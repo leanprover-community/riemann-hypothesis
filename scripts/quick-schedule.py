@@ -4,7 +4,7 @@
 One logical `gh run watch --interval120` per host/run; no run-view polling.
 An uncertain POST or monitor outcome is held for operator recovery, never retried.
 """
-import argparse,concurrent.futures,fcntl,json,os,re,subprocess,threading,time
+import argparse,concurrent.futures,fcntl,json,os,re,subprocess,sys,threading,time
 from pathlib import Path
 REPO='leanprover-community/riemann-hypothesis'
 PRIORITY={134,150}
@@ -58,9 +58,18 @@ def main():
    def persist():save(path,state);save(hostfile,state)
    try:
     if state['phase']!='watching':
-     quota=gh('rate_limit')['resources']['core']
+     try:
+      quota = gh('rate_limit')['resources']['core']
+     except (OSError, subprocess.CalledProcessError, json.JSONDecodeError) as error:
+      print(f"Deferred PR #{pr['number']} on {host['id']} because the GitHub quota check failed ({error}).",
+            file=sys.stderr, flush=True)
+      if not a.once:
+       time.sleep(60)
+      return
      # No dispatch was attempted, so leave the PR and runner available.
      if quota['remaining'] < 200:
+      print(f"Deferred PR #{pr['number']} on {host['id']} because GitHub quota is below the reserve.",
+            file=sys.stderr, flush=True)
       return
      state['phase']='dispatch_started';persist()
      r=subprocess.run(['gh','workflow','run','build-pr.yml','--repo',REPO,'--ref','main','-f','mode=quick-check','-f','pr_number='+str(pr['number']),'-f','quick_head='+pr['headRefOid'],'-f','quick_runner='+host['id']],capture_output=True,text=True,timeout=120)

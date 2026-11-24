@@ -81,22 +81,24 @@ class QueuePolicy(unittest.TestCase):
   ample = {'resources': {'core': {'remaining': 201}}}
   low = {'resources': {'core': {'remaining': 199}}}
 
-  with tempfile.TemporaryDirectory() as tmp:
-   root = Path(tmp)
-   with patch.object(sys, 'argv', ['quick-schedule', '--state', tmp, '--once']), \
-        patch.object(self.queue, 'command', return_value=json.dumps([pr])), \
-        patch.object(self.queue, 'gh', side_effect=[ample, inventory, low, ample, inventory, ample]), \
-        patch.object(self.queue.subprocess, 'run',
-                     return_value=SimpleNamespace(returncode=1, stdout='', stderr='')) as dispatch:
-    self.queue.main()
-    dispatch.assert_not_called()
-    self.assertFalse((root / (self.queue.key(pr) + '.json')).exists())
-    self.assertFalse((root / f"host-{host['id']}.json").exists())
+  quota_error = self.queue.subprocess.CalledProcessError(1, ['gh', 'api', 'rate_limit'])
+  for preflight in (low, quota_error):
+   with self.subTest(preflight=preflight), tempfile.TemporaryDirectory() as tmp:
+    root = Path(tmp)
+    with patch.object(sys, 'argv', ['quick-schedule', '--state', tmp, '--once']), \
+         patch.object(self.queue, 'command', return_value=json.dumps([pr])), \
+         patch.object(self.queue, 'gh', side_effect=[ample, inventory, preflight, ample, inventory, ample]), \
+         patch.object(self.queue.subprocess, 'run',
+                      return_value=SimpleNamespace(returncode=1, stdout='', stderr='')) as dispatch:
+     self.queue.main()
+     dispatch.assert_not_called()
+     self.assertFalse((root / (self.queue.key(pr) + '.json')).exists())
+     self.assertFalse((root / f"host-{host['id']}.json").exists())
 
-    self.queue.main()
-    dispatch.assert_called_once()
-    self.assertEqual(dispatch.call_args.args[0][:3], ['gh', 'workflow', 'run'])
-    host_state = json.loads((root / f"host-{host['id']}.json").read_text())
-    self.assertEqual(host_state['phase'], 'held')
+     self.queue.main()
+     dispatch.assert_called_once()
+     self.assertEqual(dispatch.call_args.args[0][:3], ['gh', 'workflow', 'run'])
+     host_state = json.loads((root / f"host-{host['id']}.json").read_text())
+     self.assertEqual(host_state['phase'], 'held')
 
 if __name__=='__main__':unittest.main()
