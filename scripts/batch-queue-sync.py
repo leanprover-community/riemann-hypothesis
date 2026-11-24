@@ -59,6 +59,15 @@ contains is read from its branch, never from its description. The names of the l
 `batch-labels.py`, and `verification/BATCHES.md` says what someone assembling a batch by hand
 should do for all this to work.
 
+The description is also compared with the branch, in a comment of its own on the batch's pull
+request. It names the pull requests listed under any other heading, as included, that are closed
+or whose head commit is not in the branch; those in the branch that the description does not
+list, unless it lists nothing as included; those in the branch that it lists as left out; and
+those the branch merged and then reverted, read from the messages of its commits. Each one
+reverted is told once that the batch would land it although its changes did not. The comment is
+posted once there is something to say, and edited in place after that, also to say that all is
+well again. The note remembers a digest of it, so a run that would say the same costs nothing.
+
 The batch being assembled is built on top of the batch assembled by hand that is being built,
 when exactly one into main is: its branch starts at that batch's head, and its pull request is
 to be merged after that batch's. When the batch underneath moves on, its new head is merged in.
@@ -143,8 +152,15 @@ LANDED_BEFORE_PUSH = "<!-- batch-queue-landed-before-push {number} {sha} -->"
 LANDED_ELSEWHERE = "<!-- batch-queue-landed-elsewhere {number} {sha} -->"
 LEFT_OUT = re.compile(r"<!-- batch-queue-left-out (\{.*?\}) -->")
 NO_LONGER_LEFT_OUT = "<!-- batch-queue-no-longer-left-out {number} -->"
+REVERTED = "<!-- batch-queue-reverted {number} {sha} -->"
+# The comment on a batch assembled by hand that compares its description with its branch.
+CHECK = "<!-- batch-queue-description-check -->"
 # A heading in a batch's description under which the pull requests listed are left out.
 LEFT_OUT_HEADING = re.compile(r"\b(?:left out|not included)\b", re.IGNORECASE)
+# The merge commit that adds a pull request to a batch assembled by hand, and the first line git
+# gives a commit that reverts another one, or that reverts such a revert.
+MERGED_BY_HAND = re.compile(r"Merge PR #(\d+) into batch")
+UNDONE = re.compile(r'(Revert|Reapply) "(.*)"')
 # In a batch pull request's text: the part this script writes, and its note to itself.
 BODY = "<!-- batch-queue -->"
 STATE = re.compile(r"<!-- batch-queue-state (\{.*\}) -->")
@@ -545,17 +561,25 @@ def start(gh, main, head, now, log, on=None):
 
 
 def read_record(gh, number):
-    """This script's comment on a batch assembled by hand, as (comment, note). The comment is
-    None, and the note empty, until there is one."""
+    """This script's comments on a batch assembled by hand, as (comment, note, check): the one
+    that records what it contains, what that one notes, and the one that compares its description
+    with its branch. A comment is None, and the note empty, until there is one."""
+    record, note, check = None, {}, None
     for comment in gh.pages(f"issues/{number}/comments"):
-        match = BY_HAND.match(comment.get("body") or "") if by_workflow(comment) else None
-        if match:
+        body = comment.get("body") or ""
+        if not by_workflow(comment):
+            continue
+        match = BY_HAND.match(body)
+        if match and record is None:
+            record = comment
             try:
                 note = json.loads(match.group(1))
             except ValueError:
                 note = {}
-            return comment, note if isinstance(note, dict) else {}
-    return None, {}
+            note = note if isinstance(note, dict) else {}
+        elif body.startswith(CHECK) and check is None:
+            check = comment
+    return record, note, check
 
 
 def members(note):
@@ -574,13 +598,16 @@ def queued_before(note):
 
 def branch_commits(gh, base, head, pages=20):
     """The commits of a branch whose head is `head` that `base` does not have, or None if GitHub
-    did not list them all. A request for each hundred of them."""
-    found = set()
+    did not list them all. A request for each hundred of them. They come as {commit: (message,
+    parents)}, oldest first, so that what the branch reverts is read from the same requests."""
+    found = {}
     for page in range(1, pages + 1):
         status, data = gh.call("GET", f"compare/{base}...{head}?per_page=100&page={page}")
         if status != 200 or not isinstance(data, dict) or not isinstance(data.get("commits"), list):
             return None
-        found |= {commit["sha"] for commit in data["commits"]}
+        for commit in data["commits"]:
+            found[commit["sha"]] = ((commit.get("commit") or {}).get("message") or "",
+                                    [parent.get("sha") for parent in commit.get("parents") or ()])
         if len(found) >= data.get("total_commits", 0):
             return found
         if len(data["commits"]) < 100:
@@ -597,17 +624,51 @@ def inside(batch, pulls, commits):
             if pr["number"] != batch["number"] and not is_batch(pr) and pr["sha"] in commits}
 
 
+def reverts(commits, found):
+    """Which pull requests in a batch assembled by hand its branch reverts, as {number: the commit
+    that reverts it}. `commits` is what `branch_commits` lists, oldest first, and `found` what the
+    batch contains, as {number: commit}.
+
+    A commit whose first line is `Revert "Merge PR #123 into batch"` reverts #123: that is the
+    message git gives a commit that reverts the merge commit adding #123. So does one whose first
+    line is `Revert "..."` around any other line naming #123, if a merge commit of the branch with
+    that first line brought in the commit of #123 the batch holds. A revert of such a revert, which
+    git calls `Revert "Revert "..."` or `Reapply "..."`, puts the pull request back.
+    """
+    brought = {}
+    for message, parents in commits.values():
+        for parent in parents[1:]:
+            brought.setdefault(message.split("\n", 1)[0].strip(), set()).add(parent)
+    count, last = {}, {}
+    for commit, (message, _) in commits.items():
+        subject, depth = message.split("\n", 1)[0].strip(), 0
+        match = UNDONE.fullmatch(subject)
+        while match:
+            subject, depth = match.group(2), depth + (1 if match.group(1) == "Revert" else 2)
+            match = UNDONE.fullmatch(subject)
+        if not depth:
+            continue
+        ours = MERGED_BY_HAND.fullmatch(subject)
+        for key in {ours.group(1)} if ours else set(re.findall(r"#(\d+)\b", subject)):
+            if key in found and (ours or found[key] in brought.get(subject, ())):
+                count[key] = count.get(key, 0) + (1 if depth % 2 else -1)
+                if depth % 2:
+                    last[key] = commit
+    return {key: last[key] for key in sorted(count, key=int) if count[key] > 0}
+
+
 def built_by_hand(gh, pulls, log):
     """The open batches assembled by hand that are being built, as {ref, sha, number, base,
-    comment, note, commits}.
+    comment, note, check, commits}.
 
     One labelled `building` is being built. One that is not is looked through, at a request or
     so, and labelled `building` once its branch holds the head commit of an open pull request:
     the label is how it is found again after it is closed. One labelled `batch queue` and not
     `building` is waiting in the queue like any other pull request, and is not looked at. Nor is
     one labelled `batch-building` and not `building`: another batch contains it, and it is built
-    as part of that one. Reading the note costs a request for each. `commits` is what the branch
-    was found to hold, or None when it was not looked through.
+    as part of that one. Reading the note costs a request for each, and finds the comment that
+    compares the description with the branch (`check`) as well. `commits` is what the branch was
+    found to hold, or None when it was not looked through.
     """
     found = []
     for pr in sorted(pulls.values(), key=lambda pr: pr["number"]):
@@ -628,14 +689,14 @@ def built_by_hand(gh, pulls, log):
             if not relabel(gh, pr, add=BUILDING):
                 continue
             log.append(f"#{pr['number']} is a batch assembled by hand with open pull requests in it: now `{BUILDING}`")
-        comment, note = read_record(gh, pr["number"])
+        comment, note, check = read_record(gh, pr["number"])
         if commits is not None:
             # Labelled `building` just now: for the first time, or again after it was closed
             # without being merged and reopened. What the note says was done then has been
             # undone since, so it starts again.
             note = {}
         found.append({"ref": pr["ref"], "sha": pr["sha"], "number": pr["number"], "base": pr["base"],
-                      "comment": comment, "note": note, "commits": commits})
+                      "comment": comment, "note": note, "check": check, "commits": commits})
     return found
 
 
@@ -690,9 +751,11 @@ def hold(gh, batch, pulls, held, main, log):
 
     It contains each open pull request whose head commit is in its branch, queued or not. When
     the branch's head has moved since the note was written, its commits are listed again, a
-    request for each hundred of them. What has arrived is added. What was found before stays as
-    long as the commit it was found at is still there, even after its author has pushed again,
-    unless its new head is in the branch too. Whatever has left loses `batch-building` and
+    request for each hundred of them, and so are they when the note is from before it recorded
+    what the branch reverts. What has arrived is added. What was found before stays as long as
+    the commit it was found at is still there, even after its author has pushed again, unless its
+    new head is in the branch too. Which of them the branch reverts (`reverted`, see `reverts`) is
+    read from the same list. Whatever has left loses `batch-building` and
     `frozen` unless another batch contains it, goes back to `batch queue` if it was queued before
     and still is, and is told so. `held` says, for each pull request, which batches contain it.
     Returns whether anything was queued again.
@@ -701,14 +764,17 @@ def hold(gh, batch, pulls, held, main, log):
     is in it when the batch is finished with. It then remembers what was done as it is done:
     which members were labelled (`labelled`), and who was told that they are frozen (`told`),
     that they were pushed to afterwards (`pushed`, which also labels them `awaiting-author`), or
-    what the description says about them being left out (`left`, see `tell_left_out`). Only what
+    what the description says about them being left out (`left`, see `tell_left_out`), who was
+    told that the branch reverts them (`warned`, see `tell_reverted`), and what the comment
+    comparing the description with the branch says (`check`, see `check_description`). Only what
     GitHub took counts as done, so what was refused or cut short is tried again by the next run,
     and nothing is done twice. A member is labelled once: a label taken off by hand stays off,
     except that a pull request queued again swaps `batch queue` for the labels of the batch.
     """
     note, number, requeued = batch["note"], batch["number"], False
     found, queued, new = members(note), queued_before(note), set()
-    if note.get("head") != batch["sha"]:
+    reverted = kept(note, "reverted")
+    if note.get("head") != batch["sha"] or "reverted" not in note:
         commits = batch.get("commits")
         if commits is None:
             if gh.short():
@@ -738,6 +804,7 @@ def hold(gh, batch, pulls, held, main, log):
                 log.append(f"#{key} is no longer in the batch #{number}: "
                            + (f"`{QUEUED}` again" if back else f"no longer `{MEMBER}`"))
         new, found = set(now) - set(found), now
+        reverted = reverts(commits, found)
     queued = {key for key in found if key in queued or QUEUED in (pulls.get(int(key)) or {}).get("labels", ())}
     # What was done for a pull request that has been closed since is done again if it is reopened.
     labelled = sorted({key for key in note.get("labelled") or () if key in found and int(key) in pulls}, key=int)
@@ -745,7 +812,9 @@ def hold(gh, batch, pulls, held, main, log):
         "head": batch["sha"], "members": found, "queued": sorted(queued, key=int), "labelled": labelled,
         "told": {key: commit for key, commit in kept(note, "told").items() if found.get(key) == commit},
         "pushed": {key: commit for key, commit in kept(note, "pushed").items() if found.get(key) == commit},
-        "left": kept(note, "left")}
+        "left": kept(note, "left"), "reverted": reverted,
+        "warned": {key: commit for key, commit in kept(note, "warned").items() if reverted.get(key) == commit},
+        "check": note.get("check") if isinstance(note.get("check"), str) else ""}
     save(gh, batch)
 
     try:
@@ -764,6 +833,8 @@ def hold(gh, batch, pulls, held, main, log):
         labelled.sort(key=int)
         tell_members(gh, batch, pulls, main, log)
         tell_left_out(gh, batch, pulls, log)
+        tell_reverted(gh, batch, pulls, main, log)
+        check_description(gh, batch, pulls, log)
     finally:
         save(gh, batch)
     return requeued
@@ -811,26 +882,42 @@ def frozen_text(number, commit, pr, main):
             "merged when the batch lands. If its head is still this commit then, this workflow closes it instead.")
 
 
-def left_out(body, repo):
-    """The pull requests a batch's description lists as left out, as {number: (heading, entry)}.
+def list_entries(body, repo):
+    """Every pull request a batch's description lists, as (number, heading, entry), in order.
 
     A heading is a line of its own, not part of a list, that ends with a colon. The pull
     requests under it are the list entries that start with a link to one, `#123` or its full
-    URL. Those under a heading that says "left out" or "not included" are the ones left out,
-    up to the next heading or paragraph. A pull request listed twice keeps its first entry.
+    URL, up to the next heading or paragraph. The heading is None for a list that follows a
+    paragraph instead.
     """
     link = re.compile(rf"[-*]\s+(?:https://github\.com/{re.escape(repo)}/pull/|#)(\d+)\b", re.IGNORECASE)
-    found, heading = {}, None
+    found, heading = [], None
     for line in body.splitlines():
         text = line.strip()
         if not text or line[0].isspace():
             continue
         if line.startswith(("- ", "* ")):
             match = link.match(line)
-            if heading and match:
-                found.setdefault(int(match.group(1)), (heading, text[1:].strip()))
+            if match:
+                found.append((int(match.group(1)), heading, text[1:].strip()))
             continue
-        heading = text if text.endswith(":") and LEFT_OUT_HEADING.search(text) else None
+        heading = text if text.endswith(":") else None
+    return found
+
+
+def leaves_out(heading):
+    """Whether the pull requests listed under a heading are left out."""
+    return bool(heading and LEFT_OUT_HEADING.search(heading))
+
+
+def left_out(body, repo):
+    """The pull requests a batch's description lists as left out, as {number: (heading, entry)}:
+    those listed under a heading that says "left out" or "not included". A pull request listed
+    twice keeps its first entry."""
+    found = {}
+    for number, heading, entry in list_entries(body, repo):
+        if leaves_out(heading):
+            found.setdefault(number, (heading, entry))
     return found
 
 
@@ -908,6 +995,131 @@ def tell_left_out(gh, batch, pulls, log):
             since = 0
 
 
+def tell_reverted(gh, batch, pulls, main, log):
+    """Tell each open pull request that a batch assembled by hand merged and then reverted, once,
+    that it will be taken to have landed with the batch although its changes did not.
+
+    Only one whose head is still the commit the batch holds is told: GitHub would mark it merged,
+    or this workflow would close it if it targets another branch. The note's `warned` remembers
+    who was told, so this costs nothing until the branch reverts another one. Before telling one,
+    its comments are read once, so that a note that was lost does not make it hear this twice.
+    """
+    note, number = batch["note"], batch["number"]
+    warned = note["warned"]
+    for key, undo in sorted(note["reverted"].items(), key=lambda entry: int(entry[0])):
+        pr, commit = pulls.get(int(key)), note["members"].get(key)
+        if warned.get(key) == undo or pr is None or by_hand(pr) or pr["sha"] != commit:
+            continue
+        if gh.short():
+            log.append(f"only {gh.remaining} requests left this hour: stopped telling what the batch #{number} "
+                       "reverts, and the next run carries on")
+            return
+        marker = REVERTED.format(number=number, sha=undo)
+        then = ("GitHub marks this pull request merged" if pr["base"] == main else
+                f"this workflow closes this pull request, which targets `{pr['base']}`, as landed")
+        if any(marker in (comment.get("body") or "") for comment in gh.pages(f"issues/{key}/comments")
+               if by_workflow(comment)):
+            warned[key] = undo
+        elif say(gh, pr["number"], marker,
+                 f"Batch #{number} took commit `{commit[:10]}` of this pull request and then reverted it in "
+                 f"`{undo[:10]}`. The commit is still in the batch's branch, so if the batch lands as it is, {then} "
+                 f"although its changes did not land. Its maintainers are asked on #{number} to rebuild the batch "
+                 "without it instead. If it does land like this, open a new pull request with these changes."):
+            warned[key] = undo
+            log.append(f"told #{key} that the batch #{number} reverts it")
+
+
+def check_description(gh, batch, pulls, log):
+    """Compare the description of a batch assembled by hand with its branch, in a comment of its
+    own on the batch's pull request (see `description_check`).
+
+    The comment is posted once there is something to say, and edited in place after that, also
+    to say that all is well again. The note's `check` remembers a digest of what it says, so a
+    run that would say the same thing makes no request at all. Nothing is posted just to say
+    that all is well.
+    """
+    note, number = batch["note"], batch["number"]
+    text, clear = description_check(number, pulls[number]["body"], gh.repo, note, pulls)
+    digest = hashlib.sha256(text.encode()).hexdigest()[:16]
+    comment = batch.get("check")
+    if note["check"] == digest:
+        return
+    if (comment is None and clear) or (comment is not None and comment.get("body") == text):
+        note["check"] = digest
+        return
+    if gh.short():
+        log.append(f"only {gh.remaining} requests left this hour: did not compare the description of the batch "
+                   f"#{number} with its branch, and the next run does")
+        return
+    if comment is None:
+        status, data = gh.write("POST", f"issues/{number}/comments", {"body": text})
+        if status in (0, 201):
+            batch["check"], note["check"] = {"id": (data or {}).get("id"), "body": text}, digest
+            log.append(f"posted on the batch #{number} what its description and its branch disagree on")
+    else:
+        status, _ = gh.write("PATCH", f"issues/comments/{comment['id']}", {"body": text})
+        if status in (0, 200):
+            comment["body"], note["check"] = text, digest
+            log.append(f"brought up to date what the batch #{number} is told about its description"
+                       + (": all is well now" if clear else ""))
+
+
+def description_check(number, body, repo, note, pulls):
+    """What the comment comparing the description of the batch #`number` with its branch says, and
+    whether all is well. `note` is the batch's note, and `pulls` the open pull requests.
+
+    It names what the description lists as included, under any heading but one that leaves pull
+    requests out, that is not in the branch: closed pull requests, and open ones whose head commit
+    is not there. It names what is in the branch that the description does not list at all, unless
+    the description lists nothing as included or it is a batch itself; what is in the branch that
+    it lists as left out; and what the branch reverts, which is named for that alone. What is in
+    the branch is what the note records, at the commit it was found at, so a pull request pushed
+    to since it was merged in is still in it.
+    """
+    entries = list_entries(body, repo)
+    found = {int(key) for key in note["members"]}
+    included = {entry for entry, heading, _ in entries if heading and not leaves_out(heading)} - {number}
+    anywhere = {entry for entry, _, _ in entries}
+    out = {entry for entry, heading, _ in entries if leaves_out(heading)}
+    closed = sorted(entry for entry in included - found if entry not in pulls)
+    missing = sorted(entry for entry in included - found if entry in pulls)
+    undone = sorted((int(key), undo) for key, undo in note["reverted"].items() if int(key) in pulls)
+    found -= {entry for entry, _ in undone}
+    unlisted = sorted(entry for entry in found - anywhere if included and entry in pulls and not by_hand(pulls[entry]))
+    against = sorted(entry for entry in found & out if entry in pulls)
+
+    def links(numbers):
+        return ", ".join(f"#{entry}" for entry in numbers)
+
+    lines = [CHECK, "The batch-queue workflow compares this description with the branch. It reads what the batch "
+             "contains from the branch: each open pull request whose head commit is in it. This comment is brought up "
+             "to date when either of them changes. See `verification/BATCHES.md`."]
+    if closed:
+        lines += ["", f"Listed as included, but closed: {links(closed)}."]
+    if missing:
+        lines += ["", f"Listed as included, but their head commit is not in this branch: {links(missing)}. Merge the head "
+                  "commit of each into the branch, or take it off the list. One whose earlier commit is in the branch, "
+                  "for example because it was pushed to before the workflow first looked through the batch, does not "
+                  "count either: GitHub marks a pull request merged only when its head commit lands."]
+    if unlisted:
+        lines += ["", f"In this branch, but not listed in the description: {links(unlisted)}."]
+    if against:
+        lines += ["", f"In this branch, but listed as left out: {links(against)}. They are in the batch and will land "
+                  "with it, whatever the description says. Take them off that list, or rebuild the branch without them."]
+    if undone:
+        lines += ["", "Reverted in this branch: " + ", ".join(f"#{entry} in `{undo[:10]}`" for entry, undo in undone)
+                  + ". Their head commits are still in the branch, so GitHub marks them merged when this lands, although "
+                  "their changes did not land. Rebuild the branch without them and force-push instead of reverting. "
+                  "Each one whose head has not moved since is told so."]
+    clear = not (closed or missing or unlisted or against or undone)
+    if clear and included:
+        lines += ["", "Nothing to report: every pull request listed as included is in this branch, everything in it is "
+                  "listed, and nothing in it is reverted."]
+    elif clear:
+        lines += ["", "Nothing to report: nothing in this branch is listed as left out or reverted."]
+    return "\n".join(lines) + "\n", clear
+
+
 def describe_by_hand(note):
     """The comment that records what a batch assembled by hand contains."""
     listed = ", ".join(f"#{key}" for key in sorted(note["members"], key=int)) or "nothing yet"
@@ -916,7 +1128,9 @@ def describe_by_hand(note):
             "It adds nothing to a batch assembled by hand and leaves its description alone, but it keeps the labels "
             f"in step: each open pull request whose head commit is in this branch is now `{MEMBER}` and `{FROZEN}`, "
             f"in place of `{QUEUED}` if it had that, and is asked not to push until this has landed. Those this "
-            f"description lists as left out are told why and labelled `{WAITING}`. When this is merged the pull "
+            f"description lists as left out are told why and labelled `{WAITING}`. Where the description and the "
+            "branch disagree, or the branch reverts a pull request, it says so in another comment. When this is "
+            "merged the pull "
             f"requests in it lose `{MEMBER}` and `{FROZEN}`. If it is closed without being merged they lose them too, "
             f"and the ones that were queued go back to `{QUEUED}`. See `verification/BATCHES.md`.\n\n"
             f"In this batch: {listed}.\n")

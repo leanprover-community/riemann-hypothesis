@@ -24,8 +24,9 @@ below. This page is for whoever assembles one.
    head commits of the pull requests in it reach `main`.
 5. **To take a pull request out, rebuild the branch without it and force-push.** Don't revert
    it: the reverted pull request's head commit would still be in the branch, so GitHub would mark
-   it merged when the batch lands, although its changes did not land. After a force-push, the
-   workflow looks through the branch again. A pull request that is no longer in it loses its
+   it merged when the batch lands, although its changes did not land. The workflow notices a
+   revert, says so on the batch's pull request, and tells the reverted pull request what will
+   happen. After a force-push, the workflow looks through the branch again. A pull request that is no longer in it loses its
    labels, goes back to `batch queue` if it was queued, and is told that it can push again.
    - A force-push does not stop a build of the old head: `build-pr.yml` gives each head commit
      a concurrency group of its own and does not cancel runs in progress.
@@ -35,11 +36,14 @@ below. This page is for whoever assembles one.
      the modules that depend on what was taken out. That is the same cost as reverting it.
 6. **To add a pull request, merge its head commit in and push.** The workflow looks through the
    branch again on every push.
-7. **List what is left out, and why, in the description.** People read the description to see
-   which pull requests a batch contains. The workflow reads it only for what it leaves out:
+7. **List what is included, and what is left out and why, in the description.** People read the
+   description to see which pull requests a batch contains. The workflow reads what the batch
+   contains from the branch, and reads the description for what it leaves out and to check it
+   against the branch (see below):
    - A heading is a line of its own, not part of a list, that ends with a colon. Pull requests
      listed under a heading that contains "left out" or "not included" (in any letter case) are
      left out. For example: `Left out because they conflict with a PR earlier in the batch:`.
+     Those listed under any other heading, such as `Included:`, are included.
    - Each one is a list entry starting with `- ` and then a link to the pull request, either
      `#123` or its full URL. The rest of the entry is the reason. Lines indented under an entry,
      and entries that don't start with a link, are not read.
@@ -64,6 +68,29 @@ While the batch's pull request is open, it is labelled `building`. Each open pul
 head commit is in the branch is labelled `batch-building` and `frozen`, in place of
 `batch queue`. Each is asked once, in a comment, not to push until the batch has landed or been
 closed. The workflow lists them in a comment of its own on the batch's pull request.
+
+The workflow also compares the description with the branch, and says where they disagree in a
+comment of its own on the batch's pull request. It names:
+
+- pull requests listed as included that are closed;
+- pull requests listed as included whose head commit is not in the branch. That includes one
+  pushed to after it was merged in but before the workflow first looked through the batch: the
+  workflow cannot count its old commit as in the batch. Merge its new head in, or take it off the
+  list;
+- pull requests in the branch that the description does not list at all. This is left out when
+  the description lists nothing as included, so a batch that does not follow this format is not
+  flooded;
+- pull requests in the branch that the description lists as left out;
+- pull requests whose merge into the branch was reverted. The workflow knows a revert by the
+  message git gives it: `Revert "Merge PR #123 into batch"`, or `Revert "..."` around the message
+  of any other merge commit that brought in #123 and names it. A revert of the revert puts the
+  pull request back. Each pull request reverted is also told, once, that the batch would land it
+  although its changes did not (rule 5).
+
+What is in the branch is what the workflow found there, at the commit it found, so a pull request
+pushed to after it was merged in is not named. The comment is posted once there is something to
+say. After that it is edited in place, also to say that all is well again, and only when what it
+says changes.
 
 A pull request that is pushed to after the batch took its commit stays in the batch at the old
 commit. It is told that the batch lands only that commit, and is labelled `awaiting-author`. If

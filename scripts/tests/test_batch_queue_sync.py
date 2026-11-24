@@ -5,6 +5,7 @@ import datetime
 import hashlib
 import importlib.util
 import io
+import json
 from pathlib import Path
 import re
 import unittest
@@ -198,11 +199,15 @@ class Fake(batch.GitHub):
         return 200, {"ahead_by": 0 if head == base or head in self.inside[base] else 1}
 
     def _branch_commits(self, _, base, head, page):
-        """The commits of `head` that the branch `base` does not have, a hundred a page."""
+        """The commits of `head` that the branch `base` does not have, a hundred a page, with the
+        message and parents of those the stand-in knows."""
         under = self.refs.get(base, MAIN if base == "main" else base)
         commits = sorted(({head} | self.inside[head]) - ({under} | self.inside[under]))
         start = (int(page) - 1) * 100
-        return 200, {"total_commits": len(commits), "commits": [{"sha": commit} for commit in commits[start:start + 100]]}
+        return 200, {"total_commits": len(commits), "commits": [
+            {"sha": commit, **({"commit": {"message": self.commits[commit]["message"]},
+                                "parents": self.commits[commit]["parents"]} if commit in self.commits else {})}
+            for commit in commits[start:start + 100]]}
 
     def _comments(self, _, number):
         return 200, list(self.comments.get(int(number), []))
@@ -1374,6 +1379,242 @@ class Robustness(unittest.TestCase):
         self.assertEqual([gh.pulls[n]["labels"] for n in (11, 12, 14)], [QF, QF, set()])
         for number in (11, 12, 14):
             self.assertEqual(len([body for body in gh.said(number) if body.startswith("<!-- batch-queue-unfrozen")]), 1)
+
+
+LISTED = f"""This PR merges 3 pull requests into one batch.
+
+Included:
+
+- {URL}11 Reuse a lemma (@alice)
+- #12 Prune imports (@bob)
+
+These can be dropped if the maintainers prefer:
+
+- {URL}14 Shorten a proof (@carol)
+
+Left out for other reasons:
+
+- {URL}23 Drop imports from the root theorems (@frank): it changes `src/Main.lean`.
+"""
+# The same, with #13 listed as included as well.
+WITH_13 = LISTED.replace("- #12 Prune", "- #13 Not merged in (@dan)\n- #12 Prune")
+
+
+def merge_and_revert(gh, number, subject=None, name="kim-revert", ref=HAND, pr=1018):
+    """A maintainer merges the head of #`number` into a batch's branch and then reverts that merge
+    with git's message. Returns the commit that reverts it."""
+    old, head = gh.refs[ref], gh.pulls[number]["sha"]
+    subject = subject or f"Merge PR #{number} into batch"
+    merge, undo = sha(f"{name} merge"), sha(f"{name} revert")
+    gh.commits[merge] = {"message": subject, "parents": [{"sha": old}, {"sha": head}]}
+    gh.commits[undo] = {"message": f'Revert "{subject}"\n\nThis reverts commit {merge}, reversing\nchanges made to {old}.',
+                        "parents": [{"sha": merge}]}
+    gh.inside[merge] = gh.inside[old] | gh.inside[head] | {old, head}
+    gh.inside[undo] = gh.inside[merge] | {merge}
+    move(gh, undo, ref, pr)
+    return undo
+
+
+def move(gh, head, ref=HAND, pr=1018):
+    """The batch's branch moves to `head`."""
+    gh.refs[ref] = head
+    gh.pulls[pr]["sha"] = head
+    gh.touch(pr)
+
+
+class DescriptionCheck(unittest.TestCase):
+    """The comment on a batch assembled by hand that compares its description with its branch."""
+
+    def built(self, body=LISTED):
+        gh = Fake()
+        queue(gh, 11, 12)
+        for number in (13, 14, 23):
+            gh.add_pull(number, f"head{number}")
+        by_hand(gh, 11, 12, 14)
+        gh.pulls[1018]["body"] = body
+        return gh
+
+    def checks(self, gh):
+        return [body for body in gh.said(1018) if body.startswith(batch.CHECK)]
+
+    def reverted(self, gh, number):
+        return [body for body in gh.said(number) if body.startswith("<!-- batch-queue-reverted")]
+
+    def test_a_description_that_matches_the_branch_gets_no_comment(self):
+        gh = self.built()
+        sync(gh)
+        self.assertEqual(self.checks(gh), [])
+        gh.writes = []
+        sync(gh)
+        self.assertEqual(gh.writes, [])
+
+    def test_a_closed_pull_request_listed_as_included_is_named(self):
+        gh = self.built(LISTED.replace("- #12 Prune", "- #15 Gone (@dan)\n- #12 Prune"))
+        gh.add_pull(15, "head15")
+        gh.close(15)
+        log = sync(gh)
+        [check] = self.checks(gh)
+        self.assertIn("Listed as included, but closed: #15.", check)
+        self.assertNotIn("head commit is not in this branch", check)
+        self.assertIn("posted on the batch #1018 what its description and its branch disagree on", log)
+
+    def test_an_open_pull_request_listed_but_not_in_the_branch_is_named(self):
+        gh = self.built(WITH_13)
+        sync(gh)
+        [check] = self.checks(gh)
+        self.assertIn("Listed as included, but their head commit is not in this branch: #13. Merge the head commit", check)
+
+    def test_one_pushed_to_before_the_batch_was_first_looked_through_is_named_too(self):
+        gh = self.built()
+        gh.push(12, "head12-later")  # after it was merged in, before the workflow first looks
+        sync(gh)
+        self.assertEqual(gh.pulls[12]["labels"], QF)
+        [check] = self.checks(gh)
+        self.assertIn("head commit is not in this branch: #12.", check)
+        self.assertIn("pushed to before the workflow first looked through the batch", check)
+
+    def test_a_member_pushed_to_after_it_was_merged_in_is_not_named(self):
+        gh = self.built()
+        sync(gh)
+        gh.push(12, "head12-later")
+        sync(gh)
+        self.assertEqual(self.checks(gh), [])
+
+    def test_what_the_branch_holds_but_the_description_does_not_list_is_named(self):
+        gh = self.built(LISTED.replace(f"- {URL}14 Shorten a proof (@carol)\n", f"- {URL}24 Something else\n"))
+        sync(gh)
+        [check] = self.checks(gh)
+        self.assertIn("In this branch, but not listed in the description: #14.", check)
+
+    def test_without_a_list_of_what_is_included_the_branch_is_not_compared_with_it(self):
+        gh = self.built("Assembled by hand.\n\nLeft out:\n\n- #23 reason\n")
+        sync(gh)
+        self.assertEqual(self.checks(gh), [])
+
+    def test_what_the_branch_holds_but_the_description_leaves_out_is_named(self):
+        gh = self.built(DESCRIPTION)  # lists #11 both as included and as left out
+        sync(gh)
+        [check] = self.checks(gh)
+        self.assertIn("In this branch, but listed as left out: #11.", check)
+        self.assertNotIn("not listed in the description", check)
+        self.assertEqual([body for body in gh.said(11) if body.startswith("<!-- batch-queue-left-out")], [])
+
+    def test_the_comment_is_edited_in_place_and_says_when_all_is_well(self):
+        gh = self.built(WITH_13)
+        sync(gh)
+        [first] = [comment["id"] for comment in gh.comments[1018] if comment["body"].startswith(batch.CHECK)]
+        by_hand(gh, 11, 12, 13, 14, name="kim-with-13")
+        log = sync(gh)
+        [check] = self.checks(gh)
+        self.assertIn("Nothing to report: every pull request listed as included is in this branch", check)
+        self.assertEqual([comment["id"] for comment in gh.comments[1018] if comment["body"].startswith(batch.CHECK)], [first])
+        self.assertIn("brought up to date what the batch #1018 is told about its description: all is well now", log)
+
+    def test_a_run_with_nothing_new_writes_nothing(self):
+        gh = self.built(WITH_13)
+        sync(gh)
+        gh.writes = []
+        sync(gh)
+        gh.pulls[1018]["body"] += "\nA paragraph that changes nothing.\n"
+        gh.touch(1018)
+        sync(gh)
+        self.assertEqual(gh.writes, [])
+        self.assertEqual(len(self.checks(gh)), 1)
+
+    def test_a_revert_is_named_and_the_pull_request_is_told_once(self):
+        gh = self.built()
+        sync(gh)
+        undo = merge_and_revert(gh, 13)
+        gh.pulls[1018]["body"] = WITH_13
+        log = sync(gh)
+        self.assertEqual(gh.pulls[13]["labels"], IN)  # still in the batch: its head commit is
+        [check] = self.checks(gh)
+        self.assertIn(f"Reverted in this branch: #13 in `{undo[:10]}`.", check)
+        [told] = self.reverted(gh, 13)
+        self.assertTrue(told.startswith(f"<!-- batch-queue-reverted 1018 {undo} -->"))
+        self.assertIn("GitHub marks this pull request merged although its changes did not land", told)
+        self.assertIn("told #13 that the batch #1018 reverts it", log)
+        gh.writes, gh.reads = [], []
+        sync(gh)
+        self.assertEqual((gh.writes, len(self.reverted(gh, 13))), ([], 1))
+        self.assertEqual([path for path in gh.reads if path.startswith(("compare/", "issues/13/"))], [])
+
+    def test_a_revert_already_told_is_not_told_again_when_the_note_is_lost(self):
+        gh = self.built()
+        merge_and_revert(gh, 13)
+        sync(gh)
+        gh.close(1018)
+        sync(gh)
+        gh.reopen(1018)
+        sync(gh)
+        self.assertEqual(len(self.reverted(gh, 13)), 1)
+
+    def test_any_revert_of_a_merge_that_brought_the_pull_request_in_counts(self):
+        gh = self.built()
+        merge_and_revert(gh, 13, subject="Merge pull request #13 from dan/topic-13")
+        sync(gh)
+        self.assertEqual(len(self.reverted(gh, 13)), 1)
+        # Not listed in the description, it is named only as reverted: listing it is not the fix.
+        [check] = self.checks(gh)
+        self.assertIn("Reverted in this branch: #13", check)
+        self.assertNotIn("not listed in the description", check)
+
+    def test_a_revert_naming_a_pull_request_it_did_not_bring_in_does_not_count_it(self):
+        gh = self.built()
+        merge_and_revert(gh, 13, subject="Merge pull request #13 from dan/topic-13, after #12")
+        sync(gh)
+        self.assertEqual((len(self.reverted(gh, 12)), len(self.reverted(gh, 13))), (0, 1))
+
+    def test_a_revert_that_is_reverted_again_puts_it_back(self):
+        gh = self.built()
+        undo = merge_and_revert(gh, 13)
+        again = sha("kim-reapply")
+        gh.commits[again] = {"message": f'Reapply "Merge PR #13 into batch"\n\nThis reverts commit {undo}.',
+                             "parents": [{"sha": undo}]}
+        gh.inside[again] = gh.inside[undo] | {undo}
+        move(gh, again)
+        sync(gh)
+        self.assertEqual(self.reverted(gh, 13), [])
+
+    def test_a_note_from_before_reverts_were_recorded_lists_the_branch_once_more(self):
+        gh = self.built()
+        merge_and_revert(gh, 13)
+        sync(gh)
+        record = next(comment for comment in gh.comments[1018] if comment["body"].startswith("<!-- batch-queue-by-hand"))
+        note = json.loads(batch.BY_HAND.match(record["body"]).group(1))
+        for name in ("reverted", "warned", "check"):
+            del note[name]
+        record["body"] = batch.describe_by_hand(note)
+        gh.reads = []
+        sync(gh)
+        self.assertEqual(len([path for path in gh.reads if path.startswith("compare/")]), 1)
+        self.assertEqual(len(self.reverted(gh, 13)), 1)
+        gh.reads = []
+        sync(gh)
+        self.assertEqual([path for path in gh.reads if path.startswith("compare/")], [])
+
+    def test_the_check_waits_when_the_hours_allowance_is_nearly_gone(self):
+        gh = self.built(WITH_13)
+        sync(gh)
+        gh.pulls[1018]["body"] = LISTED.replace("- #12 Prune", "- #24 Not merged in (@dan)\n- #12 Prune")
+        gh.left = batch.RESERVE - 1
+        log = sync(gh)
+        self.assertIn("#13", self.checks(gh)[0])
+        self.assertIn(f"only {batch.RESERVE - 1} requests left this hour: did not compare the description of the "
+                      "batch #1018 with its branch, and the next run does", log)
+        gh.left = 900
+        sync(gh)
+        self.assertIn("#24", self.checks(gh)[0])
+
+    def test_a_refused_edit_is_tried_again(self):
+        gh = self.built(WITH_13)
+        sync(gh)
+        gh.pulls[1018]["body"] = LISTED
+        gh.fail("PATCH", r"issues/comments/\d+", 403)
+        sync(gh)
+        self.assertIn("#13", self.checks(gh)[0])
+        sync(gh)
+        self.assertIn("Nothing to report", self.checks(gh)[0])
 
 
 class Reconciling(unittest.TestCase):
