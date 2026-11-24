@@ -13,13 +13,13 @@ request still under review adds. Until it lands, the label exists but nothing pu
 
 | Label | On | Put on when | Taken off when |
 |---|---|---|---|
-| `batch queue` | a pull request wanted in a batch | a maintainer or reviewer comments `batch` or `p` | `-batch`; it joins a batch assembled by hand (in exchange for `batch-building`); its queued commit lands; it is closed |
-| `priority` | a queued pull request that goes first | `p` | by hand |
 | `building` | the pull request of a batch assembled by hand | its branch holds the head of an open pull request | the batch is merged or closed, once its members are tidied up after |
 | `batch-building` | each pull request in that batch | the batch takes its head commit | it leaves the branch; the batch is merged or closed; it is closed |
 | `frozen` | each pull request in that batch, and each queued pull request | with `batch-building`, or with `batch queue` on a `batch` comment | it is neither queued nor in a batch being built: `-batch`, it leaves the batch, the batch is merged or closed, it is closed |
-| `awaiting-author` | a pull request handed back to its author | `aa`; it is pushed to while in a batch; the description leaves it out; a batch lands an older commit of it; `batch-conflict` is first put on it *(planned, #1700)* | `ready`, by the author or a maintainer |
 | `changed after frozen` *(planned, #1697)* | a frozen pull request whose head has moved on from the commit taken | it is pushed to after a batch or the queue took a commit of it | its head is that commit again, or it is no longer frozen |
+| `batch queue` | a pull request wanted in a batch | a maintainer or reviewer comments `batch` or `p` | `-batch`; it joins a batch assembled by hand (in exchange for `batch-building`); its queued commit lands; it is closed |
+| `priority` | a queued pull request that goes first | `p` | by hand |
+| `awaiting-author` | a pull request handed back to its author | `aa`; it is pushed to while in a batch; the description leaves it out; a batch lands an older commit of it; `batch-conflict` is first put on it *(planned, #1700)* | `ready`, by the author or a maintainer |
 | `main-conflict` *(planned, #1700)* | a pull request that conflicts with `main` | GitHub says so, unless it declares `depends on:` a batch being built | the conflict is gone, or it declares that dependency |
 | `batch-conflict` *(planned, #1700)* | a pull request that conflicts with a batch being built | git cannot merge it with the batch's head | the conflict is gone; the batch lands or is closed; it joins the batch |
 
