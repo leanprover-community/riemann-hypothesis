@@ -411,6 +411,8 @@ def consume(root, cache, record, identity, workers=24, fetcher=fetch):
             env.pop(key)
     env.update(LAKE_CONFIG=str(root / "lakefile.toml"), LAKE_CACHE_DIR=str(cache),
                LAKE_RESTORE_ARTIFACTS="true", ELAN_TOOLCHAIN=identity["toolchain"])
+    sysroot = Path(subprocess.check_output(["lake", "env", "printenv", "LEAN_SYSROOT"],
+                                           cwd=root, env=env, text=True).strip())
     env["RUST_MIN_STACK"] = str(max(int(env.get("RUST_MIN_STACK", "0")), 8388608))
     service = tomllib.loads((root / "lakefile.toml").read_text()).get("cache", {}).get("defaultService")
     entries = [decode(line) for line in contents.splitlines()[1:]]
@@ -452,9 +454,8 @@ def consume(root, cache, record, identity, workers=24, fetcher=fetch):
     for directory in dict.fromkeys(base for job in jobs for base in job["base"]):
         Path(directory).mkdir(parents=True, exist_ok=True)
     clear_output_hashes(root, modules)
-    lean = Path(subprocess.check_output(["elan", "which", "lean"], cwd=root, env=env, text=True).strip())
     print(f"Unpacking {len(jobs)} modules with stock leantar ({workers} workers)...", flush=True)
-    subprocess.run([str(lean.with_name("leantar")), "--jobs", str(workers), "-f", "-x", "-j", "-"],
+    subprocess.run([str(sysroot / "bin" / "leantar"), "--jobs", str(workers), "-f", "-x", "-j", "-"],
                    input=json.dumps(jobs), text=True, cwd=root, env=env, check=True)
     print("Checking with lake build --no-build...", flush=True)
     result = subprocess.run(["lake", "-q", "--log-level=error", "build", "--no-build"], cwd=root, env=env)

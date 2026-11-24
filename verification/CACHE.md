@@ -10,6 +10,9 @@ The first cache, for the published Lean 4.33.1 source (revision `e50d09817ad8146
 
 The public cache uses the direct R2 custom domain `https://rh-cache.taucetiproject.org`, backed by a dedicated `riemann-hypothesis-cache` bucket in the TauCeti Cloudflare account. Its service configuration is committed in `lakefile.toml`.
 
+Use the Lean release pinned in `lean-toolchain` and Python 3.11 or newer as `python3`. Lake uses
+the `leantar` from its selected toolchain, so a standalone Lean release works without `elan`.
+
 ```bash
 lake exe cache get
 lake build --no-build
