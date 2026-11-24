@@ -1468,7 +1468,8 @@ class DescriptionCheck(unittest.TestCase):
         gh = self.built()
         gh.push(12, "head12-later")  # after it was merged in, before the workflow first looks
         sync(gh)
-        self.assertEqual(gh.pulls[12]["labels"], QF)
+        # Queued, then pushed to before the batch was looked through: still queued at the old commit.
+        self.assertEqual(gh.pulls[12]["labels"], QF | {CHANGED})
         [check] = self.checks(gh)
         self.assertIn("head commit is not in this branch: #12.", check)
         self.assertIn("pushed to before the workflow first looked through the batch", check)
