@@ -56,6 +56,8 @@ class Fake(batch.GitHub):
         self.ahead = datetime.timedelta(hours=1)
         # Requests to answer badly: [method, pattern of the path, status or exception, times].
         self.failures = []
+        # Labels GitHub does not have.
+        self.missing = set()
 
     def fail(self, method, pattern, answer, times=1):
         """Answer the next `times` requests matching with `answer`: a status, or an exception."""
@@ -152,6 +154,10 @@ class Fake(batch.GitHub):
             if match:
                 return handler(self, payload, *match.groups())
         raise AssertionError(f"unexpected request: {method} {path}")
+
+    def _label(self, _, name):
+        name = name.replace("%20", " ")
+        return (404, {"message": "Not Found"}) if name in self.missing else (200, {"name": name})
 
     def _repo(self, _):
         return 200, {"default_branch": "main"}
@@ -299,6 +305,7 @@ class Fake(batch.GitHub):
 
     routes = [
         (r"GET ", _repo),
+        (r"GET labels/(.+)", _label),
         (r"GET pulls\?state=open&per_page=100&page=1", _open),
         (r"GET git/matching-refs/heads/batch/", _refs),
         (r"GET git/ref/heads/main", _main),
@@ -1374,6 +1381,18 @@ class Robustness(unittest.TestCase):
         self.assertEqual([gh.pulls[n]["labels"] for n in (11, 12, 14)], [QF, QF, set()])
         for number in (11, 12, 14):
             self.assertEqual(len([body for body in gh.said(number) if body.startswith("<!-- batch-queue-unfrozen")]), 1)
+
+
+class MissingLabels(unittest.TestCase):
+    def test_a_missing_label_stops_the_run_instead_of_being_created(self):
+        gh = Fake()
+        gh.add_pull(14, "head14")
+        by_hand(gh, 14)
+        gh.missing.add(MEMBER)
+        with self.assertRaises(batch.Refused) as caught:
+            sync(gh)
+        self.assertIn("There is no `batch-building` label", str(caught.exception))
+        self.assertNotIn(MEMBER, gh.pulls[14]["labels"])
 
 
 class Reconciling(unittest.TestCase):

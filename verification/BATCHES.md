@@ -106,7 +106,7 @@ queue stays `frozen`. After every run the workflow puts `frozen` back on a queue
 that has lost it, and takes `frozen` and `batch-building` off one that is neither queued nor in a
 batch being built.
 
-`batch-building`, `frozen` and `awaiting-author` keep a pull request out of the inbox (see
+"Labels at a glance" lists the labels that keep a pull request out of the inbox (see
 `.github/workflows/inbox.yml`). The label names are in `scripts/batch-labels.py`, and the `if:`
 of the sync job in `.github/workflows/batch-queue.yml` names some of them as well.
 
