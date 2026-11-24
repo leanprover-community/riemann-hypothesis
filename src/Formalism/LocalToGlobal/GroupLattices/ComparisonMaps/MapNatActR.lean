@@ -93,11 +93,10 @@ theorem map_substR [CommRing R] [CommRing S] (f : R →+* S)
 theorem map_natActR [Field R] [Field S] (f : R →+* S) (g : ∀ v, Fin (P.n' v) → GL (Fin (P.m + 1)) R) (Q : XR P R) :
     MvPolynomial.map f (natActR P R g Q) =
       natActR P S (fun v s => Matrix.GeneralLinearGroup.map f (g v s)) (MvPolynomial.map f Q) := by
-  simp only [natActR, LinearMap.smul_apply, AlgHom.toLinearMap_apply]
-  rw [MvPolynomial.smul_eq_C_mul, MvPolynomial.smul_eq_C_mul, map_mul, MvPolynomial.map_C, map_substR]
-  congr 2
-  · simp only [map_prod, map_zpow₀, RingHom.map_det]
-    rfl
+  simp only [natActR, LinearMap.smul_apply, AlgHom.toLinearMap_apply,
+    MvPolynomial.smul_eq_C_mul, map_mul, MvPolynomial.map_C, map_substR,
+    map_prod, map_zpow₀, RingHom.map_det]
+  rfl
 
 end Map
 
@@ -107,12 +106,10 @@ def reM (h : P.m + 1 = n) (A : Matrix (Fin n) (Fin n) ℂ) : Matrix (Fin (P.m + 
   A.submatrix (finCongr h) (finCongr h)
 
 theorem reM_mul (h : P.m + 1 = n) (A B : Matrix (Fin n) (Fin n) ℂ) : reM P h (A * B) = reM P h A * reM P h B := by
-  unfold reM
-  exact (Matrix.submatrix_mul_equiv A B (finCongr h) (finCongr h) (finCongr h)).symm
+  simp [reM]
 
 theorem reM_one (h : P.m + 1 = n) : reM P h (1 : Matrix (Fin n) (Fin n) ℂ) = 1 := by
-  unfold reM
-  exact Matrix.submatrix_one_equiv _
+  simp [reM]
 
 def reG (h : P.m + 1 = n) : GL (Fin n) ℂ →* GL (Fin (P.m + 1)) ℂ :=
   Units.map

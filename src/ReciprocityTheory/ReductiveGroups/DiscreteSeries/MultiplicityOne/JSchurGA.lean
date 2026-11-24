@@ -68,12 +68,10 @@ theorem sq2_mul_sq2_eq_half : sq2 * sq2 = 1 / 2 := by
     | (unfold sq2
        rw [← mul_inv, ← Complex.ofReal_mul, Real.mul_self_sqrt (by norm_num : (0:ℝ) ≤ 2)]
        norm_num)
-    | (unfold sq2; rw [← mul_inv]; norm_cast; rw [Real.mul_self_sqrt (by norm_num)]; norm_num)
 
 theorem star_sq2_eq_self : star sq2 = sq2 := by
   first
     | simp [sq2]
-    | (unfold sq2; rw [star_inv₀, Complex.star_def, Complex.conj_ofReal])
 
 def dG (k r : ℕ) (i : Fin (2 * r + k + 1)) : ℂ :=
   if i.val < r then sq2 else if i.val ≤ r + k then 1 else -sq2
@@ -89,7 +87,6 @@ theorem PG_mul_apply (k r : ℕ) (M : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r +
   first
     | simp only [Matrix.mul_apply, PG, add_mul, Finset.sum_add_distrib, ite_mul, zero_mul,
         Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true]
-    | simp [Matrix.mul_apply, PG, add_mul, Finset.sum_add_distrib]
 
 theorem val_rev_eq_sub (k r : ℕ) (i : Fin (2 * r + k + 1)) : (Fin.rev i).val = 2 * r + k - i.val := by
   have := i.isLt
@@ -103,7 +100,7 @@ theorem PG_mul_PG (k r : ℕ) : PG k r * PG k r = 1 := by
   have hi := i.isLt
   have hj := j.isLt
   simp only [PG, dG, cG, Matrix.one_apply, Fin.rev_rev, Fin.ext_iff, val_rev_eq_sub]
-  split_ifs <;> first | omega | ring1 | linear_combination (2:ℂ) * h2 | linear_combination (-2:ℂ) * h2 | linear_combination h2 | linear_combination (-1:ℂ) * h2
+  split_ifs <;> first | omega | ring1 | linear_combination (2:ℂ) * h2
 
 theorem PG_conjTranspose (k r : ℕ) : (PG k r)ᴴ = PG k r := by
   ext i j
@@ -146,75 +143,75 @@ theorem PG_J_PG (k r : ℕ) : PG k r * Formalism.REAL.Jm (epsG k r) * PG k r = F
   simp only [Formalism.QuantumDeterminants.Hpk, Fin.ext_iff, hr]
   rcases lt_or_ge i.val r with h1 | h1
   · have : dG k r i = sq2 := by
-      simp only [dG, cG, eG]
-      split_ifs <;> first | rfl | omega
+      simp only [dG]
+      split_ifs <;> first | rfl
     rw [this]
     have : cG k r i = sq2 := by
-      simp only [dG, cG, eG]
+      simp only [cG]
       split_ifs <;> first | rfl | omega
     rw [this]
     have : eG k r i = 1 := by
-      simp only [dG, cG, eG]
+      simp only [eG]
       split_ifs <;> first | rfl | omega
     rw [this]
     have : dG k r (Fin.rev i) = -sq2 := by
-      simp only [dG, cG, eG, hr]
+      simp only [dG, hr]
       split_ifs <;> first | rfl | omega
     rw [this]
     have : eG k r (Fin.rev i) = -1 := by
-      simp only [dG, cG, eG, hr]
+      simp only [eG, hr]
       split_ifs <;> first | rfl | omega
     rw [this]
-    split_ifs <;> first | omega | ring1 | linear_combination (2:ℂ) * h2 | linear_combination (-2:ℂ) * h2 | linear_combination h2 | linear_combination (-1:ℂ) * h2
+    split_ifs <;> first | omega | ring1 | linear_combination (2:ℂ) * h2
   rcases lt_or_ge i.val (r + k) with h3 | h3
   · have : dG k r i = 1 := by
-      simp only [dG, cG, eG]
+      simp only [dG]
       split_ifs <;> first | rfl | omega
     rw [this]
     have : cG k r i = 0 := by
-      simp only [dG, cG, eG]
+      simp only [cG]
       split_ifs <;> first | rfl | omega
     rw [this]
     have : eG k r i = 1 := by
-      simp only [dG, cG, eG]
-      split_ifs <;> first | rfl | omega
+      simp only [eG]
+      split_ifs <;> first | rfl
     rw [this]
-    split_ifs <;> first | omega | ring1 | linear_combination (2:ℂ) * h2 | linear_combination (-2:ℂ) * h2 | linear_combination h2 | linear_combination (-1:ℂ) * h2
+    split_ifs <;> first | omega | ring1
   rcases eq_or_lt_of_le h3 with h4 | h4
   · have : dG k r i = 1 := by
-      simp only [dG, cG, eG]
+      simp only [dG]
       split_ifs <;> first | rfl | omega
     rw [this]
     have : cG k r i = 0 := by
-      simp only [dG, cG, eG]
+      simp only [cG]
       split_ifs <;> first | rfl | omega
     rw [this]
     have : eG k r i = -1 := by
-      simp only [dG, cG, eG]
+      simp only [eG]
       split_ifs <;> first | rfl | omega
     rw [this]
-    split_ifs <;> first | omega | ring1 | linear_combination (2:ℂ) * h2 | linear_combination (-2:ℂ) * h2 | linear_combination h2 | linear_combination (-1:ℂ) * h2
+    split_ifs <;> first | omega | ring1
   · have : dG k r i = -sq2 := by
-      simp only [dG, cG, eG]
+      simp only [dG]
       split_ifs <;> first | rfl | omega
     rw [this]
     have : cG k r i = sq2 := by
-      simp only [dG, cG, eG]
+      simp only [cG]
       split_ifs <;> first | rfl | omega
     rw [this]
     have : eG k r i = -1 := by
-      simp only [dG, cG, eG]
+      simp only [eG]
       split_ifs <;> first | rfl | omega
     rw [this]
     have : dG k r (Fin.rev i) = sq2 := by
-      simp only [dG, cG, eG, hr]
+      simp only [dG, hr]
       split_ifs <;> first | rfl | omega
     rw [this]
     have : eG k r (Fin.rev i) = 1 := by
-      simp only [dG, cG, eG, hr]
+      simp only [eG, hr]
       split_ifs <;> first | rfl | omega
     rw [this]
-    split_ifs <;> first | omega | ring1 | linear_combination (2:ℂ) * h2 | linear_combination (-2:ℂ) * h2 | linear_combination h2 | linear_combination (-1:ℂ) * h2
+    split_ifs <;> first | omega | ring1 | linear_combination (2:ℂ) * h2
 
 end
 
@@ -263,23 +260,16 @@ def psiM (k r : ℕ) (u : Formalism.REAL.UJ (epsG k r)) : Mat k r :=
 def psiG (k r : ℕ) (u : Formalism.REAL.UJ (epsG k r)) : Mt k r := Matrix.of.symm (psiM k r u)
 
 theorem of_psiG (u : Formalism.REAL.UJ (epsG k r)) : Matrix.of (psiG k r u) = psiM k r u := by
-  first | exact Matrix.of.apply_symm_apply _ | rfl
+  first | exact Matrix.of.apply_symm_apply _
 
 theorem psiM_eq (u : Formalism.REAL.UJ (epsG k r)) : psiM k r u = PG k r * Formalism.MainNotions.S.umat u * PG k r := rfl
-
-private theorem real_Jm_mul_self_eq_one {n : ℕ} (ε : Fin n → Bool) : Formalism.REAL.Jm ε * Formalism.REAL.Jm ε = 1 := by
-  simp only [Formalism.REAL.Jm, Matrix.diagonal_mul_diagonal]
-  rw [← Matrix.diagonal_one]
-  congr 1
-  funext a
-  split_ifs <;> norm_num
 
 private theorem Jm_mul_conjTranspose_mul_Jm_mul_eq_one_of_mem_UJset {n : ℕ} {ε : Fin n → Bool} {h : Matrix (Fin n) (Fin n) ℂ}
     (hu : Formalism.REAL.inUJ ε h) : Formalism.REAL.Jm ε * hᴴ * Formalism.REAL.Jm ε * h = 1 := by
   have hu' : hᴴ * Formalism.REAL.Jm ε * h = Formalism.REAL.Jm ε := hu
   calc Formalism.REAL.Jm ε * hᴴ * Formalism.REAL.Jm ε * h = Formalism.REAL.Jm ε * (hᴴ * Formalism.REAL.Jm ε * h) := by
         simp only [Matrix.mul_assoc]
-    _ = 1 := by rw [hu', real_Jm_mul_self_eq_one]
+    _ = 1 := by rw [hu', _root_.Formalism.REAL.Jm_mul_self]
 
 private theorem exists_UJ_umat_eq_of_inUJ {n : ℕ} {ε : Fin n → Bool} (h : Matrix (Fin n) (Fin n) ℂ)
     (hu : Formalism.REAL.inUJ ε h) : ∃ v : Formalism.REAL.UJ ε, Formalism.MainNotions.S.umat v = h := by
@@ -287,10 +277,6 @@ private theorem exists_UJ_umat_eq_of_inUJ {n : ℕ} {ε : Fin n → Bool} (h : M
   have hr : h * (Formalism.REAL.Jm ε * hᴴ * Formalism.REAL.Jm ε) = 1 := by
     first
       | exact mul_eq_one_comm.mp hl
-      | exact Matrix.mul_eq_one_comm.mp hl
-      | exact (mul_eq_one_comm_of_equiv (Equiv.refl _)).mp hl
-      | exact mul_eq_one_symm hl
-      | exact Matrix.mul_eq_one_symm hl
   exact ⟨⟨⟨h, _, hr, hl⟩, hu⟩, rfl⟩
 
 private theorem isClosedEmbedding_umat (k r : ℕ) :
@@ -302,13 +288,11 @@ private theorem isClosedEmbedding_umat (k r : ℕ) :
       (continuous_const.matrix_mul continuous_id.matrix_conjTranspose).matrix_mul continuous_const
     first
       | exact continuous_id.prodMk (MulOpposite.continuous_op.comp h0)
-      | exact continuous_id.prod_mk (MulOpposite.continuous_op.comp h0)
   have hc : Continuous (fun u : Formalism.REAL.UJ (epsG k r) => Formalism.MainNotions.S.umat u) :=
     Units.continuous_val.comp continuous_subtype_val
   have he : IsInducing (fun u : Formalism.REAL.UJ (epsG k r) => Units.embedProduct _ (u : (Mat k r)ˣ)) := by
     first
       | exact Units.isInducing_embedProduct.comp IsInducing.subtypeVal
-      | exact Units.isInducing_embedProduct.comp Topology.IsInducing.subtypeVal
   have hcomp : (fun u : Formalism.REAL.UJ (epsG k r) => Units.embedProduct _ (u : (Mat k r)ˣ)) =
       (fun m : Mat k r => (m, MulOpposite.op (Formalism.REAL.Jm (epsG k r) * mᴴ * Formalism.REAL.Jm (epsG k r)))) ∘
         (fun u : Formalism.REAL.UJ (epsG k r) => Formalism.MainNotions.S.umat u) := by
@@ -358,7 +342,6 @@ theorem psiM_mem (u : Formalism.REAL.UJ (epsG k r)) : psiM k r u ∈ GV k r := b
 theorem psiM_one : psiM k r 1 = 1 := by
   rw [psiM_eq]
   first
-    | simp [PG_mul_PG]
     | (show PG k r * 1 * PG k r = 1; rw [Matrix.mul_one, PG_mul_PG])
 
 theorem psiM_mul (u v : Formalism.REAL.UJ (epsG k r)) : psiM k r (u * v) = psiM k r u * psiM k r v := by
@@ -429,7 +412,6 @@ theorem nuG_eq_smul {μ : Measure (Mt k r)} (hμ : IsHaarOn (GV k r) μ) :
   haveI hHaar : (Formalism.REAL.muG (epsG k r)).IsHaarMeasure := by
     first
       | infer_instance
-      | (unfold Formalism.REAL.muG; infer_instance)
   have hE := Measure.isMulLeftInvariant_eq_smul (nuG μ) (Formalism.REAL.muG (epsG k r))
   refine ⟨Measure.haarScalarFactor (nuG μ) (Formalism.REAL.muG (epsG k r)), ?_, hE⟩
   intro h0
@@ -450,7 +432,6 @@ private theorem nuG_isOpenPosMeasure {μ : Measure (Mt k r)} (hμ : IsHaarOn (GV
   have h0 := hU.measure_ne_zero (Formalism.REAL.muG (epsG k r)) hne
   first
     | exact smul_ne_zero hc h0
-    | exact mul_ne_zero (ENNReal.coe_ne_zero.2 hc) h0
 
 open scoped Pointwise in
 theorem nuG_inv {μ : Measure (Mt k r)} (hμ : IsHaarOn (GV k r) μ) : (nuG μ).IsInvInvariant := by
@@ -473,7 +454,6 @@ theorem nuG_inv {μ : Measure (Mt k r)} (hμ : IsHaarOn (GV k r) μ) : (nuG μ).
   haveI hFi : IsFiniteMeasureOnCompacts (nuG μ).inv := by
     first
       | infer_instance
-      | exact ⟨fun K hK => by rw [Measure.inv_apply]; exact hK.inv.measure_lt_top⟩
   haveI hLi : (nuG μ).inv.IsMulLeftInvariant := by infer_instance
   obtain ⟨c, hc⟩ : ∃ c : ℝ≥0, (nuG μ).inv = c • nuG μ :=
     ⟨_, Measure.isMulLeftInvariant_eq_smul _ _⟩
@@ -499,15 +479,10 @@ theorem nuG_inv {μ : Measure (Mt k r)} (hμ : IsHaarOn (GV k r) μ) : (nuG μ).
       exact h2.symm
     first
       | exact (ENNReal.mul_left_inj hpos.ne' hfin).1 h3
-      | exact (ENNReal.mul_right_inj hpos.ne' hfin).1 h3
-      | exact ENNReal.mul_right_cancel hpos.ne' hfin h3
-      | exact (ENNReal.mul_eq_mul_left hpos.ne' hfin).1 (by rw [mul_comm, h3, mul_comm])
-      | exact (ENNReal.mul_left_inj hpos.ne' hfin).1 (by rw [mul_comm, h3, mul_comm])
-      | exact (ENNReal.mul_right_inj hpos.ne' hfin).1 (by rw [mul_comm, h3, mul_comm])
   constructor
   rw [hc, ENNReal.coe_eq_one.1 hc1, one_smul]
 
-theorem nuG_openPos {μ : Measure (Mt k r)} (hμ : IsHaarOn (GV k r) μ) : (nuG μ).IsOpenPosMeasure := nuG_isOpenPosMeasure hμ
+alias nuG_openPos := _root_.ReciprocityTheory.ChartRestriction.DS.Mult1.nuG_isOpenPosMeasure
 
 end
 
@@ -564,11 +539,9 @@ theorem schur_GV [CompleteSpace H] [Nontrivial H] {μ : Measure (Mt k r)} (hμ :
   constructor
   · first
       | exact hE.integrable_map_iff.2 hi
-      | simpa [Function.comp_def, of_psiG] using hE.integrable_map_iff.2 hi
   · rw [hE.integral_map]
     first
       | exact he
-      | simpa [of_psiG] using he
 
 end
 

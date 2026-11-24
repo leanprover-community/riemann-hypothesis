@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.LocallyConstantPartial
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.RestrictedTensorBasePointNormSq
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -67,32 +68,7 @@ theorem eventually_pow_nsmul_mem {K M : Type} [NormedField K] [AddCommGroup M] [
 
 theorem eventually_invariant {M : Type} [AddCommGroup M] [TopologicalSpace M] [IsTopologicalAddGroup M] {Φ : M → ℂ}
     (h1 : IsLocallyConstant Φ) (h2 : HasCompactSupport Φ) : ∀ᶠ u in 𝓝 (0 : M), ∀ x, Φ (x + u) = Φ x := by
-  have hloc : ∀ y, ∀ᶠ z in 𝓝 y, Φ z = Φ y := fun y => (h1.isOpen_fiber (Φ y)).mem_nhds rfl
-  have hK : IsCompact (tsupport Φ) := h2
-  have hA : ∀ᶠ u in 𝓝 (0 : M), ∀ x ∈ tsupport Φ, Φ (x + u) = Φ x := by
-    refine hK.eventually_forall_of_forall_eventually fun y _ => ?_
-    have hc : Filter.Tendsto (fun z : M × M => z.2 + z.1) (𝓝 ((0 : M), y)) (𝓝 y) := (show Continuous fun z : M × M => z.2 + z.1 from continuous_snd.add continuous_fst).tendsto' _ _ (by simp)
-    have hs : Filter.Tendsto (fun z : M × M => z.2) (𝓝 ((0 : M), y)) (𝓝 y) := continuous_snd.tendsto _
-    filter_upwards [hc.eventually (hloc y), hs.eventually (hloc y)] with z h h'
-    exact h.trans h'.symm
-  have hB : ∀ᶠ u in 𝓝 (0 : M), ∀ x ∈ tsupport Φ, Φ (x - u) = Φ x := by
-    refine hK.eventually_forall_of_forall_eventually fun y _ => ?_
-    have hc : Filter.Tendsto (fun z : M × M => z.2 - z.1) (𝓝 ((0 : M), y)) (𝓝 y) := (show Continuous fun z : M × M => z.2 - z.1 from continuous_snd.sub continuous_fst).tendsto' _ _ (by simp)
-    have hs : Filter.Tendsto (fun z : M × M => z.2) (𝓝 ((0 : M), y)) (𝓝 y) := continuous_snd.tendsto _
-    filter_upwards [hc.eventually (hloc y), hs.eventually (hloc y)] with z h h'
-    exact h.trans h'.symm
-  filter_upwards [hA, hB] with u hu hu' x
-  by_cases hx : x ∈ tsupport Φ
-  · exact hu x hx
-  by_cases hxu : x + u ∈ tsupport Φ
-  · simpa using (hu' (x + u) hxu).symm
-  have h0 : Φ x = 0 := by
-    by_contra h
-    exact hx (subset_tsupport Φ h)
-  have h0' : Φ (x + u) = 0 := by
-    by_contra h
-    exact hxu (subset_tsupport Φ h)
-  rw [h0, h0']
+  apply GlobalTheory.PartialIntegral.eventually_invariant <;> assumption
 
 variable {D : D7} {m n : ℕ} {a : AE D}
 

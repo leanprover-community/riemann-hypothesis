@@ -71,9 +71,9 @@ theorem lat_charpoly_blockDiagonal {R n o : Type*} [CommRing R] [Fintype n] [Dec
     · subst hk
       by_cases hij : i = j
       · subst hij
-        simp [Matrix.charmatrix_apply, Matrix.blockDiagonal_apply]
-      · simp [Matrix.charmatrix_apply, Matrix.blockDiagonal_apply, Matrix.diagonal_apply, hij]
-    · simp [Matrix.charmatrix_apply, Matrix.blockDiagonal_apply, Matrix.diagonal_apply, hk]
+        simp [Matrix.blockDiagonal_apply]
+      · simp [Matrix.blockDiagonal_apply, hij]
+    · simp [Matrix.blockDiagonal_apply, hk]
   rw [Matrix.charpoly, h, Matrix.det_blockDiagonal]
   rfl
 
@@ -112,7 +112,6 @@ theorem lat_cp_map (θ : 𝓞 E) :
       algebraMap (𝓞 E) E (Algebra.lmul ℤ (𝓞 E) θ (RingOfIntegers.basis E j)) := by
     first
     | rfl
-    | simp [map_mul]
   rw [e, integralBasis_repr_apply]
 
 theorem lat_cp_eq_minpoly_pow (θ : 𝓞 E) : ∃ r : ℕ, 1 ≤ r ∧ lat_cp θ = (minpoly ℤ θ) ^ r := by

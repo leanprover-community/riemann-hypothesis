@@ -71,7 +71,6 @@ theorem pos_inj : Function.Injective (pos k r) := by
     | (congr 1; exact Fin.ext (by omega))
     | (congr 2; exact Fin.ext (by omega))
     | (exfalso; omega)
-    | skip
   all_goals (first | (exfalso; have := a.isLt; have := b.isLt; omega) | skip)
 
 theorem pos_bij : Function.Bijective (pos k r) := by
@@ -195,16 +194,14 @@ theorem bA_upper {g : Mx k r} (h : ColB g) : (bA g).IsUpperTriangular := by
 theorem bA_det {g : Mx k r} (h : ColB g) : (bA g).det = 1 := by
   rw [det_of_isUpperTriangular (bA_upper h)]
   refine Finset.prod_eq_one fun a _ => ?_
-  show g _ _ = 1
-  rw [h.aa a a le_rfl, if_pos rfl]
+  simpa [bA] using h.aa a a le_rfl
 
 theorem rel_F {g : Mx k r} (hc : ColB g) (hu : g ∈ UH (Hpk k r)) : (bF g)ᴴ * bA g = 1 := by
   ext a b
   have e := congrFun (congrFun (show gᴴ * Hpk k r * g = Hpk k r from hu) (esI k r a)) (eI k r b)
   rw [form_apply, hpk_esI_eI] at e
   simp only [hc.sa, hc.wa, mul_zero, Finset.sum_const_zero, zero_add] at e
-  rw [Matrix.mul_apply, Matrix.one_apply]
-  simpa [bF, bA, conjTranspose_apply] using e
+  simpa [bF, bA, conjTranspose_apply, Matrix.mul_apply, Matrix.one_apply] using e
 
 theorem dD_mul_apply {m : Type*} (X : Matrix (Fin (k + 1)) m ℂ) (j : Fin (k + 1)) (b : m) :
     (dD k * X) j b = dD k j j * X j b := by

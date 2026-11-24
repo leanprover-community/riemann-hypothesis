@@ -127,7 +127,6 @@ theorem interior_bdry_eq_empty {e : ℕ} {X : Type} [TopologicalSpace X] {A : Fi
   have hOo : IsOpen (ψ '' (interior (bdry s) ∩ ψ.source)) := by
     first
     | exact ψ.isOpen_image_of_subset_source hVo Set.inter_subset_right
-    | exact ψ.isOpen_image_source_inter isOpen_interior
   have hw0 : ψ y ∈ ψ '' (interior (bdry s) ∩ ψ.source) := ⟨y, ⟨hy, hyψ⟩, rfl⟩
 
   have hT : Filter.Tendsto (fun t : ℂ => ψ y + t • (fun _ : Fin e => (1 : ℂ))) (𝓝[≠] 0)

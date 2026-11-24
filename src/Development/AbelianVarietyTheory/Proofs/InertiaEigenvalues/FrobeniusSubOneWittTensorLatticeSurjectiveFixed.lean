@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.ZlWCbInjective
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Mathlib.RingTheory.Flat.Basic
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FrobSubMulSurjective
@@ -130,7 +131,7 @@ theorem baseChange_flat {R W O : Type} [CommRing R] [CommRing W] [Algebra R W] [
     intro b
     induction b using TensorProduct.induction_on with
     | zero => simp
-    | tmul o w => simp [g, TensorProduct.tmul_sub]
+    | tmul o w => simp [g]
     | add x y hx hy => rw [map_add (f := _), map_add (f := _), ← hx, ← hy]; abel
   have gsurj : Function.Surjective g := fun y => by
     obtain ⟨b, hb⟩ := hs y
@@ -173,22 +174,7 @@ theorem baseChange_flat {R W O : Type} [CommRing R] [CommRing W] [Algebra R W] [
 
 theorem algebraMap_WCb_injective (l : ℕ) [Fact l.Prime] :
     Function.Injective (algebraMap ℤ_[l] (WCb l)) := by
-
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
-  intro x hx
-  by_contra hne
-  have hker : RingHom.ker (algebraMap ℤ_[l] (WCb l)) ≠ ⊥ := by
-    intro h
-    apply hne
-    have hxk : x ∈ RingHom.ker (algebraMap ℤ_[l] (WCb l)) := hx
-    rw [h] at hxk
-    exact (Submodule.mem_bot _).mp hxk
-  obtain ⟨n, hn⟩ := PadicInt.ideal_eq_span_pow_p hker
-  have hmem : (l : ℤ_[l]) ^ n ∈ RingHom.ker (algebraMap ℤ_[l] (WCb l)) := by
-    rw [hn]
-    exact Ideal.subset_span (Set.mem_singleton _)
-  rw [RingHom.mem_ker, map_pow, map_natCast] at hmem
-  exact pow_ne_zero n (WittVector.p_nonzero l (Cb l)) hmem
+  apply Formalism.MainNotions.InvariantsGenerators.InvariantsFromGenerators.zl_WCb_injective <;> assumption
 
 theorem flat_lattice {G : Type} [Group G] [TopologicalSpace G] {Qp LL O : Type} [Field Qp]
     [Field LL] [Algebra Qp LL] [CommRing O] [Algebra O LL] [TopologicalSpace LL] [IsDomain O]

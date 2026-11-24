@@ -85,7 +85,7 @@ theorem commute_of_unitary_conjugate {ι : Type} [Fintype ι] [DecidableEq ι] {
     calc _ = bwᵀ * kwᵀ * (biwᵀ * bwᵀ) * Dw * (bw.map star * biw.map star) * kw.map star * bw.map star := by
           simp only [Matrix.mul_assoc]
       _ = bwᵀ * (kwᵀ * Dw * kw.map star) * bw.map star := by
-          rw [e1t, e1']; simp only [Matrix.mul_one, Matrix.one_mul, Matrix.mul_assoc]
+          rw [e1t, e1']; simp only [Matrix.mul_one, Matrix.mul_assoc]
       _ = bwᵀ * Dw * bw.map star := by rw [hk2]
   have hc1 : M.map star * Mᵀ = 1 := by
     have : M.map star * Mᵀ = (M * Mᴴ)ᵀ := by rw [Matrix.transpose_mul]; rfl
@@ -133,7 +133,7 @@ theorem commute_thB {d : SD σ} (R : RD d) {k : d.G} (hk : k ∈ d.K) (w : Infin
     have := congrArg (fun x => x.map (d.B.emb w).1) R.hε
     simp only [Matrix.map_mul, Matrix.transpose_map, cst] at this
     rw [hDw, this]
-    ext (i | i) (j | j) <;> by_cases hij : i = j <;> simp [jE, Matrix.fromBlocks, Matrix.smul_apply, Matrix.one_apply, hij]
+    ext (i | i) (j | j) <;> by_cases hij : i = j <;> simp [jE, Matrix.fromBlocks, Matrix.smul_apply, hij]
   have hk2 : ((mat2 k).map (piInf (d.B.emb w)))ᵀ * (dbl (incM F d.Y.J)).map (piInf (d.B.emb w)) *
       ((mat2 k).map (piInf (d.B.emb w))).map star = (dbl (incM F d.Y.J)).map (piInf (d.B.emb w)) := by
     have hk0 : (k.1 : Matrix (Fin d.n ⊕ Fin d.n) (Fin d.n ⊕ Fin d.n) (AE F E))ᵀ * dbl (incM F d.Y.J) *

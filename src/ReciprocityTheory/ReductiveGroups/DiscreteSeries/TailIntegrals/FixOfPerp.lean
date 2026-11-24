@@ -148,7 +148,7 @@ theorem fix_of_perp (c : Fin (r + 1) → EE k r) (hc : Orthonormal ℂ c)
         have h1 := v.2
         simp only [hVm, LinearMap.mem_ker, LinearMap.add_apply, LinearMap.id_apply] at h1
         have h2 := congrArg (fun z : EE k r => z.ofLp i) h1
-        simp only [HE_apply, WithLp.ofLp_add, WithLp.ofLp_toLp, Pi.add_apply, hpk_mulVec, WithLp.ofLp_zero,
+        simp only [HE_apply, WithLp.ofLp_add, Pi.add_apply, hpk_mulVec, WithLp.ofLp_zero,
           Pi.zero_apply] at h2
         linear_combination h2
       have h0 : ∀ i : Fin (2 * r + k + 1), i.val < r → (v : EE k r).ofLp i = 0 := by
@@ -197,7 +197,7 @@ theorem fix_of_perp (c : Fin (r + 1) → EE k r) (hc : Orthonormal ℂ c)
   have hxe : inner ℂ x (x - HE k r x) = 0 := by
     rw [← hcoef, inner_sum]; exact Finset.sum_eq_zero fun a _ => by rw [inner_smul_right, hxd, mul_zero]
   have h1 : inner ℂ (HE k r x) (x - HE k r x) = -inner ℂ x (x - HE k r x) := by
-    simp only [HE_adj, map_sub, HE_HE, inner_sub_right]; ring
+    simp only [HE_adj, HE_HE, inner_sub_right]; ring
   have hee : inner ℂ (x - HE k r x) (x - HE k r x) = 0 := by
     rw [inner_sub_left, h1, hxe]; ring
   have := inner_self_eq_zero.1 hee

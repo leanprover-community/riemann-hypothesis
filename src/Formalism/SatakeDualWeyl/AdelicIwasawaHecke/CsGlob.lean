@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.GroupLattices.TrivialTransfer.FiniteStabAtOfLocal
 public import Formalism.SatakeDualWeyl.DefsCS
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Adelstab
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.AdelstabL
@@ -169,27 +170,7 @@ omit [NumberField F] [Algebra F E] in
 theorem csGlob_single (Λ : Submodule (𝓞 E) (n → E))
     (hspan : Submodule.span E (Λ : Set (n → E)) = ⊤) :
     ∃ m : ℤ, m ≠ 0 ∧ ∀ k, (Pi.single k (m : E) : n → E) ∈ Λ := by
-  classical
-  have hk : ∀ k : n, ∃ N : ℕ, ∃ f : Fin N → E, ∃ w : Fin N → Λ,
-      ∑ j, f j • (w j : n → E) = Pi.single k 1 := by
-    intro k
-    have : (Pi.single k 1 : n → E) ∈ Submodule.span E (Λ : Set (n → E)) := by
-      rw [hspan]; exact Submodule.mem_top
-    obtain ⟨N, f, w, h⟩ := Submodule.mem_span_set'.1 this
-    exact ⟨N, f, fun j => ⟨w j, (w j).2⟩, h⟩
-  choose N f w hw using hk
-  obtain ⟨m, hm0, hm⟩ := adelstabL_den (fun p : Σ k : n, Fin (N k) => f p.1 p.2)
-  refine ⟨m, hm0, fun k => ?_⟩
-  have : (Pi.single k (m : E) : n → E) =
-      ∑ j, (⟨(m : E) * f k j, hm ⟨k, j⟩⟩ : 𝓞 E) • (w k j : n → E) := by
-    have h1 : (Pi.single k (m : E) : n → E) = (m : E) • (Pi.single k 1 : n → E) := by
-      rw [← Pi.single_smul', smul_eq_mul, mul_one]
-    rw [h1, ← hw k, Finset.smul_sum]
-    refine Finset.sum_congr rfl fun j _ => ?_
-    rw [← algebraMap_smul E, smul_smul]
-    rfl
-  rw [this]
-  exact sum_mem fun j _ => Λ.smul_mem _ (w k j).2
+  apply Formalism.L2.G.Triv.den_lower <;> assumption
 
 theorem csGlob_one (hA : Formalism.UG.CS.IntAdApprox) (Λ : Submodule (𝓞 E) (n → E))
     (hfin : Module.Finite (𝓞 E) Λ) (hspan : Submodule.span E (Λ : Set (n → E)) = ⊤) :

@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.AlmostEverywhereSpherical
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.UnitaryDensityField
 import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.ExistsSqAbsNormOfInert
 public import Formalism.GL3MeanSquares.GenusMeanAsymptotics.UnimodularClassRepresentatives.NormRepCountEqEulerFacInert
@@ -185,23 +186,7 @@ private theorem cnt_unit_local (hK : Formalism.HermitianLatticesTheory.IsCMUnram
 
 theorem mem_pow_iff_le_vF {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {n : 𝓞 F} (hn : n ≠ 0) (e : ℕ) :
     n ∈ 𝔭 ^ e ↔ e ≤ vF 𝔭 n := by
-  have hbdd : BddAbove {e : ℕ | n ∈ 𝔭 ^ e} := by
-    by_contra hnb
-    rw [not_bddAbove_iff] at hnb
-    apply hn
-    have hI := Ideal.iInf_pow_eq_bot_of_isDomain (I := 𝔭) h𝔭.ne_top
-    rw [← Ideal.mem_bot, ← hI, Ideal.mem_iInf]
-    intro i
-    obtain ⟨e', he', hie'⟩ := hnb i
-    exact Ideal.pow_le_pow_right hie'.le he'
-  have hne : {e : ℕ | n ∈ 𝔭 ^ e}.Nonempty := ⟨0, by simp⟩
-  unfold vF
-  constructor
-  · intro he
-    exact le_csSup hbdd he
-  · intro he
-    have hmem : sSup {e : ℕ | n ∈ 𝔭 ^ e} ∈ {e : ℕ | n ∈ 𝔭 ^ e} := Nat.sSup_mem hne hbdd
-    exact Ideal.pow_le_pow_right he hmem
+  apply Formalism.L2.SG.Pf.G1.mem_pow_iff <;> assumption
 
 theorem cnt_congr (hF : IsFixF K F) (𝔭 : Ideal (𝓞 F)) (k M : ℕ) {n n' : 𝓞 K}
     (h : n - n' ∈ extP K 𝔭 ^ k) : cnt hF 𝔭 k M n = cnt hF 𝔭 k M n' := by
@@ -223,7 +208,7 @@ theorem cnt_one_of_mem (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF 
   have := MeanC.finite_quot_pow h𝔭 1
   have := Fintype.ofFinite (𝓞 F ⧸ 𝔭 ^ 1)
   rw [finsum_eq_sum_of_fintype,
-    Finset.sum_congr rfl fun n' _ => nkCount_eq_cnt hK hF hs hd (by first | exact hL | exact hL.toIsLattice) hLi h𝔭 hv le_rfl _,
+    Finset.sum_congr rfl fun n' _ => nkCount_eq_cnt hK hF hs hd (by first | exact hL) hLi h𝔭 hv le_rfl _,
     ← Finset.add_sum_erase Finset.univ _ (Finset.mem_univ (0 : 𝓞 F ⧸ 𝔭 ^ 1))] at h0
   have h1 : (cnt hF 𝔭 1 (finrank K V) (ι (Quotient.out (0 : 𝓞 F ⧸ 𝔭 ^ 1))) : ℝ) +
       ∑ n' ∈ Finset.univ.erase (0 : 𝓞 F ⧸ 𝔭 ^ 1),

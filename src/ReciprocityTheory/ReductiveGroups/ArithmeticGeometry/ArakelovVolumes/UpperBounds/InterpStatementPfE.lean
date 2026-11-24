@@ -70,9 +70,6 @@ variable {n : ℕ}
 theorem two_le_inf : (2 : WithTop ℕ∞) ≤ ∞ := by
   first
   | exact WithTop.coe_le_coe.mpr le_top
-  | simp
-  | decide
-  | exact le_top
 
 theorem levi_logNormSq_zero_at (g : V n → ℂ) (v0 : V n) (hg : ContDiffAt ℂ 2 g v0)
     (hne : g v0 ≠ 0) (ξ : Fin n → ℂ) :

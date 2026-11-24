@@ -2,6 +2,8 @@ module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.LiftFactorization
 public import Lemmata.PosDefOfRealQuadratic.QuadFormRealSmul
+public import ReciprocityTheory.L2DbarEstimates.JacobianInterpolationStatement
+public import Lemmata.DetMonotoneStarMulSelf.OneLeReDetOneAdd
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -42,7 +44,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
-public import ReciprocityTheory.L2DbarEstimates.LeviForms.DetMonoDetOneAdd
 
 @[expose] public section
 
@@ -94,7 +95,7 @@ theorem det_eq_ofReal {n : ℕ} {A : Matrix (Fin n) (Fin n) ℂ} (hA : A.PosDef)
 theorem det_mul_det_le_normSq_det (Z W : Matrix (Fin p) (Fin q) ℂ) (hZ : (1 - Z * Zᴴ).PosDef)
     (hW : (1 - W * Wᴴ).PosDef) :
     (1 - Z * Zᴴ).det.re * (1 - W * Wᴴ).det.re ≤ Complex.normSq (1 - Z * Wᴴ).det := by
-  have hm := ReciprocityTheory.L2DbarEstimates.I.maDet p ((1 - Z * Wᴴ) * (1 - W * Wᴴ)⁻¹ * (1 - Z * Wᴴ)ᴴ)
+  have hm := _root_.Bl.DetMonotoneStarMulSelf.goal1 p ((1 - Z * Wᴴ) * (1 - W * Wᴴ)⁻¹ * (1 - Z * Wᴴ)ᴴ)
     (1 - Z * Zᴴ) hZ.posSemidef (cross_psd Z W hW)
   obtain ⟨hb, hbi⟩ := det_re_pos_im hW
   set b := (1 - W * Wᴴ).det.re
@@ -108,7 +109,7 @@ theorem det_mul_det_le_normSq_det (Z W : Matrix (Fin p) (Fin q) ℂ) (hZ : (1 - 
 
 theorem det_re_le_one {Z : Matrix (Fin p) (Fin q) ℂ} (hZ : (1 - Z * Zᴴ).PosDef) :
     (1 - Z * Zᴴ).det.re ≤ 1 := by
-  have hm := ReciprocityTheory.L2DbarEstimates.I.maDet p 1 (1 - Z * Zᴴ) hZ.posSemidef
+  have hm := _root_.Bl.DetMonotoneStarMulSelf.goal1 p 1 (1 - Z * Zᴴ) hZ.posSemidef
     (by rw [sub_sub_cancel]; exact posSemidef_self_mul_conjTranspose Z)
   simpa using hm
 
@@ -132,11 +133,7 @@ theorem quad_im {m : ℕ} {A : Matrix (Fin m) (Fin m) ℂ} (hA : A.IsHermitian) 
   rw [Complex.star_def] at h
   rw [h]; ring
 
-theorem posDef_eventually {X : Type*} [TopologicalSpace X] {m : ℕ}
-    (A : X → Matrix (Fin m) (Fin m) ℂ) (hc : ∀ i j, Continuous fun x => A x i j)
-    (hH : ∀ x, (A x).IsHermitian) (x0 : X) (h0 : (A x0).PosDef) :
-    ∀ᶠ x in 𝓝 x0, (A x).PosDef := by
-  first | exact Bl.PosDefOfRealQuadratic.goal1 .. | (apply Bl.PosDefOfRealQuadratic.goal1 <;> assumption) | (intros; apply Bl.PosDefOfRealQuadratic.goal1 <;> assumption)
+alias posDef_eventually := _root_.Bl.PosDefOfRealQuadratic.goal1
 
 theorem cont_coord {n : ℕ} (i : Fin n) : Continuous fun v : V n => v i := by
   have h : (fun v : V n => v i) = ⇑(EuclideanSpace.proj i : V n →L[ℂ] ℂ) := by

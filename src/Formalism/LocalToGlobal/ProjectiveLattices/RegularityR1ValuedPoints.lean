@@ -55,7 +55,7 @@ def IntAlg (f : Rul Xo c) : Prop := ∀ la, ∀ v ∈ valSet Xo c (algCls Xo c) 
 
 theorem intAlg_zero : IntAlg (0 : Rul Xo c) := by
   intro la v hv
-  simp only [valSet, Set.mem_setOf_eq] at hv
+  simp only [valSet] at hv
   obtain ⟨y, rfl⟩ := hv
   unfold vAtV
   obtain ⟨⟨w, q⟩, T, io, e, ho, z, hz, eta, -, hw⟩ := y

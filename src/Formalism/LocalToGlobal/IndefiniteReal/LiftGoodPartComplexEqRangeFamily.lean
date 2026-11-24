@@ -498,15 +498,13 @@ theorem lift_descent_at_lower_type (hok : A3.fam3.Ok3 s) (hK : X.KFormL) (hJ : X
     {gW : ∀ j, Representation ℂ G (X.W j)} (hU : LiftActionUnitary X gW) (hG : LiftGroupEquivariance A3 X gW)
     (hL0 : LevelTypeOfLifts A3 X (P1 := P1) (ψ1 := ψ1) (Dc := Dc) (Sp := Sp) (Zsc := Zsc) gW false P0 ψ0) :
     X.DnLevL (cvOf3 A3 P0 ψ0 P1 ψ1) false := by
-  have Hs := fun j t => lift_hypotheses_of_unitary hok hK (cvOf3 A3 P0 ψ0 P1 ψ1) (fun _ _ _ _ => rfl) hJ hU hG j t
-  exact lift_descent_at_level hok Hs hRZ P0 ψ0 (fun _ _ => rfl) hL0
+  exact lift_descent_at_level hok (fun j t => lift_hypotheses_of_unitary hok hK (cvOf3 A3 P0 ψ0 P1 ψ1) (fun _ _ _ _ => rfl) hJ hU hG j t) hRZ P0 ψ0 (fun _ _ => rfl) hL0
 
 theorem upper_level_lift_at_lower_type (hok : A3.fam3.Ok3 s) (hK : X.KFormL) (hJ : X.JIsoL (cvOf3 A3 P0 ψ0 P1 ψ1))
     {gW : ∀ j, Representation ℂ G (X.W j)} (hU : LiftActionUnitary X gW) (hG : LiftGroupEquivariance A3 X gW)
     (hL0 : LevelTypeOfLifts A3 X (P1 := P1) (ψ1 := ψ1) (Dc := Dc) (Sp := Sp) (Zsc := Zsc) gW false P0 ψ0) :
     X.UpLevL (cvOf3 A3 P0 ψ0 P1 ψ1) false := by
-  have Hs := fun j t => lift_hypotheses_of_unitary hok hK (cvOf3 A3 P0 ψ0 P1 ψ1) (fun _ _ _ _ => rfl) hJ hU hG j t
-  exact lift_ascent_at_level hok Hs P0 ψ0 (fun _ _ => rfl) hL0
+  exact lift_ascent_at_level hok (fun j t => lift_hypotheses_of_unitary hok hK (cvOf3 A3 P0 ψ0 P1 ψ1) (fun _ _ _ _ => rfl) hJ hU hG j t) P0 ψ0 (fun _ _ => rfl) hL0
 
 end Final
 

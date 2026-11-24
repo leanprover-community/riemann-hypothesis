@@ -253,7 +253,6 @@ attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem right_rule_derivative : PBN.RightRuleE := by
   intro E _ _ k r z' D f hz' hD hS hR g hg a b hab
-  have hb := b.isLt
   have hc : Continuous fun x : Mx k r => g * x := cont_lmul g
   have hD' : IsOpen {x : Mx k r | g * x ∈ D} := hD.preimage hc
   have hS' : SmoothLev k r a.castSucc {x | g * x ∈ D} (fun x => f (g * x)) :=
@@ -273,7 +272,6 @@ theorem right_rule_derivative : PBN.RightRuleE := by
   rw [hpos, eH_left, Matrix.mul_one] at h
   rw [h]
   congr 1
-  have ha1 : (a.succ : Fin (r + 1)).val < r := by simp; omega
   simp only [xv, fvec, hpos, Fin.val_succ]
   rw [dif_pos (show a.val + 1 < r by omega)]
   by_cases hh : b.val = a.val + 1
@@ -282,7 +280,6 @@ theorem right_rule_derivative : PBN.RightRuleE := by
 
 theorem left_rule_cell : PBN.LeftRuleCell := by
   intro E _ _ k r z D f hz hD hDN hS hL c hc g hg hWD a b hba
-  have ha := a.isLt
   have hcne : ∀ l, c l ≠ 0 := hc
   obtain ⟨hW0, hWcomm⟩ := head_comm (k := k) c hcne b.val b.castSucc (by simp)
   obtain ⟨T, hT, hTG, hTe, -, -⟩ := tail (k := k) c hcne b (r - b.val - 1) (Fin.last r) (by simp; omega)

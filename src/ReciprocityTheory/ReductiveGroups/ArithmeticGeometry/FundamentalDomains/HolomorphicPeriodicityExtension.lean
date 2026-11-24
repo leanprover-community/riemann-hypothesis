@@ -54,11 +54,6 @@ open Complex Filter Topology
 
 variable {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E]
 
-theorem d4l4_c_pos {r : ℕ} (X : Data E r) (τ : X.Ψ) : 0 < X.c τ := by
-  have h : τ.1 X.ξ0 ≠ 0 := (map_ne_zero τ.1).mpr X.ξ0_ne
-  show 0 < 2 * ‖τ.1 X.ξ0‖
-  exact mul_pos two_pos (norm_pos_iff.mpr h)
-
 open Classical in
 theorem d4l4_diff_flow {r : ℕ} (X : Data E r) (e : X.Ψ → Fin r → ℂ) (x : Frame X.Ψ r)
     (s : X.Ψ → ℂ) (τ0 : X.Ψ) :

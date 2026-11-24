@@ -96,7 +96,6 @@ theorem cont_symplO : Continuous fun p : MO S T × MO S T => symplO S T p.1 p.2 
   delta symplO
   first
     | exact ht.comp (continuous_const.mul hh)
-    | fun_prop
 
 theorem cont_symplO_left (w : MO S T) : Continuous fun z : MO S T => symplO S T z w := by
   have h : Continuous (Function.uncurry (symplO S T)) := cont_symplO S T
@@ -141,7 +140,7 @@ theorem theta_add {f g : MO S T → ℂ} (hf : IsThetaFunO ψ S T f) (hg : IsThe
     funext z
     have z1 := congrFun e1 z
     have z2 := congrFun e2 z
-    simp only [heisO, Pi.add_apply, Pi.zero_apply] at z1 z2 ⊢
+    simp only [heisO, Pi.add_apply] at z1 z2 ⊢
     rw [mul_add, z1, z2]
 
 theorem theta_smul (c : ℂ) {f : MO S T → ℂ} (hf : IsThetaFunO ψ S T f) : IsThetaFunO ψ S T (c • f) := by
@@ -153,7 +152,7 @@ theorem theta_smul (c : ℂ) {f : MO S T → ℂ} (hf : IsThetaFunO ψ S T f) : 
   · have e1 := hl1 u hu h0
     funext z
     have z1 := congrFun e1 z
-    simp only [heisO, Pi.smul_apply, smul_eq_mul, Pi.zero_apply] at z1 ⊢
+    simp only [heisO, Pi.smul_apply, smul_eq_mul] at z1 ⊢
     rw [mul_left_comm, z1]
 
 end Theta

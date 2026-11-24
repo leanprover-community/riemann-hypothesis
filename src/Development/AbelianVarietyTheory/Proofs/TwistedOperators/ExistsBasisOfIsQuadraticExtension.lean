@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AlmostNormFinDiag
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.QuadraticClassFieldTheory
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.RegularLocalRing.Defs
@@ -57,22 +58,7 @@ namespace GlobalTheory.QuadSymbol
 theorem exists_basis_of_isQuadraticExtension (K L : Type) [Field K] [CharZero K] [Field L] [Algebra K L]
     [Algebra.IsQuadraticExtension K L] :
     ∃ (δ : K) (e : Module.Basis (Fin 2) K L), ¬ IsSquare δ ∧ e 0 = 1 ∧ e 1 * e 1 = algebraMap K L δ := by
-  have hr : Module.finrank K L = 2 := Algebra.IsQuadraticExtension.finrank_eq_two K L
-  have : FiniteDimensional K L := Module.finite_of_finrank_pos (by omega)
-  have : IsGalois K L := inferInstance
-  have hc : Nat.card (L ≃ₐ[K] L) = 2 := by rw [IsGalois.card_aut_eq_finrank, hr]
-  have : Nontrivial (L ≃ₐ[K] L) := Finite.one_lt_card_iff_nontrivial.1 (by omega)
-  obtain ⟨σ, hσ⟩ := exists_ne (1 : L ≃ₐ[K] L)
-  have h2 : σ * σ = 1 := by
-    have := pow_card_eq_one' (x := σ)
-    rwa [hc, pow_two] at this
-  obtain ⟨δ, b, hδ, h0, -, h1⟩ := GlobalTheory.QuadNormBase.exists_basis K L (σ : L →ₐ[K] L) hr
-    (fun x => by simpa using congrArg (fun f : L ≃ₐ[K] L => f x) h2)
-    (by
-      by_contra h
-      push Not at h
-      exact hσ (AlgEquiv.ext fun x => h x))
-  exact ⟨δ, b, hδ, h0, h1⟩
+  apply GlobalTheory.QuadSymbol.AlmostNorm.exists_basis_sq <;> assumption
 
 theorem exists_completion_hom_real {K : Type} [Field K] (σ : K →+* ℝ) :
     ∃ (w : InfinitePlace K) (f : w.Completion →+* ℝ), ∀ x : K, f (algebraMap K w.Completion x) = σ x := by

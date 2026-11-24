@@ -117,7 +117,7 @@ theorem iso_unique_of_rig (hG : Out.GlobalFnsSt) {S X₀ : Scheme.{0}} (A : Over
     refine units_eq_of_res_eq_of_le_iSup _ _ (fun _ _ _ => by trivial) hcovY _ _ fun p => ?_
     rw [map_one]
     have E := mul_right_cancel ((m₁ p).symm.trans (m₂ p))
-    simp only [id_eq, LB.linCombIso, Fintype.prod_unique, zpow_one] at E
+    simp only [LB.linCombIso, zpow_one] at E
     refine (app_rs_eq_rs_app' (eSec A) ((LB.div (M₀.pull φ) M).U (p.1 default, p.2 default)) le_top ?_ _ u).trans ?_
     · exact le_inf (inf_le_left.trans (LB.wchart_le _ _ p.1 default))
         (inf_le_right.trans (LB.wchart_le _ _ p.2 default))

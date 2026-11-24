@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.PushLF
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.FibOfTens
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.PosNear
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
@@ -152,36 +153,7 @@ theorem wMat_mulVec_eq_zero (R : Type) [CommRing R] [Algebra F R] {a M : ℕ}
 theorem linIndep_iff (R : Type) [CommRing R] [Algebra F R] {a M : ℕ}
     (X : Fin a → Fin M → R ⊗[F] E) :
     LinearIndependent (R ⊗[F] E) X ↔ ∀ c, wMat b R X *ᵥ c = 0 → c = 0 := by
-  set B := Algebra.TensorProduct.basis R b with hB
-  have hBk : ∀ k, B k = (1 : R) ⊗ₜ[F] b k := fun k => Algebra.TensorProduct.basis_apply _ _
-  rw [Fintype.linearIndependent_iff]
-  constructor
-  · intro hX c hc
-    rw [wMat_mulVec_eq_zero] at hc
-    have h0 := hX (fun i => ∑ k, c (i, k) • ((1 : R) ⊗ₜ[F] b k)) (by
-      funext j
-      simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply]
-      exact hc j)
-    funext p
-    have h1 := h0 p.1
-    have h2 : B.equivFun (∑ k, c (p.1, k) • B k) = fun k => c (p.1, k) := by
-      rw [← Module.Basis.equivFun_symm_apply, LinearEquiv.apply_symm_apply]
-    simp only [hBk] at h2
-    rw [h1, map_zero] at h2
-    exact (congrFun h2 p.2).symm
-  · intro hW g hg i
-    have hc := hW (fun p => B.repr (g p.1) p.2) (by
-      rw [wMat_mulVec_eq_zero]
-      intro j
-      have e : ∀ i, ∑ k, B.repr (g i) k • ((1 : R) ⊗ₜ[F] b k) = g i := by
-        intro i
-        simp only [← hBk]
-        exact B.sum_repr (g i)
-      simp only [e]
-      have := congrFun hg j
-      simpa [Finset.sum_apply, smul_eq_mul] using this)
-    rw [← B.sum_repr (g i)]
-    simp [fun k => congrFun hc (i, k)]
+  apply PI.AprimeInfW.linIndep_iff <;> assumption
 
 section Top
 

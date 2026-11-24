@@ -64,7 +64,6 @@ theorem itD_nil (f : W → ℂ) (z : W) : itD f [] z = f z := by
   simp only [itD]
   first
     | exact iteratedFDeriv_zero_apply _
-    | simp
 
 theorem itD_differentiable {f : W → ℂ} (hf : ContDiff ℂ (⊤ : ℕ∞) f) (l : List W) :
     Differentiable ℂ (fun y => itD f l y) := by
@@ -72,8 +71,6 @@ theorem itD_differentiable {f : W → ℂ} (hf : ContDiff ℂ (⊤ : ℕ∞) f) 
     refine hf.differentiable_iteratedFDeriv ?_
     first
       | exact_mod_cast ENat.coe_lt_top _
-      | exact WithTop.coe_lt_coe.2 (ENat.coe_lt_top _)
-      | simp
   unfold itD
   exact (ContinuousMultilinearMap.apply ℂ (fun _ : Fin l.length => W) ℂ _).differentiable.comp hD
 
@@ -83,8 +80,6 @@ theorem itD_cons {f : W → ℂ} (hf : ContDiff ℂ (⊤ : ℕ∞) f) (e : W) (l
     refine hf.differentiable_iteratedFDeriv ?_
     first
       | exact_mod_cast ENat.coe_lt_top _
-      | exact WithTop.coe_lt_coe.2 (ENat.coe_lt_top _)
-      | simp
   show iteratedFDeriv ℂ (l.length + 1) f z (fun j => (e :: l).get j) = _
   rw [iteratedFDeriv_succ_apply_left]
   have hc : (fun y => itD f l y) =
@@ -121,7 +116,7 @@ def colL {n : ℕ} (L : List (Fin n × W)) (k : Fin n) : List W :=
 theorem colL_cons {n : ℕ} (a : Fin n × W) (L : List (Fin n × W)) (k : Fin n) :
     colL (a :: L) k = if a.1 = k then a.2 :: colL L k else colL L k := by
   unfold colL
-  by_cases h : a.1 = k <;> simp [List.filter_cons, h]
+  by_cases h : a.1 = k <;> simp [h]
 
 theorem itD_prod {n : ℕ} {g : Fin n → W → ℂ} (hg : ∀ k, ContDiff ℂ (⊤ : ℕ∞) (g k))
     (L : List (Fin n × W)) (x : Fin n → W) :
@@ -129,7 +124,6 @@ theorem itD_prod {n : ℕ} {g : Fin n → W → ℂ} (hg : ∀ k, ContDiff ℂ (
       ∏ k, itD (g k) (colL L k) (x k) := by
   have hP : ContDiff ℂ (⊤ : ℕ∞) (fun v : Fin n → W => ∏ k, g k (v k)) := by
     first
-      | exact contDiff_prod fun k _ => (hg k).comp (contDiff_apply ℂ W k)
       | fun_prop
   induction L generalizing x with
   | nil => simp [itD_nil, colL]
@@ -153,7 +147,6 @@ theorem itD_col {s : (Fin 1 → W) → ℂ} (hs : ContDiff ℂ (⊤ : ℕ∞) s)
   have hi : ((l.length : ℕ∞) : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) := by
     first
       | exact_mod_cast le_top
-      | exact WithTop.coe_le_coe.2 le_top
   have h := (ContinuousLinearMap.pi fun _ : Fin 1 => ContinuousLinearMap.id ℂ W).iteratedFDeriv_comp_right
     hs (0 : W) hi
   exact congrArg (fun T => T (fun j => l.get j)) h
@@ -175,7 +168,6 @@ theorem polyDeriv_eq_of_subset (P : MvPolynomial σ ℂ) (u : σ → W) (F : W �
   refine Finset.sum_subset hS fun m _ hm => ?_
   first
     | rw [MvPolynomial.notMem_support_iff.1 hm, zero_mul]
-    | rw [MvPolynomial.not_mem_support_iff.1 hm, zero_mul]
 
 theorem polyDeriv_add (P Q : MvPolynomial σ ℂ) (u : σ → W) (F : W → ℂ) (x : W) :
     polyDeriv (P + Q) u F x = polyDeriv P u F x + polyDeriv Q u F x := by

@@ -57,11 +57,6 @@ open PositivityTheory.SiegelWeilFormula
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 
-theorem rel_sigma_sigma (h : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsCMExt F E σ) (x : E) : σ (σ x) = x := by
-  let τ : E →+* ℂ := (IsAlgClosed.lift (R := ℚ) (S := E) (M := ℂ) : E →ₐ[ℚ] ℂ).toRingHom
-  apply τ.injective
-  rw [h.2.2.2, h.2.2.2, star_star]
-
 theorem rel_cA_incM {a b : Type} (X : Matrix a b E) : (incM F X).map (cA σ) = incM F (X.map σ) := by
   ext i j
   simp [incM, cA, inclR, Algebra.TensorProduct.map_tmul]
@@ -145,7 +140,7 @@ theorem frame_sign_eq_hermitian_sign (d : SD σ) (hσ : ∀ x, σ (σ x) = x) (�
 theorem rel_sign (d : SD σ) (ε : ℤˣ)
     (hε : d.b.1ᵀ * dbl d.Y.J * d.b.1.map σ = Matrix.fromBlocks 0 1 (((ε : ℤ) : E) • 1) 0) :
     ((∀ i j, σ (d.Y.J j i) = -d.Y.J i j) → ε = -1) ∧ ((∀ i j, σ (d.Y.J j i) = d.Y.J i j) → ε = 1) := by
-  have hσ := rel_sigma_sigma d.ok.good.cm
+  have hσ := _root_.GlobalTheory.AdelicU.cm_conj_conj d.ok.good.cm
   have i : Fin d.n := ⟨0, d.ok.hn⟩
   constructor
   · intro h
@@ -156,7 +151,7 @@ theorem rel_sign (d : SD σ) (ε : ℤˣ)
     exact Units.ext (Int.cast_injective (α := E) (by simpa using this))
 
 theorem rel_anti (h : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsCMExt F E σ) : ∃ η : E, η ≠ 0 ∧ σ η = -η := by
-  have hσ := rel_sigma_sigma h
+  have hσ := _root_.GlobalTheory.AdelicU.cm_conj_conj h
   obtain ⟨x, hx⟩ : ∃ x, σ x ≠ x := by
     by_contra hc
     push Not at hc

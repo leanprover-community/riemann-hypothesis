@@ -206,7 +206,6 @@ private theorem core (hL : LocEq) (hV : ValBasic) (hR : RYBasic)
   generalize e ⟨_, memX' x j2 hG hJne hi j⟩ = α at hα
   generalize e ⟨_, memY' x j2 hG hIne hj i⟩ = β at hβ
   have hXi := Xv_ne (K' := K') x i
-  have hXj := Xv_ne (K' := K') x j
   have hYi := Yv_ne x j2 i
   have hYj := Yv_ne x j2 j
   have hab : α * β = 1 := by
@@ -224,16 +223,6 @@ private theorem core (hL : LocEq) (hV : ValBasic) (hR : RYBasic)
   have hβ0 : β ≠ 0 := right_ne_zero_of_mul_eq_one hab
   have hinv := val_inv hV hβ hβ0
   have hηne : Yv x j2 i * (Yv x j2 j)⁻¹ ≠ 0 := mul_ne_zero hYi (inv_ne_zero hYj)
-  have hR2 : R2 (xv x) j2 {i} ≤ loc (RY (xv x) j2 I J) e := by
-    intro y hy
-    obtain ⟨N, hN⟩ := hR5 {j} j (Finset.mem_singleton_self j) i y (integralClosure_mono_subset (xv x) j2 (by simp) hy)
-    have hyJ : y * j2 (algebraMap F K ((x i : F) / x j)) ^ N ∈ RY (xv x) j2 I J :=
-      (le_sup_right : R2 (xv x) j2 J ≤ RY (xv x) j2 I J) (integralClosure_mono_subset (xv x) j2 (Finset.singleton_subset_iff.2 hj) hN)
-    have hl := val_loc hV (val_mul hV (val_mem (e := e) hV hyJ) (val_pow hV hinv N))
-    have heq : j2 (algebraMap F K ((x i : F) / x j)) = Yv x j2 i * (Yv x j2 j)⁻¹ := by
-      simp [div_eq_mul_inv]
-    rw [heq, mul_assoc, ← mul_pow, mul_inv_cancel₀ hηne, one_pow, mul_one] at hl
-    exact hl
   have hgen : ∀ b ∈ {b : K | b ∈ rB ℂ K (xv x) {i} ∧ ∃ l N, n l = (N, N) ∧
       z l = (((sysZ K x 0).X i ^ N * (sysZ K x 0).Y i ^ N : (K ⊗[ℂ] K)ˣ) : K ⊗[ℂ] K) * (b ⊗ₜ 1 - 1 ⊗ₜ b)},
       ∃ c, Val (RY (xv x) j2 I J) e (algebraMap K K' b) c ∧ Val (RY (xv x) j2 I J) e (j2 b) c := by

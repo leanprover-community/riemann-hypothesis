@@ -185,7 +185,6 @@ theorem chartMeasure_integrable_integral (A : FinHolAtlas e X) (P : ChartPartiti
     have h0 : P.χ j ((A.chart j).symm y) = 0 := by
       first
         | exact image_eq_zero_of_notMem_tsupport hz
-        | exact image_eq_zero_of_nmem_tsupport hz
     rw [h0]
     ring
   · have hgK := hgi j _ hKs hK
@@ -195,8 +194,6 @@ theorem chartMeasure_integrable_integral (A : FinHolAtlas e X) (P : ChartPartiti
         (g ((A.chart j).symm y) * locDens A Φ j y)) (A.chart j '' tsupport (P.χ j)) := by
       first
         | exact hgK.continuousOn_mul hc hK
-        | exact IntegrableOn.continuousOn_mul hc hgK hK
-        | exact hgK.continuousOn_mul hc hK.measurableSet
     refine hm.congr_fun (fun y _ => by ring) hK.measurableSet
 
 theorem chartMeasure_finite (A : FinHolAtlas e X) (P : ChartPartition A)
@@ -209,7 +206,6 @@ theorem chartMeasure_finite (A : FinHolAtlas e X) (P : ChartPartition A)
     measurable_const hgi).1
   first
     | exact (integrable_const_iff.1 hi).resolve_left one_ne_zero
-    | exact ⟨(integrable_const_iff.1 hi).resolve_left one_ne_zero⟩
 
 theorem maMeasure_forward (A : FinHolAtlas e X) (Φ : Fin e → LocPot X)
     (hΦ : ∀ i, IsPotential A (Φ i)) (hPsh : ∀ i, IsPsh A (Φ i)) {g : X → ℝ} (hg : Measurable g)
@@ -241,7 +237,6 @@ private theorem absDet_clm_fin {e : ℕ} (f : (Fin e → ℂ) →L[ℂ] (Fin e �
       Algebra.norm ℝ (LinearMap.det (f : (Fin e → ℂ) →ₗ[ℂ] (Fin e → ℂ))) := by
     first
       | exact LinearMap.det_restrictScalars
-      | exact LinearMap.det_restrictScalars (f := (f : (Fin e → ℂ) →ₗ[ℂ] (Fin e → ℂ)))
   rw [h, Algebra.norm_complex_apply, Complex.normSq_eq_norm_sq]
   exact abs_of_nonneg (by positivity)
 
@@ -311,7 +306,6 @@ theorem maMeasure_converse (A : FinHolAtlas e X) (Φ : Fin e → LocPot X)
     have h0 : hne.some.χ k ((A.chart j).symm y) = 0 := by
       first
         | exact image_eq_zero_of_notMem_tsupport (fun h => hnot (hne.some.tsupport_subset k h))
-        | exact image_eq_zero_of_nmem_tsupport (fun h => hnot (hne.some.tsupport_subset k h))
     rw [h0, zero_mul]
   have hsum : IntegrableOn (fun y => ∑ k, hne.some.χ k ((A.chart j).symm y) *
       (g ((A.chart j).symm y) * locDens A Φ j y)) K :=

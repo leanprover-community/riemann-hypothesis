@@ -111,7 +111,7 @@ theorem sum_unit_perm {M : Type*} [AddCommMonoid M] (g : (Unit → Equiv.Perm (F
 
 theorem rhoMono_line : rhoMono Unit 2 = Finsupp.single ((), 0) 1 := by
   ext ⟨u, i⟩
-  fin_cases i <;> simp [rhoMono, Finsupp.single_apply]
+  fin_cases i <;> simp [rhoMono]
 
 theorem dimN_line : dimN Unit 2 1 = 1 := rfl
 

@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ProductFormulaHaar.DenEqOneOfForallPadicNormLeOne
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ClosedBallValuationSubringToSubring
 public import Mathlib.NumberTheory.NumberField.Basic
 public import Mathlib.NumberTheory.Padics.Complex
@@ -60,31 +61,7 @@ def unitBallSubring (A : Type) [NormedField A] [IsUltrametricDist A] : Subring A
 
 theorem den_eq_one_of_padicNorm_le_one (c : ℚ)
     (h : ∀ q : ℕ, q.Prime → padicNorm q c ≤ 1) : c.den = 1 := by
-  by_contra hne
-  obtain ⟨q, hq, hqd⟩ := Nat.exists_prime_and_dvd hne
-  have : Fact q.Prime := ⟨hq⟩
-  have hc : c ≠ 0 := by
-    rintro rfl; simp at hne
-  have h1 := h q hq
-  rw [padicNorm.eq_zpow_of_ne_zero hc] at h1
-  have hv : 0 ≤ padicValRat q c := by
-    by_contra hlt
-    push Not at hlt
-    have hq1 : (1 : ℚ) < q := by exact_mod_cast hq.one_lt
-    have : (1 : ℚ) < (q : ℚ) ^ (-padicValRat q c) := one_lt_zpow₀ hq1 (by omega)
-    linarith
-  have hden : 1 ≤ multiplicity q c.den :=
-    one_le_multiplicity_of_dvd c.den_nz hqd
-  have hnum : padicValInt q c.num = 0 := by
-    apply padicValInt.eq_zero_of_not_dvd
-    intro hdvd
-    have hcop := c.reduced
-    have : q ∣ Nat.gcd c.num.natAbs c.den :=
-      Nat.dvd_gcd (Int.natCast_dvd.mp hdvd) hqd
-    rw [hcop] at this
-    exact hq.one_lt.ne' (Nat.dvd_one.mp this)
-  unfold padicValRat at hv
-  omega
+  apply PI.ProdFormulaE.Frac.den_eq_one_of_forall_padicNorm_le_one <;> assumption
 
 theorem isIntegral_of_forall_padicAlgCl_norm_le_one :
     ∀ (M : Type) [Field M] [NumberField M] (a : M),

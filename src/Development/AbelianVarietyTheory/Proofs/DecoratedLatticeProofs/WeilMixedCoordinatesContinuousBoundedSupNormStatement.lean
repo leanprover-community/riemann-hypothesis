@@ -64,4 +64,4 @@ open GlobalTheory.Unf
 open scoped ComplexOrder ENNReal NNReal ContDiff
 
 theorem _root_.GlobalTheory.T.weilMixedCoordinates_continuous_bounded_supNorm : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (V V₀ W W₀ : HSp D) (ρ σ : ℕ) (dV : HypDec V V₀ ρ) (dW : HypDec W W₀ σ) (vS : VolM D W.rank ρ) (vT : VolM D σ V₀.rank) (χV χW : (AE D)ˣ →* Circle) (om : Om V W), IsWeilDatumO ψ V W χV χW om → ∀ Φ, IsThetaFunO ψ V W Φ → (Continuous fun q : (GA D V × GA D W) × Mx D W.rank ρ × WO V₀ W => (_root_.I195MixedCoordinates_17a8b2bea10b408d05673c6f.source dV) W ψ vS.μ vS.𝓕 (om q.1 Φ) q.2.1 q.2.2) ∧ (Continuous fun q : (GA D V × GA D W) × Mx D W.rank ρ × Mx D V₀.rank σ × WO V₀ W₀ => evalAt ψ dV dW vS.μ vS.𝓕 vT.μ vT.𝓕 (om q.1 Φ) q.2.1 q.2.2.1 q.2.2.2) := by
-  first | exact @GlobalTheory.MixCont.mixed_coords_continuous | exact GlobalTheory.MixCont.mixed_coords_continuous | (intros; apply GlobalTheory.MixCont.mixed_coords_continuous <;> assumption)
+  first | exact @GlobalTheory.MixCont.mixed_coords_continuous

@@ -45,6 +45,6 @@ import Mathlib.Topology.Sheaves.Init
 
 namespace Formalism.L2.G.Model
 
-theorem edgePlane : Formalism.MainNotions.G.EdgePlane := Formalism.MainNotions.Pf14.edgePlane
+alias edgePlane := _root_.Formalism.MainNotions.Pf14.edgePlane
 
 end Formalism.L2.G.Model

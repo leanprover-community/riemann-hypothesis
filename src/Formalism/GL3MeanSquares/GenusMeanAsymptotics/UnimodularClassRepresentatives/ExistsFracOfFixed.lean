@@ -72,16 +72,14 @@ private theorem algebraMap_int_F_to_K_eq_algebraMap_coe (t : 𝓞 F) :
 theorem mem_hcompl_of_notMem (hF : IsFixF K F) {P : Ideal (𝓞 K)} (hP : P.IsPrime) {t : 𝓞 F}
     (ht : t ∉ P.comap (algebraMap (𝓞 F) (𝓞 K))) :
     algebraMap (𝓞 F) (𝓞 K) t ∈ Formalism.HermitianLatticesTheory.hcompl (K := K) P := by
-  apply Submonoid.subset_closure
-  refine ⟨ht, fun u hu => ?_⟩
+  refine Submonoid.subset_closure ⟨ht, fun u hu => ?_⟩
   have hfix : star (algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) t)) =
       algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) t) := by
     rw [algebraMap_int_F_to_K_eq_algebraMap_coe]
     exact (hF _).2 ⟨(t : F), rfl⟩
   rw [hfix] at hu
   have hu' : u = algebraMap (𝓞 F) (𝓞 K) t := IsFractionRing.injective (𝓞 K) K hu
-  rw [hu']
-  exact ht
+  rwa [hu']
 
 theorem div_mem_locRing {P : Ideal (𝓞 K)} (hP : P.IsPrime) (r : 𝓞 K) {s : 𝓞 K}
     (hs : s ∈ Formalism.HermitianLatticesTheory.hcompl (K := K) P) :

@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.BesselScaling
 public import Formalism.HermitianCurvature.WeylElementCommutesLevelOne
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -66,28 +67,7 @@ open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Fo
 
 theorem haar_smul {k r : ℕ} {U : Set (Mat k r)} {μ : Measure (Mt k r)} (h : IsHaarOn U μ) (c : ℝ≥0) (hc : 0 < c) :
     IsHaarOn U (c • μ) := by
-  refine ⟨?_, ?_, ?_, ?_, ?_⟩
-  · rw [smul_apply, h.conc, smul_zero]
-  · intro a ha
-    have hcont : Continuous (lmulM a : Mt k r → Mt k r) := by
-      unfold lmulM
-      exact (continuous_const (y := a)).matrix_mul (continuous_id (X := Mat k r))
-    rw [Measure.map_smul c hcont.measurable.aemeasurable, h.left a ha]
-  · intro a ha
-    have hcont : Continuous (rmulF a) := by
-      unfold rmulF
-      exact (continuous_id (X := Mat k r)).matrix_mul continuous_const
-    rw [Measure.map_smul c hcont.measurable.aemeasurable, h.right a ha]
-  · intro K hK
-    rw [smul_apply, ENNReal.smul_def, smul_eq_mul]
-    exact ENNReal.mul_lt_top ENNReal.coe_lt_top (h.finite_compact K hK)
-  · intro h0
-    apply h.ne_zero
-    have h1 : (c • μ) Set.univ = 0 := by rw [h0]; rfl
-    rw [smul_apply, ENNReal.smul_def, smul_eq_mul] at h1
-    rcases mul_eq_zero.mp h1 with h2 | h2
-    · exact absurd (by exact_mod_cast h2 : c = 0) hc.ne'
-    · exact Measure.measure_univ_eq_zero.mp h2
+  apply Formalism.FourierDecayAlt.P.BesselScaling.haar_smul <;> assumption
 
 section forms
 variable {ι : Type*} [Fintype ι] (H : Matrix ι ι ℂ)
@@ -125,8 +105,7 @@ lemma herm_single (i j : ι) : herm H (Pi.single j 1) (Pi.single i 1) = H i j :=
 
 lemma unitary_of_form (g : Matrix ι ι ℂ) (h : ∀ x y, herm H (g *ᵥ x) (g *ᵥ y) = herm H x y) : gᴴ * H * g = H := by
   ext i j
-  have := h (Pi.single j 1) (Pi.single i 1)
-  rwa [herm_mulVec, herm_single, herm_single] at this
+  simpa only [herm_mulVec, herm_single] using h (Pi.single j 1) (Pi.single i 1)
 
 lemma form_of_unitary {g : Matrix ι ι ℂ} (h : gᴴ * H * g = H) (x y : ι → ℂ) : herm H (g *ᵥ x) (g *ᵥ y) = herm H x y := by
   rw [herm_mulVec, h]
@@ -176,10 +155,10 @@ lemma transitive (hH : Hᴴ = H) (u v : ι → ℂ) (t : ℝ) (ht : 0 < t) (hu :
   · apply unitary_of_form
     intro x y
     rw [rk_mulVec, rk_mulVec]
-    simp only [herm_add_left, herm_add_right, herm_smul_left, herm_smul_right, hdy x, hdy y, hdd]
+    simp only [herm_add_left, herm_add_right, herm_smul_left, herm_smul_right, hdy y, hdd]
     have hsσ : star σ⁻¹ = σ⁻¹ := by rw [star_inv₀, hσ_def, Complex.star_def, Complex.conj_ofReal]
     have hβ : σ⁻¹ * σ = 1 := inv_mul_cancel₀ hσ0
-    simp only [star_mul', star_star, hsσ, hdy d]
+    simp only [star_mul', star_star, hsσ]
     linear_combination (herm H x y) * hcc - 2 * herm H x d * star (herm H y d) * c * star c * σ⁻¹ * hβ
   · rw [rk_mulVec, hud]
     have hβ : σ⁻¹ * σ = 1 := inv_mul_cancel₀ hσ0
@@ -230,14 +209,14 @@ lemma nu_unitary (hk : 1 ≤ k) (w s : ℂ) (hs : star s = s) (hw : s * s = w * 
   intro x y
   rw [nu_mulVec, nu_mulVec]
   simp only [herm_add_left, herm_add_right, herm_smul_left, herm_smul_right, herm_Hb_right, herm_Hb_left, herm_single]
-  simp only [Hb, Matrix.diagonal_apply, h0L, hL0, if_true, if_false, star_add, star_sub, star_mul', star_one, star_star, hs]
+  simp only [Hb, Matrix.diagonal_apply, h0L, hL0, if_true, if_false, star_sub, star_one, star_star, hs]
   linear_combination (star (y (Fin.last k)) * x (Fin.last k) - star (y 0) * x 0) * hw
 
 lemma nu_last (hk : 1 ≤ k) (w s : ℂ) : herm (Hb k) (nu k w s *ᵥ Pi.single (Fin.last k) 1) (Pi.single (Fin.last k) 1) = -w := by
   have h0L : (0 : Fin (k + 1)) ≠ Fin.last k := by
     intro h; have := congrArg Fin.val h; simp at this; omega
   rw [herm_Hb_right, nu_mulVec]
-  simp [Pi.single_apply, h0L, h0L.symm]
+  simp [h0L, h0L.symm]
 
 lemma nu_apply (w s : ℂ) (i j : Fin (k + 1)) :
     nu k w s i j = (1 : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ) i j +
@@ -349,7 +328,7 @@ lemma sum_mid (f : Fin (2 * r + k + 1) → ℂ) (hf : ∀ i : Fin (2 * r + k + 1
 
 lemma Hpk_mid (a b : Fin (k + 1)) : Hpk k r (wI k r a) (wI k r b) = Hb k a b := by
   simp only [Hpk, Hb, wI, Matrix.diagonal_apply, Fin.ext_iff, Fin.val_last]
-  split_ifs <;> first | rfl | (exfalso; omega) | (norm_num; done) | (norm_num; intro h; exfalso; omega) | (intro h; exfalso; omega)
+  split_ifs <;> first | rfl | (exfalso; omega) | (norm_num; done) | (norm_num; intro h; exfalso; omega)
 
 lemma herm_mid (z z' : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (hz' : inWb k r z') :
     herm (Hpk k r) z z' = herm (Hb k) (wbPart k r z) (wbPart k r z') := by
@@ -364,20 +343,17 @@ lemma herm_mid (z z' : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) (hz' : inW
 
 lemma herm_self (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) :
     herm (Hb k) (wbPart k r z) (wbPart k r z) = -((Tz k r z : ℝ) : ℂ) := by
-  have e := herm_mid k r z z hz hz
   have hx := herm_symm (Hb k) (Hb_herm k) (wbPart k r z) (wbPart k r z)
   simp only [Tz]
-  rw [e]
-  simp only [Complex.ofReal_neg, neg_neg]
-  exact (Complex.conj_eq_iff_re.mp hx).symm
+  rw [herm_mid k r z z hz hz]
+  simpa only [Complex.ofReal_neg, neg_neg] using (Complex.conj_eq_iff_re.mp hx).symm
 
 end mid
 
 theorem sectionExists : Formalism.QuantumDeterminants.SectionExists := by
   intro k r z z' hk hz hz' hT hT'
-  obtain ⟨μ, h1, h2⟩ := section_core k hk (wbPart k r z) (wbPart k r z') (Tz k r z) (Tz k r z') hT hT'
+  exact section_core k hk (wbPart k r z) (wbPart k r z') (Tz k r z) (Tz k r z') hT hT'
     (herm_self k r z hz) (herm_self k r z' hz')
-  exact ⟨μ, h1, h2⟩
 
 end Formalism.FourierDecayAlt.P.SettingConstruction
 

@@ -211,7 +211,7 @@ theorem actF_add_smul (hP : IsPsiFor ε lam T Ψ) {m : ℕ} (a a' : AS T m) (c :
   have e : (fun g => inner ℂ T.w (Ψ g ((a + c • a') x))) =
       fun g => jfun Ψ T.w (a x) g + c * jfun Ψ T.w (a' x) g := by
     funext g
-    simp [jfun, inner_add_right, inner_smul_right]
+    simp [jfun]
   rw [e]
   exact icx_eword_add_smul (datumFunction_isSmoothL2 hP T.w (a x)).1 (datumFunction_isSmoothL2 hP T.w (a' x)).1 c _ g hg
 
@@ -250,7 +250,7 @@ def betaLin {Λ : Fin n → ℝ} (T : KType ε Λ) (μ : Fin n → ℤ) (m : ℕ
   map_add' a a' := by
     simp only [betaF, Pi.add_apply, inner_add_right, add_smul, Finset.sum_add_distrib]
   map_smul' c a := by
-    simp [betaF, inner_smul_right, Finset.smul_sum, mul_smul]
+    simp [betaF, Finset.smul_sum, mul_smul]
 
 end Act
 

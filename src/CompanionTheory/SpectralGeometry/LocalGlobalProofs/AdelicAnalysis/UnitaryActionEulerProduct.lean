@@ -3,7 +3,7 @@ module
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.CompletionIsLocalRing
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.InfiniteAdelesLocalRingTotallyReal
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.LinearChangeEulerProductStatement
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.LinearChangeEulerProduct
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRing
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -105,7 +105,7 @@ theorem coTup_mulVec {n M d : ℕ} (b : Module.Basis (Fin d) F E) (G : Matrix (F
   have h0 : (G.map (inclR R) *ᵥ X a) i = ∑ j, inclR R (G i j) * X a j := by
     simp [Matrix.mulVec, dotProduct]
 
-  simp only [coTup, h0, map_sum, Finset.sum_apply, repr_incl_mul]
+  simp only [coTup, h0, map_sum]
   simp only [Matrix.mulVec, dotProduct, Matrix.map_apply, actMat, Fintype.sum_prod_type]
   rw [Finset.sum_eq_single a]
   · simp [coTup, repr_incl_mul]
@@ -228,7 +228,7 @@ theorem product_formula_actTup : ∀ (F E : Type) [Field F] [NumberField F] [Fie
   intro F E _ _ _ _ _ σ hσ n M g
   haveI : Module.Finite F E := Module.Finite.of_restrictScalars_finite ℚ F E
   let b := Module.finBasis F E
-  obtain ⟨cinf, c, hU, hinf, hv⟩ := GlobalTheory.T.addHaar_map_mulVec_eq_smul_at_all_places F _
+  obtain ⟨cinf, c, hU, hinf, hv⟩ := _root_.GlobalTheory.CompanionTheory.SW.ProdFormula.modulus_matrix F _
     (actMat n b (g : Matrix (Fin M) (Fin M) E)) (det_actMat_ne_zero n b g)
   refine ⟨cinf, c, hU, ?_, fun v => ?_⟩
   · obtain ⟨h1, h2, h3, h4, -⟩ := GlobalTheory.CompanionTheory.SW.isLocR_Ainf F hσ.1

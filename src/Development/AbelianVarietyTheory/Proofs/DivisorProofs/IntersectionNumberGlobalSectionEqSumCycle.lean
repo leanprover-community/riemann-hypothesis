@@ -3,12 +3,12 @@ module
 public import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.EventuallyExistsFiniteSubsetNonzeroLocus
 public import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsIsClosedImmersionGenericPoint
 public import Development.AbelianVarietyTheory.Definitions.Divisors.LineBundleGlobalSectionsDimCongrPicardClass
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntersectionNumberSheafEqSumLengthMulCycle
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TopologicalKrullDimLeZeroOfSubset
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.EventuallySubsingletonCohTwistZOfIsProjOver
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsLinearMapMultilinearMapBaseChange
 import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsFiniteLengthOfIsArtinianRingAnnihilator
 import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.IsProjOverIffIsProperAndExistsIsAmpleLB
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntersectionNumberSheafEqSumLengthMulCycleStatement
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.TopologicalKrullDimLeZeroOfSubset
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -49,6 +49,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Development.AbelianVarietyTheory.Definitions.Divisors.NefFibOfIsNef
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PolEqMultiDiff
+import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.CoheightEqOneOfDimClosure
 
 @[expose] public section
 
@@ -66,27 +67,7 @@ open GlobalTheory.QCoh
 theorem coheight_eq_one_of_dim_closure {X : Scheme.{0}} {n : ℕ}
     (hX : topologicalKrullDim X ≤ (n + 1 : ℕ)) {w : X} (hw : ¬ IsMax w)
     (hd : topologicalKrullDim (closure ({w} : Set X)) = n) : Order.coheight w = 1 := by
-  have key : ∀ {a b : X}, a < b → topologicalKrullDim (closure ({a} : Set X)) + 1 ≤
-      topologicalKrullDim (closure ({b} : Set X)) := by
-    intro a b hab
-    refine topologicalKrullDim_add_one_le isClosed_closure isClosed_closure
-      fun x hx => ⟨b, subset_closure rfl, fun hb => ?_, ?_⟩
-    · exact hab.not_ge (specializes_iff_mem_closure.2 hb)
-    · have h1 : b ⤳ a := hab.le
-      have h2 : a ⤳ x := specializes_iff_mem_closure.2 hx
-      exact h1.trans h2
-  have hle : ∀ b : X, topologicalKrullDim (closure ({b} : Set X)) ≤ topologicalKrullDim X :=
-    fun b => Topology.IsInducing.subtypeVal.topologicalKrullDim_le
-  refine le_antisymm ((Order.coheight_le_coe_iff (n := 1)).2 fun y hy => ?_) ?_
-  · by_contra hc
-    have hy0 : ¬ IsMax y := fun h => hc (by rw [Order.coheight_eq_zero.2 h]; exact zero_lt_one)
-    obtain ⟨b, hyb⟩ := not_isMax_iff.1 hy0
-    have h := ((add_le_add (hd ▸ key hy : (n : WithBot ℕ∞) + 1 ≤ _) (le_refl (1 : WithBot ℕ∞))).trans
-      (key hyb)).trans ((hle b).trans hX)
-    norm_cast at h
-    omega
-  · rw [ENat.one_le_iff_ne_zero]
-    exact fun h => hw (Order.coheight_eq_zero.1 h)
+  apply _root_.GlobalTheory.CompanionTheory.Ar.IntersectionMultiplicitySection.coheight_eq_one_of_dim_closure <;> assumption
 
 open scoped Pointwise
 
@@ -109,18 +90,7 @@ theorem mult_divOfSec_eq_length_cut {X : Scheme.{0}} [IsIntegral X] [IsLocallyNo
 theorem mult_divOfSec_ne_zero {X : Scheme.{0}} [IsIntegral X] [IsLocallyNoetherian X]
     {M : LB X} (hM : M.IsLB) (s : M.Sec) (hs : genericPoint X ∈ nonzeroLocus s) {w : X}
     (hw : Order.coheight w = 1) (hws : w ∉ nonzeroLocus s) : (divOfSec hM s hs).mult w ≠ 0 := by
-  obtain ⟨i, hi⟩ := exists_chart hM w
-  have : Ring.KrullDimLE 1 (X.presheaf.stalk w) := krullDimLE_of_coheight_le hw.le
-  have e := algebraMap_germ hi (s.f i)
-  have hg0 : X.presheaf.germ _ w hi (s.f i) ≠ 0 := fun h0 => fnOf_sec_ne_zero hs (gen_mem hi)
-    (e.symm.trans ((congrArg _ h0).trans (map_zero _)))
-  have htop := Ring.ord_ne_top (mem_nonZeroDivisors_of_ne_zero hg0)
-  have hu : ¬ IsUnit (X.presheaf.germ _ w hi (s.f i)) := fun h =>
-    hws ((mem_nonzeroLocus_iff s i hi).2 ((Scheme.mem_basicOpen _ _ _ _).2 h))
-  rw [mult_divOfSec hw hi, Nat.cast_ne_zero, Ne, ENat.toNat_eq_zero, not_or]
-  refine ⟨fun h0 => hu ?_, htop⟩
-  rw [Module.length_eq_zero_iff, Ideal.Quotient.subsingleton_iff, Ideal.span_singleton_eq_top] at h0
-  exact h0
+  apply _root_.GlobalTheory.CompanionTheory.Ar.IntersectionMultiplicitySection.mult_divOfSec_ne_zero <;> assumption
 
 theorem interNum_cons_eq_finsum_mult : ∀ (κ : Type) [Field κ] (X : Scheme.{0}) [IsIntegral X] [IsLocallyNoetherian X] [Algebra κ Γ(X, ⊤)], IsProjOver (strHom κ (X := X)) → ∀ (n : ℕ), topologicalKrullDim X ≤ (n + 1 : ℕ) → ∀ (M : LB X) (hM : M.IsLB) (P : Fin n → LB X), (∀ i, (P i).IsLB) → ∀ (s : M.Sec) (hs : genericPoint X ∈ ReciprocityTheory.ChartRestriction.G.Out.nonzeroLocus s), interNum κ (structureModule X) (Fin.cons M P : Fin (n + 1) → LB X) = ∑ᶠ w, (divOfSec hM s hs).mult w * interNumRed κ (⟨closure {w}, isClosed_closure⟩ : Closeds _) P := by
   intro κ _ X _ _ _ hproj n hX M hM P hP s hs
@@ -144,7 +114,7 @@ theorem interNum_cons_eq_finsum_mult : ∀ (κ : Type) [Field κ] (X : Scheme.{0
       w ⤳ genericPoint X).mem_open (nonzeroLocus s).isOpen hs)
     have hc := coheight_eq_one_of_dim_closure hX hmax hd
     simpa using mult_divOfSec_ne_zero hM s hs hc hw.2
-  rw [T.intersectionNumber_sheaf_eq_sum_length_mul_cycle κ X hproj (Fin n) P hP _ hsupp hfs.toFinset hS,
+  rw [_root_.GlobalTheory.SheafCycle.interNum_eq_sum_length_mul_interNumRed κ X hproj (Fin n) P hP _ hsupp hfs.toFinset hS,
     finsum_eq_sum_of_support_subset _ (s := hfs.toFinset) ?_]
   · refine Finset.sum_congr rfl fun w hw => ?_
     have hw' : (divOfSec hM s hs).mult w ≠ 0 := by simpa using hw

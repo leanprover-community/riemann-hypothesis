@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ValuationPowSubPowLt
 public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 public import Development.AbelianVarietyTheory.Definitions.Foundations.AbsCharNotUnitary
 import Mathlib.Algebra.Order.Floor.Extended
@@ -67,43 +68,12 @@ theorem exp_neg_one_lt_one : (WithZero.exp (-1 : ℤ) : WithZero (Multiplicative
 theorem locK_eq_of_tame (χ : HChar L) {v : HeightOneSpectrum (𝓞 L)} (h : χ.TameAt v) (x y : Lˣ)
     (hxy : v.valuation L ((y : L) - x) ≤ WithZero.exp (-1 : ℤ) * v.valuation L (x : L)) :
     χ.locK v y = χ.locK v x := by
-  have hx0 : v.valuation L (x : L) ≠ 0 := by simp
-  have hval : ∀ k : L, Valued.v (algebraMap L (v.adicCompletion L) k) = v.valuation L k := fun k =>
-    HeightOneSpectrum.valuedAdicCompletion_eq_valuation' v k
-  have h1 : v.valuation L (((y * x⁻¹ : Lˣ) : L) - 1) ≤ WithZero.exp (-1 : ℤ) := by
-    have : ((y * x⁻¹ : Lˣ) : L) - 1 = ((y : L) - x) * (x : L)⁻¹ := by
-      rw [Units.val_mul, Units.val_inv_eq_inv_val, _root_.sub_mul, mul_inv_cancel₀ x.ne_zero]
-    rw [this, map_mul, map_inv₀, mul_inv_le_iff₀ (zero_lt_iff.2 hx0)]
-    exact hxy
-  have h2 : v.valuation L ((y * x⁻¹ : Lˣ) : L) = 1 := by
-    have := Valuation.map_one_add_of_lt (v.valuation L) (h1.trans_lt exp_neg_one_lt_one)
-    rwa [add_sub_cancel] at this
-  have h3 : χ.locK v (y * x⁻¹) = 1 := by
-    refine h (atFin v (y * x⁻¹)) ?_ ?_
-    · exact (hval _).trans h2
-    · have : ((atFin v (y * x⁻¹) : (v.adicCompletion L)ˣ) : v.adicCompletion L) - 1 =
-          algebraMap L (v.adicCompletion L) (((y * x⁻¹ : Lˣ) : L) - 1) := by
-        rw [map_sub, map_one]; rfl
-      rw [this, hval]
-      simpa using h1
-  rwa [map_mul, map_inv, mul_inv_eq_one] at h3
+  apply GlobalTheory.GalToHecke.locK_eq_of_tame <;> assumption
 
 theorem exists_approx (S : Finset (HeightOneSpectrum (𝓞 L))) (t : HeightOneSpectrum (𝓞 L) → 𝓞 L)
     (ht : ∀ v, t v ≠ 0) : ∃ y : 𝓞 L, ∀ v ∈ S,
       v.valuation L ((y : L) - (t v : L)) ≤ WithZero.exp (-1 : ℤ) * v.valuation L (t v : L) := by
-  have hn : ∀ v : HeightOneSpectrum (𝓞 L), ∃ n : ℕ, v.intValuation (t v) = WithZero.exp (-(n : ℤ)) :=
-    fun v => ⟨_, v.intValuation_if_neg (ht v)⟩
-  choose n hn using hn
-  obtain ⟨y, hy⟩ := IsDedekindDomain.exists_forall_sub_mem_ideal (s := S) (fun v => v.asIdeal) (fun v => n v + 1)
-    (fun v _ => v.prime) (fun v _ w _ h h' => h (HeightOneSpectrum.ext h')) (fun v => t v.1)
-  refine ⟨y, fun v hv => ?_⟩
-  have h1 := (v.intValuation_le_pow_iff_mem _ _).2 (hy v hv)
-  have e1 : v.valuation L ((y : L) - (t v : L)) = v.intValuation (y - t v) := by
-    rw [← HeightOneSpectrum.valuation_of_algebraMap (K := L)]; simp
-  have e2 : v.valuation L (t v : L) = v.intValuation (t v) := HeightOneSpectrum.valuation_of_algebraMap (K := L) v _
-  rw [e1, e2, hn, ← WithZero.exp_add]
-  convert h1 using 2
-  push_cast; ring
+  apply GlobalTheory.GalToHecke.exists_approx <;> assumption
 
 theorem locK_mem (χ : HChar L) (G : Subgroup ℂˣ) (T : Finset (HeightOneSpectrum (𝓞 L)))
     (htame : ∀ v, χ.TameAt v) (hunr : ∀ v, v ∉ T → χ.UnrAt v) (hval : ∀ v, v ∉ T → χ.val v ∈ G)

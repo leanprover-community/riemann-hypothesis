@@ -177,7 +177,6 @@ theorem xtLocal {q : ℕ} (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hu : ((q : 
       have e : y' j * (lastN ∘ₗ zA) (Pi.single j 1) - y' j * ηB (Pi.single j 1) =
           ((q : E) * y' j) * (((lastN ∘ₗ zA) (Pi.single j 1) - ηB (Pi.single j 1)) / (q : E)) := by
         field_simp
-        try ring
       rw [e]
       exact (hy j).mul (diff _ _ (hB j).2 (hl j) (hres j).2)
     have hqη : IntAt P ((q : E) * ηB y') := by

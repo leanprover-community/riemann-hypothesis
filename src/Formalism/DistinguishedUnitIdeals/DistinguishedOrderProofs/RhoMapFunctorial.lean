@@ -1,5 +1,6 @@
 module
 
+import Formalism.DistinguishedUnitIdeals.DistinguishedOrderProofs.SplittingOfPositiveLevel
 public import Formalism.DistinguishedUnitIdeals.StatementE
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -81,8 +82,6 @@ theorem alg_C (f : PowerSeries O →ₐ[O] PowerSeries O) (m : O) : f (C m) = C 
   first
     | rw [show (C m : PowerSeries O) = m • (1 : PowerSeries O) from
         (by rw [PowerSeries.smul_eq_C_mul, mul_one]), map_smul, map_one]
-    | exact f.commutes m
-    | simpa using f.commutes m
 
 theorem it_C (f : PowerSeries O →ₐ[O] PowerSeries O) (k : ℕ) (m : O) : (⇑f)^[k] (C m) = C m :=
   Function.iterate_fixed (alg_C f m) k
@@ -91,10 +90,6 @@ theorem it_pow (f : PowerSeries O →ₐ[O] PowerSeries O) (k : ℕ) (a : PowerS
     (⇑f)^[k] (a ^ M) = ((⇑f)^[k] a) ^ M := by
   first
     | exact iterate_map_pow f k a M
-    | (induction k generalizing a with
-        | zero => rfl
-        | succ k ih =>
-          rw [Function.iterate_succ_apply, Function.iterate_succ_apply, map_pow, ih])
 
 theorem lc_pow (B : Base O) (K : ℕ) : B.lc ^ K = C ((B.ℓ : O) ^ K) := by
   simp only [Base.lc, map_pow]
@@ -170,27 +165,7 @@ theorem γ_N (h1 : ∀ i, ∀ v ∈ L.N i, L.γ i v - v ∈ sm X (L.N i)) {i : Z
 
 theorem γ_pull (h1 : ∀ i, ∀ v ∈ L.N i, L.γ i v - v ∈ sm X (L.N i)) {i : ZMod n} {k : ℕ} {v : V}
     (hv : v ∈ L.pull i k) : L.γ (i + (k : ZMod n)) v ∈ L.pull i k := by
-  let P : Submodule (PowerSeries O) V :=
-    { carrier := {x | L.γ (i + (k : ZMod n)) x ∈ L.pull i k}
-      add_mem' := fun {x y} hx hy => by
-        show L.γ (i + (k : ZMod n)) (x + y) ∈ L.pull i k
-        rw [map_add (f := _)]
-        exact add_mem hx hy
-      zero_mem' := by
-        show L.γ (i + (k : ZMod n)) 0 ∈ L.pull i k
-        rw [map_zero]
-        exact zero_mem _
-      smul_mem' := fun a {x} hx => by
-        show L.γ (i + (k : ZMod n)) (a • x) ∈ L.pull i k
-        rw [L.γ_semi]
-        exact Submodule.smul_mem _ _ hx }
-  have hle : L.pull i k ≤ P := by
-    refine Submodule.span_le.2 ?_
-    rintro _ ⟨u, hu, rfl⟩
-    show L.γ (i + (k : ZMod n)) (L.phiIt i k u) ∈ L.pull i k
-    rw [γ_phiIt]
-    exact phiIt_mem_pull L k (γ_N L h1 hu)
-  exact hle hv
+  apply Formalism.ExponentWindows.E.S1.gam_pull <;> assumption
 
 theorem γ_sm {a : PowerSeries O} (ha : B.γ a ∈ Ideal.span {a}) {i : ZMod n}
     {S : Submodule (PowerSeries O) V} (hS : ∀ v ∈ S, L.γ i v ∈ S) {v : V} (hv : v ∈ sm a S) :
@@ -256,7 +231,7 @@ theorem isTr_sub {c : ZMod n} {j M g sig : ℕ} {z₁ z₂ τ₁ τ₂ : V}
         = B.lc ^ K₂ • (L.γ c v₁ - v₁ - B.lc ^ K₁ • z₁)
           - B.lc ^ K₁ • (L.γ c v₂ - v₂ - B.lc ^ K₂ • z₂) := by
       rw [map_sub, γ_lc, γ_lc, pow_add]
-      simp only [smul_sub, smul_add, smul_smul, mul_comm, mul_left_comm, mul_assoc]
+      simp only [smul_sub, smul_smul, mul_comm]
       <;> abel
     rw [e]
     exact Submodule.sub_mem _ (Submodule.smul_mem _ _ hg₁) (Submodule.smul_mem _ _ hg₂)
@@ -265,7 +240,7 @@ theorem isTr_sub {c : ZMod n} {j M g sig : ℕ} {z₁ z₂ τ₁ τ₂ : V}
         = B.lc ^ K₂ • (B.lc ^ K₁ • τ₁ - B.lc ^ sig • L.phiIt c j v₁)
           - B.lc ^ K₁ • (B.lc ^ K₂ • τ₂ - B.lc ^ sig • L.phiIt c j v₂) := by
       rw [phiIt_sub, phiIt_lc, phiIt_lc, pow_add]
-      simp only [smul_sub, smul_add, smul_smul, mul_comm, mul_left_comm, mul_assoc]
+      simp only [smul_sub, smul_smul, mul_comm]
       <;> abel
     rw [e]
     exact Submodule.sub_mem _ (Submodule.smul_mem _ _ ht₁) (Submodule.smul_mem _ _ ht₂)
@@ -277,15 +252,15 @@ theorem isTr_C {c : ZMod n} {j M g sig : ℕ} {z τ : V} (m : O)
   · have e : (L.γ c (C m • v) - C m • v) - B.lc ^ K • (C m • z) =
         C m • ((L.γ c v - v) - B.lc ^ K • z) := by
       rw [γ_C]
-      simp only [smul_sub, smul_add, smul_smul, mul_comm, mul_left_comm, mul_assoc]
-      <;> abel
+      simp only [smul_sub, smul_smul, mul_comm]
+
     rw [e]
     exact Submodule.smul_mem _ _ hz
   · have e : B.lc ^ K • (C m • τ) - B.lc ^ sig • L.phiIt c j (C m • v) =
         C m • (B.lc ^ K • τ - B.lc ^ sig • L.phiIt c j v) := by
       rw [phiIt_C]
-      simp only [smul_sub, smul_add, smul_smul, mul_comm, mul_left_comm, mul_assoc]
-      <;> abel
+      simp only [smul_sub, smul_smul, mul_comm]
+
     rw [e]
     exact Submodule.smul_mem _ _ hf
 
@@ -311,7 +286,7 @@ theorem isTr_zero {c : ZMod n} {j M g sig : ℕ} {τ : V}
       B.lc ^ K' • (B.lc ^ K • τ - B.lc ^ sig • L.phiIt c j v) +
         B.lc ^ sig • (B.lc ^ K' • L.phiIt c j v) := by
     rw [pow_add]
-    simp only [smul_sub, smul_add, smul_smul, mul_comm, mul_left_comm, mul_assoc]
+    simp only [smul_sub, smul_smul, mul_comm]
       <;> abel
   rw [e]
   exact add_mem (Submodule.smul_mem _ _ hf) (Submodule.smul_mem _ _ h1)
@@ -329,7 +304,7 @@ theorem γR_mem {c : ZMod n} {j M g sig : ℕ} {w τ : V} (hB : B.Good j M g)
       (B.lc ^ sig • L.phiIt c j w - τ) =
       B.lc ^ sig • L.phiIt c j (L.γ c w - w) - (L.γ (c + (j : ZMod n)) τ - τ) := by
     simp only [map_sub, γ_lc, γ_phiIt, phiIt_sub]
-    simp only [smul_sub, smul_add, smul_smul, mul_comm, mul_left_comm, mul_assoc]
+    simp only [smul_sub]
       <;> abel
   rw [e1]
   have hP : B.lc ^ sig • L.phiIt c j (L.γ c w - w) - (L.γ (c + (j : ZMod n)) τ - τ) ∈
@@ -347,7 +322,7 @@ theorem γR_mem {c : ZMod n} {j M g sig : ℕ} {w τ : V} (hB : B.Good j M g)
         (L.γ (c + (j : ZMod n)) (B.lc ^ K • τ - B.lc ^ sig • L.phiIt c j v) -
           (B.lc ^ K • τ - B.lc ^ sig • L.phiIt c j v)) := by
     simp only [phiIt_sub, phiIt_lc, map_sub, γ_lc, γ_phiIt]
-    simp only [smul_sub, smul_add, smul_smul, mul_comm, mul_left_comm, mul_assoc]
+    simp only [smul_sub, smul_smul, mul_comm]
       <;> abel
   rw [e2]
   exact sub_mem (neg_mem (Submodule.smul_mem _ _ hZ)) (sub_mem hA hf)
@@ -468,7 +443,7 @@ theorem rho_map_linear : RhoLin := by
   have e0 : L.γ c (w' - C m • w) - (w' - C m • w) -
       ((L.γ c w' - w') - C m • (L.γ c w - w)) = 0 := by
     simp only [map_sub, γ_C]
-    simp only [smul_sub, smul_add, smul_smul, mul_comm, mul_left_comm, mul_assoc]
+    simp only [smul_sub]
       <;> abel
   rw [e0] at hT
   have hmem := isTr_zero hB.2.2 (h6 c hc) (h7 c hc) hT
@@ -477,7 +452,7 @@ theorem rho_map_linear : RhoLin := by
     have e : (B.lc ^ sig • L.phiIt c j w' - τ') - C m • (B.lc ^ sig • L.phiIt c j w - τ) =
         B.lc ^ sig • L.phiIt c j (w' - C m • w) - (τ' - C m • τ) := by
       simp only [phiIt_sub, phiIt_C]
-      simp only [smul_sub, smul_add, smul_smul, mul_comm, mul_left_comm, mul_assoc]
+      simp only [smul_sub, smul_smul, mul_comm]
       <;> abel
     rw [e]
     exact h4 c hc hmem

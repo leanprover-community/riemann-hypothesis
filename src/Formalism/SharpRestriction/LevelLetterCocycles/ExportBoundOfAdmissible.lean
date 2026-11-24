@@ -253,10 +253,10 @@ theorem Den_le_U : Den L ≤ 10 * Ub L C ^ 7 := by
   have hB0 : 0 ≤ L.Sc + D.R.t + large₂ L := by linarith
   have hA : (D.R.n : ℝ) * (D.R.t : ℝ) ^ 2 * ((D.R.N D.R.m : ℝ) + D.R.t) * large₂ L ^ 2 ≤
       Ub L C * Ub L C ^ 2 * (4 * Ub L C ^ 2) * Ub L C ^ 2 := by
-    gcongr <;> first | assumption | positivity | linarith
+    gcongr
   have hB : (D.R.k : ℝ) * (D.R.n : ℝ) ^ 2 * (L.Sc + D.R.t + large₂ L) ≤
       Ub L C * Ub L C ^ 2 * (4 * Ub L C + Ub L C + Ub L C) := by
-    gcongr <;> first | assumption | positivity | linarith
+    gcongr
   have h47 : Ub L C ^ 4 ≤ Ub L C ^ 7 := pow_le_pow_right₀ hU1 (by norm_num)
   unfold Den
   nlinarith
@@ -352,7 +352,7 @@ theorem lA_lt_lStar : lA L < lStar L := by
     rw [div_le_iff₀ (by positivity)]
     have h1 : (D.R.k : ℝ) * L.sc.x ^ L.sc.eps * L.sc.x ^ L.sc.eps ≤ Ub L C ^ 3 := by
       calc (D.R.k : ℝ) * L.sc.x ^ L.sc.eps * L.sc.x ^ L.sc.eps ≤ Ub L C * Ub L C * Ub L C := by
-            gcongr <;> first | assumption | positivity | linarith
+            gcongr
         _ = Ub L C ^ 3 := by ring
     nlinarith [mul_le_mul_of_nonneg_right h1 hde0.le,
       mul_le_mul_of_nonneg_left hde1 (mul_nonneg hk0 hxe0.le),
@@ -528,65 +528,9 @@ end Formalism.MainNotions.TwistedPlaces
 
 end
 
-noncomputable section
-
 namespace Formalism.MainNotions.TwistedPlaces
 
-open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain
-
-variable {D : D7} (L : SizeData₂ D)
-
-section Sums
-
-variable {C : ℝ} (hC : 0 < C) (P : ParameterChoice' D L) (hPar : ParametersPolynomiallyBounded L C P) (hL : Large L.sc.x L.sc.eps C)
-include hC P hPar hL
-
-theorem big_le_b : 4 * 10 ^ 6 * (C + 1) ^ 2 * Ub L C ^ 18 ≤ L.sc.b := by
-  have hx1 : (1:ℝ) ≤ L.sc.x := le_trans (by norm_num) hL.x100
-  have hx0 : (0:ℝ) < L.sc.x := by linarith
-  have hA : (C + 1) ^ 2 ≤ (C + 1) ^ 3 := by nlinarith [mul_nonneg (sq_nonneg (C + 1)) hC.le]
-  have hx2 : 4 * 10 ^ 6 * (C + 1) ^ 2 ≤ L.sc.x ^ 2 := by
-    nlinarith [mul_le_mul_of_nonneg_left hL.x100 hx0.le, hL.xK, hA, sq_nonneg (C + 1)]
-  have hxp : L.sc.x ^ 2 ≤ L.sc.x ^ (2 * C + 4) := by
-    rw [← Real.rpow_two L.sc.x]
-    exact Real.rpow_le_rpow_of_exponent_le hx1 (by linarith)
-  have hUb : Ub L C ^ 18 = L.sc.x ^ ((C + 2) * 18) * Real.exp (18 * L.sc.x ^ (L.sc.eps / 4)) := by
-    unfold Ub
-    rw [mul_pow, ← Real.rpow_mul_natCast hx0.le, ← Real.exp_nat_mul]
-    norm_num
-  have hkey := hL.ex
-  have hsplit1 : L.sc.x ^ (20 * C + 40) = L.sc.x ^ ((C + 2) * 18) * L.sc.x ^ (2 * C + 4) := by
-    rw [← Real.rpow_add hx0]; congr 1; ring
-  have hsplit2 : Real.exp (20 * L.sc.x ^ (L.sc.eps / 4)) =
-      Real.exp (18 * L.sc.x ^ (L.sc.eps / 4)) * Real.exp (2 * L.sc.x ^ (L.sc.eps / 4)) := by
-    rw [← Real.exp_add]; congr 1; ring
-  rw [hsplit1, hsplit2] at hkey
-  have h1 : (1:ℝ) ≤ L.sc.x ^ (C + 2) := Real.one_le_rpow hx1 (by linarith)
-  have hE2 : (1:ℝ) ≤ Real.exp (2 * L.sc.x ^ (L.sc.eps / 4)) :=
-    Real.one_le_exp (mul_nonneg (by norm_num) (Real.rpow_nonneg hx0.le _))
-  have hP : 0 ≤ L.sc.x ^ ((C + 2) * 18) := Real.rpow_nonneg hx0.le _
-  have hQ : 0 ≤ Real.exp (18 * L.sc.x ^ (L.sc.eps / 4)) := (Real.exp_pos _).le
-  have hR : 4 * 10 ^ 6 * (C + 1) ^ 2 ≤ L.sc.x ^ (2 * C + 4) := le_trans hx2 hxp
-  have hX0 : 0 ≤ Real.exp (L.sc.x ^ (L.sc.eps / 3)) := (Real.exp_pos _).le
-  show 4 * 10 ^ 6 * (C + 1) ^ 2 * Ub L C ^ 18 ≤ Real.exp (L.sc.x ^ L.sc.eps)
-  rw [hUb]
-  calc 4 * 10 ^ 6 * (C + 1) ^ 2 * (L.sc.x ^ ((C + 2) * 18) * Real.exp (18 * L.sc.x ^ (L.sc.eps / 4)))
-      ≤ L.sc.x ^ (2 * C + 4) * (L.sc.x ^ ((C + 2) * 18) * Real.exp (18 * L.sc.x ^ (L.sc.eps / 4))) :=
-        mul_le_mul_of_nonneg_right hR (mul_nonneg hP hQ)
-    _ ≤ L.sc.x ^ (2 * C + 4) * (L.sc.x ^ ((C + 2) * 18) * Real.exp (18 * L.sc.x ^ (L.sc.eps / 4))) *
-          Real.exp (2 * L.sc.x ^ (L.sc.eps / 4)) :=
-        le_mul_of_one_le_right (mul_nonneg (Real.rpow_nonneg hx0.le _) (mul_nonneg hP hQ)) hE2
-    _ = L.sc.x ^ ((C + 2) * 18) * L.sc.x ^ (2 * C + 4) *
-          (Real.exp (18 * L.sc.x ^ (L.sc.eps / 4)) * Real.exp (2 * L.sc.x ^ (L.sc.eps / 4))) := by ring
-    _ ≤ Real.exp (L.sc.x ^ (L.sc.eps / 3)) := hkey
-    _ ≤ L.sc.x ^ (C + 2) * Real.exp (L.sc.x ^ (L.sc.eps / 3)) := le_mul_of_one_le_left hX0 h1
-    _ ≤ Real.exp (L.sc.x ^ L.sc.eps) := hL.Xb
-
-end Sums
-
 end Formalism.MainNotions.TwistedPlaces
-
-end
 
 noncomputable section
 
@@ -768,7 +712,7 @@ include hC P hPar hL
 
 theorem U_pow_eighteen_le_b : Ub L C ^ 18 ≤ L.sc.b := by
   have hU : 1 ≤ Ub L C := one_le_U L hC P hPar hL
-  have hb := big_le_b L hC P hPar hL
+  have hb := _root_.Formalism.MainNotions.TwistedPlaces.sc_b_ge_const_mul_Ub_pow_eighteen L hC P hPar hL
   have hU18 : 0 ≤ Ub L C ^ 18 := by positivity
   have hK : (1:ℝ) ≤ 4 * 10 ^ 6 * (C + 1) ^ 2 := by nlinarith [hC]
   exact le_trans (le_mul_of_one_le_left hU18 hK) hb
@@ -1004,7 +948,7 @@ theorem point_bound (tb : Tab L) (hA : AdmT L tb C P) (S : Finset ℕ) (hS : ∀
     exact ⟨hS l hlS, h.1, h.2.1, h.2.2⟩)
   have s5 := sum_exc L hC P hPar hL tb hRe hExc (S.filter (fun l => l ∈ tb.exc ∧ lStar L < l)) (fun l hl => (Finset.mem_filter.1 hl).2)
   have gl := glob_le L hC P hPar hL
-  have hbig := big_le_b L hC P hPar hL
+  have hbig := _root_.Formalism.MainNotions.TwistedPlaces.sc_b_ge_const_mul_Ub_pow_eighteen L hC P hPar hL
   have hm := m_ge_one D
   have hf1 : (1 : ℝ) ≤ D.R.f := (m_ge_one D).trans (m_le_f D)
   have hL1 := L_ge_one L

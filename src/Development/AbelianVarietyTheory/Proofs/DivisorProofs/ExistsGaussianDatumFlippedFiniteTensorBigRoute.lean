@@ -176,11 +176,7 @@ theorem thetaPt_smul {i j : ℕ} (Γ : GlobalTheory.IndefiniteRowSideFullHecke.U
     (Φ : (Ix G i j → AF D.host.F) → ℂ) (u : Pt G i j) : thetaPt Γ ψ (c • Φ) u = c * thetaPt Γ ψ Φ u :=
   (tsum_congr fun _ => mul_left_comm _ _ _).trans tsum_mul_left
 
-theorem splitIdem_conj {a : AE D} (h : IsSplitIdem D a) : IsSplitIdem D (cA D a) := by
-  obtain ⟨h1, h2, v, ε, h3, h4⟩ := h
-  refine ⟨by rw [← RingHom.map_mul, h1], ?_, v, ε, h3, ?_⟩
-  · rw [GlobalTheory.DualPairCheck.cA_cA, mul_comm, h2]
-  · rw [GlobalTheory.DualPairCheck.cA_cA, add_comm, h4]
+alias splitIdem_conj := _root_.GlobalTheory.SplitScalar.isSplitIdem_conj
 
 theorem vac_ne_zero {S T : HSp D} {ψ θ sS sT LS LT} {f : WO S T → ℂ} (h : IsVacO ψ θ S T sS sT LS LT f) : f ≠ 0 := by
   rintro rfl

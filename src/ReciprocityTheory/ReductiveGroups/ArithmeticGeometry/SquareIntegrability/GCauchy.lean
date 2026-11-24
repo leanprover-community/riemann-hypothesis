@@ -63,7 +63,7 @@ theorem gCauchy : GCauchyStatement := by
     intro z
     rw [EuclideanSpace.norm_sq_eq]
     simp only [T, ContinuousLinearMap.coe_comp', ContinuousLinearEquiv.coe_coe,
-      LinearMap.coe_toContinuousLinearMap', Function.comp_apply, LinearMap.funLeft_apply]
+      LinearMap.coe_toContinuousLinearMap', Function.comp_apply]
     simp only [EuclideanSpace.equiv, PiLp.continuousLinearEquiv_symm_apply]
     exact Fintype.sum_equiv e _ _ (fun i => by simp)
   have hTs : ∀ i : ι, T (Pi.single (e i) 1) = EuclideanSpace.single i 1 := by
@@ -74,7 +74,7 @@ theorem gCauchy : GCauchyStatement := by
       EuclideanSpace.equiv, PiLp.continuousLinearEquiv_symm_apply, PiLp.single_apply]
     by_cases h : j = i
     · subst h; simp
-    · simp [h, Pi.single_apply, e.injective.ne h]
+    · simp [h, e.injective.ne h]
   set G : (Fin N → ℂ) → ℂ := F ∘ T
   have hG : Differentiable ℂ G := hF.comp T.differentiable
   have hGS : ∀ z, ‖G z‖ ^ 2 * Real.exp (-Real.pi * ∑ i, ‖z i‖ ^ 2) ≤ S := by
@@ -98,7 +98,6 @@ theorem gCauchy : GCauchyStatement := by
     simp only [k, Finsupp.card_toMultiset]
     first
       | rfl
-      | simp [Finsupp.sum, Finsupp.degree]
   have hdeg : (k : ℝ) = (α.degree : ℝ) := by rw [hk]
   unfold polyDeriv
   rw [MvPolynomial.support_monomial, if_neg one_ne_zero, Finset.sum_singleton,

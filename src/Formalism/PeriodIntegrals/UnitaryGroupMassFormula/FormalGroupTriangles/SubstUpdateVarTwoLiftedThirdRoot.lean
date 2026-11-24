@@ -104,16 +104,12 @@ theorem subst_updateVar_two_liftedThirdRoot (W : WeierstrassCurve ℂ_[p]) (wq :
   have hu : MvPowerSeries.HasSubst (upd 2 t) := by
     first
     | exact MvPowerSeries.hasSubst_of_constantCoeff_zero hz3
-    | exact MvPowerSeries.HasSubst.of_constantCoeff_nilpotent (fun i => by rw [hz3 i]; exact IsNilpotent.zero)
-    | exact MvPowerSeries.HasSubst.of_constantCoeff_zero hz3
   have hz2 : ∀ i, MvPowerSeries.constantCoeff
       (![MvPowerSeries.X 0, MvPowerSeries.X 1] i : MvPowerSeries (Fin 3) ℂ_[p]) = 0 := fun i => by
     fin_cases i <;> simp
   have h2 : MvPowerSeries.HasSubst ![(MvPowerSeries.X 0 : MvPowerSeries (Fin 3) ℂ_[p]), MvPowerSeries.X 1] := by
     first
     | exact MvPowerSeries.hasSubst_of_constantCoeff_zero hz2
-    | exact MvPowerSeries.HasSubst.of_constantCoeff_nilpotent (fun i => by rw [hz2 i]; exact IsNilpotent.zero)
-    | exact MvPowerSeries.HasSubst.of_constantCoeff_zero hz2
   unfold s3 pr
   rw [MvPowerSeries.subst_comp_subst_apply h2 hu]
   congr 1
@@ -141,8 +137,6 @@ theorem hasSubst_zc : MvPowerSeries.HasSubst (zc (p := p)) := by
   | exact MvPowerSeries.HasSubst.of_constantCoeff_zero (fun i => zc_const i)
   | exact MvPowerSeries.HasSubst.of_constantCoeff_zero (fun i => zc_const (p := p) i)
   | exact MvPowerSeries.hasSubst_of_constantCoeff_zero (fun i => zc_const i)
-  | exact MvPowerSeries.HasSubst.of_constantCoeff_nilpotent (fun i => by rw [zc_const i]; exact IsNilpotent.zero)
-  | exact MvPowerSeries.HasSubst.of_constantCoeff_zero (a := zc (p := p)) (by intro i; exact zc_const i)
 
 theorem pr_zero_zero (g : MvPowerSeries (Fin 2) ℂ_[p]) (hg : MvPowerSeries.constantCoeff g = 0) :
     pr (0 : MvPowerSeries (Fin 3) ℂ_[p]) 0 g = 0 := by
@@ -153,8 +147,6 @@ theorem pr_zero_zero (g : MvPowerSeries (Fin 2) ℂ_[p]) (hg : MvPowerSeries.con
   have ha : MvPowerSeries.HasSubst ![(0 : MvPowerSeries (Fin 3) ℂ_[p]), 0] := by
     first
     | exact MvPowerSeries.hasSubst_of_constantCoeff_zero hz
-    | exact MvPowerSeries.HasSubst.of_constantCoeff_nilpotent (fun i => by rw [hz i]; exact IsNilpotent.zero)
-    | exact MvPowerSeries.HasSubst.of_constantCoeff_zero hz
   rw [MvPowerSeries.coeff_subst ha, finsum_eq_single _ 0]
   · simp [MvPowerSeries.coeff_zero_eq_constantCoeff_apply, hg]
   · intro d hd

@@ -133,7 +133,7 @@ theorem placeCoords_single (p : Σ _ : Fin j, Free.ChooseBasisIndex ℤ (𝓞 I.
   rw [placeCoords_apply, placeCoordsBasis_apply]
   by_cases h : q.1 = p.1
   · simp [h]
-  · simp [h, Pi.single_apply]
+  · simp [h]
 
 def t8O : Submodule ℤ (Fin j → I.E) :=
   Submodule.span ℤ (Set.range fun p : Σ _ : Fin j, Free.ChooseBasisIndex ℤ (𝓞 I.E) =>
@@ -151,7 +151,7 @@ theorem mem_integral_vectors (a : Fin j → I.E) (ha : ∀ k, ∃ c : 𝓞 I.E, 
       by_cases h : k' = k
       · subst h
         simp [Finset.sum_apply]
-      · simp [Finset.sum_apply, Pi.single_apply, h]
+      · simp [Finset.sum_apply, h]
     rw [hx, hs]
     exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨⟨k, i⟩, rfl⟩)
   rw [← Finset.univ_sum_single a]

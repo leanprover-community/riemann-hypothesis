@@ -98,8 +98,8 @@ theorem hermPart_mem_lieAlgebra (ε : Fin n → Bool) (M : Matrix (Fin n) (Fin n
   unfold inG
   rw [Matrix.conjTranspose_smul, hc, Matrix.conjTranspose_sub, Matrix.conjTranspose_mul,
     Matrix.conjTranspose_mul, signMatrix_conjTranspose, Matrix.conjTranspose_conjTranspose]
-  simp only [Matrix.smul_mul, Matrix.mul_smul, sub_mul, mul_sub, add_mul, mul_add, Matrix.mul_assoc,
-    hJ, hJ', Matrix.mul_one, smul_sub, smul_add, neg_smul]
+  simp only [Matrix.smul_mul, Matrix.mul_smul, sub_mul, mul_sub, Matrix.mul_assoc,
+    hJ, hJ', Matrix.mul_one, smul_sub]
   abel
 
 theorem hermPart_mem_lieAlgebra_var (ε : Fin n → Bool) (M : Matrix (Fin n) (Fin n) ℂ) :

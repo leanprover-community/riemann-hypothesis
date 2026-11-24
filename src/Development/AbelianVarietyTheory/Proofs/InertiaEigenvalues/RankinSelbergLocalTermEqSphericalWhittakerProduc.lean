@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SumPairsEq
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.RsTermZero
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.AdelicUnitriangularMulMemUnipotentTimesIntegral
 import Mathlib.Algebra.Order.Floor.Extended
@@ -51,21 +52,7 @@ namespace GlobalTheory.ZEulLocal
 
 theorem wtS_eq_sum (n : ℕ) (a : Fin n → ℤ) :
     GlobalTheory.CellDec.wtS n a = ∑ i : Fin n, ((n : ℤ) - 1 - 2 * (i : ℕ)) * a i := by
-  have h1 : ∀ i : Fin n, (∑ j : Fin n, if i < j then a i - a j else 0) =
-      (∑ j : Fin n, if i < j then a i else 0) - ∑ j : Fin n, if i < j then a j else 0 := by
-    intro i
-    rw [← Finset.sum_sub_distrib]
-    refine Finset.sum_congr rfl fun j _ => ?_
-    split_ifs <;> simp
-  rw [GlobalTheory.CellDec.wtS, Finset.sum_congr rfl fun i _ => h1 i, Finset.sum_sub_distrib,
-    Finset.sum_comm (f := fun i j => if i < j then a j else 0)]
-  simp only [← Finset.sum_filter, Finset.filter_lt_eq_Ioi, Finset.filter_gt_eq_Iio, Finset.sum_const,
-    Fin.card_Ioi, Fin.card_Iio, nsmul_eq_mul, ← Finset.sum_sub_distrib]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  have hi := i.isLt
-  rw [Nat.cast_sub (by omega), Nat.cast_sub (by omega)]
-  push_cast
-  ring
+  apply GlobalTheory.WeightSumSplit.wtS_eq <;> assumption
 
 
 open GlobalTheory.JSW in

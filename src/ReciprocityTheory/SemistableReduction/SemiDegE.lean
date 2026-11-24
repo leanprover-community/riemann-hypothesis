@@ -68,8 +68,6 @@ theorem exists_kBasisIn {K : Type} [Field K] [NumberField K] {r : ℕ}
   have hfin : s.Finite := by
     first
     | exact hli.setFinite
-    | exact Set.toFinite s
-    | exact (Set.finite_coe_iff.mp hli.finite)
   haveI : Fintype s := hfin.fintype
   let e := Fintype.equivFin s
   refine ⟨Fintype.card s, fun i => ((e.symm i : s) : Fin r → K), fun i => hsB (e.symm i).2,
@@ -155,7 +153,6 @@ theorem spanIdx_ne_zero {K : Type} [Field K] [NumberField K] {r k : ℕ}
     have hdeg : (minpoly ℤ (β : 𝓞 K)).degree ≤ q.degree := by
       first
       | exact minpoly.min ℤ (β : 𝓞 K) hmon hq0
-      | exact minpoly.min (A := ℤ) (x := (β : 𝓞 K)) hmon hq0
     rw [hq, Polynomial.degree_mul, Polynomial.degree_X,
       Polynomial.degree_eq_natDegree hmon.ne_zero] at hdeg
     have h2 : 1 + q.natDegree ≤ q.natDegree := by exact_mod_cast hdeg
@@ -180,8 +177,6 @@ theorem spanIdx_ne_zero {K : Type} [Field K] [NumberField K] {r k : ℕ}
   haveI hfgQ : AddGroup.FG (B ⧸ N.toAddSubgroup) := by
     first
     | exact AddGroup.fg_of_surjective (QuotientAddGroup.mk'_surjective N.toAddSubgroup)
-    | exact QuotientAddGroup.fg N.toAddSubgroup
-    | infer_instance
   have htors : IsAddTorsion (B ⧸ N.toAddSubgroup) := by
     intro y
     induction y using QuotientAddGroup.induction_on with
@@ -199,7 +194,6 @@ theorem spanIdx_ne_zero {K : Type} [Field K] [NumberField K] {r k : ℕ}
   have hfinQ : Finite (B ⧸ N.toAddSubgroup) := by
     first
     | exact AddCommGroup.finite_of_fg_torsion _ htors
-    | exact AddCommGroup.finite_of_fg_torsion htors
   have : N.toAddSubgroup.index ≠ 0 := AddSubgroup.index_ne_zero_of_finite
   exact this
 
@@ -244,8 +238,6 @@ theorem sum_log_norm_emb {K : Type} [Field K] [NumberField K] (a : K) :
       ← h1]
     first
     | rw [← Complex.ofReal_ratCast, Complex.norm_real, Real.norm_eq_abs]
-    | simp [Complex.norm_ratCast]
-    | simp
 
 def embMat {K : Type} [Field K] [NumberField K] {r k : ℕ} (σ : K →+* ℂ)
     (b : Fin k → Fin r → K) : Matrix (Fin r) (Fin k) ℂ :=

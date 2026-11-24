@@ -175,7 +175,7 @@ theorem isMultiHomog_blockDeg_mul [DecidableEq K] {k₀ : K} {f g : MRing ι} {n
   have := isMultiHomog_mul hf hg
   convert this using 1
   ext k
-  simp only [blockDeg, Pi.add_apply, Finset.sum_apply]
+  simp only [blockDeg, Pi.add_apply]
   split_ifs <;> simp
 
 theorem isMultiHomog_blockDeg_prod [DecidableEq K] {k₀ : K} {α : Type*} (s : Finset α) {f : α → MRing ι}
@@ -184,7 +184,7 @@ theorem isMultiHomog_blockDeg_prod [DecidableEq K] {k₀ : K} {α : Type*} (s : 
   have := isMultiHomog_prod s hf
   convert this using 1
   ext k
-  simp only [blockDeg, Pi.add_apply, Finset.sum_apply]
+  simp only [blockDeg, Finset.sum_apply]
   split_ifs <;> simp
 
 theorem aeval_smul {S : Type*} [CommRing S] [Algebra ℤ S] {f : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a) (c : K → S)

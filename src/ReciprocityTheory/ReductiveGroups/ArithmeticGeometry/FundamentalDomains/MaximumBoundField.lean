@@ -99,15 +99,7 @@ theorem flowMat_nsmul (X : Data E r) (v : Fin r → E) (n : ℕ) (τ : X.Ψ) (s 
   simp only [mul_left_comm _ (n : ℂ), ← Finset.mul_sum]
   ring
 
-theorem nfac_pos (X : Data E r) (la : Wt X.Ψ r) {x : Frame X.Ψ r} (hx : x ∈ X.dom) :
-    0 < X.nfac la x := by
-  unfold Data.nfac
-  refine Finset.prod_pos fun τ _ => Finset.prod_pos fun i _ => Real.rpow_pos_of_pos ?_ _
-  have hne : ∀ j : Fin (r + 1), dmin X.Gm x τ j ≠ 0 := fun j h => by
-    have := (hx τ).2 j
-    rw [h, Complex.zero_re, mul_zero] at this
-    exact lt_irrefl 0 this
-  exact norm_pos_iff.mpr (div_ne_zero (hne _) (hne _))
+alias nfac_pos := _root_.ReciprocityTheory.ChartRestriction.G.FD.MinimumGrowthBounds.nfac_pos
 
 theorem term_norm {ι : Type*} [Fintype ι] (c : ℂ) (ν : ι → ℝ) (ζ : ℂ) (n : ℕ) :
     ‖c * cexp (4 * π * I * ∑ τ, (ν τ : ℂ) * (ζ / (n : ℂ) ^ 2))‖ =
@@ -210,7 +202,7 @@ theorem tendsto_zero (X : DataX E r) (la : Wt X.Ψ r) (P : Frame X.Ψ r → ℂ)
 
 theorem spread_nonneg' (X : Data E r) (la : Wt X.Ψ r) (τ : X.Ψ) : 0 ≤ X.spread la τ := by
   rcases isEmpty_or_nonempty (Fin r) with h | ⟨⟨i⟩⟩
-  · simp [Data.spread, Real.iSup_of_isEmpty, Real.iInf_of_isEmpty]
+  · simp [Data.spread]
   · unfold Data.spread
     have h1 := ciInf_le (Set.finite_range fun i => (la τ i : ℝ)).bddBelow i
     have h2 := le_ciSup (Set.finite_range fun i => (la τ i : ℝ)).bddAbove i

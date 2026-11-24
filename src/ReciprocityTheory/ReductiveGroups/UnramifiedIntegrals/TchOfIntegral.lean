@@ -92,7 +92,7 @@ theorem kur_resClosed : ResClosed (MaximalUnramifiedExtension l) l := by
       rw [← hX]
       exact degree_add_eq_left_of_degree_lt (hX ▸ hQ'deg)
     rw [hQ'm.degree_map, hQ'd]
-    first | exact_mod_cast hPd.ne' | simpa using hPd.ne'
+    first | exact_mod_cast hPd.ne'
   obtain ⟨δ, hδ⟩ := IsAlgClosed.exists_root Qc hQcdeg
   have hδint : IsIntegral (Rmu l) δ := ⟨Q', hQ'm, by rw [← eval_map]; exact hδ⟩
   have hQeval : ∀ y : ℂ_[l],

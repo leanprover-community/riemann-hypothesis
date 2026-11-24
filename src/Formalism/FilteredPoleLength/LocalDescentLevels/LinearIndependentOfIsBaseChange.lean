@@ -1,5 +1,6 @@
 module
 
+import Formalism.FilteredPoleLength.LocalDescentLevels.LatticeIndexBis
 public import Formalism.FilteredPoleLength.ReducedBasisBounds.BetaSesquilinearity
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Order.Floor.Extended
@@ -60,22 +61,7 @@ theorem linearIndependent_of_isBaseChange_alt {K K' V V₁ ι : Type} [Field K] 
     [AddCommGroup V] [Module K V] [AddCommGroup V₁] [Module K' V₁] [Module K V₁]
     [IsScalarTower K K' V₁] (j : V →ₗ[K] V₁) (hj : IsBaseChange K' j) (v : ι → V)
     (hv : LinearIndependent K v) : LinearIndependent K' (fun i => j (v i)) := by
-  classical
-  have hs : LinearIndepOn K id (Set.range v) := by
-    first
-    | exact hv.linearIndepOn_id_range
-    | exact (linearIndepOn_id_range_iff hv.injective).mpr hv
-  let B := Basis.extend hs
-  have hsub : Set.range v ⊆ hs.extend (Set.subset_univ _) := hs.subset_extend (Set.subset_univ _)
-  let g : ι → hs.extend (Set.subset_univ _) := fun i => ⟨v i, hsub (Set.mem_range_self i)⟩
-  have hg : Function.Injective g := fun a c h => hv.injective (congrArg Subtype.val h)
-  have hB' : (fun i => j (v i)) = (hj.basis B) ∘ g := by
-    funext i
-    first
-    | simp [B, g, IsBaseChange.basis_apply, Basis.coe_extend]
-    | simp [B, g, Basis.coe_extend]
-  rw [hB']
-  exact (hj.basis B).linearIndependent.comp g hg
+  apply Formalism.LatticeBaseChangeAlt.LatticeIndexBis.indep_baseChange <;> assumption
 
 theorem span_image_span_alt {K K' V V₁ : Type} [Field K] [Field K'] [Algebra K K']
     [AddCommGroup V] [Module K V] [AddCommGroup V₁] [Module K' V₁] [Module K V₁]
@@ -90,7 +76,6 @@ theorem span_image_span_alt {K K' V V₁ : Type} [Field K] [Field K'] [Algebra K
     exact Submodule.span_le_restrictScalars K K' _ h1
   · first
     | exact Submodule.span_mono (Set.image_mono Submodule.subset_span)
-    | exact Submodule.span_mono (Set.image_subset _ Submodule.subset_span)
 
 theorem finrank_span_image_alt : FinrankSpanImage := by
   intro O O' K K' V V₁ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ j hj V'

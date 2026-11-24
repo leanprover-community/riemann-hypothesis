@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Trusted, bounded changed-module diagnostics; never claims a complete PR build."""
 import argparse, importlib.util, json, os
+from functools import lru_cache
 from pathlib import Path
 import re, subprocess, sys, tempfile
 from types import SimpleNamespace
@@ -27,36 +28,43 @@ def runner(identifier):
 
 def imports(path):
     if path.stat().st_size > 4 * 1024**2: raise ValueError('source/header exceeds quick-check limit')
-    text = path.read_text(); depth = 0; cleaned = []; i = 0
-    # Only the header is needed; preserve line positions across nested comments.
-    while i < len(text):
-        if text.startswith('/-', i): depth += 1; i += 2
-        elif depth and text.startswith('-/', i): depth -= 1; i += 2
-        elif not depth and text.startswith('--', i):
-            end = text.find('\n', i); i = len(text) if end < 0 else end
-        elif depth:
-            if text[i] == '\n': cleaned.append('\n')
-            i += 1
-        else: cleaned.append(text[i]); i += 1
-    if depth: raise ValueError('unterminated header/source comment')
-    result = []
-    for line in ''.join(cleaned).splitlines():
-        line = line.strip()
-        if not line or line in ('module', 'prelude'): continue
-        match = re.fullmatch(r'(?:public\s+)?(?:meta\s+)?import(?:\s+all)?\s+([\w\']+(?:\.[\w\']+)*)', line)
-        if match: result.append(match[1]); continue
-        if re.match(r'(?:public\s+|meta\s+)*import\b', line): raise ValueError('unsupported import header')
-        break
+    result = []; depth = 0
+    # Lean only accepts imports in the header, so stop at the first other command.
+    with path.open(encoding='utf-8') as source:
+        for raw_line in source:
+            cleaned = []; i = 0
+            while i < len(raw_line):
+                if raw_line.startswith('/-', i):
+                    if not depth: cleaned.append(' ')
+                    depth += 1; i += 2
+                elif depth and raw_line.startswith('-/', i): depth -= 1; i += 2
+                elif not depth and raw_line.startswith('--', i): break
+                elif depth: i += 1
+                else: cleaned.append(raw_line[i]); i += 1
+            line = ''.join(cleaned).strip()
+            if not line or line in ('module', 'prelude'): continue
+            match = re.fullmatch(r'(?:public\s+)?(?:meta\s+)?import(?:\s+all)?\s+([\w\']+(?:\.[\w\']+)*)', line)
+            if match: result.append(match[1]); continue
+            if re.match(r'(?:public\s+|meta\s+)*import\b', line): raise ValueError('unsupported import header')
+            return result
+    if depth: raise ValueError('unterminated header comment')
     return result
 
 def dependency_closure(project, targets, maximum=MAX_CLOSURE):
+    # Project files enter seen, but common package imports recur in many headers.
+    # Bound the lookup cache independently of how many package imports a PR adds.
+    @lru_cache(maxsize=MAX_CLOSURE)
+    def project_source(module):
+        if not ci.MODULE.fullmatch(module): raise ValueError('invalid module name')
+        source = project / 'src' / (module.replace('.', '/') + '.lean')
+        return source if source.exists() else None
+
     pending, seen = list(targets), set()
     while pending:
         module = pending.pop()
         if module in seen: continue
-        if not ci.MODULE.fullmatch(module): raise ValueError('invalid module name')
-        source = project / 'src' / (module.replace('.', '/') + '.lean')
-        if not source.exists(): continue  # Package imports are resolved by stock Lake.
+        source = project_source(module)
+        if source is None: continue  # Package imports are resolved by stock Lake.
         ci.safe_file(project, str(source.relative_to(project)))
         seen.add(module)
         if len(seen) > maximum: raise ValueError('project ancestor cone exceeds small-runner budget')
@@ -72,7 +80,7 @@ def plan(candidate, request):
     if ci.sha256(candidate/'lakefile.toml') != ci.sha256(HERE.parent/'lakefile.toml'): raise ValueError('configuration changes need the priority/full build pool')
     base = request.get('base_head', '')
     if not re.fullmatch('[0-9a-f]{40}', base): raise ValueError('resolved base identity missing')
-    changed = ci.git(candidate, 'diff', '--name-only', base, expected['candidate_head'], '--', 'src').splitlines()
+    changed = ci.git(candidate, 'diff', '--name-only', '-z', base, expected['candidate_head'], '--', 'src').split('\0')
     changed = [name for name in changed if name.endswith('.lean')]
     if len(changed) > MAX_ROOTS: raise ValueError('more than eight changed source roots; deferred')
     targets = []

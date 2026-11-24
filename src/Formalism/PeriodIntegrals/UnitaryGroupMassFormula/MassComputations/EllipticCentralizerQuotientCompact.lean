@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.EqOneOfToHAFin
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.MassComputations.NVolAllOf
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -73,20 +74,7 @@ theorem tauF_eq_comm {D : D7} (X : HidaSetting D) (y : AF X.B.I.F ⊗[X.B.I.F] X
 
 theorem toHA_fin_one {D : D7} (X : HidaSetting D) (hb : AdBridgeIso X.B.I) (s : X.B.I.Ginf) :
     (splitA X.B.I.cm.sig X.B.I.J (toHA X.B.I hb (s, 1))).2 = 1 := by
-  have hbr := ((toHA_isBridge X.B.I hb) (s, 1)).2
-  apply Subtype.ext
-  apply Units.ext
-  ext i j
-  have e := congrFun (congrFun hbr i) j
-  simp only [ofHAFin, Matrix.map_apply] at e
-  rw [tauF_eq_comm] at e
-  have e2 := congrArg (Algebra.TensorProduct.comm X.B.I.F (Af X.B.I.F) X.B.I.E).symm e
-  rw [AlgEquiv.symm_apply_apply] at e2
-  show tensMap (E := X.B.I.E) (sndA X.B.I.F) _ = _
-  rw [← e2]
-  show _ = (1 : Matrix (Fin X.B.I.n) (Fin X.B.I.n) (Af X.B.I.F ⊗[X.B.I.F] X.B.I.E)) i j
-  simp only [Formalism.MainNotions.S.AutInst.fmat, OneMemClass.coe_one, Units.val_one, Matrix.one_apply]
-  split_ifs <;> simp
+  apply PI.AprimeInfU.toHA_fin_one <;> assumption
 
 section Split
 
@@ -94,23 +82,7 @@ variable {D : D7} (X : HidaSetting D) (hb : AdBridgeIso X.B.I)
 
 theorem eq_one_of_toHA_fin {D : D7} (X : HidaSetting D) (hb : AdBridgeIso X.B.I) (p : X.B.I.GA)
     (h : (splitA X.B.I.cm.sig X.B.I.J (toHA X.B.I hb p)).2 = 1) : p.2 = 1 := by
-  have hbr := ((toHA_isBridge X.B.I hb) p).2
-  apply Subtype.ext
-  apply Units.ext
-  ext i j
-  have e := congrFun (congrFun hbr i) j
-  simp only [ofHAFin, Matrix.map_apply] at e
-  rw [tauF_eq_comm] at e
-  have h2 : tensMap (E := X.B.I.E) (sndA X.B.I.F) (hmat X.B.I (toHA X.B.I hb p) i j) =
-      (1 : Matrix (Fin X.B.I.n) (Fin X.B.I.n) (Af X.B.I.F ⊗[X.B.I.F] X.B.I.E)) i j := by
-    have := congrArg (fun g : HA (Af X.B.I.F) X.B.I.cm.sig X.B.I.J =>
-      (HA.mat (Af X.B.I.F) X.B.I.cm.sig X.B.I.J g).val i j) h
-    exact this
-  rw [h2] at e
-  rw [Formalism.MainNotions.S.AutInst.fmat] at e
-  show _ = (1 : Matrix (Fin X.B.I.n) (Fin X.B.I.n) (X.B.I.E ⊗[X.B.I.F] Af X.B.I.F)) i j
-  rw [e, Matrix.one_apply, Matrix.one_apply]
-  split_ifs <;> simp
+  apply PI.AprimeInfU.eq_one_of_toHA_fin <;> assumption
 
 theorem split_unitary_infinite_one (s : X.B.I.Ginf) :
     splitA X.B.I.cm.sig X.B.I.J (toHA X.B.I hb (s, 1)) = (X.toInf hb s, 1) :=

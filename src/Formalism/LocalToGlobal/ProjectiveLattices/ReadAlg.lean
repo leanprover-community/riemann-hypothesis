@@ -84,7 +84,6 @@ theorem eq_zero_of_pts {M : Type} [Field M] [IsAlgClosed M] [Algebra K M] (p : T
   have hjac : (⊥ : Ideal p.R).jacobson = ⊥ := by
     first
     | exact IsJacobsonRing.out inferInstance hrad
-    | exact IsJacobsonRing.out' ⊥ hrad
   have ha : a ∈ (⊥ : Ideal p.R).jacobson := by
 
     refine Ideal.mem_sInf.2 fun J hJ => ?_

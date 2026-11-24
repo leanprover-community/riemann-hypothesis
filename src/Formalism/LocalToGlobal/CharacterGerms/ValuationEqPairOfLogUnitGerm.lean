@@ -100,7 +100,7 @@ theorem rowCopy_mul_exp {J : Fin 2 → Type} {n : ℕ} (b : Fin n) (F L : MvPowe
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun y hy => ?_
   have hdeg : y.degree = x.degree := by
-    simp only [Set.Finite.mem_toFinset, Set.mem_setOf_eq, Set.mem_preimage] at hy
+    simp only [Set.Finite.mem_toFinset, Set.mem_preimage] at hy
     rw [← hy, Finsupp.degree_mapDomain]
   show ∑ k ∈ Finset.range (y.degree + 1), _ = _
   rw [hdeg]

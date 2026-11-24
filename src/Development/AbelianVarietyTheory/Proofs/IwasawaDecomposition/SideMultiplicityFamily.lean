@@ -37,6 +37,8 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.TypeStar
+import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverStdB
+import Formalism.SharpRestriction.GlobalSchurBounds.GlobalRankLatticeProofs.EqOfLeOfAbsNormEq
 
 @[expose] public section
 
@@ -103,14 +105,8 @@ end NC
 section Conj
 variable {R : Ranks}
 
-theorem conj_conj' (H : Host R) (x : H.E) : H.conj (H.conj x) = x := by
-  let φ : H.E →+* ℂ := Classical.choice inferInstance
-  apply φ.injective
-  have h := fun y => H.conjE_apply φ y
-  exact (h _).trans ((congrArg (starRingEnd ℂ) (h x)).trans (Complex.conj_conj _))
-
 theorem isConjPl_symm' {H : Host R} {P P' : PlE H} (h : IsConjPl H P P') : IsConjPl H P' P := fun x y e =>
-  (h y x (by rw [e, conj_conj'])).symm
+  (h y x (by rw [e, _root_.Formalism.MainNotions.UnusedSlot33.HK.conj_conj])).symm
 
 end Conj
 
@@ -118,20 +114,7 @@ section Gen
 variable {D : D7} {M : MtFam D}
 
 theorem jMt_inj' (μ : D.what₂.Tup) (j : ℕ) : Function.Injective (D.what₂.jMt μ j) := by
-  classical
-  let b := Module.Free.chooseBasis D.what₂.LL (D.what₂.MtL μ j)
-  have hb := (D.what₂.jMt_basis μ j b).1
-  have : Finite (Module.Free.ChooseBasisIndex D.what₂.LL (D.what₂.MtL μ j)) := hb.finite
-  haveI := Fintype.ofFinite (Module.Free.ChooseBasisIndex D.what₂.LL (D.what₂.MtL μ j))
-  refine (injective_iff_map_eq_zero (D.what₂.jMt μ j)).2 fun y hy => ?_
-  have hsum := b.sum_repr y
-
-  rw [← hsum, map_sum] at hy
-  simp only [LinearMap.map_smulₛₗ] at hy
-  have hz := Fintype.linearIndependent_iff.1 hb _ hy
-  rw [← hsum]
-  refine Finset.sum_eq_zero fun a _ => ?_
-  rw [(map_eq_zero_iff _ D.what₂.embLL.injective).1 (hz a), zero_smul]
+  apply _root_.Formalism.L2.jMt_injective <;> assumption
 
 theorem hypOutside_transport' {μ μ' : D.what₂.Tup} {j j' : ℕ} (hμ : μ = μ') (hj : j = j')
     (a1 : 1 ≤ j) (a2 : j ≤ D.R.m) (b1 : 1 ≤ j') (b2 : j' ≤ D.R.m)

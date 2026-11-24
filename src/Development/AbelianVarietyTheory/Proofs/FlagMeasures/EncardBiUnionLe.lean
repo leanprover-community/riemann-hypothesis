@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaModuloX.ModLatticeAbsoluteValue
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.RowMinor
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -120,21 +121,7 @@ theorem Xflag_mono (j : ℕ) : Xflag F j ≤ Xflag F (j + 1) := by
   exact Submodule.span_mono (Set.image_mono fun i (hi : i.1 < j) => Nat.lt_succ_of_lt hi)
 
 theorem X_le_orth : Xsp F ≤ orth S (Xsp F) := by
-
-  have key : ∀ a, Xsp F ≤ LinearMap.ker (S.hT (F.fl.e a)) := fun a => by
-    show Submodule.span E (Set.range F.fl.e) ≤ _
-    rw [Submodule.span_le]
-    rintro _ ⟨b, rfl⟩
-    exact F.fl.e_iso a b
-  intro y hy
-  simp only [orth, Submodule.mem_iInf, LinearMap.mem_ker]
-  intro x hx
-  have key2 : Xsp F ≤ LinearMap.ker (S.hT.flip y) := by
-    show Submodule.span E (Set.range F.fl.e) ≤ _
-    rw [Submodule.span_le]
-    rintro _ ⟨a, rfl⟩
-    exact key a hy
-  simpa using key2 hx
+  apply PI.UnitaryGroupMassFormula.BetaModX.xsp_le_orth <;> assumption
 
 theorem symm_sub_mem (n : S.V ≃ₗ[E] S.V) {A B : Submodule E S.V} (hAB : A ≤ B)
     (h : ∀ x ∈ B, n x - x ∈ A) : ∀ x ∈ B, n.symm x - x ∈ A := by

@@ -139,8 +139,8 @@ theorem Du_neg_row (u : Fin L.n → AE F E) (k : Fin d.n) :
   rw [neg_neg, Matrix.map_apply, Matrix.transpose_apply]
   by_cases hk : k = L.i₀
   · subst hk
-    simp [uA, Matrix.add_apply, Matrix.sum_apply, Matrix.single_apply, Matrix.one_apply, fun j => ComplexParameterFamilyContinuity.em_ne L j]
-  · simp [uA, Matrix.add_apply, Matrix.sum_apply, Matrix.single_apply, Matrix.one_apply, hk, Ne.symm hk]
+    simp [uA, Matrix.add_apply, Matrix.sum_apply, fun j => ComplexParameterFamilyContinuity.em_ne L j]
+  · simp [uA, Matrix.add_apply, Matrix.sum_apply, hk, Ne.symm hk]
 
 theorem ellA_self (hδ : δ ≠ 0) : ellA (F := F) δ (inclR (F := F) (AF F) δ) = 1 := by
   have hex : ∃ ℓ : E →ₗ[F] F, δ ≠ 0 → ℓ δ = 1 := by
@@ -150,7 +150,7 @@ theorem ellA_self (hδ : δ ≠ 0) : ellA (F := F) δ (inclR (F := F) (AF F) δ)
       exact hδ ((Module.forall_dual_apply_eq_zero_iff F δ).1 hne)
     exact ⟨(φ δ)⁻¹ • φ, fun _ => by simp [hφ]⟩
   have hℓ := Classical.epsilon_spec hex hδ
-  simp [ellA, inclR, LinearMap.baseChange_tmul, Algebra.TensorProduct.rid_tmul, Algebra.algebraMap_eq_smul_one, hℓ]
+  simp [ellA, inclR, LinearMap.baseChange_tmul, hℓ]
 
 theorem sM_zero' : sM R L 0 = 1 := by
   apply KAway.inFrame_inj d
@@ -166,7 +166,7 @@ theorem cM_zero' (h : Hyp L nb uM nb' w₁ cM δ) (u : Fin L.n → AE F E) : cM 
 theorem move (h : Hyp L nb uM nb' w₁ cM δ) (u : Fin L.n → AE F E) (β'' : nA σ L.Y L.b) (b : Fin L.n → AE F E) (a : AF F) :
     L.j (nb' β'') * (sM R L b * cM (u, a)) =
       sM R L (b + (tau L uM nb' δ (u, β'')).1) * cM (u, a + (tau L uM nb' δ (u, β'')).2) * L.j (nb' β'') := by
-  obtain ⟨B, A, hBA⟩ := j_move (R := R) h u β''
+  obtain ⟨B, A, hBA⟩ := _root_.PositivityTheory.SiegelWeilFormula.Act.C5.j_move' (R := R) h u β''
   suffices hτ : tau L uM nb' δ (u, β'') = (B, A) by rw [hτ]; exact hBA b a
   have e0 := hBA 0 0
   rw [sM_zero', one_mul, cM_zero' h, zero_add, zero_add] at e0
@@ -178,13 +178,13 @@ theorem move (h : Hyp L nb uM nb' w₁ cM δ) (u : Fin L.n → AE F E) (β'' : n
     rw [hk, ← uM_neg' h, GlobalTheory.EisBL.DoubledParabolic.inFrame_mul, GlobalTheory.EisBL.DoubledParabolic.inFrame_mul, inFrame_sM', inFrame_cM h, frame_uM h, bMat]
     rw [show (uA L (-u))ᵀ.map (cA σ) = Du L u from rfl]
     simp only [Matrix.fromBlocks_multiply, Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, Matrix.one_mul,
-      Matrix.mul_one, uA_mul_neg, Du_mul]
+      uA_mul_neg, Du_mul]
     rw [Matrix.add_mul, Matrix.mul_assoc, Du_mul, Matrix.mul_one]
   have hrow : ∀ k, (aB L δ A * Du (σ := σ) L (-u)) L.i₀ k = if k = L.i₀ then A • inclR (F := F) (AF F) δ else 0 := by
     intro k
     rw [Matrix.mul_apply, Finset.sum_eq_single L.i₀]
     · rw [Du_neg_row]; simp [aB]
-    · intro m _ hm; simp [aB, Matrix.single_apply, Ne.symm hm]
+    · intro m _ hm; simp [aB, Ne.symm hm]
     · simp
   refine Prod.ext (funext fun k => ?_) ?_
   · show inFrame d.b (kom L uM nb' (u, β'')) (Sum.inl L.i₀) (Sum.inr (L.em k)) = B k

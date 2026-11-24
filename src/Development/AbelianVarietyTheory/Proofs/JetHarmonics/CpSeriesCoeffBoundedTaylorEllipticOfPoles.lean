@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CpTransportedTaylorSeriesTranslateNormLe
 public import Development.AbelianVarietyTheory.Definitions.Jets.CmLatticeCommutatorPairingPowEqOneOfGoodLift
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CpSeriesCoeffNormBoundedRingLaws
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsEllipticFunctionMulProdEqXy
@@ -115,23 +116,7 @@ theorem hat_one (ι : ℂ ≃+* ℂ_[q]) (ℓ : ℂ_[q]⟦X⟧) (hℓ : constant
 
 theorem prod_coeff_le (ι : ℂ ≃+* ℂ_[q]) {m : ℕ} (a : Fin m → ℂ) (ha : ∀ i, ‖ι (a i)‖ ≤ 1) (n : ℕ) :
     ‖ι ((∏ i, (Polynomial.X - Polynomial.C (a i))).coeff n)‖ ≤ 1 := by
-  revert n
-  refine Finset.prod_induction _ (fun p : Polynomial ℂ => ∀ n, ‖ι (p.coeff n)‖ ≤ 1) ?_ ?_ ?_
-  · intro p r hp hr n
-
-    rw [Polynomial.coeff_mul, map_sum]
-    refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg zero_le_one ?_
-    intro x _
-    rw [map_mul, norm_mul]
-    exact mul_le_one₀ (hp _) (norm_nonneg _) (hr _)
-  · intro n
-    rw [Polynomial.coeff_one]
-    split_ifs <;> simp
-  · intro i _ n
-    rcases n with _ | _ | n
-    · simpa using ha i
-    · simp
-    · simp [Polynomial.coeff_X]
+  apply GlobalTheory.MomOne.TransNorm.norm_coeff_prod <;> assumption
 
 theorem bdd_hat_of_ell : ∀ (q : ℕ) [Fact q.Prime] (M : Mdl q) (ℓ : ℂ_[q]⟦X⟧) (φ : ℂ → ℂ), M.Chart ℓ → Ell M.L φ → AnalyticAt ℂ φ 0 → (∀ p, meromorphicOrderAt φ p < 0 → ¬ M.Small p) → Bdd (hat M.ι ℓ φ) := by
   intro q _ M ℓ φ hC hE hA hP

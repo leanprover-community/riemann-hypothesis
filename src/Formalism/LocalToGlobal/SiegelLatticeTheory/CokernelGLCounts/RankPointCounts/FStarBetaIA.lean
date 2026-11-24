@@ -196,7 +196,7 @@ theorem exists_yG {T' : D.host.E} (G : LFlag (D.sp.Y 0) D.R.rS T') {Λ : Submodu
       rw [BwdNA.hsw (VS D) w (G.fl.e i), ← frame_csG, hw, hρe, star_zero]
     | zero => simp
     | add a b _ _ ha hb => rw [map_add (f := _), LinearMap.add_apply, ha, hb, add_zero]
-    | smul c x _ hx => rw [BwdNA.hT_smulL, hx, mul_zero]
+    | smul c x _ hx => rw [_root_.PI.ScalarPairDr.W.hT_smul_left, hx, mul_zero]
   · rw [← frame_lastG, hw, hρl]
 
 end Formalism.L2.SG.Pf.FrameGlobalPatching.FStar.BetaI

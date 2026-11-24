@@ -125,11 +125,10 @@ def coefL (act : (Fin N → ℝ) → Ω → Ω) (S : Set Ω) (ph : Fin N → ℝ
 theorem integrableOn_integrand [TopologicalSpace Ω] {act : (Fin N → ℝ) → Ω → Ω} {ph : Fin N → ℝ}
     {P : Ω → ℂ} {x : Ω} {T : Set Ω} (hP : ContinuousOn P T) (hact : Continuous fun t => act t x)
     (hT : ∀ t ∈ cube N, act t x ∈ T) : IntegrableOn (integrand act ph P x) (cube N) := by
-  have h1 : ContinuousOn (fun t => P (act t x)) (cube N) :=
-    hP.comp hact.continuousOn (fun t ht => hT t ht)
   have h2 : Continuous (chr ph) := by
     unfold chr; fun_prop
-  exact (h1.mul h2.continuousOn).integrableOn_compact isCompact_Icc
+  exact ((hP.comp hact.continuousOn (fun t ht => hT t ht)).mul
+    h2.continuousOn).integrableOn_compact isCompact_Icc
 
 end Orbit
 

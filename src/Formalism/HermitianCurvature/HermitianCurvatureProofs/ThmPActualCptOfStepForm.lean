@@ -182,7 +182,6 @@ theorem jfCptLocAll : JFCptLocAll := by
     ·
       rw [norm_mul] at hb
       have hz0 : 0 ≤ ‖zetaL P.k P.r D.z D.z' (Fin.last P.r) g‖ := norm_nonneg _
-      have hR0nn : 0 ≤ R0 := le_trans (by positivity) hb
       rw [hR', le_div_iff₀ (by positivity)]
       nlinarith
   have hJ0 : B.JF D F x = 0 := by

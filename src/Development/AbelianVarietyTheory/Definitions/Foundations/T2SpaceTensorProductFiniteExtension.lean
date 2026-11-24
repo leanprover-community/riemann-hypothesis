@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.IsNormFromBaseChangeBaseChangeProperties
 public import Development.AbelianVarietyTheory.Definitions.Foundations.OfInfProjInfMulOfFinProjFin
 import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.EmbRelExistsUnique
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsIwasawaOfIsCompact
@@ -63,22 +64,7 @@ variable {F E : Type} [Field F] [Field E] [Algebra F E] [FiniteDimensional F E]
 
 theorem norm_map (φ : R →ₐ[F] R') (x : R ⊗[F] E) :
     Algebra.norm R' (Algebra.TensorProduct.map φ (AlgHom.id F E) x) = φ (Algebra.norm R x) := by
-  classical
-  let b := Module.finBasis F E
-  have h : ∀ (y : R ⊗[F] E) i, (Algebra.TensorProduct.basis R' b).repr
-      (Algebra.TensorProduct.map φ (AlgHom.id F E) y) i = φ ((Algebra.TensorProduct.basis R b).repr y i) := by
-    intro y i
-    induction y using TensorProduct.induction_on with
-    | zero => simp
-    | tmul a e => simp [Algebra.TensorProduct.basis_repr_tmul]
-    | add x y hx hy => simp only [map_add (f := _), Finsupp.add_apply, hx, hy]
-  rw [Algebra.norm_eq_matrix_det (Algebra.TensorProduct.basis R' b),
-    Algebra.norm_eq_matrix_det (Algebra.TensorProduct.basis R b), AlgHom.map_det]
-  congr 1
-  ext i j
-  rw [AlgHom.mapMatrix_apply, Matrix.map_apply, Algebra.leftMulMatrix_eq_repr_mul, Algebra.leftMulMatrix_eq_repr_mul,
-    ← h, map_mul (Algebra.TensorProduct.map φ (AlgHom.id F E))]
-  simp [Algebra.TensorProduct.basis_apply]
+  apply GlobalTheory.CNorm.tensor_norm_map <;> assumption
 
 theorem norm_inclR (x : E) : Algebra.norm R (inclR (F := F) R x) = algebraMap F R (Algebra.norm F x) := by
   rw [Algebra.norm_apply, Algebra.norm_apply, ← LinearMap.det_baseChange]

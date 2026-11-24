@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoeffMinpolyMemAdicCompletionIntegers
 public import Mathlib.Algebra.Central.Defs
 public import Mathlib.FieldTheory.Minpoly.Basic
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
@@ -77,23 +78,7 @@ theorem injective_of_isSimpleRing {R S : Type} [Ring R] [IsSimpleRing R] [Ring S
 theorem natDegree_minpoly_le_one_tmul {F A : Type} [Field F] [Ring A] [Algebra F A] (K : Type)
     [Field K] [Algebra F K] (g : A) (hK : IsIntegral K ((1 : K) ⊗ₜ[F] g)) :
     (minpoly F g).natDegree ≤ (minpoly K ((1 : K) ⊗ₜ[F] g)).natDegree := by
-  set x : K ⊗[F] A := (1 : K) ⊗ₜ[F] g with hx
-  have hli : LinearIndependent K (fun j : Fin (minpoly F g).natDegree => x ^ (j : ℕ)) := by
-    have h := Module.Flat.linearIndependent_one_tmul (S := K) (linearIndependent_pow (K := F) g)
-    convert h using 1
-    funext j
-    simp [hx, Algebra.TensorProduct.tmul_pow]
-  by_contra hlt
-  push_neg at hlt
-  have hsum := aeval_eq_sum_range' hlt x
-  rw [minpoly.aeval, ← Fin.sum_univ_eq_sum_range (fun i => (minpoly K x).coeff i • x ^ i)] at hsum
-  have hc := Fintype.linearIndependent_iff.mp hli (fun i => (minpoly K x).coeff i) hsum.symm
-  apply minpoly.ne_zero hK
-  ext i
-  rw [coeff_zero]
-  by_cases hi : i < (minpoly F g).natDegree
-  · exact hc ⟨i, hi⟩
-  · exact coeff_eq_zero_of_natDegree_lt (by omega)
+  apply GlobalTheory.DescCoeff.natDegree_minpoly_le_one_tmul <;> assumption
 
 end GlobalTheory.CsaCharpoly
 

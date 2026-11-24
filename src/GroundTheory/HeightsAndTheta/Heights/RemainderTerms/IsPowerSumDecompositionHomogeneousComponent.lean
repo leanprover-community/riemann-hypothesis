@@ -128,7 +128,7 @@ theorem rootRingToReal_smallPowerSum_last (f r a m : ℕ) (τ : Fin f) :
       IndefiniteRowSideFullHecke.RestTerms.smallPsum f a r true m τ := by
 
   simp only [smallPowerSum, yRoot, SmallBlock.sign, yIndex, map_sum, map_pow, map_mul,
-  rootRingToReal_C, rootRingToReal_X, IndefiniteRowSideFullHecke.RestTerms.smallPsum, if_true, Rat.cast_one, C_1, one_mul]
+  rootRingToReal_C, rootRingToReal_X, IndefiniteRowSideFullHecke.RestTerms.smallPsum, if_true, C_1, one_mul]
   refine sum_congr rfl fun i _ => ?_
   rfl
 
@@ -138,7 +138,7 @@ theorem rootRingToReal_smallPowerSum_first (f r a m : ℕ) (τ : Fin f) :
 
   simp only [smallPowerSum, yRoot, SmallBlock.sign, yIndex, map_sum, map_pow, map_mul,
   rootRingToReal_C, rootRingToReal_X, IndefiniteRowSideFullHecke.RestTerms.smallPsum, Bool.false_eq_true, if_false,
-  Rat.cast_neg, Rat.cast_one, C_neg, C_1, neg_one_mul, map_neg]
+  C_1, neg_one_mul, map_neg]
   refine sum_congr rfl fun i _ => ?_
   rfl
 
@@ -168,8 +168,7 @@ theorem rootRingToReal_fibreClass_last (f r a : ℕ) :
   rw [vandermondeOf_eq_vandermonde, vandermondeOf_eq_vandermonde]
   congr 2
   · funext i
-    simp only [yRoot, SmallBlock.sign, yIndex, map_mul, rootRingToReal_C, rootRingToReal_X, Rat.cast_one,
-      C_1, one_mul] <;> rfl
+    simp only [yRoot, SmallBlock.sign, yIndex, rootRingToReal_X, C_1, one_mul] <;> rfl
   · funext i
     simp only [zRoot, zIndex, rootRingToReal_X] <;> rfl
 
@@ -182,8 +181,7 @@ theorem rootRingToReal_fibreClass_first (f r a : ℕ) :
   rw [vandermondeOf_eq_vandermonde, vandermondeOf_eq_vandermonde]
   congr 2
   · funext i
-    simp only [yRoot, SmallBlock.sign, yIndex, map_mul, rootRingToReal_C, rootRingToReal_X, Rat.cast_neg,
-      Rat.cast_one, C_neg, C_1, neg_one_mul, map_neg] <;> rfl
+    simp only [yRoot, SmallBlock.sign, yIndex, rootRingToReal_X, C_1, neg_one_mul, map_neg] <;> rfl
   · funext i
     simp only [zRoot, zIndex, rootRingToReal_X] <;> rfl
 

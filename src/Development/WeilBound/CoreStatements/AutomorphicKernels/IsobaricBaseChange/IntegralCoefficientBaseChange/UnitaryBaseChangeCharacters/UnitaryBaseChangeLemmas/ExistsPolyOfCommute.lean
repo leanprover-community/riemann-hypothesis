@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LocalRingExistsAevalOfCommuteSeparable
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.AevalRootEqZeroIff
 public import Formalism.SatakeDualWeyl.StatementF
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CyclicVectorOfSeparableCharpolyField
@@ -102,51 +103,6 @@ theorem isCsr_charpoly {R : Type} [CommRing R] (s : R →+* R) {n : ℕ} (M J Ji
 
 theorem exists_poly_of_commute {O : Type} [CommRing O] [IsLocalRing O] {n : ℕ} (M x : Matrix (Fin n) (Fin n) O)
     (hs : M.charpoly.Separable) (hc : x * M = M * x) : ∃ p : O[X], x = aeval M p := by
-  have cyclic : ∃ v, IsUnit (GlobalTheory.ClassParam.krylov M v) := by
-    haveI : Subsingleton (MaximalSpectrum O) := ⟨fun a b =>
-      MaximalSpectrum.ext ((IsLocalRing.eq_maximalIdeal a.isMaximal).trans
-        (IsLocalRing.eq_maximalIdeal b.isMaximal).symm)⟩
-    obtain ⟨w, hw⟩ := GlobalTheory.RegSS.Semilocal.cyclicSemilocal_of_cyclicField GlobalTheory.RegSS.cyclicField _ (Fin n) M hs
-    let σ : Equiv.Perm (Fin n) := (Fintype.equivFin (Fin n)).trans (finCongr (Fintype.card_fin n))
-    have hk : GlobalTheory.RegSS.krylov M w = (GlobalTheory.ClassParam.krylov M w).submatrix id σ := by
-      ext i j
-      simp [GlobalTheory.RegSS.krylov, GlobalTheory.ClassParam.krylov, σ]
-    rw [hk, Matrix.det_permute'] at hw
-    exact ⟨w, (Matrix.isUnit_iff_isUnit_det _).2 (isUnit_of_mul_isUnit_right hw)⟩
-  obtain ⟨v, hv⟩ := cyclic
-  set K := GlobalTheory.ClassParam.krylov M v with hK
-  have key : ∀ r : Matrix (Fin n) (Fin n) O, r * M = M * r →
-      r * K = GlobalTheory.ClassParam.krylov M (r *ᵥ v) := by
-    intro r hr
-    have hc : Commute r M := hr
-    ext i j
-    simp only [hK, GlobalTheory.ClassParam.krylov, Matrix.of_apply, Matrix.mul_apply]
-    rw [Matrix.mulVec_mulVec, ← (hc.pow_right (j : ℕ)).eq, ← Matrix.mulVec_mulVec]
-    rfl
-  have hKd : IsUnit K.det := (Matrix.isUnit_iff_isUnit_det K).1 hv
-  set c : Fin n → O := K⁻¹ *ᵥ (x *ᵥ v) with hcdef
-  let p : O[X] := ∑ i : Fin n, C (c i) * X ^ (i : ℕ)
-  have hp : aeval M p = ∑ i : Fin n, c i • M ^ (i : ℕ) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [p, map_sum, map_mul, aeval_C, aeval_X_pow, Algebra.smul_def]
-  have hpv : aeval M p *ᵥ v = x *ᵥ v := by
-    have h1 : aeval M p *ᵥ v = K *ᵥ c := by
-      rw [hp]
-      ext k
-      simp only [Matrix.mulVec, dotProduct, Matrix.sum_apply, Matrix.smul_apply, smul_eq_mul, Finset.sum_mul,
-        hK, GlobalTheory.ClassParam.krylov, Matrix.of_apply]
-      rw [Finset.sum_comm]
-      refine Finset.sum_congr rfl fun j _ => ?_
-      refine Finset.sum_congr rfl fun l _ => ?_
-      ring
-    rw [h1, hcdef, Matrix.mulVec_mulVec, Matrix.mul_nonsing_inv _ hKd, Matrix.one_mulVec]
-  have hpc : aeval M p * M = M * aeval M p := by
-    have e1 : aeval M (p * X) = aeval M p * M := by rw [map_mul, aeval_X]
-    have e2 : aeval M (X * p) = M * aeval M p := by rw [map_mul, aeval_X]
-    rw [← e1, ← e2, mul_comm]
-  refine ⟨p, ?_⟩
-  have e : x * K = aeval M p * K := by rw [key x hc, key _ hpc, hpv]
-  have := congrArg (· * K⁻¹) e
-  simpa only [Matrix.mul_assoc, Matrix.mul_nonsing_inv _ hKd, Matrix.mul_one] using this
+  apply GlobalTheory.LocalCommutant.exists_aeval_of_comm <;> assumption
 
 end GlobalTheory.UsideLeaf.UnitaryLocalCharpoly

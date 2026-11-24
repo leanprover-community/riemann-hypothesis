@@ -222,8 +222,7 @@ section Sig
 
 theorem epsS_false_iff (R : Formalism.BasicNotions.Ranks) (i : Fin R.r) :
     epsS R i = false ↔ R.k - 1 ≤ i.val ∧ (i.val - (R.k - 1)) % 2 = 1 := by
-  simp only [epsS]
-  by_cases h : i.val < R.k - 1 <;> simp [h] <;> omega
+  by_cases h : i.val < R.k - 1 <;> simp [epsS, h] <;> omega
 
 theorem card_epsS_false (R : Formalism.BasicNotions.Ranks) : (univ.filter fun i : Fin R.r => epsS R i = false).card = R.rS + 1 := by
   have hr : R.r = R.k + R.m - 1 := rfl

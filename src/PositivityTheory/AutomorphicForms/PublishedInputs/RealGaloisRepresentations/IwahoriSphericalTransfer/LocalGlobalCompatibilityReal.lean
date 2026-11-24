@@ -46,4 +46,4 @@ open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem _root_.GlobalTheory.T.local_global_compatibility_real : AdmissibleReal → LocCompR := by
-  first | exact @GlobalTheory.RealGal.locCompR_of_admissibleReal | exact GlobalTheory.RealGal.locCompR_of_admissibleReal | (intros; apply GlobalTheory.RealGal.locCompR_of_admissibleReal <;> assumption)
+  first | exact @GlobalTheory.RealGal.locCompR_of_admissibleReal

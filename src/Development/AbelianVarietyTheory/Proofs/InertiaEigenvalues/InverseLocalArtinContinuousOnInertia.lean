@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GaloisOpenSubgroupLocalUnits
 public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.ExistsNotCongPow
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsContinuousPadic
@@ -74,24 +75,7 @@ theorem absoluteGaloisAbelianization_t2Space (E Ω : Type) [Field E] [NumberFiel
 
 theorem continuous_localIdele' (E : Type) [Field E] [NumberField E] (v : HeightOneSpectrum (𝓞 E)) :
     Continuous (Neutral.B1.localIdele E v) := by
-  classical
-  have hle : (Filter.cofinite : Filter (HeightOneSpectrum (𝓞 E))) ≤ Filter.principal ({v}ᶜ : Set _) := by
-    rw [Filter.le_principal_iff]
-    exact (Set.finite_singleton v).compl_mem_cofinite
-  let f : v.adicCompletion E → RestrictedProduct (fun w : HeightOneSpectrum (𝓞 E) => w.adicCompletion E)
-      (fun w => (w.adicCompletionIntegers E : Set (w.adicCompletion E))) (Filter.principal ({v}ᶜ : Set _)) :=
-    fun x => ⟨Pi.mulSingle v x, by
-      rw [Filter.eventually_principal]
-      intro w hw
-      have h' : w ≠ v := hw
-      rw [Pi.mulSingle_eq_of_ne h']
-      exact one_mem _⟩
-  have hf : Continuous f := by
-    rw [RestrictedProduct.continuous_rng_of_principal]
-    exact continuous_mulSingle (A := fun w : HeightOneSpectrum (𝓞 E) => w.adicCompletion E) v
-  have hs : Continuous (Neutral.B1.finiteSingle E v) := (RestrictedProduct.continuous_inclusion hle).comp hf
-  apply Continuous.units_map
-  exact Continuous.prodMk continuous_const hs
+  apply GlobalTheory.CompanionTheory.InertOpen.continuous_localIdele' <;> assumption
 
 theorem isCompact_valOne (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) :
     IsCompact {x : (w.adicCompletion E)ˣ | Valued.v (x : w.adicCompletion E) = 1} := by

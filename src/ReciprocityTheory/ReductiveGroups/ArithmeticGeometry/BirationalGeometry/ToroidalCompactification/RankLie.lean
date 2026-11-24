@@ -75,7 +75,7 @@ variable {tk g}
 
 theorem one_left' {T : Scheme.{0}} {X : Over T} {M : Over T} [GrpObj M] : (1 : X ⟶ M).left = X.hom ≫ η[M].left := by
   rw [CategoryTheory.Hom.one_def, Over.comp_left]
-  first | rfl | simp
+  first | rfl
 
 theorem comp_one'' {T : Scheme.{0}} {X Y M : Over T} [GrpObj M] (u : Y ⟶ X) : u ≫ (1 : X ⟶ M) = 1 := by
   rw [CategoryTheory.Hom.one_def, CategoryTheory.Hom.one_def, ← Category.assoc, comp_toUnit]
@@ -179,7 +179,7 @@ theorem rel_pre {X Y : Over (Spec (CommRingCat.of k))} (φ : Y ⟶ X) {w : viaT 
     {v : X ⟶ (Over.pullback g).obj G} (h : Rel (F := F) tk g w v) : Rel (F := F) tk g (liftT tk φ ≫ w) (φ ≫ v) := by
   unfold Rel at h ⊢
   rw [Over.comp_left, Over.comp_left, Category.assoc, Category.assoc, h]
-  first | rfl | skip
+  first | rfl
 
 theorem rel_act (a : G' ⟶ G') (b : G ⟶ G) (hab : a.left ≫ F = F ≫ b.left) {X : Over (Spec (CommRingCat.of k))}
     {w : viaT tk X ⟶ G'} {v : X ⟶ (Over.pullback g).obj G} (h : Rel (F := F) tk g w v) :

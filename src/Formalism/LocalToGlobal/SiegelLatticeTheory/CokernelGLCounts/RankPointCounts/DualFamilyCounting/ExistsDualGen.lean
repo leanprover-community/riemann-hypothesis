@@ -48,6 +48,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
 
 @[expose] public section
 
@@ -106,7 +107,7 @@ theorem exists_dual_gen (e : Fin r → S.V) (z : S.V) (N : ℕ) (hN : 0 < N) (hi
     (he : ∀ a b, S.hT (e a) (e b) = 0) (hez : ∀ a, S.hT (e a) z = 0) (hzz : S.hT z z = -(N : E)) :
     ∃ y : Fin r → S.V, Dual e y z N := by
   let f : Fin (r + 1) → S.V := Fin.snoc (α := fun _ => S.V) e z
-  have hze : ∀ a, S.hT z (e a) = 0 := fun a => hsw0 S (hez a)
+  have hze : ∀ a, S.hT z (e a) = 0 := fun a => _root_.Formalism.MainNotions.LatticeGluingRadicals.p_symm_zero S (hez a)
   have hzz0 : S.hT z z ≠ 0 := by rw [hzz, neg_ne_zero]; exact_mod_cast hN.ne'
   have hf : LinearIndependent E f := by
     rw [Fintype.linearIndependent_iff]

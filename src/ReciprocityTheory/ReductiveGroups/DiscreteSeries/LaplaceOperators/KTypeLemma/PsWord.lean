@@ -123,9 +123,7 @@ lemma contDiff_lead (i : ℕ) : ContDiff ℂ ω (fun z : 𝕄 => lead i z) := by
     rw [e]
     exact contDiff_const
 
-def PhiQ (μ : Fin n → ℤ) : 𝕄 → ℂ := fun y => PhiM μ y
-
-lemma contDiffOn_phiQ (μ : Fin n → ℤ) : ContDiffOn ℂ ω (PhiQ μ) (OmegaSet n : Set 𝕄) := by
+lemma contDiffOn_phiQ (μ : Fin n → ℤ) : ContDiffOn ℂ ω (_root_.ReciprocityTheory.ChartRestriction.DS.S7.Ps1.PhiP μ) (OmegaSet n : Set 𝕄) := by
   show ContDiffOn ℂ ω (fun y : 𝕄 => ∏ i : Fin n, lead ((i : ℕ) + 1) y ^ (-(μ i - muNext μ i)))
     (OmegaSet n : Set 𝕄)
   refine contDiffOn_prod fun i _ => ?_
@@ -157,7 +155,6 @@ lemma hasFDerivAt_slice {f : WW → ℂ} {q : WW} (hf : DifferentiableAt ℂ f q
       ((fderiv ℂ f q).comp (ContinuousLinearMap.inr ℂ (𝕄 × 𝕄) 𝕄)) q.2 := by
   first
   | exact hf.hasFDerivAt.comp q.2 (hasFDerivAt_prodMk_right q.1 q.2)
-  | exact hf.hasFDerivAt.comp q.2 (hasFDerivAt_prod_mk_right q.1 q.2)
 
 lemma contDiffOn_Fw (μ : Fin n → ℤ) : ∀ D : List MM, ContDiffOn ℂ ω (Fw μ D) Om
   | [] => (contDiffOn_phiQ μ).comp contDiff_snd.contDiffOn fun _ hq => hq
@@ -183,22 +180,16 @@ lemma hasFDerivAt_psi (k : KG ε) (z : 𝕄) : HasFDerivAt (psi k) (dpsi k) z :=
   first
   | exact (hasFDerivAt_const (toMK k⁻¹, toMK k) z).prodMk
       (Ps1.conjCLM (toMK k⁻¹) (toMK k)).hasFDerivAt
-  | exact (hasFDerivAt_const (toMK k⁻¹, toMK k) z).prod
-      (Ps1.conjCLM (toMK k⁻¹) (toMK k)).hasFDerivAt
 
 lemma continuous_psi : Continuous fun p : 𝕄 × KG ε => psi p.2 p.1 := by
   have h1 : Continuous fun k : KG ε => toMK k := by
     first
     | fun_prop
-    | (unfold toMK; fun_prop)
-    | continuity
-    | (unfold toMK; continuity)
   have h2 : Continuous fun k : KG ε => toMK k⁻¹ := h1.comp continuous_inv
   have hm : Continuous fun p : 𝕄 × KG ε => mmul (mmul (toMK p.2⁻¹) p.1) (toMK p.2) :=
     continuous_mmul (continuous_mmul (h2.comp continuous_snd) continuous_fst) (h1.comp continuous_snd)
   first
   | exact ((h2.comp continuous_snd).prodMk (h1.comp continuous_snd)).prodMk hm
-  | exact ((h2.comp continuous_snd).prod_mk (h1.comp continuous_snd)).prod_mk hm
 
 def cc (T : KType ε Λ) : ℂ := (Module.finrank ℂ T.V : ℂ) / ((muK ε Set.univ).toReal : ℂ)
 
@@ -219,9 +210,6 @@ lemma continuousOn_G' (T : KType ε Λ) (μ : Fin n → ℤ) (D : List MM) :
   have h1 : Continuous fun k : KG ε => toMK k := by
     first
     | fun_prop
-    | (unfold toMK; fun_prop)
-    | continuity
-    | (unfold toMK; continuity)
   have h2 : Continuous fun k : KG ε => toMK k⁻¹ := h1.comp continuous_inv
   have hop : Continuous fun k : KG ε => T.op k := continuous_subtype_val.comp T.cont
   have hC : Continuous fun k : KG ε => T.op k * projW T * T.op k⁻¹ :=
@@ -235,8 +223,6 @@ lemma continuousOn_G' (T : KType ε Λ) (μ : Fin n → ℤ) (D : List MM) :
     first
     | exact continuous_const.prodMk
         (continuous_mmul (continuous_mmul (h2.comp continuous_snd) continuous_const) (h1.comp continuous_snd))
-    | exact continuous_const.prod_mk
-        (continuous_mmul (continuous_mmul (h2.comp continuous_snd) continuous_const) (h1.comp continuous_snd))
   exact (hFd.clm_apply hdy.continuousOn).smul (hC.comp continuous_snd).continuousOn
 
 lemma continuous_Fwk (μ : Fin n → ℤ) (D : List MM) {z : 𝕄} (hz : z ∈ Ps1.Uset ε) :
@@ -244,7 +230,6 @@ lemma continuous_Fwk (μ : Fin n → ℤ) (D : List MM) {z : 𝕄} (hz : z ∈ P
   have hc : Continuous fun k : KG ε => psi k z := by
     first
     | exact continuous_psi.comp (Continuous.prodMk continuous_const continuous_id)
-    | exact continuous_psi.comp (Continuous.prod_mk continuous_const continuous_id)
   exact (contDiffOn_Fw μ D).continuousOn.comp_continuous hc (fun k => hz k)
 
 lemma continuous_Gk (T : KType ε Λ) (μ : Fin n → ℤ) (D : List MM) {z : 𝕄} (hz : z ∈ Ps1.Uset ε) :
@@ -259,9 +244,6 @@ lemma continuous_G'k (T : KType ε Λ) (μ : Fin n → ℤ) (D : List MM) {z : �
   have h1 : Continuous fun k : KG ε => toMK k := by
     first
     | fun_prop
-    | (unfold toMK; fun_prop)
-    | continuity
-    | (unfold toMK; continuity)
   have h2 : Continuous fun k : KG ε => toMK k⁻¹ := h1.comp continuous_inv
   have hop : Continuous fun k : KG ε => T.op k := continuous_subtype_val.comp T.cont
   have hC : Continuous fun k : KG ε => T.op k * projW T * T.op k⁻¹ :=
@@ -269,7 +251,6 @@ lemma continuous_G'k (T : KType ε Λ) (μ : Fin n → ℤ) (D : List MM) {z : �
   have hps : Continuous fun k : KG ε => psi k z := by
     first
     | exact continuous_psi.comp (Continuous.prodMk continuous_const continuous_id)
-    | exact continuous_psi.comp (Continuous.prod_mk continuous_const continuous_id)
   have hFd : Continuous fun k : KG ε => fderiv ℂ (Fw μ D) (psi k z) :=
     ((contDiffOn_Fw μ D).continuousOn_fderiv_of_isOpen isOpen_Om le_top).comp_continuous hps
       (fun k => hz k)
@@ -277,20 +258,17 @@ lemma continuous_G'k (T : KType ε Λ) (μ : Fin n → ℤ) (D : List MM) {z : �
   have hdy : Continuous fun k : KG ε => dpsi k y := by
     first
     | exact continuous_const.prodMk (continuous_mmul (continuous_mmul h2 continuous_const) h1)
-    | exact continuous_const.prod_mk (continuous_mmul (continuous_mmul h2 continuous_const) h1)
   exact (hFd.clm_apply hdy).smul hC
 
 lemma integrable_G [CompactSpace (KG ε)] (T : KType ε Λ) (μ : Fin n → ℤ) (D : List MM) {z : 𝕄}
     (hz : z ∈ Ps1.Uset ε) : Integrable (G T μ D z) (muK ε) := by
   first
   | exact (continuous_Gk T μ D hz).integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
-  | exact integrableOn_univ.1 ((continuous_Gk T μ D hz).continuousOn.integrableOn_compact isCompact_univ)
 
 lemma integrable_G' [CompactSpace (KG ε)] (T : KType ε Λ) (μ : Fin n → ℤ) (D : List MM) {z : 𝕄}
     (hz : z ∈ Ps1.Uset ε) : Integrable (G' T μ D z) (muK ε) := by
   first
   | exact (continuous_G'k T μ D hz).integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
-  | exact integrableOn_univ.1 ((continuous_G'k T μ D hz).continuousOn.integrableOn_compact isCompact_univ)
 
 lemma hasFDerivAt_intG [CompactSpace (KG ε)] (T : KType ε Λ) (μ : Fin n → ℤ) (D : List MM)
     {z : 𝕄} (hz : z ∈ Ps1.Uset ε) :
@@ -314,8 +292,6 @@ lemma toMK_mul_inv (k : KG ε) : toMK k * toMK k⁻¹ = 1 := by
   | (simp only [toMK]; rw [← map_mul, mul_inv_cancel, map_one])
   | (unfold toMK; rw [← map_mul, mul_inv_cancel, map_one])
   | simp [toMK, toM]
-  | (unfold toMK toM; simp)
-  | (simp only [toMK, toM]; simp [Matrix.mul_eq_one_comm])
 
 lemma G'_apply (T : KType ε Λ) (μ : Fin n → ℤ) (D : List MM) {z : MM} (hz : z ∈ Ps1.Uset ε)
     (k : KG ε) (Z : MM) : G' T μ D z k (Z * z) = G T μ (Z :: D) z k := by

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.AbsNormCoprimeOfSup
 public import Formalism.LocalToGlobal.Divisibility.DefGroup
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Afsplit
 public import Formalism.FlagUnipotentLattices.MemOfOrthogonalAnisotropic
@@ -62,6 +63,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 
 @[expose] public section
 
@@ -318,7 +320,7 @@ private theorem span_eq_top_of_def_unimod
 theorem clFinite_of (h : LevFiniteIndex) : ClFinite := by
   intro F E _ _ _ _ _ _ hc LL _ n J L β D hU hβ
   obtain ⟨hle, hidx⟩ := h F E hc LL n J L β D hβ
-  have hfin := Formalism.UG.Final.ClassSetFiniteL F E (Fin n) hc.sig J (cm_comp hc) hU.herm hU.unit hU.tdef L
+  have hfin := _root_.Formalism.UG.P.lattice_class_set_finite_local_holds F E (Fin n) hc.sig J (cm_comp hc) hU.herm hU.unit hU.tdef L
     (Module.Finite.iff_fg.2 hU.lat.fg) (span_eq_top_of_def_unimod hU)
   refine class_set_finite_of_finite_index _ _ _ _ ?_ ?_ hfin
   · intro x hx
@@ -1305,81 +1307,11 @@ theorem fr_li {S V V' V'' : Type} [CommRing S] [Algebra R S] [AddCommGroup V] [M
     [Module R V''] (hRS : RingHom.ker (algebraMap R S) ≠ ⊤) (f : V'' →ₗ[R] V) (hf : Function.Injective f)
     (f' : V'' →ₗ[R] V') {ι : Type} {b : ι → V''} (hb' : LinearIndependent S (f' ∘ b)) :
     LinearIndependent K (f ∘ b) := by
-  contrapose hb' with hb
-  simp only [linearIndependent_iff', not_forall] at hb ⊢
-  obtain ⟨s, g, eq, j', hj's, hj'g⟩ := hb
-  use s
-  obtain ⟨a, hag, j, hjs, hgI⟩ := Ideal.exist_integer_multiples_notMem hRS s g hj's hj'g
-  choose g'' hg'' using hag
-  let := Classical.propDecidable
-  let g' i := if h : i ∈ s then g'' i h else 0
-  have hg' : ∀ i ∈ s, algebraMap _ _ (g' i) = a * g i := by
-    intro i hi; exact (congr_arg _ (dif_pos hi)).trans (hg'' i hi)
-  have hgI : algebraMap R S (g' j) ≠ 0 := by
-    simp only [FractionalIdeal.mem_coeIdeal, not_exists, not_and'] at hgI
-    exact hgI _ (hg' j hjs)
-  refine ⟨fun i => algebraMap R S (g' i), ?_, j, hjs, hgI⟩
-  have eq : f (∑ i ∈ s, g' i • b i) = 0 := by
-
-    rw [map_sum, ← smul_zero a, ← eq, Finset.smul_sum]
-    refine Finset.sum_congr rfl ?_
-    intro i hi
-    rw [map_smul, ← IsScalarTower.algebraMap_smul K, hg' i hi, ← smul_assoc,
-      smul_eq_mul, Function.comp_apply]
-
-  simp only [IsScalarTower.algebraMap_smul, ← map_smul, ← map_sum,
-  (f.map_eq_zero_iff hf).mp eq, map_zero, (· ∘ ·)]
+  apply (config := { allowSynthFailures := true }) GlobalTheory.latticeFrame.modLI_li <;> assumption
 
 theorem fr_gen_mod (P : Ideal R) [hP : P.IsMaximal] {n : ℕ} (L : Submodule R (Fin n → K)) (hfg : L.FG) :
     ∃ g : Fin n → (Fin n → K), (∀ i, g i ∈ L) ∧ L ≤ Submodule.span R (Set.range g) ⊔ P • L := by
-  classical
-  let _ : Field (R ⧸ P) := Ideal.Quotient.field P
-  have : Module.Finite R ↥L := Module.Finite.iff_fg.2 hfg
-  have : Module.Finite (R ⧸ P) (↥L ⧸ (P • (⊤ : Submodule R ↥L))) :=
-    Module.Finite.of_restrictScalars_finite R (R ⧸ P) _
-  let c := Module.finBasis (R ⧸ P) (↥L ⧸ (P • (⊤ : Submodule R ↥L)))
-  choose lift hlift using Submodule.mkQ_surjective (P • (⊤ : Submodule R ↥L))
-  let ct : Fin (Module.finrank (R ⧸ P) (↥L ⧸ (P • (⊤ : Submodule R ↥L)))) → ↥L := fun i => lift (c i)
-  have hli : LinearIndependent K (L.subtype ∘ ct) := by
-    refine fr_li (S := R ⧸ P) ?_ L.subtype (Submodule.subtype_injective L)
-      (Submodule.mkQ (P • (⊤ : Submodule R ↥L))) ?_
-    · rw [Ideal.Quotient.algebraMap_eq, Ideal.mk_ker]; exact hP.ne_top
-    · have : (Submodule.mkQ (P • (⊤ : Submodule R ↥L))) ∘ ct = c := funext fun i => hlift _
-      rw [this]; exact c.linearIndependent
-  have hmn : Module.finrank (R ⧸ P) (↥L ⧸ (P • (⊤ : Submodule R ↥L))) ≤ n := by
-    have := hli.fintype_card_le_finrank
-    simpa using this
-  refine ⟨fun i => if h : i.val < Module.finrank (R ⧸ P) (↥L ⧸ (P • (⊤ : Submodule R ↥L))) then
-    (ct ⟨i.val, h⟩ : Fin n → K) else 0, ?_, ?_⟩
-  · intro i
-    dsimp only
-    split_ifs
-    · exact (ct _).2
-    · exact L.zero_mem
-  · intro x hx
-    choose r hr using fun j => Ideal.Quotient.mk_surjective
-      (c.repr (Submodule.mkQ (P • (⊤ : Submodule R ↥L)) ⟨x, hx⟩) j)
-    have hdiff : (⟨x, hx⟩ : ↥L) - ∑ j, r j • ct j ∈ P • (⊤ : Submodule R ↥L) := by
-      rw [← Submodule.Quotient.mk_eq_zero, Submodule.Quotient.mk_sub, sub_eq_zero]
-      have h1 := c.sum_repr (Submodule.mkQ (P • (⊤ : Submodule R ↥L)) ⟨x, hx⟩)
-      show Submodule.mkQ (P • (⊤ : Submodule R ↥L)) ⟨x, hx⟩ =
-        Submodule.mkQ (P • (⊤ : Submodule R ↥L)) (∑ j, r j • ct j)
-      conv_lhs => rw [← h1]
-
-      rw [map_sum]
-      refine Finset.sum_congr rfl fun j _ => ?_
-      rw [← hr j, map_smul, hlift]
-      rfl
-    have hdiff' : x - ∑ j, r j • (ct j : Fin n → K) ∈ P • L := by
-      have h2 := Submodule.mem_map_of_mem (f := L.subtype) hdiff
-      rw [Submodule.map_smul'', Submodule.map_subtype_top] at h2
-      simpa using h2
-    have hx2 : x = ∑ j, r j • (ct j : Fin n → K) + (x - ∑ j, r j • (ct j : Fin n → K)) := by abel
-    rw [hx2]
-    refine Submodule.add_mem_sup (Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ ?_) hdiff'
-    refine Submodule.subset_span ⟨⟨j.val, lt_of_lt_of_le j.2 hmn⟩, ?_⟩
-    dsimp only
-    rw [dif_pos j.2]
+  apply GlobalTheory.latticeFrame.modLI_gen <;> assumption
 
 end FrAlg
 
@@ -1389,104 +1321,13 @@ variable {E : Type} [Field E] [NumberField E] {n : ℕ}
 
 theorem fr_coprime (I : Ideal (𝓞 E)) (hI : I ≠ ⊥) (D : ℕ) (h : I ⊔ Ideal.span {(D : 𝓞 E)} = ⊤) :
     Nat.Coprime (Ideal.absNorm I) D := by
-  classical
-  by_contra hc
-  obtain ⟨p, hp, h1, h2⟩ := Nat.Prime.not_coprime_iff_dvd.1 hc
-  have := Fact.mk hp
-  have : Finite (𝓞 E ⧸ I) := Ideal.finiteQuotientOfFreeOfNeBot I hI
-  have := Fintype.ofFinite (𝓞 E ⧸ I)
-  have hcard : p ∣ Fintype.card (𝓞 E ⧸ I) := by
-    rwa [← Nat.card_eq_fintype_card, ← Ideal.absNorm_eq_natCard]
-  obtain ⟨x, hx⟩ := exists_prime_addOrderOf_dvd_card p hcard
-  have hpx : p • x = 0 := by rw [← hx]; exact addOrderOf_nsmul_eq_zero x
-  have hx0 : x ≠ 0 := by
-    rintro rfl
-    rw [addOrderOf_zero] at hx
-    exact hp.one_lt.ne hx
-  obtain ⟨q, rfl⟩ := h2
-  have h1' : (1 : 𝓞 E) ∈ I ⊔ Ideal.span {((p * q : ℕ) : 𝓞 E)} := by rw [h]; exact Submodule.mem_top
-  obtain ⟨a, ha, b, hb, hab⟩ := Submodule.mem_sup.1 h1'
-  obtain ⟨t, rfl⟩ := Ideal.mem_span_singleton'.1 hb
-  apply hx0
-  have e1 : Ideal.Quotient.mk I (t * ((p * q : ℕ) : 𝓞 E)) = 1 := by
-    rw [← map_one (Ideal.Quotient.mk I), ← hab, map_add (f := _), Ideal.Quotient.eq_zero_iff_mem.2 ha, zero_add]
-  calc x = Ideal.Quotient.mk I (t * ((p * q : ℕ) : 𝓞 E)) * x := by rw [e1, one_mul]
-    _ = Ideal.Quotient.mk I t * (Ideal.Quotient.mk I (q : 𝓞 E)) * (p • x) := by
-        rw [nsmul_eq_mul]; push_cast; simp only [map_mul, map_natCast]; ring
-    _ = 0 := by rw [hpx, mul_zero]
+  apply GlobalTheory.latticeFrame.absNorm_coprime_of_sup <;> assumption
 
 theorem fr_good_basis (L : Submodule (𝓞 E) (Fin n → E)) (hfg : L.FG) (D : ℕ) (hD : D ≠ 0) (P0 : Pl E)
     (hP0 : (D : 𝓞 E) ∈ P0.asIdeal) :
     ∃ (b : Fin n → (Fin n → E)) (d : ℕ), (∀ i, b i ∈ L) ∧ d ≠ 0 ∧ Nat.Coprime d D ∧
       ∀ x ∈ L, (d : 𝓞 E) • x ∈ Submodule.span (𝓞 E) (Set.range b) := by
-  classical
-  have hD' : (D : 𝓞 E) ≠ 0 := Nat.cast_ne_zero.2 hD
-  set Ps : Finset (Pl E) := primesOf (D : 𝓞 E) with hPs
-  have hg : ∀ PP : Pl E, ∃ g : Fin n → (Fin n → E), (∀ i, g i ∈ L) ∧
-      L ≤ Submodule.span (𝓞 E) (Set.range g) ⊔ PP.asIdeal • L := fun PP => by
-    have := PP.isMaximal
-    exact fr_gen_mod PP.asIdeal L hfg
-  choose g hgL hgen using hg
-  have hε : ∀ PP : Pl E, PP ∈ Ps → ∃ ε : 𝓞 E, ε - 1 ∈ PP.asIdeal ∧ ∀ QQ ∈ Ps, QQ ≠ PP → ε ∈ QQ.asIdeal := by
-    intro PP hPP
-    obtain ⟨y, hy⟩ := IsDedekindDomain.exists_forall_sub_mem_ideal (s := Ps) (fun QQ : Pl E => QQ.asIdeal)
-      (fun _ => 1) (fun QQ _ => QQ.prime) (fun i _ j _ hij h => hij (HeightOneSpectrum.ext h))
-      (fun QQ => if QQ.1 = PP then 1 else 0)
-    refine ⟨y, ?_, ?_⟩
-    · have := hy PP hPP
-      simpa using this
-    · intro QQ hQ hne
-      have := hy QQ hQ
-      simpa [hne] using this
-  choose! ε hε1 hε0 using hε
-  let b : Fin n → (Fin n → E) := fun i => ∑ PP ∈ Ps, ε PP • g PP i
-  set N := Submodule.span (𝓞 E) (Set.range b) with hN
-  have hbL : ∀ i, b i ∈ L := fun i => Submodule.sum_mem _ fun PP _ => L.smul_mem _ (hgL PP i)
-  have hsup : ∀ PP ∈ Ps, L ≤ N ⊔ PP.asIdeal • L := by
-    intro PP hPP
-    refine le_trans (hgen PP) (sup_le ?_ le_sup_right)
-    rw [Submodule.span_le]
-    rintro _ ⟨i, rfl⟩
-    have e : g PP i = b i - ((ε PP - 1) • g PP i + ∑ QQ ∈ Ps.erase PP, ε QQ • g QQ i) := by
-      show _ = (∑ QQ ∈ Ps, ε QQ • g QQ i) - _
-      rw [← Finset.add_sum_erase _ _ hPP, sub_smul, one_smul]; abel
-    rw [SetLike.mem_coe, e]
-    refine Submodule.sub_mem _ (Submodule.mem_sup_left (Submodule.subset_span ⟨i, rfl⟩))
-      (Submodule.mem_sup_right ?_)
-    refine Submodule.add_mem _ (Submodule.smul_mem_smul (hε1 PP hPP) (hgL PP i))
-      (Submodule.sum_mem _ fun QQ hQ => ?_)
-    exact Submodule.smul_mem_smul
-      (hε0 QQ (Finset.mem_of_mem_erase hQ) PP hPP (Finset.ne_of_mem_erase hQ).symm) (hgL QQ i)
-  have hr : ∀ PP ∈ Ps, ∃ r : 𝓞 E, r - 1 ∈ PP.asIdeal ∧ ∀ x ∈ L, r • x ∈ N := by
-    intro PP hPP
-    obtain ⟨r, hr1, hr2⟩ := Submodule.exists_sub_one_mem_and_smul_le_of_fg_of_le_sup hfg le_rfl (hsup PP hPP)
-    exact ⟨r, hr1, fun x hx => hr2 (Submodule.smul_mem_pointwise_smul x r L hx)⟩
-  let cI : Ideal (𝓞 E) :=
-    { carrier := {r | ∀ x ∈ L, r • x ∈ N}
-      add_mem' := fun {a b} ha hb x hx => by rw [add_smul]; exact N.add_mem (ha x hx) (hb x hx)
-      zero_mem' := fun x _ => by rw [zero_smul]; exact N.zero_mem
-      smul_mem' := fun c {a} ha x hx => by rw [smul_eq_mul, mul_smul]; exact N.smul_mem _ (ha x hx) }
-  have hP0' : P0 ∈ Ps := mem_primesOf.2 ⟨hD', hP0⟩
-  have hcI0 : cI ≠ ⊥ := by
-    obtain ⟨r, hr1, hr2⟩ := hr P0 hP0'
-    intro h0
-    have h1 : r ∈ cI := hr2
-    rw [h0, Ideal.mem_bot] at h1
-    rw [h1, zero_sub, neg_mem_iff] at hr1
-    exact P0.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 hr1)
-  have htop : cI ⊔ Ideal.span {(D : 𝓞 E)} = ⊤ := by
-    by_contra hne
-    obtain ⟨mI, hmax, hle⟩ := Ideal.exists_le_maximal _ hne
-    have hDm : (D : 𝓞 E) ∈ mI := hle (Submodule.mem_sup_right (Ideal.mem_span_singleton_self _))
-    let PP : Pl E := ⟨mI, hmax.isPrime, fun h => hD' (by rw [h] at hDm; exact hDm)⟩
-    obtain ⟨r, hr1, hr2⟩ := hr PP (mem_primesOf.2 ⟨hD', hDm⟩)
-    have h1 : r ∈ mI := hle (Submodule.mem_sup_left hr2)
-    have h2 : (1 : 𝓞 E) ∈ mI := by
-      have := mI.sub_mem h1 hr1
-      simpa using this
-    exact hmax.ne_top ((Ideal.eq_top_iff_one _).2 h2)
-  exact ⟨b, Ideal.absNorm cI, hbL, fun h => hcI0 (Ideal.absNorm_eq_zero_iff.1 h), fr_coprime cI hcI0 D htop,
-    Ideal.absNorm_mem cI⟩
+  apply GlobalTheory.latticeFrame.exists_good_basis <;> assumption
 
 end FrNF
 
@@ -1503,57 +1344,7 @@ theorem fr_adele (D d : 𝓞 F) (hD : D ≠ 0)
     (hcop : ∀ v : HeightOneSpectrum (𝓞 F), D ∈ v.asIdeal → d ∉ v.asIdeal) :
     ∃ e w w' : Af F, e ∈ intAd F ∧ w ∈ intAd F ∧ w' ∈ intAd F ∧ e * e = e ∧ e * w' = 0 ∧
       algebraMap (𝓞 F) (Af F) d * w = e ∧ algebraMap (𝓞 F) (Af F) D * w' = 1 - e := by
-  classical
-  have he : ∀ v : HeightOneSpectrum (𝓞 F),
-      (if D ∈ v.asIdeal then (1 : v.adicCompletion F) else 0) ∈ v.adicCompletionIntegers F := by
-    intro v
-    split_ifs
-    · exact one_mem _
-    · exact zero_mem _
-  have hw : ∀ v : HeightOneSpectrum (𝓞 F),
-      (if D ∈ v.asIdeal then (algebraMap (𝓞 F) (v.adicCompletion F) d)⁻¹ else 0) ∈
-        v.adicCompletionIntegers F := by
-    intro v
-    split_ifs with h
-    · exact fr_inv_int v d (hcop v h)
-    · exact zero_mem _
-  have hw' : ∀ v : HeightOneSpectrum (𝓞 F),
-      (if D ∈ v.asIdeal then 0 else (algebraMap (𝓞 F) (v.adicCompletion F) D)⁻¹) ∈
-        v.adicCompletionIntegers F := by
-    intro v
-    split_ifs with h
-    · exact zero_mem _
-    · exact fr_inv_int v D h
-  refine ⟨⟨fun v => if D ∈ v.asIdeal then (1 : v.adicCompletion F) else 0, Filter.Eventually.of_forall he⟩,
-    ⟨fun v => if D ∈ v.asIdeal then (algebraMap (𝓞 F) (v.adicCompletion F) d)⁻¹ else 0,
-      Filter.Eventually.of_forall hw⟩,
-    ⟨fun v => if D ∈ v.asIdeal then 0 else (algebraMap (𝓞 F) (v.adicCompletion F) D)⁻¹,
-      Filter.Eventually.of_forall hw'⟩, he, hw, hw', ?_, ?_, ?_, ?_⟩
-  · ext1 v
-    show (if D ∈ v.asIdeal then (1 : v.adicCompletion F) else 0) * (if D ∈ v.asIdeal then 1 else 0) =
-      if D ∈ v.asIdeal then 1 else 0
-    split_ifs <;> simp
-  · ext1 v
-    show (if D ∈ v.asIdeal then (1 : v.adicCompletion F) else 0) *
-      (if D ∈ v.asIdeal then 0 else (algebraMap (𝓞 F) (v.adicCompletion F) D)⁻¹) = 0
-    split_ifs <;> simp
-  · ext1 v
-    show algebraMap (𝓞 F) (v.adicCompletion F) d *
-      (if D ∈ v.asIdeal then (algebraMap (𝓞 F) (v.adicCompletion F) d)⁻¹ else 0) =
-      if D ∈ v.asIdeal then 1 else 0
-    split_ifs with h
-    · refine mul_inv_cancel₀ (Formalism.UG.P.levelaf_algebraMap_ne_zero v d ?_)
-      rintro rfl
-      exact hcop v h (Ideal.zero_mem _)
-    · rw [mul_zero]
-  · ext1 v
-    show algebraMap (𝓞 F) (v.adicCompletion F) D *
-      (if D ∈ v.asIdeal then 0 else (algebraMap (𝓞 F) (v.adicCompletion F) D)⁻¹) =
-      1 - if D ∈ v.asIdeal then 1 else 0
-    split_ifs with h
-    · rw [mul_zero, sub_self]
-    · rw [sub_zero]
-      exact mul_inv_cancel₀ (Formalism.UG.P.levelaf_algebraMap_ne_zero v D hD)
+  apply GlobalTheory.latticeFrame.exists_adele_idem <;> assumption
 
 end FrAd
 

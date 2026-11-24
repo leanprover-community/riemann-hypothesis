@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.GenPtSpecializesOfSpecializes
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsCptGen
 public import Mathlib.AlgebraicGeometry.Noetherian
 import Mathlib.Algebra.Order.Floor.Extended
@@ -75,28 +76,7 @@ theorem exists_isOpen_common_generization {Y : Type*} [TopologicalSpace Y]
 theorem genPt_specializes_of_specializes {X : Scheme.{0}} {Ω : Type} [Field Ω]
     (ξ : Spec (CommRingCat.of Ω) ⟶ X) (h : IsCptGen ξ) {p z : X}
     (hp : genPt ξ ⤳ p) (hz : z ⤳ p) : genPt ξ ⤳ z := by
-  obtain ⟨y, rfl⟩ : z ∈ Set.range (X.fromSpecStalk p) := by
-    rw [Scheme.range_fromSpecStalk]; exact hz
-  have hinj := h.inj ⟨p, hp⟩
-  haveI : IsDomain (X.presheaf.stalk p) := hinj.isDomain (genMap ξ ⟨p, hp⟩)
-  have hp' : ξ (IsLocalRing.closedPoint (CommRingCat.of Ω)) ⤳ p := hp
-  let φ := X.presheaf.stalkSpecializes hp' ≫ Scheme.stalkClosedPointTo ξ
-  have hφ : Spec.map φ ≫ X.fromSpecStalk p = ξ := by
-    change Spec.map (X.presheaf.stalkSpecializes hp' ≫ Scheme.stalkClosedPointTo ξ) ≫ _ = ξ
-    rw [Spec.map_comp, Category.assoc, Scheme.SpecMap_stalkSpecializes_fromSpecStalk]
-    exact Scheme.Spec_stalkClosedPointTo_fromSpecStalk ξ
-  have hbot : (Spec.map φ) (IsLocalRing.closedPoint Ω) =
-      (⟨⊥, Ideal.isPrime_bot⟩ : PrimeSpectrum (X.presheaf.stalk p)) := by
-    apply PrimeSpectrum.ext
-    change Ideal.comap (genMap ξ ⟨p, hp⟩) (IsLocalRing.maximalIdeal Ω) = ⊥
-    rw [IsLocalRing.maximalIdeal_eq_bot]
-    exact Ideal.comap_bot_of_injective _ hinj
-  have hη : genPt ξ = X.fromSpecStalk p ⟨⊥, Ideal.isPrime_bot⟩ := by
-    rw [← hbot]
-    conv_lhs => rw [genPt, ← hφ]
-    rfl
-  rw [hη]
-  exact ((PrimeSpectrum.le_iff_specializes _ _).1 bot_le).map (X.fromSpecStalk p).continuous
+  apply GlobalTheory.CompanionTheory.Ar.Flat.genPt_specializes_of_specializes <;> assumption
 
 theorem isClopen_setOf_genPt_specializes (X : Scheme.{0}) (Ω : Type) [Field Ω]
     (ξ : Spec (CommRingCat.of Ω) ⟶ X) [IsLocallyNoetherian X] (h : IsCptGen ξ) :

@@ -76,26 +76,8 @@ private lemma herm_swap_eq_zero_of_eq_zero (X : Data E r) (x y : Fin r → E) (h
          simp only [cc] at hg
          rw [hg]
          ring)
-      | (have hg := X.Gm_herm a b
-         simp only [cc] at hg
-         rw [hg]
-         ring)
   rw [← e, h]
   simp [cc]
-
-private lemma herm_smul_left_fundamental_domains (G : Matrix (Fin r) (Fin r) E) (c : E) (x z : Fin r → E) :
-    herm G (c • x) z = c * herm G x z := by
-  simp only [herm, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
-  simp only [Pi.smul_apply, smul_eq_mul]
-  ring
-
-private lemma herm_smul_right_eq_cc_mul (G : Matrix (Fin r) (Fin r) E) (c : E) (x z : Fin r → E) :
-    herm G x (c • z) = cc c * herm G x z := by
-  simp only [herm, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
-  simp only [Pi.smul_apply, smul_eq_mul, cc, map_mul]
-  ring
 
 theorem isIsoPair_of (X : DataX E r) {ξ x : Fin r → E} (hξ : X.IsIso ξ) (hxξ : herm X.Gm x ξ = 0)
     (hxx : herm X.Gm x x = 0) (hne : ∀ e : E, x ≠ e • ξ) :
@@ -106,7 +88,7 @@ theorem isIsoPair_of (X : DataX E r) {ξ x : Fin r → E} (hξ : X.IsIso ξ) (hx
   refine ⟨?_, LinearIndependent.pair_iff.mpr fun s t hst => ?_⟩
   · intro i k
     fin_cases i <;> fin_cases k <;>
-      simp [herm_smul_left_fundamental_domains, herm_smul_right_eq_cc_mul, hξξ, hxξ, hxx, hξx]
+      simp [_root_.ReciprocityTheory.ChartRestriction.G.FD.HermitianTraceFormVanishing.herm_smul_left, _root_.ReciprocityTheory.ChartRestriction.G.FD.HermitianTraceFormVanishing.herm_smul_right, hξξ, hxξ, hxx, hξx]
   · by_cases ht : t = 0
     · subst ht
       simp only [zero_smul, add_zero] at hst

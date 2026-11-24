@@ -126,11 +126,6 @@ private lemma tele_fin (d : Fin n → ℂ) (hd : ∀ l, d l ≠ 0) (μ : Fin n �
 
 private lemma lead_differentiable_lemma (i : ℕ) :
     Differentiable ℂ (fun z : Matrix (Fin n) (Fin n) ℂ => lead i z) := by
-  have hent : ∀ a b : Fin n, Differentiable ℂ (fun z : Matrix (Fin n) (Fin n) ℂ => z a b) := by
-    intro a b
-    let L : Matrix (Fin n) (Fin n) ℂ →ₗ[ℂ] ℂ :=
-      { toFun := fun M => M a b, map_add' := fun _ _ => rfl, map_smul' := fun _ _ => rfl }
-    exact (LinearMap.toContinuousLinearMap L).differentiable
   unfold lead
   split_ifs with h
   · simp only [Matrix.det_apply', Matrix.submatrix_apply]

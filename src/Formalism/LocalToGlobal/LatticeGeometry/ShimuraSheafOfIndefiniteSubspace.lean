@@ -38,6 +38,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import Formalism.DegreeFormula.PointDegree.PowSum
 
 @[expose] public section
 
@@ -50,23 +51,10 @@ namespace Formalism.L2.Geo
 variable {D : D7} {G : DV.Geo D.what₂.LL} {Lev : Type} {jC : ∀ (p : ℕ) [Fact p.Prime], PlL D p → (DV.KW p →+* ℂ)}
   {ng : NgPkg}
 
-private theorem permExp_degree_eq_dimFl {ι : Type} [Fintype ι] {N : ℕ} (σ : ι → Equiv.Perm (Fin N)) :
-    (Formalism.DegreeFormula.permExp σ).degree = Formalism.DegreeFormula.dimFl ι N := by
-  rw [Finsupp.degree_eq_sum]
-  simp only [Formalism.DegreeFormula.permExp, Finsupp.coe_equivFunOnFinite_symm]
-  rw [Fintype.sum_prod_type]
-  have h1 : ∀ τ : ι, ∑ i : Fin N, (N - 1 - ((σ τ i : Fin N) : ℕ)) = N * (N - 1) / 2 := by
-    intro τ
-    rw [Equiv.sum_comp (σ τ) (fun i : Fin N => N - 1 - (i : ℕ))]
-    rw [Fin.sum_univ_eq_sum_range (fun i => N - 1 - i) N]
-    rw [Finset.sum_range_reflect (fun i => i) N]
-    exact Finset.sum_range_id N
-  simp only [h1, Finset.sum_const, Finset.card_univ, smul_eq_mul, Formalism.DegreeFormula.dimFl]
-
 theorem chernOf_homog (Tau : Type) [Fintype Tau] (N : ℕ) (vol : ℝ) (P : MvPolynomial (DV.Rt Tau N) ℝ)
     (d : ℕ) (hd : d ≠ Formalism.DegreeFormula.dimFl Tau N) (hP : P.IsHomogeneous d) : chernOf Tau N vol P = 0 := by
   have hc : ∀ σ : Tau → Equiv.Perm (Fin N), P.coeff (Formalism.DegreeFormula.permExp σ) = 0 := fun σ =>
-    hP.coeff_eq_zero (by rw [permExp_degree_eq_dimFl]; exact fun h => hd h.symm)
+    hP.coeff_eq_zero (by rw [_root_.Formalism.DegreeFormula.PPowSum.degree_permExp]; exact fun h => hd h.symm)
   simp [chernOf, degFlL, LinearMap.sum_apply, MvPolynomial.lcoeff_apply, hc]
 
 def toShimX {w : Dat D Lev} (U : ShimU D G jC ng w) (h : w.Indef) (lev : Finset ℕ)
@@ -163,9 +151,5 @@ structure TiedX (X : DivX D) (levPr : X.Lev → Finset ℕ) (hlev : ∀ κ, ∀ 
   geo : CompatibleGeometry X κg U eC
 
   lev_κg : levPr κg = Finset.univ.image D.host.g
-
-theorem psiOf_cm (p : ℕ) [Fact p.Prime] (jc : DV.KW p →+* ℂ) (τ : DV.Emb D p) :
-    τ ∈ DV.PsiOf D jc ↔ DV.cEmb D τ ∉ DV.PsiOf D jc := by
-  exact cm_type_meets_conjugate_pair p jc τ
 
 end Formalism.L2.Geo

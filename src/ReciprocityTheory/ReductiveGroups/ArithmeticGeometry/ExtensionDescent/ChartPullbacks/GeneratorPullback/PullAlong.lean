@@ -70,14 +70,12 @@ lemma pullU_comp (a : Z ⟶ Y) (h : Y ⟶ X) (U : X.Opens) (u : Γ(X, U)ˣ) :
     pullU (a ≫ h) U u = pullU a (h ⁻¹ᵁ U) (pullU h U u) := by
   first
     | rfl
-    | (ext1; simp [pullU])
 
 lemma gU_pullU_comp (a : Z ⟶ Y) (h : Y ⟶ X) (U : X.Opens) (u : Γ(X, U)ˣ) (z : Z)
     (hz : z ∈ a ⁻¹ᵁ (h ⁻¹ᵁ U)) (hz' : z ∈ (a ≫ h) ⁻¹ᵁ U) :
     gU z hz (pullU a (h ⁻¹ᵁ U) (pullU h U u)) = gU z hz' (pullU (a ≫ h) U u) := by
   first
     | exact (congrArg (gU z hz) (pullU_comp a h U u)).symm
-    | exact (congrArg (gU z hz') (pullU_comp a h U u)).symm
 
 lemma gU_rp_rp (a : Z ⟶ Y) (h : Y ⟶ X) {U : X.Opens} {V : Y.Opens} (hV : V ≤ h ⁻¹ᵁ U)
     {W : Z.Opens} (hW : W ≤ a ⁻¹ᵁ V) (u : Γ(X, U)ˣ) (z : Z) (hz : z ∈ W) :

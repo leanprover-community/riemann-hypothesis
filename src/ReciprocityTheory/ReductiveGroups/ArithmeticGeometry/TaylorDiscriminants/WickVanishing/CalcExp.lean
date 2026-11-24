@@ -351,8 +351,7 @@ theorem exp_log {f : MvPowerSeries σ k} (hf : constantCoeff f = 1) :
     PowerSeries.subst_X hb, powerSeries_subst_one]
   ring
 
-theorem log_exp {a : MvPowerSeries σ k} (ha : constantCoeff a = 0) :
-    PowerSeries.subst (PowerSeries.subst a (PowerSeries.exp k) - 1) (PowerSeries.log k) = a := subst_log_subst_exp_sub_one_eq_self ha
+alias log_exp := _root_.ReciprocityTheory.ChartRestriction.G.TB.WickVanishing.subst_log_subst_exp_sub_one_eq_self
 
 end Log
 

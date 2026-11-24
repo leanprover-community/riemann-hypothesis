@@ -166,7 +166,7 @@ theorem refNorm_smul (a : K → ℤ) (c : K → ℂ) (z : (Σ k, ι k) → ℂ) 
   have : (∑ i, ‖torusSmul c z ⟨k, i⟩‖ ^ 2) = ‖c k‖ ^ 2 * ∑ i, ‖z ⟨k, i⟩‖ ^ 2 := by
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
-    simp [torusSmul, norm_mul, mul_pow]
+    simp [torusSmul, mul_pow]
   rw [this, Real.mul_rpow (sq_nonneg _) (Finset.sum_nonneg fun _ _ => sq_nonneg _),
     sq_rpow_half (norm_nonneg _)]
 

@@ -70,7 +70,6 @@ theorem cs_abs {V : Type} [AddCommGroup V] [Module ℂ V] (Dv : V → Prop) (β 
   set a := (β x x).re
   set c := (β y y).re
   have hc : 0 ≤ c := (Complex.nonneg_iff.1 (hpos y hy)).1
-  have ha : 0 ≤ a := (Complex.nonneg_iff.1 (hpos x hx)).1
   have hB : ‖b‖ ^ 2 = Complex.normSq b := by rw [Complex.sq_norm]
   have key : ∀ t : ℝ, 0 ≤ a - 2 * t * Complex.normSq b + t ^ 2 * Complex.normSq b * c := by
     intro t

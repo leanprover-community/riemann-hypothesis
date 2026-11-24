@@ -124,7 +124,7 @@ private lemma invStep_contract (f g : MvPowerSeries Unit R) (n : ℕ)
         simpa using h
 
 private lemma existsUnique_invStep : ∃! g, invStep F g = g :=
-  existsUnique_fixedPoint _ (invStep_contract F)
+  _root_.UpperTheory.Reformulated.B.Ydb5.existsUnique_fixedPoint _ (invStep_contract F)
 
 @[no_expose]
 noncomputable def inv : PowerSeries R :=

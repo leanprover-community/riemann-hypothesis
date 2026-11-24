@@ -83,9 +83,9 @@ lemma stdH_apply' (L : PeriodPair) {n : Type} [Fintype n] [DecidableEq n] (z w :
   rw [stdH, matH_apply', Finset.mul_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [Finset.sum_eq_single i]
-  · simp [Matrix.smul_apply, Matrix.one_apply] <;> ring
+  · simp [Matrix.smul_apply] <;> ring
   · intro j _ hj
-    simp [Matrix.smul_apply, Matrix.one_apply, Ne.symm hj]
+    simp [Matrix.smul_apply, Ne.symm hj]
   · simp
 
 lemma matrixForm_diagBlocks_blockEmbed {n : Type} [Fintype n] [DecidableEq n] (h : Matrix n n ℂ) (a b : Fin 4) (v v' : n → ℂ) :

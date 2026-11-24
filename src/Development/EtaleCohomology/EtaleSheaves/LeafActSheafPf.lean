@@ -1,7 +1,8 @@
 module
 
-public import Development.EtaleCohomology.EtaleSheaves.LeafUnitActPfAug
+public import Development.AbelianVarietyTheory.Definitions.Divisors.SecClass
 public import Development.EtaleCohomology.EtaleSheaves.LeafUnitActPf
+import Mathlib.Algebra.Category.ModuleCat.FilteredColimits
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -41,7 +42,75 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.Polynomial.Basic
+import Development.EtaleCohomology.EtaleSheaves.CupProductRingLaws
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: Development.EtaleCohomology.EtaleSheaves.LeafUnitActPfAug, Development.EtaleCohomology.EtaleSheaves.LeafActSheafPf
+
+-- ===== clump member: Development.EtaleCohomology.EtaleSheaves.LeafUnitActPfAug =====
+-- clump-header: {"m": "Development.EtaleCohomology.EtaleSheaves.LeafUnitActPfAug", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.SecClass\nimport Mathlib.Algebra.Category.ModuleCat.FilteredColimits\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.AlgebraicGeometry.Modules.Sheaf\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Development.EtaleCohomology.EtaleSheaves.CupProductRingLaws\n\n"}
+section -- clump:auto
+@[expose] public section
+
+noncomputable section
+open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC
+
+namespace LateralTheory.E.LeafUnitActPfAug
+
+def sumC (q : ℕ) (A : Type) [CommRing A] : (Prim q A →₀ ULift.{1} (ZMod q)) →ₗ[ULift.{1} (ZMod q)] ULift.{1} (ZMod q) :=
+  Finsupp.linearCombination _ (fun _ => 1)
+
+theorem twRel_zero_le (q : ℕ) (A : Type) [CommRing A] : twRel q 0 A ≤ LinearMap.ker (sumC q A) := by
+  refine Submodule.span_le.2 ?_
+  rintro x ⟨ζ, ξ, a, -, rfl⟩
+  simp [sumC]
+  exact sub_self _
+
+def aug (q : ℕ) (A : Type) [CommRing A] :
+    ((Prim q A →₀ ULift.{1} (ZMod q)) ⧸ twRel q 0 A) →ₗ[ULift.{1} (ZMod q)] ULift.{1} (ZMod q) :=
+  (twRel q 0 A).liftQ (sumC q A) (twRel_zero_le q A)
+
+theorem aug_mk_single (q : ℕ) {A : Type} [CommRing A] (ζ : Prim q A) :
+    aug q A (Submodule.Quotient.mk (Finsupp.single ζ 1)) = 1 := by
+  simp [aug, sumC]
+
+theorem aug_map (q : ℕ) {A B : CommRingCat.{0}} (f : A ⟶ B) (x : (twF q 0).obj A) :
+    aug q B (((twF q 0).map f).hom x) = aug q A x := by
+  induction x using Submodule.Quotient.induction_on with
+  | H y =>
+    change aug q B (Submodule.Quotient.mk (Finsupp.mapDomain (Prim.map f.hom) y)) = aug q A (Submodule.Quotient.mk y)
+    simp only [aug, Submodule.liftQ_apply, sumC]
+    induction y using Finsupp.induction_linear with
+    | zero => simp
+    | add u v hu hv => simp [Finsupp.mapDomain_add, hu, hv]
+    | single p c => simp [Finsupp.mapDomain_single]
+
+end LateralTheory.E.LeafUnitActPfAug
+
+namespace LateralTheory.E.LeafUnitActPfAug
+open LateralTheory.E.CupProductRingLaws
+
+theorem etale_tate_twist_zero_section_locally_lifts_to_ring_value (q : ℕ) {U : Scheme.{0}} (a : Sec (tw q 0) U) :
+    Loc U (fun V g => ∃ x : (twF q 0).obj Γ(V, ⊤), Sec.res g a = ofRings.sec (twF q 0) V x) := by
+  refine ⟨_, Presheaf.imageSieve_mem Scheme.etaleTopology.{0}
+    (toSheafify Scheme.etaleTopology.{0} (Scheme.Γ ⋙ twF q 0)) (U := op U) a, fun V g ⟨t, ht⟩ => ⟨t, ht.symm⟩⟩
+
+theorem etale_tate_twist_zero_sections_eq_locally_of_sheafified_eq (q : ℕ) {U : Scheme.{0}} (x y : (twF q 0).obj Γ(U, ⊤))
+    (h : ofRings.sec (twF q 0) U x = ofRings.sec (twF q 0) U y) :
+    Loc U (fun V g => ((twF q 0).map g.appTop).hom x = ((twF q 0).map g.appTop).hom y) := by
+  refine ⟨_, Presheaf.equalizerSieve_mem Scheme.etaleTopology.{0}
+    (toSheafify Scheme.etaleTopology.{0} (Scheme.Γ ⋙ twF q 0)) (X := op U) x y h, fun V g hg => hg⟩
+
+end LateralTheory.E.LeafUnitActPfAug
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.EtaleCohomology.EtaleSheaves.LeafUnitActPfAug =====
+
+-- ===== clump member: Development.EtaleCohomology.EtaleSheaves.LeafActSheafPf =====
+-- clump-header: {"m": "Development.EtaleCohomology.EtaleSheaves.LeafActSheafPf", "h": "module\n\npublic import Development.EtaleCohomology.EtaleSheaves.LeafUnitActPfAug\npublic import Development.EtaleCohomology.EtaleSheaves.LeafUnitActPf\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.AlgebraicGeometry.Modules.Sheaf\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
+section -- clump:auto
 @[expose] public section
 
 noncomputable section
@@ -77,7 +146,7 @@ theorem map_smul' {F G : Shv R} (φ : F ⟶ G) {U : Scheme.{0}} (c : ULift.{1} R
 theorem sec_res (M : CommRingCat.{0} ⥤ ModuleCat.{1} (ULift.{1} R)) {V U : Scheme.{0}} (g : V ⟶ U) (x : M.obj Γ(U, ⊤)) :
     Sec.res (F := ofRings R M) g (ofRings.sec M U x) = ofRings.sec M V ((M.map g.appTop).hom x) := by
   have h := congrArg (fun f => f.hom x) ((toSheafify Scheme.etaleTopology.{0} (Scheme.Γ ⋙ M)).naturality g.op)
-  simp only [ModuleCat.hom_comp, LinearMap.comp_apply] at h
+  simp only [ModuleCat.hom_comp] at h
   exact h.symm
 
 theorem loc_and {U : Scheme.{0}} {P Q : ∀ V : Scheme.{0}, (V ⟶ U) → Prop} (hP : Loc U P) (hQ : Loc U Q) :
@@ -237,3 +306,7 @@ theorem LeafActSheaf_of : LeafActSheaf := by
     exact act_gen F ζ b
 
 end LateralTheory.E.LeafActSheafPf
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.EtaleCohomology.EtaleSheaves.LeafActSheafPf =====

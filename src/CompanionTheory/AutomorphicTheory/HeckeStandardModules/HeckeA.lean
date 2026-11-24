@@ -135,15 +135,11 @@ section FG
 
 variable {R : Type} [CommRing R] [Algebra R ℂ]
 
-theorem eval_fg {σ : Type} {M₀ : Submodule R ℂ} (h₀ : M₀.FG) (P : MvPolynomial σ ℂ) :
-    ∃ M : Submodule R ℂ, M.FG ∧ ∀ v : σ → ℂ, (∀ i, v i ∈ M₀) → MvPolynomial.eval v P ∈ M :=
-  _root_.UpperTheory.Reformulated.B.Qn15.eval_fg h₀ P
-
 theorem apply_fg [Module R W] [IsScalarTower R ℂ W] {σ κ : Type} [Fintype κ] [DecidableEq κ] (b : Module.Basis κ ℂ W)
     (P : κ → κ → MvPolynomial σ ℂ) {M₀ : Submodule R ℂ} (h₀ : M₀.FG) (w : W) :
     ∃ N : Submodule R W, N.FG ∧ ∀ (A : W →ₗ[ℂ] W) (v : σ → ℂ), (∀ i, v i ∈ M₀) →
       (LinearMap.toMatrix b b A = fun i j => MvPolynomial.eval v (P i j)) → A w ∈ N := by
-  choose M h1 h2 using fun p : κ × κ => eval_fg h₀ (P p.1 p.2)
+  choose M h1 h2 using fun p : κ × κ => _root_.UpperTheory.Reformulated.B.Qn15.eval_fg h₀ (P p.1 p.2)
   refine ⟨⨆ p : κ × κ, (M p).map ((LinearMap.toSpanSingleton ℂ W (b.repr w p.2 • b p.1)).restrictScalars R),
     Submodule.fg_iSup _ fun p => (h1 p).map _, fun A v hv hA => ?_⟩
   rw [← b.sum_repr (A w)]

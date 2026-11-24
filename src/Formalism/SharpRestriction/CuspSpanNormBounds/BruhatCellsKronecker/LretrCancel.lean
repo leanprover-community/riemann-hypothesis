@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaModuloX.IotaSurjectiveHolds
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BruhatCellsKronecker.IdLiftDef
 public import Lemmata.GeneralBFactRightAltForm.Imports
 import Mathlib.Algebra.Order.Floor.Extended
@@ -55,7 +56,7 @@ variable {E : Type} [Field E] [NumberField E] {V : Type} [AddCommGroup V] [Modul
 
 theorem lretr_den (A : Set V) (y : V) (hy : y ∈ Submodule.span E A) :
     ∃ d : 𝓞 E, d ≠ 0 ∧ d • y ∈ Submodule.span (𝓞 E) A := by
-  first | exact Bl.general_b_fact_right_alt_form.goal1 .. | (apply Bl.general_b_fact_right_alt_form.goal1 <;> assumption) | (intros; apply Bl.general_b_fact_right_alt_form.goal1 <;> assumption)
+  first | (apply Bl.general_b_fact_right_alt_form.goal1 <;> assumption)
 
 theorem lretr_cancel (d : 𝓞 E) (hd : d ≠ 0) (x y : V) (h : d • x = d • y) : x = y := by
   have hdE : algebraMap (𝓞 E) E d ≠ 0 := by
@@ -71,30 +72,7 @@ theorem lretr_mem (X : Submodule E V) (d : 𝓞 E) (hd : d ≠ 0) (x : V) (h : d
 
 theorem lretr_rho (Λ : Submodule (𝓞 E) V) (hfg : Λ.FG) (X : Submodule E V) :
     ∃ ρ : Λ →ₗ[𝓞 E] Λ, (∀ l : Λ, ((ρ l : Λ) : V) ∈ X) ∧ ∀ l : Λ, (l : V) ∈ X → ρ l = l := by
-  let N : Submodule (𝓞 E) Λ := (X.restrictScalars (𝓞 E)).comap Λ.subtype
-  have hmemN : ∀ l : Λ, l ∈ N ↔ (l : V) ∈ X := fun l => Iff.rfl
-  have : Module.Finite (𝓞 E) Λ := Module.Finite.iff_fg.2 hfg
-  have : Module.IsTorsionFree (𝓞 E) (Λ ⧸ N) := by
-    apply Module.IsTorsionFree.of_smul_eq_zero
-    intro r m hrm
-    by_cases hr : r = 0
-    · exact Or.inl hr
-    · right
-      obtain ⟨l, rfl⟩ := N.mkQ_surjective m
-      rw [← map_smul, Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero, hmemN] at hrm
-      rw [Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero, hmemN]
-      exact lretr_mem X r hr _ hrm
-  have : Module.FinitePresentation (𝓞 E) (Λ ⧸ N) := Module.finitePresentation_of_finite _ _
-  have : Module.Projective (𝓞 E) (Λ ⧸ N) := Module.Flat.projective_of_finitePresentation
-  obtain ⟨s, hs⟩ := Module.projective_lifting_property N.mkQ LinearMap.id N.mkQ_surjective
-  refine ⟨LinearMap.id - s ∘ₗ N.mkQ, fun l => ?_, fun l hl => ?_⟩
-  · rw [← hmemN, ← Submodule.Quotient.mk_eq_zero, ← Submodule.mkQ_apply]
-    show N.mkQ (l - s (N.mkQ l)) = 0
-    have := LinearMap.congr_fun hs (N.mkQ l)
-    simp only [LinearMap.comp_apply, LinearMap.id_apply] at this
-    rw [map_sub, this, sub_self]
-  · have h0 : N.mkQ l = 0 := by rw [Submodule.mkQ_apply, Submodule.Quotient.mk_eq_zero, hmemN]; exact hl
-    simp [h0]
+  apply PI.UnitaryGroupMassFormula.BetaModX.Iota.exists_retract <;> assumption
 
 end
 
@@ -107,7 +85,7 @@ theorem l_retr : IntegralRetraction := by
   have hK : Disjoint K X := by
     rw [Submodule.disjoint_def]
     intro x hxK hxX
-    obtain ⟨d, hd, hdx⟩ := lretr_den (N : Set S.V) x hxK
+    obtain ⟨d, hd, hdx⟩ := _root_.Bl.general_b_fact_right_alt_form.goal1 (N : Set S.V) x hxK
     have hdxN : d • x ∈ N := by
       simpa only [Submodule.span_eq] using hdx
     obtain ⟨n, hn, he⟩ := Submodule.mem_map.mp hdxN

@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.Divisibility.GeneratorPowers.PsiCover
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.TowerOrigin
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -171,28 +172,7 @@ theorem two_le_hostRd (H : Host E) : 2 ≤ hostRd E := by
     _ ≤ _ := Real.rpow_le_rpow (by positivity) h' (by positivity)
 
 theorem rt0_conj_neg_ne_zero (H : Host E) : starRingEnd ℂ H.rt0 = -H.rt0 := by
-  have h := H.sqrt_neg_disc_sq
-  rw [pow_two] at h
-  have hd : (7:ℝ) ≤ H.d := by exact_mod_cast seven_le_d H
-  have hre : H.rt0.re * H.rt0.re - H.rt0.im * H.rt0.im = -(H.d:ℝ) := by
-    have h1 := congrArg Complex.re h
-    simp only [Complex.mul_re, Complex.neg_re, Complex.natCast_re] at h1
-    exact h1
-  have him : H.rt0.re * H.rt0.im + H.rt0.im * H.rt0.re = 0 := by
-    have h1 := congrArg Complex.im h
-    simp only [Complex.mul_im, Complex.neg_im, Complex.natCast_im, neg_zero] at h1
-    exact h1
-  have h1 : H.rt0.re * H.rt0.im = 0 := by linear_combination (1/2 : ℝ) * him
-  have h2 : H.rt0.re * H.rt0.re * (H.rt0.re * H.rt0.re + H.d) = 0 := by
-    linear_combination (H.rt0.re * H.rt0.re) * hre + (H.rt0.re * H.rt0.im) * h1
-  have h3 : H.rt0.re * H.rt0.re = 0 := by
-    rcases mul_eq_zero.mp h2 with h4 | h4
-    · exact h4
-    · nlinarith [mul_self_nonneg H.rt0.re]
-  have ha : H.rt0.re = 0 := mul_self_eq_zero.mp h3
-  apply Complex.ext
-  · simp only [Complex.conj_re, Complex.neg_re, ha, neg_zero]
-  · simp only [Complex.conj_im, Complex.neg_im]
+  apply Formalism.MainNotions.ModuliIntegralCharts.H1.rt0_conj_neg_ne_zero <;> assumption
 
 theorem rt0_ne_zero (H : Host E) : H.rt0 ≠ 0 := by
   intro h

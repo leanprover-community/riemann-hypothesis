@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.RelayGeneralCaseOfAdmissible
 public import Formalism.SharpRestriction.LevelLetterCocycles.FiltrationSaturationKiller
 public import Formalism.SharpRestriction.LevelLetterCocycles.JumpsLetOfWin
 public import Formalism.SharpRestriction.LevelLetterCocycles.WachFrobeniusLatticeUnramifiedFunctor
@@ -98,30 +99,7 @@ theorem arith_h (p h : ℕ) (hp : 2 ≤ p) : h < (p - 1) * (2 * h / (p - 1) + 1)
 
 theorem jumpsLe_of_win (A : ArcP n) (hA : A.OK) (T : LocLat G Qp LL O)
     (hT : Win W A T) : JumpsLe PD T A.h := by
-  intro τ a ha
-  obtain ⟨i, hi⟩ := W.emb_bij.2 (τ.comp (IsScalarTower.toAlgHom Qp K₀ K))
-  have hw := hT.2 i τ hi.symm a ha
-  have hok := hA.2.2.2.2.1 i
-  have hGh := hA.2.2.2.2.2.1
-  have hth := hA.2.2.2.2.2.2.2.1 i
-  revert hw hok hth
-  cases A.ty i with
-  | thin =>
-    intro hw _ _
-    simp only [Formalism.MainNotions.LocalTheoryWindows.LT.win, Set.mem_Icc] at hw
-    rw [abs_le]; constructor <;> omega
-  | up b =>
-    intro hw hok hth
-    simp only [Formalism.MainNotions.LocalTheoryWindows.LT.win, Set.mem_union, Set.mem_Icc] at hw
-    simp only [Formalism.MainNotions.LocalTheoryWindows.LT.ok] at hok
-    simp only [Formalism.MainNotions.LocalTheoryWindows.LT.thick, Formalism.MainNotions.LocalTheoryWindows.LT.size, forall_const] at hth
-    rw [abs_le]; constructor <;> omega
-  | down b =>
-    intro hw hok hth
-    simp only [Formalism.MainNotions.LocalTheoryWindows.LT.win, Set.mem_union, Set.mem_Icc] at hw
-    simp only [Formalism.MainNotions.LocalTheoryWindows.LT.ok] at hok
-    simp only [Formalism.MainNotions.LocalTheoryWindows.LT.thick, Formalism.MainNotions.LocalTheoryWindows.LT.size, forall_const] at hth
-    rw [abs_le]; constructor <;> omega
+  apply Formalism.MainNotions.UnusedSlot80.Relay2.jumpsLe_of_win <;> assumption
 
 theorem lA_pow_smul (T : LocLat G Qp LL O) (k : ℕ) (x : W.DD T) :
     lA W ^ k • x = (((PD.p : ℕ) : O) ^ k) • x := by
@@ -509,8 +487,6 @@ theorem map_φpow {T T' : LocLat G Qp LL O} (f : LatHom T.L T'.L) (k : ℕ) (x :
     rw [PhiPowers.pow_apply_succ, PhiPowers.pow_apply_succ, ← ih]
     first
     | exact W.map_φ f _
-    | exact (W.map_φ f _).symm
-    | simp [W.map_φ]
 
 theorem φpow_smulA (T : LocLat G Qp LL O) (k : ℕ) (a : LetA O n) (x : W.DD T) :
     ((W.φD T) ^ k) (a • x) = (W.φA ^ k) a • ((W.φD T) ^ k) x := by
@@ -531,13 +507,6 @@ theorem φpow_smulO (T : LocLat G Qp LL O) (k : ℕ) (r : O) (x : W.DD T) :
     rw [PhiPowers.pow_apply_succ, ih, PhiPowers.pow_apply_succ]
     first
     | exact map_smul (W.φD T) r _
-    | exact W.φD_smulO T r _
-    | (rw [← algebraMap_smul (LetA O n) r, φD_smulA, ← algebraMap_smul (LetA O n) r]
-       congr 1
-       first
-       | exact AlgHom.commutes _ r
-       | exact W.φA_alg r
-       | simp)
 
 theorem φ_letE_e (e : W.DD W.one) (he : W.φD W.one e = e) (i : ZMod n) (k : ℕ) :
     ((W.φD W.one) ^ k) ((letE i : LetA O n) • e) = (letE (i + (k : ZMod n)) : LetA O n) • e := by
@@ -556,9 +525,6 @@ theorem γ_φpow (T : LocLat G Qp LL O) (k : ℕ) (x : W.DD T) :
     rw [PhiPowers.pow_apply_succ, PhiPowers.pow_apply_succ, ← ih]
     first
     | exact (W.φγ_comm _ _ _).symm
-    | exact W.φγ_comm _ _ _
-    | (simp only [LocWach.γ]; exact (W.φγ_comm _ _ _).symm)
-    | (simp only [LocWach.γ]; exact W.φγ_comm _ _ _)
 
 theorem φpow_add (T : LocLat G Qp LL O) (a b : ℕ) (x : W.DD T) :
     ((W.φD T) ^ a) (((W.φD T) ^ b) x) = ((W.φD T) ^ (b + a)) x := by

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AdjointMemAndExistsIntegralPoint
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.IsLatMeasurableConst
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AutPointRationalEquivariance
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
@@ -109,7 +110,7 @@ theorem gram_adapted {a m : ℕ} {j : Fin a → ℕ} (J : Matrix (Fin n) (Fin n)
       refine (congrFun (congrFun (h2 i).1 s) t).trans ?_
       simp [Matrix.one_apply]
     · refine (congrFun (congrFun ((h1 i k).2.2 h) s) t).trans ?_
-      simp [Matrix.one_apply, h]
+      simp [h]
   have a13 : (cat T)ᴴ * J * T₀ = 0 := by
     ext ⟨i, s⟩ t
     exact congrFun (congrFun (h2 i).2.1 s) t
@@ -169,50 +170,7 @@ theorem exists_point (I : AutInst) (γ : GL (Fin I.n) I.E) (hγ : γ ∈ Formali
     ∃ a : I.GA,
       (∀ v, uMat (a.1 v) = (I.P v)⁻¹ * (γ : Matrix (Fin I.n) (Fin I.n) I.E).map (I.φ v) * I.P v) ∧
       I.fmat a.2 = (γ : Matrix (Fin I.n) (Fin I.n) I.E).map (Formalism.UG.inclE (F := I.F) (Af I.F)) := by
-  have hφ : ∀ v e, starRingEnd ℂ (I.φ v e) = I.φ v (starRingEnd I.E e) :=
-    fun v e => (I.cm.cmUnram.2.1 (I.φ v) e).symm
-  have hf : ∀ e, Formalism.UG.sigR I.cm.sig (Af I.F) (Formalism.UG.inclE (F := I.F) (Af I.F) e) =
-      Formalism.UG.inclE (F := I.F) (Af I.F) (starRingEnd I.E e) := by
-    intro e
-    simp [Formalism.UG.sigR, Formalism.UG.inclE]
-    rfl
-  have hPP : ∀ v, I.P v * (I.P v)⁻¹ = 1 := fun v =>
-    Matrix.mul_nonsing_inv _ ((Matrix.isUnit_iff_isUnit_det _).1 (I.P_unit v))
-  let u : ∀ v : InfinitePlace I.F, (Matrix (Fin I.n) (Fin I.n) ℂ)ˣ := fun v =>
-    (I.P_unit v).unit⁻¹ * Formalism.UG.bc (I.φ v) γ * (I.P_unit v).unit
-  have hu : ∀ v, (u v : Matrix (Fin I.n) (Fin I.n) ℂ) =
-      (I.P v)⁻¹ * (γ : Matrix (Fin I.n) (Fin I.n) I.E).map (I.φ v) * I.P v := by
-    intro v
-    simp only [u, Units.val_mul, Matrix.coe_units_inv, IsUnit.unit_spec]
-    rfl
-  have hPu : ∀ v, I.P v * (u v : Matrix (Fin I.n) (Fin I.n) ℂ) =
-      (γ : Matrix (Fin I.n) (Fin I.n) I.E).map (I.φ v) * I.P v := by
-    intro v
-    rw [hu, ← Matrix.mul_assoc, ← Matrix.mul_assoc, hPP, Matrix.one_mul]
-  have hU : ∀ v, u v ∈ Formalism.REAL.UJ (I.ε v) := by
-    intro v
-    change (u v : Matrix (Fin I.n) (Fin I.n) ℂ)ᴴ * Formalism.REAL.Jm (I.ε v) *
-      (u v : Matrix (Fin I.n) (Fin I.n) ℂ) = Formalism.REAL.Jm (I.ε v)
-    have h := unitary_map _ _ (I.φ v) (hφ v) I.J _ hγ
-    have hc : Formalism.UG.cT (starRingEnd ℂ) ((γ : Matrix (Fin I.n) (Fin I.n) I.E).map (I.φ v)) =
-        ((γ : Matrix (Fin I.n) (Fin I.n) I.E).map (I.φ v))ᴴ := by
-      ext i j
-      simp [Formalism.UG.cT]
-    rw [hc] at h
-    rw [← I.P_spec v]
-    calc (u v : Matrix (Fin I.n) (Fin I.n) ℂ)ᴴ * ((I.P v)ᴴ * I.J.map (I.φ v) * I.P v) *
-          (u v : Matrix (Fin I.n) (Fin I.n) ℂ)
-        = (I.P v * (u v : Matrix (Fin I.n) (Fin I.n) ℂ))ᴴ * I.J.map (I.φ v) *
-          (I.P v * (u v : Matrix (Fin I.n) (Fin I.n) ℂ)) := by
-          simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = (I.P v)ᴴ * (((γ : Matrix (Fin I.n) (Fin I.n) I.E).map (I.φ v))ᴴ * I.J.map (I.φ v) *
-          (γ : Matrix (Fin I.n) (Fin I.n) I.E).map (I.φ v)) * I.P v := by
-          rw [hPu]
-          simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
-      _ = _ := by rw [h]
-  have hF : Formalism.UG.bc (Formalism.UG.inclE (F := I.F) (Af I.F)) γ ∈ Formalism.UG.UPts I.cm.sig I.J (Af I.F) :=
-    unitary_map _ _ _ hf I.J _ hγ
-  exact ⟨(fun v => ⟨u v, hU v⟩, ⟨_, hF⟩), hu, rfl⟩
+  apply GlobalTheory.RadCov.RatElt.exists_point <;> assumption
 
 theorem mem_ratIso (I : AutInst) (γ : GL (Fin I.n) I.E) (N : Submodule (𝓞 I.E) (Fin I.n → I.E))
     (z : Fin I.n → I.E) :

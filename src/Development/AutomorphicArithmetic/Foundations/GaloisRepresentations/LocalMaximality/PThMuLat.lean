@@ -202,7 +202,6 @@ theorem UpperTheory.Gal.productCup_of_system.thMuLat_of :
             · split_ifs
               · exact hT.memY I J hI j hj _
               · exact zero_mem _)
-      beta_reduce at hdet
       refine ⟨s, hs, ?_⟩
       rw [hdet, hcard]
     · rw [dite_eq_right h]

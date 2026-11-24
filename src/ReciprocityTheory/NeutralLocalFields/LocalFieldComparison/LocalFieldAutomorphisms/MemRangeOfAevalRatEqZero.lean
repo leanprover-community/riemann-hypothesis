@@ -100,8 +100,6 @@ private theorem exists_root_norm_sub_pow_le_eval {K : Type*} [NormedField K] [Is
     have hQ1 : G /ₘ (Polynomial.X - Polynomial.C α) = 1 := by
       first
         | exact Polynomial.eq_one_of_monic_natDegree_zero hQm hQd
-        | exact hQm.natDegree_eq_zero.mp hQd
-        | exact (Polynomial.Monic.natDegree_eq_zero_iff_eq_one hQm).mp hQd
     have he : G.eval b = (b - α) * (G /ₘ (Polynomial.X - Polynomial.C α)).eval b := by
       conv_lhs => rw [← hQ]
       rw [Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C]

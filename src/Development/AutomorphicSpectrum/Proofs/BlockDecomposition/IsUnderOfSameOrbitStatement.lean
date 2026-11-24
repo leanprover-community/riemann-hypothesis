@@ -55,4 +55,4 @@ open ReciprocityTheory.ChartRestriction.G.Geo (mcPts IsMultiHomog SameOrbit)
 
 theorem _root_.GlobalTheory.T.isUnder_of_same_orbit : ∀ (m : ℕ) (n : Fin (m + 1) → ℕ) (w : GlobalTheory.CxPts (mpStr ℤ m n) σ₀) (z z' : (Σ k, Bk n k) → ℂ),
     IsUnder w z → SameOrbit z' z → IsUnder w z' := by
-  first | exact @GlobalTheory.CompanionTheory.MixZ.Orbit.isUnder_of_sameOrbit | exact GlobalTheory.CompanionTheory.MixZ.Orbit.isUnder_of_sameOrbit | (intros; apply GlobalTheory.CompanionTheory.MixZ.Orbit.isUnder_of_sameOrbit <;> assumption)
+  first | exact @GlobalTheory.CompanionTheory.MixZ.Orbit.isUnder_of_sameOrbit

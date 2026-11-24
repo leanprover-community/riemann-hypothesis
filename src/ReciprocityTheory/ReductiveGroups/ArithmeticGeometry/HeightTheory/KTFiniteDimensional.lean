@@ -97,7 +97,7 @@ theorem KTtoS_fieldRange (h : d.S1) (c : ι) :
 
 theorem KT_finiteDimensional (hd : d.AxH 𝒜) (c : ι) :
     FiniteDimensional (d.KT c) (OmS (Ω c) d.D d.N) := by
-  have hfs := ReciprocityTheory.MultiplicativeHeights.Closed.fieldOfS K (Ω c) d.D d.N (d.x c) (hd.fg c) (hd.trdeg c) (hd.a1 c)
+  have hfs := _root_.ReciprocityTheory.MultiplicativeHeights.genericImageFinite K (Ω c) d.D d.N (d.x c) (hd.fg c) (hd.trdeg c) (hd.a1 c)
   let e : TVar d.D d.N ≃ TVar d.D d.N :=
     Equiv.prodCongr (Equiv.refl _) (Fin.cycleRange (d.jc c)).symm
   have key : (ReciprocityTheory.MultiplicativeHeights.sImage (D := d.D) (d.x c)) = (sImg (D := d.D) (d.jc c) (d.x c)) ∘ e := by

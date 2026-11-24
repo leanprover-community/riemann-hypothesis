@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.LsDatumACorr
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.SharpSpanCounting.MemPerpSpanIff
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.SharpSpanCounting.HSumRight
 import Mathlib.Algebra.Order.Floor.Extended
@@ -114,22 +115,7 @@ theorem smul_transport {A B : Type} [AddCommGroup A] [Module E A] [AddCommGroup 
 variable {r : ℕ}
 
 theorem om'_mem (f f' : Fin (r + 1) → V) : H.om' f f' ∈ H.perp (H.X f) := by
-  intro x hx
-  refine Submodule.span_induction (p := fun x _ => H.h (H.om' f f') x = 0) ?_ ?_ ?_ ?_ hx
-  · rintro _ ⟨a, rfl⟩
-    unfold HermSp.om'
-    rw [h_sum_left]
-    have hm := congrFun (congrFun (Matrix.mul_adjugate (H.Zhat f f')) a.castSucc) (Fin.last r)
-    rw [Matrix.mul_apply, Matrix.smul_apply, Matrix.one_apply_ne (Fin.castSucc_lt_last a).ne, smul_zero] at hm
-    rw [← hm]
-    apply Finset.sum_congr rfl
-    intro b _
-    simp [HermSp.Zhat, mul_comm]
-  · exact h_zero_right H _
-  · intro x y _ _ hx hy
-    rw [h_add_right, hx, hy, add_zero]
-  · intro c x _ hx
-    rw [h_smul_right, hx, mul_zero]
+  apply Formalism.L2.SG.LsDatumA.om'_mem_perpX <;> assumption
 
 theorem sends_one {f₁ f₂ : Fin (r + 1) → V} (φ : H.Wb f₁ ≃ₗ[E] H.Wb f₂) (v₁ v₂ : V)
     (h₁ : v₁ ∈ H.perp (H.X f₁)) (h₂ : v₂ ∈ H.perp (H.X f₂))
@@ -159,7 +145,7 @@ theorem h_omP (f f' : Fin (r + 1) → V) (u : V) :
   have hD : H.Dl f f' (r + 1) = (H.Zhat f f').det := by
     unfold HermSp.Dl
     rw [dite_eq_left le_rfl]
-    simp [Fin.castLE_refl]
+    simp
   unfold omP HermSp.om'
   rw [h_smul_right, h_sum_right, Finset.mul_sum]
   apply Finset.sum_congr rfl

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NearTrivialPointwise
 public import Development.AbelianVarietyTheory.BlockTheory.SiegelWeilLocal.SaturatedPerpDuality
 public import Formalism.HarderNarasimhan.ShiftInvariance
 import Mathlib.Algebra.Order.Floor.Extended
@@ -52,22 +53,7 @@ open Formalism.MainNotions.S GlobalTheory.Count
 theorem totallyComplex (I : AutInst) : IsTotallyComplex I.E := I.cm.cmUnram.1
 
 theorem frm_det (I : AutInst) (x : I.GA) (w : InfinitePlace I.E) : IsUnit (frm I x w).det := by
-  have hP : IsUnit (I.P (w.comap (algebraMap I.F I.E))).det :=
-    (Matrix.isUnit_iff_isUnit_det _).mp (I.P_unit _)
-  have hU : IsUnit (uMat (x.1 (w.comap (algebraMap I.F I.E)))).det :=
-    (Matrix.isUnit_iff_isUnit_det _).mp (Units.isUnit _)
-  have hM : IsUnit (I.P (w.comap (algebraMap I.F I.E)) * uMat (x.1 (w.comap (algebraMap I.F I.E)))).det := by
-    rw [Matrix.det_mul]
-    exact hP.mul hU
-  unfold frm
-  split_ifs
-  · exact hM
-  · have e : ((I.P (w.comap (algebraMap I.F I.E)) * uMat (x.1 (w.comap (algebraMap I.F I.E)))).map
-        (starRingEnd ℂ)).det = starRingEnd ℂ
-        (I.P (w.comap (algebraMap I.F I.E)) * uMat (x.1 (w.comap (algebraMap I.F I.E)))).det :=
-      (RingHom.map_det _ _).symm
-    rw [e]
-    exact hM.map _
+  apply GlobalTheory.NearLowerCompare.frm_isUnit <;> assumption
 
 theorem least_pos (I : AutInst) (x : I.GA) (hfg : (lamX I x).FG) (h0 : lamX I x ≠ ⊥) : 0 < least I x := by
   have := totallyComplex I

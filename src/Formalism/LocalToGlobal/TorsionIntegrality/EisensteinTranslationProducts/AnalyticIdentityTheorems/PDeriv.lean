@@ -150,11 +150,11 @@ theorem discNeZero_of (hp : PDerivZero) (hi : PInjective) : DiscNeZero := by
   have hw1 : L.ω₁ ∈ L.lattice := L.ω₁_mem_lattice
   have hw2 : L.ω₂ ∈ L.lattice := PeriodPair.mem_lattice.mpr ⟨0, 1, by push_cast; ring⟩
   have n1 : L.ω₁ / 2 ∉ L.lattice :=
-    notMem_of_rat L 2⁻¹ 0 (by push_cast; ring) (by first | decide | norm_num | simp)
+    notMem_of_rat L 2⁻¹ 0 (by push_cast; ring) (by first | norm_num)
   have n2 : L.ω₂ / 2 ∉ L.lattice :=
-    notMem_of_rat L 0 2⁻¹ (by push_cast; ring) (by first | decide | norm_num | simp)
+    notMem_of_rat L 0 2⁻¹ (by push_cast; ring) (by first | norm_num)
   have n3 : (L.ω₁ + L.ω₂) / 2 ∉ L.lattice :=
-    notMem_of_rat L 2⁻¹ 2⁻¹ (by push_cast; ring) (by first | decide | norm_num | simp)
+    notMem_of_rat L 2⁻¹ 2⁻¹ (by push_cast; ring) (by first | norm_num)
   have d1 : 2 * (L.ω₁ / 2) ∈ L.lattice := by
     rw [show 2 * (L.ω₁ / 2) = L.ω₁ by ring]
     exact hw1
@@ -165,12 +165,12 @@ theorem discNeZero_of (hp : PDerivZero) (hi : PInjective) : DiscNeZero := by
     rw [show 2 * ((L.ω₁ + L.ω₂) / 2) = L.ω₁ + L.ω₂ by ring]
     exact add_mem hw1 hw2
   exact disc_alg _ _ _ _ _ (root _ n1 d1) (root _ n2 d2) (root _ n3 d3)
-    (ne _ _ n1 n2 (notMem_of_rat L 2⁻¹ (-2⁻¹) (by push_cast; ring) (by first | decide | norm_num | simp))
-      (notMem_of_rat L 2⁻¹ 2⁻¹ (by push_cast; ring) (by first | decide | norm_num | simp)))
-    (ne _ _ n1 n3 (notMem_of_rat L 0 (-2⁻¹) (by push_cast; ring) (by first | decide | norm_num | simp))
-      (notMem_of_rat L 1 2⁻¹ (by push_cast; ring) (by first | decide | norm_num | simp)))
-    (ne _ _ n2 n3 (notMem_of_rat L (-2⁻¹) 0 (by push_cast; ring) (by first | decide | norm_num | simp))
-      (notMem_of_rat L 2⁻¹ 1 (by push_cast; ring) (by first | decide | norm_num | simp)))
+    (ne _ _ n1 n2 (notMem_of_rat L 2⁻¹ (-2⁻¹) (by push_cast; ring) (by first | norm_num))
+      (notMem_of_rat L 2⁻¹ 2⁻¹ (by push_cast; ring) (by first | norm_num)))
+    (ne _ _ n1 n3 (notMem_of_rat L 0 (-2⁻¹) (by push_cast; ring) (by first | norm_num))
+      (notMem_of_rat L 1 2⁻¹ (by push_cast; ring) (by first | norm_num)))
+    (ne _ _ n2 n3 (notMem_of_rat L (-2⁻¹) 0 (by push_cast; ring) (by first | norm_num))
+      (notMem_of_rat L 2⁻¹ 1 (by push_cast; ring) (by first | norm_num)))
 
 theorem zetaAdd_of (h : SigmaAdd) (hl : SigmaLogDeriv) (hz : SigmaZero) : ZetaAdd := by
   intro L a b ha hb hab hamb

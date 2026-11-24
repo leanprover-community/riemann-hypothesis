@@ -82,12 +82,6 @@ lemma tensorBasisMap_apply (h : V ≤ U) (m : Γ(M, V)) :
       ((show ((preMod X).obj M).obj (op V) from m) ⊗ₜ resM ((preMod X).obj L) h s :
         ((preMod X).obj M ⊗ (preMod X).obj L).obj (op V)) := rfl
 
-lemma resF_resF_of_le (F : X.Modules) {U V W : X.Opens} (h : V ≤ U) (i : W ≤ V) (m : Γ(F, U)) :
-    resF F i (resF F h m) = resF F (i.trans h) m := by
-  change (F.presheaf.map (homOfLE h).op ≫ F.presheaf.map (homOfLE i).op) m = _
-  rw [← Functor.map_comp]
-  rfl
-
 lemma tmul_basis_bijective {P Q : PMod X} {s : Q.obj (op U)} (hs : IsBasisOn Q U s)
     (h : V ≤ U) :
     Function.Bijective (fun m : P.obj (op V) => (m ⊗ₜ resM Q h s : (P ⊗ Q).obj (op V))) := by
@@ -195,7 +189,7 @@ theorem tensorBasisMap_bijective (hs : IsBasisOn ((preMod X).obj L) U s) (h : V 
           (inf_le_left : W a.1 a.2 ⊓ W b.1 b.2 ≤ W a.1 a.2) (m a.1 a.2)
         have eb := tensorBasisMap_res (M := M) (s := s) (hWU b.1 b.2)
           (inf_le_right : W a.1 a.2 ⊓ W b.1 b.2 ≤ W b.1 b.2) (m b.1 b.2)
-        rw [← ea, ← eb, key, key, resF_resF_of_le, resF_resF_of_le])
+        rw [← ea, ← eb, key, key, _root_.GroundTheory.Arith.SchemeCoh.resF_resF, _root_.GroundTheory.Arith.SchemeCoh.resF_resF])
     refine ⟨g, ?_⟩
     apply sheaf_eq_of_locally ⟨(M ⊗ L).presheaf, (M ⊗ L).isSheaf⟩ (V := V)
     intro x hx
@@ -204,13 +198,6 @@ theorem tensorBasisMap_bijective (hs : IsBasisOn ((preMod X).obj L) U s) (h : V 
     rw [tensorBasisMap_res, ← key x hx]
     congr 1
     exact hg ⟨x, hx⟩
-
-section General
-
-variable {C D : Type*} [Category C] [Category D] [MonoidalCategory C] [MonoidalCategory D]
-  {F : C ⥤ D} [F.Monoidal] {G : D ⥤ C} (adj : F ⊣ G) [IsIso adj.counit]
-
-end General
 
 def tensorDualIso (hL : IsInvertibleSheaf L) : L ⊗ dualSheaf L ≅ 𝟙_ X.Modules :=
   β_ L (dualSheaf L) ≪≫ @asIso _ _ _ _ (dualEval L) (isIso_dualEval hL)

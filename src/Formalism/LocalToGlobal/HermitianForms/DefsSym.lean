@@ -210,7 +210,7 @@ def eBf (N k c : ℕ) (hk : k ≤ N) : Fin N ⊕ Fin c → Fin (N + c) :=
 theorem eBf_inj (N k c : ℕ) (hk : k ≤ N) : Function.Injective (eBf N k c hk) := by
   intro a b h
   rcases a with a | a <;> rcases b with b | b <;>
-    simp only [eBf, Sum.elim_inl, Sum.elim_inr, Fin.mk.injEq, insB, Sum.inl.injEq, Sum.inr.injEq,
+    simp only [eBf, Sum.elim_inl, Sum.elim_inr, insB, Sum.inl.injEq, Sum.inr.injEq,
       reduceCtorEq, Fin.ext_iff] at h ⊢ <;>
     have ha := a.isLt <;> have hb := b.isLt <;> (try split_ifs at h) <;> omega
 

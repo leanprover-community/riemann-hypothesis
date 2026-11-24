@@ -100,7 +100,7 @@ theorem flatAt_shift {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)
     flatAt ψ dV dW μS 𝓕S μT 𝓕T νU x y (heisO ψ V W (dV.extX W (x ⬝ N)) f) =
       psiE ψ (upSum N) • flatAt ψ dV dW μS 𝓕S μT 𝓕T νU x y f := by
   funext w
-  simp only [flatAt, flatFun, evalAt, Pi.smul_apply, smul_eq_mul, Check.mixS_heis_extX]
+  simp only [flatAt, flatFun, evalAt, Pi.smul_apply, smul_eq_mul]
   set c := psiE ψ (upSum N) with hcdef
   have hc : c * star c = 1 := psiE_mul_star hψ _
   set H : Mx D ρ ρ → ℂ := fun m => (_root_.I195MixedCoordinates_da3d54e6b295c596ea3330b3.target dW) V₀ ψ μT 𝓕T ((_root_.I195MixedCoordinates_da3d54e6b295c596ea3330b3.source dV) W ψ μS 𝓕S f (x ⬝ m)) y w with hH

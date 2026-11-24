@@ -1,5 +1,6 @@
 module
 
+import CompanionTheory.RealGroups.GeneralUnitaryRepresentations.ArchimedeanJacquetSegments.SegmentSubquotients.IsSubquotientJacMultiProdOfSub
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.SegmentRepresentation
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InSupportOfIsSubquotient
 import Mathlib.Algebra.Order.Floor.Extended
@@ -70,18 +71,7 @@ theorem isSubquotient_jac_multiProd_of_sub {d l : ℕ} (σ : IrrRep (GL (Fin d) 
 
 theorem perm_eq_one_of_lt_succ {l : ℕ} (w : Equiv.Perm (Fin l))
     (h : ∀ (i : ℕ) (hi : i + 1 < l), w.symm ⟨i, by omega⟩ < w.symm ⟨i + 1, hi⟩) : w = 1 := by
-  cases l with
-  | zero => exact Subsingleton.elim _ _
-  | succ n =>
-    have hm : StrictMono w.symm := Fin.strictMono_iff_lt_succ.2 fun i => h i.1 (by omega)
-    have he : ∀ y, w.symm y = y := fun y => by
-      have := congrArg (fun e : Fin (n + 1) ≃o Fin (n + 1) => e y)
-        (Subsingleton.elim (hm.orderIsoOfSurjective _ w.symm.surjective) (OrderIso.refl _))
-      simpa using this
-    ext x
-    have hx := he (w x)
-    simp only [Equiv.symm_apply_apply] at hx
-    simp [← hx]
+  apply _root_.CompanionTheory.Pf1.SegRepC.Lift.perm_eq_one_of_lt_succ <;> assumption
 
 end PositivityTheory.Pf1.SegRepC.Lift
 

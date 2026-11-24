@@ -68,13 +68,6 @@ noncomputable section
 
 variable {e : ℕ} {X : Type} [TopologicalSpace X]
 
-theorem st_hessC_congr {D : ℕ} {f g : (Fin D → ℂ) → ℝ} {y : Fin D → ℂ} (h : f =ᶠ[𝓝 y] g) :
-    hessC f y = hessC g y := by
-  have h2 : fderiv ℝ (fderiv ℝ f) y = fderiv ℝ (fderiv ℝ g) y :=
-    (h.fderiv (𝕜 := ℝ)).fderiv_eq
-  unfold hessC
-  rw [h2]
-
 private lemma maDens_congr_of_hessC_eq {D : ℕ} {F F' : Fin D → (Fin D → ℂ) → ℝ} {y : Fin D → ℂ}
     (h : ∀ k, hessC (F k) y = hessC (F' k) y) : maDens F y = maDens F' y := by
   unfold maDens
@@ -83,14 +76,10 @@ private lemma maDens_congr_of_hessC_eq {D : ℕ} {F F' : Fin D → (Fin D → �
 private lemma two_le_infty_withTop : (2 : WithTop ℕ∞) ≤ ∞ := by
   first
     | exact WithTop.coe_le_coe.2 (le_top : (2 : ℕ∞) ≤ ⊤)
-    | exact_mod_cast le_top
-    | simp
 
 private lemma three_le_infty_withTop : (3 : WithTop ℕ∞) ≤ ∞ := by
   first
     | exact WithTop.coe_le_coe.2 (le_top : (3 : ℕ∞) ≤ ⊤)
-    | exact_mod_cast le_top
-    | simp
 
 private lemma contDiffAt_two_re_of_analyticAt {D : ℕ} {K : (Fin D → ℂ) → ℂ} {z : Fin D → ℂ}
     (hK : AnalyticAt ℂ K z) : ContDiffAt ℝ 2 (fun w => (K w).re) z :=
@@ -101,14 +90,14 @@ private lemma hessC_add_potential {D : ℕ} {f g : (Fin D → ℂ) → ℝ} {y :
     hessC (fun z => f z + g z) y = hessC f y + hessC g y := by
   have hd : fderiv ℝ (fun z => f z + g z) =ᶠ[𝓝 y] fun z => fderiv ℝ f z + fderiv ℝ g z := by
     filter_upwards [hf, hg] with z h1 h2
-    exact fderiv_add (h1.differentiableAt (by first | norm_num | exact one_le_two | simp))
-      (h2.differentiableAt (by first | norm_num | exact one_le_two | simp))
+    exact fderiv_add (h1.differentiableAt (by first | norm_num))
+      (h2.differentiableAt (by first | norm_num))
   have hf2 : DifferentiableAt ℝ (fderiv ℝ f) y :=
     (hf.self_of_nhds.fderiv_right (m := 1)
-      (by first | norm_num | exact le_of_eq one_add_one_eq_two | simp)).differentiableAt (by first | exact one_ne_zero | norm_num | simp)
+      (by first | norm_num)).differentiableAt (by first | exact one_ne_zero)
   have hg2 : DifferentiableAt ℝ (fderiv ℝ g) y :=
     (hg.self_of_nhds.fderiv_right (m := 1)
-      (by first | norm_num | exact le_of_eq one_add_one_eq_two | simp)).differentiableAt (by first | exact one_ne_zero | norm_num | simp)
+      (by first | norm_num)).differentiableAt (by first | exact one_ne_zero)
   have hH : fderiv ℝ (fderiv ℝ (fun z => f z + g z)) y =
       fderiv ℝ (fderiv ℝ f) y + fderiv ℝ (fderiv ℝ g) y := by
     rw [hd.fderiv_eq]
@@ -130,7 +119,6 @@ private lemma hessC_re_of_analyticAt {D : ℕ} {H : (Fin D → ℂ) → ℂ} {y 
     rw [hd.fderiv]
     first
       | rfl
-      | (ext v; simp)
   have hD : HasFDerivAt (fderiv ℂ H) ((fderiv ℂ (fderiv ℂ H) y).restrictScalars ℝ) y :=
     hH.fderiv.differentiableAt.hasFDerivAt.restrictScalars ℝ
   have h2 : HasFDerivAt (fun z => (ContinuousLinearMap.compL ℝ (Fin D → ℂ) ℂ ℝ Complex.reCLM)
@@ -146,7 +134,6 @@ private lemma hessC_re_of_analyticAt {D : ℕ} {H : (Fin D → ℂ) → ℂ} {y 
     rw [h1.fderiv_eq, h2.fderiv]
     first
       | rfl
-      | simp
   ext i k
   simp only [hessC, hv, Matrix.zero_apply, map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
   simp [Complex.mul_re, Complex.mul_im]
@@ -157,24 +144,8 @@ theorem st_maDens_cons_congr {n : ℕ} {f g : (Fin (n + 1) → ℂ) → ℝ}
   apply maDens_congr_of_hessC_eq
   intro k
   refine Fin.cases ?_ (fun i => ?_) k
-  · simpa only [Fin.cons_zero] using st_hessC_congr h
+  · simpa only [Fin.cons_zero] using _root_.ReciprocityTheory.AnForm.A.hessC_congr' h
   · simp only [Fin.cons_succ]
-
-private lemma continuous_of_atlas_smooth' (A : FinHolAtlas e X) {f : X → ℝ} (hf : A.Smooth f) :
-    Continuous f := by
-  rw [continuous_iff_continuousAt]
-  intro x
-  obtain ⟨k, hk⟩ := A.cover x
-  have hs : (A.chart k).target ∩ (A.chart k).symm ⁻¹' univ ∈ 𝓝 ((A.chart k) x) := by
-    rw [preimage_univ, inter_univ]
-    exact (A.chart k).open_target.mem_nhds ((A.chart k).map_source hk)
-  have h1 : ContinuousAt (f ∘ (A.chart k).symm) ((A.chart k) x) :=
-    (hf k).continuousOn.continuousAt hs
-  have h2 : ContinuousAt ((f ∘ (A.chart k).symm) ∘ (A.chart k)) x :=
-    ContinuousAt.comp (f := A.chart k) h1 ((A.chart k).continuousAt hk)
-  refine h2.congr ?_
-  filter_upwards [(A.chart k).open_source.mem_nhds hk] with z hz
-  simp [(A.chart k).left_inv hz]
 
 theorem st_mInt_eq_chart [CompactSpace X] [T2Space X] (A : FinHolAtlas e X)
     (Ψ : Fin e → LocPot X) (hΨ : ∀ i, IsPotential A (Ψ i)) (j : Fin A.n) (g : X → ℝ)
@@ -215,8 +186,6 @@ theorem st_locDens_piece (u : X → ℝ) (hu : A.Smooth u) {y : Fin (e + 1) → 
   refine Fin.cases ?_ (fun i => ?_) k
   · first
       | rfl
-      | (simp only [Fin.cons_zero]; rfl)
-      | simp [LocPot.ofFun, Function.comp_def]
   · simp only [Fin.cons_succ]
     have hyG : (A.chart j).symm y ∈ G := hy.2
     obtain ⟨W, hWo, haW, Gh, hGh, hdiff⟩ :=
@@ -245,7 +214,7 @@ theorem st_locDens_piece (u : X → ℝ) (hu : A.Smooth u) {y : Fin (e + 1) → 
       have hz' := hdiff ((A.chart j).symm z) hz.2
       simp only [Function.comp_apply]
       linarith
-    rw [st_hessC_congr heq, hessC_add_potential hf2 hh, hessC_re_of_analyticAt (hK y hyS), add_zero]
+    rw [_root_.ReciprocityTheory.AnForm.A.hessC_congr' heq, hessC_add_potential hf2 hh, hessC_re_of_analyticAt (hK y hyS), add_zero]
 
 
 include hΦ hGo hG hGU in
@@ -267,7 +236,7 @@ theorem st_left_piece (w ψ : X → ℝ) (hw : A.Smooth w) (hψ : A.Smooth ψ) (
     refine Fin.cases ?_ (fun i => ?_) i
     · simpa only [Fin.cons_zero] using hP0
     · simpa only [Fin.cons_succ] using hΦ i
-  rw [st_mInt_eq_piece A _ hΨ j G hG ψ (continuous_of_atlas_smooth' A hψ) hψG]
+  rw [st_mInt_eq_piece A _ hΨ j G hG ψ (_root_.ReciprocityTheory.AnForm.M.st_smooth_continuous A hψ) hψG]
   have hSm : MeasurableSet ((A.chart j).target ∩ (A.chart j).symm ⁻¹' G) :=
     ((A.chart j).isOpen_inter_preimage_symm hGo).measurableSet
   refine setIntegral_congr_fun hSm ?_

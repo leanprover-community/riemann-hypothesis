@@ -294,7 +294,7 @@ theorem cross_mem {y : (Σ k, ι k) → Ω} {N : ℕ} {v : Fin N → Ω} {e : K 
     X ⟨none, j⟩ * rename (oldEmb ι N) G' - X ⟨none, j'⟩ * rename (oldEmb ι N) G ∈ mCoordIdeal (addBlock y v) := by
   show _ ∈ RingHom.ker (mConeMap (addBlock y v))
   rw [RingHom.mem_ker, map_sub, map_mul, map_mul, mConeMap_rename_old, mConeMap_rename_old]
-  erw [mConeMap_homog y hG, mConeMap_homog y hG']
+  erw [_root_.GroundTheory.Heights₂.Heights.HilbertSamuel.ProjLine.mConeMap_eq_of_isMultiHomog y hG, _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.ProjLine.mConeMap_eq_of_isMultiHomog y hG']
   simp only [mConeMap, aeval_X, map_mul, rename_C]
   have h1 : addBlock y v ⟨none, j⟩ = v j := rfl
   have h2 : addBlock y v ⟨none, j'⟩ = v j' := rfl

@@ -120,7 +120,7 @@ theorem metricW_of (hR : NfacRmulStatement (E := E)) (hLa : NfacLactStatement (E
     have hn0 : nmat X (0 : V (nd X)) = ExtFPf.oneF X := by
       funext τ a c
       simp only [nmat, ExtFPf.oneF, Matrix.one_apply]
-      split_ifs <;> first | rfl | (exfalso; subst_vars; exact lt_irrefl _ ‹_ < _›) | simp_all
+      split_ifs <;> first | rfl | (exfalso; subst_vars; exact lt_irrefl _ ‹_ < _›)
     have hc0 : cpt X x1 0 = x1 := by
       unfold cpt
       rw [hn0, ExtFPf.rmul_oneF]

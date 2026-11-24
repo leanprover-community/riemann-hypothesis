@@ -59,8 +59,6 @@ theorem tEL_emb (D : D7) (τ : D.what₂.Tau) (x : D.host.E) : D.what₂.embLL (
   simp only [tEL, embT, Formalism.BasicNotions.Host.emb, RingHom.comp_apply]
   first
     | exact RingHom.congr_fun D.embE_φ₀ _
-    | exact D.embE_φ₀ _
-    | (rw [← D.embE_φ₀]; rfl)
 
 def locAt (X : Formalism.L2.Herm.Herm0 D) (u : D.what₂.Word) (w : D.what₂.places.Pl)
     (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) (B : GL (Fin D.R.k) D.host.E) :

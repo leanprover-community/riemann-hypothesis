@@ -62,7 +62,6 @@ theorem rmul_rmul (x a b : Frame X.Ψ r) : rmul (rmul x a) b = rmul x (bmul X a 
   funext τ
   first
     | exact Matrix.mul_assoc (mat x τ) (mat a τ) (mat b τ)
-    | (ext i j; simp [rmul, bmul, mat, Matrix.mul_assoc])
 
 theorem bmul_mem {a b : Frame X.Ψ r} (ha : a ∈ Bor X.Ψ r) (hb : b ∈ Bor X.Ψ r) :
     bmul X a b ∈ Bor X.Ψ r := by
@@ -159,7 +158,7 @@ theorem avoid_base (Xa : ArchInM X) (Fl : FlatM X Xa) (j j' : Fin Fl.δ) {γ : G
       by_cases h : e < a
       · have hne : a ≠ e := ne_of_gt h
         simp only [mat, nmat, Matrix.of_apply, dif_pos h, Matrix.one_apply_ne hne]
-        all_goals first | rfl | simp
+        all_goals first | rfl
       · simp only [mat, nmat, Matrix.of_apply, dif_neg h, Matrix.one_apply]
     show mat x0 τ * mat (nmat X 0) τ = x0 τ
     rw [hm, Matrix.mul_one]

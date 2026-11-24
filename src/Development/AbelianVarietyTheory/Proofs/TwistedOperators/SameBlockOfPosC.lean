@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.AdmissibleDiscreteSeriesOfHasParam
 public import Formalism.LocalRingCardinality.DataTheta
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -142,24 +143,7 @@ theorem sameBlock_of_posC {p q : ℕ} {a b : Ix p q} (h : posC a b) : sameBlock 
 
 theorem exists_upq_add {p q : ℕ} (Z : Mat p q) :
     ∃ X ∈ upq p q, ∃ Y ∈ upq p q, Z = X + Complex.I • Y := by
-  refine ⟨(1 / 2 : ℂ) • Z + (-1 / 2 : ℂ) • adjZ Z, ?_,
-    (-Complex.I / 2) • Z + (-Complex.I / 2) • adjZ Z, ?_, ?_⟩
-  · rw [mem_upq_iff, adjZ_add, adjZ_smul, adjZ_smul, adjZ_adjZ]
-    have h1 : star (1 / 2 : ℂ) = 1 / 2 := by simp
-    have h2 : star (-1 / 2 : ℂ) = -1 / 2 := by simp
-    rw [h1, h2]
-    module
-  · rw [mem_upq_iff, adjZ_add, adjZ_smul, adjZ_smul, adjZ_adjZ]
-    have h3 : star (-Complex.I / 2) = Complex.I / 2 := by simp
-    rw [h3]
-    module
-  · rw [smul_add, smul_smul, smul_smul]
-    have h4 : Complex.I * (-Complex.I / 2) = 1 / 2 := by
-      ring_nf
-      rw [Complex.I_sq]
-      ring
-    rw [h4]
-    module
+  apply GlobalTheory.CoverDS.exists_decomp <;> assumption
 
 theorem hasDerivAt_orbit {p q : ℕ} {T : GrpData p q} (πU : URep T) {Y : Mat p q} (hY : Y ∈ upq p q)
     {x y : πU.H} (h : HasDerivAt (fun t : ℝ => πU.π (T.expt (t • Y)) x) y 0) (t : ℝ) :

@@ -52,13 +52,8 @@ theorem massDataVolAll_of (hSW : PI.VolStabS.MassDataS.SWXS) :
   refine ⟨PI.VolStabS.MassDataS.inVolumesAt_of_SWS hSW _ _ _ _ _ _ _ _ _ _, ?_, ?_, ?_, ?_⟩
   · first
       | apply level_s_at_instance
-      | apply PI.Final.level_s_at_instance
-      | apply PI.level_s_at_instance
-      | apply MassDataLevelSSteps.inLevelSAt_holds
-      | apply PI.MassDataLevelSSteps.inLevelSAt_holds
-      | apply PI.UnitaryGroupMassFormula.MassDataLevelSSteps.inLevelSAt_holds
   · apply inMassesAt_holds
   · apply inColumnsAt_holds
-  · apply inIndicesAt_holds
+  · apply _root_.local_indices_at_instance
 
 end Formalism.L2.SG.Pf.MassDataX

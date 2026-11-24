@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.FirstMinimumAndCuspWeightBounds
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GroupDict
 public import GroundTheory.HeightsAndTheta.Heights.FiniteCovolume.PMahlerCompactness
 import Mathlib.Algebra.Order.Floor.Extended
@@ -134,34 +135,7 @@ theorem RiemLat.form_antisymm (R : RiemLat E g Λ) (x y : Λ) : R.form y x = - R
 
 theorem RiemLat.form_sq_le (R : RiemLat E g Λ) (x y : Λ) :
     ((R.form x y : ℤ) : ℝ) ^ 2 ≤ R.normSq x * R.normSq y := by
-  set z := R.P x
-  set w := R.P y
-  have key : ∀ s : ℝ, 0 ≤ R.normSq y * (s * s) + (2 * (R.form x y : ℤ) : ℝ) * s + R.normSq x := by
-    intro s
-    have h := R.quad_nonneg (z + ((s : ℂ) * Complex.I) • w)
-    have e1 : (z ⬝ᵥ R.Hm *ᵥ star z).re = R.normSq x := rfl
-    have e2 : (w ⬝ᵥ R.Hm *ᵥ star w).re = R.normSq y := rfl
-    have e3 : (z ⬝ᵥ R.Hm *ᵥ star w).im = (R.form x y : ℤ) := R.im x y
-    have e4 : (w ⬝ᵥ R.Hm *ᵥ star z).im = (R.form y x : ℤ) := R.im y x
-    rw [R.form_antisymm x y] at e4
-    have hexp : (z + ((s : ℂ) * Complex.I) • w) ⬝ᵥ R.Hm *ᵥ star (z + ((s : ℂ) * Complex.I) • w) =
-        (z ⬝ᵥ R.Hm *ᵥ star z) + (-(s : ℂ) * Complex.I) * (z ⬝ᵥ R.Hm *ᵥ star w) +
-          ((s : ℂ) * Complex.I) * (w ⬝ᵥ R.Hm *ᵥ star z) + (s : ℂ) ^ 2 * (w ⬝ᵥ R.Hm *ᵥ star w) := by
-      simp only [star_add, star_smul, mulVec_add, mulVec_smul, add_dotProduct, dotProduct_add,
-        smul_dotProduct, dotProduct_smul, smul_eq_mul, star_mul', Complex.star_def, Complex.conj_ofReal,
-        Complex.conj_I]
-      have hI := Complex.I_mul_I
-      ring_nf
-      simp only [Complex.I_sq]
-      ring
-    rw [hexp] at h
-    simp only [Complex.add_re, Complex.mul_re, Complex.neg_re, Complex.neg_im, Complex.ofReal_re,
-      Complex.ofReal_im, Complex.I_re, Complex.I_im, Complex.mul_im, e1, e2, e3, e4, sq] at h
-    push_cast at h
-    nlinarith [h]
-  have hd := discrim_le_zero key
-  rw [discrim] at hd
-  nlinarith [hd]
+  apply GlobalTheory.CompanionTheory.Ar.Cusp.RiemLat.integral_form_sq_le_mul_normSq <;> assumption
 
 theorem RiemLat.finite_normSq_le (R : RiemLat E g Λ) (c : ℝ) : {x | R.normSq x ≤ c}.Finite := by
   haveI := R.free

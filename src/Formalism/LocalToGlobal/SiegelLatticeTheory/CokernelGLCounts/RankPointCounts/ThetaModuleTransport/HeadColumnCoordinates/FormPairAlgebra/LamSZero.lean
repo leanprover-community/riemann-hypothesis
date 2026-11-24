@@ -68,12 +68,12 @@ theorem lamL_e' (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) O) :
 
 theorem lamS_e' (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) O) :
     lamS O cj Z (Pi.single (Fin.last r) 1) = cj (kap O Z) := by
-  simp only [lamS, lamStarC, kap, Matrix.mulVec, dotProduct, Pi.single_apply]
+  simp only [lamS, lamStarC, kap, Pi.single_apply]
   simp [apply_ite (fun x : O => (x : E)), mul_ite, Finset.sum_ite_eq']
 
 theorem lamS_smul (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) O) (c : O) (v : Fin (r + 1) → O) :
     lamS O cj Z (c • v) = (c : E) * lamS O cj Z v := by
-  simp [lamS, lamStarC, Matrix.mulVec, dotProduct, Finset.mul_sum, Subring.smul_def, mul_left_comm, map_mul]
+  simp [lamS, lamStarC, Finset.mul_sum, mul_left_comm]
 
 theorem lamS_zero (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) O) : lamS O cj Z 0 = 0 := by
   simp [lamS, lamStarC]

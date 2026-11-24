@@ -118,7 +118,7 @@ theorem psiR_Q (hT : TrHyp F Qm Qim c) (gg : ℕ) (hgg : 0 < gg) {κ : ℂ} (hc 
   rw [hκ]
   apply Complex.ext <;>
     simp [Complex.mul_re, Complex.mul_im, Formalism.QuantumDeterminants.cStd, Complex.div_re, Complex.div_im] <;>
-    field_simp <;> ring
+    field_simp
 
 theorem psiR_conj {H Hi g : Matrix (Fin n) (Fin n) ℂ} (hH : Hᴴ * Formalism.REAL.Jm ε * H = Formalism.REAL.Jm ε)
     (hiH : Hi * H = 1) (hHe : ∀ a, H *ᵥ F.e a = F.e a) (hHf : ∀ a, H *ᵥ F.fd a = F.fd a) (hHz : H *ᵥ F.z = F.z)

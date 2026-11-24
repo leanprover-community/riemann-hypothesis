@@ -361,7 +361,7 @@ theorem exists_good_base_vec : ∀ {D : D7} {G : Type} [Group G] [Fintype G] {Pl
   have hX : ∀ χ ∈ A.X, IsAbsIrrChar χ := hOk.irr
   have hcen : ∀ g h : G, RealDat.eC (A := A) D.what₂.embLL (g * h * g⁻¹) = RealDat.eC (A := A) D.what₂.embLL h := fun g h => by
     unfold RealDat.eC
-    rw [GlobalTheory.BaseVec.coeff_conj_of_central _ (fun b => idemOf_central A.X hX b) g h]
+    rw [_root_.GlobalTheory.Hk3.coeff_conj_central _ (fun b => idemOf_central A.X hX b) g h]
   have hgoodv : ∑ g, RealDat.eC (A := A) D.what₂.embLL g • Formalism.L2.NG.rt D.host.E n (k g) v = v := hgood k hk
   have hgoodW : ∀ w ∈ Ws, ∑ g, RealDat.eC (A := A) D.what₂.embLL g • Formalism.L2.NG.rt D.host.E n (k g) w = w := by
     intro w hw
@@ -489,11 +489,7 @@ theorem isAdmissible_of [TopologicalSpace H] [IsTopologicalGroup H]
 
 end Abstract
 
-theorem odd_r (R : Ranks) : Odd R.r := by
-  obtain ⟨a, ha⟩ := R.k_even
-  obtain ⟨b, hb⟩ := R.m_even
-  have h2 := R.two_le_m
-  exact ⟨a + b - 1, by simp only [Ranks.r]; omega⟩
+alias odd_r := _root_.Formalism.L2.NTheta.odd_r
 
 def eqv {D : D7} {Y : HSp D} {n : ℕ} (P : principalLevelFrame.RowPsi Y n) : Formalism.AUTREP.GAf D.host.E n ≃* GfC Y :=
   MulEquiv.ofBijective (P.ψ.codRestrict (GfC Y) P.into)

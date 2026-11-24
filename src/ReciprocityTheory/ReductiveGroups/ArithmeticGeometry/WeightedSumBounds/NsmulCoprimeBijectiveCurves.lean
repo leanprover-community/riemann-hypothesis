@@ -233,8 +233,8 @@ theorem nsmul_coprime_bijective_curves [CharZero C] (G : LogFGL v d) {p : ℕ} (
       rw [hK]
 
       simp only [map_sub, map_sum, MvPowerSeries.coeff_smul, ptNs_lin, MvPowerSeries.coeff_X,
-      Finsupp.single_left_inj one_ne_zero, hMab, smul_eq_mul, mul_ite, mul_one, mul_zero]
-      simp [Finset.sum_ite_eq, Finset.sum_ite_eq', eq_comm]
+      Finsupp.single_left_inj one_ne_zero, hMab, mul_ite, mul_one, mul_zero]
+      simp [Finset.sum_ite_eq, eq_comm]
   have hf : PTGood v gb := isCurve_iff_good.mp hgb
   have key : ∀ y : Fin d → PowerSeries C, PTGood v y →
       (G.nsmulF n y = gb ↔ ∀ b, ∑ a, M a b • y a + subst y (K b) = gb b) := by

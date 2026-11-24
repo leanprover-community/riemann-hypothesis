@@ -380,7 +380,6 @@ theorem transfer_holds : Transfer := by
   rw [← norm_le_zero_iff]
   refine le_of_forall_pos_le_add fun ε hε => ?_
   set D : ℝ := Fintype.card (Equiv.Perm (Fin M)) * B ^ (M + 1)
-  have hD : 0 ≤ D := mul_nonneg (Nat.cast_nonneg _) (pow_nonneg (integral_nonneg fun _ => norm_nonneg _) _)
   refine (main (ε / (D + 1)) (by positivity)).trans ?_
   rw [zero_add, mul_div_assoc', div_le_iff₀ (by positivity)]
   nlinarith

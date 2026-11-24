@@ -77,14 +77,11 @@ theorem rll_incl_int (r : 𝓞 E) : ιv (algebraMap (𝓞 E) E r) ∈ 𝒪v := b
   exact Subring.subset_closure (Or.inl ⟨⟨algebraMap (𝓞 E) E r, by
     first
     | exact ⟨r, rfl⟩
-    | exact r.2
-    | simp [Formalism.UG.intOE]
     | simp [Formalism.BasicNotions.intOE]⟩, rfl⟩)
 
 theorem rll_sigV_incl (e : E) : sigR hc.sig (v.adicCompletion F) (ιv e) = ιv (star e) := by
   first
   | simp [sigR, inclE, Formalism.BasicNotions.CMData.sig, starRingEnd_apply]
-  | rfl
 
 theorem rll_sigV_mem {s : Rv} (hs : s ∈ 𝒪v) : sigR hc.sig (v.adicCompletion F) s ∈ 𝒪v := by
   have key : 𝒪v ≤ (𝒪v).comap (sigR hc.sig (v.adicCompletion F)) := by
@@ -138,31 +135,18 @@ theorem rll_mulVec_single (M : Matrix (Fin n) (Fin n) Rv) (j : Fin n) (x : Rv) (
     (M *ᵥ Pi.single j x) i = M i j * x := by
   first
   | simp [Matrix.mulVec, dotProduct, Pi.single_apply]
-  | simp [Matrix.mulVec_single]
-  | (rw [Matrix.mulVec_single]; simp)
 
 variable (h : BasePi ST π)
 include h
 
-private theorem pE_ne_zero : pE ≠ 0 := by
-  intro h0
-  have h1 : π = 0 := by
-    first
-    | exact (map_eq_zero_iff _ (NoZeroSMulDivisors.algebraMap_injective (𝓞 E) E)).1 h0
-    | exact_mod_cast h0
-    | simpa using h0
-  have hc' := h.cop
-  rw [h1, isCoprime_zero_left, map_zero] at hc'
-  exact not_isUnit_zero hc'
-
 theorem rll_pinv_mul (x : Rv) : ιv pE⁻¹ * (ιv pE * x) = x := by
-  rw [← mul_assoc, ← map_mul, inv_mul_cancel₀ (pE_ne_zero h), map_one, one_mul]
+  rw [← mul_assoc, ← map_mul, inv_mul_cancel₀ (_root_.Formalism.L2.Col.BasePi.coe_ne_zero h), map_one, one_mul]
 
 theorem rll_p_mul_pinv (x : Rv) : ιv pE * (ιv pE⁻¹ * x) = x := by
-  rw [← mul_assoc, ← map_mul, mul_inv_cancel₀ (pE_ne_zero h), map_one, one_mul]
+  rw [← mul_assoc, ← map_mul, mul_inv_cancel₀ (_root_.Formalism.L2.Col.BasePi.coe_ne_zero h), map_one, one_mul]
 
 theorem rll_cp_mul (x : Rv) : ιv (star pE / pE) * (ιv pE * x) = ιv (star pE) * x := by
-  rw [← mul_assoc, ← map_mul, div_mul_cancel₀ _ (pE_ne_zero h)]
+  rw [← mul_assoc, ← map_mul, div_mul_cancel₀ _ (_root_.Formalism.L2.Col.BasePi.coe_ne_zero h)]
 
 theorem rll_maps_Sh {g : GL (Fin n) Rv} (hg : ∀ i j, (g : Matrix (Fin n) (Fin n) Rv) i j ∈ 𝒪v)
     (hcol : ∀ i, i ≠ lastIdx n → ∃ s ∈ 𝒪v, (g : Matrix (Fin n) (Fin n) Rv) i (lastIdx n) = ιv (star pE) * s)

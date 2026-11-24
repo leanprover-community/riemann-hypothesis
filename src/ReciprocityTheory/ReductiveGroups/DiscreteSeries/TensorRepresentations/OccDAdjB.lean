@@ -192,10 +192,10 @@ theorem adjB_block {k : Matrix (Fin n) (Fin n) ℂ} (hk : k ∈ Kset ε) {c d : 
     intro s t hst h2
     cases s <;> cases t
     · exact absurd rfl hst
-    · simp only [Bool.false_eq_true, ↓reduceIte, mul_one, one_mul] at h2
-      first | exact h2 | linear_combination h2 / 2 | linear_combination -h2 / 2
-    · simp only [Bool.false_eq_true, ↓reduceIte, mul_one, one_mul] at h2
-      first | exact h2 | linear_combination h2 / 2 | linear_combination -h2 / 2
+    · simp only [Bool.false_eq_true, ↓reduceIte, mul_one] at h2
+      first | linear_combination h2 / 2
+    · simp only [Bool.false_eq_true, ↓reduceIte, one_mul] at h2
+      first | linear_combination h2 / 2 | linear_combination -h2 / 2
     · exact absurd rfl hst
   exact key _ _ h h1
 
@@ -223,7 +223,7 @@ theorem adjB_star_Kset {k : Matrix (Fin n) (Fin n) ℂ} (hk : k ∈ Kset ε) : k
 theorem adjB_inner (hσ : IsURepOn (UJset ε) σ) {k : Matrix (Fin n) (Fin n) ℂ} (hk : k ∈ Kset ε) (v w : H) :
     inner ℂ (σ k v) w = inner ℂ v (σ kᴴ w) := by
   have hkU : k ∈ UJset ε := smd_inUJ_of_Kset hk
-  have hkhU : kᴴ ∈ UJset ε := smd_inUJ_of_Kset (adjB_star_Kset hk)
+  have hkhU : kᴴ ∈ UJset ε := smd_inUJ_of_Kset (_root_.ReciprocityTheory.ChartRestriction.DS.rq_KH hk)
   have hkk : k * kᴴ = 1 := by
     have := hk.1
     rw [Matrix.mem_unitaryGroup_iff] at this

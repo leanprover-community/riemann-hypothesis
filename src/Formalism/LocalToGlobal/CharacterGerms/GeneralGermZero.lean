@@ -103,7 +103,7 @@ theorem lg_addK {σ : Type} (F : κ → MvPowerSeries (Fin 2 × κ) C) (hF0 : �
   have e := congrArg (MvPowerSeries.subst (fun q : Fin 2 × κ => ![a, b] q.1 q.2)) (hadd k)
   rw [MvPowerSeries.subst_comp_subst_apply hF hP, MvPowerSeries.subst_add hP,
     MvPowerSeries.subst_comp_subst_apply hX0 hP, MvPowerSeries.subst_comp_subst_apply hX1 hP] at e
-  simp only [MvPowerSeries.subst_X hP, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons] at e
+  simp only [MvPowerSeries.subst_X hP, Matrix.cons_val_zero, Matrix.cons_val_one] at e
   exact e
 
 section Sum
@@ -271,7 +271,7 @@ theorem general_germ_zero
   · intro g k
 
     rw [← MvPowerSeries.coeff_zero_eq_constantCoeff_apply, map_sum]
-    simp [MvPowerSeries.coeff_smul, hP0]
+    simp [hP0]
   · intro g k μ
     show (0 : WithTop ℝ) ≤ V.v (MvPowerSeries.coeff μ (∑ x, w g x k • P g x))
 
@@ -299,7 +299,7 @@ theorem general_germ_zero
   · intro g k
 
     rw [← MvPowerSeries.coeff_zero_eq_constantCoeff_apply, map_sum]
-    simp [MvPowerSeries.coeff_smul, hP0₂]
+    simp [hP0₂]
   · intro g k μ
     show (0 : WithTop ℝ) ≤ V.v (MvPowerSeries.coeff μ (∑ x, w g x k • P₂ g x))
 

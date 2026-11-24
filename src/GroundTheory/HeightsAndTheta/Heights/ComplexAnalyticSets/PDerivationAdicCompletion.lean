@@ -52,9 +52,6 @@ open AdicCompletion
 
 variable {R : Type} [CommRing R] (I : Ideal R) (D : Derivation ℤ R R)
 
-theorem derivation_mem_pow_of_mem_pow_succ {n : ℕ} {r : R} (hr : r ∈ I ^ (n + 1)) : D r ∈ I ^ n :=
-  by apply _root_.UpperTheory.Reformulated.B.Qn11.derivation_mem_pow_of_mem_pow_succ <;> assumption
-
 theorem pow_smul_top_eq (n : ℕ) : (I ^ n • ⊤ : Ideal R) = I ^ n := by
   rw [smul_eq_mul, Ideal.mul_top]
 
@@ -68,7 +65,7 @@ noncomputable def derivQuot (n : ℕ) :
       change Ideal.Quotient.mk (I ^ n • ⊤ : Ideal R) (D r) = 0
       rw [Ideal.Quotient.eq_zero_iff_mem, pow_smul_top_eq]
       rw [pow_smul_top_eq] at hr
-      exact derivation_mem_pow_of_mem_pow_succ I D hr)
+      exact _root_.UpperTheory.Reformulated.B.Qn11.derivation_mem_pow_of_mem_pow_succ I D hr)
 
 theorem derivQuot_mk (n : ℕ) (r : R) :
     derivQuot I D n (Ideal.Quotient.mk _ r) = Ideal.Quotient.mk (I ^ n • ⊤ : Ideal R) (D r) := rfl

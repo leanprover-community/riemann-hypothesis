@@ -222,10 +222,6 @@ theorem isCompact_latLoc
   rw [e]
   exact isCompact_span_range v _
 
-theorem exists_int_smul_mem (L : Submodule (𝓞 E) (Fin n → E)) (x : Fin n → E)
-    (hx : x ∈ Submodule.span E (L : Set (Fin n → E))) : ∃ m : ℤ, m ≠ 0 ∧ m • x ∈ L :=
-  _root_.UpperTheory.Reformulated.B.FirstStatementA.main L x hx
-
 theorem isOpen_latLoc
     (hL : ∃ L : Submodule (𝓞 E) (Fin n → E), Submodule.IsFullLattice E L ∧ (L : Set (Fin n → E)) = Λ) :
     IsOpen (latLoc (E := E) v Λ : Set (Fin n → Fv F v ⊗[F] E)) := by
@@ -234,7 +230,7 @@ theorem isOpen_latLoc
   letI : Submodule.IsFullLattice E L := hLat
   have hsp := Submodule.IsFullLattice.span_eq_top (A := E) (M := L)
   have hm : ∀ i : Fin n, ∃ m : ℤ, m ≠ 0 ∧ m • (Pi.single i (1 : E) : Fin n → E) ∈ L := fun i =>
-    exists_int_smul_mem L _ (by rw [hsp]; exact Submodule.mem_top)
+    _root_.UpperTheory.Reformulated.B.FirstStatementA.main L _ (by rw [hsp]; exact Submodule.mem_top)
   choose m hm0 hmL using hm
   set N : ℤ := ∏ i, m i with hNdef
   have hN0 : N ≠ 0 := Finset.prod_ne_zero_iff.mpr fun i _ => hm0 i

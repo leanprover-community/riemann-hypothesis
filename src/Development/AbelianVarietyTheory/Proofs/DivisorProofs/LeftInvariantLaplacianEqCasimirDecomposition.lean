@@ -91,7 +91,7 @@ theorem lap_summand (τ : E →+* ℂ) :
   set I2 := lieS E a j i (atEmb τ Complex.I)
   simp only [sq, smul_add, smul_sub, add_mul, mul_add, sub_mul, mul_sub, smul_mul_assoc, mul_smul_comm, smul_smul]
   have hI : Complex.I * Complex.I = -1 := Complex.I_mul_I
-  match_scalars <;> ring_nf <;> simp [Complex.I_sq] <;> ring_nf
+  match_scalars <;> ring_nf <;> simp [Complex.I_sq]
 
 end GlobalTheory.LapSplit
 

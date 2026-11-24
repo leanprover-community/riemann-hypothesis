@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.DvdOfForallEmultiplicityLe
 public import GroundTheory.HeightsAndTheta.Heights.ChowForms.Statements
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 public import Mathlib.Algebra.MvPolynomial.Nilpotent
@@ -83,27 +84,7 @@ theorem isChowForm_iff {P : Ideal (MvPolynomial (Fin n) F)} {k : ℕ}
 theorem dvd_of_forall_emultiplicity_le {R : Type*} [CommRing R] [IsDomain R]
     [UniqueFactorizationMonoid R] {a b : R} (ha : a ≠ 0) (hb : b ≠ 0)
     (h : ∀ p, Irreducible p → emultiplicity p a ≤ emultiplicity p b) : a ∣ b := by
-  induction a using UniqueFactorizationMonoid.induction_on_prime generalizing b with
-  | h₁ => exact absurd rfl ha
-  | h₂ x hx => exact hx.dvd
-  | h₃ a p ha' hp ih =>
-    have hpp : emultiplicity p p = 1 :=
-      (FiniteMultiplicity.of_not_isUnit hp.not_isUnit hp.ne_zero).emultiplicity_self
-    have hpb : p ∣ b := by
-      apply dvd_of_emultiplicity_pos
-      have := h p hp.irreducible
-      rw [emultiplicity_mul hp, hpp] at this
-      exact lt_of_lt_of_le (by simp) this
-    obtain ⟨b', rfl⟩ := hpb
-    have hb' : b' ≠ 0 := right_ne_zero_of_mul hb
-    refine mul_dvd_mul_left p (ih ha' hb' fun q hq => ?_)
-    have hqp : Prime q := hq.prime
-    have hfin : emultiplicity q p ≠ ⊤ := by
-      rw [Ne, emultiplicity_eq_top, not_not]
-      exact FiniteMultiplicity.of_not_isUnit hqp.not_isUnit hp.ne_zero
-    have := h q hq
-    rw [emultiplicity_mul hqp, emultiplicity_mul hqp] at this
-    exact (WithTop.add_le_add_iff_left hfin).mp this
+  apply GlobalTheory.CompanionTheory.Ar.Short.ChowClosing.SectionAlgClosed.dvd_of_forall_emultiplicity_le' <;> assumption
 
 theorem ChowFormSection.proof (h₁ : ConeDimOfChowForm.Statement) (h₂ : ConeDimComponent.Statement)
     (h₃ : ChowFormExists.Statement) (h₄ : IncIdealPrime.Statement) (h₅ : SectionOrder.Statement) :

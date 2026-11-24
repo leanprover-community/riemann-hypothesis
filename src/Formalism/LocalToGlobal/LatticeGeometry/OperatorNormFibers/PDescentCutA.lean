@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.IndefiniteReal.OpNormAtLeOfPoints
 public import Formalism.HarderNarasimhan.StatementPl
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -56,58 +57,13 @@ namespace Formalism.L2.Geo.ExtensionFiltration
 
 theorem dense_emb {K : Type} [Field K] [NumberField K] (v : InfinitePlace K) (hv : v.IsComplex) :
     DenseRange v.embedding := by
-  have hs := (NumberField.InfinitePlace.Completion.bijective_extensionEmbedding_of_isComplex hv).2
-  have hc : Continuous (NumberField.InfinitePlace.Completion.extensionEmbedding v) :=
-    (NumberField.InfinitePlace.Completion.isometry_extensionEmbedding v).continuous
-  have h := hs.denseRange.comp (NumberField.InfinitePlace.Completion.denseRange_coe v) hc
-  refine Dense.mono ?_ h
-  rintro _ ⟨x, rfl⟩
-  first
-    | (refine ⟨WithAbs.equiv _ x, ?_⟩
-       first
-        | exact (NumberField.InfinitePlace.Completion.extensionEmbedding_coe v x).symm
-        | simp [NumberField.InfinitePlace.Completion.extensionEmbedding_coe]
-        | rfl)
-    | (refine ⟨WithAbs.ofAbs x, ?_⟩
-       first
-        | exact (NumberField.InfinitePlace.Completion.extensionEmbedding_coe v x).symm
-        | simp [NumberField.InfinitePlace.Completion.extensionEmbedding_coe]
-        | rfl)
-    | (refine ⟨x.1, ?_⟩
-       first
-        | exact (NumberField.InfinitePlace.Completion.extensionEmbedding_coe v x).symm
-        | simp [NumberField.InfinitePlace.Completion.extensionEmbedding_coe]
-        | rfl)
+  apply Formalism.IndefR.LatticeTransfer.BlockMetrics.dense_emb <;> assumption
 
 theorem dense_fcoord {K V ι : Type} [Field K] [NumberField K] [StarRing K] [_root_.NumberField.IsTotallyComplex K]
     [AddCommGroup V] [Module K V] [Fintype ι] [DecidableEq ι] (b : Basis ι K V)
     (X : InfinitePlace K → Matrix ι ι ℂ) (hX : ∀ v, IsUnit (X v).det) (v : InfinitePlace K) :
     DenseRange fun x : V => (WithLp.toLp 2 (Formalism.HermitianLatticesTheory.fcoord b X v x) : EuclideanSpace ℂ ι) := by
-  have h1 : DenseRange (fun f : ι → K => fun i => v.embedding (f i)) :=
-    DenseRange.piMap (fun _ => dense_emb v (IsTotallyComplex.isComplex v))
-  have h12 : DenseRange (fun x : V => Formalism.HermitianLatticesTheory.vecAt b v x) := by
-    have hr : Set.range (fun x : V => Formalism.HermitianLatticesTheory.vecAt b v x) =
-        Set.range (fun f : ι → K => fun i => v.embedding (f i)) := by
-      ext z
-      constructor
-      · rintro ⟨x, rfl⟩
-        exact ⟨fun i => b.repr x i, rfl⟩
-      · rintro ⟨f, rfl⟩
-        refine ⟨b.equivFun.symm f, ?_⟩
-        funext i
-        have h := congrFun (b.equivFun.apply_symm_apply f) i
-        rw [Basis.equivFun_apply] at h
-        simp only [Formalism.HermitianLatticesTheory.vecAt, h]
-    intro z
-    rw [hr]
-    exact h1 z
-  have hg : Continuous fun u : ι → ℂ => (WithLp.toLp 2 (Matrix.mulVec (X v)⁻¹ u) : EuclideanSpace ℂ ι) := by
-    fun_prop
-  have hsurj : Function.Surjective fun u : ι → ℂ => (WithLp.toLp 2 (Matrix.mulVec (X v)⁻¹ u) : EuclideanSpace ℂ ι) := by
-    intro y
-    refine ⟨Matrix.mulVec (X v) (WithLp.ofLp y), ?_⟩
-    simp only [Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul _ (hX v), Matrix.one_mulVec, WithLp.toLp_ofLp]
-  exact hsurj.denseRange.comp h12 hg
+  apply Formalism.IndefR.LatticeTransfer.BlockMetrics.dense_fcoord <;> assumption
 
 private theorem vecAt_apply_linearMap {K V ι W κ : Type} [Field K] [AddCommGroup V] [Module K V] [Fintype ι]
     [DecidableEq ι] [AddCommGroup W] [Module K W] [Fintype κ] [DecidableEq κ] (b : Basis ι K V)

@@ -87,8 +87,6 @@ theorem i_ofNat (n : ℕ) [n.AtLeastTwo] : ‖(OfNat.ofNat n : K)‖ ≤ 1 := by
       exact i_add ih (by simp)
   first
   | exact key n
-  | (have h0 := key n; rwa [Nat.cast_ofNat] at h0)
-  | simpa using key n
 
 theorem s_add {a b : K} (ha : ‖a‖ < 1) (hb : ‖b‖ < 1) : ‖a + b‖ < 1 := (IsUltrametricDist.norm_add_le_max a b).trans_lt (max_lt ha hb)
 
@@ -148,7 +146,6 @@ theorem disc_comb (x y : K) (h : W.toAffine.Equation x y) :
   simp only [WeierstrassCurve.Δ, WeierstrassCurve.b₂, WeierstrassCurve.b₄, WeierstrassCurve.b₆, WeierstrassCurve.b₈]
   first
   | linear_combination (432 * (W.a₆ + (y ^ 2 + W.a₁ * x * y + W.a₃ * y - x ^ 3 - W.a₂ * x ^ 2 - W.a₄ * x)) + (W.a₁ ^ 2 + 4 * W.a₂) ^ 3 + 216 * W.a₃ ^ 2 - 36 * (W.a₁ ^ 2 + 4 * W.a₂) * (2 * W.a₄ + W.a₁ * W.a₃)) * h
-  | linear_combination (-(432 * (W.a₆ + (y ^ 2 + W.a₁ * x * y + W.a₃ * y - x ^ 3 - W.a₂ * x ^ 2 - W.a₄ * x)) + (W.a₁ ^ 2 + 4 * W.a₂) ^ 3 + 216 * W.a₃ ^ 2 - 36 * (W.a₁ ^ 2 + 4 * W.a₂) * (2 * W.a₄ + W.a₁ * W.a₃))) * h
 
 end Alg
 
@@ -198,7 +195,6 @@ theorem UnitKap_of (hN : NonsingNorm) : UnitKap := by
       rw [add_self_of_Y_ne hyne] at hPP
       first
       | cases hPP
-      | exact absurd hPP (by simp)
     have hpsi : 2 * y + W.a₁ * x + W.a₃ = 0 := by
       simp only [negY] at hyeq
       linear_combination hyeq
@@ -222,7 +218,6 @@ theorem UnitPsi2_of (hN : NonsingNorm) : UnitPsi2 := by
       apply hPP
       first
       | exact add_self_of_Y_eq hyeq
-      | exact add_of_Y_eq rfl hyeq
     have hpsi_ne : 2 * y + W.a₁ * x + W.a₃ ≠ 0 := by
       intro h0
       apply hyne
@@ -238,7 +233,6 @@ theorem UnitPsi2_of (hN : NonsingNorm) : UnitPsi2 := by
       rw [hd]
       first
       | exact div_mul_cancel₀ _ hpsi_ne
-      | field_simp
     obtain ⟨L, hLdef⟩ : ∃ L, L = W.toAffine.slope x x y y := ⟨_, rfl⟩
     rw [← hLdef] at hL e2
     have hLi : ‖L‖ ≤ 1 := i_of_quadratic (b := W.a₁) (c := W.toAffine.addX x x L + W.a₂ + x + x) h1
@@ -292,7 +286,6 @@ theorem UnitDiff_of (hN : NonsingNorm) : UnitDiff := by
           apply hPQ
           first
           | exact add_of_Y_eq hxx hy
-          | (subst hxx; rw [add_eq_zero_iff_eq_neg, neg_some]; subst hy; rfl)
       have hd : x₁ - x₂ ≠ 0 := sub_ne_zero.mpr hx12
       rw [add_of_X_ne hx12] at hxs
       have es : ‖W.toAffine.addX x₁ x₂ (W.toAffine.slope x₁ x₂ y₁ y₂)‖ ≤ 1 := hxs

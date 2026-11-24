@@ -68,7 +68,7 @@ theorem index_fix [IsAlgClosure F Ω] (Q : QCM F Ω) :
 open Classical in
 noncomputable def sign [IsAlgClosure F Ω] (Q : QCM F Ω) : G F Ω →* ℤˣ where
   toFun σ := if σ ∈ Q.K.fixingSubgroup then 1 else -1
-  map_one' := by simp [Subgroup.one_mem]
+  map_one' := by simp
   map_mul' a b := by
     have h := Subgroup.mul_mem_iff_of_index_two (index_fix Q).1 (a := a) (b := b)
     by_cases ha : a ∈ Q.K.fixingSubgroup <;> by_cases hb : b ∈ Q.K.fixingSubgroup

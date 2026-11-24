@@ -78,8 +78,7 @@ theorem core1 (D : ℂ) (F τY τa sY sa T Ta Tai la : B)
   have a3 : F * (τa * sY) = Ta * (F * sY) := by rw [← mul_assoc, h2, mul_assoc]
   have e : Ta * (D • (T * la * F - la * T * F)) = Ta * (T * la * F - F * sY) := by
     rw [mul_smul_comm, mul_sub, mul_sub, ← a1, ← a2, ← a3, ← mul_sub, ← mul_sub, ← mul_smul_comm, rtt]
-  have := congrArg (Tai * ·) e
-  simpa only [← mul_assoc, hi, one_mul] using this
+  simpa only [← mul_assoc, hi, one_mul] using congrArg (Tai * ·) e
 
 theorem tau_mat (D : ℂ) (hD1 : D - 1 ≠ 0) (zi zbi G la F τ s T : B)
     (hτ : F * τ = T * F) (hTzi : T * zi = zi * T) (hTw : T * (zbi * G) = zbi * G * T)
@@ -93,7 +92,7 @@ theorem tau_mat (D : ℂ) (hD1 : D - 1 ≠ 0) (zi zbi G la F τ s T : B)
   · linear_combination (norm := (
       simp only [mul_add, add_mul, mul_sub, sub_mul, mul_neg, neg_mul, smul_add, smul_sub,
         smul_mul_assoc, mul_smul_comm, mul_assoc, one_mul, mul_one, zero_mul, mul_zero, smul_zero];
-      match_scalars <;> first | ring1 | (field_simp [hD1] <;> ring)))
+      match_scalars <;> first | ring1))
       ((D - 1)⁻¹ * D) • (zi * hτ) - ((D - 1)⁻¹ * D) • (hTzi * F)
   · simp
   · linear_combination (norm := (
@@ -113,19 +112,15 @@ section Gen2
 variable {B : Type} [Ring B] [Algebra ℂ B]
 
 theorem smul_cancel {D : ℂ} (hD : D ≠ 0) {u v : B} (h : D • u = D • v) : u = v := by
-  have := congrArg (D⁻¹ • ·) h
-  simpa [smul_smul, inv_mul_cancel₀ hD] using this
+  simpa [smul_smul, inv_mul_cancel₀ hD] using congrArg (D⁻¹ • ·) h
 
 theorem lcancel {u ui p q : B} (h : ui * u = 1) (e : u * p = u * q) : p = q := by
-  have := congrArg (ui * ·) e
-  simpa only [← mul_assoc, h, one_mul] using this
+  simpa only [← mul_assoc, h, one_mul] using congrArg (ui * ·) e
 
 theorem core2 (D : ℂ) (F Fi T la l : B) (hF : F * Fi = 1)
     (h : D • (T * la * F - la * T * F) = T * la * F - T * l * F) :
     D • (T * la - la * T) = T * la - T * l := by
-  have := congrArg (· * Fi) h
-  simp only [sub_mul, smul_mul_assoc, mul_assoc, hF, mul_one] at this
-  simpa only [mul_assoc] using this
+  simpa only [sub_mul, smul_mul_assoc, mul_assoc, hF, mul_one] using congrArg (· * Fi) h
 
 theorem rel1 {D : ℂ} (hD : D ≠ 0) (T m m' η : B) (hm : m' = m + D • η)
     (r1 : D • (T * m - m * T) = T * m - T * m') : m * T = T * (m + η) := by
@@ -252,7 +247,7 @@ theorem L_mat (D : ℂ) (hD : D ≠ 0) (hD1 : D - 1 ≠ 0)
   · linear_combination (norm := (
       simp only [mul_add, add_mul, mul_sub, sub_mul, mul_neg, neg_mul, smul_add, smul_sub,
         smul_mul_assoc, mul_smul_comm, mul_assoc, one_mul, mul_one, zero_mul, mul_zero, smul_zero];
-      match_scalars <;> first | ring1 | (field_simp [hD, hD1] <;> ring)))
+      match_scalars <;> first | ring1))
       -(D - 1)⁻¹ • (zbi * G * la * hτ) + ((D - 1)⁻¹ * D) • (zbi * G * hs) + hC * F
 
 end Gen3
@@ -295,8 +290,7 @@ theorem fr2 {a : S} {p q r s : SlopeTestRemainingChoices S A} (hp : FreeOf a p) 
 
 theorem freeOf2_mul_of_free {a : S} {M N : M2 (SlopeTestRemainingChoices S A)} (hM : FreeOf2 a M) (hN : FreeOf2 a N) : FreeOf2 a (M * N) := by
   intro i j
-  rw [Matrix.mul_apply, Fin.sum_univ_two]
-  exact fr_add (fr_mul (hM _ _) (hN _ _)) (fr_mul (hM _ _) (hN _ _))
+  simpa only [Matrix.mul_apply, Fin.sum_univ_two] using fr_add (fr_mul (hM _ _) (hN _ _)) (fr_mul (hM _ _) (hN _ _))
 
 theorem ins_smul (a : S) (c : ℂ) (M : M2 (SlopeTestRemainingChoices S A)) : ins a (c • M) = c • ins a M := by
   simp [ins, Finset.smul_sum]

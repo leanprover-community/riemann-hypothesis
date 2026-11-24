@@ -4,10 +4,12 @@ public import CompanionTheory.AutomorphicTheory.ProductFormulaTheory.CuspidalExh
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IrreducibleAdmissibleGL
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.ExhUnipRadOne
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetOfInducedFiltrationStatement
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetSubLeftOfAdmissibleStatement
+public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.ZelevinskyExhaustion.PropsExh
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetSubLeftOfAdmissible
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.BernsteinZelevinskyFiniteness
 public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.HasSupportOfIsSubquotientProdIrr
-public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.InducedCellSemisimplificationStatement
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.ExistsCellOfIsSubquotient
+public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.InducedCellSemisimplification
 import Development.AutomorphicSpectrum.Proofs.GlobalProofs.IrreducibleSmoothAdmissibleGLStatement
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -61,7 +63,7 @@ namespace CompanionTheory.Exh
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
 theorem geometricLemmaGL : GlobalTheory.Published.GeometricLemma :=
-  fun k _ _ _ _ => ⟨GlobalTheory.T.jacquet_of_induced_filtration k, GlobalTheory.T.induced_cell_semisimplification k⟩
+  fun k _ _ _ _ => ⟨GlobalTheory.T.jacquet_of_induced_filtration k, _root_.GlobalTheory.CompanionTheory.Glob.cellSemisimplification k⟩
 
 theorem embL_of_eq {x : IrrGL (k := k)} {l : List (IrrGL (k := k))} {y : Fin l.length → IrrGL (k := k)} (e : y = l.get)
     (hd : ∑ a, (y a).1 = x.1) (f : x.rep.IntertwiningMap (prodIrr y hd)) (hf : Function.Injective f) : EmbL x l := by
@@ -83,7 +85,7 @@ theorem embL_nil (x : IrrGL (k := k)) (h0 : x.1 = 0) : EmbL x [] := by
 
 variable (k) in
 theorem cuspEmbP (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (hR : RefineP k) : CuspEmbP k := by
-  have hJ : JacquetSubLeft k := GlobalTheory.T.jacquet_sub_left_of_admissible hA
+  have hJ : JacquetSubLeft k := _root_.GlobalTheory.CompanionTheory.JacquetLeft.jacquetSubLeft hA
   suffices H : ∀ n : ℕ, ∀ x : IrrGL (k := k), x.1 = n → ∃ l : List (IrrGL (k := k)), (∀ ρ ∈ l, ρ.IsCusp) ∧ EmbL x l from
     fun x => H _ x rfl
   intro n

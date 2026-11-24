@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.DisjointSpanPerpLat
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.UnitOfPair
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.CrossMSmulRight
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.GenSmulMem
@@ -58,45 +59,7 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
   (σ : E →ₐ[F] E) (v : HeightOneSpectrum (𝓞 F))
 
 theorem fixed_mem_F (hcm : IsCMExt F E σ) (e : E) (he : σ e = e) : ∃ f : F, algebraMap F E f = e := by
-  obtain ⟨-, hE, hdeg, hconj⟩ := hcm
-  by_contra hne
-  have hbot : e ∉ (⊥ : IntermediateField F E) := by
-    intro hmem
-    obtain ⟨f, hf⟩ := IntermediateField.mem_bot.mp hmem
-    exact hne ⟨f, hf⟩
-  have hint : IsIntegral F e := Algebra.IsIntegral.isIntegral e
-  have htop : (IntermediateField.adjoin F {e}) = ⊤ := by
-    have hd : Module.finrank F (IntermediateField.adjoin F {e}) ∣ 2 := by
-      have := IntermediateField.finrank_dvd_of_le_right (K := F) (le_top : (IntermediateField.adjoin F {e}) ≤ ⊤)
-      rwa [IntermediateField.finrank_top', hdeg] at this
-    have h1 : Module.finrank F (IntermediateField.adjoin F {e}) ≠ 1 := by
-      rw [Ne, IntermediateField.finrank_eq_one_iff, IntermediateField.adjoin_simple_eq_bot_iff]
-      exact hbot
-    have h22 : Module.finrank F (IntermediateField.adjoin F {e}) = 2 := by
-      rcases (Nat.dvd_prime Nat.prime_two).mp hd with h | h
-      · exact absurd h h1
-      · exact h
-    apply IntermediateField.eq_of_le_of_finrank_eq le_top
-    rw [h22, IntermediateField.finrank_top', hdeg]
-  have hfix : ∀ x : E, σ x = x := by
-    intro x
-    have hx : x ∈ Algebra.adjoin F ({e} : Set E) := by
-      rw [← IntermediateField.adjoin_simple_toSubalgebra_of_isAlgebraic hint.isAlgebraic, htop]
-      trivial
-    have hle : Algebra.adjoin F ({e} : Set E) ≤ AlgHom.equalizer σ (AlgHom.id F E) := by
-      rw [Algebra.adjoin_le_iff]
-      intro y hy
-      rw [Set.mem_singleton_iff] at hy
-      subst hy
-      exact he
-    exact hle hx
-  obtain ⟨w⟩ : Nonempty (NumberField.InfinitePlace E) := inferInstance
-  apply NumberField.InfinitePlace.not_isReal_iff_isComplex.mpr (hE.isComplex w)
-  rw [NumberField.InfinitePlace.isReal_iff, NumberField.ComplexEmbedding.isReal_iff]
-  ext x
-  have h := hconj w.embedding x
-  rw [hfix] at h
-  rw [NumberField.ComplexEmbedding.conjugate_coe_eq, starRingEnd_apply, ← h]
+  apply GlobalTheory.SelfDualLatticeCompare.exists_of_conj_eq <;> assumption
 
 theorem sc_eq (a : Fv F v) : sc (E := E) v a = algebraMap (Fv F v) (Fv F v ⊗[F] E) a := by
   simp [sc, Algebra.TensorProduct.algebraMap_apply]

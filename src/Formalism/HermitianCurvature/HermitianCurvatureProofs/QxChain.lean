@@ -881,7 +881,6 @@ theorem isBorder0 : IsBorder (e0 k l) (es0 k l) (v0 k l) := by
     (simp only [v0, e0] at h') <;> omega
   · intro j h
     have h' := congrArg Fin.val h
-    have hj := j.isLt
     (simp only [v0, es0] at h') <;> omega
 
 theorem val_bS (y : Fin (mdim k r l.succ + 1)) : (bS (v0 k l) (es0 k l) y).val = y.val + 1 := by
@@ -2149,14 +2148,14 @@ theorem stp_gauge (G P Pb C Ci Cb Cbi t00 t01 t10 t11 : B) (Y s : ℂ)
   have n : ∀ {X X' : B}, Commute X X' → ∀ Z : B, X * (X' * Z) = X' * (X * Z) := fun h Z => by
     rw [← mul_assoc, h.eq, mul_assoc]
   refine ⟨?_, ?_, ?_, ?_⟩
-  · simp only [mul_add, add_mul, mul_assoc, m a1, m a2, a1, m gCi.eq, m gCbi.eq, m g00.eq, m g10.eq,
-      g01.eq, g11.eq, n ci01, n ci11, n ciCbi, gCi.eq]
+  · simp only [mul_add, add_mul, mul_assoc, m a2, a1, m gCi.eq, m gCbi.eq, m g00.eq, m g10.eq,
+      g01.eq, g11.eq, n ci01, n ci11, n ciCbi]
     abel
-  · simp only [mul_add, add_mul, mul_assoc, mul_neg, neg_mul, mul_zero, zero_mul, add_zero, m a2, m gC.eq,
+  · simp only [mul_add, add_mul, mul_assoc, mul_neg, neg_mul, mul_zero, add_zero, m a2, m gC.eq,
       m gCbi.eq, g00.eq, g10.eq, n a3, n cCbi, n c00, n c10, neg_add]
-  · simp only [mul_add, add_mul, mul_assoc, mul_neg, neg_mul, mul_zero, zero_mul, add_zero, a1, m gCb.eq,
+  · simp only [mul_add, add_mul, mul_assoc, mul_neg, neg_mul, zero_mul, add_zero, a1, m gCb.eq,
       m gCi.eq, m g00.eq, g01.eq, n ci01, neg_add]
-  · simp only [mul_add, add_mul, mul_assoc, mul_neg, neg_mul, mul_zero, zero_mul, add_zero, neg_neg, neg_zero, m gC.eq,
+  · simp only [mul_assoc, mul_neg, neg_mul, mul_zero, zero_mul, add_zero, neg_neg, neg_zero, m gC.eq,
       m gCb.eq, g00.eq, n cCb, n c00]
 
 end Alg

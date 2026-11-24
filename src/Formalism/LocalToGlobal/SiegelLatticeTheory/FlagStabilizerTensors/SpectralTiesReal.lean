@@ -72,8 +72,6 @@ theorem kv_identity_bound {P : Type} [Fintype P] {B : S3.MassData P} {c : ℕ �
   refine mul_le_mul_of_nonneg_left ?_ hn
   first
   | exact hI.1.tsum_le_of_sum_le hMb
-  | exact tsum_le_of_sum_le hI.1 hMb
-  | exact tsum_le_of_sum_le' (le_trans (by positivity) (hMb ∅)) hMb
 
 end KV
 
@@ -114,22 +112,20 @@ theorem glob_f_eq {D : D7} {Wp Wq : InfinitePlace D.host.E → Type} [∀ x, Nor
     [∀ x, InnerProductSpace ℂ (Wp x)] [∀ x, NormedAddCommGroup (Wq x)] [∀ x, InnerProductSpace ℂ (Wq x)]
     (S : Formalism.FourierDecayAlt.C.HidaSetting D.host.E Wp Wq) {u u' : D.what₂.Word} (hC : Formalism.L2.SG.DataInst.Compat S u u') :
     S.G.f = D.R.f := by
-  first | unfold Formalism.L2.SG.DataInst.Compat at hC | skip
+  first | unfold Formalism.L2.SG.DataInst.Compat at hC
   have hf := hC.2.2.2.2.2.2
   show Fintype.card (InfinitePlace D.host.E) = D.R.f
   rw [← hf]
   first
   | exact (Fintype.card_congr S.pl).symm.trans (Fintype.card_fin S.f)
-  | (rw [← Fintype.card_fin S.f]; exact (Fintype.card_congr S.pl).symm)
-  | (convert (Fintype.card_congr S.pl).symm using 1; simp)
 
 theorem pos_facts {P : Type} [Fintype P] {B : S3.MassData P} (hP : B.Pos) : 0 < B.n0c ∧ 0 < B.c0 * B.c0' := by
   have hQ := hP
   unfold S3.MassData.Pos at hQ
   casesm* _ ∧ _
   refine ⟨?_, ?_⟩
-  · first | positivity | (unfold S3.MassData.n0c; positivity)
-  · first | positivity | (unfold S3.MassData.c0 S3.MassData.c0'; positivity) | (unfold S3.MassData.c0; positivity)
+  · first | positivity
+  · first | (unfold S3.MassData.c0 S3.MassData.c0'; positivity)
 
 theorem kv_nonneg {E : Type} [Field E] {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     {P : Type} [Fintype P] {B : S3.MassData P} {c : ℕ → TB.Pt E → ℂ} {Vt : TB.Pt E → H}
@@ -147,13 +143,13 @@ theorem pos_deg {P : Type} [Fintype P] {B : S3.MassData P} (hP : B.Pos) : 0 < B.
   have hQ := hP
   unfold S3.MassData.Pos at hQ
   casesm* _ ∧ _
-  first | positivity | assumption | (unfold S3.MassData.deg; positivity)
+  first | positivity
 
 theorem pos_rho {P : Type} [Fintype P] {B : S3.MassData P} (hP : B.Pos) : 0 < B.ρ0 := by
   have hQ := hP
   unfold S3.MassData.Pos at hQ
   casesm* _ ∧ _
-  first | positivity | assumption | (unfold S3.MassData.ρ0; positivity)
+  first | positivity
 
 
 open Formalism.L2.SG.DataInst in
@@ -297,8 +293,6 @@ theorem STies.duC_eq (T : STies D) (hF : FinX T.Y) (u : D.what₂.Word) : Formal
 theorem STies.dstC_eq (T : STies D) : Formalism.L2.SG.RowsConc.DstC T.X = D.what₂.Dstar := by
   first
   | exact T.autTie.Dstar_eq.symm
-  | exact (Formalism.MainNotions.S.AutTie.Dstar_eq T.autTie).symm
-  | (rw [T.autTie.Dstar_eq]; rfl)
 
 theorem STies.concTie (T : STies D) (hF : FinX T.Y) (hK : T.X.LevelSubgroupNormalized)
     (hN : ∀ u, Formalism.L2.SG.PoincareInHH.Cut.NeatKu T.X u T.Y.hK) (hW : Formalism.L2.SG.WuDecay.WuDecay T.X)

@@ -1,5 +1,6 @@
 module
 
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsApprox
 public import Formalism.SatakeDualWeyl.DefsCS
 import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelaf
 import Mathlib.Algebra.Order.Floor.Extended
@@ -63,9 +64,6 @@ theorem csGlobApprox_vD (v : HeightOneSpectrum (𝓞 F)) (r : 𝓞 F) :
     Valued.v (algebraMap (𝓞 F) (v.adicCompletion F) r) = v.intValuation r := by
   first
   | exact (v.valuedAdicCompletion_eq_valuation r).trans (v.valuation_of_algebraMap r)
-  | exact (v.valuedAdicCompletion_eq_valuation r).trans (v.valuation_of_algebraMap (K := F) r)
-  | (rw [IsScalarTower.algebraMap_apply (𝓞 F) F (v.adicCompletion F)]
-     exact (v.valuedAdicCompletion_eq_valuation' _).trans (v.valuation_of_algebraMap (K := F) r))
 
 theorem csGlobApprox_local (v : HeightOneSpectrum (𝓞 F)) (D : 𝓞 F) (hD : D ≠ 0)
     (x : v.adicCompletion F) (hx : x ∈ v.adicCompletionIntegers F) :
@@ -127,85 +125,7 @@ private theorem intValuation_lt_of_mem_pow_of_not_mem_pow {F : Type} [Field F] [
   lt_of_le_of_lt ((w.intValuation_le_pow_iff_mem z n).2 hz)
     (not_le.1 fun h => hDn ((w.intValuation_le_pow_iff_mem D n).1 h))
 
-private theorem valued_v_algebraMap_adicCompletion {F : Type} [Field F] [NumberField F] (w : HeightOneSpectrum (𝓞 F)) (k : F) :
-    Valued.v (algebraMap F (w.adicCompletion F) k) = w.valuation F k := by
-  first
-  | exact w.valuedAdicCompletion_eq_valuation' k
-  | rfl
-  | simp [HeightOneSpectrum.valuedAdicCompletion_eq_valuation']
-
 theorem csGlob_intAdApprox : Formalism.UG.CS.IntAdApprox := by
-  intro F _ _ D hD a ha
-  classical
-  have ha' : ∀ w : HeightOneSpectrum (𝓞 F), a w ∈ w.adicCompletionIntegers F := ha
-  have hfin : {w : HeightOneSpectrum (𝓞 F) | D ∈ w.asIdeal}.Finite := by
-    have h := Ideal.finite_factors (I := Ideal.span {D})
-      (by rw [Ne, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot]; exact hD)
-    simpa only [Ideal.dvd_span_singleton] using h
-  choose r hr using fun w : HeightOneSpectrum (𝓞 F) => csGlobApprox_local w D hD (a w) (ha' w)
-  choose e he using fun w : HeightOneSpectrum (𝓞 F) => exists_not_mem_asIdeal_pow_of_ne_zero w D hD
-  obtain ⟨r0, hr0⟩ := IsDedekindDomain.exists_forall_sub_mem_ideal (s := hfin.toFinset)
-    (fun w => w.asIdeal) e (fun w _ => w.prime)
-    (fun i _ j _ hij h => hij (HeightOneSpectrum.ext h)) (fun w => r w.1)
-  have hγ : ∀ w : HeightOneSpectrum (𝓞 F), w.intValuation D ≠ 0 := fun w =>
-    (lt_of_le_of_lt zero_le' (intValuation_lt_of_mem_pow_of_not_mem_pow w (he w) (Submodule.zero_mem _))).ne'
-  have hbound : ∀ w : HeightOneSpectrum (𝓞 F),
-      Valued.v (a w - algebraMap (𝓞 F) (w.adicCompletion F) r0) ≤ w.intValuation D := by
-    intro w
-    by_cases hw : D ∈ w.asIdeal
-    · have hmem := hr0 w (hfin.mem_toFinset.2 hw)
-      have h1 := hr w
-      rw [csGlobApprox_vD] at h1
-      have h2 : Valued.v (algebraMap (𝓞 F) (w.adicCompletion F) (r w) -
-          algebraMap (𝓞 F) (w.adicCompletion F) r0) ≤ w.intValuation D := by
-        rw [Valuation.map_sub_swap, ← map_sub, csGlobApprox_vD]
-        exact (intValuation_lt_of_mem_pow_of_not_mem_pow w (he w) hmem).le
-      rw [← sub_add_sub_cancel (a w) (algebraMap (𝓞 F) (w.adicCompletion F) (r w))]
-      exact Valuation.map_add_le _ h1 h2
-    · have h1 : w.intValuation D = 1 := by
-        refine le_antisymm (w.intValuation_le_one D) ?_
-        by_contra hlt
-        push_neg at hlt
-        first
-        | exact hw ((w.intValuation_lt_one_iff_mem D).1 hlt)
-        | exact hw (Ideal.dvd_span_singleton.1 ((w.intValuation_lt_one_iff_dvd D).1 hlt))
-      rw [h1]
-      refine le_trans (Valuation.map_sub _ _ _) (max_le ?_ ?_)
-      · exact ha' w
-      · rw [csGlobApprox_vD]
-        exact w.intValuation_le_one r0
-  have hd : algebraMap (𝓞 F) F D ≠ 0 :=
-    (map_ne_zero_iff _ (IsFractionRing.injective (𝓞 F) F)).2 hD
-  have hsc : algebraMap (𝓞 F) (FiniteAdeleRing (𝓞 F) F) D =
-      algebraMap F (FiniteAdeleRing (𝓞 F) F) (algebraMap (𝓞 F) F D) := by
-    first
-    | exact IsScalarTower.algebraMap_apply (𝓞 F) F (FiniteAdeleRing (𝓞 F) F) D
-    | rfl
-  have hunit : algebraMap (𝓞 F) (FiniteAdeleRing (𝓞 F) F) D *
-      algebraMap F (FiniteAdeleRing (𝓞 F) F) (algebraMap (𝓞 F) F D)⁻¹ = 1 := by
-    rw [hsc, ← map_mul, mul_inv_cancel₀ hd, map_one]
-  obtain ⟨Y, hY⟩ : ∃ Y : FiniteAdeleRing (𝓞 F) F, Y =
-      (a - algebraMap (𝓞 F) (FiniteAdeleRing (𝓞 F) F) r0) *
-        algebraMap F (FiniteAdeleRing (𝓞 F) F) (algebraMap (𝓞 F) F D)⁻¹ := ⟨_, rfl⟩
-  refine ⟨r0, Y, (fun w => ?_ : ∀ w : HeightOneSpectrum (𝓞 F), Y w ∈ w.adicCompletionIntegers F), ?_⟩
-  · have hcoord : Y w = (a w - algebraMap (𝓞 F) (w.adicCompletion F) r0) *
-        algebraMap F (w.adicCompletion F) (algebraMap (𝓞 F) F D)⁻¹ := by
-      rw [hY]
-      first
-      | rfl
-      | simp
-    rw [hcoord]
-    have hle : Valued.v ((a w - algebraMap (𝓞 F) (w.adicCompletion F) r0) *
-        algebraMap F (w.adicCompletion F) (algebraMap (𝓞 F) F D)⁻¹) ≤ 1 := by
-      rw [map_mul, valued_v_algebraMap_adicCompletion, map_inv₀, w.valuation_of_algebraMap]
-      calc _ ≤ w.intValuation D * (w.intValuation D)⁻¹ := by
-            first
-            | exact mul_le_mul_right (hbound w) _
-            | exact mul_le_mul_of_nonneg_right (hbound w) zero_le'
-            | (gcongr; exact hbound w)
-        _ = 1 := mul_inv_cancel₀ (hγ w)
-    exact hle
-  · rw [hY]
-    linear_combination (algebraMap (𝓞 F) (FiniteAdeleRing (𝓞 F) F) r0 - a) * hunit
+  apply Formalism.UG.P.integral_adele_approximation_holds <;> assumption
 
 end Formalism.UG.P

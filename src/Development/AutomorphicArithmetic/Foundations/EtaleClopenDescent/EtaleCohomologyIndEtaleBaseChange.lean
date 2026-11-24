@@ -1,14 +1,16 @@
 module
 
-public import Development.AbelianVarietyTheory.Definitions.Divisors.DivisorSupportCondition
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IndEtOfForallFinset
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleCohomologyLocalToGlobalAffineIndEtaleStatement
+public import Development.AbelianVarietyTheory.Definitions.Divisors.PullHlComp
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleEquivalenceSchemeOfStrictlyHenselianStalks
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsIndEtaleAlgebraOfStrictlyHenselianEtaleStalkAf
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TateTwistFinitaryStatement
+public import Development.AbelianVarietyTheory.Definitions.Divisors.DivisorSupportCondition
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PositiveDegreeClassesDieOnEtaleCover
+public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.BijectiveRestrictPointsOfEtaleOfHenselian
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HZeroPullbackTwistBijectiveStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SubsingletonEtaleCohomologyGenericFibreHenselianStatement
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TateTwistCohomologyGenericFibreHenselLineSubsingStatement
-import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsDomainAndIsIntegrallyClosedAtPrimeOfSmoothOfCo
-import Development.AbelianVarietyTheory.Proofs.ModuliProofs.FlatMapMaximalIdealIsSeparable
-public import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomologyFunctorialityAxiomsHoldOfSheafAxi
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -27,9 +29,7 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
 import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
@@ -37,7 +37,6 @@ import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
 import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.NormNum.Irrational
 import Mathlib.Tactic.NormNum.IsCoprime
 import Mathlib.Tactic.NormNum.IsSquare
@@ -50,8 +49,151 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Tactic.Linter.HaveILetI
+import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsDomainAndIsIntegrallyClosedAtPrimeOfSmoothOfCo
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.FlatMapMaximalIdealIsSeparable
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.TypeStar
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleCohomologyLocalToGlobalAffineIndEtale, Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomologyFunctorialityAxiomsHoldOfSheafAxi, Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.EtaleCohomologyIndEtaleBaseChange
+
+-- ===== clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleCohomologyLocalToGlobalAffineIndEtale =====
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleCohomologyLocalToGlobalAffineIndEtale", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.IndEtOfForallFinset\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.PullHlComp\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleEquivalenceSchemeOfStrictlyHenselianStalks\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsIndEtaleAlgebraOfStrictlyHenselianEtaleStalkAf\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TateTwistFinitaryStatement\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
+section -- clump:auto
+@[expose] public section
+
+open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC
+
+noncomputable section
+
+namespace GlobalTheory.LocGlobIndEt
+
+theorem eqv_of_comp_iso {R : Type} [CommRing R] {E E' E'' : Spc} (g : E ⟶ E') (e : E' ⟶ E'') [IsIso e] (F : Shv R)
+    (h : Eqv R (g ≫ e) F) : Eqv R g F := by
+  intro n
+  have he : Function.Bijective (pull R e F n) := by
+    refine Function.bijective_iff_has_inverse.2 ⟨pull R (inv e) F n, fun x => ?_, fun x => ?_⟩
+    · rw [← pull_comp, IsIso.inv_hom_id, pull_id]
+    · rw [← pull_comp, IsIso.hom_inv_id, pull_id]
+  refine (Function.Bijective.of_comp_iff (pull R g F n) he).1 ?_
+  have : (⇑(pull R g F n) ∘ ⇑(pull R e F n)) = ⇑(pull R (g ≫ e) F n) := funext fun x => (pull_comp R g e F n x).symm
+  rw [this]
+  exact h n
+
+theorem main : ∀ (q : ℕ) (B : Type) [CommRing B] {Y : Scheme.{0}} (f : Y ⟶ Spec (CommRingCat.of B)) [QuasiCompact f]
+    [QuasiSeparated f], IsUnit (q : B) → ∀ i : ℤ, (∀ (A : Type) [CommRing A] [Algebra B A], SH A → IndEt B A →
+      Eqv _ (sch.map (pullback.snd f (Spec.map (CommRingCat.ofHom (algebraMap B A))))) (tw q i)) →
+    Eqv _ (sch.map f) (tw q i) := by
+  intro q B _ Y f _ _ _ i hyp
+  refine _root_.GlobalTheory.EtC.eqv_sch_of_stalks (ZMod q) (tw q i) (_root_.GlobalTheory.EtC.tw_finitary q i) Y (Spec (CommRingCat.of B)) (Spec (CommRingCat.of B)) f
+    (𝟙 _) ?_
+  intro O _ s hs
+  obtain ⟨inst, hSH, hind, rfl⟩ := isStalk_affine B O s hs
+  have key := @hyp O _ inst hSH hind
+  refine eqv_of_comp_iso _ (sch.map (pullback.snd (𝟙 _) (Spec.map (CommRingCat.ofHom (algebraMap B O))))) _ ?_
+  rw [← sch.map_comp, pullback.lift_snd, Category.comp_id]
+  generalize hf : f ≫ 𝟙 _ = f'
+  rw [Category.comp_id] at hf
+  subst hf
+  exact key
+
+end GlobalTheory.LocGlobIndEt
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleCohomologyLocalToGlobalAffineIndEtale =====
+
+-- ===== clump member: Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomologyFunctorialityAxiomsHoldOfSheafAxi =====
+-- clump-header: {"m": "Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomologyFunctorialityAxiomsHoldOfSheafAxi", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.DivisorSupportCondition\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.PositiveDegreeClassesDieOnEtaleCover\npublic import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.BijectiveRestrictPointsOfEtaleOfHenselian\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.RegularLocalRing.Defs\nimport Mathlib.RingTheory.SimpleRing.Principal\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
+section -- clump:auto
+@[expose] public section
+
+open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC
+
+private theorem exists_algHom_of_etale (k B : Type) [Field k] [IsSepClosed k] [CommRing B]
+    [Nontrivial B] [Algebra k B] [Algebra.Etale k B] : Nonempty (B →ₐ[k] k) := by
+  obtain ⟨I, _, Ai, _, _, e, hA⟩ := (Algebra.Etale.iff_exists_algEquiv_prod k B).mp inferInstance
+  have hI : Nonempty I := by
+    by_contra h
+    rw [not_nonempty_iff] at h
+    have : Subsingleton (Π i, Ai i) := inferInstance
+    exact not_subsingleton B e.toEquiv.subsingleton
+  obtain ⟨i⟩ := hI
+  haveI := (hA i).1
+  haveI := (hA i).2
+  let u : k ≃ₐ[k] Ai i := AlgEquiv.ofBijective (Algebra.ofId k (Ai i))
+    ⟨(algebraMap k (Ai i)).injective, IsSepClosed.algebraMap_surjective k (Ai i)⟩
+  exact ⟨(u.symm.toAlgHom.comp (Pi.evalAlgHom k Ai i)).comp e.toAlgHom⟩
+
+private theorem exists_section_of_etale_field {k : Type} [Field k] [IsSepClosed k] {P : Scheme.{0}}
+    (q : P ⟶ Spec (CommRingCat.of k)) [Etale q] [Surjective q] :
+    ∃ g : Spec (CommRingCat.of k) ⟶ P, g ≫ q = 𝟙 _ := by
+  obtain ⟨x0⟩ : Nonempty (Spec (CommRingCat.of k)) := inferInstance
+  obtain ⟨p, -⟩ := q.surjective x0
+  let U := P.affineOpenCover
+  let j := U.idx p
+  haveI : IsOpenImmersion (U.f j) := U.map_prop j
+  let φ : CommRingCat.of k ⟶ U.X j := Spec.preimage (U.f j ≫ q)
+  have hφ : Spec.map φ = U.f j ≫ q := Spec.map_preimage _
+  have hE : Etale (Spec.map φ) := by
+    rw [hφ]
+    infer_instance
+  have het : φ.hom.Etale := HasRingHomProperty.Spec_iff.mp hE
+  letI : Algebra k (U.X j) := φ.hom.toAlgebra
+  haveI : Algebra.Etale k (U.X j) := het
+  obtain ⟨y, -⟩ := U.covers p
+  haveI : Nontrivial (U.X j) := by
+    by_contra h
+    rw [not_nontrivial_iff_subsingleton] at h
+    exact y.isPrime.ne_top (Subsingleton.elim _ _)
+  obtain ⟨ψ⟩ := exists_algHom_of_etale k (U.X j)
+  refine ⟨Spec.map (CommRingCat.ofHom ψ.toRingHom) ≫ U.f j, ?_⟩
+  rw [Category.assoc, ← hφ, ← Spec.map_comp]
+  conv_rhs => rw [← Spec.map_id]
+  congr 1
+  ext c
+  exact ψ.commutes c
+
+private theorem exists_section_of_etale_henselian (A : Type) [CommRing A] [HenselianLocalRing A]
+    [IsSepClosed (IsLocalRing.ResidueField A)] {Y : Scheme.{0}} (f : Y ⟶ Spec (CommRingCat.of A))
+    [Etale f] [Surjective f] : ∃ s : Spec (CommRingCat.of A) ⟶ Y, s ≫ f = 𝟙 _ := by
+  let κ := IsLocalRing.ResidueField A
+  let i : Spec (CommRingCat.of κ) ⟶ Spec (CommRingCat.of A) :=
+    Spec.map (CommRingCat.ofHom (IsLocalRing.residue A))
+  have hb := GlobalTheory.bijective_restrictPoints_of_etale_of_henselian f A (𝟙 _)
+  obtain ⟨σ, hσ⟩ := exists_section_of_etale_field (pullback.snd f i)
+  have hg : (σ ≫ pullback.fst f i) ≫ f = i ≫ 𝟙 _ := by
+    rw [Category.assoc, pullback.condition, ← Category.assoc, hσ, Category.id_comp,
+      Category.comp_id]
+  obtain ⟨⟨s, hs⟩, _⟩ := hb.2 ⟨σ ≫ pullback.fst f i, hg⟩
+  exact ⟨s, hs⟩
+
+theorem UpperTheory.etaleCohomology_functorialityAxioms_hold_of_sheafAxioms :
+    GlobalTheory.EtC.B2 := by
+  intro R _ A _ hA F n hn
+  obtain ⟨hHen, hSep⟩ := hA
+  refine ⟨fun x y => ?_⟩
+  have key : ∀ z : H R (sp A) F n, z = 0 := by
+    intro z
+    obtain ⟨Y, f, hE, hS, hz⟩ := _root_.GlobalTheory.EtC.classes_die_on_etale_cover R (Spec (CommRingCat.of A)) F n hn z
+    obtain ⟨s, hs⟩ := exists_section_of_etale_henselian A f
+    calc z = pull R (𝟙 _) F n z := (pull_id R _ F n z).symm
+      _ = pull R (sch.map (s ≫ f)) F n z := by rw [hs, CategoryTheory.Functor.map_id]
+      _ = pull R (sch.map s) F n (pull R (sch.map f) F n z) := by
+        rw [CategoryTheory.Functor.map_comp, pull_comp]
+      _ = 0 := by rw [hz, map_zero]
+  rw [key x, key y]
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomologyFunctorialityAxiomsHoldOfSheafAxi =====
+
+-- ===== clump member: Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.EtaleCohomologyIndEtaleBaseChange =====
+-- clump-header: {"m": "Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.EtaleCohomologyIndEtaleBaseChange", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.DivisorSupportCondition\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.IndEtOfForallFinset\npublic import Development.AbelianVarietyTheory.Definitions.Divisors.PullHlComp\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EtaleCohomologyLocalToGlobalAffineIndEtale\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HZeroPullbackTwistBijectiveStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SubsingletonEtaleCohomologyGenericFibreHenselianStatement\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TateTwistCohomologyGenericFibreHenselLineSubsingStatement\npublic import Development.AutomorphicArithmetic.CommutativeAlgebra.EtaleCohomologyFunctorialityAxiomsHoldOfSheafAxi\nimport Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.IsDomainAndIsIntegrallyClosedAtPrimeOfSmoothOfCo\nimport Development.AbelianVarietyTheory.Proofs.ModuliProofs.FlatMapMaximalIdealIsSeparable\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Finiteness.ModuleFinitePresentation\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.TotallySplit\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.TypeStar\n\n"}
+section -- clump:auto
 @[expose] public section
 
 open CategoryTheory Limits AlgebraicGeometry Opposite GlobalTheory.EtC
@@ -170,7 +312,7 @@ theorem indEt_isDomain [IsDomain T] [IsIntegrallyClosed T] [Algebra.Smooth T B] 
   have hnat : ∀ {i k : J} (f : i ⟶ k) (x : D.obj i), (s.app k).hom ((D.map f).hom x) = (s.app i).hom x := by
     intro i k f x
     have := s.naturality f
-    simp only [Functor.const_obj_map, Category.comp_id] at this
+    simp only [Functor.const_obj_map] at this
     exact congrArg (fun g => g.hom x) this
   haveI : NoZeroDivisors A := ⟨by
     intro a b hab
@@ -276,7 +418,7 @@ theorem local_eqv (q : ℕ) [NeZero q] (T : Type) [CommRing T] [IsDomain T] [IsL
     haveI := h_neg (ZMod q) (sp (FractionRing T ⊗[T] A)) (tw q i) n hn
     exact bij_of_subsingleton _
   · obtain ⟨ζ, hζ⟩ := aic_root q T hT hq
-    refine GlobalTheory.T.h_zero_pullback_twist_bijective q A (FractionRing T ⊗[T] A) _ hqA ⟨algebraMap T A ζ, ?_⟩
+    refine _root_.GlobalTheory.EtC.h_zero_pull_bijective q A (FractionRing T ⊗[T] A) _ hqA ⟨algebraMap T A ζ, ?_⟩
       hdK.toNontrivial (fun e he => IsIdempotentElem.iff_eq_zero_or_one.1 he)
       (fun e he => IsIdempotentElem.iff_eq_zero_or_one.1 he) i
     have h1 := root_map q (algebraMap T A) hq hqA hζ
@@ -287,8 +429,8 @@ theorem local_eqv (q : ℕ) [NeZero q] (T : Type) [CommRing T] [IsDomain T] [IsL
   · haveI := UpperTheory.etaleCohomology_functorialityAxioms_hold_of_sheafAxioms (ZMod q) A hSH (tw q i) n hn
     haveI : Subsingleton (Ht q (sp (FractionRing T ⊗[T] A)) n i) := by
       rcases eq_or_lt_of_le (show 1 ≤ n by omega) with rfl | h2
-      · exact GlobalTheory.T.subsingleton_ht_one_genericFibre_of_sh_etale_cover q T hT hq A hSH hel i
-      · exact GlobalTheory.T.subsingleton_etaleCohomology_genericFibre_henselianLine q T hT hq A hSH hind n i (by omega)
+      · exact _root_.GlobalTheory.LocAcycDegOne.tateTwistCohomology_genericFibre_henselLine_subsingleton q T hT hq A hSH hel i
+      · exact _root_.GlobalTheory.EtC.GenFibreLine.genericFibre_subsingleton q T hT hq A hSH hind n i (by omega)
     exact bij_of_subsingleton _
 
 theorem pullback_square (T B A : Type) [CommRing T] [CommRing B] [CommRing A] [Algebra T B] [Algebra B A] [Algebra T A]
@@ -322,7 +464,7 @@ theorem UpperTheory.Cb.etale_cohomology_ind_etale_base_change : GlobalTheory.EtC
   haveI : Algebra.Smooth T (Polynomial T) := ⟨inferInstance, inferInstance⟩
   haveI : Algebra.Smooth T B := Algebra.Smooth.comp T (Polynomial T) B
   have hqB : IsUnit (q : B) := by simpa using hq.map (algebraMap T B)
-  refine GlobalTheory.T.etaleCohomology_local_to_global_affine_indEtale q B (Spec.map (CommRingCat.ofHom
+  refine _root_.GlobalTheory.LocGlobIndEt.main q B (Spec.map (CommRingCat.ofHom
     (Algebra.TensorProduct.includeRight (R := T) (A := FractionRing T) (B := B)).toRingHom)) hqB i ?_
   intro A _ _ hSH hInd
   letI : Algebra T A := ((algebraMap B A).comp (algebraMap T B)).toAlgebra
@@ -352,3 +494,6 @@ theorem UpperTheory.Cb.etale_cohomology_ind_etale_base_change : GlobalTheory.EtC
   rw [h3] at h1
   have h4 := pull_iso_bij (sch.mapIso PB.isoPullback) (tw q i) n
   exact (Function.Bijective.of_comp_iff' h4 _).1 h1
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.EtaleCohomologyIndEtaleBaseChange =====

@@ -236,7 +236,7 @@ theorem first_level_from_universal_holds : FirstLevelFromUniversal := by
     · exact hy
   have ha := Dict.constantCoeff_vec_three_eq_zero hx.1 hx'.1 hy.1
   have hs := MvPowerSeries.hasSubst_of_constantCoeff_zero ha
-  have key := lGSubstMv K (Formalism.G.unitBall K) (Fin 3) _ hLG σ ![x, x', y] hpt
+  have key := _root_.Formalism.L2.Th1.C.expIntegralMvSubst' K (Formalism.G.unitBall K) (Fin 3) _ hLG σ ![x, x', y] hpt
   have h0 : MvPowerSeries.constantCoeff (MvPowerSeries.X (0 : Fin 3) : MvPowerSeries (Fin 3) K) = 0 :=
     MvPowerSeries.constantCoeff_X 0
   have h1 : MvPowerSeries.constantCoeff (MvPowerSeries.X (1 : Fin 3) : MvPowerSeries (Fin 3) K) = 0 :=

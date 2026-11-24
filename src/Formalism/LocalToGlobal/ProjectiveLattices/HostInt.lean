@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.FStarBwdNA
 public import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 import Mathlib.Algebra.AffineMonoid.Basic
@@ -258,29 +259,7 @@ theorem trace_rep (D : D7) (g : 𝓞 D.host.E →ₗ[ℤ] ℤ) : ∃ z : D.host.
 
 theorem riesz {E : Type} [Field E] [NumberField E] [StarRing E] (S : Formalism.BasicNotions.HSpace E) (l : S.V →ₗ[E] E) :
     ∃ x, ∀ v, S.hT x v = l v := by
-  let T : S.V →ₗ[E] (Fin S.rank → E) :=
-    { toFun := fun x i => star (S.hT x (S.frame i))
-      map_add' := by intro x y; ext i; simp [map_add (f := _), star_add]
-      map_smul' := by
-        intro e x; ext i
-        simp [LinearMap.map_smulₛₗ, star_mul', starRingEnd_apply, star_star] }
-  have hT : Function.Injective T := by
-    rw [← LinearMap.ker_eq_bot, LinearMap.ker_eq_bot']
-    intro x hx
-    have h0 : ∀ i, S.hT x (S.frame i) = 0 := fun i => by
-      have := congrFun hx i
-      simpa [T] using this
-    have h1 : S.hT x = 0 := S.frame.ext (fun i => by rw [h0 i]; rfl)
-    exact S.nondeg.1 x (fun y => by rw [h1]; rfl)
-  have hfr : Module.finrank E S.V = Module.finrank E (Fin S.rank → E) := by
-    rw [S.rank_eq, Module.finrank_fin_fun]
-  obtain ⟨x, hx⟩ := (LinearMap.injective_iff_surjective_of_finrank_eq_finrank hfr).1 hT
-    (fun i => star (l (S.frame i)))
-  refine ⟨x, fun v => ?_⟩
-  have h2 : S.hT x = l := S.frame.ext (fun i => by
-    have := congrFun hx i
-    simpa [T] using this)
-  rw [h2]
+  apply Formalism.L2.SG.Pf.FrameGlobalPatching.FStar.BwdNA.riesz <;> assumption
 
 end Unimod
 

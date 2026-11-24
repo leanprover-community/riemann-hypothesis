@@ -96,37 +96,27 @@ theorem sharp_downTo (D : D7) (μ : D.what₂.Tup) :
 theorem sharp_iota (D : D7) (μ : D.what₂.Tup) : (RowSide.sharp D).iota μ = D.what₂.iota μ := by
   first
   | (unfold RowSide.iota Rows.Data.iota; rw [sharp_downTo D μ D.R.m]; try rfl; done)
-  | (simp only [RowSide.iota, Rows.Data.iota, sharp_downTo]; try rfl; done)
-  | rfl
 
 theorem sharp_Usp (D : D7) (μ : D.what₂.Tup) : (RowSide.sharp D).Usp μ = D.what₂.Usp μ := by
   first
   | (unfold RowSide.Usp Rows.Data.Usp; rw [sharp_iota]; try rfl; done)
-  | (simp only [RowSide.Usp, Rows.Data.Usp, sharp_iota]; try rfl; done)
-  | rfl
 
 theorem sharp_Qsp (D : D7) (μ : D.what₂.Tup) : (RowSide.sharp D).Qsp μ = D.what₂.Qsp μ := by
   first
   | (unfold RowSide.Qsp Rows.Data.Qsp; rw [sharp_Usp]; try rfl; done)
-  | (simp only [RowSide.Qsp, Rows.Data.Qsp, sharp_Usp]; try rfl; done)
-  | rfl
 
 theorem sharp_LamSet (D : D7) (μ : D.what₂.Tup) : (RowSide.sharp D).LamSet μ = D.what₂.LamSet μ := by
   first
   | (unfold RowSide.LamSet Rows.Data.LamSet; rw [sharp_Qsp]; try rfl; done)
   | (simp only [RowSide.LamSet, Rows.Data.LamSet, sharp_Qsp]; try rfl; done)
-  | rfl
 
 theorem sharp_RRset (D : D7) (μ : D.what₂.Tup) : (RowSide.sharp D).RRset μ = D.what₂.RRset μ := by
   first
   | (unfold RowSide.RRset Rows.Data.RRset; rw [sharp_iota, sharp_LamSet]; try rfl; done)
-  | (simp only [RowSide.RRset, Rows.Data.RRset, sharp_iota, sharp_LamSet]; try rfl; done)
-  | rfl
 
 theorem sharp_RRDef (D : D7) : (RowSide.sharp D).RRDef ↔ DV.RRDef D := by
   first
   | (unfold RowSide.RRDef DV.RRDef; simp only [sharp_RRset]; try exact Iff.rfl; done)
-  | exact Iff.rfl
 
 section Derived
 
@@ -167,7 +157,6 @@ theorem condE_pos : 0 < LevelStarExponents.condE D := by
 theorem absNorm_ccK_pos : 0 < Ideal.absNorm D.host.ccK := by
   first
   | exact Nat.pos_of_ne_zero (fun h => D.host.ccK_ne_bot (Ideal.absNorm_eq_zero_iff.mp h))
-  | (rw [Nat.pos_iff_ne_zero, Ne, Ideal.absNorm_eq_zero_iff]; exact D.host.ccK_ne_bot)
 
 theorem rPr_mem : (rPr D).Prime ∧
     ¬ rPr D ∣ LevelStarExponents.condE D * (D.host.pde - 1) * (D.host.pde' - 1) * Ideal.absNorm D.host.ccK := by
@@ -458,7 +447,6 @@ theorem auxiliary_prime_odd (D : D7) : q0 D % 2 = 1 := by
     exact dvd_mul_of_dvd_left (dvd_mul_of_dvd_left h2 _) _
   have h2k : 2 ∣ rPr D * LevelStarExponents.condE D := dvd_mul_of_dvd_right h2c _
   rw [← Nat.mod_mod_of_dvd (q0 D) h2k, (auxiliary_prime_mem D).2.1]
-  all_goals norm_num
 
 def covR {n : ℕ} (Λ : Submodule ℤ (EuclideanSpace ℝ (Fin n))) : ℝ :=
   sSup (Set.range fun x : EuclideanSpace ℝ (Fin n) => Metric.infDist x (Λ : Set (EuclideanSpace ℝ (Fin n))))

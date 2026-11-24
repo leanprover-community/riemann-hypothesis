@@ -143,7 +143,7 @@ theorem isFrame_one_std (V : HSp D) (hV : FrmC.StdLat V) :
       funext l
       rw [Finset.sum_apply, Finset.sum_eq_single l]
       · simp
-      · intro b _ hb; simp [Pi.single_apply, hb.symm]
+      · intro b _ hb; simp [hb.symm]
       · simp
     rw [← hsum]
     exact Submodule.sum_mem _ fun i _ => hc i

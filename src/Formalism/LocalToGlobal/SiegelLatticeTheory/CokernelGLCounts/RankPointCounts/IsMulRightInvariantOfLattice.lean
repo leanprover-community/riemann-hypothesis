@@ -172,7 +172,7 @@ theorem modular_eq_one_of_mem (μ : Measure H) [IsHaarMeasure μ] (Γ : Subgroup
       (fun x => by simpa [mul_assoc] using tsum_lwt Γ hK hcov (x * δ)) (tsum_lwt Γ hK hcov)).trans rfl
   have hmap : ∫⁻ x, lwt Γ K (x * δ) ∂μ = (modularCharacterFun δ : ℝ≥0∞) * I := by
     rw [← lintegral_map hw (measurable_mul_const δ), map_mul_right_eq_modular μ δ, lintegral_smul_measure]
-    all_goals first | rfl | simp [hI]
+    all_goals first | rfl
   have : (modularCharacterFun δ : ℝ≥0∞) * I = 1 * I := by rw [← hmap, hshift, one_mul]
   exact ENNReal.coe_eq_one.1 ((ENNReal.mul_left_inj hI0 hItop).1 this)
 

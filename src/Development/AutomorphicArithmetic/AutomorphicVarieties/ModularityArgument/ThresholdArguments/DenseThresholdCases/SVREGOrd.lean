@@ -115,7 +115,7 @@ theorem exists_ordinary_form_trace_near_one_add_cyc (P : _root_.UpperTheory.V.Af
   have hlN : l * N ≠ 0 := mul_ne_zero hl.out.ne_zero (NeZero.ne N)
   set c : Pl ℚ → ℕ := fun w => N.factorization (normV w) with hc
   have hc0 : ∀ w, c w = 0 ↔ ¬ normV w ∣ N := fun w => by
-    simp [hc, Nat.factorization_eq_zero_iff, normV_prime w, (normV_prime w).ne_one, NeZero.ne N]
+    simp [hc, normV_prime w, (normV_prime w).ne_one, NeZero.ne N]
   set D : G ℚ Ω →* (Qbar l)ˣ := cycBar ℚ Ω l ^ (k - 1) * ψ with hD
   have hDv : ∀ s, (D s : Qbar l) = (cycBar ℚ Ω l s : Qbar l) ^ (k - 1) * Chr.dirG ℚ Ω (χ.ringHomComp ι.symm.toRingHom) s := fun s => by
     rw [hD, ← hm]; simp

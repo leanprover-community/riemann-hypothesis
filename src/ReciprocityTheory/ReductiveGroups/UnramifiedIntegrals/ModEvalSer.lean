@@ -110,7 +110,6 @@ theorem Conv.mul {f g : PowerSeries ℂ} (hf : Conv f) (hg : Conv g) : Conv (f *
   intro x hx
   refine (summable_norm_sum_mul_antidiagonal_of_summable_norm (hf.summable_norm hx)
     (hg.summable_norm hx)).congr fun n => ?_
-  beta_reduce
   rw [← coeff_mul_term, norm_mul, norm_pow]
 
 theorem conv_one : Conv (1 : PowerSeries ℂ) := by
@@ -233,7 +232,6 @@ private theorem eq_zero_at_zero_of_tsum_mul_pow_eq_zero (b : ℕ → ℂ) (hb : 
     (h0 : ∀ t : ℝ, 0 < t → t ≤ 1 / 2 → ∑' i, b i * (t : ℂ) ^ i = 0) : b 0 = 0 := by
   have hK : Summable fun i => ‖b (i + 1)‖ * (1 / 2 : ℝ) ^ i := by
     refine (((summable_nat_add_iff 1).mpr hb).mul_left 2).congr fun i => ?_
-    beta_reduce
     ring
   have hmain : ∀ t : ℝ, 0 < t → t ≤ 1 / 2 →
       ‖b 0‖ ≤ t * ∑' i, ‖b (i + 1)‖ * (1 / 2 : ℝ) ^ i := by
@@ -283,7 +281,6 @@ private theorem coeff_eq_zero_of_ev_eq_zero_of_lower_eq_zero {f : PowerSeries �
     have hs := (summable_nat_add_iff n).mpr (hf _ h2)
     rw [Complex.norm_real, Real.norm_of_nonneg (by norm_num : (0 : ℝ) ≤ 1 / 2)] at hs
     refine (hs.mul_left (2 ^ n)).congr fun i => ?_
-    beta_reduce
     generalize ‖PowerSeries.coeff (i + n) f‖ = c
     rw [pow_add]
     calc (2 : ℝ) ^ n * (c * ((1 / 2) ^ i * (1 / 2) ^ n)) = c * (1 / 2) ^ i * ((1 / 2) ^ n * 2 ^ n) := by

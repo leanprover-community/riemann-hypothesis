@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsActValue
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.AllDV
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.WeilIsIffCommIsOfAndLiftSubsingleton
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.SvalOfIsTwistPull
@@ -66,20 +67,7 @@ section General
 variable {S : Scheme.{0}} {A : Over S} [GrpObj A] {L : LB A.left} {T : Over S}
 
 theorem rigT_isGen {ρ : LB.Gen (L.pull (eSec A))} (hρ : ρ.IsGen) (k : ℤ) : (rigT A L ρ T k).IsGen := by
-  intro i j
-  refine unit_ext fun y hy => ?_
-  have v : ∀ i : Fin 1 → L.ι, y ∈ LB.wchart L (fun _ : Fin 1 => T.hom ≫ eSec A) i →
-      gm (𝟙 T.left) y (LB.wchart L (fun _ : Fin 1 => T.hom ≫ eSec A) i) ((rigT A L ρ T k).s i) =
-        gm T.hom y (LB.wchart L (fun _ : PUnit => eSec A) (fun _ => i 0)) (ρ.s fun _ => i 0) ^ k := fun i hi =>
-    (map_zpow _ _ _).trans (congrArg (· ^ k) (gm_rp₁ T.hom y _ _ (rigT_le A L i) hi _))
-  have e := gen_trans (L := L) (φ := fun _ : PUnit.{1} => eSec A) (ε := fun _ => 1) hρ T.hom y
-    (j := fun _ => i 0) (j' := fun _ => j 0) (rigT_le A L (T := T) i hy.1) (rigT_le A L (T := T) j hy.2)
-  rw [trF, Fintype.prod_unique, zpow_one] at e
-  refine ((gm_res (𝟙 _) y _ hy _).trans (v i hy.1)).trans (Eq.trans ?_ ((map_mul _ _ _).trans (congrArg₂ (· * ·)
-    (gm_linComb L (fun _ : Fin 1 => T.hom ≫ eSec A) (fun _ => k) (𝟙 _) y i j hy.1 hy.2)
-    ((gm_res (𝟙 _) y _ hy _).trans (v j hy.2)))).symm)
-  rw [Fin.prod_univ_one, Category.id_comp, ← mul_zpow]
-  exact congrArg (· ^ k) e
+  apply _root_.GlobalTheory.UT.EvalLevel.rigT_isGen <;> assumption
 
 theorem ptSec_fst : (ptSecT A (1 : T ⟶ A)).left ≫ (fst T A).left = 𝟙 T.left := by
   rw [← Over.comp_left, ptSecT, lift_fst]; rfl
@@ -130,10 +118,7 @@ theorem exists_value (hL : L.IsLB) {ρ : LB.Gen (L.pull (eSec A))} (hρ : ρ.IsG
   exact (Units.inv_mul_cancel_right _ _).symm.trans
     (congrArg (· * _) ((gs_res (𝟙 _) z le trivial _).trans e).symm)
 
-theorem sec_ext {Y : Scheme.{0}} {M : LB Y} {s s' : LB.Sec M} (h : ∀ j, s.f j = s'.f j) : s = s' := by
-  cases s; cases s'
-  congr
-  exact funext h
+alias sec_ext := _root_.ReciprocityTheory.ChartRestriction.G.DVR.SecOps.sec_ext
 
 end General
 

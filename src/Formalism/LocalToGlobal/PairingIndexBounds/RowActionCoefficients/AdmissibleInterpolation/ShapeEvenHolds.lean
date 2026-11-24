@@ -206,24 +206,6 @@ theorem shape_even_holds : ShapeE := by
   simp only [Finset.mem_filter, Finset.mem_univ, true_and]
   exact lt_colH_iff hν k.val t
 
-theorem shape_odd_holds : ShapeO := by
-  intro n μ hμ c hc
-  funext t
-  simp only [shapeDeg]
-  rw [← card_fin_lt c (c - μ t.rev) (Nat.sub_le c _)]
-  refine Finset.card_bij (fun k _ => Fin.rev k) ?_ ?_ ?_
-  · intro k hk
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hk ⊢
-    rw [colH_kap c (fun s => hc s) k] at hk
-    exact (lt_colH_iff (kap_antitone hμ c) _ t).mp hk
-  · intro a _ b _ h
-    exact Fin.rev_injective h
-  · intro k hk
-    refine ⟨Fin.rev k, ?_, Fin.rev_rev k⟩
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hk ⊢
-    rw [colH_kap c (fun s => hc s) (Fin.rev k), Fin.rev_rev]
-    exact (lt_colH_iff (kap_antitone hμ c) _ t).mpr hk
-
 theorem reorder_holds : Reorder := by
   intro B _ r n K K' sz sz' hsz hsz' h I
   classical

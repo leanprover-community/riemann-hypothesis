@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockResolutionSupBound
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockResolutionImageSup
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsChartSup
 import Mathlib.Algebra.Order.Floor.Extended
@@ -124,16 +125,7 @@ theorem isOpen_blockNonzero : IsOpen {z : (Σ k, ι k) → ℂ | ∀ k, ∃ i, z
 theorem eval_torus {f : MRingOver ℂ ι} {k₀ : K} {n : ℕ} (hf : IsMultiHomog f (blockDeg k₀ n))
     (c : K → ℂ) (z : (Σ k, ι k) → ℂ) :
     eval (fun p => c p.1 * z p) f = c k₀ ^ n * eval z f := by
-  rw [eval_eq', eval_eq', Finset.mul_sum]
-  refine Finset.sum_congr rfl fun m hm => ?_
-  have hdeg := hf m hm
-  have hc : ∏ p : (Σ k, ι k), c p.1 ^ m p = c k₀ ^ n := by
-    rw [Fintype.prod_sigma]
-    simp_rw [Finset.prod_pow_eq_pow_sum, hdeg]
-    rw [Fintype.prod_eq_single k₀ fun k hk => by simp [blockDeg, hk]]
-    simp [blockDeg]
-  simp_rw [mul_pow, Finset.prod_mul_distrib, hc]
-  ring
+  apply _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.BlockResolutionSupBound.eval_torus <;> assumption
 
 theorem normRatio_torus {f : MRingOver ℂ ι} {k₀ : K} {n : ℕ} (hf : IsMultiHomog f (blockDeg k₀ n))
     (A : HermLine ι) (hA : A.a = unitDeg k₀) {z z' : (Σ k, ι k) → ℂ} (h : SameOrbit z z') :

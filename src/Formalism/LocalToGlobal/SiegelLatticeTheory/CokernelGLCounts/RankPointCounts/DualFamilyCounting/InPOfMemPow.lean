@@ -57,10 +57,7 @@ open Formalism.HermitianLattices.Ext.L3 Formalism.L2.SG.Pf.Cnt Formalism.Hermiti
 variable {K F V : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberField F]
   [Algebra F K] [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
 
-theorem jι_eq' (t : 𝓞 F) :
-    algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) t) = algebraMap F K (t : F) := by
-  have e := UnimodularLocalization.algebraMap_smul_K (K := K) t (1 : K)
-  rwa [Algebra.smul_def, mul_one, mul_one] at e
+alias jι_eq' := _root_.Formalism.HermitianLattices.Ext.L3.MeanB.algebraMap_comp
 
 theorem inP_of_mem_pow {𝔭 : Ideal (𝓞 F)} [𝔭.IsPrime] {k : ℕ} {t : 𝓞 F} (ht : t ∈ 𝔭 ^ k) :
     InP 𝔭 k (algebraMap F K (t : F)) := by
@@ -82,8 +79,7 @@ theorem mem_SP_of_inP {𝔭 : Ideal (𝓞 F)} [𝔭.IsPrime] {π s₀ : 𝓞 F} 
   rw [jι_eq', ← mul_assoc, ← mul_pow, inv_mul_cancel₀ h0, one_pow, one_mul]
   exact hs
 
-theorem star_fix (hF : IsFixF K F) (x : F) : star (algebraMap F K x) = algebraMap F K x :=
-  (hF _).2 ⟨x, rfl⟩
+alias star_fix := _root_.Formalism.HermitianLattices.Ext.L3.MeanB.star_algebraMap
 
 theorem star_inv_pow (hF : IsFixF K F) (x : F) (k : ℕ) :
     star ((algebraMap F K x)⁻¹ ^ k) = (algebraMap F K x)⁻¹ ^ k := by

@@ -71,21 +71,6 @@ noncomputable section
 
 variable {D : ℕ}
 
-lemma measurable_indicator_usc {U : Set (Fin D → ℂ)} {φ : (Fin D → ℂ) → ℝ} (hU : IsOpen U)
-    (hφ : UpperSemicontinuousOn φ U) : Measurable (U.indicator φ) := by
-  refine measurable_of_Iio fun a => ?_
-  have hO : IsOpen {x | x ∈ U ∧ φ x < a} := by
-    rw [isOpen_iff_mem_nhds]
-    rintro x ⟨hxU, hx⟩
-    have h1 := hφ x hxU _ hx
-    rw [nhdsWithin_eq_nhds.2 (hU.mem_nhds hxU)] at h1
-    filter_upwards [h1, hU.mem_nhds hxU] with y hy hyU using ⟨hyU, hy⟩
-  have : U.indicator φ ⁻¹' Iio a = {x | x ∈ U ∧ φ x < a} ∪ (Uᶜ ∩ {_x | (0 : ℝ) < a}) := by
-    ext x
-    by_cases hx : x ∈ U <;> simp [hx, Set.indicator]
-  rw [this]
-  exact hO.measurableSet.union (hU.measurableSet.compl.inter (MeasurableSet.const _))
-
 lemma smul_measurePreserving {ζ : ℂ} (hζ : ‖ζ‖ = 1) :
     MeasurePreserving (fun y : Fin D → ℂ => ζ • y) ∧
       MeasurableEmbedding (fun y : Fin D → ℂ => ζ • y) := by
@@ -178,9 +163,9 @@ lemma phiC (hU : IsOpen U) (hφ : IsPsh U φ) {C : Set (Fin D → ℂ)} (hC : Is
     by_cases hx : x ∈ C
     · simp [hx, hCU hx]
     · simp [hx]
-  refine ⟨e ▸ (measurable_indicator_usc hU hφ.1).indicator hC.isClosed.measurableSet, ?_⟩
+  refine ⟨e ▸ (_root_.ReciprocityTheory.AnForm.A.PshMean.measurable_piecewise hU hφ.1).indicator hC.isClosed.measurableSet, ?_⟩
   exact (integrable_indicator_iff hC.isClosed.measurableSet).2
-    ((isPsh_locallyIntegrable_thm D U φ hU hφ).integrableOn_compact_subset hCU hC)
+    ((_root_.ReciprocityTheory.AnForm.A.PshMean.plurisubharmonicLocallyIntegrable_holds D U φ hU hφ).integrableOn_compact_subset hCU hC)
 
 lemma molli_eq_C {ε : ℝ} (hε : 0 < ε) {C : Set (Fin D → ℂ)} {z : Fin D → ℂ}
     (hz : closedBall z ε ⊆ C) :

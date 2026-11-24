@@ -50,6 +50,7 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.LminorSubmatrixCastSucc
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.ExistsUnitaryBasisSameFlag
 
 @[expose] public section
 
@@ -135,11 +136,6 @@ lemma Neg_nonneg (x : Frame X.Ψ r) (τ : X.Ψ) (y : Fin r → ℂ) : 0 ≤ Neg 
   unfold Neg
   exact Finset.sum_nonneg (fun _ _ => by positivity)
 
-lemma ortho_apply {x : Frame X.Ψ r} (hx : X.IsOrtho x) (τ : X.Ψ) (c d : Fin r) :
-    hermC τ.1 X.Gm (col (mat x τ) c) (col (mat x τ) d) = if c = d then ((sgn X.p0 c : ℝ) : ℂ) else 0 := by
-  have h := congrFun (congrFun (hx τ) c) d
-  simpa [gram, Matrix.diagonal_apply] using h
-
 lemma expand {x : Frame X.Ψ r} (hx : X.IsOrtho x) (τ : X.Ψ) (hdet : (mat x τ).det ≠ 0) (y : Fin r → ℂ) :
     y = ∑ c : Fin r, (((sgn X.p0 (c : ℕ) : ℝ) : ℂ) * hermC τ.1 X.Gm y (col (mat x τ) c)) • col (mat x τ) c := by
   have hu : IsUnit (mat x τ).det := isUnit_iff_ne_zero.mpr hdet
@@ -154,7 +150,7 @@ lemma expand {x : Frame X.Ψ r} (hx : X.IsOrtho x) (τ : X.Ψ) (hdet : (mat x τ
   have hc : ∀ c, hermC τ.1 X.Gm y (col (mat x τ) c) = t c * ((sgn X.p0 c : ℝ) : ℂ) := by
     intro c
     rw [ht, hermC_sum_left]
-    simp_rw [hermC_smul_left, ortho_apply X hx τ]
+    simp_rw [hermC_smul_left, _root_.ReciprocityTheory.ChartRestriction.G.FD.OrthonormalPerpBasis.ortho_h X hx τ]
     simp
   conv_lhs => rw [ht]
   refine Finset.sum_congr rfl (fun c _ => ?_)
@@ -168,7 +164,7 @@ lemma re_self {x : Frame X.Ψ r} (hx : X.IsOrtho x) (τ : X.Ψ) (hdet : (mat x �
     split_ifs <;> norm_num
   conv_lhs => rw [expand X hx τ hdet y]
   rw [hermC_quad]
-  simp_rw [ortho_apply X hx τ]
+  simp_rw [_root_.ReciprocityTheory.ChartRestriction.G.FD.OrthonormalPerpBasis.ortho_h X hx τ]
   simp only [mul_ite, ite_mul, mul_zero, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
   rw [Complex.re_sum]
   refine Finset.sum_congr rfl (fun c _ => ?_)
@@ -223,7 +219,7 @@ lemma perp_kap {x : Frame X.Ψ r} (hx : X.IsOrtho x) (τ : X.Ψ) (w : Fin r → 
   induction hw using Submodule.span_induction with
   | mem z hz =>
     obtain ⟨b, rfl⟩ := hz
-    rw [ortho_apply X hx τ, if_neg (kap_ne_castLE X.p0_le a b).symm]
+    rw [_root_.ReciprocityTheory.ChartRestriction.G.FD.OrthonormalPerpBasis.ortho_h X hx τ, if_neg (kap_ne_castLE X.p0_le a b).symm]
   | zero => exact hermC_zero_left _ _ _
   | add z1 z2 _ _ h1 h2 => rw [hermC_add_left, h1, h2, add_zero]
   | smul c z _ h => rw [hermC_smul_left, h, mul_zero]

@@ -59,9 +59,7 @@ def Unram (E : Type) [Field E] [NumberField E] (p : ℕ) : Prop :=
 theorem eq_one_of_dvd_two_primes {G : Type} [Group G] {β : G} {g₁ g₂ a b : ℕ}
     (hg₁ : g₁.Prime) (hg₂ : g₂.Prime) (hne : g₁ ≠ g₂)
     (ha : orderOf β ∣ g₁ ^ a) (hb : orderOf β ∣ g₂ ^ b) : β = 1 := by
-  have hcop : Nat.Coprime (g₁ ^ a) (g₂ ^ b) := Nat.coprime_pow_primes a b hg₁ hg₂ hne
-  have h1 : orderOf β = 1 := Nat.eq_one_of_dvd_coprimes hcop ha hb
-  exact orderOf_eq_one_iff.mp h1
+  exact orderOf_eq_one_iff.mp (Nat.eq_one_of_dvd_coprimes (Nat.coprime_pow_primes a b hg₁ hg₂ hne) ha hb)
 
 theorem exists_prime_over (E : Type) [Field E] [NumberField E] {g : ℕ} (hg : g.Prime) :
     ∃ PP : Ideal (𝓞 E), PP.IsPrime ∧ (g : 𝓞 E) ∈ PP := by

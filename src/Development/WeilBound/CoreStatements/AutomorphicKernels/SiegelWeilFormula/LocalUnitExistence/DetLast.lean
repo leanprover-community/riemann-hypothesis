@@ -90,9 +90,9 @@ theorem jpar {d : SD σ} {n : ℕ} (h : n + 1 = d.n) {Y : Spc F E n} {b : GL (Fi
     ext a c
     show X (Sum.inr a) (Sum.inl c) = 0
     by_cases ha : a = Ald.i0 h
-    · subst ha; rw [hr]; simp [Matrix.one_apply]
+    · subst ha; rw [hr]; simp
     by_cases hc : c = Ald.i0 h
-    · subst hc; rw [hl']; simp [Matrix.one_apply]
+    · subst hc; rw [hl']; simp
     obtain ⟨a', rfl⟩ := (Ald.ne_last_iff_mem_range h a).1 ha
     obtain ⟨c', rfl⟩ := (Ald.ne_last_iff_mem_range h c).1 hc
     have e := hsub (Sum.inr a') (Sum.inl c')

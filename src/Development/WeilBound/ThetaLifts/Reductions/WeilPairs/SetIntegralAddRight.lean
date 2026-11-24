@@ -67,7 +67,7 @@ theorem hOF_dC (σ : E →ₐ[F] E) {nS nT : ℕ} (JS : Matrix (Fin nS) (Fin nS)
   refine Finset.sum_eq_zero fun p _ => Finset.sum_eq_zero fun q _ => ?_
   simp only [← finSumFinEquiv.sum_comp, Matrix.of_apply, Equiv.symm_apply_apply, GlobalTheory.LagrThetaInv.dblG_apply]
   simp only [Fintype.sum_sum_type]
-  simp [dbl, Finset.sum_add_distrib, Finset.sum_neg_distrib]
+  simp [dbl, Finset.sum_neg_distrib]
 
 theorem symplOHF_dC (σ : E →ₐ[F] E) {nS nT : ℕ} (JS : Matrix (Fin nS) (Fin nS) E) (JT : Matrix (Fin nT) (Fin nT) E)
     (ξ₀ : E) (a b : WOF F E nS nT) :

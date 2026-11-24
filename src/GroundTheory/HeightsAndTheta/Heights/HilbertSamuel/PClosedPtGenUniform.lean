@@ -176,8 +176,7 @@ theorem ClosedPtGenUniform.proof (hG : GradedSubmodules.Statement) (hF : ClosedP
   have htw : e + cM • N + a • (0 + n₁ • N) + s • (0 + (n₁ + 1) • N) = e + c • N := by
     rw [hca]
     funext k
-    simp only [Pi.add_apply, Pi.smul_apply, Pi.zero_apply, smul_eq_mul, zero_add]
-    push_cast
+    simp only [Pi.add_apply, Pi.smul_apply, zero_add]
     ring
   rw [htw] at hB
   refine genNear_of_mul_eq_pow hB

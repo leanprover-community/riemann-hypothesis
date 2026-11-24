@@ -99,7 +99,6 @@ lemma sum_Xs (g : Fin (2 * r + k + 1) → ℂ) (hg : ∀ p : Fin (2 * r + k + 1)
   · intro p hp
     apply hg
     by_contra h
-    have hp2 := p.isLt
     exact hp ⟨⟨2 * r + k - p.val, by omega⟩, Fin.ext (by show 2 * r + k - (2 * r + k - p.val) = p.val; omega)⟩
 
 lemma sgn_X (p : Fin (2 * r + k + 1)) (hp : p.val < r ∨ r + k < p.val) : GBasic.sgn k r p = 1 := by
@@ -212,11 +211,11 @@ lemma mX_uh (vX : Matrix (Fin r) (Fin r) ℂ) (hu : IsUnit vX.det) : C2.mX k r v
       rw [key, Matrix.mul_nonsing_inv _ hu', Matrix.one_apply]
       simp only [Hpk, Fin.ext_iff]
       show _ = if a.val < r ∧ a.val + j.val = 2 * r + k then (1 : ℂ) else _
-      split_ifs <;> first | rfl | (exfalso; omega) | omega
+      split_ifs <;> first | rfl | (exfalso; omega)
     · simp only [dif_neg hj, mul_zero, Finset.sum_const_zero]
       simp only [Hpk]
       show (0 : ℂ) = if a.val < r ∧ a.val + j.val = 2 * r + k then (1 : ℂ) else _
-      split_ifs <;> first | rfl | (exfalso; omega) | omega
+      split_ifs <;> first | rfl | (exfalso; omega)
   · by_cases hi2 : r + k < i.val
     · obtain ⟨a, rfl⟩ : ∃ a : Fin r, esI k r a = i :=
         ⟨⟨2 * r + k - i.val, by omega⟩, Fin.ext (by show 2 * r + k - (2 * r + k - i.val) = i.val; omega)⟩
@@ -241,11 +240,11 @@ lemma mX_uh (vX : Matrix (Fin r) (Fin r) ℂ) (hu : IsUnit vX.det) : C2.mX k r v
           Matrix.nonsing_inv_mul _ hu, Matrix.one_apply]
         simp only [Hpk, Fin.ext_iff]
         show _ = if 2 * r + k - a.val < r ∧ 2 * r + k - a.val + j.val = 2 * r + k then (1 : ℂ) else _
-        split_ifs <;> first | rfl | (exfalso; omega) | omega
+        split_ifs <;> first | rfl | (exfalso; omega)
       · simp only [dif_neg hj, mul_zero, Finset.sum_const_zero]
         simp only [Hpk]
         show (0 : ℂ) = if 2 * r + k - a.val < r ∧ 2 * r + k - a.val + j.val = 2 * r + k then (1 : ℂ) else _
-        split_ifs <;> first | rfl | (exfalso; omega) | omega
+        split_ifs <;> first | rfl | (exfalso; omega)
     · rw [Finset.sum_eq_single i (fun p _ hp => by
           rw [unipotent_apply_middle_column vX p i (by omega) (by omega), if_neg hp, star_zero, zero_mul])
         (fun h => absurd (Finset.mem_univ i) h)]

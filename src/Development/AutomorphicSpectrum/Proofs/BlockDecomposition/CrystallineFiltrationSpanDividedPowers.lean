@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CrystallineFiltrationMultiplicative
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.AcrisKummerUnits.MapUgAlgebraMap
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -59,26 +60,7 @@ theorem divided_power_xi_zero : A.dxi0 0 = 1 :=
 
 theorem divided_power_xi_mul (i j : ℕ) :
     A.dxi0 i * A.dxi0 j = (((i + j).choose i : ℕ) : A.Acr0) * A.dxi0 (i + j) := by
-  apply Subtype.ext
-  have hi := A.isUnit_natCast (Nat.factorial_ne_zero i)
-  have hj := A.isUnit_natCast (Nat.factorial_ne_zero j)
-  have hij := A.isUnit_natCast (Nat.factorial_ne_zero (i + j))
-  change dpw i A.xi * dpw j A.xi = (((i + j).choose i : ℕ) : WL l A.A) * dpw (i + j) A.xi
-  simp only [dpw]
-  apply hij.mul_left_cancel
-  have hc : (((i + j).factorial : ℕ) : WL l A.A) =
-      (((i + j).choose i : ℕ) : WL l A.A) * ((i.factorial : ℕ) : WL l A.A) * ((j.factorial : ℕ) : WL l A.A) := by
-    have := Nat.add_choose_mul_factorial_mul_factorial i j
-    rw [← Nat.choose_symm_add] at this
-    rw [← Nat.cast_mul, ← Nat.cast_mul, this]
-  calc _ = (((i + j).choose i : ℕ) : WL l A.A) * (((i.factorial : ℕ) : WL l A.A) * Ring.inverse ((i.factorial : ℕ) : WL l A.A))
-        * (((j.factorial : ℕ) : WL l A.A) * Ring.inverse ((j.factorial : ℕ) : WL l A.A))
-        * (algebraMap _ (WL l A.A) A.xi ^ i * algebraMap _ (WL l A.A) A.xi ^ j) := by
-          rw [hc]; ring
-    _ = (((i + j).choose i : ℕ) : WL l A.A) * (algebraMap _ (WL l A.A) A.xi ^ (i + j)) := by
-          rw [Ring.mul_inverse_cancel _ hi, Ring.mul_inverse_cancel _ hj, pow_add]; ring
-    _ = _ := by
-          rw [mul_left_comm, ← mul_assoc (((i + j).factorial : ℕ) : WL l A.A), Ring.mul_inverse_cancel _ hij, one_mul]
+  apply GlobalTheory.CompanionTheory.FilMul.divided_power_xi_mul <;> assumption
 
 def spanFrom (r : ℕ) : Submodule A.W A.Acr0 :=
   Submodule.span A.W {z : A.Acr0 | ∃ k, r ≤ k ∧ z = A.dxi0 k}

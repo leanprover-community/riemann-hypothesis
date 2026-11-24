@@ -56,8 +56,7 @@ private theorem exists_nat_mul_isIntegral {E : Type} [Field E] [NumberField E] (
   · refine ⟨m, by omega, ?_⟩
     simpa [zsmul_eq_mul] using hint
   · refine ⟨m, by omega, ?_⟩
-    have h2 := hint.neg
-    simpa [zsmul_eq_mul] using h2
+    simpa [zsmul_eq_mul] using hint.neg
 
 theorem goal1 :
   ∀ {E : Type} [inst : Field.{0} E] [NumberField.{0} E] {n : Nat}

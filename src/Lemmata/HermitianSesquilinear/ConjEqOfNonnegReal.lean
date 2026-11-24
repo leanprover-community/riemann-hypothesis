@@ -81,7 +81,6 @@ theorem goal1 :
   have key := InnerProductSpace.Core.inner_mul_inner_self_le (𝕜 := ℂ) (F := M) y x
   change ‖Ξ x y‖ * ‖Ξ y x‖ ≤ (Ξ y y).re * (Ξ x x).re at key
   rw [← conj_eq_of_nonneg_real Ξ h x y, RCLike.norm_conj] at key
-  rw [sq, mul_comm (Ξ x x).re]
-  exact key
+  simpa only [sq, mul_comm (Ξ x x).re] using key
 
 end Bl.HermitianSesquilinear

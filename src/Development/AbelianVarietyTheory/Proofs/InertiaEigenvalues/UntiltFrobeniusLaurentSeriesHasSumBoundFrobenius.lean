@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.TiltFrobeniusIntegerPowerLaws
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ImportsAlt
 public import Development.AbelianVarietyTheory.CrystallinePeriods.RingBasics
 import Mathlib.Algebra.Order.Floor.Extended
@@ -82,22 +83,7 @@ theorem l_pos : (0 : ℝ) < l := by exact_mod_cast (Fact.out : l.Prime).pos
 theorem two_le_l : (2 : ℝ) ≤ l := by exact_mod_cast (Fact.out : l.Prime).two_le
 
 theorem norm_sh_pw (k : ℤ) (x : Fl l) : ‖sh (pw k x)‖ = ‖sh x‖ ^ ((l : ℝ) ^ k) := by
-  have hl := l_pos (l := l)
-  induction k using Int.induction_on with
-  | zero => simp [pw_zero]
-  | succ k ih =>
-    rw [pw_succ, sh_pow, norm_pow, ih, ← Real.rpow_natCast, ← Real.rpow_mul (norm_nonneg _),
-      zpow_add_one₀ hl.ne']
-  | pred k ih =>
-    have h1 : pw (-(k : ℤ)) x = pw (-(k : ℤ) - 1) x ^ l := by
-      rw [← pw_succ]; congr 1; ring
-    rw [h1, sh_pow, norm_pow] at ih
-    have h2 : (‖sh x‖ ^ ((l : ℝ) ^ (-(k : ℤ) - 1))) ^ l = ‖sh x‖ ^ ((l : ℝ) ^ (-(k : ℤ))) := by
-      rw [← Real.rpow_natCast, ← Real.rpow_mul (norm_nonneg _), ← zpow_add_one₀ hl.ne']
-      congr 2; ring
-    rw [← h2] at ih
-    exact (pow_left_inj₀ (norm_nonneg _) (Real.rpow_nonneg (norm_nonneg _) _)
-      (Fact.out : l.Prime).ne_zero).1 ih
+  apply GlobalTheory.PSer.PwLaws.norm_sh_pw <;> assumption
 
 theorem norm_l : ‖(l : ℂ_[l])‖ = (l : ℝ)⁻¹ := by
   rw [GlobalTheory.RingBasics.norm_eq_val, PadicComplex.valuation_p]; simp

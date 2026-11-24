@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ParabolicInductionCentralCharacterProd
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsSubquotientDetRepParInd
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -92,22 +93,7 @@ theorem piTensor_scalar {α : Type} [Fintype α] {Γ X : α → Type} [∀ a, Gr
 theorem deltaHalf_scalar {α : Type} (m : α → Type) [Fintype α] [LinearOrder α] [∀ a, Fintype (m a)]
     [∀ a, DecidableEq (m a)] (z : kˣ) :
     deltaHalf k m (fun a => GeneralLinearGroup.scalar (m a) z) = 1 := by
-  have h1 : ∀ a, GeneralLinearGroup.det (GeneralLinearGroup.scalar (m a) z) = z ^ Fintype.card (m a) :=
-    fun a => by ext; simp [GeneralLinearGroup.scalar]
-  have h2 : ∑ a, modExp m a * (Fintype.card (m a) : ℤ) = 0 := by
-    simp only [modExp, sub_mul, Finset.sum_sub_distrib, Finset.sum_mul, Finset.sum_filter, ite_mul,
-      zero_mul]
-    rw [Finset.sum_comm, sub_eq_zero]
-    simp only [mul_comm]
-  apply Units.ext
-  rw [val_deltaHalf, modulus]
-  have h3 : ∀ a, nabs k (z ^ Fintype.card (m a)) ^ modExp m a =
-      nabs k z ^ (modExp m a * (Fintype.card (m a) : ℤ)) := fun a => by
-    rw [mul_comm, _root_.zpow_mul, zpow_natCast]
-    simp [nabs]
-  simp only [h1, h3, ← Real.rpow_intCast]
-  rw [← Real.rpow_sum_of_pos (nabs_pos' k z), ← Int.cast_sum, h2]
-  simp
+  apply GlobalTheory.CompanionTheory.ZCentre.deltaHalf_scalar <;> assumption
 
 theorem multiProd_scalar {α n : Type} {m : α → Type} [Fintype α] [LinearOrder α] [∀ a, Fintype (m a)]
     [∀ a, DecidableEq (m a)] [Fintype n] [DecidableEq n] (e : (Σ a, m a) ≃ n) {X : α → Type}
@@ -120,15 +106,15 @@ theorem multiProd_scalar {α n : Type} {m : α → Type} [Fintype α] [LinearOrd
     obtain ⟨⟨b, j⟩, rfl⟩ := e.surjective j
     by_cases hab : a = b
     · subst hab
-      simp [leviEmb, blockDiagonal'_apply_eq, GeneralLinearGroup.scalar, diagonal_apply]
-    · simp [leviEmb, blockDiagonal'_apply_ne _ _ _ hab, GeneralLinearGroup.scalar,
-        diagonal_apply, hab]
+      simp [leviEmb, GeneralLinearGroup.scalar, diagonal_apply]
+    · simp [leviEmb, GeneralLinearGroup.scalar,
+        hab]
   refine Subtype.ext (Subtype.ext (funext fun x => ?_))
   have hm : leviEmb k e (fun a => GeneralLinearGroup.scalar (m a) z) ∈ parab k e := by
     apply mem_parab_iff.2
     intro a b i j hab
     rw [h1]
-    simp [GeneralLinearGroup.scalar, diagonal_apply, hab.ne']
+    simp [GeneralLinearGroup.scalar, hab.ne']
   have hp : leviProj k e ⟨_, hm⟩ = (fun a => GeneralLinearGroup.scalar (m a) z) := by
     funext a
     ext i j

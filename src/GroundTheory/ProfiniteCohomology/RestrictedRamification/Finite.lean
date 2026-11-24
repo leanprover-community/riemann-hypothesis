@@ -230,7 +230,7 @@ theorem finite_cohomology_of_trivial_gs (W₀ : OpenSubgroup (galUnramifiedOutsi
     (A : Rep.{0} (ULift.{0} ℤ) (V : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))) [IsDiscreteRep A]
     [Finite A] (htriv : ∀ (g : (V : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))) (a : A), A.ρ g a = a)
     (hA : ∀ a : A, n • a = 0) (r : ℕ) (hr : r ≤ 2) : Finite (cohomology A r) :=
-  finite_cohomology_of_trivial_of_cyclic n r
+  _root_.UpperTheory.Reformulated.B.Gua5.finite_cohomology_of_trivial_of_cyclic n r
     (fun C _ _ _ hC1 hC2 => finite_cohomology_of_isAddCyclic_gs K S n hS W₀ hW₀ V hV C hC1 hC2 r hr)
     A htriv hA
 

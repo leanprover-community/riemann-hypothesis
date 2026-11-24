@@ -78,7 +78,7 @@ private lemma mono_closure (x : Fin (d + 1) → F) (hx : x 0 ≠ 0) (y : F)
       rw [Finset.prod_eq_single l]
       · simp
       · intro b _ hb
-        simp [Pi.single_apply, hb]
+        simp [hb]
       · simp
   | one => exact ⟨0, (mono_zero x).symm⟩
   | mul y z _ _ hy hz =>

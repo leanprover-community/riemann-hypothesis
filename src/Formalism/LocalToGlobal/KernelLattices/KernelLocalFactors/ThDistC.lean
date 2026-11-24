@@ -396,17 +396,6 @@ theorem jetLin_mixed (J : (DVar ι a b →₀ ℕ) → K) (p : (ι × Fin b × F
 
 end Tests
 
-section Tests2
-
-variable {X : Fields} (A : Amb X) {a b : ℕ} (S : Finset (HeightOneSpectrum (𝓞 X.E)))
-  (N : Submodule (𝓞 X.E) (Sp X.E a)) (N' : Submodule (𝓞 X.E) (Sp X.E b))
-
-theorem opU_smul {V : Type} [AddCommGroup V] [Module ℂ V] (H : Sesq V) (x : V) (k : ℂ) (F : V → ℂ) (z : V) :
-    opU H x (fun w => k * F w) z = k * opU H x F z := by
-  unfold opU; ring
-
-end Tests2
-
 section Smooth
 
 variable {ι : Type} [Fintype ι] {a b : ℕ}

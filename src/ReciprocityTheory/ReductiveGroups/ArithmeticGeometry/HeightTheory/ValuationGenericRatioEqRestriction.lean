@@ -116,7 +116,6 @@ theorem valuation_genericRatio_eq_restriction (hd : d.AxH 𝒜) (c : ι) (w : Ad
   rw [hsum, AddValuation.map_mul, hunit, zero_add]
   first
     | rfl
-    | simp [Data.Wres, AddValuation.comap_apply]
 
 theorem ordMinMax_at_good_place (hd : d.AxH 𝒜) (c : ι) (w : AddValuation (OmS (Ω c) d.D d.N) (WithTop ℤ))
     (hv : d.admitted c (d.Wres c w)) (j0 : Fin (d.N + 1)) (hj0 : d.w j0 c ≠ 0)
@@ -136,17 +135,9 @@ theorem exists_ne_zero_of_finsum_mem_ne_zero' {α M : Type*} [AddCommMonoid M] {
   push_neg at hne
   exact h (by rw [finsum_mem_congr rfl hne, finsum_mem_zero])
 
-theorem multiplicity_split_finsum (hd : d.AxH 𝒜) (h : d.S1) (c : ι) {p : Ideal (KTp K d.D d.N)}
-    (hp : p ∈ d.HtOne) {f : A c} (hf : f ∈ 𝒜 c d.wL) (hf0 : f ≠ 0) :
-    d.nPMM h c f p =
-      (∑ᶠ (w : AddValuation (OmS (Ω c) d.D d.N) (WithTop ℤ)) (_ : w ∈ d.GoodP c p),
-        (d.fze h c w : ℤ) * WithTop.untopD 0 (d.Wres c w (ratio (Ω := Ω c) f (d.w (d.jc c) c)))) +
-      d.nPMM h c (d.w (d.jc c) c) p := by
-  exact d.x4v4_split hd h c hp hf hf0
+alias multiplicity_split_finsum := _root_.ReciprocityTheory.ChartRestriction.G.T0.Data.x4v4_split
 
-theorem algebraMap_gen_ne_zero {p : Ideal (KTp K d.D d.N)} (hp : p ∈ d.HtOne) :
-    algebraMap (KTp K d.D d.N) (KTf K d.D d.N) (d.gen p) ≠ 0 := fun h => d.gen_ne_zero_of_htOne hp
-  ((IsFractionRing.injective (KTp K d.D d.N) (KTf K d.D d.N)) (h.trans (map_zero _).symm))
+alias algebraMap_gen_ne_zero := _root_.ReciprocityTheory.ChartRestriction.G.T0.Data.x4v4_gen_ne
 
 theorem substituted_factorization_exists (hd : d.AxH 𝒜) (h : d.S1) (x : Fin (d.N + 1) → K)
     (hx : ∀ c, d.wx x c ≠ 0) (c : ι) (F : KTp K d.D d.N)

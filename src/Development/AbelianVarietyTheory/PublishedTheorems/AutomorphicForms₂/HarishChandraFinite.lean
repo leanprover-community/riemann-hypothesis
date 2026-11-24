@@ -150,7 +150,7 @@ theorem exists_isFrameFam (hV : V.SigOK) : ∃ ε fr, IsFrameFam V ε fr := by
       · have hs : s i ≠ s j := fun h => hij (s.injective h)
         rw [Formalism.REAL.Jm, diagonal_apply_ne _ hij, submatrix_apply]
         revert hs
-        rcases s i with a | a <;> rcases s j with b | b <;> simp +contextual [Formalism.UG.Jpq, Matrix.one_apply]
+        rcases s i with a | a <;> rcases s j with b | b <;> simp +contextual [Formalism.UG.Jpq]
     refine ⟨fun i => (s i).isLeft, A.submatrix s id, ?_, ?_⟩
     · refine IsUnit.of_mul_eq_one (B.submatrix id s) ?_
       rw [← submatrix_mul A B s id s Function.bijective_id, hAB, submatrix_one_equiv]

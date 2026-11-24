@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MembershipProofs.RemovableLogGrowthSingularity
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -92,45 +93,7 @@ theorem norm_iteratedFDeriv_restr_le {V : Type} [NormedAddCommGroup V] [NormedSp
 theorem exists_schwartz_box {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V] {κ κ' : Type} [Fintype κ]
     [Fintype κ'] (f₁ : SchwartzMap (κ → V) ℂ) (f₂ : SchwartzMap (κ' → V) ℂ) :
     ∃ f : SchwartzMap (κ ⊕ κ' → V) ℂ, ∀ x, f x = f₁ (x ∘ Sum.inl) * f₂ (x ∘ Sum.inr) := by
-  have hs₁ : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun y : κ ⊕ κ' → V => f₁ (y ∘ Sum.inl)) :=
-    (f₁.smooth ⊤).comp (restr V (Sum.inl : κ → κ ⊕ κ')).contDiff
-  have hs₂ : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun y : κ ⊕ κ' → V => f₂ (y ∘ Sum.inr)) :=
-    (f₂.smooth ⊤).comp (restr V (Sum.inr : κ' → κ ⊕ κ')).contDiff
-  refine ⟨⟨fun x => f₁ (x ∘ Sum.inl) * f₂ (x ∘ Sum.inr), hs₁.mul hs₂, fun k n => ?_⟩, fun _ => rfl⟩
-  refine ⟨∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) *
-    (SchwartzMap.seminorm ℝ k i f₁ * SchwartzMap.seminorm ℝ 0 (n - i) f₂ +
-      SchwartzMap.seminorm ℝ 0 i f₁ * SchwartzMap.seminorm ℝ k (n - i) f₂), fun x => ?_⟩
-  have hx : ‖x‖ ^ k ≤ ‖x ∘ Sum.inl‖ ^ k + ‖x ∘ Sum.inr‖ ^ k := by
-    have h0 : ‖x‖ ^ k ≤ (max ‖x ∘ Sum.inl‖ ‖x ∘ Sum.inr‖) ^ k :=
-      pow_le_pow_left₀ (norm_nonneg _) (norm_le_max_comp x) k
-    refine h0.trans ?_
-    have p1 := pow_nonneg (norm_nonneg (x ∘ Sum.inl)) k
-    have p2 := pow_nonneg (norm_nonneg (x ∘ Sum.inr)) k
-    rcases le_total ‖x ∘ Sum.inl‖ ‖x ∘ Sum.inr‖ with h | h
-    · rw [max_eq_right h]; linarith
-    · rw [max_eq_left h]; linarith
-  have hL := norm_iteratedFDeriv_mul_le hs₁ hs₂ x (n := n) (by exact_mod_cast le_top)
-  calc ‖x‖ ^ k * ‖iteratedFDeriv ℝ n (fun y => f₁ (y ∘ Sum.inl) * f₂ (y ∘ Sum.inr)) x‖
-      ≤ (‖x ∘ Sum.inl‖ ^ k + ‖x ∘ Sum.inr‖ ^ k) * ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) *
-          ‖iteratedFDeriv ℝ i f₁ (x ∘ Sum.inl)‖ * ‖iteratedFDeriv ℝ (n - i) f₂ (x ∘ Sum.inr)‖ := by
-        refine mul_le_mul hx (hL.trans ?_) (norm_nonneg _) (by positivity)
-        refine Finset.sum_le_sum fun i _ => ?_
-        gcongr
-        · exact norm_iteratedFDeriv_restr_le Sum.inl f₁ i x
-        · exact norm_iteratedFDeriv_restr_le Sum.inr f₂ (n - i) x
-    _ = ∑ i ∈ Finset.range (n + 1), (n.choose i : ℝ) *
-          ((‖x ∘ Sum.inl‖ ^ k * ‖iteratedFDeriv ℝ i f₁ (x ∘ Sum.inl)‖) *
-              ‖iteratedFDeriv ℝ (n - i) f₂ (x ∘ Sum.inr)‖ +
-           ‖iteratedFDeriv ℝ i f₁ (x ∘ Sum.inl)‖ *
-              (‖x ∘ Sum.inr‖ ^ k * ‖iteratedFDeriv ℝ (n - i) f₂ (x ∘ Sum.inr)‖)) := by
-        rw [Finset.mul_sum]; exact Finset.sum_congr rfl fun i _ => by ring
-    _ ≤ _ := by
-        refine Finset.sum_le_sum fun i _ => ?_
-        gcongr
-        · exact SchwartzMap.le_seminorm ℝ k i f₁ _
-        · exact SchwartzMap.norm_iteratedFDeriv_le_seminorm ℝ f₂ _ _
-        · exact SchwartzMap.norm_iteratedFDeriv_le_seminorm ℝ f₁ _ _
-        · exact SchwartzMap.le_seminorm ℝ k (n - i) f₂ _
+  apply GlobalTheory.CompanionTheory.ThetaBox.exists_schwartz_box <;> assumption
 
 theorem sb_box {X : Type} [TopologicalSpace X] {κ κ' : Type} {g₁ : (κ → X) → ℂ} {g₂ : (κ' → X) → ℂ}
     (hg₁ : g₁ ∈ SB (κ → X)) (hg₂ : g₂ ∈ SB (κ' → X)) :

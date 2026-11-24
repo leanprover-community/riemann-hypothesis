@@ -92,7 +92,7 @@ theorem lip_pi {ι : Type} [Fintype ι] [DecidableEq ι] (K : ι → Type) [∀ 
       · subst hj
         have ha := congr_fun hc a
         simpa [Matrix.mulVec, dotProduct, Finset.sum_apply] using ha
-      · simp [Matrix.mulVec, dotProduct, Finset.sum_apply, Pi.single_apply, hj]
+      · simp [Matrix.mulVec, dotProduct, Finset.sum_apply, hj]
   choose P hP using hP
   refine ⟨Matrix.of fun b a j => P j b a, ?_⟩
   ext a a' j

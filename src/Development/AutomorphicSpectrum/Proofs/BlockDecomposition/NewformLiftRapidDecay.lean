@@ -180,7 +180,6 @@ theorem pow_mul_exp_le (c : ℝ) (hc : 0 < c) (n : ℕ) :
   have h := Real.pow_div_factorial_le_exp (c * y) (by positivity) n
   rw [div_le_iff₀ (by positivity)] at h
   rw [le_div_iff₀ (by positivity), neg_mul, Real.exp_neg]
-  have hE := Real.exp_pos (c * y)
   rw [mul_pow] at h
   calc y ^ n * (Real.exp (c * y))⁻¹ * c ^ n = (c ^ n * y ^ n) * (Real.exp (c * y))⁻¹ := by ring
     _ ≤ (Real.exp (c * y) * n.factorial) * (Real.exp (c * y))⁻¹ := by gcongr
@@ -195,13 +194,10 @@ theorem real_decay {F : ℍ → ℂ} {k : ℤ} {c C₁ : ℝ} (hc : 0 < c)
   rw [atImInfty, eventually_comap, eventually_atTop] at hD0
   obtain ⟨A₀, hA⟩ := hD0
   set A := max A₀ 1 with hAdef
-  have hA1 : 1 ≤ A := le_max_right _ _
   obtain ⟨K, hK0, hK⟩ := pow_mul_exp_le c hc (k.natAbs + M)
   refine ⟨|D0| * K + |C₁| * A ^ M, fun z hz => ?_⟩
   have hy : 0 < z.im := z.im_pos
   have hsq1 : 1 ≤ Real.sqrt z.im := Real.one_le_sqrt.2 hz
-  have hsq0 : 0 < Real.sqrt z.im ^ k := zpow_pos (by linarith) _
-  have hinv : 0 ≤ (z.im⁻¹) ^ M := by positivity
   rcases le_total A z.im with h1 | h1
   · have h2 := hA z.im ((le_max_left _ _).trans h1) z rfl
     rw [Real.norm_of_nonneg (Real.exp_pos _).le] at h2
@@ -270,7 +266,7 @@ theorem cusp_decay (k : ℤ) (N : ℕ) [NeZero N] (f : CuspForm (CongruenceSubgr
 theorem dia_dg (α : ℚˣ) : dia2 (dg2 α 1) = dg2 (pri α) 1 := by
   refine Units.ext (Matrix.ext fun i j => ?_)
   fin_cases i <;> fin_cases j <;>
-    simp [dg2, pri, GroundTheory.Automorphic.AdelicGLn.diagonal, Matrix.GeneralLinearGroup.map]
+    simp [dg2, pri]
 
 theorem compact_split (κ : KA) : ∃ (r : GL (Fin 2) ℝ), r.val * r.valᵀ = 1 ∧
     ∃ y ∈ integralFiniteGL ℚ 2, κ.1 = realEmb r * finEmb ℚ 2 y := by
@@ -287,7 +283,7 @@ theorem dg_split (p : Jd) : (dg2 p 1 : G2) =
   rw [map_mul, prodEquiv_realEmb, prodEquiv_finEmb, Prod.mk_mul_mk, mul_one, one_mul]
   refine Prod.ext (Units.ext (Matrix.ext fun i j => ?_)) (Units.ext (Matrix.ext fun i j => ?_))
   · change ((dg2 p 1 : G2).val i j).1 = RationalIdeles.realEquiv.symm ((dg2 (RationalIdeles.realPart p) 1 : GL (Fin 2) ℝ).val i j)
-    fin_cases i <;> fin_cases j <;> simp [dg2, RationalIdeles.coe_realPart] <;> rfl
+    fin_cases i <;> fin_cases j <;> simp [dg2, RationalIdeles.coe_realPart]
   · change ((dg2 p 1 : G2).val i j).2 = ((dg2 (IdeleGroup.toFinite ℚ p) 1 : GL (Fin 2) Af).val i j)
     fin_cases i <;> fin_cases j <;> simp [dg2] <;> rfl
 
@@ -320,8 +316,6 @@ theorem idele_split (a : Jd) : ∃ (α : ℚˣ) (t : ℝˣ) (b : Afˣ), (t : ℝ
     have hs := (IdeleGroup.mem_standardOpenSubgroup ℚ).1 h1
     have hb : ((IdeleGroup.toFinite ℚ p.1 : Afˣ) : Af) ∈ integralFiniteAdeles (𝓞 ℚ) ℚ := fun v => (hs v).1
     have hbi : (((IdeleGroup.toFinite ℚ p.1)⁻¹ : Afˣ) : Af) ∈ integralFiniteAdeles (𝓞 ℚ) ℚ := fun v => (hs v).2
-    have h0 : (0 : Af) ∈ integralFiniteAdeles (𝓞 ℚ) ℚ := zero_mem _
-    have h1' : (1 : Af) ∈ integralFiniteAdeles (𝓞 ℚ) ℚ := one_mem _
     rw [GroundTheory.Automorphic.AdelicGLn.mem_integralFiniteGL_iff]
     have hi : ((dg2 (IdeleGroup.toFinite ℚ p.1) 1)⁻¹ : GL (Fin 2) Af) = dg2 (IdeleGroup.toFinite ℚ p.1)⁻¹ 1 := by
       refine inv_eq_of_mul_eq_one_right (Units.ext (Matrix.ext fun i j => ?_))
@@ -338,9 +332,9 @@ theorem uni_split (y : 𝔸[ℚ]) : (uni2 y : G2) =
   rw [map_mul, prodEquiv_realEmb, prodEquiv_finEmb, Prod.mk_mul_mk, mul_one, one_mul]
   refine Prod.ext (Units.ext (Matrix.ext fun i j => ?_)) (Units.ext (Matrix.ext fun i j => ?_))
   · change ((uni2 y : G2).val i j).1 = RationalIdeles.realEquiv.symm ((uni2 (RationalIdeles.realEquiv y.1) : GL (Fin 2) ℝ).val i j)
-    fin_cases i <;> fin_cases j <;> simp [uni2] <;> rfl
+    fin_cases i <;> fin_cases j <;> simp [uni2]
   · change ((uni2 y : G2).val i j).2 = ((uni2 y.2 : GL (Fin 2) Af).val i j)
-    fin_cases i <;> fin_cases j <;> simp [uni2] <;> rfl
+    fin_cases i <;> fin_cases j <;> simp [uni2]
 
 theorem uni_add {R : Type*} [CommRing R] (a b : R) : (uni2 (a + b) : GL (Fin 2) R) = uni2 a * uni2 b := by
   refine Units.ext (Matrix.ext fun i j => ?_)
@@ -349,7 +343,7 @@ theorem uni_add {R : Type*} [CommRing R] (a b : R) : (uni2 (a + b) : GL (Fin 2) 
 theorem dia_uni (q : ℚ) : dia2 (uni2 q) = uni2 (algebraMap ℚ 𝔸[ℚ] q) := by
   refine Units.ext (Matrix.ext fun i j => ?_)
   fin_cases i <;> fin_cases j <;>
-    simp [uni2, GroundTheory.Automorphic.AdelicGLn.diagonal, Matrix.GeneralLinearGroup.map]
+    simp [uni2]
 
 theorem adele_split (x : 𝔸[ℚ]) : ∃ (q : ℚ) (ρ : ℝ) (e : Af), e ∈ integralFiniteAdeles (𝓞 ℚ) ℚ ∧
     (uni2 x : G2) = dia2 (uni2 q) * realEmb (uni2 ρ) * finEmb ℚ 2 (uni2 e) := by
@@ -453,9 +447,6 @@ theorem selfDualLattice_projection_mem_of_unit_length (x : 𝔸[ℚ]) (a : Jd) (
     rw [ht]; exact (IdeleGroup.ideleModule ℚ a).2
   have he' : uni2 e ∈ integralFiniteGL ℚ 2 := by
     rw [GroundTheory.Automorphic.AdelicGLn.mem_integralFiniteGL_iff]
-    have h0 : (0 : Af) ∈ integralFiniteAdeles (𝓞 ℚ) ℚ := zero_mem _
-    have h1 : (1 : Af) ∈ integralFiniteAdeles (𝓞 ℚ) ℚ := one_mem _
-    have hn : -e ∈ integralFiniteAdeles (𝓞 ℚ) ℚ := neg_mem he
     refine ⟨fun i j => ?_, fun i j => ?_⟩
     · fin_cases i <;> fin_cases j <;> simpa [uni2]
     · have hi : ((uni2 e)⁻¹ : GL (Fin 2) Af) = uni2 (-e) := by
@@ -515,7 +506,7 @@ theorem main : B0 → F5 := by
       have h3 : ((prodEquiv ℚ 2 h).1 : Matrix (Fin 2) (Fin 2) (InfiniteAdeleRing ℚ)) i j w = (h.val i j).1 w := rfl
       have h4 : (h.val i j).1 w = (infAt w h).val i j := rfl
       rw [h3, h4, hh w]
-      rcases eq_or_ne i j with rfl | hij <;> simp [Matrix.one_apply, *] <;> rfl
+      rcases eq_or_ne i j with rfl | hij <;> simp [*] <;> rfl
     have hr : GroundTheory.Automorphic.GL2Classical.realPart h = 1 := by
       rw [GroundTheory.Automorphic.GL2Classical.realPart, hp, map_one]
     conv_lhs => rw [← realEmb_realPart_mul_finEmb h, hr, map_one, one_mul]

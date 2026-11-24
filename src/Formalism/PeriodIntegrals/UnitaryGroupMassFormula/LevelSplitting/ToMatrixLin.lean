@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.SemidirectVolume.ProjHA
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LevelSplitting.SemiAlg
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -66,28 +67,7 @@ theorem uj_of_uni {A : Type} [CommRing A] {n : Type} [Fintype n] [DecidableEq n]
     (JA : Matrix n n A) (Mx : Matrix n n A)
     (h : ∀ x y, Formalism.UG.hform σA JA (Matrix.mulVec Mx x) (Matrix.mulVec Mx y) = Formalism.UG.hform σA JA x y) :
     Formalism.UG.cT σA Mx * JA * Mx = JA := by
-  classical
-  ext a b
-  have hcol : ∀ c, Mx.mulVec (Pi.single c (1 : A)) = fun i => Mx i c := by
-    intro c
-    funext i
-    rw [Matrix.mulVec_single]
-    simp
-  have h1 := h (Pi.single a 1) (Pi.single b 1)
-  rw [hcol, hcol] at h1
-  simp only [Formalism.UG.hform] at h1
-  rw [show (Formalism.UG.cT σA Mx * JA * Mx) a b = ∑ i, ∑ j, σA (Mx i a) * JA i j * Mx j b by
-    simp only [Matrix.mul_apply, Formalism.UG.cT, Matrix.transpose_apply, Matrix.map_apply,
-      Finset.sum_mul]
-    rw [Finset.sum_comm], h1]
-  have hs : ∀ i, σA ((Pi.single a (1 : A) : n → A) i) = (Pi.single a (1 : A) : n → A) i := by
-    intro i
-    by_cases hi : i = a
-    · subst hi
-      simp
-    · simp [Pi.single_eq_of_ne hi]
-  simp only [hs]
-  simp [Pi.single_apply]
+  apply PI.VolSemiDirect.W.uj_of_uni <;> assumption
 
 theorem toMatrix'_lin (g : HA R σ J) :
     LinearMap.toMatrix' (lin R σ J g) =
@@ -247,7 +227,7 @@ theorem Pi_lin_one : (datR R σ J P T).Pi (lin R σ J 1) = LinearMap.id := by
     intro x y
     unfold hE Formalism.UG.hform
 
-    simp only [map_sum, map_mul, AlgHom.coe_toRingHom, RingHom.coe_coe, hσσ, hJ.1]
+    simp only [map_sum, map_mul, RingHom.coe_coe, hσσ, hJ.1]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
     ring
@@ -366,10 +346,9 @@ private theorem uni_lin' (g : HA R σ J) : (datR R σ J P T).Uni (lin R σ J g) 
 theorem piU_mem (g : HA R σ J) (hg : g ∈ Ssub R σ J P) : piU hσσ hJ hP g hg ∈ HR R σ J := by
   have hU := SemiG.Dat.Pi_uni (D := datR R σ J P T) (datR_hyp hσσ hJ hP)
     (mapW_lin_of_mem_Ssub hσσ hJ hP hg) (uni_lin' hσσ hJ hP g)
-  have hm := uj_of_uni (sigR R σ) (JR R J) (piMat (P := P) (T := T) g) (fun x y => by
+  exact uj_of_uni (sigR R σ) (JR R J) (piMat (P := P) (T := T) g) (fun x y => by
     rw [piMat_mulVec, piMat_mulVec]
     exact hU x y)
-  exact hm
 
 def piG (g : HA R σ J) (hg : g ∈ Ssub R σ J P) : HA R σ J :=
   ⟨piU hσσ hJ hP g hg, piU_mem hσσ hJ hP g hg⟩

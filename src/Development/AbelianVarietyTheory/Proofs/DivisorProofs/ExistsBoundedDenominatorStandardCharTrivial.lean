@@ -63,7 +63,7 @@ theorem exists_den_of_trace_int (F : Type) [Field F] [NumberField F] :
     exact hc0
   · have hmem : t ∈ FractionalIdeal.dual ℤ ℚ (1 : FractionalIdeal (𝓞 F)⁰ F) := by
       have h10 : (1 : FractionalIdeal (𝓞 F)⁰ F) ≠ 0 := by
-        first | exact one_ne_zero | simp | exact FractionalIdeal.one_ne_zero
+        first | exact one_ne_zero
       rw [FractionalIdeal.mem_dual h10]
       intro a ha
       obtain ⟨b, rfl⟩ := (FractionalIdeal.mem_one_iff _).1 ha
@@ -82,7 +82,7 @@ theorem exists_den_of_trace_int (F : Type) [Field F] [NumberField F] :
       have h2 : (y : F) = (c : F) * t := by
         rw [show (y : F) = algebraMap (𝓞 F) F y from rfl, hy, Algebra.smul_def]
       push_cast
-      first | rw [h2] | rw [← h2] | exact congrArg (_ * ·) h2.symm | simp [h2]
+      first | rw [← h2]
     rw [this]
     exact (e * y).isIntegral_coe
 

@@ -196,7 +196,7 @@ theorem word_tied {X : Q.ActualOps P.k P.r z z' π π'} {μ : Measure (Mt P.k P.
       rwa [Matrix.conjTranspose_apply] at this
     rw [h1, h2]
     exact one b a
-  have hrec := admissible_rec_of_admissible _ S _ L st w hw
+  have hrec := _root_.Formalism.FourierDecayAlt.P.Fr2.admissible_rec_of_admissible_word _ S _ L st w hw
   have hfr := (ofWord_rel (tiedRel_invClosed τ) hF hSL hMs hst hMst hq hinv hQQ w hrec).2
   have hsite : ∀ l, (intertwiningRelation τ).Site (P5.site L l) (MA.siteA P (MA.DQ P) l) := fun l => by
     refine ⟨?_, ?_, ?_⟩

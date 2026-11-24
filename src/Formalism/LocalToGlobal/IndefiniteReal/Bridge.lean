@@ -71,14 +71,13 @@ def AdForms (ρ : Γ →* Module.End ℂ W) (J : Subgroup G) (χ : J →* ℂˣ)
 def stab (J : Subgroup G) (y : G) : Subgroup Γ := J.comap ((MulAut.conj y⁻¹).toMonoidHom.comp ι)
 
 theorem mem_stab {J : Subgroup G} {y : G} {γ : Γ} : γ ∈ stab ι J y ↔ y⁻¹ * ι γ * y ∈ J := by
-  simp [stab, MulAut.conj_apply]
+  simp [stab]
 
 def stabK {J : Subgroup G} {y : G} (γ : stab ι J y) : J :=
   ⟨(y⁻¹ * ι (γ : Γ) * y)⁻¹, J.inv_mem ((mem_stab ι).1 γ.2)⟩
 
 theorem stabK_spec {J : Subgroup G} {y : G} (γ : stab ι J y) : ι (γ : Γ) * y * (stabK ι γ : G) = y := by
-  simp only [stabK]
-  group
+  simp [stabK, mul_assoc, mul_inv_rev, mul_inv_cancel_left, inv_inv]
 
 def IsReps (J : Subgroup G) {I : Type} (y : I → G) : Prop :=
   ∀ h : G, ∃! i : I, ∃ (γ : Γ) (k : J), h = ι γ * y i * k

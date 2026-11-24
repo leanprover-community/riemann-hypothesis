@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PDivisorGeneralPointBranches
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StDivisorBranches
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StNormalModelExists
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StDivisorRegularGeneric
@@ -64,19 +65,7 @@ namespace DivisorBranches
 theorem quotient_inf_dim_lt {R : Type*} [CommRing R] {I₁ I₂ : Ideal R} {d : ℕ}
     (h₁ : ringKrullDim (R ⧸ I₁) < (d : ℕ)) (h₂ : ringKrullDim (R ⧸ I₂) < (d : ℕ)) :
     ringKrullDim (R ⧸ (I₁ ⊓ I₂)) < (d : ℕ) := by
-  rw [ringKrullDim_quotient] at h₁ h₂ ⊢
-  rw [Order.krullDim_lt_coe_iff] at h₁ h₂ ⊢
-  intro l
-  have hhead : l.head.1 ∈ PrimeSpectrum.zeroLocus (I₁ : Set R) ∪ PrimeSpectrum.zeroLocus (I₂ : Set R) := by
-    rw [← PrimeSpectrum.zeroLocus_inf]
-    exact l.head.2
-  have hup : ∀ (I : Ideal R), l.head.1 ∈ PrimeSpectrum.zeroLocus (I : Set R) →
-      ∀ i, (l i).1 ∈ PrimeSpectrum.zeroLocus (I : Set R) := fun I hI i =>
-    (PrimeSpectrum.mem_zeroLocus _ _).2
-      (((PrimeSpectrum.mem_zeroLocus _ _).1 hI).trans (show l.head.1.asIdeal ≤ (l i).1.asIdeal from l.head_le i))
-  rcases hhead with h | h
-  · exact h₁ { length := l.length, toFun := fun i => ⟨(l i).1, hup I₁ h i⟩, step := fun i => l.step i }
-  · exact h₂ { length := l.length, toFun := fun i => ⟨(l i).1, hup I₂ h i⟩, step := fun i => l.step i }
+  apply _root_.GroundTheory.Heights₂.Heights.DivisorGeneralPointBranches.quotient_inf_dim_lt <;> assumption
 
 theorem not_mem_zeroSet_of_le {n : ℕ} {I I' : Ideal (MvPolynomial (Fin n) ℂ)} (hle : I ≤ I')
     {q : Fin n → ℂ} (hq : q ∉ zeroSet I) : q ∉ zeroSet I' :=

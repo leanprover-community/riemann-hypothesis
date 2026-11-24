@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.NcValVolOrdTr
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.LocVol
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -56,26 +57,7 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 theorem trace_eq_add (σ : E →ₐ[F] E) (hinv : ∀ y, σ (σ y) = y) (hnt : ∃ x, σ x ≠ x)
     (hfin : Module.finrank F E = 2) (x : E) :
     algebraMap F E (Algebra.trace F E x) = x + σ x := by
-  classical
-  have : FiniteDimensional F E := Module.finite_of_finrank_pos (by omega)
-  let τ : E ≃ₐ[F] E := AlgEquiv.ofAlgHom σ σ (AlgHom.ext hinv) (AlgHom.ext hinv)
-  have hτ : τ ≠ 1 := by
-    intro h
-    obtain ⟨x0, hx0⟩ := hnt
-    apply hx0
-    have := congrArg (fun f : E ≃ₐ[F] E => f x0) h
-    simpa [τ] using this
-  have hcard : Fintype.card (E ≃ₐ[F] E) = 2 := by
-    refine le_antisymm (hfin ▸ AlgEquiv.card_le) ?_
-    have h2 : ({1, τ} : Finset (E ≃ₐ[F] E)).card = 2 := Finset.card_pair hτ.symm
-    rw [← h2]
-    exact Finset.card_le_univ _
-  have : IsGalois F E := IsGalois.of_card_aut_eq_finrank F E (by rw [Nat.card_eq_fintype_card, hcard, hfin])
-  rw [trace_eq_sum_automorphisms]
-  have hu : (Finset.univ : Finset (E ≃ₐ[F] E)) = {1, τ} :=
-    (Finset.eq_univ_of_card _ (by rw [Finset.card_pair hτ.symm, hcard])).symm
-  rw [hu, Finset.sum_pair hτ.symm]
-  rfl
+  apply Formalism.L2.SG.Pf.NcVal.TrW.trace_eq_add <;> assumption
 
 variable (v : HeightOneSpectrum (𝓞 F))
 

@@ -205,14 +205,6 @@ theorem subG_normal_of_le {K' : IntermediateField ℚ_[p] (PadicAlgCl p)} (h : K
 theorem resGK_injective (h : K ≤ L) : Injective (resGK h) :=
   fun _ _ hστ => AlgEquiv.ext fun x => DFunLike.congr_fun hστ x
 
-theorem range_resGK (h : K ≤ L) : (resGK h).range = subG p K L := by
-  ext σ
-  constructor
-  · rintro ⟨τ, rfl⟩ x hx
-    exact τ.commutes ⟨x, hx⟩
-  · intro hσ
-    exact ⟨{ σ.toRingEquiv with commutes' := fun x => hσ x.1 x.2 }, AlgEquiv.ext fun _ => rfl⟩
-
 theorem isClosedEmbedding_resGK (h : K ≤ L) : Topology.IsClosedEmbedding (resGK h) :=
   (resGK_continuous h).isClosedEmbedding (resGK_injective h)
 
@@ -224,11 +216,11 @@ theorem comap_resGK_subG (h : K ≤ L) (L' : IntermediateField ℚ_[p] (PadicAlg
 theorem exists_equiv_subG (h : K ≤ L) : ∃ e : GK p L ≃* subG p K L, (∀ σ, (e σ : GK p K) = resGK h σ) ∧
     Continuous e ∧ Continuous e.symm := by
   have hmem : ∀ σ, resGK h σ ∈ subG p K L := fun σ => by
-    rw [← range_resGK h]; exact ⟨σ, rfl⟩
+    rw [← _root_.ReciprocityTheory.DiscreteGroups.LocalClassField.range_galois_restriction h]; exact ⟨σ, rfl⟩
   let f : GK p L →* subG p K L := (resGK h).codRestrict (subG p K L) hmem
   have hf : Bijective f := by
     refine ⟨fun a b hab => resGK_injective h (congrArg Subtype.val hab), fun τ => ?_⟩
-    have hτ : τ.1 ∈ (resGK h).range := by rw [range_resGK h]; exact τ.2
+    have hτ : τ.1 ∈ (resGK h).range := by rw [_root_.ReciprocityTheory.DiscreteGroups.LocalClassField.range_galois_restriction h]; exact τ.2
     obtain ⟨σ, hσ⟩ := hτ
     exact ⟨σ, Subtype.ext hσ⟩
   have hc : Continuous (MulEquiv.ofBijective f hf) := (resGK_continuous h).subtype_mk hmem

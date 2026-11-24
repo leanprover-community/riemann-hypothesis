@@ -74,7 +74,7 @@ theorem map_eq_self_of_fd (Γ : Subgroup N) [Countable Γ] (ν : Measure N) [ν.
   have h0 : ν 𝓝 ≠ 0 := h𝓝.measure_ne_zero (NeZero.ne ν)
   have hmap : (ν.map φ) 𝓝 = ν (φ ⁻¹' 𝓝) := MeasurableEquiv.map_apply φ.toMeasurableEquiv 𝓝
   have h1 : (c : ℝ≥0∞) * ν 𝓝 = 1 * ν 𝓝 := by
-    calc (c : ℝ≥0∞) * ν 𝓝 = (c • ν) 𝓝 := by simp [Measure.smul_apply]
+    calc (c : ℝ≥0∞) * ν 𝓝 = (c • ν) 𝓝 := by simp
       _ = (ν.map φ) 𝓝 := by rw [hc]
       _ = 1 * ν 𝓝 := by rw [one_mul]; exact hmap.trans hm
   have hc1 : c = 1 := by
@@ -99,7 +99,7 @@ theorem invInv_of_rightInv (ν : Measure N) [ν.IsHaarMeasure] [ν.IsMulRightInv
     rw [mul_smul, ← hc, ← h, ← hc, Measure.inv_inv]
   have h3 : ((c * c : ℝ≥0) : ℝ≥0∞) * ν K = 1 * ν K := by
     rw [one_mul]; conv_rhs => rw [h2]
-    simp [Measure.smul_apply]
+    simp
   have h4 : c * c = 1 := by exact_mod_cast (ENNReal.mul_left_inj h0 hf).1 h3
   have h5 : c = 1 := by
     have : (c : ℝ) * c = 1 := by exact_mod_cast h4

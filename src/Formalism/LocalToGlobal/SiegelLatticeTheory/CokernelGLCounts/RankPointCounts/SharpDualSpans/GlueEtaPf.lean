@@ -56,12 +56,9 @@ variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
 variable {M : Model F E} {V : Type} [AddCommGroup V] [Module E V]
 
-theorem h_add_right' (H : HermSp M V) (x y y' : V) : H.h x (y + y') = H.h x y + H.h x y' := by
-  rw [H.h_herm (y + y') x, H.h_add_left, map_add (f := _), ← H.h_herm, ← H.h_herm]
-
 theorem h_expand (H : HermSp M V) (x a y b : V) :
     H.h (x + a) (y + b) = H.h x y + H.h x b + H.h a y + H.h a b := by
-  rw [H.h_add_left, h_add_right', h_add_right']
+  rw [H.h_add_left, _root_.PI.LocHerm.Glue.h_add_right, _root_.PI.LocHerm.Glue.h_add_right]
   abel
 
 theorem span_MMfam (H : HermSp M V) {r : ℕ} (t : Term V M r) :

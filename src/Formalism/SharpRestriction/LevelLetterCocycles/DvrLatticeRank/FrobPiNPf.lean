@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.DvrLatticeRank.FramePfHyp
 public import Formalism.SharpRestriction.LevelLetterCocycles.DeltaInvariantUniformizer
 import Formalism.SharpRestriction.LevelLetterCocycles.BaseChangePreservesUnitaryOf
 import Formalism.SharpRestriction.LevelLetterCocycles.MapCompZero
@@ -146,18 +147,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     [CommRing O] [Algebra O LL] {v : AddValuation LL (WithTop ℚ)} {n : ℕ}
     (W : LocWach PD LL O v n) (T : LocLat G Qp LL O)
 
-theorem frobpin_φD_smul (a : LetA O n) (x : W.DD T) :
-    W.φD T (a • x) = W.φA a • W.φD T x := by
-  have := W.φD_smul T (algebraMap (LetA O n) W.EE a) x
-  rw [algebraMap_smul, W.φE_ext, algebraMap_smul] at this
-  exact this
-
-theorem frobpin_γD_smul (g : W.Gam) (a : LetA O n) (x : W.DD T) :
-    W.γD T g (a • x) = W.γA g a • W.γD T g x := by
-  have := W.γD_smul T g (algebraMap (LetA O n) W.EE a) x
-  rw [algebraMap_smul, W.γE_ext, algebraMap_smul] at this
-  exact this
-
 theorem frobpin_φA_pow (I : Ideal (LetA O n)) (hφI : ∀ a ∈ I, W.φA a ∈ I) (k : ℕ) :
     ∀ a ∈ I ^ k, W.φA a ∈ I ^ k := by
   intro a ha
@@ -175,7 +164,7 @@ theorem frobpin_local (I : Ideal (LetA O n)) (hI : IsAdicComplete I ↥(W.N T))
   obtain ⟨c, hcdef⟩ : ∃ c : LetA O n, c = (u : LetA O n) ^ M * Ep ^ (s' * M) := ⟨_, rfl⟩
   have hφx : ∀ y : W.DD T, W.φD T (π' ^ M • y) = π' ^ M • (c • W.φD T y) := by
     intro y
-    rw [frobpin_φD_smul, map_pow, hφπ, smul_smul, hcdef, mul_pow, mul_pow, ← pow_mul]
+    rw [_root_.Formalism.MainNotions.LiftingTheory.wmap_φD_smul, map_pow, hφπ, smul_smul, hcdef, mul_pow, mul_pow, ← pow_mul]
     congr 1
     ring
   obtain ⟨r, hr⟩ : ∃ r, s' * M = r + 1 + h' := ⟨s' * M - (h' + 1), by omega⟩
@@ -192,7 +181,7 @@ theorem frobpin_local (I : Ideal (LetA O n)) (hI : IsAdicComplete I ↥(W.N T))
       c • W.φD T y ∈ (I ^ (k + 1) • W.N T : Submodule (LetA O n) (W.DD T)) := by
     intro k y hy
     refine Submodule.smul_induction_on hy (fun a ha z hz => ?_) (fun x y hx hy => ?_)
-    · rw [frobpin_φD_smul, smul_comm c (W.φA a), pow_succ, Submodule.mul_smul]
+    · rw [_root_.Formalism.MainNotions.LiftingTheory.wmap_φD_smul, smul_comm c (W.φA a), pow_succ, Submodule.mul_smul]
       exact Submodule.smul_mem_smul (frobpin_φA_pow W I hφI k a ha) (hcI z hz)
     · rw [map_add (f := _), smul_add]
       exact Submodule.add_mem _ hx hy
@@ -241,7 +230,7 @@ theorem frobpin_local (I : Ideal (LetA O n)) (hI : IsAdicComplete I ↥(W.N T))
       rw [hφx, ← smul_sub, hyv]
     refine ⟨π' ^ M • (y : W.DD T), ⟨(mem_PiNS W T π' M _).2 ⟨⟨y, y.2, rfl⟩, fun δ hδ => ?_⟩, hsol⟩, ?_⟩
     · exact huniq2 _ _
-        ⟨W.γD T δ y, W.N_Γ T δ y y.2, by rw [frobpin_γD_smul, map_pow, hπΔ δ hδ]⟩ ⟨y, y.2, rfl⟩
+        ⟨W.γD T δ y, W.N_Γ T δ y y.2, by rw [_root_.Formalism.MainNotions.LiftingTheory.gammaD_semilinear, map_pow, hπΔ δ hδ]⟩ ⟨y, y.2, rfl⟩
         (by rw [W.φγ_comm, ← map_sub, hsol, hbΔ δ hδ])
     · rintro x' ⟨hx', hx'sol⟩
       exact huniq2 _ _ ((mem_PiNS W T π' M x').1 hx').1 ⟨y, y.2, rfl⟩ (by rw [hx'sol, hsol])
@@ -309,73 +298,7 @@ theorem frobpin_finrank_sup {l : ℕ} [Fact l.Prime] (F : IntermediateField ℚ_
 
 theorem frobpin_sK_pos {l : ℕ} [Fact l.Prime] (hl : l ≠ 2) (K LL : FinExt l) (hG : Good K 1 LL) :
     1 ≤ sK l K := by
-  have hlp : l.Prime := Fact.out
-  have hl3 : 2 ≤ l - 1 := by
-    have := hlp.two_le
-    omega
-  have hl0 : (l : Om l) ≠ 0 := by
-    have h : (l : Om l) = algebraMap ℚ_[l] (Om l) (l : ℚ_[l]) := (map_natCast _ _).symm
-    rw [h]
-    exact (map_ne_zero _).2 (Nat.cast_ne_zero.2 hlp.ne_zero)
-  have : NeZero (l : Om l) := ⟨hl0⟩
-  have hdeg : (Polynomial.cyclotomic l (Om l)).degree ≠ 0 := by
-    rw [Polynomial.degree_cyclotomic, Nat.totient_prime hlp]
-    exact_mod_cast (by omega : l - 1 ≠ 0)
-  obtain ⟨z, hz0⟩ := IsAlgClosed.exists_root _ hdeg
-  have hz : IsPrimitiveRoot z l := Polynomial.isRoot_cyclotomic_iff.1 hz0
-  have hKs : Ks K 1 = K0 K ⊔ IntermediateField.adjoin ℚ_[l] {z} := by
-    unfold Ks
-    congr 1
-    apply le_antisymm
-    · refine IntermediateField.adjoin_le_iff.2 fun x hx => ?_
-      have hx' : x ^ l = 1 := by simpa using hx
-      obtain ⟨i, -, rfl⟩ := hz.eq_pow_of_pow_eq_one hx'
-      exact pow_mem (IntermediateField.mem_adjoin_simple_self _ _) _
-    · refine IntermediateField.adjoin.mono _ _ _ ?_
-      intro x hx
-      rw [Set.mem_singleton_iff.1 hx]
-      show z ^ l ^ 1 = 1
-      rw [pow_one]
-      exact hz.pow_eq_one
-  have hint : IsIntegral (K0 K) z := by
-    have h1 : IsIntegral ℚ_[l] z :=
-      ⟨Polynomial.X ^ l - Polynomial.C 1, Polynomial.monic_X_pow_sub_C 1 hlp.ne_zero,
-        by simp [hz.pow_eq_one]⟩
-    exact h1.tower_top
-  have hfin : finrank ℚ_[l] ↥(Ks K 1) = finrank ℚ_[l] ↥(K0 K) * (minpoly (K0 K) z).natDegree := by
-    rw [hKs]
-    exact frobpin_finrank_sup (K0 K) z hint
-  have hmin : (minpoly (K0 K) z).natDegree ≤ l - 1 := by
-    have hroot : Polynomial.aeval z (Polynomial.cyclotomic l (K0 K)) = 0 := by
-      rw [Polynomial.aeval_def, Polynomial.eval₂_eq_eval_map, Polynomial.map_cyclotomic]
-      exact hz0
-    have hdvd := minpoly.dvd (K0 K) z hroot
-    rw [← Nat.totient_prime hlp, ← Polynomial.natDegree_cyclotomic l (K0 K)]
-    exact Polynomial.natDegree_le_of_dvd hdvd (Polynomial.cyclotomic_ne_zero _ _)
-  have hf := max_unramified_finrank_pos K
-  have ht := Module.finrank_mul_finrank ℚ_[l] ↥(K0 K) ↥K.1
-  have hKle : K.1 ≤ Ks K 1 := hG.2.2.1
-  have hpos : 0 < finrank ℚ_[l] ↥(Ks K 1) := by
-    rw [hfin]
-    exact Nat.mul_pos hf (minpoly.natDegree_pos hint)
-  have hfd : FiniteDimensional ℚ_[l] ↥(Ks K 1) := Module.finite_of_finrank_pos hpos
-  have hle : finrank ℚ_[l] ↥K.1 ≤ finrank ℚ_[l] ↥(Ks K 1) :=
-    LinearMap.finrank_le_finrank_of_injective (f := (IntermediateField.inclusion hKle).toLinearMap)
-      (IntermediateField.inclusion hKle).injective
-  have he : eK K ≤ l - 1 := by
-    have h2 : finrank ℚ_[l] ↥(K0 K) * eK K ≤ finrank ℚ_[l] ↥(K0 K) * (l - 1) := by
-      rw [ht]
-      exact hle.trans (hfin ▸ Nat.mul_le_mul_left _ hmin)
-    exact Nat.le_of_mul_le_mul_left h2 hf
-  have hepos : 0 < eK K := by
-    have hK : 0 < finrank ℚ_[l] ↥K.1 := by
-      have := K.2
-      exact Module.finrank_pos
-    rw [← ht] at hK
-    have h3 : 0 < finrank ↥(K0 K) ↥K.1 :=
-      Nat.pos_of_ne_zero (fun h0 => by rw [h0, mul_zero] at hK; exact lt_irrefl 0 hK)
-    exact h3
-  exact Nat.div_pos he hepos
+  apply Formalism.MainNotions.N.Ln34.ramification_quotient_pos <;> assumption
 
 theorem frobpin_sM {l : ℕ} [Fact l.Prime] (K : FinExt l) (h' : ℕ) (hh' : 1 ≤ h')
     (hs : 1 ≤ sK l K) : h' + 1 ≤ sK l K * MK l K h' := by

@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.NGCong
 public import Formalism.SharpRestriction.CuspSpanNormBounds.BlockEnds
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -64,23 +65,7 @@ theorem hT_swap (S : HSpace E) (x y : S.V) : S.hT y x = star (S.hT x y) :=
 
 theorem gram_fvec {S : HSpace E} {r : ℕ} {T : E} (F : FlagG S r T) (c i : Fin (r + 1)) :
     S.hT (F.fvec c) (F.fvec i) = if c = Fin.last r ∧ i = Fin.last r then -T else 0 := by
-  induction c using Fin.lastCases with
-  | last =>
-    induction i using Fin.lastCases with
-    | last => simp [FlagG.fvec, F.z_norm]
-    | cast j =>
-      have h1 : Fin.castSucc j ≠ Fin.last r := Fin.castSucc_ne_last j
-      simp only [FlagG.fvec, Fin.snoc_last, Fin.snoc_castSucc, h1, and_false, if_false]
-      rw [hT_swap, F.z_orth j, star_zero]
-  | cast j =>
-    have h1 : Fin.castSucc j ≠ Fin.last r := Fin.castSucc_ne_last j
-    induction i using Fin.lastCases with
-    | last =>
-      simp only [FlagG.fvec, Fin.snoc_last, Fin.snoc_castSucc, h1, false_and, if_false]
-      exact F.z_orth j
-    | cast l =>
-      simp only [FlagG.fvec, Fin.snoc_castSucc, h1, false_and, if_false]
-      exact F.e_iso j l
+  apply PI.CntNotIntW.flag_gram <;> assumption
 
 theorem det_mul_last {r : ℕ} (A : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (v : Fin (r + 1) → E) (c : E)
     (h : ∀ i, (A *ᵥ v) i = if i = Fin.last r then c else 0) :
@@ -108,8 +93,7 @@ theorem eq_zero_of_mulVec {n : Type} [Fintype n] [DecidableEq n] (A : Matrix n n
 
 theorem Dl_top {S : HSpace E} {r : ℕ} {T T' : E} (F : FlagG S r T) (F' : FlagG S r T') :
     Dl F F' (r + 1) = (Zhat F F').det := by
-  simp only [Dl, leadMinorE, le_refl, dif_pos]
-  rfl
+  simp [Dl, leadMinorE]
 
 theorem Dl_r {S : HSpace E} {r : ℕ} {T T' : E} (F : FlagG S r T) (F' : FlagG S r T') :
     Dl F F' r = ((Zhat F F').submatrix Fin.castSucc Fin.castSucc).det := by

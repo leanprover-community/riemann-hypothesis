@@ -2,13 +2,13 @@ module
 
 public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
 public import Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GalStarComplexMultiplicationPointsStatement
-public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GaloisConjTaylorThetaTranslateStatement
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GalStarComplexMultiplicationPoints
+public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.GaloisConjTaylorThetaTranslate
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsRingEquivComplexCompEq
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.IdealPeriodLatticeOfCurveDatum
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.InducedTypeThetaGenusOnePermutes
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LatticeInvariantsPeriodPairDictionary
 import Development.AbelianVarietyTheory.Proofs.FoundationProofs.OddThetaFunctionExistenceUniqueness
-public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsRingEquivComplexCompEq
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -141,14 +141,6 @@ theorem isLattice_of_periodPair (L : PeriodPair) (Λ : AddSubgroup ℂ) (h : ∀
   rw [h, PeriodPair.mem_lattice, AddSubgroup.mem_closure_pair]
   simp only [zsmul_eq_mul]
 
-theorem periodPair_of_isLattice (Λ : AddSubgroup ℂ)
-    (h : ∃ w₁ w₂ : ℂ, LinearIndependent ℝ ![w₁, w₂] ∧ Λ = AddSubgroup.closure {w₁, w₂}) :
-    ∃ L : PeriodPair, ∀ z, z ∈ Λ ↔ z ∈ L.lattice := by
-  obtain ⟨w₁, w₂, hi, rfl⟩ := h
-  refine ⟨⟨w₁, w₂, hi⟩, fun z => ?_⟩
-  rw [PeriodPair.mem_lattice, AddSubgroup.mem_closure_pair]
-  simp only [zsmul_eq_mul]
-
 theorem periodPair_conj (L : PeriodPair) (Λ : AddSubgroup ℂ) (h : ∀ z, z ∈ Λ ↔ z ∈ L.lattice)
     (M : IntermediateField ℚ ℂ) (ρ : M →ₐ[ℚ] ℂ) (h2 : g2 Λ ∈ M) (h3 : g3 Λ ∈ M) :
     ∃ L' : PeriodPair, ∀ z, z ∈ lamConj M ρ Λ ↔ z ∈ L'.lattice := by
@@ -196,12 +188,12 @@ theorem weil_top (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (hc : Crv D cc
     (ha : (m : ℂ) * a ∈ lamOf D cc δ) (hb : (m : ℂ) * b ∈ lamOf D cc δ)
     (haa : Adp1 ⊤ s (lamOf D cc δ) m a a') (hbb : Adp1 ⊤ s (lamOf D cc δ) m b b') :
     cj ⊤ s (ee (gl3FieldFirst (lamOf D cc δ) a b)) = ee (gl3FieldFirst (lamConj ⊤ s (lamOf D cc δ)) a' b') := by
-  obtain ⟨L, hL⟩ := periodPair_of_isLattice _
+  obtain ⟨L, hL⟩ := _root_.GlobalTheory.OddTheta.exists_periodPair _
     (GlobalTheory.CurveLattice.lattice_of_curve D (GlobalTheory.InducedType.induced_type D).1 cc δ hc).1
   obtain ⟨L', hL'⟩ := periodPair_conj L _ hL ⊤ s IntermediateField.mem_top IntermediateField.mem_top
   obtain ⟨hex, hun, -, hadd, -, hord, -⟩ :=
-    GlobalTheory.T.galStar_complexMultiplication_points D cc δ hc ⊤ s hK IntermediateField.mem_top IntermediateField.mem_top
-  have hgal := GlobalTheory.T.galois_conj_taylor_thetaTranslate D cc δ hc ⊤ s hK IntermediateField.mem_top IntermediateField.mem_top
+    _root_.GlobalTheory.ConjPoint.galStar_holds D cc δ hc ⊤ s hK IntermediateField.mem_top IntermediateField.mem_top
+  have hgal := _root_.GlobalTheory.JetConj.galois_translate_sgStar D cc δ hc ⊤ s hK IntermediateField.mem_top IntermediateField.mem_top
   generalize lamOf D cc δ = Λ at *
   have hm0 : (m : ℂ) ≠ 0 := Nat.cast_ne_zero.2 hm.ne'
   have hmul : ∀ (n : ℕ) t t', StarPt ⊤ s Λ t t' → StarPt ⊤ s Λ (n * t) (n * t') := by

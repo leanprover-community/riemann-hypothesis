@@ -124,7 +124,7 @@ lemma prod_zpow_of_sameSum {X Y : Scheme.{0}} {K K' : Type} [Fintype K] [Fintype
   rw [h1, h2]
   refine Finset.prod_congr rfl fun ψ _ => ?_
   have := hs ψ
-  convert congrArg (fun n => e ψ ^ n) this using 2 <;> simp
+  convert congrArg (fun n => e ψ ^ n) this using 2
 
 end Regroup
 
@@ -521,11 +521,11 @@ lemma sameSum_iff_fsum (φ : K → (Y ⟶ X)) (ε : K → ℤ) (φ' : K' → (Y 
   · intro h
     ext ψ
     rw [fsum_apply, fsum_apply]
-    convert h ψ using 2 <;> simp
+    convert h ψ using 2
   · intro h ψ
     have := congrArg (fun f => f ψ) h
     simp only [fsum_apply] at this
-    convert this using 2 <;> simp
+    convert this using 2
 
 lemma fsum_sumElim {K₂ : Type} [Fintype K₂] (φ : K → (Y ⟶ X)) (ε : K → ℤ) (φ₂ : K₂ → (Y ⟶ X)) (ε₂ : K₂ → ℤ) :
     fsum (Sum.elim φ φ₂) (Sum.elim ε ε₂) = fsum φ ε + fsum φ₂ ε₂ := by

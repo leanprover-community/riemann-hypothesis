@@ -102,7 +102,6 @@ theorem isMF_AA : IsMF 12 AA := by
 theorem isMF_DD : IsMF 12 DD := by
   first
     | exact ⟨ModularFormClass.modularForm CuspForm.discriminant, fun τ => rfl⟩
-    | exact ⟨ModularFormClass.modularForm CuspForm.discriminant, fun τ => rfl⟩
 
 theorem IsMF.smul_eq {k : ℤ} {f : ℍ → ℂ} (h : IsMF k f) (γ : SL(2, ℤ)) (τ : ℍ) :
     f (γ • τ) = denom γ τ ^ k * f τ := by

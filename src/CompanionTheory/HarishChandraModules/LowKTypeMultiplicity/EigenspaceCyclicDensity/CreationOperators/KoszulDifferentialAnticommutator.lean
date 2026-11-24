@@ -128,7 +128,7 @@ theorem koszul_differential_sq (hE : KRel ε E) (h1 : ∀ a b i, Commute (E a b)
     · simp [cc, cj]
     have := hE i.1.1 i.1.2 j.1.1 j.1.2 ci cj
     simp only [cc, eq_true ci, eq_true cj, if_true, true_and, mul_one, one_smul, mul_neg, ← sub_eq_add_neg, ← sub_mul, this]
-    split_ifs <;> simp [sub_mul, sub_eq_add_neg, add_mul]
+    split_ifs <;> simp [sub_eq_add_neg, add_mul]
   rw [e, ← sub_eq_zero]
   apply self_neg
   rw [eq_neg_iff_add_eq_zero]

@@ -172,17 +172,11 @@ theorem euler_eq_dg {σ : Type} (x : σ) (G : MvPolynomial σ K) :
   · rw [MvPolynomial.X_mul_pderiv_monomial, dg_monomial, MvPolynomial.smul_monomial, nsmul_eq_mul]
   · rw [map_add (f := _), mul_add, hP, hQ, map_add (f := _)]
 
-private theorem coeff_dg_eq_mul_coeff {σ : Type} (f : (σ →₀ ℕ) → K) (F : MvPolynomial σ K)
-    (α : σ →₀ ℕ) : (dg f F).coeff α = f α * F.coeff α := by
-  classical
-  rw [dg_eq_sum_f, MvPolynomial.coeff_sum]
-  by_cases h : α ∈ F.support
-  · rw [Finset.sum_eq_single α (fun β _ hβ => by rw [MvPolynomial.coeff_monomial, if_neg hβ])
-      (fun h' => absurd h h'), MvPolynomial.coeff_monomial, if_pos rfl]
-  · have h0 : F.coeff α = 0 := by simpa using h
-    rw [h0, mul_zero]
-    exact Finset.sum_eq_zero (fun β hβ => by
-      rw [MvPolynomial.coeff_monomial, if_neg (fun (e : β = α) => h (e ▸ hβ))])
+private theorem monomial_mem_PolK_of_degrees (d : L → ℕ) (ζ : L × Fin r →₀ ℕ)
+    (hζ : ∀ i, ldeg ζ i = d i) : monomial ζ (1 : K) ∈ PolK K r d := by
+  rw [mem_PolK_iff]
+  intro α hα
+  rwa [Finset.mem_singleton.mp (MvPolynomial.support_monomial_subset hα)]
 
 theorem proj_keeps_letter (d : L → ℕ)
     (Pr : MvPolynomial (L × Fin r) K →ₗ[K] MvPolynomial (L × Fin r) K) (i : L)
@@ -191,20 +185,12 @@ theorem proj_keeps_letter (d : L → ℕ)
     (ζ : L × Fin r →₀ ℕ) (hζ : ∀ k, ldeg ζ k = d k) (ζ' : L × Fin r →₀ ℕ)
     (hζ' : ζ' ∈ (Pr (monomial ζ 1)).support) (a : Fin r) : ζ' (i, a) = ζ (i, a) := by
   classical
-  have hmono : (monomial ζ (1 : K) : MvPolynomial (L × Fin r) K) ∈ PolK K r d := by
-    rw [mem_PolK_iff]
-    intro α hα k
-    have hαζ : α = ζ := by
-      by_contra hne
-      rw [MvPolynomial.mem_support_iff, MvPolynomial.coeff_monomial, if_neg (Ne.symm hne)] at hα
-      exact hα rfl
-    rw [hαζ]
-    exact hζ k
+  have hmono := monomial_mem_PolK_of_degrees (K := K) d ζ hζ
   have h := hcomm a _ hmono
   rw [euler_eq_dg, euler_eq_dg] at h
   simp only [dg_monomial, mul_one] at h
   have h' := congrArg (fun G => AddMonoidAlgebra.coeff G ζ') h
-  simp only [coeff_dg_eq_mul_coeff] at h'
+  simp only [coeff_dg] at h'
   have hsm : (monomial ζ ((ζ (i, a) : ℕ) : K) : MvPolynomial (L × Fin r) K) =
       ((ζ (i, a) : ℕ) : K) • monomial ζ (1 : K) := by
     rw [MvPolynomial.smul_monomial, smul_eq_mul, mul_one]
@@ -226,15 +212,7 @@ theorem prodProj_entries {L : Type} [Fintype L] [DecidableEq L] (sg : L → Bool
     (∀ k, ldeg ζ' k = d k) ∧
       ∀ i, sg i = true → (∀ x ∈ s, i ∉ S x) → ∀ a, ζ' (i, a) = ζ (i, a) := by
   classical
-  have hmono : (monomial ζ (1 : K) : MvPolynomial (L × Fin r) K) ∈ PolK K r d := by
-    rw [mem_PolK_iff]
-    intro α hα k
-    have hαζ : α = ζ := by
-      by_contra hne
-      rw [MvPolynomial.mem_support_iff, MvPolynomial.coeff_monomial, if_neg (Ne.symm hne)] at hα
-      exact hα rfl
-    rw [hαζ]
-    exact hζ k
+  have hmono := monomial_mem_PolK_of_degrees (K := K) d ζ hζ
   exact ⟨fun k => (mem_PolK_iff d _).mp (h1 _ hmono) ζ' hζ' k,
     fun i hi hout a => proj_keeps_letter d Pr i (h6 i hi hout) ζ hζ ζ' hζ' a⟩
 

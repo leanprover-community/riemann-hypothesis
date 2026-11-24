@@ -2,8 +2,10 @@ module
 
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.CountData
 public import Mathlib.NumberTheory.NumberField.CanonicalEmbedding.Basic
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.FiniteAdeleTopologyStatement
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.FiniteAdeleTopology
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.SummableGaussianCoset
+public import Mathlib.Analysis.Normed.Group.Tannery
+public import ReciprocityTheory.ThetaSummability.TailSumEstimates.LatSumPi
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -11,7 +13,6 @@ import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-public import Mathlib.Analysis.Normed.Group.Tannery
 import Mathlib.Analysis.SpecialFunctions.Bernstein
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
@@ -56,7 +57,6 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Topology.Sheaves.Init
-public import ReciprocityTheory.ThetaSummability.TailSumEstimates.LatSumPi
 
 @[expose] public section
 
@@ -104,7 +104,7 @@ theorem summable_pi_integers (F : Type) [Field F] [NumberField F] (ι : Type) [F
     (fun _ _ => (Real.exp_pos _).le) (fun _ => summable_integers F ha)).1
   have h2 := (e.arrowCongr (Equiv.refl (𝓞 F))).summable_iff.2 h
   refine h2.congr fun r => ?_
-  simp only [Function.comp, Equiv.arrowCongr_apply, Equiv.coe_refl, Function.id_comp, id]
+  simp only [Function.comp, Equiv.arrowCongr_apply, Equiv.coe_refl, id]
   rw [Equiv.prod_comp e.symm (fun j => Real.exp (-a * ∑ w : InfinitePlace F, (w (r j : F)) ^ 2)),
     ← Real.exp_sum, Finset.mul_sum]
 
@@ -211,7 +211,6 @@ theorem gauss_bound {M : ℕ} {B : Matrix ι ι F} {ρ : InfinitePlace F → (F 
           have : w (x j) ≤ ‖v w‖ := by
             rw [hwv]
             exact norm_le_pi_norm (v w) j
-          have h0 : 0 ≤ w (x j) := AbsoluteValue.nonneg _ _
           gcongr
       _ = _ := by simp
   have h3 : d * ∑ w, ‖v w‖ ^ 2 ≤ ∑ w, Real.pi * (τ w).im *
@@ -235,7 +234,7 @@ theorem support_denominator {gf : Matrix ι ι (A F)} (hu : IsUnit gf.det) {φ :
     (hφ : SB φ) :
     ∃ N : ℕ, 0 < N ∧ ∀ x : ι → F, φ (gf *ᵥ fun j => algebraMap F (A F) (x j)) ≠ 0 →
       ∀ j, ∃ r : 𝓞 F, (r : F) = (N : F) * x j := by
-  obtain ⟨-, -, -, -, -, -, hInt, -, hCpt, -⟩ := GlobalTheory.T.mem_Oh_iff_and_nat_mul_properties F
+  obtain ⟨-, -, -, -, -, -, hInt, -, hCpt, -⟩ := _root_.GlobalTheory.CompanionTheory.SW.Core.AfTop.finiteAdele_topology F
   have hcont : ∀ j, Continuous fun y : ι → A F => (gf⁻¹ *ᵥ y) j := fun j =>
     (continuous_apply j).comp (continuous_const.matrix_mulVec continuous_id)
   have hK : IsCompact (⋃ j, (fun y : ι → A F => (gf⁻¹ *ᵥ y) j) '' tsupport φ) :=
@@ -261,7 +260,6 @@ theorem summable_thTerm {M : ℕ} {B : Matrix ι ι F} {ρ : InfinitePlace F →
   obtain ⟨C, hC⟩ := hφ.1.continuous.bounded_above_of_compact_support hφ.2
   obtain ⟨a, ha, hg⟩ := gauss_bound hQ hO.2 hτ
   have hNF : (N : F) ≠ 0 := Nat.cast_ne_zero.2 hN.ne'
-  have hNR : (0 : ℝ) < N := Nat.cast_pos.2 hN
   let i : (ι → 𝓞 F) → (ι → F) := fun r j => (r j : F) / N
   have hi : Function.Injective i := fun r s h => funext fun j => by
     have := congrFun h j
@@ -304,7 +302,7 @@ def indN (gf : Matrix ι ι (A F)) (N : ℕ) : (ι → A F) → ℂ := Set.indic
 
 theorem sb_indN {gf : Matrix ι ι (A F)} (hu : IsUnit gf.det) {N : ℕ} (hN : 0 < N) :
     SB (indN gf N) := by
-  obtain ⟨-, -, hT2, hOc, -, -, -, -, -, hOpenN⟩ := GlobalTheory.T.mem_Oh_iff_and_nat_mul_properties F
+  obtain ⟨-, -, hT2, hOc, -, -, -, -, -, hOpenN⟩ := _root_.GlobalTheory.CompanionTheory.SW.Core.AfTop.finiteAdele_topology F
   have hTc : IsCompact (mulOh (F := F) N) := by
     have : mulOh (F := F) N = (fun y : A F => (N : A F) * y) '' Oh F := by
       ext x
@@ -390,7 +388,7 @@ theorem exists_not_multiple {y : F} (hy : y ≠ 0) :
 
 theorem indN_eventually_zero {gf : Matrix ι ι (A F)} (hu : IsUnit gf.det) {x : ι → F} (hx : x ≠ 0) :
     ∀ᶠ n : ℕ in Filter.atTop, indN gf (n + 1) (gf *ᵥ fun j => algebraMap F (A F) (x j)) = 0 := by
-  obtain ⟨-, -, -, -, -, -, hInt, -, -, -⟩ := GlobalTheory.T.mem_Oh_iff_and_nat_mul_properties F
+  obtain ⟨-, -, -, -, -, -, hInt, -, -, -⟩ := _root_.GlobalTheory.CompanionTheory.SW.Core.AfTop.finiteAdele_topology F
   obtain ⟨j, hj⟩ := Function.ne_iff.1 hx
   obtain ⟨n₀, hn₀⟩ := exists_not_multiple (F := F) hj
   filter_upwards [Filter.eventually_ge_atTop n₀] with n hn

@@ -57,14 +57,14 @@ theorem supp_inl (Y : Ix r → O) (h : ∀ a : Fin r, Y (Sum.inl a.castSucc) = 0
   funext j
   induction j using Fin.lastCases with
   | last => simp
-  | cast a => simp [h a, Pi.single_eq_of_ne (Fin.castSucc_lt_last a).ne]
+  | cast a => simp [h a]
 
 theorem supp_inr (Y : Ix r → O) (h : ∀ a : Fin r, Y (Sum.inr a.castSucc) = 0) :
     (fun j => Y (Sum.inr j)) = Y (Sum.inr (Fin.last r)) • Pi.single (Fin.last r) 1 := by
   funext j
   induction j using Fin.lastCases with
   | last => simp
-  | cast a => simp [h a, Pi.single_eq_of_ne (Fin.castSucc_lt_last a).ne]
+  | cast a => simp [h a]
 
 theorem elim_eta (Y : Ix r → O) : Y = Sum.elim (fun j => Y (Sum.inl j)) (fun j => Y (Sum.inr j)) := by
   funext i

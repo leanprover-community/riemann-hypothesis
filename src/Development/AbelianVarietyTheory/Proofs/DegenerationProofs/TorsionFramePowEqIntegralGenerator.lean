@@ -184,19 +184,6 @@ noncomputable def intU (V : Type) [CommRing V] [IsDomain V] :
 theorem exists_unit_gm {A C : Type} [CommRing A] [CommRing C] (σ : A →+* C) (z : Sp C) {Y : Scheme.{0}} (g : Sp A ⟶ Y)
     (U : Y.Opens) (ht : ⊤ ≤ g ⁻¹ᵁ U) (a : Γ(Y, U)ˣ) :
     ∃ v : Aˣ, toStkA z (σ v.val) = (gm (spMap σ ≫ g) z U a).val := by
-  have toStkA_valR' : ∀ {R : Type} [CommRing R] {T : Scheme.{0}} (f : Sp R ⟶ T)
-      (U : T.Opens) (z : Sp R) (ht : ⊤ ≤ f ⁻¹ᵁ U) (a : Γ(T, U)ˣ),
-      toStkA z (valR f U a.val) = (gm f z U a).val := by
-    intro R _ T f U z ht a
-    have hz : f z ∈ U := ht trivial
-    have e1 : ∀ c, (Scheme.ΓSpecIso (CommRingCat.of R)).inv.hom ((Scheme.ΓSpecIso (CommRingCat.of R)).hom.hom c) = c :=
-      fun c => congrArg (fun f => CommRingCat.Hom.hom f c) (Iso.hom_inv_id (Scheme.ΓSpecIso (CommRingCat.of R)))
-    rw [valR, dif_pos ht, gm, dif_pos hz]
-    show ((Sp R).presheaf.germ ⊤ z trivial).hom ((Scheme.ΓSpecIso (CommRingCat.of R)).inv.hom
-        ((Scheme.ΓSpecIso (CommRingCat.of R)).hom.hom ((f.appLE U ⊤ ht).hom a.val))) =
-      ((Sp R).presheaf.germ (f ⁻¹ᵁ U) z hz).hom ((f.app U).hom a.val)
-    rw [e1]
-    exact TopCat.Presheaf.germ_res_apply (Sp R).presheaf (homOfLE ht) z trivial ((f.app U).hom a.val)
   have hu : IsUnit (valR g U a.val) := by
     rw [GlobalTheory.Points.valR_eq g _ ht]; exact (Units.isUnit _).map _
   refine ⟨hu.unit, ?_⟩

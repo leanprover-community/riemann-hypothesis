@@ -44,6 +44,7 @@ import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
+public import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.WhittakerCovolume.GramZeroLeft
 
 @[expose] public section
 
@@ -119,9 +120,6 @@ theorem inFrame_injective (d : SD σ) : Function.Injective (inFrame (σ := σ) (
   intro x y h
   have : mat2 x = mat2 y := by rw [matrix_eq_frame_conjugate d x, matrix_eq_frame_conjugate d y, h]
   exact Subtype.ext (Units.ext this)
-
-theorem om_mem_sch (d : SD σ) (g : d.G) {Φ : d.Fn} (h : Φ ∈ d.sch) : d.om g Φ ∈ d.sch :=
-  d.ok.dbl.weil.2.1.pres g Φ h
 
 theorem section_mul_weil_action (d : SD σ) (Φ : d.Fn) (g k : d.G) : d.sec0 Φ (g * k) = d.sec0 (d.om k Φ) g := by
   simp [SD.sec0, map_mul]

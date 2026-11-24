@@ -54,14 +54,9 @@ namespace RD
 
 variable {d : SD σ} (R : RD d) (w : InfinitePlace F)
 
-theorem stepN (hT : TAll) : ∀ (y : GR d.n) (b : Matrix (Fin d.n) (Fin d.n) ℂ), bᴴ = b → mR y = nU b →
-    R.StepOK w (R.ι w y) (fun f u => Complex.exp (2 * Real.pi * Complex.I * ((R.sg w : ℤ) : ℂ) *
-      Matrix.trace (b * ((Matrix.of u)ᴴ * Matrix.of u))) * f u) id :=
-  R.stepN_pf w hT
+alias stepN := _root_.PositivityTheory.SiegelWeilFormula.RD.stepN_pf
 
-theorem stepM (hT : TAll) : ∀ (y : GR d.n) (a : Matrix (Fin d.n) (Fin d.n) ℂ), IsUnit a.det → mR y = mLoc a →
-    ∃ c : ℂ, c ≠ 0 ∧ R.StepOK w (R.ι w y) (fun f u => c * f (Matrix.of u * a)) id :=
-  R.stepM_pf w hT
+alias stepM := _root_.PositivityTheory.SiegelWeilFormula.RD.stepM_pf
 
 end RD
 

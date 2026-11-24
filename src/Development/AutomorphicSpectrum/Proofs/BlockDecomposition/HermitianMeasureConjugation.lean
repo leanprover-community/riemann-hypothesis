@@ -6,7 +6,8 @@ public import Development.AbelianVarietyTheory.Proofs.HeightProofs.IsTopological
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MulVecCEApply
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AddHaarCharLeftRightMatrixMulAdeleTensor
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DiagonalThetaIntegralSiegelRuleDoubledWeil
-import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AddEquivAddHaarCharProdCongrStatement
+import Mathlib.MeasureTheory.Measure.Haar.MulEquivHaarChar
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.AddEquivAddHaarCharProdCongr
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsRestrictScalarsMatrixLeftRightMulAdeleTens
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -108,7 +109,7 @@ theorem char_sq [IsTopologicalAddGroup M] [LocallyCompactSpace M] [SecondCountab
     rw [hl]
     change U p.1.1 + L (U p.2.1) = U (p.1.1 + L p.2.1)
     rw [map_add (f := _), hUL]
-  rw [sq, ← GlobalTheory.T.addEquivAddHaarChar_prodCongr, ← GlobalTheory.ModuLR.addEquivAddHaarChar_transport Ψ (GlobalTheory.ModuLR.prodCE T T), e]
+  rw [sq, ← _root_.GlobalTheory.ModuLR.addEquivAddHaarChar_prodCE, ← GlobalTheory.ModuLR.addEquivAddHaarChar_transport Ψ (GlobalTheory.ModuLR.prodCE T T), e]
 
 end Abstract
 

@@ -74,7 +74,6 @@ theorem haarOnSet_isHaar (H : Subgroup G) (hH : IsClosed (H : Set G)) (μ : Meas
   have hce : Topology.IsClosedEmbedding ((↑) : H → G) := by
     first
       | exact hH.isClosedEmbedding_subtypeVal
-      | exact hH.closedEmbedding_subtype_val
   haveI : LocallyCompactSpace H := hce.locallyCompactSpace
   haveI : SigmaFinite (μ.comap ((↑) : H → G)) := by
     refine SigmaFinite.of_map _ he.measurable.aemeasurable ?_
@@ -95,7 +94,6 @@ theorem haarOnSet_isHaar (H : Subgroup G) (hH : IsClosed (H : Set G)) (μ : Meas
   have hKpos : (Measure.haar : Measure H) K ≠ 0 := by
     first
       | exact (measure_pos_of_mem_nhds _ hK1).ne'
-      | exact (measure_pos_of_nonempty_interior _ ⟨1, mem_interior_iff_mem_nhds.2 hK1⟩).ne'
   have hKfin : (Measure.haar : Measure H) K < ⊤ := hK.measure_lt_top
   obtain ⟨n, hn⟩ : ∃ n, (Measure.haar : Measure H) (K ∩ spanningSets (μ.comap ((↑) : H → G)) n) ≠ 0 := by
     by_contra hcon
@@ -114,19 +112,15 @@ theorem haarOnSet_isHaar (H : Subgroup G) (hH : IsClosed (H : Set G)) (μ : Meas
   haveI : BorelSpace H := by
     first
       | infer_instance
-      | exact Subtype.borelSpace _
   haveI : SecondCountableTopology H := by
     first
-      | infer_instance
       | exact TopologicalSpace.Subtype.secondCountableTopology _
   haveI : MeasurableMul₂ H := by
     first
       | infer_instance
-      | exact ContinuousMul.measurableMul₂
   haveI : MeasurableInv H := by
     first
       | infer_instance
-      | exact ContinuousInv.measurableInv
   have heq := measure_eq_div_smul (μ.comap ((↑) : H → G)) (Measure.haar : Measure H) hn hsfin
   have hc0 : (μ.comap ((↑) : H → G)) (K ∩ spanningSets (μ.comap ((↑) : H → G)) n) /
       (Measure.haar : Measure H) (K ∩ spanningSets (μ.comap ((↑) : H → G)) n) ≠ 0 := by
@@ -140,9 +134,7 @@ theorem haarOnSet_isHaar (H : Subgroup G) (hH : IsClosed (H : Set G)) (μ : Meas
   have hHaar : (μ.comap ((↑) : H → G)).IsHaarMeasure := by
     rw [heq]
     first
-      | exact Measure.isHaarMeasure_smul _ hc0 hctop
       | exact IsHaarMeasure.smul _ hc0 hctop
-      | exact isHaarMeasure_smul _ hc0 hctop
   haveI := hHaar
   refine ⟨hHaar, fun K' hK' => ?_, fun U hU hne => ?_⟩
   · rw [← hmap, he.map_apply]

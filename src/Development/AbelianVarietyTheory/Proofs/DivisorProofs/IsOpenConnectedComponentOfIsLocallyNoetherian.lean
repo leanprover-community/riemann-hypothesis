@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.SmoothGaloisGeometry.IsOpenConnectedComponentOfNoetherianSpace
 public import Mathlib.AlgebraicGeometry.Noetherian
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -42,6 +43,7 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.TypeStar
+import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
 
@@ -54,25 +56,7 @@ namespace GlobalTheory.ConnOpen
 
 theorem isOpen_connectedComponent_noetherian {Y : Type*} [TopologicalSpace Y] [NoetherianSpace Y] (y : Y) :
     IsOpen (connectedComponent y) := by
-  set C := connectedComponent y
-  have key : ∀ t, t ∉ C → irreducibleComponent t ⊆ Cᶜ := by
-    intro t ht s hs hsC
-    have h1 : irreducibleComponent t ⊆ connectedComponent s :=
-      _root_.IsPreconnected.subset_connectedComponent
-        (isIrreducible_irreducibleComponent (x := t)).isConnected.isPreconnected hs
-    rw [← connectedComponent_eq hsC] at h1
-    exact ht (h1 mem_irreducibleComponent)
-  have hC : Cᶜ = ⋃ Z ∈ {Z ∈ irreducibleComponents Y | Z ⊆ Cᶜ}, Z := by
-    ext t
-    refine ⟨fun ht => Set.mem_biUnion ⟨irreducibleComponent_mem_irreducibleComponents t, key t ht⟩
-      mem_irreducibleComponent, fun ht => ?_⟩
-    obtain ⟨Z, ⟨-, hZ⟩, htZ⟩ := Set.mem_iUnion₂.1 ht
-    exact hZ htZ
-  have hcl : IsClosed Cᶜ := by
-    rw [hC]
-    exact (NoetherianSpace.finite_irreducibleComponents.subset (by exact fun _ h => h.1)).isClosed_biUnion
-      fun Z h => isClosed_of_mem_irreducibleComponents Z h.1
-  exact isClosed_compl_iff.1 hcl
+  apply CrystallineSemistableComparison.isOpen_connectedComponent_of_noetherianSpace <;> assumption
 
 end GlobalTheory.ConnOpen
 

@@ -73,18 +73,6 @@ section Chart
 
 variable {n m : ℕ} {J : Ideal (MvPolynomial (Fin n) ℂ)} {A : Matrix (Fin m) (Fin n) ℂ}
 
-theorem maDens_congr_germ {F G : Fin m → (Fin m → ℂ) → ℝ} {y : Fin m → ℂ}
-    (h : ∀ k, F k =ᶠ[𝓝 y] G k) : ReciprocityTheory.AnForm.maDens F y = ReciprocityTheory.AnForm.maDens G y := by
-  have h2 : ∀ k, fderiv ℝ (fderiv ℝ (F k)) y = fderiv ℝ (fderiv ℝ (G k)) y :=
-    fun k => ((h k).fderiv (𝕜 := ℝ)).fderiv_eq
-  have h3 : (fun k => ReciprocityTheory.AnForm.hessC (F k) y) = fun k => ReciprocityTheory.AnForm.hessC (G k) y := by
-    funext k
-    ext i j
-    dsimp only [ReciprocityTheory.AnForm.hessC]
-    rw [h2 k]
-  unfold ReciprocityTheory.AnForm.maDens
-  rw [h3]
-
 theorem abs_chartDens_le (hA : IsFiniteProjection J A) {w f : (Fin n → ℂ) → ℝ} {C : ℝ} (hC : 0 ≤ C)
     (hw : ∀ z, |w z| ≤ C * f z) (φ : Fin m → (Fin n → ℂ) → ℝ) (y : Fin m → ℂ) :
     |chartDens J A w φ y| ≤ C * chartAbsDens J A f φ y := by
@@ -127,7 +115,7 @@ theorem chartDens_congr_fun {w : (Fin n → ℂ) → ℝ} {φ φ' : Fin m → (F
         (hdiff.differentiableAt (hU.mem_nhds hAz)).continuousAt
       have hy : A *ᵥ z = y := hz.2
       rw [← hy]
-      refine congrArg (w z * ·) (maDens_congr_germ fun k => ?_)
+      refine congrArg (w z * ·) (_root_.GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets.maDens_congr_of_eventuallyEq fun k => ?_)
       have hk := hloc z hz.1 hw k
       rw [← hsz] at hk
       exact hcont.eventually hk

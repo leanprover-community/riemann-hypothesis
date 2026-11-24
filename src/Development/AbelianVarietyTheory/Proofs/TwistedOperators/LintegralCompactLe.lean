@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DifferentiableOneP
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.ComplexEmbeddingHermitianQuadrupleSum
 public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedSmooth
 public import Development.AbelianVarietyTheory.Proofs.AdelicLatticeProofs.EqZeroOfAeFundamentalDomain
@@ -241,23 +242,7 @@ theorem words_bound {R M X : Type} [NormedAddCommGroup R] [NormedSpace ℝ R] [F
 
 theorem one_le_sum_norm {n : ℕ} (A B : Matrix (Fin n) (Fin n) ℂ) (h : A * B = 1) (i : Fin n) :
     1 ≤ ∑ a, ∑ b, (‖A a b‖ + ‖B a b‖) := by
-  set S := ∑ a, ∑ b, (‖A a b‖ + ‖B a b‖) with hS
-  have hS0 : 0 ≤ S := by positivity
-  have hle : ∀ a b, ‖A a b‖ + ‖B a b‖ ≤ S := fun a b =>
-    (Finset.single_le_sum (f := fun b => ‖A a b‖ + ‖B a b‖) (fun _ _ => by positivity) (Finset.mem_univ b)).trans
-      (Finset.single_le_sum (f := fun a => ∑ b, (‖A a b‖ + ‖B a b‖)) (fun _ _ => by positivity) (Finset.mem_univ a))
-  have hrow : ∑ b, ‖A i b‖ ≤ S :=
-    (Finset.sum_le_sum fun b _ => le_add_of_nonneg_right (norm_nonneg (B i b))).trans
-      (Finset.single_le_sum (f := fun a => ∑ b, (‖A a b‖ + ‖B a b‖)) (fun _ _ => by positivity) (Finset.mem_univ i))
-  have h1 : (1 : ℝ) ≤ S * S := by
-    have e : (1 : ℂ) = ∑ b, A i b * B b i := by rw [← Matrix.mul_apply, h, Matrix.one_apply_eq]
-    calc (1 : ℝ) = ‖∑ b, A i b * B b i‖ := by rw [← e, norm_one]
-      _ ≤ ∑ b, ‖A i b‖ * S := (norm_sum_le _ _).trans (Finset.sum_le_sum fun b _ => by
-          rw [norm_mul]
-          exact mul_le_mul_of_nonneg_left ((le_add_of_nonneg_left (norm_nonneg (A b i))).trans (hle b i))
-            (norm_nonneg _))
-      _ ≤ S * S := by rw [← Finset.sum_mul]; exact mul_le_mul_of_nonneg_right hrow hS0
-  nlinarith
+  apply _root_.GlobalTheory.Mem.AutSpace.one_le_sum_norm <;> assumption
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta Formalism.IndefR.Datum
 open GlobalTheory.FockCompare GlobalTheory.OrientedHeis

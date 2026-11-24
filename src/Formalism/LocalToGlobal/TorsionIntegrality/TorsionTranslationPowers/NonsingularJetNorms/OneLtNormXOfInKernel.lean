@@ -110,7 +110,7 @@ theorem tele [IsUltrametricDist K] (g ψ : ℕ → K⟦X⟧) (c : K) (n : ℕ) (
       _ = _ := by rw [← key]
   have hone : constantCoeff (C h⁻¹ * g 1) = 1 := by
     rw [map_mul, constantCoeff_C, hh', inv_mul_cancel₀ hh]
-  refine ⟨hone, rootInt K (n + 1) _ hn hone ?_⟩
+  refine ⟨hone, _root_.Formalism.L2.Th1.E.root_integral_alt K (n + 1) _ hn hone ?_⟩
   rw [hY]
   exact (oMul _ _ (oInv _ _ hV hVi) (oPow _ _ h0)).2
 
@@ -260,7 +260,7 @@ theorem shift_unit' : ShiftUnit := by
           rw [h, map_mul]; ring)
       simpa using h
 
-  have hpar := parSumTwo A (fun P => Real.log ‖constantCoeff (H (P : W.toAffine.Point))‖)
+  have hpar := _root_.Formalism.L2.Th1.E.parallelogram_sum_two A (fun P => Real.log ‖constantCoeff (H (P : W.toAffine.Point))‖)
     (fun Q => Real.log ‖c (Q : W.toAffine.Point)‖) (by
       rintro ⟨P, hP⟩ ⟨Q, hQ⟩ hQ0
       have hQ0' : Q ≠ 0 := fun h => hQ0 (Subtype.ext h)

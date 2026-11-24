@@ -58,9 +58,7 @@ theorem goal1 :
       rw [Finset.mem_Iic] at hk
       rw [Finset.mem_filter]
       exact ⟨Finset.mem_univ k, le_trans h (ha hk)⟩
-    have h1 := Finset.card_le_card hsub
-    rw [Fin.card_Iic] at h1
-    omega
+    exact Nat.lt_of_succ_le (by simpa [Fin.card_Iic] using Finset.card_le_card hsub)
   · intro h
     by_contra hc
     have hsub : Finset.univ.filter (fun k => c ≤ mu k) ⊆ Finset.Iio m := by
@@ -68,10 +66,7 @@ theorem goal1 :
       rw [Finset.mem_filter] at hk
       rw [Finset.mem_Iio]
       by_contra hkm
-      have hmk : m ≤ k := not_lt.mp hkm
-      exact hc (le_trans hk.2 (ha hmk))
-    have h1 := Finset.card_le_card hsub
-    rw [Fin.card_Iio] at h1
-    omega
+      exact hc (le_trans hk.2 (ha (not_lt.mp hkm)))
+    exact (not_lt_of_ge (by simpa [Fin.card_Iio] using Finset.card_le_card hsub)) h
 
 end Bl.general_b_fact_left_further

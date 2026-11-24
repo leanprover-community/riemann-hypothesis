@@ -73,12 +73,6 @@ lemma hT_snd : hT f X ≫ (splitTorus S X).hom = (splitTorus S' X).hom ≫ f := 
   unfold hT
   exact pullback.lift_snd _ _ _
 
-private lemma left_mul_congr_lemma {Z W : Scheme.{0}} {M : Over Z} [GrpObj M] {a b : W ⟶ Z}
-    (hab : a = b) (u v : Over.mk a ⟶ M) (u' v' : Over.mk b ⟶ M)
-    (hu : u.left = u'.left) (hv : v.left = v'.left) : (u * v).left = (u' * v').left := by
-  subst hab
-  rw [Over.OverMorphism.ext hu, Over.OverMorphism.ext hv]
-
 lemma grpT : IsGrpPullback (splitTorus S' X) (splitTorus S X) f (hT f X) := by
   have hz : f ≫ Semi.toZ S = Semi.toZ S' := specULiftZIsTerminal.hom_ext _ _
   have hTf : hT f X ≫ pullback.fst (splitTorusAff _ X).hom (Semi.toZ S) =
@@ -109,7 +103,7 @@ lemma grpT : IsGrpPullback (splitTorus S' X) (splitTorus S X) f (hT f X) := by
       have e1 := gS.2 (Over.mk (T.hom ≫ f)) x₀ y₀ u v rfl rfl
       have e2 := gS'.2 T x y u' v' rfl rfl
       have e3 : (u * v).left = (u' * v').left := by
-        refine left_mul_congr_lemma (specULiftZIsTerminal.hom_ext _ _) u v u' v' ?_ ?_
+        refine _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.mul_left_congr (specULiftZIsTerminal.hom_ext _ _) u v u' v' ?_ ?_
         · show x₀.left ≫ pullback.fst (splitTorusAff _ X).hom (Semi.toZ S) =
             x.left ≫ pullback.fst (splitTorusAff _ X).hom (Semi.toZ S')
           rw [hx]
@@ -186,7 +180,6 @@ lemma iB_hom [IsMonHom i] : IsMonHom (iB f X i) := by
         _ = ((x₀ ≫ i) * (y₀ ≫ i)).left := by
           congr 1
           first
-          | simp
           | (rw [Hom.mul_def, Hom.mul_def, Category.assoc, IsMonHom.mul_hom, ← Category.assoc]
              congr 1
              simp)
@@ -209,8 +202,6 @@ lemma iB_hom [IsMonHom i] : IsMonHom (iB f X i) := by
     rw [Hom.mul_def, Hom.mul_def, lift_fst_snd, Category.id_comp] at h1
     rw [h1]
     congr 1
-
-private lemma toUnit_left_lemma {Y : Scheme.{0}} (A : Over Y) : (toUnit A).left = A.hom := rfl
 
 private lemma unit_hom_lemma_2 {Y : Scheme.{0}} : (𝟙_ (Over Y)).hom = 𝟙 Y := rfl
 
@@ -268,13 +259,13 @@ lemma iB_isKernel (hk : IsPullback i (toUnit _) q η[B]) :
   have hη : η[(Over.pullback f).obj B].left ≫ pullback.fst B.hom f = f ≫ η[B].left := by
     have h1 := one_fst_lemma_3 (B := B) f (𝟙_ (Over S'))
     rw [hone, Hom.one_def, Over.comp_left] at h1
-    rw [h1, toUnit_left_lemma]
+    rw [h1, _root_.ReciprocityTheory.ChartRestriction.G.Out.PullGtPf.toUnit_left']
     show ((𝟙_ (Over S')).hom ≫ f) ≫ η[B].left = f ≫ η[B].left
     rw [unit_hom_lemma_2]
     exact congrArg (fun g => g ≫ η[B].left) (Category.id_comp f)
   have sq1 : IsPullback (hT f X) (toUnit (splitTorus S' X)).left
       (toUnit (splitTorus S X)).left f := by
-    rw [toUnit_left_lemma, toUnit_left_lemma]
+    rw [_root_.ReciprocityTheory.ChartRestriction.G.Out.PullGtPf.toUnit_left', _root_.ReciprocityTheory.ChartRestriction.G.Out.PullGtPf.toUnit_left']
     exact (grpT f X).1
   have sq2 : IsPullback i.left (toUnit (splitTorus S X)).left q.left η[B].left :=
     IsPullback.map (F := Over.forget S) hk

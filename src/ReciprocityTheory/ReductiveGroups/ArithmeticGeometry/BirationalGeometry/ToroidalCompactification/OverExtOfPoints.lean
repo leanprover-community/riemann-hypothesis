@@ -109,7 +109,7 @@ theorem over_ext_of_points {F : Type} [Field F] [IsAlgClosed F] {K Y : Over (Spe
     show IsOpenImmersion (prod.lift (𝟙 Y) (𝟙 Y)).left
     rw [← MorphismProperty.cancel_right_of_respectsIso @IsOpenImmersion _ (Over.prodLeftIsoPullback Y Y).hom]
     convert! (inferInstance : IsOpenImmersion (pullback.diagonal Y.hom))
-    ext1 <;> simp [← Over.comp_left] <;> first | rw [prod.lift_fst, Over.id_left] | rw [prod.lift_snd, Over.id_left]
+    ext1 <;> simp [← Over.comp_left]
   have : JacobsonSpace K.left := LocallyOfFiniteType.jacobsonSpace K.hom
   have hcl : closedPoints K.left ⊆ Set.range (equalizer.ι u v).left := by
     intro x hx

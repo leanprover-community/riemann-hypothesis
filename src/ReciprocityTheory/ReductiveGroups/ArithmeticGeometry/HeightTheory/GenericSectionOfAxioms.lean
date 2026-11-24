@@ -90,7 +90,7 @@ noncomputable def htOf (hd : d.AxH 𝒜) (h : d.S1) : Formalism.MainNotions.Gaps
 
 theorem genericSection_of_axioms (hd : d.AxH 𝒜) : d.S1 := by
   intro c
-  have hS := (ReciprocityTheory.MultiplicativeHeights.Closed.fieldOfS K (Ω c) d.D d.N (d.x c) (hd.fg c) (hd.trdeg c)
+  have hS := (_root_.ReciprocityTheory.MultiplicativeHeights.genericImageFinite K (Ω c) d.D d.N (d.x c) (hd.fg c) (hd.trdeg c)
     (hd.a1 c)).1
   have key : ∀ {M : Type} (j0 : Fin (d.N + 1)) (a : M) (f : Fin d.N → M),
       Fin.succAboveCases (α := fun _ => M) j0 a f j0 = a ∧

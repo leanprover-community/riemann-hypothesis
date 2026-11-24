@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.PullGenBoxGen
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.DegProd
 import Mathlib.Algebra.Order.Floor.Extended
@@ -182,23 +183,7 @@ private theorem gm_pullAlong_section_eq_gm_comp {X X' Y Y' Z : Scheme.{0}} (L : 
 theorem isGen_boxGen (F : J → (X' ⟶ X)) (φ : K → (Y ⟶ X')) (ε : K → ℤ)
     (t : ∀ i, LB.Gen (LB.LinComb (L.pull (F i)) φ ε)) (ht : ∀ i, (t i).IsGen) :
     (GeneratorPullback.boxGen L F φ ε t).IsGen := by
-  intro (a : K → (L.LinComb F fun _ => 1).ι) (b : K → (L.LinComb F fun _ => 1).ι)
-  apply units_ext_of_gm_id_eq_on_open
-  intro y hy
-  have hy' : (𝟙 Y : Y ⟶ Y) y ∈ ((L.LinComb F fun _ => 1).LinComb φ ε).U a ⊓
-      ((L.LinComb F fun _ => 1).LinComb φ ε).U b := hy
-  have ha : (𝟙 Y : Y ⟶ Y) y ∈ (L.LinComb F fun _ => 1).wchart φ a := hy.1
-  have hb : (𝟙 Y : Y ⟶ Y) y ∈ (L.LinComb F fun _ => 1).wchart φ b := hy.2
-  rw [map_mul, gm_res_eq_gm (𝟙 Y) y _ hy' _, gm_res_eq_gm (𝟙 Y) y _ hy' _, gm_linComb_transition_eq _ φ ε (𝟙 Y) y a b hy']
-  erw [gm_boxGen L F φ ε t (𝟙 Y) y a ha, gm_boxGen L F φ ε t (𝟙 Y) y b hb, trF_box L F φ ε (𝟙 Y) y a b ha hb,
-    ← Finset.prod_mul_distrib]
-  refine Finset.prod_congr rfl fun i _ => ?_
-  have hi : (𝟙 Y : Y ⟶ Y) y ∈ ((L.pull (F i)).LinComb φ ε).U (fun k _ => a k i) ⊓
-      ((L.pull (F i)).LinComb φ ε).U (fun k _ => b k i) :=
-    ⟨mem_pull_wchart_of_mem_linComb_wchart L F φ y a i hy.1, mem_pull_wchart_of_mem_linComb_wchart L F φ y b i hy.2⟩
-  have e := congrArg (gm (𝟙 Y) y _) (ht i (fun k _ => a k i) (fun k _ => b k i))
-  rw [map_mul, gm_res_eq_gm (𝟙 Y) y _ hi _, gm_res_eq_gm (𝟙 Y) y _ hi _, gm_linComb_transition_eq _ φ ε (𝟙 Y) y _ _ hi] at e
-  exact e
+  apply GlobalTheory.BoxCubical.isGen_boxGen <;> assumption
 
 end Generators
 

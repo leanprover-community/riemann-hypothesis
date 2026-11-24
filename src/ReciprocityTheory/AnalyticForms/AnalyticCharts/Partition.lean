@@ -125,26 +125,19 @@ theorem exists_chart_partition {X : Type*} [TopologicalSpace X] [T2Space X] [Com
   have hO : ∀ x, IsOpen (O x) := fun x =>
     (e (κ x)).continuousOn.isOpen_inter_preimage (e (κ x)).open_source
       (isOpen_lt continuous_const (hgs x).continuous)
-  have hxO : ∀ x, x ∈ O x := by
-    intro x
-    refine ⟨hxs x, ?_⟩
+  have hxO : ∀ x, x ∈ O x := fun x => ⟨hxs x, by
     show (1 : ℝ) / 2 < g x (e (κ x) x)
     rw [hg1 x]
-    norm_num
+    norm_num⟩
   obtain ⟨t, ht⟩ := isCompact_univ.elim_finite_subcover O hO
     (fun p _ => Set.mem_iUnion.mpr ⟨p, hxO p⟩)
-  have hOψ : ∀ x p, p ∈ O x → 1 / 2 < ψ x p := by
-    intro x p hp
-    simp only [ψ, if_pos hp.1]
-    exact hp.2
+  have hOψ : ∀ x p, p ∈ O x → 1 / 2 < ψ x p := fun x p hp =>
+    by simpa only [ψ, ite_eq_left hp.1, Set.mem_preimage, Set.mem_ofPred_eq] using hp.2
   have hS : ∀ p, 0 < ∑ x ∈ t, ψ x p := by
     intro p
-    have hp := ht (Set.mem_univ p)
-    simp only [Set.mem_iUnion] at hp
-    obtain ⟨x, hx, hpx⟩ := hp
-    have h1 := hOψ x p hpx
-    have h2 := Finset.single_le_sum (fun y _ => hψ0 y p) hx
-    linarith
+    obtain ⟨x, hx, hpx⟩ := by simpa only [Set.mem_iUnion] using ht (Set.mem_univ p)
+    exact lt_of_lt_of_le (by norm_num : (0 : ℝ) < 1 / 2)
+      (le_trans (hOψ x p hpx).le (Finset.single_le_sum (fun y _ => hψ0 y p) hx))
   refine ⟨fun k p => (∑ x ∈ t.filter (fun x => κ x = k), ψ x p) / ∑ x ∈ t, ψ x p, ?_, ?_, ?_, ?_⟩
   · intro k p
     exact div_nonneg (Finset.sum_nonneg fun x _ => hψ0 x p) (hS p).le
@@ -168,10 +161,9 @@ theorem exists_chart_partition {X : Type*} [TopologicalSpace X] [T2Space X] [Com
       rw [hk] at hsrc
       exact hsrc
   · intro k j
-    have hnum : ContDiffOn ℝ ∞ (fun y => ∑ x ∈ t.filter (fun x => κ x = k), ψ x ((e j).symm y))
-        (e j).target := ContDiffOn.sum fun x _ => (hψext x).2 j
-    have hden : ContDiffOn ℝ ∞ (fun y => ∑ x ∈ t, ψ x ((e j).symm y)) (e j).target :=
-      ContDiffOn.sum fun x _ => (hψext x).2 j
-    exact hnum.div hden fun y _ => (hS _).ne'
+    have hsum : ∀ s : Finset X, ContDiffOn ℝ ∞
+        (fun y => ∑ x ∈ s, ψ x ((e j).symm y)) (e j).target :=
+      fun _ => ContDiffOn.sum fun i _ => (hψext i).2 j
+    exact (hsum _).div (hsum _) fun y _ => (hS _).ne'
 
 end ReciprocityTheory.AnForm

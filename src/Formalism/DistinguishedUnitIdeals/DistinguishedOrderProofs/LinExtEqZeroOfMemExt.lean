@@ -301,7 +301,7 @@ theorem linExt_proj (u : Fin r → PowerSeries O) (j : Fin r) :
   rw [linExt_apply, Finset.sum_eq_single j]
   · simp
   · intro i _ hij
-    simp [Pi.single_apply, Ne.symm hij]
+    simp [Ne.symm hij]
   · intro h
     exact absurd (Finset.mem_univ j) h
 
@@ -747,7 +747,7 @@ theorem descent_estimate_up_down : MUD := by
             map_mul, map_pow] at hi ⊢
           rw [hLamE] at hi ⊢
           rw [hLL0]
-          simp only [pow_add, map_mul, map_pow] at hi ⊢
+          simp only [pow_add] at hi ⊢
           have hαβ' := hαβ
           rw [map_pow] at hαβ'
           linear_combination (C ϖ ^ c) * hi +

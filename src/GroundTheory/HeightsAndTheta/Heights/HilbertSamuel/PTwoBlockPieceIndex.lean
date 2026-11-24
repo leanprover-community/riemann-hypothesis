@@ -182,7 +182,7 @@ theorem map_piece [DecidableEq K] (y : (Σ k, ι k) → Ω) {g : MRing ι} {e : 
       exact (mem_mHom_iff _ _).mpr (isMultiHomog_mul' ((mem_mHom_iff _ _).mp hh) (hgX j))
 
     simp only [LinearMap.mulLeft_apply, AlgHom.toLinearMap_apply, map_sum, map_zsmul,
-      map_mul, aeval_X, Finset.sum_mul, Finset.mul_sum]
+      map_mul, aeval_X, Finset.sum_mul]
     refine Finset.sum_congr rfl fun j _ => ?_
     simp only [zsmul_eq_mul]
     ring

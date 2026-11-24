@@ -99,15 +99,11 @@ theorem grad_sum (p : Fin n → ℂ) {ι : Type*} (s : Finset ι) (f : ι → Mv
 theorem grad_lin (p : Fin n → ℂ) (i : Fin n) : gradP p (X i - C (p i)) = Pi.single i 1 := by
   ext j; simp [gradP, pderiv_X, Pi.single_apply, eq_comm]
 
-theorem sub_C_mem_span_lin (p : Fin n → ℂ) (a : MvPolynomial (Fin n) ℂ) :
-    a - C (eval p a) ∈ Ideal.span (Set.range fun i => X i - C (p i)) := by
-  first | exact Bl.general_b_fact_left_more.goal1 .. | (apply Bl.general_b_fact_left_more.goal1 <;> assumption) | (intros; apply Bl.general_b_fact_left_more.goal1 <;> assumption)
-
 theorem ptIdeal_eq_span (p : Fin n → ℂ) :
     ptI p = Ideal.span (Set.range fun i => X i - C (p i)) := by
   apply le_antisymm
   · intro a ha
-    have := sub_C_mem_span_lin p a
+    have := _root_.Bl.general_b_fact_left_more.goal1 p a
     rwa [mem_ptIdeal.mp ha, map_zero, sub_zero] at this
   · rw [Ideal.span_le]
     rintro _ ⟨i, rfl⟩
@@ -115,7 +111,7 @@ theorem ptIdeal_eq_span (p : Fin n → ℂ) :
 
 theorem taylor (p : Fin n → ℂ) (a : MvPolynomial (Fin n) ℂ) :
     a - C (eval p a) - ∑ i, C (gradP p a i) * (X i - C (p i)) ∈ ptI p ^ 2 := by
-  obtain ⟨b, hb⟩ := (Ideal.mem_span_range_iff_exists_fun).mp (sub_C_mem_span_lin p a)
+  obtain ⟨b, hb⟩ := (Ideal.mem_span_range_iff_exists_fun).mp (_root_.Bl.general_b_fact_left_more.goal1 p a)
   have ha : a = C (eval p a) + ∑ i, b i * (X i - C (p i)) := by rw [hb]; ring
   have hg : ∀ j, gradP p a j = eval p (b j) := by
     intro j

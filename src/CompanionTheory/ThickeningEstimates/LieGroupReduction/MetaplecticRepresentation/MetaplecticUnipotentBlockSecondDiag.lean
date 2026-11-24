@@ -259,7 +259,6 @@ theorem hasDerivAt_UU (S : Matrix l l ℝ) (f : Sch l) (t₀ : ℝ) :
       rw [mq_eq, ph_eq, norm_mul, norm_mul, norm_mul, norm_I, norm_exp_ofReal_mul_I, Complex.norm_real,
         Real.norm_eq_abs, abs_mul, abs_of_pos Real.pi_pos]
       have h1 := hq x
-      have h2 := norm_nonneg (fouInv l f x)
       calc π * |⟪x, Matrix.toEuclideanCLM (𝕜 := ℝ) (n := l) S x⟫| * 1 * (1 * ‖fouInv l f x‖)
           = π * (|⟪x, Matrix.toEuclideanCLM (𝕜 := ℝ) (n := l) S x⟫| * ‖fouInv l f x‖) := by ring
         _ ≤ π * ((‖Matrix.toEuclideanCLM (𝕜 := ℝ) (n := l) S‖ * ‖x‖ ^ 2) * ‖fouInv l f x‖) := by gcongr

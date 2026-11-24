@@ -5,10 +5,11 @@ public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.Unipote
 public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.StrongMultiplicityOne
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CuspFormRapidKernelSmoothSpanSmoothCuspidalBound
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsEquivariantProj
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFundamentalDomainMassOneCocompactLatticeStatement
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFundamentalDomainMassOneCocompactLattice
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsMirabolicWhittakerStageOfIsCuspForm
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.QuotientAverageMapLatticeEquivStatement
-import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SetIntegralFundamentalDomainEqMassMulAverageStatement
+public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsUnitaryOfCharIff
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.QuotientAverageMapLatticeEquiv
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SetIntegralFundamentalDomainEqMassMulAverage
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -45,7 +46,6 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
-public import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsUnitaryOfCharIff
 import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ZintZero
 import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsEqColGenMulBlkU
 
@@ -68,7 +68,7 @@ theorem avg_eq_zero {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsT
     ⟨hper.1.comp (blkIxHomeo r).continuous, fun γ hγ x => by
       simp only [map_add (f := _)]
       exact hper.2 _ ((blkIxHomeo_mem r γ).2 hγ) _⟩
-  have key := GlobalTheory.T.quotientAverage_map_lattice_equiv _ _ (ratN E a r) (ratV E _) (isCoLat_ratV E (BlockIx a r))
+  have key := _root_.GlobalTheory.CuspGeneric.avg_equiv _ _ (ratN E a r) (ratV E _) (isCoLat_ratV E (BlockIx a r))
     (isCoLat_ratV E _) (blkIxHomeo r) (blkIxHomeo_mem r) _ hper
   rw [← key]
   have hfun : (fun x => F (blkU (blkIxHomeo r x) * g)) = fun x => F (unip x * g) :=
@@ -76,8 +76,8 @@ theorem avg_eq_zero {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsT
   rw [hfun] at hper2 ⊢
   letI : MeasurableSpace (BlockIx a r → Ad E) := borel _
   haveI : BorelSpace (BlockIx a r → Ad E) := ⟨rfl⟩
-  obtain ⟨μ, 𝓕, hμ, hF, h1⟩ := GlobalTheory.T.exists_fundamentalDomain_mass_one_cocompactLattice _ (ratN E a r) (isCoLat_ratV E (BlockIx a r))
-  obtain ⟨-, -, -, hint⟩ := GlobalTheory.T.setIntegral_fundamentalDomain_eq_mass_mul_average _ _ (isCoLat_ratV E (BlockIx a r)) μ 𝓕 hμ hF _ hper2
+  obtain ⟨μ, 𝓕, hμ, hF, h1⟩ := _root_.GlobalTheory.CuspGeneric.exists_fundamentalDomain_mass_one _ (ratN E a r) (isCoLat_ratV E (BlockIx a r))
+  obtain ⟨-, -, -, hint⟩ := _root_.GlobalTheory.CuspGeneric.setIntegral_eq_mass_mul_avg _ _ (isCoLat_ratV E (BlockIx a r)) μ 𝓕 hμ hF _ hper2
   have hc' := hc r hr hra' μ 𝓕 hμ hF g
   rw [hint, h1] at hc'
   simp only [ENNReal.toReal_one, Complex.ofReal_one, one_mul] at hc'

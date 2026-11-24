@@ -174,7 +174,7 @@ noncomputable def eps (s : InfinitePlace F → ℤˣ) : TR.Kinf F 2 :=
 omit [NumberField F] in
 theorem rot_add (θ η : TR.Rinf F) : rot (θ + η) = rot θ * rot η := by
   ext i j v
-  fin_cases i <;> fin_cases j <;> simp [rot, Matrix.mul_apply, Fin.sum_univ_succ, Real.cos_add, Real.sin_add] <;> ring
+  fin_cases i <;> fin_cases j <;> simp [rot, Real.cos_add, Real.sin_add] <;> ring
 
 omit [NumberField F] in
 theorem rot_zero : rot (0 : TR.Rinf F) = 1 := by
@@ -205,7 +205,7 @@ theorem dec (x : TR.Kinf F 2) : ∃ s θ, x = eps s * rot θ := by
     (by simpa using e 0 0 v) (by simpa using e 0 1 v) (by simpa using e 1 1 v)
   refine ⟨s, θ, ?_⟩
   ext i j v
-  fin_cases i <;> fin_cases j <;> simp [rot, eps, Matrix.mul_apply, Fin.sum_univ_succ, h1, h2, h3, h4]
+  fin_cases i <;> fin_cases j <;> simp [rot, eps, h1, h2, h3, h4]
 
 variable [IsTotallyReal F]
 

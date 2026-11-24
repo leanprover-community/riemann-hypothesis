@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LineMatrixKroneckerLeftFactorEqZeroOfIsPC
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsFockIPOfFockData
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.CommuteRowOpRightMixedOp
 import Mathlib.Algebra.Order.Floor.Extended
@@ -65,43 +66,7 @@ theorem monomial_eq_smul (m : σ →₀ ℕ) (c : ℂ) :
 
 theorem inner_X_mul (h : IsFockIP ι) (i : σ) (P Q : MvPolynomial σ ℂ) :
     inner ℂ (ι (X i * P)) (ι Q) = inner ℂ (ι P) (ι (pderiv i Q)) := by
-  induction P using MvPolynomial.induction_on' with
-  | add P P' hP hP' => simp only [mul_add, map_add (f := _), inner_add_left, hP, hP']
-  | monomial α c =>
-    induction Q using MvPolynomial.induction_on' with
-    | add Q Q' hQ hQ' => simp only [map_add (f := _), inner_add_right, hQ, hQ']
-    | monomial β d =>
-      rw [monomial_eq_smul α c, monomial_eq_smul β d, mul_smul_comm, Derivation.map_smul]
-      simp only [map_smul, inner_smul_left, inner_smul_right]
-      congr 2
-      rw [pderiv_monomial, monomial_eq_smul (β - _), map_smul, inner_smul_right, X, monomial_mul,
-        one_mul, h, h, one_mul]
-      by_cases e : Finsupp.single i 1 + α = β
-      · subst e
-        rw [if_pos rfl, if_pos (by simp)]
-        rw [Finsupp.prod_of_support_subset _ (s := insert i α.support) _ _ (by simp),
-          Finsupp.prod_of_support_subset α (s := insert i α.support)
-            (Finset.subset_insert _ _) _ (by simp),
-          ← Finset.mul_prod_erase _ _ (Finset.mem_insert_self i _),
-          ← Finset.mul_prod_erase (insert i α.support) _ (Finset.mem_insert_self i _), ← mul_assoc]
-        · congr 1
-          · simp [add_comm 1, Nat.factorial_succ]
-          · refine Finset.prod_congr rfl fun j hj => ?_
-            simp [Finsupp.single_apply, (Finset.ne_of_mem_erase hj).symm]
-        · intro j hj
-          by_cases hji : j = i
-          · simp [hji]
-          · simpa [hji, Finsupp.single_apply, Ne.symm hji] using hj
-      · rw [if_neg e]
-        by_cases hb : β i = 0
-        · simp [hb]
-        · rw [if_neg, mul_zero]
-          rintro rfl
-          apply e
-          ext j
-          by_cases hji : j = i
-          · subst hji; simp; omega
-          · simp [Ne.symm hji]
+  apply GlobalTheory.FockDeg.inner_X_mul <;> assumption
 
 theorem inner_pderiv (h : IsFockIP ι) (i : σ) (P Q : MvPolynomial σ ℂ) :
     inner ℂ (ι (pderiv i P)) (ι Q) = inner ℂ (ι P) (ι (X i * Q)) := by
@@ -351,7 +316,7 @@ theorem minusPart_fockAct1_offDiagonal {Z : Mat p q} (h : IsPC Z) (P : Pol p q r
   rw [e]
   split_ifs
   · simp
-  · rw [Finset.sum_eq_single c] <;> simp +contextual [kron1, Matrix.one_apply, eq_comm]
+  · rw [Finset.sum_eq_single c] <;> simp +contextual [kron1, eq_comm]
 
 theorem minusPart_fockAct2_offDiagonal {Z : Mat r s} (h : IsPC Z) (P : Pol p q r s) :
     minusPart (fockAct2 p q r s Z) P = ∑ a, ∑ c, ∑ d,
@@ -362,7 +327,7 @@ theorem minusPart_fockAct2_offDiagonal {Z : Mat r s} (h : IsPC Z) (P : Pol p q r
   refine Finset.sum_congr rfl fun d _ => ?_
   split_ifs
   · simp
-  · rw [Finset.sum_eq_single a] <;> simp +contextual [kron2, Matrix.one_apply, eq_comm]
+  · rw [Finset.sum_eq_single a] <;> simp +contextual [kron2, eq_comm]
 
 end Lines
 

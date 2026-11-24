@@ -235,7 +235,7 @@ theorem log_endo (G : FGLaw C d) (lg : Pt C 1 d) (hlin : LinN lg)
 
       rw [hchain, map_sum]
       simp only [map_mul, constantCoeff_ev hφ1, cc_pderiv, linN_coeff hlin, ite_mul, one_mul, zero_mul,
-        Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+        Finset.sum_ite_eq', Finset.mem_univ, if_true]
       unfold linM
       ring)
     (by

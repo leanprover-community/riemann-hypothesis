@@ -1,7 +1,7 @@
 # Contribute a runner
 
-- **Hardware:** Linux, ideally 128 GiB RAM; at least 250 GiB free SSD; `vm.max_map_count` at least 1048576.
-- **Tell Kim:** CPU/RAM, architecture, free disk, and availability.
+- **Hardware:** Linux, ideally 128 GiB RAM; at least 250 GiB free SSD; `vm.max_map_count` at least 1048576, persisted in `/etc/sysctl.d` (full builds and quick checks print it at the start of each job).
+- **Tell Kim:** CPU/RAM, architecture, free disk, and availability. Please DM Kim Morrison [on Zulip](https://leanprover.zulipchat.com/).
 - **Use a dedicated account:** jobs run untrusted PR code.
 - **Prerequisites:** Git, Python 3.11+, C compiler, Bubblewrap, Elan.
 - Download [ci-runner.py](https://raw.githubusercontent.com/leanprover-community/riemann-hypothesis/main/scripts/ci-runner.py).

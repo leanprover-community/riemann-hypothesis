@@ -1,15 +1,14 @@
 module
 
-public import Formalism.GL3MeanSquares.InvNormSqConjRatioPowIdentities
+public import Formalism.GL3MeanSquares.SmoothedRemainderRealIntegralFormula
+public import Formalism.HermitianLattices.StatementMass
+public import Formalism.LogVandermondeBounds.LogRatioLowerBound
+public import Mathlib.Analysis.SpecialFunctions.Log.Summable
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-public import Mathlib.Analysis.SpecialFunctions.Log.Summable
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
@@ -21,13 +20,7 @@ import Mathlib.NumberTheory.Height.NumberField
 import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.RegularLocalRing.Defs
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
 import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
@@ -35,9 +28,6 @@ import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
 import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Lemma
-import Mathlib.Tactic.Linter.HaveILetI
-import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.NormNum.Irrational
 import Mathlib.Tactic.NormNum.IsCoprime
 import Mathlib.Tactic.NormNum.IsSquare
@@ -50,9 +40,89 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Lemma
+import Mathlib.Tactic.Linter.HaveILetI
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Tactic.ReduceModChar
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: Formalism.GL3MeanSquares.InvNormSqConjRatioPowIdentities, Formalism.GL3MeanSquares.HookFormulaTorsion.GlobalBoundRefinements
+
+-- ===== clump member: Formalism.GL3MeanSquares.InvNormSqConjRatioPowIdentities =====
+-- clump-header: {"m": "Formalism.GL3MeanSquares.InvNormSqConjRatioPowIdentities", "h": "module\n\npublic import Formalism.GL3MeanSquares.SmoothedRemainderRealIntegralFormula\npublic import Formalism.HermitianLattices.StatementMass\npublic import Formalism.LogVandermondeBounds.LogRatioLowerBound\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
+@[expose] public section
+
+open Finset Filter Topology ArithmeticFunction
+
+noncomputable section
+
+namespace Formalism.HermitianLattices.GlobalBoundRefinements
+
+
+open Formalism.HermitianLattices.GL2PrimeSums in
+def ShortIntervalLowerBound : Prop :=
+  ∀ C₀ Cr cr cb : ℝ, 0 < C₀ → 0 < Cr → 0 < cr → 0 < cb →
+    ∃ C₀' c : ℝ, C₀ ≤ C₀' ∧ 0 < c ∧
+      ∀ (B G β : ℝ) (θ : ℤ) (π₁ π₂ : ℝ → ℕ) (η' : ℝ → ℝ),
+        4 ≤ B → 1 ≤ G → G ≤ B → θ ∈ ({-1, 0, 1} : Set ℤ) →
+        (θ ≠ 0 → 1 / 2 ≤ β ∧ β < 1 ∧ cb / (B ^ 2 * Real.log B) ≤ 1 - β) →
+        (∀ Y : ℝ, 1 ≤ Y → (π₂ Y : ℝ) ≤ 2 * Real.sqrt Y) →
+        (∀ Y : ℝ, 0 ≤ η' Y ∧ η' Y ≤ 3 * Real.log B) →
+        (∀ Y : ℝ, B ^ C₀ ≤ Y →
+          |G * ((π₁ Y : ℝ) + π₂ Y + η' Y) - Emain θ β Y| ≤ rhoErr Cr cr B Y * Emain θ β Y) →
+        ∀ X : ℝ, B ^ C₀' ≤ X →
+          c * B ^ (-5 : ℝ) * X / Real.log X ≤ Emain θ β X ∧
+          ∀ h : ℝ, h ≤ 1 → rhoErr Cr cr B X ≤ h / 100 → B ^ (7 : ℝ) ≤ h * X ^ ((1 : ℝ) / 3) →
+            c * h * B ^ (-6 : ℝ) * X / Real.log X ≤ (π₁ (X * (1 + h)) : ℝ) - π₁ X
+
+
+
+open Formalism.HermitianLattices.GL2PrimeSums in
+def PrimeCountAsymptoticInProgressions (C₀ Cr cr cb : ℝ) : Prop :=
+  ∀ m a : ℕ, 3 ≤ m → Nat.Coprime a m → ∃ (θ : ℤ) (β : ℝ) (η' : ℝ → ℝ), θ ∈ ({-1, 0, 1} : Set ℤ) ∧
+    (θ ≠ 0 → 1 / 2 ≤ β ∧ β < 1 ∧ cb / ((4 * (m : ℝ)) ^ 2 * Real.log (4 * m)) ≤ 1 - β) ∧
+    (∀ Y : ℝ, 0 ≤ η' Y ∧ η' Y ≤ 3 * Real.log (4 * m)) ∧
+    ∀ Y : ℝ, (4 * (m : ℝ)) ^ C₀ ≤ Y →
+      |(m.totient : ℝ) * ((((Icc 1 ⌊Y⌋₊).filter (fun p => p.Prime ∧ p ≡ a [MOD m])).card : ℝ) + η' Y) - Emain θ β Y|
+        ≤ rhoErr Cr cr (4 * m) Y * Emain θ β Y
+
+
+open Formalism.HermitianLattices.GL2PrimeSums in
+def ShortIntervalImpliesProgressions : Prop :=
+  ShortIntervalLowerBound → ∀ C₀ Cr cr cb : ℝ, 0 < C₀ → 0 < Cr → 0 < cr → 0 < cb → PrimeCountAsymptoticInProgressions C₀ Cr cr cb →
+    ∃ C₀' c : ℝ, 0 < C₀' ∧ 0 < c ∧ PrimesAPInterval C₀' Cr cr c
+
+
+
+
+open Formalism.LogVandermondeBounds.StandardLattice in
+def LogLFunctionEulerBound : Prop :=
+  ∀ (K : Type) [Field K] [NumberField K] [StarRing K], Formalism.HermitianLatticesTheory.IsCMUnram K → ∀ M : ℕ, 2 ≤ M →
+    Multipliable (fun P : {P : Ideal (NumberField.RingOfIntegers K) // P.IsMaximal} =>
+      Formalism.HermitianLatticesTheory.eulerFac K M P.1) ∧
+    0 < Formalism.HermitianLatticesTheory.lValEta K M ∧
+    |Real.log (Formalism.HermitianLatticesTheory.lValEta K M)| ≤ (Formalism.HermitianLatticesTheory.fDeg K : ℝ) * Real.log (zetaR M)
+
+end Formalism.HermitianLattices.GlobalBoundRefinements
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.GL3MeanSquares.InvNormSqConjRatioPowIdentities =====
+
+-- ===== clump member: Formalism.GL3MeanSquares.HookFormulaTorsion.GlobalBoundRefinements =====
+-- clump-header: {"m": "Formalism.GL3MeanSquares.HookFormulaTorsion.GlobalBoundRefinements", "h": "module\n\npublic import Formalism.GL3MeanSquares.InvNormSqConjRatioPowIdentities\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Int\nimport Mathlib.Algebra.Order.Star.Real\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.LocallyConvex.AbsConvexOpen\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\npublic import Mathlib.Analysis.SpecialFunctions.Log.Summable\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Henselian\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.RegularLocalRing.Defs\nimport Mathlib.RingTheory.SimpleRing.Principal\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Lemma\nimport Mathlib.Tactic.Linter.HaveILetI\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
+section -- clump:auto
 @[expose] public section
 
 open Finset Filter Topology ArithmeticFunction
@@ -84,7 +154,6 @@ private lemma exists_adjusted_exceptional_exponent {cb B β X : ℝ} {θ : ℤ} 
     have hBne : B ≠ 0 := hBpos.ne'
     have e : 2 / B ^ 2 = cb / (B ^ 2 * Real.log B) * (2 / cb * Real.log B) := by
       field_simp
-      try ring
     rw [e]
     exact mul_le_mul h3 hcbX (mul_nonneg (div_nonneg (by norm_num) hcb.le) hlogB.le) (by linarith)
 
@@ -192,7 +261,7 @@ private lemma exceptional_zero_estimates {B β X : ℝ} {θ : ℤ}
         have hn := hw x hx.1 hx.2
         show 0 ≤ (1 - (θ:ℝ) * x ^ (β - 1)) / Real.log x - W * 1 / Real.log b
         rw [mul_one, sub_nonneg, div_le_div_iff₀ hlb hlx]
-        nlinarith [mul_le_mul_of_nonneg_left hlxb hW, mul_le_mul_of_nonneg_right hn hlb.le])
+        linarith [mul_le_mul_of_nonneg_left hlxb hW, mul_le_mul_of_nonneg_right hn hlb.le])
     simp only [sub_self, mul_zero, zero_div, sub_zero] at key
     linarith
 
@@ -256,11 +325,11 @@ private lemma exceptional_zero_estimates {B β X : ℝ} {θ : ℤ}
     obtain ⟨s, hs⟩ : ∃ s, s = Real.sqrt Y := ⟨_, rfl⟩
     have hs0 : 0 ≤ s := by rw [hs]; exact Real.sqrt_nonneg Y
     have hs2 : s ^ 2 = Y := by rw [hs]; exact Real.sq_sqrt (by linarith)
-    have hs36 : 36 ≤ s := by nlinarith
+    have hs36 : 36 ≤ s := (sq_le_sq₀ (by norm_num) hs0).mp (by linarith)
     obtain ⟨r, hr⟩ : ∃ r, r = Real.sqrt s := ⟨_, rfl⟩
     have hr0 : 0 ≤ r := by rw [hr]; exact Real.sqrt_nonneg s
     have hr2 : r ^ 2 = s := by rw [hr]; exact Real.sq_sqrt hs0
-    have hr6 : 6 ≤ r := by nlinarith
+    have hr6 : 6 ≤ r := (sq_le_sq₀ (by norm_num) hr0).mp (by linarith)
     have hrpos : 0 < r := by linarith
     have hlogs : Real.log s = 2 * Real.log r := by
       rw [← hr2, Real.log_pow]
@@ -275,18 +344,19 @@ private lemma exceptional_zero_estimates {B β X : ℝ} {θ : ℤ}
       norm_num at this
       linarith
     have hl2pos : 0 < Real.log 2 := by linarith
-    have h1 := gl2a4_Li_sub_le (a := s) (b := Y) (by linarith) (by nlinarith)
+    have h1 := gl2a4_Li_sub_le (a := s) (b := Y) (by linarith)
+      (by linarith [le_self_pow₀ (by linarith : 1 ≤ s) two_ne_zero])
     have h2 := gl2a4_Li_sub_le (a := 2) (b := s) (by norm_num) (by linarith)
     rw [gl2a4_Li_two] at h2
     have hkey' : 2 * (2 * Real.log r) ≤ r ^ 2 * Real.log 2 := by
-      nlinarith [mul_nonneg (by linarith : (0:ℝ) ≤ r - 6) (by linarith : (0:ℝ) ≤ r - 6),
+      linarith [mul_nonneg (by linarith : (0:ℝ) ≤ r - 6) (by linarith : (0:ℝ) ≤ r - 6),
         mul_le_mul_of_nonneg_left hl2.le (sq_nonneg r)]
     have hkey : 2 * Real.log s ≤ s * Real.log 2 := by
       rw [hlogs, ← hr2]
       exact hkey'
     have hA : (s - 2) / Real.log 2 ≤ s ^ 2 / (2 * Real.log s) := by
       rw [div_le_div_iff₀ hl2pos (by linarith)]
-      nlinarith [mul_le_mul_of_nonneg_left hkey hs0]
+      linarith [mul_le_mul_of_nonneg_left hkey hs0]
     have hB : (Y - s) / Real.log s ≤ s ^ 2 / Real.log s :=
       div_le_div_of_nonneg_right (by linarith) hLpos.le
     have hC : s ^ 2 / Real.log s + s ^ 2 / (2 * Real.log s) = 3 * s ^ 2 / (2 * Real.log s) := by
@@ -354,12 +424,12 @@ private lemma exceptional_zero_estimates {B β X : ℝ} {θ : ℤ}
           simp
         have e3 : 0 < Real.exp (-x) := Real.exp_pos _
         have e4 : Real.exp (-x) * (x + 1) ≤ 1 := by
-          nlinarith [mul_le_mul_of_nonneg_left e1 e3.le]
+          linarith [mul_le_mul_of_nonneg_left e1 e3.le]
         have e5 : 1 ≤ x * B ^ 2 := by rwa [div_le_iff₀ hB2pos] at hd'
-        have hy : x ≤ (1 - Real.exp (-x)) * (1 + x) := by nlinarith
+        have hy : x ≤ (1 - Real.exp (-x)) * (1 + x) := by linarith
         have hBx : x ≤ x * B ^ 2 := le_mul_of_one_le_right hx0 hB2
         have key : 1 * (1 + x) ≤ (1 - Real.exp (-x)) * (2 * B ^ 2) * (1 + x) := by
-          nlinarith [mul_le_mul_of_nonneg_left hy (by linarith : (0:ℝ) ≤ 2 * B ^ 2)]
+          linarith [mul_le_mul_of_nonneg_left hy (by linarith : (0:ℝ) ≤ 2 * B ^ 2)]
         have key2 := le_of_mul_le_mul_right key (by linarith : (0:ℝ) < 1 + x)
         rw [div_le_iff₀ (by linarith)]
         linarith
@@ -373,7 +443,7 @@ private lemma exceptional_zero_estimates {B β X : ℝ} {θ : ℤ}
         have g2 : (Z ^ 2) ^ (β - 1) = Z ^ (β - 1) * Z ^ (β - 1) := by
           rw [sq, Real.mul_rpow hZ0.le hZ0.le]
         rw [show ((1:ℤ):ℝ) = 1 by norm_num]
-        nlinarith [mul_self_nonneg (1 - Z ^ (β - 1))]
+        linarith [mul_self_nonneg (1 - Z ^ (β - 1))]
 
   have gl2a4_E_nonneg {θ : ℤ} (hθ : θ = -1 ∨ θ = 0 ∨ θ = 1) {β Y : ℝ} (h1 : 1 / 2 ≤ β)
       (h2 : β < 1) (hY : 4 ≤ Y) : 0 ≤ Emain θ β Y := by
@@ -403,12 +473,12 @@ private lemma exceptional_zero_estimates {B β X : ℝ} {θ : ℤ}
     have e1 : Real.exp (-c * Real.log X' / Real.log B) ≤ Real.exp (-c * Real.log X / Real.log B) := by
       apply Real.exp_le_exp.mpr
       apply div_le_div_of_nonneg_right _ hlogB.le
-      nlinarith [mul_le_mul_of_nonneg_left hlogle hc.le]
+      linarith [mul_le_mul_of_nonneg_left hlogle hc.le]
     have e2 : Real.exp (-c * Real.sqrt (Real.log X')) ≤ Real.exp (-c * Real.sqrt (Real.log X)) := by
       apply Real.exp_le_exp.mpr
       have := Real.sqrt_le_sqrt hlogle
-      nlinarith [mul_le_mul_of_nonneg_left this hc.le]
-    nlinarith [mul_le_mul_of_nonneg_left e1 hC.le, mul_le_mul_of_nonneg_left e2 hC.le]
+      linarith [mul_le_mul_of_nonneg_left this hc.le]
+    linarith [mul_le_mul_of_nonneg_left e1 hC.le, mul_le_mul_of_nonneg_left e2 hC.le]
 
   have gl2a4_root {B X : ℝ} (hB : 4 ≤ B) (hX : B ^ (60 : ℝ) ≤ X) :
       ∃ u : ℝ, 1024 ≤ u ∧ u ^ 12 = X ∧ Real.sqrt X = u ^ 6 ∧ X ^ ((1 : ℝ) / 3) = u ^ 4 ∧
@@ -492,7 +562,7 @@ private lemma exceptional_zero_estimates {B β X : ℝ} {θ : ℤ}
       have e : 1 / (2 * B ^ 2) * q / 2 = q / (4 * B ^ 2) := by ring
       rw [e]
       exact div_le_div_of_nonneg_left hq0 (by positivity)
-        (by nlinarith [mul_le_mul_of_nonneg_left hB3 (by positivity : (0:ℝ) ≤ B ^ 2), sq_nonneg B])
+        (by linarith [mul_le_mul_of_nonneg_left hB3 (by positivity : (0:ℝ) ≤ B ^ 2), sq_nonneg B])
     rw [hT]
     linarith
 
@@ -507,14 +577,20 @@ private lemma exceptional_zero_estimates {B β X : ℝ} {θ : ℤ}
     linarith [pow_one u]
   have hXbig : 1296 ≤ X := by
     have h2 : u ^ 2 ≤ u ^ 12 := pow_le_pow_right₀ (by linarith) (by norm_num)
-    nlinarith
+    have hu2 : (1024 : ℝ) ^ 2 ≤ u ^ 2 := pow_le_pow_left₀ (by norm_num) hu 2
+    norm_num at hu2; linarith
   have hX1 : 1 < X := by linarith
   have hL : 0 < Real.log X := Real.log_pos hX1
   have hh0 : 0 < h := by linarith [gl2a4_rho_pos (c := cr) (B := B) (X := X) hCr]
   set X' := X * (1 + h) with hX'
-  have hXX' : X ≤ X' := by rw [hX']; nlinarith
-  have hX'2 : X' ≤ 2 * X := by rw [hX']; nlinarith
-  have hX'sq : X' ≤ X ^ 2 := by nlinarith
+  have hXX' : X ≤ X' := by rw [hX']; exact le_mul_of_one_le_right hX0.le (by linarith)
+  have hX'2 : X' ≤ 2 * X := by
+    rw [hX']
+    calc X * (1 + h) ≤ X * (1 + 1) := mul_le_mul_of_nonneg_left (by linarith) hX0.le
+      _ = 2 * X := by ring
+  have hX'sq : X' ≤ X ^ 2 := by
+    have : 2 * X ≤ X * X := mul_le_mul_of_nonneg_right (by linarith) hX0.le
+    linarith
   have hX'0 : 0 < X' := by linarith
   obtain ⟨W, hW1, hW2, hWlo, hWhi⟩ := gl2a4_weight hθ hβ2 (B := B) (Z := X) (by linarith) (by linarith)
     (by
@@ -709,7 +785,6 @@ theorem shortIntervalImpliesProgressions_statement : ShortIntervalImpliesProgres
   have htot0 : 0 < m.totient := by
     first
     | exact Nat.totient_pos.mpr (by omega)
-    | exact Nat.totient_pos (by omega)
   have htot1 : (1 : ℝ) ≤ (m.totient : ℝ) := by exact_mod_cast htot0
   have htotB : (m.totient : ℝ) ≤ 4 * m := by
     have h1 : (m.totient : ℝ) ≤ m := by exact_mod_cast Nat.totient_le m
@@ -739,9 +814,9 @@ theorem shortIntervalImpliesProgressions_statement : ShortIntervalImpliesProgres
   have hpos : 0 < h := by
     by_contra hneg
     push_neg at hneg
-    nlinarith
+    linarith [mul_nonpos_of_nonpos_of_nonneg hneg hY13]
   have hfl1 : 1 ≤ ⌊Y⌋₊ := Nat.le_floor (by exact_mod_cast hY1)
-  have hfl2 : ⌊Y⌋₊ ≤ ⌊Y * (1 + h)⌋₊ := Nat.floor_mono (by nlinarith)
+  have hfl2 : ⌊Y⌋₊ ≤ ⌊Y * (1 + h)⌋₊ := Nat.floor_mono (le_mul_of_one_le_right hYpos.le (by linarith))
   have hunion : Icc 1 ⌊Y * (1 + h)⌋₊ = Icc 1 ⌊Y⌋₊ ∪ Ioc ⌊Y⌋₊ ⌊Y * (1 + h)⌋₊ := by
     ext x
     simp only [Finset.mem_union, Finset.mem_Icc, Finset.mem_Ioc]
@@ -759,8 +834,6 @@ theorem shortIntervalImpliesProgressions_statement : ShortIntervalImpliesProgres
     rw [hunion, Finset.filter_union]
     first
     | exact Finset.card_union_of_disjoint hdisj
-    | exact Finset.card_disjoint_union hdisj
-    | exact Finset.card_union_eq_card_add_card.mpr hdisj
   have key2 : c * h * (4 * (m : ℝ)) ^ (-6 : ℝ) * Y / Real.log Y ≤
       (((Icc 1 ⌊Y * (1 + h)⌋₊).filter (fun p => p.Prime ∧ Nat.ModEq m p a)).card : ℝ)
         - (((Icc 1 ⌊Y⌋₊).filter (fun p => p.Prime ∧ Nat.ModEq m p a)).card : ℝ) := key
@@ -1051,7 +1124,7 @@ theorem log_l_value_field_bound : LogLFunctionEulerBound := by
       _ = (∑ P ∈ T, Real.log (Ideal.absNorm P.1 : ℝ)) / (2 * Real.log p) := by rw [Finset.sum_div]
       _ ≤ (Module.finrank ℚ K * Real.log p) / (2 * Real.log p) := by
           apply div_le_div_of_nonneg_right hlog; linarith
-      _ = (Module.finrank ℚ K : ℝ) / 2 := by field_simp; try ring
+      _ = (Module.finrank ℚ K : ℝ) / 2 := by field_simp
 
   have euler_factor_log_bound (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (M : ℕ) (hM : 1 ≤ M) (P : Ideal (𝓞 K))
       (hP : P.IsMaximal) :
@@ -1063,7 +1136,7 @@ theorem log_l_value_field_bound : LogLFunctionEulerBound := by
     have hlne := hlp.ne'
     have hc : idealPrimeWeight P = (k : ℝ) / 2 := by
       dsimp only [idealPrimeWeight]
-      rw [hk, Nat.cast_pow, Real.log_pow]; field_simp; try ring
+      rw [hk, Nat.cast_pow, Real.log_pow]; field_simp
     have hg := neg_log_one_sub_inv_pow_nonneg M hM _ hp
     unfold Formalism.HermitianLatticesTheory.eulerFac
     split_ifs with hconj
@@ -1074,16 +1147,18 @@ theorem log_l_value_field_bound : LogLFunctionEulerBound := by
         by_contra h
         have h1k : k = 1 := by omega
         rw [hk, h1k, pow_one] at hN
-        have := hp.two_le
-        nlinarith
+        have hp2 := hp.two_le
+        have hmul : residueCharacteristic P * 2 ≤ residueCharacteristic P * residueCharacteristic P := Nat.mul_le_mul_left _ hp2
+        rw [← sq] at hmul
+        omega
       rw [hc]
       have : (2 : ℝ) ≤ k := by exact_mod_cast hk2
-      nlinarith
+      linarith [mul_le_mul_of_nonneg_right (show (1 : ℝ) ≤ (k : ℝ) / 2 by linarith) hg]
     · obtain ⟨h1, h2⟩ := euler_factor_split_prime_bound M hM _ hp (Ideal.absNorm P) (by rw [hk]; exact Nat.le_self_pow (by omega) _)
       refine ⟨h1, h2.trans ?_⟩
       rw [hc]
       have : (1 : ℝ) ≤ k := by exact_mod_cast hk1
-      nlinarith
+      linarith [mul_le_mul_of_nonneg_right (show (1 / 2 : ℝ) ≤ (k : ℝ) / 2 by linarith) hg]
 
   have partial_sums_log_euler_factor_le (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (M : ℕ) (hM : 2 ≤ M)
       (u : Finset {P : Ideal (𝓞 K) // P.IsMaximal}) :
@@ -1148,3 +1223,7 @@ theorem log_l_value_field_bound : LogLFunctionEulerBound := by
 end T2
 
 end Formalism.HermitianLattices.GlobalBoundRefinements
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Formalism.GL3MeanSquares.HookFormulaTorsion.GlobalBoundRefinements =====

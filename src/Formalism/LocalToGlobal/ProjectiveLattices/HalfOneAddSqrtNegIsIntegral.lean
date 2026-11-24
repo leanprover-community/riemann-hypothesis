@@ -125,9 +125,7 @@ theorem barE_eq_star (D : D7) (a : 𝓞 D.host.E) :
     ((barE D a : 𝓞 D.host.E) : D.host.E) = (letI := D.host.cmStar; star (a : D.host.E)) := rfl
 
 theorem cc_sqrtMinusD (D : D7) : IsCMField.complexConj D.host.E D.host.sqrtMinusD = -D.host.sqrtMinusD := by
-  have h := barE_eq_conj D (rtE D)
-  have h2 := D.host.conj_sqrtMinusD
-  exact h.trans h2
+  exact (barE_eq_conj D (rtE D)).trans D.host.conj_sqrtMinusD
 
 theorem conj_w0E (D : D7) : barE D (w0E D) = 1 - w0E D := by
   apply IsFractionRing.injective (𝓞 D.host.E) D.host.E
@@ -450,8 +448,7 @@ theorem efW_adj (D : D7) (j : ℕ) (hI : DatInt D j) (a : 𝓞 D.host.E) (x y : 
   exact Int.cast_injective (α := ℚ) ((intForm_cast _ hI _ _).trans ((efQ_adj D j a x y).trans (intForm_cast _ hI _ _).symm))
 
 theorem conj_xi0_alt (D : D7) : IsCMField.complexConj D.host.E D.host.xi0 = -D.host.xi0 := by
-  simp only [Host.xi0, map_neg, map_div₀, map_one, map_mul, map_natCast, cc_sqrtMinusD]
-  rw [mul_neg, div_neg]
+  simp [Host.xi0, cc_sqrtMinusD, mul_neg, div_neg]
 
 theorem trace_cc (D : D7) (z : D.host.E) :
     Algebra.trace ℚ D.host.E (IsCMField.complexConj D.host.E z) = Algebra.trace ℚ D.host.E z := by

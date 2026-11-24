@@ -71,9 +71,6 @@ private theorem contDiffAt_ofReal_comp' {f : V n → ℝ} {x : V n} {m : WithTop
     ContDiffAt ℝ m (fun v => ((f v : ℝ) : ℂ)) x := by
   first
   | exact Complex.ofRealCLM.contDiff.contDiffAt.comp x hf
-  | exact (Complex.ofRealCLM.contDiff.contDiffAt.comp x hf).congr_of_eventuallyEq
-      (Filter.Eventually.of_forall fun v => by simp)
-  | fun_prop
 
 private theorem fderiv_wdb_apply_of_hasFDerivAt_flip {g : V n → ℂ} {x : V n} (k : Fin n)
     (hlin : ∀ v : V n, HasFDerivAt (fun y => fderiv ℝ g y v) ((fderiv ℝ (fderiv ℝ g) x).flip v) x)
@@ -91,7 +88,6 @@ private theorem fderiv_wdb_apply_of_hasFDerivAt_flip {g : V n → ℂ} {x : V n}
   first
   | rw [(show HasFDerivAt (𝕜 := ℝ) (fun y => (fderiv ℝ g y (bas n k) +
       Complex.I * fderiv ℝ g y (Complex.I • bas n k)) * (2 : ℂ)⁻¹) _ x from h3).fderiv]
-  | erw [h3.fderiv]
   simp [div_eq_mul_inv]
   try ring
 
@@ -106,8 +102,6 @@ theorem cmpb_det_nonneg {f : V n → ℝ} {x : V n} (hf : ContDiffAt ℝ 2 f x)
     have hs : IsSymmSndFDerivAt ℝ g x := by
       first
       | exact hg2.isSymmSndFDerivAt (by simp [minSmoothness_of_isRCLikeNormedField])
-      | exact hg2.isSymmSndFDerivAt (by simp [minSmoothness])
-      | exact hg2.isSymmSndFDerivAt le_rfl
     exact fun u v => hs u v
   have hlin : ∀ v : V n, HasFDerivAt (fun y => fderiv ℝ g y v)
       ((fderiv ℝ (fderiv ℝ g) x).flip v) x := by
@@ -115,7 +109,6 @@ theorem cmpb_det_nonneg {f : V n → ℝ} {x : V n} (hf : ContDiffAt ℝ 2 f x)
     have h := hD.hasFDerivAt.clm_apply (hasFDerivAt_const v x)
     first
     | simpa using h
-    | (convert h using 1; simp)
   have hval : ∀ u v : V n, fderiv ℝ (fun y => fderiv ℝ g y v) x u = fderiv ℝ (fderiv ℝ g) x u v := by
     intro u v
     rw [(hlin v).fderiv, ContinuousLinearMap.flip_apply]
@@ -173,7 +166,6 @@ theorem cmpb_det_nonneg {f : V n → ℝ} {x : V n} (hf : ContDiffAt ℝ 2 f x)
     have him : (dotProduct (star v) (Matrix.mulVec (cHess n g x) v)).im = 0 := by
       first
       | simpa using hHerm.im_star_dotProduct_mulVec_self v
-      | exact hHerm.im_star_dotProduct_mulVec_self v
     have hre : 0 ≤ (dotProduct (star v) (Matrix.mulVec (cHess n g x) v)).re := by
       rw [hq v]; exact hL (star v)
     exact Complex.le_def.2 ⟨by simpa using hre, by simpa using him.symm⟩
@@ -201,7 +193,6 @@ theorem cmpb_cHess_congr {g₁ g₂ : V n → ℂ} {x : V n} (h : g₁ =ᶠ[𝓝
     have hn : ∀ᶠ y in 𝓝 x, g₁ =ᶠ[𝓝 y] g₂ := by
       first
       | exact h.eventuallyEq_nhds
-      | exact h.eventually_nhds
     filter_upwards [hn] with y hy
     simp only [wdb, hy.fderiv_eq]
   ext j k

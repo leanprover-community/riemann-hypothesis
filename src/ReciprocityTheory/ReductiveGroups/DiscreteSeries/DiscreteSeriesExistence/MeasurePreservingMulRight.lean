@@ -54,40 +54,33 @@ variable {n : ℕ}
 theorem mir_inUJ_iff (ε : Fin n → Bool) (g : Matrix (Fin n) (Fin n) ℂ) : Formalism.REAL.inUJ ε g ↔ inUJ ε g := by
   first
   | rfl
-  | exact Iff.rfl
 
 theorem mir_UJset_eq (ε : Fin n → Bool) : Formalism.MainNotions.S.UJset ε = UJset ε := by
   first
   | rfl
-  | exact Iff.rfl
 
 theorem mir_Kset_eq (ε : Fin n → Bool) : Formalism.REAL.Kset ε = Kset ε := by
   first
   | rfl
-  | exact Iff.rfl
 
 theorem mir_lowK_eq (ε : Fin n → Bool) (lam : Fin n → ℝ) : Formalism.QuantumDeterminants.lowK ε lam = lowK ε lam := by
   first
   | rfl
-  | exact Iff.rfl
 
 theorem mir_isHCParam_iff (lam : Fin n → ℝ) : Formalism.QuantumDeterminants.IsHCParam lam ↔ S7.IsHCParam lam := by
   first
   | rfl
-  | exact Iff.rfl
 
 theorem mir_gapAtLeast_iff (ε : Fin n → Bool) (lam : Fin n → ℝ) (h : ℝ) :
     Formalism.QuantumDeterminants.GapAtLeast ε lam h ↔ GapAtLeast ε lam h := by
   first
   | rfl
-  | exact Iff.rfl
 
 theorem mir_isURepOn_iff {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     (G : Set (Matrix (Fin n) (Fin n) ℂ)) (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) :
     Formalism.MainNotions.S.IsURepOn G σ ↔ IsURepOn G σ := by
   first
   | rfl
-  | exact Iff.rfl
 
 theorem memLp_muG_of_haar (ε : Fin n → Bool) {X : Type*} [NormedAddCommGroup X]
     (F : Matrix (Fin n) (Fin n) ℂ → X) (p : ENNReal)

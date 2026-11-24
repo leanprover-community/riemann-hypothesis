@@ -73,13 +73,6 @@ theorem umat_mem_UJset (ε : Fin n → Bool) (g : Formalism.REAL.UJ ε) : Formal
 
 theorem continuous_umatA (ε : Fin n → Bool) : Continuous (fun g : Formalism.REAL.UJ ε => Formalism.MainNotions.S.umat g) := Units.continuous_val.comp continuous_subtype_val
 
-private theorem Jm_sq_lemma (e : Fin n → Bool) : Formalism.REAL.Jm e * Formalism.REAL.Jm e = 1 := by
-  unfold Formalism.REAL.Jm
-  rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
-  congr 1
-  funext a
-  by_cases h : e a <;> simp [h]
-
 private theorem inv_eq_lemma_2 (e : Fin n → Bool) (g : Formalism.REAL.UJ e) :
     (((g : (Matrix (Fin n) (Fin n) ℂ)ˣ)⁻¹ : (Matrix (Fin n) (Fin n) ℂ)ˣ) : Matrix (Fin n) (Fin n) ℂ)
       = Formalism.REAL.Jm e * (Formalism.MainNotions.S.umat g)ᴴ * Formalism.REAL.Jm e := by
@@ -88,7 +81,7 @@ private theorem inv_eq_lemma_2 (e : Fin n → Bool) (g : Formalism.REAL.UJ e) :
     calc (Formalism.REAL.Jm e * (Formalism.MainNotions.S.umat g)ᴴ * Formalism.REAL.Jm e) * Formalism.MainNotions.S.umat g
         = Formalism.REAL.Jm e * ((Formalism.MainNotions.S.umat g)ᴴ * Formalism.REAL.Jm e * Formalism.MainNotions.S.umat g) := by
           simp only [mul_assoc]
-      _ = 1 := by rw [hg, Jm_sq_lemma]
+      _ = 1 := by rw [hg, _root_.Formalism.REAL.Jm_mul_self]
   exact Units.inv_eq_of_mul_eq_one_left hl
 
 theorem isClosedEmbedding_umatA (ε : Fin n → Bool) :
@@ -97,12 +90,10 @@ theorem isClosedEmbedding_umatA (ε : Fin n → Bool) :
   have hJ : Continuous (fun M : Matrix (Fin n) (Fin n) ℂ => Formalism.REAL.Jm ε * Mᴴ * Formalism.REAL.Jm ε) := by
     first
     | exact (continuous_const.matrix_mul continuous_id.matrix_conjTranspose).matrix_mul continuous_const
-    | continuity
   have hF : Continuous (fun M : Matrix (Fin n) (Fin n) ℂ =>
       (M, MulOpposite.op (Formalism.REAL.Jm ε * Mᴴ * Formalism.REAL.Jm ε))) := by
     first
     | exact continuous_id.prodMk (MulOpposite.continuous_op.comp hJ)
-    | exact continuous_id.prod_mk (MulOpposite.continuous_op.comp hJ)
   have h2 : ((fun M : Matrix (Fin n) (Fin n) ℂ =>
       (M, MulOpposite.op (Formalism.REAL.Jm ε * Mᴴ * Formalism.REAL.Jm ε))) ∘ (fun g : Formalism.REAL.UJ ε => Formalism.MainNotions.S.umat g))
       = Units.embedProduct (Matrix (Fin n) (Fin n) ℂ) ∘ Subtype.val := by
@@ -115,7 +106,6 @@ theorem isClosedEmbedding_umatA (ε : Fin n → Bool) :
     have he : IsInducing (Units.embedProduct (Matrix (Fin n) (Fin n) ℂ)) := by
       first
       | exact Units.isEmbedding_embedProduct.isInducing
-      | exact ⟨rfl⟩
     exact he.comp IsInducing.subtypeVal
   have hrange : Set.range (fun g : Formalism.REAL.UJ ε => Formalism.MainNotions.S.umat g)
       = {M : Matrix (Fin n) (Fin n) ℂ | Mᴴ * Formalism.REAL.Jm ε * M = Formalism.REAL.Jm ε} := by
@@ -127,12 +117,10 @@ theorem isClosedEmbedding_umatA (ε : Fin n → Bool) :
       have hl : (Formalism.REAL.Jm ε * Mᴴ * Formalism.REAL.Jm ε) * M = 1 := by
         calc (Formalism.REAL.Jm ε * Mᴴ * Formalism.REAL.Jm ε) * M = Formalism.REAL.Jm ε * (Mᴴ * Formalism.REAL.Jm ε * M) := by
               simp only [mul_assoc]
-          _ = 1 := by rw [hM, Jm_sq_lemma]
+          _ = 1 := by rw [hM, _root_.Formalism.REAL.Jm_mul_self]
       have hr : M * (Formalism.REAL.Jm ε * Mᴴ * Formalism.REAL.Jm ε) = 1 := by
         first
         | exact mul_eq_one_comm.mp hl
-        | exact (Matrix.invertibleOfLeftInverse M _ hl).mul_invOf_self
-        | (letI := Matrix.invertibleOfLeftInverse M _ hl; exact mul_invOf_self M)
       exact ⟨⟨⟨M, _, hr, hl⟩, hM⟩, rfl⟩
   refine ⟨⟨IsInducing.of_comp hc hF hind, ?_⟩, ?_⟩
   · intro a b h
@@ -141,7 +129,6 @@ theorem isClosedEmbedding_umatA (ε : Fin n → Bool) :
     have hq : Continuous (fun M : Matrix (Fin n) (Fin n) ℂ => Mᴴ * Formalism.REAL.Jm ε * M) := by
       first
       | exact (continuous_id.matrix_conjTranspose.matrix_mul continuous_const).matrix_mul continuous_id
-      | continuity
     exact isClosed_eq hq continuous_const
 
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
@@ -153,8 +140,6 @@ theorem continuous_orbitA (hσ : IsURepOn (UJset ε) σ) (v : H) :
 private theorem muG_fin_lemma_3 (e : Fin n → Bool) : IsFiniteMeasureOnCompacts (Formalism.REAL.muG e) := by
   first
   | infer_instance
-  | (unfold Formalism.REAL.muG; infer_instance)
-  | (simp only [Formalism.REAL.muG]; infer_instance)
 
 theorem integrable_cvA (hσ : IsURepOn (UJset ε) σ) {α : Matrix (Fin n) (Fin n) ℂ → ℂ} (hα : Continuous α)
     (hαc : HasCompactSupport α) (v : H) :
@@ -227,7 +212,6 @@ theorem cvA_near (hσ : IsURepOn (UJset ε) σ) {φ : Matrix (Fin n) (Fin n) ℂ
   have hw : w = ∫ g : Formalism.REAL.UJ ε, ((φ (Formalism.MainNotions.S.umat g) : ℂ)) • w ∂(Formalism.REAL.muG ε) := by
     rw [integral_smul_const]
     first
-    | rw [integral_ofReal, hφ1, Complex.ofReal_one, one_smul]
     | rw [integral_complex_ofReal, hφ1, Complex.ofReal_one, one_smul]
   have hdiff : ∫ g : Formalism.REAL.UJ ε, ((φ (Formalism.MainNotions.S.umat g) : ℂ)) • (σ (Formalism.MainNotions.S.umat g) w - w) ∂(Formalism.REAL.muG ε)
       = cvA ε σ (fun g => (φ g : ℂ)) w - w := by
@@ -252,9 +236,6 @@ def hsdA (g : Matrix (Fin n) (Fin n) ℂ) : ℝ := ∑ i, ∑ j, ‖(g - 1) i j�
 theorem contDiff_entryA (i j : Fin n) : ContDiff ℝ ∞ (fun g : Matrix (Fin n) (Fin n) ℂ => g i j) := by
   first
   | exact (contDiff_apply ℝ (fun _ => ℂ) j).comp (contDiff_apply ℝ (fun _ => (Fin n → ℂ)) i)
-  | fun_prop
-  | exact ((ContinuousLinearMap.proj j).comp (ContinuousLinearMap.proj i :
-      (Fin n → Fin n → ℂ) →L[ℝ] (Fin n → ℂ))).contDiff
 
 theorem contDiff_hsdA : ContDiff ℝ ∞ (hsdA (n := n)) := by
   unfold hsdA
@@ -262,7 +243,6 @@ theorem contDiff_hsdA : ContDiff ℝ ∞ (hsdA (n := n)) := by
   show ContDiff ℝ ∞ (fun g : Matrix (Fin n) (Fin n) ℂ => ‖g i j - (1 : Matrix (Fin n) (Fin n) ℂ) i j‖ ^ 2)
   first
   | exact (contDiff_norm_sq ℂ).comp ((contDiff_entryA i j).sub contDiff_const)
-  | exact (contDiff_norm_sq ℝ).comp ((contDiff_entryA i j).sub contDiff_const)
 
 theorem hsdA_one : hsdA (1 : Matrix (Fin n) (Fin n) ℂ) = 0 := by
   simp [hsdA]
@@ -290,9 +270,6 @@ theorem hsdA_eq_trace (g : Matrix (Fin n) (Fin n) ℂ) :
   refine Finset.sum_congr rfl (fun j _ => Finset.sum_congr rfl (fun i _ => ?_))
   first
   | (rw [Complex.star_def, Complex.conj_mul']; norm_cast)
-  | (simp only [Complex.star_def, Complex.mul_re, Complex.conj_re, Complex.conj_im, Complex.sq_norm,
-      Complex.normSq_apply]; ring)
-  | (simp [Complex.mul_re, Complex.sq_abs, Complex.normSq_apply]; ring)
 
 theorem hsdA_conj {k : Matrix (Fin n) (Fin n) ℂ} (hk : k ∈ Matrix.unitaryGroup (Fin n) ℂ)
     (g : Matrix (Fin n) (Fin n) ℂ) : hsdA (k * g * star k) = hsdA g := by
@@ -337,8 +314,6 @@ theorem hasCompactSupport_bumpA (δ : ℝ) : HasCompactSupport (bumpA (n := n) �
   haveI : ProperSpace (Matrix (Fin n) (Fin n) ℂ) := by
     first
     | infer_instance
-    | exact (inferInstance : ProperSpace (Fin n → Fin n → ℂ))
-    | exact FiniteDimensional.proper_real _
   have hsub : tsupport (bumpA (n := n) δ) ⊆ Metric.closedBall 1 (Real.sqrt δ) := by
     intro g hg
     rw [Metric.mem_closedBall, dist_eq_norm]
@@ -360,9 +335,6 @@ theorem AdmA.add {U : Set (Matrix (Fin n) (Fin n) ℂ)} {α β : Matrix (Fin n) 
   · have ht : tsupport (α + β) ⊆ tsupport α ∪ tsupport β := by
       first
       | exact tsupport_add α β
-      | exact closure_minimal ((Function.support_add α β).trans
-          (Set.union_subset_union (subset_tsupport α) (subset_tsupport β)))
-          ((isClosed_tsupport α).union (isClosed_tsupport β))
     exact ht.trans (Set.union_subset h3 k3)
   · show α (k * g * star k) + β (k * g * star k) = α g + β g
     rw [h4 k hk g, k4 k hk g]
@@ -379,20 +351,16 @@ theorem AdmA.zero (U : Set (Matrix (Fin n) (Fin n) ℂ)) : AdmA ε U 0 := by
   refine ⟨?_, HasCompactSupport.zero, ?_, fun _ _ _ => rfl⟩
   · first
     | exact contDiff_zero_fun
-    | exact contDiff_const
   · rw [tsupport_zero]
     exact Set.empty_subset _
 
 theorem one_mem_UJsetA (ε : Fin n → Bool) : (1 : Matrix (Fin n) (Fin n) ℂ) ∈ UJset ε := by
   first
   | exact umat_mem_UJset ε 1
-  | (show (1 : Matrix (Fin n) (Fin n) ℂ)ᴴ * Formalism.REAL.Jm ε * 1 = Formalism.REAL.Jm ε; simp)
 
 private theorem muG_pos_lemma_4 (e : Fin n → Bool) : Measure.IsOpenPosMeasure (Formalism.REAL.muG e) := by
   first
   | infer_instance
-  | (unfold Formalism.REAL.muG; infer_instance)
-  | (simp only [Formalism.REAL.muG]; infer_instance)
 
 theorem integral_bumpA_pos (ε : Fin n → Bool) {δ : ℝ} (hδ : 0 < δ) :
     0 < ∫ g : Formalism.REAL.UJ ε, bumpA δ (Formalism.MainNotions.S.umat g) ∂(Formalism.REAL.muG ε) := by

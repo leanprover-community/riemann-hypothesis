@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.EqZeroOfHermOne
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.ArakelovInstances.IsStrictDom
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FundamentalDomainPointBound
 import Mathlib.Algebra.Order.Floor.Extended
@@ -66,27 +67,7 @@ theorem card_strictLower (r : ℕ) : Fintype.card {p : Fin r × Fin r // p.2 < p
 
 theorem two_mul_card_Psi {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : Data E r) :
     2 * X.Ψ.card = Module.finrank ℚ E := by
-  classical
-  have cc2 : ∀ τ : E →+* ℂ, ComplexEmbedding.conjugate (ComplexEmbedding.conjugate τ) = τ :=
-    fun τ => star_star τ
-  have hinj : Function.Injective (ComplexEmbedding.conjugate : (E →+* ℂ) → (E →+* ℂ)) := by
-    intro a b h
-    rw [← cc2 a, h, cc2]
-  have hc : (X.Ψ)ᶜ = X.Ψ.map ⟨ComplexEmbedding.conjugate, hinj⟩ := by
-    ext τ
-    simp only [Finset.mem_compl, Finset.mem_map, Function.Embedding.coeFn_mk]
-    constructor
-    · intro h
-      refine ⟨ComplexEmbedding.conjugate τ, ?_, cc2 τ⟩
-      rw [X.cmType, cc2]
-      exact h
-    · rintro ⟨σ, hσ, rfl⟩
-      exact (X.cmType σ).1 hσ
-  have h1 := Finset.card_compl X.Ψ
-  rw [hc, Finset.card_map, NumberField.Embeddings.card] at h1
-  have h2 : X.Ψ.card ≤ Module.finrank ℚ E := by
-    rw [← NumberField.Embeddings.card E ℂ]; exact Finset.card_le_univ _
-  omega
+  apply GlobalTheory.TwoLines.two_mul_card_cmType <;> assumption
 
 theorem fdeg_and_nd : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r),
     fdeg E = X.Ψ.card ∧ nd X = X.Ψ.card * (r * (r - 1) / 2) := by

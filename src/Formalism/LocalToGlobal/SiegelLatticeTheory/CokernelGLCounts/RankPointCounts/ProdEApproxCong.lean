@@ -112,8 +112,8 @@ theorem cong_at {p : PlF D} (hA : Agree δ M p) (L U : Formalism.L2.SG.PairVal.M
     rw [Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_one, hLL]
   have e2 : Upi * (k.1.2.unop : ProdE.MP p) * Up - 1 = Upi * ((k.1.2.unop : ProdE.MP p) - 1) * Up := by
     rw [Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_one, hUU]
-  have hc1 := ZsVolGrp.isLoUni_mul (ZsVolGrp.isLoUni_mul hLp hk1) hLpi
-  have hc2 := ZsVolGrp.isUpUni_mul (ZsVolGrp.isUpUni_mul hUpi hk2) hUp
+  have hc1 := _root_.PI.TermAttrConst.UnitaryGroupMassFormula.isLoUni_mul (_root_.PI.TermAttrConst.UnitaryGroupMassFormula.isLoUni_mul hLp hk1) hLpi
+  have hc2 := _root_.GlobalTheory.UpperUnipotentProductInertiaEigenvalues.isUpUni_mul (_root_.GlobalTheory.UpperUnipotentProductInertiaEigenvalues.isUpUni_mul hUpi hk2) hUp
   refine Subgroup.mem_inf.2 ⟨⟨⟨fun a => (hk1 a a).2 rfl, fun a b h => (hk1 a b).1 h,
     mem_R_of_sub_one M δ hA h1l⟩, ⟨fun a => (hk2 a a).2 rfl, fun a b h => (hk2 a b).1 h, mem_R_of_sub_one M δ hA h2l⟩⟩,
     ⟨⟨fun a => (hc1 a a).2 rfl, fun a b h => (hc1 a b).1 h, mem_R_of_sub_one M δ hA (by rw [e1]; exact h1c)⟩,

@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.LocalFields.ExistsUnitFiltrationUnitsLeAndRangePowLe
 public import GroundTheory.LocalFields.UnitsBasic
 public import GroundTheory.LocalFields.FilteredSurj
 public import Mathlib.RingTheory.RootsOfUnity.Basic
@@ -404,39 +405,7 @@ theorem uniformizer_pow_succ_dvd_of_valuation_lt {ϖ : 𝒪[K]} (hϖ : Irreducib
 
 theorem isOpen_range_powMonoidHom {n : ℕ} (hn : (n : K) ≠ 0) :
     IsOpen ((powMonoidHom n : Kˣ →* Kˣ).range : Set Kˣ) := by
-  obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible 𝒪[K]
-  obtain ⟨d, ε, hnd, -⟩ := exists_natCast_eq_unit_mul_pow hn hϖ
-  apply Subgroup.isOpen_of_mem_nhds _ (g := 1)
-  set B : Set K := {y | valuation K (y - 1) < valuation K ((ϖ : K) ^ (d + d))}
-  have hB : B ∈ nhds (1 : K) := by
-    refine (IsValuativeTopology.hasBasis_nhds' (1 : K)).mem_of_mem ?_
-    rw [Ne, Valuation.zero_iff]
-    exact pow_ne_zero _ (by exact_mod_cast hϖ.ne_zero)
-  have hB' : Units.val ⁻¹' B ∈ nhds (1 : Kˣ) :=
-    Units.continuous_val.continuousAt.preimage_mem_nhds (by simpa using hB)
-  refine Filter.mem_of_superset hB' fun x hx ↦ ?_
-  simp only [Set.mem_preimage, Set.mem_ofPred_eq, B] at hx
-  have hlt1 : valuation K ((x : K) - 1) < 1 := by
-    refine hx.trans_le ?_
-    rw [map_pow]
-    exact pow_le_one' ϖ.2 _
-  have hy : (x : K) - 1 ∈ 𝒪[K] := hlt1.le
-  have hv1 : valuation K (x : K) = 1 := by
-    have := Valuation.map_add_eq_of_lt_right (valuation K) (x := (x : K) - 1) (y := 1)
-      (by rwa [map_one])
-    rwa [sub_add_cancel, map_one] at this
-  have hnv : normalizedValuation K (x : K) = 1 := by
-    rw [← map_one (normalizedValuation K), normalizedValuation_eq_iff, map_one, hv1]
-  obtain ⟨u, rfl⟩ := mem_range_unitsIncl_iff.mpr hnv
-  have hu : u ∈ unitFiltration K (d + 1 + d) := by
-    rw [mem_unitFiltration, mem_maximalIdeal_pow_iff hϖ]
-    have e1 : d + 1 + d = d + d + 1 := by omega
-    rw [e1]
-    apply uniformizer_pow_succ_dvd_of_valuation_lt hϖ
-    simpa using hx
-  rw [← map_powMonoidHom_unitFiltration hϖ hnd] at hu
-  obtain ⟨w, -, rfl⟩ := hu
-  exact ⟨unitsIncl K w, by simp⟩
+  apply GroundTheory.LocalField.isOpen_range_pow <;> assumption
 
 end Open
 

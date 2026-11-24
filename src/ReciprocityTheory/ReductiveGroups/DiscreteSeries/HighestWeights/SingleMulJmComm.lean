@@ -83,8 +83,8 @@ theorem single_mul_Jm_comm {ε : Fin n → Bool} {a b : Fin n} (hab : ε a = ε 
       subst hj
       simp only [hab]
       ring
-    · simp [Matrix.single_apply, hj]
-  · simp [Matrix.single_apply, hi]
+    · simp [hj]
+  · simp [hi]
 
 private theorem pow_mem_lemma {V : Type*} [NormedAddCommGroup V] [NormedSpace ℂ V]
     (W : Submodule ℂ V) (A : V →L[ℂ] V) (hA : ∀ v ∈ W, A v ∈ W) (k : ℕ) :

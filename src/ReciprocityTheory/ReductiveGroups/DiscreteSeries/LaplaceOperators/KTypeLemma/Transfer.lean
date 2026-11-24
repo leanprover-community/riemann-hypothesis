@@ -67,7 +67,7 @@ variable {n : ℕ}
 
 lemma tt_adW_neg (ε : Fin n → Bool) (k : KG ε) (D : List (Matrix (Fin n) (Fin n) ℂ)) :
     adW ε k (D.map Neg.neg) = (adW ε k D).map Neg.neg := by
-  simp [adW, List.map_map, Function.comp_def, Matrix.mul_neg, Matrix.neg_mul]
+  simp [adW, List.map_map, Function.comp_def]
 
 lemma tt_rWord_local {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T : KType ε Λ) (μ : Fin n → ℤ)
     {U W : Set (Matrix (Fin n) (Fin n) ℂ)} {k₀ : KG ε} (hU : IsOpen U) (hW : IsOpen W)

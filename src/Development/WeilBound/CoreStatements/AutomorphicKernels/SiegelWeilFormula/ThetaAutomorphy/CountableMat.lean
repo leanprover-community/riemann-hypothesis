@@ -53,10 +53,8 @@ namespace PositivityTheory.SiegelWeilFormula.Tauto
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 
-theorem countable_E : Countable E := (Module.finBasis ℚ E).equivFun.injective.countable
-
 theorem countable_mat (p q : ℕ) : Countable (Matrix (Fin p) (Fin q) E) := by
-  haveI := countable_E (E := E)
+  haveI := _root_.Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.countableE (E := E)
   exact inferInstanceAs (Countable (Fin p → Fin q → E))
 
 def tr (d : SD σ) (g : UA σ d.A.J) (X : Matrix (Fin d.m) (Fin d.n) E) : Mx F E d.m d.n := mat g⁻¹ * incM F X

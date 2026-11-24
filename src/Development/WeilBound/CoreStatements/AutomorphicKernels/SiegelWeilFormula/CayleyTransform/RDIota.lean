@@ -209,7 +209,7 @@ theorem hQ_w {ε : ℤˣ} (hε : d.b.1ᵀ * dbl d.Y.J * d.b.1.map σ = Matrix.fr
   simp only [Qc, Matrix.fromBlocks_map, Matrix.map_zero _ (map_zero _), Matrix.map_one _ (map_zero _) (map_one _)]
   congr 1
   ext i j
-  by_cases hij : i = j <;> simp [Matrix.one_apply, hij]
+  by_cases hij : i = j <;> simp [hij]
 
 theorem map_cA_smul {p q : Type} (a : AF F) (A : Matrix p q (AE F E)) : (a • A).map (cA σ) = a • A.map (cA σ) := by
   ext i j

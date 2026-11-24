@@ -235,7 +235,6 @@ theorem coefA_ofSum {T : X →ₗ[ℂ] X} (hT : ∀ x y, inner ℂ (T x) y = inn
     rw [hxr y ((hmemE y).mpr ⟨hy, hTy⟩)]
     first
       | rfl
-      | simp
   choose x hxM hxT hxr using hx
   refine ⟨ι (∑ k, x k), Submodule.mem_map_of_mem (Submodule.sum_mem _ (fun k _ => hxM k)), ?_⟩
   intro y hy

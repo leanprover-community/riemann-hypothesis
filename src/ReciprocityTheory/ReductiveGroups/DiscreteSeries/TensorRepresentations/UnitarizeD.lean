@@ -56,26 +56,11 @@ open ReciprocityTheory.ChartRestriction.DS
 
 variable {n : ℕ} {ε : Fin n → Bool}
 
-theorem Jm_mul_Jm' (ε : Fin n → Bool) : Jm ε * Jm ε = 1 := by
-  rw [Jm_eq, Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
-  congr 1
-  funext a
-  exact sg_mul_self ε a
-
-theorem Jm_conjT (ε : Fin n → Bool) : (Jm ε)ᴴ = Jm ε := by
-  rw [Jm_eq, Matrix.diagonal_conjTranspose]
-  congr 1
-  funext a
-  exact star_sg ε a
-
-theorem Jm_Jm_mul (ε : Fin n → Bool) (X : Matrix (Fin n) (Fin n) ℂ) : Jm ε * (Jm ε * X) = X := by
-  rw [← Matrix.mul_assoc, Jm_mul_Jm', Matrix.one_mul]
-
 theorem inG_sub (Y : Matrix (Fin n) (Fin n) ℂ) : inG ε (Y - Jm ε * Yᴴ * Jm ε) := by
   unfold inG
-  rw [Matrix.conjTranspose_sub, Matrix.conjTranspose_mul, Matrix.conjTranspose_mul, Jm_conjT,
+  rw [Matrix.conjTranspose_sub, Matrix.conjTranspose_mul, Matrix.conjTranspose_mul, _root_.ReciprocityTheory.ChartRestriction.DS.S7.Jm_conjTranspose,
     Matrix.conjTranspose_conjTranspose]
-  simp only [Matrix.sub_mul, Matrix.mul_sub, Matrix.mul_assoc, Jm_mul_Jm', Jm_Jm_mul, Matrix.mul_one]
+  simp only [Matrix.sub_mul, Matrix.mul_sub, Matrix.mul_assoc, _root_.ReciprocityTheory.ChartRestriction.DS.S7.Jm_mul_self, _root_.ReciprocityTheory.ChartRestriction.DS.Jm_mul_Jm_mul, Matrix.mul_one]
   abel
 
 theorem inG_add (Y : Matrix (Fin n) (Fin n) ℂ) : inG ε (Complex.I • (Y + Jm ε * Yᴴ * Jm ε)) := by
@@ -94,7 +79,7 @@ theorem mx_smul (c : ℂ) (X : Matrix (Fin n) (Fin n) ℂ) : mx T (c • X) = c 
   simp [mx, smul_smul, Finset.smul_sum]
 
 theorem mx_single (a b : Fin n) : mx T (Matrix.single a b 1) = T a b := by
-  simp [mx, Matrix.single_apply, ite_smul, ite_and, Finset.sum_ite_eq, Finset.sum_ite_eq']
+  simp [mx, Matrix.single_apply, ite_smul, ite_and, Finset.sum_ite_eq]
 
 theorem mat_decomp (Y Z : Matrix (Fin n) (Fin n) ℂ) :
     Y = (1 / 2 : ℂ) • (Y - Z) + (-(Complex.I / 2)) • (Complex.I • (Y + Z)) := by

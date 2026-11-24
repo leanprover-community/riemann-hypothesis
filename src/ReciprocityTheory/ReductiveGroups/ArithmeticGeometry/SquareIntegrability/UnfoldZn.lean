@@ -99,7 +99,7 @@ theorem gauss_lin {d : ℕ} {W : Type} [NormedAddCommGroup W] [InnerProductSpace
   set B : Matrix (Fin d) (Fin d) ℝ := ob.toBasis.toMatrix b with hB
   have hMB : M.transpose * B = 1 := by
     ext j k
-    simp only [Matrix.mul_apply, Matrix.transpose_apply, Matrix.one_apply, hM, hB,
+    simp only [Matrix.mul_apply, Matrix.one_apply, hM, hB,
       Module.Basis.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
       OrthonormalBasis.repr_apply_apply]
     rw [← hub j k, ← ob.sum_inner_mul_inner (u j) (b k)]

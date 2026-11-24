@@ -86,16 +86,9 @@ theorem valAt_fnOf {U : Z.Opens} (hy : below y ∈ U) (h : genericPoint Z ∈ U)
   rw [e, valAt_algebraMap]
   first
   | rw [valR, dif_pos ht]
-  | simp only [valR, dif_pos ht]
-  | simp only [valR, ht, dite_true]
   refine H.trans ?_
   first
   | rfl
-  | (simp only [Scheme.Hom.appLE, CommRingCat.hom_comp, RingHom.comp_apply, Iso.trans_hom,
-      Functor.mapIso_hom, Iso.op_hom, eqToIso.hom]; done)
-  | (simp only [Scheme.Hom.appLE, CommRingCat.hom_comp, RingHom.comp_apply, Iso.trans_hom,
-      Functor.mapIso_hom, Iso.op_hom, eqToIso.hom]; rfl)
-  | (simp [Scheme.Hom.appLE]; done)
 
 theorem ratVal_eq_valAt {k : Type} [CommRing k] {q : Z ⟶ Sp k} {σ : k →+* ℂ} (y : CxPts q σ)
     (hf : RegAt (under y) f) : ratVal f y = valAt y.1 f := by
@@ -172,8 +165,6 @@ private theorem asIdeal_spMap_algebraMap_eq_bot (s : Sp F) : (spMap (algebraMap 
   have e : (spMap (algebraMap (𝓞 F) F) s).asIdeal = Ideal.comap (algebraMap (𝓞 F) F) s.asIdeal := by
     first
     | rfl
-    | simp [spMap]
-    | simp [spMap, Spec.map_base]
   rw [e, hs]
   exact Ideal.comap_bot_of_injective _ (IsFractionRing.injective (𝓞 F) F)
 
@@ -185,15 +176,12 @@ theorem mem_range_j {x : M.X} (hx : (M.p x).asIdeal = ⊥) : x ∈ Set.range M.j
   rw [← hz1, ← M.pb.isoPullback_inv_fst]
   first
   | rfl
-  | exact (Scheme.comp_apply _ _ _).symm
-  | simp
 
 theorem asIdeal_p_j (y : Y.X) : (M.p (M.j y)).asIdeal = ⊥ := by
   have e : M.p (M.j y) = spMap (algebraMap (𝓞 F) F) (Y.str y) := by
     first
     | (show (M.j ≫ M.p) y = (Y.str ≫ spMap _) y
        rw [M.pb.w])
-    | rw [← Scheme.comp_apply, M.pb.w, Scheme.comp_apply]
   rw [e, asIdeal_spMap_algebraMap_eq_bot]
 
 theorem asIdeal_p_gen [IsIntegral M.X] : (M.p (genericPoint M.X)).asIdeal = ⊥ := by

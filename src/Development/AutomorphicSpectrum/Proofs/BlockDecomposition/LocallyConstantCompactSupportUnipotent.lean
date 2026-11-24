@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OpenCellParabolicNearIdentity
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AvgVanish
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -103,22 +104,7 @@ theorem dEmb_add (i t : ℕ) (a b : Fin (t + 1) → k) : dEmb k i t (a + b) = dE
   simp only [dEmb, Subgroup.coe_mul, this, ofAdd_add, map_mul]
 
 theorem continuous_dEmb (i t : ℕ) : Continuous (dEmb k i t) := by
-  refine Continuous.subtype_mk ?_ _
-  rw [Units.continuous_iff]
-  have hcol : Continuous fun d : Fin (t + 1) → k => colMat k ((i + 1) + (t + 1)) (Fin.append (0 : Fin (i + 1) → k) d) := by
-    refine continuous_matrix fun r c => ?_
-    by_cases hc : c = Fin.last _
-    · subst hc
-      refine Fin.lastCases ?_ (fun r' => ?_) r
-      · simpa [colMat] using continuous_const
-      · simp only [colMat, if_true, Fin.lastCases_castSucc]
-        refine Fin.addCases (fun a => ?_) (fun a => ?_) r'
-        · simpa using continuous_const
-        · simpa using continuous_apply a
-    · simpa [colMat, hc] using continuous_const
-  constructor
-  · exact continuous_const.add hcol
-  · exact continuous_const.sub hcol
+  apply GlobalTheory.CompanionTheory.BZPhiPG.OntoO.Small.continuous_dEmb <;> assumption
 
 theorem dEmb_mul_entry (i t : ℕ) (d : Fin (t + 1) → k) (g : Mir k ((i + 1) + t + 1)) (b : Fin (t + 1)) :
     (((dEmb k i t d * g : Mir k ((i + 1) + t + 1)) : GL (Fin ((i + 1) + t + 2)) k) :

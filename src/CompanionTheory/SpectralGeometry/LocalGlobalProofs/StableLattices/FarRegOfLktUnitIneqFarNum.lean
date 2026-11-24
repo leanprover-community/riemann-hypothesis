@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Counterexamples.JetSurvey.LowKAddStrictAnti
 public import CompanionTheory.RealGroups.DiscreteSeries.DiscreteSeriesClassification.DiscreteSeriesExhaustion.FarRegularity.LKTExists
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -61,29 +62,7 @@ variable {n : ℕ}
 
 theorem rho_sum (ε : Fin n → Bool) (a : Fin n) :
     rhoN ε a + rhoC ε a = ((n : ℝ) - 1) / 2 - ((a : ℕ) : ℝ) := by
-  unfold rhoN rhoC
-  have kgt := Finset.card_filter_add_card_filter_not (s := Ioi a) (fun b => ε b = ε a)
-  have e1 : (Ioi a).filter (fun b => ε b = ε a) = univ.filter (fun b => a < b ∧ ε b = ε a) := by
-    ext b; simp
-  have e2 : (Ioi a).filter (fun b => ¬ ε b = ε a) = univ.filter (fun b => a < b ∧ ε b ≠ ε a) := by
-    ext b; simp
-  rw [e1, e2, Fin.card_Ioi] at kgt
-  have klt := Finset.card_filter_add_card_filter_not (s := Iio a) (fun b => ε b = ε a)
-  have e3 : (Iio a).filter (fun b => ε b = ε a) = univ.filter (fun b => b < a ∧ ε b = ε a) := by
-    ext b; simp
-  have e4 : (Iio a).filter (fun b => ¬ ε b = ε a) = univ.filter (fun b => b < a ∧ ε b ≠ ε a) := by
-    ext b; simp
-  rw [e3, e4, Fin.card_Iio] at klt
-  have ha := a.isLt
-  have kgt' : (univ.filter (fun b => a < b ∧ ε b = ε a)).card +
-      (univ.filter (fun b => a < b ∧ ε b ≠ ε a)).card + (a : ℕ) + 1 = n := by omega
-  have rgt : ((univ.filter (fun b => a < b ∧ ε b = ε a)).card : ℝ) +
-      ((univ.filter (fun b => a < b ∧ ε b ≠ ε a)).card : ℝ) + ((a : ℕ) : ℝ) + 1 = n := by
-    exact_mod_cast kgt'
-  have rlt : ((univ.filter (fun b => b < a ∧ ε b = ε a)).card : ℝ) +
-      ((univ.filter (fun b => b < a ∧ ε b ≠ ε a)).card : ℝ) = ((a : ℕ) : ℝ) := by
-    exact_mod_cast klt
-  linarith
+  apply GlobalTheory.DiscreteSeriesTest.rhoN_add_rhoC <;> assumption
 
 theorem abs_rhoC_le (ε : Fin n → Bool) (a : Fin n) : |rhoC ε a| ≤ n := by
   unfold rhoC

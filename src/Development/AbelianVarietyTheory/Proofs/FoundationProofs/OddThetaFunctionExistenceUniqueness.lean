@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.LatticeInvariantsPeriodPairDictionary
 public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.HasSumLocallyUniformlyWeierstrassZetaExcept
 public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
 import Mathlib.Algebra.Order.Floor.Extended
@@ -76,21 +77,7 @@ theorem area_eq (L : PeriodPair) (Λ : AddSubgroup ℂ) (h : ∀ z, z ∈ Λ ↔
 
 theorem wpF_eq (L : PeriodPair) (Λ : AddSubgroup ℂ) (h : ∀ z, z ∈ Λ ↔ z ∈ L.lattice) (z : ℂ) :
     wpF Λ z = L.weierstrassP z := by
-  have hs : Summable (fun l : L.lattice => 1 / (z - (l : ℂ)) ^ 2 - 1 / (l : ℂ) ^ 2) :=
-    (L.hasSum_weierstrassP z).summable
-  unfold wpF PeriodPair.weierstrassP
-  rw [← hs.tsum_subtype_add_tsum_subtype_compl ({0} : Set L.lattice),
-    tsum_singleton (0 : L.lattice) (fun l : L.lattice => 1 / (z - (l : ℂ)) ^ 2 - 1 / (l : ℂ) ^ 2)]
-  congr 1
-  · simp
-  · let e : {w : ℂ // w ∈ Λ ∧ w ≠ 0} ≃ (({0} : Set L.lattice)ᶜ : Set L.lattice) :=
-      { toFun := fun w => ⟨⟨w.1, (h w.1).1 w.2.1⟩, fun hh =>
-          w.2.2 (by simpa using congrArg Subtype.val (Set.mem_singleton_iff.1 hh))⟩
-        invFun := fun l => ⟨l.1.1, (h _).2 l.1.2, fun hh =>
-          l.2 (Set.mem_singleton_iff.2 (Subtype.ext (by simpa using hh)))⟩
-        left_inv := fun _ => rfl
-        right_inv := fun _ => rfl }
-    exact (e.tsum_eq (fun l => 1 / (z - ((l : L.lattice) : ℂ)) ^ 2 - 1 / ((l : L.lattice) : ℂ) ^ 2))
+  apply GlobalTheory.LatticeInvariants.wpF_eq <;> assumption
 
 theorem law_iff (L : PeriodPair) (Λ : AddSubgroup ℂ) (h : ∀ z, z ∈ Λ ↔ z ∈ L.lattice)
     (G : ℂ → ℂ) (ω z : ℂ) :

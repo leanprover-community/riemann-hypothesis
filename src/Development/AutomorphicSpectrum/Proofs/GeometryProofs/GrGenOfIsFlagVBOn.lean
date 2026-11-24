@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.CoreStatements.PlurisubharmonicCones.DeterminantLatticeGradedTensor
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsGenericFlag
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -71,33 +72,7 @@ private theorem zpow_mem_lemma_2 {R : Subring Ω} {x : Ω} (hx : x ∈ R) (hxi :
 
 theorem tens_gen {I : Type} [Fintype I] (Λ : I → Lat ξ Ω) (a : I → ℤ) (p : Cpt ξ) (s : I → Ω)
     (hs : ∀ i, (Λ i).IsGenAt p (s i)) : (Lat.tens Λ a).IsGenAt p (∏ i, s i ^ a i) := by
-  have hs0 : ∀ i, s i ≠ 0 := fun i => (hs i).1
-  refine ⟨Finset.prod_ne_zero_iff.mpr fun i _ => zpow_ne_zero _ (hs0 i), ?_⟩
-  show Submodule.span (regAt ξ p) {t | ∃ s' : I → Ω, (∀ i, (Λ i).IsGenAt p (s' i)) ∧ t = ∏ i, s' i ^ a i} = _
-  apply le_antisymm
-  · rw [Submodule.span_le]
-    rintro t ⟨s', hs', rfl⟩
-    have hs'0 : ∀ i, s' i ≠ 0 := fun i => (hs' i).1
-    have hw : ∀ i, s' i / s i ∈ regAt ξ p := fun i => by
-      refine div_mem_of_mem_span_singleton (hs0 i) ?_
-      rw [← (hs i).2, (hs' i).2]
-      exact Submodule.mem_span_singleton_self _
-    have hwi : ∀ i, (s' i / s i)⁻¹ ∈ regAt ξ p := fun i => by
-      rw [inv_div]
-      refine div_mem_of_mem_span_singleton (hs'0 i) ?_
-      rw [← (hs' i).2, (hs i).2]
-      exact Submodule.mem_span_singleton_self _
-    have hc : ∏ i, (s' i / s i) ^ a i ∈ regAt ξ p :=
-      prod_mem fun i _ => zpow_mem_lemma_2 (hw i) (hwi i) (a i)
-    rw [SetLike.mem_coe, Submodule.mem_span_singleton]
-    refine ⟨⟨_, hc⟩, ?_⟩
-    show (∏ i, (s' i / s i) ^ a i) * ∏ i, s i ^ a i = ∏ i, s' i ^ a i
-    rw [← Finset.prod_mul_distrib]
-    refine Finset.prod_congr rfl fun i _ => ?_
-    rw [← mul_zpow, div_mul_cancel₀ _ (hs0 i)]
-  · apply Submodule.span_mono
-    rw [Set.singleton_subset_iff]
-    exact ⟨s, hs, rfl⟩
+  apply LevelTowerAlt.N1.tens_gen <;> assumption
 
 variable {E : Type} [AddCommGroup E] [Module Ω E]
 

@@ -97,7 +97,7 @@ theorem sval_pullSec {Y' : Scheme.{0}} {φ : K → (Y ⟶ X)} {ε : K → ℤ} (
   have hm2 := hJ.mem φ (r ≫ h)
   simp only [Category.assoc] at hm2
   unfold sval
-  simp only [Category.assoc]
+  simp only
   exact (gs_res r z _ hm1 _).trans (gs_pull r h z _ hm2 _)
 
 def mulSec {φ : K → (Y ⟶ X)} {ε : K → ℤ} {φ' : K' → (Y ⟶ X)} {ε' : K' → ℤ}
@@ -175,7 +175,7 @@ theorem germ_eq_sval {φ : K → (Y ⟶ X)} {ε : K → ℤ} (s : LB.Sec (LB.Lin
   erw [gs_eq (𝟙 Y) y _ hy] at h1
   unfold sval
   rw [← h1]
-  first | rfl | simp
+  first | rfl
 
 theorem isUnit_sval {φ : K → (Y ⟶ X)} {ε : K → ℤ} (s : LB.Sec (LB.LinComb L φ ε)) (r : Z ⟶ Y) (z : Z)
     {J : (Z ⟶ X) → L.ι} (hJ : Good L z J) (k : (LB.LinComb L φ ε).ι) (hk : r z ∈ Y.basicOpen (s.f k)) :

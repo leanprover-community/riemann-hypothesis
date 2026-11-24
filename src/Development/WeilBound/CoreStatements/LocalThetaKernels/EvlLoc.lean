@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.LagrangianInvariantFormsProportionalFinitePlace
 public import Development.AbelianVarietyTheory.Definitions.Divisors.HilbertNinetyQuotientHomEqIff
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsLocallyConstantAddChar
 public import Development.AutomorphicSpectrum.Proofs.MembershipProofs.CyclicAndLine
@@ -196,34 +197,7 @@ omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [Inver
 theorem mem_of_orth (large₂ : Submodule k ((κ → k) × (κ → k)))
     (hiso : ∀ w ∈ large₂, ∀ w' ∈ large₂, w.1 ⬝ᵥ w'.2 = w'.1 ⬝ᵥ w.2) (hdim : Module.finrank k large₂ = Fintype.card κ)
     (z : (κ → k) × (κ → k)) (hz : ∀ w ∈ large₂, w.1 ⬝ᵥ z.2 = z.1 ⬝ᵥ w.2) : z ∈ large₂ := by
-  classical
-  let Ω : ((κ → k) × (κ → k)) →ₗ[k] Module.Dual k ((κ → k) × (κ → k)) :=
-    LinearMap.mk₂ k (fun z w => w.1 ⬝ᵥ z.2 - z.1 ⬝ᵥ w.2)
-      (fun a b c => by simp only [Prod.fst_add, Prod.snd_add, add_dotProduct, dotProduct_add]; ring)
-      (fun a b c => by simp only [Prod.smul_fst, Prod.smul_snd, smul_dotProduct, dotProduct_smul, smul_eq_mul]; ring)
-      (fun a b c => by simp only [Prod.fst_add, Prod.snd_add, add_dotProduct, dotProduct_add]; ring)
-      (fun a b c => by simp only [Prod.smul_fst, Prod.smul_snd, smul_dotProduct, dotProduct_smul, smul_eq_mul]; ring)
-  have hinj : Function.Injective Ω := by
-    set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
-    intro a ha
-    refine Prod.ext (funext fun i => ?_) (funext fun i => ?_)
-    · simpa [Ω] using LinearMap.congr_fun ha (0, Pi.single i 1)
-    · simpa [Ω] using LinearMap.congr_fun ha (Pi.single i 1, 0)
-  have hmem : ∀ z : (κ → k) × (κ → k), (∀ w ∈ large₂, w.1 ⬝ᵥ z.2 = z.1 ⬝ᵥ w.2) → Ω z ∈ large₂.dualAnnihilator := fun z hz => by
-    rw [Submodule.mem_dualAnnihilator]
-    intro w hw
-    exact sub_eq_zero.2 (hz w hw)
-  have hle : large₂.map Ω ≤ large₂.dualAnnihilator := by
-    rintro _ ⟨w, hw, rfl⟩
-    exact hmem w fun w' hw' => hiso w' hw' w hw
-  have h1 := Subspace.finrank_add_finrank_dualAnnihilator_eq large₂
-  rw [Module.finrank_prod, Module.finrank_fintype_fun_eq_card, hdim] at h1
-  have h2 : Module.finrank k (large₂.map Ω) = Module.finrank k large₂.dualAnnihilator := by
-    rw [← (Submodule.equivMapOfInjective Ω hinj large₂).finrank_eq, hdim]
-    omega
-  have h3 := Submodule.eq_of_le_of_finrank_eq hle h2
-  obtain ⟨w, hw, e⟩ : Ω z ∈ large₂.map Ω := h3 ▸ hmem z hz
-  exact hinj e ▸ hw
+  apply GlobalTheory.LagrInvForm.mem_of_orth <;> assumption
 
 theorem exists_test (hc : Continuous ψ) (hn : ∀ x, ‖ψ x‖ = 1) (h1 : ψ ≠ 1) (large₂ : Submodule k ((κ → k) × (κ → k)))
     (hiso : ∀ w ∈ large₂, ∀ w' ∈ large₂, w.1 ⬝ᵥ w'.2 = w'.1 ⬝ᵥ w.2) (hdim : Module.finrank k large₂ = Fintype.card κ) :

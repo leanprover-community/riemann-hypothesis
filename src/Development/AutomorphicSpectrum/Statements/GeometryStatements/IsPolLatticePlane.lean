@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.CoreStatements.HodgeTatePoints.RaTlog
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.OmStable
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.NonemptyLinearEquivOfPiFinPowFinite
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.AbelianSchemeQuotients.IsAbelianScheme
@@ -105,26 +106,7 @@ namespace PointTest
 variable {C O : Type} [Field C] [CommRing O] [Algebra O C] {v : Valuation C NNReal} {p : ℕ}
 
 theorem val_sub_one_pow [hp : Fact p.Prime] {ζ : C} (hζ : IsPrimitiveRoot ζ p) : v (ζ - 1) ^ (p - 1) = v (p : C) := by
-  have h1 : v ζ ≤ 1 := by
-    have := congrArg v hζ.pow_eq_one
-    rw [map_pow, map_one] at this
-    exact ((pow_eq_one_iff_of_nonneg zero_le hp.out.ne_zero).1 this).le
-  let z : v.integer := ⟨ζ, h1⟩
-  have hz : IsPrimitiveRoot z p := IsPrimitiveRoot.of_map_of_injective (f := v.integer.subtype) hζ Subtype.val_injective
-  have key : ∀ k ∈ Finset.range (p - 1), v (1 - ζ ^ (k + 1)) = v (ζ - 1) := by
-    intro k hk
-    have hk' : k + 1 < p := by have := Finset.mem_range.1 hk; omega
-    have hc : (k + 1).Coprime p :=
-      ((Nat.Prime.coprime_iff_not_dvd hp.out).2 (Nat.not_dvd_of_pos_of_lt k.succ_pos hk')).symm
-    have ha := hz.associated_sub_one_pow_sub_one_of_coprime hc
-    rw [Valuation.map_sub_swap]
-    exact le_antisymm ((Valuation.integer.integers v).le_of_dvd ha.dvd)
-      ((Valuation.integer.integers v).le_of_dvd ha.symm.dvd)
-  obtain ⟨n, rfl⟩ : ∃ n, p = n + 1 := ⟨p - 1, by have := hp.out.pos; omega⟩
-  rw [Nat.add_sub_cancel] at key
-  have := congrArg v hζ.prod_one_sub_pow_eq_order
-  rw [map_prod, Finset.prod_congr rfl key, Finset.prod_const, Finset.card_range] at this
-  simpa using this
+  apply PositivityTheory.HtPt.Ra.val_prim <;> assumption
 
 theorem isHTConst_sub_one [hp : Fact p.Prime] {ζ : O} (hζ : IsPrimitiveRoot (algebraMap O C ζ) p) :
     IsHTConst v p (ζ - 1) := by

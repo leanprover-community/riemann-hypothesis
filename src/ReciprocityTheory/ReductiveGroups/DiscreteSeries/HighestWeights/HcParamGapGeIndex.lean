@@ -102,11 +102,6 @@ theorem lowK_card_gt (ε : Fin n → Bool) (a : Fin n) :
     intro s
     first
     | exact Finset.card_filter_add_card_filter_not _
-    | exact Finset.filter_card_add_filter_neg_card_eq_card _
-    | rw [← Finset.card_union_of_disjoint (Finset.disjoint_filter_filter_neg s s _),
-        Finset.filter_union_filter_neg_eq]
-    | rw [← Finset.card_disjoint_union (Finset.disjoint_filter_filter_neg s s _),
-        Finset.filter_union_filter_neg_eq]
   rw [← Fin.card_Ioi a, ← key (Finset.Ioi a)]
   congr 1 <;> congr 1 <;> ext b <;> simp
 
@@ -118,11 +113,6 @@ theorem lowK_card_lt (ε : Fin n → Bool) (a : Fin n) :
     intro s
     first
     | exact Finset.card_filter_add_card_filter_not _
-    | exact Finset.filter_card_add_filter_neg_card_eq_card _
-    | rw [← Finset.card_union_of_disjoint (Finset.disjoint_filter_filter_neg s s _),
-        Finset.filter_union_filter_neg_eq]
-    | rw [← Finset.card_disjoint_union (Finset.disjoint_filter_filter_neg s s _),
-        Finset.filter_union_filter_neg_eq]
   rw [← Fin.card_Iio a, ← key (Finset.Iio a)]
   congr 1 <;> congr 1 <;> ext b <;> simp
 

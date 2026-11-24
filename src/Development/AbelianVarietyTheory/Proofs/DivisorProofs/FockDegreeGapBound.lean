@@ -113,8 +113,6 @@ theorem head_row (u : D.what₂.Word) (i : ℕ) (hi : i < D.R.m) (τ : D.what₂
     omega
   have h1' : (r : ℝ) ≤ D.R.N i := by exact_mod_cast h1
   have h2' : (D.R.N i : ℝ) + D.R.t ≤ D.R.N D.R.m := by exact_mod_cast h2
-  have h3 : (0 : ℝ) ≤ D.R.t := Nat.cast_nonneg _
-  have h4 : (0 : ℝ) ≤ r := Nat.cast_nonneg _
   push_cast
   constructor <;> linarith
 
@@ -140,7 +138,6 @@ theorem nuAbs_place (P : ParameterChoice' D L) (u : D.what₂.Word) (i : ℕ) (h
   have hN : D.R.N (i + 1 - 1) = n + 1 + 1 + i * (D.R.t + 1) := by unfold Ranks.N; rw [hn]; rfl
   have hS := L.Sc_pos
   have he := L.etaSz_pos
-  have hNm : (0 : ℝ) ≤ D.R.N D.R.m := Nat.cast_nonneg _
   have hkN : (D.R.k : ℝ) ≤ D.R.N D.R.m := by
     have : D.R.k ≤ D.R.N D.R.m := by unfold Ranks.N; omega
     exact_mod_cast this
@@ -181,7 +178,6 @@ theorem nuAbs_place (P : ParameterChoice' D L) (u : D.what₂.Word) (i : ℕ) (h
   have hi' : (i : ℝ) ≤ D.R.m := by exact_mod_cast hi.le
   have s8 : (i : ℝ) * ((D.R.t : ℝ) + 1) * (2 * L.etaSz) ≤ D.R.m * ((D.R.t : ℝ) + 1) * (2 * L.etaSz) := by gcongr
   push_cast at s2
-  have s9 : 0 ≤ (n : ℝ) * (L.Sc + D.R.N D.R.m) := by positivity
   rw [hkn, abs_le]
   constructor <;> nlinarith [s1.1, s1.2, s2.1, s2.2, s7.1, s7.2]
 
@@ -212,10 +208,7 @@ theorem letters_place (L : SizeData₂ D) (hK : KapDef D) (i : ℕ) (hi : i < D.
   obtain ⟨r1, r2⟩ := ranks_le D
   have hS := L.Sc_pos
   have he := L.etaSz_pos
-  have hNm : (0 : ℝ) ≤ D.R.N D.R.m := Nat.cast_nonneg _
-  have ht : (0 : ℝ) ≤ D.R.t := Nat.cast_nonneg _
   have hi' : (i : ℝ) + 1 ≤ D.R.m := by exact_mod_cast hi
-  have hi0 : (0 : ℝ) ≤ i := Nat.cast_nonneg _
   have e1 : ((∑ a, |D.what₂.kaBig (i + 1) τ a| : ℤ) : ℝ) =
       ∑ r ∈ Finset.range (n + (i + 1)), |aPlus D (i + 1) τ r| := by
     rw [show n + (i + 1) = (D.R.sigW (i + 1)).1 by unfold Ranks.sigW; simp only; omega,
@@ -237,7 +230,6 @@ theorem letters_place (L : SizeData₂ D) (hK : KapDef D) (i : ℕ) (hi : i < D.
     (L.Sc + 2 * D.R.N D.R.m) (fun r hr => by
       have hr' : r < D.R.k - 1 := by omega
       have hr2 : (r : ℝ) + 1 ≤ n := by exact_mod_cast hr
-      have hr0 : (0 : ℝ) ≤ r := Nat.cast_nonneg _
       obtain ⟨c1, c2⟩ := L.cloud_v τ ⟨r, hr'⟩
       have h1 : |aPlus D (i + 1) τ r - wj D (i + 1) τ| ≤ L.Sc + 2 * D.R.N D.R.m := by
         unfold aPlus
@@ -252,7 +244,6 @@ theorem letters_place (L : SizeData₂ D) (hK : KapDef D) (i : ℕ) (hi : i < D.
   have s2 := abs_le.1 (abs_sum_range_sub (fun r => |aPlus D (i + 1) τ (n + r)|) (i + 1) 0
     (L.etaSz + 2 * D.R.N D.R.m) (fun r hr => by
       have hr2 : (r : ℝ) ≤ i := by exact_mod_cast Nat.lt_succ_iff.1 hr
-      have hr0 : (0 : ℝ) ≤ r := Nat.cast_nonneg _
       have hb : n + r - (D.R.k - 1) < D.R.m := by omega
       have c := abs_le.1 (L.be_close τ ⟨_, hb⟩ ⟨i, hi⟩)
       simp only [sub_zero, abs_abs]
@@ -266,7 +257,6 @@ theorem letters_place (L : SizeData₂ D) (hK : KapDef D) (i : ℕ) (hi : i < D.
     (L.etaSz + 2 * D.R.N D.R.m) (fun r hr => by
       have hb : i + 1 + r < D.R.m := by omega
       have hr2 : (r : ℝ) ≤ D.R.m := by exact_mod_cast (by omega : r ≤ D.R.m)
-      have hr0 : (0 : ℝ) ≤ r := Nat.cast_nonneg _
       have c := abs_le.1 (L.be_close τ ⟨_, hb⟩ ⟨i, hi⟩)
       simp only [sub_zero, abs_abs]
       unfold aMinus aMinusQ
@@ -295,7 +285,6 @@ theorem errors_le (h : SizesAt L) (P : ParameterChoice' D L) :
   have hm : (1 : ℝ) ≤ D.R.m := by exact_mod_cast (by have := D.R.two_le_m; omega : 1 ≤ D.R.m)
   have h2 : LevelStarExponents.h0 L ≤ L.etaSz := div_le_self L.etaSz_pos.le hm
   obtain ⟨r1, r2⟩ := ranks_le D
-  have ht : (0 : ℝ) ≤ D.R.t := Nat.cast_nonneg _
   have hN : (1 : ℝ) ≤ D.R.N D.R.m := by linarith
   have h3 : (D.R.k : ℝ) * D.R.N D.R.m ≤ (D.R.N D.R.m : ℝ) ^ 2 := by nlinarith
   have h4 : (D.R.N D.R.m : ℝ) ^ 2 ≤ (D.R.N D.R.m : ℝ) ^ 3 := pow_le_pow_right₀ hN (by norm_num)

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.AreaBoundedOfDiscrEqOne
 public import Formalism.SharpRestriction.GlobalSchurBounds.StandardLatticesGL3
 public import Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass
 public import Mathlib.NumberTheory.ModularForms.Discriminant
@@ -108,26 +109,7 @@ theorem discr_of_tau : TaylorLogMetric.discr Λ = (2 * π / a) ^ 12 * ModularFor
   rfl
 
 theorem area_of_tau : area Λ = ‖a‖ ^ 2 * τ.im := by
-  have hy := τ.im_pos
-  have hp : 0 < ‖a‖ ^ 2 * τ.im := by have := norm_pos_iff.2 ha; positivity
-  have key : ∀ m n m' n' : ℤ, |((starRingEnd ℂ) (a * (m * (τ : ℂ) + n)) * (a * (m' * (τ : ℂ) + n'))).im| =
-      ‖a‖ ^ 2 * τ.im * |((n * m' - m * n' : ℤ) : ℝ)| := fun m n m' n' => by
-    rw [← abs_of_pos hp, ← abs_mul]
-    congr 1
-    simp [Complex.sq_norm, Complex.normSq_apply]
-    ring
-  apply IsLeast.csInf_eq
-  constructor
-  · refine ⟨hp, _, (h _).2 ⟨0, 1, rfl⟩, _, (h _).2 ⟨1, 0, rfl⟩, ?_⟩
-    rw [key]
-    simp
-  · rintro r ⟨hr, w₁, h1, w₂, h2, rfl⟩
-    obtain ⟨m, n, rfl⟩ := (h _).1 h1
-    obtain ⟨m', n', rfl⟩ := (h _).1 h2
-    rw [key] at hr ⊢
-    have h0 : (n * m' - m * n' : ℤ) ≠ 0 := fun e => by simp [e] at hr
-    have : (1 : ℝ) ≤ |((n * m' - m * n' : ℤ) : ℝ)| := by exact_mod_cast Int.one_le_abs h0
-    exact le_mul_of_one_le_right hp.le this
+  apply GlobalTheory.LatticeAreaBound.area_eq <;> assumption
 
 end
 

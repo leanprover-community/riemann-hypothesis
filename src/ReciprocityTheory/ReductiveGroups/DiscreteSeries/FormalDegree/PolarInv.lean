@@ -64,11 +64,6 @@ open ReciprocityTheory.ChartRestriction.DS.S7
 
 variable {n : ℕ}
 
-theorem polarInv_pmat_neg {ε : Fin n → Bool} (z : PCoord ε → ℂ) : pmat (-z) = -pmat z := by
-  ext a b
-  simp only [pmat, Matrix.neg_apply, Pi.neg_apply]
-  split_ifs <;> simp [star_neg]
-
 theorem polarInv_Jm_pmat {ε : Fin n → Bool} (z : PCoord ε → ℂ) : Jm ε * pmat z * Jm ε = -pmat z := by
   ext a b
   simp only [Jm, Matrix.mul_diagonal, Matrix.diagonal_mul, Matrix.neg_apply]
@@ -81,29 +76,12 @@ theorem polarInv_Jm_pmat {ε : Fin n → Bool} (z : PCoord ε → ℂ) : Jm ε *
         = ((if ε a then (1:ℂ) else -1) * (if ε b then 1 else -1)) * pmat z a b := by ring
       _ = -pmat z a b := by rw [hs]; ring
 
-theorem polarInv_toMK_inv {ε : Fin n → Bool} (k : KG ε) : toMK k⁻¹ = (toMK k)ᴴ := by
-  have hu : toMK k ∈ Matrix.unitaryGroup (Fin n) ℂ := k.2.1
-  exact Units.inv_eq_of_mul_eq_one_right (Matrix.mem_unitaryGroup_iff.mp hu)
-
-private theorem Jm_mul_Jm_eq_oneFormalDegree (ε : Fin n → Bool) : Jm ε * Jm ε = 1 := by
-  rw [Jm, Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
-  congr 1
-  funext a
-  split_ifs <;> norm_num
-
-private theorem conjTranspose_Jm_eq_Jm (ε : Fin n → Bool) : (Jm ε)ᴴ = Jm ε := by
-  rw [Jm, Matrix.diagonal_conjTranspose]
-  congr 1
-  funext a
-  simp only [Pi.star_apply]
-  split_ifs <;> simp
-
 theorem polarInv_key {ε : Fin n → Bool} (k : KG ε) (z : PCoord ε → ℂ) :
     Jm ε * (polarM (k, z))ᴴ * Jm ε = polarM (k⁻¹, adK k (-z)) := by
   have hK : toMK k ∈ Matrix.unitaryGroup (Fin n) ℂ := k.2.1
   have hKJ : toMK k * Jm ε = Jm ε * toMK k := k.2.2
-  have hJJ : Jm ε * Jm ε = 1 := Jm_mul_Jm_eq_oneFormalDegree ε
-  have hJh : (Jm ε)ᴴ = Jm ε := conjTranspose_Jm_eq_Jm ε
+  have hJJ : Jm ε * Jm ε = 1 := _root_.ReciprocityTheory.ChartRestriction.DS.S7.Jm_mul_self ε
+  have hJh : (Jm ε)ᴴ = Jm ε := _root_.ReciprocityTheory.ChartRestriction.DS.S7.Jm_conjTranspose ε
   have hKKh : toMK k * (toMK k)ᴴ = 1 := Matrix.mem_unitaryGroup_iff.mp hK
   have hKhK : (toMK k)ᴴ * toMK k = 1 := Matrix.mem_unitaryGroup_iff'.mp hK
   have hKhJ : (toMK k)ᴴ * Jm ε = Jm ε * (toMK k)ᴴ := by
@@ -124,7 +102,7 @@ theorem polarInv_key {ε : Fin n → Bool} (k : KG ε) (z : PCoord ε → ℂ) :
   rw [hKinv] at h2
   rw [show polarM (k, z) = toMK k * NormedSpace.exp (pmat z) from rfl,
     show polarM (k⁻¹, adK k (-z)) = toMK k⁻¹ * NormedSpace.exp (pmat (adK k (-z))) from rfl,
-    polarInv_toMK_inv, pmat_adK, h2, Matrix.conjTranspose_mul, hE, polarInv_pmat_neg, h1]
+    _root_.ReciprocityTheory.ChartRestriction.DS.S7.toMK_inv, pmat_adK, h2, Matrix.conjTranspose_mul, hE, _root_.ReciprocityTheory.ChartRestriction.DS.adKAux_pmat_neg, h1]
   calc Jm ε * (NormedSpace.exp (pmat z) * (toMK k)ᴴ) * Jm ε
       = Jm ε * NormedSpace.exp (pmat z) * ((toMK k)ᴴ * Jm ε) := by simp only [Matrix.mul_assoc]
     _ = Jm ε * NormedSpace.exp (pmat z) * (Jm ε * (toMK k)ᴴ) := by rw [hKhJ]
@@ -180,7 +158,7 @@ theorem muPolar_inv (ε : Fin n → Bool) : Measure.map (fun x : UJ ε => x⁻¹
   have hpm : Measurable (intMuCD_pM ε) := (polarM_continuous ε).measurable
   have hG : Measurable G :=
     ((measurable_one.indicator hT).comp hpm).mul
-      (ENNReal.measurable_ofReal.comp ((jac_continuous ε).measurable.comp measurable_snd))
+      (ENNReal.measurable_ofReal.comp ((_root_.ReciprocityTheory.ChartRestriction.DS.pb_jac_continuous ε).measurable.comp measurable_snd))
   have hH : Measurable fun k => ∫⁻ w, G (k, w) := hG.lintegral_prod_right'
   have step : ∀ k : KG ε, ∫⁻ z, (intMuCD_eM ε '' ((fun x : UJ ε => x⁻¹) ⁻¹' S)).indicator 1
       (intMuCD_pM ε (k, z)) * ENNReal.ofReal (Jac z) = ∫⁻ w, G (k⁻¹, w) := by

@@ -176,7 +176,7 @@ theorem IsCoord.finrank_eq [IsScalarTower L L' M'] {u : Basis ι L L'} (h : IsCo
   haveI : Module.Finite L L' := Module.Finite.of_basis u
   have h1 : finrank L L' * finrank L' S' = finrank L S' := Module.finrank_mul_finrank L L' S'
   have h2 : finrank L (ι → S) = Fintype.card ι * finrank L S := by
-    simp [Module.finrank, rank_fun_eq_lift_mul]
+    simp [Module.finrank]
   rw [e.finrank_eq, h2, ← Module.finrank_eq_card_basis u] at h1
   exact Nat.eq_of_mul_eq_mul_left Module.finrank_pos h1
 

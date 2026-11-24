@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.CompleteOfPow
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Algebra.Order.Floor.Extended
@@ -81,21 +82,7 @@ theorem precomplete_equiv {R M N : Type*} [CommRing R] [AddCommGroup M] [Module 
 
 theorem complete_of_pow {R : Type*} [CommRing R] (J : Ideal R) {n : ℕ} (hn : 0 < n)
     (h : IsAdicComplete (J ^ n) R) : IsAdicComplete J R := by
-  refine { toIsHausdorff := ⟨fun x hx => h.toIsHausdorff.haus x fun k => ?_⟩,
-           toIsPrecomplete := ⟨fun f hf => ?_⟩ }
-  · rw [← pow_mul]
-    exact hx (n * k)
-  · obtain ⟨L, hL⟩ := h.toIsPrecomplete.prec (f := fun k => f (n * k)) (fun {a b} hab => by
-      rw [← pow_mul]
-      exact hf (Nat.mul_le_mul_left n hab))
-    refine ⟨L, fun k => ?_⟩
-    have hk : k ≤ n * k := Nat.le_mul_of_pos_left k hn
-    have h1 : f k ≡ f (n * k) [SMOD (J ^ k • ⊤ : Submodule R R)] := hf hk
-    have h2 : f (n * k) ≡ L [SMOD (J ^ k • ⊤ : Submodule R R)] := by
-      have := hL k
-      rw [← pow_mul] at this
-      exact SModEq.mono (Submodule.smul_mono_left (Ideal.pow_le_pow_right hk)) this
-    exact h1.trans h2
+  apply Formalism.MainNotions.CrystallineLiftingInputs.OL.complete_of_pow <;> assumption
 
 private theorem mem_ideal_smul_top_pi_iff' {R : Type*} [CommRing R] {n : ℕ} (J : Ideal R) (x : Fin n → R) :
     x ∈ (J • ⊤ : Submodule R (Fin n → R)) ↔ ∀ i, x i ∈ J := by

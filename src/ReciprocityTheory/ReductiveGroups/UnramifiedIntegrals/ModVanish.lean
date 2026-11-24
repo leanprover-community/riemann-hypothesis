@@ -75,15 +75,12 @@ private lemma exists_SL2_mul_eq_Tmat_of_det_eq {m : ℕ} (hm : 0 < m) (A B C D :
     rw [hG]
     first
     | exact Int.gcd_pos_iff.mpr hAC
-    | (rcases hAC with h | h
-       · exact Int.gcd_pos_of_ne_zero_left C h
-       · exact Int.gcd_pos_of_ne_zero_right A h)
   obtain ⟨a0, ha0⟩ : (G : ℤ) ∣ A := by
     rw [hG]
-    first | exact Int.gcd_dvd_left | exact Int.gcd_dvd_left A C | exact Int.gcd_dvd_left _ _
+    first | exact Int.gcd_dvd_left A C
   obtain ⟨c0, hc0⟩ : (G : ℤ) ∣ C := by
     rw [hG]
-    first | exact Int.gcd_dvd_right | exact Int.gcd_dvd_right A C | exact Int.gcd_dvd_right _ _
+    first | exact Int.gcd_dvd_right A C
   obtain ⟨x, y, hbez⟩ : ∃ x y : ℤ, (G : ℤ) = A * x + C * y :=
     ⟨_, _, by rw [hG]; exact Int.gcd_eq_gcd_ab A C⟩
   have hG0 : (G : ℤ) ≠ 0 := by exact_mod_cast hGpos.ne'
@@ -103,8 +100,6 @@ private lemma exists_SL2_mul_eq_Tmat_of_det_eq {m : ℕ} (hm : 0 < m) (A B C D :
   obtain ⟨q, b, hdiv, hb0, hbd⟩ : ∃ q b : ℤ, d * q + b = x * B + y * D ∧ 0 ≤ b ∧ b < d :=
     ⟨(x * B + y * D) / d, (x * B + y * D) % d,
       (by first
-          | (have h5 := Int.emod_add_ediv (x * B + y * D) d; linarith)
-          | (have h5 := Int.ediv_add_emod' (x * B + y * D) d; linarith)
           | (have h5 := Int.mul_ediv_add_emod (x * B + y * D) d; linarith)), Int.emod_nonneg _ hdpos.ne',
       Int.emod_lt_of_pos _ hdpos⟩
   have hdet1 : (x + q * c0) * a0 - (y - q * a0) * -c0 = 1 := by linear_combination h1
@@ -127,7 +122,7 @@ private lemma exists_SL2_mul_eq_Tmat_of_det_eq {m : ℕ} (hm : 0 < m) (A B C D :
     · simp [hmd]
   · show !![x + q * c0, y - q * a0; -c0, a0] * !![A, B; C, D] = Tmat (G, b, d)
     rw [Matrix.mul_fin_two, e1, e2, e3, e4]
-    all_goals first | rfl | (unfold Tmat; rfl) | simp [Tmat]
+    all_goals first | rfl
 
 theorem Gm_vanish {m : ℕ} (hm : 0 < m) (τ : ℍ) (A B C D : ℤ) (hdet : A * D - B * C = m)
     (hfix : (A : ℂ) * τ + B = τ * (C * τ + D)) : Gm m τ = 0 := by
@@ -190,7 +185,6 @@ theorem Gm_vanish {m : ℕ} (hm : 0 < m) (τ : ℍ) (A B C D : ℤ) (hdet : A * 
     rw [hX, ← hform]
     first
     | exact UpperHalfPlane.ofComplex_apply (g • τ)
-    | simp
   unfold Gm
   apply Finset.prod_eq_zero hs
   apply fac_eq_zero_of_smul s τ g⁻¹

@@ -69,15 +69,13 @@ theorem card_stab_smul {A : Type*} [MulAction Γ A] (g : Γ) (a : A) :
       invFun := fun t => ⟨g * (t : Γ) * g⁻¹, by
         rw [MulAction.mem_stabilizer_iff, mul_smul, mul_smul, inv_smul_smul,
           MulAction.mem_stabilizer_iff.1 t.2]⟩
-      left_inv := fun s => Subtype.ext (by first | simp [mul_assoc] | group)
-      right_inv := fun t => Subtype.ext (by first | simp [mul_assoc] | group) }
+      left_inv := fun s => Subtype.ext (by first | simp [mul_assoc])
+      right_inv := fun t => Subtype.ext (by first | simp [mul_assoc]) }
 
 theorem card_stab_of_orbitRel {A : Type*} [MulAction Γ A] {a a' : A} (h : MulAction.orbitRel Γ A a' a) :
     Nat.card (MulAction.stabilizer Γ a') = Nat.card (MulAction.stabilizer Γ a) := by
   first
   | (obtain ⟨g, rfl⟩ := h; exact card_stab_smul g a)
-  | (obtain ⟨g, rfl⟩ := MulAction.mem_orbit_iff.1 (MulAction.orbitRel_apply.1 h);
-      exact card_stab_smul g a)
 
 section Fibre
 

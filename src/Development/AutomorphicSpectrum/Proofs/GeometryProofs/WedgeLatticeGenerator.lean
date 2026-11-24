@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.IotaMultiNeZeroOfLinIndep
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EtaleLocalizationAtPrimeTensorOfLowHeight
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -52,27 +53,7 @@ open AlgebraicGeometry CategoryTheory GlobalTheory.CompanionTheory.Ar GlobalTheo
 
 theorem ιMulti_ne_zero {Ω E : Type} [Field Ω] [AddCommGroup E] [Module Ω E] {r : ℕ} {b : Fin r → E}
     (hb : LinearIndependent Ω b) : exteriorPower.ιMulti Ω r b ≠ 0 := by
-  classical
-  obtain ⟨φ, hφ⟩ := LinearMap.exists_extend (Module.Basis.span hb).equivFun.toLinearMap
-  have hφb : ∀ j, φ (b j) = Pi.single j 1 := by
-    intro j
-    have h2 : φ (b j) = (Module.Basis.span hb).equivFun (Module.Basis.span hb j) := by
-      rw [Module.Basis.span_apply hb j]
-      exact LinearMap.congr_fun hφ ⟨b j, Submodule.subset_span ⟨j, rfl⟩⟩
-    rw [h2]
-    ext k
-    rw [Module.Basis.equivFun_self]
-    simp [Pi.single_apply, eq_comm]
-  intro h0
-  have h1 := congrArg (exteriorPower.alternatingMapLinearEquiv
-    ((Matrix.detRowAlternating (n := Fin r) (R := Ω)).compLinearMap φ)) h0
-  rw [exteriorPower.alternatingMapLinearEquiv_apply_ιMulti, map_zero] at h1
-  have h2 : (fun i => φ (b i)) = (1 : Matrix (Fin r) (Fin r) Ω) := by
-    ext i j
-    simp [hφb, Matrix.one_apply, Pi.single_apply, eq_comm]
-  have h3 : Matrix.det (fun i => φ (b i) : Matrix (Fin r) (Fin r) Ω) = 0 := h1
-  rw [h2, Matrix.det_one] at h3
-  exact one_ne_zero h3
+  apply GlobalTheory.CompanionTheory.Exterior.ιMulti_ne_zero_of_linearIndependent <;> assumption
 
 theorem ιMulti_mem_span {Ω E : Type} [Field Ω] [AddCommGroup E] [Module Ω E] (R : Subring Ω) {r : ℕ} (b c : Fin r → E)
     (hc : ∀ i, c i ∈ Submodule.span R (Set.range b)) :

@@ -181,8 +181,8 @@ theorem diagAction_commutator {W : Type*} [AddCommGroup W] [Module ℂ W] {E cp 
       (if b = c then diagE ε E cp cm a d else 0) - (if d = a then diagE ε E cp cm c b else 0) := by
   have e1 := hE a b c d
   have e2 := sgE_comm hC ε a b c d hab hcd
-  have h1 := E_comm_sgE hEC ε a b c d
-  have h2 := E_comm_sgE hEC ε c d a b
+  have h1 := _root_.ReciprocityTheory.ChartRestriction.DS.csq_E_comm_sgE hEC ε a b c d
+  have h2 := _root_.ReciprocityTheory.ChartRestriction.DS.csq_E_comm_sgE hEC ε c d a b
   have key : (E a b + sgE ε cp cm a b) * (E c d + sgE ε cp cm c d) -
       (E c d + sgE ε cp cm c d) * (E a b + sgE ε cp cm a b) =
       (E a b * E c d - E c d * E a b) + (sgE ε cp cm a b * sgE ε cp cm c d - sgE ε cp cm c d * sgE ε cp cm a b) := by

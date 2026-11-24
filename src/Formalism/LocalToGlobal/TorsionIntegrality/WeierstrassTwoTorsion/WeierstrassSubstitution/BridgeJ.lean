@@ -148,7 +148,7 @@ theorem bridgeCurve_of (hM : CoeffMem.{0}) (hU : WpInU.{0}) (hC : CubeTwoR.{0}) 
     rw [map_sub, map_mul, map_mul, map_mul, map_mul, map_pow, map_pow, MvPowerSeries.map_X,
       MvPowerSeries.map_X, PowerSeries.map_subst (HasSubst.X 0),
       PowerSeries.map_subst (HasSubst.X 1), MvPowerSeries.map_X, MvPowerSeries.map_X,
-      CurveSer.map_xS, MvPowerSeries.map_subst hs, fglMap, model_map] at key
+      CurveSer.map_xS, MvPowerSeries.map_subst hs, _root_.Formalism.L2.Th1.A.formal_group_map, model_map] at key
     unfold Formalism.L2.Th1.B.FI Formalism.InvariantFactorPaths.G7.at1
     rw [key]
     congr 2

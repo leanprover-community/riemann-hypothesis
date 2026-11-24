@@ -84,7 +84,6 @@ theorem clear_F (p : HeightOneSpectrum (𝓞 F)) (l : (A p).Fp) :
   have hπv : p.valuation F (algebraMap (𝓞 F) F π) < 1 := by
     first
     | exact (p.valuation_lt_one_iff_mem π).2 hπp
-    | exact (p.valuation_lt_one_iff_mem (K := F) π).2 hπp
   have hπF0 : algebraMap (𝓞 F) F π ≠ 0 := (map_ne_zero_iff _ (IsFractionRing.injective (𝓞 F) F)).2 hπ0
   obtain ⟨c, hc⟩ : ∃ c, c = (A p).ιF (algebraMap (𝓞 F) F π) := ⟨_, rfl⟩
   have hcint : c ∈ (ValuativeRel.valuation (A p).Fp).integer := by
@@ -105,8 +104,6 @@ theorem clear_F (p : HeightOneSpectrum (𝓞 F)) (l : (A p).Fp) :
         p.valuation F (algebraMap (𝓞 F) F π) * 1 := by
       first
       | gcongr
-      | exact mul_le_mul_right' h1 _
-      | exact mul_le_mul_of_nonneg_left h1 (zero_le _)
     rw [h3, mul_one] at h4
     exact absurd h4 (not_le.2 hπv)
   have hW : IsOpen ((fun z => (z * l - 1) * c⁻¹) ⁻¹'
@@ -175,9 +172,6 @@ theorem clear_one (p : HeightOneSpectrum (𝓞 F)) (z : (A p).Ep) :
     have hint : ∃ y : ℤ, y ≠ 0 ∧ IsIntegral ℤ ((y : E) * e) := by
       first
       | (obtain ⟨⟨w, hw⟩, y, hy0, hyw⟩ := exists_integral_multiple hz inj
-         refine ⟨y, hy0, ?_⟩
-         rw [mul_comm]
-         have hw' : IsIntegral ℤ w := hw
          simpa [hyw] using hw')
       | (obtain ⟨y, hy0, hy⟩ := hz.exists_integral_multiple
          exact ⟨y, hy0, by simpa [zsmul_eq_mul] using hy⟩)

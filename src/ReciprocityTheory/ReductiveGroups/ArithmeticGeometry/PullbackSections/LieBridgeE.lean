@@ -57,10 +57,6 @@ theorem tvOf_tv {x : Sp S ⟶ Xo.X} (n : TanM x Xo.univ.t.G) :
   apply tanM_ext
   first
     | rfl
-    | exact Over.OverMorphism.ext rfl
-    | (ext; rfl)
-    | (ext1; simp [tvOf, tv, mkT])
-    | simp [tvOf, tv, mkT]
 
 theorem eig_coords (y : FrPt Xo c S) (τ : E →+* ℂ) (n : TanM y.x Xo.univ.t.G)
     (hn : IsEigV (actR (x0 := y.x) (S := S) Xo.univ.t.act) (embK c τ) n) :

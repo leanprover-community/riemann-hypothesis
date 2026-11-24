@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.CoreStatements.HodgeTatePoints.TwpairAlg
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.TranslateMemIndOrder
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.DualOrder
 import Mathlib.Algebra.Order.Floor.Extended
@@ -53,21 +54,7 @@ open GlobalTheory.CompanionTheory.Ar.BT TensorProduct
 namespace PositivityTheory.HtPt.Twhopf
 
 theorem translate_mem : ∀ (R : Type) [CommRing R] (T : Type) [CommGroup T] (A : Subalgebra R (T → R)), IsHopfOrder A → ∀ f ∈ A, ∀ t, (fun h => f (t * h)) ∈ A := by
-  intro R _ T _ A hA f hf t
-  have key : ∀ g ∈ prodSpan A, (fun h => g (t, h)) ∈ A := by
-    intro g hg
-    induction hg using Submodule.span_induction with
-    | mem g hg =>
-      obtain ⟨a, ha, b, hb, rfl⟩ := hg
-      have e : (fun h => a (t, h).1 * b (t, h).2) = a t • b := by
-        funext h
-        simp [smul_eq_mul]
-      rw [e]
-      exact A.smul_mem hb _
-    | zero => exact A.zero_mem
-    | add x y _ _ hx hy => exact A.add_mem hx hy
-    | smul r x _ hx => exact A.smul_mem hx r
-  exact key _ (hA.comul f hf)
+  apply PositivityTheory.HtPt.Twpair.translate_mem <;> assumption
 
 theorem exists_coset_coord {T H : Type} [CommGroup T] [CommGroup H] (ι : H →* T) :
     ∃ κ : T → H, ∀ t, (QuotientGroup.mk t : T ⧸ ι.range).out * ι (κ t) = t := by

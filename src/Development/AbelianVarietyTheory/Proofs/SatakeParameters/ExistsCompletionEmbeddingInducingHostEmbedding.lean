@@ -52,6 +52,7 @@ import Formalism.LocalToGlobal.NormalizedHeckeFactors.TypesDefs
 import Formalism.LocalToGlobal.ProjectiveLattices.ErealAddIInf
 import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 import ReciprocityTheory.Automorphisms.PlaceA
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.NormEqOfSamePlace
 
 @[expose] public section
 
@@ -121,23 +122,7 @@ theorem norm_scalarLift_le (φ ψ : E →+* Om l) (h : ∀ x, ‖φ x‖ = ‖ψ
 theorem norm_eq_of_same_place (τ φ : E →+* Om l) (w : HeightOneSpectrum (𝓞 E)) (hw : w ∈ placesOver E l)
     (hτ : ∀ x : 𝓞 E, ‖τ (x : E)‖ < 1 ↔ x ∈ w.asIdeal) (hφ : ∀ x : 𝓞 E, ‖φ (x : E)‖ < 1 ↔ x ∈ w.asIdeal)
     (x : E) : ‖τ x‖ = ‖φ x‖ := by
-  have e1 := PI.CompDegEF.isEquiv_adicAbv_normAbv τ w hw
-    (fun x => ⟨PI.CompDegEF.norm_le_one_of_integer τ x, hτ x⟩)
-  have e2 := PI.CompDegEF.isEquiv_adicAbv_normAbv φ w hw
-    (fun x => ⟨PI.CompDegEF.norm_le_one_of_integer φ x, hφ x⟩)
-  obtain ⟨c, hc, hce⟩ := AbsoluteValue.isEquiv_iff_exists_rpow_eq.1 (e1.symm.trans e2)
-  have hl := congrFun hce ((l : ℕ) : E)
-  simp only [PI.CompDegEF.normAbv_apply, map_natCast] at hl
-  have hpos := PI.CompDegEF.norm_natCast_pos l
-  have hlt := PI.CompDegEF.norm_natCast_lt_one l
-  have hL : Real.log ‖((l : ℕ) : Om l)‖ ≠ 0 := (Real.log_neg hpos hlt).ne
-  have hc1 : c = 1 := by
-    have := congrArg Real.log hl
-    rw [Real.log_rpow hpos] at this
-    exact (mul_eq_right₀ hL).1 this
-  have hx := congrFun hce x
-  simp only [PI.CompDegEF.normAbv_apply, hc1, Real.rpow_one] at hx
-  exact hx
+  apply _root_.GlobalTheory.GalFirstClause.Emb.norm_eq_of_samePlace <;> assumption
 
 theorem main : ∀ (D : D7) (l : ℕ) [Fact l.Prime] (w : PlE D.host) (O : Type) [CommRing O] [Algebra ℤ_[l] O] [TopologicalSpace O] (Bw : LocBridge l D.host.E D.nd.Om (Dec (F := D.host.E) (D.nd.plOm.1 w)) O), GlobalTheory.Pst.Induces Bw → ∀ τ : D.host.E →+* Qbar l, (∀ x : 𝓞 D.host.E, ‖τ (x : D.host.E)‖ < 1 ↔ x ∈ w.asIdeal) → ∀ LL' : FinExt l, Bw.LL.1 ≤ LL'.1 → ∃ τ' : ↥Bw.Kw.1 →ₐ[ℚ_[l]] ↥LL'.1, GlobalTheory.Pst.IsInduced Bw τ τ' := by
   intro D l _ w O _ _ _ Bw hj τ hτ LL' hLL

@@ -124,9 +124,6 @@ theorem pEquiv (h : Hyp L nb uM nb' w₁ cM δ) :
     rw [hu]⟩
   exact ⟨P, h1, h2⟩
 
-theorem continuous_cA : Continuous (cA σ : AE F E → AE F E) :=
-  IsModuleTopology.continuous_of_linearMap (R := AF F) (cA σ).toLinearMap
-
 theorem isClosed_nA' {n : ℕ} {Y : Spc F E n} {b : GL (Fin n ⊕ Fin n) E} (hb : IsFrame2 σ Y b) :
     IsClosed (nA σ Y b : Set (Matrix (Fin n) (Fin n) (AE F E))) := by
   obtain ⟨ε, hε⟩ := hb.1
@@ -136,7 +133,7 @@ theorem isClosed_nA' {n : ℕ} {Y : Spc F E n} {b : GL (Fin n ⊕ Fin n) E} (hb 
     exact kunf.mem_nA_iff hε β
   rw [h]
   have hc : Continuous fun β : Matrix (Fin n) (Fin n) (AE F E) => β.map (cA σ) :=
-    continuous_id.matrix_map (continuous_cA (σ := σ))
+    continuous_id.matrix_map (_root_.PositivityTheory.SiegelWeilFormula.Act.C5.Meas.continuous_cA' (σ := σ))
   exact isClosed_eq continuous_id.matrix_transpose (hc.const_smul (((ε : ℤ) : AE F E))).neg
 
 instance lcNA {n : ℕ} {Y : Spc F E n} {b : GL (Fin n ⊕ Fin n) E} [Fact (IsFrame2 σ Y b)] :

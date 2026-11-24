@@ -1,5 +1,6 @@
 module
 
+import Formalism.LogFactorialIndices.SignedSubspaceIndex.IdxBase
 public import Formalism.LogFactorialIndices.StatementIdx
 public import Mathlib.Algebra.Module.Lattice.Full
 public import Mathlib.LinearAlgebra.Determinant
@@ -58,18 +59,6 @@ open Module Submodule
 noncomputable section
 
 namespace Formalism.LatticeIndexTer.LatticeIndexDeterminant
-
-theorem length_quot_range {O M : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
-    [AddCommGroup M] [Module O M] [Module.Free O M] [Module.Finite O M]
-    (φ : M →ₗ[O] M) (hφ : Function.Injective φ) :
-    Module.length O (M ⧸ LinearMap.range φ) = IsDiscreteValuationRing.addVal O (LinearMap.det φ) := by
-  first | exact Bl.DiscreteValuationQuotients.goal1 .. | (apply Bl.DiscreteValuationQuotients.goal1 <;> assumption) | (intros; apply Bl.DiscreteValuationQuotients.goal1 <;> assumption)
-
-theorem length_tower {O Y : Type*} [CommRing O] [AddCommGroup Y] [Module O Y]
-    (R S D E : Submodule O Y) (hD : ∀ y, y ∈ D ↔ y ∈ R ∧ y ∈ S) (hE : E ≤ D) :
-    Module.length O (R ⧸ E.comap R.subtype) =
-      Module.length O (R ⧸ S.comap R.subtype) + Module.length O (D ⧸ E.comap D.subtype) := by
-  first | exact Bl.general_b_fact_second'''.goal1 .. | (apply Bl.general_b_fact_second'''.goal1 <;> assumption) | (intros; apply Bl.general_b_fact_second'''.goal1 <;> assumption)
 
 theorem arith (x y d va vb ve ve' : ℕ∞) (h1 : ve = x + d) (h2 : ve' = y + d)
     (h3 : ve + vb = ve' + va) (hve : ve ≠ ⊤) (hve' : ve' ≠ ⊤) (hva : va ≠ ⊤) (hvb : vb ≠ ⊤) :
@@ -153,7 +142,7 @@ theorem len_span (b : Basis ι K Y) (w : ι → Y) (hw : ∀ j, w j ∈ Submodul
     congr 1
     ext i j
     exact hH i j
-  · rw [← hrange, length_quot_range φ hinj]
+  · rw [← hrange, _root_.Bl.DiscreteValuationQuotients.goal1 φ hinj]
 
 theorem idx_two_bases (b b' : Basis ι K Y) (a c0 : O) (ha : a ≠ 0) (hc0 : c0 ≠ 0)
     (h : algebraMap O K a = (b.toMatrix b').det * algebraMap O K c0) :
@@ -197,9 +186,9 @@ theorem idx_two_bases (b b' : Basis ι K Y) (a c0 : O) (ha : a ≠ 0) (hc0 : c0 
   have hE : Submodule.span O (Set.range w) ≤
       Submodule.span O (Set.range b) ⊓ Submodule.span O (Set.range b') :=
     Submodule.span_le.2 (by rintro _ ⟨j, rfl⟩; exact ⟨hw j, hw' j⟩)
-  have t1 := length_tower (Submodule.span O (Set.range b)) (Submodule.span O (Set.range b'))
+  have t1 := _root_.Bl.general_b_fact_second'''.goal1 (Submodule.span O (Set.range b)) (Submodule.span O (Set.range b'))
     _ _ (fun y => Submodule.mem_inf) hE
-  have t2 := length_tower (Submodule.span O (Set.range b')) (Submodule.span O (Set.range b))
+  have t2 := _root_.Bl.general_b_fact_second'''.goal1 (Submodule.span O (Set.range b')) (Submodule.span O (Set.range b))
     _ _ (fun y => by rw [Submodule.mem_inf, and_comm]) hE
   rw [hlen] at t1
   rw [hlen'] at t2
@@ -302,24 +291,7 @@ theorem idxScale_of (hB : LatBasis) : IdxScale := by
     simp
 
 theorem LatticeIndexDeterminant.lattice_span_of_basis : LatBasis := by
-  intro O K X _ _ _ _ _ _ _ _ _ _ _ A hA
-  have : Module.IsTorsionFree O K :=
-    isTorsionFree_iff_algebraMap_injective.mpr (IsFractionRing.injective O K)
-  have : Submodule.IsFullLattice K A :=
-    { toIsLattice := Submodule.IsLattice.of_fg K hA.1, span_eq_top := hA.2 }
-  have := Submodule.IsLattice.finite K A
-  have := Submodule.IsLattice.free K A
-  let b := Module.Free.chooseBasis O A
-  let bK := b.extendOfIsFullLattice K
-  have hcard : Fintype.card (Module.Free.ChooseBasisIndex O A) = finrank K X :=
-    (Module.finrank_eq_card_basis bK).symm
-  refine ⟨bK.reindex (Fintype.equivFinOfCardEq hcard), ?_⟩
-  rw [Module.Basis.range_reindex]
-  have hr : Set.range bK = A.subtype '' Set.range b := by
-    rw [← Set.range_comp]
-    ext x
-    simp [bK]
-  rw [hr, Submodule.span_image, b.span_eq, Submodule.map_top, Submodule.range_subtype]
+  apply Formalism.LatticeIndexTer.lattice_has_basis <;> assumption
 
 theorem lattice_index_scale : IdxScale := idxScale_of LatticeIndexDeterminant.lattice_span_of_basis
 

@@ -72,8 +72,8 @@ theorem blockIdx_loc (ρ : ℕ → ℕ → ℝ) (v : D.what₂.Tau) :
 
 theorem mem_rootPat_iff (τ : D.what₂.Tau) (w : Point D.host.E (D.R.rS + 1)) (q : Fin (D.R.rS + 1) × Fin (D.R.rS + 1)) :
     q ∈ rootPat (ptLoc D τ w) ↔ q.1 < q.2 ∧ Formalism.L2.SG.RealObj.blkOf w.1 q.1.1 = Formalism.L2.SG.RealObj.blkOf w.1 q.2.1 := by
-  simp only [rootPat, ptLoc, ptLocS, locBlocks, Set.mem_setOf_eq, blockIdx_loc]
-  simp [Set.mem_toFinset, Finset.mem_filter, Finset.mem_univ]
+  simp only [rootPat, ptLoc, ptLocS, locBlocks, blockIdx_loc]
+  simp [Finset.mem_filter, Finset.mem_univ]
 
 def idxF (τ : D.what₂.Tau) (w : Point D.host.E (D.R.rS + 1)) : ↥(rootPat (ptLoc D τ w)) ≃ Formalism.L2.SG.RealObj.FreeE w where
   toFun q := ⟨q.1, (mem_rootPat_iff τ w q.1).1 q.2⟩
@@ -87,11 +87,7 @@ theorem rootCoords_cont (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ) (p : Point
   refine continuous_pi (fun q => ?_)
   unfold flagMat
   first
-    | fun_prop
-    | (simp only [Matrix.mul_apply, Matrix.of_apply]; fun_prop)
     | continuity
-    | (exact ((continuous_apply _).comp (continuous_apply _)).comp
-        (Continuous.matrix_mul (Continuous.matrix_mul continuous_const continuous_id) continuous_const))
 
 variable {X : HidaSetting D} {θ : ℝ} (C : Choice X θ) (u u' : D.what₂.Word) (w : Point D.host.E (D.R.rS + 1))
   (γ : X.B.I.Ginf) (τ : D.what₂.Tau)

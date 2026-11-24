@@ -101,11 +101,6 @@ theorem Qm_of_tr (Q : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) :
     first
     | (simp [Matrix.mulVec_single]; done)
     | (simp [Matrix.mulVec_single]; congr 1; ext; simp <;> omega)
-    | (simp [Matrix.mulVec_single_one]; done)
-    | (simp [Matrix.mulVec_single_one]; congr 1; ext; simp <;> omega)
-    | (simp [Matrix.mulVec, dotProduct, Pi.single_apply]; done)
-    | (simp [Matrix.mulVec, dotProduct, Pi.single_apply]; congr 1; ext; simp <;> omega)
-    | (simp [Matrix.mulVec_single]; omega)
 
 theorem Qi_of_tr {ε : Fin (2 * r + k + 1) → Bool} {Q Qi : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (h2 : Q * Qi = 1) (hg : Qᴴ * Formalism.REAL.Jm ε * Q = Hpk k r) :
@@ -139,10 +134,7 @@ theorem inN_scale {n : ℕ} (ε : Fin n → Bool) (e : Fin r → Fin n → ℂ) 
   unfold InN InS
   intro h
   first
-    | simpa [hsp, hs, Matrix.mulVec_smul, hc] using h
     | simpa [hsp, hs, Matrix.mulVec_smul, hc, hJ, dotProduct_smul, smul_dotProduct, mul_eq_zero] using h
-    | simpa [hsp, hs, Matrix.mulVec_smul, hc, hJ, Matrix.dotProduct_smul, Matrix.smul_dotProduct, mul_eq_zero] using h
-    | (unfold hJ at h ⊢; simp only [hsp, hs, Matrix.mulVec_smul] at h ⊢; done)
 
 theorem inN_loc {n : ℕ} (hn : n = 2 * r + k + 1) (ε : Fin n → Bool) (Q : Matrix (Fin n) (Fin (2 * r + k + 1)) ℂ)
     (Qi : Matrix (Fin (2 * r + k + 1)) (Fin n) ℂ) (h1 : Qi * Q = 1) (h2 : Q * Qi = 1)
@@ -196,8 +188,6 @@ theorem inN_scale' {n : ℕ} (ε : Fin n → Bool) (e : Fin r → Fin n → ℂ)
   first
     | simpa [hsp, hs, Matrix.mulVec_smul, hc] using h
     | simpa [hsp, hs, Matrix.mulVec_smul, hc, hJ, dotProduct_smul, smul_dotProduct, mul_eq_zero] using h
-    | simpa [hsp, hs, Matrix.mulVec_smul, hc, hJ, Matrix.dotProduct_smul, Matrix.smul_dotProduct, mul_eq_zero] using h
-    | (unfold hJ at h ⊢; simp only [hsp, hs, Matrix.mulVec_smul] at h ⊢; done)
 
 theorem nset_loc {n : ℕ} (hn : n = 2 * r + k + 1) (ε : Fin n → Bool) (Q : Matrix (Fin n) (Fin (2 * r + k + 1)) ℂ)
     (Qi : Matrix (Fin (2 * r + k + 1)) (Fin n) ℂ) (h1 : Qi * Q = 1) (h2 : Q * Qi = 1)
@@ -247,9 +237,6 @@ theorem psiR_fix_left {n : ℕ} (ε : Fin n → Bool) (gg : ℕ) (e f : Fin r �
     intro a w
     first
       | (unfold hJ; conv_lhs => rw [← hf a, Matrix.star_mulVec, ← Matrix.dotProduct_mulVec, Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, hH])
-      | (unfold hJ; conv_lhs => rw [← hf a, Matrix.star_mulVec, ← Matrix.dotProduct_mulVec, Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, ← Matrix.mul_assoc, hH])
-      | (unfold hJ; conv_lhs => rw [← hf a, Matrix.star_mulVec, ← dotProduct_mulVec, Matrix.mulVec_mulVec, Matrix.mulVec_mulVec, hH])
-      | (unfold hJ; done)
   unfold psiR
   congr 3
   unfold rootCoord

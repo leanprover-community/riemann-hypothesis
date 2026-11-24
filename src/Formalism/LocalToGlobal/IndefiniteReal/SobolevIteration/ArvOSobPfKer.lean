@@ -180,11 +180,7 @@ theorem polyKernel_holds : PolyKernel := by
         hg_int.integrableOn
       refine le_trans (le_of_eq ?_) h
       first
-        | rfl
         | exact mul_comm _ _
-        | ring1
-        | (simp only [Measure.real]; ring1)
-        | (simp [Measure.real, mul_comm]; done)
     have h2 : ∫ k in {k : Fin n → Fin n → ℂ | qr k < ε / 2}, g k ∂μ ≤ ∫ k, g k ∂μ :=
       setIntegral_le_integral hg_int hg_nn
     rw [hIdef]; linarith
@@ -192,12 +188,9 @@ theorem polyKernel_holds : PolyKernel := by
   have hcm : ∫ k, I⁻¹ * g k ∂μ = I⁻¹ * ∫ k, g k ∂μ := by
     first
       | exact integral_const_mul I⁻¹ _
-      | exact integral_mul_left I⁻¹ _
   have hnr : ∀ x : ℝ, 0 ≤ x → ‖(x : ℂ)‖ = x := fun x hx => by
     first
       | exact Complex.norm_of_nonneg hx
-      | (rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hx])
-      | simp [abs_of_nonneg hx]
   obtain ⟨q, hqdef⟩ : ∃ q : MvPolynomial ((Fin n × Fin n) ⊕ (Fin n × Fin n)) ℂ,
       q = MvPolynomial.C ((I⁻¹ : ℝ) : ℂ) *
         (MvPolynomial.C 1 - MvPolynomial.C ((R⁻¹ : ℝ) : ℂ) * qP) ^ N := ⟨_, rfl⟩
@@ -217,8 +210,6 @@ theorem polyKernel_holds : PolyKernel := by
     have hc : ∫ k, ((I⁻¹ * g k : ℝ) : ℂ) ∂μ = ((∫ k, I⁻¹ * g k ∂μ : ℝ) : ℂ) := by
       first
         | exact integral_complex_ofReal
-        | exact integral_ofReal
-        | exact (integral_ofReal (𝕜 := ℂ))
     rw [hc, hcm, ← hIdef, inv_mul_cancel₀ hIpos.ne', Complex.ofReal_one]
   · simp only [hF]
     have hae : (fun k => ‖((I⁻¹ * g k : ℝ) : ℂ)‖) =ᵐ[μ] fun k => I⁻¹ * g k := by
@@ -251,8 +242,6 @@ theorem polyKernel_holds : PolyKernel := by
       refine mul_le_of_le_one_left (mul_nonneg (inv_nonneg.2 hIpos.le) (pow_nonneg hβ0 N)) ?_
       first
         | exact ENNReal.toReal_le_of_le_ofReal zero_le_one (by rw [ENNReal.ofReal_one]; exact prob_le_one)
-        | exact measureReal_le_one
-        | simp
     have hβN : β ^ N = (β / α) ^ N * α ^ N := by
       rw [div_pow, div_mul_cancel₀ _ (pow_pos hα0 N).ne']
     have h4 : β ^ N < η * I := by

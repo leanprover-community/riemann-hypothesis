@@ -71,9 +71,6 @@ theorem AAv_head {A : Type} [Ring A] [Algebra ℂ A] (k r : ℕ) (E : Fin (2 * r
     (hh : ∀ a b : Fin i0, y (Fin.castLE hi0 a) (sR k r i0 hi0 b) = star (h a b)) :
     AAv k r E y i0 hi0 ell = star h.det • qminor E (sR k r i0 hi0) (sR k r i0 hi0) (ell + (i0 : ℂ) - 1) := by
   classical
-  have hsv : ∀ l : Fin i0, (sR k r i0 hi0 l).val = 2 * r + k - l.val := by
-    intro l
-    simp [sR, Formalism.QuantumDeterminants.esI]
   have he : StrictMono (fun l => keyS k r (sR k r i0 hi0 l)) := by
     intro a b hab
     simp only [keyS_sR]
@@ -160,7 +157,7 @@ theorem second_expansion_identity : ExpansionDualColumn := by
       rw [hav, hsv]
       rw [dite_eq_left a.isLt, dite_eq_left (by omega)]
       congr 2
-      apply Fin.ext; simp only [Fin.val_mk]; omega
+      apply Fin.ext; simp only; omega
   have hP := third_peeling_identity A k r z' E hG (i0 + s') hm' ⟨i0, by omega⟩ ell
   have hLa : La (qminor E e2 (sR k r (i0 + s') hm) (ell + ((i0 + s' : ℕ) : ℂ) - 1)) =
       La (qminor E (sR k r i0 (by omega)) (sR k r i0 (by omega)) (ell + (i0 : ℂ) - 1)) := la_congr hR hP

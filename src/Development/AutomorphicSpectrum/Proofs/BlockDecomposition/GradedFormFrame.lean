@@ -1,9 +1,11 @@
 module
 
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.StCocycle
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartDividedPowersGradedConstantStatement
+public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.PerfectoidPullbacks.SEqOne
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartDividedPowersGradedConstant
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ChartIsGoodStatement
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsChartFromCoordinatesStatement
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PdPBotPos
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -53,25 +55,7 @@ namespace GlobalTheory.CompanionTheory.GrForm.FrameEx
 
 theorem dividedPowerFiltration_dividedPowersBot (O : Type) [CommRing O] {n : ℕ} (hn : n ≠ 0) :
     pdP (dividedPowersBot O) n = ⊥ := by
-  refine le_bot_iff.1 (Ideal.span_le.2 ?_)
-  rintro _ ⟨l, hl, hr, rfl⟩
-  have hpos : ∃ p ∈ l, p.1 ≠ 0 := by
-    by_contra hne
-    push_neg at hne
-    have : (l.map Prod.fst).sum = 0 := by
-      refine List.sum_eq_zero ?_
-      intro x hx
-      obtain ⟨p, hp, rfl⟩ := List.mem_map.1 hx
-      exact hne p hp
-    omega
-  obtain ⟨p, hp, hp0⟩ := hpos
-  have h0 : p.2 = 0 := by simpa using hl p hp
-  have : (dividedPowersBot O).dpow p.1 p.2 = 0 := by
-    rw [h0]; exact (dividedPowersBot O).dpow_eval_zero hp0
-  have hz : (l.map fun q => (dividedPowersBot O).dpow q.1 q.2).prod = 0 :=
-    List.prod_eq_zero (List.mem_map.2 ⟨p, hp, this⟩)
-  rw [hz]
-  exact Ideal.zero_mem _
+  apply GlobalTheory.CompanionTheory.BcLoc.dividedPowerFiltration_dividedPowersBot' <;> assumption
 
 variable {O : Type} [CommRing O] {X : Scheme.{0}} {q : X ⟶ Spec (CommRingCat.of O)}
 
@@ -89,12 +73,12 @@ open FrameEx in
 theorem stFrame : StFrame := by
   intro O _ l s hb X q W d c u hu
   letI := (strV q W).toAlgebra
-  obtain ⟨c', e, hTF, he1, het, hev⟩ := GlobalTheory.T.exists_chart_from_coordinates (O := O) (R := O) (I := ⊥) (dividedPowersBot O) l s hb q
+  obtain ⟨c', e, hTF, he1, het, hev⟩ := _root_.GlobalTheory.CompanionTheory.ChartAlg.chart_exists (O := O) (R := O) (I := ⊥) (dividedPowersBot O) l s hb q
     (Ideal.Quotient.mk ⊥) (fun a => rfl) c
-  have good := GlobalTheory.T.chart_is_good c'
+  have good := _root_.GlobalTheory.CompanionTheory.ChartMaps.good c'
   have hQ : ∀ T, SS q l s W T → InU W T := inU_of_SS
   have hD : SS q l s W c'.D := ⟨hTF, W, rfl, c'.inV⟩
-  obtain ⟨hpow, hgr⟩ := GlobalTheory.T.chart_divided_powers_graded_constant c' good (SS q l s W) hQ hD
+  obtain ⟨hpow, hgr⟩ := _root_.GlobalTheory.CompanionTheory.ChartFil.chart_grConst c' good (SS q l s W) hQ hD
   have hval : ∀ (T : Thick (LL q)) (h : InU W T) (σ : c'.D ⟶ T) (f : Γ(X, W)),
       Ideal.Quotient.mk T.J (σ.φ (e (1 ⊗ₜ f))) = ev T h f := by
     intro T h σ f

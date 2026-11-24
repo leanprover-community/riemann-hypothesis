@@ -114,27 +114,6 @@ theorem InL.sum {l : ℕ} {ι : Type} (s : Finset ι) (f : ι → PowerSeries C)
     rw [map_sum]
     exact Finset.sum_eq_zero fun i hi => hf i hi m hm
 
-private theorem coeff_tyS_pow_eq_of_two_le {l : ℕ} (hl : 2 ≤ l) (b : ℕ → C) (s : ℕ) :
-    PowerSeries.coeff (l ^ s) (tyS l b) = b s := by
-  simp only [tyS, PowerSeries.coeff_mk]
-  rw [Finset.sum_eq_single s]
-  · rw [if_pos rfl]
-  · intro t _ ht
-    rw [if_neg]
-    intro e
-    exact ht (Nat.pow_right_injective hl e)
-  · intro hs
-    exfalso
-    apply hs
-    rw [Finset.mem_range]
-    have := Nat.lt_pow_self (by omega : 1 < l) (n := s)
-    omega
-
-private theorem coeff_tyS_eq_zero_of_ne_pow {l : ℕ} (b : ℕ → C) (m : ℕ) (hm : ∀ s, l ^ s ≠ m) :
-    PowerSeries.coeff m (tyS l b) = 0 := by
-  simp only [tyS, PowerSeries.coeff_mk]
-  exact Finset.sum_eq_zero fun s _ => if_neg (hm s)
-
 theorem tyS_Vpow {l : ℕ} (hl : 2 ≤ l) (a : ℕ → C) :
     tyS l (fun s => if s < 1 then 0 else a (s - 1)) =
       PowerSeries.subst ((PowerSeries.X : PowerSeries C) ^ l) (tyS l a) := by
@@ -145,7 +124,7 @@ theorem tyS_Vpow {l : ℕ} (hl : 2 ≤ l) (a : ℕ → C) :
     rw [coeff_subst_X_pow hl0]
     by_cases hk : ∃ t, l ^ t = k
     · obtain ⟨t, rfl⟩ := hk
-      rw [← pow_succ', coeff_tyS_pow_eq_of_two_le hl, coeff_tyS_pow_eq_of_two_le hl]
+      rw [← pow_succ', _root_.Formalism.L2.FormalSeriesBounds.coeff_tyS_pow hl, _root_.Formalism.L2.FormalSeriesBounds.coeff_tyS_pow hl]
       simp
     · push_neg at hk
       have hk' : ∀ s, l ^ s ≠ l * k := by
@@ -157,7 +136,7 @@ theorem tyS_Vpow {l : ℕ} (hl : 2 ≤ l) (a : ℕ → C) :
           omega
         · rw [pow_succ'] at hs
           exact hk s (Nat.eq_of_mul_eq_mul_left hl0 hs)
-      rw [coeff_tyS_eq_zero_of_ne_pow _ _ hk', coeff_tyS_eq_zero_of_ne_pow _ _ hk]
+      rw [_root_.Formalism.L2.FormalSeriesBounds.coeff_tyS_of_ne _ _ hk', _root_.Formalism.L2.FormalSeriesBounds.coeff_tyS_of_ne _ _ hk]
   · rw [coeff_subst_X_pow_of_not_dvd hl0 _ _ hm]
     simp only [tyS, PowerSeries.coeff_mk]
     apply Finset.sum_eq_zero

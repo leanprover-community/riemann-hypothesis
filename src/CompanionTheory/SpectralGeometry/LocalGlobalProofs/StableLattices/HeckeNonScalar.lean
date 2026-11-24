@@ -233,7 +233,7 @@ theorem nonScal : NonScal := by
     rw [LinearMap.sum_apply, if_pos rfl, hC] at h
     have h0 : ∑ d : Fin (m + 1), (((-1 : ℂ) ^ ((d : ℕ) + (s : ℕ))) •
         (capEntry X.E (ω - 1 - (m : ℂ)) s d * cminor X.E s.succAbove d.succAbove (ω - 1))) v = 0 :=
-      Finset.sum_eq_zero fun d _ => by simp [Module.End.mul_apply, hall d]
+      Finset.sum_eq_zero fun d _ => by simp [hall d]
     rw [h0] at h
     have h1 : Formalism.QuantumDeterminants.capP χ (ω - 1 - cn (m + 1)) • v = 0 := by simpa using h.symm
     exact (smul_ne_zero hc1 hv) h1

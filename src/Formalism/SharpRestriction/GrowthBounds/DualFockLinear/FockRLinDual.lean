@@ -98,7 +98,7 @@ theorem Lin_chain (N : S → Matrix (Fin k) (Fin k) R) (s : S) (b : Fin k) (h : 
   | mul_X p v hp =>
     rw [map_mul, Derivation.leibniz, hp, hX v]
     simp only [Derivation.leibniz, map_add (f := _), map_mul, smul_add, Finset.sum_add_distrib, smul_eq_mul,
-      Finset.mul_sum, Finset.smul_sum]
+      Finset.mul_sum]
     congr 1
     · refine Finset.sum_congr rfl fun a _ => ?_
       simp only [MvPolynomial.smul_eq_C_mul]

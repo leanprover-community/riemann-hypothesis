@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.NonemptyIsLimitBaseChange
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.PullCub
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -61,31 +62,7 @@ theorem exists_gen_of_subcover {Y : Scheme.{0}} {N : LB Y} (hN : N.IsLB) {J : Ty
     (hu : ∀ k l y, y ∈ W k → y ∈ W l →
       gm (𝟙 Y) y _ (u k) = gm (𝟙 Y) y _ (N.g (a k) (a l)) * gm (𝟙 Y) y _ (u l)) :
     ∃ t : LB.Gen N, t.IsGen := by
-  have glue : ∀ i : N.ι, ∃ s : Γ(Y, N.U i)ˣ, ∀ k y, y ∈ N.U i → y ∈ W k →
-      gm (𝟙 Y) y _ s = gm (𝟙 Y) y _ (N.g i (a k)) * gm (𝟙 Y) y _ (u k) := by
-    intro i
-    let v : ∀ k, Γ(Y, N.U i ⊓ W k)ˣ := fun k =>
-      res (inf_le_inf_left _ (ha k)) (N.g i (a k)) * res inf_le_right (u k)
-    have hv : ∀ k y, y ∈ N.U i ⊓ W k →
-        gm (𝟙 Y) y _ (v k) = gm (𝟙 Y) y _ (N.g i (a k)) * gm (𝟙 Y) y _ (u k) := fun k y hy =>
-      (map_mul _ _ _).trans (congrArg₂ (· * ·) (gm_res _ y _ hy _) (gm_res _ y _ hy _))
-    obtain ⟨s, hs⟩ := glue_unit (N.U i) (fun k => N.U i ⊓ W k) (fun _ => inf_le_left)
-      (fun y hy => by
-        obtain ⟨k, hk⟩ := hW y
-        exact TopologicalSpace.Opens.mem_iSup.2 ⟨k, hy, hk⟩) v (fun k l y hy => by
-        rw [hv k y hy.1, hv l y hy.2, hu k l y hy.1.2 hy.2.2, ← _root_.mul_assoc,
-          gm_cocycle hN (𝟙 Y) y hy.1.1 (ha k hy.1.2) (ha l hy.2.2)])
-    refine ⟨s, fun k y hi hk => ?_⟩
-    rw [← hv k y ⟨hi, hk⟩, ← hs k]
-    exact (gm_res _ y _ (show y ∈ N.U i ⊓ W k from ⟨hi, hk⟩) _).symm
-  choose s hs using glue
-  refine ⟨⟨s⟩, fun i j => unit_ext fun y hy => ?_⟩
-  obtain ⟨k, hk⟩ := hW y
-  refine (gm_res _ y _ hy _).trans (Eq.trans ?_
-    ((map_mul _ _ _).trans (congrArg₂ (· * ·) rfl (gm_res _ y _ hy _))).symm)
-  show gm (𝟙 Y) y _ (s i) = _ * gm (𝟙 Y) y _ (s j)
-  rw [hs i k y hy.1 hk, hs j k y hy.2 hk, ← _root_.mul_assoc,
-    gm_cocycle hN (𝟙 Y) y hy.1 hy.2 (ha k hk)]
+  apply GlobalTheory.exists_gen_of_refinement <;> assumption
 
 theorem exists_forall_of_cofiltered {I : Type} [Category.{0} I] [IsCofiltered I] {i : I} {J : Type}
     [Finite J] (P : J → ∀ j : I, (j ⟶ i) → Prop)

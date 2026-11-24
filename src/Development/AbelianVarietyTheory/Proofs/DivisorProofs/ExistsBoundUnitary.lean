@@ -48,6 +48,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import Formalism.SharpRestriction.GlobalSchurBounds.LocalCountingBounds
 
 @[expose] public section
 
@@ -111,7 +112,7 @@ theorem cmExt (D : D7) : IsCMExt D.host.F D.host.E D.sp.cm.sig :=
 
 theorem isTotDef_of_posDef (V : HSp D) (h : ∀ τ, (gramAt D V τ).PosDef) : Formalism.UG.IsTotDef D.sp.cm.sig V.gram := by
   refine ⟨D.sp.cm.totReal, fun ι => Or.inl fun x hx => ?_⟩
-  have hτ := (cmExt D).2.2.2
+  have hτ := (_root_.Formalism.MainNotions.UnusedSlot34.isCMExt_D D).2.2.2
   obtain ⟨τ, hι⟩ := (GlobalTheory.CMTypePlaces.places_bijective D).2 (InfinitePlace.mk (Complex.ofRealHom.comp ι))
   have hι' : (tauE D τ).comp (algebraMap D.host.F D.host.E) = Complex.ofRealHom.comp ι := by
     rcases InfinitePlace.mk_eq_iff.1 hι with h1 | h1
@@ -152,7 +153,7 @@ theorem exists_compact : ∀ {D : D7} (V : HSp D), (∀ τ, (gramAt D V τ).PosD
   have hf : GlobalTheory.Mass.FiniteClasses (GQ V) ((GlobalTheory.Mass.stdLevel D.sp.cm.sig V.gram).comap π) := by
     refine (GlobalTheory.Mass.finiteClasses_comap π (GlobalTheory.Mass.ratIn _ _ _) _ hπ.surjective hπ.injOn).2 ?_
     rw [hπ.map_ratIn]
-    exact GlobalTheory.Mass.finiteClasses_unitary (cmExt D) (gram_hermND V) (isTotDef_of_posDef V hV)
+    exact GlobalTheory.Mass.finiteClasses_unitary (_root_.Formalism.MainNotions.UnusedSlot34.isCMExt_D D) (gram_hermND V) (isTotDef_of_posDef V hV)
       (GlobalTheory.Mass.isCompact_stdLevel _ _ (gram_hermND V).2) (GlobalTheory.Mass.isOpen_stdLevel _ _)
   choose R hR using fun τ => exists_bound_unitary (hV τ)
   obtain ⟨C, hC, hCe⟩ := (GlobalTheory.Mass.intTens_open_compact D.host.F D.host.E).2

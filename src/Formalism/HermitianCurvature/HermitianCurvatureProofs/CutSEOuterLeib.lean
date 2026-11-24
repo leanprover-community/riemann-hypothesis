@@ -161,8 +161,6 @@ theorem outerLeib_of (hP : PairAtDeriv) : OuterLeib := by
     · simpa [Φs, wOp_dT] using (hv a).2 [2, 0]
     · simpa [Φs, wOp_dTb] using (hv a).2 [5, 3]
   obtain ⟨ε0, hε0, F, hF, hb⟩ := slDom_fin μ l c Φs hΦs t ht
-  have hF0 : ∀ c', 0 ≤ F c' := fun c' =>
-    (norm_nonneg _).trans (hb t (Metric.mem_ball_self hε0) c' (Classical.arbitrary _))
 
   have lu : ∀ a, u a ∈ lcSub k r z z' π π' := fun a => (hu a).1
   have lv : ∀ a, v a ∈ lcSub k r z z' π π' := fun a => (hv a).1

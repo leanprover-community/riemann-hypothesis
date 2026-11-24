@@ -125,7 +125,7 @@ theorem slm_chain {F : Matrix (Fin n) (Fin n) ℂ → ℂ} (hF : Formalism.REAL.
     filter_upwards [hc.continuousAt.preimage_mem_nhds (hU.mem_nhds hmem), hcU] with s hs1 hs2
     exact heq _ hs1 hs2
   have hR : Formalism.REAL.Rd (slmJi ε (c s0) * c') F (c s0) = fderiv ℝ Ft (c s0) c' := by
-    have h := Formalism.REAL.rdExtV n ε ℂ F Ft U (c s0) (slmJi ε (c s0) * c') hU hmem hc0 hcd heq hY
+    have h := _root_.Formalism.REAL.vector_right_derivative_extends n ε ℂ F Ft U (c s0) (slmJi ε (c s0) * c') hU hmem hc0 hcd heq hY
     rw [← Matrix.mul_assoc, slm_mul_Ji hc0, Matrix.one_mul] at h
     exact h
   rw [← slm_Rd_sum hF hc0 hY, hR]

@@ -1,52 +1,7 @@
 module
 
 public import Mathlib.Algebra.MvPolynomial.PDeriv
-public import Mathlib.RingTheory.Ideal.Span
 public import Mathlib.RingTheory.Localization.FractionRing
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
-import Mathlib.RingTheory.PiTensorProduct
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.TypeStar
-import Mathlib.Topology.Sheaves.Init
 public import Mathlib.RingTheory.Ideal.Maps
 
 @[expose] public section
@@ -111,32 +66,25 @@ theorem xv_of_not {j₀ : Fin m} {p : Fin (D + 1) × Fin m} (h : ¬ Zs j₀ p) :
     xv (Ω := Ω) j₀ p = X ⟨p, h⟩ := by
   first
   | (rw [xv, dif_neg h])
-  | simp [xv, h]
 
 theorem xv_of_Z {j₀ : Fin m} {p : Fin (D + 1) × Fin m} (h : Zs j₀ p) :
     xv (Ω := Ω) j₀ p = 0 := by
   first
   | (rw [xv, dif_pos h])
-  | simp [xv, h]
 
 theorem psi_X (x : Fin m → Ω) (j₀ : Fin m) (p : Fin (D + 1) × Fin m) :
     psi x j₀ (X p) = gs x j₀ p := by
   first
   | (rw [psi, aeval_X])
-  | simp [psi]
 
 theorem psi_C (x : Fin m → Ω) (j₀ : Fin m) (a : Ω) :
     psi (D := D) x j₀ (C a) = C a := by
   first
   | (rw [psi, aeval_C, MvPolynomial.algebraMap_eq])
-  | simp [psi]
-  | exact (psi x j₀).commutes a
 
 theorem incl_C (j₀ : Fin m) (a : Ω) : incl (D := D) j₀ (C a) = C a := by
   first
   | (rw [incl, rename_C])
-  | simp [incl]
-  | exact (incl j₀).commutes a
 
 theorem gs_succ (x : Fin m → Ω) (j₀ : Fin m) (i : Fin D) (j : Fin m) :
     gs x j₀ (i.succ, j) = xv j₀ (i.succ, j) +
@@ -146,7 +94,6 @@ theorem gs_succ (x : Fin m → Ω) (j₀ : Fin m) (i : Fin D) (j : Fin m) :
       unfold Zs
       exact ⟨Fin.succ_ne_zero i, h⟩
     rw [gs, if_pos hz, xv_of_Z hz, if_pos h, zero_add]
-    try rfl
   · have hz : ¬ Zs j₀ (i.succ, j) := by
       unfold Zs
       exact fun hz => h hz.2
@@ -160,9 +107,7 @@ theorem psi_sec (x : Fin m → Ω) (j₀ : Fin m) (hx₀ : x j₀ ≠ 0) (i : Fi
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [mul_assoc, ← C_mul, rr]
     congr 2
-    first
-    | exact div_mul_cancel₀ (x k) hx₀
-    | field_simp
+    exact div_mul_cancel₀ (x k) hx₀
   have hI : ∑ j : Fin m, (if j = j₀ then -∑ k, xv (Ω := Ω) j₀ (i.succ, k) * C (rr x j₀ k) else 0) * C (x j) =
       -(∑ k, xv (Ω := Ω) j₀ (i.succ, k) * C (rr x j₀ k)) * C (x j₀) := by
     rw [Finset.sum_eq_single j₀]
@@ -179,7 +124,6 @@ theorem psi_sec (x : Fin m → Ω) (j₀ : Fin m) (hx₀ : x j₀ ≠ 0) (i : Fi
   rw [Finset.sum_add_distrib, hI, neg_mul, hS]
   first
   | exact add_neg_cancel _
-  | exact add_right_neg _
   | abel
 
 theorem incl_xv_succ (j₀ : Fin m) (i : Fin D) (k : Fin m) :
@@ -193,7 +137,6 @@ theorem incl_xv_succ (j₀ : Fin m) (i : Fin D) (k : Fin m) :
       unfold Zs
       exact fun hz => h hz.2
     rw [xv_of_not hz, if_neg h, incl, rename_X]
-    try rfl
 
 theorem X_sub_incl_gs (x : Fin m → Ω) (j₀ : Fin m) (hx₀ : x j₀ ≠ 0) (i : Fin D) :
     X (i.succ, j₀) - incl j₀ (gs x j₀ (i.succ, j₀)) = C (x j₀)⁻¹ * sec x i := by
@@ -225,13 +168,11 @@ theorem sub_incl_psi_mem (x : Fin m → Ω) (j₀ : Fin m) (hx₀ : x j₀ ≠ 0
       obtain ⟨i, rfl⟩ : ∃ i : Fin D, i.succ = i' := by
         first
         | exact Fin.exists_succ_eq.mpr hp'.1
-        | exact ⟨i'.pred hp'.1, Fin.succ_pred i' hp'.1⟩
       rw [hp'.2, X_sub_incl_gs x j₀ hx₀ i]
       exact Ideal.mul_mem_left _ _ (Ideal.subset_span ⟨i, rfl⟩)
     · first
       | (rw [gs, if_neg hp, xv_of_not hp, incl, rename_X, sub_self]
          exact Ideal.zero_mem _)
-      | simp [gs, hp, xv_of_not hp, incl]
   induction f using MvPolynomial.induction_on
   next a =>
     rw [psi_C, incl_C, sub_self]
@@ -286,7 +227,7 @@ theorem pderiv_gs (x : Fin m → Ω) (j₀ : Fin m) (q : {p : Fin (D + 1) × Fin
     rw [gs, if_pos hp, if_neg hne, zero_sub, map_neg]
     congr 1
 
-    simp only [map_sum, Derivation.leibniz, pderiv_C, smul_zero, smul_eq_mul, pderiv_xv, mul_zero, zero_add]
+    simp only [map_sum, Derivation.leibniz, pderiv_C, smul_eq_mul, pderiv_xv, mul_zero, zero_add]
     rw [Finset.sum_eq_single q.1.2]
     · by_cases h1 : p.1 = q.1.1
       · have e : (p.1, q.1.2) = q.1 := Prod.ext h1 rfl
@@ -310,7 +251,6 @@ theorem pderiv_aeval {ι : Type*} [Fintype ι] [DecidableEq ι] (j₀ : Fin m) (
     first
     | (rw [aeval_C, MvPolynomial.algebraMap_apply, pderiv_C]
        simp only [pderiv_C, map_zero, zero_mul, Finset.sum_const_zero])
-    | simp
   next G₁ G₂ h₁ h₂ =>
     simp only [map_add (f := _), h₁, h₂, add_mul, Finset.sum_add_distrib]
   next G i h =>
@@ -323,8 +263,6 @@ theorem pderiv_aeval {ι : Type*} [Fintype ι] [DecidableEq ι] (j₀ : Fin m) (
         have h0 : pderiv b (X i : MvPolynomial ι K) = 0 := by
           first
           | exact pderiv_X_of_ne (Ne.symm hb)
-          | exact pderiv_X_of_ne hb
-          | simp [pderiv_X, Pi.single_apply, hb, Ne.symm hb]
         rw [h0, mul_zero, map_zero, zero_mul]
       · intro hi
         exact absurd (Finset.mem_univ i) hi

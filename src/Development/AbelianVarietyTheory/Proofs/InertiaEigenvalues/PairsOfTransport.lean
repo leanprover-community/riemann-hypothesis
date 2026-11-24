@@ -3,11 +3,12 @@ module
 public import Development.AbelianVarietyTheory.Definitions.GaloisGeometry.HeckeSplitOne
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.OrthKerEqRangeAdjoint
 public import Formalism.LocalRingCardinality.DataKap
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SphericalHeckeScalarOnTypeSpacesAllPlacesStatement
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.RowsExhaust
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SphericalHeckeScalarOnTypeSpacesAllPlaces
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ThetaLiftHasPointAtLocalisationSamePlace
+public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HoweThetaLiftComponents
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CoeffMonicPolySum
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ComplexHeckeEigenvectorDescendsToCoefficientFiel
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.HoweThetaLiftComponents
 import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SplitExEveryDatum
 import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverEta
 import Mathlib.Algebra.Order.Floor.Extended
@@ -94,7 +95,7 @@ theorem exists_point (D : D7) (M : MtFam D) (HT : HeckeTied D M) (AV : AVTied D 
     rw [← NL.phK_emb _ _ i h y, ← D.naut.iota_LL i y]
     exact congrArg (fun f : FractionRing (D.nd.O i) →+* ℂ => f (D.nd.embK i y)) hφK
 
-  have HS := GlobalTheory.T.sphericalHeckeScalarOnTypeSpaces_all_places D M HT AV i
+  have HS := _root_.GlobalTheory.HeckeScalarAll.heckeScalar_all D M HT AV i
   have key : ∀ v k, GenAt D (D.what₂.places.resChar (D.nd.w i)) (NL.B.Qc (D.nd.j i) (D.nd.w i)) v k →
       ∃ κ : NL.B.Oc (D.nd.j i) (D.nd.w i), ∀ (s : SplitPlace D.host.E)
         (ϖ : s.v.adicCompletion (maximalRealSubfield D.host.E)), IsConjPl D.host v s.w → IsUnif D.host.E s.v ϖ →

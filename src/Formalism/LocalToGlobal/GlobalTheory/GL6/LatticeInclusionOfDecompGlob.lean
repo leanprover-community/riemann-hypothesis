@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GelfandTsetlinLowering.LiftAsm
 public import Formalism.LocalRingCardinality.RhoDetPrimeEqMuTildeMulChiPow
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.BwAValIntegralNonneg
 import Mathlib.Algebra.Order.Floor.Extended
@@ -51,22 +52,7 @@ open Formalism.BasicNotions Formalism.MainNotions.product_first_zeroth_parts For
 variable (D : D7) (u : D.what₂.Word)
 
 theorem bwA_natW_anti {N : ℕ} (lam : DomWeight N) : Antitone lam.natW := by
-  first
-    | exact lam.natW_anti
-    | exact lam.anti
-    | exact lam.antitone
-    | (intro a b hab
-       simp only [DomWeight.natW]
-       first
-         | (have := lam.anti hab; omega)
-         | (have := lam.dom hab; omega)
-         | (have := lam.antitone hab; omega)
-         | (have := lam.mono hab; omega)
-         | (have := lam.2 hab; omega)
-         | (have := lam.dom a b hab; omega)
-         | (have := lam.2 a b hab; omega)
-         | (have := lam.w_anti hab; omega)
-         | (have := lam.anti a b hab; omega))
+  apply PI.WGL.lm_natW_anti <;> assumption
 
 theorem bwA_val_locInt (w : D.what₂.places.Pl) (σ : D.host.E →+* D.host.E) (y : D.host.E) (s : ℕ)
     (hs : ¬ D.what₂.places.resChar w ∣ s) (hy : (s : D.host.E) * y ∈ (algebraMap (NumberField.RingOfIntegers D.host.E) D.host.E).range) :

@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ValuationLocalVolumes.OmVSDBwdHolds
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.FundamentalEquivalence.LevelIntersectParabolic
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
@@ -67,31 +68,7 @@ variable {E : Type} [Field E] [NumberField E] {n : ℕ}
 theorem exists_int_smul_mem (L : Submodule (𝓞 E) (Fin n → E))
     (hL : Submodule.span E (L : Set (Fin n → E)) = ⊤) (x : Fin n → E) :
     ∃ N : ℤ, N ≠ 0 ∧ N • x ∈ L := by
-  have hx : x ∈ Submodule.span E (L : Set (Fin n → E)) := hL ▸ Submodule.mem_top
-  induction hx using Submodule.span_induction with
-  | mem y hy => exact ⟨1, one_ne_zero, by simpa using hy⟩
-  | zero => exact ⟨1, one_ne_zero, by simp⟩
-  | add y z _ _ hy hz =>
-    obtain ⟨N1, h1, m1⟩ := hy
-    obtain ⟨N2, h2, m2⟩ := hz
-    refine ⟨N1 * N2, mul_ne_zero h1 h2, ?_⟩
-    have e1 : (N1 * N2) • y = N2 • (N1 • y) := by rw [mul_comm, mul_smul]
-    have e2 : (N1 * N2) • z = N1 • (N2 • z) := by rw [mul_smul]
-    rw [smul_add, e1, e2]
-    exact L.add_mem (zsmul_mem m1 N2) (zsmul_mem m2 N1)
-  | smul e y _ hy =>
-    obtain ⟨N, hN, m⟩ := hy
-    obtain ⟨c, hc, hint⟩ := exists_integral_multiples ℤ ℚ (L := E) {e}
-    have hi : IsIntegral ℤ (c • e) := hint e (Finset.mem_singleton_self e)
-    refine ⟨c * N, mul_ne_zero hc hN, ?_⟩
-    have e3 : (c * N) • (e • y) = (c • e) • (N • y) := by
-      rw [mul_smul, smul_comm N e y, smul_assoc]
-    rw [e3]
-    have e4 : (c • e) • (N • y) = (IsIntegralClosure.mk' (𝓞 E) (c • e) hi) • (N • y) := by
-      rw [← algebraMap_smul E (IsIntegralClosure.mk' (𝓞 E) (c • e) hi) (N • y),
-        IsIntegralClosure.algebraMap_mk']
-    rw [e4]
-    exact L.smul_mem _ m
+  apply Formalism.L2.SG.Pf.NcVal.OmVSt.OmX.exists_int_smul_mem <;> assumption
 
 end Key
 

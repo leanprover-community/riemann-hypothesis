@@ -1,10 +1,10 @@
 module
 
+public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
+public import Mathlib.Data.Fintype.Basic
+public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 public import Formalism.LocalToGlobal.KernelLattices.FirstKernelLawReading
-public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ProdFinEqProdCastLE
-import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.DualWeylPoint
-import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LSatLemmas
 public import Formalism.GradedWeylDivisibility.FockSpaceTableaux.TensorBasis
 public import Formalism.LocalRingCardinality.CoeNeZeroOfNotMem
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC
@@ -12,10 +12,14 @@ import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Normed.Algebra.GelfandRadius
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Combinatorics.Enumerative.DyckWord
 import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
 import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Nat.Choose.Multinomial
 import Mathlib.Geometry.Euclidean.Volume.Basic
 import Mathlib.NumberTheory.Chebyshev
 import Mathlib.NumberTheory.Height.NumberField
@@ -23,8 +27,6 @@ import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
 import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
@@ -32,7 +34,6 @@ import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
 import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.NormNum.Irrational
 import Mathlib.Tactic.NormNum.IsCoprime
 import Mathlib.Tactic.NormNum.IsSquare
@@ -45,11 +46,47 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Topology.Sheaves.Init
+import Formalism.GradedWeylDivisibility.DualWeylDominanceOf
+import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LSatLemmas
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: Development.AbelianVarietyTheory.Proofs.SatakeParameters.ProdFinEqProdCastLE, Development.AbelianVarietyTheory.Proofs.SatakeParameters.ThetaDistributionUnfolded
+
+-- ===== clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.ProdFinEqProdCastLE =====
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.SatakeParameters.ProdFinEqProdCastLE", "h": "module\n\npublic import Mathlib.Algebra.BigOperators.Group.Finset.Defs\npublic import Mathlib.Data.Fintype.Basic\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\npublic import Mathlib.Algebra.BigOperators.Group.Finset.Basic\n\n"}
+section -- clump:auto
+@[expose] public section
+
+namespace GlobalTheory.ProdFinCastLE
+
+theorem prod_fin_eq_prod_castLE {a b : ℕ} {M : Type} [CommMonoid M] (h : a ≤ b) (f : Fin b → M)
+    (hf : ∀ r : Fin b, a ≤ (r : ℕ) → f r = 1) :
+    ∏ r : Fin b, f r = ∏ r : Fin a, f (Fin.castLE h r) := by
+  symm
+  rw [show (∏ r : Fin a, f (Fin.castLE h r)) =
+      ∏ x ∈ Finset.univ.map ⟨Fin.castLE h, Fin.castLE_injective h⟩, f x by
+    rw [Finset.prod_map]
+    rfl]
+  refine Finset.prod_subset (Finset.subset_univ _) fun x _ hx => hf x ?_
+  by_contra hlt
+  push Not at hlt
+  exact hx (Finset.mem_map.2 ⟨⟨x, hlt⟩, Finset.mem_univ _, Fin.ext rfl⟩)
+
+end GlobalTheory.ProdFinCastLE
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.ProdFinEqProdCastLE =====
+
+-- ===== clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.ThetaDistributionUnfolded =====
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.SatakeParameters.ThetaDistributionUnfolded", "h": "module\n\npublic import Formalism.LocalToGlobal.KernelLattices.FirstKernelLawReading\npublic import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ProdFinEqProdCastLE\nimport Formalism.GradedWeylDivisibility.DualWeylDominanceOf\npublic import Formalism.GradedWeylDivisibility.FockSpaceTableaux.DualWeylPoint\nimport Formalism.GradedWeylDivisibility.FockSpaceTableaux.LSatLemmas\npublic import Formalism.GradedWeylDivisibility.FockSpaceTableaux.TensorBasis\npublic import Formalism.LocalRingCardinality.CoeNeZeroOfNotMem\npublic import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.ThDistC\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
+section -- clump:auto
 @[expose] public section
 
 open NumberField IsDedekindDomain
@@ -65,16 +102,6 @@ section Wt
 open MvPolynomial Formalism.L2.DIV
 
 variable {K : Type} [Field K] {ι : Type} [Fintype ι] {a b n : ℕ}
-
-theorem prod_castLE {M : Type} [CommMonoid M] (h : a ≤ b) (f : Fin b → M) (h0 : ∀ r : Fin b, a ≤ r.1 → f r = 1) :
-    ∏ r, f r = ∏ r : Fin a, f (Fin.castLE h r) := by
-  first
-  | exact @_root_.GlobalTheory.ProdFinCastLE.prod_fin_eq_prod_castLE
-  | exact _root_.GlobalTheory.ProdFinCastLE.prod_fin_eq_prod_castLE
-  | (apply _root_.GlobalTheory.ProdFinCastLE.prod_fin_eq_prod_castLE <;> assumption)
-  | (intros; apply _root_.GlobalTheory.ProdFinCastLE.prod_fin_eq_prod_castLE <;> assumption)
-  | (intros; apply @_root_.GlobalTheory.ProdFinCastLE.prod_fin_eq_prod_castLE <;> first | assumption | infer_instance)
-  | (intros; exact _root_.GlobalTheory.ProdFinCastLE.prod_fin_eq_prod_castLE ..)
 
 theorem sum_castLE {M : Type} [AddCommMonoid M] (h : a ≤ b) (f : Fin b → M) (h0 : ∀ r : Fin b, a ≤ r.1 → f r = 0) :
     ∑ r, f r = ∑ r : Fin a, f (Fin.castLE h r) := by
@@ -165,7 +192,7 @@ theorem jet_weight : JetWt := by
   rw [jetMap_zero, ← jetLin_liftL, liftL_subD h hβ, hQ _ (isBor_resB h hβ), map_smul, map_smul]
   congr 1
   refine Finset.prod_congr rfl fun τ _ => ?_
-  rw [prod_castLE h]
+  rw [_root_.GlobalTheory.ProdFinCastLE.prod_fin_eq_prod_castLE h]
   · refine Finset.prod_congr rfl fun r _ => ?_
     simp only [resB, extNu]
     rw [dif_pos (show ((Fin.castLE h r : Fin b) : ℕ) < a from r.2)]
@@ -1046,3 +1073,7 @@ theorem tied_on_models : TiedOnModels := by
 end Unf
 
 end GlobalTheory.KerWt
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AbelianVarietyTheory.Proofs.SatakeParameters.ThetaDistributionUnfolded =====

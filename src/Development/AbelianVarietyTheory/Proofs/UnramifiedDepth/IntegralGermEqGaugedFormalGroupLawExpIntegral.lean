@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.AddCurveStableOfIntegralGaugedFormalGroupLaw
 public import Development.AbelianVarietyTheory.Definitions.TeichmullerDepth.HasTeich
 public import Development.AbelianVarietyTheory.Proofs.CovolumeBounds.CoeffSubstInvMemOfTwoLeOrder
 public import Mathlib.RingTheory.PowerSeries.Substitution
@@ -164,27 +165,7 @@ theorem log_add_const (hY : RLaw Y V) {τ : Type} {a b : κ → MvPowerSeries τ
 theorem intS_addP (hY : RLaw Y V) {τ : Type} {a b : κ → MvPowerSeries τ C} (ha : ∀ i, constantCoeff (a i) = 0)
     (hb : ∀ i, constantCoeff (b i) = 0) (ia : ∀ i, IntS V (a i)) (ib : ∀ i, IntS V (b i)) (i : κ) :
     IntS V (addP Y a b i) := by
-  set ab : Fin 2 × κ → MvPowerSeries τ C := fun p => if p.1 = 0 then a p.2 else b p.2 with hab
-  have h0 : ∀ p, constantCoeff (ab p) = 0 := fun p => by
-    simp only [hab]; split_ifs; exacts [ha _, hb _]
-  have hi : ∀ p, IntS V (ab p) := fun p => by
-    simp only [hab]; split_ifs; exacts [ia _, ib _]
-  have hs := hasSubst_of_constantCoeff_zero h0
-  have hg : ∀ (j : Fin 2) x, constantCoeff (gp C κ j x) = 0 := fun j x => constantCoeff_X _
-  have key : addP Y a b i = subst ab (addP Y (gp C κ (0 : Fin 2)) (gp C κ 1) i) := by
-    unfold addP
-    rw [subst_comp_subst_apply (hasSubst_of_constantCoeff_zero (log_add_const hY (hg 0) (hg 1))) hs]
-    congr 1
-    funext x
-    rw [subst_add hs, subst_comp_subst_apply (hasSubst_of_constantCoeff_zero (hg 0)) hs,
-      subst_comp_subst_apply (hasSubst_of_constantCoeff_zero (hg 1)) hs]
-    have e0 : (fun s => subst ab (gp C κ (0 : Fin 2) s)) = a := funext fun s => by
-      rw [gp, subst_X hs]; simp [hab]
-    have e1 : (fun s => subst ab (gp C κ (1 : Fin 2) s)) = b := funext fun s => by
-      rw [gp, subst_X hs]; simp [hab]
-    rw [e0, e1]
-  rw [key]
-  exact intS_subst h0 hi (hY.addInt i)
+  apply GlobalTheory.RowLaw.AddCurve.intS_addP <;> assumption
 
 theorem exists_sum_point (hY : RLaw Y V) {τ ι : Type} (s : Finset ι) (a : ι → κ → MvPowerSeries τ C)
     (ha : ∀ c i, constantCoeff (a c i) = 0) (ia : ∀ c i, IntS V (a c i)) :

@@ -112,7 +112,7 @@ theorem cc_subst {g s : R⟦X⟧} (hs : constantCoeff s = 0) :
   erw [PowerSeries.constantCoeff_subst (HasSubst.of_constantCoeff_zero hs), finsum_eq_single _ 0]
   · simp
   · intro d hd
-    simp [hs, hd]
+    simp
     rw [show MvPowerSeries.constantCoeff s = 0 from hs, zero_pow hd, mul_zero]
 
 theorem coeff_one_subst {f s : R⟦X⟧} (hs : constantCoeff s = 0) :

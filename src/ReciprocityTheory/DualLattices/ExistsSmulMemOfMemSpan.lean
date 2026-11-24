@@ -68,11 +68,7 @@ open Module
 
 variable {C : Type} [Field C] {R : Type} [CommRing R] [Algebra R C]
 
-theorem exists_smul_mem_of_mem_span [IsDomain R] [IsFractionRing R C]
-    {V : Type} [AddCommGroup V] [Module C V] [Module R V] [IsScalarTower R C V]
-    (S : Submodule R V) {x : V} (hx : x ∈ Submodule.span C (S : Set V)) :
-    ∃ r : R, r ≠ 0 ∧ r • x ∈ S := by
-  exact Bl.SecondBlockLemmaM.goal1 (C := C) S hx
+alias exists_smul_mem_of_mem_span := _root_.Bl.SecondBlockLemmaM.goal1
 
 theorem free_of_finite_torsionFree [IsDomain R] [ValuationRing R] (P : Type) [AddCommGroup P]
     [Module R P] [Module.Finite R P] (h : ∀ (r : R) (x : P), r ≠ 0 → r • x = 0 → x = 0) :

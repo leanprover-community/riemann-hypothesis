@@ -78,9 +78,8 @@ theorem goal1 :
   obtain ⟨y, hy⟩ := exists_near F v x.1
   have hx : Valued.v x.1 ≤ 1 := x.2
   have hyc : Valued.v (algebraMap F (v.adicCompletion F) y) ≤ 1 := by
-    have e : algebraMap F (v.adicCompletion F) y = x.1 - (x.1 - algebraMap F (v.adicCompletion F) y) := by
-      ring
-    rw [e]
+    rw [show algebraMap F (v.adicCompletion F) y =
+      x.1 - (x.1 - algebraMap F (v.adicCompletion F) y) by ring]
     exact (Valuation.map_sub _ _ _).trans (max_le hx hy.le)
   have hyv : v.valuation F y ≤ 1 := by
     have e2 : Valued.v (algebraMap F (v.adicCompletion F) y) = v.valuation F y :=

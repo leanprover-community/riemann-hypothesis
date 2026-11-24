@@ -67,16 +67,11 @@ theorem smodEq_pow_iff_sub_mem {x y : R} {n : ℕ} :
     x ≡ y [SMOD (I ^ n • ⊤ : Submodule R R)] ↔ x - y ∈ I ^ n := by
   rw [SModEq.sub_mem, smul_eq_mul, Ideal.mul_top]
 
-theorem exists_limit_of_approx [IsPrecomplete I R] (P : ℕ → R → Prop)
-    (hstep : ∀ n x, P n x → ∃ y, y - x ∈ I ^ n ∧ P (n + 1) y) {x₀ : R} (h₀ : P 0 x₀) :
-    ∃ x, ∀ n, ∃ y, P n y ∧ x - y ∈ I ^ n :=
-  by apply _root_.UpperTheory.Reformulated.B.Qp1.exists_limit_of_approx <;> assumption
-
 theorem exists_eq_zero_of_approx [IsAdicComplete I R] (F : R → R)
     (hF : ∀ n x y, x - y ∈ I ^ n → F x - F y ∈ I ^ n)
     (hstep : ∀ n x, F x ∈ I ^ n → ∃ y, y - x ∈ I ^ n ∧ F y ∈ I ^ (n + 1))
     {m : ℕ} {x₀ : R} (h₀ : F x₀ ∈ I ^ m) : ∃ x, F x = 0 ∧ x - x₀ ∈ I ^ m := by
-  obtain ⟨x, hx⟩ := exists_limit_of_approx I (fun n y => F y ∈ I ^ (m + n) ∧ y - x₀ ∈ I ^ m)
+  obtain ⟨x, hx⟩ := _root_.UpperTheory.Reformulated.B.Qp1.exists_limit_of_approx I (fun n y => F y ∈ I ^ (m + n) ∧ y - x₀ ∈ I ^ m)
     (fun n y ⟨h1, h2⟩ => by
       obtain ⟨z, hz1, hz2⟩ := hstep (m + n) y h1
       refine ⟨z, Ideal.pow_le_pow_right (by omega) hz1, hz2, ?_⟩

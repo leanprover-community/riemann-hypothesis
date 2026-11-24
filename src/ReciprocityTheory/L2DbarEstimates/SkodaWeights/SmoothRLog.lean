@@ -201,7 +201,7 @@ private theorem db_log_eq_inv_mul_db {M : Type*} [TopologicalSpace M] (n : ℕ) 
       have h := Complex.reCLM.contDiff.comp_contDiffOn (hph e hs.1)
       simpa [Function.comp_def] using h
     have hd : DifferentiableAt ℝ (fun w => ph (e.symm w)) (e y) :=
-      (hc.differentiableOn (by first | simp | exact WithTop.coe_le_coe.mpr le_top | norm_num)
+      (hc.differentiableOn (by first | simp)
         ).differentiableAt (e.open_target.mem_nhds hp)
     have hne : ph (e.symm (e y)) ≠ 0 := (hpos _).ne'
     have h1 := (Complex.ofRealCLM.hasFDerivAt.comp (e y) (hd.hasFDerivAt.log hne)).fderiv
@@ -351,7 +351,6 @@ theorem skodaLevi (n : ℕ) (M : Type*) [TopologicalSpace M] [T2Space M] :
       ((vsq (gv g x) : ℝ) : ℂ)⁻¹ * ∑ l, (starRingEnd ℂ) (d n z k (g l) x) * d n z j (g l) x := by
     intro j k
     rw [d_mul n z _ _ hSi (hE k) j x, hdSi j, hdS j, hdEk j k]
-    all_goals ring
   have hG : ∀ k, db n z k (fun y => ((Real.log (vsq (gv g y)) : ℝ) : ℂ)) =
       fun y => (((vsq (gv g y) : ℝ) : ℂ))⁻¹ * ∑ l, (starRingEnd ℂ) (d n z k (g l) y) * g l y := by
     intro k
@@ -494,7 +493,7 @@ theorem skodaHyp (n : ℕ) (M : Type*) [TopologicalSpace M] [T2Space M] :
         gcongr
     _ = ‖u x‖ ^ 2 * (1 - ‖w i‖ ^ 2 / vsq w) / (t * vsq w) *
           (t * (vsq (perp w a) / vsq w)) := by
-        field_simp <;> ring
+        field_simp
     _ ≤ ‖u x‖ ^ 2 * (1 - ‖w i‖ ^ 2 / vsq w) / (t * vsq w) * L :=
         mul_le_mul_of_nonneg_left hW (div_nonneg (mul_nonneg hU hc) (mul_pos ht hWp).le)
 

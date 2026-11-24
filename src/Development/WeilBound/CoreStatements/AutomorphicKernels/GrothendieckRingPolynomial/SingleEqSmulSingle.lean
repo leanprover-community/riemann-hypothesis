@@ -1,5 +1,6 @@
 module
 
+import CompanionTheory.AutomorphicTheory.ProductFormulaTheory.GrothendieckRingPolynomial.SingleEqSmulSingle
 public import Development.WeilBound.CoreStatements.AutomorphicKernels.GrothendieckRingPolynomial.ProdList
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -123,25 +124,7 @@ variable {ι : Type*} (C : ι → ι → ι →₀ ℤ)
 theorem bil_assoc (hA : ∀ x y z, bil C (bil C (Finsupp.single x 1) (Finsupp.single y 1)) (Finsupp.single z 1) =
       bil C (Finsupp.single x 1) (bil C (Finsupp.single y 1) (Finsupp.single z 1))) (a b c : ι →₀ ℤ) :
     bil C (bil C a b) c = bil C a (bil C b c) := by
-  induction a using Finsupp.induction_linear with
-  | zero => simp only [bil_zero_left]
-  | add a a' ha ha' => rw [bil_add_left, bil_add_left, bil_add_left, ha, ha']
-  | single x m =>
-    simp only [single_eq_smul_single x m, bil_smul_left]
-    congr 1
-    induction b using Finsupp.induction_linear with
-    | zero => simp only [bil_zero_left, bil_zero_right]
-    | add b b' hb hb' => rw [bil_add_right, bil_add_left, hb, hb', bil_add_left, bil_add_right]
-    | single y n =>
-      simp only [single_eq_smul_single y n, bil_smul_left, bil_smul_right]
-      congr 1
-      induction c using Finsupp.induction_linear with
-      | zero => simp only [bil_zero_right]
-      | add c c' hc hc' => rw [bil_add_right, bil_add_right, hc, hc', bil_add_right]
-      | single z p =>
-        simp only [single_eq_smul_single z p, bil_smul_right]
-        congr 1
-        exact hA x y z
+  apply CompanionTheory.Groth.GrothendieckRing.bil_assoc <;> assumption
 
 theorem bil_one (u : ι →₀ ℤ) (h : ∀ x, bil C u (Finsupp.single x 1) = Finsupp.single x 1) (a : ι →₀ ℤ) :
     bil C u a = a := by

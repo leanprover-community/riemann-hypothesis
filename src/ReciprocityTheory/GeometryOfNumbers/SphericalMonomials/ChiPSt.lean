@@ -67,7 +67,6 @@ theorem chiPAux_prod_fact_mul_fact_le {D : ℕ} (a : Fin (D + 1) → ℕ) :
   have h1 : (∏ i, (a i).factorial) ∣ (∑ i, a i).factorial := by
     first
       | exact Nat.prod_factorial_dvd_factorial_sum _ _
-      | exact Nat.prod_factorial_dvd_factorial_sum
   have h2 : (∑ i, a i).factorial * D.factorial ∣ ((∑ i, a i) + D).factorial :=
     Nat.factorial_mul_factorial_dvd_factorial_add _ _
   exact Nat.le_of_dvd (Nat.factorial_pos _) (dvd_trans (mul_dvd_mul_right h1 _) h2)
@@ -79,8 +78,6 @@ theorem monoNormSq_le_one {D : ℕ} (a : Fin (D + 1) → ℕ) : monoNormSq a ≤
     exact_mod_cast chiPAux_prod_fact_mul_fact_le a
   first
     | exact (div_le_one hF).mpr hle
-    | exact (div_le_one₀ hF).mpr hle
-    | exact div_le_one_of_le₀ hle hF.le
 
 theorem chiPAux_multinomial_univ_le {D : ℕ} (a : Fin (D + 1) → ℕ) :
     Nat.multinomial Finset.univ a ≤ (D + 1) ^ (∑ i, a i) := by
@@ -127,7 +124,6 @@ private theorem inv_le_mul_div_of_le_mul {Q A E F : ℝ} (hF : 0 < F) (hA : 0 < 
         _ ≤ A * E := le_mul_of_one_le_right hA.le hE
     first
       | exact (le_div_iff₀ hF).mpr key
-      | exact (le_div_iff hF).mpr key
 
 theorem le_monoNormSq {D : ℕ} (a : Fin (D + 1) → ℕ) :
     (((D + 1 : ℝ) ^ (∑ i, a i)) * ((∑ i, a i : ℕ) + D : ℝ) ^ D)⁻¹ ≤ monoNormSq a := by
@@ -140,14 +136,14 @@ theorem le_monoNormSq {D : ℕ} (a : Fin (D + 1) → ℕ) :
 theorem chiPAux_sum_update_zero {D : ℕ} (a : Fin (D + 1) → ℕ) (v : ℕ) :
     ∑ i, Function.update a 0 v i = v + ∑ i : Fin D, a i.succ := by
   rw [Fin.sum_univ_succ]
-  simp [Function.update_apply, Fin.succ_ne_zero]
+  simp [Fin.succ_ne_zero]
 
 theorem monoNormSq_succ {D : ℕ} (a : Fin (D + 1) → ℕ) :
     monoNormSq (Function.update a 0 (a 0 + 1)) =
       monoNormSq a * ((a 0 + 1 : ℝ) / ((∑ i, a i : ℕ) + D + 1 : ℝ)) := by
   have e0 : Function.update a 0 (a 0 + 1) 0 = a 0 + 1 := by simp
   have es : ∀ i : Fin D, Function.update a 0 (a 0 + 1) i.succ = a i.succ := fun i => by
-    simp [Function.update_apply, Fin.succ_ne_zero]
+    simp [Fin.succ_ne_zero]
   have hs : ∑ i, Function.update a 0 (a 0 + 1) i = (∑ i, a i) + 1 := by
     rw [chiPAux_sum_update_zero, Fin.sum_univ_succ a]
     ring
@@ -164,7 +160,6 @@ theorem monoNormSq_succ {D : ℕ} (a : Fin (D + 1) → ℕ) :
   have hg : (∑ i, (a i : ℝ)) + D + 1 ≠ 0 := by positivity
   first
     | (rw [div_mul_div_comm, div_eq_div_iff (mul_ne_zero hg hF) (mul_ne_zero hF hg)]; ring)
-    | (field_simp; ring)
 
 theorem chiP_nonneg (D n : ℕ) : 0 ≤ chiP D n := by
   unfold chiP
@@ -216,7 +211,7 @@ theorem chiPAux_filter_zero_eq_empty (n : ℕ) :
   rw [Finset.filter_eq_empty_iff]
   intro b hb h0
   have h1 := Finset.Nat.mem_antidiagonalTuple.mp hb
-  simp [Fin.sum_univ_succ, h0] at h1 <;> omega
+  simp [h0] at h1
 
 theorem chiPAux_sum_split (D n : ℕ) (g : (Fin (D + 1) → ℕ) → ℝ) :
     ∑ b ∈ Finset.Nat.antidiagonalTuple (D + 1) (n + 1), g b =
@@ -233,7 +228,7 @@ theorem chiPAux_sum_split (D n : ℕ) (g : (Fin (D + 1) → ℕ) → ℝ) :
       refine Finset.mem_filter.mpr ⟨Finset.Nat.mem_antidiagonalTuple.mpr ?_, ?_⟩
       · rw [chiPAux_sum_update_zero]
         omega
-      · simp [Function.update_apply]
+      · simp
     · intro b hb
       have h1 := Finset.Nat.mem_antidiagonalTuple.mp (Finset.mem_filter.mp hb).1
       have h2 : b 0 ≠ 0 := (Finset.mem_filter.mp hb).2
@@ -245,15 +240,15 @@ theorem chiPAux_sum_split (D n : ℕ) (g : (Fin (D + 1) → ℕ) → ℝ) :
       funext i
       by_cases hi : i = 0
       · subst hi
-        simp [Function.update_apply]
-      · simp [Function.update_apply, hi]
+        simp
+      · simp [hi]
     · intro b hb
       have h2 : b 0 ≠ 0 := (Finset.mem_filter.mp hb).2
       funext i
       by_cases hi : i = 0
       · subst hi
-        simp [Function.update_apply] <;> omega
-      · simp [Function.update_apply, hi]
+        simp <;> omega
+      · simp [hi]
     · intro a _
       rfl
   linarith [key]
@@ -291,8 +286,6 @@ theorem chiPAux_neg_log_step_mem (D n : ℕ) (a : Fin (D + 1) → ℕ) (ha : a �
     have hnum : (a 0 + 1 : ℝ) ≤ (n : ℝ) + D + 1 := by linarith
     first
       | exact (div_le_one hden).mpr hnum
-      | exact (div_le_one₀ hden).mpr hnum
-      | exact div_le_one_of_le₀ hnum hden.le
   constructor
   · have := Real.log_nonpos hpos.le hle1
     linarith
@@ -318,7 +311,6 @@ theorem chiPAux_neg_log_monoNormSq_le {D : ℕ} (b : Fin (D + 1) → ℕ) :
       Real.log (monoNormSq b) := by
     first
       | exact Real.log_le_log (inv_pos.mpr hQpos) hQ
-      | exact (Real.log_le_log_iff (inv_pos.mpr hQpos) (monoNormSq_pos b)).mpr hQ
   rw [Real.log_inv, Real.log_mul hA.ne' hB.ne', Real.log_pow, Real.log_pow] at hlog
   linarith
 
@@ -449,7 +441,6 @@ private theorem log_add_add_one_le_log_add_log (n D : ℕ) :
   have hle : (n : ℝ) + D + 1 ≤ ((n : ℝ) + 1) * ((D : ℝ) + 1) := by nlinarith [mul_nonneg hn hD]
   first
     | exact Real.log_le_log (by positivity) hle
-    | exact (Real.log_le_log_iff (by positivity) (by positivity)).mpr hle
 
 theorem exists_chiP_succ_sub_le (D : ℕ) :
     ∃ C : ℝ, ∀ n : ℕ, 1 ≤ n → chiP D (n + 1) - chiP D n ≤ C * (n : ℝ) ^ D * Real.log (n + 1) := by
@@ -480,7 +471,6 @@ theorem exists_chiP_succ_sub_le (D : ℕ) :
     rw [hℓ]
     first
       | exact Real.log_le_log (by norm_num) (by linarith)
-      | exact (Real.log_le_log_iff (by norm_num) (by linarith)).mpr (by linarith)
   have hℓ0 : 0 ≤ ℓ := by linarith
   have hc : c₀ ≤ L * ℓ := hcL ℓ hℓ2
   have hlogND : Real.log ((n : ℝ) + D + 1) ≤ ℓ + c₀ := by

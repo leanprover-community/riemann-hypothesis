@@ -60,11 +60,11 @@ namespace Formalism.REAL
 
 private theorem epow_zero_apply {A : Type*} [Ring A] {n : ℕ} (E : Fin n → Fin n → A)
     (a b : Fin n) : epow E 0 a b = if a = b then 1 else 0 := by
-  first | rfl | simp [epow]
+  first | rfl
 
 private theorem epow_succ_apply {A : Type*} [Ring A] {n : ℕ} (E : Fin n → Fin n → A)
     (k : ℕ) (a b : Fin n) : epow E (k + 1) a b = ∑ c, epow E k a c * E c b := by
-  first | rfl | simp [epow]
+  first | rfl
 
 theorem HWDiag_cov {A : Type*} [Ring A] {n : ℕ} (E : Fin n → Fin n → A) (hE : GlRel E) :
     ∀ (k : ℕ) (a b c d : Fin n),
@@ -117,11 +117,6 @@ private theorem module_end_finset_sum_apply {V : Type*} [AddCommGroup V] [Module
     (s : Finset ι) (f : ι → Module.End ℂ V) (v : V) : (∑ i ∈ s, f i) v = ∑ i ∈ s, f i v := by
   first
   | exact LinearMap.sum_apply s f v
-  | simp
-  | (classical
-     induction s using Finset.induction_on with
-     | empty => simp
-     | insert x s hx ih => rw [Finset.sum_insert hx, Finset.sum_insert hx, LinearMap.add_apply, ih])
 
 theorem HWDiag_upper {V : Type*} [AddCommGroup V] [Module ℂ V] {n : ℕ}
     (E : Fin n → Fin n → Module.End ℂ V) (ν : Fin n → ℂ) (v : V) (hE : GlRel E)
@@ -149,18 +144,6 @@ private theorem card_filter_fin_lt_eq {n : ℕ} (a : Fin n) :
   first
   | (rw [show (univ.filter fun b : Fin n => a < b) = Finset.Ioi a by ext; simp]
      exact Fin.card_Ioi a)
-  | (have hmap : (univ.filter fun b : Fin n => a < b).map Fin.valEmbedding =
-        Finset.Ico ((a : ℕ) + 1) n := by
-       ext x
-       simp only [Finset.mem_map, Finset.mem_filter, Finset.mem_univ, true_and,
-         Fin.valEmbedding_apply, Finset.mem_Ico]
-       constructor
-       · rintro ⟨b, hb, rfl⟩
-         exact ⟨Nat.succ_le_of_lt hb, b.isLt⟩
-       · rintro ⟨h1, h2⟩
-         exact ⟨⟨x, h2⟩, Fin.lt_def.mpr (by simpa using h1), rfl⟩
-     rw [← Finset.card_map Fin.valEmbedding, hmap, Nat.card_Ico]
-     omega)
 
 private theorem cast_nat_sub_one_sub_fin_eq_complex {n : ℕ} (a : Fin n) :
     ((n - 1 - (a : ℕ) : ℕ) : ℂ) = (n : ℂ) - 1 - (a : ℂ) := by
@@ -169,9 +152,6 @@ private theorem cast_nat_sub_one_sub_fin_eq_complex {n : ℕ} (a : Fin n) :
   have hc : ((n - 1 - (a : ℕ) : ℕ) : ℂ) + (a : ℂ) + 1 = (n : ℂ) := by
     first
     | exact_mod_cast hN
-    | (have h' := congrArg (Nat.cast : ℕ → ℂ) hN
-       push_cast at h'
-       exact h')
   linear_combination hc
 
 theorem generatorPowDiagRecursion_holds : HWDiag := by
@@ -201,8 +181,6 @@ theorem generatorPowDiagRecursion_holds : HWDiag := by
     rw [← cast_nat_sub_one_sub_fin_eq_complex a]
     first
     | exact (Nat.cast_smul_eq_nsmul ℂ _ _).symm
-    | exact nsmul_eq_smul_cast ℂ _ _
-    | simp
   rw [epow_succ_apply, module_end_finset_sum_apply]
   simp only [module_end_mul_apply, hterm]
   rw [Finset.sum_add_distrib, h1, h2, Finset.sum_sub_distrib, Finset.sum_const,
@@ -221,14 +199,6 @@ theorem HWDiag_charpoly {n : ℕ} (l : Fin n → ℂ) :
   first
   | (rw [Matrix.charpoly_of_upperTriangular _ hU]
      simp [Amat])
-  | (rw [Matrix.charpoly, Matrix.det_of_upperTriangular]
-     · refine Finset.prod_congr rfl fun s _ => ?_
-       simp [Matrix.charmatrix_apply_eq, Amat]
-     · intro i j hij
-       have h : j < i := hij
-       first
-       | simp [Matrix.charmatrix_apply_ne _ _ _ h.ne', Amat, h.ne', not_lt.mpr h.le]
-       | simp [Matrix.charmatrix_apply, Amat, h.ne', not_lt.mpr h.le])
 
 private theorem sum_Amat_smul_eq_smul_sub_sum_gt {V : Type*} [AddCommGroup V] [Module ℂ V] {n : ℕ}
     (l : Fin n → ℂ) (y : Fin n → V) (a : Fin n) :
@@ -255,7 +225,6 @@ theorem diagChar_of (h : HWDiag) : DiagChar := by
     intro k b
     first
     | rw [h V n E ν v hE hv k b, hM, sum_Amat_smul_eq_smul_sub_sum_gt]
-    | (rw [h V n E ν v hE hv k b, hM]; simp only [sum_Amat_smul_eq_smul_sub_sum_gt])
   have hpow : ∀ (k : ℕ) (b : Fin n), epow E k b b v = ∑ c, (M ^ k) b c • v := by
     intro k
     induction k with

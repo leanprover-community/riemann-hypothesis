@@ -206,7 +206,6 @@ theorem isU_alpha (h : p.UnitAA) {L : HSp D} {ζ : Fin L.rank → D.host.E} (hζ
         incA D e⁻¹ * a ∈ intAt D (· = p.v) := by
     first
     | exact GlobalTheory.GoodPos.line_gen hζ (GlobalTheory.WeilAtPlace.isSelfDualC_frameLat L) p.v
-    | exact GlobalTheory.GoodPos.line_gen hζ (GlobalTheory.WeilAtPlace.isSelfDualC_frameLat L).1 p.v
   obtain ⟨e, he, hg⟩ := hgen
   refine IsU.inv (fun a ha => ?_) α.inv_mul
   have h1 := hα L (GlobalTheory.AdelicU.frameLat L) ((incA D e * a) • ratV ζ)

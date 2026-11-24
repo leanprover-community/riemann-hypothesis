@@ -78,7 +78,7 @@ include halt he
 theorem proj_mem (y : H) : y - B y f • e + B y e • f ∈ perp B e f := by
   have h1 : B f e = -1 := by rw [alt_swap B halt, he]
   rw [mem_perp]
-  constructor <;> simp [halt, he, h1] <;> ring
+  constructor <;> simp [halt, he, h1]
 
 def proj : H →ₗ[ℤ] perp B e f where
   toFun y := ⟨y - B y f • e + B y e • f, proj_mem B halt e f he y⟩

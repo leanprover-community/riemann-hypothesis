@@ -61,15 +61,15 @@ variable (k : Type) [CommRing k]
 theorem polyCovered_mp [IsDomain k] : ∀ (m : ℕ) (n : Fin (m + 1) → ℕ), PolyCovered (mpStr k m n) (∑ i, n i)
   | 0, n => by
     rw [Fin.sum_univ_one]
-    exact polyCovered_pSpace (n 0)
+    exact _root_.GlobalTheory.Amb.polyCovered_pSpace' (n 0)
   | m + 1, n => by
     have h := polyCovered_pullback (toSpecBase k (n 0)) (mpStr k m (Fin.tail n)) (n 0) (∑ i, Fin.tail n i)
-      (polyCovered_pSpace (n 0)) (polyCovered_mp m (Fin.tail n))
+      (_root_.GlobalTheory.Amb.polyCovered_pSpace' (n 0)) (polyCovered_mp m (Fin.tail n))
     rw [Fin.sum_univ_succ]
     exact h
 
 theorem isIntegral_mp [IsDomain k] (m : ℕ) (n : Fin (m + 1) → ℕ) : IsIntegral (MP k m n) :=
-  isIntegral_of_polyCovered _ _ (polyCovered_mp k m n)
+  _root_.GlobalTheory.Amb.isIntegral_of_polyCovered' _ _ (polyCovered_mp k m n)
 
 theorem smooth_mp : ∀ (m : ℕ) (n : Fin (m + 1) → ℕ), SmoothOfRelativeDimension (∑ i, n i) (mpStr k m n)
   | 0, n => by
@@ -97,7 +97,7 @@ theorem isArithVar_mp [IsDomain k] [CharZero k] (hf : Module.Finite ℤ k) (m : 
   haveI : Module.Finite ℤ k := hf
   haveI : IsNoetherian ℤ k := isNoetherian_of_isNoetherianRing_of_finite ℤ k
   haveI : IsNoetherianRing k := isNoetherian_of_tower ℤ inferInstance
-  have hdim : ringKrullDim k = 1 := ringKrullDim_eq_one hf
+  have hdim : ringKrullDim k = 1 := _root_.GlobalTheory.Amb.ringKrullDim_eq_one' hf
   have hbase := (GlobalTheory.ArithBase.isArithVar_id (k := k) hdim).flat
   rw [Category.id_comp] at hbase
   haveI := hbase
@@ -107,7 +107,7 @@ theorem isArithVar_mp [IsDomain k] [CharZero k] (hf : Module.Finite ℤ k) (m : 
   · rw [← multiProjEmb_toSpecBase]
     exact GlobalTheory.ProjSpace.isProjOver_comp_of_isClosedImmersion _ (GlobalTheory.ProjSpace.isProjOver_pspace_str k _)
   · exact Flat.comp _ _
-  · exact topologicalKrullDim_of_polyCovered hdim (mpStr k m n) _ (polyCovered_mp k m n)
+  · exact _root_.GlobalTheory.Amb.topologicalKrullDim_of_polyCovered' hdim (mpStr k m n) _ (polyCovered_mp k m n)
 
 theorem isClosedImmersion_lift {T : Scheme.{0}} (m : ℕ) (n' : ℕ) (n : Fin (m + 1) → ℕ) (a : T ⟶ PSpace k n')
     [IsClosedImmersion a] (b : T ⟶ MP k m n) (h : a ≫ toSpecBase k n' = b ≫ mpStr k m n) :

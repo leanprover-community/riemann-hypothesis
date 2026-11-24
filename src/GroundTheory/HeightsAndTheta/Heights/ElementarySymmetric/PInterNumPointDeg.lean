@@ -172,7 +172,7 @@ theorem finrank_funField_pt (hrel : ∃ i, (X i : Poly k N) ∉ pp) :
       refine ⟨_, ⟨NumbersDVR.blockWeight (fun _ : Unit => Fin (N + 1)) ⟨(), l⟩, X ⟨(), l⟩, X ⟨(), j⟩,
         isWeightedHomogeneous_X k _ _,
         isWeightedHomogeneous_X k _ _, hjP, rfl⟩, ?_⟩
-      simp only [AlgEquiv.coe_toAlgHom, AlgHom.coe_coe, map_div₀, hΦ, aeval_pt_oneBlock]
+      simp only [AlgEquiv.coe_toAlgHom, map_div₀, hΦ, aeval_pt_oneBlock]
       rfl
   unfold FieldNumbers.resDeg
   rw [dite_eq_left (inferInstance : P.IsPrime), ← hmap]

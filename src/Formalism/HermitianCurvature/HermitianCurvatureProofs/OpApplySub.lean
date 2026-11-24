@@ -1,5 +1,7 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.SliceAppend
+
 public import Formalism.HermitianCurvature.StatementJC
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ComponentFamilySettingOfSetting
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.PhiBoundPartsOfRadicalParametrisation
@@ -133,16 +135,7 @@ theorem levQ : ∃ Cp : ℝ, 0 ≤ Cp ∧ ∀ Cc : ℝ, 16 * Cp ≤ Cc →
   refine ⟨Cp, hCp0, ?_⟩
   intro Cc hCc k r Wp Wq _ _ _ _ _ _ T χ A₀ N P0 hPk hPr hk2 hχ hA₀ ε hε i hi hi1 w hw p hc hp a
 
-  obtain ⟨h, n, t, rfl⟩ : ∃ (h : C.LPt) (n : ℕ) (t : ℂ), p = h ++ [(n + 1, t)] := by
-    have hne : p ≠ [] := by
-      rintro rfl
-      have := hp.2
-      simp [D.ptSize] at this
-      omega
-    refine ⟨p.dropLast, (p.getLast hne).1 - 1, (p.getLast hne).2, ?_⟩
-    have h1 : 1 ≤ (p.getLast hne).1 := (hp.1 _ (List.getLast_mem hne)).1
-    rw [Nat.sub_add_cancel h1]
-    exact (List.dropLast_append_getLast hne).symm
+  obtain ⟨h, n, t, rfl⟩ := Formalism.FourierDecayAlt.P.SliceAppend.exists_append_succ hi1 hp
   obtain ⟨hpb, hps⟩ := hp
   subst hps
   set ph := D.ptSize h with hph
@@ -153,51 +146,13 @@ theorem levQ : ∃ Cp : ℝ, 0 ≤ Cp ∧ ∀ Cc : ℝ, 16 * Cp ≤ Cc →
   have hd0 : ∀ q, D.ptDiag h q ≠ 0 := fun q => Formalism.FourierDecayAlt.P.JCTx6.Link2.ptScal_ne h hlocH.1 q q.2
   set ρ := r - D.ptSize (h ++ [(n + 1, t)]) with hρ
   have hsum : ph + (n + 1) + ρ = r := by omega
-  have hspec := (Formalism.FourierDecayAlt.P.ptPerm_spec _ _ hloc).1
-  have hspec' := (Formalism.FourierDecayAlt.P.ptPerm_spec _ _ hlocH).1
-  have hσ : ∀ q : Fin (D.ptSize (h ++ [(n + 1, t)])),
-      ((Formalism.FourierDecayAlt.P.Dx2.SL.sigP (n := n) (D.ptPerm h)) (Fin.cast hP q)).val = (D.ptPerm (h ++ [(n + 1, t)]) q).val := by
-    intro q
-    rw [hspec q, Formalism.FourierDecayAlt.P.Dx2.SL.partner_append (n + 1) t h q.val (by have := q.isLt; omega)]
-    by_cases h1 : q.val < D.ptSize h
-    · rw [if_pos h1]
-      have e : Fin.cast hP q = Fin.castAdd (n + 1) ⟨q.val, h1⟩ := Fin.ext rfl
-      rw [e, Formalism.FourierDecayAlt.P.Dx2.SL.blockPerm_castAdd]
-      exact hspec' ⟨q.val, h1⟩
-    · rw [if_neg h1]
-      have e : Fin.cast hP q = Fin.natAdd (D.ptSize h) ⟨q.val - D.ptSize h, by have := q.isLt; omega⟩ :=
-        Fin.ext (by simp; omega)
-      rw [e, Formalism.FourierDecayAlt.P.Dx2.SL.blockPerm_natAdd]
-      simp only [Fin.val_natAdd, Fin.val_rev]
-      omega
-  have hd : ∀ q : Fin (D.ptSize (h ++ [(n + 1, t)])),
-      Formalism.FourierDecayAlt.P.Dx2.SL.dP (n := n) (D.ptDiag h) t (Fin.cast hP q) = D.ptDiag (h ++ [(n + 1, t)]) q := by
-    intro q
-    simp only [D.ptDiag]
-    rw [Formalism.FourierDecayAlt.P.Dx2.SL.scal_append (n + 1) t h q.val (by have := q.isLt; omega)]
-    by_cases h1 : q.val < D.ptSize h
-    · rw [if_pos h1]
-      have e : Fin.cast hP q = Fin.castAdd (n + 1) ⟨q.val, h1⟩ := Fin.ext rfl
-      rw [e, Formalism.FourierDecayAlt.P.Dx2.SL.dP, Fin.addCases_left]; rfl
-    · rw [if_neg h1]
-      have e : Fin.cast hP q = Fin.natAdd (D.ptSize h) ⟨q.val - D.ptSize h, by have := q.isLt; omega⟩ :=
-        Fin.ext (by simp; omega)
-      rw [e, Formalism.FourierDecayAlt.P.Dx2.SL.dP, Fin.addCases_right]
-  have hdP : ∀ q, Formalism.FourierDecayAlt.P.Dx2.SL.dP (n := n) (D.ptDiag h) t q ≠ 0 := by
-    intro q
-    refine Fin.addCases (fun i => ?_) (fun i => ?_) q
-    · simp only [Formalism.FourierDecayAlt.P.Dx2.SL.dP, Fin.addCases_left]; exact hd0 i
-    · simp only [Formalism.FourierDecayAlt.P.Dx2.SL.dP, Fin.addCases_right]; exact ht
+  have hdP := Formalism.FourierDecayAlt.P.SliceAppend.diag_append_ne_zero (n := n) hd0 ht
   have hS : ∀ (Gx : B.Mat k r → (Wq →L[ℂ] Wp)) (γ : B.Mat k ρ), D.sliceAt k r T.base.z T.base.z' Gx (h ++ [(n + 1, t)]) γ =
       U.PhiFun (p := ph + (n + 1)) (s := 0) k ρ (Formalism.FourierDecayAlt.P.Dx2.SL.sigP (D.ptPerm h))
         (Formalism.FourierDecayAlt.P.Dx2.SL.dP (D.ptDiag h) t) (D.castV (by omega) T.base.z) (D.castV (by omega) T.base.z')
         (D.castF (by omega) Gx) (fun a => a.elim0) γ := by
     intro Gx γ
-    obtain ⟨-, hT2⟩ := Formalism.FourierDecayAlt.P.Dx2.SL.phi_transport (k := k) (ρ := ρ) hP _ _ hσ _ _ hd
-      (D.castV (by omega) T.base.z) (D.castV (by omega) T.base.z') (D.castF (by omega) Gx) γ
-    unfold D.sliceAt
-    rw [dite_eq_left (by omega), hT2]
-    simp only [Formalism.FourierDecayAlt.P.Dx2.SL.castV_castV, Formalism.FourierDecayAlt.P.Dx2.SL.castF_castF]
+    exact Formalism.FourierDecayAlt.P.SliceAppend.slice_append k r T.base.z T.base.z' Gx h n t hloc (by omega) γ
   have e1 : r = ph + (n + 1) + ρ := hsum.symm
   have e2 : ph + (n + 1) + ρ = r := hsum
   have hj1 : 1 ≤ ph + (n + 1) := by omega
@@ -308,9 +263,9 @@ theorem levQ : ∃ Cp : ℝ, 0 ≤ Cp ∧ ∀ Cc : ℝ, 16 * Cp ≤ Cc →
     set y := U.gaXi (p := ph + (n + 1)) (s := 0) k ρ (Formalism.FourierDecayAlt.P.Dx2.SL.sigP (D.ptPerm h))
       (Formalism.FourierDecayAlt.P.Dx2.SL.dP (D.ptDiag h) t) ξ (fun a => a.elim0) γ with hy
     have hyG : y ∈ B.GV k (ph + (n + 1) + 0 + ρ) :=
-      Formalism.FourierDecayAlt.P.Ux10.gaXi_mem Formalism.FourierDecayAlt.P.slice_membership Formalism.FourierDecayAlt.P.radical_parametrisation _ _ hdP ξ _ hZ0 hγ
+      Formalism.FourierDecayAlt.P.Ux10.gaXi_mem _root_.Formalism.FourierDecayAlt.P.Ux2.sliceMem _root_.Formalism.FourierDecayAlt.P.Ux2.radicalParam _ _ hdP ξ _ hZ0 hγ
     have hDj : U.DjU k (ph + (n + 1) + 0) ρ y ≠ 0 := by
-      rw [Formalism.FourierDecayAlt.P.Ux10.DjU_gaXi Formalism.FourierDecayAlt.P.hat_z_on_slice]
+      rw [Formalism.FourierDecayAlt.P.Ux10.DjU_gaXi _root_.Formalism.FourierDecayAlt.P.Ux3.zhSlice]
       exact mul_ne_zero (Formalism.FourierDecayAlt.P.Ux10.det_hMat_ne _ _ hdP) hZ0
     have hc₁' := Formalism.FourierDecayAlt.P.JCTx6.Link2.ckOn_castF e2 (Formalism.FourierDecayAlt.P.JCTx6.Link2.ckOn_cutF T.base hχ hs₁ ε)
     have hc₂' := Formalism.FourierDecayAlt.P.JCTx6.Link2.ckOn_castF e2 (Formalism.FourierDecayAlt.P.JCTx6.Link2.ckOn_cutF T.base hχ hs₂ ε)

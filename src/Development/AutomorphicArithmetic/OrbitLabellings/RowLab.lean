@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.RealPlaceLabellingInertFrobeniusNotConj
 public import Formalism.LocalToGlobal.CharacterGerms.SelfConjugateRowData
 public import Formalism.LocalToGlobal.Divisibility.Numbers
 public import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.ExistsMulInvolutionAddOneMemPow
@@ -444,13 +445,9 @@ theorem ge_int {x : C} (hx : IsIntegral ℤ x) : V.Ge 0 x := by
   have h1 : IsIntegral (Valuation.integer (V.v : Valuation C (Multiplicative (WithTop ℝ)ᵒᵈ))) x := hx.tower_top
   exact (Valuation.integer.integers (V.v : Valuation C (Multiplicative (WithTop ℝ)ᵒᵈ))).mem_of_integral h1
 
-theorem mm_add {a b : C} (ha : V.MM a) (hb : V.MM b) : V.MM (a + b) := V.v.map_lt_add ha hb
+alias mm_add := _root_.UpperTheory.G2.RowLab.Hyp.mm_add
 
-theorem mm_mul {a b : C} (ha : V.Ge 0 a) (hb : V.MM b) : V.MM (a * b) := by
-  unfold VF.MM at *
-  unfold VF.Ge at ha
-  rw [V.v.map_mul]
-  exact lt_of_lt_of_le hb (le_add_of_nonneg_left (by simpa using ha))
+alias mm_mul := _root_.UpperTheory.G2.RowLab.Hyp.mm_mul
 
 def ker (V : VF C) {R : Type} [CommRing R] (f : R →+* C) (hf : ∀ x, V.Ge 0 (f x)) : Ideal R where
   carrier := {x | V.MM (f x)}
@@ -550,38 +547,7 @@ lemma pos_mod (N : NumDatum) (l : ℕ) (z : RPl N.R) (e : ℕ) :
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E}
 
 lemma inPsi_conj_iff (τ : E →+* ℂ) : InPsi H (ComplexEmbedding.conjugate τ) ↔ ¬ InPsi H τ := by
-  have hd : (H.d : ℂ) ≠ 0 := Nat.cast_ne_zero.2 H.d_prime.ne_zero
-  have h0 : H.rt0 ≠ 0 := fun h => by
-    have := H.sqrt_neg_disc_sq
-    rw [h] at this
-    exact hd (by linear_combination this)
-  have h1 : τ (H.rt : E) ^ 2 = -(H.d : ℂ) := by
-    have : ((H.rt : 𝓞 E) : E) ^ 2 = -(H.d : E) := by
-      have := congrArg (algebraMap (𝓞 E) E) H.rt_sq
-      simpa using this
-    rw [← map_pow, this, map_neg, map_natCast]
-  have h2 : ∀ w : ℂ, w ^ 2 = -(H.d : ℂ) → starRingEnd ℂ w = -w := by
-    intro w hw
-    have hre := congrArg Complex.re hw
-    have him := congrArg Complex.im hw
-    simp [pow_two] at hre him
-    have hdp : (0 : ℝ) < H.d := by exact_mod_cast H.d_prime.pos
-    have : w.re = 0 := by
-      by_contra hne
-      have : w.im = 0 := by
-        have : w.re * w.im = 0 := by linarith
-        exact (mul_eq_zero.1 this).resolve_left hne
-      rw [this] at hre
-      nlinarith [mul_self_nonneg w.re]
-    apply Complex.ext <;> simp [this]
-  unfold InPsi
-  rw [ComplexEmbedding.conjugate_coe_eq, h2 _ h1]
-  have h3 : τ (H.rt : E) = H.rt0 ∨ τ (H.rt : E) = -H.rt0 := sq_eq_sq_iff_eq_or_eq_neg.1 (h1.trans H.sqrt_neg_disc_sq.symm)
-  constructor
-  · intro a b
-    exact h0 (by linear_combination (-1/2 : ℂ) * a - (1/2 : ℂ) * b)
-  · intro a
-    rw [h3.resolve_left a, neg_neg]
+  apply GlobalTheory.InertLabelling.inPsi_conj_iff <;> assumption
 
 lemma embK_conj_bar {lv : Level H} (c : Coeff lv) (τ : E →+* ℂ) (x : 𝓞 E) :
     embK c τ (H.bar x) = embK c (ComplexEmbedding.conjugate τ) x := by

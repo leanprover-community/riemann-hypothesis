@@ -5,8 +5,9 @@ public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSc
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsSplitTorusPointsMulEquiv
 public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.ProdSurjectiveGeometricPoints
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.GeometricallyConnectedOfIsPullbackOfSurjective
-public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.CardTorsionAbelianVarietyStatement
+public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.CardTorsionAbelianVariety
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ConnectedSpaceSpecOfIsLocalRing
+public import Mathlib.RingTheory.RootsOfUnity.EnoughRootsOfUnity
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -52,7 +53,6 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.DimSplitPf
 import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.AuxiliaryInertOddPrime
-public import Mathlib.RingTheory.RootsOfUnity.EnoughRootsOfUnity
 
 @[expose] public section
 
@@ -193,7 +193,7 @@ theorem card_torsion_mul_card_toric_torsion : ∀ (k : Type) [Field k] [IsAlgClo
   have hg := dim_eq G E g g' dG dB
   obtain ⟨e⟩ := nonempty_torus_points_mulEquiv k E.X
   obtain ⟨hdiv, hcard⟩ := divisible_and_card e N hN
-  have hB := GlobalTheory.T.card_torsion_eq_pow_two_mul_dim k E.B g' N E.isAbelian dB hN
+  have hB := _root_.GlobalTheory.card_torsion_abelianVariety k E.B g' N E.isAbelian dB hN
   let i := IsMonHom.monoidHom E.i (𝟙_ (Over (Sp k)))
   have hi : Function.Injective i := fun a b h => hk.hom_ext h (toUnit_unique _ _)
   have h1 := card_pow_eq_one_of_extension i (IsMonHom.monoidHom E.q (𝟙_ (Over (Sp k)))) hi

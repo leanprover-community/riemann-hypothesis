@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.MemOfAevalEqZero
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.Imports
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
 public import GroundTheory.HeightsAndTheta.Heights.HeightsOfSets.MemMCoordIdealIffOfIsWeightedHomogeneous
@@ -125,25 +126,7 @@ theorem isMultiHomog_one : IsMultiHomog (1 : MRing ι) 0 := by
   simp
 
 theorem isMultiHomog_X [DecidableEq K] (p : Σ k, ι k) : IsMultiHomog (X p : MRing ι) (Pi.single p.1 1) := by
-  classical
-  intro m hm k
-  rw [support_X, Finset.mem_singleton] at hm
-  subst hm
-  obtain ⟨k₀, i₀⟩ := p
-  by_cases hk : k = k₀
-  · subst hk
-    rw [Pi.single_eq_same, Finset.sum_eq_single i₀]
-    · simp
-    · intro i _ hi
-      rw [Finsupp.single_apply, if_neg]
-      intro h
-      exact hi (eq_of_heq (Sigma.mk.inj_iff.mp h).2).symm
-    · simp
-  · rw [Pi.single_eq_of_ne hk]
-    refine Finset.sum_eq_zero fun i _ ↦ ?_
-    rw [Finsupp.single_apply, if_neg]
-    intro h
-    exact hk (Sigma.mk.inj_iff.mp h).1.symm
+  apply GlobalTheory.CompanionTheory.Ar.Flat.UnitChart.homog_X <;> assumption
 
 theorem isMultiHomog_pow {p : MRing ι} {a : K → ℕ} (hp : IsMultiHomog p a) (e : ℕ) :
     IsMultiHomog (p ^ e) (e • a) := by

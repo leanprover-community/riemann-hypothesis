@@ -70,8 +70,6 @@ private theorem sum_Ix_eq_sum_inl_add_sum_inr {M : Type} [AddCommMonoid M] (f : 
     ∑ x, f x = ∑ i, f (Sum.inl i) + ∑ i, f (Sum.inr i) := by
   first
   | exact Fintype.sum_sum_type f
-  | exact (Fintype.sum_equiv (Equiv.refl _ : GlobalTheory.CompanionTheory.Jp.Ix n ≃ (Fin n ⊕ Fin n)) f f
-      (fun _ => rfl)).trans (Fintype.sum_sum_type f)
 
 private theorem eq_zero_of_vecMul_GL_eq_zero {ι R : Type} [Fintype ι] [DecidableEq ι]
     [CommRing R] (A : GL ι R) {x : ι → R} (h : x ᵥ* A.1 = 0) : x = 0 := by
@@ -150,8 +148,6 @@ theorem exists_completion {k : Type} [Field k] (v : Fin n → Ix n → k) (hv : 
   refine ⟨hM.unit, fun j c => ?_⟩
   first
   | rfl
-  | (rw [IsUnit.unit_spec]; rfl)
-  | simp
 
 section Lift
 
@@ -269,7 +265,6 @@ theorem block_form (g κ₂ : GL (Ix n) L) (dd : GL (Fin n) L)
     ext i j
     first
     | rfl
-    | simp [Matrix.mul_apply]
   obtain ⟨X, hX⟩ : ∃ X : GL (GlobalTheory.CompanionTheory.Jp.Ix n) L, X = g * κ₂⁻¹ := ⟨_, rfl⟩
   have hbot : X.1.submatrix Sum.inr id =
       (dd⁻¹).1 * (1 : Matrix (GlobalTheory.CompanionTheory.Jp.Ix n) (GlobalTheory.CompanionTheory.Jp.Ix n) L).submatrix Sum.inr id := by
@@ -324,7 +319,6 @@ theorem det_diagU (δ : Fin n → Lˣ) : Matrix.GeneralLinearGroup.det (diagU δ
   first
   | (rw [Matrix.GeneralLinearGroup.val_det_apply, Units.coe_prod]
      exact Matrix.det_diagonal)
-  | simp [GlobalTheory.CompanionTheory.Jp.Hgt.diagU, Matrix.GeneralLinearGroup.val_det_apply, Matrix.det_diagonal]
 
 theorem tauM_inv_val (w : Lˣ) :
     ((tauM (n := n) w)⁻¹).1 = fromBlocks 1 0 0 (diagonal fun _ => ((w⁻¹ : Lˣ) : L)) := by
@@ -375,15 +369,11 @@ theorem exists_decomp (ϖ : O) (hϖ : Irreducible ϖ) (w : Lˣ) (hw : (w : L) = 
     ext a c
     first
     | rfl
-    | simp [GlobalTheory.CompanionTheory.Jp.lowerLeftBlock, GlobalTheory.CompanionTheory.Jp.resK, Matrix.GeneralLinearGroup.map_apply,
-        Matrix.toBlocks₂₁]
   have hmapD : (GlobalTheory.CompanionTheory.Jp.dBlk κ).map (IsLocalRing.residue O) =
       GlobalTheory.CompanionTheory.Jp.dBlk (GlobalTheory.CompanionTheory.Jp.resK κ) := by
     ext a c
     first
     | rfl
-    | simp [GlobalTheory.CompanionTheory.Jp.dBlk, GlobalTheory.CompanionTheory.Jp.resK, Matrix.GeneralLinearGroup.map_apply,
-        Matrix.toBlocks₂₂]
   have hdiv : ∀ j c, ∃ t : O, e j = 0 → (P.1 * GlobalTheory.CompanionTheory.Jp.dBlk κ) j c = ϖ * t := by
     intro j c
     by_cases hj : e j = 0
@@ -449,7 +439,6 @@ theorem exists_decomp (ϖ : O) (hϖ : Irreducible ϖ) (w : Lˣ) (hw : (w : L) = 
     rw [← hκ₂ j col]
     first
     | rfl
-    | simp [GlobalTheory.CompanionTheory.Jp.inL, Matrix.GeneralLinearGroup.map_apply]
   have hPC : ∀ j c, ∑ m, algebraMap O L (P.1 j m) * algebraMap O L (GlobalTheory.CompanionTheory.Jp.lowerLeftBlock κ m c) =
       algebraMap O L ((P.1 * GlobalTheory.CompanionTheory.Jp.lowerLeftBlock κ) j c) := by
     intro j c

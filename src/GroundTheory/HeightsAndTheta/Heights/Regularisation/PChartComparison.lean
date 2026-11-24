@@ -103,7 +103,6 @@ theorem ChartComparison.proof (h0 : MollifiedLowerBound.Statement)
   simp only [lt_min_iff] at ht₀
   obtain ⟨⟨htt₂, htδ₁⟩, htδ, hte⟩ := ht₀
   have hCt : t * (C₁ + 2) < δ := (lt_div_iff₀ hC₁2).1 htδ
-  have hCt' : t * (C₁ + 2) = C₁ * t + 2 * t := by ring
   have hC₁t : C₁ * t ≤ δ := by linarith
   have hC₁tlt : C₁ * t < δ := by linarith
   have htLt : t ≤ L * t := le_mul_of_one_le_left ht.le hL
@@ -121,9 +120,6 @@ theorem ChartComparison.proof (h0 : MollifiedLowerBound.Statement)
       linarith [le_abs_self B₁]
     have h3' : C₂ * Real.log (Real.log t⁻¹) ≤ C₂' * Real.log (Real.log t⁻¹) :=
       mul_le_mul_of_nonneg_right hC₂C₂' (by linarith)
-    have h4' : (C₂' + |B₁| + 1) * Real.log (Real.log t⁻¹) = C₂' * Real.log (Real.log t⁻¹) +
-        |B₁| * Real.log (Real.log t⁻¹) + Real.log (Real.log t⁻¹) := by ring
-    have h5' : -C₂ * Real.log (Real.log t⁻¹) = -(C₂ * Real.log (Real.log t⁻¹)) := by ring
     linarith
   have key : ∀ j k : Fin R.N, ∀ x ∈ R.mid j ∩ R.mid k,
       R.phReg ρ K t j x - R.phReg ρ K t k x ≤ E * (Real.log (Real.log t⁻¹) / Real.log t⁻¹) + L * t := by
@@ -148,12 +144,10 @@ theorem ChartComparison.proof (h0 : MollifiedLowerBound.Statement)
     have hlowk := hlow t ht htt₂ K k x hx.2
     have e0 := mono t (L * t) ht.le htLt (by linarith)
     have e1 := mono (L * t) (C₁ * t) (by linarith) hLt hC₁t
-    have h4C : 0 < 4 * C₁ := by linarith
     have hq : t / (4 * C₁) ≤ t / 4 := div_le_div_of_nonneg_left ht.le (by norm_num) (by linarith)
     have e2 := mono (t / (4 * C₁)) (t / 4) (by positivity) hq (by linarith)
     have e3 := mono (t / 4) (2 * t) (by positivity) (by linarith) (by linarith)
     have e4 := mono (2 * t) (C₁ * t) (by positivity) h2t hC₁t
-    have e5 := mono t (C₁ * t) ht.le htC hC₁t
     have hmax : max (polyMax (R.trunc K k) (R.chart k x) (L * t)) (-K + B₁) =
         polyMax (R.trunc K k) (R.chart k x) (L * t) := max_eq_left (by linarith)
     rw [hmax] at hii
@@ -173,8 +167,6 @@ theorem ChartComparison.proof (h0 : MollifiedLowerBound.Statement)
         mul_le_mul_of_nonneg_right hC₂C₂' (by linarith)
       have h2' : B₀' ≤ B₀' * Real.log (Real.log t⁻¹) := le_mul_of_one_le_right hB₀'0 hlogℓ.le
       have h3' : -C₂ * Real.log (Real.log t⁻¹) = -(C₂ * Real.log (Real.log t⁻¹)) := by ring
-      have h4' : (B₀' + C₂') * Real.log (Real.log t⁻¹) =
-          B₀' * Real.log (Real.log t⁻¹) + C₂' * Real.log (Real.log t⁻¹) := by ring
       linarith
     have hden : Real.log t⁻¹ / 2 ≤ Real.log (δ / (C₁ * t)) := by
       rw [show δ / (C₁ * t) = (δ / C₁) * t⁻¹ by field_simp,
@@ -211,21 +203,6 @@ theorem ChartComparison.proof (h0 : MollifiedLowerBound.Statement)
       rw [hE]
       have := mul_le_mul_of_nonneg_left hO (by linarith : (0 : ℝ) ≤ 1 + c₀)
       linarith
-    have hsum : polyMax (R.trunc K k) (R.chart k x) (L * t) -
-          polyMax (R.trunc K k) (R.chart k x) (2 * t) +
-          c₀ * (polyMax (R.trunc K k) (R.chart k x) (2 * t) -
-            polyMax (R.trunc K k) (R.chart k x) (t / 4)) ≤
-        (1 + c₀) * (polyMax (R.trunc K k) (R.chart k x) (C₁ * t) -
-          polyMax (R.trunc K k) (R.chart k x) (t / (4 * C₁))) := by
-      have h' : polyMax (R.trunc K k) (R.chart k x) (L * t) -
-          polyMax (R.trunc K k) (R.chart k x) (2 * t) ≤
-          polyMax (R.trunc K k) (R.chart k x) (C₁ * t) -
-            polyMax (R.trunc K k) (R.chart k x) (t / (4 * C₁)) := by linarith
-      calc _ ≤ (polyMax (R.trunc K k) (R.chart k x) (C₁ * t) -
-              polyMax (R.trunc K k) (R.chart k x) (t / (4 * C₁))) +
-            c₀ * (polyMax (R.trunc K k) (R.chart k x) (C₁ * t) -
-              polyMax (R.trunc K k) (R.chart k x) (t / (4 * C₁))) := add_le_add h' hc
-        _ = _ := by ring
     simp only [RegChartData.phReg, RegChartData.smoothed]
     linarith
   have hr : 0 ≤ Real.log (Real.log t⁻¹) / Real.log t⁻¹ := div_nonneg (by linarith) hℓ0.le

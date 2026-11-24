@@ -68,8 +68,6 @@ theorem KType.op_eq_exp {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T : KType ε
   obtain ⟨γ, hγ⟩ := exists_curve ε hY
   have h1 : γ 1 = k := onep_KG_ext (by rw [hγ, he]; simp)
   refine ⟨Y, hY, ?_⟩
-  have h2 := ReciprocityTheory.ChartRestriction.DS.HW.KType.op_curve T hY γ hγ 1
-  rw [h1] at h2
-  simpa using h2
+  simpa [h1] using KType.op_curve T hY γ hγ 1
 
 end ReciprocityTheory.ChartRestriction.DS.HW

@@ -70,9 +70,9 @@ theorem bhw_Ecc_Eab (hE : IsGlRep E) {μ : Fin n → ℝ} {v : D} (hv : ∀ c, E
   rw [sub_eq_iff_eq_add.mp h, hv c, map_smul]
   rcases eq_or_ne c a with h1 | h1 <;> rcases eq_or_ne c b with h2 | h2
   · subst h1; subst h2; simp [root]
-  · subst h1; simp [root, Pi.single_apply, Ne.symm h2, h2, add_smul, add_comm]
-  · subst h2; simp [root, Pi.single_apply, h1, sub_smul, add_smul]; exact add_comm _ _
-  · simp [root, Pi.single_apply, h1, h2, Ne.symm h2]
+  · subst h1; simp [root, Ne.symm h2, h2, add_smul, add_comm]
+  · subst h2; simp [root, h1, add_smul]; exact add_comm _ _
+  · simp [root, h1, h2, Ne.symm h2]
 
 private theorem hasDerivAt_zero_mem_of_forall_mem_finiteDim {S : Submodule ℂ H} [FiniteDimensional ℂ S] {f : ℝ → H} {L : H}
     (hf : HasDerivAt f L 0) (hS : ∀ t, f t ∈ S) : L ∈ S := by

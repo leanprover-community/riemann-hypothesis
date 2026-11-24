@@ -134,7 +134,7 @@ theorem frame_inv_poly' (hinj : Function.Injective (algebraMap O LL)) {d : ℕ}
     have h1 : (PowerSeries.constantCoeff : PowerSeries LL →+* LL).mapMatrix Hps = 1 := by
       ext i k
       simp only [RingHom.mapMatrix_apply, Matrix.map_apply, hHps, Matrix.of_apply,
-        PowerSeries.coeff_zero_eq_constantCoeff_apply, PowerSeries.constantCoeff_mk, hsol0,
+        PowerSeries.constantCoeff_mk, hsol0,
         Matrix.one_apply, Pi.single_apply]
     rw [h1, Matrix.det_one]
     exact isUnit_one

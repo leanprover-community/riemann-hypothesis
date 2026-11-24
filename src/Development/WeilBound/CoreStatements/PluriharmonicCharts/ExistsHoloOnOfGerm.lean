@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.PointsIntegralSmallLimit
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag
 public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialPullbackStatement
 import Mathlib.Algebra.Order.Floor.Extended
@@ -110,25 +111,7 @@ theorem exists_inv [CompactSpace Y] [T2Space X] (A : FinHolAtlas e X) (B : FinHo
 
 theorem holoOn_comp {A : FinHolAtlas e X} {B : FinHolAtlas e' Y} {h : Y → X} (hh : HoloMap B A h) {W : Set X}
     {f : X → ℂ} (hf : A.HoloOn W f) : B.HoloOn (h ⁻¹' W) (fun y => f (h y)) := by
-  intro j z hz
-  obtain ⟨hzt, hzW⟩ := hz
-  obtain ⟨k, hk⟩ := A.cover (h ((B.chart j).symm z))
-  obtain ⟨hhc, hha⟩ := hh
-  have hin : AnalyticAt ℂ ((A.chart k) ∘ h ∘ (B.chart j).symm) z := hha j k z ⟨hzt, hk⟩
-  have hout : AnalyticAt ℂ (f ∘ (A.chart k).symm) (((A.chart k) ∘ h ∘ (B.chart j).symm) z) := by
-    apply hf k
-    refine ⟨(A.chart k).map_source hk, ?_⟩
-    show (A.chart k).symm (A.chart k (h ((B.chart j).symm z))) ∈ W
-    rw [(A.chart k).left_inv hk]
-    exact hzW
-  have hev : ∀ᶠ w in 𝓝 z, h ((B.chart j).symm w) ∈ (A.chart k).source := by
-    have hc : ContinuousAt (h ∘ (B.chart j).symm) z :=
-      hhc.continuousAt.comp ((B.chart j).continuousAt_symm hzt)
-    exact hc.preimage_mem_nhds ((A.chart k).open_source.mem_nhds hk)
-  refine (hout.comp hin).congr ?_
-  filter_upwards [hev] with w hw
-  simp only [Function.comp_apply]
-  rw [(A.chart k).left_inv hw]
+  apply PositivityTheory.Xgn.SmallPotentialLimit.holoOn_comp <;> assumption
 
 theorem holoOn_mono {A : FinHolAtlas e X} {W W' : Set X} {f : X → ℂ} (h : A.HoloOn W f) (s : W' ⊆ W) :
     A.HoloOn W' f := by

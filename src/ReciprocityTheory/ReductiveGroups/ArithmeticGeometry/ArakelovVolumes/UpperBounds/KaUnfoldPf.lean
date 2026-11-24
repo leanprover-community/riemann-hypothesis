@@ -165,7 +165,6 @@ namespace ReciprocityTheory.ChartRestriction.G.AR.Up
 
 variable {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E]
 
-theorem kaUnfold_of (hMI : MeasInvStatement (E := E)) (hSB : SumBoundStatement) :
-    KaUnfoldStatement (E := E) := KU.kaUnfold_of hMI hSB
+alias kaUnfold_of := _root_.ReciprocityTheory.ChartRestriction.G.AR.Up.KU.kaUnfold_of
 
 end ReciprocityTheory.ChartRestriction.G.AR.Up

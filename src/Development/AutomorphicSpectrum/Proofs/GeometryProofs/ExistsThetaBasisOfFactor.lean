@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.EqZeroOfLineSubsetDiscrete
 public import Mathlib.Tactic.ENatToNat
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsLieBasis
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.SectionsPowThetaFunctions
@@ -67,7 +68,7 @@ variable {X Y : Scheme.{0}}
 theorem top_le_wchart_iff (L : LB X) {K : Type} [Fintype K] (φ : K → (Y ⟶ X)) (y : Sp ℂ ⟶ Y)
     (j : K → L.ι) : ⊤ ≤ y ⁻¹ᵁ LB.wchart L φ j ↔ ∀ k, ⊤ ≤ (y ≫ φ k) ⁻¹ᵁ L.U (j k) := by
   rw [GlobalTheory.top_le_preimage_iff_mem]
-  simp only [GlobalTheory.top_le_preimage_comp, GlobalTheory.top_le_preimage_iff_mem]
+  simp only [GlobalTheory.top_le_preimage_iff_mem]
   exact Set.mem_iInter
 
 theorem val_linComb_g (L : LB X) {K : Type} [Fintype K] (φ : K → (Y ⟶ X)) (y : Sp ℂ ⟶ Y)
@@ -302,21 +303,7 @@ end Frames
 
 theorem eq_zero_of_smul_mem {g : ℕ} (Λ : Submodule ℤ (Fin g → ℂ)) (hΛ : DiscreteTopology Λ)
     (w : Fin g → ℂ) (hm : ∀ t : ℂ, t • w ∈ Λ) : w = 0 := by
-  by_contra hw
-  obtain ⟨ε, hε, hb⟩ := Metric.isOpen_iff.1 (isOpen_discrete ({0} : Set Λ)) 0 rfl
-  have hwn : 0 < ‖w‖ := norm_pos_iff.2 hw
-  have hp : 0 < ε / (2 * ‖w‖) := by positivity
-  have h1 : (⟨((ε / (2 * ‖w‖) : ℝ) : ℂ) • w, hm _⟩ : Λ) ∈ Metric.ball (0 : Λ) ε := by
-    rw [Metric.mem_ball, Subtype.dist_eq]
-    change dist (((ε / (2 * ‖w‖) : ℝ) : ℂ) • w) 0 < ε
-    rw [dist_zero_right, norm_smul, Complex.norm_real, Real.norm_of_nonneg hp.le]
-    have : ε / (2 * ‖w‖) * ‖w‖ = ε / 2 := by field_simp
-    rw [this]
-    linarith
-  have h2 : ((ε / (2 * ‖w‖) : ℝ) : ℂ) • w = 0 := congrArg Subtype.val (hb h1)
-  rcases smul_eq_zero.1 h2 with h3 | h3
-  · exact hp.ne' (Complex.ofReal_eq_zero.1 h3)
-  · exact hw h3
+  apply (config := { allowSynthFailures := true }) GlobalTheory.KS.eq_zero_of_line_subset_discrete <;> assumption
 
 theorem exists_theta_family : ∀ (A : Over (Sp ℂ)) [GrpObj A] (L : LB A.left) (g : ℕ) (u : HolUnif A L g) (Hm : Matrix (Fin g) (Fin g) ℂ) (χ : u.Λ → ℂ), L.IsLB → IsAbelianScheme A → Out.RelAmple A L → (∀ (l : u.Λ) i z, ⊤ ≤ (u.ex z).left ⁻¹ᵁ L.U i → u.fr i z = χ l * Complex.exp (Real.pi * (z ⬝ᵥ Hm.mulVec (star (l : Fin g → ℂ))) + Real.pi / 2 * ((l : Fin g → ℂ) ⬝ᵥ Hm.mulVec (star (l : Fin g → ℂ)))) * u.fr i (z + l)) → ∃ (N : ℕ) (J : Type) (Θ : J → (Fin g → ℂ) → ℂ), 0 < N ∧ (∀ i, Differentiable ℂ (Θ i)) ∧ (∀ i (l : u.Λ) z, Θ i (z + l) = (χ l * Complex.exp (Real.pi * (z ⬝ᵥ Hm.mulVec (star (l : Fin g → ℂ))) + Real.pi / 2 * ((l : Fin g → ℂ) ⬝ᵥ Hm.mulVec (star (l : Fin g → ℂ))))) ^ N * Θ i z) ∧ (∃ i, Θ i ≠ 0) ∧ ∀ w : Fin g → ℂ, w ≠ 0 → ¬ ∀ i (t : ℂ) z, Θ i (z + t • w) = Θ i z := by
   intro A _ L g u Hm χ hL _ hamp hlaw

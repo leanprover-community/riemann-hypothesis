@@ -103,12 +103,9 @@ theorem conj_levi_coeff' (z : Circle) (r : ℝ) :
     starRingEnd ℂ ((z : ℂ) * (r : ℂ)) = ((z⁻¹ : Circle) : ℂ) * (r : ℂ) := by
   rw [map_mul, Circle.coe_inv_eq_conj, Complex.conj_ofReal]
 
-theorem incA_conj_neg_inv : cA D (incA D (-D.host.xi0⁻¹)) = incA D D.host.xi0⁻¹ := by
-  rw [GlobalTheory.DualPairCheck.cA_incA, star_neg, star_inv₀, GlobalTheory.DualPairCheck.star_purely_imaginary_eq_neg, inv_neg, neg_neg]
-
 theorem dagger_ofAdj (S T : HSp D) (z : Mx D S.rank T.rank) :
     dagger S T (ofAdj S T z) = incA D D.host.xi0⁻¹ • z := by
-  rw [dagger, ofAdj, adj_smul, adj_mul, adj_mul, adj_adj, adj_gA, adj_giA, incA_conj_neg_inv, Matrix.smul_mul,
+  rw [dagger, ofAdj, adj_smul, adj_mul, adj_mul, adj_adj, adj_gA, adj_giA, _root_.GlobalTheory.MixSwap.adelicConj_incl_neg_inv_hermitianScalar, Matrix.smul_mul,
     Matrix.mul_smul, Matrix.mul_assoc, Matrix.mul_assoc, giA_gA_cancel, giA_mul_gA, Matrix.mul_one]
 
 theorem symplOH_dagger {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsStdChar D ψ (-1)) (S T : HSp D) (x y : WO S T) :
@@ -132,7 +129,7 @@ theorem nC_inv_incAdj_sub {S T T₀ : HSp D} {ρ : ℕ} (d : HypDec T T₀ ρ) (
 theorem giA_adj_central {S : HSp D} {ρ : ℕ} (c : skewA D ρ) (y : Mx D S.rank ρ) :
     giA S ⬝ adj (-(c.1 ⬝ (incA D (-D.host.xi0⁻¹) • (adj y ⬝ gA S)))) = (incA D D.host.xi0⁻¹ • y) ⬝ c.1 := by
   have hc : adj c.1 = -c.1 := c.2
-  rw [adj_neg, adj_mul, hc, adj_smul, adj_mul, adj_adj, adj_gA, incA_conj_neg_inv]
+  rw [adj_neg, adj_mul, hc, adj_smul, adj_mul, adj_adj, adj_gA, _root_.GlobalTheory.MixSwap.adelicConj_incl_neg_inv_hermitianScalar]
   simp only [Matrix.mul_neg, neg_neg]
   rw [Matrix.smul_mul, Matrix.mul_smul, ← Matrix.mul_assoc, giA_gA_cancel, Matrix.smul_mul]
 

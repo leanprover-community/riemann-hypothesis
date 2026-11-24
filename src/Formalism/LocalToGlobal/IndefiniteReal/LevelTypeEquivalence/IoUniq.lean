@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.IndefiniteReal.SchurOrthogonality
 public import Formalism.LocalToGlobal.IndefiniteReal.LevelTypeEquivalence.PeterssonNormOfUpLift
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -64,36 +65,7 @@ theorem sobCont_zero : Sobolev₂ Lie σ 0 :=
 
 theorem sobCont_add {ℓ₁ ℓ₂ : H →ₗ[ℂ] ℂ} (h₁ : Sobolev₂ Lie σ ℓ₁) (h₂ : Sobolev₂ Lie σ ℓ₂) :
     Sobolev₂ Lie σ (ℓ₁ + ℓ₂) := by
-  obtain ⟨S₁, C₁, hS₁, hb₁⟩ := h₁
-  obtain ⟨S₂, C₂, hS₂, hb₂⟩ := h₂
-  refine ⟨S₁ ++ S₂, max C₁ 0 + max C₂ 0, fun l hl X hX => ?_, fun w hw => ?_⟩
-  · rcases List.mem_append.1 hl with hl | hl
-    · exact hS₁ l hl X hX
-    · exact hS₂ l hl X hX
-  · have n₁ : 0 ≤ (S₁.map fun l => ‖l.foldr (dRep σ) w‖).sum :=
-      List.sum_nonneg fun x hx => by
-        obtain ⟨l, -, rfl⟩ := List.mem_map.1 hx
-        exact norm_nonneg _
-    have n₂ : 0 ≤ (S₂.map fun l => ‖l.foldr (dRep σ) w‖).sum :=
-      List.sum_nonneg fun x hx => by
-        obtain ⟨l, -, rfl⟩ := List.mem_map.1 hx
-        exact norm_nonneg _
-    have e₁ : C₁ * (S₁.map fun l => ‖l.foldr (dRep σ) w‖).sum ≤
-        max C₁ 0 * (S₁.map fun l => ‖l.foldr (dRep σ) w‖).sum :=
-      mul_le_mul_of_nonneg_right (le_max_left _ _) n₁
-    have e₂ : C₂ * (S₂.map fun l => ‖l.foldr (dRep σ) w‖).sum ≤
-        max C₂ 0 * (S₂.map fun l => ‖l.foldr (dRep σ) w‖).sum :=
-      mul_le_mul_of_nonneg_right (le_max_left _ _) n₂
-    have m₁ : 0 ≤ max C₁ 0 := le_max_right _ _
-    have m₂ : 0 ≤ max C₂ 0 := le_max_right _ _
-    rw [List.map_append, List.sum_append, LinearMap.add_apply]
-    calc ‖ℓ₁ w + ℓ₂ w‖ ≤ ‖ℓ₁ w‖ + ‖ℓ₂ w‖ := norm_add_le _ _
-      _ ≤ C₁ * (S₁.map fun l => ‖l.foldr (dRep σ) w‖).sum + C₂ * (S₂.map fun l => ‖l.foldr (dRep σ) w‖).sum :=
-        add_le_add (hb₁ w hw) (hb₂ w hw)
-      _ ≤ max C₁ 0 * (S₁.map fun l => ‖l.foldr (dRep σ) w‖).sum +
-          max C₂ 0 * (S₂.map fun l => ‖l.foldr (dRep σ) w‖).sum := add_le_add e₁ e₂
-      _ ≤ (max C₁ 0 + max C₂ 0) * ((S₁.map fun l => ‖l.foldr (dRep σ) w‖).sum +
-          (S₂.map fun l => ‖l.foldr (dRep σ) w‖).sum) := by nlinarith
+  apply Formalism.IndefR.SchurOrthogonalityAlt.sobCont_add <;> assumption
 
 theorem sobCont_smul {ℓ : H →ₗ[ℂ] ℂ} (c : ℂ) (h : Sobolev₂ Lie σ ℓ) : Sobolev₂ Lie σ (c • ℓ) := by
   obtain ⟨S, C, hS, hb⟩ := h

@@ -55,12 +55,6 @@ def nuOf (L : SizeData₂ D) (u : D.what₂.Word) {d : ℕ} (e : (Fin d → D.wh
     Submodule (𝓞 D.what₂.LL) (Fin d → D.what₂.LL) :=
   (L.NuLat u).comap ((e : (Fin d → D.what₂.LL) →ₗ[D.what₂.LL] (D.div.Nu u).V).restrictScalars (𝓞 D.what₂.LL))
 
-private theorem sg_eq_zero_of_not_mem_supp (L : SizeData₂ D) (u : D.what₂.Word) (w : D.what₂.places.Pl) (hw : w ∉ L.supp) :
-    L.sg u w = 0 := by
-  unfold Formalism.BasicNotions.SizeData₂.sg
-  refine Finset.sum_eq_zero fun j _ => ?_
-  simp [Formalism.BasicNotions.SizeData₂.gainD, L.gain_supp j w hw, L.F_supp j w hw, L.E_supp u j w hw]
-
 private theorem shiftIdeal_shiftZ_sgRec_eq_Iu (L : SizeData₂ D) (u : D.what₂.Word) :
     Formalism.DivisionValues.shiftIdeal (shiftZ (sgRec L u)) = Formalism.BasicNotions.DV.Iu D L u := by
   have hfun : ∀ i, shiftZ (sgRec L u) (D.plEq i) = ⌊Formalism.BasicNotions.DV.ur D i (L.sg u i)⌋ := by
@@ -82,7 +76,7 @@ private theorem shiftIdeal_shiftZ_sgRec_eq_Iu (L : SizeData₂ D) (u : D.what₂
         by_contra hs
         have hs' : i ∉ L.supp := fun h => hs (Finset.mem_coe.2 h)
         apply hi
-        simp [sg_eq_zero_of_not_mem_supp L u i hs', Formalism.BasicNotions.DV.ur]
+        simp [_root_.Formalism.L2.G.ServJoint.sg_off L u i hs', Formalism.BasicNotions.DV.ur]
 
 theorem shift_nuOf (L : SizeData₂ D) (hN : NprimeDef D L) (u : D.what₂.Word) {d : ℕ}
     (e : (Fin d → D.what₂.LL) ≃ₗ[D.what₂.LL] (D.div.Nu u).V) (NuC : Submodule (𝓞 D.what₂.LL) (Fin d → D.what₂.LL))
@@ -120,7 +114,7 @@ theorem sgRec_fin (L : SizeData₂ D) (u : D.what₂.Word) : (Function.support (
   by_contra hs
   have hs' : D.plEq.symm w ∉ L.supp := fun h => hs (Finset.mem_coe.2 h)
   apply hw
-  simp [shiftZ, sgRec, sg_eq_zero_of_not_mem_supp L u _ hs', Formalism.BasicNotions.DV.ur]
+  simp [shiftZ, sgRec, _root_.Formalism.L2.G.ServJoint.sg_off L u _ hs', Formalism.BasicNotions.DV.ur]
 
 end Formalism.L2.DIV.Cons
 

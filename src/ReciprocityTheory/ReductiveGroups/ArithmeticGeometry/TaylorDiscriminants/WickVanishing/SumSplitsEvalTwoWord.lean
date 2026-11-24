@@ -125,12 +125,12 @@ theorem sum_splits_evalOne_word (g : ι → k) (Ls : List ι) (hnd : Ls.Nodup) (
       have e2 : word Ls (m - Finsupp.single y 1) = word Ls m :=
         word_congr_lemma_6 _ _ _ fun z hz => by
           have hyz : y ≠ z := fun h => hy (h ▸ hz)
-          simp [Finsupp.single_apply, hyz]
+          simp [hyz]
       rw [word_cons_lemma_5, e1, e2]
     · congr 1
       refine List.map_congr_left fun z hz => ?_
       have hzy : z ≠ y := fun h => hy (h ▸ hz)
-      have e : (m - Finsupp.single z 1 : ι →₀ ℕ) y = m y := by simp [Finsupp.single_apply, hzy]
+      have e : (m - Finsupp.single z 1 : ι →₀ ℕ) y = m y := by simp [hzy]
       rw [word_cons_lemma_5, e]
 
 theorem two_mul_choose_two (n : ℕ) : 2 * n.choose 2 = n * (n - 1) := by
@@ -144,7 +144,7 @@ theorem two_mul_choose_two (n : ℕ) : 2 * n.choose 2 = n * (n - 1) := by
 
 private theorem ev2_cons_lemma_7 (c : ι → ι → k) (l : ι) (t : List ι) :
     ev2 c (l :: t) = ev1 (c l) t := by
-  rcases t with _ | ⟨a, _ | ⟨b, t⟩⟩ <;> first | rfl | simp [ev1, ev2]
+  rcases t with _ | ⟨a, _ | ⟨b, t⟩⟩ <;> first | rfl
 
 private theorem t2_cons_lemma_8 (c : ι → ι → k) (l : ι) (w : List ι) (φ : List ι → k) :
     ((splits (l :: w)).map (fun p => φ p.1 * ev2 c p.2)).sum =
@@ -206,7 +206,7 @@ theorem sum_splits_evalTwo_word (c : ι → ι → k) (hc : ∀ x y, c x y = c y
         | (simp; done)
         | (simp; omega)
       have e3 : word Ls (m - Finsupp.single y0 1 - Finsupp.single y0 1) = word Ls m :=
-        word_congr_lemma_6 _ _ _ fun z hz => by simp [Finsupp.single_apply, hne z hz]
+        word_congr_lemma_6 _ _ _ fun z hz => by simp [hne z hz]
       rw [e1, word_cons_lemma_5, e2, e3, ← two_mul_choose_two]
       push_cast
       ring
@@ -218,9 +218,9 @@ theorem sum_splits_evalTwo_word (c : ι → ι → k) (hc : ∀ x y, c x y = c y
       congr 1
       refine List.map_congr_left fun y hyL => ?_
       have hyy : y0 ≠ y := hne y hyL
-      have e1 : (m - Finsupp.single y 1 : ι →₀ ℕ) y0 = m y0 := by simp [Finsupp.single_apply, hyy.symm]
+      have e1 : (m - Finsupp.single y 1 : ι →₀ ℕ) y0 = m y0 := by simp [hyy.symm]
       have e2 : (m - Finsupp.single y 1 - Finsupp.single y0 1 : ι →₀ ℕ) y0 = m y0 - 1 := by
-        simp [Finsupp.single_apply, hyy.symm]
+        simp [hyy.symm]
       have e3 : word Ls (m - Finsupp.single y 1 - Finsupp.single y0 1) = word Ls (m - Finsupp.single y 1) :=
         word_congr_lemma_6 _ _ _ fun z hz => by simp [Finsupp.single_apply, hne z hz]
       rw [e1, word_cons_lemma_5, e2, e3]
@@ -234,9 +234,9 @@ theorem sum_splits_evalTwo_word (c : ι → ι → k) (hc : ∀ x y, c x y = c y
       congr 1
       refine List.map_congr_left fun x hxL => ?_
       have hxx : y0 ≠ x := hne x hxL
-      have e1 : (m - Finsupp.single y0 1 : ι →₀ ℕ) x = m x := by simp [Finsupp.single_apply, hxx]
+      have e1 : (m - Finsupp.single y0 1 : ι →₀ ℕ) x = m x := by simp [hxx]
       have e2 : (m - Finsupp.single y0 1 - Finsupp.single x 1 : ι →₀ ℕ) y0 = m y0 - 1 := by
-        simp [Finsupp.single_apply, hxx.symm]
+        simp [hxx.symm]
       have e3 : word Ls (m - Finsupp.single y0 1 - Finsupp.single x 1) = word Ls (m - Finsupp.single x 1) :=
         word_congr_lemma_6 _ _ _ fun z hz => by simp [Finsupp.single_apply, hne z hz]
       rw [e1, word_cons_lemma_5, e2, e3, hc x y0]
@@ -251,7 +251,7 @@ theorem sum_splits_evalTwo_word (c : ι → ι → k) (hc : ∀ x y, c x y = c y
       congr 1
       refine List.map_congr_left fun y hyL => ?_
       have e : (m - Finsupp.single y 1 - Finsupp.single x 1 : ι →₀ ℕ) y0 = m y0 := by
-        simp [Finsupp.single_apply, (hne y hyL).symm, (hne x hxL).symm]
+        simp [(hne y hyL).symm, (hne x hxL).symm]
       rw [word_cons_lemma_5, e]
     linear_combination -ha - hb1 - hb2 - hcc
 

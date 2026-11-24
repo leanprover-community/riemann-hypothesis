@@ -78,7 +78,7 @@ theorem val_pmaps' (w : LB.Iso L' (L.pull F)) {K : Type} [Fintype K] {φ' : K �
     intro k
     convert hJ₀ ((r ≫ h) ≫ φ k) using 2
     rw [hp]
-    first | rfl | simp
+    first | rfl
   have h2 : ∀ k, φ' k (r z) ∈ L'.U (J (r ≫ φ' k)) := fun k => hJ (r ≫ φ' k)
   have key := hm Z r z (fun k => J₀ ((r ≫ h) ≫ φ k)) (fun k => J (r ≫ φ' k)) h1 h2
   unfold val

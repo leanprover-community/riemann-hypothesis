@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.SdDual
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.SdUniq
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerVolume.PosNear
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.T2SpaceTensorProductFiniteExtension
@@ -131,32 +132,7 @@ theorem trace_one_tmul (e : E) :
 include b in
 theorem trace_nondeg [Algebra.IsSeparable F E] (z : Fv F v ⊗[F] E)
     (h : ∀ w, Algebra.trace (Fv F v) (Fv F v ⊗[F] E) (w * z) = 0) : z = 0 := by
-  classical
-  let B := Algebra.TensorProduct.basis (Fv F v) b
-  have hB : ∀ k, B k = (1 : Fv F v) ⊗ₜ[F] b k := fun k => Algebra.TensorProduct.basis_apply _ _
-  let c : Fin d → Fv F v := fun k => B.repr z k
-  let G : Matrix (Fin d) (Fin d) (Fv F v) :=
-    (Algebra.traceMatrix F b).map (algebraMap F (Fv F v))
-  have hc : G.mulVec c = 0 := by
-    funext l
-    have hz := h (B l)
-
-    rw [← B.sum_repr z, Finset.mul_sum, map_sum] at hz
-    simp only [Matrix.mulVec, dotProduct, Pi.zero_apply]
-    rw [← hz]
-    refine Finset.sum_congr rfl fun k _ => ?_
-    rw [mul_smul_comm, map_smul, hB, hB, Algebra.TensorProduct.tmul_mul_tmul, one_mul,
-      trace_one_tmul, smul_eq_mul, mul_comm]
-    simp [G, Algebra.traceMatrix_apply, Algebra.traceForm_apply, c]
-  have hdet : G.det ≠ 0 := by
-    rw [show G.det = algebraMap F (Fv F v) (Algebra.traceMatrix F b).det from
-      (RingHom.map_det _ _).symm]
-    exact (map_ne_zero _).2 (Algebra.discr_not_zero_of_basis F b)
-  have hc0 : c = 0 := Matrix.eq_zero_of_mulVec_eq_zero hdet hc
-  rw [← B.sum_repr z]
-  refine Finset.sum_eq_zero fun k _ => ?_
-  have : B.repr z k = 0 := congrFun hc0 k
-  rw [this, zero_smul]
+  apply PI.VolStabSW.SdDualW.trace_nondeg <;> assumption
 
 end Nondeg
 
@@ -226,66 +202,13 @@ theorem bound_alt
     (c : Fv F v) : ∃ K, IsCompact K ∧
       {y | ∀ x ∈ latSub v b a M, BR (Fv F v) σ J x y ∈
         (fun s => c * s) '' (v.adicCompletionIntegers F : Set (Fv F v))} ⊆ K := by
-  classical
-  have hker : LinearMap.ker (phiL (a := a) v b σ J) = ⊥ := by
-    rw [LinearMap.ker_eq_bot']
-    intro Y hY
-    apply hN Y
-    intro X
-    rw [BR_expand v b σ J X Y]
-    refine Finset.sum_eq_zero fun q _ => ?_
-    have : BR (Fv F v) σ J (eT v b q) Y = 0 := congrFun hY q
-    rw [this, mul_zero]
-  obtain ⟨g, hg⟩ := LinearMap.exists_leftInverse_of_injective (phiL (a := a) v b σ J) hker
-  have hgc : Continuous g := IsModuleTopology.continuous_of_linearMap g
-  let box : Set (Fin a × Fin M × Fin d → Fv F v) :=
-    Set.pi Set.univ fun _ => (fun s => c * s) '' (v.adicCompletionIntegers F : Set (Fv F v))
-  have hbox : IsCompact box := isCompact_univ_pi fun _ =>
-    (ReciprocityTheory.GeneralLinearIntegers.GeneralLinearIntegersOpenCompact.isCompact_integers v).image (continuous_const.mul continuous_id)
-  refine ⟨g '' box, hbox.image hgc, ?_⟩
-  intro y hy
-  refine ⟨phiL (a := a) v b σ J y, ?_, ?_⟩
-  · intro q _
-    exact hy _ (eT_mem v b q)
-  · exact LinearMap.congr_fun hg y
+  apply PI.VolStabSW.SdDualW.bound_alt <;> assumption
 
 include b in
 theorem dualAt_alt
     (hN : ∀ Y : Fin a → Fin M → Fv F v ⊗[F] E, (∀ X, BR (Fv F v) σ J X Y = 0) → Y = 0) :
     DualAt v (BR (Fv F v) σ J (n := a)) := by
-  classical
-  have hker : LinearMap.ker (phiL (a := a) v b σ J) = ⊥ := by
-    rw [LinearMap.ker_eq_bot']
-    intro Y hY
-    apply hN Y
-    intro X
-    rw [BR_expand v b σ J X Y]
-    refine Finset.sum_eq_zero fun q _ => ?_
-    have : BR (Fv F v) σ J (eT v b q) Y = 0 := congrFun hY q
-    rw [this, mul_zero]
-  obtain ⟨g, hg⟩ := LinearMap.exists_leftInverse_of_injective (phiL (a := a) v b σ J) hker
-  have hgc : Continuous g := IsModuleTopology.continuous_of_linearMap g
-  refine ⟨latSub v b a M, isCompact_latV b v a M, (isClopen_latV b v a M).isOpen, ?_, ?_⟩
-  · intro s hs x hx
-    refine ⟨s • x, ?_, fun y => BR_smul_left v σ J s x y⟩
-    show ∀ p i l, (Algebra.TensorProduct.basis (Fv F v) b).repr ((s • x) p i) l ∈
-      v.adicCompletionIntegers F
-    intro p i l
-    have := crd_smul v b s (x p i) l
-    simp only [crd] at this
-    rw [Pi.smul_apply, Pi.smul_apply, this]
-    exact mul_mem hs (hx p i l)
-  · intro c
-    let box : Set (Fin a × Fin M × Fin d → Fv F v) :=
-      Set.pi Set.univ fun _ => (fun s => c * s) '' (v.adicCompletionIntegers F : Set (Fv F v))
-    have hbox : IsCompact box := isCompact_univ_pi fun _ =>
-      (ReciprocityTheory.GeneralLinearIntegers.GeneralLinearIntegersOpenCompact.isCompact_integers v).image (continuous_const.mul continuous_id)
-    refine ⟨g '' box, hbox.image hgc, ?_⟩
-    intro y hy
-    refine ⟨phiL (a := a) v b σ J y, ?_, ?_⟩
-    · intro q _
-      exact hy _ (eT_mem v b q)
-    · exact LinearMap.congr_fun hg y
+  apply PI.VolStabSW.SdDualW.dualAt_alt <;> assumption
 
 end Dual
 
@@ -296,26 +219,7 @@ variable [FiniteDimensional F E]
 theorem nondeg_BR [Algebra.IsSeparable F E] (σ : E →ₐ[F] E) (hσ : ∀ x, σ (σ x) = x) {M a : ℕ}
     (J : Matrix (Fin M) (Fin M) E) (hJ : J.det ≠ 0) (Y : Fin a → Fin M → Fv F v ⊗[F] E)
     (h : ∀ X, BR (Fv F v) σ J X Y = 0) : Y = 0 := by
-  classical
-  funext p
-  have hz : ∀ i, (JR (Fv F v) J).mulVec (Y p) i = 0 := by
-    intro i
-    apply trace_nondeg v (Module.finBasis F E)
-    intro w
-    have := h (Pi.single p (Pi.single i (sigR (Fv F v) σ w)))
-    simp only [BR, hR, Formalism.UG.hform] at this
-    rw [Finset.sum_eq_single p (fun p' _ hp' => by simp [Pi.single_apply, hp']) (by simp)] at this
-    rw [Finset.sum_eq_single i (fun i' _ hi' => by simp [Pi.single_apply, hi']) (by simp)] at this
-    simp only [Pi.single_eq_same, sigR_invol (Fv F v) σ hσ] at this
-    simpa [Matrix.mulVec, dotProduct, Finset.mul_sum, mul_assoc] using this
-  have hdet : IsUnit ((1 : Matrix (Fin M) (Fin M) (Fv F v ⊗[F] E)) * JR (Fv F v) J).det := by
-    rw [one_mul]
-    have e := RingHom.map_det (inclR (F := F) (E := E) (Fv F v)) J
-    rw [RingHom.mapMatrix_apply] at e
-    show IsUnit (J.map (inclR (Fv F v))).det
-    rw [← e]
-    exact (isUnit_iff_ne_zero.2 hJ).map _
-  exact TensAllW.inj_of_isUnit _ 1 hdet _ (funext hz)
+  apply PI.VolStabSW.SdDualW.nondeg_BR <;> assumption
 
 end NondegBR
 
@@ -449,79 +353,12 @@ theorem pairHerm_iota (σ : E →ₐ[F] E) (hσ : ∀ x, σ (σ x) = x) {a : ℕ
     pairHerm (Fv F v) σ a ⟨iota v σ X, iota_mem v σ hσ X⟩ T =
       BR (Fv F v) σ (1 : Matrix (Fin a) (Fin a) E) X
         (fun p i => (T : Matrix (Fin a) (Fin a) (Fv F v ⊗[F] E)) i p) := by
-  set Tm := (T : Matrix (Fin a) (Fin a) (Fv F v ⊗[F] E)) with hTm
-  have hT : ∀ p q, Tm q p = sigR (Fv F v) σ (Tm p q) := fun p q => (T.2 q p).symm
-  have h2 : Algebra.trace (Fv F v) (Fv F v ⊗[F] E) (∑ p, ∑ q, X q p * Tm q p) =
-      Algebra.trace (Fv F v) (Fv F v ⊗[F] E) (∑ p, ∑ q, sigR (Fv F v) σ (X p q) * Tm q p) := by
-
-    simp only [map_sum]
-    rw [Finset.sum_comm]
-    refine Finset.sum_congr rfl fun p _ => Finset.sum_congr rfl fun q _ => ?_
-    rw [hT q p, ← trace_sigR v σ hσ, map_mul, sigR_invol (Fv F v) σ hσ]
-  have hBR : BR (Fv F v) σ (1 : Matrix (Fin a) (Fin a) E) X (fun p i => Tm i p) =
-      Algebra.trace (Fv F v) (Fv F v ⊗[F] E) (∑ p, ∑ q, sigR (Fv F v) σ (X p q) * Tm q p) := by
-
-    simp only [BR, hR, Formalism.UG.hform, JR, Matrix.map_apply, Matrix.one_apply, apply_ite,
-    map_one, map_zero, mul_ite, mul_one, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq,
-    Finset.mem_univ, if_true, map_sum]
-  rw [hBR]
-  simp only [pairHerm, iota, add_mul, Finset.sum_add_distrib, map_add (f := _)]
-  simp only [← hTm]
-  rw [h2]
-  have h12 : algebraMap F (Fv F v) (1 / 2) * 2 = 1 := by
-    rw [← map_ofNat (algebraMap F (Fv F v)) 2, ← map_mul]
-    norm_num
-  linear_combination (Algebra.trace (Fv F v) (Fv F v ⊗[F] E)
-    (∑ p, ∑ q, sigR (Fv F v) σ (X p q) * Tm q p)) * h12
+  apply PI.VolStabSW.SdDualW.pairHerm_iota <;> assumption
 
 include b in
 theorem dualAt_H [Algebra.IsSeparable F E] (σ : E →ₐ[F] E) (hσ : ∀ x, σ (σ x) = x) (a : ℕ) :
     DualAt v (pairHerm (Fv F v) σ a) := by
-  classical
-  have := locallyCompact_Fv F v
-  have hcl := (isClosed_HermR (Fv F v) σ a).isClosedEmbedding_subtypeVal
-  have hKc : IsCompact ((Set.univ.pi fun _ => Set.univ.pi fun _ =>
-      (latS v b σ : Set (Fv F v ⊗[F] E))) : Set (Matrix (Fin a) (Fin a) (Fv F v ⊗[F] E))) :=
-    isCompact_univ_pi fun _ => isCompact_univ_pi fun _ => isCompact_latS v b σ
-  have hKo : IsOpen ((Set.univ.pi fun _ => Set.univ.pi fun _ =>
-      (latS v b σ : Set (Fv F v ⊗[F] E))) : Set (Matrix (Fin a) (Fin a) (Fv F v ⊗[F] E))) :=
-    isOpen_set_pi Set.finite_univ fun _ _ => isOpen_set_pi Set.finite_univ fun _ _ =>
-      isOpen_latS v b σ
-  refine ⟨latH v b σ a, ?_, ?_, ?_, ?_⟩
-  · rw [latH_eq]
-    exact hcl.isCompact_preimage hKc
-  · rw [latH_eq]
-    exact hKo.preimage continuous_subtype_val
-  · intro s hs S hS
-    have hmem : s • (S : Matrix (Fin a) (Fin a) (Fv F v ⊗[F] E)) ∈ HermR (Fv F v) σ a := by
-      intro p q
-      simp only [Matrix.smul_apply, sigR_smul, S.2 p q]
-    refine ⟨⟨_, hmem⟩, fun p q => smul_mem_latS v b σ hs (hS p q), fun T => ?_⟩
-    simp only [pairHerm, Matrix.smul_apply, smul_mul_assoc, ← Finset.smul_sum, map_smul,
-      smul_eq_mul]
-    ring
-  · intro c
-    have hN : ∀ Y : Fin a → Fin a → Fv F v ⊗[F] E,
-        (∀ X, BR (Fv F v) σ (1 : Matrix (Fin a) (Fin a) E) X Y = 0) → Y = 0 :=
-      fun Y hY => nondeg_BR v σ hσ 1 (by simp) Y hY
-    obtain ⟨K, hK, hKs⟩ := bound_alt v b σ (1 : Matrix (Fin a) (Fin a) E) (a := a) hN c
-    let tr : (Fin a → Fin a → Fv F v ⊗[F] E) → Matrix (Fin a) (Fin a) (Fv F v ⊗[F] E) :=
-      fun Y i p => Y p i
-    have htr : Continuous tr := continuous_pi fun i => continuous_pi fun p =>
-      (continuous_apply i).comp (continuous_apply p)
-    refine ⟨Subtype.val ⁻¹' (tr '' K), hcl.isCompact_preimage (hK.image htr), ?_⟩
-    intro T hT
-    refine ⟨fun p i => (T : Matrix (Fin a) (Fin a) (Fv F v ⊗[F] E)) i p, ?_, rfl⟩
-    apply hKs
-    intro X hX
-    have hS : (⟨iota v σ X, iota_mem v σ hσ X⟩ : HermR (Fv F v) σ a) ∈ latH v b σ a := by
-      intro p q
-      have h1 : X p q ∈ latA v b := fun k => hX p q k
-      have h2 : X q p ∈ latA v b := fun k => hX q p k
-      rw [mem_latS]
-      exact ⟨X q p, h2, X p q, h1, add_comm _ _⟩
-    have := hT _ hS
-    rwa [pairHerm_iota v σ hσ] at this
+  apply PI.VolStabSW.SdDualW.dualAt_H <;> assumption
 
 end Herm
 

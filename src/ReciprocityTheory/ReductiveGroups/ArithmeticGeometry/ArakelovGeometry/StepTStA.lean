@@ -157,7 +157,7 @@ theorem mem_pts_iff (v : J → Ω) (z : J → ℂ) :
     have hfg : qmap f = C ((b : ℤ) : ℚ) * g := by
       ext m
       rw [coeff_C_mul, ← hr m]
-      simp only [qmap, coeff_map, hfdef, coeff_sum, MvPolynomial.coeff_monomial, Finset.sum_ite_eq', Finset.sum_ite_eq]
+      simp only [qmap, coeff_map, hfdef, coeff_sum, MvPolynomial.coeff_monomial, Finset.sum_ite_eq']
       split_ifs with hm
       · simp
       · rw [mem_support_iff, not_not] at hm

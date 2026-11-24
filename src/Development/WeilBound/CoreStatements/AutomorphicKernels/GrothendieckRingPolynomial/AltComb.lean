@@ -348,7 +348,7 @@ theorem altSumN (L : ℕ) (hL : 0 < L) (s : Finset (Finset (Fin L))) (hs : ∀ S
         · exact hS x h
     · intro S _
       by_cases haS : a ∈ S
-      · simp [haS, Finset.insert_erase]
+      · simp [haS]
       · simp [haS]
   · push Not at hz
     obtain ⟨i0, _, hu⟩ := hP 0 hL

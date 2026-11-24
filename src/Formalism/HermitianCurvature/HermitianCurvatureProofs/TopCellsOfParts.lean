@@ -276,7 +276,6 @@ theorem topCells_of (hZ : ZjAffine) (hST : SizesTop) (hIT : IntTop) : TopCells :
   haveI i11 : SecondCountableTopology ((Fin s → Fin p → ℂ) × (Fin p → Fin s → ℂ)) := inferInstance
   haveI i12 : SecondCountableTopology ((LW σ → ℂ) × (G.UT p → ℂ)) := inferInstance
   haveI : OpensMeasurableSpace (XiH p s σ) := inferInstance
-  have hN : (1 : ℝ) ≤ ((p + s : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ p + s)
   have h5N : (0 : ℝ) < 5 * ((p + s : ℕ) : ℝ) := by positivity
   have hepos : ∀ i ≤ q, 0 ≤ e i := by
     intro i hi
@@ -445,4 +444,4 @@ theorem topCells_of (hZ : ZjAffine) (hST : SizesTop) (hIT : IntTop) : TopCells :
 end Formalism.FourierDecayAlt.P.Ux13
 
 theorem Formalism.FourierDecayAlt.P.top_cells : Formalism.FourierDecayAlt.U.TopCells := by
-  exact Formalism.FourierDecayAlt.P.Ux13.topCells_of Formalism.FourierDecayAlt.P.level_z_affine Formalism.FourierDecayAlt.P.sizes_top_level Formalism.FourierDecayAlt.P.integrability_top_level
+  exact Formalism.FourierDecayAlt.P.Ux13.topCells_of _root_.Formalism.FourierDecayAlt.P.Ux4.ux_zjAffine Formalism.FourierDecayAlt.P.sizes_top_level _root_.Formalism.FourierDecayAlt.P.Ux6.intTop

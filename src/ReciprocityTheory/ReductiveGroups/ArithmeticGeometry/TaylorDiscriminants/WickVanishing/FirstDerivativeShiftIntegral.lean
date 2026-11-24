@@ -73,13 +73,11 @@ theorem eval_first_axis_of_identity (g : PS k 2 d) (c : Fin d) (hg : ev (n := 1)
     by
       first
         | exact MvPowerSeries.hasSubst_of_constantCoeff_zero (fun q => by simp)
-        | exact MvPowerSeries.HasSubst.of_constantCoeff_zero' (fun q => by simp)
   have h1 : MvPowerSeries.HasSubst
       (fun p : Fin 2 × Fin d => (![pt k d 0, 0] : Fin 2 → Pt k 1 d) p.1 p.2) :=
     by
       first
         | exact MvPowerSeries.hasSubst_of_constantCoeff_zero (fun p => by rcases p with ⟨i, j⟩; fin_cases i <;> simp [pt])
-        | exact MvPowerSeries.HasSubst.of_constantCoeff_zero' (fun p => by rcases p with ⟨i, j⟩; fin_cases i <;> simp [pt])
   have key : (fun p : Fin 2 × Fin d => (![pt k d 0, 0] : Fin 2 → Pt k 2 d) p.1 p.2) =
       fun p => MvPowerSeries.subst (fun q : Fin 1 × Fin d => (X ((0 : Fin 2), q.2) : PS k 2 d))
         ((![pt k d 0, 0] : Fin 2 → Pt k 1 d) p.1 p.2) := by

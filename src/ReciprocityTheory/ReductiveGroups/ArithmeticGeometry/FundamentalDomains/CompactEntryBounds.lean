@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.MahlerCompactness
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.QuadraticLatticeForms
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -57,31 +58,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : Data 
 theorem hermC_expand (τ : E →+* ℂ) (P : Matrix (Fin r) (Fin r) E) (u w : Fin r → ℂ) :
     hermC τ X.Gm ((P.map τ) *ᵥ u) ((P.map τ) *ᵥ w) =
       ∑ k, ∑ l, u k * conj (w l) * τ (herm X.Gm (P *ᵥ Pi.single k 1) (P *ᵥ Pi.single l 1)) := by
-  have hcc : ∀ x : E, τ (cc x) = conj (τ x) := fun x =>
-    NumberField.IsCMField.complexEmbedding_complexConj E τ x
-  have hL : ∀ a b, ((P.map τ) *ᵥ u) a * τ (X.Gm a b) * conj (((P.map τ) *ᵥ w) b) =
-      ∑ k, ∑ l, u k * conj (w l) * (τ (P a k) * τ (X.Gm a b) * conj (τ (P b l))) := by
-    intro a b
-    simp only [Matrix.mulVec, dotProduct, Matrix.map_apply]
-
-    rw [map_sum, Finset.sum_mul, Finset.sum_mul_sum]
-    refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => ?_
-    rw [map_mul]
-    ring
-  have hR : ∀ k l, u k * conj (w l) *
-      τ (herm X.Gm (P *ᵥ Pi.single k 1) (P *ᵥ Pi.single l 1)) = ∑ a, ∑ b, u k * conj (w l) * (τ (P a k) * τ (X.Gm a b) * conj (τ (P b l))) := by
-    intro k l
-
-    simp only [herm, Matrix.mulVec_single_one, Matrix.transpose_apply, map_sum, map_mul, hcc,
-    Finset.mul_sum]
-    rfl
-  simp only [hermC, hL, hR]
-  calc _ = ∑ a, ∑ k, ∑ b, ∑ l, u k * conj (w l) * (τ (P a k) * τ (X.Gm a b) * conj (τ (P b l))) :=
-        Finset.sum_congr rfl fun a _ => Finset.sum_comm
-    _ = ∑ k, ∑ a, ∑ b, ∑ l, u k * conj (w l) * (τ (P a k) * τ (X.Gm a b) * conj (τ (P b l))) := Finset.sum_comm
-    _ = ∑ k, ∑ a, ∑ l, ∑ b, u k * conj (w l) * (τ (P a k) * τ (X.Gm a b) * conj (τ (P b l))) :=
-        Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun a _ => Finset.sum_comm
-    _ = ∑ k, ∑ l, ∑ a, ∑ b, u k * conj (w l) * (τ (P a k) * τ (X.Gm a b) * conj (τ (P b l))) := Finset.sum_congr rfl fun k _ => Finset.sum_comm
+  apply GlobalTheory.FlagMahler.hermC_expand <;> assumption
 
 theorem hermC_stab {γ : Matrix (Fin r) (Fin r) E}
     (hγ : ∀ x y, herm X.Gm (γ *ᵥ x) (γ *ᵥ y) = herm X.Gm x y) (τ : E →+* ℂ) (u w : Fin r → ℂ) :
@@ -124,43 +101,7 @@ private theorem gram_eq_transpose_mul_map_mul_fundamental_domains (τ : E →+* 
 theorem entry_bound {τ : E →+* ℂ} {Y : Matrix (Fin r) (Fin r) ℂ} (hY : Y.det ≠ 0)
     (hg : gram τ X.Gm Y = diagonal fun a : Fin r => ((sgn X.p0 (a : ℕ) : ℝ) : ℂ)) (l b : Fin r) :
     ‖Y l b‖ ≤ ∑ k, ‖(X.Gm.map τ)⁻¹ k l‖ * ‖Y⁻¹ b k‖ := by
-  set d : Fin r → ℂ := fun a => ((sgn X.p0 (a : ℕ) : ℝ) : ℂ) with hd_def
-  have hA : (X.Gm.map τ).det ≠ 0 := by
-    have h := RingHom.map_det τ X.Gm
-    rw [RingHom.mapMatrix_apply] at h
-    rw [← h]
-    exact (map_ne_zero τ).2 X.Gm_det
-  have e1 : Yᵀ * X.Gm.map τ * (Yᴴ)ᵀ = diagonal d := by
-    rw [← gram_eq_transpose_mul_map_mul_fundamental_domains, hg]
-  have e2 := congrArg Matrix.transpose e1
-  simp only [Matrix.transpose_mul, Matrix.transpose_transpose, Matrix.diagonal_transpose,
-    ← Matrix.mul_assoc] at e2
-  have hYH : IsUnit (Yᴴ).det := by
-    rw [Matrix.det_conjTranspose]
-    exact isUnit_iff_ne_zero.2 (star_ne_zero.2 hY)
-  have hAT : IsUnit (X.Gm.map τ)ᵀ.det := by
-    rw [Matrix.det_transpose]
-    exact isUnit_iff_ne_zero.2 hA
-  have e3 : Y = ((X.Gm.map τ)ᵀ)⁻¹ * (Yᴴ)⁻¹ * diagonal d := by
-    rw [← e2]
-    simp only [← Matrix.mul_assoc]
-    rw [Matrix.mul_assoc ((X.Gm.map τ)ᵀ)⁻¹ (Yᴴ)⁻¹ Yᴴ, Matrix.nonsing_inv_mul _ hYH, Matrix.mul_one,
-      Matrix.nonsing_inv_mul _ hAT, Matrix.one_mul]
-  have e4 : Y l b = (∑ k, (X.Gm.map τ)⁻¹ k l * star (Y⁻¹ b k)) * d b := by
-    conv_lhs => rw [e3]
-    rw [Matrix.mul_diagonal, Matrix.mul_apply]
-    congr 1
-    refine Finset.sum_congr rfl fun k _ => ?_
-    rw [← Matrix.transpose_nonsing_inv, Matrix.transpose_apply, ← Matrix.conjTranspose_nonsing_inv,
-      Matrix.conjTranspose_apply]
-  have hdb : ‖d b‖ = 1 := by
-    rw [hd_def, Complex.norm_real]
-    unfold sgn
-    split_ifs <;> norm_num
-  rw [e4, norm_mul, hdb, mul_one]
-  refine (norm_sum_le _ _).trans (le_of_eq ?_)
-  refine Finset.sum_congr rfl fun k _ => ?_
-  rw [norm_mul, norm_star]
+  apply GlobalTheory.FlagMahler.entry_bound <;> assumption
 
 theorem comp_le_Qy (y : X.Ψ → Matrix (Fin r) (Fin r) ℂ) (τ : X.Ψ) (p : Fin r → E) (b : Fin r) :
     X.c τ * ‖((y τ)⁻¹ *ᵥ Data.emb τ.1 p) b‖ ^ 2 ≤ QuadraticLatticeForms.Qy X y p := by

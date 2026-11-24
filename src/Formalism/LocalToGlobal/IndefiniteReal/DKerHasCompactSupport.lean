@@ -315,7 +315,7 @@ theorem gvT_smooth (M : DSModel V S) (τ : D.what₂.Tau) {Φ : Matrix (Fin V.ra
     SmoothVec (lieAt V τ) (M.rep τ) (gvT M τ Φ w) := by
   have : CompleteSpace (M.H τ) := (M.ds τ).1
   exact Formalism.IndefR.PeterssonHilbertSpace.sm_transfer (M.ε τ) (M.σ τ) (M.fr τ) _ (M.fr_unit τ) (M.fr_gram τ) (lieAt V τ)
-    (fun X hX => hX) _ (PI.KFinSmoothW.garding_vectors_smooth _ (M.ε τ) (M.H τ) (M.σ τ) (urep M τ) Φ hΦ hΦc w)
+    (fun X hX => hX) _ (_root_.PI.KFinSmoothW.Gard.stepGarding_main _ (M.ε τ) (M.H τ) (M.σ τ) (urep M τ) Φ hΦ hΦc w)
 
 def gvTL (M : DSModel V S) (τ : D.what₂.Tau) (Φ : Matrix (Fin V.rank) (Fin V.rank) ℂ → ℂ)
     (hΦ : Continuous Φ) (hΦc : HasCompactSupport Φ) : M.H τ →ₗ[ℂ] M.H τ where

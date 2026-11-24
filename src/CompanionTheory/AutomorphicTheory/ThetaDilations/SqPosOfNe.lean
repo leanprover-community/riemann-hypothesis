@@ -161,7 +161,7 @@ theorem impl_D (a : Rˣ) {m : ℝ} (hm : 0 < m)
   · funext u
     simp only [Heisenberg₂, opD, mMat, Matrix.of_apply, Matrix.cons_val', Matrix.cons_val_zero, Matrix.cons_val_one,
       Matrix.cons_val_fin_one, zero_smul, add_zero, zero_add, mulVec_smul, dotProduct_smul, smul_dotProduct, smul_add,
-      smul_eq_mul, Units.mul_inv_cancel_left, Units.inv_mul_cancel_left]
+      smul_eq_mul, Units.inv_mul_cancel_left]
     ring
 
 theorem impl_fou_chiB : Impl ψ h B μ wMat (fou (chiB ψ B) μ) := by

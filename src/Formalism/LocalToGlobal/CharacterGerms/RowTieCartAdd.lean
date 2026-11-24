@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.CharacterGerms.RowTiePGerm
 public import Formalism.LocalToGlobal.CharacterGerms.IntSubst
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.CocycleRightZeroThd
 public import Formalism.LocalToGlobal.CharacterGerms.RowTieAxes
@@ -85,24 +86,7 @@ theorem IntS.pow {f : MvPowerSeries τ C} (hf : IntS V f) (n : ℕ) : IntS V (f 
 theorem IntS.subst {σ : Type} [Finite σ] {a : σ → MvPowerSeries τ C}
     (ha0 : ∀ s, MvPowerSeries.constantCoeff (a s) = 0) (ha : ∀ s, IntS V (a s)) {f : MvPowerSeries σ C}
     (hf : IntS V f) : IntS V (MvPowerSeries.subst a f) := by
-  have hA : MvPowerSeries.HasSubst a := MvPowerSeries.hasSubst_of_constantCoeff_zero ha0
-  intro μ
-  rw [MvPowerSeries.coeff_subst hA]
-  have hterm : ∀ d : σ →₀ ℕ,
-      V.Ge 0 (MvPowerSeries.coeff d f • MvPowerSeries.coeff μ (d.prod fun s e => a s ^ e)) := by
-    intro d
-    have hp : IntS V (d.prod fun s e => a s ^ e) := by
-      show IntS V (∏ s ∈ d.support, a s ^ d s)
-      exact Finset.prod_induction _ (fun p => IntS V p) (fun _ _ hx hy => IntS.mul hx hy) IntS.one
-        (fun s _ => IntS.pow (ha s) _)
-    have h2 := (hf d).mul (hp μ)
-    simpa [smul_eq_mul] using h2
-  by_cases hfin : (Function.support fun d : σ →₀ ℕ =>
-      MvPowerSeries.coeff d f • MvPowerSeries.coeff μ (d.prod fun s e => a s ^ e)).Finite
-  · rw [finsum_eq_sum _ hfin]
-    exact VF.Ge.sum fun d _ => hterm d
-  · rw [finsum_of_infinite_support hfin]
-    simp [VF.Ge]
+  apply Formalism.L2.FormalSeriesBounds.PartialDerivEval.intS_subst <;> assumption
 
 theorem intS_ps {f : PowerSeries C} : IntS V f ↔ ∀ n, V.Ge 0 (PowerSeries.coeff n f) := by
   constructor
@@ -111,7 +95,7 @@ theorem intS_ps {f : PowerSeries C} : IntS V f ↔ ∀ n, V.Ge 0 (PowerSeries.co
   · intro h μ
     have hμ : μ = Finsupp.single () (μ ()) := by
       ext
-      simp [Finsupp.single_apply]
+      simp
     rw [hμ]
     exact h (μ ())
 
@@ -193,7 +177,7 @@ variable {dd : ℕ}
 theorem pts_eq_X : (fun p : Fin 2 × Fin dd => ![pt C (n := 2) dd 0, pt C (n := 2) dd 1] p.1 p.2) = MvPowerSeries.X := by
   funext p
   rcases p with ⟨i, j⟩
-  fin_cases i <;> first | rfl | simp [pt]
+  fin_cases i <;> first | rfl
 
 theorem addOf_pts (F : Fin dd → PS C 2 dd) (j : Fin dd) :
     addOf F (pt C (n := 2) dd 0) (pt C (n := 2) dd 1) j = F j := by

@@ -339,7 +339,6 @@ theorem cf_bound {X : Obj k r} (hX : X.1.OK) {m : ℕ} (hD : Decay X.2 m) (hm : 
   have a5 : N ^ m * ‖⟪w, X.2.R.σ (g⁻¹).mat (x d)⟫_ℂ‖ ≤ |C| * nu X.2.R.σ Ws w * nu X.2.R.σ Ws (x d) :=
     a2.trans (by rw [mul_right_comm]; gcongr; exact le_abs_self _)
   set q := ‖⟪w, X.2.R.σ (g⁻¹).mat (x d)⟫_ℂ‖
-  have hq : 0 ≤ q := norm_nonneg _
   calc ‖X.1.ρ (g⁻¹).mat c d‖ * q * N ^ ((2 * r + k + 1) ^ 2 + 1)
       ≤ |C'| * N ^ X.1.deg * q * N ^ ((2 * r + k + 1) ^ 2 + 1) := by gcongr
     _ = |C'| * ((N ^ X.1.deg * N ^ ((2 * r + k + 1) ^ 2 + 1)) * q) := by ring

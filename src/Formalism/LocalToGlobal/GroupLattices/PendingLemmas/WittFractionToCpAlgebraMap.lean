@@ -294,8 +294,7 @@ theorem exists_approx (x : WW p) (N : ℕ) : ∃ z, Approx p N x z := by
 theorem nadd {a b : ℂ_[p]} {c : ℝ} (ha : ‖a‖ ≤ c) (hb : ‖b‖ ≤ c) : ‖a + b‖ ≤ c :=
   (PadicComplex.isNonarchimedean p a b).trans (max_le ha hb)
 
-theorem nsub {a b : ℂ_[p]} {c : ℝ} (ha : ‖a‖ ≤ c) (hb : ‖b‖ ≤ c) : ‖a - b‖ ≤ c := by
-  first | exact Bl.FirstBlockLemmaF.goal1 .. | (apply Bl.FirstBlockLemmaF.goal1 <;> assumption) | (intros; apply Bl.FirstBlockLemmaF.goal1 <;> assumption) | (apply @Bl.FirstBlockLemmaF.goal1 <;> assumption) | (intros; apply @Bl.FirstBlockLemmaF.goal1 <;> assumption) | (apply @Bl.FirstBlockLemmaF.goal1 <;> first | assumption | infer_instance) | exact @Bl.FirstBlockLemmaF.goal1 p hp a b c ha hb | exact @Bl.FirstBlockLemmaF.goal1 p hp a b c ha | exact @Bl.FirstBlockLemmaF.goal1 p hp a b c | exact @Bl.FirstBlockLemmaF.goal1 p hp a b | exact @Bl.FirstBlockLemmaF.goal1 p hp a | exact @Bl.FirstBlockLemmaF.goal1 p hp | exact @Bl.FirstBlockLemmaF.goal1 p
+alias nsub := _root_.Bl.FirstBlockLemmaF.goal1
 
 theorem approx_close {N M : ℕ} (hNM : N ≤ M) {x : WW p} {z z' : Kalg p} (h : Approx p N x z)
     (h' : Approx p M x z') : ‖phi p z - phi p z'‖ ≤ ((p : ℝ)⁻¹) ^ N := by

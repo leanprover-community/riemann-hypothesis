@@ -1,5 +1,6 @@
 module
 
+import Mathlib.AlgebraicGeometry.AffineScheme
 public import Development.ResolutionOfSingularities.Statements
 public import Development.AutomorphicSpectrum.PublishedTheorems.Geometry₂.NotSubsetOfDenseCompl
 public import Development.ResolutionOfSingularities.EmbeddedResolution.EtaleCoordinates.ChartRing
@@ -101,31 +102,8 @@ theorem mem_support_iff_forall_notMem_basicOpen {X : Scheme.{u}} (I : X.IdealShe
 
 theorem mem_basicOpen_iff_notMem_primeIdealOf {X : Scheme.{u}} {U : X.Opens}
     (hU : IsAffineOpen U) (f : Γ(X, U)) (x : ↥U) :
-    (x : ↥X) ∈ X.basicOpen f ↔ f ∉ (hU.primeIdealOf x).asIdeal := by
-  have h2 : (AlgebraicGeometry.IsAffineOpen.fromSpec hU).base
-      (AlgebraicGeometry.IsAffineOpen.primeIdealOf hU x) = (x : ↥X) :=
-    AlgebraicGeometry.IsAffineOpen.fromSpec_primeIdealOf hU x
-  have h1 : AlgebraicGeometry.IsAffineOpen.fromSpec hU ⁻¹ᵁ X.basicOpen f
-      = PrimeSpectrum.basicOpen f :=
-    AlgebraicGeometry.IsAffineOpen.fromSpec_preimage_basicOpen hU f
-  constructor
-  · intro hx
-    have hmem : AlgebraicGeometry.IsAffineOpen.primeIdealOf hU x
-        ∈ AlgebraicGeometry.IsAffineOpen.fromSpec hU ⁻¹ᵁ X.basicOpen f := by
-      show (AlgebraicGeometry.IsAffineOpen.fromSpec hU).base
-        (AlgebraicGeometry.IsAffineOpen.primeIdealOf hU x) ∈ X.basicOpen f
-      rw [h2]
-      exact hx
-    rw [h1] at hmem
-    exact (PrimeSpectrum.mem_basicOpen f _).mp hmem
-  · intro hx
-    have hmem : AlgebraicGeometry.IsAffineOpen.primeIdealOf hU x ∈ PrimeSpectrum.basicOpen f :=
-      (PrimeSpectrum.mem_basicOpen f _).mpr hx
-    rw [← h1] at hmem
-    have h3 : (AlgebraicGeometry.IsAffineOpen.fromSpec hU).base
-        (AlgebraicGeometry.IsAffineOpen.primeIdealOf hU x) ∈ X.basicOpen f := hmem
-    rw [h2] at h3
-    exact h3
+    (x : ↥X) ∈ X.basicOpen f ↔ f ∉ (hU.primeIdealOf x).asIdeal :=
+  hU.mem_basicOpen_iff_notMem_primeIdealOf x f
 
 theorem mem_support_of_ideal_eq_span_singleton {X : Scheme.{u}} (I : X.IdealSheafData) {x : ↥X}
     {U : X.Opens} (hU : IsAffineOpen U) (hx : x ∈ U) (g : Γ(X, U))

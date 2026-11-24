@@ -70,11 +70,9 @@ theorem goal1 :
     simp only [LinearMap.mem_ker] at ha ⊢
     have hb : ∀ i, a • b i = 0 := fun i => by
       simpa [φ] using congr_fun ha i
-    have hw : ∀ w : W, a • w = 0 := by
-      intro w
-      have e : (DistribSMul.toLinearMap k W a) = 0 :=
-        b.ext (fun i => hb i)
-      exact LinearMap.congr_fun e w
+    have hw : ∀ w : W, a • w = 0 := fun w =>
+      LinearMap.congr_fun (b.ext (fun i => hb i) :
+        (DistribSMul.toLinearMap k W a) = 0) w
     simpa [σ] using h a hw s
   let ψ₀ : LinearMap.range φ →ₗ[A] S :=
     (LinearMap.ker φ).liftQ σ hker ∘ₗ φ.quotKerEquivRange.symm.toLinearMap
@@ -90,10 +88,7 @@ theorem goal1 :
     simp [σ]
   by_contra hne
   push_neg at hne
-  have hz : Ψ = 0 := by
-    apply LinearMap.pi_ext'
-    intro i
-    exact hne _
+  have hz : Ψ = 0 := LinearMap.pi_ext' fun i => hne _
   rw [hz] at hΨ
   exact hs hΨ.symm
 

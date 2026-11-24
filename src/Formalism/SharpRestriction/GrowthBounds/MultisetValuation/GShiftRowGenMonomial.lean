@@ -48,6 +48,8 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
+import Formalism.LocalToGlobal.GroupLattices.FockModels.OperatorsPreserveLattices
+import Formalism.GradedWeylDivisibility.FockSpaceTableaux.LDrowLemmas
 
 @[expose] public section
 
@@ -197,12 +199,12 @@ theorem g_weight {n : ℕ} (d : Fin r × Fin n →₀ ℕ) :
     refine Finset.sum_congr rfl fun a _ => ?_
     rw [map_add (f := _), Pi.add_apply, Nat.cast_add, mul_add]
   · intro v k
-    simp only [Finsupp.weight_apply, Finsupp.sum_single_index, zero_smul, implies_true]
+    simp only [Finsupp.weight_apply, Finsupp.sum_single_index, zero_smul]
     rw [Finset.sum_eq_single v.1]
     · simp [htW, rowW]
       try ring
     · intro b _ hb
-      simp [rowW, Pi.single_apply, hb]
+      simp [rowW, hb]
     · intro h
       exact absurd (Finset.mem_univ _) h
 
@@ -246,64 +248,34 @@ theorem dom_dualWeyl (R : Type) [CommRing R] [IsDomain R] (r n : ℕ) (ν : Fin 
 
 section Diag
 
-def piR {k n : ℕ} (r : ℕ) (d : Fin k × Fin n →₀ ℕ) : ℕ := ∑ a : Fin k with a.val < r, rowDeg d a
-
-private theorem finsupp_weight_rowW_eq_rowDeg {k n : ℕ} (d : Fin k × Fin n →₀ ℕ) (a : Fin k) :
-    Finsupp.weight (rowW k n) d a = rowDeg d a := by
-  refine Finsupp.induction_linear d ?_ ?_ ?_
-  · simp [rowDeg]
-  · intro f g hf hg
-    rw [map_add (f := _), Pi.add_apply, hf, hg]
-    simp only [rowDeg, Finsupp.add_apply, Finset.sum_add_distrib]
-  · intro v c
-    simp only [Finsupp.weight_apply, Finsupp.sum_single_index, zero_smul, implies_true]
-    simp only [rowDeg, rowW, Pi.smul_apply, Pi.single_apply, smul_eq_mul, Finsupp.single_apply]
-    by_cases h : a = v.1
-    · subst h
-      rw [Finset.sum_eq_single v.2]
-      · simp
-      · intro s _ hs
-        rw [if_neg]
-        intro hv
-        exact hs (congrArg Prod.snd hv).symm
-      · intro hs
-        exact absurd (Finset.mem_univ _) hs
-    · rw [if_neg h, mul_zero]
-      refine (Finset.sum_eq_zero fun s _ => ?_).symm
-      rw [if_neg]
-      intro hv
-      exact h (congrArg Prod.fst hv).symm
-
 theorem weight_ind {k n : ℕ} (r : ℕ) (d : Fin k × Fin n →₀ ℕ) :
-    Finsupp.weight (htW (fun a : Fin k => if a.val < r then (1 : ℤ) else 0) n) d = (piR r d : ℤ) := by
+    Finsupp.weight (htW (fun a : Fin k => if a.val < r then (1 : ℤ) else 0) n) d = (_root_.Formalism.GradedWeylDivisibility.rowPart r d : ℤ) := by
   rw [g_weight]
-  unfold piR
+  unfold _root_.Formalism.GradedWeylDivisibility.rowPart
   push_cast
   rw [Finset.sum_filter]
   refine Finset.sum_congr rfl fun a _ => ?_
-  rw [finsupp_weight_rowW_eq_rowDeg]
+  rw [_root_.Formalism.GradedWeylDivisibility.ldrow_weight_rowW]
   split_ifs <;> simp
 
 theorem diag_monomial {K : Type} [Field K] {k n : ℕ} (r : ℕ) (c : K) (d : Fin k × Fin n →₀ ℕ) (x : K) :
-    rowAct K (lb_D k r c) (monomial d x) = (c⁻¹) ^ (piR r d) • monomial d x := by
+    rowAct K (lb_D k r c) (monomial d x) = (c⁻¹) ^ (_root_.Formalism.GradedWeylDivisibility.rowPart r d) • monomial d x := by
   have hD : RowActDiagWeight := by
     first
     | exact rowActDiagWeight
-    | exact row_action_diagonal_weight
-    | exact Formalism.GradedWeylDivisibility.rowActDiagWeight
   have hH : IsWeightedHomogeneous (rowW k n) (monomial d x) (Finsupp.weight (rowW k n) d) :=
     isWeightedHomogeneous_monomial _ _ _ rfl
   unfold lb_D
   rw [hD K k n _ _ _ hH]
   congr 1
-  unfold piR
+  unfold _root_.Formalism.GradedWeylDivisibility.rowPart
   rw [← Finset.prod_pow_eq_pow_sum, Finset.prod_filter]
   refine Finset.prod_congr rfl fun a _ => ?_
-  rw [finsupp_weight_rowW_eq_rowDeg]
+  rw [_root_.Formalism.GradedWeylDivisibility.ldrow_weight_rowW]
   split_ifs <;> simp
 
 theorem diag_const {K : Type} [Field K] {k n : ℕ} (r : ℕ) (c : K) (G : MvPolynomial (Fin k × Fin n) K) (π0 : ℕ)
-    (h : ∀ d ∈ G.support, piR r d = π0) : rowAct K (lb_D k r c) G = (c⁻¹) ^ π0 • G := by
+    (h : ∀ d ∈ G.support, _root_.Formalism.GradedWeylDivisibility.rowPart r d = π0) : rowAct K (lb_D k r c) G = (c⁻¹) ^ π0 • G := by
   conv_lhs => rw [G.as_sum]
 
   rw [map_sum]
@@ -341,7 +313,7 @@ theorem weyl_diag (O Kf : Type) [CommRing O] [IsDomain O] [Field Kf] [Algebra O 
       exact Submodule.zero_mem _
     · obtain ⟨d, hd⟩ := ne_zero_iff.mp h0
       obtain ⟨z, hz⟩ := g_applyWord (ht := fun a : Fin k => if a.val < r then (1 : ℤ) else 0) O (le_refl k) ν hν wd
-      have hπ : ∀ d' ∈ (map (algebraMap O Kf) Wd).support, piR r d' = piR r d := by
+      have hπ : ∀ d' ∈ (map (algebraMap O Kf) Wd).support, _root_.Formalism.GradedWeylDivisibility.rowPart r d' = _root_.Formalism.GradedWeylDivisibility.rowPart r d := by
         intro d' hd'
         have h1 : AddMonoidAlgebra.coeff Wd d' ≠ 0 := by
           intro h
@@ -351,13 +323,13 @@ theorem weyl_diag (O Kf : Type) [CommRing O] [IsDomain O] [Field Kf] [Algebra O 
         have e2 := hz hd
         rw [weight_ind] at e1 e2
         exact_mod_cast e1.trans e2.symm
-      have hle : piR r d ≤ N :=
+      have hle : _root_.Formalism.GradedWeylDivisibility.rowPart r d ≤ N :=
         dom_dualWeyl O k k ν Wd (weylLeDual O k k le_rfl ν hν hWmem) r d (mem_support_iff.2 hd)
       rw [diag_const r c _ _ hπ, smul_smul]
-      refine ⟨w ^ (N - piR r d) • Wd, Submodule.smul_mem _ _ hWmem, ?_⟩
-      rw [map_smul, hmap, ← algebraMap_smul Kf (w ^ (N - piR r d)), map_pow, ← hc]
+      refine ⟨w ^ (N - _root_.Formalism.GradedWeylDivisibility.rowPart r d) • Wd, Submodule.smul_mem _ _ hWmem, ?_⟩
+      rw [map_smul, hmap, ← algebraMap_smul Kf (w ^ (N - _root_.Formalism.GradedWeylDivisibility.rowPart r d)), map_pow, ← hc]
       congr 1
-      have h4 : c ^ N = c ^ (N - piR r d) * c ^ (piR r d) := by
+      have h4 : c ^ N = c ^ (N - _root_.Formalism.GradedWeylDivisibility.rowPart r d) * c ^ (_root_.Formalism.GradedWeylDivisibility.rowPart r d) := by
         rw [← pow_add, Nat.sub_add_cancel hle]
       rw [h4, inv_pow, mul_assoc, mul_inv_cancel₀ (pow_ne_zero _ hw), mul_one]
   exact key hf
@@ -373,56 +345,14 @@ theorem mem_deltaL {O Kf : Type} [CommRing O] [Field Kf] [Algebra O Kf] {k : ℕ
   rw [Submodule.mem_comap, Submodule.mem_map]
   first
   | rfl
-  | simp [MvPolynomial.mapAlgHom_apply]
 
 theorem dl_P (O Kf : Type) [CommRing O] [IsDomain O] [Field Kf] [Algebra O Kf] (m r : ℕ)
     (lam : Fin (m + 1) → ℤ) (hlam : Antitone lam)
     (w : O) (hw : algebraMap O Kf w ≠ 0) (g : Matrix (Fin (m + 1)) (Fin (m + 1)) Kf)
     (F : MvPolynomial (Fin (m + 1) × Fin (m + 1)) Kf) (hF : F ∈ deltaLTw O Kf m lam g) :
     (algebraMap O Kf w ^ (∑ i : Fin (m + 1) with i.val < r, lam i)) • F ∈
-      deltaLTw O Kf m lam (g * lb_D (m + 1) r (algebraMap O Kf w)) := by
-  classical
-  set c : Kf := algebraMap O Kf w with hc
-  set ν : Fin (m + 1) → ℕ := nuOf lam with hν
-  set e : ℤ := lam (Fin.last m) with he
-  have hνa : Antitone ν := by
-    intro x y hxy
-    simp only [hν, nuOf]
-    exact Int.toNat_le_toNat (sub_le_sub_right (hlam hxy) _)
-  obtain ⟨F0, hF0, rfl⟩ := hF
-  obtain ⟨f, hf, hfe⟩ := mem_deltaL.1 hF0
-  set Nν : ℕ := ∑ t : Fin (m + 1) with t.val < r, ν t with hNν
-  set A : ℤ := ∑ i : Fin (m + 1) with i.val < r, lam i with hA
-  obtain ⟨f1, hf1, hf1e⟩ := weyl_diag O Kf (m + 1) r ν hνa w hw f hf
-  refine ⟨c ^ Nν • F0, mem_deltaL.2 ⟨f1, hf1, ?_⟩, ?_⟩
-  · have h5 := rowActMul Kf (m + 1) (m + 1) (lb_D (m + 1) r c) g
-    have h6 : rowAct Kf (g * lb_D (m + 1) r c) F0 = rowAct Kf (lb_D (m + 1) r c) (rowAct Kf g F0) := by
-      rw [← h5]
-      rfl
-    rw [map_smul, h6, ← hfe]
-    exact hf1e
-  · show (g * lb_D (m + 1) r c).det ^ (-e) • (c ^ Nν • F0) = c ^ A • (g.det ^ (-e) • F0)
-    rw [smul_smul, smul_smul]
-    congr 1
-    set ρ : ℕ := (Finset.univ.filter fun a : Fin (m + 1) => a.val < r).card with hρ
-    have h1 : (g * lb_D (m + 1) r c).det = g.det * (c⁻¹) ^ ρ := by
-      rw [Matrix.det_mul, lb_D, Matrix.det_diagonal, Finset.prod_ite, Finset.prod_const,
-        Finset.prod_const_one, mul_one]
-    have h3 : A = (Nν : ℤ) + ρ * e := by
-      rw [hA, hNν, hρ]
-      push_cast
-      rw [Finset.card_eq_sum_ones]
-      push_cast
-      rw [Finset.sum_mul, ← Finset.sum_add_distrib]
-      apply Finset.sum_congr rfl
-      intro a _
-      have : 0 ≤ lam a - lam (Fin.last m) := sub_nonneg.2 (hlam (Fin.le_last a))
-      simp only [hν, nuOf, Int.toNat_of_nonneg this, he]
-      ring
-    have h5 : ((c⁻¹) ^ ρ) ^ (-e) = c ^ ((ρ : ℤ) * e) := by
-      rw [inv_pow, inv_zpow, zpow_neg, inv_inv, ← zpow_natCast c ρ, ← zpow_mul]
-    rw [h1, h3, mul_zpow, h5, zpow_add₀ hw, zpow_natCast]
-    ring
+      deltaLTw O Kf m lam (g * lb_D (m + 1) r (algebraMap O Kf w)) :=
+  Formalism.L2.G.Model.dl_P O Kf m r lam hlam w hw g F hF
 
 theorem dl_indep (O Kf : Type) [CommRing O] [IsDomain O] [Field Kf] [Algebra O Kf]
     (hinj : Function.Injective (algebraMap O Kf)) (m : ℕ) (lam : Fin (m + 1) → ℤ)
@@ -476,7 +406,7 @@ theorem dl_indep (O Kf : Type) [CommRing O] [IsDomain O] [Field Kf] [Algebra O K
   obtain ⟨F0, hF0, rfl⟩ := hF
   obtain ⟨f, hf, hfe⟩ := mem_deltaL.1 hF0
   have hst : rowAct O U f ∈ weyl O (m + 1) (m + 1) le_rfl (nuOf lam) := by
-    have := Formalism.UG.P.weyl_module_GL_stable O (m + 1) (m + 1) le_rfl (nuOf lam) UU⁻¹ f hf
+    have := _root_.Formalism.UG.P.wlocal_global O (m + 1) (m + 1) le_rfl (nuOf lam) UU⁻¹ f hf
     unfold Formalism.UG.dwAct at this
     rw [inv_inv] at this
     exact this

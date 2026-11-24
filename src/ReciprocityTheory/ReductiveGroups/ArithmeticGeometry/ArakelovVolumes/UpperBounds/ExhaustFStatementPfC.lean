@@ -139,7 +139,7 @@ theorem gramPos_cpt (x0 : Frame X.Ψ r) (ho : IsOrth X x0) (z : V (nd X)) (τ : 
   congr 1
   · refine Finset.sum_congr rfl fun e _ => ?_
     have he : ((Fin.castLE X.p0_le e : Fin r) : ℕ) < X.p0 := by simp
-    simp [sgn, he]
+    simp [sgn]
   · refine Finset.sum_congr rfl fun m _ => ?_
     have hm : ¬ ((qI X m : Fin r) : ℕ) < X.p0 := by simp [qI]
     simp [sgn, hm]

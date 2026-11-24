@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocalBlochKatoConditionOfWachModules
 public import Formalism.SharpRestriction.LevelLetterCocycles.JointConditionsZpowers.JointConditionTameBound
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -220,26 +221,7 @@ theorem tb_part1 (E : S.Comparison₂) (hTB : TBat S E) (e M0 h0 cB : ℕ) (Ve :
     (φ : Yt.V →ₗ[S.O] (Ve.V ⧸ Ve.L.T))
     (hφ : ∀ g, ∀ y ∈ Yt.L.T, p y = 0 → φ (Yt.ρ g y) = actD Ve.L g (φ y)) :
     ((S.PD.p : S.O) ^ cB) • (fun g => φ (Yt.ρ g e₀ - e₀)) ∈ HfD S.PD Ve.L := by
-  let Y := kerY Yt p e₀ hpe hp hint he₀
-  let φ' : ↥Y.L.T →ₗ[S.O] (Ve.V ⧸ Ve.L.T) :=
-    φ ∘ₗ ((incL S Yt p e₀ hpe hp hint he₀).restrictScalars S.O) ∘ₗ Y.L.T.subtype
-  let f : S.G → ↥Y.L.T := fun g =>
-    ⟨(⟨Yt.ρ g e₀ - e₀, by rw [LinearMap.mem_ker, map_sub, hp, sub_self]⟩ : ↥(LinearMap.ker p)),
-      Yt.L.T.sub_mem (Yt.L.stable g e₀ he₀) he₀⟩
-  have honto : ∀ z ∈ (trivZ S.G S.Qp S.LL S.O hinj).L.T,
-      ∃ a : S.O, z = a • (projHom S Yt p hp hint hinj).f e₀ := by
-    rintro _ ⟨a, rfl⟩
-    refine ⟨a, ?_⟩
-    show algebraMap S.O S.LL a = a • p e₀
-    rw [hpe, Algebra.smul_def, mul_one]
-  have hequiv : ∀ g y, φ' (actT Y.L g y) = actD Ve.L g (φ' y) := fun g y => hφ g _ y.2 y.1.2
-  have key := hTB e M0 h0 Yt Y (trivZ S.G S.Qp S.LL S.O hinj) Ve (incHom S Yt p e₀ hpe hp hint he₀)
-    (projHom S Yt p hp hint hinj) (ses S Yt p e₀ hpe hp hint he₀ hinj) (Module.finrank_self S.LL)
-    (fun _ _ => rfl) h1 hχ hCt hWY e₀ he₀ honto φ' hequiv f (fun _ => rfl)
-  obtain ⟨d, hd⟩ := Nat.exists_eq_add_of_le hc
-  have hfun : (fun g => φ (Yt.ρ g e₀ - e₀)) = fun g => φ' (f g) := rfl
-  rw [hd, pow_add, mul_comm, mul_smul, hfun]
-  exact Submodule.smul_mem _ _ key
+  apply GlobalTheory.TBLocal.tb_part1 <;> assumption
 
 end Part1
 end UpperTheory.N.TBLoc

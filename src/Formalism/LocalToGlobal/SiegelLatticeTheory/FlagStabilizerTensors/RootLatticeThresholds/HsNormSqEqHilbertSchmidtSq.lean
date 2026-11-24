@@ -66,9 +66,7 @@ theorem hsNormSq_eq_hilbertSchmidt_sq {V V' : Type*} [NormedAddCommGroup V] [Inn
   rw [Complex.re_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   first
-    | exact inner_self_eq_norm_sq _
     | (rw [inner_self_eq_norm_sq_to_K]; norm_cast)
-    | (rw [inner_self_eq_norm_sq_to_K]; simp [sq])
 
 variable {D : D7} {X : HidaSetting D} (u u' : D.what₂.Word)
 

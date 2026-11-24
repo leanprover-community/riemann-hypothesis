@@ -209,7 +209,7 @@ noncomputable def restrictAux (g : G) : V ≃ₗᵢ[ℂ] V where
   map_smul' c v := Subtype.ext (by simp)
   left_inv v := Subtype.ext (by simp)
   right_inv v := Subtype.ext (by simp)
-  norm_map' v := by simp [Submodule.coe_norm]
+  norm_map' v := by simp
 
 noncomputable def restrict : UnitaryRep G V :=
   ofLinearIsometryEquiv

@@ -104,7 +104,6 @@ theorem psum_single {S : Scheme.{0}} (G : Over S) [GrpObj G] [IsCommMonObj G] {T
   simp only [psum, e, List.foldr_cons, List.foldr_nil, padd, pzero]
   first
     | simp
-    | exact MonObj.lift_comp_one_right _ _
 
 theorem hom_ext_triple {S : Scheme.{0}} (G : Over S) {X : Scheme.{0}} {a b : X ⟶ (G3 G).left}
     (h : ∀ i, a ≫ (x3 G i).left = b ≫ (x3 G i).left) : a = b := by

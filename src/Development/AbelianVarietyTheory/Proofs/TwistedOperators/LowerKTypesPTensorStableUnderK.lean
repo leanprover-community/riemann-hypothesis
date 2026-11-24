@@ -119,8 +119,7 @@ theorem vmstab_conj_thE {ε : Fin n → Bool} {k : Matrix (Fin n) (Fin n) ℂ} (
   rw [Matrix.inv_eq_left_inv hl]
   obtain ⟨a, b⟩ := p
   ext i j
-  simp [thE, Matrix.mul_apply, Matrix.sum_apply, Matrix.single_apply, Fintype.sum_prod_type, Finset.sum_mul,
-    Finset.mul_sum, ite_and]
+  simp [thE, Matrix.mul_apply, Matrix.sum_apply, Matrix.single_apply, Fintype.sum_prod_type, ite_and]
   by_cases h1 : ε a = ε j
   · by_cases h2 : ε b = ε i
     · simp only [Formalism.REAL.sgn, h1, h2]
@@ -434,7 +433,7 @@ theorem vminus_stable_under_K : ∀ (V W : Type) [NormedAddCommGroup V] [InnerPr
   refine Finset.sum_congr rfl fun q _ => Finset.sum_congr rfl fun p _ => ?_
   rw [hadj k (vmstab_mem_KC hk).1 w (G p)]
   congr 1
-  simp only [G₀, PiLp.toLp_apply]
+  simp only [G₀]
   ring
 
 end GlobalTheory.SphJet

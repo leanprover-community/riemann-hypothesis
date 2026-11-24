@@ -122,7 +122,7 @@ theorem headCols_le_ker (Z : M.Mat (r + 1)) : headCols Z.Z ≤ LinearMap.ker (el
   rintro _ ⟨a, rfl⟩
   simp only [SetLike.mem_coe, LinearMap.mem_ker]
   rw [ellRaw_col]
-  simp [Pi.single_apply, (Fin.castSucc_lt_last a).ne']
+  simp [(Fin.castSucc_lt_last a).ne']
 
 theorem headCols_le_range (Z : M.Mat (r + 1)) :
     headCols Z.Z ≤ (LinearMap.range Z.Z.mulVecLin).comap LinearMap.id := by
@@ -172,7 +172,7 @@ theorem ell_e (Z : M.Mat (r + 1)) (hD : headDet M Z.Z = 0) : ell Z (eCl Z.Z) = 0
     by_cases hj : j = Fin.last r
     · subst hj
       simp
-    · simp [Pi.single_apply, hj]
+    · simp [hj]
   have h2 : (Z.Z.map M.R.subtype).adjugate (Fin.last r) (Fin.last r) = 0 := by
     rw [Matrix.adjugate_fin_succ_eq_det_submatrix, Fin.succAbove_last, hD, mul_zero]
   rw [h1, Matrix.inv_def]

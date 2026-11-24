@@ -110,7 +110,6 @@ theorem cptCoef_apx {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace �
       refine Finset.sum_congr rfl fun j _ => ?_
       rw [Matrix.smul_apply, Complex.real_smul, Complex.normSq_mul, Complex.normSq_ofReal]
       ring
-    have hpos : (0 : ℝ) < (n : ℝ) + 1 := by positivity
     have hS : ∑ i, ∑ j, Complex.normSq (g i j) ≤ (2 * ((n : ℝ) + 1)) ^ 2 := by
       rw [heq, inv_pow, inv_mul_lt_iff₀ (by positivity)] at hs
       have e2 : (2 * ((n : ℝ) + 1)) ^ 2 = ((n : ℝ) + 1) ^ 2 * 4 := by ring

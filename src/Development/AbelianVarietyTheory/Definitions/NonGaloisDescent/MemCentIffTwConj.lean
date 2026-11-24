@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnitaryTwistInvolutionGLProperties
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.TwConj
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -110,22 +111,7 @@ theorem theta_inv_eq {g : Matrix (Fin n) (Fin n) R} (hg : IsUnit g) :
     Matrix.nonsing_inv_nonsing_inv _ ((Matrix.isUnit_iff_isUnit_det g).mp hg)]
 
 theorem theta_theta {g : Matrix (Fin n) (Fin n) R} (hg : IsUnit g) : theta (theta g) = g := by
-  rw [theta, theta_inv_eq hg]
-  have h2 : ((Phi n R)ᵀ)ᴴ = Phi n R := by rw [← Phi_conjTranspose, conjTranspose_conjTranspose]
-  simp only [Matrix.conjTranspose_mul, conjTranspose_conjTranspose, h2, Phi_conjTranspose]
-  have hs : ((-1 : R) ^ (n - 1)) * ((-1 : R) ^ (n - 1)) = 1 := by
-    rw [← pow_add, ← two_mul, pow_mul]; simp
-  have hP : Phi n R = ((-1 : R) ^ (n - 1)) • (Phi n R)ᵀ := by
-    rw [Phi_transpose, smul_smul, hs, one_smul]
-  have h3 : Phi n R * Phi n R = ((-1 : R) ^ (n - 1)) • (1 : Matrix (Fin n) (Fin n) R) := by
-    conv_lhs => rw [hP]
-    nth_rewrite 2 [Phi_transpose]
-    rw [smul_smul, hs, one_smul, Matrix.smul_mul, transpose_mul_Phi]
-  have h4 : (Phi n R)ᵀ * (Phi n R)ᵀ = ((-1 : R) ^ (n - 1)) • (1 : Matrix (Fin n) (Fin n) R) := by
-    rw [← Matrix.transpose_mul, h3]; simp
-  calc Phi n R * (Phi n R * (g * (Phi n R)ᵀ)) * (Phi n R)ᵀ
-      = (Phi n R * Phi n R) * g * ((Phi n R)ᵀ * (Phi n R)ᵀ) := by simp only [Matrix.mul_assoc]
-    _ = g := by rw [h3, h4]; simp [smul_smul, hs]
+  apply GlobalTheory.Tw.PhiConjugateTranspose.theta_theta <;> assumption
 
 theorem adj_eq {δ g : Matrix (Fin n) (Fin n) R} (hδ : IsUnit δ) (hg : IsUnit g) :
     adj δ g = (δ * theta g * δ⁻¹)⁻¹ := by

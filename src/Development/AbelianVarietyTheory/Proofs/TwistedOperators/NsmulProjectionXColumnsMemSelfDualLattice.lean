@@ -77,7 +77,7 @@ theorem selfDual_isFullLattice {D : D7} : ∀ (V : HSp D) (Λ : Submodule (𝓞 
       refine ⟨b + c, ?_⟩
       change (b : D.host.E) + c = _
       rw [hb, hc]
-      simp [f, map_add, add_mul, Finset.sum_add_distrib, mul_add]
+      simp [f, add_mul, Finset.sum_add_distrib, mul_add]
     smul_mem' := by
       rintro c x ⟨b, hb⟩
       refine ⟨RingOfIntegers.mapRingHom (starRingEnd D.host.E) c * b, ?_⟩

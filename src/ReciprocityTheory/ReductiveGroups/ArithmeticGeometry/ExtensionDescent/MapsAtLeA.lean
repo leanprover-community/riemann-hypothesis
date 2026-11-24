@@ -75,7 +75,6 @@ lemma mapsAt_le_b (pr : J → (X' ⟶ X)) (p : Y ⟶ X') (jN : J → L.ι) (jL :
       LB.wchart L (fun i => p ≫ pr i) jN := by
   intro x hx
   first
-  | exact Set.mem_iInter.2 fun i => Set.mem_iInter.1 hx.2 i
   | exact Set.mem_iInter.2 fun i => Set.mem_iInter.1 hx.1 i
 
 lemma mapsAt_le_a (pr : J → (X' ⟶ X)) (p : Y ⟶ X') (jN : J → L.ι) (jL : L'.ι) :
@@ -83,7 +82,6 @@ lemma mapsAt_le_a (pr : J → (X' ⟶ X)) (p : Y ⟶ X') (jN : J → L.ι) (jL :
       LB.wchart L' (fun _ : PUnit => p) (fun _ => jL) := by
   intro x hx
   first
-  | exact Set.mem_iInter.2 fun _ => hx.1
   | exact Set.mem_iInter.2 fun _ => hx.2
 
 def MapsAt (pr : J → (X' ⟶ X)) (w : LB.Iso L' (LB.LinComb L pr (fun _ => 1))) (p : Y ⟶ X') (n : ℤ)

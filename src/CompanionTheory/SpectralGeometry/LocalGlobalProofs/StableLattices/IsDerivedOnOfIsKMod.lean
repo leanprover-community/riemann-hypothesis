@@ -316,10 +316,7 @@ theorem locFin_sE (hF : LocFin ε E) (hF' : LocFin ε E') : LocFin ε (sE E E') 
   refine ⟨(S₁.prod S₂).map ofP, ?_, ?_, ?_⟩
   · haveI : FiniteDimensional ℂ (S₁.prod S₂) := by
       first
-        | infer_instance
         | (rw [← Submodule.range_subtype S₁, ← Submodule.range_subtype S₂, ← LinearMap.range_prodMap]
-           infer_instance)
-        | (rw [← Submodule.range_subtype S₁, ← Submodule.range_subtype S₂, ← LinearMap.range_prod_map]
            infer_instance)
     infer_instance
   · intro a b hab w hw

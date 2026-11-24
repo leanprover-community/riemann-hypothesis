@@ -51,7 +51,6 @@ namespace GlobalTheory.SizeNum
 
 private lemma sqrt_two_mul_succ_le (r : ℕ) (n : ℝ) (hn : 2 * ((r : ℝ) + 1) ≤ n) :
     Real.sqrt (2 * ((r : ℝ) + 1)) ≤ n := by
-  have hr : (0 : ℝ) ≤ r := Nat.cast_nonneg r
   calc Real.sqrt (2 * ((r : ℝ) + 1)) ≤ Real.sqrt (n ^ 2) := Real.sqrt_le_sqrt (by nlinarith)
     _ = n := Real.sqrt_sq (by linarith)
 
@@ -59,8 +58,6 @@ theorem aOf_ge (r : ℕ) (n h : ℝ) (hn : 2 * ((r : ℝ) + 1) ≤ n) (hh : n ^ 
     n ^ 18 / 32 ≤ Formalism.FourierDecayAlt.ThreeDimData.aOf r h := by
   have hs := sqrt_two_mul_succ_le r n hn
   have hr : (0 : ℝ) < 2 * ((r : ℝ) + 1) := by positivity
-  have hsp : 0 < Real.sqrt (2 * ((r : ℝ) + 1)) := Real.sqrt_pos.mpr hr
-  have hn0 : 0 ≤ n := by linarith
   unfold Formalism.FourierDecayAlt.ThreeDimData.aOf
   rw [le_div_iff₀ (by positivity)]
   calc n ^ 18 / 32 * (8 * Real.sqrt (2 * ((r : ℝ) + 1))) ≤ n ^ 18 / 32 * (8 * n) := by gcongr
@@ -71,8 +68,6 @@ theorem AG_le (k r : ℕ) (n : ℝ) (hn : n = 2 * r + k + 1) :
     0 ≤ Formalism.FourierDecayAlt.ThreeDimData.AG k r ∧ Formalism.FourierDecayAlt.ThreeDimData.AG k r ≤ 4 * n ^ 2 := by
   subst hn
   unfold Formalism.FourierDecayAlt.ThreeDimData.AG
-  have hk : (0 : ℝ) ≤ k := Nat.cast_nonneg k
-  have hr : (0 : ℝ) ≤ r := Nat.cast_nonneg r
   constructor
   · positivity
   · nlinarith [mul_le_mul (show (k : ℝ) + r ≤ 2 * r + k + 1 by linarith)
@@ -83,8 +78,6 @@ theorem AS_le (k r : ℕ) (n : ℝ) (hn : n = 2 * r + k + 1) :
   subst hn
   unfold Formalism.FourierDecayAlt.ThreeDimData.AS Formalism.FourierDecayAlt.ThreeDimData.dN
   push_cast
-  have hk : (0 : ℝ) ≤ k := Nat.cast_nonneg k
-  have hr : (0 : ℝ) ≤ r := Nat.cast_nonneg r
   have hd0 : 0 ≤ (r : ℝ) * ((r : ℝ) - 1) + 2 * (r : ℝ) * ((k : ℝ) + 1) + (r : ℝ) ^ 2 := by nlinarith
   have hd1 : (r : ℝ) * ((r : ℝ) - 1) + 2 * (r : ℝ) * ((k : ℝ) + 1) + (r : ℝ) ^ 2 ≤
       2 * (2 * (r : ℝ) + k + 1) ^ 2 := by nlinarith
@@ -105,15 +98,10 @@ theorem pow_big (n : ℝ) (hn : 1000 ≤ n) : 1000 * n ^ 5 ≤ n ^ 18 / 32 ∧ n
 
 theorem gapOK (k r : ℕ) (n : ℝ) (hn : n = 2 * r + k + 1) (hk : 1 ≤ k) (hb : 1000 ≤ n) :
     Formalism.FourierDecayAlt.ThreeDimData.GapOK k r (n ^ 19 / 4) ∧ GapCell k r (n ^ 19 / 2) := by
-  have hk0 : (0 : ℝ) ≤ k := Nat.cast_nonneg k
-  have hr0 : (0 : ℝ) ≤ r := Nat.cast_nonneg r
   have hk1 : (1 : ℝ) ≤ k := by exact_mod_cast hk
   have hn2 : 2 * ((r : ℝ) + 1) ≤ n := by rw [hn]; linarith
   have hcast : ((2 * r + k + 1 : ℕ) : ℝ) = n := by rw [hn]; push_cast; ring
   obtain ⟨hb1, hb2, hb3, hb4, hb5, hb6⟩ := pow_big n hb
-  have h19 : 0 ≤ n ^ 19 := by positivity
-  have h18 : 0 ≤ n ^ 18 := by positivity
-  have hn0 : 0 ≤ n := by linarith
   have ha4 := aOf_ge r n (n ^ 19 / 4) hn2 le_rfl
   have ha2 := aOf_ge r n (n ^ 19 / 2) hn2 (by linarith)
   obtain ⟨hG0, hG⟩ := AG_le k r n hn
@@ -398,8 +386,6 @@ theorem num_of_size : ∀ (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT
   have hC10 : ∀ a c : Fin (2 * D.R.rS + D.R.k + 1), a < c → c.val + 1 < D.R.k →
       (D.R.r : ℝ) * (D.R.m : ℝ) ^ 10 ≤ lamD D τ a - lamD D τ c := by
     intro a c hac _
-    have hlt : a.val < c.val := hac
-    have hc := c.isLt
     have ha1 : a.val + 1 < 2 * D.R.rS + D.R.k + 1 := by omega
     have key := hcons a ha1
     have hmono : lamD D τ c ≤ lamD D τ ⟨a.val + 1, ha1⟩ :=
@@ -441,8 +427,6 @@ theorem num_of_size : ∀ (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT
   have hnodeGap : ∀ a c : Fin (2 * D.R.rS + D.R.k + 1), a < c → ¬ a.val < D.R.k - 1 →
       (D.R.r : ℝ) ^ 19 ≤ lamD D τ a - lamD D τ c := by
     intro a c hlt ha
-    have hlt' : a.val < c.val := hlt
-    have hc := c.isLt
     have ha1 : a.val + 1 < 2 * D.R.rS + D.R.k + 1 := by omega
     have e1 : lamD D τ a = -bOne D τ (a.val + 2 - D.R.k) :=
       lam_b D τ a _ (by omega) (by omega)
@@ -465,14 +449,12 @@ theorem num_of_size : ∀ (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT
       · have h1 := (hC6 a (by omega)).1
         have h2 := (hC7 c (by omega)).2
         have h0 := (hC6 ⟨0, by omega⟩ (show 0 + 1 < D.R.k by omega)).1
-        have h0' := (hC6 ⟨0, by omega⟩ (show 0 + 1 < D.R.k by omega)).2
         rw [abs_of_nonneg (by linarith)]
         linarith
     · by_cases hc : c.val < D.R.k - 1
       · have h1 := (hC6 c (by omega)).1
         have h2 := (hC7 a (by omega)).2
         have h0 := (hC6 ⟨0, by omega⟩ (show 0 + 1 < D.R.k by omega)).1
-        have h0' := (hC6 ⟨0, by omega⟩ (show 0 + 1 < D.R.k by omega)).2
         rw [abs_sub_comm, abs_of_nonneg (by linarith)]
         linarith
       · have hne : a ≠ c := by

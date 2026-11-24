@@ -75,11 +75,6 @@ theorem hwfin_denom (ε : Fin n → Bool) :
     simp
   rw [h1] at h
   simp only [zero_add] at h
-  have hD : ((∏ i ∈ Finset.range (Formalism.MainNotions.LocalBesselAndTopKernel.nPl ε), (i.factorial : ℝ)) *
-        ∏ i ∈ Finset.range (Formalism.MainNotions.LocalBesselAndTopKernel.nMi ε), (i.factorial : ℝ)) ≠ 0 := by
-    intro h0
-    rw [h0, div_zero] at h
-    exact one_ne_zero h
   field_simp at h
   exact h.symm
 
@@ -87,7 +82,6 @@ theorem kType_finrank {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T : KType ε �
     (Module.finrank ℂ T.V : ℝ) = ∏ a : Fin n, ∏ b ∈ Finset.univ.filter (fun b => a < b ∧ ε a = ε b),
       ((Λ + rhoC ε) a - (Λ + rhoC ε) b) / (rhoC ε a - rhoC ε b) := by
   rw [hwfin_weyl T, ← hwfin_denom ε, ← Finset.prod_div_distrib]
-  refine Finset.prod_congr rfl fun a _ => ?_
-  rw [Finset.prod_div_distrib]
+  simp_rw [Finset.prod_div_distrib]
 
 end ReciprocityTheory.ChartRestriction.DS.HW

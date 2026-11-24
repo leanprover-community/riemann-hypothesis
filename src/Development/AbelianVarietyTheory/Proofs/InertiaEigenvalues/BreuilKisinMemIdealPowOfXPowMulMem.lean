@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.MemBreuilKisinIdealPowOfNormLe
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IsStratHom
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -53,24 +54,7 @@ namespace GlobalTheory.BSP.BK
 variable {l : ℕ} [Fact l.Prime] {K : FinExt l}
 
 theorem X_pow_natDegree_mem_lE (bk : BK K) : (X : bk.S) ^ bk.Ep.natDegree ∈ bk.J := by
-  have hdvd : Polynomial.C (l : Wq l bk.a) ∣ bk.Ep - Polynomial.X ^ bk.Ep.natDegree := by
-    rw [Polynomial.C_dvd_iff_dvd_coeff]
-    intro i
-    rw [Polynomial.coeff_sub, Polynomial.coeff_X_pow]
-    rcases lt_trichotomy i bk.Ep.natDegree with h | h | h
-    · rw [if_neg h.ne, sub_zero]; exact bk.dvd_coeff i h
-    · subst h; rw [if_pos rfl, bk.monic.coeff_natDegree, sub_self]; exact dvd_zero _
-    · rw [if_neg h.ne', Polynomial.coeff_eq_zero_of_natDegree_lt h, sub_zero]; exact dvd_zero _
-  obtain ⟨q, hq⟩ := hdvd
-  have h1 := congrArg (fun p : Polynomial (Wq l bk.a) => (p : bk.S)) hq
-  simp only [Polynomial.coe_sub, Polynomial.coe_pow, Polynomial.coe_X, Polynomial.coe_mul,
-    Polynomial.coe_C] at h1
-  rw [map_natCast] at h1
-  have h2 : (X : bk.S) ^ bk.Ep.natDegree = bk.E - (l : bk.S) * (q : bk.S) := by
-    linear_combination -h1
-  rw [h2]
-  exact Ideal.sub_mem _ (Ideal.mem_sup_right (Ideal.mem_span_singleton_self _))
-    (Ideal.mem_sup_left (Ideal.mul_mem_right _ _ (Ideal.mem_span_singleton_self _)))
+  apply GlobalTheory.BSP.BK.X_pow_natDegree_mem_J <;> assumption
 
 theorem E_mem_span_l_X (bk : BK K) : bk.E ∈ Ideal.span {(l : bk.S)} ⊔ Ideal.span {(X : bk.S)} := by
   obtain ⟨w, hw⟩ := bk.coeff_zero

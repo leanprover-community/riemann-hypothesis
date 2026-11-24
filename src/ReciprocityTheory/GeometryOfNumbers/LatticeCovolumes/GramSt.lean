@@ -69,7 +69,7 @@ theorem gramSt_det_one_add_eq {Q : Matrix ι ι ℂ} (hQ : Q.PosSemidef) :
     ext i j
     by_cases h : i = j
     · subst h; simp
-    · simp [h, one_apply]
+    · simp [h]
   rw [h1, Unitary.conjStarAlgAut_apply, hd, det_mul, det_mul, det_diagonal, Complex.ofReal_prod]
   rw [mul_comm (det _) (∏ _, _), mul_assoc, ← det_mul]
   try rw [Unitary.coe_star]
@@ -119,10 +119,6 @@ theorem gramSt_fischer {A : Matrix m m ℂ} {B : Matrix m k ℂ} {C : Matrix k m
   have hA : A.PosDef := by
     have := h.submatrix (e := (Sum.inl : m → m ⊕ k)) Sum.inl_injective
     have e : (fromBlocks A B C D).submatrix Sum.inl Sum.inl = A := by ext; simp
-    rwa [e] at this
-  have hD : D.PosDef := by
-    have := h.submatrix (e := (Sum.inr : k → m ⊕ k)) Sum.inr_injective
-    have e : (fromBlocks A B C D).submatrix Sum.inr Sum.inr = D := by ext; simp
     rwa [e] at this
   have hC : C = Bᴴ := by
     have := (isHermitian_fromBlocks_iff.mp h.1)

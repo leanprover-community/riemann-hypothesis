@@ -42,6 +42,7 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
+public import Mathlib.RingTheory.MvPolynomial
 
 @[expose] public section
 
@@ -71,9 +72,6 @@ theorem T_lin (d : SD σ) (Φ Φ' : d.Fn) (a : ℂ) : d.T (Φ + a • Φ') = d.T
   show d.l (d.dd.rho d.B.ψ (X * (incM F d.b.1.toCols₂)ᵀ) (Φ + a • Φ')) =
     d.l (d.dd.rho d.B.ψ (X * (incM F d.b.1.toCols₂)ᵀ) Φ) + a • d.l (d.dd.rho d.B.ψ (X * (incM F d.b.1.toCols₂)ᵀ) Φ')
   rw [e, map_add (f := _), map_smul]
-
-theorem mu_right (d : SD σ) : d.μ.IsMulRightInvariant := by
-  exact KSplitA.mu_right d
 
 theorem thetaSum_S_rat (hT : TAll) (d : SD σ) : ∀ Φ ∈ d.sch, ∀ γ ∈ ratU σ d.A.J, thetaSum F (d.S γ Φ) = thetaSum F Φ := by
   intro Φ hΦ γ hγ
@@ -113,7 +111,7 @@ theorem thetaSum_lin (hT : TAll) (d : SD σ) {Φ Φ' : d.Fn} (hΦ : Φ ∈ d.sch
 theorem I_S (hT : TAll) (d : SD σ) : ∀ Φ ∈ d.sch, ∀ g x, d.I (d.S g Φ) x = d.I Φ x := by
   intro Φ hΦ g x
   have := d.ok.haar
-  have := mu_right d
+  have := _root_.PositivityTheory.SiegelWeilFormula.KSplitA.mu_right d
   have := PositivityTheory.ThKF.countable_ratU σ d.A.J
   have : BorelSpace (UA σ d.A.J) := ⟨rfl⟩
   have hinv : ∀ γ ∈ ratU σ d.A.J, ∀ h, thetaSum F (d.om x (d.S (γ * h) Φ)) = thetaSum F (d.om x (d.S h Φ)) := by
@@ -139,20 +137,10 @@ theorem I_lin (hT : TAll) (d : SD σ) {Φ Φ' : d.Fn} (hΦ : Φ ∈ d.sch) (hΦ'
   rw [MeasureTheory.integral_add (hi Φ hΦ) ((hi Φ' hΦ').const_mul a), MeasureTheory.integral_const_mul, smul_add,
     mul_smul_comm]
 
-theorem exists_embU (d : SD σ) (R : RD d) (w : InfinitePlace F) (u : Matrix (Fin d.m) (Fin d.m) ℂ)
-    (hu : u ∈ Matrix.unitaryGroup (Fin d.m) ℂ) : ∃ g : UA σ d.A.J, ∀ X : Mx F E d.m d.n,
-      R.loc w (mat g⁻¹ * X) = (u * Matrix.of (R.loc w X) : Matrix (Fin d.m) (Fin d.n) ℂ) ∧ (∀ w', w' ≠ w → d.cw w' (mat g⁻¹ * X - X) = 0) ∧
-        finOne F • (mat g⁻¹ * X - X) = 0 := by
-  exact KSplitA.exists_embU d R w u hu
-
-theorem fP_unitary {m n : ℕ} (u : Matrix (Fin m) (Fin m) ℂ) (hu : u ∈ Matrix.unitaryGroup (Fin m) ℂ) (P : PX m n)
-    (v : Matrix (Fin m) (Fin n) ℂ) : fP P (u * v) = fP (actU u P) v := by
-  exact KSplitA.fP_unitary u hu P v
-
 theorem S_lift (hT : TAll) (hF : FockMem) (d : SD σ) (R : RD d) (w : InfinitePlace F) (Ψ : Mx F E d.m d.n → ℂ)
     (hΨ : Ψ ∈ R.away w) (φ : PX d.m d.n →ₗ[ℂ] d.Fn) (hφ : R.IsLift w Ψ φ) (u : Matrix (Fin d.m) (Fin d.m) ℂ)
     (hu : u ∈ Matrix.unitaryGroup (Fin d.m) ℂ) : ∃ g : UA σ d.A.J, ∀ P, d.S g (φ P) = φ (actU u P) := by
-  obtain ⟨g, hg⟩ := exists_embU d R w u hu
+  obtain ⟨g, hg⟩ := _root_.PositivityTheory.SiegelWeilFormula.KSplitA.exists_embU d R w u hu
   refine ⟨g, fun P => ?_⟩
   have hP := hφ P
   have hQ := hφ (actU u P)
@@ -167,7 +155,7 @@ theorem S_lift (hT : TAll) (hF : FockMem) (d : SD σ) (R : RD d) (w : InfinitePl
     have eX : mat g⁻¹ * X = X + (mat g⁻¹ * X - X) := by abel
     simp only [RD.tens, smul_eq_mul, Pi.zero_apply]
     rw [h1, eX, hΨi X _ h2 h3, show fP P (u * Matrix.of (R.loc w X)) = fP (actU u P) (R.loc w X) from
-      fP_unitary u hu P _]
+      _root_.PositivityTheory.SiegelWeilFormula.KSplitA.fP_unitary u hu P _]
     ring
   have h0 := (hT.1 F E σ d).2.2 _ hsub hT0
   have : d.S g (φ P) = -((-1 : ℂ) • φ (actU u P)) := eq_neg_of_add_eq_zero_left h0

@@ -87,7 +87,6 @@ theorem evC_smul (h : GenFrEx Xo c) (Z : Comp Xo c) (a : c.F) (f : Rul Xo c) :
 theorem smul_single_AC (Z : Comp Xo c) (a : 𝓞 c.F) (G : WTZ E) (e : Om Z) :
     a • (AddMonoidAlgebra.single G e : AC Z) = AddMonoidAlgebra.single G (algebraMap c.F (Om Z) (a : c.F) * e) := by
   first
-  | rw [AddMonoidAlgebra.smul_single]
   | erw [AddMonoidAlgebra.smul_single]
   rw [Algebra.smul_def]
   congr 1

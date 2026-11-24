@@ -127,7 +127,7 @@ theorem sqrt_neg_moved_by_inertia : ∀ (F Ω : Type) [Field F] [NumberField F] 
   set f : F[X] := X ^ 2 + C (p : F) with hfdef
   have hf_root : ∀ x : Ω, aeval x f = 0 ↔ x ^ 2 = -(p : Ω) := by
     intro x
-    simp only [hfdef, map_add (f := _), map_pow, aeval_X, aeval_C, map_natCast]
+    simp only [hfdef, map_add (f := _), map_pow, aeval_X, map_natCast]
     constructor <;> intro h <;> linear_combination h
   have hmon : f.Monic := monic_X_pow_add_C _ two_ne_zero
   have hirr : Irreducible f := by

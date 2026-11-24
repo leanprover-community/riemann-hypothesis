@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.TheoremPIntegralOfPlaces
 public import Formalism.HermitianCurvature.StatementTBB
 public import Formalism.FormalDegreeBessel.FinalG
 import Mathlib.Algebra.Order.Floor.Extended
@@ -78,21 +79,7 @@ theorem Gf_sgs {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductS
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] (Ds : B.RealPlaceData k r Wp Wq) (q : B.SS k r)
     (hq : Ds.inSS q) (g : B.Mat k r) :
     Gf k r Ds.z Ds.z' (B.sgs q g) = Gf k r Ds.z Ds.z' g := by
-  obtain ⟨hh, hn, hh', hn'⟩ := hq
-  have SG := sGroup k r Ds.z Ds.z_mem
-  have SG' := sGroup k r Ds.z' Ds.z'_mem
-  have hS1 : Matrix.of q.1.1 ∈ Sset k r Ds.z := ⟨_, hh, 1, (nSubgroup k r).1, by simp⟩
-  have hS2 : Matrix.of q.1.2 ∈ Sset k r Ds.z := ⟨1, one_mem_UW _ _ _, _, hn, by simp⟩
-  have hS3 : Matrix.of q.2.1 ∈ Sset k r Ds.z' := ⟨_, hh', 1, (nSubgroup k r).1, by simp⟩
-  have hS4 : Matrix.of q.2.2 ∈ Sset k r Ds.z' := ⟨1, one_mem_UW _ _ _, _, hn', by simp⟩
-  have hs : (Matrix.of q.1.1)⁻¹ * (Matrix.of q.1.2)⁻¹ ∈ Sset k r Ds.z :=
-    SG.2.1 _ (SG.2.2 _ hS1) _ (SG.2.2 _ hS2)
-  have hs' : Matrix.of q.2.2 * Matrix.of q.2.1 ∈ Sset k r Ds.z' := SG'.2.1 _ hS4 _ hS3
-  have e : B.sgs q g = ((Matrix.of q.1.1)⁻¹ * (Matrix.of q.1.2)⁻¹) * g *
-      (Matrix.of q.2.2 * Matrix.of q.2.1) := by
-    unfold B.sgs; simp only [mul_assoc]
-  rw [e]
-  exact gInv k r Ds.z Ds.z' Ds.z_mem Ds.z'_mem _ hs _ hs' g
+  apply Formalism.FourierDecayAlt.P.JCx1.needs.gf_sgs <;> assumption
 
 theorem ae_inSS {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] (Ds : B.RealPlaceData k r Wp Wq) :
@@ -213,7 +200,6 @@ theorem Formalism.FourierDecayAlt.P.point_bound_of_corollary_s : TBB.PtBoundOfCo
     obtain ⟨ε, ⟨w, hw, hle⟩, hall'⟩ := (hclaim.and hall).exists
     first
       | exact absurd hle (not_le.mpr (hall' w hw))
-      | exact hall' w hw hle
   obtain ⟨w, hw, hfw⟩ := hfreq
   have hlim := hLim w hw.1 hw.2
   rcases eq_or_lt_of_le hc0 with hc | hc

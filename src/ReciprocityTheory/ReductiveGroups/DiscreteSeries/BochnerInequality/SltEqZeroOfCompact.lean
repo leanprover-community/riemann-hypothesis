@@ -43,6 +43,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.BochnerInequality.BigRep
 
 @[expose] public section
 
@@ -101,22 +102,11 @@ theorem slt_inner_eq_sum {k : ℕ} (i : Fin k) (A B : Big n k M) :
   exact (slt_sum_fin_one_fun
     (fun p => inner ℂ (A ((slRest i).symm (p, r))) (B ((slRest i).symm (p, r))))).symm
 
-theorem slt_ofCoords_apply {X : Type*} [AddCommGroup X] [Module ℂ X] (k : ℕ)
-    (f : (Fin k → Fin n × Fin n) → (X →ₗ[ℂ] M)) (x : X) (κ : Fin k → Fin n × Fin n) :
-    ofCoords k f x κ = f κ x := rfl
-
 theorem slt_coord_apply (k : ℕ) (κ : Fin k → Fin n × Fin n) (F : Big n k M) :
     coord k κ F = F κ := rfl
 
 theorem slt_mAct_apply (k : ℕ) (a b : Fin n) (F : Big n k M) (κ : Fin k → Fin n × Fin n) :
     mAct E k a b F κ = E a b (F κ) := rfl
-
-theorem slt_positionAd_apply (k : ℕ) (i : Fin k) (a b : Fin n) (F : Big n k M) (κ : Fin k → Fin n × Fin n) :
-    factorAd k i a b F κ =
-      (if (κ i).1 = a then F (Function.update κ i (b, (κ i).2)) else 0) -
-        (if (κ i).2 = b then F (Function.update κ i ((κ i).1, a)) else 0) := by
-  rw [factorAd, slt_ofCoords_apply, LinearMap.sub_apply]
-  split_ifs <;> simp [slt_coord_apply]
 
 theorem slt_crossOp_apply (k : ℕ) (i : Fin k) (F : Big n k M) (κ : Fin k → Fin n × Fin n) :
     crossOp ε E k i F κ = ∑ a, ∑ b ∈ univ.filter (fun b => ε b = ε a),
@@ -128,7 +118,7 @@ theorem slt_crossOp_apply (k : ℕ) (i : Fin k) (F : Big n k M) (κ : Fin k → 
   refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
   rw [slt_coord_apply]
   change factorAd k i a b (mAct E k b a F) κ = _
-  rw [slt_positionAd_apply, slt_mAct_apply, slt_mAct_apply]
+  rw [_root_.ReciprocityTheory.ChartRestriction.DS.factorAd_apply, slt_mAct_apply, slt_mAct_apply]
 
 private theorem slt_apply {k : ℕ} (i : Fin k) (r : {j // j ≠ i} → Fin n × Fin n)
     (A : Big n k M) (ι : Fin 1 → Fin n × Fin n) : slt i r A ι = A ((slRest i).symm (ι 0, r)) :=

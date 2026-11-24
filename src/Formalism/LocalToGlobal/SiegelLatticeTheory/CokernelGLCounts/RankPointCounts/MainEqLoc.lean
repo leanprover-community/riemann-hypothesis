@@ -83,7 +83,6 @@ theorem localInputG_of_le {τ Rw I H H₁ : Type} [Fintype I] [NormedAddCommGrou
   · intro x hx
     rw [ha x hx]
     first
-      | rfl
       | (unfold Formalism.L2.SG.Pf.MainEqCut.weightedGenericAmplitudeSq Formalism.L2.SG.Pf.MainEqCut.ampGen; rfl)
       | (cases hd : L.dat x.1 x.2 <;> simp [Formalism.L2.SG.Pf.MainEqCut.weightedGenericAmplitudeSq, Formalism.L2.SG.Pf.MainEqCut.ampGen, hd])
   · show N.ngen γ = L.V0 * c * ∏ p, L.ngen p

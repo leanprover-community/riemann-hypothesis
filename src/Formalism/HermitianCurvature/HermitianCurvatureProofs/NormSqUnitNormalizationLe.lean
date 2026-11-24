@@ -94,7 +94,7 @@ lemma n1_eI_eq_card {n : ℕ} (I : Finset (Fin n)) : N1 (eI I) = I.card := by
     split_ifs <;> rfl
   simp only [h]
   rw [Finset.sum_boole]
-  simp [Finset.filter_mem_eq_inter]
+  simp
 
 lemma Ninf_eI {n : ℕ} (I : Finset (Fin n)) : Ninf (eI I) ≤ 1 := by
   unfold Ninf
@@ -384,7 +384,6 @@ theorem family_expansion_of_parts (p : KB.Pl P Wp Wq) (f : B.Mat P.k P.r → (Wq
     _ ≤ (2 * (d.n * Real.sqrt d.n) * d.H) ^ (P.r + 1) := by
         first
           | exact pow_le_pow_left₀ hbase hb2 _
-          | exact pow_le_pow_left hbase hb2 _
     _ = (2 * (d.n : ℝ) ^ (3 / 2 : ℝ) * d.H) ^ (P.r + 1) := by rw [hn32]
 
 theorem coefficient_growth_le_power (n r : ℕ) (b H CH C₃ : ℝ) (hb : 2 ≤ b) (hn : (n : ℝ) ≤ b) (hH : 0 ≤ H)
@@ -394,7 +393,6 @@ theorem coefficient_growth_le_power (n r : ℕ) (b H CH C₃ : ℝ) (hb : 2 ≤ 
   have hb0 : (0 : ℝ) < b := by linarith
   have hm : ((2 * r + 2 : ℕ) : ℝ) = 2 * (r : ℝ) + 2 := by push_cast; ring
   rw [hm] at hHb ⊢
-  have hr0 : (0 : ℝ) ≤ r := Nat.cast_nonneg r
   have hn0 : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
   have h32 : (n : ℝ) ^ (3 / 2 : ℝ) ≤ b ^ (3 / 2 : ℝ) := Real.rpow_le_rpow hn0 hn (by norm_num)
   have hn32 : (0 : ℝ) ≤ (n : ℝ) ^ (3 / 2 : ℝ) := Real.rpow_nonneg hn0 _

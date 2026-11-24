@@ -44,6 +44,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBLocal
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.LBPull
 import Development.AbelianVarietyTheory.Definitions.Divisors.ExistsMinAt
+import Mathlib.CategoryTheory.Monoidal.Opposite.Mon
 
 @[expose] public section
 
@@ -58,23 +59,6 @@ open GlobalTheory.LamRigid GlobalTheory.LamBiext
 noncomputable section
 
 namespace GlobalTheory.TChart.PeriodAdd
-
-theorem exists_ratio {X Y S₀ : Scheme.{0}} {M : LB X} (hM : M.IsLB) {K : Type} [Fintype K] {φ : K → (Y ⟶ X)} {ε : K → ℤ}
-    (p : Y ⟶ S₀) (hp : Function.Surjective p.appTop.hom)
-    {u u' : LB.Gen (LB.LinComb M φ ε)} (hu : u.IsGen) (hu' : u'.IsGen) :
-    ∃ a : Γ(S₀, ⊤), ∀ (Z : Scheme.{0}) (r : Z ⟶ Y) (z : Z) (J), Good M z J →
-      (val u r z J * (val u' r z J)⁻¹).val = gs (r ≫ p) z ⊤ a := by
-  obtain ⟨t, -, hv⟩ := exists_gen hM (K' := PEmpty) (φ' := PEmpty.elim) (ε' := PEmpty.elim) (fun U _ h => by
-      refine (Fintype.prod_sum_type _).trans (Eq.trans ?_ (Fintype.prod_empty _).symm)
-      simp only [Sum.elim_inl, Sum.elim_inr, zpow_neg, Finset.prod_inv_distrib, mul_inv_cancel])
-    (LB.mulGen M _ _ _ _ u (LB.invGen M _ _ u')) (DVR.mulGen_isGen _ _ _ _ _ _ _ hu (DVR.invGen_isGen _ _ _ _ hu'))
-  have le : (⊤ : Y.Opens) ≤ LB.wchart M (PEmpty.elim : PEmpty → (Y ⟶ X)) PEmpty.elim := fun _ _ =>
-    Set.mem_iInter.2 fun k => k.elim
-  obtain ⟨a, ha⟩ := hp (res le (t.s PEmpty.elim)).val
-  refine ⟨a, fun Z r z J hJ => ?_⟩
-  rw [← val_inv, ← val_mul hJ, ← hv Z r z J hJ, val_of t r z J PEmpty.elim (fun k => k.elim)]
-  exact (congrArg Units.val (gm_res r z le trivial _)).symm.trans ((gs_unit r z ⊤ trivial _).symm.trans
-    ((congrArg (gs r z ⊤) ha.symm).trans (gs_pull r p z ⊤ trivial a)))
 
 theorem exists_pull {X X' Y : Scheme.{0}} {L : LB X} (F : X' ⟶ X) {K : Type} [Fintype K] (φ' : K → (Y ⟶ X')) (ε : K → ℤ)
     {a : LB.Gen (LB.LinComb L (fun k => φ' k ≫ F) ε)} (ha : a.IsGen) :
@@ -105,7 +89,7 @@ theorem rigid_two {X X₁ X' Y S₀ : Scheme.{0}} {L : LB X} {L₁ : LB X₁} {F
   obtain ⟨a', ha', hv'⟩ := exists_pull F φ' ε ha
   have hP : (L.pull F).IsLB := DVR.linComb_isLB _ hL _ _
   obtain ⟨t₁, ht₁, hv⟩ := exists_up ((isGen_iff w).1 hw) hL₁ hP a' ha'
-  obtain ⟨c, hc⟩ := exists_ratio hL₁ p hp ht ht₁
+  obtain ⟨c, hc⟩ := _root_.GlobalTheory.WeilMul.exists_ratio hL₁ p hp ht ht₁
   refine ⟨c, fun Z r z J J' hJ hJ' => Eq.trans ?_ (hc Z r z J hJ)⟩
   have m : r z ∈ LB.wchart (L.pull F) φ' (fun k _ => J' (r ≫ φ' k ≫ F)) :=
     Set.mem_iInter.2 fun k => mem_pull.2 (hJ' (r ≫ φ' k ≫ F))

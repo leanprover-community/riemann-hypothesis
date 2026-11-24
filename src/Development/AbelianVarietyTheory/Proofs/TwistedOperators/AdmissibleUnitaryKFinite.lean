@@ -2,7 +2,7 @@ module
 
 public import Development.AbelianVarietyTheory.Definitions.TwistedInnerProducts.IsAdmOnOfFiniteDimensional
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.ExistsStandardIndModule
-public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LeviModulusOneLinearReductiveExpMulExpStatement
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.LeviModulusOneLinearReductiveExpMulExp
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MaxCompactIrreducibleHasHighestWeightAndIso
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -69,7 +69,7 @@ theorem isLinRed_UJset (ε : Fin n → Bool) : GlobalTheory.LinRed.IsLinRed (UJs
   have hW : IsIsoFlag ε (fun i : Fin 0 => i.elim0) (fun _ : Fin 1 => (⊥ : Submodule ℂ (Fin n → ℂ))) :=
     ⟨rfl, monotone_const, fun i => i.elim0, fun x hx y _ => by
       rw [(Submodule.mem_bot ℂ).1 hx]; simp⟩
-  have h := (GlobalTheory.T.leviModulusOne_linearReductive_exp_mul_exp n ε 0 _ _ hW (fun i => i.elim0)).1
+  have h := (_root_.GlobalTheory.LeviPolar.isLinRed_leviOne n ε 0 _ _ hW (fun i => i.elim0)).1
   rwa [leviOne_zero hW, mats_top] at h
 
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] {π : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)}

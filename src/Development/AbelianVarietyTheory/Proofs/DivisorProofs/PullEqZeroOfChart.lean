@@ -42,6 +42,8 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.SiegelFamilyTangentDimensionBound
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsRigidifiedTwist
 
 @[expose] public section
 
@@ -56,32 +58,7 @@ namespace GlobalTheory.KTrivOfLam
 
 open GlobalTheory.CechPic
 
-theorem cls_cube_pair {S : Scheme.{0}} {A T : Over S} [GrpObj A] [IsCommMonObj A] {L : LB A.left} (hL : L.IsLB)
-    (x y : T ⟶ A) (h : (cubeLB A ![x, y] L).IsLB) :
-    cls _ h = pull (x * y).left (cls L hL) - pull x.left (cls L hL) - pull y.left (cls L hL) +
-      pull (1 : T ⟶ A).left (cls L hL) := by
-  refine (cls_linComb hL _ _ h).trans ?_
-  rw [← Equiv.ulift.symm.sum_comp]
-  have hu : (Finset.univ : Finset (Finset (Fin 2))) = {∅, {0}, {1}, {0, 1}} := by decide
-  have p₀ : psum A ![x, y] ∅ = 1 := rfl
-  have p₁ : psum A ![x, y] {0} = x := mul_one x
-  have p₂ : psum A ![x, y] {1} = y := mul_one y
-  have p₃ : psum A ![x, y] {0, 1} = x * y := congrArg (x * ·) (mul_one y)
-  rw [hu, Finset.sum_insert (by decide), Finset.sum_insert (by decide), Finset.sum_insert (by decide),
-    Finset.sum_singleton]
-  simp only [Equiv.ulift_symm_apply, p₀, p₁, p₂, p₃]
-  rw [Finset.card_pair (by decide)]
-  simp
-  abel
-
-theorem pull_eq_zero_of_chart {X Y : Scheme.{0}} {L : LB X} (hL : L.IsLB) (f : Y ⟶ X) (i : L.ι)
-    (hf : ∀ y, f y ∈ L.U i) : pull f (cls L hL) = 0 :=
-  (cls_eq_zero_iff (pull_isLB hL f)).2 (GlobalTheory.IsoExtend.exists_gen_of_chart hL f i hf)
-
-theorem exists_chart {X : Scheme.{0}} {L : LB X} (hL : L.IsLB) (z : X) : ∃ i, z ∈ L.U i := by
-  have : z ∈ (⊤ : X.Opens) := trivial
-  rw [← hL.cover] at this
-  exact TopologicalSpace.Opens.mem_iSup.1 this
+alias exists_chart := _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.exists_chart
 
 theorem kTriv_of_lam_iso : ∀ (S : Scheme.{0}) (B : Over S) [GrpObj B] [IsCommMonObj B], IsAbelianScheme B →
     ∀ (P : LB (G2 B).left), P.IsLB →
@@ -129,14 +106,14 @@ theorem kTriv_of_lam_iso : ∀ (S : Scheme.{0}) (B : Over S) [GrpObj B] [IsCommM
     exact sub_eq_zero.1 h₁
   have hcP : cls _ hP = cls _ hLam := ((cls_eq_iff hLam hP).2 hiso).symm
   have hC : cls _ hLam = pull (fst B B * snd B B).left c - pull (fst B B).left c - pull (snd B B).left c +
-      pull (1 : G2 B ⟶ B).left c := cls_cube_pair hL (fst B B) (snd B B) hLam
+      pull (1 : G2 B ⟶ B).left c := _root_.GlobalTheory.PowerTangent.cls_cube_two hL (fst B B) (snd B B) hLam
   have e₃ : pull (snd B TW ≫ ιW ≫ x).left c = 0 := by
-    rw [Over.comp_left, pull_comp, pull_eq_zero_of_chart hL (ιW ≫ x).left i ?_, map_zero]
+    rw [Over.comp_left, pull_comp, _root_.GlobalTheory.RigidifyTwist.pull_cls_eq_zero hL (ιW ≫ x).left i ?_, map_zero]
     intro y
     exact y.2.1.2
   have e₄ : pull (1 : B ⊗ TW ⟶ B).left c = 0 := by
     have k : (1 : B ⊗ TW ⟶ B) = snd B TW ≫ ιW ≫ (1 : T₀ ⟶ B) := by rw [MonObj.comp_one, MonObj.comp_one]
-    rw [k, Over.comp_left, pull_comp, pull_eq_zero_of_chart hL (ιW ≫ (1 : T₀ ⟶ B)).left j ?_, map_zero]
+    rw [k, Over.comp_left, pull_comp, _root_.GlobalTheory.RigidifyTwist.pull_cls_eq_zero hL (ιW ≫ (1 : T₀ ⟶ B)).left j ?_, map_zero]
     intro y
     exact y.2.2
   refine (cls_eq_zero_iff (pull_isLB hP _)).1 ?_

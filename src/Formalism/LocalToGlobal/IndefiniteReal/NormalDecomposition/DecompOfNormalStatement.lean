@@ -103,8 +103,7 @@ theorem notLifted_le_ker (hI : Intw θ op opB) (hG : GoodIn θ good goodB) {c : 
     by_contra h
     exact hn ⟨hc, h⟩
   have hm : θ x ∈ eigPart opB c ⊓ goodB := ⟨map_eigPart hI hx.1, hG x hx.2⟩
-  rw [h0, Submodule.mem_bot] at hm
-  exact hm
+  simpa [h0, LinearMap.mem_ker] using hm
 
 theorem range_adj_le (hA : IsAdj θ θa) : LinearMap.range θa ≤ (LinearMap.ker θ)ᗮ := by
   rintro _ ⟨y, rfl⟩

@@ -150,7 +150,7 @@ theorem cpt_zero {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X
   have h1 : mat (nmat X 0) τ = 1 := by
     ext a b
     simp only [mat, Matrix.of_apply, nmat, Matrix.one_apply]
-    split_ifs <;> first | rfl | (exfalso; subst_vars; exact lt_irrefl _ ‹_›) | simp_all
+    split_ifs <;> first | rfl | (exfalso; subst_vars; exact lt_irrefl _ ‹_›)
   rw [h1, Matrix.mul_one]
   rfl
 

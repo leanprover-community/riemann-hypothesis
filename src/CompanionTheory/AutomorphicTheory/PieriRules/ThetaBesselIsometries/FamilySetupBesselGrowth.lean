@@ -2,7 +2,7 @@ module
 
 public import CompanionTheory.AutomorphicTheory.PieriRules.ThetaBesselIsometries.IsDSOfIsDG
 public import CompanionTheory.AutomorphicTheory.PieriRules.ThetaBesselIsometries.DiscreteSeriesUnitarySmoothBasic
-public import CompanionTheory.AutomorphicTheory.PieriRules.ThetaBesselIsometries.GapCoefficientDerivativeBoundStatement
+public import CompanionTheory.AutomorphicTheory.PieriRules.ThetaBesselIsometries.GapCoefficientDerivativeBound
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.UhMeasurableSet
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -91,12 +91,11 @@ theorem mom_mass : HypsG → ∀ (k r : ℕ) (Wp : Type) [NormedAddCommGroup Wp]
     have hx := abs_sub_abs_le_abs_sub (lam a - lam c) ((ν c : ℝ) - ν a)
     have e : (lam a - lam c) - ((ν c : ℝ) - ν a) = (lam a + ν a) - (lam c + ν c) := by ring
     rw [e] at hx
-    have hq : (0 : ℝ) ≤ q0 := Nat.cast_nonneg q0
     show h / 4 ≤ |(lam a + (ν a : ℝ)) - (lam c + (ν c : ℝ))|
     linarith
   have hIso : BranchingSupport.NzOn (R ν) (l ν) →
       BranchingSupport.IsIsoB (R ν) z π νq (fun w => ((Real.sqrt (dg ν) : ℝ) : ℂ) • l ν w) := fun hNz =>
-    Gp91.GlobalTheory.T.isIsoB_sqrt_fdeg_smul_of_gap hH k r _ _ (h / 4) (R ν) Wp z π u μW μN μG νq (l ν) (dg ν) hDG hgap hGapOK hSide hBeL
+    _root_.Gp91.GlobalTheory.scaled_bessel_isometric hH k r _ _ (h / 4) (R ν) Wp z π u μW μN μG νq (l ν) (dg ν) hDG hgap hGapOK hSide hBeL
       hfd hNz
   have hEq : BranchingSupport.NzOn (R ν) (l ν) → ∀ w ∈ (R ν).sm,
       ∫⁻ x, ENNReal.ofReal (1 * (dg ν * ‖l ν ((R ν).σ (Matrix.of x) w)‖ ^ 2)) ∂νq = ENNReal.ofReal (‖w‖ ^ 2) := by

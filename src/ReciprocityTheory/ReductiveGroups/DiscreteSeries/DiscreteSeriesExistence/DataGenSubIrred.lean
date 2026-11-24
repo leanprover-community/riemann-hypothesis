@@ -66,10 +66,11 @@ variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteS
   {lam : Fin n → ℝ} {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} {D : Submodule ℂ H}
   {E : Fin n → Fin n → Module.End ℂ D} {V : Submodule ℂ D}
 
-theorem data_genSub_irred (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D E)
-    (hV : IsKIrrHW ε E (lowK ε lam) V) (hc : ∀ v ∈ V, casimir E v = (casVal lam : ℂ) • v)
-    (hVK : ∀ k ∈ Kset ε, ∀ v ∈ V, ∃ w ∈ V, (w : H) = σ k v) (N : Submodule ℂ D) (hN : N ≤ genSub E V)
-    (hNE : ∀ a b, ∀ x ∈ N, E a b x ∈ N) (hNK : ∀ k ∈ Kset ε, ∀ x ∈ N, ∃ y ∈ N, (y : H) = σ k x) :
+private theorem data_genSub_irred_of_highest_weight_mem (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D E)
+    (hV : IsKIrrHW ε E (lowK ε lam) V)
+    (hlow : ∀ {w : D}, w ∈ genSub E V → IsKHWVec ε E (lowK ε lam) w → w ∈ V)
+    (N : Submodule ℂ D) (hN : N ≤ genSub E V)
+    (hNE : ∀ a b, ∀ x ∈ N, E a b x ∈ N) :
     N = ⊥ ∨ N = genSub E V := by
   have hE := hD.glRep
   have hU := isInfUnitary_of_isDerivedOn hσ hD
@@ -98,7 +99,7 @@ theorem data_genSub_irred (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ) 
     by_contra hne
     obtain ⟨u, huN, hu, huz, -⟩ :=
       schA_riesz hE hU hV.1 hV.2.1 N hN hNk (innerₛₗ ℂ w) (lowK ε lam) hfd hfl hz
-    have huV : u ∈ V := khw_lowK_mem hE hU hV hc hgap (hN huN) hu
+    have huV : u ∈ V := hlow (hN huN) hu
     have := hVN u ⟨huN, huV⟩
     rw [this, inner_zero_left, innerₛₗ_apply_apply] at huz
     exact hne huz.symm
@@ -115,11 +116,19 @@ theorem data_genSub_irred (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ) 
   refine Or.inl ((Submodule.eq_bot_iff _).2 fun z hz => ?_)
   exact inner_self_eq_zero.1 ((Submodule.mem_orthogonal _ _).1 (hle (hN hz)).2 z hz)
 
-theorem data_end_scalar (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D E)
+theorem data_genSub_irred (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D E)
     (hV : IsKIrrHW ε E (lowK ε lam) V) (hc : ∀ v ∈ V, casimir E v = (casVal lam : ℂ) • v)
-    (hVK : ∀ k ∈ Kset ε, ∀ v ∈ V, ∃ w ∈ V, (w : H) = σ k v) (A : D →ₗ[ℂ] D) (hA : ∀ x ∈ genSub E V, A x ∈ genSub E V)
-    (hAE : ∀ a b, ∀ x ∈ genSub E V, A (E a b x) = E a b (A x))
-    (hAK : ∀ k ∈ Kset ε, ∀ x ∈ genSub E V, ∀ y ∈ genSub E V, (y : H) = σ k x → (A y : H) = σ k (A x)) :
+    (hVK : ∀ k ∈ Kset ε, ∀ v ∈ V, ∃ w ∈ V, (w : H) = σ k v) (N : Submodule ℂ D) (hN : N ≤ genSub E V)
+    (hNE : ∀ a b, ∀ x ∈ N, E a b x ∈ N) (hNK : ∀ k ∈ Kset ε, ∀ x ∈ N, ∃ y ∈ N, (y : H) = σ k x) :
+    N = ⊥ ∨ N = genSub E V := by
+  exact data_genSub_irred_of_highest_weight_mem hσ hD hV
+    (khw_lowK_mem hD.glRep (isInfUnitary_of_isDerivedOn hσ hD) hV hc hgap) N hN hNE
+
+private theorem data_end_scalar_of_highest_weight_mem (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D E)
+    (hV : IsKIrrHW ε E (lowK ε lam) V)
+    (hlow : ∀ {w : D}, w ∈ genSub E V → IsKHWVec ε E (lowK ε lam) w → w ∈ V)
+    (A : D →ₗ[ℂ] D) (hA : ∀ x ∈ genSub E V, A x ∈ genSub E V)
+    (hAE : ∀ a b, ∀ x ∈ genSub E V, A (E a b x) = E a b (A x)) :
     ∃ c : ℂ, ∀ x ∈ genSub E V, A x = c • x := by
   have hE := hD.glRep
   have hU := isInfUnitary_of_isDerivedOn hσ hD
@@ -129,7 +138,7 @@ theorem data_end_scalar (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ) (h
     refine ⟨fun a => ?_, fun a b hab h => ?_⟩
     · rw [← hAE a a w hwG, hw.1 a, map_smul]
     · rw [← hAE a b w hwG, hw.2 a b hab h, map_zero]
-  have hAwV : A w ∈ V := khw_lowK_mem hE hU hV hc hgap (hA w hwG) hAw
+  have hAwV : A w ∈ V := hlow (hA w hwG) hAw
   obtain ⟨c, hc'⟩ := khw_line_of_kIrrHW hE hU hV hAwV hwV hAw hw hw0
   have hk : ∀ x, x ∈ LinearMap.ker (A - c • (1 : Module.End ℂ D)) ↔ A x = c • x := fun x => by
     simp [sub_eq_zero]
@@ -140,6 +149,15 @@ theorem data_end_scalar (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ) (h
     rw [hAE a b x hx.1, (hk x).1 hx.2, map_smul]
   have hle := schA_genSub_le hV _ hX hwV ⟨hwG, (hk w).2 hc'⟩ hw0
   exact ⟨c, fun x hx => (hk x).1 (hle hx).2⟩
+
+theorem data_end_scalar (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D E)
+    (hV : IsKIrrHW ε E (lowK ε lam) V) (hc : ∀ v ∈ V, casimir E v = (casVal lam : ℂ) • v)
+    (hVK : ∀ k ∈ Kset ε, ∀ v ∈ V, ∃ w ∈ V, (w : H) = σ k v) (A : D →ₗ[ℂ] D) (hA : ∀ x ∈ genSub E V, A x ∈ genSub E V)
+    (hAE : ∀ a b, ∀ x ∈ genSub E V, A (E a b x) = E a b (A x))
+    (hAK : ∀ k ∈ Kset ε, ∀ x ∈ genSub E V, ∀ y ∈ genSub E V, (y : H) = σ k x → (A y : H) = σ k (A x)) :
+    ∃ c : ℂ, ∀ x ∈ genSub E V, A x = c • x := by
+  exact data_end_scalar_of_highest_weight_mem hσ hD hV
+    (khw_lowK_mem hD.glRep (isInfUnitary_of_isDerivedOn hσ hD) hV hc hgap) A hA hAE
 
 theorem data_form_scalar (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D E)
     (hV : IsKIrrHW ε E (lowK ε lam) V) (hc : ∀ v ∈ V, casimir E v = (casVal lam : ℂ) • v)

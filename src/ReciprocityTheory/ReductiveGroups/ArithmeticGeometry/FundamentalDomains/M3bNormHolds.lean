@@ -158,14 +158,13 @@ private theorem ratio_tau {r : ℕ} (X : Data E r) (e : X.Ψ → Fin r → ℂ) 
       dmin X.Gm (X.flowV e s x) τ i = dmin X.Gm x τ i * ((a i : ℝ) : ℂ) := by
     intro i
     rw [dmin_eq, dmin_eq, dmin_flow (X := X) (he := he0) (s := s) (i := (i : ℕ)) (h := Nat.le_of_lt_succ i.isLt) .., ha', hm']
-    all_goals first | exact hx | exact hT
+    all_goals first | exact hx
   have hapos : ∀ i : ℕ, i ≤ r → 0 < a i := by
     intro i hi
     have h1 := (hx' τ).2 ⟨i, Nat.lt_succ_of_le hi⟩
     have h2 := (hT' τ).2 ⟨i, Nat.lt_succ_of_le hi⟩
     rw [hd'] at h2
-    simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero, sub_zero,
-      Fin.val_mk] at h1 h2
+    simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero, sub_zero] at h1 h2
     by_contra hle
     push_neg at hle
     nlinarith [mul_le_mul_of_nonneg_left hle h1.le]
@@ -195,7 +194,7 @@ private theorem ratio_tau {r : ℕ} (X : Data E r) (e : X.Ψ → Fin r → ℂ) 
     unfold Data.ttV
     rw [div_div_eq_mul_div, div_one, maj_eq (X := X) (he := he0) ..]
     · ring
-    all_goals first | exact hx | exact hT
+    all_goals first | exact hx
   simp only [hfac]
   rw [hq]
   have hq0 : 0 < a X.p0 := hapos _ X.p0_le
@@ -219,7 +218,7 @@ private theorem ratio_tau {r : ℕ} (X : Data E r) (e : X.Ψ → Fin r → ℂ) 
   have hlb : ∀ k, k < r → (⨅ i, (la τ i : ℝ)) ≤ l k ∧ l k ≤ ⨆ i, (la τ i : ℝ) := by
     intro k hk
     have h1 := hli ⟨k, hk⟩
-    simp only [Fin.val_mk] at h1
+    simp only at h1
     rw [h1]
     exact ⟨ciInf_le (Finite.bddBelow_range _) _, le_ciSup (Finite.bddAbove_range (fun i => (la τ i : ℝ))) ⟨k, hk⟩⟩
   have hxg : ∀ (i : ℕ) (h : i ≤ r),
@@ -232,7 +231,7 @@ private theorem ratio_tau {r : ℕ} (X : Data E r) (e : X.Ψ → Fin r → ℂ) 
     rw [ha', hm', mN_zero, mul_zero, add_zero, Real.log_one]
   have hLr : Real.log (a r) = 0 := by
     rw [ha', hm', mN_top (e := e τ) (p0 := X.p0) .., mul_zero, add_zero, Real.log_one]
-    all_goals first | exact hxg | exact hG_of (X := X) τ | exact X.signature τ | exact X.p0_le | exact (hx' τ).1 | exact hx | exact he0
+    all_goals first | exact hxg | exact hG_of (X := X) τ | exact (hx' τ).1 | exact he0
   have hL : ∀ i j, i ≤ r → j ≤ r → m i ≤ m j →
       ((0 ≤ 2 * X.c τ * (s τ).im → Real.log (a i) ≤ Real.log (a j)) ∧
         (2 * X.c τ * (s τ).im ≤ 0 → Real.log (a j) ≤ Real.log (a i))) := by
@@ -250,12 +249,12 @@ private theorem ratio_tau {r : ℕ} (X : Data E r) (e : X.Ψ → Fin r → ℂ) 
     intro i hi
     rw [hm', hm']
     apply mN_up (p0 := X.p0) (j := i + 1) (hj := hi) (i := i) (hi := Nat.le_succ i)
-    all_goals first | exact hxg | exact hG_of (X := X) τ | exact X.signature τ | exact X.p0_le | exact (hx' τ).1 | exact hx | exact he0
+    all_goals first | exact hxg | exact hG_of (X := X) τ | exact X.p0_le
   have hdown : ∀ i, X.p0 ≤ i → i < r → m (i + 1) ≤ m i := by
     intro i hi hir
     rw [hm', hm']
     apply mN_down (p0 := X.p0) (i := i) (hi := hi) (j := i + 1) (hij := Nat.le_succ i) (hj := hir)
-    all_goals first | exact hxg | exact hG_of (X := X) τ | exact X.signature τ | exact X.p0_le | exact (hx' τ).1 | exact hx | exact he0
+    all_goals first | exact hxg | exact hG_of (X := X) τ
   have hp0r := X.p0_le
   have hmono : ((∀ i, i < X.p0 → Real.log (a i) ≤ Real.log (a (i + 1))) ∧
         (∀ i, X.p0 ≤ i → i < r → Real.log (a (i + 1)) ≤ Real.log (a i))) ∨

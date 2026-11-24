@@ -75,7 +75,7 @@ theorem isFibreFamily_transport :
       exact (hemb.restrict_map μ _)
     rw [hr, hemb.lintegral_map, h2 (fun v => φ (e v)) (hφ.comp e.measurable), hτ.lintegral_map]
     refine lintegral_congr fun b => ?_
-    simp only [τ.symm_apply_apply, hemb.lintegral_map, Function.comp]
+    simp only [τ.symm_apply_apply, hemb.lintegral_map]
   · intro φ hφ hcs hts
     have hts' : tsupport (φ ∘ e) ⊆ g ⁻¹' B := by
       rw [tsupport_comp_eq_preimage, ← hU]

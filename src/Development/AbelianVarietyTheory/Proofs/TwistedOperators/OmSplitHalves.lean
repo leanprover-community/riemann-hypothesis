@@ -75,10 +75,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
-theorem parts_ext {x y : AE D} (h1 : infPart D x = infPart D y) (h2 : finPart D x = finPart D y) : x = y := by
-  obtain ⟨e, he, -⟩ := GlobalTheory.AdSplit.exists_adele_equiv D.host.F D.host.E
-  exact e.injective (Prod.ext ((he _).1.trans (h1.trans (he _).1.symm)) ((he _).2.trans (h2.trans (he _).2.symm)))
-
 theorem place_comp {v : HeightOneSpectrum (𝓞 D.host.F)} {ε : AF D.host.F} (hε : IsPlaceIdem D v ε) :
     infPart D (algebraMap (AF D.host.F) (AE D) ε) = 0 ∧
       compFin D v (finPart D (algebraMap (AF D.host.F) (AE D) ε)) = 1 ∧
@@ -99,7 +95,7 @@ theorem supp_iff {v : HeightOneSpectrum (𝓞 D.host.F)} {ε : AF D.host.F} (hε
     refine ⟨by rw [← h, RingHom.map_mul, hi, zero_mul], fun w hw => ?_⟩
     rw [← h, RingHom.map_mul, RingHom.map_mul, h0 w hw, zero_mul]
   · rintro ⟨a, b⟩
-    refine parts_ext (by rw [RingHom.map_mul, hi, zero_mul, a]) (GlobalTheory.LatticeLocalGlobal.ext_components _ _ fun w => ?_)
+    refine _root_.GlobalTheory.SplitScalar.adele_ext (by rw [RingHom.map_mul, hi, zero_mul, a]) (GlobalTheory.LatticeLocalGlobal.ext_components _ _ fun w => ?_)
     change compFin D w _ = compFin D w _
     rw [RingHom.map_mul, RingHom.map_mul]
     by_cases hw : w = v
@@ -146,7 +142,7 @@ theorem selfDual_full (V : HSp D) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank �
       refine ⟨b + c, ?_⟩
       change (b : D.host.E) + c = _
       rw [hb, hc]
-      simp [f, map_add, add_mul, Finset.sum_add_distrib, mul_add]
+      simp [f, add_mul, Finset.sum_add_distrib, mul_add]
     smul_mem' := by
       rintro c x ⟨b, hb⟩
       refine ⟨RingOfIntegers.mapRingHom (starRingEnd D.host.E) c * b, ?_⟩

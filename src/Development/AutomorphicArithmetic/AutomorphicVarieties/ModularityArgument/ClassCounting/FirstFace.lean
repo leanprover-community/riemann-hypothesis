@@ -1,5 +1,6 @@
 module
 
+import Development.EtaleCohomology.CyclotomicDiscriminants.SZcTPf
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ClassCounting.LemmaKOfSteps
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -108,22 +109,7 @@ private theorem merge (q e t : ℕ) (ht : t < e + 1) (j : Fin (e + 1) → ZMod q
       · rw [if_neg h1, if_neg h1]
 
 theorem sZc : SZc := by
-  intro q _ e
-  have hz : zc q e = ∑ j : Fin (e + 1) → ZMod q, Finsupp.single (gz q e j) 1 := rfl
-
-  rw [Cyc, hz, map_sum]
-  simp only [bd, Finsupp.linearCombination_single, one_smul]
-  rw [Finset.sum_add_distrib, first_face, zero_add, Finset.sum_comm]
-  simp only [← Finset.smul_sum]
-  rw [Finset.sum_fin_eq_sum_range]
-  refine sum_pair _ (e + 1) fun t ht => ?_
-  rw [dite_eq_left (show 2 * t < 2 * e + 1 + 1 by omega), dite_eq_left (show 2 * t + 1 < 2 * e + 1 + 1 by omega)]
-  simp only [merge q e t ht]
-  rw [← Equiv.sum_comp (Equiv.addRight (fun i : Fin (e + 1) => if (i : ℕ) = t then (1 : ZMod q) else
-    if (i : ℕ) = t + 1 then -1 else 0)) fun j => (Finsupp.single (Fin.contractNth
-      (⟨2 * t + 1, by omega⟩ : Fin (2 * e + 1 + 1)) (· * ·) (gz q e j)) 1 : Ch (ZMod q) (Cq q) (2 * e + 1))]
-  simp only [Equiv.coe_addRight]
-  rw [← add_smul, pow_succ (-1 : ZMod q) (2 * t + 1), mul_neg_one, add_neg_cancel, zero_smul]
+  apply LateralTheory.Q.SZcT.SZc_of <;> assumption
 
 end UpperTheory.V.ZK
 

@@ -108,7 +108,7 @@ def hopfPull (e : X ≃+ Y) (A : HopfOrder (C := C) R Y) : HopfOrder (C := C) R 
     rw [Submodule.mem_map_equiv]
     convert A.one_mem using 1
     funext y
-    simp [pbE_symm_apply]
+    simp
   mul_mem := fun f g hf hg => by
     rw [Submodule.mem_map_equiv] at hf hg ⊢
     convert A.mul_mem _ _ hf hg using 1

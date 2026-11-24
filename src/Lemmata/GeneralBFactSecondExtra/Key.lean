@@ -100,7 +100,6 @@ theorem goal1 :
           (Module.length.{u_1, u_2} O
             (HasQuotient.Quotient.{u_2, u_2} (Subtype.{u_2 + 1} fun (x : Y) ↦ Membership.mem.{u_2, u_2} D x)
               (Submodule.comap.{u_1, u_1, u_2, u_2} (Submodule.subtype.{u_1, u_2} D) E)))) := by
-  intro O Y _ _ _ R S D E hD hE
-  exact key R S D E hD hE
+  exact key
 
 end Bl.general_b_fact_second'''

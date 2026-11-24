@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalDualGenerator.IsClosedO
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.CountNonIntegrality.DSurjDef
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -53,23 +54,7 @@ open ValuativeRel
 
 theorem t2Space_of_nonarchimedeanLocalField' (Fp : Type) [Field Fp] [ValuativeRel Fp] [TopologicalSpace Fp] [IsNonarchimedeanLocalField Fp] :
     T2Space Fp := by
-  have : T0Space Fp := by
-    refine ⟨fun x y hxy => ?_⟩
-    by_contra hne
-    have hv : valuation Fp (y - x) ≠ 0 :=
-      (valuation Fp).ne_zero_iff.mpr (sub_ne_zero.mpr (Ne.symm hne))
-    have hs : {z : Fp | z ≠ y} ∈ nhds x := by
-      rw [IsValuativeTopology.mem_nhds_iff]
-      refine ⟨Units.mk0 _ hv, ?_⟩
-      rintro _ ⟨z, hz, rfl⟩ h
-      have h' : x + z = y := h
-      have hz' : valuation Fp z < valuation Fp (y - x) := hz
-      have hzy : z = y - x := by rw [← h']; ring
-      rw [hzy] at hz'
-      exact lt_irrefl _ hz'
-    rw [hxy.nhds_eq] at hs
-    exact (mem_of_mem_nhds hs : y ≠ y) rfl
-  infer_instance
+  apply PI.LocDualGen.FpU.t2 <;> assumption
 
 theorem tensorLiftSurjective : PiSurj := by
   unfold PiSurj

@@ -1,5 +1,7 @@
 module
 
+public import Mathlib.RingTheory.AlgebraicIndependent.Defs
+public import Mathlib.RingTheory.IntegralClosure.IsIntegralClosure.Basic
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterGoodD
 public import Mathlib.RingTheory.AlgebraicIndependent.Defs
 import Mathlib.Algebra.Order.Floor.Extended
@@ -65,7 +67,7 @@ theorem intOver_trans {R : Type*} [CommRing R] [Algebra k R] {r : ℕ} (ℓ : Fi
     (hx : IntOver k ℓ x) : IntOver k (fun i => ℓ i.succ - lam i • ℓ 0) x := by
   set ℓ' : Fin r → R := fun i => ℓ i.succ - lam i • ℓ 0 with hℓ'
   let f' : MvPolynomial (Fin r) k →+* R := (aeval ℓ' : MvPolynomial (Fin r) k →ₐ[k] R)
-  letI : Algebra (MvPolynomial (Fin r) k) R := f'.toAlgebra
+  let : Algebra (MvPolynomial (Fin r) k) R := f'.toAlgebra
   let Cl := integralClosure (MvPolynomial (Fin r) k) R
   have hmem0 : ℓ 0 ∈ Cl := h0
   have hB : ∀ b, f' b ∈ Cl := fun b => Subalgebra.algebraMap_mem Cl b

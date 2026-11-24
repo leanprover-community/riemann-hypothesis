@@ -69,9 +69,6 @@ theorem small_mem_nhds (v : HeightOneSpectrum R) {s : Set (v.adicCompletion K)}
 theorem nhds_zero_int {N : Set (FiniteAdeleRing R K)} (hN : N ∈ 𝓝 (0 : FiniteAdeleRing R K)) :
     ∃ r : R, r ≠ 0 ∧ ∀ y : FiniteAdeleRing R K,
       (∀ v, Valued.v (y v) ≤ v.intValuation r) → y ∈ N := by
-  have hBopen : ∀ v : HeightOneSpectrum R,
-      IsOpen ((v.adicCompletionIntegers K : ValuationSubring _) : Set (v.adicCompletion K)) :=
-    fun v => Valued.isOpen_valuationSubring _
   let mk : (∀ v : HeightOneSpectrum R, v.adicCompletionIntegers K) → FiniteAdeleRing R K :=
     fun y => ⟨fun v => (y v : v.adicCompletion K), Eventually.of_forall fun v => (y v).2⟩
   have hmk : Continuous mk := by
@@ -133,7 +130,6 @@ theorem denseRange_finiteAdele : DenseRange (algebraMap K (FiniteAdeleRing R K))
         -((b - algebraMap K (FiniteAdeleRing R K) u) v - algebraMap K _ (algebraMap R K a)) := by
       first
       | rfl
-      | simp
     rw [hv, Valuation.map_neg]
     exact ha v)
   simpa using hmem

@@ -4,10 +4,12 @@ public import Development.WeilBound.CoreStatements.CentralCharts.PshAt0
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals
 public import ReciprocityTheory.AnalyticForms.LeviForms.IsRegFamilyInhabitStatement
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRes
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsSncAdaptedChartAtPointStatement
+public import ReciprocityTheory.AnalyticForms.PotentialTheory.IsPotentialOfFun
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsSncAdaptedChartAtPoint
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.LogResolutionFubiniStudyPositive
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SameOrbitRefl
-public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncAdaptedChartSectionFormStatement
+public import Development.AutomorphicSpectrum.Proofs.MetricProofs.SncAdaptedChartSectionForm
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.SatakeMat
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -90,24 +92,7 @@ def NChart (A : FinHolAtlas n X) (U : Set X) (L : LocPot X) (s : X → X → ℂ
 
 theorem exists_perm_first (S : Finset (Fin n)) :
     ∃ σ : Equiv.Perm (Fin n), ∀ i, i ∈ S ↔ ((σ i : Fin n) : ℕ) < S.card := by
-  classical
-  have hle : S.card ≤ n := by simpa using S.card_le_univ
-  have hcard : Fintype.card {i : Fin n // i ∈ S} = Fintype.card {i : Fin n // (i : ℕ) < S.card} := by
-    rw [Fintype.card_coe, ← Fintype.card_congr (Fin.castLEquiv hle), Fintype.card_fin]
-  have hcard' : Fintype.card {i : Fin n // ¬ i ∈ S} = Fintype.card {i : Fin n // ¬ (i : ℕ) < S.card} := by
-    rw [Fintype.card_subtype_compl, Fintype.card_subtype_compl, hcard]
-  let e := Fintype.equivOfCardEq hcard
-  let f := Fintype.equivOfCardEq hcard'
-  refine ⟨Equiv.subtypeCongr e f, fun i => ?_⟩
-  by_cases hi : i ∈ S
-  · have h1 : Equiv.subtypeCongr e f i = e ⟨i, hi⟩ := by
-      simp [Equiv.subtypeCongr, Equiv.sumCompl_symm_apply_of_pos hi]
-    rw [h1]
-    exact ⟨fun _ => (e ⟨i, hi⟩).2, fun _ => hi⟩
-  · have h1 : Equiv.subtypeCongr e f i = f ⟨i, hi⟩ := by
-      simp [Equiv.subtypeCongr, Equiv.sumCompl_symm_apply_of_neg hi]
-    rw [h1]
-    exact ⟨fun h => absurd h hi, fun h => absurd h (f ⟨i, hi⟩).2⟩
+  apply Formalism.UG.P.satake_exists_perm <;> assumption
 
 def scalePerm (δ : ℝ) (hδ : 0 < δ) (σ : Equiv.Perm (Fin n)) : (Fin n → ℂ) ≃L[ℂ] (Fin n → ℂ) :=
   LinearEquiv.toContinuousLinearEquiv
@@ -130,8 +115,8 @@ theorem exists_nchart (A : FinHolAtlas n X) (L : LocPot X) (s : X → X → ℂ)
     (hU : IsOpen U) (hx : x₀ ∈ U) : ∃ ψ a M, NChart A U L s x₀ ψ a M := by
   classical
   obtain ⟨φ, S, μ, v, hφ, hx0, hball2, hφ0, hsrc, hμ, hv, hv0, hsv⟩ :=
-    GlobalTheory.T.exists_snc_adapted_chart_at_point n X A L s nb m W snc x₀
-  obtain ⟨hbd, M, hM⟩ := GlobalTheory.T.snc_adapted_chart_section_form n X A L s hL hs x₀ φ S μ v hφ hball2 hsrc hμ hv hv0 hsv
+    _root_.GlobalTheory.CompanionTheory.Ar.PB.LocalForm.exists_local_form n X A L s nb m W snc x₀
+  obtain ⟨hbd, M, hM⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.LocalModel.zero_set_and_bound n X A L s hL hs x₀ φ S μ v hφ hball2 hsrc hμ hv hv0 hsv
   have h0t : (0 : Fin n → ℂ) ∈ φ.target := hball2 (by simp)
   have hs0 : φ.symm 0 = x₀ := by rw [← hφ0]; exact φ.left_inv hx0
   have hnhds : φ.target ∩ φ.symm ⁻¹' U ∈ 𝓝 (0 : Fin n → ℂ) := by

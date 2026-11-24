@@ -101,7 +101,6 @@ theorem isFrameJ_of (e f : Fin r → Fin (2 * r + k + 1) → ℂ) (z : Fin (2 * 
     (hww : ∀ a b, hJ ε (wf a) (wf b) = if a = b then 1 else 0)
     (hew : ∀ c a, hJ ε (e c) (wf a) = 0) (hfw : ∀ c a, hJ ε (f c) (wf a) = 0) (hzw : ∀ a, hJ ε z (wf a) = 0) :
     IsFrameJ ε e f wf (z0v T z) := by
-  have hs : Real.sqrt T ≠ 0 := (Real.sqrt_pos.mpr hT).ne'
   refine ⟨hee, hff, hef, fun a => ?_, fun a => ?_, ?_, hww, hew, hfw, fun a => ?_⟩
   · rw [z0v, hJ_smul_right, hez, mul_zero]
   · rw [z0v, hJ_smul_right, hfz, mul_zero]
@@ -164,8 +163,7 @@ theorem HNset_eq_NH (hHN : LocHNProps) {T : ℝ} (hT : 0 < T) {z : Fin (2 * r + 
     refine ⟨h * n * h⁻¹, hnorm h ⟨he, hf, hzz⟩ n hn, h, ⟨he, hf, hzz⟩, by group⟩
   · rintro ⟨m, hm, h, hh, rfl⟩
     refine ⟨h, h⁻¹ * m * h, by group, hh.1, hh.2.1, hh.2.2, ?_⟩
-    have := hnorm h⁻¹ (fix_inv hh) m hm
-    simpa using this
+    simpa using hnorm h⁻¹ (fix_inv hh) m hm
 
 end QuotRaw
 

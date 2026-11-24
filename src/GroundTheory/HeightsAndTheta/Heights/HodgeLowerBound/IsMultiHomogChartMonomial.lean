@@ -145,7 +145,7 @@ theorem IsValueAt.mul {a b : Ω} {v w : ℂ} (ha : IsValueAt y a z v) (hb : IsVa
     ring
   · rw [map_mul, eval_mul]
     exact mul_ne_zero hz hz'
-  · simp only [map_mul, eval_mul]
+  · simp only [map_mul]
     rw [hzg, hzg']
     ring
 
@@ -165,7 +165,7 @@ theorem IsValueAt.add {a b : Ω} {v w : ℂ} (ha : IsValueAt y a z v) (hb : IsVa
     ring
   · rw [map_mul, eval_mul]
     exact mul_ne_zero hz hz'
-  · simp only [map_add (f := _), map_mul, eval_add, eval_mul]
+  · simp only [map_add (f := _), map_mul]
     rw [hzg, hzg']
     ring
 
@@ -236,13 +236,13 @@ theorem regularAt_of_mem_chartRing (hz : z ∈ mcPts (mCoordIdeal y)) {c : ∀ k
     have hm := mem_mCoordIdeal_of_aeval (y := y) (isMultiHomog_chartMonomial c)
       (by simpa [NumbersDVR.segreVec] using h0)
     have := hz.2 _ hm
-    simp only [map_prod, map_X, eval_prod, eval_X] at this
+    simp only [map_prod, map_X, eval_X] at this
     exact Finset.prod_ne_zero_iff.2 (fun k _ => hc k) this
   induction ha using Algebra.adjoin_induction with
   | mem x hx =>
     obtain ⟨c', rfl⟩ := hx
     have hz0 : eval z (map (Int.castRingHom ℂ) (∏ k, (X ⟨k, c k⟩ : MRing ι))) ≠ 0 := by
-      simp only [map_prod, map_X, eval_prod, eval_X]
+      simp only [map_prod, map_X, eval_X]
       exact Finset.prod_ne_zero_iff.2 fun k _ => hc k
     refine ⟨eval z (map (Int.castRingHom ℂ) (∏ k, (X ⟨k, c' k⟩ : MRing ι))) /
       eval z (map (Int.castRingHom ℂ) (∏ k, (X ⟨k, c k⟩ : MRing ι))), fun _ => 1,

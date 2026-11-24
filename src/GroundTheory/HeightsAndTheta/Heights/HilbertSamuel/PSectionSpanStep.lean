@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSpanStepHomog
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSectionSpanStep
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSpanStepHomog
 import Mathlib.Algebra.Order.Floor.Extended
@@ -65,18 +66,7 @@ variable {K : Type} [Fintype K] {ι : K → Type} {Ω : Type} [Field Ω]
 
 theorem mul_mem {y : (Σ k, ι k) → Ω} {a : K → ℤ} {n j : ℕ} {s t : Ω} (hs : s ∈ chartLat y a n)
     (ht : t ∈ chartLat y a j) : s * t ∈ chartLat y a (n + j) := by
-  intro c hc
-  have h : ∏ k, y ⟨k, c k⟩ ^ (-(((n + j : ℕ) : ℤ) * a k)) =
-      (∏ k, y ⟨k, c k⟩ ^ (-((n : ℤ) * a k))) * ∏ k, y ⟨k, c k⟩ ^ (-((j : ℤ) * a k)) := by
-    rw [← Finset.prod_mul_distrib]
-    refine Finset.prod_congr rfl fun k _ => ?_
-    rw [← zpow_add₀ (hc k)]
-    congr 1
-    push_cast
-    ring
-  rw [h, show s * t * ((∏ k, y ⟨k, c k⟩ ^ (-((n : ℤ) * a k))) * ∏ k, y ⟨k, c k⟩ ^ (-((j : ℤ) * a k))) =
-      (s * ∏ k, y ⟨k, c k⟩ ^ (-((n : ℤ) * a k))) * (t * ∏ k, y ⟨k, c k⟩ ^ (-((j : ℤ) * a k))) by ring]
-  exact MulMemClass.mul_mem (hs c hc) (ht c hc)
+  apply _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.SpanStepHomog.mul_mem <;> assumption
 
 theorem prod_pow_mem {y : (Σ k, ι k) → Ω} {a : K → ℤ} {q : ℕ} {w : Fin q → Ω}
     (hw : ∀ j, w j ∈ chartLat y a 1) (ν : Fin q → ℕ) (S : Finset (Fin q)) :

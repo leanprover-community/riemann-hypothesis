@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.CoreStatements.HomogeneousNonvanishing.MvSecValComp
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ChartJetTrB
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.ChartJetTrA
 import Mathlib.Algebra.Order.Floor.Extended
@@ -55,23 +56,16 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 theorem spMap_id' (R : Type) [CommRing R] : spMap (RingHom.id R) = 𝟙 (Sp R) := by
   first
-  | exact spMap_id R
-  | exact spMap_id
   | simp [spMap]
-  | unfold spMap
 
 theorem spMap_alg_self (R : Type) [CommRing R] : spMap (algebraMap R R) = 𝟙 (Sp R) := by
   first
   | exact spMap_id' R
-  | (rw [Algebra.algebraMap_self]; exact spMap_id' R)
 
 theorem spMap_algHom_alg {R A B : Type} [CommRing R] [CommRing A] [CommRing B] [Algebra R A] [Algebra R B]
     (φ : A →ₐ[R] B) : spMap (φ : A →+* B) ≫ spMap (algebraMap R A) = spMap (algebraMap R B) := by
   first
-  | (rw [← spMap_comp]; congr 1; exact φ.comp_algebraMap)
-  | (rw [spMap_comp]; congr 1; exact φ.comp_algebraMap)
   | (simp only [spMap, ← Spec.map_comp, ← CommRingCat.ofHom_comp, AlgHom.comp_algebraMap])
-  | unfold spMap
 
 theorem jetCoef_substP {V K : Type} [CommRing V] [CommRing K] (f : V →+* K) {κ κ' : Type} (m : ℕ)
     (φ : κ → MvPolynomial κ' V) :
@@ -108,33 +102,7 @@ theorem jetCoef_substP {V K : Type} [CommRing V] [CommRing K] (f : V →+* K) {�
 
 theorem unit_push {S S' : Scheme.{0}} {G : Over S} {G' : Over S'} [GrpObj G] [GrpObj G'] {f : S' ⟶ S}
     {φ : G'.left ⟶ G.left} (h : IsGrpPullback G' G f φ) : η[G'].left ≫ φ = f ≫ η[G].left := by
-  obtain ⟨hpb, hmul⟩ := h
-  let x₀ : Over.mk ((𝟙_ (Over S')).hom ≫ f) ⟶ G := Over.homMk (η[G'].left ≫ φ) (by
-    show (η[G'].left ≫ φ) ≫ G.hom = (𝟙_ (Over S')).hom ≫ f
-    rw [Category.assoc, hpb.w, ← Category.assoc, Over.w η[G']])
-  have hη : (1 : 𝟙_ (Over S') ⟶ G') = η[G'] := by
-    show toUnit (𝟙_ (Over S')) ≫ η[G'] = η[G']
-    first
-    | rw [toUnit_unit, Category.id_comp]
-    | rw [Subsingleton.elim (toUnit (𝟙_ (Over S'))) (𝟙 _), Category.id_comp]
-  have h2 := hmul (𝟙_ (Over S')) η[G'] η[G'] x₀ x₀ rfl rfl
-  have hidem : x₀ * x₀ = x₀ := by
-    apply Over.OverMorphism.ext
-    rw [h2, ← hη, _root_.one_mul]
-    rfl
-  have h1 : x₀ = 1 := by
-    first
-    | exact mul_eq_left.1 hidem
-    | exact mul_right_eq_self.1 hidem
-  have h3 : x₀.left = (toUnit (Over.mk ((𝟙_ (Over S')).hom ≫ f)) ≫ η[G]).left :=
-    congrArg (fun g => g.left) h1
-  rw [Over.comp_left] at h3
-  have h4 : (toUnit (Over.mk ((𝟙_ (Over S')).hom ≫ f))).left = f := by
-    first
-    | simp
-    | simpa using Over.w (toUnit (Over.mk ((𝟙_ (Over S')).hom ≫ f)))
-  rw [h4] at h3
-  exact h3
+  apply PositivityTheory.UnitarySelfGeneration.Isomove.mv_eta <;> assumption
 
 section Pt
 

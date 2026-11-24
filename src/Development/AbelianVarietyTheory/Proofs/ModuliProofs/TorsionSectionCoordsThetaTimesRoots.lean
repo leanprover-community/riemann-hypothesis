@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.HasThetaConstantsRingBaseChange
 public import Development.AbelianVarietyTheory.Definitions.ModuliSpaces.FiniteHomogeneousInf
 public import Development.AbelianVarietyTheory.Proofs.ThetaFamilyOrigin.IsVVGenOfIsThetaFamily
 public import Development.AbelianVarietyTheory.Definitions.ThetaMetrics.ExistsSecNonzeroLocusEqOfLbIso
@@ -73,22 +74,7 @@ theorem isThetaPtOver_pull_of_gen (P : PolAV S) {n : ℕ} {I : Type} {x : I → 
     (H : IsThetaPtOver P n x v) (h : T' ⟶ T)
     (hg : ∀ th, IsGenSec P.A P.L 1 th → IsGenSec P.A P.L 1 (pullS P.A 1 h th)) :
     IsThetaPtOver P n (fun a => h ≫ x a) (fun a => h.left.appTop.hom (v a)) := by
-  have hL := P.isLB
-  obtain ⟨th, s₁, α, τ, U, s₂, w, u, hth, hα, hτ, hs₁, hU, hs₂, hw, hv⟩ := H
-  obtain ⟨α', hα', k₁⟩ := exists_twist_pull P.A (ψ := mulT P.A T n) (hm := lift_snd _ _) (b := 1)
-    hL hα h (ψ' := mulT P.A T' n) (lift_snd _ _) (mulT_comm P.A h n)
-  obtain ⟨τ', hτ', k₂⟩ := exists_gen_pullTo (φ' := fun _ : Fin 1 => (1 : T' ⟶ P.A).left) τ hτ h.left
-    (fun _ => by rw [← Over.comp_left, MonObj.comp_one])
-  choose U' hU' k₃ using fun a => exists_symLift_act_pull hL h (hU a)
-  refine ⟨_, _, α', τ', U', fun a => pullS P.A _ h (s₂ a), fun a => h.left.appTop.hom (w a),
-    Units.map h.left.appTop.hom.toMonoidHom u, hg _ hth, hα', hτ', k₁ _ _ hs₁, hU',
-    fun a => k₃ a _ _ (hs₂ a), fun a => isValueAt_of_sv hL hτ' fun z J hJ => ?_, fun a => ?_⟩
-  · have q := sv_of_isValueAt (hw a) h hJ
-    rw [MonObj.comp_one] at q
-    rw [sv_pullS _ _ _ _ _ z hJ, ← Over.comp_left, lift_whiskerRight, Category.id_comp, q, k₂ _ _ z J hJ,
-      Category.id_comp]
-    exact congrArg (· * _) ((gs_pull (𝟙 _) h.left z ⊤ trivial _).trans (by rw [Category.id_comp])).symm
-  · exact (congrArg h.left.appTop.hom (hv a)).trans (map_mul _ _ _)
+  apply GlobalTheory.ThetaBaseChange.isThetaPtOver_pull_of_gen <;> assumption
 
 theorem eq_zero_of_smul_gen (P : PolAV S) {n : ℕ} {I : Type} {x : I → (T ⟶ P.A)} {v : I → Γ(T.left, ⊤)}
     (H : IsThetaPtOver P n x v) (hv : Ideal.span (Set.range v) = ⊤) {th₀ : LB.Sec (LPow P.A P.L 1 T)}

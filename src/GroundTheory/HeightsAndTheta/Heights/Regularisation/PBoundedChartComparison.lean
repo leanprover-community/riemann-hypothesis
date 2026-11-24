@@ -188,7 +188,6 @@ theorem BoundedChartComparison.proof (h0 : MollifiedLowerBound.Statement)
   simp only [lt_min_iff] at ht₀
   obtain ⟨htδ₁, htδ, hte⟩ := ht₀
   have hCt : t * (C₁ + 2) < δ := (lt_div_iff₀ hC₁2).1 htδ
-  have hCt' : t * (C₁ + 2) = C₁ * t + 2 * t := by ring
   have hC₁t : C₁ * t ≤ δ := by linarith
   have hC₁tlt : C₁ * t < δ := by linarith
   have htLt : t ≤ L * t := le_mul_of_one_le_left ht.le hL
@@ -232,7 +231,6 @@ theorem BoundedChartComparison.proof (h0 : MollifiedLowerBound.Statement)
         polyMax (B.u k) (B.chart k x) s ≤ polyMax (B.u k) (B.chart k x) s' :=
       fun s s' hs hss' hs' => polyMax_mono' hpk.1 hs hss' (hball k x hx.2 _ hs')
     have e1 := mono (L * t) (C₁ * t) (by linarith) hLt hC₁t
-    have h4C : 0 < 4 * C₁ := by linarith
     have hq : t / (4 * C₁) ≤ t / 4 := div_le_div_of_nonneg_left ht.le (by norm_num) (by linarith)
     have e2 := mono (t / (4 * C₁)) (t / 4) (by positivity) hq (by linarith)
     have e3 := mono (t / 4) (2 * t) (by positivity) (by linarith) (by linarith)
@@ -270,14 +268,6 @@ theorem BoundedChartComparison.proof (h0 : MollifiedLowerBound.Statement)
           polyMax (B.u k) (B.chart k x) (t / (4 * C₁))) ≤ E / Real.log t⁻¹ := by
       rw [hE, mul_div_assoc]
       exact mul_le_mul_of_nonneg_left hO (by linarith)
-    have hsum : polyMax (B.u k) (B.chart k x) (L * t) - polyMax (B.u k) (B.chart k x) (2 * t) +
-          c₀ * (polyMax (B.u k) (B.chart k x) (2 * t) - polyMax (B.u k) (B.chart k x) (t / 4)) ≤
-        (1 + c₀) * (polyMax (B.u k) (B.chart k x) (C₁ * t) -
-          polyMax (B.u k) (B.chart k x) (t / (4 * C₁))) := by
-      have h' : polyMax (B.u k) (B.chart k x) (L * t) - polyMax (B.u k) (B.chart k x) (2 * t) ≤
-          polyMax (B.u k) (B.chart k x) (C₁ * t) - polyMax (B.u k) (B.chart k x) (t / (4 * C₁)) := by
-        linarith
-      linarith
     simp only [BoundedPshData.phReg, BoundedPshData.smoothed]
     linarith
   intro j k x hx

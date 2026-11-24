@@ -124,7 +124,6 @@ lemma kfa_exp_cont (X : Matrix (Fin n) (Fin n) ℂ) :
     Continuous (fun t : ℝ => NormedSpace.exp ((t : ℂ) • X)) := by
   first
   | exact NormedSpace.exp_continuous.comp (Complex.continuous_ofReal.smul continuous_const)
-  | fun_prop
 
 lemma kfa_exp_comm {J X : Matrix (Fin n) (Fin n) ℂ} (h : X * J = J * X) :
     NormedSpace.exp X * J = J * NormedSpace.exp X := Commute.exp_left h

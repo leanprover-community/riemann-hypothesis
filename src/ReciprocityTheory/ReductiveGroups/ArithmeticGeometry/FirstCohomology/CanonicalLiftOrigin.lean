@@ -92,7 +92,7 @@ theorem gt_rel (oa : D.toPre.OAct O) (a : O) (g g' h g0 : GtPtF D.toPre F) (z : 
   have e1 : val (g.s (star a • χ)) (𝟙 _) y J * val r (lift (DegPre.cF D.toPre F χ) g.b).left y J =
       val (g'.s χ) (𝟙 _) y J := by
     rw [← val_corr (h := hs' r hr hr0 χ) (r := 𝟙 _), val_mul, val_pull, Category.id_comp]
-    all_goals first | exact hJ | rfl
+    all_goals first | exact hJ
   rw [e1]
   have e2 := hs0 χ y J hJ
   rw [hzs χ y J hJ, _root_.one_mul, hsh χ y J hJ] at e2

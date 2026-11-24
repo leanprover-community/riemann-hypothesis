@@ -255,7 +255,7 @@ theorem rpow_neg_le {x y c b : ℝ} (hy : 0 < y) (hc : 0 < c) (hb : 0 ≤ b) (h 
     exact Real.rpow_le_rpow hy.le h hb
   rw [Real.rpow_neg hx.le, Real.rpow_neg hy.le]
   have e : c ^ b * (y ^ b)⁻¹ - (x ^ b)⁻¹ = (c ^ b * x ^ b - y ^ b) / (x ^ b * y ^ b) := by
-    field_simp <;> ring
+    field_simp
   have h2 : 0 ≤ (c ^ b * x ^ b - y ^ b) / (x ^ b * y ^ b) :=
     div_nonneg (by linarith) (mul_pos hA hB).le
   linarith

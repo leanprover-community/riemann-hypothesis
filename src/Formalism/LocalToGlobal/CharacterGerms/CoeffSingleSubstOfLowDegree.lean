@@ -67,17 +67,10 @@ variable {C : Type} [Field C]
 private theorem deg_single_lemma_0 {τ : Type} (c : τ) (n : ℕ) : Finsupp.degree (Finsupp.single c n) = n := by
   first
   | exact Finsupp.degree_single c n
-  | simp [Finsupp.degree_single]
-  | simp [Finsupp.degree]
-  | (classical
-     unfold Finsupp.degree
-     by_cases h : n = 0 <;> simp [h])
 
 private theorem deg_zero_lemma_0 {τ : Type} (d : τ →₀ ℕ) (h : Finsupp.degree d = 0) : d = 0 := by
   first
   | exact (Finsupp.degree_eq_zero_iff d).mp h
-  | exact Finsupp.degree_eq_zero_iff.mp h
-  | simpa using h
 
 private theorem cs_mul_lemma {τ : Type} (A B : MvPowerSeries τ C) (hA : MvPowerSeries.constantCoeff A = 0)
     (hB : MvPowerSeries.constantCoeff B = 0) (c : τ) :
@@ -207,11 +200,6 @@ theorem coeff_single_substX_tyS {τ : Type} {l : ℕ} (hl : 2 ≤ l) (a : ℕ �
     first
     | (rw [show MvPowerSeries.coeff (Finsupp.single () 1) = PowerSeries.coeff (R := C) 1 from rfl,
         PowerSeries.coeff_mk]
-       simp [Finset.sum_range_succ, hl1])
-    | (rw [show MvPowerSeries.coeff (Finsupp.single () 1) = PowerSeries.coeff C 1 from rfl,
-        PowerSeries.coeff_mk]
-       simp [Finset.sum_range_succ, hl1])
-    | (show (∑ s ∈ Finset.range (1 + 1), if l ^ s = 1 then a s else 0) = a 0
        simp [Finset.sum_range_succ, hl1])
   show MvPowerSeries.coeff (Finsupp.single c 1)
       (MvPowerSeries.subst (fun _ : Unit => (MvPowerSeries.X c'' : MvPowerSeries τ C)) (tyS l a)) = _

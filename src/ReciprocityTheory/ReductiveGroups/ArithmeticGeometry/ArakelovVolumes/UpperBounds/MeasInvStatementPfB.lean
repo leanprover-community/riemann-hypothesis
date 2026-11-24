@@ -71,13 +71,6 @@ lemma det_lowerUni {N : Matrix (Fin n) (Fin n) ℂ} (hN : N.BlockTriangular Orde
   rw [Matrix.det_of_lowerTriangular N hN]
   simp [h1]
 
-theorem lu_unique {N N' U U' : Matrix (Fin n) (Fin n) ℂ}
-    (hN : N.BlockTriangular OrderDual.toDual) (hN1 : ∀ a, N a a = 1)
-    (hN' : N'.BlockTriangular OrderDual.toDual) (hN'1 : ∀ a, N' a a = 1)
-    (hU : U.BlockTriangular id) (hU' : U'.BlockTriangular id) (hd : U'.det ≠ 0)
-    (h : N * U = N' * U') : N = N' ∧ U = U' := by
-  first | exact Bl.general_b_fact_form.goal1 .. | (apply Bl.general_b_fact_form.goal1 <;> assumption) | (intros; apply Bl.general_b_fact_form.goal1 <;> assumption)
-
 lemma lminor_last' (M : Matrix (Fin n) (Fin n) ℂ) : lminor M (Fin.last n) = M.det := by
   rfl
 
@@ -215,7 +208,7 @@ theorem lu_injOn : Set.InjOn (lu (ι := ι) (r := r)) (sS ι r) := by
     intro τ
     have hM : (1 + sl w τ) * up w τ = (1 + sl w' τ) * up w' τ := by
       rw [← Mt_lu, ← Mt_lu, h]
-    exact lu_unique (one_add_sl_low w τ) (one_add_sl_diag w τ) (one_add_sl_low w' τ)
+    exact _root_.Bl.general_b_fact_form.goal1 (one_add_sl_low w τ) (one_add_sl_diag w τ) (one_add_sl_low w' τ)
       (one_add_sl_diag w' τ) (up_upper w τ) (up_upper w' τ) (det_up_ne hw' τ) hM
   exact eq_of_sl_up (fun τ => add_left_cancel (key τ).1) (fun τ => (key τ).2)
 

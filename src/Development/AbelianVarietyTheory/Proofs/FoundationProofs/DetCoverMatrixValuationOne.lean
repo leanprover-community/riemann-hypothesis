@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.AntitoneZeroOneEqOfSumEq
 public import Formalism.SatakeDualWeyl.StatementE
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -61,24 +62,6 @@ theorem v_eq_one_of_mul {x y : v.adicCompletion F} (hx : x ∈ Formalism.UG.Ov F
   calc (1 : WithZero (Multiplicative ℤ)) = Valued.v x * Valued.v y := h1.symm
     _ ≤ Valued.v x := mul_le_of_le_one_right' hy1
 
-theorem det_v {n : ℕ} {X : GL (Fin n) (v.adicCompletion F)} (hX : X ∈ GLint (Fin n) (Formalism.UG.Ov F v)) :
-    Valued.v (X : Matrix (Fin n) (Fin n) (v.adicCompletion F)).det = 1 := by
-  obtain ⟨y, rfl⟩ := hX
-  have hd : ∀ z : GL (Fin n) (Formalism.UG.Ov F v),
-      ((Formalism.UG.bc (n := Fin n) (Formalism.UG.Ov F v).subtype z : GL (Fin n) (v.adicCompletion F)) :
-        Matrix (Fin n) (Fin n) (v.adicCompletion F)).det
-      = (((z : Matrix (Fin n) (Fin n) (Formalism.UG.Ov F v)).det : Formalism.UG.Ov F v) : v.adicCompletion F) := by
-    intro z
-    rw [← (Formalism.UG.Ov F v).subtype_apply, RingHom.map_det]; rfl
-  have hdi : (y : Matrix (Fin n) (Fin n) (Formalism.UG.Ov F v)).det *
-      ((y⁻¹ : GL (Fin n) (Formalism.UG.Ov F v)) : Matrix (Fin n) (Fin n) (Formalism.UG.Ov F v)).det = 1 := by
-    rw [← Matrix.det_mul, ← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.det_one]
-  rw [hd]
-  refine v_eq_one_of_mul (SetLike.coe_mem _)
-    (SetLike.coe_mem (((y⁻¹ : GL (Fin n) (Formalism.UG.Ov F v)) : Matrix (Fin n) (Fin n) (Formalism.UG.Ov F v)).det)) ?_
-  have := congrArg (fun z : Formalism.UG.Ov F v => (z : v.adicCompletion F)) hdi
-  exact_mod_cast this
-
 variable {n : ℕ} {ϖ : v.adicCompletion F} {a : Fin n → ℤ}
 
 end
@@ -87,21 +70,9 @@ end GlobalTheory.GLintCover
 noncomputable section
 namespace GlobalTheory.GLintCover
 
-section Count
-variable {F : Type} [Field F] [NumberField F] {v : HeightOneSpectrum (𝓞 F)} {n : ℕ}
-
-variable {ϖ : v.adicCompletion F} {a : Fin n → ℤ}
-
-end Count
 end GlobalTheory.GLintCover
 
 noncomputable section
 namespace GlobalTheory.GLintCover
-
-section Main
-variable {F : Type} [Field F] [NumberField F] {v : HeightOneSpectrum (𝓞 F)} {n : ℕ}
-variable {ϖ : v.adicCompletion F} {a : Fin n → ℤ}
-
-end Main
 
 end GlobalTheory.GLintCover

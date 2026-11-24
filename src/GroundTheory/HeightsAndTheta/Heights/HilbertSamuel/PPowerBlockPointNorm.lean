@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockImageInverse
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPowerBlockPointNorm
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsSectionPointValue
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsLocalRep
@@ -149,17 +150,7 @@ theorem pn_aeval_smul {S : Type*} [CommRing S] [Algebra ℤ S] {f : MRing ι} {a
 theorem pn_aeval_congr_block [DecidableEq K] {S : Type*} [CommRing S] [Algebra ℤ S] {h : MRing ι} {k₀ : K} {n : ℕ}
     (hh : IsMultiHomog h (blockDeg k₀ n)) {v w : (Σ k, ι k) → S} (hvw : ∀ i, v ⟨k₀, i⟩ = w ⟨k₀, i⟩) :
     aeval v h = aeval w h := by
-  rw [aeval_def, aeval_def, eval₂_eq', eval₂_eq']
-  refine Finset.sum_congr rfl fun d hd => congrArg _ (Finset.prod_congr rfl fun p _ => ?_)
-  obtain ⟨k, i⟩ := p
-  by_cases hk : k = k₀
-  · subst hk
-    rw [hvw]
-  · have h0 : d ⟨k, i⟩ = 0 := by
-      have := hh d hd k
-      simp only [blockDeg, if_neg hk] at this
-      exact (Finset.sum_eq_zero_iff.mp this) i (Finset.mem_univ _)
-    rw [h0, pow_zero, pow_zero]
+  apply _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.BlockImageInverse.aeval_congr_block <;> assumption
 
 theorem pn_eval_map_int {σ : Type*} (z : σ → ℂ) (f : MvPolynomial σ ℤ) :
     eval z (map (Int.castRingHom ℂ) f) = aeval z f := by

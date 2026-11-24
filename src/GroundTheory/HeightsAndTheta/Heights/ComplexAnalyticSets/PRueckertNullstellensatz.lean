@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PPrimeGermPrimitivePresentation
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StRueckertNullstellensatz
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StAnalyticGermsNoetherian
 public import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.StPrimeGermNullstellensatz
@@ -64,37 +65,7 @@ theorem exists_of_mem_holGermIdeal {k : ℕ} (p : Fin k → (σ → ℂ) → ℂ
     (hφ : φ ∈ holGermIdeal w p) :
     ∃ h : Fin k → (σ → ℂ) → ℂ, (∀ i, AnalyticAt ℂ (h i) w) ∧
       (φ : Germ (𝓝 w) ℂ) = ((fun z => ∑ i, h i z * p i z : (σ → ℂ) → ℂ) : Germ (𝓝 w) ℂ) := by
-  induction hφ using Submodule.span_induction with
-  | mem φ hφ =>
-    obtain ⟨i, hi⟩ := hφ
-    refine ⟨fun j _ => if j = i then 1 else 0, fun j => analyticAt_const, ?_⟩
-    rw [hi]
-    congr 1
-    funext z
-    simp
-  | zero =>
-    refine ⟨fun _ _ => 0, fun _ => analyticAt_const, ?_⟩
-    rw [show (fun z => ∑ i, (fun (_ : Fin k) (_ : σ → ℂ) => (0 : ℂ)) i z * p i z) = (0 : (σ → ℂ) → ℂ) by
-      funext z; simp]
-    rfl
-  | add x y _ _ hx hy =>
-    obtain ⟨h₁, hh₁, e₁⟩ := hx
-    obtain ⟨h₂, hh₂, e₂⟩ := hy
-    refine ⟨fun i z => h₁ i z + h₂ i z, fun i => (hh₁ i).add (hh₂ i), ?_⟩
-    show (x : Germ (𝓝 w) ℂ) + y = _
-    rw [e₁, e₂, ← Germ.coe_add]
-    congr 1
-    funext z
-    simp [add_mul, Finset.sum_add_distrib]
-  | smul a x _ hx =>
-    obtain ⟨h, hh, e⟩ := hx
-    obtain ⟨fa, hfa, efa⟩ : ∃ f : (σ → ℂ) → ℂ, AnalyticAt ℂ f w ∧ (f : Germ (𝓝 w) ℂ) = a := a.2
-    refine ⟨fun i z => fa z * h i z, fun i => hfa.mul (hh i), ?_⟩
-    show (a : Germ (𝓝 w) ℂ) * x = _
-    rw [e, ← efa, ← Germ.coe_mul]
-    congr 1
-    funext z
-    simp [Finset.mul_sum, mul_assoc]
+  apply GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.ComplexSets.PrimeGermPrimitivePresentation.exists_of_mem_holGermIdeal <;> assumption
 
 theorem mem_holGermIdeal_of_eq {k : ℕ} {p : Fin k → (σ → ℂ) → ℂ} (hp : ∀ i, AnalyticAt ℂ (p i) w)
     {h : Fin k → (σ → ℂ) → ℂ} (hh : ∀ i, AnalyticAt ℂ (h i) w) (φ : holGerms w)

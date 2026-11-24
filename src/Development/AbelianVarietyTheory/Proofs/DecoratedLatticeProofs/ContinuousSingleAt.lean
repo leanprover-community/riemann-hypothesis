@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsLocalComponentAdelicAddChar
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.IsSumFrame
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsContinuousPadic
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsPlaceChartOfSplitIdempotent
@@ -56,17 +57,7 @@ open GlobalTheory.IdemModTwo GlobalTheory.SplitIdem GlobalTheory.SplitChart Glob
 open Classical in
 theorem continuous_single_at (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) :
     Continuous (singleV F v) := by
-  have hS : Filter.cofinite ≤ Filter.principal ({v}ᶜ : Set (HeightOneSpectrum (𝓞 F))) :=
-    Filter.le_principal_iff.2 (Set.finite_singleton v).compl_mem_cofinite
-  let f : v.adicCompletion F → Πʳ w : HeightOneSpectrum (𝓞 F),
-      [w.adicCompletion F, w.adicCompletionIntegers F]_[Filter.principal ({v}ᶜ : Set _)] :=
-    fun x => ⟨Pi.single (M := fun w : HeightOneSpectrum (𝓞 F) => w.adicCompletion F) v x, by
-      intro w hw
-      have hw' : w ≠ v := hw
-      simp only [Set.mem_ofPred_eq, Pi.single_eq_of_ne hw', SetLike.mem_coe]
-      exact zero_mem _⟩
-  have hf : Continuous f := RestrictedProduct.continuous_rng_of_principal.2 (continuous_single v)
-  exact (RestrictedProduct.continuous_inclusion hS).comp hf
+  apply _root_.GlobalTheory.LocalComponentChar.continuous_singleV <;> assumption
 
 theorem continuous_eval_at (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) :
     Continuous (evalV F v) :=

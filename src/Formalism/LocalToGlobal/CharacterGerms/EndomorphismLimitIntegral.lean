@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.FormalGroupActionLimitsIntegralEndomorphisms
 public import Formalism.LocalToGlobal.CharacterGerms.CoeffSubstEqSum
 public import Formalism.LocalToGlobal.CharacterGerms.RowTiePGerm
 import Mathlib.Algebra.Order.Floor.Extended
@@ -107,65 +108,7 @@ theorem const_of_lim (Y : FBChart C V O dd) {a : ℕ → O} {e : Pt C 1 dd}
   exact h.unique (tends_const 0)
 
 theorem endomorphism_limit_integral (Y : FBChart C V O dd) : EndomorphismLimitIntegral Y := by
-  intro a ha hb
-  obtain ⟨e, he⟩ := exists_lim Y (φ := fun n => Y.B.A.act (a n)) ha
-  obtain ⟨eb, heb⟩ := exists_lim Y (φ := fun n => Y.B.A.act (star (a n))) hb
-  have e0 := const_of_lim Y he
-  have eb0 := const_of_lim Y (a := fun n => star (a n)) heb
-  have act0 : ∀ x i, constantCoeff (Y.B.A.act x i) = 0 := Y.B.A.const
-  refine ⟨e, eb, fun i => (he i).intS fun n => Y.intAct _ i, fun i => (heb i).intS fun n => Y.intAct _ i,
-    fun N i μ => he i μ N, fun N i μ => heb i μ N, ?_, ?_⟩
-  ·
-    funext i
-    have hP : ∀ i, constantCoeff (addOf Y.B.G.F (pt C (n := 2) dd 0) (pt C (n := 2) dd 1) i) = 0 :=
-      fun j => const_addOf Y 0 1 j
-    have L := TendsS.comp1 (φ := fun k => Y.B.A.act (a k)) (b := fun _ => addOf Y.B.G.F (pt C (n := 2) dd 0)
-      (pt C (n := 2) dd 1)) (fun _ => hP) hP he (fun j => TendsS.const _) i
-    have hc : ∀ (j : Fin 2) k i', constantCoeff (comp1 (Y.B.A.act (a k)) (pt C (n := 2) dd j) i') = 0 :=
-      fun j k i' => const_comp1 (act0 _) (fun _ => z0_pt j _) i'
-    have hcl : ∀ (j : Fin 2) i', constantCoeff (comp1 e (pt C (n := 2) dd j) i') = 0 :=
-      fun j i' => const_comp1 e0 (fun _ => z0_pt j _) i'
-    have R := TendsS.ev (V := V) (f := fun _ => Y.B.G.F i) (F := Y.B.G.F i)
-      (a := fun k => ![comp1 (Y.B.A.act (a k)) (pt C (n := 2) dd 0), comp1 (Y.B.A.act (a k)) (pt C (n := 2) dd 1)])
-      (A := ![comp1 e (pt C (n := 2) dd 0), comp1 e (pt C (n := 2) dd 1)])
-      (fun k => constant_zero_two_points _ _ (hc 0 k) (hc 1 k)) (constant_zero_two_points _ _ (hcl 0) (hcl 1))
-      (tends_two (TendsS.comp1 (fun _ => z0_pt 0) (z0_pt 0) he (fun _ => TendsS.const _))
-        (TendsS.comp1 (fun _ => z0_pt 1) (z0_pt 1) he (fun _ => TendsS.const _))) (TendsS.const _)
-    have eq : (fun k => comp1 (Y.B.A.act (a k)) (addOf Y.B.G.F (pt C (n := 2) dd 0) (pt C (n := 2) dd 1)) i) =
-        fun k => ev ![comp1 (Y.B.A.act (a k)) (pt C (n := 2) dd 0), comp1 (Y.B.A.act (a k)) (pt C (n := 2) dd 1)]
-          (Y.B.G.F i) := funext fun k => by rw [Y.B.A.hom (a k)]; rfl
-    rw [eq] at L
-    exact L.unique R
-  ·
-    let g : ℕ → PS C 2 dd := fun k => ev (n := 2) ![comp1 (Y.B.A.act (a k)) (pt C dd 0), pt C dd 1] Y.h -
-      ev (n := 2) ![pt C dd 0, comp1 (Y.B.A.act (star (a k))) (pt C dd 1)] Y.h
-    have hc0 : ∀ k, Z0 (![comp1 (Y.B.A.act (a k)) (pt C dd 0), pt C dd 1] : Fin 2 → Pt C 2 dd) :=
-      fun k => constant_zero_two_points _ _ (const_comp1 (act0 _) (fun _ => z0_pt 0 _)) (fun _ => z0_pt 1 _)
-    have hc1 : ∀ k, Z0 (![pt C dd 0, comp1 (Y.B.A.act (star (a k))) (pt C dd 1)] : Fin 2 → Pt C 2 dd) :=
-      fun k => constant_zero_two_points _ _ (fun _ => z0_pt 0 _) (const_comp1 (act0 _) (fun _ => z0_pt 1 _))
-    have hC0 : Z0 (![comp1 e (pt C dd 0), pt C dd 1] : Fin 2 → Pt C 2 dd) :=
-      constant_zero_two_points _ _ (const_comp1 e0 (fun _ => z0_pt 0 _)) (fun _ => z0_pt 1 _)
-    have hC1 : Z0 (![pt C dd 0, comp1 eb (pt C dd 1)] : Fin 2 → Pt C 2 dd) :=
-      constant_zero_two_points _ _ (fun _ => z0_pt 0 _) (const_comp1 eb0 (fun _ => z0_pt 1 _))
-    have hg : TendsS V g (ev (n := 2) ![comp1 e (pt C dd 0), pt C dd 1] Y.h -
-        ev (n := 2) ![pt C dd 0, comp1 eb (pt C dd 1)] Y.h) :=
-      (TendsS.ev hc0 hC0 (tends_two (TendsS.comp1 (fun _ => z0_pt 0) (z0_pt 0) he (fun _ => TendsS.const _))
-        (fun _ => TendsS.const _)) (TendsS.const _)).sub
-      (TendsS.ev hc1 hC1 (tends_two (fun _ => TendsS.const _)
-        (TendsS.comp1 (fun _ => z0_pt 1) (z0_pt 1) heb (fun _ => TendsS.const _))) (TendsS.const _))
-    have hh := h_const Y
-    have hg0 : ∀ k, constantCoeff (g k) = 0 := fun k => by
-      simp only [g, map_sub, constantCoeff_ev (hc0 k), constantCoeff_ev (hc1 k), hh, sub_zero]
-    have hG0 : constantCoeff (ev (n := 2) ![comp1 e (pt C dd 0), pt C dd 1] Y.h -
-        ev (n := 2) ![pt C dd 0, comp1 eb (pt C dd 1)] Y.h) = 0 := by
-      simp only [map_sub, constantCoeff_ev hC0, constantCoeff_ev hC1, hh, sub_zero]
-    have hE := TendsS.expS hg0 hG0 hg
-    have hadk : ∀ k, FB.expS C (g k) = Y.B.ad (a k) := fun k => by
-      have h1 := Y.gauge.ad (a k)
-      rw [toK_self, actK_self, actK_self] at h1
-      exact h1.symm
-    simp only [hadk] at hE
-    exact hE.intS fun k => Y.intAd _
+  apply GlobalTheory.ActLimit.limit_endomorphisms <;> assumption
 
 end RowTiePE0
 

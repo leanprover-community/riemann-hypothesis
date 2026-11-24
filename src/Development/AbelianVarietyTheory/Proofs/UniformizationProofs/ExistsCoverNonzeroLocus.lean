@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsSectionsGenerateSquareBundle
 public import Development.AbelianVarietyTheory.Definitions.AbelianSchemeLaws.FirstCohomologyVanishesSpecOfIsLocalRing
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.SquareUnits
 public import Development.AbelianVarietyTheory.Proofs.AbelianSchemeLawProofs.ExistsSecValueIsUnit
@@ -106,24 +107,7 @@ theorem unitAt_of_pw {n : ℤ} (s : LB.Sec (pw L n)) (φ : Y ⟶ X) (y : Y) (i :
 theorem exists_sec_of_unitAt (hL : L.IsLB) {n : ℤ} {x : X}
     (h : UnitAt L (K := Fin 1) (fun _ => 𝟙 X) (fun _ => n) x) :
     ∃ t : LB.Sec (pw L n), x ∈ nonzeroLocus t := by
-  obtain ⟨s, hs⟩ := h
-  have l : ∀ i : L.ι, L.U i ≤ LB.wchart L (fun _ : Fin 1 => 𝟙 X) (fun _ => i) :=
-    fun i _ hy => Set.mem_iInter.2 fun _ => hy
-  let t : LB.Sec (pw L n) :=
-    { f := fun i => (X.presheaf.map (homOfLE (l i)).op).hom (s.f fun _ => i)
-      compat := fun i i' => fn_ext fun z hz => by
-        refine ((gs_res (𝟙 X) z _ hz _).trans (gs_res (𝟙 X) z (l i) hz.1 _)).trans (Eq.trans ?_
-          ((gs_mul (𝟙 X) z _ hz _ _).trans (congrArg _
-            ((gs_res (𝟙 X) z _ hz _).trans (gs_res (𝟙 X) z (l i') hz.2 _)))).symm)
-        refine (sec_trans s (𝟙 X) z (l i hz.1) (l i' hz.2)).trans ?_
-        rw [gs_g_single (𝟙 X) n _ _ z (l i hz.1) (l i' hz.2), Category.id_comp]
-        rfl }
-  obtain ⟨i, hi⟩ := exists_chart hL x
-  refine ⟨t, TopologicalSpace.Opens.mem_iSup.2 ⟨i, ?_⟩⟩
-  obtain ⟨J, hJ, e⟩ := sval_trans hL s x (fun _ => i) (l i hi)
-  have u : IsUnit (gs (𝟙 X) x (L.U i) (t.f i)) :=
-    (congrArg IsUnit ((gs_res _ x (l i) hi _).trans e)).mpr ((Units.isUnit _).mul (hs J hJ))
-  exact (X.mem_basicOpen _ x hi).2 ((congrArg IsUnit (gs_eq (𝟙 X) x _ hi _)).mp u)
+  apply GlobalTheory.SquareGenerated.exists_sec_pw <;> assumption
 
 theorem unitAt_of_triv (hL : L.IsLB) {I : Type} [Fintype I] {φ : I → (Y ⟶ X)} {ε : I → ℤ}
     (h : Triv (LB.LinComb L φ ε)) {Y' : Scheme.{0}} (e : Y' ⟶ Y) (k : ℕ) (y : Y') :

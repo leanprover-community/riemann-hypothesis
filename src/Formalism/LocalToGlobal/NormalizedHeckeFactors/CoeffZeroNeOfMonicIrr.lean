@@ -190,12 +190,6 @@ theorem hasLabelO_spec {C : LabelConv (ZMod g)} (O : LabelMap (ZMod g) C) {r : �
   · rw [natDegree_prod_of_monic _ _ hmon, Finset.sum_congr rfl (fun c _ => (hfac c).2.2.2)]
     first
       | (rw [← Fintype.card_sigma, Fintype.card_congr (Equiv.sigmaFiberEquiv b), Fintype.card_fin])
-      | (simp only [Fintype.card_subtype]
-         rw [← Finset.card_eq_sum_card_fiberwise (fun x _ => Finset.mem_univ (b x)), Finset.card_univ,
-           Fintype.card_fin])
-      | (simp only [Fintype.card_subtype]
-         rw [← Finset.card_eq_sum_card_fiberwise (fun x _ => Finset.mem_univ (b x))]
-         simp)
   · rw [coeff_zero_eq_eval_zero, eval_prod]
     refine Finset.prod_ne_zero_iff.mpr fun c _ => ?_
     rw [← coeff_zero_eq_eval_zero]

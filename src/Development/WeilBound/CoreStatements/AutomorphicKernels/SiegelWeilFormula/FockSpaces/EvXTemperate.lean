@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.ThetaSchwartzSums.SchwartzPolyGauss
 public import Development.WeilBound.RepresentationTheoryGL.SiegelWeilProof.HolomorphicContinuation.NullSec
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.Distribution.SchwartzSpace.Basic
@@ -76,22 +77,7 @@ private theorem hasTemperateGrowth_evX' {m n : ℕ} (k : Fin m × Fin n × Bool)
 
 theorem evX_temperate {m n : ℕ} (P : PX m n) :
     Function.HasTemperateGrowth (fun x : Fin m → Fin n → ℂ => evX P x) := by
-  induction P using MvPolynomial.induction_on with
-  | C a =>
-    convert Function.HasTemperateGrowth.const (E := Fin m → Fin n → ℂ) a using 1
-    funext x
-    simp [evX]
-  | add p q hp hq =>
-    convert hp.add hq using 1
-    funext x
-    simp [evX]
-  | mul_X p k hp =>
-    have e : (fun x : Fin m → Fin n → ℂ => evX (p * MvPolynomial.X k) x) =
-        fun x => evX p x * (if k.2.2 = true then star (x k.1 k.2.1) else x k.1 k.2.1) := by
-      funext x
-      simp [evX]
-    rw [e]
-    exact hp.fun_mul (hasTemperateGrowth_evX' k)
+  apply PositivityTheory.SiegelWeilFormula.KMain.evX_temperate <;> assumption
 
 def eucl (m n : ℕ) (s : ℝ) (hs : s ≠ 0) : (Fin m → Fin n → ℂ) ≃L[ℝ] EuclideanSpace ℂ (Fin m × Fin n) :=
   ((LinearEquiv.smulOfNeZero ℝ (Fin m → Fin n → ℂ) s hs).trans
@@ -103,7 +89,7 @@ theorem eucl_norm_sq (m n : ℕ) (s : ℝ) (hs : s ≠ 0) (x : Fin m → Fin n �
   refine Finset.sum_congr rfl fun a _ => ?_
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
-  simp [eucl, norm_smul, mul_pow]
+  simp [eucl, mul_pow]
 
 theorem gsSch (m n : ℕ) {c : ℝ} (hc : 0 < c) : ∃ G : 𝓢(Fin m → Fin n → ℂ, ℂ), ∀ x, G x = gs c x := by
   have hpi : 0 < Real.pi := Real.pi_pos

@@ -57,7 +57,6 @@ theorem sizes (Cg m N P s : ℝ) (hCg : 1000 ≤ Cg) (hm2 : 2 ≤ m) (hmN : m �
   have hm4e : m ^ 4 = m ^ 2 * m ^ 2 := by ring
   have hm4 : (16 : ℝ) ≤ m ^ 4 := by rw [hm4e]; nlinarith
   have hm4' : 4 * m ^ 2 ≤ m ^ 4 := by rw [hm4e]; nlinarith
-  have hCg0 : (0 : ℝ) ≤ Cg := by linarith
   constructor
   · have a : (16 : ℝ) ≤ m ^ 4 * s := le_trans hm4 (le_mul_of_one_le_right (by positivity) hs)
     have b : (16000 : ℝ) ≤ Cg * (m ^ 4 * s) := by nlinarith
@@ -73,10 +72,8 @@ theorem consts (k r : ℕ) (hk : 1 ≤ k) :
     Formalism.FourierDecayAlt.ThreeDimData.Mexp r ≤ (2 * (r : ℝ) + 2) ^ 2 / 2 ∧ 0 ≤ Formalism.FourierDecayAlt.ThreeDimData.Mexp r ∧
     Formalism.FourierDecayAlt.ThreeDimData.AS k r ≤ 2 * (2 * (r : ℝ) + k + 1) ^ 3 ∧ 0 ≤ Formalism.FourierDecayAlt.ThreeDimData.AS k r ∧
     Formalism.FourierDecayAlt.ThreeDimData.AG k r ≤ 4 * (2 * (r : ℝ) + k + 1) ^ 3 ∧ 0 ≤ Formalism.FourierDecayAlt.ThreeDimData.AG k r := by
-  have hr0 : (0 : ℝ) ≤ r := Nat.cast_nonneg _
   have hk1 : (1 : ℝ) ≤ k := by exact_mod_cast hk
   set N : ℝ := 2 * (r : ℝ) + k + 1 with hN
-  have hN1 : (1 : ℝ) ≤ N := by linarith
   have hN2 : N ^ 2 ≤ N ^ 3 := by nlinarith
   have hdN : Formalism.FourierDecayAlt.ThreeDimData.dN k r ≤ 2 * N ^ 2 := by unfold Formalism.FourierDecayAlt.ThreeDimData.dN; rw [hN]; nlinarith
   have hdN0 : 0 ≤ Formalism.FourierDecayAlt.ThreeDimData.dN k r := by unfold Formalism.FourierDecayAlt.ThreeDimData.dN; nlinarith
@@ -99,7 +96,6 @@ theorem consts (k r : ℕ) (hk : 1 ≤ k) :
 theorem gapOK_of (k r : ℕ) (hk : 1 ≤ k) (Cg : ℝ) (hCg : 1000 ≤ Cg) :
     Formalism.FourierDecayAlt.ThreeDimData.GapOK k r (Cg * ((2 * r + 2 : ℕ) : ℝ) ^ ((9 : ℝ) / 2) *
       (((3 * (r + 1) : ℕ) : ℝ) * ((2 * r + k + 1 : ℕ) : ℝ) ^ 2 + ((2 * r + k + 1 : ℕ) : ℝ) ^ 3) / 4) := by
-  have hr0 : (0 : ℝ) ≤ r := Nat.cast_nonneg _
   have hk1 : (1 : ℝ) ≤ k := by exact_mod_cast hk
   have em : ((2 * r + 2 : ℕ) : ℝ) = 2 * (r : ℝ) + 2 := by push_cast; ring
   have eN : ((2 * r + k + 1 : ℕ) : ℝ) = 2 * (r : ℝ) + k + 1 := by push_cast; ring
@@ -118,7 +114,6 @@ theorem gapOK_of (k r : ℕ) (hk : 1 ≤ k) (Cg : ℝ) (hCg : 1000 ≤ Cg) :
       Real.sqrt_eq_rpow]
   have hs1 : (1 : ℝ) ≤ Real.sqrt m := by
     rw [show (1 : ℝ) = Real.sqrt 1 by simp]; exact Real.sqrt_le_sqrt (by linarith)
-  have hspos : (0 : ℝ) < Real.sqrt m := by linarith
   have hN3 : (1 : ℝ) ≤ N ^ 3 := one_le_pow₀ hN1
   have hPN : N ^ 3 ≤ 3 * ((r : ℝ) + 1) * N ^ 2 + N ^ 3 := by
     have : (0 : ℝ) ≤ 3 * ((r : ℝ) + 1) * N ^ 2 := by positivity

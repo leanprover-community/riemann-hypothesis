@@ -1,5 +1,6 @@
 module
 
+import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.CsScale
 public import Formalism.SatakeDualWeyl.DefsCS
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelaf
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Adelstab
@@ -91,29 +92,7 @@ theorem csDual_sig_C (σ : E →ₐ[F] E) (c : 𝓞 F) :
 
 theorem csDual_sig_mem (σ : E →ₐ[F] E) {s : 𝒜} (hs : s ∈ 𝒮) :
     sigR σ (FiniteAdeleRing (𝓞 F) F) s ∈ 𝒮 := by
-  have key : ∀ s ∈ tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (intOE E) (intAd F),
-      s ∈ (tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (intOE E) (intAd F)).comap
-        (sigR σ (FiniteAdeleRing (𝓞 F) F)) := by
-    intro s hs'
-    refine (Subring.closure_le.2 ?_) hs'
-    rintro _ (⟨⟨x, hx⟩, rfl⟩ | ⟨⟨y, hy⟩, rfl⟩)
-    · obtain ⟨a, ha⟩ := hx
-      have hint : IsIntegral ℤ (σ x) := by
-        rw [← ha]
-        simpa using (IsIntegral.algebraMap (Algebra.IsIntegral.isIntegral (R := ℤ) a)).map
-          σ.toRingHom.toIntAlgHom
-      have e1 : sigR σ (FiniteAdeleRing (𝓞 F) F) (x ⊗ₜ[F] (1 : (FiniteAdeleRing (𝓞 F) F))) = (σ x) ⊗ₜ[F] (1 : (FiniteAdeleRing (𝓞 F) F)) := by
-        simp [sigR]
-      show sigR σ (FiniteAdeleRing (𝓞 F) F) (x ⊗ₜ[F] (1 : (FiniteAdeleRing (𝓞 F) F))) ∈ tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (intOE E) (intAd F)
-      rw [e1]
-      exact Subring.subset_closure (Or.inl ⟨⟨σ x, IsIntegralClosure.mk' (𝓞 E) _ hint,
-        IsIntegralClosure.algebraMap_mk' _ _ _⟩, rfl⟩)
-    · have e2 : sigR σ (FiniteAdeleRing (𝓞 F) F) ((1 : E) ⊗ₜ[F] y) = (1 : E) ⊗ₜ[F] y := by
-        simp [sigR]
-      show sigR σ (FiniteAdeleRing (𝓞 F) F) ((1 : E) ⊗ₜ[F] y) ∈ tensInt (F := F) (FiniteAdeleRing (𝓞 F) F) (intOE E) (intAd F)
-      rw [e2]
-      exact Subring.subset_closure (Or.inr ⟨⟨y, hy⟩, rfl⟩)
-  exact key s hs
+  apply Formalism.UG.P.csScale_sigR_mem <;> assumption
 
 theorem csDual_hform_incl (σ : E →ₐ[F] E) (J : Matrix n n E) (y x : n → E) :
     hform (sigR σ (FiniteAdeleRing (𝓞 F) F)) (J.map ι) (fun i => ι (y i)) (fun i => ι (x i)) =

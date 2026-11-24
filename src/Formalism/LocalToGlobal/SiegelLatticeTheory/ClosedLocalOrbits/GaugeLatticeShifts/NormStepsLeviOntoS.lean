@@ -164,11 +164,11 @@ theorem leviOntoS_of (hK : KappaOnto TR u) : LeviOntoS TR cs := by
   obtain ⟨κ, hκK, hfix, hlev⟩ := hK s
   have e1 : colDS (cs.h (cs.base q.1))
       (cs.h (cs.base q.1) * ⟨X.xu u * κ * (X.xu u)⁻¹, LeviOntoS_conj_mem u κ hfix⟩) = κ := by
-    simp only [colDS, Subgroup.coe_mul, Subgroup.coe_mk]
+    simp only [colDS, Subgroup.coe_mul]
     group
   have e2 : colDS (cs.h (cs.base q.1) * ⟨X.xu u * κ * (X.xu u)⁻¹, LeviOntoS_conj_mem u κ hfix⟩)
       (cs.h (cs.base q.1)) = κ⁻¹ := by
-    simp only [colDS, Subgroup.coe_mul, Subgroup.coe_mk]
+    simp only [colDS, Subgroup.coe_mul]
     group
   refine ⟨cs.h (cs.base q.1) * ⟨X.xu u * κ * (X.xu u)⁻¹, LeviOntoS_conj_mem u κ hfix⟩, ?_, ?_, ?_⟩
   · rw [e1]

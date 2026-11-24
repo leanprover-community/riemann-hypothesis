@@ -69,7 +69,6 @@ private lemma sum_log_div_le_two_mul_mul_add_two (s : Finset ℕ) (T : ℝ) (hT 
     have h3 : 1 / (p : ℝ) ≤ 2 / ((p : ℝ) + 1) := by
       first
       | (rw [div_le_div_iff₀ hp0 (by linarith)]; linarith)
-      | (rw [div_le_div_iff hp0 (by linarith)]; linarith)
     have e2 : T / p ≤ T * (2 / ((p : ℝ) + 1)) := by
       calc T / p = T * (1 / p) := by ring
         _ ≤ T * (2 / ((p : ℝ) + 1)) := mul_le_mul_of_nonneg_left h3 hT
@@ -78,7 +77,6 @@ private lemma sum_log_div_le_two_mul_mul_add_two (s : Finset ℕ) (T : ℝ) (hT 
   have hh : ∑ p ∈ Finset.range ⌈Real.exp T⌉₊, ((p : ℝ) + 1)⁻¹ = (harmonic ⌈Real.exp T⌉₊ : ℝ) := by
     first
     | simp [harmonic]
-    | (rw [harmonic]; push_cast; rfl)
   have hlN : Real.log (⌈Real.exp T⌉₊ : ℝ) ≤ T + 1 := by
     rcases Nat.eq_zero_or_pos ⌈Real.exp T⌉₊ with h0 | h0
     · rw [h0]

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.TraceSymplecticFormEqOrientedHomSymplecticForm
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsUSplittingInl
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -113,31 +114,7 @@ theorem symp_eq_symplO (D : D7) (S T : HSp D) (JA : Matrix (Fin T.rank) (Fin T.r
     (hB : ξ • incM D.host.F JB = incM D.host.F (D.host.xi0 • S.gram⁻¹)) (x y : Formalism.IndefR.Datum.WO S T) :
     GlobalTheory.WeilM.symp (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA D.sp.cm.sig) ξ (incM D.host.F JA) (incM D.host.F JB) x y =
       Formalism.IndefR.Datum.symplO S T x y := by
-  unfold GlobalTheory.WeilM.symp Formalism.IndefR.Datum.symplO
-  congr 1
-  have hb : ∀ j l, ξ * incM D.host.F JB j l = incA D D.host.xi0 * incA D (S.gram⁻¹ j l) := fun j l => by
-    have := congrFun (congrFun hB j) l
-    simp only [Matrix.smul_apply, smul_eq_mul] at this
-    rw [this]
-    simp [incM, Matrix.map_apply, Matrix.smul_apply, map_mul]
-  have e : ∀ i j k l, ξ * (x i j * incM D.host.F JA i k * incM D.host.F JB j l * GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA D.sp.cm.sig (y k l)) =
-      incA D D.host.xi0 * (incA D (S.gram⁻¹ j l) * cA D (y k l) * incA D (T.gram k i) * x i j) := fun i j k l => by
-    have h1 : incM D.host.F JA i k = incA D (T.gram k i) := by
-      subst hA; rfl
-    rw [cA_apply, h1]
-    linear_combination (x i j * incA D (T.gram k i) * cA D (y k l)) * hb j l
-  unfold GlobalTheory.WeilM.hTens Formalism.IndefR.Datum.hO
-  simp only [Finset.mul_sum, e]
-  symm
-  calc _ = ∑ a, ∑ b, ∑ d, ∑ c, incA D D.host.xi0 *
-        (incA D (S.gram⁻¹ a b) * cA D (y c b) * incA D (T.gram c d) * x d a) :=
-        Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => Finset.sum_comm
-    _ = ∑ a, ∑ d, ∑ b, ∑ c, incA D D.host.xi0 *
-        (incA D (S.gram⁻¹ a b) * cA D (y c b) * incA D (T.gram c d) * x d a) :=
-        Finset.sum_congr rfl fun a _ => Finset.sum_comm
-    _ = ∑ d, ∑ a, ∑ b, ∑ c, incA D D.host.xi0 *
-        (incA D (S.gram⁻¹ a b) * cA D (y c b) * incA D (T.gram c d) * x d a) := Finset.sum_comm
-    _ = _ := Finset.sum_congr rfl fun d _ => Finset.sum_congr rfl fun a _ => Finset.sum_comm
+  apply GlobalTheory.WeilSchrodinger.symp_eq_symplO <;> assumption
 
 end GlobalTheory.ThetaQuasiRat
 

@@ -152,8 +152,6 @@ lemma LZ_sum {N : ℕ} {ω : Fin N → X.Ψ → Fin 2 → Fin 2 → ℂ} (hω : 
   have key : ∀ j, (n j : ℂ) • ω j = n j • ω j := fun j => by
     first
     | exact Int.cast_smul_eq_zsmul ℂ (n j) (ω j)
-    | exact Int.cast_smul_eq_zsmul (n j) (ω j)
-    | simp
   rw [Finset.sum_congr rfl fun j _ => key j]
   exact (LZsub X g).sum_mem fun j _ => (LZsub X g).zsmul_mem (hω j) (n j)
 
@@ -163,12 +161,6 @@ def Lc : Submodule ℤ (X.Ψ → Fin 2 → Fin 2 → ℝ) :=
 lemma mem_Lc {y : X.Ψ → Fin 2 → Fin 2 → ℝ} : y ∈ Lc X g ↔ ∃ b ∈ X.LZ g, kap b = y := by
   first
   | exact Iff.rfl
-  | constructor
-    · intro h
-      obtain ⟨b, hb, e⟩ := AddSubgroup.mem_map.mp (AddSubgroup.mem_toIntSubmodule.mp h)
-      exact ⟨b, hb, e⟩
-    · rintro ⟨b, hb, e⟩
-      exact AddSubgroup.mem_toIntSubmodule.mpr (AddSubgroup.mem_map.mpr ⟨b, hb, e⟩)
 
 lemma finite_small (hg : 0 < g) : {y | y ∈ Lc X g ∧ ‖y‖ < 1}.Finite := by
   have hS := NumberField.Embeddings.finite_of_norm_le E ℂ 4
@@ -190,13 +182,13 @@ lemma finite_small (hg : 0 < g) : {y | y ∈ Lc X g ∧ ‖y‖ < 1}.Finite := b
   have hre : ∀ (τ : X.Ψ) (i k : Fin 2), |(τ.1 (β i k)).re| < 1 ∧ |(τ.1 (β i k)).im| < 1 := by
     intro τ
     have h00 : |(τ.1 (β 0 0)).re| < 1 := by
-      first | exact hk τ 0 0 | simpa [kap, Data.embH] using hk τ 0 0
+      first | exact hk τ 0 0
     have h01 : |(τ.1 (β 0 1)).re| < 1 := by
-      first | exact hk τ 0 1 | simpa [kap, Data.embH] using hk τ 0 1
+      first | exact hk τ 0 1
     have h10 : |(τ.1 (β 0 1)).im| < 1 := by
-      first | exact hk τ 1 0 | simpa [kap, Data.embH] using hk τ 1 0
+      first | exact hk τ 1 0
     have h11 : |(τ.1 (β 1 1)).re| < 1 := by
-      first | exact hk τ 1 1 | simpa [kap, Data.embH] using hk τ 1 1
+      first | exact hk τ 1 1
     have e0 : τ.1 (β 0 0) = conj (τ.1 (β 0 0)) := hb τ 0 0
     have e1 : τ.1 (β 1 1) = conj (τ.1 (β 1 1)) := hb τ 1 1
     have e2 : τ.1 (β 1 0) = conj (τ.1 (β 0 1)) := hb τ 0 1
@@ -236,7 +228,7 @@ lemma finite_small (hg : 0 < g) : {y | y ∈ Lc X g ∧ ‖y‖ < 1}.Finite := b
     rw [en] at h2
     nlinarith [norm_nonneg (τ.1 (γ i k))]
   refine ⟨γ, ?_, ?_⟩
-  · simp only [Set.mem_pi, Set.mem_univ, true_implies, forall_const, Set.mem_setOf_eq]
+  · simp only [Set.mem_pi, Set.mem_univ, forall_const, Set.mem_setOf_eq]
     intro i k
     refine ⟨hγi i k, fun φ => ?_⟩
     by_cases hφ : φ ∈ X.Ψ
@@ -288,19 +280,14 @@ lemma span_fixed_integral_real_parts : Submodule.span ℝ {p : X.Ψ → ℝ | �
     intro y
     first
     | exact NumberField.IsCMField.complexConj_apply_apply E y
-    | exact NumberField.IsCMField.complexConj_apply_apply y
-    | simp [cc]
   have hvan : ∀ x : 𝓞 E, ∑ τ : X.Ψ, (τ.1 (x : E)).re * lam τ = 0 := by
     intro x
     have hx : IsIntegral ℤ (x : E) := by
       first
       | exact x.isIntegral_coe
-      | exact NumberField.RingOfIntegers.isIntegral_coe x
-      | exact x.2
     have hcx : IsIntegral ℤ (cc (x : E)) := by
       first
       | exact hx.map ((IsCMField.complexConj E).toRingEquiv.toRingHom.toIntAlgHom)
-      | exact hx.map ((IsCMField.complexConj E).toAlgHom.restrictScalars ℤ)
     have hr : cc ((x : E) + cc (x : E)) = (x : E) + cc (x : E) := by
       rw [show cc ((x : E) + cc (x : E)) = cc (x : E) + cc (cc (x : E)) from map_add _ _ _, hinv,
         add_comm]
@@ -329,7 +316,6 @@ lemma span_fixed_integral_real_parts : Submodule.span ℝ {p : X.Ψ → ℝ | �
     first
     | exact ComplexEmbedding.conjugate_conjugate φ
     | exact star_star φ
-    | (ext y; simp [ComplexEmbedding.conjugate_coe_eq])
   have hFinj : Function.Injective
       (Sum.elim (fun τ : X.Ψ => τ.1) (fun τ : X.Ψ => ComplexEmbedding.conjugate τ.1)) := by
     rintro (τ | τ) (τ' | τ') h

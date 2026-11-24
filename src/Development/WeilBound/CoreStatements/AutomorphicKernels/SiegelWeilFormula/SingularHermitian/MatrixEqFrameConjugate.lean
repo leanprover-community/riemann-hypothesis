@@ -266,7 +266,7 @@ theorem fin_toBlocks₁₂ {n : ℕ} (X : Matrix (Fin n ⊕ Fin n) (Fin n ⊕ Fi
 
 theorem toBlocks₁₂_one {n : ℕ} {α : Type} [Zero α] [One α] :
     (1 : Matrix (Fin n ⊕ Fin n) (Fin n ⊕ Fin n) α).toBlocks₁₂ = 0 := by
-  ext i j; simp [Matrix.toBlocks₁₂, Matrix.one_apply]
+  ext i j; simp [Matrix.toBlocks₁₂]
 
 theorem piInf_trace (d : SD σ) (w : InfinitePlace F) (M : Matrix (Fin d.n) (Fin d.n) (AE F E)) :
     piInf (d.B.emb w) M.trace = (d.cw w M).trace := by
@@ -281,7 +281,7 @@ theorem cw_unip (d : SD σ) (R : RD d) (w : InfinitePlace F) (u : GR d.n) (H : M
   calc d.cw w (inFrame d.b (R.ι w u)) = dZ d.n R.ζ⁻¹ * (dZ d.n R.ζ * d.cw w (inFrame d.b (R.ι w u))) := by
         rw [← Matrix.mul_assoc, Krd.dZ_inv_mul hζ0, Matrix.one_mul]
     _ = dZ d.n R.ζ⁻¹ * (nU H * dZ d.n R.ζ) := by rw [h]
-    _ = _ := by simp [dZ, nU, Matrix.fromBlocks_multiply, smul_smul, inv_mul_cancel₀ hζ0, mul_inv_cancel₀ hζ0, Matrix.mul_smul]
+    _ = _ := by simp [dZ, nU, Matrix.fromBlocks_multiply, smul_smul, mul_inv_cancel₀ hζ0]
 
 end UnitaryGroupBasics
 

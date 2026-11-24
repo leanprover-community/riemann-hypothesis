@@ -79,7 +79,7 @@ theorem hasLen_coker_det' {C : Type} [Field C] (v : Valuation C NNReal) (R : Typ
       refine ⟨X *ᵥ (y ∘ e), ⟨y ∘ e, rfl⟩, ?_⟩
       funext i
       simp only [Matrix.mulVecLin_apply, X', Matrix.submatrix_mulVec_equiv, Φ,
-        LinearEquiv.funCongrLeft_apply, LinearMap.funLeft_apply, Function.comp_apply]
+        Function.comp_apply]
       simp
   have h := Smith.hasLen_coker_det hv X'
   rw [hdet] at h

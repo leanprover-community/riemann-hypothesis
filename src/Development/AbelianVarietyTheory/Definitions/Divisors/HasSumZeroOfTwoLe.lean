@@ -44,6 +44,7 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ModFMulPosPrincipal
 
 @[expose] public section
 
@@ -81,18 +82,7 @@ theorem modF_pos (y : (Af E)ˣ) : 0 < modF y :=
 
 theorem modF_princ (k : Eˣ) :
     modF (Units.map (algebraMap E (Af E)).toMonoidHom k) = (|((Algebra.norm ℚ (k : E) : ℚ) : ℝ)|)⁻¹ := by
-  have h := FinitePlace.prod_eq_inv_abs_norm (K := E) k.ne_zero
-  push_cast at h
-  rw [← h, ← finprod_comp_equiv (FinitePlace.equivHeightOneSpectrum (K := E)).symm]
-  unfold modF
-  refine finprod_congr fun v => ?_
-  rw [FinitePlace.equivHeightOneSpectrum_symm_apply, FinitePlace.norm_embedding']
-  have h0 : v.valuation E (k : E) ≠ 0 := by simp
-  have h1 : Valued.v (((Units.map (algebraMap E (Af E)).toMonoidHom k : (Af E)ˣ) : Af E) v) = v.valuation E (k : E) :=
-    HeightOneSpectrum.valuedAdicCompletion_eq_valuation' v (k : E)
-  rw [h1, WithZeroMulInt.toNNReal_neg_apply _ h0]
-  push_cast
-  congr 1
+  apply _root_.GlobalTheory.CMVal.IdeleModule.modF_princ <;> assumption
 
 theorem hatO_integral {c : Ideal (OF E)} {y : Af E} (hy : y ∈ hatO c) (v : HeightOneSpectrum (𝓞 E)) :
     Valued.v (y v) ≤ 1 := by

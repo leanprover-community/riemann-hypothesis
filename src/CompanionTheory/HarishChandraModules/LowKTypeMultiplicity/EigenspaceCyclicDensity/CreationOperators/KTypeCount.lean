@@ -122,12 +122,13 @@ theorem exists_sort (ε : Fin n → Bool) (κ : Fin n → ℝ) : ∃ w : Equiv.P
   have : 0 ≤ (κ (w a) - κ (w b)) * (((b : ℕ) : ℝ) - ((a : ℕ) : ℝ)) := by rw [← e]; linarith
   linarith [nonneg_of_mul_nonneg_left this hp]
 
-theorem K_type_count : NumK := by
-  intro n ε lam ν B C hl hB hBn hC _ hdom hn
-  set κ := lowK ε lam + rhoC ε - wt B with hκ
-  set μ := lowK ε lam + (2 : ℝ) • rhoC ε - wt B - wt C with hμ
-  obtain ⟨w, hw, hs⟩ := exists_sort ε κ
-  obtain ⟨m, hm, hm2⟩ := hdom w hw
+theorem sorted_weight_eq_of_norm_eq (ε : Fin n → Bool) (κ μ ν : Fin n → ℝ)
+    (C : Finset (Pos n)) (hC : ∀ i ∈ C, cpt ε i) (w : Equiv.Perm (Fin n))
+    (hw : ∀ c, ε (w c) = ε c) (hs : ∀ a b, a < b → ε a = ε b → κ (w b) ≤ κ (w a))
+    (hdom : CDom ε (μ ∘ w) ν) (hκ : ∀ a, κ a = μ a + (wt C a - rhoC ε a))
+    (hn : nsq (ν + rhoC ε) = nsq κ) :
+    ∀ a, κ (w a) = ν a + rhoC ε a := by
+  obtain ⟨m, hm, hm2⟩ := hdom
   have i1 : ∑ a, κ (w a) * μ (w a) ≤ ∑ a, κ (w a) * ν a := by
     rw [← sub_nonneg, ← Finset.sum_sub_distrib]
     have e : ∀ a, κ (w a) * ν a - κ (w a) * μ (w a) = ∑ c, ∑ d, (m c d : ℝ) * (κ (w a) * root c d a) := fun a => by
@@ -191,23 +192,30 @@ theorem K_type_count : NumK := by
               · simp [h, h1, h1.not_gt, abs_of_nonpos (sub_nonpos.2 (hs b a h1 h.symm))]
             · simp [h]
     linarith
-  have hκw : ∀ a, κ (w a) = ν a + rhoC ε a := by
-    have e1 : ∑ a, κ a * κ a = ∑ a, κ (w a) * μ (w a) + ∑ a, κ a * (wt C a - rhoC ε a) := by
-      rw [Equiv.sum_comp w fun a => κ a * μ a, ← Finset.sum_add_distrib]
-      refine Finset.sum_congr rfl fun a _ => ?_
-      simp only [hκ, hμ, Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul]
-      ring
-    have e2 : ∑ a, κ (w a) * κ (w a) = ∑ a, κ a * κ a := Equiv.sum_comp w fun a => κ a * κ a
-    have e3 : ∑ a, (κ (w a) - (ν a + rhoC ε a)) ^ 2 = ∑ a, κ (w a) * κ (w a) - 2 * ∑ a, κ (w a) * ν a -
-        2 * ∑ a, κ (w a) * rhoC ε a + ∑ a, (ν a + rhoC ε a) * (ν a + rhoC ε a) := by
-      simp only [Finset.mul_sum, ← Finset.sum_sub_distrib, ← Finset.sum_add_distrib]
-      exact Finset.sum_congr rfl fun a _ => by ring
-    have hn' : ∑ a, (ν a + rhoC ε a) * (ν a + rhoC ε a) = ∑ a, κ a * κ a := hn
-    have h0 : ∑ a, (κ (w a) - (ν a + rhoC ε a)) ^ 2 = 0 :=
-      le_antisymm (by linarith) (Finset.sum_nonneg fun _ _ => sq_nonneg _)
-    intro a
-    have := (Finset.sum_eq_zero_iff_of_nonneg fun _ _ => sq_nonneg _).1 h0 a (mem_univ _)
-    exact sub_eq_zero.1 (pow_eq_zero_iff two_ne_zero |>.1 this)
+  have e1 : ∑ a, κ a * κ a = ∑ a, κ (w a) * μ (w a) + ∑ a, κ a * (wt C a - rhoC ε a) := by
+    rw [Equiv.sum_comp w fun a => κ a * μ a, ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    rw [hκ a]
+    ring
+  have e2 : ∑ a, κ (w a) * κ (w a) = ∑ a, κ a * κ a := Equiv.sum_comp w fun a => κ a * κ a
+  have e3 : ∑ a, (κ (w a) - (ν a + rhoC ε a)) ^ 2 = ∑ a, κ (w a) * κ (w a) - 2 * ∑ a, κ (w a) * ν a -
+      2 * ∑ a, κ (w a) * rhoC ε a + ∑ a, (ν a + rhoC ε a) * (ν a + rhoC ε a) := by
+    simp only [Finset.mul_sum, ← Finset.sum_sub_distrib, ← Finset.sum_add_distrib]
+    exact Finset.sum_congr rfl fun a _ => by ring
+  have hn' : ∑ a, (ν a + rhoC ε a) * (ν a + rhoC ε a) = ∑ a, κ a * κ a := hn
+  have h0 : ∑ a, (κ (w a) - (ν a + rhoC ε a)) ^ 2 = 0 :=
+    le_antisymm (by linarith) (Finset.sum_nonneg fun _ _ => sq_nonneg _)
+  intro a
+  have := (Finset.sum_eq_zero_iff_of_nonneg fun _ _ => sq_nonneg _).1 h0 a (mem_univ _)
+  exact sub_eq_zero.1 (pow_eq_zero_iff two_ne_zero |>.1 this)
+
+theorem K_type_count : NumK := by
+  intro n ε lam ν B C hl hB hBn hC _ hdom hn
+  set κ := lowK ε lam + rhoC ε - wt B with hκ
+  set μ := lowK ε lam + (2 : ℝ) • rhoC ε - wt B - wt C with hμ
+  obtain ⟨w, hw, hs⟩ := exists_sort ε κ
+  have hκw := sorted_weight_eq_of_norm_eq ε κ μ ν C hC w hw hs (hdom w hw)
+    (fun a => by simp only [hκ, hμ, Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul]; ring) hn
   let t : Fin n → Fin n → ℝ := fun a b =>
     (sig a b - sc ε a b) - 2 * (ind B a b - ind B b a) + sc ε (w.symm a) (w.symm b)
   have hws : ∀ c, ε (w.symm c) = ε c := fun c => by rw [← hw, Equiv.apply_symm_apply]

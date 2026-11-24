@@ -74,7 +74,6 @@ theorem WinC.map_inv {c s : ℝ} {B : Multiset ℂ} (h : WinC c s B) (hc : 0 < c
   obtain ⟨h1, h2⟩ := h
   refine ⟨fun x hx => ?_, ?_⟩
   · obtain ⟨b, hb, rfl⟩ := Multiset.mem_map.mp hx
-    beta_reduce
     obtain ⟨l, r⟩ := h1 b hb
     have hbpos : 0 < ‖b‖ := by
       by_contra hh

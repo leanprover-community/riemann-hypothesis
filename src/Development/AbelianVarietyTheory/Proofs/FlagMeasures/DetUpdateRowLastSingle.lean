@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.DetFromBlocksSingle
 public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -75,20 +76,20 @@ theorem det_fromBlocks_corner {K : Type} [CommRing K] (r : ℕ)
       = (Matrix.fromBlocks Z 0 (D b) W).updateRow (Sum.inl l)
           (Matrix.fromBlocks Z 0 (D b) W (Sum.inl l) + a • Pi.single (Sum.inr l) 1) := by
     ext (i | i) (j | j) <;> by_cases hi : i = l <;> by_cases hj : j = l <;>
-      simp [Matrix.updateRow_apply, hD, Matrix.diagonal_apply, Pi.single_apply, hi, hj, eq_comm] <;> grind
+      simp [Matrix.updateRow_apply, hD, Matrix.diagonal_apply, hi, hj, eq_comm]
   have h2 : (Matrix.fromBlocks Z 0 (D b) W).updateRow (Sum.inl l) (Pi.single (Sum.inr l) 1)
       = (Matrix.fromBlocks (Z.updateRow l 0) (D 1) 0 W).updateRow (Sum.inr l)
           (Matrix.fromBlocks (Z.updateRow l 0) (D 1) 0 W (Sum.inr l)
             + b • Pi.single (Sum.inl l) 1) := by
     ext (i | i) (j | j) <;> by_cases hi : i = l <;> by_cases hj : j = l <;>
-      simp [Matrix.updateRow_apply, hD, Matrix.diagonal_apply, Pi.single_apply, hi, hj, eq_comm] <;> grind
+      simp [Matrix.updateRow_apply, hD, Matrix.diagonal_apply, hi, hj, eq_comm]
   have h3 : (Matrix.fromBlocks (Z.updateRow l 0) (D 1) 0 W).updateRow (Sum.inr l)
         (Pi.single (Sum.inl l) 1)
       = (Matrix.fromBlocks (Z.updateRow l (Pi.single l 1)) 0 0
           (W.updateRow l (Pi.single l 1))).submatrix (Equiv.swap (Sum.inl l) (Sum.inr l)) id := by
     ext (i | i) (j | j) <;> by_cases hi : i = l <;> by_cases hj : j = l <;>
-      simp [Matrix.updateRow_apply, hD, Matrix.diagonal_apply, Pi.single_apply, hi, hj, eq_comm,
-        Equiv.swap_apply_def] <;> grind
+      simp [Matrix.updateRow_apply, hD, Matrix.diagonal_apply, hi, hj, eq_comm,
+        Equiv.swap_apply_def]
   have h0 : (Z.updateRow l 0).det = 0 :=
     Matrix.det_eq_zero_of_row_eq_zero l (by simp)
   change (Matrix.fromBlocks Z (D a) (D b) W).det = _
@@ -106,21 +107,6 @@ theorem det_gram_two_frames {K : Type} [CommRing K] (r : ℕ)
       (Matrix.diagonal fun i => if i = Fin.last r then -T' else 0)).det
       = (-1) ^ (r + 1) * (Z.det * W.det - T * T' * ((Z.submatrix Fin.castSucc Fin.castSucc).det
           * (W.submatrix Fin.castSucc Fin.castSucc).det)) := by
-  have hs : (Matrix.fromBlocks 0 1 1 0 :
-      Matrix (Fin (r + 1) ⊕ Fin (r + 1)) (Fin (r + 1) ⊕ Fin (r + 1)) K).det = (-1) ^ (r + 1) := by
-    have h : (Matrix.fromBlocks 0 1 1 0 :
-        Matrix (Fin (r + 1) ⊕ Fin (r + 1)) (Fin (r + 1) ⊕ Fin (r + 1)) K)
-        = Matrix.fromBlocks 1 (-1) 0 1 * Matrix.fromBlocks 1 1 1 0 := by
-      simp [Matrix.fromBlocks_multiply]
-    rw [h, Matrix.det_mul, Matrix.det_fromBlocks_zero₂₁, Matrix.det_fromBlocks_one₁₁]
-    simp [Matrix.det_neg]
-  have hm : Matrix.fromBlocks (Matrix.diagonal fun i => if i = Fin.last r then -T else 0) Z W
-      (Matrix.diagonal fun i => if i = Fin.last r then -T' else 0)
-      = Matrix.fromBlocks Z (Matrix.diagonal fun i => if i = Fin.last r then -T else 0)
-        (Matrix.diagonal fun i => if i = Fin.last r then -T' else 0) W
-        * Matrix.fromBlocks 0 1 1 0 := by
-    simp [Matrix.fromBlocks_multiply]
-  rw [hm, Matrix.det_mul, hs, det_fromBlocks_corner]
-  ring
+  apply GlobalTheory.SA.TransvG.det_fromBlocks_last <;> assumption
 
 end GlobalTheory

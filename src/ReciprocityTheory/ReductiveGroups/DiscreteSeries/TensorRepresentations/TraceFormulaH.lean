@@ -61,23 +61,34 @@ namespace ReciprocityTheory.ChartRestriction.DS
 
 variable {n : ℕ} {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 
-theorem tf_trace_data (dual : Bool) {lam : Fin n → ℝ} [CompleteSpace H] {ε : Fin n → Bool}
+private theorem tf_trace_data_of_closed_stability (dual : Bool) [CompleteSpace H] {ε : Fin n → Bool}
     {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} {D : Submodule ℂ H} {E : Fin n → Fin n → Module.End ℂ D}
-    (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D E) (hsm : ∀ v : D, IsSmoothVecU ε σ v)
-    {V : Submodule ℂ D} (hgap : StdGap ε lam) (hV : IsKIrrHW ε E (lowK ε lam) V)
-    (hc : ∀ v ∈ V, casimir E v = (casVal lam : ℂ) • v)
-    (hVK : ∀ k ∈ Kset ε, ∀ v ∈ V, ∃ w ∈ V, (w : H) = σ k v)
-    (hW : ∀ v ∈ genSub E V, ∀ w ∈ genSub E V, MemLp (fun g : Formalism.REAL.UJ ε =>
-      ((Real.sqrt (S7.hs (Formalism.MainNotions.S.umat g)) : ℝ) : ℂ) * inner ℂ ((w : D) : H) (σ (Formalism.MainNotions.S.umat g) ((v : D) : H)))
-      2 (Formalism.REAL.muG ε))
+    (hσ : IsURepOn (UJset ε) σ)
+    {V : Submodule ℂ D}
     {P : Module.End ℂ (Fin n → D)} (hP : IsGKEndo dual ε σ E (genSub E V) P)
     (hPP : ∀ f ∈ tensSub (genSub E V), P (P f) = P f)
     (hPB : ∀ f ∈ tensSub (genSub E V), ∀ g ∈ tensSub (genSub E V),
       tfFormBH ε (fun c => ((P f c : D) : H)) (fun c => ((g c : D) : H)) =
         tfFormBH ε (fun c => ((f c : D) : H)) (fun c => ((P g c : D) : H)))
-    {z : ℂ} (hEP : ∀ f ∈ tensSub (genSub E V), eeF dual E (P f) = z • P f)
     {c0 : ℂ} (hc0 : ∀ x ∈ genSub E V, ptr P x = c0 • x) {y : D} (hyV : y ∈ V) (hy0 : (y : H) ≠ 0) {d : ℝ}
-    (hd : Formalism.MainNotions.S.IsFdeg (Formalism.REAL.muG ε) (tfClRep σ (closGen E V)) d) :
+    (hd : Formalism.MainNotions.S.IsFdeg (Formalism.REAL.muG ε) (tfClRep σ (closGen E V)) d)
+    (hst0 : ∀ g ∈ UJset ε, ∀ x ∈ closGen E V, σ g x ∈ closGen E V)
+    (hst : ∀ g ∈ UJset ε, ∀ v ∈ (Submodule.span ℂ {v : tfL2n ε | ∃ f ∈ tensSub (genSub E V),
+        v = tfPh dual ε σ (y : H) (fun c => ((P f c : D) : H))}).topologicalClosure,
+      tfRdiag ε g v ∈ (Submodule.span ℂ {v : tfL2n ε | ∃ f ∈ tensSub (genSub E V),
+        v = tfPh dual ε σ (y : H) (fun c => ((P f c : D) : H))}).topologicalClosure)
+    (hmem : ∀ {f : Fin n → D}, f ∈ tensSub (genSub E V) → ∀ c : Fin n,
+      MemLp (fun g : Formalism.REAL.UJ ε => coefMap dual σ (Pi.single c (tfSgn ε c • (y : H)))
+        (fun j => ((f j : D) : H)) (Formalism.MainNotions.S.umat g)) 2 (Formalism.REAL.muG ε))
+    (hT2 : ∀ {ζ ζ' : Fin n → H}, (∀ c, ζ c ∈ closGen E V) → (∀ c, ζ' c ∈ closGen E V) →
+      (∀ c, MemLp (fun g : Formalism.REAL.UJ ε =>
+        coefMap dual σ (Pi.single c (tfSgn ε c • (y : H))) ζ (Formalism.MainNotions.S.umat g))
+        2 (Formalism.REAL.muG ε)) →
+      (∀ c, MemLp (fun g : Formalism.REAL.UJ ε =>
+        coefMap dual σ (Pi.single c (tfSgn ε c • (y : H))) ζ' (Formalism.MainNotions.S.umat g))
+        2 (Formalism.REAL.muG ε)) →
+      inner ℂ (tfPh dual ε σ y ζ) (tfJ ε (tfPh dual ε σ y ζ')) =
+        tfFormBH ε ζ ζ' * inner ℂ (y : H) (y : H) / (d : ℂ)) :
     ∃ (HP : Submodule ℂ (tfL2n ε)) (w : Fin n → tfL2n ε), IsClosed (HP : Set (tfL2n ε)) ∧
       HP = (Submodule.span ℂ {v : tfL2n ε | ∃ f ∈ tensSub (genSub E V),
         v = tfPh dual ε σ (y : H) (fun c => ((P f c : D) : H))}).topologicalClosure ∧
@@ -86,31 +97,17 @@ theorem tf_trace_data (dual : Bool) {lam : Fin n → ℝ} [CompleteSpace H] {ε 
         fun g => inner ℂ (w c) (tfRdiag ε (Formalism.MainNotions.S.umat g) v)) ∧
       c0 = (((∑ c, ‖w c‖ ^ 2) / d : ℝ) : ℂ) := by
   have hyG : y ∈ genSub E V := rorth_le_genSub hyV
-  have hyC : (y : H) ∈ closGen E V := Submodule.le_topologicalClosure _ ⟨y, hyG, rfl⟩
   have hdpos : 0 < d := hd.1
-  have hst0 := closGen_stable hgap hσ hD hV hc hVK
 
   set S : Submodule ℂ (tfL2n ε) := Submodule.span ℂ {v : tfL2n ε | ∃ f ∈ tensSub (genSub E V),
     v = tfPh dual ε σ (y : H) (fun c => ((P f c : D) : H))} with hS
   set HP : Submodule ℂ (tfL2n ε) := S.topologicalClosure with hHP
   have hHPc : IsClosed (HP : Set (tfL2n ε)) := S.isClosed_topologicalClosure
   have : CompleteSpace HP := hHPc.completeSpace_coe
-  have hst : ∀ g ∈ UJset ε, ∀ v ∈ HP, tfRdiag ε g v ∈ HP :=
-    tf_closure_stable dual hσ hD hsm hgap hV hc hVK hW hP hEP hyG
   have hSHP : S ≤ HP := S.le_topologicalClosure
   have hPm : ∀ f ∈ tensSub (genSub E V), P f ∈ tensSub (genSub E V) := hP.1
   have hcoeC : ∀ f : Fin n → D, f ∈ tensSub (genSub E V) → ∀ c : Fin n, ((f c : D) : H) ∈ closGen E V := fun f hf c =>
     Submodule.le_topologicalClosure _ ⟨f c, (tset_mem.1 hf) c, rfl⟩
-  have hmem := fun {f : Fin n → D} (hf : f ∈ tensSub (genSub E V)) =>
-    tf_ph_memLp dual hσ hD hsm hgap hV hc hVK hW hyG hf
-
-  have hT2 := fun {ζ ζ' : Fin n → H} (hζ : ∀ c, ζ c ∈ closGen E V) (hζ' : ∀ c, ζ' c ∈ closGen E V)
-    (hm : ∀ c, MemLp (fun g : Formalism.REAL.UJ ε =>
-      coefMap dual σ (Pi.single c (tfSgn ε c • (y : H))) ζ (Formalism.MainNotions.S.umat g)) 2 (Formalism.REAL.muG ε))
-    (hm' : ∀ c, MemLp (fun g : Formalism.REAL.UJ ε =>
-      coefMap dual σ (Pi.single c (tfSgn ε c • (y : H))) ζ' (Formalism.MainNotions.S.umat g)) 2 (Formalism.REAL.muG ε)) =>
-    tensor_functor_separation dual hσ hD hgap hV hc hVK hd hyC hζ hζ' hm hm'
-
   set Nr : ℝ := ‖(y : H)‖ ^ 2 with hNr
   have hNpos : 0 < Nr := pow_pos (norm_pos_iff.2 hy0) 2
   have hNc : inner ℂ (y : H) (y : H) = (Nr : ℂ) := by
@@ -336,5 +333,37 @@ theorem tf_trace_data (dual : Bool) {lam : Fin n → ℝ} [CompleteSpace H] {ε 
   congr 1
   rw [hκ]
   field_simp
+
+theorem tf_trace_data (dual : Bool) {lam : Fin n → ℝ} [CompleteSpace H] {ε : Fin n → Bool}
+    {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} {D : Submodule ℂ H} {E : Fin n → Fin n → Module.End ℂ D}
+    (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D E) (hsm : ∀ v : D, IsSmoothVecU ε σ v)
+    {V : Submodule ℂ D} (hgap : StdGap ε lam) (hV : IsKIrrHW ε E (lowK ε lam) V)
+    (hc : ∀ v ∈ V, casimir E v = (casVal lam : ℂ) • v)
+    (hVK : ∀ k ∈ Kset ε, ∀ v ∈ V, ∃ w ∈ V, (w : H) = σ k v)
+    (hW : ∀ v ∈ genSub E V, ∀ w ∈ genSub E V, MemLp (fun g : Formalism.REAL.UJ ε =>
+      ((Real.sqrt (S7.hs (Formalism.MainNotions.S.umat g)) : ℝ) : ℂ) * inner ℂ ((w : D) : H) (σ (Formalism.MainNotions.S.umat g) ((v : D) : H)))
+      2 (Formalism.REAL.muG ε))
+    {P : Module.End ℂ (Fin n → D)} (hP : IsGKEndo dual ε σ E (genSub E V) P)
+    (hPP : ∀ f ∈ tensSub (genSub E V), P (P f) = P f)
+    (hPB : ∀ f ∈ tensSub (genSub E V), ∀ g ∈ tensSub (genSub E V),
+      tfFormBH ε (fun c => ((P f c : D) : H)) (fun c => ((g c : D) : H)) =
+        tfFormBH ε (fun c => ((f c : D) : H)) (fun c => ((P g c : D) : H)))
+    {z : ℂ} (hEP : ∀ f ∈ tensSub (genSub E V), eeF dual E (P f) = z • P f)
+    {c0 : ℂ} (hc0 : ∀ x ∈ genSub E V, ptr P x = c0 • x) {y : D} (hyV : y ∈ V) (hy0 : (y : H) ≠ 0) {d : ℝ}
+    (hd : Formalism.MainNotions.S.IsFdeg (Formalism.REAL.muG ε) (tfClRep σ (closGen E V)) d) :
+    ∃ (HP : Submodule ℂ (tfL2n ε)) (w : Fin n → tfL2n ε), IsClosed (HP : Set (tfL2n ε)) ∧
+      HP = (Submodule.span ℂ {v : tfL2n ε | ∃ f ∈ tensSub (genSub E V),
+        v = tfPh dual ε σ (y : H) (fun c => ((P f c : D) : H))}).topologicalClosure ∧
+      (∀ g ∈ UJset ε, ∀ v ∈ HP, tfRdiag ε g v ∈ HP) ∧
+      (∀ v ∈ HP, ∀ c, ((v c : L2 ε) : Formalism.REAL.UJ ε → ℂ) =ᵐ[Formalism.REAL.muG ε]
+        fun g => inner ℂ (w c) (tfRdiag ε (Formalism.MainNotions.S.umat g) v)) ∧
+      c0 = (((∑ c, ‖w c‖ ^ 2) / d : ℝ) : ℂ) := by
+  have hyG : y ∈ genSub E V := rorth_le_genSub hyV
+  have hyC : (y : H) ∈ closGen E V := Submodule.le_topologicalClosure _ ⟨y, hyG, rfl⟩
+  exact tf_trace_data_of_closed_stability dual hσ hP hPP hPB hc0 hyV hy0 hd
+    (closGen_stable hgap hσ hD hV hc hVK)
+    (tf_closure_stable dual hσ hD hsm hgap hV hc hVK hW hP hEP hyG)
+    (fun hf => tf_ph_memLp dual hσ hD hsm hgap hV hc hVK hW hyG hf)
+    (fun hζ hζ' hm hm' => tensor_functor_separation dual hσ hD hgap hV hc hVK hd hyC hζ hζ' hm hm')
 
 end ReciprocityTheory.ChartRestriction.DS

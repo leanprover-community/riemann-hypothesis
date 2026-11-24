@@ -95,16 +95,16 @@ theorem inFrame_j_nb {x : G2 σ L.Y} {β : Matrix (Fin L.n) (Fin L.n) (AE F E)}
   · rcases eq_or_ne r L.i₀ with rfl | hr
     · rw [(kl _).1]; simp [Matrix.one_apply]
     rcases eq_or_ne c L.i₀ with rfl | hc
-    · rw [(kl _).2]; simp [Matrix.one_apply, hr]
+    · rw [(kl _).2]; simp [hr]
     obtain ⟨k, rfl⟩ := (L.rng r).1 hr
     obtain ⟨l, rfl⟩ := (L.rng c).1 hc
     have := emb (Sum.inl k) (Sum.inl l)
     simp only [Sum.map_inl, Matrix.fromBlocks_apply₁₁] at this ⊢
     rw [this, one_em]
   · rcases eq_or_ne r L.i₀ with rfl | hr
-    · rw [(kl _).1]; simp [Matrix.one_apply, padZ]
+    · rw [(kl _).1]; simp [padZ]
     rcases eq_or_ne c L.i₀ with rfl | hc
-    · rw [(kr _).2]; simp [Matrix.one_apply, padZ]
+    · rw [(kr _).2]; simp [padZ]
     obtain ⟨k, rfl⟩ := (L.rng r).1 hr
     obtain ⟨l, rfl⟩ := (L.rng c).1 hc
     have := emb (Sum.inl k) (Sum.inr l)
@@ -112,9 +112,9 @@ theorem inFrame_j_nb {x : G2 σ L.Y} {β : Matrix (Fin L.n) (Fin L.n) (AE F E)}
     rw [this]
     simp [padZ, ComplexParameterFamilyContinuity.em_ne, pre_em]
   · rcases eq_or_ne r L.i₀ with rfl | hr
-    · rw [(kr _).1]; simp [Matrix.one_apply]
+    · rw [(kr _).1]; simp
     rcases eq_or_ne c L.i₀ with rfl | hc
-    · rw [(kl _).2]; simp [Matrix.one_apply]
+    · rw [(kl _).2]; simp
     obtain ⟨k, rfl⟩ := (L.rng r).1 hr
     obtain ⟨l, rfl⟩ := (L.rng c).1 hc
     have := emb (Sum.inr k) (Sum.inl l)
@@ -124,7 +124,7 @@ theorem inFrame_j_nb {x : G2 σ L.Y} {β : Matrix (Fin L.n) (Fin L.n) (AE F E)}
   · rcases eq_or_ne r L.i₀ with rfl | hr
     · rw [(kr _).1]; simp [Matrix.one_apply]
     rcases eq_or_ne c L.i₀ with rfl | hc
-    · rw [(kr _).2]; simp [Matrix.one_apply, hr]
+    · rw [(kr _).2]; simp [hr]
     obtain ⟨k, rfl⟩ := (L.rng r).1 hr
     obtain ⟨l, rfl⟩ := (L.rng c).1 hc
     have := emb (Sum.inr k) (Sum.inr l)

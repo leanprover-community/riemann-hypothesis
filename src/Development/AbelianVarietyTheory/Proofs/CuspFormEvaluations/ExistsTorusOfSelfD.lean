@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.HermitianThetaLevelDataFormsSystem
 public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsStabForm
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.IsotropicCoefficientSplitting
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.PeriodTorusConstantEqBase
@@ -74,27 +75,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r g : ℕ} {X : Dat
 
 theorem nondeg {bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ} (hs : IsSympl X bas) :
     LinearMap.BilinForm.Nondegenerate (EFBil X) := by
-
-  have key : ∀ u : Fin r → E, (∀ v, EF X u v = 0) → u = 0 := by
-    intro u hu
-    have hc : crd X bas u = 0 := by
-      funext j
-      rcases j with i | i
-      · have h := hu (vecQ X bas (Pi.single (Sum.inr i) 1))
-        rw [EF_crd hs, crd_vecQ hs] at h
-        simpa [Pi.single_apply] using h
-      · have h := hu (vecQ X bas (Pi.single (Sum.inl i) 1))
-        rw [EF_crd hs, crd_vecQ hs] at h
-        simpa [Pi.single_apply] using h
-    rw [← vecQ_crd X bas u, hc, vecQ_zero]
-  have hB : ∀ u v, EFBil X u v = EF X u v := fun _ _ => rfl
-  refine show LinearMap.SeparatingLeft (EFBil X) ∧ LinearMap.SeparatingRight (EFBil X) from
-    ⟨fun u hu => key u fun v => ?_, fun v hv => key v fun u => ?_⟩
-  · rw [← hB]
-    exact hu v
-  · have h := hv u
-    rw [hB] at h
-    rw [TensLat.EF_swap, h, neg_zero]
+  apply GlobalTheory.SW.RecSys.EFBil_nondegenerate <;> assumption
 
 theorem perf {bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ} (hs : IsSympl X bas) {L : Lt E r} (hL : SelfD X L)
     (φ : L →+ ℤ) : ∃ u ∈ L, ∀ v : L, (φ v : ℚ) = EF X u v := by

@@ -212,17 +212,8 @@ theorem split_prime_local_holds : SplitPrimeLoc := by
   refine ⟨fun v hv => ⟨card_quot_split p hp hF v hv, ?_⟩, hF⟩
   have h1 := intValuation_split p hp hF v hv
   first
-  | exact h1
   | (rw [← h1, ← HeightOneSpectrum.valuation_of_algebraMap (K := F),
       ← HeightOneSpectrum.valuedAdicCompletion_eq_valuation']; congr 1; exact (map_natCast (algebraMap F (v.adicCompletion F)) p).symm)
-  | (rw [← h1, ← HeightOneSpectrum.valuation_of_algebraMap (K := F),
-      ← HeightOneSpectrum.valuedAdicCompletion_eq_valuation']; congr 1; simp; done)
-  | (rw [← h1, ← HeightOneSpectrum.valuation_of_algebraMap (K := F),
-      ← HeightOneSpectrum.valuedAdicCompletion_eq_valuation']; congr 1; norm_cast; done)
-  | (rw [← h1, ← HeightOneSpectrum.valuation_of_algebraMap (K := F),
-      ← HeightOneSpectrum.valuedAdicCompletion_eq_valuation']; simp; done)
-  | (rw [← h1, ← HeightOneSpectrum.valuation_of_algebraMap (K := F),
-      ← HeightOneSpectrum.valuedAdicCompletion_eq_valuation']; rfl)
 
 end Formalism.L2.SG.Pf.SatGramLoc
 

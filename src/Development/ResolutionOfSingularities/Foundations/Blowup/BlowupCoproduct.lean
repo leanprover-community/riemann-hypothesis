@@ -147,30 +147,10 @@ private theorem map_appLE_ker_comp {T W Z : Scheme.{u}} (f : T ⟶ W) (g : W ⟶
   rw [hid, hcomp]
   exact map_ker_comp_of_surjective _ _ hsurj
 
-private theorem ker_comap_of_isOpenImmersion {T W Z : Scheme.{u}} (f : T ⟶ W) (g : W ⟶ Z)
-    [IsOpenImmersion g] [QuasiCompact f] [QuasiCompact (f ≫ g)] :
-    (f ≫ g).ker.comap g = f.ker := by
-  have key : ∀ V : W.affineOpens, ((f ≫ g).ker.comap g).ideal V = f.ker.ideal V := by
-    intro V
-    have hU : IsAffineOpen (g ''ᵁ (V : W.Opens)) := isAffineOpen_image g (V : W.Opens) V.2
-    have hpre : g ⁻¹ᵁ (g ''ᵁ (V : W.Opens)) = (V : W.Opens) :=
-      preimage_image_opens g (V : W.Opens)
-    have e : (V : W.Opens) ≤ g ⁻¹ᵁ (g ''ᵁ (V : W.Opens)) := hpre.ge
-    have h1 : ((f ≫ g).ker.comap g).ideal V
-        = Ideal.map (CommRingCat.Hom.hom (g.appLE (g ''ᵁ (V : W.Opens)) (V : W.Opens) e))
-            ((f ≫ g).ker.ideal ⟨g ''ᵁ (V : W.Opens), hU⟩) :=
-      Scheme.IdealSheafData.comap_ideal_eq_map_appLE ((f ≫ g).ker) g
-        ⟨g ''ᵁ (V : W.Opens), hU⟩ V e
-    rw [h1, ker_ideal_eq_ker_app (f ≫ g) ⟨g ''ᵁ (V : W.Opens), hU⟩, ker_ideal_eq_ker_app f V]
-    exact map_appLE_ker_comp f g (g ''ᵁ (V : W.Opens)) (V : W.Opens) hpre e
-      (surjective_of_isIso (g.app (g ''ᵁ (V : W.Opens))) inferInstance)
-  ext V
-  rw [key V]
-
 theorem ker_comp_coprod_inl_comap_inl {X Y Z : Scheme.{u}} (f : Z ⟶ X)
     [QuasiCompact f] [QuasiCompact (f ≫ (coprod.inl : X ⟶ X ⨿ Y))] :
     (f ≫ (coprod.inl : X ⟶ X ⨿ Y)).ker.comap (coprod.inl : X ⟶ X ⨿ Y) = f.ker :=
-  ker_comap_of_isOpenImmersion f (coprod.inl : X ⟶ X ⨿ Y)
+  _root_.FunctorialResolution.Blowup.comap_ker_comp_of_isOpenImmersion f (coprod.inl : X ⟶ X ⨿ Y)
 
 private theorem ideal_eq_of_map_eq_of_bijective {A B : Type u} [CommRing A] [CommRing B]
     (φ : A →+* B) (hφ : Function.Bijective φ) {K L : Ideal A}

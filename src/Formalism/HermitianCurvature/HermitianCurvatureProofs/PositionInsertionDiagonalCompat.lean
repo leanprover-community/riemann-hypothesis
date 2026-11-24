@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.ScalarCommuteTransposedRMatrixEntry
 public import Formalism.HermitianCurvature.StatementWd
 public import Mathlib.CategoryTheory.Category.Basic
 import Mathlib.Algebra.Order.Floor.Extended
@@ -66,9 +67,9 @@ theorem cond_iff (a : S) (i j : Fin 2) (x y : Ix S) :
     funext b
     by_cases hb : b = a
     · subst hb; simp [h2]
-    · simp [Function.update_apply, hb, h3 b hb]
+    · simp [hb, h3 b hb]
   · rintro ⟨h1, rfl⟩
-    exact ⟨h1, by simp, fun b hb => by simp [Function.update_apply, hb]⟩
+    exact ⟨h1, by simp, fun b hb => by simp [hb]⟩
 
 theorem eU_apply (a : S) (i j : Fin 2) (x y : Ix S) :
     (eU a i j : SlopeTestRemainingChoices S A) x y = if x a = i ∧ y = Function.update x a j then 1 else 0 := by
@@ -107,7 +108,7 @@ theorem eU_comm_of_ne {a c : S} (hc : c ≠ a) (i j k l : Fin 2) :
   ext x y
   rw [eU_mul_apply, eU_mul_apply, eU_apply, eU_apply]
   by_cases hxc : x c = i <;> by_cases hxa : x a = k <;>
-    simp [Function.update_apply, hc, Ne.symm hc, hxc, hxa, Function.update_comm hc j l x]
+    simp [hc, Ne.symm hc, hxc, hxa, Function.update_comm hc j l x]
 
 theorem star_eU [StarRing A] (a : S) (i j : Fin 2) :
     star (eU a i j : SlopeTestRemainingChoices S A) = eU a j i := by
@@ -124,21 +125,7 @@ theorem star_eU [StarRing A] (a : S) (i j : Fin 2) :
 
 theorem ins_mul (a : S) (M N : M2 (SlopeTestRemainingChoices S A)) (hM : FreeOf2 a M) :
     ins a (M * N) = ins a M * ins a N := by
-  have key : ∀ i j k l : Fin 2, (eU a i j : SlopeTestRemainingChoices S A) * M i j * (eU a k l * N k l) =
-      if j = k then eU a i l * (M i j * N k l) else 0 := by
-    intro i j k l
-    have e1 : (eU a i j : SlopeTestRemainingChoices S A) * M i j * (eU a k l * N k l) =
-        eU a i j * (M i j * eU a k l) * N k l := by
-      simp only [mul_assoc]
-    rw [e1, ← (hM i j k l).eq]
-    have e2 : (eU a i j : SlopeTestRemainingChoices S A) * (eU a k l * M i j) * N k l =
-        (eU a i j * eU a k l) * (M i j * N k l) := by
-      simp only [mul_assoc]
-    rw [e2, eU_mul_eU]
-    split_ifs <;> simp
-  simp only [ins, Fin.sum_univ_two, Matrix.mul_apply, add_mul, mul_add, key]
-  simp
-  abel
+  apply Formalism.FourierDecayAlt.P.Wd7.ins_mul <;> assumption
 
 theorem ins_star [StarRing A] (a : S) (M : M2 (SlopeTestRemainingChoices S A)) (hM : FreeOf2 a M) :
     star (ins a M) = ins a Mᴴ := by

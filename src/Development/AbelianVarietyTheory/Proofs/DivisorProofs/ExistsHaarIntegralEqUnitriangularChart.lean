@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Counterexamples.UpperHalfSurvey.ExistsFundSetOrth
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HaarChart
 public import Development.AbelianVarietyTheory.Proofs.TorusHaarMeasure.DetNeZeroOfIsOrth
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IsProbabilityMeasureAutQuotientNormalized
@@ -161,22 +162,7 @@ theorem frameOf_eq_lmulC (X : Data E r) (g : RealGrp X) :
   exact key
 
 theorem muF_univ_ne_zero (X : Data E r) {x0 : Frame X.Ψ r} (h : IsOrth X x0) : muF X x0 Set.univ ≠ 0 := by
-  have hO := OntoB.isOpen_OmF X x0
-  unfold muF
-  rw [withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ]
-  intro h0
-  have hm : AEMeasurable (fun z => ENNReal.ofReal (densF X x0 z)) (volume.restrict (OmF X x0)) :=
-    (OntoB.densF_continuousOn.aemeasurable hO.measurableSet).ennreal_ofReal
-  rw [lintegral_eq_zero_iff' hm] at h0
-  have h1 : ∀ᵐ z ∂(volume.restrict (OmF X x0)), False := by
-    filter_upwards [h0, ae_restrict_mem hO.measurableSet] with z hz hz'
-    have := OntoB.densF_pos hz'
-    simp only [Pi.zero_apply, ENNReal.ofReal_eq_zero] at hz
-    linarith
-  rw [ae_iff] at h1
-  simp only [not_false_eq_true, Set.setOf_true, Measure.restrict_apply MeasurableSet.univ,
-    Set.univ_inter] at h1
-  exact (hO.measure_pos volume ⟨0, IW.zero_mem_OmF X x0 h⟩).ne' h1
+  apply GlobalTheory.MetricWeightTest.muF_ne_zero <;> assumption
 
 theorem exists_haarChart (X : Data E r) : ∃ c : ℝ≥0∞, c ≠ 0 ∧ c ≠ ⊤ ∧ HaarChart X c := by
   classical

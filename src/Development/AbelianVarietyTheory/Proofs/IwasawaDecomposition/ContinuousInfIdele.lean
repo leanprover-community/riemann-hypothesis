@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.ThetaLifts.Reductions.WeightConstants.Bridge
 public import Formalism.LocalToGlobal.UnitaryNorms.IsUnitaryNormOf
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -60,21 +61,7 @@ namespace GlobalTheory.InfTypeLocal
 
 theorem denseRange_atInf (L : Type) [Field L] [NumberField L] :
     DenseRange (fun (k : Lˣ) (w : InfinitePlace L) => atInf w k) := by
-  have hg : Topology.IsOpenEmbedding
-      (Pi.map (fun (w : InfinitePlace L) => (Units.val : (w.Completion)ˣ → w.Completion))) :=
-    Topology.IsOpenEmbedding.piMap (fun w => Units.isOpenEmbedding_val)
-  rw [DenseRange, dense_iff_inter_open]
-  rintro U hU ⟨u, hu⟩
-  obtain ⟨k, v, hv, hk⟩ := (InfiniteAdeleRing.denseRange_algebraMap L).exists_mem_open (hg.isOpenMap U hU) ⟨_, u, hu, rfl⟩
-  have hk0 : k ≠ 0 := by
-    rintro rfl
-    obtain ⟨w⟩ : Nonempty (InfinitePlace L) := inferInstance
-    have h1 := congrFun hk w
-    rw [map_zero] at h1
-    exact (v w).ne_zero h1
-  refine ⟨v, hv, Units.mk0 k hk0, ?_⟩
-  funext w
-  exact Units.ext (congrFun hk w).symm
+  apply PositivityTheory.ThKRed.HK.dense_atInf <;> assumption
 
 theorem continuous_infIdele (L : Type) [Field L] [NumberField L] (w : InfinitePlace L) :
     Continuous (infIdele L w) := by

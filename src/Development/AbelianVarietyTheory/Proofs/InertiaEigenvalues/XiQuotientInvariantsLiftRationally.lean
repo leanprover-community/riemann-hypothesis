@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.LocalTheoremOfUnramifiedLifting
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.ExpStar
 public import Mathlib.Algebra.Lie.OfAssociative
 public import Development.AbelianVarietyTheory.CrystallinePeriods.RingIface
@@ -570,22 +571,7 @@ theorem goodO : GoodO (Qp := ℚ_[l]) ℚ_[l] ℤ_[l] := by
   exact PadicInt.isOpenEmbedding_coe.isOpen_range
 
 theorem finKs (K : FinExt l) (s : ℕ) : FiniteDimensional ℚ_[l] ↥(Ks K s) := by
-  classical
-  haveI := K.2
-  haveI : FiniteDimensional ℚ_[l] ↥(K0 K) := FiniteDimensional.of_injective
-    (IntermediateField.inclusion (inf_le_left : K0 K ≤ K.1)).toLinearMap
-    (IntermediateField.inclusion_injective (inf_le_left : K0 K ≤ K.1))
-  have hpos : 0 < l ^ s := pow_pos (Fact.out : l.Prime).pos s
-  haveI : Finite {x : Om l | x ^ (l ^ s) = 1} := by
-    refine Set.Finite.to_subtype (Set.Finite.subset
-      (Polynomial.nthRoots (l ^ s) (1 : Om l)).toFinset.finite_toSet ?_)
-    intro x hx
-    simpa [Polynomial.mem_nthRoots hpos] using hx
-  haveI : FiniteDimensional ℚ_[l]
-      ↥(IntermediateField.adjoin ℚ_[l] {x : Om l | x ^ (l ^ s) = 1}) :=
-    IntermediateField.finiteDimensional_adjoin fun x _ =>
-      (Algebra.IsAlgebraic.isAlgebraic x).isIntegral
-  exact IntermediateField.finiteDimensional_sup _ _
+  apply Formalism.MainNotions.WachCoordinates.Br.fd_Ks <;> assumption
 
 def lev (K : FinExt l) (j : ℕ) : FinExt l := ⟨Ks K j, finKs K j⟩
 

@@ -66,11 +66,6 @@ theorem smodEq_span_singleton_pow_iff (a x y : R) (n : ℕ) :
   rw [SModEq.sub_mem, smul_eq_mul, Ideal.mul_top, Ideal.span_singleton_pow,
     Ideal.mem_span_singleton]
 
-theorem le_span_singleton_of_forall_mem_eq {π ξ : R} [IsAdicComplete (Ideal.span {π}) R]
-    {J : Ideal R} (h : ∀ x ∈ J, ∃ a z, z ∈ J ∧ x = a * ξ + z * π) :
-    J ≤ Ideal.span {ξ} :=
-  _root_.UpperTheory.Reformulated.B.Yhc2.le_span_singleton_of_forall_mem_eq h
-
 end Adic
 
 section WittPerfect
@@ -370,7 +365,7 @@ theorem ker_fontaineTheta_eq_span {ξ : 𝕎𝒪♭} (hξ : ξ ∈ RingHom.ker �
       intro h
       rw [h, untilt_zero, ZeroMemClass.coe_zero, norm_zero] at hnξ0
       exact hpK (norm_eq_zero.1 hnξ0.symm)
-    refine le_span_singleton_of_forall_mem_eq (π := (p : 𝕎𝒪♭)) fun x hx => ?_
+    refine _root_.UpperTheory.Reformulated.B.Yhc2.le_span_singleton_of_forall_mem_eq (π := (p : 𝕎𝒪♭)) fun x hx => ?_
     obtain ⟨y, hy⟩ := exists_eq_teichmuller_add_mul_p x
     have hθx := untilt_coeff_zero_add_eq_zero hx hy
     have hnx0 : ‖((PreTilt.untilt (x.coeff 0) : 𝒪) : K)‖ ≤ ‖(p : K)‖ := by

@@ -102,7 +102,7 @@ theorem gam'_last (N' : ℕ) (Z : MatZ D) :
     Gam' N' Z (Fin.last D.R.rS) (Fin.last D.R.rS) =
       -(N' : D.host.E) * (star (Z⁻¹ (Fin.last D.R.rS) (Fin.last D.R.rS)) * Z⁻¹ (Fin.last D.R.rS) (Fin.last D.R.rS)) := by
   simp only [Gam', Gam, Matrix.mul_apply, Matrix.conjTranspose_apply, Matrix.of_apply, ite_and]
-  simp [Finset.sum_ite_eq', Finset.sum_ite_eq, mul_ite, ite_mul]
+  simp [Finset.sum_ite_eq', mul_ite, ite_mul]
   ring
 
 theorem tv_star (N N' : ℕ) (Z : MatZ D) : star (tv N N' Z) = tv N N' Z := by

@@ -58,9 +58,8 @@ variable {n : ℕ}
 theorem isFdeg_smul {ε : Fin n → Bool} {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} {μ : Measure (Formalism.REAL.UJ ε)} {d c : ℝ} (hc : 0 < c)
     (hd : Formalism.MainNotions.S.IsFdeg μ σ d) : Formalism.MainNotions.S.IsFdeg (ENNReal.ofReal c • μ) σ (d / c) := by
-  obtain ⟨hd0, hd⟩ := hd
-  refine ⟨div_pos hd0 hc, fun v w v' w' => ?_⟩
-  obtain ⟨hi, he⟩ := hd v w v' w'
+  refine ⟨div_pos hd.1 hc, fun v w v' w' => ?_⟩
+  obtain ⟨hi, he⟩ := hd.2 v w v' w'
   refine ⟨hi.smul_measure ENNReal.ofReal_ne_top, ?_⟩
   rw [integral_smul_measure, he, ENNReal.toReal_ofReal hc.le, Complex.real_smul,
     Complex.ofReal_div, div_div_eq_mul_div]

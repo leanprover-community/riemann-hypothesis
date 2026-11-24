@@ -234,6 +234,4 @@ theorem unitaryComplementMove_of_isotropic : UnitaryComplementMove (E := E) := b
 
 end Data
 
-theorem unitaryComplementMove : UnitaryComplementMove (E := E) := Data.unitaryComplementMove_of_isotropic
-
 end ReciprocityTheory.ChartRestriction.G.FD

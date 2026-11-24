@@ -62,7 +62,6 @@ theorem sf_smul (c : ℝ≥0∞) (hc : c ≠ ⊤) : SigmaFinite (c • (volume :
   lift c to NNReal using hc
   first
   | exact (inferInstance : SigmaFinite (c • (volume : Measure ℂ)))
-  | (rw [← ENNReal.smul_def]; infer_instance)
 
 theorem pi_smul_vol {ι : Type*} [Fintype ι] (c : ι → ℝ≥0∞) (hc : ∀ i, c i ≠ ⊤) :
     Measure.pi (fun i => c i • (volume : Measure ℂ)) = (∏ i, c i) • (volume : Measure (ι → ℂ)) := by

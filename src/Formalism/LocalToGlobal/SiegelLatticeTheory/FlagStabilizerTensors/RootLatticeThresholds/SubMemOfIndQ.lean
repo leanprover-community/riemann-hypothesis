@@ -61,8 +61,7 @@ variable {D : D7} {T : D.host.E} (F0 : FlagG (VS D) D.R.rS T)
 
 theorem fix_e {c : (VS D).V ≃ₗ[D.host.E] (VS D).V} (hfix : ∀ a, c (F0.fvec a) = F0.fvec a) (i : Fin D.R.rS) :
     c (F0.e i) = F0.e i := by
-  have h := hfix (Fin.castSucc i)
-  simpa [FlagG.fvec] using h
+  simpa [FlagG.fvec] using hfix (Fin.castSucc i)
 
 theorem fix_X {c : (VS D).V ≃ₗ[D.host.E] (VS D).V} (hfix : ∀ a, c (F0.fvec a) = F0.fvec a) :
     ∀ x ∈ F0.X, c x = x := by
@@ -82,10 +81,7 @@ theorem Xa_le_X (j : ℕ) : F0.Xa j ≤ F0.X := Submodule.span_mono (Set.image_s
 theorem perp_maps {c : (VS D).V ≃ₗ[D.host.E] (VS D).V} (hc : c ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT)
     (hfix : ∀ a, c (F0.fvec a) = F0.fvec a) : ∀ y ∈ perpS (VS D) F0.X, c y ∈ perpS (VS D) F0.X := by
   intro y hy x hx
-  have h1 : c x = x := fix_X F0 hfix x hx
-  have h2 := hc x y
-  rw [h1] at h2
-  rw [h2]
+  rw [← fix_X F0 hfix x hx, hc x y]
   exact hy x hx
 
 def indQ (c : (VS D).V ≃ₗ[D.host.E] (VS D).V) (hc : c ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT)
@@ -136,25 +132,14 @@ theorem nlam_of_sub {Λ : Submodule (𝓞 D.host.E) (VS D).V} {c c' : (VS D).V �
   obtain ⟨hci', hcg'⟩ := hA'
   have hX : ∀ x ∈ F0.X, c x = x := fix_X F0 hfix
   have hX' : ∀ x ∈ F0.X, c' x = x := fix_X F0 hfix'
-  have hXinv : ∀ x ∈ F0.X, c⁻¹ x = x := fun x hx => by
-    show c.symm x = x
-    rw [LinearEquiv.symm_apply_eq, hX x hx]
+  have hXinv : ∀ x ∈ F0.X, c⁻¹ x = x := fix_X F0 (inv_fix F0 hfix)
   have hn : ∀ x ∈ F0.X, (c⁻¹ * c') x = x := fun x hx => by
     show c⁻¹ (c' x) = x
     rw [hX' x hx, hXinv x hx]
   refine ⟨⟨Subgroup.mul_mem _ (Subgroup.inv_mem _ hci) hci', ?_⟩, fun j x hx => ?_, fun x hx => ?_⟩
-  · have hinv : Formalism.HermitianLatticesTheory.gmap c⁻¹ Λ = Λ := by
-      conv_lhs => rw [← hcg]
-      rw [← gmap_mul_sat, inv_mul_cancel]
-      ext x
-      constructor
-      · rintro ⟨y, hy, rfl⟩
-        exact hy
-      · intro hx
-        exact ⟨x, hx, rfl⟩
+  · have hinv : Formalism.HermitianLatticesTheory.gmap c⁻¹ Λ = Λ := gmap_inv_of hcg
     rw [gmap_mul_sat, hcg', hinv]
-  · have hxX : x ∈ F0.X := Xa_le_X F0 (j + 1) hx
-    rw [hn x hxX, sub_self]
+  · rw [hn x (Xa_le_X F0 (j + 1) hx), sub_self]
     exact Submodule.zero_mem _
   · have hxp : x ∈ perpS (VS D) F0.X := by
       intro z hz
@@ -169,8 +154,7 @@ theorem nlam_of_sub {Λ : Submodule (𝓞 D.host.E) (VS D).V} {c c' : (VS D).V �
       rw [LinearEquiv.symm_apply_apply]
     rw [e1]
     have hmem : c' x - c x ∈ F0.X := by
-      have := F0.X.neg_mem hd
-      simpa using this
+      simpa using F0.X.neg_mem hd
     rw [hXinv _ hmem]
     exact hmem
 
@@ -239,8 +223,7 @@ theorem card_le {t : RT Y u u'} (S0 : Finset (TT Y u u')) (hS0 : ∀ s ∈ S0, s
     obtain ⟨n', hn', ν', hν', he'⟩ := (hcf s').2.2.2
     exact Subtype.ext (eq_of_dec (h₀.trans (hS0 s s.2).symm) (h₀.trans (hS0 s' s'.2).symm) hn hn' hν hν'
       (hcf s).1 (hcf s').1 (hcf s).2.1 (hcf s').2.1 (hcf s).2.2.1 (hcf s').2.2.1 he he' hq)
-  have := Nat.card_le_card_of_injective f hf
-  simpa [Nat.card_eq_fintype_card] using this
+  simpa [Nat.card_eq_fintype_card] using Nat.card_le_card_of_injective f hf
 
 end Fib
 

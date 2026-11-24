@@ -160,8 +160,7 @@ theorem pY_mem (v : S.V) : pY e f v ∈ Submodule.span E (Set.range f) := by
   exact Submodule.sum_mem _ fun a _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨a, rfl⟩)
 
 include hee hef in
-theorem pj_of_memX (x : S.V) (hx : x ∈ Submodule.span E (Set.range e)) : pj e f x = 0 := by
-  rw [pj_eq, pX_of_mem hef x hx, pY_of_memX hee x hx]; abel
+alias pj_of_memX := _root_.Formalism.L2.SG.Pf.pj_X
 
 include hff hef in
 theorem pj_of_memY (y : S.V) (hy : y ∈ Submodule.span E (Set.range f)) : pj e f y = 0 := by

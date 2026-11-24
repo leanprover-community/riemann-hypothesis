@@ -197,7 +197,7 @@ theorem continuous_col : Continuous fun x : Fin m → F => mir 1 x :=
 
 theorem lr_mir (h : GL (Fin m) F) (x : Fin m → F) : lr (mir h x) = lr 1 := by
   funext j
-  induction j using Fin.lastCases <;> simp [lr, Matrix.one_apply, (Fin.castSucc_ne_last _).symm]
+  induction j using Fin.lastCases <;> simp [lr, (Fin.castSucc_ne_last _).symm]
 
 theorem eq_mirabolicMatrix_of_lastRow_eq {p : GL (Fin (m + 1)) F} (hp : lr p = lr 1) :
     p.val = mirM (p.val.submatrix Fin.castSucc Fin.castSucc) fun i => p.val i.castSucc (Fin.last m) := by

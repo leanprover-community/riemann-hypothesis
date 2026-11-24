@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.AdelicUnitaryRealPointsStructureRealPlaces
 public import Formalism.LocalToGlobal.ProjectiveLattices.EquivariantFiniteGroup
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryExistsWithPrescribedParts
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsAdeleRingTensorEquivInfiniteProdFinite
@@ -63,22 +64,7 @@ theorem tauE_injective : Function.Injective (tauE D) := fun _ _ h =>
 
 theorem tauE_cm (σ : D.host.E →+* ℂ) :
     (∃ ρ, tauE D ρ = σ) ↔ ¬ ∃ ρ, tauE D ρ = ComplexEmbedding.conjugate σ := by
-  obtain ⟨g, rfl⟩ := (factEmb D.R D.host).1.2 σ
-  have hc : ComplexEmbedding.conjugate (D.host.emb g) = D.host.emb (g * D.R.cc) := by
-    rw [Formalism.L2.Geo.emb_mul_cc_comp]
-    refine RingHom.ext fun x => ?_
-    letI := D.host.cmStar
-    haveI : IsCMField D.host.E := D.host.isCMField_hostE
-    have h1 : star x = D.host.conj x := bridge_star_holds D.R D.host x
-    have h2 : D.host.emb g (star x) = starRingEnd ℂ (D.host.emb g x) :=
-      IsCMField.complexEmbedding_complexConj D.host.E (D.host.emb g) x
-    rw [h1] at h2
-    exact h2.symm
-  have key : ∀ g', (∃ ρ, tauE D ρ = D.host.emb g') ↔ g' ∈ D.R.Psi := fun g' => by
-    rw [← Formalism.L2.Geo.exists_tauEmb_iff D g']
-    exact exists_congr fun ρ => eq_comm
-  rw [hc, key, key]
-  exact Formalism.L2.Geo.mem_Psi_iff_mul_cc_notMem g
+  apply GlobalTheory.SmoothForms.RealPts.tauE_cm <;> assumption
 
 theorem archM_mul (V : HSp D) (θ : Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ) (a b : GA D V) :
     Formalism.L2.Pj.archM V θ (a * b) = Formalism.L2.Pj.archM V θ a * Formalism.L2.Pj.archM V θ b := by

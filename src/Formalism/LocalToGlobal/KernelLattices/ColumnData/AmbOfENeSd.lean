@@ -47,9 +47,7 @@ namespace Formalism.L2.Ker.Cd
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Host Formalism.FrobeniusOrbits
 
-theorem Base.stdOK {D : Car} {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc δ) (hcc : TaylorLogMetric.IsCurveIdeal D cc)
-    (hδ : TaylorLogMetric.IsDiscriminantTwelfthRootOfIdealLattice D cc δ) : B.StdOK :=
-  Formalism.L2.Ker.Cd.IntegralLatticeDensity.SO.stdOK B hcc hδ
+alias Base.stdOK := _root_.Formalism.L2.Ker.Cd.IntegralLatticeDensity.SO.stdOK
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Col
 

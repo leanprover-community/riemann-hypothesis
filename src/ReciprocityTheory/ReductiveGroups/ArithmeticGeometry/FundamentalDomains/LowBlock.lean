@@ -146,12 +146,7 @@ def Gp (Z : X.Coord) (τ : X.Ψ) : Matrix (Fin r) (Fin r) ℂ :=
   (X.lowBlock Z τ)ᵀ * Matrix.diagonal (fun a : Fin r => ((sgn X.p0 (a : ℕ) : ℝ) : ℂ)) *
     (X.lowBlock Z τ).map (starRingEnd ℂ)
 
-private lemma gram_eq_upper_bounds (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (x : Matrix (Fin r) (Fin r) ℂ) :
-    gram τ G x = xᵀ * G.map τ * x.map (starRingEnd ℂ) := by
-  ext a b
-  simp only [ReciprocityTheory.ChartRestriction.G.FD.gram, ReciprocityTheory.ChartRestriction.G.FD.hermC, ReciprocityTheory.ChartRestriction.G.FD.col, Matrix.of_apply,
-    Matrix.mul_apply, Matrix.transpose_apply, Matrix.map_apply, Finset.sum_mul]
-  exact Finset.sum_comm
+private alias gram_eq_upper_bounds := _root_.ReciprocityTheory.ChartRestriction.G.FD.FrameDegreeData.gram_eq
 
 lemma gram_xZ {x : Frame X.Ψ r} (ho : X.IsOrtho x) (Z : X.Coord) (τ : X.Ψ) :
     gram τ.1 X.Gm (mat (X.xZ x Z) τ) = Gp X Z τ := by

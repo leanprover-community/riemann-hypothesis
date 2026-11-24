@@ -52,6 +52,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.NormHalfB2SubTwoTorsionLeOne
 
 @[expose] public section
 
@@ -203,7 +204,7 @@ theorem ePhi1_eq (g : G1 p) (s2 : ℂ_[p]) (hOk : g.Ok)
   have hl : flog (g.C • wModel g.lam g.abelian₂) g.wq = Formalism.L2.Th1.A.logSer g.W := formal_logarithm_agree p _ g.wq hOk.2.1
   obtain ⟨hl0, -, -, -⟩ := Formalism.L2.Th1.A.logSpec ℂ_[p] g.W
   have hL : HasSubst (Formalism.L2.Th1.A.logSer g.W) := HasSubst.of_constantCoeff_zero' hl0
-  have hS := (Formalism.L2.Th1.B.curveSigma ℂ_[p] g.W s2).2.1
+  have hS := (_root_.Formalism.L2.Th1.B.Crv.curve_sigma_function_holds ℂ_[p] g.W s2).2.1
   set ep : ℂ_[p] := ((g.C.u⁻¹ : ℂ_[p]ˣ) : ℂ_[p]) with hep
   have hep0 : ep ≠ 0 := Units.ne_zero _
   have hlin : PowerSeries.subst (Formalism.L2.Th1.A.logSer g.W) (ep • (X : PowerSeries ℂ_[p])) =
@@ -222,7 +223,7 @@ theorem ePhi1_eq (g : G1 p) (s2 : ℂ_[p]) (hOk : g.Ok)
 theorem formal_phase_agree : PhAgree := by
   intro p _ g s2 hOk hR
   have he := ePhi1_eq g s2 hOk hR
-  have h0 := (Formalism.L2.Th1.B.curveSigma ℂ_[p] g.W s2).1
+  have h0 := (_root_.Formalism.L2.Th1.B.Crv.curve_sigma_function_holds ℂ_[p] g.W s2).1
   have hn : MvPowerSeries.constantCoeff (-(Formalism.L2.Th1.B.phW g.W s2) : MvPowerSeries Unit ℂ_[p]) = 0 := by
     rw [map_neg, neg_eq_zero]
     exact h0

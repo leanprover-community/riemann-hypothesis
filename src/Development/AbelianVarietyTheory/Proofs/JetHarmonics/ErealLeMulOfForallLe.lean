@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.Divisibility.GeneratorPowers.SpanResCharNeBot
 public import Formalism.LocalToGlobal.ProjectiveLattices.PlaceBelow
 public import Formalism.LocalToGlobal.ProjectiveLattices.CrudeVal
 import Mathlib.Algebra.AffineMonoid.Basic
@@ -57,26 +58,7 @@ namespace GlobalTheory.GoodDepth
 
 theorem ramOverZ_ne_zero' {K : Type} [Field K] [NumberField K] (la : HeightOneSpectrum (𝓞 K)) :
     ramOverZ la ≠ 0 := by
-  have hl := Formalism.L2.Pj.Crude.resCharOf_prime la
-  have hne0 : Ideal.span {((resCharOf la : ℕ) : ℤ)} ≠ ⊥ := by
-    rw [Ne, Ideal.span_singleton_eq_bot]
-    exact_mod_cast hl.ne_zero
-  have hmax : (Ideal.span {((resCharOf la : ℕ) : ℤ)}).IsMaximal :=
-    PrincipalIdealRing.isMaximal_of_irreducible (Nat.prime_iff_prime_int.mp hl).irreducible
-  have hle : Ideal.span {((resCharOf la : ℕ) : ℤ)} ≤ la.asIdeal.under ℤ := by
-    rw [Ideal.span_le, Set.singleton_subset_iff]
-    show algebraMap ℤ (𝓞 K) ((resCharOf la : ℕ) : ℤ) ∈ la.asIdeal
-    rw [map_natCast]
-    exact Formalism.L2.Pj.Crude.crv_char_mem la
-  have hne : la.asIdeal.under ℤ ≠ ⊤ := by
-    intro h
-    apply la.isPrime.ne_top
-    rw [Ideal.eq_top_iff_one]
-    have h1 : (1 : ℤ) ∈ la.asIdeal.under ℤ := by rw [h]; trivial
-    change algebraMap ℤ (𝓞 K) 1 ∈ la.asIdeal at h1
-    rwa [map_one] at h1
-  have : la.asIdeal.LiesOver (Ideal.span {((resCharOf la : ℕ) : ℤ)}) := ⟨hmax.eq_of_le hne hle⟩
-  exact Ideal.IsDedekindDomain.ramificationIdx'_ne_zero_of_liesOver la.asIdeal hne0
+  apply Formalism.MainNotions.ModuliIntegralCharts.H1.H1algLink.ramOverZ_ne_zero <;> assumption
 
 theorem ereal_le_mul_of_forall_le {x : EReal} {e B : ℝ} (he : 0 < e)
     (h : ∀ ν : ℝ, ((e * ν : ℝ) : EReal) ≤ x → ν ≤ B) : x ≤ ((e * B : ℝ) : EReal) := by

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsIntSubMem
 public import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.BlockComplementLattice
 public import Development.AbelianVarietyTheory.BlockTheory.NonGaloisCusps.RepresentationOverSumChar
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.GaloisSideTwistedSelmerAuxiliaryPrimes
@@ -196,22 +197,7 @@ theorem exists_conj_ne (H : Host R) : ∃ x y : 𝓞 H.E, (y : H.E) = H.conj (x 
 
 theorem exists_int_sub_mem {E : Type} [Field E] [NumberField E] (v : HeightOneSpectrum (𝓞 E))
     (hv : v.asIdeal.inertiaDeg ℤ = 1) (x : 𝓞 E) : ∃ n : ℤ, x - n ∈ v.asIdeal := by
-  have := v.isPrime
-  have : NeZero v.asIdeal := ⟨v.ne_bot⟩
-  have hp := Nat.absNorm_under_prime v.asIdeal
-  have h := Ideal.absNorm_pow_inertiaDeg (v.asIdeal.under ℤ) v.asIdeal
-  rw [hv, pow_one] at h
-  rw [h] at hp
-  have : Fact (Ideal.absNorm v.asIdeal).Prime := ⟨hp⟩
-  have hc : Nat.card (𝓞 E ⧸ v.asIdeal) = Ideal.absNorm v.asIdeal :=
-    (Ideal.absNorm_eq_natCard v.asIdeal).symm
-  have : Nontrivial (𝓞 E ⧸ v.asIdeal) := Ideal.Quotient.nontrivial_iff.2 v.isPrime.ne_top
-  have hm := mem_zmultiples_of_prime_card hc (g := (1 : 𝓞 E ⧸ v.asIdeal)) (g' := Ideal.Quotient.mk _ x)
-    one_ne_zero
-  obtain ⟨n, hn⟩ := AddSubgroup.mem_zmultiples_iff.1 hm
-  refine ⟨n, Ideal.Quotient.eq.1 ?_⟩
-  rw [← hn]
-  simp
+  apply GlobalTheory.SplitFrobDense.exists_int_sub_mem <;> assumption
 
 theorem eq_univ_of_frob (hC : GlobalTheory.TwSys.Cheb) (i : N.Loc) (s : Set (GE N)) (hs : IsClosed s)
     (h : ∀ w : PlE H, SplitOut N i w → ∀ (B : ValuationSubring N.Om) (σ : GE N),

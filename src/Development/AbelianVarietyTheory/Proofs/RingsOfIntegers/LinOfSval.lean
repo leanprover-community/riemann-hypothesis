@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.RingsOfIntegers.ExistsBasisOfEq
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.BoxLeOfComp
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ValuationMultiplicationInvariance
@@ -70,21 +71,7 @@ theorem lin_of_sval {L : LB X} (hL : L.IsLB) {K : Type} [Fintype K] {φ : K → 
     (H : ∀ (y : Y) J, Good L y J → sval s (𝟙 Y) y J = ∑ i, gs (𝟙 Y) y ⊤ (b i) * sval (t i) (𝟙 Y) y J)
     (j : K → L.ι) :
     s.f j = ∑ i, resTop (LB.wchart L φ j) (b i) * (show Γ(Y, LB.wchart L φ j) from (t i).f j) := by
-  unfold resTop
-  dsimp only
-  refine fn_ext fun y hy0 => ?_
-  have hy : (𝟙 Y) y ∈ LB.wchart L φ j := hy0
-  show gs (𝟙 Y) y (LB.wchart L φ j) (s.f j) = gs (𝟙 Y) y (LB.wchart L φ j) _
-  obtain ⟨J, hJ, hs⟩ := sval_trans hL s y j hy
-  have hy' := hJ.mem φ (𝟙 Y)
-  have e : ∀ i, gs (𝟙 Y) y (LB.wchart L φ j) ((t i).f j) =
-      (trF φ ε (𝟙 Y) y j (fun k => J (𝟙 Y ≫ φ k))).val * sval (t i) (𝟙 Y) y J := fun i =>
-    (sec_trans (t i) (𝟙 Y) y hy hy').trans (congrArg _ (sval_of (t i) (𝟙 Y) y J _ fun _ => rfl).symm)
-  rw [hs, H y J hJ, Finset.mul_sum, gs_fsum _ _ _ hy]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  refine Eq.trans ?_ (gs_mul (𝟙 Y) y (LB.wchart L φ j) hy _ ((t i).f j)).symm
-  rw [gs_res (𝟙 Y) y le_top hy (b i), e i]
-  ring
+  apply GlobalTheory.IntegralCoord.lin_of_sval <;> assumption
 
 theorem gs_one (r : Z ⟶ Y) (z : Z) : gs r z ⊤ (1 : Γ(Y, ⊤)) = 1 := by
   rw [gs_eq r z ⊤ trivial, map_one, map_one]

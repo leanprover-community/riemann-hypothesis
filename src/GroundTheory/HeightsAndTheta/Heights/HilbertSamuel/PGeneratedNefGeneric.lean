@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.ArithmeticBezout.PGenericFibreDim
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGeneratedNefGeneric
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsPerturb
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGeneratedRestrict
@@ -58,21 +59,7 @@ noncomputable section
 
 theorem GeneratedNefGeneric.eq_natCast_of_add_one_eq (d : ℕ) (x : WithBot ℕ∞)
     (hform : x + 1 = ((d : ℕ) : WithBot ℕ∞) + 1) : x = d := by
-  induction x using WithBot.recBotCoe with
-  | bot => exact absurd hform (by simp; rw [← Nat.cast_succ]; exact (WithBot.natCast_ne_bot _).symm)
-  | coe y =>
-    induction y using ENat.recTopCoe with
-    | top =>
-      exfalso
-      have h1 : (((⊤ : ℕ∞) + 1 : ℕ∞) : WithBot ℕ∞) = (((d + 1 : ℕ) : ℕ∞) : WithBot ℕ∞) := by
-        rw [WithBot.coe_add]; exact_mod_cast hform
-      have h2 : ((⊤ : ℕ∞) + 1 : ℕ∞) = ((d + 1 : ℕ) : ℕ∞) := WithBot.coe_injective h1
-      rw [top_add] at h2
-      exact ENat.top_ne_natCast _ h2
-    | coe y =>
-      have h1 : ((y + 1 : ℕ) : WithBot ℕ∞) = ((d + 1 : ℕ) : WithBot ℕ∞) := by exact_mod_cast hform
-      have : y = d := by exact_mod_cast (by exact_mod_cast h1 : y + 1 = d + 1) |> Nat.succ_injective
-      subst this; rfl
+  apply GroundTheory.Heights₂.Heights.ObjectsChow.GenericFibreDim.eq_natCast_of_add_one_eq <;> assumption
 
 theorem GeneratedNefGeneric.isProjVarF_map {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
     {W : Ideal (MRing ι)} {d : ℕ} (hW : IsArithVar W (d + 1)) :

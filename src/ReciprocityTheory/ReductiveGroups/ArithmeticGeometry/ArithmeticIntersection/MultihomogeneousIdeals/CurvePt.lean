@@ -84,7 +84,7 @@ theorem weight_mw (m : (Σ k, ι k) →₀ ℕ) :
   rw [Fintype.sum_sigma, Finset.sum_eq_single k]
   · simp
   · intro b _ hb
-    simp [Pi.single_apply, Ne.symm hb]
+    simp [Ne.symm hb]
   · simp
 
 theorem mem_weighted_of_isMultiHomog {f : MRingOver F ι} {a : K → ℕ}
@@ -95,9 +95,7 @@ theorem mem_weighted_of_isMultiHomog {f : MRingOver F ι} {a : K → ℕ}
   unfold IsMultiHomog at hf
   have h := hf m (by simpa [MvPolynomial.mem_support_iff] using hm)
   first
-    | exact h
     | exact funext h
-    | simpa [funext_iff] using h
 
 theorem isMultiHomog_of_mem_weighted {f : MRingOver F ι} {a : K → ℕ}
     (hf : f ∈ weightedHomogeneousSubmodule F (mw (ι := ι)) a) : IsMultiHomog f a := by
@@ -107,9 +105,7 @@ theorem isMultiHomog_of_mem_weighted {f : MRingOver F ι} {a : K → ℕ}
   have h := hf (by simpa [MvPolynomial.mem_support_iff] using hm)
   rw [weight_mw] at h
   first
-    | exact h
     | exact congrFun h
-    | simpa [funext_iff] using h
 
 theorem monomial_mem_weighted (m : (Σ k, ι k) →₀ ℕ) (c : F) :
     monomial m c ∈ weightedHomogeneousSubmodule F (mw (ι := ι)) (fun k => ∑ i, m ⟨k, i⟩) := (mem_weightedHomogeneousSubmodule _ _ _ _).mpr
@@ -329,12 +325,12 @@ theorem isUnit_mk_chartIdeal_form {V : Ideal (MRingOver F ι)} (hV : IsProjVarF 
     intro S
     induction S using Finset.induction_on with
     | empty =>
-      have := cyc_dim_add_one_le (hVQ ∅) hbase hp
+      have := _root_.Bl.FirstBlockLemmaB.goal1 (hVQ ∅) hbase hp
       rw [Finset.card_empty, Nat.cast_zero, zero_add, add_comm]
       exact this
     | @insert k S hk ih =>
       have : (Q S).IsPrime := hQp S
-      have h1 := cyc_dim_add_one_le (hmono S k) (hin S k) (hout S k hk)
+      have h1 := _root_.Bl.FirstBlockLemmaB.goal1 (hmono S k) (hin S k) (hout S k hk)
       rw [Finset.card_insert_of_notMem hk]
       calc (((S.card + 1 : ℕ)) : WithBot ℕ∞) + 1 + ringKrullDim (MRingOver F ι ⧸ Q (insert k S))
           = (S.card : WithBot ℕ∞) + 1 + (ringKrullDim (MRingOver F ι ⧸ Q (insert k S)) + 1) := by

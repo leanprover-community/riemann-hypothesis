@@ -125,7 +125,7 @@ theorem oneDifferential_val (M : TRep R G) (x : M.coch.X 1) (a b : G) :
   rw [LowDeg.dn_one_apply]
   have he : ∀ c : G, (![c] : Fin 1 → G) = e1 c := fun c => funext fun i => by
     rw [Fin.fin_one_eq_zero i]; rfl
-  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, he]
+  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, he]
 
 theorem wach_d1_eq_zero_iff (M : TRep R G) (x : M.coch.X 1) :
     M.coch.d 1 x = 0 ↔ ∀ a b, x.1 (e1 (a * b)) = x.1 (e1 a) + M.rho a (x.1 (e1 b)) := by

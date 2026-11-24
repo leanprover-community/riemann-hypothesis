@@ -175,7 +175,6 @@ def co (hK : IsMatGroup K) : (Mat n →L[ℝ] ℝ) →ₗ[ℝ] C(MG K hK, ℝ) w
 
 theorem finAlg_sep : (finAlg (MG K hK)).SeparatesPoints := by
   intro x y hxy
-  have hne : x.mat - y.mat ≠ 0 := fun h => hxy (MG.ext (sub_eq_zero.1 h))
   obtain ⟨i, j, hij⟩ : ∃ i j, x.mat i j ≠ y.mat i j := by
     by_contra h
     push Not at h

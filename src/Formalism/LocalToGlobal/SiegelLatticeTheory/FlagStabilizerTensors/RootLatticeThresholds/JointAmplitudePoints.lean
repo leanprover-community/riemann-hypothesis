@@ -103,7 +103,6 @@ variable {D : D7} {X : HidaSetting D}
 theorem card_pos' (D : D7) : 0 < Fintype.card D.what₂.Tau := by
   first
   | (haveI : Nonempty D.what₂.Tau := ⟨D.eTau.symm 1⟩; exact Fintype.card_pos)
-  | (haveI : Nonempty D.what₂.Tau := ⟨D.eTau.symm ⟨1, one_mem _⟩⟩; exact Fintype.card_pos)
 
 def ofPts {K : Type} {i : ℕ} (s : Σ c : Composition (i + 1), (Fin c.length → K)) : List (K × ℕ) :=
   List.ofFn fun a => (s.2 a, s.1.blocksFun a)
@@ -111,7 +110,6 @@ def ofPts {K : Type} {i : ℕ} (s : Σ c : Composition (i + 1), (Fin c.length �
 theorem ofPts_toPts {K : Type} [Zero K] {i : ℕ} (p : Point K (i + 1)) : ofPts (toPts p) = p.1 := by
   first
   | (apply List.ext_getElem <;> simp [ofPts, toPts, Composition.blocksFun, Composition.length])
-  | (apply List.ext_get <;> simp [ofPts, toPts, Composition.blocksFun, Composition.length])
 
 theorem toPts_injective {K : Type} [Zero K] {i : ℕ} :
     Function.Injective (toPts : Point K (i + 1) → Σ c : Composition (i + 1), (Fin c.length → K)) := by

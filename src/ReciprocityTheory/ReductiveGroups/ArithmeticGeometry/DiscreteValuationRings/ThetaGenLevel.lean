@@ -101,8 +101,6 @@ lemma app_eq_zero_of_comp {X Y Z : Scheme.{0}} {f : X ⟶ Z} {g : X ⟶ Y} {h : 
   subst hf
   first
   | exact hx
-  | (rw [Scheme.comp_app]; exact hx)
-  | (simp only [Scheme.comp_app, CommRingCat.comp_apply]; exact hx)
 
 variable {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {D : DegData R I}
   {A : PolAV (Spec (CommRingCat.of (FractionRing R)))}

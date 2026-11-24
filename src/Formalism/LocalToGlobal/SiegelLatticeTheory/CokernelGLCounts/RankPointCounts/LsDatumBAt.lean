@@ -159,7 +159,7 @@ theorem dnInDens_of {D : Formalism.BasicNotions.D7} {u u' : D.what₂.Word} {F0 
     unfold zT nrep
     rw [dite_eq_left hex]
   obtain ⟨⟨hPD, hmk⟩, hadm, -, -, -⟩ := hex.choose_spec
-  have hTF := Formalism.L2.SG.Closed.TermFun_holds D u u' F0 γ.lam (hrows.1 γ.lam γ.mem)
+  have hTF := _root_.term_function_const D u u' F0 γ.lam (hrows.1 γ.lam γ.mem)
   have hGt := TermDef.Gt_mk hTF.1 ⟨_, hPD⟩
   have hGen := TermDef.isGen_mk (gS D) hTF.2.2.2.1 ⟨_, hPD⟩
   rw [hmk] at hGt hGen

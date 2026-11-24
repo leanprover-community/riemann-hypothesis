@@ -70,10 +70,7 @@ private theorem tf (p : Nat) [Fact (Nat.Prime p)] (σ : Type) :
     Module.IsTorsionFree (PadicInt p) (MvPolynomial σ (Padic p)) := by
   refine Module.IsTorsionFree.comap (S := Padic p) (algebraMap (PadicInt p) (Padic p)) ?_ ?_
   · intro r hr
-    have h0 : r ≠ 0 := hr.ne_zero
-    have h1 : algebraMap (PadicInt p) (Padic p) r ≠ 0 := by
-      simpa using h0
-    exact IsRegular.of_ne_zero h1
+    exact IsRegular.of_ne_zero (by simpa using hr.ne_zero)
   · intro r m
     exact algebraMap_smul (Padic p) r m
 

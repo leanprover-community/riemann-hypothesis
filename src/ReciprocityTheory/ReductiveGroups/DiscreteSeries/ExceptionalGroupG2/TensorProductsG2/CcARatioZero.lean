@@ -51,6 +51,7 @@ import ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG2.Tenso
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG2.TensorProductsG2.PoleMatch
 import ReciprocityTheory.ReductiveGroups.DiscreteSeries.FormalDegree.FdegTransfer
 import Std.Tactic.BVDecide.Normalize.Bool
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.CcARatioZero
 
 @[expose] public section
 
@@ -83,14 +84,6 @@ theorem ccA_fdeg_pos (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ :
   exact hd.1
 
 end SlopeTestRemainingChoices
-
-theorem ccA_arith {a b r r₂ : ℝ} (ha : 0 < a) (hb : 0 < b) (h1 : a / b ≤ r) (h2 : b / a ≤ r₂)
-    (hm : r * r₂ = 1) : a / b = r := by
-  have hr : 0 < r := lt_of_lt_of_le (div_pos ha hb) h1
-  refine le_antisymm h1 ?_
-  rw [div_le_iff₀ ha] at h2
-  rw [le_div_iff₀ hb]
-  nlinarith
 
 theorem ccA_ratio_mul (dual : Bool) {ε : Fin n → Bool} {lam lam' : Fin n → ℝ} (hgap : StdGap ε lam)
     (hgap' : StdGap ε lam') (s : Fin n) (hlam' : lam' = shiftF dual lam s) :

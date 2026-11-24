@@ -235,12 +235,6 @@ theorem aa_unit_at (P : HeightOneSpectrum (𝓞 X.E)) (hb : s.PrimeTo D.host.�
 
 end IdealS
 
-section NatS
-
-variable {D : D7} {X : Fields} (s : Seam D X)
-
-end NatS
-
 section Main
 
 variable {D : D7} {X : Fields} (s : Seam D X) {cc : Ideal (𝓞 D.host.K)} {δ : ℂ} (B : Base D cc δ) (χ : TaylorLogMetric.IdE D → ℂ) (cD : D.what₂.Tau → ℂ)
@@ -277,13 +271,6 @@ open Formalism.EigenvalueLevelCeiling (plc)
 
 variable {X : Fields} {Pr : Primes X} (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
 
-theorem mem_of_divs {A : Type} [CommRing A] [IsDedekindDomain A] {a : A} {P : HeightOneSpectrum A} (h : P ∈ divs a) : a ∈ P.asIdeal := by
-  unfold divs at h
-  split_ifs at h with hf
-  · exact hf.mem_toFinset.mp h
-  · simp at h
-
-
 open Classical in
 theorem bad_gen (hPr : Pr.Ok) (u : Pr.Word) {P : HeightOneSpectrum (𝓞 X.E)} (hP : P ∈ Pr.vT u ∪ Pr.vGs) :
     ∃ (π : 𝓞 X.E) (p : ℕ), π ∈ P.asIdeal ∧ IsCoprime π (X.conjO π) ∧ π * X.conjO π = (p : 𝓞 X.E) ∧ p.Prime ∧
@@ -291,11 +278,11 @@ theorem bad_gen (hPr : Pr.Ok) (u : Pr.Word) {P : HeightOneSpectrum (𝓞 X.E)} (
   have hcc : ∀ r : 𝓞 X.E, X.conjO (X.conjO r) = r := fun r => cO_cO r
   rw [Finset.mem_union] at hP
   rcases hP with h | h
-  · exact ⟨Pr.piT u, Pr.T u, mem_of_divs h, hPr.piT_cop u, hPr.piT_norm u, hPr.T_prime u, Or.inl ⟨rfl, rfl⟩⟩
+  · exact ⟨Pr.piT u, Pr.T u, _root_.Formalism.L2.Col.decoFin_mem_of_mem_divs h, hPr.piT_cop u, hPr.piT_norm u, hPr.T_prime u, Or.inl ⟨rfl, rfl⟩⟩
   · unfold Primes.vGs at h
     rw [Finset.mem_union] at h
     have key : ∀ i, P ∈ Pr.vG i → _ := fun i hi =>
-      (⟨X.conjO (Pr.piG i), Pr.g i, mem_of_divs hi, by rw [hcc]; exact (hPr.piG_cop i).symm, by rw [hcc, mul_comm]; exact hPr.piG_norm i,
+      (⟨X.conjO (Pr.piG i), Pr.g i, _root_.Formalism.L2.Col.decoFin_mem_of_mem_divs hi, by rw [hcc]; exact (hPr.piG_cop i).symm, by rw [hcc, mul_comm]; exact hPr.piG_norm i,
         hPr.g_prime i, Or.inr ⟨i, rfl, rfl⟩⟩ : ∃ (π : 𝓞 X.E) (p : ℕ), π ∈ P.asIdeal ∧ IsCoprime π (X.conjO π) ∧ π * X.conjO π = (p : 𝓞 X.E) ∧ p.Prime ∧
       (p = Pr.T u ∧ π = Pr.piT u ∨ ∃ i, p = Pr.g i ∧ π = X.conjO (Pr.piG i)))
     exact h.elim (key 0) (key 1)

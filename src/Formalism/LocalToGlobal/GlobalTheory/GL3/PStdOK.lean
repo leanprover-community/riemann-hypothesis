@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SpanRangeEmb4EqTop
 public import Formalism.LocalToGlobal.KernelLattices.KernelLocalFactors.IsAdmissibleFlagPairOfUnitriangularLeftAutomorph
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.PHfArith
 public import Formalism.LocalToGlobal.GlobalTheory.GL3.PFamily
@@ -204,33 +205,7 @@ def put4 (n : Type) (a : Fin 4) : (n → ℂ) →+ (Fin 4 × n → ℂ) where
 
 theorem fourth_power_le_closure_embeddings (Λ : AddSubgroup ℂ) : pow4 (lamMM D Λ) ≤
     AddSubgroup.closure {z | ∃ w ∈ Λ, ∃ y : Fin 4 → D.host.E, (∀ a, y a ∈ D.host.AA0) ∧ z = w • emb4 D y} := by
-  intro z hz
-  have key : ∀ a : Fin 4, lamMM D Λ ≤ (AddSubgroup.closure
-      {z | ∃ w ∈ Λ, ∃ y : Fin 4 → D.host.E, (∀ a, y a ∈ D.host.AA0) ∧ z = w • emb4 D y}).comap
-        (put4 D.what₂.Tau a) := by
-    intro a
-    unfold lamMM
-    rw [AddSubgroup.closure_le]
-    rintro v ⟨w, hw, a0, ha0, rfl⟩
-    refine AddSubgroup.subset_closure ⟨w, hw, Pi.single a a0, ?_, ?_⟩
-    · intro a'
-      by_cases h : a' = a
-      · subst h; rwa [Pi.single_eq_same]
-      · rw [Pi.single_eq_of_ne h]; exact FractionalIdeal.zero_mem _
-    · funext ⟨a', τ⟩
-      show (if a' = a then w * TaylorLogMetric.embT D τ a0 else 0) = w * TaylorLogMetric.embT D τ ((Pi.single a a0 : Fin 4 → D.host.E) a')
-      by_cases h : a' = a
-      · subst h; simp
-      · rw [Pi.single_eq_of_ne h]; simp [h]
-  have hsum : z = ∑ a, put4 D.what₂.Tau a (slice a z) := by
-    funext ⟨a', τ⟩
-    simp only [Finset.sum_apply, put4, AddMonoidHom.coe_mk, ZeroHom.coe_mk, slice]
-    rw [Finset.sum_eq_single a']
-    · simp
-    · intro b _ hb; simp [Ne.symm hb]
-    · simp
-  rw [hsum]
-  exact AddSubgroup.sum_mem _ fun a _ => key a (hz a)
+  apply GlobalTheory.FourthRootStd.fourth_power_le_closure_embeddings <;> assumption
 
 theorem int_mem_inverse_half_different {x : D.host.E} (hx : IsIntegral ℤ x) : x ∈ D.host.AA0 := by
   have h1 := FL.one_mem_inverse_halfDifferent D
@@ -300,79 +275,11 @@ theorem betaSemi (hcc : TaylorLogMetric.IsCurveIdeal D cc) (hδ : TaylorLogMetri
 theorem up : ∃ N : ℕ, 0 < N ∧
     ∀ x ∈ imgLat (B.gC : (Fin 4 × D.what₂.Tau → ℂ) →ₗ[ℂ] (Fin 4 × D.what₂.Tau → ℂ)) (pow4 B.lamM),
       N • x ∈ stdLat B.L (Fin 4 × D.what₂.Tau) := by
-  obtain ⟨k, hk, hA⟩ := exists_nat_clearing_order_denominators D
-  let f : Fin 4 × (Fin 4 × D.what₂.Tau) → D.host.E →+ D.host.K := fun p =>
-    { toFun := fun x => B.γ₀.g (Pi.single p.1 x) p.2
-      map_zero' := by simp
-      map_add' := fun x y => by rw [Pi.single_add, map_add (f := _)]; rfl }
-  obtain ⟨m, hm, hf⟩ := denom D.host.E D.host.K f
-  refine ⟨m * k, Nat.mul_pos hm hk, ?_⟩
-  have hle : pow4 B.lamM ≤ ((stdLat B.L (Fin 4 × D.what₂.Tau)).comap
-      (nsmulAddMonoidHom (α := Fin 4 × D.what₂.Tau → ℂ) (m * k))).comap
-        (B.gC : (Fin 4 × D.what₂.Tau → ℂ) →ₗ[ℂ] (Fin 4 × D.what₂.Tau → ℂ)).toAddMonoidHom := by
-    refine (fourth_power_le_closure_embeddings _).trans ?_
-    rw [AddSubgroup.closure_le]
-    rintro _ ⟨w, hw, y, hy, rfl⟩
-    show (m * k) • B.gC (w • emb4 D y) ∈ stdLat B.L (Fin 4 × D.what₂.Tau)
-    rw [mem_stdLat]
-    intro v
-    rw [map_smul, show B.gC (emb4 D y) = _ from B.gC_spec y, mem_iff]
-
-    have hint : IsIntegral ℤ (((m * k : ℕ) : D.host.K) * B.γ₀.g y v) := by
-      have hy' : y = ∑ a, Pi.single a (y a) := by
-        funext a'; simp [Finset.sum_apply, Pi.single_apply]
-      have e : ((m * k : ℕ) : D.host.K) * B.γ₀.g y v
-          = ∑ a, (m : D.host.K) * f (a, v) ((k : D.host.E) * y a) := by
-        conv_lhs => rw [hy']
-
-        rw [map_sum, Finset.sum_apply, Finset.mul_sum]
-        refine Finset.sum_congr rfl fun a _ => ?_
-        show ((m * k : ℕ) : D.host.K) * B.γ₀.g (Pi.single a (y a)) v
-          = (m : D.host.K) * B.γ₀.g (Pi.single a ((k : D.host.E) * y a)) v
-        have : (Pi.single a ((k : D.host.E) * y a) : Fin 4 → D.host.E) = k • Pi.single a (y a) := by
-          funext a'
-          by_cases h : a' = a
-          · subst h; simp
-          · simp [Pi.single_eq_of_ne h]
-        rw [this, map_nsmul]
-        simp only [Pi.smul_apply, nsmul_eq_mul]
-        push_cast; ring
-      rw [e]
-      exact IsIntegral.sum _ fun a _ => hf (a, v) ⟨_, hA _ (hy a)⟩
-    have := lam_mul (cc := cc) (δ := δ) (⟨_, hint⟩ : 𝓞 D.host.K) hw
-    convert this using 1
-    simp only [Pi.smul_apply, smul_eq_mul, nsmul_eq_mul]
-    show ((m * k : ℕ) : ℂ) * (w * D.host.φ₀ ((B.γ₀.g y v : D.host.K) : D.host.E))
-      = D.host.φ₀ (((((m * k : ℕ) : D.host.K) * B.γ₀.g y v : D.host.K)) : D.host.E) * w
-    push_cast
-    rw [map_mul, map_mul, map_natCast, map_natCast]
-    ring
-  rintro _ ⟨z, hz, rfl⟩
-  exact hle hz
+  apply GlobalTheory.FourthRootStd.up <;> assumption
 
 theorem down : ∃ N : ℕ, 0 < N ∧ ∀ x ∈ stdLat B.L (Fin 4 × D.what₂.Tau),
     N • x ∈ imgLat (B.gC : (Fin 4 × D.what₂.Tau → ℂ) →ₗ[ℂ] (Fin 4 × D.what₂.Tau → ℂ)) (pow4 B.lamM) := by
-  obtain ⟨m, hm, hT⟩ := exists_nat_mul D.host.E
-    (Finset.univ.image fun p : (Fin 4 × D.what₂.Tau) × Fin 4 =>
-      B.γ₀.g.symm (Pi.single p.1 (1 : D.host.K)) p.2)
-  refine ⟨m, hm, fun x hx => ?_⟩
-  rw [mem_stdLat] at hx
-  have hsum : m • x = ∑ v, m • (Pi.single v (x v) : Fin 4 × D.what₂.Tau → ℂ) := by
-    rw [← Finset.smul_sum]
-    congr 1
-    funext v'; simp [Finset.sum_apply, Pi.single_apply]
-  rw [hsum]
-  refine AddSubgroup.sum_mem _ fun v _ => ?_
-  refine ⟨x v • emb4 D (m • B.γ₀.g.symm (Pi.single v (1 : D.host.K))),
-    gen_mem ((mem_iff B _).1 (hx v)) (fun a => int_mem_inverse_half_different ?_), ?_⟩
-  · have := hT _ (Finset.mem_image.2 ⟨(v, a), Finset.mem_univ _, rfl⟩)
-    simpa using this
-  · show B.gC (x v • emb4 D (m • B.γ₀.g.symm (Pi.single v (1 : D.host.K)))) = _
-    rw [map_smul, show B.gC (emb4 D _) = _ from B.gC_spec _, map_nsmul, LinearEquiv.apply_symm_apply]
-    funext v'
-    by_cases h : v' = v
-    · subst h; simp; ring
-    · simp [Pi.single_eq_of_ne h]
+  apply GlobalTheory.FourthRootStd.down <;> assumption
 
 theorem idx₂ : relIdx (imgLat (B.gC : (Fin 4 × D.what₂.Tau → ℂ) →ₗ[ℂ] (Fin 4 × D.what₂.Tau → ℂ)) (pow4 B.lamM))
     (stdLat B.L (Fin 4 × D.what₂.Tau)) ≠ 0 := by

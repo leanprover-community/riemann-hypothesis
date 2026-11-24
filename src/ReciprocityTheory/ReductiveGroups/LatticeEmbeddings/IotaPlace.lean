@@ -75,8 +75,6 @@ theorem norm_le_one_of_isIntegral_int {p : ℕ} [Fact p.Prime] {x : ℂ_[p]} (hx
       have h := IsUltrametricDist.norm_intCast_le_one ℂ_[p] (f.coeff i)
       first
         | (simpa using h)
-        | (rw [algebraMap_int_eq, eq_intCast]; exact h)
-        | (convert h using 2; exact (algebraMap ℤ ℂ_[p]).eq_intCast _)
     have hi' : i ≤ n - 1 := by
       have := Finset.mem_range.mp hi
       omega
@@ -134,17 +132,6 @@ theorem smallIdeal_isPrime (ι : K →+* ℂ_[p]) : (smallIdeal ι).IsPrime := b
     push_neg at hc
     obtain ⟨ha, hb⟩ := hc
     nlinarith [norm_int_le ι a, norm_int_le ι b]
-
-theorem norm_p_lt_one : ‖(p : ℂ_[p])‖ < 1 := by
-  have e : (p : ℂ_[p]) = (((algebraMap ℚ_[p] (PadicAlgCl p)) (p : ℚ_[p]) : PadicAlgCl p) : ℂ_[p]) := by
-    first
-      | simp
-      | (rw [map_natCast]; exact (map_natCast UniformSpace.Completion.coeRingHom p).symm)
-  rw [e, PadicComplex.norm_extends, PadicAlgCl.norm_extends]
-  first
-    | exact Padic.norm_p_lt_one
-    | (rw [Padic.norm_p]; exact inv_lt_one_of_one_lt₀ (by exact_mod_cast (Fact.out : p.Prime).one_lt))
-    | (rw [padicNormE.norm_p]; exact inv_lt_one_of_one_lt₀ (by exact_mod_cast (Fact.out : p.Prime).one_lt))
 
 end ReciprocityTheory.ChartRestriction.B3.IotaPl
 

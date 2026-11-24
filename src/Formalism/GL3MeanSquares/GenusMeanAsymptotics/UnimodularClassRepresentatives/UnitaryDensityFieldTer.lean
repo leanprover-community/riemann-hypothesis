@@ -87,7 +87,7 @@ private theorem exists_mem_extP_pow_form_eq_of_mem_extP_pow_smul (hF : IsFixF K 
     refine ⟨conjO K r * o, Ideal.mul_mem_right _ _ (idealPowerSpanBounds.conjO_mem_pow hF 𝔭 k r hr), ?_⟩
     rw [Submodule.coe_smul, ← algebraMap_smul K r (m : V), LinearMap.map_smulₛₗ, LinearMap.smul_apply,
       smul_eq_mul, map_mul, ho]
-    congr 1 <;> simp [conjO]
+    congr 1
   · obtain ⟨u, hu, hu'⟩ := hx
     obtain ⟨v, hv, hv'⟩ := hy
     exact ⟨u + v, Ideal.add_mem _ hu hv, by
@@ -126,7 +126,7 @@ theorem form_lin (hzo : ∀ i j, i ≠ j → h (z i : V) (z j : V) = 0)
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [← algebraMap_smul K (c i) (z i : V), LinearMap.map_smulₛₗ, LinearMap.smul_apply,
     form_right hzo hzg, smul_eq_mul, map_mul, map_mul, map_mul, ← mul_assoc]
-  congr 2 <;> simp [conjO]
+  congr 2
 
 theorem mk_lin_eq_iff (hLi : Formalism.HermitianLatticesTheory.IsIntegralLat h L) (𝔭 : Ideal (𝓞 F)) (k : ℕ)
     (hzo : ∀ i j, i ≠ j → h (z i : V) (z j : V) = 0)

@@ -60,17 +60,11 @@ theorem star_coeF (D : Formalism.BasicNotions.D7) (t : D.host.F) : star (t : D.h
   first
   | exact (NumberField.IsCMField.complexConj_eq_self_iff _).mpr t.2
   | exact (NumberField.IsCMField.complexConj_eq_self_iff (K := D.host.E) (t : D.host.E)).mpr t.2
-  | exact NumberField.IsCMField.complexConj_apply_of_mem_maximalRealSubfield t.2
-  | exact NumberField.IsCMField.complexConj_apply_eq_self_of_mem t.2
-  | exact (NumberField.IsCMField.star_eq_self_iff _).mpr t.2
-  | exact (NumberField.IsCMField.mem_maximalRealSubfield_iff_star_eq _).mp t.2
-  | exact (NumberField.IsCMField.complexConj D.host.E).commutes t
 
 theorem resChar_mem' (D : Formalism.BasicNotions.D7) (p : PlF D) : ((Loc.resChar p : ℕ) : 𝓞 D.host.F) ∈ p.asIdeal := by
   rw [← Ideal.Quotient.eq_zero_iff_mem, map_natCast]
   first
   | exact ringChar.Nat.cast_ringChar
-  | (unfold Loc.resChar; exact ringChar.Nat.cast_ringChar)
 
 theorem val_resChar_lt (D : Formalism.BasicNotions.D7) (p : PlF D) :
     valuation (D.s.atP p).Fp (((Loc.resChar p : ℕ) : (D.s.atP p).Fp)) < 1 := by
@@ -88,11 +82,6 @@ theorem val_resChar_lt (D : Formalism.BasicNotions.D7) (p : PlF D) :
   rw [← not_le, ← map_one (valuation (D.s.atP p).Fp)]
   first
   | exact fun h => hnot ((Valuation.Compatible.vle_iff_le (v := valuation (D.s.atP p).Fp) _ _).mpr h)
-  | exact fun h => hnot ((Valuation.Compatible.rel_iff_le (v := valuation (D.s.atP p).Fp) _ _).mpr h)
-  | exact fun h => hnot (ValuativeRel.valuation_le_valuation.mp h)
-  | exact fun h => hnot ((ValuativeRel.valuation_le_valuation_iff _ _).mp h)
-  | simpa using hnot
-  | simpa [ValuativeRel.valuation_le_valuation] using hnot
 
 theorem locDiff_of (hT : TrDual) (hA : DualApprox) (hS : PowSmall) : LocDiff := by
   intro D δ M hag p
@@ -132,17 +121,14 @@ theorem unitAt_mul_natCast (D : Formalism.BasicNotions.D7) (p : PlF D) : ∃ n :
     push_cast
     first
     | (field_simp; done)
-    | (field_simp; ring)
   · refine ⟨D.host.g 0, ?_⟩
     push_cast
     first
     | (field_simp; done)
-    | (field_simp; ring)
   · refine ⟨D.host.g 0 * D.host.g 1, ?_⟩
     push_cast
     first
     | (field_simp; done)
-    | (field_simp; ring)
 
 theorem algMap_mem_O (D : Formalism.BasicNotions.D7) (p : PlF D) (c : (D.s.atP p).Fp) (hc : c ∈ 𝒪[(D.s.atP p).Fp]) :
     algebraMap (D.s.atP p).Fp (D.s.atP p).Ep c ∈ (D.s.atP p).O := by

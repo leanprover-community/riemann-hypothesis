@@ -44,6 +44,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import Formalism.LocalToGlobal.Columns.PolyFnLemmas
 
 @[expose] public section
 
@@ -61,19 +62,12 @@ section NF
 
 variable {ι : Type} [Fintype ι] {n : ℕ} (lam : ι → DomWeight n)
 
-private theorem fockF_sub_right {σ : Type} (f g : MvPolynomial σ ℂ) (S : Finset (σ →₀ ℕ)) (h : f.support ⊆ S) :
-    fockF f g = ∑ m ∈ S, f.coeff m * star (g.coeff m) * ((∏ k ∈ m.support, (m k).factorial : ℕ) : ℂ) := by
-  unfold fockF
-  refine Finset.sum_subset h fun m _ hm => ?_
-  have h0 : f.coeff m = 0 := by simpa [MvPolynomial.mem_support_iff] using hm
-  simp [h0]
-
 private theorem fockF_add_left_eq_add {σ : Type} (f f' g : MvPolynomial σ ℂ) :
     fockF (f + f') g = fockF f g + fockF f' g := by
   classical
-  rw [fockF_sub_right (f + f') g _ MvPolynomial.support_add,
-    fockF_sub_right f g (f.support ∪ f'.support) Finset.subset_union_left,
-    fockF_sub_right f' g (f.support ∪ f'.support) Finset.subset_union_right, ← Finset.sum_add_distrib]
+  rw [_root_.Formalism.L2.Col.fockF_eq_sum (f + f') g _ MvPolynomial.support_add,
+    _root_.Formalism.L2.Col.fockF_eq_sum f g (f.support ∪ f'.support) Finset.subset_union_left,
+    _root_.Formalism.L2.Col.fockF_eq_sum f' g (f.support ∪ f'.support) Finset.subset_union_right, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun m _ => ?_
   rw [MvPolynomial.coeff_add]
   ring
@@ -88,8 +82,8 @@ private theorem fockF_add_right_lemma_3 {σ : Type} (f g g' : MvPolynomial σ �
 
 private theorem fockF_smul_left_eq_mul {σ : Type} (z : ℂ) (f g : MvPolynomial σ ℂ) :
     fockF (z • f) g = z * fockF f g := by
-  rw [fockF_sub_right (z • f) g f.support MvPolynomial.support_smul,
-    fockF_sub_right f g f.support (Finset.Subset.refl _), Finset.mul_sum]
+  rw [_root_.Formalism.L2.Col.fockF_eq_sum (z • f) g f.support MvPolynomial.support_smul,
+    _root_.Formalism.L2.Col.fockF_eq_sum f g f.support (Finset.Subset.refl _), Finset.mul_sum]
   refine Finset.sum_congr rfl fun m _ => ?_
   rw [MvPolynomial.coeff_smul, smul_eq_mul]
   ring

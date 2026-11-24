@@ -1,8 +1,8 @@
 module
 
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.CountData
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.FiniteAdeleTopologyStatement
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.StandardAdelicCharacterStatement
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.FiniteAdeleTopology
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.StandardAdelicCharacter
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -67,8 +67,8 @@ theorem fstar_periodic : ∀ (F : Type) [Field F] [NumberField F] [MeasurableSpa
   intro F _ _ _ _ lf _ _ ψ hψ ι _ _ M B ρ P _ φ hφ
   have hK : IsCompact (qf (hf F) (Bf B) '' tsupport φ) :=
     IsCompact.image hφ.2 (continuous_qf _ _)
-  obtain ⟨N, hN, hNK⟩ := (GlobalTheory.T.mem_Oh_iff_and_nat_mul_properties F).2.2.2.2.2.2.2.2.1 _ hK
-  have htriv := ((GlobalTheory.T.standard_adelic_character F).2 ψ hψ).2.1
+  obtain ⟨N, hN, hNK⟩ := (_root_.GlobalTheory.CompanionTheory.SW.Core.AfTop.finiteAdele_topology F).2.2.2.2.2.2.2.2.1 _ hK
+  have htriv := ((_root_.GlobalTheory.CompanionTheory.SW.Core.StdChar.main F).2 ψ hψ).2.1
   have key : ∀ x ∈ Oh F, opU ψ (hf F) (Bf B) ((N : A F) * x) φ = φ := by
     intro x hx
     funext u

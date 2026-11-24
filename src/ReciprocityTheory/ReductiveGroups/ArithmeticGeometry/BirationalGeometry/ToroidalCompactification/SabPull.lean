@@ -154,10 +154,9 @@ def preHom {T T' : Over S} (U : T' ⟶ T) : (T ⟶ G) →* (T' ⟶ G) :=
 theorem psum_push (h : IsGrpPullback G' G f φ) {T' : Over S'} {T : Over S} {n : ℕ} (x' : Fin n → (T' ⟶ G'))
     (x : Fin n → (T ⟶ G)) (U : Over.mk (T'.hom ≫ f) ⟶ T) (hx : ∀ i, pushPt h.1.w (x' i) = U ≫ x i)
     (I : Finset (Fin n)) : (psum G' x' I).left ≫ φ = U.left ≫ (psum G x I).left := by
-  have e : pushPt h.1.w (psum G' x' I) = U ≫ psum G x I :=
-    (psum_hom (pushHom h T') x' I).trans ((congrArg (fun z => psum G z I) (funext hx)).trans
-      (psum_hom (preHom U) x I).symm)
-  exact congrArg (fun z => z.left) e
+  exact congrArg (fun z => z.left) ((psum_hom (pushHom h T') x' I).trans
+    ((congrArg (fun z => psum G z I) (funext hx)).trans
+      (psum_hom (preHom U) x I).symm))
 
 def cubeMapOf (h : IsGrpPullback G' G f φ) : CubeMap G' G where
   F := φ

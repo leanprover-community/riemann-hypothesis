@@ -45,6 +45,7 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.CoeffOneLNe
 public import Formalism.LocalToGlobal.GroupLattices.PendingLemmas.InvarianceIffAdditiveMapsExist
+import Mathlib.RingTheory.MvPolynomial
 
 @[expose] public section
 
@@ -95,7 +96,7 @@ theorem kapLaw_of_stabLaw (hp0 : (p : Kc) ≠ 0) (hS : StabLaw X Kc hfin ThR) :
   generalize delt X hfin j c L = δ at e0 ⊢
   generalize delt X hfin j c ((X.Lv.lev j c).smul γ L) = δ' at e1 ⊢
   have e2 : (X.Lv.lev j c).smul γ L = (X.Lv.lev j c).smul (γ * δ) L0 := by
-    rw [lsmul_mul, ← e0]
+    rw [_root_.Formalism.MainNotions.G.LatticeSystems.jd_smul_mul, ← e0]
   have h10 : L1 = L0 := (repOf_ex X.Lv hfin j c _ hL').unique ⟨h1, δ', e1⟩ ⟨h0, γ * δ, e2⟩
   subst h10
   have r1 : (X.Lv.lev j c).smul δ'⁻¹ ((X.Lv.lev j c).smul γ L) = L1 := by
@@ -105,7 +106,7 @@ theorem kapLaw_of_stabLaw (hp0 : (p : Kc) ≠ 0) (hS : StabLaw X Kc hfin ThR) :
     conv_lhs => rw [e0]
     exact lsmul_inv_lsmul _ _ _
   have hst : (X.Lv.lev j c).smul ((γ * δ)⁻¹ * δ') L1 = L1 := by
-    rw [lsmul_mul, ← e1, e2, lsmul_inv_lsmul]
+    rw [_root_.Formalism.MainNotions.G.LatticeSystems.jd_smul_mul, ← e1, e2, lsmul_inv_lsmul]
   rw [r1, r0]
   obtain ⟨ε, hε⟩ : ∃ ε, ε = (γ * δ)⁻¹ * δ' := ⟨_, rfl⟩
   rw [← hε] at hst

@@ -127,7 +127,7 @@ theorem single_mulVec_one {n : ℕ} (x y : Fin n) (v : Fin n → ℂ) : Matrix.s
   by_cases h : l = x
   · subst h
     simp [bvec]
-  · simp [bvec, Pi.single_apply, h]
+  · simp [bvec, h]
 
 theorem unitB_fr (hgU : g ∈ UH (Hpk k r)) (a b : Fin k) :
     unitB (Hpk k r) (fr k r g) a b = g * Matrix.single (wI k r a.castSucc) (wI k r b.castSucc) (1 : ℂ) * g⁻¹ := by
@@ -141,24 +141,7 @@ end Frame
 
 theorem unitB_adj {m : ℕ} (Bs : Fin m → Fin (2 * r + k + 1) → ℂ) (a b : Fin m) :
     (Hpk k r)⁻¹ * (unitB (Hpk k r) Bs a b)ᴴ * Hpk k r = unitB (Hpk k r) Bs b a := by
-  apply SkewHermitianParts.mat_ext_b
-  intro p
-  rw [← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, Qx8.unitB_mulVec]
-  have h1 : (unitB (Hpk k r) Bs a b)ᴴ *ᵥ (Hpk k r *ᵥ bvec p) =
-      herm (Hpk k r) (bvec p) (Bs a) • (Hpk k r *ᵥ Bs b) := by
-    funext q
-    have e1 : ((unitB (Hpk k r) Bs a b)ᴴ *ᵥ (Hpk k r *ᵥ bvec p)) q =
-        star (herm (Hpk k r) (bvec q) (Bs b)) * (star (Bs a) ⬝ᵥ (Hpk k r *ᵥ bvec p)) := by
-      simp only [Matrix.mulVec, dotProduct, Matrix.conjTranspose_apply, unitB, Matrix.of_apply, star_mul',
-        Pi.star_apply, Finset.mul_sum]
-      apply Finset.sum_congr rfl
-      intro j _
-      apply Finset.sum_congr rfl
-      intro x _
-      ring
-    rw [e1, Qx2.herm_star, Qx8.herm_bvec_right, Pi.smul_apply, smul_eq_mul, mul_comm]
-    rfl
-  rw [h1, Qx8.hpk_inv, Matrix.mulVec_smul, Matrix.mulVec_mulVec, WeylGroupFacts.hpk_sq, Matrix.one_mulVec]
+  apply Formalism.FourierDecayAlt.P.Qx8.unitB_adj <;> assumption
 
 theorem hpart1_self {m : ℕ} (Bs : Fin m → Fin (2 * r + k + 1) → ℂ) (a : Fin m) :
     hpart1 (Hpk k r) (unitB (Hpk k r) Bs a a) = 0 := by

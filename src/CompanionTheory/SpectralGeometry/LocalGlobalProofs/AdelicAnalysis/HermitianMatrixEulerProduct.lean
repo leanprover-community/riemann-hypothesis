@@ -3,8 +3,10 @@ module
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.CoordinateHaarMeasure
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.CompletionIsLocalRing
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.InfiniteAdelesLocalRingTotallyReal
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.LinearChangeEulerProductStatement
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRingStatement
+public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.LinearChangeEulerProduct
+import Formalism.UnipotentAdelicQuotients.SWXSDefs
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRing
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -146,7 +148,7 @@ def mg (σ : E →ₐ[F] E) (G : Matrix (Fin n) (Fin n) (R ⊗[F] E)) :
     Matrix (Fin n) (Fin n) (R ⊗[F] E) →ₗ[R] Matrix (Fin n) (Fin n) (R ⊗[F] E) where
   toFun S := cT (sigR R σ) G * S * G
   map_add' S T := by simp [Matrix.mul_add, Matrix.add_mul]
-  map_smul' r S := by simp [Matrix.mul_smul, Matrix.smul_mul]
+  map_smul' r S := by simp
 
 theorem psi_mem {σ : E →ₐ[F] E} (hinv : ∀ x, σ (σ x) = x) (b : Module.Basis (Fin d) F E)
     (x : Idx n d → R) : psi R σ b x ∈ HermR R σ n :=
@@ -386,7 +388,7 @@ theorem map_eq_of_coord {σ : E →ₐ[F] E} (hcm : IsCMExt F E σ)
     (hτ : ∀ S, (τ S : Matrix (Fin n) (Fin n) (R ⊗[F] E)) =
       cT (sigR R σ) (g.map (inclR R)) * (S : Matrix (Fin n) (Fin n) (R ⊗[F] E)) * g.map (inclR R)) :
     ν.map τ = c • ν := by
-  obtain ⟨t1, t2, t3, t4, t5, t6, t7, -, -, -⟩ := GlobalTheory.T.tensor_locally_compact_ring F E σ hcm R
+  obtain ⟨t1, t2, t3, t4, t5, t6, t7, -, -, -⟩ := _root_.GlobalTheory.CompanionTheory.SW.TopK.topTens_props F E σ hcm R
   have h2 : Module.finrank F E = 2 := hcm.2.2.1
   obtain ⟨hinv, δ, hδ, hσδ⟩ := HaarCoord.conj_facts hcm
   haveI : BorelSpace (R ⊗[F] E) := ⟨rfl⟩
@@ -438,7 +440,7 @@ theorem pf_herm : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberFi
   haveI : Module.Finite F E := Module.finite_of_finrank_pos (by omega)
   obtain ⟨hinv, δ, hδ, hσδ⟩ := HaarCoord.conj_facts hcm
   let b : Module.Basis (Fin 2) F E := Module.finBasisOfFinrankEq F E h2
-  obtain ⟨cinf, c, hU, hI, hF⟩ := GlobalTheory.T.addHaar_map_mulVec_eq_smul_at_all_places F (Idx n 2) (Amat σ b g)
+  obtain ⟨cinf, c, hU, hI, hF⟩ := _root_.GlobalTheory.CompanionTheory.SW.ProdFormula.modulus_matrix F (Idx n 2) (Amat σ b g)
     (Amat_det hinv h2 hδ hσδ b hg)
   refine ⟨cinf, c, hU, ?_, fun v => ?_⟩
   · obtain ⟨l1, l2, l3, l4, -⟩ := isLocR_Ainf F hcm.1

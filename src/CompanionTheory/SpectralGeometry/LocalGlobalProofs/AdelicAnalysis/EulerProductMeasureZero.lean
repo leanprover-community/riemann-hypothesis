@@ -1,10 +1,11 @@
 module
 
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.AdelesLocallyCompactSecondCountableStatement
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.AdelicTupleProjectionsStatement
+public import Formalism.UnipotentAdelicQuotients.SWXSDefs
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.AdelesLocallyCompactSecondCountable
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.AdelicTupleProjections
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.InfiniteProductMultipliable
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRingStatement
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRing
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -80,19 +81,6 @@ theorem exists_tail_pos {ι : Type} {a : ι → ℝ} (h : Summable (fun v => |a 
   show 0 < a v
   linarith
 
-theorem countable_places (F : Type) [Field F] [NumberField F] :
-    Countable (HeightOneSpectrum (𝓞 F)) := by
-  haveI : Countable (𝓞 F) := by
-    haveI : Countable F := (Module.finBasis ℚ F).equivFun.injective.countable
-    exact RingOfIntegers.coe_injective.countable
-  haveI : Countable (Ideal (𝓞 F)) := by
-    refine Function.Surjective.countable
-      (f := fun s : Finset (𝓞 F) => Ideal.span (s : Set (𝓞 F))) ?_
-    intro I
-    exact (IsNoetherian.noetherian I : I.FG)
-  exact Function.Injective.countable (f := fun la : HeightOneSpectrum (𝓞 F) => la.asIdeal)
-    fun a b h => HeightOneSpectrum.ext h
-
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E]
 
 theorem exists_measure_intOff {d M n : ℕ} {b : Module.Basis (Fin d) F E}
@@ -119,9 +107,9 @@ end GlobalTheory.CompanionTheory.SW.EulerZero
 open GlobalTheory.CompanionTheory.SW.EulerZero in
 theorem GlobalTheory.CompanionTheory.SW.EulerZero.euler_zero : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E) (n M : ℕ) (I : Measure (Fin n → Fin M → AF F ⊗[F] E)) (c : ℝ≥0) (minf : Measure (Fin n → Fin M → Ainf F ⊗[F] E)) (m : ∀ v : HeightOneSpectrum (𝓞 F), Measure (Fin n → Fin M → Fv F v ⊗[F] E)), (IsEulerProd b I c minf m → I = 0 → c = 0 ∨ minf = 0 ∨ ∃ v, m v = 0) ∧ (IsEulerProd b I c minf m → (minf = 0 ∨ ∃ v, m v = 0) → I = 0) ∧ ((∀ v, m v (latV b v) < ⊤) → Summable (fun v => |(m v (latV b v)).toReal - 1|) → (minf = 0 ∨ ∃ v, m v = 0) → IsEulerProd b 0 c minf m) := by
   intro F E _ _ _ _ _ σ hσ d b n M I c minf m
-  obtain ⟨-, -, -, -, hopen, hcof, -⟩ := GlobalTheory.T.adelic_tuple_projections F E σ hσ d b n M
-  obtain ⟨⟨hlc, hsc, ht2⟩, -⟩ := GlobalTheory.T.adeles_locally_compact_second_countable F
-  obtain ⟨-, -, -, -, -, -, -, hborel, -⟩ := GlobalTheory.T.tensor_locally_compact_ring F E σ hσ (AF F)
+  obtain ⟨-, -, -, -, hopen, hcof, -⟩ := _root_.GlobalTheory.CompanionTheory.SW.MeasProj.proj_props F E σ hσ d b n M
+  obtain ⟨⟨hlc, hsc, ht2⟩, -⟩ := _root_.GlobalTheory.CompanionTheory.AdeleTop.adele_top F
+  obtain ⟨-, -, -, -, -, -, -, hborel, -⟩ := _root_.GlobalTheory.CompanionTheory.SW.TopK.topTens_props F E σ hσ (AF F)
   haveI := hborel n M
   have hmeas : ∀ S, MeasurableSet (intOff (n := n) (M := M) b S) := fun S => (hopen S).measurableSet
   refine ⟨fun h hI => ?_, fun h hz => ?_, fun hfin hsum hz => ?_⟩
@@ -147,7 +135,7 @@ theorem GlobalTheory.CompanionTheory.SW.EulerZero.euler_zero : ∀ (F E : Type) 
       · exact ⟨S₀, subset_rfl, fun S _ => by simp [hz]⟩
       · refine ⟨insert v S₀, Finset.subset_insert _ _, fun S hS => ?_⟩
         rw [Finset.prod_eq_zero (hS (Finset.mem_insert_self v S₀)) (by simp [hv]), mul_zero]
-    haveI := countable_places F
+    haveI := _root_.GlobalTheory.AdelicUnitaryTop.countable_heightOneSpectrum F
     have hcover : (Set.univ : Set (Fin n → Fin M → AF F ⊗[F] E)) ⊆
         ⋃ T : Finset (HeightOneSpectrum (𝓞 F)), intOff b (S₁ ∪ T) := by
       intro X _

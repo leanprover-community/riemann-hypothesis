@@ -85,8 +85,6 @@ theorem Mx_diff (τ : X.Ψ) (a c : Fin r) : Differentiable ℂ (fun x => Mx X x0
   simp only [Mx, Matrix.mul_apply, ReciprocityTheory.ChartRestriction.G.FD.mat, Matrix.of_apply]
   first
     | fun_prop
-    | exact Differentiable.sum fun b _ => (differentiable_const _).mul
-        ((differentiable_apply c).comp ((differentiable_apply b).comp (differentiable_apply τ)))
 
 theorem Delta_diff : Differentiable ℂ (DeltaF X x0) := by
   have hdet : ∀ τ (k : Fin (r + 1)), Differentiable ℂ (fun x => lminor (Mx X x0 x τ) k) := by

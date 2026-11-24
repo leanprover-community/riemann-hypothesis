@@ -102,7 +102,7 @@ theorem GlobalTheory.CompanionTheory.MixZ.volume_chart_zeroSet_fnOf : ∀ (X : S
   have hcomp : (evHom hyU).comp (MvPolynomial.eval₂Hom (ReciprocityTheory.ChartRestriction.G.DVR.FlatBC.algX q c.U) c.x) =
       MvPolynomial.eval₂Hom σ (fun i => c.e (c.e.symm v) i) := by
     refine MvPolynomial.ringHom_ext (fun i => ?_) (fun i => ?_)
-    · simp [← ev_eq hyU, ev_algX hyU]
+    · simp [← ev_eq hyU]
     · simp [← ev_eq hyU, c.apply_eq _ hys]
   have hQy := congrArg (fun F => F Q) hcomp
   simp only [RingHom.comp_apply] at hQy

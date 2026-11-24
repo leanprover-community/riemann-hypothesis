@@ -234,7 +234,6 @@ theorem phase_formula : Formalism.FourierDecayAlt.G.PhaseFormula := by
         intro h
         apply hi
         rw [← Fin.rev_rev i, h, Fin.rev_zero]
-      have hnl : ¬ i.rev < 0 := by simp
       simp [upper, strictUpper, Matrix.one_apply_ne hne]
     · simp
   have h3 : ∀ k : Fin (m + 1), xOf (Xof t v) (t • b) k = t * blk (upper v) b 0 1 k.castSucc k.succ := by

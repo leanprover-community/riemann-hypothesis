@@ -69,13 +69,8 @@ def MT (V : VF C) (A : ℕ → Matrix (Fin n) (Fin n) C) (B : Matrix (Fin n) (Fi
 
 def IntM (V : VF C) (A : Matrix (Fin n) (Fin n) C) : Prop := ∀ i j, V.Ge 0 (A i j)
 
-private theorem tends_const' (x : C) : Tends V (fun _ => x) x := fun w => ⟨0, fun n _ => by
-  show ((w : ℝ) : WithTop ℝ) ≤ V.v (x - x)
-  rw [sub_self, AddValuation.map_zero]
-  exact le_top⟩
-
 theorem MT.const (B : Matrix (Fin n) (Fin n) C) : MT V (fun _ => B) B :=
-  fun i j => tends_const' _
+  fun i j => _root_.Formalism.L2.FormalSeriesBounds.RowTiePE0.tends_const _
 
 variable {A A' : ℕ → Matrix (Fin n) (Fin n) C} {B B' : Matrix (Fin n) (Fin n) C}
 
@@ -86,7 +81,7 @@ theorem MT.sub (h : MT V A B) (h' : MT V A' B') : MT V (fun k => A k - A' k) (B 
   fun i j => (h i j).sub (h' i j)
 
 theorem MT.smul (c : C) (h : MT V A B) : MT V (fun k => c • A k) (c • B) :=
-  fun i j => (tends_const' c).mul (h i j)
+  fun i j => (_root_.Formalism.L2.FormalSeriesBounds.RowTiePE0.tends_const c).mul (h i j)
 
 theorem MT.mul (h : MT V A B) (h' : MT V A' B') : MT V (fun k => A k * A' k) (B * B') := by
   intro i j

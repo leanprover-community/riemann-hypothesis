@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.RadicalStalks.CommutingSurjectivity
 public import Development.AbelianVarietyTheory.Definitions.Divisors.NotCompactOfMEqOne
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -107,38 +108,6 @@ theorem Datum.exists_zsmul_eq_algebraMap (D : Datum p) (hm : D.m = 1) (x : D.O) 
 
 theorem Datum.algebraMap_surjective_of_m_eq_one :
     ∀ (p : ℕ) [Fact p.Prime] (D : Datum p), D.m = 1 → Function.Surjective (algebraMap (𝓞 D.F) D.O) := by
-  intro p _ D hm x
-  haveI := D.freeO
-  haveI := D.finO
-  obtain ⟨e, he, a, ha⟩ := D.exists_zsmul_eq_algebraMap hm x
-  haveI : Algebra.IsIntegral ℤ D.O := Algebra.IsIntegral.of_finite ℤ D.O
-  obtain ⟨P, hPm, hP⟩ := Algebra.IsIntegral.isIntegral (R := ℤ) x
-  have h1 : Polynomial.aeval (algebraMap ℤ D.O e * x) (P.scaleRoots e) = 0 :=
-    Polynomial.scaleRoots_aeval_eq_zero (by rwa [Polynomial.aeval_def])
-  rw [← Algebra.smul_def, ha, Polynomial.aeval_algebraMap_apply] at h1
-  have h2 : Polynomial.aeval a (P.scaleRoots e) = 0 :=
-    D.algebraMap_injective hm (by rw [h1, map_zero])
-  have he' : (e : D.F) ≠ 0 := by exact_mod_cast he
-  have h4 : Polynomial.aeval (a : D.F) (P.scaleRoots e) = 0 := by
-    have := congrArg (algebraMap (𝓞 D.F) D.F) h2
-    rwa [← Polynomial.aeval_algebraMap_apply, map_zero] at this
-  have h3 : Polynomial.eval₂ (algebraMap ℤ D.F) ((a : D.F) / e) P = 0 := by
-    have := Polynomial.scaleRoots_eval₂_mul (p := P) (algebraMap ℤ D.F) ((a : D.F) / e) e
-    rw [show algebraMap ℤ D.F e * ((a : D.F) / e) = (a : D.F) by
-      rw [algebraMap_int_eq, eq_intCast]; field_simp] at this
-    rw [← Polynomial.aeval_def, h4] at this
-    exact (mul_eq_zero.mp this.symm).resolve_left (pow_ne_zero _ (by simpa using he'))
-  have hint : IsIntegral ℤ ((a : D.F) / e) := ⟨P, hPm, h3⟩
-  obtain ⟨a', ha'⟩ : ∃ a' : 𝓞 D.F, (a' : D.F) = (a : D.F) / e := ⟨⟨_, hint⟩, rfl⟩
-  refine ⟨a', ?_⟩
-  have hae : a = e • a' := by
-    apply RingOfIntegers.coe_injective
-    rw [zsmul_eq_mul, map_mul, map_intCast]
-    change (a : D.F) = (e : D.F) * (a' : D.F)
-    rw [ha']
-    field_simp
-  apply smul_right_injective D.O he
-  change e • algebraMap (𝓞 D.F) D.O a' = e • x
-  rw [ha, ← map_zsmul, ← hae]
+  apply UpperTheory.Gal.Ord.surjO <;> assumption
 
 end GlobalTheory.UPel.HT

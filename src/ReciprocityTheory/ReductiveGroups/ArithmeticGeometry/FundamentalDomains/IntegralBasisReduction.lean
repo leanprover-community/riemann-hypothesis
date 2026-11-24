@@ -115,8 +115,6 @@ theorem ip_Sg {y : X.Ψ → Matrix (Fin r) (Fin r) ℂ} (hy : IsNormal X y) (p q
     first
       | simp [herm, hermC, Data.embV, Data.emb, cc, map_sum, map_mul,
           IsCMField.complexEmbedding_complexConj]
-      | simp [herm, hermC, Data.embV, Data.emb, cc, map_sum, map_mul,
-          NumberField.IsCMField.complexEmbedding_complexConj]
   rw [hτ, hermC_normal X hdet _ hg]
   congr 2
   refine Finset.sum_congr rfl fun a _ => ?_

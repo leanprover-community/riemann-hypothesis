@@ -1,5 +1,6 @@
 module
 
+import CompanionTheory.AutomorphicTheory.ProductFormulaTheory.SquareIntegrableSegments.SegmentReordering.CsOrderfree
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.PropsCos
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IrreducibleAdmissibleGL
 public import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ZelevinskyJacquet.ZelevinskyCosocles.LUnlinkedComm
@@ -88,24 +89,6 @@ theorem perm_of_univ_map_eq {α : Type*} {l : ℕ} {x y : Fin l → α}
 end OrderFree
 
 theorem cs_orderfree : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], GlobalTheory.Published.IrreducibleAdmissibleGL → LUnlinkedComm k → LOrderFree k := by
-  intro k _ _ _ _ hIA hUC 𝔪 n N x hd hLF V _ _ π hL
-  obtain ⟨m, x', hd', ⟨Δ', ⟨hm', hord'⟩, hseg'⟩, hcos⟩ := hL
-  obtain ⟨Δ, ⟨hm, hord⟩, hseg⟩ := hLF
-  obtain rfl : m = n := by
-    have hc := congrArg Multiset.card (hm'.trans hm.symm)
-    simpa using hc
-  obtain ⟨e, he⟩ := perm_of_univ_map_eq (x := Δ') (y := Δ) (hm.trans hm'.symm)
-  have hxe : ∀ a, x' (e a) = x a := fun a =>
-    irrGL_eq_of_isLSeg_same (Δ := Δ a) (by rw [he a]; exact hseg' (e a)) (hseg a)
-  have hdσ : ∑ a, (x' (e a)).fst = N := by
-    simp only [hxe]
-    exact hd
-  have hordσ : ∀ i j, i < j → ¬(Δ' (e i)).Precedes (Δ' (e j)) := by
-    intro i j hij
-    rw [← he i, ← he j]
-    exact hord i j hij
-  obtain ⟨f⟩ := cs_reorderord hIA hUC Δ' e x' hd' hdσ hord' hordσ hseg'
-  obtain ⟨g⟩ := prodIrr_equiv_of_eq (funext hxe : x' ∘ e = x) hdσ hd
-  exact hcos.of_equiv (Representation.Equiv.refl π) (f.trans g)
+  apply CompanionTheory.PfEss.Zc2.cs_orderfree <;> assumption
 
 end PositivityTheory.PfEss.Zc2

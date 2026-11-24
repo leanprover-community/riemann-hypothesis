@@ -70,9 +70,6 @@ theorem fn_zero_ne (hD : ∀ k, D k ≠ 0) : fn hm D Y 0 ≠ 0 := by
       Matrix.mul_one]
     first
     | exact Matrix.submatrix_diagonal _ _ (Fin.castLE_injective hm)
-    | simp [Matrix.submatrix_diagonal _ _ (Fin.castLE_injective hm)]
-    | (ext i j
-       simp [Matrix.diagonal_apply, (Fin.castLE_injective hm).eq_iff])
   rw [h, Matrix.det_diagonal, ← Complex.ofReal_prod, Complex.ofReal_re]
   exact Finset.prod_ne_zero_iff.2 fun a _ => hD _
 
@@ -103,11 +100,6 @@ theorem Gz_herm (ζ : ℂ) : (Gz hm D Y ζ)ᴴ = Gz hm D Y ζ := by
   first
   | simp only [Gz, Matrix.conjTranspose_submatrix, Matrix.conjTranspose_mul,
       Matrix.conjTranspose_conjTranspose, hD, Matrix.mul_assoc]
-  | (unfold Gz
-     rw [Matrix.conjTranspose_submatrix, Matrix.conjTranspose_mul, Matrix.conjTranspose_mul,
-       Matrix.conjTranspose_conjTranspose]
-     erw [hD]
-     simp only [Matrix.mul_assoc])
 
 theorem fn_eq (v : Fin 1 → ℂ) : fn hm D Y v = ‖pd hm Y v‖ ^ 2 * fY hm D Y v := by
   have key : ∀ (p G : ℂ), (star p * (G * p)).re = ‖p‖ ^ 2 * G.re := by
@@ -118,8 +110,6 @@ theorem fn_eq (v : Fin 1 → ℂ) : fn hm D Y v = ‖pd hm Y v‖ ^ 2 * fY hm D 
     rw [h1, Complex.re_ofReal_mul]
     first
     | rw [Complex.normSq_eq_norm_sq]
-    | rw [← Complex.sq_norm]
-    | simp [Complex.normSq_eq_norm_sq]
   simp only [fn, fY, Gnz, pd, Matrix.det_mul, Matrix.det_conjTranspose]
   exact key _ _
 
@@ -130,8 +120,8 @@ theorem pd_eval (v : Fin 1 → ℂ) : pd hm Y v = (lin (-(Ym hm Y))).det.eval (v
   ext i j
   by_cases h : i = j
   · subst h
-    simp [Matrix.one_apply, sub_eq_add_neg] <;> ring
-  · simp [Matrix.one_apply, h, sub_eq_add_neg] <;> ring
+    simp [sub_eq_add_neg] <;> ring
+  · simp [h, sub_eq_add_neg] <;> ring
 
 theorem pd_analytic : AnalyticAt ℂ (pd hm Y) 0 := by
   have e : pd hm Y = (fun z => (lin (-(Ym hm Y))).det.eval z) ∘ (fun v : Fin 1 → ℂ => v 0) :=

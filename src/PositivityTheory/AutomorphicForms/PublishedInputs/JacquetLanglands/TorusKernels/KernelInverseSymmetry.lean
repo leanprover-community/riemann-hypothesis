@@ -179,7 +179,6 @@ theorem tsum_le (hB : B1b) (hBc : B1c) (hAx : D.Ax) (k : I → ℕ) (hk : ∀ v,
     ∑' γ, ‖T D k p γ y‖ₑ ≤ ENNReal.ofReal (cK k / nrm k p.1 * nrm k y.2) * ENNReal.ofReal Bnd := by
   have h1 := ENNReal.tsum_le_tsum fun γ => T_le D hB hBc hAx k hk p γ y
   rw [← tsum_subtype] at h1
-  beta_reduce at h1
   rw [ENNReal.tsum_mul_left] at h1
   refine h1.trans (mul_le_mul' le_rfl (Eq.trans_le ?_ (hS y.1 y.2)))
   exact Equiv.tsum_eq (invEquiv D y.1 (xH D p))

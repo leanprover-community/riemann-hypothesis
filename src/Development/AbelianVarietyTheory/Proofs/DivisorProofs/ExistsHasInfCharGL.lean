@@ -44,6 +44,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Definitions.Divisors.IsSquareIntegrableAutomorphicSpace
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.IsNormalisedOfIsDiscrete
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DiscreteAutomorphicRepGLExistsLocalComponent
 
 @[expose] public section
 
@@ -65,33 +66,7 @@ theorem cap_commute_act' {E : Type} [Field E] [NumberField E] [_root_.NumberFiel
 theorem exists_scalar {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a : ℕ} {V : Submodule ℂ (Sm E a)}
     (hV : IsDiscrete V) {z : Module.End ℂ (Sm E a)} (hz : z ∈ Zalg E a)
     (hc : ∀ o : Op E a, Commute z (act o)) : ∃ c : ℂ, ∀ φ ∈ V, z φ = c • φ := by
-  obtain ⟨φ, hφ, h0⟩ := (Submodule.ne_bot_iff _).1 hV.ne_bot
-  set U := Submodule.span ℂ ((fun z : Module.End ℂ (Sm E a) => z φ) '' Zalg E a) with hU
-  have hfin : FiniteDimensional ℂ U := (hV.aut φ hφ).zfin
-  have hle : U ≤ V := Submodule.span_le.2 (by
-    rintro _ ⟨y, hy, rfl⟩
-    exact Zalg_stable (fun X => hV.stable (.lie X)) hy φ hφ)
-  have hst : ∀ x ∈ U, z x ∈ U := fun x hx => by
-    have : U ≤ U.comap z := Submodule.span_le.2 (by
-      rintro _ ⟨y, hy, rfl⟩
-      exact Submodule.subset_span ⟨z * y, mul_mem hz hy, rfl⟩)
-    exact this hx
-  have hφU : φ ∈ U := Submodule.subset_span ⟨1, one_mem _, rfl⟩
-  have : Nontrivial U := ⟨⟨φ, hφU⟩, 0, fun h => h0 (congrArg Subtype.val h)⟩
-  obtain ⟨c, hc'⟩ := Module.End.exists_eigenvalue (z.restrict hst)
-  obtain ⟨v, hv⟩ := hc'.exists_hasEigenvector
-  have hv1 : z v.1 = c • v.1 := congrArg Subtype.val hv.apply_eq_smul
-  refine ⟨c, fun ψ hψ => ?_⟩
-  rcases hV.irred (V ⊓ z.eigenspace c) inf_le_left (fun o x hx => ⟨hV.stable o x hx.1, by
-    have h1 : z x = c • x := Module.End.mem_eigenspace_iff.1 hx.2
-    refine Module.End.mem_eigenspace_iff.2 ?_
-    rw [← map_smul, ← h1]
-    exact LinearMap.congr_fun (hc o).eq x⟩) with h | h
-  · have : v.1 ∈ V ⊓ z.eigenspace c := ⟨hle v.2, Module.End.mem_eigenspace_iff.2 hv1⟩
-    rw [h] at this
-    exact absurd (Subtype.ext ((Submodule.mem_bot ℂ).1 this)) hv.2
-  · rw [← h] at hψ
-    exact Module.End.mem_eigenspace_iff.1 hψ.2
+  apply _root_.GlobalTheory.DiscLocEx.exists_scalarD <;> assumption
 
 theorem exists_hasInfCharGL {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {N : ℕ}
     {V : Submodule ℂ (Sm E N)} (hV : IsDiscrete V) (τ : E →+* ℂ) : ∃ μ, HasInfCharGL V τ μ := by

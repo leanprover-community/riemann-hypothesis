@@ -201,7 +201,7 @@ theorem etEmpty : EtEmpty X := by
 
 theorem invInvariant_muf : X.B.μf.IsInvInvariant := by
   have : X.B.μf.IsMulRightInvariant := Formalism.L2.SG.Closed.GfUnimod_holds X.B.I X.B.μf
-  have hK := Formalism.L2.SG.Closed.level_subgroup_is_group X
+  have hK := _root_.Formalism.L2.SG.Pf.level_subgroup_character_unitary X
   have hL := Formalism.L2.SG.Closed.level_subgroup_properties X
   have he1 : X.B.e 1 ≠ 0 := by
     rw [X.e_eq]

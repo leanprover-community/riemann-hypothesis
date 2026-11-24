@@ -91,7 +91,7 @@ private lemma scale_b_prime_div_x_le_b (s : Scale) : s.b' / s.x ≤ s.b := by
   have hb := scale_b_pos s
   have h : s.b' / s.x = s.b / s.X' := by
     unfold Scale.b' Scale.a
-    field_simp <;> ring
+    field_simp
   rw [h]
   exact div_le_self hb.le hX
 

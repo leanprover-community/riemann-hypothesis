@@ -82,7 +82,7 @@ theorem crd_smul (a : AF F) (X : Mx F E d.m d.n) : d.crd (a • X) = a • d.crd
 def cmbL : (Ix d → AF F) →ₗ[AF F] Mx F E d.m d.n where
   toFun := d.cmb
   map_add' c c' := by ext i j; simp [SD.cmb, TensorProduct.add_tmul, Finset.sum_add_distrib]
-  map_smul' a c := by ext i j; simp [SD.cmb, Finset.smul_sum, TensorProduct.smul_tmul']
+  map_smul' a c := by ext i j; simp [SD.cmb, TensorProduct.smul_tmul']
 
 def ek (k : Ix d) : Mx F E d.m d.n := d.cmb fun j => if k = j then 1 else 0
 

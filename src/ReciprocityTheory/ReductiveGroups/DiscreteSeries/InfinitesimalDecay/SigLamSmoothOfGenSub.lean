@@ -108,8 +108,7 @@ theorem kfin_integral (hσ : IsURepOn (UJset ε) σ) (u : H) {α : C(S7.KG ε, �
       show ∫ κ, ∑ i, a i k₀⁻¹ • (β i κ • σ (S7.toMK κ) u) ∂(S7.muK ε) = _
       rw [integral_finsetSum Finset.univ (f := fun i κ => a i k₀⁻¹ • (β i κ • σ (S7.toMK κ) u))
         (fun i _ => (hint (β i)).smul (a i k₀⁻¹))]
-      refine Finset.sum_congr rfl fun i _ => ?_
-      rw [integral_smul]
+      simp only [integral_smul]
     rw [e1, e2, e3]
     exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
   set S : Submodule ℂ H := Submodule.span ℂ (Set.range fun k : S7.KG ε => σ (S7.toMK k) x)
@@ -134,13 +133,11 @@ theorem dSW_integral (hσ : IsURepOn (UJset ε) σ)
     (α : C(S7.KG ε, ℂ)) (hx : IsSmoothVecU ε σ (∫ k, α k • σ (S7.toMK k) u ∂(S7.muK ε))) :
     dSW σ w (∫ k, α k • σ (S7.toMK k) u ∂(S7.muK ε)) =
       ∫ k, α k • dSW σ w (σ (S7.toMK k) u) ∂(S7.muK ε) := by
-  have := S7.compactSpace_KG ε
   have hint1 : Integrable (fun k => α k • σ (S7.toMK k) u) (S7.muK ε) :=
     intK (α.continuous.smul (orbitK_continuous hσ u))
   have hint2 : Integrable (fun k => α k • dSW σ w (σ (S7.toMK k) u)) (S7.muK ε) :=
     intK (α.continuous.smul (continuous_dSW_orbit hσ hw hu))
   refine sub_eq_zero.1 (hsep _ fun y hy => ?_)
-  have hwr : ∀ X ∈ w.reverse, inG ε X := fun X hX => hw X (List.mem_reverse.1 hX)
   rw [inner_sub_right, sub_eq_zero, inner_dSW hσ hw hy hx, ← integral_inner hint1, ← integral_inner hint2,
     ← integral_const_mul]
   refine integral_congr_ae (Filter.Eventually.of_forall fun k => ?_)

@@ -175,7 +175,7 @@ theorem jetSubstP_anAct (m : ℕ) (a : 𝓞 E) (b : Jet ℂ (Fin 1 × Fin g) m) 
         by_cases hj : j = q
         · subst hj
           simp
-        · simp [hj, Finsupp.single_apply, Ne.symm hj]
+        · simp [hj]
       rw [if_pos hmem]
       simp [MvPolynomial.constantCoeff_X, hq]
   show (Ideal.Quotient.mkₐ ℂ _) (MvPolynomial.aeval _ f) = (Ideal.Quotient.mkₐ ℂ _) (MvPolynomial.aeval _ f)
@@ -191,7 +191,7 @@ theorem fst_jetTan (ℓ : Fin 1 × Fin g) (a : Jet ℂ (Fin 1 × Fin g) (0 + 1))
   simp only [jetTan, jetAug, liftJet]
   try simp only [Ideal.Quotient.liftₐ_apply]
   erw [Ideal.Quotient.lift_mk, Ideal.Quotient.lift_mk]
-  try simp only [AlgHom.coe_toRingHom, RingHom.coe_coe]
+  try simp only [RingHom.coe_coe]
   induction p using MvPolynomial.induction_on with
   | C r => simp [TrivSqZeroExt.algebraMap_eq_inl]
   | add p q hp hq => simp [hp, hq]

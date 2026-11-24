@@ -1,5 +1,6 @@
 module
 
+import CompanionTheory.AutomorphicTheory.PlaceSeparation.IsOpenQuotientMapArt0
 public import Development.AbelianVarietyTheory.PublishedTheorems.AutomorphicForms₂.ExistsUniqueHcharOfFiniteOrder
 public import GroundTheory.GlobalFields.GlobalArtinMap.ArtinMap
 public import Mathlib.RingTheory.PicardGroup
@@ -109,33 +110,7 @@ theorem continuous_toAb : Continuous (toAb E Ω) := QuotientGroup.continuous_mk
 theorem mem_of_forall_res {H : Subgroup (Gab E Ω)} (hH : IsClosed (H : Set (Gab E Ω))) {g : Gab E Ω}
     (h : ∀ (L : IntermediateField E Ω) [FiniteDimensional E L] [IsAbelianGalois E L], H ≤ (res L).ker →
       res L g = 1) : g ∈ H := by
-  obtain ⟨σ, rfl⟩ := toAb_surjective g
-  let H' : ClosedSubgroup (Ω ≃ₐ[E] Ω) := ⟨H.comap (toAb E Ω), hH.preimage continuous_toAb⟩
-  have hfix := InfiniteGalois.fixingSubgroup_fixedField H'
-  have : σ ∈ (IntermediateField.fixedField H'.1).fixingSubgroup := by
-    rw [IntermediateField.mem_fixingSubgroup_iff]
-    intro y hy
-    have hab : y ∈ maximalAbelianExtension E Ω := by
-      refine IntermediateField.fixedField_le (fun τ hτ => ?_) hy
-      show toAb E Ω τ ∈ H
-      rw [show toAb E Ω τ = 1 from (QuotientGroup.eq_one_iff τ).2 hτ]
-      exact H.one_mem
-    obtain ⟨L0, _, _, hL0⟩ := exists_finite_abelian_mem hab
-    let L : IntermediateField E Ω := L0 ⊓ IntermediateField.fixedField H'.1
-    have : FiniteDimensional E L :=
-      FiniteDimensional.of_injective (IntermediateField.inclusion (inf_le_left : L ≤ L0)).toLinearMap
-        (IntermediateField.inclusion (inf_le_left : L ≤ L0)).injective
-    have : IsAbelianGalois E L := IsAbelianGalois.of_algHom (IntermediateField.inclusion (inf_le_left : L ≤ L0))
-    have h1 := h L fun a ha => by
-      obtain ⟨τ, rfl⟩ := toAb_surjective a
-      rw [MonoidHom.mem_ker, res_toAb, ← MonoidHom.mem_ker, L.restrictNormalHom_ker,
-        IntermediateField.mem_fixingSubgroup_iff]
-      intro z hz
-      exact (IntermediateField.mem_fixedField_iff _ z).1 hz.2 τ ha
-    rw [res_toAb, ← MonoidHom.mem_ker, L.restrictNormalHom_ker, IntermediateField.mem_fixingSubgroup_iff] at h1
-    exact h1 y ⟨hL0, hy⟩
-  rw [hfix] at this
-  exact this
+  apply CompanionTheory.FamInh.mem_of_forall_res <;> assumption
 
 theorem eq_of_forall_res {H H' : Subgroup (Gab E Ω)} (hH : IsClosed (H : Set (Gab E Ω)))
     (hH' : IsClosed (H' : Set (Gab E Ω)))

@@ -45,9 +45,7 @@ import Mathlib.Topology.Sheaves.Init
 
 namespace Formalism.L2.Th1.C
 
-theorem curveFrame : CurveFrame := curve_formal_frame
-theorem curve_second_log_derivative : CurveSecondLogDerivative := curve_second_log_derivative_holds
-theorem curveEndoR : CurveEndoR := curve_real_multiplication_series
-theorem curveEndoAll : CurveEndoAll := curve_all_endomorphism_series
-
+alias curveFrame := _root_.Formalism.L2.Th1.C.curve_formal_frame
+alias curve_second_log_derivative := _root_.Formalism.L2.Th1.C.curve_second_log_derivative_holds
+alias curveEndoR := _root_.Formalism.L2.Th1.C.curve_real_multiplication_series
 end Formalism.L2.Th1.C

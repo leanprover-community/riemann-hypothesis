@@ -64,297 +64,24 @@ public import Mathlib.Analysis.Calculus.Deriv.Pow
 
 @[expose] public section
 
-@[reducible] noncomputable def UpperTheory.Reformulated.B.Gwa7.U2 :
-    Type :=
-    ↥(@Matrix.unitaryGroup (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-        (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-        (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex Complex.commRing
-        Complex.instStarRing)
+namespace UpperTheory.Reformulated.B.Gwa7
 
-@[reducible] noncomputable def UpperTheory.Reformulated.B.Gwa7.instMeasurableSpaceU2 :
-    MeasurableSpace UpperTheory.Reformulated.B.Gwa7.U2 :=
-    @borel UpperTheory.Reformulated.B.Gwa7.U2
-      (@instTopologicalSpaceSubtype
-        (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-          (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-        (fun
-            (x :
-              Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex) ↦
-          @Membership.mem
-            (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-              (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-            (@Submonoid
-              (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-              (@MulZeroOneClass.toMulOneClass
-                (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                (@instMulZeroOneClassOfSemiring
-                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                  (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                    (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                    (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))))))
-            (@SetLike.instMembership
-              (@Submonoid
-                (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                (@MulZeroOneClass.toMulOneClass
-                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                  (@instMulZeroOneClassOfSemiring
-                    (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                    (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                      (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                      (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))))))
-              (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-              (@Submonoid.instSetLike
-                (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                (@MulZeroOneClass.toMulOneClass
-                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                  (@instMulZeroOneClassOfSemiring
-                    (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                    (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                      (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                      (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))))))))
-            (@Matrix.unitaryGroup (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-              (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-              (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex Complex.commRing
-              Complex.instStarRing)
-            x)
-        (@instTopologicalSpaceMatrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-          (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-          (@UniformSpace.toTopologicalSpace Complex
-            (@PseudoMetricSpace.toUniformSpace Complex
-              (@SeminormedRing.toPseudoMetricSpace Complex
-                (@SeminormedCommRing.toSeminormedRing Complex
-                  (@NormedCommRing.toSeminormedCommRing Complex
-                    (@CommCStarAlgebra.toNormedCommRing Complex instCommCStarAlgebraComplex))))))))
-attribute [local instance] UpperTheory.Reformulated.B.Gwa7.instMeasurableSpaceU2
+@[reducible] noncomputable def U2 : Type :=
+↥(Matrix.unitaryGroup (Fin 2) ℂ)
 
-theorem UpperTheory.Reformulated.B.Gwa7.aux3 :
-    @IsTopologicalGroup
-      (↥(@unitary
-          (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-            (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-          (@Semiring.toMonoid
-            (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-              (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-            (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-              (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-              (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-              (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))))
-          (@StarRing.toStarMul
-            (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-              (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-            (@NonUnitalSemiring.toNonUnitalNonAssocSemiring
-              (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-              (@Matrix.nonUnitalSemiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                (@Semiring.toNonUnitalSemiring Complex
-                  (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing)))
-                (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))))
-            (@Matrix.instStarRing (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-              (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-              (@NonUnitalSemiring.toNonUnitalNonAssocSemiring Complex
-                (@Semiring.toNonUnitalSemiring Complex
-                  (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))))
-              Complex.instStarRing))))
-      (@instTopologicalSpaceSubtype
-        (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-          (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-        (fun
-            (x :
-              Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex) ↦
-          @Membership.mem
-            (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-              (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-            (@Submonoid
-              (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-              (@Monoid.toMulOneClass
-                (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                (@Semiring.toMonoid
-                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                  (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                    (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                    (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))))))
-            (@SetLike.instMembership
-              (@Submonoid
-                (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                (@Monoid.toMulOneClass
-                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                  (@Semiring.toMonoid
-                    (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                    (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                      (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                      (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))))))
-              (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-              (@Submonoid.instSetLike
-                (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                (@Monoid.toMulOneClass
-                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                  (@Semiring.toMonoid
-                    (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                    (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                      (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                      (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))))))))
-            (@unitary
-              (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-              (@Semiring.toMonoid
-                (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                  (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                  (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))))
-              (@StarRing.toStarMul
-                (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                (@NonUnitalSemiring.toNonUnitalNonAssocSemiring
-                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                  (@Matrix.nonUnitalSemiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                    (@Semiring.toNonUnitalSemiring Complex
-                      (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing)))
-                    (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))))
-                (@Matrix.instStarRing (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                  (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (@NonUnitalSemiring.toNonUnitalNonAssocSemiring Complex
-                    (@Semiring.toNonUnitalSemiring Complex
-                      (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))))
-                  Complex.instStarRing)))
-            x)
-        (@instTopologicalSpaceMatrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-          (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-          (@UniformSpace.toTopologicalSpace Complex
-            (@PseudoMetricSpace.toUniformSpace Complex
-              (@SeminormedRing.toPseudoMetricSpace Complex
-                (@SeminormedCommRing.toSeminormedRing Complex
-                  (@NormedCommRing.toSeminormedCommRing Complex
-                    (@CommCStarAlgebra.toNormedCommRing Complex instCommCStarAlgebraComplex))))))))
-      (@Unitary.instGroupSubtypeMemSubmonoidUnitary
-        (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-          (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-        (@Semiring.toMonoid
-          (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-            (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-          (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-            (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-            (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-            (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))))
-        (@StarRing.toStarMul
-          (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-            (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-          (@NonUnitalSemiring.toNonUnitalNonAssocSemiring
-            (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-              (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-            (@Matrix.nonUnitalSemiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-              (@Semiring.toNonUnitalSemiring Complex
-                (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing)))
-              (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))))
-          (@Matrix.instStarRing (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-            (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-            (@NonUnitalSemiring.toNonUnitalNonAssocSemiring Complex
-              (@Semiring.toNonUnitalSemiring Complex
-                (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))))
-            Complex.instStarRing))) := by
+@[reducible] noncomputable def instMeasurableSpaceU2 : MeasurableSpace
+  U2 :=
+borel U2
+
+attribute [local instance] instMeasurableSpaceU2
+
+theorem aux3 : IsTopologicalGroup ↥(unitary (Matrix (Fin 2) (Fin 2) ℂ)) := by
   exact (inferInstance : IsTopologicalGroup (Matrix.unitaryGroup (Fin 2) ℂ))
 
-theorem UpperTheory.Reformulated.B.Gwa7.aux4 :
-    @BorelSpace UpperTheory.Reformulated.B.Gwa7.U2
-      (@instTopologicalSpaceSubtype
-        (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-          (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-        (fun
-            (x :
-              Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex) ↦
-          @Membership.mem
-            (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-              (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-            (@Submonoid
-              (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-              (@MulZeroOneClass.toMulOneClass
-                (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                (@instMulZeroOneClassOfSemiring
-                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                  (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                    (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                    (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))))))
-            (@SetLike.instMembership
-              (@Submonoid
-                (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                (@MulZeroOneClass.toMulOneClass
-                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                  (@instMulZeroOneClassOfSemiring
-                    (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                    (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                      (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                      (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))))))
-              (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-              (@Submonoid.instSetLike
-                (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                (@MulZeroOneClass.toMulOneClass
-                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                  (@instMulZeroOneClassOfSemiring
-                    (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                    (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                      (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                      (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))))))))
-            (@Matrix.unitaryGroup (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-              (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-              (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex Complex.commRing
-              Complex.instStarRing)
-            x)
-        (@instTopologicalSpaceMatrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-          (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-          (@UniformSpace.toTopologicalSpace Complex
-            (@PseudoMetricSpace.toUniformSpace Complex
-              (@SeminormedRing.toPseudoMetricSpace Complex
-                (@SeminormedCommRing.toSeminormedRing Complex
-                  (@NormedCommRing.toSeminormedCommRing Complex
-                    (@CommCStarAlgebra.toNormedCommRing Complex instCommCStarAlgebraComplex))))))))
-      UpperTheory.Reformulated.B.Gwa7.instMeasurableSpaceU2 := by
+theorem aux4 : BorelSpace U2 := by
   exact ⟨rfl⟩
 
-private theorem UpperTheory.Reformulated.B.Gwa7.compact_unitary :
+private theorem compact_unitary :
     CompactSpace (Matrix.unitaryGroup (Fin 2) ℂ) := by
   refine isCompact_iff_compactSpace.1 ?_
   have hK : IsCompact (Set.pi Set.univ fun _ : Fin 2 => Set.pi Set.univ fun _ : Fin 2 =>
@@ -365,362 +92,36 @@ private theorem UpperTheory.Reformulated.B.Gwa7.compact_unitary :
   intro U hU i _ j _
   simpa using entry_norm_bound_of_unitary hU i j
 
-theorem UpperTheory.Reformulated.B.Gwa7.aux5 :
-    @CompactSpace
-      (↥(@Matrix.unitaryGroup (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-          (fun (a b : Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) ↦
-            @LinearOrder.toDecidableEq (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-              (@Fin.instLinearOrder (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) a b)
-          (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-          (@Field.toCommRing Complex
-            (@NormedField.toField Complex
-              (@DenselyNormedField.toNormedField Complex (@RCLike.toDenselyNormedField Complex Complex.instRCLike))))
-          (@RCLike.toStarRing Complex Complex.instRCLike)))
-      (@instTopologicalSpaceSubtype
-        (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-          (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-        (fun
-            (x :
-              Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex) ↦
-          @Membership.mem
-            (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-              (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-            (@Submonoid
-              (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-              (@MulZeroOneClass.toMulOneClass
-                (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                (@instMulZeroOneClassOfSemiring
-                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                  (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                    (@CommSemiring.toSemiring Complex
-                      (@CommRing.toCommSemiring Complex
-                        (@Field.toCommRing Complex
-                          (@NormedField.toField Complex
-                            (@DenselyNormedField.toNormedField Complex
-                              (@RCLike.toDenselyNormedField Complex Complex.instRCLike))))))
-                    (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    fun (a b : Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) ↦
-                    @LinearOrder.toDecidableEq (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (@Fin.instLinearOrder (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) a b))))
-            (@SetLike.instMembership
-              (@Submonoid
-                (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                (@MulZeroOneClass.toMulOneClass
-                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                  (@instMulZeroOneClassOfSemiring
-                    (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                    (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                      (@CommSemiring.toSemiring Complex
-                        (@CommRing.toCommSemiring Complex
-                          (@Field.toCommRing Complex
-                            (@NormedField.toField Complex
-                              (@DenselyNormedField.toNormedField Complex
-                                (@RCLike.toDenselyNormedField Complex Complex.instRCLike))))))
-                      (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      fun (a b : Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) ↦
-                      @LinearOrder.toDecidableEq (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                        (@Fin.instLinearOrder (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) a b))))
-              (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-              (@Submonoid.instSetLike
-                (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                (@MulZeroOneClass.toMulOneClass
-                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                  (@instMulZeroOneClassOfSemiring
-                    (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                    (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                      (@CommSemiring.toSemiring Complex
-                        (@CommRing.toCommSemiring Complex
-                          (@Field.toCommRing Complex
-                            (@NormedField.toField Complex
-                              (@DenselyNormedField.toNormedField Complex
-                                (@RCLike.toDenselyNormedField Complex Complex.instRCLike))))))
-                      (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      fun (a b : Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) ↦
-                      @LinearOrder.toDecidableEq (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                        (@Fin.instLinearOrder (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) a b)))))
-            (@Matrix.unitaryGroup (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-              (fun (a b : Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) ↦
-                @LinearOrder.toDecidableEq (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (@Fin.instLinearOrder (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) a b)
-              (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-              (@Field.toCommRing Complex
-                (@NormedField.toField Complex
-                  (@DenselyNormedField.toNormedField Complex (@RCLike.toDenselyNormedField Complex Complex.instRCLike))))
-              (@RCLike.toStarRing Complex Complex.instRCLike))
-            x)
-        (@instTopologicalSpaceMatrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-          (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-          (@UniformSpace.toTopologicalSpace Complex
-            (@PseudoMetricSpace.toUniformSpace Complex
-              (@SeminormedRing.toPseudoMetricSpace Complex
-                (@SeminormedCommRing.toSeminormedRing Complex
-                  (@NormedCommRing.toSeminormedCommRing Complex
-                    (@NormedField.toNormedCommRing Complex
-                      (@DenselyNormedField.toNormedField Complex
-                        (@RCLike.toDenselyNormedField Complex Complex.instRCLike)))))))))) := by
-  exact UpperTheory.Reformulated.B.Gwa7.compact_unitary
+theorem aux5 : CompactSpace ↥(Matrix.unitaryGroup (Fin 2) ℂ) := by
+  exact compact_unitary
 
-theorem UpperTheory.Reformulated.B.Gwa7.aux6 :
-    Nonempty UpperTheory.Reformulated.B.Gwa7.U2 := by
+theorem aux6 : Nonempty U2 := by
   exact ⟨1⟩
 
-noncomputable def UpperTheory.Reformulated.B.Gwa7.μK : MeasureTheory.Measure UpperTheory.Reformulated.B.Gwa7.U2 := @MeasureTheory.Measure.haarMeasure UpperTheory.Reformulated.B.Gwa7.U2
-      (@Unitary.instGroupSubtypeMemSubmonoidUnitary
-        (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-          (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-        (@Semiring.toMonoid
-          (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-            (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-          (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-            (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-            (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-            (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))))
-        (@StarRing.toStarMul
-          (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-            (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-          (@NonUnitalSemiring.toNonUnitalNonAssocSemiring
-            (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-              (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-            (@Matrix.nonUnitalSemiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-              (@Semiring.toNonUnitalSemiring Complex
-                (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing)))
-              (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))))
-          (@Matrix.instStarRing (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-            (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-            (@NonUnitalSemiring.toNonUnitalNonAssocSemiring Complex
-              (@Semiring.toNonUnitalSemiring Complex
-                (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))))
-            Complex.instStarRing)))
-      (@instTopologicalSpaceSubtype
-        (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-          (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-        (fun
-            (x :
-              Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex) ↦
-          @Membership.mem
-            (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-              (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-            (@Submonoid
-              (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-              (@MulZeroOneClass.toMulOneClass
-                (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                (@instMulZeroOneClassOfSemiring
-                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                  (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                    (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                    (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))))))
-            (@SetLike.instMembership
-              (@Submonoid
-                (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                (@MulZeroOneClass.toMulOneClass
-                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                  (@instMulZeroOneClassOfSemiring
-                    (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                    (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                      (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                      (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))))))
-              (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-              (@Submonoid.instSetLike
-                (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                (@MulZeroOneClass.toMulOneClass
-                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                  (@instMulZeroOneClassOfSemiring
-                    (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                    (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                      (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                      (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))))))))
-            (@Matrix.unitaryGroup (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-              (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-              (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex Complex.commRing
-              Complex.instStarRing)
-            x)
-        (@instTopologicalSpaceMatrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-          (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-          (@UniformSpace.toTopologicalSpace Complex
-            (@PseudoMetricSpace.toUniformSpace Complex
-              (@SeminormedRing.toPseudoMetricSpace Complex
-                (@SeminormedCommRing.toSeminormedRing Complex
-                  (@NormedCommRing.toSeminormedCommRing Complex
-                    (@CommCStarAlgebra.toNormedCommRing Complex instCommCStarAlgebraComplex))))))))
-      UpperTheory.Reformulated.B.Gwa7.aux3 UpperTheory.Reformulated.B.Gwa7.instMeasurableSpaceU2 UpperTheory.Reformulated.B.Gwa7.aux4
-      (@Top.top
-        (@TopologicalSpace.PositiveCompacts UpperTheory.Reformulated.B.Gwa7.U2
-          (@instTopologicalSpaceSubtype
-            (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-              (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-            (fun
-                (x :
-                  Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex) ↦
-              @Membership.mem
-                (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                (@Submonoid
-                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                  (@MulZeroOneClass.toMulOneClass
-                    (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                    (@instMulZeroOneClassOfSemiring
-                      (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                        (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                      (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                        (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                        (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                        (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))))))
-                (@SetLike.instMembership
-                  (@Submonoid
-                    (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                    (@MulZeroOneClass.toMulOneClass
-                      (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                        (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                      (@instMulZeroOneClassOfSemiring
-                        (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                          (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                        (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                          (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                          (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                          (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))))))
-                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                  (@Submonoid.instSetLike
-                    (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                    (@MulZeroOneClass.toMulOneClass
-                      (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                        (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                      (@instMulZeroOneClassOfSemiring
-                        (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                          (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                        (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                          (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                          (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                          (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))))))))
-                (@Matrix.unitaryGroup (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex Complex.commRing
-                  Complex.instStarRing)
-                x)
-            (@instTopologicalSpaceMatrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-              (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-              (@UniformSpace.toTopologicalSpace Complex
-                (@PseudoMetricSpace.toUniformSpace Complex
-                  (@SeminormedRing.toPseudoMetricSpace Complex
-                    (@SeminormedCommRing.toSeminormedRing Complex
-                      (@NormedCommRing.toSeminormedCommRing Complex
-                        (@CommCStarAlgebra.toNormedCommRing Complex instCommCStarAlgebraComplex)))))))))
-        (@TopologicalSpace.PositiveCompacts.instTopOfCompactSpaceOfNonempty UpperTheory.Reformulated.B.Gwa7.U2
-          (@instTopologicalSpaceSubtype
-            (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-              (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-            (fun
-                (x :
-                  Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex) ↦
-              @Membership.mem
-                (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                (@Submonoid
-                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                  (@MulZeroOneClass.toMulOneClass
-                    (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                    (@instMulZeroOneClassOfSemiring
-                      (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                        (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                      (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                        (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                        (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                        (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))))))
-                (@SetLike.instMembership
-                  (@Submonoid
-                    (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                    (@MulZeroOneClass.toMulOneClass
-                      (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                        (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                      (@instMulZeroOneClassOfSemiring
-                        (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                          (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                        (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                          (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                          (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                          (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))))))
-                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                  (@Submonoid.instSetLike
-                    (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                    (@MulZeroOneClass.toMulOneClass
-                      (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                        (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                      (@instMulZeroOneClassOfSemiring
-                        (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                          (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                        (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                          (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                          (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                          (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))))))))
-                (@Matrix.unitaryGroup (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex Complex.commRing
-                  Complex.instStarRing)
-                x)
-            (@instTopologicalSpaceMatrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-              (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-              (@UniformSpace.toTopologicalSpace Complex
-                (@PseudoMetricSpace.toUniformSpace Complex
-                  (@SeminormedRing.toPseudoMetricSpace Complex
-                    (@SeminormedCommRing.toSeminormedRing Complex
-                      (@NormedCommRing.toSeminormedCommRing Complex
-                        (@CommCStarAlgebra.toNormedCommRing Complex instCommCStarAlgebraComplex))))))))
-          UpperTheory.Reformulated.B.Gwa7.aux5 UpperTheory.Reformulated.B.Gwa7.aux6))
+noncomputable def μK : MeasureTheory.Measure U2 := by
+  letI : BorelSpace U2 := aux4
+  letI : CompactSpace U2 := aux5
+  letI : Nonempty U2 := aux6
+  exact MeasureTheory.Measure.haarMeasure ⊤
 
 section Algebra
 variable {A : Type*} [NormedCommRing A] [NormedAlgebra ℂ A]
 
-private theorem UpperTheory.Reformulated.B.Gwa7.deriv_zero (φ : A →L[ℂ] ℂ) {f : ℂ → A} {f' : A}
+private theorem deriv_zero (φ : A →L[ℂ] ℂ) {f : ℂ → A} {f' : A}
     (hf : HasDerivAt f f' 0) (h : ∀ t, φ (f t) = 0) : φ f' = 0 := by
   have h1 : HasDerivAt (fun t => φ (f t)) (φ f') 0 := φ.hasFDerivAt.comp_hasDerivAt 0 hf
   have h2 : (fun t => φ (f t)) = fun _ => (0 : ℂ) := funext h
   rw [h2] at h1
   exact h1.unique (hasDerivAt_const 0 0)
 
-private theorem UpperTheory.Reformulated.B.Gwa7.line_deriv (x y : A) :
+private theorem line_deriv (x y : A) :
     HasDerivAt (fun t : ℂ => x + t • y) y 0 := by
   simpa using ((hasDerivAt_id (0 : ℂ)).smul_const y).const_add x
 
-private theorem UpperTheory.Reformulated.B.Gwa7.step_one (φ : A →L[ℂ] ℂ) (x y c : A) (n : ℕ)
+private theorem step_one (φ : A →L[ℂ] ℂ) (x y c : A) (n : ℕ)
     (h : ∀ s : ℂ, φ ((x + s • y) ^ (n + 1) * c) = 0) : φ (x ^ n * y * c) = 0 := by
-  have h1 := UpperTheory.Reformulated.B.Gwa7.deriv_zero φ
-    (((UpperTheory.Reformulated.B.Gwa7.line_deriv x y).pow (n + 1)).mul_const c) h
+  have h1 := deriv_zero φ
+    (((line_deriv x y).pow (n + 1)).mul_const c) h
   have h2 : ((n + 1 : ℕ) : A) * (x + (0 : ℂ) • y) ^ (n + 1 - 1) * y * c
       = ((n + 1 : ℕ) : ℂ) • (x ^ n * y * c) := by
     simp only [Algebra.smul_def, map_natCast, map_zero, zero_mul, add_zero, Nat.add_sub_cancel]
@@ -728,13 +129,13 @@ private theorem UpperTheory.Reformulated.B.Gwa7.step_one (φ : A →L[ℂ] ℂ) 
   rw [h2, map_smul, smul_eq_mul] at h1
   exact (mul_eq_zero.1 h1).resolve_left (Nat.cast_ne_zero.2 (Nat.succ_ne_zero n))
 
-private theorem UpperTheory.Reformulated.B.Gwa7.step_two (φ : A →L[ℂ] ℂ) (x x' y y' c Δ : A) (κ : ℂ) (n : ℕ)
+private theorem step_two (φ : A →L[ℂ] ℂ) (x x' y y' c Δ : A) (κ : ℂ) (n : ℕ)
     (hΔ : x' * y = x * y' - κ • Δ)
     (h : ∀ t : ℂ, φ ((x + t • x') ^ (n + 1) * (y + t • y') * c) = 0)
     (h' : φ (x ^ n * Δ * c) = 0) : φ (x ^ (n + 1) * y' * c) = 0 := by
-  have h1 := UpperTheory.Reformulated.B.Gwa7.deriv_zero φ
-    ((((UpperTheory.Reformulated.B.Gwa7.line_deriv x x').pow (n + 1)).mul
-      (UpperTheory.Reformulated.B.Gwa7.line_deriv y y')).mul_const c) h
+  have h1 := deriv_zero φ
+    ((((line_deriv x x').pow (n + 1)).mul
+      (line_deriv y y')).mul_const c) h
   have h2 : (((n + 1 : ℕ) : A) * (x + (0 : ℂ) • x') ^ (n + 1 - 1) * x' * (y + (0 : ℂ) • y')
       + (x + (0 : ℂ) • x') ^ (n + 1) * y') * c
       = ((n + 2 : ℕ) : ℂ) • (x ^ (n + 1) * y' * c) - (((n + 1 : ℕ) : ℂ) * κ) • (x ^ n * Δ * c) := by
@@ -746,35 +147,35 @@ private theorem UpperTheory.Reformulated.B.Gwa7.step_two (φ : A →L[ℂ] ℂ) 
   rw [map_sub, map_smul, map_smul, h', smul_zero, sub_zero, smul_eq_mul] at h3
   exact (mul_eq_zero.1 h3).resolve_left (Nat.cast_ne_zero.2 (Nat.succ_ne_zero _))
 
-private def UpperTheory.Reformulated.B.Gwa7.lin (p q r s : A) (a b c d : ℂ) : A :=
+private def lin (p q r s : A) (a b c d : ℂ) : A :=
   (a * c) • p + (a * d) • q + (b * c) • r + (b * d) • s
 
-private theorem UpperTheory.Reformulated.B.Gwa7.mul_lin (φ : A →L[ℂ] ℂ) (p q r s z : A) (D : ℤ → A)
+private theorem mul_lin (φ : A →L[ℂ] ℂ) (p q r s z : A) (D : ℤ → A)
     (hD : ∀ m, D (m + 1) = (p * s - q * r) * D m)
-    (h : ∀ (n : ℕ) (m : ℤ) (a b c d : ℂ), φ (UpperTheory.Reformulated.B.Gwa7.lin p q r s a b c d ^ n * D m * z) = 0)
+    (h : ∀ (n : ℕ) (m : ℤ) (a b c d : ℂ), φ (lin p q r s a b c d ^ n * D m * z) = 0)
     (a' b' c' d' : ℂ) (n : ℕ) (m : ℤ) (a b c d : ℂ) :
-    φ (UpperTheory.Reformulated.B.Gwa7.lin p q r s a b c d ^ n * D m *
-      (UpperTheory.Reformulated.B.Gwa7.lin p q r s a' b' c' d' * z)) = 0 := by
+    φ (lin p q r s a b c d ^ n * D m *
+      (lin p q r s a' b' c' d' * z)) = 0 := by
   cases n with
   | zero =>
     rw [← h 1 m a' b' c' d']
     congr 1
     ring
   | succ n =>
-    have key := UpperTheory.Reformulated.B.Gwa7.step_two φ (UpperTheory.Reformulated.B.Gwa7.lin p q r s a b c d)
-      (UpperTheory.Reformulated.B.Gwa7.lin p q r s a b c' d') (UpperTheory.Reformulated.B.Gwa7.lin p q r s a' b' c d)
-      (UpperTheory.Reformulated.B.Gwa7.lin p q r s a' b' c' d') (D m * z) (p * s - q * r)
+    have key := step_two φ (lin p q r s a b c d)
+      (lin p q r s a b c' d') (lin p q r s a' b' c d)
+      (lin p q r s a' b' c' d') (D m * z) (p * s - q * r)
       ((a * b' - b * a') * (c * d' - d * c')) n ?_ ?_ ?_
     · rw [← key]
       congr 1
       ring
-    · simp only [UpperTheory.Reformulated.B.Gwa7.lin, Algebra.smul_def, map_mul, map_sub]
+    · simp only [lin, Algebra.smul_def, map_mul, map_sub]
       ring
     · intro t
-      refine UpperTheory.Reformulated.B.Gwa7.step_one φ _ _ _ _ fun u => ?_
+      refine step_one φ _ _ _ _ fun u => ?_
       rw [← h (n + 1 + 1) m (a + u * a') (b + u * b') (c + t * c') (d + t * d'), ← mul_assoc]
       congr 4
-      simp only [UpperTheory.Reformulated.B.Gwa7.lin, Algebra.smul_def, map_mul, map_add (f := _)]
+      simp only [lin, Algebra.smul_def, map_mul, map_add (f := _)]
       ring
     · rw [← h n (m + 1) a b c d, hD]
       congr 1
@@ -782,7 +183,7 @@ private theorem UpperTheory.Reformulated.B.Gwa7.mul_lin (φ : A →L[ℂ] ℂ) (
 
 end Algebra
 
-private theorem UpperTheory.Reformulated.B.Gwa7.unit_vec (a b : ℂ) :
+private theorem unit_vec (a b : ℂ) :
     ∃ r α β : ℂ, a = r * α ∧ b = r * β ∧
       α * (starRingEnd ℂ) α + β * (starRingEnd ℂ) β = 1 := by
   by_cases h0 : Complex.normSq a + Complex.normSq b = 0
@@ -808,26 +209,26 @@ private theorem UpperTheory.Reformulated.B.Gwa7.unit_vec (a b : ℂ) :
     field_simp
     linear_combination -hc
 
-private noncomputable def UpperTheory.Reformulated.B.Gwa7.entry (i j : Fin 2) : C(UpperTheory.Reformulated.B.Gwa7.U2, ℂ) :=
+private noncomputable def entry (i j : Fin 2) : C(U2, ℂ) :=
   ⟨fun k => k.1 i j, continuous_subtype_val.matrix_elem i j⟩
 
-private theorem UpperTheory.Reformulated.B.Gwa7.det_ne (k : UpperTheory.Reformulated.B.Gwa7.U2) : k.1.det ≠ 0 :=
+private theorem det_ne (k : U2) : k.1.det ≠ 0 :=
   (Unitary.isUnit_coe (U := ⟨_, Matrix.det_of_mem_unitary k.2⟩)).ne_zero
 
-private noncomputable def UpperTheory.Reformulated.B.Gwa7.detPow (m : ℤ) : C(UpperTheory.Reformulated.B.Gwa7.U2, ℂ) :=
+private noncomputable def detPow (m : ℤ) : C(U2, ℂ) :=
   ⟨fun k => k.1.det ^ m, continuous_subtype_val.matrix_det.zpow₀ m
-    fun k => Or.inl (UpperTheory.Reformulated.B.Gwa7.det_ne k)⟩
+    fun k => Or.inl (det_ne k)⟩
 
-private theorem UpperTheory.Reformulated.B.Gwa7.star_eq (k : UpperTheory.Reformulated.B.Gwa7.U2) :
+private theorem star_eq (k : U2) :
     star k.1 = (k.1.det)⁻¹ • k.1.adjugate := by
   have h1 : star k.1 * k.1 = 1 := Matrix.mem_unitaryGroup_iff'.1 k.2
   have h2 : star k.1 * (k.1 * k.1.adjugate) = k.1.adjugate := by
     rw [← mul_assoc, h1, one_mul]
   rw [Matrix.mul_adjugate, Matrix.mul_smul, mul_one] at h2
-  rw [← h2, smul_smul, inv_mul_cancel₀ (UpperTheory.Reformulated.B.Gwa7.det_ne k), one_smul]
+  rw [← h2, smul_smul, inv_mul_cancel₀ (det_ne k), one_smul]
 
 open UpperTheory.Reformulated.B.Gwa7 in
-private theorem UpperTheory.Reformulated.B.Gwa7.entry_lin [CompactSpace U2] (i j : Fin 2) : ∃ a b c d : ℂ,
+private theorem entry_lin [CompactSpace U2] (i j : Fin 2) : ∃ a b c d : ℂ,
     entry i j = lin (entry 0 0) (entry 0 1) (entry 1 0) (entry 1 1) a b c d := by
   fin_cases i <;> fin_cases j
   · exact ⟨1, 0, 1, 0, by simp [lin]⟩
@@ -836,7 +237,7 @@ private theorem UpperTheory.Reformulated.B.Gwa7.entry_lin [CompactSpace U2] (i j
   · exact ⟨0, 1, 0, 1, by simp [lin]⟩
 
 open UpperTheory.Reformulated.B.Gwa7 in
-private theorem UpperTheory.Reformulated.B.Gwa7.star_entry_lin [CompactSpace U2] (i j : Fin 2) : ∃ a b c d : ℂ,
+private theorem star_entry_lin [CompactSpace U2] (i j : Fin 2) : ∃ a b c d : ℂ,
     star (entry i j) = detPow (-1) * lin (entry 0 0) (entry 0 1) (entry 1 0) (entry 1 1) a b c d := by
   have h : ∀ k : U2, star (k.1 i j) = (k.1.det)⁻¹ * k.1.adjugate j i := fun k => by
     have := congrFun (congrFun (star_eq k) j) i
@@ -852,7 +253,7 @@ private theorem UpperTheory.Reformulated.B.Gwa7.star_entry_lin [CompactSpace U2]
     simp [lin, detPow, entry, Matrix.adjugate_fin_two]
 
 open UpperTheory.Reformulated.B.Gwa7 in
-private theorem UpperTheory.Reformulated.B.Gwa7.lin_eq [CompactSpace U2] (a b c d : ℂ) :
+private theorem lin_eq [CompactSpace U2] (a b c d : ℂ) :
     ∃ (r : ℂ) (l₁ l₂ : U2), ∀ k : U2,
     lin (entry 0 0) (entry 0 1) (entry 1 0) (entry 1 1) a b c d k = r * (l₁ * k * l₂).1 0 0 := by
   obtain ⟨r, α, β, rfl, rfl, h⟩ := unit_vec a b
@@ -873,7 +274,7 @@ private theorem UpperTheory.Reformulated.B.Gwa7.lin_eq [CompactSpace U2] (a b c 
     ring
 
 open UpperTheory.Reformulated.B.Gwa7 in
-private theorem UpperTheory.Reformulated.B.Gwa7.functional_zero [CompactSpace U2] (φ : C(U2, ℂ) →L[ℂ] ℂ)
+private theorem functional_zero [CompactSpace U2] (φ : C(U2, ℂ) →L[ℂ] ℂ)
     (h : ∀ (n : ℕ) (m : ℤ) (a b c d : ℂ),
       φ (lin (entry 0 0) (entry 0 1) (entry 1 0) (entry 1 1) a b c d ^ n * detPow m * 1) = 0)
     (f : C(U2, ℂ)) : φ f = 0 := by
@@ -939,7 +340,7 @@ private theorem UpperTheory.Reformulated.B.Gwa7.functional_zero [CompactSpace U2
   simpa [hD0] using this
 
 open UpperTheory.Reformulated.B.Gwa7 MeasureTheory in
-private theorem UpperTheory.Reformulated.B.Gwa7.main [CompactSpace U2] [BorelSpace U2] (μ : Measure U2)
+private theorem main [CompactSpace U2] [BorelSpace U2] (μ : Measure U2)
     [IsFiniteMeasure μ] [μ.IsOpenPosMeasure] {g : U2 → ℂ} (hg : Continuous g)
     (h : ∀ (n : ℕ) (q : ℤ) (l₁ l₂ : U2),
       ∫ k, (l₁ * k * l₂).1 0 0 ^ n * k.1.det ^ q * g k ∂μ = 0) : g = 0 := by
@@ -965,279 +366,20 @@ private theorem UpperTheory.Reformulated.B.Gwa7.main [CompactSpace U2] [BorelSpa
   ext k
   simpa [G] using congrArg (fun F : C(U2, ℂ) => F k) h2
 
-theorem UpperTheory.Reformulated.B.Gwa7.eq_zero_of_forall_integral_coeff :
-    ∀ {g : UpperTheory.Reformulated.B.Gwa7.U2 → Complex},
-      @Continuous UpperTheory.Reformulated.B.Gwa7.U2 Complex
-          (@instTopologicalSpaceSubtype
-            (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-              (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-            (fun
-                (x :
-                  Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex) ↦
-              @Membership.mem
-                (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                (@Submonoid
-                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                  (@MulZeroOneClass.toMulOneClass
-                    (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                    (@instMulZeroOneClassOfSemiring
-                      (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                        (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                      (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                        (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                        (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                        (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))))))
-                (@SetLike.instMembership
-                  (@Submonoid
-                    (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                    (@MulZeroOneClass.toMulOneClass
-                      (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                        (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                      (@instMulZeroOneClassOfSemiring
-                        (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                          (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                        (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                          (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                          (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                          (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))))))
-                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                  (@Submonoid.instSetLike
-                    (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                      (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                    (@MulZeroOneClass.toMulOneClass
-                      (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                        (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                      (@instMulZeroOneClassOfSemiring
-                        (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                          (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                        (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                          (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                          (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                          (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))))))))
-                (@Matrix.unitaryGroup (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                  (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex Complex.commRing
-                  Complex.instStarRing)
-                x)
-            (@instTopologicalSpaceMatrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-              (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-              (@UniformSpace.toTopologicalSpace Complex
-                (@PseudoMetricSpace.toUniformSpace Complex
-                  (@SeminormedRing.toPseudoMetricSpace Complex
-                    (@SeminormedCommRing.toSeminormedRing Complex
-                      (@NormedCommRing.toSeminormedCommRing Complex
-                        (@CommCStarAlgebra.toNormedCommRing Complex instCommCStarAlgebraComplex))))))))
-          (@UniformSpace.toTopologicalSpace Complex
-            (@PseudoMetricSpace.toUniformSpace Complex
-              (@SeminormedRing.toPseudoMetricSpace Complex
-                (@SeminormedCommRing.toSeminormedRing Complex
-                  (@NormedCommRing.toSeminormedCommRing Complex
-                    (@CommCStarAlgebra.toNormedCommRing Complex instCommCStarAlgebraComplex))))))
-          g →
-        (∀ (n : Nat) (q : Int) (l₁ l₂ : UpperTheory.Reformulated.B.Gwa7.U2),
-            @Eq Complex
-              (@MeasureTheory.integral UpperTheory.Reformulated.B.Gwa7.U2 Complex Complex.instNormedAddCommGroup
-                (@InnerProductSpace.toNormedSpace Real Complex Real.instRCLike
-                  (@NormedAddCommGroup.toSeminormedAddCommGroup Complex Complex.instNormedAddCommGroup)
-                  instInnerProductSpaceRealComplex)
-                UpperTheory.Reformulated.B.Gwa7.instMeasurableSpaceU2 UpperTheory.Reformulated.B.Gwa7.μK fun (k : UpperTheory.Reformulated.B.Gwa7.U2) ↦
-                @HMul.hMul Complex Complex Complex (@instHMul Complex Complex.instMul)
-                  (@HMul.hMul Complex Complex Complex (@instHMul Complex Complex.instMul)
-                    (@HPow.hPow Complex Nat Complex
-                      (@instHPow Complex Nat
-                        (@NPow.toPow Complex (@Monoid.toNPow Complex (@Semiring.toMonoid Complex Complex.instSemiring))))
-                      (@Subtype.val
-                        (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                          (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                        (fun
-                            (x :
-                              Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex) ↦
-                          @Membership.mem
-                            (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                              (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                            (@Submonoid
-                              (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                              (@MulZeroOneClass.toMulOneClass
-                                (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                                (@instMulZeroOneClassOfSemiring
-                                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                                  (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                                    (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                                    (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                    (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))))))
-                            (@SetLike.instMembership
-                              (@Submonoid
-                                (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                                (@MulZeroOneClass.toMulOneClass
-                                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                                  (@instMulZeroOneClassOfSemiring
-                                    (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                      (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                                    (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                      Complex
-                                      (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                                      (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                      (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))))))
-                              (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                              (@Submonoid.instSetLike
-                                (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                                (@MulZeroOneClass.toMulOneClass
-                                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                                  (@instMulZeroOneClassOfSemiring
-                                    (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                      (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                                    (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                      Complex
-                                      (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                                      (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                      (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))))))))
-                            (@Matrix.unitaryGroup (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                              (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                              (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                              Complex.commRing Complex.instStarRing)
-                            x)
-                        (@HMul.hMul UpperTheory.Reformulated.B.Gwa7.U2 UpperTheory.Reformulated.B.Gwa7.U2 UpperTheory.Reformulated.B.Gwa7.U2
-                          (@instHMul UpperTheory.Reformulated.B.Gwa7.U2
-                            (@Submonoid.mul
-                              (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                              (@MulZeroOneClass.toMulOneClass
-                                (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                                (@instMulZeroOneClassOfSemiring
-                                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                                  (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                                    (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                                    (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                    (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))))))
-                              (@Matrix.unitaryGroup (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                                Complex.commRing Complex.instStarRing)))
-                          (@HMul.hMul UpperTheory.Reformulated.B.Gwa7.U2 UpperTheory.Reformulated.B.Gwa7.U2 UpperTheory.Reformulated.B.Gwa7.U2
-                            (@instHMul UpperTheory.Reformulated.B.Gwa7.U2
-                              (@Submonoid.mul
-                                (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                                (@MulZeroOneClass.toMulOneClass
-                                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                                  (@instMulZeroOneClassOfSemiring
-                                    (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                      (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                                    (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                      Complex
-                                      (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                                      (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                      (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))))))
-                                (@Matrix.unitaryGroup (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                  (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                  (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                                  Complex.commRing Complex.instStarRing)))
-                            l₁ k)
-                          l₂)
-                        (@OfNat.ofNat (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) (nat_lit 0)
-                          (@Fin.instOfNat (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))
-                            (@Nat.instNeZeroSucc (@OfNat.ofNat Nat (nat_lit 1) (instOfNatNat (nat_lit 1)))) (nat_lit 0)))
-                        (@OfNat.ofNat (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) (nat_lit 0)
-                          (@Fin.instOfNat (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))
-                            (@Nat.instNeZeroSucc (@OfNat.ofNat Nat (nat_lit 1) (instOfNatNat (nat_lit 1)))) (nat_lit 0))))
-                      n)
-                    (@HPow.hPow Complex Int Complex
-                      (@instHPow Complex Int (@ZPow.toPow Complex (@DivInvMonoid.toZPow Complex Complex.instDivInvMonoid)))
-                      (@Matrix.det (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                        (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                        (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex Complex.commRing
-                        (@Subtype.val
-                          (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                            (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                          (fun
-                              (x :
-                                Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex) ↦
-                            @Membership.mem
-                              (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                              (@Submonoid
-                                (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                                (@MulZeroOneClass.toMulOneClass
-                                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                                  (@instMulZeroOneClassOfSemiring
-                                    (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                      (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                                    (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                      Complex
-                                      (@CommSemiring.toSemiring Complex (@CommRing.toCommSemiring Complex Complex.commRing))
-                                      (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                      (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))))))
-                              (@SetLike.instMembership
-                                (@Submonoid
-                                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                                  (@MulZeroOneClass.toMulOneClass
-                                    (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                      (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                                    (@instMulZeroOneClassOfSemiring
-                                      (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                        (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                                      (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                        Complex
-                                        (@CommSemiring.toSemiring Complex
-                                          (@CommRing.toCommSemiring Complex Complex.commRing))
-                                        (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                        (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))))))
-                                (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                  (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                                (@Submonoid.instSetLike
-                                  (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                    (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                                  (@MulZeroOneClass.toMulOneClass
-                                    (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                      (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                                    (@instMulZeroOneClassOfSemiring
-                                      (Matrix (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                        (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex)
-                                      (@Matrix.semiring (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                        Complex
-                                        (@CommSemiring.toSemiring Complex
-                                          (@CommRing.toCommSemiring Complex Complex.commRing))
-                                        (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                        (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))))))))
-                              (@Matrix.unitaryGroup (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                (instDecidableEqFin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))))
-                                (Fin.fintype (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) Complex
-                                Complex.commRing Complex.instStarRing)
-                              x)
-                          k))
-                      q))
-                  (g k))
-              (@OfNat.ofNat Complex (nat_lit 0) (@Zero.toOfNat0 Complex Complex.instZero))) →
-          @Eq (UpperTheory.Reformulated.B.Gwa7.U2 → Complex) g
-            (@OfNat.ofNat (UpperTheory.Reformulated.B.Gwa7.U2 → Complex) (nat_lit 0)
-              (@Zero.toOfNat0 (UpperTheory.Reformulated.B.Gwa7.U2 → Complex)
-                (@Pi.instZero UpperTheory.Reformulated.B.Gwa7.U2 (fun (a : UpperTheory.Reformulated.B.Gwa7.U2) ↦ Complex) fun (i : UpperTheory.Reformulated.B.Gwa7.U2) ↦
-                  Complex.instZero))) := by
+theorem eq_zero_of_forall_integral_coeff : ∀
+  {g : U2 → ℂ},
+  Continuous g →
+    (∀ (n : ℕ) (q : ℤ) (l₁ l₂ : U2),
+        ∫ (k : U2),
+            ((l₁ * k * l₂ : U2) : Matrix (Fin 2) (Fin 2) ℂ) 0 0 ^ n *
+              (k : Matrix (Fin 2) (Fin 2) ℂ).det ^ q * g k ∂μK =
+          0) →
+      g = 0 := by
   intro g hg h
-  haveI : CompactSpace UpperTheory.Reformulated.B.Gwa7.U2 := UpperTheory.Reformulated.B.Gwa7.aux5
-  haveI : BorelSpace UpperTheory.Reformulated.B.Gwa7.U2 := UpperTheory.Reformulated.B.Gwa7.aux4
-  haveI : UpperTheory.Reformulated.B.Gwa7.μK.IsHaarMeasure :=
+  haveI : CompactSpace U2 := aux5
+  haveI : BorelSpace U2 := aux4
+  haveI : μK.IsHaarMeasure :=
     MeasureTheory.Measure.isHaarMeasure_haarMeasure _
-  exact UpperTheory.Reformulated.B.Gwa7.main UpperTheory.Reformulated.B.Gwa7.μK hg h
+  exact main μK hg h
+
+end UpperTheory.Reformulated.B.Gwa7

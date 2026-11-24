@@ -95,11 +95,11 @@ theorem occurrence_phi_k_equivariant (dual : Bool) (η f f' : Fin n → smD ε (
     (hff : (fun c => ((f' c : smD ε (rreg ε)) : L2 ε)) = kDiag dual (rreg ε) k (fun c => ((f c : smD ε (rreg ε)) : L2 ε))) :
     rreg ε k (occC2phi dual ε η f) = occC2phi dual ε η f' := by
   unfold occC2phi
-  rw [rightRegular_toL2 ε _ (cf_kset_sub hk)]
+  rw [rightRegular_toL2 ε _ (_root_.ReciprocityTheory.ChartRestriction.DS.UnitaryGroupOfForm.K_mem_UJ hk)]
   apply toL2_congr_of_forall_inUJ_eq
   intro g hg
   show ∑ c, _ = ∑ c, _
-  rw [occA_tensGrp_mul dual (rreg_isURepOn ε) hg hk, ← hff]
+  rw [_root_.ReciprocityTheory.ChartRestriction.DS.tensor_group_mul_kDiag dual (rreg_isURepOn ε) hg hk, ← hff]
 
 end Phi
 
@@ -150,7 +150,7 @@ theorem occurrence_projection_mem (dual : Bool) (hP : IsPsiFor ε lam T Ψ) (hv�
     let u' : Fin n → W := fun c => ∑ d, (cond dual (star (k c d)) (k c d)) • (⟨y d, hyW d⟩ : W)
     refine ⟨u', ?_⟩
     show P _ = rreg ε k (P _)
-    rw [← projection_commutes_right_regular hgap' hP' hv₀' k (cf_kset_sub hk)]
+    rw [← projection_commutes_right_regular hgap' hP' hv₀' k (_root_.ReciprocityTheory.ChartRestriction.DS.UnitaryGroupOfForm.K_mem_UJ hk)]
     congr 1
     refine (occurrence_phi_k_equivariant dual η _ _ hk ?_).symm
     funext c

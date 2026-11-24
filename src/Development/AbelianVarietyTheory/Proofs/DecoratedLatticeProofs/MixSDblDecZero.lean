@@ -96,7 +96,7 @@ theorem stackRows_gram (A : HSp D) {k l : ℕ} (X Y : Matrix (Fin A.rank) (Fin k
   rw [GlobalTheory.Doubling.gram_hdbl, GlobalTheory.Doubling.dblGram, GlobalTheory.Doubling.blkMat, stackRows, stackRows,
     conjTranspose_submatrix, submatrix_mul_equiv, submatrix_mul_equiv, submatrix_id_id,
     conjTranspose_fromRows_eq_fromCols_conjTranspose, fromCols_mul_fromBlocks, fromCols_mul_fromRows]
-  simp only [Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, Matrix.mul_neg, Matrix.neg_mul, sub_eq_add_neg]
+  simp only [Matrix.mul_zero, add_zero, zero_add, Matrix.mul_neg, Matrix.neg_mul, sub_eq_add_neg]
 
 def dblDec (A : HSp D) : HypDec (dblSp A) (zeroSp D) A.rank where
   e := stackRows A.gram⁻¹ A.gram⁻¹

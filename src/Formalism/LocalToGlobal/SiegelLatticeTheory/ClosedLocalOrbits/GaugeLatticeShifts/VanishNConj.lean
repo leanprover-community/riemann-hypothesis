@@ -64,14 +64,7 @@ theorem chiN_mul {x y : X.B.I.Gf} (hx : x ∈ X.K2) (hy : y ∈ X.K2) :
   have hg := modulus_g_ne_zero X
   unfold chiN
   refine unitaryCongruence.psi_mul_of_Z X.B.I X.B.g X.psiEf_add X.psiEf_int hg ?_
-  have h : (∑ a, hA X.B.I (X.f0 a) (X.B.I.fmat (x * y) *ᵥ nxt X.e0 X.z0 a)) -
-      (∑ a, hA X.B.I (X.f0 a) (X.B.I.fmat x *ᵥ nxt X.e0 X.z0 a)) -
-      (∑ a, hA X.B.I (X.f0 a) (X.B.I.fmat y *ᵥ nxt X.e0 X.z0 a)) =
-      ∑ a, (hA X.B.I (X.f0 a) (X.B.I.fmat (x * y) *ᵥ nxt X.e0 X.z0 a) -
-        hA X.B.I (X.f0 a) (X.B.I.fmat x *ᵥ nxt X.e0 X.z0 a) -
-        hA X.B.I (X.f0 a) (X.B.I.fmat y *ᵥ nxt X.e0 X.z0 a)) := by
-    simp only [Finset.sum_sub_distrib]
-  rw [h]
+  rw [← Finset.sum_sub_distrib, ← Finset.sum_sub_distrib]
   exact unitaryCongruence.Z_sum X.B.I X.B.g _ _ fun a _ =>
     unitaryCongruence.term_Z X.B.I X.B.g _ _ (unitaryCongruence.nxt_Z X.B.I X.B.g X.e0 X.f0 X.z0 hfe hfz a)
       (unitaryCongruence.Me_Q X.B.I X.B.g X.e0 X.f0 hf0 hfe a
@@ -80,8 +73,7 @@ theorem chiN_mul {x y : X.B.I.Gf} (hx : x ∈ X.K2) (hy : y ∈ X.K2) :
 
 theorem chiL_conj {u : D.what₂.Word} {n : X.B.I.Gf} (hn : n ∈ X.NfinU u) (hnK : n ∈ X.B.I.Kset) :
     chiL X ((X.xu u)⁻¹ * n * X.xu u) = 1 := by
-  unfold chiL
-  exact unitaryCongruence.psi_Z X.B.I X.B.g X.psiEf_add X.psiEf_int (modulus_g_ne_zero X)
+  simpa only [chiL] using unitaryCongruence.psi_Z X.B.I X.B.g X.psiEf_add X.psiEf_int (modulus_g_ne_zero X)
     (unitaryCongruence.Z_sum X.B.I X.B.g _ _ fun i _ => Z_bw hn hnK i)
 
 theorem chiN_conj {u : D.what₂.Word} {n : X.B.I.Gf} (hn : n ∈ X.NfinU u) (hnK : n ∈ X.B.I.Kset) :

@@ -271,7 +271,7 @@ theorem Representative.proof (h1 : DivCycleMul.Statement.{u}) : Representative.S
       funext k
       have h1k := hle H₁ hH₁ k
       have h2k := congrFun hde k
-      simp only [Pi.add_apply, Pi.sub_apply] at h1k h2k ⊢
+      simp only [Pi.add_apply] at h1k h2k ⊢
       simp only [hF, Pi.add_apply, Pi.sub_apply]
       omega
     have hdegv : ∀ H ∈ T', A H + (E - (A H + e H)) + d H = F := by

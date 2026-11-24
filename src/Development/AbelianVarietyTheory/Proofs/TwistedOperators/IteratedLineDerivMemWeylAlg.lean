@@ -119,8 +119,7 @@ theorem weightOp_apply (f : Sch l) (x : EuclideanSpace ℝ l) :
     weightOp l f x = ((1 + ‖x‖ ^ 2 : ℝ) : ℂ) * f x := by
   have hπ : (π : ℂ) ≠ 0 := by simp [Real.pi_ne_zero]
   simp only [weightOp, ContinuousLinearMap.sub_apply, ContinuousLinearMap.smul_apply, ContinuousLinearMap.sum_apply,
-    ContinuousLinearMap.mul_apply, ContinuousLinearMap.one_apply, SchwartzMap.sub_apply, SchwartzMap.smul_apply,
-    SchwartzMap.sum_apply, dRho_single_inr, smul_eq_mul, EuclideanSpace.real_norm_sq_eq]
+    ContinuousLinearMap.mul_apply, ContinuousLinearMap.one_apply, dRho_single_inr, smul_eq_mul, EuclideanSpace.real_norm_sq_eq]
   push_cast
   rw [add_mul, one_mul, Finset.mul_sum, Finset.sum_mul, sub_eq_add_neg, ← Finset.sum_neg_distrib]
   congr 1
@@ -461,7 +460,7 @@ theorem hasDerivAt_toLp_omS
       dRho_eq_sum (X *ᵥ w)]
 
     simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply, map_sum,
-    map_smul, ofReal_neg, ofReal_zero, zero_smul, NormedSpace.exp_zero, transpose_one, mul_one, J_squared, neg_neg, one_mulVec,
+    map_smul, zero_smul, NormedSpace.exp_zero, transpose_one, mul_one, J_squared, neg_neg, one_mulVec,
     h0, map_one, ContinuousLinearMap.one_apply, ContinuousLinearMap.sub_apply, ContinuousLinearMap.mul_apply,
     map_sub, neg_smul, ← sub_eq_add_neg, Finset.sum_sub_distrib]
     simp only [coe_smul]

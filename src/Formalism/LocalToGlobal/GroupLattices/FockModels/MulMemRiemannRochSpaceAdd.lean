@@ -39,6 +39,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
+import Formalism.SharpRestriction.GrowthBounds.LatticeSystems
 
 @[expose] public section
 
@@ -123,18 +124,6 @@ theorem lamAt_add {n' m : ℕ} (lam0 mu0 : Fin n' → Fin (m + 1) → ℤ) (s : 
     simp only [Pi.add_apply]
     ring
 
-private lemma lamAt_antitone_lemma {n' m : ℕ} (lam0 : Fin n' → Fin (m + 1) → ℤ) (h : IsDominant lam0)
-    (s : Fin n') : Antitone (lamAt lam0 s) := by
-  unfold lamAt
-  split_ifs
-  · exact h s
-  · intro i j hij
-    have hr : j.rev ≤ i.rev := by
-      rw [Fin.le_def] at hij ⊢
-      simp only [Fin.val_rev]
-      omega
-    exact neg_le_neg (h s hr)
-
 theorem products_sections_integral (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.tableLineDegreeFive.LevelPrimesProviso D := by
   unfold Formalism.MainNotions.tableLineDegreeFive.LevelPrimesProviso
   intro O Kf _ _ _ n' m lam0 mu0 Λ hl hm F hF G hG
@@ -143,6 +132,6 @@ theorem products_sections_integral (D : Formalism.BasicNotions.D7) : Formalism.M
   intro s F' hF' G' hG'
   show F' * G' ∈ H0 O m (lamAt (lam0 + mu0) s) (Λ s)
   rw [lamAt_add]
-  exact mul_mem_riemannRochSpace_add O Kf m _ _ (lamAt_antitone_lemma lam0 hl s) (lamAt_antitone_lemma mu0 hm s) (Λ s) hF' hG'
+  exact mul_mem_riemannRochSpace_add O Kf m _ _ (_root_.Formalism.MainNotions.G.LatticeSystems.kp_lamAt_antitone lam0 hl s) (_root_.Formalism.MainNotions.G.LatticeSystems.kp_lamAt_antitone mu0 hm s) (Λ s) hF' hG'
 
 end Formalism.L2.G.Model

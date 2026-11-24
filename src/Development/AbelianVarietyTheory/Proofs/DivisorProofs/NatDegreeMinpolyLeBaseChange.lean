@@ -3,8 +3,9 @@ module
 public import Mathlib.Algebra.Central.Defs
 public import Mathlib.FieldTheory.Separable
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FinrankIInfKerEqOfIsBaseChangeFamily
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MatrixEqAevalOfCommuteStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MatrixEqAevalOfCommute
 public import GroundTheory.Brauer.Degree
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CoeffMinpolyMemAdicCompletionIntegers
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -81,23 +82,7 @@ theorem centralizer_toSubmodule {K S : Type} [Field K] [Ring S] [Algebra K S] (g
 theorem natDegree_minpoly_le_baseChange {F A : Type} [Field F] [Ring A] [Algebra F A] (K : Type)
     [Field K] [Algebra F K] (g : A) (hK : IsIntegral K ((1 : K) ⊗ₜ[F] g)) :
     (minpoly F g).natDegree ≤ (minpoly K ((1 : K) ⊗ₜ[F] g)).natDegree := by
-  set x : K ⊗[F] A := (1 : K) ⊗ₜ[F] g with hx
-  have hli : LinearIndependent K (fun j : Fin (minpoly F g).natDegree => x ^ (j : ℕ)) := by
-    have h := Module.Flat.linearIndependent_one_tmul (S := K) (linearIndependent_pow (K := F) g)
-    convert h using 1
-    funext j
-    simp [hx, Algebra.TensorProduct.tmul_pow]
-  by_contra hlt
-  push_neg at hlt
-  have hsum := aeval_eq_sum_range' hlt x
-  rw [minpoly.aeval, ← Fin.sum_univ_eq_sum_range (fun i => (minpoly K x).coeff i • x ^ i)] at hsum
-  have hc := Fintype.linearIndependent_iff.mp hli (fun i => (minpoly K x).coeff i) hsum.symm
-  apply minpoly.ne_zero hK
-  ext i
-  rw [coeff_zero]
-  by_cases hi : i < (minpoly F g).natDegree
-  · exact hc ⟨i, hi⟩
-  · exact coeff_eq_zero_of_natDegree_lt (by omega)
+  apply GlobalTheory.DescCoeff.natDegree_minpoly_le_one_tmul <;> assumption
 
 theorem centralizer_eq_adjoin : ∀ (F B : Type) [Field F] [Ring B] [Algebra F B]
     [Algebra.IsCentral F B] [IsSimpleRing B] [FiniteDimensional F B] (n : ℕ),
@@ -146,7 +131,7 @@ theorem centralizer_eq_adjoin : ∀ (F B : Type) [Field F] [Ring B] [Algebra F B
     have hcomm : Commute (e y) N := by
       change e y * e x = e x * e y
       rw [← map_mul, ← map_mul, hy']
-    obtain ⟨q, hq⟩ := GlobalTheory.T.matrix_eq_aeval_of_commute_of_charpoly_separable k N (e y) hNsep hcomm
+    obtain ⟨q, hq⟩ := _root_.GlobalTheory.CentralizerSeparable.matrix_eq_aeval_of_commute k N (e y) hNsep hcomm
     have : y = aeval x q := by
       apply e.injective
       rw [hq, hN, ← aeval_algHom_apply]

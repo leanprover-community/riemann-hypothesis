@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.StabilizerOrbitVolume.OrbRing
 public import Formalism.SatakeDualWeyl.Statement
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -90,32 +91,7 @@ theorem hform_eq_sum (x y : Fin M → A) :
 theorem exists_mem_UJ (hdet : IsUnit J.det) (g : Matrix (Fin M) (Fin M) A)
     (hg : ∀ y z, hform c J (g *ᵥ y) (g *ᵥ z) = hform c J y z) :
     ∃ G ∈ UJ c J, (G : Matrix (Fin M) (Fin M) A) = g := by
-  have hsingle : ∀ k l, hform c J (Pi.single k 1) (Pi.single l 1) = J k l := by
-    intro k l
-    simp [Formalism.UG.hform, Pi.single_apply, apply_ite c]
-  have hcol : ∀ k, g *ᵥ Pi.single k 1 = fun i => g i k := by
-    intro k
-    ext i
-    simp [Matrix.mulVec, dotProduct, Pi.single_apply]
-  have key : (g.map c)ᵀ * J * g = J := by
-    ext k l
-    have h1 := hg (Pi.single k 1) (Pi.single l 1)
-    rw [hcol, hcol, hsingle] at h1
-    rw [← h1]
-    simp only [Formalism.UG.hform, Matrix.mul_apply, Matrix.transpose_apply, Matrix.map_apply,
-      Finset.sum_mul]
-    exact Finset.sum_comm
-  have hdg : IsUnit g.det := by
-    have h2 := congrArg Matrix.det key
-    rw [Matrix.det_mul, Matrix.det_mul] at h2
-    have h3 : J.det * ((g.map c)ᵀ.det * g.det) = J.det * 1 := by
-      linear_combination h2
-    have h4 := hdet.mul_left_cancel h3
-    exact isUnit_of_mul_isUnit_right (by rw [h4]; exact isUnit_one)
-  refine ⟨Matrix.nonsingInvUnit g hdg, ?_, rfl⟩
-  simp only [Formalism.UG.UJ, Subgroup.mem_mk, Submonoid.mem_mk, Subsemigroup.mem_mk, Set.mem_ofPred_eq,
-    Formalism.UG.cT]
-  exact key
+  apply PI.VolStabSW.OrbR.mem_UJ_of <;> assumption
 
 theorem exists_reflection (hc : ∀ a, c (c a) = a) (hJ : ∀ i j, c (J j i) = J i j)
     (hdet : IsUnit J.det) (x x' : Fin M → A) (hx : hform c J x x = hform c J x' x')

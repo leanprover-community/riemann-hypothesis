@@ -127,7 +127,6 @@ theorem local_norm [FiniteDimensional F L] [Algebra.IsSeparable F L]
   · rw [hset]
     first
     | exact ValPl.placesOver_finite (O := Localization.AtPrime p) (F := F) (L := L)
-    | exact ValPl.placesOver_finite (O := Localization.AtPrime p) (L := L)
   · rw [hset, hN, e1, mul_assoc, e2]
     rfl
 

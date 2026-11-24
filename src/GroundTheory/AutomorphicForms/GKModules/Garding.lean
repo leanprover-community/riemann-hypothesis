@@ -154,7 +154,7 @@ theorem isSmoothVector_integrated {f : G → ℂ} (hf : h.IsTestFunction f) (v :
     rw [← integral_mul_left_eq_self (F Y) (h.expG Y)]
     congr 1
     funext x
-    simp [hFdef, BanachRep.map_mul_apply, expG_neg]
+    simp [hFdef, expG_neg]
   rw [hexp]
 
   set ψ : 𝔤 → G → ℂ := fun Y g => f (h.expG (-Y) * g) with hψdef

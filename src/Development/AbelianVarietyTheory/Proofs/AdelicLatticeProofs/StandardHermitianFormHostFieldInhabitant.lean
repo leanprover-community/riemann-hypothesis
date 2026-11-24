@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.CmHostIdempotentTraceEqOne
 public import Development.AbelianVarietyTheory.Definitions.AdelicHermitianForms.IsHermForm
 public import Formalism.LocalToGlobal.ProjectiveLattices.ThShort
 import Mathlib.Algebra.AffineMonoid.Basic
@@ -67,23 +68,7 @@ theorem bar_bar (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (a : �
   rw [H.bar_eq, H.bar_eq, IsCMField.complexConj_apply_apply]
 
 theorem bar_rt (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) : H.bar H.rt = -H.rt := by
-  have h1 : H.bar H.rt ^ 2 = H.rt ^ 2 := by
-    rw [← map_pow, H.rt_sq, map_neg, map_natCast]
-  rcases sq_eq_sq_iff_eq_or_eq_neg.1 h1 with e | e
-  · exfalso
-    have e' : IsCMField.complexConj E (H.rt : E) = H.rt := by rw [← H.bar_eq, e]
-    obtain ⟨φ⟩ : Nonempty (E →+* ℂ) := inferInstance
-    have c := IsCMField.complexEmbedding_complexConj E φ (H.rt : E)
-    rw [e'] at c
-    have r : φ (H.rt : E) ^ 2 = -(H.d : ℂ) := by
-      have := congrArg (fun z : 𝓞 E => φ (z : E)) H.rt_sq
-      simpa using this
-    obtain ⟨x, hx⟩ := Complex.conj_eq_iff_real.1 c.symm
-    rw [hx] at r
-    have r' : x ^ 2 = -(H.d : ℝ) := by exact_mod_cast r
-    have : (0 : ℝ) < H.d := by exact_mod_cast H.d_prime.pos
-    nlinarith [sq_nonneg x]
-  · exact e
+  apply GlobalTheory.QuadTrace.bar_rt <;> assumption
 
 theorem bar_w (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) : H.bar H.w0 = 1 - H.w0 := by
   have h2 : 2 * H.bar H.w0 = 1 + H.bar H.rt := by
@@ -197,7 +182,7 @@ theorem isUnE_one_iff {F : Type} [Field F] [Algebra F E] (c : E ≃ₐ[F] E) {n 
     rw [this]
     by_cases e : i = j
     · subst e; simp [Pi.single_apply]
-    · simp [Pi.single_apply, e, Ne.symm e]
+    · simp [Pi.single_apply, e]
   · intro h x y
     rw [hermE_one, hermE_one]
 
@@ -219,7 +204,7 @@ theorem main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Recip
     fun P _ => moved_iff H P, isUnE_one_iff _⟩
   · by_cases e : a = b
     · subst e; simp
-    · simp [Matrix.one_apply, e, Ne.symm e]
+    · simp [e, Ne.symm e]
   · rw [stdLat_eq_span]
     exact Submodule.fg_span (Set.finite_range _)
   · rw [eq_top_iff, ← (Pi.basisFun E (Fin n)).span_eq]

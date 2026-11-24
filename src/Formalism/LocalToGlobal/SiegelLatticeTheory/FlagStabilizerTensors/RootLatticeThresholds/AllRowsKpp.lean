@@ -199,7 +199,7 @@ def KgSub : Subgroup X.B.I.Gf where
   one_mem' := one_mem_Kg' X.B.I X.B.g
   inv_mem' := fun hx => Kg_inv' X.B.I X.B.g hx
 
-abbrev concreteLevelAdelicSubset : Subgroup X.B.I.Gf := levelSubgroupOfCharacter X (Formalism.L2.SG.Closed.level_subgroup_is_group X)
+abbrev concreteLevelAdelicSubset : Subgroup X.B.I.Gf := levelSubgroupOfCharacter X (_root_.Formalism.L2.SG.Pf.level_subgroup_character_unitary X)
 
 theorem le1 : KgSub X ≤ KSub X.B.I := fun _ hx => hx.1
 theorem le2 : KgSub X ≤ concreteLevelAdelicSubset X := fun x hx => ((Formalism.L2.SG.Closed.level_subgroup_properties X).1 x hx).1

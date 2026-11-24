@@ -82,7 +82,7 @@ theorem weight_blockWeight (d : (Σ o, E o) →₀ ℕ) :
     funext o
     by_cases h : v.1 = o
     · subst h; simp [blockWeight]
-    · simp [blockWeight, Pi.single_apply, Ne.symm h]
+    · simp [blockWeight, Ne.symm h]
 
 theorem coeff_eval₂_C_mul_X_fst {B : Type*} [CommRing B] (f : R →+* B) (a : (Σ o, E o) → B)
     (p : MvPolynomial (Σ o, E o) R) (e : κ →₀ ℕ) :
@@ -307,7 +307,7 @@ theorem BlowUpOverLocInChart.proof : BlowUpOverLocInChart.Statement.{u} := by
       rw [hQdef, RingHom.mem_ker, RingHom.comp_apply] at hmem
       simp only [hψ, coe_eval₂Hom, eval₂_X, map_mul, map_C, map_X] at hmem
       have h2 := congrArg (AddMonoidAlgebra.coeff · (Finsupp.single o 1)) hmem
-      simp only [coeff_C_mul, coeff_X, coeff_X', if_true, mul_one, AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply] at h2
+      simp only [coeff_C_mul, coeff_X, if_true, mul_one, AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply] at h2
       rw [Ideal.Quotient.eq_zero_iff_mem] at h2
       have h1' : aC ⟨o, l⟩ = 1 := Subtype.ext (by rw [haC]; exact h1)
       rw [h1'] at h2

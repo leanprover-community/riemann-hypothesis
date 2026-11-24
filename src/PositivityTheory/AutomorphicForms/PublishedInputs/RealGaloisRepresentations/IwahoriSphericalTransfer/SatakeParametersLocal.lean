@@ -47,4 +47,4 @@ open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem _root_.GlobalTheory.T.satakeParameters_local : SatLoc := by
-  first | exact @GlobalTheory.RealGal.SatLocProof.main | exact GlobalTheory.RealGal.SatLocProof.main | (intros; apply GlobalTheory.RealGal.SatLocProof.main <;> assumption)
+  first | exact @GlobalTheory.RealGal.SatLocProof.main

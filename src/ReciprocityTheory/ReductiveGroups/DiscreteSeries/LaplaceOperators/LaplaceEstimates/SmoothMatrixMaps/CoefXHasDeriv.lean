@@ -372,7 +372,7 @@ theorem tMapD_Eab {σ : Mat k r → (H →L[ℂ] H)} {D : Submodule ℂ H}
       rw [single_dotProduct, one_mul]
       by_cases h : c = a
       · subst h; simp [Matrix.mulVec, dotProduct, Matrix.single_apply]
-      · simp [Matrix.mulVec, dotProduct, Matrix.single_apply, h, Ne.symm h]
+      · simp [Matrix.mulVec, dotProduct, h, Ne.symm h]
     have e2 : (if c = a then y b * coefX σ x₀ w (f a : H) g else 0) =
         (if c = a then y b else 0) * coefX σ x₀ w (f c : H) g := by
       by_cases h : c = a

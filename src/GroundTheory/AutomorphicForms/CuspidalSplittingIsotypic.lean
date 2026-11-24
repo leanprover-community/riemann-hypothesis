@@ -310,7 +310,7 @@ theorem exists_sub_mem_isotypicKernel (u : U) :
           (Submodule.span ℂ (Set.range fun h => ρ h u)).comap (ρ g) := by
         refine Submodule.span_le.2 ?_
         rintro _ ⟨h, rfl⟩
-        exact Submodule.subset_span ⟨g * h, by simp [map_mul, Module.End.mul_apply]⟩
+        exact Submodule.subset_span ⟨g * h, by simp [map_mul]⟩
       exact hle hx⟩
   have huW0 : u ∈ W0.toSubmodule := Submodule.subset_span ⟨1, by simp⟩
   have hvanish : ∀ H : Representation.IntertwiningMap ρ π, H u = 0 →

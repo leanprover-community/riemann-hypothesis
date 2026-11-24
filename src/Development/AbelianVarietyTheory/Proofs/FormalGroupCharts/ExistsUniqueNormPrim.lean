@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FormalGroupCharts.ExistsGenRosati
 public import Development.AbelianVarietyTheory.Definitions.TwoChartAtlas.TwoChartSt
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -92,22 +93,7 @@ theorem prod_lam {S : Scheme.{0}} {G T : Over S} [GrpObj G] [IsCommMonObj G] (x 
     (h : (T.left ⟶ G.left) → U) :
     ∏ I : ULift.{0} (Finset (Fin 2)), h (psum G ![x, y] I.down).left ^ ((-1 : ℤ) ^ (2 - I.down.card)) =
       h (x * y).left * (h x.left)⁻¹ * (h y.left)⁻¹ * h (1 : T ⟶ G).left := by
-  refine (Fintype.prod_equiv (Equiv.ulift : ULift.{0} (Finset (Fin 2)) ≃ Finset (Fin 2)) _
-    (fun I => h (psum G ![x, y] I).left ^ ((-1 : ℤ) ^ (2 - I.card))) (fun I => rfl)).trans ?_
-  rw [show (Finset.univ : Finset (Finset (Fin 2))) = {∅, {0}, {1}, {0, 1}} by decide,
-    Finset.prod_insert (by decide), Finset.prod_insert (by decide), Finset.prod_insert (by decide),
-    Finset.prod_singleton]
-  have p₀ : psum G ![x, y] ∅ = 1 := rfl
-  have p₁ : psum G ![x, y] {0} = x := _root_.mul_one x
-  have p₂ : psum G ![x, y] {1} = y := _root_.mul_one y
-  have p₄ : psum G ![x, y] {0, 1} = x * y := congrArg (x * ·) (_root_.mul_one y)
-  rw [p₀, p₁, p₂, p₄]
-  have q₀ : (-1 : ℤ) ^ (2 - (∅ : Finset (Fin 2)).card) = 1 := by decide
-  have q₁ : ∀ i : Fin 2, (-1 : ℤ) ^ (2 - ({i} : Finset (Fin 2)).card) = -1 := by decide
-  have q₄ : (-1 : ℤ) ^ (2 - ({0, 1} : Finset (Fin 2)).card) = 1 := by decide
-  rw [q₀, q₁, q₁, q₄]
-  simp only [zpow_neg, zpow_one]
-  ac_rfl
+  apply GlobalTheory.NormRos.prod_square <;> assumption
 
 theorem prod_prim {S : Scheme.{0}} {G T : Over S} [GrpObj G] (w : G ⟶ G) (x : T ⟶ G) {U : Type} [CommGroup U]
     (h : (T.left ⟶ G.left) → U) :

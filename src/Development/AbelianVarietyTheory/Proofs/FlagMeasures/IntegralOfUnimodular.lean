@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.BetaUniqueness.FlagVectorMemLocalization
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.RowMinor
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsLatticeOfAdelicPoint
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsTraceOneIntegerConjDiffPrimeTo
@@ -125,21 +126,7 @@ theorem star_int {t : E} (ht : ∃ o : 𝓞 E, (o : E) = t) : ∃ o : 𝓞 E, (o
 
 theorem iso_X {r : ℕ} {T : E} (F : LFlag S r T) {x y : S.V} (hx : x ∈ Xsp F) (hy : y ∈ Xsp F) :
     S.hT x y = 0 := by
-  have key : ∀ a, ∀ v ∈ Submodule.span E (Set.range F.fl.e), S.hT (F.fl.e a) v = 0 := by
-    intro a v hv
-    induction hv using Submodule.span_induction with
-    | mem u hu => obtain ⟨b, rfl⟩ := hu; exact F.fl.e_iso a b
-    | zero => simp
-    | add u v _ _ hu hv => simp [hu, hv]
-    | smul c u _ hu => simp [hu]
-  have key2 : ∀ u ∈ Submodule.span E (Set.range F.fl.e), S.hT u y = 0 := by
-    intro u hu
-    induction hu using Submodule.span_induction with
-    | mem u hu => obtain ⟨a, rfl⟩ := hu; exact key a y hy
-    | zero => simp
-    | add u v _ _ hu hv => simp [hu, hv]
-    | smul c u _ hu => simp [hu]
-  exact key2 x hx
+  apply PI.UnitaryGroupMassFormula.BetaLUniq.EigB.hT_X <;> assumption
 
 theorem mem_orth {U : Submodule E S.V} {y : S.V} : y ∈ orth S U ↔ ∀ x ∈ U, S.hT x y = 0 := by
   simp [orth, Submodule.mem_iInf, LinearMap.mem_ker]

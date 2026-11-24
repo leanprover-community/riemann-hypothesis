@@ -57,10 +57,6 @@ namespace Formalism.L2.Th1.D
 open Formalism.DworkPowerSeriesWeights (Integral)
 open Formalism.InvariantFactorPaths.G7 (lgF UnrOK frobVar frobVar_eq_expand)
 
-theorem ip_norm_pow_sub_pow_le {K : Type} [NormedField K] [IsUltrametricDist K] {x y : K}
-    (hx : ‖x‖ ≤ 1) (hy : ‖y‖ ≤ 1) (n : ℕ) : ‖x ^ n - y ^ n‖ ≤ ‖x - y‖ := by
-  first | exact Bl.general_b_fact_upper.goal1 .. | (apply Bl.general_b_fact_upper.goal1 <;> assumption) | (intros; apply Bl.general_b_fact_upper.goal1 <;> assumption) | (apply @Bl.general_b_fact_upper.goal1 <;> assumption) | (intros; apply @Bl.general_b_fact_upper.goal1 <;> assumption) | (apply @Bl.general_b_fact_upper.goal1 <;> first | assumption | infer_instance) | exact @Bl.general_b_fact_upper.goal1 K ‹_› ‹_› x y hx hy n | exact @Bl.general_b_fact_upper.goal1 K ‹_› ‹_› x y hx hy | exact @Bl.general_b_fact_upper.goal1 K ‹_› ‹_› x y hx | exact @Bl.general_b_fact_upper.goal1 K ‹_› ‹_› x y | exact @Bl.general_b_fact_upper.goal1 K ‹_› ‹_› x | exact @Bl.general_b_fact_upper.goal1 K ‹_› ‹_› | exact @Bl.general_b_fact_upper.goal1 K ‹_› | exact @Bl.general_b_fact_upper.goal1 K
-
 theorem frobenius_square : FrobSq := by
   intro K _ _ _ l σ h
   obtain ⟨hl, _, hn, _, hσ⟩ := h
@@ -83,7 +79,7 @@ theorem frobenius_square : FrobSq := by
       ring
     rw [h]
     refine (IsUltrametricDist.norm_add_le_max _ _).trans (max_le (hσ _ (hball a ha)) ?_)
-    exact (ip_norm_pow_sub_pow_le (hball a ha)
+    exact (_root_.Bl.general_b_fact_upper.goal1 (hball a ha)
       (by rw [norm_pow]; exact pow_le_one₀ (norm_nonneg _) ha) l).trans (hσ a ha)
 
 section Closure
@@ -217,7 +213,7 @@ theorem IPLemma_of : FrobSq → IPLemma := by
     simp only [Finset.univ_unique, Finset.sum_singleton, one_smul]
     rw [MvPowerSeries.smul_eq_C_mul, ← frobVar_eq_expand hq]
     exact hg.2
-  obtain ⟨hh, h0, hI, hs⟩ := Formalism.FG.funEqHomV K l (l ^ 2) hq (σ.comp σ) hset Unit
+  obtain ⟨hh, h0, hI, hs⟩ := _root_.Formalism.FG.functional_equation_hom_vector K l (l ^ 2) hq (σ.comp σ) hset Unit
     (fun _ _ => 1) (fun _ _ => by simp) (fun _ => lgF K l) hid hf τ (fun _ => g)
     (fun _ => hg.1) hgt
   exact ⟨hh (), h0 (), hI (), hs ()⟩

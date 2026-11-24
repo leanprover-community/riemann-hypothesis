@@ -60,8 +60,6 @@ private lemma abs_half_card_sub_le {n : ℕ} (s t : Finset (Fin n)) :
     exact_mod_cast (Finset.card_le_univ s).trans_eq (Fintype.card_fin n)
   have ht : (t.card : ℝ) ≤ n := by
     exact_mod_cast (Finset.card_le_univ t).trans_eq (Fintype.card_fin n)
-  have hs0 : (0 : ℝ) ≤ s.card := Nat.cast_nonneg _
-  have ht0 : (0 : ℝ) ≤ t.card := Nat.cast_nonneg _
   rw [abs_le]; constructor <;> linarith
 
 open Finset in
@@ -69,7 +67,7 @@ open scoped InnerProductSpace in
 private lemma re_inner_double_sum_apply {M : Type} [NormedAddCommGroup M] [InnerProductSpace ℂ M]
     {n : ℕ} (F : Fin n → Fin n → Module.End ℂ M) (w : M) :
     (⟪w, (∑ a, ∑ b, F a b) w⟫_ℂ).re = ∑ a, ∑ b, (⟪w, F a b w⟫_ℂ).re := by
-  simp [LinearMap.sum_apply, inner_sum, Complex.re_sum]
+  simp [LinearMap.sum_apply, Complex.re_sum]
 
 open Finset in
 open scoped InnerProductSpace in
@@ -103,7 +101,6 @@ private lemma mul_sq_sqrt_sub_le_sq_div_sixteen {n : ℕ} (μ U T ρ L : Fin n �
   have hn2 : (4 : ℝ) ≤ (n : ℝ) ^ 2 := by nlinarith
   have hnsq : (n : ℝ) ≤ (n : ℝ) ^ 2 := by nlinarith
   have hbv1 : 30 * (n : ℝ) ^ 2 ≤ bv := by linarith [h7 2 (by norm_num)]
-  have hnb : (n : ℝ) ≤ bv := by linarith [h7 1 (by norm_num), pow_one (n : ℝ)]
   have hbv0 : 0 ≤ bv := by linarith
   have hbvone : 1 ≤ bv := by linarith
   have hJ5 : (j : ℝ) ≤ 5 * (n : ℝ) ^ 2 := by linarith
@@ -128,7 +125,6 @@ private lemma mul_sq_sqrt_sub_le_sq_div_sixteen {n : ℕ} (μ U T ρ L : Fin n �
   have hsqrt : √K ≤ 4 * n * bv := by
     calc √K ≤ √((4 * n * bv) ^ 2) := Real.sqrt_le_sqrt (by rw [hK]; linarith)
       _ = 4 * n * bv := Real.sqrt_sq (by positivity)
-  have hsqrt0 : 0 ≤ √K := Real.sqrt_nonneg _
   have hpt : ∀ a, 2 * (μ a + U a) ^ 2 - μ a ^ 2 + ρ a ^ 2 - (μ a + U a - T a) ^ 2
       ≤ 12 * n * bv + 4 * (n : ℝ) ^ 2 := by
     intro a
@@ -154,10 +150,6 @@ private lemma mul_sq_sqrt_sub_le_sq_div_sixteen {n : ℕ} (μ U T ρ L : Fin n �
       _ = _ := by rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
   have hcross : 16 * n * j * √K ≤ 16 * n * j * (4 * n * bv) :=
     mul_le_mul_of_nonneg_left hsqrt (by positivity)
-  have hX : 2 * (√K + 4 * n * j) ^ 2 - c - (∑ a, L a ^ 2 - 8 * bv * j)
-      ≤ (n : ℝ) * (12 * n * bv + 4 * (n : ℝ) ^ 2) + 64 * (n : ℝ) ^ 2 * j * bv
-        + 32 * (n : ℝ) ^ 2 * (j : ℝ) ^ 2 + 8 * bv * j := by
-    linarith [hsq, hsumid, hsumle, hcross]
   have b1 : 64 * (n : ℝ) ^ 2 * j * bv ≤ 320 * (n : ℝ) ^ 4 * bv := by
     have := mul_le_mul_of_nonneg_left hJ5 (by positivity : (0 : ℝ) ≤ 64 * (n : ℝ) ^ 2 * bv)
     linarith
@@ -177,7 +169,6 @@ private lemma mul_sq_sqrt_sub_le_sq_div_sixteen {n : ℕ} (μ U T ρ L : Fin n �
     mul_le_mul_of_nonneg_right (h7 5 (by norm_num)) hbv0
   have c3 : (n : ℝ) ^ 4 ≤ (n : ℝ) ^ 7 := h7 4 (by norm_num)
   have c4 : (n : ℝ) ^ 7 ≤ (n : ℝ) ^ 7 * bv := le_mul_of_one_le_right (by positivity) hbvone
-  have c6 : (n : ℝ) ^ 6 ≤ (n : ℝ) ^ 7 := h7 6 (by norm_num)
   have c5 : 10 ^ 6 * (n : ℝ) ^ 7 * bv ≤ bv * bv := mul_le_mul_of_nonneg_right hbv hbv0
   calc (n : ℝ) * (2 * (√K + 4 * n * j) ^ 2 - c - (∑ a, L a ^ 2 - 8 * bv * j))
       ≤ (n : ℝ) * (52 * (n : ℝ) ^ 2 * bv + 4 * (n : ℝ) ^ 3 + 320 * (n : ℝ) ^ 4 * bv
@@ -226,7 +217,6 @@ theorem _root_.GlobalTheory.lev_offDiag_normSq_le : ∀ (M : Type) [NormedAddCom
     intro a
     unfold _root_.Formalism.QuantumDeterminants.rhoStd
     have ha : ((a : ℕ) : ℝ) + 1 ≤ n := by exact_mod_cast a.isLt
-    have ha0 : (0 : ℝ) ≤ ((a : ℕ) : ℝ) := Nat.cast_nonneg _
     rw [abs_le]; constructor <;> linarith
   have hLeq : ∀ a, _root_.Formalism.QuantumDeterminants.lowK ε μ a = μ a + _root_.Formalism.REAL.rhoN ε a - _root_.Formalism.REAL.rhoC ε a := fun a => by
     unfold _root_.Formalism.QuantumDeterminants.lowK; simp

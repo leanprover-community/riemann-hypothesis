@@ -131,7 +131,7 @@ theorem ad_gram_hStd : Formalism.UG.gram (hStd E n) = 1 := by
 
 def ratHom : URat hc n →* UF E n where
   toFun γ := ⟨Formalism.UG.glEquiv (γ : GL (Fin n) E), by
-    have h := (Formalism.UG.Final.HermBridge E (Fin n) (hStd E n) (γ : GL (Fin n) E)).1
+    have h := (_root_.Formalism.UG.P.hermitian_lattice_correspondence_holds E (Fin n) (hStd E n) (γ : GL (Fin n) E)).1
     rw [ad_gram_hStd] at h
     exact h γ.2⟩
   map_one' := by
@@ -165,7 +165,7 @@ theorem ratHom_bijective : Function.Bijective (ratHom hc n) := by
       ((LinearMap.GeneralLinearGroup.generalLinearEquiv E (Fin n → E)).symm (u : Sp E n ≃ₗ[E] Sp E n))
     have hg : Formalism.UG.glEquiv g = (u : Sp E n ≃ₗ[E] Sp E n) := by
       simp [g, Formalism.UG.glEquiv]
-    have h := (Formalism.UG.Final.HermBridge E (Fin n) (hStd E n) g).2
+    have h := (_root_.Formalism.UG.P.hermitian_lattice_correspondence_holds E (Fin n) (hStd E n) g).2
     rw [ad_gram_hStd, hg] at h
     have hm : g ∈ URat hc n := h u.2
     exact ⟨⟨g, hm⟩, Subtype.ext hg⟩

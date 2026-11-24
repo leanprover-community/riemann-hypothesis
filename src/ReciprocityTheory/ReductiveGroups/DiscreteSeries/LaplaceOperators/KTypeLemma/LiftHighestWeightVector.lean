@@ -109,14 +109,6 @@ theorem contraction_compactWordAction (ε : Fin n → Bool) (E : Fin n → Fin n
       rw [key, sub_add_cancel]
     · simp [hd]
 
-theorem sT_sA (ε : Fin n → Bool) (E : Fin n → Fin n → Module.End ℂ M) (V : Submodule ℂ M)
-    (hV : IsKStableSub ε E V) (hE : IsGlRep E) (a b : Fin n) (hab : ε a = ε b) (x : KS (n := n) V) :
-    sT E V (sA ε E V hV a b x) = tensV E a b (sT E V x) := by
-  have e : sA ε E V hV a b x = Cone.compactWordAction ε E V hV a b x + Cone.sC V a b x := by
-    simp [Cone.compactWordAction]
-  funext d
-  rw [e, map_add (f := _), Pi.add_apply, contraction_compactWordAction ε E V hV hE a b hab, Cone.sT_sC, Cone.tensV_eq]
-
 theorem sA_single' (ε : Fin n → Bool) (E : Fin n → Fin n → Module.End ℂ M) (V : Submodule ℂ M)
     (hV : IsKStableSub ε E V) (a b : Fin n) (p : List (Fin n × Fin n) × Fin n) (v : V) :
     sA ε E V hV a b (Finsupp.single p v) =
@@ -214,7 +206,7 @@ theorem lift_highestWeightVector {M : Type*} [NormedAddCommGroup M] [InnerProduc
   let _ : InnerProductSpace ℂ (KS (n := n) V) := InnerProductSpace.ofCore cr.toCore
   obtain ⟨u, -, -, h1, h2⟩ := lift_khw (ε := ε) (A := sA ε E V hV) (μ := μ)
     (B := tensV E) (fun a b hab x y => ipK_sA ε E V hV hU' hab x y) (sT E V)
-    (fun a b hab x => sT_sA ε E V hV hE a b hab x) hfd hS (x₀ := x)
+    (fun a b hab x => _root_.ReciprocityTheory.ChartRestriction.DS.Lap.LemK.KernelRelationLemmas.sT_sA ε E V hV hE a b hab x) hfd hS (x₀ := x)
     (fun p hp => Finset.le_sup (f := fun p : List (Fin n × Fin n) × Fin n => p.1.length) hp) hμ
   exact ⟨u, h1, h2⟩
 

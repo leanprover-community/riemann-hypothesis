@@ -132,30 +132,13 @@ theorem ordP_mul_unit [IsDomain W] [IsDiscreteValuationRing W] [IsFractionRing W
   obtain ⟨n, u, rfl⟩ := exists_eq_unit_mul_zpow₂ hp hx
   rw [mul_right_comm, ← map_mul, ← Units.val_mul, ordP_eq hp, ordP_eq hp]
 
-theorem exists_mul_of_le {k : ℕ} (g g' : Matrix (Fin k) (Fin k) Qq) (h : colSpan W g' ≤ colSpan W g) :
-    ∃ A : Matrix (Fin k) (Fin k) W, g' = g * A.map (algebraMap W Qq) := by
-  have hc : ∀ c : Fin k, ∃ a : Fin k → W, ∑ i, a i • (fun r => g r i) = (fun r => g' r c) := by
-    intro c
-    have hmem : (fun r => g' r c) ∈ colSpan W g := h (Submodule.subset_span ⟨c, rfl⟩)
-    simp only [colSpan, Submodule.mem_span_range_iff_exists_fun] at hmem
-    exact hmem
-  choose a ha using hc
-  refine ⟨Matrix.of fun i c => a c i, ?_⟩
-  refine Matrix.ext fun r c => ?_
-  rw [Matrix.mul_apply]
-  have h1 := congrFun (ha c) r
-  simp only [Finset.sum_apply, Pi.smul_apply, Algebra.smul_def] at h1
-  rw [← h1]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  simp [Matrix.of_apply, Matrix.map_apply, mul_comm]
-
 theorem det_of_colSpan_eq [IsDomain W] [IsFractionRing W Qq] {k : ℕ} (g g' : Matrix (Fin k) (Fin k) Qq)
     (hg : IsUnit g.det) (h : colSpan W g = colSpan W g') : ∃ u : Wˣ, g'.det = g.det * algebraMap W Qq u := by
   have hmd : ∀ M : Matrix (Fin k) (Fin k) W, (M.map (algebraMap W Qq)).det = algebraMap W Qq M.det := by
     intro M
     rw [RingHom.map_det, RingHom.mapMatrix_apply]
-  obtain ⟨A, hA⟩ := exists_mul_of_le g g' h.symm.le
-  obtain ⟨B, hB⟩ := exists_mul_of_le g' g h.le
+  obtain ⟨A, hA⟩ := _root_.Formalism.MainNotions.G.LatticeSystems.la_factor g g' h.symm.le
+  obtain ⟨B, hB⟩ := _root_.Formalism.MainNotions.G.LatticeSystems.la_factor g' g h.le
   have hAB : A.map (algebraMap W Qq) * B.map (algebraMap W Qq) = 1 := by
     have hg' : IsUnit g := (Matrix.isUnit_iff_isUnit_det g).mpr hg
     have h2 : g * (A.map (algebraMap W Qq) * B.map (algebraMap W Qq)) = g * 1 := by
@@ -253,8 +236,6 @@ theorem len_edge : ∀ j (v' : Fin (X.Pj j).nV) (i : ℕ) (L : (X.Pj j).Tup)
   have hu : Function.update L v' L'' v' = L'' := by
     first
     | exact Function.update_self _ _ _
-    | exact Function.update_same _ _ _
-    | exact dif_pos rfl
   rw [hu]
   exact lenLat_edge hS.p_unif hS.res_card (by have := hS.five_le; omega) (by have := hS.two_le; omega) _ he
 
@@ -270,8 +251,6 @@ theorem len_other : ∀ j (v' : Fin (X.Pj j).nV) (v : X.Pl) (L : (X.Pj j).Tup)
   have hu : Function.update L v' L'' (X.vJ j v) = L (X.vJ j v) := by
     first
     | exact Function.update_of_ne hne _ _
-    | exact Function.update_noteq hne _ _
-    | exact dif_neg hne
   rw [hu]
 
 end Global

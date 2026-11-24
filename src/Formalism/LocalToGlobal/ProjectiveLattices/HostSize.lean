@@ -58,9 +58,6 @@ theorem hostSize_finrank (D : D7) : Module.finrank ℚ D.host.E = 2 * D.R.f := b
   rw [D.host.der.finrank_E, Formalism.BasicNotions.Ranks.f_eq_ord (R := D.R)]
   first
   | ring
-  | rfl
-  | omega
-  | (simp only [Formalism.BasicNotions.Ranks.ord]; ring)
 
 theorem hostSize_f (D : D7) : PT.f D.host.E = D.R.f := by
   simp only [ReciprocityTheory.ChartRestriction.G.I2.PT.f, hostSize_finrank D]

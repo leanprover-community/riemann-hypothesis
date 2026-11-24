@@ -97,7 +97,7 @@ theorem sheetDensity_nonneg {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fin
     have hpsd : ∀ j, (cxHessian (fun y' => pot N j (hγ.choose y')) y).PosSemidef := fun j =>
       Inter.SheetHessPSD.proof K ι P e Ψ (N j) y w _ (hNs j) (hNp j) hγ.choose_spec
     unfold maDensity
-    exact mul_nonneg (by positivity) (ReciprocityTheory.AnForm.A.mdisc_nonneg_of_posSemidef _ hpsd).2
+    exact mul_nonneg (by positivity) (_root_.ReciprocityTheory.AnForm.A.mixedDiscriminant_nonneg_of_gram _ hpsd).2
   · exact le_rfl
 
 end PtsSemiPosMassFinite

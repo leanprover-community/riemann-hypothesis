@@ -127,7 +127,7 @@ theorem headAlg_gen (A : Type) [Ring A] [Algebra ℂ A] (M : Type) [AddCommGroup
       congr 2
       ext a l
       simp only [Matrix.of_apply, Matrix.submatrix_apply]
-      rw [hxi' _ _ (by simp <;> omega), dite_eq_left (by simp [xR, eI] <;> omega)]
+      rw [hxi' _ _ (by simp), dite_eq_left (by simp [xR, eI] <;> omega)]
       congr 1
     · intro a p ha hp
       rw [hxi' a p (by omega), dite_eq_right (by omega)]
@@ -149,7 +149,7 @@ theorem headAlg_gen (A : Type) [Ring A] [Algebra ℂ A] (M : Type) [AddCommGroup
       rw [la_intmul]
       have hne : a (Fin.castSucc (Fin.castSucc l)) ≠ a (Fin.last (m + 1)) := by
         intro h'; have := congrArg Fin.val h'; rw [hav, hav] at this; simp at this; omega
-      rw [tm_offdiag _ _ hne, hR _ _ _ (by rw [hav, hav]; simp <;> omega) (by rw [hav]; simp <;> omega),
+      rw [tm_offdiag _ _ hne, hR _ _ _ (by rw [hav, hav]; simp) (by rw [hav]; simp <;> omega),
         if_neg (by rw [hav, hav]; simp <;> omega), zero_smul, smul_zero]
     rw [Finset.sum_eq_zero (fun l _ => hzero l), zero_add]
     have hlast : La ((((-1 : ℤ) ^ (m + 1 + ((Fin.last (m + 1) : Fin (m + 2)) : ℕ)) : ℤ) : A) *
@@ -214,7 +214,6 @@ theorem headAlg_gen (A : Type) [Ring A] [Algebra ℂ A] (M : Type) [AddCommGroup
     congr 1
     push_cast
     rw [pow_add]
-    try ring
   have hT : Tm E (u - ((m + 1 : ℕ) : ℂ)) (eI k r ⟨m + 1, by omega⟩) (eI k r ⟨m + 1, by omega⟩) =
       algebraMap ℂ A (u - ((m + 1 : ℕ) : ℂ)) + E (eI k r ⟨m + 1, by omega⟩) (eI k r ⟨m + 1, by omega⟩) := by
     simp [Tm]
@@ -429,8 +428,6 @@ theorem _root_.Formalism.FourierDecayAlt.P.head_algebra_relations_vector : HeadA
   have hZ : Z''.det ≠ 0 := by rw [hZdet]; exact mul_ne_zero hW hεne
   have hZinv : ∀ b, Z''⁻¹ b (Fin.last m) = εv b * W⁻¹ b (Fin.last m) := by
     intro b
-    have hWu : IsUnit W.det := isUnit_iff_ne_zero.2 hW
-    have hDu : IsUnit (Matrix.diagonal εv).det := isUnit_iff_ne_zero.2 (by rw [hDdet]; exact hεne)
     rw [hZdef, Matrix.mul_inv_rev, hDinv, Matrix.diagonal_mul]
   set c : ℂ := (-1 : ℂ) ^ (m + 1) * d with hcdef
   set c' : ℂ := -((-1 : ℂ) ^ (m + 1) * d) with hc'def
@@ -526,7 +523,6 @@ theorem _root_.Formalism.FourierDecayAlt.P.head_algebra_relations_vector : HeadA
   set P0 := ∏ l : Fin m, (-1 : ℂ) ^ (l : ℕ) with hP0
   set e := (-1 : ℂ) ^ m with he
   have hP0sq : P0 * P0 = 1 := prod_neg_one_sq m
-  have hesq : e * e = 1 := by rw [he, ← mul_pow]; norm_num
   have hP0ne : P0 ≠ 0 := fun h => by rw [h, zero_mul] at hP0sq; exact zero_ne_one hP0sq
   have hene : e ≠ 0 := pow_ne_zero _ (by norm_num)
   have hm1 : (-1 : ℂ) ^ (m + 1) = -e := by rw [pow_succ, he]; ring

@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MembershipProofs.ThetaDistributionNonzeroAdmissible
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.Distribution.SchwartzSpace.Basic
 import Mathlib.Algebra.Order.Floor.Extended
@@ -265,21 +266,7 @@ theorem bound_mul_translate {A : P × E → ℂ} (hA : Function.HasTemperateGrow
 end family
 
 theorem temperate_exp : Function.HasTemperateGrowth (fun t : ℝ => cexp (I * t)) := by
-  have hd : ∀ n : ℕ, iteratedDeriv n (fun t : ℝ => cexp (I * t)) = fun t : ℝ => I ^ n * cexp (I * t) := by
-    intro n
-    induction n with
-    | zero => simp
-    | succ n ih =>
-      funext t
-      rw [iteratedDeriv_succ, ih]
-      have : HasDerivAt (fun t : ℝ => I ^ n * cexp (I * t)) (I ^ n * (cexp (I * t) * (I * 1))) t :=
-        (((hasDerivAt_id (t : ℂ)).const_mul I).cexp.const_mul _).comp_ofReal
-      rw [this.deriv]; ring
-  refine ⟨Complex.contDiff_exp.comp (contDiff_const.mul Complex.ofRealCLM.contDiff),
-    fun n => ⟨0, 1, fun t => ?_⟩⟩
-  rw [norm_iteratedFDeriv_eq_norm_iteratedDeriv, hd, norm_mul, norm_pow,
-    Complex.norm_I, one_pow, one_mul, Complex.norm_exp_I_mul_ofReal]
-  simp
+  apply GlobalTheory.CompanionTheory.AdelicHeis.temperate_exp_I <;> assumption
 
 variable {κ : Type} [Fintype κ]
 

@@ -127,7 +127,7 @@ theorem prod_reindex_option {e rc : ℕ} (J : Finset (Fin e)) (σ : Fin e → Op
     intro l
     cases h : σ l with
     | none => simp
-    | some k0 => simp [Finset.prod_ite_eq, Finset.prod_ite_eq']
+    | some k0 => simp [Finset.prod_ite_eq]
   have hR : ∀ k, Option.elim (σ' k) 1 (fun i => w i ^ m k) =
       ∏ l ∈ J, if σ l = some k then w l ^ m k else 1 := by
     intro k

@@ -69,7 +69,6 @@ theorem extAll_vAt_inc (la : HeightOneSpectrum (𝓞 T.Q.c.F)) (y : (extAll h j 
   have h0 : y.1 0 = ⊤ := by
     first
       | exact (isVal_valSet la y.1 y.2).zero
-      | simpa using (isVal_valSet la y.1 y.2).zero
   show vG y.1 ((recPJ h j hj).inc w F) = y.1 F.1
   unfold vG
   simp only [hinc]

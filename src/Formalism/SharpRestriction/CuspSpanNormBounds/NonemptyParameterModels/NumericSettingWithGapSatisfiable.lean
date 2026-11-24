@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.CuspSpanNormBounds.NonemptyParameterModels.AmpTensorDSdNonemptyOfSubsingleton
 public import Formalism.SharpRestriction.CuspSpanNormBounds.RelevantZeroGramTerms
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.GBasic
 public import Formalism.SharpRestriction.CuspSpanNormBounds.CayleySignature
@@ -145,9 +146,7 @@ lemma obj_PP_apply (k r : ℕ) (i j : Fin (2 * r + k + 1)) :
 
 lemma obj_PU_cayley (k r : ℕ) : IsCayleyU k r (epsK k r) (obj_PU k r) := by
   have h1 : (obj_PU k r)ᴴ * obj_PU k r = 1 := by ext i j; exact obj_PP_apply k r i j
-  have hu : obj_PU k r ∈ Matrix.unitaryGroup (Fin (2 * r + k + 1)) ℂ := by
-    rw [Matrix.mem_unitaryGroup_iff']; exact h1
-  refine ⟨⟨?_, by ext i j; exact obj_PJP_apply k r i j⟩, hu⟩
+  refine ⟨⟨?_, by ext i j; exact obj_PJP_apply k r i j⟩, (Matrix.mem_unitaryGroup_iff').2 h1⟩
   exact ⟨⟨obj_PU k r, (obj_PU k r)ᴴ, mul_eq_one_comm.1 h1, h1⟩, rfl⟩
 
 theorem obj_cayleyU_of_card (k r : ℕ) (ε : Fin (2 * r + k + 1) → Bool)
@@ -238,59 +237,7 @@ lemma obj_m_eq (R : Formalism.BasicNotions.Ranks) : R.m = 2 * R.rS + 2 := by
   simp only [Formalism.BasicNotions.Ranks.rS]; omega
 
 theorem obj_isHCParam_lamSH (R : Formalism.BasicNotions.Ranks) (P : Formalism.BasicNotions.HCParam R) : IsHCParam (lamSH R P) := by
-  have hm := obj_m_eq R
-  have hk3 := R.m_add_three_le_k
-  refine ⟨?_, ?_⟩
-  · rw [Fin.strictAnti_iff_succ_lt]
-    intro i
-    have hi := i.isLt
-    by_cases h1 : i.val + 1 < R.k - 1
-    · rw [obj_lamSH_lo R P i.succ (by simpa using h1), obj_lamSH_lo R P i.castSucc (by simp; omega)]
-      have a := P.u_gt_v ⟨i.val + 1, h1⟩
-      have b := P.v_gt_u ⟨i.val, by omega⟩
-      have c := lt_trans a b
-      simp only [Fin.val_succ, Fin.val_castSucc]
-      exact_mod_cast c
-    · by_cases h2 : i.val < R.k - 1
-      · have e : i.val + 1 = R.k - 1 := by omega
-        rw [obj_lamSH_hi R P i.succ (by simpa using h1) (by simp; omega),
-          obj_lamSH_lo R P i.castSucc (by simpa using h2)]
-        have a := P.u_last_gt (by omega) (by omega)
-        have b := P.v_gt_u ⟨i.val, h2⟩
-        have e1 : (⟨i.val + 1, by omega⟩ : Fin R.k) = ⟨R.k - 1, by omega⟩ := Fin.ext e
-        rw [e1] at b
-        have c := lt_trans a b
-        have e2 : (⟨(i.succ).val - (R.k - 1), by simp; omega⟩ : Fin R.m) = ⟨0, by omega⟩ := by
-          apply Fin.ext; simp; omega
-        rw [e2]
-        simp only [Fin.val_castSucc]
-        exact_mod_cast c
-      · rw [obj_lamSH_hi R P i.succ (by simpa using h1) (by simp; omega),
-          obj_lamSH_hi R P i.castSucc (by simpa using h2) (by simp; omega)]
-        have hj : i.val - (R.k - 1) < R.m := by omega
-        have hj1 : i.val - (R.k - 1) + 1 < R.m := by omega
-        have a := P.gap_be ⟨i.val - (R.k - 1), hj⟩
-        have b := P.gap_eb ⟨i.val - (R.k - 1), hj⟩ hj1
-        have e2 : (⟨(i.succ).val - (R.k - 1), by simp; omega⟩ : Fin R.m) = ⟨i.val - (R.k - 1) + 1, hj1⟩ := by
-          apply Fin.ext; simp; omega
-        rw [e2]
-        simp only [Fin.val_castSucc]
-        have t0 : (0 : ℚ) ≤ (R.t : ℚ) := Nat.cast_nonneg _
-        have c : P.b ⟨i.val - (R.k - 1), hj⟩ < P.b ⟨i.val - (R.k - 1) + 1, hj1⟩ := by linarith
-        have c' : (P.b ⟨i.val - (R.k - 1), hj⟩ : ℝ) < (P.b ⟨i.val - (R.k - 1) + 1, hj1⟩ : ℝ) := by exact_mod_cast c
-        linarith
-  · intro a
-    obtain ⟨q, hq⟩ := R.k_even
-    have hn : (((2 * R.rS + R.k + 1 : ℕ) : ℝ) - 1) / 2 = ((R.rS + q : ℕ) : ℝ) := by
-      rw [hq]; push_cast; ring
-    have ha := a.isLt
-    by_cases h : a.val < R.k - 1
-    · obtain ⟨z, hz⟩ := P.v_int ⟨a.val, h⟩
-      refine ⟨z - (R.rS + q : ℕ), ?_⟩
-      rw [obj_lamSH_lo R P a h, hn, hz]; push_cast; ring
-    · obtain ⟨z, hz⟩ := P.b_int ⟨a.val - (R.k - 1), by omega⟩
-      refine ⟨-z - (R.rS + q : ℕ), ?_⟩
-      rw [obj_lamSH_hi R P a h (by omega), hn, hz]; push_cast; ring
+  apply Formalism.MainNotions.S.Inh.amp_isHCParam_lamSH <;> assumption
 
 theorem obj_isHCParam_u (R : Formalism.BasicNotions.Ranks) (P : Formalism.BasicNotions.HCParam R) : IsHCParam (fun i => ((P.u i : ℚ) : ℝ)) := by
   have hk3 := R.m_add_three_le_k

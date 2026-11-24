@@ -50,8 +50,7 @@ namespace Formalism.L2.SG.PoincareInHH.Cut
 
 variable {D : D7} (X : HidaSetting D) (u : D.what₂.Word)
 
-theorem poincare_well_defined (hK : X.LevelSubgroupCharacter) (hS : KsetSplit X u) (hN : UnipotentConjugateInLevel X u) : PhWellDef X u hK :=
-  phWellDef_of_steps X u hK hS hN
+alias poincare_well_defined := _root_.Formalism.L2.SG.PoincareInHH.Cut.phWellDef_of_steps
 
 theorem poincare_properties (hK : X.LevelSubgroupCharacter) (hR : FoldReadyX X) (hS : KsetSplit X u) (hN : UnipotentConjugateInLevel X u)
     (hL : RatLevi X u) (hP : PsiProd X u) : PhProps X u hK :=

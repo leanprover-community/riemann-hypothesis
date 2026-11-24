@@ -97,12 +97,10 @@ theorem gam_one (ψ₀ : AddChar F ℂ) :
     gam ψ₀ (1 : GL (Fin k) F) = (Fintype.card (GL (Fin k) F) : ℂ) / (cardU F k : ℂ) := by
   have hp : ∀ y : GL (Fin k) F, psiNat ψ₀ (y * 1 * y⁻¹) = 1 := by
     intro y
-    rw [mul_one, mul_inv_cancel]
-    simp only [psiNat, isUni_one, if_true, psiU, Units.val_one, superdiag_one, AddChar.map_zero_eq_one]
+    simp [psiNat, isUni_one, psiU, superdiag_one, AddChar.map_zero_eq_one]
   unfold gam
   rw [Finset.sum_congr rfl (fun y _ => hp y)]
-  simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_one]
-  rw [div_eq_inv_mul]
+  simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_one, div_eq_inv_mul]
 
 end One
 
@@ -181,12 +179,10 @@ def TermsGGBound : Prop :=
 theorem termsGGBound_of_matrix (h : GGMatrixBound) : TermsGGBound := by
   intro ι _ Fq _ _ k ψ hψ hq X _ _ hfree d hd τ Rw H H₁ _ _ _ _ T hGG hG1
   have h2 := (h ι Fq k ψ hψ hq X hfree d hd).2
-  unfold Formalism.FourierDecayAlt.PB.Terms.GGBound
   have hM : Matrix.of T.GG = Matrix.of fun i j =>
       if ∃ x : (∀ v, GL (Fin k) (Fq v))ᵐᵒᵖ, x • j = i then conj (gamProd ψ (d i j)) else 0 := by
     ext i j; simp [hGG]
-  rw [hM, hG1]
-  convert h2 using 3
+  simpa [Formalism.FourierDecayAlt.PB.Terms.GGBound, hM, hG1] using h2
 
 end
 

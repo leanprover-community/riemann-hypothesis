@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NearTrivialPointwise
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.LayerProd
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.AutPointLatticeIntersectionSelfDualProperties
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FiniteAdelicUnitaryCongruenceTopology
@@ -62,21 +63,7 @@ theorem totCx (I : AutInst) : IsTotallyComplex I.E := by
   exact h
 
 theorem frm_unit (I : AutInst) (x : I.GA) (w : InfinitePlace I.E) : IsUnit (frm I x w).det := by
-  have hU : IsUnit (uMat (x.1 (w.comap (algebraMap I.F I.E)))).det :=
-    (Matrix.isUnit_iff_isUnit_det _).1 (Units.isUnit _)
-  have hP : IsUnit (I.P (w.comap (algebraMap I.F I.E))).det :=
-    (Matrix.isUnit_iff_isUnit_det _).1 (I.P_unit _)
-  by_cases h : w.embedding = I.φ (w.comap (algebraMap I.F I.E))
-  · simp only [frm, if_pos h]
-    rw [Matrix.det_mul]
-    exact hP.mul hU
-  · simp only [frm, if_neg h]
-    have hm : ((I.P (w.comap (algebraMap I.F I.E)) * uMat (x.1 (w.comap (algebraMap I.F I.E)))).map
-        (starRingEnd ℂ)).det = starRingEnd ℂ (I.P (w.comap (algebraMap I.F I.E)) *
-          uMat (x.1 (w.comap (algebraMap I.F I.E)))).det := by
-      rw [RingHom.map_det]; rfl
-    rw [hm, Matrix.det_mul]
-    exact (hP.mul hU).map _
+  apply GlobalTheory.NearLowerCompare.frm_isUnit <;> assumption
 
 abbrev rho (I : AutInst) (x : I.GA) := Formalism.HermitianLatticesTheory.realize (bas I) (frm I x)
 

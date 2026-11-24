@@ -94,7 +94,7 @@ theorem regM_dbarDir_eq {n : ℕ} (g : V n → ℂ) (y v : V n) :
     apply Complex.ext <;> simp
   rw [hcj]
   simp only [Complex.real_smul, Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im,
-    zero_mul, one_mul, zero_sub, sub_zero, zero_add, Complex.ofReal_neg]
+    zero_mul, one_mul, zero_sub, zero_add, Complex.ofReal_neg]
   linear_combination (((v j).re : ℂ) * L (Complex.I • bas n j) - ((v j).im : ℂ) * L (bas n j) -
     Complex.I * ((v j).im : ℂ) * L (Complex.I • bas n j)) * Complex.I_sq
 

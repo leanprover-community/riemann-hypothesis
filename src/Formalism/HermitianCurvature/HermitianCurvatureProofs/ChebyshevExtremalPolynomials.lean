@@ -141,7 +141,6 @@ lemma node_mul_U (m : ℕ) (j : Fin (m + 2)) :
   · rw [if_neg (by tauto)]
     have h := U_mul_sin_node m j
     have hpos : 0 < Real.sin ((j:ℕ) * Real.pi / ((m + 1 : ℕ) : ℝ)) := by
-      have hj : (0:ℝ) < (j:ℕ) := by exact_mod_cast Nat.pos_of_ne_zero h0
       have hjm : ((j:ℕ):ℝ) < ((m + 1 : ℕ) : ℝ) := by
         have := j.isLt
         exact_mod_cast (by omega : (j:ℕ) < m + 1)
@@ -192,7 +191,6 @@ lemma lagCo_nd (m : ℕ) (j : Fin (m + 2)) :
 theorem coValue : Formalism.FourierDecayAlt.F7.ChebCoValue := by
   intro α β n hαβ hn j
   obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
-  have hd : 0 < β - α := by linarith
   have e : Formalism.SA.C.chebPt α β (m + 1) = fun i => (α + β) / 2 + (β - α) / 2 * nd (m + 1) i := by
     funext i; exact chebPt_eq α β (m + 1) i
   rw [e, lagCo_affine, lagCo_nd]
@@ -217,7 +215,6 @@ lemma sum_half (m : ℕ) :
 
 theorem sharp : Formalism.FourierDecayAlt.F7.ChebSharp := by
   intro α β n hαβ hn
-  have hd : 0 < β - α := by linarith
   constructor
   · intro i j hij
     rw [chebPt_eq, chebPt_eq] at hij
@@ -280,7 +277,5 @@ lemma lead_complex {V : Type} [AddCommGroup V] [Module ℂ V] {d : ℕ} (y : Fin
 end Formalism.FourierDecayAlt.P.ChebyshevExtremalPolynomials
 
 namespace Formalism.FourierDecayAlt.P
-
-theorem chebyshev_bound_sharp : Formalism.FourierDecayAlt.F7.ChebSharp := ChebyshevExtremalPolynomials.sharp
 
 end Formalism.FourierDecayAlt.P

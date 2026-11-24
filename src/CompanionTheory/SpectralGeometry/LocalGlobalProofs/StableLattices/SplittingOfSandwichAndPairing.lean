@@ -296,7 +296,6 @@ theorem restrict_isMax (hS : StSandwich) [ProperSpace L] [FiniteDimensional L V]
   have hlatU := restrict_isLat hS hh hδ0 he hf hef hU hΛ.1
   refine ⟨hlatU, fun x hx => hΛ.2.1 _ hx, fun N hN hNint hle => ?_⟩
   set P := prU hh hδ0 he hf hef hU with hP
-  have hPv : ∀ x, ((P x : U) : V) = pr hh δ e f x := fun _ => rfl
   set M := bigLat (ca hh δ f) (cb hh δ e) P N with hM
   have hΛM : Λ ≤ M := fun x hx => by
     obtain ⟨h1, h2, h3⟩ := coef_int hs hδ0 hh hΛ.1 hpair heΛ hfΛ hx

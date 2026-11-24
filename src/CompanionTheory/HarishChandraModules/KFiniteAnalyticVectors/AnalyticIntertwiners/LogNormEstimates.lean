@@ -85,7 +85,7 @@ theorem adjZ_addD (X Y : Mat p q) : adjZ (X + Y) = adjZ X + adjZ Y := by
   simp [adjZ, conjTranspose_add, Matrix.mul_add, Matrix.add_mul]
 
 theorem adjZ_smulD (c : ℂ) (X : Mat p q) : adjZ (c • X) = star c • adjZ X := by
-  simp [adjZ, conjTranspose_smul, Matrix.mul_smul, Matrix.smul_mul]
+  simp [adjZ, conjTranspose_smul]
 
 theorem mem_upq_of_adjZD {Y : Mat p q} (h : adjZ Y = -Y) : Y ∈ upq p q := by
   show Yᴴ * Jm p q + Jm p q * Y = 0
@@ -202,7 +202,7 @@ variable {p q : ℕ} {M : GKMod p q} {H₁ H₂ : Type} [NormedAddCommGroup H₁
 def cwD : Ix p q → ℚ := Sum.elim (fun i => -(i : ℚ)) (fun j => -(j : ℚ))
 
 theorem cwD_lt {a b : Ix p q} (h : posC a b) : cwD b < cwD a := by
-  rcases a with a | a <;> rcases b with b | b <;> simp_all [posC, cwD] <;> exact_mod_cast h
+  rcases a with a | a <;> rcases b with b | b <;> simp_all [posC, cwD]
 
 def ellD (μ : Ix p q → ℚ) : ℚ := ∑ a, cwD a * μ a
 
@@ -269,8 +269,8 @@ theorem form_propD (ι₁ : M.V →ₗ[ℂ] H₁) (ι₂ : M.V →ₗ[ℂ] H₂)
   let β : Y₁ → Y₁ → ℂ := fun x x' => ⟪ι₂ (e₁.symm x), ι₂ (e₁.symm x')⟫_ℂ
   let f : Y₁ → (Y₁ →L[ℂ] ℂ) := fun x => LinearMap.toContinuousLinearMap
     { toFun := fun x' => β x x'
-      map_add' := fun a b => by simp [β, inner_add_right]
-      map_smul' := fun c a => by simp [β, inner_smul_right] }
+      map_add' := fun a b => by simp [β]
+      map_smul' := fun c a => by simp [β] }
   let T : Y₁ →ₗ[ℂ] Y₁ :=
     { toFun := fun x => (InnerProductSpace.toDual ℂ Y₁).symm (f x)
       map_add' := fun a b => ext_inner_right ℂ fun z => by
@@ -384,9 +384,9 @@ theorem form_propD (ι₁ : M.V →ₗ[ℂ] H₁) (ι₂ : M.V →ₗ[ℂ] H₂)
 
   let R : Submodule ℂ M.V :=
     { carrier := {x | ∀ w, ⟪ι₂ x, ι₂ w⟫_ℂ = (lam : ℂ) * ⟪ι₁ x, ι₁ w⟫_ℂ}
-      add_mem' := fun {a b} ha hb w => by simp only [Set.mem_setOf_eq, map_add (f := _), inner_add_left, ha w, hb w]; ring
+      add_mem' := fun {a b} ha hb w => by simp only [map_add (f := _), inner_add_left, ha w, hb w]; ring
       zero_mem' := fun w => by simp
-      smul_mem' := fun c a ha w => by simp only [Set.mem_setOf_eq, map_smul, inner_smul_left, ha w]; ring }
+      smul_mem' := fun c a ha w => by simp only [map_smul, inner_smul_left, ha w]; ring }
   have hRst : ∀ Z, ∀ y ∈ R, M.act Z y ∈ R := fun Z y hy w => by
     rw [adj_ruleD s₂, hy, adj_ruleD s₁]
   have hv₀R : (v₀ : M.V) ∈ R := fun w => by

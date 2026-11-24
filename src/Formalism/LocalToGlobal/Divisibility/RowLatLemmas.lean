@@ -596,7 +596,7 @@ theorem gaMat_single (g : G) : B.S.gaMat B.r (MonoidAlgebra.single g 1) = B.S.ac
   rw [Finset.sum_eq_single g]
   · simp
   · intro b _ hb
-    simp [hb, Ne.symm hb]
+    simp [hb]
   · intro h
     exact absurd (Finset.mem_univ g) h
 

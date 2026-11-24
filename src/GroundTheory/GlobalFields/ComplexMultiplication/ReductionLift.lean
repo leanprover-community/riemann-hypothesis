@@ -250,8 +250,7 @@ theorem comp_algebraMap_gaussLift (σ : (W.baseChange K).toAffine.FunctionField 
   apply IsLocalization.ringHom_ext (gaussPrime W).primeCompl
   apply coordinateRing_ringHom_ext
   · intro c
-    simp only [RingHom.comp_apply, ← IsScalarTower.algebraMap_apply, gaussLift_algebraMap,
-      coordEval_algebraMap, hσ, gaussLift_algebraMap_base]
+    simp only [RingHom.comp_apply, ← IsScalarTower.algebraMap_apply, hσ, gaussLift_algebraMap_base]
   · simp only [RingHom.comp_apply, gaussLift_algebraMap, coordEval_mk]
     rw [← gaussX, algebraMap_gaussX, hX]
     simp

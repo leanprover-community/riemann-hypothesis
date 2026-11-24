@@ -87,7 +87,6 @@ theorem scaleEquiv_C (P : σ → Prop) [DecidablePred P] (u : Sˣ) (a : S) :
     scaleEquiv P u (C a) = C a := by
   first
     | (rw [scaleEquiv_apply', MvPolynomial.aeval_C, MvPolynomial.algebraMap_eq]; done)
-    | exact (scaleEquiv P u).commutes a
 
 theorem scaleEquiv_monomial [Fintype σ] (P : σ → Prop) [DecidablePred P] (u : Sˣ)
     (s : σ →₀ ℕ) (a : S) :
@@ -219,8 +218,6 @@ theorem algebraMap_K_OmS (κ : K) :
   first
     | (rw [IsScalarTower.algebraMap_apply K (MvPolynomial (SVar D N) Ω) (OmS Ω D N),
         MvPolynomial.algebraMap_apply]; done)
-    | exact IsScalarTower.algebraMap_apply K (MvPolynomial (SVar D N) Ω) (OmS Ω D N) κ
-    | rfl
 
 private theorem tauF_algebraMap' (b : Fin (D + 1)) (u : Kˣ)
     (q : MvPolynomial (SVar D N) Ω) :
@@ -230,7 +227,6 @@ private theorem tauF_algebraMap' (b : Fin (D + 1)) (u : Kˣ)
   unfold tauF
   first
     | (rw [IsFractionRing.ringEquivOfRingEquiv_algebraMap]; rfl)
-    | exact IsLocalization.ringEquivOfRingEquiv_eq _ _
 
 theorem tauF_algebraMap (b : Fin (D + 1)) (u : Kˣ) (r : Ω) :
     tauF (Ω := Ω) (D := D) (N := N) b u (algebraMap Ω (OmS Ω D N) r) =
@@ -239,7 +235,6 @@ theorem tauF_algebraMap (b : Fin (D + 1)) (u : Kˣ) (r : Ω) :
       algebraMap (MvPolynomial (SVar D N) Ω) (OmS Ω D N) (MvPolynomial.C r) := by
     first
       | exact IsScalarTower.algebraMap_apply Ω (MvPolynomial (SVar D N) Ω) (OmS Ω D N) r
-      | rfl
   rw [h1, tauF_algebraMap', scaleEquiv_C]
 
 theorem tauF_sHom (b : Fin (D + 1)) (hb : b ≠ 0) (u : Kˣ) (j₀ : Fin (N + 1)) (x : Fin N → Ω)
@@ -295,8 +290,6 @@ theorem tauF_KTtoS (h : d.S1) (c : ι) (b : Fin (d.D + 1)) (hb : b ≠ 0) (u : K
     intro G
     first
       | exact IsFractionRing.lift_algebraMap _ _
-      | exact IsFractionRing.lift_algebraMap _
-      | simp [Data.KTtoS]
   have key : ∀ F : KTp K d.D d.N,
       tauF (Ω := Ω c) b u (d.KTtoS h c (algebraMap (KTp K d.D d.N) (KTf K d.D d.N) F)) =
         d.KTtoS h c (sigF b u (algebraMap (KTp K d.D d.N) (KTf K d.D d.N) F)) := by

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.TowerLevelAdjoinRootsIntegrallyClosedQuotient
 public import Mathlib.Algebra.Algebra.Subalgebra.Lattice
 public import Mathlib.Basic.NNReal.Defs
 public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs
@@ -60,35 +61,7 @@ open Polynomial
 
 theorem mem_adjoin_inv_of_isIntegral' {R K : Type*} [CommRing R] [Field K] [Algebra R K] {z : K}
     (hz : z ≠ 0) (hi : IsIntegral R z) : z ∈ Algebra.adjoin R {z⁻¹} := by
-  obtain ⟨p, hpm, hp⟩ := hi
-  rw [Polynomial.eval₂_eq_sum_range, Finset.sum_range_succ, hpm.coeff_natDegree, map_one,
-    one_mul] at hp
-  obtain ⟨m, hm⟩ : ∃ m, p.natDegree = m + 1 := by
-    refine Nat.exists_eq_succ_of_ne_zero fun h => ?_
-    rw [h, Finset.sum_range_zero, pow_zero, zero_add] at hp
-    exact one_ne_zero hp
-  rw [hm] at hp
-  have hzn : z ^ (m + 1) = -∑ i ∈ Finset.range (m + 1), algebraMap R K (p.coeff i) * z ^ i := by
-    rw [eq_neg_iff_add_eq_zero, add_comm]
-    exact hp
-  have h1 : z = z ^ (m + 1) * z⁻¹ ^ m := by
-    rw [pow_succ, mul_comm (z ^ m) z, mul_assoc, ← mul_pow, mul_inv_cancel₀ hz, one_pow, mul_one]
-  have hterm : ∀ i ∈ Finset.range (m + 1), algebraMap R K (p.coeff i) * z ^ i * z⁻¹ ^ m =
-      algebraMap R K (p.coeff i) * z⁻¹ ^ (m - i) := by
-    intro i hi
-    obtain ⟨k, hk⟩ := Nat.exists_eq_add_of_le (Nat.lt_succ_iff.mp (Finset.mem_range.mp hi))
-    rw [hk, Nat.add_sub_cancel_left, mul_assoc, pow_add, ← mul_assoc (z ^ i), ← mul_pow,
-      mul_inv_cancel₀ hz, one_pow, one_mul]
-  have key : z = -∑ i ∈ Finset.range (m + 1), algebraMap R K (p.coeff i) * z⁻¹ ^ (m - i) := by
-    rw [← Finset.sum_congr rfl hterm, ← Finset.sum_mul, ← neg_mul, ← hzn]
-    exact h1
-  have hmem : -∑ i ∈ Finset.range (m + 1), algebraMap R K (p.coeff i) * z⁻¹ ^ (m - i) ∈
-      Algebra.adjoin R {z⁻¹} := by
-    refine Subalgebra.neg_mem _ (Subalgebra.sum_mem _ fun i _ => Subalgebra.mul_mem _
-      (Subalgebra.algebraMap_mem _ _) (Subalgebra.pow_mem _ (Algebra.subset_adjoin ?_) _))
-    exact Set.mem_singleton _
-  rw [← key] at hmem
-  exact hmem
+  apply GlobalTheory.K5.LevClosed.mem_adjoin_inv_of_isIntegral <;> assumption
 
 theorem mem_of_div_le_one : ∀ (O Ω : Type) [CommRing O] [Field Ω] [Algebra O Ω] (v : Valuation Ω NNReal), (∀ x : Ω, v x ≤ 1 ↔ IsIntegral O x) →
   ∀ (B : Subalgebra O Ω), (∀ x ∈ B, v x ≤ 1) → ∀ π ∈ B, π ≠ 0 → v π < 1 → (∀ x ∈ B, v x < 1 → x / π ∈ B) →

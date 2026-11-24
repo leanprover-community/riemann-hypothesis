@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.DiamondOperatorOfMatrixModularFormGamma1InterGam
 public import Development.AbelianVarietyTheory.Definitions.Foundations.PetEqRelIndexMulPetProd
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -53,41 +54,7 @@ namespace GlobalTheory.Hk
 
 theorem conj_mem_lev {N l : ℕ} {d : ℤ} {σ : SL(2, ℤ)} (hσ : IsDia N l d σ) {γ : SL(2, ℤ)}
     (hγ : γ ∈ lev N l) : σ * γ * σ⁻¹ ∈ lev N l := by
-  obtain ⟨h1, -⟩ := hσ
-  rw [ZMod.intCast_zmod_eq_zero_iff_dvd] at h1
-  push_cast at h1
-  have hN : ((σ 1 0 : ℤ) : ZMod N) = 0 :=
-    (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).2 (dvd_trans (dvd_mul_right _ _) h1)
-  have hl : ((σ 1 0 : ℤ) : ZMod l) = 0 :=
-    (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).2 (dvd_trans (dvd_mul_left _ _) h1)
-  obtain ⟨hg1, hg0⟩ := Subgroup.mem_inf.1 hγ
-  rw [Gamma1_mem] at hg1
-  obtain ⟨hx, hw, hz⟩ := hg1
-  rw [Gamma0_mem] at hg0
-  have hdet := σ.det_coe
-  rw [Matrix.det_fin_two] at hdet
-  have hdN := congrArg (Int.cast : ℤ → ZMod N) hdet
-  push_cast at hdN
-  refine Subgroup.mem_inf.2 ⟨?_, ?_⟩
-  · rw [Gamma1_mem]
-    simp only [Matrix.SpecialLinearGroup.coe_mul, Matrix.SpecialLinearGroup.coe_inv,
-      Matrix.adjugate_fin_two, Matrix.mul_apply, Fin.sum_univ_two, Matrix.of_apply,
-      Matrix.cons_val', Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.empty_val',
-      Matrix.cons_val_fin_one, Matrix.head_cons, Matrix.head_fin_const]
-    push_cast
-    rw [hN, hx, hw, hz] at *
-    refine ⟨?_, ?_, ?_⟩
-    · linear_combination hdN
-    · linear_combination hdN
-    · ring
-  · rw [Gamma0_mem]
-    simp only [Matrix.SpecialLinearGroup.coe_mul, Matrix.SpecialLinearGroup.coe_inv,
-      Matrix.adjugate_fin_two, Matrix.mul_apply, Fin.sum_univ_two, Matrix.of_apply,
-      Matrix.cons_val', Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.empty_val',
-      Matrix.cons_val_fin_one, Matrix.head_cons, Matrix.head_fin_const]
-    push_cast
-    rw [hl, hg0]
-    ring
+  apply GlobalTheory.Hk.dia_conj_mem <;> assumption
 
 end GlobalTheory.Hk
 

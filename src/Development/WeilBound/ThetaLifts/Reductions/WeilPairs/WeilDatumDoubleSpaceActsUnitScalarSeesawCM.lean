@@ -2,16 +2,18 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ReindexDblIncM
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DeltaTApply
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicSymplecticTraceFormAlternatingSwapStatement
+public import Formalism.LocalToGlobal.IndefiniteReal.DatumF
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AdelicSymplecticTraceFormAlternatingSwap
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.InfPartFPlaceIdem
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RationalMatricesDiscreteCocompactAdelicMatrixSpaStatement
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RationalPointsSelfAnnihilatorSymplecticStandardCStatement
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RationalMatricesDiscreteCocompactAdelicMatrixSpa
+public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RationalPointsSelfAnnihilatorSymplecticStandardC
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SchurLemmaHeisenbergCommutingThetaOperator
+public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.SymplOHFNegNeg
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.StandardTraceAddCharIsStandardCharOfAdmissibleCM
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ThetaFunctionHeisenbergInvariant
 import Development.AbelianVarietyTheory.Proofs.HeightProofs.MeanSquareAddFundamentalDomainOfCocompact
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.EqZeroOfCoefficientsSeparatingCharactersEqZero
-public import Development.WeilBound.ThetaLifts.Reductions.WeilPairs.SymplOHFNegNeg
 import Formalism.LocalToGlobal.IndefiniteReal.PHeisFC
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -133,8 +135,8 @@ theorem exists_prod_domain : ∃ (μ : Measure (WOF F E nS nT)) (𝓕 : Set (WOF
     μ.IsAddHaarMeasure ∧ IsAddFundamentalDomain (ratLF F E nS nT) 𝓕 μ ∧
     μ₂.IsAddHaarMeasure ∧ IsAddFundamentalDomain (ratLF F E nS (nT + nT)) 𝓕₂ μ₂ ∧
     ∀ φ χ : WOF F E nS nT → ℂ, ∫ x in 𝓕₂, φ (topR x) * χ (botR x) ∂μ₂ = (∫ x in 𝓕, φ x ∂μ) * ∫ x in 𝓕, χ x ∂μ := by
-  obtain ⟨i1, i2, i3, i4, i5, K, hK, hKc⟩ := GlobalTheory.T.rationalMatrices_discrete_cocompact_adelicMatrixSpace F E nS nT
-  obtain ⟨j1, j2, j3, j4, j5, -⟩ := GlobalTheory.T.rationalMatrices_discrete_cocompact_adelicMatrixSpace F E nS (nT + nT)
+  obtain ⟨i1, i2, i3, i4, i5, K, hK, hKc⟩ := _root_.GlobalTheory.AdelicMatrixLatticeF.lattice F E nS nT
+  obtain ⟨j1, j2, j3, j4, j5, -⟩ := _root_.GlobalTheory.AdelicMatrixLatticeF.lattice F E nS (nT + nT)
   have : BorelSpace (WOF F E nS nT) := ⟨rfl⟩
   have : BorelSpace (WOF F E nS (nT + nT)) := ⟨rfl⟩
   obtain ⟨μ, 𝓕, hμ, h𝓕, -⟩ :=
@@ -213,7 +215,7 @@ theorem abstract {n m : ℕ} {J : Matrix (Fin n) (Fin n) E} {J' : Matrix (Fin m)
     (h𝓕 : IsAddFundamentalDomain (ratLF F E n m) 𝓕 μ)
     (hs : ∀ i i', ∫ x in 𝓕, A i x * star (A i' x) ∂μ = ∫ x in 𝓕, B i x * star (B i' x) ∂μ) :
     ∃ c : ℂ, ‖c‖ = 1 ∧ ∀ i, A i = c • B i := by
-  obtain ⟨i1, i2, i3, i4, i5, K, hK, hKc⟩ := GlobalTheory.T.rationalMatrices_discrete_cocompact_adelicMatrixSpace F E n m
+  obtain ⟨i1, i2, i3, i4, i5, K, hK, hKc⟩ := _root_.GlobalTheory.AdelicMatrixLatticeF.lattice F E n m
   have : BorelSpace (WOF F E n m) := ⟨rfl⟩
   have : Countable (ratLF F E n m) := TopologicalSpace.separableSpace_iff_countable.1 inferInstance
   have : IsFiniteMeasure (μ.restrict 𝓕) := ⟨by
@@ -309,8 +311,8 @@ theorem PositivityTheory.ThKW.weil_rep_unitary_pair_equivariant : ∀ (F E : Typ
     ext x
     simp only [deltaT, star_mul]
     ring
-  obtain ⟨c, hc, H⟩ := abstract hψ (GlobalTheory.T.adelicSymplecticTraceForm_alternating_swap F E σ hinv _ _ JS _ hS hT' ξ₀ hσξ)
-    (GlobalTheory.T.rational_points_self_annihilator_symplectic_standardChar F E σ B hB _ _ JS _ hS hT' ξ₀ hξ)
+  obtain ⟨c, hc, H⟩ := abstract hψ (_root_.GlobalTheory.SymplSkew.symplOF_swap F E σ hinv _ _ JS _ hS hT' ξ₀ hσξ)
+    (_root_.GlobalTheory.RatAnnihF.ratLF_annihilator F E σ B hB _ _ JS _ hS hT' ξ₀ hξ)
     (fun p : T × T => ωd (1, hd) (deltaT p.1.1 p.2.1)) (fun p => deltaT (ω (1, h) p.1.1) p.2.1)
     (fun p => hωd.om_pres _ _ (theta_delta hψ.2.1 p.1.2 p.2.2))
     (fun p => theta_delta hψ.2.1 (hω.om_pres _ _ p.1.2) p.2.2)

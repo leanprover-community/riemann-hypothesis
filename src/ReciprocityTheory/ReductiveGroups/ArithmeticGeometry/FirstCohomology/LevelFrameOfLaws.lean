@@ -69,8 +69,6 @@ private lemma gs_eq_stalkMap_germ {X Y : Scheme.{0}} (f : Y ⟶ X) (y : Y) (U : 
   rw [gs, dif_pos hy]
   first
     | exact (Scheme.Hom.germ_stalkMap_apply f U y hy a).symm
-    | (erw [Scheme.Hom.germ_stalkMap_apply])
-    | (erw [Scheme.Hom.germ_stalkMap_apply]; rfl)
 
 theorem sval_scal {X Y Y' Z : Scheme.{0}} {L : LB X} {K K' : Type} [Fintype K] [Fintype K'] {φ₁ : K → (Y' ⟶ X)}
     {ε₁ : K → ℤ} {s₁ : LB.Sec (LB.LinComb L φ₁ ε₁)} {φ₂ : K' → (Y ⟶ X)} {ε₂ : K' → ℤ} {s₂ : LB.Sec (LB.LinComb L φ₂ ε₂)}
@@ -134,7 +132,6 @@ theorem sval_scal {X Y Y' Z : Scheme.{0}} {L : LB X} {K K' : Type} [Fintype K] [
   first
     | rfl
     | erw [CommRingCat.comp_apply]
-    | simp only [CommRingCat.hom_comp, RingHom.comp_apply]
 
 theorem cst_mul {V : Type} [CommRing V] {Z : Scheme.{0}} (q : Z ⟶ Sp V) (z : Z) (a b : V) :
     cst q z (a * b) = cst q z a * cst q z b := by
@@ -159,14 +156,8 @@ theorem cst_stalkMap {V : Type} [CommRing V] {X Z : Scheme.{0}} (r : Z ⟶ X) (p
     | (erw [Scheme.Hom.germ_stalkMap_apply]; rfl)
     | (rw [Scheme.stalkMap_germ_apply]; rfl)
     | (simp [Scheme.Hom.germ_stalkMap_apply, Scheme.comp_app])
-    | (have e := congrArg (fun g => g.hom ((p.app ⊤).hom ((Scheme.ΓSpecIso (CommRingCat.of V)).inv.hom a)))
-          (Scheme.Hom.germ_stalkMap r (p ⁻¹ᵁ ⊤) z hp)
-       simpa using e)
 
-theorem gs_sum {X Z : Scheme.{0}} (r : Z ⟶ X) (z : Z) (U : X.Opens) (h : r z ∈ U) {n : ℕ} (a : Fin n → Γ(X, U)) :
-    gs r z U (∑ i, a i) = ∑ i, gs r z U (a i) := by
-
-  simp [gs, h, map_sum]
+alias gs_sum := _root_.ReciprocityTheory.ChartRestriction.G.DVR.SectionScalarValuation.gs_sum
 
 theorem gs_spec {A C : Type} [CommRing A] [CommRing C] (φ : A →+* C) (z : Sp C) (a : A) :
     cst (spMap φ) z a = cst (𝟙 _) z (φ a) := by
@@ -175,7 +166,6 @@ theorem gs_spec {A C : Type} [CommRing A] [CommRing C] (φ : A →+* C) (z : Sp 
     have := congrArg (fun g => g.hom a) (Scheme.ΓSpecIso_inv_naturality (CommRingCat.ofHom φ))
     first
       | exact this.symm
-      | simp
       | (simp only [CommRingCat.comp_apply] at this; exact this.symm)
   have h1 : (spMap φ) z ∈ (⊤ : (Sp A).Opens) := trivial
   have h2 : (𝟙 (Sp C) : Sp C ⟶ Sp C) z ∈ (⊤ : (Sp C).Opens) := trivial
@@ -205,25 +195,18 @@ theorem gs_fromSpec {X Z : Scheme.{0}} {U W : X.Opens} (hU : IsAffineOpen U) (le
   erw [← Scheme.Hom.germ_stalkMap_apply, ← Scheme.Hom.germ_stalkMap_apply]
   first
     | rw [Scheme.Hom.stalkMap_comp]
-    | rw [Scheme.stalkMap_comp]
     | erw [Scheme.Hom.stalkMap_comp]
   first
     | erw [CommRingCat.comp_apply]
-    | rw [CommRingCat.hom_comp, RingHom.comp_apply]
-    | simp only [CommRingCat.hom_comp, RingHom.comp_apply]
     | erw [ConcreteCategory.comp_apply]
   congr 1
   erw [Scheme.Hom.germ_stalkMap_apply]
   rw [hU.fromSpec_app_of_le W le]
   first
     | erw [CommRingCat.comp_apply]
-    | rw [CommRingCat.hom_comp, RingHom.comp_apply]
-    | simp only [CommRingCat.hom_comp, RingHom.comp_apply]
     | erw [ConcreteCategory.comp_apply]
   try (first
       | erw [CommRingCat.comp_apply]
-      | rw [CommRingCat.hom_comp, RingHom.comp_apply]
-      | simp only [CommRingCat.hom_comp, RingHom.comp_apply]
       | erw [ConcreteCategory.comp_apply])
   erw [TopCat.Presheaf.germ_res_apply]
   rfl

@@ -468,7 +468,7 @@ theorem rinfU_mem (M : GL (Fin X.B.I.n) X.B.I.E) (hM : M ∈ Formalism.UG.UJ (st
 def rfinU (M : GL (Fin X.B.I.n) X.B.I.E) (hM : M ∈ Formalism.UG.UJ (starRingEnd X.B.I.E) X.B.I.J) : X.B.I.Gf :=
   ⟨Formalism.UG.bc (Formalism.UG.inclE (F := X.B.I.F) (Af X.B.I.F)) M,
     Formalism.UG.P.rational_points_le_holds X.B.I.F X.B.I.E (Fin X.B.I.n) X.B.I.cm.sig X.B.I.J (Af X.B.I.F)
-      ⟨M, by rw [PIW.AdelClassFin.dictTop_sig]; exact hM, rfl⟩⟩
+      ⟨M, by rw [_root_.PI.UnitaryGroupMassFormula.LCG.DualI.sig_eq]; exact hM, rfl⟩⟩
 
 theorem fmat_rfinU (M : GL (Fin X.B.I.n) X.B.I.E) (hM : M ∈ Formalism.UG.UJ (starRingEnd X.B.I.E) X.B.I.J) :
     X.B.I.fmat (rfinU X M hM) = (M : Matrix (Fin X.B.I.n) (Fin X.B.I.n) X.B.I.E).map (Formalism.UG.inclE (F := X.B.I.F) (Af X.B.I.F)) := rfl
@@ -549,8 +549,7 @@ theorem int_iff (a : D.host.E) : a ∈ (algebraMap (𝓞 D.host.E) D.host.E).ran
     have hb' : (b : X.B.I.E) = X.ιE.symm a := hb
     rw [hb', RingEquiv.apply_symm_apply]
 
-theorem crd_smul (c : D.host.E) (y : (VS D).V) : X.crd (c • y) = X.ιE.symm c • X.crd y := by
-  conv_lhs => rw [← toV_crd X y, ← RingEquiv.apply_symm_apply X.ιE c, ← toV_smul, crd_toV]
+alias crd_smul := _root_.Formalism.L2.SG.Pf.crd_smul
 
 theorem hmem_nsmul (h : Hfin X u) (N : ℕ) (y : (VS D).V) :
     Tm X u h *ᵥ incl X.B.I (X.crd (N • y)) = (N : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • (Tm X u h *ᵥ incl X.B.I (X.crd y)) := by
@@ -1102,16 +1101,11 @@ theorem prV_of_perp {w : (VS D).V} (he : ∀ a, (VS D).hT (X.eX a) w = 0) (hf : 
     prV X w = w := by
   simp [prV_apply, he, hf]
 
-theorem smulMem {K W : Type} [Field K] [NumberField K] [AddCommGroup W] [Module K W] [Module (𝓞 K) W]
-    [IsScalarTower (𝓞 K) K W] (Λ : Submodule (𝓞 K) W) [hΛ : Submodule.IsFullLattice K Λ] (v : W) :
-    ∃ s : 𝓞 K, s ≠ 0 ∧ s • v ∈ Λ := by
-  first | exact Bl.general_b_fact_third_ter_form.goal1 .. | (apply Bl.general_b_fact_third_ter_form.goal1 <;> assumption) | (intros; apply Bl.general_b_fact_third_ter_form.goal1 <;> assumption)
-
 theorem uniform_mul {K W : Type} [Field K] [NumberField K] [AddCommGroup W] [Module K W] [Module (𝓞 K) W]
     [IsScalarTower (𝓞 K) K W] {A B : Submodule (𝓞 K) W} (hA : A.FG) [hB : Submodule.IsFullLattice K B] :
     ∃ c : 𝓞 K, c ≠ 0 ∧ ∀ a ∈ A, c • a ∈ B := by
   obtain ⟨S, rfl⟩ := hA
-  choose cs hcs0 hcs using fun s : W => smulMem B s
+  choose cs hcs0 hcs using fun s : W => _root_.Bl.general_b_fact_third_ter_form.goal1 B s
   refine ⟨∏ s ∈ S, cs s, Finset.prod_ne_zero_iff.2 fun s _ => hcs0 s, fun a ha => ?_⟩
   induction ha using Submodule.span_induction with
   | mem s hs =>
@@ -1176,8 +1170,7 @@ theorem dltE_stab {f' : Fin D.R.rS → (VS D).V} (hff : ∀ a b, (VS D).hT (f' a
     rw [X.flagZVector]
     exact delta_fix_anisotropic X u hz
 
-theorem crd_add (x y : (VS D).V) : X.crd (x + y) = X.crd x + X.crd y := by
-  funext i; simp [HidaSetting.crd, crdOf]
+alias crd_add := _root_.Formalism.L2.SG.Pf.crd_add
 
 def crdHom : (VS D).V →+ (Fin X.B.I.n → X.B.I.E) := AddMonoidHom.mk' X.crd (crd_add X)
 

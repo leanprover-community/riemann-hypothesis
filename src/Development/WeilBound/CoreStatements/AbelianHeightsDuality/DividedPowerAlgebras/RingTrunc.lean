@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsDPMorphismOfIsStd
 public import Development.AbelianVarietyTheory.Definitions.Divisors.RatBasisLinearIndependentInt
 public import Development.WeilBound.CoreStatements.AbelianHeightsDuality.DividedPowerAlgebras.ExistsDividedPowersAug
 public import Development.WeilBound.CoreStatements.AbelianHeightsDuality.DividedPowerAlgebras.FilIsSubDPIdeal
@@ -68,21 +69,7 @@ theorem dp_of_std (δ : DividedPowers J) (Q : PDPoly B) (η : DividedPowers (Q.e
     {C : Type} [CommRing C] {L : Ideal C} (θ : DividedPowers L) (F : Q.P →+* C) (c : C) (hc : c ∈ L)
     (hF : IsDPMorphism δ θ (F.comp (algebraMap B Q.P))) (he : ∀ n, F (Q.e n) = θ.dpow n c) :
     IsDPMorphism η θ F := by
-  have hS : Q.ext J = Ideal.span ((algebraMap B Q.P) '' (J : Set B) ∪ Set.range (fun m : ℕ => Q.e (m + 1))) := by
-    rw [Ideal.span_union]
-    rfl
-  have h1 : Q.e 1 ∈ Q.ext J := Q.e_one_mem_ext J
-  refine IsDPMorphism.on_span η θ hS ?_ ?_
-  · rintro s (⟨b, hb, rfl⟩ | ⟨m, rfl⟩)
-    · rw [← RingHom.comp_apply]
-      exact hF.1 (Ideal.mem_map_of_mem _ hb)
-    · rw [he]
-      exact θ.dpow_mem (Nat.succ_ne_zero m) hc
-  · rintro n s (⟨b, hb, rfl⟩ | ⟨m, rfl⟩)
-    · rw [hQ.dp.dpow_comp b hb, ← RingHom.comp_apply, ← RingHom.comp_apply, hF.dpow_comp b hb]
-    · show F (η.dpow n (Q.e (m + 1))) = θ.dpow n (F (Q.e (m + 1)))
-      rw [he, ← hQ.var (m + 1), η.dpow_comp (Nat.succ_ne_zero m) h1, map_mul, map_natCast, hQ.var, he,
-        θ.dpow_comp (Nat.succ_ne_zero m) hc]
+  apply GlobalTheory.PDA.PDPoly.isDPMorphism_of_isStd <;> assumption
 
 theorem ring_trunc (κ : DividedPowers I) (f : R →+* B) (δ : DividedPowers J) (h : ExtDP κ f δ) (n : ℕ)
     (hn : 1 ≤ n) : ∃ (A : Type) (_ : CommRing A) (a : B →+* A) (JA : Ideal A) (θ : DividedPowers JA),

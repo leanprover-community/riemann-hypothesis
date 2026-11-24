@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MemBasicOpenOfIsUnit
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.SquareUnits
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.TWMove
 import Mathlib.Algebra.Order.Floor.Extended
@@ -75,22 +76,7 @@ variable {S : Scheme.{0}} [IsLocallyNoetherian S] {K : Type} [Field K] (t : Spec
 theorem unitAt_square (hsq : SquareSt) (P : PolAV S) (x₁ x₂ : Over.mk t ⟶ P.A) (y : (Over.mk t ⊗ P.A).left) :
     UnitAt P.L ![(translPt P.A (x₁ * x₂)).left, (snd (Over.mk t) P.A).left,
       (translPt P.A x₁).left, (translPt P.A x₂).left] ![1, 1, -1, -1] y := by
-  obtain ⟨V, hpV, c, hc⟩ := hsq S P (Over.mk t) x₁ x₂ (IsLocalRing.closedPoint K)
-  have hV : V = ⊤ := eq_top_iff.2 fun q _ => by
-    have := spec_pt_eq q (IsLocalRing.closedPoint K)
-    rw [this]; exact hpV
-  subst hV
-  obtain ⟨s, hs⟩ := exists_sec_of_pullGen (Z := (Over.mk t ⊗ P.A).left)
-    ((fst (Over.mk t) P.A).left ⁻¹ᵁ ⊤).ι c hc
-  let e := IsOpenImmersion.lift ((fst (Over.mk t) P.A).left ⁻¹ᵁ ⊤).ι (𝟙 _)
-    (by rintro _ ⟨q, rfl⟩; rw [Scheme.Opens.range_ι]; trivial)
-  have he : e ≫ ((fst (Over.mk t) P.A).left ⁻¹ᵁ ⊤).ι = 𝟙 _ :=
-    IsOpenImmersion.lift_fac _ _ _
-  refine UnitAt.congr P.isLB ?_ ⟨SectionArithmetic.pullSec s e, fun J hJ => ?_⟩
-  · refine formEq_of_add fun U _ hh => ?_
-    simp only [← Category.assoc, he, Category.id_comp]
-  · rw [SectionArithmetic.sval_pullSec s e (𝟙 _) y hJ]
-    exact hs _ y J hJ
+  apply GlobalTheory.IntegralJets.unitAt_square <;> assumption
 
 theorem unitAt_iter (hsq : SquareSt) (P : PolAV S) (b : Over.mk t ⟶ P.A) (y : (Over.mk t ⊗ P.A).left) :
     ∀ n : ℕ, UnitAt P.L ![(translPt P.A (b ^ (n + 2))).left, (snd (Over.mk t) P.A).left,

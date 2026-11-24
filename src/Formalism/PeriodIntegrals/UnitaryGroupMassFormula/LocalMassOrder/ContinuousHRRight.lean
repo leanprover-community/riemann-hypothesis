@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalJacobianType.ContinuousTrESymm
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.LocVol
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassOrder.IsTopRingTens
@@ -94,22 +95,7 @@ theorem exists_gens : ∃ (m : ℕ) (w : Fin m → Fv F v ⊗[F] E), (∀ k, w k
   exact ⟨fun k => (c k : Fv F v), fun k => (c k).2, by rw [← hc]; rfl⟩
 
 theorem isCompact_oev : IsCompact (OEv (E := E) v) := by
-  obtain ⟨m, w, hw, hx⟩ := exists_gens (E := E) v
-  have hK : IsCompact (Set.univ.pi fun _ : Fin m => (v.adicCompletionIntegers F : Set (Fv F v))) :=
-    isCompact_univ_pi fun _ => PI.AdicCompletionValuation.isCompact_adicCompletionIntegers F v
-  have hcont : Continuous fun c : Fin m → Fv F v => ∑ k, c k • w k :=
-    continuous_finsetSum _ fun k _ => (continuous_apply k).smul continuous_const
-  have e : OEv (E := E) v = (fun c : Fin m → Fv F v => ∑ k, c k • w k) ''
-      (Set.univ.pi fun _ : Fin m => (v.adicCompletionIntegers F : Set (Fv F v))) := by
-    ext x
-    constructor
-    · intro h
-      obtain ⟨c, hc, rfl⟩ := hx x h
-      exact ⟨c, fun k _ => hc k, rfl⟩
-    · rintro ⟨c, hc, rfl⟩
-      exact Submodule.sum_mem _ fun k _ => oev_smul v (hc k trivial) (hw k)
-  rw [e]
-  exact hK.image hcont
+  apply PI.UnitaryGroupMassFormula.LocJacTyp.Sd.isCompact_oev <;> assumption
 
 theorem isClosed_oev : IsClosed (OEv (E := E) v) := by
   have := LocMassOrdSF.finDim_FE (F := F) (E := E)

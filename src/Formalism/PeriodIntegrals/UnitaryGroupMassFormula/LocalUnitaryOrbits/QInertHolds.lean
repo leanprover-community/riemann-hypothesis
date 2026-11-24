@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.NormOneUnitFixedPoints
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.EtaVCases
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -74,27 +75,7 @@ theorem sig_ne (h : IsCMExt F E σ) : σ ≠ AlgHom.id F E := by
     (InfinitePlace.isReal_mk_iff.2 hr)
 
 theorem fix_range (h : IsCMExt F E σ) {y : E} (hy : σ y = y) : ∃ c : F, algebraMap F E c = y := by
-  by_contra hne
-  push Not at hne
-  have li : LinearIndependent F ![(1 : E), y] := by
-    rw [LinearIndependent.pair_iff]
-    intro s t hst
-    by_cases ht : t = 0
-    · subst ht
-      simp only [zero_smul, add_zero, smul_eq_zero, one_ne_zero, or_false] at hst
-      exact ⟨hst, rfl⟩
-    · exfalso
-      apply hne (-(t⁻¹ * s))
-      have hy' : y = t⁻¹ • (t • y) := by rw [smul_smul, inv_mul_cancel₀ ht, one_smul]
-      rw [hy', eq_neg_of_add_eq_zero_right hst, smul_neg, smul_smul, Algebra.algebraMap_eq_smul_one, neg_smul]
-  have hsp := li.span_eq_top_of_card_eq_finrank' (by simpa using h.2.2.1.symm)
-  apply sig_ne σ h
-  have hl : σ.toLinearMap = LinearMap.id := by
-    refine LinearMap.ext_on_range hsp fun i => ?_
-    fin_cases i
-    · simp
-    · simpa using hy
-  exact AlgHom.ext fun x => LinearMap.congr_fun hl x
+  apply PI.OmLocU.NormOneUnitFixedPoints.gr_fix_range <;> assumption
 
 theorem fix_int (h : IsCMExt F E σ) (y : 𝓞 E) (hy : sigO σ y = y) :
     ∃ a : 𝓞 F, algebraMap (𝓞 F) (𝓞 E) a = y := by

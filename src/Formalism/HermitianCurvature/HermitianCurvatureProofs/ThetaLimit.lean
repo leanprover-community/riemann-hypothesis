@@ -127,7 +127,7 @@ theorem mkP_eval (m : ℕ) (c : ℕ → ℂ) (z : ℂ) : (mkP m c).eval z = ∑ 
 
 open Polynomial in
 theorem mkP_coeff (m : ℕ) (c : ℕ → ℂ) (k : ℕ) : (mkP m c).coeff k = if k < m + 1 then c k else 0 := by
-  simp [mkP, finsetSum_coeff, coeff_C_mul, coeff_X_pow]
+  simp [mkP, coeff_C_mul, coeff_X_pow]
 
 theorem ld_rpow (q : ℕ) (s x : ℝ) (hx : 0 < x) : ld q (fun y => y ^ s) x = s ^ q * x ^ s := by
   unfold ld
@@ -393,7 +393,6 @@ theorem limit_L2 : CutoffLimitInL2 := by
       rw [this]; simp
 
 theorem amgm (a b δ : ℝ) (hδ : 0 < δ) : a * b ≤ (a ^ 2 / δ + δ * b ^ 2) / 2 := by
-  have h := sq_nonneg (a - δ * b)
   have : a ^ 2 / δ + δ * b ^ 2 - 2 * (a * b) = (a - δ * b) ^ 2 / δ := by field_simp; ring
   have h2 : 0 ≤ (a - δ * b) ^ 2 / δ := by positivity
   linarith

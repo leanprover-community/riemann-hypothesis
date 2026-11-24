@@ -319,7 +319,6 @@ theorem short_isotropic_vector_of : Transp → ShortIsot := by
     have a2 := (norm_hf_leD (I.ε v) (vecAt I y u v) (vecAt I y u' v)).trans
       (mul_le_mul_of_nonneg_left a1 (Nat.cast_nonneg _))
     refine (mul_le_mul_of_nonneg_left a2 (Nat.cast_nonneg c)).trans ?_
-    have hcp : (0 : ℝ) < c := by exact_mod_cast hc
     have : (c : ℝ) * ((I.n + 1) * s) = 1 / 2 := by simp only [s]; field_simp
     rw [← this]
     gcongr

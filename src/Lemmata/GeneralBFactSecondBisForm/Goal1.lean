@@ -72,47 +72,31 @@ theorem goal1 :
   rcases eq_or_ne v 0 with rfl | hv
   · simp
   have hvpos : 0 < ‖v‖ := norm_pos_iff.mpr hv
-  have hline : ∀ t : ℂ, HasDerivAt (fun t : ℂ => y + t • v) v t := by
-    intro t
-    simpa using ((hasDerivAt_id t).smul_const v).const_add y
-  have hmaps : ∀ t : ℂ, ‖t‖ * ‖v‖ < δ → y + t • v ∈ Metric.ball y δ := by
-    intro t ht
-    rw [Metric.mem_ball, dist_eq_norm]
-    simpa [norm_smul] using ht
+  have hline : ∀ t : ℂ, HasDerivAt (fun t : ℂ => y + t • v) v t :=
+    fun t => by simpa using ((hasDerivAt_id t).smul_const v).const_add y
+  have hmaps : ∀ t : ℂ, ‖t‖ * ‖v‖ < δ → y + t • v ∈ Metric.ball y δ :=
+    fun t ht => by simpa [Metric.mem_ball, dist_eq_norm, norm_smul] using ht
   have hr : ∀ r : ℝ, 0 < r → r < δ → ‖fderiv ℂ f y v‖ * r ≤ M * ‖v‖ := by
     intro r hr0 hrδ
-    have hgd : DifferentiableOn ℂ (fun t : ℂ => f (y + t • v)) (Metric.ball 0 (δ / ‖v‖)) := by
-      intro t ht
-      have ht' : ‖t‖ * ‖v‖ < δ := by
-        rw [Metric.mem_ball, dist_zero_right, lt_div_iff₀ hvpos] at ht
-        exact ht
-      exact ((hf.differentiableAt (Metric.isOpen_ball.mem_nhds (hmaps t ht'))).comp t
-        (hline t).differentiableAt).differentiableWithinAt
-    have hR : 0 < r / ‖v‖ := div_pos hr0 hvpos
-    have hcl : DiffContOnCl ℂ (fun t : ℂ => f (y + t • v)) (Metric.ball 0 (r / ‖v‖)) := by
-      refine DifferentiableOn.diffContOnCl (hgd.mono ?_)
-      rw [closure_ball _ hR.ne']
-      exact Metric.closedBall_subset_ball ((div_lt_div_iff_of_pos_right hvpos).2 hrδ)
-    have hderiv : deriv (fun t : ℂ => f (y + t • v)) 0 = fderiv ℂ f y v := by
-      have h := hdy.hasFDerivAt.comp_hasDerivAt_of_eq (0 : ℂ) (hline 0) (by simp)
-      exact h.deriv
+    have hgd : DifferentiableOn ℂ (fun t : ℂ => f (y + t • v)) (Metric.ball 0 (δ / ‖v‖)) :=
+      hf.comp (by fun_prop) fun t ht => hmaps t (by
+        rwa [Metric.mem_ball, dist_zero_right, lt_div_iff₀ hvpos] at ht)
+    have hcl : DiffContOnCl ℂ (fun t : ℂ => f (y + t • v)) (Metric.ball 0 (r / ‖v‖)) :=
+      hgd.diffContOnCl_ball
+        (Metric.closedBall_subset_ball ((div_lt_div_iff_of_pos_right hvpos).2 hrδ))
+    have hderiv : deriv (fun t : ℂ => f (y + t • v)) 0 = fderiv ℂ f y v :=
+      (hdy.hasFDerivAt.comp_hasDerivAt_of_eq (0 : ℂ) (hline 0) (by simp)).deriv
     have hb : ∀ z ∈ Metric.sphere (0 : ℂ) (r / ‖v‖), ‖f (y + z • v)‖ ≤ M := by
       intro z hz
-      apply hM
-      apply hmaps
       rw [mem_sphere_zero_iff_norm] at hz
-      rw [hz, div_mul_cancel₀ _ hvpos.ne']
-      exact hrδ
-    have h := Complex.norm_deriv_le_of_forall_mem_sphere_norm_le hR hcl hb
-    rw [hderiv, div_div_eq_mul_div, le_div_iff₀ hr0] at h
-    exact h
+      exact hM _ (hmaps z (by rw [hz, div_mul_cancel₀ _ hvpos.ne']; exact hrδ))
+    have h := Complex.norm_deriv_le_of_forall_mem_sphere_norm_le (div_pos hr0 hvpos) hcl hb
+    rwa [hderiv, div_div_eq_mul_div, le_div_iff₀ hr0] at h
   have ht : Filter.Tendsto (fun r : ℝ => ‖fderiv ℂ f y v‖ * r) (nhdsWithin δ (Set.Iio δ))
       (nhds (‖fderiv ℂ f y v‖ * δ)) :=
     ((continuous_const.mul continuous_id).tendsto δ).mono_left nhdsWithin_le_nhds
-  have hev : ∀ᶠ r in nhdsWithin δ (Set.Iio δ), ‖fderiv ℂ f y v‖ * r ≤ M * ‖v‖ := by
-    filter_upwards [Ioo_mem_nhdsLT hδ] with r h1 using hr r h1.1 h1.2
-  have hlim := le_of_tendsto ht hev
   rw [div_mul_eq_mul_div, le_div_iff₀ hδ]
-  exact hlim
+  refine le_of_tendsto ht ?_
+  filter_upwards [Ioo_mem_nhdsLT hδ] with r h1 using hr r h1.1 h1.2
 
 end Bl.general_b_fact_second_bis_form

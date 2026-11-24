@@ -1,5 +1,6 @@
 module
 
+import CompanionTheory.RealGroups.FormalDegrees.ArchimedeanFormalDegrees.PositiveConjugation.PhiMul
 public import Development.WeilBound.RepresentationTheoryGL.FormalDegree.FormalDegreeHilbert.HlamStable
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -79,18 +80,6 @@ theorem phiM_add_smul (μ D : Fin n → ℤ) (t : ℕ) {y : Matrix (Fin n) (Fin 
   ring
 
 theorem phiMul : PhiMul := by
-  intro n ε μ t x hx k
-  have hy := posDef_conj_toMK k hx
-  have h1 := phiM_posDef μ hy
-  have h2 := phiM_posDef (Dz n) hy
-  refine ⟨h1.1, ?_⟩
-  unfold phiK
-  rw [phiM_add_smul μ (Dz n) t (posSet_subset_omega hy)]
-  have e1 : PhiM μ (toMK k⁻¹ * x * toMK k) = ((PhiM μ (toMK k⁻¹ * x * toMK k)).re : ℂ) :=
-    Complex.ext (by simp) (by simp [h1.2])
-  have e2 : PhiM (Dz n) (toMK k⁻¹ * x * toMK k) = ((PhiM (Dz n) (toMK k⁻¹ * x * toMK k)).re : ℂ) :=
-    Complex.ext (by simp) (by simp [h2.2])
-  rw [e1, e2, ← Complex.ofReal_pow, ← Complex.ofReal_mul]
-  simp only [Complex.ofReal_re]
+  apply _root_.CompanionTheory.RgFd.phiMul <;> assumption
 
 end PositivityTheory.RgFd

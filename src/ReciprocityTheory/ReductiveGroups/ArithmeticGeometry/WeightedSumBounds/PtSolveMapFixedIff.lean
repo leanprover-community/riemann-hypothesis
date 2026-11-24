@@ -120,7 +120,7 @@ theorem pt_low_of_lin {σ : Type*} [Fintype σ] {Φ : MvPowerSeries σ C}
       · subst hi
         simp only [Finsupp.single_eq_same]
         omega
-      · simp [Finsupp.single_apply, Ne.symm hi]
+      · simp [Ne.symm hi]
     have hadd := add_tsub_cancel_of_le hle
     have hd := congrArg Finsupp.degree hadd
     rw [map_add (f := _), Finsupp.degree_single, h] at hd
