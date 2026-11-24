@@ -350,10 +350,6 @@ def quotInt {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] (T : Subgroup 
     (F : G → E) : E :=
   ∫ c, F (Quotient.out c) ∂quotMeas T μ μT
 
-def QuotIntegrable {E : Type} [NormedAddCommGroup E] (T : Subgroup G) (μ : Measure G) (μT : Measure T)
-    (F : G → E) : Prop :=
-  Integrable (fun c : RCoset T => F (Quotient.out c)) (quotMeas T μ μT)
-
 
 omit [MeasurableSpace G] in
 theorem apply_out_mk {T : Subgroup G} {α : Type} {F : G → α} (hF : ∀ t ∈ T, ∀ x, F (t * x) = F x) (x : G) :
@@ -452,21 +448,6 @@ theorem isQuotMeasure_quotMeas (hT : IsClosed (T : Set G)) : IsQuotMeasure T μ 
   have : LocallyCompactSpace T := hT.locallyCompactSpace
   have : SecondCountableTopology T := TopologicalSpace.Subtype.secondCountableTopology (T : Set G)
   exact Classical.epsilon_spec ⟨_, hβ.isQuotMeasure⟩
-
-theorem quotInt_eq_cutoff (hT : IsClosed (T : Set G)) {β : G → NNReal} (hβ : IsCosetCutoff T μT β) {F : G → ℂ}
-    (hm : Measurable F) (hF : ∀ t ∈ T, ∀ x, F (t * x) = F x) : quotInt T μ μT F = ∫ x, (β x : ℝ) • F x ∂μ := by
-  rw [quotInt, (isQuotMeasure_quotMeas hT).eq_map hβ,
-    integral_map measurable_quotient_mk''.aemeasurable (measurable_comp_out hm hF).aestronglyMeasurable,
-    integral_withDensity_eq_integral_smul hβ.1]
-  exact integral_congr_ae (Filter.Eventually.of_forall fun x => by simp only [apply_out_mk hF]; rfl)
-
-theorem quotIntegrable_iff_cutoff (hT : IsClosed (T : Set G)) {β : G → NNReal} (hβ : IsCosetCutoff T μT β) {F : G → ℂ}
-    (hm : Measurable F) (hF : ∀ t ∈ T, ∀ x, F (t * x) = F x) :
-    QuotIntegrable T μ μT F ↔ Integrable (fun x => (β x : ℝ) • F x) μ := by
-  rw [QuotIntegrable, (isQuotMeasure_quotMeas hT).eq_map hβ,
-    integrable_map_measure (measurable_comp_out hm hF).aestronglyMeasurable measurable_quotient_mk''.aemeasurable,
-    integrable_withDensity_iff_integrable_smul hβ.1]
-  exact integrable_congr (Filter.Eventually.of_forall fun x => by simp only [Function.comp, apply_out_mk hF]; rfl)
 
 end Exist
 
@@ -725,28 +706,6 @@ theorem IsQuotIntL1.unique (hR : IsClosed (R : Set G)) (h : IsQuotIntL1 μR μG 
   have : SecondCountableTopology R := TopologicalSpace.Subtype.secondCountableTopology (R : Set G)
   rw [(h.cutoff hβ).2, (h'.cutoff hβ).2]
 
-
-open GlobalTheory.Tw in
-theorem isQuotIntL1_iff (hR : IsClosed (R : Set G)) (hm : Measurable f) :
-    IsQuotIntL1 μR μG f z ↔
-      (∀ s ∈ R, ∀ x, f (s * x) = f x) ∧ QuotIntegrable R μG μR f ∧ z = quotInt R μG μR f := by
-  obtain ⟨β, -, hβ⟩ := exists_isCosetCutoff (μT := μR) hR
-  have : LocallyCompactSpace R := hR.locallyCompactSpace
-  have : SecondCountableTopology R := TopologicalSpace.Subtype.secondCountableTopology (R : Set G)
-  have : μR.IsMulRightInvariant := by rw [← Measure.inv_eq_self μR]; infer_instance
-  constructor
-  · intro h
-    have hl : ∀ s ∈ R, ∀ x, f (s * x) = f x := fun s hs => h.left hs
-    exact ⟨hl, (quotIntegrable_iff_cutoff hR hβ hm hl).2 (h.cutoff hβ).1,
-      by rw [quotInt_eq_cutoff hR hβ hm hl, (h.cutoff hβ).2]⟩
-  · rintro ⟨hl, hi, rfl⟩
-    have hb := fun x => integrable_of_lintegral_eq_one (μ := μR) (b := fun t : R => β (t * x))
-      (hβ.1.comp (measurable_subtype_coe.mul_const x)) (hβ.2 x)
-    have hb' := fun x => (hb x).2
-    refine ⟨fun x => (β x : ℝ) • f x, (quotIntegrable_iff_cutoff hR hβ hm hl).1 hi, fun x => ?_, fun x => ?_,
-      quotInt_eq_cutoff hR hβ hm hl⟩
-    · simpa only [hl _ (Subtype.property _)] using (hb x).1.smul_const (f x)
-    · simp only [hl _ (Subtype.property _), integral_smul_const, hb', one_smul]
 
 end Quot
 
