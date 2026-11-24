@@ -693,7 +693,6 @@ end
 
 section
 
-open Matrix MeasureTheory Formalism.QuantumDeterminants Formalism.FourierDecayAlt
 
 set_option linter.unusedSimpArgs false
 set_option linter.unusedVariables false
@@ -2243,7 +2242,6 @@ end
 
 section
 
-open Matrix MeasureTheory Formalism.QuantumDeterminants Formalism.FourierDecayAlt
 
 set_option linter.unusedSimpArgs false
 set_option linter.unusedVariables false
@@ -2893,7 +2891,6 @@ end
 
 section
 
-open Matrix MeasureTheory Formalism.QuantumDeterminants Formalism.FourierDecayAlt
 
 set_option linter.unusedSimpArgs false
 set_option linter.unusedVariables false
@@ -3347,7 +3344,6 @@ end
 
 section
 
-open Matrix MeasureTheory Formalism.QuantumDeterminants Formalism.FourierDecayAlt
 
 set_option linter.unusedSimpArgs false
 set_option linter.unusedVariables false
@@ -3569,8 +3565,6 @@ end
 
 section
 
-open Matrix MeasureTheory Formalism.QuantumDeterminants Formalism.FourierDecayAlt
-open scoped ComplexConjugate
 
 namespace Formalism.FourierDecayAlt.P.Dx2.Rad
 
@@ -4560,7 +4554,6 @@ end
 
 section
 
-open Matrix MeasureTheory Formalism.QuantumDeterminants Formalism.FourierDecayAlt
 
 set_option linter.unusedSimpArgs false
 set_option linter.unusedVariables false
@@ -5187,8 +5180,6 @@ theorem smat_comm_Hpk {k r : ℕ} {ι : Type*} [Fintype ι] (u w Y : ι → Fin 
 end explicit
 
 section explicit2
-open Formalism.FourierDecayAlt.P.Dx2.DF
-open scoped ComplexConjugate
 variable {k r : ℕ}
 
 theorem caseA' {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
@@ -5218,8 +5209,6 @@ theorem caseB' {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
 end explicit2
 
 section frameHelpers
-open Formalism.FourierDecayAlt.P.Dx2.DF
-open scoped ComplexConjugate
 variable {k r : ℕ}
 
 theorem Wb_N {n : B.Mat k r} (hn : n ∈ Nset k r) {v : Fin (2 * r + k + 1) → ℂ}
@@ -5278,8 +5267,6 @@ theorem unit_c {x y : Fin (2 * r + k + 1) → ℂ} (hx : herm (Hpk k r) x x = 1)
 end frameHelpers
 
 section cof
-open Formalism.FourierDecayAlt.P.Dx2.DF
-open scoped ComplexConjugate
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] (S : B.RealPlaceData k r Wp Wq)
 
@@ -5335,8 +5322,6 @@ theorem cofL_free {γ : B.Mat k r} (hγ : γ ∈ B.GV k r) (a : Fin r) :
 end cof
 
 section frameFix
-open Formalism.FourierDecayAlt.P.Dx2.DF
-open scoped ComplexConjugate
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] (S : B.RealPlaceData k r Wp Wq)
 
@@ -5493,8 +5478,6 @@ theorem frame_fix (ν' : Fin (2 * r + k + 1) → ℂ) (m₀ : B.Mat k r) (hbase 
 end frameFix
 
 section final
-open Formalism.FourierDecayAlt.P.Dx2.DF
-open scoped ComplexConjugate
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] (S : B.RealPlaceData k r Wp Wq)
 
@@ -5595,7 +5578,6 @@ end
 
 section
 
-open Matrix MeasureTheory Formalism.QuantumDeterminants Formalism.FourierDecayAlt
 
 namespace Formalism.FourierDecayAlt.P.Dx2.SL
 

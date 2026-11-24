@@ -385,12 +385,10 @@ theorem regularity_at_place_of_expansion (p : KB.Pl P Wp Wq) (f : B.Mat P.k P.r 
 
 end reg
 
-section iter
 
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] {P : M.Par}
 
-end iter
 
 end
 

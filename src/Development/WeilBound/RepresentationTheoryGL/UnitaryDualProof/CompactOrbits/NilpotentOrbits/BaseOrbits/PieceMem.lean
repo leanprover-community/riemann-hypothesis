@@ -124,7 +124,6 @@ theorem piece_mem (K : Subgroup G) (S : Set W) (hKo : ∀ w ∈ S, IsOpen {w' | 
 
 variable {ι : Type*}
 
-open Classical in
 theorem core (hcomm : ∀ a b : G, a * b = b * a) (hcont : ∀ g : G, Continuous fun w : W => g • w)
     (D : (Y × W → ℂ) →ₗ[ℂ] ℂ)
     (hD : ∀ g : G, ∀ f ∈ TF (Y × W), D (fun p => f (p.1, g • p.2)) = D f)

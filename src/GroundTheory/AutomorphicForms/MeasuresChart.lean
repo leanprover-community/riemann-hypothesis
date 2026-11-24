@@ -152,7 +152,6 @@ theorem map_mul_right_comap (h : G) :
           MonoidWithZeroHom.ValueGroup₀.embedding
         strictMono' := ValuativeRel.IsRankLeOne.nonempty.some.strictMono.comp
           MonoidWithZeroHom.ValueGroup₀.embedding_strictMono }
-    open scoped Valued in
     haveI : ProperSpace F := .of_nontriviallyNormedField_of_weaklyLocallyCompactSpace F
     exact secondCountable_of_proper
   ext s hs

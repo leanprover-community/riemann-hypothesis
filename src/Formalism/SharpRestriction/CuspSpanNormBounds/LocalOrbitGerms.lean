@@ -355,7 +355,6 @@ theorem sc_F (hF : IsNonarchimedeanLocalField F) : SecondCountableTopology F := 
         MonoidWithZeroHom.ValueGroup₀.embedding_strictMono }
   open scoped Valued in
   have : ProperSpace F := .of_nontriviallyNormedField_of_weaklyLocallyCompactSpace F
-  open scoped Valued in
   exact inferInstance
 
 end Top
@@ -382,7 +381,6 @@ end
 
 noncomputable section
 
-open MeasureTheory Matrix Formalism.DoubleCosetMeasures
 
 namespace Formalism.MainNotions.LocalOrbitGerms
 
@@ -729,7 +727,6 @@ end
 
 noncomputable section
 
-open MeasureTheory Matrix Formalism.DoubleCosetMeasures
 
 namespace Formalism.MainNotions.LocalOrbitGerms
 
@@ -1593,25 +1590,20 @@ end
 
 noncomputable section
 
-open MeasureTheory Matrix Formalism.DoubleCosetMeasures
 open scoped Topology
 
 namespace Formalism.MainNotions.LocalOrbitGerms
 
 namespace Germ
 
-section Mk
 
 variable {K : Type} [CommRing K] {n : ℕ}
 
-end Mk
 
-section Trans
 
 variable {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRing K] [SecondCountableTopology K]
   [MeasurableSpace K] [BorelSpace K] (μ : Measure K) [SigmaFinite μ] [μ.IsAddLeftInvariant] {n : ℕ}
 
-end Trans
 
 end Germ
 
@@ -1623,25 +1615,19 @@ end
 
 noncomputable section
 
-open MeasureTheory Matrix Formalism.DoubleCosetMeasures
-open scoped Topology
 
 namespace Formalism.MainNotions.LocalOrbitGerms
 
 namespace Germ
 
-section Shapes
 
 variable {K : Type} [CommRing K] {n : ℕ}
 
-end Shapes
 
-section Avg
 
 variable {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRing K] [SecondCountableTopology K]
   [MeasurableSpace K] [BorelSpace K] (μ : Measure K) [SigmaFinite μ] [μ.IsAddLeftInvariant] (R : Subring K) {n : ℕ}
 
-end Avg
 
 end Germ
 
@@ -1653,14 +1639,11 @@ end
 
 noncomputable section
 
-open MeasureTheory Matrix Formalism.DoubleCosetMeasures
-open scoped Topology
 
 namespace Formalism.MainNotions.LocalOrbitGerms
 
 namespace Germ
 
-section Orb
 
 variable {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRing K] [SecondCountableTopology K]
   [MeasurableSpace K] [BorelSpace K] (μ : Measure K) [SigmaFinite μ] [μ.IsAddLeftInvariant] (R : Subring K)
@@ -1668,7 +1651,6 @@ variable {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRing K] [Sec
 
 variable {sb}
 
-end Orb
 
 end Germ
 
@@ -1680,20 +1662,16 @@ end
 
 noncomputable section
 
-open MeasureTheory Matrix Formalism.DoubleCosetMeasures
-open scoped Topology
 
 namespace Formalism.MainNotions.LocalOrbitGerms
 
 namespace Germ
 
-section Fub
 
 variable {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRing K] [SecondCountableTopology K]
   [MeasurableSpace K] [BorelSpace K] (μ : Measure K) [SigmaFinite μ] [μ.IsAddLeftInvariant] (R : Subring K)
   (ψ : AddChar K ℂ) (s : List ℕ) (t : ℕ → Kˣ) {sb : Fin s.sum → Fin s.sum → Bool}
 
-end Fub
 
 end Germ
 
@@ -1705,18 +1683,14 @@ end
 
 noncomputable section
 
-open MeasureTheory Matrix Formalism.DoubleCosetMeasures Formalism.MainNotions.S.Loc Formalism.MainNotions.LocalModelPeriodLattices Formalism.FourierDecayAlt
-open scoped Topology
 
 namespace Formalism.MainNotions.LocalOrbitGerms
 
 namespace Germ
 
-section Core
 
 variable {K : Type} [CommRing K] [TopologicalSpace K] [IsTopologicalRing K]
 
-end Core
 
 end Germ
 
@@ -1728,19 +1702,15 @@ end
 
 noncomputable section
 
-open MeasureTheory Matrix Formalism.DoubleCosetMeasures Formalism.MainNotions.S.Loc Formalism.MainNotions.LocalModelPeriodLattices Formalism.FourierDecayAlt
-open scoped Topology
 
 namespace Formalism.MainNotions.LocalOrbitGerms
 
 namespace Germ
 
-section Loc
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
 
-end Loc
 
 end Germ
 
@@ -1752,19 +1722,15 @@ end
 
 noncomputable section
 
-open MeasureTheory Matrix Formalism.DoubleCosetMeasures Formalism.MainNotions.S.Loc Formalism.MainNotions.LocalModelPeriodLattices Formalism.FourierDecayAlt
-open scoped Topology
 
 namespace Formalism.MainNotions.LocalOrbitGerms
 
 namespace Germ
 
-section Loc
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
 
-end Loc
 
 end Germ
 
@@ -1776,19 +1742,15 @@ end
 
 noncomputable section
 
-open MeasureTheory Matrix Formalism.DoubleCosetMeasures Formalism.MainNotions.S.Loc Formalism.MainNotions.LocalModelPeriodLattices Formalism.FourierDecayAlt
-open scoped Topology
 
 namespace Formalism.MainNotions.LocalOrbitGerms
 
 namespace Germ
 
-section Loc
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
 
-end Loc
 
 end Germ
 
@@ -1800,25 +1762,19 @@ end
 
 noncomputable section
 
-open MeasureTheory Matrix Formalism.DoubleCosetMeasures Formalism.MainNotions.S.Loc Formalism.MainNotions.LocalModelPeriodLattices Formalism.FourierDecayAlt
-open scoped Topology
 
 namespace Formalism.MainNotions.LocalOrbitGerms
 
 namespace Germ
 
-section Comb
 
 variable {E : Type} [CommRing E]
 
-end Comb
 
-section Loc
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
 
-end Loc
 
 end Germ
 

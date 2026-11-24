@@ -237,7 +237,6 @@ theorem isOpen_IndI {D : D7} (X : HidaSetting D) : IsOpen (IndI X) := by
   haveI : FiniteDimensional X.B.I.F X.B.I.E := fd_of X
   exact isOpen_linIndep (Module.finBasis X.B.I.F X.B.I.E) (Ainf X.B.I.F) (isOpen_units_Ainf _) (lip_ainf _)
 
-section LC
 
 variable {F E : Type} [Field F] [Field E] [Algebra F E] [FiniteDimensional F E]
 variable (R : Type) [CommRing R] [Algebra F R] [TopologicalSpace R] [IsTopologicalRing R]
@@ -251,7 +250,6 @@ instance t2Space_tensorProduct : T2Space (R ⊗[F] E) := by
   obtain ⟨ι, _, ⟨h⟩⟩ := exists_homeomorph_tensP (F := F) (E := E) R
   exact h.isEmbedding.t2Space
 
-end LC
 
 instance t2Space_infiniteAdeleRing_archimedean_orbit_measures (F : Type) [Field F] [NumberField F] : T2Space (InfiniteAdeleRing F) :=
   inferInstanceAs (T2Space (∀ v : InfinitePlace F, v.Completion))

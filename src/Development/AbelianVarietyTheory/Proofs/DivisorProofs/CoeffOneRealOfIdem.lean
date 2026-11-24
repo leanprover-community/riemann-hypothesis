@@ -106,7 +106,6 @@ theorem sd_one {A : Type} [AddCommMonoid A] [One A] {N : ℕ} :
 
 variable (D : D7)
 
-open Classical in
 theorem coeff_badElt (k : Fin 2) (S : Finset (Tup D k)) (g : G0g D.nd) :
     (badElt D k S).coeff g = if ∀ kv : (Σ k : Fin 2, D.nd.PlG k), kv.1 ≠ k → g kv = 1 then
       ∑ t ∈ S, ∏ v : D.nd.PlG k, (D.ntypes.eSer k (t v)).coeff (g ⟨k, v⟩) else 0 := by
@@ -121,7 +120,6 @@ abbrev sdg {A : Type} [AddCommMonoid A] {N : ℕ} (M : Matrix (Fin N) (Fin N) A)
   ∑ i ∈ Finset.range (N - 1), entN M i (i + 1)
 
 
-open Classical in
 theorem coeff_eU (g N : ℕ) [NeZero g] (ψ₀ : AddChar (ZMod g) ℂ) (x : GL (Fin N) (ZMod g)) :
     (eU g N ψ₀).coeff x =
       if IsUniUp (x : Matrix (Fin N) (Fin N) (ZMod g)) then
@@ -156,7 +154,6 @@ theorem extAt_restr (k : Fin 2) (y : G0g D.nd) (hy : ∀ kv : (Σ k : Fin 2, D.n
   · rw [extAt_apply_ne D k _ _ h, hy ⟨k', v⟩ h]
 
 
-open Classical in
 theorem sum_trivOff [Fintype (G0g D.nd)] (k : Fin 2) [Fintype (∀ v : D.nd.PlG k, GL (Fin D.R.r) (ZMod (D.host.g k)))]
     (F : (∀ v : D.nd.PlG k, GL (Fin D.R.r) (ZMod (D.host.g k))) → ℂ) :
     ∑ y : G0g D.nd, (if ∀ kv : (Σ k : Fin 2, D.nd.PlG k), kv.1 ≠ k → y kv = 1 then F (fun v => y ⟨k, v⟩) else 0) =
@@ -190,7 +187,6 @@ def phiAt (k : Fin 2) (ψ₀ : AddChar (ZMod (D.host.g k)) ℂ) (f : (ZMod (D.ho
     (ψ₀ (sdg (u : Matrix (Fin D.R.r) (Fin D.R.r) (ZMod (D.host.g k)))))⁻¹ * (D.ntypes.eSer k f).coeff u⁻¹ else 0
 
 
-open Classical in
 def cardU (k : Fin 2) : ℂ :=
   haveI : NeZero (D.host.g k) := ⟨(D.host.g_prime k).ne_zero⟩
   ((Finset.univ.filter fun u : GL (Fin D.R.r) (ZMod (D.host.g k)) =>
@@ -204,7 +200,6 @@ theorem cardU_ne_zero (k : Fin 2) : cardU D k ≠ 0 := by
   simp only [Finset.mem_filter, Finset.mem_univ, true_and, Units.val_one]
   exact isUniUp_one
 
-open Classical in
 theorem coeff_eUk (k : Fin 2) (ψ₀ : AddChar (ZMod (D.host.g k)) ℂ) (x : GL (Fin D.R.r) (ZMod (D.host.g k))) :
     (eUk D k ψ₀).coeff x = if IsUniUp (x : Matrix (Fin D.R.r) (Fin D.R.r) (ZMod (D.host.g k))) then
       (cardU D k)⁻¹ * (ψ₀ (sdg (x : Matrix (Fin D.R.r) (Fin D.R.r) (ZMod (D.host.g k)))))⁻¹ else 0 := by
@@ -254,7 +249,6 @@ open Polynomial
 variable (D : D7)
 
 
-open Classical in
 theorem term_eq [Fintype (G0g D.nd)] (P : Subgroup (G0g D.nd)) (lam : P →* ℂˣ)
     (ψ : ∀ kv : (Σ k : Fin 2, D.nd.PlG k), AddChar (ZMod (D.host.g kv.1)) ℂ) (hW : IsWhit D P lam ψ)
     (k : Fin 2) (S : Finset (Tup D k)) (y : G0g D.nd) :

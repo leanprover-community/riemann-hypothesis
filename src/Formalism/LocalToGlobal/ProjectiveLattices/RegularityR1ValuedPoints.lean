@@ -158,7 +158,6 @@ theorem exists_of_mem_span_valG {u : WtR E} {ι : Type} {R : ι → Rul Xo c} {x
     rw [IsScalarTower.algebraMap_apply (𝓞 c.F) c.F (AC Z)]
     exact (valC_smul_ct h u.1 u.2 (a : c.F) F Z).symm
 
-section LawA2Of
 
 variable [Fintype (Comp Xo c)]
     (fn : ∀ σ : c.F →+* ℂ, FrPt Xo c (CAt σ) → Ix Dw → ℝ)
@@ -171,6 +170,5 @@ variable [Fintype (Comp Xo c)]
     (ip : (c.F →+* ℂ) → (∀ Z : Comp Xo c, AC Z) → (∀ Z : Comp Xo c, AC Z) → ℂ)
     (wsize : WTZ E → ℝ) (DF PN PQ tableDegreeThreeBase PP0' Pd Gc PI4 Pet tableLineDegreeFive tableLineDegreeTwo Prw PO f r : ℝ)
 
-end LawA2Of
 
 end Formalism.L2.Pj

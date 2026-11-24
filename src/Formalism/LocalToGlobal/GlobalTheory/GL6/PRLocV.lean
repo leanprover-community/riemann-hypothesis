@@ -179,7 +179,6 @@ theorem rlv_mulLat_inv {n : ℕ} (g : GL (Fin n) E) (L : Submodule (𝓞 E) (Fin
     exact ⟨(g : Matrix (Fin n) (Fin n) E) *ᵥ x, ⟨x, hx, rfl⟩, by
       rw [mulVec_mulVec, ← Units.val_mul, inv_mul_cancel, Units.val_one, one_mulVec]⟩
 
-section LocalProjection
 
 open Formalism.UG.CS Formalism.UG.P Formalism.L2.GlobalTheoryTheory.Comp
 
@@ -234,7 +233,6 @@ private theorem rlv_loc_fwd {Λ Λ' : Submodule (𝓞 E) (n → E)} (k : GL n �
     rw [Subring.smul_def, mulVec_smul]
     exact Submodule.smul_mem _ t hy
 
-end LocalProjection
 
 theorem rlv_yloc (v : HeightOneSpectrum (𝓞 F)) {n : Type} [Fintype n] [DecidableEq n] {L Lb : Submodule (𝓞 E) (n → E)}
     (y : GL n (E ⊗[F] FiniteAdeleRing (𝓞 F) F))
@@ -289,12 +287,10 @@ theorem rlv_stab {n : ℕ} (v : HeightOneSpectrum (𝓞 F)) {Lb L1 L2 : Submodul
 
 end LatS2
 
-section Lev
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {n : ℕ} {σ : E →ₐ[F] E} {J : Matrix (Fin n) (Fin n) E} {T f : ℕ} {bad : Set (HeightOneSpectrum (𝓞 F))}
 
-end Lev
 
 section Chain
 

@@ -229,12 +229,10 @@ section MidTie
 
 end MidTie
 
-section MidSteps
 
 open Formalism.BasicNotions (Ranks)
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m) {k' : Type} [Field k']
 
-end MidSteps
 
 end Formalism.L2.Col

@@ -105,7 +105,6 @@ theorem tfun_add {Φ Φ' : W → ℂ} (h : IsSB L X Φ) (h' : IsSB L X Φ') :
   · simp only [if_neg hy, add_zero]
 
 include hχl hχr hχ0 hLL hdY hoY hfinX hfinY htf in
-open Classical in
 theorem tfun_smul {Φ : W → ℂ} (h : IsSB L X Φ) (c : ℂ) : tfun ρ χ L X Y f₀ (c • Φ) = c • tfun ρ χ L X Y f₀ Φ := by
   unfold tfun
   rw [smul_finsum' c (term_support_finite hχl hχr hχ0 hLL hdY hfinX hfinY htf hoY h)]
@@ -115,7 +114,6 @@ theorem tfun_smul {Φ : W → ℂ} (h : IsSB L X Φ) (c : ℂ) : tfun ρ χ L X 
   · simp only [if_neg hy, smul_zero]
 
 include hX hXY hfX hχl hχr hχ0 hLL hdY hoY hfinX hfinY htf in
-open Classical in
 theorem tfun_trans {Φ : W → ℂ} (h : IsSB L X Φ) {x : W} (hx : x ∈ X) :
     tfun ρ χ L X Y f₀ (fun t => Φ (t + x)) = ρ x (tfun ρ χ L X Y f₀ Φ) := by
   have hs := h.1
@@ -147,7 +145,6 @@ theorem tfun_trans {Φ : W → ℂ} (h : IsSB L X Φ) {x : W} (hx : x ∈ X) :
   · simp only [if_neg hy, map_zero]
 
 include hY hXY hfY hχl hχr hχ0 hLL hdY hoY hfinX hfinY htf in
-open Classical in
 theorem tfun_modul {Φ : W → ℂ} (h : IsSB L X Φ) {y₀ : W} (hy₀ : y₀ ∈ Y) :
     tfun ρ χ L X Y f₀ (fun t => χ t y₀ * Φ t) = ρ y₀ (tfun ρ χ L X Y f₀ Φ) := by
   have hs := h.1
@@ -197,7 +194,6 @@ theorem tfun_modul {Φ : W → ℂ} (h : IsSB L X Φ) {y₀ : W} (hy₀ : y₀ �
     rw [if_neg hy, if_neg hy', map_zero]
 
 include hX hY hXY hfX hfY hχl hχr hχ0 hLL hdY hoY hfinX in
-open Classical in
 theorem tfun_vac : tfun ρ χ L X Y f₀ (fun t => if t ∈ L ∧ t ∈ X then (1 : ℂ) else 0) = f₀ := by
   have hsupp := (isSB_ind (L := L) (X := X)).1
   have hval : ∀ a ∈ L ⊓ X, ∀ y ∈ L ⊓ Y,
@@ -260,7 +256,6 @@ theorem tfun_vac : tfun ρ χ L X Y f₀ (fun t => if t ∈ L ∧ t ∈ X then (
 
 
 include hX hY hXY hχl hχr hχ0 hLL hdY hfinX hfinY htf hoX hoY hfX hfY in
-open Classical in
 theorem exists_model : ∃ T : (W → ℂ) →ₗ[ℂ] V,
     (∀ Φ, IsSB L X Φ → T Φ = tfun ρ χ L X Y f₀ Φ) ∧
     (∀ Φ, IsSB L X Φ → ∀ x ∈ X, T (fun t => Φ (t + x)) = ρ x (T Φ)) ∧

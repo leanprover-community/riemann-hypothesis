@@ -66,7 +66,6 @@ open Classical in
 def part (b : K → ℕ) (s : MvPolynomial (Σ k, ι k) ℂ) : MvPolynomial (Σ k, ι k) ℂ :=
   ∑ m ∈ s.support.filter (fun m => mdeg m = b), monomial m (AddMonoidAlgebra.coeff s m)
 
-open Classical in
 theorem coeff_part (b : K → ℕ) (s : MvPolynomial (Σ k, ι k) ℂ) (m : (Σ k, ι k) →₀ ℕ) :
     AddMonoidAlgebra.coeff (part b s) m = if mdeg m = b then AddMonoidAlgebra.coeff s m else 0 := by
   unfold part
@@ -80,7 +79,6 @@ theorem coeff_part (b : K → ℕ) (s : MvPolynomial (Σ k, ι k) ℂ) (m : (Σ 
       simp [this]
   · simp [h]
 
-open Classical in
 theorem sum_part (s : MvPolynomial (Σ k, ι k) ℂ) :
     ∑ b ∈ s.support.image mdeg, part b s = s := by
   unfold part

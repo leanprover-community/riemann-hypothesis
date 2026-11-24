@@ -328,7 +328,6 @@ open ThetaJet
 
 
 open scoped Classical in
-open Classical in
 theorem exists_section_jet_ne_zero {ι : Type} [Fintype ι] (Y : GT ι) (θ : EuclideanSpace ℂ ι → ℂ) (hθ : θ ∈ Y.Sec 1) (h0 : θ ≠ 0)
     (D q : ℕ) (hq : 3 * D + 2 ≤ q) (P : MvPolynomial ι ℂ) (hP : P ≠ 0) (hD : P.totalDegree ≤ D) :
     ∃ F : EuclideanSpace ℂ ι → ℂ, Differentiable ℂ F ∧

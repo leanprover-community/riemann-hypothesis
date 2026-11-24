@@ -492,7 +492,6 @@ end Formalism.FourierDecayAlt.P.B2x8
 
 namespace Formalism.FourierDecayAlt.P.B2x8
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 def μx : Measure ℂ := (volume : Measure ℂ).withDensity fun c => ENNReal.ofReal ((‖c‖ ^ 2)⁻¹)
 
@@ -502,7 +501,6 @@ end Formalism.FourierDecayAlt.P.B2x8
 
 namespace Formalism.FourierDecayAlt.P.B2x8
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 theorem map_mulVec_volume {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (hA : A.det ≠ 0) :
     (volume : Measure (Fin n → ℂ)).map (fun y => A *ᵥ y) = ENNReal.ofReal ((‖A.det‖ ^ 2)⁻¹) • volume := by
@@ -529,7 +527,6 @@ end Formalism.FourierDecayAlt.P.B2x8
 
 namespace Formalism.FourierDecayAlt.P.B2x8
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 def mi2D (l c : ℂ) : ℂ →L[ℝ] ℂ :=
   ((ContinuousLinearMap.smulRight (1 : ℂ →L[ℂ] ℂ) (l * -((conj c) ^ 2)⁻¹)).restrictScalars ℝ).comp
@@ -613,7 +610,6 @@ end Formalism.FourierDecayAlt.P.B2x8
 
 namespace Formalism.FourierDecayAlt.P.B2x8
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 theorem lintegral_inv_norm_lt_top (R : ℝ) :
     (∫⁻ c in Metric.closedBall (0 : ℂ) R, ENNReal.ofReal (‖c‖⁻¹)) < ∞ := by
@@ -648,7 +644,6 @@ end Formalism.FourierDecayAlt.P.B2x8
 
 namespace Formalism.FourierDecayAlt.P.B2x8
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 variable {k r' : ℕ}
 
@@ -667,7 +662,6 @@ end Formalism.FourierDecayAlt.P.B2x8
 
 namespace Formalism.FourierDecayAlt.P.B2x8
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 variable {k r' : ℕ}
 
@@ -798,7 +792,6 @@ end Formalism.FourierDecayAlt.P.B2x8
 
 namespace Formalism.FourierDecayAlt.P.B2x8
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 variable {k r' : ℕ}
 
@@ -881,7 +874,6 @@ end Formalism.FourierDecayAlt.P.B2x8
 
 namespace Formalism.FourierDecayAlt.P.B2x8
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 variable {k r' : ℕ}
 
@@ -1255,7 +1247,6 @@ end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P.B2x8
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 variable {k r' : ℕ}
 
@@ -1372,7 +1363,6 @@ end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P.B2x8
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 variable {k r' : ℕ}
 
@@ -1446,7 +1436,6 @@ end Formalism.FourierDecayAlt.P.B2x8
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2 B2x8
 
 theorem isotropic_cone_finite_measure : Formalism.FourierDecayAlt.B2.ConeFinite := by
   unfold Formalism.FourierDecayAlt.B2.ConeFinite
@@ -1469,12 +1458,9 @@ end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P.B2x8
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
-section dj
 variable {k r : ℕ}
 
-end dj
 
 end Formalism.FourierDecayAlt.P.B2x8
 

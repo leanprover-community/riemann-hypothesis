@@ -141,7 +141,6 @@ end Formalism.FourierDecayAlt.P.JFxG
 
 namespace Formalism.FourierDecayAlt.P.JFxG
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF Formalism.FourierDecayAlt.P.B4
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 

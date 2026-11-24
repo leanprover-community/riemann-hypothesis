@@ -100,7 +100,6 @@ end GroundTheory.Automorphic
 namespace GroundTheory.Automorphic
 
 open NormedSpace Set Filter Topology Asymptotics
-open scoped ContDiff
 
 namespace IsExpLieAlgebra
 
@@ -166,8 +165,6 @@ end GroundTheory.Automorphic
 
 namespace GroundTheory.Automorphic
 
-open NormedSpace Set Filter Topology Asymptotics
-open scoped ContDiff
 
 namespace IsExpLieAlgebra
 
@@ -273,8 +270,6 @@ end GroundTheory.Automorphic
 
 namespace GroundTheory.Automorphic
 
-open NormedSpace Set Filter Topology Asymptotics
-open scoped ContDiff
 
 namespace IsExpLieAlgebra
 

@@ -1126,7 +1126,6 @@ theorem rf_filter_reps {Λ₁ Λ₂ C : AddSubgroup V} {S : Finset V} (hS : IsRe
     have : x = y - (y - x) := by abel
     rw [this]; exact C.sub_mem hy.2 h1
 
-open Classical in
 theorem rf_sum_ind (C : AddSubgroup V) (S : Finset V) (f : V → ℂ) :
     ∑ t ∈ S, indL C t * f t = ∑ t ∈ S.filter (· ∈ C), f t := by
   rw [Finset.sum_filter]
@@ -1669,7 +1668,6 @@ theorem ad_mulLat_le {H : Type} [AddCommGroup H] [Module (𝓞 E) H] (c c' : ℕ
   exact ti_mul_mono (Dvd.intro c' rfl) M hw
 
 
-open Classical in
 theorem ad_ind_sum {H : Type} [AddCommGroup H] [Module (𝓞 E) H] (A B : Submodule (𝓞 E) H) (hBA : B ≤ A) [Fintype (↥A ⧸ B.comap A.subtype)] (w : H) :
     (if w ∈ A then (1 : ℂ) else 0) = ∑ z : ↥A ⧸ B.comap A.subtype,
       if w - ((Function.surjInv (Submodule.Quotient.mk_surjective (B.comap A.subtype)) z : ↥A) : H) ∈ B then (1 : ℂ) else 0 := by

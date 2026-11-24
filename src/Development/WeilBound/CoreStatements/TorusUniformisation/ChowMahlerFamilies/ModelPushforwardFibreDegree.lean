@@ -1377,7 +1377,6 @@ theorem fibre_minimal (hϖ : Irreducible ϖ) (hP' : IsModelOver P' d)
   rw [contract_special j ι' hϖ (hQW hϖQ), hc, relDim_special hϖ hP hf hfP hW hϖW] at d4
   exact lt_irrefl _ (lt_of_le_of_lt d4 (relDim_lt_of_dim_lt _ _ d3))
 
-open Classical in
 theorem fibre_degree (hϖ : Irreducible ϖ) (hP' : IsModelOver P' d)
     (hP : IsModelOver (P'.comap (rr j ι' O)) d) (hf : IsMultiHomog f c)
     (hfP : f ∉ P'.comap (rr j ι' O)) (hϖW : (C ϖ : MRing (fun k => ι' (j k)) O) ∈ W)
@@ -1468,7 +1467,6 @@ theorem fibre_degree (hϖ : Irreducible ϖ) (hP' : IsModelOver P' d)
       exact ⟨⟨a1, a4, a2⟩, a3, h1⟩
     · exact absurd rfl h
 
-open Classical in
 theorem fibre_num (hϖ : Irreducible ϖ) (hP' : IsModelOver P' d)
     (hP : IsModelOver (P'.comap (rr j ι' O)) d) (hf : IsMultiHomog f c)
     (hfP : f ∉ P'.comap (rr j ι' O)) (hϖW : (C ϖ : MRing (fun k => ι' (j k)) O) ∈ W)
@@ -1546,7 +1544,6 @@ theorem fibre_num (hϖ : Irreducible ϖ) (hP' : IsModelOver P' d)
       rw [hz, mul_zero]
     · rfl
 
-open Classical in
 theorem push (hϖ : Irreducible ϖ) (hP' : IsModelOver P' d)
     (hP : IsModelOver (P'.comap (rr j ι' O)) d) (hf : IsMultiHomog f c)
     (hfP : f ∉ P'.comap (rr j ι' O)) {L : Type} [Field L] (φ : MRing ι' O →+* L)

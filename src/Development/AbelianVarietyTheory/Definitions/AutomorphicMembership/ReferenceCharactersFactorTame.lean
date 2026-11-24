@@ -95,7 +95,6 @@ theorem isFr_latFr (P : HeightOneSpectrum (𝓞 E)) {N : Submodule (𝓞 E) (Sp 
   · exact CharValCompare.isFr_frameAt (CharValCompare.exists_isFr P hN)
 
 
-open Classical in
 def ptFr (p : DecoF E n ST SG Q) (P : HeightOneSpectrum (𝓞 E)) : Sp E n ≃ₗ[E] Sp E n :=
   if h : P ∈ SG then p.deco.1.liftFr ⟨P, h⟩ else if h' : P ∈ Q then p.fr ⟨P, h'⟩ else latFr P p.deco.1.N
 
@@ -146,7 +145,6 @@ theorem extTo_self (hd : Disjoint SG Q) (p : DecoF E n ST SG Q) : extTo Q p = p 
   Subtype.ext (Prod.ext rfl (funext fun P => ptFr_of_mem p (Finset.disjoint_right.1 hd P.2) P.2))
 
 
-open Classical in
 def detIdl (SB : Finset (HeightOneSpectrum (𝓞 E))) (N : Submodule (𝓞 E) (Sp E n))
     (fr : HeightOneSpectrum (𝓞 E) → Sp E n ≃ₗ[E] Sp E n) : Ideles E :=
   (∏ P ∈ SB, localIdele E P (atFin P (LinearEquiv.det (fr P)))) *
@@ -168,7 +166,6 @@ theorem finite_ordSub {N : Submodule (𝓞 E) (Sp E n)} (hN : Submodule.IsLattic
     simp [hz]
 
 
-open Classical in
 theorem finite_detIdl (SB : Finset (HeightOneSpectrum (𝓞 E))) {N : Submodule (𝓞 E) (Sp E n)} (hN : Submodule.IsLattice E N) :
     Function.HasFiniteMulSupport fun w : HeightOneSpectrum (𝓞 E) =>
       if w ∈ SB ∨ conjPrime₂ w ∈ SB then 1 else localIdele E w (atFin w (unif w)) ^ (ordSub w (detSub N)).toNat := by
@@ -176,7 +173,6 @@ theorem finite_detIdl (SB : Finset (HeightOneSpectrum (𝓞 E))) {N : Submodule 
   simp [h0]
 
 
-open Classical in
 theorem compAt_detIdl (SB : Finset (HeightOneSpectrum (𝓞 E))) {N : Submodule (𝓞 E) (Sp E n)} (hN : Submodule.IsLattice E N)
     (fr : HeightOneSpectrum (𝓞 E) → Sp E n ≃ₗ[E] Sp E n) (w : HeightOneSpectrum (𝓞 E)) :
     compAt w (detIdl SB N fr) =

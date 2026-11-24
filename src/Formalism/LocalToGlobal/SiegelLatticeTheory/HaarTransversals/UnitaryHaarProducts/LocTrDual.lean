@@ -63,7 +63,6 @@ theorem single_at (y : Fv F v) : (singleV F v y) v = y := by
     | simp [singleV]
     | rfl
 
-open Classical in
 theorem single_at_ne (y : Fv F v) {w : HeightOneSpectrum (𝓞 F)} (h : w ≠ v) : (singleV F v y) w = 0 := by
   first
     | exact Pi.single_eq_of_ne h y

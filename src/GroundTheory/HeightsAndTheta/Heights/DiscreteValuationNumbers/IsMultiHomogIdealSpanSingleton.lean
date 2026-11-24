@@ -127,7 +127,6 @@ def GenericFibProps.Statement : Prop :=
         MvPolynomial.map (algebraMap O (FractionRing O)) s ∉ genFib P
 
 
-open Classical in
 def GenericCycleCorresp.Statement : Prop :=
   by
   classical

@@ -55,7 +55,6 @@ noncomputable section
 
 attribute [local instance] MvPolynomial.algebraMvPolynomial
 
-section DvdBasis
 
 variable {R A : Type*} [CommRing R] [CommRing A] [Algebra R A] {n : ℕ}
 
@@ -88,7 +87,6 @@ private def tensorPolyBasis {ι : Type*} (b : Module.Basis ι R A) (n : ℕ) :
     Module.Basis ι (MvPolynomial (Fin n) R) (MvPolynomial (Fin n) A) :=
   (Algebra.TensorProduct.basis (MvPolynomial (Fin n) R) b).map (tensorPolyEquiv R A n)
 
-end DvdBasis
 
 theorem NormFormDvd.proof : NormFormDvd.Statement := by
   intro R A _ _ _ _ _ n x p hdvd

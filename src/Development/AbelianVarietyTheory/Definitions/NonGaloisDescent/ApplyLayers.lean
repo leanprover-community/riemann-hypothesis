@@ -140,7 +140,6 @@ def etOf : WEt (ioOf E hs hp hL hI) := { W, E with }
 def clOf : WCl (etOf E hs hp hL hI) := { W, E with }
 
 
-open Classical in
 def nOf (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) : Submodule (LetA O n) (W.DD T) :=
   if IsCrys PD T.ρ then W.N T else ⊥
 

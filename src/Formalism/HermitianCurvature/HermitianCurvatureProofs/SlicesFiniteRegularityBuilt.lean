@@ -116,7 +116,6 @@ end Formalism.FourierDecayAlt.P.JCTx6
 
 namespace Formalism.FourierDecayAlt.P.JCTx6
 
-open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants MeasureTheory
 
 noncomputable section
 
@@ -192,7 +191,6 @@ end Formalism.FourierDecayAlt.P.JCTx6
 
 namespace Formalism.FourierDecayAlt.P.JCTx6.Lev0
 
-open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants MeasureTheory
 
 noncomputable section
 
@@ -335,7 +333,6 @@ end Formalism.FourierDecayAlt.P.JCTx6.Lev0
 
 namespace Formalism.FourierDecayAlt.P.JCTx6.Link
 
-open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants MeasureTheory
 
 noncomputable section
 
@@ -427,7 +424,6 @@ end Formalism.FourierDecayAlt.P.JCTx6.Link
 
 namespace Formalism.FourierDecayAlt.P.JCTx6.Link2
 
-open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants MeasureTheory
 
 noncomputable section
 
@@ -816,7 +812,6 @@ end Formalism.FourierDecayAlt.P.JCTx6.Let
 
 namespace Formalism.FourierDecayAlt.P.JCTx6.Let
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.U Formalism.REAL Formalism.QuantumDeterminants PI.UnitaryGroupMassFormula.UsCompose
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -864,7 +859,6 @@ end Formalism.FourierDecayAlt.P.JCTx6.Let
 
 namespace Formalism.FourierDecayAlt.P.JCTx6.Let
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.U Formalism.REAL Formalism.QuantumDeterminants PI.UnitaryGroupMassFormula.UsCompose
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -927,7 +921,6 @@ end Formalism.FourierDecayAlt.P.JCTx6.Let
 
 namespace Formalism.FourierDecayAlt.P.JCTx6.Let
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.U Formalism.REAL Formalism.QuantumDeterminants PI.UnitaryGroupMassFormula.UsCompose
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -984,7 +977,6 @@ def aaFS (k j ρ m : ℕ) (hm : m ≤ j + ρ) (u : ℂ) (L : FS k (j + ρ)) : FS
     else []
 
 
-open Classical in
 def avFS (k j ρ m : ℕ) (hm : m ≤ j + ρ) (ell : ℂ) (L : FS k (j + ρ)) : FS k (j + ρ) :=
   (Finset.univ : Finset (Fin m → Fin (2 * (j + ρ) + k + 1))).toList.flatMap fun B =>
     if StrictMono (fun l => C3.keyS k (j + ρ) (B l)) then
@@ -1048,7 +1040,6 @@ end Formalism.FourierDecayAlt.P.JCTx6.Let
 
 namespace Formalism.FourierDecayAlt.P.JCTx6.Let
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.U Formalism.REAL Formalism.QuantumDeterminants PI.UnitaryGroupMassFormula.UsCompose
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -1191,11 +1182,9 @@ end Formalism.FourierDecayAlt.P.JCTx6.Int
 
 noncomputable section
 
-open Matrix MeasureTheory Formalism.QuantumDeterminants Formalism.FourierDecayAlt
 
 namespace Formalism.FourierDecayAlt.P.JCTx6.Int
 
-open Formalism.FourierDecayAlt.P.Dx2.SL
 
 def Zu (n : ℕ) (t : ℂ) (u : G.UT (n + 1) → ℂ) : G.Mat (n + 1) :=
   Matrix.of.symm (t • G.wMat (n + 1) * G.upper u)
@@ -1270,11 +1259,9 @@ end Formalism.FourierDecayAlt.P.JCTx6.Int
 
 noncomputable section
 
-open Matrix MeasureTheory Formalism.QuantumDeterminants Formalism.FourierDecayAlt
 
 namespace Formalism.FourierDecayAlt.P.JCTx6.Int
 
-open Formalism.FourierDecayAlt.P.Dx2.SL
 
 lemma continuous_slice_integrand {ph n : ℕ} (σ : Equiv.Perm (Fin ph)) (d : Fin ph → ℂ) (t : ℂ) :
     Continuous fun y : U.XiH ph (n + 1) σ × (G.UT (n + 1) → ℂ) => U.ZjH σ d y.1 (Zu n t y.2) := by
@@ -1333,11 +1320,9 @@ end Formalism.FourierDecayAlt.P.JCTx6.Int
 
 noncomputable section
 
-open Matrix MeasureTheory Formalism.QuantumDeterminants Formalism.FourierDecayAlt
 
 namespace Formalism.FourierDecayAlt.P.JCTx6.Int
 
-open Formalism.FourierDecayAlt.P.Dx2.SL
 
 lemma rpow_Z_le {a c x y : ℝ} (ha : 0 ≤ a) (hc : 0 < c) (hx : 0 < x) (hy : 0 < y) (hxy : x ≤ c * y) :
     y ^ (-a) ≤ c ^ a * x ^ (-a) := by
@@ -1659,13 +1644,11 @@ theorem bump_exists {c₀ : ℂ} (hc : c₀ ≠ 0) :
 
 end Formalism.FourierDecayAlt.P.JCTx6.Pos
 
-open Matrix MeasureTheory Filter Topology
 
 noncomputable section
 
 namespace Formalism.FourierDecayAlt.P.JCTx6.Pos
 
-open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants
 
 theorem cont_DjU (k j ρ : ℕ) : Continuous (fun g : B.Mat k (j + ρ) => U.DjU k j ρ g) := by
   unfold U.DjU U.Zh
@@ -1717,13 +1700,11 @@ theorem Zv_decay (n : ℕ) {t : ℂ} (ht : t ≠ 0) (u : G.UT (n + 1) → ℂ) {
 
 end Formalism.FourierDecayAlt.P.JCTx6.Pos
 
-open Matrix MeasureTheory Filter Topology
 
 noncomputable section
 
 namespace Formalism.FourierDecayAlt.P.JCTx6.Pos
 
-open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants
 
 
 theorem posCore : PosCore := by
@@ -1976,7 +1957,6 @@ end Formalism.FourierDecayAlt.P.JCTx6.Pos
 
 namespace Formalism.FourierDecayAlt.P.JCTx6.Asm
 
-open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants MeasureTheory
 
 theorem sliceLevel_of (hL : LettersDD) (hP : PosCore) (hI : IntG) (hT : OrbitSliceIntegrable) : ∃ Cc, SliceLevel Cc := by
   obtain ⟨Cp, hCp0, hCp⟩ := Link2.pos_levels hL hP hI hT

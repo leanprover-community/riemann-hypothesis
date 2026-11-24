@@ -94,13 +94,11 @@ noncomputable def e3A (δ l : ℕ) : Finset (Fin δ → K) := by
       ¬ Set.InjOn (primeToPart l) ((monicOf c).rootSet L))
 
 
-open Classical in
 noncomputable def e3I (δ : ℕ) : Finset (Fin δ → K) := by
   classical
   exact Finset.univ.filter (fun c => Irreducible (monicOf c) ∧ (monicOf c).coeff 0 ≠ 0)
 
 
-open Classical in
 noncomputable def e3C (δ l : ℕ) (P' : K[X]) : Finset (Fin δ → K) := by
   classical
   exact Finset.univ.filter (fun c => Irreducible (monicOf c) ∧

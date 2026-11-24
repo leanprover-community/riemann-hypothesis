@@ -60,7 +60,6 @@ def locAdele (S₁ : Finset (InfinitePlace F)) (S₂ : Finset (HeightOneSpectrum
   ((fun u : InfinitePlace F => if h : u ∈ S₁ then p.2 ⟨u, h⟩ else 0 : InfiniteAdeleRing F),
     ∑ v : S₂, GlobalTheory.AdelicU.singleFin v.1 (p.1 v))
 
-open Classical in
 theorem continuous_locAdele (S₁ : Finset (InfinitePlace F)) (S₂ : Finset (HeightOneSpectrum (𝓞 F))) :
     Continuous (locAdele S₁ S₂) := by
   refine Continuous.prodMk ?_ ?_
@@ -73,7 +72,6 @@ theorem continuous_locAdele (S₁ : Finset (InfinitePlace F)) (S₂ : Finset (He
   · exact continuous_finsetSum _ fun v _ =>
       (GlobalTheory.AdelicU.continuous_singleFin v.1).comp ((continuous_apply v).comp continuous_fst)
 
-open Classical in
 theorem locAdele_zero (S₁ : Finset (InfinitePlace F)) (S₂ : Finset (HeightOneSpectrum (𝓞 F))) :
     locAdele S₁ S₂ 0 = 0 := by
   refine Prod.ext ?_ ?_
@@ -82,7 +80,6 @@ theorem locAdele_zero (S₁ : Finset (InfinitePlace F)) (S₂ : Finset (HeightOn
     split_ifs <;> rfl
   · simp [locAdele]
 
-open Classical in
 theorem mul_eq_locAdele {S₁ : Finset (InfinitePlace F)} {S₂ : Finset (HeightOneSpectrum (𝓞 F))} {ε : AF F}
     (hε : IsPlacesIdem S₁ S₂ ε) (a : AF F) :
     ε * a = locAdele S₁ S₂ ((fun v => evalV F v.1 (sndA F a)), (fun w => fstA F a w.1)) := by

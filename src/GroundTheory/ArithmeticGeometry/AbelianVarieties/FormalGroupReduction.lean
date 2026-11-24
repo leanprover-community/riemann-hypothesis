@@ -640,7 +640,6 @@ theorem intPart_algebraMap (x : 𝒪) : intPart K (algebraMap 𝒪 K x) = x := b
   rw [intPart, dite_eq_left h]
   exact IsFractionRing.injective 𝒪 K h.choose_spec
 
-open Classical in
 def reducePoint : (curveK K W).Point → (curveRed W).Point
   | .zero => 0
   | @WeierstrassCurve.Affine.Point.some _ _ _ X Y _ =>

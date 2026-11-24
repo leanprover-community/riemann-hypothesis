@@ -1096,12 +1096,10 @@ theorem lw_pos (w : HeightOneSpectrum (𝓞 K)) : 0 < lw w := by
   have h4 : 0 < finrank ℚ K := Module.finrank_pos
   exact_mod_cast h4
 
-section Level
 
 variable (h5 : ∀ w ∈ Tw0, plc w = 5)
 include h5
 
-end Level
 
 end Examples₂
 

@@ -58,14 +58,11 @@ namespace Formalism.InvariantFactorPaths.GelfandTsetlinBases
 
 namespace GS
 
-section Slices
 
 variable {k : Type*} [Field k] {σ : Type*}
 variable {A B D : Type*} [CommRing A] [CommRing B] [CommRing D] [Algebra k A] [Algebra k B] [Algebra k D]
 
-end Slices
 
-section Sharp
 
 variable {ι ζ : Type*} {n : ℕ} (isVec : ι → Bool) (S : Set ι) [DecidablePred (· ∈ S)]
 variable {A B : Type*} [CommRing A] [CommRing B]
@@ -74,7 +71,6 @@ variable {isVec S}
 
 variable (isVec S)
 
-end Sharp
 
 section Universal
 
@@ -87,13 +83,10 @@ theorem genMat_isUnit : IsUnit (genMat k n).det := isUnit_iff_ne_zero.mpr (genMa
 
 end Universal
 
-section Act
 
 variable {k : Type*} [Field k] {ι ζ : Type*} {n : ℕ} (isVec : ι → Bool) (S : Set ι) [DecidablePred (· ∈ S)]
 
-end Act
 
-section Torus
 
 variable {ι ζ : Type*} {n : ℕ} (isVec : ι → Bool) (S : Set ι) [DecidablePred (· ∈ S)]
 
@@ -103,15 +96,11 @@ variable {A}
 
 variable {k : Type*} [Field k] [Algebra k A]
 
-end Torus
 
-section Weights
 
 variable {k : Type*} [Field k] {ι ζ : Type*} {n : ℕ} (isVec : ι → Bool) (S : Set ι) [DecidablePred (· ∈ S)]
 
-end Weights
 
-section Exponents
 
 variable {k : Type*} [Field k] {ι ζ : Type*} {n : ℕ} (isVec : ι → Bool) (S : Set ι) [DecidablePred (· ∈ S)]
 
@@ -122,7 +111,6 @@ variable (φ : MvPolynomial (LVar ι ζ n) k →ₗ[k] MvPolynomial (LVar ι ζ 
 
 include h1 h2
 
-end Exponents
 
 end GS
 

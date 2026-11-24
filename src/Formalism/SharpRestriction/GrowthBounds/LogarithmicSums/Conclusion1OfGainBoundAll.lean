@@ -178,7 +178,6 @@ def candF (D : D7) (L : SizeData₂ D) (K : Consts) : Finset ℕ :=
   (Finset.range ⌈L.sc.X'⌉₊).filter (fun p => Cand D L K p)
 
 
-open Classical in
 def ZZ (X : Inst D L) (K : Consts) (a b : HH D → ℤ) : ℝ :=
   ∑ p ∈ candF D L K, Real.log p / p *
     ((if L.sc.x ^ (-L.sc.eps) < Sig X K a b p then 1 else 0) + Sig X K a b p)

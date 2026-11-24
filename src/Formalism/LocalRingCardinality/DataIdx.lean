@@ -119,7 +119,6 @@ end Formalism.BasicNotions
 
 namespace Formalism.BasicNotions.Idx
 
-open NumberField IsDedekindDomain Formalism.BasicNotions
 
 variable (D : D7)
 
@@ -208,7 +207,6 @@ end Formalism.BasicNotions
 
 namespace Formalism.BasicNotions.Idx
 
-open NumberField IsDedekindDomain Formalism.BasicNotions
 
 end Formalism.BasicNotions.Idx
 

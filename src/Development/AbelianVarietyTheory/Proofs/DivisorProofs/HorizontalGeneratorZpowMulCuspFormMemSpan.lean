@@ -74,7 +74,6 @@ theorem mulAt_same {Comp : Type} (X : Comp → Data E r) (k0 : Comp) (h : Frame 
     LinearMap.proj_apply]
   rfl
 
-open Classical in
 theorem mulAt_ne {Comp : Type} (X : Comp → Data E r) (k0 : Comp) (h : Frame (X k0).Ψ r → ℂ) (P : FDSec X) {k : Comp}
     (hk : k ≠ k0) : mulAt X k0 h P k = 0 := by
   simp only [mulAt, LinearMap.comp_apply, LinearMap.single_apply, Pi.single_eq_of_ne hk]

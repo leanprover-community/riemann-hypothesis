@@ -240,7 +240,6 @@ theorem pie_B_sw {n : ℕ} {lam mu : Fin n → ℕ} {j : Fin n} (hj : j ∈ pie_
 def pie_g {n : ℕ} (lam mu : Fin n → ℕ) : Fin n → ℕ :=
   if h : (pie_B lam mu).Nonempty then pie_sw mu ((pie_B lam mu).max' h) else mu
 
-open Classical in
 theorem pie_bad_zero (n b : ℕ) (lam : Fin n → ℕ) (hlam : Antitone lam) :
     ∑ mu ∈ (pie_S lam b).filter (fun mu => (pie_B lam mu).Nonempty), alt n (mu + rhoN n) = 0 := by
   have key : ∀ mu : Fin n → ℕ, (∀ j, lam j ≤ mu j) → (pie_B lam mu).Nonempty →

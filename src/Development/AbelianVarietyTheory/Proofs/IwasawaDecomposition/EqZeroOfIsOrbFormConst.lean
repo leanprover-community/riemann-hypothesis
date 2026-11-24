@@ -168,7 +168,6 @@ def orbFun (w0 : O) (v : LinearMap.BilinForm ℤ X₀) : InvFun O where
 
 variable {O}
 
-open Classical in
 theorem orbFun_toFun (w0 : O) (v : LinearMap.BilinForm ℤ X₀) (n : ℕ) (B : (Fin n → O) → (Fin n → O) → ℝ) :
     (orbFun O w0 v).toFun n B = if v ≠ 0 ∧ ∃ σ : O ≃+* O, σ w0 = w0 ∧ IsOrbForm v σ n B then 1 else 0 := rfl
 

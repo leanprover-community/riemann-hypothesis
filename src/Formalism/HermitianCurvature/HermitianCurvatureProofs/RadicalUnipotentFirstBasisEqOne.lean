@@ -448,7 +448,6 @@ variable {k j ρ : ℕ}
 
 section M1b
 
-open Dx2.Split
 
 theorem hs' (k j ρ : ℕ) : j + (1 + ρ) = (j + 1) + ρ := by omega
 
@@ -616,7 +615,6 @@ variable {k j ρ : ℕ}
 
 section M2
 
-open Dx2.Split
 
 def Z1 (c : ℂ) : G.Mat 1 := fun _ _ => c
 
@@ -675,7 +673,6 @@ variable {k j ρ : ℕ}
 
 section GXs
 
-open Dx2.Split
 
 theorem muP_one' (n : ℕ) : U.muP k n ρ 1 = 1 := by
   rw [U.muP]; simp [Ux3.wMat_mul_self, Ux3.block3_one]

@@ -67,11 +67,9 @@ variable {H} (Lb : Lbl H)
 
 variable (H) (what₂ : Rows.Data R) (h : NHyp H what₂)
 
-section Field
 
 variable (K : Type) [Field K] [CharZero K]
 
-end Field
 
 
 end Formalism.BasicNotions.Examples₂.NZ

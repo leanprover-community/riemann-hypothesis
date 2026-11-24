@@ -94,10 +94,8 @@ theorem degAt_eq (m : DVar ι a b →₀ ℕ) (τ : ι) : degAt m τ = ∑ k : D
   rw [this]; simp
 
 
-open Classical in
 def scU (a b : ℕ) (τ : ι) (x : K) : ((ι × Fin b × Fin b) ⊕ DVar ι a b) → K := Sum.elim (fun _ => 1) (fun k => if k.1 = τ then x else 1)
 
-open Classical in
 theorem scale_prod (τ : ι) (x : K) (s : ((ι × Fin b × Fin b) ⊕ DVar ι a b) →₀ ℕ) :
     (s.prod fun i k => scU a b τ x i ^ k) = x ^ degAt (s.comapDomain Sum.inr Sum.inr_injective.injOn) τ := by
   rw [Finsupp.prod_fintype _ _ (fun i => pow_zero _), Fintype.prod_sum_type, degAt_eq, ← Finset.prod_pow_eq_pow_sum]
@@ -106,10 +104,8 @@ theorem scale_prod (τ : ι) (x : K) (s : ((ι × Fin b × Fin b) ⊕ DVar ι a 
   split_ifs <;> simp
 
 
-open Classical in
 def bSc (a : ℕ) (τ : ι) (x : K) : ι → Matrix (Fin a) (Fin a) K := fun τ' => Matrix.diagonal fun _ => if τ' = τ then x else 1
 
-open Classical in
 theorem isBor_bSc (τ : ι) {x : K} (hx : x ≠ 0) : IsBor (bSc a τ x) := by
   intro τ'
   refine ⟨fun r s h => ?_, fun r => ?_⟩
@@ -119,7 +115,6 @@ theorem isBor_bSc (τ : ι) {x : K} (hx : x ≠ 0) : IsBor (bSc a τ x) := by
     · exact hx
     · exact one_ne_zero
 
-open Classical in
 theorem colSub_bSc_X (τ : ι) (x : K) (v : ι × Fin a × Fin a) :
     colSub (bSc a τ x) (X v : Pol K ι a) = C (if v.1 = τ then x else 1) * X v := by
   simp only [colSub, aeval_X, bSc, Matrix.diagonal_apply]
@@ -129,7 +124,6 @@ theorem colSub_bSc_X (τ : ι) (x : K) (v : ι × Fin a × Fin a) :
     simp [hr]
   · simp
 
-open Classical in
 theorem subD_colSub_bSc (τ : ι) (x : K) (Q : Pol K ι a) :
     subD K ι a b (colSub (bSc a τ x) Q) = aeval (fun i => C (scU a b τ x i) * X i) (subD K ι a b Q) := by
   have e : (subD K ι a b).comp (colSub (bSc a τ x)) =

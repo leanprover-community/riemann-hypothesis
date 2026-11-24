@@ -83,13 +83,11 @@ theorem disjoint_conj {X : Finset (Pl D.host.E)} (hX : SplitSet X) : Disjoint X 
   exact zero_mem _
 
 
-open Classical in
 theorem idem_add_cA {X : Finset (Pl D.host.E)} (hX : SplitSet X) :
     idem X + cA D (idem X) = idem (X ∪ X.image Formalism.L2.DIV.conjPl) := by
   rw [← idem_eq (GlobalTheory.RefDatumLev.isIdemSum_conjPl hX.isIdemSum), idem, idem, idem, Finset.sum_union (disjoint_conj hX)]
 
 
-open Classical in
 theorem idem_add_cA_eq {X Y : Finset (Pl D.host.E)} (hX : SplitSet X) (hY : SplitSet Y)
     (h : ∀ P, P ∈ X ∪ X.image Formalism.L2.DIV.conjPl ↔ P ∈ Y ∪ Y.image Formalism.L2.DIV.conjPl) :
     idem X + cA D (idem X) = idem Y + cA D (idem Y) := by
@@ -99,7 +97,6 @@ theorem idem_add_cA_eq {X Y : Finset (Pl D.host.E)} (hX : SplitSet X) (hY : Spli
   exact h P
 
 
-open Classical in
 theorem mem_half_closure {ch : Set (Pl D.host.E)}
     (hch : ∀ P P', Formalism.BasicNotions.IsConjPl D.host P P' → P ≠ P' → (P ∈ ch ↔ P' ∉ ch)) {A B : Finset (Pl D.host.E)}
     (hcl : ∀ P, P ∈ A ∨ P ∈ B → Formalism.L2.DIV.conjPl P ∈ A ∨ Formalism.L2.DIV.conjPl P ∈ B)

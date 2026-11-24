@@ -104,7 +104,6 @@ def heckeFun {W : Type} [AddCommGroup W] [Module ℂ W] (U : Subgroup (GAf L n))
   fun g => ∑ᶠ c : GAf L n ⧸ U, if (∃ x ∈ D, (x : GAf L n ⧸ U) = c) then f (g * c.out) else 0
 
 
-open Classical in
 def heckeEnd {W : Type} [AddCommGroup W] [Module ℂ W] (ρ : Representation ℂ (GQ L n) W)
     (U : Subgroup (GAf L n)) (D : Set (GAf L n)) : Module.End ℂ (Forms L n ρ U) :=
   if h : ∃ φ : Module.End ℂ (Forms L n ρ U), ∀ f g, (φ f : GAf L n → W) g = heckeFun L n U D f g

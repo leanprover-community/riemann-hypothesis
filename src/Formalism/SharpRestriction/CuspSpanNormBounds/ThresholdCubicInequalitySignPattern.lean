@@ -690,13 +690,11 @@ open Formalism.MainNotions.S.ThB
 
 end SizeRangeProof
 
-section SizeFam
 
 open Formalism.MainNotions.S.Bridge Formalism.MainNotions.S.ThB
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
-end SizeFam
 
 theorem count_hypotheses_diagonal_words (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT C0 A : ℝ)
     (hD : StandingNumericalData D C0) (hH : StandingHypotheses D large₂ C' Cl Cg cb Cu cT CT) (h0 : 1 ≤ C0) (hCl : 2 < Cl) (hC' : 1 ≤ C')
@@ -724,27 +722,20 @@ theorem sizes3bF (C0 Cg cb Cu cT CT C1 C2 A : ℝ) (h0 : 0 ≤ C1) (h1 : C1 ≤ 
 
 end Family
 
-section Assembly
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
-end Assembly
 
-section Assembly2
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
-end Assembly2
 
-section All
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
-end All
 
 end Formalism.MainNotions
 
-section S8c
 
 open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.CayleySignature
 
@@ -756,4 +747,3 @@ variable {D : D7} (X : ThetaX D)
 
 end Formalism.MainNotions.ConjugationAmplitude
 
-end S8c

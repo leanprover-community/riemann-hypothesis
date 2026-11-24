@@ -85,42 +85,32 @@ theorem pointConeMap_of_isMultiHomog (y : (Σ k, ι k) → Ω) {s : MRingOver R 
 
 end Points
 
-section Lines
 
 variable {K : Type*} [Fintype K] {ι : K → Type*} [∀ k, Fintype (ι k)]
 variable {R : Type*} [CommRing R] {Ω : Type*} [Field Ω] [Algebra R Ω]
 
-end Lines
 
-section Flags
 
 variable {K : Type*} [Fintype K] {ι : K → Type*} [∀ k, Fintype (ι k)]
 variable {R : Type*} [CommRing R] {Ω : Type*} [Field Ω] [Algebra R Ω]
 variable {E : Type*} [AddCommGroup E] [Module Ω E] {N : ℕ}
 
-end Flags
 
-section Twisted
 
 variable {K : Type*} [Fintype K] {ι : K → Type*} [∀ k, Fintype (ι k)]
 variable {R : Type*} [CommRing R] {Ω : Type*} [Field Ω] [Algebra R Ω]
 variable {E : Type*} [AddCommGroup E] [Module Ω E] {N : ℕ}
 
-end Twisted
 
-section Generic
 
 variable {K : Type*} [Fintype K] {ι : K → Type*} [∀ k, Fintype (ι k)]
 variable {R : Type*} [CommRing R] {Ω : Type*} [Field Ω] [Algebra R Ω]
 variable {E : Type*} [AddCommGroup E] [Module Ω E] {N : ℕ}
 
-end Generic
 
-section Degrees
 
 variable {K : Type*} [Fintype K]
 
-end Degrees
 
 section Triangular
 
@@ -173,14 +163,12 @@ theorem isMultiHomog_iff (f : MRingOver R ι) (a : K → ℕ) :
 
 end MultiHomog
 
-section FlagPairs
 
 variable {K : Type*} [Fintype K] [DecidableEq K] {ι : K → Type*} [∀ k, Fintype (ι k)]
 variable {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
 variable {Ω : Type*} [Field Ω] [Algebra O Ω]
 variable {E : Type*} [AddCommGroup E] [Module Ω E] {N : ℕ}
 
-end FlagPairs
 
 section Numbers
 
@@ -267,11 +255,9 @@ section Monomials
 
 end Monomials
 
-section Koszul
 
 variable {N : ℕ}
 
-end Koszul
 
 section PairNumbers
 
@@ -285,14 +271,11 @@ theorem vNumL_perm (W : Ideal (MRingOver O ι)) {L₁ L₂ : List (K → ℤ)} (
 
 end PairNumbers
 
-section Vertical
 
 variable {K : Type*} [Fintype K] [DecidableEq K] {ι : K → Type*} [∀ k, Fintype (ι k)]
 variable {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
 
-end Vertical
 
-section ProjBundle
 
 variable {Ω : Type*} [Field Ω] {Φ : Type*} [Field Φ] [Algebra Ω Φ] {N : ℕ}
 
@@ -302,7 +285,6 @@ variable [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {M : ℕ}
 
 variable {F : Type*} [Field F] [Algebra F Ω] {E : Type*} [AddCommGroup E] [Module Ω E]
 
-end ProjBundle
 
 end FlagTypings
 

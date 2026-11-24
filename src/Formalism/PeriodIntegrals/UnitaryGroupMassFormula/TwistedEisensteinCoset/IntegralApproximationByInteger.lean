@@ -332,7 +332,6 @@ theorem integer_integral_iff_dvd : IntegerIntegralIffDvd := by
     rw [e2]
     exact iNat P k
 
-open NTA in
 theorem integral_approximation_by_integer : IntegralApproximationByInteger := by
   intro E _ _ P hp hq x N hx
   have hq0 := q_ne P hp
@@ -354,7 +353,6 @@ theorem integral_approximation_by_integer : IntegralApproximationByInteger := by
       rw [e]
       exact hzd
 
-open NTA in
 theorem element_eq_prime_power_mul_unit : ElementEqPrimePowerMulUnit := by
   intro E _ _ P hp hq a ha
   have hq0 := q_ne P hp
@@ -373,7 +371,6 @@ theorem element_eq_prime_power_mul_unit : ElementEqPrimePowerMulUnit := by
   · rw [inv_div, div_eq_mul_inv]
     exact iMul P hui' huii
 
-open NTA in
 theorem valuation_exponent_unique : ValuationExponentUnique := by
   intro E _ _ P hp hq e e' w w' hw hwi hwii hw'i hw'ii h
   have hq0 := q_ne P hp
@@ -398,7 +395,6 @@ theorem valuation_exponent_unique : ValuationExponentUnique := by
     rw [hpw, zpow_sub₀ hq0, div_mul_eq_mul_div, eq_div_iff (zpow_ne_zero _ hq0)]
     linear_combination -h
 
-open NTA in
 theorem unit_congruent_to_integer : UnitCongruentToInteger := by
   intro E _ _ P hp hq w N hw hwi hwii
   have hq0 := q_ne P hp

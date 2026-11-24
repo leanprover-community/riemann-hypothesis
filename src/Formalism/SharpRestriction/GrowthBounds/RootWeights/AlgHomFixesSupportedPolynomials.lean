@@ -169,7 +169,6 @@ theorem adjugate_last_row_ne_zero (R : Type) [CommRing R] [Nontrivial R] {ι : T
   rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with hs | hs <;> simp [hs] at hdet
 
 
-open Classical in
 def lastRowSubstitution (R : Type) [CommRing R] {ι : Type} {r : ℕ} [NeZero r] (A : Fin r → ι) (a : Fin r) :
     MvPolynomial (ι × Fin r) R →ₐ[R] MvPolynomial (ι × Fin r) R :=
   aeval fun v => if v.1 = A (lastIdx r) then (if v.2 = a then 1 else 0) else X v

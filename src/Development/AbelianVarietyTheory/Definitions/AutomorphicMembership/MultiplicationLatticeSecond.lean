@@ -188,7 +188,6 @@ def expo (_a : At S κ p) (l : PsiT D → ℕ → ℤ) (σ : D.host.E →+* ℂ)
     if σ = conjEmb (DV.tauEmb D t) then -l (D.eTau t) (N - i) else 0)
 
 
-open Classical in
 def Lb (l : PsiT D → ℕ → ℤ) : a.Sh a.YY :=
   if h : ∃ L, IsGrLB a.YY (a.expo l) L then a.YY.ofMod (GlobalTheory.LB.toMod h.choose) else ⟨0, 0, 0, 0, 0⟩
 

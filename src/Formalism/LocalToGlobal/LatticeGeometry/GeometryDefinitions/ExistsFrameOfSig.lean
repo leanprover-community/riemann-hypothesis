@@ -108,11 +108,9 @@ theorem crdLat_lattice (S : HSpace E) (L : Submodule (𝓞 E) S.V) (hL : Submodu
 
 end Space
 
-section Twist
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
 
-end Twist
 
 end Formalism.L2.Geo.Def.G1

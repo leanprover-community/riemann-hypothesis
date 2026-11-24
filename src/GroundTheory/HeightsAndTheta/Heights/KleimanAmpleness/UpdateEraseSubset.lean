@@ -273,7 +273,6 @@ def DoubleCech.hD (y : (Σ k, ι k) → Ω) (M : Kleiman.Chart x → (∀ k, Fin
     exact fun J => cellD_mem (M J.1) (fun I I' _ _ h h' => hMI J.1 I I' h h') (hs J)
 
 
-open Classical in
 def DoubleCech.aug (y : (Σ k, ι k) → Ω) (T : Kleiman.SubSystem F x Ω)
     (M : Kleiman.Chart x → (∀ k, Finset (ι k)) → Submodule F Ω)
     (hrow : ∀ J, CellAugExact F y (M J) ((T.sub J).restrictScalars F)) (p : ℕ) :

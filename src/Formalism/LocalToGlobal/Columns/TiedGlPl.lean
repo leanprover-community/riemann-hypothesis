@@ -130,7 +130,6 @@ theorem glk_ker (w : Pl E) (hov : IsOver v w) (ϖ : 𝓞 E) (h2 : cO E ϖ ∉ w.
 
 end Ker
 
-section Pl
 
 variable {X : Fields} {Pr : Primes X} (hc : Formalism.BasicNotions.CMData X.F X.E) (hPr : Pr.Ok)
 
@@ -146,6 +145,5 @@ variable {hc}
 
 
 
-end Pl
 
 end Formalism.L2.Col

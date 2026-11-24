@@ -93,15 +93,11 @@ def Kills (x : E) : Prop := ∀ (k : ℕ) (w : Fin k → E), D.D (k + 1) (Fin.co
 
 end Det
 
-section sch
 variable {n : ℕ} {A E : Type*} [CommRing A] [Ring E] [Algebra A E]
 
-end sch
 
-section sqz
 variable {A N : Type*} [CommRing A] [AddCommGroup N] [Module A N] [Module Aᵐᵒᵖ N] [IsCentralScalar A N]
 
-end sqz
 
 def Det.IsMap {n : ℕ} {G B A : Type} [Group G] [CommRing B] [CommRing A]
     (D : Det n B (MonoidAlgebra B G) B) (D' : Det n A (MonoidAlgebra A G) A) (φ : B →+* A) : Prop :=

@@ -176,11 +176,9 @@ theorem logSigmaOnePullbackSpec : PhEDef := by
   rw [phE]
   ring
 
-section Parity
 
 variable {K : Type} [Field K] [CharZero K]
 
-end Parity
 
 
 end Formalism.L2.Th1.B.Ph

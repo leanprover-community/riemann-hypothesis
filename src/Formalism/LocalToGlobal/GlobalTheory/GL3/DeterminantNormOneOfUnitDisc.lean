@@ -200,7 +200,6 @@ end Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.DN
 
 namespace Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.DN
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Matrix
 
 variable (D : D7)
 

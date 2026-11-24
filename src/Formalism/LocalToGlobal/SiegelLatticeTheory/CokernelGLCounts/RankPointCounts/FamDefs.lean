@@ -274,7 +274,6 @@ end Leaves
 
 section Assembly
 
-open Formalism.MainNotions.S.LocNG Formalism.L2.SG.NGData Formalism.L2.SG.NGCut Formalism.L2.SG.NGAnalytic
 
 variable {D : D7} {X : HidaSetting D} {Y : Full X} {u u' : D.what₂.Word}
 

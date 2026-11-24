@@ -126,12 +126,10 @@ theorem ppval_of_le {O : Type} [CommRing O] (u : Oˣ) (ℓ E kap : ℕ) (JS JS' 
   obtain ⟨ε', h2⟩ := ppevalVal u ℓ E JS' hp hV
   exact ⟨kapExp ℓ E JS + kapExp ℓ E JS', ε * ε', hk, by rw [h1, h2, Units.val_mul, pow_add]; ring⟩
 
-section free
 variable {O : Type} [CommRing O]
 
 variable {B : Base O} {n : ℕ} {V₀ : Type} [AddCommGroup V₀] [Module (PowerSeries O) V₀]
 
-end free
 
 end PolynomialValuationLemmas
 

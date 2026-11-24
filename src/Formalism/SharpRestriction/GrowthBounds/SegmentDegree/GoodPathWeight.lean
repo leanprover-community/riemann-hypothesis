@@ -56,7 +56,6 @@ open Classical in
 def restr (j : ℤ) (b : ℤ → ℕ) : ℤ → ℕ := fun x => if x ∈ X.toLate j then b x else 0
 
 
-open Classical in
 def Bdeg (j : ℤ) (b : ℤ → ℕ) (x : ℤ) : ℕ :=
   if X.F.IsW j x then (X.Bw p K j x - (X.m0 K : ℤ)).toNat else b x
 
@@ -133,7 +132,6 @@ def GoodPathWeight (C₀ : ℝ) : Prop :=
           (r + K - 1) : ℕ) : ℝ)) ≤ (Nat.card (X.Tset p K j (X.restr j b)) : ℝ)
 
 
-open Classical in
 def RestMon (C₀ : ℝ) : Prop :=
   ∀ (p n' r K : ℕ) [NeZero n'] [NeZero r] [NeZero K] (X : Dat n' r),
     X.Hyp p K → C₀ ≤ X.CLa → C₀ ≤ X.Ck →

@@ -76,7 +76,6 @@ def gW (t : ℂ) : PowerSeries ℂ_[l] :=
 end Gen
 
 
-open Classical in
 def PtWAdd : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (L : PeriodPair) (ι : ℂ ≃+* ℂ_[l]) (W : WeierstrassCurve ℂ_[l]), Unif l L ι W →
     ∀ s t : ℂ, ptW l L ι W (s + t) = ptW l L ι W s + ptW l L ι W t
@@ -86,7 +85,6 @@ def PtWZero : Prop :=
     ∀ t : ℂ, ptW l L ι W t = 0 ↔ t ∈ L.lattice
 
 
-open Classical in
 def AnalyticSysW : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (L : PeriodPair) (ι : ℂ ≃+* ℂ_[l]) (W : WeierstrassCurve ℂ_[l]), Unif l L ι W →
     ∀ (π : ℂ →+ W.toAffine.Point), (∀ t, π t = ptW l L ι W t) → IsTransSys W π (gW l L ι W)

@@ -108,13 +108,11 @@ theorem loc_fwd {Λ Λ' : Submodule (𝓞 E) (n → E)} (k : GL n 𝒜) (hk : �
 
 end Loc
 
-section Lev
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
 
 
 
-end Lev
 
 end Formalism.L2.GlobalTheoryTheory.TraceIntegrality.Fr
 

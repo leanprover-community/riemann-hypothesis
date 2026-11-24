@@ -307,7 +307,6 @@ theorem subsingleton_cycTateZero_adicCompletionIntegers_units
   exact (Nat.card_eq_one_iff_unique.1 h1).1
 
 
-open AdicLiesOver in
 include v in
 theorem subsingleton_cycTateNegOne_adicCompletionIntegers_units
     (he : w.asIdeal.ramificationIdx (𝓞 K) = 1)

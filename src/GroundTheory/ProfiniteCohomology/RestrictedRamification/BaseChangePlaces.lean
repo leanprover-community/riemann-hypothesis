@@ -99,12 +99,10 @@ theorem exists_unique_tensorLiftOfAlgHom_single :
 def placeOfAlgHom : PlacesOver L v :=
   (exists_unique_tensorLiftOfAlgHom_single j).exists.choose
 
-open Classical in
 theorem tensorLiftOfAlgHom_single_placeOfAlgHom :
     tensorLiftOfAlgHom j (Pi.single (placeOfAlgHom j) 1) = 1 :=
   (exists_unique_tensorLiftOfAlgHom_single j).exists.choose_spec
 
-open Classical in
 theorem eq_placeOfAlgHom_of_tensorLiftOfAlgHom {w : PlacesOver L v}
     (h : tensorLiftOfAlgHom j (Pi.single w 1) = 1) : w = placeOfAlgHom j :=
   (exists_unique_tensorLiftOfAlgHom_single j).unique h (tensorLiftOfAlgHom_single_placeOfAlgHom j)
@@ -120,7 +118,6 @@ theorem pi_single_algebraMap_completionsOver {w : PlacesOver L v} [DecidableEq (
   · simp [hu]
 
 
-open Classical in
 def completionEmbeddingOfAlgHom :
     (placeOfAlgHom j).1.adicCompletion L →ₐ[v.adicCompletion F]
       AlgebraicClosure (v.adicCompletion F) where

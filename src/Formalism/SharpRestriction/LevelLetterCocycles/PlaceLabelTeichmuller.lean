@@ -55,17 +55,13 @@ noncomputable section
 
 namespace Formalism.MainNotions.N.PlaceLabelTeichmuller
 
-section BoundedBy'
 
 open Formalism.BasicNotions Formalism.MainNotions
 
-section Len
 
 variable {R : Type} [CommRing R]
 
-end Len
 
-section Drop
 
 variable {O K V X : Type} [CommRing O] [IsDomain O] [IsPrincipalIdealRing O] [Field K] [Algebra O K]
     [IsFractionRing O K] [AddCommGroup V] [Module K V] [Module O V] [IsScalarTower O K V]
@@ -74,7 +70,6 @@ variable {O K V X : Type} [CommRing O] [IsDomain O] [IsPrincipalIdealRing O] [Fi
 
 
 
-end Drop
 
 end BoundedBy'
 
@@ -291,7 +286,6 @@ theorem eGood_central (hcen : ∀ i p a, E i p * a = a * E i p) (x : MonoidAlgeb
 variable {W : Type} [AddCommGroup W] [Module ℂ W]
 
 
-open Classical in
 def onC {A : Type} [Ring A] [Algebra ℂ A] (Φ : Subalgebra.center ℂ A →ₐ[ℂ] Module.End ℂ W) (z : A) :
     Module.End ℂ W :=
   if h : z ∈ Subalgebra.center ℂ A then Φ ⟨z, h⟩ else 0
@@ -478,7 +472,6 @@ end Record
 
 section Record2
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Polynomial
 
 variable (D : D7)
 
@@ -526,7 +519,6 @@ end Record2
 
 section ClauseA
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Polynomial
 
 theorem pp_arith (l n : ℕ) (hl : l.Prime) (hn : 0 < n) :
     l ^ n.factorization l * (((l ^ n.factorization l : ℕ) : ZMod (n / l ^ n.factorization l))⁻¹).val ≡
@@ -680,23 +672,17 @@ end GoodTr
 
 end ClauseA
 
-section DualAmb
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Polynomial
 
-section Poly
 
 variable {g : ℕ} [Fact g.Prime]
 
-end Poly
 
 variable (D : D7)
 
 end DualAmb
 
-section RecordA
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Polynomial
 
 variable (D : D7)
 
@@ -708,6 +694,5 @@ variable {D}
 
 variable (D)
 
-end RecordA
 
 end Formalism.MainNotions.N.PlaceLabelTeichmuller

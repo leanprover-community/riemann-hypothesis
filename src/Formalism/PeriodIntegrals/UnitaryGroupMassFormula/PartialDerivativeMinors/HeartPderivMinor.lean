@@ -54,11 +54,9 @@ namespace PI.EntAtD.W
 
 open PI.EntAtD
 
-section Ker
 
 variable {A : Type} [CommRing A] (D : Derivation ℤ A A)
 
-end Ker
 
 private theorem derivation_prod_eq_zero_of_forall' {R A ι : Type} [CommRing R] [CommRing A] [Algebra R A]
     (D : Derivation R A A) (s : Finset ι) (f : ι → A) (h : ∀ i ∈ s, D (f i) = 0) :

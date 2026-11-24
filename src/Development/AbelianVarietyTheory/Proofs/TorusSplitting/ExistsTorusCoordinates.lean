@@ -164,7 +164,6 @@ theorem _root_.GlobalTheory.TorusCoord.lt_neg (X : _root_.ReciprocityTheory.Char
   omega
 
 open scoped Classical in
-open Classical in
 def coord (X : Data E r) (e : X.Ψ → Fin r → (Fin r → ℂ)) (y : X.Ψ → Fin r → ℂ)
     (i : Idx (dimOf X)) : ℂ :=
   if h : i.1 ∈ X.Ψ then pr X e y ⟨i.1, h⟩ ⟨i.2.1, lt_pos X h i.2⟩

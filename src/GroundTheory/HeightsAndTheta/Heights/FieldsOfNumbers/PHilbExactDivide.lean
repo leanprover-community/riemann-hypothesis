@@ -107,7 +107,6 @@ theorem mem_colon_span_iff {I : Ideal (MRing ι F)} {s g : MRing ι F} :
     exact I.mul_mem_left t h
 
 
-open Classical in
 theorem finrank_eq (h1 : GradedFinite.Statement.{u}) [Fintype K] [∀ k, Fintype (ι k)]
     {I : Ideal (MRing ι F)} (hI : IsMultiHomogIdeal I) {c : K → ℕ} {s : MRing ι F}
     (hs : IsMultiHomog s c) (n : K → ℕ) :

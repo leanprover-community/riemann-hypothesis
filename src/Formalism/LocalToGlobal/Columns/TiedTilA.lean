@@ -53,11 +53,9 @@ namespace Formalism.L2.Col
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.UG
 
-section Pad
 
 variable {R : Type} [CommRing R] {n : ℕ}
 
-end Pad
 
 section Ad
 

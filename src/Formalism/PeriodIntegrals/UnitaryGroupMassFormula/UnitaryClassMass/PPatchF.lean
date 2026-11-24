@@ -118,7 +118,6 @@ theorem floc_gmap {F E : Type} [Field F] [NumberField F] [Field E] [NumberField 
     refine ⟨_, hsx, ?_⟩
     rw [equiv_smul_O u, LinearEquiv.apply_symm_apply]
 
-section Localization
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 variable {V : Type} [AddCommGroup V] [Module E V] [Module (𝓞 E) V]
@@ -292,7 +291,6 @@ private theorem flocHat_iff (b : Module.Basis (Fin M) E V) (L : Submodule (𝓞 
     rw [hzero]
     simp [Set.not_nonempty_iff_eq_empty.mp hS]
 
-end Localization
 
 theorem local_patching : PatchF := by
   intro F E _ _ _ _ _ _ σ V _ _ _ _ _ M J b L0 _ hsat γ T

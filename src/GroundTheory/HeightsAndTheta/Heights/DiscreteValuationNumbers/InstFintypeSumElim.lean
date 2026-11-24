@@ -276,8 +276,6 @@ def ck (x : (Σ k, ι k) → Ω) (d N : ℕ) {V : Type*} [AddCommGroup V] [Modul
   else 0
 
 
-open scoped Classical in
-open Classical in
 def rootNum (x : (Σ k, ι k) → Ω) (d N : ℕ) {V : Type*} [AddCommGroup V] [Module Ω V]
     (E : ChartBundle O (mseg x) N V) (G : MvPolynomial (Fin N) ℤ) {q : ℕ} (L : Fin q → K → ℤ)
     (Q : MvPolynomial (Fin q) ℤ) (c : O) : ℤ :=

@@ -183,7 +183,6 @@ theorem trace_Mt (i j : Fin a) (x : Cinf E) (Y : (isExpLieAlgebra E a).lieSubalg
   · intro v _
     rfl
 
-open Classical in
 theorem toL_single_atEmb (i j p q : Fin a) (w v : InfinitePlace E) (z : ℂ) :
     toL (Matrix.single i j (atEmb w.embedding z)) p q v = if (w, i, j) = (v, p, q) then z else 0 := by
   change Matrix.single i j (atEmb w.embedding z) p q v = _

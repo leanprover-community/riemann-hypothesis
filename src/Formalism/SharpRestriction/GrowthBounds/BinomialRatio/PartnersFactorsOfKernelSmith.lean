@@ -148,7 +148,6 @@ def SmithAt (C0 CYb Cde Ck CD Cb CE1 CE2 Cm Cc : ℝ) : Prop :=
       SmithData (segForm O X.p X.m (X.seg C0 CE1 CE2 j)) (Lj O C0 CE1 CE2 Cm X j) n al be β
 
 
-open Classical in
 def CountSmithAt (C0 CYb Cde Ck CD Cb CE1 CE2 Cm Cc : ℝ) : Prop :=
   ∀ (X : Loc) [NeZero X.m] (W Qq O Kf : Type) [CommRing W] [IsDomain W] [IsDiscreteValuationRing W] [Field Qq]
     [Algebra W Qq] [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field Kf] [Algebra O Kf]
@@ -208,7 +207,6 @@ theorem rank_le_of_ker {V : Type} [AddCommGroup V] [Module O V] {n : ℕ} (al : 
 end Rank
 
 
-open Classical in
 def KerSmithAt (C0 CYb Cde Ck CD Cb CE1 CE2 Cm Cc : ℝ) : Prop :=
   ∀ (X : Loc) [NeZero X.m] (W Qq O Kf : Type) [CommRing W] [IsDomain W] [IsDiscreteValuationRing W] [Field Qq]
     [Algebra W Qq] [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field Kf] [Algebra O Kf]
@@ -222,7 +220,6 @@ def KerSmithAt (C0 CYb Cde Ck CD Cb CE1 CE2 Cm Cc : ℝ) : Prop :=
         ∀ a : Fin n → O, (∑ i, a i • al i) ∈ L₁ →
           (∀ i, vLE X.p (segForm O X.p X.m (X.seg C0 CE1 CE2 j) (al i) (be i)) Dj → a i = 0) → a = 0
 
-open Classical in
 theorem countSmithAt_of {C0 CYb Cde Ck CD Cb CE1 CE2 Cm Cc : ℝ}
     (h : KerSmithAt C0 CYb Cde Ck CD Cb CE1 CE2 Cm Cc) : CountSmithAt C0 CYb Cde Ck CD Cb CE1 CE2 Cm Cc := by
   intro X _ W Qq O Kf _ _ _ _ _ _ _ _ _ _ ι σ jO w hS hH hC j Dj L₁ hD hG n al be β hSm
@@ -274,7 +271,6 @@ theorem bad_sum {p : ℕ} {D : ℝ} {ι : Type} (s : Finset ι) (f : ι → KK O
     exact bad_add (h i (Finset.mem_insert_self i s)) (ih fun j hj => h j (Finset.mem_insert_of_mem hj))
 
 
-open Classical in
 theorem prim_div {w : O} (hw : Irreducible w) {n : ℕ} (a : Fin n → O) (ha : a ≠ 0) :
     ∃ (k : ℕ) (a' : Fin n → O), (∀ i, a i = w ^ k * a' i) ∧ ∃ i0, IsUnit (a' i0) := by
   obtain ⟨j, hj⟩ : ∃ j, a j ≠ 0 := by

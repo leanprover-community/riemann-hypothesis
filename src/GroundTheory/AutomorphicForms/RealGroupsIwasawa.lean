@@ -326,8 +326,6 @@ end Homeomorph
 
 section Homeomorph2
 
-open scoped Matrix.Norms.L2Operator Topology
-open Filter Set
 
 variable [WellFoundedLT n] [LocallyFiniteOrderBot n]
 
@@ -444,8 +442,6 @@ end Homeomorph2
 
 section Homeomorph3
 
-open scoped Matrix.Norms.L2Operator Topology
-open Filter Set
 
 variable [WellFoundedLT n] [LocallyFiniteOrderBot n]
 

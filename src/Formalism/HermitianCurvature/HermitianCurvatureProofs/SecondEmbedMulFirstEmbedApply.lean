@@ -240,7 +240,6 @@ end Formalism.FourierDecayAlt.P.Wd3
 
 namespace Formalism.FourierDecayAlt.P
 
-open Matrix Formalism.YangianSpanCharacter.T Formalism.FourierDecayAlt.W Formalism.FourierDecayAlt.Wd
 
 theorem exchange_relation_plus : Formalism.FourierDecayAlt.Wd.ExchPlus := by
   unfold Formalism.FourierDecayAlt.Wd.ExchPlus

@@ -136,7 +136,6 @@ def rdT (l n r N p : ℕ) (y : (ZMod (lvT l n r N p))ˣ) : (ZMod p)ˣ × (ZMod (
      (ZMod (l ^ r))).toMonoidHom y)
 
 
-open Classical in
 def inv1 (m a : ℕ) : (ZMod m)ˣ := if h : IsUnit (a : ZMod m) then h.unit⁻¹ else 1
 
 def YT (X : Tower Ω ε) (l : ℕ) [Fact l.Prime] (n r N p : ℕ) [NeZero N] [NeZero p] (x : ZMod N) (c d w : ℕ) (g : SL(2, ℤ))

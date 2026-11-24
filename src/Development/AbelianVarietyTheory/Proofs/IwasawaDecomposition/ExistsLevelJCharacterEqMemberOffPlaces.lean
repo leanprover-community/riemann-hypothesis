@@ -83,7 +83,6 @@ def cutL (l : List (HeightOneSpectrum (𝓞 F))) :
     GL n (E ⊗[F] FiniteAdeleRing (𝓞 F) F) →* GL n (E ⊗[F] FiniteAdeleRing (𝓞 F) F) :=
   l.foldr (fun v f => (cut1 v).comp f) (MonoidHom.id _)
 
-open Classical in
 theorem cutL_prV (l : List (HeightOneSpectrum (𝓞 F))) (w : HeightOneSpectrum (𝓞 F))
     (x : GL n (E ⊗[F] FiniteAdeleRing (𝓞 F) F)) :
     bc (prV (E := E) w) (cutL l x) = if w ∈ l then 1 else bc (prV (E := E) w) x := by

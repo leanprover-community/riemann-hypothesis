@@ -62,11 +62,9 @@ section Combinatorics
 
 end Combinatorics
 
-section Snoc
 
 variable {S : Type u} [CommRing S] {Ω : Type w} [Field Ω] [Algebra S Ω] {N : ℕ} {x : Fin (N + 1) → Ω}
 
-end Snoc
 
 section Dim
 

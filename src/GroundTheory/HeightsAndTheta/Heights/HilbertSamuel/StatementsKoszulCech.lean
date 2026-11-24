@@ -118,7 +118,6 @@ def KoszulCechComplex.Statement : Prop :=
       (∀ φ, kosCech S ι V R p n (kosD z p n φ) = kosD z p (n + 1) (kosCech S ι V R (p + 1) n φ)) ∧
       (∀ φ, kosD z p n (kosD z (p + 1) n φ) = 0)
 
-section Inhabitants
 
 namespace KoszulCech
 
@@ -128,9 +127,7 @@ variable {S : Type} [CommRing S] {K : Type} [Fintype K] [LinearOrder K] {ι : K 
 
 end KoszulCech
 
-open KoszulCech
 
-end Inhabitants
 
 end
 

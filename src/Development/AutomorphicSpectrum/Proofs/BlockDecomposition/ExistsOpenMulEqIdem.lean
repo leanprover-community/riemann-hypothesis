@@ -134,7 +134,6 @@ theorem compInf_eSF {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F 
   rw [Algebra.TensorProduct.map_tmul, show algebraMap (AF F) (AF F) (eSF S) = eSF S from rfl, evInf_eSF]
   simp [Algebra.TensorProduct.one_def]
 
-open Classical in
 theorem compFin_eSF {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E]
     (S : Finset (HeightOneSpectrum (𝓞 F))) (v : HeightOneSpectrum (𝓞 F)) :
     compFin F E v (algebraMap (AF F) (AF F ⊗[F] E) (eSF S)) = if v ∈ S then 1 else 0 := by

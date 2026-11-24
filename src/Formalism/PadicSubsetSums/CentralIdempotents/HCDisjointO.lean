@@ -59,10 +59,8 @@ def RepIso {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module
 
 end Reps
 
-section Props
 
 variable {K : Type} [Field K] [Fintype K] [DecidableEq K] {C : LabelConv K}
 
-end Props
 
 end Formalism.IrreducibleCountingLemmas.TYPES

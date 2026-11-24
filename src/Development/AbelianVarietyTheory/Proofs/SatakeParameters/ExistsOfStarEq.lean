@@ -961,7 +961,6 @@ theorem prod_twist (hX : X.Ok) (hsel : IsSel X sel)
 end Main
 
 
-open Classical in
 theorem prod_muAt : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} (Ch : Chars X Pr R.m) (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu)) (σ₀ : X.K →+* ℂ) (e : Fin R.m → X.Tau → ℤ) (m0 : Fin R.m → Formalism.L2.Host.HChar X.E) (eta : Formalism.L2.Host.HChar X.E), X.Ok → Pr.Ok → IsSel X sel → (∀ i, Pr.g i ∈ S) → (∀ v : HeightOneSpectrum (𝓞 X.F), v.asIdeal.ramificationIdxIn (𝓞 X.E) = 1) → Ch.Tied σ₀ (fun j τ => (e j τ : ℚ)) m0 eta → ∀ (j : Fin R.m) (z : X.E), z * star z = 1 → IsIntegral ℤ z → σ₀ (∏ P : rowSG Pr sel mu, muAt Ch sel mu cst j.1 P z) = ∏ τ, X.embC σ₀ τ z ^ (-(e j τ)) := by
   intro X Pr R Ch sel S mu cs σ₀ e m0 eta hX hPr hsel hS hu hT j z hz hzi
   have hzs : IsIntegral ℤ (star z) := hzi.map (starRingEnd X.E).toIntAlgHom

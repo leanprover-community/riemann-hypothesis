@@ -100,12 +100,10 @@ theorem cs_abs {V : Type} [AddCommGroup V] [Module ℂ V] (Dv : V → Prop) (β 
     field_simp at this
     nlinarith [Complex.normSq_nonneg b]
 
-section place
 
 variable {P : M.Par} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq]
 
-end place
 
 theorem plusW_eq (ys : List ℝ) (w : List C.Letter) :
     KB.plusW ys w = ys.map (fun y => ((true, y) : C.Letter)) ++ w := by
@@ -253,7 +251,6 @@ end Formalism.FourierDecayAlt.P.TBBx5
 
 namespace Formalism.FourierDecayAlt.P.TBBx5
 
-open Formalism.FourierDecayAlt Filter Topology MeasureTheory
 open scoped ComplexConjugate ENNReal
 
 noncomputable section
@@ -395,12 +392,9 @@ end Formalism.FourierDecayAlt.P.TBBx5
 
 namespace Formalism.FourierDecayAlt.P.TBBx5
 
-open Formalism.FourierDecayAlt Filter Topology MeasureTheory
-open scoped ComplexConjugate ENNReal ComplexOrder
 
 noncomputable section
 
-open Classical
 
 section lift
 
@@ -448,11 +442,9 @@ end Formalism.FourierDecayAlt.P.TBBx5
 namespace Formalism.FourierDecayAlt.P.TBBx5
 
 open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology MeasureTheory
-open scoped ComplexConjugate ENNReal ComplexOrder
 
 noncomputable section
 
-open Classical
 
 section wave
 
@@ -549,12 +541,9 @@ end Formalism.FourierDecayAlt.P.TBBx5
 
 namespace Formalism.FourierDecayAlt.P.TBBx5
 
-open Formalism.FourierDecayAlt Filter Topology MeasureTheory
-open scoped ComplexConjugate ENNReal ComplexOrder
 
 noncomputable section
 
-open Classical
 
 section germ
 
@@ -584,6 +573,5 @@ end Formalism.FourierDecayAlt.P.TBBx5
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt
 
 end Formalism.FourierDecayAlt.P

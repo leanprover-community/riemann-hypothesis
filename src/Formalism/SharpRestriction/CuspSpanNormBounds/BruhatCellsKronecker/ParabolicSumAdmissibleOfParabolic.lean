@@ -115,11 +115,9 @@ theorem jhUnit_le {W : LocW D.R.k D.R.rS} (w w' : D.what₂.Word) (A : LocS W)
 
 end Rec
 
-section Fam
 
 variable {eps : ℝ} (Fm : FamP eps)
 
-end Fam
 
 end Formalism.MainNotions.BridgeLemma
 

@@ -53,11 +53,9 @@ open NumberField IsDedekindDomain IsLocalRing Formalism.ConjugateSelfDual Recipr
 
 namespace TwB
 
-section Settings
 
 variable (F : Type) [Field F] [NumberField F]
 
-end Settings
 
 section OneLL
 

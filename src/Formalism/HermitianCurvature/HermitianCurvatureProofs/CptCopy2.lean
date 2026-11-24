@@ -88,8 +88,6 @@ end
 end Formalism.FourierDecayAlt.P.CutBPEq
 
 namespace Formalism.FourierDecayAlt.P.CutBPEq
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.TBB Formalism.QuantumDeterminants Formalism.FourierDecayAlt.P.CutBP Formalism.FourierDecayAlt.P.CutBP2 MeasureTheory
-open scoped ENNReal
 noncomputable section
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
@@ -145,8 +143,6 @@ end
 end Formalism.FourierDecayAlt.P.CutBPEq
 
 namespace Formalism.FourierDecayAlt.P.CutBPEq
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.TBB Formalism.QuantumDeterminants Formalism.FourierDecayAlt.P.CutBP Formalism.FourierDecayAlt.P.CutBP2 MeasureTheory
-open scoped ENNReal
 noncomputable section
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in

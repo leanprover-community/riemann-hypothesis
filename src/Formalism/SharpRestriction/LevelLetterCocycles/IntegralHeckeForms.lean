@@ -250,7 +250,6 @@ def InclAt (i : X.Tw) (j : ℕ) (b : Bool) (Sg : Set (Y.Dat i j b)) (k : ℕ) (Q
   eThPsi Y i j b k Q ψ Sg ≤ eThPMt Y i j b k Q ψ
 
 
-open Classical in
 def GoodTw (N0 : X.Tw → ℕ) (i : X.Tw) (eps' : ℝ)
     (S : ∀ (j : ℕ) (b : Bool), Finset (Y.Dat i j b)) (A : Finset (PlE D.host)) (Q : Finset (PlE D.host)) (k' : ℕ)
     (ψ' : X.RCG i Q →* (X.Ok i k')ˣ) : Prop :=

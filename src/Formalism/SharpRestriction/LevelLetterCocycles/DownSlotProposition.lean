@@ -210,7 +210,6 @@ def IsCoord (Pt : ZMod n → LL → (K →ₐ[Qp] LL) → Prop) (π' Eπ : LetA 
       algebraMap (LetA O n) W.EE (π' * g)
 
 
-open Classical in
 def OmF (c : ZMod n) (S h' : ℕ) (up : (K →ₐ[Qp] LL) → Bool) (b : (K →ₐ[Qp] LL) → ℕ) : Finset ℤ :=
   (Finset.Icc (-(h' : ℤ)) h').filter fun i => ∃ τ, Formalism.MainNotions.DeltaInvariantLattices.OverLetter W τ c ∧
     ((up τ = true ∧ -((b τ : ℤ) + S) ≤ i ∧ i < -(b τ : ℤ)) ∨ (up τ = false ∧ (b τ : ℤ) ≤ i ∧ i < b τ + S))

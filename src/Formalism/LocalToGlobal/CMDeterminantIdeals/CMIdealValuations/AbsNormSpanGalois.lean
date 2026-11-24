@@ -469,10 +469,8 @@ theorem coeff_mem_of_local : CoeffMemOfLoc := by
           rw [map_mul, mul_assoc, mul_inv_cancel₀ hne, mul_one]
       _ ≤ _ := by gcongr
 
-section galois
 
 variable {K : Type} [Field K] [NumberField K]
 
-end galois
 
 end Formalism.L2.LamCM

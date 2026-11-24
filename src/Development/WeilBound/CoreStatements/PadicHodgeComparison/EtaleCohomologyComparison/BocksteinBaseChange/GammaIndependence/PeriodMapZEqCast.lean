@@ -208,7 +208,6 @@ theorem cD_tmV {M : Model l K} (hM : G M) (a : D.Ch M) (n : ℕ) (z : ℚ_[l]) (
   exact ExtV.ext_tmul _ z u f
 
 
-open Classical in
 def cC (M : Model l K) (n : ℕ) : M.V n →+ (Module.Dual C.K₀ (I.D M n) →+ C.C) :=
   if hM : G M then cD hF hC Fm E hM (a0 hL M hM) n else 0
 

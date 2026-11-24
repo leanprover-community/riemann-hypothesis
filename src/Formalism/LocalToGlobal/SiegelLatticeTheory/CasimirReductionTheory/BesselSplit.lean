@@ -54,19 +54,15 @@ open scoped InnerProductSpace
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-section Period
 
 variable {k r : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   {Vp : Type} [NormedAddCommGroup Vp] [InnerProductSpace ℂ Vp]
 
-end Period
 
-section Chain
 
 variable {k r : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   {Vp : Type} [NormedAddCommGroup Vp] [InnerProductSpace ℂ Vp]
 
-end Chain
 
 section Smooth
 

@@ -1011,7 +1011,6 @@ theorem vecw_xC_match {P : M.Par} (τ : M.Ty (parametersUForUPrime P)) (ρ : M.T
 end par
 
 section final
-open Finset
 
 theorem vecw_frame_exists (k r : ℕ) (hk : 1 ≤ k) (z e : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z)
     (hT : 0 < Tz k r z) (he : inWb k r e) (hez : herm (Hpk k r) e z = 0) (hee : herm (Hpk k r) e e = 1) :

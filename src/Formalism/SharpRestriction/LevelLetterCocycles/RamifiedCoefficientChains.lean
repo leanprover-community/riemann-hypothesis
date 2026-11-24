@@ -341,24 +341,19 @@ open Formalism.BasicNotions in
 def TheoremCConstantsRange (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (R : ℕ → Prop) (k₁ k₂ k₃ k₄ k₅ C : ℝ) : Prop := LocalBoundRange D.loc D.locA HW F R k₁ k₂ k₃ k₄ k₅ C
 
 
-open Formalism.BasicNotions in
 def aux₃ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (C : ℝ) : Prop := ConclusionL D.loc D.locA HW F C
 
 
 
-open Formalism.BasicNotions in
 def adm1 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) : Prop := Formalism.MainNotions.DeltaInvariantLattices.deltaInvariantLatticeGlobal D HW F Cm
 
 
-open Formalism.BasicNotions in
 def adm2 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.DeltaInvariantLattices.gammaSemisimpleQuotientGlobal D HW F
 
 
-open Formalism.BasicNotions in
 def adm3 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.DeltaInvariantLattices.prop2 D HW F
 
 
-open Formalism.BasicNotions in
 def ArchimedeanSignatureMatching (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.DeltaInvariantLattices.lem3 D HW F
 
 def adm5 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.LiftingTheory.ConclusionL D HW F
@@ -374,23 +369,18 @@ def adm9 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formal
 def adm10 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (CA CB CK : ℝ) : Prop := Formalism.MainNotions.LiftingTheory.LiftTheoremAllCases D HW F CA CB CK
 
 
-open Formalism.BasicNotions in
 def adm11 (D : D7) : Prop := DcrisExactStrictAll D.loc
 
 
-open Formalism.BasicNotions in
 def adm12 (D : D7) : Prop := admBK D.loc
 
 
-open Formalism.BasicNotions in
 def adm13 (D : D7) : Prop := H1fGeneratorCount D.loc
 
 
-open Formalism.BasicNotions in
 def adm14 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.DeltaInvariantLattices.adm2 D HW F
 
 
-open Formalism.BasicNotions in
 def adm15 (D : D7) : Prop := BlochKatoExtensionCriterion D.loc
 
 def adm16 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
@@ -406,7 +396,6 @@ def adm18 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
     DssLet ((HW l).W K s LL h)
 
 
-open Formalism.BasicNotions in
 def adm19 (D : D7) : Prop := H1fGeneratorBoundAll D.loc
 
 def admitted (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (CR CA CB CK : ℝ) : Prop :=

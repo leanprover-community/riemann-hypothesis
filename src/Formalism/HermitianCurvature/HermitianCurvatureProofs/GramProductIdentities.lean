@@ -57,12 +57,10 @@ namespace Formalism.FourierDecayAlt.P.GramProductIdentities
 open Finset Formalism.FourierDecayAlt.FormPairingAction Formalism.FourierDecayAlt.Wd
 open scoped ComplexOrder MatrixOrder Matrix.Norms.L2Operator
 
-section Rep
 
 variable {A S V : Type} [Ring A] [StarRing A] [Algebra ℂ A] [Fintype S] [DecidableEq S]
   [AddCommGroup V] [Module ℂ V] [Module A V] [IsScalarTower ℂ A V]
 
-end Rep
 
 section CS
 

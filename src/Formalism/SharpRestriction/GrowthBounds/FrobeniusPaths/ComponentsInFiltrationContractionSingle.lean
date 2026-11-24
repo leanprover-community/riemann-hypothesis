@@ -78,7 +78,6 @@ theorem twisted_action_C (φ : R →+* B) (m m' : Matrix (Fin n) (Fin n) B) (c :
     twistedMatrixSubstitution LL S φ m m' (C c) = C (φ c) := by
   simp [twistedMatrixSubstitution]
 
-open Classical in
 theorem twisted_action_X (φ : R →+* B) (m m' : Matrix (Fin n) (Fin n) B) (v : ι × Fin n) :
     twistedMatrixSubstitution LL S φ m m' (X v) = if v.1 ∈ S then
       (if LL.vec v.1 then ∑ b : Fin n, MvPolynomial.C (m b v.2) * X (v.1, b)
@@ -858,7 +857,6 @@ end supp
 
 section filt
 
-open Formalism.MainNotions.G.GLWeightTheory
 
 variable {n : ℕ} {Q : Type*} [CommRing Q] (Fl : flt_Fil Q)
 
@@ -944,7 +942,6 @@ end filt
 
 section final
 
-open Formalism.MainNotions.G.GLWeightTheory
 
 variable {N n : ℕ} (LL : Letters (Fin N))
 

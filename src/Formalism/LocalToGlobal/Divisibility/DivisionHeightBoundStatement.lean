@@ -343,7 +343,6 @@ end Comparison₂
 
 section ColFace
 
-open Formalism.BasicNotions Formalism.L2.Col
 
 variable {X : Fields} {Pr : Primes X} {Rk : Ranks} (W : Wts X Pr.Word Rk) (Ch : Chars X Pr Rk.m) (hX : X.Ok)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {Sg : Set ℕ}
@@ -387,7 +386,6 @@ end ColFace
 
 section ColFaceAll
 
-open Formalism.BasicNotions Formalism.L2.Col
 
 variable {X : Fields} {Pr : Primes X} {Rk : Ranks} {W : Wts X Pr.Word Rk} {Ch : Chars X Pr Rk.m}
   {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {Sg : Set ℕ}
@@ -558,7 +556,6 @@ end Concrete
 
 section ConcreteCol
 
-open Formalism.BasicNotions Formalism.L2.Col
 
 variable {X : Fields} {Pr : Primes X} {Rk : Ranks} {W : Wts X Pr.Word Rk} {Ch : Chars X Pr Rk.m}
   {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {Sg : Set ℕ}
@@ -579,7 +576,6 @@ end Formalism.L2.DIV
 namespace Formalism.L2.DIV.Inst
 
 open Formalism.DivisionValues Formalism.EigenvalueLevelCeiling Formalism.L2.Indef Formalism.L2.Indef.Examples₂ Formalism.L2.DIV
-open Formalism.LatticeIndexTer (ph)
 
 
 

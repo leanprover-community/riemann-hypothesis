@@ -293,7 +293,6 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {V W : HSp D}
 
 
-open Classical in
 theorem ccr (hψ : IsStdChar D ψ (-1)) (hθ : IsInfFam θ) (A : Fr V) (B : Fr W) (k l : FVar D W.rank V.rank)
     {g : WO V W → ℂ} (hg : IsThetaFunO ψ V W g) :
     annih (heisO ψ V W) θ k.1 (cplxO (A.cart k.1) (B.cart k.1)) (unitMap (A.onb k.1) (B.onb k.1) k.2.1 k.2.2)

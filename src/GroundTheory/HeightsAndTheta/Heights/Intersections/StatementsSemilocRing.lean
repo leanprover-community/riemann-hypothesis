@@ -162,11 +162,9 @@ namespace SemilocRing
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
 
-open Classical in
 def blkW : (Σ k, ι k) → K → ℕ := fun p => Pi.single p.1 1
 
 
-open Classical in
 theorem isMultiHomog_of_wh {s : MRing ι} {a : K → ℕ} (h : IsWeightedHomogeneous (blkW (ι := ι)) s a) :
     IsMultiHomog s a := by
   intro m hm k

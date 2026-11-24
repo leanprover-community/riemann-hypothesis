@@ -754,14 +754,11 @@ theorem descent_cm_field : DescentCM := by
 
 namespace ConjugateWeightGram
 
-open StepBAux
 
-section Restrict
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 
 
-end Restrict
 
 end ConjugateWeightGram
 

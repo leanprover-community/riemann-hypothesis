@@ -352,7 +352,6 @@ end LinearLie
 section IndefiniteUnitary
 
 open Matrix
-open scoped Matrix.Norms.L2Operator
 
 variable (p q : ℕ)
 
@@ -412,8 +411,6 @@ end IndefiniteUnitary
 
 section IndefiniteUnitaryLie
 
-open Matrix
-open scoped Matrix.Norms.L2Operator
 
 variable (p q : ℕ)
 

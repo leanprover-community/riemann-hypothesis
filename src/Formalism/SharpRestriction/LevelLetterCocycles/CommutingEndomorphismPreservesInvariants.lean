@@ -61,23 +61,16 @@ namespace Idx
 
 open Formalism.IrreducibleCountingLemmas.TW (relLen)
 open Formalism.MainNotions.IntegralHeckeForms (IsLatIn lenR)
-open scoped TensorProduct
 
-section Comm
 
 variable {R W : Type} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [AddCommGroup W] [Module R W]
 
-end Comm
 
 end Idx
 
 namespace Idx
 
-open Formalism.IrreducibleCountingLemmas.TW (relLen)
-open Formalism.MainNotions.IntegralHeckeForms (IsLatIn lenR)
-open scoped TensorProduct
 
-section BaseChange
 
 variable {R R' W W' : Type} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
   [CommRing R'] [IsDomain R'] [IsDiscreteValuationRing R'] [Algebra R R']
@@ -92,17 +85,12 @@ variable {ϖ : R} {ϖ' : R'} {u : R'ˣ} {e : ℕ}
 
 
 
-end BaseChange
 
 end Idx
 
 namespace Idx
 
-open Formalism.IrreducibleCountingLemmas.TW (relLen)
-open Formalism.MainNotions.IntegralHeckeForms (IsLatIn lenR)
-open scoped TensorProduct
 
-section Transfer
 
 variable {O Ok O' Fm : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
   [CommRing Ok] [IsDomain Ok] [IsDiscreteValuationRing Ok] [CommRing O'] [IsDomain O']
@@ -110,21 +98,15 @@ variable {O Ok O' Fm : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing 
   [AddCommGroup Fm] [Module O Fm]
 
 
-end Transfer
 
 end Idx
 
 namespace Idx
 
-open Formalism.IrreducibleCountingLemmas.TW (relLen)
-open Formalism.MainNotions.IntegralHeckeForms (IsLatIn lenR)
-open scoped TensorProduct
 
-section More
 
 variable {R W : Type} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [AddCommGroup W] [Module R W]
 
-end More
 
 end Idx
 
@@ -254,7 +236,6 @@ end Lat
 
 section BC
 
-open Formalism.IrreducibleCountingLemmas
 
 theorem full_span {R U : Type*} [CommRing R] [IsDomain R] [AddCommGroup U] [Module R U]
     (N' : Submodule R U) (s : Set U) (hs : ∀ x ∈ s, ∃ c : R, c ≠ 0 ∧ c • x ∈ N') :

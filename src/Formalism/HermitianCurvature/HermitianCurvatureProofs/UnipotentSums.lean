@@ -160,7 +160,6 @@ end UnipotentSums
 
 namespace UnipotentSums
 
-open C2x5 C2x6 FlagSpanVanishing HermitianXiVector
 
 variable {k r : ℕ}
 

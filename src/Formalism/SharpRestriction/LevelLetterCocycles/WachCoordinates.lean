@@ -345,7 +345,6 @@ end Theory
 
 section Record
 
-open Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 def Conclusion1 (D : D7) (C : ℝ) : Prop := LiftingTheoremLocalTheory D.loc C
 

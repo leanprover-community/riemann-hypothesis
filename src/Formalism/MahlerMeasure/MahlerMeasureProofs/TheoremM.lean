@@ -139,7 +139,6 @@ theorem S_mono (LL : Letters N) (T : TieData) (n n' : Fin T.t → ℕ) (hn : ∀
 end S0
 
 section S1
-open M MvPolynomial Finset
 
 variable {p : ℕ} [Fact p.Prime]
 
@@ -339,7 +338,6 @@ theorem grid_average {t : ℕ} (s : Fin t → Finset ℕ) (bad : (Fin t → ℕ)
 end S3
 
 section S4
-open M MvPolynomial Finset
 
 variable {p : ℕ} [Fact p.Prime] {σ : Type}
 
@@ -628,12 +626,10 @@ theorem existsAdaptedBasis : AdaptedBasisExists := by
 end S4
 
 section S5
-open M MvPolynomial Finset
 
 end S5
 
 section S6
-open M MvPolynomial Finset
 
 variable {p : ℕ} [Fact p.Prime] {σ : Type}
 

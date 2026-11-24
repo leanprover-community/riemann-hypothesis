@@ -99,7 +99,6 @@ def infiniteLocalNorm (v : InfinitePlace K) :
 
 
 omit [NumberField K] in
-open scoped Classical in
 variable {L} in
 theorem coe_infiniteLocalNorm (v : InfinitePlace K)
     (y : (w : v.placesOver L) → ((w : InfinitePlace L).Completion)ˣ) :

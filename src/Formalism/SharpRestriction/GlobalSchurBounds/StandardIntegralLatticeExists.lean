@@ -126,11 +126,9 @@ theorem Adm_std (N N' : ℕ) (h : Even N) (h' : Even N') :
 
 end Std
 
-section KernelEntryData
 
 variable (p : ℕ) [Fact p.Prime]
 
-end KernelEntryData
 
 section ReadsSec
 
@@ -141,7 +139,6 @@ end ReadsSec
 
 section FrobSec
 
-open Formalism.FrobeniusOrbits
 open scoped Pointwise
 
 end FrobSec
@@ -340,11 +337,9 @@ theorem host_emb_star (D : D7) (σ : D.host.E →+* ℂ) (a : D.host.E) : σ (st
   have := D.host.isCMField_hostE
   exact NumberField.IsCMField.complexEmbedding_complexConj D.host.E σ a
 
-section LocB
 
 variable {LL : Type} [Field LL] (Pl : Rows.Places LL) (w : Pl.Pl) {V : Type} [AddCommGroup V] [Module LL V]
 
-end LocB
 
 end Formalism.MainNotions.GlobalTheoryTheory.Inhab
 

@@ -87,7 +87,6 @@ theorem integral_box (ν : Measure k) (c : kˣ) :
   simp [Measure.real]
 
 
-open Classical in
 theorem hat_box {ψ : AddChar k Circle} (hψ : HasConductor ψ 1) (ν : Measure k) [ν.IsAddHaarMeasure] (c : kˣ) :
     ∃ V : ℝ, 0 < V ∧ ∀ u, hat ψ ν (-1) (fun y : n → k => if y ∈ box n c⁻¹ then (1 : ℂ) else 0) u =
       (V : ℂ) * (if u ∈ box n c then 1 else 0) := by
@@ -296,7 +295,6 @@ theorem Phi_mul_rowE (hP : S.Pattern t) (j c : ℕ) (H : j + 1 + (c + 1) = s) (r
 end GlobalTheory.LocFlat.DoubleStepProof
 
 
-open Classical in
 theorem GlobalTheory.LocFlat.doubleStep_of_pureCol_pureRow : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] [MeasurableSpace k] [BorelSpace k] (ν : Measure k), IsUnitVol ν → ∀ (s κ : ℕ) (S : SymData k s κ) (t : Type) [Fintype t] [DecidableEq t], S.Pattern t → S.OneIndexAt t ν → GlobalTheory.LocFlat.PureCol S t ν → GlobalTheory.LocFlat.PureRow S t ν → GlobalTheory.LocFlat.DoubleStep S t ν := by
   intro k _ _ _ _ _ _ ν hν s κ S t _ _ hP hOne hCol hRow j c H r hc
   haveI := hν.1

@@ -442,7 +442,6 @@ end Dict
 
 section Cols2
 
-open Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain Formalism.NG
 
 variable {D : D7} (i : D.nd.Loc) (dc : TruncatedSeriesCountingIdentities.Decl D i)
   {X' : Type} {d : Type} [Fintype d] [DecidableEq d]
@@ -534,7 +533,6 @@ end Cols2
 
 section Prf
 
-open Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain Formalism.NG
 
 variable {D : D7} (i : D.nd.Loc) (dc : TruncatedSeriesCountingIdentities.Decl D i) {n : ℕ}
   {V : Type} [AddCommGroup V] [Module (FractionRing (D.nd.O i)) V] [Module (D.nd.O i) V]
@@ -583,7 +581,6 @@ end Prf
 
 section PrfRow
 
-open Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain Formalism.NG
 
 variable {D : D7} (i : D.nd.Loc) (dc : TruncatedSeriesCountingIdentities.Decl D i)
   [TopologicalSpace (FractionRing (D.nd.O i))] [IsTopologicalAddGroup (FractionRing (D.nd.O i))]
@@ -626,7 +623,6 @@ end PrfRow
 
 section PrfCol
 
-open Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain Formalism.NG
 
 variable {D : D7} (i : D.nd.Loc) (dc : TruncatedSeriesCountingIdentities.Decl D i)
   {X' : Type} {d : Type} [Fintype d] [DecidableEq d]
@@ -698,15 +694,12 @@ theorem comp_mem_Lx {P : Type} [AddCommGroup P] [Module R' P] [Module (D.nd.O i)
 
 end PrfCol
 
-section PrfKappa
 
-open Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain Formalism.NG
 
 variable {D : D7} (i : D.nd.Loc) (dc : TruncatedSeriesCountingIdentities.Decl D i)
   {X' : Type} {d : Type} [Fintype d] [DecidableEq d]
   {R' : Subalgebra (D.nd.O i) (X' → Matrix d d (FractionRing (D.nd.O i)))} {Tc : Type} [CommRing Tc] [Algebra Tc R']
   (r : (D.nd.Om ≃ₐ[D.host.E] D.nd.Om) →* R') (χ : (D.nd.Om ≃ₐ[D.host.E] D.nd.Om) →* Tcˣ)
 
-end PrfKappa
 
 end Formalism.MainNotions.N.KHf

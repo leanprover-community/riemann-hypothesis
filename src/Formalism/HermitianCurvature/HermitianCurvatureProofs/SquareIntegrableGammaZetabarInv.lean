@@ -110,10 +110,7 @@ set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx2.R2
-open Formalism.FourierDecayAlt.MA
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.P.MAx1.An MeasureTheory
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -133,10 +130,8 @@ set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx2.R2
-open Formalism.FourierDecayAlt.MA
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.P.MAx1.An MeasureTheory Finset
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -169,9 +164,7 @@ theorem act_alg (c : ℂ) (f π) : actA P (algebraMap ℂ (A P (DQ P)) c) f π =
 theorem act_kap (g : M.Ty P → ℂ) (f π) : actA P (kap P (DQ P) g) f π = g π • f π := act_diag P _ f π
 end Act
 
-section R0
 variable {B : Type} [Ring B] [Algebra ℂ B] (L : LevelData B 0)
-end R0
 
 abbrev Pb (b : ℕ) : M.Par := ⟨1, 0, 1, 1, fun _ => 0, fun _ => 2 * b⟩
 
@@ -193,10 +186,8 @@ set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx2.R2
-open Formalism.FourierDecayAlt.MA
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.P.MAx1.An MeasureTheory Finset
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -207,7 +198,6 @@ end
 end Formalism.FourierDecayAlt.P.MAx2.R2
 
 namespace Formalism.FourierDecayAlt.P.MAx2.R2
-open Formalism.FourierDecayAlt.MA
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.YangianSpanCharacter.T Matrix
 
@@ -304,7 +294,6 @@ end Formalism.FourierDecayAlt.P.MAx2
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA
 
 theorem roots_outside_of_parts_alt : Formalism.FourierDecayAlt.MA.RootsOutQOfParts := by
   intro hJ P l L j lam α β Lb c Ntot hH
@@ -483,7 +472,6 @@ set_option linter.unusedSimpArgs false
 namespace Formalism.FourierDecayAlt.P.MAx2.Jet
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.P.MAx1.An
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -858,7 +846,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx2.Jet
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr
 
 noncomputable section
 
@@ -966,7 +953,6 @@ set_option linter.unusedSimpArgs false
 namespace Formalism.FourierDecayAlt.P.MAx2.J0
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.P.MAx1.An MeasureTheory
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -1018,7 +1004,6 @@ set_option linter.unusedSimpArgs false
 namespace Formalism.FourierDecayAlt.P.MAx2.J0
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.P.MAx1.An MeasureTheory Finset
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -1046,9 +1031,7 @@ theorem act_alg (c : ℂ) (f π) : actA P (algebraMap ℂ (A P (DQ P)) c) f π =
   rw [Matrix.algebraMap_eq_diagonal, act_diag]; rfl
 end Act
 
-section R0
 variable {B : Type} [Ring B] [Algebra ℂ B] (L : LevelData B 0)
-end R0
 
 variable {τ : ℝ}
 
@@ -1063,8 +1046,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx2.J0
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.P.MAx1.An MeasureTheory Finset
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -1082,8 +1063,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx2.J0
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.P.MAx1.An MeasureTheory Finset
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -1108,8 +1087,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx2.Adj
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.P.MAx1.An MeasureTheory
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -1622,7 +1599,6 @@ end Formalism.FourierDecayAlt.P.MAx2.Adj
 namespace Formalism.FourierDecayAlt.P
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.MAx2.Adj MeasureTheory
-open scoped ComplexConjugate
 
 theorem adjoint_closed : Formalism.FourierDecayAlt.MA.AdjClosed := fun _ _ =>
   ⟨isAdj_one, fun _ _ ha hb => ⟨isAdj_add ha hb, isAdj_mul ha hb⟩, fun z _ ha => isAdj_smul z ha,

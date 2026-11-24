@@ -83,19 +83,15 @@ theorem isSDLat_globLat (hc : CMData F E) {x : GL (Fin n) (E ⊗[F] Formalism.L2
 
 end Lat
 
-section Rep
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Λ : ∀ j, LevFam X.E X.K (R.N j) Pr.vGs)
 
-end Rep
 
-section Rel
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Λ : ∀ j, LevFam X.E X.K (R.N j) Pr.vGs)
 
-end Rel
 
 end DetChrChi
 

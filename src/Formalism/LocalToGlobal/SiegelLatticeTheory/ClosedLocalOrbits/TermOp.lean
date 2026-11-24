@@ -217,7 +217,6 @@ def chiN (κ : X.B.I.Gf) : ℂ :=
   X.psiEf (divN X.B.I X.B.g (∑ a, hA X.B.I (X.f0 a) (X.B.I.fmat κ *ᵥ nxt X.e0 X.z0 a)))
 
 
-open Formalism.L2.SG.HidaSetting in
 def chiL (κ : X.B.I.Gf) : ℂ :=
   X.psiEf (divN X.B.I X.B.g (∑ i : Fin D.R.k,
     if h : i.1 + 1 < D.R.k then hA X.B.I (X.bwd i) (X.B.I.fmat κ *ᵥ X.bw ⟨i.1 + 1, h⟩) else 0))
@@ -272,7 +271,6 @@ section Op
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-open Formalism.L2.SG.PoincareInHH.PoincareSetting
 
 variable {D : D7} {X : Formalism.L2.SG.HidaSetting.HidaSetting D} {u u' : D.what₂.Word}
   {F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)} {F0' : FlagG (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)}
@@ -350,7 +348,6 @@ section Split
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-open Formalism.L2.SG.PoincareInHH.PoincareSetting
 
 variable {D : D7} {X : Formalism.L2.SG.HidaSetting.HidaSetting D} {u u' : D.what₂.Word}
   {F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)} {F0' : FlagG (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)}

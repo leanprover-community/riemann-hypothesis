@@ -419,8 +419,6 @@ end Formalism.FourierDecayAlt.P.S6x3
 namespace Formalism.FourierDecayAlt.P
 
 open Formalism.FourierDecayAlt.S6 Formalism.FourierDecayAlt.P.S6x3
-open NumberField NumberField.IsCMField Module
-open scoped nonZeroDivisors
 
 theorem twistedLatticeIndex : Formalism.FourierDecayAlt.S6.IndexCore := by
   intro E _ _ _ A g s hA0 hA hg hU

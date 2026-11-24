@@ -85,7 +85,6 @@ def BCSum : Prop := ∀ (l : ℕ) (W W' : Type) (q : W → ℕ) (q' : W' → ℕ
       ∑' p, lterm q' ξ ζ σ p = ∑ j ∈ Finset.range l, ∑' p, lterm q α (fun v b => β v b * c v ^ j) σ p
 
 
-open Classical in
 def AbsCount : Prop := ∀ (l : ℕ) (W W' : Type) (q : W → ℕ) (q' : W' → ℕ) (u : W' → W) (f : W' → ℕ) (c : W → ℂ), 1 ≤ l →
   Cover l q q' u f c → ∀ (X X' : Type) (d : X → ℕ) (d' : X' → ℕ) (A : ∀ x, W → Fin (d x) → ℂ) (A' : ∀ x, W' → Fin (d' x) → ℂ),
     Sys q X d A → Sys q' X' d' A' → ∀ (ι : Type) [Fintype ι] (x : X) (y : ℕ → X) (z : ι → X' × ℝ) (t t' : ℝ),

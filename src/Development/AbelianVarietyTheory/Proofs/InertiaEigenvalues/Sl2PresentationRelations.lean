@@ -95,7 +95,6 @@ lemma mx_unit (m : Kˣ → M) (s : Kˣ) : mx m (s : K) = m s := by
   rw [mx_ne m s.ne_zero, Units.mk0_val]
 
 
-open Classical in
 def rho (n : K → M) (m : Kˣ → M) (t : M) (g : SpecialLinearGroup (Fin 2) K) : M := by
   classical
   exact if en g 1 0 = 0 then mx m (en g 0 0) * n (en g 0 1 / en g 0 0)

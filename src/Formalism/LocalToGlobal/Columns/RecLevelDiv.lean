@@ -260,11 +260,9 @@ theorem levChr_parFam_eq_levChar (x : GL (Fin n) (E ⊗[F] Formalism.L2.Herm.Af 
 
 end Cmp
 
-section FinCol
 
 variable {κ K : Type} [CommRing κ] [Field K] {n r : ℕ}
 
-end FinCol
 
 section Cols
 
@@ -277,11 +275,9 @@ theorem t_pos (R : Ranks) : 0 < R.t := by
 
 end Cols
 
-section SharpFin
 
 variable {κ K : Type} [CommRing κ] [Field K]
 
-end SharpFin
 
 section Sharp
 

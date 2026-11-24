@@ -49,7 +49,6 @@ namespace Formalism.L2.Rows
 
 open Formalism.L2.DIV Formalism.L2.Indef
 
-section Joint
 
 variable (D : D7) {Gp : Type} [Group Gp] [Fintype Gp] {Pl0 I0 Ty T : Type}
   (A3 : FamIn3 D.what₂.LL Gp Pl0 I0 Ty T D.R.m)
@@ -70,7 +69,6 @@ structure BaseDivisionAmbientCompatibilityFamily (Y : DivX D) (p0 : BaseLevelRow
 
   cen0 : CenTie D A3.A p0.s P0 ψ0 I.eG I.tup I.jA0
 
-end Joint
 
 section Bundle
 
@@ -137,7 +135,6 @@ structure RowsHold0_3 (P : RowSideFamily ex) : Prop where
 def RowsHoldKap3 (P : RowSideFamily ex) : Prop := ∀ e : D.what₂.LL →+* ℂ, Y.kapR e = P.S1.κ (InfinitePlace.mk e)
 
 
-open Classical in
 def RowsHoldLam3 (P : RowSideFamily ex) : Prop :=
   ∃ cOf : D.what₂.FT → P.A3.fam3.base3.Ix,
     (∀ (i : Fin D.R.m) (c : P.A3.fam3.base3.Ix),

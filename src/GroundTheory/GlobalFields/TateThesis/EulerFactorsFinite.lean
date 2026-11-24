@@ -221,7 +221,6 @@ theorem mem_conductorPrimes {v : HeightOneSpectrum (𝓞 K)} :
 def conductorPart (b : (FiniteAdeleRing (𝓞 K) K)ˣ) : (FiniteAdeleRing (𝓞 K) K)ˣ :=
   ∏ v ∈ χ.conductorPrimes, finiteUnitsSingle v (finiteComponent v b)
 
-open Classical in
 theorem finiteComponent_conductorPart (b : (FiniteAdeleRing (𝓞 K) K)ˣ)
     (v : HeightOneSpectrum (𝓞 K)) :
     finiteComponent v (χ.conductorPart b) =
@@ -282,7 +281,6 @@ theorem count_idealOfExponents {n : HeightOneSpectrum (𝓞 K) →₀ ℤ} (hn :
   rw [coeIdeal_idealOfExponents hn, FractionalIdeal.count_finsuppProd]
 
 
-open Classical in
 theorem finiteTestFun_mul_toIdele (b : (FiniteAdeleRing (𝓞 K) K)ˣ) :
     χ.finiteTestFun b * (χ.toIdele (ofFinite b) : ℂ) =
       if ∀ v, 0 ≤ ord v (ofFinite b) then χ.coeff (idealOfExponents (ordFinsupp K (ofFinite b)))
@@ -384,7 +382,6 @@ theorem finiteModule_ofFinite_eq {b : (FiniteAdeleRing (𝓞 K) K)ˣ}
   exact h
 
 
-open Classical in
 def orderTerm (s : ℂ) (n : HeightOneSpectrum (𝓞 K) →₀ ℤ) : ℂ :=
   if ∀ v, 0 ≤ n v then χ.coeff (idealOfExponents n) *
     (Ideal.absNorm (idealOfExponents n) : ℂ) ^ (-s) else 0

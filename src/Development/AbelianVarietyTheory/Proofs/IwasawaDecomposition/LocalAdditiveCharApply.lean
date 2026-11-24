@@ -300,7 +300,6 @@ theorem unit_of_valuation {E : Type} [Field E] [NumberField E] (w : HeightOneSpe
   exact (HeightOneSpectrum.valuation_eq_one_iff_notMem w).1 h2 (Ideal.Quotient.eq_zero_iff_mem.1 h1.symm)
 
 
-open Classical in
 def idx (w : {w // w ∈ Pr.vGs}) : Fin 2 := if w.1 ∈ Pr.vG 0 then 0 else 1
 
 theorem idx_mem (w : {w // w ∈ Pr.vGs}) : w.1 ∈ Pr.vG (idx w) := by

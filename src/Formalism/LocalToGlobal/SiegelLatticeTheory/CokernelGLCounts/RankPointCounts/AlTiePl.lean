@@ -67,7 +67,6 @@ section comp
 
 open MonoidWithZeroHom MonoidWithZeroHom.ValueGroup₀
 
-open MonoidWithZeroHom MonoidWithZeroHom.ValueGroup₀
 
 variable {E L : Type} [Field E] [NumberField E] [Field L] [NumberField L]
 
@@ -267,7 +266,6 @@ end Formalism.L2.SG.Pf.AlTie
 namespace Formalism.L2.SG.Pf.AlTie
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.HidaSetting
-open scoped TensorProduct
 
 theorem asIdeal_mapPl' {F L : Type} [Field F] [NumberField F] [Field L] [NumberField L] (j : F ≃+* L)
     (v : HeightOneSpectrum (𝓞 F)) : (mapPl j v).asIdeal = v.asIdeal.map (RingOfIntegers.mapRingEquiv j) := asIdeal_mapPl j v

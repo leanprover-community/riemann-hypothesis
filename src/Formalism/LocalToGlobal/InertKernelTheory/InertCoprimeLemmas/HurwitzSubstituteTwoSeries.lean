@@ -359,7 +359,6 @@ end Formalism.L2.KerInert.Jet
 
 namespace Formalism.L2.KerInert.Jet
 
-open MvPowerSeries Finset
 
 section E
 
@@ -538,7 +537,6 @@ end Formalism.L2.KerInert.Jet
 
 namespace Formalism.L2.KerInert.Jet
 
-open MvPowerSeries Finset Formalism.MainNotions.G Formalism.BasicNotions Formalism.MainNotions.FormalGroupSystem
 
 attribute [local instance] Formalism.MainNotions.G.GAtP.ringO Formalism.MainNotions.G.GAtP.domO Formalism.MainNotions.G.GAtP.dvrO Formalism.MainNotions.G.GAtP.fieldK
   Formalism.MainNotions.G.GAtP.algOK
@@ -601,7 +599,6 @@ end Formalism.L2.KerInert.Jet
 
 namespace Formalism.L2.KerInert.Jet
 
-open MvPowerSeries Finset Formalism.MainNotions.G Formalism.BasicNotions Formalism.MainNotions.FormalGroupSystem
 
 attribute [local instance] Formalism.MainNotions.G.GAtP.ringO Formalism.MainNotions.G.GAtP.domO Formalism.MainNotions.G.GAtP.dvrO Formalism.MainNotions.G.GAtP.fieldK
   Formalism.MainNotions.G.GAtP.algOK
@@ -714,7 +711,6 @@ end Formalism.L2.KerInert.Jet
 
 namespace Formalism.L2.KerInert.Jet
 
-open MvPowerSeries Finset Formalism.MainNotions.G Formalism.BasicNotions Formalism.MainNotions.FormalGroupSystem
 
 attribute [local instance] Formalism.MainNotions.G.GAtP.ringO Formalism.MainNotions.G.GAtP.domO Formalism.MainNotions.G.GAtP.dvrO Formalism.MainNotions.G.GAtP.fieldK
   Formalism.MainNotions.G.GAtP.algOK
@@ -805,7 +801,6 @@ end Formalism.L2.KerInert.Jet
 
 namespace Formalism.L2.KerInert.Jet
 
-open MvPowerSeries Finset Formalism.MainNotions.G Formalism.BasicNotions Formalism.MainNotions.FormalGroupSystem
 
 attribute [local instance] Formalism.MainNotions.G.GAtP.ringO Formalism.MainNotions.G.GAtP.domO Formalism.MainNotions.G.GAtP.dvrO Formalism.MainNotions.G.GAtP.fieldK
   Formalism.MainNotions.G.GAtP.algOK
@@ -923,7 +918,6 @@ end Formalism.L2.KerInert.Jet
 
 namespace Formalism.L2.KerInert.Jet
 
-open MvPowerSeries Finset Formalism.MainNotions.G Formalism.BasicNotions Formalism.MainNotions.FormalGroupSystem
 
 attribute [local instance] Formalism.MainNotions.G.GAtP.ringO Formalism.MainNotions.G.GAtP.domO Formalism.MainNotions.G.GAtP.dvrO Formalism.MainNotions.G.GAtP.fieldK
   Formalism.MainNotions.G.GAtP.algOK

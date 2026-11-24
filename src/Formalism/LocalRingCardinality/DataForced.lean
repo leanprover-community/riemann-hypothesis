@@ -168,7 +168,6 @@ def fockDeg (D : D7) (j : ℕ) : ℤ :=
 def FTypeG (D : D7) (j : ℕ) : ℝ := -((fockDeg D j : ℝ)) / 2
 
 
-open Classical in
 def FvalP {D : D7} (L : SizeData₂ D) (j p : ℕ) : ℝ :=
   if p ∈ L.gTypes then FTypeG D j
   else if D.host.cls p = PrimeClass.ramD then FRamD D j

@@ -139,7 +139,6 @@ end Num1
 
 section Num2
 
-open Formalism.FourierDecayAlt.PB Finset
 
 lemma inv_two_pow (n : ℕ) : ((2 : ℝ) ^ n)⁻¹ = (2 : ℝ) ^ (-(n : ℝ)) := by
   rw [Real.rpow_neg (by norm_num : (0:ℝ) ≤ 2), Real.rpow_natCast]
@@ -269,7 +268,6 @@ end Num2
 
 section Num3
 
-open Formalism.FourierDecayAlt.PB Finset
 
 lemma exp_mul_one_sub_le (y : ℝ) : Real.exp y * (1 - y) ≤ 1 := by
   have h := Real.add_one_le_exp (-y)
@@ -361,7 +359,6 @@ end Num4
 
 section Hil1
 
-open Formalism.FourierDecayAlt.PB Finset
 
 theorem t_TextClosing : NormSqAddBoundBySqrtSum := by
   intro H _ x y η ε dd hdd hx hy
@@ -403,7 +400,6 @@ end Hil1
 
 section Hil2
 
-open Formalism.FourierDecayAlt.PB Finset
 
 section
 variable {τ Rw I H H₁ : Type} [Fintype I] [NormedAddCommGroup H] [InnerProductSpace ℂ H]
@@ -519,7 +515,6 @@ end Hil2
 
 section Hil3
 
-open Formalism.FourierDecayAlt.PB Finset
 
 theorem t_PairBound : PairBound := by
   intro hPBA hPI hEI hPS hSF hNP hNE hND hNL hNN hNGE hEZ τ Rw I H H₁ _ _ _ _ _ _ X k r f b g1 g2 c Cn
@@ -552,7 +547,6 @@ end Hil3
 
 section Hil4
 
-open Formalism.FourierDecayAlt.PB Finset
 open Classical
 open scoped ComplexOrder
 
@@ -599,8 +593,6 @@ end Hil4
 
 section Hil5
 
-open Formalism.FourierDecayAlt.PB Finset
-open Classical
 
 section
 variable {τ H₁ : Type} [NormedAddCommGroup H₁] [InnerProductSpace ℂ H₁]
@@ -717,7 +709,6 @@ end Hil5
 
 section Hil6
 
-open Formalism.FourierDecayAlt.PB
 
 end Hil6
 
@@ -725,7 +716,6 @@ section LocA
 
 open Finset NumberField Formalism.FourierDecayAlt Formalism.FourierDecayAlt.PB
 open scoped ComplexOrder ComplexConjugate
-open Classical
 
 theorem psd_congr {α : Type} {Y : Finset α} {k k' : α → α → ℂ}
     (h : ∀ x ∈ Y, ∀ y ∈ Y, k x y = k' x y) (hk : TB.PSDOn Y k) : TB.PSDOn Y k' := by
@@ -799,9 +789,6 @@ end LocA
 
 section LocB
 
-open Finset NumberField Formalism.FourierDecayAlt Formalism.FourierDecayAlt.PB
-open scoped ComplexOrder ComplexConjugate
-open Classical
 
 variable {E : Type} [Field E]
 
@@ -910,9 +897,6 @@ end LocB
 
 section Loc
 
-open Finset NumberField Formalism.FourierDecayAlt Formalism.FourierDecayAlt.PB
-open scoped ComplexOrder ComplexConjugate
-open Classical
 
 theorem t_AxiomsOfLocalModel : AxiomsOfLocalModel := by
   rintro ⟨hA, hSch, hPD, hDS, hDP, hBD, hPL, hSO, hPh, hOS, hOD, hLP, hUH, hTP, hTU, hGL, hUM, hAS, hAF,
@@ -1002,7 +986,6 @@ end Lat
 section Main
 
 open Finset NumberField Formalism.FourierDecayAlt Formalism.FourierDecayAlt.J Formalism.FourierDecayAlt.PB
-open scoped ComplexOrder ComplexConjugate
 
 theorem t_MainRow : MainRow := by
   intro hLC hGC _hLL hAx h13s C₄ Cthr h4

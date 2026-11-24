@@ -215,7 +215,6 @@ end Formalism.GM.ProjS
 
 namespace Formalism.GM.ProjS
 
-open MvPolynomial Finset
 
 variable {k σ : Type} [Field k]
 
@@ -346,7 +345,6 @@ end Formalism.GM.ProjS
 
 namespace Formalism.GM.ProjS
 
-open MvPolynomial Finset
 
 variable {k σ : Type} [Field k]
 
@@ -486,7 +484,6 @@ end Formalism.GM.ProjS
 
 namespace Formalism.GM.ProjS
 
-open MvPolynomial Finset
 
 variable {k σ : Type} [Field k] {r : ℕ} {w e : Fin r → σ} {zv sv : σ}
 
@@ -695,7 +692,6 @@ end Formalism.GM.ProjS
 
 namespace Formalism.GM.ProjS
 
-open MvPolynomial Finset
 
 theorem coef_cancel {k : Type} [Field k] [CharZero k] (o n r z j : ℕ) (hr : 1 ≤ r) (hj : j < o) :
     ((-1 : k) ^ j) / (((j.factorial : k) ^ 2) * ((o + n + r + z - 1).choose j : k)) +
@@ -739,7 +735,6 @@ end Formalism.GM.ProjS
 
 namespace Formalism.GM.ProjS
 
-open MvPolynomial Finset
 
 variable {k σ : Type} [Field k] {r : ℕ} {w e : Fin r → σ} {zv sv : σ}
 
@@ -798,7 +793,6 @@ end Formalism.GM.ProjS
 
 namespace Formalism.GM.ProjS
 
-open MvPolynomial Finset
 
 variable {k σ : Type} [Field k] {r : ℕ} {w e : Fin r → σ} {zv sv : σ}
 

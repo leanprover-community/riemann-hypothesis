@@ -276,7 +276,6 @@ theorem card_gal_le_two (h2 : Module.finrank F Ω ≤ 2) : Fintype.card Gal(Ω/F
   exact (AlgEquiv.card_le (F := F) (K := Ω)).trans h2
 
 
-open Classical in
 noncomputable def quadraticChar (h2 : Module.finrank F Ω ≤ 2) : Additive Gal(Ω/F) →ₜ+ QZ where
   toFun x := if Additive.toMul x = 1 then 0 else QZ.mk (1 / 2)
   map_zero' := by simp
@@ -298,7 +297,6 @@ noncomputable def quadraticChar (h2 : Module.finrank F Ω ≤ 2) : Additive Gal(
   continuous_toFun := continuous_of_discreteTopology
 
 omit [IsGalois F Ω] in
-open Classical in
 theorem quadraticChar_injective (h2 : Module.finrank F Ω ≤ 2) :
     Function.Injective (quadraticChar F Ω h2) := by
   refine (injective_iff_map_eq_zero (quadraticChar F Ω h2)).2 fun x hx => ?_

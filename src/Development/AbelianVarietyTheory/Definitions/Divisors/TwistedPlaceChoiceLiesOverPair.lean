@@ -118,7 +118,6 @@ def sqRank (D : D7) (ij : Sq D) : ℕ :=
   GlobalTheory.ChiGrid.rankV D ij.1 ((ij.2 : ℕ) + 1) + GlobalTheory.ChiGrid.rankV D ((ij.1 : ℕ) + 1) ij.2
 
 
-open Classical in
 def FunIn.data {p : PtAt ex Csz} {CF : ℝ} (d : FunIn p CF) (ze : Tup p → D.what₂.LL) (Tf : Finset (PlL D)) (dF : PlL D → ℤ) :
     FunData D.what₂.LL (Df p) where
   n := d.n

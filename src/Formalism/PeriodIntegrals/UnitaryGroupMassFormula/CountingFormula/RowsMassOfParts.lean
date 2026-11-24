@@ -56,13 +56,11 @@ section Pos
 
 end Pos
 
-section Generic
 
 variable {K F : Type} [Field K] [NumberField K] [StarRing K] [Field F] [NumberField F] [Algebra F K]
 variable {V1 : Type} [AddCommGroup V1] [Module K V1] [FiniteDimensional K V1] [Module (𝓞 K) V1]
   [IsScalarTower (𝓞 K) K V1]
 
-end Generic
 
 section Bridge
 

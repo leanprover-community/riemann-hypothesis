@@ -122,7 +122,6 @@ def th (u : B.Word) (a : I.ι) (i : ℕ) (b : Idx I.sel (I.tup a) (I.idx a) i) (
   GamP := B.GamP
 
 
-open Classical in
 def fmIn (hPr : (B.primes X).Ok) (u : B.Word) (a : I.ι) : FmIn (I.atIn u a) B.places where
   tauOf w := tauAt hPr u w
   seenP w := decide (seenC (B.primes X) u w)
@@ -173,7 +172,6 @@ def crd (B : Base) (i : ℕ) (hi : i ≤ B.R.m) :
   (B.sp.X i).frame.equivFun.trans (LinearEquiv.funCongrLeft B.host.E B.host.E (finCongr (B.sp.X_rank i hi)).symm)
 
 
-open Classical in
 def latAt (u : B.Word) (a : I.ι) (i : ℕ) (c : (I.stp u a i).Cl) :
     letI := B.host.cmStar; Submodule (𝓞 B.host.E) (B.sp.X i).V :=
   letI := B.host.cmStar

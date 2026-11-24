@@ -251,7 +251,6 @@ theorem equivariant_last_degree : EqvLast := by
   show rowDeg m (Fin.last n) = (wsum lam - wsum mu - lam.detShift).toNat
   omega
 
-open EqvWt in
 theorem equivariant_partial_weight : EqvRowWt := by
   intro n N h lam mu hI φ hφ ω s hs hω
   subst h

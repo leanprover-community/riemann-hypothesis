@@ -1646,7 +1646,6 @@ end Dual
 
 section Comb
 
-open Classical in
 theorem comb_identity {A₁ C₁ A₂ C₂ Θ : Type} [Fintype A₁] [Fintype C₁] [Fintype A₂] [Fintype C₂]
     [Fintype Θ] (P₁ : A₁ → C₁ → Prop) (P₂ : A₂ → C₂ → Prop) (ta : Θ → A₁ → A₂) (tc : Θ → C₁ → C₂)
     (Q : Θ → A₁ → C₁ → A₂ → C₂ → Prop)
@@ -1706,7 +1705,6 @@ theorem finsum_of_inj {X S : Type} (ι : S → X) (hι : Function.Injective ι) 
 
 variable {K : Type} [CommRing K]
 
-open Classical in
 def tTerm (R : Subring K) (ψ : AddChar K ℂ) {m m' N N' : ℕ} (hN : N = m + 1) (hN' : N' = m' + 1)
     (Z₁ : Matrix (Fin m) (Fin m) K) (Z₂ : Matrix (Fin m') (Fin m') K) (c : K)
     (y : ((Fin m → KR R) × (Fin m → KR R)) × ((Fin m' → KR R) × (Fin m' → KR R))) : ℂ :=
@@ -1717,7 +1715,6 @@ def tTerm (R : Subring K) (ψ : AddChar K ℂ) {m m' N N' : ℕ} (hN : N = m + 1
     ψ (lastE (outV R y.1.1) + lastE (outV R y.1.2)) *
     conj (ψ (lastE (outV R y.2.1) + lastE (outV R y.2.2)))
 
-open Classical in
 theorem tTerm_mk (R : Subring K) (ψ : AddChar K ℂ) {m m' N N' : ℕ} (hN : N = m + 1)
     (hN' : N' = m' + 1) (Z₁ : Matrix (Fin m) (Fin m) K) (Z₂ : Matrix (Fin m') (Fin m') K) (c : K)
     (x y : Fin m → KR R) (x' y' : Fin m' → KR R) :
@@ -1764,7 +1761,6 @@ theorem tTerm_supp (R : Subring K) (ψ : AddChar K ℂ) {m m' N N' : ℕ} (hN : 
     rw [tTerm_mk, if_neg hI]
     simp
 
-open Classical in
 theorem tTerm_iota (R : Subring K) (ψ : AddChar K ℂ) (hψ : ∀ r ∈ R, ψ r = 1) {m m' N N' : ℕ}
     (hN : N = m + 1) (hN' : N' = m' + 1) (Z₁ : Matrix (Fin m) (Fin m) K)
     (Z₂ : Matrix (Fin m') (Fin m') K) (c : Kˣ) (h₁ : IsInt R Z₁) (h₂ : IsInt R Z₂)

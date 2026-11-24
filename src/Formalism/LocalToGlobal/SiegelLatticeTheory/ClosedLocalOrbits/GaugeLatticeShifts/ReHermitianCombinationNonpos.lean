@@ -444,7 +444,6 @@ section PosWPf
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 
 theorem form_coord {E : Type} [Field E] [NumberField E] [StarRing E] (S : Formalism.BasicNotions.HSpace E) (τ : E →+* ℂ)
     (hconj : ∀ a : E, τ (star a) = starRingEnd ℂ (τ a)) (a b : S.V) :
@@ -569,7 +568,6 @@ section Final
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.TermDef Formalism.L2.SG.Corank
 
 end Final
 

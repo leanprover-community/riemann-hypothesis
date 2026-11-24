@@ -61,7 +61,6 @@ abbrev FK (ι : Type) : Type := ι → Unit → ℂ
 
 end Std
 
-section Member
 
 variable {R : Ranks} {Tau : Type} [Fintype Tau] (hc : Tau → HCParam R) (K : ClsPkg)
 
@@ -69,9 +68,7 @@ variable (T : ℕ) [hT : Fact T.Prime]
 
 variable (Dst : ℝ) (hD : 0 < Dst) (du : ℕ) (hdu : 0 < du) (Gam : ℝ) (hG : 1 < Gam)
 
-end Member
 
-section Forms
 
 variable {R : Ranks} {Tau : Type} [Fintype Tau] (hc : Tau → HCParam R) (K : ClsPkg) (T : ℕ) [hT : Fact T.Prime]
   (Dst : ℝ) (hD : 0 < Dst) (du : ℕ) (hdu : 0 < du) (Gam : ℝ) (hG : 1 < Gam)
@@ -79,6 +76,5 @@ variable {R : Ranks} {Tau : Type} [Fintype Tau] (hc : Tau → HCParam R) (K : Cl
   {LL : Type} [Field LL] [NumberField LL] [StarRing LL] (embLL : LL →+* ℂ)
   (Pl : Rows.Places LL) (hTau : Fintype.card Tau = R.f)
 
-end Forms
 
 end Formalism.BasicNotions.Examples₂.NZ

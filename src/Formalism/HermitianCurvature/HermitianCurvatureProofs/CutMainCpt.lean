@@ -204,7 +204,6 @@ end
 end Formalism.FourierDecayAlt.P.CutBP
 
 namespace Formalism.FourierDecayAlt.P.CutBP
-open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology
 noncomputable section
 
 theorem _root_.Formalism.FourierDecayAlt.P.CutBP.limE_of_limEvTCpt (hA : P5.ThmPActualCpt) (Cb : ℝ) : ∃ Cc : ℝ, ∀ (Wp Wq : Type) [NormedAddCommGroup Wp]
@@ -233,7 +232,6 @@ theorem _root_.Formalism.FourierDecayAlt.P.TBBx5.integral_four_of_parts_holdsCpt
 end Formalism.FourierDecayAlt.P.TBBx5
 
 namespace Formalism.FourierDecayAlt.P
-open Formalism.FourierDecayAlt
 
 theorem _root_.Formalism.FourierDecayAlt.P.integral_four_at_placeCpt (hA : P5.ThmPActualCpt) (hSS : KB.SizeStdCpt) (hDL : KB.DegLift) (hFP : PBL.FormPosCpt)
     {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
@@ -245,7 +243,6 @@ theorem _root_.Formalism.FourierDecayAlt.P.integral_four_at_placeCpt (hA : P5.Th
 end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P.TBBx5
-open Formalism.FourierDecayAlt
 
 theorem _root_.Formalism.FourierDecayAlt.P.TBBx5.integral_three_of_parts_holdsCpt : CurvatureIntegralOfPartsCpt := by
   intro hA hPS hVI hSS hDW hFP Wp Wq _ _ _ _ _ _ P p nn F Y Λ K N Cb hCb hF hnn hgrid
@@ -254,7 +251,6 @@ theorem _root_.Formalism.FourierDecayAlt.P.TBBx5.integral_three_of_parts_holdsCp
 end Formalism.FourierDecayAlt.P.TBBx5
 
 namespace Formalism.FourierDecayAlt.P
-open Formalism.FourierDecayAlt
 
 theorem _root_.Formalism.FourierDecayAlt.P.integral_three_at_placeCpt (hA : P5.ThmPActualCpt) (hPS : KB.PStdCpt) (hVI : KB.VIsoCpt) (hSS : KB.SizeStdCpt)
     (hDW : KB.DegWave) (hFP : PBL.FormPosCpt) {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
@@ -266,8 +262,6 @@ theorem _root_.Formalism.FourierDecayAlt.P.integral_three_at_placeCpt (hA : P5.T
 end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P.CutBP
-open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology MeasureTheory
-open scoped ComplexConjugate ENNReal
 noncomputable section
 section place
 variable {P : M.Par} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
@@ -299,8 +293,6 @@ end
 end Formalism.FourierDecayAlt.P.CutBP
 
 namespace Formalism.FourierDecayAlt.P.CutBP
-open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology MeasureTheory
-open scoped ComplexConjugate ENNReal
 noncomputable section
 
 theorem _root_.Formalism.FourierDecayAlt.P.CutBP.ptBound_dec_allCpt (hA : P5.ThmPActualCpt) : ∃ C₂ : ℝ, 0 < C₂ ∧
@@ -329,8 +321,6 @@ end
 end Formalism.FourierDecayAlt.P.CutBP
 
 namespace Formalism.FourierDecayAlt.P.CutBP
-open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology MeasureTheory
-open scoped ComplexConjugate ENNReal
 noncomputable section
 
 theorem _root_.Formalism.FourierDecayAlt.P.CutBP.thmBpAt_of_leaves_decCpt (hA : P5.ThmPActualCpt) (C₃ CΛ C₀ Cκ : ℝ) (hC₃ : 0 ≤ C₃) (hCΛ : 0 ≤ CΛ)
@@ -424,7 +414,6 @@ end
 end Formalism.FourierDecayAlt.P.CutBP
 
 namespace Formalism.FourierDecayAlt.P.CutBP
-open Formalism.FourierDecayAlt Formalism.QuantumDeterminants
 noncomputable section
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
@@ -455,7 +444,6 @@ end
 end Formalism.FourierDecayAlt.P.CutBP
 
 namespace Formalism.FourierDecayAlt.P.CutBP
-open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology
 noncomputable section
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
@@ -497,7 +485,6 @@ end
 end Formalism.FourierDecayAlt.P.CutBP
 
 namespace Formalism.FourierDecayAlt.P.CutBP.GT
-open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology MeasureTheory
 open scoped ComplexConjugate InnerProductSpace
 noncomputable section
 open Classical
@@ -528,7 +515,6 @@ end
 end Formalism.FourierDecayAlt.P.CutBP.GT
 
 namespace Formalism.FourierDecayAlt.P.CutBP
-open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology MeasureTheory
 noncomputable section
 
 theorem _root_.Formalism.FourierDecayAlt.P.CutBP.limEvT_fpm_of_NFCpt (hA : P5.ThmPActualCpt) (h1 : NFTopFormAllCpt) (h2 : NFTopPtwAll) (h3 : NFTopDomAll) (h4 : NFTopIdAll) (Cb : ℝ) :
@@ -556,7 +542,6 @@ end
 end Formalism.FourierDecayAlt.P.CutBP
 
 namespace Formalism.FourierDecayAlt.P.CutBP
-open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology MeasureTheory
 noncomputable section
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace in
@@ -596,10 +581,7 @@ end
 end Formalism.FourierDecayAlt.P.CutBP
 
 namespace Formalism.FourierDecayAlt.P.CutBP
-open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology MeasureTheory
-open scoped ComplexConjugate InnerProductSpace
 noncomputable section
-open Classical
 
 open GLG in
 theorem _root_.Formalism.FourierDecayAlt.P.CutBP.low_level_germCpt : GLGermCpt := by
@@ -654,10 +636,7 @@ end
 end Formalism.FourierDecayAlt.P.CutBP
 
 namespace Formalism.FourierDecayAlt.P.CutBP
-open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology MeasureTheory
-open scoped ComplexConjugate InnerProductSpace
 noncomputable section
-open Classical
 
 theorem _root_.Formalism.FourierDecayAlt.P.CutBP.germDataLowAll_of_partsCpt (hGr : GLGramCpt) (hFi : GLFibreCpt) (hCo : GLContCpt) (hGe : GLGermCpt) : GermDataLowAllCpt := by
   intro hA Wp Wq _ _ _ _ _ _ P p nn F Y K N Cb hCb hF hnn b s hb hs hbs hlev h hh w hw hN hBdd
@@ -820,7 +799,6 @@ end
 end Formalism.FourierDecayAlt.P.CutBP
 
 namespace Formalism.FourierDecayAlt.P.CutBP
-open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology MeasureTheory
 noncomputable section
 
 theorem _root_.Formalism.FourierDecayAlt.P.CutBP.low_level_continuityCpt : GLContCpt := by
@@ -843,10 +821,7 @@ end
 end Formalism.FourierDecayAlt.P.CutBP
 
 namespace Formalism.FourierDecayAlt.P.CutBP.GT
-open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology MeasureTheory
-open scoped ComplexConjugate InnerProductSpace
 noncomputable section
-open Classical
 
 theorem _root_.Formalism.FourierDecayAlt.P.CutBP.GT.germDataTopAll_of_partsCpt (hTG : TopGram1) (hTC : TopCore1) (hFT : FibreTopCpt) (hYC : YCont)
     (hMU : FieldMemU) (hSU : FieldSup) (hME : FieldMeas) (hLO : FieldLoc) : GermDataTopAllCpt := by
@@ -1005,7 +980,6 @@ theorem _root_.Formalism.FourierDecayAlt.P.CutBP.germ_data_top_levelCpt : GermDa
 end Formalism.FourierDecayAlt.P.CutBP
 
 namespace Formalism.FourierDecayAlt.P.CutBP
-open Formalism.FourierDecayAlt
 
 theorem _root_.Formalism.FourierDecayAlt.P.CutBP.block_growth_bound_of_germ_dataCpt (hA : P5.ThmPActualCpt) {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] {P : M.Par}
@@ -1019,7 +993,6 @@ theorem _root_.Formalism.FourierDecayAlt.P.CutBP.block_growth_bound_of_germ_data
 end Formalism.FourierDecayAlt.P.CutBP
 
 namespace Formalism.FourierDecayAlt.P.CutBP
-open Formalism.FourierDecayAlt
 
 theorem _root_.Formalism.FourierDecayAlt.P.CutBP.block_growth_bound_of_compact_coef_of_germ_dataCpt (hA : P5.ThmPActualCpt) {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] {P : M.Par}

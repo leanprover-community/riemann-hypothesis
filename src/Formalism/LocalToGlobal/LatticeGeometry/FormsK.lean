@@ -46,11 +46,9 @@ open scoped ComplexOrder
 
 namespace Formalism.L2.Geo
 
-section Abs
 
 variable {K : Type} [Field K] [NumberField K]
 
-end Abs
 
 namespace FormsPkg
 
@@ -71,11 +69,9 @@ theorem inc_mem_cuspF {j : ℕ} {w : WeightFamilies.Wt D j} (F : P.Cusp j w) : P
 variable {j : ℕ}
 
 
-section Gauss
 
 variable (la : HeightOneSpectrum (𝓞 P.KO)) (y : P.Pt j la)
 
-end Gauss
 
 end FormsPkg
 

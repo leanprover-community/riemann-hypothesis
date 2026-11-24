@@ -383,7 +383,6 @@ end Formalism.FourierDecayAlt.P.Ux4
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt.P.Ux4
 
 theorem directions_in_parabolic : Formalism.FourierDecayAlt.U.DirectionsInP := by
   intro k j ρ x

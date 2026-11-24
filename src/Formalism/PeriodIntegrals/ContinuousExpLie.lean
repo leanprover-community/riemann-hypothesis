@@ -143,7 +143,6 @@ theorem InA.pow {X : Mx k r} (hX : InA k r X) : ∀ n : ℕ, InA k r (X ^ (n + 1
   | zero => simpa using hX
   | succ n ih => rw [pow_succ]; exact ih.mul hX
 
-open scoped Matrix.Norms.Operator in
 theorem exp_entry_hasSum (X : Mx k r) (i j : Fin (2 * r + k + 1)) :
     HasSum (fun n : ℕ => ((n.factorial : ℂ)⁻¹) * (X ^ n) i j) ((NormedSpace.exp X) i j) := by
   have h := NormedSpace.exp_series_hasSum_exp' (𝕂 := ℂ) X

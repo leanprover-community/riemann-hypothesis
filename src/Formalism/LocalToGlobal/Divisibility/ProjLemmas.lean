@@ -921,7 +921,6 @@ theorem convA {k V G : Type} [Field k] [IsAlgClosed k] [Group G] [Fintype G] [Ad
 variable {K : Type} [Field K] [CharZero K] {G : Type} [Group G] [Fintype G]
 
 
-open Classical in
 theorem conv_char {χ χ' : G → K} (h : IsAbsIrrChar χ) (h' : IsAbsIrrChar χ') (u : G) :
     (∑ s, χ s⁻¹ * χ' (s * u)) * χ' 1 = if χ = χ' then (Fintype.card G : K) * χ' u else 0 := by
   classical
@@ -979,7 +978,6 @@ theorem conv_char {χ χ' : G → K} (h : IsAbsIrrChar χ) (h' : IsAbsIrrChar χ
   · rw [map_mul, map_natCast, Nat.card_eq_fintype_card]
   · simp
 
-open Classical in
 theorem chiIdem_mul {χ χ' : G → K} (h : IsAbsIrrChar χ) (h' : IsAbsIrrChar χ') :
     chiIdem χ * chiIdem χ' = if χ = χ' then chiIdem χ' else 0 := by
   classical
@@ -1384,7 +1382,6 @@ end Formalism.L2.DIV
 
 namespace Formalism.L2.DIV.Test
 
-open Formalism.DivisionValues
 
 variable (K : Type) [Field K] [NumberField K] [StarRing K] (G : Type) [Group G] [Fintype G]
 

@@ -54,7 +54,6 @@ namespace Formalism.MainNotions.N.Ln17
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.ArcLiftingSetup Module
 open Formalism.MainNotions.N.FrobeniusPowerSeries (LiftsAt InFF InLpp)
 
-section Core
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -107,7 +106,6 @@ structure CoresW [Fintype (K →ₐ[Qp] LL)] (W : LocWach PD LL O v n) (CR : ℝ
     cc ∈ latticeCocycles T₂.L → IsCrys PD T₂.ρ → IsCrys PD Y.ρ → Formalism.MainNotions.LiftingTheory.IsExtOf W ι π cc →
     ∀ (τ : K →ₐ[Qp] LL) (a : ℤ), IsJumpV PD Y.ρ τ a → a = 0 ∨ IsJumpV PD T₂.ρ τ a
 
-end Core
 
 section PPts
 

@@ -384,7 +384,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.Lnk
 
-open Formalism.BasicNotions Formalism.D5 Formalism.FrobeniusOrbits Formalism.LFunctionChainParameters Formalism.LFunctionChainParameters.LHost Formalism.MainNotions.GlobalTheoryTheory Formalism.MainNotions.ZetaZeroFreeRegion Formalism.MainNotions.ZetaZeroFreeRegion.Br
 
 variable {D : D7} (L : SizeData₂ D)
 

@@ -193,7 +193,6 @@ section D51b
 variable {D : D7} (i : D.nd.Loc) (r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i)))
   (ρ : D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i))) (π : D.nd.X i)
 
-open Classical
 
 theorem design_normalized (S : IdempotentChoiceData D.nd i) (hG : GoodCongruenceObjects D.nd r ρ π S) : InertiaElementIdempotentChoice D.nd (rN i r ρ π) π := by
   obtain ⟨hbd, hχ, hρ⟩ := normAt_rN i r ρ π

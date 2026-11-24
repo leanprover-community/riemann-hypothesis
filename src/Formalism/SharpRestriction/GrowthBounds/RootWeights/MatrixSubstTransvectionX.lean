@@ -131,7 +131,6 @@ section fs
 
 variable {ι : Type*} [Fintype ι] {n : ℕ} (LL : Letters ι) (a b : Fin n)
 
-open Classical in
 theorem sum_single_sourceVar_apply (c : ι → ℕ) (v : ι × Fin n) :
     (∑ l : ι, Finsupp.single (sourceVar LL a b l) (c l)) v = if v = sourceVar LL a b v.1 then c v.1 else 0 := by
   rw [Finsupp.finsetSum_apply, Finset.sum_eq_single v.1]

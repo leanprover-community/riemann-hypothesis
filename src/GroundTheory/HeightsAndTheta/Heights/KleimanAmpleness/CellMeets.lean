@@ -69,7 +69,6 @@ def cellSec (y : (Σ k, ι k) → Ω) (γ : K → ℤ) (I : ∀ k, Finset (ι k)
 variable [LinearOrder K] [∀ k, LinearOrder (ι k)]
 
 
-open Classical in
 def cellD (y : (Σ k, ι k) → Ω) (n : ℕ) :
     (ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.Cell K ι n → Ω) →ₗ[S] (ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.Cell K ι (n + 1) → Ω) :=
   LinearMap.pi fun I => if CellMeets y I.1 then ∑ k, ∑ i ∈ I.1 k,

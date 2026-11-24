@@ -167,14 +167,12 @@ def dl (t0 : B.H) : ℝ :=
     K.dl2 * (Nv B I h p t0 : ℝ) * Real.logb p (2 * B.sc.a) ^ 2
 
 
-open Classical in
 def g0 (j : ℕ) (oj : Bool × B.H → ℝ) (t0 : B.H) : ℝ :=
   (∑ s ∈ topsOn B I h p t0, ∑' e : ℕ,
     if Odd e ∧ ¬ Excl B h p s e then max 0 (al B a s / (p : ℝ) ^ e - capU B b h p j oj s e) else 0) -
     dl B I K h p t0
 
 
-open Classical in
 def gU (j : ℕ) (oj : Bool × B.H → ℝ) (t0 : B.H) : ℝ :=
   G.gam p * (∑ s ∈ topsOn B I h p t0, al B a s) -
     (∑ s ∈ (topsOn B I h p t0).filter (fun s => ¬ IsV B I h p s), ∑' e : ℕ,
@@ -182,7 +180,6 @@ def gU (j : ℕ) (oj : Bool × B.H → ℝ) (t0 : B.H) : ℝ :=
     dl B I K h p t0
 
 
-open Classical in
 def Pr (j : ℕ) (oj : Bool × B.H → ℝ) (t0 : B.H) : ℝ :=
   if B.sc.p0 B.R.k ≤ (p : ℝ) then
     (∑ s ∈ (topsOn B I h p t0).filter (fun s => ¬ IsV B I h p s), (fillG B b j oj (false, s) - (b s : ℝ))) +
@@ -198,20 +195,17 @@ def Cand : Prop :=
     (B.sc.p0 B.R.k ≤ (p : ℝ) → ¬ B.InBand K p)
 
 
-open Classical in
 def goodReps : Finset B.H := (reps B I h p).filter (fun t0 => Good B h t0)
 
 def Sig : ℝ := (B.R.m : ℝ) * ∑ t0 ∈ goodReps B I h p, kapv B I K a b h p t0
 
 
-open Classical in
 def VV : Finset B.H :=
   if Cand B K h p ∧ Sig B I K a b h p ≤ B.sc.x ^ (-B.sc.eps) then goodReps B I h p else ∅
 
 
 
 
-open Classical in
 def gainP (j : ℕ) (oj : Bool × B.H → ℝ) : ℝ :=
   if (B.IsResidueClassZero p ∧ h = 0) ∨ B.sc.X'' B.R.n < (p : ℝ) then 0 else
     (∑ t0 ∈ VV B I K a b h p, max (gU B I K a b h p j oj t0 - Pr B I K b h p j oj t0)
@@ -241,7 +235,6 @@ def kapISet (n' : ℕ) (TT : Finset (Fin n')) (a b : Fin n' → ℤ) : Set ℝ :
 end Loc
 
 
-open Classical in
 def bsH {φ : Formalism.HC.Frame} (h t : φ.A) : φ.A :=
   if hex : ∃ v : ℕ, ∃ i : ℕ, φ.ofNat v + i • h = t then φ.ofNat (Nat.find hex) else t
 
@@ -277,7 +270,6 @@ section Weights
 variable (a b : N.R.A → ℤ) (p : ℕ)
 
 
-open Classical in
 def gainAt (j : ℕ) : ℝ :=
   if N.cls p = PrimeClass.inertClass ∨ N.cls p = PrimeClass.signal then
     Loc.gainP (base N) (ins0 N C) C.K a b (N.hP p) p j (off N j)
@@ -316,7 +308,6 @@ def Lev.admitted : Prop :=
 def drop : Set ℕ := {p | p.Prime ∧ NoGainAt N C (aZ N) (bZ N) p ∧ ∀ δ ∈ Lv.Ws, p ≠ Lv.T δ}
 
 
-open Classical in
 def gainD (p j : ℕ) : ℝ := if p ∈ drop N C Lv then 0 else gain N C p j
 
 def lamQ (δ : Code N) (z : RPl N.R) (a : ℕ) : ℚ :=
@@ -324,7 +315,6 @@ def lamQ (δ : Code N) (z : RPl N.R) (a : ℕ) : ℚ :=
   else -wG N.R (N.eQ ((a - N.R.k) / (N.R.t + 1) + 1) z) ((a - N.R.k) / (N.R.t + 1) + 1)
 
 
-open Classical in
 def Wt (δ : Code N) (z : RPl N.R) : ℕ :=
   (Finset.range (N.R.m + 1)).sup fun i => Finset.univ.sup fun a : Fin (N.R.N i) =>
     if a.1 = 0 ∧ (z.1 = false ∧ z.2 ∈ N.TT) then 0
@@ -339,7 +329,6 @@ def EatG (δ : Code N) (j : ℕ) (vq : ℝ) : ℝ :=
     C.err.g * (N.R.f : ℝ) * ((N.Nm : ℝ) ^ 2 + (N.R.m : ℝ) ^ 2 * N.eta)
 
 
-open Classical in
 def EP (j p : ℕ) : ℝ :=
   (padicValNat p Lv.DGam : ℝ) +
     (if N.cls p = PrimeClass.ramD then N.EatD Lv.Ws Lv.Ws_ne j
@@ -361,7 +350,6 @@ def eltBar (sd : K) (π : ℤ × ℤ) : K := ((π.1 : K) - (π.2 : K) * sd) / 2
 def vU (w : HeightOneSpectrum (𝓞 K)) (x : K) : ℝ := (vAdd w x : ℝ) / (eWL K w : ℝ)
 
 
-open Classical in
 def E (sd : K) (δ : Code N) (j : ℕ) (w : HeightOneSpectrum (𝓞 K)) : ℝ :=
   if pOf w = Lv.T δ then (if 0 < vAdd w (elt sd (Lv.piT δ)) then EatT N δ else 0)
   else if pOf w = N.g 0 then

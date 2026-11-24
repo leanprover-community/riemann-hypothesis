@@ -273,7 +273,6 @@ theorem heckeOperator_apply (Q : principalLevelFrame.RowPsi V n) (R : Finset (GA
   rw [LinearMap.sum_apply, Finset.sum_apply]
   rfl
 
-open Classical in
 theorem heckeOperator_image {B : Finset (GA D V)} (hB : ∀ γ ∈ B, γ ∈ GfC V) (x : Formalism.AUTREP.GAf D.host.E n → ℂ) :
     principalLevelFrame.Hecke₃ Q B x = principalLevelFrame.Hecke₃ Q' (B.image fun γ => Q'.ψ (principalLevelFrame.pre Q γ)) x := by
   funext h

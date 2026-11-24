@@ -197,7 +197,6 @@ open OpX
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-open Formalism.FourierDecayAlt.P.BetaSesquilinearity Formalism.FourierDecayAlt.P.AdmissibleLieWords PI.UnitaryCorollaryDerivatives.CRH
 
 theorem spectral_operator_X : RDSOpX := by
   intro Wp Wq _ _ _ _ _ _ P z z' π π' X μ L st l0 D hD hl1 hl2 hz hz' hπ hπ' hr Y hYi

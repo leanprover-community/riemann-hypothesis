@@ -196,7 +196,6 @@ theorem rlv_coordFacts (i : ℕ) (hi : i ≤ D.R.m) :
 
 end TiedQ
 
-section TiedW
 
 variable {D : D7} {u : D.what₂.Word}
 
@@ -204,6 +203,5 @@ variable {D : D7} {u : D.what₂.Word}
 
 
 
-end TiedW
 
 end Formalism.L2.GlobalTheoryTheory.LocalLatticeBases

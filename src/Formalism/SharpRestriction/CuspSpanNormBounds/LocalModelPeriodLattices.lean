@@ -946,7 +946,6 @@ end PartA
 
 section Meas2
 
-open Topology MeasureTheory
 
 section Fin1
 

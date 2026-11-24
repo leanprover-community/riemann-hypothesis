@@ -97,7 +97,6 @@ theorem parts_pairA (α : Af D.host.F) :
     exact TensorProduct.zero_tmul _ _
   · exact (placeIdempotent_infinite_and_finite_components D w _ α rfl).2 w
 
-open Classical in
 theorem parts_idemQ (Q : Finset (Pl D)) :
     infPart D (algebraMap (AF D.host.F) (AE D) (idemQ D Q)) = 0 ∧
       ∀ w : Pl D, compAt D w (algebraMap (AF D.host.F) (AE D) (idemQ D Q)) = if w ∈ Q then 1 else 0 := by
@@ -107,7 +106,6 @@ theorem parts_idemQ (Q : Finset (Pl D)) :
   · rfl
   · exact TensorProduct.zero_tmul _ _
 
-open Classical in
 theorem parts_idemQc (Q : Finset (Pl D)) :
     infPart D (algebraMap (AF D.host.F) (AE D) (idemQc D Q)) = 0 ∧
       ∀ w : Pl D, compAt D w (algebraMap (AF D.host.F) (AE D) (idemQc D Q)) = if w ∈ Q then 0 else 1 := by
@@ -151,12 +149,10 @@ theorem mem_idOff_iff_mul (P : Pl D → Prop) [DecidablePred P] (c : AE D) (h0 :
     have := congrArg (compAt D w) ha
     rwa [RingHom.map_mul, hc w, if_pos hw, one_mul, RingHom.map_zero] at this
 
-open Classical in
 theorem mem_idAt_Q_iff (Q : Finset (Pl D)) (a : AE D) :
     a ∈ idAt D (· ∈ Q) ↔ algebraMap (AF D.host.F) (AE D) (idemQ D Q) * a = a :=
   mem_idAt_iff_mul (· ∈ Q) _ (parts_idemQ Q).1 (parts_idemQ Q).2 a
 
-open Classical in
 theorem mem_idAt_Qc_iff (Q : Finset (Pl D)) (a : AE D) :
     a ∈ idAt D (· ∉ Q) ↔ algebraMap (AF D.host.F) (AE D) (idemQc D Q) * a = a :=
   mem_idAt_iff_mul (· ∉ Q) _ (parts_idemQc Q).1

@@ -115,7 +115,6 @@ end Formalism.FourierDecayAlt.P.PBH
 
 namespace Formalism.FourierDecayAlt.P.PBH
 
-open Dx2.Split Dx2.SplitM
 
 variable {k j ρ : ℕ}
 
@@ -168,7 +167,6 @@ end Formalism.FourierDecayAlt.P.PBH
 
 namespace Formalism.FourierDecayAlt.P.PBH
 
-open Dx2.Split Dx2.SplitM
 
 theorem pointStep : PointStep := by
   intro k j ρ σ d hd c hc zA zA' hzA hzA' E _ _ _ F γ hint

@@ -218,13 +218,11 @@ theorem c3eqv_NLam_symm {n : S.V ≃ₗ[E] S.V} (hn : n ∈ NLam Λ F) : n.symm 
 
 end Gen
 
-section D7
 
 variable (D : D7)
 
 variable (Λ : LatV D) {T T' : D.host.E} (F : LFlag (D.sp.Y 0) D.R.rS T)
 
-end D7
 
 end Formalism.MainNotions.BridgeLemma₂
 

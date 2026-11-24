@@ -280,7 +280,6 @@ theorem two_adic_unit_zpow_mem (z : ℤ) (hz : 0 ≤ z) :
 
 end Tools
 
-section Model
 
 variable (D : D7) (r j p : ℕ) (c : CF p) (ρ : ℕ)
 
@@ -554,7 +553,6 @@ variable (D : D7) (r j p : ℕ) (c : CF p) (ρ : ℕ)
     (abs_le_pmM D d (r + j) τ _ (Finset.Icc_subset_Icc (by omega) (by omega)))
 
 
-open Classical in
 @[reducible] def locBT (hp : 2 ≤ p ∨ ρ = 0) (hd : ρ * (2 * D.R.f) ≤ D.R.f * r) :
     BoundaryLocalData.LocB D (locT D r j p c ρ) where
   chX := fun {_} y => XT D (Fin (rkB ρ y) → 𝓞 D.host.E)
@@ -665,7 +663,6 @@ open Classical in
     rw [Finset.sum_eq_single_of_mem 0 h0 (fun χ _ hχ => by simp [hχ])]
     simp
 
-end Model
 
 def rhoJ (r p : ℕ) : ℕ := if 2 ≤ r ∧ 2 ≤ p then 1 else 0
 
@@ -690,13 +687,11 @@ def junkLocBAll (D : D7) (r j p : ℕ) : BoundaryLocalData.LocB D (junkLocalData
 
 def junkLocB (D : D7) (r j p : ℕ) (_hp : p.Prime) : BoundaryLocalData.LocB D (junkLocalData D r j p) := junkLocBAll D r j p
 
-section Facts
 
 variable (D : D7) (r j p : ℕ) (c : CF p) (ρ : ℕ)
 
 variable {D r j p}
 
-end Facts
 
 end Formalism.L2.Geo
 

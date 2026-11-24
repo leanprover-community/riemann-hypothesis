@@ -205,7 +205,6 @@ end Abstract
 
 section Lemma2
 
-open NumberField IsDedekindDomain
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 
@@ -214,15 +213,11 @@ def DegreeKernelLowerBound (A : HLat K) (e : Module.End K A.V) (n : ℕ) : Prop 
 
 end Lemma2
 
-section Lemma4
 
-open NumberField IsDedekindDomain
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G]
 
-end Lemma4
 
-section Lemma8
 
 structure GMap (K : Type) [Field K] (σ : K →+* ℂ) (G : Type) [Group G] [Fintype G] (T : GoodSet K G)
     (EE : Type) [AddCommGroup EE] [Module ℂ EE] (ρE : Representation ℂ G EE) where
@@ -254,7 +249,6 @@ variable {K : Type} [Field K] {σ : K →+* ℂ} {G : Type} [Group G] [Fintype G
 
 end GMap
 
-end Lemma8
 
 namespace Ten
 
@@ -348,7 +342,6 @@ theorem mapDomain_mulSingle (i : ι) (a : MonoidAlgebra ℂ (G i)) :
 variable {P : ι → Type} [∀ i, Fintype (P i)]
 
 
-open Classical in
 def eGood (E : ∀ i, P i → MonoidAlgebra ℂ (G i)) (good : (∀ i, P i) → Prop) :
     MonoidAlgebra ℂ (∀ i, G i) :=
   ∑ p : ∀ i, P i, if good p then tens (fun i => E i (p i)) else 0
@@ -359,7 +352,6 @@ end Ten
 
 section Record
 
-open NumberField IsDedekindDomain
 
 @[instance_reducible] def finiteLevelGroupFintype (D : D7) : Fintype (G0g D.nd) := by
   haveI : ∀ k, NeZero (D.host.g k) := fun k => ⟨(D.host.g_prime k).ne_zero⟩
@@ -509,26 +501,19 @@ def LatticeChainWithoutLast (Y : Prov D X) : Prop :=
 
 end Record
 
-section Herm
 
-open NumberField IsDedekindDomain
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] [Fintype G]
 
-end Herm
 
-section Whole
 
 variable {D : D7} {X : BaseLevelRowSide D}
 
-end Whole
 
-section Family
 
 open Formalism.MainNotions
 
 variable {ε : ℝ}
 
-end Family
 
 end Formalism.MainNotions.PrimeDegreeVariant

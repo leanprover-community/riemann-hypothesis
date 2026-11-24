@@ -108,7 +108,6 @@ instance t2Space_hermitian_adeles : T2Space (HA R σ J) := inferInstanceAs (T2Sp
 
 end Gen
 
-section NF
 
 variable (F : Type) [Field F] [NumberField F]
 
@@ -131,6 +130,5 @@ instance sc_subInf (K : Subgroup (HA (Ainf F) σ J)) : SecondCountableTopology K
 instance sc_subF (K : Subgroup (HA (Af F) σ J)) : SecondCountableTopology K :=
   TopologicalSpace.Subtype.secondCountableTopology _
 
-end NF
 
 end PI.UnitaryGroupMassFormula.MeasWCore

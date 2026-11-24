@@ -50,7 +50,6 @@ namespace Formalism.L2.Indef.Tree.DepthTie
 open NumberField IsDedekindDomain
 open Formalism.DivisionValues Formalism.EigenvalueLevelCeiling Formalism.L2.Indef Formalism.L2.Indef.Tree Formalism.L2.DIV Formalism.BasicNotions Formalism.L2.Indef.Tree.DepthCond
 
-section Sat
 
 open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
@@ -61,7 +60,6 @@ variable {K : Type} [Field K] [NumberField K] [StarRing K] [Algebra (𝓞 c.F) (
 variable {Bs : DefBase K} {Df : DefSide Bs} {S : IndefData Df} {P : Type} [Group P] [Finite P] {oc : OnConst}
   (O : OnObj S P oc) (ι : Bs.J → ℕ)
 
-end Sat
 
 section CoreSat
 

@@ -463,7 +463,6 @@ theorem frobenius_coboundary_error_bound (hD : DivDeriv) (hDe : DeIntegral) (hL 
   convert bd_neg hsum using 1
   ring
 
-open FrobeniusSubstitution in
 theorem StepII_of (hW : DworkMv) (hD : DivDeriv) (hDe : DeIntegral) (hL : LawSymm) : StepII := by
   intro K _ _ _ p σ hU F hF G c _ hS hc hDer
   have herror := frobenius_coboundary_error_bound hD hDe hL hU hF hc hDer

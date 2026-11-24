@@ -229,7 +229,6 @@ end Formalism.L2.SG.Pf.GV
 
 namespace Formalism.L2.SG.Pf.GV
 
-open Formalism.MainNotions.S ReciprocityTheory.ChartRestriction.DS
 
 variable {k : ℕ}
 
@@ -340,7 +339,6 @@ end Formalism.L2.SG.Pf.GV
 
 namespace Formalism.L2.SG.Pf.GV
 
-open Formalism.MainNotions.S ReciprocityTheory.ChartRestriction.DS Formalism.L2.SG.Pf.BH.Model
 
 variable {k : ℕ}
 
@@ -398,7 +396,6 @@ end Formalism.L2.SG.Pf.GV
 
 namespace Formalism.L2.SG.Pf.GV
 
-open Formalism.MainNotions.S ReciprocityTheory.ChartRestriction.DS Formalism.L2.SG.Pf.BH.Model
 
 variable {k : ℕ}
 
@@ -484,7 +481,6 @@ end Formalism.L2.SG.Pf.GV
 
 namespace Formalism.L2.SG.Pf.GV
 
-open Formalism.MainNotions.S ReciprocityTheory.ChartRestriction.DS
 
 variable {k : ℕ}
 

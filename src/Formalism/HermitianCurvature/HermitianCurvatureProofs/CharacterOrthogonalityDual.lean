@@ -182,7 +182,6 @@ theorem chS_apply (h : ∀ a : K, (∀ r ∈ R, ψ (a * r) = 1) ↔ a ∈ R)
     chS h S c α = psiKR R ψ ((α : C →ₗ[R] KR R) c) := rfl
 
 
-open Classical in
 theorem sum_over_S (h : ∀ a : K, (∀ r ∈ R, ψ (a * r) = 1) ↔ a ∈ R) [Finite C]
     (S : Submodule R (C →ₗ[R] KR R)) (c : C) :
     ∑ᶠ α : S, psiKR R ψ ((α : C →ₗ[R] KR R) c) =
@@ -211,7 +210,6 @@ variable {K : Type} [CommRing K] {R : Subring K} {ψ : AddChar K ℂ}
 variable {C : Type} [AddCommGroup C] [Module R C]
 
 
-open Classical in
 theorem sum_over_dual' (h : ∀ a : K, (∀ r ∈ R, ψ (a * r) = 1) ↔ a ∈ R) [Finite C]
     (hsep : ∀ c : C, (∀ α : C →ₗ[R] KR R, α c = 0) → c = 0) (x : C) :
     ∑ᶠ α : C →ₗ[R] KR R, psiKR R ψ (α x) =

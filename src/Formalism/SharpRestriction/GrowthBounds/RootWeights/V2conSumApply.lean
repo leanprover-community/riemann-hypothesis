@@ -84,7 +84,6 @@ theorem v2con_glAct_eq {R : Type*} [CommRing R] {ι : Type*} [Fintype ι] {n : �
   refine Finset.sum_congr rfl fun l _ => ?_
   split_ifs <;> simp
 
-open Classical in
 theorem v2con_der_X {R : Type*} [CommRing R] {ι : Type*} [Fintype ι] {n : ℕ} (LL : Letters ι) (S : Set ι)
     (a b : Fin n) (l : ι) (c : Fin n) : letterPolarizationDerivation R LL S a b (X (l, c)) =
       if l ∈ S then

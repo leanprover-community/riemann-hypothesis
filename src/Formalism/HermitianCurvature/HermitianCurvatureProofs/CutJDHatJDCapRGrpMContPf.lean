@@ -200,7 +200,6 @@ end ops
 
 section loc
 
-open ContPf
 
 variable {r : ℕ} {X : Type} [NormedAddCommGroup X] [NormedSpace ℂ X]
 

@@ -318,12 +318,10 @@ def adm1 : Prop := ∀ i y, (Lc.loc i y).CartierFrobeniusFormLocal ∧ (Lc.loc i
 
 def Conclusion5 (C : ℝ) : Prop := ∀ i y, (Lc.loc i y).ContentAt C
 
-section Family
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
   (YF : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), ModuliIntegralCharts.Prov (Fm.D x i))
   (LF : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), Loc (Fm.D x i) (Fm.X x i) (YF x hx i))
 
-end Family
 
 end Formalism.MainNotions.CartierLocalBounds

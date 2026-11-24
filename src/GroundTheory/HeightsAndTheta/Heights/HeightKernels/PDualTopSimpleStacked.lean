@@ -238,7 +238,6 @@ theorem logNorm_eq {F F' : HermLattice K i} {b : Module.Basis T ℤ (dualLattice
   rw [hcz t, norm_mul, mul_div_mul_left _ _ (norm_ne_zero_iff.mpr hc)]
 
 
-open IndefiniteRowSideFullHecke.Inter in
 theorem step (hHor : DualStackedGraphHorizontal.Statement) {F F' : HermLattice K i}
     {b : Module.Basis T ℤ (dualLattice F)} (hb : Function.Bijective (Matrix.mulVecLin (dualEmbMatrix b)))
     {b' : Module.Basis T ℤ (dualLattice F')} (hb' : Function.Bijective (Matrix.mulVecLin (dualEmbMatrix b')))

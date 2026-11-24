@@ -73,7 +73,6 @@ theorem plMap_refl {E : Type} [Field E] [NumberField E] (P : HeightOneSpectrum (
   exact Formalism.L2.Host.CT.mem_plMap (RingEquiv.refl E) P x
 
 
-open Classical in
 theorem image_refl {E : Type} [Field E] [NumberField E] (f : E ≃+* E) (hf : f = RingEquiv.refl E)
     (S : Finset (HeightOneSpectrum (𝓞 E))) : S.image (Formalism.L2.Host.CT.plMap f) = S := by
   subst hf

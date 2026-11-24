@@ -54,7 +54,6 @@ namespace Formalism.WeaklyAdmissibleFiltrations
 
 open Module TensorProduct
 
-section TrivCrysProof
 
 variable {G : Type} [Group G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -157,7 +156,6 @@ private theorem trivCrysMap_injective :
   have h2 := Module.Flat.lTensor_preserves_injective_linearMap (M := LL) _ hi
   exact h2
 
-end TrivCrysProof
 
 theorem trivialIsCrystalline_holds : TrivCrys := by
   intro G _ Qp K₀ K _ _ _ _ _ _ _ B BdR _ _ _ _ _ _ _ _ _ _ _ PD LL _ _ _ _

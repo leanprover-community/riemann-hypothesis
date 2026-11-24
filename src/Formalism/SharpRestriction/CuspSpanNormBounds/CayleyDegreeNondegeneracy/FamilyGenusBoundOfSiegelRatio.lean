@@ -130,11 +130,9 @@ theorem plane_mass_bound_parameters (D : D7) (large₂ : SizeData₂ D) (u u' : 
     (hC : 55 * max 1 (1 / Cl) ≤ C ^ 2) : UnitaryVolumeMass.stMass2 D large₂ u u' C' Cl Cg cb Cu cT CT C0 A C :=
   fun hH => plane_mass_le_height_pow D large₂ C' Cl Cg cb Cu cT CT C hC hH.1.1
 
-section Family
 
 variable {eps : ℝ} (Fm : FamP eps)
 
-end Family
 
 end Formalism.MainNotions.BridgeLemma₂
 

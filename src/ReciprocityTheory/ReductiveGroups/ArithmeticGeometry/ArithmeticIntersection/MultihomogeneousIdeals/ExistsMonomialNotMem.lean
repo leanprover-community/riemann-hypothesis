@@ -97,7 +97,6 @@ theorem isMultiHomog_pow {f : MRingOver F ι} {a : K → ℕ} (hf : IsMultiHomog
     rw [pow_succ, succ_nsmul]
     exact isMultiHomog_mul ih hf
 
-open Classical in
 theorem isMultiHomog_coordProd (c : ∀ k, ι k) (d : K → ℕ) :
     IsMultiHomog (∏ k, (X ⟨k, c k⟩ : MRingOver F ι) ^ d k) d := by
   classical

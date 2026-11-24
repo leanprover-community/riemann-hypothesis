@@ -107,7 +107,6 @@ theorem fr_spec (y : C.Y.X) : (fr C y).Tri (algebraMap (C.Y.X.presheaf.stalk y) 
 
 
 
-open Classical in
 def symLog (b : ℕ → Bool) (st : ((E →+* ℂ) × ℕ) ⊕ ℕ) : PtFn C.Y := fun v ε y =>
   if hp : (resP v).Prime then
     haveI := Fact.mk hp
@@ -118,7 +117,6 @@ def symLog (b : ℕ → Bool) (st : ((E →+* ℂ) × ℕ) ⊕ ℕ) : PtFn C.Y :
   else 0
 
 
-open Classical in
 def lgCopy (w : Sym E →₀ ℤ) (v : HeightOneSpectrum (𝓞 F)) (ε : Ext v) (y : AlgPt C.Y) : ℝ :=
   if hp : (resP v).Prime then
     haveI := Fact.mk hp

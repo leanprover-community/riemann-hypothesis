@@ -199,7 +199,6 @@ end Infinite
 
 section Main
 
-open scoped NumberField.LiesOver
 
 
 set_option maxHeartbeats 2000000 in

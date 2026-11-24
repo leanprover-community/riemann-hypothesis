@@ -163,7 +163,6 @@ theorem petersson_eq_sum_restrict_twist (t : SymmetricTwistedColumnsAtPrimes tp 
     simp [hc', nfAll_zero_tw]
   · intro h; exact absurd (Finset.mem_univ c) h
 
-open Classical in
 def pcTw (t : SymmetricTwistedColumnsAtPrimes tp C Tw) (u : D.what₂.Word) (μ : D.what₂.Tup) (hμ : μ ≠ D.what₂.mu0)
     (c : (Tw.fm u μ).clsP) (z : (D.PTw u μ).Wrow) (G : (D.PTw u μ).Mt) : ℂ :=
   if z ∈ (Tw.fm u μ).ptC then pcLTw t u μ hμ c z G

@@ -275,7 +275,6 @@ def infiniteGamma (w : InfinitePlace K) (s : ℂ) : ℂ :=
   else Gammaℂ (s + χ.infiniteTau w * I + ((χ.infiniteWeight w).natAbs : ℂ) / 2)
 
 
-open Classical in
 def infiniteConst (w : InfinitePlace K) : ℂ := if w.IsReal then 1 else π
 
 

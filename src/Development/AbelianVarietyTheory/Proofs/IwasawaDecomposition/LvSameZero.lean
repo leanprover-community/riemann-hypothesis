@@ -79,7 +79,6 @@ def fvD (d : DecoSet (E := X.E) (n := n) (ST := ST) (SG := SG)) (P : ST) : Modul
   if h : ∃ φ : Module.Dual (Res P.1) (TDat.Red d.1.N P.1), ∀ x : d.1.N, φ (Submodule.Quotient.mk x) = d.1.f P x then h.choose else 0
 
 
-open Classical in
 def teD (d : DecoSet (E := X.E) (n := n) (ST := ST) (SG := SG)) (T : ℕ) (P : ST) : TDat.Red (d.1.dnN P) P.1 :=
   if h : ∃ t : d.1.dnN P, ∃ e ∈ d.1.N, d.1.f P e = 1 ∧ (t : Fin n → X.E) = (T : 𝓞 X.E) • e
   then Submodule.Quotient.mk h.choose else 0

@@ -89,15 +89,12 @@ def PieriShellBound (D : D7) (Ch Cg Cq C1 CA CQ : ℝ) : Prop :=
 
 end PieceA3
 
-section PieceA4
 
 open Formalism.HermitianLatticeCounting.ExpansionTerms
 
-section Geo
 
 variable {k r : ℕ}
 
-end Geo
 
 end PieceA4
 
@@ -115,20 +112,15 @@ def GapFr (D : D7) (Cgf : ℝ) (ε : Fin (2 * D.R.rS + D.R.k + 1) → Bool) (lam
 
 end PieceB1
 
-section PieceB2
 
-section HS
 
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
 
-end HS
 
-section Loc
 
 variable {k r : ℕ}
 
-end Loc
 
 end PieceB2
 
@@ -613,11 +605,9 @@ end PieceB8
 
 section PieceB9
 
-section Gen
 
 variable {n : ℕ}
 
-end Gen
 
 theorem epsSH_both (D : D7) : ∃ a b : Fin (2 * D.R.rS + D.R.k + 1), epsSH D.R a ≠ epsSH D.R b := by
   have hk := Ranks.k_ge D.R

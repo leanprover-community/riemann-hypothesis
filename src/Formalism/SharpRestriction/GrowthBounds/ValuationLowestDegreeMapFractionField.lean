@@ -450,7 +450,6 @@ open Classical in
 def suppProj (R : Type) [CommRing R] {σ : Type} (s : Set (σ →₀ ℕ)) : MvPolynomial σ R →ₗ[R] MvPolynomial σ R :=
   (basisMonomials σ R).constr R fun m => if m ∈ s then monomial m 1 else 0
 
-open Classical in
 theorem suppProj_monomial (R : Type) [CommRing R] {σ : Type} (s : Set (σ →₀ ℕ)) (m : σ →₀ ℕ) (a : R) :
     suppProj R s (monomial m a) = if m ∈ s then monomial m a else 0 := by
   have h : (monomial m a : MvPolynomial σ R) = a • basisMonomials σ R m := by
@@ -460,7 +459,6 @@ theorem suppProj_monomial (R : Type) [CommRing R] {σ : Type} (s : Set (σ →�
   · rw [coe_basisMonomials]
   · rw [smul_zero]
 
-open Classical in
 theorem coeff_suppProj (R : Type) [CommRing R] {σ : Type} (s : Set (σ →₀ ℕ)) (A : MvPolynomial σ R) (m : σ →₀ ℕ) :
     AddMonoidAlgebra.coeff (suppProj R s A) m = if m ∈ s then AddMonoidAlgebra.coeff A m else 0 := by
   induction A using MvPolynomial.induction_on' with
@@ -590,7 +588,6 @@ theorem hom_Pol_C (R : Type) [CommRing R] {ι : Type} {n : ℕ} (a : R) :
   rw [← h0]
   simp [multideg]
 
-open Classical in
 theorem hom_Pol_CX (R : Type) [CommRing R] {ι : Type} {n : ℕ} (a : R) (l : ι) (c : Fin n) :
     (C a * X (l, c) : MvPolynomial (ι × Fin n) R) ∈ Pol R n (fun i => if i = l then 1 else 0) := by
   unfold Pol
@@ -610,7 +607,6 @@ theorem hom_Pol_CX (R : Type) [CommRing R] {ι : Type} {n : ℕ} (a : R) (l : ι
     simp [Finsupp.single_apply]
   · simp [hi]
 
-open Classical in
 theorem hom_twistSub_X_mem {R : Type} [CommRing R] {ι : Type} {n : ℕ} (LL : Letters ι) (S : Set ι) (j : Fin n)
     (v : ι × Fin n) : twistSub LL S j (X v : MvPolynomial (ι × Fin n) R) ∈
       Pol (GLLaurent R n) n (fun i => if i = v.1 then 1 else 0) := by
@@ -969,7 +965,6 @@ end Gen
 
 section W
 
-open Formalism.MainNotions.SelectionLemmas Formalism.MainNotions.CovariantDegrees
 
 variable {n' r : ℕ} [NeZero n'] (F : Frames n' r) (j : ℤ)
 
@@ -1062,7 +1057,6 @@ end W
 
 section One
 
-open Formalism.MainNotions.SelectionLemmas Formalism.MainNotions.CovariantDegrees
 
 variable {n' r : ℕ} [NeZero n'] (F : Frames n' r) (j : ℤ)
 
@@ -1271,7 +1265,6 @@ end One
 
 section Four0
 
-open Formalism.MainNotions.SelectionLemmas Formalism.MainNotions.CovariantDegrees
 
 def biSet {N r K : ℕ} (b' b'' : Fin N → ℕ) : Set (Fin N × Fin (r + K) →₀ ℕ) :=
   {mm | ∀ i, ∑ c : Fin r, mm (i, Fin.castAdd K c) = b' i ∧ ∑ c : Fin K, mm (i, Fin.natAdd r c) = b'' i}
@@ -1282,7 +1275,6 @@ def biPol (R : Type) [CommRing R] {N r K : ℕ} (b' b'' : Fin N → ℕ) :
 variable {n' r : ℕ} [NeZero n'] (F : Frames n' r) (j : ℤ)
 
 
-open Classical in
 def segL (m : ℤ → ℤ) (th : ℤ → ℝ) : List (PathInequality (segN F j)) :=
   (List.finRange (segN F j)).flatMap fun i =>
     if F.IsW j (segE F j i) then []
@@ -1418,7 +1410,6 @@ theorem li_segE_injective {n' r : ℕ} [NeZero n'] (F : Frames n' r) (j : ℤ) :
   fun _ _ h => (OrderIso.injective _) (Subtype.ext h)
 
 
-open Formalism.MainNotions.SelectionLemmas in
 theorem space_statement_linear_independent (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     (hA2 : ∀ (N n : ℕ) [NeZero n] (LL : Letters (Fin N)) (B : Fin N → ℕ),
       LinearIndependent O (fun x : {x : PPath n N LL B × (ℤ → Finset (Fin n)) // IsSt x.1.mu x.2} =>
@@ -1746,7 +1737,6 @@ theorem XXZ_lift (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O
     rw [smul_eq_C_mul, smul_eq_C_mul, map_mul, map_C]
 
 
-open Formalism.MainNotions.SelectionLemmas in
 theorem space_statement_sixth_clause (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (n' r K : ℕ) [NeZero n']
     [NeZero r] [NeZero K] (F : Frames n' r) (j : ℤ) (m : ℤ → ℤ) (th o : ℤ → ℝ)
     (h1 : XX' O r K F j m th o =
@@ -1789,7 +1779,6 @@ theorem space_statement_sixth_clause (O : Type) [CommRing O] [IsDomain O] [IsDis
 
 section Fin1
 
-open Formalism.MainNotions.SelectionLemmas Formalism.MainNotions.CovariantDegrees
 
 def SpaceStatementAtRing (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] : Prop :=
   ∀ (n' r K : ℕ) [NeZero n'] [NeZero r] [NeZero K]
@@ -1864,7 +1853,6 @@ end Fin1
 
 section Comb
 
-open Formalism.MainNotions.SelectionLemmas Formalism.MainNotions.CovariantDegrees
 
 theorem comb_deg_unique {n N : ℕ} {LL : Letters (Fin N)} {b c : Fin N → ℕ} (P : PPath n N LL b)
     (P' : PPath n N LL c) (h : P.mu = P'.mu) : b = c := by
@@ -2053,12 +2041,10 @@ end Comb
 
 section Jone
 
-open Formalism.MainNotions.CovariantDegrees
 
 variable {Fd : Type} [Field Fd] {N m k : ℕ}
 
 
-open Classical in
 def jone_w (LL : Letters (Fin N)) (S : Set (Fin N)) (e : Fin m → Fin k) : Fin N × Fin k → ℤ :=
   fun v => if v.1 ∈ S ∧ v.2 ∈ Set.range e then (if LL.vec v.1 then 1 else -1) else 0
 
@@ -2106,7 +2092,6 @@ theorem jone_umon (LL : Letters (Fin N)) (S : Set (Fin N)) (e : Fin m → Fin k)
   | one => exact fun y hy => hy
   | mul u1 u2 _ _ h1 h2 => exact fun y hy => h1 _ (h2 y hy)
 
-open Classical in
 theorem jone_weight (LL : Letters (Fin N)) (S : Set (Fin N)) (e : Fin m → Fin k) (he : Function.Injective e)
     (mm : Fin N × Fin k →₀ ℕ) :
     Finsupp.weight (jone_w LL S e) mm =
@@ -2137,7 +2122,6 @@ theorem jone_coeff_XD (i : Fin N × Fin k) (p : MvPolynomial (Fin N × Fin k) Fd
     · simp [h]
   | add p q hp hq => rw [map_add (f := _), mul_add, MvPolynomial.coeff_add, MvPolynomial.coeff_add, hp, hq, mul_add]
 
-open Classical in
 theorem jone_coeff_Eaa (LL : Letters (Fin N)) (S : Set (Fin N)) (e : Fin m → Fin k) (a : Fin m)
     (v : MvPolynomial (Fin N × Fin k) Fd) (mm : Fin N × Fin k →₀ ℕ) :
     AddMonoidAlgebra.coeff (glOpsE Fd LL S e a a v) mm =
@@ -2179,7 +2163,6 @@ theorem jone_iso [CharZero Fd] (LL : Letters (Fin N)) (S : Set (Fin N)) (e : Fin
   rintro _ ⟨u, hu, v, hv, rfl⟩
   exact jone_umon LL S e _ u hu v (jone_wt LL S e he lam v hv.2.1)
 
-open Classical in
 theorem jone_diff (f : Fin N → ℤ) (i : Fin N) (S0 S1 : Set (Fin N)) (h1 : ∀ l, l ∈ S1 ↔ l ∈ S0 ∨ l = i)
     (h0 : i ∉ S0) : (∑ l, if l ∈ S1 then f l else 0) - (∑ l, if l ∈ S0 then f l else 0) = f i := by
   rw [← Finset.sum_sub_distrib, Finset.sum_eq_single i]
@@ -2239,7 +2222,6 @@ end Jone
 
 section Proj
 
-open Formalism.MainNotions.SelectionLemmas Formalism.MainNotions.CovariantDegrees
 
 theorem proj_biSet_disjoint {N r K : ℕ} {b' b'' c' c'' : Fin N → ℕ} (h : ¬ (b' = c' ∧ b'' = c'')) :
     Disjoint (biSet (r := r) (K := K) c' c'') (biSet (r := r) (K := K) b' b'') := by
@@ -2526,7 +2508,6 @@ end Proj
 
 section Fin2
 
-open Formalism.MainNotions.SelectionLemmas Formalism.MainNotions.CovariantDegrees
 
 def LastInequalityClause (O : Type) [CommRing O] [IsDomain O] : Prop :=
   ∀ (N r K : ℕ) [NeZero r] [NeZero K] (LL : Letters (Fin N)) (B : Fin N → ℕ), N + r ≤ K → ∀ L : List (PathInequality N),
@@ -2573,7 +2554,6 @@ end Fin2
 
 section Fin3
 
-open Formalism.MainNotions.SelectionLemmas Formalism.MainNotions.CovariantDegrees
 
 theorem space_criterion_of_standard_basis (D : Formalism.BasicNotions.D7) (hA3 : DefiniteRankOne D) : Formalism.MainNotions.SourceCleaning.SpaceCriterionModuloUniformiser D := by
   intro p _ O _ _ _ S n' r K _ _ _ Fr j m th o

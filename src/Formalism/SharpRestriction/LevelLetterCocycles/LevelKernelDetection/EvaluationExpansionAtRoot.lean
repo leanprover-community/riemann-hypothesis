@@ -119,7 +119,6 @@ theorem rho_product_unit_mul {ell : ℕ}
   ring
 
 
-open Classical in
 theorem levelCond_iff (ell : ℕ)
     (hk1b : ∀ s < ell, ∃ ε : (PowerSeries (KsW W s))ˣ,
       rhoL hR c s ((baseIdOf hR).Bs.p s) = (ε : PowerSeries (KsW W s)) * PowerSeries.X)

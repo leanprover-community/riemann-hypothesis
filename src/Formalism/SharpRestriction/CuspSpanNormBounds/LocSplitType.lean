@@ -48,12 +48,10 @@ namespace Formalism.MainNotions.BridgeRowsGenus
 
 open NumberField Formalism.HermitianLatticesTheory
 
-section Loc
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
   {V : Type} [AddCommGroup V] [Module E V] [Module (𝓞 E) V] [IsScalarTower (𝓞 E) E V]
 
-end Loc
 
 def LocUnimod : Prop :=
   ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E],

@@ -264,7 +264,6 @@ theorem unitsTwoPow : UnitsTwoPow := by
   obtain ⟨p, hp⟩ := hbij.2 u
   exact ⟨p, hp.symm, fun q hq => hbij.1 (hq.symm.trans hp.symm)⟩
 
-open AdmissibleUnits in
 theorem quotCyclic : QuotCyclic := by
   unfold QuotCyclic
   intro n

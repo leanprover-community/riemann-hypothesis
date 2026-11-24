@@ -129,7 +129,6 @@ theorem eigBasis_toMatrix (g g' : EigFrame Z φ x) :
     simp [Finsupp.single_apply, show ∀ a, (⟨τ, a⟩ : Σ τ : E →+* ℂ, Fin (Dw.mult τ)) ≠ ⟨σ, b⟩ from
       fun a e => h (congrArg Sigma.fst e).symm]
 
-open Classical in
 theorem frameDet_change (M : GlobalTheory.Reg.MChart Z) (h : ⊤ ≤ x ⁻¹ᵁ M.U) (g g' : EigFrame Z φ x) :
     frameDet M h g' = frameDet M h g * ∏ τ, (g.co g' τ).det := by
   rw [frameDet, frameDet, ← GlobalTheory.FlagMod.rdet_toMatrix_mul _ (eigBasisFin g), GlobalTheory.FlagMod.rdet_self]

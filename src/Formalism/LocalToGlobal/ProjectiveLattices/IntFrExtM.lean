@@ -82,11 +82,9 @@ end ValCrit
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 
-section Open
 
 variable {D : Datum H} {l : Level H}
 
-end Open
 
 section Proofs
 
@@ -104,17 +102,13 @@ theorem exists_family {D : Datum H} {l : Level H} (X0 : Moduli D l) (hN : ∀ l'
 
 end Proofs
 
-section Place
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 
-end Place
 
-section Level
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 
-end Level
 
 section Definite
 

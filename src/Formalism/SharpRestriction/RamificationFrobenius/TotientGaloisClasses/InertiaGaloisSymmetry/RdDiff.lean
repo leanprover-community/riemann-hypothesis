@@ -230,7 +230,6 @@ theorem absNorm_diff : ((Ideal.absNorm (differentIdeal (𝓞 E) (𝓞 L)) : ℕ)
   rw [hnormR, map_prod, Rat.cast_prod,
     Finset.abs_prod]
 
-open Classical in
 theorem log_discr_tower : Real.log |(discr L : ℝ)| =
     ∑ σ ∈ (Finset.univ : Finset (L ≃ₐ[E] L)).erase 1, Real.log |((Algebra.norm ℚ (ζ - σ ζ) : ℚ) : ℝ)| +
       Module.finrank E L * Real.log |(discr E : ℝ)| := by
@@ -257,7 +256,6 @@ theorem log_discr_tower : Real.log |(discr L : ℝ)| =
   rw [← h1, hD, map_mul, absNorm_map_algebraMap_eq_pow_finrank, Nat.cast_mul, Nat.cast_pow, absNorm_diff hζ E,
     hE, Real.log_mul (Finset.prod_ne_zero_iff.2 hne) (pow_ne_zero _ hdE), Real.log_prod hne, Real.log_pow]
 
-open Classical in
 theorem log_discr_sub : Module.finrank E L * Real.log |(discr E : ℝ)| =
     ∑ σ ∈ (Finset.univ : Finset (L ≃ₐ[ℚ] L)).filter (fun σ => ¬ ∀ x : E, σ (algebraMap E L x) = algebraMap E L x),
       Real.log |((Algebra.norm ℚ (ζ - σ ζ) : ℚ) : ℝ)| := by
@@ -339,7 +337,6 @@ theorem log_norm_weight (u : ZMod N) (hu : u ≠ 1) :
 
 local instance (p : Prop) : Decidable p := Classical.propDecidable p
 
-open Classical in
 theorem log_rd (U : Subgroup (ZMod N)ˣ)
     (hU : ∀ (σ : L ≃ₐ[ℚ] L) (u : (ZMod N)ˣ), σ ζ = ζ ^ (u : ZMod N).val →
       ((∀ x : E, σ (algebraMap E L x) = algebraMap E L x) ↔ u ∈ U)) :

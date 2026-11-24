@@ -63,7 +63,6 @@ def indP (P : Pl D → Prop) : Af D.host.F :=
     · simp only [h, if_true]; exact one_mem _
     · simp only [h, if_false]; exact zero_mem _⟩
 
-open Classical in
 theorem evalV_indP (P : Pl D → Prop) (v : Pl D) : evalV D.host.F v (indP P) = if P v then 1 else 0 := rfl
 
 def cP (P : Pl D → Prop) : AF D.host.F := pairA D.host.F 0 (indP P)

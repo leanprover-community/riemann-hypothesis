@@ -74,7 +74,6 @@ def indP (D : D7) (P : Pl D → Prop) : Af D.host.F :=
     · simp only [if_pos h]; exact one_mem (v.adicCompletionIntegers D.host.F)
     · simp only [if_neg h]; exact zero_mem (v.adicCompletionIntegers D.host.F)⟩
 
-open Classical in
 theorem evalV_indP (P : Pl D → Prop) (w : Pl D) : evalV D.host.F w (indP D P) = if P w then 1 else 0 := rfl
 
 theorem indicatorAdele_integral (P : Pl D → Prop) : indP D P ∈ intAf D.host.F := fun w => by
@@ -89,7 +88,6 @@ theorem one_sub_indP_int (P : Pl D → Prop) : 1 - indP D P ∈ intAf D.host.F :
   · rw [sub_self]; exact zero_mem _
   · rw [sub_zero]; exact one_mem _
 
-open Classical in
 theorem compFin_e (P : Pl D → Prop) (w : Pl D) :
     GlobalTheory.IndefiniteRowSideFullHecke.UnramifiedCharacter.compFin D w (indP D P ⊗ₜ[D.host.F] (1 : D.host.E)) = if P w then 1 else 0 := by
   change evalV D.host.F w (indP D P) ⊗ₜ[D.host.F] (1 : D.host.E) = _

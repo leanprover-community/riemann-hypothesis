@@ -150,7 +150,6 @@ def GoodDeg (j : ℕ) (n : X.ZA j →₀ ℕ) : Prop :=
     ((∑ a, ∑ b, n ⟨v, (s, a, b)⟩ : ℕ) : ℤ) = ∑ i ∈ Icc 1 (NN X.G.P.m X.t (j + 1)), X.nuv v (j + 1) s i
 
 
-open Classical in
 def derAt (j : ℕ) (n : X.ZA j →₀ ℕ) (f : MvPowerSeries (X.ZA j) Kc) : Kc :=
   if GoodDeg X j n then (∏ x ∈ n.support, ((n x).factorial : Kc)) * MvPowerSeries.coeff n f else 0
 
@@ -232,7 +231,6 @@ theorem del_deg (j : ℕ) (G : (X.Pj j).Xsp) (f : MvPowerSeries (X.ZA j) Kc)
 section NonZero
 
 
-open Classical in
 def evPt (j : ℕ) : DA X Kc j →+* Kc :=
   MvPolynomial.eval₂Hom
     (MvPolynomial.eval fun i : (Σ v : Fin (X.Pj (j + 1)).nV, Fin ((X.Pj (j + 1)).n' v) ×

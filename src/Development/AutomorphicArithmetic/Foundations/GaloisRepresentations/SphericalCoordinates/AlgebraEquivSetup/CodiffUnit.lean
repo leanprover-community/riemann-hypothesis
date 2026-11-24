@@ -117,7 +117,6 @@ def TraceType : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (
   (∀ v : InfinitePlace E, ∃! τ : Phi A, InfinitePlace.mk τ.1 = v) ∧ (A.τ₀ (A.ω : E)).im ≠ 0
 
 
-open Classical in
 def FormCoord : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (A : Arith E) (n : ℕ)
   (Θ : ℝ ⊗[ℤ] (Fin n → 𝓞 E) ≃ₗ[ℝ] (Phi A × Fin n → ℂ)), (∀ (x : Fin n → 𝓞 E) τ i, Θ (1 ⊗ₜ x) (τ, i) = τ.1 (x i : E)) →
   ∀ x y, (A.EF n).baseChange ℝ x y =

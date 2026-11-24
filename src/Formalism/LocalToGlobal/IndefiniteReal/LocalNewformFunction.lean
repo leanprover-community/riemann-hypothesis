@@ -260,7 +260,6 @@ def IsSBHalf (e : AE D) (Λ : AddSubgroup (Mx D m n)) (Φ : Mx D m n → ℂ) : 
     (∀ u ∈ Λ, IsHalf e u → ∀ t, Φ (t + k • u) = Φ t) ∧ ∀ t, Φ t ≠ 0 → k • t ∈ Λ
 
 
-open Classical in
 def halfInd (e : AE D) (Λ : AddSubgroup (Mx D m n)) (t : Mx D m n) : ℂ :=
   if t ∈ Λ ∧ IsHalf e t then 1 else 0
 
@@ -281,7 +280,6 @@ end Split
 section Local
 
 
-open Classical in
 def localNewformFunction (v : HeightOneSpectrum (𝓞 D.host.F)) {r t : ℕ}
     (P : Subgroup (GL (Fin r) (v.adicCompletionIntegers D.host.F))) (lam : P →* ℂˣ) (mu : (Fv D.host.F v)ˣ →* ℂˣ)
     (x : Matrix (Fin r ⊕ Fin t) (Fin r) (Fv D.host.F v)) : ℂ :=

@@ -66,7 +66,6 @@ theorem perExt_I_of_pBar {τ : Ψ} {y : Fin (j + j') → ℂ} (h : C.pBar R τ y
     ((C.perExt R (Pi.single τ (Complex.I • y))) k) * Complex.I_mul_I
 
 
-open Classical in
 theorem pPart_of_pBar {τ : Ψ} {y : Fin (j + j') → ℂ} (h : C.pBar R τ y = 0) :
     C.pPart R τ y = C.perExt R (Pi.single τ y) := by
   have h1 := perExt_I_of_pBar C R h
@@ -75,7 +74,6 @@ theorem pPart_of_pBar {τ : Ψ} {y : Fin (j + j') → ℂ} (h : C.pBar R τ y = 
   linear_combination (-(1 / 2 : ℂ) * (C.perExt R (Pi.single τ y)) k) * Complex.I_mul_I
 
 
-open Classical in
 theorem Fm_single (τ : Ψ) (y x : Fin (j + j') → ℂ) :
     C.Fm (Pi.single τ y) (Pi.single τ x) =
       2 * (embOf (F.σ τ) C.xi * (star x ⬝ᵥ (C.gr τ *ᵥ y))).re := by

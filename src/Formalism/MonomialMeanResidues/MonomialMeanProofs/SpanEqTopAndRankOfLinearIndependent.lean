@@ -70,11 +70,9 @@ namespace Formalism.HermiteSiegelSlopes
 
 open Formalism.HN
 
-section GammaDefs
 
 variable {K : Type} [Field K] [NumberField K]
 
-end GammaDefs
 
 section BCDefs
 
@@ -90,23 +88,17 @@ end BCDefs
 open scoped nonZeroDivisors
 open IsDedekindDomain
 
-section W1
 
 variable {K : Type} [Field K] [NumberField K]
 
-end W1
 
-section W2a
 
 variable {K : Type} [Field K] [NumberField K]
 
-end W2a
 
-section PullbackHopfOrder
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 
-end PullbackHopfOrder
 
 section W3
 

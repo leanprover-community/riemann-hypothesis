@@ -102,7 +102,6 @@ namespace GlobalTheory.PolChar
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 
-open Classical in
 def iAt (v : InfinitePlace (maximalRealSubfield E)) : (Cinf E)ˣ where
   val w := if w.comap (algebraMap (maximalRealSubfield E) E) = v then Complex.I else 1
   inv w := if w.comap (algebraMap (maximalRealSubfield E) E) = v then -Complex.I else 1

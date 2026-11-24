@@ -170,7 +170,6 @@ namespace PI.FockOneDegW
 
 open HwC
 
-open Classical in
 theorem hwExist : HwExist := by
   intro p q r s U hfd hU0 hstab
   haveI := hfd

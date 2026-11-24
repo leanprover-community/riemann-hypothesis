@@ -79,18 +79,14 @@ lemma constantCoeff_mvExp (f : MvPowerSeries ι K) (hf : MvPowerSeries.constantC
 
 end Exp
 
-section Comb
 
 variable {n : ℕ}
 
 variable {R : Type u} [CommRing R]
 
-end Comb
 
-section Main
 
 variable {K : Type u} [NormedField K] [CharZero K] {ι : Type} [Fintype ι]
 
-end Main
 
 end Formalism.DworkPowerSeriesWeights

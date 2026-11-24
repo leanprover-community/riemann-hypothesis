@@ -143,7 +143,6 @@ def AAx {A : Type*} [Ring A] [Algebra ℂ A] (k r : ℕ) (E : Fin (2 * r + k + 1
     else 0
 
 
-open scoped Classical in
 def AAv {A : Type*} [Ring A] [Algebra ℂ A] (k r : ℕ) (E : Fin (2 * r + k + 1) → Fin (2 * r + k + 1) → A)
     (y : Fin r → Fin (2 * r + k + 1) → ℂ) (m : ℕ) (hm : m ≤ r) (ell : ℂ) : A :=
   ∑ B : Fin m → Fin (2 * r + k + 1),
@@ -232,7 +231,6 @@ def XiYZhat : Prop :=
     (g⁻¹ *ᵥ bvec (eI k r a)) (esI k r b) = star (Zhat k r z z' g a.castSucc b.castSucc)
 
 
-open scoped Classical in
 def AAop {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] (k r m : ℕ) (hm : m ≤ r) (u : ℂ)
     (f : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → E) :
     Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → E := fun g =>
@@ -243,7 +241,6 @@ def AAop {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] (k r m : ℕ) (h
     else 0
 
 
-open scoped Classical in
 def AAvop {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] (k r m : ℕ) (hm : m ≤ r) (ell : ℂ)
     (f : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → E) :
     Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → E := fun g =>

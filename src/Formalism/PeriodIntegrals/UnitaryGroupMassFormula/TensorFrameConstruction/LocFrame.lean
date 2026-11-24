@@ -85,7 +85,6 @@ def locFrame (I : Formalism.MainNotions.S.AutInst) {r k : ℕ} (e f : Fin r → 
   fw := fun c a => ((hw.2 a).1 c).2
   zw := fun a => (hw.2 a).2
 
-section Simp
 
 variable (I : Formalism.MainNotions.S.AutInst) {r k : ℕ} (e f : Fin r → Fin I.n → I.E) (z : Fin I.n → I.E)
   (hn : I.n = 2 * r + k + 1) (hF : IsFrame I e f z)
@@ -94,6 +93,5 @@ variable (I : Formalism.MainNotions.S.AutInst) {r k : ℕ} (e f : Fin r → Fin 
       ∀ a, (∀ c, hJ (I.ε v) (rv I v (e c)) (w a) = 0 ∧ hJ (I.ε v) (rv I v (f c)) (w a) = 0) ∧
         hJ (I.ε v) (rv I v z) (w a) = 0)
 
-end Simp
 
 end PI.ScPiBuildW.Rv

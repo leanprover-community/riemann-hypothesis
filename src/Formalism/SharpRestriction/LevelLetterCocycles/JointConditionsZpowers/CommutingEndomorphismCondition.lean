@@ -111,7 +111,6 @@ end Star
 
 section Wit
 
-open Classical
 
 variable {D : D7}
 
@@ -126,7 +125,6 @@ end Wit
 
 section Sup
 
-open Classical
 
 variable {D : D7}
 
@@ -172,7 +170,6 @@ end Asm
 
 section Rows
 
-open Classical
 
 variable {D : D7}
 
@@ -227,7 +224,6 @@ end Rows
 
 section CanonData
 
-open Classical
 
 variable {D : D7}
 

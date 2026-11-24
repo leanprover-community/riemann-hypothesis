@@ -91,7 +91,6 @@ def RSPole : Prop := ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberFiel
         ((⟨m, CG.mk π⟩ : Σ a, CG E a) ≠ ⟨k, CG.mk π'⟩ → Z 1 = 0)
 
 
-open Classical in
 def RSU : Prop := ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (m k : ℕ) (π : CG E m) (π' : CG E k),
   1 ≤ m → 1 ≤ k → π.IsUnitary → π'.IsUnitary →
     ∃ S₀ : Finset (HeightOneSpectrum (𝓞 E)), ∀ S, S₀ ⊆ S → ∀ (α : Off E S → Fin m → ℂˣ) (β : Off E S → Fin k → ℂˣ),

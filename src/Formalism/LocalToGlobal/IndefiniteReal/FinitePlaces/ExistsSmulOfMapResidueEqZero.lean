@@ -521,7 +521,6 @@ theorem exists_GLint_map {n : Type} [Fintype n] [DecidableEq n] {M : Matrix n n 
   rw [← Matrix.toLin'_apply', Matrix.toLin'_toMatrix']
 
 
-open Classical in
 def dgl {ϖ : L} (hϖ : ϖ ≠ 0) (n e : ℕ) : GL (Fin n) L :=
   ⟨Matrix.diagonal fun i => if (i : ℕ) < e then ϖ else 1, Matrix.diagonal fun i => if (i : ℕ) < e then ϖ⁻¹ else 1,
     by rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]; congr 1; funext i; split_ifs <;> field_simp,
@@ -559,7 +558,6 @@ theorem isType_dgl {ϖ : O} (hϖ : Irreducible ϖ) {n e : ℕ} (he : e ≤ n) :
     simp
 
 
-open Classical in
 theorem card_filter_reps {ϖ : O} (hϖ : Irreducible ϖ) {n e : ℕ} {γ : GL (Fin n) L} (hγ : IsType O ϖ e γ)
     {R : Finset (GL (Fin n) L)} (hR : IsReps (Formalism.UG.GLint (Fin n) O) γ R)
     (P : Submodule (IsLocalRing.ResidueField O) (Fin n → IsLocalRing.ResidueField O) → Prop) :

@@ -192,7 +192,6 @@ end Formalism.FourierDecayAlt.P.PBF
 
 namespace Formalism.FourierDecayAlt.P.PBF
 
-open Finset Formalism.FourierDecayAlt.Wd
 
 section Lift
 
@@ -386,7 +385,6 @@ end Formalism.FourierDecayAlt.P.PBF
 
 namespace Formalism.FourierDecayAlt.P.PBF
 
-open Finset Formalism.FourierDecayAlt.Wd
 
 section ActLift
 
@@ -563,7 +561,6 @@ end Formalism.FourierDecayAlt.P.PBF
 
 namespace Formalism.FourierDecayAlt.P.PBF
 
-open Finset Formalism.FourierDecayAlt.Wd
 
 section Positions2
 

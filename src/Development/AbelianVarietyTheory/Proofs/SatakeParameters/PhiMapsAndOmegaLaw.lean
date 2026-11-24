@@ -681,7 +681,6 @@ end Ent
 
 section Laws
 
-open Classical in
 theorem ite_law {G Y K : Type} [Group G] [Field K] (J : Subgroup G) (act : G → Y → Y) (hact : ∀ g x, act g⁻¹ (act g x) = x)
     (S : Y → Prop) (val : Y → K) (μ lam : G → K)
     (h : ∀ g ∈ J, ∀ x, S x → S (act g x) ∧ val (act g x) * μ g = lam g * val x) {g : G} (hg : g ∈ J) (x : Y) :
@@ -706,7 +705,6 @@ variable (ψ : AddChar (𝓞 E ⧸ P.asIdeal) K) (χ : ℕ → (𝓞 E ⧸ P.asI
   {k₀ k₁ rS r t i c' n' c n : ℕ}
 
 
-open Classical in
 def PhiM (k₀ k₁ rS r t i c' n' c n : ℕ) : SF E K (n' + c') (n + c) := fun x =>
   if SuppG P k₁ rS r t (n + c) (r + i * t) (entB (qOf P) k₀ c' n' c n (fun i => i + 1) (fun i => i + 1) x) then
     valG ψ χ k₁ r t i (entB (qOf P) k₀ c' n' c n (fun i => i + 1) (fun i => i + 1) x) else 0

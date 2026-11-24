@@ -71,16 +71,12 @@ theorem hJ_inv_r (g : Formalism.REAL.UJ ε) (x y : Fin n → ℂ) :
 
 end Form
 
-section Eich
 
 variable {n : ℕ} (ε : Fin n → Bool)
 
-end Eich
 
-section Frame
 
 variable {n r : ℕ} (ε : Fin n → Bool)
 
-end Frame
 
 end Formalism.L2.SG.RealObj.InfCut.RealHermitianForms

@@ -135,7 +135,6 @@ open Classical in
 def W : Finset (Pl D.host.E) := Pg ∪ Z.Wd ∪ {Z.w0}
 
 
-open Classical in
 def depth (w : Pl D.host.E) : ℕ := if w = Z.w0 then Z.e0 else 2
 
 def ideal : Ideal (𝓞 D.host.E) := ∏ w ∈ Z.W Pg, w.asIdeal ^ Z.depth w

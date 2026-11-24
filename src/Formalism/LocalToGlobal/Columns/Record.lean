@@ -439,7 +439,6 @@ theorem modP.lift_mk (P : HeightOneSpectrum (𝓞 E)) (M : Submodule (𝓞 E) (S
     (x : ↥M) : modP.lift P M f (modP.mk P M x) = f x := rfl
 
 
-open Classical in
 def modP.ext (P : HeightOneSpectrum (𝓞 E)) (M : Submodule (𝓞 E) (Sp E n)) (g : modP P M → 𝓞 E ⧸ P.asIdeal) (y : Sp E n) :
     𝓞 E ⧸ P.asIdeal :=
   if h : ∃ s : 𝓞 E, s ∉ P.asIdeal ∧ s • y ∈ M then
@@ -550,7 +549,6 @@ theorem first_raising_mem_equivariant (d : DecoSet (E := E) (n := n) (ST := ST) 
 theorem functional_firstBasis_eq_one (d : DecoSet (E := E) (n := n) (ST := ST) (SG := SG)) (P : ST) : d.1.f P (d.e1 P) = 1 := d.2.exists_dualBasis.choose_spec.2.1 P
 
 
-open Classical in
 def te (d : DecoSet (E := E) (n := n) (ST := ST) (SG := SG)) (P : ST) (q : 𝓞 E) : d.lk P :=
   if h : q • d.e1 P ∈ d.1.kerAt P then modP.mk P.1 (d.1.kerAt P) ⟨_, h⟩ else 0
 
@@ -957,7 +955,6 @@ def repPt (hc : Formalism.BasicNotions.CMData X.F X.E) (u : Pr.Word) (j : ℕ) (
   ((ptOf hc (R.N j) (Pr.vT u) Pr.vGs ((stepGSD W Λ u j).outSec.rep c) : GL (Fin (R.N j)) (X.E ⊗[X.F] Formalism.L2.Herm.Af X.F)))
 
 
-open Classical in
 def rhoK (W : Wts X Pr.Word R) (Λ : ∀ j, LevFam X.E X.K (R.N j) Pr.vGs)
     (Dc : DetChr X R.m) (u : Pr.Word) (i : ℕ) (c : StCl W Λ u i) : X.Kˣ :=
   if hc : Formalism.BasicNotions.CMData X.F X.E then
@@ -966,7 +963,6 @@ def rhoK (W : Wts X Pr.Word R) (Λ : ∀ j, LevFam X.E X.K (R.N j) Pr.vGs)
   else 1
 
 
-open Classical in
 def rhoK' (W : Wts X Pr.Word R) (Λ : ∀ j, LevFam X.E X.K (R.N j) Pr.vGs)
     (Dc : DetChr X R.m) (u : Pr.Word) (i : ℕ) (c : StCl W Λ u (i + 1)) : X.Kˣ :=
   if hc : Formalism.BasicNotions.CMData X.F X.E then
@@ -1151,11 +1147,9 @@ def recAtT (hX : X.Ok) (hPr : Pr.Ok) (hf : X.f = R.f) (σ₀ : X.K →+* ℂ) (h
   GamP := N.GamP
   one_lt_gammaP := N.one_lt_gammaP
 
-section Levs
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks}
 
-end Levs
 
 @[reducible] def stepH (hX : X.Ok) (u : Pr.Word) (j : ℕ) : HLat X.K :=
   (stepGSD W Λ u j).toH (stepOk W Λ hX u j) (stepGSD W Λ u j).intDel
@@ -1233,7 +1227,6 @@ structure XpArg {hc : X.Tau → HCParam R} (σ₀ : X.K →+* ℂ) (C : ColumnCh
   thFree_nonneg : ∀ i s L L', 0 ≤ thFree i s L L'
 
 
-open Classical in
 def tauOfR (hX : X.Ok) (hPr : Pr.Ok) (u : Pr.Word) (w : HeightOneSpectrum (𝓞 X.K)) : {P // P ∈ Pr.vT u} ≃ X.Tau :=
   haveI := hX.nonempty_Tau
   if hw : (Pr.T u : 𝓞 X.K) ∈ w.asIdeal then Equiv.ofBijective _ (tauOfC_bijective hX hPr u w hw)
@@ -1501,13 +1494,10 @@ def recXp (hX : X.Ok) (hPr : Pr.Ok) (σ₀ : X.K →+* ℂ) (hσ : ∀ x : X.K, 
 
 end Xp
 
-section Ker
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} {W : Wts X Pr.Word R} {Λ : ∀ j, LevFam X.E X.K (R.N j) Pr.vGs}
 
-end Ker
 
-section Fam
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 
@@ -1525,19 +1515,14 @@ variable {K : Type} [Field K] [NumberField K] [StarRing K]
 variable {X : Fields} {R : Ranks}
 
 
-end Fam
 
-section NonDeg
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} {W : Wts X Pr.Word R} {Λ : ∀ j, LevFam X.E X.K (R.N j) Pr.vGs}
 
-end NonDeg
 
-section Ram
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} {W : Wts X Pr.Word R} {Λ : ∀ j, LevFam X.E X.K (R.N j) Pr.vGs}
 
-end Ram
 
 section All
 
@@ -1555,25 +1540,19 @@ def recFormsX (hX : X.Ok) (hPr : Pr.Ok) (hf : X.f = R.f) (σ₀ : X.K →+* ℂ)
 
 end All
 
-section Mink
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} {W : Wts X Pr.Word R} {Λ : ∀ j, LevFam X.E X.K (R.N j) Pr.vGs}
 
 variable {σ₀ : X.K →+* ℂ}
 
-end Mink
 
-section FrmMink
 
 variable {X : Fields} {n : ℕ} {ST SG Q : Finset (HeightOneSpectrum (𝓞 X.E))}
   (C : CoefPk X n (DecoF X.E n ST SG Q)) (Λ : LevFam X.E X.K n SG) (Θ : LevQFam X.E X.K n Q)
 
-end FrmMink
 
-section TwMinkS
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} {W : Wts X Pr.Word R} {σ₀ : X.K →+* ℂ}
 
-end TwMinkS
 
 end Formalism.L2.Col

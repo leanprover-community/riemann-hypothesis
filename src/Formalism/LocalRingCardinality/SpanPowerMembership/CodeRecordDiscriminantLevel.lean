@@ -47,7 +47,6 @@ namespace Formalism.BasicNotions.Examples₂
 
 open NumberField IsDedekindDomain
 
-section Rows5
 
 variable {R : Ranks} (W : Type) (LL : Type) [Field LL] [NumberField LL] (embLL : LL →+* ℂ) (P : Rows.Places LL)
   (Tau : Type) [Fintype Tau] (hTau : Fintype.card Tau = R.f) (Dst : ℝ)
@@ -55,7 +54,6 @@ variable {R : Ranks} (W : Type) (LL : Type) [Field LL] [NumberField LL] (embLL :
   (kb : ∀ j, Tau → Fin (R.sigW j).1 → ℤ) (ks : ∀ j, Tau → Fin (R.sigW j).2 → ℤ)
   (tw : P.Pl → Bool) (htw : ∀ w, tw (P.conj w) = tw w)
 
-end Rows5
 
 section Record
 
@@ -99,13 +97,11 @@ variable (hv : W → ℝ) (vol : @HSpace H.E _ _ H.cmStar → ℝ) (hvol : ∀ V
 
 end Record
 
-section Words
 
 variable {R : Ranks} (h : HCParam R) (n : ℕ)
   (hgap : ∀ (l : ℕ) (hl : l + 1 < R.k - 1), h.v ⟨l, by omega⟩ - h.v ⟨l + 1, hl⟩ = 4 * (n : ℚ))
   (hlet : ∀ (l : ℕ) (hl : l < R.k - 2), h.u ⟨l + 1, by omega⟩ = h.v ⟨l, by omega⟩ - 1 / 2)
   (hn : 0 < n) (a : Fin (R.k - 2) → Bool)
 
-end Words
 
 end Formalism.BasicNotions.Examples₂

@@ -183,7 +183,6 @@ theorem ocbS_card_res (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hp : q.Prime) (
       exact this
 
 
-open Classical in
 theorem ocbS_card_vals (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hu : ((q : ℕ) : 𝓞 E) ∉ P.asIdeal ^ 2) (hp : q.Prime)
     (hcard : Nat.card (𝓞 E ⧸ P.asIdeal) = q) {A B d : ℕ} (hd : d ≤ A) (hB : 1 ≤ B) (ρ : 𝓞 E ⧸ P.asIdeal) :
     ((LocE.valsQ E q A B).filter (fun v => IntAt P ((q : E) ^ d * v) ∧ redP P ((q : E) ^ d * v) = ρ)).card = q ^ (B + d - 1) := by

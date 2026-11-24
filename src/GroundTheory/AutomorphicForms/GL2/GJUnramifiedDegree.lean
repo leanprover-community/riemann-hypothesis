@@ -257,7 +257,6 @@ end Induced
 section Core
 
 open Matrix GLnLocal Parabolic Iwasawa MeasureTheory Polynomial
-open scoped NNReal ENNReal
 
 variable [MeasurableSpace (GL (Fin n) F)] [BorelSpace (GL (Fin n) F)]
   {V : Type*} [AddCommGroup V] [Module ℂ V] {π : Representation ℂ (GL (Fin n) F) V}

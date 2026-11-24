@@ -149,7 +149,6 @@ def onHalf (e : AE D) (Φ : Matrix (Fin T.rank) (Fin S.rank) (Fv D.host.F v) →
   fun t => if IsHalf e t then Φ (mapCo φ S T BS BT t) else 0
 
 
-open Classical in
 def onHalfAdj (e : AE D) (Φ : Matrix (Fin S.rank) (Fin T.rank) (Fv D.host.F v) → ℂ) : WO S T → ℂ :=
   fun t => if IsHalf (cA D e) t then Φ (adjCo φ S T BS BT t) else 0
 
@@ -162,7 +161,6 @@ def linOm (v : FinPl D) {a b : ℕ} (g : GL (Fin a) (Fv D.host.F v)) (h : GL (Fi
   GlobalTheory.SplitWeil.om (k := Fv D.host.F v) 1 g h Φ
 
 
-open Classical in
 def phiQ (v : FinPl D) {a b : ℕ} (r : ℕ) (de : (Fv D.host.F v)ˣ →* ℂˣ) (x : Matrix (Fin b) (Fin a) (Fv D.host.F v)) : ℂ :=
   if h : IsUnit (topL r x).det ∧ Valued.v (topL r x).det = 1 ∧ (∀ i j, x i j ∈ v.adicCompletionIntegers D.host.F) ∧
       ∀ i j, r ≤ i.val → j.val < r → Valued.v (x i j) < 1 then
@@ -205,7 +203,6 @@ def detPos {k : ℕ} (p : ℕ) (κ : Matrix (Fin k) (Fin k) ℂ) : ℂ := (κ.to
 def detNeg {k : ℕ} (p : ℕ) (κ : Matrix (Fin k) (Fin k) ℂ) : ℂ := (κ.toSquareBlockProp fun i => ¬ i.val < p).det
 
 
-open Classical in
 def fockSub (τ : D.what₂.Tau) (pS pT : ℕ) (κS : Matrix (Fin n) (Fin n) ℂ) (κT : Matrix (Fin m) (Fin m) ℂ) :
     MvPolynomial (FVar D m n) ℂ →ₐ[ℂ] MvPolynomial (FVar D m n) ℂ :=
   MvPolynomial.aeval fun y : FVar D m n =>
@@ -219,7 +216,6 @@ def quadOp {ι : Type} (c : ℂ) (z z' : ι) (P : MvPolynomial ι ℂ) : MvPolyn
     (starRingEnd ℂ) c • MvPolynomial.pderiv z (MvPolynomial.pderiv z' P)
 
 
-open Classical in
 def fockP (τ : D.what₂.Tau) (pS pT : ℕ) (YS : Matrix (Fin n) (Fin n) ℂ) (YT : Matrix (Fin m) (Fin m) ℂ)
     (P : MvPolynomial (FVar D m n) ℂ) : MvPolynomial (FVar D m n) ℂ :=
   (∑ c : Fin n, ∑ i : Fin m, ∑ i' : Fin m,

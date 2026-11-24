@@ -129,13 +129,11 @@ theorem tld_isLat (i : ℕ) (hi : i ≤ D.R.m) (c : (D.mem u).C.cls i) :
 
 end TLd
 
-section TLdLoc
 
 open Matrix Formalism.UG
 
 variable {D : D7} {u : D.what₂.Word}
 
-end TLdLoc
 
 section SFGen
 
@@ -222,7 +220,6 @@ end SFGen
 
 section SFGen2
 
-open Matrix Formalism.UG IsDedekindDomain
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 

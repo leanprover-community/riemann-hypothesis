@@ -82,7 +82,6 @@ theorem monicOf_inj {g : ℕ} [Fact g.Prime] {N : ℕ} {a b : Fin N → ZMod g}
   funext i
   rw [← Formalism.L2.SG.Pf.RowDictPf.coeff_monicOf a i, ← Formalism.L2.SG.Pf.RowDictPf.coeff_monicOf b i, h]
 
-open Classical in
 theorem Ea_mul (a b : CV D) : Ea a * Ea b = if a = b then Ea a else 0 := by
   have : ∀ k, Fact (D.host.g k).Prime := fun k => ⟨D.host.g_prime k⟩
   apply MonoidAlgebra.ext
@@ -115,7 +114,6 @@ theorem Ea_mul (a b : CV D) : Ea a * Ea b = if a = b then Ea a else 0 := by
     simp
 
 
-open Classical in
 theorem ES_idem (S : Set (Tup2 D)) : ES S * ES S = ES S := by
   rw [ES_eq, Finset.sum_mul_sum]
   refine Finset.sum_congr rfl fun a ha => ?_

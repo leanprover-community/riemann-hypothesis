@@ -109,7 +109,6 @@ def extZero (H : Subgroup T) (t : T) (a : H → R) : T → R :=
   fun x => if h : t⁻¹ * x ∈ H then a ⟨_, h⟩ else 0
 
 
-open Classical in
 def extZero₂ (H : Subgroup T) (t s : T) (g : H × H → R) : T × T → R :=
   fun z => if h : t⁻¹ * z.1 ∈ H ∧ s⁻¹ * z.2 ∈ H then g (⟨_, h.1⟩, ⟨_, h.2⟩) else 0
 

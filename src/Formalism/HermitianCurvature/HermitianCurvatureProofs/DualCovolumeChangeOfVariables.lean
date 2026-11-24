@@ -93,7 +93,6 @@ theorem t_BlockFrame : BlockFrame := by
   obtain ⟨a, b, c⟩ := hE E (S6.perLat E g ν s) (S6.rd E ^ (-ν)) h10 h11
   exact ⟨a, b, c.trans h12⟩
 
-open InfinitePlace in
 theorem orth_zero (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (z : CV E)
     (h : ∀ t : E, inner ℝ z (cemb E t) = 0) : z = 0 := by
   classical

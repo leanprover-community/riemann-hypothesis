@@ -204,7 +204,6 @@ end RatFunc
 
 section RingOfIntegers
 
-open scoped Polynomial
 
 variable [IsFunctionField k K] [Algebra k[X] K] [Algebra (RatFunc k) K]
   [IsScalarTower k[X] (RatFunc k) K] [IsScalarTower k k[X] K] [FunctionField k K]

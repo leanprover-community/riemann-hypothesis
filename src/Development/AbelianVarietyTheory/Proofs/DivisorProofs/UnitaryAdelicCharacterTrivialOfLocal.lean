@@ -69,7 +69,6 @@ def ind (S : Finset (HeightOneSpectrum (𝓞 F))) : Af F :=
     · simp only [h, if_true]; exact one_mem _
     · simp only [h, if_false]; exact zero_mem _⟩
 
-open Classical in
 theorem ev_ind (S : Finset (HeightOneSpectrum (𝓞 F))) (u : HeightOneSpectrum (𝓞 F)) :
     evalV F u (ind S) = if u ∈ S then 1 else 0 := rfl
 

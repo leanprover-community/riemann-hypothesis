@@ -178,7 +178,6 @@ def cutMult (J qq : Ideal (Poly S N)) [qq.IsPrime] : ℕ∞ :=
 
 end Numbers
 
-section Domination
 
 variable {S : Type u} [CommRing S] {Ω : Type w} [Field Ω] [Algebra S Ω] {N N' : ℕ}
 
@@ -186,9 +185,7 @@ variable {S : Type u} [CommRing S] {Ω : Type w} [Field Ω] [Algebra S Ω] {N N'
 
 
 
-end Domination
 
-section Restrict
 
 variable {S : Type u} [CommRing S] {Ω : Type w} [Field Ω] [Algebra S Ω] {N : ℕ}
   {x : Fin (N + 1) → Ω}
@@ -204,7 +201,6 @@ structure RestrictData {K' : Type w} [Field K'] [Algebra S K'] (Q : SubSystem S 
     r (aeval x f / aeval x s * q) = aeval y f / aeval y s * r q
   span : ∀ I : Chart y, Submodule.span (chartRing S y I) (r '' Q.sub (liftChart hxy I)) = Q'.sub I
 
-end Restrict
 
 section Steps
 
@@ -345,11 +341,9 @@ theorem isVeryAmple_twistSys_one : IsVeryAmple (twistSys S x 1) := ⟨N, x, isVe
 
 end Inhabitants2
 
-section LineData
 
 variable (k : Type u) [Field k]
 
-end LineData
 
 end
 

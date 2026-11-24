@@ -71,12 +71,10 @@ theorem tmap_inclR (φ : R →ₐ[F] S) (e : E) :
 
 end Gen
 
-section Loc
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] (σ : E →ₐ[F] E) {M : ℕ}
   (J : Matrix (Fin M) (Fin M) E)
 
-end Loc
 
 end CompGAux
 

@@ -197,7 +197,6 @@ theorem card_ext (L K : Type) [Field L] [NumberField L] [Field K] [NumberField K
       left_inv := fun t => by ext; rfl
       right_inv := fun φ => by ext; rfl }
 
-open Classical in
 theorem sum_comp_algebraMap (L K : Type) [Field L] [NumberField L] [Field K] [NumberField K] [Algebra L K]
     (F : (L →+* ℂ) → ℝ) :
     ∑ τ : K →+* ℂ, F (τ.comp (algebraMap L K)) = Module.finrank L K * ∑ σ, F σ := by

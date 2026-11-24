@@ -746,7 +746,6 @@ end Rec
 
 section Rec2
 
-open Formalism.MainNotions.S.LocalSplitGroups Formalism.MainNotions.JointEigenvalueBoundsFromAnyDatum Formalism.MainNotions.LocalModelPeriodLattices
 
 variable {D : Formalism.BasicNotions.D7}
 
@@ -902,13 +901,10 @@ theorem laIsPeriod_of (δ : ∀ p, (D.s.atP p).Fp) (M : ∀ p : PlF D, Loc.Model
 
 end Rec2
 
-section Rec3
 
-open Formalism.MainNotions.S.LocalSplitGroups Formalism.MainNotions.JointEigenvalueBoundsFromAnyDatum Formalism.MainNotions.LocalModelPeriodLattices
 
 variable {D : Formalism.BasicNotions.D7}
 
-end Rec3
 
 end Formalism.MainNotions.BridgeLemma
 

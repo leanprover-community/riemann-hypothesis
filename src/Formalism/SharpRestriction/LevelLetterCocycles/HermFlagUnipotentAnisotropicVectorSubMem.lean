@@ -233,13 +233,11 @@ theorem tTool1_of [NeZero n] (hinj : Function.Injective (algebraMap O LL))
 
 end Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
 
-open Classical
 
 noncomputable section
 
 namespace Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.WachCoordinates.Br Formalism.MainNotions.UnusedSlot80.Relay2
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -841,7 +839,6 @@ theorem uniformizer_dvd_of_frobenius_power [NeZero n] [IsDomain O] (hinj : Funct
 
 end Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
 
-open Classical
 
 noncomputable section
 
@@ -1130,13 +1127,11 @@ theorem bound2 (hπ : W.π₀ ∈ W.AΔ)
 
 end Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
 
-open Classical
 
 noncomputable section
 
 namespace Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.WachCoordinates.Br Formalism.MainNotions.UnusedSlot80.Relay2
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -1177,13 +1172,11 @@ theorem trunc_ex [NeZero n] [IsLocalRing O] [IsAdicComplete (IsLocalRing.maximal
 
 end Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
 
-open Classical
 
 noncomputable section
 
 namespace Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.WachCoordinates.Br Formalism.MainNotions.UnusedSlot80.Relay2
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -1214,13 +1207,11 @@ theorem span_gen [NeZero n] [IsDomain O] (hinj : Function.Injective (algebraMap 
 
 end Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
 
-open Classical
 
 noncomputable section
 
 namespace Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.WachCoordinates.Br Formalism.MainNotions.UnusedSlot80.Relay2
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]

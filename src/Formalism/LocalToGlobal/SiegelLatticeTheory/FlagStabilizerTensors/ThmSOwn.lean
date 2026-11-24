@@ -269,7 +269,6 @@ end SOf
 
 section Clauses
 
-open Formalism.L2.SG.Full
 
 variable {D : D7} {X : HidaSetting D} {Y : Full X} {hF : FinX Y} (hI : SIso D.s (sOf hF))
 
@@ -343,7 +342,6 @@ end Clauses
 
 section Clauses2
 
-open Formalism.L2.SG.Full
 
 variable {D : D7} {X : HidaSetting D} {Y : Full X} {hF : FinX Y} (hI : SIso D.s (sOf hF))
 
@@ -399,7 +397,6 @@ end Clauses2
 
 section Family
 
-open Formalism.L2.SG.Full
 
 structure ConcK (D : D7) : Type 1 where
   X : HidaSetting D
@@ -462,7 +459,6 @@ end Family
 
 section Family2
 
-open Formalism.L2.SG.Full
 
 variable (C0 : ℝ)
 

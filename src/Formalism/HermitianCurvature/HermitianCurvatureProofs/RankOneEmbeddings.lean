@@ -167,7 +167,6 @@ end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P.RankOneEmbeddings.R1
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 theorem factor_meas {X V : Type*} [MeasurableSpace X] [StandardBorelSpace X] [MeasurableSpace V]
     [MeasurableSpace.CountablySeparated V] (π : X → V) (hπ : Measurable π) (F : X → ℝ≥0∞) (hF : Measurable F)
@@ -255,7 +254,6 @@ end Formalism.FourierDecayAlt.P.RankOneEmbeddings.R1
 
 namespace Formalism.FourierDecayAlt.P.RankOneEmbeddings.R1
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 variable {k r : ℕ}
 
@@ -420,7 +418,6 @@ end Formalism.FourierDecayAlt.P.RankOneEmbeddings.R1
 
 namespace Formalism.FourierDecayAlt.P.RankOneEmbeddings.R1
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 variable {k r : ℕ}
 
@@ -753,7 +750,6 @@ end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P.RankOneEmbeddings.In
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2 Formalism.FourierDecayAlt.P.RankOneEmbeddings.R1
 
 variable {k r : ℕ}
 
@@ -928,7 +924,6 @@ end Formalism.FourierDecayAlt.P.RankOneEmbeddings.In
 
 namespace Formalism.FourierDecayAlt.P.RankOneEmbeddings.In
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2 Formalism.FourierDecayAlt.P.RankOneEmbeddings.R1
 
 variable {k r : ℕ}
 
@@ -1081,7 +1076,6 @@ end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P.RankOneEmbeddings.Nm
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 theorem exists_pos {k r : ℕ} (μ : Measure (Mt k r)) (h0 : μ ≠ 0) : ∃ K : Set (Mt k r), IsCompact K ∧ μ K ≠ 0 := by
   by_contra hcon
@@ -1094,7 +1088,6 @@ end Formalism.FourierDecayAlt.P.RankOneEmbeddings.Nm
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 theorem integral_normalisation_from_constant : Formalism.FourierDecayAlt.B2.IntNormFromConst := by
   intro hC k r z z' μsec μG μW μN μW' hD

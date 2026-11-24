@@ -248,8 +248,6 @@ end Formalism.MainNotions.ShortIntervalPrimes.Br
 
 namespace Formalism.MainNotions.ShortIntervalPrimes
 
-open Finset Filter Topology ArithmeticFunction MeasureTheory Formalism.MainNotions.GlobalTheoryTheory
-open Formalism.HermitianLattices.GL2PrimeSums (psum psumR Gchi Gone)
 open Br
 
 theorem l21a {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) (hp : χ.IsPrimitive) (y : ℝ) (hy : 1 ≤ y) :
@@ -368,16 +366,12 @@ noncomputable section
 
 namespace Formalism.MainNotions.ShortIntervalPrimes
 
-open Finset Filter Topology ArithmeticFunction MeasureTheory Formalism.MainNotions.GlobalTheoryTheory
-open Br
 
-section ShortIntervalLowerBound
 
 variable (K0 : Type) [Field K0] [NumberField K0]
 
 variable {K0}
 
-end ShortIntervalLowerBound
 
 end Formalism.MainNotions.ShortIntervalPrimes
 
@@ -387,8 +381,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.ShortIntervalPrimes
 
-open Finset Filter Topology ArithmeticFunction MeasureTheory Formalism.MainNotions.GlobalTheoryTheory
-open Br
 
 end Formalism.MainNotions.ShortIntervalPrimes
 
@@ -400,11 +392,9 @@ namespace Formalism.MainNotions.ShortIntervalPrimes
 
 open NumberField
 
-section Deg2
 
 variable {K0 : Type} [Field K0] [NumberField K0]
 
-end Deg2
 
 end Formalism.MainNotions.ShortIntervalPrimes
 
@@ -414,8 +404,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.ShortIntervalPrimes
 
-open Finset Filter Topology ArithmeticFunction MeasureTheory Formalism.MainNotions.GlobalTheoryTheory
-open Br
 
 def lamE (D : Formalism.BasicNotions.D7) : ℝ := max 1 (Real.log (NE D))
 
@@ -487,7 +475,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.ShortIntervalPrimes
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.GlobalTheoryTheory Filter Topology
 
 theorem rpow_le_mul_exp_neg_log {u v r k : ℝ} (hu0 : 0 < u) (hv : v = Real.log u) (hv0 : 0 ≤ v) (hr : r ≤ 1 - k) :
     u ^ r ≤ u * Real.exp (-k * v) := by
@@ -1221,8 +1208,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.ShortIntervalPrimes
 
-open Finset Filter Topology ArithmeticFunction MeasureTheory Formalism.MainNotions.GlobalTheoryTheory
-open Br
 
 end Formalism.MainNotions.ShortIntervalPrimes
 
@@ -1232,8 +1217,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.ShortIntervalPrimes
 
-open Finset Filter Topology ArithmeticFunction MeasureTheory Formalism.MainNotions.GlobalTheoryTheory
-open Br
 
 end Formalism.MainNotions.ShortIntervalPrimes
 

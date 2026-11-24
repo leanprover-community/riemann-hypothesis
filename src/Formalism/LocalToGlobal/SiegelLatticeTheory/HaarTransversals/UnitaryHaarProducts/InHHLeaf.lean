@@ -168,8 +168,6 @@ end InHHLeaf
 
 namespace InHHLeaf
 
-open MeasureTheory Set Formalism.MainNotions.LeviCoordinates
-open scoped ENNReal InnerProductSpace
 
 variable {G H : Type*} [Group G] [MeasurableSpace G] [MeasurableMul₂ G] [MeasurableInv G]
   {μ : Measure G} [SigmaFinite μ] [μ.IsMulLeftInvariant] [μ.IsMulRightInvariant]
@@ -245,7 +243,6 @@ end Fix
 
 namespace InHHLeaf
 
-open MeasureTheory Set Formalism.MainNotions.LeviCoordinates
 open scoped ENNReal Pointwise
 
 section Unfold
@@ -345,8 +342,6 @@ end InHHLeaf
 
 namespace InHHLeaf
 
-open MeasureTheory Set Formalism.MainNotions.LeviCoordinates
-open scoped ENNReal Pointwise
 
 section Unfold2
 
@@ -416,7 +411,6 @@ end InHHLeaf
 
 section PserRphSec
 
-open MeasureTheory Formalism.MainNotions.LeviCoordinates
 open scoped ENNReal
 
 variable {D : D7} (X : HidaSetting D)

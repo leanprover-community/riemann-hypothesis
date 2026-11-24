@@ -375,7 +375,6 @@ theorem nilpotent_orthogonal_complement : NPerp := by
   rw [Matrix.sub_mulVec, Matrix.one_mulVec]
   exact inX_mem h5
 
-open UnipW in
 theorem unipotent_nilpotent_radical : UnipN := by
   intro k r z hzs g hg p hp
   have hz := hzs.1

@@ -112,12 +112,10 @@ theorem cf_sglF_ne {v u : HeightOneSpectrum (𝓞 F)} (h : u ≠ v) (c : Fv F v)
   unfold singleV
   exact RestrictedProduct.single_eq_of_ne (fun w : HeightOneSpectrum (𝓞 F) => w.adicCompletionIntegers F) c h
 
-open Classical in
 theorem continuous_sglI (w : InfinitePlace F) : Continuous (sglI (F := F) w) := by
   unfold sglI
   exact (continuous_single w).prodMk continuous_const
 
-open Classical in
 theorem continuous_sglF (v : HeightOneSpectrum (𝓞 F)) : Continuous (sglF (F := F) v) := by
   have hS : Filter.cofinite ≤ Filter.principal ({v}ᶜ : Set (HeightOneSpectrum (𝓞 F))) :=
     Filter.le_principal_iff.2 (Set.finite_singleton v).compl_mem_cofinite
@@ -136,7 +134,6 @@ def invS (S₁ : Finset (InfinitePlace F)) (S₂ : Finset (HeightOneSpectrum (�
 
 variable {S₁ : Finset (InfinitePlace F)} {S₂ : Finset (HeightOneSpectrum (𝓞 F))}
 
-open Classical in
 theorem ci_invS (y : AF F) (u : InfinitePlace F) :
     ci u (invS S₁ S₂ y) = if u ∈ S₁ then (ci u y)⁻¹ else 0 := by
 
@@ -146,7 +143,6 @@ theorem ci_invS (y : AF F) (u : InfinitePlace F) :
   · rw [Finset.sum_eq_single_of_mem u hu (fun w _ hw => ci_sglI_ne (Ne.symm hw) _), ci_sglI_self]
   · exact Finset.sum_eq_zero fun w hw => ci_sglI_ne (fun h : u = w => hu (h ▸ hw)) _
 
-open Classical in
 theorem cf_invS (y : AF F) (u : HeightOneSpectrum (𝓞 F)) :
     cf u (invS S₁ S₂ y) = if u ∈ S₂ then (cf u y)⁻¹ else 0 := by
 

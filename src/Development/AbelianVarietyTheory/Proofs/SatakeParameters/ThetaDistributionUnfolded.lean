@@ -665,7 +665,6 @@ variable {K : Type} [Field K] {n : ℕ} {ι : Type}
 abbrev Off (ι : Type) (n : ℕ) (τ : ι) : Type := {v : ι × Fin n × Fin n // v.1 ≠ τ}
 
 
-open Classical in
 def psi (τ : ι) : Pol K ι n →ₐ[K] MvPolynomial (Off ι n τ) (MvPolynomial (Fin n × Fin n) K) :=
   aeval fun v => if h : v.1 = τ then C (X v.2) else X ⟨v, h⟩
 
@@ -702,7 +701,6 @@ theorem psi_psi' (τ : ι) (p : MvPolynomial (Off ι n τ) (MvPolynomial (Fin n 
       simp [psi, psi', w.2]
   exact RingHom.congr_fun e p
 
-open Classical in
 theorem psi_colSub [Fintype ι] (τ : ι) (β : Matrix (Fin n) (Fin n) K) (Q : Pol K ι n) :
     psi τ (colSub (Function.update (1 : ι → Matrix (Fin n) (Fin n) K) τ β) Q) = map (colSub1 β).toRingHom (psi τ Q) := by
   have e : (psi (K := K) (n := n) τ).toRingHom.comp (colSub (Function.update (1 : ι → Matrix (Fin n) (Fin n) K) τ β)).toRingHom =
@@ -814,7 +812,6 @@ theorem psi_blockEmb_ne (τ σ : ι) (h : σ ≠ τ) (F : MvPolynomial (Fin n ×
     simp only [map_mul, hp]
     simp [blockEmb, psi, h]
 
-open Classical in
 theorem atPos_prod [Fintype ι] (τ : ι) (π : MvPolynomial (Fin n × Fin n) K →ₗ[K] MvPolynomial (Fin n × Fin n) K)
     (F : ι → MvPolynomial (Fin n × Fin n) K) :
     atPos τ π (∏ σ, blockEmb K σ (F σ)) = ∏ σ, blockEmb K σ (Function.update F τ (π (F τ)) σ) := by

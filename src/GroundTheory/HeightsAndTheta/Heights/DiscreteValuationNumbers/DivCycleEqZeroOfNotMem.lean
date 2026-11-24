@@ -57,7 +57,6 @@ universe u
 
 noncomputable section
 
-section Helpers
 
 variable {K : Type*} {ι : K → Type*} {R : Type*} [CommRing R]
 
@@ -78,9 +77,7 @@ private theorem facts_of_divCycle_ne_zero' {P W : Ideal (MRing ι R)} {x : MRing
   · exact hc
   · exact absurd rfl h
 
-end Helpers
 
-section Rel
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {R : Type u} [CommRing R]
   [IsNoetherianRing R]
@@ -102,7 +99,6 @@ private theorem ratDiv_eq_of_rel {P W : Ideal (MRing ι R)} (hP : P.IsPrime) (hP
   unfold ratDiv
   linarith
 
-end Rel
 
 section Proof
 

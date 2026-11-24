@@ -509,7 +509,6 @@ def unitOf (z : ℂ) : ℂˣ := if hz : z = 0 then 1 else Units.mk0 z hz
 theorem coe_unitOf {z : ℂ} (hz : z ≠ 0) : (unitOf z : ℂ) = z := by simp [unitOf, hz]
 
 
-open Classical in
 variable (h) in
 def lpUnr (m : Multiset ℂ) : WD h := mk (WDRep.diag (h := h) fun i : m.ToType => unitOf (i : ℂ))
 
@@ -556,7 +555,6 @@ def frobEig (x : WD h) : Multiset ℂ := eig x (frob h)
   eig_mk _ _
 
 
-open Classical in
 noncomputable def inePol (x : WD h) (σ : G E Ω) : ℂ[X] := by
   classical
   exact if hσ : σ ∈ Weil h then charPol x ⟨σ, hσ⟩ else 1

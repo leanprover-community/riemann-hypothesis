@@ -62,12 +62,10 @@ end Use
 end PA
 
 section PB
-open Formalism.BasicNotions NumberField Finset
 
 end PB
 
 section PC
-open Formalism.BasicNotions NumberField Finset
 
 theorem b_nums {D : D7} {T g1 g2 : ℕ} {Cn x b L b' Sc eta : ℝ} (h : Nums D T g1 g2 Cn x b L b' Sc eta) :
     1 ≤ L ∧ 0 ≤ Cn ∧ 4 ≤ b' ∧ b' ≤ b ∧ (D.R.N D.R.m : ℝ) ≤ b' ∧ Sc + eta + D.R.m * D.R.t ≤ b' ∧
@@ -145,27 +143,22 @@ theorem b_Tu_pos (D : D7) (u : D.what₂.Word) : (0 : ℝ) < (Tu D u : ℝ) := b
 end PC
 
 section PD
-open Formalism.BasicNotions NumberField Finset
 
 end PD
 
 section PE
-open Formalism.BasicNotions NumberField Finset
 
 end PE
 
 section PF
-open Formalism.BasicNotions NumberField Finset
 
 end PF
 
 section PG
-open Formalism.BasicNotions NumberField Finset
 
 end PG
 
 section PH
-open Formalism.BasicNotions NumberField Finset
 
 def toEuc (D : D7) (i : ℕ) (s : D.what₂.LL →+* ℂ) (w : Gx D i → ℂ) : EuclideanSpace ℂ (Gx D i) :=
   WithLp.toLp 2 fun g => (((Real.sqrt (Real.pi * D.gx.Om g.1 s))⁻¹ : ℝ) : ℂ) * w g
@@ -173,7 +166,6 @@ def toEuc (D : D7) (i : ℕ) (s : D.what₂.LL →+* ℂ) (w : Gx D i → ℂ) :
 end PH
 
 section PI
-open Formalism.BasicNotions NumberField Finset
 
 theorem b_finrank_host (D : D7) : Module.finrank ℚ D.host.E = 2 * D.R.f := by
   have hb := (factEmb D.R D.host).1
@@ -379,8 +371,6 @@ theorem col_setup (D : D7) (u : D.what₂.Word) (Cn x b L b' Sc eta K : ℝ) (hK
 end Z56a
 
 section Z56
-open Formalism.BasicNotions NumberField
-open Formalism.HermitianLattices.TraceIntegrality (Numbers wt plus MeanSquareWeightBound)
 
 def SlopeLow (D : D7) (u : D.what₂.Word) : Prop :=
   -(∑ τ, colAbs D u τ / D.R.k * Real.log (Tu D u)) -
@@ -617,27 +607,22 @@ theorem familySlopeMax_of_open {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 end Z56
 
 section Ms
-open Formalism.BasicNotions NumberField
 
 end Ms
 
 section Z1a
-open Formalism.BasicNotions NumberField
 
 end Z1a
 
 section Z1b
-open Formalism.BasicNotions NumberField
 
 end Z1b
 
 section continuousCocycles
-open Formalism.BasicNotions NumberField
 
 end continuousCocycles
 
 section JI
-open Formalism.BasicNotions NumberField
 
 end JI
 
@@ -651,20 +636,15 @@ open MeasureTheory Complex
 
 end GrowthPolynomialOperator
 
-section HilbertSchmidtNorm
-open MeasureTheory Complex
 
 variable {ι : Type} [Fintype ι]
 
-end HilbertSchmidtNorm
 
 section PB3
-open MeasureTheory Complex
 
 end PB3
 
 section Z1d
-open Formalism.BasicNotions
 
 end Z1d
 
@@ -679,7 +659,6 @@ open Formalism.BasicNotions NumberField MeasureTheory Complex
 end MV1
 
 section MV2
-open Formalism.BasicNotions NumberField MeasureTheory Complex
 
 def rho (D : D7) (i : ℕ) (s : D.what₂.LL →+* ℂ) (w : Gx D i → ℂ) : ℝ :=
   2 ^ Fintype.card (Gx D i) * Real.exp (-(2 * Real.pi) * Hq D i s w)
@@ -687,12 +666,10 @@ def rho (D : D7) (i : ℕ) (s : D.what₂.LL →+* ℂ) (w : Gx D i → ℂ) : �
 end MV2
 
 section crystallineCocycles
-open Formalism.BasicNotions
 
 end crystallineCocycles
 
 section PJ
-open Formalism.BasicNotions NumberField
 
 end PJ
 

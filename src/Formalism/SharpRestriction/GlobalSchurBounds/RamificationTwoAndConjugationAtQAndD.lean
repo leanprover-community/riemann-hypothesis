@@ -152,10 +152,7 @@ noncomputable section
 
 namespace Formalism.MainNotions.ZetaZeroFreeRegion.Br
 
-open NumberField Formalism.FrobeniusOrbits Formalism.BasicNotions Formalism.MainNotions.GlobalTheoryTheory Formalism.MainNotions Formalism.LFunctionChainParameters Finset
-open scoped Pointwise ComplexConjugate
 
-open Classical
 
 variable (D : D7)
 
@@ -340,10 +337,7 @@ noncomputable section
 
 namespace Formalism.MainNotions.ZetaZeroFreeRegion.Br
 
-open NumberField Formalism.FrobeniusOrbits Formalism.BasicNotions Formalism.MainNotions.GlobalTheoryTheory Formalism.MainNotions Formalism.LFunctionChainParameters Finset
-open scoped Pointwise ComplexConjugate
 
-open Classical
 
 variable (D : D7)
 

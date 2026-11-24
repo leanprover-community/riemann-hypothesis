@@ -443,23 +443,17 @@ theorem blkDet_diagEmb {s : ℕ} (h : s ≤ n) (β : ℕ → ℕ) (c : ℕ) (hc 
 
 end DiagChar
 
-section Sym
 
 variable {n : ℕ} {κ : Type} [CommRing κ]
 
-end Sym
 
-section More
 
 variable {κ : Type} [CommRing κ] {K : Type} [Field K]
 
-end More
 
-section Res
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {L : Type} [Field L]
 
-end Res
 
 section ParId
 

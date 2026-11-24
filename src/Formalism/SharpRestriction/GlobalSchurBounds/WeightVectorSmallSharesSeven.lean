@@ -65,7 +65,6 @@ def cands (K : G.Consts) : Finset ℕ := (Finset.range ⌈L.sc.X'⌉₊).filter 
 variable {L}
 
 
-open Classical in
 def ChW_at (X : G.Inst D L) (K : G.Consts) : Prop :=
   ∑ p ∈ cands L K, Real.log p / p *
       ((if L.sc.x ^ (-L.sc.eps) < G.Sig X K (G.aL L) (G.bL L) p then 2 else 0) +

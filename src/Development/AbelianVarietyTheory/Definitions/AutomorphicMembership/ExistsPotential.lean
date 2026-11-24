@@ -180,7 +180,6 @@ open Classical in
     rho'_norm := fun _ _ _ => by simp [uI] }
 
 
-open Classical in
 @[reducible] def member (u : B.Word) : Member B.R (Tau B.R) (B.hcW u) :=
   haveI : Fact (B.T u).Prime := ⟨B.T_prime u⟩
   { C := ch B u
@@ -222,7 +221,6 @@ open Classical in
   rhoDetPrime_eq_muTilde_mul_chi_pow _ _ _ := rfl
 
 
-open Classical in
 def cols (B : Base) : Cols B where
   toCols0 := cols0 B.toPre
   fm u :=

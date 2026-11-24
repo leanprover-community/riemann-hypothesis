@@ -120,7 +120,6 @@ theorem exists_div_indP (v : GlobalTheory.FinPl.Pl D) (g : ℕ) (hg : (g : 𝓞 
   · rw [mul_left_comm, ← map_natCast (algebraMap D.host.F (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af D.host.F)) g, ← map_mul,
       mul_inv_cancel₀ hg0, map_one, mul_one]
 
-open Classical in
 theorem fix_of_grpAt {I : AutInst} (h : I = Formalism.L2.SG.InstExistsPf.instOf D) (v : GlobalTheory.FinPl.Pl D) (g : ℕ)
     (hg : (g : 𝓞 D.host.F) ∉ v.asIdeal) (κ : GA D (D.sp.Y 0)) (hκ : κ ∈ grpAt (D.sp.Y 0) (· = v)) :
     ∃ t ∈ IntAf I.F I.E, ∀ i j, (g : I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F) * t *

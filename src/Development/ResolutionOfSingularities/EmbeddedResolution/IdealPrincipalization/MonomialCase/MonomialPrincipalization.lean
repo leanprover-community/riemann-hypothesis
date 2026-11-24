@@ -92,7 +92,6 @@ def binaryEncode {n : ℕ} (J : Finset (Fin n)) : ℕ :=
 def maxBinaryCode (I : Y.IdealSheafData) (m : ℕ) (L : List Y.IdealSheafData) : ℕ :=
   sSup {c : ℕ | ∃ J : Finset (Fin L.length), IsMaxOrderIndexSet I m L J ∧ binaryEncode J = c}
 
-open Classical in
 def lexMaxIndices (I : Y.IdealSheafData) (m : ℕ) (L : List Y.IdealSheafData) :
     Finset (Fin L.length) :=
   if h : ∃ J : Finset (Fin L.length), IsMaxOrderIndexSet I m L J ∧ binaryEncode J = maxBinaryCode I m L then
@@ -107,7 +106,6 @@ def openSublocusIdeal {V : Scheme.{u}} (ι : V ⟶ Y) (S : Set ↥V) (hS : IsOpe
   AlgebraicGeometry.Scheme.Hom.ker
     (AlgebraicGeometry.Scheme.Opens.ι (X := V) ⟨S, hS⟩ ≫ ι)
 
-open Classical in
 def monomialCenter (I : Y.IdealSheafData) (m : ℕ) (L : List Y.IdealSheafData) : Y.IdealSheafData :=
   if h : minIndexCard I m L ≠ 0 ∧
       IsOpen (⇑(intersectionIdeal L (lexMaxIndices I m L)).subschemeι.base ⁻¹' monomialCenterSet I m L) then
@@ -136,7 +134,6 @@ def IsAdmissibleCenter (d : MarkedBlowupSequenceData p I m E) : Prop :=
     ((centerAtLast d).comap (Blowup.blowup.proj (centerAtLast d))) ^ m * B =
       (d.ideal d.length).comap (Blowup.blowup.proj (centerAtLast d)))
 
-open Classical in
 def blowupAtCenter (hinv : ComapIsoInvariance.{u}) (d : MarkedBlowupSequenceData p I m E) :
     MarkedBlowupSequenceData p I m E :=
   if h : IsAdmissibleCenter d then

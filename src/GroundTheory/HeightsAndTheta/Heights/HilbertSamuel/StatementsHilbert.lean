@@ -148,7 +148,6 @@ def HilbertIncrement.Statement : Prop :=
         C * ((∑ k, (a k : ℝ)) + 1) ^ ((d : ℝ) - 1)
 
 
-open Classical in
 def IntersectionRecursion.Statement : Prop :=
   ∀ (F : Type u) [Field F] (K : Type) [Fintype K] [DecidableEq K] (ι : K → Type)
     [∀ k, Fintype (ι k)] (q : Ideal (MRing ι F)) (d : ℕ), IsMultiProjPrime q →

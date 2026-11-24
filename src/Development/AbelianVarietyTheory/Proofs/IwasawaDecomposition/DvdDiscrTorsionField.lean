@@ -337,7 +337,6 @@ variable {F H M : Type} [Field F] [NumberField F] [Field H] [NumberField H] [Fie
 include hsub
 
 
-open Classical in
 theorem exists_point {z : M} (hz : algebraMap M ℂ z ∈ torsionCoords (A.baseChange ℂ) 12) :
     ∃ (x y : M) (h : (A.baseChange M).toAffine.Nonsingular x y), 12 • Point.some x y h = 0 ∧ (z = x ∨ z = y) := by
   obtain ⟨x, y, h, h12, hz⟩ := hz

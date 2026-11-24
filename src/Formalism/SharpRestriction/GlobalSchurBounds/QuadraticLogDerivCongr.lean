@@ -317,7 +317,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.Lnk
 
-open Formalism.BasicNotions Formalism.D5 Formalism.FrobeniusOrbits Formalism.LFunctionChainParameters.LHost Formalism.RankGapBounds.WeightedMeanData Formalism.LFunctionChainParameters.WeightedSlopeBounds Formalism.LFunctionChainParameters.characterSumData Formalism.LFunctionChainParameters.ThickSetMeanBounds
   Formalism.LFunctionChainParameters.LErr Formalism.LFunctionChainParameters.LChain
 
 theorem sgnZ_injective : Function.Injective sgnZ := by
@@ -536,7 +535,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.Lnk
 
-open Formalism.BasicNotions Formalism.D5 Formalism.FrobeniusOrbits Formalism.LFunctionChainParameters.LHost Formalism.RankGapBounds.WeightedMeanData Formalism.LFunctionChainParameters.WeightedSlopeBounds Formalism.LFunctionChainParameters.characterSumData Formalism.LFunctionChainParameters.ThickSetMeanBounds
   Formalism.LFunctionChainParameters.LErr Formalism.LFunctionChainParameters.LChain
 
 variable {eps : ℝ} {Fm : FamP eps} {x : ℝ}
@@ -760,7 +758,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.Lnk
 
-open Formalism.BasicNotions Formalism.D5 Formalism.FrobeniusOrbits Formalism.LFunctionChainParameters.LHost Formalism.RankGapBounds.WeightedMeanData Formalism.LFunctionChainParameters.WeightedSlopeBounds Formalism.LFunctionChainParameters.characterSumData Formalism.LFunctionChainParameters.ThickSetMeanBounds
   Formalism.LFunctionChainParameters.LErr Formalism.LFunctionChainParameters.LChain
 
 theorem loss_bound_nonneg {D : D7} (L : SizeData₂ D) : 0 ≤ L.B0 := by
@@ -856,7 +853,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.Lnk
 
-open Formalism.BasicNotions Formalism.D5 Formalism.FrobeniusOrbits Formalism.LFunctionChainParameters.LHost Formalism.RankGapBounds.WeightedMeanData Formalism.LFunctionChainParameters.WeightedSlopeBounds Formalism.LFunctionChainParameters.characterSumData Formalism.LFunctionChainParameters.ThickSetMeanBounds
   Formalism.LFunctionChainParameters.LErr Formalism.LFunctionChainParameters.LChain
 
 def mkC (Cd Cabs Cc Cs C1 Cl eL CH : ℝ) : Consts := ⟨Cd, Cabs, Cd, Cd, Cc, Cs, C1, Cl, eL, CH⟩
@@ -880,7 +876,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.Lnk
 
-open Formalism.BasicNotions Formalism.D5 Formalism.FrobeniusOrbits Formalism.LFunctionChainParameters.LHost Formalism.RankGapBounds.WeightedMeanData
 
 def gOfM (e : Formalism.HC.Frame) (ρ : E0 × e.A) : e.GG := ((if ρ.1.2 = 0 then 1 else -1, 1), e.iota ρ.2)
 

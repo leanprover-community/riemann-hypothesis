@@ -141,7 +141,6 @@ abbrev inLeft (Q : Finset (HeightOneSpectrum (𝓞 E))) (w : SG) : uSG SG Q := �
 abbrev inRight (SG : Finset (HeightOneSpectrum (𝓞 E))) (P : Q) : uSG SG Q := ⟨P.1, by classical exact Finset.mem_union_right _ P.2⟩
 
 
-open Classical in
 def forgetDeco (p : DecoF E n ST SG Q) : Deco E n ST (uSG SG Q) where
   N := p.deco.1.N
   f := p.deco.1.f
@@ -179,7 +178,6 @@ theorem forgetFr_N (p : DecoF E n ST SG Q) : (forgetFr p).1.N = p.deco.1.N := rf
 theorem forgetFr_f (p : DecoF E n ST SG Q) : (forgetFr p).1.f = p.deco.1.f := rfl
 
 
-open Classical in
 theorem forgetFr_res (p : DecoF E n ST SG Q) : (forgetFr p).res Finset.subset_union_left = p.deco := by
   apply Subtype.ext
   ext1
@@ -193,7 +191,6 @@ theorem isLiftFr_forgetFr (p : DecoF E n ST SG Q) (w : uSG SG Q) (h : w.1 ∉ SG
   ⟨p.2 (rightOf w h), fun _ hx => (congrFun (forgetDeco_be_of_not p w h) _).trans (frBe_apply _ hx)⟩
 
 
-open Classical in
 theorem forgetFr_surjective : Function.Surjective (forgetFr : DecoF E n ST SG Q → DecoSet (E := E) (n := n) (ST := ST) (SG := uSG SG Q)) := by
   intro d
   refine ⟨⟨(d.res Finset.subset_union_left, fun P => d.1.liftFr (inRight SG P)),
@@ -209,7 +206,6 @@ theorem forgetFr_surjective : Function.Surjective (forgetFr : DecoF E n ST SG Q 
 
 
 variable (E n SG Q) in
-open Classical in
 def redGQ : GLG (E := E) (n := n) (SG := SG) × GLQ E n Q →* GLG (E := E) (n := n) (SG := uSG SG Q) where
   toFun a w := if h : w.1 ∈ SG then a.1 ⟨w.1, h⟩ else redGL n w.1 (a.2 (rightOf w h))
   map_one' := by
@@ -404,7 +400,6 @@ variable {E : Type} [Field E] [NumberField E] [StarRing E] {N n : ℕ} (hN : N =
   {ST SG Q : Finset (HeightOneSpectrum (𝓞 E))}
 
 
-open Classical in
 def unitOf (pi : 𝓞 E) : Eˣ := if h : (pi : E) = 0 then 1 else Units.mk0 _ h
 
 
@@ -417,7 +412,6 @@ theorem unitOf_val {pi : 𝓞 E} {P : HeightOneSpectrum (𝓞 E)} (h : pi ∉ P.
   rfl
 
 
-open Classical in
 def tilFr (pi : 𝓞 E) (p : DecoF E n ∅ SG Q) : DecoF E N ST SG Q :=
   if h : ∀ (P : Q) (x : Sp E N),
       sumE hN (p.fr P) (unitOf pi) x ∈ (DecoSet.tilH (ST := ST) hN pi p.deco).1.at P.1 ↔ x ∈ stdAt E N P.1

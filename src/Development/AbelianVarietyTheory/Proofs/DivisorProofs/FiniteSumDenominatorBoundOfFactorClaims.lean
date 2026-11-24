@@ -286,7 +286,6 @@ section Core
 variable {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {U : Set T}
 
 
-open Classical in
 theorem vCore_lin {S : GridChoice W U} {t : T} {Φ : G.Datum} (h : S.SumOK t Φ) {J : Type} (s : Finset J) (a : J → ℂ)
     (Ψs : J → FinPt G (.top 0) → VV ℂ (wt G (.top 0))) (Ψ0 : FinPt G (.top 0) → VV ℂ (wt G (.top 0)))
     (F : FinPt G (.grid 0 D.R.m) → VV ℂ (listedWt G (.grid 0 D.R.m)))
@@ -317,7 +316,6 @@ variable {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 T : Type} {A : FamIn 
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat D A Ks}
 
 
-open Classical in
 theorem core_loss (ch : Choice R) {t : T} {w : PlL D} {Φ : ch.G.Datum} (hS : ch.S.SumOK t Φ)
     (hD : ∀ β ∈ ch.S.supp t Φ, ∃ τ, IsCosetExpansion ch.S.toGridChoice t Φ β (expDepth ch.S.toGridChoice t Φ β) τ)
     {aC aD aG aT aR aP aF : ℝ}
@@ -433,7 +431,6 @@ theorem gam_ne {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {U
 
 
 
-open Classical in
 theorem exists_intMod_levelPrimePow_eq_add_mul (ch : Choice R) {t : T} {w : PlL D} {B : ℝ} (hB : 0 ≤ B) (hO : ∀ a, ch.S.SumOK t (ch.Phi a))
     {X' : InfinitePlace D.what₂.LL → Matrix (Fin ch.n) (Fin ch.n) ℂ} {M : Submodule (𝓞 D.what₂.LL) (Fin ch.n → D.what₂.LL)}
     (hM : IsTestLat ch.G ch.rp ch.n ch.e X' M) (Fx : A.fam.amb.FR t) (y : Fin ch.n → D.what₂.LL)

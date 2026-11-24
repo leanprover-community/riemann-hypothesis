@@ -436,7 +436,6 @@ open Classical in
 def iL (F : Finset ι → Submodule k E) (I : Finset ι) : F I →ₗ[k] coch F :=
   if h : I.Nonempty then LinearMap.codRestrict (coch F) _ (single_mem_coch F h) else 0
 
-open Classical in
 theorem iL_val (F : Finset ι → Submodule k E) (I : Finset ι) (x : F I) (s : Finset ι) :
     (iL F I x).1 s = if I.Nonempty ∧ s = I then x.1 else 0 := by
   by_cases h : I.Nonempty

@@ -91,12 +91,10 @@ theorem labIn_tyOf {n : ℕ} {e : List ℤ} (h : ∃ y, Formalism.L2.Col.InertTy
   exact h.choose_spec
 
 
-open Classical in
 def valC (Lb : List ℤ → Prop) (n : ℕ) (a : List ℕ → ℂ) (c : List ℤ →₀ ℂ) : ℂ :=
   ∑ e ∈ c.support, c e * (if Lb e then a (tyOf n e) else 0)
 
 
-open Classical in
 theorem comb_apply {M X : Type} [AddCommGroup M] [Module ℂ M] [AddCommGroup X] [Module ℂ X] (e : M →ₗ[ℂ] X)
     (he : Function.Injective e) (h : (List ℤ →₀ ℂ) → Module.End ℂ M) (Tt : (List ℤ →₀ ℂ) → X → X)
     (hh : ∀ c x, e (h c x) = Tt c (e x))

@@ -50,11 +50,9 @@ namespace Formalism.L2.GlobalTheoryTheory.TraceIntegrality
 
 open Matrix
 
-section CSMat
 
 variable {ι : Type} [Fintype ι]
 
-end CSMat
 
 section CSSpace
 

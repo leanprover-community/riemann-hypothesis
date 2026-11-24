@@ -66,7 +66,6 @@ instance contSMul_herm (σ : E →ₐ[F] E) (a : ℕ) : ContinuousSMul (Fv F v) 
 
 end LatFactsW
 
-open scoped TensorProduct
 open NumberField IsDedekindDomain Topology Filter Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes PI.VolFromSW LatFactsW
 
 end PI.VolStabSW

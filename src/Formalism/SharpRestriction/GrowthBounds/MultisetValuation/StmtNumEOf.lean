@@ -104,7 +104,6 @@ def nc_Need (C₀ : ℝ) : Prop :=
           ((Y.Fl u w hg).w (Y.vOf u w hg t0)) j ≤
           Formalism.MainNotions.G.Pr X K (Formalism.MainNotions.G.bL L) (D.what₂.places.resChar w) j t0
 
-open Classical in
 theorem stmtNumE_of (C₀ : ℝ) (h : nc_Need C₀) : Formalism.MainNotions.FormalGroupSystem.NumericalComparisonUniform := by
   have two_le : ∀ (p : ℕ) (x : ℝ), 1 ≤ Real.logb (p : ℝ) x → 2 ≤ p := by
     intro p x hx

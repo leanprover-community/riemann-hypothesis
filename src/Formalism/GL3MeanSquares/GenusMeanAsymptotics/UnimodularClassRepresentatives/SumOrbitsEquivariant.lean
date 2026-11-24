@@ -169,7 +169,6 @@ theorem exists_fibReps (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hs 
   simp_rw [exists_smul_iff] at this
   exact this
 
-open StabilizerLattices SplitBAux in
 theorem repMass_eq_sum_fib (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hs : h.IsSymm) (hd : IsTotPosDef h)
     (S : VecSplit h h') {L : Submodule (𝓞 K) V} (hL : Submodule.IsLattice K L)
     (hLi : Formalism.HermitianLatticesTheory.IsIntegralLat h L) {s' : Finset (Submodule (𝓞 K) V')}

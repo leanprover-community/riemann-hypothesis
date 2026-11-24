@@ -61,7 +61,6 @@ noncomputable def partAt {D : D7} (V : HSp D) (g : GA D V) (s : Finset D.what₂
   ofInf D.sp.cm.sig V.gram (embArchPi D.sp.cm.sig V.gram fun w =>
     if w ∈ s.image (placeOf D) then projArch D.sp.cm.sig V.gram w g else 1)
 
-open Classical in
 theorem projArch_partAt {D : D7} (V : HSp D) (g : GA D V) (s : Finset D.what₂.Tau) (w : InfinitePlace D.host.F) :
     projArch D.sp.cm.sig V.gram w (partAt V g s) =
       if w ∈ s.image (placeOf D) then projArch D.sp.cm.sig V.gram w g else 1 := by
@@ -71,7 +70,6 @@ theorem proj_partAt {D : D7} (V : HSp D) (g : GA D V) (s : Finset D.what₂.Tau)
     proj D.sp.cm.sig V.gram v (partAt V g s) = 1 := by
   rw [partAt, proj_ofInf]
 
-open Classical in
 theorem partAt_insert {D : D7} (V : HSp D) (g : GA D V) {s : Finset D.what₂.Tau} {τ : D.what₂.Tau} (hτ : τ ∉ s) :
     partAt V g (insert τ s) =
       embW V (placeOf D τ) (projArch D.sp.cm.sig V.gram (placeOf D τ) g) * partAt V g s := by

@@ -70,7 +70,6 @@ def ocbAllow (k₀ m t N p p' : ℕ) : Prop :=
   else p < k₀ + m - 1 ∨ (p < N ∧ (p - (k₀ + m - 1)) / t ≤ (p' - (k₀ + m - 1)) / t)
 
 
-open Classical in
 def ocbPhiS {k : Type} [Field k] (ψ₀ : AddChar k ℂ) (χ : ℕ → kˣ →* ℂˣ) (k₀ m t j n' c n : ℕ) : Loc.SF k ℂ (n' + (c + 1)) (n + c) :=
   fun x =>
     let M := ocbEnt k₀ (c + 1) n' c n x
@@ -210,7 +209,6 @@ def ocbXPat (k₀ rS j t : ℕ) (hbar : GL (Fin N) κ) : Prop :=
   (∀ p, p < k₀ + j → ocbM hbar p p = 1) ∧ ∀ p p', p < N → p' < N → p ≠ p' → ocbM hbar p p' ≠ 0 → ocbXAllow k₀ rS j t p p'
 
 
-open Classical in
 def ocbChiK (χ : κˣ →* Kˣ) (x : κ) : K := if h : IsUnit x then ((χ h.unit : Kˣ) : K) else 0
 
 def ocbXLam (ψ₀ : AddChar κ K) (χ : ℕ → κˣ →* Kˣ) (k₀ j t : ℕ) (hbar : GL (Fin N) κ) : K :=
@@ -232,7 +230,6 @@ def OcbGrpGLoc (m2 : ℕ) : Prop :=
       ∀ x ∈ stdAt X.E (R.N j) w.1, redV w.1 (g x) = hbar.1.mulVec (redV w.1 x)) ↔ ocbXPat R.k R.rS j R.t hbar
 
 
-open Classical in
 def OcbChrGLoc (m2 : ℕ) : Prop :=
   OcbBase Ch sel mu cst m2 → ∀ j, j ≤ m2 + 1 → ∀ (w : {w // w ∈ Pr.vGs}) (hbar : GL (Fin (R.N j)) (𝓞 X.E ⧸ w.1.asIdeal))
     (g : Sp X.E (R.N j) ≃ₗ[X.E] Sp X.E (R.N j)) (r : AutY X R j),

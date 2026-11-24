@@ -445,7 +445,6 @@ def HasSignature (J : Matrix n n ℂ) (p q : ℕ) : Prop :=
 
 end More
 
-open NumberField IsDedekindDomain
 
 def UJTransport : Prop :=
   ∀ (A B : Type) [CommRing A] [CommRing B] (n : Type) [Fintype n] [DecidableEq n]

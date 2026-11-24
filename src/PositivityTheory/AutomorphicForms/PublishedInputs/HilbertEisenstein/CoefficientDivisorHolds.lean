@@ -83,7 +83,6 @@ theorem prodS_ne_bot (T : Finset (HeightOneSpectrum (𝓞 F))) (p : HeightOneSpe
   intro w _
   exact pow_ne_zero _ w.ne_bot
 
-open Classical in
 theorem ordI_prodS (T : Finset (HeightOneSpectrum (𝓞 F))) (p : HeightOneSpectrum (𝓞 F) → ℕ)
     (v : HeightOneSpectrum (𝓞 F)) : ordI v (∏ w ∈ T, w.asIdeal ^ p w) = if v ∈ T then p v else 0 := by
   classical
@@ -124,7 +123,6 @@ theorem dvd_fin {m : Ideal (𝓞 F)} (hm : m ≠ ⊥) : {r : Ideal (𝓞 F) | r 
   exact Set.finite_coe_iff.1 (Finite.of_fintype {r // r ∣ m})
 
 
-open Classical in
 def ext (S : Finset (HeightOneSpectrum (𝓞 F))) (p : S → ℕ) (w : HeightOneSpectrum (𝓞 F)) : ℕ :=
   if h : w ∈ S then p ⟨w, h⟩ else 0
 

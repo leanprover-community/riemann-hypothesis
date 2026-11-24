@@ -125,7 +125,6 @@ theorem isConjChars_base_six {F : Face D A} (h : GlobalTheory.Hk3.Core R F) (i :
       exact h.lev.xiR t PP hq a k u hk hu
 
 
-open Classical in
 theorem chr_base_six {F : Face D A} (h : GlobalTheory.Hk3.Core R F) (i : Fin D.R.m) (t : T) :
     chrOf (Vc D i) (R.βV i) (datV i R.Pg (R.Q t) R.triv
       (fun PP => if PP ∈ R.Pg then (R.chi ((i : ℕ) + 1) PP)⁻¹ else R.xiR t PP)) = (levEnv _ (R.βV i) (R.datVt i t)).χ := by

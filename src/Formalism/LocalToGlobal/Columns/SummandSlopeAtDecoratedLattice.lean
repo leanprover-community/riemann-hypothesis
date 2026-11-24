@@ -95,31 +95,25 @@ def lamZ (u : Pr.Word) (τ : X.Tau) : Fin (kap R + 1) → ℤ := castW (kap_succ
 
 end Nums
 
-section Named
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 
 variable (K) {n : ℕ}
 
-end Named
 
-section NamedCol
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
 
-end NamedCol
 
 section Main
 
 end Main
 
-section PartI
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
 
 
 variable (hX : X.Ok)
 
-end PartI
 
 end Formalism.L2.Col

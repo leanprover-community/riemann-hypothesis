@@ -242,7 +242,6 @@ end ChartCutoffEnergyAlt
 
 namespace ChartCutoffEnergyAlt
 
-open ReciprocityTheory.AnForm.A
 
 theorem hessC_eq_cxHessian {D : ℕ} (φ : (Fin D → ℂ) → ℝ) : hessC φ = cxHessian φ := rfl
 

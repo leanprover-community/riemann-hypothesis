@@ -197,7 +197,6 @@ end Construction
 
 section Classification
 
-open HeckeAlgebraLevel
 
 variable {V : Type*} [AddCommGroup V] [Module ℂ V] {ρ : Representation ℂ G V}
 

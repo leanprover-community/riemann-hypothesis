@@ -100,7 +100,6 @@ def pushD (X : Tower Ω ε) (k M : ℕ) [NeZero k] [NeZero M] (a : Fam X (k * M)
   fun x y => ∏ x' ∈ Finset.univ.filter (fun x' => dn k M x' = x), ∏ y' ∈ Finset.univ.filter (fun y' => dn k M y' = y), a x' y'
 
 
-open Classical in
 def pushH (X : Tower Ω ε) (k M : ℕ) [NeZero k] [NeZero M] (a : Fam X (k * M)) : Fam X M :=
   haveI : NeZero (k * M) := ⟨mul_ne_zero (NeZero.ne k) (NeZero.ne M)⟩
   fun x y => ∏ x' ∈ Finset.univ.filter (fun x' => x' 0 = up k M x 0 ∧ dn k M x' 1 = x 1),

@@ -78,7 +78,6 @@ section Basic
 variable {O : Type} [CommRing O] {bar : O → O} {ψ lab : InvFun O} {i : ℕ}
   {X : Type} [AddCommGroup X] [Module O X] [Module.Finite O X]
 
-open Classical in
 theorem markVal_int (n : ℕ) (β : LinearMap.BilinForm ℤ (Fin n → O)) :
     markVal bar ψ lab i n (fun a b => (β a b : ℝ)) = if IsMarked bar ψ lab i (Fin n → O) β then 1 else 0 := by
   classical

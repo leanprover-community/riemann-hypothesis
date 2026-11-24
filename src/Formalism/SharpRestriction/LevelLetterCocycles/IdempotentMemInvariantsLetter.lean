@@ -612,7 +612,6 @@ end Scalar
 end Formalism.MainNotions.N.Pv.LocalLengthBound
 
 noncomputable section
-open Classical
 
 namespace Formalism.MainNotions.N.Pv.LocalLengthBound
 
@@ -777,11 +776,9 @@ end DelH2
 end Formalism.MainNotions.N.Pv.LocalLengthBound
 
 noncomputable section
-open Classical
 
 namespace Formalism.MainNotions.N.Pv.LocalLengthBound
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc PowerSeries Formalism.MainNotions.WachCoordinates Formalism.MainNotions.N.Pv.LocalLengthBound.Ser TensorProduct
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -918,11 +915,9 @@ end TrH2
 end Formalism.MainNotions.N.Pv.LocalLengthBound
 
 noncomputable section
-open Classical
 
 namespace Formalism.MainNotions.N.Pv.LocalLengthBound
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc PowerSeries Formalism.MainNotions.WachCoordinates Formalism.MainNotions.N.Pv.LocalLengthBound.Ser TensorProduct
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -1184,11 +1179,9 @@ end KR
 end Formalism.MainNotions.N.Pv.LocalLengthBound
 
 noncomputable section
-open Classical
 
 namespace Formalism.MainNotions.N.Pv.LocalLengthBound
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc PowerSeries Formalism.MainNotions.WachCoordinates Formalism.MainNotions.N.Pv.LocalLengthBound.Ser TensorProduct
 
 section Coord
 
@@ -1370,11 +1363,9 @@ theorem comparison_linear_sum (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) {
 end Formalism.MainNotions.N.Pv.LocalLengthBound
 
 noncomputable section
-open Classical
 
 namespace Formalism.MainNotions.N.Pv.LocalLengthBound
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc PowerSeries Formalism.MainNotions.WachCoordinates Formalism.MainNotions.N.Pv.LocalLengthBound.Ser TensorProduct
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]

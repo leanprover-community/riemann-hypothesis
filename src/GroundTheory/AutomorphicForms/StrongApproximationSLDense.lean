@@ -175,14 +175,12 @@ def finiteAdeleSingleAdd (v : HeightOneSpectrum (𝓞 K)) (c : v.adicCompletion 
     FiniteAdeleRing (𝓞 K) K :=
   RestrictedProduct.single (fun w : HeightOneSpectrum (𝓞 K) => w.adicCompletionIntegers K) v c
 
-open Classical in
 theorem finiteAdeleSingleAdd_apply (v w : HeightOneSpectrum (𝓞 K)) (c : v.adicCompletion K) :
     finiteAdeleSingleAdd v c w = Pi.single (M := fun u : HeightOneSpectrum (𝓞 K) =>
       u.adicCompletion K) v c w :=
   rfl
 
 
-open Classical in
 def localEmbedding (v : HeightOneSpectrum (𝓞 K)) : GL (Fin n) (v.adicCompletion K) →* FiniteAdelicGL K n where
   toFun x := (finiteRestrictedEquiv K n).symm
     (RestrictedProduct.mulSingle (fun w => GLnLocal.integralGL (w.adicCompletion K) n) v x)
@@ -196,7 +194,6 @@ theorem finiteRestrictedEquiv_symm_apply (y : FiniteRestrictedGL K n) (w : Heigh
   rw [← finiteRestrictedEquiv_apply, ContinuousMulEquiv.apply_symm_apply]
 
 
-open Classical in
 theorem localEmbedding_transvectionGL (v : HeightOneSpectrum (𝓞 K))
     (t : TransvectionStruct (Fin n) (v.adicCompletion K)) :
     localEmbedding v (transvectionGL _ _ t) = transvectionGL (Fin n) (FiniteAdeleRing (𝓞 K) K)
@@ -249,7 +246,6 @@ theorem det_finiteRestrictedEquiv_apply (g : FiniteAdelicGL K n) (v : HeightOneS
   rfl
 
 
-open Classical in
 def truncate (S : Finset (HeightOneSpectrum (𝓞 K))) (y : FiniteRestrictedGL K n) :
     FiniteRestrictedGL K n where
   val v := if v ∈ S then y v else 1
@@ -258,12 +254,10 @@ def truncate (S : Finset (HeightOneSpectrum (𝓞 K))) (y : FiniteRestrictedGL K
     rw [ite_eq_right (by simpa using hv)]
     exact one_mem (GLnLocal.integralGL (v.adicCompletion K) n)
 
-open Classical in
 theorem truncate_apply (S : Finset (HeightOneSpectrum (𝓞 K))) (y : FiniteRestrictedGL K n)
     (v : HeightOneSpectrum (𝓞 K)) : truncate S y v = if v ∈ S then y v else 1 :=
   rfl
 
-open Classical in
 theorem truncate_insert {S : Finset (HeightOneSpectrum (𝓞 K))} {v : HeightOneSpectrum (𝓞 K)}
     (hv : v ∉ S) (y : FiniteRestrictedGL K n) :
     truncate (insert v S) y = truncate S y *

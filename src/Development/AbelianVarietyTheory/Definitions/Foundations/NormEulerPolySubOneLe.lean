@@ -415,7 +415,6 @@ theorem LvTw_inert (c : Fam E) (m : HeightOneSpectrum (𝓞 E) → ℂˣ) {v : H
 open Formalism.MainNotions.SchurIrreducible
 
 
-open Classical in
 variable (E) in
 def etaU (v : HeightOneSpectrum (𝓞 F)) : ℂˣ := if IsSplit (E := E) v then 1 else -1
 
@@ -423,7 +422,6 @@ theorem etaU_sq (v : HeightOneSpectrum (𝓞 F)) : etaU E v ^ 2 = 1 := by
   unfold etaU; split_ifs <;> simp
 
 
-open Classical in
 variable (E) in
 def etaFam (k : ℕ) : Fam F := fun v => if IsUnram (E := E) v ∨ Even k then {etaU E v ^ k} else 0
 

@@ -305,7 +305,6 @@ theorem om_pt {ψ : AddChar (AF D.host.F) ℂ} {θ : InfFam D} {S T : HSp D} {χ
       rw [Function.update_self, a2, onb, Matrix.mul_assoc, h1, Matrix.mul_one]
     · rw [Function.update_of_ne e, a3 ρ e, Matrix.mul_one, Matrix.one_mul]
 
-open Classical in
 theorem sub_diag {m n : ℕ} (τ : D.what₂.Tau) (l : Fin m → ℂ) :
     (sub (Function.update (fun _ => 1) τ (diagonal l)) : PolF D m n →ₐ[ℂ] PolF D m n) =
       MvPolynomial.aeval fun v : FVar D m n => (if v.1 = τ then l v.2.1 else 1) • (MvPolynomial.X v : PolF D m n) := by
@@ -320,7 +319,6 @@ theorem sub_diag {m n : ℕ} (τ : D.what₂.Tau) (l : Fin m → ℂ) :
       (fun h => (h (Finset.mem_univ _)).elim), Matrix.one_apply_eq]
 
 
-open Classical in
 theorem delta_weights {m n : ℕ} (p q : D.what₂.Tau → ℕ) (ap am : D.what₂.Tau → ℕ → ℕ) (τ : D.what₂.Tau) {ε : Fin m → Bool}
     (hε : ∀ a, ε a = decide ((a : ℕ) < p τ)) (χ : Matrix (Fin m) (Fin m) ℂ → ℂ) (κ : Fin m → ℝ)
     (hχ : ∀ t : Fin m → ℝ, χ (diagonal fun a => Complex.exp ((t a : ℂ) * Complex.I)) =
@@ -407,7 +405,6 @@ theorem cartan_one {k : ℕ} {G B : Matrix (Fin k) (Fin k) ℂ} (h : IsONBasis G
   exact Matrix.PosDef.one
 
 
-open Classical in
 theorem replace_at {V W : HSp D} {S' : D.what₂.Tau → SPar} {θ : InfFam D} (M : DSModel W S') {c : CoefA V}
     {ω : GA D V × GA D W →* Module.End ℂ (WO V W → ℂ)} {pt : PolF D W.rank V.rank →ₗ[ℂ] (WO V W → ℂ)}
     (p q : D.what₂.Tau → ℕ) (ap am : D.what₂.Tau → ℕ → ℕ) {io : LowT M →ₗ[ℂ] c.W →ₗ[ℂ] PolF D W.rank V.rank}

@@ -108,7 +108,6 @@ def prodFn {v : Pl F} (h : ∀ w : PlacesOver E v, GL (Fin n) (w.1.adicCompletio
   ∏ᶠ w, h w (cmp w g)
 
 
-open Classical in
 def iwFn {q : Pl F} (w₀ : PlacesOver E q) (ν : Fin n → ℤ) : GL (Fin n) (CompletionsOver E q) → ℂ :=
   prodFn fun w => (iwCoset w.1 (if w = w₀ then ν else 0)).indicator 1
 

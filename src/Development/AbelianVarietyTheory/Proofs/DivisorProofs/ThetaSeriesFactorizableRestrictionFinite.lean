@@ -296,7 +296,6 @@ theorem idem_mul_idem (S : Finset (Pl (F := F))) : idem S * idem S = idem S := b
   rw [sub_mul, one_mul, sub_eq_zero] at this
   exact this.symm
 
-open Classical in
 theorem pure_split {κ : Type} [Fintype κ] (S : Finset (Pl (F := F))) (f : SInf F κ) (φ ω : ∀ w : Pl (F := F), (κ → Fv F w) → ℂ)
     (hω : ∀ᶠ w in Filter.cofinite, ω w = Set.indicator {x | ∀ i, x i ∈ w.adicCompletionIntegers F} 1)
     (hφ : ∀ w, w ∉ S → φ w = ω w) (x : κ → AF F) :

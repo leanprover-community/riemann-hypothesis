@@ -125,10 +125,6 @@ theorem stdData_cm {a₀ : ℕ} {b₀ c₀ : ℤ} {d : ℕ} (ha : 0 < a₀) (hd 
 
 end MMScale
 
-open NumberField Formalism.BasicNotions Formalism.L2.Ker Classical
-open Formalism.L2.Th1.CM (MaximalUnramifiedExtension)
-open Formalism.L2.Th1.H (CmOK cmL matH stdH stdLat blk4 pow4 imgLat relIdx IsIsom IsSelfDual StdData Th alphaQ kernel4 tens4)
-open Formalism.L2.DIV.C.X (gcm_mem_map_smul gcm_relIdx_map_smul gcm_opU_scale gcm_alphaQ_scale gcm_dualLat_scale gcm_matH_scale
   blockFour_smul gcm_stdH_scale gcm_stdLat_scale gcm_imgLat_scale gcm_scalePair_scalePair gcm_kernel4_scale)
 
 theorem scale_integrality : ScaleInt := by

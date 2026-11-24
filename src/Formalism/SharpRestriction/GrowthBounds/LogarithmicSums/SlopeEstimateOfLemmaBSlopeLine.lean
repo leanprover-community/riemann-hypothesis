@@ -63,7 +63,6 @@ variable {α β : Type} [Fintype α] [DecidableEq α] [Fintype β] [DecidableEq 
 open Classical in
 def margC (φ : β → α) (T : α → Finset ℤ) : ℕ := ∏ t, (if ∃ i, φ i = t then 1 else (T t).card)
 
-open Classical in
 theorem marg_fibre (φ : β → α) (hφ : Function.Injective φ) (T : α → Finset ℤ) (a' : β → ℤ)
     (ha' : ∀ i, a' i ∈ T (φ i)) :
     ((Fintype.piFinset T).filter (fun a => (fun i => a (φ i)) = a')).card = margC φ T := by
@@ -96,7 +95,6 @@ theorem marg_fibre (φ : β → α) (hφ : Function.Injective φ) (T : α → Fi
   refine Finset.prod_congr rfl fun t _ => ?_
   split_ifs <;> simp
 
-open Classical in
 theorem marg_sum (φ : β → α) (hφ : Function.Injective φ) (T : α → Finset ℤ) (T' : β → Finset ℤ)
     (hT : ∀ i, T' i = T (φ i)) (F : (β → ℤ) → ℝ) :
     ∑ a ∈ Fintype.piFinset T, F (fun i => a (φ i)) = (margC φ T : ℝ) * ∑ a' ∈ Fintype.piFinset T', F a' := by

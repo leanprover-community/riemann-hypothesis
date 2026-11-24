@@ -395,7 +395,6 @@ theorem two_torsion_kernel_unique_holds : TwoTorsionKernelUnique := by
   intro K _ _ W hW h2 ha P Q hP0 hP hPE
   exact two_torsion_kernel_norm_unique hW h2 ha P Q hP0 hP hPE
 
-open Classical in
 theorem torsion_norm_bound_holds : TorsBound := by
   intro K _ _ W hW h2 P k hk hP
   exact tors_bound hW h2 P k hk hP

@@ -103,11 +103,9 @@ def PointsLemma (D : D7) (XD : DivX D) (P : DIV.Align.PrinLev XD) : Prop :=
         (XD.shv S κ).chern (chLie (XD.shv S κ).j (k - 1) (Sum.inl τ) * collapse D _ Q) /
           ((p : ℝ) - 1))
 
-section One1
 variable (D : D7) (XD : DivX D) (T : Loc D XD)
   (S : letI := D.host.cmStar; HSpace D.host.E) (κ : XD.Lev)
 
-end One1
 
 end Formalism.MainNotions.LatticeTransfer
 

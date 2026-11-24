@@ -105,7 +105,6 @@ theorem form_apply (x y : VecInf E j) : form E j x y = ∑ w, (x w ⬝ᵥ y w).r
 
 theorem form_symm : (form E j).IsSymm := ⟨fun x y => by simp [form_apply, dotProduct_comm]⟩
 
-open Classical in
 theorem toMatrix_form : LinearMap.BilinForm.toMatrix (stdB E j) (form E j) =
     Matrix.diagonal fun i : Idx E j => if i.2.2 = 0 then (1 : ℝ) else -1 := by
   ext ⟨w, a, s⟩ ⟨w', a', s'⟩
@@ -124,7 +123,6 @@ theorem toMatrix_form : LinearMap.BilinForm.toMatrix (stdB E j) (form E j) =
     simp [Pi.single_eq_of_ne h]
   · simp
 
-open Classical in
 theorem abs_det_form : |(LinearMap.BilinForm.toMatrix (stdB E j) (form E j)).det| = 1 := by
   rw [toMatrix_form, Matrix.det_diagonal, Finset.abs_prod]
   exact Finset.prod_eq_one fun i _ => by split_ifs <;> simp
@@ -231,7 +229,6 @@ theorem intB_apply [_root_.NumberField.IsTotallyComplex E] (i) : intB E j i = em
 
 instance : MeasurableAdd (mixedEmbedding.mixedSpace E) := MeasurableAdd₂.toMeasurableAdd
 
-open Classical in
 theorem volume_fd_map [_root_.NumberField.IsTotallyComplex E] {ι : Type} [Fintype ι] (b : Basis ι ℝ (mixedEmbedding.mixedSpace E)) :
     volume.real (ZSpan.fundamentalDomain ((Pi.basis fun _ : Fin j => b).map (mix E j))) =
       volume.real (ZSpan.fundamentalDomain b) ^ j := by

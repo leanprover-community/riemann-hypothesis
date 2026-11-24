@@ -54,7 +54,6 @@ noncomputable section
 
 universe u
 
-section Topology
 
 variable {F E : Type*} [Field F] [Field E] [NumberField E] [Algebra F E]
   [Algebra.IsQuadraticExtension F E]
@@ -72,7 +71,6 @@ instance secondCountableTopology_archUnitary (h : HermitianForm F E W) (v : Basi
   have : SecondCountableTopology (InfinitePlace E → GL ι ℂ) := inferInstance
   exact TopologicalSpace.Subtype.secondCountableTopology _
 
-end Topology
 
 section Groups
 

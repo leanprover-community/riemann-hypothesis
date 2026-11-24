@@ -400,7 +400,6 @@ noncomputable section
 
 namespace Formalism.L2.Ker
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br
 
 section Fock
 
@@ -480,7 +479,6 @@ theorem lb_gram_det_ne : (gramB (K := K) lam).det ≠ 0 := by
   exact Fintype.linearIndependent_iff.mp (bVVfun_spec K lam).1 c (by rw [← hxdef]; exact hx0) i
 
 
-open Classical in
 theorem lb_proj_spec (p : Pol K ι n) : ∀ v ∈ VV K lam, fockB ((projVV lam p : VV K lam) : Pol K ι n) v = fockB p v := by
   have hG : IsUnit (gramB (K := K) lam).det := isUnit_iff_ne_zero.mpr (lb_gram_det_ne lam)
   have hsym : (gramB (K := K) lam)ᵀ = gramB (K := K) lam := by
@@ -567,7 +565,6 @@ theorem lb_map_brConst {N n : ℕ} (hN : N = n + 1) (lam : ι → DomWeight N) (
   refine Finset.prod_congr rfl fun τ _ => ?_
   rw [map_mul, map_intCast, lb_map_kapBr]
 
-open Classical in
 theorem lb_coefLast_monomial {N n : ℕ} (hN : N = n + 1) (b : ι → Fin n → ℕ) (m : ι × Fin N × Fin N →₀ ℕ) (a : K) :
     coefLast hN b (monomial m a) =
       a • (if IsTop hN b m then monomial (m.comapDomain (upVar hN) (upVar_inj hN).injOn) (1 : K) else 0) := by
@@ -575,7 +572,6 @@ theorem lb_coefLast_monomial {N n : ℕ} (hN : N = n + 1) (b : ι → Fin n → 
     rw [coe_basisMonomials, smul_monomial, smul_eq_mul, mul_one]
   rw [e, map_smul, coefLast, Module.Basis.constr_basis]
 
-open Classical in
 theorem lb_map_coefLast {N n : ℕ} (hN : N = n + 1) (b : ι → Fin n → ℕ) (f : Pol K ι N) :
     map j (coefLast hN b f) = coefLast hN b (map j f) := by
   induction f using MvPolynomial.induction_on' with
@@ -614,7 +610,6 @@ noncomputable section
 
 namespace Formalism.L2.Ker
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br
 
 section Shift
 
@@ -632,7 +627,6 @@ end Degen
 
 section Degen2
 
-open Classical
 
 variable {K : Type} [Field K] {ι : Type} [Fintype ι]
 
@@ -640,13 +634,11 @@ end Degen2
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
 namespace Formalism.L2.Ker
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br
 
 section Coef
 
@@ -661,7 +653,6 @@ theorem lx_iC_ne_iL (i : Fin n) : iC hN i ≠ iL hN := by
 theorem lx_eq_iC_of_ne (a : Fin N) (ha : a ≠ iL hN) : ∃ i : Fin n, iC hN i = a :=
   ⟨⟨a.1, by have := a.2; have : a.1 ≠ n := fun h => ha (Fin.ext h); omega⟩, Fin.ext rfl⟩
 
-open Classical in
 theorem lx_zExp_apply (b : ι → Fin n → ℕ) (v : ι × Fin N × Fin N) :
     zExp hN b v = ∑ τ, ∑ s, if (τ, iL hN, iC hN s) = v then b τ s else 0 := by
   classical
@@ -873,7 +864,6 @@ section Ten
 variable {K : Type} [Field K] {ι : Type} [Fintype ι] {N n : ℕ} (hN : N = n + 1)
 
 
-open Classical in
 def lxW (τ : ι) : ι × Fin N × Fin N → ℕ := fun v => if v.1 = τ ∧ v.2.1 = iL hN then v.2.2.val + 1 else 0
 
 def LxLow (τ : ι) (D : ℤ) (P : Pol K ι N) : Prop := ∀ M ∈ P.support, ((Finsupp.weight (lxW hN τ) M : ℕ) : ℤ) < D
@@ -1166,13 +1156,11 @@ end Open
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
 namespace Formalism.L2.Ker
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br
 
 section Mem
 
@@ -1383,7 +1371,6 @@ end Formalism.L2.Ker
 
 namespace Formalism.L2.Ker
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br
 
 section Inhabit
 
@@ -1405,7 +1392,6 @@ end Formalism.L2.Ker
 
 namespace Formalism.L2.Ker
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br
 
 section Norm
 
@@ -1438,7 +1424,6 @@ end Formalism.L2.Ker
 
 namespace Formalism.L2.Ker
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br
 
 section ShiftTr
 
@@ -1510,7 +1495,6 @@ end ShapeNe
 
 section Comparison₂
 
-open Formalism.MainNotions.product_first_zeroth_parts
 
 variable {ι : Type} [Fintype ι]
 
@@ -1648,7 +1632,6 @@ end GlobalTheory
 
 section FinTwoTypeFamily
 
-open Formalism.MainNotions.product_first_zeroth_parts
 
 variable {ι : Type} [Fintype ι] {N n : ℕ} (hN : N = n + 1) (lam : ι → DomWeight N) (sg : ι → DomWeight n)
 
@@ -1712,7 +1695,6 @@ end OneP
 
 section RecP
 
-open Formalism.MainNotions.product_first_zeroth_parts
 
 theorem brOne_member (D : Formalism.BasicNotions.D7) (u : D.what₂.Word) (τ : D.what₂.Tau)
     (hI : Formalism.MainNotions.PrimeDegreeVariant.Interlace (Nm_succ D.R) (lamTr D u τ) (sgTr D u τ)) :
@@ -1730,7 +1712,6 @@ end Formalism.L2.Ker
 
 namespace Formalism.L2.Ker
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br
 
 section Emb
 
@@ -1868,7 +1849,6 @@ end Equiv
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
@@ -1891,13 +1871,11 @@ def IsHwRow {K : Type} [Field K] {N n : ℕ} (hN : N = n + 1) (sg : DomWeight n)
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
 namespace Formalism.L2.Ker
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br Formalism.GradedWeylDivisibility
 
 theorem hwA_key {K : Type} [Field K] [CharZero K] {σ ι' : Type} (S : Finset ι') (u t : ι' → σ) (w : σ → ℕ)
     (f : MvPolynomial σ K) (hD : ∑ s ∈ S, X (u s) * pderiv (t s) f = 0) (d : ℕ)
@@ -2043,7 +2021,6 @@ theorem hwA_slice_unique (ν : Fin N → ℕ) (ρ : Fin n → ℕ) (m m' : Fin N
   · exact h1 a j ha
 
 
-open Classical in
 def hwAw : Fin N × Fin N → ℕ := fun v => if v.1 = v.2 ∧ v.1 ≠ iL hN then 1 else 0
 
 theorem hwAw_diag (a : Fin N) (ha : a ≠ iL hN) : hwAw hN (a, a) = 1 := if_pos ⟨rfl, ha⟩
@@ -2110,13 +2087,11 @@ end Slice
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
 namespace Formalism.L2.Ker
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br Formalism.GradedWeylDivisibility
 
 section Gen
 
@@ -2379,13 +2354,11 @@ end BPlevel
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
 namespace Formalism.L2.Ker
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br
 
 section TenStep
 
@@ -2466,7 +2439,6 @@ end Formalism.L2.Ker
 
 namespace Formalism.L2.Ker
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br
 
 theorem hwC_single_of {K : Type} [Field K] [CharZero K] {N n : ℕ} (hN : N = n + 1) (lam : DomWeight N) (sg : DomWeight n)
     (hI : Interlace hN lam sg) (hS : SameShift lam sg)
@@ -2483,13 +2455,11 @@ theorem hwC_single_of {K : Type} [Field K] [CharZero K] {N n : ℕ} (hN : N = n 
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
 namespace Formalism.L2.Ker
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br Formalism.GradedWeylDivisibility
 
 section A
 
@@ -2683,13 +2653,11 @@ end C
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
 namespace Formalism.L2.Ker
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br Formalism.GradedWeylDivisibility
 
 theorem highest_weight_isotypic_unique {K : Type} [Field K] [CharZero K] {ι : Type} [Fintype ι] {N n : ℕ} (hN : N = n + 1)
     (lam : ι → DomWeight N) (sg : ι → DomWeight n) : IoHw hN lam sg K :=
@@ -2705,7 +2673,6 @@ end Formalism.L2.Ker
 
 namespace Formalism.L2.Ker
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br
 
 section BrEquiv
 
@@ -2906,7 +2873,6 @@ end OneEquiv
 
 section RecP4
 
-open Formalism.MainNotions.product_first_zeroth_parts
 
 theorem brOne_member4 (D : Formalism.BasicNotions.D7) (u : D.what₂.Word) (τ : D.what₂.Tau)
     (hI : Formalism.MainNotions.PrimeDegreeVariant.Interlace (Nm_succ D.R) (lamTr D u τ) (sgTr D u τ)) :
@@ -2941,13 +2907,11 @@ end RecP4
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
 namespace Formalism.L2.Ker
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br Formalism.GradedWeylDivisibility
 
 def in_ioOne (K : Type) [Field K] {N n : ℕ} (hN : N = n + 1) (l : DomWeight N) (s : DomWeight n) :
     MvPolynomial (Fin n × Fin n) K →ₗ[K] MvPolynomial (Fin N × Fin N) K :=
@@ -2973,7 +2937,6 @@ theorem in_ioOne_mem {K : Type} [Field K] {N n : ℕ} (hN : N = n + 1) (l : DomW
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
@@ -3137,13 +3100,11 @@ theorem inB_capInt {n : ℕ} (lam sg : Fin n → ℕ) (hI : Formalism.BranchingD
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
 namespace Formalism.L2.Ker
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br Formalism.GradedWeylDivisibility
 
 def inC_mat {r : ℕ} (a b : Fin r) (t : ℚ) : Matrix (Fin r) (Fin r) ℚ :=
   fun c d => (if c = d then 1 else 0) + (if c = b ∧ d = a then t else 0)
@@ -3444,13 +3405,11 @@ end Ident
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
 namespace Formalism.L2.Ker
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br Formalism.GradedWeylDivisibility
 
 section D
 
@@ -3518,13 +3477,11 @@ end D
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
 namespace Formalism.L2.Ker
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br Formalism.GradedWeylDivisibility
 
 section E
 
@@ -3560,7 +3517,6 @@ end E
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
@@ -3691,7 +3647,6 @@ end NmA
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
@@ -3796,13 +3751,11 @@ end NmB
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
 namespace Formalism.L2.Ker
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br Formalism.GradedWeylDivisibility Formalism.REAL Formalism.BranchingDeterminantCap
 
 section NmC
 
@@ -3962,13 +3915,11 @@ end NmC
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
 namespace Formalism.L2.Ker
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br Formalism.GradedWeylDivisibility Formalism.REAL Formalism.BranchingDeterminantCap
 
 section NmD
 
@@ -4032,7 +3983,6 @@ end NmD
 
 section NmRec
 
-open Formalism.MainNotions.product_first_zeroth_parts
 
 theorem nm_beOnEq (D : Formalism.BasicNotions.D7) (u : D.what₂.Word) : BeOnEq D u := by
   intro τ hI
@@ -4069,13 +4019,11 @@ end NmRec
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
 namespace Formalism.L2.Ker
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br Formalism.GradedWeylDivisibility Formalism.REAL Formalism.BranchingDeterminantCap
 
 section NmE
 
@@ -4147,13 +4095,11 @@ end NmE
 
 end Formalism.L2.Ker
 
-open MvPolynomial
 
 noncomputable section
 
 namespace Formalism.L2.Ker
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br Formalism.GradedWeylDivisibility Formalism.REAL Formalism.BranchingDeterminantCap
 
 section NmF
 
@@ -4260,7 +4206,6 @@ end NmF
 
 section NmRec2
 
-open Formalism.MainNotions.product_first_zeroth_parts
 
 theorem nm_hB (D : Formalism.BasicNotions.D7) (u : D.what₂.Word) (τ : D.what₂.Tau)
     (hI : Formalism.MainNotions.PrimeDegreeVariant.Interlace (Nm_succ D.R) (lamTr D u τ) (sgTr D u τ)) :
@@ -4279,7 +4224,6 @@ namespace Formalism.L2.Ker
 
 section Final
 
-open Formalism.MainNotions.product_first_zeroth_parts
 
 theorem brOneIsBr (D : Formalism.BasicNotions.D7) (u : D.what₂.Word) : BrOneIsBr D u :=
   brOneIsBr_of D u (fun τ hI => int_member D u τ hI) (fun τ hI => nm_hB D u τ hI)
@@ -4294,7 +4238,6 @@ namespace Formalism.L2.Ker
 
 section At
 
-open Formalism.MainNotions.product_first_zeroth_parts
 
 section BlkCalc
 
@@ -4366,7 +4309,6 @@ end TieAt
 
 section Kill
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br
 
 end Kill
 

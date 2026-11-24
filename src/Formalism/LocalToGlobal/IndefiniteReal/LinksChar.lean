@@ -66,7 +66,6 @@ def IsDualPair {V : HSp D} {S : D.what₂.Tau → SPar} (θ : InfFam D) (M : DSM
     pr (c.ρ (atTau θ V τ g) w) (PiTensorProduct.tprod ℂ (Function.update v τ u)) = pr w (PiTensorProduct.tprod ℂ v)
 
 
-open Classical in
 def IsIoW {V W : HSp D} {S' : D.what₂.Tau → SPar} (θ : InfFam D) (M' : DSModel W S') (c : CoefA V)
     (ω : GA D V × GA D W →* Module.End ℂ (WO V W → ℂ)) (pt : PolF D W.rank V.rank → (WO V W → ℂ))
     (Δ : PolF D W.rank V.rank) (io : LowT M' →ₗ[ℂ] c.W →ₗ[ℂ] PolF D W.rank V.rank) : Prop :=
@@ -84,7 +83,6 @@ variable {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel V S)
 def inclT : SmT M →ₗ[ℂ] ⨂[ℂ] τ, M.H τ := PiTensorProduct.map fun τ => (M.sm τ).subtype
 
 
-open Classical in
 def actT (τ : D.what₂.Tau) (g : Matrix (Fin V.rank) (Fin V.rank) ℂ) : (⨂[ℂ] ρ, M.H ρ) →ₗ[ℂ] ⨂[ℂ] ρ, M.H ρ :=
   PiTensorProduct.map (Function.update (fun ρ => (LinearMap.id : M.H ρ →ₗ[ℂ] M.H ρ)) τ (M.rep τ g : M.H τ →ₗ[ℂ] M.H τ))
 

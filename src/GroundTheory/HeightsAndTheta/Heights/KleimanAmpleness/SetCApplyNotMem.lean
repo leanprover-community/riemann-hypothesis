@@ -270,13 +270,11 @@ def dif (y : (Σ k, ι k) → Ω) (f : (∀ k, Finset (ι k)) → Ω) (I : ∀ k
   if Good y I then ∑ k, ∑ i ∈ I k, faceSign I k i • f (rem I ⟨k, i⟩) else 0
 
 
-open Classical in
 def coneOp (y : (Σ k, ι k) → Ω) (c : ∀ k, ι k) (k : K) (f : (∀ k, Finset (ι k)) → Ω)
     (I : ∀ k, Finset (ι k)) : Ω :=
   if Good y I ∧ c k ∉ I k then faceSign (addC c I k) k (c k) • f (addC c I k) else 0
 
 
-open Classical in
 def projOp (y : (Σ k, ι k) → Ω) (c : ∀ k, ι k) (T : Finset K) (f : (∀ k, Finset (ι k)) → Ω)
     (I : ∀ k, Finset (ι k)) : Ω :=
   if Good y I ∧ ∀ j ∈ T, (I j).card = 1 then f (setC c T I) else 0
@@ -650,7 +648,6 @@ theorem supp_homot (f : (∀ k, Finset (ι k)) → Ω) : Supp y (homot y c f) :=
   fun _ h => Finset.sum_eq_zero fun _ _ => projOp_of_not fun h' => h h'.1
 
 
-open Classical in
 def extC (m : ℕ) (t : ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.Cell K ι m → Ω) (J : ∀ k, Finset (ι k)) : Ω :=
   if h : (∀ l, (J l).Nonempty) ∧ ∑ l, ((J l).card - 1) = m then t ⟨J, h⟩ else 0
 

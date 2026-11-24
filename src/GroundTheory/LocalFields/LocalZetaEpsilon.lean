@@ -152,7 +152,6 @@ variable [MeasurableSpace K] [BorelSpace K]
 section Epsilon
 
 
-open Classical in
 def localEpsilon (χ : Kˣ →* ℂˣ) (ψ : AddChar K Circle) (s : ℂ) : ℂ :=
   if IsUnramifiedChar χ then
     ((χ (unifUnit K ^ addCharConductor ψ) : ℂˣ) : ℂ)⁻¹ *
@@ -268,7 +267,6 @@ def oneAddValBallIndicator (c : ℤ) : K → ℂ :=
   {x : K | x - 1 ∈ valBall K c}.indicator fun _ => 1
 
 omit [MeasurableSpace K] [BorelSpace K] in
-open Classical in
 theorem oneAddValBallIndicator_apply (c : ℤ) (x : K) :
     oneAddValBallIndicator c x = if x - 1 ∈ valBall K c then 1 else 0 := by
   unfold oneAddValBallIndicator

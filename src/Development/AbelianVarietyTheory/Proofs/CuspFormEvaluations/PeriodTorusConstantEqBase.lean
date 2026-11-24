@@ -89,7 +89,6 @@ theorem card_idx_dimPer : Fintype.card (Idx (dimPer X)) = X.Ψ.card * r := by
   simp [dimPer_add]
 
 
-open Classical in
 def rowFn (i : Idx (dimPer X)) : X.Ψ × Fin r :=
   if h : i.1 ∈ X.Ψ then (⟨i.1, h⟩, ⟨X.p0 + i.2.1, by
       have := lt_of_lt_of_eq i.2.2 (dimPer_mem X h); omega⟩)

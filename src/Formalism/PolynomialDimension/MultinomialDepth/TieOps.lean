@@ -216,7 +216,6 @@ end Formalism.CountingSumsFrames.TO
 
 namespace Formalism.CountingSumsFrames.TO
 
-open Formalism.GM.DimensionMonotonicity Finset
 
 namespace GlX
 
@@ -322,7 +321,6 @@ end Formalism.CountingSumsFrames.TO
 
 namespace Formalism.CountingSumsFrames.TO
 
-open Formalism.GM.DimensionMonotonicity Finset
 
 namespace GlX
 
@@ -432,7 +430,6 @@ end Formalism.CountingSumsFrames.TO
 
 namespace Formalism.CountingSumsFrames.TO
 
-open Formalism.GM.DimensionMonotonicity Finset
 
 namespace GlX
 
@@ -827,7 +824,6 @@ end Formalism.CountingSumsFrames.TO
 
 namespace Formalism.CountingSumsFrames.TO
 
-open MvPolynomial Finset Formalism.GM.DimensionMonotonicity Formalism.GM.M
 
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 
@@ -973,7 +969,6 @@ end Formalism.CountingSumsFrames.TO
 
 namespace Formalism.CountingSumsFrames.TO
 
-open MvPolynomial Finset Formalism.GM.DimensionMonotonicity Formalism.GM.M
 
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 
@@ -1092,7 +1087,6 @@ end Formalism.CountingSumsFrames.TO
 
 namespace Formalism.CountingSumsFrames.TO
 
-open MvPolynomial Finset Formalism.GM.DimensionMonotonicity Formalism.GM.M
 
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 
@@ -1114,7 +1108,6 @@ end Formalism.CountingSumsFrames.TO
 
 namespace Formalism.CountingSumsFrames.TO
 
-open Formalism.GM.DimensionMonotonicity Finset
 
 namespace GlX
 
@@ -1409,7 +1402,6 @@ end Formalism.CountingSumsFrames.TO
 
 namespace Formalism.CountingSumsFrames.TO
 
-open Formalism.GM Formalism.GM.M Formalism.GM.DimensionMonotonicity MvPolynomial Finset
 
 section OpsAux
 
@@ -1718,7 +1710,6 @@ end Formalism.CountingSumsFrames.TO
 
 namespace Formalism.CountingSumsFrames.TO
 
-open Formalism.GM Formalism.GM.M Formalism.GM.DimensionMonotonicity MvPolynomial Finset
 
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 
@@ -1892,7 +1883,6 @@ end Formalism.CountingSumsFrames.TO
 
 namespace Formalism.CountingSumsFrames.TO
 
-open Formalism.GM Formalism.GM.M Formalism.GM.DimensionMonotonicity MvPolynomial Finset
 
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 
@@ -2426,7 +2416,6 @@ end Formalism.CountingSumsFrames.TO
 
 namespace Formalism.CountingSumsFrames.TO
 
-open Formalism.GM Formalism.GM.M Formalism.GM.DimensionMonotonicity MvPolynomial Finset
 
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 
@@ -2617,7 +2606,6 @@ end Formalism.CountingSumsFrames.TO
 
 namespace Formalism.CountingSumsFrames.TO
 
-open Formalism.GM Formalism.GM.M Formalism.GM.DimensionMonotonicity MvPolynomial Finset
 
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 
@@ -2834,7 +2822,6 @@ end Formalism.CountingSumsFrames.TO
 
 namespace Formalism.CountingSumsFrames.TO
 
-open Formalism.GM Formalism.GM.M Formalism.GM.DimensionMonotonicity MvPolynomial Finset
 
 variable {p : ℕ} [Fact p.Prime]
 

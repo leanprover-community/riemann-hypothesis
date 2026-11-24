@@ -120,7 +120,6 @@ def stepPt (x₀ : Matrix n n' k) (e : StepVar n c n' → k) : Matrix (n ⊕ Fin
   basePt c x₀ + Matrix.of fun r s => if h : Free (c / 2 + 1) (r, s) ∨ Kept (r, s) then e ⟨(r, s), h⟩ else 0
 
 
-open Classical in
 def keptPt (w : {rs : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1)) // Kept rs} → k) : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k :=
   Matrix.of fun r s => if h : Kept (r, s) then w ⟨(r, s), h⟩ else 0
 
@@ -248,7 +247,6 @@ def Reps.elt {J : G.Level} (ρ : Reps hs J) (β : Cosets hs J) : G.VertexGroup :
 
 
 variable (hs) in
-open Classical in
 def Reps.through (J : G.Level) (h : ∀ j : ℕ, GL (Fin (G.rank (G.m, j))) k) : Reps hs J where
   base := h 0
   rep i β := if DoubleCoset.mk _ _ (h (i + 1)) = β then h (i + 1) else β.out

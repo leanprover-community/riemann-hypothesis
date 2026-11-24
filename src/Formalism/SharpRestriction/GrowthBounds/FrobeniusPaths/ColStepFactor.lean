@@ -72,14 +72,12 @@ def SgW (R : Type) [CommRing R] (LL : LiftLetters (Fin N)) (mu : Fin (N + 1) →
     else SgW R LL mu c j
 
 
-open Classical in
 def oS (p : ℕ) (pos : Fin N → ℤ) (mu : Fin (N + 1) → Fin (r + K) → ℤ) (c : ℤ) (j : ℕ) (s : ℤ) : ℕ :=
   ∑ i : Fin N, if i.val < j ∧ IsCostly mu c i then p ^ (s - pos i).toNat else 0
 
 lemma oS_zero (p : ℕ) (pos : Fin N → ℤ) (mu : Fin (N + 1) → Fin (r + K) → ℤ) (c : ℤ) (s : ℤ) :
     oS p pos mu c 0 s = 0 := by simp [oS]
 
-open Classical in
 lemma oS_succ (p : ℕ) (pos : Fin N → ℤ) (mu : Fin (N + 1) → Fin (r + K) → ℤ) (c : ℤ) (s : ℤ) (j : ℕ) (h : j < N) :
     oS p pos mu c (j + 1) s = oS p pos mu c j s +
       (if IsCostly mu c ⟨j, h⟩ then p ^ (s - pos ⟨j, h⟩).toNat else 0) := by

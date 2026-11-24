@@ -148,12 +148,10 @@ lemma gN_inv_le {g : Mat k r} (hg : g ∈ GV k r) : gN g⁻¹ ≤ gN (Hpk k r) ^
         mul_le_mul_of_nonneg_right (gN_mul_le_hermitian_curvature _ _) (h0 _)
     _ = gN (Hpk k r) ^ 2 * gN g := by rw [gN_conjT]; ring
 
-section vol
 
 open Formalism.FourierDecayAlt.P.B2x6
 
 variable {k r' : ℕ}
 
-end vol
 
 end Formalism.FourierDecayAlt.P.HeisenbergLevelMinors

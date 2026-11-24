@@ -54,13 +54,10 @@ section frames
 
 end frames
 
-section sizes
 open scoped nonZeroDivisors
 
-section Gl
 variable {ι : Type} [Fintype ι] (G : Sz.Glob ι) (C : ℝ) (de de' : ℕ → ℝ) (T T' : ℝ) (l : ℕ)
 
-end Gl
 
 end sizes
 

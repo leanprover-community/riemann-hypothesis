@@ -109,7 +109,6 @@ noncomputable def stabRep : Representation k D (M x₀) where
       Function.comp_apply, Function.eval, LinearMap.coe_single, Module.End.mul_apply]
     exact hρ.apply_base_eq ((hD d).1 d.2) (Pi.single_eq_same x₀ _).symm
 
-open Classical in
 theorem stabRep_apply (d : D) (a : M x₀) :
     stabRep ρ hρ x₀ D hD d a = ρ d (Pi.single x₀ a) x₀ :=
   rfl

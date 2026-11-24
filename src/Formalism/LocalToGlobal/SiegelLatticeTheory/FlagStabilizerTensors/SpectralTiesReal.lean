@@ -337,7 +337,6 @@ def deOf (τ : D.what₂.Tau) (u : D.what₂.Word) (l : ℕ) : ℝ :=
   if 1 ≤ l ∧ l + 2 ≤ D.R.k then (vOne D τ l - 1 / 2 - uOne D u τ (l + 1)) / D.s.Del else 0
 
 
-open Classical in
 def lOf (de de' : ℕ → ℝ) : ℕ :=
   if h : ∃ l, 1 ≤ l ∧ l + 2 ≤ D.R.k ∧ de l ≠ de' l then Nat.find h else 0
 

@@ -85,12 +85,10 @@ theorem orb_of_sub {LL : Type} [Field LL] [TopologicalSpace LL] [IsTopologicalRi
 
 end Gen
 
-section Fin
 
 variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] {X' d : Type} [Fintype d] [DecidableEq d]
   {R' : Subalgebra O (X' → Matrix d d (FractionRing O))}
 
-end Fin
 
 section Rec
 

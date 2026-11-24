@@ -65,7 +65,6 @@ def ins (τ : D.what₂.Tau) (P : D.what₂.Tau → LPol b a) : LPol b a →ₗ[
 theorem ins_apply (τ : D.what₂.Tau) (P : D.what₂.Tau → LPol b a) (p : LPol b a) :
     ins τ P p = MvPolynomial.rename (fun s => (τ, s)) p * rest τ P := rfl
 
-open Classical in
 theorem glue_update (τ : D.what₂.Tau) (P : D.what₂.Tau → LPol b a) (p : LPol b a) :
     glue (Function.update P τ p) = ins τ P p := by
   rw [ins_apply, glue, ← Finset.mul_prod_erase _ _ (Finset.mem_univ τ), rest]

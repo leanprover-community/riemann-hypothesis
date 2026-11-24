@@ -140,7 +140,6 @@ theorem filter_positions (hD : Disj bs) (T : Choice bs) (p : Σ j : Fin nb, Fin 
           rfl
     _ = _ := by rw [Multiset.map_map]; rfl
 
-open Classical in
 theorem colL_block (hD : Disj bs) (T : Choice bs) (p : Σ j : Fin nb, Fin (bs j).i) :
     ((colL (lst X bs T) (colB bs p) : List (Vsp X.dim)) : Multiset (Vsp X.dim)) =
       Multiset.map (fun r : Fin (bs p.1).c => EuclideanSpace.single

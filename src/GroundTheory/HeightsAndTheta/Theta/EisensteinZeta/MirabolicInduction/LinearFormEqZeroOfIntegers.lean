@@ -63,19 +63,15 @@ namespace DualHomPf
 open NumberField Module FunctionalEquationAlt FunctionalEquationAlt.MetSpace NumberField.InfinitePlace
 open scoped InnerProductSpace nonZeroDivisors ComplexConjugate
 
-section NumberFieldFacts
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E]
 
 open Classical
 
-end NumberFieldFacts
 
-section DualLattice
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E]
 
-end DualLattice
 
 section DualBasis
 
@@ -208,34 +204,26 @@ theorem exists_dualBasis (A : Submodule (𝓞 E) V) (hA : A.FG) :
 
 end DualBasis2
 
-section Fibres
 
 variable {E : Type} [Field E] [NumberField E]
 
 variable (S : MetSpace E) (τ : InfinitePlace E)
 
-end Fibres
 
-section Adjoints
 
 variable {H₁ H₂ : Type} [NormedAddCommGroup H₁] [InnerProductSpace ℂ H₁] [FiniteDimensional ℂ H₁]
   [NormedAddCommGroup H₂] [InnerProductSpace ℂ H₂] [FiniteDimensional ℂ H₂]
 
-end Adjoints
 
-section IdealMaps
 
 variable {E : Type} [Field E] [NumberField E]
 variable {V V' : Type} [AddCommGroup V] [Module E V] [Module (𝓞 E) V] [IsScalarTower (𝓞 E) E V]
   [AddCommGroup V'] [Module E V'] [Module (𝓞 E) V'] [IsScalarTower (𝓞 E) E V']
 
-end IdealMaps
 
-section FibMaps
 
 variable {E : Type} [Field E] [NumberField E]
 
-end FibMaps
 
 end DualHomPf
 

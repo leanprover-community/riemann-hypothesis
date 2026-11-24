@@ -140,8 +140,6 @@ end Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 
 namespace Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 
-open scoped TensorProduct
-open NumberField IsDedekindDomain MeasureTheory Topology
 
 section Top
 
@@ -253,8 +251,6 @@ end Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 
 namespace Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 
-open scoped TensorProduct
-open NumberField IsDedekindDomain MeasureTheory Topology
 
 section AdeleAnalysis
 
@@ -342,8 +338,6 @@ end Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 
 namespace Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 
-open scoped TensorProduct
-open NumberField IsDedekindDomain MeasureTheory Topology
 
 section More
 
@@ -388,8 +382,6 @@ end Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 
 namespace Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
 
-open scoped TensorProduct
-open NumberField IsDedekindDomain MeasureTheory Topology
 
 section HMeasures
 

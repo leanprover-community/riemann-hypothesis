@@ -162,7 +162,6 @@ def RIsGerm (act : 𝓞 E → Fin d → MvPowerSeries (Fin 1 × Fin d) S) (e : �
 
 end Germ
 
-section Pin
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
 variable (Xo : Moduli Dw l) (c : Coeff l)
@@ -186,7 +185,6 @@ structure RChartAt [StarRing (𝓞 E)] {S : Type} [CommRing S] [Algebra c.F S] [
       (homAt x0 (jetAug : Jet S (Fin 1 × Fin d) 0 →ₐ[S] S)).left)
     (rigT Xo.univ.t.G Xo.univ.t.PP.L Xo.univ.t.PP.rig (overAt x0 S) 1)
 
-end Pin
 
 section ToRaw
 

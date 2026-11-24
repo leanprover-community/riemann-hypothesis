@@ -143,14 +143,12 @@ open scoped TensorProduct
 variable {F E B : Type} [Field F] [Field E] [Algebra F E] [CommRing B] [Algebra F B]
 variable {ι : Type} [Fintype ι] [DecidableEq ι] (b : Module.Basis ι F E)
 
-section Topology
 
 variable [TopologicalSpace B] [IsTopologicalRing B]
 
 variable {b}
 variable {X : Type*} [TopologicalSpace X]
 
-end Topology
 
 end PI.IwaMeasEx.Wau
 
@@ -161,7 +159,6 @@ noncomputable section
 namespace PI.IwaMeasEx.Wau
 
 open IsDedekindDomain IsDedekindDomain.HeightOneSpectrum NumberField
-open scoped TensorProduct
 
 variable {F : Type} [Field F] [NumberField F]
 
@@ -170,14 +167,12 @@ theorem ohat_zero : (0 : FiniteAdeleRing (𝓞 F) F) ∈ Ohat F :=
     show (0 : v.adicCompletion F) ∈ _
     exact zero_mem _
 
-section Coord
 
 variable {E : Type} [Field E] [NumberField E] [Algebra F E]
 variable {ι : Type} [Fintype ι] [DecidableEq ι] (b : Module.Basis ι F E)
 
 variable {b}
 
-end Coord
 
 end PI.IwaMeasEx.Wau
 

@@ -118,7 +118,6 @@ end
 
 section
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
 theorem skip_one_eq_succAbove {t : ℕ} (i : Fin (t + 1)) : (skip1 i : Fin t → Fin (t + 1)) = i.succAbove := by
   funext j
@@ -223,7 +222,6 @@ end
 
 section
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
 theorem sgn_congr {a b : ℕ} (h : a % 2 = b % 2) : (-1 : ℤ) ^ a = (-1) ^ b := by
   rw [neg_one_pow_eq_pow_mod_two, h, ← neg_one_pow_eq_pow_mod_two]
@@ -318,7 +316,6 @@ end
 
 section
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
 theorem Tm_comm {A : Type*} [Ring A] [Algebra ℂ A] {n : ℕ} (E : Fin n → Fin n → A) (hE : GlRel E) (u : ℂ)
     {a c d : Fin n} (h1 : a ≠ c) (h2 : d ≠ a) : Tm E u a a * E c d = E c d * Tm E u a a := by
@@ -345,16 +342,13 @@ theorem skip_two_comp_skip_one {n : ℕ} : ∀ {t : ℕ} (v : Fin (t + 1) → Fi
     simp only [Function.comp] at h3 ⊢
     rw [h3, h4]
 
-section full
 variable {A : Type} [Ring A] [Algebra ℂ A] {n : ℕ} (E : Fin n → Fin n → A)
 
-end full
 
 end
 
 section
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
 end
 
@@ -530,7 +524,6 @@ end
 
 section
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -613,7 +606,6 @@ end
 
 section
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -777,7 +769,6 @@ end
 
 section
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -919,7 +910,6 @@ end
 
 section
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -1169,7 +1159,6 @@ end
 
 section
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -1400,7 +1389,6 @@ end
 
 section
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -1442,7 +1430,6 @@ section Cut
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] {L : Fin (r + 1)} {Dc : (Fin r → ℂ) → Set (Mx k r)}
 
 
-open Classical in
 def cutP (L : Fin (r + 1)) (Dc : (Fin r → ℂ) → Set (Mx k r)) : Fn k r E →ₗ[ℂ] Fn k r E where
   toFun := fun Φ c g => if c ∈ OmX r ∧ g ∈ Glev k r L ∧ g ∈ Dc c then Φ c g else 0
   map_add' := fun Φ Ψ => by
@@ -1543,7 +1530,6 @@ end
 
 section
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -1814,7 +1800,6 @@ end
 
 section
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.Q
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 

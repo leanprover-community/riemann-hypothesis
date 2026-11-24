@@ -139,11 +139,9 @@ def etaSum (L : SizeData₂ D) (j : ℕ) : ℝ :=
     SizeData₂.lwP w * (D.what₂.places.ramIdx w : ℝ) * (D.what₂.etaJ j w : ℝ)
 
 
-open Classical in
 def twAt (L : SizeData₂ D) (l : ℕ) : Finset D.what₂.places.Pl :=
   L.supp.filter (fun w => D.what₂.muAt w ≠ D.what₂.mu0 ∧ D.what₂.places.resChar w = l)
 
-open Classical in
 theorem mem_twAt {L : SizeData₂ D} {l : ℕ} {w : D.what₂.places.Pl} :
     w ∈ twAt L l ↔ w ∈ L.supp ∧ TwPl D w ∧ D.what₂.places.resChar w = l := by
   unfold twAt TwPl
@@ -209,7 +207,6 @@ def admB : Prop :=
         (GP L + 1) * ((jA L l : ℝ) + 1) + large₂ L))
 
 
-open Classical in
 def flatCD (i : D.nd.Loc) (lam : HeightOneSpectrum (𝓞 D.host.E)) (l : ℕ) : ℝ :=
   (wP L + eta₃ L) / l + L.Sc + large₂ L + eta₃ L * (if tb.band i lam then 1 else 0)
 

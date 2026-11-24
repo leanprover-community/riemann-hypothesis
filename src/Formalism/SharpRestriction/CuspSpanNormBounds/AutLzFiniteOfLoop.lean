@@ -75,7 +75,6 @@ end Formalism.MainNotions.S.Lem.Comparison₂
 end A
 
 section B
-open Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.BasicNotions NumberField
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -157,7 +156,6 @@ theorem PEqv_refl (D : D7) (Λ : LatV D) {T T' : D.host.E} (F : LFlag (D.sp.Y 0)
 end Formalism.MainNotions.S.Lem.Cnt
 end C
 
-section E
 
 open Formalism.MainNotions.S Formalism.MainNotions.S.LocalSplitGroups
 
@@ -167,6 +165,5 @@ variable {D : Formalism.BasicNotions.D7}
 
 
 end Formalism.MainNotions.S.Lem.Glob
-end E
 
 end

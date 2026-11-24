@@ -112,12 +112,10 @@ theorem nsmul_ptOf (hA : PtOfAdd) (hZ : PtOfZero) (t : ℂ) (N : ℕ) :
     ring
 
 
-open Classical in
 def piOf (hA : PtOfAdd) : ℂ →+ (curveL l L ι).toAffine.Point :=
   AddMonoidHom.mk' (ptOf l L ι) (hA l L ι)
 
 
-open Classical in
 theorem restrict (hS : AnalyticSys) (hA : PtOfAdd) (hZ : PtOfZero) (hI : PtOfInt)
     (hW : IntCurve (curveL l L ι)) (t : ℂ) (N : ℕ) (hN : 0 < N) (hlN : ¬ l ∣ N)
     (hNt : (N : ℂ) * t ∈ L.lattice) :
@@ -179,7 +177,6 @@ end Tor
 open Tor
 
 
-open Classical in
 theorem PtOfInt_of (hA : PtOfAdd) (hZ : PtOfZero) (hT : TorsionIntegral) : PtOfInt := by
   intro l _ L ι hW t N _ hlN hNt ht
   refine hT ℂ_[l] (curveL l L ι) hW (ptOf l L ι t) N (norm_natCast l hlN) ?_ ?_
@@ -220,7 +217,6 @@ theorem KernelPtInt_of (hI : PtOfInt) : KernelPtInt := by
     exact neg_mem hnt
 
 
-open Classical in
 theorem AnalyticTrans_of (hS : AnalyticSys) (hA : PtOfAdd) (hZ : PtOfZero) (hI : PtOfInt)
     (hU : TransUnit) : AnalyticTrans := by
   intro l _ L ι hW t N hN hlN hNt ht
@@ -235,7 +231,6 @@ theorem AnalyticTrans_of (hS : AnalyticSys) (hA : PtOfAdd) (hZ : PtOfZero) (hI :
   simpa only [cc_gT] using h
 
 
-open Classical in
 theorem Th0Analytic_of (hS : AnalyticSys) (hA : PtOfAdd) (hZ : PtOfZero) (hI : PtOfInt)
     (hU : TransUnit) (hG : TransGauss) (hO : OpUTh0Root) : ThetaZeroAnalytic := by
   intro l _ L ι hl2 hW ω₀ hω hω2

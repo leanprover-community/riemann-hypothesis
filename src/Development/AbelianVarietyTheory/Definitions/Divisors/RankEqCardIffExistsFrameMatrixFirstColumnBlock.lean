@@ -631,7 +631,6 @@ def fourierSum (ψ : AddChar k Circle) (ϖ : kˣ) (e : ℕ) (P : Finset D) :
     · simp
 
 
-open Classical in
 def invFourierSum (ψ : AddChar k Circle) (ϖ : kˣ) (e : ℕ) (P : Finset D) :
     (Matrix A D k → ℂ) →ₗ[ℂ] (Matrix A D k → ℂ) where
   toFun Ψ T := if ∀ i, ∀ j ∈ P, T i j ∈ 𝒪[k] then
@@ -646,21 +645,18 @@ def invFourierSum (ψ : AddChar k Circle) (ϖ : kˣ) (e : ℕ) (P : Finset D) :
     · simp
 
 
-open Classical in
 theorem fourierSum_apply (ψ : AddChar k Circle) (ϖ : kˣ) (e : ℕ) (P : Finset D) (Φ : Matrix A D k → ℂ)
     (Y : Matrix A D k) : fourierSum ψ ϖ e P Φ Y = if ∀ i, ∀ j ∈ P, ((ϖ ^ e : kˣ) : k) * Y i j ∈ 𝒪[k] then
     ((resCard k : ℂ) ^ (e * Fintype.card A * P.card))⁻¹ *
       ∑ T : A → P → Res (k := k) e, Φ (setCols P Y (liftRes T)) * (ψ (pairCols P Y (liftRes T)) : ℂ) else 0 := rfl
 
 
-open Classical in
 theorem invFourierSum_apply (ψ : AddChar k Circle) (ϖ : kˣ) (e : ℕ) (P : Finset D) (Ψ : Matrix A D k → ℂ)
     (T : Matrix A D k) : invFourierSum ψ ϖ e P Ψ T = if ∀ i, ∀ j ∈ P, T i j ∈ 𝒪[k] then
     ∑ S : A → P → Res (k := k) e, Ψ (setCols P T ((ϖ ^ e)⁻¹ • liftRes S)) *
       (ψ (-pairCols P T ((ϖ ^ e)⁻¹ • liftRes S)) : ℂ) else 0 := rfl
 
 
-open Classical in
 theorem invFourierSum_inv_apply (ψ : AddChar k Circle) (ϖ : kˣ) (e : ℕ) (P : Finset D) (Ψ : Matrix A D k → ℂ)
     (T : Matrix A D k) : invFourierSum ψ⁻¹ ϖ e P Ψ T = if ∀ i, ∀ j ∈ P, T i j ∈ 𝒪[k] then
     ∑ S : A → P → Res (k := k) e, Ψ (setCols P T ((ϖ ^ e)⁻¹ • liftRes S)) *
@@ -743,7 +739,6 @@ theorem smallF_mul_left (μ : Measure (GL A' k)) [μ.IsHaarMeasure] (ν : kˣ �
 
 open scoped Classical
 
-open Classical in
 def fFun (μ : Measure (GL A' k)) (σ : A ⊕ A' ≃ D) (ν : kˣ →* ℂˣ) (Ψ : Matrix A' D k → ℂ) (X : Matrix A D k) : ℂ :=
   if hX : ∃ h : GL D k, X = X0 (k := k) σ * (invT h).val then
     (ν (gdet hX.choose) : ℂ) * apow (gdet hX.choose) ((Fintype.card D : ℂ) / 2) *
@@ -786,7 +781,6 @@ theorem splitTheta_fFun_frameFirstBlock_mul (μ : Measure (GL A' k)) [μ.IsHaarM
   ring
 
 
-open Classical in
 def phiA (μ : Measure (GL A' k)) (σ : A ⊕ A' ≃ D) (ν : kˣ →* ℂˣ) (ϖ : kˣ) (e : ℕ) (Λ' : Submodule 𝒪[k] (D → k))
     (Ψ : Matrix A' D k → ℂ) (X : Matrix A D k) : ℂ :=
   if IsPrimFrame (latA ϖ e Λ') X then fFun μ σ ν Ψ X else 0

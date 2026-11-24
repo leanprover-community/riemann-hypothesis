@@ -298,7 +298,6 @@ end Formalism.GM.DimensionMonotonicity
 
 namespace Formalism.GM.DimensionMonotonicity
 
-open Finset
 
 def psum {r : ℕ} (μ : Fin r → ℤ) (k : ℕ) : ℤ := ∑ c : Fin r, if (c : ℕ) < k then μ c else 0
 
@@ -508,7 +507,6 @@ end Formalism.GM.DimensionMonotonicity
 
 namespace Formalism.GM.DimensionMonotonicity
 
-open Finset
 
 namespace GlW
 
@@ -794,7 +792,6 @@ end Formalism.GM.DimensionMonotonicity
 
 namespace Formalism.GM.DimensionMonotonicity
 
-open Finset
 
 namespace GlW
 
@@ -1025,7 +1022,6 @@ theorem top_self_comm (LL : Letters N) (i : Fin N) (a b c d : Fin r) (F : MvPoly
     rw [this]
     split_ifs <;> (try simp) <;> abel
 
-open Formalism.GM.FrozenVariableComponents in
 theorem glAct_comm (LL : Letters N) (j : ℕ) (a b c d : Fin r) (F : MvPolynomial (Fin N × Fin r) ℚ_[p]) :
     glAct p LL j a b (glAct p LL j c d F) - glAct p LL j c d (glAct p LL j a b F) =
       (if b = c then glAct p LL j a d F else 0) - (if d = a then glAct p LL j c b F else 0) := by
@@ -1068,7 +1064,6 @@ end Formalism.GM.DimensionMonotonicity
 
 namespace Formalism.GM.DimensionMonotonicity
 
-open MvPolynomial Finset Formalism.GM.M
 
 section W
 variable {K : Type} [CommRing K] {σ : Type} [DecidableEq σ] {M : Type} [AddCommGroup M]
@@ -1130,7 +1125,6 @@ theorem weight_wv (LL : Letters N) (j : ℕ) (m : Fin N × Fin r →₀ ℕ) (c 
   refine Finset.sum_congr rfl fun i _ => ?_
   by_cases h1 : (i : ℕ) < j <;> by_cases h2 : LL.vec i <;> simp [wv, h1, h2, Pi.single_apply]
 
-open Formalism.GM.FrozenVariableComponents in
 theorem glAct_diag_monomial (LL : Letters N) (j : ℕ) (c : Fin r) (d : Fin N × Fin r →₀ ℕ) (a : ℚ_[p]) :
     glAct p LL j c c (monomial d a) = ((wt LL j c d : ℤ) : ℚ_[p]) • monomial d a := by
   unfold glAct wt
@@ -1138,7 +1132,6 @@ theorem glAct_diag_monomial (LL : Letters N) (j : ℕ) (c : Fin r) (d : Fin N ×
   refine Finset.sum_congr rfl fun i _ => ?_
   split_ifs with h1 h2 <;> simp [XD_diag] <;> rw [← pderiv_monomial, XD_diag]
 
-open Formalism.GM.FrozenVariableComponents in
 theorem glAct_wh (LL : Letters N) (j : ℕ) (a b : Fin r) {ν : Fin r → ℤ} {x : MvPolynomial (Fin N × Fin r) ℚ_[p]}
     (hx : x ∈ weightedHomogeneousSubmodule ℚ_[p] (wv LL j) ν) :
     glAct p LL j a b x ∈ weightedHomogeneousSubmodule ℚ_[p] (wv LL j) (ν + dl a b) := by
@@ -1243,7 +1236,6 @@ end Formalism.GM.DimensionMonotonicity
 
 namespace Formalism.GM.DimensionMonotonicity
 
-open MvPolynomial Finset Formalism.GM.M
 
 theorem deriv_transfer {K σ τ : Type} [CommRing K] (φ : MvPolynomial σ K →ₐ[K] MvPolynomial τ K)
     (D0 : MvPolynomial σ K →ₗ[K] MvPolynomial σ K) (D1 : MvPolynomial τ K →ₗ[K] MvPolynomial τ K)
@@ -1433,7 +1425,6 @@ end Formalism.GM.DimensionMonotonicity
 
 namespace Formalism.GM.DimensionMonotonicity
 
-open MvPolynomial Finset Formalism.GM.M
 
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 
@@ -1666,7 +1657,6 @@ end Formalism.GM.DimensionMonotonicity
 
 namespace Formalism.GM.DimensionMonotonicity
 
-open MvPolynomial Finset Formalism.GM.M
 
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 
@@ -1853,7 +1843,6 @@ end Formalism.GM.DimensionMonotonicity
 
 namespace Formalism.GM.DimensionMonotonicity
 
-open MvPolynomial Finset Formalism.GM.M
 
 theorem aeval_isWH' {σ τ R M : Type} [CommSemiring R] [AddCommMonoid M] (w' : σ → M) (w : τ → M)
     (g : σ → MvPolynomial τ R) (hg : ∀ x, IsWeightedHomogeneous w (g x) (w' x))
@@ -2024,7 +2013,6 @@ end Formalism.GM.DimensionMonotonicity
 
 namespace Formalism.GM.DimensionMonotonicity
 
-open MvPolynomial Finset Formalism.GM.M
 
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 
@@ -2118,7 +2106,6 @@ end Formalism.GM.DimensionMonotonicity
 
 namespace Formalism.GM.DimensionMonotonicity
 
-open MvPolynomial Finset Formalism.GM.M
 
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 
@@ -2324,7 +2311,6 @@ end Formalism.GM.DimensionMonotonicity
 
 namespace Formalism.GM.DimensionMonotonicity
 
-open MvPolynomial Finset Formalism.GM.M
 
 theorem comp_mul_hom {σ M K : Type} [AddCommGroup M] [CommRing K] (w : σ → M) {φ : MvPolynomial σ K} {κ : M}
     (hφ : IsWeightedHomogeneous w φ κ) (ν : M) (x : MvPolynomial σ K) :
@@ -2467,7 +2453,6 @@ end Formalism.GM.DimensionMonotonicity
 
 namespace Formalism.GM.DimensionMonotonicity
 
-open MvPolynomial Finset Formalism.GM.M
 
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 
@@ -2609,7 +2594,6 @@ end Formalism.GM.DimensionMonotonicity
 
 namespace Formalism.GM.DimensionMonotonicity
 
-open MvPolynomial Finset Formalism.GM.M
 
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 
@@ -2672,7 +2656,6 @@ end Formalism.GM.DimensionMonotonicity
 
 namespace Formalism.GM.DimensionMonotonicity
 
-open MvPolynomial Finset Formalism.GM.M
 
 theorem highest_weight_dim_monotone : WeightSpaceDimMonotone := by
   intro p _ N r _ _ LL T hadm ρ hρ hr i n w f hf hf0 hS n' hn

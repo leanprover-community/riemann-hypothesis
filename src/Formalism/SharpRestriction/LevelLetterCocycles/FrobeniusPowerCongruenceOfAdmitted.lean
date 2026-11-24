@@ -266,7 +266,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {gR : G → (RW →ₐ[O] RW)} {πA : O ⊗[Zl] Ai} {E : EtTie W (O ⊗[Zl] Ai) RW inclR φR gR πA}
     {ιdR : Ai →+* BdR} {p1 : Ai} {tS zS : BdR}
 
-open Formalism.MainNotions.WachCoordinates.Br Formalism.MainNotions.UnusedSlot80.SatW
 
 variable (C : CmpTie W E ιdR p1 tS zS)
 
@@ -364,7 +363,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {gR : G → (RW →ₐ[O] RW)} {πA : O ⊗[Zl] Ai} {E : EtTie W (O ⊗[Zl] Ai) RW inclR φR gR πA}
     {ιdR : Ai →+* BdR} {p1 : Ai} {tS zS : BdR}
 
-open Formalism.MainNotions.WachCoordinates.Br Formalism.MainNotions.UnusedSlot80.SatW
 
 theorem key_idJ {T : LocLat G Qp LL O} (Φ : W.DD T →ₗ[O] W.DD T) (ψ : LetA O n →ₐ[O] LetA O n)
     (hΦ : ∀ (a : LetA O n) (x : W.DD T), Φ (a • x) = ψ a • Φ x)
@@ -495,7 +493,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {gR : G → (RW →ₐ[O] RW)} {πA : O ⊗[Zl] Ai} {E : EtTie W (O ⊗[Zl] Ai) RW inclR φR gR πA}
     {ιdR : Ai →+* BdR} {p1 : Ai} {tS zS : BdR}
 
-open Formalism.MainNotions.WachCoordinates.Br Formalism.MainNotions.UnusedSlot80.SatW
 
 variable (C : CmpTie W E ιdR p1 tS zS)
 

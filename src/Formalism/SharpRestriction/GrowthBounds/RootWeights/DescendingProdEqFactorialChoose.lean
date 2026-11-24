@@ -95,7 +95,6 @@ theorem glAct_eq_sum_polarizations (LL : Letters ι) (S : Set ι) (a b : Fin n) 
   refine Finset.sum_congr rfl fun l _ => ?_
   split_ifs <;> simp_all [polarizationDerivation, polarizationLetterSign, polarizationSource, polarizationTarget]
 
-open Classical in
 theorem divPowMono_eq_monomialSum (LL : Letters ι) (S : Set ι) (a b : Fin n) (k : ℕ) (m : ι × Fin n →₀ ℕ) :
     divPowMono R LL S a b k m =
       dividedPowerMonomialSum (polarizationLetterSign R LL) (polarizationSource LL a b) (polarizationTarget LL a b) (Finset.univ.filter (· ∈ S)) k m := by

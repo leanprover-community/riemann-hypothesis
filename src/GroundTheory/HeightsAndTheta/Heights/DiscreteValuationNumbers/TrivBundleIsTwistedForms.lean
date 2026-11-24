@@ -64,15 +64,12 @@ def segreVec (pt : MRingOver o ι →ₐ[o] Ω) : ((k : K) → ι k) → Ω :=
 
 end Coordinates
 
-section Flags
 
 variable {K : Type*} [Fintype K] {ι : K → Type*} [∀ k, Fintype (ι k)]
 variable {o : Type*} [CommRing o] {Ω : Type*} [Field Ω] [Algebra o Ω]
 variable {E : Type*} [AddCommGroup E] [Module Ω E] {N : ℕ}
 
-end Flags
 
-section ProjBundle
 
 variable {K : Type*} [Fintype K]
 
@@ -80,7 +77,6 @@ variable {ι : K → Type w} [∀ k, Fintype (ι k)] {τ : Type w} [Fintype τ]
 variable {F : Type*} [Field F] {Ω : Type*} [Field Ω] [Algebra F Ω]
 variable {E : Type*} [AddCommGroup E] [Module Ω E] {N : ℕ}
 
-end ProjBundle
 
 section PolyNum
 
@@ -149,11 +145,9 @@ def genPt (R : Type*) [CommRing R] [IsDomain R] (ι : K → Type*) [∀ k, Finty
   IsScalarTower.toAlgHom R _ _
 
 
-section DVR
 
 variable {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
 
-end DVR
 
 end Inhabitants
 

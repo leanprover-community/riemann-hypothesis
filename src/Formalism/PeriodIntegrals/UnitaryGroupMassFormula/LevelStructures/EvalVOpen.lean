@@ -247,7 +247,6 @@ namespace MassDataLevelSSteps
 
 namespace EvalVSpec
 
-open scoped TensorProduct
 open NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.Measures
 open Formalism.MainNotions.S (AutInst)
 
@@ -265,12 +264,10 @@ def singleL (v : HeightOneSpectrum (𝓞 F)) : Fv F v →ₗ[F] Af F where
     unfold singleV
     exact RestrictedProduct.mul_single _ v x (algebraMap F (Af F) c)
 
-open Classical in
 theorem singleV_self (v : HeightOneSpectrum (𝓞 F)) (x : Fv F v) : (singleV F v x) v = x := by
   unfold singleV
   exact RestrictedProduct.single_eq_same _ v x
 
-open Classical in
 theorem singleL_mul (v : HeightOneSpectrum (𝓞 F)) (x y : Fv F v) :
     singleL v (x * y) = singleL v x * singleL v y := by
   have h := RestrictedProduct.single_mul (fun w : HeightOneSpectrum (𝓞 F) => w.adicCompletionIntegers F) v x
@@ -334,8 +331,6 @@ theorem continuous_Jt_single (v : HeightOneSpectrum (𝓞 F)) :
 end EvalVSpec
 
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.Measures NumberField IsDedekindDomain
-open Formalism.MainNotions.S (AutInst)
-open scoped TensorProduct
 
 theorem evalVOpen_holds : EvalVOpen := by
   intro I v

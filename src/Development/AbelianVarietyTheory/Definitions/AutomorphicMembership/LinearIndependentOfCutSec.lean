@@ -251,7 +251,6 @@ def IsCutHerm (H : ReciprocityTheory.GeometryOfNumbersTheory.HermFam E (cutSec Y
 
 
 
-open Classical in
 def cutDeg (Λ : Submodule (𝓞 E) (cutSec Y E w c)) : ℝ :=
   if h : ∃ H, IsCutHerm w c A H then ReciprocityTheory.GeometryOfNumbersTheory.deg h.choose Λ else 0
 

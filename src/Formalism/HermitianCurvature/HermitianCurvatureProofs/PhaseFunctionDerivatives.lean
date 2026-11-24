@@ -264,11 +264,9 @@ end PartA
 
 section PartB
 
-open Matrix Finset
 
 namespace Formalism.FourierDecayAlt.P.PhaseFunctionDerivatives
 
-open Formalism.FourierDecayAlt.G
 
 theorem b_pow_sub_one (ω : ℂ) (hω : ‖ω‖ = 1) (i : ℕ) : ‖ω ^ i - 1‖ ≤ i * ‖ω - 1‖ := by
   induction i with
@@ -393,7 +391,6 @@ end Formalism.FourierDecayAlt.P.PhaseFunctionDerivatives
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt.G
 
 theorem phase_near_critical : Formalism.FourierDecayAlt.G.PhaseFunctionNearCritical := by
   intro m δ Rz hδ
@@ -468,7 +465,6 @@ open MeasureTheory
 
 namespace Formalism.FourierDecayAlt.P.PhaseFunctionDerivatives
 
-open Formalism.FourierDecayAlt.G
 
 theorem c_le (a : ℝ) (ha : 0 ≤ a) (E' : ℕ) (d A : ℝ) (hd : 0 ≤ d) (hA : (E' : ℝ) + d + 1 ≤ A) :
     (1 + a) ^ E' * (max 1 a) ^ (-A) ≤ 2 ^ ((E' : ℝ) + d + 1) * (1 + a) ^ (-(d + 1)) := by
@@ -574,7 +570,6 @@ end Formalism.FourierDecayAlt.P.PhaseFunctionDerivatives
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt.G
 
 theorem majorant_y : Formalism.FourierDecayAlt.G.MajorantY := by
   intro m E' β
@@ -597,7 +592,6 @@ open Matrix MeasureTheory Filter Topology
 
 namespace Formalism.FourierDecayAlt.P.PhaseFunctionDerivatives
 
-open Formalism.FourierDecayAlt.G
 
 theorem d_continuous_tri (m : ℕ) (x : Fin (m + 1) → ℂ) :
     Continuous (fun y : UT (m + 2) → ℂ => triXY x y) := by

@@ -222,7 +222,6 @@ theorem two_mul_sum_embeddings {r : k} (hr : r ^ 2 = -(H.d : k)) (p q : ℕ) :
   · rw [h, if_pos rfl, if_neg hr0.symm]
   · rw [h, neg_neg, if_pos rfl, if_neg hr0.symm, add_comm]
 
-open Classical in
 theorem sum_embeddings {r : k} (hr : r ^ 2 = -(H.d : k)) (p q : ℕ) :
     ∑ φ : E →+* k, (if φ (H.rt : E) = r then p else q) = Module.finrank ℚ E / 2 * (p + q) := by
   have h1 := two_mul_sum_embeddings H hr 1 0

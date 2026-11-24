@@ -80,7 +80,6 @@ def dualCl (x : IrrGL (k := k)) : IrrGL (k := k) :=
   if h : (contra x.rep).IsIrreducible then IrrGL.of (contra x.rep) (isSmooth_smoothRep _) h else x
 
 
-open Classical in
 def segDual (Δ : Segment k) : Segment k :=
   if hc : (dualCl Δ.first).IsCusp then
     Segment.ofFirst ((dualCl Δ.first).nu (1 - (Δ.len : ℂ))) (hc.nu _) Δ.len Δ.len_pos

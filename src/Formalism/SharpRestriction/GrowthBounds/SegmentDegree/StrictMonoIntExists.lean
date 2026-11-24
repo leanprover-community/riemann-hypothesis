@@ -231,7 +231,6 @@ theorem strictMono_int_exists (e : ℤ → ℤ) (he : StrictMono e) (x : ℤ) : 
 open Classical in
 def nonW (F : Frames n' r) (j : ℤ) : Finset ℤ := (F.letters j).filter fun x => ¬ F.IsW j x
 
-open Classical in
 theorem nonW_eq [NeZero r] (hV : F.Valid L₁ N₁) (j : ℤ) :
     nonW F j = (Finset.Ioc (eFr F (j - 1)) (eFr F j)).filter fun x => posOf n' x ∈ F.TT := by
   ext x

@@ -60,6 +60,5 @@ end Formalism.FourierDecayAlt.P.WordLiftInduction
 
 namespace Formalism.FourierDecayAlt.P
 
-open Finset Polynomial Formalism.FourierDecayAlt.F7
 
 end Formalism.FourierDecayAlt.P

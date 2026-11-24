@@ -56,8 +56,6 @@ end Gauge
 
 section LevelR
 
-open Matrix MeasureTheory TensorProduct
-open scoped ContDiff
 open Formalism.QuantumDeterminants Formalism.MainNotions.S.TopsChoicePartA Formalism.MainNotions.S.LevR
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
@@ -80,7 +78,6 @@ end LevelR
 section Further
 
 open Matrix MeasureTheory Filter Topology Polynomial
-open scoped ContDiff
 open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA Formalism.MainNotions.S.LevR
 
 def IsKFinCoefT {k r : ℕ} {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
@@ -90,11 +87,9 @@ def IsKFinCoefT {k r : ℕ} {H : Type*} [NormedAddCommGroup H] [InnerProductSpac
     (f : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ → (Wq →L[ℂ] Wp)) : Prop :=
   ∃ a ∈ UH (Hpk k r), ∃ b ∈ UH (Hpk k r), IsKFinCoefH σ (fun g => f (a * g * b))
 
-section Lists
 
 variable {m : ℕ} {E : Type*} [AddCommGroup E] [Module ℂ E]
 
-end Lists
 
 def headEl (k j r' : ℕ) (h : Matrix (Fin j) (Fin j) ℂ)
     (g : Matrix (Fin (2 * r' + k + 1)) (Fin (2 * r' + k + 1)) ℂ) :

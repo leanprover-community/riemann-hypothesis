@@ -114,7 +114,6 @@ def linPart (p : ℕ) (h : Matrix (n ⊕ Fin c) (n ⊕ Fin c) k) :
       {rs : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1)) // Free p rs} k :=
   Matrix.of fun a b => if a.1.2 = b.1.2 then h a.1.1 b.1.1 else 0
 
-open Classical in
 theorem det_linPart {p : ℕ} {h : GL (n ⊕ Fin c) k} (hh : InN p h) :
     (linPart (n' := n') p h.val).det = 1 := by
   refine det_eq_one_of_level (fun a => lev p a.1.1) _ fun a b hab => ?_
@@ -123,7 +122,6 @@ theorem det_linPart {p : ℕ} {h : GL (n ⊕ Fin c) k} (hh : InN p h) :
   simp only [Matrix.one_apply, Subtype.ext_iff, Prod.ext_iff]
   by_cases h1 : a.1.1 = b.1.1 <;> by_cases h2 : a.1.2 = b.1.2 <;> simp [h1, h2]
 
-open Classical in
 theorem linPart_mulVec (p : ℕ) (h : Matrix (n ⊕ Fin c) (n ⊕ Fin c) k)
     (e : {rs : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1)) // Free p rs} → k)
     (a : {rs : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1)) // Free p rs}) :
@@ -148,7 +146,6 @@ theorem linPart_mulVec (p : ℕ) (h : Matrix (n ⊕ Fin c) (n ⊕ Fin c) k)
     simp [F, hs.symm]
   · simp
 
-open Classical in
 theorem mul_affPt {p : ℕ} {h : GL (n ⊕ Fin c) k} (hh : InN p h) (x₀ : Matrix n n' k)
     (e : {rs : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1)) // Free p rs} → k) :
     h.val * affPt p x₀ e = affPt p x₀ ((linPart p h.val).mulVec e +

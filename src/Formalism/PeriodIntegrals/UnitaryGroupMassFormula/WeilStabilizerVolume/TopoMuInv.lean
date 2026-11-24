@@ -66,6 +66,5 @@ end PI.VolStabW.TopoMuInv
 namespace PI.VolStabW
 
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.Sub NumberField IsDedekindDomain MeasureTheory PI.VolFromSW
-open scoped TensorProduct
 
 end PI.VolStabW

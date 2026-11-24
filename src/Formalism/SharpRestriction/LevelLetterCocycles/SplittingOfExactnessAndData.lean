@@ -334,11 +334,9 @@ end Formalism.MainNotions.UnusedSlot80
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.Split
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.WachCoordinates.Br Formalism.MainNotions.ArcLiftingSetup
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -734,7 +732,6 @@ end Formalism.MainNotions.UnusedSlot80.Split
 
 namespace Formalism.MainNotions.UnusedSlot80
 
-open Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 theorem splitting_of_exactness_and_data (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (Cm : CmpOf D.loc D.locA HW F) (hX : Split.DDExactL D HW) (hC : Split.CutDataL D HW)

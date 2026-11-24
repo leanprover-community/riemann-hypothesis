@@ -67,7 +67,6 @@ open Classical in
 def blkW : (Σ k, ι k) → K → ℕ := fun p => Pi.single p.1 1
 
 
-open Classical in
 theorem isMultiHomog_of_wh {s : MRing ι} {a : K → ℕ} (h : IsWeightedHomogeneous (blkW (ι := ι)) s a) :
     IsMultiHomog s a := by
   intro m hm k
@@ -80,7 +79,6 @@ theorem isMultiHomog_of_wh {s : MRing ι} {a : K → ℕ} (h : IsWeightedHomogen
 
 
 omit [Fintype K] in
-open Classical in
 theorem sum_single_eq_extend {K₀ : Type} [Fintype K₀] (κ : K₀ → K) (hκ : Function.Injective κ) (α : K₀ → ℕ) :
     (∑ k, α k • (Pi.single (κ k) 1 : K → ℕ)) = Function.extend κ α 0 := by
   funext k'

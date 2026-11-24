@@ -77,7 +77,6 @@ theorem dividedPowerMonomial_eq_sum (k : ℕ) :
   have h0 : f l = 0 := by simpa using hl
   simp [h0]
 
-open Classical in
 theorem sum_finsuppAntidiag_eq_sum_piFinset (k : ℕ) :
     ∑ f ∈ Finset.finsuppAntidiag (Finset.univ.filter (· ∈ S)) k,
       monomial (shiftedExponent LL a b m (⇑f)) (rootShiftCoefficient B LL a b m (⇑f)) =

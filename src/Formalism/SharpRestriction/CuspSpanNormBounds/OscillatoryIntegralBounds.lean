@@ -52,23 +52,19 @@ import Formalism.YangianSpanCharacter.StatementT
 
 @[expose] public section
 
-section PartA3c
 
 open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA
 
 namespace Formalism.MainNotions.InterlacingSignCuts
 
-section Cut
 
 variable {k0 : ℕ}
 
-end Cut
 
 end Formalism.MainNotions.InterlacingSignCuts
 
 end PartA3c
 
-section PartA4
 
 open Matrix
 open scoped ContDiff
@@ -81,13 +77,11 @@ open Formalism.QuantumDeterminants Formalism.YangianSpanCharacter.T
 
 variable {m : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
-section PlaneWaves
 
 open Formalism.QuantumDeterminants.WirtingerDerivatives
 
 variable {m : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
-end PlaneWaves
 
 end Formalism.MainNotions.InterlacingSignCuts
 
@@ -95,10 +89,8 @@ end
 
 end PartA4
 
-section PartA9
 
 open Formalism.QuantumDeterminants Matrix
-open scoped ContDiff
 
 noncomputable section
 
@@ -110,7 +102,6 @@ end Formalism.MainNotions.InterlacingSignCuts
 
 end
 
-end PartA9
 
 section PartA14
 
@@ -128,7 +119,6 @@ end PartA14
 
 section PartA14v
 
-open Polynomial Finset
 
 noncomputable section
 
@@ -159,7 +149,6 @@ end
 
 end PartA15
 
-section PartA16
 
 open Complex Real MeasureTheory
 open scoped SchwartzMap FourierTransform RealInnerProductSpace
@@ -168,14 +157,12 @@ noncomputable section
 
 namespace Formalism.MainNotions.InterlacingSignCuts
 
-section Std
 
 variable (d : ℕ)
 
 variable {d}
 
 
-end Std
 
 end Formalism.MainNotions.InterlacingSignCuts
 
@@ -198,10 +185,8 @@ end
 
 end PartA17m
 
-section PartA17d
 
 open MeasureTheory Filter Topology Set
-open scoped ContDiff
 
 noncomputable section
 
@@ -213,7 +198,6 @@ end Formalism.MainNotions.InterlacingSignCuts.SP
 
 end
 
-end PartA17d
 
 section PartA17a
 
@@ -233,7 +217,6 @@ end PartA17a
 section PartA17p
 
 open MeasureTheory Complex Filter Set Topology
-open scoped ContDiff Real
 
 noncomputable section
 
@@ -247,8 +230,6 @@ end PartA17p
 
 section PartA17s
 
-open MeasureTheory Complex Filter Set Topology
-open scoped ContDiff Real
 
 noncomputable section
 
@@ -381,7 +362,6 @@ end PartAOm
 section PartAImg
 
 open Matrix Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.TopsChoicePartA Topology Filter
-open scoped ContDiff
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -394,7 +374,6 @@ end PartAImg
 section PartAGb
 
 open MeasureTheory Matrix
-open scoped ContDiff
 
 noncomputable section
 
@@ -408,7 +387,6 @@ end
 
 end PartAGb
 
-section PartAGw
 
 open MeasureTheory
 
@@ -416,14 +394,12 @@ noncomputable section
 
 namespace Formalism.MainNotions.InterlacingSignCuts.Gm
 
-section Abstract
 
 variable {X Y K Q : Type*} [MeasurableSpace X] [MeasurableSpace Y] [MeasurableSpace K] [MeasurableSpace Q]
 
 variable {M ν : Measure X} {Sm : Measure Y} {act : X → Y → X} {LUs : Set X}
   {μK : Measure K} {μQ : Measure Q} [SFinite μK] [SFinite μQ] {κ : K → Y} {Ψ : K × Q → X} {kc : X → K} {γ : K → ℝ}
 
-end Abstract
 
 end Formalism.MainNotions.InterlacingSignCuts.Gm
 
@@ -433,7 +409,6 @@ end PartAGw
 
 section PartAGj
 
-open MeasureTheory Matrix
 
 noncomputable section
 
@@ -449,8 +424,6 @@ end PartAGj
 
 section PartAGo1
 
-open MeasureTheory Matrix
-open scoped ContDiff
 
 noncomputable section
 
@@ -468,14 +441,11 @@ end PartAGo1
 
 section PartAGo2
 
-open MeasureTheory Matrix
-open scoped ContDiff
 
 noncomputable section
 
 namespace Formalism.MainNotions.InterlacingSignCuts.Gm
 
-open Formalism.MainNotions.S.UnitaryLevelOperators Formalism.FourierDecayAlt.G Formalism.FourierDecayAlt.P
 
 end Formalism.MainNotions.InterlacingSignCuts.Gm
 
@@ -485,14 +455,11 @@ end PartAGo2
 
 section PartAGo3
 
-open MeasureTheory Matrix
-open scoped ContDiff
 
 noncomputable section
 
 namespace Formalism.MainNotions.InterlacingSignCuts.Gm
 
-open Formalism.MainNotions.S.UnitaryLevelOperators Formalism.FourierDecayAlt.G Formalism.FourierDecayAlt.P
 
 end Formalism.MainNotions.InterlacingSignCuts.Gm
 
@@ -502,14 +469,11 @@ end PartAGo3
 
 section PartAGo4
 
-open MeasureTheory Matrix
-open scoped ContDiff
 
 noncomputable section
 
 namespace Formalism.MainNotions.InterlacingSignCuts.Gm
 
-open Formalism.MainNotions.S.UnitaryLevelOperators Formalism.FourierDecayAlt.G Formalism.FourierDecayAlt.P
 
 end Formalism.MainNotions.InterlacingSignCuts.Gm
 
@@ -519,14 +483,11 @@ end PartAGo4
 
 section PartAGo
 
-open MeasureTheory Matrix
-open scoped ContDiff
 
 noncomputable section
 
 namespace Formalism.MainNotions.InterlacingSignCuts.Gm
 
-open Formalism.MainNotions.S.UnitaryLevelOperators Formalism.FourierDecayAlt.G Formalism.FourierDecayAlt.P
 
 end Formalism.MainNotions.InterlacingSignCuts.Gm
 
@@ -536,8 +497,6 @@ end PartAGo
 
 section PartAGk
 
-open MeasureTheory Matrix
-open scoped ContDiff
 
 noncomputable section
 
@@ -569,9 +528,7 @@ end
 
 end PartAGs1
 
-section PartAGs2
 
-open MeasureTheory Matrix
 
 noncomputable section
 
@@ -585,11 +542,9 @@ end Formalism.MainNotions.InterlacingSignCuts.Gm
 
 end
 
-end PartAGs2
 
 section PartAGs3
 
-open MeasureTheory Matrix
 
 noncomputable section
 
@@ -632,7 +587,6 @@ end PartAPk
 section PartALev
 
 open Matrix MeasureTheory TensorProduct
-open scoped ContDiff
 open Formalism.QuantumDeterminants Formalism.MainNotions.S.TopsChoicePartA Formalism.MainNotions.S.LevR Formalism.MainNotions.S.UnitaryLevelOperators
 
 namespace Formalism.MainNotions.InterlacingSignCuts
@@ -643,7 +597,6 @@ end PartALev
 
 section PartAOpen
 
-open Polynomial
 
 namespace Formalism.MainNotions.InterlacingSignCuts
 
@@ -739,22 +692,16 @@ end
 
 end PartALat
 
-section PartALat2
 
-open NumberField
-open scoped nonZeroDivisors
 
 noncomputable section
 
 namespace Formalism.MainNotions.InterlacingSignCuts
 
-open Formalism.BasicNotions Formalism.MainNotions.S
 
-section Theta
 
 variable (D : D7) (C1 C2 N T T' : ℝ) (δ : D.host.E) (x : D.what₂.Tau → LocalDataRealPlace D) (L : LatticeDataWithDual D)
 
-end Theta
 
 end Formalism.MainNotions.InterlacingSignCuts
 
@@ -762,7 +709,6 @@ end
 
 end PartALat2
 
-section PartAAx
 
 open scoped ComplexConjugate ComplexOrder
 
@@ -774,19 +720,15 @@ open Formalism.BasicNotions Formalism.MainNotions.S Formalism.FourierDecayAlt.TA
 
 attribute [local instance] Classical.propDecidable
 
-section Points
 
 variable {E : Type} [Field E]
 
-end Points
 
-section Data
 
 variable (D : D7) (L : LatticeDataWithDual D) (Kd : KernelData D) (Lv : ℕ → AddSubgroup D.host.E)
 
 variable {D L Kd}
 
-end Data
 
 end Formalism.MainNotions.InterlacingSignCuts
 
@@ -794,26 +736,21 @@ end
 
 end PartAAx
 
-section PartASz
 
 open NumberField Finset
-open scoped nonZeroDivisors
 
 noncomputable section
 
 namespace Formalism.MainNotions.InterlacingSignCuts
 
-open Formalism.BasicNotions Formalism.MainNotions.S Formalism.FourierDecayAlt.TA
 
 attribute [local instance] Classical.propDecidable
 
-section Sizes
 
 variable (D : D7) (C1 C2 N T T' : ℝ) (δ : D.host.E) (x : D.what₂.Tau → LocalDataRealPlace D) (L : LatticeDataWithDual D) (K : ℕ)
 
 variable {D C1 C2 N T T' δ x L}
 
-end Sizes
 
 end Formalism.MainNotions.InterlacingSignCuts
 
@@ -829,7 +766,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.InterlacingSignCuts
 
-open Formalism.MainNotions.S
 
 end Formalism.MainNotions.InterlacingSignCuts
 
@@ -839,13 +775,11 @@ end PartAKol
 
 section PartAPsd
 
-open scoped ComplexConjugate ComplexOrder
 
 noncomputable section
 
 namespace Formalism.MainNotions.InterlacingSignCuts
 
-open Formalism.MainNotions.S
 
 attribute [local instance] Classical.propDecidable
 
@@ -855,7 +789,6 @@ end
 
 end PartAPsd
 
-section PartARow
 
 open scoped ComplexConjugate ComplexOrder InnerProductSpace ENNReal
 
@@ -863,7 +796,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.InterlacingSignCuts
 
-open Formalism.MainNotions.S
 
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
@@ -871,9 +803,7 @@ end Formalism.MainNotions.InterlacingSignCuts
 
 end
 
-end PartARow
 
-section PartATop
 
 open NumberField Finset Filter Topology
 open scoped nonZeroDivisors ComplexConjugate ComplexOrder InnerProductSpace
@@ -882,15 +812,12 @@ noncomputable section
 
 namespace Formalism.MainNotions.InterlacingSignCuts
 
-open Formalism.BasicNotions Formalism.MainNotions.S Formalism.FourierDecayAlt.TA
 
 attribute [local instance] Classical.propDecidable
 
-section Points
 
 variable {E : Type} [Field E]
 
-end Points
 
 end Formalism.MainNotions.InterlacingSignCuts
 

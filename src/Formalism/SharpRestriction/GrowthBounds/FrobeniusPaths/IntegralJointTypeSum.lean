@@ -161,7 +161,6 @@ lemma coeff_XDii {σ : Type*} (i : σ) (f : MvPolynomial σ F) (mm : σ →₀ �
     rw [h3, mul_comm]
 
 
-open Classical in
 def wtA (mm : Fin N × Fin k →₀ ℕ) (a : Fin m) : ℤ :=
   ∑ l : Fin N, if l ∈ S then (if LL.vec l then (mm (l, e a) : ℤ) else -(mm (l, e a) : ℤ)) else 0
 
@@ -189,7 +188,6 @@ lemma tot_add (m1 m2 : Fin N × Fin k →₀ ℕ) : tot LL S e (m1 + m2) = tot L
   intro l _
   split_ifs <;> simp <;> ring
 
-open Classical in
 lemma tot_single (he : Function.Injective e) (l : Fin N) (c : Fin m) :
     tot LL S e (Finsupp.single (l, e c) 1) = if l ∈ S then (if LL.vec l then 1 else -1) else 0 := by
   simp only [tot, wtA]

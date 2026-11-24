@@ -60,7 +60,6 @@ def detIdl (e : AE D) (V : HSp D) (g : GA D V) : (AE D)ˣ :=
   if he : e * e = e then GlobalTheory.VecInv.detAt e he V g else 1
 
 
-open Classical in
 theorem detIdl_val {e : AE D} (he : e * e = e) (V : HSp D) (g : GA D V) :
     ((detIdl e V g : (AE D)ˣ) : AE D) = e * (Formalism.L2.Theta.mt V g).det + (1 - e) := by
   rw [detIdl, dite_eq_left he]; rfl

@@ -49,12 +49,10 @@ open NumberField IsDedekindDomain
 open scoped TensorProduct nonZeroDivisors
 open Formalism.MainNotions.S
 
-section Gen
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
 
-end Gen
 
 section Unit
 

@@ -120,7 +120,6 @@ lemma kill_monomial (S : σ → Prop) [DecidablePred S] (m : σ →₀ ℕ) (c :
     rw [Finsupp.prod, Finset.prod_eq_zero (Finsupp.mem_support_iff.2 hx), mul_zero]
     rw [if_pos hS, zero_pow hx]
 
-open Classical in
 lemma coeff_kill (S : σ → Prop) [DecidablePred S] (P : MvPolynomial σ R) (e : σ →₀ ℕ) :
     AddMonoidAlgebra.coeff (kill S P) e =
       if ∀ x, S x → e x = 0 then AddMonoidAlgebra.coeff P e else 0 := by

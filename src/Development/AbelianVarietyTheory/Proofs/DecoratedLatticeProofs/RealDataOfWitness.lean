@@ -91,7 +91,6 @@ theorem image_congr {D : D7} {X X' : Formalism.L2.Col.Fields} (hX : X = X') {s :
   rfl
 
 
-open Classical in
 theorem image_refl {E : Type} [Field E] [NumberField E] (f : E ≃+* E) (hf : f = RingEquiv.refl E)
     (S : Finset (HeightOneSpectrum (𝓞 E))) : S.image (Formalism.L2.Host.CT.plMap f) = S := by
   subst hf

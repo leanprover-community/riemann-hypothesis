@@ -118,14 +118,12 @@ lemma continuous_transposeGL {F : Type*} [Field F] [TopologicalSpace F] {n : ℕ
   · exact Units.continuous_coe_inv.matrix_transpose
 
 
-open GroundTheory.Automorphic.ContragredientTranspose in
 noncomputable def thetaTContinuous : GL (Fin n) F ≃ₜ* GL (Fin n) F :=
   { (thetaT : GL (Fin n) F ≃* GL (Fin n) F) with
     continuous_toFun := continuous_transposeGL.inv
     continuous_invFun := continuous_transposeGL.inv }
 
 
-open GroundTheory.Automorphic.ContragredientTranspose in
 lemma thetaT_thetaT {F : Type*} [Field F] {n : ℕ} (g : GL (Fin n) F) :
     (thetaT : GL (Fin n) F ≃* GL (Fin n) F) (thetaT g) = g :=
   (thetaT : GL (Fin n) F ≃* GL (Fin n) F).symm_apply_apply g
@@ -137,7 +135,6 @@ end MapThetaTInvariant
 open MapThetaTInvariant
 
 
-open GroundTheory.Automorphic.ContragredientTranspose in
 theorem map_thetaT_eq_self {F : Type*} [Field F] [ValuativeRel F] [TopologicalSpace F]
     [IsNonarchimedeanLocalField F] {n : ℕ} [MeasurableSpace (GL (Fin n) F)]
     [BorelSpace (GL (Fin n) F)] (μ : Measure (GL (Fin n) F)) [μ.IsHaarMeasure] :

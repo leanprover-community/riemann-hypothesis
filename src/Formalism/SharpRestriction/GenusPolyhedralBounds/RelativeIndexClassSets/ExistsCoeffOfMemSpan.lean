@@ -321,7 +321,6 @@ theorem aeval_ySec_monomial (m : Fin (WeightFamilies.dimY D j) →₀ ℕ) :
   rw [map_pow]
   rfl
 
-open MvPolynomial in
 theorem ySec_monomial_mul_mem (u : WeightFamilies.Wt D j) (m : Fin (WeightFamilies.dimY D j) →₀ ℕ) (F : B.Cusp j u) :
     aeval (ySec X la w) (monomial m (1 : Kp X la N)) * algebraMap (Rp X la N) (Lw X la w) (emb X la N (X.inc u F)) ∈
       JHfr X la w u m.degree := by
@@ -334,7 +333,6 @@ end Concrete
 
 section Final
 
-open MvPolynomial
 
 variable (X : PJ D B P j) (la : HeightOneSpectrum (𝓞 B.KO)) {N : ℕ} {wL : WeightFamilies.Wt D j} (w : Fin N → B.Cusp j wL)
   (wF : WeightFamilies.Wt D j) (T : ℕ)
@@ -386,7 +384,6 @@ end Final
 
 section Main
 
-open MvPolynomial
 
 variable {X : PJ D B P j} {wL wF : WeightFamilies.Wt D j} {T : ℕ} (G : GlobalFamilyData X (addL wF wL T) wL wF)
   (la : HeightOneSpectrum (𝓞 B.KO))

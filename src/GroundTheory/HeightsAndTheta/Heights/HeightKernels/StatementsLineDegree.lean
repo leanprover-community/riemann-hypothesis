@@ -91,7 +91,6 @@ theorem embComp_smul {K : Type} [Field K] [NumberField K] {i : ℕ} (σ : K →+
   exact Finset.sum_congr rfl fun m _ => by ring
 
 
-open scoped Classical in
 theorem sum_emb_embComp {K : Type} [Field K] [NumberField K] {i : ℕ} (z : ProjIdx K i → ℂ)
     (m : Module.Free.ChooseBasisIndex ℤ (𝓞 K)) (j : Fin i) :
     ∑ σ : K →+* ℂ, σ (integralBasis K m) * embComp σ z j = z (m, j) := by

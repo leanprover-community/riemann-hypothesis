@@ -71,7 +71,6 @@ def cosetInd (q : Unif k) (L : Submodule 𝒪[k] (n → k)) (f : Module.Dual �
   if ∃ F : n → k, Lifts L F f ∧ InDual L (η - q.inv • F) then 1 else 0
 
 
-open Classical in
 def datum (q : Unif k) (P : Pair k n') (LY : Submodule 𝒪[k] (n → k)) (x₀ : Matrix n n' k) (y : n → k) : ℂ :=
   if (∀ z ∈ P.ker, x₀ *ᵥ z ∈ LY) ∧ q.inv • y + x₀ *ᵥ P.vec ∈ LY then 1 else 0
 
@@ -85,7 +84,6 @@ def qvec (q : Unif k) (P : Pair k n') : Red P.ker :=
 def resUnit (ε : 𝒪[k]ˣ) : 𝓀[k]ˣ := Units.map (residue 𝒪[k]).toMonoidHom ε
 
 
-open Classical in
 def term (q : Unif k) (χ : AddChar 𝓀[k] ℂ) (ε : 𝓀[k]ˣ) (P : Pair k n') (LY : Submodule 𝒪[k] (n → k))
     (fW : Module.Dual 𝓀[k] (Red LY)) (x₀ : Matrix n n' k) : ℂ :=
   if h : ∀ z ∈ P.ker, x₀ *ᵥ z ∈ LY then
@@ -94,7 +92,6 @@ def term (q : Unif k) (χ : AddChar 𝓀[k] ℂ) (ε : 𝓀[k]ˣ) (P : Pair k n'
   else 0
 
 
-open Classical in
 def compInd (L : Submodule 𝒪[k] (n' → k)) (LY : Submodule 𝒪[k] (n → k)) (f' : Module.Dual 𝓀[k] (Red L))
     (fW : Module.Dual 𝓀[k] (Red LY)) (x₀ : Matrix n n' k) : ℂ :=
   if ∃ h : ∀ z ∈ L, x₀ *ᵥ z ∈ LY, ∀ z : L, fW (Red.mk LY ⟨x₀ *ᵥ z, h z z.2⟩) = f' (Red.mk L z) then 1 else 0
@@ -256,7 +253,6 @@ def ClassSumFormula : Prop :=
           θ (dia (resUnit ε) (FFStar q (resChar ψ hψ q) φ) P') (phiOne P' Q)
 
 
-open Classical in
 def LastStep : Prop :=
   ∀ (q : Unif k) (LY : Submodule 𝒪[k] (n → k)) [LY.IsFullLattice k] (L'' : Submodule 𝒪[k] (n'' → k)) [L''.IsFullLattice k],
     (∀ (fW : {f : Module.Dual 𝓀[k] (Red LY) // f ≠ 0}) (x' : Matrix n'' n k) (η : n → k),

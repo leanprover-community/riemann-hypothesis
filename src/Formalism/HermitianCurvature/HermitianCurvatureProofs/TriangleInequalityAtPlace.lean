@@ -121,8 +121,6 @@ end Formalism.FourierDecayAlt.P.TBBx2
 
 namespace Formalism.FourierDecayAlt.P.TBBx2
 
-open MeasureTheory Filter Topology Formalism.QuantumDeterminants
-open scoped ENNReal
 
 noncomputable section
 
@@ -229,7 +227,6 @@ theorem Formalism.FourierDecayAlt.P.point_bound_of_corollary_s : TBB.PtBoundOfCo
 namespace Formalism.FourierDecayAlt.P.TBBx2.Tri
 
 open Finset Formalism.FourierDecayAlt Formalism.FourierDecayAlt.TBB
-open scoped ENNReal
 
 noncomputable section
 
@@ -292,7 +289,6 @@ end Formalism.FourierDecayAlt.P.TBBx2.Tri
 namespace Formalism.FourierDecayAlt.P.TBBx2.Bp
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.TBB MeasureTheory
-open scoped ENNReal
 
 lemma expo_le (C₃ CΛ C₀ L K : ℝ) (r n₀ p₀ : ℕ) (hC₃ : 0 ≤ C₃) (hCΛ : 0 ≤ CΛ) (hC₀ : 1 / 2 ≤ C₀)
     (hL : 0 ≤ L) (hK : 0 ≤ K)
@@ -404,8 +400,6 @@ end Formalism.FourierDecayAlt.P.TBBx2.Bp
 
 namespace Formalism.FourierDecayAlt.P.TBBx2.Bp
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.TBB MeasureTheory
-open scoped ENNReal
 
 lemma jacobi_norm_sq_bound {P : M.Par} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
     [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] (p : KB.Pl P Wp Wq)

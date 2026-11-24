@@ -103,7 +103,6 @@ theorem finiteProj_placesIdele [Finite S] (a : ∀ w : S, (w.1.adicCompletion K)
     exact h w.2
 
 
-open Classical in
 def divisorExponent (D : sDivisor S) (v : HeightOneSpectrum (𝓞 K)) : ℤ :=
   if h : v ∈ S then 0 else D ⟨v, h⟩
 

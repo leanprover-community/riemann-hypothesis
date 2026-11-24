@@ -135,10 +135,8 @@ def dimY : ℕ := D.R.f * (D.R.r.choose 2)
 abbrev LocF {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) :=
   ∀ x (_ : Fm.x1 < x) (i : Fm.Ix x), Loc (Fm.D x i) (Fm.X x i)
 
-section Fam
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (XF : LocF Fm)
 
-end Fam
 
 end Formalism.MainNotions.placeRankTwoOne
 

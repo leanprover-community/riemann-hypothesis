@@ -492,7 +492,6 @@ end NT
 section NT2
 
 open NumberField IsDedekindDomain
-open scoped TensorProduct
 
 variable (I : AutInst)
 
@@ -543,8 +542,6 @@ end NT2
 
 section NT3
 
-open NumberField IsDedekindDomain
-open scoped TensorProduct
 
 variable (I : AutInst)
 
@@ -612,7 +609,6 @@ end NT3
 section Disc
 
 open NumberField
-open scoped TensorProduct
 
 variable (I : AutInst)
 
@@ -748,8 +744,6 @@ end Disc
 
 section T2
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum
-open scoped TensorProduct
 
 theorem wz_lemma (γ δ : WithZero (Multiplicative ℤ)) (h : γ < 1) (hδ : ∀ k : ℕ, δ ≤ γ ^ k) : δ = 0 := by
   by_contra hδ0
@@ -1083,7 +1077,6 @@ end NLamGrp
 
 section GinfDisc
 
-open NumberField
 
 variable (I : AutInst)
 

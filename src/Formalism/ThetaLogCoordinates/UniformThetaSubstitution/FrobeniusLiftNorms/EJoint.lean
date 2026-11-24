@@ -68,11 +68,9 @@ theorem coeff_subst_scale {K ι : Type} [Field K] (ϖ : K) (Th : MvPowerSeries �
   rw [h, ← MvPowerSeries.rescale_eq_subst, MvPowerSeries.coeff_rescale, Finsupp.prod,
     Finset.prod_pow_eq_pow_sum, Finsupp.degree_apply]
 
-section Lin
 
 variable {K : Type} [Field K] {ν r0 r1 : ℕ}
 
-end Lin
 
 end MinorFormHomogeneity
 

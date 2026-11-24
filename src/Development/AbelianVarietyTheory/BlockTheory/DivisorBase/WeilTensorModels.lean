@@ -380,7 +380,6 @@ structure Chars where
 def Chars.ν (X : Chars F E) : Chr F E := X.α / X.β
 
 
-open Classical in
 def Chars.T (X : Chars F E) : Finset (Pl F) := X.S₀ ∪ X.Q
 
 
@@ -586,7 +585,6 @@ structure Plane.IsAdapted (B : Base F E) {n n₁ : ℕ} (H : Plane E n n₁) (Y 
     ∀ j : Fin n₁, i.1 = skip i₀ i₁ j → ∀ r, (Y.bas v).1 r i = (H.ι.map (B.τ v) * (Y₁.bas v).1) r j
 
 
-open Classical in
 def stepFac (B : Base F E) (X : Chars F E) (e₁ e₂ s : ℤˣ) (𝔟 𝔠 : FractionalIdeal (𝓞 E)⁰ E) (z : ℤ) : ℂ :=
   ((idealVal X.ν 𝔟 ^ (e₁ : ℤ) * idealVal X.ν 𝔠 ^ (e₂ : ℤ) : ℂˣ) : ℂ) *
     ∏ v : B.P with v.1 ∈ X.T, (chrW X.ν (B.τ v) (Units.map (Int.castRingHom _).toMonoidHom s) : ℂ) *

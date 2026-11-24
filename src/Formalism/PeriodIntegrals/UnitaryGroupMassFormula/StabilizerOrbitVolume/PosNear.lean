@@ -157,7 +157,6 @@ theorem isCompact_latV (a M : ℕ) : IsCompact (latV (M := M) (n := a) b v) := b
 
 end Loc
 
-section Main
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E]
 
@@ -165,12 +164,9 @@ variable [FiniteDimensional F E] {d : ℕ} (b : Module.Basis (Fin d) F E)
 
 
 
-end Main
 
 end PositiveNearLattice
 
 open PositiveNearLattice
-open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.Sub NumberField IsDedekindDomain MeasureTheory PI.VolFromSW
-open scoped TensorProduct
 
 end PI.VolStabSW

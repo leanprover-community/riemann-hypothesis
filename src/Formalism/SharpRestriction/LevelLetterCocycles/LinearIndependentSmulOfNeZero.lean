@@ -64,7 +64,6 @@ open Formalism.MainNotions.BlochKatoReduction.Gen (nval)
 
 end GT
 
-section Cons
 
 open Formalism.MainNotions.IntegralHeckeForms (IsLatIn)
 open scoped TensorProduct
@@ -72,22 +71,17 @@ open scoped TensorProduct
 variable {D : Formalism.BasicNotions.D7} {N : Formalism.BasicNotions.NData D.R D.host D.what₂}
   {X : Formalism.BasicNotions.NTw D.R D.host D.what₂ D.LL0 N} {Y : Formalism.BasicNotions.NExp D.R D.host D.what₂ D.LL0 N X}
 
-end Cons
 
-section Open
 
 open Formalism.MainNotions.BlochKatoReduction.Gen (SetHyp PsiOk partAT partC partD)
 
 variable (D : Formalism.BasicNotions.D7) (bkP : Formalism.MainNotions.BlochKatoReduction.BK D) (N0 : D.ntw.Tw → ℕ)
 
-end Open
 
 section Lattice
 
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions
 open Formalism.MainNotions.IntegralHeckeForms (HkIdx hkO TwOK T3 IsLatIn sIdx specU)
-open Formalism.MainNotions.BlochKatoReduction.Gen (nval)
-open scoped TensorProduct
 
 variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂}
   {X : NTw D.R D.host D.what₂ D.LL0 N} (Y : NExp D.R D.host D.what₂ D.LL0 N X)
@@ -125,23 +119,14 @@ def Pack.v : ℝ := sIdx (X.l i) p.B p.Th + (p.c : ℝ) * p.S.card
 
 end Lattice
 
-section Asm0
 
-open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions
-open Formalism.MainNotions.IntegralHeckeForms (HkIdx hkO TwOK T3 IsLatIn sIdx specU)
-open Formalism.MainNotions.BlochKatoReduction.Gen (nval)
-open scoped TensorProduct
 
 variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂}
   {X : NTw D.R D.host D.what₂ D.LL0 N} {Y : NExp D.R D.host D.what₂ D.LL0 N X}
 
-end Asm0
 
-section Chain
 
-open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions
 open Formalism.MainNotions.IntegralHeckeForms (HkIdx hkO)
-open scoped TensorProduct
 
 variable {D : Formalism.BasicNotions.D7}
 
@@ -153,13 +138,9 @@ variable {Y}
 
 
 
-end Chain
 
-section CrdAll
 
-open scoped TensorProduct
 
-section Coord
 
 variable {O Fm : Type} [CommRing O] [AddCommGroup Fm] [Module O Fm]
 
@@ -169,67 +150,45 @@ variable {B : Submodule O Fm} {d : ℕ} (β : Module.Basis (Fin d) O B)
 
 variable {Λ}
 
-end Coord
 
-section Free
 
 open Formalism.IrreducibleCountingLemmas.TW (relLen)
-open Formalism.MainNotions.IntegralHeckeForms (IsLatIn)
-open Formalism.MainNotions.BlochKatoReduction.Gen (nval)
 
 variable {R W : Type} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [AddCommGroup W] [Module R W]
 
 variable {d : ℕ} {e : Fin d → W}
 
-end Free
 
-section BaseCh
 
 variable {O Fm : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [AddCommGroup Fm] [Module O Fm]
   {B : Submodule O Fm} {d : ℕ} (β : Module.Basis (Fin d) O B)
   (R' : Type) [CommRing R'] [IsDomain R'] [Algebra O R']
 
-end BaseCh
 
-section Det
 
-open Formalism.MainNotions.IntegralHeckeForms (IsLatIn)
-open Formalism.MainNotions.BlochKatoReduction.Gen (nval)
 
 variable {O Fm : Type} [CommRing O] [AddCommGroup Fm] [Module O Fm]
   {B : Submodule O Fm} {d : ℕ} (β : Module.Basis (Fin d) O B)
 
 variable {Λ : Type} [CommRing Λ] [Algebra O Λ] [Module.Flat O Λ]
 
-end Det
 
-section Det2
 
-open Formalism.MainNotions.IntegralHeckeForms (IsLatIn)
-open Formalism.MainNotions.BlochKatoReduction.Gen (nval)
 
 variable {O Fm : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [AddCommGroup Fm] [Module O Fm]
   {B : Submodule O Fm} {d : ℕ} (β : Module.Basis (Fin d) O B)
 
-end Det2
 
 end CrdAll
 
-section Alg
 
 open Polynomial
 
 variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
   [IsAlgClosed (IsLocalRing.ResidueField O)]
 
-end Alg
 
-section Asm1
 
-open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions
-open Formalism.MainNotions.IntegralHeckeForms (HkIdx hkO TwOK T3 IsLatIn sIdx specU)
-open Formalism.MainNotions.BlochKatoReduction.Gen (nval)
-open scoped TensorProduct
 open Classical
 
 variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂}
@@ -240,15 +199,8 @@ variable {n : ℕ} (β : Module.Basis (Fin n) (X.O i) p.B)
 
 variable (es : Fin n ≃ ↥p.S)
 
-end Asm1
 
-section K4
 
-open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions
-open Formalism.MainNotions.IntegralHeckeForms (HkIdx hkO TwOK T3 IsLatIn sIdx specU)
-open Formalism.MainNotions.BlochKatoReduction.Gen (nval)
-open scoped TensorProduct
-open Classical
 
 variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂}
   {X : NTw D.R D.host D.what₂ D.LL0 N} {Y : NExp D.R D.host D.what₂ D.LL0 N X}
@@ -256,15 +208,9 @@ variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂}
 
 variable {n : ℕ} (β : Module.Basis (Fin n) (X.O i) p.B)
 
-end K4
 
 section Asm2
 
-open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions
-open Formalism.MainNotions.IntegralHeckeForms (HkIdx hkO TwOK T3 IsLatIn sIdx specU)
-open Formalism.MainNotions.BlochKatoReduction.Gen (nval)
-open scoped TensorProduct
-open Classical
 
 variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂}
   {X : NTw D.R D.host D.what₂ D.LL0 N} {Y : NExp D.R D.host D.what₂ D.LL0 N X}
@@ -277,49 +223,33 @@ def Pack.x (a : Y.Dat i j b) : Y.Fm i j b := ((X.l i : X.O i) ^ p.c) • p.A (Y.
 
 end Asm2
 
-section Asm3
 
-open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions
-open Formalism.MainNotions.IntegralHeckeForms (HkIdx hkO TwOK T3 IsLatIn sIdx specU)
-open Formalism.MainNotions.BlochKatoReduction.Gen (nval)
-open scoped TensorProduct
-open Classical
 
 variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂}
   {X : NTw D.R D.host D.what₂ D.LL0 N} {Y : NExp D.R D.host D.what₂ D.LL0 N X}
   {i : X.Tw} {j : ℕ} {b : Bool} (p : Pack Y i j b) {n : ℕ} (β : Module.Basis (Fin n) (X.O i) p.B)
   (es : Fin n ≃ ↥p.S)
 
-end Asm3
 
-section Fin
 
-open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions
-open Formalism.MainNotions.IntegralHeckeForms (HkIdx hkO TwOK T3 IsLatIn sIdx specU)
 open Formalism.MainNotions.BlochKatoReduction.Gen (psiAt nval SetHyp PsiOk partA partAT partC partD)
-open scoped TensorProduct
 
 variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂}
   {X : NTw D.R D.host D.what₂ D.LL0 N} {Y : NExp D.R D.host D.what₂ D.LL0 N X}
 
 
-end Fin
 
-section Asm4
 
-open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions
 
 variable {D : Formalism.BasicNotions.D7} {N : NData D.R D.host D.what₂}
   {X : NTw D.R D.host D.what₂ D.LL0 N} {Y : NExp D.R D.host D.what₂ D.LL0 N X}
   {i : X.Tw} {j : ℕ} {b : Bool} (p : Pack Y i j b)
 
-end Asm4
 
 section FrobAll
 
 section Frob
 
-open Polynomial
 
 theorem val_le_one_of_isIntegral {R Ω : Type} [CommRing R] [Field Ω] [Algebra R Ω] (A : ValuationSubring Ω)
     (hR : ∀ r : R, A.valuation (algebraMap R Ω r) ≤ 1) {y : Ω} (hy : IsIntegral R y) :
@@ -422,7 +352,6 @@ end Frob
 
 section Frob2
 
-open Polynomial
 
 variable {R Ω : Type} [CommRing R] [Field Ω] [Algebra R Ω] (A : ValuationSubring Ω)
 
@@ -548,7 +477,6 @@ end Frob3
 
 section Frob4
 
-open Polynomial Pointwise
 
 variable {R F Ω : Type} [CommRing R] [IsDedekindDomain R] [Field F] [Algebra R F] [IsFractionRing R F]
   [Field Ω] [Algebra F Ω] [Algebra R Ω] [IsScalarTower R F Ω]

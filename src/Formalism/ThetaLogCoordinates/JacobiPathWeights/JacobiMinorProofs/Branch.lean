@@ -224,14 +224,12 @@ theorem card_restr {n : ℕ} (A : Finset (Fin (n + 1))) : (restr A).card = cnt A
   rw [← cnt_restr A le_rfl]
   exact (cnt_of_le _ le_rfl).symm
 
-open Classical in
 theorem card_eq_restr {n : ℕ} (A : Finset (Fin (n + 1))) :
     A.card = (restr A).card + if Fin.last n ∈ A then 1 else 0 := by
   have h := card_extd_eq (restr A) (Fin.last n ∈ A)
   rw [extd_restr A _ Iff.rfl] at h
   exact h
 
-open Classical in
 theorem card_extd {n : ℕ} (A : Finset (Fin n)) (b : Prop) :
     (extd A b).card = A.card + if b then 1 else 0 := by
   convert card_extd_eq A b

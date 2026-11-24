@@ -396,7 +396,6 @@ end Halves
 
 section Lifts
 
-open Formalism.L2.Col Formalism.HermitianLatticesTheory NumberField IsDedekindDomain
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
   {W : Type} [AddCommGroup W] [Module E W] [Module (𝓞 E) W] [IsScalarTower (𝓞 E) E W]
@@ -494,7 +493,6 @@ end Lifts
 
 section TwHomS
 
-open Formalism.L2.Col Formalism.HermitianLatticesTheory NumberField IsDedekindDomain
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
 
@@ -619,7 +617,6 @@ end TwHomS
 
 section Norm
 
-open Formalism.L2.Col Formalism.HermitianLatticesTheory NumberField IsDedekindDomain
 
 theorem half_periods_of_lattice : HalvesOfLa := by
   intro E _ _ _ ι _ _ a b emb δ d sc AA0 SS N N' c hδ hc hSS hN h0 hB hA
@@ -651,7 +648,6 @@ end Norm
 
 section TwDual
 
-open Formalism.L2.Col Formalism.HermitianLatticesTheory NumberField IsDedekindDomain
 
 theorem twist_selfDual : TwSelfDual := by
   intro E _ _ _ b N' c e _ hc he hU
@@ -703,7 +699,6 @@ end TwDual
 
 section Vol
 
-open Formalism.L2.Col Formalism.HermitianLatticesTheory NumberField IsDedekindDomain
 open scoped Pointwise
 
 theorem relIndex_ne_zero_of_cover {G : Type} [AddCommGroup G] (H K : AddSubgroup G) (R : Set G) (hR : R.Finite)
@@ -781,7 +776,6 @@ end Vol
 
 section VolumeCarry
 
-open Formalism.L2.Col Formalism.HermitianLatticesTheory NumberField IsDedekindDomain
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
   {W : Type} [AddCommGroup W] [Module E W] [Module (𝓞 E) W] [IsScalarTower (𝓞 E) E W]

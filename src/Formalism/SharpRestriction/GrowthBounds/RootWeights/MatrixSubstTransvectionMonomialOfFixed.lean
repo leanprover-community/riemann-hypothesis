@@ -206,7 +206,6 @@ theorem monomial_mul_prod_binomial_term (p : ι → ℕ) (hp : ∀ l, p l ≤ so
     ring
 
 
-open Classical in
 theorem matrixSubst_transvection_monomial_sum :
     matrixSubst LL S φ (Matrix.transvection a b t) (Matrix.transvection a b (-t)) (monomial m 1) =
       ∑ p ∈ Fintype.piFinset (fun l : ι => Finset.range (sourceExp LL S a b m l + 1)),

@@ -241,7 +241,6 @@ end Ties
 
 section Val
 
-open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {l : Level H}
   {Dw : ℕ → Datum H} (Xo : ∀ j, Moduli (Dw j) l) (c : Coeff l) [StarRing (𝓞 E)] (Dd : DepData E)
@@ -387,7 +386,6 @@ end Val
 
 section Ram
 
-open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {l : Level H}
   {Dw : ℕ → Datum H} (Xo : ∀ j, Moduli (Dw j) l) (c : Coeff l) [StarRing (𝓞 E)] (Dd : DepData E)
@@ -503,7 +501,6 @@ end Ram
 
 section Leaves
 
-open Formalism.L2.Pj ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {l : Level H}
   {Dw : ℕ → Datum H} (Xo : ∀ j, Moduli (Dw j) l) (c : Coeff l) [StarRing (𝓞 E)] (Dd : DepData E)

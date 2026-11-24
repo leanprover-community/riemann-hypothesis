@@ -89,13 +89,11 @@ def HCMultDSG : Prop :=
     Formalism.MainNotions.GapDS.thrDS ε < h → ∀ S : Submodule ℂ H, FiniteDimensional ℂ S → IsKStableOn ε σ S →
       FiniteDimensional ℂ (eqImg (fun k : KG ε => σ (toMK k)) S)
 
-section Final
 
 open Formalism.MainNotions.BridgeLemma Formalism.MainNotions.PlaceDegreeData Formalism.BasicNotions
 
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
-end Final
 
 end Formalism.MainNotions.BridgeCPX
 
@@ -142,7 +140,6 @@ end Formalism.MainNotions.TheoremBConstants
 
 namespace Formalism.MainNotions.LowestKTypeMultiplicity
 
-open Formalism.QuantumDeterminants Formalism.MainNotions.S
 
 end Formalism.MainNotions.LowestKTypeMultiplicity
 
@@ -157,7 +154,6 @@ end
 
 namespace Formalism.MainNotions.GapDS
 
-open Formalism.MainNotions.PlaceDegreeData
 
 noncomputable def thrX {n : ℕ} (ε : Fin n → Bool) : ℝ :=
   max (thrDS ε) (120 * (n : ℝ) * ((min (pOf ε) (qOf ε) : ℕ) : ℝ) ^ ((3 : ℝ) / 2))
@@ -192,7 +188,6 @@ end Formalism.MainNotions.GapDS
 
 namespace Formalism.MainNotions.DiscreteSeriesWeylDimension
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S
 
 end Formalism.MainNotions.DiscreteSeriesWeylDimension
 
@@ -204,13 +199,10 @@ end Formalism.MainNotions.TheoremBConstants
 
 namespace Formalism.MainNotions.DiscreteSeriesInnerProducts
 
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.ThB Formalism.BasicNotions Formalism.MainNotions.OnePlaceEstimates Formalism.MainNotions.TheoremBConstants
-open Formalism.QuantumDeterminants.WeylGroupFacts
 
 end Formalism.MainNotions.DiscreteSeriesInnerProducts
 
 namespace Formalism.MainNotions.GapDS
 
-open Formalism.MainNotions.PlaceDegreeData
 
 end Formalism.MainNotions.GapDS

@@ -428,8 +428,6 @@ instance Nsub.normal (Λ : Submodule (𝓞 D.host.E) (VS D).V) : (Nsub (F0 := F0
 
 end Formalism.L2.SG.Pf.Cnt.StabilizerQuotient
 
-open NumberField Module Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal Formalism.L2.SG.Saturated
-open Classical
 
 noncomputable section
 
@@ -534,8 +532,6 @@ theorem eq_one_of_fix (g : G0 F0) {Λ : Submodule (𝓞 D.host.E) (VS D).V}
 
 end Formalism.L2.SG.Pf.Cnt.StabilizerQuotient
 
-open NumberField Module Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal Formalism.L2.SG.Saturated
-open Classical
 
 noncomputable section
 
@@ -665,8 +661,6 @@ theorem card_quot (u : D.what₂.Word) (F0 : FlagG (VS D) D.R.rS (Tn u)) (Λ : S
 
 end Formalism.L2.SG.Pf.Cnt.StabilizerQuotient
 
-open NumberField Module Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal Formalism.L2.SG.Saturated
-open Classical
 
 noncomputable section
 
@@ -734,8 +728,6 @@ theorem row_count (u u' : D.what₂.Word) (F0 : FlagG (VS D) D.R.rS (Tn u)) (Λ 
 
 end Formalism.L2.SG.Pf.Cnt.StabilizerQuotient
 
-open NumberField Module Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal Formalism.L2.SG.Saturated
-open Classical
 
 noncomputable section
 
@@ -841,8 +833,6 @@ theorem isomFix_iff {T' : D.host.E} (F' : LFlag (D.sp.Y 0) D.R.rS T') (hzt : F'.
 
 end Formalism.L2.SG.Pf.Cnt.StabilizerQuotient
 
-open NumberField Module Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal Formalism.L2.SG.Saturated
-open Classical
 
 noncomputable section
 
@@ -1031,8 +1021,6 @@ theorem class_red (u : D.what₂.Word) (F0 : FlagG (VS D) D.R.rS (Tn u)) {Λ Λ'
 
 end Formalism.L2.SG.Pf.Cnt.StabilizerQuotient
 
-open NumberField Module Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.CntLocal Formalism.L2.SG.Saturated
-open Classical
 
 noncomputable section
 

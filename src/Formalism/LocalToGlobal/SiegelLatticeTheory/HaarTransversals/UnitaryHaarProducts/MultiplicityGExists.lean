@@ -228,11 +228,9 @@ end Grp
 end Formalism.L2.SG.Pf.Meas
 
 open MeasureTheory NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Topology
-open scoped TensorProduct
 
 namespace Formalism.L2.SG.Pf.Meas
 
-open Formalism.L2.SG.Measures
 
 section Top
 
@@ -281,8 +279,6 @@ end Top
 
 end Formalism.L2.SG.Pf.Meas
 
-open MeasureTheory NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Topology
-open scoped TensorProduct
 
 namespace Formalism.L2.SG.Pf.Meas
 
@@ -330,8 +326,6 @@ end Iso
 
 end Formalism.L2.SG.Pf.Meas
 
-open MeasureTheory NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Topology
-open scoped TensorProduct
 
 namespace Formalism.L2.SG.Pf.Meas
 
@@ -416,8 +410,6 @@ theorem cross_inf (x : I.Gf) : (splitA I.cm.sig I.J (toHA I hb (1, x))).1 = 1 :=
 
 end Formalism.L2.SG.Pf.Meas
 
-open MeasureTheory NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Topology
-open scoped TensorProduct
 
 namespace Formalism.L2.SG.Pf.Meas
 
@@ -500,8 +492,6 @@ theorem Phi_eq : (Phi I hb : I.GA → _) = Prod.map (eInf I hb) (eFin I hb) := b
 
 end Formalism.L2.SG.Pf.Meas
 
-open MeasureTheory NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Topology
-open scoped TensorProduct
 
 namespace Formalism.L2.SG.Pf.Meas
 
@@ -574,12 +564,9 @@ end Loc
 
 end Formalism.L2.SG.Pf.Meas
 
-open MeasureTheory NumberField IsDedekindDomain Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Topology
-open scoped TensorProduct
 
 namespace Formalism.L2.SG.Pf.Meas
 
-open Formalism.L2.SG.Measures Formalism.L2.SG.AdBridge Formalism.L2.SG.MExistsCut Formalism.IndefR.Eqv.G5
 
 variable (I : Formalism.MainNotions.S.AutInst) (hb : AdBridgeIso I)
 

@@ -74,7 +74,6 @@ end Formalism.FourierDecayAlt.P.Sz3
 
 namespace Formalism.FourierDecayAlt.P
 
-open Finset Formalism.FourierDecayAlt.Sz
 
 theorem interlacing : Formalism.FourierDecayAlt.Sz.Interlacing := by
   intro c de hc hw
@@ -149,13 +148,11 @@ end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P.Sz3
 
-open Finset Formalism.FourierDecayAlt.Sz
 
 end Formalism.FourierDecayAlt.P.Sz3
 
 namespace Formalism.FourierDecayAlt.P.Sz3
 
-open Finset Formalism.FourierDecayAlt.Sz
 
 noncomputable def hs (n : ℕ) : ℝ := ∑ d ∈ Ioc 0 n, 1 / (d : ℝ)
 

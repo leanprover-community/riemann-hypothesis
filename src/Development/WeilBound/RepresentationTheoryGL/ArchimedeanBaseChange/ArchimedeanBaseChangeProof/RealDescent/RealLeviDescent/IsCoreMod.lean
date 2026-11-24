@@ -168,7 +168,6 @@ def rhoU (lev : Fin n → ℕ) : Fin n → ℝ := fun a =>
 def muQ (lam : Fin n → ℤ) (lev : Fin n → ℕ) : Fin n → ℝ := fun a => 2 * (lam a : ℝ) + 2 * rhoU lev a
 
 
-open Classical in
 def harmSet (lam : Fin n → ℤ) : Finset (Fin n → ℝ) :=
   ((univ : Finset (Fin n → Fin n)).filter fun lev => IsLev lam fun a => (lev a : ℕ)).image fun lev => muQ lam fun a => (lev a : ℕ)
 

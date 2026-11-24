@@ -176,7 +176,6 @@ def famL (w : HeightOneSpectrum (𝓞 K)) (x : ∀ v, D.finite.W v)
     rw [MultilinearMap.toLinearMap_apply]
     exact RestrictedTensor.tprod_mem_restrictedTensor (hx.update w y)
 
-open Classical in
 variable {P} in
 theorem coe_famL (w : HeightOneSpectrum (𝓞 K)) (x : ∀ v, D.finite.W v)
     (hx : RestrictedTensor.IsRestricted D.finite.ξ x) (y : D.finite.W w) :

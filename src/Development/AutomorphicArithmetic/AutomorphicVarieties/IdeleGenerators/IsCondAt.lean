@@ -112,7 +112,6 @@ open Classical in
 def coefAt (c : Ideal (𝓞 F) → ℂ) (y : Af F) : ℂ := if h : ∃ 𝔪, GenD y 𝔪 then c h.choose else 0
 
 
-open Classical in
 def coefDiv (c : Ideal (𝓞 F) → ℂ) (𝔮 𝔪 : Ideal (𝓞 F)) : ℂ := if h : ∃ 𝔫, 𝔪 = 𝔮 * 𝔫 then c h.choose else 0
 
 def absF (y : (Af F)ˣ) : ℝ := ∏ᶠ w : HeightOneSpectrum (𝓞 F), ‖pLoc F w (y : Af F)‖

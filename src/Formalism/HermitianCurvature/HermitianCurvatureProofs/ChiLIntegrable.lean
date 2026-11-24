@@ -60,7 +60,6 @@ noncomputable section
 
 namespace Formalism.FourierDecayAlt.P.PBM
 
-section inst
 
 variable {k r : ℕ} (σ : Equiv.Perm (Fin r))
 
@@ -71,7 +70,6 @@ instance borelXiH : BorelSpace (U.XiH r 0 σ) := by
   have : BorelSpace ((Fin 0 → Fin r → ℂ) × (Fin r → Fin 0 → ℂ)) := Prod.borelSpace
   exact Prod.borelSpace
 
-end inst
 
 section cont
 

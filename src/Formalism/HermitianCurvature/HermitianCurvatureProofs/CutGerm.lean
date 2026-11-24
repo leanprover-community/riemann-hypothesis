@@ -243,8 +243,6 @@ end Formalism.FourierDecayAlt.P.CutBP
 
 namespace Formalism.FourierDecayAlt.P.CutBP
 
-open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology MeasureTheory
-open scoped ComplexConjugate ENNReal
 
 noncomputable section
 

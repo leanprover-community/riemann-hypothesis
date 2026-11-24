@@ -129,7 +129,6 @@ theorem lifts_of_isLiftG0 {a : G0 B.G.Pg T.rank} {κ : GA D T} (h : Lev.IsLevelL
   ⟨h.1, parLev_St h.2.1, fun PP => (congrFun h.2.2 PP).symm.trans (GlobalTheory.AdjDatumMove.restrictedBlock_self_apply _)⟩
 
 
-open Classical in
 theorem om_type (hB : B.Good) (hS : S.SigOK) {Q : Finset (Pl D.host.E)} (hQ : B.admitted Q) {ω : PairRep S T} (hω : B.IsWeil 1 ω)
     {a : G0 B.G.Pg T.rank} (hH : a ∈ B.G.P.H) {κ : GA D T} (hκ : Lifts B a κ)
     {φ φ' : ∀ PP : ↥Q, Matrix (Fin T.rank) (Fin S.rank) (kP PP.1) → ℂ} (s : ↥Q → ℂˣ)
@@ -310,7 +309,6 @@ def coefAt (δ : Δ) : V ⊗[R] AddMonoidAlgebra R Δ →ₗ[R] V :=
       map_add' := fun _ _ => by simp
       map_smul' := fun _ _ => by simp }
 
-open Classical in
 theorem coefAt_tmul_single (δ δ' : Δ) (v : V) :
     coefAt δ (v ⊗ₜ[R] AddMonoidAlgebra.single δ' (1 : R)) = if δ' = δ then v else 0 := by
   change (AddMonoidAlgebra.single δ' (1 : R)).coeff δ • v = _

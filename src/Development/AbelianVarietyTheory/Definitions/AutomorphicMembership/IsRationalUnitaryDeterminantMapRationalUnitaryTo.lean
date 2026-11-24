@@ -142,7 +142,6 @@ def IsRationalUnitaryDeterminantMap (f : (letI := H.cmStar; unitary H.E) →* Dt
   ∀ (k : H.Eˣ) (z : unitary H.E), (z : H.E) * H.conj (k : H.E) = k → QuotientGroup.mk (diagUnits H.E k) = f z
 
 
-open Classical in
 def e1T : (letI := H.cmStar; unitary H.E) →* DtT H := if h : ∃ f, IsRationalUnitaryDeterminantMap H f then h.choose else 1
 
 def relDetT (N : ℕ) (M M' : Submodule (𝓞 H.E) (Fin N → H.E)) : DtT H ⧸ UOT H :=

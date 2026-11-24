@@ -371,7 +371,6 @@ theorem below_eq_iff {P Pb : HeightOneSpectrum (𝓞 D.host.E)} (h : IsConjPl D.
   rw [below, e, Finset.mem_insert, Finset.mem_singleton]
 
 
-open Classical in
 theorem gen_relation (hA : GlobalTheory.Published.GlobalArtinReciprocity) (hL : ToricSumFormula) (ht : IsToricElt X) : BlochKatoReduction.Gen.adm10 X := by
   intro i hi Q hQ lam s hs P Pb hP hPb hne hconj k ψ σ hσ
   have : IsCMField D.host.E := D.host.isCMField_hostE

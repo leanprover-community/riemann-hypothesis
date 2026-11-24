@@ -78,11 +78,9 @@ theorem exists_nzAt (z : J → ℂ) : ∃ k, NZAt z k :=
   ⟨Fintype.card J, fun h => absurd h (lt_irrefl _)⟩
 
 
-open Classical in
 def idx (z : J → ℂ) : ℕ := Nat.find (exists_nzAt z)
 
 
-open Classical in
 def normPt (z : J → ℂ) : J → ℂ :=
   if h : idx z < Fintype.card J then (z ((Fintype.equivFin J).symm ⟨idx z, h⟩))⁻¹ • z else z
 
@@ -91,7 +89,6 @@ theorem nzAt_smul_iff {c : ℂ} (hc : c ≠ 0) (z : J → ℂ) (k : ℕ) : NZAt 
   refine forall_congr' fun h => ?_
   simp [Pi.smul_apply, smul_eq_mul, hc]
 
-open Classical in
 theorem idx_smul {c : ℂ} (hc : c ≠ 0) (z : J → ℂ) : idx (c • z) = idx z := by
   unfold idx
   refine le_antisymm (Nat.find_min' _ ((nzAt_smul_iff hc z _).2 (Nat.find_spec (exists_nzAt z))))

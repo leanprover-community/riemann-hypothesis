@@ -277,7 +277,6 @@ theorem cos_ratio (μ : Measure V) (ν : Measure X) [μ.IsAddHaarMeasure] [ν.Is
 
 end Lat
 
-section Fin
 
 variable {V X Y : Type} [AddCommGroup V] [TopologicalSpace V] [IsTopologicalAddGroup V]
   [T2Space V] [LocallyCompactSpace V] [SecondCountableTopology V]
@@ -285,6 +284,5 @@ variable {V X Y : Type} [AddCommGroup V] [TopologicalSpace V] [IsTopologicalAddG
   [IsTopologicalAddGroup X] [T2Space X] [LocallyCompactSpace X] [SecondCountableTopology X]
   [MeasurableSpace X] [BorelSpace X]
 
-end Fin
 
 end PI.VolStabSW

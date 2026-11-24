@@ -284,7 +284,6 @@ def idsOf (cG : G0 R.Pg D.R.r ≃* G0g D.nd) (Z : ReadL R F X0 Y) (C : ReadC R F
   eNu := C.eNu
 
 
-open Classical in
 def Lam3 (Z : ReadL R F X0 Y) : Prop :=
   ∃ cOf : D.what₂.FT → A3.fam3.base3.Ix,
     (∀ (i : Fin D.R.m) (c : A3.fam3.base3.Ix),

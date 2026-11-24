@@ -140,7 +140,6 @@ def GradedPieceQuot.Statement : Prop :=
         Module.finrank F ↥(weightedHomogeneousSubmodule F (blockWeight ι) m ⊓ I.restrictScalars F)
 
 
-open Classical in
 def CutPieces.Statement : Prop :=
   ∀ (F : Type u) [Field F] (K : Type) [Fintype K] [DecidableEq K] (ι : K → Type)
     [∀ k, Fintype (ι k)] (I : Ideal (MRing ι F)) (x : MRing ι F) (e m : K → ℕ),
@@ -202,7 +201,6 @@ def PrimeFiltration.Statement : Prop :=
       (∀ (W : Ideal (MRing ι F)) [W.IsPrime], multAt J W = (l.map fun p => multAt p.1 W).sum)
 
 
-open Classical in
 def MultAtPrimeAtMinimal.Statement : Prop :=
   ∀ (R : Type u) [CommRing R] (K : Type) (ι : K → Type) (J Q W : Ideal (MRing ι R)) [Q.IsPrime]
     [W.IsPrime], J ≤ Q → W ∈ J.minimalPrimes → multAt Q W = if Q = W then 1 else 0

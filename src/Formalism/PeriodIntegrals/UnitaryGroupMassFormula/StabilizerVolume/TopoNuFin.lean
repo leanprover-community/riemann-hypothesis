@@ -127,9 +127,7 @@ end PI.VolStabS.TopoNuFin
 
 namespace PI.VolStabS
 
-open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.Sub NumberField IsDedekindDomain MeasureTheory Filter Topology
   PI.VolFromSW PI.VolStabS.PositiveNearLattice PI.VolStabS.TopoNuFin
-open scoped TensorProduct ENNReal
 
 theorem nuFin_gen {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E]
     [FiniteDimensional F E] (σ : E →ₐ[F] E) {M a : ℕ} (J : Matrix (Fin M) (Fin M) E)

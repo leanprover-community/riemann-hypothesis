@@ -62,21 +62,17 @@ section Count
 
 end Count
 
-section Lat
 
 variable (D : D7)
 
-end Lat
 
 section Num
 
 end Num
 
-section Main
 
 variable (D : D7) (large₂ : SizeData₂ D) (u u' : D.what₂.Word)
 
-end Main
 
 section Inv
 
@@ -101,11 +97,9 @@ theorem c3sub_dual_gmap (h : V →ₗ⋆[K] V →ₗ[K] K) (γ : V ≃ₗ[K] V) 
 
 end Inv
 
-section Mean
 
 variable (D : D7) (large₂ : SizeData₂ D) (u u' : D.what₂.Word)
 
-end Mean
 
 end Formalism.MainNotions.BridgeLemma₂
 

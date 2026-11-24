@@ -77,7 +77,6 @@ theorem singleV_self (v : HeightOneSpectrum (𝓞 F)) (t : Fv F v) : singleV F v
   show (Pi.single v t : ∀ w : HeightOneSpectrum (𝓞 F), Fv F w) v = t
   exact Pi.single_eq_same v t
 
-open Classical in
 theorem singleV_ne (v w : HeightOneSpectrum (𝓞 F)) (h : w ≠ v) (t : Fv F v) : singleV F v t w = 0 := by
   show (Pi.single v t : ∀ w : HeightOneSpectrum (𝓞 F), Fv F w) w = 0
   exact Pi.single_eq_of_ne h t

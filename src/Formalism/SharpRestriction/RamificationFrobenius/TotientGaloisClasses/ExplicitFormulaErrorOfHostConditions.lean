@@ -74,7 +74,6 @@ open Classical in
 def Nt : Finset PChar := Λ.KEPT.erase PChar.one
 
 
-open Classical in
 def wt (ψ : PChar) : ℝ := if Λ.psK = some ψ then 1 else (3 * (Λ.o : ℝ) + 1)⁻¹
 
 def Gm (y : ℝ) : ℝ := Formalism.Gz y + ∑ ψ ∈ Λ.Nt, Λ.wt ψ * (An.gChi ψ.χ y).re
@@ -140,7 +139,6 @@ theorem PChar.of_inv {M : ℕ} [NeZero M] (χ : DirichletCharacter ℂ M) : PCha
     (by rw [map_inv, DirichletCharacter.changeLevel_primitiveCharacter]) _ _
 
 
-open Classical in
 def Level.ofSub {M : ℕ} [NeZero M] (Ξ : Subgroup (DirichletCharacter ℂ M)) : Level where
   KEPT := (Finset.univ.filter fun χ : DirichletCharacter ℂ M => χ ∈ Ξ).image PChar.of
   one_mem := Finset.mem_image.2 ⟨1, Finset.mem_filter.2 ⟨Finset.mem_univ _, Ξ.one_mem⟩, PChar.of_one M⟩
@@ -167,11 +165,9 @@ namespace Frame
 variable (φ : Frame)
 
 
-open Classical in
 def lam (γ : φ.A) : ℝ := (if γ ∈ φ.A0 then 4 else 3) / (3 * (φ.o : ℝ) + 1)
 
 
-open Classical in
 def Shares (TT : Finset φ.A) (δ : ℝ) : Prop :=
   ∀ γ : φ.A, |((TT.filter fun t => t - γ ∈ φ.A0).card : ℝ) - φ.lam γ * (TT.card : ℝ)| ≤ δ * (TT.card : ℝ)
 

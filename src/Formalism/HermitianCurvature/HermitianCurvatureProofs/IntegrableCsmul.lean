@@ -827,7 +827,6 @@ theorem qminor_foldT {t : ℕ} (a b : Fin t → Fin (2 * r + k + 1)) (u : ℂ) (
   simp only [Formalism.FourierDecayAlt.P.CapelliWordSumExpansion.foldT, List.map_ofFn]
   rfl
 
-open Formalism.FourierDecayAlt.P.CapelliWordSumExpansion in
 theorem qminor_clm (L : E →L[ℂ] E) {t : ℕ} (a b : Fin t → Fin (2 * r + k + 1)) (u : ℂ) (f : Mat k r → E)
     {g : Mat k r} (hg : g ∈ GV k r) (hf : Loc (t : ℕ∞) f g) (hLf : Loc (t : ℕ∞) (fun x => L (f x)) g) :
     qminorOp (EabH (Hpk k r)) a b u (fun x => L (f x)) g = L (qminorOp (EabH (Hpk k r)) a b u f g) := by

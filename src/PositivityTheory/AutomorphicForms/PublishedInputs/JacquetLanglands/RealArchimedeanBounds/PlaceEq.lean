@@ -96,7 +96,6 @@ lemma mapsTo (R : ℝ) : Set.MapsTo (fun t : F => fun v : InfinitePlace F => ⌊
 
 end UpperTheory.Esk.BoxMapsToLemmas
 
-open Classical in
 theorem UpperTheory.Esk.dBox : UpperTheory.Esk.DBox := by
   intro F _ _ _
   refine ⟨5 ^ Fintype.card (InfinitePlace F), fun R hR => ?_⟩

@@ -69,7 +69,6 @@ def sec {n : ℕ} (w : Vc k n) : GL (Fin (n + 1)) k :=
   if h : ∃ s : GL (Fin (n + 1)) k, ∀ j, (s : Matrix (Fin (n + 1)) (Fin (n + 1)) k) (Fin.last n) j = w j then h.choose else 1
 
 
-open Classical in
 def phi {n : ℕ} (Λ : (Mx k n → ℂ) →ₗ[ℂ] ℂ) (F : Mx k n × Vc k n → ℂ) (w : Vc k n) : ℂ :=
   if w = 0 then 0 else Λ (fun x => F (cj (sec w)⁻¹ x, w))
 

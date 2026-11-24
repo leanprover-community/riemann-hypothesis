@@ -200,7 +200,6 @@ def rootDiscr : MvPolynomial (Root m) ℝ :=
 
 
 variable {m} in
-open Classical in
 def antisymm (Q : MvPolynomial (Root m) ℝ) : MvPolynomial (Root m) ℝ :=
   ∑ w : ∀ τ, Equiv.Perm (Fin (m τ)),
     ((∏ τ, Equiv.Perm.sign (w τ) : ℤˣ) : ℤ) • rename (fun x : Root m => (⟨x.1, w x.1 x.2⟩ : Root m)) Q

@@ -871,7 +871,6 @@ end NExp
 end Exp
 
 section Types
-open Polynomial
 
 abbrev Fb (l : ℕ) (hl : l.Prime) : Type := @Formalism.CyclotomicNorms.Fbar l ⟨hl⟩
 
@@ -989,7 +988,6 @@ def onAmb (μ : what₂.Tup) (z : MonoidAlgebra ℂ (G0g N)) : Module.End ℂ (w
   if h : z ∈ Subalgebra.center ℂ (MonoidAlgebra ℂ (G0g N)) then X.cenAmb μ ⟨z, h⟩ else 0
 
 def onMt (μ : what₂.Tup) (j : ℕ) (z : MonoidAlgebra ℂ (G0g N)) : Module.End ℂ (what₂.Mt μ j) :=
-  open Classical in
   if h : z ∈ Subalgebra.center ℂ (MonoidAlgebra ℂ (G0g N)) then X.cenMt μ j ⟨z, h⟩ else 0
 
 def IdempotentMatchesAction : Prop :=
@@ -1133,7 +1131,6 @@ open Formalism.BasicNotions NumberField IsDedekindDomain Formalism.ConjugateSelf
 
 section SharedN4
 
-open Polynomial
 
 variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R}
 

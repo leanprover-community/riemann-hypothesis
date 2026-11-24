@@ -101,7 +101,6 @@ section Univ
 variable {k : Type} [Field k] {r n : ℕ}
 
 
-open Classical in
 def prim (y : Matrix (Fin r) (Fin n) k) : ℚ := if LinearIndependent k y.row then 1 else 0
 
 def Compl (U : Submodule k (Fin n → k)) (y : Matrix (Fin r) (Fin n) k) : Prop :=
@@ -184,7 +183,6 @@ theorem dU_mul (β : DetBases k r n) (U : Planes k r n) (g : Matrix (Fin r) (Fin
 variable [Finite k] {C : Type} [AddCommGroup C]
 
 
-open Classical in
 def univTerm (β : DetBases k r n) (κ : kˣ →* Multiplicative C) (y : Matrix (Fin r) (Fin n) k) (U : Planes k r n) :
     AddMonoidAlgebra ℚ C :=
   if h : Compl U.1 y then

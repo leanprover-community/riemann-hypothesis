@@ -570,7 +570,6 @@ theorem psiUnitT_one (i : T.Tw) (b : Bool) : psiUnitT D T θ i b 1 = 1 := by
   rw [dite_eq_left (one_mem _)]
   exact map_one _
 
-open Classical in
 theorem mulSingle_mem_U (kv : Σ kk : Fin 2, D.nd.PlG kk) (M : Matrix (Fin D.R.r) (Fin D.R.r) (ZMod (D.host.g kv.1)))
     (hM : NX.IsUniTri D.R.r M) : (Pi.mulSingle kv (NX.glOf M) : G0g D.nd) ∈ Formalism.IndefR.NX.U D.nd := by
   rw [Formalism.IndefR.NX.U_eq_Uup, NX.mem_Uup]
@@ -583,7 +582,6 @@ theorem mulSingle_mem_U (kv : Σ kk : Fin 2, D.nd.PlG kk) (M : Matrix (Fin D.R.r
     exact ⟨Matrix.blockTriangular_one, fun a => by simp⟩
 
 
-open Classical in
 def gU (i : T.Tw) (k : ℕ) (b : Bool) (kv : Σ kk : Fin 2, D.nd.PlG kk) (s : SplitPlace D.host.E)
     (red : s.v.adicCompletionIntegers (maximalRealSubfield D.host.E) →+* ZMod (D.host.g kv.1))
     (τ : (ZMod (D.host.g kv.1))ˣ →* (FractionRing (T.O i))ˣ)
@@ -603,7 +601,6 @@ theorem gU_val (x : Matrix (Fin D.R.nV) (Fin D.R.nV) (s.v.adicCompletion (maxima
   unfold gU gValT
   split_ifs <;> simp [psiUnitT_val]
 
-open Classical in
 theorem gU_one
     (hred : ∀ z : s.v.adicCompletionIntegers (maximalRealSubfield D.host.E),
       Valued.v (z : s.v.adicCompletion (maximalRealSubfield D.host.E)) < 1 → red z = 0)
@@ -620,7 +617,6 @@ theorem gU_one
   unfold gU
   rw [hM, hg, Pi.mulSingle_one, psiUnitT_one, map_one, one_mul, dite_eq_left hu, hun, map_one, map_one]
 
-open Classical in
 theorem gU_eq (x : Matrix (Fin D.R.nV) (Fin D.R.nV) (s.v.adicCompletion (maximalRealSubfield D.host.E)))
     (hu : IsUnit (red (NX.intLift s.v (NX.detT D.R.r x)))) :
     gU D T θ i k b kv s red τ x = Units.map (toKkT D T i k).toMonoidHom (psiUnitT D T θ i b (Pi.mulSingle kv
@@ -629,7 +625,6 @@ theorem gU_eq (x : Matrix (Fin D.R.nV) (Fin D.R.nV) (s.v.adicCompletion (maximal
   unfold gU
   rw [dite_eq_left hu]
 
-open Classical in
 theorem gU_mul
     (hred : ∀ z : s.v.adicCompletionIntegers (maximalRealSubfield D.host.E),
       Valued.v (z : s.v.adicCompletion (maximalRealSubfield D.host.E)) < 1 → red z = 0)

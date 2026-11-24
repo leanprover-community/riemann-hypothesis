@@ -139,7 +139,6 @@ theorem delOf_laws (M : ℕ) (T : Set (PlE H)) :
     refine ⟨by simp, fun _ _ _ => by simp, fun _ _ _ _ _ _ => rfl, fun _ _ _ _ _ _ => rfl⟩
 
 
-open Classical in
 def delCoord (Q : Finset (PlE H)) (M : ℕ) (P : PlE H) : G H.E Ω →* Multiplicative (ZMod (l ^ M)) :=
   if pair H P ⊆ ↑Q then delOf H cc l M (pair H P) else 1
 

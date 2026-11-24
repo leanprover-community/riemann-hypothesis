@@ -109,7 +109,6 @@ theorem eventually_norm_prod (s : Multiset (PadicAlgCl l)) (M : ℚ_[l][X]) :
     rw [map_add (f := _), aeval_C, IsUltrametricDist.norm_add_eq_max_of_norm_ne_norm (by rw [hc]; exact hlt.ne'),
       hc, max_eq_left hlt.le]
 
-open Classical in
 theorem card_filter_eq (s t : Multiset (PadicAlgCl l))
     (h : ∀ F : ℚ_[l][X], ‖(s.map fun a => aeval a F).prod‖ = ‖(t.map fun a => aeval a F).prod‖)
     (M : ℚ_[l][X]) :
@@ -146,7 +145,6 @@ theorem monic_eq_one_of_no_root {P : ℚ_[l][X]} (hP : P.Monic)
   obtain ⟨a, ha⟩ := IsAlgClosed.exists_aeval_eq_zero (PadicAlgCl l) P hd
   exact h a (mem_aroots.2 ⟨hP.ne_zero, ha⟩)
 
-open Classical in
 theorem exists_root_minpoly_eq_of_card_eq (P Q : ℚ_[l][X]) (hQ : Q ≠ 0)
     (hc : ∀ a : PadicAlgCl l, ((P.aroots (PadicAlgCl l)).filter fun b => aeval b (minpoly ℚ_[l] a) = 0).card =
       ((Q.aroots (PadicAlgCl l)).filter fun b => aeval b (minpoly ℚ_[l] a) = 0).card)
@@ -160,7 +158,6 @@ theorem exists_root_minpoly_eq_of_card_eq (P Q : ℚ_[l][X]) (hQ : Q ≠ 0)
   obtain ⟨hbQ, hbM⟩ := Multiset.mem_filter.1 hb
   exact ⟨b, hbQ, minpoly.eq_of_irreducible_of_monic (minpoly.irreducible hint) hbM (minpoly.monic hint)⟩
 
-open Classical in
 theorem eq_of_card_filter (n : ℕ) : ∀ P Q : ℚ_[l][X], P.natDegree = n → P.Monic → Q.Monic →
     (∀ a : PadicAlgCl l, ((P.aroots (PadicAlgCl l)).filter fun b => aeval b (minpoly ℚ_[l] a) = 0).card =
       ((Q.aroots (PadicAlgCl l)).filter fun b => aeval b (minpoly ℚ_[l] a) = 0).card) → P = Q := by

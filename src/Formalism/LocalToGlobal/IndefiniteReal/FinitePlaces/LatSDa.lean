@@ -241,7 +241,6 @@ theorem lsd_finPart_expand (z : AE D) :
   have h := congrArg (finPart D) (VacEx.expand_cE z)
   simpa only [map_sum, Fock.DRho.finPart_tmul] using h
 
-open Formalism.IndefR.PHeisFC in
 theorem lsd_infPart_expand (z : AE D) :
     infPart D z = ∑ k, fstA D.host.F (cE D.host.F D.host.E z k) ⊗ₜ[D.host.F] Module.finBasis D.host.F D.host.E k := by
   have h := congrArg (infPart D) (VacEx.expand_cE z)
@@ -258,7 +257,6 @@ theorem lsdE_finPart (i : Fin T.rank) (j : Fin S.rank) (β : Af D.host.F) (e : D
 
 
 
-open Formalism.IndefR.PHeisFC in
 theorem latO_isOpen (hΛS : IsSelfDualC S ΛS) (hΛT : IsSelfDualC T ΛT) :
     IsOpen {w : WO S T | ∃ u ∈ latO S T (ΛS : Set (Fin S.rank → D.host.E)) (ΛT : Set (Fin T.rank → D.host.E))
       (fun _ => True), (w - u).map (finPart D) = 0} := by
@@ -304,7 +302,6 @@ theorem latO_isOpen (hΛS : IsSelfDualC S ΛS) (hΛT : IsSelfDualC T ΛT) :
       rw [← mul_assoc, h1, one_mul]
     exact congrArg (fun β => β ⊗ₜ[D.host.F] (Module.finBasis D.host.F D.host.E k)) hgk.symm
 
-open Formalism.IndefR.PHeisFC in
 theorem lsd_cE_tmul (a : AF D.host.F) (e : D.host.E) (k : Fin (Module.finrank D.host.F D.host.E)) :
     cE D.host.F D.host.E (a ⊗ₜ[D.host.F] e) k =
       a * algebraMap D.host.F (AF D.host.F) ((Module.finBasis D.host.F D.host.E).repr e k) := by
@@ -313,7 +310,6 @@ theorem lsd_cE_tmul (a : AF D.host.F) (e : D.host.E) (k : Fin (Module.finrank D.
   rw [h, map_smul, Pi.smul_apply, cE_tmul, smul_eq_mul]
 
 
-open Formalism.IndefR.PHeisFC in
 theorem lsd_fst (z : AE D) (k : Fin (Module.finrank D.host.F D.host.E)) :
     fstA D.host.F (cE D.host.F D.host.E z k) =
       (Algebra.TensorProduct.basis (Ainf D.host.F) (Module.finBasis D.host.F D.host.E)).repr (infPart D z) k := by
@@ -328,7 +324,6 @@ theorem lsd_fst (z : AE D) (k : Fin (Module.finrank D.host.F D.host.E)) :
     rw [h1, map_add (f := _), hx, hy, ← Finsupp.add_apply, ← LinearEquiv.map_add (e := _), ← RingHom.map_add (f := _)]
 
 
-open Formalism.IndefR.PHeisFC in
 theorem lsd_snd (z : AE D) (k : Fin (Module.finrank D.host.F D.host.E)) :
     sndA D.host.F (cE D.host.F D.host.E z k) =
       (Algebra.TensorProduct.basis (Af D.host.F) (Module.finBasis D.host.F D.host.E)).repr (finPart D z) k := by
@@ -347,7 +342,6 @@ theorem lsd_alg_int (y : 𝓞 D.host.F) : algebraMap D.host.F (Af D.host.F) (y :
   rw [AlgHom.commutes, HeightOneSpectrum.mem_adicCompletionIntegers]
   exact Formalism.IndefR.Fin.val_coe_le_one v y
 
-open Formalism.IndefR.PHeisFC in
 theorem lsd_int_coord : ∃ r : 𝓞 D.host.F, r ≠ 0 ∧ ∀ w ∈ intAE D, ∀ k,
     algebraMap D.host.F (Af D.host.F) (r : D.host.F) *
       (Algebra.TensorProduct.basis (Af D.host.F) (Module.finBasis D.host.F D.host.E)).repr w k ∈ intAf D.host.F := by
@@ -369,7 +363,6 @@ theorem lsd_int_coord : ∃ r : 𝓞 D.host.F, r ≠ 0 ∧ ∀ w ∈ intAE D, �
     rw [map_neg, Finsupp.neg_apply, mul_neg]
     exact fun v => by rw [map_neg]; exact neg_mem (hx v)
 
-open Formalism.IndefR.PHeisFC in
 theorem lsd_cE_of_inf (z : AE D) (hz : infPart D z = 0) (k : Fin (Module.finrank D.host.F D.host.E)) :
     cE D.host.F D.host.E z k = pairA D.host.F 0 (sndA D.host.F (cE D.host.F D.host.E z k)) := by
   refine Fock.DRho.AF_ext D ?_ rfl
@@ -378,7 +371,6 @@ theorem lsd_cE_of_inf (z : AE D) (hz : infPart D z = 0) (k : Fin (Module.finrank
 
 
 
-open Formalism.IndefR.PHeisFC in
 theorem lsd_decomp (Y : WO S T) (hY : ∀ i j, infPart D (Y i j) = 0) :
     Y = ∑ i, ∑ j, ∑ k, lsdE S T i j (sndA D.host.F (cE D.host.F D.host.E (Y i j) k))
       (Module.finBasis D.host.F D.host.E k) := by
@@ -407,7 +399,6 @@ theorem lsdE_nsmul (N : ℕ) (i : Fin T.rank) (j : Fin S.rank) (β : Af D.host.F
 
 
 
-open Formalism.IndefR.PHeisFC in
 theorem latO_nsmul_mem (hΛS : IsSelfDualC S ΛS) (hΛT : IsSelfDualC T ΛT) :
     ∃ N : ℕ, 0 < N ∧ ∀ Y : WO S T, (∀ i j, finPart D (Y i j) ∈ intAE D) → (∀ i j, infPart D (Y i j) = 0) →
       N • Y ∈ latO S T (ΛS : Set (Fin S.rank → D.host.E)) (ΛT : Set (Fin T.rank → D.host.E)) (fun _ => True) := by
@@ -453,7 +444,6 @@ theorem lsd_fi : ∀ x ∈ latO S T (ΛS : Set (Fin S.rank → D.host.E)) (ΛT :
 
 
 
-open Formalism.IndefR.PHeisFC in
 theorem latO_isCompact (hΛS : IsSelfDualC S ΛS) (hΛT : IsSelfDualC T ΛT) :
     IsCompact ((latO S T (ΛS : Set (Fin S.rank → D.host.E)) (ΛT : Set (Fin T.rank → D.host.E)) fun _ => True :
       AddSubgroup (WO S T)) : Set (WO S T)) := by

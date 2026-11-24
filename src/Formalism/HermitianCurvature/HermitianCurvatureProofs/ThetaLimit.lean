@@ -115,17 +115,14 @@ theorem iterDeriv_poly (P : ℂ[X]) (p : ℕ) :
     rw [this, ih]
     simp [Function.iterate_succ]
 
-open Polynomial in
 noncomputable def mkP (m : ℕ) (c : ℕ → ℂ) : ℂ[X] := ∑ q ∈ range (m + 1), C (c q) * X ^ q
 
-open Polynomial in
 theorem mkP_eval (m : ℕ) (c : ℕ → ℂ) (z : ℂ) : (mkP m c).eval z = ∑ q ∈ range (m + 1), z ^ q * c q := by
   unfold mkP
   rw [eval_finsetSum]
   refine Finset.sum_congr rfl fun q _ => ?_
   rw [eval_mul, eval_C, eval_pow, eval_X, mul_comm]
 
-open Polynomial in
 theorem mkP_coeff (m : ℕ) (c : ℕ → ℂ) (k : ℕ) : (mkP m c).coeff k = if k < m + 1 then c k else 0 := by
   simp [mkP, finsetSum_coeff, coeff_C_mul, coeff_X_pow]
 
@@ -144,7 +141,6 @@ theorem smoothLog_rpow (s : ℝ) : SmoothLog (fun y => y ^ s) := by
   rw [this]
   exact Real.contDiff_exp.comp (contDiff_const.mul contDiff_id)
 
-open Polynomial in
 theorem leibniz : Leibniz := by
   intro B A A' T u d hJ hP φ hφ ω a
   obtain ⟨m, c, hc⟩ := hJ

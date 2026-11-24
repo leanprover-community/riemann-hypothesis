@@ -68,7 +68,6 @@ def cutA (z : FiniteAdeleRing (𝓞 E) E) (hz : ∀ P : HeightOneSpectrum (𝓞 
     · simp only [h, if_false]
       exact one_mem _⟩
 
-open Classical in
 theorem cutA_apply (z : FiniteAdeleRing (𝓞 E) E) (hz : ∀ P : HeightOneSpectrum (𝓞 E), Valued.v (z P) ≤ 1)
     (S : Set (HeightOneSpectrum (𝓞 E))) (P : HeightOneSpectrum (𝓞 E)) :
     cutA z hz S P = if P ∈ S then z P else 1 := by
@@ -115,7 +114,6 @@ def cutU (x : (AfE F E)ˣ) (hx : x ∈ intU F E) (S : Set (HeightOneSpectrum (�
     · rw [mul_comm]; exact afIso_mul_inv x P
     · exact one_mul 1
 
-open Classical in
 theorem afIso_cutU (x : (AfE F E)ˣ) (hx : x ∈ intU F E) (S : Set (HeightOneSpectrum (𝓞 E)))
     (P : HeightOneSpectrum (𝓞 E)) :
     afIso F E (cutU x hx S : AfE F E) P = if P ∈ S then afIso F E (x : AfE F E) P else 1 := by

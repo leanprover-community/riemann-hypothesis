@@ -316,11 +316,9 @@ namespace Formalism.MainNotions.KappaEndpoints
 
 open Formalism.HermitianLatticeCounting.S6
 
-section Cov
 
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V] {H : HermSpace K V} {r : ℕ}
 
-end Cov
 
 end Formalism.MainNotions.KappaEndpoints
 
@@ -330,22 +328,17 @@ noncomputable section
 
 namespace Formalism.MainNotions.KappaEndpoints
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.BridgeLemma Formalism.MainNotions.LatticeGluingRadicals
 
-section Schur
 
 variable {G : Type} [Group G] (Sg : Subgroup G)
 variable {A B : Type} [NormedAddCommGroup A] [NormedSpace ℂ A] [NormedAddCommGroup B] [NormedSpace ℂ B]
 
-end Schur
 
-section Rec
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} (X : TermTie D)
 
-end Rec
 
 end Formalism.MainNotions.KappaEndpoints
 
@@ -357,13 +350,11 @@ namespace Formalism.MainNotions.KappaEndpoints
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 
-section Rec
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} (X : TermTie D)
 
-end Rec
 
 end Formalism.MainNotions.KappaEndpoints
 
@@ -373,14 +364,11 @@ noncomputable section
 
 namespace Formalism.MainNotions.KappaEndpoints
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat
 
-section HS
 
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
 
-end HS
 
 section Rec
 
@@ -404,7 +392,6 @@ namespace Formalism.MainNotions.KappaEndpoints
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.BridgeLemma
 
-section Rec
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -412,13 +399,10 @@ variable {D : D7} (X : TermTie D)
 
 variable (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT C0 : ℝ)
 
-end Rec
 
-section Fam
 
 variable {eps : ℝ} (Fm : FamP eps) (At : ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, TermTie (Fm.D x i))
 
-end Fam
 
 end Formalism.MainNotions.KappaEndpoints
 
@@ -486,7 +470,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.KappaEndpoints
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt Formalism.MainNotions.BridgeLemma
 open scoped nonZeroDivisors NumberField
 
 section Rec
@@ -610,11 +593,9 @@ open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat 
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section Gen
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} {T T' : E}
 
-end Gen
 
 end Formalism.MainNotions.KappaEndpoints
 
@@ -644,7 +625,6 @@ end
 
 noncomputable section
 
-open NumberField
 
 namespace Formalism.MainNotions.KappaEndpoints
 
@@ -652,7 +632,6 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formal
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section Gen
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} {T T' : E}
 
@@ -661,31 +640,22 @@ variable (Λ : Submodule (𝓞 E) S.V) (hΛ : Submodule.IsLattice E Λ) (F : LFl
 
 include hΛ hz hz'
 
-end Gen
 
-section Emb
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} {T T' : E}
 
-end Emb
 
-section Fin
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} {T T' : E}
 
-end Fin
 
-section Rec
 
 variable {D : D7} (X : TermTie D)
 
-end Rec
 
-section Halves
 
 variable {D : D7} (X : TermTie D)
 
-end Halves
 
 end Formalism.MainNotions.KappaEndpoints
 
@@ -693,7 +663,6 @@ end
 
 noncomputable section
 
-open NumberField
 
 namespace Formalism.MainNotions.KappaEndpoints
 
@@ -701,17 +670,13 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formal
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section Det
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ} {T T' : E}
 
-end Det
 
-section RecDet
 
 variable {D : D7} (X : TermTie D)
 
-end RecDet
 
 end Formalism.MainNotions.KappaEndpoints
 
@@ -721,15 +686,12 @@ noncomputable section
 
 namespace Formalism.MainNotions.KappaEndpoints
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.Cnt Formalism.MainNotions.BridgeLemma
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section Same
 
 variable (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT C0 : ℝ)
 
-end Same
 
 section Sizes
 
@@ -777,12 +739,10 @@ theorem final_bound_closes (D : D7) (large₂ : SizeData₂ D) (C : ℝ) (hC : 1
 
 end Close
 
-section Main
 
 variable {D : D7} {large₂ : SizeData₂ D} (X : TermTie D)
 
 
-end Main
 
 section Abstract
 
@@ -924,25 +884,19 @@ theorem rank_contribution_le {C Ch Cc : ℝ} (hC : 0 ≤ C) (j : ℕ) (hj : j �
 
 end Assembly
 
-section Final
-
-variable {D : D7} (large₂ : SizeData₂ D) (X : TermTie D)
-
-end Final
-
-section PairsS
 
 variable {D : D7} (large₂ : SizeData₂ D) (X : TermTie D)
 
 
 
-end PairsS
+variable {D : D7} (large₂ : SizeData₂ D) (X : TermTie D)
 
-section Fam
+
+
+
 
 variable {eps : ℝ} (Fm : FamP eps) (At : ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, TermTie (Fm.D x i))
 
-end Fam
 
 end Formalism.MainNotions.KappaEndpoints
 
@@ -1055,7 +1009,6 @@ theorem two_le_residue_card (hOK : M.OK) : 2 ≤ qF F := by
   have : Finite 𝓀[F] := inferInstance
   exact Finite.one_lt_card
 
-open MeasureTheory in
 theorem ng_modK_nonunit (hOK : M.OK) (a : 𝒪[F]) (ha0 : (a : F) ≠ 0) (hau : ¬ IsUnit a) :
     M.modK (algebraMap F E a) ≤ (((qF F : ℝ)) ^ 2)⁻¹ := by
   have := hOK.loc
@@ -1842,17 +1795,13 @@ noncomputable section
 
 namespace Formalism.MainNotions.KappaEndpoints
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.BridgeLemma
-open Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG ValuativeRel
 
-section NGb
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
 variable {M : Model F E} {V : Type} [AddCommGroup V] [Module E V]
 variable {H : HermSp M V} {r : ℕ}
 
-end NGb
 
 end Formalism.MainNotions.KappaEndpoints
 
@@ -1862,31 +1811,23 @@ noncomputable section
 
 namespace Formalism.MainNotions.KappaEndpoints
 
-section Mat
 
 variable {E : Type} [CommRing E] {n : ℕ}
 
-end Mat
 
-section Pt
 
 open Formalism.MainNotions.S.Loc
 
 variable {E : Type} [CommRing E]
 
-end Pt
 
-section NGc
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.BridgeLemma
-open Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG ValuativeRel
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
 variable {M : Model F E} {V : Type} [AddCommGroup V] [Module E V]
 variable {H : HermSp M V} {r : ℕ} {P : FPair H r}
 
-end NGc
 
 end Formalism.MainNotions.KappaEndpoints
 
@@ -1896,21 +1837,16 @@ noncomputable section
 
 namespace Formalism.MainNotions.KappaEndpoints
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.BridgeLemma
-open Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG ValuativeRel
 
-section NGc
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
 variable {M : Model F E} {V : Type} [AddCommGroup V] [Module E V]
 variable {H : HermSp M V} {r : ℕ}
 
-section Glue
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι]
 
-end Glue
 
 variable {P : FPair H r}
 
@@ -1926,15 +1862,11 @@ namespace Formalism.MainNotions.KappaEndpoints
 
 open Formalism.MainNotions.S.LocNG
 
-section Grp
 
 variable {G : Type*} [Group G]
 
-end Grp
 
-section Lat
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.BridgeLemma
 open Formalism.MainNotions.S.Loc ValuativeRel
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
@@ -1943,12 +1875,9 @@ variable {M : Model F E} {V : Type} [AddCommGroup V] [Module E V]
 
 variable {H : HermSp M V} {r : ℕ} {P : FPair H r}
 
-end Lat
 
 section Left
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.BridgeLemma
-open Formalism.MainNotions.S.Loc ValuativeRel
 
 end Left
 
@@ -1960,17 +1889,13 @@ noncomputable section
 
 namespace Formalism.MainNotions.KappaEndpoints
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.BridgeLemma
-open Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG ValuativeRel
 
-section NGe
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
 variable {M : Model F E} {V : Type} [AddCommGroup V] [Module E V]
 variable {H : HermSp M V} {r : ℕ} {P : FPair H r}
 
-end NGe
 
 end Formalism.MainNotions.KappaEndpoints
 
@@ -1980,17 +1905,13 @@ noncomputable section
 
 namespace Formalism.MainNotions.KappaEndpoints
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.BridgeLemma
-open Formalism.MainNotions.S.Loc Formalism.MainNotions.S.LocNG ValuativeRel
 
-section NGf
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
 variable {E : Type} [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
 variable {M : Model F E} {V : Type} [AddCommGroup V] [Module E V]
 variable {H : HermSp M V} {r : ℕ} {P : FPair H r}
 
-end NGf
 
 section Left2
 

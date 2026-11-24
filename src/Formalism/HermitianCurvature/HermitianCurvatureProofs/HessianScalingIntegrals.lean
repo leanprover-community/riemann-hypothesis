@@ -276,7 +276,6 @@ end Formalism.FourierDecayAlt.P.HessianScalingIntegrals
 
 
 open Formalism.FourierDecayAlt.P.HessianScalingIntegrals in
-open Classical in
 theorem Formalism.FourierDecayAlt.P.stationaryPhaseOfSteps : Formalism.FourierDecayAlt.A6.StationaryAssemble := by
   intro hNS hMorse hRef hMod hRF _ _ _ _ _ hRS hSM hGA _ K _ _ _ R ψ hD hn m hm γ hγ L₀ Λ₁ Q hL₀ hΛ₁
     hQ hQu

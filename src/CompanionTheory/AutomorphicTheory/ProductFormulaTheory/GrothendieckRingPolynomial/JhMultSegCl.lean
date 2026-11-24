@@ -95,7 +95,6 @@ theorem jhMult_seg_cl (hA : GlobalTheory.Published.IrreducibleAdmissibleGL)
     rfl
 
 
-open Classical in
 theorem jm_seg (hA : GlobalTheory.Published.IrreducibleAdmissibleGL)
     {Z : ∀ Δ : Segment k, IrrCl (GL (Fin (Δ.len * Δ.d)) k)} (hZ : IsSegmentClass k Z) (Δ : Segment k)
     {m : ℕ} (y : Fin m → IrrGL (k := k)) (hy : ∀ a, (y a).1 = Δ.d) (hd : ∑ a, (y a).1 = Δ.len * Δ.d) :
@@ -114,7 +113,6 @@ theorem jm_seg (hA : GlobalTheory.Published.IrreducibleAdmissibleGL)
   exact propext ⟨fun h => ⟨rfl, fun a => by simpa using h a⟩, fun ⟨_, h⟩ a => by simpa using h a⟩
 
 
-open Classical in
 theorem jmL_seg (hA : GlobalTheory.Published.IrreducibleAdmissibleGL)
     {Z : ∀ Δ : Segment k, IrrCl (GL (Fin (Δ.len * Δ.d)) k)} (hZ : IsSegmentClass k Z) (Δ : Segment k)
     (W : List (IrrGL (k := k))) (hW : ∀ w ∈ W, w.1 = Δ.d) (hl : W.length = Δ.len) :

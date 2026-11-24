@@ -208,7 +208,6 @@ def exptStd (X : Mat p q) : covSub p q :=
 theorem exptStd_of_mem {X : Mat p q} (h : X ∈ upq p q) :
     exptStd X = ⟨(expU X, expC (X.trace / 2)), exp_pair_mem h⟩ := dif_pos h
 
-open scoped Matrix.Norms.Operator in
 theorem continuous_matExp : Continuous (NormedSpace.exp : Mat p q → Mat p q) :=
   NormedSpace.exp_continuous
 
@@ -261,7 +260,6 @@ def stdGrp : GrpData p q :=
           Complex.exp ((s • X).trace / 2) * Complex.exp ((t • X).trace / 2)
         rw [← Complex.exp_add, add_smul, Matrix.trace_add, add_div] }
 
-section Emb
 
 open scoped Kronecker
 
@@ -289,7 +287,6 @@ attribute [instance] FockCore.nacg FockCore.ips FockCore.cs
 
 variable {p q r s}
 
-end Emb
 
 section Checks
 
@@ -301,9 +298,7 @@ abbrev Xm (l : Ln p q r s) : Module.End ℂ (Pol p q r s) := LinearMap.mulLeft �
 
 end Checks
 
-section Skew
 
-open MvPolynomial
 
 variable {p q r s : ℕ}
 
@@ -311,19 +306,14 @@ variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] (ι : Pol p
 
 variable {ι}
 
-end Skew
 
-section Compact
 
 variable {p q : ℕ}
 
-end Compact
 
-section Triv
 
 variable {p q : ℕ}
 
-end Triv
 
 end Formalism.MainNotions.DIV.Inh
 

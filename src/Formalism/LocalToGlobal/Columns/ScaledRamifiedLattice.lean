@@ -235,7 +235,6 @@ def topsP (u : Pr.Word) (w : HeightOneSpectrum (𝓞 X.K)) : Finset X.Tau :=
   W.tops.filter fun τ => pullW τ w ∈ Pr.vT u
 
 
-open Classical in
 def VVTc (u : Pr.Word) (w : HeightOneSpectrum (𝓞 X.K)) : Finset {P // P ∈ Pr.vT u} :=
   Finset.univ.filter fun P => ∃ τ ∈ W.tops, SeesP w τ P.1
 

@@ -145,7 +145,6 @@ theorem schwartzBruhatPi_sumElim_mem {F : ((ι ⊕ κ) → 𝔸[K]) → ℂ}
 
 end Slice
 
-section Pairing
 
 variable {K W P₁ P₂ Q₁ Q₂ : Type*} [Field K] [AddCommGroup W] [Module K W]
   [AddCommGroup P₁] [Module K P₁] [AddCommGroup P₂] [Module K P₂]
@@ -154,16 +153,13 @@ variable {K W P₁ P₂ Q₁ Q₂ : Type*} [Field K] [AddCommGroup W] [Module K 
 
 variable [FiniteDimensional K P₂] [FiniteDimensional K Q₂]
 
-end Pairing
 
-section Adelic
 
 variable {K W P₁ P₂ Q₁ Q₂ : Type*} [Field K] [NumberField K] [AddCommGroup W] [Module K W]
   [AddCommGroup P₁] [Module K P₁] [AddCommGroup P₂] [Module K P₂]
   [AddCommGroup Q₁] [Module K Q₁] [AddCommGroup Q₂] [Module K Q₂]
   {ω : LinearMap.BilinForm K W}
 
-end Adelic
 
 end
 

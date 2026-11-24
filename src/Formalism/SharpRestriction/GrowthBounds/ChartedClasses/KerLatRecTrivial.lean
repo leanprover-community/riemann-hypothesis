@@ -49,11 +49,9 @@ namespace Formalism.MainNotions.G.KAat
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section SlopeTestRemainingChoices
 
 variable {p : ℕ} [Fact p.Prime] {X : Sys p} {D : D7}
 
-end SlopeTestRemainingChoices
 
 section Rec
 

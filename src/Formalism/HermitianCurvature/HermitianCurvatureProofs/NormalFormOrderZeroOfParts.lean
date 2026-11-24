@@ -279,12 +279,9 @@ end
 section
 noncomputable section
 
-open Matrix Finset
-open scoped ContDiff
 
 namespace Formalism.FourierDecayAlt.P.NFx4
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.NF
 
 section Jet
 
@@ -482,8 +479,6 @@ end
 section
 noncomputable section
 
-open Matrix Finset
-open scoped ContDiff
 
 namespace Formalism.FourierDecayAlt.P.NFx4
 
@@ -671,12 +666,9 @@ end
 section
 noncomputable section
 
-open Matrix Finset
-open scoped ContDiff
 
 namespace Formalism.FourierDecayAlt.P.NFx4
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.NF Formalism.FourierDecayAlt.P.Qx2 Formalism.FourierDecayAlt.P.Qx5
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -866,12 +858,9 @@ end
 section
 noncomputable section
 
-open Matrix Finset
-open scoped ContDiff
 
 namespace Formalism.FourierDecayAlt.P.NFx4
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.NF Formalism.FourierDecayAlt.P.Qx2 Formalism.FourierDecayAlt.P.Qx5
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -957,8 +946,6 @@ end
 
 section
 
-open Matrix Finset
-open scoped ContDiff
 
 namespace Formalism.FourierDecayAlt.P.NFx4.NO
 
@@ -1353,7 +1340,6 @@ end Formalism.FourierDecayAlt.P.NFx4.NO
 
 namespace Formalism.FourierDecayAlt.P.NFx4.NO
 
-open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants
 
 section RingFin
 
@@ -1584,7 +1570,6 @@ end
 
 section
 
-open Matrix Finset
 
 namespace Formalism.FourierDecayAlt.P.NFx4.SX
 
@@ -1681,7 +1666,6 @@ end Formalism.FourierDecayAlt.P.NFx4.SX
 
 namespace Formalism.FourierDecayAlt.P.NFx4.SX
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.NF Formalism.REAL Formalism.QuantumDeterminants
 
 noncomputable section
 
@@ -1764,7 +1748,6 @@ end Formalism.FourierDecayAlt.P.NFx4.SX
 
 namespace Formalism.FourierDecayAlt.P.NFx4.SX
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.NF Formalism.REAL Formalism.QuantumDeterminants
 
 noncomputable section
 
@@ -1868,7 +1851,6 @@ end Formalism.FourierDecayAlt.P.NFx4.SX
 
 namespace Formalism.FourierDecayAlt.P.NFx4.SX
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.NF Formalism.REAL Formalism.QuantumDeterminants
 
 noncomputable section
 
@@ -1998,7 +1980,6 @@ end Formalism.FourierDecayAlt.P.NFx4.SX
 
 namespace Formalism.FourierDecayAlt.P.NFx4.SX
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.NF Formalism.REAL Formalism.QuantumDeterminants
 
 noncomputable section
 
@@ -2068,7 +2049,6 @@ end Formalism.FourierDecayAlt.P.NFx4.SX
 
 namespace Formalism.FourierDecayAlt.P.NFx4.SX
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.NF Formalism.REAL Formalism.QuantumDeterminants
 
 noncomputable section
 
@@ -2196,7 +2176,6 @@ end Formalism.FourierDecayAlt.P.NFx4.SX
 
 namespace Formalism.FourierDecayAlt.P.NFx4.SX
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.NF Formalism.REAL Formalism.QuantumDeterminants
 
 noncomputable section
 
@@ -2296,7 +2275,6 @@ end Formalism.FourierDecayAlt.P.NFx4.SX
 
 namespace Formalism.FourierDecayAlt.P.NFx4.SX
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.NF Formalism.REAL Formalism.QuantumDeterminants
 
 noncomputable section
 
@@ -2421,7 +2399,6 @@ end Formalism.FourierDecayAlt.P.NFx4.SX
 
 namespace Formalism.FourierDecayAlt.P.NFx4.SX
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.NF Formalism.REAL Formalism.QuantumDeterminants
 
 noncomputable section
 
@@ -2482,7 +2459,6 @@ end Formalism.FourierDecayAlt.P.NFx4.SX
 
 namespace Formalism.FourierDecayAlt.P.NFx4.SX
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.NF Formalism.REAL Formalism.QuantumDeterminants
 
 noncomputable section
 
@@ -2551,7 +2527,6 @@ end Formalism.FourierDecayAlt.P.NFx4.SX
 
 namespace Formalism.FourierDecayAlt.P.NFx4.SX
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.NF Formalism.REAL Formalism.QuantumDeterminants
 
 noncomputable section
 
@@ -2675,7 +2650,6 @@ end Formalism.FourierDecayAlt.P.NFx4.SX
 
 namespace Formalism.FourierDecayAlt.P.NFx4.SX
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.NF Formalism.REAL Formalism.QuantumDeterminants
 
 noncomputable section
 
@@ -2746,7 +2720,6 @@ end Formalism.FourierDecayAlt.P.NFx4.SX
 
 namespace Formalism.FourierDecayAlt.P.NFx4.SX
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.NF Formalism.REAL Formalism.QuantumDeterminants
 
 noncomputable section
 
@@ -2774,7 +2747,6 @@ end Formalism.FourierDecayAlt.P.NFx4.SX
 
 namespace Formalism.FourierDecayAlt.P.NFx4.SX
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.NF Formalism.REAL Formalism.QuantumDeterminants
 
 noncomputable section
 
@@ -2858,7 +2830,6 @@ end Formalism.FourierDecayAlt.P.NFx4.SX
 
 namespace Formalism.FourierDecayAlt.P.NFx4.SX
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.NF Formalism.REAL Formalism.QuantumDeterminants
 
 noncomputable section
 

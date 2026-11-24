@@ -122,7 +122,6 @@ variable (K L C) in
 def crdOr (n : ℕ) : C →ₗ[K] (Fin n → L) := if h : HasB K C n then crd L h.some else 0
 
 
-open Classical in
 variable (K C) in
 def bOr (n : ℕ) : Fin n → C := if h : HasB K C n then h.some else 0
 
@@ -133,7 +132,6 @@ theorem bOr_eq (h : HasB K C n) : bOr K C n = h.some := dif_pos h
 theorem crdOr_injective (h : HasB K C n) : Function.Injective (crdOr K L C n) := crdOr_eq (L := L) h ▸ crd_injective _
 
 
-open Classical in
 variable (K L C) in
 def secOr (n : ℕ) : LinearMap.range (crdOr K L C n) →ₗ[K] C :=
   if h : Function.Injective (crdOr K L C n) then (LinearEquiv.ofInjective _ h).symm.toLinearMap else 0
@@ -151,7 +149,6 @@ theorem extB_crdOr (h : HasB K C n) (σ : L →+* ℂ) (jK : C →ₛₗ[σ.comp
 def EvEx (σ : K →+* ℂ) (ev : H → X) (φ : C → X) : Prop := ∃ j : C →ₛₗ[σ] H, ∀ f, ev (j f) = φ f
 
 
-open Classical in
 def evOr (σ : K →+* ℂ) (ev : H → X) (φ : C → X) : C →ₛₗ[σ] H := if h : EvEx σ ev φ then h.choose else 0
 
 theorem evOr_spec {σ : K →+* ℂ} {ev : H → X} {φ : C → X} (h : EvEx σ ev φ) (f : C) : ev (evOr σ ev φ f) = φ f := by
@@ -173,7 +170,6 @@ def RhoIs (σ : L →+* ℂ) (j : WL →ₛₗ[σ] H) (e : H →ₗ[ℂ] X) (act
   ∀ g x, e (j (ρ g x)) = σ ((chi g : Lˣ) : L) • act g (e (j x))
 
 
-open Classical in
 def rhoOr (σ : L →+* ℂ) (j : WL →ₛₗ[σ] H) (e : H →ₗ[ℂ] X) (act : G → X →ₗ[ℂ] X) (chi : G →* Lˣ) :
     G →* (WL →ₗ[L] WL) :=
   if h : ∃ ρ, RhoIs σ j e act chi ρ then h.choose else 1
@@ -355,7 +351,6 @@ def ChiIs (i : Fin D.R.m) (chi : G →* D.what₂.LLˣ) : Prop :=
   ∀ g, D.what₂.embLL ((chi g : D.what₂.LLˣ) : D.what₂.LL) = (chiC R i g : ℂ)
 
 
-open Classical in
 def chiTop (i : Fin D.R.m) : G →* D.what₂.LLˣ := if h : ∃ chi, ChiIs R i chi then h.choose else 1
 
 def ChiVal : Prop :=
@@ -451,7 +446,6 @@ def JEvBar : Prop :=
   ∀ i σ, ¬ GoodEmb T.Q.c (res T σ) → ∀ hV, JEvBarAt T R κ i σ hV
 
 
-open Classical in
 def jTop (i : Fin D.R.m) (σ : D.what₂.LL →+* ℂ) : Cu T κ i →ₛₗ[res T σ] (R.HW i σ).H :=
   if GoodEmb T.Q.c (res T σ) then
     if hV : T.V ((i : ℕ) + 1) (res T σ) = Wc D i then

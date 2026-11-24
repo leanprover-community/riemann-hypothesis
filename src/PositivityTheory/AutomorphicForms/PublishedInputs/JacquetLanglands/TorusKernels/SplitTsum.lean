@@ -62,7 +62,6 @@ theorem split_tsum {G : Type} (P : G → Prop) (f : G → ℂ) (hf : Summable fu
 end UpperTheory.Esk.CentralTermsContribution
 
 open UpperTheory.Esk in
-open Classical in
 theorem UpperTheory.Esk.pf_TF : UpperTheory.Esk.E2 → UpperTheory.Esk.Ecut → UpperTheory.Esk.E6 → UpperTheory.Esk.Fell → UpperTheory.Esk.Fhyp → UpperTheory.Esk.TF := by
   intro hE2 hcut hE6 hFell hFhyp F I Gf _ _ _ D hAx ι _ a
   obtain ⟨S, hFam, hS⟩ := hFell F I Gf D hAx ι a

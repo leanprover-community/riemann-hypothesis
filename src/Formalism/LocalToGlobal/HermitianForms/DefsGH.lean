@@ -48,7 +48,6 @@ namespace Formalism.L2.Forms
 open Formalism.BasicNotions NumberField IsDedekindDomain Matrix Formalism.UG
 open scoped TensorProduct
 
-section Loc
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 variable {σ : E →ₐ[F] E} {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {T f : ℕ} {bad : Set (HeightOneSpectrum (𝓞 F))}
@@ -76,6 +75,5 @@ structure GLevH (S : StepLevel F E σ J T f bad) (G : GLoc F E σ gp)
 
   chi_unit : ∀ x : S.U, ‖(S.chi x : ℂ)‖ = 1
 
-end Loc
 
 end Formalism.L2.Forms

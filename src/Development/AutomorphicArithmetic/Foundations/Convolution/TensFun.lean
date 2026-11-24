@@ -96,7 +96,6 @@ def uAct : UC K n →ₐ[ℂ] Module.End ℂ (archSmooth K n) :=
   Algebra.TensorProduct.lift (Algebra.ofId ℂ _) uAction fun c _ => Algebra.commute_algebraMap_left c _
 
 
-open Classical in
 def lact (u : UC K n) (β : TI K n) : TI K n :=
   if h : ∃ (h : (fun g => β g⁻¹) ∈ (isExpLieAlgebra K n).smoothFuns (F := ℂ)) (γ : TI K n),
       ∀ g, γ g = (rUC u ⟨fun g => β g⁻¹, h⟩ : archGroup K n → ℂ) g⁻¹ then h.choose_spec.choose else 0
@@ -107,7 +106,6 @@ def LeftFin (β : TI K n) : Prop :=
   FiniteDimensional ℂ (Submodule.span ℂ (Set.range fun k : archCompact K n => fun g : archGroup K n => β ((k : archGroup K n) * g)))
 
 
-open Classical in
 def along (τ : K →+* ℂ) (z : ℂ) : mixedEmbedding.mixedSpace K :=
   (0, fun w => if w.1 = InfinitePlace.mk τ then (if w.1.embedding = τ then z else starRingEnd ℂ z) else 0)
 
@@ -228,7 +226,6 @@ def Datum.Pt (b : Datum K n) (S : Set (Pl K)) (Λ : (K →+* ℂ) → Multiset �
       ∀ w ∉ S, t w = ∑ i, (B i w).map (· * (Ideal.absNorm w.asIdeal : ℂ) ^ (-lam i))
 
 
-open Classical in
 def admitted (S : Set (Pl K)) (F : KF (Ix K n) (Pl K × Fin n)) : Prop :=
   (∀ w : (K →+* ℂ) → Equiv.Perm (Fin n), map (ren fun x : Ix K n => (x.1, w x.1 x.2)) F = F) ∧ ∀ x ∈ F.vars, x.1 ∉ S
 

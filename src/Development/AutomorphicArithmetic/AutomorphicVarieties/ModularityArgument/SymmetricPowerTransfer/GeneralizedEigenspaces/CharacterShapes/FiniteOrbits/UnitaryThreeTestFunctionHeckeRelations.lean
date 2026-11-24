@@ -333,7 +333,6 @@ private theorem exW (L : LocOk A) : ∃ w : GA Δ, (∀ v (h : v ∈ A.Sg), eU (
   · show (if h : v ∈ A.Sg then f v h else 1) = 1
     rw [dif_neg h]
 
-open Classical in
 private theorem orbital_function_eq_weighted (L : LocOk A) {a w : GA Δ} {d : ParN F 3}
     (hw : ∀ v (h : v ∈ A.Sg), eU (A.hs v h) (w.1 v) = Phi (Kv v)) (hw' : ∀ v ∉ A.Sg, w.1 v = 1)
     (ha : A.IsElG a d) (y : GA Δ) : A.F0 d y = fw A.dat.UG w a y := by
@@ -434,7 +433,6 @@ private theorem el_one : A.IsElG (1 : GA Δ) (1 : ParN F 3) := by
   show eU (A.hs v h) 1 = diagT _ _ 1
   rw [map_one, map_one]
 
-open Classical in
 private theorem FG_eq (t : Dat.Par F) (g : GA Δ) : A.dat.FG t g = ∑ y ∈ A.Ys, A.F0 (A.dG t y) g := by
   have hfin : {v | g.1 v ∉ KU (Ov v) (cv v Δ)}.Finite := Filter.eventually_cofinite.1 g.2
   let T : Finset (Pl F) := A.Sg ∪ hfin.toFinset

@@ -81,7 +81,6 @@ end
 section
 
 open MeasureTheory Matrix
-open scoped ENNReal
 
 namespace Formalism.MainNotions.BridgeCSB
 
@@ -232,12 +231,9 @@ end
 
 section
 
-open MeasureTheory Matrix
-open scoped ENNReal
 
 namespace Formalism.MainNotions.BridgeCSB
 
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.QuantumDeterminants.WeylGroupFacts
 
 variable {k r : ℕ}
 
@@ -324,7 +320,6 @@ end
 
 section
 
-open MeasureTheory
 
 namespace Formalism.MainNotions.BridgeCSB
 
@@ -410,7 +405,6 @@ open Matrix
 
 namespace Formalism.MainNotions.BridgeCSB
 
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.QuantumDeterminants.WeylGroupFacts
 
 variable {k r : ℕ}
 
@@ -623,11 +617,9 @@ end
 
 section
 
-open Matrix
 
 namespace Formalism.MainNotions.BridgeCSB
 
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.QuantumDeterminants.WeylGroupFacts
 
 variable {k r : ℕ}
 
@@ -847,11 +839,9 @@ section
 
 set_option linter.style.haveILetI false
 
-open Matrix
 
 namespace Formalism.MainNotions.BridgeCSB
 
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.QuantumDeterminants.WeylGroupFacts
 
 variable {k r : ℕ}
 
@@ -1013,12 +1003,10 @@ section
 
 set_option linter.style.haveILetI false
 
-open MeasureTheory Matrix
 open scoped ENNReal NNReal
 
 namespace Formalism.MainNotions.BridgeCSB
 
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.QuantumDeterminants.WeylGroupFacts
 
 variable {k r : ℕ}
 
@@ -1136,12 +1124,9 @@ section
 
 set_option linter.style.haveILetI false
 
-open MeasureTheory Matrix
-open scoped ENNReal NNReal
 
 namespace Formalism.MainNotions.BridgeCSB
 
-open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.QuantumDeterminants.WeylGroupFacts
 
 variable {k r : ℕ}
 
@@ -1251,8 +1236,6 @@ end
 
 section
 
-open MeasureTheory
-open scoped ENNReal NNReal
 
 namespace Formalism.MainNotions.BridgeCSB
 
@@ -1277,8 +1260,6 @@ end
 
 section
 
-open MeasureTheory
-open scoped ENNReal
 
 namespace Formalism.MainNotions.BridgeCSB
 

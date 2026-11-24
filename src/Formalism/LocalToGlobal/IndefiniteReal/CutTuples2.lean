@@ -86,7 +86,6 @@ def opC (t : Bs.Tup) (i : A.OpR t) : Module.End ℂ (X.FC t) :=
   else 0
 
 
-open Classical in
 def opLC (j : Bs.J) (t : Bs.Tup) (i : A.OpL j t) : Module.End ℂ (X.FLC j t) :=
   if h : LinearIndependent ℂ (fun k => X.jL j t (bL j t k)) ∧
       Submodule.span ℂ (Set.range fun k => X.jL j t (bL j t k)) = ⊤ then
@@ -191,7 +190,6 @@ section Pairing
 variable {fc : DefSub A → DefFace Bs} (cr : Crd A fc)
 
 
-open Classical in
 def rinv {d n : ℕ} (P : Matrix (Fin d) (Fin n) K) : Matrix (Fin n) (Fin d) K :=
   if h : ∃ R : Matrix (Fin n) (Fin d) K, P * R = 1 then h.choose else 0
 
@@ -230,7 +228,6 @@ def W1 (N : IndefNum Bs) (w : HeightOneSpectrum (𝓞 K)) : Prop :=
     N.F0 w j ≠ 0 ∨ N.F0 (conjPl w) j ≠ 0
 
 
-open Classical in
 def MuDef (N : IndefNum Bs) (tw : HeightOneSpectrum (𝓞 K) → Bs.Tup) : Prop :=
   (∀ w, X.W1 cr N w → tw w ≠ Bs.μ0) ∧ (∀ w, X.W1 cr N w → tw (conjPl w) = tw w) ∧
     (∀ w, X.μ w = if X.W1 cr N w then tw w else Bs.μ0) ∧ ∀ w, w ∈ X.Tw ↔ X.W1 cr N w

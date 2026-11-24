@@ -115,7 +115,6 @@ lemma one_le_abs_norm_mul_abs_discr {E : Type} [Field E] [NumberField E] (z : E)
     1 ≤ |(Algebra.norm ℚ z : ℚ)| * |(NumberField.discr E : ℚ)| := by
   apply ReciprocityTheory.ChartRestriction.G.I2.so_norm_ge <;> assumption
 
-open NumberField
 
 section Cov
 
@@ -151,14 +150,12 @@ open scoped Classical in
 noncomputable def complexSpaceMixedEquivCLM (hc : ∀ w : InfinitePlace E, w.IsComplex) :
     s5bV E ≃L[ℝ] mixedEmbedding.mixedSpace E := (complexSpaceMixedLinearEquiv hc).toContinuousLinearEquiv
 
-open scoped Classical in
 noncomputable def integerEmbeddingLattice (hc : ∀ w : InfinitePlace E, w.IsComplex) : Submodule ℤ (s5bV E) :=
   ZLattice.comap ℝ (mixedEmbedding.integerLattice E) (complexSpaceMixedEquivCLM hc).toLinearMap
 
 instance (hc : ∀ w : InfinitePlace E, w.IsComplex) : DiscreteTopology (integerEmbeddingLattice hc) := by
   rw [integerEmbeddingLattice]; infer_instance
 
-open scoped Classical in
 instance (hc : ∀ w : InfinitePlace E, w.IsComplex) : IsZLattice ℝ (integerEmbeddingLattice hc) := by
   simp_rw [integerEmbeddingLattice]; infer_instance
 
@@ -188,7 +185,6 @@ lemma s5bLat_mem (hc : ∀ w : InfinitePlace E, w.IsComplex) (x : s5bV E) :
 
 end Cov
 
-open NumberField
 
 section Cov2
 

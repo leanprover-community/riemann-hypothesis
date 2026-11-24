@@ -69,7 +69,6 @@ theorem rcol_rowSG_eq : Pr.vGs = rowSG Pr sel mu := by
 
 end Defs
 
-section Main
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} {W : Wts X Pr.Word R} {Λ : ∀ j, LevFam X.E X.K (R.N j) Pr.vGs} {Ch : Chars X Pr R.m}
   {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)} {S : Set ℕ}
@@ -82,6 +81,5 @@ variable {X : Fields} {Pr : Primes X} {R : Ranks} {W : Wts X Pr.Word R} {Λ : �
   (hK : KerEquivC W Ch sel mu cst L Am u m2 b₁ hY P) (hF : ∀ j, (chF W sel mu L u j).Ok)
   (φ : MfV W Ch u)
 
-end Main
 
 end Formalism.L2.Col

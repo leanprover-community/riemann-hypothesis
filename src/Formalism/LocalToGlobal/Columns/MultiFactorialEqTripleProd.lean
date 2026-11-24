@@ -52,11 +52,9 @@ namespace Formalism.L2.Col
 
 open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.GlobalTheoryTheory.HLatOps Formalism.HermitianLatticesTheory Formalism.HN Formalism.L2.Forms
 
-section Main
 
 variable (K : Type) [Field K] [NumberField K] [StarRing K] [_root_.NumberField.IsTotallyComplex K] {ι : Type} [Fintype ι] {n : ℕ} (lam : ι → DomWeight n)
 
-end Main
 
 section Mono
 
@@ -77,12 +75,10 @@ variable {ι : Type} [Fintype ι] {n : ℕ}
 
 end Mono
 
-section Gen
 
 open Formalism.HermitianLattices.TraceIntegrality
 
 variable (K : Type) [Field K] [NumberField K] [StarRing K] [_root_.NumberField.IsTotallyComplex K] {ι : Type} [Fintype ι]
 
-end Gen
 
 end Formalism.L2.Col

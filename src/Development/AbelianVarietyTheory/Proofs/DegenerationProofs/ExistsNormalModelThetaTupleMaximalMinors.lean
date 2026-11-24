@@ -105,7 +105,6 @@ private theorem exists_open_ringOn_contains_of_fg_of_finite {o Ω : Type} [CommR
   · exact Algebra.adjoin_le fun x hx => hU x (Or.inl hx)
 
 open CategoryTheory Limits AlgebraicGeometry in
-open Classical in
 private theorem exists_open_over0_ringOn_of_fg {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω]
     (S : _root_.GlobalTheory.ZH.ThetaSys o Ω) (M : _root_.GlobalTheory.ZH.RatModel o Ω) (R' : Subalgebra o Ω)
     (hfg : R'.FG) (hR : S.R ≤ R') (hn : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsNormalScheme M.Z) (hp : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsProjOver M.s) (hd : M.HasDiv S.th) :
@@ -118,7 +117,6 @@ private theorem exists_open_over0_ringOn_of_fg {o Ω : Type} [CommRing o] [Field
     fun T c k _ _ => hFU _ (Or.inr ⟨⟨T, c, k⟩, rfl⟩)⟩, hAU⟩
 
 open CategoryTheory Limits AlgebraicGeometry in
-open Classical in
 private theorem module_finite_of_subfield_le {Ω : Type} [Field Ω] {K K' : Subfield Ω} (h : K ≤ K')
     [Module.Finite K Ω] : Module.Finite K' Ω := by
   letI : Algebra K K' := (Subfield.inclusion h).toAlgebra
@@ -126,7 +124,6 @@ private theorem module_finite_of_subfield_le {Ω : Type} [Field Ω] {K K' : Subf
   exact Module.Finite.of_restrictScalars_finite K K' Ω
 
 open CategoryTheory Limits AlgebraicGeometry in
-open Classical in
 private theorem isProper_of_isProjOver_degeneration {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω]
     (M : _root_.GlobalTheory.ZH.RatModel o Ω) (h : _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsProjOver M.s) : IsProper M.s := by
   obtain ⟨N, i, hi, e⟩ := h
@@ -136,7 +133,6 @@ private theorem isProper_of_isProjOver_degeneration {o Ω : Type} [CommRing o] [
 
 
 open CategoryTheory Limits AlgebraicGeometry in
-open Classical in
 theorem _root_.GlobalTheory.ZH.exists_minor_model : ∀ (o Ω : Type) [CommRing o] [Field Ω]
     [Algebra o Ω] [_root_.GlobalTheory.ZH.ArithBase o Ω] (S : _root_.GlobalTheory.ZH.ThetaSys o Ω), S.HasTests →
     Module.Finite (Subfield.closure (Set.range (algebraMap o Ω) ∪ {x | ∃ i j, x = S.th j / S.th i})) Ω →

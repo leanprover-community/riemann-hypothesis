@@ -65,7 +65,6 @@ theorem finrank_eq_two_mul (K : Type) [Field K] [NumberField K] [_root_.NumberFi
   simp [IsTotallyComplex.mult_eq, mul_comm]
 
 
-open Classical in
 theorem sum_ind_placeUnder (K : Type) [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] (σ₀ : K →+* ℂ)
     (M : IntermediateField ℚ ℂ) [FiniteDimensional ℚ M] (h : ∀ k, σ₀ k ∈ M) (v : InfinitePlace K) :
     (∑ ρ : M →ₐ[ℚ] ℂ, (if placeUnder σ₀ h ρ = v then (1 : ℝ) else 0)) / (Module.finrank ℚ M : ℝ)

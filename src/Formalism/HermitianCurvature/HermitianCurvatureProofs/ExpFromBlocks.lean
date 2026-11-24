@@ -83,11 +83,8 @@ theorem exp_fromBlocks (A : Matrix m m ℂ) (D : Matrix n n ℂ) :
   have hc : Continuous fun p : Matrix m m ℂ × Matrix n n ℂ => fbHom m n p := by
     show Continuous fun p : Matrix m m ℂ × Matrix n n ℂ => Matrix.fromBlocks p.1 0 0 p.2
     exact Continuous.matrix_fromBlocks continuous_fst continuous_const continuous_const continuous_snd
-  open scoped Matrix.Norms.Operator in
   have h := NormedSpace.map_exp (fbHom m n) hc (A, D)
-  open scoped Matrix.Norms.Operator in
   have h1 := Prod.fst_exp (A, D)
-  open scoped Matrix.Norms.Operator in
   have h2 := Prod.snd_exp (A, D)
   change Matrix.fromBlocks _ 0 0 _ = NormedSpace.exp (Matrix.fromBlocks _ 0 0 _) at h
   rw [h1, h2] at h

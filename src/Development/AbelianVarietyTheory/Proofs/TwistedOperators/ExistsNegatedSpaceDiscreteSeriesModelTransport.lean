@@ -159,7 +159,6 @@ theorem eq_update (v : (negM M).Vec) (τ : D.what₂.Tau) (w : (negM M).sm τ) :
     (fun ρ => smEquiv M θ hθ ρ (Function.update v τ w ρ)) = Function.update (fun ρ => smEquiv M θ hθ ρ (v ρ)) τ (smEquiv M θ hθ τ w) :=
   funext fun ρ => Function.apply_update (fun ρ (u : (negM M).sm ρ) => smEquiv M θ hθ ρ u) v τ w ρ
 
-open Classical in
 theorem eq_symm_update (v : M.Vec) (τ : D.what₂.Tau) (w : M.sm τ) :
     (fun ρ => (smEquiv M θ hθ ρ).symm (Function.update v τ w ρ)) =
       Function.update (fun ρ => (smEquiv M θ hθ ρ).symm (v ρ)) τ ((smEquiv M θ hθ τ).symm w) :=

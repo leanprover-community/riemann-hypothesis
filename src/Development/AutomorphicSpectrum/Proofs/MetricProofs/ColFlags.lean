@@ -114,7 +114,6 @@ def posOf : ∀ s : Ψ ⊕ Ψ, Fin (rk Ψ p q s) → Fin (p + q)
   | .inr _ => omEmb p q
 
 
-open Classical in
 def aExt (s : Ψ ⊕ Ψ) : Matrix (Fin (n s)) (Fin (p + q)) Ω :=
   fun j a => ∑ l, if posOf p q s l = a then A s j l else 0
 
@@ -127,7 +126,6 @@ def rkW (i : Fin (p + q)) : ℕ := min ((i : ℕ) + 1) p
 def rkO (i : Fin (p + q)) : ℕ := (i : ℕ) + 1 - min ((i : ℕ) + 1) p
 
 
-open Classical in
 def twist (m : Ψ ⊕ Ψ → ℕ) (r : Ψ × Fin (p + q)) : K₀ ⊕ StepIx Ψ p q → ℤ
   | .inl _ => (rkW r.2 * m (.inl r.1) + rkO r.2 * m (.inr r.1) : ℕ)
   | .inr t =>
@@ -147,7 +145,6 @@ abbrev EE (A : HodgeCpt Y S x) : Type := A.Li × ∀ τ : CMType H, Module.Dual 
 def inW (A : HodgeCpt Y S x) : A.Li →ₗ[Ω] EE A := LinearMap.inl Ω _ _
 
 
-open Classical in
 def inO (A : HodgeCpt Y S x) (τ : CMType H) : Module.Dual Ω (A.Vgen (.inr τ)) →ₗ[Ω] EE A :=
   (LinearMap.inr Ω _ _).comp (LinearMap.single Ω (fun τ : CMType H => Module.Dual Ω (A.Vgen (.inr τ))) τ)
 

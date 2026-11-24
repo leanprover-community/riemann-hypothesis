@@ -275,7 +275,6 @@ section RecC
 variable {D : D7} (i : D.nd.Loc) (r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i)))
   (ρ : D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i))) (π : D.nd.X i)
 
-open Classical
 
 theorem conjK_self (hd : TruncatedSeriesCountingIdentities.SemisimpleDecomposition i r ρ π) :
     IsConjM (fun g => (rO D.nd i r π g).map (toK D.nd i))
@@ -313,7 +312,6 @@ section RecT
 variable {D : D7} (i : D.nd.Loc) (r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i)))
   (ρ : D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i))) (π : D.nd.X i)
 
-open Classical
 
 theorem IsConjM.congr' {Γ K : Type} [CommRing K] {n : Type} [Fintype n] [DecidableEq n]
     {M₁ M₂ N₁ N₂ : Γ → Matrix n n K} (h : IsConjM M₁ M₂) (e1 : ∀ g, M₁ g = N₁ g) (e2 : ∀ g, M₂ g = N₂ g) :
@@ -522,7 +520,6 @@ section G5rec
 variable {D : D7} (i : D.nd.Loc) (r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i)))
   (ρ : D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i))) (π : D.nd.X i)
 
-open Classical
 
 theorem admG5_rN (hd : TruncatedSeriesCountingIdentities.SemisimpleDecomposition i r ρ π) (h : TruncatedSeriesCountingIdentities.admG5 i r) : TruncatedSeriesCountingIdentities.admG5 i (rN i r ρ π) := by
   intro w hw
@@ -603,11 +600,9 @@ theorem admG5_rN (hd : TruncatedSeriesCountingIdentities.SemisimpleDecomposition
 
 end G5rec
 
-section Final
 
 variable {D : D7} (i : D.nd.Loc) (r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i)))
   (ρ : D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i))) (π : D.nd.X i)
 
-end Final
 
 end Formalism.MainNotions.N.K.Norm

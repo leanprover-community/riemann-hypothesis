@@ -74,7 +74,6 @@ theorem fiber_ind_mem {X S : Type} [TopologicalSpace X] [T2Space X] {ξ : X → 
   simp [this]
 
 
-open Classical in
 theorem isLocallyConstant_pattern {X ι : Type} [TopologicalSpace X] [Fintype ι] {U : ι → Set X}
     (hU : ∀ i, IsClopen (U i)) :
     IsLocallyConstant (fun x => Finset.univ.filter (fun i => x ∈ U i)) := by
@@ -93,7 +92,6 @@ theorem isLocallyConstant_pattern {X ι : Type} [TopologicalSpace X] [Fintype ι
   simp [hy i]
 
 
-open Classical in
 theorem isCompact_pattern_fiber {X ι : Type} [TopologicalSpace X] [T2Space X] [Fintype ι]
     {U : ι → Set X} (hU : ∀ i, IsClopen (U i)) (hc : ∀ i, IsCompact (U i)) (s : Finset ι)
     (hs : s ≠ ∅) :
@@ -106,7 +104,6 @@ theorem isCompact_pattern_fiber {X ι : Type} [TopologicalSpace X] [T2Space X] [
   simpa using hi
 
 
-open Classical in
 theorem span_of_factor {A B S T : Type} [TopologicalSpace A] [T2Space A] [TopologicalSpace B]
     [T2Space B] [Fintype S] [Fintype T] {ξ : A → S} {η : B → T}
     (hξ : IsLocallyConstant ξ) (hη : IsLocallyConstant η) (s0 : S) (t0 : T)
@@ -169,7 +166,6 @@ theorem span_of_factor {A B S T : Type} [TopologicalSpace A] [T2Space A] [Topolo
     exact Submodule.zero_mem _
 
 
-open Classical in
 theorem span_box : ∀ (A B : Type) [TopologicalSpace A] [T2Space A] [LocallyCompactSpace A] [TotallyDisconnectedSpace A] [TopologicalSpace B] [T2Space B] [LocallyCompactSpace B] [TotallyDisconnectedSpace B] (f : SB (A × B)), (f : A × B → ℂ) ∈ Submodule.span ℂ {F : A × B → ℂ | ∃ a : SB A, ∃ b : SB B, (∀ q : A × B, (a : A → ℂ) q.1 ≠ 0 → (b : B → ℂ) q.2 ≠ 0 → (f : A × B → ℂ) q ≠ 0) ∧ F = fun q => (a : A → ℂ) q.1 * (b : B → ℂ) q.2} := by
   intro A B _ _ _ _ _ _ _ _ f
   have hlc : IsLocallyConstant (f : A × B → ℂ) := (mem_SB_iff.1 f.2).1

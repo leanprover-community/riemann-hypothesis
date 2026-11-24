@@ -62,7 +62,6 @@ theorem factor_isAddHaar (F : Type) [Field F] [NumberField F] :
   Measure.prod.instIsAddHaarMeasure _ _
 
 
-open Classical in
 instance measI_isAddHaar (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype κ] :
     (measI F κ).IsAddHaarMeasure := by
   haveI := factor_isAddHaar F

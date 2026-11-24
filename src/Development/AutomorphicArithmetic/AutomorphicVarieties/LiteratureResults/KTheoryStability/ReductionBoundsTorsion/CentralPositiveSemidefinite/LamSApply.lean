@@ -64,7 +64,6 @@ private def lamS : ({w : InfinitePlace L // w ≠ w₀} → ℝ) →ₗ[ℝ] (In
       ∑ w' : {w : InfinitePlace L // w ≠ w₀}, LinearMap.proj w'
     else ((mult w : ℝ))⁻¹ • LinearMap.proj (⟨w, h⟩ : {w : InfinitePlace L // w ≠ w₀})
 
-open Classical in
 private theorem lamS_apply (x : {w : InfinitePlace L // w ≠ w₀} → ℝ) (w : InfinitePlace L) :
     lamS L x w = if h : w = w₀ then -((mult (w₀ : InfinitePlace L) : ℝ))⁻¹ * ∑ w', x w'
       else ((mult w : ℝ))⁻¹ * x ⟨w, h⟩ := by

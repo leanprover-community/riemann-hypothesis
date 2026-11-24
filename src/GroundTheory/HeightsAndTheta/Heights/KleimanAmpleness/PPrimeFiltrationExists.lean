@@ -248,8 +248,6 @@ theorem exists_primeFiltSeq_eq_top [IsNoetherianRing S] [Module.Finite (Poly S N
   rwa [← h2] at h1
 
 
-open scoped Classical in
-open Classical in
 def primeFilt [IsNoetherianRing S] [Module.Finite (Poly S N) M] : PrimeFilt 𝓜 where
   n := Nat.find 𝓜.exists_primeFiltSeq_eq_top
   step i := 𝓜.primeFiltSeq i
@@ -277,7 +275,6 @@ variable {S : Type u} [CommRing S] {N : ℕ}
 variable {M : Type v} [AddCommGroup M] [Module (Poly S N) M] [Module S M]
   {𝓜 : GradedPMod S N M}
 
-open scoped Classical in
 theorem card_prime_eq_length (F : PrimeFilt 𝓜) (pp : Ideal (Poly S N)) [pp.IsPrime]
     (hpp : pp ∈ (Module.annihilator (Poly S N) M).minimalPrimes) :
     (((Finset.univ.filter fun k => F.prime k = pp).card : ℕ) : ℕ∞) =

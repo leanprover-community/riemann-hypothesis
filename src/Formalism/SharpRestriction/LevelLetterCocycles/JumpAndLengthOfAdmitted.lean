@@ -403,7 +403,6 @@ theorem conjPl_unique {E : Type} [Field E] [NumberField E] (cj : E ≃ₐ[ℚ] E
   exact (h x y hx').symm.trans (h' x y hx')
 
 
-open NumberField IsDedekindDomain in
 theorem conjPl_unique' {E : Type} [Field E] [NumberField E] (cj : E ≃ₐ[ℚ] E)
     (u u' v : HeightOneSpectrum (𝓞 E))
     (h : ∀ x y : 𝓞 E, (y : E) = cj (x : E) → (x ∈ u.asIdeal ↔ y ∈ v.asIdeal))
@@ -432,13 +431,11 @@ theorem ef_conj {E : Type} [Field E] [NumberField E] (cj : E ≃ₐ[ℚ] E)
 
 end TypeU
 
-section TypeD
 
 open NumberField IsDedekindDomain
 
 variable {E Lc Kf : Type} [Field E] [NumberField E] [Field Lc] [Field Kf]
 
-end TypeD
 
 section Std
 
@@ -629,7 +626,6 @@ end Joint
 
 section Final
 
-open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Classical
 open Formalism.MainNotions.TruncatedSeriesCountingIdentities (Decl CoefExt locC)
 
 section PDgen

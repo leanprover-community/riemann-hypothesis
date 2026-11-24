@@ -103,8 +103,6 @@ theorem gridConvergence : GridConvergence := by
 end Formalism.FourierDecayAlt.P.LEx2
 
 namespace Formalism.FourierDecayAlt.P.LEx2
-open Formalism.FourierDecayAlt.LE
-open MeasureTheory Filter Topology Finset
 open scoped ComplexConjugate
 
 theorem weighted_L2_zero (B : Base) (wt : B.Ω → ℝ) : WeightedL2 B wt (fun _ => 0) := by
@@ -224,9 +222,6 @@ theorem coefficient_L2 : InterpolationCoefficientsInL2 := by
 end Formalism.FourierDecayAlt.P.LEx2
 
 namespace Formalism.FourierDecayAlt.P.LEx2
-open Formalism.FourierDecayAlt.LE
-open MeasureTheory Filter Topology Finset
-open scoped ComplexConjugate
 
 theorem dS_poly (B : Base) {A A' : Type} (T : Fn B A → Fn B A') (u : Fn B A) (d : ℕ) (c : ℕ → Fn B A')
     (hc : ∀ (s : ℝ) ω a, conjS B T u s ω a = ∑ q ∈ range (d + 1), (s : ℂ) ^ q * c q ω a) (p : ℕ) (ω : B.Ω) (a : A') :
@@ -295,9 +290,6 @@ theorem coefIntegrable : CoefIntegrable := by
 end Formalism.FourierDecayAlt.P.LEx2
 
 namespace Formalism.FourierDecayAlt.P.LEx2
-open Formalism.FourierDecayAlt.LE
-open MeasureTheory Filter Topology Finset
-open scoped ComplexConjugate
 
 theorem opt_delta (x A Bb : ℝ) (hA : 0 ≤ A) (hB : 0 ≤ Bb)
     (h : ∀ δ : ℝ, 0 < δ → x ≤ (A / δ + δ * Bb) / 2) : x ≤ √A * √Bb := by
@@ -380,9 +372,6 @@ theorem csTerm : CSTerm := by
 end Formalism.FourierDecayAlt.P.LEx2
 
 namespace Formalism.FourierDecayAlt.P.LEx2
-open Formalism.FourierDecayAlt.LE
-open MeasureTheory Filter Topology Finset
-open scoped ComplexConjugate
 
 theorem meas_th' (B : Base) (ε σ : ℝ) : Measurable fun ω => th ε σ (B.G ω) := by
   unfold th
@@ -474,9 +463,6 @@ theorem domConv : DomConv := by
 end Formalism.FourierDecayAlt.P.LEx2
 
 namespace Formalism.FourierDecayAlt.P.LEx2
-open Formalism.FourierDecayAlt.LE
-open MeasureTheory Filter Topology Finset
-open scoped ComplexConjugate
 
 theorem cutTheta : CutTheta := by
   intro hC c σ ε h4 hε p
@@ -511,9 +497,6 @@ theorem cutTheta : CutTheta := by
 end Formalism.FourierDecayAlt.P.LEx2
 
 namespace Formalism.FourierDecayAlt.P.LEx2
-open Formalism.FourierDecayAlt.LE
-open MeasureTheory Filter Topology Finset
-open scoped ComplexConjugate
 
 theorem L3 (hC : E.CauchyTheta) (hCT : CutTheta) (hTS : ThetaSmooth) (hTR : ThetaRange) (B : Base) (c : Cut)
     (σ ε : ℝ) (h4 : 4 ≤ σ) (hε : 0 < ε) (p : ℕ) (h : B.Ω → ℂ) (hm : AEStronglyMeasurable h B.μ) (b : B.Ω → ℝ)
@@ -648,9 +631,6 @@ theorem adj : Adj := by
 end Formalism.FourierDecayAlt.P.LEx2
 
 namespace Formalism.FourierDecayAlt.P.LEx2
-open Formalism.FourierDecayAlt.LE
-open MeasureTheory Filter Topology Finset
-open scoped ComplexConjugate
 
 theorem conjS_zero (B : Base) {A A' : Type} (T : Fn B A → Fn B A') (u : Fn B A) : conjS B T u 0 = T u := by
   have h0 := dS_zero B T u
@@ -792,9 +772,6 @@ theorem limitA : LimitA := by
 end Formalism.FourierDecayAlt.P.LEx2
 
 namespace Formalism.FourierDecayAlt.P.LEx2
-open Formalism.FourierDecayAlt.LE
-open MeasureTheory Filter Topology Finset
-open scoped ComplexConjugate
 
 theorem markovTerm : MarkovTerm := by
   intro hMV B S σ ε M hσ hε hL hM hW hI4 hI4' Y hY hEns p

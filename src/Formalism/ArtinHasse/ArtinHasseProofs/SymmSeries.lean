@@ -112,7 +112,6 @@ namespace Formalism.FT.SymmetricSeries
 
 variable {σ R : Type*} [CommRing R] [Fintype σ] [DecidableEq σ]
 
-open PowerSeries in
 lemma coeff_prod_one_sub (i : ℕ) :
     coeff i (∏ j : σ, (1 - C (MvPolynomial.X j : MvPolynomial σ R) * X)) =
       (-1) ^ i * MvPolynomial.esymm σ R i := by
@@ -137,7 +136,6 @@ lemma coeff_prod_one_sub (i : ℕ) :
   refine Finset.sum_congr rfl fun t ht => ?_
   rw [(Finset.mem_powersetCard.mp ht).2]
 
-open PowerSeries in
 lemma coeff_prod_geom (k : ℕ) :
     coeff k (∏ j : σ, PowerSeries.mk (fun m => (MvPolynomial.X j : MvPolynomial σ R) ^ m)) =
       MvPolynomial.hsymm σ R k := by

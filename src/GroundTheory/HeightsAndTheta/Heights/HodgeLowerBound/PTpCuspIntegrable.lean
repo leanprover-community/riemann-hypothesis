@@ -177,7 +177,6 @@ theorem ref_deg_eq (X : ComponentSetting D O Lt) : X.S'.ref.a = X.S.ref.a :=
   X.S'.ref_deg.trans X.S.ref_deg.symm
 
 
-open Classical in
 theorem measurable_uFn (X : ComponentSetting D O Lt) : @Measurable X.M.Xc ℝ (borel X.M.Xc) _ (uFn X) := by
   let _ : MeasurableSpace X.M.Xc := borel X.M.Xc
   have _ : BorelSpace X.M.Xc := ⟨rfl⟩
@@ -187,7 +186,6 @@ theorem measurable_uFn (X : ComponentSetting D O Lt) : @Measurable X.M.Xc ℝ (b
     X.S.R.isOpen_Yo.measurableSet
 
 
-open Classical in
 theorem uFn_bound (X : ComponentSetting D O Lt) :
     ∃ C C' : ℝ, ∀ x ∈ X.S.R.Yo, |uFn X x| ≤ C + C' * Real.log (X.S.R.r x) := by
   obtain ⟨CB, hCB⟩ := X.S'.B.bdd
@@ -214,7 +212,6 @@ theorem uFn_bound (X : ComponentSetting D O Lt) :
   constructor <;> linarith [h1.1, h1.2, h2.1, h2.2]
 
 
-open Classical in
 theorem cuspWeight_eq (X : ComponentSetting D O Lt) {z : (Σ k, ι k) → ℂ} (hz : z ∈ mcPts (mCoordIdeal D.y))
     (hzb : z ∉ D.Bd) (hY : X.M.proj z ∈ X.S.R.Yo) : X.Cd.cuspWeight z / 2 = uFn X (X.M.proj z) := by
   have hXo : z ∈ D.Xo ∩ mcPts (mCoordIdeal D.y) := ⟨⟨hz, hzb⟩, hz⟩

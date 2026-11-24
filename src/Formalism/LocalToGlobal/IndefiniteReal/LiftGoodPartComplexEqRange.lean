@@ -569,7 +569,6 @@ variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] 
   {P1 : Subgroup G} {ψ1 : P1 →* Kˣ} {Dc : ∀ Zs : DefSub A.fam.amb, DefCols (A.side P1 ψ1 Zs)}
   {Sp : ∀ Zs : DefSub A.fam.amb, SPer (Dc Zs)} {Zsc : DefSub A.fam.amb → IndefScale A.fam.base}
 
-open LevelOperators
 
 end ConcL
 
@@ -580,7 +579,6 @@ variable {K : Type} [Field K] [NumberField K] [StarRing K] {G : Type} [Group G] 
   {P1 : Subgroup G} {ψ1 : P1 →* Kˣ} {Dc : ∀ Zs : DefSub A.fam.amb, DefCols (A.side P1 ψ1 Zs)}
   {Sp : ∀ Zs : DefSub A.fam.amb, SPer (Dc Zs)} {Zsc : DefSub A.fam.amb → IndefScale A.fam.base} {s : ℕ}
 
-open LevelOperators
 
 end Final
 

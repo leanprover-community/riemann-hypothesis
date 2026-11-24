@@ -145,7 +145,6 @@ theorem rnd_fill_at (S : StepLevel F E σ J T f bad) (emb : ι → E →+* ℂ)
   rw [rnd_fillG_eq S emb hc x0 hs h x0 (⟨1, (UJ (σ : E →+* E) J).one_mem⟩, 1) (by simp) y, map_one, Units.val_one,
     one_mul, rnd_tr_congr emb hc (inv_one) _ (UJ (σ : E →+* E) J).one_mem, rnd_tr_one]
 
-open Classical in
 theorem rnd_fill_mem (S : StepLevel F E σ J T f bad) (emb : ι → E →+* ℂ)
     (hc : ∀ τ x, emb τ (σ x) = starRingEnd ℂ (emb τ x))
     (x0 : UPts σ J (FiniteAdeleRing (𝓞 F) F)) (hs : RndStabTriv S x0) (h : Frames (gramC J emb) → ℂ) :

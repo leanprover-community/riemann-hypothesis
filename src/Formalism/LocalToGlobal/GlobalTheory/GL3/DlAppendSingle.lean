@@ -48,11 +48,9 @@ namespace Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.RestC
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker Classical
 
-section Pd
 
 variable {σ : Type*} {p : ℕ} [Fact p.Prime]
 
-end Pd
 
 section Der
 

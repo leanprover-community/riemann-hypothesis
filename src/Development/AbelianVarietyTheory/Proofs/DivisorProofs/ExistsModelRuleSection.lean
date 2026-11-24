@@ -324,7 +324,6 @@ theorem isDerivAt0_of_sameVecs {y : Sp ℂ ⟶ Xo.XF c} {g n : ℕ} {e : (Fin g 
   exact h2
 
 
-open Classical in
 theorem exists_reading (hU : IsClosed (U : Set (Xo.XF c))) {σb : RuleY Y} {σ : RuleU Xo c}
     (hres : Restricts Y U τ σb σ) {s : c.F →+* ℂ} {g₀ : ℕ} {ty : Fin g₀ → (E →+* ℂ)}
     {Fu : FamilyUnif Xo (s.comp (IntermediateField.inclusion c.le).toRingHom) ty} {i : Fin Fu.n}

@@ -313,7 +313,6 @@ theorem sum_val_log_le (n : ℕ) (hn : 0 < n) (P : Finset ℕ) (hP : ∀ p ∈ P
     _ ≤ Real.log (n : ℝ) := Real.log_le_log h3 (by exact_mod_cast h2)
 
 
-open Classical in
 def EatCI (L : SizeData₂ D) (K : Consts) (c : ErrC) (j p : ℕ) : ℝ :=
   if IsResidueClassZero D p ∧ hP D p = 0 then EatC L c j p else EatI L K c j p
 
@@ -330,7 +329,6 @@ def InertPrimeLossBound (D : D7) (L : SizeData₂ D) (K : Consts) (c : ErrC) (C 
     ∑ p ∈ P, 2 * Real.log (p : ℝ) * |EatCI L K c j p| ≤ C * L.B0
 
 
-open Classical in
 def hOff (L : SizeData₂ D) (K : Consts) (c : ErrC) (u : D.what₂.Word) (j p : ℕ) : ℝ :=
   (padicValNat p (D.mem u).C.DGam : ℝ) + (if D.host.cls p = PrimeClass.ramD then |EatD D j| else 0) +
     (if (IsResidueClassZero D p ∨ IsSg D p) ∧ (p : ℝ) ≤ L.sc.X'' D.R.n then |EatCI L K c j p| else 0)
@@ -479,7 +477,6 @@ end PartA
 
 section PartB
 
-open scoped BigOperators
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.DV Formalism.MainNotions.G Formalism.MainNotions.WeilJacquetShalikaLaw
 
 def PairAtT (D : D7) (Dx : DivX D) (T : TwForms D) : Prop :=
@@ -691,7 +688,6 @@ section PartC
 
 open Formalism.BasicNotions NumberField
 
-section Arch
 
 variable {D : D7} {T : ThetaX D}
 
@@ -717,7 +713,6 @@ structure LocC (X : ZetaProductPairs.Loc D T) where
 
 attribute [instance] LocC.acVc LocC.moVc LocC.acVD LocC.moVD
 
-end Arch
 
 section Rat
 
@@ -729,90 +724,68 @@ def RationalMapValues : Prop :=
 
 end Rat
 
-section C5
 
 variable {D : D7} {T : ThetaX D}
 
-end C5
 
-section Family
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
   (XF : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), ZetaProductPairs.Loc (Fm.D x i) (Fm.ex x hx i).th)
 
-end Family
 
 end PartC
 
-section PartE
 
 open Formalism.BasicNotions NumberField IsDedekindDomain
 
-section Lat
 
 variable {K : Type} [Field K] [NumberField K] {V : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V]
   [IsScalarTower (𝓞 K) K V]
 
-end Lat
 
-section Form
 
 variable {K : Type} [Field K] {σ : K →+* ℂ} {V : Type} [AddCommGroup V] [Module K V]
   {E : Type} [AddCommGroup E] [Module ℂ E] {ι : Type} [Fintype ι] [DecidableEq ι]
   (b : Module.Basis ι K V) (j : V →ₛₗ[σ] E)
 
-end Form
 
-section Side
 
 variable {D : D7} {EE : Type} [NormedAddCommGroup EE] [InnerProductSpace ℂ EE] [FiniteDimensional ℂ EE]
   (S : RowSide D EE)
 
-end Side
 
-section SideAI
 
 variable {D : D7} {EE : Type} [NormedAddCommGroup EE] [InnerProductSpace ℂ EE] [FiniteDimensional ℂ EE]
   (S : RowSide D EE)
 
-end SideAI
 
-section Fam
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
-end Fam
 
 end PartE
 
 section PartEJ
 
-open Formalism.BasicNotions NumberField IsDedekindDomain
 
 end PartEJ
 
-section PartF
 
-open Formalism.BasicNotions Formalism.BasicNotions.DV
 
 variable (D : D7)
 
 
 
 
-end PartF
 
 section PartF2
 
-open Formalism.BasicNotions Formalism.BasicNotions.DV
 
 variable (D : D7)
 
-section Fam
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
-end Fam
 
 
 section IV
@@ -842,12 +815,10 @@ end IV
 
 
 
-section FamJ
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
 
-end FamJ
 
 end PartF2
 

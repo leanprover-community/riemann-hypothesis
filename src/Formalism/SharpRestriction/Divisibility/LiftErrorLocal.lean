@@ -127,7 +127,6 @@ def IsV {y : Lc.Pt Lc.Xm} {La : Lc.Unim} (x : D.host.E) (l : G.Lt y La) : Prop :
   ‖G.sgE y (G.ltype y La l) x‖ < 1
 
 
-open Classical in
 def subV {y : Lc.Pt Lc.Xm} {La : Lc.Unim} (x : D.host.E) (yy : G.Lt y La → (Lc.fld y).C)
     (P : MvPolynomial (G.Lt y La) (Lc.fld y).C) : MvPolynomial (G.Lt y La) (Lc.fld y).C :=
   MvPolynomial.bind₁ (fun l => if G.IsV x l then MvPolynomial.C (yy l) else MvPolynomial.X l) P
@@ -490,12 +489,10 @@ def Conclusion₂ (CRd C1 C2 C3 CA CD : ℝ) : Prop :=
 
 end Conclusion₂
 
-section Fam
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
   (XF : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x), Loc (Fm.D x i) (Fm.ex x hx i).nch)
 
-end Fam
 
 end Formalism.MainNotions.LiftErrorLocal
 

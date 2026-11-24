@@ -209,7 +209,6 @@ private theorem abs_sum {I G : Type} (Sg : Finset I) (P : G → Prop) (S : G →
   · rw [if_neg (fun h => hev h.1), (Nat.not_even_iff_odd.mp hev).neg_one_pow]
     ring
 
-open Classical in
 private theorem two_cls {Γ : Type} [Group Γ] (N : Subgroup Γ) (h : Γ → ℂ) (hv : ∀ t, h t = 1 ∨ h t = -1)
     (hN : ∀ t, t ∈ N ↔ h t = 1) (hm : ∀ x y, h (x * y) = h x * h y) (α β : ℂ) :
     ∑ᶠ q : Γ ⧸ N, (if h q.out = 1 then α else β) = α + if ∃ y, h y ≠ 1 then β else 0 := by
@@ -318,7 +317,6 @@ private theorem elmap_smul {K K' : Type} [Field K] [Field K'] (f : K →+* K') {
     elmap f (t • m) = f t • elmap f m := by
   ext <;> simp [elmap, lmap]
 
-open Classical in
 private theorem loc_two {K : Type} [Field K] [CharZero K] (τ : K)
     (hm : ∀ x y : Kˣ, hs (τ ^ 2 - 4) ((x * y : Kˣ) : K) = hs (τ ^ 2 - 4) (x : K) * hs (τ ^ 2 - 4) (y : K))
     (f : Kˣ → ℂ) (hf : ∀ t ∈ NE τ, ∀ x, f (t * x) = f x) (b : ℂ)
@@ -372,7 +370,6 @@ private theorem loc_two {K : Type} [Field K] [CharZero K] (τ : K)
     · rw [hb, dite_eq_right hex]
       ring
 
-open Classical in
 private theorem finprod_sign {I : Type} (u : I → ℂ) (s : Finset I) (h : ∀ v, u v = if v ∈ s then -1 else 1) :
     ∏ᶠ v, u v = (-1) ^ s.card := by
   have hs : Function.mulSupport u ⊆ ↑s := by
@@ -383,7 +380,6 @@ private theorem finprod_sign {I : Type} (u : I → ℂ) (s : Finset I) (h : ∀ 
   rw [finprod_eq_prod_of_mulSupport_subset u hs,
     Finset.prod_congr rfl (g := fun _ => (-1 : ℂ)) (fun v hv => by rw [h v, if_pos hv]), Finset.prod_const]
 
-open Classical in
 theorem sumT : SumT := by
   intro F _ _ Δ D hOk τ c d m hCM hSpl hDat
   have hD0 : τ ^ 2 - 4 ≠ 0 := hDat.reg

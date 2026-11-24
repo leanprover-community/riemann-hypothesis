@@ -129,7 +129,6 @@ open Classical in
 def flipAt (S : Set (Sq H)) (x : LevelGroup H) : LevelGroup H := fun v => if v ∈ S then (x v)⁻¹ else x v
 
 
-open Classical in
 def flipParam (S : Set (Sq H)) (s : ∀ v : Sq H, SSParam (H.g v.1) K R.r) : ∀ v : Sq H, SSParam (H.g v.1) K R.r :=
   fun v => if v ∈ S then invParam (s v) else s v
 

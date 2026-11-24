@@ -174,7 +174,6 @@ namespace PI.AprimeInfW
 
 open MeasureTheory Formalism.BasicNotions Formalism.L2.SG.HidaSetting Formalism.L2.SG.RealObj Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.SG.Sub
   Formalism.L2.SG.TypedSets Formalism.L2.SG.Pf.NcReal
-open scoped TensorProduct
 
 theorem wittInf_holds : WittInf := by
   intro D X u' ψ hT μinf νinf fibInf hP y hy

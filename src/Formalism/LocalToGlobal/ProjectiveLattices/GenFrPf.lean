@@ -100,7 +100,7 @@ theorem gfp_xGen_over (Z : Comp Xo c) : xGen Z ≫ Xo.s = sOf c (kap Z) := by
   rfl
 
 theorem gfp_tower (Z : Comp Xo c) (r : c.F) :
-    algebraMap c.F (Om Z) r = algebraMap (kap Z) (Om Z) (algebraMap c.F (kap Z) r) := by rfl
+    algebraMap c.F (Om Z) r = algebraMap (kap Z) (Om Z) (algebraMap c.F (kap Z) r) := rfl
 
 section Gen
 

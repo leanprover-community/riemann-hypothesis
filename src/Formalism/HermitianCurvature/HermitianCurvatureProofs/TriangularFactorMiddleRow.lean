@@ -81,11 +81,9 @@ theorem herm_expand (v w : Fin (2 * r + k + 1) → ℂ) :
 
 end N1
 
-section MajorantSquareBound
 
 variable {k r : ℕ}
 
-end MajorantSquareBound
 
 end
 

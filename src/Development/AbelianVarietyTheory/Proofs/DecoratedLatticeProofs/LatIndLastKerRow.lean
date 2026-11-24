@@ -66,7 +66,6 @@ def zrow (β : Frame p T n) (ζ : Fin L.rank → D.host.E) (x : WO T L) : n → 
     ((fun i => p.pr (((fun j => incA D ((star ζ ᵥ* L.gram) j)) ᵥ* x) i)) ᵥ* β.b)
 
 
-open Classical in
 def rowFun (β : Frame p T n) (ζ : Fin L.rank → D.host.E) (b : (n → k) → ℂ) (x : WO T L) : ℂ :=
   if IsHalf p.e x then b (zrow β ζ x) else 0
 

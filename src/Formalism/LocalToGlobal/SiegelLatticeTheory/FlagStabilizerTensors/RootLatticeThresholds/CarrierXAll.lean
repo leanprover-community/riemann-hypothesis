@@ -219,7 +219,6 @@ end Formalism.L2.SG.Pf.CarrierXAll
 noncomputable section
 
 open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S
-open scoped Matrix
 
 namespace Formalism.L2.SG.Pf.CarrierXAll
 
@@ -388,8 +387,6 @@ end Formalism.L2.SG.Pf.CarrierXAll
 
 noncomputable section
 
-open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S
-open scoped Matrix
 
 namespace Formalism.L2.SG.Pf.CarrierXAll
 
@@ -527,8 +524,6 @@ end Formalism.L2.SG.Pf.CarrierXAll
 
 noncomputable section
 
-open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S
-open scoped Matrix
 
 namespace Formalism.L2.SG.Pf.CarrierXAll
 
@@ -582,8 +577,6 @@ end Formalism.L2.SG.Pf.CarrierXAll
 
 namespace Formalism.L2.SG.Pf.CarrierXAll
 
-open Formalism.L2.SG.Pf.Carrier Formalism.L2.SG.Pf.BaseOf Formalism.L2.SG.Pf.Built Formalism.L2.SG.LocWSOf Formalism.L2.SG.Pf.CarrierT Formalism.L2.SG.RealObj
-open Formalism.L2.SG.Pf.Carrier.CarPinVt
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar instCM
 
@@ -617,13 +610,9 @@ end Formalism.L2.SG.Pf.CarrierXAll
 
 noncomputable section
 
-open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S
-open scoped Matrix
 
 namespace Formalism.L2.SG.Pf.CarrierXAll
 
-open Formalism.L2.SG.Pf.Carrier Formalism.L2.SG.Pf.BaseOf Formalism.L2.SG.Pf.Built Formalism.L2.SG.LocWSOf Formalism.L2.SG.Pf.CarrierT Formalism.L2.SG.RealObj
-open Formalism.L2.SG.Pf.Carrier.CarPinVt
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar instCM
 
@@ -794,12 +783,9 @@ end Formalism.L2.SG.Pf.CarrierXAll
 
 noncomputable section
 
-open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S
-open scoped Matrix
 
 namespace Formalism.L2.SG.Pf.CarrierXAll
 
-open Formalism.L2.SG.Pf.Carrier Formalism.L2.SG.Pf.BaseOf Formalism.L2.SG.Pf.Built Formalism.L2.SG.LocWSOf Formalism.L2.SG.Pf.CarrierT Formalism.L2.SG.RealObj
 open Formalism.FourierDecayAlt Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups
 open Formalism.L2.SG.AdBridge Formalism.L2.SG.DataInst Formalism.L2.SG.SpectralTiesReal
 
@@ -839,14 +825,9 @@ end Formalism.L2.SG.Pf.CarrierXAll
 
 noncomputable section
 
-open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S
-open scoped Matrix
 
 namespace Formalism.L2.SG.Pf.CarrierXAll
 
-open Formalism.L2.SG.Pf.Carrier Formalism.L2.SG.Pf.BaseOf Formalism.L2.SG.Pf.Built Formalism.L2.SG.LocWSOf Formalism.L2.SG.Pf.CarrierT Formalism.L2.SG.RealObj
-open Formalism.FourierDecayAlt Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full Formalism.L2.SG.PackageTie2 Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups
-open Formalism.L2.SG.AdBridge Formalism.L2.SG.DataInst Formalism.L2.SG.SpectralTiesReal
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar instCM
 

@@ -2494,12 +2494,10 @@ theorem card_Lsh_quot_L_of_ok {X : Fields} {Pr : Primes X} (hPr : Pr.Ok) (u : Pr
 
 end Index
 
-section Misc
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
   {ST SG : Finset (HeightOneSpectrum (𝓞 E))}
 
-end Misc
 
 section AtBase2
 
@@ -2544,24 +2542,18 @@ theorem piT_dvd_of_mem (hX : X.Ok) (hPr : Pr.Ok) (u : Pr.Word) (r : 𝓞 X.E)
 
 end AtBase2
 
-section Bridge
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
 
-end Bridge
 
-section TilClasses
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
   {ST SG : Finset (HeightOneSpectrum (𝓞 E))}
 
-end TilClasses
 
-section AtBase3
 
 variable {X : Fields} {Pr : Primes X}
 
-end AtBase3
 
 section DnNonempty
 

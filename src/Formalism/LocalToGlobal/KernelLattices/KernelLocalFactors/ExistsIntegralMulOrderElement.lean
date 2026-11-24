@@ -301,7 +301,6 @@ theorem bad_gen (hPr : Pr.Ok) (u : Pr.Word) {P : HeightOneSpectrum (𝓞 X.E)} (
     exact h.elim (key 0) (key 1)
 
 
-open Classical in
 theorem tg_noConj (hPr : Pr.Ok) (u : Pr.Word) : ∀ P ∈ Pr.vT u ∪ Pr.vGs, conjPrime₂ P ∉ Pr.vT u ∪ Pr.vGs := by
   intro P hP hP'
   obtain ⟨π, p, hπ, hcop, hn, hp, hk⟩ := bad_gen hPr u hP
@@ -390,7 +389,6 @@ theorem conjP_twice (P : HeightOneSpectrum (𝓞 X.E)) : conjPrime₂ (conjPrime
   rw [mem_conjP, mem_conjP, cO_cO]
 
 
-open Classical in
 theorem sall_noConj (hX : X.AbelianUnramifiedExtensionConditions) (hPr : Pr.Ok) (hsel : IsSel X sel) (u : Pr.Word) (hT : Pr.T u ∈ S) (hg : ∀ i, Pr.g i ∈ S) :
     ∀ P ∈ Sall sel mu u, conjPrime₂ P ∉ Sall sel mu u := by
   have hsplit : ∀ P, P ∈ Sall sel mu u ↔ P ∈ Pr.vT u ∪ Pr.vGs ∨ P ∈ QE sel (mu : Chr X.F X.E X.K) := by
@@ -417,7 +415,6 @@ theorem sall_noConj (hX : X.AbelianUnramifiedExtensionConditions) (hPr : Pr.Ok) 
   · exact qe_noConj mu hX hsel P h h'
 
 
-open Classical in
 theorem sall_nat (hPr : Pr.Ok) (hsel : IsSel X sel) (u : Pr.Word) {P : HeightOneSpectrum (𝓞 X.E)} (hP : P ∈ Sall sel mu u) :
     ∃ p : ℕ, p.Prime ∧ (p : 𝓞 X.E) ∈ P.asIdeal ∧ (p = Pr.T u ∨ (∃ i, p = Pr.g i) ∨ p ∉ S) := by
   have hP' : P ∈ Pr.vT u ∪ Pr.vGs ∨ P ∈ QE sel (mu : Chr X.F X.E X.K) := by

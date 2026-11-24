@@ -206,11 +206,9 @@ end Family
 
 theorem stLoss7 : ThickDensitySizeWindowsForAllFamilies := fun _ Fm h1 h2 h3 => losses_of_small_share_weight Fm h1 h2 h3
 
-section Size
 
 variable {D : D7} {L : SizeData₂ D}
 
-end Size
 
 section Family
 

@@ -50,7 +50,6 @@ namespace Formalism.MainNotions.Gaps.LG
 open NumberField IsDedekindDomain Matrix Formalism.UG Formalism.BasicNotions Formalism.FrobeniusOrbits
 open scoped TensorProduct
 
-section Gen
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -76,13 +75,10 @@ variable {k : ℕ} (P : Par F E k)
 
 end Par
 
-end Gen
 
-section HostPar
 
 variable {R : Ranks} (H : Host R)
 
-end HostPar
 
 end Formalism.MainNotions.Gaps.LG
 

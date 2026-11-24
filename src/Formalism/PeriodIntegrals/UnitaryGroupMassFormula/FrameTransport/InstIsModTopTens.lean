@@ -92,7 +92,6 @@ theorem cont_HA_iff {T : Type*} [TopologicalSpace T] {n : ℕ} {J : Matrix (Fin 
 
 end Cont
 
-section Frame
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E] {σ : E →ₐ[F] E}
 
@@ -100,6 +99,5 @@ instance instNontrivialAF : Nontrivial (AF F) :=
   inferInstanceAs (Nontrivial (NumberField.InfiniteAdeleRing F ×
     IsDedekindDomain.FiniteAdeleRing (NumberField.RingOfIntegers F) F))
 
-end Frame
 
 end PI.FT

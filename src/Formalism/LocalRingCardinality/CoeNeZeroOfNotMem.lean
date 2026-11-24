@@ -552,7 +552,6 @@ end Formalism.BasicNotions.SkeletonIndexLemmas
 
 namespace Formalism.BasicNotions.SkeletonIndexLemmas
 
-open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory
 
 section Herm
 

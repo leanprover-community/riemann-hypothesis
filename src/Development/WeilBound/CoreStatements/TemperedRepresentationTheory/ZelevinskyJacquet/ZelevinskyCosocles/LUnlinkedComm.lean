@@ -62,7 +62,6 @@ def sub {α : Type*} {h : ℕ} (W : List α) (c : Fin W.length → Fin h) (i : F
   ((List.finRange W.length).filter (fun p => c p = i)).map W.get
 
 
-open Classical in
 def shuffleCount {α : Type*} {h : ℕ} (W : List α) (D : Fin h → List α) : ℕ :=
   (Finset.univ.filter fun c : Fin W.length → Fin h => ∀ i, sub W c i = D i).card
 

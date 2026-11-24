@@ -173,8 +173,6 @@ end Formalism.FourierDecayAlt.P.GTRRSecH
 
 namespace Formalism.FourierDecayAlt.P.GTRRSecH
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2 Formalism.FourierDecayAlt.P.SettingConstruction Formalism.FourierDecayAlt.P.TwoByOneBlock Formalism.FourierDecayAlt.P.TheSec
-open Formalism.FourierDecayAlt.P.CutMP.Gauge.GC
 
 section block2
 
@@ -275,7 +273,6 @@ end Formalism.FourierDecayAlt.P.GTRRSecH
 
 namespace Formalism.FourierDecayAlt.P.CutMP.Gauge.GC
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2 Formalism.FourierDecayAlt.P.SettingConstruction Formalism.FourierDecayAlt.P.TwoByOneBlock Formalism.FourierDecayAlt.P.TheSec
 open Formalism.FourierDecayAlt.P.GTRRSecH
 
 theorem jV_smul' {k r : ℕ} (c : ℂ) (u : Fin (k + 1) → ℂ) : jV k r (c • u) = c • jV k r u := by

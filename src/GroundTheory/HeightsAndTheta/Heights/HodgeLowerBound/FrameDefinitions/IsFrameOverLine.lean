@@ -133,7 +133,6 @@ def MuFrameAt.norm {H : HodgeData D} {z : (Σ k, ι k) → ℂ} (d : MuFrameAt H
     ∏ τ, Real.sqrt (quotNormSq D.j_le_N (gramAt (D.h τ) (d.b τ) z))
 
 
-open Classical in
 def muMetric (H : HodgeData D) (z : (Σ k, ι k) → ℂ) : ℝ :=
   if h : Nonempty (MuFrameAt H z) then h.some.norm else 0
 

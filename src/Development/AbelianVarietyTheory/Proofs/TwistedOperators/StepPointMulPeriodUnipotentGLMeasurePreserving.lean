@@ -99,7 +99,6 @@ theorem eq_stepPt_of (x₀ : Matrix n n' k) (Y : Matrix (n ⊕ Fin c) (n' ⊕ Fi
 def linV (g : Matrix (n' ⊕ Fin (c + 1)) (n' ⊕ Fin (c + 1)) k) : Matrix (StepVar n c n') (StepVar n c n') k :=
   Matrix.of fun a b => if b.1.1 = a.1.1 then g b.1.2 a.1.2 else 0
 
-open Classical in
 theorem varPart_mul_apply (e : StepVar n c n' → k) (g : Matrix (n' ⊕ Fin (c + 1)) (n' ⊕ Fin (c + 1)) k)
     (a : StepVar n c n') : (varPart e * g) a.1.1 a.1.2 = (linV g).mulVec e a := by
   have h1 : (linV g).mulVec e a = ∑ b : (n ⊕ Fin c) × (n' ⊕ Fin (c + 1)),
@@ -116,7 +115,6 @@ theorem varPart_mul_apply (e : StepVar n c n' → k) (g : Matrix (n' ⊕ Fin (c 
   · simp
 
 
-open Classical in
 theorem det_linV {q : ℕ} {g : GL (n' ⊕ Fin (c + 1)) k} (hg : InN q g) : (linV (n := n) g.val).det = 1 := by
   rw [← det_transpose]
   refine GlobalTheory.RootExSource.det_eq_one_of_unip (fun a => lev q a.1.2) _ fun a b hab => ?_
@@ -230,7 +228,6 @@ def movers : Subgroup (GL (n' ⊕ Fin (c + 1)) k) where
 
 variable {ν n c n'}
 
-open Classical in
 theorem mem_movers_of_inN {q : ℕ} (hq : q = c / 2 + 1 ∨ (c % 2 = 1 ∧ q = c / 2 + 2))
     {g : GL (n' ⊕ Fin (c + 1)) k} (hg : InN q g) : g ∈ movers ν n c n' := by
   intro x₀
@@ -249,7 +246,6 @@ theorem symN_le_movers : symN k n' (c + 1) ≤ movers ν n c n' := by
   · omega
 
 
-open Classical in
 theorem exists_embX_mp (κ : GL n' k) (hκ : valuation k (gdet κ : k) = 1) (x₀ : Matrix n n' k) :
     ∃ φ : (StepVar n c n' → k) ≃ᵐ (StepVar n c n' → k), MeasurePreserving φ (stepVol ν n c n') (stepVol ν n c n') ∧
       ∀ e, stepPt x₀ e * (embX (c + 1) κ).val = stepPt (x₀ * κ.val) (φ e) := by

@@ -383,11 +383,9 @@ theorem radical_positive_each_embedding (Λ : Submodule (𝓞 E) S.V) {T T' : E}
 
 end Gen2
 
-section Gen3
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ}
 
-end Gen3
 
 section D7b
 
@@ -412,7 +410,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module
 
 section A
 
@@ -905,7 +902,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module
 
 section B
 
@@ -1313,7 +1309,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -1361,7 +1356,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -1472,7 +1466,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module
 
 section Gen
 
@@ -1558,7 +1551,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module
 
 section Gen
 
@@ -1791,7 +1783,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module
 
 section C
 
@@ -4543,7 +4534,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module IsDedekindDomain
 
 section Den
 
@@ -4912,7 +4902,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module
 
 section I
 
@@ -5803,7 +5792,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module
 
 section Gen
 
@@ -5953,7 +5941,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module Formalism.HermitianLatticesTheory
 
 section Fin
 
@@ -6044,7 +6031,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module Formalism.HermitianLatticesTheory
 
 section H1
 
@@ -6203,7 +6189,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module Formalism.HermitianLatticesTheory
 
 section H2
 
@@ -6334,7 +6319,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module Formalism.HermitianLatticesTheory
 
 section H3
 
@@ -6472,7 +6456,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module Formalism.HermitianLatticesTheory
 
 section H4
 
@@ -6660,7 +6643,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module Formalism.HermitianLatticesTheory
 
 section H5
 
@@ -6710,7 +6692,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -6821,10 +6802,8 @@ theorem lattice_theorem_B (D : D7) : VanishingOnXAndXPlusGluing.Conclusion4 D :=
 theorem lemma_one_section (D : D7) : Formalism.MainNotions.S.UnitaryVolumeMass.stLem1 D := lattice_lemma_one D
 theorem theorem_B_section (D : D7) : Formalism.MainNotions.S.UnitaryVolumeMass.stThmB D := lattice_theorem_B D
 
-section Fam
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
-end Fam
 
 end Formalism.MainNotions.LatticeGluingRadicals
 
@@ -6985,7 +6964,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open NumberField Module
 
 section Chain
 
@@ -7058,7 +7036,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module Formalism.HermitianLatticesTheory
 
 section Tr
 
@@ -7295,7 +7272,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module Formalism.HermitianLatticesTheory
 
 section Norm
 
@@ -7414,7 +7390,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module Formalism.HermitianLatticesTheory
 
 section Main
 
@@ -7544,7 +7519,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module
 
 section Orth
 
@@ -7635,7 +7609,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module Formalism.HermitianLatticesTheory
 
 section J8
 
@@ -7736,7 +7709,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module Formalism.HermitianLatticesTheory
 
 section modelEmbedding
 
@@ -7831,7 +7803,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module Formalism.HermitianLatticesTheory
 
 section J9
 
@@ -8020,7 +7991,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -8060,7 +8030,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module
 
 section K1
 
@@ -8176,7 +8145,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module
 
 section K2
 
@@ -8314,7 +8282,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module
 
 section K3
 
@@ -8475,7 +8442,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module
 
 section InfinitePlaceStep
 
@@ -8634,7 +8600,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module
 
 section K5
 
@@ -8784,7 +8749,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module
 
 section Defs
 
@@ -8933,7 +8897,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module
 
 section K7
 
@@ -9039,7 +9002,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module
 
 section K8
 
@@ -9159,7 +9121,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -9298,7 +9259,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.LatticeGluingRadicals
 
-open Formalism.BasicNotions Formalism.MainNotions.S.Lat NumberField Module
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -9309,10 +9269,8 @@ theorem lattice_theorem_A_from_degenerate (D : D7) : VanishingOnXAndXPlusGluing.
 
 theorem theorem_A_section (D : D7) : Formalism.MainNotions.S.UnitaryVolumeMass.stThmA D := lattice_theorem_A_from_degenerate D
 
-section Fam
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
-end Fam
 
 end Formalism.MainNotions.LatticeGluingRadicals
 

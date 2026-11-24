@@ -135,7 +135,6 @@ private theorem card_zero {k L : Type} [Field k] [Field L] (ι : k →+* L) {σ 
   congr 1
   exact Multiset.filter_congr (fun i _ => eq_comm)
 
-open Classical in
 private theorem coeff_mid {L : Type} [Field L] {σ : Type} [Fintype σ] [DecidableEq σ] (θ : σ → L) :
     (∏ i, (Polynomial.X - Polynomial.C (θ i))).coeff (Finset.univ.filter (fun i => θ i = 0)).card =
       (-1) ^ (Finset.univ.filter (fun i => ¬ θ i = 0)).card *

@@ -359,7 +359,6 @@ def IsInv (f : (urT p K).H 2 →+ QZ) : Prop :=
     f ((urT p K).coch.cls 2 z hz) = QuotientAddGroup.mk (t (frobLK p K (MaximalUnramifiedExtension p K)))
 
 
-open Classical in
 def invUr : (urT p K).H 2 →+ QZ := if h : ∃ f, IsInv p K f then h.choose else 0
 
 end

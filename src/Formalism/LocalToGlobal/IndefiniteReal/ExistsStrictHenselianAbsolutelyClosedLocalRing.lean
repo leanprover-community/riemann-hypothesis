@@ -173,7 +173,6 @@ section Alg
 variable {K : Type} [Field K] {G : Type} [Group G] [Fintype G]
 
 
-open Classical in
 def epA (H : Subgroup G) (χ : H →* (𝓞 K)ˣ) : MonoidAlgebra K G :=
   ((Nat.card H : ℕ) : K)⁻¹ •
     ∑ h : H, MonoidAlgebra.single (h : G) ((((χ h⁻¹ : (𝓞 K)ˣ) : 𝓞 K) : K))

@@ -49,13 +49,10 @@ namespace Formalism.L2.Col
 
 open Module Module.End Polynomial
 
-section Link
 
 variable {L Pl Pt : Type} [Field L]
 
-end Link
 
-section Conc
 
 open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory
 
@@ -63,7 +60,6 @@ variable {K : Type} [Field K] [NumberField K] [StarRing K]
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ}
   {ST SG : Finset (HeightOneSpectrum (𝓞 E))} {S : GSD K}
 
-end Conc
 
 section Genus
 
@@ -87,7 +83,6 @@ end Genus
 
 section Counting
 
-open NumberField Formalism.HermitianLatticesTheory Formalism.BasicNotions
 
 def wSeq {n : ℕ} (lam : DomWeight n) : ℕ → ℝ := fun i => if h : i < n then ((lam.w ⟨i, h⟩ : ℤ) : ℝ) - i else 0
 
@@ -96,13 +91,11 @@ def WeylDim {n : ℕ} (lam : DomWeight n) : Prop :=
 
 end Counting
 
-section Alcove
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.DIV
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
 
-end Alcove
 
 abbrev MinkowskiBound : Prop := Formalism.HermitianLatticeCounting.S6.MinkowskiBound
 

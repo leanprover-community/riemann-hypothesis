@@ -1376,7 +1376,6 @@ end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P.EtaleIntegralityFacts.Crit
 
-open Formalism.FourierDecayAlt.G Formalism.FourierDecayAlt.P Formalism.FourierDecayAlt.P.EtaleIntegralityFacts Matrix Filter Topology
 
 theorem derivBound_mono {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] {s k q : ℕ} {Kd : Set ℂ}
     {bd : Mat s → ℝ} {Φ : Mat s → V} (h : DerivBound k Kd bd Φ) (hq : q ≤ k) : DerivBound q Kd bd Φ :=

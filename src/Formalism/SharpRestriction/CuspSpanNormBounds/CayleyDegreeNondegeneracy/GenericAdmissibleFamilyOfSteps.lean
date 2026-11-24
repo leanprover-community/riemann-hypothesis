@@ -54,17 +54,13 @@ open scoped ENNReal
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section Eqv
 
 variable (D : D7)
 
-end Eqv
 
-section Sat
 
 variable (D : D7)
 
-end Sat
 
 section Sub
 
@@ -80,11 +76,9 @@ def PrimitiveMeanCorankOne (C' Cl Cg cb Cu cT CT C0 A : ℝ) : Prop :=
 
 end Sub
 
-section Fam
 
 variable {eps : ℝ} (Fm : FamP eps)
 
-end Fam
 
 end Formalism.MainNotions.BridgeLemma₂
 

@@ -67,12 +67,10 @@ end FlatBC
 
 namespace FlatBC
 
-section Hom
 
 variable {R : Type*} [CommRing R] {X Y Z : Type*} [AddCommGroup X] [Module R X] [AddCommGroup Y]
   [Module R Y] [AddCommGroup Z] [Module R Z]
 
-end Hom
 
 end FlatBC
 
@@ -87,7 +85,6 @@ end FlatBC
 
 namespace FlatBC
 
-section CechDeg
 
 open Cech
 
@@ -95,21 +92,17 @@ variable {n : ℕ} {U : Finset (Fin n)} {R : Type*} [CommRing R] {G : Cell U →
   [∀ I, AddCommGroup (G I)] [∀ I, Module R (G I)] {deg : ∀ I, Submodule R (G I)}
   {ρ : ∀ I J : Cell U, I.1 ⊆ J.1 → G I →ₗ[R] G J}
 
-end CechDeg
 
-section Poly
 
 variable (S : Type u) [CommRing S] (S' : Type u) [CommRing S'] [Algebra S S'] (N : ℕ)
 
 variable {S S' N}
 
-end Poly
 
 end FlatBC
 
 namespace FlatBC
 
-section Loc
 
 variable {S : Type u} [CommRing S] {N : ℕ}
 
@@ -124,13 +117,11 @@ variable {S' : Type u} [CommRing S'] [Algebra S S']
 
 
 
-end Loc
 
 end FlatBC
 
 namespace FlatBC
 
-section Grade
 
 variable {S : Type u} [CommRing S] {N : ℕ}
   {M : Type v} [AddCommGroup M] [Module (Poly S N) M] [Module S M] [IsScalarTower S (Poly S N) M]
@@ -145,13 +136,11 @@ variable {S : Type u} [CommRing S] {N : ℕ}
 
 
 
-end Grade
 
 end FlatBC
 
 namespace FlatBC
 
-section Final
 
 variable {S : Type u} [CommRing S] {N : ℕ}
   {M : Type v} [AddCommGroup M] [Module (Poly S N) M] [Module S M] [IsScalarTower S (Poly S N) M]
@@ -163,7 +152,6 @@ variable {S : Type u} [CommRing S] {N : ℕ}
   (hf : IsBaseChange S' f) (𝓜 : GradedPMod S N M) (𝓜' : GradedPMod S' N M')
   (hdeg : ∀ (c : ℤ) (m : M), m ∈ 𝓜.piece c → f m ∈ 𝓜'.piece c) (c : ℤ)
 
-end Final
 
 end FlatBC
 

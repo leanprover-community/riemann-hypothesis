@@ -81,7 +81,6 @@ theorem rho_basis_expand {ι : Type} [Fintype ι] {n : ℕ} {lam : ι → DomWei
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [Submodule.coe_smul, Z.basis_coe, LinearMap.toMatrix_apply]
 
-open Classical in
 theorem gram_lattice_block_diagonal (Z : ZBasis ((D.fm u).lam 0)) (v : InfinitePlace D.what₂.LL) (i i' : Z.J0) (c c' : (D.mem u).C.cls 0) :
     majAt ((D.fm u).lat 0).b ((D.fm u).lat 0).X v ((coE CV hTV).symm (Pi.single c (Z.basis D.what₂.LL i)))
         ((coE CV hTV).symm (Pi.single c' (Z.basis D.what₂.LL i'))) =

@@ -60,11 +60,9 @@ end Formalism.L2.Ker
 
 namespace Formalism.L2.Ker
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br Formalism.GradedWeylDivisibility Formalism.REAL
 
 section LcTen
 
-open Formalism.BranchingDeterminantCap
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι]
 
@@ -91,11 +89,9 @@ end Formalism.L2.Ker
 
 namespace Formalism.L2.Ker
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br Formalism.GradedWeylDivisibility Formalism.REAL
 
 section LcBr
 
-open Formalism.BranchingDeterminantCap
 
 variable {N n : ℕ} (hN : N = n + 1) (l : DomWeight N) (s : DomWeight n)
 
@@ -103,7 +99,6 @@ end LcBr
 
 section LcBrTen
 
-open Formalism.BranchingDeterminantCap
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι] {N n : ℕ} (hN : N = n + 1) (l : ι → DomWeight N) (s : ι → DomWeight n)
 
@@ -119,7 +114,6 @@ end Formalism.L2.Ker
 
 namespace Formalism.L2.Ker
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br Formalism.GradedWeylDivisibility Formalism.REAL
 
 section LcFrameTen
 
@@ -147,11 +141,9 @@ end Formalism.L2.Ker
 
 namespace Formalism.L2.Ker
 
-open Formalism.BasicNotions Formalism.L2.DIV Formalism.L2.Col Formalism.L2.Col.Br Formalism.GradedWeylDivisibility Formalism.REAL
 
 section LcLog
 
-open Formalism.MainNotions.product_first_zeroth_parts
 
 variable {D : Formalism.BasicNotions.D7} {u : D.what₂.Word}
 

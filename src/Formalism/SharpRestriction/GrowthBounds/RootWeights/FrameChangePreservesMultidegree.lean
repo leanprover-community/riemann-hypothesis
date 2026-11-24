@@ -129,7 +129,6 @@ theorem frame_evaluation_comp_change {R : Type} [CommRing R] {ι : Type} {r : �
     · simp [frameCoordinateEvaluation, eBeta, hS]
 
 
-open Classical in
 def letterDegreeWeight {ι : Type} {r : ℕ} (i : ι) : ι × Fin r → ℕ := fun v => if v.1 = i then 1 else 0
 
 theorem letter_weight_eq_multidegree {ι : Type} [Fintype ι] {r : ℕ} (i : ι) (m : ι × Fin r →₀ ℕ) :
@@ -170,7 +169,6 @@ theorem frame_change_preserves_multidegree {R : Type} [CommRing R] {ι : Type} [
   have := frame_change_weighted_homogeneous LL S j g0 g0inv i (d i) G hG' (mem_support_iff.1 hm)
   rwa [letter_weight_eq_multidegree] at this
 
-open Classical in
 theorem last_column_weight_eq {ι : Type} [Fintype ι] {r : ℕ} [NeZero r] (LL : Letters ι) (S : Set ι)
     (m : ι × Fin r →₀ ℕ) :
     eWt LL S m = ∑ i : ι, (if i ∈ S then

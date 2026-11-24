@@ -82,7 +82,6 @@ theorem killB_X_of_not_mem (B : Set K) {v : Σ k, ι k} (hv : v.1 ∉ B) :
   classical
   simp [killB, hv]
 
-open Classical in
 theorem killB_monomial (B : Set K) (d : (Σ k, ι k) →₀ ℕ) (a : R) :
     killB (R := R) B (monomial d a) =
       if ∀ v ∈ d.support, v.1 ∉ B then monomial d a else 0 := by
@@ -97,7 +96,6 @@ theorem killB_monomial (B : Set K) (d : (Σ k, ι k) →₀ ℕ) (a : R) :
     rw [Finsupp.prod, Finset.prod_eq_zero hv, mul_zero]
     rw [if_pos hB, zero_pow (Finsupp.mem_support_iff.mp hv)]
 
-open Classical in
 theorem coeff_killB (B : Set K) (p : MRing ι R) (d : (Σ k, ι k) →₀ ℕ) :
     AddMonoidAlgebra.coeff (killB B p) d = if ∀ v ∈ d.support, v.1 ∉ B then AddMonoidAlgebra.coeff p d else 0 := by
   induction p using MvPolynomial.induction_on' with

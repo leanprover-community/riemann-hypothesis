@@ -131,7 +131,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.TwistedPlaces
 
-open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain
 
 variable {D : D7} (L : SizeData₂ D)
 
@@ -271,7 +270,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.TwistedPlaces
 
-open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain
 
 variable {D : D7} (L : SizeData₂ D)
 
@@ -532,7 +530,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.TwistedPlaces
 
-open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain
 
 variable {D : D7} (L : SizeData₂ D)
 
@@ -553,7 +550,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.TwistedPlaces
 
-open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain
 
 variable {D : D7} (L : SizeData₂ D)
 
@@ -718,7 +714,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.TwistedPlaces
 
-open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain
 
 variable {D : D7} (L : SizeData₂ D)
 
@@ -883,7 +878,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.TwistedPlaces
 
-open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain
 
 variable {D : D7} (L : SizeData₂ D)
 
@@ -893,7 +887,6 @@ variable {C : ℝ} (hC : 0 < C) (P : ParameterChoice' D L) (hPar : ParametersPol
 include hC P hPar hL
 
 
-open Classical in
 theorem point_bound (tb : Tab L) (hA : AdmT L tb C P) (S : Finset ℕ) (hS : ∀ l ∈ S, l.Prime) :
     6 + UpperTheory.KStar.nuBudget D + Real.log (Formalism.MainNotions.N.hE D.host : ℝ) + Real.log (D.what₂.restRowsFiniteGroupCard : ℝ) +
       ∑ l ∈ S, Real.log l * lamG L tb C l ≤ 2000 * (C + 1) ^ 3 * (D.R.f * D.R.m * L.sc.b * large₂ L ^ 2) := by

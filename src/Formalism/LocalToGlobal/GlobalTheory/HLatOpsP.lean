@@ -772,11 +772,9 @@ theorem dual_numbers : DualNumbers := by
 
 end DualSec
 
-section HtMap
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 
-end HtMap
 
 section Emb
 
@@ -828,14 +826,12 @@ theorem comap_fg {V W : Type} [AddCommGroup V] [Module K V] [Module (𝓞 K) V]
 
 end Emb
 
-section Ext
 
 open TensorProduct
 
 variable {K K' : Type} [Field K] [NumberField K] [StarRing K] [Field K'] [NumberField K']
   [StarRing K'] [Algebra K K']
 
-end Ext
 
 section Record
 
@@ -843,10 +839,8 @@ open Formalism.BasicNotions.DV
 
 end Record
 
-section Checks
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 
-end Checks
 
 end Formalism.L2.GlobalTheoryTheory.HLatOps

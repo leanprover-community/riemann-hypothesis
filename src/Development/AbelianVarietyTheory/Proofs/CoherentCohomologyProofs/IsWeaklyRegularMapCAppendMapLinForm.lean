@@ -219,7 +219,6 @@ theorem linFormHom_comp_eq_id {u v : J → R} (S : Set ι) {j₀ : J} (h₀ : v 
   · simp [linFormHom_X_of_notMem _ hx]
 
 
-open Classical in
 def linFormInvCoeff (u : J → R) (j₀ : J) (hu : IsUnit (u j₀)) (j : J) : R :=
   by
     classical

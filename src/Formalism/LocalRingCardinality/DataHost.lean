@@ -167,7 +167,6 @@ open Classical in
 noncomputable def topPlaces : Finset R.GG := H.TT.image R.tau1
 
 
-open Classical in
 noncomputable def thickPlaces : Finset R.GG :=
   H.T2.image (fun s => R.tau2 (R.dig s + H.u0))
 

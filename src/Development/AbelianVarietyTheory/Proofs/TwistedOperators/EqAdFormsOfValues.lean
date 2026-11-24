@@ -141,7 +141,6 @@ theorem exists_gf_reps (rp : ClassReps G) :
     exact hg.symm.trans e2
 
 
-open Classical in
 theorem span_colOf_psi {θ : InfFam D} (hθ : IsInfFam θ) (rp : ClassReps G) {n : ℕ} (e : Fin n ≃ TestIx G × VVIdx (LaP G))
     (Φ : G.Datum) :
     Submodule.span ℂ ((fun a => colOf θ (psi rp e a)) '' {a | datumOf e a = Φ}) = Cols G θ := by

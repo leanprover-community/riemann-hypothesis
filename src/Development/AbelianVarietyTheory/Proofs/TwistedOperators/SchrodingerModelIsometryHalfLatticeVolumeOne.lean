@@ -135,7 +135,6 @@ theorem halfInd_add {a : AE D} {Λ : AddSubgroup (WO S T)} {l : WO S T} (hl : l 
   simpa using isHalf_sub h hl'
 
 
-open Classical in
 theorem integral_waves (hψ : IsStdChar D ψ (-1)) (hS : IsSelfDualC S ΛS) (hT : IsSelfDualC T ΛT) {a : AE D}
     (ha : IsSplitIdem D a) {G : Type} [AddCommGroup G] [MeasurableSpace G] [MeasurableAdd G] (ν : Measure G)
     [ν.IsAddRightInvariant] {κ : WO S T → G} {σ : G → WO S T} (h1 : ∀ z, IsHalf a (σ z)) (h2 : ∀ z, κ (σ z) = z)

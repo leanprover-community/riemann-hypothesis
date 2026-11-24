@@ -95,7 +95,6 @@ end Formalism.L2.SG.Pf.DensCongPf
 
 namespace Formalism.L2.SG.Pf.DensCongPf
 
-open Formalism.MainNotions.S ValuativeRel
 open scoped Matrix
 
 section Main
@@ -173,8 +172,6 @@ end Formalism.L2.SG.Pf.DensCongPf
 
 namespace Formalism.L2.SG.Pf.DensCongPf
 
-open Formalism.MainNotions.S ValuativeRel
-open scoped Matrix
 
 section Count
 

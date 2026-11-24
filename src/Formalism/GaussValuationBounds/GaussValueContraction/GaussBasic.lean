@@ -70,7 +70,6 @@ theorem minLeGaussValAdd : GaussAdd := by
   · rw [min_eq_right (ENat.toENNReal_le.mpr h)]
     exact ENat.toENNReal_le.mpr (by rwa [min_eq_right h] at h2)
 
-open IsDiscreteValuationRing in
 theorem gaussValC : GaussC := by
   intro O _ _ _ x _ c
   refine le_antisymm ((iInf_le _ 0).trans (by simp)) (le_iInf fun n => ?_)
@@ -79,7 +78,6 @@ theorem gaussValC : GaussC := by
   · rw [PowerSeries.coeff_C, if_neg hn.ne', addVal_zero]
     simp
 
-open IsDiscreteValuationRing in
 theorem gaussValUnit : GaussUnit := by
   intro O _ _ _ x _ u hu
   obtain ⟨w, hw⟩ := hu.map (PowerSeries.constantCoeff (R := O))

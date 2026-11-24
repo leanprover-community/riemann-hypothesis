@@ -195,7 +195,6 @@ namespace NetData
 variable (Nt : NetData B j ka)
 
 
-open Classical in
 def runN : ∀ j' (ka' : WeightFamilies.Wt D j'), (B.KO →+* ℂ) → B.Cusp j' ka' → ℝ :=
   fun j' ka' => if h : (⟨j', ka'⟩ : Σ i, WeightFamilies.Wt D i) = ⟨j, ka⟩ then
       cast (congrArg (fun p : (Σ i, WeightFamilies.Wt D i) => (B.KO →+* ℂ) → B.Cusp p.1 p.2 → ℝ) h.symm) Nt.netN

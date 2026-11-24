@@ -124,11 +124,9 @@ theorem hs_mul_right_le (X B : Matrix ι ι ℂ) : hs (X * B) ≤ hs X * ‖B‖
 
 end HS
 
-section Inner
 
 variable {f : ℕ} {p q : Fin f → ℕ}
 
-end Inner
 
 section Frame
 
@@ -142,33 +140,27 @@ section ExpBound
 
 end ExpBound
 
-section Dim
 
 variable (p q : ℕ)
 
-end Dim
 
 end UnitaryRecombination
 
 namespace UnitaryRecombination
 
-section Places
 
 variable {ι : Type*} [Fintype ι]
 
 variable (F : OrthoFrame)
 
-end Places
 
 end UnitaryRecombination
 
 namespace UnitaryRecombination
 
-section Products
 
 variable (F : OrthoFrame)
 
-end Products
 
 end UnitaryRecombination
 

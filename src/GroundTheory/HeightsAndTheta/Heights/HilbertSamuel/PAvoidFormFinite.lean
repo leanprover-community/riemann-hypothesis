@@ -206,7 +206,6 @@ theorem cmp_of_homog {h : MRingOver ℂ ι} {b : K → ℕ} (hh : IsMultiHomog h
       rfl
 
 
-open Classical in
 theorem cmp_mul {q : MRingOver ℂ ι} {d : K → ℕ} (hq : IsMultiHomog q d) (D : K → ℕ)
     (p : MRingOver ℂ ι) : cmp D (p * q) = if d ≤ D then cmp (D - d) p * q else 0 := by
   classical
@@ -288,11 +287,9 @@ theorem eval_cmp_eq_zero {S : Set (MRingOver ℂ ι)} (hS : ∀ s ∈ S, ∃ a, 
     · simp
 
 
-open Classical in
 def spike (j : ∀ k, ι k) (f : K → ℕ) : (Σ k, ι k) →₀ ℕ :=
   Finsupp.equivFunOnFinite.symm (fun p => if p.2 = j p.1 then f p.1 else 0)
 
-open Classical in
 theorem spike_apply (j : ∀ k, ι k) (f : K → ℕ) (p : Σ k, ι k) :
     spike j f p = if p.2 = j p.1 then f p.1 else 0 := by
   classical
@@ -525,7 +522,6 @@ theorem phi_smul {G : MRingOver ℂ ι} {e : K → ℕ} (hG : IsMultiHomog G e) 
   rw [hpow, mul_pow, mul_div_mul_left _ _ (pow_ne_zero _ hP)]
 
 
-open Classical in
 theorem isMultiHomog_X (k : K) (a : ι k) :
     IsMultiHomog (X ⟨k, a⟩ : MRingOver ℂ ι) (fun k' => if k' = k then 1 else 0) := by
   classical

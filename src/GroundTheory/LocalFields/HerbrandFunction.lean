@@ -177,7 +177,6 @@ theorem inv_relIndex_eq_sum (t : ℝ) :
     exact_mod_cast hmul
   rw [← hmulR, mul_inv, mul_assoc, inv_mul_cancel₀ hc, mul_one]
 
-open Classical in
 theorem antitone_indicator_lowerRamificationGroupReal (σ : L ≃ₐ[K] L) :
     Antitone fun t : ℝ ↦ if σ ∈ lowerRamificationGroup K L 0 ∧
       σ ∈ lowerRamificationGroupReal K L t then (1 : ℝ) else 0 := by
@@ -202,7 +201,6 @@ theorem integral_indicator_Iic {c : ℝ} (hc : 0 ≤ c) (u : ℝ) :
     simp [hu]
 
 
-open Classical in
 theorem integral_indicator_lowerRamificationGroupReal (σ : L ≃ₐ[K] L) (u : ℝ) :
     ∫ t in (0 : ℝ)..u, (if σ ∈ lowerRamificationGroup K L 0 ∧
       σ ∈ lowerRamificationGroupReal K L t then (1 : ℝ) else 0) =
@@ -231,7 +229,6 @@ theorem integral_indicator_lowerRamificationGroupReal (σ : L ≃ₐ[K] L) (u : 
   · simp [h0]
 
 
-open Classical in
 theorem herbrandPhi_eq_sum (u : ℝ) :
     herbrandPhi K L u = (Nat.card (lowerRamificationGroup K L 0) : ℝ)⁻¹ *
       ∑ σ : L ≃ₐ[K] L, if σ ∈ lowerRamificationGroup K L 0 then
@@ -244,7 +241,6 @@ theorem herbrandPhi_eq_sum (u : ℝ) :
     exact (antitone_indicator_lowerRamificationGroupReal σ).intervalIntegrable
 
 omit [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K] in
-open Classical in
 theorem card_filter_mem {G : Type*} [Group G] [Fintype G] (H : Subgroup G) :
     ((Finset.univ.filter (· ∈ H)).card : ℝ) = Nat.card H := by
   rw [Nat.card_eq_fintype_card, Fintype.card_subtype]

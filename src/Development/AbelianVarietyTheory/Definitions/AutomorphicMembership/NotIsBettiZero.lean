@@ -140,7 +140,6 @@ def IsBetti (k : s.Comp) (τ : D.what₂.Tau) (σ : (Φ.C k).Y.Fn) (b : ℂˣ) :
     CoordAtC (Φ.C k) ((s.U κ.σ₀).un k x) (detEx S τ) σ a ↔ a = b * bettiCo s L k τ x.1
 
 
-open Classical in
 def flBetti (k : s.Comp) (τ : D.what₂.Tau) : ℂˣ :=
   if h : ∃ b, IsBetti s Φ L k τ (flatSec s Φ k τ) b then h.choose else 1
 

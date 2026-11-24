@@ -101,7 +101,6 @@ theorem nc_gU_eq (K : Formalism.MainNotions.G.Consts) (j : ℕ) :
   rw [nc_capU X Y hT hL u w hg t0 ht0]
   rfl
 
-open Classical in
 include hL ht0 in
 theorem growth_exclusion_sum_eq (K : Formalism.MainNotions.G.Consts) (j : ℕ) :
     Formalism.MainNotions.G.g0 X K (Formalism.MainNotions.G.aL L) (Formalism.MainNotions.G.bL L) (D.what₂.places.resChar w) j t0 =

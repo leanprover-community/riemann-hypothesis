@@ -96,7 +96,6 @@ noncomputable def idelesCohomologySum (n : ℕ) :
     (⨁ v : Place K, cohomology (placeRep L v) n) →+ cohomology (ideleRep K L) n :=
   DirectSum.toAddMonoid fun v => (cohomologyMap (placeEmbed v) n).hom.toAddMonoidHom
 
-open Classical in
 theorem idelesCohomologySum_of (n : ℕ) (v : Place K) (x : cohomology (placeRep L v) n) :
     idelesCohomologySum L n (DirectSum.of (fun v => cohomology (placeRep L v) n) v x) =
       (cohomologyMap (placeEmbed v) n).hom x := by
@@ -104,7 +103,6 @@ theorem idelesCohomologySum_of (n : ℕ) (v : Place K) (x : cohomology (placeRep
   exact DirectSum.toAddMonoid_of (β := fun v => cohomology (placeRep L v) n) _ v x
 
 
-open Classical in
 theorem placeProj_idelesCohomologySum (n : ℕ) (ξ : ⨁ v : Place K, cohomology (placeRep L v) n)
     (v : Place K) : (cohomologyMap (placeProj v) n).hom (idelesCohomologySum L n ξ) = ξ v := by
   classical
@@ -154,7 +152,6 @@ def sIndexMain (S : Finset (HeightOneSpectrum (𝓞 K))) :
   ⟨Sum.map id Sum.inl, Sum.map_injective.2 ⟨fun _ _ h => h, Sum.inl_injective⟩⟩
 
 omit [IsGalois K L] in
-open Classical in
 theorem subtype_sEmbInf (S : Finset (HeightOneSpectrum (𝓞 K))) (n : ℕ) (v : InfinitePlace K)
     (z : cohomology (Rep.of (infiniteUnitsAboveRep L v)) n) :
     (cohomologyMap (Rep.subtype _ _ (sIdelesSubmodule_stable K L S)) n).hom
@@ -165,7 +162,6 @@ theorem subtype_sEmbInf (S : Finset (HeightOneSpectrum (𝓞 K))) (n : ℕ) (v :
     (idelesCohomologySum_of n (.inl v) z).symm
 
 omit [IsGalois K L] in
-open Classical in
 theorem subtype_sEmbFin (S : Finset (HeightOneSpectrum (𝓞 K))) (n : ℕ)
     (v : (S : Set (HeightOneSpectrum (𝓞 K))))
     (z : cohomology (Rep.of (finiteUnitsAboveRep L v.1)) n) :
@@ -177,7 +173,6 @@ theorem subtype_sEmbFin (S : Finset (HeightOneSpectrum (𝓞 K))) (n : ℕ)
     (idelesCohomologySum_of n (.inr v.1) z).symm
 
 
-open Classical in
 theorem idelesCohomologySum_surjective {n : ℕ} (hn : 1 ≤ n) :
     Function.Surjective (idelesCohomologySum (K := K) L n) := by
   intro x

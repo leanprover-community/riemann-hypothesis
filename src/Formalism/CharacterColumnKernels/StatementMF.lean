@@ -64,11 +64,9 @@ abbrev EpsDual (O OO Q : Type*) [CommRing O] [Ring OO] [Algebra O OO] [AddCommGr
     (ε : OO) : Type _ :=
   epsIdeal O ε →ₗ[O] Q
 
-section EpsDual
 variable (O OO Q : Type*) [CommRing O] [Ring OO] [Algebra O OO] [AddCommGroup Q] [Module O Q]
   (ε : OO)
 
-end EpsDual
 
 def StatMatlis : Prop :=
   ∀ (O N : Type*) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [AddCommGroup N]

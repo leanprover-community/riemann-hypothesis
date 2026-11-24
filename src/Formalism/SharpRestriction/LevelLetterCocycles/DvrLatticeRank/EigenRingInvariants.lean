@@ -228,11 +228,9 @@ open PowerSeries Formalism.IrreducibleCountingLemmas.WindowSums
 
 variable {l : ℕ} [hl : Fact l.Prime]
 
-section O
 
 variable {O : Type*} [CommRing O] [Algebra ℤ_[l] O] {a ζ : O}
 
-end O
 
 end DualFramesAlt.eigenRingInvariants
 
@@ -242,13 +240,11 @@ open PowerSeries Formalism.IrreducibleCountingLemmas.WindowSums Classical
 
 variable {l : ℕ} [hl : Fact l.Prime]
 
-section Act
 
 variable {O : Type*} [CommRing O] [Algebra ℤ_[l] O]
 
 variable [IsDomain O]
 
-end Act
 
 end DualFramesAlt.eigenRingInvariants
 
@@ -258,12 +254,10 @@ open PowerSeries Formalism.IrreducibleCountingLemmas.WindowSums Classical
 
 variable {l : ℕ} [hl : Fact l.Prime]
 
-section Fiber
 
 variable {O : Type*} [CommRing O] [IsDomain O] [IsLocalRing O] [Algebra ℤ_[l] O]
 
 variable [IsAdicComplete (IsLocalRing.maximalIdeal O) O]
 
-end Fiber
 
 end DualFramesAlt.eigenRingInvariants

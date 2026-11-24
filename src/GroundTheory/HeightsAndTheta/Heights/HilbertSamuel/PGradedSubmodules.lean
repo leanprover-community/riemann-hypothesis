@@ -182,7 +182,6 @@ end GradedSubmodules
 
 open GradedSubmodules in
 attribute [local instance] MvPolynomial.weightedGradedAlgebra in
-open Classical in
 theorem GradedSubmodules.proof : GradedSubmodules.Statement := by
   intro S _ K _ ι _ M _ _ _ _ 𝓜 hM
   refine ⟨?_, fun P hP => ?_⟩

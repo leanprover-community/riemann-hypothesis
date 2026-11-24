@@ -108,7 +108,6 @@ theorem norm_le_one_of_mem_integralFiniteAdeles {a : FiniteAdeleRing (𝓞 K) K}
   norm_le_one_of_mem v (ha v)
 
 
-open scoped Classical in
 theorem exists_dirichlet_box : ∃ B : ℝ, 0 < B ∧ ∀ (a : 𝔸[K]) (N : ℕ), 0 < N →
     ∃ l : 𝓞 K, l ≠ 0 ∧
       (∀ w : InfinitePlace K, ‖(algebraMap K 𝔸[K] (l : K)).1 w‖ ≤ (N + 1) * B) ∧

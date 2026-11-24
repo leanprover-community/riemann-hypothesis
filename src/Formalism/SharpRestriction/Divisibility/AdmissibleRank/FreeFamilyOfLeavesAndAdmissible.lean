@@ -137,11 +137,9 @@ theorem aMinusQ_mono (D : D7) (j : ℕ) (τ : D.what₂.Tau) (c c' : ℕ) (h : c
   | base => exact le_rfl
   | succ n hn ih => exact (ih (by omega)).trans (aMinusQ_step D j τ n (by omega))
 
-section Family
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
-end Family
 
 end Formalism.MainNotions.DIV
 
@@ -159,7 +157,6 @@ open Formalism.BasicNotions.TH
 
 end Proved
 
-section Split20
 
 set_option linter.unusedVariables false
 
@@ -167,7 +164,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
-end Split20
 
 end Formalism.MainNotions.DIV
 

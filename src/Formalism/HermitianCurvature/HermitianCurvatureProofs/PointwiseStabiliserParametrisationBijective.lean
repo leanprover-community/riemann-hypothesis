@@ -76,9 +76,6 @@ end Formalism.FourierDecayAlt.P.S3x1
 
 namespace Formalism.FourierDecayAlt.P.S3x1
 
-open Matrix Finset
-open Formalism.DoubleCosetMeasures (IsUpUni upUniG isUpUni_mul isUpUni_inv isUpUni_one isUpUni_det)
-open Formalism.FourierDecayAlt.S3
 
 section Count
 
@@ -133,10 +130,8 @@ def mk (a : Matrix (Fin r) (Fin r) A) (b : Matrix (Fin r) (Mid k) A) (c : Matrix
     Matrix (Idx r k) (Idx r k) A :=
   Matrix.fromBlocks a (Matrix.fromCols b c) 0 (Matrix.fromBlocks m e 0 f)
 
-section mk
 variable (a : Matrix (Fin r) (Fin r) A) (b : Matrix (Fin r) (Mid k) A) (c : Matrix (Fin r) (Fin r) A)
     (m : Matrix (Mid k) (Mid k) A) (e : Matrix (Mid k) (Fin r) A) (f : Matrix (Fin r) (Fin r) A)
-end mk
 
 end Count
 
@@ -144,9 +139,6 @@ end Formalism.FourierDecayAlt.P.S3x1
 
 namespace Formalism.FourierDecayAlt.P.S3x1
 
-open Matrix Finset
-open Formalism.DoubleCosetMeasures (IsUpUni upUniG isUpUni_mul isUpUni_inv isUpUni_one isUpUni_det)
-open Formalism.FourierDecayAlt.S3
 
 section Count2
 

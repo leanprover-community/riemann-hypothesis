@@ -65,7 +65,6 @@ theorem _root_.GlobalTheory.FinWeil.rep_inv_apply {Γ : Type} [Group Γ] (ρ : �
     (x : X) : ρ g⁻¹ (ρ g x) = x := by
   rw [← Module.End.mul_apply, ← map_mul, inv_mul_cancel, map_one, Module.End.one_apply]
 
-open Classical in
 open scoped BigOperators in
 variable {R X M : Type} [CommRing R] [AddCommGroup X] [Module R X] [AddCommGroup M] [Module ℂ M] in
 theorem _root_.GlobalTheory.FinWeil.mem_map_rep {Γ : Type} [Group Γ] (ρ : Γ →* Module.End R X) (g : Γ)
@@ -79,7 +78,6 @@ theorem _root_.GlobalTheory.FinWeil.mem_map_rep {Γ : Type} [Group Γ] (ρ : Γ 
     refine ⟨ρ g⁻¹ x, hx, ?_⟩
     rw [← Module.End.mul_apply, ← map_mul, mul_inv_cancel, map_one, Module.End.one_apply]
 
-open Classical in
 open scoped BigOperators in
 variable {R X M : Type} [CommRing R] [AddCommGroup X] [Module R X] [AddCommGroup M] [Module ℂ M] in
 theorem _root_.GlobalTheory.FinWeil.selfDual_map_rep {γ : X → X → ℂ} {Γ : Type} [Group Γ]
@@ -97,7 +95,6 @@ theorem _root_.GlobalTheory.FinWeil.selfDual_map_rep {γ : X → X → ℂ} {Γ 
     have key := H (ρ g a) (Submodule.mem_map_of_mem ha)
     rwa [← hρ g⁻¹, _root_.GlobalTheory.FinWeil.rep_inv_apply] at key
 
-open Classical in
 open scoped BigOperators in
 variable {R X M : Type} [CommRing R] [AddCommGroup X] [Module R X] [AddCommGroup M] [Module ℂ M] in
 theorem _root_.GlobalTheory.FinWeil.isHeis_comp_rep {σ : R →+* R} {w : R} {γ : X → X → ℂ}
@@ -114,7 +111,6 @@ theorem _root_.GlobalTheory.FinWeil.isHeis_comp_rep {σ : R →+* R} {w : R} {γ
   · show W (ρ g x) (W (ρ g y) v) = γ (w • x) y • W (ρ g (x + y)) v
     rw [h.comp, map_add (f := _), ← hρ g (w • x) y, LinearMap.map_smul]
 
-open Classical in
 open scoped BigOperators in
 variable {R X M : Type} [CommRing R] [AddCommGroup X] [Module R X] [AddCommGroup M] [Module ℂ M] in
 private theorem normOp_eq_inv_smul_sumOp (lam : ℕ →* ℂ) (W : X → M →ₗ[ℂ] M)
@@ -122,7 +118,6 @@ private theorem normOp_eq_inv_smul_sumOp (lam : ℕ →* ℂ) (W : X → M →�
     _root_.GlobalTheory.FinWeil.normOp lam W B C v =
       (lam (_root_.GlobalTheory.FinWeil.idx B C))⁻¹ • _root_.GlobalTheory.FinWeil.sumOp W B C v := rfl
 
-open Classical in
 open scoped BigOperators in
 variable {R X M : Type} [CommRing R] [AddCommGroup X] [Module R X] [AddCommGroup M] [Module ℂ M] in
 private theorem exists_linearMap_of_relations (u u' : X → M)
@@ -146,7 +141,6 @@ private theorem exists_linearMap_of_relations (u u' : X → M)
     simp [T]
   simp [hq, T']
 
-open Classical in
 open scoped BigOperators in
 variable {R X M : Type} [CommRing R] [AddCommGroup X] [Module R X] [AddCommGroup M] [Module ℂ M] in
 private theorem apply_translate_eq_smul_of_fixes {σ : R →+* R} {w : R} {γ : X → X → ℂ}
@@ -155,7 +149,6 @@ private theorem apply_translate_eq_smul_of_fixes {σ : R →+* R} {w : R} {γ : 
     W a (W x e) = γ a x • W x e := by
   rw [h.comm, he a ha]
 
-open Classical in
 open scoped BigOperators in
 variable {R X M : Type} [CommRing R] [AddCommGroup X] [Module R X] [AddCommGroup M] [Module ℂ M] in
 private theorem translate_eq_smul_of_sub_mem {σ : R →+* R} {w : R} {γ : X → X → ℂ}
@@ -166,7 +159,6 @@ private theorem translate_eq_smul_of_sub_mem {σ : R →+* R} {w : R} {γ : X �
   rw [he _ hxy, add_sub_cancel] at key
   rw [key, smul_smul, inv_mul_cancel₀ (h.ne_zero _ _), one_smul]
 
-open Classical in
 open scoped BigOperators in
 variable {R X M : Type} [CommRing R] [AddCommGroup X] [Module R X] [AddCommGroup M] [Module ℂ M] in
 private theorem translate_ne_zero' {σ : R →+* R} {w : R} {γ : X → X → ℂ}
@@ -177,7 +169,6 @@ private theorem translate_ne_zero' {σ : R →+* R} {w : R} {γ : X → X → �
   rw [h0, map_zero] at key
   exact he0 ((smul_eq_zero.mp key.symm).resolve_left (h.ne_zero _ _))
 
-open Classical in
 open scoped BigOperators in
 variable {R X M : Type} [CommRing R] [AddCommGroup X] [Module R X] [AddCommGroup M] [Module ℂ M] in
 private theorem sum_smul_translate_eq_zero_of_fixes_selfDual {σ : R →+* R} {w : R} {γ : X → X → ℂ}
@@ -240,7 +231,6 @@ private theorem sum_smul_translate_eq_zero_of_fixes_selfDual {σ : R →+* R} {w
     exact (smul_eq_zero.mp hzero).resolve_left (sub_ne_zero.mpr hγ)
 
 
-open Classical in
 open scoped BigOperators in
 variable {R X M : Type} [CommRing R] [AddCommGroup X] [Module R X] [AddCommGroup M] [Module ℂ M] in
 theorem _root_.GlobalTheory.FinWeil.exists_weil_rep : ∀ {R X M : Type} [CommRing R] [AddCommGroup X]

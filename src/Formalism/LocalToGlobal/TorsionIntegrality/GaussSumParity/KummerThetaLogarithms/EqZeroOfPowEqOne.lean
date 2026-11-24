@@ -315,7 +315,6 @@ theorem letter_shift : LetterShift := by
   · exact shiftType_gLog (K := K) hl σ (fun s : ZMod d => s)
   · exact shiftType_gLog (K := K) hl σ (fun s : ZMod d => ((s, a, b) : ZMod d × Fin N0 × Fin N1))
 
-open KernelCokernelKilling in
 theorem ShiftIP_of_frobSq : FrobSq → ShiftIP := by
   intro hF
   unfold ShiftIP

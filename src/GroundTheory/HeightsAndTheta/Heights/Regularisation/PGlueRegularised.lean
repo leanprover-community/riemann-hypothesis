@@ -130,7 +130,6 @@ theorem arg_contDiffAt (ρ : Mollifier D) (η : Fin R.N → X → ℝ) {Cη K t 
 end RegChartData
 
 
-open Classical in
 theorem GlueRegularised.proof : GlueRegularised.Statement := by
   intro X _ _ _ D A R ρ η Cη K t ε hcut ht hε hball hcmp
   refine ⟨fun i y hy => ?_, fun k x hx w => ?_⟩

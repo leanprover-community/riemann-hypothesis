@@ -284,7 +284,6 @@ end ops
 
 section letters
 
-open Classical
 
 variable {k r : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
@@ -364,7 +363,6 @@ end letters
 
 section final
 
-open Classical
 
 variable {k r : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E]
 
@@ -451,7 +449,6 @@ end final
 
 section smooth
 
-open Classical
 
 variable {k r : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E]
 

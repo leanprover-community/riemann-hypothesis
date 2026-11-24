@@ -118,13 +118,11 @@ end A0
 
 namespace A0
 
-section Weights
 
 variable {ι ζ : Type*} {n : ℕ} {L : Type*} [CommRing L] (isVec : ι → Bool) (S : Set ι) [DecidablePred (· ∈ S)]
 
 variable {isVec S} {last : Bool} {s : ℤ}
 
-end Weights
 
 theorem pathWord_card {R : Type*} [CommRing R] {n N : ℕ} {isVec : ℕ → Bool} {B : ℕ → ℕ} {μ : ℕ → Fin n → ℤ}
     (hp : IsPath n isVec B μ N) (c : ℤ) (Xr : ℕ → Fin n → R) :
@@ -188,23 +186,19 @@ theorem pathWord_card {R : Type*} [CommRing R] {n N : ℕ} {isVec : ℕ → Bool
           rw [if_neg h1] at e ⊢
           omega
 
-section Gen
 
 variable (k : Type) [Field k] {n : ℕ} (isVec : ℕ → Bool) (S : Set ℕ) [DecidablePred (· ∈ S)]
 
 variable {k isVec S}
 
-end Gen
 
 end A0
 
 namespace A0
 
-section Jacobi
 
 variable {R : Type} [CommRing R] {n : ℕ}
 
-end Jacobi
 
 end A0
 

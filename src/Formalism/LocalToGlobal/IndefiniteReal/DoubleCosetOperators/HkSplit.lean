@@ -145,7 +145,6 @@ end Ext
 section Place
 
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
-open scoped TensorProduct
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E]
 
@@ -432,7 +431,6 @@ end Emb
 
 section Level
 
-open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.MainNotions.StandardLattice Formalism.L2.Theta
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

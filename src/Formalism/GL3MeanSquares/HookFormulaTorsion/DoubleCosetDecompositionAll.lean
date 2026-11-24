@@ -54,10 +54,8 @@ namespace Formalism.HermitianLattices.OneDimInversion
 
 open Finset Formalism.LogVandermondeBounds.product_first_zeroth_parts
 
-section T1
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F] {R : Type} [CommRing R]
 
-end T1
 end Formalism.HermitianLattices.OneDimInversion
 
 namespace Formalism.HermitianLattices.RamifiedLatticeOperators
@@ -225,7 +223,6 @@ theorem fubini_over_orbits : Fubini_orbits := by
 end Formalism.HermitianLattices.RamifiedLatticeOperators
 
 namespace Formalism.HermitianLattices.RamifiedLatticeOperators
-open Formalism.HermitianLattices.OneDimInversion
 
 theorem count_of_orbits : Count_orbits := by
   intro Γ A B V _ _ _ _ _ up down G RA RB hud hup hG hfA hfB hRA hRB
@@ -296,7 +293,6 @@ private lemma len_quot_pi {R : Type} [CommRing R] [IsDomain R] [IsDiscreteValuat
 end Formalism.HermitianLattices.OneDimInversion
 
 namespace Formalism.HermitianLattices.RamifiedLatticeOperators
-open Formalism.HermitianLattices.OneDimInversion
 
 theorem lemmaB_length_statement : LemmaB'_length := by
   intro R _ _ _ ϖ hϖ ι _ deg
@@ -305,6 +301,5 @@ theorem lemmaB_length_statement : LemmaB'_length := by
 end Formalism.HermitianLattices.RamifiedLatticeOperators
 
 namespace Formalism.HermitianLattices.RamifiedLatticeOperators
-open Formalism.HermitianLattices.OneDimInversion
 
 end Formalism.HermitianLattices.RamifiedLatticeOperators

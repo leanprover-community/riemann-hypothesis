@@ -69,7 +69,6 @@ def cutL {n : ℕ} (U : Set k) : (Mx k n → ℂ) →ₗ[ℂ] (GL (Fin (n + 1)) 
     split_ifs <;> simp
 
 omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
-open Classical in
 theorem cutL_apply {n : ℕ} (U : Set k) (ψ : Mx k n → ℂ) (x : GL (Fin (n + 1)) k) :
     cutL U ψ x = if (x.val).det ∈ U then ψ x.val else 0 := by
   classical

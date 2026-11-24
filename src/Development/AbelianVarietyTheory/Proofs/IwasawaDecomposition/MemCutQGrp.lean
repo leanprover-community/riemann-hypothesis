@@ -135,7 +135,6 @@ abbrev lvQ (a : I.ι) (i : ℕ) := levQAt I.sel (I.tup a) (I.idx a) (I.Tp a) i
 abbrev rpT (u : B.Word) (a : I.ι) (i : ℕ) (c : (I.stp u a i).Cl) : PtAt B.R I.sel (I.tup a) (I.cst a) u i :=
   rp (lvG I a i) (lvQ I a i) ((I.Tp a).pref u i) (I.pref u a i) c
 
-open Classical in
 theorem q_sub_SQ (a : I.ι) : I.Q a ⊆ I.SQ := by
   intro P hP
   unfold ColIn.SQ

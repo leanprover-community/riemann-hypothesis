@@ -175,7 +175,6 @@ def AlgAA : Prop :=
         qminor E (xR k r m hm) C u else 0
 
 
-open scoped Classical in
 def AlgAAv : Prop :=
   ∀ (A : Type) [Ring A] [Algebra ℂ A] (k r m : ℕ) (hm : m ≤ r)
     (E : Fin (2 * r + k + 1) → Fin (2 * r + k + 1) → A) (P Q : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ)

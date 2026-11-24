@@ -158,7 +158,6 @@ theorem coeff_diagonalMultiplier (a : Fin n) (f : ℤ → ℤ) (x : MvPolynomial
   · rw [MvPolynomial.mem_support_iff, not_not] at h
     rw [h, zero_mul]
 
-open Classical in
 theorem coeff_monomialRestriction (q : (ι × Fin n →₀ ℕ) → Prop) (x : MvPolynomial (ι × Fin n) R) (m : ι × Fin n →₀ ℕ) :
     AddMonoidAlgebra.coeff (monomialRestriction q x) m = if q m then x.coeff m else 0 := by
   simp only [monomialRestriction, coeff_sum, coeff_monomial]

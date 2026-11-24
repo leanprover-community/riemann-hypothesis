@@ -271,7 +271,6 @@ theorem continuous_realPlaceEquiv_symm : Continuous (realPlaceEquiv hw hE).symm 
 
 end Phi
 
-section Unitary
 
 variable {K E : Type*} [Field K] [Field E] [Algebra K E] [Algebra.IsQuadraticExtension K E]
 variable {w : InfinitePlace K} (hw : w.IsReal) (hE : IsNonsplitAt E w)
@@ -281,7 +280,6 @@ attribute [local instance] tensorTopology isModuleTopology_tensor isTopologicalR
 
 variable {H}
 
-end Unitary
 
 section Example
 

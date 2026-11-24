@@ -54,17 +54,14 @@ section Count
 
 end Count
 
-section Real
 
 open Real
 
 variable (r : ℕ)
 
-end Real
 
 section Final
 
-open Real
 
 end Final
 

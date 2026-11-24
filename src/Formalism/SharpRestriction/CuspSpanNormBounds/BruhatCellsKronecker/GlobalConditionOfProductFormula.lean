@@ -530,7 +530,6 @@ end RecD
 
 section LaPS
 
-open Formalism.MainNotions.S.LocalSplitGroups Formalism.MainNotions.JointEigenvalueBoundsFromAnyDatum Formalism.MainNotions.LocalModelPeriodLattices
 
 section G
 
@@ -709,7 +708,6 @@ theorem localCondition_iff (δ : ∀ p, (D.s.atP p).Fp) (M : ∀ p : PlF D, Loc.
 
 end LaPS
 
-section Red
 
 open Formalism.MainNotions.S.LocalSplitGroups Formalism.MainNotions.JointEigenvalueBoundsFromAnyDatum Formalism.MainNotions.LocalModelPeriodLattices Formalism.MainNotions Formalism.MainNotions.S
 
@@ -717,7 +715,6 @@ variable {D : Formalism.BasicNotions.D7}
 
 variable {eps : ℝ} (Fm : FamP eps) {Y : ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, TermTie (Fm.D x i)}
 
-end Red
 
 end Formalism.MainNotions.BridgeLemma
 

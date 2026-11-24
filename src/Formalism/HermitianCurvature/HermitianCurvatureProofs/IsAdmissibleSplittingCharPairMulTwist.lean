@@ -109,7 +109,6 @@ end Formalism.FourierDecayAlt.P.MAx3
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA MeasureTheory
 
 theorem roots_outside : Formalism.FourierDecayAlt.MA.RootsOutQ :=
   roots_outside_of_parts_alt roots_outside_jointly
@@ -243,7 +242,6 @@ end Formalism.FourierDecayAlt.P.MAx3
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA MeasureTheory
 
 theorem jet_module_closed : Formalism.FourierDecayAlt.MA.JetQ := by
   intro P l L j lam α β Lb c Ntot hH w hw hl Y hY
@@ -294,7 +292,6 @@ end Formalism.FourierDecayAlt.P.MAx3
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA MeasureTheory
 
 theorem weight_positive : Formalism.FourierDecayAlt.MA.WPosQ := by
   intro P l L j lam α β Lb c Ntot hH w hw hl
@@ -491,7 +488,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.G
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx1.An
 
 noncomputable section
 
@@ -641,7 +637,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.G
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx1.An
 
 noncomputable section
 
@@ -870,7 +865,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.G
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx1.An
 
 noncomputable section
 
@@ -1037,7 +1031,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.G
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx1.An
 
 noncomputable section
 
@@ -1181,7 +1174,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.G
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx1.An
 
 noncomputable section
 
@@ -1359,7 +1351,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Wd MeasureTheory
 
 theorem sum4 {M : Type*} [AddCommMonoid M] {ι : Type*} [Fintype ι] (T : ι → ι → ι → ι → M) :
     ∑ a, ∑ b, ∑ e, ∑ e', T a b e e' = ∑ e, ∑ e', ∑ a, ∑ b, T a b e e' := by
@@ -1810,8 +1801,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.MA Formalism.YangianSpanCharacter.T
-open Formalism.FourierDecayAlt.P.MAx2.Jet (matSub mem_matSub diag_mem scalar_mem matrix_two_mem_sub)
 
 noncomputable section
 
@@ -2002,8 +1991,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.MA Formalism.YangianSpanCharacter.T
-open Formalism.FourierDecayAlt.P.MAx2.Jet (matSub mem_matSub diag_mem scalar_mem matrix_two_mem_sub)
 
 noncomputable section
 
@@ -2104,8 +2091,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.MA Formalism.YangianSpanCharacter.T
-open Formalism.FourierDecayAlt.P.MAx2.Jet (matSub mem_matSub diag_mem scalar_mem matrix_two_mem_sub)
 
 noncomputable section
 
@@ -2267,7 +2252,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.MA Formalism.YangianSpanCharacter.T Matrix
 
 noncomputable section
 
@@ -2384,7 +2368,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd
 
 section Free
 
@@ -2465,7 +2448,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.MA Formalism.YangianSpanCharacter.T Matrix
 
 noncomputable section
 
@@ -2524,7 +2506,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.MA Formalism.YangianSpanCharacter.T Matrix
 
 noncomputable section
 
@@ -2590,7 +2571,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.MA Formalism.YangianSpanCharacter.T Matrix
 
 noncomputable section
 
@@ -2674,7 +2654,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.MA Formalism.YangianSpanCharacter.T Matrix
 
 noncomputable section
 
@@ -2770,7 +2749,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.MA Formalism.YangianSpanCharacter.T Matrix
 
 noncomputable section
 
@@ -2863,7 +2841,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.MA Formalism.YangianSpanCharacter.T Matrix
 
 noncomputable section
 
@@ -2983,7 +2960,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.MA Formalism.YangianSpanCharacter.T Matrix
 
 noncomputable section
 
@@ -3062,7 +3038,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.MA Formalism.YangianSpanCharacter.T Matrix
 
 noncomputable section
 
@@ -3232,7 +3207,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.MA Formalism.YangianSpanCharacter.T Matrix
 
 noncomputable section
 
@@ -3307,7 +3281,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.MA Formalism.YangianSpanCharacter.T Matrix
 
 noncomputable section
 
@@ -3380,7 +3353,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.MA Formalism.YangianSpanCharacter.T Matrix
 
 noncomputable section
 
@@ -3422,7 +3394,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.MA Formalism.YangianSpanCharacter.T Matrix
 
 noncomputable section
 
@@ -3474,7 +3445,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.MA Formalism.YangianSpanCharacter.T Matrix
 
 noncomputable section
 
@@ -3545,7 +3515,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.F
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.MA Formalism.YangianSpanCharacter.T Matrix
 
 noncomputable section
 
@@ -3686,7 +3655,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd
 
 noncomputable section
 
@@ -3842,7 +3810,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd
 
 noncomputable section
 
@@ -3938,7 +3905,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd
 
 noncomputable section
 
@@ -4002,7 +3968,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd
 
 noncomputable section
 
@@ -4386,7 +4351,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Finset
 
 theorem sum_Ico_range (f : ℕ → ℝ) (m n : ℕ) : ∑ i ∈ Ico m n, f i = ∑ j ∈ range (n - m), f (m + j) :=
   sum_Ico_eq_sum_range f m n
@@ -4462,7 +4426,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Finset
 
 noncomputable def resA (s t : Finset ℕ) (a b : ℕ → ℝ) (j : ℕ) : ℝ :=
   -(∏ i ∈ s, (b j - a i)) / (∏ m ∈ t.erase j, (b j - b m))
@@ -4538,7 +4501,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Finset
 
 theorem prod_neg_flip (s : Finset ℕ) (c : ℕ → ℝ) (x : ℝ) :
     ∏ i ∈ s, (x - c i) = (-1) ^ s.card * ∏ i ∈ s, (c i - x) := by
@@ -4612,7 +4574,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Finset
 
 structure Side (k l : ℕ) (a b : ℕ → ℝ) (α β : ℝ) : Prop where
   inter : ∀ j ∈ Icc 1 (k - 1), a j ≤ b j ∧ b j ≤ a (j + 1)
@@ -4694,7 +4655,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Finset
 
 section
 variable {k l : ℕ} {af bf ag bg : ℕ → ℝ} {α β : ℝ}
@@ -4772,7 +4732,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Finset
 
 section
 variable {k l : ℕ} {af bf ag bg : ℕ → ℝ} {α β : ℝ}
@@ -4861,7 +4820,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Finset
 
 section
 variable {k l : ℕ} {a b : ℕ → ℝ} {α β : ℝ}
@@ -4962,7 +4920,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd
 
 noncomputable section
 
@@ -5048,7 +5005,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd
 
 noncomputable section
 
@@ -5099,7 +5055,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd
 
 noncomputable section
 
@@ -5240,7 +5195,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd
 
 noncomputable section
 
@@ -5282,7 +5236,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd
 
 noncomputable section
 
@@ -5335,7 +5288,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd
 
 noncomputable section
 
@@ -5380,7 +5332,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd
 
 noncomputable section
 
@@ -5418,7 +5369,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd
 
 noncomputable section
 
@@ -5467,7 +5417,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd
 
 noncomputable section
 
@@ -5626,7 +5575,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd Finset
 
 noncomputable section
 
@@ -5671,7 +5619,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd Finset
 
 noncomputable section
 
@@ -5742,7 +5689,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd Finset
 
 noncomputable section
 
@@ -5927,7 +5873,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd Finset
 
 noncomputable section
 
@@ -6010,7 +5955,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Finset
 
 theorem sparse_bound {ι α : Type} [Fintype ι] [DecidableEq ι] (T : Finset α) (Pr : α → ι → ι → Prop)
     [∀ m i i', Decidable (Pr m i i')]
@@ -6085,7 +6029,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd Finset
 
 noncomputable section
 
@@ -6141,7 +6084,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd Finset
 
 noncomputable section
 
@@ -6204,7 +6146,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd Finset
 
 noncomputable section
 
@@ -6269,7 +6210,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd Finset
 
 noncomputable section
 
@@ -6408,7 +6348,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd Finset
 
 noncomputable section
 
@@ -6463,7 +6402,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd Finset
 
 noncomputable section
 
@@ -6498,7 +6436,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd Finset
 
 noncomputable section
 
@@ -6546,7 +6483,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd Finset
 
 noncomputable section
 
@@ -6716,7 +6652,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd Finset
 
 noncomputable section
 
@@ -6780,7 +6715,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd Finset
 
 noncomputable section
 
@@ -6834,7 +6768,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd Finset
 
 noncomputable section
 
@@ -6977,7 +6910,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd Finset
 
 noncomputable section
 
@@ -7045,7 +6977,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd Finset
 
 noncomputable section
 
@@ -7157,7 +7088,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd Finset
 
 noncomputable section
 
@@ -7233,7 +7163,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.R
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd Finset
 
 noncomputable section
 
@@ -7417,7 +7346,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.NF
 
-open Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD
 
 noncomputable section
 
@@ -7677,7 +7605,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.NF
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.RuleGD
 
 noncomputable section
 
@@ -7839,7 +7766,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.NF
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.RuleGD
 
 noncomputable section
 
@@ -7967,7 +7893,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.NF
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.RuleGD
 
 noncomputable section
 
@@ -8117,7 +8042,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.NF
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.RuleGD
 
 noncomputable section
 
@@ -8141,7 +8065,6 @@ theorem ptMat_mul {N : ℕ} (b c : SlopeTestRemainingChoices (Fin N) (A P (DQ P)
   rw [G.apply_matrix_pointwise P c hc U hU q j]
   simp [U]
 
-open Classical in
 theorem ptMat_one {N : ℕ} (q : Qp P.r P.TT) (i k : Iota P N) :
     ptMat P (1 : SlopeTestRemainingChoices (Fin N) (A P (DQ P))) q i k = if i = k then 1 else 0 := by
   classical
@@ -8287,7 +8210,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.NF
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.RuleGD
 
 noncomputable section
 
@@ -8399,7 +8321,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.NF
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.RuleGD
 
 noncomputable section
 
@@ -8507,7 +8428,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.H
 
-open Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD
 
 variable {A : Type} [Ring A] [Algebra ℂ A] {r : ℕ} (L : LevelData A r)
 
@@ -8522,7 +8442,6 @@ theorem FS_comm : ∀ x ∈ FS L, ∀ y ∈ FS L, x * y = y * x := by
 
 abbrev CF : Type := Subring.closure (FS L)
 
-open scoped IsMulCommutative in
 instance : CommRing (CF L) :=
   letI := Subring.isMulCommutative_closure (s := FS L) fun x hx y hy _ => FS_comm L x hx y hy
   inferInstance
@@ -8578,7 +8497,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.H
 
-open Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD
 
 variable {A : Type} [Ring A] [Algebra ℂ A] {r : ℕ} (L : LevelData A r)
 
@@ -8657,7 +8575,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.H
 
-open Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD
 
 variable {A : Type} [Ring A] [Algebra ℂ A] {r : ℕ} (L : LevelData A r)
 
@@ -8726,7 +8643,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.H
 
-open Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD
 
 variable {A : Type} [Ring A] [Algebra ℂ A] {r : ℕ} {L : LevelData A r} {S : Submonoid A}
 
@@ -8804,7 +8720,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.H
 
-open Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD
 
 variable {A : Type} [Ring A] [Algebra ℂ A] {r : ℕ} {L : LevelData A r} {S : Submonoid A}
 
@@ -8852,7 +8767,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.H
 
-open Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD
 
 variable {A : Type} [Ring A] [Algebra ℂ A] {r : ℕ} {L : LevelData A r} {S : Submonoid A}
 
@@ -8908,7 +8822,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.H
 
-open Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD
 
 variable {A : Type} [Ring A] [Algebra ℂ A] {r : ℕ} {L : LevelData A r}
 
@@ -9068,7 +8981,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.H
 
-open Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD
 
 variable {A : Type} [Ring A] [Algebra ℂ A] {r : ℕ} (L : LevelData A r)
 
@@ -9143,7 +9055,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.H
 
-open Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD
 
 variable {A : Type} [Ring A] [Algebra ℂ A] {r : ℕ} (L : LevelData A r)
 
@@ -9287,7 +9198,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.H
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD
 
 noncomputable section
 
@@ -9337,7 +9247,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.H
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD
 
 noncomputable section
 
@@ -9592,7 +9501,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.I4
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx3.H
 
 noncomputable section
 
@@ -9692,7 +9600,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.I4
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx3.H
 
 noncomputable section
 
@@ -9746,7 +9653,6 @@ set_option linter.unusedSimpArgs false
 namespace Formalism.FourierDecayAlt.P.MAx3.I4
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx1.An
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -9838,8 +9744,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.I4
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx1.An
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -9933,8 +9837,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.I4
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx1.An
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -10067,8 +9969,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.I4
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx1.An
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -10182,7 +10082,6 @@ set_option linter.unusedSimpArgs false
 namespace Formalism.FourierDecayAlt.P.MAx3.I4
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx1.An MeasureTheory
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -10239,8 +10138,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.I4
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx1.An MeasureTheory
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -10347,7 +10244,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.I4
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx1.An
 
 noncomputable section
 
@@ -10434,7 +10330,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.I4
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx1.An
 
 noncomputable section
 
@@ -10530,7 +10425,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.I4
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx1.An
 
 noncomputable section
 
@@ -10699,7 +10593,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.I4
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx1.An
 
 noncomputable section
 
@@ -10764,7 +10657,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.I4
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx1.An
 
 noncomputable section
 
@@ -10881,7 +10773,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.I4
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx1.An MeasureTheory
 
 noncomputable section
 
@@ -10934,7 +10825,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.I4
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx1.An MeasureTheory
 
 noncomputable section
 
@@ -11019,7 +10909,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.I4
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx1.An MeasureTheory
 
 noncomputable section
 
@@ -11088,7 +10977,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.I4
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx1.An MeasureTheory
 
 noncomputable section
 
@@ -11133,7 +11021,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.I4
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx1.An MeasureTheory
 
 noncomputable section
 
@@ -11182,7 +11069,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.I4
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx1.An MeasureTheory
 
 noncomputable section
 
@@ -11285,7 +11171,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx1.An MeasureTheory
 
 theorem fourth_identity_dual : Formalism.FourierDecayAlt.MA.I4'Q := by
   intro P l L j lam α β Lb c Ntot hH w hw hl ε hε
@@ -11634,7 +11519,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.PG
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx3.G
 
 noncomputable section
 
@@ -11724,7 +11608,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.PG
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx3.G
 
 noncomputable section
 
@@ -11832,7 +11715,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.PG
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx3.G
 
 noncomputable section
 
@@ -11973,7 +11855,6 @@ namespace Formalism.FourierDecayAlt.P.MAx3.PG
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx3.G Formalism.FourierDecayAlt.Wd
   Formalism.FourierDecayAlt.Fr MeasureTheory
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -12093,9 +11974,7 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.PG
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx3.G Formalism.FourierDecayAlt.Wd
   Formalism.FourierDecayAlt.Fr MeasureTheory
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -12307,7 +12186,6 @@ set_option linter.unusedSimpArgs false
 namespace Formalism.FourierDecayAlt.P.MAx3.Z
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx3.I4 Formalism.FourierDecayAlt.P.MAx1.An
-open scoped ComplexConjugate
 
 noncomputable section
 
@@ -12478,7 +12356,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.L
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.MAx2.Jet
 
 noncomputable section
 
@@ -12570,7 +12447,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.L
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.MAx2.Jet
 
 noncomputable section
 
@@ -12749,7 +12625,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.L
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.MAx2.Jet Formalism.FourierDecayAlt.P.MAx3.G
 
 noncomputable section
 
@@ -12950,7 +12825,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.AD
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.MAx2.Jet Formalism.FourierDecayAlt.P.MAx3.L
 
 noncomputable section
 
@@ -13047,7 +12921,6 @@ end Formalism.FourierDecayAlt.P.MAx3.AD
 
 end S_AD_AD2
 
-section S_K_K1
 
 set_option linter.unusedVariables false
 
@@ -13061,7 +12934,6 @@ variable {Hs : Set A}
 
 end Formalism.FourierDecayAlt.P.MAx3.K
 
-end S_K_K1
 
 section S_K_K2
 
@@ -13069,7 +12941,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.K
 
-open Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD Formalism.FourierDecayAlt.P.MAx3.H
 
 variable {A : Type} [Ring A] [Algebra ℂ A] {r : ℕ} (L : LevelData A r)
 
@@ -13141,7 +13012,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.K
 
-open Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD Formalism.FourierDecayAlt.P.MAx3.H
 
 variable {A : Type} [Ring A] [Algebra ℂ A] {r : ℕ} {L : LevelData A r} {S : Submonoid A} {Hs : Set A}
 
@@ -13309,7 +13179,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.K
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD Formalism.FourierDecayAlt.P.MAx3.H
 
 noncomputable section
 
@@ -13518,7 +13387,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.Q
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD Matrix Formalism.FourierDecayAlt.P.MAx3.H
 open Formalism.FourierDecayAlt.P.MAx2.Jet (matSub matrix_two_mem_sub)
 
 noncomputable section
@@ -13577,8 +13445,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.Q
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD Matrix Formalism.FourierDecayAlt.P.MAx3.H
-open Formalism.FourierDecayAlt.P.MAx2.Jet (matSub matrix_two_mem_sub)
 
 noncomputable section
 
@@ -13653,7 +13519,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.Q
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD Matrix Formalism.FourierDecayAlt.P.MAx3.H
 
 noncomputable section
 
@@ -13844,7 +13709,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.AD
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.MAx2.Jet Formalism.FourierDecayAlt.P.MAx3.L
 
 noncomputable section
 
@@ -14136,8 +14000,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.Z
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx3.I4 Formalism.FourierDecayAlt.P.MAx3.AD Formalism.FourierDecayAlt.P.MAx3.L
-open Formalism.FourierDecayAlt.P.RuleGD
 
 noncomputable section
 
@@ -14209,8 +14071,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.Z
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx3.I4 Formalism.FourierDecayAlt.P.MAx3.AD Formalism.FourierDecayAlt.P.MAx3.L
-open Formalism.FourierDecayAlt.P.RuleGD
 
 noncomputable section
 
@@ -14285,8 +14145,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.Z
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx3.I4 Formalism.FourierDecayAlt.P.MAx3.AD Formalism.FourierDecayAlt.P.MAx3.L
-open Formalism.FourierDecayAlt.P.RuleGD
 
 noncomputable section
 
@@ -14359,7 +14217,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.I1
 
-open Finset
 
 noncomputable section
 
@@ -14681,7 +14538,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.I1
 
-open Finset
 
 noncomputable section
 
@@ -14824,7 +14680,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.I1
 
-open Finset Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd MeasureTheory ComplexConjugate
 
 noncomputable section
 
@@ -14944,7 +14799,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.I1
 
-open Finset Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd MeasureTheory ComplexConjugate
 
 noncomputable section
 
@@ -15005,8 +14859,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.AD
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.MAx2.Jet Formalism.FourierDecayAlt.P.MAx3.L MeasureTheory
-open ComplexConjugate
 
 noncomputable section
 
@@ -15124,7 +14976,6 @@ namespace Formalism.FourierDecayAlt.P.MAx3.Z
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr MeasureTheory Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx3.AD
 open Formalism.FourierDecayAlt.P.MAx3.L
-open ComplexConjugate
 
 noncomputable section
 
@@ -15169,9 +15020,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.Z
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr MeasureTheory Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx3.AD
-open Formalism.FourierDecayAlt.P.MAx3.L
-open ComplexConjugate
 
 noncomputable section
 
@@ -15224,9 +15072,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.Z
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr MeasureTheory Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx3.AD
-open Formalism.FourierDecayAlt.P.MAx3.L
-open ComplexConjugate
 
 noncomputable section
 
@@ -15282,8 +15127,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.AD
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.MAx2.Jet Formalism.FourierDecayAlt.P.MAx3.L MeasureTheory
-open ComplexConjugate
 
 noncomputable section
 
@@ -15375,8 +15218,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.AD
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.MAx2.Jet Formalism.FourierDecayAlt.P.MAx3.L MeasureTheory
-open ComplexConjugate
 
 noncomputable section
 
@@ -15473,8 +15314,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.AD
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.MAx2.Jet Formalism.FourierDecayAlt.P.MAx3.L MeasureTheory
-open ComplexConjugate
 
 noncomputable section
 
@@ -15570,8 +15409,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.AD
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.MAx2.Jet Formalism.FourierDecayAlt.P.MAx3.L MeasureTheory
-open ComplexConjugate
 
 noncomputable section
 
@@ -15666,8 +15503,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.AD
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.MAx2.Jet Formalism.FourierDecayAlt.P.MAx3.L
-open MeasureTheory ComplexConjugate
 
 noncomputable section
 
@@ -15694,15 +15529,12 @@ end Formalism.FourierDecayAlt.P.MAx3.AD
 
 end S_AD_AD12
 
-section S_AD_AD13
 
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.AD
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.MAx2.Jet Formalism.FourierDecayAlt.P.MAx3.L
-open MeasureTheory ComplexConjugate
 
 noncomputable section
 
@@ -15713,7 +15545,6 @@ end
 
 end Formalism.FourierDecayAlt.P.MAx3.AD
 
-end S_AD_AD13
 
 section S_AD_AD14
 
@@ -15722,8 +15553,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.AD
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.MAx2.Jet Formalism.FourierDecayAlt.P.MAx3.L
-open MeasureTheory ComplexConjugate
 
 noncomputable section
 
@@ -15806,8 +15635,6 @@ set_option linter.unusedSimpArgs false
 namespace Formalism.FourierDecayAlt.P.MAx3.Z
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R MeasureTheory Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx3.AD Formalism.FourierDecayAlt.P.MAx3.L
-open Formalism.FourierDecayAlt.P.RuleGD
-open ComplexConjugate
 
 noncomputable section
 
@@ -15892,9 +15719,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.Z
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R MeasureTheory Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx3.AD Formalism.FourierDecayAlt.P.MAx3.L
-open Formalism.FourierDecayAlt.P.RuleGD
-open ComplexConjugate
 open Formalism.FourierDecayAlt.P.MAx2.Jet (Phi)
 open Formalism.FourierDecayAlt.P.MAx3.I4 (SB)
 
@@ -16021,9 +15845,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.Z
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr MeasureTheory Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx3.AD
-open Formalism.FourierDecayAlt.P.MAx3.L
-open ComplexConjugate
 
 noncomputable section
 
@@ -16058,7 +15879,6 @@ end Formalism.FourierDecayAlt.P.MAx3.Z
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr MeasureTheory Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx3.AD
 open Formalism.FourierDecayAlt.P.MAx3.Z
 
 theorem theorem_P_adjoint : Formalism.FourierDecayAlt.MA.ThmPAdj := by
@@ -16217,8 +16037,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.AD
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.MAx2.Jet Formalism.FourierDecayAlt.P.MAx3.L
-open MeasureTheory ComplexConjugate
 
 noncomputable section
 
@@ -16349,8 +16167,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.AB
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx3.K
-open Formalism.FourierDecayAlt.P.MAx3.Z Formalism.FourierDecayAlt.P.MAx3.AD
 
 noncomputable section
 
@@ -16376,8 +16192,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.AB
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx3.K
-open Formalism.FourierDecayAlt.P.MAx3.Z Formalism.FourierDecayAlt.P.MAx3.AD
 
 noncomputable section
 
@@ -16385,7 +16199,6 @@ variable {P : M.Par}
 
 abbrev FnS (P : M.Par) : Subring (A P (DQ P)) := Subring.closure {x | IsFnP x}
 
-open scoped IsMulCommutative in
 instance : CommRing (FnS P) :=
   letI := Subring.isMulCommutative_closure (s := {x : A P (DQ P) | IsFnP x})
     fun _ hx _ hy _ => isFnP_comm hx hy
@@ -16475,8 +16288,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.AD
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.MAx1.An Formalism.FourierDecayAlt.P.MAx2.Jet Formalism.FourierDecayAlt.P.MAx3.L
-open MeasureTheory ComplexConjugate
 
 noncomputable section
 
@@ -16506,8 +16317,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.AB
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx3.K
-open Formalism.FourierDecayAlt.P.MAx3.Z Formalism.FourierDecayAlt.P.MAx3.AD
 
 noncomputable section
 
@@ -16554,8 +16363,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.AB
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx3.K
-open Formalism.FourierDecayAlt.P.MAx3.Z Formalism.FourierDecayAlt.P.MAx3.AD
 
 noncomputable section
 
@@ -16633,8 +16440,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.AB
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx3.K
-open Formalism.FourierDecayAlt.P.MAx3.Z Formalism.FourierDecayAlt.P.MAx3.AD
 
 noncomputable section
 
@@ -16681,8 +16486,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.AB
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx3.K
-open Formalism.FourierDecayAlt.P.MAx3.Z Formalism.FourierDecayAlt.P.MAx3.AD
 
 noncomputable section
 
@@ -16775,8 +16578,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.AB
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx3.K
-open Formalism.FourierDecayAlt.P.MAx3.Z Formalism.FourierDecayAlt.P.MAx3.AD
 
 noncomputable section
 
@@ -16841,8 +16642,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.AB
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx3.K
-open Formalism.FourierDecayAlt.P.MAx3.Z Formalism.FourierDecayAlt.P.MAx3.AD
 
 noncomputable section
 
@@ -16923,8 +16722,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.AB
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.R.LevelData Formalism.FourierDecayAlt.P.RuleGD Formalism.FourierDecayAlt.P.MAx3.H Formalism.FourierDecayAlt.P.MAx3.K
-open Formalism.FourierDecayAlt.P.MAx3.Z Formalism.FourierDecayAlt.P.MAx3.AD
 
 noncomputable section
 
@@ -16988,8 +16785,6 @@ set_option linter.unusedSimpArgs false
 namespace Formalism.FourierDecayAlt.P.MAx3.AB
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr MeasureTheory
-open Formalism.FourierDecayAlt.P.MAx3.Z Formalism.FourierDecayAlt.P.MAx3.AD
-open ComplexConjugate
 
 noncomputable section
 
@@ -17037,9 +16832,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.AB
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr MeasureTheory
-open Formalism.FourierDecayAlt.P.MAx3.Z Formalism.FourierDecayAlt.P.MAx3.AD
-open ComplexConjugate
 
 noncomputable section
 
@@ -17116,9 +16908,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.AB
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr MeasureTheory
-open Formalism.FourierDecayAlt.P.MAx3.Z Formalism.FourierDecayAlt.P.MAx3.AD
-open ComplexConjugate
 
 noncomputable section
 
@@ -17215,9 +17004,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.AB
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr MeasureTheory
-open Formalism.FourierDecayAlt.P.MAx3.Z Formalism.FourierDecayAlt.P.MAx3.AD
-open ComplexConjugate
 
 noncomputable section
 
@@ -17279,9 +17065,6 @@ set_option linter.unusedSimpArgs false
 
 namespace Formalism.FourierDecayAlt.P.MAx3.AB
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr MeasureTheory
-open Formalism.FourierDecayAlt.P.MAx3.Z Formalism.FourierDecayAlt.P.MAx3.AD
-open ComplexConjugate
 
 noncomputable section
 
@@ -17319,9 +17102,7 @@ end Formalism.FourierDecayAlt.P.MAx3.AB
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr MeasureTheory
 open Formalism.FourierDecayAlt.P.MAx3.Z Formalism.FourierDecayAlt.P.MAx3.AD Formalism.FourierDecayAlt.P.MAx3.AB
-open ComplexConjugate
 
 theorem adjoint_bounded : Formalism.FourierDecayAlt.MA.AdjBQ := by
   intro P l L j lam α β Lb c Ntot hH w hw hl Y hY ε ε₂ hε hε₂

@@ -48,13 +48,11 @@ namespace Formalism.L2.GlobalTheoryTheory.LocalLatticeBases
 open Formalism.BasicNotions Formalism.L2.Forms NumberField IsDedekindDomain Matrix Formalism.UG
 open scoped TensorProduct
 
-section DdlGen
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {n : ℕ} {σ : E →ₐ[F] E} {J : Matrix (Fin n) (Fin n) E} {T f : ℕ} {bad : Set (HeightOneSpectrum (𝓞 F))}
 
 
-end DdlGen
 
 section DdlLoc
 
@@ -97,7 +95,6 @@ theorem localization_smul_cancel {n : ℕ} (P : Ideal (𝓞 E)) [P.IsPrime] (g g
 
 end DdlLoc
 
-section DdlTied
 
 variable {D : D7} {u : D.what₂.Word}
 
@@ -108,6 +105,5 @@ variable {D : D7} {u : D.what₂.Word}
 
 
 
-end DdlTied
 
 end Formalism.L2.GlobalTheoryTheory.LocalLatticeBases

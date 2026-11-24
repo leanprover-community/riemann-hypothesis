@@ -127,7 +127,6 @@ theorem antiLift_of (σ : G → G) (hσ : ∀ x y, σ (x * y) = σ y * σ x) (g 
     antiLift σ hσ (MonoidAlgebra.of ℂ G g) = MulOpposite.op (MonoidAlgebra.of ℂ G (σ g)) := by
   simp [antiLift]
 
-open Classical in
 theorem antiLift_idem (σ : G → G) (hσ : ∀ x y, σ (x * y) = σ y * σ x) (hσσ : ∀ x, σ (σ x) = x)
     (J : Subgroup G) (χ : J →* ℂˣ) (hJ : ∀ u : J, ∃ h : σ u ∈ J, χ ⟨σ u, h⟩ = χ u) :
     antiLift σ hσ (twistedIdem J χ) = MulOpposite.op (twistedIdem J χ) := by
@@ -361,7 +360,6 @@ end Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 end
 
 section
-open Finset
 
 namespace Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 
@@ -534,7 +532,6 @@ end Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 end
 
 section
-open Finset Matrix
 
 namespace Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 
@@ -597,7 +594,6 @@ def Cleared (h : Matrix (Fin N) (Fin N) K) (k : ℕ) (p : Fin N → Fin N) : Pro
   ∀ j : Fin N, (j : ℕ) < k →
     h (p j) j ≠ 0 ∧ (∀ i, i ≠ p j → h i j = 0) ∧ (∀ c, c ≠ j → h (p j) c = 0)
 
-open Classical in
 theorem bruhat_step (g : GL (Fin N) K) : ∀ k : ℕ, k ≤ N → ∃ u u' : GL (Fin N) K,
     IsUT (u : Matrix (Fin N) (Fin N) K) ∧ IsUT (u' : Matrix (Fin N) (Fin N) K) ∧
     ∃ p, Cleared ((u * g * u' : GL (Fin N) K) : Matrix (Fin N) (Fin N) K) k p := by
@@ -739,7 +735,6 @@ end Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 end
 
 section
-open Finset Matrix
 
 namespace Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 

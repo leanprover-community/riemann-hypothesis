@@ -54,12 +54,10 @@ namespace Formalism.FourierDecayAlt.P.DualKernelLemmas
 open Finset Formalism.FourierDecayAlt.FormPairingAction Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.P.GramProductIdentities
 open scoped Matrix
 
-section Rep
 
 variable {A S V : Type} [Ring A] [StarRing A] [Algebra ℂ A] [Fintype S] [DecidableEq S]
   [AddCommGroup V] [Module ℂ V] [Module A V] [IsScalarTower ℂ A V]
 
-end Rep
 
 theorem real_bound (u v c b : ℂ) (hc : c ≠ 0) (hu : u.im = 0) (hv : v.im = 0)
     (hb : ‖b‖ ^ 2 ≤ u.re * v.re) :

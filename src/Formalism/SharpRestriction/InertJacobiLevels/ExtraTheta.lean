@@ -49,11 +49,9 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.BasicNotions.Exa
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section Ext
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
 
-end Ext
 
 structure Tow (D : D7) (t : ℕ) where
   Xs : ℕ → HSp D

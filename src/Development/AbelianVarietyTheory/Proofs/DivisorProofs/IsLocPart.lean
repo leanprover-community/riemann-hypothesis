@@ -76,13 +76,11 @@ def stdA (ν : kˣ →* ℂˣ) (ϖ : kˣ) (c a a' : ℕ) (X : Matrix (Fin a) (Fi
     (((ν (Units.mk0 _ h.1))⁻¹ : ℂˣ) : ℂ) else 0
 
 
-open Classical in
 def stdB (ν : kˣ →* ℂˣ) (ϖ : kˣ) (c a a' : ℕ) (Y : Matrix (Fin a') (Fin (a + a')) k) : ℂ :=
   if h : (blk₂ Y).det ≠ 0 ∧ IsGLO (blk₂ Y) ∧ ∀ i j, blk₁ Y i j ∈ GlobalTheory.SplitWeil.cball (ϖ ^ c) then
     (((ν (Units.mk0 _ h.1))⁻¹ : ℂˣ) : ℂ) else 0
 
 
-open Classical in
 def unitInd (ν : kˣ →* ℂˣ) (y : k) : ℂ :=
   if h : y ≠ 0 ∧ valuation k y = 1 then (((ν (Units.mk0 y h.1))⁻¹ : ℂˣ) : ℂ) else 0
 

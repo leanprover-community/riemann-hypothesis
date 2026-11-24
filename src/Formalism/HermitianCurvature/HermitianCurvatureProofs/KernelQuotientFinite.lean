@@ -351,7 +351,6 @@ end Formalism.FourierDecayAlt.P.A5x4
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt.P.A5x4
 
 theorem gram_kernel_identity : Formalism.FourierDecayAlt.A5.GramIdentity := by
   intro K _ _ _ R ψ hL w w' μ₁ μ₂ μ₁' μ₂' _ _ _ _ _ _ _ _ h1 h2 h1' h2' ι _ C _ _ e lam hne hex
@@ -504,7 +503,6 @@ end Formalism.FourierDecayAlt.P.A5x4
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt.P.A5x4
 
 theorem kernel_gram_property : Formalism.FourierDecayAlt.A5.KpGram := by
   intro K _ _ _ R ψ hL F a

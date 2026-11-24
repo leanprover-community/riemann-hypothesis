@@ -205,7 +205,6 @@ def swd (M : ℕ) (φ : Fam E n N) (Z : CM Ψ N N) (z z' : CM Ψ n N) : ℂ :=
   classSum M fun Λ => thH Ψ (φ Λ) Z z z' - eis Ψ (φ Λ) Z z z'
 
 
-open Classical in
 def twist (R : ℕ) (𝔛 : Lt E N) (φ : Fam E n N) : Fam E n N := by
   classical
   exact fun Λ x => if h : (∀ ξ ∈ 𝔛, (R : E) • (x *ᵥ ξ) ∈ Λ) ∧

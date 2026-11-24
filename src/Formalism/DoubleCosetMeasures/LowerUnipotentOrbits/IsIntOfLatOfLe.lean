@@ -161,10 +161,8 @@ theorem intInv : Formalism.DoubleCosetMeasures.IntInv := by
   · intro h
     exact isInt_mul R (isInt_mul R haR h) hbR
 
-section Lat
 
 variable {K : Type} [CommRing K] (R : Subring K) {n : ℕ}
 
-end Lat
 
 end Formalism.DoubleCosetMeasures.P

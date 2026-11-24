@@ -239,7 +239,6 @@ def lzE : PairedCharacterCondition.LzData g where
   cons_ofIrr _ _ := Set.mem_singleton_iff
   hc _ _ := ∅
 
-open Classical in
 theorem lzE_ser (hidem : ∀ f, e f * e f = e f) (hcen : ∀ f a, e f * a = a * e f)
     (horth : ∀ f f', f ≠ f' → e f * e f' = 0)
     (hsum : ∃ S : Finset (ZMod g)[X], (∀ f, f ∈ S ↔ f.Monic ∧ f.natDegree = r ∧ f.coeff 0 ≠ 0) ∧

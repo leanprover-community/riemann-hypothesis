@@ -250,7 +250,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.TwistedPlaces
 
-open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain
 
 variable {D : D7} (L : SizeData₂ D)
 
@@ -461,7 +460,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.TwistedPlaces
 
-open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain
 
 structure Large (x eps C : ℝ) : Prop where
   x100 : 100 ≤ x
@@ -656,7 +654,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.TwistedPlaces
 
-open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain
 
 variable {D : D7} (L : SizeData₂ D)
 
@@ -917,7 +914,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.TwistedPlaces
 
-open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain
 
 theorem card_le_of_le (T : Finset ℕ) (Y : ℝ) (hY : 0 ≤ Y) (hT : ∀ l ∈ T, 1 ≤ l ∧ (l : ℝ) ≤ Y) :
     (T.card : ℝ) ≤ Y := by
@@ -972,7 +968,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.TwistedPlaces
 
-open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain
 
 variable {D : D7} (L : SizeData₂ D)
 
@@ -1077,7 +1072,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.TwistedPlaces
 
-open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain
 
 variable {D : D7} (L : SizeData₂ D)
 
@@ -1202,7 +1196,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.TwistedPlaces
 
-open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain
 
 variable {D : D7} (L : SizeData₂ D)
 
@@ -1380,7 +1373,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.TwistedPlaces
 
-open Formalism.BasicNotions Formalism.MainNotions NumberField IsDedekindDomain
 
 variable {D : D7} (L : SizeData₂ D)
 

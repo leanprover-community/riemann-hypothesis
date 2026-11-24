@@ -68,32 +68,24 @@ variable {δ}
 
 end Good
 
-section Ring
 
 variable {p : ℕ} [Fact p.Prime]
 
-end Ring
 
-section Deriv
 
 open Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity
 
 variable {p : ℕ} [Fact p.Prime] {r : ℕ}
 
-end Deriv
 
-section Chain
 
-open Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity
 
 variable {D : D7} {N N' r : ℕ} {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) (Λ : AddSubgroup ℂ)
   (C : WeierstrassCurve.VariableChange ℂ_[p]) (wq : PowerSeries ℂ_[p]) (b : Fin r → Matrix (Fin N') (Fin N) D.host.E)
 
-end Chain
 
 section Lin
 
-open Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity
 
 variable {D : D7} {N N' r : ℕ} {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p])
 
@@ -114,20 +106,15 @@ end Lin
 
 section Core
 
-open Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity
 
 end Core
 
-section Log
 
-open Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity
 
 variable {p : ℕ} [Fact p.Prime]
 
-end Log
 
 end JetIntegrality
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker
 
 end Formalism.L2.KerInert

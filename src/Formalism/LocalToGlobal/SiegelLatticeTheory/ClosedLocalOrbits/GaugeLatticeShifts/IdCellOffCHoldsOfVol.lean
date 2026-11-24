@@ -457,8 +457,6 @@ theorem idOffConj_all {D : D7} (X : HidaSetting D) (u u' : D.what₂.Word)
 
 end Formalism.L2.SG.Pf.IdBlocks2.Conj
 
-open scoped Classical
-open MeasureTheory NumberField Matrix Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp
   Formalism.L2.SG.PoincareInHH.PoincareSetting
 
 namespace Formalism.L2.SG.Pf.IdBlocks2.Lift
@@ -692,7 +690,6 @@ namespace Formalism.L2.SG.Pf
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-open scoped Classical
 open Formalism.BasicNotions Formalism.L2.SG.HidaSetting Formalism.L2.SG.TermOp Formalism.L2.SG.TermOp.IdBlocks Formalism.L2.SG.Full
 
 theorem idOffConjC_holds : IdOffConjC :=

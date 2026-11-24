@@ -438,7 +438,6 @@ end Arith
 section LemT
 
 open Module NumberField Formalism.BasicNotions
-open scoped nonZeroDivisors
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
 
@@ -554,8 +553,6 @@ end LemT
 
 section LemT2
 
-open Module NumberField Formalism.BasicNotions
-open scoped nonZeroDivisors
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
 
@@ -709,26 +706,20 @@ theorem exists_short_basis_dual (hT : PI.TransferenceMinima) (S : HSpace E)
 
 end LemT2
 
-section LemTi
 
-open Module NumberField Formalism.BasicNotions
-open scoped nonZeroDivisors
 
 variable {E : Type} [Field E] [NumberField E]
 
 variable [StarRing E]
 
-end LemTi
 
 section LemTiP
 
-open Module NumberField Formalism.BasicNotions
 
 end LemTiP
 
 section Rec
 
-open Module NumberField Formalism.BasicNotions
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -841,19 +832,16 @@ end ColAbs
 
 section Polar
 
-open Module NumberField Formalism.BasicNotions IsDedekindDomain
 
 end Polar
 
 section F7
 
-open Module NumberField Formalism.BasicNotions IsDedekindDomain
 
 end F7
 
 section ColRec
 
-open Module NumberField Formalism.BasicNotions IsDedekindDomain
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

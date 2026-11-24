@@ -66,7 +66,6 @@ def matDer (τ : T) (X : Matrix (Fin n) (Fin n) ℂ) :
   MvPolynomial.mkDerivation ℂ fun p =>
     if p.1 = τ then ∑ m, MvPolynomial.X (τ, p.2.1, m) * MvPolynomial.C (X m p.2.2) else 0
 
-open Classical in
 theorem matDer_X (τ : T) (X : Matrix (Fin n) (Fin n) ℂ) (p : T × Fin n × Fin n) :
     matDer τ X (MvPolynomial.X p) =
       if p.1 = τ then ∑ m, MvPolynomial.X (τ, p.2.1, m) * MvPolynomial.C (X m p.2.2) else 0 :=
@@ -173,7 +172,6 @@ theorem placeRep_comm (V : HSp D) {τ τ' : D.what₂.Tau} (h : τ ≠ τ') (x :
       exact ((matDer_commute h X.1 Y.1).smul_left c).smul_right c'
 
 
-open Classical in
 def polyLie (V : HSp D) : GlobalTheory.AutFinLit.LieC V →ₗ⁅ℂ⁆ Module.End ℂ (PolyE V) :=
   DirectSum.toLieAlgebra _ (fun τ => (placeRep V τ).toLieHom.comp (UniversalEnvelopingAlgebra.ι ℂ)) fun τ τ' h x y => by
     change placeRep V τ (UniversalEnvelopingAlgebra.ι ℂ x) * placeRep V τ' (UniversalEnvelopingAlgebra.ι ℂ y) -
@@ -183,7 +181,6 @@ def polyLie (V : HSp D) : GlobalTheory.AutFinLit.LieC V →ₗ⁅ℂ⁆ Module.E
 def polyRep (V : HSp D) : GlobalTheory.AutFinLit.Env V →ₐ[ℂ] Module.End ℂ (PolyE V) :=
   UniversalEnvelopingAlgebra.lift ℂ (polyLie V)
 
-open Classical in
 theorem polyRep_ι_of (V : HSp D) (τ : D.what₂.Tau) (x : ℂ ⊗[ℝ] LieAt V τ) :
     polyRep V (UniversalEnvelopingAlgebra.ι ℂ (DirectSum.of (fun τ => ℂ ⊗[ℝ] LieAt V τ) τ x)) =
       placeRep V τ (UniversalEnvelopingAlgebra.ι ℂ x) := by

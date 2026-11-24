@@ -81,7 +81,6 @@ def gainS (X : Inst D L) (K : Consts) (p j : ℕ) : ℝ :=
   if (IsResidueClassZero D p ∨ IsSg D p) ∧ ¬ Exc D p then (if IsCs D p then 0 else gainP X K (aL L) (bL L) p j) else 0
 
 
-open Classical in
 def g0S (X : Inst D L) (K : Consts) (p j : ℕ) : ℝ :=
   if IsCs D p then 0 else ∑ t0 ∈ reps X p, max (g0 X K (aL L) (bL L) p j t0) 0
 

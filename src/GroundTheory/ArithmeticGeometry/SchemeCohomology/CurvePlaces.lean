@@ -114,7 +114,6 @@ end ToPlace
 
 section Center
 
-open GroundTheory.FunctionField
 
 variable {k : Type u} [Field k] {X : Scheme.{u}} [X.Over (Spec (.of k))] [IsIntegral X]
 
@@ -223,7 +222,6 @@ end Center
 
 section PlaceEquiv
 
-open GroundTheory.FunctionField
 
 theorem valuationSubring_eq_of_le {K : Type*} [Field K] {A B : ValuationSubring K} (hAB : A ≤ B)
     (hloc : ∀ a ∈ A, a⁻¹ ∈ B → a⁻¹ ∈ A) : A = B := by

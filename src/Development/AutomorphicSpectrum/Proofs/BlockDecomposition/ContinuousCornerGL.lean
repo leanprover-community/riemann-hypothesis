@@ -181,7 +181,6 @@ def sV (v : InfinitePlace E) : ℂ →ₙ+* Ad E where
   map_zero' := by rw [Pi.single_zero, map_zero]
   map_add' x y := by rw [Pi.single_add, map_add (f := _)]
 
-open Classical in
 theorem cV_sV (v w : InfinitePlace E) (x : ℂ) : cV w (sV v x) = (Pi.single v x : InfinitePlace E → ℂ) w :=
   congrFun ((infEq E).symm_apply_apply _) w
 
@@ -203,7 +202,6 @@ theorem continuous_mapGL {R S : Type} [CommRing R] [CommRing S] [TopologicalSpac
     (f : R →+* S) (hf : Continuous f) : Continuous (GeneralLinearGroup.map (n := Fin n) f) :=
   Continuous.units_map _ (Continuous.matrix_map continuous_id hf)
 
-open Classical in
 theorem cV_embInf (v w : InfinitePlace E) (y : GL (Fin n) ℂ) :
     GeneralLinearGroup.map (cV w) (embInf n v y) = if w = v then y else 1 := by
   ext i j

@@ -55,7 +55,6 @@ open Finset Filter Topology MeasureTheory
 
 namespace Formalism.HermitianLattices.GL2PrimeSums
 
-section abel
 
 variable {𝕜 : Type*} [RCLike 𝕜]
 
@@ -137,7 +136,6 @@ private lemma integral_partial_sum_div_sq (c : ℕ → 𝕜) {y U : ℝ} (hy : 1
   linear_combination -key + hL + hint_r - ((U : 𝕜))⁻¹ * sum_Icc_zero_ite_eq_sum_Icc_one c ⌊U⌋₊
     + ((y : 𝕜))⁻¹ * sum_Icc_zero_ite_eq_sum_Icc_one c ⌊y⌋₊
 
-end abel
 
 private theorem sum_Icc_eq_mul_sum_div_sub_sum_partial (c : ℕ → ℂ) (N : ℕ) :
     ∑ n ∈ Icc 1 N, c n = (N : ℂ) * (∑ n ∈ Icc 1 N, c n / (n : ℂ))

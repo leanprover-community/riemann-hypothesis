@@ -85,7 +85,6 @@ theorem ab_tendsto (T₀ : Finset (Pl F)) [DecidableEq (Pl F)] :
   tendsto_atTop_finset_of_monotone (fun _ _ h _ hw => mem_ab.2 (Finset.union_subset_union_left h (mem_ab.1 hw)))
     fun w => ⟨{w.under (𝓞 F)}, mem_ab.2 (by simp)⟩
 
-open Classical in
 theorem lim_tw {ν : Chr F E} {z : ℕ} (hz : 2 ≤ z) (m : HeightOneSpectrum (𝓞 E) → ℤ) (S T₀ : Finset (Pl F))
     (hν : UnrOff ν (S : Set (Pl F))) (hm : ∀ w, w.under (𝓞 F) ∉ T₀ → m w = 0) :
     Tendsto (fun T : Finset (Pl F) => ∏ w ∈ ab ((T ∪ T₀) \ S), tw ν z (m w) w) atTop
@@ -113,7 +112,6 @@ theorem lim_tw {ν : Chr F E} {z : ℕ} (hz : 2 ≤ z) (m : HeightOneSpectrum (�
       simp [eulerFac, eulerPoly]
 
 
-open Classical in
 theorem tail {B : Base F E} (hB : B.IsGood σ) {z : ℕ} (hz : 2 ≤ z) (𝔞 : FractionalIdeal (𝓞 E)⁰ E) (T T₀ : Finset (Pl F))
     (hT : T ⊆ T₀) (hm : ∀ w : HeightOneSpectrum (𝓞 E), w.under (𝓞 F) ∉ T₀ → FractionalIdeal.count E w 𝔞 = 0)
     (β : Measure (part (PI (F := F)) ⊤ (io (rest T)))) (hβ : β.IsHaarMeasure ∧ β {x | x.1 ∈ (UI F E : Set (AE F E)ˣ)} = 1)
@@ -188,7 +186,6 @@ theorem tail {B : Base F E} (hB : B.IsGood σ) {z : ℕ} (hz : 2 ≤ z) (𝔞 : 
     exact le_abs_self _
   refine ⟨int, (cov.integral_tendsto_of_countably_generated int).congr fun T' => (key ν hc hν T').2⟩
 
-open Classical in
 theorem euler {ν : Chr F E} {z : ℕ} (hz : 2 ≤ z) (𝔞 : FractionalIdeal (𝓞 E)⁰ E)
     (fin : {w | ¬ FractionalIdeal.count E w 𝔞 = 0}.Finite) {S₀ S T : Finset (Pl F)} (hS : S₀ ⊆ S) (hT : S ⊆ T)
     (hν : UnrOff ν (S : Set (Pl F)))

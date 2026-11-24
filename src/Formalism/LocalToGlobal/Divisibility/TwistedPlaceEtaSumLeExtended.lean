@@ -363,7 +363,6 @@ end Link3
 
 section Link3N
 
-open Formalism.BasicNotions Formalism.L2.Col
 
 variable {D : D7} {G : Type} [Group G] [Fintype G] {Pl0 I0 Ty T : Type} {m : ℕ}
 

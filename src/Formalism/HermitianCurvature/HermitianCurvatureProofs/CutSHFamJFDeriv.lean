@@ -240,7 +240,6 @@ end Formalism.FourierDecayAlt.P.CutSHD
 
 namespace Formalism.FourierDecayAlt.P.CutSHD
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P5 Formalism.FourierDecayAlt.P.PBH Formalism.FourierDecayAlt.P.CutSH
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 

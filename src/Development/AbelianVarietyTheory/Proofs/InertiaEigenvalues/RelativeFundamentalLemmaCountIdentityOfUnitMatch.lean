@@ -260,7 +260,6 @@ theorem unit_iff {n : ℕ} {φ : K.E ≃+* E} (hs : ∀ y, φ (K.c y) = star (φ
   exact (Matrix.map_injective φ.injective).eq_iff.symm
 
 
-open Classical in
 def wU (w : B.A) (L : Submodule K.O B.A) : ℂ :=
   if (∀ y ∈ L, B.g * y ∈ L) ∧ w ∈ L then 1 else 0
 

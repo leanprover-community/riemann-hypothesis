@@ -704,7 +704,6 @@ end
 
 noncomputable section
 
-open Finset
 
 namespace Formalism.MainNotions.G.Joints.F4
 
@@ -752,7 +751,6 @@ end
 
 noncomputable section
 
-open Finset
 
 namespace Formalism.MainNotions.G.Joints.F5
 
@@ -858,13 +856,11 @@ namespace Formalism.MainNotions.G.Joints.KP
 
 open MvPolynomial Formalism.MainNotions.G Formalism.MainNotions.flipOneThree Formalism.MainNotions.G.CountingStatementReduction
 
-section GlobalTheory
 
 variable {A A' : Type} [CommRing A] [CommRing A'] {n : ℕ}
 
 variable (W : Fin n → A) (Dm : Matrix (Fin n) (Fin n) A) (γ : A) (v : Fin n → A) (b' : Matrix (Fin n) (Fin n) A)
 
-end GlobalTheory
 
 section Eval
 
@@ -975,11 +971,9 @@ theorem kr_not_dvd_det (q : MvPolynomial (Fin n × Fin n) O) (hq : ¬ IsUnit (kr
 
 end Primes
 
-section Coeff
 
 variable {O : Type} [CommRing O] {A : Type} [CommRing A] [Algebra O A] {r : ℕ}
 
-end Coeff
 
 theorem kr_HB_of_universal (O : Type) [CommRing O] [IsDomain O] (r : ℕ) (c : ℤ) (ka : Fin r → ℤ)
     (f₁ : GLCoord O (r + 1))
@@ -1138,7 +1132,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.G.Joints.KP
 
-open MvPolynomial Formalism.MainNotions.G Formalism.MainNotions.flipOneThree Formalism.MainNotions.G.CountingStatementReduction Formalism.GradedWeylDivisibility
 
 theorem det_ne_zero_of_map_eq_one {B R : Type} [CommRing B] [CommRing R] [Nontrivial R] {n : ℕ} (g : Matrix (Fin n) (Fin n) B)
     (φ : B →+* R) (h : g.map φ = 1) : g.det ≠ 0 := by
@@ -1369,7 +1362,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.G.Joints.KP
 
-open MvPolynomial Formalism.MainNotions.G Formalism.MainNotions.flipOneThree Formalism.MainNotions.G.CountingStatementReduction Formalism.GradedWeylDivisibility
 
 section Tools
 
@@ -1552,7 +1544,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.G.Joints.KP
 
-open MvPolynomial Formalism.MainNotions.G Formalism.MainNotions.flipOneThree Formalism.MainNotions.G.CountingStatementReduction Formalism.GradedWeylDivisibility
 
 section Red
 
@@ -1750,7 +1741,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.G.Joints.KP
 
-open MvPolynomial Formalism.MainNotions.G Formalism.MainNotions.flipOneThree Formalism.MainNotions.G.CountingStatementReduction Formalism.GradedWeylDivisibility
 
 theorem transpose_transpose_polynomial (R : Type) [CommRing R] (n : ℕ) (P : MvPolynomial (Fin n × Fin n) R) :
     tr R n (tr R n P) = P := by
@@ -1953,7 +1943,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.G.Joints.KP
 
-open MvPolynomial Formalism.MainNotions.G Formalism.MainNotions.flipOneThree Formalism.MainNotions.G.CountingStatementReduction Formalism.GradedWeylDivisibility
 
 def sC (k n : ℕ) (ν : Fin n → ℕ) : ℕ := Nat.card (ssIdx k n ν)
 
@@ -2298,7 +2287,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.G.Joints.KP
 
-open MvPolynomial Formalism.MainNotions.G Formalism.MainNotions.flipOneThree Formalism.MainNotions.G.CountingStatementReduction Formalism.GradedWeylDivisibility
 
 theorem mem_highest_weight_congr {R : Type} [CommRing R] {r : ℕ} {c c' : ℤ} {ka ka' : Fin r → ℤ} (hc : c = c')
     (hk : ka = ka') {f : GLCoord R (r + 1)} (h : f ∈ HB R r c ka) : f ∈ HB R r c' ka' := by
@@ -2465,7 +2453,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.G.Joints.KP
 
-open MvPolynomial Formalism.MainNotions.G Formalism.MainNotions.flipOneThree Formalism.MainNotions.G.CountingStatementReduction Formalism.GradedWeylDivisibility
 
 theorem mem_span_highest_weight_iff (hB2 : HBLin) {K : Type} [Field K] {r : ℕ} {c : ℤ} {ka : Fin r → ℤ}
     {x : GLCoord K (r + 1)} : x ∈ Submodule.span K (HB K r c ka) ↔ x ∈ HB K r c ka := by
@@ -2642,7 +2629,6 @@ end Formalism.MainNotions.G.Joints
 
 namespace Formalism.MainNotions.G.Joints
 
-open KP
 
 theorem restriction_dimension_holds (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.flipOneThree.adm6 D :=
   lattice_count_of_highest_weight D polyHB bidetHB hbLin hbMul hbDet kp1Dom

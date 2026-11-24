@@ -152,7 +152,6 @@ variable {ψl : k → ℂ} (hadd : ∀ x y, ψl (x + y) = ψl x * ψl y) (hO : �
 include hadd hO hc
 
 
-open Classical in
 theorem gS_mul_unit (x : k) (hx : valuation k x ≤ 1) (u : kˣ) (hu : valuation k (u : k) = 1) :
     gS ψl ν hϖ hc1 (x * u) = ν u * gS ψl ν hϖ hc1 x := by
   classical
@@ -205,7 +204,6 @@ theorem gS_mul_unit (x : k) (hx : valuation k x ≤ 1) (u : kˣ) (hu : valuation
   rw [hsum, ← mul_assoc, ← Units.val_mul, mul_inv_cancel, Units.val_one, one_mul]
 
 
-open Classical in
 theorem gS_eq_zero_of_lt (hmin : ∃ u ∈ unitCong (ϖ ^ (c - 1)), ν u ≠ 1) (x : k) (hx : valuation k x < 1) :
     gS ψl ν hϖ hc1 x = 0 := by
   classical
@@ -271,7 +269,6 @@ section Main
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
 
-open Classical in
 theorem gS_one_ne_zero {ψl : k → ℂ} (hadd : ∀ x y, ψl (x + y) = ψl x * ψl y)
     (hO : ∀ x : k, valuation k x ≤ 1 → ψl x = 1)
     (hcond : ∀ x : k, (∀ y : k, valuation k y ≤ 1 → ψl (x * y) = 1) → valuation k x ≤ 1)

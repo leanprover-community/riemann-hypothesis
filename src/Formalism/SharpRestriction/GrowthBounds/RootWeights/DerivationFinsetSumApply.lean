@@ -88,7 +88,6 @@ theorem gl_action_eq_derivation (LL : Letters ι) (S : Set ι) (a b : Fin n) (F 
   refine Finset.sum_congr rfl fun l _ => ?_
   split_ifs <;> simp
 
-open Classical in
 theorem gl_derivation_variable (LL : Letters ι) (S : Set ι) (a b : Fin n) (l : ι) (c : Fin n) :
     glDerivation K LL S a b (X (l, c)) =
       if l ∈ S then (if LL.vec l then (if c = b then X (l, a) else 0) else (if c = a then -X (l, b) else 0))

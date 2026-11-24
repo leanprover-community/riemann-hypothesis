@@ -286,7 +286,6 @@ def IsImageHeight (Nm : (K →+* ℂ) → V → ℝ) (L : Submodule (𝓞 K) V) 
       ((D : ℝ) + 1) * δ * h = formHeight δ w A f
 
 
-open Classical in
 def imageHeight (Nm : (K →+* ℂ) → V → ℝ) (L : Submodule (𝓞 K) V) (ev : V →ₗ[K] Ω) (D : ℕ) : ℝ :=
   if h : ∃ x, IsImageHeight Nm L ev D x then h.choose else 0
 

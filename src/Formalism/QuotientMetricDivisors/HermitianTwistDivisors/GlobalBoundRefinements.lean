@@ -122,17 +122,14 @@ end DivisorInequalityBounds
 
 theorem divisor_inequality_explicit : DivIneqRecord := DivisorInequalityBounds.divIneqRecord_of divisor_inequality
 
-section Rho
 
 open Formalism.DivisionValues.RationalHermitianForm Formalism.DivisionValues.StepBAux Formalism.DivisionValues.ConjugateWeightGram
 
 namespace DivisorInequalityBounds
 
-section LocalW
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 
-end LocalW
 
 end DivisorInequalityBounds
 

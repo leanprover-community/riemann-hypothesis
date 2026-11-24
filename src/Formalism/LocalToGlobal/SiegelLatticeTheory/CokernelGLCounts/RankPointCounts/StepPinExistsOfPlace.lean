@@ -351,7 +351,6 @@ end PtInj
 section Pin
 
 open Formalism.L2.SG.RealObj Formalism.L2.SG.HidaSetting
-open Matrix
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -462,7 +461,6 @@ end Pin
 
 section Assembly
 
-open Formalism.L2.SG.RealObj Formalism.L2.SG.HidaSetting
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -547,8 +545,6 @@ end Assembly
 
 section Places
 
-open Formalism.L2.SG.RealObj Formalism.L2.SG.HidaSetting
-open Matrix
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

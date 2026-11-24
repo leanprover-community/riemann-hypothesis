@@ -278,11 +278,9 @@ theorem leafUnip_of (O : OnObj S (∀ v, Pm v) c) (fN : ℕ) (hG : IsLevelGroups
 
 end Discharge
 
-section Builder
 
 variable {Bs : DefBase K} {Df : DefSide Bs} {S : IndefData Df} {c : OnConst}
 
-end Builder
 
 section Groups
 
@@ -374,11 +372,9 @@ variable (v0 : InfinitePlace KC) (Tw0 : Finset (HeightOneSpectrum (𝓞 KC)))
 
 end ToyLevel
 
-section NotProjectiveExample
 
 variable (K)
 variable (v0 : InfinitePlace K) (Tw0 : Finset (HeightOneSpectrum (𝓞 K)))
 
-end NotProjectiveExample
 
 end Formalism.L2.Indef.Tree

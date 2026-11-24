@@ -54,12 +54,10 @@ namespace Formalism.MainNotions.Gaps.CC.Idx
 open NumberField IsDedekindDomain Matrix Formalism.UG Formalism.UG.P Formalism.BasicNotions Formalism.FrobeniusOrbits Formalism.MainNotions.Gaps.LG
 open scoped TensorProduct
 
-section Defs
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {n : Type} [Fintype n] [DecidableEq n]
 
-end Defs
 
 section SA
 
@@ -114,26 +112,21 @@ theorem mem_S_of_loc (x : E ⊗[F] FiniteAdeleRing (𝓞 F) F) (h : ∀ w, prV (
 
 end SA
 
-section SP
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {n : Type} [Fintype n] [DecidableEq n]
 
 
-end SP
 
-section SL
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {n : Type} [Fintype n] [DecidableEq n]
 
-end SL
 
 section K
 
 end K
 
-section TAbs
 
 variable {A : Type} [CommRing A] (O : Subring A) {n : Type} [Fintype n] [DecidableEq n] (i0 : n) (p q qi : A)
   (Lb Ld : Submodule O (n → A))
@@ -147,7 +140,6 @@ variable (hp : p ∈ O) (hq : q ∈ O) (hqi : q * qi = 1)
 
 
 
-end TAbs
 
 section TConc
 
@@ -168,13 +160,10 @@ variable {k : ℕ} (P : Par F E k)
 
 end TConc
 
-section TMain
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-end TMain
 
-section Asm
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
@@ -182,13 +171,10 @@ variable {k : ℕ} (P : Par F E k)
 
 variable {P} {f : ℕ}
 
-end Asm
 
-section Host
 
 variable {R : Ranks} (H : Host R)
 
-end Host
 
 end Formalism.MainNotions.Gaps.CC.Idx
 

@@ -252,18 +252,14 @@ def Std (Ks : ℕ) (C₀ Cg : ℝ) : Prop :=
 
 end Dat
 
-section Weights
 
 variable {D : D7} {k0 : ℕ} (Gm : GramMap k0 D.R.rS) (X : Dat D k0)
 
 
-end Weights
 
-section Lattices
 
 variable (D : D7)
 
-end Lattices
 
 section Estimates
 
@@ -275,17 +271,13 @@ def E (k0 : ℕ) (Ks : ℕ) (C₀ Cg : ℝ) : Prop :=
 
 end Estimates
 
-section TopLevel
 
 variable (D : D7) {k0 : ℕ} (Gm : GramMap k0 D.R.rS)
 
-end TopLevel
 
-section Family
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (Gm : ∀ k0 r : ℕ, GramMap k0 r)
 
-end Family
 
 end Formalism.MainNotions.S.GramWordSpace
 

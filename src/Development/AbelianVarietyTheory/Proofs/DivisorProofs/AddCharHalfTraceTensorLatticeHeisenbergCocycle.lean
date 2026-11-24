@@ -92,7 +92,6 @@ theorem _root_.GlobalTheory.VacCocycle.conj_hTens (hc : ∀ z, c (c z) = z) {JA 
 
 set_option autoImplicit false in
 open IsDedekindDomain NumberField MeasureTheory Matrix in
-open Classical in
 open scoped TensorProduct ComplexConjugate in
 attribute [local instance] _root_.Formalism.BasicNotions.Host.cmStar _root_.GlobalTheory.LocalData.complRel
   _root_.GlobalTheory.LocalData.isLocalField _root_.GlobalTheory.FunObj.borelKw
@@ -107,7 +106,6 @@ end General
 
 set_option autoImplicit false in
 open IsDedekindDomain NumberField MeasureTheory Matrix in
-open Classical in
 open scoped TensorProduct ComplexConjugate in
 attribute [local instance] _root_.Formalism.BasicNotions.Host.cmStar _root_.GlobalTheory.LocalData.complRel
   _root_.GlobalTheory.LocalData.isLocalField _root_.GlobalTheory.FunObj.borelKw
@@ -126,7 +124,6 @@ private lemma hTens_add_add (JA : Matrix α α A) (JB : Matrix β β A)
 
 set_option autoImplicit false in
 open IsDedekindDomain NumberField MeasureTheory Matrix in
-open Classical in
 open scoped TensorProduct ComplexConjugate in
 attribute [local instance] _root_.Formalism.BasicNotions.Host.cmStar _root_.GlobalTheory.LocalData.complRel
   _root_.GlobalTheory.LocalData.isLocalField _root_.GlobalTheory.FunObj.borelKw
@@ -171,7 +168,6 @@ private lemma addChar_symp_add_add (hc : ∀ z, c (c z) = z) {JA : Matrix α α 
 
 set_option autoImplicit false in
 open IsDedekindDomain NumberField MeasureTheory Matrix in
-open Classical in
 open scoped TensorProduct ComplexConjugate in
 attribute [local instance] _root_.Formalism.BasicNotions.Host.cmStar _root_.GlobalTheory.LocalData.complRel
   _root_.GlobalTheory.LocalData.isLocalField _root_.GlobalTheory.FunObj.borelKw

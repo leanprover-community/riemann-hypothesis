@@ -542,7 +542,7 @@ theorem sfin_iff (x : X.B.I.Gf) : x ∈ SfinU X u ↔
 
 theorem sinf_iff (s : X.B.I.Ginf) : s ∈ X.SinfU u ↔ ∀ v,
     C1 (fun a => rv X.B.I v (X.eR a)) (uMat (s v)) ∧
-      (uMat (s v) - 1) *ᵥ rv X.B.I v (X.zR u) ∈ SpL (fun a => rv X.B.I v (X.eR a)) D.R.rS := by rfl
+      (uMat (s v) - 1) *ᵥ rv X.B.I v (X.zR u) ∈ SpL (fun a => rv X.B.I v (X.eR a)) D.R.rS := rfl
 
 def SSub : Subgroup X.B.I.GA where
   carrier := {y | y.1 ∈ X.SinfU u ∧ y.2 ∈ SfinU X u}

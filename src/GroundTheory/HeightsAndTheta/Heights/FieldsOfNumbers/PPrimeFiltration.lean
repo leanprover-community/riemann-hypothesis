@@ -113,7 +113,6 @@ theorem component_lex (f : MRing ι F) (b : K → ℕ) :
   ext d
   simp only [coeff_weightedHomogeneousComponent, weight_lexWeight, lexEmb_injective.eq_iff]
 
-open Classical in
 theorem component_lex_of_ne (f : MRing ι F) (m : Lex (Fin (Fintype.card K) → ℕ))
     (hm : ∀ b, lexEmb K b ≠ m) :
     weightedHomogeneousComponent (lexWeight (ι := ι)) m f = 0 := by
@@ -447,7 +446,6 @@ theorem hilbFn_top (m : K → ℤ) : hilbFn (⊤ : Ideal (MRing ι F)) m = 0 := 
   · rfl
 
 
-open Classical in
 theorem filtration (h1 : HilbExactDivide.Statement.{u}) (J : Ideal (MRing ι F))
     (hJ : IsMultiHomogIdeal J) :
     ∃ (r : ℕ) (Q : Fin r → Ideal (MRing ι F)) (c : Fin r → K → ℕ),

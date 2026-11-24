@@ -214,7 +214,6 @@ open Classical in
 def ofBlock (t : ι) (w : Fin r → ℂ) : Fin g → ℂ :=
   fun k => if (idx k).1 = t then kap q (idx k).2 (w (idx k).2) else 0
 
-open Classical in
 theorem blockOf_ofBlock (t t' : ι) (w : Fin r → ℂ) :
     blockOf idx q t' (ofBlock idx q t w) = if t' = t then w else 0 := by
   ext a

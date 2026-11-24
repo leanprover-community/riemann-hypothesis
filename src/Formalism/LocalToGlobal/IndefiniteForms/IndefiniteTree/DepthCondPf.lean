@@ -143,13 +143,11 @@ theorem ramified_discriminant_condition_holds : FRamDCore := by
   unfold NumDatum.FRamD
   constructor <;> nlinarith
 
-section Record
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 variable {Bs : DefBase K} {Df : DefSide Bs} {S : IndefData Df} {P : Type} [Group P] [Finite P] {c : OnConst}
 
 open Formalism.DivisionValues Formalism.EigenvalueLevelCeiling Formalism.L2.Indef Formalism.L2.Indef.Tree
 
-end Record
 
 end Formalism.L2.Indef.Tree.DepthCond

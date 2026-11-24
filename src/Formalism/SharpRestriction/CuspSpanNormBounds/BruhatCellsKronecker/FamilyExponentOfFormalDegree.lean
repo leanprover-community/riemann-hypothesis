@@ -101,11 +101,9 @@ theorem Tr_pos (D : D7) (u : D.what₂.Word) : 0 < Tr D u := by
 theorem ka_pos_of {D : D7} (hv : 1 ≤ D.host.v) : 0 < D.host.ka := by
   exact div_pos Real.pi_pos (by linarith)
 
-section Family
 
 variable {eps : ℝ} {Fm : FamP eps}
 
-end Family
 
 end Formalism.MainNotions.BridgeLemma
 

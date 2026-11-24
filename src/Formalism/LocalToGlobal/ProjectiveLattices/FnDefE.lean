@@ -115,12 +115,10 @@ theorem continuousOn_pnorm (X : Data E r) (la : Wt X.Ψ r) {P : Frame X.Ψ r →
 
 end FD
 
-section Gen
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
   {Xo : Moduli Dw l} {c : Coeff l} {r : ℕ}
 
-end Gen
 
 section Core
 

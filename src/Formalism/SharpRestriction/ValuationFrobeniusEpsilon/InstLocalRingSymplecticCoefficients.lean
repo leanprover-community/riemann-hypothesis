@@ -459,7 +459,6 @@ noncomputable def extGG3 {A : Type} [CommRing A] (K : IntermediateField ℚ Qbar
   else 0
 
 
-open Classical in
 def IsLiftGG3 (O : Type) [CommRing O] [IsLocalRing O] (H GK : Subgroup GQ) (η : GQ → O)
     (c0 : GQ → Matrix (Fin 3) (Fin 3) O) (A : Type) [CommRing A] [IsLocalRing A] [Algebra O A]
     (r : H → Matrix (Fin 3) (Fin 3) A) : Prop :=
@@ -471,7 +470,6 @@ def IsLiftGG3 (O : Type) [CommRing O] [IsLocalRing O] (H GK : Subgroup GQ) (η :
   (∀ h : H, (r h).map (residue A) = (c0 h).map (fun x => residue A (algebraMap O A x)))
 
 
-open Classical in
 def IsUnivLiftGG3 (O : Type) [CommRing O] [IsLocalRing O] (H GK : Subgroup GQ) (η : GQ → O)
     (c0 : GQ → Matrix (Fin 3) (Fin 3) O)
     (P : ∀ (A : Type) [CommRing A] [IsLocalRing A] [Algebra O A], (H → Matrix (Fin 3) (Fin 3) A) → Prop)
@@ -1066,7 +1064,6 @@ end VH
 
 namespace VH
 
-open IsDedekindDomain
 
 def Iwc (s : HidaSetting) (c : ℕ) :
     Subgroup (∀ v : s.Vl, GL (Fin s.n) (HeightOneSpectrum.adicCompletionIntegers s.L (s.vt v))) :=
@@ -1089,7 +1086,6 @@ end VH
 
 namespace VH
 
-open IsDedekindDomain
 
 def Tplus (s : HidaSetting) : Submonoid (∀ v : s.Vl, Fin s.n → (HeightOneSpectrum.adicCompletion s.L (s.vt v))ˣ) where
   carrier := {t | ∀ v (i j : Fin s.n), i ≤ j →

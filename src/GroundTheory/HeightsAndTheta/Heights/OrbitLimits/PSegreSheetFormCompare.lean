@@ -141,7 +141,6 @@ def blk (k : K) : (Fin (NN ι) → ℂ) →L[ℂ] (Fin (nk ι k) → ℂ) :=
   ContinuousLinearMap.pi fun r => ContinuousLinearMap.proj (eS ι ⟨k, r⟩)
 
 
-open Classical in
 def ins (jj : (k : K) → ι k) (t : Fin (NN ι) → ℂ) : (Σ k, ι k) → ℂ :=
   fun p => if h : p.2 = jj p.1 then 1 else t (eS ι ⟨p.1, eK jj p.1 ⟨p.2, h⟩⟩)
 

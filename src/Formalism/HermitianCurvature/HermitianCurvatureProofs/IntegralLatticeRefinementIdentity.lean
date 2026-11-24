@@ -479,7 +479,6 @@ end Formalism.FourierDecayAlt.P
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.FourierDecayAlt.P.A6x3
 
 theorem orthogonal_lattice_properties : Formalism.FourierDecayAlt.A6.PerpLat := by
   intro K _ _ _ R ψ hd hn L hL

@@ -79,7 +79,6 @@ def GoodLeSmall : Prop :=
       Formalism.GM.M.goodCount p B L D ≤
         (Finset.univ.filter (fun a : Fin m => B (f a) (f a) ≠ 0 ∧ (B (f a) (f a)).valuation ≤ D)).card
 
-open Classical in
 theorem orthCount_of (h : GoodLeSmall) : OrthCount := by
   intro p _ σ B L W D hW hLW hsm hadd hsym m f hfL hli hspan horth
   have hgood := h p σ B L W D hW hLW hsm hadd hsym m f hfL hli hspan horth

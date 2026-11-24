@@ -258,7 +258,6 @@ theorem int_cosets (hm : IsVol m) (hϖ : IsUnif ϖ) (c : ℕ) (f : k → ℂ) (h
   refine Finset.sum_congr rfl fun y _ => ?_
   rw [integral_const_mul, integral_sub_right_eq_self, int_ind_pow hm hϖ, mul_comm]
 
-open Classical in
 theorem gI_gauss (hm : IsVol m) (hψ : IsPsi ψ) (hϖ : IsUnif ϖ) (hc : 1 ≤ c) (hν : CondLE ϖ c ν) [Fintype (Res k c)ˣ] :
     gI m ψ ν (((ϖ : k) ^ c)⁻¹) = ((resCard k : ℂ) ^ c)⁻¹ * ∑ y : (Res k c)ˣ,
       if h : ((Quotient.out y.1 : 𝒪[k]) : k) = 0 then 0 else

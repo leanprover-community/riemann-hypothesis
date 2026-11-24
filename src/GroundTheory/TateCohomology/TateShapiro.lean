@@ -159,7 +159,6 @@ noncomputable def toResCoind (B : Rep.{u} k S) : B ⟶ res S.subtype (coind S.su
         rfl)⟩
 
 
-open scoped Classical in
 lemma toResCoind_apply (B : Rep.{u} k S) (b : B) (x : G) :
     ((toResCoind S B).hom b).1 x = if h : x ∈ S then B.ρ ⟨x, h⟩ b else 0 := by
   change (if h : x ∈ S then B.ρ ⟨x, h⟩ else 0) b = _
@@ -168,7 +167,6 @@ lemma toResCoind_apply (B : Rep.{u} k S) (b : B) (x : G) :
 variable [Fintype G] [Fintype S]
 
 
-open scoped Classical in
 lemma sum_toResCoind (B : Rep.{u} k S) (b : B) (g : G) :
     ∑ h : G, ((toResCoind S B).hom b).1 (g * h) = B.ρ.norm b := by
   rw [show (∑ h : G, ((toResCoind S B).hom b).1 (g * h)) =
@@ -446,7 +444,6 @@ section Ind
 variable {k G : Type u} [CommRing k] [Group G] (S : Subgroup G) [Fintype G] [Fintype S]
 
 
-open scoped Classical in
 noncomputable def tateIndNatIso (n : ℤ) :
     indFunctor k S.subtype ⋙ tateCohomologyFunctor n ≅
       tateCohomologyFunctor (R := k) (G := S) n :=

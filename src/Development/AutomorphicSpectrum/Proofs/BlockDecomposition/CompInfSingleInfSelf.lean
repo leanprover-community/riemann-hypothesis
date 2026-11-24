@@ -180,11 +180,9 @@ theorem infJ_mul (w : InfinitePlace F) (a b : w.Completion) : infJ w (a * b) = i
   refine Prod.ext ?_ (mul_zero _).symm
   exact Pi.single_mul w a b
 
-open Classical in
 theorem evInf_infJ_self (w : InfinitePlace F) (a : w.Completion) : evInf F w (infJ w a) = a :=
   Pi.single_eq_same (M := fun u : InfinitePlace F => u.Completion) w a
 
-open Classical in
 theorem evInf_infJ_ne {u w : InfinitePlace F} (h : u ≠ w) (a : w.Completion) : evInf F u (infJ w a) = 0 :=
   Pi.single_eq_of_ne (M := fun u : InfinitePlace F => u.Completion) h a
 

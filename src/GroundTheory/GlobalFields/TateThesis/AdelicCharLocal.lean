@@ -71,7 +71,6 @@ def finiteAdeleSingleAdd (v : HeightOneSpectrum (𝓞 K)) :
   map_add' x y := Subtype.ext (Pi.single_add (f := fun u : HeightOneSpectrum (𝓞 K) =>
     u.adicCompletion K) v x y)
 
-open Classical in
 theorem finiteAdeleSingleAdd_apply (v u : HeightOneSpectrum (𝓞 K)) (x : v.adicCompletion K) :
     finiteAdeleSingleAdd v x u =
       Pi.single (M := fun u : HeightOneSpectrum (𝓞 K) => u.adicCompletion K) v x u := rfl
@@ -128,12 +127,10 @@ theorem continuous_finitePlaceIncl (v : HeightOneSpectrum (𝓞 K)) :
   continuous_const.prodMk (continuous_finiteAdeleSingleAdd v)
 
 
-open Classical in
 def infinitePlaceIncl (w : InfinitePlace K) : w.Completion →+ 𝔸[K] :=
   ((AddMonoidHom.single (fun u : InfinitePlace K => u.Completion) w).prod 0 :
     w.Completion →+ InfiniteAdeleRing K × FiniteAdeleRing (𝓞 K) K)
 
-open Classical in
 theorem infinitePlaceIncl_fst (w : InfinitePlace K) (z : w.Completion) (u : InfinitePlace K) :
     (infinitePlaceIncl w z).1 u = Pi.single (M := fun u : InfinitePlace K => u.Completion) w z u :=
   rfl

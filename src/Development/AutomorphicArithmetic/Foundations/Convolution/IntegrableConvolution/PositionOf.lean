@@ -114,7 +114,6 @@ private theorem mk_eq_of_co_along {τ τ₀ : K →+* ℂ} {z : ℂ} (h : co τ 
   rcases co_cases τ with h1 | h1 <;> simp [h1, along, hc]
 
 
-open Classical in
 private def cc (w : InfinitePlace K) (τ : K →+* ℂ) : w.Completion →+* ℂ :=
   if w.embedding = τ then Completion.extensionEmbedding w
   else (starRingEnd ℂ).comp (Completion.extensionEmbedding w)

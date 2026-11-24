@@ -394,7 +394,6 @@ def tauEmb (τ : D.what₂.Tau) : D.host.E →+* ℂ :=
   D.host.emb ((D.eTau τ : D.R.Psi) : D.R.GG)
 
 
-open Classical in
 def frobG (p : ℕ) : D.R.GG :=
   if h : ∃ g : D.R.GG, ∀ (P : Ideal (NumberField.RingOfIntegers D.host.E)) [P.IsPrime]
       [P.LiesOver (Ideal.span {(p : ℤ)})], IsArithFrobAt ℤ (D.host.sigmaOf g) P

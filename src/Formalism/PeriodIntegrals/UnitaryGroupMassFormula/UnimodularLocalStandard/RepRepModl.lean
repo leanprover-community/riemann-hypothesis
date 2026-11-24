@@ -72,13 +72,10 @@ theorem rep_rep_modl {l : ℕ} (hl : l.Prime) (a : ℕ) (b c : ℤ) (d : ℕ) (h
     · have hl2 : l ≠ 2 := by omega
       have h2 : (2 : ZMod l) ≠ 0 := Ring.two_ne_zero (by rw [ZMod.ringChar_zmod_n]; exact hl2)
       have hcard : Fintype.card (ZMod l) % 2 = 1 := by rw [ZMod.card]; exact hodd
-      open Polynomial in
       have hf : ((X : (ZMod l)[X]) ^ 2).degree = 2 := by
         rw [degree_X_pow]; rfl
-      open Polynomial in
       have hdeg : (C D * X ^ 2 : (ZMod l)[X]).degree = 2 := by
         rw [degree_C_mul_X_pow 2 hD]; rfl
-      open Polynomial in
       have hg : (C D * X ^ 2 - C (4 * v) : (ZMod l)[X]).degree = 2 := by
         rw [degree_sub_C (by rw [hdeg]; decide), hdeg]
       obtain ⟨x, y, hxy⟩ := FiniteField.exists_root_sum_quadratic hf hg hcard

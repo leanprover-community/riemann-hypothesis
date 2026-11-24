@@ -64,11 +64,9 @@ def viewX {D : D7} {L : SizeData₂ D} (X : G.Inst D L) : GC.Inst (viewD D) (vie
   kapI := X.kapI
   ep := X.ep
 
-section View
 
 variable {D : D7} {L : SizeData₂ D} (X : G.Inst D L) (K : G.Consts) (a b : G.HH D → ℤ)
 
-end View
 
 structure GAll where
   D : GC.GD
@@ -114,7 +112,6 @@ theorem host_cls_eq {R R' : Ranks} {H : Host R} {H' : Host R'} (hq : H.q = H'.q)
   simp only [Formalism.HC.HostRaw.small, hq, hd, hQS]
   split_ifs <;> simp_all
 
-section Tied
 
 variable {D : D7} (L0 : SizeData₂ D) (X0 : G.Inst D L0) (K : G.Consts) (dr : Set ℕ)
   (len : D.what₂.Word → D.what₂.places.Pl → ℚ) (hw : 1 ≤ L0.sc.w'' D.R.n)
@@ -122,7 +119,6 @@ variable {D : D7} (L0 : SizeData₂ D) (X0 : G.Inst D L0) (K : G.Consts) (dr : S
   (hu : ∀ w, D.what₂.muAt w = D.what₂.mu0 → ∀ j, 1 ≤ j → j ≤ D.R.m → Fval L0 j w = 0)
 
 
-end Tied
 
 end Formalism.MainNotions.Inhab
 

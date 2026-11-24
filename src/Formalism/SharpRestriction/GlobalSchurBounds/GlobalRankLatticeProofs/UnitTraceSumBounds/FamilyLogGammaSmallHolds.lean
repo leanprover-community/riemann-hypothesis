@@ -63,28 +63,23 @@ end Formalism.MainNotions.GL3Theta
 
 namespace Formalism.MainNotions.GL3Theta
 
-open Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric NumberField
 
 end Formalism.MainNotions.GL3Theta
 
 namespace Formalism.MainNotions.GL3Theta
 
-open Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric NumberField
 
 end Formalism.MainNotions.GL3Theta
 
 namespace Formalism.MainNotions.GL3Theta
 
-open Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric NumberField
 
 instance instUltraCp (p : ℕ) [Fact p.Prime] : IsUltrametricDist ℂ_[p] :=
   IsUltrametricDist.isUltrametricDist_of_isNonarchimedean_norm (PadicComplex.isNonarchimedean p)
 
-section Nu
 
 variable {E : Type} [Field E] [NumberField E] {K : Type} [NormedField K] [IsUltrametricDist K] (ψ : E →+* K)
 
-end Nu
 
 noncomputable def psiT (D : D7) {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) (τ : D.what₂.Tau) : D.host.E →+* ℂ_[p] :=
   lam.comp ((embT D τ).codRestrict Qbar (embT_mem D τ))
@@ -108,13 +103,11 @@ end Formalism.MainNotions.GL3Columns
 
 namespace Formalism.MainNotions.GL3Theta
 
-open Formalism.BasicNotions
 
 end Formalism.MainNotions.GL3Theta
 
 namespace Formalism.MainNotions.GL3Columns
 
-open Formalism.BasicNotions
 
 end Formalism.MainNotions.GL3Columns
 

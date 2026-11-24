@@ -203,7 +203,6 @@ end Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.IL
 namespace Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.IL
 
 open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric MeasureTheory Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.IO
-open scoped Pointwise ENNReal Function
 
 variable {D : D7} {N N' : ℕ}
 
@@ -400,8 +399,6 @@ end Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.IL
 
 namespace Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.IL
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric MeasureTheory Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.IO
-open scoped Pointwise ENNReal Function
 
 variable {D : D7} {N N' : ℕ}
 
@@ -578,7 +575,6 @@ end Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.IL
 
 namespace Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity
 
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric MeasureTheory Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.IO
 
 def HfIntRec : Prop :=
   ∀ D : D7, ∀ cc : Ideal (𝓞 D.host.K), IsCurveIdeal D cc → ∀ δ : ℂ, IsDiscriminantTwelfthRootOfIdealLattice D cc δ → δ ≠ 0 →

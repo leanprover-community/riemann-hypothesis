@@ -63,12 +63,10 @@ theorem ind_sb {K : Type} [Field K] [NumberField K] {κ ι : Type} [Fintype κ] 
     exact if_congr (intM_add_iff_of_intM_right hy) rfl rfl
 
 
-open Classical in
 theorem ind_isSB {K : Type} [Field K] [NumberField K] {κ ι : Type} [Fintype κ] [Fintype ι] :
     IsSB (fun x : Matrix κ ι K => if IntM x then (1:ℂ) else 0) := ⟨1, one_pos, ind_sb⟩
 
 
-open Classical in
 theorem ind_ne_zero {K : Type} [Field K] [NumberField K] {κ ι : Type} [Fintype κ] [Fintype ι] :
     (fun x : Matrix κ ι K => if IntM x then (1:ℂ) else 0) ≠ 0 := by
   intro h

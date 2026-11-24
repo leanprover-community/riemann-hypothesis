@@ -314,7 +314,6 @@ noncomputable section
 namespace Formalism.MainNotions.BridgeLemma
 
 open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.MainNotions.S.Cnt MeasureTheory
-open scoped ENNReal
 
 theorem list_map_prod_le (f g : ℕ → ℝ) (h : ∀ a, 0 ≤ f a ∧ f a ≤ g a) :
     ∀ l : List ℕ, 0 ≤ (l.map f).prod ∧ (l.map f).prod ≤ (l.map g).prod := by
@@ -1643,11 +1642,9 @@ namespace Formalism.MainNotions.BridgeLemma
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S
 
-section Assembly
 
 variable {eps : ℝ} (Fm : FamP eps)
 
-end Assembly
 
 end Formalism.MainNotions.BridgeLemma
 
@@ -1658,7 +1655,6 @@ noncomputable section
 namespace Formalism.MainNotions.BridgeLemma
 
 open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.Cnt MeasureTheory
-open scoped ENNReal
 
 section HS
 
@@ -2001,7 +1997,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.BridgeLemma
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formalism.QuantumDeterminants Formalism.HermitianLatticeCounting.LatticeSumBounds
 
 theorem scaled_div_le_of_mul (a h d B s : ℝ) (hs : 0 < s) (H : a * h / d ≤ B * s ^ 2) : a * (h / s ^ 2) / d ≤ B := by
   have e : a * (h / s ^ 2) / d = a * h / d / s ^ 2 := by ring
@@ -2216,11 +2211,9 @@ theorem abs_decay_mono_constants (D : D7) (large₂ : SizeData₂ D) {C' Cl Cg c
   have : 0 ≤ lossP large₂.sc.b C D.R.m W.z W.z' γ p := by linarith
   positivity
 
-section Fam
 
 variable {eps : ℝ} (Fm : FamP eps)
 
-end Fam
 
 end Formalism.MainNotions.BridgeLemma
 
@@ -2230,8 +2223,6 @@ noncomputable section
 
 namespace Formalism.MainNotions.BridgeLemma
 
-open Formalism.BasicNotions Formalism.QuantumDeterminants Formalism.MainNotions Formalism.MainNotions.S Formalism.MainNotions.S.Cnt MeasureTheory
-open scoped ENNReal
 
 theorem rpow_neg_half_eq_sqrt_inv {x : ℝ} (hx : 0 < x) : x ^ (-(1 / 2 : ℝ)) = Real.sqrt x⁻¹ := by
   rw [Real.rpow_neg hx.le, Real.sqrt_inv, Real.sqrt_eq_rpow]
@@ -2545,13 +2536,10 @@ noncomputable section
 
 namespace Formalism.MainNotions.BridgeLemma
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S
 
-section Final
 
 variable {eps : ℝ} (Fm : FamP eps)
 
-end Final
 
 end Formalism.MainNotions.BridgeLemma
 
@@ -2561,13 +2549,10 @@ noncomputable section
 
 namespace Formalism.MainNotions.BridgeLemma
 
-open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S
 
-section Final
 
 variable {eps : ℝ} (Fm : FamP eps)
 
-end Final
 
 end Formalism.MainNotions.BridgeLemma
 

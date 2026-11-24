@@ -168,7 +168,6 @@ end Formalism.CountingSumsFrames
 
 namespace Formalism.CountingSumsFrames
 
-open Formalism.GM.DimensionMonotonicity Finset
 
 namespace GlX
 
@@ -274,7 +273,6 @@ end Formalism.CountingSumsFrames
 
 namespace Formalism.CountingSumsFrames
 
-open Formalism.GM.DimensionMonotonicity Finset
 
 namespace GlX
 
@@ -380,7 +378,6 @@ end Formalism.CountingSumsFrames
 
 namespace Formalism.CountingSumsFrames
 
-open Formalism.GM.DimensionMonotonicity Finset
 
 namespace GlX
 
@@ -807,7 +804,6 @@ end Formalism.CountingSumsFrames
 
 namespace Formalism.CountingSumsFrames
 
-open MvPolynomial Finset Formalism.GM.DimensionMonotonicity Formalism.GM.M
 
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 
@@ -940,7 +936,6 @@ end Formalism.CountingSumsFrames
 
 namespace Formalism.CountingSumsFrames
 
-open MvPolynomial Finset Formalism.GM.DimensionMonotonicity Formalism.GM.M
 
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 
@@ -1074,7 +1069,6 @@ end Formalism.CountingSumsFrames
 
 namespace Formalism.CountingSumsFrames
 
-open MvPolynomial Finset Formalism.GM.DimensionMonotonicity Formalism.GM.M
 
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 
@@ -1142,7 +1136,6 @@ end Formalism.CountingSumsFrames
 
 namespace Formalism.CountingSumsFrames
 
-open MvPolynomial Finset Formalism.GM.DimensionMonotonicity Formalism.GM.M
 
 theorem finrank_of_proj {K V : Type} [Field K] [AddCommGroup V] [Module K V] (Y : Submodule K V)
     [FiniteDimensional K Y] {ι : Type} [Fintype ι] [DecidableEq ι] (Q : ι → Submodule K V) (P : ι → V →ₗ[K] V)
@@ -1230,7 +1223,6 @@ end Formalism.CountingSumsFrames
 
 namespace Formalism.CountingSumsFrames
 
-open MvPolynomial Finset Formalism.GM.DimensionMonotonicity Formalism.GM.M
 
 theorem GlX.exists_theta {K V : Type} [Field K] [CharZero K] [AddCommGroup V] [Module K V] {r : ℕ} (G : GlW K V r)
     {W : Submodule K V} (hW : G.Stable W) (hWf : G.FinW W) {la : Fin r → ℤ} {h h' : V}
@@ -1271,7 +1263,6 @@ end Formalism.CountingSumsFrames
 
 namespace Formalism.CountingSumsFrames
 
-open MvPolynomial Finset Formalism.GM.DimensionMonotonicity Formalism.GM.M
 
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 
@@ -1425,7 +1416,6 @@ end Formalism.CountingSumsFrames
 
 namespace Formalism.CountingSumsFrames
 
-open MvPolynomial Finset Formalism.GM.DimensionMonotonicity Formalism.GM.M
 
 def GlX.HWs {K V : Type} [Field K] [AddCommGroup V] [Module K V] {r : ℕ} (G : GlW K V r) (μ : Fin r → ℤ) :
     Submodule K V where
@@ -1539,7 +1529,6 @@ end Formalism.CountingSumsFrames
 
 namespace Formalism.CountingSumsFrames
 
-open MvPolynomial Finset Formalism.GM.DimensionMonotonicity Formalism.GM.M
 
 variable {p : ℕ} [Fact p.Prime] {K r : ℕ}
 
@@ -1635,7 +1624,6 @@ end Formalism.CountingSumsFrames
 
 namespace Formalism.CountingSumsFrames
 
-open MvPolynomial Finset Formalism.GM.DimensionMonotonicity Formalism.GM.M
 
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 
@@ -1805,7 +1793,6 @@ end Formalism.CountingSumsFrames
 
 namespace Formalism.CountingSumsFrames
 
-open MvPolynomial Finset Formalism.GM.DimensionMonotonicity Formalism.GM.M
 
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 

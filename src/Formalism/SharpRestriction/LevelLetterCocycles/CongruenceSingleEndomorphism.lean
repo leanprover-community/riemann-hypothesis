@@ -106,7 +106,6 @@ end Record
 
 section Reduce
 
-open Formalism.MainNotions.TruncatedSeriesCountingIdentities.Br Formalism.NG Formalism.NG.QuotientPowerLengths
 
 variable {D : D7}
 

@@ -98,7 +98,6 @@ end Step
 
 section Wt
 
-open scoped Classical
 open Formalism.MainNotions.S.Lat Formalism.L2.SG.HidaSetting Formalism.L2.SG.PoincareInHH.PoincareSetting Formalism.L2.SG.TermOp Formalism.L2.SG.Full Formalism.L2.SG.RowsConc
   Formalism.L2.SG.NGData
 

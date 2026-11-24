@@ -112,13 +112,11 @@ theorem cycZ_eq_χQ (g : ↥(GK Bw.Kw)) :
 
 end Cyc
 
-section TopPi
 
 variable {O : Type} [CommRing O] [IsDomain O] [TopologicalSpace (FractionRing O)]
   {LL : Type} [Field LL] [TopologicalSpace LL] [IsTopologicalRing LL] (e : FractionRing O ≃+* LL)
   (n : Type) [Fintype n]
 
-end TopPi
 
 section RecC
 

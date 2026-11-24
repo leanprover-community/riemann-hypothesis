@@ -594,13 +594,11 @@ theorem rowBound_relevant {Q : D.s.Pair u u' → Prop}
 
 end Size
 
-section AuxiliaryNormPrimes
 
 variable {eps : ℝ} (Fm : FamP eps) (C1 : ℝ) (X : ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, TermTie (Fm.D x i))
   (Y : ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x) (u u' : (Fm.D x i).what₂.Word),
     LoopTie (Fm.D x i) (Fm.L x i) (X x hx i) u u' C1)
 
-end AuxiliaryNormPrimes
 
 end Formalism.MainNotions.BridgeLemma
 

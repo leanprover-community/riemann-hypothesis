@@ -167,10 +167,8 @@ theorem valuation_ge_of_le_add_one {x y : WithTop ℤ} {t t' : ℝ} (h : x ≤ y
     have h3 : (k'' : ℝ) ≤ (k : ℝ) + 1 := by exact_mod_cast WithTop.coe_le_coe.mp h'
     linarith
 
-section ValOp
 
 variable {Kf : Type} [Field Kf] {ι : Type} {n : ℕ} [NeZero n] (LL : Letters ι) (S : Set ι)
 
-end ValOp
 
 end Formalism.MainNotions.PairMembershipBlocks

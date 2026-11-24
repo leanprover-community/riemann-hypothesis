@@ -153,7 +153,6 @@ theorem pairMult_dc {K : Subgroup G} {g h a b : G} {R₁ R₂ : Finset G} (h₁ 
   obtain ⟨k₁, i₁, k₂, i₂, rfl⟩ := e
   rw [pairMult_mul_right _ _ i₂, pairMult_mul_left h₁ h₂ i₁]
 
-open Classical in
 theorem sum_single_of_dc {K : Subgroup G} {T : Finset G} {S : G → Finset G} (hS : ∀ x ∈ T, Reps K x (S x))
     (hT : ∀ x ∈ T, ∀ y ∈ T, SameDC K x y → x = y) {M : Type} [AddCommMonoid M] (F : G → M)
     (hF : ∀ x, ∀ l ∈ K, F (x * l) = F x) {z x₀ : G} (hx₀ : x₀ ∈ T) (hz : SameDC K x₀ z) :

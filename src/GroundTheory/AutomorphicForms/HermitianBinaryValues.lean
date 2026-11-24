@@ -78,7 +78,6 @@ end Archimedean
 
 section Main
 
-open NumberField.InfinitePlace.Completion
 
 universe u
 

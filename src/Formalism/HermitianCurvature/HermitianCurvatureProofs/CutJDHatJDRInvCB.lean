@@ -380,7 +380,6 @@ theorem inverse_alpha_minus_holds : RInvAlphaM := by
     rw [mul_comm X, ← mul_assoc, det_inv_mul hS', one_mul]
   exact key _
 
-open RInvCB in
 theorem inverse_beta_positive_holds : RInvBetaP := by
   intro k r z g S _ hS d
   have hS' : S ∈ UH (Hpk k r) := hS
@@ -543,7 +542,6 @@ theorem A0_eq_herm_mulVec_bvec_wv (z : Fin (2 * r + k + 1) → ℂ) (g : Q.Mx k 
 
 end RInvCB
 
-open RInvCB in
 theorem inverse_alpha_left_minus : RInvAlphaLeftM := by
   intro k r z h m g hz hh hm _ J
   rw [alJ_eq, alJ_eq]
@@ -611,7 +609,6 @@ theorem beJ_eq' (z : Fin (2 * r + k + 1) → ℂ) (g : Q.Mx k r) (J : Fin (r + k
 
 end RInvCB
 
-open RInvCB in
 theorem inverse_beta_left_positive : RInvBetaLeftP := by
   intro k r z h m g hz hh hm _ J
   rw [beJ_eq', beJ_eq']

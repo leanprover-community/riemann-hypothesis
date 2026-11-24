@@ -100,7 +100,6 @@ open Classical in
 def lamW (C0 CE1 CE2 : ℝ) (X : Loc) (j : Fin (numSeg X.TT)) (x : X.TT × Bool) : BV C0 CE1 CE2 X j → ℕ :=
   fun v => if (symVar C0 CE1 CE2 X j v).1 = x then 1 else 0
 
-open Classical in
 def lamL (X : Loc) (j : Fin (numSeg X.TT)) (x : X.TT × Bool) : Fin (2 * segS X.TT j + 1 + 1) → ℕ :=
   fun a => if letterOf X j a = x then 1 else 0
 

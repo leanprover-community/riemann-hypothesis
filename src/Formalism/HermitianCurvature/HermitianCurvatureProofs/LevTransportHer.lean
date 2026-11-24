@@ -50,12 +50,10 @@ namespace Formalism.FourierDecayAlt.P.PTie
 
 open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.P5 Formalism.FourierDecayAlt.P.PBH
 
-section reindex
 
 variable {K A S S' : Type}
 
 
-end reindex
 
 def TowerAt : Prop :=
   ∀ (k r : ℕ) (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]

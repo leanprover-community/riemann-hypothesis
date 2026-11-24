@@ -112,7 +112,6 @@ def Da (q : Unif k) (a : 𝓀[k]) : Module.End ℂ (Form k n M) :=
 
 def D (q : Unif k) : Module.End ℂ (Form k n M) := Da q 1
 
-open Classical in
 def U (q : Unif k) : Module.End ℂ (Form k n M) :=
   sumOp (fun P => (withKer P.lat).filter fun P₁ => cross q P₁ P = 1) fun _ _ => 1
 
@@ -159,14 +158,11 @@ theorem tr_apply (P : Pair k n) : tr φ P = ∑ Q ∈ withLat P.lat, φ Q := trL
 
 theorem tr'_apply (P : Pair k n) : tr' φ P = ∑ Q ∈ withKer P.ker, φ Q := trKer_apply φ _
 
-open Classical in
 theorem Da_apply (a : 𝓀[k]) (P₁ : Pair k n) :
     Da q a φ P₁ = ∑ P ∈ withLat P₁.ker with cross q P₁ P = a, φ P := by simp [Da, sumOp_apply]
 
-open Classical in
 theorem D_apply (P₁ : Pair k n) : D q φ P₁ = ∑ P ∈ withLat P₁.ker with cross q P₁ P = 1, φ P := Da_apply q φ 1 P₁
 
-open Classical in
 theorem U_apply (P : Pair k n) : U q φ P = ∑ P₁ ∈ withKer P.lat with cross q P₁ P = 1, φ P₁ := by
   simp [U, sumOp_apply]
 
@@ -348,14 +344,12 @@ end Character
 section Kernel
 variable [Fintype n']
 
-open Classical in
 def latInd (S : Submodule 𝒪[k] (n' → k)) (L : Submodule 𝒪[k] (n → k)) (x : Matrix n n' k) : ℂ :=
   if ∀ y ∈ S, x *ᵥ y ∈ L then 1 else 0
 
 def Maps (P : Pair k n') (Q : Pair k n) (x : Matrix n n' k) : Prop :=
   ∃ h : ∀ y ∈ P.lat, x *ᵥ y ∈ Q.lat, ∀ y : P.lat, Q.fn ⟨x *ᵥ y, h y y.2⟩ = P.fn y
 
-open Classical in
 def phiOne (P : Pair k n') (Q : Pair k n) (x : Matrix n n' k) : ℂ := if Maps P Q x then 1 else 0
 
 variable {P : Pair k n'} {Q : Pair k n} {x : Matrix n n' k}

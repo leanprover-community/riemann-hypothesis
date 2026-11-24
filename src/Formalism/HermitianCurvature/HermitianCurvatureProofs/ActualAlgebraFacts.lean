@@ -129,7 +129,6 @@ end Formalism.FourierDecayAlt.P.TLB
 
 namespace Formalism.FourierDecayAlt.P
 
-open Matrix Formalism.FourierDecayAlt Formalism.FourierDecayAlt.TL Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Q Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.P5
 
 noncomputable section
 

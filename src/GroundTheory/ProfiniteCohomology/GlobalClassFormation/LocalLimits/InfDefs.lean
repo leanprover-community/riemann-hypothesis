@@ -119,12 +119,10 @@ theorem exists_unique_infTensorLift_single :
 def infPlaceOfEmbedding : v.placesOver F.1 :=
   (exists_unique_infTensorLift_single ι F).exists.choose
 
-open Classical in
 theorem infTensorLift_single_infPlaceOfEmbedding :
     infTensorLift ι F (Pi.single (infPlaceOfEmbedding ι F) 1) = 1 :=
   (exists_unique_infTensorLift_single ι F).exists.choose_spec
 
-open Classical in
 theorem eq_infPlaceOfEmbedding_of_infTensorLift {w : v.placesOver F.1}
     (h : infTensorLift ι F (Pi.single w 1) = 1) : w = infPlaceOfEmbedding ι F :=
   (exists_unique_infTensorLift_single ι F).unique h (infTensorLift_single_infPlaceOfEmbedding ι F)
@@ -141,7 +139,6 @@ theorem pi_single_algebraMap_eq_infinite {w : v.placesOver F.1} [DecidableEq (v.
   · simp [hu]
 
 
-open Classical in
 def infCompletionEmbedding :
     (infPlaceOfEmbedding ι F : NumberField.InfinitePlace F.1).Completion →ₐ[v.Completion]
       AlgebraicClosure v.Completion where

@@ -168,7 +168,6 @@ def GMod : Prop := ∀ (F : Type) [Field F] [NumberField F] (l : ℕ) [Fact l.Pr
   0 < absF z ∧ nu ι ((absF z : ℂ) * ∏ v, D.ea v (z : Af F)) = 1
 
 
-open Classical in
 def GTerm : Prop := ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F] (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (D : LDat F ι)
   (c : Pl F → ℕ) (χ : Hc c →* ℂˣ), (∀ v, c (D.pl v) = 1) → ∀ k₀ : ℕ, 2 ≤ k₀ → ∀ (N : ℕ) (t : InfinitePlace F → ℕ), (∀ v, (l - 1) * l ^ N ∣ t v) →
   ∀ (W : List (Pl F)) (r : ℕ), 1 ≤ r → (∀ v, r ≤ W.count (D.pl v)) → ∀ (n : ℕ) (a : Fin n → GF F), IsReps c W a →
@@ -256,7 +255,6 @@ def DAx : Prop := ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F], 2 
   ∀ χ : Hc c →* ℂˣ, (∃ m, 0 < m ∧ ∀ h, χ h ^ m = 1) → (mkDat c χ).Ax
 
 
-open Classical in
 def HolWC : Prop :=
   ∀ (F : Type) [Field F] [NumberField F] [IsTotallyReal F], 2 ≤ Module.finrank ℚ F → ∀ (l : ℕ) [Fact l.Prime], l ≠ 2 → ∀ (ι : Qbar l ≃+* ℂ) (D : LDat F ι)
     (k₀ : ℕ), 4 ≤ k₀ → ∀ c : Pl F → ℕ, {w | c w ≠ 0}.Finite → (∀ v, c (D.pl v) = 1) → (∃ u, c u ≠ 0 ∧ normV u = 2) →
@@ -266,7 +264,6 @@ def HolWC : Prop :=
       ∀ w, nu ι ((∏ v, if D.pl v = w ∧ v ∈ S then (l : ℂ) ^ t else 1) * lam' w - lam w) < 1
 
 
-open Classical in
 def PropMV : Prop :=
   ∀ (F Ω : Type) [Field F] [NumberField F] [IsTotallyReal F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (l : ℕ) [Fact l.Prime], l ≠ 2 →
     2 ≤ Module.finrank ℚ F → SplitL F l →

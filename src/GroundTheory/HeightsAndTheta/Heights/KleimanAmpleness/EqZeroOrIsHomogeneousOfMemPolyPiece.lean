@@ -209,12 +209,10 @@ theorem mem_twist_twistSys_iff (F : Kleiman.SubSystem S x E) (c : ℤ) (I : Klei
 
 end Families
 
-section Filtration
 
 variable (S : Type) [CommRing S] (N : ℕ)
 variable {M : Type} [AddCommGroup M] [Module (Poly S N) M] [Module S M] [IsScalarTower S (Poly S N) M]
 
-end Filtration
 
 end
 

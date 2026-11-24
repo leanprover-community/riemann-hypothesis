@@ -189,11 +189,9 @@ theorem dualSpan : DualSpan := by
     exact (AddChar.val_isUnit _ _).ne_zero
   rw [← this]; exact hα
 
-section ColumnOp
 
 variable {K : Type} [CommRing K] {n : ℕ}
 
-end ColumnOp
 
 section Triple
 

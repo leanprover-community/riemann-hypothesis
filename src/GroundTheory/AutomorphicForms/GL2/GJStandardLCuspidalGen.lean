@@ -277,12 +277,10 @@ theorem fre_pi (v : HeightOneSpectrum (𝓞 K)) (x : GL (Fin n) (v.adicCompletio
   rw [ContinuousMulEquiv.apply_symm_apply]
   rfl
 
-open Classical in
 theorem fre_self (v : HeightOneSpectrum (𝓞 K)) (x : GL (Fin n) (v.adicCompletion K)) :
     finiteRestrictedEquiv K n (localEmbedding v x) v = x := by
   rw [fre_pi, Pi.mulSingle_eq_same]
 
-open Classical in
 theorem fre_ne (v : HeightOneSpectrum (𝓞 K)) (x : GL (Fin n) (v.adicCompletion K))
     {w : HeightOneSpectrum (𝓞 K)} (hw : w ≠ v) :
     finiteRestrictedEquiv K n (localEmbedding v x) w = 1 := by
@@ -463,7 +461,6 @@ end Pure
 section Cusp
 
 open AutomorphicForm CuspidalSpectrum AdelicGLn GLnLocal RestrictedTensor
-open scoped TensorProduct Classical
 
 theorem hR_gen {A H : Type*} [Group A] [NormedAddCommGroup H] [InnerProductSpace ℂ H] (T : A → H → H)
     (hTmul : ∀ a b v, T (a * b) v = T a (T b v)) (hTi : ∀ a v w, inner ℂ (T a v) (T a w) = inner ℂ v w)
@@ -649,8 +646,6 @@ end Conclusion
 
 section Final
 
-open AutomorphicForm CuspidalSpectrum AdelicGLn GLnLocal RestrictedTensor
-open scoped TensorProduct Classical
 
 variable {K : Type} [Field K] [NumberField K] {n : ℕ}
 

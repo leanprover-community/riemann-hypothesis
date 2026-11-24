@@ -79,7 +79,6 @@ end Formalism.FourierDecayAlt.P.PBH
 
 namespace Formalism.FourierDecayAlt.P.PBH
 
-open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants
 
 def PointStep : Prop :=
   ∀ (k j ρ : ℕ) (σ : Equiv.Perm (Fin j)) (d : Fin j → ℂ), (∀ i, d i ≠ 0) → ∀ (c : ℂ), c ≠ 0 →

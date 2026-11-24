@@ -521,7 +521,6 @@ theorem subsingleton_tate :
 end NormalLatticeData
 
 
-open scoped Pointwise in
 theorem exists_openSubgroup_units_tateTrivial :
     ∃ (π : 𝒪[K]) (θ : L) (k : ℕ), Irreducible π ∧ (LinearIndependent K fun σ : Gal(L/K) => σ θ) ∧
       Submodule.span K (Set.range fun σ : Gal(L/K) => σ θ) = ⊤ ∧

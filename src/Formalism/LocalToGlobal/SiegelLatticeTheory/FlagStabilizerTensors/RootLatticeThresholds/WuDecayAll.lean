@@ -446,7 +446,6 @@ end Glob
 
 section Steps
 
-open Classical
 
 variable {D : D7} (X : HidaSetting D) (u : D.what₂.Word)
 
@@ -482,7 +481,6 @@ def LocDecayStep : Prop :=
 
 section Assembly
 
-open Classical
 
 variable {D : D7} (X : HidaSetting D) (u : D.what₂.Word)
 
@@ -567,7 +565,6 @@ end Assembly
 
 section LocalL2Isometry
 
-open Classical
 
 variable {D : D7} (X : HidaSetting D) (u : D.what₂.Word)
 
@@ -606,7 +603,6 @@ end LocalL2Isometry
 
 section LocEq
 
-open Classical
 
 variable {D : D7} (X : HidaSetting D) (u : D.what₂.Word)
 
@@ -906,7 +902,6 @@ end Tens2
 
 section Scalar
 
-open Classical
 
 variable {D : D7} (X : HidaSetting D) (u : D.what₂.Word)
 

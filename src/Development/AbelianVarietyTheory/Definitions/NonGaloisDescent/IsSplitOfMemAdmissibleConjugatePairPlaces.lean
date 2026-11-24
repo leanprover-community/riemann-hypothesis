@@ -142,7 +142,6 @@ structure IsChoice (ch : Set (Pl D.host.E)) : Prop where
     P.asIdeal.comap (algebraMap (𝓞 D.host.K) (𝓞 D.host.E)) = P'.asIdeal.comap (algebraMap (𝓞 D.host.K) (𝓞 D.host.E))
 
 
-open Classical in
 def half (ch : Set (Pl D.host.E)) (Q : Finset (Pl D.host.E)) : Finset (Pl D.host.E) := Q.filter (· ∈ ch)
 
 theorem mem_half {ch : Set (Pl D.host.E)} {Q : Finset (Pl D.host.E)} {P : Pl D.host.E} : P ∈ half ch Q ↔ P ∈ Q ∧ P ∈ ch := by
@@ -179,11 +178,9 @@ instance (i : X.Tw) (M : ℕ) : NeZero (X.l i ^ M) := ⟨pow_ne_zero _ (X.lPrime
 
 
 variable (X) in
-open Classical in
 def admissibleConjugatePairPlaces (i : X.Tw) (Q : Finset (Pl D.host.E)) (M : ℕ) : Finset (Pl D.host.E) :=
   Q.filter fun P => ∃ P' ∈ Q, IsConjPl D.host P P' ∧ Formalism.MainNotions.NAdm.AdmQ X i {P, P'} M
 
-open Classical in
 theorem mem_admissibleConjugatePairPlaces_iff {i : X.Tw} {Q : Finset (Pl D.host.E)} {M : ℕ} {P : Pl D.host.E} : P ∈ admissibleConjugatePairPlaces X i Q M ↔
     P ∈ Q ∧ ∃ P' ∈ Q, IsConjPl D.host P P' ∧ Formalism.MainNotions.NAdm.AdmQ X i {P, P'} M := Finset.mem_filter
 
@@ -211,7 +208,6 @@ theorem isSplit_of_mem_admissibleConjugatePairPlaces {i : X.Tw} {Q : Finset (Pl 
 variable (Y : NExp D.R D.host D.what₂ D.LL0 N X) (i : X.Tw) (Q : Finset (Pl D.host.E)) (M : ℕ)
 
 
-open Classical in
 def coord (P : Pl D.host.E) : G D.host.E N.Om →* Multiplicative (ZMod (X.l i ^ M)) :=
   if h : P ∈ Q then
     (AddMonoidHom.toMultiplicative (Pi.evalAddMonoidHom (fun _ : ↥Q => ZMod (X.l i ^ M)) ⟨P, h⟩)).comp (Y.delU i Q M)
@@ -226,7 +222,6 @@ def univOf (a : Recip D N.Om) : UnivTwist D (ZMod (X.l i ^ M)) :=
   ⟨fun P => a.pull (coord Y i Q M P), fun P => resOf (a.pull (coord Y i Q M P)) P⟩
 
 
-open Classical in
 def weight (P : ↥Q) (v : Pl D.host.E) : ZMod (X.l i ^ M) :=
   if v = P.1 then 1
   else if h : v ∈ Q ∧ IsConjPl D.host P.1 v then (((Y.delU_conj i Q M P.1 P.2 v h.1 h.2).choose : ℤ) : ZMod (X.l i ^ M)) else 0

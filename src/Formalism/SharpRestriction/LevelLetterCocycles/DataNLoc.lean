@@ -583,9 +583,7 @@ abbrev LocTheory : Type 1 := ∀ (l : ℕ) [Fact l.Prime], LocPrime l
 
 end Fam
 
-section Bridge
 
-open Loc
 
 variable {l : ℕ} [Fact l.Prime]
 
@@ -608,7 +606,6 @@ structure LocBridge (l : ℕ) [Fact l.Prime] (E Ω : Type) [Field E] [Field Ω] 
   eO_cont : Continuous eO
   eO_symm_cont : Continuous eO.symm
 
-end Bridge
 
 section PullPD
 
@@ -661,7 +658,6 @@ end PullPD
 
 section PC
 
-open Loc
 
 variable {l : ℕ} [Fact l.Prime]
 
@@ -714,7 +710,6 @@ end PC
 
 section BridgeDefs
 
-open Loc
 
 variable {l : ℕ} [Fact l.Prime]
 
@@ -869,7 +864,6 @@ end Formalism.BasicNotions
 
 namespace Formalism.BasicNotions
 
-open Loc
 
 namespace Loc
 
@@ -1155,7 +1149,6 @@ end Formalism.BasicNotions
 
 namespace Formalism.BasicNotions
 
-open Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct
 
 section Generic
 

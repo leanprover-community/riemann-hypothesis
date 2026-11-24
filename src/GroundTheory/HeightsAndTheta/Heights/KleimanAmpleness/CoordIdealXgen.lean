@@ -57,10 +57,8 @@ def SerreVanish.Statement : Prop :=
     (G : GradedMod S N M), Module.Finite (Poly S N) M →
     ∃ c₀ : ℤ, ∀ (i : ℕ), 1 ≤ i → ∀ c : ℤ, c₀ ≤ c → Subsingleton (gradedH S N M G i c)
 
-section Inhabitants
 
 variable (k : Type) [Field k]
 
-end Inhabitants
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Kleiman

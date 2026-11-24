@@ -76,7 +76,6 @@ private theorem tops_sum_coset {H : Type} [AddCommGroup H] [Fintype H] (A0 : Add
     rw [Nat.card_congr eqv, Nat.card_eq_fintype_card, Fintype.card_subtype]
   rw [Finset.sum_congr rfl fun g _ => step g, ← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul, hc]
 
-open Classical in
 private theorem tops_sum_gen {H : Type} [AddCommGroup H] [Fintype H] (A0 : AddSubgroup H) (θ : AddChar H ℂ)
     (h0 : ∀ s ∈ A0, θ s = 1) (h1 : θ ≠ 0) (TT : Finset H) (o : ℕ) (ho : Fintype.card H = o * Nat.card A0)
     (b c η : ℝ)

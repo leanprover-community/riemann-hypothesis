@@ -77,7 +77,6 @@ theorem φpow_smul (T : LocLat G Qp LL O) (k : ℕ) (a : LetA O n) (x : W.DD T) 
     congr 1
     rw [pow_succ', AlgHom.mul_apply]
 
-open Formalism.MainNotions.UnusedSlot80.PhiPowers in
 theorem γ_φpow (T : LocLat G Qp LL O) (g : W.Gam) (k : ℕ) (x : W.DD T) :
     W.γD T g (((W.φD T) ^ k) x) = ((W.φD T) ^ k) (W.γD T g x) := by
   induction k with
@@ -166,7 +165,6 @@ theorem Pp_osmul (T : LocLat G Qp LL O) (c : ZMod n) (e : ℕ) (o : O) :
   rw [← algebraMap_smul (LetA O n) o y]
   exact Pp_smul W T c e ((W.AΔ).algebraMap_mem o) y hy
 
-open Formalism.MainNotions.UnusedSlot80.PhiPowers in
 theorem Pp_letter (T : LocLat G Qp LL O) (c : ZMod n) (e : ℕ) :
     ∀ y ∈ Formalism.MainNotions.ArcLiftingSetup.Pp W T c e, (letE (c + (e : ZMod n)) : LetA O n) • y = y := by
   refine Pp_ind W T c e _ (smul_zero _) (fun x y hx hy => by rw [smul_add, hx, hy])
@@ -174,7 +172,6 @@ theorem Pp_letter (T : LocLat G Qp LL O) (c : ZMod n) (e : ℕ) :
   intro a _ x hx
   rw [smul_comm, φD_pow_letter W T c x (InNΔi_letter W T c hx) e]
 
-open Formalism.MainNotions.UnusedSlot80.PhiPowers in
 theorem Pp_Δ (T : LocLat G Qp LL O) (c : ZMod n) (e : ℕ) :
     ∀ y ∈ Formalism.MainNotions.ArcLiftingSetup.Pp W T c e, ∀ δ ∈ W.DelF, W.γD T δ y = y := by
   refine Pp_ind W T c e _ (fun δ _ => map_zero _)
@@ -289,11 +286,9 @@ end Formalism.MainNotions.UnusedSlot80.Relay2
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.Relay2
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.WachCoordinates.Br
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -467,11 +462,9 @@ end Formalism.MainNotions.UnusedSlot80.Relay2
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.Relay2
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.WachCoordinates.Br
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -679,11 +672,9 @@ end Formalism.MainNotions.UnusedSlot80.Relay2
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.Relay2
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.WachCoordinates.Br
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -806,11 +797,9 @@ end Formalism.MainNotions.UnusedSlot80.Relay2
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.Relay2
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.WachCoordinates.Br
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -887,11 +876,9 @@ end Formalism.MainNotions.UnusedSlot80.Relay2
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.Relay2
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.WachCoordinates.Br
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -993,11 +980,9 @@ end Formalism.MainNotions.UnusedSlot80.Relay2
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.Relay2
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.WachCoordinates.Br
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -1129,11 +1114,9 @@ end Formalism.MainNotions.UnusedSlot80.Relay2
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.Relay2
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.WachCoordinates.Br
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]
@@ -1241,11 +1224,9 @@ end Formalism.MainNotions.UnusedSlot80.Relay2
 
 noncomputable section
 
-open Classical
 
 namespace Formalism.MainNotions.UnusedSlot80.Relay2
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.WachCoordinates.Br
 
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]

@@ -304,7 +304,6 @@ variable {r : ℕ}
 def horizGen {Ψ : Finset (E →+* ℂ)} (τ : Ψ) (x : Frame Ψ r) : ℂ := (mat x τ).det⁻¹
 
 
-open Classical in
 def modelFlat {Ψ : Finset (E →+* ℂ)} (r : ℕ) (τ : Ψ) : Wt Ψ r := fun τ' _ => if τ' = τ then -1 else 0
 
 theorem det_gram (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (y : Matrix (Fin r) (Fin r) ℂ) :
@@ -720,7 +719,6 @@ theorem shift_spec (h : HasPts U Z) (s : ∀ τ, FlatSec U x Z τ) (w : Psi H �
 end FlatSec
 
 
-open Classical in
 def degFlat (Z : Comp Xo c) (τ : Psi H) : ℝ := if h : Nonempty (FlatSec U x Z τ) then h.some.deg else 0
 
 def c1 (τ : Psi H) : ℝ := -(∑ᶠ Z : Comp Xo c, degFlat U x Z τ) / (Nat.card (Comp Xo c) : ℝ)

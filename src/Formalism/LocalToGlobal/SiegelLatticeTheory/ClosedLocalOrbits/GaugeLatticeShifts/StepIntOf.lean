@@ -54,11 +54,9 @@ namespace Formalism.L2.SG.RealObj.StepIntOf
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-section Defs
 
 variable {D : D7} (X : HidaSetting D)
 
-end Defs
 
 def StIntOfLint : Prop :=
   ∀ (D : D7) (X : HidaSetting D) (u u' : D.what₂.Word) (γ : X.B.I.Ginf),

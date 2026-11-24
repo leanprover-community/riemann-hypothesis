@@ -108,7 +108,6 @@ def ivL (v : InfinitePlace F) : (Fin 2 → Fin 2 → ℝ) →L[ℝ] TR.Lie F 2 :
 theorem ivL_apply (v : InfinitePlace F) (y : Fin 2 → Fin 2 → ℝ) : ivL v y = iv v y := rfl
 
 
-open Classical in
 def i0 (v : InfinitePlace F) : TR.Lie F 2 := fun a b w => if w = v then 0 else (1 : Matrix (Fin 2) (Fin 2) ℝ) a b
 
 theorem embedded_archimedean_identity_eq_one (v : InfinitePlace F) : i0 v + ivL v (Matrix.of.symm 1) = TR.oneL F 2 := by
@@ -118,7 +117,6 @@ theorem embedded_archimedean_identity_eq_one (v : InfinitePlace F) : i0 v + ivL 
     simp [i0, ivL_apply, iv, TR.oneL, Matrix.one_apply, ite_apply]
   · simp [i0, ivL_apply, iv, TR.oneL, Matrix.one_apply, ite_apply, h]
 
-open Classical in
 theorem map_embedded_archimedean_matrix (v : InfinitePlace F) (x : Fin 2 → Fin 2 → ℝ) (w : InfinitePlace F) :
     (Matrix.of (i0 v + ivL v x)).map (fun r : TR.Rinf F => r w) = if w = v then Matrix.of x else 1 := by
   ext a b

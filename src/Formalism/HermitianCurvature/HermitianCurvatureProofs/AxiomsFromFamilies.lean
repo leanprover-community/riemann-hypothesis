@@ -180,7 +180,6 @@ end Formalism.FourierDecayAlt.P.Jx9
 
 namespace Formalism.FourierDecayAlt.P
 
-open Classical in
 theorem local_pullback : LocalPullback := by
   intro hP hA2 K _ _ _ R ψ hD E α _ s m σ u η F Θ hs hm hΘ
   obtain ⟨p1, p2, p3, p4, p5, _, _⟩ := hΘ
@@ -260,7 +259,6 @@ theorem local_pullback : LocalPullback := by
     simp only [pullSys]
     rw [sum_image hinj]
 
-open Classical in
 theorem local_unit_heads : LocalUnitHeads := by
   intro hP hN0 K _ _ _ R ψ hD E α _ s m σ u η F Θ hm hG hΘ t ht
   obtain ⟨p1, p2, p3, p4, p5, p6, p7⟩ := hΘ
@@ -287,7 +285,6 @@ theorem local_unit_heads : LocalUnitHeads := by
   simp only [pullSys, dif_pos (And.intro ht ht)]
   ring
 
-open Classical in
 theorem top_pullback : TopPullback := by
   intro hP K _ _ _ R ψ hD E α _ σ u τ₀ η F Θ hΘ
   obtain ⟨p1, p2, p3, p4, p5, _, _⟩ := hΘ

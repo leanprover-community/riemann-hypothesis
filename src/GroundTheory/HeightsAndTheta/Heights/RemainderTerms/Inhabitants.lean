@@ -53,7 +53,6 @@ open MvPolynomial
 
 noncomputable section
 
-open MvPolynomial
 
 end
 

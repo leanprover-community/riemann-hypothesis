@@ -419,7 +419,6 @@ theorem fam_li (hBrk : FactBrk) (k : Type) [Field k] (n N : ℕ) (isVec : ℕ �
 
 end A3ev
 
-open A3ev in
 theorem lemmaA2indep_of : FactEV → FactBrk → LemmaA2indep := by
   intro hEV hBrk k _ n N isVec B
   classical

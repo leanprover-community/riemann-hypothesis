@@ -162,9 +162,6 @@ end GroundTheory.Automorphic.ArchWhittaker
 
 namespace GroundTheory.Automorphic.ArchWhittaker
 
-open Matrix NormedSpace Complex MeasureTheory intervalIntegral Filter Topology Set
-open ContinuousLinearMap
-open scoped Matrix.Norms.L2Operator Real InnerProductSpace ComplexConjugate ComplexStarModule
 
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 

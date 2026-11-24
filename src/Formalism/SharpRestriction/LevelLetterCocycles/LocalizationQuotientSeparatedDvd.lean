@@ -254,7 +254,6 @@ end Formalism.MainNotions.UnusedSlot80.LevR
 
 namespace Formalism.MainNotions.UnusedSlot80.LevR
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct
 
 section Sep
 
@@ -420,7 +419,6 @@ end Formalism.MainNotions.UnusedSlot80.LevR
 
 namespace Formalism.MainNotions.UnusedSlot80.LevR
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct
 
 section W
 
@@ -696,7 +694,6 @@ end Formalism.MainNotions.UnusedSlot80
 
 namespace Formalism.MainNotions.UnusedSlot80.LevR
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 theorem root_eq_one {l : ℕ} [Fact l.Prime] (t : ℚ_[l]) (ht : t ^ (l - 1) = 1) (h1 : ‖t - 1‖ < 1) :
     t = 1 := by
@@ -899,7 +896,6 @@ end Formalism.MainNotions.UnusedSlot80.LevR
 
 namespace Formalism.MainNotions.UnusedSlot80
 
-open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 theorem points_exist_of_ring_condition (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (h9 : Formalism.MainNotions.DeltaInvariantLattices.P9 D HW F) : PtEx D HW := by

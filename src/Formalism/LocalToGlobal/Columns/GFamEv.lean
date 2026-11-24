@@ -92,10 +92,8 @@ variable {K : Type} [Field K] [NumberField K] [StarRing K] {S : GSD K} {σ : K �
 
 end GSD.Ev
 
-section Round
 
 variable {X : Fields} {n : ℕ} {ST SG : Finset (HeightOneSpectrum (𝓞 X.E))} {β : Type} [Fintype β] [DecidableEq β]
 
-end Round
 
 end Formalism.L2.Col

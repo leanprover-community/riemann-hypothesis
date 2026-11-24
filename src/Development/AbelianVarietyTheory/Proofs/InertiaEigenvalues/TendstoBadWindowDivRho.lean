@@ -65,7 +65,6 @@ noncomputable def badWinBox {ι : Type} (S I : Finset ι) (L k : ℕ) (i₀ i : 
   else if i = i₀ then Finset.Ico (-(L : ℤ)) L ∪ Finset.Ioc (2 * (k : ℤ) - L) (2 * k + L)
   else Finset.Icc (-(L : ℤ)) (2 * k + L)
 
-open Classical in
 theorem card_badWinBox_le {ι : Type} (S I : Finset ι) (L k : ℕ) (i₀ i : ι) :
     (badWinBox S I L k i₀ i).card ≤
       2 * (2 * L + 1) * (if i ∈ insert i₀ S then 1 else k + 1) := by
@@ -84,7 +83,6 @@ theorem card_badWinBox_le {ι : Type} (S I : Finset ι) (L k : ℕ) (i₀ i : ι
       simp [Int.card_Icc]
       nlinarith
 
-open Classical in
 theorem card_piFinset_badWinBox_le {ι : Type} [Fintype ι] (S I : Finset ι) (L k : ℕ) (i₀ : ι) (h₀ : i₀ ∉ S) :
     (Fintype.piFinset (badWinBox S I L k i₀)).card ≤
       (2 * (2 * L + 1)) ^ Fintype.card ι * (k + 1) ^ (Fintype.card ι - S.card - 1) := by

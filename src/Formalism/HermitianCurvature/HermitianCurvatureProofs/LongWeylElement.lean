@@ -265,7 +265,6 @@ end PartW
 
 section PartU
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 variable {k r' : ℕ}
 
@@ -499,7 +498,6 @@ end PartU
 
 section PartF
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
 variable {k r : ℕ}
 

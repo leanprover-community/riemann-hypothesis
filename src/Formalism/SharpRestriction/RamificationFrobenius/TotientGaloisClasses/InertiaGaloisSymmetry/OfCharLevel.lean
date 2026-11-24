@@ -110,10 +110,8 @@ theorem exists_good : ∃ m, Good Ξ e m := by
 open Classical in
 def QS : ℕ := Nat.find (exists_good Ξ e)
 
-open Classical in
 theorem good_QS : Good Ξ e (QS Ξ e) := Nat.find_spec (exists_good Ξ e)
 
-open Classical in
 theorem not_good {m : ℕ} (h : m < QS Ξ e) : ¬ Good Ξ e m := Nat.find_min (exists_good Ξ e) h
 
 theorem QS_dvd : QS Ξ e ∣ Nat.lcm (2 ^ (e + 2)) M := (good_QS Ξ e).1

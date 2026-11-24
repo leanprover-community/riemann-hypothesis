@@ -96,7 +96,7 @@ theorem volIdxProd_of (hP : PrimeHyp D u (Tu D u')) (C : PairVal.MatR D → Pair
   have hco := Formalism.L2.SG.Pf.IndexCocycleOrbits.idxCocycle (PairVal.GLR D) (PairVal.stabInt D u u' δ M w)
     (PairVal.stabAut D u u' F0 what₂ γ F' L) (C (ZhatL (lf D F0) F') L) hle hne'
   have hv : PairVal.volIdx D u u' F0 what₂ δ M γ w F' L =
-      IdxRatio (PairVal.stabInt D u u' δ M w) (PairVal.stabAut D u u' F0 what₂ γ F' L) := by rfl
+      IdxRatio (PairVal.stabInt D u u' δ M w) (PairVal.stabAut D u u' F0 what₂ γ F' L) := rfl
   rw [hv, hco, hidx, h2 γ w F' L U hH]
 
 end Formalism.L2.SG.Pf.ZsVolCut

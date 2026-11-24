@@ -74,7 +74,6 @@ def resHom {U W : X.Opens} (e : W ≤ U) : secGrp M U →+ secGrp M W where
   map_zero' := by split_ifs <;> rfl
   map_add' s t := by split_ifs <;> first | rfl | simp
 
-open Classical in
 theorem val_resHom {U W : X.Opens} (e : W ≤ U) (s : secGrp M U) :
     ((resHom M e s : secGrp M W) : V) = if genericPoint X ∈ W then (s : V) else 0 := by
   unfold resHom; simp only [AddMonoidHom.coe_mk, ZeroHom.coe_mk]; split_ifs <;> rfl
@@ -117,7 +116,6 @@ def mk (U : (X.Opens)ᵒᵖ) (v : V) (h : v ∈ secGrp M U.unop) : (pre M).obj U
 
 @[simp] theorem sv_mk (U : (X.Opens)ᵒᵖ) (v : V) (h : v ∈ secGrp M U.unop) : sv M U (mk M U v h) = v := rfl
 
-open Classical in
 theorem sv_map {U W : (X.Opens)ᵒᵖ} (f : U ⟶ W) (s : (pre M).obj U) :
     sv M W ((pre M).map f s) = if genericPoint X ∈ W.unop then sv M U s else 0 :=
   val_resHom M (leOfHom f.unop) s
@@ -155,7 +153,6 @@ variable {M}
 variable (hM : ∀ y (f : X.functionField) (v : V), RegAt y f → v ∈ M y → f • v ∈ M y)
 
 
-open Classical in
 def smulSec (U : X.Opens) (r : Γ(X, U)) (s : secGrp M U) : secGrp M U :=
   if h : genericPoint X ∈ U then
     ⟨fnOf U h r • (s : V), fun y hy => hM y _ _ (regAt_fnOf hy h r) (s.2.1 y hy), fun h' => (h' h).elim⟩

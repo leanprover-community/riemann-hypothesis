@@ -172,7 +172,6 @@ def G7 : Prop := ForE fun E _ _ _ a => ∀ ψ, StdPsi ψ → ∀ (S : Finset (Pl
     St ψ S Y Y' n (Function.update m w (m w + 1))
 
 
-open Classical in
 def FourierInductionSteps : Prop := ForE fun E _ _ _ a => ∀ ψ, StdPsi ψ → ∀ (S : Finset (Pl E)) (Y Y' : Submodule ℂ (XB E a)),
   YOK ψ S Y → YOK ψ S Y' → St ψ S Y Y' 0 (fun _ => 0) → St ψ S Y Y' (a - 1) fun w => if w ∈ S then a - 1 else 0
 

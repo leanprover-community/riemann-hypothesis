@@ -317,7 +317,6 @@ def blockRank (O : Type*) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] 
   Module.finrank (KK O) (Submodule.span (KK O) (L : Set (MvPolynomial (BVar (2 * s + 1) r S.t) (KK O))))
 
 
-open Classical in
 def segRank (O : Type*) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (p r : ℕ) [NeZero r]
     (S : SegData s) (aTop : Fin s → ℕ) (aPlus : ℕ) (m : ℝ) : ℕ :=
   ∑ᶠ b : SegBlock s r, if Kept p r S aTop b then blockRank O p r S aTop aPlus m b else 0
@@ -355,7 +354,6 @@ def segPos (TT : Finset (Fin n')) (j : Fin (numSeg TT)) (i : Fin (segS TT j)) : 
   posAdd (segStart TT j) ((segDists TT j).get i)
 
 
-open Classical in
 def segData (p : ℕ) (TT : Finset (Fin n')) (bT : Fin n' → ℕ) (a : ℕ) (b' Y La E0 : ℝ) (j : Fin (numSeg TT)) :
     SegData (segS TT j) where
   sigma := ((List.finRange (segS TT j)).filter

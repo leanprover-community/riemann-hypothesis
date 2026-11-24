@@ -88,7 +88,6 @@ def WeberLev (B : Base) (f : Fr B.toPre) (T : TwDat B) : Prop :=
       WeberIn H B.LLC (B.host.g 0 * B.host.g 1 * ∏ q ∈ S.image (fun Q => Nat.card (kP Q)), q)
 
 
-open Classical in
 theorem lg_weberLev (K : Ctx) : large₂ K WeberLev := by
   have h : ∀ (P : Pre) (Ξ : Set (HChar P.host.E)), ∃ Z : Finset ℂ, (∀ z ∈ Z, IsAlgebraic ℚ z) ∧
       ({Q : HeightOneSpectrum (𝓞 P.host.E) | ∃ χ ∈ Ξ, ¬ χ.UnrAt Q}.Finite →

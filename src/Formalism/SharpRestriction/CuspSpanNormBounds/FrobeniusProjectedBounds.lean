@@ -76,17 +76,13 @@ def Gam : ℝ := (D.mem D.u₀).A.GamP
 
 end Letters
 
-section Flags
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ}
 
-end Flags
 
-section Parts
 
 variable (D : D7)
 
-end Parts
 
 def Hyp (D : D7) (large₂ : SizeData₂ D) (C' Cl Cg cb Cu cT CT C0 : ℝ) : Prop :=
   StandingHypotheses D large₂ C' Cl Cg cb Cu cT CT ∧ StandingNumericalData D C0 ∧ 1 ≤ C0
@@ -108,18 +104,14 @@ def eF (D : D7) (C0 : ℝ) : ℝ := 2 * C0 / Gam D + 2 * Real.exp (-(kR D * fR D
 
 end Statements
 
-section LinAlg
 
 variable {H G : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [FiniteDimensional ℂ H]
   [NormedAddCommGroup G] [InnerProductSpace ℂ G] [FiniteDimensional ℂ G]
 
-end LinAlg
 
-section Family
 
 variable {eps : ℝ} (Fm : FamP eps) (At : ∀ x, Fm.x1 < x → ∀ i : Fm.Ix x, TermTie (Fm.D x i))
   (Cg cb Cu cT CT C0 : ℝ)
 
-end Family
 
 end Formalism.MainNotions.FrobeniusProjectedBounds

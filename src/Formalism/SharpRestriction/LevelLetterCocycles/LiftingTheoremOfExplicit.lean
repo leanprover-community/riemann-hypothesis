@@ -48,13 +48,10 @@ namespace Formalism.MainNotions.ElementDenominator
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Module
 
-section Orbit
 
 variable {G LL : Type} [Group G] [Field LL] (I : Subgroup G) [hI : I.Normal] (Fr : G)
 
-end Orbit
 
-section Iner
 
 variable {G : Type} [Group G] {Qp K₀ K K₀' K' : Type} [Field Qp] [Field K₀] [Field K]
     [Field K₀'] [Field K']
@@ -68,7 +65,6 @@ variable {G : Type} [Group G] {Qp K₀ K K₀' K' : Type} [Field Qp] [Field K₀
     [IsScalarTower K₀' K' BdR] [IsScalarTower Qp K₀' BdR]
     (PC : PotCrysData G Qp K₀ K K₀' K' B BdR)
 
-end Iner
 
 section PartII
 

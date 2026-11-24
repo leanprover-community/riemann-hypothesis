@@ -68,7 +68,6 @@ def stripsUp {n : ℕ} (μ : Fin n → ℤ) (b : ℕ) : Finset (Fin n → ℤ) :
   exact (Fintype.piFinset fun i => Finset.Icc (μ i) (μ i + b)).filter fun ν => HStrip ν μ b
 
 
-open Classical in
 def stripsDown {n : ℕ} (μ : Fin n → ℤ) (b : ℕ) : Finset (Fin n → ℤ) := by
   letI : DecidablePred (fun ν => HStrip μ ν b) := fun ν => by
     unfold HStrip

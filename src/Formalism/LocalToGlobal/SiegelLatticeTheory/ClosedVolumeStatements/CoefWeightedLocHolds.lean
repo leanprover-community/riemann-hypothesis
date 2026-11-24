@@ -138,9 +138,6 @@ namespace Formalism.L2.SG.Closed.ScRef
 
 noncomputable section
 
-open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.SplitPrimeNormLemmas
-open scoped InnerProductSpace TensorProduct Classical ENNReal
-open Matrix
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -212,9 +209,6 @@ namespace Formalism.L2.SG.Closed.ScXu
 
 noncomputable section
 
-open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.SplitPrimeNormLemmas
-open scoped InnerProductSpace TensorProduct Classical ENNReal
-open Matrix
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -303,9 +297,6 @@ namespace Formalism.L2.SG.Closed.ScPi
 
 noncomputable section
 
-open MeasureTheory NumberField Formalism.BasicNotions Formalism.MainNotions.S Formalism.L2.SG.HidaSetting Formalism.L2.SG.SplitPrimeNormLemmas
-open scoped InnerProductSpace TensorProduct Classical ENNReal
-open Matrix
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 

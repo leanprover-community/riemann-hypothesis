@@ -321,7 +321,6 @@ end Adelic
 
 end SdTestInfW
 
-open scoped TensorProduct
 open NumberField Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes PI.AdicCompletionValuation PI.VolFromSW SdUniqW SdTestInfW
 
 theorem sdTestInf_holds : SdTestInf := by

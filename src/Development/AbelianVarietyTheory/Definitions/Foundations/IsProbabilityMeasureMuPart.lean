@@ -79,13 +79,11 @@ def slope_sq (N : (K →+* ℂ) → V → ℝ) (L : Submodule (𝓞 K) V) : ℝ 
   if h : HasGram N then Formalism.HN.muDef h.some.2.1.1 h.some.2.1.2 L else 0
 
 
-open Classical in
 def slopeMax_sq (N : (K →+* ℂ) → V → ℝ) (L : Submodule (𝓞 K) V) : ℝ :=
   letI : StarRing K := starRingOfComm
   if h : HasGram N then Formalism.HN.muMaxDef h.some.2.1.1 h.some.2.1.2 L else 0
 
 
-open Classical in
 def slopeMin_sq (N : (K →+* ℂ) → V → ℝ) (L : Submodule (𝓞 K) V) : ℝ :=
   letI : StarRing K := starRingOfComm
   if h : HasGram N then Formalism.HN.muMinDef h.some.2.1.1 h.some.2.1.2 L else 0
@@ -217,7 +215,6 @@ abbrev Psi (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) : Type := {
 abbrev Weight (Dw : Datum H) : Type := Psi H → Fin (Dw.p + Dw.q) → ℤ
 
 
-open Classical in
 def wtOf (Dw : Datum H) (la : Weight Dw) (m : ℤ) : WTZ E :=
   (fun x =>
     if h : x.1 (H.rt : E) = H.rt0 then
@@ -403,7 +400,6 @@ section Cusp
 variable {r : ℕ}
 
 
-open Classical in
 def modelWt {σ : c.F →+* ℂ} (U : Unf Xo c σ r) (G : WTZ E) (k : U.Comp) : Wt (U.X k).Ψ r :=
   fun τ j => if (U.X k).p0 ≤ (j : ℕ) then
       G.1 (Function.invFun (relab c σ) τ.1, (j : ℕ) - (U.X k).p0) + G.2 / 2

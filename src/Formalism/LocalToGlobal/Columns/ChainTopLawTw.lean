@@ -57,13 +57,11 @@ namespace Formalism.L2.Col
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV Formalism.L2.Ker
 
-section FtY
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks}
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ}
   (mu : Tup X.F X.E X.K S) (cst : LocCst X (rowSG Pr sel mu))
 
-end FtY
 
 section Core
 
@@ -83,9 +81,7 @@ def IsKOneType (P : HeightOneSpectrum (𝓞 E)) (q : ℕ) {N : ℕ} (cc : ℕ) (
 
 end Core
 
-section Core2
 
-open Classical
 
 variable {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K] {P : HeightOneSpectrum (𝓞 E)} {q : ℕ}
 
@@ -105,19 +101,14 @@ private theorem redP_mul_of_intAt {a b : E} (ha : IntAt P a) (hb : IntAt P b) :
   apply mul_left_cancel₀ hs0
   rw [e3, map_mul, map_mul, ← e1, ← e2]; ring
 
-end Core2
 
-section Core3
 
-open Classical
 
 variable {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K] {P : HeightOneSpectrum (𝓞 E)} {q : ℕ}
 
-end Core3
 
 section K1
 
-open Classical
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] (P : HeightOneSpectrum (𝓞 E))
 
@@ -275,7 +266,6 @@ end RedBlk
 
 section Gen2
 
-open Classical
 
 variable {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K] {P : HeightOneSpectrum (𝓞 E)} {q : ℕ}
 

@@ -53,13 +53,10 @@ namespace PI.Dv.Tr
 
 open PI.Dv Module NumberField
 
-section Sandwich
 
 variable {K : Type} [Field K] {W : Type} [AddCommGroup W] [Module K W] [FiniteDimensional K W]
 
-end Sandwich
 
-section GroupAlg
 
 variable {K : Type} [Field K] [CharZero K] {G : Type} [Group G] [Fintype G]
 
@@ -67,7 +64,6 @@ variable {K : Type} [Field K] [CharZero K] {G : Type} [Group G] [Fintype G]
 
 
 
-end GroupAlg
 
 section Norms
 

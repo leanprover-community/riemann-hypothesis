@@ -204,7 +204,6 @@ variable (θ n) in
 def lowDeg (N : ℕ) : Submodule ℂ (Mx D V.rank n → ℂ) :=
   Submodule.span ℂ {φ | ∃ e g, Finsupp.degree e < N ∧ φ = gen θ V l s e g}
 
-open Classical in
 theorem hasDerivAt_gen (hθ : IsInfFam θ) (hM : ∀ τ, (gramAt D V τ * s τ).IsHermitian)
     (e : D.what₂.Tau × Fin V.rank × Fin n × Bool →₀ ℕ) (g : (Fin V.rank → Fin n → Af D.host.F ⊗[D.host.F] D.host.E) → ℂ)
     (x : Mx D V.rank n) (τ : D.what₂.Tau) (X : Matrix (Fin V.rank) (Fin n) ℂ) :
@@ -225,7 +224,6 @@ theorem hasDerivAt_gen (hθ : IsInfFam θ) (hM : ∀ τ, (gramAt D V τ * s τ).
   simp only [gen, evalPoly_eq, Complex.ofReal_zero, zero_smul, add_zero]
   ring
 
-open Classical in
 theorem annS_gen (hθ : IsInfFam θ) (hM : ∀ τ, (gramAt D V τ * s τ).IsHermitian)
     (e : D.what₂.Tau × Fin V.rank × Fin n × Bool →₀ ℕ) (g : (Fin V.rank → Fin n → Af D.host.F ⊗[D.host.F] D.host.E) → ℂ)
     (τ : D.what₂.Tau) (X : Matrix (Fin V.rank) (Fin n) ℂ) :

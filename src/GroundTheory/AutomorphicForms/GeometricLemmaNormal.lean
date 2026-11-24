@@ -194,7 +194,6 @@ end Normalized
 
 section DiagonalValues
 
-open MeasureTheory Measure Measures
 
 variable {F : Type*} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
   {n : ℕ} {β γ : Fin n → ℕ} {w : Equiv.Perm (Fin n)}
@@ -293,7 +292,6 @@ end DiagonalValues
 
 section Identity
 
-open MeasureTheory Measure Measures
 
 variable {F : Type*} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
   {n : ℕ} {β γ : Fin n → ℕ} {w : Equiv.Perm (Fin n)}

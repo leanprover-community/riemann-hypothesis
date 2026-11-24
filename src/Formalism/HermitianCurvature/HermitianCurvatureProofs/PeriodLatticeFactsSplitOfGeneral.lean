@@ -87,8 +87,6 @@ end Formalism.FourierDecayAlt.P.S6x1
 namespace Formalism.FourierDecayAlt.P
 
 open Formalism.FourierDecayAlt.S6 Formalism.FourierDecayAlt.P.S6x1
-open NumberField NumberField.IsCMField Module
-open scoped nonZeroDivisors
 
 theorem unramRelative : Formalism.FourierDecayAlt.S6.UnramRelative := by
   intro E _ _ _ hU

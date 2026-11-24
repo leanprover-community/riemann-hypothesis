@@ -150,7 +150,6 @@ end Split
 
 section Tower
 
-open NumberField IsDedekindDomain
 
 variable (K L : Type) [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
 
@@ -352,8 +351,6 @@ end Local
 
 section Red
 
-open Formalism.MainNotions.S NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Formalism.BasicNotions Formalism.L2.SG.HidaSetting
-open scoped TensorProduct
 
 variable (I : AutInst) (v : HeightOneSpectrum (𝓞 I.F))
 
@@ -438,7 +435,6 @@ open TypedLoc Formalism.MainNotions.S
 
 section TypedPlaces
 
-open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Formalism.BasicNotions
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 
@@ -490,8 +486,6 @@ namespace TypedLoc
 
 section Key
 
-open Formalism.MainNotions.S NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Formalism.BasicNotions Formalism.L2.SG.HidaSetting
-open scoped TensorProduct
 
 variable (I : AutInst)
 
@@ -586,8 +580,6 @@ namespace TypedLoc
 
 section Lat
 
-open Formalism.MainNotions.S NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Formalism.BasicNotions Formalism.L2.SG.HidaSetting
-open scoped TensorProduct
 
 variable (I : AutInst)
 
@@ -649,8 +641,6 @@ namespace TypedLoc
 
 section Key2
 
-open Formalism.MainNotions.S NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Formalism.BasicNotions Formalism.L2.SG.HidaSetting
-open scoped TensorProduct
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D) (v : HeightOneSpectrum (𝓞 X.B.I.F))
 
@@ -782,7 +772,6 @@ end TypedLoc
 section Finals
 
 open Formalism.MainNotions.S NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum Formalism.BasicNotions Formalism.L2.SG.HidaSetting TypedLoc
-open scoped TensorProduct
 
 variable {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D)
 

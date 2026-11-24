@@ -96,7 +96,6 @@ def SubHasRatBasis (Z : Submodule K (Fin n → K)) : Prop :=
   ∃ b : Basis (Fin (subDim Z)) K Z, ∀ j i, (b j : Fin n → K) i ∈ cmMax K
 
 
-open Classical in
 def subBasis (Z : Submodule K (Fin n → K)) : Basis (Fin (subDim Z)) K Z :=
   if h : SubHasRatBasis Z then h.choose else finBasis K Z
 

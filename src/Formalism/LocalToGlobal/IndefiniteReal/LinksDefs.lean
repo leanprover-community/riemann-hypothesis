@@ -181,7 +181,6 @@ open Classical in
 def sgAt (σ₀ : K →+* ℂ) (v : InfinitePlace K) : K →+* ℂ := if v = InfinitePlace.mk σ₀ then σ₀ else v.embedding
 
 
-open Classical in
 def twAt (σ₀ : K →+* ℂ) (v : InfinitePlace K) : Bool := if v.embedding = sgAt σ₀ v then false else true
 
 theorem emb_eq (σ₀ : K →+* ℂ) (v : InfinitePlace K) (a : K) : v.embedding a = cj (twAt σ₀ v) (sgAt σ₀ v a) := by
@@ -347,7 +346,6 @@ def labLL (τ : D.what₂.Tau) : D.host.E →+* D.what₂.LL :=
 def labE (σ : D.what₂.LL →+* ℂ) (τ : D.what₂.Tau) : D.host.E →+* ℂ := σ.comp (labLL D τ)
 
 
-open Classical in
 def lab (σ : D.what₂.LL →+* ℂ) (ρ : D.what₂.Tau) : D.what₂.Tau :=
   if h : ∃ τ, labE σ τ = tauE D ρ ∨ labE σ τ = (starRingEnd ℂ).comp (tauE D ρ) then h.choose else ρ
 
@@ -356,7 +354,6 @@ def kapAt (W : HSp D) (σ : D.what₂.LL →+* ℂ) (ρ : D.what₂.Tau) :
   Formalism.L2.NTheta.kapW (D.hc (lab σ ρ)) _ _
 
 
-open Classical in
 def parAt (W : HSp D) (σ : D.what₂.LL →+* ℂ) (ρ : D.what₂.Tau) : SPar :=
   if labE σ (lab σ ρ) = tauE D ρ then Formalism.L2.NTheta.holPar _ _ (kapAt W σ ρ)
   else dualPar (Formalism.L2.NTheta.holPar _ _ (kapAt W σ ρ))

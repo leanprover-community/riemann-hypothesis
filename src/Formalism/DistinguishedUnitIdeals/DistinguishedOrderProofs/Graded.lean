@@ -332,7 +332,6 @@ end Formalism.ExponentWindows.G.SlopeTestRemainingChoices
 
 namespace Formalism.ExponentWindows.G.SlopeTestRemainingChoices
 
-open TensorProduct
 
 section hahn
 variable {LL Ks Δ D : Type} [Field LL] [CommRing Ks] [Algebra LL Ks] [AddCommGroup D] [Module LL D]
@@ -812,7 +811,6 @@ end Formalism.ExponentWindows.G
 
 namespace Formalism.ExponentWindows.G
 
-open TensorProduct SlopeTestRemainingChoices
 
 namespace SlopeTestRemainingChoices
 section
@@ -825,7 +823,6 @@ end Formalism.ExponentWindows.G
 
 namespace Formalism.ExponentWindows.G
 
-open TensorProduct SlopeTestRemainingChoices
 
 theorem graded_semilinear_holds : GrdSemi := by
   intro LL Ks D _ _ _ _ _ τ a x f
@@ -869,7 +866,6 @@ end Formalism.ExponentWindows.G
 
 namespace Formalism.ExponentWindows.G
 
-open TensorProduct SlopeTestRemainingChoices
 
 namespace SlopeTestRemainingChoices
 

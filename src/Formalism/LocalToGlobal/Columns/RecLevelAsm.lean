@@ -58,7 +58,6 @@ namespace Formalism.L2.Col
 
 open Formalism.L2.DIV (Pl kP St redAt redFn)
 
-section Pack
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E]
 
@@ -86,7 +85,6 @@ structure RecCls (hc : Formalism.BasicNotions.CMData F E) {n : ℕ} (J : Matrix 
   stabI_lat : ∀ c (γ : stab c) (x : Fin n → E),
     x ∈ lat c ↔ (((stabI c γ : GL (Fin n) E) : Matrix (Fin n) (Fin n) E) *ᵥ x) ∈ lat c
 
-end Pack
 
 section Dia
 

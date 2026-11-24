@@ -83,8 +83,6 @@ def resDeg (P : Ideal (MRing ι F)) : ℕ :=
   if h : P.IsPrime then haveI := h; Module.finrank F (homFracDegZero P) else 0
 
 
-open scoped Classical in
-open Classical in
 def topCycle [Fintype K] (I : Ideal (MRing ι F)) (n : ℕ) (W : Ideal (MRing ι F)) : ℤ :=
   if h : W ∈ I.minimalPrimes ∧ IsRelevant W ∧ relDim W = n then
     haveI : W.IsPrime := h.1.1.1
@@ -196,7 +194,6 @@ def IntNumBase.Statement : Prop :=
       intNum F P (n := 0) ![] = Module.finrank F (homFracDegZero P)
 
 
-open Classical in
 def PrimeFiltration.Statement : Prop :=
   ∀ (F : Type u) [Field F] (K : Type) [Fintype K] [DecidableEq K] (ι : K → Type)
     [∀ k, Fintype (ι k)] (I : Ideal (MRing ι F)), IsMultiHomogIdeal I →

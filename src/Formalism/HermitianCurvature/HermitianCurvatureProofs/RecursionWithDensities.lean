@@ -105,22 +105,17 @@ noncomputable def G (L : AddSubgroup E) (S : Finset E) (Th : E → α → α →
 
 end gen
 
-section ta
 variable {E : Type} [Field E] [DecidableEq E]
 
-end ta
 
-section main
 variable {E : Type} [Field E] [DecidableEq E]
 
-end main
 
 end Formalism.FourierDecayAlt.P.RecursionWithDensities.A1
 
 namespace Formalism.FourierDecayAlt.P.RecursionWithDensities.A2
 
 open Formalism.FourierDecayAlt.TA Finset Filter Topology
-open scoped ComplexConjugate InnerProductSpace
 open Formalism.FourierDecayAlt.TC
 
 end Formalism.FourierDecayAlt.P.RecursionWithDensities.A2
@@ -129,7 +124,6 @@ namespace Formalism.FourierDecayAlt.P.RecursionWithDensities.B1
 
 open Finset Formalism.FourierDecayAlt.TB Formalism.FourierDecayAlt.TB.Data Formalism.FourierDecayAlt.TC
 open scoped ComplexOrder
-open Classical
 
 theorem psd_congr {α : Type} {Y : Finset α} {k k' : α → α → ℂ}
     (h : ∀ x ∈ Y, ∀ y ∈ Y, k x y = k' x y) (hk : PSDOn Y k) : PSDOn Y k' := by
@@ -430,7 +424,6 @@ end Formalism.FourierDecayAlt.P.RecursionWithDensities.B1
 namespace Formalism.FourierDecayAlt.P.RecursionWithDensities.B2
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.TB Formalism.FourierDecayAlt.P.OneLevelCoefficients Finset
-open scoped ComplexOrder
 
 variable {E W : Type} [Field E]
 

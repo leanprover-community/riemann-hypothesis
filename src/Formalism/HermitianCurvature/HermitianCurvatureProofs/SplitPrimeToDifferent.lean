@@ -154,8 +154,6 @@ end Formalism.FourierDecayAlt.P.S6x4
 namespace Formalism.FourierDecayAlt.P
 
 open Formalism.FourierDecayAlt.S6 Formalism.FourierDecayAlt.P.S6x4
-open NumberField NumberField.IsCMField Module
-open scoped nonZeroDivisors
 
 theorem traceDualGe : Formalism.FourierDecayAlt.S6.DualSupset := by
   intro E _ _ _ hU g ν s hg l hl t ht

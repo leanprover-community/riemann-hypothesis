@@ -61,7 +61,6 @@ def stepEx (σ : E →+* ℂ) (j : ℕ) : Ix Dw → ℤ :=
   fun ix => ix.elim 0 fun p => if p.1 = σ ∧ (p.2 : ℕ) < j then 1 else 0
 
 
-open Classical in
 theorem exOf_tailWt (τ : Psi H) (k : ℕ) (hk : Dw.p ≤ k) :
     AllWt.exOf Dw (GlobalTheory.NefWt.tailWt τ k) 0 = stepEx (conjEmb τ.1) (Dw.p + Dw.q - 1 - k) := by
   refine FlagMod.exOf_ext rfl (fun τ' i hi => ?_) (fun τ' i hi => ?_)
@@ -83,7 +82,6 @@ theorem exOf_tailWt (τ : Psi H) (k : ℕ) (hk : Dw.p ≤ k) :
       simp [GlobalTheory.NefWt.tailWt, stepEx, e, hc]
 
 
-open Classical in
 theorem exOf_headWt (τ : Psi H) (k : ℕ) (hk : k < Dw.p) :
     AllWt.exOf Dw (GlobalTheory.NefWt.headWt τ k) 0 = stepEx τ.1 (k + 1) := by
   refine FlagMod.exOf_ext rfl (fun τ' i hi => ?_) (fun τ' i hi => ?_)

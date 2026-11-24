@@ -223,7 +223,6 @@ end Loc
 
 section Nc
 
-open Formalism.BasicNotions Formalism.L2.SG.HidaSetting Formalism.L2.SG.AdBridge
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -265,7 +264,6 @@ end Kernel
 
 section Full
 
-open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermDef Formalism.L2.SG.HidaSetting Formalism.L2.SG.AdBridge
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
@@ -287,7 +285,6 @@ end Full
 
 section Closed
 
-open Formalism.BasicNotions Formalism.MainNotions.S Formalism.MainNotions.S.Lat Formalism.MainNotions.S.LocalSplitGroups Formalism.L2.SG.TermDef Formalism.L2.SG.HidaSetting Formalism.L2.SG.AdBridge
   Formalism.L2.SG.LocVol
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar

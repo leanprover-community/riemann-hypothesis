@@ -138,7 +138,6 @@ end Formalism.MainNotions.tableLineDegreeTwo
 
 namespace Formalism.MainNotions.tableLineDegreeTwo
 
-open Formalism.WeaklyAdmissibleFiltrations
 
 section Coh
 
@@ -191,7 +190,6 @@ end Formalism.MainNotions.tableLineDegreeTwo
 
 namespace Formalism.MainNotions.tableLineDegreeTwo
 
-open Formalism.WeaklyAdmissibleFiltrations
 
 section Top
 
@@ -252,7 +250,6 @@ end Formalism.MainNotions.tableLineDegreeTwo
 
 namespace Formalism.MainNotions.tableLineDegreeTwo
 
-open Formalism.WeaklyAdmissibleFiltrations
 
 section Lit
 

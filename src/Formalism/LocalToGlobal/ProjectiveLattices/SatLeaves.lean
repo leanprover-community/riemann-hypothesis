@@ -372,7 +372,6 @@ end Tan
 section TanSAB
 
 open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 attribute [local instance] Over.cartesianMonoidalCategory
 
@@ -417,8 +416,6 @@ end TanSAB
 
 section Sat
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 attribute [local instance] Over.cartesianMonoidalCategory
 
@@ -564,8 +561,6 @@ end Sat
 
 section Reb
 
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
-open ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 attribute [local instance] Over.cartesianMonoidalCategory
 

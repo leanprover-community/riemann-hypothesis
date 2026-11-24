@@ -75,7 +75,6 @@ theorem overIx_labOf (Z : ReadL R F X0 Y) (hH : Holds R F) (σ : D.what₂.FT) (
   exact h.choose_spec
 
 
-open Classical in
 def logLamOf (Z : ReadL R F X0 Y) (hH : Holds R F) (j : ℕ) (σ : D.what₂.FT) (e : D.what₂.LL →+* ℂ) : ℝ :=
   if e = D.what₂.embLL then Real.log (D.what₂.lamP D.what₂.mu0 j σ)
   else if h : j - 1 < D.R.m then

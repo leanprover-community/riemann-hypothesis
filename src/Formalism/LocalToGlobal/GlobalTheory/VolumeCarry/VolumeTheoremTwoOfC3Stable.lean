@@ -63,12 +63,10 @@ theorem hE_repr (D : D7) (W : HSpace D.host.E) (x y : W.V) :
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   ring
 
-section Gen
 
 variable (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   (σ : E →ₐ[F] E) (M : ℕ) (J : Matrix (Fin M) (Fin M) E)
 
-end Gen
 
 end Formalism.L2.GlobalTheoryTheory.VolumeCarry
 

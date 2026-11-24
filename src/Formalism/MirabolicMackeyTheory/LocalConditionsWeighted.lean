@@ -91,7 +91,6 @@ def TwistSetDouble : Prop :=
       ∑ j, (ε0 w j + ε0 (conjPl w) j) ≤ 2 / (plc w : ℝ) ^ 2
 
 
-open Classical in
 def OnExportSet : Prop :=
   ∀ (K : Type) [Field K] [NumberField K] [StarRing K] (D : ℕ), 0 < D →
   ∀ (Tup : Type) (μ : HeightOneSpectrum (𝓞 K) → Tup) (J : Type) [Fintype J] (d : J → ℕ),

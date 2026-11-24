@@ -61,7 +61,6 @@ theorem image_refl {E : Type} [Field E] [NumberField E] (f : E ≃+* E) (hf : f 
   rw [show Formalism.L2.Host.CT.plMap (RingEquiv.refl E) = id from funext plMap_refl, Finset.image_id]
 
 
-open Classical in
 theorem qe_image_congr {D : D7} {X X' : Formalism.L2.Col.Fields} (hX : X = X') {s : Formalism.L2.Ker.Seam D X} {s' : Formalism.L2.Ker.Seam D X'}
     (hs : HEq s s') {S S' : Set ℕ} (hS : S = S') {sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)}
     {sel' : HeightOneSpectrum (𝓞 X'.F) → HeightOneSpectrum (𝓞 X'.E)} (hsel : HEq sel sel')
@@ -77,7 +76,6 @@ theorem qe_image_congr {D : D7} {X X' : Formalism.L2.Col.Fields} (hX : X = X') {
   rfl
 
 
-open Classical in
 theorem qe_image_std {B : Base} {f : Fr B.toPre} {T : TwDat B} (w : ColW B f T) (Z : w.Lt)
     {L : SizeData₂ (w.D Z)} {hT : GatTies (w.D Z)} {Gi : Formalism.MainNotions.G.Inst (w.D Z) L} {Gl : Formalism.MainNotions.G.LatInst (w.D Z)}
     {Kc : Formalism.MainNotions.G.Consts} {Yd : DivX (w.D Z)} {cX : ExtraC} {ex : Extra (w.D Z) L hT Gi Gl Kc Yd cX}

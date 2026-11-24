@@ -164,7 +164,6 @@ theorem hasDirichletDensity_deuringSet (σ : Gal(L/K)) :
     by_contra he
     exact hu ⟨w, he, HeightOneSpectrum.ext hw.over.symm⟩
 
-open private HasDirichletDensity.eq_1 from Mathlib.NumberTheory.NumberField.DirichletDensity in
 theorem hasDirichletDensity_chebotarevSet_isConj (σ : Gal(L/K)) :
     (chebotarevSet {τ : Gal(L/K) | IsConj σ τ}).HasDirichletDensity
       (1 / Nat.card (Subgroup.centralizer {σ})) := by

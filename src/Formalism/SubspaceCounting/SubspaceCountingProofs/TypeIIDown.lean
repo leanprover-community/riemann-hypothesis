@@ -153,7 +153,6 @@ namespace Formalism.G0
 
 namespace TypeIIDownP
 
-open QVandermondeP
 
 private theorem finrank_map_subtype_eq' {F W : Type} [Field F] [AddCommGroup W] [Module F W]
     (A : Submodule F W) (V : Submodule F A) :
@@ -227,7 +226,6 @@ namespace Formalism.G0
 
 namespace TypeIIDownP
 
-open QVandermondeP
 
 theorem codimCount (hS : SubspaceCount) {F W : Type} [Field F] [Fintype F] [AddCommGroup W]
     [Module F W] [Finite W] (n j : ℕ) (hn : Module.finrank F W = n) :

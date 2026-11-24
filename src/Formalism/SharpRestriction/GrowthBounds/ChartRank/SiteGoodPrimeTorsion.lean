@@ -242,11 +242,9 @@ theorem HypTies.atHyp {Z : AtIn X0 Tw u μ w h Lv} (A : HypTies Z Gt c) (K : Cmp
     fin := A.toI.fin K
     card := (A.hyp K).card }
 
-section Fam
 
 variable {L : SizeData₂ D} {hT : GatTies D} {Gi : G.Inst D L} {Gl : G.LatInst D} {Kc : G.Consts} {Dx : DivX D} {cX : ExtraC}
 
-end Fam
 
 end Formalism.MainNotions.G.ChF
 

@@ -185,7 +185,6 @@ namespace Formalism.FourierDecayAlt.P.PBI
 
 section cpt
 
-open Formalism.FourierDecayAlt.P.PBI.Sm
 
 variable {k j ρ : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq]

@@ -184,7 +184,7 @@ lemma eSplit_mp : MeasurePreserving (eSplit w) volume volume :=
     ((measurePreserving_piCongrLeft (fun _ => (volume : Measure ℂ)) (splitEquiv w).symm).symm _)
 
 lemma eSplit_apply (x : C2.Lidx m → ℂ) :
-    eSplit w x = (fun a => x ⟨a.1, a.2.1⟩, fun b => x ⟨b.1, b.2.1⟩) := by rfl
+    eSplit w x = (fun a => x ⟨a.1, a.2.1⟩, fun b => x ⟨b.1, b.2.1⟩) := rfl
 
 def mulMap (p : (C2.LPidx w → ℂ) × (C2.Lstidx w → ℂ)) : C2.Lidx m → ℂ := fun q =>
   (C2.lowOf (fun q : C2.LPidx w => q.1) p.1 * C2.lowOf (fun q : C2.Lstidx w => q.1) p.2) q.1.1 q.1.2

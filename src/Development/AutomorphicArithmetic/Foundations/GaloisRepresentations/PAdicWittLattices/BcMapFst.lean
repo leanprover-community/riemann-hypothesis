@@ -187,7 +187,6 @@ def IsHop (j : X.ι) (f : G → R) (A : Module.End R (T.H (X.q j))) : Prop :=
     ∀ x, X.pl T m j 1 (A x) = ∑ᶠ y : G ⧸ X.K j, f y.out • X.pl T m j y.out⁻¹ x
 
 
-open Classical in
 def hecke (j : X.ι) (f : G → R) : Module.End R (T.H (X.q j)) :=
   if h : ∃ A, X.IsHop T j f A then h.choose else 0
 

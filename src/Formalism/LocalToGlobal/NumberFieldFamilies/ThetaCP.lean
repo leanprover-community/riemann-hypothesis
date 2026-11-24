@@ -95,7 +95,6 @@ def SpSig (D : D7) : Prop :=
     ∀ τ, (D.sp.Y j).sig τ = (D.R.r + j * D.R.t - (D.R.m - j) / 2, (D.R.m - j) / 2)
 
 
-open Classical in
 def lowC (V : HSp D) (i : ℕ) : HSp D :=
   if i = 0 then V else if h : ∃ V' : HSp D, IsWittLower V V' i then fixSig h.choose else V
 

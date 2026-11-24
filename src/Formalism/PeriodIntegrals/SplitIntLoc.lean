@@ -50,11 +50,9 @@ noncomputable section
 
 namespace PI.SplitIntLoc
 
-section Defs
 
 variable {A : Type} [CommRing A] {n : Type} [Fintype n] [DecidableEq n]
 
-end Defs
 
 section Points
 

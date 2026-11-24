@@ -799,8 +799,8 @@ def eRoot {r : ℕ} (γ : Point ℂ (r + 1)) : (rootPat γ) ≃ Formalism.Fourie
   invFun q := ⟨(q.1.2, q.1.1), by
     simp only [rootPat, Finset.mem_filter, Finset.mem_univ, true_and]
     exact ⟨q.2.1, (root_iff γ _ _ q.2.1).2 q.2.2⟩⟩
-  left_inv p := by rfl
-  right_inv q := by rfl
+  left_inv p := rfl
+  right_inv q := rfl
 
 theorem hpk_esI (k r : ℕ) (a : Fin r) (j : Fin (2 * r + k + 1)) :
     Hpk k r (esI k r a) j = if j = eI k r a then 1 else 0 := by
@@ -1325,11 +1325,9 @@ theorem adjHS_spec (T : (Wq →L[ℂ] Wp) →L[ℂ] (Wq →L[ℂ] Wp)) (A B : Wq
 
 end HSadj
 
-section HSadj2
 variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [FiniteDimensional ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
 
-end HSadj2
 
 section cellOp
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [FiniteDimensional ℂ Wp]
@@ -1352,17 +1350,13 @@ def cellOp {N : ℕ} (ws : Fin N → List (Formalism.MainNotions.BridgeLemma₃.
 
 end cellOp
 
-section cellOp2
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [FiniteDimensional ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
 
-end cellOp2
 
-section cellOp3
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [FiniteDimensional ℂ Wp]
   [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq]
 
-end cellOp3
 
 section zeroOp
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [FiniteDimensional ℂ Wp]

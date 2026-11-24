@@ -59,13 +59,11 @@ structure LevCh (X : Fields) (Pr : Primes X) (R : Ranks) where
 
 attribute [instance] LevCh.finβ LevCh.decβ
 
-section Step
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Λ : LevCh X Pr R)
 
 
 
-end Step
 
 section RhoPt
 
@@ -82,7 +80,6 @@ def rhoPt (Dc : DetChr X R.m) {u : Pr.Word} (i : ℕ) (p : DecoSet (E := X.E) (n
   else 1
 
 
-open Classical in
 def rhoPt' (Dc : DetChr X R.m) {u : Pr.Word} (i : ℕ) (p : DecoSet (E := X.E) (n := R.N (i + 1)) (ST := Pr.vT u) (SG := Pr.vGs)) : X.Kˣ :=
   if hc : Formalism.BasicNotions.CMData X.F X.E then
     letI : NeZero (R.N (i + 1)) := ⟨(R.N_pos (i + 1)).ne'⟩
@@ -94,13 +91,11 @@ def rhoPt' (Dc : DetChr X R.m) {u : Pr.Word} (i : ℕ) (p : DecoSet (E := X.E) (
 
 end RhoPt
 
-section Chain
 
 variable {X : Fields} {Pr : Primes X} {R : Ranks} (W : Wts X Pr.Word R) (Λ : LevCh X Pr R)
 
 variable {W Λ}
 
-end Chain
 
 section Xi
 

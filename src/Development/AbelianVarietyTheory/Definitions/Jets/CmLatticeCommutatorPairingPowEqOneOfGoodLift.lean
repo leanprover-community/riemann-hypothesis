@@ -147,7 +147,6 @@ open Classical in
 def u (z : ℂ) : ℂ := if z ∈ M.L.lattice then 0 else -M.x z / M.y z
 
 
-open Classical in
 def w (z : ℂ) : ℂ := if z ∈ M.L.lattice then 0 else -1 / M.y z
 
 def Small (z : ℂ) : Prop := z ∈ M.L.lattice ∨ 1 < ‖M.ι (M.x z)‖

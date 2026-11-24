@@ -212,8 +212,6 @@ end Formalism.L2.KerInert.RepFrame
 
 namespace Formalism.L2.KerInert.RepFrame
 
-open Formalism.MainNotions.FormalGroupSystem
-open Formalism.L2.G.Pend (k0ToC wittFractionAlgebraCp Frm invF zOfX tw mAt rank_eq mAt_mul Pi Qi)
 
 variable {p : ℕ} [Fact p.Prime] (X : Sys p) [IsFractionRing X.G.O X.G.Kf] (E : Formalism.L2.G.Pend.CEmbC X.G)
   {T : Type} [Fintype T] (pos : (Σ v : X.Pl, Fin (X.G.P.n' v)) ≃ T)
@@ -256,7 +254,6 @@ namespace Formalism.L2.KerInert.RepFrame
 
 open Formalism.MainNotions.FormalGroupSystem Formalism.L2.KerInert.Rep
 open Formalism.L2.G.Pend (Frm)
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker
 
 variable {p : ℕ} [Fact p.Prime] (X : Sys p) [IsFractionRing X.G.O X.G.Kf] (E : Formalism.L2.G.Pend.CEmbC X.G)
   (hfin : ∀ j c, (X.Lv.lev j c).FinClasses) (D : D7) (pos : (Σ v : X.Pl, Fin (X.G.P.n' v)) ≃ D.what₂.Tau)
@@ -268,10 +265,7 @@ end Formalism.L2.KerInert.RepFrame
 namespace Formalism.L2.KerInert.RepFrame
 
 open Formalism.MainNotions.FormalGroupSystem Formalism.L2.Th1.D Formalism.L2.Th1.Top Formalism.L2.KerInert.K1
-open Formalism.InvariantFactorPaths.G7 (UnrOK)
-open Formalism.L2.Th1.CM (MaximalUnramifiedExtension)
 open Formalism.L2.G.Pend (Frm zOfX lin_repr)
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker
 
 section Lin
 
@@ -348,8 +342,6 @@ end Formalism.L2.KerInert.RepFrame
 
 namespace Formalism.L2.KerInert.RepFrame
 
-open Formalism.MainNotions.FormalGroupSystem
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker
 
 variable {p : ℕ} [Fact p.Prime] (X : Sys p) (hfin : ∀ j c, (X.Lv.lev j c).FinClasses) (D : D7)
     (large₂ : ∀ j, X.Lt j → X.Lt (j + 1) → Submodule (𝓞 D.host.E) (Fin ((X.Pj j).m + 1) → D.host.E))
@@ -359,8 +351,6 @@ end Formalism.L2.KerInert.RepFrame
 
 namespace Formalism.L2.KerInert.RepFrame
 
-open Formalism.MainNotions.FormalGroupSystem
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker
 
 theorem lamONB_of_cols (D : D7) {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) {N N' r : ℕ}
     (b : Fin r → Matrix (Fin N') (Fin N) D.host.E) (hr : r = Fintype.card (D.what₂.Tau × Fin N' × Fin N))
@@ -393,8 +383,6 @@ end Formalism.L2.KerInert.RepFrame
 
 namespace Formalism.L2.KerInert.RepFrame
 
-open Formalism.MainNotions.FormalGroupSystem
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker
 open Formalism.L2.KerInert.IntegralOrthonormalChange (embQ lamC_embT)
 
 theorem cols_of_trace (D : D7) (hT : TraceTau D) {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) {N N' r : ℕ}
@@ -439,9 +427,6 @@ end Formalism.L2.KerInert.RepFrame
 
 namespace Formalism.L2.KerInert.RepFrame
 
-open Formalism.MainNotions.FormalGroupSystem Formalism.L2.Th1.D Formalism.L2.Th1.Top Formalism.L2.KerInert.K1
-open Formalism.L2.G.Pend (k0ToC wittFractionAlgebraCp Frm invF zOfX tw mAt rank_eq mAt_mul Pi Qi)
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker
 
 section Coef
 
@@ -530,10 +515,6 @@ end Formalism.L2.KerInert.RepFrame
 
 namespace Formalism.L2.KerInert.RepFrame
 
-open Formalism.MainNotions.FormalGroupSystem Formalism.L2.Th1.D Formalism.L2.Th1.Top Formalism.L2.KerInert.K1
-open Formalism.L2.G.Pend (k0ToC wittFractionAlgebraCp Frm invF zOfX tw mAt rank_eq mAt_mul Pi Qi)
-open Formalism.L2.Th1.CM (MaximalUnramifiedExtension)
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker
 
 variable {p : ℕ} [Fact p.Prime] (X : Sys p) [IsFractionRing X.G.O X.G.Kf] (E : Formalism.L2.G.Pend.CEmbC X.G)
 
@@ -586,10 +567,7 @@ end Formalism.L2.KerInert.RepFrame
 
 namespace Formalism.L2.KerInert.RepFrame
 
-open Formalism.MainNotions.FormalGroupSystem Formalism.L2.Th1.D Formalism.L2.Th1.Top Formalism.L2.KerInert.K1
 open Formalism.L2.G.Pend (k0ToC wittFractionAlgebraCp Frm invF zOfX tw mAt rank_eq mAt_mul Pi Qi dualT)
-open Formalism.L2.Th1.CM (MaximalUnramifiedExtension)
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker
 
 section Sum3
 
@@ -742,10 +720,6 @@ end Formalism.L2.KerInert.RepFrame
 
 namespace Formalism.L2.KerInert.RepFrame
 
-open Formalism.MainNotions.FormalGroupSystem Formalism.L2.Th1.D Formalism.L2.Th1.Top Formalism.L2.KerInert.K1
-open Formalism.L2.G.Pend (k0ToC wittFractionAlgebraCp Frm invF zOfX tw mAt rank_eq mAt_mul Pi Qi dualT)
-open Formalism.L2.Th1.CM (MaximalUnramifiedExtension)
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker
 
 theorem sum2x {R : Type} [CommRing R] {α β : Type} [Fintype α] [Fintype β] (x u : β → R) (y z : α → R) (w1 w2 : R) :
     ∑ B, ∑ A, (x B * y A * w1) * (z A * u B * w2) = (∑ A, y A * z A) * (∑ B, u B * x B) * (w1 * w2) := by
@@ -876,10 +850,6 @@ end Formalism.L2.KerInert.RepFrame
 
 namespace Formalism.L2.KerInert.RepFrame
 
-open Formalism.MainNotions.FormalGroupSystem Formalism.L2.Th1.D Formalism.L2.Th1.Top Formalism.L2.KerInert.K1
-open Formalism.L2.G.Pend (k0ToC wittFractionAlgebraCp Frm invF zOfX tw mAt rank_eq mAt_mul Pi Qi dualT)
-open Formalism.L2.Th1.CM (MaximalUnramifiedExtension)
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker
 
 variable {p : ℕ} [Fact p.Prime] (X : Sys p) [IsFractionRing X.G.O X.G.Kf] (E : Formalism.L2.G.Pend.CEmbC X.G)
   (D : D7) (pos : (Σ v : X.Pl, Fin (X.G.P.n' v)) ≃ D.what₂.Tau) (lam : Qbar →+* ℂ_[p])
@@ -907,7 +877,6 @@ variable (σ : MaximalUnramifiedExtension p →+* MaximalUnramifiedExtension p)
   (hσtw : ∀ v s x, σ (twK v s x) = twK v (finRotate _ s) x) (hσw : ∀ w, σ (wK w) = wK (sigW p w))
   (hev : ∀ v, Even (X.G.P.n' v)) (hconj : ∀ x, D.host.conj (D.host.conj x) = x)
 
-open Classical in
 include hρ htwK hσtw hσw hev hconj in
 theorem dual_fK (hL : LamONB D lam b) (hM : ∀ v, IsUnit (M j L0 v).det) (hM' : ∀ v, IsUnit (M (j + 1) La' v).det)
     (e e' : X.EA j) :
@@ -977,10 +946,6 @@ end Formalism.L2.KerInert.RepFrame
 
 namespace Formalism.L2.KerInert.RepFrame
 
-open Formalism.MainNotions.FormalGroupSystem Formalism.L2.Th1.D Formalism.L2.Th1.Top Formalism.L2.KerInert.K1
-open Formalism.L2.G.Pend (k0ToC wittFractionAlgebraCp Frm invF zOfX tw mAt rank_eq mAt_mul Pi Qi dualT)
-open Formalism.L2.Th1.CM (MaximalUnramifiedExtension)
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker
 
 variable {p : ℕ} [Fact p.Prime] (X : Sys p) [IsFractionRing X.G.O X.G.Kf] (E : Formalism.L2.G.Pend.CEmbC X.G)
   (D : D7) (pos : (Σ v : X.Pl, Fin (X.G.P.n' v)) ≃ D.what₂.Tau) (lam : Qbar →+* ℂ_[p])
@@ -1088,11 +1053,6 @@ end Formalism.L2.KerInert.RepFrame
 
 namespace Formalism.L2.KerInert.RepFrame
 
-open Formalism.MainNotions.FormalGroupSystem Formalism.L2.Th1.D Formalism.L2.Th1.Top Formalism.L2.KerInert.K1
-open Formalism.InvariantFactorPaths.G7 (UnrOK)
-open Formalism.L2.G.Pend (Frm)
-open Formalism.L2.Th1.CM (MaximalUnramifiedExtension)
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker
 
 variable {p : ℕ} [Fact p.Prime] (X : Sys p) [IsFractionRing X.G.O X.G.Kf] (E : Formalism.L2.G.Pend.CEmbC X.G)
   (hfin : ∀ j c, (X.Lv.lev j c).FinClasses) (D : D7) (pos : (Σ v : X.Pl, Fin (X.G.P.n' v)) ≃ D.what₂.Tau)
@@ -1104,8 +1064,6 @@ end Formalism.L2.KerInert.RepFrame
 
 namespace Formalism.L2.KerInert.RepFrame
 
-open Formalism.MainNotions.FormalGroupSystem
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker
 
 theorem conj_conj (D : D7) (x : D.host.E) : D.host.conj (D.host.conj x) = x := by
   apply D.host.φ₀.injective
@@ -1123,9 +1081,6 @@ end Formalism.L2.KerInert.RepFrame
 
 namespace Formalism.L2.KerInert.RepFrame
 
-open Formalism.MainNotions.FormalGroupSystem Formalism.L2.Th1.D Formalism.L2.Th1.Top Formalism.L2.KerInert.K1
-open Formalism.L2.G.Pend (Frm)
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker
 open scoped Matrix
 
 theorem entry_int {W Qq : Type} [CommRing W] [Field Qq] [Algebra W Qq] {k l : ℕ} (Gt Gti : Matrix (Fin k) (Fin k) Qq)
@@ -1154,8 +1109,6 @@ end Formalism.L2.KerInert.RepFrame
 
 namespace Formalism.L2.KerInert.RepFrame
 
-open Formalism.MainNotions.FormalGroupSystem
-open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Formalism.L2.Ker
 
 variable {p : ℕ} [Fact p.Prime] (X : Sys p) [IsFractionRing X.G.O X.G.Kf] (E : Formalism.L2.G.Pend.CEmbC X.G)
   (hfin : ∀ j c, (X.Lv.lev j c).FinClasses) (D : D7) (pos : (Σ v : X.Pl, Fin (X.G.P.n' v)) ≃ D.what₂.Tau)

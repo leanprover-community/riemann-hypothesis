@@ -52,14 +52,12 @@ namespace Formalism.BasicNotions.Examples₂.NZ
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.BasicNotions.Examples₂
 
-section Pure
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K] (σ : K →+* ℂ)
   (hstar : ∀ z, σ (star z) = starRingEnd ℂ (σ z)) {n : ℕ}
   {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V] (b : OrthonormalBasis (Fin n) ℂ V)
 
 
-end Pure
 
 section Sharp
 
@@ -78,7 +76,6 @@ theorem sharp_iota (μ) : (RowSide.sharp D).iota μ = D.what₂.iota μ := by
 
 end Sharp
 
-section Rec
 
 variable {R : Ranks} (H : Host R)
 
@@ -122,6 +119,5 @@ variable (Lb : Lbl H) (hT2 : ∀ u, T u ≠ 2) (per : ∀ u : W, Bool → FK ((K
     Formalism.MainNotions.G.GAtP ((@placesOf H.E _ _ H.cmStar).resChar w))
   (hgat : ∀ u w h, (gat u w h).d = @Fintype.card ((K u).cls 0) ((K u).clsFin 0))
 
-end Rec
 
 end Formalism.BasicNotions.Examples₂.NZ

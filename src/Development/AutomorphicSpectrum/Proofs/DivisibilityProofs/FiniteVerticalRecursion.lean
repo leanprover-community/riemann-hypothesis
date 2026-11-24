@@ -146,7 +146,6 @@ theorem support_term_subset {P : Ideal (MRing ι ℤ)} {D : ℕ} (hP : IsArithVa
   · exact absurd (vertTerm_of_not_mem p W _ hm) hp
 
 
-open Classical in
 theorem finsum_term {P : Ideal (MRing ι ℤ)} {D : ℕ} (hP : IsArithVar P (D + 1)) {a : K → ℕ}
     {s : MRing ι ℤ} (hs : IsMultiHomog s a) (hsP : s ∉ P) (b : Fin D → K → ℤ)
     (W : Ideal (MRing ι ℤ)) :

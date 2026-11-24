@@ -203,8 +203,6 @@ theorem kernel_as_coset_sum : Formalism.FourierDecayAlt.A6.KpFromBB := by
 
 end Formalism.FourierDecayAlt.P
 
-open Matrix Formalism.DoubleCosetMeasures Formalism.FourierDecayAlt.A5 Formalism.FourierDecayAlt.A6 Filter Topology
-open scoped ComplexConjugate
 
 namespace Formalism.FourierDecayAlt.P.A6x7.Hess
 
@@ -485,7 +483,6 @@ theorem gauss_hessian_index_of_parts : Formalism.FourierDecayAlt.A6.GaussHessAss
 
 end Formalism.FourierDecayAlt.P
 
-open Matrix Formalism.DoubleCosetMeasures Formalism.FourierDecayAlt.A5 Formalism.FourierDecayAlt.A6 Filter Topology
 
 namespace Formalism.FourierDecayAlt.P.A6x7.Osc
 
@@ -560,7 +557,6 @@ theorem oscillatory_integral_invariant : Formalism.FourierDecayAlt.A6.OscInvaria
 
 end Formalism.FourierDecayAlt.P
 
-open Matrix Formalism.DoubleCosetMeasures Formalism.FourierDecayAlt.A5 Formalism.FourierDecayAlt.A6 Filter Topology
 
 namespace Formalism.FourierDecayAlt.P.A6x7.admitted
 
@@ -674,7 +670,6 @@ theorem admissible_gauss_sum_small : Formalism.FourierDecayAlt.A6.GaussAdmSmall 
 
 end Formalism.FourierDecayAlt.P
 
-open Matrix Formalism.DoubleCosetMeasures Formalism.FourierDecayAlt.A5 Formalism.FourierDecayAlt.A6 Filter Topology
 
 namespace Formalism.FourierDecayAlt.P.A6x7.Ind
 

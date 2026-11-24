@@ -89,7 +89,6 @@ def indS (S : Finset (Pl D)) : Af D.host.F :=
     · simp only [if_pos h]; exact one_mem (v.adicCompletionIntegers D.host.F)
     · simp only [if_neg h]; exact zero_mem (v.adicCompletionIntegers D.host.F)⟩
 
-open Classical in
 theorem indS_apply (S : Finset (Pl D)) (v : Pl D) : (indS S) v = if v ∈ S then 1 else 0 := rfl
 
 def eS (S : Finset (Pl D)) : AE D := ((1, indS S) : AF D.host.F) ⊗ₜ[D.host.F] (1 : D.host.E)

@@ -135,7 +135,6 @@ private theorem count_ms {ρ : IrrGL (k := k)} (hρ : ρ.IsCusp) {Δ : Segment k
   rw [Segment.mem_ms, Segment.mem_carrier, h]
   exact ⟨fun ⟨a, ha, e⟩ => nu_inj hρ e ▸ ha, fun hn => ⟨n, hn, rfl⟩⟩
 
-open Classical in
 private theorem count_msupp {ρ : IrrGL (k := k)} (hρ : ρ.IsCusp) {Δ : Segment k} (h : Δ.first = ρ)
     (𝔪 : Multiset (Segment k)) (hm : ∀ D ∈ 𝔪, D.first = ρ) :
     (msupp 𝔪).count (ρ.nu ((Δ.len - 1 : ℕ) : ℂ)) = (msupp 𝔪).count (ρ.nu ((Δ.len : ℕ) : ℂ)) + 𝔪.count Δ := by

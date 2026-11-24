@@ -122,7 +122,6 @@ end QuadPf
 
 section DRhoPf
 
-open Formalism.IndefR.Fock.CCR
 
 
 end DRhoPf
@@ -135,7 +134,6 @@ end HeisFar
 
 section OmFar
 
-open Formalism.IndefR.Fock.DRho
 open scoped TensorProduct
 
 theorem finPart_mt {V : HSp D} {g : GA D V} (hg : g ∈ GinfC V) : (Formalism.L2.Theta.mt V g).map (finPart D) = 1 := by

@@ -76,7 +76,6 @@ instance topology : TopologicalSpace w.M :=
     {S | ∃ (c : w.Idx) (O : Set (Fin (w.pres c.1 c.2).n → ℂ)), IsOpen O ∧ S = w.src c ∩ w.coord c ⁻¹' O}
 
 
-open Classical in
 def lift (c : w.Idx) (q : Σ k, ι k) : MvPolynomial (Fin (w.pres c.1 c.2).n) ℂ :=
   if q.2 = c.1 q.1 then 1 else X (w.yq c.1 c.2 q)
 

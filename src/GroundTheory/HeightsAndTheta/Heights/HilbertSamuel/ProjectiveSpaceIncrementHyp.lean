@@ -54,7 +54,6 @@ noncomputable section
 
 universe u
 
-section Objects
 
 variable {K : Type*} [DecidableEq K] (ι : K → Type*) {F : Type*} [Field F]
 variable {M : Type*} [AddCommGroup M] [Module (MRing ι F) M] [Module F M]
@@ -63,20 +62,15 @@ variable {M : Type*} [AddCommGroup M] [Module (MRing ι F) M] [Module F M]
 
 variable {ι}
 
-end Objects
 
-section Support
 
 variable {S : Type*} [CommRing S] (M : Type*) [AddCommGroup M] [Module S M]
 
-end Support
 
-section Cycle
 
 variable {K : Type*} [Fintype K] [DecidableEq K] (ι : K → Type*) (F : Type*) [Field F]
 variable (M : Type*) [AddCommGroup M] [Module (MRing ι F) M]
 
-end Cycle
 
 section Statements
 
@@ -92,11 +86,9 @@ def HilbertIncrement.Statement : Prop :=
 
 end Statements
 
-section Examples
 
 variable {K : Type*} [DecidableEq K] (ι : K → Type*) (F : Type*) [Field F]
 
-end Examples
 
 end
 

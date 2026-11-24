@@ -531,7 +531,6 @@ theorem block_unit {α : Type} [Fintype α] [DecidableEq α] {S : Set α} [Finty
   rw [Matrix.det_one, Matrix.det_mul] at h2
   exact isUnit_iff_exists_inv.2 ⟨_, h2.symm⟩
 
-open Classical in
 theorem bdet_val {α : Type} [Fintype α] [DecidableEq α] (S : Set α) (g : GL α R) (hg : g ∈ stab R S) :
     ((bdet S g : Rˣ) : R) = ((g : Matrix α α R).submatrix (Subtype.val : S → α) Subtype.val).det := by
   unfold bdet

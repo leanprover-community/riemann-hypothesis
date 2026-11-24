@@ -260,7 +260,6 @@ end Formalism.FourierDecayAlt.P.PBE
 
 namespace Formalism.FourierDecayAlt.P.PBE
 
-open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants
 
 theorem orbJ_tendsto : ∃ c₃ : ℝ, ∀ (k r : ℕ) (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]
     [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] (Bs : B.RealPlaceData k r Wp Wq) (γ : B.Mat k r)
@@ -344,7 +343,6 @@ end Formalism.FourierDecayAlt.P.PBE
 
 namespace Formalism.FourierDecayAlt.P.PBE
 
-open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -513,7 +511,6 @@ end Formalism.FourierDecayAlt.P.PBE
 
 namespace Formalism.FourierDecayAlt.P.PBE
 
-open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -624,7 +621,6 @@ end Formalism.FourierDecayAlt.P.PBE
 
 namespace Formalism.FourierDecayAlt.P.PBE
 
-open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
@@ -805,7 +801,6 @@ end Formalism.FourierDecayAlt.P.PBE
 
 namespace Formalism.FourierDecayAlt.P.PBE
 
-open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants
 
 theorem hsInner_tendsto {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
     [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] {u v : ℕ → (Wq →L[ℂ] Wp)} {x y : Wq →L[ℂ] Wp}
@@ -820,7 +815,6 @@ end Formalism.FourierDecayAlt.P.PBE
 
 namespace Formalism.FourierDecayAlt.P.PBE
 
-open Formalism.FourierDecayAlt Formalism.REAL Formalism.QuantumDeterminants
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 

@@ -494,13 +494,11 @@ end Formalism.CountingSumsFrames
 
 namespace Formalism.CountingSumsFrames
 
-open Formalism.GM Formalism.GM.TM M MvPolynomial Finset
 
 end Formalism.CountingSumsFrames
 
 namespace Formalism.CountingSumsFrames
 
-open Formalism.GM Formalism.GM.TM M MvPolynomial Finset
 
 section XD
 variable {k σ : Type} [Field k]
@@ -615,7 +613,6 @@ end Formalism.CountingSumsFrames
 
 namespace Formalism.CountingSumsFrames
 
-open Formalism.GM Formalism.GM.TM M MvPolynomial Finset
 
 section Wt
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
@@ -769,7 +766,6 @@ end Formalism.CountingSumsFrames
 
 namespace Formalism.CountingSumsFrames
 
-open Formalism.GM Formalism.GM.TM M MvPolynomial Finset
 
 section Comm
 variable {k σ : Type} [Field k]
@@ -920,7 +916,6 @@ end Formalism.CountingSumsFrames
 
 namespace Formalism.CountingSumsFrames
 
-open Formalism.GM Formalism.GM.TM M MvPolynomial Finset
 
 section Gen
 variable {K V : Type*} [Field K] [AddCommGroup V] [Module K V]
@@ -1031,7 +1026,6 @@ end Formalism.CountingSumsFrames
 
 namespace Formalism.CountingSumsFrames
 
-open Formalism.GM Formalism.GM.TM M MvPolynomial Finset
 
 section Proj
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
@@ -1172,7 +1166,6 @@ end Formalism.CountingSumsFrames
 
 namespace Formalism.CountingSumsFrames
 
-open Formalism.GM Formalism.GM.TM M MvPolynomial Finset
 
 section Comp
 variable {K σ : Type} [Field K]
@@ -1182,7 +1175,6 @@ open Classical in
 noncomputable def compP (Pr : (σ →₀ ℕ) → Prop) (x : MvPolynomial σ K) : MvPolynomial σ K :=
   ∑ m ∈ x.support, if Pr m then monomial m (AddMonoidAlgebra.coeff x m) else 0
 
-open Classical in
 theorem coeff_compP (Pr : (σ →₀ ℕ) → Prop) (x : MvPolynomial σ K) (m : σ →₀ ℕ) :
     AddMonoidAlgebra.coeff (compP Pr x) m = if Pr m then AddMonoidAlgebra.coeff x m else 0 := by
   classical
@@ -1295,7 +1287,6 @@ end Formalism.CountingSumsFrames
 
 namespace Formalism.CountingSumsFrames
 
-open Formalism.GM Formalism.GM.TM M MvPolynomial Finset
 
 section HW
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
@@ -1420,7 +1411,6 @@ end Formalism.CountingSumsFrames
 
 namespace Formalism.CountingSumsFrames
 
-open Formalism.GM Formalism.GM.TM M MvPolynomial Finset
 
 section E1
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
@@ -1491,7 +1481,6 @@ end Formalism.CountingSumsFrames
 
 namespace Formalism.CountingSumsFrames
 
-open Formalism.GM Formalism.GM.TM M MvPolynomial Finset
 
 section E2
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
@@ -1547,7 +1536,6 @@ end Formalism.CountingSumsFrames
 
 namespace Formalism.CountingSumsFrames
 
-open Formalism.GM Formalism.GM.TM M MvPolynomial Finset
 
 section E3
 
@@ -1591,6 +1579,5 @@ end Formalism.CountingSumsFrames
 
 namespace Formalism.CountingSumsFrames
 
-open Formalism.GM Formalism.GM.TM
 
 end Formalism.CountingSumsFrames

@@ -218,7 +218,6 @@ lemma orderOf_eq_two_of_mul_self_eq_one {n : ℕ} (g : GalL n) (h : g * g = 1) (
 
 end ModelEmbedding
 
-open ModelEmbedding
 
 theorem gensModel : GensModel := by
   intro n hn
@@ -455,7 +454,6 @@ lemma KK_le_ker (k : ℕ) : KK (k + 3) ≤ (psi k).ker := by
 
 end ModelEmbedding
 
-open ModelEmbedding
 
 theorem gmRank : GmRank := by
   intro n hn

@@ -215,12 +215,9 @@ end WmPSym
 
 open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory Module Pointwise
 
-section WmPUp
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ} {SG : Finset (HeightOneSpectrum (𝓞 E))}
 
-end WmPUp
 
-open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory Module Pointwise
 
 section WmPK
 variable {E : Type} [Field E] [NumberField E] [StarRing E]
@@ -243,65 +240,44 @@ theorem card_wmpToK (p : Submodule (𝓞 E) V) : Nat.card (wmpToK P p) = Nat.car
 
 end WmPK
 
-section WmPSub
 variable {k V : Type} [Field k] [Fintype k] [AddCommGroup V] [Module k V] [Finite V]
 
-end WmPSub
 
-section WmPCountUp
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ} {SG : Finset (HeightOneSpectrum (𝓞 E))}
 
-end WmPCountUp
 
-open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory Module Pointwise
 
-section WmPCountDown
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {n : ℕ} {SG : Finset (HeightOneSpectrum (𝓞 E))}
 
-end WmPCountDown
 
-open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory Module Pointwise
 
-section WmPMain
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {SG : Finset (HeightOneSpectrum (𝓞 E))}
 
-end WmPMain
 
-open NumberField IsDedekindDomain Formalism.HermitianLatticesTheory Module
 
-section LemU
 
 variable {κ K : Type} [CommRing κ] [Field K]
 
-end LemU
 
-section Det
 
 variable {κ : Type} [CommRing κ]
 
-end Det
 
-section Red
 
 variable {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K] {a b : ℕ}
   {SG : Finset (HeightOneSpectrum (𝓞 E))}
 
-end Red
 
-section Main
 
 variable {X : Fields} {Pr : Primes X} {R : Formalism.BasicNotions.Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Formalism.L2.DIV.Tup X.F X.E X.K S)
 
-end Main
 
-section Final
 
 open Formalism.BasicNotions Formalism.HermitianLatticesTheory Formalism.L2.DIV
 
 variable {X : Fields} {Pr : Primes X} {R : Formalism.BasicNotions.Ranks} (W : Wts X Pr.Word R) (Ch : Chars X Pr R.m)
   (sel : HeightOneSpectrum (𝓞 X.F) → HeightOneSpectrum (𝓞 X.E)) {S : Set ℕ} (mu : Tup X.F X.E X.K S)
 
-end Final
 
 end Formalism.L2.Col

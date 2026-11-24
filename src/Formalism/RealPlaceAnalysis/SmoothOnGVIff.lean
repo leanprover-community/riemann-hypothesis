@@ -149,8 +149,6 @@ lemma inK_smul_real {n : ℕ} (ε : Fin n → Bool) {Z : Matrix (Fin n) (Fin n) 
   · rw [Matrix.smul_mul, Matrix.mul_smul, hJ]
 
 
-open scoped Classical in
-open Classical in
 def expK {n : ℕ} (ε : Fin n → Bool) (Z : Matrix (Fin n) (Fin n) ℂ) (t : ℝ) : KG ε :=
   if h : inK ε Z then
     ⟨expG ε Z t, by

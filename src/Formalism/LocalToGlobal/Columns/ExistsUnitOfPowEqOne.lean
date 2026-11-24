@@ -48,17 +48,13 @@ noncomputable section
 
 namespace Formalism.L2.Col
 
-section Rep
 
 variable {Γ : Type} [Group Γ] [Fintype Γ]
 
-end Rep
 
-section Series
 
 variable {g : ℕ} [Fact g.Prime]
 
-end Series
 
 section Assemble
 

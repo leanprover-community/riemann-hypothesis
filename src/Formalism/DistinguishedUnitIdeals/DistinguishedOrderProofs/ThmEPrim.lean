@@ -548,12 +548,10 @@ namespace Formalism.ExponentWindows.E.Prim
 
 open PowerSeries IdempotentNormalFormsRhoFacts GoodPlacesAlt
 
-section p4
 variable {O : Type} [CommRing O] {B : Base O}
 
 variable {n : ℕ} [NeZero n] {V : Type} [AddCommGroup V] [Module (PowerSeries O) V]
 
-end p4
 
 end Formalism.ExponentWindows.E.Prim
 

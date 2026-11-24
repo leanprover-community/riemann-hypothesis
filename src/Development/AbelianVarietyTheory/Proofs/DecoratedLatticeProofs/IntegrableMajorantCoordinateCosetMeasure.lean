@@ -93,7 +93,6 @@ def shift {m n : ℕ} (P : Fin m → Fin n → Prop) (z : D.what₂.Tau × Fin m
   Matrix.of fun i j => if P i j then
     realPt D (fun τ => ((z (τ, i, j)).1 : ℂ) + ((z (τ, i, j)).2 : ℂ) * Complex.I) else 0
 
-open Classical in
 theorem compAt_shift {θ : InfFam D} (hθ : IsInfFam θ) {m n : ℕ} (P : Fin m → Fin n → Prop)
     (z : D.what₂.Tau × Fin m × Fin n → ℤ × ℤ) (τ : D.what₂.Tau) (i : Fin m) (j : Fin n) :
     compAt θ τ (shift P z) i j =

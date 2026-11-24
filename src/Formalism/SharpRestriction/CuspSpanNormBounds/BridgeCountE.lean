@@ -171,18 +171,15 @@ theorem count_rows_class_of_count_class (n₀ : ℕ) (A C c cb : ℝ) (hp : Coun
 
 end Count
 
-section Family
 
 variable {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps)
 
-end Family
 
 abbrev PLev : ∀ I : AutInst, Measure I.Gf → ℕ → (I.Gf → ℂ) → Prop := fun I μf g₀ e => I.IsLevelCharIdem μf g₀ e
 
 end CountE
 
 
-open Classical in
 def IsCharIdemFin {G : Type} [Group G] (f : MonoidAlgebra ℂ G) : Prop :=
   ∃ (U : Subgroup G) (χ : G → ℂ), (∀ a ∈ U, ∀ b ∈ U, χ (a * b) = χ a * χ b) ∧ (∀ a ∈ U, ‖χ a‖ = 1) ∧
     ∀ a, f.coeff a = if a ∈ U then (χ a)⁻¹ / (Nat.card U : ℂ) else 0
@@ -207,7 +204,6 @@ structure RedDatum (g₁ g₂ : ℕ) : Type 1 where
 attribute [instance] RedDatum.grp₁ RedDatum.grp₂ RedDatum.fin₁ RedDatum.fin₂
 
 
-open Classical in
 def IsCountIdem (μf : Measure I.Gf) (g₀ : ℕ) (e : I.Gf → ℂ) : Prop :=
   ∃ (a b p : ℕ) (R : I.RedDatum (g₀ ^ a) (p ^ b)) (f₀ : MonoidAlgebra ℂ R.G₁) (z ε₂ : MonoidAlgebra ℂ R.G₂),
     p.Prime ∧ p ≠ g₀ ∧ IsCharIdemFin f₀ ∧ (∀ x ∈ I.Kset, f₀.coeff (R.red x).1 ≠ 0 → I.UnipMod g₀ x) ∧

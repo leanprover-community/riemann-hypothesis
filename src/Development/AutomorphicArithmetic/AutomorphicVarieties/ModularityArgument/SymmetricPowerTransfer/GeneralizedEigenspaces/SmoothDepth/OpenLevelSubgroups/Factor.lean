@@ -71,7 +71,6 @@ private def idem (P : HeightOneSpectrum (𝓞 E) → Prop) : Af E :=
     · exact one_mem _
     · exact zero_mem _⟩
 
-open Classical in
 private theorem pLoc_idem (P : HeightOneSpectrum (𝓞 E) → Prop) (u : HeightOneSpectrum (𝓞 E)) :
     pLoc E u (idem P) = if P u then 1 else 0 := rfl
 

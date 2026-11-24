@@ -90,7 +90,6 @@ theorem polyFun_add (P Q : PolyE V) : polyFun θ V (P + Q) = polyFun θ V P + po
 theorem polyFun_smul (c : ℂ) (P : PolyE V) : polyFun θ V (c • P) = c • polyFun θ V P := by
   funext g; simp [polyFun, MvPolynomial.smul_eval]
 
-open Classical in
 theorem envRepAll_ι_of (R : RealPoints θ V) (τ : D.what₂.Tau) (y : ℂ ⊗[ℝ] LieAt V τ) :
     envRepAll R (UniversalEnvelopingAlgebra.ι ℂ (DirectSum.of (fun τ => ℂ ⊗[ℝ] LieAt V τ) τ y)) =
       envRep R τ (UniversalEnvelopingAlgebra.ι ℂ y) := by
@@ -134,7 +133,6 @@ theorem realEntries_one (R : RealPoints θ V) :
 
 
 
-open Classical in
 theorem envRepAll_injective (D : D7) (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)) (_hθ : IsInfFam θ)
     (V : HSp D) (R : RealPoints θ V) : Function.Injective (envRepAll R) := by
   set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]

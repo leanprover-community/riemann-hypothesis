@@ -149,7 +149,6 @@ theorem finrank_ker_of_diag [IsDomain O] [IsPrincipalIdealRing O] [IsFractionRin
   rfl
 
 
-open Classical in
 theorem quot_clauses [IsDomain O] [IsPrincipalIdealRing O] [IsFractionRing O F] (P P' : Submodule O Q)
     (γ : Q →ₗ[O] Q) (hP : ∀ x ∈ P, γ x ∈ P)
     (hs : P'.submoduleOf P ≤ (P'.submoduleOf P).comap (γ.restrict hP))

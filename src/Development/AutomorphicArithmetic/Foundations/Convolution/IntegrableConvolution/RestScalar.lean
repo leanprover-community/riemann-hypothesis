@@ -71,7 +71,6 @@ private theorem tr_insert {T : Finset (Pl K)} {b : Pl K} (hb : b ∉ T) (h : Ade
   rw [AdelicGLn.truncate_insert hb, map_mul]
   rfl
 
-open Classical in
 private theorem tr_comm {T : Finset (Pl K)} {b : Pl K} (hb : b ∉ T) (h : AdelicGLn.FiniteAdelicGL K n)
     (g : GL (Fin n) (b.adicCompletion K)) :
     tr T h * AdelicGLn.localEmbedding b g = AdelicGLn.localEmbedding b g * tr T h := by

@@ -979,7 +979,6 @@ end Tools
 
 section TheoremII
 
-open Formalism.BasicNotions
 
 def SecondTheoremReduced (D : D7) : Prop :=
   ∀ CLa Ck Crk Cdeg : ℝ, tableLineDegreeFive.admitted D CLa Ck Crk Cdeg →
@@ -1104,7 +1103,6 @@ end TheoremII
 
 section TheoremI
 
-open Formalism.BasicNotions
 
 structure Loc8All : Prop where
 
@@ -1304,7 +1302,6 @@ end TheoremI
 
 section Sizes
 
-open Formalism.BasicNotions
 
 theorem log_cube_le (M δ : ℝ) (hδ : 0 < δ) : ∃ x0 : ℝ, ∀ x ≥ x0, M * Real.log x ^ 3 ≤ x ^ δ := by
   have h := (isLittleO_log_rpow_rpow_atTop (3 : ℝ) hδ).def (c := 1 / (|M| + 1)) (by positivity)

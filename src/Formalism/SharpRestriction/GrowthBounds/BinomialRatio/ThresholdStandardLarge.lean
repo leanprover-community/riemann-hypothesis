@@ -119,7 +119,6 @@ theorem pair_sum (hCD : ChainDimAt) (hNB : NumBranchAt) {s : ℕ} (r A : ℕ) (A
     intro lam
     rw [if_neg (show ¬ IsPair A Ai Ci mu lam from fun h => hmu h.1)]
 
-open Classical in
 theorem kept_sum (hCD : ChainDimAt) (p : ℕ) (La : ℝ) {s : ℕ} (r : ℕ) [NeZero r] (A : ℕ) (Ai Ci : Fin s → ℕ) :
     keptPairSum p La (r := r) A Ai Ci =
       ∑ x ∈ (pairSet_finite hCD r A Ai Ci).toFinset, if KeptPair p La Ai Ci x.1 x.2 then wdim x.2 else 0 := by
@@ -138,7 +137,6 @@ theorem kept_sum (hCD : ChainDimAt) (p : ℕ) (La : ℝ) {s : ℕ} (r : ℕ) [Ne
     rw [if_neg (fun h => this h.1)]
 
 
-open Classical in
 theorem tail_core (hCD : ChainDimAt) (hNB : NumBranchAt) (p : ℕ) (La : ℝ) {s : ℕ} (r : ℕ) [NeZero r] (A : ℕ)
     (Ai Ci : Fin s → ℕ) (Np W e : ℝ) (hW : 0 ≤ W)
     (hN : ((pairSet r A Ai Ci).ncard : ℝ) ≤ Np)

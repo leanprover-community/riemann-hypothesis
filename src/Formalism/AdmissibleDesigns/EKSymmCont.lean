@@ -172,7 +172,6 @@ end Rec
 
 section Homeo
 
-open Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain
 
 variable {D : D7} (i : D.nd.Loc) {w : HeightOneSpectrum (𝓞 D.host.E)} (hw : w ∈ placesOver D.host.E (D.nd.l i))
 
@@ -239,31 +238,23 @@ theorem topMatch_pi (n : Type) [Finite n] :
 
 end Homeo
 
-section Cyc
 
-open Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain
 
 variable {D : D7} (i : D.nd.Loc) {w : HeightOneSpectrum (𝓞 D.host.E)} (hw : w ∈ placesOver D.host.E (D.nd.l i))
 
-end Cyc
 
-section Row
 
-open Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain
 
 variable {D : D7} (i : D.nd.Loc) (dc : TruncatedSeriesCountingIdentities.Decl D i)
 
-end Row
 
 section RowTop
 
-open Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain
 
 end RowTop
 
 section Ms
 
-open Formalism.MainNotions Formalism.MainNotions.N NumberField IsDedekindDomain
 
 variable {D : D7} (i : D.nd.Loc) (r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i)))
 

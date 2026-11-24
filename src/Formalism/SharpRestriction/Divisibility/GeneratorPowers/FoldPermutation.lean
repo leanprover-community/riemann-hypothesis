@@ -182,7 +182,6 @@ theorem dofN_comm (G : FGLaw k d) {n : ℕ} (b b' : Fin n) (u v : Fin d → k) (
 
 end Comm
 
-section Fold
 
 variable {n' n : ℕ} (F : Fin d → PS k 2 d)
   (hF : ∀ (b b' : Fin n) (v v' : Fin d → k) (G : PS k n d), DofN F b v (DofN F b' v' G) = DofN F b' v' (DofN F b v G))
@@ -191,13 +190,10 @@ variable {n' n : ℕ} (F : Fin d → PS k 2 d)
   (hφ : Function.Injective φ) (hcp : ∀ l, cp (φ l) = e (cp' l)) (hu : ∀ l, u (φ l) = u' l)
 include hF he hφ hcp hu
 
-end Fold
 
-section Val
 
 variable {R : Type} [CommRing R] {O : Type} [CommRing O] [StarRing O] (B : FB R d O) (K : Type) [CommRing K]
   [Algebra ℚ K] [Algebra R K]
 
-end Val
 
 end Formalism.MainNotions.ModuliIntegralCharts.H1.FoldPermutation

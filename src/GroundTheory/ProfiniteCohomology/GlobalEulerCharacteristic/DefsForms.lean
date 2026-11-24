@@ -142,7 +142,6 @@ end Real
 
 section Infinite
 
-open scoped Classical
 
 variable (ι : ∀ v : InfinitePlace K.1, ℚ̄ →ₐ[K.1] AlgebraicClosure v.Completion)
 

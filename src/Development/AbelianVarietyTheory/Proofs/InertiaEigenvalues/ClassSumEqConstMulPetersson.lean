@@ -146,7 +146,6 @@ namespace GlobalTheory.ClassPet
 variable {L : Type} [Field L] [NumberField L] [IsCMField L] {n : ℕ}
 
 
-open Classical in
 def lev {W : Type} (f : GAf L n → W) : ℕ := if h : ∃ N, 0 < N ∧ InvAt N f then h.choose else 1
 
 theorem lev_spec {W : Type} [AddCommGroup W] [Module ℂ W] {ρ : Representation ℂ (GQ L n) W} {f : GAf L n → W}
@@ -316,7 +315,6 @@ theorem mem_conj_iff (K : Subgroup (GAf L n)) (h x : GAf L n) :
   · intro hx
     exact ⟨h * x * h⁻¹, hx, by simp [MulAut.conj_apply, mul_assoc]⟩
 
-open Classical in
 theorem isClassReps_conj {K : Subgroup (GAf L n)} {T : Finset (GAf L n)} (hT : IsClassReps K T) (h : GAf L n) :
     IsClassReps (K.map (MulAut.conj h⁻¹).toMonoidHom) (T.image (· * h)) := by
   classical
@@ -331,7 +329,6 @@ theorem isClassReps_conj {K : Subgroup (GAf L n)} {T : Finset (GAf L n)} (hT : I
     have : t' = t := huniq t' ⟨ht', γ', h * κ' * h⁻¹, (mem_conj_iff K h κ').1 hκ', by rw [e']; group⟩
     rw [this]
 
-open Classical in
 theorem classSum_rt {K : Subgroup (GAf L n)} (T : Finset (GAf L n)) (h : GAf L n) (f f' : GAf L n → a.W) :
     classSum a β K T (NG.rt L n h f) (NG.rt L n h f') =
       classSum a β (K.map (MulAut.conj h⁻¹).toMonoidHom) (T.image (· * h)) f f' := by

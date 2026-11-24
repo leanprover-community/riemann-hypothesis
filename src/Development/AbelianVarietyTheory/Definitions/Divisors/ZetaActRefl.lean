@@ -98,12 +98,10 @@ def cSum (N e : ℕ) (ε : ℂ) (x : Fin 2 → ZMod N) (k : ℕ) : ℂ :=
     ε * (if ((k / m : ℕ) : ZMod N) = -x 0 then ch N (-((m : ZMod N) * x 1)) else 0))
 
 
-open Classical in
 def cB (N : ℕ) (x : Fin 2 → ZMod N) (k : ℕ) : ℂ :=
   if k = 0 then (if x 0 = 0 then ch N (x 1) / (1 - ch N (x 1)) ^ 2 else 0) else cSum N 1 1 x k
 
 
-open Classical in
 def cD (N : ℕ) (x : Fin 2 → ZMod N) (k : ℕ) : ℂ :=
   if k = 0 then (if x 0 = 0 then ch N (x 1) * (1 + ch N (x 1)) / (1 - ch N (x 1)) ^ 3 else 0) else cSum N 2 (-1) x k
 
@@ -111,7 +109,6 @@ def cG (N : ℕ) (k : ℕ) : ℂ :=
   if k = 0 then -1 / 12 else if N ∣ k then 2 * (ArithmeticFunction.sigma 1 (k / N) : ℂ) else 0
 
 
-open Classical in
 def cP (N : ℕ) (x : Fin 2 → ZMod N) (k : ℕ) : ℂ := if x = 0 then 0 else cB N x k - cG N k
 
 theorem wB_eq (N : ℕ) (x : Fin 2 → ZMod N) (τ : ℍ) :

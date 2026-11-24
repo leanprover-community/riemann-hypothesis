@@ -86,7 +86,6 @@ theorem le_supInf (w : InfinitePlace F) (τ : EmbOver E w) (u : J → E) (f : J)
     ‖τ.1 (u f)‖₊ ≤ Finset.univ.sup fun p : EmbOver E w × J => ‖p.1.1 (u p.2)‖₊ :=
   Finset.le_sup (f := fun p : EmbOver E w × J => ‖p.1.1 (u p.2)‖₊) (Finset.mem_univ (τ, f))
 
-open Classical in
 theorem one_le_supInf (w : InfinitePlace F) {u : J → E} {f₀ : J} (hu : u f₀ = 1) :
     1 ≤ Finset.univ.sup fun p : EmbOver E w × J => ‖p.1.1 (u p.2)‖₊ := by
   obtain ⟨τ⟩ := nonempty_embOver (E := E) F w

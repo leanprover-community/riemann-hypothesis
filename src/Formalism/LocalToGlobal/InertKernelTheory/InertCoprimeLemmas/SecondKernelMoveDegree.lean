@@ -55,12 +55,10 @@ namespace Formalism.L2.KerInert.SecondKernelMoveDegree
 open Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Ker Formalism.L2.KerInert.K2 Formalism.L2.KerInert.SecondKernelInstances Formalism.L2.KerInert.SecondKernelDifference Formalism.L2.KerInert.SecondKernelSeries
   Formalism.L2.KerInert.QuadraticBaseChangeGL3 Formalism.L2.KerInert.SecondKernelHermitian
 
-section Move
 
 variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : G.Inst D L} {Gl : G.LatInst D} {Kc0 : G.Consts} {Dx : DivX D}
   {cX : ExtraC} {ex : Extra D L hT Gi Gl Kc0 Dx cX}
 
-end Move
 
 def PolDYDeg : Prop :=
   ∀ (D : D7) (N N' : ℕ) (s : D.what₂.Tau → ℂ) (ν : D.what₂.Tau → Fin N → ℕ) (Q : MvPolynomial (GL3Theta.FrV D N) ℂ),
@@ -78,7 +76,6 @@ open Classical in
 def wF {N : ℕ} (τ : D.what₂.Tau) : GL3Theta.FrV D N → ℕ := fun k => if k.1 = τ then 1 else 0
 
 
-open Classical in
 def wI {N N' : ℕ} (τ : D.what₂.Tau) : GL3Theta.Idx D N N' → ℕ := fun k => if k.1 = τ then 1 else 0
 
 theorem aeval_CX_monomial {σ R : Type} [CommRing R] (c : σ → R) (s : σ →₀ ℕ) (a : R) :
@@ -176,7 +173,6 @@ end Deg
 
 section Deg2
 
-open MvPolynomial
 
 theorem weight_wI {D : D7} {N N' : ℕ} (τ : D.what₂.Tau) (α : GL3Theta.Idx D N N' →₀ ℕ) :
     Finsupp.weight (wI (N := N) (N' := N') τ) α = ∑ b : Fin N', ∑ a : Fin N, α (τ, b, a) := by

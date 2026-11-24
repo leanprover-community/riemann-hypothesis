@@ -134,13 +134,11 @@ variable {G : Type} [Group G] {W : Type} [AddCommGroup W] [Module ℂ W]
   {K : Type} [Field K] {G₀ : Type} [Group G₀] [Fintype G₀]
 
 
-open Classical in
 def cutAvgL {Q : Subgroup G} (ch : Q →* ℂˣ) (red : Q →* G₀) (hred : Function.Surjective red) (σ : K →+* ℂ)
     (P : Subgroup G₀) (ψ : P →* Kˣ) (W : Type) [AddCommGroup W] [Module ℂ W] : (G → W) →ₗ[ℂ] (G → W) :=
   ∑ p : P, (σ ((Nat.card P : K)⁻¹ * ((ψ p⁻¹ : Kˣ) : K)) * (((ch (hred (p : G₀)).choose)⁻¹ : ℂˣ) : ℂ)) •
     LinearMap.funLeft ℂ W (fun h : G => h * ((hred (p : G₀)).choose : G))
 
-open Classical in
 theorem cutAvgL_apply {Q : Subgroup G} (ch : Q →* ℂˣ) (red : Q →* G₀) (hred : Function.Surjective red)
     (σ : K →+* ℂ) (P : Subgroup G₀) (ψ : P →* Kˣ) (F : G → W) (h : G) :
     cutAvgL ch red hred σ P ψ W F h = ∑ p : P, (σ ((Nat.card P : K)⁻¹ * ((ψ p⁻¹ : Kˣ) : K)) *

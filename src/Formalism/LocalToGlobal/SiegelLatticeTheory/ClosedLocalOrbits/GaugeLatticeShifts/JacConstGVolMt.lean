@@ -218,7 +218,6 @@ end Formalism.L2.SG.Pf.GV
 
 namespace Formalism.L2.SG.Pf.GV
 
-open Formalism.QuantumDeterminants Formalism.QuantumDeterminants.WeylGroupFacts
 
 variable {k r : ℕ}
 
@@ -525,7 +524,6 @@ end Formalism.L2.SG.Pf.GV
 
 namespace Formalism.L2.SG.Pf.GV
 
-open Formalism.QuantumDeterminants Formalism.QuantumDeterminants.WeylGroupFacts Formalism.MainNotions.S
 
 variable {k r : ℕ}
 
@@ -588,7 +586,6 @@ end Formalism.L2.SG.Pf.GV
 
 namespace Formalism.L2.SG.Pf.GV
 
-open Formalism.QuantumDeterminants Formalism.QuantumDeterminants.WeylGroupFacts Formalism.MainNotions.S
 
 variable {k r : ℕ}
 
@@ -644,7 +641,6 @@ end Formalism.L2.SG.Pf.GV
 
 namespace Formalism.L2.SG.Pf.GV
 
-open Formalism.QuantumDeterminants Formalism.QuantumDeterminants.WeylGroupFacts Formalism.MainNotions.S
 
 variable {k r : ℕ}
 
@@ -739,7 +735,6 @@ end Formalism.L2.SG.Pf.GV
 
 namespace Formalism.L2.SG.Pf.GV
 
-open Formalism.QuantumDeterminants Formalism.QuantumDeterminants.WeylGroupFacts Formalism.MainNotions.S
 
 variable {k r : ℕ}
 

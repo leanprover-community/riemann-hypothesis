@@ -389,7 +389,6 @@ def f1 (h h' : Point K) (d : K) (z : K) : ℂ :=
   (((modK R ((m + 1 : ℕ) : K))⁻¹ * (modK R z ^ m)⁻¹ : ℝ) : ℂ) *
     (NsK R ψ (m + 1) h h' z * ψ (z * d))
 
-open Classical in
 theorem core2 (hMM : MM R) (hun : ∀ x : K, conj (ψ x) = ψ (-x)) (hψR : ∀ r ∈ R, ψ r = 1)
     (hs : IsUnit ((m + 1 : ℕ) : K)) (hγ1 : ∀ a, ‖γ a‖ = 1)
     (hγ2 : ∀ a b : Kˣ, γ (a * b ^ 2) = γ a)

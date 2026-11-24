@@ -90,10 +90,8 @@ def IsProjVarQ (P0 : Ideal (MRing ι ℚ)) (e : ℕ) : Prop :=
 
 end Objects
 
-section Ring
 
 variable {K : Type} {ι : K → Type}
 
-end Ring
 
 end GroundTheory.Heights₂.Heights.IndefiniteRowSideFullHecke.Inter

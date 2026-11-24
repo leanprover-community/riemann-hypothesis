@@ -483,12 +483,9 @@ theorem Formalism.FourierDecayAlt.P.standard_pairing_of_headsCpt : Formalism.Fou
 
 namespace Formalism.FourierDecayAlt.P.CutBP
 
-open Formalism.FourierDecayAlt Formalism.QuantumDeterminants Filter Topology MeasureTheory
-open scoped ComplexConjugate ENNReal ComplexOrder
 
 noncomputable section
 
-open Classical
 
 section place
 

@@ -94,7 +94,6 @@ theorem lin_pow {ι : Type} [Fintype ι] (n : ι → ℝ) (m : ℕ) :
   exact Finset.sum_congr rfl fun f _ => prod_X_eq f (fun j => n (f j))
 
 
-open Classical in
 noncomputable def coef {ι : Type} {m : ℕ} (F : (Fin m → ι) → ℝ) (k : ι →₀ ℕ) : ℝ :=
   if h : ∃ f : Fin m → ι, cnt f = k then F h.choose else 0
 

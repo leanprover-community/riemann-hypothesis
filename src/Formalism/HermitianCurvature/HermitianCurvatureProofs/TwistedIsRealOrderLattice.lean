@@ -232,8 +232,6 @@ end Formalism.FourierDecayAlt.P.S6x5
 namespace Formalism.FourierDecayAlt.P
 
 open Formalism.FourierDecayAlt.S6 Formalism.FourierDecayAlt.P.S6x5
-open NumberField NumberField.IsCMField Module MeasureTheory
-open scoped nonZeroDivisors
 
 
 open scoped Classical in

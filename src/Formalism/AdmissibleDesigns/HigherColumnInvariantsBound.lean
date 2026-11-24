@@ -266,7 +266,6 @@ section N9Rec
 variable {D : D7} (i : D.nd.Loc) (ρ : D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i))) (π : D.nd.X i)
   (dc : TruncatedSeriesCountingIdentities.Decl D i)
 
-open Formalism.MainNotions.N.Glob Formalism.BasicNotions.Loc
 
 theorem eON_eq : ∃ e : ℕ, e ≠ 0 ∧ eON i = e := by
   obtain ⟨e, he0, he⟩ := Formalism.MainNotions.TruncatedSeriesCountingIdentities.Br.exists_eO D.nd i
@@ -406,7 +405,6 @@ section N9Main
 variable {D : D7} (i : D.nd.Loc) (ρ : D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i))) (π : D.nd.X i)
   (dc : TruncatedSeriesCountingIdentities.Decl D i)
 
-open Formalism.MainNotions.N.Glob Formalism.BasicNotions.Loc
 
 theorem qU_vdel {vδ : ℕ∞}
     (hvδ : vδ = eON i * ((∑ k ∈ Finset.Ioo 0 D.R.t, (D.nd.s0 i + padicValNat (D.nd.l i) k) : ℕ) : ℕ∞)) :
@@ -556,7 +554,6 @@ section N9Cor
 variable {D : D7} (i : D.nd.Loc) (ρ : D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i))) (π : D.nd.X i)
   (dc : TruncatedSeriesCountingIdentities.Decl D i)
 
-open Formalism.MainNotions.N.Glob Formalism.BasicNotions.Loc
 
 def SelmerLengthInequality (lenRow : HeightOneSpectrum (𝓞 D.host.E) → ℚ) (e' : HeightOneSpectrum (𝓞 D.host.E) → ℕ)
     (cB : ℕ) : Prop :=

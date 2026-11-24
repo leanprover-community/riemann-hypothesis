@@ -102,7 +102,6 @@ end PartD0
 
 section PartA
 
-open Formalism.FourierDecayAlt.G MeasureTheory Filter Topology
 
 namespace Formalism.FourierDecayAlt.P.StationaryPhaseModel
 
@@ -446,7 +445,6 @@ end PartA
 
 section PartB
 
-open Formalism.FourierDecayAlt.G MeasureTheory Filter Topology
 
 namespace Formalism.FourierDecayAlt.P.StationaryPhaseModel
 
@@ -1667,7 +1665,6 @@ end PartD
 
 section PartE
 
-open Formalism.FourierDecayAlt.G MeasureTheory Filter Topology
 
 namespace Formalism.FourierDecayAlt.P.StationaryPhaseModel
 
@@ -2629,7 +2626,6 @@ end PartE
 
 section PartF
 
-open Formalism.FourierDecayAlt.G MeasureTheory Filter Topology Matrix
 
 namespace Formalism.FourierDecayAlt.P.StationaryPhaseModel
 
@@ -3164,7 +3160,6 @@ theorem F_zero_small (d : ℕ) (hd : 0 < d) (β : ℂ) (hβ : β ≠ 0) (r Λ : 
 
 end Formalism.FourierDecayAlt.P.StationaryPhaseModel
 
-open Formalism.FourierDecayAlt.G MeasureTheory Filter Topology Matrix
 
 namespace Formalism.FourierDecayAlt.P.StationaryPhaseModel
 

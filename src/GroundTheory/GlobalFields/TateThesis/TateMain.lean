@@ -256,7 +256,6 @@ open Classical in
 def tateZetaAt (w : InfinitePlace K) (F : 𝔸[K] → ℂ) (χ : HeckeCharacter K) (s : ℂ) : ℂ :=
   if hF : F ∈ schwartzBruhat K then (thetaPair w hF χ).Λ (s + (archExponent w χ : ℂ) * I) else 0
 
-open Classical in
 theorem tateZetaAt_eq (w : InfinitePlace K) {F : 𝔸[K] → ℂ} (hF : F ∈ schwartzBruhat K)
     (χ : HeckeCharacter K) :
     tateZetaAt w F χ = fun s ↦ (thetaPair w hF χ).Λ (s + (archExponent w χ : ℂ) * I) := by

@@ -95,7 +95,6 @@ theorem window_of_sheet {J : Ideal (MvPolynomial (Fin n) ℂ)} {A : Matrix (Fin 
     fun x'' hx'' hAx'' => hNs x'' ⟨hx''.1, interior_subset hx''.2⟩ hAx''⟩
 
 
-open Classical in
 theorem sheetTerm_window {J : Ideal (MvPolynomial (Fin n) ℂ)} {A : Matrix (Fin D) (Fin n) ℂ}
     {H : (Fin n → ℂ) → ((Fin D → ℂ) → Fin n → ℂ) → ℝ} {y : Fin D → ℂ}
     {s : (Fin D → ℂ) → Fin n → ℂ} {V : Set (Fin D → ℂ)} {W : Set (Fin n → ℂ)}
@@ -131,7 +130,6 @@ theorem sheetTerm_window {J : Ideal (MvPolynomial (Fin n) ℂ)} {A : Matrix (Fin
       exact absurd ⟨(hsec y hyV).2, (hsec y hyV).1⟩ hx
     · rfl
 
-open Classical in
 theorem finite_support_sheetTerm_window {J : Ideal (MvPolynomial (Fin n) ℂ)}
     {A : Matrix (Fin D) (Fin n) ℂ} {H : (Fin n → ℂ) → ((Fin D → ℂ) → Fin n → ℂ) → ℝ}
     {y : Fin D → ℂ} {s : (Fin D → ℂ) → Fin n → ℂ} {V : Set (Fin D → ℂ)}
@@ -143,7 +141,6 @@ theorem finite_support_sheetTerm_window {J : Ideal (MvPolynomial (Fin n) ℂ)}
   · exact hc.2
   · exact absurd rfl hx
 
-open Classical in
 theorem sheetSum_window {J : Ideal (MvPolynomial (Fin n) ℂ)} {A : Matrix (Fin D) (Fin n) ℂ}
     {H : (Fin n → ℂ) → ((Fin D → ℂ) → Fin n → ℂ) → ℝ} {y : Fin D → ℂ}
     {s : (Fin D → ℂ) → Fin n → ℂ} {V : Set (Fin D → ℂ)}
@@ -250,7 +247,6 @@ theorem contDiffOn_comp_section {J : Ideal (MvPolynomial (Fin n) ℂ)} {g : (Fin
     fun y hy => hZO (hsZ y hy)
 
 
-open Classical in
 theorem sheetTerm_weight_window {J : Ideal (MvPolynomial (Fin n) ℂ)} {A : Matrix (Fin D) (Fin n) ℂ}
     {s : (Fin D → ℂ) → Fin n → ℂ} {V : Set (Fin D → ℂ)} {W : Set (Fin n → ℂ)}
     (hsec : ∀ y ∈ V, A *ᵥ s y = y ∧ s y ∈ zeroSet J)
@@ -269,7 +265,6 @@ theorem sheetTerm_weight_window {J : Ideal (MvPolynomial (Fin n) ℂ)} {A : Matr
     rw [hf0 _ hyW, zero_mul]
 
 
-open Classical in
 theorem sheetTerm_cons_window {J : Ideal (MvPolynomial (Fin n) ℂ)}
     {A : Matrix (Fin (D + 1)) (Fin n) ℂ} {s : (Fin (D + 1) → ℂ) → Fin n → ℂ}
     {V : Set (Fin (D + 1) → ℂ)} {W : Set (Fin n → ℂ)} (hV : IsOpen V)

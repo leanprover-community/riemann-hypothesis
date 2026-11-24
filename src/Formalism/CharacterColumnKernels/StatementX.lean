@@ -72,7 +72,6 @@ def matEnd (O M : Type*) [CommRing O] [AddCommGroup M] [Module O M] (d : Type*) 
 def LatQ {R : Type*} [Ring R] (O : Type*) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     (d : Type*) [Fintype d] [DecidableEq d] (_ρ : R →+* Matrix d d O) : Type _ := d → KO O
 
-section LatQ
 variable {R : Type*} [Ring R] (O : Type*) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
   (d : Type*) [Fintype d] [DecidableEq d] (ρ : R →+* Matrix d d O)
 
@@ -81,7 +80,6 @@ instance : Module O (LatQ O d ρ) := inferInstanceAs (Module O (d → KO O))
 instance : Module R (LatQ O d ρ) :=
   Module.compHom (d → KO O) ((matEnd O (KO O) d).comp ρ)
 
-end LatQ
 
 def StatKerHomRect : Prop :=
   ∀ (R O : Type*) [Ring R] [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]

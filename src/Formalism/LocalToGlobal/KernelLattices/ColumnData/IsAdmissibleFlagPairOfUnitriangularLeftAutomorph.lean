@@ -555,7 +555,6 @@ end Base
 end Rec
 
 section Isom
-open Formalism.L2.Ker.Cd.IntegralLatticeDensity
 
 variable {D : Car}
 

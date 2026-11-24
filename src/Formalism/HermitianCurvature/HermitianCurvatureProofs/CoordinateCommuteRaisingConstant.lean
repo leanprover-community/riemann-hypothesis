@@ -976,8 +976,6 @@ end
 section
 
 open  Formalism.FourierDecayAlt Matrix Finset Polynomial
-open Formalism.FourierDecayAlt.M hiding A sc kap pA pbA cA ciA cbA cbiA zA ziA zbA zbiA ggA ggiA nabA nabsA IsModelLevel SS l0A m0A xA weightedSumBis S12 S4 t22 t21 t12 t11 QQr eeA startM siteA FrameConcl Pr Op mulOp fnP mk cP ciP cbP cbiP zP ziP zbP zbiP ggP ggiP pP pbP dzP dzbP gg coord euler lA mA fnsA zfnsA sitesFrom QQlev LevFns LevP LevPb LevPP LevNab LevNabs StarGens SSScalar SSShift SSNorm SSComm SSMixed NabSS Curvature QQNormal QQHerm QQRTTEntries QQRTT QQRTTOfEntries QQDet T21Commute QQLeading QQZeta StartIsStart StartOK LevelExists LevelStar SitesOKM ChainM LowerCommutes LowerStart StartIsStartAssemble StartAssemble LevelAssemble ModelFrame ModelAssemble CutAdm
-open Formalism.FourierDecayAlt.MA
 
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
@@ -1246,13 +1244,11 @@ theorem qQHerm : QQHerm := by
   · exact congrFun (congrFun (star_t12 P D Y) _) _
   · exact congrFun (congrFun (star_t22 P D Y) _) _
 
-section lead
 
 variable {R : Type*} [Ring R] [Algebra ℂ R]
 
 variable {n m : ℕ} {c d : R} {f g : ℂ → R}
 
-end lead
 
 theorem xC_split (j : ℕ) (hj : j ∈ Icc 1 (P.k - 1)) (π : Ty P) (Y : ℂ) :
     xC P π Y = (Y + (rho P π j : ℂ)) * xEx P {j} π Y := by
@@ -1483,8 +1479,6 @@ set_option linter.unusedVariables false
 namespace Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations
 
 open Matrix Finset Polynomial
-open Formalism.FourierDecayAlt.M hiding A sc kap pA pbA cA ciA cbA cbiA zA ziA zbA zbiA ggA ggiA nabA nabsA IsModelLevel SS l0A m0A xA weightedSumBis S12 S4 t22 t21 t12 t11 QQr eeA startM siteA FrameConcl Pr Op mulOp fnP mk cP ciP cbP cbiP zP ziP zbP zbiP ggP ggiP pP pbP dzP dzbP gg coord euler lA mA fnsA zfnsA sitesFrom QQlev LevFns LevP LevPb LevPP LevNab LevNabs StarGens SSScalar SSShift SSNorm SSComm SSMixed NabSS Curvature QQNormal QQHerm QQRTTEntries QQRTT QQRTTOfEntries QQDet T21Commute QQLeading QQZeta StartIsStart StartOK LevelExists LevelStar SitesOKM ChainM LowerCommutes LowerStart StartIsStartAssemble StartAssemble LevelAssemble ModelFrame ModelAssemble CutAdm
-open Formalism.FourierDecayAlt.MA
 
 noncomputable section
 
@@ -1501,9 +1495,6 @@ end Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations
 
 namespace Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations
 
-open Matrix Finset Polynomial
-open Formalism.FourierDecayAlt.M hiding A sc kap pA pbA cA ciA cbA cbiA zA ziA zbA zbiA ggA ggiA nabA nabsA IsModelLevel SS l0A m0A xA weightedSumBis S12 S4 t22 t21 t12 t11 QQr eeA startM siteA FrameConcl Pr Op mulOp fnP mk cP ciP cbP cbiP zP ziP zbP zbiP ggP ggiP pP pbP dzP dzbP gg coord euler lA mA fnsA zfnsA sitesFrom QQlev LevFns LevP LevPb LevPP LevNab LevNabs StarGens SSScalar SSShift SSNorm SSComm SSMixed NabSS Curvature QQNormal QQHerm QQRTTEntries QQRTT QQRTTOfEntries QQDet T21Commute QQLeading QQZeta StartIsStart StartOK LevelExists LevelStar SitesOKM ChainM LowerCommutes LowerStart StartIsStartAssemble StartAssemble LevelAssemble ModelFrame ModelAssemble CutAdm
-open Formalism.FourierDecayAlt.MA
 
 noncomputable section
 
@@ -1813,8 +1804,6 @@ end Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations.GA
 namespace Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations.WB
 
 open Matrix Finset Polynomial  Formalism.FourierDecayAlt
-open Formalism.FourierDecayAlt.M hiding A sc kap pA pbA cA ciA cbA cbiA zA ziA zbA zbiA ggA ggiA nabA nabsA IsModelLevel SS l0A m0A xA weightedSumBis S12 S4 t22 t21 t12 t11 QQr eeA startM siteA FrameConcl Pr Op mulOp fnP mk cP ciP cbP cbiP zP ziP zbP zbiP ggP ggiP pP pbP dzP dzbP gg coord euler lA mA fnsA zfnsA sitesFrom QQlev LevFns LevP LevPb LevPP LevNab LevNabs StarGens SSScalar SSShift SSNorm SSComm SSMixed NabSS Curvature QQNormal QQHerm QQRTTEntries QQRTT QQRTTOfEntries QQDet T21Commute QQLeading QQZeta StartIsStart StartOK LevelExists LevelStar SitesOKM ChainM LowerCommutes LowerStart StartIsStartAssemble StartAssemble LevelAssemble ModelFrame ModelAssemble CutAdm
-open Formalism.FourierDecayAlt.MA
 
 noncomputable section
 
@@ -2286,8 +2275,6 @@ end Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations.WB
 namespace Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations.PC
 
 open Matrix Finset Polynomial  Formalism.YangianSpanCharacter.T Formalism.FourierDecayAlt.W
-open Formalism.FourierDecayAlt.M hiding A sc kap pA pbA cA ciA cbA cbiA zA ziA zbA zbiA ggA ggiA nabA nabsA IsModelLevel SS l0A m0A xA weightedSumBis S12 S4 t22 t21 t12 t11 QQr eeA startM siteA FrameConcl Pr Op mulOp fnP mk cP ciP cbP cbiP zP ziP zbP zbiP ggP ggiP pP pbP dzP dzbP gg coord euler lA mA fnsA zfnsA sitesFrom QQlev LevFns LevP LevPb LevPP LevNab LevNabs StarGens SSScalar SSShift SSNorm SSComm SSMixed NabSS Curvature QQNormal QQHerm QQRTTEntries QQRTT QQRTTOfEntries QQDet T21Commute QQLeading QQZeta StartIsStart StartOK LevelExists LevelStar SitesOKM ChainM LowerCommutes LowerStart StartIsStartAssemble StartAssemble LevelAssemble ModelFrame ModelAssemble CutAdm
-open Formalism.FourierDecayAlt.MA
 
 noncomputable section
 
@@ -2531,9 +2518,6 @@ end Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations.PC
 
 namespace Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations.L3
 
-open Matrix Finset Polynomial
-open Formalism.FourierDecayAlt.M hiding A sc kap pA pbA cA ciA cbA cbiA zA ziA zbA zbiA ggA ggiA nabA nabsA IsModelLevel SS l0A m0A xA weightedSumBis S12 S4 t22 t21 t12 t11 QQr eeA startM siteA FrameConcl Pr Op mulOp fnP mk cP ciP cbP cbiP zP ziP zbP zbiP ggP ggiP pP pbP dzP dzbP gg coord euler lA mA fnsA zfnsA sitesFrom QQlev LevFns LevP LevPb LevPP LevNab LevNabs StarGens SSScalar SSShift SSNorm SSComm SSMixed NabSS Curvature QQNormal QQHerm QQRTTEntries QQRTT QQRTTOfEntries QQDet T21Commute QQLeading QQZeta StartIsStart StartOK LevelExists LevelStar SitesOKM ChainM LowerCommutes LowerStart StartIsStartAssemble StartAssemble LevelAssemble ModelFrame ModelAssemble CutAdm
-open Formalism.FourierDecayAlt.MA
 
 noncomputable section
 
@@ -2737,9 +2721,6 @@ end Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations.L3
 
 namespace Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations.L4
 
-open Matrix Finset Polynomial
-open Formalism.FourierDecayAlt.M hiding A sc kap pA pbA cA ciA cbA cbiA zA ziA zbA zbiA ggA ggiA nabA nabsA IsModelLevel SS l0A m0A xA weightedSumBis S12 S4 t22 t21 t12 t11 QQr eeA startM siteA FrameConcl Pr Op mulOp fnP mk cP ciP cbP cbiP zP ziP zbP zbiP ggP ggiP pP pbP dzP dzbP gg coord euler lA mA fnsA zfnsA sitesFrom QQlev LevFns LevP LevPb LevPP LevNab LevNabs StarGens SSScalar SSShift SSNorm SSComm SSMixed NabSS Curvature QQNormal QQHerm QQRTTEntries QQRTT QQRTTOfEntries QQDet T21Commute QQLeading QQZeta StartIsStart StartOK LevelExists LevelStar SitesOKM ChainM LowerCommutes LowerStart StartIsStartAssemble StartAssemble LevelAssemble ModelFrame ModelAssemble CutAdm
-open Formalism.FourierDecayAlt.MA
 
 noncomputable section
 
@@ -2902,9 +2883,6 @@ end Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations.L4
 
 namespace Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations
 
-open Matrix Finset Polynomial
-open Formalism.FourierDecayAlt.M hiding A sc kap pA pbA cA ciA cbA cbiA zA ziA zbA zbiA ggA ggiA nabA nabsA IsModelLevel SS l0A m0A xA weightedSumBis S12 S4 t22 t21 t12 t11 QQr eeA startM siteA FrameConcl Pr Op mulOp fnP mk cP ciP cbP cbiP zP ziP zbP zbiP ggP ggiP pP pbP dzP dzbP gg coord euler lA mA fnsA zfnsA sitesFrom QQlev LevFns LevP LevPb LevPP LevNab LevNabs StarGens SSScalar SSShift SSNorm SSComm SSMixed NabSS Curvature QQNormal QQHerm QQRTTEntries QQRTT QQRTTOfEntries QQDet T21Commute QQLeading QQZeta StartIsStart StartOK LevelExists LevelStar SitesOKM ChainM LowerCommutes LowerStart StartIsStartAssemble StartAssemble LevelAssemble ModelFrame ModelAssemble CutAdm
-open Formalism.FourierDecayAlt.MA
 
 section Abs
 variable {B : Type*} [Ring B] [Algebra ℂ B]
@@ -3062,9 +3040,6 @@ end Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations
 
 namespace Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations
 
-open Matrix Finset Polynomial
-open Formalism.FourierDecayAlt.M hiding A sc kap pA pbA cA ciA cbA cbiA zA ziA zbA zbiA ggA ggiA nabA nabsA IsModelLevel SS l0A m0A xA weightedSumBis S12 S4 t22 t21 t12 t11 QQr eeA startM siteA FrameConcl Pr Op mulOp fnP mk cP ciP cbP cbiP zP ziP zbP zbiP ggP ggiP pP pbP dzP dzbP gg coord euler lA mA fnsA zfnsA sitesFrom QQlev LevFns LevP LevPb LevPP LevNab LevNabs StarGens SSScalar SSShift SSNorm SSComm SSMixed NabSS Curvature QQNormal QQHerm QQRTTEntries QQRTT QQRTTOfEntries QQDet T21Commute QQLeading QQZeta StartIsStart StartOK LevelExists LevelStar SitesOKM ChainM LowerCommutes LowerStart StartIsStartAssemble StartAssemble LevelAssemble ModelFrame ModelAssemble CutAdm
-open Formalism.FourierDecayAlt.MA
 
 section Abs2
 variable {B : Type*} [Ring B] [Algebra ℂ B]
@@ -3190,9 +3165,6 @@ end Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations
 
 namespace Formalism.FourierDecayAlt.P.MAx1.ModelAlgebraRelations
 
-open Matrix Finset Polynomial
-open Formalism.FourierDecayAlt.M hiding A sc kap pA pbA cA ciA cbA cbiA zA ziA zbA zbiA ggA ggiA nabA nabsA IsModelLevel SS l0A m0A xA weightedSumBis S12 S4 t22 t21 t12 t11 QQr eeA startM siteA FrameConcl Pr Op mulOp fnP mk cP ciP cbP cbiP zP ziP zbP zbiP ggP ggiP pP pbP dzP dzbP gg coord euler lA mA fnsA zfnsA sitesFrom QQlev LevFns LevP LevPb LevPP LevNab LevNabs StarGens SSScalar SSShift SSNorm SSComm SSMixed NabSS Curvature QQNormal QQHerm QQRTTEntries QQRTT QQRTTOfEntries QQDet T21Commute QQLeading QQZeta StartIsStart StartOK LevelExists LevelStar SitesOKM ChainM LowerCommutes LowerStart StartIsStartAssemble StartAssemble LevelAssemble ModelFrame ModelAssemble CutAdm
-open Formalism.FourierDecayAlt.MA
 
 section Abs3
 variable {B : Type*} [Ring B] [Algebra ℂ B]
@@ -3367,8 +3339,6 @@ namespace Formalism.FourierDecayAlt.P.MAx1.D7
 section PartT
 
 open  Formalism.FourierDecayAlt Finset
-open Formalism.FourierDecayAlt.M hiding A sc kap pA pbA cA ciA cbA cbiA zA ziA zbA zbiA ggA ggiA nabA nabsA IsModelLevel SS l0A m0A xA weightedSumBis S12 S4 t22 t21 t12 t11 QQr eeA startM siteA FrameConcl Pr Op mulOp fnP mk cP ciP cbP cbiP zP ziP zbP zbiP ggP ggiP pP pbP dzP dzbP gg coord euler lA mA fnsA zfnsA sitesFrom QQlev LevFns LevP LevPb LevPP LevNab LevNabs StarGens SSScalar SSShift SSNorm SSComm SSMixed NabSS Curvature QQNormal QQHerm QQRTTEntries QQRTT QQRTTOfEntries QQDet T21Commute QQLeading QQZeta StartIsStart StartOK LevelExists LevelStar SitesOKM ChainM LowerCommutes LowerStart StartIsStartAssemble StartAssemble LevelAssemble ModelFrame ModelAssemble CutAdm
-open Formalism.FourierDecayAlt.MA
 
 theorem kap_eq (P : Par) (D : DAlg P.r) [Fact (D.Laws P.TT)] (f : Ty P → ℂ) :
     kap P D f = Matrix.diagonal fun π => algebraMap ℂ (D.Pr) (f π) := rfl
@@ -3661,8 +3631,6 @@ end PartT
 section PartF
 
 open  Formalism.FourierDecayAlt Finset Polynomial
-open Formalism.FourierDecayAlt.M hiding A sc kap pA pbA cA ciA cbA cbiA zA ziA zbA zbiA ggA ggiA nabA nabsA IsModelLevel SS l0A m0A xA weightedSumBis S12 S4 t22 t21 t12 t11 QQr eeA startM siteA FrameConcl Pr Op mulOp fnP mk cP ciP cbP cbiP zP ziP zbP zbiP ggP ggiP pP pbP dzP dzbP gg coord euler lA mA fnsA zfnsA sitesFrom QQlev LevFns LevP LevPb LevPP LevNab LevNabs StarGens SSScalar SSShift SSNorm SSComm SSMixed NabSS Curvature QQNormal QQHerm QQRTTEntries QQRTT QQRTTOfEntries QQDet T21Commute QQLeading QQZeta StartIsStart StartOK LevelExists LevelStar SitesOKM ChainM LowerCommutes LowerStart StartIsStartAssemble StartAssemble LevelAssemble ModelFrame ModelAssemble CutAdm
-open Formalism.FourierDecayAlt.MA
 
 noncomputable section
 
@@ -4133,9 +4101,6 @@ end PartF
 
 section PartA
 
-open  Formalism.FourierDecayAlt Finset Polynomial
-open Formalism.FourierDecayAlt.M hiding A sc kap pA pbA cA ciA cbA cbiA zA ziA zbA zbiA ggA ggiA nabA nabsA IsModelLevel SS l0A m0A xA weightedSumBis S12 S4 t22 t21 t12 t11 QQr eeA startM siteA FrameConcl Pr Op mulOp fnP mk cP ciP cbP cbiP zP ziP zbP zbiP ggP ggiP pP pbP dzP dzbP gg coord euler lA mA fnsA zfnsA sitesFrom QQlev LevFns LevP LevPb LevPP LevNab LevNabs StarGens SSScalar SSShift SSNorm SSComm SSMixed NabSS Curvature QQNormal QQHerm QQRTTEntries QQRTT QQRTTOfEntries QQDet T21Commute QQLeading QQZeta StartIsStart StartOK LevelExists LevelStar SitesOKM ChainM LowerCommutes LowerStart StartIsStartAssemble StartAssemble LevelAssemble ModelFrame ModelAssemble CutAdm
-open Formalism.FourierDecayAlt.MA
 
 section Poly
 
@@ -4318,9 +4283,6 @@ end PartA
 
 section PartB
 
-open  Formalism.FourierDecayAlt Finset
-open Formalism.FourierDecayAlt.M hiding A sc kap pA pbA cA ciA cbA cbiA zA ziA zbA zbiA ggA ggiA nabA nabsA IsModelLevel SS l0A m0A xA weightedSumBis S12 S4 t22 t21 t12 t11 QQr eeA startM siteA FrameConcl Pr Op mulOp fnP mk cP ciP cbP cbiP zP ziP zbP zbiP ggP ggiP pP pbP dzP dzbP gg coord euler lA mA fnsA zfnsA sitesFrom QQlev LevFns LevP LevPb LevPP LevNab LevNabs StarGens SSScalar SSShift SSNorm SSComm SSMixed NabSS Curvature QQNormal QQHerm QQRTTEntries QQRTT QQRTTOfEntries QQDet T21Commute QQLeading QQZeta StartIsStart StartOK LevelExists LevelStar SitesOKM ChainM LowerCommutes LowerStart StartIsStartAssemble StartAssemble LevelAssemble ModelFrame ModelAssemble CutAdm
-open Formalism.FourierDecayAlt.MA
 
 section abs2
 
@@ -4624,9 +4586,6 @@ end PartB
 
 section PartC
 
-open  Formalism.FourierDecayAlt Finset
-open Formalism.FourierDecayAlt.M hiding A sc kap pA pbA cA ciA cbA cbiA zA ziA zbA zbiA ggA ggiA nabA nabsA IsModelLevel SS l0A m0A xA weightedSumBis S12 S4 t22 t21 t12 t11 QQr eeA startM siteA FrameConcl Pr Op mulOp fnP mk cP ciP cbP cbiP zP ziP zbP zbiP ggP ggiP pP pbP dzP dzbP gg coord euler lA mA fnsA zfnsA sitesFrom QQlev LevFns LevP LevPb LevPP LevNab LevNabs StarGens SSScalar SSShift SSNorm SSComm SSMixed NabSS Curvature QQNormal QQHerm QQRTTEntries QQRTT QQRTTOfEntries QQDet T21Commute QQLeading QQZeta StartIsStart StartOK LevelExists LevelStar SitesOKM ChainM LowerCommutes LowerStart StartIsStartAssemble StartAssemble LevelAssemble ModelFrame ModelAssemble CutAdm
-open Formalism.FourierDecayAlt.MA
 
 theorem nab_SSs (hSc : SSScalar) (hN : NabSS) (hSG : StarGens) (P : Par) (D : DAlg P.r) [Fact (D.Laws P.TT)] (l : ℕ) (hl : l ∈ Icc 1 (P.k - 1)) :
     nabA P D * star (SS P D l) = star (SS P D l) * nabA P D + zbA P D * ggiA P D * star (SS P D l) := by
@@ -4774,9 +4733,6 @@ end PartC
 
 section PartD
 
-open  Formalism.FourierDecayAlt Finset Polynomial
-open Formalism.FourierDecayAlt.M hiding A sc kap pA pbA cA ciA cbA cbiA zA ziA zbA zbiA ggA ggiA nabA nabsA IsModelLevel SS l0A m0A xA weightedSumBis S12 S4 t22 t21 t12 t11 QQr eeA startM siteA FrameConcl Pr Op mulOp fnP mk cP ciP cbP cbiP zP ziP zbP zbiP ggP ggiP pP pbP dzP dzbP gg coord euler lA mA fnsA zfnsA sitesFrom QQlev LevFns LevP LevPb LevPP LevNab LevNabs StarGens SSScalar SSShift SSNorm SSComm SSMixed NabSS Curvature QQNormal QQHerm QQRTTEntries QQRTT QQRTTOfEntries QQDet T21Commute QQLeading QQZeta StartIsStart StartOK LevelExists LevelStar SitesOKM ChainM LowerCommutes LowerStart StartIsStartAssemble StartAssemble LevelAssemble ModelFrame ModelAssemble CutAdm
-open Formalism.FourierDecayAlt.MA
 
 theorem isPoly_kap (P : Par) (D : DAlg P.r) [Fact (D.Laws P.TT)] (p : Ty P → ℂ[X]) : IsPoly (fun Y => kap P D fun π => (p π).eval Y) := by
   have h : ∀ Y, (kap P D fun π => (p π).eval Y) =
@@ -4919,8 +4875,6 @@ end
 section
 
 open  Formalism.FourierDecayAlt.Fr Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.W Formalism.YangianSpanCharacter.T Formalism.FourierDecayAlt Matrix Finset
-open Formalism.FourierDecayAlt.M hiding A sc kap pA pbA cA ciA cbA cbiA zA ziA zbA zbiA ggA ggiA nabA nabsA IsModelLevel SS l0A m0A xA weightedSumBis S12 S4 t22 t21 t12 t11 QQr eeA startM siteA FrameConcl Pr Op mulOp fnP mk cP ciP cbP cbiP zP ziP zbP zbiP ggP ggiP pP pbP dzP dzbP gg coord euler lA mA fnsA zfnsA sitesFrom QQlev LevFns LevP LevPb LevPP LevNab LevNabs StarGens SSScalar SSShift SSNorm SSComm SSMixed NabSS Curvature QQNormal QQHerm QQRTTEntries QQRTT QQRTTOfEntries QQDet T21Commute QQLeading QQZeta StartIsStart StartOK LevelExists LevelStar SitesOKM ChainM LowerCommutes LowerStart StartIsStartAssemble StartAssemble LevelAssemble ModelFrame ModelAssemble CutAdm
-open Formalism.FourierDecayAlt.MA
 
 set_option linter.unusedVariables false
 set_option linter.unusedSimpArgs false
@@ -5277,11 +5231,9 @@ theorem z_mem (P : Par) (D : DAlg P.r) [Fact (D.Laws P.TT)] (i : Fin P.r) : ∀ 
 
 def Ent {A : Type} [Ring A] [Algebra ℂ A] (C : Subalgebra ℂ A) (M : M2 A) : Prop := ∀ a b, M a b ∈ C
 
-section Ent
 
 variable {A : Type} [Ring A] [Algebra ℂ A] {C : Subalgebra ℂ A}
 
-end Ent
 
 theorem QQr_ent (P : Par) (D : DAlg P.r) [Fact (D.Laws P.TT)] (i : Fin P.r) (Y : ℂ) : Ent (Cen P D i) (QQr P D Y) := by
   have hz : zA P D ∈ Cen P D i := z_mem P D i _ (by simp)
@@ -5595,7 +5547,6 @@ end Formalism.FourierDecayAlt.P.MAx1.An
 namespace Formalism.FourierDecayAlt.P
 
 open Formalism.FourierDecayAlt.MA Formalism.FourierDecayAlt MAx1.An
-open scoped ComplexConjugate
 
 theorem analytic_leibniz : Formalism.FourierDecayAlt.MA.AnLeibniz := by
   intro r TT v f g
@@ -5662,9 +5613,6 @@ set_option linter.unusedVariables false
 
 namespace Formalism.FourierDecayAlt.P.MAx1
 
-open Formalism.FourierDecayAlt Finset Matrix Formalism.YangianSpanCharacter.T Formalism.FourierDecayAlt.R Formalism.FourierDecayAlt.W Formalism.FourierDecayAlt.Wd Formalism.FourierDecayAlt.Fr
-open Formalism.FourierDecayAlt.M hiding A sc kap pA pbA cA ciA cbA cbiA zA ziA zbA zbiA ggA ggiA nabA nabsA IsModelLevel SS l0A m0A xA weightedSumBis S12 S4 t22 t21 t12 t11 QQr eeA startM siteA FrameConcl Pr Op mulOp fnP mk cP ciP cbP cbiP zP ziP zbP zbiP ggP ggiP pP pbP dzP dzbP gg coord euler lA mA fnsA zfnsA sitesFrom QQlev LevFns LevP LevPb LevPP LevNab LevNabs StarGens SSScalar SSShift SSNorm SSComm SSMixed NabSS Curvature QQNormal QQHerm QQRTTEntries QQRTT QQRTTOfEntries QQDet T21Commute QQLeading QQZeta StartIsStart StartOK LevelExists LevelStar SitesOKM ChainM LowerCommutes LowerStart StartIsStartAssemble StartAssemble LevelAssemble ModelFrame ModelAssemble CutAdm
-open Formalism.FourierDecayAlt.MA
 
 theorem startIsStart : StartIsStart := startIsStartAssemble qQHerm qQRTT qQDet
 

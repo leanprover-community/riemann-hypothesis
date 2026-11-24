@@ -95,6 +95,5 @@ end Formalism.FourierDecayAlt.P.BigCellZetaMinors
 
 namespace Formalism.FourierDecayAlt.P
 
-open Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.JF
 
 end Formalism.FourierDecayAlt.P

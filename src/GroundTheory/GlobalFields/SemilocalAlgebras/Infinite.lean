@@ -168,7 +168,6 @@ instance instFintypePlacesOver [NumberField L] : Fintype (v.placesOver L) :=
 variable [NumberField K] [NumberField L]
 
 
-open scoped Classical in
 theorem sum_finrank_completion :
     ∑ w : v.placesOver L, Module.finrank v.Completion (w : InfinitePlace L).Completion =
       Module.finrank K L := by

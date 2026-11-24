@@ -78,7 +78,6 @@ end Check
 
 namespace Formalism.LFunctionChainParameters.LChain
 
-open Formalism Formalism.D5 Formalism.RankGapBounds.WeightedMeanData Formalism.LFunctionChainParameters.WeightedSlopeBounds Formalism.LFunctionChainParameters.characterSumData Formalism.LFunctionChainParameters.ThickSetMeanBounds Formalism.LFunctionChainParameters.LErr
 
 lemma errX5at_le {U0 : Type} [Fintype U0] {W : U0 → Type} [∀ u0, Fintype (W u0)] [∀ u0, Nonempty (W u0)]
     {Top : Type} [Fintype Top] {m f : ℕ} (D : Data U0 W Top m f) (C : Consts) (Xpp eK K : ℝ)
@@ -165,5 +164,4 @@ end ModelText
 end Formalism.LFunctionChainParameters.LChain
 
 section Check2
-open Formalism.LFunctionChainParameters.LChain
 end Check2
