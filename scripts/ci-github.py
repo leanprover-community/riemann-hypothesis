@@ -297,11 +297,21 @@ def catch_up_main(store, source):
     if current is None or pub.decode_json(current.data).get("build_exit_code") != 0:
         return
     expected = pub.expected_metadata(prep.identity("main"), promotion=True)
-    if expected["candidate_head"] == source or matching_record(current.data, expected) is None:
+    if matching_record(current.data, expected) is None:
         return
-    result = pub.promote(store, expected, source)
-    verify_maps(store, {expected["candidate_head"]})
-    print(json.dumps({"caught_up_main_alias": result}, sort_keys=True))
+    revision = expected["candidate_head"]
+    if revision != source:
+        result = pub.promote(store, expected, source)
+        verify_maps(store, {revision})
+        print(json.dumps({"caught_up_main_alias": result}, sort_keys=True))
+    # The push check may have finished before this publication. Check the receipt
+    # actually published for main, including when the source was the main commit itself.
+    published = store.get(f"ci/revisions/{revision}.json")
+    if published is None:
+        raise ValueError(f"Published main receipt is missing for {revision}")
+    count = pub.decode_json(published.data)["receipt"].get("info_messages", 0)
+    if count:
+        raise SystemExit(f"The published build for main at {revision} added {count} info messages.")
 
 
 def empty_failed_build(cache, expected):

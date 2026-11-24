@@ -423,14 +423,18 @@ roots = ["Base", "Stable", "Main"]
         assert info["inherited"]["count"] == 0 and info["new"]["modules"] == 1, info
         assert [row["module"] for row in info["new"]["messages"]] == ["Main"], info
         assert "answer : Nat" in info["new"]["messages"][0]["message"], info
-        # Taken from a known map, the same module is reported as inherited, not counted against the build.
+        # Reusing the PR's own archive must report exactly the same messages as the first build.
         for archive in (noisy / "artifacts").iterdir():
             shutil.copyfile(archive, cache / "artifacts" / archive.name)
-        replayed, replayed_receipt = build("noisy-replayed", ["--cache-map", str(noisy / "outputs.jsonl")])
+        warm = ["--cache-map", str(noisy / "outputs.jsonl")]
+        replayed, replayed_receipt = build("noisy-replayed", [*warm, "--info-base-map", str(base_map)])
         assert "Unpacked Main" in (replayed / "build.log").read_text()
-        assert replayed_receipt["info_messages"] == 0
-        replayed_info = json.loads((replayed / "info-messages.json").read_text())
-        assert replayed_info == {"new": {"count": 0, "modules": 0, "messages": []}, "inherited": info["new"]}, replayed_info
+        assert replayed_receipt["info_messages"] == 1
+        assert json.loads((replayed / "info-messages.json").read_text()) == info
+        # The same archive really is inherited once it is in the base revision's map.
+        based, based_receipt = build("noisy-on-base", [*warm, "--info-base-map", str(noisy / "outputs.jsonl")])
+        assert based_receipt["info_messages"] == 0
+        assert json.loads((based / "info-messages.json").read_text()) == {"new": info["inherited"], "inherited": info["new"]}
         (root / "src/Main.lean").write_text("import Base\nimport Stable\ndef answer : Nat := value + 1\n")
         commit()
         # Changed options must not retain old input hashes, even with warm archives available.

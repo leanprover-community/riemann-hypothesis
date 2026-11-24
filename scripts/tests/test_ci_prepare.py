@@ -151,6 +151,24 @@ class PreparationTests(unittest.TestCase):
                 prep.BASE + "/" + published["map_key"]: data,
                 prep.BASE + "/" + published["module_manifest_key"]: manifest}, data
 
+    def test_info_base_map_requires_the_exact_base_revision(self):
+        revision = "2" * 40
+        request = {"base_head": revision}
+        responses, data = self.published_cache(revision, "Base", "1")
+        url = f"{prep.BASE}/ci/revisions/{revision}.json"
+        def get(url, **kwargs):
+            return responses.get(url)
+
+        with tempfile.TemporaryDirectory() as directory, patch.object(prep, "get", side_effect=get):
+            root = Path(directory)
+            self.assertEqual(prep.info_base_map(request, root).read_bytes(), data)
+            alias = json.loads(responses[url])
+            alias["candidate_head"] = "3" * 40
+            responses[url] = json.dumps(alias).encode()
+            self.assertIsNone(prep.info_base_map(request, root))
+            del responses[url]
+            self.assertIsNone(prep.info_base_map(request, root))
+
     def test_pr_partial_cache_precedes_newer_main_and_missing_branch_falls_back(self):
         for preferred in ("head", "ancestor", "main"):
             with self.subTest(preferred=preferred), self.cache_history() as (root, request, commits):

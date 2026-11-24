@@ -167,6 +167,8 @@ jobs:
                   '--baseline-manifest', paths['baseline_manifest'], '--baseline-map', paths['baseline_map']]
           if paths['latest_map']:
               args += ['--cache-map', paths['latest_map']]
+          if paths['info_base_map']:
+              args += ['--info-base-map', paths['info_base_map']]
           result = subprocess.run(args)
           code = result.returncode if result.returncode >= 0 else 128 - result.returncode
           subprocess.run(['python3', 'trusted/scripts/ci-prepare.py', 'expected', '--request',

@@ -234,20 +234,48 @@ def previous_cache_revisions(candidate, request):
     return list(dict.fromkeys([head, *branch, *fallback]))
 
 
+def cache_record(revision):
+    if not HEX.fullmatch(revision):
+        raise ValueError("Invalid cache revision")
+    data = get(f"{BASE}/ci/revisions/{revision}.json", missing=True, maximum=2_000_000)
+    if data is None:
+        return None
+    record = json.loads(data)
+    # Skip other releases before validation, including ones that have left the allow-list.
+    if isinstance(record, dict) and record.get("toolchain") != TOOLCHAIN:
+        return None
+    validate_record(record)
+    return record
+
+
+def verified_map(record):
+    data = get(BASE + "/" + record["map_key"])
+    if digest(data) != record["map_sha256"]:
+        raise ValueError("Published CI cache integrity mismatch")
+    return data
+
+
+def info_base_map(request, directory):
+    revision = request.get("base_head")
+    if not revision:
+        return None
+    record = cache_record(revision)
+    # The revision index can also hold a PR-head alias for a different merge commit.
+    if record is None or record["candidate_head"] != revision:
+        return None
+    path = directory / f"info-base-{revision}.jsonl"
+    path.write_bytes(verified_map(record))
+    return path
+
+
 def restore_previous_cache(candidate, request, cache):
     for revision in previous_cache_revisions(candidate, request):
-        record_data = get(f"{BASE}/ci/revisions/{revision}.json", missing=True, maximum=2_000_000)
-        if record_data is None:
+        record = cache_record(revision)
+        if record is None:
             continue
-        record = json.loads(record_data)
-        # Skip other releases before validating: validation rejects a release that has left the allow-list.
-        if isinstance(record, dict) and record.get("toolchain") != TOOLCHAIN:
-            continue
-        validate_record(record)
-        map_key, manifest_key = record["map_key"], record["module_manifest_key"]
-        data = get(BASE + "/" + map_key)
-        module_data = get(BASE + "/" + manifest_key)
-        if digest(data) != record["map_sha256"] or digest(module_data) != record["module_manifest_sha256"]:
+        data = verified_map(record)
+        module_data = get(BASE + "/" + record["module_manifest_key"])
+        if digest(module_data) != record["module_manifest_sha256"]:
             raise ValueError("Published CI cache integrity mismatch")
         latest, extra_hashes = manifest_artifacts(module_data, data, record)
         downloads(cache, latest, extra_hashes)
@@ -324,9 +352,10 @@ def prepare(args):
         downloads(cache, entries, hashes)
         request = json.loads(Path(args.request).read_text())
         selected = None if quick_plan else restore_previous_cache(args.candidate, request, cache)
+        info_base = None if quick_plan else info_base_map(request, Path(args.output).resolve().parent)
         paths = {"packages": str(deps / ".lake/packages"), "baseline_cache": str(cache),
                  "baseline_manifest": str(cache / "modules.jsonl.gz"), "baseline_map": str(cache / "outputs.jsonl"),
-                 "latest_map": str(selected) if selected else ""}
+                 "latest_map": str(selected) if selected else "", "info_base_map": str(info_base) if info_base else ""}
         Path(args.output).write_text(json.dumps(paths, indent=2) + "\n")
 
 

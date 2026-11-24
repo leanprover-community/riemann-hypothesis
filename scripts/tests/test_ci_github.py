@@ -213,18 +213,28 @@ class Validation(unittest.TestCase):
             ci.promote_main(SimpleNamespace(event_file=str(self.root / "push.json")))
 
     def test_quick_merge_catches_up_only_equivalent_main_without_building(self):
-        record = {**self.identity, "repository": ci.REPOSITORY, "build_exit_code": 0}
+        record = {**self.identity, "repository": ci.REPOSITORY, "build_exit_code": 0, "receipt": {}}
         main = {**self.identity, "candidate_head": "8" * 40, "candidate_tree": "9" * 40}
+        main_record = {**record, **main, "receipt": {}}
+        records = {f"ci/revisions/{item['candidate_head']}.json": item for item in (record, main_record)}
         class Store:
             def get(self, key):
-                return ci.pub.Object(ci.pub.canonical(record), "etag")
+                return ci.pub.Object(ci.pub.canonical(records[key]), "etag")
         with (patch.object(ci.prep, "identity", return_value=main),
               patch.object(ci.pub, "promote", return_value={"main": "8" * 40}) as promote,
               patch.object(ci, "verify_maps"),
               patch.object(ci.subprocess, "run", side_effect=AssertionError("Catch-up must not build"))):
             ci.catch_up_main(Store(), self.identity["candidate_head"])
             promote.assert_called_once()
+            main_record["receipt"]["info_messages"] = 2
             promote.reset_mock()
+            with self.assertRaisesRegex(SystemExit, "added 2 info messages"):
+                ci.catch_up_main(Store(), self.identity["candidate_head"])
+            promote.assert_called_once()
+            promote.reset_mock()
+            with self.assertRaisesRegex(SystemExit, "added 2 info messages"):
+                ci.catch_up_main(Store(), main["candidate_head"])
+            promote.assert_not_called()
             main["source_tree"] = "7" * 40
             main["input_fingerprint"] = ci.pub.fingerprint(main)
             ci.catch_up_main(Store(), self.identity["candidate_head"])

@@ -716,6 +716,13 @@ def info_messages(project, modules, keep=200):
     return {"count": count, "modules": noisy, "messages": kept}
 
 
+def build_info_messages(project, modules, base_map):
+    # A warm cache may come from this PR's own previous attempt.
+    inherited = {name for name, dep_hash, archive in modules if base_map.get(dep_hash) == archive}
+    added = {name for name, _, _ in modules} - inherited
+    return {"new": info_messages(project, added), "inherited": info_messages(project, inherited, keep=20)}
+
+
 def recover_completed_map(project, cache, toolchain, work, destination, known_hashes=None, existing=None, known_mappings=None):
     """Recover only already-saved LTARs after Lake dies before flushing -o."""
     known_by_digest = {digest: name for name, digest in (known_hashes or {}).items()}
@@ -889,6 +896,8 @@ def main():
     parser.add_argument("--baseline-cache", type=Path)
     parser.add_argument("--cache-map", type=Path, action="append", default=[],
                         help="newer PR/ancestor map; LTARs must already be in --baseline-cache")
+    parser.add_argument("--info-base-map", type=Path,
+                        help="map of the exact base revision; without it all info messages count")
     parser.add_argument("--recover-work", type=Path, help="adopt a quiesced old run-* directory already moved outside the GitHub workspace")
     parser.add_argument("--recover-request", type=Path, help="original independently recorded hosted CI request")
     parser.add_argument("--recover-controller-pid", type=int)
@@ -1023,11 +1032,7 @@ def main():
             recover_completed_map(project, cache, toolchain, work, mapping_file, base_hashes, mapping, known_mappings)
             mapping = load_map(mapping_file)
         modules = collect_mapped_modules(project, cache, mapping, incomplete=bool(build_exit_code))
-        # Reported apart from build_exit_code: the cache of a noisy build is still valid. Only
-        # modules whose inputs no known map (main's caches) had are counted against this build.
-        inherited = {name for name, dep_hash, _ in modules if dep_hash in known_mappings}
-        info = {"new": info_messages(project, {name for name, _, _ in modules} - inherited),
-                "inherited": info_messages(project, inherited, keep=20)}
+        info = build_info_messages(project, modules, load_map(args.info_base_map) if args.info_base_map else {})
         (output / "info-messages.json").write_text(json.dumps(info, indent=2) + "\n")
         for kind, report in info.items():
             if report["count"]:
