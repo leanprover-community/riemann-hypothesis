@@ -58,6 +58,10 @@ noncomputable section
 set_option synthInstance.maxHeartbeats 400000
 set_option maxHeartbeats 10000000
 
+-- Instance search for the action of `↥(OL LL)` otherwise detours through these three instances,
+-- where every attempt is slow to fail. The declarations of this file are unchanged.
+attribute [-instance] NormedSpace.toModule NormedAlgebra.toAlgebra Subalgebra.smulCommClass_right
+
 namespace GlobalTheory.BKGal.CrisTensor
 
 variable {l : ℕ} [Fact l.Prime] {LL : FinExt l}
