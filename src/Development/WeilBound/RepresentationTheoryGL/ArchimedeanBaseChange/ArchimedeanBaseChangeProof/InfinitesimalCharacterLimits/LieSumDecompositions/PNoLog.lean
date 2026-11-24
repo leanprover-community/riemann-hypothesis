@@ -865,10 +865,10 @@ theorem Sl_mapsTo {T : Module.End ℂ (Sm E (r + s))} (hT : T ∈ Sl (r + s)) {�
   · rw [← Module.End.mul_apply, (Sl_comm_cap τ u hT).eq, Module.End.mul_apply, hΦ.2, map_smul]
 
 theorem capR_mem_Sl (τ : E →+* ℂ) (u : ℂ) : capR r s τ u ∈ Sl (E := E) (r + s) :=
-  qdet_mem _ _ (fun _ _ => Eop_mem_Sl τ _ _) _
+  qdet_mem (Sl (E := E) (r + s)) _ (fun _ _ => Eop_mem_Sl τ _ _) _
 
 theorem capS_mem_Sl (τ : E →+* ℂ) (u : ℂ) : capS r s τ u ∈ Sl (E := E) (r + s) :=
-  qdet_mem _ _ (fun _ _ => Eop_mem_Sl τ _ _) _
+  qdet_mem (Sl (E := E) (r + s)) _ (fun _ _ => Eop_mem_Sl τ _ _) _
 
 theorem capR_mem_Pa (τ : E →+* ℂ) (u : ℂ) : capR r s τ u ∈ Pa (Vsp r s m) (Isp r s m) :=
   ⟨fun _ hv => Sl_mapsTo r s m (capR_mem_Sl r s τ u) hv, fun _ hv =>
