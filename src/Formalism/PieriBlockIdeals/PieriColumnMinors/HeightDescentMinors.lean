@@ -522,7 +522,10 @@ lemma hasSubst_one_add_X_pow_sub_one_alt {R : Type} [CommRing R] (l : ℕ) :
   simp
 
 lemma hasSubst_X_pow_of_ne_zero {R : Type} [CommRing R] {l : ℕ} (hl : l ≠ 0) :
-    HasSubst (X ^ l : R⟦X⟧) := HasSubst.X_pow hl
+    HasSubst (X ^ l : R⟦X⟧) := by
+  apply PowerSeries.HasSubst.of_constantCoeff_zero
+  change PowerSeries.constantCoeff (X ^ l : R⟦X⟧) = 0
+  simp [zero_pow hl]
 
 end A2General
 

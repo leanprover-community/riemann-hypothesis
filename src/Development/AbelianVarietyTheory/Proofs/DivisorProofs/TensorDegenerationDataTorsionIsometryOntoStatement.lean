@@ -422,7 +422,19 @@ namespace GlobalTheory.Mum.TensTor
 theorem gtRelV_pow {F : Type} [Field F] {N N' : NumD F} {r : ℕ} {W : Matrix (Fin r) (Fin r) ℤ}
     {φ : N'.A → Fin r → N.A} {e : N'.X → Fin r → N.X} {wv : N'.A → F} (h : TensFacts W φ e wv)
     {v' : N'.Gt} {vs : Fin r → N.Gt} (hv : GtRelV W φ e wv v' vs) (k : ℕ) :
-    GtRelV W φ e wv (v' ^ k) (vs ^ k) := GlobalTheory.Mum.TensTor.gtRelV_npow_of_tensFacts h hv k
+    GtRelV W φ e wv (v' ^ k) (vs ^ k) := by
+  induction k with
+  | zero =>
+    have h0 := GlobalTheory.T.tensorTorusValueCorrespondence_period F N N' W φ e wv h 0
+    have e0 : ∀ j, e 0 j = 0 := fun j => by
+      have := h.2.2.1 0 0 j
+      rw [add_zero] at this
+      exact (add_eq_left.1 this.symm)
+    simp only [e0, NumD.io_zero] at h0
+    rwa [pow_zero, pow_zero]
+  | succ k ih =>
+    rw [pow_succ, pow_succ]
+    exact GlobalTheory.T.tensorTorusValueCorrespondence_mul F N N' W φ e wv h _ _ _ _ ih hv
 
 theorem exists_ptRel : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], Base R → ∀ (D D' : DegData R (maximalIdeal R)) {r : ℕ} (W : Matrix (Fin r) (Fin r) ℤ) (T : Tens D.toPre D'.toPre W) (F : Type) [Field F] [IsAlgClosed F] [Algebra (FractionRing R) F] (N N' : NumD F) (ν : NumOf D.toPre F N) (ν' : NumOf D'.toPre F N') (k : ℕ) (ps : Fin r → QkPt D.toPre F k), ∃ p' : QkPt D'.toPre F k, PtRel T ν ν' p' ps := by
   intro R _ _ _ hR D D' r W T F _ _ _ N N' ν ν' k ps
@@ -1477,7 +1489,16 @@ theorem comp_nsmul (h : TensFacts W φ e wv) (k : ℕ) (χ : N'.X) (i : Fin r) :
   (AddMonoidHom.mk' (fun χ => e χ i) fun a b => h.2.2.1 a b i).map_nsmul k χ
 
 theorem rel_pow (h : TensFacts W φ e wv) {v' : N'.Gt} {vs : Fin r → N.Gt} (hv : GtRelV W φ e wv v' vs) (k : ℕ) :
-    GtRelV W φ e wv (v' ^ k) (vs ^ k) := GlobalTheory.Mum.TensAct.rel_pow h hv k
+    GtRelV W φ e wv (v' ^ k) (vs ^ k) := by
+  induction k with
+  | zero =>
+    have h0 := GlobalTheory.T.tensorTorusValueCorrespondence_period F N N' W φ e wv h 0
+    have e0 : ∀ j, e 0 j = 0 := fun j => by simpa using comp_nsmul h 0 0 j
+    simp only [e0, NumD.io_zero] at h0
+    rwa [pow_zero, pow_zero]
+  | succ k ih =>
+    rw [pow_succ, pow_succ]
+    exact GlobalTheory.T.tensorTorusValueCorrespondence_mul F N N' W φ e wv h _ _ _ _ ih hv
 
 theorem tower_val (h : TensFacts W φ e wv) {n m : ℕ} {p' : N'.QT (n * m)} {ps : Fin r → N.QT (n * m)} {t' : N'.QT n}
     {ts : Fin r → N.QT n} (hp : QRelV W φ e wv p' ps) (ht : QRelV W φ e wv t' ts)

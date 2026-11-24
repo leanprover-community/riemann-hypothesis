@@ -79,7 +79,13 @@ open AlgebraicGeometry CategoryTheory ReciprocityTheory.ChartRestriction.G.Semi 
 
 theorem affSmooth_mvPolynomial (R : Type) [CommRing R] [Nontrivial R] (r : ℕ) :
     Algebra.IsStandardSmoothOfRelativeDimension r R (MvPolynomial (Fin r) R) := by
-  apply GlobalTheory.isStandardSmoothOfRelativeDimension_mvPolynomial_fin
+  have : Algebra.IsStandardSmooth R (MvPolynomial (Fin r) R) :=
+    Algebra.IsStandardSmooth.iff_exists_basis_kaehlerDifferential.2
+      ⟨inferInstance, _, KaehlerDifferential.mvPolynomialBasis R _, by
+        rintro _ ⟨i, rfl⟩
+        exact ⟨MvPolynomial.X i, (KaehlerDifferential.mvPolynomialBasis_apply R _ i).symm⟩⟩
+  exact (Algebra.IsStandardSmoothOfRelativeDimension.iff_of_isStandardSmooth _).2 (by
+    rw [rank_eq_card_basis (KaehlerDifferential.mvPolynomialBasis R _), Fintype.card_fin])
 
 theorem affSmooth_of_range_eq {R S K : Type} [CommRing R] [Nontrivial R] [CommRing S] [CommRing K] {r : ℕ}
     (ψ : R →+* S) (j : S →+* K) (hj : Function.Injective j) (t : Fin r → K)

@@ -534,8 +534,16 @@ variable {R : Type} [CommRing R] {C : Type 1} [Category.{0} C] {Φ : PDF R C} {F
 
 theorem cupList_mem (hF : IsFil Φ Fil) : ∀ (m : ℕ) (ℓ : Fin m → CH.Cn (CH.modF Φ.A) 1),
     (∀ k, ℓ k ∈ FC (Fil ((1 : ℕ) : ℤ)) 1) → cupListC Φ.A ℓ ∈ FC (Fil (m : ℤ)) m := by
-  intros
-  apply GlobalTheory.CompanionTheory.RepLifts.cupList_mem <;> assumption
+  intro m
+  induction m with
+  | zero =>
+    intro ℓ _
+    refine mem_FC.2 fun s => ?_
+    rw [hF.top _ (by simp)]
+    trivial
+  | succ m ih =>
+    intro ℓ h
+    exact cup_mem hF _ (ih _ fun k => h _) (h _)
 
 theorem rep_cup (hF : IsFil Φ Fil) (E : Frame Φ d) (σ : ∀ T : C, E.D ⟶ T) (hc : E.GrConst Fil)
     (n : ℕ) (ℓ : Fin (n + 1) → CH.Cn (CH.modF Φ.A) 1) (c : Fin (n + 1) → Fin d → Φ.A.obj E.D)
@@ -764,7 +772,16 @@ def ee {d : ℕ} (E : Frame Φ d) (k i : Fin d) : Φ.A.obj E.D := if i = k then 
 
 theorem cupList_mem (hF : IsFil Φ Fil) : ∀ (m : ℕ) (ℓ : Fin m → CH.Cn (CH.modF Φ.A) 1),
     (∀ k, ℓ k ∈ FC (Fil ((1 : ℕ) : ℤ)) 1) → cupListC Φ.A ℓ ∈ FC (Fil (m : ℤ)) m := by
-  exact GlobalTheory.CompanionTheory.ConeLRestr.cupList_mem hF
+  intro m
+  induction m with
+  | zero =>
+    intro ℓ _
+    refine mem_FC.2 fun s => ?_
+    rw [Nat.cast_zero, hF.top 0 le_rfl]
+    trivial
+  | succ m ih =>
+    intro ℓ hl
+    exact cup_mem hF rfl (ih _ fun k => hl _) (hl (Fin.last m))
 
 theorem form_id_eq {n : ℕ} (E : Frame Φ n) (σ : ∀ T : C, E.D ⟶ T) (w : Φ.A.obj E.D)
     (u : ComposableArrows C n) :
@@ -981,7 +998,13 @@ theorem sgn_det {B : Type} [CommRing B] {m : ℕ} (c : Fin m → Fin m → B) :
   · simp
 
 theorem inv_map {A B : Type*} [CommRing A] [CommRing B] (e : A ≃+* B) (a : A) : Ring.inverse (e a) = e (Ring.inverse a) := by
-  exact GlobalTheory.CompanionTheory.ConeLocal.inv_map e a
+  by_cases h : IsUnit a
+  · obtain ⟨v, rfl⟩ := h
+    have e1 : e (v : A) = ((Units.map e.toMonoidHom v : Bˣ) : B) := rfl
+    rw [e1, Ring.inverse_unit, Ring.inverse_unit]
+    rfl
+  · have h' : ¬ IsUnit (e a) := fun hu => h ((MulEquiv.isUnit_map e).1 hu)
+    rw [Ring.inverse_non_unit _ h, Ring.inverse_non_unit _ h', map_zero]
 
 theorem inv_prod {A : Type*} [CommRing A] {ι : Type*} [Fintype ι] (u : ι → A) (h : ∀ k, IsUnit (u k)) :
     Ring.inverse (∏ k, u k) = ∏ k, Ring.inverse (u k) := by

@@ -152,7 +152,17 @@ theorem UpperTheory.Reformulated.B.Rc8.norm_le_one_of_mem :
     x ∈ c.O →
       ‖x‖ ≤
         (1 :
-          ℝ) := GlobalTheory.Ord2.FirstDer.norm_le_one_of_mem
+          ℝ) := by
+  intro l _ c x hx
+  have hi : IsIntegral ℤ_[l] x :=
+    (Algebra.IsIntegral.isIntegral (R := ℤ_[l]) (⟨x, hx⟩ : c.O)).map c.O.val
+  have hm : minpoly ℚ_[l] x = (minpoly ℤ_[l] x).map (algebraMap ℤ_[l] ℚ_[l]) :=
+    minpoly.isIntegrallyClosed_eq_field_fractions' ℚ_[l] hi
+  rw [← PadicAlgCl.spectralNorm_eq, spectralNorm, hm,
+    spectralValue_le_one_iff ((minpoly.monic hi).map _)]
+  intro n
+  rw [Polynomial.coeff_map]
+  exact PadicInt.norm_le_one _
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ImportsFurtherTail =====
@@ -201,7 +211,12 @@ open scoped Matrix
 namespace GlobalTheory.LimCoc
 
 theorem norm_l_lt_one (l : ℕ) [Fact l.Prime] : ‖((l : ℕ) : Qbar l)‖ < 1 := by
-  exact GlobalTheory.norm_natCast_prime_qbar l
+  have h : ((l : ℕ) : Qbar l) = algebraMap ℚ_[l] (PadicAlgCl l) (l : ℚ_[l]) := by
+    rw [map_natCast]
+  rw [h]
+  have := PadicAlgCl.norm_extends l (l : ℚ_[l])
+  rw [this, Padic.norm_p]
+  exact inv_lt_one_of_one_lt₀ (by exact_mod_cast (Fact.out : l.Prime).one_lt)
 
 theorem ultra3 {K : Type*} [NormedField K] [IsUltrametricDist K] (a b c e : K) (ε : ℝ)
     (ha : ‖a‖ ≤ ε) (hb : ‖b‖ ≤ ε) (hc : ‖c‖ ≤ ε) (he : ‖e‖ ≤ ε) :
@@ -540,7 +555,17 @@ namespace GlobalTheory.KA.TameLim
 variable {l : ℕ} [Fact l.Prime]
 
 theorem norm_le_one_of_mem (c : Coef l) {x : Qbar l} (hx : x ∈ c.O) : ‖x‖ ≤ 1 := by
-  exact GlobalTheory.Ord2.FirstDer.norm_le_one_of_mem c hx
+  haveI : Module.Finite ℤ_[l] c.O := c.fin
+  have hi : IsIntegral ℤ_[l] x := by
+    have h := (isIntegral_algHom_iff (c.O.val.restrictScalars ℤ_[l]) Subtype.val_injective).2
+      (Algebra.IsIntegral.isIntegral (⟨x, hx⟩ : c.O))
+    simpa using h
+  have hq : IsIntegral ℚ_[l] x := Algebra.IsIntegral.isIntegral x
+  change spectralValue (minpoly ℚ_[l] x) ≤ 1
+  rw [spectralValue_le_one_iff (minpoly.monic hq)]
+  intro k
+  rw [minpoly.isIntegrallyClosed_eq_field_fractions' ℚ_[l] hi, Polynomial.coeff_map]
+  exact PadicInt.norm_le_one _
 
 theorem inv_pow_mem (c : Coef l) (e k : ℕ) (h : k = 0 ∨ ¬ l ∣ k) : (((k : ℕ) : Qbar l) ^ e)⁻¹ ∈ c.O := by
   rcases h with rfl | h

@@ -62,7 +62,11 @@ namespace GlobalTheory.ThetaAmple
 
 theorem opens_le_of_points {Y : Scheme.{0}} (p : Y ⟶ Sp ℂ) [LocallyOfFiniteType p] {U V : Y.Opens}
     (h : ∀ x : Sp ℂ ⟶ Y, x ≫ p = 𝟙 _ → ⊤ ≤ x ⁻¹ᵁ U → ⊤ ≤ x ⁻¹ᵁ V) : U ≤ V := by
-  exact GlobalTheory.ComplexPoints.opens_le_of_complexPoints p U V h
+  intro y hy
+  by_contra hV
+  obtain ⟨x, hx, hZ⟩ := ComplexPoints.exists_point_mem (K := ℂ) p (Z := (U : Set Y) ∩ (V : Set Y)ᶜ)
+    (U.isOpen.isLocallyClosed.inter V.isOpen.isClosed_compl.isLocallyClosed) ⟨y, hy, hV⟩
+  exact (hZ _).2 ((top_le_preimage_iff_mem x V).1 (h x hx ((top_le_preimage_iff_mem x U).2 (hZ _).1)))
 
 theorem top_le_preimage_iSup {Y : Scheme.{0}} (x : Sp ℂ ⟶ Y) {κ : Type} (U : κ → Y.Opens) :
     ⊤ ≤ x ⁻¹ᵁ (⨆ k, U k) ↔ ∃ k, ⊤ ≤ x ⁻¹ᵁ U k := by

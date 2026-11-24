@@ -445,7 +445,12 @@ theorem iter_sum (D : Derivation k R R) (n : ℕ) {ι : Type} (s : Finset ι) (f
     rw [ih, map_sum]
 
 theorem iter_sub (D : Derivation k R R) (n : ℕ) (a b : R) :
-    (⇑D)^[n] (a - b) = (⇑D)^[n] a - (⇑D)^[n] b := iterate_map_sub D n a b
+    (⇑D)^[n] (a - b) = (⇑D)^[n] a - (⇑D)^[n] b := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    simp only [Function.iterate_succ_apply']
+    rw [ih, map_sub]
 
 theorem iter_smul (D : Derivation k R R) (n : ℕ) (r : k) (a : R) :
     (⇑D)^[n] (r • a) = r • (⇑D)^[n] a := by
@@ -689,7 +694,15 @@ theorem convPow_pow (y : A →ₗ[k] k) (f : A)
 
 theorem counit_eq_zero_of_primitive [Nontrivial A] (f : A)
     (hf : Coalgebra.comul (R := k) f = f ⊗ₜ[k] (1 : A) + (1 : A) ⊗ₜ[k] f) :
-    Coalgebra.counit (R := k) f = 0 := IsPrimitiveElem.counit_eq_zero hf
+    Coalgebra.counit (R := k) f = 0 := by
+  have key := congrArg (fun t => TensorProduct.lid k A (LinearMap.rTensor A Coalgebra.counit t)) hf
+  simp only [Coalgebra.rTensor_counit_comul, map_add (f := _), LinearMap.rTensor_tmul,
+    TensorProduct.lid_tmul, Bialgebra.counit_one, one_smul] at key
+  have h2 : Coalgebra.counit (R := k) f • (1 : A) = 0 := by
+    have := congrArg (· - f) key
+    simpa using this.symm
+  rw [Algebra.smul_def, mul_one] at h2
+  exact (algebraMap k A).injective (h2.trans (map_zero _).symm)
 
 theorem exists_form_of_primitive (f : A)
     (hf : Coalgebra.comul (R := k) f = f ⊗ₜ[k] (1 : A) + (1 : A) ⊗ₜ[k] f) (hf0 : f ≠ 0) :

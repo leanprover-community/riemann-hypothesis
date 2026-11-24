@@ -1105,7 +1105,10 @@ open GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization GlobalTheory.Hec
 
 namespace GlobalTheory.HeckeTwo
 
-lemma ofReal_add_I_ne_zero (t : ℝ) : (t : ℂ) + I ≠ 0 := HeckeTwoC.tI_ne t
+lemma ofReal_add_I_ne_zero (t : ℝ) : (t : ℂ) + I ≠ 0 := by
+  intro h
+  have := congrArg Complex.im h
+  simp at this
 
 lemma norm_inv_ofReal_add_I_sq (t : ℝ) : ‖((t : ℂ) + I)⁻¹ ^ 2‖ = (1 + t ^ 2)⁻¹ := by
   rw [norm_pow, norm_inv, inv_pow, Complex.sq_norm, Complex.normSq_apply]

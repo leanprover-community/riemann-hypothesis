@@ -404,7 +404,16 @@ theorem sum_Ioc_zero_eq_factorial (y : ℕ) :
 
 theorem padicValNat_factorial_le_div_sub_one (y : ℕ) :
     ((padicValNat l y.factorial : ℕ) : ℝ) ≤ (y : ℝ) / ((l : ℝ) - 1) := by
-  exact Formalism.ZetaNonvanishing.ZetaNonvanishingCriteria.padicValNat_factorial_le_real l y
+  have h1 : 1 < l := hl.out.one_lt
+  have hc : (0:ℝ) < (l:ℝ) - 1 := by
+    have : (1:ℝ) < l := by exact_mod_cast h1
+    linarith
+  have key : (l - 1) * padicValNat l y.factorial ≤ y := by
+    rw [Nat.padicValNat_def, hl.out.sub_one_mul_multiplicity_factorial]; exact Nat.sub_le _ _
+  have key' : (((l - 1 : ℕ) : ℝ)) * (padicValNat l y.factorial : ℝ) ≤ y := by
+    exact_mod_cast key
+  rw [Nat.cast_sub h1.le, Nat.cast_one] at key'
+  rw [le_div_iff₀ hc]; linarith
 
 theorem padicValNat_choose_le_logb' (k n : ℕ) :
     ((padicValNat l (k.choose n) : ℕ) : ℝ) ≤ Real.logb l k := by

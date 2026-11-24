@@ -1246,7 +1246,16 @@ section Lines
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
 theorem smooth_comb {J : Type} [Fintype J] {ℓ : J → HermLine ι} (hℓ : ∀ j, IsSmoothHerm (ℓ j))
-    (n : J → ℤ) : IsSmoothHerm (combLine ℓ n) := RootFieldNumerics.EffN.smooth_comb hℓ n
+    (n : J → ℤ) : IsSmoothHerm (combLine ℓ n) := by
+  refine contDiffOn_prod fun a _ => ?_
+  intro z hz
+  have h0 : (ℓ a).h z ≠ 0 := ((ℓ a).pos z hz).ne'
+  have hf := hℓ a z hz
+  cases n a with
+  | ofNat k => simpa only [Int.ofNat_eq_natCast, zpow_natCast] using hf.pow k
+  | negSucc k =>
+    simp only [zpow_negSucc]
+    exact (hf.pow (k + 1)).inv (pow_ne_zero _ h0)
 
 theorem geomDeg_comb (II : IntersectionSystem) (hII : IsFullIntersectionSystem II) {J : Type} [Fintype J]
     {ℓ : J → HermLine ι} (hℓ : ∀ j, IsSmoothHerm (ℓ j)) (n : J → ℤ) (W : Ideal (MRing ι))

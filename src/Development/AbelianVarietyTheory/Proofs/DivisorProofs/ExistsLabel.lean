@@ -843,7 +843,13 @@ namespace GlobalTheory.PolynomialEvaluationMembership
 
 theorem pow_apply_mem {F V : Type} [Field F] [AddCommGroup V] [Module F V]
     (g : Module.End F V) (W : Submodule F V) (hW : ∀ x ∈ W, g x ∈ W) (n : ℕ) :
-    ∀ x ∈ W, (g ^ n) x ∈ W := fun x a ↦ Module.End.pow_apply_mem_of_forall_mem n hW x a
+    ∀ x ∈ W, (g ^ n) x ∈ W := by
+  induction n with
+  | zero => intro x hx; simpa using hx
+  | succ n ih =>
+    intro x hx
+    rw [pow_succ, Module.End.mul_apply]
+    exact ih _ (hW x hx)
 
 theorem aeval_apply_mem {F V : Type} [Field F] [AddCommGroup V] [Module F V]
     (g : Module.End F V) (W : Submodule F V) (hW : ∀ x ∈ W, g x ∈ W) (p : Polynomial F) :
