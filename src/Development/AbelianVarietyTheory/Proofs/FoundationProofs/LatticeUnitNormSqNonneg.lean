@@ -156,7 +156,7 @@ theorem cls_le_exp (f k : ℕ) (n r l L : ℝ) (hf : 1 ≤ f) (hk : (k : ℝ) �
   have hk0 : (0 : ℝ) ≤ k := Nat.cast_nonneg k
   refine pow_le_exp (by positivity) (by positivity) ?_ ?_
   · have e1 : (f : ℝ) ^ 2 * (k : ℝ) ^ 4 ≤ Real.exp (4 * l) := by
-      refine le_trans ?_ (pow_le_exp (y := (f : ℝ) * (2 * n)) (n := 4) (by nlinarith) hl h1 (by norm_num))
+      refine le_trans ?_ (pow_le_exp (y := (f : ℝ) * (2 * n)) (n := 4) (mul_nonneg (by positivity) (by linarith)) hl h1 (by norm_num))
       rw [mul_pow]
       exact mul_le_mul (pow_le_pow_right₀ hf' (by norm_num)) (pow_le_pow_left₀ hk0 hk 4) (by positivity)
         (by positivity)
@@ -164,8 +164,7 @@ theorem cls_le_exp (f k : ℕ) (n r l L : ℝ) (hf : 1 ≤ f) (hk : (k : ℝ) �
     rw [mul_assoc (12 : ℝ)]
     exact mul_le_exp (by positivity) (mul_le_exp (by positivity) (le_exp_self 12) e1) e2
   · push_cast
-    have := pow_le_pow_left₀ hk0 hk 2
-    nlinarith
+    linarith [mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hk0 hk 2) (Nat.cast_nonneg f)]
 
 
 
@@ -191,11 +190,11 @@ theorem sizes (f N a d s Q ch cT ca cd : ℕ) (B L r ν A : ℝ) (hf : 1 ≤ f) 
   have hs0 : (0 : ℝ) ≤ s := Nat.cast_nonneg s
   generalize (N : ℝ) = n at *
   have hm1 : B * (2 * n) = Real.exp (Real.log (B * (2 * n))) := (Real.exp_log (by positivity)).symm
-  have hm0 : 0 ≤ Real.log (B * (2 * n)) := Real.log_nonneg (by nlinarith)
-  have hfn : 1 ≤ (f : ℝ) * (2 * n) := by nlinarith
+  have hm0 : 0 ≤ Real.log (B * (2 * n)) := Real.log_nonneg (one_le_mul_of_one_le_of_one_le hB (by linarith))
+  have hfn : 1 ≤ (f : ℝ) * (2 * n) := one_le_mul_of_one_le_of_one_le hf' (by linarith)
   have hl1 : (f : ℝ) * (2 * n) * B = Real.exp (Real.log ((f : ℝ) * (2 * n) * B)) :=
     (Real.exp_log (by positivity)).symm
-  have hl0 : 0 ≤ Real.log ((f : ℝ) * (2 * n) * B) := Real.log_nonneg (by nlinarith)
+  have hl0 : 0 ≤ Real.log ((f : ℝ) * (2 * n) * B) := Real.log_nonneg (one_le_mul_of_one_le_of_one_le hfn hB)
   have hq1 : (Q : ℝ) ≤ Real.exp (Real.log Q) := (Real.exp_log (by positivity)).ge
   have hq0 : 0 ≤ Real.log Q := Real.log_nonneg hQ'
   have hr1 : r ≤ Real.exp L := (Real.exp_log (by positivity)).ge.trans (Real.exp_le_exp.2 hrL)
@@ -208,16 +207,16 @@ theorem sizes (f N a d s Q ch cT ca cd : ℕ) (B L r ν A : ℝ) (hf : 1 ≤ f) 
   generalize Real.log Q = q at *
   generalize Real.posLog ν = v at *
   generalize Real.posLog A⁻¹ = u at *
-  have hfl : (f : ℝ) * (2 * n) ≤ Real.exp l := by nlinarith
-  have had' : (a : ℝ) * d ≤ 4 * n ^ 2 := by nlinarith
-  have hG : ((f * a * d : ℕ) : ℝ) ≤ 4 * f * n ^ 2 := by push_cast; nlinarith
+  have hfl : (f : ℝ) * (2 * n) ≤ Real.exp l := hl1 ▸ le_mul_of_one_le_right (by linarith) hB
+  have had' : (a : ℝ) * d ≤ 4 * n ^ 2 := by linarith [mul_le_mul ha' hd' hd0 (by linarith)]
+  have hG : ((f * a * d : ℕ) : ℝ) ≤ 4 * f * n ^ 2 := by push_cast; linarith [mul_le_mul_of_nonneg_left had' (Nat.cast_nonneg f)]
   have hG0 : (0 : ℝ) ≤ ((f * a * d : ℕ) : ℝ) := Nat.cast_nonneg _
   have e1 := hcd.trans (cls_le_exp f d n r l L hf hd' (by linarith) hl0 (by linarith) hfl hr1)
   have e2 := hca.trans (cls_le_exp f a n r l L hf ha' (by linarith) hl0 (by linarith) hfl hr1)
   have e3 : (ch : ℝ) ≤ Real.exp (24 * f * n ^ 2 * (12 + 4 * l + 2 * L) + 8 * n ^ 2 * q) := by
     have : (ch : ℝ) ≤ cd * (Q : ℝ) ^ (d ^ 2 + 4) := by exact_mod_cast hch
     refine this.trans (mul_le_exp (by positivity) e1 (pow_le_exp (by positivity) hq0 hq1 ?_))
-    push_cast; nlinarith
+    push_cast; linarith [pow_le_pow_left₀ hd0 hd' 2, one_le_pow₀ (n := 2) hn]
   have e4 : (cT : ℝ) ≤ Real.exp (4 * f * n * B * 2) := by
     have : (cT : ℝ) ≤ (2 : ℝ) ^ (d * s) := by exact_mod_cast hcT
     refine this.trans (pow_le_exp (by positivity) (by positivity) (le_exp_self 2) ?_)
@@ -232,7 +231,7 @@ theorem sizes (f N a d s Q ch cT ca cd : ℕ) (B L r ν A : ℝ) (hf : 1 ≤ f) 
     refine pow_le_exp (by positivity) (by positivity) (pow_le_exp (by positivity) (by positivity) ?_ hs)
       (by norm_num)
     have : (a.factorial : ℝ) ≤ (a : ℝ) ^ a := by exact_mod_cast Nat.factorial_le_pow a
-    exact this.trans (pow_le_exp ha0 hm0 (by nlinarith) ha')
+    exact this.trans (pow_le_exp ha0 hm0 (ha'.trans (hm1 ▸ le_mul_of_one_le_left (by linarith) hB)) ha')
   have e8 : (2 * ((f * a * d : ℕ) : ℝ) * r + 1) ^ (f * a * d) ≤
       Real.exp (4 * f * n ^ 2 * (3 + (2 * l + L))) := by
     refine pow_le_exp (by positivity) (by positivity) ?_ hG
@@ -241,7 +240,7 @@ theorem sizes (f N a d s Q ch cT ca cd : ℕ) (B L r ν A : ℝ) (hf : 1 ≤ f) 
       refine hG.trans (le_trans ?_ h1)
       have : 0 ≤ f * n ^ 2 * (f - 1) := by have : 0 ≤ (f : ℝ) - 1 := by linarith
                                            positivity
-      nlinarith
+      linarith
     have h3 := mul_le_exp (by linarith) h2 hr1
     have h4 : 1 ≤ Real.exp (2 * l + L) := Real.one_le_exp (by linarith)
     have h5 := mul_le_exp (Real.exp_pos _).le (le_exp_self 3) (le_refl (Real.exp (2 * l + L)))
@@ -252,7 +251,7 @@ theorem sizes (f N a d s Q ch cT ca cd : ℕ) (B L r ν A : ℝ) (hf : 1 ≤ f) 
     · rw [div_eq_mul_inv]
       refine mul_le_exp (by positivity) (mul_le_exp (by positivity) (mul_le_exp (by positivity)
         (mul_le_exp (by positivity) (le_exp_self 2) le_rfl) (Real.pi_le_four.trans (le_exp_self 4))) ?_) hu1
-      nlinarith
+      exact hm1 ▸ le_mul_of_one_le_right (by linarith) (by linarith)
     · push_cast
       have := mul_le_mul ha' hs hs0 (by positivity)
       linarith
@@ -260,8 +259,8 @@ theorem sizes (f N a d s Q ch cT ca cd : ℕ) (B L r ν A : ℝ) (hf : 1 ≤ f) 
     (mul_le_exp (by positivity) (mul_le_exp (by positivity) e5 e6)
       (mul_le_exp (by positivity) e7 (mul_le_exp (by positivity) (mul_le_exp (by positivity)
         (mul_le_exp (by positivity) (le_exp_self 3) e8) e9) e10)))).trans (Real.exp_le_exp.2 ?_)
-  have hn2 : 1 ≤ n ^ 2 := by nlinarith
-  have t2 : 1 ≤ (f : ℝ) * n ^ 2 := by nlinarith
+  have hn2 : 1 ≤ n ^ 2 := one_le_pow₀ hn
+  have t2 : 1 ≤ (f : ℝ) * n ^ 2 := one_le_mul_of_one_le_of_one_le hf' hn2
   have t1 : 0 ≤ (f : ℝ) * n * B := by positivity
   have p1 := mul_nonneg t1 hm0
   have p2 := mul_le_mul_of_nonneg_left hL t1
@@ -355,9 +354,9 @@ theorem norm_meanInf_posLog_le : ∃ C : ℝ, 0 < C ∧ ∀ (D : D7), Inp D → 
     rw [Finset.card_univ, hcard, nsmul_eq_mul]; ring
   have hf' : (1 : ℝ) ≤ fF D := by exact_mod_cast hf
   have hn : (1 : ℝ) ≤ N := by exact_mod_cast hN
-  have hm0 : 0 ≤ Real.log (B * (2 * (N : ℝ))) := Real.log_nonneg (by nlinarith)
-  have hfn : 1 ≤ (fF D : ℝ) * (2 * (N : ℝ)) := by nlinarith
-  have hl0 : 0 ≤ Real.log ((fF D : ℝ) * (2 * (N : ℝ)) * B) := Real.log_nonneg (by nlinarith)
+  have hm0 : 0 ≤ Real.log (B * (2 * (N : ℝ))) := Real.log_nonneg (one_le_mul_of_one_le_of_one_le hB (by linarith))
+  have hfn : 1 ≤ (fF D : ℝ) * (2 * (N : ℝ)) := one_le_mul_of_one_le_of_one_le hf' (by linarith)
+  have hl0 : 0 ≤ Real.log ((fF D : ℝ) * (2 * (N : ℝ)) * B) := Real.log_nonneg (one_le_mul_of_one_le_of_one_le hfn hB)
   have hq0 : 0 ≤ Real.log Q := Real.log_natCast_nonneg Q
   set E₀ : ℝ := 1100 * fF D * (2 * (N : ℝ)) * B * (L + Real.log (B * (2 * (N : ℝ)))) +
       1100 * fF D * (N : ℝ) ^ 2 * (L + Real.log ((fF D : ℝ) * (2 * (N : ℝ)) * B)) +
