@@ -224,7 +224,9 @@ jobs:
             # The withdrawal is recorded first, and whether or not the label is still there, so
             # that putting the label back by hand queues nothing.
             say "$(printf '<!-- batch-queue-withdrawn -->\nTaken out of the batch queue by `%s`.' "$AUTHOR")"
-            present=$(gh api "repos/$REPO/issues/$PR/labels" --jq '.[].name')
+            # The withdrawal is recorded above: a failure to read the labels must not stop the
+            # sync job from running.
+            present=$(gh api "repos/$REPO/issues/$PR/labels" --jq '.[].name') || present=""
             if grep -qxF -- "$LABEL" <<< "$present"; then
               gh api -X DELETE "repos/$REPO/issues/$PR/labels/$(jq -rn --arg label "$LABEL" '$label | @uri')" --silent
               echo "Removed '$LABEL' from pull request $PR, as $AUTHOR asked."
@@ -402,6 +404,9 @@ jobs:
               contains(github.event.pull_request.labels.*.name, 'batch-building') ||
               contains(github.event.pull_request.labels.*.name, 'frozen')))))) }}
     runs-on: ubuntu-latest
+    # Writes are paced a second apart, so a run that labels and tells a large batch takes a few
+    # minutes.
+    timeout-minutes: 30
     # One run at a time. A run still waiting when a newer one arrives can be dropped, and that
     # loses nothing: each run works from what GitHub shows now, not from what started it.
     concurrency:
