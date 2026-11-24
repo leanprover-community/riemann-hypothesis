@@ -66,7 +66,7 @@ removes, renames or moves.>
 Drop the part from `---` on if the pull request depends on no other.
 
 A pull request that depends on another still targets `main`. Merge the dependency's branch into
-yours rather than rebasing onto it. Keep the `depends on` line: once the dependency lands, a
+yours, and never rebase onto it. Keep the `depends on` line: once the dependency lands, a
 workflow ticks its box. Leave the ticked line there; it still declares the dependency.
 
 ## Do not
