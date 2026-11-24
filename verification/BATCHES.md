@@ -20,7 +20,7 @@ request still under review adds. Until it lands, the label exists but nothing pu
 | `batch queue` | a pull request wanted in a batch | a maintainer or reviewer comments `batch` or `p` | `-batch`; it joins a batch assembled by hand (in exchange for `batch-building`); its queued commit lands; it is closed |
 | `priority` | a queued pull request that goes first | `p` | by hand |
 | `awaiting-author` | a pull request handed back to its author | `aa`; it is pushed to while in a batch; the description leaves it out; a batch lands an older commit of it; `batch-conflict` is first put on it | `ready`, by the author or a maintainer |
-| `main-conflict` | a pull request that conflicts with `main` | GitHub says so, unless it declares `depends on:` a batch being built | the conflict is gone, or it declares that dependency |
+| `main-conflict` | a pull request that conflicts with `main` | GitHub says so, unless it declares `depends on:` an open batch | the conflict is gone, or it declares that dependency |
 | `batch-conflict` | a pull request that conflicts with a batch being built | git cannot merge it with the batch's head | the conflict is gone; the batch lands or is closed; it joins the batch |
 
 `batch queue`, `building`, `batch-building`, `frozen`, `awaiting-author` and `batch-conflict`
@@ -175,7 +175,10 @@ heading about conflicts.
 ### If your pull request is labelled `batch-conflict`
 
 1. Merge the batch's branch (`batch/...`, named in the comment) into your branch, or rebase onto
-   it, and resolve the conflicts.
+   it, and resolve the conflicts. If the batch's branch is rebuilt before it lands, which is how
+   a pull request is taken out of a batch (rule 5), your branch still carries the pull request
+   that was taken out. Start your branch again from the new batch branch then, with only your
+   own commits on top.
 2. Add this line at the top of the description, where #123 is the batch's pull request:
 
    ```
@@ -186,8 +189,8 @@ heading about conflicts.
    batch lands. The line says that this is expected, and keeps `main-conflict` off it.
 3. Comment `ready`.
 
-Or wait until the batch has landed, then merge `main` into your branch and resolve the conflicts
-there.
+Or wait until the batch has landed, then merge `main` into your branch, resolve the conflicts
+there and comment `ready`.
 
 A line counts as a dependency when it starts with `depends on`, `depend on` or `depends upon`,
 optionally after `- [ ]` or `- [x]`, and names the batch's pull request as `#123` or by its

@@ -419,8 +419,11 @@ jobs:
     concurrency:
       group: batch-queue-sync
       cancel-in-progress: false
-    # `contents: write` to create batch branches and merge into them.
+    # `contents: write` to create batch branches and merge into them, and `actions: write` to
+    # start the conflict-labels workflow when a batch assembled by hand is first labelled
+    # `building`.
     permissions:
+      actions: write
       contents: write
       issues: write
       pull-requests: write

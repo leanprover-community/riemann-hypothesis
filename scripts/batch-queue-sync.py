@@ -166,7 +166,10 @@ MERGED_BY_HAND = re.compile(r"Merge PR #(\d+) into batch")
 UNDONE = re.compile(r'(Revert|Reapply) "(.*)"')
 # A left-out heading for conflicts. `conflict-labels.py` finds those itself, from git, and tells
 # the pull request with `batch-conflict`, so they are not told again from the description.
-CONFLICT_HEADING = re.compile(r"\bconflict", re.IGNORECASE)
+CONFLICT_HEADING = re.compile(r"\bconflicts?\s+with\b", re.IGNORECASE)
+# The workflow that labels conflicts, started when a batch is first labelled `building`: that
+# label is put on with the workflow's token, which starts no run of it by itself.
+CONFLICT_WORKFLOW = "conflict-labels.yml"
 # In a batch pull request's text: the part this script writes, and its note to itself.
 BODY = "<!-- batch-queue -->"
 STATE = re.compile(r"<!-- batch-queue-state (\{.*\}) -->")
@@ -272,7 +275,7 @@ def open_pulls(gh):
             "number": info["number"], "sha": head["sha"], "ref": head["ref"],
             "own": (head.get("repo") or {}).get("full_name") == gh.repo, "base": info["base"]["ref"],
             "labels": {label["name"] for label in info["labels"]},
-            "updated": info["updated_at"], "body": info.get("body") or ""}
+            "updated": info["updated_at"], "body": info.get("body") or "", "draft": bool(info.get("draft"))}
     return found
 
 
@@ -864,7 +867,7 @@ def hold(gh, batch, pulls, held, main, log):
                 log.append(f"#{key} is in the batch #{number}: now `{MEMBER}` and `{FROZEN}`")
         labelled.sort(key=int)
         tell_members(gh, batch, pulls, main, log)
-        tell_left_out(gh, batch, pulls, log)
+        tell_left_out(gh, batch, pulls, main, log)
         tell_reverted(gh, batch, pulls, main, log)
         check_description(gh, batch, pulls, log)
     finally:
@@ -962,7 +965,7 @@ def left_out_digest(heading, entry):
     return hashlib.sha256(" ".join(kind.lower().split()).encode()).hexdigest()[:16]
 
 
-def tell_left_out(gh, batch, pulls, log):
+def tell_left_out(gh, batch, pulls, main, log):
     """Tell each open pull request a batch's description lists as left out what it says.
 
     The comment quotes the heading and the pull request's entry, and the pull request is
@@ -983,7 +986,9 @@ def tell_left_out(gh, batch, pulls, log):
     conflicts = {other for other, (heading, _) in listed.items() if CONFLICT_HEADING.search(heading)}
     for key in sorted(set(left) | {str(other) for other in listed}, key=int):
         pr = pulls.get(int(key))
-        if pr is None or key in found or is_batch(pr) or by_hand(pr) or int(key) in conflicts:
+        # The conflict-labels workflow looks only at pull requests into main that are not drafts.
+        left_to_it = int(key) in conflicts and pr is not None and pr["base"] == main and not pr.get("draft")
+        if pr is None or key in found or is_batch(pr) or by_hand(pr) or left_to_it:
             left.pop(key, None)
             continue
         entry = listed.get(int(key))
@@ -1505,6 +1510,12 @@ def assemble(gh, now, log, approved, pulls, held, held_at):
     # A batch assembled by hand that another one contains carries `batch-building` for that
     # reason alone. It is built as part of the other one, which contains what it contains too.
     hand = built_by_hand(gh, pulls, log)
+    if any(batch["commits"] is not None for batch in hand):
+        # A batch labelled `building` just now. Without this, the conflict labels wait for their
+        # next sweep, since a label put on with this workflow's token starts no run.
+        status, _ = gh.write("POST", f"actions/workflows/{CONFLICT_WORKFLOW}/dispatches", {"ref": main})
+        log.append(f"started {CONFLICT_WORKFLOW}" if status in (0, 204)
+                   else f"could not start {CONFLICT_WORKFLOW} ({status}): its next sweep looks at the new batch")
     contained = holders(hand)
     hand = [batch for batch in hand if str(batch["number"]) not in contained]
     held.update(holders(hand))
@@ -1589,7 +1600,8 @@ def assemble(gh, now, log, approved, pulls, held, held_at):
             reason = f"GitHub refused the merge ({status}: `{(data or {}).get('message', 'no reason given')}`)."
         elif on:
             reason = (f"GitHub could not merge it with what is already there: #{on}, which this batch is built on, "
-                      "and the pull requests added before it.")
+                      f"and the pull requests added before it. If it conflicts with #{on} itself, it is labelled "
+                      f"`batch-conflict`, and the comment that comes with that label says what to do.")
         else:
             reason = "GitHub could not merge it with what is already there."
         link = f"#{batch['number']}" if batch["number"] else f"`{batch['ref']}`"
