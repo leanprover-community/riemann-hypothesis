@@ -173,11 +173,11 @@ heading about conflicts.
 
 ### If your pull request is labelled `batch-conflict`
 
-1. Merge the batch's branch (`batch/...`, named in the comment) into your branch, or rebase onto
-   it, and resolve the conflicts. If the batch's branch is rebuilt before it lands, which is how
-   a pull request is taken out of a batch (rule 5), your branch still carries the pull request
-   that was taken out. Start your branch again from the new batch branch then, with only your
-   own commits on top.
+1. Merge the batch's branch (`batch/...`, named in the comment) into your branch, rather than
+   rebasing onto it, and resolve the conflicts. If the batch's branch is rebuilt before it lands,
+   which is how a pull request is taken out of a batch (rule 5), your branch still carries the
+   pull request that was taken out. Then make a new branch from the new batch branch, copy only
+   your own commits onto it with `git cherry-pick`, and push that to your pull request.
 2. Add this line at the top of the description, where #123 is the batch's pull request:
 
    ```
