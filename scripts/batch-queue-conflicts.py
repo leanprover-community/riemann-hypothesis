@@ -432,8 +432,7 @@ def report(number, head, others, results):
                   f"{listing(result.conflicts)}" for other, label, result in conflicts]
     stale = [(other, others[other], results[other]) for other in sorted(results) if results[other].stale]
     if stale:
-        lines += ["", "git merges these without conflict, but one deletes a Lean file that the other "
-                      "starts to import:", ""]
+        lines += ["", "One pull request deletes a Lean file that the other starts to import:", ""]
         for other, label, result in stale:
             said = []
             for who, deleter, importer in (("ours", number, other), ("theirs", other, number)):

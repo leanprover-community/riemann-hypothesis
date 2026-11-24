@@ -233,8 +233,6 @@ open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.
 open GlobalTheory.PRep GlobalTheory.TypeTwo.PowIrrProof
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 namespace UpperTheory.V.Z.J.D.TypeVAux
-attribute [-instance] UpperTheory.V.Hi.IsCNL.toIsLocalRing
-  Formalism.BasicNotions.NTypes.instMray in
 private theorem eq_one_of_charpoly_dvd {V : Type} [AddCommGroup V] [Module ℂ V] [FiniteDimensional ℂ V]
     (f : Module.End ℂ V) (hf : f.IsSemisimple) {n : ℕ} (hd : f.charpoly ∣ (X - C 1) ^ n) : f = 1 := by
   obtain ⟨q, hq⟩ := hd
@@ -247,8 +245,6 @@ private theorem eq_one_of_charpoly_dvd {V : Type} [AddCommGroup V] [Module ℂ V
   rwa [map_one] at this
 section Loc
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-attribute [-instance] UpperTheory.V.Hi.IsCNL.toIsLocalRing
-  Formalism.BasicNotions.NTypes.instMray in
 private theorem prinSeries_irreducible {n : ℕ} (ω : Fin n → kˣ →* ℂˣ) (hω : ∀ i, IsSmoothChar (ω i))
     (h : ∀ i j, ω j ≠ ω i * absPow k 1) : (prinSeries ω).IsIrreducible := by
   let x : Fin n → IrrGL (k := k) := fun i => IrrGL.ofChar (ω i) (hω i)
@@ -297,8 +293,6 @@ end Loc
 section WD
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
-attribute [-instance] UpperTheory.V.Hi.IsCNL.toIsLocalRing
-  Formalism.BasicNotions.NTypes.instMray in
 private theorem exists_char {z : WD h} (hz : IsIrrWD z) {n : ℕ} (η : Fin n → Weil h →* ℂˣ)
     (hd : ∀ g, z.charPol g ∣ ∏ j, (X - C (η j g : ℂ))) :
     ∃ (ξ : Weil h →* ℂˣ) (hξ : GlobalTheory.WeilDeligne.IsSmooth ξ), z = WD.lpOfChar h ξ hξ := by
@@ -416,8 +410,6 @@ private theorem hasSupport_of_charPol (hZ : GlobalTheory.Published.ZelevinskyPol
     rw [h3]
   rw [htt, Multiset.map_map] at hs
   exact hs
-attribute [-instance] UpperTheory.V.Hi.IsCNL.toIsLocalRing
-  Formalism.BasicNotions.NTypes.instMray in
 theorem nonempty_equiv_principal_series_of_char_poly_of_generic (Lc : _root_.GlobalTheory.Mem.LiteralAutomorphy.LitLocAlt) (H : UpperTheory.V.Z.Win.LawsV a ha ε rc) {n : ℕ}
     (σ : SmIrr (GL (Fin n) (w.adicCompletion E))) (ω : Fin n → (w.adicCompletion E)ˣ →* ℂˣ)
     (hω : ∀ i, IsSmoothChar (ω i)) (hp : ∀ s, (rc (algNorm σ)).charPol s = ∏ j, (X - C (ω j (a s) : ℂ)))
@@ -514,8 +506,6 @@ open GlobalTheory.PRep GlobalTheory.TypeTwo.PowIrrProof
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 open scoped commutatorElement
 namespace UpperTheory.V.Z.J.D.TypeVAux
-attribute [-instance] UpperTheory.V.Hi.IsCNL.toIsLocalRing
-  Formalism.BasicNotions.NTypes.instMray in
 private theorem exists_chars {Γ : Type} [Group Γ] {n : ℕ} (ρ : Representation ℂ Γ (Fin n → ℂ))
     (hs : ∀ g, Module.End.IsSemisimple (ρ g)) (hc : ∀ s t, ρ s * ρ t = ρ t * ρ s) :
     ∃ η : Fin n → Γ →* ℂˣ, (∀ g, (ρ g).charpoly = ∏ j, (X - C (η j g : ℂ))) ∧
@@ -554,8 +544,6 @@ private theorem sum_of_prod {n : ℕ} (u v : Fin n → ℂ) (h : ∏ j, (X - C (
   exact congrArg Multiset.sum (((key u).symm.trans (congrArg roots h)).trans (key v))
 end UpperTheory.V.Z.J.D.TypeVAux
 
-attribute [-instance] UpperTheory.V.Hi.IsCNL.toIsLocalRing
-  Formalism.BasicNotions.NTypes.instMray in
 open UpperTheory.V.Z.J.D UpperTheory.V.Z.J.D.TypeVAux in
 theorem UpperTheory.V.Z.J.D.type_v_statement :
     _root_.UpperTheory.V.Z.J.D.TypeVAlt := by

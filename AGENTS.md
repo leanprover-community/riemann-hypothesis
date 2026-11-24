@@ -115,6 +115,15 @@ a future bump. Many files still have them from earlier bumps; don't copy those. 
 instead: often it is enough to rewrite with a lemma rather than rely on Lean to unfold a
 definition.
 
+### Replacing `exact` or `rfl` with your own tactic
+
+Don't write a tactic with `elab` or `run_tac` that closes the goal in place of `exact` or `rfl`,
+whether it assigns the goal without checking the term's type or checks it with `Kernel.isDefEq`.
+Both hide a slow unification instead of fixing it, and the first leaves a wrong term to show up only
+as a kernel error at the end of the declaration. Some files already have one, such as
+`exact_by_kernel`; don't copy those. If `exact` is slow because the term and the goal only agree
+after unfolding, work out what Lean has to unfold and rewrite with a lemma for it.
+
 ### Small speed-ups to the CI scripts
 
 We get many pull requests that shave a fraction of a second off a script in `scripts/` or

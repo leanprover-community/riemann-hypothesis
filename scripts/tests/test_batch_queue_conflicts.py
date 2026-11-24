@@ -361,6 +361,14 @@ class Reports(unittest.TestCase):
         self.assertNotIn("src/F10.lean", body)
         self.assertEqual(body.count("src/Old ?x?.lean"), 1)
 
+    def test_deleted_import_and_text_conflict_on_the_same_pull_request(self):
+        result = conflicts.Comparison("conflict", [b"a.txt"], [b"a.txt"])
+        result.stale = [("ours", b"src/Gone.lean", b"src/New.lean")]
+        body, _ = conflicts.report(7, "0" * 40, {11: "batch queue"}, {11: result})
+        self.assertIn("1 file in conflict: `a.txt`", body)
+        self.assertIn("#7 deletes `src/Gone.lean`, which #11 starts to import in `src/New.lean`", body)
+        self.assertNotIn("without conflict", body)
+
     def test_many_deleted_files_are_cut(self):
         result = conflicts.Comparison("apart")
         result.stale = [("ours", f"src/G{number:02}.lean".encode(), b"src/New.lean") for number in range(13)]
