@@ -26,8 +26,8 @@ request still under review adds. Until it lands, the label exists but nothing pu
 `batch queue`, `building`, `batch-building`, `frozen`, `awaiting-author` and `batch-conflict`
 keep a pull request out of the inbox (`inbox`, see `.github/workflows/inbox.yml`). The names are in `scripts/batch-labels.py`.
 
-Also planned: a check of each batch's description against its branch, posted on the batch's
-pull request. It reports pull requests listed as included that aren't in the branch, members the
+Also planned *(#1707)*: a check of each batch's description against its branch, posted on the
+batch's pull request. It reports pull requests listed as included that aren't in the branch, members the
 description doesn't mention, and pull requests reverted in the branch.
 
 ## Rules
