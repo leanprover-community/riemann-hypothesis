@@ -22,6 +22,8 @@ FIRST = "batch/2026-11-23-041230"
 QUEUED, BUILDING, BOT = batch.QUEUED, batch.BUILDING, batch.BOT
 MEMBER, FROZEN, WAITING = batch.MEMBER, batch.FROZEN, batch.WAITING
 IN = {MEMBER, FROZEN}
+# What the label job puts on a pull request it queues.
+QF = {QUEUED, FROZEN}
 PRIORITY = batch.PRIORITY
 
 
@@ -162,6 +164,9 @@ class Fake(batch.GitHub):
     def _closed_members(self, _):
         return self._closed_with(MEMBER)
 
+    def _closed_frozen(self, _):
+        return self._closed_with(FROZEN)
+
     def _events(self, _, number):
         return 200, list(self.events.get(int(number), []))
 
@@ -284,6 +289,7 @@ class Fake(batch.GitHub):
         (r"GET issues\?state=closed&labels=building&per_page=100&page=1", _closed_building),
         (r"GET issues\?state=closed&labels=batch%20queue&per_page=100&page=1", _closed_queued),
         (r"GET issues\?state=closed&labels=batch-building&per_page=100&page=1", _closed_members),
+        (r"GET issues\?state=closed&labels=frozen&per_page=100&page=1", _closed_frozen),
         (r"GET issues/(\d+)/events\?per_page=100&page=1", _events),
         (r"GET compare/([^.]+)\.\.\.([^?]+)\?per_page=1", _compare),
         (r"GET compare/([^.]+)\.\.\.([^?]+)\?per_page=100&page=(\d+)", _branch_commits),
@@ -310,6 +316,7 @@ def queue(gh, *numbers):
             gh.add_pull(number, f"head{number}")
         gh.say(number, f"<!-- batch-queue-approved {gh.pulls[number]['sha']} -->\nQueued at this commit.")
         gh.label(number, add=QUEUED)
+        gh.label(number, add=FROZEN)
 
 
 def clash(gh, *numbers):
@@ -323,6 +330,8 @@ def unqueue(gh, number):
     """A maintainer comments `-batch`: the label job withdraws the commit, then removes the label."""
     gh.say(number, "<!-- batch-queue-withdrawn -->\nTaken out of the batch queue.")
     gh.label(number, remove=QUEUED)
+    if MEMBER not in gh.pulls[number]["labels"]:
+        gh.label(number, remove=FROZEN)
 
 
 def batch_pull(gh, ref=FIRST):
@@ -452,7 +461,7 @@ class Assembling(unittest.TestCase):
         self.assertTrue(opened["body"].startswith(batch.BODY))
         self.assertTrue({sha("head11"), sha("head12")} <= gh.inside[gh.refs[FIRST]])
         # Being in a batch that is still open to additions does not change a label.
-        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[12]["labels"]), ({QUEUED}, {QUEUED}))
+        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[12]["labels"]), (QF, QF))
         self.assertIn(f"added #11 at `{short('head11')}` to `{FIRST}`", log)
 
     def test_running_again_changes_nothing_more(self):
@@ -483,7 +492,7 @@ class Assembling(unittest.TestCase):
         self.assertEqual(len(gh.said(12)), 1)
         self.assertIn(f"The commit `{short('head12')}` of this pull request was not added to the batch `{FIRST}`", gh.said(12)[0])
         self.assertIn("could not merge it with what is already there", gh.said(12)[0])
-        self.assertEqual(gh.pulls[12]["labels"], {QUEUED})
+        self.assertEqual(gh.pulls[12]["labels"], QF)
         self.assertTrue(any(line.startswith("left #12 out") for line in log))
         # The same commit is not tried, or commented on, a second time.
         gh.writes = []
@@ -583,7 +592,7 @@ class Growing(unittest.TestCase):
         sync(gh)
         self.assertLessEqual({sha("head11"), sha("head12")}, gh.inside[gh.refs[FIRST]])
         self.assertEqual((gh.pulls[11]["labels"], gh.pulls[12]["labels"], gh.pulls[111]["labels"]),
-                         ({QUEUED}, {QUEUED}, set()))
+                         (QF, QF, set()))
         self.assertFalse([path for path in gh.reads if path.startswith("actions/")])
         self.assertNotIn("freeze", gh.pulls[111]["body"])
 
@@ -604,8 +613,8 @@ class FinishedBatches(unittest.TestCase):
         self.assertEqual((gh.pulls[11]["labels"], gh.pulls[12]["labels"]), (set(), set()))
         self.assertEqual(gh.pulls[12]["state"], "open")
         self.assertEqual(gh.refs, {})
-        self.assertIn("#11 is closed: `batch queue` removed", log)
-        self.assertIn("#12 landed with batch #112 at the commit that was queued: `batch queue` removed", log)
+        self.assertIn("#11 is closed: `batch queue` and `frozen` removed", log)
+        self.assertIn("#12 landed with batch #112 at the commit that was queued: `batch queue` and `frozen` removed", log)
         self.assertIn(f"removed the branch `{FIRST}`", log)
         self.assertEqual(sync(gh), ["nothing to do"])
 
@@ -616,7 +625,7 @@ class FinishedBatches(unittest.TestCase):
         gh.close(11, merged=True)
         gh.close(112, merged=True)
         sync(gh, hours=1)
-        self.assertEqual(gh.pulls[12]["labels"], {QUEUED})
+        self.assertEqual(gh.pulls[12]["labels"], QF)
         newest = batch_pull(gh, "batch/2026-11-23-051230")
         self.assertIn(f"- #12 at `{short('head12-later')}`", newest["body"])
 
@@ -633,7 +642,7 @@ class FinishedBatches(unittest.TestCase):
         gh = self.assembled()
         gh.close(112)
         log = sync(gh, hours=1)
-        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[12]["labels"]), ({QUEUED}, {QUEUED}))
+        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[12]["labels"]), (QF, QF))
         self.assertIn(f"removed the branch `{FIRST}`", log)
         self.assertEqual(list(gh.refs), ["batch/2026-11-23-051230"])
         self.assertIn(f"- #11 at `{short('head11')}`\n- #12 at `{short('head12')}`",
@@ -644,7 +653,7 @@ class FinishedBatches(unittest.TestCase):
         gh.close(112)
         del gh.refs[FIRST]
         sync(gh, hours=1)
-        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[12]["labels"]), ({QUEUED}, {QUEUED}))
+        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[12]["labels"]), (QF, QF))
         self.assertIn(f"- #11 at `{short('head11')}`\n- #12 at `{short('head12')}`",
                       batch_pull(gh, "batch/2026-11-23-051230")["body"])
 
@@ -752,7 +761,7 @@ class OtherBatchBranches(unittest.TestCase):
         self.assertEqual(gh.pulls[413]["body"], "Written by the maintainer who assembled it.")
         self.assertEqual(gh.refs["batch/removals-2026-11-24"], sha("removals"))
         # #11 is not in it, so it stays queued and goes to a batch of the workflow's own.
-        self.assertEqual(gh.pulls[11]["labels"], {QUEUED})
+        self.assertEqual(gh.pulls[11]["labels"], QF)
         self.assertIn(sha("head11"), gh.inside[gh.refs[FIRST]])
         self.assertIn("In this batch: nothing yet.", gh.said(413)[0])
 
@@ -798,7 +807,7 @@ class BuiltByHand(unittest.TestCase):
     def test_what_it_contains_becomes_building_and_the_rest_is_batched_as_before(self):
         gh = self.built()
         log = sync(gh)
-        self.assertEqual([gh.pulls[n]["labels"] for n in (11, 12, 13, 14)], [IN, IN, {QUEUED}, IN])
+        self.assertEqual([gh.pulls[n]["labels"] for n in (11, 12, 13, 14)], [IN, IN, QF, IN])
         self.assertEqual(gh.pulls[1018]["labels"], {"large", BUILDING})
         self.assertEqual(merges(gh), [sha("head13")])
         self.assertEqual(gh.pulls[1018]["body"], "Assembled by hand.")
@@ -819,7 +828,7 @@ class BuiltByHand(unittest.TestCase):
         gh = self.built()
         gh.label(1018, add=BUILDING, login="maintainer")
         sync(gh)
-        self.assertEqual([gh.pulls[n]["labels"] for n in (11, 12, 13, 14)], [IN, IN, {QUEUED}, IN])
+        self.assertEqual([gh.pulls[n]["labels"] for n in (11, 12, 13, 14)], [IN, IN, QF, IN])
         self.assertIn("In this batch: #11, #12, #14.", gh.said(1018)[0])
 
     def test_a_pull_request_into_another_branch_is_in_it_too(self):
@@ -843,7 +852,7 @@ class BuiltByHand(unittest.TestCase):
         gh.push(11, "head11-later")  # the batch holds an older commit of #11 only
         gh.writes = []
         sync(gh)
-        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[1018]["labels"]), ({QUEUED}, {"large"}))
+        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[1018]["labels"]), (QF, {"large"}))
         self.assertEqual(gh.said(1018), [])
         self.assertEqual([write for write in gh.writes if "1018" in write[1]], [])
 
@@ -853,7 +862,7 @@ class BuiltByHand(unittest.TestCase):
         by_hand(gh, 11, number=463, ref="batch/citations", name="citations")
         queue(gh, 463)
         sync(gh)
-        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[463]["labels"]), (set(), {"large", QUEUED}))
+        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[463]["labels"]), (set(), {"large", *QF}))
         self.assertEqual(merges(gh), [sha("citations")])
         self.assertEqual(gh.said(463), [])
 
@@ -885,7 +894,7 @@ class BuiltByHand(unittest.TestCase):
         sync(gh)
         gh.close(1018)
         log = sync(gh)
-        self.assertEqual([gh.pulls[n]["labels"] for n in (11, 12, 14, 1018)], [{QUEUED}, {QUEUED}, set(), {"large"}])
+        self.assertEqual([gh.pulls[n]["labels"] for n in (11, 12, 14, 1018)], [QF, QF, set(), {"large"}])
         self.assertIn("batch #1018 was closed without merging: #11 is `batch queue` again", log)
         self.assertIn("batch #1018 was closed without merging: #14 is no longer `batch-building`", log)
         self.assertIn("not starting a new batch in this run: the next `batch` or `-batch` comment does", log)
@@ -910,7 +919,7 @@ class BuiltByHand(unittest.TestCase):
         self.assertIn('"queued": ["11", "12", "14"]', gh.said(1018)[0])
         gh.close(1018)
         sync(gh)
-        self.assertEqual(gh.pulls[14]["labels"], {QUEUED})
+        self.assertEqual(gh.pulls[14]["labels"], QF)
 
     def test_what_the_batch_being_assembled_already_took_is_not_told_to_leave(self):
         gh = Fake()
@@ -918,7 +927,7 @@ class BuiltByHand(unittest.TestCase):
         sync(gh)
         by_hand(gh, 11)
         sync(gh)
-        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[12]["labels"]), (IN, {QUEUED}))
+        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[12]["labels"]), (IN, QF))
         body = batch_pull(gh)["body"]
         # The batch being assembled was rebuilt on top of #1018, which holds #11 now.
         self.assertIn(f"In this batch:\n\n- #12 at `{short('head12')}`\n\nMerge this", body)
@@ -930,7 +939,7 @@ class BuiltByHand(unittest.TestCase):
         # The branch is rebuilt without #11 and #14, and with #13.
         by_hand(gh, 12, 13, name="kim-again")
         log = sync(gh)
-        self.assertEqual([gh.pulls[n]["labels"] for n in (11, 12, 13, 14)], [{QUEUED}, IN, IN, set()])
+        self.assertEqual([gh.pulls[n]["labels"] for n in (11, 12, 13, 14)], [QF, IN, IN, set()])
         self.assertIn("#11 is no longer in the batch #1018: `batch queue` again", log)
         self.assertIn("#14 is no longer in the batch #1018: no longer `batch-building`", log)
         self.assertIn("In this batch: #12, #13.", gh.said(1018)[0])
@@ -976,7 +985,7 @@ class BuiltByHand(unittest.TestCase):
         self.assertEqual(gh.said(463), [])  # not being built in its own right
         gh.close(1018)
         sync(gh)
-        self.assertEqual([gh.pulls[n]["labels"] - {"large"} for n in (11, 12, 463)], [{QUEUED}] * 3)
+        self.assertEqual([gh.pulls[n]["labels"] - {"large"} for n in (11, 12, 463)], [QF] * 3)
 
     def test_looking_through_it_costs_a_request_for_each_hundred_commits(self):
         gh = Fake()
@@ -989,11 +998,11 @@ class BuiltByHand(unittest.TestCase):
         # Labels, the frozen notes and the comment are writes: three for each queued pull request,
         # two for the batch.
         self.assertLess(gh.calls - before, 33 * 3 + 15)
-        # The seven requests of a run with nothing new, and this script's comment on the batch.
+        # The eight requests of a run with nothing new, and this script's comment on the batch.
         for _ in range(2):
             before = gh.calls
             sync(gh)
-            self.assertEqual(gh.calls - before, 8)
+            self.assertEqual(gh.calls - before, 9)
 
     def test_a_record_from_before_queued_was_written_down_puts_everything_back(self):
         gh = self.built()
@@ -1002,7 +1011,7 @@ class BuiltByHand(unittest.TestCase):
         comment["body"] = re.sub(r', "queued": \[[^]]*\]', "", comment["body"])
         gh.close(1018)
         sync(gh)
-        self.assertEqual([gh.pulls[n]["labels"] for n in (11, 12, 14)], [{QUEUED}] * 3)
+        self.assertEqual([gh.pulls[n]["labels"] for n in (11, 12, 14)], [QF] * 3)
 
     def test_looking_through_stops_when_the_hours_allowance_is_nearly_gone(self):
         gh = self.built()
@@ -1010,7 +1019,7 @@ class BuiltByHand(unittest.TestCase):
         log = sync(gh)
         self.assertIn(f"only {batch.RESERVE - 1} requests left this hour: did not look through the batch #1018, "
                       "and the next run does", log)
-        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[1018]["labels"]), ({QUEUED}, {"large"}))
+        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[1018]["labels"]), (QF, {"large"}))
         gh.left = 900
         sync(gh)
         self.assertEqual((gh.pulls[11]["labels"], gh.pulls[14]["labels"]), (IN, IN))
@@ -1102,7 +1111,7 @@ class Members(unittest.TestCase):
                       "> Left out because they conflict with a PR earlier in the batch:\n>\n"
                       f"> {URL}21 refactor: fold modules", note)
         self.assertIn("comment `ready`", note)
-        self.assertEqual(gh.pulls[21]["labels"], {QUEUED, WAITING})  # still queued
+        self.assertEqual(gh.pulls[21]["labels"], QF | {WAITING})  # still queued
         self.assertEqual([gh.pulls[n]["labels"] for n in (22, 23, 24)], [{WAITING}, {WAITING}, set()])
         self.assertEqual([len(self.left(gh, n)) for n in (11, 22, 23, 24)], [0, 1, 1, 0])
         self.assertIn("told #23 that the batch #1018 leaves it out: now `awaiting-author`", log)
@@ -1152,11 +1161,11 @@ class Members(unittest.TestCase):
         by_hand(gh, 12, 14, name="kim-without-11")  # the branch is rebuilt without #11
         log = sync(gh)
         # Out of the branch, it is also told what the description says about it.
-        self.assertEqual(gh.pulls[11]["labels"], {QUEUED, WAITING})
+        self.assertEqual(gh.pulls[11]["labels"], QF | {WAITING})
         dropped = [note for note in gh.said(11) if note.startswith("<!-- batch-queue-dropped")]
         self.assertEqual(len(dropped), 1)
         self.assertIn("is no longer in batch #1018: its branch was changed without it", dropped[0])
-        self.assertIn("It is back in the batch queue.", dropped[0])
+        self.assertIn("It is back in the batch queue, at the commit that was queued, and stays `frozen`", dropped[0])
         self.assertEqual(len(self.left(gh, 11)), 1)
         self.assertIn("#11 is no longer in the batch #1018: `batch queue` again", log)
 
@@ -1165,10 +1174,10 @@ class Members(unittest.TestCase):
         sync(gh)
         gh.close(1018)
         sync(gh)
-        self.assertEqual([gh.pulls[n]["labels"] for n in (11, 14)], [{QUEUED}, set()])
+        self.assertEqual([gh.pulls[n]["labels"] for n in (11, 14)], [QF, set()])
         self.assertIn("Batch #1018 was closed without being merged.", gh.said(14)[-1])
         self.assertNotIn("batch queue", gh.said(14)[-1])
-        self.assertIn("It is back in the batch queue.", gh.said(11)[-1])
+        self.assertIn("It is back in the batch queue, at the commit that was queued, and stays `frozen`", gh.said(11)[-1])
 
     def test_a_new_head_merged_into_the_branch_is_what_the_batch_holds(self):
         gh = self.built()
@@ -1395,7 +1404,7 @@ class ClosedPullRequests(unittest.TestCase):
         gh.add_pull(12, "head12", labels=[QUEUED])  # labelled by hand
         gh.close(12)
         log = sync(gh)
-        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[12]["labels"]), ({QUEUED}, set()))
+        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[12]["labels"]), (QF, set()))
         self.assertIn("#12 is closed: `batch queue` removed", log)
         self.assertEqual(sync(gh), ["nothing to do"])
 
@@ -1422,7 +1431,7 @@ class ClosedPullRequests(unittest.TestCase):
         # When the batch is closed without merging, only the open one goes back to the queue.
         gh.close(1018)
         sync(gh)
-        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[12]["labels"]), ({QUEUED}, set()))
+        self.assertEqual((gh.pulls[11]["labels"], gh.pulls[12]["labels"]), (QF, set()))
 
     def test_a_merged_batch_is_tidied_up_once(self):
         gh = Fake()
@@ -1455,8 +1464,8 @@ class Reopening(unittest.TestCase):
     def test_the_label_comes_back(self):
         for queued in (True, False):
             gh = self.closed(queued)
-            self.assertEqual(batch.reopened(gh, 11), ["#11 was reopened: `batch queue` put back"])
-            self.assertEqual(gh.pulls[11]["labels"], {QUEUED})
+            self.assertEqual(batch.reopened(gh, 11), ["#11 was reopened: `batch queue` and `frozen` put back"])
+            self.assertEqual(gh.pulls[11]["labels"], QF)
 
     def test_and_a_queued_commit_is_merged_again_by_the_next_run(self):
         gh = self.closed()
@@ -1524,9 +1533,9 @@ class Requests(unittest.TestCase):
         first = self.spent(gh)
         self.assertLess(first, 33 * 5 + 15)
         # The repository, main, open pull requests, batch branches, and the closed pull requests
-        # still labelled `building`, `batch-building` or `batch queue`: no more.
-        self.assertEqual(self.spent(gh), 7)
-        self.assertEqual(self.spent(gh), 7)
+        # still labelled `building`, `batch-building`, `frozen` or `batch queue`: no more.
+        self.assertEqual(self.spent(gh), 8)
+        self.assertEqual(self.spent(gh), 8)
 
     def test_one_more_pull_request_costs_a_handful(self):
         gh = self.big()

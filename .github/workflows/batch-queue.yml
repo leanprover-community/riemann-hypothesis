@@ -3,7 +3,7 @@ name: batch queue
 # A maintainer or reviewer queues a pull request for a batch build by commenting `batch`, or just
 # `b`, on it.
 # This records the commit that was the pull request's head when the comment was posted, adds the
-# `batch queue` label, and merges that commit into the batch being assembled: a branch `batch/...`
+# `batch queue` and `frozen` labels, and merges that commit into the batch being assembled: a branch `batch/...`
 # with its own pull request, which the workflow opens and keeps described. `batch <commit>`, with
 # the full id of the head commit, names the commit outright. A batch takes only recorded commits.
 # The label on its own queues nothing, and commits pushed later wait for another `batch`.
@@ -21,7 +21,8 @@ name: batch queue
 # request the way `batch` does and labels it `priority` as well.
 #
 # Commenting `-batch` takes a pull request out of the queue again: it withdraws the recorded
-# commit and removes the `batch queue` label, and nothing else. Commits already merged into a
+# commit and removes the `batch queue` label, and `frozen` unless a batch being built holds the
+# pull request (it is then labelled `batch-building`), and nothing else. Commits already merged into a
 # batch stay there, and no batch is rebuilt, so a build that is under way is never disturbed.
 #
 # Commenting `aa` hands a pull request back to its author: it adds the `awaiting-author` label and
@@ -119,7 +120,10 @@ jobs:
           OPENER: ${{ github.event.issue.user.login }}
           BODY: ${{ github.event.comment.body }}
           WHEN: ${{ github.event.comment.created_at }}
+          # The names of scripts/batch-labels.py.
           LABEL: batch queue
+          FROZEN: frozen
+          MEMBER: batch-building
           PRIORITY: priority
           WAITING: awaiting-author
         run: |
@@ -220,11 +224,17 @@ jobs:
             # The withdrawal is recorded first, and whether or not the label is still there, so
             # that putting the label back by hand queues nothing.
             say "$(printf '<!-- batch-queue-withdrawn -->\nTaken out of the batch queue by `%s`.' "$AUTHOR")"
-            if gh api "repos/$REPO/issues/$PR/labels" --jq '.[].name' | grep -qxF -- "$LABEL"; then
+            present=$(gh api "repos/$REPO/issues/$PR/labels" --jq '.[].name')
+            if grep -qxF -- "$LABEL" <<< "$present"; then
               gh api -X DELETE "repos/$REPO/issues/$PR/labels/$(jq -rn --arg label "$LABEL" '$label | @uri')" --silent
               echo "Removed '$LABEL' from pull request $PR, as $AUTHOR asked."
             else
               echo "Pull request $PR does not carry '$LABEL'. The withdrawal is recorded all the same."
+            fi
+            # A batch being built that holds the pull request keeps it frozen.
+            if grep -qxF -- "$FROZEN" <<< "$present" && ! grep -qxF -- "$MEMBER" <<< "$present"; then
+              gh api -X DELETE "repos/$REPO/issues/$PR/labels/$(jq -rn --arg label "$FROZEN" '$label | @uri')" --silent
+              echo "Removed '$FROZEN' from pull request $PR."
             fi
             echo "unqueued=true" >> "$GITHUB_OUTPUT"
             exit 0
@@ -232,10 +242,12 @@ jobs:
 
           # Adding a label that does not exist creates it. If `batch queue` is ever renamed, this
           # should fail and be noticed, not start a second label.
-          if ! gh api "repos/$REPO/labels/$(jq -rn --arg label "$LABEL" '$label | @uri')" --silent; then
-            echo "::error::There is no '$LABEL' label in $REPO. Was it renamed?"
-            exit 1
-          fi
+          for needed in "$LABEL" "$FROZEN"; do
+            if ! gh api "repos/$REPO/labels/$(jq -rn --arg label "$needed" '$label | @uri')" --silent; then
+              echo "::error::There is no '$needed' label in $REPO. Was it renamed?"
+              exit 1
+            fi
+          done
           if [ -n "$priority" ] && ! gh api "repos/$REPO/labels/$(jq -rn --arg label "$PRIORITY" '$label | @uri')" --silent; then
             echo "::error::There is no '$PRIORITY' label in $REPO. Was it renamed?"
             exit 1
@@ -289,16 +301,16 @@ jobs:
           # The record first and the label second, so that a run which sees the label also sees
           # the record. The sync job trusts the record only at the start of a comment written by
           # this workflow.
-          say "$(printf '<!-- batch-queue-approved %s -->\nQueued at `%s`, %s. A batch takes this commit and no other.' "$commit" "$commit" "$why")"
+          say "$(printf '<!-- batch-queue-approved %s -->\nQueued at `%s`, %s. A batch takes this commit and no other, so this pull request is now `frozen`: please don'"'"'t push to it until it has landed or left the queue. A commit pushed now waits for another `batch`.' "$commit" "$commit" "$why")"
           echo "Recorded $commit as the queued commit."
-          # Both labels in one request, so the sync job never sees the pull request queued
+          # All the labels in one request, so the sync job never sees the pull request queued
           # without its `priority`.
-          labels=(-f "labels[]=$LABEL")
+          labels=(-f "labels[]=$LABEL" -f "labels[]=$FROZEN")
           if [ -n "$priority" ]; then
             labels+=(-f "labels[]=$PRIORITY")
           fi
           gh api -X POST "repos/$REPO/issues/$PR/labels" "${labels[@]}" --silent
-          echo "Added '$LABEL'${priority:+ and '$PRIORITY'} to pull request $PR, as $AUTHOR asked."
+          echo "Added '$LABEL', '$FROZEN'${priority:+ and '$PRIORITY'} to pull request $PR, as $AUTHOR asked."
           echo "queued=true" >> "$GITHUB_OUTPUT"
 
   conflicts:

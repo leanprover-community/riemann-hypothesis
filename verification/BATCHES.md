@@ -70,6 +70,11 @@ whose head has moved on since the batch took it stays open, and is told what lan
 not. When the batch is closed without being merged, what it contained loses its labels too, is
 told it can push again, and goes back to `batch queue` if it was queued.
 
+A pull request queued with a `batch` comment is labelled `frozen` too, since the queue also takes
+only the commit that was queued. `-batch` takes `frozen` off again, unless a batch being built
+holds the pull request. A pull request that leaves a batch assembled by hand and goes back to the
+queue stays `frozen`.
+
 `batch-building`, `frozen` and `awaiting-author` keep a pull request out of the inbox (see
 `.github/workflows/inbox.yml`). The label names are in `scripts/batch-labels.py`, and the `if:`
 of the sync job in `.github/workflows/batch-queue.yml` names some of them as well.

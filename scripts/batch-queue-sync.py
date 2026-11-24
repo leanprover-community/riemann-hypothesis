@@ -8,7 +8,8 @@ Which commit goes into a batch. A maintainer queues one commit of a pull request
 `batch`: the commit that was its head when the comment was posted, or one named in the comment.
 The workflow's label job records that commit in a comment of its own, and it is the only one a
 batch takes. The `batch queue` label alone queues nothing, and commits pushed afterwards wait
-for another `batch`.
+for another `batch`. The label job labels a queued pull request `frozen` as well, and this
+script keeps that label on it while it is queued.
 
 A batch is a branch of this repository that this script started, normally with an open pull
 request. Its name is `batch/` and the time it was started, such as `batch/2026-11-23-041230`,
@@ -94,6 +95,7 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+import time
 
 _LABELS_SPEC = importlib.util.spec_from_file_location("rh_batch_labels", Path(__file__).with_name("batch-labels.py"))
 _labels = importlib.util.module_from_spec(_LABELS_SPEC)
@@ -110,6 +112,10 @@ OWN_BATCH = re.compile(r"batch/[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{6}(?:-[0-9]+)?")
 BOT = "github-actions[bot]"
 # Stop early when fewer requests than this are left for the hour, so other workflows keep working.
 RESERVE = 150
+# Seconds between two requests that change something. GitHub allows no more than 80 requests
+# that create content a minute, and asks for a pause of a second between those that change
+# anything.
+PACE = 1.0
 # What was read from a pull request is remembered only once the pull request has been quiet for
 # this long. GitHub's update times are whole seconds, so two changes in one second look like one.
 SETTLE = datetime.timedelta(seconds=120)
@@ -154,10 +160,15 @@ class GitHub:
 
     def __init__(self, repo, dry_run=False):
         self.repo, self.dry_run = repo, dry_run
-        self.calls, self.remaining = 0, None
+        self.calls, self.remaining, self.changed = 0, None, None
 
     def call(self, method, path, payload=None):
-        """One request. Returns (HTTP status, decoded body or None)."""
+        """One request. Returns (HTTP status, decoded body or None). Requests that change
+        something are spaced PACE seconds apart."""
+        if method != "GET":
+            if self.changed is not None:
+                time.sleep(max(0.0, self.changed + PACE - time.monotonic()))
+            self.changed = time.monotonic()
         args = ["gh", "api", "--include", "--method", method, f"repos/{self.repo}/{path}".rstrip("/")]
         data = None
         if payload is not None:
@@ -262,6 +273,20 @@ def relabel(gh, pr_or_number, add=None, remove=None):
         gh.write("DELETE", f"issues/{number}/labels/{quoted(name)}")
     if isinstance(pr_or_number, dict):
         pr_or_number["labels"] = (pr_or_number["labels"] | set(add)) - set(remove)
+
+
+def unfrozen(back):
+    """The labels a pull request leaving a batch assembled by hand loses. One that goes back to
+    the queue stays `frozen`: the queue, too, takes only the commit that was queued."""
+    return (MEMBER, BUILDING) if back else IN_BATCH
+
+
+def thawed(back):
+    """What a pull request leaving a batch assembled by hand is told about pushing."""
+    if back:
+        return (f"It is back in the batch queue, at the commit that was queued, and stays `{FROZEN}`: a commit "
+                "pushed now waits for another `batch` comment.")
+    return f"This pull request is no longer `{FROZEN}`, and you can push to it again."
 
 
 def say(gh, number, marker, text):
@@ -648,13 +673,12 @@ def hold(gh, batch, pulls, held, main, log):
             pr = pulls.get(int(key))
             if pr and pr["labels"] & set(IN_BATCH) and not held.get(key, set()) - {number}:
                 back = key in queued
-                relabel(gh, pr, add=QUEUED if back else None, remove=IN_BATCH)
+                relabel(gh, pr, add=QUEUED if back else None, remove=unfrozen(back))
                 requeued |= back
                 if not by_hand(pr):
                     say(gh, pr["number"], DROPPED.format(number=number, sha=found[key]),
                         f"Commit `{found[key][:10]}` of this pull request is no longer in batch #{number}: its branch "
-                        f"was changed without it. This pull request is no longer `{FROZEN}`, and you can push to it "
-                        "again." + (" It is back in the batch queue." if back else ""))
+                        f"was changed without it. {thawed(back)}")
                 log.append(f"#{key} is no longer in the batch #{number}: "
                            + (f"`{QUEUED}` again" if back else f"no longer `{MEMBER}`"))
         new, found = set(now) - set(found), now
@@ -923,12 +947,11 @@ def finish(gh, pulls, held, leftover, main, main_sha, closed_building, closed_la
                     landed(gh, batch, key, pr, main, log)
             elif pr["labels"] & set(IN_BATCH):
                 back = key in batch["queued"]
-                relabel(gh, pr, add=QUEUED if back else None, remove=IN_BATCH)
+                relabel(gh, pr, add=QUEUED if back else None, remove=unfrozen(back))
                 requeued |= back
                 if not by_hand(pr):
                     say(gh, pr["number"], UNFROZEN.format(number=batch["number"]),
-                        f"Batch #{batch['number']} was closed without being merged. This pull request is no longer "
-                        f"`{FROZEN}`, and you can push to it again." + (" It is back in the batch queue." if back else ""))
+                        f"Batch #{batch['number']} was closed without being merged. {thawed(back)}")
                 log.append(f"batch #{batch['number']} was closed without merging: #{key} is "
                            + (f"`{QUEUED}` again" if back else f"no longer `{MEMBER}`"))
         # Taking the label off the batch itself marks it as dealt with.
@@ -941,9 +964,9 @@ def finish(gh, pulls, held, leftover, main, main_sha, closed_building, closed_la
             for key, commit in sorted(merged.items(), key=lambda entry: int(entry[0])):
                 pr = pulls.get(int(key))
                 if pr and QUEUED in pr["labels"] and look(gh, pr, {})[0] == commit:
-                    relabel(gh, pr, remove=QUEUED)
+                    relabel(gh, pr, remove=(QUEUED, FROZEN))
                     log.append(f"#{key} landed with batch #{info['number']} at the commit that was queued: "
-                               f"`{QUEUED}` removed")
+                               f"`{QUEUED}` and `{FROZEN}` removed")
         gh.write("DELETE", f"git/refs/heads/{item['ref']}")
         log.append(f"removed the branch `{item['ref']}`")
     return requeued, cleared
@@ -971,8 +994,8 @@ def landed(gh, batch, key, pr, main, log):
 
 def unlabel_closed(gh, closed, cleared, log):
     """Take `batch queue`, `building`, `batch-building` and `frozen` off pull requests that were
-    closed, merged or not. `closed` is the closed issues and pull requests that carry `building`
-    or `batch-building`, with their labels.
+    closed, merged or not. `closed` is the closed issues and pull requests that carry `building`,
+    `batch-building` or `frozen`, with their labels.
 
     `finish` has already taken the labels of a batch off the batches assembled by hand it tidied
     up after, and off what they contained. Those keep only `batch queue` to lose here.
@@ -1010,13 +1033,16 @@ def reopened(gh, number):
     events = gh.pages(f"issues/{number}/events")
     closed = [event["created_at"] for event in events if event.get("event") == "closed"]
     removed = [event for event in events if event.get("event") == "unlabeled"
-               and (event.get("label") or {}).get("name") in (QUEUED, *IN_BATCH)]
-    if not closed or not removed or removed[-1]["created_at"] < closed[-1]:
+               and (event.get("label") or {}).get("name") in (QUEUED, *IN_BATCH)
+               and closed and event["created_at"] >= closed[-1]]
+    if not removed:
         return [f"#{number} had no label taken off when it was closed: nothing to put back"]
-    last = removed[-1]
-    who = (last.get("actor") or {}).get("login") or "someone"
-    if who != BOT:
-        return [f"#{number}: `{last['label']['name']}` was taken off by {who}, so it stays off"]
+    # A person who took one of them off after it was closed meant it, whatever the workflow
+    # took off besides.
+    for event in reversed(removed):
+        who = (event.get("actor") or {}).get("login") or "someone"
+        if who != BOT:
+            return [f"#{number}: `{event['label']['name']}` was taken off by {who}, so it stays off"]
     record = None
     for comment in gh.pages(f"issues/{number}/comments"):
         body = comment.get("body") or ""
@@ -1027,8 +1053,8 @@ def reopened(gh, number):
                 record = "withdrawn"
     if record == "withdrawn":
         return [f"#{number} was taken out of the queue with `-batch`: `{QUEUED}` stays off"]
-    relabel(gh, number, add=QUEUED)
-    return [f"#{number} was reopened: `{QUEUED}` put back"]
+    relabel(gh, number, add=(QUEUED, FROZEN))
+    return [f"#{number} was reopened: `{QUEUED}` and `{FROZEN}` put back"]
 
 
 def sync(gh, now=None):
@@ -1045,7 +1071,8 @@ def sync(gh, now=None):
     hand = [batch for batch in hand if str(batch["number"]) not in contained]
     held = holders(hand)
     closed_building = gh.pages(f"issues?state=closed&labels={quoted(BUILDING)}")
-    closed = closed_building + gh.pages(f"issues?state=closed&labels={quoted(MEMBER)}")
+    closed = closed_building + [item for label in (MEMBER, FROZEN)
+                                for item in gh.pages(f"issues?state=closed&labels={quoted(label)}")]
     closed_labels = {item["number"]: {label["name"] for label in item.get("labels") or ()} for item in closed}
     requeued, cleared = finish(gh, pulls, held, leftover, main, main_sha, closed_building, closed_labels, log)
     unlabel_closed(gh, closed, cleared, log)
