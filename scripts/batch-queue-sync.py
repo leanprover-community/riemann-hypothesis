@@ -166,7 +166,7 @@ class GitHub:
 
     def __init__(self, repo, dry_run=False):
         self.repo, self.dry_run = repo, dry_run
-        self.calls, self.remaining, self.changed = 0, None, None
+        self.calls, self.remaining, self.changed, self.labels = 0, None, None, set()
 
     def call(self, method, path, payload=None):
         """One request. Returns (HTTP status, decoded body or None). Requests that change
@@ -220,6 +220,17 @@ class GitHub:
         if status == 429 or (status == 403 and "rate limit" in str((data or {}).get("message", "")).lower()):
             raise Refused(f"GitHub's rate limit refused {method} {path}: the next run carries on.")
         return status, data
+
+    def label_exists(self, name):
+        """Stop the run if a label is missing, instead of adding it, which would create it: a
+        label renamed on GitHub should be noticed, not started again under the old name."""
+        if name in self.labels:
+            return
+        status, _ = self.call("GET", f"labels/{quoted(name)}")
+        if status == 404:
+            raise Refused(f"There is no `{name}` label in {self.repo}. Was it renamed? See `batch-labels.py`.")
+        if status == 200:
+            self.labels.add(name)
 
     def short(self):
         """Whether the hour's allowance is nearly used up."""
@@ -280,6 +291,8 @@ def relabel(gh, pr_or_number, add=None, remove=None):
         have = pr_or_number["labels"]
         add, remove = [name for name in add if name not in have], [name for name in remove if name in have]
     done = True
+    for name in add:
+        gh.label_exists(name)
     if add:
         done = gh.write("POST", f"issues/{number}/labels", {"labels": add})[0] in (0, 200)
     for name in remove:
@@ -292,8 +305,10 @@ def relabel(gh, pr_or_number, add=None, remove=None):
 
 def unlabel(gh, number, have, gone):
     """Take the labels `gone` off a closed pull request that carries `have`, in one request when
-    there are several: setting its labels replaces them all. Nobody else changes the labels of a
-    closed pull request, so the list read earlier in the run is current enough."""
+    there are several: setting its labels replaces them all. Another workflow may change them in
+    the meantime, inbox-sync taking `inbox` off for one, and a label it took off would come back.
+    That is rare, and the other workflow takes it off again on its next run, so saving a request
+    for each pull request a batch lands is worth it."""
     gone = sorted(set(gone) & set(have))
     if len(gone) > 1:
         gh.write("PUT", f"issues/{number}/labels", {"labels": sorted(set(have) - set(gone))})
@@ -366,7 +381,8 @@ def tell(gh, number, comments, marker, text):
     """Leave a comment on a pull request, unless the workflow has left that one before."""
     if comments is None:
         comments = gh.pages(f"issues/{number}/comments")
-    if any(marker in (comment.get("body") or "") for comment in comments if by_workflow(comment)):
+    # At the start only: a comment can quote text someone else wrote, markers included.
+    if any((comment.get("body") or "").startswith(marker) for comment in comments if by_workflow(comment)):
         return False
     return say(gh, number, marker, text)
 
