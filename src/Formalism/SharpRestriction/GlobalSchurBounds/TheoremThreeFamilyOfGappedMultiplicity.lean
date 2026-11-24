@@ -281,22 +281,22 @@ theorem gap_big {p q N ep0 h0 : ℝ} (hp : 1 ≤ p) (hq : 1 ≤ q) (hN : N = p +
     lt_of_lt_of_le (by norm_num at hlog2 ⊢; linarith) (Real.log_le_log (by norm_num) hN2)
   have hep : 0 < ep0 := lt_of_lt_of_le (Real.exp_pos _) he1
   have hmin : 1 ≤ min p q := le_min hp hq
-  have hpq : 1 ≤ p * q := by nlinarith
-  have hpq3 : (p * q) ^ 2 ≤ (p * q) ^ 3 := by nlinarith
-  have hsum : p + q ≤ 2 * (p * q) := by nlinarith
+  have hpq : 1 ≤ p * q := one_le_mul_of_one_le_of_one_le hp hq
+  have hpq3 : (p * q) ^ 2 ≤ (p * q) ^ 3 := pow_le_pow_right₀ hpq (by norm_num)
+  have hsum : p + q ≤ 2 * (p * q) := by linarith [mul_nonneg (sub_nonneg.2 hp) (sub_nonneg.2 hq)]
   set X := 8192 * min p q * (p * q) ^ 3 * Real.log N with hXdef
   have hX : 8192 * 0.69 * (p * q) ^ 3 ≤ X := by
     have h3 : 0 ≤ (p * q) ^ 3 := by positivity
     have h4 : (1 : ℝ) * 0.69 ≤ min p q * Real.log N := mul_le_mul hmin hlog.le (by norm_num) (by linarith)
     rw [hXdef]
-    nlinarith
+    linarith [mul_le_mul_of_nonneg_right h4 h3]
   have hdiv : 4 * X ≤ X / ep0 ^ 2 := by
     rw [le_div_iff₀ (by positivity)]
-    have h5 : ep0 ^ 2 ≤ 1 / 4 := by nlinarith
+    have h5 : ep0 ^ 2 ≤ 1 / 4 := by linarith [sq_lt_sq' (by linarith : -(1 / 2 : ℝ) < ep0) he2]
     have hXpos : 0 ≤ X := le_trans (by positivity) hX
-    nlinarith
+    linarith [mul_le_mul_of_nonneg_left h5 hXpos]
   rw [hN]
-  nlinarith
+  nlinarith [mul_le_mul_of_nonneg_right hsum (by linarith : (0 : ℝ) ≤ p * q), one_le_pow₀ (n := 2) hpq]
 
 end PI.UnitaryGroupMassFormula.HCFdegRGap
 end -- clump:auto
@@ -443,7 +443,7 @@ theorem thrStar_lt {N : ℕ} (ε : Fin N → Bool) (hp : 1 ≤ ReciprocityTheory
     exact_mod_cast this
   have h2m : (0 : ℝ) ≤ 2 * ((ReciprocityTheory.ChartRestriction.DS.S7.q0 ε : ℕ) : ℝ) := by positivity
   have hsq : Real.sqrt (2 * ((ReciprocityTheory.ChartRestriction.DS.S7.q0 ε : ℕ) : ℝ)) ≤ 2 * ((ReciprocityTheory.ChartRestriction.DS.S7.q0 ε : ℕ) : ℝ) := by
-    nlinarith [Real.sq_sqrt h2m, Real.sqrt_nonneg (2 * ((ReciprocityTheory.ChartRestriction.DS.S7.q0 ε : ℕ) : ℝ)),
+    linarith [Real.sq_sqrt h2m, Real.sqrt_nonneg (2 * ((ReciprocityTheory.ChartRestriction.DS.S7.q0 ε : ℕ) : ℝ)),
       sq_nonneg (Real.sqrt (2 * ((ReciprocityTheory.ChartRestriction.DS.S7.q0 ε : ℕ) : ℝ)) - 1)]
   have hA : (N : ℝ) * ((ReciprocityTheory.ChartRestriction.DS.S7.q0 ε : ℕ) : ℝ) ≤
       (N : ℝ) * (ReciprocityTheory.ChartRestriction.DS.pOf ε : ℝ) * (ReciprocityTheory.ChartRestriction.DS.qOf ε : ℝ) := by
@@ -610,7 +610,7 @@ theorem theorem_three_of_gap_bound (s : (n : ℕ) → (Fin n → Bool) → NNRea
   have hep : 0 < ep0 := lt_of_lt_of_le (Real.exp_pos _) he1
   have hnn := Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.fdegHC_nonneg lam hlam
   rw [hfw, hτ]
-  refine ⟨by nlinarith, ?_⟩
+  refine ⟨by linarith [mul_nonneg hep.le hnn], ?_⟩
   have hle := Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.fdegHC_le_dTau ε lam hlam
   have hτ0 : 0 < StandardLattice.dTau ε lam := StandardLattice.formalDegreeFactor_pos_of_strictAnti ε lam hlam.1
   have hexp : p * q = ((StandardLattice.nPlus ε * StandardLattice.nMinus ε : ℕ) : ℝ) := by push_cast; rfl
@@ -623,17 +623,17 @@ theorem theorem_three_of_gap_bound (s : (n : ℕ) → (Fin n → Bool) → NNRea
     exact_mod_cast h
   have hN := StandardLattice.count_plus_add_count_minus N ε
   have hL1 := Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.lamAbs_ge_one lam hlam (by omega)
-  have hpq : (1 : ℝ) ≤ 3 * p * q := by nlinarith
-  have hX : StandardLattice.lamAbs lam ≤ 3 * p * q * StandardLattice.lamAbs lam := by nlinarith
+  have hpq : (1 : ℝ) ≤ 3 * p * q := by linarith [one_le_mul_of_one_le_of_one_le hp hq]
+  have hX : StandardLattice.lamAbs lam ≤ 3 * p * q * StandardLattice.lamAbs lam := le_mul_of_one_le_left (by linarith) hpq
   have hpow : StandardLattice.lamAbs lam ^ (StandardLattice.nPlus ε * StandardLattice.nMinus ε) ≤
       (3 * p * q * StandardLattice.lamAbs lam) ^ (StandardLattice.nPlus ε * StandardLattice.nMinus ε) :=
     pow_le_pow_left₀ (by linarith) hX _
   have hpos : 0 ≤ (3 * p * q * StandardLattice.lamAbs lam) ^ (StandardLattice.nPlus ε * StandardLattice.nMinus ε) :=
-    pow_nonneg (by nlinarith) _
+    pow_nonneg (mul_nonneg (by linarith) (by linarith)) _
   calc Formalism.QuantumDeterminants.fdegHC lam ≤ StandardLattice.dTau ε lam * StandardLattice.lamAbs lam ^ (StandardLattice.nPlus ε * StandardLattice.nMinus ε) := hle
     _ ≤ StandardLattice.dTau ε lam * (3 * p * q * StandardLattice.lamAbs lam) ^ (StandardLattice.nPlus ε * StandardLattice.nMinus ε) :=
         mul_le_mul_of_nonneg_left hpow hτ0.le
-    _ ≤ 4 * StandardLattice.dTau ε lam * (3 * p * q * StandardLattice.lamAbs lam) ^ (StandardLattice.nPlus ε * StandardLattice.nMinus ε) := by nlinarith
+    _ ≤ 4 * StandardLattice.dTau ε lam * (3 * p * q * StandardLattice.lamAbs lam) ^ (StandardLattice.nPlus ε * StandardLattice.nMinus ε) := by linarith [mul_nonneg hτ0.le hpos]
 
 theorem theorem_three_of_weyl_gapped_multiplicity (hW : DiscreteSeriesWeylDimension.WeylForK) (hL : DiscreteSeriesWeylDimension.LowKMultOneG) : Formalism.MainNotions.RT.DiscreteSeriesDegreeBoundsAllScales :=
   fun cd s hc => theorem_three_of_gap_bound s (PI.UnitaryGroupMassFormula.HCFdegRGap.hCFdegRGap_holds cd s hc) hW hL
@@ -675,13 +675,13 @@ theorem theorem_three_rows_of_real_place (D : D7) (hc : cdScaleTie D) (hdt : dsi
     generalize ((Finset.univ.filter (fun a => epsSH D.R a = false)).card : ℝ) = q at *
     generalize ((ReciprocityTheory.ChartRestriction.DS.S7.q0 (epsSH D.R) : ℕ) : ℝ) = r at *
     generalize ((2 * D.R.rS + D.R.k + 1 : ℕ) : ℝ) = n at *
-    have hpq : 1 ≤ p * q := by nlinarith
+    have hpq : 1 ≤ p * q := one_le_mul_of_one_le_of_one_le hp1 hq1
     have hn : 1 ≤ n := by linarith
-    have hrpq : r ≤ p * q := by nlinarith
+    have hrpq : r ≤ p * q := hq0.trans (le_mul_of_one_le_right (by linarith) hq1)
     rw [max_lt_iff]
     constructor
-    · nlinarith
-    · nlinarith
+    · linarith [mul_le_mul_of_nonneg_left hpq (by linarith : (0 : ℝ) ≤ n)]
+    · nlinarith [mul_le_mul_of_nonneg_left hrpq (by linarith : (0 : ℝ) ≤ n)]
   have hEx := dsigEx_at D hdt ρ
     (ReciprocityTheory.ChartRestriction.DS.G2.discrete_series_exists_large_gap _ (epsSH D.R) _ hHC (spectralGapLowerBound D ep0) hg' (Or.inr hmax))
   obtain ⟨H, i1, i2, σ, hDS, hF⟩ := hEx
