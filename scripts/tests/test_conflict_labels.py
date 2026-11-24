@@ -172,7 +172,7 @@ class Message(unittest.TestCase):
         for needed in ("#900", "`batch/b9-on-1313`", "git cannot merge 2 files", "`src/A.lean`, `src/B.lean`",
                        "#900 deletes `src/Gone.lean`, which this pull request starts to import in `src/New.lean`",
                        "this pull request deletes `src/Old.lean`, which #900 starts to import in `src/X.lean`",
-                       "Merge the batch's branch `batch/b9-on-1313` into your branch, or rebase onto it",
+                       "Merge the batch's branch `batch/b9-on-1313` into your branch and resolve the conflicts",
                        "at the top of the pull request's description", "- [ ] depends on: #900",
                        "Comment `ready`", "wait until #900 has landed, then merge `main`",
                        f"`{BATCH_CONFLICT}` and `{WAITING}`"):

@@ -454,8 +454,11 @@ def message(batch, result):
         "",
         f"It cannot land after #{batch['number']} as it is. To fix that:",
         "",
-        f"1. Merge the batch's branch {branch} into your branch, or rebase onto it, and resolve the conflicts. "
-        + "If #{n}'s branch is rebuilt before it lands, which is how a pull request is taken out of a batch, your branch still carries the pull request that was taken out. Start your branch again from the new batch branch then, with only your own commits on top.".format(n=batch["number"]),
+        f"1. Merge the batch's branch {branch} into your branch and resolve the conflicts. Merge it rather than "
+        "rebasing onto it (see `AGENTS.md`). If #{n}'s branch is rebuilt before it lands, which is how a pull "
+        "request is taken out of a batch, your branch still carries the pull request that was taken out. Then "
+        "make a new branch from the new batch branch, copy only your own commits onto it with `git cherry-pick`, "
+        "and push that to this pull request.".format(n=batch["number"]),
         "2. Add this line at the top of the pull request's description:",
         "",
         "   ```",
