@@ -58,6 +58,8 @@ class Fake(batch.GitHub):
         self.failures = []
         # Labels GitHub does not have.
         self.missing = set()
+        # Runs of the conflict-labels workflow started, by branch.
+        self.dispatched = []
 
     def fail(self, method, pattern, answer, times=1):
         """Answer the next `times` requests matching with `answer`: a status, or an exception."""
@@ -133,6 +135,7 @@ class Fake(batch.GitHub):
                 "labels": [{"name": name} for name in sorted(pr["labels"])],
                 "head": {"sha": pr["sha"], "ref": pr["ref"], "repo": {"full_name": REPO if pr["own"] else "fork/r"}},
                 "base": {"ref": pr["base"]}, "body": pr["body"], "title": pr["title"], "merged": bool(pr["merged_at"]),
+                "draft": pr.get("draft", False),
                 "updated_at": (T0 + datetime.timedelta(seconds=pr["updated"])).strftime("%Y-%m-%dT%H:%M:%SZ")}
 
     # Answering requests.
@@ -215,6 +218,10 @@ class Fake(batch.GitHub):
 
     def _labels(self, _, number):
         return 200, [{"name": name} for name in sorted(self.pulls[int(number)]["labels"])]
+
+    def _dispatch(self, payload):
+        self.dispatched.append(payload["ref"])
+        return 204, None
 
     def _runs(self, _):
         return 200, {"workflow_runs": [{"display_title": title} for title in self.runs]}
@@ -323,6 +330,7 @@ class Fake(batch.GitHub):
         (r"GET issues/(\d+)/labels", _labels),
         (r"GET actions/workflows/build-pr.yml/runs\?event=workflow_dispatch&per_page=30", _runs),
         (r"POST git/refs", _new_ref),
+        (r"POST actions/workflows/conflict-labels\.yml/dispatches", _dispatch),
         (r"POST merges", _merge),
         (r"POST pulls", _new_pull),
         (r"PATCH pulls/(\d+)", _edit_pull),
@@ -1381,6 +1389,33 @@ class Robustness(unittest.TestCase):
         self.assertEqual([gh.pulls[n]["labels"] for n in (11, 12, 14)], [QF, QF, set()])
         for number in (11, 12, 14):
             self.assertEqual(len([body for body in gh.said(number) if body.startswith("<!-- batch-queue-unfrozen")]), 1)
+
+
+class ConflictWorkflow(unittest.TestCase):
+    def test_a_batch_first_labelled_building_starts_the_conflict_labels(self):
+        gh = Fake()
+        gh.add_pull(14, "head14")
+        by_hand(gh, 14)
+        log = sync(gh)
+        self.assertEqual(gh.dispatched, ["main"])
+        self.assertIn("started conflict-labels.yml", log)
+        sync(gh)
+        self.assertEqual(gh.dispatched, ["main"])  # only when it is first labelled
+
+    def test_conflict_entries_are_left_to_it_only_for_pull_requests_it_looks_at(self):
+        gh = Fake()
+        gh.add_pull(11, "head11")
+        for number in (21, 22):
+            gh.add_pull(number, f"head{number}")
+        gh.pulls[22]["draft"] = True
+        by_hand(gh, 11)
+        gh.pulls[1018]["body"] = ("Left out because they conflict with a PR earlier in the batch:\n\n"
+                                  "- #21 a (@x): conflicts with #11.\n- #22 b (@y): conflicts with #11.\n\n"
+                                  "Left out (no conflicts, the build failed):\n\n- #23 c (@z): it fails.\n")
+        gh.add_pull(23, "head23")
+        sync(gh)
+        left = lambda n: [b for b in gh.said(n) if b.startswith("<!-- batch-queue-left-out")]
+        self.assertEqual([len(left(n)) for n in (21, 22, 23)], [0, 1, 1])
 
 
 class MissingLabels(unittest.TestCase):
