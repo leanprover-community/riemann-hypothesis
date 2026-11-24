@@ -498,7 +498,7 @@ private theorem hsn_le_of_near {n : ℕ} (g : Matrix (Fin n) (Fin n) ℂ) (hg : 
   have hS2 : ∑ a, ∑ b, ‖(g - 1) a b‖ ^ 2 ≤ 1 / 16 := by
     have h := Real.sq_sqrt hS0
     have h0 := Real.sqrt_nonneg (∑ a, ∑ b, ‖(g - 1) a b‖ ^ 2)
-    nlinarith
+    linarith [pow_le_pow_left₀ h0 hS 2]
   have hent : ∀ a b, ‖g a b‖ ^ 2 ≤ 2 * ‖(g - 1) a b‖ ^ 2 + 2 * (if a = b then (1 : ℝ) else 0) := by
     intro a b
     have hsplit : g a b = (g - 1) a b + (1 : Matrix (Fin n) (Fin n) ℂ) a b := by simp
@@ -510,7 +510,7 @@ private theorem hsn_le_of_near {n : ℕ} (g : Matrix (Fin n) (Fin n) ℂ) (hg : 
     have hq := norm_nonneg ((g - 1) a b)
     have hr := norm_nonneg ((1 : Matrix (Fin n) (Fin n) ℂ) a b)
     rw [← hone]
-    nlinarith [sq_nonneg (‖(g - 1) a b‖ - ‖(1 : Matrix (Fin n) (Fin n) ℂ) a b‖)]
+    linarith [sq_nonneg (‖(g - 1) a b‖ - ‖(1 : Matrix (Fin n) (Fin n) ℂ) a b‖), mul_le_mul htri htri hp (add_nonneg hq hr)]
   have hsum : ∑ a, ∑ b, ‖g a b‖ ^ 2 ≤ 2 * (∑ a, ∑ b, ‖(g - 1) a b‖ ^ 2) + 2 * n := by
     calc ∑ a, ∑ b, ‖g a b‖ ^ 2
         ≤ ∑ a, ∑ b, (2 * ‖(g - 1) a b‖ ^ 2 + 2 * (if a = b then (1 : ℝ) else 0)) := by
@@ -524,18 +524,18 @@ private theorem hsn_le_of_near {n : ℕ} (g : Matrix (Fin n) (Fin n) ℂ) (hg : 
   constructor
   · positivity
   · have h0 : (0 : ℝ) ≤ n := n.cast_nonneg
-    nlinarith
+    linarith [sq_nonneg (n : ℝ)]
 
 private theorem vol_arith (n : ℕ) (B : ℝ) (hn : 3 ≤ n) (hB : 1 ≤ B) :
     (1 + 2 * ((n : ℝ) + 1) ^ 2 / (1 / (4 * (8 * (n : ℝ) * B) ^ 2))) ^ (2 * n ^ 2) * 4 ≤ big 11 n B := by
   have hn' : (3 : ℝ) ≤ n := by exact_mod_cast hn
-  have hm1 : 1 ≤ ((n : ℝ) + 1) ^ 2 := by nlinarith
-  have hB1 : 1 ≤ B ^ 2 := by nlinarith
+  have hm1 : 1 ≤ ((n : ℝ) + 1) ^ 2 := one_le_pow₀ (by linarith)
+  have hB1 : 1 ≤ B ^ 2 := one_le_pow₀ hB
   have hp1 : 1 ≤ ((n : ℝ) + 1) ^ 2 * B ^ 2 := one_le_mul_of_one_le_of_one_le hm1 hB1
   have hmP : ((n : ℝ) + 1) ^ 2 ≤ ((n : ℝ) + 1) ^ 2 * B ^ 2 := le_mul_of_one_le_right (by positivity) hB1
   have hqp : (n : ℝ) ^ 2 * B ^ 2 ≤ ((n : ℝ) + 1) ^ 2 * B ^ 2 := by
     have hB2 : 0 ≤ B ^ 2 := by positivity
-    have : (n : ℝ) ^ 2 ≤ ((n : ℝ) + 1) ^ 2 := by nlinarith
+    have : (n : ℝ) ^ 2 ≤ ((n : ℝ) + 1) ^ 2 := pow_le_pow_left₀ (by linarith) (by linarith) 2
     exact mul_le_mul_of_nonneg_right this hB2
   have hq0 : 0 ≤ (n : ℝ) ^ 2 * B ^ 2 := by positivity
   have e1 : 2 * ((n : ℝ) + 1) ^ 2 / (1 / (4 * (8 * (n : ℝ) * B) ^ 2))
@@ -549,8 +549,8 @@ private theorem vol_arith (n : ℕ) (B : ℝ) (hn : 3 ≤ n) (hB : 1 ≤ B) :
   have hX : 1 + 2 * ((n : ℝ) + 1) ^ 2 / (1 / (4 * (8 * (n : ℝ) * B) ^ 2)) ≤ (8 * ((n : ℝ) + 1) * B) ^ 4 := by
     rw [e1, e2]
     have := mul_le_mul hmP hqp hq0 (by linarith)
-    nlinarith
-  have hL4 : (4 : ℝ) ≤ 8 * ((n : ℝ) + 1) * B := by nlinarith
+    linarith [one_le_pow₀ (n := 2) hp1]
+  have hL4 : (4 : ℝ) ≤ 8 * ((n : ℝ) + 1) * B := by linarith [hX0, one_le_mul_of_one_le_of_one_le (show (1 : ℝ) ≤ n + 1 by linarith) hB]
   have hL0 : 0 < 8 * ((n : ℝ) + 1) * B := by linarith
   have hstep : (1 + 2 * ((n : ℝ) + 1) ^ 2 / (1 / (4 * (8 * (n : ℝ) * B) ^ 2))) ^ (2 * n ^ 2) * 4
       ≤ (8 * ((n : ℝ) + 1) * B) ^ (8 * n ^ 2 + 1) := by
@@ -565,7 +565,7 @@ private theorem vol_arith (n : ℕ) (B : ℝ) (hn : 3 ≤ n) (hB : 1 ≤ B) :
     rw [Real.exp_nat_mul, Real.exp_log hL0]
   have hN : ((8 * n ^ 2 + 1 : ℕ) : ℝ) ≤ 11 * ((n : ℝ) + 1) ^ 4 := by
     push_cast
-    nlinarith [sq_nonneg ((n : ℝ) + 1), sq_nonneg (n : ℝ)]
+    linarith [sq_nonneg (n : ℝ), pow_nonneg (show (0 : ℝ) ≤ n by linarith) 3, pow_nonneg (show (0 : ℝ) ≤ n by linarith) 4]
   have hlog : 0 ≤ Real.log (8 * ((n : ℝ) + 1) * B) := Real.log_nonneg (by linarith)
   unfold big
   calc _ ≤ _ := hstep
@@ -588,7 +588,7 @@ theorem UpperTheory.Lit.Branch.volDeg :
   have hgap' : GapAtLeast ε' mu (1000 * (n : ℝ) ^ 3) :=
     RealAsm.gap_mono (by
       have : (0 : ℝ) ≤ n := n.cast_nonneg
-      nlinarith [pow_le_pow_left₀ this (by linarith : (n : ℝ) ≤ n + 1) 3]) hP.gap'
+      linarith [hn', pow_nonneg this 3, pow_le_pow_left₀ this (by linarith : (n : ℝ) ≤ n + 1) 3]) hP.gap'
   have hdu := hDegU n ε' mu B hn hP.hmu hgap' hP.bound.2 H' σ hσ d hd
   obtain ⟨-, htop, hvb⟩ := hVol n ε' (1 / (4 * (8 * (n : ℝ) * B) ^ 2)) ((n : ℝ) + 1) (by positivity) (by positivity)
   have hsub : nbh ε' (1 / 4) ⊆ {g | GlobalTheory.SepReal.hsn (umat g) ≤ (n : ℝ) + 1} := fun g hg => hsn_le_of_near _ hg

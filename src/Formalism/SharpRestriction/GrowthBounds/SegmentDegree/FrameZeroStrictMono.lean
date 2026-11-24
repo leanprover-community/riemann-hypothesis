@@ -409,9 +409,9 @@ theorem thirty_two_Y_le_a (hX : X.Hyp p K) : 32 * X.Y ≤ X.a := by
   have B := basics hX
   refine le_trans ?_ (l42b hX 0 _ (reflection_mem_Glev_castSucc hX.valid 0))
   have h1 : (1 : ℝ) ≤ (p : ℝ) ^ (X.F.dist 0 (X.F.fr (0 - 1) 0) + X.Rj p K 0) := one_le_pow₀ B.p1.le
-  have hk2 : (25 : ℝ) ≤ Dat.k (r := r) K ^ 2 := by nlinarith [B.k5]
+  have hk2 : (25 : ℝ) ≤ Dat.k (r := r) K ^ 2 := by linarith [pow_le_pow_left₀ (by norm_num) B.k5 2]
   have hY0 : (0 : ℝ) < X.Y := by linarith [B.Y1]
-  have h2 : 32 * X.Y ≤ 8 * X.Y * Dat.k (r := r) K ^ 2 := by nlinarith
+  have h2 : 32 * X.Y ≤ 8 * X.Y * Dat.k (r := r) K ^ 2 := by linarith [mul_le_mul_of_nonneg_left hk2 hY0.le]
   have h3 : 8 * X.Y * Dat.k (r := r) K ^ 2 ≤ 8 * X.Y * Dat.k (r := r) K ^ 2 * (X.Ns : ℝ) :=
     le_mul_of_one_le_right (by positivity) B.Ns1
   have h4 : 8 * X.Y * Dat.k (r := r) K ^ 2 * (X.Ns : ℝ) ≤
@@ -437,7 +437,7 @@ theorem sum_kP (hX : X.Hyp p K) (hLa : (1088 : ℝ) ≤ X.CLa) (hk : (1088 : ℝ
     positivity
   have h1 : Dat.k (r := r) K ≤ X.Y * Dat.k (r := r) K ^ 2 * (X.Ns : ℝ) := by
     have hk0 : (0 : ℝ) < Dat.k (r := r) K := by linarith [B.k5]
-    have a1 : Dat.k (r := r) K ≤ Dat.k (r := r) K ^ 2 := by nlinarith [B.k5]
+    have a1 : Dat.k (r := r) K ≤ Dat.k (r := r) K ^ 2 := le_self_pow₀ (by linarith [B.k5]) two_ne_zero
     have a2 : Dat.k (r := r) K ^ 2 ≤ X.Y * Dat.k (r := r) K ^ 2 := le_mul_of_one_le_left (by positivity) B.Y1
     have a3 : X.Y * Dat.k (r := r) K ^ 2 ≤ X.Y * Dat.k (r := r) K ^ 2 * (X.Ns : ℝ) :=
       le_mul_of_one_le_right (by have := B.Y1; positivity) B.Ns1
@@ -476,7 +476,7 @@ theorem sum_compA (hX : X.Hyp p K) (hLa : (1088 : ℝ) ≤ X.CLa) (hk : (1088 : 
     have hp1 : (1 : ℝ) ≤ (p : ℝ) ^ X.F.dist 0 (X.F.fr (0 - 1) 0) := one_le_pow₀ B.p1.le
     have w1 : Dat.k (r := r) K * X.Y ≤
         8 * X.Y * Dat.k (r := r) K ^ 2 * (X.Ns : ℝ) * (p : ℝ) ^ X.F.dist 0 (X.F.fr (0 - 1) 0) := by
-      have a1 : Dat.k (r := r) K * X.Y ≤ 8 * X.Y * Dat.k (r := r) K ^ 2 := by nlinarith [B.k5]
+      have a1 : Dat.k (r := r) K * X.Y ≤ 8 * X.Y * Dat.k (r := r) K ^ 2 := by linarith [mul_le_mul_of_nonneg_left (le_self_pow₀ (show (1 : ℝ) ≤ Dat.k (r := r) K by linarith [B.k5]) two_ne_zero) hY0.le]
       have a2 : 8 * X.Y * Dat.k (r := r) K ^ 2 ≤ 8 * X.Y * Dat.k (r := r) K ^ 2 * (X.Ns : ℝ) :=
         le_mul_of_one_le_right (by positivity) B.Ns1
       have a3 : 8 * X.Y * Dat.k (r := r) K ^ 2 * (X.Ns : ℝ) ≤
@@ -486,7 +486,7 @@ theorem sum_compA (hX : X.Hyp p K) (hLa : (1088 : ℝ) ≤ X.CLa) (hk : (1088 : 
     have hE : (X.E₀ : ℝ) ≤ 4 * (p : ℝ) * ((X.E₀ : ℝ) + X.mStar + 1) := by
       have e0 : (0 : ℝ) ≤ X.E₀ := Nat.cast_nonneg _
       have m0 : (0 : ℝ) ≤ X.mStar := Nat.cast_nonneg _
-      nlinarith [B.p1]
+      linarith [le_mul_of_one_le_left (show (0 : ℝ) ≤ (X.E₀ : ℝ) + X.mStar + 1 by linarith) (show (1 : ℝ) ≤ p by linarith [B.p1])]
     calc (X.E₀ : ℝ) * (Dat.k (r := r) K * X.Y)
         ≤ (4 * (p : ℝ) * ((X.E₀ : ℝ) + X.mStar + 1)) *
           (8 * X.Y * Dat.k (r := r) K ^ 2 * (X.Ns : ℝ) * (p : ℝ) ^ X.F.dist 0 (X.F.fr (0 - 1) 0)) :=
@@ -500,9 +500,9 @@ theorem sum_compA (hX : X.Hyp p K) (hLa : (1088 : ℝ) ≤ X.CLa) (hk : (1088 : 
       unfold Dat.k
       have := hX.NsK
       exact_mod_cast (by omega : X.Ns ≤ r + K)
-    have h2 : 4 * (X.Ns : ℝ) * X.a ≤ 4 * Dat.k (r := r) K * X.a := by nlinarith
+    have h2 : 4 * (X.Ns : ℝ) * X.a ≤ 4 * Dat.k (r := r) K * X.a := by linarith [mul_le_mul_of_nonneg_right hNk ha0]
     have h3 : Dat.k (r := r) K * ((X.Et p K t : ℝ) * (Dat.k (r := r) K * X.Y)) ≤ Dat.k (r := r) K * (4 * X.a) := by
-      nlinarith
+      linarith
     exact le_of_mul_le_mul_left h3 hk0
   have hdeg := (hX.degs t ht).1
   have hnat : X.deg t ≤ X.a' p K t + X.E' t + X.Et p K t := by
@@ -515,10 +515,10 @@ theorem sum_compA (hX : X.Hyp p K) (hLa : (1088 : ℝ) ≤ X.CLa) (hk : (1088 : 
   have hθ0 : 0 ≤ θ := by positivity
   have hθ1 : θ ≤ 1 := by
     rw [hθ, div_le_one hu]
-    nlinarith [B.k5, B.Y1]
+    linarith [B.k5, hLa, hk, le_mul_of_one_le_right (show (0 : ℝ) ≤ Dat.k (r := r) K by linarith [B.k5]) B.Y1]
   have key : (X.E₀ : ℝ) + X.Et p K t ≤ θ * X.deg t := by
     rw [hθ, div_mul_eq_mul_div, le_div_iff₀ hu]
-    nlinarith
+    linarith
   have hcmp := choose_add_mul_one_sub_le_pow_mul_choose_add (X.a' p K t) (X.deg t) (r + K - 1) 1 θ hθ1 (fun l _ => by
     have hl : (0 : ℝ) ≤ θ * (1 + l) := by positivity
     calc ((X.deg t : ℝ) + 1 + l) * (1 - θ) = (X.deg t : ℝ) + 1 + l - θ * X.deg t - θ * (1 + l) := by ring
@@ -580,12 +580,12 @@ theorem sum_compW (hX : X.Hyp p K) (hLa : (1088 : ℝ) ≤ X.CLa) (hk : (1088 : 
     have h2 := mul_le_mul_of_nonneg_left h1 hP'r.le
     have h3 : (P' : ℝ) * ((n : ℝ) / P') = n := by field_simp
     have h4 := mul_le_mul_of_nonneg_right hc hP'r.le
-    nlinarith
+    linarith [hY0]
   set θ : ℝ := 1 / (Dat.k (r := r) K * X.Y) with hθ
   have hθ0 : 0 ≤ θ := by positivity
   have hθ1 : θ ≤ 1 := by
     rw [hθ, div_le_one hu]
-    nlinarith [B.k5, B.Y1]
+    exact one_le_mul_of_one_le_of_one_le (by linarith [B.k5]) B.Y1
   have key : 4 * (Dat.k (r := r) K * X.Ns) * P' ≤ θ * n := by
     rw [hθ, div_mul_eq_mul_div, one_mul, le_div_iff₀ hu]
     have : 4 * (Dat.k (r := r) K * X.Ns) * P' * (Dat.k (r := r) K * X.Y) =
