@@ -19,13 +19,12 @@ request still under review adds. Until it lands, the label exists but nothing pu
 | `changed after frozen` *(planned, #1697)* | a frozen pull request whose head has moved on from the commit taken | it is pushed to after a batch or the queue took a commit of it | its head is that commit again, or it is no longer frozen |
 | `batch queue` | a pull request wanted in a batch | a maintainer or reviewer comments `batch` or `p` | `-batch`; it joins a batch assembled by hand (in exchange for `batch-building`); its queued commit lands; it is closed |
 | `priority` | a queued pull request that goes first | `p` | by hand |
-| `awaiting-author` | a pull request handed back to its author | `aa`; it is pushed to while in a batch; the description leaves it out; a batch lands an older commit of it; `batch-conflict` is first put on it *(planned, #1700)* | `ready`, by the author or a maintainer |
-| `main-conflict` *(planned, #1700)* | a pull request that conflicts with `main` | GitHub says so, unless it declares `depends on:` a batch being built | the conflict is gone, or it declares that dependency |
-| `batch-conflict` *(planned, #1700)* | a pull request that conflicts with a batch being built | git cannot merge it with the batch's head | the conflict is gone; the batch lands or is closed; it joins the batch |
+| `awaiting-author` | a pull request handed back to its author | `aa`; it is pushed to while in a batch; the description leaves it out; a batch lands an older commit of it; `batch-conflict` is first put on it | `ready`, by the author or a maintainer |
+| `main-conflict` | a pull request that conflicts with `main` | GitHub says so, unless it declares `depends on:` a batch being built | the conflict is gone, or it declares that dependency |
+| `batch-conflict` | a pull request that conflicts with a batch being built | git cannot merge it with the batch's head | the conflict is gone; the batch lands or is closed; it joins the batch |
 
-`batch queue`, `building`, `batch-building`, `frozen` and `awaiting-author` keep a pull request
-out of the inbox (`inbox`, see `.github/workflows/inbox.yml`), and so will `batch-conflict`
-*(planned, #1700)*. The names are in `scripts/batch-labels.py`.
+`batch queue`, `building`, `batch-building`, `frozen`, `awaiting-author` and `batch-conflict`
+keep a pull request out of the inbox (`inbox`, see `.github/workflows/inbox.yml`). The names are in `scripts/batch-labels.py`.
 
 Also planned: a check of each batch's description against its branch, posted on the batch's
 pull request. It reports pull requests listed as included that aren't in the branch, members the
