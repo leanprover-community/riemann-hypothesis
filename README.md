@@ -90,8 +90,11 @@ lake comparator --config comparator.json \
 To lend a Linux machine with plenty of memory and disk, see
 [CI-RUNNERS.md](verification/CI-RUNNERS.md). To assemble a batch of pull requests by hand, or
 to resolve a pull request's conflict with the batch being built (`batch-conflict`), see
-[BATCHES.md](verification/BATCHES.md). The CI scripts are in [`scripts/`](scripts/) and
-[`tools/ci_native/`](tools/ci_native/README.md).
+[BATCHES.md](verification/BATCHES.md). A workflow ticks the `depends on` box in a pull request's
+description once the pull request it names has landed, and hands the pull request back to its
+author if that one is closed without landing (see
+[`dependencies.yml`](.github/workflows/dependencies.yml)). The CI scripts are in
+[`scripts/`](scripts/) and [`tools/ci_native/`](tools/ci_native/README.md).
 
 ## License
 

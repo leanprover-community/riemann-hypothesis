@@ -1,0 +1,84 @@
+name: dependencies
+
+# Ticks the `depends on` boxes in open pull requests' descriptions once the dependency has landed.
+# A line such as `- [ ] depends on: #123` becomes `- [x] depends on: #123` when #123 was merged,
+# or was closed with its head commit in main, as when it landed through a batch. A line that names
+# several pull requests is ticked once all of them have landed. Only that one character changes;
+# nothing is ever unticked, and a ticked line still declares the dependency.
+#
+# When a pull request that a description depends on is closed without landing, its box stays
+# empty. The pull request that depends on it is labelled `awaiting-author` and told, once for
+# each closed pull request, that its branch probably still carries those changes: its author
+# should merge main and take them out, or take over the work, then edit the description and
+# comment `ready`. `scripts/pr-dependencies.py` has the forms a `depends on` line can take, and
+# `scripts/dependency-ticks.py` the exact rules.
+#
+# A run looks at the open pull requests whose description names a pull request when that one is
+# closed, merged or not; at one pull request when it is opened or reopened or its description is
+# edited, since what it depends on may have landed already; at every open pull request every
+# hour; and, when started by hand, at one pull request or at all of them. GitHub starts no run
+# for changes made with a workflow token, such as the batch queue closing a pull request that
+# landed through a batch or this workflow's own edits, so the hourly sweep catches those. The
+# sweep is offset from those of the inbox and the conflict labels.
+#
+# pull_request_target gives the token write access for pull requests from forks. Nothing from a
+# pull request is checked out or run: the script comes from the same trusted commit as this
+# workflow, and pull requests are read and written through GitHub's API.
+
+on:
+  pull_request_target:
+    types: [opened, reopened, edited, closed]
+  schedule:
+    - cron: '29 * * * *'
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: Pull request to look at (optional; without one, every open pull request is)
+        type: number
+        required: false
+
+permissions: {}
+
+jobs:
+  ticks:
+    # Forks with Actions turned on would otherwise run against themselves. An edit counts only if
+    # it changed the description, where the `depends on` lines are.
+    if: >-
+      ${{ github.repository == 'leanprover-community/riemann-hypothesis' && (
+          contains(fromJSON('["schedule", "workflow_dispatch"]'), github.event_name) ||
+          (github.event_name == 'pull_request_target' &&
+           (contains(fromJSON('["opened", "reopened", "closed"]'), github.event.action) ||
+            (github.event.action == 'edited' && github.event.changes.body))) ) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # One sweep at a time, and one run at a time for each pull request, whether it is about the
+    # pull request itself or about those that depend on it. A run that is dropped while it waits
+    # loses nothing that the next one for the same pull request, or the next sweep, does not do.
+    concurrency:
+      group: dependencies-${{ (github.event_name == 'pull_request_target' && github.event.pull_request.number) || inputs.pr || 'sweep' }}
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Check out this workflow's own copy of the scripts
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        # No `ref`: the default is the commit GitHub runs this workflow from. When a pull request is
+        # merged, that commit is also its merge commit, and checkout refuses it when it is passed as
+        # `ref`.
+        with:
+          persist-credentials: false
+          sparse-checkout: scripts
+      - name: Tick the boxes of dependencies that have landed
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          # At most one of these is set; neither for a sweep.
+          PR: ${{ (github.event_name == 'pull_request_target' && github.event.action != 'closed' && github.event.pull_request.number) || inputs.pr }}
+          CLOSED: ${{ github.event_name == 'pull_request_target' && github.event.action == 'closed' && github.event.pull_request.number || '' }}
+        run: |
+          which=()
+          if [ -n "$PR" ]; then which=(--pr "$PR"); fi
+          if [ -n "$CLOSED" ]; then which=(--closed "$CLOSED"); fi
+          python3 scripts/dependency-ticks.py --repo "$REPO" "${which[@]}" --summary "$GITHUB_STEP_SUMMARY"

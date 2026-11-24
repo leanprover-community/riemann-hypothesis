@@ -33,47 +33,13 @@ BUILDING, MEMBER, WAITING = labels.BUILDING, labels.MEMBER, labels.WAITING
 
 
 # ---------------------------------------------------------------------------------------------
-# The dependency lines.
+# The dependency lines. `test_pr_dependencies.py` checks the parser itself.
 
 
 class Dependencies(unittest.TestCase):
-    def read(self, body):
-        return labels.dependencies(body, REPO)
-
-    def test_the_line_agents_md_asks_for(self):
-        self.assertEqual(self.read("Some text.\n\n---\n\n- [ ] depends on: #123\n"), {123})
-
-    def test_every_wording_and_task_box(self):
-        for line in ("- [ ] depends on: #7", "- [x] depends on: #7", "- [X] Depends on #7", "depends on #7",
-                     "Depend on: #7", "* [ ] depends upon #7", "  - depends on: #7", "DEPENDS ON #7"):
-            with self.subTest(line=line):
-                self.assertEqual(self.read(line), {7})
-
-    def test_several_on_one_line_and_several_lines(self):
-        self.assertEqual(self.read("- [ ] depends on: #1, #2\n- [x] depends on: #3\n"), {1, 2, 3})
-
-    def test_addresses_and_references_to_this_repository_only(self):
-        body = ("depends on https://github.com/o/r/pull/11\n"
-                "depends on https://github.com/other/r/pull/12\n"
-                "depends on o/r#13 and other/r#14\n")
-        self.assertEqual(self.read(body), {11, 13})
-
-    def test_only_at_the_start_of_a_line(self):
-        self.assertEqual(self.read("This depends on #5.\n- see #6, which depends on #7\n"), set())
-
-    def test_other_words_are_not_dependencies(self):
-        self.assertEqual(self.read("dependson #1\ndepends #2\ndepends-on #3\n- [ ] closes #4\n"), set())
-
-    def test_comments_and_code_blocks_are_not_read(self):
-        body = ("<!-- - [ ] depends on: #1 -->\n<!--\ndepends on #2\n-->\n"
-                "```\n- [ ] depends on: #3\n```\n~~~md\ndepends on #4\n~~~\ndepends on #5\n")
-        self.assertEqual(self.read(body), {5})
-
-    def test_windows_line_ends(self):
-        self.assertEqual(self.read("text\r\n- [ ] depends on: #9\r\n"), {9})
-
-    def test_a_number_must_stand_alone(self):
-        self.assertEqual(self.read("depends on #12abc and &#13; and #14\n"), {14})
+    def test_the_shared_parser_is_used(self):
+        self.assertEqual(labels.dependencies.__module__, "rh_pr_dependencies")
+        self.assertEqual(labels.dependencies("Some text.\n\n---\n\n- [x] blocked by: #123\n", REPO), {123})
 
 
 # ---------------------------------------------------------------------------------------------

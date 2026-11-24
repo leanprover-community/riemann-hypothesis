@@ -15,8 +15,9 @@ A batch is a pull request from a branch of this repository named `batch/...`.
 yet worked that out, the label stays as it is. A pull request whose description says that it
 depends on an open batch does not get the label, and loses it: it is expected to carry the
 batch's changes, and so to conflict with main until the batch lands. That is a line such as
-`- [ ] depends on: #123`, where #123 is the batch's pull request (see `dependencies`). There is
-no comment: GitHub already shows the conflict on the pull request.
+`- [ ] depends on: #123`, where #123 is the batch's pull request (`pr-dependencies.py` has the
+forms such a line can take). There is no comment: GitHub already shows the conflict on the pull
+request.
 
 `batch-conflict`: the pull request conflicts with the head of an open batch labelled `building`.
 A pull request labelled `batch-building` is in a batch, and does not get it. The comparison is
@@ -61,6 +62,9 @@ def _load(name, filename):
 _labels = _load("rh_batch_labels", "batch-labels.py")
 # The trial merge and its helpers, as the batch queue uses them to compare queued pull requests.
 _conflicts = _load("rh_batch_queue_conflicts", "batch-queue-conflicts.py")
+# The parser for the `depends on` lines of a description, shared with `dependency-ticks.py`.
+_dependencies = _load("rh_pr_dependencies", "pr-dependencies.py")
+dependencies = _dependencies.dependencies
 MAIN_CONFLICT, BATCH_CONFLICT = _labels.MAIN_CONFLICT, _labels.BATCH_CONFLICT
 BUILDING, MEMBER, WAITING = _labels.BUILDING, _labels.MEMBER, _labels.WAITING
 OURS = (MAIN_CONFLICT, BATCH_CONFLICT)
@@ -81,14 +85,6 @@ RETRIES, WAIT = 3, 15.0
 # Hidden at the start of the comment sent to a pull request that conflicts with a batch.
 MARKER = "<!-- conflict-labels-batch {number} -->"
 TOLD = re.compile(r"<!-- conflict-labels-batch (\d+) -->")
-
-# A line that says the pull request depends on another, such as `- [ ] depends on: #123`.
-DEPENDS = re.compile(r"[ \t]*(?:[-*+][ \t]+)?(?:\[[ xX]\][ \t]*)?depends?[ \t]+(?:on|upon)\b(.*)", re.IGNORECASE)
-# A pull request named on such a line: `#123`, `owner/name#123` or the pull request's address.
-REFERENCE = re.compile(r"(?<![\w/&.-])(?:([\w.-]+/[\w.-]+))?#(\d+)\b"
-                       r"|https://github\.com/([\w.-]+/[\w.-]+)/pull/(\d+)\b", re.IGNORECASE)
-COMMENT = re.compile(r"<!--.*?-->", re.DOTALL)
-FENCE = re.compile(r"[ \t]*(```|~~~)")
 
 FIELDS = """
   number state isDraft headRefName headRefOid baseRefName mergeable body
@@ -324,32 +320,6 @@ def pull(node, repo):
 # Deciding, from what is known about a pull request. Nothing here asks GitHub or git.
 
 
-def dependencies(body, repo):
-    """The pull requests that a description says this one depends on, as a set of numbers.
-
-    A dependency is a line that starts with `depends on`, `depend on` or `depends upon`, in any
-    letter case, optionally after a list marker and a task box such as `- [ ]` or `- [x]`. Every
-    pull request of `repo` that the rest of the line names counts: `#123`, `owner/name#123` or
-    the pull request's address. Lines in HTML comments and in fenced code blocks are not read.
-    """
-    found, fenced = set(), None
-    for line in COMMENT.sub("", body.replace("\r\n", "\n")).split("\n"):
-        fence = FENCE.match(line)
-        if fence:
-            fenced = None if fenced == fence.group(1) else (fenced or fence.group(1))
-            continue
-        if fenced:
-            continue
-        match = DEPENDS.fullmatch(line)
-        if not match:
-            continue
-        for named, number, url_repo, url_number in REFERENCE.findall(match.group(1)):
-            where = named or url_repo
-            if not where or where.lower() == repo.lower():
-                found.add(int(number or url_number))
-    return found
-
-
 def is_batch(pr):
     return pr["own"] and pr["ref"].startswith(PREFIX)
 
@@ -380,10 +350,11 @@ def decide(pr, main, batches, results):
     """What the labels of a pull request should be.
 
     `pr["depends"]` holds the pull requests its description says it depends on (see
-    `dependencies`). `batches` is every open batch as {number: pull request}, and `results` the pull request's
-    comparison with each one being built, as {batch number: Comparison, or None when it could not
-    be made}. Returns {"main": wanted, "batch": wanted, "conflicts": {batch number: Comparison},
-    "why": {label: reason}}, where wanted is True or False, or None to leave the label as it is.
+    `pr-dependencies.py`). `batches` is every open batch as {number: pull request}, and `results`
+    the pull request's comparison with each one being built, as {batch number: Comparison, or None
+    when it could not be made}. Returns {"main": wanted, "batch": wanted, "conflicts": {batch
+    number: Comparison}, "why": {label: reason}}, where wanted is True or False, or None to leave
+    the label as it is.
     """
     why = {}
     gone = unavailable(pr, main)

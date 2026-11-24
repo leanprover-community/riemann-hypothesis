@@ -1,7 +1,8 @@
-"""The labels the batch-queue, conflict-labels and inbox workflows give pull requests, in one place.
+"""The labels the batch-queue, conflict-labels, dependencies and inbox workflows give pull requests,
+in one place.
 
-`batch-queue-sync.py`, `batch-queue-conflicts.py`, `conflict-labels.py` and `inbox-sync.py` read
-the names from here.
+`batch-queue-sync.py`, `batch-queue-conflicts.py`, `conflict-labels.py`, `dependency-ticks.py` and
+`inbox-sync.py` read the names from here.
 A workflow's `if:` cannot read this file, so `.github/workflows/batch-queue.yml` and
 `.github/workflows/conflict-labels.yml` name some of them too: rename a label there as well, and
 on GitHub before either change lands.

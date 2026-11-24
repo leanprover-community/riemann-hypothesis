@@ -19,7 +19,7 @@ request still under review adds. Until it lands, the label exists but nothing pu
 | `changed after frozen` | a frozen pull request whose head has moved on from the commit taken | it is pushed to after a batch or the queue took a commit of it | its head is that commit again, or it is no longer frozen |
 | `batch queue` | a pull request wanted in a batch | a maintainer or reviewer comments `batch` or `p` | `-batch`; it joins a batch assembled by hand (in exchange for `batch-building`); its queued commit lands; it is closed |
 | `priority` | a queued pull request that goes first | `p` | by hand |
-| `awaiting-author` | a pull request handed back to its author | `aa`; it is pushed to while in a batch; the description leaves it out; a batch lands an older commit of it; `batch-conflict` is first put on it | `ready`, by the author or a maintainer |
+| `awaiting-author` | a pull request handed back to its author | `aa`; it is pushed to while in a batch; the description leaves it out; a batch lands an older commit of it; `batch-conflict` is first put on it; a pull request it depends on is closed without landing | `ready`, by the author or a maintainer |
 | `main-conflict` | a pull request that conflicts with `main` | GitHub says so, unless it declares `depends on:` a batch being built | the conflict is gone, or it declares that dependency |
 | `batch-conflict` | a pull request that conflicts with a batch being built | git cannot merge it with the batch's head | the conflict is gone; the batch lands or is closed; it joins the batch |
 
@@ -189,9 +189,12 @@ heading about conflicts.
 Or wait until the batch has landed, then merge `main` into your branch and resolve the conflicts
 there.
 
-A line counts as a dependency when it starts with `depends on`, `depend on` or `depends upon`,
-optionally after `- [ ]` or `- [x]`, and names the batch's pull request as `#123` or by its
-address.
+A line counts as a dependency when it starts with `depends on`, `depend on`, `depends upon`,
+`blocked by`, `requires` or `needs`, optionally after a list marker or `>` and a task box such as
+`- [ ]` or `- [x]`, and names the batch's pull request as `#123` or by its address
+(`scripts/pr-dependencies.py` has the exact rules). Once the batch has landed, the dependencies
+workflow (`.github/workflows/dependencies.yml`) ticks the box. Leave the line there: ticked, it
+still declares the dependency.
 
 ## Several batches at once
 
