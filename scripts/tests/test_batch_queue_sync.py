@@ -1477,6 +1477,18 @@ class ChangedAfterFrozen(unittest.TestCase):
         sync(gh)
         self.assertEqual(gh.pulls[14]["labels"], {WAITING})
 
+    def test_a_member_whose_frozen_was_taken_off_after_it_changed_loses_the_label(self):
+        gh = Fake()
+        gh.add_pull(14, "head14")
+        by_hand(gh, 14)
+        sync(gh)
+        gh.push(14, "head14-later")
+        sync(gh)
+        self.assertIn(CHANGED, gh.pulls[14]["labels"])
+        gh.label(14, remove=FROZEN, login="maintainer")
+        sync(gh)
+        self.assertNotIn(CHANGED, gh.pulls[14]["labels"])
+
 
 def resets(gh):
     return [(path, payload["sha"]) for method, path, payload in gh.writes if method == "PATCH" and path.startswith("git/refs/")]

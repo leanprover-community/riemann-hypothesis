@@ -34,8 +34,8 @@ name: batch queue
 # that pull request, so it goes back in the inbox within a minute or so. Without the label there
 # is nothing to take off, and `ready` does nothing.
 #
-# A pull request that is closed, merged or not, loses `batch queue`, `building`, `batch-building`
-# and `frozen`. Reopened, it gets `batch queue` back if this workflow took the labels off and
+# A pull request that is closed, merged or not, loses `batch queue`, `building`, `batch-building`,
+# `frozen` and `changed after frozen`. Reopened, it gets `batch queue` back if this workflow took the labels off and
 # nobody commented `-batch` on it meanwhile. A label a person took off stays off.
 #
 # The batches are the branches this workflow starts, named after the time they were started:
@@ -124,6 +124,7 @@ jobs:
           # The names of scripts/batch-labels.py.
           LABEL: batch queue
           FROZEN: frozen
+          CHANGED: changed after frozen
           MEMBER: batch-building
           PRIORITY: priority
           WAITING: awaiting-author
@@ -238,6 +239,11 @@ jobs:
             if grep -qxF -- "$FROZEN" <<< "$present" && ! grep -qxF -- "$MEMBER" <<< "$present"; then
               gh api -X DELETE "repos/$REPO/issues/$PR/labels/$(jq -rn --arg label "$FROZEN" '$label | @uri')" --silent
               echo "Removed '$FROZEN' from pull request $PR."
+              # No longer frozen, so not changed after it either.
+              if grep -qxF -- "$CHANGED" <<< "$present"; then
+                gh api -X DELETE "repos/$REPO/issues/$PR/labels/$(jq -rn --arg label "$CHANGED" '$label | @uri')" --silent
+                echo "Removed '$CHANGED' from pull request $PR."
+              fi
             fi
             echo "unqueued=true" >> "$GITHUB_OUTPUT"
             exit 0
