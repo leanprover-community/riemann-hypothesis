@@ -447,38 +447,9 @@ theorem continuous_slice {ε : Fin n → Bool} {c : KG ε → ℂ} (hc : Continu
       ((continuous_pk ε).prodMk (continuous_const (y := z))).continuousAt
   exact h1.mul hc
 
-private theorem compactSpace_KG' (ε : Fin n → Bool) : CompactSpace (KG ε) := by
-  have hKc : IsCompact (Kset ε) := (Formalism.REAL.maximal_compact_facts n ε).2.1
-  have hrange : Set.range (fun k : KG ε => toMK k) = Kset ε := by
-    ext M
-    constructor
-    · rintro ⟨k, rfl⟩
-      exact (Formalism.REAL.mem_KG ε _).1 k.2
-    · intro hM
-      exact ⟨⟨⟨⟨M, star M, Matrix.mem_unitaryGroup_iff.1 hM.1, Matrix.mem_unitaryGroup_iff'.1 hM.1⟩,
-        (Formalism.REAL.maximal_compact_facts n ε).1 M hM⟩, (Formalism.REAL.mem_KG ε _).2 hM⟩, rfl⟩
-  have h1 : Topology.IsInducing (fun k : KG ε => Units.embedProduct Mt ((k : UJ ε) : Mtˣ)) :=
-    Units.isEmbedding_embedProduct.isInducing.comp
-      (Topology.IsInducing.subtypeVal.comp Topology.IsInducing.subtypeVal)
-  have hg : Continuous (fun M : Mt => (M, MulOpposite.op Mᴴ)) :=
-    continuous_id.prodMk (MulOpposite.continuous_op.comp continuous_id.matrix_conjTranspose)
-  have hind : Topology.IsInducing (fun k : KG ε => toMK k) := by
-    refine Topology.IsInducing.of_comp (_root_.GlobalTheory.Dec.FormF.toMK_cont ε) hg ?_
-    convert h1 using 1
-    funext k
-    have hu : toMK k ∈ Matrix.unitaryGroup (Fin n) ℂ := ((Formalism.REAL.mem_KG ε _).1 k.2).1
-    have hs : toMK k * (toMK k)ᴴ = 1 := by
-      rw [← Matrix.star_eq_conjTranspose]; exact Matrix.mem_unitaryGroup_iff.1 hu
-    simp only [Function.comp_apply, Units.embedProduct_apply]
-    exact Prod.ext rfl (congrArg MulOpposite.op (Units.eq_inv_of_mul_eq_one_left hs))
-  have hc : IsCompact (Set.univ : Set (KG ε)) := by
-    rw [hind.isCompact_iff, Set.image_univ, hrange]; exact hKc
-  exact isCompact_univ_iff.1 hc
-
 theorem integrable_slice {ε : Fin n → Bool} {c : KG ε → ℂ} (hc : Continuous c)
     {G : (Mt × Mt) × Mt → ℂ} (hG : AnalyticOnNhd ℂ G (Om3 n)) {z : Mt} (hz : z ∈ U1 ε) :
     Integrable (fun k : KG ε => G (pk k, z) * c k) (muK ε) := by
-  have := compactSpace_KG' ε
   have : IsProbabilityMeasure (muK ε) := (_root_.Formalism.REAL.compact_haar_holds n ε).1
   obtain ⟨C, hC⟩ := isCompact_univ.exists_bound_of_continuousOn (continuous_slice hc hG hz).continuousOn
   exact Integrable.of_bound (continuous_slice hc hG hz).aestronglyMeasurable C (ae_of_all _ fun k => hC k trivial)
@@ -497,7 +468,6 @@ theorem rd_intK {ε : Fin n → Bool} {c : KG ε → ℂ} (hc : Continuous c)
     {G : (Mt × Mt) × Mt → ℂ} (hG : AnalyticOnNhd ℂ G (Om3 n)) {f : Mt → ℂ} {z X : Mt} (hz : inUJ ε z)
     (hX : inG ε X) (h : ∀ᶠ y in 𝓝 z, inUJ ε y → y ∈ U1 ε ∧ f y = intK c G y) :
     Rd X f z = intK c (Dz X G) z := by
-  have hcK := _root_.GlobalTheory.Dec.PsiEig.compactSpace_KG' ε
   have hP : IsProbabilityMeasure (muK ε) := (_root_.Formalism.REAL.compact_haar_holds n ε).1
   have hexp : ∀ t : ℝ, inUJ ε (NormedSpace.exp ((t : ℂ) • X)) := Formalism.REAL.exp_indefinite_unitary_holds n ε X hX
   have hpJ : ∀ t : ℝ, inUJ ε (z * NormedSpace.exp ((t : ℂ) • X)) := fun t => inUJ_mul_flag_measures hz (hexp t)
@@ -595,7 +565,6 @@ theorem inner_ps {ε : Fin n → Bool} (lam : Fin n → ℝ) {abelian₂ : Fin n
     ⟪u, ps ε lam τ w z v⟫_ℂ =
       intK (fun k : KG ε => (Module.finrank ℂ W : ℂ) * (⟪τ (toMK k) w, v⟫_ℂ * ⟪u, τ (toMK k) w⟫_ℂ))
         (fun x : (Mt × Mt) × Mt => Phi lam (x.1.1 * x.2 * x.1.2)) z := by
-  have hcK := _root_.GlobalTheory.Dec.PsiEig.compactSpace_KG' ε
   have hP : IsProbabilityMeasure (muK ε) := (_root_.Formalism.REAL.compact_haar_holds n ε).1
   have hfd : FiniteDimensional ℂ W := h.1
   have hPhi : Continuous (fun k : KG ε => Phi lam ((toMK k)⁻¹ * z * toMK k)) :=
