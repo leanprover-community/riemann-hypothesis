@@ -383,7 +383,7 @@ theorem germ_mean_property : PropGMean := by
     Nh' (√SS + √B') hLIM hbnd hAA hAR hRA
   set A0 : V 1 → ℂ := fun σ => LIM (fun x : Λs.toAddSubgroup => ⟪r x, r ((x : V 1) + σ)⟫_ℂ) with hA0
 
-  have h2pi : (2 * Real.pi * Complex.I : ℂ) ≠ 0 := TBBx5.lp_ne
+  have h2pi : (2 * Real.pi * Complex.I : ℂ) ≠ 0 := Complex.two_pi_I_ne_zero
   have hη0 : η ≠ 0 := by rcases hη with h | h <;> simp [h]
   set φ : ℂ → V 1 := fun σ => fun _ => η * σ / (2 * Real.pi * Complex.I) with hφ
   have hXφ : ∀ σ, X (φ σ) = η * σ := by

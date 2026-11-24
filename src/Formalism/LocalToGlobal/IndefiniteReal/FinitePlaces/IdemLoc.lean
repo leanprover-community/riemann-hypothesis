@@ -198,7 +198,7 @@ theorem roots_exist (t N : 𝓞 F) (hN : N ∈ v.asIdeal) (ht : t ∉ v.asIdeal)
     have adicInt_dvd_iff (x y : (v.adicCompletionIntegers F)) :
         x ∣ y ↔ Valued.v (y : (v.adicCompletion F)) ≤ Valued.v (x : (v.adicCompletion F)) := by
       first
-      | exact (adicInt_integers (K := F) v).dvd_iff_le
+      | exact (IsDedekindDomain.HeightOneSpectrum.adicCompletionIntegers.integers (K := F) v).dvd_iff_le
 
     have adicInt_max_eq_span (π : (v.adicCompletionIntegers F)) (hπ : Valued.v (π : (v.adicCompletion F)) = exp (-1 : ℤ)) :
         maximalIdeal (v.adicCompletionIntegers F) = Ideal.span {π} := by

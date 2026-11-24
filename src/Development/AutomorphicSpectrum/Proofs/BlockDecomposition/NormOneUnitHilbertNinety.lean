@@ -256,7 +256,7 @@ theorem exists_unit_norm_eq : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
     have adicInt_dvd_iff (x y : Ov) :
         x ∣ y ↔ Valued.v (y : Kv) ≤ Valued.v (x : Kv) := by
       first
-      | exact (Formalism.BasicNotions.Examples₂.adicInt_integers (K := E) w ).dvd_iff_le
+      | exact (IsDedekindDomain.HeightOneSpectrum.adicCompletionIntegers.integers (K := E) w ).dvd_iff_le
 
     have adicInt_max_eq_span (π : Ov) (hπ : Valued.v (π : Kv) = exp (-1 : ℤ)) :
         maximalIdeal Ov = Ideal.span {π} := by
@@ -370,7 +370,7 @@ theorem exists_unit_norm_eq : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
     ((cj w).comp (w.adicCompletionIntegers E).subtype).codRestrict _ hmem
   have hσc : ∀ x, ((σ x : w.adicCompletionIntegers E) : w.adicCompletion E) = cj w x := fun _ => rfl
   have hunit : ∀ x : w.adicCompletionIntegers E, IsUnit x ↔ Valued.v (x : w.adicCompletion E) = 1 :=
-    fun x => (Formalism.BasicNotions.Examples₂.adicInt_integers w).isUnit_iff_valuation_eq_one
+    fun x => (IsDedekindDomain.HeightOneSpectrum.adicCompletionIntegers.integers (K := E) w).isUnit_iff_valuation_eq_one
   have hσ : ∀ x, σ (σ x) = x := fun x => Subtype.ext (hinv _)
   let y₀ : w.adicCompletionIntegers E := ⟨x₀, by
     rw [HeightOneSpectrum.mem_adicCompletionIntegers]; exact hx₀⟩

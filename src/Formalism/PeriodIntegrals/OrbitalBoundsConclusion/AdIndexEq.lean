@@ -1341,7 +1341,7 @@ theorem trace_integral' : TraceInt := by
   let w : Valuation K (WithZero (Multiplicative ℤ)) := Valued.v
   let m := IsLocalRing.maximalIdeal O
   have hcomplete : IsAdicComplete m O := by
-    have hIntegers := Formalism.BasicNotions.Examples₂.adicInt_integers (K := I.F) v
+    have hIntegers := IsDedekindDomain.HeightOneSpectrum.adicCompletionIntegers.integers (K := I.F) v
     obtain ⟨π, hπ⟩ := Formalism.BasicNotions.Examples₂.adicInt_exists_unif (K := I.F) v
     have hm : m = Ideal.span {π} := by
       ext x

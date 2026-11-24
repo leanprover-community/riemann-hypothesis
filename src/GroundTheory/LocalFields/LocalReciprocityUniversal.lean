@@ -463,12 +463,6 @@ section Group
 
 variable {G : Type*} [Group G] {M : Type*} [Group M] [IsMulCommutative M]
 
-theorem commutator_le_ker_of_isMulCommutative (f : G →* M) : commutator G ≤ f.ker := by
-  rw [commutator, Subgroup.commutator_le]
-  intro a _ b _
-  rw [MonoidHom.mem_ker, map_commutatorElement, commutatorElement_eq_one_iff_mul_comm]
-  exact mul_comm' _ _
-
 end Group
 
 variable {K : Type*} [Field K] [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K]
@@ -547,7 +541,7 @@ omit [ValuativeRel K] [TopologicalSpace K] [IsNonarchimedeanLocalField K] in
 theorem topologicalClosure_commutator_le_ker_restrictNormalHom :
     (commutator (Ω ≃ₐ[K] Ω)).topologicalClosure ≤
       (AlgEquiv.restrictNormalHom (F := K) (K₁ := Ω) L).ker := by
-  refine Subgroup.topologicalClosure_minimal _ (commutator_le_ker_of_isMulCommutative _) ?_
+  refine Subgroup.topologicalClosure_minimal _ (Group.Abelianization.commutator_le_ker _) ?_
   rw [ker_restrictNormalHom]
   exact Subgroup.isClosed_of_isOpen _ (L.fixingSubgroup_isOpen)
 
@@ -564,7 +558,7 @@ theorem abelianRestrict_mk (σ : Ω ≃ₐ[K] Ω) :
 theorem isAbelianExtension_fixingOpenSubgroup : IsAbelianExtension ⊤ (fixingOpenSubgroup L) := by
   refine ⟨le_top, ?_⟩
   rw [← ker_restrictTop]
-  exact commutator_le_ker_of_isMulCommutative _
+  exact Group.Abelianization.commutator_le_ker _
 
 theorem abelianRestrict_topAbelianizationEquiv
     (y : TopologicalAbelianization ((⊤ : OpenSubgroup (Ω ≃ₐ[K] Ω)) : Subgroup (Ω ≃ₐ[K] Ω))) :
@@ -709,7 +703,7 @@ theorem unramifiedDegree_of_mk_eq_localReciprocityLimit {x : Kˣ} {g : Ω ≃ₐ
     exact (multiples n).zero_mem
   have hL : IsAbelianExtension ⊤ (unramifiedOpenSubgroup K Ω n) := by
     refine ⟨le_top, fun y hy => ?_⟩
-    have h := commutator_le_ker_of_isMulCommutative
+    have h := Group.Abelianization.commutator_le_ker
       ((unramifiedDegree K Ω).comp (Subgroup.subtype _)) hy
     rw [MonoidHom.mem_ker, MonoidHom.comp_apply, Subgroup.coe_subtype] at h
     rw [Subgroup.mem_subgroupOf, mem_unramifiedOpenSubgroup, h, toAdd_one]

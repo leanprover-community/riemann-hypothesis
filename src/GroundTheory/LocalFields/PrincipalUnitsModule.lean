@@ -241,14 +241,9 @@ section Module
 
 variable (p : ℕ) [hp : Fact p.Prime]
 
-theorem padicInt_dvd_intCast_iff {k : ℕ} {c : ℤ} :
-    (p : ℤ_[p]) ^ k ∣ (c : ℤ_[p]) ↔ ((p : ℤ) ^ k) ∣ c := by
-  rw [← Ideal.mem_span_singleton, ← PadicInt.norm_le_pow_iff_mem_span_pow,
-    PadicInt.norm_int_le_pow_iff_dvd]
-
 theorem intCast_dvd_sub_of_dvd_sub {k : ℕ} {a : ℤ_[p]} {c c' : ℤ} (h : (p : ℤ_[p]) ^ k ∣ a - c)
     (h' : (p : ℤ_[p]) ^ k ∣ a - c') : ((p : ℤ) ^ k) ∣ c' - c := by
-  rw [← padicInt_dvd_intCast_iff]
+  rw [← PadicInt.pow_p_dvd_int_iff]
   have := dvd_sub h h'
   push_cast
   convert this using 1

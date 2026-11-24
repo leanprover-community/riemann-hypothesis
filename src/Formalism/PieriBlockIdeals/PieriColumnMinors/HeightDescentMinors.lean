@@ -189,8 +189,6 @@ end Ode
 
 section Act
 
-theorem subst_X_eq_self {R : Type*} [CommRing R] (f : R⟦X⟧) : f.subst (X : R⟦X⟧) = f := PowerSeries.X_subst f
-
 theorem coeff_one_add_X_pow_alt (R : Type*) [CommRing R] (d n : ℕ) :
     coeff n ((1 + X : R⟦X⟧) ^ d) = (d.choose n : R) := by
   have e : ((1 + X : R⟦X⟧)) ^ d = (((1 + Polynomial.X) ^ d : Polynomial R) : R⟦X⟧) := by
@@ -232,7 +230,7 @@ theorem action_laws_holds : ActLaws := by
   intro l _ O _ _
   refine ⟨binomialAction_binomialSeriesSubOne l O, binomialAction_comp_eq_mul l O, ?_, phi_eq_act_l l O, ?_, ?_, ?_⟩
   · intro f
-    rw [act, binomialSeriesSubOne_one, subst_X_eq_self]
+    rw [act, binomialSeriesSubOne_one, PowerSeries.X_subst]
   · intro c f
     rw [phi_eq_act_l, phi_eq_act_l, binomialAction_comp_eq_mul, binomialAction_comp_eq_mul, mul_comm]
   · intro c f g

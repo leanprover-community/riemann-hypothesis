@@ -609,7 +609,7 @@ theorem UpperTheory.V.Br.perZero :
   have hN' : (0 : ℝ) < N := by exact_mod_cast hN
   refine GroundTheory.Automorphic.GL2Classical.isZeroAtImInfty_of_integral_vadd_eq_zero hN' hper hf ?_ hint
   obtain ⟨c, hc⟩ := UpperTheory.V.Br.per_tendsto hN'
-    (GroundTheory.Automorphic.GL2Classical.periodic_comp_ofComplex_of_vadd hper)
+    (UpperHalfPlane.periodic_comp_ofComplex hper)
     (fun z hz => (UpperHalfPlane.mdifferentiable_iff.1 hf).differentiableAt
       ((isOpen_lt continuous_const Complex.continuous_im).mem_nhds hz)) C m
     (fun z hz hr => by

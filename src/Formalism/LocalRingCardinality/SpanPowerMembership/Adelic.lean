@@ -74,11 +74,6 @@ theorem wz_lt_one_iff (γ : ℤᵐ⁰) : γ < 1 ↔ γ ≤ exp (-1 : ℤ) := by
   · first
     | (rw [← WithZero.exp_log hγ, ← WithZero.exp_zero, WithZero.exp_lt_exp, WithZero.exp_le_exp]; omega)
 
-theorem adicInt_integers :
-    Valuation.Integers (Valued.v : Valuation (v.adicCompletion K) ℤᵐ⁰) (v.adicCompletionIntegers K) := by
-  first
-  | exact Valuation.integer.integers _
-
 theorem adicInt_exists_unif :
     ∃ π : v.adicCompletionIntegers K, Valued.v (π : v.adicCompletion K) = exp (-1 : ℤ) := by
   obtain ⟨π, hπ⟩ : ∃ π : K, v.valuation K π = exp (-1 : ℤ) := by
@@ -96,7 +91,7 @@ theorem adicInt_exists_unif :
 
 theorem adicInt_mem_max_iff (x : v.adicCompletionIntegers K) :
     x ∈ maximalIdeal (v.adicCompletionIntegers K) ↔ Valued.v (x : v.adicCompletion K) < 1 := by
-  have hI := adicInt_integers (K := K) v
+  have hI := IsDedekindDomain.HeightOneSpectrum.adicCompletionIntegers.integers (K := K) v
   rw [IsLocalRing.mem_maximalIdeal, mem_nonunits_iff, hI.isUnit_iff_valuation_eq_one]
   exact (hI.map_le_one x).lt_iff_ne.symm
 
@@ -113,7 +108,7 @@ local notation "Ov" => v.adicCompletionIntegers K
 theorem adicInt_dvd_iff (x y : Ov) :
     x ∣ y ↔ Valued.v (y : Kv) ≤ Valued.v (x : Kv) := by
   first
-  | exact (adicInt_integers (K := K) v).dvd_iff_le
+  | exact (IsDedekindDomain.HeightOneSpectrum.adicCompletionIntegers.integers (K := K) v).dvd_iff_le
 
 theorem adicInt_max_eq_span (π : Ov) (hπ : Valued.v (π : Kv) = exp (-1 : ℤ)) :
     maximalIdeal Ov = Ideal.span {π} := by
@@ -272,7 +267,7 @@ theorem adicInt_residue_finite [Finite (R ⧸ v.asIdeal)] : Finite (ResidueField
     (Ideal.Quotient.lift_surjective_of_surjective v.asIdeal hf (adicInt_residue_surj v))
 
 theorem adicInt_isUnit_of_not_mem (r : R) (hr : r ∉ v.asIdeal) : IsUnit (algebraMap R Ov r) := by
-  rw [(adicInt_integers (K := K) v).isUnit_iff_valuation_eq_one]
+  rw [(IsDedekindDomain.HeightOneSpectrum.adicCompletionIntegers.integers (K := K) v).isUnit_iff_valuation_eq_one]
   have h1 : algebraMap Ov Kv (algebraMap R Ov r) = algebraMap K Kv (algebraMap R K r) := by
     first
     | rfl

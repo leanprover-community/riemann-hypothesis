@@ -2338,11 +2338,6 @@ theorem um_uni (x1 : U.RC k 1 (j + ρ)) : Ux2.uniK (Ux2.kU (j + 1)) (Um x1) := b
         rw [Matrix.one_apply_ne]
         intro h; subst h; exact lt_irrefl _ hab
 
-theorem rev_zero' (n : ℕ) : Fin.rev (0 : Fin (n + 1)) = Fin.last n := by ext; simp
-theorem rev_succ' {n : ℕ} (a : Fin n) : Fin.rev a.succ = (Fin.rev a).castSucc := by ext; simp [Fin.val_rev]
-theorem rev_last' (n : ℕ) : Fin.rev (Fin.last n) = 0 := by ext; simp
-theorem rev_castSucc' {n : ℕ} (a : Fin n) : Fin.rev a.castSucc = (Fin.rev a).succ := by ext; simp [Fin.val_rev]; try omega
-
 theorem wvec_apply (v : Fin j → ℂ) (a : Fin j) : (G.wMat j *ᵥ v) a = v a.rev := by
   simp [G.wMat, Matrix.mulVec, dotProduct]
 
@@ -2374,21 +2369,21 @@ theorem um_ct_mul (x1 : U.RC k 1 (j + ρ)) :
   cases a using Fin.cases with
   | zero =>
     cases b using Fin.cases with
-    | zero => simp [Um, Ut0, rev_zero', rev_succ']
+    | zero => simp [Um, Ut0, Fin.rev_zero, Fin.rev_succ]
     | succ b =>
-      simp [Um, Ut0, rev_zero', rev_succ', Matrix.one_apply]
+      simp [Um, Ut0, Fin.rev_zero, Fin.rev_succ, Matrix.one_apply]
       exact (Fin.succ_ne_zero b).symm
   | succ a =>
     cases b using Fin.cases with
     | zero =>
-      simp only [Um, Ut0, rev_zero', rev_succ', Fin.cases_zero, Fin.cases_succ, Fin.lastCases_last,
+      simp only [Um, Ut0, Fin.rev_zero, Fin.rev_succ, Fin.cases_zero, Fin.cases_succ, Fin.lastCases_last,
         Fin.lastCases_castSucc, vecMul_w_apply, Pi.star_apply, star_neg, star_star]
       rw [Finset.sum_eq_single a]
       · simp
       · intro c _ hc; simp [Matrix.one_apply_ne hc]
       · simp
     | succ b =>
-      simp only [Um, Ut0, rev_zero', rev_succ', Fin.cases_zero, Fin.cases_succ, Fin.lastCases_last,
+      simp only [Um, Ut0, Fin.rev_zero, Fin.rev_succ, Fin.cases_zero, Fin.cases_succ, Fin.lastCases_last,
         Fin.lastCases_castSucc]
       by_cases h : a = b
       · subst h; simp [Matrix.one_apply]
@@ -2593,7 +2588,7 @@ theorem kl0 (x1 : U.RC k 1 (j + ρ)) (x : U.RC k j ρ) :
     | zero =>
       simp only [pos0, posV, Ux3.block3_apply]
       simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.neg_apply, Matrix.neg_mul]
-      rw [rowP, hrn_form, vecMul_block3_middle_coords, e1, e2, e3, Matrix.mul_assoc, Ux3.wMat_mul_apply, rev_zero']
+      rw [rowP, hrn_form, vecMul_block3_middle_coords, e1, e2, e3, Matrix.mul_assoc, Ux3.wMat_mul_apply, Fin.rev_zero]
       simp only [TX, Cm, Matrix.vecMul, dotProduct, Matrix.mul_apply, Matrix.conjTranspose_apply, Matrix.of_apply,
         Fin.lastCases_last, Matrix.mulVec, Pi.star_apply, star_sub, Matrix.zero_apply, mul_zero, Finset.sum_const_zero,
         zero_add, Matrix.neg_apply, mul_neg, Finset.sum_neg_distrib, star_sum, star_mul', sub_mul, Finset.sum_sub_distrib,
@@ -2605,7 +2600,7 @@ theorem kl0 (x1 : U.RC k 1 (j + ρ)) (x : U.RC k j ρ) :
     | succ a =>
       simp only [posX, posV, Ux3.block3_apply]
       simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Matrix.neg_apply, Ux3.rn_eq, Ux3.block3_apply]
-      rw [Matrix.mul_assoc, Ux3.wMat_mul_apply, Matrix.mul_assoc, Ux3.wMat_mul_apply, rev_succ']
+      rw [Matrix.mul_assoc, Ux3.wMat_mul_apply, Matrix.mul_assoc, Ux3.wMat_mul_apply, Fin.rev_succ]
       simp [TX, Cm, Matrix.mul_apply]
   · cases a using Fin.cases with
     | zero =>
@@ -2613,7 +2608,7 @@ theorem kl0 (x1 : U.RC k 1 (j + ρ)) (x : U.RC k j ρ) :
       | last =>
         simp only [pos0, posL, Ux3.block3_apply]
         simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr]
-        rw [Matrix.mul_assoc (G.wMat (j + 1)), Ux3.wMat_mul_apply (n := j + 1), rev_zero', mul_unitriangular_last_col]
+        rw [Matrix.mul_assoc (G.wMat (j + 1)), Ux3.wMat_mul_apply (n := j + 1), Fin.rev_zero, mul_unitriangular_last_col]
         simp only [Z_lc, Z_ll]
         have hw1 : G.wMat 1 = 1 := by ext a b; fin_cases a; fin_cases b; simp [G.wMat]
         rw [hw1, Matrix.one_mul]
@@ -2690,7 +2685,7 @@ theorem kl0 (x1 : U.RC k 1 (j + ρ)) (x : U.RC k j ρ) :
       | cast b' =>
         simp only [pos0, posS, Ux3.block3_apply]
         simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Matrix.neg_mul, Matrix.neg_apply]
-        rw [rowP, hrn_form, vecMul_block3_last_coord, e1, e2, e3, Matrix.mul_assoc (G.wMat (j + 1)), Ux3.wMat_mul_apply, rev_zero',
+        rw [rowP, hrn_form, vecMul_block3_last_coord, e1, e2, e3, Matrix.mul_assoc (G.wMat (j + 1)), Ux3.wMat_mul_apply, Fin.rev_zero,
           mul_unitriangular_castSucc_col, Z_lc]
         have hH : (Hpk k ρ)ᴴ = Hpk k ρ := Ux4.hpk_conjTranspose k ρ
         have hw : (G.wMat j)ᴴ = G.wMat j := Ux4.wMat_conjTranspose j
@@ -2713,7 +2708,7 @@ theorem kl0 (x1 : U.RC k 1 (j + ρ)) (x : U.RC k j ρ) :
       | last =>
         simp only [posX, posL, Ux3.block3_apply]
         simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr]
-        rw [Matrix.mul_assoc, Ux3.wMat_mul_apply, rev_succ', mul_unitriangular_last_col]
+        rw [Matrix.mul_assoc, Ux3.wMat_mul_apply, Fin.rev_succ, mul_unitriangular_last_col]
         simp only [Z_cc, Z_cl]
         show cX x1 a = _
         have hv : (((-(1 / 2 : ℂ)) • ((Matrix.of x.1)ᴴ * Hpk k ρ * Matrix.of x.1) + U.skewOf x.2) *ᵥ cS x1) +
@@ -2729,7 +2724,7 @@ theorem kl0 (x1 : U.RC k 1 (j + ρ)) (x : U.RC k j ρ) :
         simp only [posX, posS, Ux3.block3_apply]
         simp only [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Ux3.rn_eq, Ux3.block3_apply]
         rw [Ux3.wMat_mul_apply]
-        rw [Matrix.mul_assoc (G.wMat (j + 1)), Ux3.wMat_mul_apply, rev_succ', mul_unitriangular_castSucc_col, Z_cc]
+        rw [Matrix.mul_assoc (G.wMat (j + 1)), Ux3.wMat_mul_apply, Fin.rev_succ, mul_unitriangular_castSucc_col, Z_cc]
   ·
     cases a' using Fin.cases with
     | zero => simp only [posV, pos0, Ux3.block3_apply]; simp
@@ -2830,7 +2825,7 @@ theorem emb_muP (q : Matrix (Fin j) (Fin j) ℂ) (hq : IsUnit q.det) :
       simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Ux3.block3_apply]
   · cases b using Fin.lastCases <;> cases b' using Fin.lastCases <;>
       simp only [posS, posL, U.embG, U.muP, Ux3.block3_apply] <;>
-      simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Ux3.block3_apply, w_conj_apply, rev_last', rev_castSucc', Dm]
+      simp [Matrix.fromBlocks_apply₁₁, Matrix.fromBlocks_apply₁₂, Matrix.fromBlocks_apply₂₁, Matrix.fromBlocks_apply₂₂, Matrix.fromRows_apply_inl, Matrix.fromRows_apply_inr, Matrix.fromCols_apply_inl, Matrix.fromCols_apply_inr, Ux3.block3_apply, w_conj_apply, Fin.rev_last, Fin.rev_castSucc, Dm]
 
 theorem emb_emb (y : B.Mat k ρ) :
     D.castM (by omega : 1 + (j + ρ) = (j + 1) + ρ) (U.embG k 1 (j + ρ) (U.embG k j ρ y)) = U.embG k (j + 1) ρ y := by

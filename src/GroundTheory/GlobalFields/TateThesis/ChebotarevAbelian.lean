@@ -701,7 +701,7 @@ theorem ord_eq_one_of_valued_eq_exp {π : v.adicCompletion K}
       (x : v.adicCompletion K) := by
     rw [Valuation.IsUniformizer.iff,
       Valuation.IsRankOneDiscrete.generator_eq_exp_neg_one_of_surjective
-        (valued_adicCompletion_surjective v)]
+        (IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_surjective (K := K) v)]
     exact hπ
   have hx : Irreducible x :=
     (IsDiscreteValuationRing.irreducible_iff_uniformizer x).2

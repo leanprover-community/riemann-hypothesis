@@ -163,7 +163,7 @@ theorem valued_irreducible_valuationInteger {ϖ : 𝒪[v.adicCompletion K]} (hϖ
     exact_mod_cast hϖ.ne_zero
   have hlt : Valued.v (ϖ : v.adicCompletion K) < 1 :=
     he.lt_one_iff_lt_one.1 (valuation_lt_one_of_mem_maximalIdeal (uniformizer_mem_maximalIdeal hϖ))
-  obtain ⟨y, hy⟩ := valued_adicCompletion_surjective (K := K) v (exp (-1 : ℤ))
+  obtain ⟨y, hy⟩ := IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_surjective (K := K) v (exp (-1 : ℤ))
   have hexp : exp (-1 : ℤ) < 1 := by
     rw [← exp_zero, exp_lt_exp]
     norm_num

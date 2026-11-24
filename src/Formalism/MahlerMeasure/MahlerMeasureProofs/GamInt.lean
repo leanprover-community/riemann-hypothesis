@@ -71,9 +71,6 @@ theorem norm_natCast_le_one' (n : ℕ) : ‖(n : ℚ_[p])‖ ≤ 1 := by
   have := Padic.norm_int_le_one (p := p) (n : ℤ)
   simpa using this
 
-theorem norm_intCast_le_one' (n : ℤ) : ‖(n : ℚ_[p])‖ ≤ 1 :=
-  Padic.norm_int_le_one n
-
 theorem norm_sum_le_one {ι : Type} (s : Finset ι) (f : ι → ℚ_[p]) (h : ∀ i ∈ s, ‖f i‖ ≤ 1) :
     ‖∑ i ∈ s, f i‖ ≤ 1 := by
   classical
@@ -155,7 +152,7 @@ theorem IVP.newton {D : ℕ} {g : ℕ → ℚ_[p]} (hg : IVP p D g) :
     apply norm_sum_le_one
     intro i _
     rw [zsmul_eq_mul, norm_mul]
-    exact mul_le_one₀ (by exact_mod_cast norm_intCast_le_one' _) (norm_nonneg _) (hn i)
+    exact mul_le_one₀ (by exact_mod_cast Padic.norm_int_le_one _) (norm_nonneg _) (hn i)
   have hd_zero : ∀ k, D < k → d k = 0 := by
     intro k hk
     have h0 : (fwdDiff (1 : ℚ_[p]))^[k] P.eval 0 = 0 := by

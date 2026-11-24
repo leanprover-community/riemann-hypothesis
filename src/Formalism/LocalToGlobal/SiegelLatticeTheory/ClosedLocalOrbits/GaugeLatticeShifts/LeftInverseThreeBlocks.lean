@@ -346,8 +346,6 @@ section Main
 
 variable {n r : ℕ}
 
-theorem castSucc_ne (b : Fin r) : Fin.castSucc b ≠ Fin.last r := (Fin.castSucc_lt_last b).ne
-
 theorem hJ_swap (ε : Fin n → Bool) (x y : Fin n → ℂ) : hJ ε x y = star (hJ ε y x) := by
   show hJ ε x y = (starRingEnd ℂ) (hJ ε y x)
   unfold hJ Formalism.REAL.Jm
@@ -402,8 +400,8 @@ theorem gram (ε : Fin n → Bool) (e f : Fin r → Fin n → ℂ) (z : Fin n �
       | cast a => simp [fam, hJ_swap ε z (e a), (hez a).1, last_ne a]
     | cast a =>
       induction c' using Fin.lastCases with
-      | last => simp [fam, (hez a).1, castSucc_ne a]
-      | cast a' => simp [fam, hee a a', castSucc_ne a]
+      | last => simp [fam, (hez a).1, Fin.castSucc_ne_last a]
+      | cast a' => simp [fam, hee a a', Fin.castSucc_ne_last a]
   · simp only [Sum.elim_inl, Sum.elim_inr, Gm, Matrix.fromBlocks_apply₁₂, Em, Matrix.of_apply]
     induction c using Fin.lastCases with
     | last => simp [fam, hJ_swap ε z (f b'), (hez b').2, last_ne b']

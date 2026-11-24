@@ -247,9 +247,6 @@ theorem setLIntegral_rotAbout {n : ℕ} (c : V n) {a : ℂ} (ha : ‖a‖ = 1) (
     lintegral_congr fun z => indicator_rotAbout c ha R g z]
   exact (measurePreserving_rotAbout c ha).lintegral_comp_emb (measurableEmbedding_rotAbout c ha) _
 
-theorem norm_exp_mul_I_eq_one (θ : ℝ) : ‖Complex.exp ((θ : ℂ) * I)‖ = 1 :=
-  Complex.norm_exp_ofReal_mul_I θ
-
 theorem continuous_rotAbout_exp {n : ℕ} (c : V n) :
     Continuous (fun p : ℝ × V n => rotAbout c (Complex.exp ((p.1 : ℂ) * I)) p.2) := by
   unfold rotAbout; fun_prop
@@ -260,11 +257,11 @@ theorem continuousOn_comp_rotAbout {n : ℕ} {c : V n} {R : ℝ} {u : V n → �
       (s ×ˢ ball c R) := by
   refine hu.continuousOn.comp (continuous_rotAbout_exp c).continuousOn ?_
   rintro ⟨θ, z⟩ ⟨_, hz⟩
-  exact (rotAbout_mem_ball_iff c (norm_exp_mul_I_eq_one θ) R z).2 hz
+  exact (rotAbout_mem_ball_iff c (Complex.norm_exp_ofReal_mul_I θ) R z).2 hz
 
 theorem mv : MVStatement := by
   intro n c R u r hu hr
-  have hT1 := norm_exp_mul_I_eq_one
+  have hT1 := Complex.norm_exp_ofReal_mul_I
   have hrot : ∀ θ : ℝ, ∫⁻ z in ball c R,
       ‖u (rotAbout c (Complex.exp ((θ : ℂ) * I)) z)‖ₑ ^ 2 * r ‖z - c‖ =
         ∫⁻ z in ball c R, ‖u z‖ₑ ^ 2 * r ‖z - c‖ := by

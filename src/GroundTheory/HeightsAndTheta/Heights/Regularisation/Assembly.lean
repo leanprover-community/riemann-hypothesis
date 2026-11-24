@@ -482,7 +482,7 @@ theorem tau_shifted_periodic (j : Fin a) (w : Fin n → ℂ) (hw : w ∈ logCove
     intro i
     by_cases hij : i = j
     · subst hij
-      simp only [Pi.add_apply, Pi.single_eq_same, add_div, div_self two_pi_I_ne_zero, add_smul,
+      simp only [Pi.add_apply, Pi.single_eq_same, add_div, div_self Complex.two_pi_I_ne_zero, add_smul,
         one_smul]
     · simp [cusp_ne P hij, hij]
   simp only [PeriodPolydisc.tau0, P.periodic j w hw]
@@ -521,7 +521,7 @@ theorem exp_quad (w : Fin n → ℂ) :
   rw [qf_tau, mul_add, Complex.exp_add, phi, Finset.mul_sum]
   congr 2
   refine Finset.sum_congr rfl fun i _ => ?_
-  field_simp [two_pi_I_ne_zero]
+  field_simp [Complex.two_pi_I_ne_zero]
 
 theorem norm_exp_quad_le (w : Fin n → ℂ) (hw : w ∈ logCover P.a_le) :
     ‖Complex.exp (2 * Real.pi * Complex.I * qf (P.τ w) v)‖ ≤ 1 := by

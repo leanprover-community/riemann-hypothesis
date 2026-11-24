@@ -56,9 +56,6 @@ section Witt
 
 variable {p : ℕ} [hp : Fact p.Prime] {R : Type*} [CommRing R] [CharP R p] [PerfectRing R p]
 
-lemma mem_span_p_iff (x : WittVector p R) : x ∈ span {(p : WittVector p R)} ↔ x.coeff 0 = 0 :=
-  WittVector.mem_span_p_iff_coeff_zero_eq_zero x
-
 lemma p_mul_eq_zero (x : WittVector p R) (h : x * p = 0) : x = 0 :=
   WittVector.eq_zero_of_p_mul_eq_zero x h
 
@@ -130,7 +127,7 @@ theorem regular (hO : ∀ x : O, (p : O) * x = 0 → x = 0) : RegularStatement p
   intro pflat hpf
   refine ⟨p_mem_nonZeroDivisors, ?_, ?_⟩
   · intro x hx
-    rw [mem_span_p_iff] at hx ⊢
+    rw [WittVector.mem_span_p_iff_coeff_zero_eq_zero] at hx ⊢
     rw [WittVector.mul_coeff_zero, WittVector.teichmuller_coeff_zero] at hx
     exact pflat_mul_eq_zero hO pflat hpf _ hx
   · intro htop
@@ -142,7 +139,7 @@ theorem regular (hO : ∀ x : O, (p : O) * x = 0 → x = 0) : RegularStatement p
     simp only [WittVector.add_coeff_zero, WittVector.mul_coeff_zero,
       WittVector.teichmuller_coeff_zero, WittVector.one_coeff_zero] at h2
     have hp0 : (p : WittVector p (PreTilt O p)).coeff 0 = 0 := by
-      rw [← mem_span_p_iff]; exact Ideal.mem_span_singleton_self _
+      rw [← WittVector.mem_span_p_iff_coeff_zero_eq_zero]; exact Ideal.mem_span_singleton_self _
     rw [hp0, mul_zero, zero_add, mul_comm] at h2
     have hu : IsUnit pflat := ⟨⟨pflat, _, h2, by rw [mul_comm]; exact h2⟩, rfl⟩
     have h3 := hu.map (PreTilt.untilt (O := O) (p := p))

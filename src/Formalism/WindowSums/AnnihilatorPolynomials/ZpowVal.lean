@@ -56,24 +56,22 @@ section ZpowValAux
 
 variable {ℓ : ℕ} [hℓ : Fact ℓ.Prime]
 
-alias zv_prime := _root_.PadicInt.prime_p
-
 lemma zv_emult_eq_val {x : ℤ_[ℓ]} (hx : x ≠ 0) :
     emultiplicity (ℓ : ℤ_[ℓ]) x = (x.valuation : ℕ∞) := by
   conv_lhs => rw [PadicInt.unitCoeff_spec hx]
-  rw [emultiplicity_mul zv_prime, emultiplicity_of_isUnit_right zv_prime.not_unit (Units.isUnit _),
-    zero_add, emultiplicity_pow_self_of_prime zv_prime]
+  rw [emultiplicity_mul PadicInt.prime_p, emultiplicity_of_isUnit_right PadicInt.prime_p.not_unit (Units.isUnit _),
+    zero_add, emultiplicity_pow_self_of_prime PadicInt.prime_p]
 
 lemma zv_emult_unit_mul {c : ℤ_[ℓ]} (hc : IsUnit c) (y : ℤ_[ℓ]) :
     emultiplicity (ℓ : ℤ_[ℓ]) (c * y) = emultiplicity (ℓ : ℤ_[ℓ]) y := by
-  rw [emultiplicity_mul zv_prime, emultiplicity_of_isUnit_right zv_prime.not_unit hc, zero_add]
+  rw [emultiplicity_mul PadicInt.prime_p, emultiplicity_of_isUnit_right PadicInt.prime_p.not_unit hc, zero_add]
 
 lemma zv_not_dvd_of_dvd_sub_one {x : ℤ_[ℓ]} (hx : (ℓ : ℤ_[ℓ]) ∣ x - 1) : ¬ (ℓ : ℤ_[ℓ]) ∣ x := by
   intro h
   have h1 : (ℓ : ℤ_[ℓ]) ∣ 1 := by
     have h2 := dvd_sub h hx
     rwa [sub_sub_cancel] at h2
-  exact zv_prime.not_unit (isUnit_of_dvd_one h1)
+  exact PadicInt.prime_p.not_unit (isUnit_of_dvd_one h1)
 
 lemma zv_two_sq_step (h2 : ℓ = 2) {x : ℤ_[ℓ]} (h4 : (ℓ : ℤ_[ℓ]) ^ 2 ∣ x - 1) :
     emultiplicity (ℓ : ℤ_[ℓ]) (x ^ 2 - 1) = emultiplicity (ℓ : ℤ_[ℓ]) (x - 1) + 1 := by
@@ -93,9 +91,9 @@ lemma zv_two_sq_step (h2 : ℓ = 2) {x : ℤ_[ℓ]} (h4 : (ℓ : ℤ_[ℓ]) ^ 2 
       rw [e, add_sub_cancel_left] at h5
       rw [pow_one]
       exact h5
-    have h6 := (pow_dvd_pow_iff zv_prime.ne_zero zv_prime.not_unit).1 h3
+    have h6 := (pow_dvd_pow_iff PadicInt.prime_p.ne_zero PadicInt.prime_p.not_unit).1 h3
     omega
-  rw [show x ^ 2 - 1 = (x - 1) * (x + 1) by ring, emultiplicity_mul zv_prime, hp1]
+  rw [show x ^ 2 - 1 = (x - 1) * (x + 1) by ring, emultiplicity_mul PadicInt.prime_p, hp1]
 
 lemma zv_pow_prime_pow (x : ℤ_[ℓ]) (hx : (ℓ : ℤ_[ℓ]) ∣ x - 1)
     (h2 : ℓ = 2 → (ℓ : ℤ_[ℓ]) ^ 2 ∣ x - 1) (k : ℕ) :
@@ -113,7 +111,7 @@ lemma zv_pow_prime_pow (x : ℤ_[ℓ]) (hx : (ℓ : ℤ_[ℓ]) ∣ x - 1)
       push_cast
       ring
   · have hodd : Odd ℓ := hℓ.out.odd_of_ne_two hl
-    have h1 := emultiplicity_pow_prime_pow_sub_pow_prime_pow (x := x) (y := 1) zv_prime hodd
+    have h1 := emultiplicity_pow_prime_pow_sub_pow_prime_pow (x := x) (y := 1) PadicInt.prime_p hodd
       (by simpa using hx) (zv_not_dvd_of_dvd_sub_one hx) k
     rwa [one_pow] at h1
 
@@ -132,7 +130,7 @@ lemma zv_pow_nat (x : ℤ_[ℓ]) (hx : (ℓ : ℤ_[ℓ]) ∣ x - 1)
   obtain ⟨e, m, hm, rfl⟩ := Nat.exists_eq_pow_mul_and_not_dvd hn ℓ hℓ.out.ne_one
   have hm0 : m ≠ 0 := right_ne_zero_of_mul hn
   have hy1 : (ℓ : ℤ_[ℓ]) ∣ x ^ ℓ ^ e - 1 := hx.trans (sub_one_dvd_pow_sub_one x _)
-  have h1 := emultiplicity_pow_sub_pow_of_prime zv_prime hy1
+  have h1 := emultiplicity_pow_sub_pow_of_prime PadicInt.prime_p hy1
     (zv_not_dvd_of_dvd_sub_one (by simpa using hy1)) (zv_not_dvd_cast hm)
   rw [one_pow] at h1
   have hv : padicValNat ℓ (ℓ ^ e * m) = e := by

@@ -1374,15 +1374,6 @@ section HS
 
 variable {A : Type} [CommRing A]
 
-theorem hs_succAbove_one_zero {n : ℕ} : (Fin.succAbove (1 : Fin (n + 2)) 0) = 0 := by
-  rfl
-
-theorem hs_succAbove_one_succ {n : ℕ} (i : Fin n) :
-    (Fin.succAbove (1 : Fin (n + 2)) i.succ) = i.succ.succ := by
-  apply Fin.succAbove_of_le_castSucc
-  rw [Fin.le_def]
-  simp
-
 theorem hs_isHess_succ {n : ℕ} {t : A} {M : Matrix (Fin (n + 1)) (Fin (n + 1)) A} (h : IsHess t M) :
     IsHess t (M.submatrix Fin.succ Fin.succ) := by
   intro i j
@@ -1394,11 +1385,11 @@ theorem hs_isHess_above {n : ℕ} {t : A} {M : Matrix (Fin (n + 2)) (Fin (n + 2)
   constructor
   · intro e
     obtain ⟨i', rfl⟩ : ∃ i', i = Fin.succ i' := ⟨i.pred (by intro h0; simp [h0] at e), by simp⟩
-    rw [Matrix.submatrix_apply, hs_succAbove_one_succ]
+    rw [Matrix.submatrix_apply, Fin.one_succAbove_succ]
     exact (h _ _).1 (by simp at e ⊢; omega)
   · intro e
     obtain ⟨i', rfl⟩ : ∃ i', i = Fin.succ i' := ⟨i.pred (by intro h0; simp [h0] at e), by simp⟩
-    rw [Matrix.submatrix_apply, hs_succAbove_one_succ]
+    rw [Matrix.submatrix_apply, Fin.one_succAbove_succ]
     exact (h _ _).2 (by simp at e ⊢; omega)
 
 theorem hess_laplace {n : ℕ} {t : A} (M : Matrix (Fin (n + 2)) (Fin (n + 2)) A) (h : IsHess t M) :
@@ -1444,7 +1435,7 @@ theorem hess_two {n : ℕ} {t : A} (M : Matrix (Fin n) (Fin n) A) (h : IsHess t 
       refine ⟨M 0 0 * r - r', ?_⟩
       rw [hess_laplace M h, hr, hr', hs_sg_succ, Fin.prod_univ_succ (fun i => M i i),
         Fin.prod_univ_succ (fun i => (M.submatrix (Fin.succAbove 1) Fin.succ) i i)]
-      simp only [Matrix.submatrix_apply, hs_succAbove_one_zero, hs_succAbove_one_succ]
+      simp only [Matrix.submatrix_apply, Fin.one_succAbove_zero, Fin.one_succAbove_succ]
       have h3 : (Fin.succ (0 : Fin (k + 1))) = 1 := rfl
       rw [h3]
       ring
@@ -2165,12 +2156,12 @@ theorem pw_main (hC : Cst R ϖ L₀ Λ₀ Q a b) (m : ℕ) (hm : 1 ≤ m) :
       (Fin.succAbove 1) Fin.succ) i i = y (sd 0) * ∏ i : Fin n, x i.succ := by
     have f0 : ((HH (t : K) (Fin.cons ρ x : Fin (n + 1 + 1) → K) y).submatrix
         (Fin.succAbove 1) Fin.succ) 0 0 = y (sd 0) := by
-      rw [Matrix.submatrix_apply, _root_.Formalism.FourierDecayAlt.P.OrbitalIntegralReduction.hs_succAbove_one_zero, hessenberg_entry_upper _ _ _ (Fin.succ_pos 0)]
+      rw [Matrix.submatrix_apply, Fin.one_succAbove_zero, hessenberg_entry_upper _ _ _ (Fin.succ_pos 0)]
       congr 1
     have f1 : ∀ i : Fin n, ((HH (t : K) (Fin.cons ρ x : Fin (n + 1 + 1) → K) y).submatrix
         (Fin.succAbove 1) Fin.succ) i.succ i.succ = x i.succ := by
       intro i
-      rw [Matrix.submatrix_apply, _root_.Formalism.FourierDecayAlt.P.OrbitalIntegralReduction.hs_succAbove_one_succ, _root_.Formalism.FourierDecayAlt.P.OrbitalIntegralReduction.hessenberg_entry_diagonal, Fin.cons_succ]
+      rw [Matrix.submatrix_apply, Fin.one_succAbove_succ, _root_.Formalism.FourierDecayAlt.P.OrbitalIntegralReduction.hessenberg_entry_diagonal, Fin.cons_succ]
     rw [Fin.prod_univ_succ, f0]
     simp only [f1]
   rw [hdiag'] at e₁
