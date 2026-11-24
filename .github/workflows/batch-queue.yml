@@ -65,7 +65,7 @@ name: batch queue
 # cannot change what it does. Nothing from a pull request is checked out or run:
 # GitHub performs the merges, and comparisons read git objects only.
 #
-# Queuing also compares the pull request with the others labelled `building` or `batch queue`
+# Queuing also compares the pull request with the others labelled `batch-building` or `batch queue`
 # and comments if git cannot merge it with one of them, or if one deletes a Lean file the other
 # starts to import. That job only reports.
 #

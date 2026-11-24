@@ -142,7 +142,7 @@ built. The label comes off when the head is the commit that was taken again, for
 another `batch` comment or once a batch merges in the new head, and when the pull request is no
 longer frozen.
 
-`batch-building`, `frozen` and `awaiting-author` keep a pull request out of the inbox (see
+"Labels at a glance" lists the labels that keep a pull request out of the inbox (see
 `.github/workflows/inbox.yml`). The label names are in `scripts/batch-labels.py`, and the `if:`
 of the sync job in `.github/workflows/batch-queue.yml` and of `.github/workflows/conflict-labels.yml`
 name some of them as well.
