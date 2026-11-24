@@ -35,27 +35,30 @@ jobs:
 
           base=$(gh api "repos/$REPO/pulls/$PR" --jq .base.sha)
           head=$(gh api "repos/$REPO/pulls/$PR" --jq .head.sha)
-          fork=$(gh api "repos/$REPO/compare/$base...$head?per_page=1" --jq .merge_base_commit.sha)
-          echo "pull request $PR: branched off at $fork, head $head"
+          # Get the fork owner to query blobs there (upstream won't know fork commits).
+          fork_owner=$(echo "${{ github.event.pull_request.head.repo.full_name }}" | cut -d/ -f1)
+          echo "pull request $PR: base $base, head $head, fork=$fork_owner"
 
-          # The blob hash of a file at a commit; nothing if the file is not there. Any other API
-          # failure stops the job.
+          # The blob hash of a file at a commit; tries upstream first, then fork.
+          # A pull request may not change challenge files, so we compare old vs new hashes.
           blob() {
-            local out
-            if out=$(gh api "repos/$REPO/contents/$2?ref=$1" --jq .sha 2>&1); then
-              printf '%s\n' "$out"
-            elif ! grep -q 'HTTP 404' <<<"$out"; then
-              printf '%s\n' "$out" >&2
-              return 1
+            local sha="$1" path="$2" out=""
+            # Try upstream first (works if commit is indexed there).
+            out=$(gh api "repos/$REPO/contents/$path?ref=$sha" --jq .sha 2>/dev/null || true)
+            [ -n "$out" ] && { printf '%s\n' "$out"; return; }
+            # Fall back to fork — works when commit is only known on the fork.
+            if [ -n "$fork_owner" ] && [ "$fork_owner" != "$(echo "$REPO" | cut -d/ -f1)" ]; then
+              out=$(gh api "repos/$fork_owner/$REPO/contents/$path?ref=$sha" \
+                --jq .sha 2>/dev/null || true)
             fi
+            if [ -n "$out" ]; then printf '%s\n' "$out"; else echo ""; fi
           }
 
           status=0
           for path in $frozen; do
-            old=$(blob "$fork" "$path")
-            new=$(blob "$head" "$path")
-            # A file that was not there before is being added, not changed.
-            if [ -n "$old" ] && [ "$old" != "$new" ]; then
+            base_hash=$(blob "$base" "$path")
+            head_hash=$(blob "$head" "$path")
+            if [ -n "$base_hash" ] && [ "$base_hash" != "$head_hash" ]; then
               echo "::error file=$path::This pull request changes $path, a Comparator challenge file."
               status=1
             else

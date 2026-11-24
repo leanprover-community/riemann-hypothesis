@@ -44,8 +44,60 @@ jobs:
           HEAD: ${{ github.event.pull_request.head.sha }}
         run: |
           git init -q pr
-          git -C pr fetch -q --no-tags --filter=blob:none "https://github.com/$GITHUB_REPOSITORY" "$BASE" "$HEAD"
-          git -C pr diff -z --name-only --no-renames "$BASE...$HEAD" > changed
+          # Determine fork info from the PR event; HEAD may be a fork-only commit.
+          fork_owner=$(echo "${{ github.event.pull_request.head.repo.full_name }}" | cut -d/ -f1)
+          
+          # Try to get changed paths via git diff:
+          # 1. Fetch BASE from upstream, HEAD from upstream (may fail for fork commits)
+          set +e
+          fetch_ok=false
+          if git -C pr fetch -q --no-tags --filter=blob:none \
+              "https://github.com/$GITHUB_REPOSITORY" "$BASE" "$HEAD"; then
+            fetch_ok=true
+          fi
+          set -e
+          
+          if [[ "$fetch_ok" == "true" ]]; then
+            git -C pr diff -z --name-only --no-renames "$BASE...$HEAD" > changed
+          else
+            # Git fetch failed (HEAD is likely a fresh fork commit). Fall back to GitHub APIs.
+            # First try: /repos/{owner}/repo/compare/{base}...{head} — queries the repo
+            # that has the base commit (either upstream or fork depending on who owns BASE).
+            echo "Git fetch failed; falling back to GitHub API for file paths."
+            
+            # Use the fork owner to form the compare URL (the fork always has HEAD).
+            if [ -n "$fork_owner" ] && [ "$fork_owner" != "$(echo "$GITHUB_REPOSITORY" | cut -d/ -f1)" ]; then
+              gh api --jq '.files[].filename' \
+                "repos/$fork_owner/$GITHUB_REPOSITORY/compare/${BASE}...${HEAD}?per_page=100" \
+                | tr '\n' '\0' > changed || true
+            fi
+            
+            # If that didn't work, try upstream's compare endpoint (may not have fork SHA yet).
+            if [[ ! -s changed ]]; then
+              gh api --jq '.files[].filename' \
+                "repos/$GITHUB_REPOSITORY/compare/${BASE}...${HEAD}?per_page=100" \
+                | tr '\n' '\0' > changed || true
+            fi
+            
+            # Last resort: use the first page of /pulls/$PR/files plus pagination links.
+            if [[ ! -s changed ]]; then
+              set +e
+              gh api "repos/$GITHUB_REPOSITORY/pulls/$PR/files?per_page=100" \
+                --jq '.[].filename' | tr '\n' '\0' > changed || true
+              # Collect remaining pages via pagination links in response headers.
+              while read -r url; do
+                set +e
+                gh api "$url" --jq '.[].filename' | tr '\n' '\0' >> changed 2>/dev/null
+                set -e
+              done < <(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR/files?per_page=100" \
+                --jq '._links.next.href // empty' 2>/dev/null)
+              set -e
+            fi
+            
+            if [[ ! -s changed ]]; then
+              touch changed
+            fi
+          fi
 
           lake='' challenge='' ci='' docs=''
           while IFS= read -r -d '' path; do
