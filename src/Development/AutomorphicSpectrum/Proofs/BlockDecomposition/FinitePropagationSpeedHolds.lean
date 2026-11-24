@@ -311,7 +311,7 @@ theorem pointwise_energy_ineq : ∀ {W ι : Type} [NormedAddCommGroup W] [InnerP
     have hmul : |L p * ⟪Y p, w⟫_ℝ| ≤ C₁ * ((1 / 2) * (‖Y p‖ ^ 2 + ‖w‖ ^ 2)) := by
       rw [abs_mul]
       have h2 : ‖Y p‖ * ‖w‖ ≤ (1 / 2) * (‖Y p‖ ^ 2 + ‖w‖ ^ 2) := by
-        nlinarith [sq_nonneg (‖Y p‖ - ‖w‖)]
+        linarith [sq_nonneg (‖Y p‖ - ‖w‖)]
       exact mul_le_mul (hL p) (hin.trans h2) (abs_nonneg _) hC₁
     have hle : L p * ⟪Y p, w⟫_ℝ ≤ C₁ * ((1 / 2) * (‖Y p‖ ^ 2 + ‖w‖ ^ 2)) :=
       (le_abs_self _).trans hmul
@@ -333,7 +333,7 @@ theorem pointwise_energy_ineq : ∀ {W ι : Type} [NormedAddCommGroup W] [InnerP
   have hN0 : (0 : ℝ) ≤ Fintype.card ι := Nat.cast_nonneg _
   have hbr : (1 / 4) * S + (1 / 4) * (Fintype.card ι : ℝ) * ‖w‖ ^ 2
       ≤ (1 + (Fintype.card ι : ℝ)) * D := by
-    nlinarith [mul_le_mul_of_nonneg_left hwD hN0, mul_nonneg hN0 hw2]
+    linarith [mul_le_mul_of_nonneg_left hwD hN0, mul_nonneg hN0 hw2]
   have hcC : (-c) * C₁ * ((1 / 4) * S + (1 / 4) * (Fintype.card ι : ℝ) * ‖w‖ ^ 2)
       ≤ (-c) * C * D := by
     have hnc : 0 ≤ -c := neg_nonneg.2 hc
@@ -349,17 +349,17 @@ theorem pointwise_energy_ineq : ∀ {W ι : Type} [NormedAddCommGroup W] [InnerP
       (mul_le_mul_of_nonneg_right (A.le_opNorm v) (norm_nonneg _))
   have hwv : ⟪w, v⟫_ℝ ≤ ‖w‖ * ‖v‖ := real_inner_le_norm _ _
   have hvw : 2 * (‖v‖ * ‖w‖) ≤ ‖v‖ ^ 2 + ‖w‖ ^ 2 := by
-    nlinarith [sq_nonneg (‖v‖ - ‖w‖)]
+    linarith [sq_nonneg (‖v‖ - ‖w‖)]
   have hvwD : 2 * (‖v‖ * ‖w‖) ≤ D := by rw [hD] at *; linarith
   have hA0 : 0 ≤ ‖A‖ := norm_nonneg _
   have hbrack : 2 * ⟪A v, w⟫_ℝ + 2 * ⟪w, v⟫_ℝ ≤ (‖A‖ + 1) * D := by
     have h3 : ‖A‖ * (2 * (‖v‖ * ‖w‖)) ≤ ‖A‖ * D := mul_le_mul_of_nonneg_left hvwD hA0
-    nlinarith
+    linarith
   have hφ' := mul_le_mul_of_nonneg_left hbrack hφ
   have hrew : (1 / 2) * ∑ p, c * L p * ⟪Y p, w⟫_ℝ
       = -(-(1 / 2) * ∑ p, c * L p * ⟪Y p, w⟫_ℝ) := by ring
   rw [hrew]
-  nlinarith
+  linarith
 
 end GlobalTheory.CompanionTheory.WaveSpd
 end -- clump:auto
@@ -785,7 +785,7 @@ theorem energy_diff_ineq : ∀ {n : ℕ} {W : Type} [NormedAddCommGroup W] [Inne
       have h2 := (abs_lt.1 (Real.dist_eq s' s ▸ Metric.mem_ball.1 hs')).1
       linarith
     have h3 := mul_nonneg hC0 h0
-    have h4 : 1 ≤ ℓ y.val + C * s' - r := by rw [hR] at hy'; nlinarith
+    have h4 : 1 ≤ ℓ y.val + C * s' - r := by rw [hR] at hy'; linarith
     simp only [ρ, cw, hχ1 _ h4, zero_mul]
   have hder := _root_.GlobalTheory.CompanionTheory.WaveSpd.IntDeriv.hasDerivAt_integral_compact μ ρ hρ _ hK s 1 one_pos hvan
   refine ⟨_, hder, ?_⟩
@@ -802,7 +802,7 @@ theorem energy_diff_ineq : ∀ {n : ℕ} {W : Type} [NormedAddCommGroup W] [Inne
   have hRs : r + 1 - C * s ≤ R := by
     have h1 := neg_abs_le s
     have h2 : 0 ≤ C * (|s| + 1 + s) := mul_nonneg hC0 (by linarith)
-    rw [hR]; nlinarith
+    rw [hR]; linarith
   have hrrvan : ∀ (p : Ix n) (y : G n), y ∉ {y : G n | ℓ y.val ≤ R} →
       Rr (hm p) (Ψ p s) y.val = 0 := by
     intro p y hy
@@ -927,7 +927,7 @@ theorem sq_le_dens [NormedSpace ℝ W] (u : ℝ → Mat n → W) (s : ℝ) (y : 
     ‖u s y‖ ^ 2 ≤ dens u s y := by
   unfold dens
   have : 0 ≤ ∑ p : Ix n, ‖Rt (hm p) u s y‖ ^ 2 := Finset.sum_nonneg (fun _ _ => by positivity)
-  nlinarith [sq_nonneg ‖dt u s y‖]
+  linarith [sq_nonneg ‖dt u s y‖]
 
 theorem dens_continuousOn [NormedSpace ℝ W] (u : ℝ → Mat n → W) (hu : Sm u) (s : ℝ) :
     ContinuousOn (dens u s) (GLs n) := by
@@ -1369,7 +1369,7 @@ theorem asmSpeed : AsmSpeed := by
     refine speed_pos hL hR C₁ hC₁ hlg χ h1 h2 h3 h4 h5 E u hu t ht x hx C le_rfl ?_
     intro y hy hle
     refine h0 y hy (hle.trans ?_)
-    nlinarith [mul_nonneg hC0 ht, mul_nonneg hl0 ht]
+    linarith [mul_nonneg hC0 ht, mul_nonneg hl0 ht]
   intro E u hu t x hx h0
   rcases le_total 0 t with ht | ht
   · exact key E u hu t ht x hx (by rwa [abs_of_nonneg ht] at h0)

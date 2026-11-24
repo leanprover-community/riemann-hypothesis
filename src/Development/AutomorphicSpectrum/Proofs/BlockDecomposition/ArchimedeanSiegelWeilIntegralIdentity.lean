@@ -303,7 +303,7 @@ theorem peetre (x y : V) : 1 + ‖y‖ ≤ (1 + ‖x + y‖) * (1 + ‖x‖) := 
   have h : ‖y‖ ≤ ‖x + y‖ + ‖x‖ := by
     have := norm_sub_le (x + y) x
     simpa using this
-  nlinarith [norm_nonneg (x + y), norm_nonneg x, mul_nonneg (norm_nonneg (x + y)) (norm_nonneg x)]
+  linarith [norm_nonneg (x + y), norm_nonneg x, mul_nonneg (norm_nonneg (x + y)) (norm_nonneg x)]
 
 theorem diffFun_bound (f : SchwartzMap V ℂ) (k n K : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ x y : V,
@@ -582,18 +582,18 @@ theorem one_var (l : ℝ) :
       refine lintegral_mono fun z => ENNReal.ofReal_le_ofReal ?_
       have ha : (0:ℝ) ≤ ((1 + ‖z‖) ^ 3)⁻¹ := by positivity
       have hb : ((1 + |l| * ‖z‖) ^ 3)⁻¹ ≤ 1 := inv_le_one_of_one_le₀
-        (one_le_pow₀ (by nlinarith [norm_nonneg z, abs_nonneg l]))
-      nlinarith
+        (one_le_pow₀ (by linarith [mul_nonneg (abs_nonneg l) (norm_nonneg z)]))
+      exact mul_le_of_le_one_right ha hb
     refine h1.trans ?_
     conv_lhs => rw [← hI]
     refine ENNReal.ofReal_le_ofReal ?_
     have h2 : l ^ 2 ≤ 1 := by
       rw [← sq_abs]
-      nlinarith [abs_nonneg l]
+      linarith [sq_le_sq' (by linarith [abs_nonneg l]) h]
     have h3 : (1 : ℝ) ≤ 2 * (1 + l ^ 2)⁻¹ := by
       rw [← div_eq_mul_inv, le_div_iff₀ (by positivity)]
       linarith
-    nlinarith
+    linarith [mul_le_mul_of_nonneg_left h3 hI0]
   · have hl : l ≠ 0 := by
       rintro rfl
       simp at h
@@ -603,7 +603,7 @@ theorem one_var (l : ℝ) :
       have ha : (0:ℝ) ≤ ((1 + |l| * ‖z‖) ^ 3)⁻¹ := by positivity
       have hb : ((1 + ‖z‖) ^ 3)⁻¹ ≤ 1 := inv_le_one_of_one_le₀
         (one_le_pow₀ (by linarith [norm_nonneg z]))
-      nlinarith
+      exact mul_le_of_le_one_left ha hb
     refine h1.trans ?_
     rw [lint_scale hl]
     conv_lhs => rw [← hI]
@@ -611,11 +611,11 @@ theorem one_var (l : ℝ) :
     refine ENNReal.ofReal_le_ofReal ?_
     have h2 : 1 ≤ l ^ 2 := by
       rw [← sq_abs]
-      nlinarith
+      exact one_le_pow₀ h.le
     have h3 : (l ^ 2)⁻¹ ≤ 2 * (1 + l ^ 2)⁻¹ := by
       rw [← div_eq_mul_inv, inv_eq_one_div, div_le_div_iff₀ (by positivity) (by positivity)]
       linarith
-    nlinarith
+    linarith [mul_le_mul_of_nonneg_left h3 hI0]
 
 theorem pi_bound {n : ℕ} (l : Fin n → ℝ) :
     ∫⁻ z : Fin n → ℂ, ∏ i, wt (l i) (z i) ≤
@@ -980,7 +980,7 @@ theorem weight_le (κ : Type) [Fintype κ] (L : ℕ) (C r s : ℝ) (u v : κ →
       rw [← mul_inv, ← mul_pow]
       apply inv_anti₀ (pow_pos hv1 L)
       apply pow_le_pow_left₀ hv1.le
-      nlinarith [hvs k]
+      linarith [hvs k]
     exact mul_le_mul h1 h2 (mul_nonneg (inv_nonneg.mpr (pow_nonneg hC0.le L))
       (inv_nonneg.mpr (pow_nonneg hs1.le L))) (inv_nonneg.mpr (pow_nonneg hu1.le L))
   calc ((1 + r) ^ (Fintype.card κ * L))⁻¹ * ((1 + s) ^ (Fintype.card κ * L))⁻¹
@@ -1606,7 +1606,7 @@ theorem one_le_detW : ∀ (n : ℕ) (b : Matrix (Fin n) (Fin n) ℂ), b.IsHermit
   unfold detW
   rw [det_one_add_sq_eq_prod_eigenvalues n b hb, Complex.ofReal_re]
   have : ∀ i ∈ (Finset.univ : Finset (Fin n)), (1 : ℝ) ≤ 1 + hb.eigenvalues i ^ 2 := fun i _ => by
-    nlinarith [sq_nonneg (hb.eigenvalues i)]
+    linarith [sq_nonneg (hb.eigenvalues i)]
   calc (1 : ℝ) = ∏ _i : Fin n, (1 : ℝ) := by simp
     _ ≤ _ := Finset.prod_le_prod₀ (fun _ _ => zero_le_one) this
 
