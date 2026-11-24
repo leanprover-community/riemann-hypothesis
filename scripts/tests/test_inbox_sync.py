@@ -168,7 +168,8 @@ class Sweep(unittest.TestCase):
     def test_drafts_batches_and_decided_pull_requests_stay_out(self):
         gh = Fake([node(1, draft=True), node(2, ref="batch/citations"),
                    node(3, labels=["batch queue"]), node(4, labels=["building"]),
-                   node(5, labels=["awaiting-author"]), node(6, state="CLOSED")])
+                   node(5, labels=["awaiting-author"]), node(6, state="CLOSED"),
+                   node(7, labels=["batch-building", "frozen"]), node(8, labels=["frozen"])])
         sweep(gh)
         self.assertEqual(gh.writes, [])
 

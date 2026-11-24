@@ -7,7 +7,8 @@ and for every open pull request every fifteen minutes. Nothing from a pull reque
 Everything is read from GitHub's API, and the only thing written is the label.
 
 A pull request can be in the inbox when it is open, is not a draft, is not a batch, and carries
-none of `batch queue`, `building` and `awaiting-author`. A batch is a pull request from a branch
+none of `batch queue`, `building`, `batch-building`, `frozen` and `awaiting-author` (named in
+`batch-labels.py`). A batch is a pull request from a branch
 named `batch/...`, in this repository or a fork.
 
 A pull request enters review when it is opened, reopened or marked ready, and again when
@@ -34,16 +35,21 @@ from __future__ import annotations
 
 import argparse
 import datetime
+import importlib.util
 import json
 from pathlib import Path
 import subprocess
 import sys
 
+_LABELS_SPEC = importlib.util.spec_from_file_location("rh_batch_labels", Path(__file__).with_name("batch-labels.py"))
+_labels = importlib.util.module_from_spec(_LABELS_SPEC)
+_LABELS_SPEC.loader.exec_module(_labels)
+
 INBOX = "inbox"
 # Handed back to the author. Taking it off hands the pull request back to the maintainers.
-WAITING = "awaiting-author"
+WAITING = _labels.WAITING
 # Labels that mean a maintainer has already decided what happens next.
-DECIDED = ("batch queue", "building", WAITING)
+DECIDED = (_labels.QUEUED, _labels.BUILDING, _labels.MEMBER, _labels.FROZEN, WAITING)
 # Labels that label-pr.yml keeps up to date from the files a pull request changes and its size.
 # Someone adding or removing one of these by hand has not responded to the pull request: they were
 # all put on by hand once, before that workflow existed.

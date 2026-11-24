@@ -31,12 +31,29 @@ A batch assembled by hand is being built for as long as its pull request is open
 holds the head commit of an open pull request, and this script labels its pull request
 `building` to say so. One that is labelled `batch queue` itself waits in the queue like any
 other pull request instead. What it contains is every open pull request whose head commit is in
-its branch, queued or not, into main or into another branch. They are labelled `building`, in
-place of `batch queue` for those that had it. This script records them in a comment of its own
-on the batch's pull request, and looks through the branch again when its head moves. A pull
-request that has left the branch by then loses `building`, and so does everything in it once
-the batch is merged or closed. Those that had `batch queue` before get it back, unless the
-batch was merged.
+its branch, queued or not, into main or into another branch. They are labelled `batch-building`
+and `frozen`, in place of `batch queue` for those that had it, and each is told once in a
+comment not to push until the batch has landed. This script records them in a comment of its
+own on the batch's pull request, and looks through the branch again when its head moves. A pull
+request that has left the branch by then loses both labels and is told so, and so does
+everything in it once the batch is merged or closed. Those that had `batch queue` before get it
+back, unless the batch was merged.
+
+A pull request that is pushed to after the batch took its commit is still in the batch, at that
+commit. It is told that the batch lands only that commit, and is labelled `awaiting-author`. When
+the batch is merged, GitHub marks merged each pull request whose head commit is in it and whose
+base is main. One whose head has moved on stays open: it is told what landed and what did not,
+and keeps `awaiting-author`. One whose head landed but whose base is another branch is closed,
+with a comment saying where its commit went, since GitHub does not mark it merged.
+
+The description of a batch assembled by hand lists pull requests under headings ending with a
+colon. Those listed under a heading that says "left out" or "not included" are told so in a
+comment quoting the heading and their entry, and are labelled `awaiting-author`. `batch queue`
+stays on them. A pull request told the same thing before, by any batch, is not told again. One
+whose entry is removed from the description is told that too. Which pull requests a batch
+contains is read from its branch, never from its description. The names of the labels are in
+`batch-labels.py`, and `verification/BATCHES.md` says what someone assembling a batch by hand
+should do for all this to work.
 
 The batch being assembled is built on top of the batch assembled by hand that is being built,
 when exactly one into main is: its branch starts at that batch's head, and its pull request is
@@ -52,9 +69,10 @@ then.
 Taking a pull request out of the queue never changes a batch. Commits already merged into one
 stay there, and the batch's description says so. No batch is rebuilt for that.
 
-A pull request that is closed, whether merged or not, loses `batch queue` and `building`: it is
-neither waiting for a build nor in one any more. The pull request of a batch assembled by hand
-is the exception, because it keeps `building` until it has been tidied up after. When a pull
+A pull request that is closed, whether merged or not, loses `batch queue`, `building`,
+`batch-building` and `frozen`: it is neither waiting for a build nor in one any more. The pull
+request of a batch assembled by hand is the exception, because it keeps `building` until it has
+been tidied up after. When a pull
 request is reopened, `batch queue` comes back if this workflow was the last to take a label off,
 and the pull request was not taken out of the queue with `-batch` meanwhile. A label a person
 took off stays off.
@@ -69,15 +87,23 @@ from __future__ import annotations
 
 import argparse
 import datetime
+import hashlib
+import importlib.util
 import json
 from pathlib import Path
 import re
 import subprocess
 import sys
 
-QUEUED, BUILDING = "batch queue", "building"
+_LABELS_SPEC = importlib.util.spec_from_file_location("rh_batch_labels", Path(__file__).with_name("batch-labels.py"))
+_labels = importlib.util.module_from_spec(_LABELS_SPEC)
+_LABELS_SPEC.loader.exec_module(_labels)
+QUEUED, BUILDING, MEMBER, FROZEN = _labels.QUEUED, _labels.BUILDING, _labels.MEMBER, _labels.FROZEN
 # A maintainer's label: pull requests that carry it go into a batch before the others.
-PRIORITY = "priority"
+PRIORITY, WAITING = _labels.PRIORITY, _labels.WAITING
+# What a pull request in a batch assembled by hand carries, `building` from before the batch's
+# pull request and its members were labelled differently included.
+IN_BATCH = (MEMBER, FROZEN, BUILDING)
 PREFIX = "batch/"
 # The name `start` gives a batch branch. Any other `batch/...` branch is not this script's.
 OWN_BATCH = re.compile(r"batch/[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{6}(?:-[0-9]+)?")
@@ -99,6 +125,17 @@ MOVED = "<!-- batch-queue-moved {sha} -->"
 STAYS = "<!-- batch-queue-stays {branch} -->"
 # The comment on a batch assembled by hand that records what it contains.
 BY_HAND = re.compile(r"<!-- batch-queue-by-hand (\{.*\}) -->")
+# Comments this script leaves on what a batch assembled by hand contains or leaves out.
+FROZEN_NOTE = "<!-- batch-queue-frozen {number} {sha} -->"
+PUSHED = "<!-- batch-queue-pushed-while-frozen {number} {sha} -->"
+DROPPED = "<!-- batch-queue-dropped {number} {sha} -->"
+UNFROZEN = "<!-- batch-queue-unfrozen {number} -->"
+LANDED_BEFORE_PUSH = "<!-- batch-queue-landed-before-push {number} {sha} -->"
+LANDED_ELSEWHERE = "<!-- batch-queue-landed-elsewhere {number} {sha} -->"
+LEFT_OUT = re.compile(r"<!-- batch-queue-left-out (\{.*?\}) -->")
+NO_LONGER_LEFT_OUT = "<!-- batch-queue-no-longer-left-out {number} -->"
+# A heading in a batch's description under which the pull requests listed are left out.
+LEFT_OUT_HEADING = re.compile(r"\b(?:left out|not included)\b", re.IGNORECASE)
 # In a batch pull request's text: the part this script writes, and its note to itself.
 BODY = "<!-- batch-queue -->"
 STATE = re.compile(r"<!-- batch-queue-state (\{.*\}) -->")
@@ -202,15 +239,36 @@ def by_hand(pr):
     return pr["own"] and pr["ref"].startswith(PREFIX) and not own_batch(pr["ref"])
 
 
+def names(given):
+    """A label, several of them, or None, as a list."""
+    return [given] if isinstance(given, str) else [name for name in (given or ()) if name]
+
+
 def relabel(gh, pr_or_number, add=None, remove=None):
-    """Change labels on GitHub, and on our own copy of the pull request when we hold one."""
+    """Change labels on GitHub, and on our own copy of the pull request when we hold one.
+
+    `add` and `remove` are a label each or several. With our own copy, only the labels it is
+    missing are added and only those it carries are removed. Without one, `remove` is sent as
+    it is, and should name only labels the pull request carries.
+    """
     number = pr_or_number["number"] if isinstance(pr_or_number, dict) else pr_or_number
-    if add:
-        gh.write("POST", f"issues/{number}/labels", {"labels": [add]})
-    if remove:
-        gh.write("DELETE", f"issues/{number}/labels/{quoted(remove)}")
+    add, remove = names(add), [name for name in names(remove) if name not in names(add)]
     if isinstance(pr_or_number, dict):
-        pr_or_number["labels"] = (pr_or_number["labels"] | ({add} if add else set())) - {remove}
+        have = pr_or_number["labels"]
+        add, remove = [name for name in add if name not in have], [name for name in remove if name in have]
+    if add:
+        gh.write("POST", f"issues/{number}/labels", {"labels": add})
+    for name in remove:
+        gh.write("DELETE", f"issues/{number}/labels/{quoted(name)}")
+    if isinstance(pr_or_number, dict):
+        pr_or_number["labels"] = (pr_or_number["labels"] | set(add)) - set(remove)
+
+
+def say(gh, number, marker, text):
+    """Leave a comment on a pull request without looking for an earlier one: for things that
+    happen once, or that the caller keeps track of itself. Returns its id, or None."""
+    status, data = gh.write("POST", f"issues/{number}/comments", {"body": f"{marker}\n{text}\n"})
+    return (data or {}).get("id") if status == 201 else None
 
 
 def by_workflow(comment):
@@ -500,13 +558,14 @@ def built_by_hand(gh, pulls, log):
     One labelled `building` is being built. One that is not is looked through, at a request or
     so, and labelled `building` once its branch holds the head commit of an open pull request:
     the label is how it is found again after it is closed. One labelled `batch queue` and not
-    `building` is waiting in the queue like any other pull request, and is not looked at.
-    Reading the note costs a request for each. `commits` is what the branch was found to hold,
-    or None when it was not looked through.
+    `building` is waiting in the queue like any other pull request, and is not looked at. Nor is
+    one labelled `batch-building` and not `building`: another batch contains it, and it is built
+    as part of that one. Reading the note costs a request for each. `commits` is what the branch
+    was found to hold, or None when it was not looked through.
     """
     found = []
     for pr in sorted(pulls.values(), key=lambda pr: pr["number"]):
-        if not by_hand(pr) or (QUEUED in pr["labels"] and BUILDING not in pr["labels"]):
+        if not by_hand(pr) or (pr["labels"] & {QUEUED, MEMBER} and BUILDING not in pr["labels"]):
             continue
         commits = None
         if BUILDING not in pr["labels"]:
@@ -545,16 +604,27 @@ def contains(gh, head, commit):
     return data["ahead_by"] == 0
 
 
-def hold(gh, batch, pulls, held, log):
-    """Find what a batch assembled by hand contains, record it, and label it `building`.
+def kept(note, name):
+    """A map the note keeps, as {number: value}, or an empty one."""
+    found = note.get(name)
+    return dict(found) if isinstance(found, dict) else {}
+
+
+def hold(gh, batch, pulls, held, main, log):
+    """Find what a batch assembled by hand contains, record it, label it and tell it so.
 
     It contains each open pull request whose head commit is in its branch, queued or not. When
     the branch's head has moved since the note was written, its commits are listed again, a
     request for each hundred of them. What has arrived is added. What was found before stays as
-    long as the commit it was found at is still there, even after its author has pushed again.
-    Whatever has left loses `building` unless another batch contains it, and goes back to
-    `batch queue` if it was queued before. `held` says, for each pull request, which batches
+    long as the commit it was found at is still there, even after its author has pushed again,
+    unless its new head is in the branch too. Whatever has left loses `batch-building` and
+    `frozen` unless another batch contains it, goes back to `batch queue` if it was queued
+    before, and is told it can push again. `held` says, for each pull request, which batches
     contain it. Returns whether anything was queued again.
+
+    Each pull request it contains is told once that it is frozen, and once that it was pushed to
+    afterwards, if it was: that also labels it `awaiting-author`. Those the batch's description
+    lists as left out are told so (see `tell_left_out`). The note remembers who was told what.
     """
     note, number, requeued = batch["note"], batch["number"], False
     found, queued, new = members(note), queued_before(note), set()
@@ -570,24 +640,57 @@ def hold(gh, batch, pulls, held, log):
         if commits is None:
             log.append(f"GitHub did not list every commit of the batch #{number}: the next run looks again")
             return False
-        now = {key: commit for key, commit in found.items() if commit in commits}
-        for key, commit in inside(batch, pulls, commits).items():
-            now.setdefault(key, commit)
+        now = inside(batch, pulls, commits)
+        for key, commit in found.items():
+            if commit in commits:
+                now.setdefault(key, commit)
         for key in sorted(set(found) - set(now), key=int):
             pr = pulls.get(int(key))
-            if pr and BUILDING in pr["labels"] and not held.get(key, set()) - {number}:
+            if pr and pr["labels"] & set(IN_BATCH) and not held.get(key, set()) - {number}:
                 back = key in queued
-                relabel(gh, pr, add=QUEUED if back else None, remove=BUILDING)
+                relabel(gh, pr, add=QUEUED if back else None, remove=IN_BATCH)
                 requeued |= back
+                if not by_hand(pr):
+                    say(gh, pr["number"], DROPPED.format(number=number, sha=found[key]),
+                        f"Commit `{found[key][:10]}` of this pull request is no longer in batch #{number}: its branch "
+                        f"was changed without it. This pull request is no longer `{FROZEN}`, and you can push to it "
+                        "again." + (" It is back in the batch queue." if back else ""))
                 log.append(f"#{key} is no longer in the batch #{number}: "
-                           + (f"`{QUEUED}` again" if back else f"no longer `{BUILDING}`"))
+                           + (f"`{QUEUED}` again" if back else f"no longer `{MEMBER}`"))
         new, found = set(now) - set(found), now
     queued = {key for key in found if key in queued or QUEUED in (pulls.get(int(key)) or {}).get("labels", ())}
-    batch["note"] = {"head": batch["sha"], "members": found, "queued": sorted(queued, key=int)}
+    told = {key: commit for key, commit in kept(note, "told").items() if found.get(key) == commit}
+    pushed = {key: commit for key, commit in kept(note, "pushed").items() if found.get(key) == commit}
 
-    # The record first and the labels second, so that whatever carries `building` because of
-    # this batch is in the record when the batch is finished with. A label taken off by hand is
-    # not put back, except that a pull request queued again swaps `batch queue` for it.
+    for key in sorted(found, key=int):
+        pr, commit = pulls.get(int(key)), found[key]
+        if pr is None or by_hand(pr) or (told.get(key) == commit and (pr["sha"] == commit or pushed.get(key) == commit)):
+            continue
+        if gh.short():
+            log.append(f"only {gh.remaining} requests left this hour: stopped telling what is in the batch #{number}, "
+                       "and the next run carries on")
+            break
+        if told.get(key) != commit:
+            say(gh, pr["number"], FROZEN_NOTE.format(number=number, sha=commit), frozen_text(number, commit, pr, main))
+            told[key] = commit
+            log.append(f"told #{key} that it is frozen while the batch #{number} is built")
+        if pr["sha"] != commit and pushed.get(key) != commit:
+            say(gh, pr["number"], PUSHED.format(number=number, sha=pr["sha"]),
+                f"This pull request was pushed to after batch #{number} took its commit `{commit[:10]}`. The batch "
+                f"builds and lands `{commit[:10]}` only, not `{pr['sha'][:10]}`, so when it lands this pull request "
+                f"stays open with what came after `{commit[:10]}`. Once the batch has landed, merge `{main}` into "
+                "this branch and comment `ready`, or close this pull request if nothing is left to change.")
+            relabel(gh, pr, add=WAITING)
+            pushed[key] = commit
+            log.append(f"told #{key} that it was pushed to after the batch #{number} took it: now `{WAITING}`")
+    left = tell_left_out(gh, batch, pulls, found, kept(note, "left"), log)
+    batch["note"] = {"head": batch["sha"], "members": found, "queued": sorted(queued, key=int),
+                     "told": told, "pushed": pushed, "left": left}
+
+    # The record first and the labels second, so that whatever carries `batch-building` because
+    # of this batch is in the record when the batch is finished with. A label taken off by hand
+    # is not put back, except that a pull request queued again swaps `batch queue` for it. A
+    # member still labelled `building` is from before members were labelled differently.
     text = describe_by_hand(batch["note"])
     if batch["comment"] is None:
         gh.write("POST", f"issues/{number}/comments", {"body": text})
@@ -595,14 +698,98 @@ def hold(gh, batch, pulls, held, log):
         gh.write("PATCH", f"issues/comments/{batch['comment']['id']}", {"body": text})
     for key in sorted(found, key=int):
         pr = pulls.get(int(key))
-        if pr and QUEUED in pr["labels"]:
-            relabel(gh, pr, add=BUILDING, remove=QUEUED)
-        elif pr and key in new and BUILDING not in pr["labels"]:
-            relabel(gh, pr, add=BUILDING)
-        else:
-            continue
-        log.append(f"#{key} is in the batch #{number}: now `{BUILDING}`")
+        if pr and (pr["labels"] & {QUEUED, BUILDING} or (key in new and MEMBER not in pr["labels"])):
+            relabel(gh, pr, add=(MEMBER, FROZEN), remove=(QUEUED, BUILDING))
+            log.append(f"#{key} is in the batch #{number}: now `{MEMBER}` and `{FROZEN}`")
     return requeued
+
+
+def frozen_text(number, commit, pr, main):
+    """What a pull request in a batch assembled by hand is told when the batch takes it."""
+    text = (f"Commit `{commit[:10]}` of this pull request is in batch #{number}, which is being built. Please "
+            "don't push to this pull request until the batch has landed or been closed: the batch builds and lands "
+            f"`{commit[:10]}`, and commits pushed after it are not part of it.")
+    if pr["base"] == main:
+        return text + " When the batch lands, GitHub marks this pull request merged."
+    return (text + f" This pull request targets `{pr['base']}` rather than `{main}`, so GitHub will not mark it "
+            "merged when the batch lands. If its head is still this commit then, this workflow closes it instead.")
+
+
+def left_out(body, repo):
+    """The pull requests a batch's description lists as left out, as {number: (heading, entry)}.
+
+    A heading is a line of its own, not part of a list, that ends with a colon. The pull
+    requests under it are the list entries that start with a link to one, `#123` or its full
+    URL. Those under a heading that says "left out" or "not included" are the ones left out,
+    up to the next heading or paragraph. A pull request listed twice keeps its first entry.
+    """
+    link = re.compile(rf"[-*]\s+(?:https://github\.com/{re.escape(repo)}/pull/|#)(\d+)\b", re.IGNORECASE)
+    found, heading = {}, None
+    for line in body.splitlines():
+        text = line.strip()
+        if not text or line[0].isspace():
+            continue
+        if line.startswith(("- ", "* ")):
+            match = link.match(line)
+            if heading and match:
+                found.setdefault(int(match.group(1)), (heading, text[1:].strip()))
+            continue
+        heading = text if text.endswith(":") and LEFT_OUT_HEADING.search(text) else None
+    return found
+
+
+def tell_left_out(gh, batch, pulls, found, before, log):
+    """Tell each open pull request a batch's description lists as left out what it says.
+
+    The comment quotes the heading and the pull request's entry, and the pull request is
+    labelled `awaiting-author`. One whose latest such comment, from this batch or another, says
+    the same is not told again, so a pull request left out of batch after batch for the same
+    reason hears it once. One whose entry has gone from the description since it was told is
+    told that. What the batch contains is never told it is left out. `before` is what the note
+    remembers from earlier runs, {number: digest of the entry}. Returns the same for now.
+    """
+    number, now = batch["number"], {}
+    listed = left_out(pulls[number]["body"], gh.repo)
+    for key in sorted(set(before) | {str(other) for other in listed}, key=int):
+        pr = pulls.get(int(key))
+        if pr is None or key in found or is_batch(pr) or by_hand(pr):
+            continue
+        entry = listed.get(int(key))
+        digest = hashlib.sha256("\n".join(entry).encode()).hexdigest()[:16] if entry else None
+        if before.get(key) == digest:
+            if digest:
+                now[key] = digest
+            continue
+        if gh.short():
+            # Remembered as it was, so that the next run looks again.
+            if key in before:
+                now[key] = before[key]
+            continue
+        if entry is None:
+            say(gh, pr["number"], NO_LONGER_LEFT_OUT.format(number=number),
+                f"The description of batch #{number} no longer lists this pull request as left out. If you were "
+                "waiting on that, comment `ready`.")
+            log.append(f"told #{key} that the batch #{number} no longer lists it as left out")
+            continue
+        now[key] = digest
+        latest = None
+        for comment in gh.pages(f"issues/{key}/comments"):
+            match = LEFT_OUT.match(comment.get("body") or "") if by_workflow(comment) else None
+            if match:
+                latest = match.group(1)
+        try:
+            if latest and json.loads(latest).get("digest") == digest:
+                continue
+        except ValueError:
+            pass
+        heading, text = entry
+        marker = f"<!-- batch-queue-left-out {json.dumps({'batch': number, 'digest': digest}, sort_keys=True)} -->"
+        say(gh, pr["number"], marker,
+            f"Batch #{number} leaves this pull request out. Its description says:\n\n> {heading}\n>\n> {text}\n\n"
+            "Once you have dealt with that, comment `ready` to hand this pull request back to the maintainers.")
+        relabel(gh, pr, add=WAITING)
+        log.append(f"told #{key} that the batch #{number} leaves it out: now `{WAITING}`")
+    return now
 
 
 def describe_by_hand(note):
@@ -611,9 +798,11 @@ def describe_by_hand(note):
     return (f"<!-- batch-queue-by-hand {json.dumps(note, sort_keys=True)} -->\n"
             "While this pull request is open, the batch-queue workflow takes it to be a batch that is being built. "
             "It adds nothing to a batch assembled by hand and leaves its description alone, but it keeps the labels "
-            f"in step: each open pull request whose head commit is in this branch is now `{BUILDING}`, in place of "
-            f"`{QUEUED}` if it had that. When this is merged they lose `{BUILDING}`. If it is closed without being "
-            f"merged they lose it too, and the ones that were queued go back to `{QUEUED}`.\n\n"
+            f"in step: each open pull request whose head commit is in this branch is now `{MEMBER}` and `{FROZEN}`, "
+            f"in place of `{QUEUED}` if it had that, and is asked not to push until this has landed. Those this "
+            f"description lists as left out are told why and labelled `{WAITING}`. When this is merged the pull "
+            f"requests in it lose `{MEMBER}` and `{FROZEN}`. If it is closed without being merged they lose them too, "
+            f"and the ones that were queued go back to `{QUEUED}`. See `verification/BATCHES.md`.\n\n"
             f"In this batch: {listed}.\n")
 
 
@@ -692,34 +881,56 @@ def on_top(state, crowded=()):
 # One run.
 
 
-def finish(gh, pulls, held, leftover, main_sha, closed_building, log):
+def finish(gh, pulls, held, leftover, main, main_sha, closed_building, closed_labels, log):
     """Tidy up after batches that were merged or closed. `held` is what the open batches
-    assembled by hand contain, and a pull request one of them contains keeps `building`.
+    assembled by hand contain, and a pull request one of them contains keeps its labels.
+    `closed_labels` is what each closed pull request still labelled `building` or
+    `batch-building` carries, by number.
+
+    When a batch assembled by hand was merged, GitHub marks merged each pull request in it whose
+    head commit landed and whose base is main. Of those still open, one whose head has moved on
+    since the batch took it is told what landed and is labelled `awaiting-author`, and one whose
+    head landed but whose base is another branch is closed, with a comment saying so. When the
+    batch was closed without merging, what it contained is told it can push again.
 
     The branch of a batch this script assembled is removed once its pull request is merged or
     closed. When it was merged, GitHub marks what it contained as merged too, except a pull
     request pushed to after it was queued. That one loses `batch queue` here if the commit that
     landed is the one queued, since nothing is left of it to build.
 
-    Returns whether anything was queued again, and the numbers whose `building` was taken off.
+    Returns whether anything was queued again, and the numbers whose labels were taken off.
     """
     requeued, cleared = False, set()
     for batch in finished(gh, closed_building, held):
         cleared.add(batch["number"])
-        for key in batch["members"]:
+        for key in sorted(batch["members"], key=int):
             pr = pulls.get(int(key))
-            if batch["fate"] == "merged":
-                # A pull request that GitHub marked as merged is no longer in `pulls`.
-                if pr is None or (BUILDING in pr["labels"] and key not in held):
-                    relabel(gh, pr or int(key), remove=BUILDING)
+            if pr is None:
+                # Closed, or marked merged by GitHub along with the batch.
+                gone = closed_labels.get(int(key), set()) & set(IN_BATCH)
+                if gone:
+                    relabel(gh, int(key), remove=sorted(gone))
                     cleared.add(int(key))
-                    log.append(f"#{key} landed with batch #{batch['number']}: `{BUILDING}` removed")
-            elif pr and BUILDING in pr["labels"] and key not in held:
+                    log.append(f"#{key} landed with batch #{batch['number']}: "
+                               + " and ".join(f"`{name}`" for name in sorted(gone)) + " removed")
+            elif key in held:
+                continue
+            elif batch["fate"] == "merged":
+                if pr["labels"] & set(IN_BATCH):
+                    relabel(gh, pr, remove=IN_BATCH)
+                    log.append(f"#{key} landed with batch #{batch['number']}: `{MEMBER}` and `{FROZEN}` removed")
+                if not by_hand(pr):
+                    landed(gh, batch, key, pr, main, log)
+            elif pr["labels"] & set(IN_BATCH):
                 back = key in batch["queued"]
-                relabel(gh, pr, add=QUEUED if back else None, remove=BUILDING)
+                relabel(gh, pr, add=QUEUED if back else None, remove=IN_BATCH)
                 requeued |= back
+                if not by_hand(pr):
+                    say(gh, pr["number"], UNFROZEN.format(number=batch["number"]),
+                        f"Batch #{batch['number']} was closed without being merged. This pull request is no longer "
+                        f"`{FROZEN}`, and you can push to it again." + (" It is back in the batch queue." if back else ""))
                 log.append(f"batch #{batch['number']} was closed without merging: #{key} is "
-                           + (f"`{QUEUED}` again" if back else f"no longer `{BUILDING}`"))
+                           + (f"`{QUEUED}` again" if back else f"no longer `{MEMBER}`"))
         # Taking the label off the batch itself marks it as dealt with.
         relabel(gh, batch["number"], remove=BUILDING)
         log.append(f"tidied up after batch #{batch['number']}, which was assembled by hand")
@@ -738,31 +949,55 @@ def finish(gh, pulls, held, leftover, main_sha, closed_building, log):
     return requeued, cleared
 
 
-def unlabel_closed(gh, closed_building, cleared, log):
-    """Take `batch queue` and `building` off pull requests that were closed, merged or not.
+def landed(gh, batch, key, pr, main, log):
+    """Deal with a pull request that is still open after the batch assembled by hand that
+    contained it was merged."""
+    number, commit = batch["number"], batch["members"][key]
+    if pr["sha"] != commit:
+        say(gh, pr["number"], LANDED_BEFORE_PUSH.format(number=number, sha=commit),
+            f"Batch #{number} has landed on `{main}` with commit `{commit[:10]}` of this pull request. What was "
+            f"pushed here after it, up to `{pr['sha'][:10]}`, has not landed, so this pull request stays open. Merge "
+            f"`{main}` into this branch and comment `ready`, or close this pull request if nothing is left to change.")
+        relabel(gh, pr, add=WAITING)
+        log.append(f"#{key} was pushed to after the batch #{number} took it: told what landed, now `{WAITING}`")
+    elif pr["base"] != main:
+        say(gh, pr["number"], LANDED_ELSEWHERE.format(number=number, sha=commit),
+            f"Batch #{number} has landed on `{main}`, and with it the head of this pull request, `{commit[:10]}`. "
+            f"GitHub does not mark this pull request merged because it targets `{pr['base']}` rather than "
+            f"`{main}`, so this workflow closes it. Nothing is lost: its commits are on `{main}`.")
+        gh.write("PATCH", f"pulls/{pr['number']}", {"state": "closed"})
+        log.append(f"#{key} landed with batch #{number} but targets `{pr['base']}`: closed")
 
-    `finish` has already taken `building` off the batches assembled by hand it tidied up after,
-    and off what they contained. Those are skipped.
+
+def unlabel_closed(gh, closed, cleared, log):
+    """Take `batch queue`, `building`, `batch-building` and `frozen` off pull requests that were
+    closed, merged or not. `closed` is the closed issues and pull requests that carry `building`
+    or `batch-building`, with their labels.
+
+    `finish` has already taken the labels of a batch off the batches assembled by hand it tidied
+    up after, and off what they contained. Those keep only `batch queue` to lose here.
     """
-    closed_queued = gh.pages(f"issues?state=closed&labels={quoted(QUEUED)}")
-    for label, items in ((QUEUED, closed_queued), (BUILDING, closed_building)):
-        for item in items:
-            number = item["number"]
-            if "pull_request" not in item:
-                continue
-            if label == BUILDING and number in cleared:
-                continue
-            relabel(gh, number, remove=label)
-            log.append(f"#{number} is closed: `{label}` removed")
+    seen = set()
+    for item in gh.pages(f"issues?state=closed&labels={quoted(QUEUED)}") + list(closed):
+        number = item["number"]
+        if "pull_request" not in item or number in seen:
+            continue
+        seen.add(number)
+        gone = {label["name"] for label in item.get("labels") or ()} & {QUEUED, *IN_BATCH}
+        if number in cleared:
+            gone -= set(IN_BATCH)
+        if gone:
+            relabel(gh, number, remove=sorted(gone))
+            log.append(f"#{number} is closed: " + " and ".join(f"`{name}`" for name in sorted(gone)) + " removed")
 
 
 def reopened(gh, number):
     """Put `batch queue` back on a reopened pull request that lost it when it was closed.
 
-    Only if this workflow was the last to take `batch queue` or `building` off, after the pull
-    request was last closed, and no maintainer has taken it out of the queue with `-batch` since
-    it was last queued. A label a person took off stays off. Whether the pull request then becomes
-    `building` again is decided by the next sync, as for any other queued pull request.
+    Only if this workflow was the last to take `batch queue` or the labels of a batch off, after
+    the pull request was last closed, and no maintainer has taken it out of the queue with `-batch` since
+    it was last queued. A label a person took off stays off. Whether the pull request then joins a
+    batch again is decided by the next sync, as for any other queued pull request.
     """
     info = gh.get(f"pulls/{number}")
     head = info["head"]
@@ -770,12 +1005,12 @@ def reopened(gh, number):
         return [f"#{number} is not open: nothing to put back"]
     if (head.get("repo") or {}).get("full_name") == gh.repo and head["ref"].startswith(PREFIX):
         return [f"#{number} holds a batch: nothing to put back"]
-    if {label["name"] for label in info["labels"]} & {QUEUED, BUILDING}:
-        return [f"#{number} already carries `{QUEUED}` or `{BUILDING}`"]
+    if {label["name"] for label in info["labels"]} & {QUEUED, *IN_BATCH}:
+        return [f"#{number} already carries `{QUEUED}` or the labels of a batch"]
     events = gh.pages(f"issues/{number}/events")
     closed = [event["created_at"] for event in events if event.get("event") == "closed"]
     removed = [event for event in events if event.get("event") == "unlabeled"
-               and (event.get("label") or {}).get("name") in (QUEUED, BUILDING)]
+               and (event.get("label") or {}).get("name") in (QUEUED, *IN_BATCH)]
     if not closed or not removed or removed[-1]["created_at"] < closed[-1]:
         return [f"#{number} had no label taken off when it was closed: nothing to put back"]
     last = removed[-1]
@@ -803,21 +1038,23 @@ def sync(gh, now=None):
     main_sha = gh.get(f"git/ref/heads/{main}")["object"]["sha"]
     pulls = open_pulls(gh)
     found, leftover = batches(gh, pulls)
-    # A batch assembled by hand that another one contains carries `building` for that reason
-    # alone. It is built as part of the other one, which contains what it contains too.
+    # A batch assembled by hand that another one contains carries `batch-building` for that
+    # reason alone. It is built as part of the other one, which contains what it contains too.
     hand = built_by_hand(gh, pulls, log)
     contained = holders(hand)
     hand = [batch for batch in hand if str(batch["number"]) not in contained]
     held = holders(hand)
     closed_building = gh.pages(f"issues?state=closed&labels={quoted(BUILDING)}")
-    requeued, cleared = finish(gh, pulls, held, leftover, main_sha, closed_building, log)
-    unlabel_closed(gh, closed_building, cleared, log)
+    closed = closed_building + gh.pages(f"issues?state=closed&labels={quoted(MEMBER)}")
+    closed_labels = {item["number"]: {label["name"] for label in item.get("labels") or ()} for item in closed}
+    requeued, cleared = finish(gh, pulls, held, leftover, main, main_sha, closed_building, closed_labels, log)
+    unlabel_closed(gh, closed, cleared, log)
     # One that was inside a batch closed just now has gone back to `batch queue`.
     hand = [batch for batch in hand if BUILDING in pulls[batch["number"]]["labels"]]
     held = holders(hand)
 
     for batch in hand:
-        requeued |= hold(gh, batch, pulls, held, log)
+        requeued |= hold(gh, batch, pulls, held, main, log)
     held = holders(hand)
 
     if requeued:
@@ -911,7 +1148,7 @@ def sync(gh, now=None):
             also.append((number, "closed since it was merged in"))
         elif QUEUED in pr["labels"]:
             also.append((number, "at an earlier commit than the one now queued"))
-        elif BUILDING in pr["labels"] and held.get(key):
+        elif MEMBER in pr["labels"] and held.get(key):
             # Being built in another batch: nothing to tell it.
             also.append((number, "being built in " + ", ".join(f"#{other}" for other in sorted(held[key]))))
         else:

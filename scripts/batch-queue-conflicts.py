@@ -12,6 +12,7 @@ build together.
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 from pathlib import Path
 import re
@@ -19,8 +20,11 @@ import subprocess
 import sys
 import tempfile
 
+_LABELS_SPEC = importlib.util.spec_from_file_location("rh_batch_labels", Path(__file__).with_name("batch-labels.py"))
+_labels = importlib.util.module_from_spec(_LABELS_SPEC)
+_LABELS_SPEC.loader.exec_module(_labels)
 # Compared against, in this order: what is being built now, then what is waiting.
-LABELS = ("building", "batch queue")
+LABELS = (_labels.MEMBER, _labels.QUEUED)
 # Branches of this repository that hold a batch. Their pull requests are not compared.
 BATCHES = "batch/"
 # Hidden in the comment so that a later run edits it instead of adding another.
