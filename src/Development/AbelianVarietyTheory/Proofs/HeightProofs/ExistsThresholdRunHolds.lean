@@ -346,37 +346,31 @@ attribute [local irreducible]
   Formalism.BasicNotions.lw _root_.SummationFilter.unconditional _root_.tsum Formalism.MainNotions.Gaps.EtaleWeightGaps.fdeg
   Formalism.MainNotions.WeightAlgebra.g0
 
-def qT {G : GlobalFamilyData X ka wL wF} {la : HeightOneSpectrum (𝓞 B.KO)} (Q : LocalPointData G la) : LocalPointData (gT n G) la where
-  y := Q.y
-  g0 := Q.g0
-  c := Q.c
-
 variable (G : GlobalFamilyData X ka wL wF) (S : Scal B)
 
+/-- The hypotheses that depend on a place `la`, moved to the changed norm.
 
-theorem shareRhoR_iff (T d : ℕ) : ShareRhoR (gT n G) (sT n S) T d ↔ ShareRhoR G S T d := Iff.rfl
-
-
-theorem inBasis_iff (la : HeightOneSpectrum (𝓞 B.KO)) : InBasis (gT n G) la ↔ InBasis G la := Iff.rfl
-
-
-theorem inContainMR_iff (la : HeightOneSpectrum (𝓞 B.KO)) (CRm : ℝ) (T : ℕ) (c : ℝ) :
-    InContainMR (gT n G) la (sT n S) CRm T c ↔ InContainMR G la S CRm T c := Iff.rfl
+Each of them is the same statement once `gT` and `sT` are unfolded. The kernel can only see that by
+comparing the ring and module instances of `Kp`, `Rp`, `Lw` and `OsK` over `xT n X` with those over
+`X` field by field, which takes several seconds, and it starts again in every declaration and under
+every `∀ la`. So all of them are moved here, under a single `∀ la`. -/
+theorem local_move {T d : ℕ} {CRm c Gc Prw : ℝ} {Qf : ∀ la, LocalPointData G la}
+    (h8 : ShareRhoR G S T d) (h11 : ∀ la, InBasis G la) (h12 : ∀ la, InContainMR G la S CRm T c)
+    (h2 : ∀ la, (Qf la).InCurve) (h3 : ∀ la, (Qf la).InTie S) (h4 : ∀ la, (Qf la).InLiftC S Gc Prw T) :
+    ShareRhoR (gT n G) (sT n S) T d ∧ ∀ la, InBasis (gT n G) la ∧ InContainMR (gT n G) la (sT n S) CRm T c ∧
+      ∃ Q' : LocalPointData (gT n G) la, Q'.InCurve ∧ Q'.InTie (sT n S) ∧ Q'.InLiftC (sT n S) Gc Prw T ∧
+        Q'.Ila = (Qf la).Ila ∧ Q'.Net = (Qf la).Net :=
+  forall_and.1 fun la =>
+    ⟨h8 la, h11 la, h12 la, ⟨(Qf la).y, (Qf la).g0, (Qf la).c⟩, h2 la, h3 la, h4 la, rfl, rfl⟩
 
 variable {G}
 
-
-theorem inCurve_iff {la : HeightOneSpectrum (𝓞 B.KO)} (Q : LocalPointData G la) : (qT n Q).InCurve ↔ Q.InCurve := Iff.rfl
-
-
-theorem inTie_iff {la : HeightOneSpectrum (𝓞 B.KO)} (Q : LocalPointData G la) : (qT n Q).InTie (sT n S) ↔ Q.InTie S := Iff.rfl
-
-
-theorem inLift_iff {la : HeightOneSpectrum (𝓞 B.KO)} (Q : LocalPointData G la) (T : ℕ) : (qT n Q).InLift T ↔ Q.InLift T := Iff.rfl
-
-
-theorem heights_iff (Qf : ∀ la, LocalPointData G la) (Gc PH Prw Pet : ℝ) :
-    Heights (fun la => qT n (Qf la)) Gc PH Prw Pet ↔ Heights Qf Gc PH Prw Pet := Iff.rfl
+theorem heights_of {Qf : ∀ la, LocalPointData G la} {Qf' : ∀ la, LocalPointData (gT n G) la}
+    (hI : ∀ la, (Qf' la).Ila = (Qf la).Ila) (hN : ∀ la, (Qf' la).Net = (Qf la).Net) (Gc PH Prw Pet : ℝ)
+    (h : Heights Qf Gc PH Prw Pet) : Heights Qf' Gc PH Prw Pet := by
+  unfold Heights at h ⊢
+  simp only [hI, hN]
+  exact h
 
 end Structural
 
@@ -395,36 +389,16 @@ theorem tiedEt_iff (large₂ : SizeData₂ D) (Cf Af : ℝ) : (gT n G).TiedEt la
 theorem combBound_iff (c : ℝ) (nus : HeightOneSpectrum (𝓞 B.KO) → ℝ) :
     CombBound (gT n G) (sT n S) c nus ↔ CombBound G S c nus := Iff.rfl
 
-variable {G} in
-theorem inLiftC_of {la : HeightOneSpectrum (𝓞 B.KO)} (Q : LocalPointData G la) (Gc Prw : ℝ) (T : ℕ) (h : Q.InLiftC S Gc Prw T) :
-    (qT n Q).InLiftC (sT n S) Gc Prw T := fun a b c =>
-  (inLift_iff n Q T).2 (h ((tiedW_iff n G S Gc Prw).1 a) ((inCurve_iff n Q).1 b) ((inTie_iff n S Q).1 c))
-
-
-
-theorem famIn_move (large₂ : SizeData₂ D) (K : KAdm) (H : KHyp) (Ch Ah Cq Aq C2 A2 CR : ℝ) (Tn : ℕ) (Gc PH Prw Pet Pd : ℝ)
-    (h : FamIn large₂ K H Ch Ah Cq Aq C2 A2 CR S Tn G Gc PH Prw Pet Pd) :
-    FamIn large₂ K H Ch Ah Cq Aq C2 A2 CR (sT n S) Tn (gT n G) Gc PH Prw Pet Pd := by
-  obtain ⟨a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12⟩ := h
-  exact ⟨(tiedW_iff n G S Gc Prw).2 a1, (tiedTh_iff n G S Gc).2 a2, (tiedEt_iff n G large₂ _ _).2 a3, a4, a5, a6, a7,
-    (shareRhoR_iff n G S _ _).2 a8, a9, a10, fun la => (inBasis_iff n G la).2 (a11 la),
-    fun la => (inContainMR_iff n G S la _ _ _).2 (a12 la)⟩
-
-
-
-theorem ptIn_move (Tn : ℕ) (c Gc PH Prw Pet : ℝ) (nus : HeightOneSpectrum (𝓞 B.KO) → ℝ)
-    (h : PtIn S Tn G c Gc PH Prw Pet nus) : PtIn (sT n S) Tn (gT n G) c Gc PH Prw Pet nus := by
-  obtain ⟨a1, Qf, a2, a3, a4, a5⟩ := h
-  exact ⟨(combBound_iff n G S c nus).2 a1, fun la => qT n (Qf la), fun la => (inCurve_iff n (Qf la)).2 (a2 la),
-    fun la => (inTie_iff n S (Qf la)).2 (a3 la), fun la => inLiftC_of n S (Qf la) Gc Prw Tn (a4 la),
-    (heights_iff n Qf Gc PH Prw Pet).2 a5⟩
-
-
-
 set_option linter.unusedVariables false in
 theorem exists_famIn_ptIn : ∀ (D : D7) (B : WeightFamilies.Prov D) (P : ModuliIntegralCharts.Prov D) (j : ℕ) (X : PJ D B P j) (large₂ : SizeData₂ D) (K : KAdm) (H : KHyp) (Ch Ah Cq Aq C2 A2 CR CT : ℝ) (S : Scal B) (ka wL wF : WeightFamilies.Wt D j) (Tn nP nW : ℕ) (h0 : ℝ) (nus : HeightOneSpectrum (𝓞 B.KO) → ℝ) (n : SecNorm B) (G : GlobalFamilyData X ka wL wF) (Gc PH Prw Pet Pd c : ℝ), FamIn large₂ K H Ch Ah Cq Aq C2 A2 CR S Tn G Gc PH Prw Pet Pd → PtIn S Tn G c Gc PH Prw Pet nus → ∃ G' : GlobalFamilyData (PJ.tol2NormAlt n.N n.h0 n.h1 n.h2 n.h3 n.h4 X) ka wL wF, FamIn large₂ K H Ch Ah Cq Aq C2 A2 CR (scalarsWithNorm n.N n.h0 n.h1 n.h2 n.h3 n.h4 S) Tn G' Gc PH Prw Pet Pd ∧ PtIn (scalarsWithNorm n.N n.h0 n.h1 n.h2 n.h3 n.h4 S) Tn G' c Gc PH Prw Pet nus :=
-  fun _ _ _ _ _ large₂ K H Ch Ah Cq Aq C2 A2 CR _ S _ _ _ Tn _ _ _ nus n G Gc PH Prw Pet Pd c hF hP =>
-    ⟨gT n G, famIn_move n G S large₂ K H Ch Ah Cq Aq C2 A2 CR Tn Gc PH Prw Pet Pd hF, ptIn_move n G S Tn c Gc PH Prw Pet nus hP⟩
+  fun _ _ _ _ _ large₂ K H Ch Ah Cq Aq C2 A2 CR _ S _ _ _ Tn _ _ _ nus n G Gc PH Prw Pet Pd c hF hP => by
+    obtain ⟨a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12⟩ := hF
+    obtain ⟨b1, Qf, b2, b3, b4, b5⟩ := hP
+    obtain ⟨c8, hla⟩ := local_move n G S a8 a11 a12 b2 b3 b4
+    choose c11 c12 Qf' d2 d3 d4 hI hN using hla
+    exact ⟨gT n G, ⟨(tiedW_iff n G S Gc Prw).2 a1, (tiedTh_iff n G S Gc).2 a2, (tiedEt_iff n G large₂ _ _).2 a3,
+        a4, a5, a6, a7, c8, a9, a10, c11, c12⟩,
+      (combBound_iff n G S c nus).2 b1, Qf', d2, d3, d4, heights_of n hI hN Gc PH Prw Pet b5⟩
 
 end GlobalTheory.NormMove
 end -- clump:auto
