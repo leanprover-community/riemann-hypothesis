@@ -34,8 +34,8 @@ name: batch queue
 # that pull request, so it goes back in the inbox within a minute or so. Without the label there
 # is nothing to take off, and `ready` does nothing.
 #
-# A pull request that is closed, merged or not, loses `batch queue`, `building`, `batch-building`
-# and `frozen`. Reopened, it gets `batch queue` back if this workflow took the labels off and
+# A pull request that is closed, merged or not, loses `batch queue`, `building`, `batch-building`,
+# `frozen` and `changed after frozen`. Reopened, it gets `batch queue` back if this workflow took the labels off and
 # nobody commented `-batch` on it meanwhile. A label a person took off stays off.
 #
 # The batches are the branches this workflow starts, named after the time they were started:
@@ -65,7 +65,7 @@ name: batch queue
 # cannot change what it does. Nothing from a pull request is checked out or run:
 # GitHub performs the merges, and comparisons read git objects only.
 #
-# Queuing also compares the pull request with the others labelled `building` or `batch queue`
+# Queuing also compares the pull request with the others labelled `batch-building` or `batch queue`
 # and comments if git cannot merge it with one of them, or if one deletes a Lean file the other
 # starts to import. That job only reports.
 #
@@ -124,6 +124,7 @@ jobs:
           # The names of scripts/batch-labels.py.
           LABEL: batch queue
           FROZEN: frozen
+          CHANGED: changed after frozen
           MEMBER: batch-building
           PRIORITY: priority
           WAITING: awaiting-author
@@ -238,6 +239,11 @@ jobs:
             if grep -qxF -- "$FROZEN" <<< "$present" && ! grep -qxF -- "$MEMBER" <<< "$present"; then
               gh api -X DELETE "repos/$REPO/issues/$PR/labels/$(jq -rn --arg label "$FROZEN" '$label | @uri')" --silent
               echo "Removed '$FROZEN' from pull request $PR."
+              # No longer frozen, so not changed after it either.
+              if grep -qxF -- "$CHANGED" <<< "$present"; then
+                gh api -X DELETE "repos/$REPO/issues/$PR/labels/$(jq -rn --arg label "$CHANGED" '$label | @uri')" --silent
+                echo "Removed '$CHANGED' from pull request $PR."
+              fi
             fi
             echo "unqueued=true" >> "$GITHUB_OUTPUT"
             exit 0
@@ -413,8 +419,11 @@ jobs:
     concurrency:
       group: batch-queue-sync
       cancel-in-progress: false
-    # `contents: write` to create batch branches and merge into them.
+    # `contents: write` to create batch branches and merge into them, and `actions: write` to
+    # start the conflict-labels workflow when a batch assembled by hand is first labelled
+    # `building`.
     permissions:
+      actions: write
       contents: write
       issues: write
       pull-requests: write

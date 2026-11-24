@@ -183,7 +183,12 @@ class GitHub:
         if self.dry_run:
             print(f"would {method} {path} {json.dumps(payload) if payload else ''}".rstrip())
             return 200, None
-        return self.call(method, path, payload)
+        status, data = self.call(method, path, payload)
+        # A refusal for going too fast stops the run: every write after it would be refused too,
+        # on the allowance the other workflows share. The next run carries on.
+        if status == 429 or (status == 403 and "rate limit" in str((data or {}).get("message", "")).lower()):
+            raise Refused(f"GitHub's rate limit refused {method} {path}: the next run carries on.")
+        return status, data
 
     def graphql(self, query, **variables):
         done = self.run(["graphql", "--input", "-"], {"query": query, "variables": variables})
@@ -449,7 +454,8 @@ def message(batch, result):
         "",
         f"It cannot land after #{batch['number']} as it is. To fix that:",
         "",
-        f"1. Merge the batch's branch {branch} into your branch, or rebase onto it, and resolve the conflicts.",
+        f"1. Merge the batch's branch {branch} into your branch, or rebase onto it, and resolve the conflicts. "
+        + "If #{n}'s branch is rebuilt before it lands, which is how a pull request is taken out of a batch, your branch still carries the pull request that was taken out. Start your branch again from the new batch branch then, with only your own commits on top.".format(n=batch["number"]),
         "2. Add this line at the top of the pull request's description:",
         "",
         "   ```",
@@ -460,8 +466,8 @@ def message(batch, result):
         f"#{batch['number']} lands. That line says this is expected.",
         "3. Comment `ready`.",
         "",
-        f"Or wait until #{batch['number']} has landed, then merge `main` into your branch and resolve the "
-        "conflicts there.",
+        f"Or wait until #{batch['number']} has landed, then merge `main` into your branch, resolve the "
+        "conflicts there and comment `ready`.",
         "",
         f"This pull request is labelled `{BATCH_CONFLICT}` and `{WAITING}` meanwhile. `{BATCH_CONFLICT}` comes "
         "off by itself once the conflict is gone or the batch has landed or been closed. "
@@ -628,6 +634,13 @@ def sync(gh, number=None, compare=compare_all):
                            "and the next run carries on")
                 stopped = True
                 break
+            if number is None:
+                # A sweep decided from what it read minutes ago. A pull request pushed to or
+                # relabelled since is left to the run its own event started.
+                fresh = gh.some([key], FIELDS).get(key)
+                if fresh is None or fresh["sha"] != pr["sha"] or fresh["labels"] != pr["labels"]:
+                    log.append(f"#{key}: changed during this sweep, so left to the run for it")
+                    continue
             for label in sorted(add):
                 if label not in checked:
                     checked[label] = gh.label_exists(label)
@@ -658,6 +671,10 @@ def sync(gh, number=None, compare=compare_all):
         try:
             for label, closed in gh.closed_with_labels().items():
                 for key in closed:
+                    if gh.short():
+                        log.append(f"only {gh.remaining} REST requests left this hour: stopped taking labels off "
+                                   "closed pull requests, and the next run carries on")
+                        break
                     gh.remove_label(key, label)
                     log.append(f"#{key}: {'would take' if gh.dry_run else 'took'} `{label}` off, because it is closed")
         except RuntimeError as error:

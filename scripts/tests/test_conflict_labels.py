@@ -304,6 +304,33 @@ class Runs(unittest.TestCase):
         gh.add(3, labels_=[MEMBER])
         return gh
 
+    def test_a_pull_request_pushed_to_during_a_sweep_is_left_to_its_own_run(self):
+        gh = self.scene()
+        inner = comparing({(1, 900): CONFLICT})
+
+        def compare(*args):
+            gh.pulls[1]["headRefOid"] = "f" * 40  # its author pushes while the sweep compares
+            return inner(*args)
+        with contextlib.redirect_stdout(io.StringIO()):
+            log = labels.sync(gh, None, compare=compare)
+        self.assertEqual(gh.pulls[1]["labels"], set())
+        self.assertIn("#1: changed during this sweep, so left to the run for it", log)
+
+    def test_a_rate_limit_refusal_stops_the_run(self):
+        gh = self.scene()
+        gh.add(4)
+        original = gh.call
+
+        def call(method, path, payload=None):
+            if method == "POST" and path.startswith("issues/1/"):
+                gh.calls += 1
+                return 403, {"message": "You have exceeded a secondary rate limit."}
+            return original(method, path, payload)
+        gh.call = call
+        with self.assertRaises(labels.Refused):
+            run(gh, table={(1, 900): CONFLICT, (4, 900): CONFLICT})
+        self.assertEqual(gh.pulls[4]["labels"], set())
+
     def test_a_conflict_with_the_batch_is_told_once(self):
         gh = self.scene()
         run(gh, table={(1, 900): CONFLICT})

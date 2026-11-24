@@ -8,8 +8,7 @@ below. This page is for whoever assembles one.
 
 ## Labels at a glance
 
-The sections below give the details. A row marked *(planned)* describes a label that a pull
-request still under review adds. Until it lands, the label exists but nothing puts it on.
+The sections below give the details.
 
 | Label | On | Put on when | Taken off when |
 |---|---|---|---|
@@ -20,7 +19,7 @@ request still under review adds. Until it lands, the label exists but nothing pu
 | `batch queue` | a pull request wanted in a batch | a maintainer or reviewer comments `batch` or `p` | `-batch`; it joins a batch assembled by hand (in exchange for `batch-building`); its queued commit lands; it is closed |
 | `priority` | a queued pull request that goes first | `p` | by hand |
 | `awaiting-author` | a pull request handed back to its author | `aa`; it is pushed to while in a batch; the description leaves it out; a batch lands an older commit of it; `batch-conflict` is first put on it; a pull request it depends on is closed without landing | `ready`, by the author or a maintainer |
-| `main-conflict` | a pull request that conflicts with `main` | GitHub says so, unless it declares `depends on:` a batch being built | the conflict is gone, or it declares that dependency |
+| `main-conflict` | a pull request that conflicts with `main` | GitHub says so, unless it declares `depends on:` an open batch | the conflict is gone, or it declares that dependency |
 | `batch-conflict` | a pull request that conflicts with a batch being built | git cannot merge it with the batch's head | the conflict is gone; the batch lands or is closed; it joins the batch |
 
 `batch queue`, `building`, `batch-building`, `frozen`, `awaiting-author` and `batch-conflict`
@@ -142,7 +141,7 @@ built. The label comes off when the head is the commit that was taken again, for
 another `batch` comment or once a batch merges in the new head, and when the pull request is no
 longer frozen.
 
-`batch-building`, `frozen` and `awaiting-author` keep a pull request out of the inbox (see
+"Labels at a glance" lists the labels that keep a pull request out of the inbox (see
 `.github/workflows/inbox.yml`). The label names are in `scripts/batch-labels.py`, and the `if:`
 of the sync job in `.github/workflows/batch-queue.yml` and of `.github/workflows/conflict-labels.yml`
 name some of them as well.
@@ -175,7 +174,10 @@ heading about conflicts.
 ### If your pull request is labelled `batch-conflict`
 
 1. Merge the batch's branch (`batch/...`, named in the comment) into your branch, or rebase onto
-   it, and resolve the conflicts.
+   it, and resolve the conflicts. If the batch's branch is rebuilt before it lands, which is how
+   a pull request is taken out of a batch (rule 5), your branch still carries the pull request
+   that was taken out. Start your branch again from the new batch branch then, with only your
+   own commits on top.
 2. Add this line at the top of the description, where #123 is the batch's pull request:
 
    ```
@@ -186,8 +188,8 @@ heading about conflicts.
    batch lands. The line says that this is expected, and keeps `main-conflict` off it.
 3. Comment `ready`.
 
-Or wait until the batch has landed, then merge `main` into your branch and resolve the conflicts
-there.
+Or wait until the batch has landed, then merge `main` into your branch, resolve the conflicts
+there and comment `ready`.
 
 A line counts as a dependency when it starts with `depends on`, `depend on`, `depends upon`,
 `blocked by`, `requires` or `needs`, optionally after a list marker or `>` and a task box such as

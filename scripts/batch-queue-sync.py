@@ -85,7 +85,7 @@ Taking a pull request out of the queue never changes a batch. Commits already me
 stay there, and the batch's description says so. No batch is rebuilt for that.
 
 A pull request that is closed, whether merged or not, loses `batch queue`, `building`,
-`batch-building` and `frozen`: it is neither waiting for a build nor in one any more. The pull
+`batch-building`, `frozen` and `changed after frozen`: it is neither waiting for a build nor in one any more. The pull
 request of a batch assembled by hand is the exception, because it keeps `building` until it has
 been tidied up after. When a pull
 request is reopened, `batch queue` comes back if this workflow was the last to take a label off,
@@ -166,7 +166,10 @@ MERGED_BY_HAND = re.compile(r"Merge PR #(\d+) into batch")
 UNDONE = re.compile(r'(Revert|Reapply) "(.*)"')
 # A left-out heading for conflicts. `conflict-labels.py` finds those itself, from git, and tells
 # the pull request with `batch-conflict`, so they are not told again from the description.
-CONFLICT_HEADING = re.compile(r"\bconflict", re.IGNORECASE)
+CONFLICT_HEADING = re.compile(r"\bconflicts?\s+with\b", re.IGNORECASE)
+# The workflow that labels conflicts, started when a batch is first labelled `building`: that
+# label is put on with the workflow's token, which starts no run of it by itself.
+CONFLICT_WORKFLOW = "conflict-labels.yml"
 # In a batch pull request's text: the part this script writes, and its note to itself.
 BODY = "<!-- batch-queue -->"
 STATE = re.compile(r"<!-- batch-queue-state (\{.*\}) -->")
@@ -185,7 +188,7 @@ class GitHub:
 
     def __init__(self, repo, dry_run=False):
         self.repo, self.dry_run = repo, dry_run
-        self.calls, self.remaining, self.changed = 0, None, None
+        self.calls, self.remaining, self.changed, self.labels = 0, None, None, set()
 
     def call(self, method, path, payload=None):
         """One request. Returns (HTTP status, decoded body or None). Requests that change
@@ -240,6 +243,17 @@ class GitHub:
             raise Refused(f"GitHub's rate limit refused {method} {path}: the next run carries on.")
         return status, data
 
+    def label_exists(self, name):
+        """Stop the run if a label is missing, instead of adding it, which would create it: a
+        label renamed on GitHub should be noticed, not started again under the old name."""
+        if name in self.labels:
+            return
+        status, _ = self.call("GET", f"labels/{quoted(name)}")
+        if status == 404:
+            raise Refused(f"There is no `{name}` label in {self.repo}. Was it renamed? See `batch-labels.py`.")
+        if status == 200:
+            self.labels.add(name)
+
     def short(self):
         """Whether the hour's allowance is nearly used up."""
         return self.remaining is not None and self.remaining < RESERVE
@@ -261,7 +275,7 @@ def open_pulls(gh):
             "number": info["number"], "sha": head["sha"], "ref": head["ref"],
             "own": (head.get("repo") or {}).get("full_name") == gh.repo, "base": info["base"]["ref"],
             "labels": {label["name"] for label in info["labels"]},
-            "updated": info["updated_at"], "body": info.get("body") or ""}
+            "updated": info["updated_at"], "body": info.get("body") or "", "draft": bool(info.get("draft"))}
     return found
 
 
@@ -299,6 +313,8 @@ def relabel(gh, pr_or_number, add=None, remove=None):
         have = pr_or_number["labels"]
         add, remove = [name for name in add if name not in have], [name for name in remove if name in have]
     done = True
+    for name in add:
+        gh.label_exists(name)
     if add:
         done = gh.write("POST", f"issues/{number}/labels", {"labels": add})[0] in (0, 200)
     for name in remove:
@@ -311,8 +327,10 @@ def relabel(gh, pr_or_number, add=None, remove=None):
 
 def unlabel(gh, number, have, gone):
     """Take the labels `gone` off a closed pull request that carries `have`, in one request when
-    there are several: setting its labels replaces them all. Nobody else changes the labels of a
-    closed pull request, so the list read earlier in the run is current enough."""
+    there are several: setting its labels replaces them all. Another workflow may change them in
+    the meantime, inbox-sync taking `inbox` off for one, and a label it took off would come back.
+    That is rare, and the other workflow takes it off again on its next run, so saving a request
+    for each pull request a batch lands is worth it."""
     gone = sorted(set(gone) & set(have))
     if len(gone) > 1:
         gh.write("PUT", f"issues/{number}/labels", {"labels": sorted(set(have) - set(gone))})
@@ -385,7 +403,8 @@ def tell(gh, number, comments, marker, text):
     """Leave a comment on a pull request, unless the workflow has left that one before."""
     if comments is None:
         comments = gh.pages(f"issues/{number}/comments")
-    if any(marker in (comment.get("body") or "") for comment in comments if by_workflow(comment)):
+    # At the start only: a comment can quote text someone else wrote, markers included.
+    if any((comment.get("body") or "").startswith(marker) for comment in comments if by_workflow(comment)):
         return False
     return say(gh, number, marker, text)
 
@@ -848,7 +867,7 @@ def hold(gh, batch, pulls, held, main, log):
                 log.append(f"#{key} is in the batch #{number}: now `{MEMBER}` and `{FROZEN}`")
         labelled.sort(key=int)
         tell_members(gh, batch, pulls, main, log)
-        tell_left_out(gh, batch, pulls, log)
+        tell_left_out(gh, batch, pulls, main, log)
         tell_reverted(gh, batch, pulls, main, log)
         check_description(gh, batch, pulls, log)
     finally:
@@ -946,7 +965,7 @@ def left_out_digest(heading, entry):
     return hashlib.sha256(" ".join(kind.lower().split()).encode()).hexdigest()[:16]
 
 
-def tell_left_out(gh, batch, pulls, log):
+def tell_left_out(gh, batch, pulls, main, log):
     """Tell each open pull request a batch's description lists as left out what it says.
 
     The comment quotes the heading and the pull request's entry, and the pull request is
@@ -967,7 +986,9 @@ def tell_left_out(gh, batch, pulls, log):
     conflicts = {other for other, (heading, _) in listed.items() if CONFLICT_HEADING.search(heading)}
     for key in sorted(set(left) | {str(other) for other in listed}, key=int):
         pr = pulls.get(int(key))
-        if pr is None or key in found or is_batch(pr) or by_hand(pr) or int(key) in conflicts:
+        # The conflict-labels workflow looks only at pull requests into main that are not drafts.
+        left_to_it = int(key) in conflicts and pr is not None and pr["base"] == main and not pr.get("draft")
+        if pr is None or key in found or is_batch(pr) or by_hand(pr) or left_to_it:
             left.pop(key, None)
             continue
         entry = listed.get(int(key))
@@ -1443,7 +1464,9 @@ def reconcile(gh, pulls, held, approved, log):
             add = set() if inside else {FROZEN}
             if pr["sha"] != at and (FROZEN in have or not inside):
                 add.add(CHANGED)
-            add, gone = add - have, have & ({CHANGED} if pr["sha"] == at else set())
+            # One no longer labelled `frozen`, taken off by hand, is not changed after it either.
+            thawed = inside and FROZEN not in have
+            add, gone = add - have, have & ({CHANGED} if pr["sha"] == at or thawed else set())
         if not add and not gone:
             continue
         if gh.short():
@@ -1487,6 +1510,12 @@ def assemble(gh, now, log, approved, pulls, held, held_at):
     # A batch assembled by hand that another one contains carries `batch-building` for that
     # reason alone. It is built as part of the other one, which contains what it contains too.
     hand = built_by_hand(gh, pulls, log)
+    if any(batch["commits"] is not None for batch in hand):
+        # A batch labelled `building` just now. Without this, the conflict labels wait for their
+        # next sweep, since a label put on with this workflow's token starts no run.
+        status, _ = gh.write("POST", f"actions/workflows/{CONFLICT_WORKFLOW}/dispatches", {"ref": main})
+        log.append(f"started {CONFLICT_WORKFLOW}" if status in (0, 204)
+                   else f"could not start {CONFLICT_WORKFLOW} ({status}): its next sweep looks at the new batch")
     contained = holders(hand)
     hand = [batch for batch in hand if str(batch["number"]) not in contained]
     held.update(holders(hand))
@@ -1571,7 +1600,8 @@ def assemble(gh, now, log, approved, pulls, held, held_at):
             reason = f"GitHub refused the merge ({status}: `{(data or {}).get('message', 'no reason given')}`)."
         elif on:
             reason = (f"GitHub could not merge it with what is already there: #{on}, which this batch is built on, "
-                      "and the pull requests added before it.")
+                      f"and the pull requests added before it. If it conflicts with #{on} itself, it is labelled "
+                      f"`batch-conflict`, and the comment that comes with that label says what to do.")
         else:
             reason = "GitHub could not merge it with what is already there."
         link = f"#{batch['number']}" if batch["number"] else f"`{batch['ref']}`"
