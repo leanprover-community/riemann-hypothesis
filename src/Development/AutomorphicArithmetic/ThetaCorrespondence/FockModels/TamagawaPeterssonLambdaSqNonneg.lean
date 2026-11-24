@@ -460,6 +460,7 @@ linear-in-`Lb` log bound `UpperTheory.Lit.Tam.supConst2_log_le_quadratic`.
 
 noncomputable section
 
+open scoped GlobalTheory.CompHt
 namespace UpperTheory.Lit.Tam
 
 def lamPet2 (E : Type) [Field E] [NumberField E] (r q d M : ℕ) (Om s t : ℝ) : ℝ :=

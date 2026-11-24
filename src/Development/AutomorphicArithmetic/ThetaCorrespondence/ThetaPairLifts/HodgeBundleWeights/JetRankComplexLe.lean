@@ -1468,6 +1468,7 @@ open GlobalTheory GlobalTheory.CechPic
 open GlobalTheory.ThickeningDetermines (secIdeal)
 open scoped TensorProduct
 open Limits
+open scoped GlobalTheory.CompHt
 namespace GlobalTheory.JetRank
 section Nef
 variable {k : Type} [Field k] {X : Scheme.{0}} [Algebra k Γ(X, ⊤)]

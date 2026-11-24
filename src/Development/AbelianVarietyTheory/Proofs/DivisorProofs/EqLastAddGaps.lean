@@ -47,6 +47,7 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory GlobalTheory.CompHS
 open GlobalTheory.AllWt (Psi)
 open GlobalTheory.HSApp
+open scoped GlobalTheory.CompHt
 
 set_option autoImplicit false
 

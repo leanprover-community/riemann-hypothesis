@@ -78,6 +78,7 @@ open scoped TensorProduct
 open GlobalTheory.FlatLine GlobalTheory.FlatTw GlobalTheory.IndefiniteRowSideFullHecke.ComponentMassSum GlobalTheory.ShFam GlobalTheory.IndefiniteRowSideFullHecke.DifferentConjugateDefects ReciprocityTheory.ChartRestriction.G.FD Formalism.BasicNotions.TH
 open IsDedekindDomain GlobalTheory.LamT GlobalTheory.KeyFourth
 open GlobalTheory.AllWt
+open scoped GlobalTheory.CompHt
 
 namespace GlobalTheory.KeyPowTw
 

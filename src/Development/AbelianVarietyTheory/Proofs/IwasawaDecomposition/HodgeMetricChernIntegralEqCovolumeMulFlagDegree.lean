@@ -1012,6 +1012,7 @@ open GlobalTheory GlobalTheory.Cartier GlobalTheory.ProjVar GlobalTheory.CxPts G
 open MeasureTheory Formalism.DegreeFormula GlobalTheory.TrueCx
 
 open scoped Matrix ComplexOrder
+open scoped GlobalTheory.CompHt
 
 namespace GlobalTheory.UnifNull
 
@@ -1260,6 +1261,7 @@ section -- clump:auto
 open AlgebraicGeometry CategoryTheory MvPolynomial NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.L2.Pj GlobalTheory.Toroidal GlobalTheory.ShFam GlobalTheory.ProjVar GlobalTheory.FlagBundle GlobalTheory.GoodMetric GlobalTheory.LieBase
 open Classical
 open GlobalTheory GlobalTheory.Cartier GlobalTheory.ProjVar GlobalTheory.CxPts GlobalTheory.ChartGlue GlobalTheory.FlagBundle GlobalTheory.HermFrame
+open scoped GlobalTheory.CompHt
 
 namespace GlobalTheory.LieBase
 

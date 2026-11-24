@@ -1256,6 +1256,7 @@ open GlobalTheory.AllWt (Psi wtOf cuspOn latOn normOn petOn GoodOn GoodW bergOn 
 open GlobalTheory.FlagMod (FlagCover)
 open GlobalTheory.FlagTan (dimFlag)
 open GlobalTheory.HSApp
+open scoped GlobalTheory.CompHt
 set_option synthInstance.maxHeartbeats 400000
 noncomputable section
 namespace GlobalTheory.FlatUnit

@@ -755,6 +755,7 @@ open GlobalTheory.IndefiniteRowSideFullHecke.LevelStructureAutomorphisms (LevelA
 open GlobalTheory.BadCount
 open scoped TensorProduct
 open GlobalTheory.CovInt IsDedekindDomain
+open scoped GlobalTheory.CompHt
 
 set_option autoImplicit false
 
