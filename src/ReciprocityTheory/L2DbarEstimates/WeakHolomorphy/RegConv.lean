@@ -74,7 +74,7 @@ theorem differentiableAt_of_fderiv_I {n : ℕ} {f : V n → ℂ} {x : V n}
   exact (differentiableAt_iff_restrictScalars ℝ hf).2 ⟨g', ContinuousLinearMap.ext fun _ => rfl⟩
 
 theorem mollify_differentiableAt {n : ℕ} {Ω : Set (V n)} {u : V n → ℂ} {t : ℝ} {x : V n}
-    (hΩ : IsOpen Ω) (hu : Integrable u) (hw : WeakHolo Ω u) (ht : 0 < t)
+    (hu : Integrable u) (hw : WeakHolo Ω u) (ht : 0 < t)
     (hx : closedBall x t ⊆ Ω) :
     DifferentiableAt ℂ (mollify n t u) x := by
   have hcs := moll_hasCompactSupport n ht

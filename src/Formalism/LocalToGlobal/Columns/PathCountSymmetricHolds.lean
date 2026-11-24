@@ -622,9 +622,9 @@ theorem topNeighbour_inf_eq (Q : HeightOneSpectrum (𝓞 E)) {N Z : Submodule (�
     Nat.eq_of_mul_eq_mul_right hpos (by rw [one_mul]; exact hm)
   exact le_antisymm ((Submodule.toAddSubgroup_le _ _).mp (AddSubgroup.relIndex_eq_one.mp h1)) hle
 
-theorem ideal_smul_topNeighbour_le (Q : HeightOneSpectrum (𝓞 E)) (hne : conjPrime₂ Q ≠ Q) {N Z H : Submodule (𝓞 E) (Sp E n)} {j : ℕ}
-    (hN : Submodule.IsLattice E N) (huN : IsUnimodular (hStd E n) N) (huZ : IsUnimodular (hStd E n) Z)
-    (huH : IsUnimodular (hStd E n) H) (hZ : IsHeckeNbr Q.asIdeal n N Z) (hH : IsHeckeNbr Q.asIdeal j N H) :
+theorem ideal_smul_topNeighbour_le (Q : HeightOneSpectrum (𝓞 E)) {N Z H : Submodule (𝓞 E) (Sp E n)} {j : ℕ}
+    (hN : Submodule.IsLattice E N) (huN : IsUnimodular (hStd E n) N)
+    (hZ : IsHeckeNbr Q.asIdeal n N Z) (hH : IsHeckeNbr Q.asIdeal j N H) :
     Q.asIdeal • Z ≤ H := by
   have h2 := hH.2.1
   rw [conjIdeal_asIdeal] at h2
@@ -647,7 +647,7 @@ theorem neighbour_conj_of_topNeighbour (Q : HeightOneSpectrum (𝓞 E)) (hne : c
     (huN : IsUnimodular (hStd E n) N) (huZ : IsUnimodular (hStd E n) Z)
     (huH : IsUnimodular (hStd E n) H) (hZ : IsHeckeNbr Q.asIdeal n N Z) (hH : IsHeckeNbr Q.asIdeal j N H) :
     IsHeckeNbr (conjPrime₂ Q).asIdeal (n - j) Z H := by
-  have hQZ := ideal_smul_topNeighbour_le Q hne hN huN huZ huH hZ hH
+  have hQZ := ideal_smul_topNeighbour_le Q hN huN hZ hH
   have hQbH := dual_ideal_smul_le Q huZ huH hQZ
   unfold IsHeckeNbr
   refine ⟨hQbH, ?_, ?_⟩

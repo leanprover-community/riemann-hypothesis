@@ -121,7 +121,7 @@ theorem norm_perronIntegrand (y : ℝ) (hy : 0 < y) (w : ℂ) :
     ‖Fy y w‖ = ‖deriv riemannZeta w / riemannZeta w‖ * y ^ w.re / (‖w‖ * ‖w - 1‖) := by
   simp only [Fy, norm_div, norm_mul, norm_neg, Complex.norm_cpow_eq_rpow_re_of_pos hy]
 
-theorem one_sub_div_log_le (c c' T v : ℝ) (hc : 0 < c) (hcc : c ≤ c') (_hT : 0 ≤ T) (hv : |v| ≤ T) :
+theorem one_sub_div_log_le (c c' T v : ℝ) (hc : 0 < c) (hcc : c ≤ c') (hv : |v| ≤ T) :
     1 - c' / Real.log (|v| + 2) ≤ 1 - c / Real.log (T + 2) := by
   have h2 : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)
   have hpos : 0 < Real.log (|v| + 2) := h2.trans_le (Real.log_le_log (by norm_num) (by linarith [abs_nonneg v]))
@@ -135,7 +135,7 @@ theorem riemannZeta_ne_zero_of_mem_rectangle (c₀ : ℝ)
     (c T σ₀ : ℝ) (hc : 0 < c) (hcc : c ≤ c₀) (hT : 0 ≤ T) :
     ∀ w : ℂ, 1 - c / Real.log (T + 2) ≤ w.re → w.re ≤ σ₀ → |w.im| ≤ T → w ≠ 1 →
       riemannZeta w ≠ 0 :=
-  fun w h1 _ h3 h4 => hZ w h4 ((one_sub_div_log_le c c₀ T w.im hc hcc hT h3).trans h1)
+  fun w h1 _ h3 h4 => hZ w h4 ((one_sub_div_log_le c c₀ T w.im hc hcc h3).trans h1)
 
 theorem norm_perronIntegrand_le_right (C₂ : ℝ)
     (hR : ∀ s : ℂ, 1 < s.re → ‖deriv riemannZeta s / riemannZeta s‖ ≤ 1 / (s.re - 1) + C₂)
@@ -173,7 +173,7 @@ theorem norm_perronIntegrand_le_horizontal (c₁ C₁ : ℝ) (hC₁ : 0 ≤ C₁
   have hw1 : T ≤ ‖w‖ := by rw [← hv, ← him]; exact Complex.abs_im_le_norm w
   have hw2 : T ≤ ‖w - 1‖ := by rw [← hv, ← show (w - 1).im = v by simp [him]]; exact Complex.abs_im_le_norm _
   have hne : w ≠ 1 := fun h => by rw [h, sub_self, norm_zero] at hw2; linarith
-  have hD' := hD w hne (by rw [hre]; exact (one_sub_div_log_le c c₁ T w.im hc hcc (by linarith) (by rw [him, hv])).trans hx1)
+  have hD' := hD w hne (by rw [hre]; exact (one_sub_div_log_le c c₁ T w.im hc hcc (by rw [him, hv])).trans hx1)
   rw [him, hv] at hD'
   have hinv : ‖1 / (w - 1)‖ ≤ 1 := by rw [norm_div, norm_one]; exact (div_le_one (by linarith)).mpr (by linarith)
   have hζ : ‖deriv riemannZeta w / riemannZeta w‖ ≤ C₁ * Real.log (T + 2) ^ 2 + 1 := by
@@ -204,7 +204,7 @@ theorem norm_perronIntegrand_le_left (c₁ C₁ : ℝ) (hC₁ : 0 ≤ C₁)
   have hw2 : c / L ≤ ‖w - 1‖ := by
     simpa [hre, abs_of_pos hcL] using Complex.abs_re_le_norm (w - 1)
   have hne : w ≠ 1 := fun h => by rw [h, sub_self, norm_zero] at hw2; linarith
-  have hD' := hD w hne (by rw [hre, him]; exact one_sub_div_log_le c c₁ T u hc hcc hT hu)
+  have hD' := hD w hne (by rw [hre, him]; exact one_sub_div_log_le c c₁ T u hc hcc hu)
   rw [him] at hD'
   have hlogu : Real.log (|u| + 2) ^ 2 ≤ L ^ 2 :=
     pow_le_pow_left₀ (Real.log_nonneg (by linarith [abs_nonneg u]))

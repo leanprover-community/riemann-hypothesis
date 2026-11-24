@@ -335,7 +335,7 @@ private theorem lintegral_comp_of_map_eq {μ : Measure G} {φ : G → G} {g : G 
   conv_rhs => rw [← hμ]
   rw [lintegral_map hg hφ]
 
-theorem eq_smul_inv {H : Set G} (hHm : MeasurableSet H) (hinvH : ∀ h ∈ H, h⁻¹ ∈ H) {μ ν : Measure G}
+theorem eq_smul_inv {H : Set G} (hinvH : ∀ h ∈ H, h⁻¹ ∈ H) {μ ν : Measure G}
     [SFinite μ] [IsProbabilityMeasure ν] (hμc : μ Hᶜ = 0) (hμl : ∀ h ∈ H, μ.map (fun x => h * x) = μ)
     (hνc : ν Hᶜ = 0) (hνl : ∀ h ∈ H, ν.map (fun x => h * x) = ν) :
     μ = μ Set.univ • ν.map (fun x => x⁻¹) := by
@@ -366,8 +366,8 @@ theorem finite_bi {H : Set G} (hHm : MeasurableSet H) (hinvH : ∀ h ∈ H, h⁻
     [SigmaFinite μ] [IsProbabilityMeasure ν] (hμc : μ Hᶜ = 0) (hμl : ∀ h ∈ H, μ.map (fun x => h * x) = μ)
     (hνc : ν Hᶜ = 0) (hνl : ∀ h ∈ H, ν.map (fun x => h * x) = ν) :
     IsFiniteMeasure μ ∧ (∀ h ∈ H, μ.map (fun x => x * h) = μ) ∧ μ.map (fun x => x⁻¹) = μ := by
-  have hμeq := eq_smul_inv hHm hinvH hμc hμl hνc hνl
-  have hνeq := eq_smul_inv hHm hinvH hνc hνl hνc hνl
+  have hμeq := eq_smul_inv hinvH hμc hμl hνc hνl
+  have hνeq := eq_smul_inv hinvH hνc hνl hνc hνl
   rw [measure_univ, one_smul] at hνeq
   have hS : ∀ S, μ S = μ Set.univ * (ν.map (fun x => x⁻¹)) S := by
     intro S

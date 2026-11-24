@@ -272,7 +272,7 @@ theorem transp_exists {n : ℕ} (hn : n = 2 * r + k + 1) (ε : Fin n → Bool) (
   · rw [show (Pi.single (esI k r a) 1 : Fin (2 * r + k + 1) → ℂ) = bvec (esI k r a) from rfl,
       Formalism.L2.SG.Pf.WFL.Qm_mulVec_bvec, Formalism.L2.SG.Pf.WFL.colQ_esI]
 
-theorem qi_eq {n : ℕ} (hn : n = 2 * r + k + 1) (ε : Fin n → Bool) {Q : Matrix (Fin n) (Fin (2 * r + k + 1)) ℂ}
+theorem qi_eq {n : ℕ} (ε : Fin n → Bool) {Q : Matrix (Fin n) (Fin (2 * r + k + 1)) ℂ}
     {Qi : Matrix (Fin (2 * r + k + 1)) (Fin n) ℂ} (h2 : Q * Qi = 1) (hg : Qᴴ * Formalism.REAL.Jm ε * Q = Hpk k r) :
     Qi = Hpk k r * Qᴴ * Formalism.REAL.Jm ε := by
   calc Qi = Hpk k r * (Qᴴ * Formalism.REAL.Jm ε * Q) * Qi := by
@@ -284,7 +284,7 @@ theorem haar_tr {n : ℕ} (hn : n = 2 * r + k + 1) (ε : Fin n → Bool) (Q : Ma
     Formalism.MainNotions.S.IsHaarOn (UH (Hpk k r))
       ((Formalism.REAL.muG ε).map (fun γ => Matrix.of.symm (Formalism.L2.SG.RealObj.trG Q Qi γ))) := by
   subst hn
-  have hP : Formalism.L2.SG.Pf.WFL.CayPair ε Q Qi := ⟨hg, qi_eq rfl ε h2 hg⟩
+  have hP : Formalism.L2.SG.Pf.WFL.CayPair ε Q Qi := ⟨hg, qi_eq ε h2 hg⟩
   exact Formalism.L2.SG.Pf.WFL.isHaarOn_G hP
 
 theorem z_tr {n : ℕ} (hn : n = 2 * r + k + 1) (ε : Fin n → Bool) {Q : Matrix (Fin n) (Fin (2 * r + k + 1)) ℂ}
@@ -293,7 +293,7 @@ theorem z_tr {n : ℕ} (hn : n = 2 * r + k + 1) (ε : Fin n → Bool) {Q : Matri
       hJ ε (Q *ᵥ Pi.single (esI k r a) 1) z = 0) :
     inWb k r (Qi *ᵥ z) ∧ Tz k r (Qi *ᵥ z) = -(hJ ε z z).re := by
   subst hn
-  have hQi := qi_eq rfl ε h2 hg
+  have hQi := qi_eq ε h2 hg
   have hcoord : ∀ i, (Qi *ᵥ z) i = Formalism.QuantumDeterminants.GBasic.sgn k r i *
       hJ ε (Q *ᵥ Pi.single (Formalism.QuantumDeterminants.GBasic.sig k r i) 1) z := by
     intro i

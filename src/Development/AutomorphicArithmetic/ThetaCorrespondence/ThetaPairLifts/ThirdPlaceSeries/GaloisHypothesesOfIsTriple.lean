@@ -1396,7 +1396,7 @@ theorem hkSat_of_isTripleWith (h : _root_.GlobalTheory.Triple.IsGaloisTripleWith
   have hμ := mu_unr C (jIdx s) (fun k hk => hP (D.ntw.placesOver_subset_exceptional i k hk)) fun hp => hP (D.ntw.primes_subset_exceptional i hp)
   rw [(twBy_unr S (mu_unitary C (D.ntw.l i) (jIdx s)) (h.unr_of_notMem hP) hμ.inv).2, heckeVal, satake, Multiset.map_map]
   have e1 : ((k : ℂ) * ((D.R.r : ℂ) - k)) / 2 = ((k * (D.R.r - k) / 2 : ℕ) : ℂ) := by
-    have := congrArg (Nat.cast : ℕ → ℂ) (two_mul_half D.R hk)
+    have := congrArg (Nat.cast : ℕ → ℂ) (two_mul_half D.R)
     rw [Nat.cast_mul, Nat.cast_mul, Nat.cast_sub hk] at this
     rw [← this]
     push_cast

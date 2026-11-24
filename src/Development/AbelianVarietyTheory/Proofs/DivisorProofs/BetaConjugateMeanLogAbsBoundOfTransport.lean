@@ -257,7 +257,7 @@ namespace GlobalTheory.ConjValChar
 open NumberField IsDedekindDomain Neutral.B1 ReciprocityTheory.Neutral.Bridge.HCFR Formalism.L2.Host GlobalTheory.CMVal
 variable {E : Type} [Field E] [NumberField E] {I : Type} [Fintype I]
 
-theorem injective_of_isCMType {φ : I → E →+* ℂ} (h : IsCMType φ) : Function.Injective φ := fun i j hij =>
+theorem injective_of_isCMType {φ : I → E →+* ℂ} (h : IsCMType φ) : Function.Injective φ := fun i _ hij =>
   (h (φ i)).unique (Or.inl rfl) (Or.inl hij)
 
 theorem bijective_of_isCMType {φ : I → E →+* ℂ} (h : IsCMType φ) :

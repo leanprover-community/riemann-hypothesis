@@ -206,7 +206,7 @@ theorem crossOp_eig_gap (hE : IsGlRep E) (hU : IsInfUnitary ε E) (hV : IsKIrrHW
   obtain ⟨w, hwS, hw0, -, μ, hμw, -⟩ :=
     eig_casimirK (bAct_isGlRep hE 1) (bAct_isKUnitary hU 1) hfd hSst v.2 hx0 hxθ
   obtain ⟨hw1, hw2⟩ := Submodule.mem_inf.1 hwS
-  obtain ⟨r, s, hε, hμ, hcross⟩ := crossOp_khw hE hU hV hw2 hw0 hμw
+  obtain ⟨r, s, hε, hμ, hcross⟩ := crossOp_khw hE hV hw2 hw0 hμw
   have hθw : crossOp ε E 1 0 w = (θ : ℂ) • w := Module.End.mem_eigenspace_iff.1 hw1
   rw [hθw, smul_smul] at hcross
   have h2 := smul_left_injective ℂ hw0 hcross
@@ -362,7 +362,7 @@ theorem Wm_khw (hE : IsGlRep E) (hU : IsInfUnitary ε E) (hV : IsKIrrHW ε E (lo
     (hν : IsKHWVec ε (bAct E 1) ν x) :
     ∃ a b : Fin n, a < b ∧ ε a ≠ ε b ∧ ν = lowK ε lam - root a b := by
   have hxN := Wm_le_ncV hx
-  obtain ⟨r, s, hrs, hν', hC2⟩ := crossOp_khw hE hU hV hxN hx0 hν
+  obtain ⟨r, s, hrs, hν', hC2⟩ := crossOp_khw hE hV hxN hx0 hν
   have hne : r ≠ s := fun h => hrs (h ▸ rfl)
   rcases lt_or_gt_of_ne hne with hlt | hlt
   · exfalso

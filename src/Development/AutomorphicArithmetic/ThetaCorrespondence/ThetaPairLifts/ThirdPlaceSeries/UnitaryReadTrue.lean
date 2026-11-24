@@ -827,13 +827,13 @@ theorem isSplitAt_w (F : FinIso L n) (s : SplitPlace L) (i : s.v.adicCompletion 
     change F.κ (GlobalTheory.SplitLift.Em s δ) u = 0
     by_cases hu : u = s.w
     · subst hu
-      rw [kappa_split F s i hic hi, GlobalTheory.SplitLift.proj_Em s δ d hd hr, map_zero]
+      rw [kappa_split F s i hic hi, GlobalTheory.SplitLift.proj_Em s δ d hr, map_zero]
     · apply kappa_eq_zero
       apply GlobalTheory.SplitLift.compAt_Em
       rw [← under_w s]
       exact fun h => hns ⟨u, hu, h⟩
   have h0 : GlobalTheory.SplitLift.Em s δ = 0 := F.κ.injective (hk.trans (map_zero _).symm)
-  have h1 := GlobalTheory.SplitLift.proj_Ep s δ d hd hr
+  have h1 := GlobalTheory.SplitLift.proj_Ep s δ d hr
   rw [← GlobalTheory.SplitLift.conj_Em s δ hδ, h0, map_zero, map_zero] at h1
   exact zero_ne_one h1
 end GlobalTheory.SplitDict

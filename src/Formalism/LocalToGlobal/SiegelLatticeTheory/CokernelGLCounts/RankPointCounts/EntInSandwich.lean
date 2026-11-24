@@ -31,7 +31,7 @@ theorem smul_sandwich (e : L.Ep) (P X Q : Matrix (Fin n) (Fin n) L.Ep) : P * (e 
 theorem close (ex ey : L.Ep) (hex : ex ∈ L.O) (hey : ey ∈ L.O) (hxx : ex * ex = ex) (hyy : ey * ey = ey)
     (hsum : ex + ey = 1) (hxy : ex * ey = 0)
     (N Ni Δ Δi Γ Γi : Matrix (Fin n) (Fin n) L.Ep) (hN : N * Ni = 1) (hN' : Ni * N = 1) (hΔ : Δ * Δi = 1)
-    (hΓ : Γ * Γi = 1) (hΓ' : Γi * Γ = 1) (h1 h2 : GL (Fin n) L.Ep)
+    (hΓ' : Γi * Γ = 1) (h1 h2 : GL (Fin n) L.Ep)
     (hh : (h1 : Matrix (Fin n) (Fin n) L.Ep) * N * (h2 : Matrix (Fin n) (Fin n) L.Ep) = N) (c : L.Fp) (hc0 : c ≠ 0) (hc : c ∈ 𝒪[L.Fp]) :
     ∃ c' : L.Fp, c' ≠ 0 ∧ c' ∈ 𝒪[L.Fp] ∧ ∀ (l ρ : GL (Fin n) L.Ep) (G : Matrix (Fin n) (Fin n) L.Ep),
       (∀ i j, i ≤ j → (((h1⁻¹ * l : GL (Fin n) L.Ep) : Matrix (Fin n) (Fin n) L.Ep) - 1) i j = 0) →

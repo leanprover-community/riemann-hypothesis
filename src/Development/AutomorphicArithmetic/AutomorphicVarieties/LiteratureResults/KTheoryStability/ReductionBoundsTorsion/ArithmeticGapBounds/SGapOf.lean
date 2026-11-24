@@ -1033,7 +1033,7 @@ def rmul {Γ : Type*} [Group Γ] (H : Subgroup Γ) (k : Γ) :
     induction c using Quotient.inductionOn' with
     | h a => simp [Quotient.map'_mk'']
 
-theorem bridge {Γ : Type*} [Group Γ] (H N : Subgroup Γ) [N.Normal] (hNH : N ≤ H) (hH : H.index ≠ 0)
+theorem bridge {Γ : Type*} [Group Γ] (H N : Subgroup Γ) [N.Normal] (hNH : N ≤ H)
     [Fintype (Γ ⧸ N)] (φ : Γ → ℝ) (hφ : ∀ h ∈ H, ∀ k, φ (h * k) = φ k) :
     (H.index : ℝ)⁻¹ * ∑ᶠ c : Quotient (QuotientGroup.rightRel H), φ c.out =
       (Fintype.card (Γ ⧸ N) : ℝ)⁻¹ * ∑ q : Γ ⧸ N, φ q.out := by
@@ -1130,7 +1130,7 @@ theorem design_holds : Design := by
     exact hu _ (Subgroup.mem_subgroupOf.mp hh) _
   have havg : ∀ u, LInv j (E ⊓ E') u →
       avg j (E ⊓ E') K u x = (Fintype.card (K ⧸ N) : ℝ)⁻¹ * ∑ q : K ⧸ N, φ u q.out :=
-    fun u hu => bridge Bk N hNB hidx (φ u) (hinvB u hu)
+    fun u hu => bridge Bk N hNB (φ u) (hinvB u hu)
   have haB : LInv j (E ⊓ E') a := fun γ hγ y => ha γ hγ.1 y
   have hbB : LInv j (E ⊓ E') b := fun γ hγ y => hb γ hγ.2 y
   have habB : LInv j (E ⊓ E') (fun y => a y * b y) := fun γ hγ y => by

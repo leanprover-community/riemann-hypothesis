@@ -1204,7 +1204,7 @@ theorem trace_sumRep {k Γ : Type} [CommRing k] [Group Γ] {a b : ℕ} (ρ : Γ 
   rw [e]
   simp [Matrix.trace, Fin.sum_univ_add]
 
-theorem noDouble_of_live (D : D7) (h5 : SumRepresentations.adm5 D) (i : D.nd.Loc) (k : Fin 2) (hl : D.nd.l i = D.host.g k)
+theorem noDouble_of_live (D : D7) (i : D.nd.Loc) (k : Fin 2) (hl : D.nd.l i = D.host.g k)
     (hL : GlobalTheory.CoefDuty.Live D.nd i) (r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i))) (hr : GoodR D.nd i r)
     (hb : ResidualCharpolyIndependent D.nd i r) (x : D.nd.X i) {K' : Type} [Field K'] (f : D.nd.O i →+* K') (hf : Function.Injective f) {d u : ℕ}
     (σ : GE D.nd →* GL (Fin d) K') (υ : GE D.nd →* GL (Fin u) K') (h : d + d + u = D.R.nV) (Pm : GL (Fin D.R.nV) K')
@@ -1461,7 +1461,7 @@ theorem constituentCondition_at_distinguishedPrime (D : D7) (h5 : SumRepresentat
     (hL : GlobalTheory.CoefDuty.Live D.nd i) (r : D.nd.X i → (Formalism.ConjugateSelfDual.G D.host.E D.nd.Om →* GL (Fin D.R.nV) (D.nd.O i)))
     (hg : GoodR D.nd i r) (hb : ResidualCharpolyIndependent D.nd i r) : DistinctAbsIrredConstituents D.nd i r :=
   constituentCondition_of_noRepeatedFactor D i r (fun x => _root_.GlobalTheory.NRows.isHeckeGaloisQ_of_isHeckeGalois D i x (r x) (hg x)) fun x _ _ f f' e' _ _ σ υ h Pm hd hrel =>
-    noDouble_of_live D h5 i k hl hL r hg hb x f (by
+    noDouble_of_live D i k hl hL r hg hb x f (by
       have := SumRepresentations.iotaOQ_injective D.nd D.naut i
       rw [← e'] at this
       exact Function.Injective.of_comp (f := f') this) σ υ h Pm hd hrel

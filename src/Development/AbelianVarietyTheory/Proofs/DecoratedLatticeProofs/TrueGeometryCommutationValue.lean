@@ -532,8 +532,8 @@ theorem piA_finite (hfin : ∀ j d h, (A j d h).Finite) (j : ℕ) : Finite (PiA 
   · exact @Finite.of_subsingleton _ ⟨fun x y => Subtype.ext (funext fun d => funext fun h => absurd h (by omega))⟩
 
 def ChT (j : ℕ) : Type :=
-  {x : PiA G A j // j ≠ G.s + 1} ⊕
-    {o : Orb ((G.T δ hδ η).lev (G.s + 1) 0 rfl).J (twist_lev_le δ hδ η (G.s + 1) 0 rfl) (G.ϖ ^ M)⁻¹ (G.ϖ ^ M) // j = G.s + 1}
+  {_ : PiA G A j // j ≠ G.s + 1} ⊕
+    {_ : Orb ((G.T δ hδ η).lev (G.s + 1) 0 rfl).J (twist_lev_le δ hδ η (G.s + 1) 0 rfl) (G.ϖ ^ M)⁻¹ (G.ϖ ^ M) // j = G.s + 1}
 
 theorem chT_finite (hfin : ∀ j d h, (A j d h).Finite) (j : ℕ) : Finite (ChT G δ hδ η A M j) := by
   haveI := piA_finite G A hfin j; unfold ChT; infer_instance
@@ -890,8 +890,8 @@ theorem piA_finite (hfin : ∀ j d h, (A j d h).Finite) (j : ℕ) : Finite (PiA 
   · exact @Finite.of_subsingleton _ ⟨fun x y => Subtype.ext (funext fun d => funext fun h => absurd h (by omega))⟩
 
 def ChT (j : ℕ) : Type :=
-  {x : PiA G A j // j ≠ G.s + 1} ⊕
-    {o : Orb ((G.T δ hδ η).lev (G.s + 1) 0 rfl).J (G.T_le δ hδ η (G.s + 1) 0 rfl) (G.ϖ ^ M)⁻¹ (G.ϖ ^ M) // j = G.s + 1}
+  {_ : PiA G A j // j ≠ G.s + 1} ⊕
+    {_ : Orb ((G.T δ hδ η).lev (G.s + 1) 0 rfl).J (G.T_le δ hδ η (G.s + 1) 0 rfl) (G.ϖ ^ M)⁻¹ (G.ϖ ^ M) // j = G.s + 1}
 
 theorem chT_finite (hfin : ∀ j d h, (A j d h).Finite) (j : ℕ) : Finite (ChT G δ hδ η A M j) := by
   haveI := piA_finite G A hfin j; unfold ChT; infer_instance

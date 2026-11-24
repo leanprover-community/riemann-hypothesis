@@ -110,10 +110,10 @@ theorem sobO_om_le (hom : IsWeilDatumO ψ S T χS χT om) (hc : Chart θ σ) (h�
           add_le_add (le_mul_of_one_le_left' h1) le_rfl
       _ = _ := by push_cast; ring
 
-theorem sobO_weil_le_height : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (hθ : IsInfFam θ) (ε : Bool) (M X : HSp D)
-    (χ χ' : (AE D)ˣ →* Circle) (ω : WRep M X) (hω : IsWeil ψ ε M X χ χ' ω) (Φ : WO M X → ℂ) (hΦ : IsThetaFunO ψ (sgn ε M) X Φ)
-    (C₁ : Set (GA D M)) (hC₁ : IsCompact C₁)
-    (μ : Measure (WO (sgn ε M) X)) (𝓕 : Set (WO (sgn ε M) X)) (hμ : IsCovolOne (ratL X (sgn ε M)) μ 𝓕) (k : ℕ),
+theorem sobO_weil_le_height : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (_ : IsInfFam θ) (ε : Bool) (M X : HSp D)
+    (χ χ' : (AE D)ˣ →* Circle) (ω : WRep M X) (_ : IsWeil ψ ε M X χ χ' ω) (Φ : WO M X → ℂ) (_ : IsThetaFunO ψ (sgn ε M) X Φ)
+    (C₁ : Set (GA D M)) (_ : IsCompact C₁)
+    (μ : Measure (WO (sgn ε M) X)) (𝓕 : Set (WO (sgn ε M) X)) (_ : IsCovolOne (ratL X (sgn ε M)) μ 𝓕) (k : ℕ),
     ∃ (N : ℕ) (C : ℝ), 0 ≤ C ∧ ∀ y ∈ C₁, ∀ h : GA D X,
       (GlobalTheory.Size.sobO (V := sgn ε M) (W := X) ψ θ μ 𝓕 k (ω (y, h) Φ)).toReal ≤
         C * (GlobalTheory.IndefiniteRowSideFullHecke.LieAlgebraExponentialFamilies.height θ X h : ℝ) ^ N := by

@@ -276,7 +276,7 @@ theorem approximation_of_square_identity : SqId → Approx := by
   rw [hkey]
   refine le_trans (Complex.re_le_norm _) (le_trans (norm_inner_le_norm _ _) ?_)
   gcongr
-  exact le_of_eq (by simp only [two_smul, two_nsmul])
+  exact le_of_eq (by simp only [two_smul])
 
 end PositivityTheory.RgHe3
 end -- clump:auto
@@ -379,7 +379,7 @@ theorem smooth_map (T : H →L[ℂ] H) (hT : ∀ g ∈ UJset ε, Commute T (ρ g
 theorem dS_map (hρ : IsURepOn (UJset ε) ρ) (T : H →L[ℂ] H) (hT : ∀ g ∈ UJset ε, Commute T (ρ g))
     {X : Matrix (Fin n) (Fin n) ℂ} (hX : inG ε X) {v : H} (hv : IsSmoothVecU ε ρ v) :
     dS ρ X (T v) = T (dS ρ X v) := by
-  have hf := hasDerivAt_dS hρ hX hv
+  have hf := hasDerivAt_dS hX hv
   have hTf := (T.restrictScalars ℝ).hasFDerivAt.comp_hasDerivAt (0 : ℝ) hf
   have heq : (fun t : ℝ => ρ (NormedSpace.exp ((t : ℂ) • X)) (T v)) =
       ⇑(T.restrictScalars ℝ) ∘ fun t : ℝ => ρ (NormedSpace.exp ((t : ℂ) • X)) v := by
@@ -915,7 +915,7 @@ theorem identity_holds : Ident := by
   have hcas : CasOnSmooth ε mu σ := casOnSmooth_of_isDS hσ hstd
   obtain ⟨V₂, hV₂, hV₂0, hVK₂, hc₂⟩ := arb_datum hσ hcas
   have hD₂ := isDerivedOn_smE hσU
-  obtain ⟨Uq, hUq⟩ := data_unitary_equiv hstd hρ hD hV hc₁ hVK₁ hV₁0 hσU hD₂ hV₂ hc₂ hVK₂ hV₂0
+  obtain ⟨Uq, hUq⟩ := data_unitary_equiv hstd hρ hD hV hc₁ hVK₁ hV₁0 hσU hD₂ hV₂ hc₂ hVK₂
   have htop : closGen (smE ε σ) V₂ = ⊤ :=
     data_closGen_eq_top hstd hσU hD₂ hV₂ hc₂ hVK₂ hσ.2.2.2.1 hV₂0
 
@@ -942,7 +942,7 @@ theorem identity_holds : Ident := by
 
     set y : closGen (smE ε ρ) V := Uq.symm (e₂ x) with hy
     have hmem : ρ g (y : H) ∈ closGen (smE ε ρ) V :=
-      closGen_stable hstd hρ hD hV hc₁ hVK₁ g hg _ y.2
+      closGen_stable hρ hD hV hc₁ g hg _ y.2
     let y' : closGen (smE ε ρ) V := ⟨ρ g (y : H), hmem⟩
     have key := hUq g hg y' y rfl
     have e1 : ((Uq y : closGen (smE ε σ) V₂) : H') = x := by
@@ -1348,7 +1348,7 @@ theorem abs_rhoC_le {n : ℕ} (ε : Fin n → Bool) (a : Fin n) : |rhoC ε a| �
   rw [abs_le]
   constructor <;> linarith
 
-theorem dot_root {n : ℕ} (x : Fin n → ℝ) {a b : Fin n} (hab : a ≠ b) : dot x (root a b) = x a - x b := by
+theorem dot_root {n : ℕ} (x : Fin n → ℝ) {a b : Fin n} : dot x (root a b) = x a - x b := by
   simp [dot, root, Pi.single_apply, mul_sub, Finset.sum_sub_distrib]
 
 end PositivityTheory.RgHe3.DropRoots
@@ -1362,7 +1362,7 @@ theorem drop_holds : Drop := by
   unfold casValK
   have e : L - root a b + rhoC ε = (L + rhoC ε) - root a b := by
     funext c; simp only [Pi.add_apply, Pi.sub_apply]; ring
-  rw [e, nsq_sub', nsq_root hab, dot_root _ hab]
+  rw [e, nsq_sub', nsq_root hab, dot_root _]
   have h1 := abs_rhoC_le ε a
   have h2 := abs_rhoC_le ε b
   simp only [Pi.add_apply]

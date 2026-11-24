@@ -1046,7 +1046,7 @@ instance (Z : Subgroup G) : Nonempty (OpenSubgroupAbove Z) :=
   ⟨⟨⊤, le_top⟩⟩
 
 instance (Z : Subgroup G) : IsDirectedOrder (OpenSubgroupAbove Z) :=
-  ⟨fun a b => ⟨⟨a.1 ⊓ b.1, fun z hz => ⟨a.2 hz, b.2 hz⟩⟩, fun x hx => hx.1, fun x hx => hx.2⟩⟩
+  ⟨fun a b => ⟨⟨a.1 ⊓ b.1, fun _ hz => ⟨a.2 hz, b.2 hz⟩⟩, fun _ hx => hx.1, fun _ hx => hx.2⟩⟩
 
 abbrev trivQZRes (U : OpenSubgroup G) : Rep.{0} (ULift.{0} ℤ) (U : Subgroup G) :=
   Rep.res (U : Subgroup G).subtype (trivRep G QZ)
@@ -1073,7 +1073,7 @@ def coindToDivFunOne (U : OpenSubgroup G) (hU : ψ.range ≤ (U : Subgroup G)) :
       map_smul' := fun _ _ => rfl }, fun _ => rfl⟩
 
 theorem coindToDivFunOne_injective (U : OpenSubgroup G) (hU : ψ.range ≤ (U : Subgroup G)) :
-    Function.Injective (coindToDivFunOne ψ U hU).hom := fun F F' h =>
+    Function.Injective (coindToDivFunOne ψ U hU).hom := fun _ _ h =>
   Subtype.ext (congrFun (congrArg Subtype.val h) PUnit.unit)
 
 end Single
@@ -1342,7 +1342,7 @@ theorem single_mem_divFun (j : I) (F : G → QZ) (hF : IsLocallyConstant F ∧ �
   refine ⟨(Set.finite_singleton j).subset fun i hi => ?_, fun i => ?_⟩
   · by_contra h
     have h' : i ≠ j := fun e => h (Set.mem_singleton_iff.2 e)
-    exact hi (by simp [Pi.single_apply, h'])
+    exact hi (by simp [h'])
   · by_cases h : i = j
     · subst h
       simpa only [Pi.single_eq_same] using hF

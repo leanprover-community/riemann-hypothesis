@@ -128,7 +128,7 @@ theorem prWv_perp {z y : Fin (2 * r + k + 1) → ℂ} (hT : 0 < Tz k r z) (hy : 
   rw [h1]
   ring
 
-theorem prWv_inWb {z y : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hy : inWb k r y) :
+theorem prWv_inWb {z y : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) :
     inWb k r (SSn.prWv k r z y) := by
   intro i hi
   have h1 : SSn.wbP k r y i = 0 := by
@@ -193,8 +193,8 @@ theorem base {z z' : Fin (2 * r + k + 1) → ℂ} {μsec : ℂ → Matrix (Fin (
     rw [sub_pos, lt_div_iff₀ hT]; linarith
   have hposi : 0 < Complex.normSq (conj ζ) / Tz k r z' - Tz k r z := by
     rw [Complex.normSq_conj, sub_pos, lt_div_iff₀ hT']; linarith
-  obtain ⟨h1, h2⟩ := unitH_facts (prWv_inWb hz hy) (prWv_perp hT hy) hpos (prWv_norm hT hy hyy hyz)
-  obtain ⟨h3, h4⟩ := unitH_facts (prWv_inWb hz' hyi) (prWv_perp hT' hyi) hposi (prWv_norm hT' hyi hyyi hyzi)
+  obtain ⟨h1, h2⟩ := unitH_facts (prWv_inWb hz) (prWv_perp hT hy) hpos (prWv_norm hT hy hyy hyz)
+  obtain ⟨h3, h4⟩ := unitH_facts (prWv_inWb hz') (prWv_perp hT' hyi) hposi (prWv_norm hT' hyi hyyi hyzi)
   exact ⟨h1, h2, h3, h4⟩
 
 end DU

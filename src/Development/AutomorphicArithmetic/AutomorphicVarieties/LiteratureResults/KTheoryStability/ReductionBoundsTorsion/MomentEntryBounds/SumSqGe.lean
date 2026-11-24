@@ -126,7 +126,7 @@ theorem int_d {d : ℤ} {G : Matrix (Fin N) (Fin N) L} (hd : ∀ i j, IsIntegral
   rw [← mul_assoc]
   exact (hd a j).mul (RingOfIntegers.isIntegral_coe (y j))
 
-theorem sum_sq_ge (hL : IsTotallyComplex L) {d : ℤ} (hd : d ≠ 0) {β : L} (hβ : β ≠ 0)
+theorem sum_sq_ge {d : ℤ} (hd : d ≠ 0) {β : L} (hβ : β ≠ 0)
     (hint : IsIntegral ℤ ((d : L) * β)) : ((d : ℝ) ^ 2)⁻¹ ≤ ∑ w : InfinitePlace L, ‖w.embedding β‖ ^ 2 := by
   have hdR : (d : ℝ) ≠ 0 := Int.cast_ne_zero.mpr hd
   let α : 𝓞 L := ⟨(d : L) * β, hint⟩

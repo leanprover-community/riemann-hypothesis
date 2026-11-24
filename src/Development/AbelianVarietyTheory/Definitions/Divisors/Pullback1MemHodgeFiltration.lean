@@ -536,8 +536,8 @@ def idHom {y : Sp E.C ⟶ X} (hy : y ≫ s = spMap (algebraMap R E.C)) :
 
 def val (y : Sp E.C ⟶ X) (hy : y ≫ s = spMap (algebraMap R E.C)) : Z1 (O (dp0 R) s) →ₗ[R] E.C where
   toFun f := ev f (E.secHom (E.red_w hy) E.i E.π_i) - ev f (E.idHom hy)
-  map_add' f g := add_sub_add_comm (α := E.C) _ _ _ _
-  map_smul' r f := (smul_sub r (_ : E.C) _).symm
+  map_add' _ _ := add_sub_add_comm (α := E.C) _ _ _ _
+  map_smul' r _ := (smul_sub r (_ : E.C) _).symm
 
 theorem val_apply (y : Sp E.C ⟶ X) (hy : y ≫ s = spMap (algebraMap R E.C)) (f : Z1 (O (dp0 R) s)) :
     E.val y hy f = ev f (E.secHom (E.red_w hy) E.i E.π_i) - ev f (E.idHom hy) := rfl

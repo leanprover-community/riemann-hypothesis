@@ -50,7 +50,7 @@ theorem rows_rpow_pow {b : ℝ} (hb : 0 < b) (x : ℝ) (n : ℕ) : (b ^ x) ^ n =
   first
     | exact (Real.rpow_mul_natCast hb.le x n).symm
 
-theorem rows_num_Q {f r : ℕ} {b pe E1 cr δ : ℝ} (hb : 2 ≤ b) (hδ0 : 0 ≤ δ) (hδ : δ ≤ 1) :
+theorem rows_num_Q {f r : ℕ} {b pe E1 cr δ : ℝ} (hb : 2 ≤ b) (hδ : δ ≤ 1) :
     (1 + δ) * (((b ^ pe) ^ E1) ^ 2 * ((b ^ pe) ^ cr) ^ 2) * ((41 ^ f * (b ^ pe) ^ 3) ^ ((r + 1) ^ 2)) ^ 2 ≤
       b ^ (1 + 12 * (f : ℝ) * ((r : ℝ) + 1) ^ 2 + pe * (2 * E1 + 2 * cr + 6 * ((r : ℝ) + 1) ^ 2)) := by
   have hb0 : 0 < b := by linarith
@@ -114,7 +114,7 @@ theorem rows_num_nd {k m f s r : ℕ} {b g v Γ c C pe E1 cr δ rD XiP : ℝ} {X
     rw [← Real.rpow_mul hb0.le]
     first
       | exact Real.rpow_le_rpow_of_exponent_le hb1 hexp
-  have hB := (rows_num_Q (f := f) (r := r) (pe := pe) (E1 := E1) (cr := cr) hb hδ0 hδ).trans hH
+  have hB := (rows_num_Q (f := f) (r := r) (pe := pe) (E1 := E1) (cr := cr) hb hδ).trans hH
   have hep : 1 ≤ Real.exp 1 * Real.pi := by
     have h1 : (1 : ℝ) ≤ Real.exp 1 := by linarith [Real.add_one_le_exp (1 : ℝ)]
     have h2 : (1 : ℝ) ≤ Real.pi := by linarith [Real.pi_gt_three]

@@ -53,7 +53,7 @@ theorem unitary_inv {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (hA : IsUnit A.de
     _ = 1 := by rw [Matrix.nonsing_inv_mul _ hA, Matrix.mul_one, Matrix.mul_nonsing_inv _ hRu]
 
 theorem quotMetC_unitary {n d : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) (hA : A.PosDef)
-    (P : Matrix (Fin d) (Fin n) ℂ) (hP : Function.Surjective P.mulVec)
+    (P : Matrix (Fin d) (Fin n) ℂ)
     (R : Matrix (Fin n) (Fin n) ℂ) (hR : Rᴴ * A * R = A) (hRu : IsUnit R.det)
     (N : Matrix (Fin d) (Fin d) ℂ) (hN : P * R = N * P) :
     Nᴴ * quotMetC P A * N = quotMetC P A := by
@@ -653,7 +653,7 @@ theorem quotThrough_holds : QuotThrough := by
     quotMetC_through A hA P hP C D hDC hE N hN P' hP' J hJ hPC
 
 theorem quotUnitary_holds : QuotUnitary := by
-  exact fun n d A hA P hP R hR hRu N hN => quotMetC_unitary A hA P hP R hR hRu N hN
+  exact fun n d A hA P hP R hR hRu N hN => quotMetC_unitary A hA P R hR hRu N hN
 
 theorem quot_transfer' (B : BlockDat K G Pl0) {v0 : InfinitePlace K} (hv0 : IsConjAt v0) {s : ℕ} (h : B.Ok s)
     (X : Finset (G → K)) (hX : ∀ χ ∈ X, IsAbsIrrChar χ) (P : Subgroup G) (ψ : P →* Kˣ) (Z : Submodule K B.S.Forms)

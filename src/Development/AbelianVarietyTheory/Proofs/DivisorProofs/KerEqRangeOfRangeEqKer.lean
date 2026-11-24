@@ -138,7 +138,7 @@ namespace GlobalTheory.PDiv.FrobKerPrim
 
 theorem mem_frobKerIdeal_of_cobOne (p : ℕ) [Fact p.Prime] (K H : Type) [Field K] [CharP K p]
     [CommRing H] [HopfAlgebra K H] [IsCocomm K H] [Module.Finite K H] (b : H)
-    (_hb : counit (R := K) b = 0) (hd : dUnit (R := K) b = 0)
+    (hd : dUnit (R := K) b = 0)
     (hc : Algebra.TensorProduct.map (Ideal.Quotient.mkₐ K (frobKerIdeal p K H))
       (Ideal.Quotient.mkₐ K (frobKerIdeal p K H)) (cobOne K H b) = 0) :
     b ∈ frobKerIdeal p K H := by
@@ -342,7 +342,7 @@ theorem ker_rigExtMap_relFrob_le_range_rigOfOmega (p : ℕ) [Fact p.Prime] (K : 
     congrArg (fun z : G.cocycles => z.1 1) hc₁
   have hker := _root_.GlobalTheory.PDiv.frobKerIdeal_eq_kerIdeal_relFrob p K h G 1
   have hmem : B₁.1 1 ∈ frobKerIdeal p K (G.A 1) := by
-    refine _root_.GlobalTheory.PDiv.FrobKerPrim.mem_frobKerIdeal_of_cobOne p K (G.A 1) _ hb0 hbd ?_
+    refine _root_.GlobalTheory.PDiv.FrobKerPrim.mem_frobKerIdeal_of_cobOne p K (G.A 1) _ hbd ?_
     rw [hker]
     exact map_mk_cobOne_eq_zero ((relFrob h G).app 1) hb0 hcob
   rw [hker] at hmem

@@ -40,7 +40,7 @@ theorem data_admissible (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ) (h
     refine sSup_le fun S hSmem => ?_
     obtain ⟨hS, hST⟩ := hSmem
     obtain ⟨hSf, hSK, hirr, -, -⟩ := id hST
-    have hSM := data_kfin_le hgap hσ hD hV hc hVK S hS hSf (fun g hg x hx => hSK g hg x hx)
+    have hSM := data_kfin_le hgap hσ hD hV hc S hS hSf (fun g hg x hx => hSK g hg x hx)
     have hSD : S ≤ D := hSM.trans (Submodule.map_subtype_le _ _)
     obtain ⟨w, hwS, hw0, hwμ⟩ := exists_isKHWVec_of_isKTypeOf hσ hD hST hSD
     have hwg : w ∈ genSub E V := by

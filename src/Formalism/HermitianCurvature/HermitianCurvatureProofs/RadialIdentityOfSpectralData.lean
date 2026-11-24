@@ -524,7 +524,7 @@ theorem comm_inv' {a b bi : A} (h : Commute a b) (h1 : b * bi = 1) (h2 : bi * b 
     _ = bi * a * (b * bi) := by simp only [mul_assoc]
     _ = bi * a := by rw [h1, mul_one]
 
-theorem star_inv' {b bi : A} (hb : star b = b) (h1 : b * bi = 1) (h2 : bi * b = 1) : star bi = bi := by
+theorem star_inv' {b bi : A} (hb : star b = b) (h1 : b * bi = 1) : star bi = bi := by
   have hsb : star bi * b = 1 := by
     calc star bi * b = star bi * star b := by rw [hb]
       _ = star (b * bi) := (star_mul b bi).symm
@@ -648,9 +648,9 @@ theorem radial_rearrangement : RDRearr := by
   have hzb : star L.ζb = L.ζ := by rw [← hSL.1, star_star]
   have hGs : star L.GG = L.GG := by
     rw [L.GG_def, star_sub, star_mul, hzb, hSL.1, ← algebraMap_star_comm, hSL.2.2]
-  have hGis : star L.GGi = L.GGi := star_inv' hGs L.GG_GGi L.GGi_GG
+  have hGis : star L.GGi = L.GGi := star_inv' hGs L.GG_GGi
   have hx1s : star (st.x (Y + 1)) = st.x (Y + 1) := hLS.x_star (Y + 1) hY1
-  have hxi1s : star (st.xi (Y + 1)) = st.xi (Y + 1) := star_inv' hx1s hx1 hx1'
+  have hxi1s : star (st.xi (Y + 1)) = st.xi (Y + 1) := star_inv' hx1s hx1
   have hQ1s : star (st.QQ (Y + 1) 0 1) = st.QQ (Y + 1) 1 0 := by
     have := congrFun (congrFun (hLS.start.herm (Y + 1) hY1) 1) 0
     simpa [Matrix.conjTranspose_apply] using this

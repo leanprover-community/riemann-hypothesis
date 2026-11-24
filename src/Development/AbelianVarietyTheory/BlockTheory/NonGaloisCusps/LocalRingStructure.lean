@@ -134,7 +134,7 @@ def letterMax {l : ℕ} [Fact l.Prime] (K : FinExt l)
   Finset.univ.sup m
 
 def HeightsFromJumps (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (H : LocHW l P)
-    (F : LocFon l P AI H) (_C : LocCmpT l P AI H F) : Prop :=
+    (F : LocFon l P AI H) : Prop :=
   ∀ (K : FinExt l) (s : ℕ) (LL : FinExt l) (hg : Good K s LL)
     (T : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)), IsCrys (P.PD K) T.ρ →
     ∀ M h : ZMod (Module.finrank ℚ_[l] ↥(K0 K)) → ℕ, JumpsBounded (H.W K s LL hg) T M h →

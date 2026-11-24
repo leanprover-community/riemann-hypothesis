@@ -469,7 +469,7 @@ theorem archimedean_class_count_bound : _root_.GlobalTheory.FunPr.ThetaLocalInpu
   have hM0 : 0 ≤ M := by rw [hM, hBd]; positivity
   have factor : ∀ (n : ℕ), n ≤ N → ∀ a : ℝ, 0 ≤ a → a ≤ Real.exp (2 * sig ch.G) → hBd D n * a ^ (n ^ 2) ≤ M := by
     intro n hn a ha0 ha
-    have h1 : hBd D n ≤ hBd D N := hBd_mono hn hbase1 hrd0.le
+    have h1 : hBd D n ≤ hBd D N := hBd_mono hn hbase1
     have h2 : a ^ (n ^ 2) ≤ Real.exp (2 * sig ch.G) ^ (N ^ 2) :=
       (pow_le_pow_left₀ ha0 ha _).trans (pow_le_pow_right₀ (Real.one_le_exp (by linarith)) (by gcongr))
     exact mul_le_mul h1 h2 (by positivity) (by rw [hBd]; positivity)

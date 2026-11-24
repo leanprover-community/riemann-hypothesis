@@ -298,7 +298,7 @@ theorem ratio_eq_one_of_cyclic (ℓ : ℕ) [Fact ℓ.Prime] (K : FiniteSubfield)
   rw [he]
   exact eq_one_of_forall_isCyclic (gsOpenSubgroup S hL) (gs_multKilled ℓ K S hS hSℓ ιr)
     (gs_posKilled ℓ K S hS hSℓ ιr) ρ (fun D hD' => by
-      obtain ⟨L', hKL', hL', hW, hle, hcycW⟩ := exists_field_of_cyclic ℓ K S ιr L hL D hD'
+      obtain ⟨L', hKL', hL', hW, hle, hcycW⟩ := exists_field_of_cyclic ℓ K S L hL D hD'
       have := hcyc L' hL' hle hcycW
       rw [W_coinf_b.coind_eq_infl_funRep ℓ K S ιr L hL M ρ hρ D L' hL' hW] at this
       exact this)
@@ -339,7 +339,6 @@ theorem mem_gsOpenSubgroup_placesOver_iff {K : FiniteSubfield} (S : Set (HeightO
 
 theorem ending_lemmaX (hX : GlobalEulerCharCoprime) (ℓ : ℕ) [Fact ℓ.Prime] (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1))) (hS : S.Finite)
     (hSℓ : ∀ v : HeightOneSpectrum (𝓞 K.1), ((ℓ : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S)
-    (ιr : ∀ v : {v : InfinitePlace K.1 // v.IsReal}, ℚ̄ →ₐ[K.1] AlgebraicClosure v.1.Completion)
     (L : FiniteSubfield) [Fact (K ≤ L)]
     (hL : ∀ x : L.1, algebraMap L.1 ℚ̄ x ∈ maxUnramifiedOutside K.1 ℚ̄ S)
     (hN : (gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)).Normal)
@@ -749,7 +748,7 @@ theorem ratio_coind_cyclic (ℓ : ℕ) [Fact ℓ.Prime] (K : FiniteSubfield) (S 
     (hL : ∀ x : L.1, algebraMap L.1 ℚ̄ x ∈ maxUnramifiedOutside K.1 ℚ̄ S)
     (hN : (gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)).Normal)
     (M : Rep.{0} (ULift.{0} ℤ) (galUnramifiedOutside K.1 ℚ̄ S)) [IsDiscreteRep M] [Finite M]
-    (hℓ : ∀ m : M, ℓ • m = 0) (htriv : ∀ g ∈ (gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)), M.ρ g = 1)
+    (hℓ : ∀ m : M, ℓ • m = 0)
     (hK : ∀ (K' : FiniteSubfield) [Fact (K ≤ K')]
       (hK' : ∀ x : K'.1, algebraMap K'.1 ℚ̄ x ∈ maxUnramifiedOutside K.1 ℚ̄ S),
       (gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)) ≤ (gsOpenSubgroup S hK' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)) → IsCyclic ((gsOpenSubgroup S hK' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)) ⧸ (gsOpenSubgroup S hL : Subgroup (galUnramifiedOutside K.1 ℚ̄ S)).subgroupOf (gsOpenSubgroup S hK' : Subgroup (galUnramifiedOutside K.1 ℚ̄ S))) →
@@ -818,7 +817,7 @@ local notation "ℚ̄" => AlgebraicClosure ℚ
 
 set_option maxHeartbeats 800000 in
 theorem exists_split (ℓ : ℕ) [Fact ℓ.Prime] (K : FiniteSubfield) (S : Set (HeightOneSpectrum (𝓞 K.1)))
-    (hS : S.Finite) (hSℓ : ∀ v : HeightOneSpectrum (𝓞 K.1), ((ℓ : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S)
+    (hSℓ : ∀ v : HeightOneSpectrum (𝓞 K.1), ((ℓ : ℕ) : 𝓞 K.1) ∈ v.asIdeal → v ∈ S)
     (M : Rep.{0} (ULift.{0} ℤ) (galUnramifiedOutside K.1 ℚ̄ S)) [IsDiscreteRep M] [Finite M] :
     ∃ (L : FiniteSubfield) (hKL : Fact (K ≤ L)),
       haveI := hKL
@@ -951,16 +950,16 @@ theorem ratio_eq_one_of_coprime_cyclic' (ℓ : ℕ) [Fact ℓ.Prime] (K : Finite
         (resTo S K' hK' M) ιr' = 1) :
     gsEulerRatio S M ιr = 1 :=
   W_killed_c.ratio_eq_one_of_cyclic ℓ K S hS hSℓ ιr L hL hN M hℓ htriv
-    (fun L' _ hL' hle hcyc => W_killed_b.ratio_coind_cyclic ℓ K S hS hSℓ ιr L hL hN M hℓ htriv hK L' hL' hle hcyc)
+    (fun L' _ hL' hle hcyc => W_killed_b.ratio_coind_cyclic ℓ K S hS hSℓ ιr L hL hN M hℓ hK L' hL' hle hcyc)
 
 theorem ratioOneKilled_of_lemmaX (ℓ : ℕ) [Fact ℓ.Prime] (hX : GlobalEulerCharCoprime) :
     RatioOneKilled ℓ (fun _ => True) := by
   intro K S hS hSℓ _ ιr M _ _ hℓ
-  obtain ⟨L, hKL, hsplit⟩ := W_split.exists_split ℓ K S hS hSℓ M
+  obtain ⟨L, hKL, hsplit⟩ := W_split.exists_split ℓ K S hSℓ M
   letI := hKL
   obtain ⟨hL, hN, hζ, hc, htriv⟩ := hsplit
   exact ratio_eq_one_of_coprime_cyclic' ℓ K S hS hSℓ ιr L hL hN M hℓ htriv
-    (W_endx.ending_lemmaX hX ℓ K S hS hSℓ ιr L hL hN M hℓ htriv hζ hc)
+    (W_endx.ending_lemmaX hX ℓ K S hS hSℓ L hL hN M hℓ htriv hζ hc)
 
 end PositivityTheory.Lit1.GEN.W_assemble
 end -- clump:auto

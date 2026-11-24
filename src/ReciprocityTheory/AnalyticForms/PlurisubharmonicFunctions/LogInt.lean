@@ -48,7 +48,7 @@ theorem locallyIntegrable_comp_eval_fin {D : ℕ} (i : Fin D) {g : ℂ → ℝ}
     rw [Set.mem_univ_pi] at hz
     push Not at hz
     obtain ⟨j, hj⟩ := hz
-    exact Finset.prod_eq_zero (Finset.mem_univ j) (by split_ifs <;> simp [Set.indicator_apply, hj])
+    exact Finset.prod_eq_zero (Finset.mem_univ j) (by split_ifs <;> simp [hj])
 
 theorem locallyIntegrable_comp_fst_real {g : ℝ → ℝ} (hg : LocallyIntegrable g volume) :
     LocallyIntegrable (fun p : ℝ × ℝ => g p.1) volume := by
@@ -150,7 +150,7 @@ theorem logNormLocIntC_thm : LogNormLocIntCStatement := by
   calc ‖Real.log ‖z‖‖ ≤ ‖Real.log z.re‖ + ‖Real.log z.im‖ + ‖z.re‖ + ‖z.im‖ := h1
     _ = ‖‖Real.log z.re‖ + ‖Real.log z.im‖ + ‖z.re‖ + ‖z.im‖‖ := (Real.norm_of_nonneg h2).symm
 
-theorem logCoordLocInt_thm : LogCoordLocIntStatement := fun D i => locallyIntegrable_comp_eval_fin i logNormLocIntC_thm
+theorem logCoordLocInt_thm : LogCoordLocIntStatement := fun _ i => locallyIntegrable_comp_eval_fin i logNormLocIntC_thm
 
 theorem logMonoLocInt_thm : LogMonoLocIntStatement := by
   intro D m

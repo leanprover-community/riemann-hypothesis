@@ -231,7 +231,7 @@ theorem lsB_sd (D : Formalism.BasicNotions.D7) (cc : Ideal (𝓞 D.host.K)) (r :
       refine mem_of_dual D cc r hn hs fun x hx => ?_
       have h' := h (Pi.single i x) (hsingle i x hx)
       unfold hE at h'
-      rwa [Finset.sum_eq_single i (fun j _ hj => by simp [Pi.single_apply, hj]) (by simp),
+      rwa [Finset.sum_eq_single i (fun j _ hj => by simp [hj]) (by simp),
         Pi.single_eq_same] at h'
 
 end GlobalTheory.VacRead.SelfDual

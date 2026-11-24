@@ -1287,7 +1287,7 @@ theorem relIndex_eq {G : Type} [Group G] (T C K : Subgroup G)
 end GlobalTheory.DoubleCosetWeight
 
 theorem GlobalTheory.doubleCoset_relIndex_const : ∀ (G : Type) [Group G] (T C K : Subgroup G), (∀ q : G, T ⊓ K.map (MulAut.conj q).toMonoidHom ≤ C) → ∀ t ∈ T, ∀ k ∈ K, ∀ q : G, (T ⊓ K.map (MulAut.conj (t * q * k)).toMonoidHom).relIndex C = (T ⊓ K.map (MulAut.conj q).toMonoidHom).relIndex C :=
-  fun G _ T C K hC => GlobalTheory.DoubleCosetWeight.relIndex_eq T C K hC
+  fun _ _ T C K hC => GlobalTheory.DoubleCosetWeight.relIndex_eq T C K hC
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.DoubleCosetRelIndexInfConjConst =====

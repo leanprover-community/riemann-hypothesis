@@ -838,7 +838,7 @@ theorem tailFin_of (hCH : CH) : TailFin := by
   rw [J2.tail_eq]
   exact ENNReal.mul_lt_top (J2.kc_lt_top (by linarith)) (hCH p m _ hc)
 
-theorem ch_of (hC1 : C1) : CH := by
+theorem ch_of : CH := by
   intro p
   induction p with
   | zero =>

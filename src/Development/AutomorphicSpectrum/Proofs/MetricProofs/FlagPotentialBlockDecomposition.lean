@@ -123,7 +123,7 @@ theorem pos_norm {z : ℂ} (hz : 0 < z) : ‖z‖ = z.re := by
   have : z = (z.re : ℂ) := Complex.ext (by simp) (by simp [him.symm])
   rw [this, Complex.norm_real, Complex.ofReal_re, Real.norm_eq_abs, abs_of_pos hre]
 
-theorem mul_re_of_pos {x y : ℂ} (hx : 0 < x) (hy : 0 < y) : (x * y).re = x.re * y.re := by
+theorem mul_re_of_pos {x y : ℂ} (hx : 0 < x) : (x * y).re = x.re * y.re := by
   rw [Complex.mul_re, ← (Complex.pos_iff.mp hx).2]
   simp
 
@@ -265,7 +265,7 @@ theorem stepPot_mul_eq_blockPot : ∀ (N j : ℕ) (i : Fin N) (Pi G h : Matrix (
   have logMul : ∀ x y : ℂ, 0 < x → 0 < y →
       (1 / 2) * Real.log (x * y).re = (1 / 2) * Real.log x.re + (1 / 2) * Real.log y.re := by
     intro x y hx hy
-    rw [mul_re_of_pos hx hy, Real.log_mul (rePos hx).ne' (rePos hy).ne']
+    rw [mul_re_of_pos hx, Real.log_mul (rePos hx).ne' (rePos hy).ne']
     ring
   have logW : (1 / 2) * Real.log (sd (hᴴ * G * h) (Ge (N - j))).re =
       (1 / 2) * Real.log (sd G (Ge (N - j))).re + Real.log ‖sd h (Ge (N - j))‖ := by

@@ -100,7 +100,7 @@ theorem OffS.add {a b : AE D} (ha : OffS S a) (hb : OffS S b) : OffS S (a + b) :
   ⟨fun w => by rw [map_add (f := _), ha.1 w, hb.1 w, add_zero], fun v hv => by rw [map_add (f := _), ha.2.1 v hv, hb.2.1 v hv, add_zero],
     ha.2.2.add hb.2.2⟩
 
-theorem offS_zero : OffS S (0 : AE D) := ⟨fun w => map_zero _, fun v _ => map_zero _, intS_zero⟩
+theorem offS_zero : OffS S (0 : AE D) := ⟨fun _ => map_zero _, fun _ _ => map_zero _, intS_zero⟩
 
 theorem OffS.neg {a : AE D} (ha : OffS S a) : OffS S (-a) :=
   ⟨fun w => by rw [map_neg, ha.1 w, neg_zero], fun v hv => by rw [map_neg, ha.2.1 v hv, neg_zero], ha.2.2.neg⟩

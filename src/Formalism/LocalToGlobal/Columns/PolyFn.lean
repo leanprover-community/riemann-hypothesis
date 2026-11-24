@@ -42,7 +42,7 @@ def stdFr : Frames (fun _ : ι => (1 : Matrix (Fin n) (Fin n) ℂ)) := ⟨fun _ 
 
 theorem mapS_apply {σ : Type} (s : K →+* ℂ) (P : MvPolynomial σ K) : mapS s P = MvPolynomial.map s P := rfl
 
-theorem mapS_injective {σ : Type} (s : K →+* ℂ) : Function.Injective (mapS (σ := σ) s) := fun P Q h => MvPolynomial.map_injective s s.injective h
+theorem mapS_injective {σ : Type} (s : K →+* ℂ) : Function.Injective (mapS (σ := σ) s) := fun _ _ h => MvPolynomial.map_injective s s.injective h
 
 theorem evFr_apply (G : ι → Matrix (Fin n) (Fin n) ℂ) (sh : ι → ℤ) (s : K →+* ℂ)
     (P : MvPolynomial (ι × Fin n × Fin n) K) (y : Frames G) :

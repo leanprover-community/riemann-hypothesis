@@ -118,13 +118,13 @@ theorem sameGenus_iff (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF :
   constructor
   · rintro H ⟨𝔭, h𝔭⟩
     obtain ⟨P, hP, rfl⟩ := LocalizedFibreSets.exists_max_over (K := K) h𝔭
-    rw [locF_eq_loc hK hF hP, locF_eq_loc hK hF hP]
+    rw [locF_eq_loc hF hP, locF_eq_loc hF hP]
     exact H P hP
   · intro H P hP
     have hm : (P.comap (algebraMap (𝓞 F) (𝓞 K))).IsMaximal :=
       Ideal.isMaximal_under_of_isIntegral_of_isMaximal (R := 𝓞 F) P
     have := H ⟨_, hm⟩
-    rwa [locF_eq_loc hK hF hP, locF_eq_loc hK hF hP] at this
+    rwa [locF_eq_loc hF hP, locF_eq_loc hF hP] at this
 
 theorem isIntegralLat_of_forall {W : Type} [AddCommGroup W] [Module K W] [Module (𝓞 K) W]
     [IsScalarTower (𝓞 K) K W] {h₀ : W →ₗ⋆[K] W →ₗ[K] K} {M : Submodule (𝓞 K) W}
@@ -226,7 +226,7 @@ theorem exists_patch (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : 
     (hτ : ∀ 𝔭 ∈ Z, locF 𝔭.1 (τ 𝔭) = τ 𝔭 ∧ fibLoc S L 𝔭.1 (τ 𝔭) ≠ 0)
     (hZ : ∀ 𝔭 ∉ Z, fibLoc S L 𝔭.1 A ≠ 0) :
     ∃ M, Good F S L M ∧ (∀ 𝔭 ∈ Z, locF 𝔭.1 M = τ 𝔭) ∧ ∀ 𝔭 ∉ Z, locF 𝔭.1 M = locF 𝔭.1 A := by
-  obtain ⟨M, ⟨hMl, h1, h2⟩, -⟩ := exists_unique_patch hK hF hA Z τ (fun 𝔭 h𝔭 => by
+  obtain ⟨M, ⟨hMl, h1, h2⟩, -⟩ := exists_unique_patch hA Z τ (fun 𝔭 h𝔭 => by
     obtain ⟨C, hC, e⟩ := exists_full_lattice_of_fibLoc_ne_zero S hL (hτ 𝔭 h𝔭).2
     exact ⟨(hτ 𝔭 h𝔭).1, C, hC, e.trans (hτ 𝔭 h𝔭).1⟩)
   refine ⟨M, ⟨hMl, fun 𝔭 => ?_⟩, h1, h2⟩

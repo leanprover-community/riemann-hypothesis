@@ -131,7 +131,7 @@ private theorem fld_lemma_3 (O K A : Type) [CommRing O] [IsDomain O] [IsDiscrete
 
 
 private theorem dvr_lemma_4 (Cr Dr : Type) [CommRing Cr] [CommRing Dr] [IsDomain Dr] [IsDedekindDomain Dr]
-    (hD : ¬IsField Dr) (φ : Cr →+* Dr) (hφ : Function.Surjective φ) (e : Cr) (he1 : φ e = 1)
+    (hD : ¬IsField Dr) (φ : Cr →+* Dr) (hφ : Function.Surjective φ) (e : Cr)
     (he0 : ∀ c, φ c = 0 → e * c = 0) (Pm : Ideal Cr) [Pm.IsMaximal] (heP : e ∉ Pm) :
     ∃ _ : IsDomain (Localization.AtPrime Pm), IsDiscreteValuationRing (Localization.AtPrime Pm) := by
   classical
@@ -318,7 +318,7 @@ private theorem pt_lemma_6 (O K A : Type) [CommRing O] [IsDomain O] [IsDiscreteV
     · rw [h]
       exact congrArg Subtype.val hc
     · rfl
-  obtain ⟨h1, h2⟩ := dvr_lemma_4 _ _ hNF φ hsurj _ hone hzero ζ.asIdeal hI
+  obtain ⟨h1, h2⟩ := dvr_lemma_4 _ _ hNF φ hsurj _ hzero ζ.asIdeal hI
   exact ⟨h1, h2⟩
 
 theorem integralClosure_dvr' : PublishedIntClos := by

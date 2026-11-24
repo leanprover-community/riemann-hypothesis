@@ -146,7 +146,7 @@ lemma sizeBound_card_le (r N Nₛ k Q c' : ℝ) (hr : 2 ≤ r) (hk : 1 ≤ k) (h
     _ ≤ r ^ 2 * N * (k * c' * Q ^ 2) := e2
     _ = r ^ 2 * N * k * c' * Q ^ 2 := by ring
 
-lemma pII0_size (CE p r N N₁ Nₛ k Q c' Y al : ℝ) (hCE : 0 ≤ CE) (hp : 0 ≤ p) (hpQ : p ≤ Q)
+lemma pII0_size (CE p r N N₁ Nₛ k Q c' Y al : ℝ) (hCE : 0 ≤ CE) (hpQ : p ≤ Q)
     (hQ : 1 ≤ Q) (hr : 2 ≤ r) (hrN1 : r ≤ N₁) (hN1 : N₁ ^ 2 ≤ r * N) (hk : N₁ + 3 * r ≤ k)
     (hNs0 : 0 ≤ Nₛ) (hNs1 : Nₛ ≤ N₁) (hNs2 : Nₛ ≤ 2 * N) (hc : 1 ≤ c') (hY : 0 ≤ Y)
     (hal0 : 0 ≤ al) (hal : al ≤ 1 + r * k * Q) :
@@ -205,7 +205,7 @@ lemma pII0_size (CE p r N N₁ Nₛ k Q c' Y al : ℝ) (hCE : 0 ≤ CE) (hp : 0 
     _ ≤ (32 * Y * k ^ 2 * Q ^ 2) * (Q * ((2 * CE + 7) * M)) := mul_le_mul_of_nonneg_left hpX hB
     _ = 32 * (2 * CE + 7) * (k ^ 3 * r ^ 2 * N * Q ^ 5 * c' * Y) := by rw [hM]; ring
 
-lemma sizeBound_first_term (r N k Q c' Y : ℝ) (hr : 0 ≤ r) (hN : 1 ≤ N) (hk : 1 ≤ k) (hQ : 1 ≤ Q)
+lemma sizeBound_first_term (r N k Q c' Y : ℝ) (hN : 1 ≤ N) (hk : 1 ≤ k) (hQ : 1 ≤ Q)
     (hc : 0 ≤ c') (hY : 0 ≤ Y) :
     r ^ 2 * c' * (Y * k ^ 2 * Q) ≤ k ^ 3 * r ^ 2 * N * Q ^ 5 * c' * Y := by
   have h0 : 0 ≤ r ^ 2 * c' * Y * k ^ 2 * Q := by positivity
@@ -232,7 +232,7 @@ lemma sizeBound_second_term (r N N₁ k Q c' Y c₀ : ℝ) (hr : 1 ≤ r) (hN : 
     _ = k ^ 3 * r ^ 2 * N * Q ^ 5 * c' * Y := by ring
 
 lemma sizeBound_third_term (r N N₁ k Q c' Y al : ℝ) (hQ : 1 ≤ Q) (hr : 2 ≤ r) (hk8 : 8 ≤ k) (hc : 1 ≤ c')
-    (hY : 0 ≤ Y) (hal0 : 0 ≤ al) (hal : al ≤ 1 + r * k * Q) (hN0 : 0 ≤ N) (hN10 : 0 ≤ N₁)
+    (hY : 0 ≤ Y) (hal0 : 0 ≤ al) (hal : al ≤ 1 + r * k * Q) (hN0 : 0 ≤ N)
     (hN1r : N₁ + 1 ≤ 2 * r * N) :
     (N₁ + 1) * ((2 * Q + 3) * c' + k * Q + c' * al + 3 * c') * (Y * k ^ 2 * Q)
       ≤ 6 * (k ^ 3 * r ^ 2 * N * Q ^ 5 * c' * Y) := by
@@ -255,7 +255,7 @@ lemma sizeBound_third_term (r N N₁ k Q c' Y al : ℝ) (hQ : 1 ≤ Q) (hr : 2 �
 
 lemma sizeBound_fourth_term (r N k Q c' Y : ℝ) (hr : 1 ≤ r) (hN : 1 ≤ N) (hk : 1 ≤ k) (hQ : 1 ≤ Q)
     (hc : 1 ≤ c') (hY : 0 ≤ Y) : Y * k ^ 2 * Q ≤ k ^ 3 * r ^ 2 * N * Q ^ 5 * c' * Y := by
-  have h := sizeBound_first_term r N k Q 1 Y (by linarith) hN hk hQ (by norm_num) hY
+  have h := sizeBound_first_term r N k Q 1 Y hN hk hQ (by norm_num) hY
   have h0 : 0 ≤ k ^ 3 * r ^ 2 * N * Q ^ 5 * Y := by positivity
   have h1 : Y * k ^ 2 * Q ≤ r ^ 2 * 1 * (Y * k ^ 2 * Q) := by
     have hr2 : 1 ≤ r ^ 2 := one_le_pow₀ hr
@@ -275,9 +275,9 @@ lemma pII0_slack (r N N₁ k Q c' Y al c₀ : ℝ) (hQ : 1 ≤ Q) (hr : 2 ≤ r)
       ≤ 155 * (k ^ 3 * r ^ 2 * N * Q ^ 5 * c' * Y) := by
   obtain ⟨hrN, hk8, hN1r⟩ := pII0_basic r N N₁ k hr hrN1 hN1 hk
   have hN : 1 ≤ N := by linarith
-  have q1 := sizeBound_first_term r N k Q c' Y (by linarith) hN (by linarith) hQ (by linarith) hY
+  have q1 := sizeBound_first_term r N k Q c' Y hN (by linarith) hQ (by linarith) hY
   have q2 := sizeBound_second_term r N N₁ k Q c' Y c₀ (by linarith) hN (by linarith) hQ hY (by linarith) hc00 hc0
-  have q3 := sizeBound_third_term r N N₁ k Q c' Y al hQ hr hk8 hc hY hal0 hal (by linarith) (by linarith) hN1r
+  have q3 := sizeBound_third_term r N N₁ k Q c' Y al hQ hr hk8 hc hY hal0 hal (by linarith) hN1r
   have q4 := sizeBound_fourth_term r N k Q c' Y (by linarith) hN (by linarith) hQ hc hY
   have hM : 0 ≤ k ^ 3 * r ^ 2 * N * Q ^ 5 * c' * Y := by
     have : 0 ≤ k := by linarith
@@ -366,7 +366,7 @@ theorem secondParameterSizeBounds_holds : ParamsII0 := by
   have ha0 : 0 ≤ a := le_trans (mul_nonneg (by linarith) hM0) hCa'
   refine ⟨?_, ?_, ?_, ?_, hY1, ?_⟩
   · unfold errorTerm mStarII
-    have hs := pII0_size CE p r N N₁ Nₛ k Q c' Y al (by linarith) (Nat.cast_nonneg _) hpQ hQ1
+    have hs := pII0_size CE p r N N₁ Nₛ k Q c' Y al (by linarith) hpQ hQ1
       hr2' hrN1' hN1' hk' (Nat.cast_nonneg _) hNs1' hNs2' hc1 hY0 hal0 hal
     have : 32 * (2 * CE + 7) * M ≤ (64 * CE + 400 + C₂) * M :=
       mul_le_mul_of_nonneg_right (by linarith) hM0

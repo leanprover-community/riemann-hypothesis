@@ -60,7 +60,7 @@ theorem bijective_mk_of_isCMType {E : Type} [Field E] [NumberField E] {I : Type}
   apply GlobalTheory.CMVal.Model.IsCMType.bijective <;> assumption
 
 theorem card_eq_finrank_of_isCMType : ∀ {K E : Type} [Field K] [NumberField K] [Field E] [NumberField E] [IsCMField E]
-    [Algebra K E] {I : Type} [Fintype I] (φ : I → E →+* ℂ) (hφ : IsCMType φ) (h2 : Module.finrank ℚ K = 2),
+    [Algebra K E] {I : Type} [Fintype I] (φ : I → E →+* ℂ) (_ : IsCMType φ) (_ : Module.finrank ℚ K = 2),
     Fintype.card I = Module.finrank K E := by
   intro K E _ _ _ _ _ _ I _ φ hφ h2
   have hc : Fintype.card I = Fintype.card (InfinitePlace E) :=

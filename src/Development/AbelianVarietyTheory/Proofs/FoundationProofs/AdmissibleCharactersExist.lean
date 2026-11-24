@@ -250,7 +250,7 @@ theorem proj_translate (H : (∀ x y f, W x (W y f) = c x y • W (x + y) f) ∧
       (∀ x x' y, c (x + x') y = c x y * c x' y) ∧ (∀ x y y', c x (y + y') = c x y * c x y') ∧
       ∀ x y, c x y ≠ 0)
     {A₀ A : AddSubgroup V}
-    [Fintype (A ⧸ A₀.addSubgroupOf A)] (cA : ∀ x ∈ A, ∀ y ∈ A, c x y = 1)
+    [Fintype (A ⧸ A₀.addSubgroupOf A)]
     (hsd : ∀ v, (∀ x ∈ A, c x v = c v x) → v ∈ A)
     (f : F) (hf : ∀ x ∈ A, W x f = f) (v : V) (hv : ∀ l ∈ A₀, c l v = 1 ∧ c v l = 1) :
     ∑ q : A ⧸ A₀.addSubgroupOf A, W (rep q) (W v f) =
@@ -313,7 +313,7 @@ theorem proj_triple (H : (∀ x y f, W x (W y f) = c x y • W (x + y) f) ∧
   refine Finset.sum_congr rfl fun z _ => ?_
   rw [Finset.sum_comm, Finset.mul_sum, Finset.sum_smul]
   refine Finset.sum_congr rfl fun y _ => ?_
-  rw [← Finset.smul_sum, proj_translate H cA hsd f hf, smul_smul]
+  rw [← Finset.smul_sum, proj_translate H hsd f hf, smul_smul]
   · congr 1
     split_ifs <;> ring
   · intro l hl

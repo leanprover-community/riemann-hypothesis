@@ -978,7 +978,7 @@ theorem iso_eq_of_rig {s : R' →+* R'} {D' : DegPre R'} (F : D'.P.A.left ⟶ D'
 
 theorem level_eq {I' : Ideal R'} {D' : DegPre R'} {e : ℕ} {G' : Over (Sp R')} [GrpObj G']
     [IsCommMonObj G'] (g : GtCoord I' D' e G') (F : D'.P.A.left ⟶ D'.P.A.left)
-    (w : LB.Iso D'.P.L (D'.P.L.pull F)) (hw : w.IsGen)
+    (w : LB.Iso D'.P.L (D'.P.L.pull F))
     (f f' : (thickObj R' I' e G').left ⟶ (thickObj R' I' e G').left)
     (hb : f ≫ pullback.snd G'.hom (thick R' I' e) = f' ≫ pullback.snd G'.hom (thick R' I' e))
     (hp : g.pG.left ≫ F = f ≫ g.pG.left) (hp' : g.pG.left ≫ F = f' ≫ g.pG.left)
@@ -1020,7 +1020,7 @@ theorem level_eq_two {s : R' →+* R'} {I' : Ideal R'} {D' : DegPre R'} {e : ℕ
         (GeneratorPullback.pullAlong D'.P.L F' f' _ Oinvε _ hψ (g.t (xe' x)))) : f = f' := by
   subst hF hxe hxe'
   obtain rfl := iso_eq_of_rig F he w w' hw hw' hr hr'
-  exact level_eq g F w hw f f' hb hp hp' ht ht'
+  exact level_eq g F w f f' hb hp hp' ht ht'
 
 end GlobalTheory.Mum.GalUniq
 

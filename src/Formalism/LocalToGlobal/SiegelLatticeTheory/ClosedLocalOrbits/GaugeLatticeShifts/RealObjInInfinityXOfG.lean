@@ -439,7 +439,7 @@ theorem sumsq_eq {σ : G → (HH →L[ℂ] HH)} (hσ : IsUnitRep σ) {w : HH} (h
               congr 1
               funext t
               rw [hg, gvec_inner]
-              exact kF hσ w hSinv hWeq hτu z z' (hΩS hs)
+              exact kF hσ w hWeq hτu z z' (hΩS hs)
           _ = _ := conv_integral hS hΩm hΩS hfin _
               (Fk_continuous hσ w hWc (a := fun _ => z) (b := fun _ => z') (c := fun q => q)
                 continuous_const continuous_const continuous_id).stronglyMeasurable hint
@@ -808,7 +808,6 @@ theorem tendsto_ratio_ennreal {a b : ℕ → ℝ≥0∞} (hb0 : ∀ n, 0 < b n) 
 theorem liminf_lower {μS μS' : Measure G} [SFinite μS'] [MeasurableInv G]
     (hinv : μS.map (fun x => x⁻¹) = μS) (hinv' : μS'.map (fun x => x⁻¹) = μS')
     (Ω Ω' : ℕ → Set G) (hΩ0 : ∀ n, 0 < μS (Ω n)) (hΩt : ∀ n, μS (Ω n) < ⊤)
-    (hΩ0' : ∀ n, 0 < μS' (Ω' n)) (hΩt' : ∀ n, μS' (Ω' n) < ⊤)
     (f : ℕ → G → G → ℝ≥0∞) (hf : ∀ n, Measurable (fun p : G × G => f n p.1 p.2)) (h : ℝ) (hh : 0 ≤ h)
     (key : ∀ ε : ℝ, 0 < ε → ∃ K K' : Set G,
       Tendsto (fun n => μS (folInt (Ω n) K) / μS (Ω n)) atTop (𝓝 1) ∧
@@ -1091,7 +1090,7 @@ theorem point_lower {μ : Measure G} [μ.IsHaarMeasure] {σ : G → (HH →L[ℂ
   have hm : μ = (ν.prod μS).map φinv := (quot_map_inv hq) hinvmS
   have hm' : μ = (ν'.prod μS').map φinv := (quot_map_inv hq') hinvmS'
   refine liminf_lower hinvmS hinvmS' Ω Ω'
-    (fun n => (hΩ n).2.2.1) (fun n => (hΩ n).2.2.2) (fun n => (hΩ' n).2.2.1) (fun n => (hΩ' n).2.2.2)
+    (fun n => (hΩ n).2.2.1) (fun n => (hΩ n).2.2.2)
     (fun n s s' => ENNReal.ofReal (Formalism.L2.SG.Pf.EnergyAbs.hsA
       (Xop μS ν μS' ν' σ d w W W' (Ω n) (Ω' n) (s * γ * s'⁻¹))))
     (fun n => ?_) (Formalism.L2.SG.Pf.EnergyAbs.hsA (∫ x, Formalism.L2.SG.Pf.EnergyAbs.rk1A (W x) (W' (γ⁻¹ * x)) ∂μ))

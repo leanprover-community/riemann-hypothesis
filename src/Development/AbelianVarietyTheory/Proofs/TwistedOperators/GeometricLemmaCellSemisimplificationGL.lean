@@ -270,7 +270,7 @@ variable {G X U : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [A
   [AddCommGroup U] [Module ℂ U] {P : Subgroup G} {σ : Representation ℂ P X} {ρ : Representation ℂ P U}
 
 theorem smIndMap_injective (ι : σ.IntertwiningMap ρ) (hι : Function.Injective ι) :
-    Function.Injective (smIndMap ι) := fun φ ψ h =>
+    Function.Injective (smIndMap ι) := fun _ _ h =>
   Subtype.ext (Subtype.ext (funext fun g =>
     hι (congrFun (congrArg (fun χ : smoothPart (ind P ρ) => χ.1.1) h) g)))
 

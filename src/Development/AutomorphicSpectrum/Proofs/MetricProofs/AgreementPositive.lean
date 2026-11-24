@@ -428,7 +428,7 @@ theorem rsmul_one (Θ : LocPot X) : Θ.rsmul 1 = Θ := by
   show (1 : ℝ) * Θ.φ x y = Θ.φ x y
   simp
 
-theorem smooth_zero (A : FinHolAtlas e X) : A.Smooth (0 : X → ℝ) := fun j => contDiffOn_const
+theorem smooth_zero (A : FinHolAtlas e X) : A.Smooth (0 : X → ℝ) := fun _ => contDiffOn_const
 
 theorem isPsh_zero (A : FinHolAtlas e X) : IsPsh A (LocPot.ofFun (0 : X → ℝ) + LocPot.ofFun (0 : X → ℝ)) := by
   intro x j y _ w

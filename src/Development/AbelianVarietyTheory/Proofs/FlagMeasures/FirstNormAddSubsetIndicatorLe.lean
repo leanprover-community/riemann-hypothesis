@@ -363,7 +363,7 @@ theorem eZ_inj {n l : ℕ} (ν : Fin n → ℤ) : Function.Injective fun I : Sub
   by_cases h1 : a ∈ I.1 <;> by_cases h2 : a ∈ J.1 <;> simp_all
 
 theorem scale_le {b v g Cg : ℝ} (hb : Real.exp 1 < b) (hv : 1 ≤ v) (hvb : 2 * v ≤ b) (hg : 1 ≤ g)
-    (hgb : g ≤ b ^ (2 * Cg)) (hC : 8 ≤ Cg) :
+    (hgb : g ≤ b ^ (2 * Cg)) :
     max (‖((2 * (Real.pi / v) / g : ℝ) : ℂ)‖ / 2) (2 / ‖((2 * (Real.pi / v) / g : ℝ) : ℂ)‖) ≤ b ^ (2 * Cg + 2) := by
   have h1 := Real.pi_gt_three
   have h2 := Real.pi_lt_four

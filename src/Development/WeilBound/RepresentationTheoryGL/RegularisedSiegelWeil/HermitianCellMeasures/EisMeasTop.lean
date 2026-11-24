@@ -992,7 +992,7 @@ theorem abs_map (f : M → X) (hf : Measurable f) {B : Set M} (hB : MeasurableSe
 open Pointwise in
 theorem abs_finite [AddCommGroup M] [TopologicalSpace M] [ContinuousAdd M] [TopologicalSpace X] [T2Space X]
     [OpensMeasurableSpace X] [OpensMeasurableSpace M] [T2Space M]
-    (f : M → X) (hf : Measurable f) (ι : X → M) (hι : Continuous ι) {B : Set M} (hB : MeasurableSet B) (P : Measure M)
+    (f : M → X) (hf : Measurable f) (ι : X → M) (hι : Continuous ι) {B : Set M} (P : Measure M)
     [IsFiniteMeasureOnCompacts P] (T : Set M) (hT : IsCompact T) (h : ∀ z ∈ B, z - ι (f z) ∈ T) :
     IsFiniteMeasureOnCompacts ((P.restrict B).map f) := by
   refine ⟨fun C hC => ?_⟩
@@ -1291,7 +1291,7 @@ theorem sig_finite (S : Finset (Pl D)) {e : AE D} (hS : IsIdem S e) (he : e * e 
   have c2 : ContinuousAdd (Mx D a t) := q2.toContinuousAdd
   have c3 : ContinuousAdd (Mx D a r × Mx D a t) := Prod.continuousAdd
   have t3 : T2Space (Mx D a r × Mx D a t) := Prod.t2Space
-  refine abs_finite (toX he) (measurable_toX he) Subtype.val continuous_subtype_val (measurableSet_box S) P
+  refine abs_finite (toX he) (measurable_toX he) Subtype.val continuous_subtype_val P
     (T₁ ×ˢ T₂) (hT₁.prod hT₂) (fun z hz => ?_)
   have e1 : z - ((toX he z).1 : Mx D a r × Mx D a t) = ((1 - e) • z.1, (1 - e) • z.2) :=
     Prod.ext (mod_sub e z.1) (mod_sub e z.2)

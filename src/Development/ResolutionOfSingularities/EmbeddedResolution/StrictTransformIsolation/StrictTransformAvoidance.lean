@@ -227,7 +227,7 @@ private theorem mem_image_strictTransformι_succ_of_mem_image [AlgebraicGeometry
 
 theorem mem_image_strictTransformι_iff_of_notMem_ambientCenter [AlgebraicGeometry.IsReduced Y]
     (S : EmbeddedBlowupSequence k Y pY)
-    (_hN : ∀ j ≤ S.length, AlgebraicGeometry.IsNoetherian (S.schemeAt j)) (i : ℕ) (hi : i < S.length)
+    (i : ℕ) (hi : i < S.length)
     (C : Set ↥(S.strictTransform (i + 1))) (η : ↥(S.strictTransform (i + 1))) (hη : IsGenericPoint η C)
     (C' : Set ↥(S.strictTransform i)) (hη' : IsGenericPoint ((S.strictTransformMap i).base η) C')
     (x : ↥(S.schemeAt (i + 1)))
@@ -725,7 +725,7 @@ private theorem agreesWithComponentsOrderOne_succ {k : Type u} [Field k] [CharZe
     ext y
     have hcb := comp_base_apply U.ι ((D.toEmbeddedBlowupSequence A).blowdown i) y
     have hiff := EmbeddedBlowupSequence.mem_image_strictTransformι_iff_of_notMem_ambientCenter
-      (D.toEmbeddedBlowupSequence A) hN i hi' C η hηgen C' hη' (U.ι.base y) (hmemU y)
+      (D.toEmbeddedBlowupSequence A) i hi' C η hηgen C' hη' (U.ι.base y) (hmemU y)
     constructor
     · intro hy
       have hy1 : U.ι.base y ∈ ⇑((D.toEmbeddedBlowupSequence A).strictTransformι (i + 1)).base '' C := hy

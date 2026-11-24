@@ -46,7 +46,7 @@ open NumberField Formalism.ConjugateSelfDual ReciprocityTheory.Gal IsLocalRing U
 open scoped Pointwise
 
 private theorem orbit_count {G X V : Type} [Group G] [MulAction G X] [Fintype V] (U : Subgroup G) [U.Normal]
-    (hU : U.index ≠ 0) (b : X) (p : V → X) (h1 : ∀ v, ∃ γ : G, p v = γ • b)
+    (b : X) (p : V → X) (h1 : ∀ v, ∃ γ : G, p v = γ • b)
     (h2 : ∀ g : G, ∃! v, ∃ u ∈ U, g • b = u • p v) :
     ∑ v, U.relIndex (MulAction.stabilizer G (p v)) = U.index := by
   classical
@@ -174,7 +174,7 @@ theorem UpperTheory.V.Pr.degEq :
     rw [← hidx]
     unfold Fr.Frame.d
     rw [Finset.sum_congr rfl (fun v _ => k.dv v)]
-    refine orbit_count (upl Ω L) (by rw [hidx]; exact Module.finrank_pos.ne') B k.pl ?_ ?_
+    refine orbit_count (upl Ω L) B k.pl ?_ ?_
     · intro v
       obtain ⟨γ, -, h⟩ := k.pl_conj v
       exact ⟨γ, h⟩

@@ -240,7 +240,7 @@ end UnitChart
 
 open UnitChart in
 theorem isUnitSec_iff_chart (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Ω : Type) [Field Ω]
-    (y : (Σ k, ι k) → Ω) (f g : MRing ι) (df dg : K → ℕ) (_hy : ∀ k, ∃ i, y ⟨k, i⟩ ≠ 0)
+    (y : (Σ k, ι k) → Ω) (f g : MRing ι) (df dg : K → ℕ)
     (hf : IsMultiHomog f df) (hg : IsMultiHomog g dg) (hfn : f ∉ mCoordIdeal y) (hgn : g ∉ mCoordIdeal y) :
     IsUnitSec (mCoordIdeal y) f g ↔ ∀ c : ∀ k, ι k, (∀ k, y ⟨k, c k⟩ ≠ 0) →
       aeval y f / aeval y g * ∏ k, y ⟨k, c k⟩ ^ (-((df k : ℤ) - dg k)) ∈ chartRingZ y c ∧

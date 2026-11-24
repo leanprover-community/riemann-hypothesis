@@ -81,7 +81,7 @@ instance countable_hostE (D : D7) : Countable D.host.E := by
 instance countable_GLR (D : D7) : Countable (Formalism.L2.SG.PairVal.GLR D) :=
   Function.Injective.countable
     (f := fun g : Formalism.L2.SG.PairVal.GLR D => fun i j => (g : Formalism.L2.SG.PairVal.MatR D) i j)
-    (fun a b h => Units.ext (Matrix.ext fun i j => congrFun (congrFun h i) j))
+    (fun _ _ h => Units.ext (Matrix.ext fun i j => congrFun (congrFun h i) j))
 
 private theorem isHaarOnSet_conj {I : Formalism.MainNotions.S.AutInst} {S : Set I.Ginf} {μ : Measure I.Ginf}
     (h : IsHaarOnSet I S μ) (c : I.Ginf) :
@@ -108,7 +108,7 @@ private theorem isHaarOnSet_conj {I : Formalism.MainNotions.S.AutInst} {S : Set 
       group
     rw [hc, ← Measure.map_map hm (measurable_const_mul _), hinv _ hs]
 
-theorem pinned_haar (t : TT Y u u') (w : Point D.host.E (D.R.rS + 1)) (γw s s' : X.B.I.Ginf) (μw : Measure X.B.I.Ginf)
+theorem pinned_haar (t : TT Y u u') (γw s s' : X.B.I.Ginf) (μw : Measure X.B.I.Ginf)
     (hs : s ∈ X.SinfU u) (hs' : s' ∈ X.SinfU u') (hdec : t.pt.1 = s * γw * s'⁻¹)
     (hμw : IsHaarOnSet X.B.I (Formalism.L2.SG.RealObj.StInf X u u' γw) μw) :
     IsHaarOnSet X.B.I (Formalism.L2.SG.TermOp.Vanish.Rset t) (μw.map (fun y => s * y * s⁻¹)) := by
@@ -262,7 +262,7 @@ theorem volume_generic_odd_of (hD : DictC) (hC : CovolOne3C)
     obtain ⟨h1, b, hb, hwb, -⟩ := ha
     exact ⟨h1, b, hb, hwb⟩
   obtain ⟨hf1, hf2⟩ := hFin D X Y u u' hP Y.agree t.toTerm w F' L U hrel hgen hN hGv
-  exact H_affine_combination_eq_of_quadratic_relation t w F' L γw s c Φ hDict _ (pinned_haar t w γw s s' μw hs hs' hdec hμw) KA hKA hKAu hKA1
+  exact H_affine_combination_eq_of_quadratic_relation t w F' L γw s c Φ hDict _ (pinned_haar t γw s s' μw hs hs' hdec hμw) KA hKA hKAu hKA1
     K hK hKu hAut hInt hf1 hf2
 
 end Assembly

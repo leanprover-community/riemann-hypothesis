@@ -369,7 +369,7 @@ theorem classSet_mono {G : Type} [Group G] (Γ K K' : Subgroup G) (h : K ≤ K')
   induction q using Quotient.inductionOn' with
   | h x => exact ⟨Quotient.mk'' x, rfl⟩
 
-theorem classSet_finIdx {G : Type} [Group G] (Γ K K' : Subgroup G) (h : K' ≤ K)
+theorem classSet_finIdx {G : Type} [Group G] (Γ K K' : Subgroup G)
     (hi : K'.relIndex K ≠ 0) :
     Finite (Formalism.UG.ClassSet Γ K) → Finite (Formalism.UG.ClassSet Γ K') := by
   intro hf
@@ -962,7 +962,7 @@ section -- clump:auto
 theorem stabClassFinite : PI.InHHClassFin.StabClassFinite :=
   PI.UnitaryGroupMassFormula.InHHClassFin.stabClassFinite_of_steps
     (fun _ _ Γ K K' h => PI.UnitaryGroupMassFormula.InHHClassFin.classSet_mono Γ K K' h)
-    (fun _ _ Γ K K' h hi => PI.UnitaryGroupMassFormula.InHHClassFin.classSet_finIdx Γ K K' h hi)
+    (fun _ _ Γ K K' h hi => PI.UnitaryGroupMassFormula.InHHClassFin.classSet_finIdx Γ K K' hi)
     (fun _ _ _ _ Φ Γ K => PI.UnitaryGroupMassFormula.InHHClassFin.classSet_map Φ Γ K)
     PI.UnitaryGroupMassFormula.InHHClassFin.kgNhd PI.UnitaryGroupMassFormula.InHHClassFin.sigConj PI.UnitaryGroupMassFormula.InHHClassFin.frameExists
     PI.UnitaryGroupMassFormula.InHHClassFin.frameIso PI.UnitaryGroupMassFormula.InHHClassFin.frameGram PI.UnitaryGroupMassFormula.InHHClassFin.frameRat

@@ -575,7 +575,7 @@ private theorem isTorsionFree_int_of_isTorsionFree (O : Type) [CommRing O] [IsDo
     (Y : Type) [AddCommGroup Y] [Module O Y] [Module.IsTorsionFree O Y] :
     Module.IsTorsionFree ℤ Y :=
   Module.IsTorsionFree.comap (S := O) (fun r : ℤ => (r : O))
-    (fun r hr => IsRegular.of_ne_zero (Int.cast_ne_zero.mpr hr.ne_zero))
+    (fun _ hr => IsRegular.of_ne_zero (Int.cast_ne_zero.mpr hr.ne_zero))
     (fun r m => Int.cast_smul_eq_zsmul O r m)
 
 theorem free_int_of_projective (O : Type) [CommRing O] [IsDomain O] [CharZero O] [Module.Finite ℤ O]

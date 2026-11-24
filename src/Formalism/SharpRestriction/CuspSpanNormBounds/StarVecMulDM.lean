@@ -125,7 +125,7 @@ theorem bigCell_cj (hκ : 0 < κ) (hτ : 0 < τ) (c : Fin r → ℂ) (μ : Matri
         field_simp
       · rw [ite_eq_right hi, ite_eq_right hi, mul_zero]
 
-theorem flagMat_cj (hκ : 0 < κ) (hτ : 0 < τ) {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (x : Mx k r)
+theorem flagMat_cj {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (x : Mx k r)
     (i j : Fin (r + 1)) (hi : i.val < r) :
     flagMat k r ((τ : ℂ) • z) (cj k r κ τ x) i j =
       ((tF r κ τ j.val / tF r κ τ i.val : ℝ) : ℂ) * flagMat k r z x i j := by
@@ -145,7 +145,7 @@ theorem rootCoords_cjT (hκ : 0 < κ) (hτ : 0 < τ) {z : Fin (2 * r + k + 1) �
     omega
   unfold rootCoords
   rw [of_cjT]
-  exact flagMat_cj hκ hτ hz (Matrix.of x) p.1.1 p.1.2 hi
+  exact flagMat_cj hz (Matrix.of x) p.1.1 p.1.2 hi
 
 theorem Tz_smul (z : Fin (2 * r + k + 1) → ℂ) (t : ℝ) : Tz k r ((t : ℂ) • z) = t ^ 2 * Tz k r z := by
   unfold Tz herm

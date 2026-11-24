@@ -374,7 +374,7 @@ noncomputable section
 
 namespace GlobalTheory.DatumOfPeriodsGap
 
-theorem exists_goodS : GlobalTheory.GapIn.Hyp → ∀ (D : D7) τ w w' θ (W : LocW D.R.k D.R.rS) (lam : Fin (2 * D.R.rS + D.R.k + 1) → ℝ) (R : Rep D.R.k D.R.rS) (h : ℝ) (l : R.H → W.Wp) (l' : R.H → W.Wq) (dd : ℝ), cdScaleTie D → GoodW D τ w w' θ W → R.IsDG (epsSH D.R) lam → PI.BesselMapUniq.IsBesselMapSm (k := D.R.k) (r := D.R.rS) W.z (psiS D W.z) R.σ W.π l → PI.BesselMapUniq.IsBesselMapSm (k := D.R.k) (r := D.R.rS) W.z' (psiS D W.z') R.σ W.π' l' → 0 < dd → (∀ v ∈ R.sm, l2SG W.νS (fun g => l (R.σ g v)) = ENNReal.ofReal (‖v‖ ^ 2 / dd)) → (∀ v ∈ R.sm, l2SG W.νS' (fun g => l' (R.σ g v)) = ENNReal.ofReal (‖v‖ ^ 2 / dd)) → ∃ A : LocS W, GoodS D lam A := by
+theorem exists_goodS : GlobalTheory.GapIn.Hyp → ∀ (D : D7) τ w w' θ (W : LocW D.R.k D.R.rS) (lam : Fin (2 * D.R.rS + D.R.k + 1) → ℝ) (R : Rep D.R.k D.R.rS) (_ : ℝ) (l : R.H → W.Wp) (l' : R.H → W.Wq) (dd : ℝ), cdScaleTie D → GoodW D τ w w' θ W → R.IsDG (epsSH D.R) lam → PI.BesselMapUniq.IsBesselMapSm (k := D.R.k) (r := D.R.rS) W.z (psiS D W.z) R.σ W.π l → PI.BesselMapUniq.IsBesselMapSm (k := D.R.k) (r := D.R.rS) W.z' (psiS D W.z') R.σ W.π' l' → 0 < dd → (∀ v ∈ R.sm, l2SG W.νS (fun g => l (R.σ g v)) = ENNReal.ofReal (‖v‖ ^ 2 / dd)) → (∀ v ∈ R.sm, l2SG W.νS' (fun g => l' (R.σ g v)) = ENNReal.ofReal (‖v‖ ^ 2 / dd)) → ∃ A : LocS W, GoodS D lam A := by
   intro hH D τ w w' θ W lam R _ l l' dd _ _ hRG hl hl' hdd hn hn'
   have hK : PI.KFinSmooth := hH.1.1.2.2.1
   have hR : R.IsDS (epsSH D.R) lam := GlobalTheory.isDS_of_isDG hRG
@@ -686,7 +686,7 @@ theorem tensH_trivial : BranchingSupport.HypsG → ∀ (k r : ℕ) (lam : Fin (2
     (fun s => hF _ (hμs s)) (fun s => hG2 _ (hμs s)) a (by
       intro s hs he
       have := congrFun he s
-      simp [Pi.single_apply, hs] at this
+      simp [hs] at this
       linarith)
   rw [add_sub_cancel_right, Function.update_self] at hU
   have hUI : ∀ I : Sub (2 * r + k + 1) 0, ∃ U : (F ν).H ≃ₗᵢ[ℂ] (F' (ν + eZ I.1)).H,
@@ -1194,7 +1194,7 @@ theorem minor_line : GlobalTheory.GapIn.Hyp → GlobalTheory.GapIn.AmpKF0 → Ce
     have hN : ((2 * D.R.rS + D.R.k + 1 : ℝ)) ^ l ≤ large₂.sc.b ^ (max 2 Cu * (D.R.m : ℝ) ^ 2) :=
       pow_le_rpow hb1 (by linarith) hnb hM (by rw [hmR]; nlinarith)
     have hS : ‖∏ a : Fin l, s (Fin.castLE hl a)‖ ≤ large₂.sc.b ^ ((2 * Cg + 2) * (D.R.m : ℝ) ^ 2) := by
-      have hQ := scale_le hbe hv hvb hg1 hgb hCg
+      have hQ := scale_le hbe hv hvb hg1 hgb
       rw [← hka] at hQ
       have h1 : ∀ a, ‖s a‖ ≤ large₂.sc.b ^ ((2 * Cg + 2) * (D.R.m : ℝ)) := fun a =>
         (hs1 a).trans (pow_le_rpow hb1 (le_max_of_le_left (by positivity)) hQ (by linarith) (by linarith))

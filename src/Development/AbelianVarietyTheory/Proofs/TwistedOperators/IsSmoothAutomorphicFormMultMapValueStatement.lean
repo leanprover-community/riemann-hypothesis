@@ -167,7 +167,7 @@ theorem gelf_eigen (hE : IsEquivMap θ M T) (hC : IsSobValued M T) (τ : D.what�
   rw [Function.update_eq_self] at this
   exact this
 
-theorem zfin (hθ : IsInfFam θ) (hE : IsEquivMap θ M T) (hC : IsSobValued M T) (v : M.Vec) :
+theorem zfin (hE : IsEquivMap θ M T) (hC : IsSobValued M T) (v : M.Vec) :
     ∃ W : Submodule ℂ (GA D V → ℂ), FiniteDimensional ℂ W ∧ T v ∈ W ∧ ∀ τ k, ∀ f ∈ W, gelf θ V τ k f ∈ W := by
   refine ⟨ℂ ∙ T v, inferInstance, Submodule.mem_span_singleton_self _, fun τ k f hf => ?_⟩
   obtain ⟨a, rfl⟩ := Submodule.mem_span_singleton.1 hf
@@ -179,7 +179,7 @@ theorem isAutFunSm : GlobalTheory.Published.HarishChandraModules → ∀ (D : D7
   intro _ D θ hθ V S M T U N hU hT hE hC v
   obtain ⟨h1, h2, h3, h4, h5⟩ := hT v
   exact GlobalTheory.Grow.UnifModGrowth.isAutFunSm hθ ((GlobalTheory.Size.unifModGrowth_iff_growthSob hθ h4).2 ⟨N, h5⟩)
-    ⟨h2, ⟨U, hU, h3⟩, h1⟩ h4 (zfin hθ hE hC v)
+    ⟨h2, ⟨U, hU, h3⟩, h1⟩ h4 (zfin hE hC v)
 
 end GlobalTheory.EquivValues
 

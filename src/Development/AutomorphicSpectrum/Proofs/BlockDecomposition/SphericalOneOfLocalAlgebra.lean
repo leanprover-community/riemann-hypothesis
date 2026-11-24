@@ -111,8 +111,8 @@ theorem conv_comm_sub {A : Type} [Group A] (H : Subgroup A) (K : Subgroup H) (θ
     (hK : ∀ x : H, x ∈ K → (⟨θ x, hH _ x.2⟩ : H) ∈ K)
     (hdc : ∀ g : H, ∃ a b : K, (⟨θ g, hH _ g.2⟩ : H) = (a : H) * g * b)
     (f₁ f₂ : H → ℂ) (hf₁ : IsBiInv K f₁) (hf₂ : IsBiInv K f₂) : conv K f₁ f₂ = conv K f₂ f₁ :=
-  Formalism.UG.P.heckecomm_gelfand K (fun x : H => (⟨θ x, hH _ x.2⟩ : H)) (fun x y => Subtype.ext (hm _ _))
-    (fun x => Subtype.ext (hi _)) hK hdc f₁ f₂ hf₁ hf₂
+  Formalism.UG.P.heckecomm_gelfand K (fun x : H => (⟨θ x, hH _ x.2⟩ : H)) (fun _ _ => Subtype.ext (hm _ _))
+    (fun _ => Subtype.ext (hi _)) hK hdc f₁ f₂ hf₁ hf₂
 
 theorem dc_of_decomp {A : Type} [Group A] (H : Subgroup A) (K : Subgroup H) (θ : A → A)
     (hm : ∀ x y, θ (x * y) = θ y * θ x) (hH : ∀ x ∈ H, θ x ∈ H)

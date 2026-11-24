@@ -731,7 +731,7 @@ theorem exponent_le (s e : ℕ) :
     push_cast at h1 ⊢
     linarith
 
-theorem exists_expStar_zero_near : ∀ (D : Formalism.BasicNotions.D7), adm2 D → ArchimedeanSignatureMatching D → ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ), Lev l s → ∀ (e : ℕ) (z : GQ l → ℚ_[l]), CocOn (Gj K s) (fun σ y => (((D.loc l).χQ σ ^ (-(e : ℤ)) : ℚ_[l]ˣ) : ℚ_[l]) * y) Set.univ z → (∃ b ∈ ((D.loc l).PD (botExt l)).Fil 0, ∀ σ ∈ Gj K s, ∃ a : Ainf l, algebraMap ℚ_[l] (D.loc l).R.BdR (z σ) - (algebraMap ℚ_[l] (D.loc l).R.BdR (((D.loc l).χQ σ ^ (-(e : ℤ)) : ℚ_[l]ˣ) : ℚ_[l]) * (D.loc l).actQdR σ b - b) - (D.loc l).ιB ((D.locA l).ιA a) ∈ ((D.loc l).PD (botExt l)).Fil ((e : ℤ) + 1)) → ∃ z' : GQ l → ℚ_[l], ExpStar D.loc (Gj K s) e z' 0 ∧ ∀ σ ∈ Gj K s, ‖z' σ - (l : ℚ_[l]) ^ ((e + 2) * s + padicValNat l e + e / (l - 1) + 1) * z σ‖ ≤ 1 := by
+theorem exists_expStar_zero_near : ∀ (D : Formalism.BasicNotions.D7), adm2 → ArchimedeanSignatureMatching → ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ), Lev l s → ∀ (e : ℕ) (z : GQ l → ℚ_[l]), CocOn (Gj K s) (fun σ y => (((D.loc l).χQ σ ^ (-(e : ℤ)) : ℚ_[l]ˣ) : ℚ_[l]) * y) Set.univ z → (∃ b ∈ ((D.loc l).PD (botExt l)).Fil 0, ∀ σ ∈ Gj K s, ∃ a : Ainf l, algebraMap ℚ_[l] (D.loc l).R.BdR (z σ) - (algebraMap ℚ_[l] (D.loc l).R.BdR (((D.loc l).χQ σ ^ (-(e : ℤ)) : ℚ_[l]ˣ) : ℚ_[l]) * (D.loc l).actQdR σ b - b) - (D.loc l).ιB ((D.locA l).ιA a) ∈ ((D.loc l).PD (botExt l)).Fil ((e : ℤ) + 1)) → ∃ z' : GQ l → ℚ_[l], ExpStar D.loc (Gj K s) e z' 0 ∧ ∀ σ ∈ Gj K s, ‖z' σ - (l : ℚ_[l]) ^ ((e + 2) * s + padicValNat l e + e / (l - 1) + 1) * z σ‖ ≤ 1 := by
   intro D _ _ l _ K s hs e z hz hb
   obtain ⟨α, hα, hE⟩ := (_root_.GlobalTheory.ExpDef.expStar_existsUnique D l K s hs e).1 z hz
   have hN := _root_.GlobalTheory.Cyc.ExpBound.norm_expStar_le D l K s hs e z α hα hE hb
@@ -1380,7 +1380,7 @@ section Top
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Formalism.MainNotions.LocalSituation GlobalTheory.Cyc
 
-theorem connecting_torsion : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW), adm5 D → adm7 D → ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let S := sit D.loc HW l (D.locA l) K s LL h; let E : S.Comparison₂ := ((F l).E K s LL h).tie; ∀ (e : ℕ) (Yt T Z : LocLat S.G S.Qp S.LL S.O) (ι : LatHom T.L Yt.L) (π : LatHom Yt.L Z.L) (hle : Gj K s ≤ GK K), IsSESLat (Qp := S.Qp) ι π → (∀ g x, Z.ρ g x = x) → IsCrysOn S S.W.GKs Yt → ∀ yt ∈ Yt.L.T, ∀ f : S.G → ↥T.L.T, (∀ g, ι.f (f g : T.V) = Yt.ρ g yt - yt) → ∀ one : ↥(Mxi (AinfSub l) (xiU (D.locA l)) 0), (one : WCb l) = 1 → letI := zlMod LL T; ∃ k : ℕ, IsCob (repQ (D.locA l) (Gj K s) ((actTZ LL T).comp (Subgroup.inclusion hle)) 0 ((e : ℤ) + 1)) (fun g => (l : ℤ_[l]) ^ k • (f (Subgroup.inclusion hle g) ⊗ₜ[ℤ_[l]] (Submodule.Quotient.mk one : Qab (AinfSub l) (xiU (D.locA l)) 0 ((e : ℤ) + 1)))) := by
+theorem connecting_torsion : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW), adm5 D → adm7 D → ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let S := sit D.loc HW l (D.locA l) K s LL h; let _ : S.Comparison₂ := ((F l).E K s LL h).tie; ∀ (e : ℕ) (Yt T Z : LocLat S.G S.Qp S.LL S.O) (ι : LatHom T.L Yt.L) (π : LatHom Yt.L Z.L) (hle : Gj K s ≤ GK K), IsSESLat (Qp := S.Qp) ι π → (∀ g x, Z.ρ g x = x) → IsCrysOn S S.W.GKs Yt → ∀ yt ∈ Yt.L.T, ∀ f : S.G → ↥T.L.T, (∀ g, ι.f (f g : T.V) = Yt.ρ g yt - yt) → ∀ one : ↥(Mxi (AinfSub l) (xiU (D.locA l)) 0), (one : WCb l) = 1 → letI := zlMod LL T; ∃ k : ℕ, IsCob (repQ (D.locA l) (Gj K s) ((actTZ LL T).comp (Subgroup.inclusion hle)) 0 ((e : ℤ) + 1)) (fun g => (l : ℤ_[l]) ^ k • (f (Subgroup.inclusion hle g) ⊗ₜ[ℤ_[l]] (Submodule.Quotient.mk one : Qab (AinfSub l) (xiU (D.locA l)) 0 ((e : ℤ) + 1)))) := by
   intro D HW F _ h7 l _ K s LL h S E e Yt T Z ι π hle hse hZ hcr yt _ f hf one hone
   obtain ⟨J⟩ := GlobalTheory.ThetaTie.nonempty_thetaL D l
   exact cob_of_strict (D.locA l) (D.locT l) J K LL Yt T Z ι π hse hZ
@@ -1529,7 +1529,7 @@ theorem mem_HfD_of_coords (P : LocPrime l) (K LL : FinExt l) (s : ℕ) (hK : K.1
       rw [map_sub w.repr, Finsupp.sub_apply, ← w.equivFun_apply, LinearEquiv.apply_symm_apply]
     exact (congrArg norm (h1 _ _)).le.trans (hzf i h hh)
 
-theorem scalar_step (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (h4 : ArchimedeanSignatureMatching D) (K : FinExt l) (s : ℕ)
+theorem scalar_step (D : Formalism.BasicNotions.D7) (h2 : adm2) (h4 : ArchimedeanSignatureMatching) (K : FinExt l) (s : ℕ)
     (hs : Lev l s) (e r N : ℕ) (c : GQ l → ℚ_[l]) (hb : ∀ σ ∈ Gj K s, ‖c σ‖ ≤ (l : ℝ) ^ r)
     (hc : ∀ σ ∈ Gj K s, ∀ τ ∈ Gj K s, ‖c (σ * τ) - c σ -
       (((D.loc l).χQ σ ^ (-(e : ℤ)) : ℚ_[l]ˣ) : ℚ_[l]) * c τ‖ ≤ 1)
@@ -1590,7 +1590,7 @@ theorem scalar_step (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (h4 : Archimed
   rw [norm_mul]
   exact mul_le_one₀ (hl1 _) (norm_nonneg _) (hzc σ hσ)
 
-theorem scalar_of_isCob (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (h4 : ArchimedeanSignatureMatching D) (K : FinExt l) (s : ℕ)
+theorem scalar_of_isCob (D : Formalism.BasicNotions.D7) (h2 : adm2) (h4 : ArchimedeanSignatureMatching) (K : FinExt l) (s : ℕ)
     (hs : Lev l s) (hle : Gj K s ≤ GK K) (e N r : ℕ) (Y : Type) [AddCommGroup Y] [Module ℤ_[l] Y]
     (ρ : ↥(GK K) →* (Y →ₗ[ℤ_[l]] Y)) (f : ↥(GK K) → Y) (hf : ∀ g h, f (g * h) = f g + ρ g (f h))
     (hfl : ∀ (n : ℕ) (g : ↥(GK K)), ∀ᶠ h in nhds g, ∃ y : Y, f h - f g = (l ^ n : ℕ) • y)
@@ -1646,7 +1646,7 @@ theorem scalar_of_isCob (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (h4 : Arch
 
 
 
-theorem mem_HfD_of_isCob (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (h4 : ArchimedeanSignatureMatching D) (K LL : FinExt l) (s : ℕ)
+theorem mem_HfD_of_isCob (D : Formalism.BasicNotions.D7) (h2 : adm2) (h4 : ArchimedeanSignatureMatching) (K LL : FinExt l) (s : ℕ)
     (hs : Lev l s) (hK : K.1 ≤ Ks K s) (hle : Gj K s ≤ GK K) (e N r : ℕ)
     (Y : Type) [AddCommGroup Y] [Module ℤ_[l] Y]
     (ρ : ↥(GK K) →* (Y →ₗ[ℤ_[l]] Y)) (f : ↥(GK K) → Y) (hf : ∀ g h, f (g * h) = f g + ρ g (f h))
@@ -1714,7 +1714,7 @@ theorem lift_equivariant {G : Type} [Group G] [TopologicalSpace G] {Qp LL O : Ty
 
 
 
-theorem mem_HfD_of_lattice (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (h4 : ArchimedeanSignatureMatching D) (K LL : FinExt l) (s : ℕ)
+theorem mem_HfD_of_lattice (D : Formalism.BasicNotions.D7) (h2 : adm2) (h4 : ArchimedeanSignatureMatching) (K LL : FinExt l) (s : ℕ)
     (hs : Lev l s) (hK : K.1 ≤ Ks K s) (hle : Gj K s ≤ GK K) (e N : ℕ)
     (Y V : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL))
     (hV : ∀ g x, V.ρ g x =
@@ -1822,7 +1822,7 @@ namespace GlobalTheory.TheoremTBRecords
 
 theorem aux_of_blochKato_tateDuality_eulerChar :
     GlobalTheory.Published.BlochKatoLocal → Formalism.GaloisCohomology.LocalTateDualityK → Formalism.GaloisCohomology.LocalEulerCharK →
-      ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F),
+      ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (_ : CmpOf D.loc D.locA HW F),
         LocalSituation.Conclusion4 D HW F := by
   intro hBK hTD hEC D HW F _Cm
   obtain ⟨_J, hA⟩ := GlobalTheory.LocInputs.ties_and_inputs_of_duality_euler hTD hEC D HW F

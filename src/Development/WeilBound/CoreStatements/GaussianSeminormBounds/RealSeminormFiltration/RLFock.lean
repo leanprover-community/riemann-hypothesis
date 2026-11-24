@@ -656,7 +656,7 @@ theorem exists_fockMap : ∃ φ : MvPolynomial L ℂ →ₗ[ℂ] 𝓢(V, ℂ), F
     rw [hc]; by_cases h : l = l' <;> simp [Pi.single_apply, h, @eq_comm _ l' l, a, b]
   obtain ⟨φ, h1, h2, h3⟩ := exists_fock (fun l => (2 * r)⁻¹ • (a l - I • b l)) (fun l => (2 * r)⁻¹ • (-a l - I • b l))
     (fun l l' => by
-      simp only [smul_mul_smul_comm, sub_mul, mul_sub, smul_mul_assoc, mul_smul_comm]
+      simp only [sub_mul, mul_sub, smul_mul_assoc, mul_smul_comm]
       rw [haa l l', hbb l l', hab l l', hba l l']
       module)
     (fun l l' => by

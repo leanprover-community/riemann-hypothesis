@@ -315,7 +315,7 @@ theorem IsIntwF.transport (hθ : IsInfFam θ) (hσ : IdOrConj σ) (hA : ModelTr 
     simp only [hpt, hω, oneP, lA.atTau, map_one] at this
     exact hρ.deriv this
 
-theorem exists_bilin (hσ : IdOrConj σ) (hA : ModelTr σ εA θ MA₁ MA κA) (hB : ModelTr σ εB θ MB₁ MB κB)
+theorem exists_bilin (hA : ModelTr σ εA θ MA₁ MA κA) (hB : ModelTr σ εB θ MB₁ MB κB)
     {P₁ : Type} [AddCommGroup P₁] [Module ℂ P₁] (It : P₁ → SmT MA →ₗ[ℂ] SmT MB) (h1 : ∀ p q, It (p + q) = It p + It q)
     (h2 : ∀ (c : ℂ) p, It (c • p) = σ c • It p) :
     ∃ It₁ : P₁ →ₗ[ℂ] SmT MA₁ →ₗ[ℂ] SmT MB₁, ∀ p v, κB (It₁ p v) = It p (κA v) := by
@@ -349,7 +349,7 @@ theorem lifts_of_tr {X : ProvA} (hP : PairLifts D X) (hθ : IsInfFam θ) {A B : 
     {K : P → GA D B → GA D A → ℂ} (hK : ∀ p h g, ρ (ω (h, g) (pt f p) (α 0)) = σ (K p h g))
     {ν : Measure (GA D A)} {𝓕 : Set (GA D A)} (hν : ν.IsHaarMeasure) (h𝓕 : IsFundamentalDomain (GQ A) 𝓕 ν) :
     LiftsM θ MA MB ν 𝓕 K fun p v => It p v := by
-  obtain ⟨It₁, hI⟩ := exists_bilin hσ hA hB (fun p => It (j.symm p)) h1 h2
+  obtain ⟨It₁, hI⟩ := exists_bilin hA hB (fun p => It (j.symm p)) h1 h2
   have hI' : ∀ p v, κB (It₁ (j p) v) = It p (κA v) := fun p v => by rw [hI, j.symm_apply_apply]
   have hv : IsVacVec ψ θ MB₁ MA₁ fun y => ρ (f₀ (α y)) := ⟨(hpt f₀ hf₀).1.1, fun h => h0 (funext fun z => by
     obtain ⟨y, rfl⟩ := hα z

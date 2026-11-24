@@ -38,7 +38,7 @@ theorem dS_rsum (hσ : IsURepOn (UJset ε) σ) {ι : Type*} (s : Finset ι) (r :
   | empty => simpa using SmDerA.dS_zero_mat (σ := σ) v
   | insert a s ha ih =>
     have hs : ∀ i ∈ s, inG ε (X i) := fun i hi => hX i (Finset.mem_insert_of_mem hi)
-    rw [Finset.sum_insert ha, Finset.sum_insert ha, add_comm, dS_add_smul hσ (inG_rsum s r X hs)
+    rw [Finset.sum_insert ha, Finset.sum_insert ha, add_comm, dS_add_smul (inG_rsum s r X hs)
       (hX a (Finset.mem_insert_self a s)) (r a) hv, ih hs, add_comm]
 
 theorem dS_vsum (hσ : IsURepOn (UJset ε) σ) {X : Matrix (Fin n) (Fin n) ℂ} (hX : inG ε X) {ι : Type*}

@@ -209,10 +209,10 @@ theorem exists_basis_adapted_frame : ∀ (C : Type) [Field C] [IsAlgClosed C] [C
         unfold IsIntV
         by_cases hc : c = e
         · subst hc; simp
-        · simp [Pi.single_apply, hc])
+        · simp [hc])
       (fun c hc => by
         have : c ≠ e := fun h' => hc (h' ▸ rfl)
-        simp [Pi.single_apply, this])
+        simp [this])
   let γ : Fin d → Fin d → PowerSeries C := fun e =>
     if hm : e ∈ Set.range r0 then γ' ((Equiv.ofInjective r0 hinj).symm ⟨e, hm⟩) else ζ e
   have hγr : ∀ a, γ (r0 a) = γ' a := by

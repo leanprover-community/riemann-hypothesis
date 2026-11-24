@@ -203,7 +203,7 @@ theorem hcl_neg_one' (e : ℕ) : hcl e (-1) = 1 := by
   rw [QuotientGroup.eq_one_iff]
   exact Subgroup.mem_zpowers _
 
-theorem hPart_inertia (hqd : HypOdd q d) (h : IsLayer (e + 2) q d ζ a b) (p : ℕ) (hp : p.Prime)
+theorem hPart_inertia (h : IsLayer (e + 2) q d ζ a b) (p : ℕ) (hp : p.Prime)
     (hp2 : p ≠ 2) (Q : Ideal (𝓞 L)) [Q.IsPrime] [Q.LiesOver (span {(p : ℤ)})]
     (P : Ideal (𝓞 (hostE ζ a b))) [Q.LiesOver P] (ρ : hostE ζ a b ≃ₐ[ℚ] hostE ζ a b)
     (hρ : ∀ x : 𝓞 (hostE ζ a b), ρ • x - x ∈ P) : (galE e ζ a b ρ).2 = 1 := by
@@ -498,7 +498,7 @@ theorem hostDecomp : HostDecomp := by
     constructor
     · intro hσ
       obtain ⟨k, ρ, hρ, rfl⟩ := stab_eq_inertia_mul q P σF σ hFE hσ
-      have e2 : (galE e ζ a b ρ).2 = 1 := hPart_inertia hqd h q hq hq2 Q P ρ hρ
+      have e2 : (galE e ζ a b ρ).2 = 1 := hPart_inertia h q hq hq2 Q P ρ hρ
       have e1 : (galE e ζ a b ρ).1.2 = 1 :=
         odd_sgn_inertia q hq hq2 P ρ hρ (bE ζ a b) d (bE_sq' h) hqnd
       rw [hmulE, hpowE, hgF]
@@ -553,7 +553,7 @@ theorem hostDecomp : HostDecomp := by
     constructor
     · intro hσ
       obtain ⟨k, ρ, hρ, rfl⟩ := stab_eq_inertia_mul d P σF σ hFE hσ
-      have e2 : (galE e ζ a b ρ).2 = 1 := hPart_inertia hqd h d hd hd2 Q P ρ hρ
+      have e2 : (galE e ζ a b ρ).2 = 1 := hPart_inertia h d hd hd2 Q P ρ hρ
       have e1 : (galE e ζ a b ρ).1.1 = 1 :=
         odd_sgn_inertia d hd hd2 P ρ hρ (aE ζ a b) q (aE_sq_eq_neg_q h) hdnq
       rw [hmulE, hpowE, hgF]

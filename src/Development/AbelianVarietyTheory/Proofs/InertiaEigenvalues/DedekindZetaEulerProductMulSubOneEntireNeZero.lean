@@ -72,7 +72,7 @@ private lemma dedekindZeta_eq_exp_tsum_neg_log (K : Type) [Field K] [NumberField
     norm_num at hs
   have key := _root_.GlobalTheory.tsum_ideal_mul_absNorm_cpow_eq_exp_tsum K (fun I => if I = ⊥ then 0 else 1)
     (by simp) (by simp) (fun I J => by
-      by_cases hI : I = ⊥ <;> by_cases hJ : J = ⊥ <;> simp [hI, hJ, Ideal.mul_eq_bot])
+      by_cases hI : I = ⊥ <;> by_cases hJ : J = ⊥ <;> simp [hI, hJ])
     (fun I => by split_ifs <;> simp) s hs
   rw [_root_.GlobalTheory.Mem.ZetaPole.dedekindZeta_eq_tsum_ideal K hs]
   convert key using 1

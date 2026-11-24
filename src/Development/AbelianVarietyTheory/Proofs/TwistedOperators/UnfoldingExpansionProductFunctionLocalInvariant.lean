@@ -736,7 +736,7 @@ private theorem cut_conj_unipotent_mem_St_succ {D : D7} {T : Type} {L : LevCh D 
 
 open GlobalTheory.PlaceModel GlobalTheory.PlaceDatum GlobalTheory.SplitHecke GlobalTheory.ThetaMove GlobalTheory.OffPartLattice in
 theorem offPart_fixes_vac : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {U : Set T} (S : GridChoice W U) {t : T} {μ₀ : T}, L.Is μ₀ → t ∈ U → ∀ {Φ : G.Datum} {β : CosFam G t} (j : ℕ) (hj : j + 1 < D.R.m) (k : FinPt G (.top (j + 1))),
-    finG (G.V (.top (j + 1))) k ∈ S.levTop t Φ β (j + 1) hj → ∀ (e : AE D) (he : IsIdemSum e (locPl G t)),
+    finG (G.V (.top (j + 1))) k ∈ S.levTop t Φ β (j + 1) hj → ∀ (e : AE D) (_ : IsIdemSum e (locPl G t)),
     W.om (.top t (j + 1)) (cutPart (1 - (e + cA D e)) (G.V (.top (j + 1))) ((((S.N.u (.top (j + 1)))⁻¹ * k * S.N.u (.top (j + 1)) : FinPt G (.top (j + 1))) : GA D (G.V (.top (j + 1))))), 1) (S.Z.vac (.top t (j + 1))) = S.Z.vac (.top t (j + 1)) := by
   intro D T L sc G W U S t μ₀ hL ht Φ β j hj k hk e he
 
@@ -836,7 +836,7 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.Local
 open GlobalTheory.TopLevelInv
 
 theorem _root_.GlobalTheory.T.offPlacePart_fixes_standardVacuum : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil} {U : Set T} (S : GridChoice W U) {t : T} {μ₀ : T}, L.Is μ₀ → t ∈ U → ∀ {Φ : G.Datum} {β : CosFam G t} (j : ℕ) (hj : j + 1 < D.R.m) (k : FinPt G (.top (j + 1))),
-    finG (G.V (.top (j + 1))) k ∈ S.levTop t Φ β (j + 1) hj → ∀ (e : AE D) (he : IsIdemSum e (locPl G t)),
+    finG (G.V (.top (j + 1))) k ∈ S.levTop t Φ β (j + 1) hj → ∀ (e : AE D) (_ : IsIdemSum e (locPl G t)),
     W.om (.top t (j + 1)) (cutPart (1 - (e + cA D e)) (G.V (.top (j + 1))) ((((S.N.u (.top (j + 1)))⁻¹ * k * S.N.u (.top (j + 1)) : FinPt G (.top (j + 1))) : GA D (G.V (.top (j + 1))))), 1) (S.Z.vac (.top t (j + 1))) = S.Z.vac (.top t (j + 1)) := by
   first | exact @GlobalTheory.OffPartVac.offPart_fixes_vac
 end -- clump:auto
@@ -1002,7 +1002,7 @@ theorem det_kapAt_val {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : Gri
 
 
 theorem detAt_conjPt_eq_prod {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {W : G.Weil}
-    {U : Set T} (S : GridChoice W U) {t : T} (_ht : t ∈ U) (j : ℕ) (hj : j + 1 < D.R.m) (k : FinPt G (.top (j + 1)))
+    {U : Set T} (S : GridChoice W U) {t : T} (j : ℕ) (hj : j + 1 < D.R.m) (k : FinPt G (.top (j + 1)))
     (e : AE D) (hI : IsIdemSum e (locPl G t)) :
     detAt e (G.V (.top (j + 1))) (conjPt S j k) =
       ∏ w : locPl G t, GlobalTheory.LFun.locIdele D.host.F w.1 (gdet (kapAt S t j hj k w)) := by
@@ -1523,7 +1523,7 @@ theorem omega_conj_vac_low: ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts
   conv_lhs => rw [← hvac]
   refine (hlaw (halfInd e (stdLatO S (.top t j))) (_root_.GlobalTheory.isSBHalf_halfInd e _)).trans ?_
   congr 1
-  · rw [detAt_one' he2, detAt_resG_eq he2 hc hε halg, _root_.GlobalTheory.TopLevelInv.detAt_conjPt_eq_prod S ht j hj k e he]
+  · rw [detAt_one' he2, detAt_resG_eq he2 hc hε halg, _root_.GlobalTheory.TopLevelInv.detAt_conjPt_eq_prod S j hj k e he]
     unfold GlobalTheory.SplitLinear.fac
     simp only [splitFacO, map_one, inv_one, one_mul]
     rw [GlobalTheory.T.topPairSourceChar_prod_localIdeles G hL j hj]

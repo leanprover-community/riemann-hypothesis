@@ -211,7 +211,7 @@ theorem rootRingToReal_degreePolynomial_first (f r a : ℕ) :
 
 theorem blockPowerSum_isHomogeneous (f N m : ℕ) (τ : Fin f) :
     (blockPowerSum f N m τ).IsHomogeneous m :=
-  IsHomogeneous.sum _ _ _ fun i _ => isHomogeneous_X_pow _ _
+  IsHomogeneous.sum _ _ _ fun _ _ => isHomogeneous_X_pow _ _
 
 theorem isPowerSumDecomposition_homogeneousComponent (f N : ℕ) (F : RootRing f N)
     (Q : ℕ → Fin f → RootRing f N) (hF : F.IsHomogeneous (topDegree f N + 1))

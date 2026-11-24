@@ -100,7 +100,7 @@ theorem map_ptIdeal_eq_maximalIdeal (I : Ideal (MvPolynomial (Fin m) ℂ)) (t : 
   apply GlobalTheory.CompanionTheory.Ar.Cmp.SncRes.Par.map_ptIdeal_eq_maximalIdeal_ordAff <;> assumption
 
 theorem exists_den_of_mem_map (I D : Ideal (MvPolynomial (Fin m) ℂ)) (t : Fin m → ℂ) (hID : I ≤ D)
-    (hp : ∀ h ∈ I, eval t h = 0) {f : MvPolynomial (Fin m) ℂ}
+    {f : MvPolynomial (Fin m) ℂ}
     (hf : algebraMap _ (locRing I t) f ∈ Ideal.map (algebraMap _ (locRing I t)) D) :
     ∃ s, eval t s ≠ 0 ∧ s * f ∈ D := by
   have key : ∀ x ∈ Ideal.map (algebraMap (MvPolynomial (Fin m) ℂ) (locRing I t)) D,
@@ -200,7 +200,7 @@ theorem exists_den_prod_params : ∀ (m e : ℕ) (I Dc : Ideal (MvPolynomial (Fi
       rw [hrad]; exact Ideal.mem_span_singleton_self _
     obtain ⟨N, hN⟩ := h1
     rw [← map_pow] at hN
-    obtain ⟨s, hs, hsm⟩ := exists_den_of_mem_map I Dc t hID hp hN
+    obtain ⟨s, hs, hsm⟩ := exists_den_of_mem_map I Dc t hID hN
     refine ⟨s, hs, N + 1, ?_⟩
     have : (s * Q) ^ (N + 1) = s ^ N * Q * (s * Q ^ N) := by ring
     rw [this]
@@ -324,7 +324,7 @@ theorem exists_unit_mul_monomial_of_primes {m e : ℕ} (I Dc : Ideal (MvPolynomi
       rw [Ideal.mem_comap]; exact hle (Ideal.mem_span_singleton_self _)
     obtain ⟨i, hiJ, hi⟩ := (hpr _ h1 h2 h3).1 (hg _ h1 h2 h3 hgm)
     exact Ideal.mem_of_dvd _ (Finset.dvd_prod_of_mem _ hiJ) hi
-  exact eq_unit_mul_monomial (fun l => algebraMap _ (locRing I t) (r l)) hspan' hdim' J hg0 hrad
+  exact eq_unit_mul_monomial (fun l => algebraMap _ (locRing I t) (r l)) hspan' hdim' J hrad
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
@@ -354,7 +354,7 @@ theorem ideal_sup_le_of_mem (P D : Ideal (MvPolynomial (Σ k, ι k) ℂ)) (p : (
         rw [mem_map_renR_iff, hs]
         exact hc
       exact hw0 _ (hI hm)
-    obtain ⟨hcone, h1, -⟩ := conePts_of_chartIdeal hP p w' hchart
+    obtain ⟨hcone, h1, -⟩ := conePts_of_chartIdeal p w' hchart
     have hlift : (fun q => eval w (SncRes.lift p q)) = w' := by
       funext q
       unfold SncRes.lift

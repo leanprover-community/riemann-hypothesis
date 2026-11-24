@@ -230,7 +230,7 @@ def ptMap {R S : LAlg R₀} (f : LHom R S) :
     Additive (sp (R₀ := R₀) (R : Type) ⟶ G) →+ Additive (sp (R₀ := R₀) (S : Type) ⟶ G) where
   toFun z := Additive.ofMul (spMap f.1 ≫ z.toMul)
   map_zero' := congrArg Additive.ofMul (MonObj.comp_one _)
-  map_add' a b := congrArg Additive.ofMul (MonObj.comp_mul _ _ _)
+  map_add' _ _ := congrArg Additive.ofMul (MonObj.comp_mul _ _ _)
 
 variable {G} {g : ℕ}
   {x : ∀ (S : Type) [CommRing S] [Algebra R₀ S], (Fin g → S) → (sp (R₀ := R₀) S ⟶ G)}

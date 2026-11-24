@@ -233,7 +233,7 @@ lemma prod_plTan (R : Type*) [CommRing R] {N r K : ℕ} (nu : Fin (N + 1) → Fi
     psi_eq_prod_superset R ka I'' h2.1 _ (colRange_pl_subset nu ka).2, map_prod, map_prod]
   simp only [joinI_pl, joinI_tan]
 
-theorem joint_type_lower_bound (D : Formalism.BasicNotions.D7) (hB2 : PathWeightComponents D)
+theorem joint_type_lower_bound (D : Formalism.BasicNotions.D7) (hB2 : PathWeightComponents)
     (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (S : UniformizedDVR p O)
     (N r K : ℕ) [NeZero r] [NeZero K]
     (LL : Letters (Fin N)) (B : Fin N → ℕ) (om : Fin N → ℕ) (hK : N + r ≤ K) (h1 : StrictAnti om) (h2 : ∀ i, 0 < om i)
@@ -318,7 +318,7 @@ lemma range_pvec (O : Type) [CommRing O] {N r K : ℕ} (LL : Letters (Fin N)) (B
   · rintro ⟨nu, ka, I', I'', h1, h2, h3, rfl⟩
     exact ⟨⟨((nu, I'), (ka, I'')), h1, h2, h3⟩, rfl⟩
 
-theorem joint_type_lattice_saturated (D : Formalism.BasicNotions.D7) (h16 : PairedPathIndependence D)
+theorem joint_type_lattice_saturated (D : Formalism.BasicNotions.D7) (h16 : PairedPathIndependence)
     (p : ℕ) [hp : Fact p.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (S : UniformizedDVR p O)
     (N r K : ℕ) [NeZero r] [NeZero K] (LL : Letters (Fin N)) (B : Fin N → ℕ) (hK : N + r ≤ K)
     (PP : Set ((Fin (N + 1) → Fin r → ℤ) × (Fin (N + 1) → Fin K → ℤ)))
@@ -334,7 +334,7 @@ theorem joint_type_lattice_saturated (D : Formalism.BasicNotions.D7) (h16 : Pair
   rw [← hsp]
   exact Submodule.span_mono (Set.image_subset_range _ _) haf
 
-def IntegralJointTypeSum (_D : Formalism.BasicNotions.D7) : Prop :=
+def IntegralJointTypeSum : Prop :=
   ∀ (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (_S : UniformizedDVR p O)
     (N r K : ℕ) [NeZero r] [NeZero K]
     (LL : Letters (Fin N)) (B : Fin N → ℕ), N + r ≤ K →
@@ -344,7 +344,7 @@ def IntegralJointTypeSum (_D : Formalism.BasicNotions.D7) : Prop :=
         (XXZ O PP : Set _) = {f | MvPolynomial.map (algebraMap O (KK O)) f ∈
           ⨆ q ∈ PP, jointType (KK O) LL q.1 q.2})
 
-theorem lemma_B3 (D : Formalism.BasicNotions.D7) (h16 : PairedPathIndependence D) (hB2 : PathWeightComponents D) (hc : IntegralJointTypeSum D) : ConclusionB3 D := by
+theorem lemma_B3 (D : Formalism.BasicNotions.D7) (h16 : PairedPathIndependence) (hB2 : PathWeightComponents) (hc : IntegralJointTypeSum) : ConclusionB3 := by
   intro p _ O _ _ _ S N r K _ _ LL B om hK h1 h2 PP hPP
   refine ⟨joint_type_lattice_saturated D h16 p O S N r K LL B hK PP hPP, ?_, hc p O S N r K LL B hK PP⟩
   intro q hq I' I'' hI' hI''

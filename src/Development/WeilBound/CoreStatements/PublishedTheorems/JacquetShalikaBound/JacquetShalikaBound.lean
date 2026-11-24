@@ -655,7 +655,7 @@ theorem sub_mem_lat {m M : ℕ} {x y : Fin m → F} (hx : x ∈ lat F m M) (hy :
   exact sub_mem (hx i) (hy i)
 
 theorem setIntegral_lat_add [MeasurableSpace F] [BorelSpace F] (μ : Measure F)
-    [μ.IsAddHaarMeasure] {m M : ℕ} (hmeas : MeasurableSet (lat F m M))
+    [μ.IsAddHaarMeasure] {m M : ℕ}
     {y : Fin m → F} (hy : y ∈ lat F m M) (f : (Fin m → F) → ℂ) :
     ∫ x in lat F m M, f (x + y) ∂(Measure.pi fun _ => μ)
       = ∫ x in lat F m M, f x ∂(Measure.pi fun _ => μ) := by
@@ -709,7 +709,7 @@ theorem equivariant_of_steps : L0 → ColumnsMirabolic → ColumnsUnipotent → 
   rw [hM₁ (M₁ + M₂ + M₃) (by omega), hM₂ (M₁ + M₂ + M₃) (by omega), hpsi]
   simp_rw [hpt]
   rw [integral_const_mul]
-  have e := setIntegral_lat_add μ (hmeas (M₁ + M₂ + M₃)) hx₀
+  have e := setIntegral_lat_add μ hx₀
     (fun x => ψ (-x (Fin.last k)) * (B u') ((ρ (col n k x)) u))
   beta_reduce at e
   rw [e]

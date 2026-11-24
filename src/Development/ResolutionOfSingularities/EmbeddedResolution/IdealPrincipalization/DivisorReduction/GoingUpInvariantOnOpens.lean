@@ -80,7 +80,7 @@ open CategoryTheory AlgebraicGeometry TopologicalSpace
 namespace FunctorialResolution.EmbeddedResolution
 
 theorem imageIdealSheaf_comap_ι_eq_self_of_support_subset {Y : Scheme.{u}} (Z : Y.IdealSheafData)
-    (U : Y.Opens) (_hU : IsClosed (U : Set Y))
+    (U : Y.Opens)
     (hZ : (Z.support : Set Y) ⊆ (U : Set Y)) :
     _root_.FunctorialResolution.Blowup.schemeImageIdeal U.ι (Z.comap U.ι) = Z := by
   have hmem : ∀ x : ↥Z.subscheme, x ∈ (Z.subschemeι ⁻¹ᵁ U) := by
@@ -447,7 +447,7 @@ theorem boundary_comap_iteratedPreimage_succ (U₀ : (s.toSequenceOfBlowups.sche
         [Blowup.exceptionalIdeal (restrictedBlowupMorphism T j hj I₀ E₀ s U₀ t)
             ((s.toSequenceOfBlowups.center t).comap (iteratedPreimage T j hj I₀ E₀ s U₀ t).ι)] := by
   have : AlgebraicGeometry.IsNoetherian (s.toSequenceOfBlowups.schemeAt (t + 1)) :=
-    MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hV s (t + 1) ht
+    MarkedSequenceOfBlowups.isNoetherian_schemeAt hV s (t + 1) ht
   have : AlgebraicGeometry.IsLocallyNoetherian (s.toSequenceOfBlowups.schemeAt (t + 1)) := inferInstance
   have hex : (Blowup.exceptionalIdeal (s.toSequenceOfBlowups.transitionMapSucc t) (s.toSequenceOfBlowups.center t)).comap
         (iteratedPreimage T j hj I₀ E₀ s U₀ (t + 1)).ι =
@@ -663,7 +663,7 @@ theorem center_ambientBlowupSeq_eq_imageIdealSheaf [AlgebraicGeometry.IsNoetheri
         ((s.toSequenceOfBlowups.center t).comap (iteratedPreimage T j hj I₀ E₀ s U₀ t).ι)
       = s.toSequenceOfBlowups.center t :=
     imageIdealSheaf_comap_ι_eq_self_of_support_subset (s.toSequenceOfBlowups.center t)
-      (iteratedPreimage T j hj I₀ E₀ s U₀ t) hcl hsub
+      (iteratedPreimage T j hj I₀ E₀ s U₀ t) hsub
   rw [ambientBlowupSeq_center_eq_imageIdealSheaf, restrictedEmbedding_eq_ι_comp_embeddingIntoAmbient]
   exact (imageIdealSheaf_comp_of_eq (iteratedPreimage T j hj I₀ E₀ s U₀ t).ι
     (embeddingIntoAmbient hres hno T j hj I₀ E₀ s hpr t)

@@ -14,7 +14,7 @@ namespace Formalism.L2.Th1.D
 
 open Formalism.DworkPowerSeriesWeights (Integral mvExp torus)
 open Formalism.InvariantFactorPaths.G7 (lgF at1 Simeq DivAB d1 swap2 UnrOK IsLawOfLog BetaHyp frobVar)
-open Formalism.InvariantFactorPaths.G7.FormalGroupLaws (constantCoeff_lgF coeff_one_lgF lgF_subst_inj lgF_funEq map_lgF
+open Formalism.InvariantFactorPaths.G7.FormalGroupLaws (constantCoeff_lgF coeff_one_lgF lgF_funEq map_lgF
   rescale_lgF)
 
 namespace FormalExponential
@@ -118,7 +118,7 @@ theorem integral_X : Integral (PowerSeries.X : MvPowerSeries Unit K) := by
 
 theorem ip_lgF (l : ℕ) (σ : K →+* K) (hl : 2 ≤ l) (hlK : (l : K) ≠ 0) :
     IP l σ (lgF K l : MvPowerSeries Unit K) := by
-  refine ⟨constantCoeff_lgF l hl, ?_⟩
+  refine ⟨constantCoeff_lgF l, ?_⟩
   have h1 : MvPowerSeries.map (σ.comp σ) (lgF K l : MvPowerSeries Unit K) = lgF K l :=
     map_lgF (σ.comp σ) l
   have h2 : (lgF K l : MvPowerSeries Unit K) - MvPowerSeries.C ((l : K)⁻¹) *
@@ -136,7 +136,7 @@ open FormalExponential
 
 theorem exponential_specification : ExpSpec := by
   intro K _ l hl
-  have h0 := constantCoeff_lgF (K := K) l hl
+  have h0 := constantCoeff_lgF (K := K) l
   have hc : PowerSeries.constantCoeff (expF K l) = 0 := by
     rw [expF_eq l hl]
     exact PowerSeries.constantCoeff_substInvOfIsUnit _ _
@@ -179,7 +179,7 @@ theorem MulSpec_of : ExpSpec → IPLemma → IPClosure → MulSpec := by
   have hl : 2 ≤ l := hp.two_le
   have hlK : (l : K) ≠ 0 := by exact_mod_cast hp.ne_zero
   obtain ⟨hc, h1, _, _⟩ := hE K l hl
-  have h0 := constantCoeff_lgF (K := K) l hl
+  have h0 := constantCoeff_lgF (K := K) l
   have huniq : ∀ e e' : PowerSeries K, IsMul l c e → IsMul l c e' → e = e' := fun e e' he he' =>
     inj l hl e e' he.1 he'.1 (he.2.trans he'.2.symm)
   refine ⟨?_, huniq, ?_⟩

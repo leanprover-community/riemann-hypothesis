@@ -317,7 +317,7 @@ def baseChange : Geo E where
   isLBA := LB.isLB_pull G.isLBA _
   e := GlobalTheory.chartSec (chartPullQuot (GlobalTheory.chartPullPull _ _)
     (chartPullTwist (GlobalTheory.chartPullPull _ _) (GlobalTheory.chartPullPull _ _) _)) G.e
-  U_le y hy := (nonzeroLocus_chartSec _ G.e fun z _ _ => exists_chart (LB.isLB_div (LB.isLB_pull G.isLBA _)
+  U_le _ hy := (nonzeroLocus_chartSec _ G.e fun z _ _ => exists_chart (LB.isLB_div (LB.isLB_pull G.isLBA _)
     (isLB_tw (LB.isLB_pull G.isLB₂ _) (LB.isLB_pull G.isLB _) _)) z).ge (G.U_le hy)
 
 def fst : (G.baseChange E).Y ⟶ G.Y := G.bcFst E

@@ -244,7 +244,7 @@ end Gen
 
 section Top
 
-theorem real_eq_one {x y C : ℝ} (hx : 0 < x) (hy : 0 < y) (hxy : x * y = 1) (hxn : ∀ n : ℕ, x ^ n ≤ C)
+theorem real_eq_one {x y C : ℝ} (hx : 0 < x) (hxy : x * y = 1) (hxn : ∀ n : ℕ, x ^ n ≤ C)
     (hyn : ∀ n : ℕ, y ^ n ≤ C) : x = 1 := by
   have le1 : ∀ z : ℝ, (∀ n : ℕ, z ^ n ≤ C) → z ≤ 1 := by
     intro z h
@@ -302,7 +302,7 @@ theorem char_eq_one [hU : Unram F E] (r : ℕ) (ch : unitaryGroup (Fin r) E →*
   obtain ⟨B', hB'⟩ := bddPow_inv hU.norm_star ⟨B, hB⟩
   obtain ⟨T, hT⟩ := (isCompact_bdd r (max B B')).exists_bound_of_continuousOn hc.continuousOn
   have hxy : ch g * ch g⁻¹ = 1 := by rw [← map_mul, mul_inv_cancel, map_one]
-  refine real_eq_one (hpos g) (hpos g⁻¹) hxy (C := T) (fun n => ?_) (fun n => ?_)
+  refine real_eq_one (hpos g) hxy (C := T) (fun n => ?_) (fun n => ?_)
   · rw [← map_pow]
     exact (le_abs_self _).trans ((Real.norm_eq_abs _) ▸ hT _ fun i j => (hB n i j).trans (le_max_left _ _))
   · rw [← map_pow]
@@ -371,7 +371,7 @@ theorem isMulRightInvariant [hU : Unram F E] (r : ℕ) (M : Meas r F E) :
       rw [← NNReal.coe_mul, ← map_mul, mul_inv_cancel, map_one, NNReal.coe_one]
     apply NNReal.coe_injective
     rw [NNReal.coe_one]
-    refine real_eq_one (Measure.modularCharacterFun_pos g) (Measure.modularCharacterFun_pos g⁻¹) hxy (C := T)
+    refine real_eq_one (Measure.modularCharacterFun_pos g) hxy (C := T)
       (fun n => ?_) (fun n => ?_)
     · change ((Measure.modularCharacter g : NNReal) : ℝ) ^ n ≤ T
       rw [← NNReal.coe_pow, ← map_pow]

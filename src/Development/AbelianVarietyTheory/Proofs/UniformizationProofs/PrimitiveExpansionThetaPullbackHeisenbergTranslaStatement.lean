@@ -237,7 +237,7 @@ theorem exists_unit (V : Type) [CommRing V] [IsLocalRing V] : ∃ n : ℕ, 2 ≤
   exacts [⟨3, by omega, h⟩, ⟨2, le_rfl, (IsUnit.neg_iff _).1 h⟩]
 
 theorem prim_of_coefPull : LL → TwistBCSpanStatement → TWM.VRatioGtStatement → TWStatement → UUStatement →
-    AllDV fun {V} _ _ _ {ϖ} hϖ D Q {F} _ _ {v} hv => ∀ (m : ℕ), 1 ≤ m →
+    AllDV fun {_} _ _ _ {_} _ D Q {F} _ _ {v} _ => ∀ (m : ℕ), 1 ≤ m →
       ∀ (κ : LB.Gen (kapLB D.toPre (𝟙 D.toPre.P.A ^ m) (m ^ 2) 1)), κ.IsGen →
       ∀ (ϑ : Fam D.toPre F 1) (s : Fam D.toPre F (m ^ 2)), CoefPull m κ ϑ s → Prim D Q v ϑ → Prim D Q v s := by
   intro hL h₁ h₂ h₃ h₄ V _ _ _ _ hc ϖ hϖ D Q hQ F _ _ _ v hv m hm κ hκ ϑ s H hP
@@ -283,7 +283,7 @@ theorem prim_of_coefPull : LL → TwistBCSpanStatement → TWM.VRatioGtStatement
     simp only [Int.cast_zero, zero_div] at b₁
     linarith
 
-theorem main : LL → TwistBCSpanStatement → TWM.VRatioGtStatement → TWStatement → UUStatement → AllUV fun {V} _ _ _ {ϖ} hϖ {D} Q {F} _ _ {v} hv {A} {G} _ _ U => ∀ w₀ ρ, NormW U.toUnifPre w₀ ρ → ∀ (th : SecA A F 1) (ϑ : Fam D.toPre F 1), U.ExpandsF F 1 w₀ th ϑ → Prim D Q v ϑ → ∀ (m : ℕ), Odd m → IsUnit (m : V) → ∀ x t c s, x ^ (m ^ 2) = 1 → ThC A ρ m th x t c → U.ExpandsF F (m ^ 2) w₀ t s → Prim D Q v s := by
+theorem main : LL → TwistBCSpanStatement → TWM.VRatioGtStatement → TWStatement → UUStatement → AllUV fun {V} _ _ _ {_} _ {D} Q {F} _ _ {v} _ {A} {_} _ _ U => ∀ w₀ ρ, NormW U.toUnifPre w₀ ρ → ∀ (th : SecA A F 1) (ϑ : Fam D.toPre F 1), U.ExpandsF F 1 w₀ th ϑ → Prim D Q v ϑ → ∀ (m : ℕ), Odd m → IsUnit (m : V) → ∀ x t c s, x ^ (m ^ 2) = 1 → ThC A ρ m th x t c → U.ExpandsF F (m ^ 2) w₀ t s → Prim D Q v s := by
   intro hL h₁ h₂ h₃ h₄ V _ _ _ _ hc ϖ hϖ D Q hQ F _ _ _ v hv A G _ _ hG U w₀ ρ hN th ϑ hϑ hP m hm _ x t c s hx hT hs
   have hA : AdmBase V (maximalIdeal V) := ⟨inferInstance, inferInstance, inferInstance, hc⟩
   obtain ⟨α, s₁, θ, hα, hαn, htw, hθ, hact, -⟩ := hT
@@ -326,7 +326,7 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT
 
-theorem _root_.GlobalTheory.T.primitive_expansion_thetaPullback_heisenbergTranslates : LL → TwistBCSpanStatement → TWM.VRatioGtStatement → TWStatement → UUStatement → AllUV fun {V} _ _ _ {ϖ} hϖ {D} Q {F} _ _ {v} hv {A} {G} _ _ U => ∀ w₀ ρ, NormW U.toUnifPre w₀ ρ → ∀ (th : SecA A F 1) (ϑ : Fam D.toPre F 1), U.ExpandsF F 1 w₀ th ϑ → Prim D Q v ϑ → ∀ (m : ℕ), Odd m → IsUnit (m : V) → ∀ x t c s, x ^ (m ^ 2) = 1 → ThC A ρ m th x t c → U.ExpandsF F (m ^ 2) w₀ t s → Prim D Q v s := by
+theorem _root_.GlobalTheory.T.primitive_expansion_thetaPullback_heisenbergTranslates : LL → TwistBCSpanStatement → TWM.VRatioGtStatement → TWStatement → UUStatement → AllUV fun {V} _ _ _ {_} _ {D} Q {F} _ _ {v} _ {A} {_} _ _ U => ∀ w₀ ρ, NormW U.toUnifPre w₀ ρ → ∀ (th : SecA A F 1) (ϑ : Fam D.toPre F 1), U.ExpandsF F 1 w₀ th ϑ → Prim D Q v ϑ → ∀ (m : ℕ), Odd m → IsUnit (m : V) → ∀ x t c s, x ^ (m ^ 2) = 1 → ThC A ρ m th x t c → U.ExpandsF F (m ^ 2) w₀ t s → Prim D Q v s := by
   first | exact @GlobalTheory.UT.PrimPull.main
 end -- clump:auto
 end -- clump:auto

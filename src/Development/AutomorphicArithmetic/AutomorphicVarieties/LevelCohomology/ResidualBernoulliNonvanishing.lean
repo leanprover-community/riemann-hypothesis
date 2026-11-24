@@ -204,7 +204,7 @@ private theorem zero_of_unr {Γ k : Type} [Group Γ] [Field k] (l : ℕ) [CharP 
   refine (mul_eq_zero.1 h2).resolve_left fun h => hH ?_
   exact ((CharP.cast_eq_zero_iff k l _).1 h).trans (Subgroup.index_dvd_of_le hle)
 
-private theorem exists_odd {N : ℕ} [NeZero N] (hN : 2 < N) (b : (ZMod N)ˣ) :
+private theorem exists_odd {N : ℕ} [NeZero N] (b : (ZMod N)ˣ) :
     ∃ a : ℕ, Odd a ∧ a.Coprime N ∧ (a : ZMod N) = b := by
   have hc := ZMod.val_coe_unit_coprime b
   rcases Nat.even_or_odd (b : ZMod N).val with h | h
@@ -247,7 +247,7 @@ theorem UpperTheory.V.X.residual_bernoulli_nonvanishing :
   obtain ⟨a, hao, hac, har⟩ : ∃ a : ℕ, Odd a ∧ a.Coprime N ∧ red (χ a) ≠ a := by
     by_cases hlN : l ∣ N
     · obtain ⟨g, hg⟩ := hcyc
-      obtain ⟨a, h1, h2, h3⟩ := exists_odd hN (Chr.cls ℚ Ω N g)
+      obtain ⟨a, h1, h2, h3⟩ := exists_odd (Chr.cls ℚ Ω N g)
       refine ⟨a, h1, h2, ?_⟩
       rwa [hγv, red_chi Ω red hlN g a h3, ← h3] at hg
     · have hc := (Nat.Prime.coprime_iff_not_dvd Fact.out).2 hlN

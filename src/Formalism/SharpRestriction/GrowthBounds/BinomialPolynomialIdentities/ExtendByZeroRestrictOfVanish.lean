@@ -136,7 +136,7 @@ theorem rename_Psi (hT : RestPathTo) (hF : RestPathFrom) (hS : RestStd) (hP : Re
   rfl
 
 theorem word_basis_of_path_restrictions (D : Formalism.BasicNotions.D7) (hT : RestPathTo) (hF : RestPathFrom) (hS : RestStd) (hP : RestPsi)
-    (hPol : RestPol) : Formalism.MainNotions.CovariantDegrees.PathBasisOverRing D := by
+    (hPol : RestPol) : Formalism.MainNotions.CovariantDegrees.PathBasisOverRing := by
   intro R _ N n _ LL B
   have hρ : Function.Injective
       (rename (iv N n) : MvPolynomial (Fin N × Fin n) R →ₐ[R] MvPolynomial (ℕ × Fin n) R).toLinearMap :=

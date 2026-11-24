@@ -710,7 +710,7 @@ namespace GlobalTheory.IwConst
 
 theorem iwasawa_shift_lintegral {G : Type} [Group G] [MeasurableSpace G] [MeasurableMul₂ G]
     (M : Set G) (μM μK : Measure G) [SFinite μK] (δ φ ψ : G → ENNReal)
-    (hδ : Measurable δ) (hφ : Measurable φ) (hψ : Measurable ψ) (hM : μM Mᶜ = 0) (l : G)
+    (hM : μM Mᶜ = 0) (l : G)
     (h1 : μM.map (fun g => g * l) = μM) (h2 : μK.map (fun g => l * g) = μK)
     (h3 : ∀ m ∈ M, δ (m * l) = δ m) (u : G) :
     ∫⁻ m, δ m * ∫⁻ k, φ (u * m * k) * ψ k ∂μK ∂μM
@@ -773,7 +773,7 @@ theorem iwasawa_unfold_lintegral : ∀ (G : Type) [Group G] [MeasurableSpace G] 
       = ∫⁻ u, ∫⁻ m, δ m * ∫⁻ k, φ (u * m * k) * ψ k ∂μK ∂μM ∂μN := by
     filter_upwards [hLae] with l hl
     exact lintegral_congr fun u =>
-      (iwasawa_shift_lintegral M μM μK δ φ ψ hδ hφ hψ hM l (h1 l hl) (h2 l hl) (h3 l hl) u).symm
+      (iwasawa_shift_lintegral M μM μK δ φ ψ hM l (h1 l hl) (h2 l hl) (h3 l hl) u).symm
   calc νL Set.univ * ∫⁻ u, ∫⁻ m, δ m * ∫⁻ k, φ (u * m * k) * ψ k ∂μK ∂μM ∂μN
       = ∫⁻ _l, (∫⁻ u, ∫⁻ m, δ m * ∫⁻ k, φ (u * m * k) * ψ k ∂μK ∂μM ∂μN) ∂νL := by
         rw [lintegral_const]; exact mul_comm _ _

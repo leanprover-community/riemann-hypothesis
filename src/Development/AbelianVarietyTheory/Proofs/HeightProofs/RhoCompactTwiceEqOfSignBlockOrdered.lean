@@ -492,7 +492,7 @@ theorem blattner_int (P : SignedPar n) (h : BlockOrd e P.sgn) (a : Ix p q) :
   have h1 := GlobalTheory.SignedParTest.blattner_add_rho2C hp a
   have h2 : ((Finset.univ.filter fun b => blockPar P e b < blockPar P e a).card : ℚ) +
       (Finset.univ.filter fun b => blockPar P e a < blockPar P e b).card + 1 = n := by
-    have h3 : (n : ℚ) = ∑ _b : Ix p q, 1 := by simp [← Fintype.card_sum, Fintype.card_congr e]
+    have h3 : (n : ℚ) = ∑ _b : Ix p q, 1 := by simp [Fintype.card_congr e]
     have h4 : (1 : ℚ) = ∑ b : Ix p q, if b = a then 1 else 0 := by simp
     rw [h3, Finset.card_filter, Finset.card_filter]
     nth_rw 1 [h4]

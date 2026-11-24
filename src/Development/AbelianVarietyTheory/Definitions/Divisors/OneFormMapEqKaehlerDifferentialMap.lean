@@ -318,8 +318,8 @@ theorem sgn_of_mem {j : ℕ} {x : DR R B} (hx : x ∈ ⋀[B]^j Ω[B⁄R]) : sgn 
 variable (R B) in
 def dOm (j : ℕ) : Om R B j →ₗ[R] Om R B (j + 1) where
   toFun x := ⟨dDR R B x, dDR_mem x.2⟩
-  map_add' x y := Subtype.ext (map_add _ _ _)
-  map_smul' r x := Subtype.ext (map_smul _ _ _)
+  map_add' _ _ := Subtype.ext (map_add _ _ _)
+  map_smul' _ _ := Subtype.ext (map_smul _ _ _)
 
 @[simp] theorem coe_dOm {j : ℕ} (x : Om R B j) : (dOm R B j x : DR R B) = dDR R B x := rfl
 

@@ -144,7 +144,7 @@ lemma one_char [IsCMField E] (hNP : Ext.NearestPlane) {dim : (E →+* ℂ) → �
     (ω : Fin (Module.finrank ℚ E) → 𝓞 E) (hω : LinearIndependent ℚ (fun j => (ω j : E)))
     (B : ℝ) (hωB : ∀ j (τ : E →+* ℂ), ‖τ (ω j : E)‖ ≤ B)
     (D : ℕ) (hD : Module.finrank ℝ (IR I) ≤ D) (σ : E →+* ℂ) (W : Submodule ℂ (Vsp dim))
-    (k : ℕ) (χ : ℕ → Vsp dim) (hχX : ∀ j < k, χ j ∈ Xg L I) (hχW : ∀ j < k, prj σ (χ j) ∈ W)
+    (k : ℕ) (χ : ℕ → Vsp dim) (hχW : ∀ j < k, prj σ (χ j) ∈ W)
     (hWχ : W ≤ Submodule.span ℂ ((fun i => prj σ (χ i)) '' Set.Iio k))
     (hflag : ∀ j < k, ∃ μ, χ j ∈ Zs L I μ ∧ ∀ y ∈ Xg L I, prj σ y ∉ W → μ ≤ ‖y‖)
     (v : Vsp dim) (hvX : v ∈ Xg L I) (hvW : prj σ v ∉ W)
@@ -455,7 +455,7 @@ lemma inv_step [IsCMField E] (hNP : Ext.NearestPlane) {dim : (E →+* ℂ) → �
     have : 0 < 30 * (ρ : ℝ) ^ 2 + 1 := by positivity
     rw [mul_assoc]; exact mul_pos this hKμ
   obtain ⟨t, χn, hto, htn, htt, hχX, hχZ, hχt, hχu⟩ := one_char hNP L I hLs hIs hiso hsep ω hω B hωB D hD σ
-    (Wk σ χ k) k χ (fun j hj => h1 j hj) (fun j hj => prj_mem_Wk σ χ hj) (le_refl _)
+    (Wk σ χ k) k χ (fun j hj => prj_mem_Wk σ χ hj) (le_refl _)
     (fun j hj => ⟨μ j, (h9 j hj).1, fun y hy hyW => (h9 j hj).2 y hy
       (fun hm => hyW (Wk_mono σ χ (le_of_lt hj) hm))⟩)
     v hvX hvW hvmin ((30 * (ρ : ℝ) ^ 2 + 1) * K0 * ‖v‖) hTpos
@@ -941,7 +941,7 @@ theorem gSup_holds : GSupStatement := gSup Ext.all.1
 
 theorem propA_holds : PropAStatement := propA Ext.all.1 Ext.all.2.1
 
-theorem split_holds : SplitStatement := split Ext.all
+theorem split_holds : SplitStatement := split
 
 theorem char_holds : CharStatement := char Ext.all
 
@@ -949,11 +949,11 @@ theorem J_holds : JStatement :=
   jOf Ext.all split_holds char_holds (colTorus Ext.all propA_holds gSup_holds)
     (colAbel Ext.all propA_holds gSup_holds) (colEmpty Ext.all propA_holds gSup_holds)
 
-theorem N_holds : NStatement := lemmaN _root_.ReciprocityTheory.ChartRestriction.G.I2.dim
+theorem N_holds : NStatement := lemmaN
 
 theorem I_holds : IStatement := iOf J_holds N_holds
 
-theorem T_holds : TStatement := tOf Ext.all split_holds gSup_holds _root_.ReciprocityTheory.ChartRestriction.G.I2.dim
+theorem T_holds : TStatement := tOf Ext.all split_holds gSup_holds
 
 end ReciprocityTheory.ChartRestriction.G.I2
 end -- clump:auto

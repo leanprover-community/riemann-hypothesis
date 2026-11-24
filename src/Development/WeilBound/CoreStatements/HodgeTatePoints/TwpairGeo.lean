@@ -162,7 +162,7 @@ theorem exists_tensor_of_prod (s : Γ((Γ.G ⊗ Γ.G).left, ⊤)) :
     rw [hρ, ← Spec.map_comp, ← CommRingCat.ofHom_comp]
     congr 2
     ext r
-    simp [iR, Algebra.TensorProduct.algebraMap_apply'])
+    simp [iR])
   refine ⟨valAt (lift x y).left ⊤ le_top s, ?_⟩
   intro a b ha hb
   let φ : B ⊗[R] B →+* FractionRing R :=

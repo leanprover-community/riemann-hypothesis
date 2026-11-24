@@ -56,7 +56,7 @@ theorem hform_self_congr (σ : A →+* A) (J : Matrix n n A) (P : Ideal A) (x z 
 
   simp only [hform, map_sum, map_mul, e₁, e₂]
 
-theorem exists_hform_not_mem (σ : A →+* A) (hσ : ∀ y, σ (σ y) = y) (h2 : IsUnit (2 : A))
+theorem exists_hform_not_mem (σ : A →+* A) (h2 : IsUnit (2 : A))
     (hδ : ∃ δ : A, IsUnit δ ∧ σ δ = -δ) (m : ℕ) (J : Matrix (Fin (m + 1)) (Fin (m + 1)) A)
     (hdet : IsUnit J.det) (P : Ideal A) (hP : P.IsMaximal) :
     ∃ y, hform σ J y y ∉ P := by
@@ -118,7 +118,7 @@ theorem exists_good_on_finset [Finite (MaximalSpectrum A)] (σ : A →+* A) (hσ
       rcases Finset.mem_insert.1 hp with rfl | hp
       · exact hxq
       · exact hx p hp
-    obtain ⟨y, hy⟩ := exists_hform_not_mem σ hσ h2 hδ m J hdet q.asIdeal q.isMaximal
+    obtain ⟨y, hy⟩ := exists_hform_not_mem σ h2 hδ m J hdet q.asIdeal q.isMaximal
     have hfix := hform_self_fixed σ hσ J hJ x
     have hmemc : ∀ {P : Ideal A}, hform σ J x x ∈ P → hform σ J x x ∈ P.comap σ := fun h => by
       rw [Ideal.mem_comap, hfix]; exact h

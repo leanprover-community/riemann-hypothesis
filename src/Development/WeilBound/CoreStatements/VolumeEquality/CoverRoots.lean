@@ -208,7 +208,7 @@ theorem val_of_point (hξ : IsCptGen ξ) (hall : ∀ q : X, genPt ξ ⤳ q) (hn 
   · show e _ = _
     rw [hom_eval₂, h2]
 
-theorem point_of_root (hξ : IsCptGen ξ) (hall : ∀ q : X, genPt ξ ⤳ q) (hdom : ξ ≫ f = spMap fn ≫ ξ₀)
+theorem point_of_root (hall : ∀ q : X, genPt ξ ⤳ q) (hdom : ξ ≫ f = spMap fn ≫ ξ₀)
     {U U₀ : Y.Opens} (hU₀ : IsAffineOpen U₀) (hU : U ≤ U₀) (h₀ : centre ξ₀ ∈ U) {W : X.Opens} (hW : IsAffineOpen W)
     (hWU : W ≤ f ⁻¹ᵁ U₀) (h : centre ξ ∈ W) (θ : Ω)
     (hr : ∀ a, ∃ G : Γ(Y, U)[X], eval₂ (fn.comp (val ξ₀ U h₀)) θ G = val ξ W h a) (p : Sp ℂ ⟶ Y)
@@ -358,7 +358,7 @@ theorem cover {K : Type} [Fintype K] {J : K → Type} [∀ k, Fintype (J k)] {y 
   refine ⟨?_, fun x hx => ?_, fun z hz => ?_, fun x x' z hx hx' hc1 hc2 => ?_⟩
   · have := hsep.map (f := val p U hp)
     rwa [mon_map] at this
-  · obtain ⟨z, hz, hzp, hv⟩ := point_of_root hξ hall hdom hU₀ (hUle.trans inf_le_left) h₀ (hW.basicOpen g) hgU hηg θ
+  · obtain ⟨z, hz, hzp, hv⟩ := point_of_root hall hdom hU₀ (hUle.trans inf_le_left) h₀ (hW.basicOpen g) hgU hηg θ
       hr p hp x (key x hx)
     refine ⟨z, hzp, coordsAt_of_val c hy (fun s => ?_) (hone x hx)⟩
     have := hv (low (cf s)) (by rw [hcf]; exact hreg _ (X.basicOpen_le g hz) s)

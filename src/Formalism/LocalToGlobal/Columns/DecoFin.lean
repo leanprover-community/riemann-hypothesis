@@ -1215,7 +1215,7 @@ theorem Deco.Ok.mem_L {d : Deco E n ST SG} (hd : d.Ok) (x : Sp E n) :
   · intro hx
     exact Submodule.subset_span hx
 
-theorem Deco.Ok.L_le_N {d : Deco E n ST SG} (hd : d.Ok) : d.L ≤ d.N := Submodule.span_le.mpr fun x hx => hx.1
+theorem Deco.Ok.L_le_N {d : Deco E n ST SG} (hd : d.Ok) : d.L ≤ d.N := Submodule.span_le.mpr fun _ hx => hx.1
 
 theorem Deco.Ok.N_le_Lsh {d : Deco E n ST SG} (hd : d.Ok) : d.N ≤ d.Lsh := by
   have hu : dual (hStd E n) d.N = d.N := hd.uni

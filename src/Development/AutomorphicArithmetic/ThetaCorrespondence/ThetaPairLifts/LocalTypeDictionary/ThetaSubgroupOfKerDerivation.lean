@@ -509,7 +509,7 @@ theorem ker_derivation_isThetaSubgroup : _root_.GlobalTheory.FunPr.ThetaLocalInp
     classical
     intro v h hh Φ hΦ
     obtain ⟨T, hXT, hOn⟩ := (GlobalTheory.ThK.PolynomialMatching.polMatch_iff Bs Γ Xc R Rf 0 Φ).mp hΦ.2
-    have hOn' : GlobalTheory.ThK.PolynomialMatching.PolMatchOn Bs Γ Xc R Rf (insert v T) 0 Φ := by
+    have hOn' : GlobalTheory.ThK.PolynomialMatching.PolMatchOn Bs Γ R Rf (insert v T) 0 Φ := by
       by_cases hvT : v ∈ T
       · rwa [Finset.insert_eq_of_mem hvT]
       · exact GlobalTheory.ThK.PolynomialMatching.polMatchOn_insert F E σ Bs a a' Γ Xc R Rf v

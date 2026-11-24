@@ -179,13 +179,13 @@ lemma Hb_herm : (Hb k)ᴴ = Hb k := by
 lemma herm_Hb_right (x : Fin (k + 1) → ℂ) (i : Fin (k + 1)) :
     herm (Hb k) x (Pi.single i 1) = (if i = Fin.last k then -1 else 1) * x i := by
   simp only [herm, dotProduct, Hb, Matrix.mulVec_diagonal]
-  rw [Finset.sum_eq_single i (fun j _ hj => by simp [Pi.single_apply, hj]) (by simp)]
+  rw [Finset.sum_eq_single i (fun j _ hj => by simp [hj]) (by simp)]
   simp
 
 lemma herm_Hb_left (y : Fin (k + 1) → ℂ) (i : Fin (k + 1)) :
     herm (Hb k) (Pi.single i 1) y = (if i = Fin.last k then -1 else 1) * star (y i) := by
   simp only [herm, dotProduct, Hb, Matrix.mulVec_diagonal]
-  rw [Finset.sum_eq_single i (fun j _ hj => by simp [Pi.single_apply, hj]) (by simp)]
+  rw [Finset.sum_eq_single i (fun j _ hj => by simp [hj]) (by simp)]
   simp [mul_comm]
 
 def nu (w s : ℂ) : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ :=

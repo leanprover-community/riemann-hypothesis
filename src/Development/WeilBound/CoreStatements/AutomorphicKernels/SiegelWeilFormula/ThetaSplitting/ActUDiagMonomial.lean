@@ -365,7 +365,7 @@ theorem hOp_eq (c : ℝ) (a b : Fin m) (P : PX m n) : hOp (fun _ => true) c a b 
         transpose_apply]
       by_cases hb : a' = b
       · subst hb
-        rw [Finset.sum_eq_single a (fun c _ hc => by simp [hc, Ne.symm hc]) (by simp)]
+        rw [Finset.sum_eq_single a (fun c _ hc => by simp [Ne.symm hc]) (by simp)]
         rw [Finset.sum_eq_single i' (fun c _ hc => by simp [Ne.symm hc]) (by simp)]
         simp
       · simp [Ne.symm hb, hb]

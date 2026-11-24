@@ -830,7 +830,7 @@ variable {R₀ : Type} [CommRing R₀]
 
 def finOf_fst (C : Type) [Field C] [Algebra R₀ C] :
     LHom (R₀ := R₀) ⟨DualNumber C⟩ ⟨C⟩ :=
-  ⟨TrivSqZeroExt.fstHom R₀ C C, ⟨fun a h => TrivSqZeroExt.isUnit_iff_isUnit_fst.2 h⟩⟩
+  ⟨TrivSqZeroExt.fstHom R₀ C C, ⟨fun _ h => TrivSqZeroExt.isUnit_iff_isUnit_fst.2 h⟩⟩
 
 lemma finOf_fst_sqZero (C : Type) [Field C] [Algebra R₀ C] : (finOf_fst (R₀ := R₀) C).SqZero := by
   refine ⟨fun c => ⟨TrivSqZeroExt.inl c, rfl⟩, ?_⟩
@@ -1682,8 +1682,8 @@ private lemma teich_decomp (p : ℕ) [Fact p.Prime] {K : Type} [CommRing K] [Cha
 
 theorem teichmuller_quot :
   (∀ (p : ℕ) [Fact p.Prime] {C : Type} [Field C] [IsAlgClosed C] [CharZero C] {v : Valuation C NNReal} (O : Type) [CommRing O] [Algebra O C]
-    [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] (hv : v.Integers O) (ε : PreTilt O p)
-    (hε : IsPrimitiveRoot (((frobeniusEquiv (PreTilt O p) p).symm ε).untilt) p) (ϖ : PreTilt O p), ϖ.untilt = (p : O) →
+    [Fact ¬IsUnit (p : O)] [IsAdicComplete (Ideal.span {(p : O)}) O] (_ : v.Integers O) (ε : PreTilt O p)
+    (_ : IsPrimitiveRoot (((frobeniusEquiv (PreTilt O p) p).symm ε).untilt) p) (ϖ : PreTilt O p), ϖ.untilt = (p : O) →
     ∀ (W : Type) [CommRing W] (pr : Ainf.A p O →+* W), Function.Surjective pr →
     RingHom.ker pr = Ideal.span {(p : Ainf.A p O) ^ 2, WittVector.teichmuller p ϖ} →
     (∀ w : W, ∃ c : PreTilt O p, ∃ c' : W, w = pr (WittVector.teichmuller p c) + p * c') ∧

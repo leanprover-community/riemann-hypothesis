@@ -792,7 +792,7 @@ theorem Asm.nilpB_of [CharZero k] (fourP : FourP (k := k)) (orbP : OrbP (k := k)
       ((nabs k t)⁻¹) (one_lt_inv_iff₀.2 ⟨ht0, ht1⟩) (dB0 Z) a ha ξ ((Submodule.mem_dualAnnihilator _).2 hξK) ?_
     rw [Submodule.mem_dualAnnihilator]
     refine (hF4 _ (Asm.prod_supp Z hCR t _ a ξ hξB)).2 fun f hf => ?_
-    rw [Asm.four_prod Z hCR 𝓕 hF1 hF5 hF6 t a ξ hξB f ⟨hf.1, Set.subset_univ _⟩]
+    rw [Asm.four_prod Z hCR 𝓕 hF6 t a ξ hξB f ⟨hf.1, Set.subset_univ _⟩]
     exact hFξ f hf
   exact (Submodule.mem_dualAnnihilator ξ).1 key
 

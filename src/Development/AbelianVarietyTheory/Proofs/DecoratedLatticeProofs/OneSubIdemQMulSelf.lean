@@ -95,7 +95,7 @@ theorem parts_pairA (α : Af D.host.F) :
       ((pairA D.host.F 0 α) ⊗ₜ[D.host.F] (1 : D.host.E)) = 0
     rw [Algebra.TensorProduct.map_tmul]
     exact TensorProduct.zero_tmul _ _
-  · exact (placeIdempotent_infinite_and_finite_components D w _ α rfl).2 w
+  · exact (placeIdempotent_infinite_and_finite_components D _ α rfl).2 w
 
 open Classical in
 theorem parts_idemQ (Q : Finset (Pl D)) :

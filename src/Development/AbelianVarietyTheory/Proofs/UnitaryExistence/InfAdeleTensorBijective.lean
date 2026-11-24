@@ -156,7 +156,7 @@ theorem exists_delta (c : E ≃ₐ[F] E) (h2 : Module.finrank F E = 2) (hc : c �
   exact ⟨p, q, by simp [Algebra.smul_def]⟩
 
 theorem eq_or_conj (c : E ≃ₐ[F] E) (hτ : ∀ (τ : E →+* ℂ) x, τ (c x) = starRingEnd ℂ (τ x))
-    {δ : E} (h0 : δ ≠ 0) (hc : c δ = -δ)
+    {δ : E} (hc : c δ = -δ)
     (hs : ∀ x : E, ∃ p q : F, x = algebraMap F E p + algebraMap F E q * δ) (τ τ' : E →+* ℂ)
     (h : τ.comp (algebraMap F E) = τ'.comp (algebraMap F E)) :
     τ = τ' ∨ τ = ComplexEmbedding.conjugate τ' := by
@@ -258,7 +258,7 @@ theorem bijective [IsTotallyReal F] (c : E ≃ₐ[F] E) (h2 : Module.finrank F E
     funext τ
     obtain ⟨τ, hτΨ⟩ := τ
     have e : t (InfinitePlace.mk (τ.comp (algebraMap F E))) = τ := by
-      rcases eq_or_conj c hτ h0 hcδ hs _ _ (mk_eq_iff (htw (InfinitePlace.mk (τ.comp (algebraMap F E))))) with e | e
+      rcases eq_or_conj c hτ hcδ hs _ _ (mk_eq_iff (htw (InfinitePlace.mk (τ.comp (algebraMap F E))))) with e | e
       · exact e
       · exact absurd (e ▸ ht _) ((hΨ τ).1 hτΨ)
     have := hval τ a b

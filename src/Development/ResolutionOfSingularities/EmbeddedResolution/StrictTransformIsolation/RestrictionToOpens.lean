@@ -412,7 +412,7 @@ private theorem false_of_isSmoothDivisor_of_orderOneCentersIsolated {V : Vanishi
       (⇑(H₀.subschemeι ≫ U₀.ι).base ⁻¹' Mem) ((Z.comap U₀.ι).comap H₀.subschemeι))
     (hm1 : μ = 1) (hS1 : C.S1 ⊆ (Z.support : Set ↥W)) (hxi2Z : C.xi2 ∉ (Z.support : Set ↥W))
     (hxi1M : C.xi1 ∉ Mem) (hxi2M : C.xi2 ∉ Mem)
-    (hagree : AgreeNear N (V W ⟨C.S1, C.closed1⟩) C.xi1) (_hord : orderAt N C.xi1 = 1)
+    (hagree : AgreeNear N (V W ⟨C.S1, C.closed1⟩) C.xi1)
     (hxi2N : C.xi2 ∈ (N.support : Set ↥W)) : False := by
   have hptZ : C.pt ∈ (Z.support : Set ↥W) := hS1 C.mem_first_closed
   have hopenU : IsOpen ((U₀ : Set ↥W)) := hV.isOpen_opens W U₀
@@ -565,7 +565,7 @@ private theorem orderOneCentersIsolated_of_isSmoothDivisor {V : VanishingAssignm
       (hZH C.pt hz) (hNsubH C.pt hz) (hJnone C.pt hz hJJ) hxi2Z hxi2N
   · exact false_of_isSmoothDivisor_of_orderOneCentersIsolated hV C (U C.pt hz) (H C.pt hz) Jz (hU C.pt hz) (hH C.pt hz)
       (hNsubH C.pt hz) (hZH C.pt hz) (hJcomp C.pt hz Jz hJJ) (hJloc C.pt hz Jz hJJ)
-      (ih C.pt hz Jz hJJ) hm1 hS1 hxi2Z hxi1M hxi2M hagree hord hxi2N
+      (ih C.pt hz Jz hJJ) hm1 hS1 hxi2Z hxi1M hxi2M hagree hxi2N
 
 theorem orderOneCentersIsolated_of_principalizationCertificate {V : VanishingAssignment.{u}} (hV : IdealSheafGeometryHypotheses V)
     {k : Type u} [Field k] {W : Scheme.{u}} {p : W ⟶ Spec (CommRingCat.of k)}

@@ -304,7 +304,7 @@ theorem exists_jac_quot (hBZ : GlobalTheory.Published.BernsteinZelevinskyFiniten
         by_cases ha : a = i
         · subst ha
           simpa [ψ] using hc z hz v
-        · simp [ψ, Pi.mulSingle_eq_of_ne ha, ha]) y
+        · simp [ψ, ha]) y
     simpa using h1
   have h5 : IsSubquotient (q i).rep ((piTensor fun a => (q a).rep).comp ψ : Representation ℂ _ _) :=
     GlobalTheory.CompanionTheory.Hypotheses₂.TD.isSubquotient_comp_mulSingle (fun a => (q a).rep) (fun a => (q a).2.rep.irr) i

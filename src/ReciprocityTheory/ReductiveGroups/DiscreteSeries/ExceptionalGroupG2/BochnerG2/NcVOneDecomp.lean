@@ -68,7 +68,7 @@ theorem crossOp_eig_gap (hE : IsGlRep E) (hU : IsInfUnitary ε E) (hV : IsKIrrHW
       (ReciprocityTheory.ChartRestriction.DS.bAct_isKUnitary hU 1) hfd hS hne
   have hwS' := Submodule.mem_inf.1 hwS
   obtain ⟨r, s, hrs, hμeq, h2⟩ :=
-    ReciprocityTheory.ChartRestriction.DS.crossOp_khw hE hU hV hwS'.2 hw0 hμ
+    ReciprocityTheory.ChartRestriction.DS.crossOp_khw hE hV hwS'.2 hw0 hμ
   have hθw : crossOp ε E 1 0 w = (θ : ℂ) • w := Module.End.mem_eigenspace_iff.1 hwS'.1
   rw [hθw, smul_smul] at h2
   have hc : ((2 : ℂ) * (θ : ℂ)) =
@@ -217,7 +217,7 @@ theorem Wm_khw (hE : IsGlRep E) (hU : IsInfUnitary ε E) (hV : IsKIrrHW ε E (lo
       Module.End.eigenspace (crossOp ε E 1 0) (θ : ℂ) ⊓ ncV ε V 1) ≤ ncV ε V 1
     exact iSup₂_le fun θ _ => inf_le_right
   have hxN : x ∈ ncV ε V 1 := hle hx
-  obtain ⟨r, s, hrs, hν', hC⟩ := crossOp_khw hE hU hV hxN hx0 hν
+  obtain ⟨r, s, hrs, hν', hC⟩ := crossOp_khw hE hV hxN hx0 hν
   have hne : r ≠ s := fun h' => hrs (h' ▸ rfl)
   rcases lt_or_gt_of_ne hne with hlt | hgt
   · exfalso

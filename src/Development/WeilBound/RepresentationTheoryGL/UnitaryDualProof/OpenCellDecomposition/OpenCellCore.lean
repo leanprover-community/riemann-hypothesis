@@ -374,7 +374,7 @@ end BlockShapes
 section Volume
 
 theorem relIndex_ne_zero {G : Type*} [Group G] [TopologicalSpace G] [ContinuousMul G]
-    {U L L₀ : Subgroup G} (_hL : L ≤ L₀) (hL₀U : L₀ ≤ U) (hc : IsCompact (L₀ : Set G))
+    {U L L₀ : Subgroup G} (hL₀U : L₀ ≤ U) (hc : IsCompact (L₀ : Set G))
     {O : Set G} (hO : IsOpen O) (hOL : O ∩ (U : Set G) = L) : L.relIndex L₀ ≠ 0 := by
   have h1 : (1 : G) ∈ O := (hOL.symm ▸ L.one_mem : (1 : G) ∈ O ∩ (U : Set G)).1
   obtain ⟨t, htL, htf, hcov⟩ := hc.elim_finite_subcover_image (b := (L₀ : Set G)) (c := fun x => x • O)
@@ -461,7 +461,7 @@ theorem vol_relIndex (ψ : AddChar k Circle) {h N : ℕ} (d : Fin h → ℕ) (hd
   classical
   have hUB : unipU k d hd ≤ unipB k (Fin N) := inf_le_left
   obtain ⟨O, hO, hOL⟩ := hLO
-  have : (L.subgroupOf L₀).FiniteIndex := ⟨relIndex_ne_zero hLL₀ hL₀U hL₀c hO hOL⟩
+  have : (L.subgroupOf L₀).FiniteIndex := ⟨relIndex_ne_zero hL₀U hL₀c hO hOL⟩
   let _ : Fintype (L₀ ⧸ L.subgroupOf L₀) := Fintype.ofFinite _
   let r : L₀ ⧸ L.subgroupOf L₀ → GL (Fin N) k := fun q => (q.out : L₀).1
   have hr : ∀ q, r q ∈ L₀ := fun q => q.out.2

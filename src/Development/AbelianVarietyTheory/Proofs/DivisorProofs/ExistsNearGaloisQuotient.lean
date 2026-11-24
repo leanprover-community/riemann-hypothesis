@@ -922,7 +922,7 @@ theorem translate_baseChange_affineOpen : ∀ (R R₁ : Type) [CommRing R] [Comm
   let Z : Over (Sp R₁) := Over.mk (z ≫ pullback.snd G.hom f)
   let z' : Z ⟶ G₁ := Over.homMk z (by simp [G₁, Z])
   have key := (isGrpPullback_pullback G f).2 Z z' (z' ≫ c) x a' (by simpa [z'] using hx)
-    (by rw [ha]; simp [z', c, e, a₁, G₁, pullback.lift_fst]; rfl)
+    (by rw [ha]; simp [z', c, e, a₁, G₁]; rfl)
   have hT : z' * (z' ≫ c) = z' ≫ T := by simp only [T, MonObj.comp_mul, Category.comp_id]
   rw [hT] at key
   have : (z ≫ T.left ≫ pullback.fst G.hom f) w ∈ V := by
@@ -1081,7 +1081,7 @@ namespace GlobalTheory.Mum
 
 theorem finite_closedFibre_subset_isAffineOpen : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], Base R →
     ∀ (D : DegData R (maximalIdeal R)) (A : PolAV (Sp (FractionRing R))) (G : Over (Sp R)) [GrpObj G] [IsCommMonObj G],
-    IsSemiAbelian G → ∀ U : Unif (maximalIdeal R) D A G, ∀ s : Finset G.left, (∀ x ∈ s, G.hom x = closedPoint R) →
+    IsSemiAbelian G → ∀ _ : Unif (maximalIdeal R) D A G, ∀ s : Finset G.left, (∀ x ∈ s, G.hom x = closedPoint R) →
     ∃ O : G.left.Opens, IsAffineOpen O ∧ ∀ x ∈ s, x ∈ O := by
   intro R _ _ _ hR _ _ G _ _ hG _ s hs
   exact GlobalTheory.T.exists_affineOpen_finset_closedFibre_semiAbelian R hR.1 G hG s hs
@@ -1102,7 +1102,7 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.Mum
 
-theorem _root_.GlobalTheory.T.uniformisedGroup_closedFibre_finset_in_affineOpen : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], Base R → ∀ (D : DegData R (maximalIdeal R)) (A : PolAV (Sp (FractionRing R))) (G : Over (Sp R)) [GrpObj G] [IsCommMonObj G], IsSemiAbelian G → ∀ U : Unif (maximalIdeal R) D A G, ∀ s : Finset G.left, (∀ x ∈ s, G.hom x = closedPoint R) → ∃ O : G.left.Opens, IsAffineOpen O ∧ ∀ x ∈ s, x ∈ O := by
+theorem _root_.GlobalTheory.T.uniformisedGroup_closedFibre_finset_in_affineOpen : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], Base R → ∀ (D : DegData R (maximalIdeal R)) (A : PolAV (Sp (FractionRing R))) (G : Over (Sp R)) [GrpObj G] [IsCommMonObj G], IsSemiAbelian G → ∀ _ : Unif (maximalIdeal R) D A G, ∀ s : Finset G.left, (∀ x ∈ s, G.hom x = closedPoint R) → ∃ O : G.left.Opens, IsAffineOpen O ∧ ∀ x ∈ s, x ∈ O := by
   first | exact @GlobalTheory.Mum.finite_closedFibre_subset_isAffineOpen
 end -- clump:auto
 end -- clump:auto

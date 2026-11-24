@@ -1071,15 +1071,15 @@ section PureX
 
 theorem pX_pow {X : ℝ} (h1 : 1 ≤ X) {a b : ℕ} (h : a ≤ b) : X ^ a ≤ X ^ b := pow_le_pow_right₀ h1 h
 
-theorem pX_div {X θ : ℝ} (_hθ : 0 < θ) (h2 : 2 ≤ X) (h3 : 5 / θ ≤ X) : 5 * (X / θ) ≤ X ^ 2 := by
+theorem pX_div {X θ : ℝ} (h2 : 2 ≤ X) (h3 : 5 / θ ≤ X) : 5 * (X / θ) ≤ X ^ 2 := by
   have : 5 * (X / θ) = X * (5 / θ) := by ring
   rw [this, sq]
   exact mul_le_mul_of_nonneg_left h3 (by linarith)
 
-theorem permutedRowProductSplitSum {X θ Cl : ℝ} (hθ : 0 < θ) (h2 : 2 ≤ X) (h3 : 5 / θ ≤ X) (hCl : Cl ≤ X) (_hCl0 : 0 < Cl) :
+theorem permutedRowProductSplitSum {X θ Cl : ℝ} (hθ : 0 < θ) (h2 : 2 ≤ X) (h3 : 5 / θ ≤ X) (hCl : Cl ≤ X) :
     Cl * (1 + 3 * (X / θ) + X ^ 21) ≤ X ^ 100 := by
   have h1 : 1 ≤ X := by linarith
-  have a := pX_div hθ h2 h3
+  have a := pX_div h2 h3
   have hXθ : 0 ≤ X / θ := by positivity
   have b : X ^ 2 ≤ X ^ 21 := pX_pow h1 (by norm_num)
   have c : (1 : ℝ) ≤ X ^ 21 := one_le_pow₀ h1
@@ -1184,7 +1184,7 @@ theorem log_root_discriminant_le (SzN : SizeN L) (SzQ : SizeQD L) (Cl : ℝ) (hC
   have l2 : Real.log 2 ≤ 1 := by
     have := Real.log_le_sub_one_of_pos (show (0 : ℝ) < 2 by norm_num)
     linarith
-  have key := permutedRowProductSplitSum (th_pos L) h2 h3 hCl hCl0
+  have key := permutedRowProductSplitSum (th_pos L) h2 h3 hCl
   rw [le_div_iff₀ hCl0, scL_XX L]
   have : Real.log D.host.rdE ≤ 1 + 3 * (XX L / szTh L) + XX L ^ 21 := by linarith
   calc Real.log D.host.rdE * Cl ≤ (1 + 3 * (XX L / szTh L) + XX L ^ 21) * Cl :=
@@ -1240,7 +1240,7 @@ theorem kx_le_b (SzK : SizeK L) (h2 : 2 ≤ XX L) (h3 : 5 / szTh L ≤ XX L) :
   have hx : 0 < L.sc.x := lt_trans one_pos L.sc.one_lt_alt
   have a := logk_le L SzK
   have b := logx_le L
-  have c := pX_div (th_pos L) h2 h3
+  have c := pX_div h2 h3
   have d : XX L ^ 2 ≤ XX L ^ 100 := pX_pow (by linarith) (by norm_num)
   have hl : 0 ≤ Real.log L.sc.x := Real.log_nonneg L.sc.one_lt_alt.le
   rw [scb_eq, scL_XX L]
@@ -1268,7 +1268,7 @@ theorem max_power_le_half_width (SzK : SizeK L) (SzW : SizeW L) (Cl : ℝ) (hCl0
     apply Real.exp_le_exp.2
     have a := logk_le L SzK
     have b := logx_le L
-    have c := pX_div (th_pos L) h2 h3
+    have c := pX_div h2 h3
     have d := permutedRowProductSplit h2
     have e : Real.log (D.R.k : ℝ) ≤ XX L ^ 2 := by linarith
     have f : Real.log (D.R.k : ℝ) * Cl ≤ XX L ^ 2 * XX L :=
@@ -1770,7 +1770,7 @@ theorem splitsCompl_of_ncard (E : Type) [Field E] [NumberField E] (p : ℕ) (hp 
     have : 2 ≤ (span {(p : ℤ)}).ramificationIdx' P := le_csSup hb hle
     omega
 
-theorem root_discriminant_ge_two (D : D7) (_h : UnusedSlot33.Conclusion1 D) : 2 ≤ D.host.rdE := by
+theorem root_discriminant_ge_two (D : D7) : 2 ≤ D.host.rdE := by
   have h1 : (4 * D.R.ord : ℝ) ≤ D.host.rdE ^ 2 := D.host.der.rd_sq_ge
   have h2 : (1 : ℝ) ≤ D.R.ord := by exact_mod_cast D.R.ord_pos
   have h3 : 0 ≤ D.host.rdE := by unfold Host.rdE; positivity
@@ -1807,7 +1807,7 @@ theorem level_norm_one_mod_conductor (D : D7) (u : D.what₂.Word) : ShortInterv
   rw [h2]
   exact mul_mem (inv_mem (natCast_mem _ _)) (sub_mem hK (one_mem _))
 
-theorem discriminant_eq_base_sq (D : D7) (_h : UnusedSlot33.Conclusion1 D) : discr D.host.E = discr D.host.F ^ 2 := by
+theorem discriminant_eq_base_sq (D : D7) : discr D.host.E = discr D.host.F ^ 2 := by
   exact D.host.der.discr_sq
 
 end FromGL

@@ -70,8 +70,8 @@ def ptOverHomEquiv {K L : Type} [Field K] [Field L] [Algebra K L] (X : Over (Sp 
     (ptOver K L ⟶ X) ≃ {x : Sp L ⟶ X.left // x ≫ X.hom = spMap (algebraMap K L)} where
   toFun y := ⟨y.left, Over.w y⟩
   invFun x := Over.homMk x.1 x.2
-  left_inv y := Over.OverMorphism.ext rfl
-  right_inv x := rfl
+  left_inv _ := Over.OverMorphism.ext rfl
+  right_inv _ := rfl
 
 theorem isUnit_natCast_top {K : Type} [Field K] {m : ℕ} (hm : (m : K) ≠ 0) : IsUnit (m : Γ(Sp K, ⊤)) := by
   simpa using (isUnit_iff_ne_zero.2 hm).map (Scheme.ΓSpecIso (CommRingCat.of K)).inv.hom

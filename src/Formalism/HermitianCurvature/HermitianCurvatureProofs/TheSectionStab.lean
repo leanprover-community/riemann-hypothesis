@@ -243,7 +243,7 @@ theorem sZ_ne {T T' : ℝ} (hT : 0 < T) (hT' : 0 < T') {ζ : ℂ} (hζ : T * T' 
 
 theorem block_iff (hk : 1 ≤ k) {a b : Fin (k + 1) → ℂ} {T T' : ℝ} (hT : 0 < T) (hT' : 0 < T')
     (ha : herm (Hb k) a a = -(T : ℂ)) (hb : herm (Hb k) b b = -(T' : ℂ)) {ζ : ℂ} (hζ : T * T' < Complex.normSq ζ)
-    {μ μ' : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} (hμ : μ ∈ UH (Hb k)) (hμ' : μ' ∈ UH (Hb k))
+    {μ μ' : Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} (hμ : μ ∈ UH (Hb k))
     (hμa : μ *ᵥ a = a) (hμb : μ' *ᵥ b = b) :
     μ * theSecB k a b T T' ζ * μ' = theSecB k a b T T' ζ ↔
       ((gA k a T)⁻¹ * μ * gA k a T) *ᵥ Pi.single 0 1 = Pi.single 0 1 ∧
@@ -359,8 +359,8 @@ theorem stab_sub (hk : 1 ≤ k) {z z' : Fin (2 * r + k + 1) → ℂ} (hz : inWb 
       theSecB k (wbPart k r z) (wbPart k r z') (Tz k r z) (Tz k r z') ζ := by
     apply emb_inj (r := r)
     rwa [emb_mul, emb_mul, ← hp1, ← hp2]
-  have hc := (block_iff hk hT hT' ha hb hζ hμ hμ' hμa hμb).1 hblock
-  have hblock' := (block_iff hk hT hT' ha hb hζ' hμ hμ' hμa hμb).2 hc
+  have hc := (block_iff hk hT hT' ha hb hζ hμ hμa hμb).1 hblock
+  have hblock' := (block_iff hk hT hT' ha hb hζ' hμ hμa hμb).2 hc
   show p.1 * embWb k r (theSection k r z z' ζ') * p.2 = embWb k r (theSection k r z z' ζ')
   rw [hp1, hp2, ← emb_mul, ← emb_mul]
   exact congrArg (embWb k r) hblock'
@@ -370,7 +370,7 @@ theorem theSection_csec (hk : 1 ≤ k) {z z' : Fin (2 * r + k + 1) → ℂ} (hz 
     IsSection k r z z' (theSection k r z z') ∧ ∀ ζ ζ' : ℂ, Tz k r z * Tz k r z' < Complex.normSq ζ →
       Tz k r z * Tz k r z' < Complex.normSq ζ' →
         NF.Stab k r z z' (theSection k r z z') ζ = NF.Stab k r z z' (theSection k r z z') ζ' :=
-  ⟨theSection_isSection k r z z' hk hz hz' hT hT', fun ζ ζ' hζ hζ' => Set.ext fun p =>
+  ⟨theSection_isSection k r z z' hk hz hz' hT hT', fun _ _ hζ hζ' => Set.ext fun p =>
     ⟨stab_sub hk hz hz' hT hT' hζ hζ' p, stab_sub hk hz hz' hT hT' hζ' hζ p⟩⟩
 
 end full

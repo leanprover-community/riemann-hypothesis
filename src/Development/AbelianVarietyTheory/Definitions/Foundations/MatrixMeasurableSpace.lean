@@ -58,7 +58,7 @@ def SB (X : Type*) [TopologicalSpace X] : Submodule ℂ (X → ℂ) where
   carrier := {f | IsLocallyConstant f ∧ HasCompactSupport f}
   add_mem' hf hg := ⟨hf.1.add hg.1, hf.2.add hg.2⟩
   zero_mem' := ⟨IsLocallyConstant.const 0, HasCompactSupport.zero⟩
-  smul_mem' c f hf := ⟨(IsLocallyConstant.const c).mul hf.1, hf.2.smul_left (f := fun _ => c)⟩
+  smul_mem' c _ hf := ⟨(IsLocallyConstant.const c).mul hf.1, hf.2.smul_left (f := fun _ => c)⟩
 
 def IsSmoothRep {G V : Type*} [Group G] [TopologicalSpace G] [AddCommGroup V] [Module ℂ V]
     (ρ : Representation ℂ G V) : Prop := ∀ v : V, IsOpen {g : G | ρ g v = v}

@@ -70,7 +70,7 @@ namespace Formalism.MainNotions.TestSideCounting
 
 open Formalism.MainNotions.G Formalism.MainNotions.SourceCleaning Formalism.MainNotions.G.WittFrameLocaliserOrders Formalism.MainNotions.G.symbolGeneratorData
 
-def OneSidedLemma4 (_D : Formalism.BasicNotions.D7) (CLa CD Csz : ℝ) : Prop :=
+def OneSidedLemma4 (CLa CD Csz : ℝ) : Prop :=
   ∀ (p n' r K : ℕ) [Fact p.Prime] [NeZero n'] [NeZero r] [NeZero K] (O : Type) [CommRing O] [IsDomain O]
     [IsDiscreteValuationRing O] [Algebra (WF p n') O] (S : UniformizedDVR p O), OHyp p n' O S →
     CommonHypotheses p n' r (r + K) →
@@ -240,7 +240,7 @@ theorem restDivMU (hE : FieldMultidegreeDivisibility) : ∃ C : ℝ, 1 ≤ C ∧
     exact WithTop.coe_le_coe.2 (by exact_mod_cast h4)
 
 theorem one_sided_lemma4_of_interfaces (D : Formalism.BasicNotions.D7) (CLa CD Csz : ℝ) (hModel : RestModel) (hDiv : RestDivMU CLa CD Csz)
-    (hW1 : GeneratorSpanInclusion) (hW2 : GeneratorImageIsSymbol) (hMon : RestMon) (hPh : RestPh) : OneSidedLemma4 D CLa CD Csz := by
+    (hW1 : GeneratorSpanInclusion) (hW2 : GeneratorImageIsSymbol) (hMon : RestMon) (hPh : RestPh) : OneSidedLemma4 CLa CD Csz := by
   intro p n' r K _ _ _ _ O _ _ _ _ S hO hH Fr L₁ N₁ G' hV hT deg a Y c0 c'' cStar Dd hII c' g hg n obd xi dd hxi hdd
     mon hmon hmonT o ho
   have hII' := hII
@@ -292,7 +292,7 @@ theorem one_sided_lemma4_of_interfaces (D : Formalism.BasicNotions.D7) (CLa CD C
     exact ho m (support_map_subset _ _ hm)
 
 theorem one_sided_lemma4_of_admitted_lemmas : ∃ C : ℝ, 1 ≤ C ∧ ∀ D : Formalism.BasicNotions.D7, StandardMonomialSpanBis D → PathPairCorrespondence D → admB2 D → admB3 D → CoefficientValuationLemma D → LargePrimeLengthVanishing D →
-    OneSidedLemma4 D C (C + 1) C := by
+    OneSidedLemma4 C (C + 1) C := by
   by_cases hE : FieldMultidegreeDivisibility
   · obtain ⟨C, hC, hD⟩ := restDivMU hE
     exact ⟨C, hC, fun D hA3 hB1 hB2 hB3 hC1 _ => one_sided_lemma4_of_interfaces D C (C + 1) C restModel (hD restGeomU)
@@ -300,7 +300,7 @@ theorem one_sided_lemma4_of_admitted_lemmas : ∃ C : ℝ, 1 ≤ C ∧ ∀ D : F
   · exact ⟨1, le_rfl, fun D _ _ _ _ _ h => absurd h hE⟩
 
 theorem one_sided_lemma4_of_admitted_theorem_II : ∃ C : ℝ, 1 ≤ C ∧ ∀ (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ), tableLineDegreeFive.admitted D CLa Ck Crk Cdeg →
-    OneSidedLemma4 D C (C + 1) C := by
+    OneSidedLemma4 C (C + 1) C := by
   obtain ⟨C, hC, H⟩ := one_sided_lemma4_of_admitted_lemmas
   refine ⟨C, hC, fun D CLa Ck Crk Cdeg hA => ?_⟩
   obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, h15, h16, h17, h18, _, h20, h21, _⟩ := hA
@@ -346,7 +346,7 @@ def OneSidedLemma4Element (p : ℕ) {n' r : ℕ} [NeZero n'] (K : ℕ) [NeZero r
     (∀ mm ∈ (monPh O K p Fr mon xi).support, normDeg r mm = o) ∧
     sig = MvPolynomial.map (algebraMap O (KK O)) (rename (castVK hk) (monPh O K p Fr mon xi))
 
-theorem one_sided_lemma4_realisable (D : Formalism.BasicNotions.D7) (CLa CD Csz : ℝ) (h6 : OneSidedLemma4 D CLa CD Csz) {p n' r K : ℕ} [Fact p.Prime] [NeZero n']
+theorem one_sided_lemma4_realisable (D : Formalism.BasicNotions.D7) (CLa CD Csz : ℝ) (h6 : OneSidedLemma4 CLa CD Csz) {p n' r K : ℕ} [Fact p.Prime] [NeZero n']
     [NeZero r] [NeZero K] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Algebra (WF p n') O]
     (S : UniformizedDVR p O) (hO : OHyp p n' O S) {k : ℕ} (hk : k = r + K) (hH : CommonHypotheses p n' r k) (Fr : Frames n' r)
     (L₁ N₁ G' : ℕ) (hV : Fr.Valid L₁ N₁) (hT : TwistBound p Fr (p ^ G')) (deg : Fin n' → ℕ) (a : ℕ) (Y : ℝ)

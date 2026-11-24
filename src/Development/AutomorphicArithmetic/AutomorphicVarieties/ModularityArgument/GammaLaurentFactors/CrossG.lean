@@ -790,7 +790,7 @@ private theorem loc_dual {F : Type*} [Field F] [ValuativeRel F] [TopologicalSpac
   ring
 
 private theorem comb {I : Type} (S : Finset I) (N : I → ℕ) (P : I → ℂ[X]) (c : I → ℂ) (j : I → ℤ) (q : ℕ) (f d : I → ℕ)
-    (hq : 1 < q) (h : ∀ v ∈ S, 1 < N v ∧ (P v).eval 0 = 1 ∧ (P v).natDegree = d v ∧ (d v ≠ 0 → N v = q ^ f v)) :
+    (h : ∀ v ∈ S, 1 < N v ∧ (P v).eval 0 = 1 ∧ (P v).natDegree = d v ∧ (d v ≠ 0 → N v = q ^ f v)) :
     ∃ (P₀ : ℂ[X]) (c₀ : ℂ) (t : ℝ), P₀.eval 0 = 1 ∧ P₀.natDegree = ∑ v ∈ S, f v * d v ∧ ∀ s : ℂ,
       ∏ v ∈ S, c v * ((N v : ℂ) ^ (-s)) ^ j v * (P v).eval ((N v : ℂ) ^ (-s)) / (P v).eval (N v * (N v : ℂ) ^ (-s)) =
         fac c₀ t q P₀ s := by
@@ -937,7 +937,7 @@ theorem UpperTheory.V.Z.Gam.sideGCenOf :
           exact hr s hs
         · exact ⟨0, 0, 0, 0, fun e => absurd e hv⟩
     choose P e j cv hd using hd
-    obtain ⟨P₀, c₀, t, hP0, hPd, hfac⟩ := comb S (fun v => Ideal.absNorm v.asIdeal) P e j q f (fun v => cnt (sp v) 1) hq
+    obtain ⟨P₀, c₀, t, hP0, hPd, hfac⟩ := comb S (fun v => Ideal.absNorm v.asIdeal) P e j q f (fun v => cnt (sp v) 1)
       fun v hv => ⟨NumberField.HeightOneSpectrum.one_lt_absNorm v, (hd v hv).1, (hd v hv).2.1, (hsp v hv).2⟩
     have hb' : ∏ v ∈ S, b v ≠ 0 := Finset.prod_ne_zero_iff.2 fun v _ => hb0 v
     set r : ℝ := |σ₁| + |σ₂| + ∑ v ∈ S, |cv v| + 2 with hr

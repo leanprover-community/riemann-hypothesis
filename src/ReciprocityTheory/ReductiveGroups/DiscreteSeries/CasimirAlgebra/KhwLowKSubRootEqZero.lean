@@ -320,7 +320,7 @@ theorem casimir_khw_le (ε : Fin n → Bool) {E : Fin n → Fin n → Module.End
 
 theorem khw_lowK_sub_root_eq_zero (ε : Fin n → Bool) {E : Fin n → Fin n → Module.End ℂ M}
     (hE : IsGlRep E) (hU : IsInfUnitary ε E) (lam : Fin n → ℝ) {a b : Fin n} (hab : a < b)
-    (hε : ε a ≠ ε b) (hgap : 1 + 2 * dot (rhoC ε) (rhoN ε) < dot lam (root a b)) {v : M}
+    (hgap : 1 + 2 * dot (rhoC ε) (rhoN ε) < dot lam (root a b)) {v : M}
     (hv : IsKHWVec ε E (lowK ε lam - root a b) v)
     (hc : casimir E v = (casVal lam : ℂ) • v) : v = 0 := by
   by_contra hv0

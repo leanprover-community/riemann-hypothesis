@@ -1343,7 +1343,7 @@ theorem gal_sqq (σ : hostE ζ a b ≃ₐ[ℚ] hostE ζ a b) :
     σ (aE ζ a b) = ((((galE φ.e ζ a b σ).1.1 : ℤˣ) : ℤ) : hostE ζ a b) * aE ζ a b := by
   apply Subtype.ext
   push_cast
-  exact galE_aE hH.toHypOdd h σ
+  exact galE_aE h σ
 
 theorem psQ : (hostRaw φ hinj hH he h).PsQ := by
   intro u

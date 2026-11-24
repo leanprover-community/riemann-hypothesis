@@ -100,7 +100,7 @@ namespace GlobalTheory.PlaneBasis
 
 def unskip (i₀ i₁ i : ℕ) : ℕ := if i < i₀ then i else if i < i₁ then i - 1 else i - 2
 
-theorem skip_ne_left {i₀ i₁ : ℕ} (h : i₀ < i₁) (j : ℕ) : skip i₀ i₁ j ≠ i₀ := by
+theorem skip_ne_left {i₀ i₁ : ℕ} (j : ℕ) : skip i₀ i₁ j ≠ i₀ := by
   unfold skip; split_ifs <;> omega
 
 theorem skip_ne_right {i₀ i₁ : ℕ} (h : i₀ < i₁) (j : ℕ) : skip i₀ i₁ j ≠ i₁ := by
@@ -109,7 +109,7 @@ theorem skip_ne_right {i₀ i₁ : ℕ} (h : i₀ < i₁) (j : ℕ) : skip i₀ 
 theorem skip_lt {i₀ i₁ n₁ : ℕ} {j : ℕ} (hj : j < n₁) : skip i₀ i₁ j < n₁ + 2 := by
   unfold skip; split_ifs <;> omega
 
-theorem unskip_skip {i₀ i₁ : ℕ} (h : i₀ < i₁) (j : ℕ) : unskip i₀ i₁ (skip i₀ i₁ j) = j := by
+theorem unskip_skip {i₀ i₁ : ℕ} (j : ℕ) : unskip i₀ i₁ (skip i₀ i₁ j) = j := by
   unfold skip unskip; split_ifs <;> omega
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
@@ -150,7 +150,7 @@ theorem exists_isSplitBasis_plane : ∀ (F E : Type) [Field F] [NumberField F] [
     simp [hM, colMat, h01.ne']
   have hcj : ∀ j : Fin n₁, (fun r => M r ⟨skip i₀ i₁ j, skip_lt j.2⟩) = fun r => (ι.map τ * β₁.1) r j :=
     fun j => funext fun r => by
-      simp [hM, colMat, skip_ne_left h01, skip_ne_right h01, unskip_skip h01, j.2]
+      simp [hM, colMat, skip_ne_left, skip_ne_right h01, unskip_skip, j.2]
   have hPx : (fun r => τ (x r)) ∈ P := hc0 ▸ Submodule.subset_span ⟨_, rfl⟩
   have hPy : (fun r => τ (y r)) ∈ P := hc1 ▸ Submodule.subset_span ⟨_, rfl⟩
   have hPcol : ∀ j : Fin n₁, (fun r => (ι.map τ * β₁.1) r j) ∈ P := fun j =>

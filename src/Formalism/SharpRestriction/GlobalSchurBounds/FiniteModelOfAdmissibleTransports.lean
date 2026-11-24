@@ -1002,7 +1002,7 @@ def SlopeLine : Prop :=
 variable {D u}
 
 theorem len_comp_le {R M : Type} [CommRing R] [AddCommGroup M] [Module R M] (A : Submodule R M) (g h : M →ₗ[R] M)
-    (hg : A.map g ≤ A) (_hh : A.map h ≤ A) :
+    (hg : A.map g ≤ A) :
     Module.length R (A ⧸ (A.map (g ∘ₗ h)).comap A.subtype) ≤
       Module.length R (A ⧸ (A.map g).comap A.subtype) + Module.length R (A ⧸ (A.map h).comap A.subtype) := by
   have hg' : ∀ x ∈ A, g x ∈ A := fun x hx => hg ⟨x, hx, rfl⟩
@@ -1055,7 +1055,7 @@ theorem len_list_le {R M ι : Type} [CommRing R] [AddCommGroup M] [Module R M] (
     · rw [List.foldr_cons, Submodule.map_comp]
       exact le_trans (Submodule.map_mono i1) hv
     · rw [List.foldr_cons, List.map_cons, List.sum_cons]
-      exact le_trans (len_comp_le A _ _ hv i1) (add_le_add_right i2 _)
+      exact le_trans (len_comp_le A _ _ hv) (add_le_add_right i2 _)
 
 theorem len_pow_le {R M : Type} [CommRing R] [AddCommGroup M] [Module R M] (A : Submodule R M) (G : M →ₗ[R] M)
     (hG : A.map G ≤ A) (m : ℕ) :
@@ -1071,7 +1071,7 @@ theorem len_pow_le {R M : Type} [CommRing R] [AddCommGroup M] [Module R M] (A : 
     refine ⟨?_, ?_⟩
     · rw [Submodule.map_comp]; exact le_trans (Submodule.map_mono hG) i1
     · rw [succ_nsmul]
-      exact le_trans (len_comp_le A _ _ i1 hG) (add_le_add_left i2 _)
+      exact le_trans (len_comp_le A _ _ i1) (add_le_add_left i2 _)
 
 lemma entry_le (τ : D.what₂.Tau) (a : Fin (D.R.N 0)) (ha : a.1 ≠ 0) :
     (((D.fm u).lam 0 τ).w a).natAbs ≤ Wt D u τ := by

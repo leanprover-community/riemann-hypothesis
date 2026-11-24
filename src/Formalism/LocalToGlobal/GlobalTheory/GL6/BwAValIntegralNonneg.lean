@@ -407,7 +407,7 @@ private theorem isWeightedHomogeneous_bwA_prod_of_forall {ι : Type} (s : Finset
     rw [Finset.prod_insert hi, Finset.sum_insert hi]
     exact (h i (Finset.mem_insert_self i s)).mul (ih fun j hj => h j (Finset.mem_insert_of_mem hj))
 
-theorem bwA_applyWord_homog (hn : n ≤ r) (ν : Fin n → ℕ) (hν : Antitone ν) (w : List (Fin r × Fin r × ℕ)) :
+theorem bwA_applyWord_homog (hn : n ≤ r) (ν : Fin n → ℕ) (w : List (Fin r × Fin r × ℕ)) :
     ∃ μ : Fin r → ℤ, MvPolynomial.IsWeightedHomogeneous (bwA_wZ r n) (Formalism.GradedWeylDivisibility.applyWord R w (Formalism.GradedWeylDivisibility.hw R hn ν)) μ := by
   classical
   have hmin : ∀ (s : ℕ) (hr : s ≤ r) (hs : s ≤ n), MvPolynomial.IsWeightedHomogeneous (bwA_wZ r n)
@@ -507,7 +507,7 @@ theorem bwA_diag_gen {K : Type} [Field K] {r n : ℕ} (hn : n ≤ r) (ν : Fin n
     by_contra h
     push Not at h
     exact hg0 (MvPolynomial.support_eq_empty.1 (Finset.eq_empty_of_forall_notMem h))
-  obtain ⟨μ, hμ⟩ := bwA_applyWord_homog (R := ℤ) hn ν hν w
+  obtain ⟨μ, hμ⟩ := bwA_applyWord_homog (R := ℤ) hn ν w
   set μN := Finsupp.weight (Formalism.GradedWeylDivisibility.rowW r n) m with hμN
   have hhom : MvPolynomial.IsWeightedHomogeneous (Formalism.GradedWeylDivisibility.rowW r n) (MvPolynomial.map (Int.castRingHom K) g) μN := by
     intro m' hm'

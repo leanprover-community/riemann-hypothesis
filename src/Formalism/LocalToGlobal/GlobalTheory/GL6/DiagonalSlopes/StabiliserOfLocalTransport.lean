@@ -36,7 +36,7 @@ section Gen
 variable {E : Type} [Field E] [NumberField E]
 
 theorem isLattice_between {W : Type} [AddCommGroup W] [Module E W] [Module (𝓞 E) W] [IsScalarTower (𝓞 E) E W]
-    (A B : Submodule (𝓞 E) W) (hA : Submodule.IsLattice E A) (hAB : A ≤ B) (T : ℕ) (hT : T ≠ 0)
+    (A B : Submodule (𝓞 E) W) (hA : Submodule.IsLattice E A) (T : ℕ) (hT : T ≠ 0)
     (hTB : ∀ x ∈ B, (T : E) • x ∈ A) : Submodule.IsLattice E B := by
   let f : W →ₗ[𝓞 E] W := ((T : ℕ) : 𝓞 E) • LinearMap.id
   have hf : Function.Injective f := by
@@ -125,7 +125,7 @@ theorem dual_base_lattice_full (K : ClsTied u i hi) :
     Submodule.IsLattice.of_fg D.host.E (Module.Finite.iff_fg.1 K.lev.Lb_fin)
   have := Formalism.L2.GlobalTheoryTheory.TraceIntegrality.isLattice_between K.lev.Lb
     (Formalism.L2.GlobalTheoryTheory.Comp.dl (sigD D) (gramN D i hi) K.lev.Lb) hLb
-    (fun x hx => Submodule.subset_span (K.lev.Lb_int x hx)) _ (D.mem u).A.T_prime.ne_zero (by
+    _ (D.mem u).A.T_prime.ne_zero (by
       intro x hx
       induction hx using Submodule.span_induction with
       | mem x hx => exact K.lev.Lb_dual x hx

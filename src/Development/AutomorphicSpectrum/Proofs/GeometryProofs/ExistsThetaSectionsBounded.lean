@@ -131,7 +131,7 @@ theorem gm_comp_spMap_unitOn {R R' : Type} [CommRing R] [CommRing R'] (f : R →
   exact (congrArg (fun q => q.hom u.val) (Scheme.ΓSpecIso_inv_naturality (CommRingCat.ofHom f))).symm
 
 def FG.scaled {X Y : Scheme.{0}} {M : LB X} (hM : M.IsLB) (a : FG M Y) (c : Γ(Y, ⊤)ˣ) : FG M Y :=
-  ⟨a.K, a.φ, a.ε, scaleGen a.t c, scaleGen_isGen hM a.t a.ht c⟩
+  ⟨a.K, a.φ, a.ε, scaleGen a.t c, scaleGen_isGen a.t a.ht c⟩
 
 theorem FG.v_scaled {X Y Z : Scheme.{0}} {M : LB X} (hM : M.IsLB) (a : FG M Y) (c : Γ(Y, ⊤)ˣ) (r : Z ⟶ Y) {z : Z}
     {J : (Z ⟶ X) → M.ι} (hJ : Good M z J) : (a.scaled hM c).v r z J = gm r z ⊤ c * a.v r z J :=
@@ -1447,7 +1447,7 @@ def ptAt (D : PPData H L) (x : Over.mk (baseF L (RingHom.id L')) ⟶ D.t.G) {F :
     Over.mk (baseF L f) ⟶ D.t.G :=
   (Over.homMk (spMap f) (by
     show spMap f ≫ baseF L (RingHom.id L') = baseF L f
-    simp only [baseF, ← Category.assoc, ← spMap_comp]
+    simp only [baseF, ← spMap_comp]
     ) : Over.mk (baseF L f) ⟶ Over.mk (baseF L (RingHom.id L'))) ≫ x
 
 theorem ptAt_left (D : PPData H L) (x : Over.mk (baseF L (RingHom.id L')) ⟶ D.t.G) {F : Type} [Field F] (f : L' →+* F) :

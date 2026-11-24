@@ -342,7 +342,7 @@ theorem weilPairJ (hI : CompanionTheory.Lime.BM.Inputs2) (hRT : ReproTr) (hL2 : 
   refine ⟨fun u => (Formalism.MainNotions.S.muS (C.muW u τ) μNc).comap (Tm C τ),
     fun u => ((νq u).comap (Tm C τ)).map (MeasurableEquiv.mulRight yJ⁻¹), fun u => ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩, ?_⟩
   · have := (hSH u).1
-    have := sigmaFinite_comap C τ (hSc0 u)
+    have := sigmaFinite_comap C τ
     infer_instance
   · have := hsf u
     have := sFinite_comap C τ (μ := νq u)

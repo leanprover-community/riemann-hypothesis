@@ -803,7 +803,7 @@ end GlobalTheory.ShareSection
 namespace GlobalTheory.ShareSection
 
 theorem exists_bddSec_shift : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : DataX E r)
-    (Xa : ArchInM X.toData) (Fl : FlatM X.toData Xa), GlobalTheory.Shares.Margins X.toData Xa → 0 < X.p0 → X.p0 < r →
+    (Xa : ArchInM X.toData) (_ : FlatM X.toData Xa), GlobalTheory.Shares.Margins X.toData Xa → 0 < X.p0 → X.p0 < r →
     GapsGe X.p0 Xa.L 1 → PairGe Xa.L (1.9 * Xa.T) →
     GapsGe X.p0 (Xa.Fp - kLog X.Ψ r - (nd X.toData + 2) • Xa.L) 0 →
     PairGe (Xa.Fp - kLog X.Ψ r - (nd X.toData + 2) • Xa.L) 1 → ∀ s : ℕ, Even s → s ≤ Xa.T →

@@ -416,7 +416,7 @@ theorem numericLeaves (h : RunTie T EX Tp hK O ι) (hN : NumTie Tp hK O) (hR : S
     leafSizes_of_page O 1 zero_le_one hC' hx3 (by rw [mul_one, h.x_eq]; exact hx) h02 h11 h1246 h29 h21 hW h14 h011 hSg h1243
       h13 h231 h44 tX2 hZ3,
     leafX h hN hR,
-    leafBad_of_page O (by linarith) hB.1 hB.2 hx3 h02 h11 h1246 h21 h1 hW h14 h121 h1232 h75 h19 h18 tVd⟩
+    leafBad_of_page O (by linarith) hB.1 hB.2 hx3 h11 h1246 h21 h1 hW h14 h121 h1232 h75 h19 h18 tVd⟩
 
 end Obj
 

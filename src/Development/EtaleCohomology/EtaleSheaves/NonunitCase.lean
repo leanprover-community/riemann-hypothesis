@@ -61,7 +61,7 @@ theorem mS_mul (S : Subalgebra A K) {x b : K} (hx : x ∈ mS S) (hb : b ∈ S) :
     rw [add_mul]
     exact Submodule.add_mem _ hx hy
 
-theorem unit_case (S : Subalgebra A K) {u h e : K} (hu : u ∈ S) (hh : h ∈ S) (huh : u * h = 1)
+theorem unit_case (S : Subalgebra A K) {u h e : K} (hh : h ∈ S) (huh : u * h = 1)
     (he : e ∈ S) (hue : u - e ∈ mS S) (hee : e * e - e ∈ mS S) : e - 1 ∈ mS S := by
   have key : e - 1 = (e * e - e) * h + (u - e) * ((e - 1) * h) := by
     linear_combination (1 - e) * huh
@@ -71,7 +71,7 @@ theorem unit_case (S : Subalgebra A K) {u h e : K} (hu : u ∈ S) (hh : h ∈ S)
 
 theorem nonunit_case (S : Subalgebra A K) {u h e : K} (hu : u ∈ S) (hh : h ∈ S) (huh : (1 - u) * h = 1)
     (he : e ∈ S) (hue : u - e ∈ mS S) (hee : e * e - e ∈ mS S) : e ∈ mS S := by
-  have h1 := unit_case S (u := 1 - u) (e := 1 - e) (S.sub_mem S.one_mem hu) hh huh
+  have h1 := unit_case S (u := 1 - u) (e := 1 - e) hh huh
     (S.sub_mem S.one_mem he)
     (by
       have : (1 - u) - (1 - e) = (u - e) * (-1) := by ring
@@ -102,7 +102,7 @@ theorem AlgGlue_of (hL : IdemLift) (hF : LateralTheory.E.LZProperCut.LZHensFinit
     have hv' : g * (v : K) = 1 := by
       have := congrArg Subtype.val hv; simpa using this
     right
-    exact ⟨unit_case B hgB (hRB v.2) hv' heB hge hee, unit_case C hgC (hRC v.2) hv' hfC hgf hff⟩
+    exact ⟨unit_case B (hRB v.2) hv' heB hge hee, unit_case C (hRC v.2) hv' hfC hgf hff⟩
   · obtain ⟨v, hv⟩ := hu.exists_right_inv
     have hv' : (1 - g) * (v : K) = 1 := by
       have := congrArg Subtype.val hv; simpa using this

@@ -360,7 +360,7 @@ theorem integralMv_subst2 {F : MvPowerSeries (Fin 2) K} {P : Fin 2 → MvPowerSe
     (hP : ∀ i, IntegralMv (P i)) : IntegralMv (F.subst P) := by
   rw [integralMv_iff_divBy_one] at hF ⊢
   exact divByMv_subst2 hF hP0 hP
-theorem divByMv_subst2_congr {x : K} (hx : ‖x‖ ≤ 1) {F : MvPowerSeries (Fin 2) K}
+theorem divByMv_subst2_congr {x : K} {F : MvPowerSeries (Fin 2) K}
     {P Q : Fin 2 → MvPowerSeries ι K} (hF : IntegralMv F)
     (hP0 : ∀ i, MvPowerSeries.constantCoeff (P i) = 0)
     (hQ0 : ∀ i, MvPowerSeries.constantCoeff (Q i) = 0) (hP : ∀ i, IntegralMv (P i))

@@ -113,7 +113,6 @@ theorem orderAt_transform_eq_of_not_mem_exceptional (hGeom : MonomialGeometryHyp
 
 theorem orderAlong_transform_eq_of_genericPoint_not_mem_exceptional (hGeom : MonomialGeometryHypotheses.{u})
     {T : MarkedIdealWithBoundary.{u}} (hT : MonomialCenter.IsLocallyMonomialTriple T)
-    (_h : minIndexCard T.ideal T.mult T.boundary ≠ 0)
     {X' : Scheme.{u}} (π : X' ⟶ T.scheme)
     (hπ : Blowup.IsBlowupAlongIdealSheaf π (monomialCenter T.ideal T.mult T.boundary))
     (I' : X'.IdealSheafData)
@@ -722,8 +721,6 @@ theorem maxOrderCandidatePairs_ncard_lt_of_blowup (hGeom : MonomialGeometryHypot
     (hI' : (monomialCenter T.ideal T.mult T.boundary).comap π ^ T.mult * I' =
       T.ideal.comap π)
     (hT' : MonomialCenter.IsLocallyMonomialTriple (blowupTriple T π q I'))
-    (_h' : minIndexCard I' T.mult
-      (transformedBoundary π (monomialCenter T.ideal T.mult T.boundary) T.boundary) ≠ 0)
     (hr : minIndexCard I' T.mult
         (transformedBoundary π (monomialCenter T.ideal T.mult T.boundary) T.boundary)
       = minIndexCard T.ideal T.mult T.boundary)
@@ -800,7 +797,7 @@ theorem maxOrderCandidatePairs_ncard_lt_of_blowup (hGeom : MonomialGeometryHypot
     have hcl2 : closure (⇑π '' p.2) = closure C := by
       rw [hclim, hCcl.closure_eq]
     have hordeq : orderAlong I' p.2 = orderAlong T.ideal C := by
-      have h1 := orderAlong_transform_eq_of_genericPoint_not_mem_exceptional hGeom hT h π hπ I' hI' hC'img hoff
+      have h1 := orderAlong_transform_eq_of_genericPoint_not_mem_exceptional hGeom hT π hπ I' hI' hC'img hoff
       rw [h1]
       exact orderAlong_eq_of_closure_eq T.ideal hSirr hCirr hcl2
     have hordC : orderAlong T.ideal C = maxCandidateOrder T.ideal T.mult T.boundary := by
@@ -1881,7 +1878,7 @@ theorem monomialInvariant_blowupTripleAtCenterIdeal_lt (hGeom : MonomialGeometry
           ((monomialCenter T.ideal T.mult T.boundary).comap
             (Blowup.blowup.proj (monomialCenter T.ideal T.mult T.boundary))) T.mult)
         (pow_mul_residualByPow _ _ _ (exists_controlledTransform_monomialCenter hGeom hT h))
-        hTstep h' hrank.symm hval.symm
+        hTstep hrank.symm hval.symm
 
 end FunctorialResolution.EmbeddedResolution
 

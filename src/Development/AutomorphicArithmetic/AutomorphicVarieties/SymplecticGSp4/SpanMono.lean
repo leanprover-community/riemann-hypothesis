@@ -66,7 +66,7 @@ private theorem spanMono_prec {R M : Type} [CommRing R] [AddCommGroup M] [Module
 
 private theorem exists_pow_mem_map_maxIdeal_of_monic_aeval_mem {O B : Type} [CommRing O] [IsLocalRing O] [CommRing B] [IsLocalRing B]
     [Algebra O B] (x : B) (hx : x ∈ maximalIdeal B)
-    (hJ : (maximalIdeal O).map (algebraMap O B) ≤ maximalIdeal B) :
+    :
     ∀ (d m : ℕ) (p : Polynomial O), p.Monic → p.natDegree = d →
       x ^ m * Polynomial.aeval x p ∈ (maximalIdeal O).map (algebraMap O B) →
       ∃ n : ℕ, x ^ n ∈ (maximalIdeal O).map (algebraMap O B) := by
@@ -137,7 +137,7 @@ private theorem spanMono_top {O B : Type} [CommRing O] [IsLocalRing O] [IsAdicCo
       have h2 := congrArg A.val h0
       rw [← Polynomial.aeval_algHom_apply] at h2
       simpa using h2
-    refine exists_pow_mem_map_maxIdeal_of_monic_aeval_mem x (hum x hx) hJm _ 0 p hp rfl ?_
+    refine exists_pow_mem_map_maxIdeal_of_monic_aeval_mem x (hum x hx) _ 0 p hp rfl ?_
     rw [h1, mul_zero]
     exact Ideal.zero_mem _
   have hrad : Ideal.span u ≤ ((maximalIdeal O).map (algebraMap O B)).radical := by

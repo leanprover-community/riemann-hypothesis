@@ -237,7 +237,7 @@ private theorem chSym_anti {A : Type*} [Ring A] {u u' H : A} (h1 : u * u' = 1) (
   rw [e, neg_neg]
 
 private theorem chSym_mv {n : ℕ} {W : Type*} [AddCommGroup W] [Module ℂ W] (E : Fin n → Fin n → Module.End ℂ W)
-    {a b : Fin n} (hab : a ≠ b) (u : Module.End ℂ W)
+    {a b : Fin n} (u : Module.End ℂ W)
     (h3 : u * (E a a - E b b) = -((E a a - E b b) * u)) (h4 : Commute (E a a + E b b) u)
     (h5 : ∀ c, c ≠ a → c ≠ b → Commute (E c c) u)
     (ν : Wt n) (x : W) (hx : IsWeight E ν x) : IsWeight E (ν ∘ Equiv.swap a b) (u x) := by
@@ -333,7 +333,7 @@ private theorem chSym_swap {n : ℕ} {V : Type} [NormedAddCommGroup V] [InnerPro
     rw [hU x hxS]
     refine ⟨?_, (u ⟨x, hxS⟩).2⟩
     rw [memw, ← wt]
-    exact chSym_mv R hab u hu3 cHu cCu ν ⟨x, hxS⟩ ((wt ν _).2 hw)
+    exact chSym_mv R u hu3 cHu cCu ν ⟨x, hxS⟩ ((wt ν _).2 hw)
   have mvU' : ∀ ν x, x ∈ wsp F ν ⊓ S → U' x ∈ wsp F (ν ∘ Equiv.swap a b) ⊓ S := by
     intro ν x hx
     rw [Submodule.mem_inf] at hx ⊢
@@ -341,7 +341,7 @@ private theorem chSym_swap {n : ℕ} {V : Type} [NormedAddCommGroup V] [InnerPro
     rw [hU' x hxS]
     refine ⟨?_, (u' ⟨x, hxS⟩).2⟩
     rw [memw, ← wt]
-    exact chSym_mv R hab u' hu5 cHu' cCu' ν ⟨x, hxS⟩ ((wt ν _).2 hw)
+    exact chSym_mv R u' hu5 cHu' cCu' ν ⟨x, hxS⟩ ((wt ν _).2 hw)
   have fd : ∀ ν : Wt n, FiniteDimensional ℂ ↥(wsp F ν ⊓ S) := fun ν =>
     Submodule.finiteDimensional_of_le inf_le_right
   have back : ∀ x, x ∈ wsp F (μ ∘ Equiv.swap a b) ⊓ S → (U' * B) x ∈ wsp F μ ⊓ S := by

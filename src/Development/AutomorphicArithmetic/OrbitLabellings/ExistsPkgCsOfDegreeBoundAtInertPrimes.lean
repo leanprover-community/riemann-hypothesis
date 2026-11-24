@@ -1234,7 +1234,7 @@ theorem UpperTheory.labelSetGeo_of_labelSetArith :
     (Xo : Moduli Dw lv) (c : Coeff lv) [StarRing (𝓞 E)], (∀ x : 𝓞 E, star x = H.bar x) →
     ∀ (T : CDVR) (io : c.F →+* T.Fr) (y : IntFr Xo c T io) (C3 : IntChart T io y) (C : Type) [Field C] [CharZero C] (V : VF C)
     (ι : T.Fr →+* C), EmbOK T V ι → ∀ (k : ℕ) (Y : FBChart C V (𝓞 E) (chD C3.ch)), IsBC C3 ι k Y →
-    ∀ (Orb : Type) [Fintype Orb] (d : ℕ) [NeZero d] (lab : Formalism.L2.FormalSeriesBounds.LabS E C Orb d) (ha : LabSArith V io ι lab),
+    ∀ (Orb : Type) [Fintype Orb] (d : ℕ) [NeZero d] (lab : Formalism.L2.FormalSeriesBounds.LabS E C Orb d) (_ : LabSArith V io ι lab),
     LabSGeo C3 ι Y lab := by
   intro E _ _ _ H Dw lv Xo c _ hstar T io y C3 C _ _ V ι hι k Y hY Orb _ d _ lab ha
   have hsep1 : ∀ o (s s' : ZMod d), s ≠ s' →
@@ -1336,7 +1336,7 @@ theorem UpperTheory.labelSetGeo_of_even_of_rankOK_of_not_dvd_discr :
     ∀ (T : CDVR) (io : c.F →+* T.Fr) (y : IntFr Xo c T io) (C3 : IntChart T io y) (C : Type) [Field C] [CharZero C] (V : VF C)
     (ι : T.Fr →+* C), EmbOK T V ι → ∀ (k : ℕ) (Y : FBChart C V (𝓞 E) (chD C3.ch)), IsBC C3 ι k Y →
     y.IsAlg →
-    ∀ (Orb : Type) [Fintype Orb] (d : ℕ) [NeZero d] (lab : Formalism.L2.FormalSeriesBounds.LabS E C Orb d) (ha : LabSArith V io ι lab),
+    ∀ (Orb : Type) [Fintype Orb] (d : ℕ) [NeZero d] (lab : Formalism.L2.FormalSeriesBounds.LabS E C Orb d) (_ : LabSArith V io ι lab),
     ¬ (V.l : ℤ) ∣ NumberField.discr E → Even d → lab.RankOK Dw → (∀ o s, lab.big o 0 s ↔ Even s.val) → lab.j' < lab.n →
     ∀ (a : (E →+* ℂ) × ℕ → ℕ) (ga : Orb → ZMod d → ℕ → ℕ),
     (∀ o s k', ga o s k' ≠ 0 → 1 ≤ k' ∧ k' ≤ Dw.mult (lab.tau o s)) → WtTieS Dw.mult lab.tau ga (fun τ i => a (τ, i)) →

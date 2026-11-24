@@ -151,9 +151,9 @@ private theorem siegel {C : Set (GL (Fin 2) (A F))} (hC : IsCompact C) :
   set g : (A F)ˣ := IdeleGroup.diagonal F c with hg
   set Y := gl (mD g) * (gl (nU b * mD a) * β) with hY
   have hY' := tri Y (g * a * u₀) ((g * a)⁻¹ * u₁)
-    (by simp [hY, _root_.UpperTheory.ConvolutionTheory.R2.gl_mul, vn, vm, Matrix.vecMul, dotProduct, Matrix.mul_apply, Fin.sum_univ_two, h1, ← e₀, mul_assoc])
-    (by simp [hY, _root_.UpperTheory.ConvolutionTheory.R2.gl_mul, vn, vm, Matrix.vecMul, dotProduct, Matrix.mul_apply, Fin.sum_univ_two, ← e₁, mul_assoc, mul_left_comm])
-    (by simp [hY, _root_.UpperTheory.ConvolutionTheory.R2.gl_mul, vn, vm, Matrix.vecMul, dotProduct, Matrix.mul_apply, Fin.sum_univ_two, h1])
+    (by simp [hY, _root_.UpperTheory.ConvolutionTheory.R2.gl_mul, vn, Matrix.vecMul, dotProduct, Matrix.mul_apply, Fin.sum_univ_two, h1, ← e₀, mul_assoc])
+    (by simp [hY, _root_.UpperTheory.ConvolutionTheory.R2.gl_mul, vn, Matrix.vecMul, dotProduct, Matrix.mul_apply, Fin.sum_univ_two, ← e₁, mul_assoc, mul_left_comm])
+    (by simp [hY, _root_.UpperTheory.ConvolutionTheory.R2.gl_mul, vn, Matrix.vecMul, dotProduct, Matrix.mul_apply, Fin.sum_univ_two, h1])
   set e := Y.val 0 1 * ((((g * a)⁻¹ * u₁)⁻¹ : (A F)ˣ) : A F)
   obtain ⟨ξ, hξ⟩ := hQ e
   obtain ⟨γ, hγ⟩ := _root_.UpperTheory.ConvolutionTheory.R2.Pp.rat_n ξ

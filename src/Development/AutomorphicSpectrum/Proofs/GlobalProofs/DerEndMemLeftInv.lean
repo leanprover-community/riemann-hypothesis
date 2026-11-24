@@ -636,7 +636,7 @@ open GlobalTheory.UAut GlobalTheory.AdelicU GlobalTheory.SiegelSet
 
 namespace GlobalTheory.CompanionTheory.CuspSmooth
 
-theorem mem_Sm_blockEmb_smFun : ∀ (D : D7) [_root_.NumberField.IsTotallyComplex D.host.E] (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)) (hθ : IsInfFam θ)
+theorem mem_Sm_blockEmb_smFun : ∀ (D : D7) [_root_.NumberField.IsTotallyComplex D.host.E] (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)) (_ : IsInfFam θ)
     (V : HSp D) (m : ℕ) (X Y : Matrix (Fin V.rank) (Fin m) D.host.E),
     IsWittFrame D.sp.cm.sig V.gram X Y → ∀ (l d : ℕ) (h : l + d ≤ m)
     (ι : GlobalTheory.CuspRep.GA D.host.E d →* GA D V), GlobalTheory.BlockForms.IsBlockEmb D.sp.cm.sig V.gram X Y h ι →
@@ -694,7 +694,7 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.Published GlobalTheory.Published.AutFin GlobalTheory.StdPar GlobalTheory.ThK.SmoothLev GlobalTheory.CompanionTheory.Hypotheses₂.ConstFin GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart
 open GlobalTheory.UAut GlobalTheory.AdelicU GlobalTheory.SiegelSet
 
-theorem _root_.GlobalTheory.T.automorphic_function_restrict_block : ∀ (D : D7) [_root_.NumberField.IsTotallyComplex D.host.E] (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)) (hθ : IsInfFam θ)
+theorem _root_.GlobalTheory.T.automorphic_function_restrict_block : ∀ (D : D7) [_root_.NumberField.IsTotallyComplex D.host.E] (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)) (_ : IsInfFam θ)
     (V : HSp D) (m : ℕ) (X Y : Matrix (Fin V.rank) (Fin m) D.host.E),
     IsWittFrame D.sp.cm.sig V.gram X Y → ∀ (l d : ℕ) (h : l + d ≤ m)
     (ι : GlobalTheory.CuspRep.GA D.host.E d →* GA D V), GlobalTheory.BlockForms.IsBlockEmb D.sp.cm.sig V.gram X Y h ι →
@@ -1080,7 +1080,7 @@ theorem glRel_conj_rev (P Q : Matrix (Fin n) (Fin n) ℂ) (hQP : Q * P = 1) :
   split_ifs <;> simp
   abel
 
-theorem span_conj (P Q : Matrix (Fin n) (Fin n) ℂ) (hPQ : P * Q = 1) (hQP : Q * P = 1) :
+theorem span_conj (P Q : Matrix (Fin n) (Fin n) ℂ) (hPQ : P * Q = 1) :
     Submodule.span ℂ (Set.range fun p : Fin n × Fin n => P * Matrix.single p.1 p.2 (1 : ℂ) * Q) = ⊤ := by
   rw [eq_top_iff]
   intro Z _
@@ -1098,7 +1098,7 @@ theorem span_conj (P Q : Matrix (Fin n) (Fin n) ℂ) (hPQ : P * Q = 1) (hQP : Q 
 
 theorem span_conj_rev (P Q : Matrix (Fin n) (Fin n) ℂ) (hPQ : P * Q = 1) (hQP : Q * P = 1) :
     Submodule.span ℂ (Set.range fun p : Fin n × Fin n => -(P * Matrix.single p.2.rev p.1.rev (1 : ℂ) * Q)) = ⊤ := by
-  rw [eq_top_iff, ← span_conj P Q hPQ hQP]
+  rw [eq_top_iff, ← span_conj P Q hPQ]
   refine Submodule.span_le.2 ?_
   rintro _ ⟨⟨a, b⟩, rfl⟩
   have := (Submodule.span ℂ (Set.range fun p : Fin n × Fin n => -(P * Matrix.single p.2.rev p.1.rev (1 : ℂ) * Q))).neg_mem
@@ -1140,7 +1140,7 @@ theorem monic_block : ∀ (D : D7) [_root_.NumberField.IsTotallyComplex D.host.E
           Polynomial.aeval (cap (a := d) τ u) q f = 0 := by
     rcases hτ' with e | e
     · subst e
-      exact core hθ T ι hN hsm τ' _ (c τ') (fun p q => P * Matrix.single p q 1 * Q) (glRel_conj P Q hQP) (span_conj P Q hPQ hQP)
+      exact core hθ T ι hN hsm τ' _ (c τ') (fun p q => P * Matrix.single p q 1 * Q) (glRel_conj P Q hQP) (span_conj P Q hPQ)
         (fun p q hpq H hH x => van hθ hW T h hι hblk hend hprev hC τ' p q hpq H hH x)
         (fun F f hf i j p q hp hq x => resX hW h hι hC τ' F f hf i j p q hp hq x) u
     · have e' : τ = NumberField.ComplexEmbedding.conjugate (tauE D τ') := by

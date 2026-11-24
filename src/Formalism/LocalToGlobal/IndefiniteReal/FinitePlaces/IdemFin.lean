@@ -86,7 +86,7 @@ theorem conj_idem_eq {P Q : HeightOneSpectrum (𝓞 D.host.E)} {x y : AE D} (hx 
     (HeightOneSpectrum.ext ((belowPl P).isMaximal.eq_of_le (belowPl Q).isPrime.ne_top hle)).symm
   have hs' := below_of_idemAt hy
   rw [hbel] at hs'
-  rcases idem_class P hsp e₀ ι hs₀ hz hκ he₀.1.1 he₀.1.2.1 y hy.1.1 hy.1.2.1 hs' with h | h
+  rcases idem_class P e₀ ι hs₀ hz he₀.1.1 he₀.1.2.1 y hy.1.1 hy.1.2.1 hs' with h | h
   · exfalso
     rw [← hx0] at h
     have hPQ : P = Q := pin_eq hx (h ▸ hy)

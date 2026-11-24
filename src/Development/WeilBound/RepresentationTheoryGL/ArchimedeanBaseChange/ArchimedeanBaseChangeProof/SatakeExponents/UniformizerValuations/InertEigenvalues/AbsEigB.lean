@@ -1044,7 +1044,7 @@ private lemma key {E : Type} [AddCommGroup E] [Module ℂ E] [FiniteDimensional 
 end CommutingFamilyCommonEigenvector
 
 theorem UpperTheory.Reformulated.B.Ygb8.main :
-    ∀ (d : ℕ) (E : Type) [inst : AddCommGroup E] [inst_1 : _root_.Module ℂ E] [FiniteDimensional ℂ E] {I : Type}
+    ∀ (d : ℕ) (E : Type) [AddCommGroup E] [_root_.Module ℂ E] [FiniteDimensional ℂ E] {I : Type}
       (T : I → Module.End ℂ E),
       (∀ (a b : I), Commute (T a) (T b)) →
         Module.finrank ℂ E = d → (0 : ℕ) < d → ∃ (w : E), w ≠ (0 : E) ∧ ∃ (c : I → ℂ), ∀ (i : I), (T i : E → E) w = c i • w := by

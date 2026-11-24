@@ -195,7 +195,7 @@ private lemma zpow_neg_val_eq_inv_pow_val_of_isPrimitiveRoot {M : Type} [Field M
 
 alias galE_of_lift := _root_.Formalism.FrobeniusOrbits.Galois.galE_lift
 
-theorem galE_aE (hqd : HypOdd q d) (h : IsLayer (e + 2) q d ζ a b)
+theorem galE_aE (h : IsLayer (e + 2) q d ζ a b)
     (σ : hostE ζ a b ≃ₐ[ℚ] hostE ζ a b) :
     ((σ (aE ζ a b) : hostE ζ a b) : L) = ((((galE e ζ a b σ).1.1 : ℤˣ) : ℤ) : L) * a := by
   have ha : (aE ζ a b) ^ 2 = -((q : ℕ) : hostE ζ a b) := by
@@ -217,7 +217,7 @@ theorem galE_aE (hqd : HypOdd q d) (h : IsLayer (e + 2) q d ζ a b)
     · rw [h1]
       simp [aE]
 
-theorem galE_bE (hqd : HypOdd q d) (h : IsLayer (e + 2) q d ζ a b)
+theorem galE_bE (h : IsLayer (e + 2) q d ζ a b)
     (σ : hostE ζ a b ≃ₐ[ℚ] hostE ζ a b) :
     ((σ (bE ζ a b) : hostE ζ a b) : L) = ((((galE e ζ a b σ).1.2 : ℤˣ) : ℤ) : L) * b := by
   have ha : (bE ζ a b) ^ 2 = -((d : ℕ) : hostE ζ a b) := by

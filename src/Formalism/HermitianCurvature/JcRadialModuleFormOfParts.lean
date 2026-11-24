@@ -495,7 +495,7 @@ open Classical
 
 theorem firstSt_inj {w : List C.Letter} : ∀ ys : List ℝ, Function.Injective (KB.firstSt (w := w) ys)
   | [] => fun _ _ h => h
-  | _ :: ys => fun e e' h => firstSt_inj ys (Fin.cons_right_injective (α := fun _ => Fin 2) (0 : Fin 2) h)
+  | _ :: ys => fun _ _ h => firstSt_inj ys (Fin.cons_right_injective (α := fun _ => Fin 2) (0 : Fin 2) h)
 
 theorem lam_sum_eq {K d : ℕ} (grid : Fin K → Fin (d + 1) → ℝ) :
     ∑ n : Fin K → Fin (d + 1), |∏ b, F7.lagCo (grid b) (n b)| = ∏ b, ∑ i, |F7.lagCo (grid b) i| := by
@@ -522,7 +522,7 @@ theorem lam_sum_le {K d : ℕ} (grid : Fin K → Fin (d + 1) → ℝ) (B : ℝ)
         Finset.prod_le_prod₀ (fun b _ => Finset.sum_nonneg fun i _ => abs_nonneg _) fun b _ => hb b
     _ = B ^ K := by simp
 
-theorem zpow_sq_eq (x : ℝ) (hx : 0 < x) (ν : ℤ) : (x ^ ν) ^ 2 = x⁻¹ ^ (-(2 * ν)) := by
+theorem zpow_sq_eq (x : ℝ) (ν : ℤ) : (x ^ ν) ^ 2 = x⁻¹ ^ (-(2 * ν)) := by
   rw [inv_zpow', neg_neg, ← zpow_natCast, ← zpow_mul, mul_comm]
   norm_num
 
@@ -793,7 +793,7 @@ open Classical
 
 theorem topLocB : TopLocB := by
   intro hDT hVT hTR Cb Cc E _ _ _ Wp Wq _ _ _ _ _ _ S p f χ A₀ hC hB
-  refine ⟨fun s hs2 hsr v => lamTop_thr hC hB s hs2 hsr v, fun F hF (v : Fin S.f) => ?_⟩
+  refine ⟨fun s hs2 hsr v => lamTop_thr hC hB s hsr v, fun F hF (v : Fin S.f) => ?_⟩
   have hB' := hB
   obtain ⟨hg1, hg2, -, -, -, -, -, -, -, -, hGo, hGr, -, -, -, hv⟩ := hB'
   obtain ⟨hl0, -⟩ := hv v
@@ -918,7 +918,7 @@ theorem topLocB : TopLocB := by
       have e2 : (S.G.r : ℤ) + 2 - ((S.G.r + 2 - s : ℕ) : ℤ) = (s : ℤ) := by push_cast; omega
       have e3 : (S.g : ℝ) = S.G.g := by unfold C.HidaSetting.g Sz.Glob.g; push_cast; ring
       have e4 : S.G.r + 2 - s - 1 = d := by omega
-      rw [e2, e1, e4, hlvdef, zpow_sq_eq _ (by positivity), inv_div, e3, hBdef, ← pow_mul, _root_.Formalism.FourierDecayAlt.P.PBL.ntop_eq_N',
+      rw [e2, e1, e4, hlvdef, zpow_sq_eq _, inv_div, e3, hBdef, ← pow_mul, _root_.Formalism.FourierDecayAlt.P.PBL.ntop_eq_N',
         len_eq_lenI', hC0, mul_comm d 2]
       ring
     have hfin : ‖c‖ ^ 2 * Λ * C0 ^ C.Kst * Λ ≤ (‖t‖ * lamTop S (S.G.r + 2 - s) v) ^ (2 * C.Kst) := by
@@ -1378,7 +1378,7 @@ theorem thr_plus3 (c0 Cc R X N A : ℝ) (hc : max (4 * c0) 0 ≤ Cc) (hR : 0 ≤
       _ = (4 * c0) * R * (N * X ^ 2 + X ^ 3) := by ring
       _ ≤ Cc * R * (N * X ^ 2 + X ^ 3) := by gcongr
 
-theorem bound_absorb (K C M y a b : ℝ) (_hM : 0 ≤ M) (hy : 0 ≤ y) (_hb : 0 ≤ b) (hK : 0 ≤ K)
+theorem bound_absorb (K C M y a b : ℝ) (hy : 0 ≤ y) (hK : 0 ≤ K)
     (ha : a ≤ C * y) (hyM : y ≤ M * b) : K * a ≤ (K * |C| * M) * b := by
   have h1 : C * y ≤ |C| * (M * b) := le_trans (mul_le_mul_of_nonneg_right (le_abs_self C) hy)
     (mul_le_mul_of_nonneg_left hyM (abs_nonneg C))
@@ -1461,8 +1461,8 @@ theorem decayUnif_of_place (hP : P5.ThmPActualCpt) (hRH : KB.RadHead) (hHT : KB.
       have hnl : ‖(lam : ℂ) * c‖ = lam * ‖c‖ := by
         rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg hlam_pos.le]
       rw [hnl] at hb1
-      have := bound_absorb K1 C ((max 1 lam⁻¹) ^ 3) (((1 + lam * ‖c‖) ^ 3)⁻¹) _ _ (by positivity) (by positivity)
-        hb (abs_nonneg _) hb1 (decay_scale lam ‖c‖ hlam_pos (norm_nonneg _))
+      have := bound_absorb K1 C ((max 1 lam⁻¹) ^ 3) (((1 + lam * ‖c‖) ^ 3)⁻¹) _ _ (by positivity)
+        (abs_nonneg _) hb1 (decay_scale lam ‖c‖ hlam_pos (norm_nonneg _))
       have h2 : 0 ≤ K2 * |C| * (max 1 tw⁻¹) ^ 3 * ((1 + ‖c‖) ^ 3)⁻¹ := by positivity
       calc K1 * _ ≤ (K1 * |C| * (max 1 lam⁻¹) ^ 3) * ((1 + ‖c‖) ^ 3)⁻¹ := this
         _ ≤ _ := by nlinarith
@@ -1471,8 +1471,8 @@ theorem decayUnif_of_place (hP : P5.ThmPActualCpt) (hRH : KB.RadHead) (hHT : KB.
       rw [hsW l] at hb1
       rw [int_gramLoc_setC hPS hB _ v ε (hcpt n) j hj (w.1 v) hw l h h' hloc.1 hloc.2, norm_mul,
         Complex.norm_real, Real.norm_eq_abs]
-      have := bound_absorb K2 C ((max 1 tw⁻¹) ^ 3) (((1 + tw * ‖l‖) ^ 3)⁻¹) _ _ (by positivity) (by positivity)
-        hb (abs_nonneg _) hb1 (decay_scale tw ‖l‖ htw_pos (norm_nonneg _))
+      have := bound_absorb K2 C ((max 1 tw⁻¹) ^ 3) (((1 + tw * ‖l‖) ^ 3)⁻¹) _ _ (by positivity)
+        (abs_nonneg _) hb1 (decay_scale tw ‖l‖ htw_pos (norm_nonneg _))
       have h2 : 0 ≤ K1 * |C| * (max 1 lam⁻¹) ^ 3 * ((1 + ‖l‖) ^ 3)⁻¹ := by positivity
       calc K2 * _ ≤ (K2 * |C| * (max 1 tw⁻¹) ^ 3) * ((1 + ‖l‖) ^ 3)⁻¹ := this
         _ ≤ _ := by nlinarith

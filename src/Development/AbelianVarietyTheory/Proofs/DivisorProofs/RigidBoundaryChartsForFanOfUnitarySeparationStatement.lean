@@ -1053,7 +1053,7 @@ theorem not_X_dvd_X {σ k : Type} [Field k] {a b : σ} (hab : a ≠ b) :
     ¬ (MvPowerSeries.X a : MvPowerSeries σ k) ∣ MvPowerSeries.X b := by
   classical
   intro h
-  have := MvPowerSeries.X_dvd_iff.1 h (Finsupp.single b 1) (by simp [Finsupp.single_apply, hab])
+  have := MvPowerSeries.X_dvd_iff.1 h (Finsupp.single b 1) (by simp [hab])
   simp [MvPowerSeries.coeff_X] at this
 
 variable (k : Type) [Field k] (m e : ℕ)

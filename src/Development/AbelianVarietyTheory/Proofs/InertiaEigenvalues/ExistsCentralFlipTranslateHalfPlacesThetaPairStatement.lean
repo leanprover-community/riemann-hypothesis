@@ -106,7 +106,7 @@ theorem symplO_nsmul_right (V W : HSp D) (x y : WO V W) (k : ℕ) :
   | zero => rw [zero_nsmul, zero_nsmul, symplO_zero_right]
   | succ k ih => rw [succ_nsmul, _root_.GlobalTheory.LatVac.symplO_add_right, ih, succ_nsmul]
 
-theorem flipElt_mul_of_half {e eT x : AE D} (m : ℕ) (hx : e * x = x) (h1 : e * eT = eT) (h3 : e * e = e)
+theorem flipElt_mul_of_half {e eT x : AE D} (m : ℕ) (hx : e * x = x) (h3 : e * e = e)
     (h5 : e * cA D eT = 0) : flipElt eT m * x = (e - eT) * x + (m : AE D) * (eT * x) := by
   unfold flipElt
   linear_combination (-(cA D eT * (incA D ((m : D.host.E)⁻¹) - 1) + 1 - e)) * hx +
@@ -216,7 +216,7 @@ theorem flip_translates : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : In
       show HMul.hMul (HMul.hMul (Formalism.L2.Theta.mt W 1) y) (Formalism.L2.Theta.mt V z⁻¹⁻¹) = _
       rw [inv_inv, hz, hmt1, Matrix.one_mul, Matrix.mul_smul, Matrix.mul_one]
       ext i j
-      rw [Matrix.smul_apply, smul_eq_mul, GlobalTheory.FlipTranslates.flipElt_mul_of_half m (hy i j) h1 h3 h5,
+      rw [Matrix.smul_apply, smul_eq_mul, GlobalTheory.FlipTranslates.flipElt_mul_of_half m (hy i j) h3 h5,
         Matrix.add_apply, hb, hlam]
       simp only [Matrix.smul_apply, smul_eq_mul, nsmul_eq_mul]
     have hlamT : IsHalf eT lam := isHalf_nsmul (isHalf_smul h2 y) m
@@ -1037,7 +1037,7 @@ theorem exists_central_flip_step : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ)
       unfold flipScal
       refine mul_ne_zero (inv_ne_zero (Circle.coe_ne_zero _)) (inv_ne_zero ?_)
       rw [Complex.ofReal_ne_zero, Real.sqrt_ne_zero']
-      exact Nat.cast_pos.2 (Nat.pos_of_ne_zero (flipIdx_ne_zero V W T hm0))
+      exact Nat.cast_pos.2 (Nat.pos_of_ne_zero (flipIdx_ne_zero V W T))
     intro M u e e' P O hM hu he hTP he' hz
     exact GlobalTheory.T.centralFlip_maps_halfTranslates_span D ψ θ V W χV χW om ΛV ΛW sW f₀ hV T m eT z _ Y heT hodd hcop hmT hzmt hs hY hom M u e e' P O hM hu he hTP
       (GlobalTheory.T.isIdemSum_conjugatePlaces_subset_eq_flip D e eT e' P T he heT hTP he') hz

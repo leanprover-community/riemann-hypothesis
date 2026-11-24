@@ -89,7 +89,7 @@ variable {V : Type} [AddCommGroup V] [Module L V] {σ : L →+* L} {B : V →ₛ
 def ReflIn (B : V →ₛₗ[σ] V →ₗ[L] L) (N : Submonoid (Module.End L V)) (Λ : Set V) : Prop :=
   ∀ w ∈ Λ, ∀ μ : L, μ ≠ 0 → μ⁻¹ ∈ intL L → B w w = μ + σ μ → refl B w μ ∈ N
 
-theorem exists_param (hσ : ∀ x, σ (σ x) = x) {τ : L} (hτ : τ ∈ intL L) (hτ1 : τ + σ τ = 1) {δ : L}
+theorem exists_param {τ : L} (hτ : τ ∈ intL L) (hτ1 : τ + σ τ = 1) {δ : L}
     (hδ : Valued.v δ = 1) (hδ' : σ δ = -δ) {π : L} (hπ0 : π ≠ 0) (hπ : Valued.v π < 1) (hσπ : σ π = π)
     {A : L} (hA : A ∈ intL L) (hA' : σ A = A) :
     ∃ μ : L, μ ≠ 0 ∧ A = μ + σ μ ∧ ∃ m ∈ intL L, μ⁻¹ = π * m ∧ m * (δ + π * (τ * A)) = 1 := by
@@ -206,8 +206,8 @@ theorem exists_move [FiniteDimensional L V] (hσσ : ∀ x, σ (σ x) = x) (hσ 
     (fun w hw => hR w hw.1) (fun w hw => hR' w hw.1)
     ⟨b + 1, fun v hv => ⟨ha v hv.1, (perp B W e f).smul_mem _ hv.2⟩⟩
   have hδi : Valued.v (-δ⁻¹) = 1 := by rw [Valuation.map_neg, map_inv₀, hδ, inv_one]
-  obtain ⟨μ, hμ0, hμ, p, hp, hμp, hp1⟩ := exists_param hσσ hτ hτ1 hδ hδ' hπ0 hπ1 hσπ hee (hB e e)
-  obtain ⟨μ', hμ0', hμ', p', hp', hμp', hp1'⟩ := exists_param hσσ hτ hτ1 hδi
+  obtain ⟨μ, hμ0, hμ, p, hp, hμp, hp1⟩ := exists_param hτ hτ1 hδ hδ' hπ0 hπ1 hσπ hee (hB e e)
+  obtain ⟨μ', hμ0', hμ', p', hp', hμp', hp1'⟩ := exists_param hτ hτ1 hδi
     (by rw [map_neg, map_inv₀, hδ', inv_neg]) hπ0 hπ1 hσπ hff (hB f f)
   have r₁ := hR' e he μ hμ0 (hμp ▸ mul_mem hπO hp) hμ
   have r₂ := hR f hf μ' hμ0' (hμp' ▸ mul_mem hπO hp') hμ'

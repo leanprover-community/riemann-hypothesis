@@ -237,7 +237,7 @@ theorem map_conj_finprod (S : Set (Pl E)) (F : Pl E → ℂ) (hF : (S ∩ Functi
 end Fm
 
 open Fm in
-theorem fmTr (h3 : Slots) : FmTr := by
+theorem fmTr : FmTr := by
   intro E _ _ _ κ _ S P B e hPS hne L N hL
   have x₀ : ∀ w : P, κ w := fun w => Classical.choice (hne w w.2)
   have hs : ∀ w ∉ P, L.s w = L.ent P x₀ x₀ w := fun w hw => by simp [LM.ent, hw]
@@ -275,7 +275,7 @@ theorem fmTr (h3 : Slots) : FmTr := by
   exact Finset.sum_congr rfl fun x _ => Finset.sum_congr rfl fun y _ => by ring
 
 open Fm in
-theorem fmAlg (h1 : FinConv) (h3 : Slots) : FmAlg := by
+theorem fmAlg (h1 : FinConv) : FmAlg := by
   intro E _ _ _ κ _ S P B e hS hPS L L' hL hL'
   obtain ⟨hv, hC⟩ := h1 E B S hS
   have hm : ∀ φ φ' : ∀ w : Pl E, LF B.a B.b w, IsTestP φ → IsTestP φ' → IsTestP (fun w => mconv (φ w) (φ' w)) :=

@@ -68,7 +68,7 @@ private theorem tri_of_lt (E : ℕ → ℝ) (Y : ℕ → ℂ) (τ : ℝ) (ρ : �
     tri E Y τ ρ a j = (τ : ℂ) * Y a * E j * star (Y j) / ((ρ a : ℂ) * ρ (a + 1)) := by
   unfold tri; rw [ite_eq_right (show ¬ j < a by omega), ite_eq_right (show ¬ j = a by omega)]
 
-theorem tri_gram (E : ℕ → ℝ) (Y : ℕ → ℂ) (τ : ℝ) (ρ : ℕ → ℝ) (hE : ∀ a, E a * E a = 1) (hρ : ∀ a, ρ a ≠ 0)
+theorem tri_gram (E : ℕ → ℝ) (Y : ℕ → ℂ) (τ : ℝ) (ρ : ℕ → ℝ) (hρ : ∀ a, ρ a ≠ 0)
     (h0 : ρ 0 = 1) (hs : ∀ a, (ρ (a + 1) : ℂ) ^ 2 = (ρ a : ℂ) ^ 2 + τ * E a * (Y a * star (Y a))) (i j k : ℕ) :
     ∑ a ∈ Finset.range k, star (tri E Y τ ρ a i) * E a * tri E Y τ ρ a j =
       if k ≤ i ∧ k ≤ j then τ * (E i * Y i) * (E j * star (Y j)) * (1 - 1 / (ρ k : ℂ) ^ 2)
@@ -237,7 +237,7 @@ theorem core (n q : ℕ) (y : Fin n → ℂ) (hy : star y ⬝ᵥ (sgnM n q).mulV
     rw [tri_self]
     exact div_ne_zero (by exact_mod_cast hρ0 _) (by exact_mod_cast hρ0 _)
   · ext i j
-    have key := tri_gram (ReciprocityTheory.ChartRestriction.G.FD.sgn q) Y (2 * t) ρ hE hρ0 h0 hs i j n
+    have key := tri_gram (ReciprocityTheory.ChartRestriction.G.FD.sgn q) Y (2 * t) ρ hρ0 h0 hs i j n
     rw [ite_eq_right (show ¬ (n ≤ (i : ℕ) ∧ n ≤ (j : ℕ)) from fun h => by have := i.isLt; omega),
       Finset.sum_range] at key
     simp only [hY] at key

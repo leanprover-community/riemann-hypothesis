@@ -73,7 +73,7 @@ theorem tensorCoeff_diagAction (ε : Fin n → Bool) (E : Fin n → Fin n → Mo
   rw [diagE, LinearMap.add_apply, map_add (f := _), signedAction_tensor, eT, tcoef_map_left, tcoef_lTensor, coord_comp_sg, tcoef_smul]
 
 theorem line_deg {ε : Fin n → Bool} {lam : Fin n → ℝ} {E : Fin n → Fin n → Module.End ℂ M}
-    (hE : IsGlRep E) (hU : IsInfUnitary ε E) {W : Submodule ℂ M} (hW : IsKIrrHW ε E (lowK ε lam) W)
+    (hE : IsGlRep E) {W : Submodule ℂ M} (hW : IsKIrrHW ε E (lowK ε lam) W)
     {z : TensorProduct ℂ M (Fock n)} (hz : z ∈ lineSub ε E lam W) :
     z ∈ LinearMap.range (TensorProduct.map W.subtype (⋀[ℂ]^(sDeg ε) (Fin n × Fin n → ℂ)).subtype) := by
   obtain ⟨⟨hK, hT⟩, hP⟩ := hz
@@ -123,7 +123,7 @@ theorem line_deg {ε : Fin n → Bool} {lam : Fin n → ℝ} {E : Fin n → Fin 
       simp [TensorProduct.map_tmul]⟩
 
 theorem line_ker {ε : Fin n → Bool} {lam : Fin n → ℝ} {E : Fin n → Fin n → Module.End ℂ M}
-    (hE : IsGlRep E) (hU : IsInfUnitary ε E) {W : Submodule ℂ M} (hW : IsKIrrHW ε E (lowK ε lam) W)
+    (hE : IsGlRep E) (hU : IsInfUnitary ε E) {W : Submodule ℂ M}
     (hc : ∀ v ∈ W, casimir E v = ((casVal lam : ℝ) : ℂ) • v)
     {z : TensorProduct ℂ M (Fock n)} (hz : z ∈ lineSub ε E lam W) : (dOp ε (eT E) cpT + dOp' ε (eT E) cmT) z = 0 := by
   obtain ⟨⟨hK, hT⟩, hP⟩ := hz

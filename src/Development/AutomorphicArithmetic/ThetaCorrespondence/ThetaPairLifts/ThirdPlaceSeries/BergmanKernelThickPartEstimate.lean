@@ -704,7 +704,7 @@ theorem selfDual_and_congr_free (E : Type) [Field E] [NumberField E] [IsCMField 
         exact ⟨b, sub_eq_iff_eq_add'.1 hb⟩
   have hS : GlobalTheory.EqCovol.IsSelfDualTr (U.X k) := by
     intro x
-    have hd := (GlobalTheory.HermModel.rank_integral_selfDual E H _ r _ _ φ0 hξ' hlat).2.2.2 x
+    have hd := (GlobalTheory.HermModel.rank_integral_selfDual E H _ r _ _ φ0 hlat).2.2.2 x
     show x ∈ (U.X k).Λ ↔ ∀ y ∈ (U.X k).Λ, ∃ n : ℤ,
       Algebra.trace ℚ E (-(U.X k).ξ0 * herm (U.X k).Gm x y) = n
     rw [← hΛ, ← hd]

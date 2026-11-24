@@ -83,7 +83,7 @@ theorem emb_injective {R : Ranks} (H : Host R) : Function.Injective H.emb := by
     AlgEquiv.ext fun x => H.φ₀.injective (RingHom.congr_fun h x)
   exact (H.gal).symm.injective h1
 
-theorem embT_injective {R : Ranks} (H : Host R) : Function.Injective (embT H) := fun τ τ' h =>
+theorem embT_injective {R : Ranks} (H : Host R) : Function.Injective (embT H) := fun _ _ h =>
   Subtype.ext (emb_injective H h)
 
 theorem bb_ne_bot {R : Ranks} (H : Host R) : H.𝔟 ≠ ⊥ := by

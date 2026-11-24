@@ -62,9 +62,9 @@ theorem dualCl_eq (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (x : Irr
   unfold dualCl
   rw [dite_eq_left (isIrreducible_contra hA _ x.2.rep.smooth x.2.rep.irr)]
 
-theorem nonempty_equiv_contra_twist (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) {n : ℕ} {V : Type} [AddCommGroup V]
-    [Module ℂ V] (π : Representation ℂ (GL (Fin n) k) V) (hs : IsSmooth π) (hi : π.IsIrreducible)
-    {χ χ' : kˣ →* ℂˣ} (hχ : IsSmoothChar χ) (hχ' : IsSmoothChar χ') (h : χ * χ' = 1) :
+theorem nonempty_equiv_contra_twist {n : ℕ} {V : Type} [AddCommGroup V]
+    [Module ℂ V] (π : Representation ℂ (GL (Fin n) k) V)
+    {χ χ' : kˣ →* ℂˣ} (hχ : IsSmoothChar χ) (h : χ * χ' = 1) :
     Nonempty ((twist (contra π) (detChar (Fin n) χ')).Equiv (contra (twist π (detChar (Fin n) χ)))) := by
   have hψ : IsSmoothChar (detChar (Fin n) χ) := hχ.detChar
   have hinv : ∀ g : GL (Fin n) k,
@@ -175,7 +175,7 @@ private theorem nonempty_contra_equiv_of_equiv {G V W : Type} [Group G] [Topolog
                 Representation.IntertwiningMap.isIntertwining] }⟩
 
 theorem dualCl_nu : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-    (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (x : IrrGL (k := k)) (s : ℂ), dualCl (x.nu s) = (dualCl x).nu (-s) := by
+    (_ : GlobalTheory.Published.IrreducibleAdmissibleGL) (x : IrrGL (k := k)) (s : ℂ), dualCl (x.nu s) = (dualCl x).nu (-s) := by
   intro k _ _ _ _ hA x s
   have hs' : IsSmoothChar (absPow k s) := isSmoothChar_of_isUnram (isUnram_absPow k s)
   have hn' : IsSmoothChar (absPow k (-s)) := isSmoothChar_of_isUnram (isUnram_absPow k (-s))
@@ -186,7 +186,7 @@ theorem dualCl_nu : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace 
   obtain ⟨e1⟩ : Nonempty ((x.nu s).rep.Equiv (twist x.rep (detChar (Fin x.fst) (absPow k s)))) :=
     IrrRep.nonempty_equiv_rep (irrTwist x.snd.rep (detChar (Fin x.fst) (absPow k s)) hψ)
   obtain ⟨e2⟩ := nonempty_contra_equiv_of_equiv e1
-  obtain ⟨e3⟩ := nonempty_equiv_contra_twist hA x.rep x.2.rep.smooth x.2.rep.irr hs' hn' hmul
+  obtain ⟨e3⟩ := nonempty_equiv_contra_twist x.rep hs' hmul
   have hc := isIrreducible_contra hA _ x.2.rep.smooth x.2.rep.irr
   obtain ⟨e4⟩ := IrrRep.nonempty_equiv_rep
     (⟨_, contra x.rep, isSmooth_contra _, hc⟩ : IrrRep (GL (Fin x.fst) k))

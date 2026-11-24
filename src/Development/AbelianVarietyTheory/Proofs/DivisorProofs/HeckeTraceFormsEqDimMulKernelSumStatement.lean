@@ -373,7 +373,7 @@ theorem toSub_cLoc_val (hE : Unr E) (w : Pl E) (x : finU (E := E) (n := n)) :
   unfold toSub
   rw [dite_eq_left (cLoc_mem_UL E hE n w x)]
 
-theorem factor_ne_zero (S : Set (Pl E)) (K' : ∀ w : Pl E, Subgroup (UL n w)) (hK : ∀ᶠ w in cofinite, K' w = KL n w)
+theorem factor_ne_zero (S : Set (Pl E)) (K' : ∀ w : Pl E, Subgroup (UL n w))
     (f : ∀ w : Pl E, UL n w → ℂ) (hf : ∀ᶠ w in cofinite, f w = (KL n w : Set (UL n w)).indicator 1)
     (x : finU (E := E) (n := n)) (hx : globFn S f x ≠ 0) :
     ∀ w ∈ S, f w (toSub (UL n w) (cLoc w (x : UA E n))) ≠ 0 := by
@@ -409,7 +409,7 @@ theorem GlobalTheory.BCT.finite_globFn_ne_zero : ∀ (E : Type) [Field E] [Numbe
   intro E _ _ _ hE n S K' hK f hf
   set F : Set (Pl E) := {w | ¬ (K' w = KL n w ∧ f w = (KL n w : Set (UL n w)).indicator 1)} with hF
   have hFfin : F.Finite := Filter.eventually_cofinite.1 (hK.2.and hf.2)
-  have key := factor_ne_zero S K' hK.2 f hf.2
+  have key := factor_ne_zero S K' f hf.2
   have inK : ∀ x : finU (E := E) (n := n), globFn S f x ≠ 0 → ∀ w ∈ S, w ∉ F →
       toSub (UL n w) (cLoc w (x : UA E n)) ∈ K' w := by
     intro x hx w hwS hwF

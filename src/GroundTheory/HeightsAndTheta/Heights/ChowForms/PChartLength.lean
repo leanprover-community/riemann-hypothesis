@@ -92,7 +92,7 @@ theorem finsum_maximalSpectrum_ord_eq_sum {O B ι : Type*} [CommRing O] [CommRin
         simp only [ψ, dite_eq_left hmax]
         exact hm i hi hmax.isPrime
 
-theorem ChartLength.proof (h₁ : IncIdealBelow.Statement) (h₂ : SpecFirstMemIncIdeal.Statement)
+theorem ChartLength.proof (h₂ : SpecFirstMemIncIdeal.Statement)
     (h₃ : ChartFinite.Statement) (h₄ : LengthFiniteAlgebra.Statement) (h₅ : ChartMaxIdeals.Statement)
     (h₆ : ChartLocalOrder.Statement) (h₇ : ChartResidueDegree.Statement) : ChartLength.Statement := by
   intro F _ _ n e I f t u q p _ hI hf hu hq hp hqt

@@ -80,8 +80,8 @@ variable (K) in
 @[reducible] def Charts.Ten : K.Obj ⥤ CommAlgCat.{0} D where
   obj T := CommAlgCat.of D (T.ten D)
   map f := CommAlgCat.ofHom (Charts.Hom.ten D f)
-  map_id T := CommAlgCat.hom_ext (Algebra.TensorProduct.ext' fun _ _ ↦ rfl)
-  map_comp f f' := CommAlgCat.hom_ext (Algebra.TensorProduct.ext' fun _ _ ↦ rfl)
+  map_id _ := CommAlgCat.hom_ext (Algebra.TensorProduct.ext' fun _ _ ↦ rfl)
+  map_comp _ _ := CommAlgCat.hom_ext (Algebra.TensorProduct.ext' fun _ _ ↦ rfl)
 
 variable {D}
 

@@ -59,7 +59,7 @@ section Mat
 
 variable {N j : ℕ}
 
-theorem transv_isBlockDiag {a b ca cb : Fin N} (hb : (b : ℕ) = a + 1) (hab : (b : ℕ) < j ∨ j ≤ (a : ℕ))
+theorem transv_isBlockDiag {a b ca cb : Fin N} (hb : (b : ℕ) = a + 1)
     (hca : (ca : ℕ) = lastCol N j a) (hcb : (cb : ℕ) = ca + 1) (t : ℂ) :
     IsBlockDiag j (1 + Matrix.single cb ca t : Matrix (Fin N) (Fin N) ℂ) := by
   have same : ((ca : ℕ) < N - j ↔ (cb : ℕ) < N - j) := by
@@ -109,7 +109,7 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
     by_cases e : τ' = τ
     · subst e
       rw [Function.update_self]
-      refine ⟨(hh τ').1.mul (transv_isBlockDiag hb hab hca hcb t), ?_⟩
+      refine ⟨(hh τ').1.mul (transv_isBlockDiag hb hca hcb t), ?_⟩
       rw [Matrix.det_mul, transv_det_one hcb, mul_one]
       exact (hh τ').2
     · rw [Function.update_of_ne e]

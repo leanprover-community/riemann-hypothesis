@@ -127,7 +127,7 @@ theorem IsOpp.exists_isometry_extend {E : Type} [Field E] [NumberField E] [IsCMF
   let α : D.La →ₗ[𝓞 E] Z' :=
     { toFun := c
       map_add' := fun a a' => (hu _ _ fun z => by
-        simp only [Submodule.coe_add, map_add (f := _), hc, map_sub, LinearMap.sub_apply, map_add (f := _)]
+        simp only [Submodule.coe_add, hc, map_sub, LinearMap.sub_apply, map_add (f := _)]
         abel).symm
       map_smul' := fun x a => (hu _ _ fun z => by
         have key : ∀ u w : D.La, D.EF u (x • w) = D.EF (H.bar x • u) w := fun u w => by rw [D.adj, bar_bar]

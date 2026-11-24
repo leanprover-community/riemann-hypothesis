@@ -108,7 +108,7 @@ def Compat (s : ∀ i : L.ι, Γ(Z, b ⁻¹ᵁ L.U i)ˣ) : Prop :=
 variable (j : L.ι) (hj : ⊤ ≤ b ⁻¹ᵁ L.U j)
 
 def extend (t : Γ(Z, ⊤)ˣ) (i : L.ι) : Γ(Z, b ⁻¹ᵁ L.U i)ˣ :=
-  pb b (L.U j ⊓ L.U i) _ (fun x hx => ⟨hj trivial, hx⟩) (L.g j i) * res le_top t
+  pb b (L.U j ⊓ L.U i) _ (fun _ hx => ⟨hj trivial, hx⟩) (L.g j i) * res le_top t
 
 variable {L}
 

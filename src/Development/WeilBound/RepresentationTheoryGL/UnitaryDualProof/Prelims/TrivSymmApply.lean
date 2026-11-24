@@ -167,7 +167,7 @@ theorem eq_fap [LocallyCompactSpace (Fib p)] (α : SB G) (φ : SB (Fib p)) (f : 
     f = fap hp σ hpc μH α φ := by
   apply Subtype.ext
   funext x
-  have hx : x = σ.s (p x) • (zpart hp σ x).1 := by simp [zpart, ← smul_smul]
+  have hx : x = σ.s (p x) • (zpart hp σ x).1 := by simp [zpart]
   rw [hx, hf, fap_smul]
 
 end Fap

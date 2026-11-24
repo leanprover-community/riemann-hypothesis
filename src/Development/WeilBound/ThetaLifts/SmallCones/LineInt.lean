@@ -290,7 +290,7 @@ theorem exists_so {B : Base F E} {M : Model σ X W} (hM : M.IsGood B.ψ) {ι : T
 theorem dom_int {M : Model σ X W} {om : Rep σ X W} (hom : ∀ x, ∀ Φ ∈ schA F (Fin n × Fin d), om x Φ ∈ schA F _)
     {𝓕 : Set ((Fin n × Fin d → Af F) → ℂ)} (hD : Dom M om 𝓕) {ι : Type} [Fintype ι] {φ : ι → (Fin n × Fin d → Af F) → ℂ}
     (h1 : ∀ i, φ i ∈ SB _) (h2 : ∀ i, φ i ∈ 𝓕) {α : Type} [MeasurableSpace α] (μ : Measure α) (g : ι → α → SInf F (Fin n × Fin d))
-    (t : α → ℝ) (ht0 : ∀ l, 0 ≤ t l)
+    (t : α → ℝ)
     (hg : ∀ q : Seminorm ℂ (SInf F (Fin n × Fin d)), Continuous q → ∀ i, Integrable (fun l => q (g i l) * t l) μ) (h : UA σ W.J) :
     ∫⁻ l, (∫⁻ x in M.dom, ‖theta om (∑ i, pureA F (g i l) (φ i)) x h‖ₑ ∂M.μ) * ENNReal.ofReal (t l) ∂μ < ⊤ := by
   choose p k G hp hG hG' hb using fun i => hD _ (h2 i)
@@ -326,12 +326,12 @@ theorem lineInt_of (hS : Slice) (hI : SchInt) (hT : TateAbs) : LineInt := by
   refine ⟨fun om₁ hom hD h₁ => ?_, ?_⟩
   · rcases hD with hD | ⟨hD, hso⟩
     · simp only [h3]
-      exact dom_int hom hD h1 h1 μ (fun i l => g i l) _ (fun l => by positivity) h4 h₁
+      exact dom_int hom hD h1 h1 μ (fun i l => g i l) _ h4 h₁
     · obtain ⟨φ', hφ', h5⟩ := exists_so hM₁ φ
       have h6 : ∀ a, e (M.co.rho B.ψ (τ a • incM F v₀) Ψ) = ∑ i, pureA F (g i a) (φ' i) := fun a => by
         rw [h3, h5 _ (h3 a ▸ hso _)]
       simp only [h6]
-      exact dom_int hom hD (fun i => (hφ' i).1) hφ' μ (fun i l => g i l) _ (fun l => by positivity) h4 h₁
+      exact dom_int hom hD (fun i => (hφ' i).1) hφ' μ (fun i l => g i l) _ h4 h₁
   obtain ⟨-, -, _, -, -, _, -⟩ := ideleTop F E
   let c : (AE F E)ˣ → ℂ := fun l => (ν l : ℂ) * ((absE F E l : ℝ) : ℂ) ^ z
   have hc : Continuous c := (continuous_subtype_val.comp hν).mul

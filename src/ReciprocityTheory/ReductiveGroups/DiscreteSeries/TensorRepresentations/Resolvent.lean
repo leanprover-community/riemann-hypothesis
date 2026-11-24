@@ -93,7 +93,7 @@ theorem tensVd_isGlRep {E : Fin n → Fin n → Module.End ℂ M} (hE : IsGlRep 
   split_ifs <;> subst_vars <;>
     simp only [map_zero, add_zero, sub_zero, zero_sub, sub_self] <;> first | (exfalso; simp_all; done) | abel
 
-theorem casimir_tensV {E : Fin n → Fin n → Module.End ℂ M} (hE : IsGlRep E) :
+theorem casimir_tensV {E : Fin n → Fin n → Module.End ℂ M} :
     casimir (tensV E) = diagOp (casimir E) + (n : ℂ) • 1 + (2 : ℂ) • eeV E := by
   refine LinearMap.ext fun f => funext fun x => ?_
   simp only [casimir, LinearMap.add_apply, LinearMap.smul_apply, LinearMap.sum_apply, Finset.sum_apply,
@@ -110,7 +110,7 @@ theorem casimir_tensV {E : Fin n → Fin n → Module.End ℂ M} (hE : IsGlRep E
     Nat.cast_smul_eq_nsmul, two_smul]
   abel
 
-theorem casimir_tensVd {E : Fin n → Fin n → Module.End ℂ M} (hE : IsGlRep E) :
+theorem casimir_tensVd {E : Fin n → Fin n → Module.End ℂ M} :
     casimir (tensVd E) = diagOp (casimir E) + (n : ℂ) • 1 + (2 : ℂ) • eeVd E := by
   refine LinearMap.ext fun f => funext fun x => ?_
   simp only [casimir, LinearMap.add_apply, LinearMap.smul_apply, LinearMap.sum_apply, Finset.sum_apply,

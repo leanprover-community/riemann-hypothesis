@@ -459,7 +459,7 @@ theorem card_eq_chainSum (hSt : StWeylAt) (LL : ChainLetters N) {q : ℕ} (J : F
     simp only [sK, Set.mem_ofPred_eq] at this ⊢
     rw [← hxy]; exact this) x0, Nat.card_eq_fintype_card, Fintype.card_subtype]
 
-theorem dimY_of {D : Formalism.BasicNotions.D7} (hA2 : Formalism.MainNotions.CovariantDegrees.HyperplaneRank D) (hA3 : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D) (hSt : StWeylAt) :
+theorem dimY_of {D : Formalism.BasicNotions.D7} (hA2 : Formalism.MainNotions.CovariantDegrees.HyperplaneRank D) (hA3 : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne) (hSt : StWeylAt) :
     DimYAt := by
   intro p _ O _ _ _ S N r _ LL q J M hJ
   have hKz : CharZero (KK O) := dvr_fraction_field_charZero S (Fact.out : p.Prime)

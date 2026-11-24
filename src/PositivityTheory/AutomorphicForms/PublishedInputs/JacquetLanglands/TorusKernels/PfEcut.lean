@@ -30,7 +30,7 @@ theorem kap_pos (a z : P) (ha : a.1.im = 1 ∨ a.1.im = -1) (h : 0 < a.1.im * z.
   rcases ha with ha | ha <;> rw [ha] at h h1 <;> nlinarith
 
 theorem kap_bs_pos {I : Type} (z : X I) (v : I) :
-    0 < kap (bs (fun i => decide (0 < (z v).1.im)) v) (z v) := by
+    0 < kap (bs (fun _ => decide (0 < (z v).1.im)) v) (z v) := by
   have hz := (z v).2
   unfold bs
   by_cases h : 0 < (z v).1.im
@@ -41,7 +41,7 @@ theorem kap_bs_pos {I : Type} (z : X I) (v : I) :
     exact kap_pos _ _ (Or.inr (by simp [iN])) (by simp [iN]; linarith)
 
 theorem Kap_nonneg {I : Type} [Fintype I] (hk0 : ∀ z w : P, 0 ≤ kap z w) (k : I → ℕ) (z w : X I) : 0 ≤ Kap k z w :=
-  Finset.prod_nonneg fun v _ => Real.rpow_nonneg (hk0 _ _) _
+  Finset.prod_nonneg fun _ _ => Real.rpow_nonneg (hk0 _ _) _
 
 
 open Classical in
@@ -50,7 +50,7 @@ def uX {I : Type} [Fintype I] (z : X I) : ℝ := by
   exact ∑ e : I → Bool, Kap (fun _ => 4) (bs e) z
 
 theorem uX_nonneg {I : Type} [Fintype I] (hk0 : ∀ z w : P, 0 ≤ kap z w) (z : X I) : 0 ≤ uX z :=
-  Finset.sum_nonneg fun e _ => Kap_nonneg hk0 _ _ _
+  Finset.sum_nonneg fun _ _ => Kap_nonneg hk0 _ _ _
 
 theorem uX_pos {I : Type} [Fintype I] (hk0 : ∀ z w : P, 0 ≤ kap z w) (z : X I) : 0 < uX z := by
   classical

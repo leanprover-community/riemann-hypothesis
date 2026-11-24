@@ -196,9 +196,9 @@ theorem isStrictPullbackBlowupSeq_id_divisorFamily_of_get_eq
         exact hfin
   · have hcs0 : orderAtLeastLocus T.ideal T.mult = ∅ := Set.not_nonempty_iff_eq_empty.mp hcs
     exact IsStrictPullbackBlowupSeq.of_length_zero _ _ _
-      (divisorFamily_canonicalAlgorithmRules_length_eq_zero hres n L j₂ (T.withBoundary L₂) hV₂ hdim hO hbal
+      (divisorFamily_canonicalAlgorithmRules_length_eq_zero hres n L j₂ (T.withBoundary L₂) hV₂
         hj₂ hcs0)
-      (divisorFamily_canonicalAlgorithmRules_length_eq_zero hres n L j₁ (T.withBoundary L₁) hV₁ hdim hO hbal
+      (divisorFamily_canonicalAlgorithmRules_length_eq_zero hres n L j₁ (T.withBoundary L₁) hV₁
         hj₁ hcs0)
 
 theorem strictBoundaryReindexingInvariance_of_divisorReductionSeqEqAmbient
@@ -365,8 +365,8 @@ theorem isPushforwardBlowupSeq_divisorFamily_canonicalAlgorithmRules (hres : Fun
       exact h0
     refine isPushforwardSequenceOfBlowups_of_length_eq_zero _ _ _ ?_ ?_
     · exact hL.trivial_of_coSupport_empty _ hVJ (lt_of_lt_of_le hdimJ hdim) hcsJ
-    · exact divisorFamily_canonicalAlgorithmRules_length_eq_zero hres n L j T hV hdim hO
-        (hD hV.locallyOfFiniteType) hj hcs
+    · exact divisorFamily_canonicalAlgorithmRules_length_eq_zero hres n L j T hV
+        hj hcs
   · have hpretop : DivisorReduction.containedComponentsIdeal T j hj = ⊤ :=
       hfacts.preIdeal_eq_top_of_imageIdeal T hV j hj J hm hVJ him
     rcases DivisorReduction.divisorReductionSeq_eq_ambientBlowupSeq_or_prepend hres hfacts L j T hV hj hO
@@ -886,7 +886,7 @@ theorem isBoundaryDivisorReduction_divisorFamily_canonicalAlgorithmRules
       (strictPullbackOfSmoothBaseChangeOnDivisor_of_isMaxOrderReduction hres hin.divisorReductionTerminationProperties hin.baseChange n L O hL j)
       hshapeN T hV hdim hO hbal hj Y q h hq E' hBE htake hV' hdim' hO' hDB' hjE2
   · intro T hV hdim hO hbal hj hcs
-    exact divisorFamily_canonicalAlgorithmRules_length_eq_zero hres n L j T hV hdim hO hbal hj hcs
+    exact divisorFamily_canonicalAlgorithmRules_length_eq_zero hres n L j T hV hj hcs
 
 theorem isBoundaryPositionInvariant_divisorFamily_canonicalAlgorithmRules
     (hres : FunctorialResolution.Blowup.StrictTransformIsBlowupOfClosedSubscheme.{u})

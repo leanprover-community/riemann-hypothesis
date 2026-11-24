@@ -269,7 +269,7 @@ open scoped TensorProduct Polynomial
 namespace GlobalTheory
 
 theorem exists_numberField_of_finiteType_rat (R : Type) [CommRing R] [Nontrivial R] [Algebra ℚ R]
-    [Algebra.FiniteType ℚ R] : ∃ (K : Type) (_ : Field K) (_ : NumberField K) (φ : R →+* K), True := by
+    [Algebra.FiniteType ℚ R] : ∃ (K : Type) (_ : Field K) (_ : NumberField K) (_ : R →+* K), True := by
   obtain ⟨m, hm⟩ := Ideal.exists_maximal R
   letI : Field (R ⧸ m) := Ideal.Quotient.field m
   haveI : Algebra.FiniteType ℚ (R ⧸ m) :=
@@ -536,7 +536,7 @@ theorem nonempty_adjoin_ringHom_zmod_of_dvd_eval : ∀ (K : Type) [Field K] [Num
     exact (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mpr hx
   exact ⟨(AdjoinRoot.lift (Int.castRingHom (ZMod m)) (x : ZMod m) h).comp (minpoly.equivAdjoin hθ).symm.toRingEquiv.toRingHom⟩
 
-theorem nonempty_closure_ringHom_of_mul_mem : ∀ (K : Type) [Field K] [CharZero K] (O : Subring K) (R : Type) [CommRing R] (ψ : O →+* R) (N : ℕ), 0 < N → IsUnit (N : R) → ∀ (S : Finset K), (∀ s ∈ S, (N : K) * s ∈ O) → Nonempty (Subring.closure (S : Set K) →+* R) := by
+theorem nonempty_closure_ringHom_of_mul_mem : ∀ (K : Type) [Field K] [CharZero K] (O : Subring K) (R : Type) [CommRing R] (_ : O →+* R) (N : ℕ), 0 < N → IsUnit (N : R) → ∀ (S : Finset K), (∀ s ∈ S, (N : K) * s ∈ O) → Nonempty (Subring.closure (S : Set K) →+* R) := by
   intro K _ _ O R _ ψ N hN hu S hS
   set B := Localization.Away (N : O)
   have hNK : (N : K) ≠ 0 := by exact_mod_cast hN.ne'

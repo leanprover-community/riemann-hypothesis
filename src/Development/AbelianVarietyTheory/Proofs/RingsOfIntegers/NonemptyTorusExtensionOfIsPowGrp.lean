@@ -83,7 +83,7 @@ theorem nonempty_torusExtension_of_isPowGrp : ∀ (K : Type) [Field K] (G' G : O
              i_hom := him him0
              isKernel := GlobalTheory.PowKernel.main _ _ _ G' G _ _ j pT p pB i q i' q' hi hq hker }⟩
 
-theorem isSemiAbelian_pow : ∀ (S : Scheme.{0}) (G' G : Over S) [GrpObj G'] [IsCommMonObj G'] [GrpObj G] [IsCommMonObj G] (j : ℕ) (p : IsPowGrp G' G j), IsSemiAbelian G → IsSemiAbelian G' := by
+theorem isSemiAbelian_pow : ∀ (S : Scheme.{0}) (G' G : Over S) [GrpObj G'] [IsCommMonObj G'] [GrpObj G] [IsCommMonObj G] (j : ℕ) (_ : IsPowGrp G' G j), IsSemiAbelian G → IsSemiAbelian G' := by
   intro S G' G _ _ _ _ j p' hG
   obtain ⟨_, hs, hsep, hqc, hgc, hf⟩ := hG
   have hpow := GlobalTheory.PowGrp.powers S G' G j p'

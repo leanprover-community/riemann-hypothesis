@@ -131,7 +131,7 @@ theorem norm_term_le {F : MvPowerSeries (Fin 2) K} (hF : IntegralMv F) {a b : K}
 theorem summable_term {F : MvPowerSeries (Fin 2) K} (hF : IntegralMv F) {a b : K}
     (ha : ‖a‖ < 1) (hb : ‖b‖ < 1) : Summable (term F a b) :=
   summable_of_bound Finsupp.degree (le_trans (norm_nonneg a) (le_max_left _ _))
-    (max_lt ha hb) (fun N => (finite_degree_lt N).subset fun d hd => hd.2)
+    (max_lt ha hb) (fun N => (finite_degree_lt N).subset fun _ hd => hd.2)
     (norm_term_le hF (le_max_left _ _) (le_max_right _ _))
 
 def IL (K : Type u) [NormedField K] [IsUltrametricDist K] : Subring (MvPowerSeries (Fin 2) K) where
@@ -750,7 +750,7 @@ theorem inv_formal (hU : WSubstUnique.{u}) (hS : WChordSubst.{u}) {W : Weierstra
   rw [e2] at e
   simpa using e
 
-theorem dbl_formal (hU : WSubstUnique.{u}) (hS : WChordSubst.{u}) {W : WeierstrassCurve K}
+theorem dbl_formal (hS : WChordSubst.{u}) {W : WeierstrassCurve K}
     {w : PowerSeries K} (hw : WFixed W w) (F : FormalGroup K)
     (hch : ChordAt W w (MvPowerSeries.X 0) (MvPowerSeries.X 1) F.toPowerSeries)
     (hy : yOf w (MvPowerSeries.X 0 : MvPowerSeries (Fin 2) K) ≠
@@ -1100,7 +1100,7 @@ theorem case_tan (hU : WSubstUnique.{u}) (hS : WChordSubst.{u}) {W : Weierstrass
     simp only [← hj] at h
     field_simp at h
     first | linear_combination h
-  obtain ⟨nD, hxD, hyD⟩ := dbl_formal hU hS hw F hch hyF
+  obtain ⟨nD, hxD, hyD⟩ := dbl_formal hS hw F hch hyF
   have nwD : w.subst D ≠ 0 := WeierstrassSubstitution.ne_zero_of_weq (hU K W w hw (Fin 2) D cD).1 nD
   unfold xOf yOf at hxD hyD
   obtain ⟨hX, hY⟩ := (tan_iff (W.map (algebraMap K (FractionRing (MvPowerSeries (Fin 2) K)))).toAffine

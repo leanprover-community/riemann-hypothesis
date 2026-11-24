@@ -154,7 +154,7 @@ theorem TransUnit_of (hR : IntRules) (hA : UnitAtRules) (hN : RootInt) (hF : Fac
   exact ⟨hcn, hone, hN K (k + 1) _ hnn hone (oInv _ _ hV hinv).2⟩
 
 set_option linter.unusedVariables false in
-theorem TransGauss_of (hR : IntRules) (hA : UnitAtRules) (hU : TransUnit) : TransGauss := by
+theorem TransGauss_of (hA : UnitAtRules) (hU : TransUnit) : TransGauss := by
   intro K _ _ _ W hW T _ π G hI hG t N hNn hNt
   obtain ⟨-, -, -, uG, -⟩ := hA K
   by_cases ht : π t = 0

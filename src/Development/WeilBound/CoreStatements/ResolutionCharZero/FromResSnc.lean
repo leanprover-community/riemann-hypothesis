@@ -370,7 +370,7 @@ theorem support_exceptionalProduct_eq_drop {k : Type} [Field k] {X : Scheme.{0}}
 theorem isStrictNormalCrossings_of_isPrincipalizingSequence {k : Type} [Field k] [CharZero k] {X : Scheme.{0}}
     {p : X ⟶ Spec (CommRingCat.of k)} [Smooth p] [LocallyOfFiniteType p] [QuasiCompact p]
     {I : X.IdealSheafData} {E : List X.IdealSheafData} {s : BlowupSequence X}
-    (hE : HasSimpleNormalCrossings p E) (h : IsPrincipalizingSequence p I E s) :
+    (h : IsPrincipalizingSequence p I E s) :
     IsStrictNormalCrossings (reducedPreimage s.topMap I.support) := by
   obtain ⟨bd, hbd, hsupp⟩ := support_exceptionalProduct_eq_drop h
   obtain ⟨-, -, -, -, -, -, -, -, -, -, htop, hsm, -⟩ := h

@@ -266,7 +266,7 @@ private theorem exists_red {E : Type} [Field E] [NumberField E] {w : HeightOneSp
   exact (MonoidHom.liftOfRightInverse_comp_apply f _ (Function.rightInverse_surjInv hf) ⟨c, hker⟩ u).symm
 
 private theorem norm_eq_prod {g : ℕ} [Fact g.Prime] {n : ℕ} {K : Type} [Field K] [Algebra (ZMod g) K]
-    (hK : Nat.card K = g ^ n) (hn : 0 < n) (z : Kˣ) :
+    (hK : Nat.card K = g ^ n) (z : Kˣ) :
     algebraMap (ZMod g) K (Algebra.norm (ZMod g) (z : K)) = ∏ j ∈ Finset.range n, ((z ^ g ^ j : Kˣ) : K) := by
   have hg : 2 ≤ g := (Fact.out : g.Prime).two_le
   haveI : Finite K := Nat.finite_of_card_ne_zero (by rw [hK]; exact pow_ne_zero _ (by omega))
@@ -356,7 +356,7 @@ theorem UpperTheory.Zero.LLC.parTw : UpperTheory.Zero.LLC.ParTw := by
       congr 1
       refine Units.ext ((algebraMap (ZMod g') D.K).injective ?_)
       show algebraMap (ZMod g') D.K (PadicInt.toZMod (u : ℤ_[g'])) = algebraMap (ZMod g') D.K (Algebra.norm (ZMod g') (R t : D.K))
-      rw [hun, norm_eq_prod hK hn]
+      rw [hun, norm_eq_prod hK]
     have hpoint : ∀ j : ℕ, ((θ * DiscreteGroups.sglob.DzType.nmChar D.K χ₀⁻¹) (R t ^ g' ^ j) * (χ.comp a) (ineIncl h t) : ℂˣ) = θ (R t ^ g' ^ j) := by
       intro j
       have e3 : DiscreteGroups.sglob.DzType.nmChar D.K χ₀⁻¹ (R t ^ g' ^ j) * DiscreteGroups.sglob.DzType.nmChar D.K χ₀ (R t) = 1 := by

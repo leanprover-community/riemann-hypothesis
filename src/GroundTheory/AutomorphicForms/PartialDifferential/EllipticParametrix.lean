@@ -640,7 +640,7 @@ section Parametrix
 variable {n : ℕ}
 
 theorem exists_parametrix {m : ℕ} (hn : 0 < n) (hm : 1 ≤ m) (hnm : n < 2 * m)
-    {Ω : Set (EuclideanSpace ℝ (Fin n))} (hΩ : IsOpen Ω) {A : Finset (Fin n → ℕ)}
+    {Ω : Set (EuclideanSpace ℝ (Fin n))} {A : Finset (Fin n → ℕ)}
     {a : (Fin n → ℕ) → EuclideanSpace ℝ (Fin n) → ℂ}
     (hA : ∀ α ∈ A, mabs α ≤ m) (ha : ∀ α ∈ A, ContDiffOn ℝ ∞ (a α) Ω)
     (hell : ∀ x ∈ Ω, ∀ ξ : EuclideanSpace ℝ (Fin n), ξ ≠ 0 → prinSymbol A a m x ξ ≠ 0)

@@ -278,7 +278,7 @@ section Run
 open IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.WeightAlgebra Formalism.MainNotions.DIV.Cons GlobalTheory.PlaceTop
 
 theorem exists_alpha (D : D7) (T : Top D) (h : LawsP T) (hs : LawsSh T) (j : ℕ) (hj : InR D j) (EX : ErrX D)
-    (hor : Oriented T EX) (n : ℕ) (w : (D.host.E →+* ℂ) × ℕ → ℕ) (ℓ : ℕ) (hℓ : ℓ.Prime) :
+    (hor : Oriented T EX) (n : ℕ) (ℓ : ℕ) (hℓ : ℓ.Prime) :
     ¬ ℓ ^ 2 ∣ (T.dδ j n).l₂.M ∧ (T.dδ j n).pd ≠ 0 ∧ ∃ α α' : 𝓞 D.host.E,
       α * α' = EX.piG 0 * EX.piG 1 * ((T.dδ j n).pd : 𝓞 D.host.E) ∧ α ≠ 0 ∧ α' ≠ 0 ∧
       ((¬ ℓ ∣ (T.dδ j n).l₂.M ∧ α = 1) ∨
@@ -369,7 +369,7 @@ theorem shortBound : ShortBoundSt := by
     rw [← hv, map_natCast, map_natCast]
   rw [← nval_bc iT hr hiT e, hval]
   obtain ⟨ℓ, hℓ, hu⟩ := exists_resChar T' hfr
-  obtain ⟨hsq, hp0, α, α', hαb, hα0, hb0, hα⟩ := exists_alpha D T h hs j hj EX hor w.n (wtA w) ℓ hℓ
+  obtain ⟨hsq, hp0, α, α', hαb, hα0, hb0, hα⟩ := exists_alpha D T h hs j hj EX hor w.n ℓ hℓ
   have hch := GlobalTheory.PlaceInt.HostChart.chBound_host D _ (T.Q.Dw j) _ (T.dδ j w.n).Xo₂ (T.dδ j w.n).c₂ hnab.1 T' io₂ y₂ C (r * e) he' (wtA w) w.n
     (WeightAlgebra.DF w) hDF.le
   have hcard := GlobalTheory.PlaceInt.card_fun_levQ _ _ (T.Q.Dw j) (T.dδ j w.n).l₂ w.n

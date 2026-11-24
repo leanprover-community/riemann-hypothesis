@@ -246,7 +246,7 @@ namespace GlobalTheory
 
 theorem lbIso_triv_pull_triv {X Y : Scheme.{0}} (f : Y ⟶ X) : LBIso ((LB.triv X).pull f) (LB.triv Y) :=
   Ex.ValInh.lbIso_of_g_one (fun i j => by
-    simp only [LB.pull, LB.LinComb, LB.triv, map_one, one_zpow, Finset.prod_const_one]
+    simp only [LB.pull, LB.LinComb, LB.triv, map_one]
     simp only [Finset.univ_unique, Finset.prod_singleton, zpow_one]
     exact (res _).map_one) (fun i j => rfl)
 

@@ -87,7 +87,7 @@ end Art
 set_option linter.unusedVariables false in
 theorem exists_ine_of_res {E' Ω : Type} [Field E'] [NumberField E'] [Field Ω] [Algebra E' Ω] [IsAlgClosure E' Ω]
     (g : ℕ) [Fact g.Prime] (A : ValuationSubring Ω) (w' : HeightOneSpectrum (𝓞 E')) (h' : IsPlaceOver A w') (n : ℕ)
-    (hn : 0 < n) (hN : normV w' = g ^ n) (a' : Weil h' →* (w'.adicCompletion E')ˣ) (ha' : IsLocalArtin h' a')
+    (a' : Weil h' →* (w'.adicCompletion E')ˣ) (ha' : IsLocalArtin h' a')
     (K : Type) [Field K] (red : 𝓞 E' →+* K) (hr : Function.Surjective red) (hk : RingHom.ker red = w'.asIdeal) :
     ∀ z : Kˣ, ∃ (t : Ine (F := E') A) (x : 𝓞 E'), red x = z ∧
       Valued.v ((a' (ineIncl h' t) : w'.adicCompletion E') - algebraMap E' (w'.adicCompletion E') (x : E')) < 1 := by

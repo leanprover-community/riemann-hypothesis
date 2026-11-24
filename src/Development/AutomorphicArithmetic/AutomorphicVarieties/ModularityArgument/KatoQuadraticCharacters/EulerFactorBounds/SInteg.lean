@@ -53,7 +53,7 @@ private theorem root_mem {l : ℕ} [hl : Fact l.Prime] (c : Coef l) {x : Qbar l}
   rw [Nat.card_eq_fintype_card, ZMod.card_units] at hg
   have hg1 : g ∈ rootsOfUnity (l - 1) (ZMod l) := by
     rw [mem_rootsOfUnity, ← hg, pow_orderOf_eq_one]
-  rw [← KStar.TotallyRealRoots.map_red_rootsOfUnity (l := l) dvd_rfl] at hg1
+  rw [← KStar.TotallyRealRoots.map_red_rootsOfUnity (l := l)] at hg1
   obtain ⟨ζ, hζ, hζg⟩ := hg1
   have hζ1 : ζ ^ (l - 1) = 1 := hζ
   have hp : IsPrimitiveRoot ζ (l - 1) := by

@@ -83,7 +83,7 @@ structure AtT (D : D7) (u : D.what₂.Word)
     ∀ h : ((D.mem u).A.T : D.host.E) • (y : (D.sp.X i).V) ∈ Lk D u (Pv v) i c,
       prk i v c ⟨_, h⟩ = (D.fm u).te i v c
 
-  upG : ∀ i v (c : (D.mem u).C.cls i), Ld D u i c → GX D i
+  upG : ∀ i _ (c : (D.mem u).C.cls i), Ld D u i c → GX D i
 
   up_tie : ∀ i, i ≤ D.R.m → ∀ v c (y : Ld D u i c), (D.fm u).fv i v c (pr i v c y) = 1 →
     haveI := (Pv_max v).isPrime

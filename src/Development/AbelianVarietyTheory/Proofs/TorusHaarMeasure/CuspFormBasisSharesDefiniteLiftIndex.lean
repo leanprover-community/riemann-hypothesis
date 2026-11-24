@@ -321,7 +321,7 @@ private theorem exists_injective_leviM_eq_sum_weight_sq (X : Data E r) (hp : X.p
   simp [sgn, hp]
 
 private theorem leviM_pos_of_isStrictDom (X : Data E r) (hp : X.p0 = 0) (la : Wt X.Ψ r) (hla : IsStrictDom X la)
-    (x0 : Frame X.Ψ r) (hx0 : x0 ∈ X.dom) (z : ReciprocityTheory.L2DbarEstimates.V (nd X)) (hz : cpt X x0 z ∈ X.dom) (ξ : Fin (nd X) → ℂ)
+    (x0 : Frame X.Ψ r) (z : ReciprocityTheory.L2DbarEstimates.V (nd X)) (hz : cpt X x0 z ∈ X.dom) (ξ : Fin (nd X) → ℂ)
     (hξ : ξ ≠ 0) : 0 < leviM X (phla X la) x0 z ξ := by
   obtain ⟨D, hD, hl⟩ := exists_injective_leviM_eq_sum_weight_sq X hp x0 z hz
   rw [hl]
@@ -465,8 +465,8 @@ theorem exists_archInM (X : Data E r) (hr : 0 < r) (hp : X.p0 = 0) (hΨ : Nonemp
         simp [leviM, h0]
       base_psi_weighted_cf := ⟨⟨0, 0, fun x _ => by simp⟩, fun η _ _ =>
         ⟨0, 0, fun x _ ξ hξ _ => absurd hξ (hniso ξ)⟩⟩
-      posL := fun x0 hx0 z hz ξ hξ => leviM_pos_of_isStrictDom X hp L hL x0 hx0 z hz ξ hξ
-      posLde := fun x0 hx0 z hz ξ hξ => leviM_pos_of_isStrictDom X hp _ hSD2 x0 hx0 z hz ξ hξ
+      posL := fun x0 hx0 z hz ξ hξ => leviM_pos_of_isStrictDom X hp L hL x0 z hz ξ hξ
+      posLde := fun x0 hx0 z hz ξ hξ => leviM_pos_of_isStrictDom X hp _ hSD2 x0 z hz ξ hξ
       posF := ⟨1, one_pos, fun t _ _ x0 _ z hz ξ => by
         obtain ⟨D, -, hl⟩ := exists_injective_leviM_eq_sum_weight_sq X hp x0 z hz
         simp only [mul_zero, zero_div, zero_mul, sub_zero, mul_one]

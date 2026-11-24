@@ -587,7 +587,7 @@ theorem colE_mulVec (x : Fin (2 * r + k + 1) → ℂ) (a : Fin r) :
 theorem colE_apply (a : Fin r → ℂ) (j : Fin r) : (colE k r *ᵥ a) (eI k r j) = a j := by
   simp [colE, mulVec, dotProduct, eI_inj]
 
-theorem colE_col (j : Fin r) : (fun i => colE k r i j) = bvec (eI k r j) := funext fun i => (bvec_apply _ _).symm
+theorem colE_col (j : Fin r) : (fun i => colE k r i j) = bvec (eI k r j) := funext fun _ => (bvec_apply _ _).symm
 
 variable {z : Fin (2 * r + k + 1) → ℂ} {g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
 

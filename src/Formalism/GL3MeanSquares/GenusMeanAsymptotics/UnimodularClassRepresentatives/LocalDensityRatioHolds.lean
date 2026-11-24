@@ -623,7 +623,7 @@ theorem nO_of_rel (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsF
 
 theorem nO_gram (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F)
     {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm) (hd : IsTotPosDef h) {A₀ : Submodule (𝓞 K) V}
-    (hA₀ : Submodule.IsLattice K A₀) (hA₀i : Formalism.HermitianLatticesTheory.IsIntegralLat h A₀) {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal)
+    (hA₀i : Formalism.HermitianLatticesTheory.IsIntegralLat h A₀) {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal)
     (a : Basis (Fin (finrank K V)) K V)
     (ha : locF 𝔭 (Submodule.span (𝓞 K) (Set.range a)) = locF 𝔭 A₀) :
     (Matrix.of fun i j => h (a i) (a j)).det ∈ pK K 𝔭 0 ∧
@@ -951,8 +951,8 @@ theorem relIndex_sesqL (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF 
       (matL 𝔭 (k + c) f g).relIndex (matL 𝔭 k (fun _ _ => 1) (fun _ _ => 1)) := by
     rw [hSA, hSB, AddSubgroup.relIndex_comap, AddSubgroup.map_comap_eq_self_of_surjective hΦs]
   rw [← hidx] at H1
-  obtain ⟨hDa, hDa0, hDan⟩ := nO_gram hK hF hs hd hA₀.toIsLattice hA₀i h𝔭 a hA
-  obtain ⟨hDb, hDb0, hDbn⟩ := nO_gram hK hF hs hd hB₀.toIsLattice hB₀i h𝔭 b hB
+  obtain ⟨hDa, hDa0, hDan⟩ := nO_gram hK hF hs hd hA₀i h𝔭 a hA
+  obtain ⟨hDb, hDb0, hDbn⟩ := nO_gram hK hF hs hd hB₀i h𝔭 b hB
   have hnf : ∀ i j, nO 𝔭 (f i j) = nO 𝔭 (e i : K) * nO 𝔭 (e j : K) := fun i j => by
     rw [nO_mul h𝔭 (star_mem_pK hF h𝔭 (hem i)) (star_ne_zero.2 (heK i)) (hem j), nO_star hF h𝔭]
   have hng : nO 𝔭 (star (γ : K) * γ) = nO 𝔭 (γ : K) * nO 𝔭 (γ : K) := by
@@ -1519,7 +1519,7 @@ theorem exists_newton (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF :
 theorem relIndex_sSub_inf_eq (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F)
     {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm) (hd : IsTotPosDef h) {A₀ : Submodule (𝓞 K) V}
     (hA₀ : Submodule.IsFullLattice K A₀) (hA₀i : Formalism.HermitianLatticesTheory.IsIntegralLat h A₀) {B₀ : Submodule (𝓞 K) V}
-    (hB₀ : Submodule.IsFullLattice K B₀) (hB₀i : Formalism.HermitianLatticesTheory.IsIntegralLat h B₀) {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) :
+    (hB₀ : Submodule.IsFullLattice K B₀) {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) :
     ∃ c₀ : ℕ, ∀ c ≥ c₀, ∃ k₀ : ℕ, ∀ k ≥ k₀,
       sSub h (locF 𝔭 B₀) 𝔭 (k + c) ⊓ glSub (locF 𝔭 A₀) ≤ sSub h (locF 𝔭 A₀) 𝔭 k ⊓ glSub (locF 𝔭 B₀) ∧
       sesqL (locF 𝔭 B₀) 𝔭 (k + c) ≤ sesqL (locF 𝔭 A₀) 𝔭 k ∧
@@ -1528,7 +1528,7 @@ theorem relIndex_sSub_inf_eq (hK : Formalism.HermitianLatticesTheory.IsCMUnram K
         (hermL (locF 𝔭 B₀) 𝔭 (k + c)).relIndex (hermL (locF 𝔭 A₀) 𝔭 k) := by
   obtain ⟨r, hr⟩ := exists_smul_le hA₀.toIsLattice hB₀ h𝔭
   obtain ⟨r', hr'⟩ := exists_smul_le hB₀.toIsLattice hA₀ h𝔭
-  obtain ⟨e, he⟩ := exists_dual_bound hK hF hs hd hA₀ h𝔭
+  obtain ⟨e, he⟩ := exists_dual_bound hd hA₀ h𝔭
   refine ⟨2 * r, fun c hc => ⟨c + 2 * e + 2 * r' + r + r' + 1, fun k hk => ?_⟩⟩
 
   have hGA : ∀ {X : V ≃ₗ[K] V}, X ∈ sSub h (locF 𝔭 A₀) 𝔭 k ⊓ glSub (locF 𝔭 B₀) →
@@ -1635,7 +1635,7 @@ theorem relIndex_sSub_inf (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (
           (sSub h (locF 𝔭 A₀) 𝔭 k ⊓ glSub (locF 𝔭 B₀)) *
           Ideal.absNorm 𝔭 ^ (finrank K V * vd h (locF 𝔭 B₀) 𝔭) =
         Ideal.absNorm 𝔭 ^ (finrank K V ^ 2 * c + finrank K V * vd h (locF 𝔭 A₀) 𝔭) := by
-  obtain ⟨c₀, hc₀⟩ := relIndex_sSub_inf_eq hK hF hs hd hA₀ hA₀i hB₀ hB₀i h𝔭
+  obtain ⟨c₀, hc₀⟩ := relIndex_sSub_inf_eq hK hF hs hd hA₀ hA₀i hB₀ h𝔭
   refine ⟨c₀, fun c hc => ?_⟩
   obtain ⟨k₀, hk₀⟩ := hc₀ c hc
   refine ⟨k₀, fun k hk => ?_⟩

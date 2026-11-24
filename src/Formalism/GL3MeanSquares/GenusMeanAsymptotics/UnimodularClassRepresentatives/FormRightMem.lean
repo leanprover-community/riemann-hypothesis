@@ -290,7 +290,7 @@ theorem cnt_sub (hF : IsFixF K F) {h : V →ₗ⋆[K] V →ₗ[K] K} {𝔭 : Ide
     {A B : Submodule (𝓞 K) V} (hA : locF 𝔭 A = A) (hB : locF 𝔭 B = B)
     (hAi : IsIntegralAt 𝔭 h A) (hBA : B ≤ A) {k : ℕ}
     (hk : ((extP K 𝔭) ^ k • A : Submodule (𝓞 K) V) ≤ B)
-    (hfin : Finite (↥B ⧸ ((extP K 𝔭) ^ k • ⊤ : Submodule (𝓞 K) ↥B))) (n : 𝓞 F) {Ω : Set V}
+    (n : 𝓞 F) {Ω : Set V}
     (hΩB : Ω ⊆ B) (hΩ : ∀ y ∈ Ω, ∀ z ∈ ((extP K 𝔭) ^ k • A : Submodule (𝓞 K) V), y + z ∈ Ω) :
     cnt h B 𝔭 k n Ω = Nat.card (↥A ⧸ B.submoduleOf A) * cnt h A 𝔭 k n Ω := by
   obtain ⟨π, hπ, hπ'⟩ := D2.exists_unif h𝔭

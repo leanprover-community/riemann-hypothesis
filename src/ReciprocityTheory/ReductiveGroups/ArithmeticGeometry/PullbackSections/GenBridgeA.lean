@@ -171,7 +171,7 @@ def sabM (hC : ReciprocityTheory.ChartRestriction.G.Out.CubePullSt) {S S' : Sche
     SABMap (sabT hC f t) t f :=
   have h := isGrpPullback_pullback t.G f
   have P := hC S S' t.G _ (cubeMapOf h) t.PP t.cub
-  ⟨cubeMapOf h, h, rfl, fun a => pullback.lift_fst _ _ _, P.choose_spec.choose_spec.1.choose_spec⟩
+  ⟨cubeMapOf h, h, rfl, fun _ => pullback.lift_fst _ _ _, P.choose_spec.choose_spec.1.choose_spec⟩
 
 end Sab
 

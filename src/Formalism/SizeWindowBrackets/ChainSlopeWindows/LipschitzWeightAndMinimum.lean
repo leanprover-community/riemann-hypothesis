@@ -864,7 +864,7 @@ section
 variable {H : Type} [AddCommGroup H] [Fintype H] [DecidableEq H]
 
 lemma deriv_char (D : ArithData H) (ell : AddChar (E0 × H) ℂ → ℂ) (ψ : AddChar (E0 × H) ℂ) (hψ : ψ ≠ 0)
-    (y z : ℝ) (hy : 1 ≤ y) (_hz : 1 ≤ z) :
+    (y z : ℝ) (hy : 1 ≤ y) :
     ‖GPsi D ell ψ y - GPsi D ell ψ z‖ ≤ |y - z| * (Real.log (max y z) + (Real.log 4 + 4) + ‖ell ψ‖) := by
   have hyM : ⌊y⌋₊ ≤ ⌊max y z⌋₊ := Nat.floor_le_floor (le_max_left _ _)
   have hzM : ⌊z⌋₊ ≤ ⌊max y z⌋₊ := Nat.floor_le_floor (le_max_right _ _)
@@ -1064,7 +1064,7 @@ theorem derivative_integral_all : DerivIntAll := by
   intro H _ _ _ D ell
   constructor
   · intro ψ hψ y z hy hz
-    refine le_trans (AN.deriv_char D ell ψ hψ y z hy hz) ?_
+    refine le_trans (AN.deriv_char D ell ψ hψ y z hy) ?_
     apply mul_le_mul_of_nonneg_left _ (abs_nonneg _)
     have := abs_nonneg K
     linarith

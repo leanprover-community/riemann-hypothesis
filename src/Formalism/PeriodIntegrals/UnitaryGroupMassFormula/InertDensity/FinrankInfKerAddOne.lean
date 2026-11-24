@@ -107,7 +107,7 @@ theorem hf_smul_right (x : Fin n → L) (c : L) (y : Fin n → L) :
   refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => ?_
   ring
 
-theorem hf_sub_right (hq : q ≠ 0) (hadd : ∀ a b : L, (a + b) ^ q = a ^ q + b ^ q)
+theorem hf_sub_right (hadd : ∀ a b : L, (a + b) ^ q = a ^ q + b ^ q)
     (x y y' : Fin n → L) : hf q M x (y - y') = hf q M x y - hf q M x y' := by
   have hs : ∀ a b : L, (a - b) ^ q = a ^ q - b ^ q := fun a b => by
     have h := hadd (a - b) b

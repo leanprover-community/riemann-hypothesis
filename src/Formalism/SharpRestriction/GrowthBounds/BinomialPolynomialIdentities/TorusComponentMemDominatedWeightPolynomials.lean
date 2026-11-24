@@ -445,7 +445,7 @@ theorem standardWord_monomial_weight_dominated (hW : RestWord) (F : Type) [Field
       MvPolynomial.coeff_rename_mapDomain _ (iv_inj N n)]
     exact MvPolynomial.mem_support_iff.1 hm
 
-theorem firstLettersLowerSet_of_restWord_restOne (D : Formalism.BasicNotions.D7) (hW : RestWord) (hO : RestOne) : Formalism.MainNotions.CovariantDegrees.FirstLettersLowerSet D := by
+theorem firstLettersLowerSet_of_restWord_restOne (D : Formalism.BasicNotions.D7) (hW : RestWord) (hO : RestOne) : Formalism.MainNotions.CovariantDegrees.FirstLettersLowerSet := by
   classical
   intro F _ N n LL B i pi hpi G hG
   have hLow : LowerC pi := fun μ hμ ν hν hd => hpi.2 μ hμ ν hν ((dominanceOrder_iff ν μ).2 hd)

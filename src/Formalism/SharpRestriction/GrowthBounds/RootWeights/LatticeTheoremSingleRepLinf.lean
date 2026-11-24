@@ -442,7 +442,7 @@ namespace Formalism.MainNotions.G.GLWeightTheory
 
 open Formalism.MainNotions.G Formalism.MainNotions.CovariantDegrees
 
-theorem exists_equivariant_cyclic_to_hwv (D : Formalism.BasicNotions.D7) (h2 : adm2 D) {n : ℕ} {K V : Type} [Field K] [CharZero K]
+theorem exists_equivariant_cyclic_to_hwv (D : Formalism.BasicNotions.D7) (h2 : adm2) {n : ℕ} {K V : Type} [Field K] [CharZero K]
     [AddCommGroup V] [Module K V] [FiniteDimensional K V] (E : GLOps n K V) (hE : IsGLRep E) (lam : Fin n → ℤ)
     (v0 v : V) (hv0 : IsHWV E lam v0) (hv : IsHWV E lam v) (hL : IsSubrepresentation E (cyclicSubmodule E v0)) :
     ∃ φ : cyclicSubmodule E v0 →ₗ[K] V, IsEquivariantMap (restrictRepresentation E _ hL) E φ ∧ φ ⟨v0, self_mem_cyclicSubmodule E v0⟩ = v := by
@@ -511,7 +511,7 @@ theorem trivialRep_invariant_projection (n : ℕ) (K : Type) [Field K] [CharZero
   rw [Submodule.mem_bot] at this
   rw [this, map_zero]
 
-theorem invariant_projection_equivariant (D : Formalism.BasicNotions.D7) (h2 : adm2 D) {n : ℕ} {K V V' : Type} [Field K] [CharZero K]
+theorem invariant_projection_equivariant (D : Formalism.BasicNotions.D7) (h2 : adm2) {n : ℕ} {K V V' : Type} [Field K] [CharZero K]
     [AddCommGroup V] [Module K V] [FiniteDimensional K V] [AddCommGroup V'] [Module K V'] [FiniteDimensional K V']
     (E : GLOps n K V) (E' : GLOps n K V') (hE : IsGLRep E) (hE' : IsGLRep E')
     (P : Module.End K (V →ₗ[K] V')) (hP : IsInvProj (homRepresentation E E') P) (g : V →ₗ[K] V') : IsEquivariantMap E E' (P g) := by
@@ -521,7 +521,7 @@ theorem invariant_projection_equivariant (D : Formalism.BasicNotions.D7) (h2 : a
   simp only [homRepresentation_apply, LinearMap.zero_apply] at h
   exact (sub_eq_zero.1 h).symm
 
-theorem schur_invariant_projection_trace (D : Formalism.BasicNotions.D7) (h2 : adm2 D) {n : ℕ} {K L : Type} [Field K] [CharZero K]
+theorem schur_invariant_projection_trace (D : Formalism.BasicNotions.D7) (h2 : adm2) {n : ℕ} {K L : Type} [Field K] [CharZero K]
     [AddCommGroup L] [Module K L] [FiniteDimensional K L] (EL : GLOps n K L) (hEL : IsGLRep EL) (lam : Fin n → ℤ)
     (v0 : L) (hv0 : IsHWV EL lam v0) (hcyc : cyclicSubmodule EL v0 = ⊤)
     (P0 : Module.End K (L →ₗ[K] L)) (hP0 : IsInvProj (homRepresentation EL EL) P0) (g : L →ₗ[K] L) :
@@ -581,7 +581,7 @@ def smulRightLinear {K L W : Type} [Field K] [AddCommGroup L] [Module K L] [AddC
     simp only [LinearMap.smulRight_apply, RingHom.id_apply, LinearMap.smul_apply]
     exact smul_comm _ _ _
 
-theorem isotypic_projector_trace_formula (D : Formalism.BasicNotions.D7) (h2 : adm2 D) : IsotypicProjectorTraceFormula := by
+theorem isotypic_projector_trace_formula (D : Formalism.BasicNotions.D7) (h2 : adm2) : IsotypicProjectorTraceFormula := by
   intro n K W _ _ _ _ _ E hE lam e he v0 hv0 hL P hP ι _ b m
   have hEL := restrictRepresentation_isRep E hE _ hL
   have hv0' := highest_vector_restrict E _ hL lam v0 (self_mem_cyclicSubmodule E v0) hv0
@@ -920,7 +920,7 @@ theorem lattice_theorem_single_rep_linf (h : InvariantDenominatorLinftyBound) (h
       exact hle this
     rw [h0, smul_zero]; exact M.zero_mem
 
-theorem isotypicProjectorTheoremField_of_linfty_bound (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (h : InvariantDenominatorLinftyBound) : IsotypicProjectorTheoremField D := by
+theorem isotypicProjectorTheoremField_of_linfty_bound (D : Formalism.BasicNotions.D7) (h2 : adm2) (h : InvariantDenominatorLinftyBound) : IsotypicProjectorTheoremField := by
   intro p n' O _ _ _ S hG n _ V _ _ _ _ _ E hE M hM hMQ Sw hSw e he x hx
   rw [Finset.smul_sum]
   refine M.sum_mem fun lam hlam => ?_

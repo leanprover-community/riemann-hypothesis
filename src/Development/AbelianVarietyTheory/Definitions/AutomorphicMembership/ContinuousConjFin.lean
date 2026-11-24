@@ -318,10 +318,10 @@ variable (a) in
 def mulChi (χ : HChar E) : Sm E a ≃ₗ[ℂ] Sm E a where
   toFun φ := ⟨fun x => φ.1 x * (chiDet a χ x : ℂˣ), mul_chi_mem_Sm χ φ.2⟩
   invFun φ := ⟨fun x => φ.1 x * (chiDet a χ⁻¹ x : ℂˣ), mul_chi_mem_Sm χ⁻¹ φ.2⟩
-  map_add' φ ψ := Subtype.ext <| funext fun _x => add_mul _ _ _
-  map_smul' c φ := Subtype.ext <| funext fun _x => mul_assoc _ _ _
-  left_inv φ := Subtype.ext <| funext fun _x => Units.mul_inv_cancel_right _ _
-  right_inv φ := Subtype.ext <| funext fun _x => Units.inv_mul_cancel_right _ _
+  map_add' _ _ := Subtype.ext <| funext fun _x => add_mul _ _ _
+  map_smul' _ _ := Subtype.ext <| funext fun _x => mul_assoc _ _ _
+  left_inv _ := Subtype.ext <| funext fun _x => Units.mul_inv_cancel_right _ _
+  right_inv _ := Subtype.ext <| funext fun _x => Units.inv_mul_cancel_right _ _
 
 @[simp] theorem mulChi_apply (χ : HChar E) (φ : Sm E a) (g : GA E a) :
     (mulChi a χ φ).1 g = φ.1 g * (chiDet a χ g : ℂˣ) := rfl

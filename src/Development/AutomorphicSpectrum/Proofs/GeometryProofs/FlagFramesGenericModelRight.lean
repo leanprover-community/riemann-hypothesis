@@ -970,7 +970,7 @@ theorem big_cell_smooth : ∀ (Ω : Type) [Field Ω] (S : Type) [Fintype S] (r n
     · obtain ⟨s, ⟨⟨l, k⟩, hlk⟩⟩ := q
       have hlk' : k < l := hlk
       have e1 : V s l k = kMinor (Y s) ((k : ℕ) + 1) k.2 (w s ∘ lastRow k l) / y0 ⟨s, k⟩ := by
-        rw [← kMinor_lower_lastRow (V s) (hV0 s) (hV1 s) k l hlk', ← hrat]
+        rw [← kMinor_lower_lastRow (V s) (hV0 s) (hV1 s) k l, ← hrat]
       have e2 : V s l k = (kMinor (Y s) ((k : ℕ) + 1) k.2 (w s ∘ lastRow k l) /
           stepMinor (flagB M T s) k (J ⟨s, k⟩)) * (tq ⟨s, k⟩)⁻¹ := by
         rw [e1]
@@ -1032,7 +1032,7 @@ namespace GlobalTheory.CompanionTheory.Ar.FlagBun.Sm
 
 namespace ChartFrame
 
-theorem locSub_le_of_mul {F : Type} [Field F] {R : Subring F} {a b : F} (ha : a ∈ R) (hb : b ∈ R)
+theorem locSub_le_of_mul {F : Type} [Field F] {R : Subring F} {a b : F} (hb : b ∈ R)
     (h0 : a * b ≠ 0) : locSub R a ≤ locSub R (a * b) := by
   have hb0 : b ≠ 0 := right_ne_zero_of_mul h0
   unfold GlobalTheory.CompanionTheory.Ar.FlagBun.Sm.locSub
@@ -1187,7 +1187,7 @@ theorem exists_chart_frame : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : S
     intro i
     have hsplit := Finset.mul_prod_erase Finset.univ s (Finset.mem_univ i)
     rw [← hsplit]
-    exact locSub_le_of_mul (hsR i) (prod_mem fun j _ => hsR j) (by rw [hsplit]; exact hg0)
+    exact locSub_le_of_mul (prod_mem fun j _ => hsR j) (by rw [hsplit]; exact hg0)
   refine ⟨∏ i, s i, hgR, hgU, Matrix.of fun k l => w k (b l),
     Matrix.of fun j k => φ j (b' k) / x c ^ m, Matrix.of fun l j => gv l j, hdet, ?_, ?_, hNM, ?_⟩
   · intro j k

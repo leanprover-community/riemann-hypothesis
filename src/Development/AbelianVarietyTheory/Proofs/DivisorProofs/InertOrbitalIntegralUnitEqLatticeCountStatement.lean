@@ -717,7 +717,7 @@ theorem clear_denominator (L : Submodule O V) (y : V) (hy : y ∈ Submodule.span
     rw [this]
     exact L.smul_mem _ hx
 
-theorem exists_unit_length (c : E →+* E) (s : O →+* O) (hs : ∀ x, s (s x) = x)
+theorem exists_unit_length (c : E →+* E) (s : O →+* O)
     (hcs : ∀ x, c (algebraMap O E x) = algebraMap O E (s x)) (θ : O)
     (hθ : θ - s θ ∉ maximalIdeal O) (h : V → V → E)
     (ha : ∀ y y' z, h (y + y') z = h y z + h y' z) (hm : ∀ (a : E) y z, h (a • y) z = a * h y z)
@@ -810,7 +810,7 @@ theorem extend_family [IsAdicComplete (maximalIdeal O) O] [Finite (ResidueField 
     refine ⟨d • y₀, (hL' _).2 ⟨hdy, ?_⟩, ?_⟩
     · rw [← algebraMap_smul E d]; exact Submodule.smul_mem _ _ hy₀
     · rw [← algebraMap_smul E d]; exact smul_ne_zero (by simpa using hd) hy0
-  obtain ⟨e, he, u, hu, hue⟩ := exists_unit_length c s hs hcs θ hθ h ha hm hc (LinearMap.ker φ) L'
+  obtain ⟨e, he, u, hu, hue⟩ := exists_unit_length c s hcs θ hθ h ha hm hc (LinearMap.ker φ) L'
     (hfg.of_le inf_le_left) hne (fun y hy => hy.2)
     (fun y hy z hz => (hdual y).1 hy.1 z hz.1)
     (by
@@ -1043,7 +1043,7 @@ theorem mulVec_int_iff {E : Type} [Field E] [NumberField E] {n : ℕ} (w : Pl E)
     have := h (Pi.single j 1) (fun k => by
       by_cases hk : k = j
       · subst hk; simp
-      · simp [Pi.single_apply, hk]) i
+      · simp [hk]) i
     simpa [Matrix.mulVec_single] using this
   · intro h v hv i
     rw [hmem]

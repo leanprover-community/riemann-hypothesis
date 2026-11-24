@@ -289,7 +289,7 @@ lemma chordCoeffCubic_inversionDenom_inv (hw : WFixed W w) : C3 W w * (C3 W w)�
     unfold Formalism.ELL.WeierstrassChordSeries.C3
     exact Formalism.ELL.WeierstrassChordSeries.lineCoeffCubic_mem _ c2 c4 c6 hl
   have hAi : (Formalism.ELL.WeierstrassChordSeries.C3 W w)⁻¹ ∈ Formalism.ELL.WeierstrassChordSeries.T W :=
-    Formalism.ELL.WeierstrassChordSeries.inv_mem_integralSeries hA hAne (by rw [hA0, inv_one]; exact one_mem _)
+    Formalism.ELL.WeierstrassChordSeries.inv_mem_integralSeries hA (by rw [hA0, inv_one]; exact one_mem _)
   have hQ : Formalism.ELL.WeierstrassChordSeries.C2 W w ∈ Formalism.ELL.WeierstrassChordSeries.T W := by
     unfold Formalism.ELL.WeierstrassChordSeries.C2
     exact Formalism.ELL.WeierstrassChordSeries.lineCoeffQuadratic_mem _ c1 c2 c3 c4 c6 hl hn
@@ -303,7 +303,7 @@ lemma chordCoeffCubic_inversionDenom_inv (hw : WFixed W w) : C3 W w * (C3 W w)�
     unfold Formalism.ELL.WeierstrassChordSeries.dd
     exact add_mem (add_mem (neg_mem (one_mem _)) (mul_mem c1 hz)) (mul_mem c3 hv)
   exact ⟨MvPowerSeries.mul_inv_cancel _ hAne, MvPowerSeries.mul_inv_cancel _ hDne, hAi,
-    Formalism.ELL.WeierstrassChordSeries.inv_mem_integralSeries hD hDne (by rw [hD0, inv_neg, inv_one]; exact neg_mem (one_mem _))⟩
+    Formalism.ELL.WeierstrassChordSeries.inv_mem_integralSeries hD (by rw [hD0, inv_neg, inv_one]; exact neg_mem (one_mem _))⟩
 
 private theorem constantCoeff_subst_of_zero_lemma_2 {τ : Type} [Finite τ] {a : τ → MvPowerSeries σ K}
     (ha : ∀ i, cc (a i) = 0) (f : MvPowerSeries τ K) : cc (MvPowerSeries.subst a f) = cc f := by

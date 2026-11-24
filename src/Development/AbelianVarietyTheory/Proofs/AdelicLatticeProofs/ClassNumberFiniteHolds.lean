@@ -111,11 +111,11 @@ variable (F : Type) [Field F] [NumberField F]
 
 def intAdeles : Subring (FiniteAdeleRing (𝓞 F) F) where
   carrier := {c | ∀ v, c v ∈ HeightOneSpectrum.adicCompletionIntegers F v}
-  mul_mem' := fun {a b} ha hb v => mul_mem (ha v) (hb v)
+  mul_mem' := fun {_ _} ha hb v => mul_mem (ha v) (hb v)
   one_mem' := fun v => one_mem (HeightOneSpectrum.adicCompletionIntegers F v)
-  add_mem' := fun {a b} ha hb v => add_mem (ha v) (hb v)
+  add_mem' := fun {_ _} ha hb v => add_mem (ha v) (hb v)
   zero_mem' := fun v => zero_mem (HeightOneSpectrum.adicCompletionIntegers F v)
-  neg_mem' := fun {a} ha v => neg_mem (ha v)
+  neg_mem' := fun {_} ha v => neg_mem (ha v)
 
 theorem algebraMap_mem (a : 𝓞 F) :
     algebraMap F (FiniteAdeleRing (𝓞 F) F) (a : F) ∈ intAdeles F := by

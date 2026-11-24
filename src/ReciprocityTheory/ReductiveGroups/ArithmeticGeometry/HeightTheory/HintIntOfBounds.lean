@@ -19,7 +19,7 @@ noncomputable def hintPt {D n : ℕ} (t0 : Fin n → ℂ) (z : BlockSphere D n) 
     Fin (D + 1) × Fin n → ℂ :=
   fun v => Fin.cases (t0 v.2) (fun i => spherePoint (z i) v.2) v.1
 
-theorem hint_mpSplit (D n : ℕ) (hn : 0 < n) :
+theorem hint_mpSplit (D n : ℕ) :
     MeasurePreserving (MeasurableEquiv.piFinSuccAbove (fun _ : Fin (D + 1) => UnitSphereC n) 0)
       (blockSphereProb (D + 1) n) ((sphereProb n).prod (blockSphereProb D n)) := by
   unfold blockSphereProb
@@ -45,7 +45,7 @@ theorem hint_mpTail (D n : ℕ) (hn : 0 < n) :
     unfold blockSphereProb
     infer_instance
   have h := (measurePreserving_snd (μ := sphereProb n) (ν := blockSphereProb D n)).comp
-    (hint_mpSplit D n hn)
+    (hint_mpSplit D n)
   have e : (fun z : BlockSphere (D + 1) n => fun i : Fin D => z i.succ) =
       Prod.snd ∘ ⇑(MeasurableEquiv.piFinSuccAbove (fun _ : Fin (D + 1) => UnitSphereC n) 0) := by
     funext z i
@@ -143,7 +143,7 @@ theorem hint_fubini {D n : ℕ} (hn : 0 < n) {a : Fin (D + 1) → ℕ}
   set G : UnitSphereC n × BlockSphere D n → ℝ :=
     fun p => Real.log ‖MvPolynomial.eval (hintPt (spherePoint p.1) p.2) F‖ with hG
   have hint : Integrable G ((sphereProb n).prod (blockSphereProb D n)) := by
-    rw [← (hint_mpSplit D n hn).integrable_comp_emb
+    rw [← (hint_mpSplit D n).integrable_comp_emb
       (MeasurableEquiv.piFinSuccAbove (fun _ : Fin (D + 1) => UnitSphereC n) 0).measurableEmbedding]
     refine (ReciprocityTheory.MultiplicativeHeights.Closed.sphereLogIntegrable (D + 1) n a F hF0 hF).congr
       (Filter.Eventually.of_forall fun z => ?_)

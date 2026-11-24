@@ -70,7 +70,7 @@ section -- clump:auto
 
 namespace GlobalTheory.RationalIntegralCoordinates
 
-theorem exists_coords {d : ℕ} (hd : 0 < d) {r : ℂ} (hr : r ^ 2 = -(d : ℂ)) {z : ℂ}
+theorem exists_coords {d : ℕ} {r : ℂ} (hr : r ^ 2 = -(d : ℂ)) {z : ℂ}
     (hzK : z ∈ IntermediateField.adjoin ℚ ({r} : Set ℂ)) :
     ∃ a b : ℚ, z = (a : ℂ) + (b : ℂ) * r := by
   have hint : IsIntegral ℚ r := by
@@ -149,7 +149,7 @@ theorem main {d : ℕ} (hd : Nat.Prime d) (hd4 : d % 4 = 3) {r : ℂ} (hr : r ^ 
     (T : Subring ℂ) (hT : (1 + r) / 2 ∈ T) {z : ℂ}
     (hzK : z ∈ IntermediateField.adjoin ℚ ({r} : Set ℂ)) (hz : IsIntegral ℤ z) : z ∈ T := by
   have hd0 : 0 < d := hd.pos
-  obtain ⟨a, b, rfl⟩ := exists_coords hd0 hr hzK
+  obtain ⟨a, b, rfl⟩ := exists_coords hr hzK
   have hc : starRingEnd ℂ ((a : ℂ) + b * r) = a - b * r := by
     rw [map_add (f := _), map_mul, conj_eq_neg hd0 hr, map_ratCast, map_ratCast]
     ring

@@ -144,7 +144,7 @@ theorem PtsAbsMeasurable.proof (hE : ResExistsStatement) : PtsAbsMeasurable.Stat
   obtain ⟨J, ⟨R⟩⟩ := exists_anLogRes hE hP
   have hI := integrable_absPushSum R.A (fun j => potOf R (L j))
     (fun j => potOf_isPotential R (L j) (hL j)) (brQ R Ψ) (brBad R Ψ) (brBad_null R Ψ hP hΨ)
-    (brGood R Ψ) (brFib_finite R Ψ hP hΨ) _ (brIntegrable R L A s hP hL hA hs)
+    (brGood R Ψ) (brFib_finite R Ψ hP hΨ) _ (brIntegrable R L A s hL hA hs)
   exact hI.aestronglyMeasurable.congr
     ((absFibreSum_ae R Ψ L A s hP hΨ hL hA hs).mono fun y hy => hy.symm)
 

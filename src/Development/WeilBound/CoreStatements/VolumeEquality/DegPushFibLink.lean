@@ -266,7 +266,7 @@ private theorem exists_integral_change_of_basis_of_span_eq (fn : Ω₀ →+* Ω)
           by_cases hmk : m = k
           · subst hmk
             simp
-          · simp [Pi.single_apply, hmk]) hmem
+          · simp [hmk]) hmem
       refine ⟨h, hh, coords_unique hc ?_⟩
       rw [← sum_mulVec c bb G hGk h, ← heq]
     | zero => exact ⟨0, fun m => by simp, by funext l; simp⟩

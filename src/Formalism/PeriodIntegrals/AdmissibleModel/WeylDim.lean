@@ -330,7 +330,7 @@ theorem weyl_dualWeyl (K : Type) [Field K] (n : ℕ) (nu : Fin n → ℕ) (h : A
   push_cast
   rfl
 
-theorem weyl_dual_weight_admissible (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.ColumnSystems.adm3 D := by
+theorem weyl_dual_weight_admissible (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.ColumnSystems.adm3 := by
   exact fun K _ _ n nu h => weyl_dualWeyl K n nu h
 
 theorem finrank_tensor' (Kf : Type) [Field Kf] (S : Type) [Fintype S] [DecidableEq S] (k n : ℕ)
@@ -379,10 +379,10 @@ theorem weylV_proved : Formalism.MainNotions.flipOneThree.WeylV := by
     ring
   · rfl
 
-theorem fewBadOrbits (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.tableLineDegreeFive.FewBadOrbits D := by
+theorem fewBadOrbits (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.tableLineDegreeFive.FewBadOrbits := by
   exact weylV_proved
 
-theorem gl_branching_dimension (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.ColumnSystems.adm2 D := by
+theorem gl_branching_dimension (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.ColumnSystems.adm2 := by
   intro K _ _ n lam hlam
   simp only [finrank_dualWeyl]
   simp only [dGT]

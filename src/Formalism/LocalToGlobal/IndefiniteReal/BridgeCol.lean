@@ -118,7 +118,7 @@ def classPresOf {S : GSD K} {G Γ : Type} [Group G] [Group Γ] {ι : Γ →* G} 
     {W : Type} [NormedAddCommGroup W] [InnerProductSpace ℂ W] (σ : K →+* ℂ) (ρ : Γ →* Module.End ℂ W) (χ : J →* ℂˣ)
     (coef : S.V →ₛₗ[σ] W) (hli : LinearIndependent ℂ fun i => coef (S.bV i))
     (hspan : Submodule.span ℂ (Set.range fun i => coef (S.bV i)) = ⊤)
-    (hpair : ∀ x x', inner ℂ (coef x) (coef x') = σ (S.pair x x')) (_hK1 : ∀ k : J, (k : G) ∈ A.K1 → χ k = 1)
+    (hpair : ∀ x x', inner ℂ (coef x) (coef x') = σ (S.pair x x'))
     (hgl : ∀ (γ : Γ) (k : J) (v : S.V), coef (S.ρ (A.gl (γ, k)) v) = ((χ k)⁻¹ : ℂˣ) • ρ γ (coef v)) :
     ClassPres ι (S.toCSD h) σ ρ J χ where
   y := A.y

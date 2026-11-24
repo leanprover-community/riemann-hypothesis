@@ -1129,7 +1129,7 @@ def counitAb (M : ModuleCat.{u} (X.presheaf.stalk x)) :
   colimit.desc _ (Cocone.mk (AddCommGrpCat.of M)
     { app := fun U ↦ AddCommGrpCat.ofHom (AddMonoidHom.mk' (M := Obj x U.unop.1 M)
         (fun m ↦ m ⟨U.unop.2⟩) fun _ _ ↦ rfl)
-      naturality := fun U V i ↦ rfl })
+      naturality := fun _ _ _ ↦ rfl })
 
 theorem counitAb_germ (M : ModuleCat.{u} (X.presheaf.stalk x)) (U : X.Opens) (hx : x ∈ U)
     (m : Γ(sky x M, U)) : counitAb x M ((sky x M).presheaf.germ U x hx m) = m ⟨hx⟩ := by

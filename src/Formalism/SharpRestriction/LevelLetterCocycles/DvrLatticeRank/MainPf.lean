@@ -1524,7 +1524,7 @@ theorem local_theorem_of_leaf_lemmas (hG : GenStep) (hL : LiftStep) (hd : DvdSte
     (hU1L : FirstFrameOfModels) (hkp : KapPiStep) (hU2L : SecondPropositionOfRank) (hU2R : SecondRankHypothesis)
     (hD : DownSlotOfModels) (hUp : UpSlotOfModels) (hMx : MixedSlotOfModels) :
     ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
-      (CA CB CK C : ℝ), 160 ≤ C → FontExAll D HW F → DdRFull D → DiRank D HW F Cm →
+      (CA CB CK C : ℝ), 160 ≤ C → FontExAll D HW → DdRFull D → DiRank D HW F →
         IntegralityFromMetric D HW F Cm CA CB CK C := by
   intro D HW F Cm CA CB CK C hC160 hFont hdr hrk hA
   have hMQ : ModelQStep := modelQStep_of hMQL hML
@@ -1630,7 +1630,7 @@ open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.Basi
 
 theorem lifting_theorem_of_uniform_link (hU1L : FirstFrameOfModels) :
     ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
-      (CA CB CK C : ℝ), 160 ≤ C → FontExAll D HW F → DdRFull D → DiRank D HW F Cm →
+      (CA CB CK C : ℝ), 160 ≤ C → FontExAll D HW → DdRFull D → DiRank D HW F →
         IntegralityFromMetric D HW F Cm CA CB CK C :=
   local_theorem_of_leaf_lemmas generator_bound_of_hypotheses lift_bound_of_hypotheses DvdPf.dvdCondition quotient_jumps_subset normR_holds
     uniformiser_ring_of_hypotheses ExtPf.ext_pf w_pf kerlam2_pf ninlam_pf gradNCondition frobPiNCondition gamPiCondition

@@ -94,7 +94,7 @@ theorem one_le_log_logR {t : Fin n → ℂ} (ht : ‖t‖ < 1) (h : ∀ i : Fin 
   calc (1 : ℝ) = Real.log (Real.exp 1) := (Real.log_exp 1).symm
     _ ≤ Real.log (logR a t) := Real.log_le_log (Real.exp_pos 1) (exp_le_logR ht h)
 
-theorem tame_of {ε C₁ C₂ e : ℝ} (hε : 0 < ε) (h1 : 0 ≤ C₁) (h2 : 0 ≤ C₂) (he : 0 ≤ e)
+theorem tame_of {ε C₁ C₂ e : ℝ} (hε : 0 < ε) (h1 : 0 ≤ C₁)
     (h : ∀ t : Fin n → ℂ, ‖t‖ < ε → ‖t‖ < 1 → (∀ i : Fin n, (i : ℕ) < a → t i ≠ 0) →
       ContDiffAt ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f t ∧ |f t| ≤ C₁ * Real.log (logR a t) ∧
         ‖fderiv ℝ f t‖ ≤ C₂ * logR a t ^ e * Real.exp (logR a t / 2)) : Tame a f := by
@@ -118,7 +118,7 @@ theorem tame_of {ε C₁ C₂ e : ℝ} (hε : 0 < ε) (h1 : 0 ≤ C₁) (h2 : 0 
 theorem add (hf : Tame a f) (hg : Tame a g) : Tame a fun t => f t + g t := by
   obtain ⟨ε₁, C₁, hε₁, -, hC₁, hf⟩ := hf
   obtain ⟨ε₂, C₂, hε₂, -, hC₂, hg⟩ := hg
-  apply tame_of (ε := min ε₁ ε₂) (C₁ := C₁ + C₂) (C₂ := C₁ + C₂) (e := C₁ + C₂) (lt_min hε₁ hε₂) (by linarith) (by linarith) (by linarith)
+  apply tame_of (ε := min ε₁ ε₂) (C₁ := C₁ + C₂) (C₂ := C₁ + C₂) (e := C₁ + C₂) (lt_min hε₁ hε₂) (by linarith)
   intro t ht ht1 hoff
   obtain ⟨hfc, hf1, hf2⟩ := hf t (lt_of_lt_of_le ht (min_le_left _ _)) hoff
   obtain ⟨hgc, hg1, hg2⟩ := hg t (lt_of_lt_of_le ht (min_le_right _ _)) hoff
@@ -140,7 +140,7 @@ theorem add (hf : Tame a f) (hg : Tame a g) : Tame a fun t => f t + g t := by
 
 theorem const_mul (c : ℝ) (hf : Tame a f) : Tame a fun t => c * f t := by
   obtain ⟨ε, C, hε, -, hC, h⟩ := hf
-  refine tame_of (C₁ := |c| * C) (C₂ := |c| * C) (e := C) hε (by positivity) (by positivity) hC
+  refine tame_of (C₁ := |c| * C) (C₂ := |c| * C) (e := C) hε (by positivity)
     fun t ht _ hi => ?_
   obtain ⟨a1, a2, a3⟩ := h t ht hi
   refine ⟨contDiffAt_const.mul a1, ?_, ?_⟩
@@ -204,7 +204,7 @@ theorem tame_of_smooth (a : ℕ) (hf : ∀ᶠ t in 𝓝 (0 : Fin n → ℂ), Con
   obtain ⟨δ, hδ, hδh⟩ := Metric.eventually_nhds_iff.mp (hf.and (e1.and e2))
   have hM0 : 0 ≤ max (|f 0| + 1) (‖fderiv ℝ f 0‖ + 1) := le_max_of_le_left (by positivity)
   apply tame_of (ε := δ) (C₁ := max (|f 0| + 1) (‖fderiv ℝ f 0‖ + 1)) (C₂ := max (|f 0| + 1) (‖fderiv ℝ f 0‖ + 1))
-    (e := max (|f 0| + 1) (‖fderiv ℝ f 0‖ + 1)) hδ hM0 hM0 hM0
+    (e := max (|f 0| + 1) (‖fderiv ℝ f 0‖ + 1)) hδ hM0
   intro t ht ht1 hoff
   obtain ⟨hct, hb1, hb2⟩ := hδh (by rwa [dist_zero_right])
   have hL := one_le_logR ht1 hoff

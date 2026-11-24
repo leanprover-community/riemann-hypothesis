@@ -317,7 +317,7 @@ theorem zeta_of_sign'_k {d : _root_.PositivityTheory.SiegelWeilFormula.SD_k σ} 
     · refine (_root_.PositivityTheory.SiegelWeilFormula.ThetaDictR.zeta_of_eps_k R).2 ?_
       have := _root_.PositivityTheory.SiegelWeilFormula.ThetaDictR.eps_of_form_k R hcm 1 (fun i j => by rw [hY]; ring)
       linear_combination this
-theorem eta_zeta'_k {d : _root_.PositivityTheory.SiegelWeilFormula.SD_k σ} (R : _root_.PositivityTheory.SiegelWeilFormula.RD_k d) {η : E} (hη : η ≠ 0) (herm : ∀ i j, σ (η * d.A.J j i) = η * d.A.J i j) :
+theorem eta_zeta'_k {d : _root_.PositivityTheory.SiegelWeilFormula.SD_k σ} (R : _root_.PositivityTheory.SiegelWeilFormula.RD_k d) {η : E} (herm : ∀ i j, σ (η * d.A.J j i) = η * d.A.J i j) :
     (σ η = η ∧ R.ζ = 1) ∨ (σ η = -η ∧ R.ζ = Complex.I) := by
   obtain ⟨i, j, hij⟩ := _root_.PositivityTheory.SiegelWeilFormula.ThetaDictR.exists_J_ne_k d
   rcases d.ok.sign with ⟨hA, _⟩ | ⟨hA, _⟩
@@ -564,7 +564,7 @@ theorem relReal_k : _root_.PositivityTheory.SiegelWeilFormula.ThetaDictR.RelReal
   refine ⟨thW d.B, _root_.PositivityTheory.SiegelWeilFormula.ThetaDictR.frW_k R η hη, _root_.PositivityTheory.SiegelWeilFormula.ThetaDictR.gW_k d u η hη, fun _ => -1, _root_.PositivityTheory.SiegelWeilFormula.ThetaDictR.εsW_k R η, _, Φf, Φv, thW_th' d.B, fun w => _root_.PositivityTheory.SiegelWeilFormula.ThetaDictR.frW_frc_k R η hη w,
     fun w => _root_.PositivityTheory.SiegelWeilFormula.ThetaDictR.gW_gc_k d u η hη w, fun _ => rfl, ⟨fun w => decide (0 < (((d.B.emb w).1 η / R.ζ) * ((R.sg w : ℤ) : ℂ)).re), rfl⟩,
     _root_.PositivityTheory.SiegelWeilFormula.ThetaDictR.isCharAF_of_good_k d.B d.ok.good, _root_.PositivityTheory.SiegelWeilFormula.ThetaDictR.isPlaces_thW'_k d.B d.ok.good,
-    _root_.PositivityTheory.SiegelWeilFormula.ThetaDictR.isFrames_of'_k R η hη d.ok.good.cm herm (_root_.PositivityTheory.SiegelWeilFormula.ThetaDictR.eta_zeta'_k R hη herm) (thW d.B) (thW_th' d.B) (_root_.PositivityTheory.SiegelWeilFormula.ThetaDictR.frW_k R η hη)
+    _root_.PositivityTheory.SiegelWeilFormula.ThetaDictR.isFrames_of'_k R η hη d.ok.good.cm herm (_root_.PositivityTheory.SiegelWeilFormula.ThetaDictR.eta_zeta'_k R herm) (thW d.B) (thW_th' d.B) (_root_.PositivityTheory.SiegelWeilFormula.ThetaDictR.frW_k R η hη)
       (fun w => _root_.PositivityTheory.SiegelWeilFormula.ThetaDictR.frW_frc_k R η hη w), hpf, hpr⟩
 end PositivityTheory.SiegelWeilFormula.ThetaDictR
 end
@@ -645,7 +645,7 @@ theorem unipotentParam_rational_matrix (d : _root_.PositivityTheory.SiegelWeilFo
 def relH_k (d : _root_.PositivityTheory.SiegelWeilFormula.SD_k σ) (η : E) (β : nA σ d.Y d.b) : Matrix (Fin d.n) (Fin d.n) (AE F E) :=
   -(Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (F := F) (E := E) (AF F) η⁻¹ • β.1ᵀ)
 theorem relH_mem_k (d : _root_.PositivityTheory.SiegelWeilFormula.SD_k σ) (ε : ℤˣ)
-    (hε : d.b.1ᵀ * dbl d.Y.J * d.b.1.map σ = Matrix.fromBlocks 0 1 (((ε : ℤ) : E) • 1) 0) (η : E) (hη : η ≠ 0)
+    (hε : d.b.1ᵀ * dbl d.Y.J * d.b.1.map σ = Matrix.fromBlocks 0 1 (((ε : ℤ) : E) • 1) 0) (η : E)
     (hση : σ η = -(((ε : ℤ) : E) * η)) (β : nA σ d.Y d.b) :
     _root_.PositivityTheory.SiegelWeilFormula.KWhit.relH_k d η β ∈ HeckeCharacterZeroLocus.SiegelWeilU.HermR (AF F) σ d.n := by
   intro a b
@@ -702,7 +702,7 @@ theorem relAlg_pf_k : _root_.PositivityTheory.SiegelWeilFormula.KWhit.RelAlg_k :
   intro F E _ _ _ _ _ σ d
   obtain ⟨⟨ε, hε⟩, -⟩ := d.ok.frame
   obtain ⟨η, hη, hση, hherm⟩ := _root_.PositivityTheory.SiegelWeilFormula.KWhit.rel_eta_k d ε hε
-  refine ⟨η, fun β => ⟨_root_.PositivityTheory.SiegelWeilFormula.KWhit.relH_k d η β, _root_.PositivityTheory.SiegelWeilFormula.KWhit.relH_mem_k d ε hε η hη hση β⟩, hη, hherm, fun β => _root_.PositivityTheory.SiegelWeilFormula.KWhit.relH_eq_k d η hη β,
+  refine ⟨η, fun β => ⟨_root_.PositivityTheory.SiegelWeilFormula.KWhit.relH_k d η β, _root_.PositivityTheory.SiegelWeilFormula.KWhit.relH_mem_k d ε hε η hση β⟩, hη, hherm, fun β => _root_.PositivityTheory.SiegelWeilFormula.KWhit.relH_eq_k d η hη β,
     fun y hy => _root_.PositivityTheory.SiegelWeilFormula.KWhit.rel_aniso_k d η hη y hy, d.ok.good.cm, ⟨fun i j => ?_, ?_⟩, fun T hT => ?_⟩
   · simp only [_root_.PositivityTheory.SiegelWeilFormula.KWhit.Jd_k, Matrix.transpose_apply, Matrix.smul_apply, smul_eq_mul]
     exact hherm j i

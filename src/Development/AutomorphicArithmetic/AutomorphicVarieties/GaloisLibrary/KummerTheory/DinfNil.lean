@@ -153,7 +153,7 @@ theorem UpperTheory.V.Kum.dinfNil :
   have stabC : ∀ γ ∈ cycU l U, ∀ x, φ (conjHom (cycU l U) γ x) = φ x := by
     intro γ hγ x
     have e : conjHom (cycU l U) γ x = (⟨γ, hγ⟩ : cycU l U)⁻¹ * x * ⟨γ, hγ⟩ :=
-      Subtype.ext (by simp only [conj_val, Subgroup.coe_mul, Subgroup.coe_inv, Subgroup.coe_mk])
+      Subtype.ext (by simp only [conj_val, Subgroup.coe_mul, Subgroup.coe_inv])
     rw [e, hadd, hadd, hinv]
     abel
   have stabW : ∀ γ ∈ W.toSubgroup, ∀ x, φ (conjHom (cycU l U) γ x) = φ x := by
@@ -164,7 +164,7 @@ theorem UpperTheory.V.Kum.dinfNil :
       have h3 : (x : G F Ω) * γ * (x : G F Ω)⁻¹ ∈ W.toSubgroup := W.isNormal'.conj_mem γ hγ x
       simpa [mul_assoc] using mul_mem (inv_mem hγ) h3
     have e : conjHom (cycU l U) γ x = ⟨_, hdC⟩ * x :=
-      Subtype.ext (by simp only [conj_val, Subgroup.coe_mul, Subgroup.coe_mk]; group)
+      Subtype.ext (by simp only [conj_val, Subgroup.coe_mul]; group)
     rw [e, hadd, hWker _ hdC hdW, zero_add]
   have stabMul : ∀ a b : G F Ω, (∀ x, φ (conjHom (cycU l U) a x) = φ x) →
       (∀ x, φ (conjHom (cycU l U) b x) = φ x) → ∀ x, φ (conjHom (cycU l U) (a * b) x) = φ x := by

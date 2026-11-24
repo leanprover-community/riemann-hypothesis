@@ -272,7 +272,7 @@ theorem le_gap_bar {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Recip
   rw [ite_eq_left (by omega), ite_eq_right (by omega)]
   linarith
 
-theorem bir_gap_le (d N : ℕ) (hd : 3 ≤ d) : (d + 3) ^ 2 + 2 * N ≤ (d + 3) * ((d + 1).choose 2 + 4 * N + d + 3) := by
+theorem bir_gap_le (d N : ℕ) : (d + 3) ^ 2 + 2 * N ≤ (d + 3) * ((d + 1).choose 2 + 4 * N + d + 3) := by
   nlinarith [Nat.zero_le ((d + 1).choose 2), Nat.zero_le N]
 
 end GlobalTheory.CovTop.HodgeSteps
@@ -427,7 +427,7 @@ theorem rk_le_alt_alt : GlobalTheory.CovTop.HypothesesX → _root_.GlobalTheory.
   have hbir := _root_.GlobalTheory.DegVal.birOn_of_weight_gaps_large hX hG hQ (_root_.GlobalTheory.CovTop.PublishedHodgeBundleTheorems.toClassicalTheorems hP) hP.q15 hP.q16 _ p.T hL _ hp1 hq1 Y _ _ hY.1 u1 fun τ a b hb => by
     rw [← gap_eq _ hb]
     refine le_trans ?_ (hgap τ a (hb ▸ b.2))
-    exact_mod_cast bir_gap_le _ _ hd3
+    exact_mod_cast bir_gap_le _ _
   have hboth := _root_.GlobalTheory.DegVal.compDeg_between _ _ _ _ _ _ _ Y.U hY.1.unf (_root_.GlobalTheory.T.proportionality_principle_compactification hP hTo hN _ p.T hL _ hp1 hq1 hf hj Y _ _ hY.1).1
     (_root_.GlobalTheory.T.compactification_top_chern_eq_volume hP hTo hN _ p.T hL _ hp1 hq1 hf hj Y _ _ hY.1) u1 (fun τ => (hA τ).1) (fun τ => (hA τ).2) hbir hval
   have hc0 : 1 ≤ cZero (Fm.D x ι) ((i : ℕ) + 1) := by

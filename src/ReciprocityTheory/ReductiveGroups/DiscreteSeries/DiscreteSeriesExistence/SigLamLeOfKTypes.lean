@@ -234,9 +234,6 @@ variable {ε : Fin n → Bool} {lam : Fin n → ℝ} {T : S7.KType ε (lowK ε l
   {Ψ : Matrix (Fin n) (Fin n) ℂ → (T.V →L[ℂ] T.V)} {v₀ : T.V}
 
 theorem sigLam_le_of_kTypes (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) (W : Submodule ℂ (Hlam ε Ψ v₀)) (hWf : FiniteDimensional ℂ W)
-    (hWfull : ∀ (μ : Fin n → ℝ) (S : Submodule ℂ (Hlam ε Ψ v₀)),
-      Formalism.MainNotions.S.IsKTypeOf ε (sigLam ε Ψ v₀) μ S →
-        (∃ S' ≤ W, Formalism.MainNotions.S.IsKTypeOf ε (sigLam ε Ψ v₀) μ S') → S ≤ W)
     (hWsum : W ≤ sSup {S : Submodule ℂ (Hlam ε Ψ v₀) | ∃ μ, Formalism.MainNotions.S.IsKTypeOf ε (sigLam ε Ψ v₀) μ S})
     (U : Set (Matrix (Fin n) (Fin n) ℂ)) (hU : IsOpen U) (h1 : (1 : Matrix (Fin n) (Fin n) ℂ) ∈ U) :
     ∃ α : Matrix (Fin n) (Fin n) ℂ → ℂ, ContDiff ℝ ∞ α ∧ HasCompactSupport α ∧ tsupport α ⊆ U ∧

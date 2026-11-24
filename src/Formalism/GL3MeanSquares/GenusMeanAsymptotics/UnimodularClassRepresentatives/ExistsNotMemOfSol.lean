@@ -289,7 +289,7 @@ theorem nkQ_succ (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) {𝔭 : Id
   rwa [e] at h
 
 theorem exists_notMem_of_sol {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {H : Matrix m m (𝓞 K)}
-    (hH : Hᴴ = H) {D n : 𝓞 F} (hD : H.det = ι D) {d v c k : ℕ} (hDd : D ∉ 𝔭 ^ (d + 1))
+    {D n : 𝓞 F} (hD : H.det = ι D) {d v c k : ℕ} (hDd : D ∉ 𝔭 ^ (d + 1))
     (hn : n ∉ 𝔭 ^ (v + 1)) (hk : d + v + 1 ≤ k) (hc : d + v + 1 ≤ 2 * (c + 1)) {x : m → 𝓞 K}
     (hx : fm H x x - ι n ∈ extP K 𝔭 ^ k) : ∃ j, (star x ᵥ* H) j ∉ extP K 𝔭 ^ (c + 1) := by
   have hF : IsFixF K F := Fact.out
@@ -350,7 +350,7 @@ theorem nkM_eq_nkQ {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {H : Matrix 
     rw [Qc_mk hck H y]
     rw [mk_fm] at hx
     have hy : fm H y y - ι n ∈ extP K 𝔭 ^ k := Ideal.Quotient.eq.mp hx
-    exact exists_notMem_of_sol h𝔭 hH hD hDd hn hk hc hy
+    exact exists_notMem_of_sol h𝔭 hD hDd hn hk hc hy
   · exact fun h => h.2
 
 theorem nkM_succ (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal)

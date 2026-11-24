@@ -50,7 +50,7 @@ noncomputable section
 namespace GlobalTheory.FramePairGram
 
 theorem coef_eq_coW_change {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} (X : Data E r) {j : ℕ}
-    (hj : j ≤ r) (hp : X.p0 = r - j) {x x' : Frame X.Ψ r} (hx : x ∈ X.dom) (hx' : x' ∈ X.dom) (τ : X.Ψ)
+    (hj : j ≤ r) (hp : X.p0 = r - j) {x x' : Frame X.Ψ r} (hx' : x' ∈ X.dom) (τ : X.Ψ)
     (h : moeb (frameCo X hj x τ) 0 = moeb (frameCo X hj x' τ) 0) :
     (Matrix.of fun b i : Fin j => coef X x x' τ.1 b i) = (coW X hj x' τ)⁻¹ * coW X hj x τ := by
   have hd' : IsUnit (mat x' τ).det := (hx' τ).1.isUnit

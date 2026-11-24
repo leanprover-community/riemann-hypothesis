@@ -134,7 +134,7 @@ theorem logdet_mono {P G : Matrix (Fin r) (Fin r) ℂ} (hP : P.PosDef) (hG : G.P
 theorem posDef_smul_one {c : ℝ} (hc : 0 < c) : ((c : ℂ) • (1 : Matrix (Fin r) (Fin r) ℂ)).PosDef :=
   Matrix.PosDef.one.smul (by exact_mod_cast hc)
 
-theorem logdet_smul_one {c : ℝ} (hc : 0 < c) :
+theorem logdet_smul_one {c : ℝ} :
     Real.log ((c : ℂ) • (1 : Matrix (Fin r) (Fin r) ℂ)).det.re = r * Real.log c := by
   rw [det_smul, det_one, mul_one, Fintype.card_fin, ← Complex.ofReal_pow, Complex.ofReal_re, Real.log_pow]
 

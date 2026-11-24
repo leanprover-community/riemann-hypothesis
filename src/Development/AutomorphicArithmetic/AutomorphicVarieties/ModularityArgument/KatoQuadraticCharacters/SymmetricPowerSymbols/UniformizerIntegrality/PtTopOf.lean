@@ -69,7 +69,7 @@ def IsoEx : Prop :=
   ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε) (M : ℕ), ∃ e : topBar X M ≃+* Kb X, IsIso X M e
 
 def IntU : Prop :=
-  ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε) (M : ℕ) (u : X.K), IsU X u → IsIntegral (Algebra.adjoin Ω {X.jK}) u ∧ IsIntegral (Algebra.adjoin Ω {X.jK}) u⁻¹
+  ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε) (_ : ℕ) (u : X.K), IsU X u → IsIntegral (Algebra.adjoin Ω {X.jK}) u ∧ IsIntegral (Algebra.adjoin Ω {X.jK}) u⁻¹
 
 def LcGeo : Prop :=
   ∀ (F K E : Type) [Field F] [Field K] [Field E] [Algebra F K] [Algebra F E] [Algebra K E] [IsScalarTower F K E]

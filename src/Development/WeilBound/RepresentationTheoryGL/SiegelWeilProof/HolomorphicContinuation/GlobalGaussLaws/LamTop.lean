@@ -705,7 +705,7 @@ theorem block_matrix_one {R : Type} [CommRing R] : blk4 (1 : Matrix (Fin n) (Fin
   rw [Matrix.fromBlocks_one]
   exact Matrix.submatrix_one_equiv _
 
-theorem mat_injective : Function.Injective (mat (D := D) (n := n)) := fun x y h =>
+theorem mat_injective : Function.Injective (mat (D := D) (n := n)) := fun _ _ h =>
   GlobalTheory.AdelicU.matHom_injective _ _ _ (Units.ext h)
 
 theorem mat_mul (x y : G D n) : mat (x * y) = mat x * mat y := by

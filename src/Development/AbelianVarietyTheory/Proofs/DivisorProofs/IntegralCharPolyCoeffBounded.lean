@@ -88,6 +88,6 @@ theorem charpoly_coeff_of_mem_KGL {E : Type} [Field E] [NumberField E] (n : ℕ)
 theorem charpoly_nrmL_integral : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (w : Pl E),
     IsLevel (thL n w) (GlobalTheory.LFun.KGL w (n := n)) (GlobalTheory.LFun.KGL w (n := n)) → ∀ y ∈ GlobalTheory.LFun.KGL w (n := n),
       (∀ i, Valued.v ((nrmL n w y).val.charpoly.coeff i) ≤ 1) ∧ 1 ≤ Valued.v ((nrmL n w y).val.charpoly.coeff 0) :=
-  fun _ _ _ _ n w hL y hy => charpoly_coeff_of_mem_KGL n w (nrmL_mem_KGL n w hL hy)
+  fun _ _ _ _ n w hL _ hy => charpoly_coeff_of_mem_KGL n w (nrmL_mem_KGL n w hL hy)
 
 end GlobalTheory.BCT.GeoFin

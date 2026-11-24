@@ -166,7 +166,7 @@ theorem height_eq {p : ℕ} [hp : Fact p.Prime] {k : Type} [Field k] (A : AbVar 
 
 theorem exists_tower_and_height_eq : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] (A : AbVar k),
     (∃ G : PDivGroup p k, Nonempty (G.TorsionTower A.X)) ∧
-      ∀ (G : PDivGroup p k) (t : G.TorsionTower A.X), G.height = 2 * A.dim := by
+      ∀ (G : PDivGroup p k) (_ : G.TorsionTower A.X), G.height = 2 * A.dim := by
   intro p _ k _ A
   obtain ⟨G, -, hG⟩ := exists_tower p k A
   exact ⟨⟨G, hG⟩, fun G t => height_eq A G t⟩

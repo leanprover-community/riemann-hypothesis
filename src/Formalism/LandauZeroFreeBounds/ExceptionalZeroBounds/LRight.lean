@@ -131,7 +131,7 @@ theorem l_log_deriv_right : LLogDerivRight := by
   rw [negLD_eq_LSeries_mul_vonMangoldt χ hs]
   refine le_trans (norm_LSeries_twist_vonMangoldt_le χ hs) ?_
   have hre : 1 < (s.re : ℂ).re := by simpa using hs
-  rw [Formalism.ZF.lamF_eq_norm hs, ArithmeticFunction.LSeries_vonMangoldt_eq_deriv_riemannZeta_div hre,
+  rw [Formalism.ZF.lamF_eq_norm, ArithmeticFunction.LSeries_vonMangoldt_eq_deriv_riemannZeta_div hre,
     neg_div, norm_neg]
   have h := hC (s.re : ℂ) hre
   simpa using h

@@ -830,7 +830,7 @@ namespace Data
 variable (d : Data K ι Ω WT A)
 
 theorem gen_prime' {q : Ideal (KTp K d.D d.N)} (hq : q ∈ d.HtOne) : Prime (d.gen q) :=
-  ValUFD.gen_prime (fun p hp hh => d.gen_span ⟨hp, hh⟩) hq
+  ValUFD.gen_prime (fun _ hp hh => d.gen_span ⟨hp, hh⟩) hq
 
 theorem gen_not_mem {p q : Ideal (KTp K d.D d.N)} (hp : p ∈ d.HtOne) (hq : q ∈ d.HtOne)
     (hqp : q ≠ p) : d.gen q ∉ p := by

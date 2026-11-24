@@ -369,7 +369,7 @@ theorem section_ext_affine {U : X.Opens} {a b : Γ(F, U)}
       F.presheaf.map (homOfLE hV).op a = F.presheaf.map (homOfLE hV).op b) : a = b :=
   TopCat.Sheaf.eq_of_locally_eq' (⟨_, F.isSheaf⟩ : TopCat.Sheaf Ab X)
     (fun V : {V : X.Opens // IsAffineOpen V ∧ V ≤ U} ↦ V.1) U (fun V ↦ homOfLE V.2.2)
-    (fun p hp ↦
+    (fun _ hp ↦
       have ⟨V, h1, h2, h3⟩ := Opens.isBasis_iff_nbhd.1 X.isBasis_affineOpens hp
       Opens.mem_iSup.2 ⟨⟨V, h1, h3⟩, h2⟩) a b fun V ↦ h V.1 V.2.1 V.2.2
 

@@ -381,7 +381,7 @@ theorem star_psiE_div (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (hψ : IsStdChar
     (hadd : ∀ x y, psiEf (x + y) = psiEf x * psiEf y)
     (hint : ∀ x ∈ IntAf (instOf D).F (instOf D).E, psiEf x = 1)
     (hrat : ∀ x : (instOf D).E, psiEf (Formalism.UG.inclE (F := (instOf D).F) (Formalism.MainNotions.S.Af (instOf D).F) x) * psiEinf (instOf D) x = 1)
-    (g : ℕ) (hg : g ≠ 0) (S : AE D) :
+    (g : ℕ) (S : AE D) :
     star (psiE ψ (incA D ((g : D.host.E)⁻¹) * S)) =
       (∏ v, Complex.exp (2 * Real.pi * Complex.I *
         ((thetaV (instOf D) v S + star (thetaV (instOf D) v S)) / (g : ℂ)))) *
@@ -449,7 +449,7 @@ theorem core (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (hψ : IsStdChar D ψ (-1
     rw [tauF_hN]
     simp only [hid]
     rfl
-  rw [star_psiE_div D ψ hψ psiEf hadd hint hrat g hg]
+  rw [star_psiE_div D ψ hψ psiEf hadd hint hrat g]
   congr 1
   · unfold Formalism.L2.SG.HidaSetting.psiInf
     refine Finset.prod_congr rfl fun v _ => ?_

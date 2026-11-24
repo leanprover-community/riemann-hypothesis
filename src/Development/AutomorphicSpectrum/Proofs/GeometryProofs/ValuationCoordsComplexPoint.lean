@@ -222,11 +222,11 @@ theorem isVal_zero : IsVal y w 0 0 :=
 
 def locRing (y : (Σ k, ι k) → Ω) (w : (Σ k, ι k) → ℂ) : Subring Ω where
   carrier := {a | ∃ v, IsVal y w a v}
-  mul_mem' := fun ⟨v, hv⟩ ⟨u, hu⟩ => ⟨_, hv.mul hu⟩
+  mul_mem' := fun ⟨_, hv⟩ ⟨_, hu⟩ => ⟨_, hv.mul hu⟩
   one_mem' := ⟨1, isVal_one⟩
-  add_mem' := fun ⟨v, hv⟩ ⟨u, hu⟩ => ⟨_, hv.add hu⟩
+  add_mem' := fun ⟨_, hv⟩ ⟨_, hu⟩ => ⟨_, hv.add hu⟩
   zero_mem' := ⟨0, isVal_zero⟩
-  neg_mem' := fun ⟨v, hv⟩ => ⟨_, hv.neg⟩
+  neg_mem' := fun ⟨_, hv⟩ => ⟨_, hv.neg⟩
 
 theorem mem_locRing_of {a : Ω} {v : ℂ} (h : IsVal y w a v) : a ∈ locRing y w := ⟨v, h⟩
 

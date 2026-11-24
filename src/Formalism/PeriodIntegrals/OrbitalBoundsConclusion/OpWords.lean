@@ -96,7 +96,7 @@ theorem kappa_ad (hL : KappaLeft) (hR : KappaRight) (K : Type) [Field K] [CharZe
   rw [map_sub, hL K k d a b A, hR K k d a b A]
   rfl
 
-theorem divide_all (hV : Vanish) (hD : DivT) (hRB : RBihom) (hRT : RTT) (hTW : TTWt)
+theorem divide_all (hV : Vanish) (hD : DivT) (hRT : RTT) (hTW : TTWt)
     (K : Type) [Field K] [CharZero K] (k c : ℕ) : ∀ n : ℕ, ∀ (W : Submodule K (Pol K k)),
     W ≤ Bihom K k (c + n) → (∀ f ∈ W, ∀ a b, Rop K k a b f ∈ W) → (∀ f ∈ W, WtLe K k c f) →
     ∀ f ∈ W, ∃ g ∈ Bihom K k c, f = tt K k ^ n * g := by
@@ -177,7 +177,7 @@ theorem opWords_of (hI : KappaInj) (hL : KappaLeft) (hR : KappaRight) (hB : Kapp
         have h2 := hE K k a (ω a) (kappa K k d A') h1 m hm
         rw [h2]
         exact_mod_cast hωc a
-      obtain ⟨g, hg, he⟩ := divide_all hV hD hRB hRT hTW K k c (d - c) W hW hWst hWwt _
+      obtain ⟨g, hg, he⟩ := divide_all hV hD hRT hTW K k c (d - c) W hW hWst hWwt _
         (Submodule.mem_map_of_mem hA)
       exact ⟨c, le_rfl, hcd.le, g, hg, he⟩
     · exact ⟨d, hdc, le_rfl, kappa K k d A, hB K k d A, by simp⟩

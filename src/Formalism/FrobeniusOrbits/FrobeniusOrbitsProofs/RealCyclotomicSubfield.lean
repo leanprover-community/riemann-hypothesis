@@ -334,7 +334,7 @@ theorem real_subfield_of_galois_spec (hSpec : HostGalSpec) : TwoPowerCyclotomicL
       rw [h4]
       rfl
 
-theorem hostCMType_of (hGal : HostGalois) (hSpec : HostGalSpec) : HostCMType := by
+theorem hostCMType_of (hGal : HostGalois) : HostCMType := by
   intro e q d hq L _ _ ζ a b h
   obtain ⟨-, hfin, -, -⟩ := hGal e q d hq L ζ a b h
   have hb : b ^ 2 = -(d : L) := h.2.2.1

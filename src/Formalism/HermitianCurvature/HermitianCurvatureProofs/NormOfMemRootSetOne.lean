@@ -268,7 +268,7 @@ theorem tendsto_shift (s : ℕ) (hs : 1 ≤ s) (σ : ℂ) :
     field_simp [hx2.2]
     ring
 
-theorem tendsto_shift_ne (s : ℕ) (hs : 1 ≤ s) (σ ζ : ℂ) (hζ : ζ ≠ 1) :
+theorem tendsto_shift_ne (s : ℕ) (σ ζ : ℂ) (hζ : ζ ≠ 1) :
     Tendsto (fun x => ζ * rhoR s σ x * (x + σ) - x) (cocompact ℂ) (cocompact ℂ) := by
   have hρ := Formalism.FourierDecayAlt.P.PBK.tendsto_rhoR s σ
   have hζ1 : 0 < ‖ζ - 1‖ := norm_pos_iff.mpr (sub_ne_zero.mpr hζ)

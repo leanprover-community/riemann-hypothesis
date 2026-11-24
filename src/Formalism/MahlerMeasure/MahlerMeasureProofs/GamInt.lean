@@ -432,7 +432,7 @@ theorem Dop_commute (u v u' v' : σ) : Commute (Dop (p := p) u v) (Dop u' v') :=
 
 theorem Dop_commute_sum {ι : Type} (s : Finset ι) (u v : σ) (f g : ι → σ) :
     Commute (Dop (p := p) u v) (∑ i ∈ s, Dop (f i) (g i)) :=
-  Commute.sum_right _ _ _ (fun i _ => Dop_commute _ _ _ _)
+  Commute.sum_right _ _ _ (fun _ _ => Dop_commute _ _ _ _)
 
 theorem coeff_Dop_pow (u v : σ) (huv : u ≠ v) (a : ℕ) (G : MvPolynomial σ ℚ_[p]) (β : σ →₀ ℕ) :
     AddMonoidAlgebra.coeff ((Dop u v ^ a) G) β = AddMonoidAlgebra.coeff G (β + a • (Finsupp.single u 1 + Finsupp.single v 1)) *

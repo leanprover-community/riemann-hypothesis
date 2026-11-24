@@ -895,17 +895,17 @@ variable (X₁ p z₁) in
 noncomputable def sys : FPre (H.bar : 𝓞 E → 𝓞 E) (min Dw.p Dw.q) p (X₁.M.Z.presheaf.stalk z₁) where
   Y := Pts X₁ p z₁
   ev y := evC (pick y)
-  ev_le y h := norm_evC_le _ h
-  ev_lt y h hh := norm_evC_lt _ h hh
+  ev_le _ h := norm_evC_le _ h
+  ev_lt _ h hh := norm_evC_lt _ h hh
   X y := (pick y).T.P.D.toPre.X
-  fin y := finite_X _
-  proj y := projective_X _
-  rank_le y := rank_le _
+  fin _ := finite_X _
+  proj _ := projective_X _
+  rank_le _ := rank_le _
   β y := (pick y).T.be
-  bal y := be_bal _
-  pos y x hx := _root_.GlobalTheory.UPoinc.ShortBound.be_pos _ x hx
+  bal _ := be_bal _
+  pos _ x hx := _root_.GlobalTheory.UPoinc.ShortBound.be_pos _ x hx
   sc y := (pick y).sc
-  sc_pos y := sc_pos _
+  sc_pos _ := sc_pos _
 
 theorem sys_matches : UMatches (sys X₁ p z₁) := by
   intro t

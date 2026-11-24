@@ -567,7 +567,7 @@ section Extract
 variable {V : Type} [AddCommGroup V] [Module ℂ V]
 
 theorem extract (W' : Submodule ℂ (Module.Dual ℂ V)) (φ : Module.Dual ℂ V) {m : ℕ} (hm : 1 ≤ m)
-    (E : Fin m → Fin m → Module.End ℂ V) (a : ℂ) (P : ℂ[X]) (hdeg : P.natDegree = m) (hP : P.Monic)
+    (E : Fin m → Fin m → Module.End ℂ V) (a : ℂ) (P : ℂ[X])
     (h : ∀ Y : ℂ, φ ∘ₗ qdet E (Y + a) - P.eval Y • φ ∈ W') :
     φ ∘ₗ (∑ k, E k k) - (P.coeff (m - 1) - (m : ℂ) * a + (m : ℂ) * ((m : ℂ) - 1) / 2) • φ ∈ W' := by
   by_contra hx
@@ -587,7 +587,7 @@ theorem extract (W' : Submodule ℂ (Module.Dual ℂ V)) (φ : Module.Dual ℂ V
       refine LinearMap.ext fun v => ?_
       rw [hC (Y + a)]
 
-      simp [Algebra.algebraMap_eq_smul_one, LinearMap.sum_apply, map_sum, ← ht]
+      simp [Algebra.algebraMap_eq_smul_one, LinearMap.sum_apply, map_sum]
     rw [e]
 
     simp [hR, eval_finsetSum, map_sum, map_add (f := _), map_sub, map_smul]
@@ -1071,7 +1071,7 @@ theorem tr_mem (B : GradBasis A) (χ : Fin n → ℂ) (W' : Submodule ℂ (Modul
       simp [hc]
     have hx := extract W' φ hm
       (fun p q : Fin m => Eb X B (stdBlocks (dims n B.j) B.hj ⟨i, p⟩) (stdBlocks (dims n B.j) B.hj ⟨i, q⟩))
-      a P hPd hPm (fun Y => by
+      a P (fun Y => by
         have := h i Y
         have e1 : Y + a = Y + ((m : ℂ) - 1) / 2 - e / 2 := by rw [ha]; ring
         have e2 : P.eval Y = plab χ L i Y := by

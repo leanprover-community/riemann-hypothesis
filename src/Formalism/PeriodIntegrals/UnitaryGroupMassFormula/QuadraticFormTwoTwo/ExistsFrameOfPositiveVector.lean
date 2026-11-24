@@ -323,7 +323,7 @@ theorem exists_frame_of_positive_vector {a b : Fin (2 * r + k + 1) → ℂ} (hb 
         · rw [gb_smul_left, hvb, mul_zero]
       · rw [Fin.snoc_castSucc]; exact hB3 j w hw
 
-theorem exists_frame {a b : Fin (2 * r + k + 1) → ℂ} (ha : inWb k r a) (hb : inWb k r b) (hT : 0 < Tz k r b) :
+theorem exists_frame {a b : Fin (2 * r + k + 1) → ℂ} (hb : inWb k r b) (hT : 0 < Tz k r b) :
     ∃ Bs : Fin (k - 1) → Fin (2 * r + k + 1) → ℂ, IsFrameOf k r [a, b] Bs := exists_frame_of_positive_vector hb hT (k - 1) le_rfl
 
 theorem exists_unit {z a : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hT : 0 < Tz k r z) (ha : inWb k r a)
@@ -359,7 +359,7 @@ theorem geom_package {z z' : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hz'
   have hgi' := glev_inWb hg hz'
   obtain ⟨hnp1, hnp2⟩ := not_prop_of_GG hz hz' hg hGG
   obtain ⟨_, hu2⟩ := glev_unit hg
-  obtain ⟨Bs, hB⟩ := exists_frame hgi.2 hz' hT'
+  obtain ⟨Bs, hB⟩ := exists_frame hz' hT'
   obtain ⟨e', he'w, he'z, he'e, he'v⟩ := exists_unit hz' hT' hgi.2 hnp1
   obtain ⟨e, hew, hez, hee, hev⟩ := exists_unit hz hT hgi'.1 hnp2
   have hB' := hB

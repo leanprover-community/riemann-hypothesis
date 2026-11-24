@@ -738,7 +738,7 @@ theorem selfAdj_of_pyth (hv : v.IsComplex) (e : V →ₗ[K] V)
 end Maj
 
 theorem numeric {dg db μ μg m lg δ Q : ℝ} (hd : 0 < dg + db) (hdg : 0 ≤ dg) (hdb : 0 ≤ db)
-    (hcut : (dg + db) * μ ≤ dg * μg + db * (m + lg)) (hδ : 0 ≤ δ) (hδ' : δ ≤ 1 / 12) (hb : db ≤ 3 * δ * (dg + db))
+    (hcut : (dg + db) * μ ≤ dg * μg + db * (m + lg)) (hδ' : δ ≤ 1 / 12) (hb : db ≤ 3 * δ * (dg + db))
     (hm : m ≤ Q) (hμ : -Q ≤ μ) (hlg : lg ≤ Q) (hlg0 : 0 ≤ lg) : μ - 12 * δ * Q ≤ μg := by
   have hQ : 0 ≤ Q := by linarith
   have hδdb : δ * db ≤ 1 / 12 * db := mul_le_mul_of_nonneg_right hδ' hdb
@@ -786,7 +786,7 @@ theorem slope_good_ge : ∀ (K V : Type) [Field K] [NumberField K] [_root_.Numbe
     have := Real.log_nonneg this
     linarith
   rw [hrkR] at hcut hrk hpos
-  exact numeric hpos (Nat.cast_nonneg _) (Nat.cast_nonneg _) (by linarith) hδ hδ' hrk hmax hmin hlog hlg0
+  exact numeric hpos (Nat.cast_nonneg _) (Nat.cast_nonneg _) (by linarith) hδ' hrk hmax hmin hlog hlg0
 
 end GlobalTheory.CutNum
 end -- clump:auto

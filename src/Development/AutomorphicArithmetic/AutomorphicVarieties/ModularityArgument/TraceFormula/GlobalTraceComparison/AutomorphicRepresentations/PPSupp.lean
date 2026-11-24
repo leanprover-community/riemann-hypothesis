@@ -71,7 +71,7 @@ theorem UpperTheory.Reformulated.B.MultiplicationNormBound.memLp_mul {X : Type*}
 
 noncomputable def UpperTheory.Reformulated.B.MultiplicationNormBound.mulL.{u_1} :
     {X : Type u_1} →
-      [inst : MeasurableSpace X] →
+      [MeasurableSpace X] →
         {ν : MeasureTheory.Measure X} →
           (c : X → ℝ) →
             Measurable c →
@@ -111,7 +111,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.MulLinearAe.mulL_ae.{u_1} :
-    ∀ {X : Type u_1} [inst : MeasurableSpace X] {ν : MeasureTheory.Measure X} (c : X → ℝ) (hc : Measurable c)
+    ∀ {X : Type u_1} [MeasurableSpace X] {ν : MeasureTheory.Measure X} (c : X → ℝ) (hc : Measurable c)
       (hb : ∀ (x : X), |c x| ≤ (1 : ℝ)) (f : ↥(MeasureTheory.Lp ℂ (2 : ENNReal) ν)),
       (↑(↑((UpperTheory.Reformulated.B.MultiplicationNormBound.mulL c hc hb : ↥(MeasureTheory.Lp ℂ (2 : ENNReal) ν) → ↥(MeasureTheory.Lp ℂ (2 : ENNReal) ν))
                         f) :

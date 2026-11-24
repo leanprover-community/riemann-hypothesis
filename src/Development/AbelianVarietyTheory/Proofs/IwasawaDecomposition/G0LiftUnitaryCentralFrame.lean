@@ -134,7 +134,7 @@ theorem not_mem_gPl_of_twist (D : D7) {Q : Finset (Pl D.host.E)} (hQ : IsTwistPl
       rw [← hov, Ideal.mem_comap, map_natCast]; exact h0
     rwa [← s.w_under, Ideal.mem_comap, map_natCast] at h1
   exact GlobalTheory.LevelTypePlace.not_two_primes s.w.asIdeal (D.host.g_prime kv.1) hq (hqg kv.1).symm hg
-    (GlobalTheory.LevelTypePlace.natCast_mem_of_card s.w hcard hq.ne_zero)
+    (GlobalTheory.LevelTypePlace.natCast_mem_of_card s.w hcard)
 
 theorem exists_blockLift (D : D7) {Q Pg : Finset (Pl D.host.E)} (hQ : IsTwistPlaces D.host.g Q) {G : Type} [Group G]
     (eG : G ≃* G0 Pg D.R.r) (cG : G0 Pg D.R.r ≃* G0g D.nd)

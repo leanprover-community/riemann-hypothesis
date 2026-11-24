@@ -76,7 +76,7 @@ namespace Formalism.MainNotions.G.CountingStatementReduction
 
 open Formalism.MainNotions.flipOneThree Formalism.GM Formalism.GM.M Formalism.InvariantFactorPaths.PW Formalism.InvariantFactorPaths.L4 Finset
 
-theorem alternative_mean_value_theorem (D : Formalism.BasicNotions.D7) (X : InstM) : ModelLatticeRank D X := fun hX =>
+theorem alternative_mean_value_theorem (D : Formalism.BasicNotions.D7) (X : InstM) : ModelLatticeRank X := fun hX =>
   _root_.Formalism.InvariantFactorPaths.MC.theoremMV7 X.p X.s X.r X.LL X.T X.a X.E X.Yl X.n₀ X.dd X.ρ hX.1 hX.2.1 hX.2.2.1 hX.2.2.2.1
     hX.2.2.2.2.1 hX.2.2.2.2.2.1 hX.2.2.2.2.2.2.1 hX.2.2.2.2.2.2.2.1 hX.2.2.2.2.2.2.2.2.1 hX.2.2.2.2.2.2.2.2.2.1
     hX.2.2.2.2.2.2.2.2.2.2
@@ -268,7 +268,7 @@ theorem spec_alg {A : Type} [CommRing A] [Algebra O A] (b g : Matrix (Fin n) (Fi
 
 end Universal
 
-theorem key_positivity_condition (D : Formalism.BasicNotions.D7) : ArchimedeanSignatureMatching D := by
+theorem key_positivity_condition (D : Formalism.BasicNotions.D7) : ArchimedeanSignatureMatching := by
   intro O _ _ _ r c ka f _ hf hdvd
   obtain ⟨f₁, rfl⟩ := hdvd
   refine ⟨f₁, ?_, rfl⟩
@@ -958,7 +958,7 @@ theorem res_sat (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     exact ha (C_injective _ _ (h6.trans C_0.symm))
   exact mul_left_cancel₀ hne h4
 
-theorem residue_division_transfer (D : Formalism.BasicNotions.D7) : adm7 D := by
+theorem residue_division_transfer (D : Formalism.BasicNotions.D7) : adm7 := by
   intro O _ _ _ r c ka
   refine ⟨res_unit O r, fun hM => ⟨fun f hf f' hf' h => res_inj O r c ka hM f hf f' hf' h,
     fun f hf m => res_coeff O r c ka hM f hf m,
@@ -1029,8 +1029,8 @@ theorem mq_top_of_irr {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationR
   rintro x ⟨u, hu, rfl⟩
   exact hU u hu v (Submodule.subset_span hv)
 
-theorem weight_condition_of_integral_form (D : Formalism.BasicNotions.D7) (X : Formalism.MainNotions.flipOneThree.Inst) (h : Formalism.MainNotions.CovariantDegrees.NablaDeltaComparisonField D) :
-    Formalism.MainNotions.flipOneThree.adm2 D X := by
+theorem weight_condition_of_integral_form (D : Formalism.BasicNotions.D7) (X : Formalism.MainNotions.flipOneThree.Inst) (h : Formalism.MainNotions.CovariantDegrees.NablaDeltaComparisonField) :
+    Formalism.MainNotions.flipOneThree.adm2 X := by
   intro n V _ _ _ _ E lam v hn _ hirr hl
   obtain ⟨hA, hB⟩ := h X.p X.L.n' X.O X.setting X.instance_ring_standard (n + 1) lam V E v hirr
   refine ⟨fun x hx => ?_, fun M hM hv hwt => ?_⟩
@@ -1053,7 +1053,7 @@ theorem weight_condition_of_integral_form (D : Formalism.BasicNotions.D7) (X : F
       rw [← algebraMap_smul (KK X.O) c v]
       exact Submodule.smul_mem _ _ hirr.2.2.1.2.1
 
-theorem weight_condition_from_integral_form (D : Formalism.BasicNotions.D7) (X : Formalism.MainNotions.flipOneThree.Inst) : Formalism.MainNotions.flipOneThree.adm2 D X :=
+theorem weight_condition_from_integral_form (D : Formalism.BasicNotions.D7) (X : Formalism.MainNotions.flipOneThree.Inst) : Formalism.MainNotions.flipOneThree.adm2 X :=
   weight_condition_of_integral_form D X (Formalism.MainNotions.G.GLWeightTheory.nabla_delta_comparison_field D)
 
 end Formalism.MainNotions.G.CountingStatementReduction
@@ -2231,7 +2231,7 @@ theorem ext_poly (D : Formalism.BasicNotions.D7) {K : Type} [Field K] [CharZero 
     (fun x hx => ext_fock_nondeg x hx) la e' he'
 
 theorem exponent_bound_of_positivity (D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ) (X : flipOneThree.Inst)
-    (h1 : adm1 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X) : adm3 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X := by
+    (h1 : adm1 C0 CYb Cde Ck CD Cb CE1 CE2 Cc X) : adm3 C0 CYb Cde Ck CD Cb CE1 CE2 Cc X := by
   intro hH LL hLL j hj la _
   have : CharZero (KK X.O) := dvr_fraction_field_char_zero X.std.1.prime X.setting
   obtain ⟨⟨e', he'⟩, hall⟩ := ((h1 hH LL hLL).1 j hj).2
@@ -2270,7 +2270,7 @@ theorem ptool_sub (D : Formalism.BasicNotions.D7) (p n' : ℕ) (O : Type) [CommR
       LL.deg T e he e1 he1) F hF).2 hFB
 
 theorem positivity_condition_holds (D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ) (hCYb : 1 ≤ CYb) (hCE1 : 0 ≤ CE1)
-    (hCE2 : 0 ≤ CE2) (X : flipOneThree.Inst) : adm1 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X := by
+    (hCE2 : 0 ≤ CE2) (X : flipOneThree.Inst) : adm1 C0 CYb Cde Ck CD Cb CE1 CE2 Cc X := by
   intro hH LL hLL
   have hr := r_ge C0 CYb Cde Ck CD Cb Cc X hH
   have : CharZero (KK X.O) := dvr_fraction_field_char_zero (p_prime X) X.setting
@@ -2287,7 +2287,7 @@ theorem positivity_condition_holds (D : Formalism.BasicNotions.D7) (C0 CYb Cde C
       (fun j => subOps_rep (K := KK X.O) (⟨LL.vec⟩ : Letters (Fin (2 * X.s + 1))) _ _ (Fin.castLE_injective _)) j j' hjj
 
 theorem exponent_condition_holds (D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Cc : ℝ) (hCYb : 1 ≤ CYb) (hCE1 : 0 ≤ CE1)
-    (hCE2 : 0 ≤ CE2) (X : flipOneThree.Inst) : adm3 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X :=
+    (hCE2 : 0 ≤ CE2) (X : flipOneThree.Inst) : adm3 C0 CYb Cde Ck CD Cb CE1 CE2 Cc X :=
   exponent_bound_of_positivity D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X (positivity_condition_holds D C0 CYb Cde Ck CD Cb CE1 CE2 Cc hCYb hCE1 hCE2 X)
 
 theorem thr_of_ge {P : ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → Prop}
@@ -2296,11 +2296,11 @@ theorem thr_of_ge {P : ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → �
     h C0 CYb Cde Ck CD Cb CE1 CE2 Cc hY (zero_le_one.trans h1) (zero_le_one.trans h2)⟩⟩⟩
 
 theorem positivity_condition_eventually (D : Formalism.BasicNotions.D7) :
-    TransportedAlt fun C0 CYb Cde Ck CD Cb CE1 CE2 Cc => ∀ X : flipOneThree.Inst, adm1 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X :=
+    TransportedAlt fun C0 CYb Cde Ck CD Cb CE1 CE2 Cc => ∀ X : flipOneThree.Inst, adm1 C0 CYb Cde Ck CD Cb CE1 CE2 Cc X :=
   thr_of_ge fun C0 CYb Cde Ck CD Cb CE1 CE2 Cc h1 h2 h3 X => positivity_condition_holds D C0 CYb Cde Ck CD Cb CE1 CE2 Cc h1 h2 h3 X
 
 theorem exponent_bound_eventually (D : Formalism.BasicNotions.D7) :
-    TransportedAlt fun C0 CYb Cde Ck CD Cb CE1 CE2 Cc => ∀ X : flipOneThree.Inst, adm3 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X :=
+    TransportedAlt fun C0 CYb Cde Ck CD Cb CE1 CE2 Cc => ∀ X : flipOneThree.Inst, adm3 C0 CYb Cde Ck CD Cb CE1 CE2 Cc X :=
   thr_of_ge fun C0 CYb Cde Ck CD Cb CE1 CE2 Cc h1 h2 h3 X => exponent_condition_holds D C0 CYb Cde Ck CD Cb CE1 CE2 Cc h1 h2 h3 X
 
 end Formalism.MainNotions.G.CountingStatementReduction
@@ -2476,7 +2476,7 @@ theorem meanKapT_le_one (C0 CE1 CE2 : ℝ) (X : flipOneThree.Inst) (D : ℝ) : m
   exact (meanBox_mono X _ _ fun _ _ _ _ => badShare_le_one).trans (meanBox_one_le X)
 
 theorem counting_statement_small_range (D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Cc C : ℝ) (X : flipOneThree.Inst)
-    (hY : X.L.Y ≤ C * (((X.S C0 CE1 CE2).t : ℝ) + 1) * X.N₁) : Conclusion1 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc C X := by
+    (hY : X.L.Y ≤ C * (((X.S C0 CE1 CE2).t : ℝ) + 1) * X.N₁) : Conclusion1 C0 CYb Cde Ck CD Cb CE1 CE2 Cc C X := by
   intro hH
   have h1 : (1 : ℝ) ≤ X.L.Y := hH.1.1
   refine (meanKapT_le_one C0 CE1 CE2 X _).trans ?_
@@ -2498,7 +2498,7 @@ def RemainingCountingStatement (C0 CYb Cde Ck CD Cb CE1 CE2 Cc C : ℝ) (X : fli
       meanBox X κ ≤ C * (((X.S C0 CE1 CE2).t : ℝ) + 1) * X.N₁ / X.L.Y
 
 theorem counting_statement_of_block_form (D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Cc C : ℝ) (X : flipOneThree.Inst)
-    (h : RemainingCountingStatement C0 CYb Cde Ck CD Cb CE1 CE2 Cc C X) : Conclusion1 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc C X := by
+    (h : RemainingCountingStatement C0 CYb Cde Ck CD Cb CE1 CE2 Cc C X) : Conclusion1 C0 CYb Cde Ck CD Cb CE1 CE2 Cc C X := by
   by_cases hY : X.L.Y ≤ C * (((X.S C0 CE1 CE2).t : ℝ) + 1) * X.N₁
   · exact counting_statement_small_range D C0 CYb Cde Ck CD Cb CE1 CE2 Cc C X hY
   · intro hH
@@ -2520,9 +2520,9 @@ theorem thr_mono {P Q : ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → 
   exact ⟨T2, hT2, fun CYb Cde Ck CD Cb b1 b2 b3 b4 b5 => h _ _ _ _ _ _ _ _ _ (h2 CYb Cde Ck CD Cb b1 b2 b3 b4 b5)⟩
 
 def AdmNoK (D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Ckap Cc Cs : ℝ) (X : flipOneThree.Inst) : Prop :=
-  adm1 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X ∧ adm2 D X ∧ adm3 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X ∧ adm8 D X ∧
-    adm9 D C0 CYb Cde Ck CD Cb CE1 CE2 Ckap Cc Cs X ∧ adm10 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X ∧
-    adm11 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X
+  adm1 C0 CYb Cde Ck CD Cb CE1 CE2 Cc X ∧ adm2 X ∧ adm3 C0 CYb Cde Ck CD Cb CE1 CE2 Cc X ∧ adm8 X ∧
+    adm9 C0 CYb Cde Ck CD Cb CE1 CE2 Ckap Cc Cs X ∧ adm10 C0 CYb Cde Ck CD Cb CE1 CE2 Cc X ∧
+    adm11 C0 CYb Cde Ck CD Cb CE1 CE2 Cc X
 
 theorem admissible_without_key_of_admissible {D : Formalism.BasicNotions.D7} {C0 CYb Cde Ck CD Cb CE1 CE2 Ckap Cc Cs : ℝ} {X : flipOneThree.Inst}
     (h : admitted D C0 CYb Cde Ck CD Cb CE1 CE2 Ckap Cc Cs X) : AdmNoK D C0 CYb Cde Ck CD Cb CE1 CE2 Ckap Cc Cs X :=
@@ -2797,7 +2797,7 @@ theorem block_form_of_segment_form (C0 CYb Cde Ck CD Cb CE1 CE2 Cc C : ℝ) (X :
       linarith
 
 theorem counting_statement_of_segment_form (D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Cc C : ℝ) (X : flipOneThree.Inst)
-    (h : BlockFormSegmentRemaining C0 CYb Cde Ck CD Cb CE1 CE2 Cc C X) : Conclusion1 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc C X :=
+    (h : BlockFormSegmentRemaining C0 CYb Cde Ck CD Cb CE1 CE2 Cc C X) : Conclusion1 C0 CYb Cde Ck CD Cb CE1 CE2 Cc C X :=
   counting_statement_of_block_form D C0 CYb Cde Ck CD Cb CE1 CE2 Cc C X (block_form_of_segment_form C0 CYb Cde Ck CD Cb CE1 CE2 Cc C X h)
 
 end Formalism.MainNotions.G.CountingStatementReduction
@@ -3096,7 +3096,7 @@ theorem realise {CYb Cde Ck CD Cb Cc : ℝ} (hH : flipOneThree.HI C0 CYb Cde Ck 
     ⟨le_rfl, by linarith⟩ (fun i => hw _ (Fintype.mem_piFinset.1 hT i)) (hw _ hP) s
 
 theorem rank_ge {D : Formalism.BasicNotions.D7} {CYb Cde Ck CD Cb Cc : ℝ} (hH : flipOneThree.HI C0 CYb Cde Ck CD Cb Cc X)
-    (h11 : adm11 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X) (aTop : Fin X.s → ℕ) (aPlus : ℕ)
+    (h11 : adm11 C0 CYb Cde Ck CD Cb CE1 CE2 Cc X) (aTop : Fin X.s → ℕ) (aPlus : ℕ)
     (hT : aTop ∈ Fintype.piFinset (fun _ : Fin X.s => X.winA)) (hP : aPlus ∈ X.winA) (dl : DCl X)
     (hc : Compat C0 CE1 CE2 X dl aTop) :
     (mCl C0 CE1 CE2 X dl aTop : ℝ) / 2 ≤ (clSum C0 CE1 CE2 X (bRank C0 CE1 CE2 X aTop aPlus) aTop dl : ℝ) := by
@@ -3139,7 +3139,7 @@ theorem meanBox_eq (κ : (Fin X.s → ℕ) → ℕ → ℝ) :
 
 open Classical in
 theorem mean_of_classes {D : Formalism.BasicNotions.D7} {CYb Cde Ck CD Cb Cc : ℝ} (hH : flipOneThree.HI C0 CYb Cde Ck CD Cb Cc X)
-    (h11 : adm11 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X)
+    (h11 : adm11 C0 CYb Cde Ck CD Cb CE1 CE2 Cc X)
     (hfin : ∀ aTop : Fin X.s → ℕ, {b | Kept X.p X.r (X.S C0 CE1 CE2) aTop b}.Finite)
     (g : (Fin X.s → ℕ) → ℕ → SegBlock X.s X.r → ℕ) (ε K : ℝ) (hε : 0 ≤ ε) (hK : 0 ≤ K)
     (hC5 : DigitClassDimensionComparison C0 CE1 CE2 X g ε) (hFlat : RestFlat C0 CE1 CE2 X K) :
@@ -3203,7 +3203,7 @@ theorem shareB_eq {C0 CE1 CE2 : ℝ} {X : flipOneThree.Inst} (hrk : RestRk C0 CE
   rfl
 
 theorem segment_form_of_scaled_form (D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Cc C : ℝ) (X : flipOneThree.Inst)
-    (h11 : adm11 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X) (hrk : RestRk C0 CE1 CE2 X)
+    (h11 : adm11 C0 CYb Cde Ck CD Cb CE1 CE2 Cc X) (hrk : RestRk C0 CE1 CE2 X)
     (h : ScaledSegmentRemaining C0 CYb Cde Ck CD Cb CE1 CE2 Cc C X) : BlockFormSegmentRemaining C0 CYb Cde Ck CD Cb CE1 CE2 Cc C X := by
   intro hH hY
   obtain ⟨g, ε, K, hε, hK, hb, hg, hC5, hFlat⟩ := h hH hY
@@ -3213,8 +3213,8 @@ theorem segment_form_of_scaled_form (D : Formalism.BasicNotions.D7) (C0 CYb Cde 
   exact shareB_eq hrk g aTop ha aPlus hp
 
 theorem counting_theorem_of_remaining_sum (D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Cc C : ℝ) (X : flipOneThree.Inst)
-    (h11 : adm11 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X) (hrk : RestRk C0 CE1 CE2 X)
-    (h : ScaledSegmentRemaining C0 CYb Cde Ck CD Cb CE1 CE2 Cc C X) : Conclusion1 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc C X :=
+    (h11 : adm11 C0 CYb Cde Ck CD Cb CE1 CE2 Cc X) (hrk : RestRk C0 CE1 CE2 X)
+    (h : ScaledSegmentRemaining C0 CYb Cde Ck CD Cb CE1 CE2 Cc C X) : Conclusion1 C0 CYb Cde Ck CD Cb CE1 CE2 Cc C X :=
   counting_statement_of_segment_form D C0 CYb Cde Ck CD Cb CE1 CE2 Cc C X
     (segment_form_of_scaled_form D C0 CYb Cde Ck CD Cb CE1 CE2 Cc C X h11 hrk h)
 
@@ -3648,8 +3648,8 @@ theorem remaining_of_segment_bound (C0 CYb Cde Ck CD Cb CE1 CE2 Cc C : ℝ) (X :
   exact ⟨g, ε, Real.exp 3, hε, (Real.exp_pos 3).le, hb, hg, hC5, restFlat_exp hCYb hH hs⟩
 
 theorem counting_statement_of_digit_class_rank_form (D : Formalism.BasicNotions.D7) (C0 CYb Cde Ck CD Cb CE1 CE2 Cc C : ℝ) (X : flipOneThree.Inst) (hCYb : 1 ≤ CYb)
-    (hC : 1 ≤ C) (h11 : adm11 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X) (hrk : RestRk C0 CE1 CE2 X)
-    (h : SegmentWeightedCountingBound C0 CYb Cde Ck CD Cb CE1 CE2 Cc C X) : Conclusion1 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc C X :=
+    (hC : 1 ≤ C) (h11 : adm11 C0 CYb Cde Ck CD Cb CE1 CE2 Cc X) (hrk : RestRk C0 CE1 CE2 X)
+    (h : SegmentWeightedCountingBound C0 CYb Cde Ck CD Cb CE1 CE2 Cc C X) : Conclusion1 C0 CYb Cde Ck CD Cb CE1 CE2 Cc C X :=
   counting_theorem_of_remaining_sum D C0 CYb Cde Ck CD Cb CE1 CE2 Cc C X h11 hrk
     (remaining_of_segment_bound C0 CYb Cde Ck CD Cb CE1 CE2 Cc C X hCYb hC h)
 

@@ -316,7 +316,7 @@ theorem mem_latW_iff' (W : Spc F E n) (y : Fin n → AE F E) :
     refine sub_eq_zero.1 (eq_zero_of_at (v := v) (at_sub (fun u hu => congrFun (h1 u hu) i) (at_sgE _)) ?_)
     rw [map_sub, comp_sgE, sub_self]
 
-theorem stab_latW {Y : Spc F E n} {k : UA σ Y.J} (hk : k ∈ UAt σ Y (evFin F v)) {κ : Matrix (Fin n) (Fin n) (Fv F v ⊗[F] E)}
+theorem stab_latW {Y : Spc F E n} {k : UA σ Y.J} {κ : Matrix (Fin n) (Fin n) (Fv F v ⊗[F] E)}
     (e : (mat k).map (compFin F E v) = κ) (h : ∀ z ∈ latLoc F Y.L v, κ *ᵥ z ∈ latLoc F Y.L v) :
     ∀ y ∈ latW Y v, mat k *ᵥ y ∈ latW Y v := fun y hy => by
   obtain ⟨h1, h2⟩ := (mem_latW_iff' Y y).1 hy
@@ -360,11 +360,11 @@ theorem iwaLoc {B : Base F E} (hB : B.IsGood σ) {Y : Spc F E n} {r s : ℕ} (hY
     change At _ (mat _ - 1)
     rw [mat_bk]
     exact at_emb z
-  refine ⟨_, hat q, _, ⟨hat k, fun y hy => ⟨stab_latW (hat k) (cmp k) (fun z hz => (hk z).1 hz) y hy, ?_⟩⟩, t,
+  refine ⟨_, hat q, _, ⟨hat k, fun y hy => ⟨stab_latW (cmp k) (fun z hz => (hk z).1 hz) y hy, ?_⟩⟩, t,
     by rw [mat_bk]; exact ht, ?_⟩
   · rw [← map_inv, ← map_inv]
     have hk' : k⁻¹ ∈ stabLoc σ _ Y.L v := inv_mem hk
-    exact stab_latW (hat k⁻¹) (cmp k⁻¹) (fun z hz => (hk' z).1 hz) y hy
+    exact stab_latW (cmp k⁻¹) (fun z hz => (hk' z).1 hz) y hy
   · rw [← map_mul, ← map_mul, ← e]
     have c1 := cmp (proj σ _ v g')
     have a1 := at_sub hg (hat (proj σ _ v g'))

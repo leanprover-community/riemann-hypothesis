@@ -274,7 +274,6 @@ theorem at_point {n a g : ℕ} {Λ : Type} [AddCommGroup Λ] (L : Flat.LogPeriod
     (hE : ∀ i j, L.E (bas (.inl i)) (bas (.inl j)) = 0 ∧ L.E (bas (.inr i)) (bas (.inr j)) = 0 ∧
       L.E (bas (.inl i)) (bas (.inr j)) = if i = j then -1 else 0)
     (hAc : ContinuousOn A (Metric.ball 0 1)) (hTc : ContinuousOn T0 (Metric.ball 0 1))
-    (hK : 0 ≤ K)
     (hAinv : ∀ z ∈ Metric.ball (0 : Fin n → ℂ) ρ, (A z).det ≠ 0 ∧
       ∀ y : Fin g → ℂ, ∑ i, ‖y i‖ ^ 2 ≤ K * ∑ i, ‖((A z)ᵀ *ᵥ y) i‖ ^ 2)
     (hB : ∀ j, ((B j).map (fun x : ℤ => (x : ℝ))).PosSemidef)
@@ -637,7 +636,7 @@ theorem bounded_on_limit_lattice : ∀ (n a g : ℕ) (Λ : Type) [AddCommGroup �
   have hρρ₁ : ρ ≤ ρ₁ := (min_le_left _ _).trans (min_le_left _ _)
   have hρρ₂ : ρ ≤ ρ₂ := (min_le_left _ _).trans (min_le_right _ _)
   refine ⟨ρ, c⁻¹ * K, hρpos, hρ1, fun z hz => ?_⟩
-  refine at_point L bas A T0 Q.B c K ρ hc hρpos hρ1 hE hAc hTc hK
+  refine at_point L bas A T0 Q.B c K ρ hc hρpos hρ1 hE hAc hTc
     (fun z hz => hinv z (Metric.ball_subset_ball hρρ₂ hz)) hBpsd ?_ ?_ ?_ z hz
   · intro z hz l hl
     have hz1 : ∀ k, ‖z k‖ < 1 := fun k =>

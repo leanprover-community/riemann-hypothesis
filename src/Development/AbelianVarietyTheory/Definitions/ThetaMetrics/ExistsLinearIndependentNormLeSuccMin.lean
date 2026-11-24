@@ -411,7 +411,7 @@ variable {V : Type*} [AddCommGroup V] [Module ℝ V]
 def succMinQuad (Q : QuadraticForm ℝ V) (L : Submodule ℤ V) (i : ℕ) : ℝ :=
   succMinOf ℝ (fun x => √(Q x)) (L : Set V) i
 
-def QuadSpace (Q : QuadraticForm ℝ V) (_hQ : Q.PosDef) : Type _ := V
+def QuadSpace (Q : QuadraticForm ℝ V) : Type _ := V
 
 namespace QuadSpace
 

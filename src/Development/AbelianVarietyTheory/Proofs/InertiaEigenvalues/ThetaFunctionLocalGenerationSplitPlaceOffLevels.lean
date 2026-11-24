@@ -179,7 +179,7 @@ theorem lat_facts (hψ : IsStdChar D ψ (-1)) (S T : HSp D) (he : IsSplitIdem D 
     obtain ⟨l, hl, hl', hne⟩ := GlobalTheory.SplitScalar.exists_dual_half he hdual (hst he'.1) hx hn
     exact GlobalTheory.SplitScalar.psi_skew_ne hne (h l hl hl')
 
-theorem lat_level (hψ : IsStdChar D ψ (-1)) {f : WO S T → ℂ} (hf : IsThetaFunO ψ S T f) :
+theorem lat_level {f : WO S T → ℂ} (hf : IsThetaFunO ψ S T f) :
     ∃ k : ℕ, 0 < k ∧ ∀ u ∈ lat0 S T, heisO ψ S T (k • u) f = f := by
   have hS := GlobalTheory.PlaceModel.isSelfDualC_latFrame S
   have hT := GlobalTheory.PlaceModel.isSelfDualC_latFrame T
@@ -388,7 +388,7 @@ theorem reps_lat (hψ : IsStdChar D ψ (-1)) (he : IsSplitIdem D e) {k : ℕ} (h
 
 theorem level_down (hψ : IsStdChar D ψ (-1)) {f : WO S T → ℂ} (hf : IsThetaFunO ψ S T f) :
     ∃ k : ℕ, 0 < k ∧ ∀ u ∈ latDown S T k, heisO ψ S T u f = f := by
-  obtain ⟨k, hk, h⟩ := lat_level hψ hf
+  obtain ⟨k, hk, h⟩ := lat_level hf
   exact ⟨k, hk, fun u hu => by
     have := h _ (mem_latDown.1 hu)
     rwa [nsmul_invNat hk] at this⟩
@@ -564,7 +564,7 @@ theorem mem_span_vacGen (hW : IsWeilDatumO ψ S T χS χT om) (hr : T.rank ≤ S
   let M : {ℓ // InvForm ψ S T e ℓ} → (WO S T → ℂ) →ₗ[ℂ] (Matrix (Fin S.rank) (Fin T.rank) (Fv D.host.F v) → ℂ) :=
     fun ℓ => LinearMap.pi fun m => ℓ.1 ∘ₗ heisL ψ S T (τ m)
   have hM : ∀ ℓ φ m, M ℓ φ m = ℓ.1 (heisO ψ S T (τ m) φ) := fun _ _ _ => rfl
-  obtain ⟨k, hk, hfix⟩ := lat_level hψ hf
+  obtain ⟨k, hk, hfix⟩ := lat_level hf
   have hk0 : (k : Ov D v) ≠ 0 := fun h => by
     have h1 := congrArg (algebraMap (Ov D v) (Fv D.host.F v)) h
     rw [map_natCast, map_zero, ← map_natCast (algebraMap D.host.F (Fv D.host.F v)),
@@ -584,7 +584,7 @@ theorem mem_span_vacGen (hW : IsWeilDatumO ψ S T χS χT om) (hr : T.rank ≤ S
       obtain ⟨m, rfl⟩ := c2 x hx
       rw [← hM ⟨ℓ, hℓ⟩, map_sub, hMF, sub_self, Pi.zero_apply]
     exact (sub_eq_zero.1 this).subst (motive := fun x => x ∈ Submodule.span ℂ (vacGen ψ om e f)) hF
-  refine exists_same_images_matrix hr hk0 M f (Submodule.span ℂ (vacGen ψ om e f))
+  refine exists_same_images_matrix hk0 M f (Submodule.span ℂ (vacGen ψ om e f))
     (fun ℓ => ⟨fun x z => ?_, fun x hx => ?_, fun κ x => ?_⟩) fun z γ => ?_
   · have e1 : ((k : Ov D v) • z).map (algebraMap (Ov D v) (Fv D.host.F v)) =
         k • z.map (algebraMap (Ov D v) (Fv D.host.F v)) := by

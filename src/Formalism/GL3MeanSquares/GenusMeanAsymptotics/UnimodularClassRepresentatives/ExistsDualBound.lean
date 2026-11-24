@@ -72,8 +72,8 @@ theorem nondegenerate {h : V →ₗ⋆[K] V →ₗ[K] K} (hd : IsTotPosDef h) : 
     exact lt_irrefl _ h1
   exact ⟨fun x hx => key x (hx x), fun y hy => key y (hy y)⟩
 
-theorem exists_dual_bound (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F)
-    {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm) (hd : IsTotPosDef h) {A₀ : Submodule (𝓞 K) V}
+theorem exists_dual_bound
+    {h : V →ₗ⋆[K] V →ₗ[K] K} (hd : IsTotPosDef h) {A₀ : Submodule (𝓞 K) V}
     (hA₀ : Submodule.IsFullLattice K A₀) {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) :
     ∃ e : ℕ, ∀ (k : ℕ) (x : V), (∀ y ∈ locF 𝔭 A₀, h y x ∈ pK K 𝔭 (k + e)) →
       x ∈ extP K 𝔭 ^ k • locF 𝔭 A₀ := by
@@ -92,7 +92,7 @@ theorem exists_dual_bound (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (
   have hle : n j ≤ ∑ j, n j := Finset.single_le_sum (fun _ _ => Nat.zero_le _) (Finset.mem_univ j)
   refine (mem_smul_iff_unif h𝔭 hπ hπ' A₀).2
     ⟨(c * algebraMap F K (π : F) ^ (∑ j, n j - n j)) • (algebraMap F K (π : F) ^ n j • bs j),
-      smul_mem_locF h𝔭 A₀ (by simpa using mul_mem_pK h𝔭 hc (unif_pow_mem_pK_zero hπ _)) (hn j), ?_⟩
+      smul_mem_locF h𝔭 A₀ (by simpa using mul_mem_pK h𝔭 hc (unif_pow_mem_pK_zero _)) (hn j), ?_⟩
   rw [smul_smul, smul_smul]
   congr 1
   have : k + ∑ j, n j = k + (∑ j, n j - n j) + n j := by omega

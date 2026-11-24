@@ -88,7 +88,7 @@ theorem continuousAt_nrm {w : ((k : K) → ι k) → ℂ} (hw : Ψ w 0 ≠ 0) : 
     differentiableAt_id).continuousAt
 
 theorem continuous_segre : Continuous (segre : ((Σ k, ι k) → ℂ) → ((k : K) → ι k) → ℂ) :=
-  continuous_pi fun i => continuous_finsetProd _ fun k _ => continuous_apply _
+  continuous_pi fun _ => continuous_finsetProd _ fun _ _ => continuous_apply _
 
 theorem analyticOnNhd_of_diffOn {m : ℕ} {σ : Type*} [Fintype σ] {U : Set (Fin m → ℂ)}
     {f : (Fin m → ℂ) → σ → ℂ} (hU : IsOpen U) (hf : ∀ y ∈ U, DifferentiableAt ℂ f y) :

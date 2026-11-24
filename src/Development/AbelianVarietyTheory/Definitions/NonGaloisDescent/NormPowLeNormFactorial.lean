@@ -428,7 +428,7 @@ theorem frob_mem_R (l : ℕ) [Fact l.Prime] {k : ℝ} (hk : 0 ≤ k) {f : K⟦X�
       (fun _ _ h => pow_le_pow_of_le_one (rad_nonneg l k) (rad_le_one l hk) h) f)
     ((mem_R.1 hf).comp (Nat.tendsto_div_const_atTop (Fact.out : l.Prime).ne_zero))
 
-theorem A_le_R (l : ℕ) [Fact l.Prime] {k : ℝ} (hk : 0 < k) : A O K ≤ R O K l k := fun f hf =>
+theorem A_le_R (l : ℕ) [Fact l.Prime] {k : ℝ} (hk : 0 < k) : A O K ≤ R O K l k := fun _ hf =>
   mem_R.2 <| squeeze_zero (fun n => mul_nonneg (norm_nonneg _) (pow_nonneg (rad_nonneg l k) n))
     (fun n => mul_le_of_le_one_left (pow_nonneg (rad_nonneg l k) n) (hf n))
     (tendsto_pow_atTop_nhds_zero_of_lt_one (rad_nonneg l k) (rad_lt_one l hk))

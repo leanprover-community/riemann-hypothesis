@@ -134,7 +134,7 @@ end LinAlg
 
 theorem exists_eq_smul_ιMulti {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X} {E : Type}
     [AddCommGroup E] [Module Ω E] {L : Lat ξ E} {r : ℕ} {u : Fin r → E} {x : Cpt ξ} (hu : L.IsFrameAt u x)
-    {a : ⋀[Ω]^r E} {α : Ω} (hα : α ≠ 0) (hw : L.wedge r x = Submodule.span (regAt ξ x) {α • a}) :
+    {a : ⋀[Ω]^r E} {α : Ω} (hw : L.wedge r x = Submodule.span (regAt ξ x) {α • a}) :
     ∃ γ : Ω, γ ≠ 0 ∧ a = γ • exteriorPower.ιMulti Ω r u := by
   obtain ⟨h1, h2⟩ := WedgeFrame.wedge_eq_span_ιMulti X Ω ξ E L r u x hu
   have h3 : exteriorPower.ιMulti Ω r u ∈ Submodule.span (regAt ξ x) {α • a} := by
@@ -181,7 +181,7 @@ theorem exists_side {Z : CptOver Y U} {𝔐 : HodgeCpt Y S y} {i : Z.Ω →+* Ω
     (hB : ∀ k, j (u k) ∈ Submodule.span Ω (Set.range B)) :
     ∃ (a' : ⋀[Ω]^r 𝔐.Li) (d : Ω), d ≠ 0 ∧ a' ≠ 0 ∧ CptIn.IsPullWedge i j a a' ∧
       a' = d • exteriorPower.ιMulti Ω r B := by
-  obtain ⟨γ, hγ, rfl⟩ := exists_eq_smul_ιMulti hu hα hw
+  obtain ⟨γ, hγ, rfl⟩ := exists_eq_smul_ιMulti hu hw
   have hj : IsExtOver i j := h.2.2.1
   have hind : LinearIndependent Ω fun k => j (u k) := hj.2 r u hu.1
   have hne := WedgeFrame.ιMulti_ne_zero hind

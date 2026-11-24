@@ -398,7 +398,7 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.HermitianLatt
 namespace GlobalTheory
 
 theorem latSum_reindex_of_le_sup (E : Type) [Field E] [NumberField E] (W : Type) [AddCommGroup W] [Module (𝓞 E) W]
-    (D C As B : Submodule (𝓞 E) W) (f g : W → ℂ) (hCD : C ≤ D) (hB : ∀ t ∈ As, t ∈ B ↔ t ∈ C) (hD : D ≤ As ⊔ C)
+    (D C As B : Submodule (𝓞 E) W) (f g : W → ℂ) (hB : ∀ t ∈ As, t ∈ B ↔ t ∈ C) (hD : D ≤ As ⊔ C)
     (hfg : ∀ x ∈ D, ∀ t ∈ As, t - x ∈ C → f x = g t) (hg : ∀ t ∈ As, t ∉ D → g t = 0) :
     latSum D C f = latSum As B g := by
   classical
@@ -1167,7 +1167,6 @@ theorem pair_eq (hA : Moves A a b) (hS : ∀ P ∈ S, conjPrime₂ P ∉ S) (hU 
     (fun t => ((Real.sqrt ((perO A.AA N (twist₂ N' c (expS S))).toAddSubgroup.relIndex (perO A.AA N N').toAddSubgroup : ℕ) : ℝ) : ℂ)⁻¹ *
       (Ξ t * (alV A.d A.sc (embH (X.embC A.σ₀) A.δ t) *
           opU (Formalism.L2.Ker.HV A.sc) (-(embH (X.embC A.σ₀) A.δ t)) (vac A N (twist₂ N' c (expS S))) z)))
-    (fun x hx => (mD x).2 fun P hP => (d1.trans d2).1 P hP ((mC x).1 hx P hP))
     (fun t ht => ⟨fun hb => (mC t).2 fun P _ => mem_localization_of_mem P hb, fun hb => mem_of_locP fun Q => by
       by_cases hQ : Q ∈ S
       · exact (mC t).1 hb Q hQ

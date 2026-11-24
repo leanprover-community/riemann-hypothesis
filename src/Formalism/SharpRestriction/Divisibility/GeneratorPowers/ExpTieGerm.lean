@@ -157,7 +157,7 @@ section Val
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
 variable {Xo : Moduli Dw l}
 
-theorem isValueAt_pullScale (hL : Xo.univ.t.PP.L.IsLB) (a : ℤ) {T T' : Over Xo.X} (h : T' ⟶ T)
+theorem isValueAt_pullScale (a : ℤ) {T T' : Over Xo.X} (h : T' ⟶ T)
     {s : LB.Sec (LPow Xo.univ.t.G Xo.univ.t.PP.L a T)} {s' : LB.Sec (LPow Xo.univ.t.G Xo.univ.t.PP.L a T')}
     (hs : IsPullSec Xo.univ.t.G Xo.univ.t.PP.L a (h ▷ Xo.univ.t.G) (whiskerRight_snd _ _) s s')
     {z : T ⟶ Xo.univ.t.G}

@@ -91,7 +91,7 @@ theorem exists_geomPoint_mem {X S : Scheme.{u}} (p : X ⟶ S) [LocallyOfFiniteTy
 
 theorem surjective_specMap_field {k L : Type u} [Field k] [Field L] (σ : k →+* L) :
     Surjective (Spec.map (CommRingCat.ofHom σ)) :=
-  ⟨fun x => ⟨IsLocalRing.closedPoint L, Subsingleton.elim (α := PrimeSpectrum k) _ _⟩⟩
+  ⟨fun _ => ⟨IsLocalRing.closedPoint L, Subsingleton.elim (α := PrimeSpectrum k) _ _⟩⟩
 
 
 set_option autoImplicit false in

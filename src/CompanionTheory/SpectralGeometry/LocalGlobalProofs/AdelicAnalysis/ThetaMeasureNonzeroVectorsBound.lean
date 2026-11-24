@@ -154,7 +154,7 @@ theorem cntI_nonzero_lt_top : ∀ (F E : Type) [Field F] [NumberField F] [Field 
   refine cntI_le_of_contrib fun g X hX hne => ?_
   have hY : actW (AF F) σ J g⁻¹ (ratTup (AF F) X) ∈ Ω := by
     by_contra hY
-    exact hne (by simp [hΦ, Set.indicator, hY])
+    exact hne (by simp [hΦ, hY])
   obtain ⟨t, ht⟩ := hlenQ X
   by_cases h0 : t = 0
   · refine Or.inl ⟨hX, ?_⟩

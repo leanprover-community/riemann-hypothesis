@@ -82,7 +82,7 @@ theorem square (hN : LcNat) (H : RIn l) (r : Roots l) (M : Model l K) {C : Type 
     (Mor.restrict (modF (AcrEl M.P n)) G).pull j ((lcMor hN H r ((𝟭 (El M.P)) ⋙ CategoryOfElements.π _) n).pull j y) =
       (lcMor hN H r (G ⋙ CategoryOfElements.π _) n).pull j ((mG H r M G n).pull j y) :=
   pull_square (lcMor hN H r ((𝟭 (El M.P)) ⋙ CategoryOfElements.π _) n) (Mor.restrict (modF (AcrEl M.P n)) G)
-    (mG H r M G n) (lcMor hN H r (G ⋙ CategoryOfElements.π _) n) j (fun z => rfl) y
+    (mG H r M G n) (lcMor hN H r (G ⋙ CategoryOfElements.π _) n) j (fun _ => rfl) y
 
 theorem pull_sch_id (q : ℕ) (i : ℤ) (j : ℕ) (X : Scheme.{0}) (x : Ht q (sch.obj X) j i) :
     pull _ (sch.map (𝟙 X)) _ j x = x := by

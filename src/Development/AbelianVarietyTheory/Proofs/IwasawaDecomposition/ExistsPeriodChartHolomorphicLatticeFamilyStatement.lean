@@ -1709,7 +1709,7 @@ theorem periodChart_rescale_ball : ∀ (n a g rk : ℕ) (ha : a ≤ n) (ρ : ℝ
     simp only [Complex.mul_im, Complex.intCast_re, Complex.intCast_im, mul_zero, him]
     push_cast
     simp only [zero_add]
-    simp only [← Finset.mul_sum, ← Finset.sum_mul]
+    simp only [← Finset.mul_sum]
     ring
 
 end GlobalTheory.LieBase.HodgeChart

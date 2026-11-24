@@ -74,7 +74,7 @@ noncomputable section
 
 open ValuativeRel Matrix Polynomial GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V.Hi UpperTheory.V.AlgebraTools UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Sig UpperTheory.V.Z.Sym.Loc UpperTheory.V.Z.Sym.Glob
 
-private theorem index_comap {G G' : Type} [Group G] [Group G'] (e : G →* G') (he : Function.Surjective e)
+private theorem index_comap {G G' : Type} [Group G] [Group G'] (e : G →* G')
     {A B : Subgroup G'} (h : A.relIndex B ≠ 0) : (A.comap e).relIndex (B.comap e) ≠ 0 := Subgroup.relIndex_comap_ne_zero e h
 
 private theorem J_index {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
@@ -108,9 +108,9 @@ theorem UpperTheory.V.Z.Sym.Sig.okLev :
     rw [← Subgroup.relIndex_mul_relIndex _ _ _ f3 f2, h0, zero_mul])
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · rw [← hKU]; exact Subgroup.comap_mono (f6 3).2.2.2
-  · rw [← hKU]; exact index_comap _ hU.2 (J_index V 3)
+  · rw [← hKU]; exact index_comap _ (J_index V 3)
   · rw [← hKD]; exact Subgroup.comap_mono (f6 2).2.2.2
-  · rw [← hKD]; exact index_comap _ hD.2 (J_index V 2)
+  · rw [← hKD]; exact index_comap _ (J_index V 2)
   · change 0 < (V.H.relIndex (Uo k) : ℝ) * (V.H.relIndex V.H2 : ℝ)
     have a1 : 0 < V.H.relIndex (Uo k) := Nat.pos_of_ne_zero f1
     have a2 : 0 < V.H.relIndex V.H2 := Nat.pos_of_ne_zero hpos

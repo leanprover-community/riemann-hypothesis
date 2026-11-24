@@ -774,7 +774,7 @@ theorem continuous_rootCoordsS {z : Fin (2 * r + k + 1) → ℂ} (S : Finset (Fi
   · exact continuous_const
   · exact continuous_const
 
-theorem turn_normc (L : LocBessel k r) (ka : ℝ) (hka : 0 < ka) (hc : L.c = ((2 * ka : ℝ) : ℂ)) :
+theorem turn_normc (L : LocBessel k r) (ka : ℝ) (hc : L.c = ((2 * ka : ℝ) : ℂ)) :
     ‖(turnL L ka).c‖ = ‖L.c‖ := by
   show ‖cOfDpsi (ka : ℂ)‖ = ‖L.c‖
   rw [hc, ← turn_c, norm_mul, Complex.norm_I, mul_one]
@@ -788,7 +788,7 @@ theorem isRootMeas_turn (L : LocBessel k r) (ka : ℝ) (hka : 0 < ka) (hc : L.c 
     convert h1 using 2
     ext x
     simp only [Set.mem_preimage, Set.mem_ofPred_eq, cAE_coe, of_cA, conjI_mem_RStab_iff]
-  · rw [turn_normc L ka hka hc]
+  · rw [turn_normc L ka hc]
     show Measure.map (fun (x : Mt k r) (q : rootPat (turnPt p)) => flagMat k r L.z (Matrix.of x) q.1.1 q.1.2)
       (μR.map (cA k r)) = _
     rw [rootPat_turnPt]

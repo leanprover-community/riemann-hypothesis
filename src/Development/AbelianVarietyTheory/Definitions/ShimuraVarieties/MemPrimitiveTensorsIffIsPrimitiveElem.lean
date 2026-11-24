@@ -1119,7 +1119,7 @@ theorem pairingMap_pairingBaseChange (u : H ⊗[R] K) (x : A ⊗[R] CartierDual 
       simp only [pairingMap, pairingBaseChange, tmul_add, map_add (f := _), LinearMap.add_apply,
         LinearMap.baseChange_tmul] at hs ht ⊢
       rw [hs, ht]
-    | tmul h k => simp [pairingBaseChange, smul_tmul', ← smul_tmul]
+    | tmul h k => simp [pairingBaseChange, smul_tmul']
 
 variable [Module.Finite R H] [Module.Projective R H] [Module.Finite R K] [Module.Projective R K]
 

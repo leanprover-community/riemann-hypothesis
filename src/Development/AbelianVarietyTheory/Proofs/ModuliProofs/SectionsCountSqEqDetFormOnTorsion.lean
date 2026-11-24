@@ -550,7 +550,7 @@ theorem map_ev (g : Q →+ Q) {pt pt' : κ → Q} (h : ∀ i, N • pt i = 0) (h
 
 theorem ev_injective {pt : κ → Q} (h : ∀ i, N • pt i = 0)
     (hb : ∀ y : Q, N • y = 0 → ∃! c : κ → ZMod N, ∑ i, (c i).val • pt i = y) :
-    Function.Injective (ev pt h) := fun a b hab =>
+    Function.Injective (ev pt h) := fun _ b hab =>
   (hb _ (nsmul_ev pt h b)).unique hab rfl
 
 theorem det_eq_det [DecidableEq κ] (g : Q →+ Q) {pt pt' : κ → Q} (h : ∀ i, N • pt i = 0)

@@ -192,7 +192,7 @@ theorem pull_bijective_of_ringEquiv {R : Type} [CommRing R] {A B : Type} [CommRi
 
 theorem bijective_of_subsingleton {M N : Type*} [AddCommGroup M] [AddCommGroup N] [Subsingleton M] [Subsingleton N]
     (f : M →+ N) : Function.Bijective f :=
-  ⟨fun a b _ => Subsingleton.elim a b, fun y => ⟨0, Subsingleton.elim _ _⟩⟩
+  ⟨fun a b _ => Subsingleton.elim a b, fun _ => ⟨0, Subsingleton.elim _ _⟩⟩
 
 end GlobalTheory.EtC.HtpyLine
 

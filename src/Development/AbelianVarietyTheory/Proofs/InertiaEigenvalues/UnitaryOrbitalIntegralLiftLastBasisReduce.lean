@@ -406,7 +406,7 @@ theorem exists_unit_value {E : Type} [NormedField E] [IsUltrametricDist E] [Star
         mul_le_of_le_one_left (mul_nonneg h3 h2) htn
       linarith
 
-theorem main : (let d1 : {E : Type} → [NormedField E] → {n m : Type} → Matrix n m E → Prop := @(fun {E : Type} [NormedField E] {n m : Type} (h : Matrix n m E) ↦ ∀ (i : n) (j : m), ‖h i j‖ ≤ (1 : ℝ)); ∀ {E : Type} [inst : NormedField E] [IsUltrametricDist E] [inst_2 : StarRing E], (∀ (y : E), ‖Star.star y‖ = ‖y‖) → ∀ (e0 : E), ‖e0‖ ≤ (1 : ℝ) → e0 + Star.star e0 = (1 : E) → ∀ {n : Type} [inst_3 : Fintype n] [inst_4 : DecidableEq n] [Nonempty n] (G : Matrix n n E), Matrix.IsHermitian G → d1 G → ‖Matrix.det G‖ = (1 : ℝ) → ∃ (i : n) (w : n → E), (∀ (a : n), ‖w a‖ ≤ (1 : ℝ)) ∧ w i = (1 : E) ∧ ‖Star.star w ⬝ᵥ Matrix.mulVec G w‖ = (1 : ℝ)) := by
+theorem main : (let d1 : {E : Type} → [NormedField E] → {n m : Type} → Matrix n m E → Prop := @(fun {E : Type} [NormedField E] {n m : Type} (h : Matrix n m E) ↦ ∀ (i : n) (j : m), ‖h i j‖ ≤ (1 : ℝ)); ∀ {E : Type} [NormedField E] [IsUltrametricDist E] [StarRing E], (∀ (y : E), ‖Star.star y‖ = ‖y‖) → ∀ (e0 : E), ‖e0‖ ≤ (1 : ℝ) → e0 + Star.star e0 = (1 : E) → ∀ {n : Type} [Fintype n] [DecidableEq n] [Nonempty n] (G : Matrix n n E), Matrix.IsHermitian G → d1 G → ‖Matrix.det G‖ = (1 : ℝ) → ∃ (i : n) (w : n → E), (∀ (a : n), ‖w a‖ ≤ (1 : ℝ)) ∧ w i = (1 : E) ∧ ‖Star.star w ⬝ᵥ Matrix.mulVec G w‖ = (1 : ℝ)) := by
   intro d1 E _ _ _ hstar e0 he htr n _ _ _ G hG hint hdet
   exact exists_unit_value hstar e0 he htr G hG hint hdet
 
@@ -548,7 +548,7 @@ section Main
 
 variable {E : Type} [NormedField E] [IsUltrametricDist E] [StarRing E]
 
-theorem sol_transfer (hs : ∀ y : E, ‖star y‖ = ‖y‖) {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n']
+theorem sol_transfer {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n']
     [DecidableEq n'] (e : n ≃ n') (G : Matrix n n E) (h : Matrix n' n' E) (hi : ∀ i j, ‖h i j‖ ≤ 1)
     (hd : ‖h.det‖ = 1) (hh : hᴴ * reindex e e G * h = 1) :
     ∃ h : Matrix n n E, (∀ i j, ‖h i j‖ ≤ 1) ∧ ‖h.det‖ = 1 ∧ hᴴ * G * h = 1 := by
@@ -590,7 +590,7 @@ theorem good_all (hs : ∀ y : E, ‖star y‖ = ‖y‖)
     obtain ⟨h, hi, hd, hh⟩ := good_sum hs (ih _ hc') (reindex e e (Pᴴ * G * P))
       (by simpa [reindex_apply] using hM.submatrix e.symm) (fun i j => hMi _ _)
       (by rw [det_reindex_self]; exact hMd) hk'
-    obtain ⟨h₁, hi₁, hd₁, hh₁⟩ := sol_transfer hs e _ h hi hd hh
+    obtain ⟨h₁, hi₁, hd₁, hh₁⟩ := sol_transfer e _ h hi hd hh
     refine ⟨P * h₁, intg_mul hPi hi₁, by rw [det_mul, norm_mul, hPd, hd₁, one_mul], ?_⟩
     rw [conjTranspose_mul, ← hh₁]
     simp only [Matrix.mul_assoc]
@@ -1181,7 +1181,7 @@ theorem orbU_liftH (F E : Type) [NontriviallyNormedField F] [NontriviallyNormedF
   haveI := (_root_.GlobalTheory.JR.UnitChar.posChar_trivial_and_unimodular F E (r+1)).2 M
   haveI := (_root_.GlobalTheory.JR.UnitChar.posChar_trivial_and_unimodular F E r).2 M'
   rw [GlobalTheory.CosetIntegral.integral_eq_of_coset_support _ _ (uEmb r E) (uEmb_isClosedEmbedding r E) M.μU M'.μU R₀
-    uO_isOpen uO_isCompact M.volU (by
+    uO_isOpen M.volU (by
       show M'.μU (uEmb r E ⁻¹' uO (r + 1) E) = 1
       rw [preimage_uO]; exact M'.volU)
     _ (fun k hk g => unitU_actU_mul k g hk _) (support_sub X ν l hν) (compact_support X ν l hΔ)]

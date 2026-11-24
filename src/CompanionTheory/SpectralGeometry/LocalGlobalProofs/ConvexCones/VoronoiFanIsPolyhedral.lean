@@ -1532,7 +1532,7 @@ theorem eq_zero_of_covers {X : Type} [AddCommGroup X] (β : LinearMap.BilinForm 
   rw [Int.abs_eq_natAbs]
   exact_mod_cast Nat.lt_two_pow_self
 
-theorem vorFun_int_pos : ∀ (O : Type) [CommRing O] [IsDedekindDomain O] [CharZero O] [Module.Finite ℤ O] (bar : O → O) (g q : ℕ)
+theorem vorFun_int_pos : ∀ (O : Type) [CommRing O] [IsDedekindDomain O] [CharZero O] [Module.Finite ℤ O] (_ : O → O) (g q : ℕ)
     (X : Type) [AddCommGroup X] [Module O X] [Module.Finite O X] [Module.Projective O X],
     Module.finrank ℤ O * q ≤ g → Module.finrank O X ≤ q →
     (∀ β : LinearMap.BilinForm ℤ X, (∀ y, 0 ≤ β y y) → ∃ n : ℤ, (vorFun O g).evalZ β = n) ∧

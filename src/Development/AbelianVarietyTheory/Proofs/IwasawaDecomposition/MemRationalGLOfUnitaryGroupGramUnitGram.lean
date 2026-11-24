@@ -97,7 +97,7 @@ theorem inclA_injective : Function.Injective (inclR (F := D.host.F) (E := D.host
 def glL (n : ℕ) : GL (Fin n) D.host.E →* GL (Fin n) (ReciprocityTheory.Aut.AL D.host.E) :=
   Matrix.GeneralLinearGroup.map Algebra.TensorProduct.includeLeftRingHom
 
-theorem glL_injective (n : ℕ) : Function.Injective (glL (D := D) n) := fun a b h =>
+theorem glL_injective (n : ℕ) : Function.Injective (glL (D := D) n) := fun _ _ h =>
   Units.ext (Matrix.map_injective inclL_injective (congrArg Units.val h))
 
 theorem glL_mem (n : ℕ) (x : GL (Fin n) D.host.E) (hx : x ∈ ReciprocityTheory.Aut.GQ0 D.host.E n) :

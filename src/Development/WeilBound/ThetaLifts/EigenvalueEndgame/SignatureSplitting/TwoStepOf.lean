@@ -71,8 +71,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.ConjugateSubgroup.conj_sub :
-    ∀ {G : Type} [inst : Group G] [inst_1 : TopologicalSpace G] [IsTopologicalGroup G]
-    [inst_3 : MeasurableSpace G] [BorelSpace G] [LocallyCompactSpace G] [SecondCountableTopology G] [T2Space G]
+    ∀ {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
+    [MeasurableSpace G] [BorelSpace G] [LocallyCompactSpace G] [SecondCountableTopology G] [T2Space G]
     {Γ A : Subgroup G},
     IsClosed (↑A : Set G) →
       PositivityTheory.ThKEnd.Two.Lat (Γ.subgroupOf A) →

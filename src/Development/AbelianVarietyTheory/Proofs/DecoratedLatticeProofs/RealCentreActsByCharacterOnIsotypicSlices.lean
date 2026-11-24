@@ -283,7 +283,7 @@ theorem weilOperator_equal_scalars_acts_by_scalar_fock {ψ : AddChar (AF D.host.
   refine ⟨l, fun P => ?_⟩
   rw [← GlobalTheory.FiniteFock.pureTensorO_smul, ← hl]
   open GlobalTheory.OrientedHeis in
-  refine (pureTensorL_intertwine (IsThetaFunO ψ A S) theta_zero (fun _ _ => theta_add) (fun c _ => theta_smul c) _ _
+  refine (pureTensorL_intertwine (IsThetaFunO ψ A S) (fun _ _ => theta_add) (fun c _ => theta_smul c) _ _
     (k.om (a, b)) (fun i f hf => ?_) k.vac hk.vac.2.theta P).2
   obtain ⟨τ, i, j⟩ := i
   open GlobalTheory.OrientedHeis in

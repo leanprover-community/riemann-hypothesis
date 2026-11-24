@@ -76,7 +76,7 @@ theorem eq_of_isPrim_of_toReal_eq_smul : ∀ {O : Type} [CommRing O] (bar : O �
   have habs : |(x a c : ℝ)| = b * |(y a c : ℝ)| := by
     rw [hR, abs_mul, abs_of_pos hb]
   apply eq_of_isPrim hx hy px py (k := (y a c).natAbs) (n := (x a c).natAbs)
-    (Int.natAbs_pos.2 hac) (Int.natAbs_pos.2 hxac)
+    (Int.natAbs_pos.2 hac)
   apply LinearMap.ext₂
   intro u v
   simp only [LinearMap.smul_apply, smul_eq_mul, Int.natCast_natAbs]

@@ -56,7 +56,7 @@ open Formalism.MainNotions Formalism.MainNotions.AuxBlock8
 
 namespace Formalism.MainNotions.G.Joints
 
-theorem DII_arith (x DII Np N1 r k lb n' c c0 b' : ℝ) (hx : 500 ≤ x) (hDII0 : 0 ≤ DII) (hNp0 : 0 ≤ Np) (hN10 : 0 ≤ N1)
+theorem DII_arith (x DII Np N1 r k lb n' c c0 b' : ℝ) (hx : 500 ≤ x) (hNp0 : 0 ≤ Np) (hN10 : 0 ≤ N1)
     (hr0 : 0 ≤ r) (hk0 : 0 ≤ k) (hlb0 : 0 ≤ lb) (hn0 : 0 ≤ n') (hc0 : 0 ≤ c) (hc00 : 0 ≤ c0)
     (hDII : 480 * DII ≤ x) (hNp : Np ≤ 40 * x ^ 3) (hN1 : N1 ≤ x) (hr : r ≤ x) (hk : k ≤ x ^ 6) (hlb : lb ≤ 4 * x)
     (hn : n' ≤ x ^ 3) (hc : c ≤ b') (hc0' : c0 ≤ 5 * b') (hb : 1 ≤ b') :
@@ -99,7 +99,7 @@ theorem DII_arith (x DII Np N1 r k lb n' c c0 b' : ℝ) (hx : 500 ≤ x) (hDII0 
   have h8 : 1 ≤ x ^ 17 * b' := one_le_mul_of_one_le_of_one_le (le_trans hx4 hx17) hb
   linarith [h3, h4, h5, h6, h7, h8, hC]
 
-theorem SzII_arith (x sz k r N n' Q5 DIIc c c0 XA E2 b' R : ℝ) (hx : 500 ≤ x) (hsz0 : 0 ≤ sz) (hk0 : 0 ≤ k)
+theorem SzII_arith (x sz k r N n' Q5 DIIc c c0 XA E2 b' R : ℝ) (hx : 500 ≤ x) (hk0 : 0 ≤ k)
     (hr0 : 0 ≤ r) (hN0 : 0 ≤ N) (hn0 : 0 ≤ n') (hQ0 : 0 ≤ Q5) (hD0 : 0 ≤ DIIc) (hc0 : 0 ≤ c) (hc00 : 0 ≤ c0)
     (hsz : sz ≤ x) (hk : k ≤ x ^ 6) (hr : r ≤ x) (hN : N ≤ x ^ 3) (hn : n' ≤ x ^ 3) (hQ : Q5 ≤ E2)
     (hD : DIIc ≤ x ^ 18 * b') (hc : c ≤ b') (hc0' : c0 ≤ 5 * b') (hb : 1 ≤ b') (hXA : XA = x ^ 26)
@@ -580,11 +580,11 @@ theorem numII_ev (eps : ℝ) (K : Consts) (hK : K.Nonneg) (C31 : ℝ) (h31 : 0 <
           Real.logb p L.sc.a + 2 * (rG L.sc : ℝ) * (n' : ℝ) * cG L + (rG L.sc : ℝ) * NplusF L.sc n' * c0num L := by
         positivity
       have h2 := DII_arith L.sc.x K.DII (NplusF L.sc n') (N1 L.sc : ℝ) (rG L.sc : ℝ) (D.R.k : ℝ)
-        (Real.logb p L.sc.a) (n' : ℝ) (cG L) (c0num L) L.sc.b' hx500 hDII0 hNp0 hN10 hr0 hk0.le hlb0 hn'0 hcG0 hc00
+        (Real.logb p L.sc.a) (n' : ℝ) (cG L) (c0num L) L.sc.b' hx500 hNp0 hN10 hr0 hk0.le hlb0 hn'0 hcG0 hc00
         hxDII hNp hN1x hrx hk6 hlb hn'3 hcG hc0 hb1
       exact (Nat.ceil_lt_add_one hW0).le.trans h2
     apply SzII_arith L.sc.x K.szII _ _ _ _ _ _ _ _ _
-      (Real.exp (L.sc.x ^ (L.sc.eps / 8 + L.sc.eps / 48)) ^ 5) L.sc.b' _ hx500 hsz0 hk0.le hr0 hN0 hn'0 (by positivity)
+      (Real.exp (L.sc.x ^ (L.sc.eps / 8 + L.sc.eps / 48)) ^ 5) L.sc.b' _ hx500 hk0.le hr0 hN0 hn'0 (by positivity)
       (Nat.cast_nonneg _) hcG0 hc00 hxsz hk6 hrx hN3 hn'3 (by gcongr) hDIIf hcG hc0 hb1 rfl
 
     set E := Real.exp (L.sc.x ^ (L.sc.eps / 8 + L.sc.eps / 48)) ^ 5 with hE

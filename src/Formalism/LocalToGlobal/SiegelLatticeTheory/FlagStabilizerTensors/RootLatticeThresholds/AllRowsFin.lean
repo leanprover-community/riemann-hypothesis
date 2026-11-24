@@ -167,8 +167,8 @@ theorem biInv_egA (a : MonoidAlgebra ℂ (G0g D.nd)) (ha : ∀ γ P : G0g D.nd, 
     rw [egA_of_not_mem X a hnx, egA_of_not_mem X a hx]
 
 theorem biInv_eT (S : Set (Tup2 D)) : BiInv X (eT X S) :=
-  ⟨fun x hx => by_contra fun h => hx (eT_of_not_mem X S h), fun x n hn => eT_mul X S x hn,
-    fun x n hn => eT_mul_left X S x hn⟩
+  ⟨fun _ hx => by_contra fun h => hx (eT_of_not_mem X S h), fun x _ hn => eT_mul X S x hn,
+    fun x _ hn => eT_mul_left X S x hn⟩
 
 theorem conv_sum [Fintype (KSub X.B.I ⧸ KgN X.B.I X.B.g)] {f₁ f₂ : X.B.I.Gf → ℂ} (hf₁ : BiInv X f₁) (hf₂ : BiInv X f₂) (x : X.B.I.Gf) :
     X.B.I.convF X.B.μf f₁ f₂ x = (V X : ℂ) * ∑ q : KSub X.B.I ⧸ KgN X.B.I X.B.g,

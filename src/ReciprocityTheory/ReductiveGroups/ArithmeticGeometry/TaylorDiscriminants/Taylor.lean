@@ -200,7 +200,7 @@ theorem dirs_add_single (n : Fin 1 × Fin g →₀ ℕ) (p : Fin 1 × Fin g) :
   | (simp only [dirs, map_add (f := _), Finsupp.toMultiset_single, one_nsmul, Multiset.map_add (f := _), Multiset.map_singleton]
      rw [add_comm, Multiset.singleton_add])
 
-theorem fct_ne_zero (n : Fin 1 × Fin g →₀ ℕ) : fct n ≠ 0 := Finset.prod_ne_zero_iff.mpr fun p _ => Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero _)
+theorem fct_ne_zero (n : Fin 1 × Fin g →₀ ℕ) : fct n ≠ 0 := Finset.prod_ne_zero_iff.mpr fun _ _ => Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero _)
 
 theorem fct_add_single (n : Fin 1 × Fin g →₀ ℕ) (p : Fin 1 × Fin g) :
     fct (n + Finsupp.single p 1) = fct n * ((n p : ℂ) + 1) := by

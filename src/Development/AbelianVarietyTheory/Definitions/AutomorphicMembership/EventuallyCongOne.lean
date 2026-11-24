@@ -85,12 +85,12 @@ theorem lT_apply (u : ι → GL (Fin n) ℂ) (F : Frames G → ℂ) (y : Frames 
 
 omit [Fintype ι] in
 theorem lT_mul (u v : ι → GL (Fin n) ℂ) (F : Frames G → ℂ) : lT G (u * v) F = lT G v (lT G u F) :=
-  funext fun y => congrArg F (Subtype.ext (funext fun τ => Matrix.mul_assoc _ _ _))
+  funext fun _ => congrArg F (Subtype.ext (funext fun _ => Matrix.mul_assoc _ _ _))
 
 
 omit [Fintype ι] in
 theorem lT_one (F : Frames G → ℂ) : lT G 1 F = F :=
-  funext fun y => congrArg F (Subtype.ext (funext fun τ => Matrix.one_mul _))
+  funext fun _ => congrArg F (Subtype.ext (funext fun _ => Matrix.one_mul _))
 
 theorem lT_mem (lam : ι → DomWeight n) (u : ι → GL (Fin n) ℂ) {F : Frames G → ℂ} (hF : F ∈ ValC G lam) :
     lT G u F ∈ ValC G lam := by

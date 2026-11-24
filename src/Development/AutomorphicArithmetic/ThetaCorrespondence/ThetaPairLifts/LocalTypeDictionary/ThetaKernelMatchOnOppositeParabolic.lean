@@ -343,7 +343,7 @@ theorem polarization_match_lie_derivative : _root_.GlobalTheory.FunPr.ThetaLocal
     (Xc : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Chars D.host.F D.host.E) (om : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig Γ.V Γ.W)
     (om' : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig Γ.V' Γ.W) (cA : Matrix (Fin W.rank) (Fin (W.rank + W₁.rank)) (AE D) ≃+ WO W X)
     (cB : Matrix (Fin W₁.rank) (Fin (W.rank + W₁.rank)) (AE D) ≃+ WO W₁ X),
-    IsInfFam θ → IsTriple W W₁ X α β → ∀ (hO : IsOver ψ θ A A₁ B α β ν 𝓕 ν₁ 𝓕₁ ωA ωB e Bs Γ Xc om om' cA cB),
+    IsInfFam θ → IsTriple W W₁ X α β → ∀ (_ : IsOver ψ θ A A₁ B α β ν 𝓕 ν₁ 𝓕₁ ωA ωB e Bs Γ Xc om om' cA cB),
     GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsTriple Bs Γ Xc om om' →
     ∀ R Rf, GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsMatched Bs Γ Xc om om' R Rf →
     ∀ Pi rf rl p p', IsMatch ψ θ A A₁ B α β ωA ωB Pi rf rl p p' →
@@ -446,7 +446,7 @@ theorem polarization_match_square_kappa : _root_.GlobalTheory.FunPr.ThetaLocalIn
   obtain ⟨S₀, hS₀⟩ := _root_.GlobalTheory.SphFix.spherical_fixes_pure_vacuum_vectors hP _ _ _ Bs _ _ Γ Xc om om' hT
   obtain ⟨T₀, hXT, hOn⟩ := hPM
   obtain ⟨S, l, k, hTS, hl, hprod, hkinf, hkS, hkV, hkV'⟩ := GlobalTheory.T.exists_adelicUnitary_prod_localPoints_mul_latticeStabilizer _ _ _ Bs _ _ Γ hT.geo _ hinf (T₀ ∪ S₀)
-  have ext : ∀ U : Finset (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := D.host.F)), GlobalTheory.ThK.PolynomialMatching.PolMatchOn Bs Γ Xc R Rf (T₀ ∪ U) ΦD Φ₀D := by
+  have ext : ∀ U : Finset (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := D.host.F)), GlobalTheory.ThK.PolynomialMatching.PolMatchOn Bs Γ R Rf (T₀ ∪ U) ΦD Φ₀D := by
     intro U
     induction U using Finset.induction_on with
     | empty => rw [Finset.union_empty]; exact hOn
@@ -455,11 +455,11 @@ theorem polarization_match_square_kappa : _root_.GlobalTheory.FunPr.ThetaLocalIn
       by_cases hvX : v ∈ Xc.T
       · rwa [Finset.insert_eq_of_mem (Finset.mem_union_left _ (hXT hvX))]
       · exact GlobalTheory.ThK.PolynomialMatching.polMatchOn_insert _ _ _ Bs _ _ Γ Xc R Rf v (hM.fin.sph v hvX).1 _ _ _ ih
-  have hOnS : GlobalTheory.ThK.PolynomialMatching.PolMatchOn Bs Γ Xc R Rf S ΦD Φ₀D := by
+  have hOnS : GlobalTheory.ThK.PolynomialMatching.PolMatchOn Bs Γ R Rf S ΦD Φ₀D := by
     have := ext S
     rwa [Finset.union_eq_right.2 (Finset.union_subset_left hTS)] at this
   have hU := hS₀ S (Finset.union_subset_right hTS) k hkinf hkS hkV hkV'
-  have hOnK : GlobalTheory.ThK.PolynomialMatching.PolMatchOn Bs Γ Xc R Rf S (om (1, k) ΦD) (om' (1, k) Φ₀D) := by
+  have hOnK : GlobalTheory.ThK.PolynomialMatching.PolMatchOn Bs Γ R Rf S (om (1, k) ΦD) (om' (1, k) Φ₀D) := by
     obtain ⟨m, m', f, φ, f', φ', hφ, hφ', hΦ, hΦ', hsum⟩ := hOnS
     refine ⟨m, m', f, φ, f', φ', hφ, hφ', ?_, ?_, hsum⟩
 
@@ -476,7 +476,7 @@ theorem polarization_match_square_kappa : _root_.GlobalTheory.FunPr.ThetaLocalIn
     rw [show ((1 : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.UA D.sp.cm.sig Γ.V'.J), x * y) = (1, x) * (1, y) by simp, map_mul, Module.End.mul_apply]
   have key : ∀ l' : List (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := D.host.F) × GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.UA D.sp.cm.sig Γ.W.J),
       (∀ x ∈ l', x.1 ∈ S ∧ x.2 ∈ GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.UAt D.sp.cm.sig Γ.W (GlobalTheory.AdelicU.evFin D.host.F x.1)) →
-      GlobalTheory.ThK.PolynomialMatching.PolMatchOn Bs Γ Xc R Rf S (om (1, (l'.map Prod.snd).prod * k) ΦD)
+      GlobalTheory.ThK.PolynomialMatching.PolMatchOn Bs Γ R Rf S (om (1, (l'.map Prod.snd).prod * k) ΦD)
         (om' (1, (l'.map Prod.snd).prod * k) Φ₀D) := by
     intro l'
     induction l' with
@@ -519,7 +519,7 @@ theorem theta_kernel_match_on_parabolic : GlobalTheory.Published.HoweDualityReal
     (Xc : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Chars D.host.F D.host.E) (om : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig Γ.V Γ.W)
     (om' : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig Γ.V' Γ.W) (cA : Matrix (Fin W.rank) (Fin (W.rank + W₁.rank)) (AE D) ≃+ WO W X)
     (cB : Matrix (Fin W₁.rank) (Fin (W.rank + W₁.rank)) (AE D) ≃+ WO W₁ X),
-    IsInfFam θ → IsTriple W W₁ X α β → ∀ (hO : IsOver ψ θ A A₁ B α β ν 𝓕 ν₁ 𝓕₁ ωA ωB e Bs Γ Xc om om' cA cB),
+    IsInfFam θ → IsTriple W W₁ X α β → ∀ (_ : IsOver ψ θ A A₁ B α β ν 𝓕 ν₁ 𝓕₁ ωA ωB e Bs Γ Xc om om' cA cB),
     GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsTriple Bs Γ Xc om om' →
     ∀ R Rf, GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsMatched Bs Γ Xc om om' R Rf →
     ∀ Pi rf rl p p', IsMatch ψ θ A A₁ B α β ωA ωB Pi rf rl p p' →
@@ -541,7 +541,7 @@ theorem theta_kernel_match_on_opposite_parabolic : GlobalTheory.Published.HoweDu
     (Xc : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Chars D.host.F D.host.E) (om : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig Γ.V Γ.W)
     (om' : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep D.sp.cm.sig Γ.V' Γ.W) (cA : Matrix (Fin W.rank) (Fin (W.rank + W₁.rank)) (AE D) ≃+ WO W X)
     (cB : Matrix (Fin W₁.rank) (Fin (W.rank + W₁.rank)) (AE D) ≃+ WO W₁ X),
-    IsInfFam θ → IsTriple W W₁ X α β → ∀ (hO : IsOver ψ θ A A₁ B α β ν 𝓕 ν₁ 𝓕₁ ωA ωB e Bs Γ Xc om om' cA cB),
+    IsInfFam θ → IsTriple W W₁ X α β → ∀ (_ : IsOver ψ θ A A₁ B α β ν 𝓕 ν₁ 𝓕₁ ωA ωB e Bs Γ Xc om om' cA cB),
     GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsTriple Bs Γ Xc om om' →
     ∀ R Rf, GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsMatched Bs Γ Xc om om' R Rf →
     ∀ Pi rf rl p p', IsMatch ψ θ A A₁ B α β ωA ωB Pi rf rl p p' →

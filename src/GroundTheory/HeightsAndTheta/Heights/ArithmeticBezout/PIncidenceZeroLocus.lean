@@ -238,7 +238,7 @@ theorem proof : IncidenceZeroLocus.Statement := by
       intro hw
       have h := congrFun hw ⟨_, hmemj⟩
       simp only [w, Pi.zero_apply] at h
-      rw [Fintype.prod_eq_single j (fun i hi => by simp [Finsupp.single_apply, Ne.symm hi])] at h
+      rw [Fintype.prod_eq_single j (fun i hi => by simp [Ne.symm hi])] at h
       simp only [Finsupp.single_eq_same] at h
       exact hj ((pow_eq_zero_iff (n := N) (by omega)).mp h)
     have hwM : Matrix.vecMul w ((Mx.map φu).submatrix id σ') = 0 := by

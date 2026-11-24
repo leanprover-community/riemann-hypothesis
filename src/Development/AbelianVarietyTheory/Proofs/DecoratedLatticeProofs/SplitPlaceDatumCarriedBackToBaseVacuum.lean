@@ -216,7 +216,7 @@ theorem ind_mem_of_ind_nsmul {G : Type} [AddCommGroup G] {X L : AddSubgroup G} (
     exact ⟨r, hR.mem_toFinset.2 hr, k • u, ⟨u, hu, rfl⟩, rfl⟩
 
 theorem isSBHalf_zero' {D : D7} {S T : HSp D} (e : AE D) (Λ : AddSubgroup (WO S T)) : IsSBHalf e Λ (0 : WO S T → ℂ) :=
-  ⟨fun t h => absurd rfl h, 1, one_pos, fun _ _ _ _ => rfl, fun t h => absurd rfl h⟩
+  ⟨fun _ h => absurd rfl h, 1, one_pos, fun _ _ _ _ => rfl, fun _ h => absurd rfl h⟩
 
 theorem isHalf_nsmul' {D : D7} {m n : ℕ} {e : AE D} {u : Mx D m n} (hu : IsHalf e u) (N : ℕ) : IsHalf e (N • u) :=
   fun i j => by rw [Matrix.smul_apply, nsmul_eq_mul, mul_left_comm, hu i j]

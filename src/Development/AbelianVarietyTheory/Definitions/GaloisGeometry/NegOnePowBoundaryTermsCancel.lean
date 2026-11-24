@@ -82,7 +82,7 @@ def mult : CatH.Mult (O L) where
   mul_assoc T x y z := mul_assoc (G := T.B) x y z
   mul_comm T x y := mul_comm (G := T.B) x y
   one_mul T x := one_mul (M := T.B) x
-  map_mul {X Y} f x y := map_mul f.φ (show X.B from x) y
+  map_mul {X _} f x y := map_mul f.φ (show X.B from x) y
   map_one f := map_one f.φ
 
 end GlobalTheory.LogCris
@@ -300,7 +300,7 @@ def cup {m n k : ℕ} (h : m + n = k) : H F m →ₗ[R] H F n →ₗ[R] H F k :=
         Submodule.liftQ_apply, LinearMap.zero_comp, LinearMap.zero_apply, Submodule.Quotient.mk_eq_zero]
       exact cupC_mem_left μ h hf (LinearMap.mem_ker.1 g.2)
 
-def oneC : Cn F 0 := fun s => μ.one _
+def oneC : Cn F 0 := fun _ => μ.one _
 
 theorem d_oneC : d F 0 (oneC μ) = 0 := by
   funext s

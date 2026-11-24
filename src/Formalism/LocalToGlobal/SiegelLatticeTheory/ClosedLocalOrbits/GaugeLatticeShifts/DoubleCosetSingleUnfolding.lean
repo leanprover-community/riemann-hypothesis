@@ -410,7 +410,7 @@ end OOSum
 
 section DT
 
-theorem exists_doubleTransversal {G : Type*} [Group G] (Γ S S' : Subgroup G) (hS : S ≤ Γ) (hS' : S' ≤ Γ) :
+theorem exists_doubleTransversal {G : Type*} [Group G] (Γ S S' : Subgroup G) :
     ∃ R : Set G, IsDoubleTransversal Γ S S' R := by
   classical
   let r : Setoid Γ :=
@@ -487,7 +487,6 @@ theorem kExpansionC_holds_of (hSC : SlabCoverC) (hRG : RegroupC)
   have : BorelSpace X.B.I.GA := hR.2.2.2.1
   have hdisc : DiscreteTopology (Formalism.MainNotions.LeviCoordinates.rr_GF X.B.I) := hR.2.2.2.2
   obtain ⟨R, hRt⟩ := exists_doubleTransversal (Formalism.MainNotions.LeviCoordinates.rr_GF X.B.I) (Srat X u) (Srat X u')
-    inf_le_left inf_le_left
   have hsd : ∀ r : X.B.I.GA, DiscreteTopology (stab (Srat X u) (Srat X u') r) := fun r =>
     DiscreteTopology.of_subset hdisc (fun y hy => (inf_le_left : Srat X u ≤ _) ((mem_stab _ _ _ _).1 hy).1)
   have hFex : ∀ r : X.B.I.GA, ∃ F : Set X.B.I.GA,
@@ -619,7 +618,6 @@ theorem Slab.ooLintSum_of {D : D7} {X : Formalism.L2.SG.HidaSetting.HidaSetting 
   have hWD : PhWellDef X u Y.hK := phWellDef_holds X u
   have hWD' : PhWellDef X u' Y.hK := phWellDef_holds X u'
   obtain ⟨R, hRt⟩ := exists_doubleTransversal (Formalism.MainNotions.LeviCoordinates.rr_GF X.B.I) (Srat X u) (Srat X u')
-    inf_le_left inf_le_left
   have hsd : ∀ r : X.B.I.GA, DiscreteTopology (stab (Srat X u) (Srat X u') r) := fun r =>
     DiscreteTopology.of_subset hdisc (fun y hy => (inf_le_left : Srat X u ≤ _) ((mem_stab _ _ _ _).1 hy).1)
   have hFex : ∀ r : X.B.I.GA, ∃ F : Set X.B.I.GA,

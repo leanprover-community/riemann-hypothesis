@@ -56,7 +56,7 @@ def StabInfV : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (h
       ∀ v b, uMat (x v) *ᵥ wV X u' v b = wV X u' v b
 
 def WittBlock : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf
-    fibInf, PushHyp X u' ψ hT μinf νinf fibInf → ∀ v : NumberField.InfinitePlace X.B.I.F,
+    fibInf, PushHyp X u' ψ μinf νinf fibInf → ∀ v : NumberField.InfinitePlace X.B.I.F,
     ∃ (S : Finset (Fin X.B.I.n)) (c : Formalism.REAL.UJ (X.B.I.ε v)),
       (S.card = D.R.k ∧ ∀ i ∈ S, X.B.I.ε v i = true) ∧
       Submodule.span ℂ (Set.range fun b => uMat c⁻¹ *ᵥ wV X u' v b) =

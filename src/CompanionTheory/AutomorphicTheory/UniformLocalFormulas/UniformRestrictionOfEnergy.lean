@@ -339,7 +339,7 @@ theorem uniform_restriction_of_energy (hF : LoopBCovN.CovNFormula) (hU : UniqOfP
   have hLF := LocF.locFactor_holds hG Cc
   obtain ⟨νl, hpin, hQ⟩ := Formalism.L2.S.L6.UnitaryStandardVectors.ooQuot_of_nuQPin X u u' ν hp.2
   have hW : LoopTerm.CovWinN (Y := Y) Cc large₂ 1 u u' := by
-    refine LoopBCovN.covWinN_of hF Cc large₂ zero_le_one ?_ u u'
+    refine LoopBCovN.covWinN_of hF Cc large₂ ?_ u u'
     rw [hv]
     refine mul_le_mul (by nlinarith [sq_nonneg (D.R.m : ℝ)]) (Real.log_le_log hrd hrdb) (Real.log_nonneg hrd1)
       (by positivity)

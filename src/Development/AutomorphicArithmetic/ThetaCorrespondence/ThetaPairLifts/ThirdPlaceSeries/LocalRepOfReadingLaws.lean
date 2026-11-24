@@ -397,7 +397,7 @@ variable {ρ Gv Gc J}
 
 theorem locAlg_mem {A B : Subgroup G} {d : Module.End ℂ V} (hd : d ∈ locAlg ρ A B) {S : Submodule ℂ V}
     (hS : ∀ g, ∀ x ∈ S, ρ g x ∈ S) {x : V} (hx : x ∈ S) : d x ∈ S :=
-  (hd.2 (S.prod S) (fun g _ z hz => ⟨hS g _ hz.1, hS g _ hz.2⟩) (x, x) ⟨hx, hx⟩).1
+  (hd.2 (S.prod S) (fun g _ _ hz => ⟨hS g _ hz.1, hS g _ hz.2⟩) (x, x) ⟨hx, hx⟩).1
 
 theorem locAlg_comm {A B A' B' : Subgroup G} (hle : A' ≤ B) {d d' : Module.End ℂ V} (hd : d ∈ locAlg ρ A B)
     (hd' : d' ∈ locAlg ρ A' B') (x : V) : d (d' x) = d' (d x) := by

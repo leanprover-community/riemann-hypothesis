@@ -137,8 +137,8 @@ def upperUnip (F : Type) {a : Type} [Field F] [Fintype a] [DecidableEq a] (pos :
     Subgroup (GL a F) where
   carrier := {g | IsUpperUnip pos (g : Matrix a a F)}
   one_mem' := fun _ _ _ => rfl
-  mul_mem' := fun {g h} hg hh => Radical.Uni.mul (b := pos) hg hh
-  inv_mem' := fun {g} hg => Radical.Uni.inv (b := pos) hg
+  mul_mem' := fun {_ _} hg hh => Radical.Uni.mul (b := pos) hg hh
+  inv_mem' := fun {_} hg => Radical.Uni.inv (b := pos) hg
 
 theorem superSum_mul {pos : a → ℕ} {M M' : Matrix a a F} (h : IsUpperUnip pos M)
     (h' : IsUpperUnip pos M') : superSum pos (M * M') = superSum pos M + superSum pos M' := by

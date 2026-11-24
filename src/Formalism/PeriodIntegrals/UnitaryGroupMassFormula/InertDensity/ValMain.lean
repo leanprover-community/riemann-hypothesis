@@ -177,7 +177,7 @@ theorem val_expand [Fintype L] (h2 : finrank K L = 2) (hM : IsHerm (Fintype.card
   simp only [val_add_left, val_add_right, val_smul_left, val_smul_right, hwe, hew]
   ring
 
-theorem nondeg_valPerp [Fintype L] (h2 : finrank K L = 2) (hM : IsHerm (Fintype.card K) M)
+theorem nondeg_valPerp [Fintype L]
     {W : Submodule L (Fin n → L)} (hW : NonDeg (Fintype.card K) M W) {e : Fin n → L}
     (he : e ∈ W) (hb : hf (Fintype.card K) M e e ≠ 0) :
     NonDeg (Fintype.card K) M (valPerp (Fintype.card K) M W e) := by
@@ -430,7 +430,7 @@ theorem val_main (h2 : finrank K L = 2) (hM : IsHerm (Fintype.card K) M) :
     have hfr : finrank L (valPerp (Fintype.card K) M W e) = d := by
       have h := finrank_valPerp (q := Fintype.card K) (M := M) he hb
       omega
-    have hih := ih (valPerp (Fintype.card K) M W e) (nondeg_valPerp h2 hM hW he hb) hfr a ha
+    have hih := ih (valPerp (Fintype.card K) M W e) (nondeg_valPerp hW he hb) hfr a ha
     have hcardL : (Fintype.card L : ℤ) = (Fintype.card K : ℤ) ^ 2 := by
       have h := Module.card_eq_pow_finrank (K := K) (V := L)
       rw [h2] at h

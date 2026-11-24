@@ -1621,7 +1621,7 @@ theorem lieMult_iff_finrank : ∀ (O : Type) [CommRing O] (S : Scheme.{0}) (G : 
         let y : eigSub (actR (x0 := t) (S := k) act) τ := ∑ i, c i • b i
         have hy : IsLieEigen act t τ (tv (y : TanM t G)) := (mem_iff t act τ _).1 y.2
         obtain ⟨d, _, hd⟩ := huniq _ hy
-        have h1 := hd c (key y c (by simp [y, Submodule.coe_sum]))
+        have h1 := hd c (key y c (by simp [y]))
         have h2 := hd c' (key y c' (by rw [show y = ∑ i, c' i • b i from hcc]; simp [Submodule.coe_sum]))
         exact h1.trans h2.symm
       · intro y

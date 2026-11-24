@@ -257,7 +257,7 @@ def StepConvG : Prop :=
       ∫⁻ z, ∫⁻ z', ∫⁻ s, ‖⟪X.B.σs z (X.B.tens X.B.w), X.B.σs s (X.B.σs z' (X.B.tens X.B.w))⟫_ℂ‖ₑ *
         ‖X.Wu w z‖ₑ * ‖X.Wu w z'‖ₑ ∂(muS X w) ∂(X.nuQ w) ∂(X.nuQ w) < ⊤
 
-theorem double_integral_finite_diagonal {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D) (u u' : D.what₂.Word) (sc : ℝ) (hsc : 0 < sc)
+theorem double_integral_finite_diagonal {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D) (u u' : D.what₂.Word) (sc : ℝ)
     (hL : ∀ (v : InfinitePlace X.B.I.F) (cv : Fin (D.R.rS + 1) → ℂ),
       cv ∈ Formalism.L2.SG.RealObj.EnergyCut.GoodV (D := D) u u' → ∀ g : Formalism.REAL.UJ (X.B.I.ε v),
         Zhat (X.B.I.ε v) (frm X u sc v) (frm X u' sc v) (uMat g) = Matrix.diagonal cv →
@@ -299,7 +299,7 @@ theorem convolution_integral_finite {D : D7} (X : Formalism.L2.SG.HidaSetting.Hi
 
 theorem stepConvG_of (hB : LocQuadGG_G) (hC : LocQuad1_G) : StepConvG := by
   intro D hG X u u' sc hsc
-  exact ⟨fun c hc γ hγ => double_integral_finite_diagonal X u u' sc hsc (hB D hG X u u' sc hsc) c hc γ hγ,
+  exact ⟨fun c hc γ hγ => double_integral_finite_diagonal X u u' sc (hB D hG X u u' sc hsc) c hc γ hγ,
     fun w => convolution_integral_finite X w (hC D hG X w)⟩
 
 end Formalism.L2.S.Pv.ConvG

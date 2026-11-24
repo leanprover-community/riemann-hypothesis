@@ -189,7 +189,7 @@ private lemma bd_add' {c : ℝ} {F G : MvPowerSeries ι K} (hF : Bd c F) (hG : B
   exact (IsUltrametricDist.norm_add_le_max _ _).trans (max_le (hF d) (hG d))
 
 lemma powp_step {p : ℕ} (hp : p.Prime) {r : ℕ} (hr : 1 ≤ r) {A B : MvPowerSeries ι K}
-    (_hA : Bd 1 A) (hB : Bd 1 B) (hD : Bd (‖(p : K)‖ ^ r) (A - B)) :
+    (hB : Bd 1 B) (hD : Bd (‖(p : K)‖ ^ r) (A - B)) :
     Bd (‖(p : K)‖ ^ (r + 1)) (A ^ p - B ^ p) := by
   have hpn : 0 ≤ ‖(p : K)‖ := norm_nonneg _
   have hp1 : ‖(p : K)‖ ≤ 1 := IsUltrametricDist.norm_natCast_le_one K p
@@ -239,7 +239,7 @@ lemma powpj {p : ℕ} (hp : p.Prime) {r : ℕ} (hr : 1 ≤ r) {A B : MvPowerSeri
   | 0 => by simpa using hD
   | j + 1 => by
     rw [pow_succ p j, pow_mul, pow_mul, ← add_assoc]
-    exact powp_step hp (by omega) (by simpa using hA.pow zero_le_one (p ^ j))
+    exact powp_step hp (by omega)
       (by simpa using hB.pow zero_le_one (p ^ j)) (powpj hp hr hA hB hD j)
 
 lemma pow_sub_pow_bd {c : ℝ} (hc : 0 ≤ c) {A B : MvPowerSeries ι K} (hA : Bd 1 A) (hB : Bd 1 B)

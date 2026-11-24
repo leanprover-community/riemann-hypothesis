@@ -55,7 +55,7 @@ open MeasureTheory
 
 theorem toReal_eq_relIndex_mul {G : Type} [Group G] [MeasurableSpace G] [MeasurableMul G]
     (μ : Measure G) [μ.IsMulLeftInvariant] (H K : Subgroup G) (hle : H ≤ K)
-    (hK : MeasurableSet (K : Set G)) (hH : MeasurableSet (H : Set G)) (hpos : μ H ≠ 0) :
+    (hH : MeasurableSet (H : Set G)) (hpos : μ H ≠ 0) :
     (μ K).toReal = (H.relIndex K : ℝ) * (μ H).toReal := by
   classical
   have hrel : H.relIndex K = (H.subgroupOf K).index := rfl
@@ -117,7 +117,7 @@ theorem toReal_eq_relIndex_mul_of_open {G : Type} [Group G] [TopologicalSpace G]
     (H K : Subgroup G) (hle : H ≤ K) (hH : IsOpen (H : Set G)) :
     (μ K).toReal = (H.relIndex K : ℝ) * (μ H).toReal := by
   have hK : IsOpen (K : Set G) := Subgroup.isOpen_mono hle hH
-  exact toReal_eq_relIndex_mul μ H K hle hK.measurableSet hH.measurableSet
+  exact toReal_eq_relIndex_mul μ H K hle hH.measurableSet
     (hH.measure_ne_zero μ ⟨1, H.one_mem⟩)
 
 theorem toReal_eq_relIndex_mul_of_haar {G : Type} [Group G] [TopologicalSpace G] [MeasurableSpace G]

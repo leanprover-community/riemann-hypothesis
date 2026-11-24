@@ -150,7 +150,7 @@ lemma nuNext_tele (ν : Fin n → ℝ) {a b : Fin n} (hba : b < a) :
   rw [hfil, sum_Ico_tele f (b := (b : ℕ)) (a : ℕ) (Fin.lt_iff_val_lt_val.mp hba).le]
   simp [f, b.isLt, a.isLt]
 
-theorem dec_weighted {ε : Fin n → Bool} (ν : Fin n → ℝ) (hν : Antitone ν) {g : ℝ}
+theorem dec_weighted {ε : Fin n → Bool} (ν : Fin n → ℝ) {g : ℝ}
     (hg : ∀ a b : Fin n, ε a ≠ ε b → b < a → g ≤ ν b - ν a) {Y : Matrix (Fin n) (Fin n) ℂ} (hY : inP ε Y) :
     g * hs Y / 2 ≤
       ∑ i : Fin n, (ν i - nuNext ν i) *
@@ -458,7 +458,7 @@ theorem phi_decay_core (ν : Fin n → ℝ) (hν : Antitone ν) {g : ℝ}
       rw [hV, hL, Real.log_one]
       simp
   have hsum : t * (g * hs Y / 2) / 4 ≤ ∑ i, (ν i - nuNext ν i) * Real.log (c i) := by
-    have hw := dec_weighted ν hν hg hY
+    have hw := dec_weighted ν hg hY
     calc t * (g * hs Y / 2) / 4 ≤ t * (∑ i, (ν i - nuNext ν i) * V i) / 4 := by
           have := mul_le_mul_of_nonneg_left hw ht0
           linarith

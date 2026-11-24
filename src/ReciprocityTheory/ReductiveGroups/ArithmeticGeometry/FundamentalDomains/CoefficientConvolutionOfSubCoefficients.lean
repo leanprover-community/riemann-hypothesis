@@ -373,7 +373,7 @@ def Om (ξ : Fin r → E) (x : Frame X.Ψ r) (ω : Fin (Fintype.card X.Ψ) → X
     Set (Fin (Fintype.card X.Ψ) → ℝ) :=
   {b | (fun τ => ∑ j, b j * ω j τ) ∈ admissibleImaginary X ξ x}
 
-theorem Om_open (ξ : Fin r → E) {x : Frame X.Ψ r} (hx : x ∈ X.dom) (ω : Fin (Fintype.card X.Ψ) → X.Ψ → ℝ) :
+theorem Om_open (ξ : Fin r → E) {x : Frame X.Ψ r} (ω : Fin (Fintype.card X.Ψ) → X.Ψ → ℝ) :
     IsOpen (Om ξ x ω) := by
   have hc : ∀ (τ : X.Ψ) (i : Fin (r + 1)), Continuous fun b : Fin (Fintype.card X.Ψ) → ℝ =>
       psgn X.p0 i * (lminor (gram τ.1 X.Gm (mat x τ) +
@@ -497,7 +497,7 @@ theorem flow_mem_of_tube {ξ : Fin r → E} (hξ : herm X.Gm ξ ξ = 0) {x : Fra
       simp [Complex.im_sum]
     rwa [gramflow_lemma_29 hξ τ, him]
 
-theorem zero_mem_Om {ξ : Fin r → E} (hξ : herm X.Gm ξ ξ = 0) {x : Frame X.Ψ r} (hx : x ∈ X.dom)
+theorem zero_mem_Om {ξ : Fin r → E} {x : Frame X.Ψ r} (hx : x ∈ X.dom)
     (ω : Fin (Fintype.card X.Ψ) → X.Ψ → ℝ) : (0 : Fin (Fintype.card X.Ψ) → ℝ) ∈ Om ξ x ω := by
   show (fun τ => ∑ j, (0 : Fin (Fintype.card X.Ψ) → ℝ) j * ω j τ) ∈ admissibleImaginary X ξ x
   simp only [admissibleImaginary, Set.mem_setOf_eq, Pi.zero_apply, zero_mul, Finset.sum_const_zero, mul_zero,
@@ -571,9 +571,9 @@ theorem coefficientConvolution_of_subCoefficients (hsub : SubCoeffSt (E := E)) :
   by_cases hν : ν ∈ Set.range e
   · obtain ⟨k0, rfl⟩ := hν
     have hfm := four_mul' (Fintype.card X.Ψ) (Om ξ x ω) (hline X P ξ x ω) (hline X Q ξ x ω)
-      (Om_open ξ hx ω) (hline_diff hP.1 hξ.2.1 hx ω) (hline_diff hQ.1 hξ.2.1 hx ω)
+      (Om_open ξ ω) (hline_diff hP.1 hξ.2.1 hx ω) (hline_diff hQ.1 hξ.2.1 hx ω)
       (hline_per hP hξ hx ω (scaledPeriod_mem_left X la la')) (hline_per hQ hξ hx ω (scaledPeriod_mem_right X la la')) 0
-      (zero_mem_Om hξ.2.1 hx ω) k0
+      (zero_mem_Om hx ω) k0
     have hprod : hline X P ξ x ω * hline X Q ξ x ω = hline X (P * Q) ξ x ω := rfl
     rw [hprod, ← cPQ] at hfm
     rw [← he_inj.hasSum_iff (fun ν' hν' => by rw [z la P (scaledPeriod_mem_left X la la') ν' hν', zero_mul])]

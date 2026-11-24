@@ -48,7 +48,7 @@ theorem integrable_conj_mul_translate_path {G : Type} [Group G] [TopologicalSpac
     [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G] [LocallyCompactSpace G] (Γ : Subgroup G)
     [DiscreteTopology Γ] (μ : Measure G) [μ.IsMulLeftInvariant] [μ.IsMulRightInvariant]
     [IsFiniteMeasureOnCompacts μ] (c : ℝ → G) (hc : Continuous c) {f' : G → ℂ} (hf' : MemL2Quotient Γ μ f')
-    (_hcont : Continuous f') (H : L2 Γ μ) (t : ℝ) :
+    (H : L2 Γ μ) (t : ℝ) :
     Integrable (Function.uncurry fun (s : ℝ) (q : GlobalTheory.AutomorphicL2Unitary.Quot Γ) => starRingEnd ℂ (H q) * f' (sec Γ q * c s))
       ((volume.restrict (Set.uIoc 0 t)).prod (quotMeasure Γ μ)) := by
   haveI : SigmaFinite μ := inferInstance

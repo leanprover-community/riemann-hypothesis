@@ -927,7 +927,7 @@ open MeasureTheory Topology Filter Formalism.BasicNotions Formalism.L2.SG.HidaSe
 open scoped TensorProduct
 
 theorem lfFib_at {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf fibInf
-    (hP : PushHyp X u' ψ hT μinf νinf fibInf) (T : HmI X) : LFI X (fibInf T) := by
+    (hP : PushHyp X u' ψ μinf νinf fibInf) (T : HmI X) : LFI X (fibInf T) := by
   intro K hK hKU
   haveI : FiniteDimensional X.B.I.F X.B.I.E := fd_of X
   obtain ⟨k, -, hkcl, hKk, hkU⟩ := exists_compact_closed_between hK (isOpen_IndI X) hKU
@@ -1015,7 +1015,7 @@ open MeasureTheory Topology Filter Formalism.BasicNotions Formalism.L2.SG.HidaSe
 open scoped TensorProduct
 
 def JacOneCFor (Pr : ChartPred) : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf fibInf,
-    PushHyp X u' ψ hT μinf νinf fibInf → ∀ Ω a, IsChart X u' hT Ω a → Pr X u' hT μinf νinf a →
+    PushHyp X u' ψ μinf νinf fibInf → ∀ Ω a, IsChart X u' hT Ω a → Pr X u' hT μinf νinf a →
     ∀ Ω₂ ⊆ Ω, Ω₂ ∈ 𝓝 (TI X u' hT) → ∀ c : HmI X → ENNReal, ContinuousAt c (TI X u' hT) →
       PolId X u' μinf νinf a Ω₂ c → c (TI X u' hT) = (ENNReal.ofReal (KVal X u'))⁻¹
 

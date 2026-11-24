@@ -55,7 +55,7 @@ namespace GlobalTheory.BCT.TrKer
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
 instance finiteDimensional_wsp (lam : InfinitePlace E → DomWeight n) : FiniteDimensional ℂ (Wsp lam) :=
-  Module.Finite.of_basis (Basis.piTensorProduct fun v => Module.finBasis ℂ _)
+  Module.Finite.of_basis (Basis.piTensorProduct fun _ => Module.finBasis ℂ _)
 
 
 variable (E n) in

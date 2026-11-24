@@ -819,7 +819,7 @@ theorem th_cont (C : Ctx σ W) : Continuous (th C j) := by
   exact Units.continuous_iff.2 ⟨Units.continuous_val.matrix_map c, Units.continuous_coe_inv.matrix_map c⟩
 
 theorem th_rat (C : Ctx σ W) (γ : GL (Fin j) E) : th C j (ratGL E j γ) = Matrix.GeneralLinearGroup.map (inclR (F := F) (AF F)) γ :=
-  Units.ext (Matrix.ext fun a b => C.ad.symm_apply_eq.2 (C.ad_inc _).symm)
+  Units.ext (Matrix.ext fun _ _ => C.ad.symm_apply_eq.2 (C.ad_inc _).symm)
 
 variable (C : Ctx σ W) (h : Fr (σ : E →+* E) W.J u u') {ct : (UA σ W.J → ℂ) → UA σ W.J → ℂ} (H : IsCt (colSp u) ct)
   {f : UA σ W.J → ℂ} (hf : IsAut (W := W) f)

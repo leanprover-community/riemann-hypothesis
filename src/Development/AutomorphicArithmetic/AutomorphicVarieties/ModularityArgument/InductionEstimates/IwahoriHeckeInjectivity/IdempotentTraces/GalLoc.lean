@@ -92,7 +92,7 @@ private theorem gal_cent (σ : E ≃ₐ[F] E) (s : {r : ℝ // 0 < r}) :
   rw [← e, ← UpperTheory.centralSection_baseChange F E n]
   exact (UpperTheory.adele_galois_action_baseChange_compat F E σ n).2.2.2.2.1 _
 
-private theorem gal_retract (σ : E ≃ₐ[F] E) (hn : 0 < n) {μ : Measure (G1 E n)} [μ.IsHaarMeasure] {θ : Twist μ}
+private theorem gal_retract (σ : E ≃ₐ[F] E) {μ : Measure (G1 E n)} [μ.IsHaarMeasure] {θ : Twist μ}
     (hθ : IsGalTwist σ θ) (x : AdelicGLn.AdelicGL E n) :
     θ.e (retractOne x) = retractOne (mapGL n (galAd σ) x) := by
   have h1 : ((θ.e (retractOne x) : G1 E n) : AdelicGLn.AdelicGL E n) * centralSection E n (detModule E n x) =
@@ -165,7 +165,7 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.E.galLoc :
     have hm : k' ∈ archCompact E n := (hc k').2 fun i => by rw [key i]; exact hk (i + 1)
     refine ⟨⟨k', hm⟩, ?_, ?_⟩
     · change θ.e (archP E n k) = archP E n k'
-      rw [← retract_infEmb, ← retract_infEmb, gal_retract σ hn hθ, hk']
+      rw [← retract_infEmb, ← retract_infEmb, gal_retract σ hθ, hk']
     · rw [he k (fun i => ⟨_, hk i⟩) fun _ => rfl, he ⟨k', hm⟩ (fun i => ⟨_, hk (i + 1)⟩) fun i => (key i).symm,
         Fin.prod_univ_two, Fin.prod_univ_two, mul_comm]
       rfl
@@ -177,7 +177,7 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.E.galLoc :
     obtain ⟨c1, c2, -⟩ := UpperTheory.adele_galois_action_baseChange_compat F E σ n
     obtain ⟨-, g2, -, -, -, -, hsh, -⟩ := UpperTheory.ConvolutionTheory.L1.glueBasic _ _ _ _ 1 D n
     change θ.e (retractOne (finEmb E n _)) = retractOne (finEmb E n _)
-    rw [gal_retract σ hn hθ]
+    rw [gal_retract σ hθ]
     congr 1
     refine ad_ext F ?_ fun v' => ?_
     · rw [c1, pI_eq, pI_eq, prodEquiv_finEmb, prodEquiv_finEmb, map_one]

@@ -395,7 +395,7 @@ theorem diag_open (S : Sys I π s₀) (hI : I ^ 2 = 0) {U V : X₀.affineOpens} 
 
 end
 
-theorem exists_presents : ∀ (R R₀ : Type) [CommRing R] [CommRing R₀] (I : Ideal R) (hI : I ^ 2 = 0) (π : R →+* R₀) (hπ : Function.Surjective π) (hk : RingHom.ker π = I) (X₀ : Scheme.{0}) (s₀ : X₀ ⟶ Sp R₀), ∀ S : Sys I π s₀, ∃ (X : Scheme.{0}) (s : X ⟶ Sp R) (i : X₀ ⟶ X), IsClosedImmersion i ∧ Surjective i ∧ Nonempty (S.Presents s i) := by
+theorem exists_presents : ∀ (R R₀ : Type) [CommRing R] [CommRing R₀] (I : Ideal R) (_ : I ^ 2 = 0) (π : R →+* R₀) (_ : Function.Surjective π) (_ : RingHom.ker π = I) (X₀ : Scheme.{0}) (s₀ : X₀ ⟶ Sp R₀), ∀ S : Sys I π s₀, ∃ (X : Scheme.{0}) (s : X ⟶ Sp R) (i : X₀ ⟶ X), IsClosedImmersion i ∧ Surjective i ∧ Nonempty (S.Presents s i) := by
   intro R R₀ _ _ I hI π _ _ X₀ s₀ S
   have hbas : ∀ U ∈ X₀.affineOpens, ∀ (W : X₀.Opens) (x : X₀), x ∈ U → x ∈ W →
       ∃ V ∈ X₀.affineOpens, x ∈ V ∧ V ≤ U ∧ V ≤ W := by

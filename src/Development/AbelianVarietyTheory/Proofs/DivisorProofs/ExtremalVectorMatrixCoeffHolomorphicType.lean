@@ -167,7 +167,7 @@ theorem killedFn_coef {q : ι → ℕ} {x₀ : ι → Mt n} {w : ι → Fin n �
 
 end General
 
-theorem arr_bijective {n q : ℕ} (hq : q ≤ n) : Function.Bijective (arr (n := n) q) := by
+theorem arr_bijective {n q : ℕ} : Function.Bijective (arr (n := n) q) := by
   refine Finite.injective_iff_bijective.1 fun a b hab => ?_
   have h := congrArg Fin.val hab
   have := a.2
@@ -185,7 +185,7 @@ theorem torus_ext {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel
     (hx : (x0Mat M τ).det ≠ 0) :
     M.rep τ (torEl (x0Mat M) s τ) (v τ : M.H τ) =
       (∏ a, Complex.exp ((s τ a : ℂ) * Complex.I) ^ w τ a) • (v τ : M.H τ) := by
-  set e := Equiv.ofBijective _ (arr_bijective (nNeg_le (M.ε τ))) with he
+  set e := Equiv.ofBijective _ (arr_bijective) with he
   have hfr : IsUnit (M.fr τ).det := (Matrix.isUnit_iff_isUnit_det _).1 (M.fr_unit τ)
   have h1 := torus_x0Mat M τ fun a => Complex.exp ((s τ (e.symm a) : ℂ) * Complex.I)
   have h2 : ∀ c, e.symm (arr (nNeg (M.ε τ)) c) = c := fun c => e.symm_apply_apply c

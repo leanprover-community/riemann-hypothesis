@@ -142,7 +142,7 @@ private theorem loc_dual {F : Type*} [Field F] [ValuativeRel F] [TopologicalSpac
   ring
 
 private theorem comb {I : Type} (S : Finset I) (N : I → ℕ) (P : I → ℂ[X]) (c : I → ℂ) (j : I → ℤ) (q : ℕ) (f d : I → ℕ)
-    (hq : 1 < q) (h : ∀ v ∈ S, 1 < N v ∧ (P v).eval 0 = 1 ∧ (P v).natDegree = d v ∧ (d v ≠ 0 → N v = q ^ f v)) :
+    (h : ∀ v ∈ S, 1 < N v ∧ (P v).eval 0 = 1 ∧ (P v).natDegree = d v ∧ (d v ≠ 0 → N v = q ^ f v)) :
     ∃ (c₀ : ℂ) (t : ℝ), ∀ s : ℂ,
       ∏ v ∈ S, c v * ((N v : ℂ) ^ (-s)) ^ j v * (P v).eval ((N v : ℂ) ^ (-s)) / (P v).eval (N v * (N v : ℂ) ^ (-s)) =
         fac c₀ t q (∏ v ∈ S, (P v).comp (X ^ f v)) s := by
@@ -281,7 +281,7 @@ theorem UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter.sideXCen :
         exact hr s hs
       · exact ⟨0, 0, 0, 0, fun e => absurd e hv⟩
   choose P e j cv hd using hd
-  obtain ⟨c₀, t, hfac⟩ := comb S (fun v => Ideal.absNorm v.asIdeal) P e j q f (fun v => cnt (sp v) 1) hq
+  obtain ⟨c₀, t, hfac⟩ := comb S (fun v => Ideal.absNorm v.asIdeal) P e j q f (fun v => cnt (sp v) 1)
     fun v hv => ⟨NumberField.HeightOneSpectrum.one_lt_absNorm v, (hd v hv).2.1, (hd v hv).2.2.1, (hsp v hv).2⟩
   have hPe : ∏ v ∈ S, (pol (sp v) 1).comp (X ^ f v) = ∏ v ∈ S, (P v).comp (X ^ f v) :=
     Finset.prod_congr rfl fun v hv => by rw [(hd v hv).1]
@@ -406,7 +406,7 @@ private theorem loc_unif {χ : HChar K} {v : HeightOneSpectrum (𝓞 K)} (h : χ
   rw [map_mul, map_inv, mul_inv_eq_one] at a4
   exact a4
 
-private theorem pol_shift (P : ℂ[X]) (N q f d : ℕ) (z : ℂ) (hq : 1 < q) (h0 : P.eval 0 = 1) (hd : P.natDegree = d)
+private theorem pol_shift (P : ℂ[X]) (N q f d : ℕ) (z : ℂ) (hq : 1 < q) (hd : P.natDegree = d)
     (h : d ≠ 0 → N = q ^ f) :
     ((P.comp (C ((N : ℂ) ^ (-z)) * X)).comp (X ^ f)).comp (C (((q : ℝ) : ℂ) ^ z) * X) = P.comp (X ^ f) := by
   by_cases e : d = 0
@@ -483,7 +483,7 @@ theorem UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter.sideX :
     refine Finset.prod_congr rfl fun v hv => ?_
     have hF := (polFacts (v.adicCompletion K)).2.2.2 (s v) 1
     rw [(hs' v hv).2.2]
-    exact pol_shift _ _ q _ _ z hq hF.1 hF.2.1 (hs v hv).2
+    exact pol_shift _ _ q _ _ z hq hF.2.1 (hs v hv).2
   rw [e', e''] at hP2
   refine ⟨β.comp (X - C z), ?_, ?_⟩
   · intro h

@@ -104,7 +104,7 @@ theorem d_perm (u v : Fin n → ℝ) (w : Equiv.Perm (Fin n)) : dot (u ∘ w) (v
   simpa [dot] using Equiv.sum_comp w (fun a => u a * v a)
 
 theorem d_self_nonneg (u : Fin n → ℝ) : 0 ≤ dot u u :=
-  sum_nonneg fun a _ => mul_self_nonneg _
+  sum_nonneg fun _ _ => mul_self_nonneg _
 
 theorem rho_sub (a b : Fin n) : rhoV n a - rhoV n b = (b : ℕ) - (a : ℕ) := by
   simp only [rhoV]; ring

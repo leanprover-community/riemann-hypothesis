@@ -237,7 +237,7 @@ def ptPart (D : D7) (i : D.nd.Loc) : Submodule ℂ (D.what₂.Mt (D.nd.mu i) (D.
 
 theorem onMt_ptPart (hC : OnMtPreservesTypeV D) (i : D.nd.Loc) (z : MonoidAlgebra ℂ (G0g D.nd)) :
     ptPart D i ≤ (ptPart D i).comap (D.ntypes.onMt (D.nd.mu i) (D.nd.j i) z) :=
-  iSup₂_le fun o ho F hF => Submodule.mem_comap.2
+  iSup₂_le fun o ho _ hF => Submodule.mem_comap.2
     (Submodule.mem_iSup_of_mem o (Submodule.mem_iSup_of_mem ho (onMt_typeSum hC i z o hF)))
 
 theorem Phi_mem {i : D.nd.Loc} (s : Sec D i) (w : TensorProduct (D.nd.O i) (KK D.nd i) (D.nd.Mt i)) :
@@ -1384,7 +1384,7 @@ theorem inePol_twistIso (D : D7) (hT : SumRepresentations.At.TieLP D.nd D.naut) 
     unfold spehLoc
     rw [inePol_foldr D _ _ _ σ hσ, inePol_foldr D _ _ _ σ hσ, hpart]
 
-theorem eq_pow_of_mul_eq (A B : ℂ[X]) (n : ℕ) (hA : A.Monic) (hB : B.Monic) (h : A * B = (X - 1) ^ n) :
+theorem eq_pow_of_mul_eq (A B : ℂ[X]) (n : ℕ) (hA : A.Monic) (h : A * B = (X - 1) ^ n) :
     A = (X - 1) ^ A.natDegree := by
   have hdvd : A ∣ (X - C 1) ^ n := by rw [map_one, ← h]; exact dvd_mul_right A B
   obtain ⟨j, -, hj⟩ := (dvd_prime_pow (Polynomial.prime_X_sub_C (1 : ℂ)) n).1 hdvd
@@ -1474,7 +1474,7 @@ theorem main : ∀ D : D7, (∀ S : Formalism.L2.ParC D, ∃ σ' : D.ntypes.Par,
     have hm1 := ((hT w (isoLoc D.nd D.naut Sig w) (isoLoc D.nd D.naut Sig w) _ _ 0 hd1 hd1).2.2.2.2.2 σ hσ).1
     have hm2 := ((hT w (isoLoc D.nd D.naut [muPart D.nd D.naut i] w)
       (isoLoc D.nd D.naut [muPart D.nd D.naut i] w) _ _ 0 hd1 hd1).2.2.2.2.2 σ hσ).1
-    have e := eq_pow_of_mul_eq _ _ _ hm1.1 hm2.1 htame
+    have e := eq_pow_of_mul_eq _ _ _ hm1.1 htame
     rw [e, hm1.2]
   exact hPar ⟨Sig, hparts, hnodup, hrank, hlab⟩
 

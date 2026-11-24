@@ -65,7 +65,7 @@ theorem logDerivBoundRightHalfPlane : LogDerivRight := by
       rw [← ofReal_one, ← ofReal_sub, Complex.norm_real, Real.norm_of_nonneg hσ1.le]
     have hb := hball (by rw [Complex.dist_eq, hreal]; linarith) (by simpa using hs.ne')
     simp only [norm_one, mul_one] at hb
-    rw [lamF_eq_norm hs, LSeries_vonMangoldt_eq_deriv_riemannZeta_div (by simpa using hs), neg_div, norm_neg]
+    rw [lamF_eq_norm, LSeries_vonMangoldt_eq_deriv_riemannZeta_div (by simpa using hs), neg_div, norm_neg]
     have htri := norm_sub_le (deriv riemannZeta (s.re : ℂ) / riemannZeta (s.re : ℂ) + ((s.re : ℂ) - 1)⁻¹)
       (((s.re : ℂ) - 1)⁻¹)
     simp only [add_sub_cancel_right, norm_inv, hreal] at htri

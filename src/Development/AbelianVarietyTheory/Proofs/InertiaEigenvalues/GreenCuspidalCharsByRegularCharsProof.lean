@@ -437,7 +437,7 @@ theorem pow_modEq_pow_mod {g : ℕ} (d : ℕ) (hg : 0 < g) (m : ℕ) : g ^ m ≡
 theorem filter_modEq_congr {g d a b l : ℕ} (h : a ≡ b [MOD g ^ d - 1]) :
     ((Finset.range d).filter fun i => a * g ^ i ≡ l [MOD g ^ d - 1]) =
       (Finset.range d).filter fun i => b * g ^ i ≡ l [MOD g ^ d - 1] :=
-  Finset.filter_congr fun i _ =>
+  Finset.filter_congr fun _ _ =>
     ⟨fun h' => ((h.symm.mul_right _).trans h'), fun h' => ((h.mul_right _).trans h')⟩
 
 theorem card_filter_le_shift {g d : ℕ} (hg : 0 < g) (hd : 0 < d) (a c l : ℕ) :

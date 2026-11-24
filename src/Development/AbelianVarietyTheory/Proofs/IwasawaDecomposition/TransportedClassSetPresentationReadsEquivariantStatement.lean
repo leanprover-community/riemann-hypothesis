@@ -72,10 +72,10 @@ theorem transport_ext_eq : ∀ {K : Type} [Field K] [NumberField K] [StarRing K]
     (eG : G ≃* G') (eΓ : Γ ≃* Γ') (hι : ∀ γ, ι' (eΓ γ) = eG (ι γ)) (hρ : ∀ γ, ρ' (eΓ γ) = ρ γ)
     (hJ : J' = J.map eG.toMonoidHom) (hχ : ∀ (k : J) (hk : eG k ∈ J'), χ' ⟨eG k, hk⟩ = χ k)
     (f : (S.toCSD h).Forms) (g : G'),
-    ((Bridge.classPresOf A h σ ρ χ coef hli hspan hpair hK1 hgl).transport eG eΓ hι hρ hJ hχ).ext (f : S.Cl → S.V) g =
+    ((Bridge.classPresOf A h σ ρ χ coef hli hspan hpair hgl).transport eG eΓ hι hρ hJ hχ).ext (f : S.Cl → S.V) g =
       coef ((((S.res h).symm f : S.EqFun) : S.D → S.V) (A.q (eG.symm g))) := by
   intro K _ _ _ S G Γ G' Γ' _ _ _ _ ι J A h W _ _ σ ρ χ coef hli hspan hpair hK1 hgl ι' ρ' J' χ' eG eΓ hι hρ hJ hχ f g
-  set P' := (Bridge.classPresOf A h σ ρ χ coef hli hspan hpair hK1 hgl).transport eG eΓ hι hρ hJ hχ with hP'
+  set P' := (Bridge.classPresOf A h σ ρ χ coef hli hspan hpair hgl).transport eG eΓ hι hρ hJ hχ with hP'
   have hJ' : ∀ x, x ∈ J' ↔ eG.symm x ∈ J := fun x => by subst hJ; exact Subgroup.mem_map_equiv
   have hspec := P'.dec_spec g
   set γ' := P'.decG g
@@ -133,7 +133,7 @@ theorem _root_.GlobalTheory.T.transportedClassSetPresentation_reads_equivariant 
     (eG : G ≃* G') (eΓ : Γ ≃* Γ') (hι : ∀ γ, ι' (eΓ γ) = eG (ι γ)) (hρ : ∀ γ, ρ' (eΓ γ) = ρ γ)
     (hJ : J' = J.map eG.toMonoidHom) (hχ : ∀ (k : J) (hk : eG k ∈ J'), χ' ⟨eG k, hk⟩ = χ k)
     (f : (S.toCSD h).Forms) (g : G'),
-    ((Bridge.classPresOf A h σ ρ χ coef hli hspan hpair hK1 hgl).transport eG eΓ hι hρ hJ hχ).ext (f : S.Cl → S.V) g =
+    ((Bridge.classPresOf A h σ ρ χ coef hli hspan hpair hgl).transport eG eΓ hι hρ hJ hχ).ext (f : S.Cl → S.V) g =
       coef ((((S.res h).symm f : S.EqFun) : S.D → S.V) (A.q (eG.symm g))) := by
   first | exact @GlobalTheory.Mem.TransportRead.transport_ext_eq
 end -- clump:auto

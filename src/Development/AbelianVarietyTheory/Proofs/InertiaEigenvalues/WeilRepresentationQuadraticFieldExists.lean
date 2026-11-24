@@ -1151,7 +1151,7 @@ def testSub (X : Type) [TopologicalSpace X] : Submodule ℂ (X → ℂ) where
   carrier := {f | IsTest f}
   add_mem' := fun ha hb => ⟨ha.1.add hb.1, ha.2.add hb.2⟩
   zero_mem' := ⟨IsLocallyConstant.const 0, HasCompactSupport.zero⟩
-  smul_mem' := fun c f hf => ⟨hf.1.comp (fun z => c • z), hf.2.smul_left (f := fun _ => c)⟩
+  smul_mem' := fun c _ hf => ⟨hf.1.comp (fun z => c • z), hf.2.smul_left (f := fun _ => c)⟩
 
 theorem fOp_smul (A : Et F E) (ψ : AddChar F ℂ) (x : A.K) (μ : Measure A.L) (c : ℂ) (φ : A.L → ℂ) :
     fOp A ψ x μ (c • φ) = c • fOp A ψ x μ φ := by

@@ -28,7 +28,7 @@ theorem kap_nonneg (z w : P) : 0 ≤ kap z w := by
   unfold kap; split_ifs <;> positivity
 
 theorem Kap_nonneg (k : I → ℕ) (z w : X I) : 0 ≤ Kap k z w :=
-  Finset.prod_nonneg fun v _ => Real.rpow_nonneg (kap_nonneg _ _) _
+  Finset.prod_nonneg fun _ _ => Real.rpow_nonneg (kap_nonneg _ _) _
 
 theorem N_pos (z : X I) : 0 < ∏ v, |(z v).1.im| :=
   Finset.prod_pos fun v _ => abs_pos.2 (z v).2

@@ -64,7 +64,7 @@ section Idx
 variable {G : Type*} [Group G] [MeasurableSpace G] [MeasurableMul G]
 
 theorem measure_eq_relIndex_mul (μ : Measure G) [IsMulLeftInvariant μ] {U W : Subgroup G} (hWU : W ≤ U)
-    (hU : MeasurableSet (U : Set G)) (hW : MeasurableSet (W : Set G)) (hfin : W.relIndex U ≠ 0) :
+    (hW : MeasurableSet (W : Set G)) (hfin : W.relIndex U ≠ 0) :
     μ U = W.relIndex U * μ W := by
   classical
   have hcard : Nat.card (U ⧸ W.subgroupOf U) = W.relIndex U := rfl

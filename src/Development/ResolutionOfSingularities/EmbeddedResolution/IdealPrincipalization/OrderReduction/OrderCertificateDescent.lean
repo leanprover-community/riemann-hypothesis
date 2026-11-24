@@ -699,8 +699,6 @@ theorem isMarked_balancedTunedIdeal_of_isStrictPullbackBlowupSeq (hinv : ComapIs
     [AlgebraicGeometry.Smooth (MaxContactCoverData.coverMap T h.valid)]
     [AlgebraicGeometry.Surjective (MaxContactCoverData.coverMap T h.valid)]
     [IsZariskiLocalAtSource (@AlgebraicGeometry.Smooth.{u})]
-    (_hoi : MaxContactFunctoriality.IsLocalIsomorphism (MaxContactCoverData.coverMap T h.valid))
-    (_hmult : 1 ≤ MaxContactCoverData.tunedMult T)
     (d : BlowupSequenceData T.scheme)
     (hpb : IsStrictPullbackBlowupSeq (MaxContactCoverData.coverMap T h.valid)
       (MaxContactFunctoriality.coverBlowupSequence hinv Afam T h.valid).toBlowupSequenceData.toSequenceOfBlowups d.toSequenceOfBlowups)

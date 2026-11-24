@@ -159,9 +159,8 @@ def SequenceOfBlowupsPullback.toMarkedPullbackSquare {T T' : MarkedIdealWithBoun
 
 theorem lastNonMonomialPart_eq_comap_lastMap_of_pullback (hG : PrincipalizationGeometryHypotheses.{u}) (hinv : ComapIsoInvariance.{u})
     (n : ℕ) (A : PrincipalizationAssignment.{u}) (T T' : MarkedIdealWithBoundary.{u}) (g : T'.scheme ⟶ T.scheme)
-    (hT : T.IsAdmissible) (hT' : T'.IsAdmissible) (_hdim : T.krullDimSucc ≤ n) (_hdim' : T'.krullDimSucc ≤ n)
-    (hmult : T'.mult = T.mult) (_hideal : T'.ideal = T.ideal.comap g)
-    (_hbdry : MarkedIdealWithBoundary.SameNontrivialBoundary T'.boundary (T.boundary.map fun D => D.comap g))
+    (hT : T.IsAdmissible) (hT' : T'.IsAdmissible)
+    (hmult : T'.mult = T.mult)
     (hbc : BaseChangeCompatible hinv A n T g T'.base T'.structMap)
     (s : MarkedBlowupSequenceData T.structMap T.ideal T.mult T.boundary)
     (s' : MarkedBlowupSequenceData T'.structMap T'.ideal T'.mult T'.boundary)
@@ -197,8 +196,8 @@ theorem maxOrderNonMonomial_le_of_pullback (hG : PrincipalizationGeometryHypothe
       ((s.boundary s.length).map fun D => D.comap c.lastMap)) :
     maxOrderNonMonomial T' s' ≤ maxOrderNonMonomial T s := by
   have key : lastNonMonomialPart T' s' = (lastNonMonomialPart T s).comap c.lastMap :=
-    lastNonMonomialPart_eq_comap_lastMap_of_pullback hG hinv n A T T' g hT hT' hdim hdim' hmult hideal
-      hbdry hbc s s' c hlastIdeal hsameBoundary
+    lastNonMonomialPart_eq_comap_lastMap_of_pullback hG hinv n A T T' g hT hT' hmult
+      hbc s s' c hlastIdeal hsameBoundary
   have hvalid : (MarkedIdealWithBoundary.mk T.base (s.obj s.length) (s.toMarkedSequenceOfBlowups.projectionToSpec s.length)
       (s.ideal s.length) T.mult (s.boundary s.length)).IsAdmissible :=
     hG.monomialInputs.level_valid T hT s.toMarkedSequenceOfBlowups s.length le_rfl
@@ -257,8 +256,8 @@ theorem maxOrderNonMonomialOnOrderLocus_le_of_pullback (hG : PrincipalizationGeo
       MarkedPullbackSquare.orderAt_comap_verticalMap (SequenceOfBlowupsPullback.toMarkedPullbackSquare g s s' c hdimS hvalS) hT
         hbc.order Aid y
   have hnonMon : lastNonMonomialPart T' s' = (lastNonMonomialPart T s).comap c.lastMap :=
-    lastNonMonomialPart_eq_comap_lastMap_of_pullback hG hinv n A T T' g hT hT' hdim hdim' hmult hideal
-      hbdry hbc s s' c hlastIdeal hsameBoundary
+    lastNonMonomialPart_eq_comap_lastMap_of_pullback hG hinv n A T T' g hT hT' hmult
+      hbc s s' c hlastIdeal hsameBoundary
   have hmain : maxOrderNonMonomialOnOrderLocus T' s' =
       maxOrderOn (lastNonMonomialPart T' s') (orderAtLeastLocus (s'.ideal s'.length) T'.mult) := rfl
   rw [hmain]
@@ -370,8 +369,8 @@ theorem companionIdeal_eq_comap_lastMap_of_pullback (hG : PrincipalizationGeomet
       ((s.boundary s.length).map fun D => D.comap c.lastMap))
     (hinveq : maxOrderNonMonomialOnOrderLocus T' s' = maxOrderNonMonomialOnOrderLocus T s) :
     companionIdeal T' s' = (companionIdeal T s).comap c.lastMap := by
-  have hnonMon := lastNonMonomialPart_eq_comap_lastMap_of_pullback hG hinv n A T T' g hT hT' hdim hdim'
-    hmult hideal hbdry hbc s s' c hlastIdeal hsameBoundary
+  have hnonMon := lastNonMonomialPart_eq_comap_lastMap_of_pullback hG hinv n A T T' g hT hT'
+    hmult hbc s s' c hlastIdeal hsameBoundary
   unfold companionIdeal
   exact pow_sup_pow_eq_comap_pow_sup_pow _ _ _ _ _ T'.mult T.mult (maxOrderNonMonomialOnOrderLocus T' s') (maxOrderNonMonomialOnOrderLocus T s)
     hnonMon hlastIdeal hmult hinveq
@@ -483,16 +482,13 @@ private theorem nonempty_sequenceOfBlowupsPullback_of_markedDataOfSeq {k₁ k₂
     exact absurd (hrem.symm.trans hnone) (Option.some_ne_none d)
 
 theorem nonempty_sequenceOfBlowupsPullback_appendRecursive (hG : PrincipalizationGeometryHypotheses.{u}) (hinv : ComapIsoInvariance.{u})
-    (n : ℕ) (A B : PrincipalizationAssignment.{u}) (_hspec : IsOrderReduction (fun d => d ≤ n) A B)
+    (n : ℕ) (A B : PrincipalizationAssignment.{u})
     (T T' : MarkedIdealWithBoundary.{u}) (g : T'.scheme ⟶ T.scheme)
-    (hT : T.IsAdmissible) (hT' : T'.IsAdmissible) (_hdim : T.krullDimSucc ≤ n) (hdim' : T'.krullDimSucc ≤ n)
-    (_hmult : T'.mult = T.mult) (_hideal : T'.ideal = T.ideal.comap g)
-    (_hbdry : MarkedIdealWithBoundary.SameNontrivialBoundary T'.boundary (T.boundary.map fun D => D.comap g))
+    (hT : T.IsAdmissible) (hT' : T'.IsAdmissible) (hdim' : T'.krullDimSucc ≤ n)
     (hbc : BaseChangeCompatible hinv A n T g T'.base T'.structMap)
     (s : MarkedBlowupSequenceData T.structMap T.ideal T.mult T.boundary)
     (s' : MarkedBlowupSequenceData T'.structMap T'.ideal T'.mult T'.boundary)
     (c : SequenceOfBlowupsPullback g s'.toMarkedSequenceOfBlowups.toSequenceOfBlowups s.toMarkedSequenceOfBlowups.toSequenceOfBlowups)
-    (_htopIdeal : s'.ideal s'.length = (s.ideal s.length).comap c.lastMap)
     (hsameBoundary : MarkedIdealWithBoundary.SameNontrivialBoundary (s'.boundary s'.length)
       ((s.boundary s.length).map fun D => D.comap c.lastMap))
     (J : (s.obj s.length).IdealSheafData) (μ : ℕ)
@@ -674,18 +670,13 @@ private theorem append_proj_center_ne_base_of_orderAtLeastLocus_empty (hG : Prin
   simp only [Set.mem_empty_iff_false] at hmem
 
 theorem appendRecursive_proj_center_ne_of_orderAtLeastLocus_empty (hG : PrincipalizationGeometryHypotheses.{u}) (hinv : ComapIsoInvariance.{u})
-    (n : ℕ) (A B : PrincipalizationAssignment.{u}) (_hspec : IsOrderReduction (fun d => d ≤ n) A B)
+    (n : ℕ) (A B : PrincipalizationAssignment.{u})
     (T T' : MarkedIdealWithBoundary.{u}) (g : T'.scheme ⟶ T.scheme)
-    (hT : T.IsAdmissible) (_hT' : T'.IsAdmissible) (_hdim : T.krullDimSucc ≤ n) (_hdim' : T'.krullDimSucc ≤ n)
-    (_hmult : T'.mult = T.mult) (_hideal : T'.ideal = T.ideal.comap g)
-    (_hbdry : MarkedIdealWithBoundary.SameNontrivialBoundary T'.boundary (T.boundary.map fun D => D.comap g))
+    (hT : T.IsAdmissible)
     (hbc : BaseChangeCompatible hinv A n T g T'.base T'.structMap)
     (s : MarkedBlowupSequenceData T.structMap T.ideal T.mult T.boundary)
     (s' : MarkedBlowupSequenceData T'.structMap T'.ideal T'.mult T'.boundary)
     (c : SequenceOfBlowupsPullback g s'.toMarkedSequenceOfBlowups.toSequenceOfBlowups s.toMarkedSequenceOfBlowups.toSequenceOfBlowups)
-    (_htopIdeal : s'.ideal s'.length = (s.ideal s.length).comap c.lastMap)
-    (_hsameBoundary : MarkedIdealWithBoundary.SameNontrivialBoundary (s'.boundary s'.length)
-      ((s.boundary s.length).map fun D => D.comap c.lastMap))
     (J : (s.obj s.length).IdealSheafData) (μ : ℕ)
     (hJ : (tripleAtLength T s J μ).IsAdmissible)
     (hempty : orderAtLeastLocus (J.comap c.lastMap) μ = ∅)
@@ -753,8 +744,8 @@ theorem nonempty_sequenceOfBlowupsPullback_of_orderAtLeastLocus_empty (hG : Prin
   rcases appendRecursivePrincipalization_eq_self_or_append hinv T (principalizationOfDimLe T A) s J μ with heq | ⟨t, heq⟩
   · rw [heq]
     exact ⟨c⟩
-  · have hmiss := appendRecursive_proj_center_ne_of_orderAtLeastLocus_empty hG hinv n A B hspec T T' g hT hT' hdim
-      hdim' hmult hideal hbdry hbc s s' c hlastIdeal hsameBoundary J μ hJ hempty
+  · have hmiss := appendRecursive_proj_center_ne_of_orderAtLeastLocus_empty hG hinv n A B T T' g hT
+      hbc s s' c J μ hJ hempty
     have hconcat : (s.append t hinv).toBlowupSequenceData
         = s.toBlowupSequenceData.append t.toBlowupSequenceData := by
       rw [MarkedBlowupSequenceData.append_toBlowupSequenceData]
@@ -821,8 +812,8 @@ theorem nonempty_sequenceOfBlowupsPullback_extendByNonMonomialPart (hG : Princip
       (extendByNonMonomialPart hinv T' (principalizationOfDimLe T' A) s').toMarkedSequenceOfBlowups.toSequenceOfBlowups
       (extendByNonMonomialPart hinv T (principalizationOfDimLe T A) s).toMarkedSequenceOfBlowups.toSequenceOfBlowups) := by
   have hnonMon : lastNonMonomialPart T' s' = (lastNonMonomialPart T s).comap c.lastMap :=
-    lastNonMonomialPart_eq_comap_lastMap_of_pullback hG hinv n A T T' g hT hT' hdim hdim' hmult hideal
-      hbdry hbc s s' c hlastIdeal hsameBoundary
+    lastNonMonomialPart_eq_comap_lastMap_of_pullback hG hinv n A T T' g hT hT' hmult
+      hbc s s' c hlastIdeal hsameBoundary
   have hJ : (tripleAtLength T s (lastNonMonomialPart T s) (maxOrderNonMonomial T s)).IsAdmissible :=
     isAdmissible_nonMonomialTriple hG hT s hcont
   have hJ' : (tripleAtLength T' s' (lastNonMonomialPart T' s') (maxOrderNonMonomial T' s')).IsAdmissible :=
@@ -831,8 +822,8 @@ theorem nonempty_sequenceOfBlowupsPullback_extendByNonMonomialPart (hG : Princip
   have hord : ∀ x : ↥(s.obj s.length),
       orderAt (lastNonMonomialPart T s) x ≤ ((maxOrderNonMonomial T s : ℕ) : ℕ∞) :=
     fun x => orderAt_lastNonMonomialPart_le_maxOrderNonMonomial hG hT s x
-  have key := nonempty_sequenceOfBlowupsPullback_appendRecursive hG hinv n A B hspec T T' g hT hT' hdim hdim'
-    hmult hideal hbdry hbc s s' c hlastIdeal hsameBoundary (lastNonMonomialPart T s) (maxOrderNonMonomial T s)
+  have key := nonempty_sequenceOfBlowupsPullback_appendRecursive hG hinv n A B T T' g hT hT' hdim'
+    hbc s s' c hsameBoundary (lastNonMonomialPart T s) (maxOrderNonMonomial T s)
     hJ hJ' hord hmark
   have hL : extendByNonMonomialPart hinv T (principalizationOfDimLe T A) s
       = appendRecursivePrincipalization hinv T (principalizationOfDimLe T A) s (lastNonMonomialPart T s) (maxOrderNonMonomial T s) := rfl
@@ -916,8 +907,8 @@ theorem nonempty_sequenceOfBlowupsPullback_extendByCompanionIdeal (hG : Principa
         ((companionIdeal T s).comap c.lastMap) (T'.mult * maxOrderNonMonomialOnOrderLocus T' s')
         (T.mult * maxOrderNonMonomialOnOrderLocus T s) hJideal hmu)
   rw [hA, hB]
-  exact nonempty_sequenceOfBlowupsPullback_appendRecursive hG hinv n A B hspec T T' g hT hT' hdim hdim' hmult
-    hideal hbdry hbc s s' c hlastIdeal hsameBoundary (companionIdeal T s) (T.mult * maxOrderNonMonomialOnOrderLocus T s)
+  exact nonempty_sequenceOfBlowupsPullback_appendRecursive hG hinv n A B T T' g hT hT' hdim'
+    hbc s s' c hsameBoundary (companionIdeal T s) (T.mult * maxOrderNonMonomialOnOrderLocus T s)
     hJ hJ' hord hmark
 
 theorem orderAtLeastLocus_comap_lastNonMonomialPart_eq_empty_of_lt (hG : PrincipalizationGeometryHypotheses.{u})
@@ -936,8 +927,8 @@ theorem orderAtLeastLocus_comap_lastNonMonomialPart_eq_empty_of_lt (hG : Princip
     (hlt : maxOrderNonMonomial T' s' < maxOrderNonMonomial T s) :
     orderAtLeastLocus ((lastNonMonomialPart T s).comap c.lastMap) (maxOrderNonMonomial T s) = ∅ := by
   have hnonMon : lastNonMonomialPart T' s' = (lastNonMonomialPart T s).comap c.lastMap :=
-    lastNonMonomialPart_eq_comap_lastMap_of_pullback hG hinv n A T T' g hT hT' hdim hdim' hmult hideal
-      hbdry hbc s s' c hlastIdeal hsameBoundary
+    lastNonMonomialPart_eq_comap_lastMap_of_pullback hG hinv n A T T' g hT hT' hmult
+      hbc s s' c hlastIdeal hsameBoundary
   refine Set.eq_empty_of_subset_empty ?_
   intro y hy
   have hy' := (mem_orderAtLeastLocus_iff ((lastNonMonomialPart T s).comap c.lastMap) (maxOrderNonMonomial T s) y).1 hy
@@ -982,8 +973,8 @@ theorem orderAtLeastLocus_comap_companionIdeal_eq_empty_of_lt (hG : Principaliza
   have hm1 : 1 ≤ T.mult := hT.one_le_mult
   have hp1 : 1 ≤ maxOrderNonMonomialOnOrderLocus T s := by omega
   have hnonMon : lastNonMonomialPart T' s' = (lastNonMonomialPart T s).comap c.lastMap :=
-    lastNonMonomialPart_eq_comap_lastMap_of_pullback hG hinv n A T T' g hT hT' hdim hdim' hmult hideal
-      hbdry hbc s s' c hlastIdeal hsameBoundary
+    lastNonMonomialPart_eq_comap_lastMap_of_pullback hG hinv n A T T' g hT hT' hmult
+      hbc s s' c hlastIdeal hsameBoundary
   have hcompanion : (companionIdeal T s).comap c.lastMap
       = lastNonMonomialPart T' s' ^ T.mult ⊔ s'.ideal s'.length ^ maxOrderNonMonomialOnOrderLocus T s := by
     unfold companionIdeal
@@ -1057,7 +1048,7 @@ private theorem isNoetherian_schemeAt_of_isAdmissible (T : MarkedIdealWithBounda
     (u : MarkedBlowupSequenceData T.structMap T.ideal T.mult T.boundary) (i : ℕ) (hi : i ≤ u.length) :
     AlgebraicGeometry.IsNoetherian (u.obj i) := by
   have hlen : i ≤ u.toMarkedSequenceOfBlowups.length := hi.trans_eq (MarkedBlowupSequenceData.toMarkedSequence_length u).symm
-  have h := MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hT u.toMarkedSequenceOfBlowups i hlen
+  have h := MarkedSequenceOfBlowups.isNoetherian_schemeAt hT u.toMarkedSequenceOfBlowups i hlen
   rwa [MarkedBlowupSequenceData.toMarkedSequence_schemeAt] at h
 
 private theorem nonempty_sequenceOfBlowupsPullback_of_length_eq_zero {X Y : Scheme.{u}} (g : Y ⟶ X)
@@ -1135,8 +1126,8 @@ private theorem extendByNonMonomialPart_sequenceOfBlowupsPullback_cases (hG : Pr
     maxOrderNonMonomial_le_of_pullback hG hinv n A T T' g hT hT' hdim hdim' hmult hideal hbdry hbc
       s s' c hlastIdeal hsameBoundary
   have hnonMon : lastNonMonomialPart T' s' = (lastNonMonomialPart T s).comap c.lastMap :=
-    lastNonMonomialPart_eq_comap_lastMap_of_pullback hG hinv n A T T' g hT hT' hdim hdim' hmult hideal
-      hbdry hbc s s' c hlastIdeal hsameBoundary
+    lastNonMonomialPart_eq_comap_lastMap_of_pullback hG hinv n A T T' g hT hT' hmult
+      hbc s s' c hlastIdeal hsameBoundary
   have hJ : (tripleAtLength T s (lastNonMonomialPart T s) (maxOrderNonMonomial T s)).IsAdmissible :=
     isAdmissible_nonMonomialTriple hG hT s hcont
   have hskip : orderAtLeastLocus ((lastNonMonomialPart T s).comap c.lastMap) (maxOrderNonMonomial T s) = ∅ →

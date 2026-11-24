@@ -21,7 +21,7 @@ variable (X : Sys p) [IsFractionRing X.G.O X.G.Kf] (E : CEmb X.G)
     (DelF : DelTy X E) (hDel : DelDeg X E DelF)
 
 theorem condition_iff_additive_maps (D : Formalism.BasicNotions.D7) :
-    Formalism.MainNotions.FormalGroupSystem.adm5 D X (pendOf X E hfin hst be ThF DelF hDel) ↔
+    Formalism.MainNotions.FormalGroupSystem.adm5 X (pendOf X E hfin hst be ThF DelF hDel) ↔
       ∀ v, ∀ j < X.mm, letI := algKfC E; XiEx X ℂ_[p] ThF v j := by
   let _ := algKfC E
   constructor

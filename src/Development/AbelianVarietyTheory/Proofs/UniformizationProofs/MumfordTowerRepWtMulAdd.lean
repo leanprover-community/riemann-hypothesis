@@ -232,7 +232,7 @@ theorem triv_square_sections {V : Type} [CommRing V] [IsLocalRing V] {B : Over (
     _ (DVR.pullGen_isGen _ _ _ _ hw ρ.left)
   exact ⟨u, hu⟩
 
-theorem repWt_add : AllSet fun {V} _ _ _ {A} {G} _ _ s => ∀ (t : Tower s) (a : t.Alg) (χ χ' : s.X) (c c' : 𝟙_ _ ⟶ a.B) (e : ℕ), a.RepWt c χ e → a.RepWt c' χ' e → a.RepWt (c * c') (χ + χ') e := by
+theorem repWt_add : AllSet fun {_} _ _ _ {_} {_} _ _ s => ∀ (t : Tower s) (a : t.Alg) (χ χ' : s.X) (c c' : 𝟙_ _ ⟶ a.B) (e : ℕ), a.RepWt c χ e → a.RepWt c' χ' e → a.RepWt (c * c') (χ + χ') e := by
   intro V _ _ _ A G _ _ s t a χ χ' c c' e h h'
   refine exists_genWt_add (fun Z x g => ?_) a.M.L.isLB (GlobalTheory.Square.triv_inv (triv_square_sections a.M.c c c'))
     (fun U _ f => ?_) h h'

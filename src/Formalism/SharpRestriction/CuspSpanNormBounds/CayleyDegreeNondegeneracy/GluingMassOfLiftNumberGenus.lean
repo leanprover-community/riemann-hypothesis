@@ -70,7 +70,7 @@ section Loc
 
 variable {E : Type} [Field E] [NumberField E]
 
-theorem exists_not_mem_mul_mem_span {P : Ideal (𝓞 E)} (hP : P.IsMaximal) {t : 𝓞 E} (ht : t ∈ P) (ht2 : t ∉ P ^ 2) :
+theorem exists_not_mem_mul_mem_span {P : Ideal (𝓞 E)} {t : 𝓞 E} (ht : t ∈ P) (ht2 : t ∉ P ^ 2) :
     ∃ c : 𝓞 E, c ∉ P ∧ ∀ x ∈ P, c * x ∈ Ideal.span {t} := by
   have hle : Ideal.span {t} ≤ P := (Ideal.span_singleton_le_iff_mem _).2 ht
   obtain ⟨I, hI⟩ := Ideal.dvd_iff_le.mpr hle
@@ -118,7 +118,7 @@ theorem isLocalizedModule_quotient_prime {P : Ideal (𝓞 E)} (hP : P.IsMaximal)
     obtain ⟨a1, rfl⟩ := Submodule.Quotient.mk_surjective _ x1
     obtain ⟨a2, rfl⟩ := Submodule.Quotient.mk_surjective _ x2
     simp only [quotientSpanToQuotientPrime, Submodule.mapQ_apply, LinearMap.id_apply, Submodule.Quotient.eq] at h
-    obtain ⟨c, hcP, hc⟩ := exists_not_mem_mul_mem_span hP ht ht2
+    obtain ⟨c, hcP, hc⟩ := exists_not_mem_mul_mem_span ht ht2
     refine ⟨⟨c, hcP⟩, ?_⟩
     rw [Submonoid.smul_def, Submonoid.smul_def]
     rw [← Submodule.Quotient.mk_smul, ← Submodule.Quotient.mk_smul, Submodule.Quotient.eq, ← smul_sub, smul_eq_mul]
@@ -190,7 +190,7 @@ theorem genIdx_cyclic_split_prime {A B : Submodule (𝓞 E) S.V} (hBA : B ≤ A)
   rw [finprod_congr h1]
   exact finprod_plOver E hT hs id
 
-theorem latDet_sq_of_cyclic_dual_quotient (M : Submodule (𝓞 E) S.V) (hl : Submodule.IsLattice E M)
+theorem latDet_sq_of_cyclic_dual_quotient (M : Submodule (𝓞 E) S.V)
     (hint : M ≤ Formalism.HermitianLatticesTheory.dual S.hT M) {T : ℕ} (hT : T.Prime) (hs : SplitsCompl E T) (w₁ : S.V)
     (hw : w₁ ∈ Formalism.HermitianLatticesTheory.dual S.hT M) (hgen : ∀ w ∈ Formalism.HermitianLatticesTheory.dual S.hT M, ∃ a : 𝓞 E, w + a • w₁ ∈ M)
     (hker : ∀ a : 𝓞 E, a • w₁ ∈ M ↔ ((T : ℕ) : 𝓞 E) ∣ a) :
@@ -256,7 +256,7 @@ theorem latDet_of_cyclic_dual_quotient (D : D7) (M : Submodule (𝓞 D.host.E) (
     (hgen : ∀ w ∈ Formalism.HermitianLatticesTheory.dual (D.sp.X 0).hT M, ∃ a : 𝓞 D.host.E, w + a • w₁ ∈ M)
     (hker : ∀ a : 𝓞 D.host.E, a • w₁ ∈ M ↔ ((T : ℕ) : 𝓞 D.host.E) ∣ a) :
     latDetH (D.sp.X 0).hT M = ((T ^ D.R.f : ℕ) : ℝ) := by
-  rw [latDet_sq_of_cyclic_dual_quotient M hl hint hT hs w₁ hw hgen hker, _root_.Formalism.MainNotions.StandardLattice.finrank_host, pow_mul',
+  rw [latDet_sq_of_cyclic_dual_quotient M hint hT hs w₁ hw hgen hker, _root_.Formalism.MainNotions.StandardLattice.finrank_host, pow_mul',
     Real.sqrt_sq (by positivity)]
   norm_cast
 

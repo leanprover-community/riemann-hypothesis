@@ -975,7 +975,7 @@ theorem tate_twist_multiplication_intertwines (g : G) (x : LL ⊗[Qp] B) :
   | zero => simp
   | add a c ha hc => simp only [map_add (f := _), ha, hc]
   | tmul v c =>
-    simp [actVB, PD.t_act, WeaklyAdmissibleFiltrations.charRep, cycLL, ← Algebra.smul_def, smul_tmul]
+    simp [actVB, PD.t_act, WeaklyAdmissibleFiltrations.charRep, cycLL, smul_tmul]
 
 include PD in
 theorem mB_t_injective : Function.Injective (mB LL PD.t : V ⊗[Qp] B → V ⊗[Qp] B) := by

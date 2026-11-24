@@ -249,7 +249,7 @@ theorem comp_affineSpaceInl (hsm : AffineSpaceIsSmooth.{u}) (k : Type u) [Field 
     rw [hx1]
     exact hxU
   · have : AlgebraicGeometry.Smooth (prodMapOnPreimage k M p c U q) :=
-      smooth_prodMapOnPreimage hsm k M p c U q hqcomp
+      smooth_prodMapOnPreimage k M p c U q hqcomp
     infer_instance
   · rw [Category.assoc, affineSpaceIsoOfEquiv_hom_comp_toSpec, prodMapOnPreimage_comp_affineSpaceIndexedByToSpec]
   · show (Scheme.Hom.ker (ρ ≫ affineSpaceInl k M p)).comap (opensPreimageProjLeft k M p U).ι =

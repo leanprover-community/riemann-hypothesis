@@ -198,7 +198,7 @@ variable {ι : Type} (U : ι → X.Opens) (d : ι → ℕ) (c : ∀ α, Coord q 
 
 def uu (α : ι) : Fin (d α) → ∀ T : Thick (LL q), T.B := fun k T => lft (U α) T ((c α).t k)
 
-theorem uu_lift (α : ι) : IsLift (U α) (c α).t (uu U d c α) := fun k T h => lft_spec T h _
+theorem uu_lift (α : ι) : IsLift (U α) (c α).t (uu U d c α) := fun _ T h => lft_spec T h _
 
 theorem uu_res (α : ι) {W : X.Opens} (h : W ≤ U α) : IsLift W (fun k => rs h ((c α).t k)) (uu U d c α) :=
   isLift_res h (uu_lift U d c α) fun _ => rfl

@@ -168,7 +168,7 @@ theorem pull2 {νq νq' : Measure (Formalism.QuantumDeterminants.Mt k r)} (F G :
   exact lintegral_const_mul' K _ hK
 
 theorem final2 {μG : Measure (Formalism.QuantumDeterminants.Mt k r)} (Fx : Formalism.QuantumDeterminants.Mt k r → ℝ≥0∞) (hF : Measurable Fx)
-    {c : ℝ≥0∞} (hc : c ≠ ⊤) :
+    {c : ℝ≥0∞} :
     ∫⁻ x, ∫⁻ y, c * (Fx x * Fx y) ∂μG ∂μG = c * ((∫⁻ x, Fx x ∂μG) * ∫⁻ y, Fx y ∂μG) := by
   have h1 : ∀ x, ∫⁻ y, c * (Fx x * Fx y) ∂μG = (c * Fx x) * ∫⁻ y, Fx y ∂μG := by
     intro x

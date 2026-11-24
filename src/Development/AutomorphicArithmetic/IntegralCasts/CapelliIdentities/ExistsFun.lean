@@ -93,8 +93,8 @@ private theorem UpperTheory.Reformulated.B.Gr28.exists_fun
       simpa [mul_assoc] using this
 
 theorem UpperTheory.Reformulated.B.Gr28.indVec :
-    ∀ {G W : Type} [inst : Group G] [inst_1 : TopologicalSpace G] [inst_2 : IsTopologicalGroup G] [inst_3 : AddCommGroup W]
-      [inst_4 : _root_.Module ℂ W] (H K : Subgroup G) (σ : Representation ℂ (↥H) W),
+    ∀ {G W : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup W]
+      [_root_.Module ℂ W] (H K : Subgroup G) (σ : Representation ℂ (↥H) W),
       IsOpen (↑K : Set G) →
         ∀ (w : W),
           (∀ (h : ↥H), (↑h : G) ∈ K → ((σ : ↥H → W →ₗ[ℂ] W) h : W → W) w = w) →

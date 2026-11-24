@@ -61,7 +61,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.DetMulExpand.det_mul_expand :
-    ∀ {F : Type} [inst : CommRing F] {k r : ℕ} (A : Matrix (Fin k) (Fin r) F) (B : Matrix (Fin r) (Fin k) F),
+    ∀ {F : Type} [CommRing F] {k r : ℕ} (A : Matrix (Fin k) (Fin r) F) (B : Matrix (Fin r) (Fin k) F),
       (A * B).det = ∑ f : Fin k → Fin r, (∏ a : Fin k, A a (f a)) * (B.submatrix f id).det := by
   intro F _ k r A B
   have h1 : (A * B) = (fun a => ∑ j, (A a j • B j : Fin k → F)) := by
@@ -189,7 +189,7 @@ def lastRow {r : ℕ} (k l : Fin r) : Fin ((k : ℕ) + 1) → Fin r := fun a =>
   if h : (a : ℕ) = k then l else ⟨a, by have := a.2; have := k.2; omega⟩
 
 theorem kMinor_lower_lastRow {F : Type} [CommRing F] {r : ℕ} (L : Matrix (Fin r) (Fin r) F)
-    (h0 : ∀ l k, l < k → L l k = 0) (h1 : ∀ l, L l l = 1) (k l : Fin r) (hkl : k < l) :
+    (h0 : ∀ l k, l < k → L l k = 0) (h1 : ∀ l, L l l = 1) (k l : Fin r) :
     kMinor L ((k : ℕ) + 1) k.2 (lastRow k l) = L l k := by
   unfold kMinor
   rw [Matrix.det_of_lowerTriangular, Fin.prod_univ_castSucc]
@@ -277,7 +277,7 @@ theorem entries_mem {Ω K : Type} [Field Ω] [Field K] [Algebra Ω K] (Fd : Inte
   have hc : kMinor C _ hk (Fin.castLE hk) ≠ 0 := right_ne_zero_of_mul_eq_one h1
   have h2 := kMinor_mul_upper u C hC _ hk (lastRow k l)
   have h3 := kMinor_mul_upper u C hC _ hk (Fin.castLE hk)
-  rw [kMinor_lower_lastRow u hu0 hu1 k l hkl, hQ'] at h2
+  rw [kMinor_lower_lastRow u hu0 hu1 k l, hQ'] at h2
   rw [kMinor_lower_lead u hu0 hu1, hQ', _root_.one_mul] at h3
   have e : u l k = kMinor Q _ hk (lastRow k l) / kMinor Q _ hk (Fin.castLE hk) := by
     rw [h2, h3, mul_div_assoc, div_self hc, mul_one]

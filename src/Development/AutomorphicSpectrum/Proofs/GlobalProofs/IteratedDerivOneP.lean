@@ -1050,7 +1050,7 @@ theorem cuspFinite : ∀ (D : D7) (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.h
       rw [hg φ.1 (smooth_of_mem φ)] at h1
       refine Subtype.ext ?_
       rw [Submodule.coe_smul, ← h1]
-      simp [Submodule.coe_sum, der]) bK
+      simp [der]) bK
     obtain ⟨_, b'⟩ := bd_span μ hθ (E : Set (Mc θ V))
       (Set.range X ∪ Set.range fun b => (fr τ)⁻¹ * y b * fr τ) (by
         rintro _ (⟨a, rfl⟩ | ⟨b, rfl⟩)

@@ -72,7 +72,7 @@ private theorem one_mem_Kg_flag_measures (I : AutInst) (g : ℕ) : (1 : I.Gf) �
     simpa only [AutInst.Kset, Set.mem_ofPred_eq, OneMemClass.coe_one] using one_mem _
   · simp only [AutInst.fmat, OneMemClass.coe_one, Units.val_one, sub_self, Matrix.zero_mulVec, smul_zero]
 
-theorem level_comp_Re (B : RowsAut) (k : B.I.Gf) (hk : k ∈ B.I.Kg B.g) (hg : 1 ≤ B.g) :
+theorem level_comp_Re (B : RowsAut) (k : B.I.Gf) (hk : k ∈ B.I.Kg B.g) :
     (B.R (1, k)).comp B.Re = B.Re := by
   obtain ⟨h1, hm, hn, -⟩ := GlobalTheory.RightRegFund.rightReg_unitary_continuous B
   set π : B.I.Gf → (B.I.L2 B.μf B.fund →L[ℂ] B.I.L2 B.μf B.fund) := fun g => B.R (1, g) with hπ
@@ -150,7 +150,7 @@ theorem row_isCuspFn : ∀ (B : RowsAut) (d : InfinitePlace B.I.F → ℝ) (h : 
   have hlev : ∀ k ∈ B.I.Kg B.g, B.R (1, k) ((B.Re.comp A₀) (B.tens B.w)) = (B.Re.comp A₀) (B.tens B.w) := by
     intro k hk
     rw [ContinuousLinearMap.comp_apply, ← ContinuousLinearMap.comp_apply (B.R (1, k)) B.Re,
-      level_comp_Re B k hk hg]
+      level_comp_Re B k hk]
   obtain ⟨C, hC⟩ := _root_.GlobalTheory.EvalBound.exists_contRep_bound_of_isKTypeOf B d hd hK hn hg
   obtain ⟨f, hf, hfb⟩ := hC _ hhom hlev
   have hvan := _root_.GlobalTheory.RealFibre.integral_phe_eq_zero_of_isKTypeOf B d h hd hK hl hh

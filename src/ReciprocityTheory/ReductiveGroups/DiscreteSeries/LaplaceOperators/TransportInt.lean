@@ -59,7 +59,7 @@ theorem frob_conj_ge {k r : ℕ} {P : Mat k r} (hP : IsUnit P.det) :
   nlinarith
 
 theorem pi_isometry {k r : ℕ} {u : Fin k → ℝ} {Vp : Type*} [NormedAddCommGroup Vp] [InnerProductSpace ℂ Vp]
-    {z : Fin (2 * r + k + 1) → ℂ} {π : Mat k r → (Vp →L[ℂ] Vp)} (hz : inWb k r z) (hT : 0 < Tz k r z)
+    {z : Fin (2 * r + k + 1) → ℂ} {π : Mat k r → (Vp →L[ℂ] Vp)} (hT : 0 < Tz k r z)
     (hπ : Formalism.MainNotions.S.IsHCTypeW k r z u π) : ∀ h ∈ UWset k r z, ∀ ξ : Vp, ‖π h ξ‖ = ‖ξ‖ := by
   intro h hh ξ
   obtain ⟨g, hg, hρ⟩ := hπ
@@ -266,7 +266,7 @@ theorem integrable_coef_of (hIS : S0.IntSStatement) (hDD : DecDerivStatement)
   have hchi : ‖chiInv (Formalism.MainNotions.S.psiGen k r z c) π (Matrix.of p.1) (Matrix.of p.2) ξ‖ = ‖ξ‖ := by
     unfold chiInv Formalism.MainNotions.S.psiGen
     rw [norm_smul, norm_star, Complex.norm_exp_I_mul_ofReal, one_mul,
-      pi_isometry hz hT hπ _ ((Transport.uw_closedSubgroup k r z).inv_mem _ hp'.1)]
+      pi_isometry hT hπ _ ((Transport.uw_closedSubgroup k r z).inv_mem _ hp'.1)]
   rw [norm_smul, hchi]
   calc ‖psiCoef T μ P v₁ v₂ g‖ * ‖ξ‖ ≤ C * (c0 ^ (-a) * Formalism.FourierDecayAlt.B.gN g ^ (-a)) * ‖ξ‖ :=
         mul_le_mul_of_nonneg_right hcoef (norm_nonneg _)

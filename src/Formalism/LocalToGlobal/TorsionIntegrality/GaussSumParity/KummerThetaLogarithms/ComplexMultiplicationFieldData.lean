@@ -124,7 +124,7 @@ theorem uSer_map (g2 g3 : K) : PowerSeries.map φ (uSer g2 g3) = uSer (φ g2) (�
 
 theorem cc_arg {l : ℕ} (hl : 2 ≤ l) (ε : K) :
     PowerSeries.constantCoeff (PowerSeries.C ε * lgF K l) = 0 := by
-  rw [map_mul, Pair.cc_lgF hl, mul_zero]
+  rw [map_mul, Pair.cc_lgF, mul_zero]
 
 theorem thetaS_map {l : ℕ} (hl : 2 ≤ l) (g2 g3 ε : K) :
     PowerSeries.map φ (thetaS l g2 g3 ε) = thetaS l (φ g2) (φ g3) (φ ε) := by

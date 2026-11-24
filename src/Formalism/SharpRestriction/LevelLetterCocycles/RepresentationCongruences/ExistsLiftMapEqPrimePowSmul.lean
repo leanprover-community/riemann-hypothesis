@@ -276,7 +276,7 @@ theorem chi_pow_val {LL : Type*} [Field LL] (v : AddValuation LL (WithTop ℚ)) 
 
 theorem cc_assoc {LL O : Type*} [Field LL] [CommRing O] [Algebra O LL] (v : AddValuation LL (WithTop ℚ))
     (l : ℕ) [Fact l.Prime] (hl2 : l ≠ 2) (hvl : v (l : LL) = 1)
-    (hO : ∀ x : O, 0 ≤ v (algebraMap O LL x)) (hOv : ∀ x : LL, 0 ≤ v x → ∃ y : O, algebraMap O LL y = x)
+    (hOv : ∀ x : LL, 0 ≤ v x → ∃ y : O, algebraMap O LL y = x)
     (hinj : Function.Injective (algebraMap O LL))
     (u : Oˣ) (hu : v (algebraMap O LL (u : O) - 1) = 1)
     (cc : ℤ → O) (hcc : ∀ m : ℤ, (-(l : O)) * cc m = ((u ^ (-m) : Oˣ) : O) - 1) :
@@ -1290,7 +1290,7 @@ theorem existsLiftMapEqPrimePowSmul (W : LocWach PD LL O v n) (hcase : Formalism
     have h₂ := step_ii W hcase hP9 hc₁ hO hOv hinj F i Ai ri hA hr dop₁ hd₁ dop₂ hd₂ (TruncatedCoefficientPoly cc bi S η (Ai + ri)) hCONS hH1
     have hu : v (algebraMap O LL ((W.χΓ W.gam : Oˣ) : O) - 1) = 1 := by
       rw [W.gam_gen, hcase.2.1, Nat.cast_one]
-    have hcA := cc_assoc v PD.p hcase.2.2 W.v_l hO hOv hinj (W.χΓ W.gam) hu cc hcc
+    have hcA := cc_assoc v PD.p hcase.2.2 W.v_l hOv hinj (W.χΓ W.gam) hu cc hcc
     have hS₂ : TruncationIndexSet bi S η (Ai + ri) ⊆
         Finset.Icc ((bi : ℤ) + 1) ((bi : ℤ) + S + (Ai + ri : ℕ)) ∪
           Finset.Icc (1 - (η : ℤ)) ((η : ℤ) + (Ai + ri : ℕ)) := by

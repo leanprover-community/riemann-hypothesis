@@ -114,7 +114,7 @@ theorem dc_isGKEndo_mul' {A B : Module.End ℂ (Fin n → D)} (hA : IsGKEndo dua
   · exact hA.2.2 k hk _ (hB.1 f hf) _ (hB.1 f' hf') (hB.2.2 k hk f hf f' hf' h)
 
 theorem dc_isGKEndo_one' : IsGKEndo dual ε σ E S 1 :=
-  ⟨fun f hf => hf, fun _ _ _ _ => rfl, fun _ _ _ _ _ _ h => h⟩
+  ⟨fun _ hf => hf, fun _ _ _ _ => rfl, fun _ _ _ _ _ _ h => h⟩
 
 theorem dc_isGKEndo_zero' : IsGKEndo dual ε σ E S 0 := by
   refine ⟨fun _ _ => (tensSub S).zero_mem, fun _ _ _ _ => by simp, fun k _ _ _ _ _ _ => ?_⟩

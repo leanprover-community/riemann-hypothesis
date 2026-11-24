@@ -236,7 +236,7 @@ section Degree
 variable {p q r s : ℕ}
 
 theorem homog_fd (d : ℕ) : FiniteDimensional ℂ (homog (Ix p q × Ix r s) d) :=
-  Submodule.finiteDimensional_of_le (S₂ := restrictTotalDegree (Ix p q × Ix r s) ℂ d) fun P hP =>
+  Submodule.finiteDimensional_of_le (S₂ := restrictTotalDegree (Ix p q × Ix r s) ℂ d) fun _ hP =>
     (mem_restrictTotalDegree _ _ _).2 (IsHomogeneous.totalDegree_le hP)
 
 theorem omAct_mem (N : Submodule ℂ (Pol p q r s)) (Z : Matrix (Ln p q r s) (Ln p q r s) ℂ)
@@ -402,7 +402,7 @@ theorem low_vanish (hI : Intw M1 M2 f) {μ : Ix p q → ℚ}
   linarith
 
 theorem subset_genSub {V : Type} [AddCommGroup V] [Module ℂ V]
-    (a : Mat p q →ₗ[ℂ] Module.End ℂ V) (S : Set V) : S ⊆ genSub a S := fun x hx =>
+    (a : Mat p q →ₗ[ℂ] Module.End ℂ V) (S : Set V) : S ⊆ genSub a S := fun _ hx =>
   Submodule.mem_sInf.2 fun _ hN => hN.1 hx
 
 theorem genSub_stable {V : Type} [AddCommGroup V] [Module ℂ V]

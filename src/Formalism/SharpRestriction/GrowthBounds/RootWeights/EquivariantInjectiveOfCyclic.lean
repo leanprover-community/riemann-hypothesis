@@ -125,7 +125,7 @@ theorem equivariant_map_cyclicSubmodule (E : GLOps n K V) (E' : GLOps n K V') (T
 
 end
 
-theorem equivariant_injective_of_cyclic (D : Formalism.BasicNotions.D7) (h2 : adm2 D) {n : ℕ} {K G V : Type} [Field K] [CharZero K]
+theorem equivariant_injective_of_cyclic (D : Formalism.BasicNotions.D7) (h2 : adm2) {n : ℕ} {K G V : Type} [Field K] [CharZero K]
     [AddCommGroup G] [Module K G] [FiniteDimensional K G] [AddCommGroup V] [Module K V]
     (EG : GLOps n K G) (hEG : IsGLRep EG) (E : GLOps n K V) (lam : Fin n → ℤ) (g0 : G) (hg0 : IsHWV EG lam g0)
     (hcyc : cyclicSubmodule EG g0 = ⊤) (F : G →ₗ[K] V) (hF : IsEquivariantMap EG E F) (hne : F g0 ≠ 0) :

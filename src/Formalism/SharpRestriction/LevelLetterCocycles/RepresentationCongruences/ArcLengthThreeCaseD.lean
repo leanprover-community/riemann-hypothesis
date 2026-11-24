@@ -337,7 +337,7 @@ theorem ArcLengthThreeDescent.split [IsDomain O] [IsDiscreteValuationRing O] [Is
       ∃ (κ : ℕ) (X₀ : O), InFr W c (ps W 0 ^ y₀) (ps W 1 ^ b₁)
         (lE W κ * f₂ - algebraMap (LetA O n) W.EE (letE c) * algebraMap O W.EE X₀) := by
   have : Fact PD.p.Prime := Fact.mk PD.hp
-  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T hT hO hinj
+  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T hT hO
   obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible O
   obtain ⟨κ, x, hx⟩ := hf2
   set K := ArcLengthThreeDescent.Kc PD.p b₁ y with hKdef

@@ -130,7 +130,7 @@ theorem isDerivAt0_of_fibre {Q : Out.PolAV (Sp ℂ)} {X : Scheme.{0}} (ψ : Q.A.
   rw [← h42 (ψ ⁻¹ᵁ U) h' ((ψ.app U).hom f)]
   simp only [Scheme.Hom.comp_appLE, CommRingCat.hom_comp, RingHom.comp_apply]
 
-theorem isDiff_map {Q : Out.PolAV (Sp ℂ)} (u u' : HolUnif Q.A Q.L Q.g) (d₂ : ∀ w, ∃! v, IsTangent v ∧ u.IsDiff w v)
+theorem isDiff_map {Q : Out.PolAV (Sp ℂ)} (u u' : HolUnif Q.A Q.L Q.g)
     (G : (Fin Q.g → ℂ) →ₗ[ℂ] (Fin Q.g → ℂ)) (hG : ∀ z, u.ex (G z) = u'.ex z) {w : Fin Q.g → ℂ}
     {t : epsR ℂ ⟶ Q.A} (ht : IsTangent t) (hd : u'.IsDiff w t) : u.IsDiff (G w) t := by
   have h4 := isDerivAt0_of_isDiff u' ht hd
@@ -179,7 +179,7 @@ theorem hodgeGram_iff_period : ∀ (E : Type) [Field E] [NumberField E] [IsCMFie
       have e : v' c = t := Over.OverMorphism.ext
         (hQ.1.hom_ext ((hv c).1.trans h₃.symm) (by rw [Over.w, Over.w]))
       have h₄ : u'.IsDiff (W' c) t := e ▸ (hv c).2
-      exact (d₁ t h₁).unique (isDiff_map u u' d₂ G hG h₁ h₄) h₂
+      exact (d₁ t h₁).unique (isDiff_map u u' G hG h₁ h₄) h₂
     rw [hΓ, ← GlobalTheory.UnifCompare.hermForm_eq Q.isLB u' u hAH hAH₂ G hG, hW, hW, hH]
   · intro hΓ
     obtain ⟨Q, ψ, -, hQ, hQL, -⟩ := GlobalTheory.exists_polAV_pullback_of_isLocalRing E H _ Xo.univ.t Xo.univ.proper

@@ -328,7 +328,7 @@ def objPullMap (o : Obj b N s) (f : S' ⟶ S) (s' : S' ⟶ Sp R) (hs : f ≫ s =
   sq := isSquare f o.A
   act c := actPull_left f o.act c
   pol := gen_refl _ (pull_isLB o.isLB _)
-  eta y := GlobalTheory.SiegelPull.secPull_left (isGrpPullback f o.A) _
+  eta _ := GlobalTheory.SiegelPull.secPull_left (isGrpPullback f o.A) _
 
 end GlobalTheory.HTPullEvery
 

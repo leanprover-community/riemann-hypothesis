@@ -116,7 +116,7 @@ theorem prX_le_KO_of_prCat (X : Fields) (Pr : Primes X) (R : Ranks) (Ch : Chars 
   have hV : IsOpen {v : GL (XIx (Fin R.k) (Fin R.t) j) k |
       v⁻¹ * z ∈ ((prX (Cgrp J g) ⊓ KO k _ : Subgroup _) : Set _)} :=
     (hpo.inter GlobalTheory.SplitFlip.isOpen_KO).preimage (by fun_prop)
-  obtain ⟨y, hy⟩ := GlobalTheory.denseGL_completion ι hcompl.dense e' z _ hV (by simp [one_mem, hz])
+  obtain ⟨y, hy⟩ := GlobalTheory.denseGL_completion ι hcompl.dense e' z _ hV (by simp [one_mem])
   have hy1 : (φ' y)⁻¹ * z ∈ prX (Cgrp J g) := hy.1
   have hy2 : (φ' y)⁻¹ * z ∈ KO k _ := hy.2
   have hyC : φ' y ∈ prX (Cgrp J g) := by

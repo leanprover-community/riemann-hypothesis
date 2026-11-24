@@ -112,7 +112,7 @@ theorem lintegral_mul_base (hι : Function.Injective ι) (hf : ∀ X, ι (q X) =
   rw [h1, lintegral_mul_const _ hg, mul_comm]
 
 theorem tail_lintegral {φ : V → ℂ} (hφ : Measurable φ) (hq : Measurable q) {A : Set V}
-    (hA : MeasurableSet A) {e : ℝ≥0∞}
+    {e : ℝ≥0∞}
     (hY : ∀ Y, MeasurableSet Y → ∫⁻ X in Aᶜ ∩ q ⁻¹' Y, ‖φ X‖ₑ ∂μ ≤ e * ν Y)
     {s : H → ℝ≥0∞} (hs : Measurable s) :
     ∫⁻ X in Aᶜ, ‖φ X‖ₑ * s (q X) ∂μ ≤ e * ∫⁻ y, s y ∂ν := by
@@ -490,7 +490,7 @@ theorem tail_mu {φ : V → ℂ} (hφ : Continuous φ) (hq : Continuous q) {A : 
               _ = _ := by rw [mul_one]
       _ = ∫⁻ X in Aᶜ, ‖φ X‖ₑ * ENNReal.ofReal (s (q X)) ∂μ := lintegral_indicator hA.compl _
       _ ≤ ENNReal.ofReal ε * ∫⁻ y, ENNReal.ofReal (s y) ∂ν :=
-          tail_lintegral hφ.measurable hq.measurable hA hY hsm
+          tail_lintegral hφ.measurable hq.measurable hY hsm
       _ = ENNReal.ofReal (ε * ∫ y, s y ∂ν) := by
           rw [ENNReal.ofReal_mul hε,
             ofReal_integral_eq_lintegral_ofReal hsi (Eventually.of_forall hs0)]

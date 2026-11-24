@@ -698,7 +698,7 @@ theorem minor_empty {C : Finset (Fin N)} (hC : C = ∅) (S : Matrix (Fin N) (Fin
   haveI : IsEmpty (Fin (∅ : Finset (Fin N)).card) := inferInstanceAs (IsEmpty (Fin 0))
   exact det_isEmpty
 
-theorem blockDiag_transv (hj : j ≤ N) {a b ca cb : Fin N} (hb : (b : ℕ) = a + 1) (hc : (b : ℕ) < j ∨ j ≤ (a : ℕ))
+theorem blockDiag_transv (hj : j ≤ N) {a b ca cb : Fin N} (hb : (b : ℕ) = a + 1)
     (hca : (ca : ℕ) = lastCol N j a) (hcb : (cb : ℕ) = ca + 1) (t : ℂ) :
     IsBlockDiag j (1 + Matrix.single cb ca t : Matrix (Fin N) (Fin N) ℂ) := by
   have same : ((ca : ℕ) < N - j ↔ (cb : ℕ) < N - j) := by
@@ -1148,7 +1148,7 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
   have hζ : ∀ k, zeta M (basePart M.blk z₀) F₁ F₂ k ≠ 0 := fun k => div_ne_zero (h2 k) (h1 k)
   have hd := detFac_ne (hS τ).1 (hS τ).2
   have hcc := cc_ne M τ hζ hd
-  have hT := blockDiag_transv M.j_le hb hc hca hcb t
+  have hT := blockDiag_transv M.j_le hb hca hcb t
   refine ⟨_, _, _, ⟨_, hcc, rfl⟩, ⟨_, hcc, rfl⟩, (hS τ).1, (hS τ).2, fun i => ?_, fun i => ?_, ?_⟩
   · exact exact_move hz h1 h2 τ i (hd i) rfl (fun k hk m => (hsc (τ, i)).1 k hk h hh m) (hE₀ i)
   · rw [Matrix.mul_assoc]
@@ -1314,7 +1314,7 @@ section Cols
 
 variable {N j : ℕ} {a b ca cb : Fin N}
 
-theorem cols_next (hj : j ≤ N) (hb : (b : ℕ) = a + 1) (hcase : (b : ℕ) < j ∨ j ≤ (a : ℕ))
+theorem cols_next (hb : (b : ℕ) = a + 1) (hcase : (b : ℕ) < j ∨ j ≤ (a : ℕ))
     (hca : (ca : ℕ) = lastCol N j a) (hcb : (cb : ℕ) = ca + 1) :
     stepCols N j b = insert cb (stepCols N j a) ∧ cb ∉ stepCols N j a ∧ ca ∈ stepCols N j a := by
   have hbN := b.2
@@ -1344,7 +1344,7 @@ theorem cols_next (hj : j ≤ N) (hb : (b : ℕ) = a + 1) (hcase : (b : ℕ) < j
     · simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and, ite_eq_right h1]
       omega
 
-theorem cols_prev (hj : j ≤ N) (hb : (b : ℕ) = a + 1) (hcase : (b : ℕ) < j ∨ j ≤ (a : ℕ))
+theorem cols_prev (hb : (b : ℕ) = a + 1) (hcase : (b : ℕ) < j ∨ j ≤ (a : ℕ))
     (hca : (ca : ℕ) = lastCol N j a) {a' : Fin N} (ha' : (a' : ℕ) + 1 = a) (hp : IsProperStep N j a') :
     stepCols N j a' = (stepCols N j a).erase ca := by
   have hbN := b.2
@@ -1381,7 +1381,7 @@ theorem cols_first (hj : j ≤ N) (hb : (b : ℕ) = a + 1) (hcase : (b : ℕ) < 
       Finset.mem_erase, ne_eq, Fin.ext_iff]
     omega
 
-theorem transv_blockDiag (hj : j ≤ N) (hb : (b : ℕ) = a + 1) (hcase : (b : ℕ) < j ∨ j ≤ (a : ℕ))
+theorem transv_blockDiag (hj : j ≤ N) (hb : (b : ℕ) = a + 1)
     (hca : (ca : ℕ) = lastCol N j a) (hcb : (cb : ℕ) = ca + 1) (t : ℂ) :
     IsBlockDiag j (1 + Matrix.single cb ca t : Matrix (Fin N) (Fin N) ℂ) := by
   have hbN := b.2
@@ -1658,7 +1658,7 @@ theorem normRhs_same : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fint
   have ob1 := base_one M F q1 (e1 a).1 (e1' a).1
   have bz0 : basePart M.blk z₀' = basePart M.blk z₀ := base_eq q0 ob0
   have bz1 : basePart M.blk z₁' = basePart M.blk z₀ := (base_eq q1 ob1).trans hb1
-  have hT := transv_blockDiag (a := a) (b := b) (ca := ca) (cb := cb) hj hb hcase hca hcb
+  have hT := transv_blockDiag (a := a) (b := b) (ca := ca) (cb := cb) hj hb hca hcb
   have m0 : ∀ i k, M.blk (τ, i) = some k → ∀ I, minorIJ h' I (stepCols N j i) = c0 k * minorIJ h I (stepCols N j i) :=
     fun i k hk I => minors_prop M hbp hF hG hk q0 rfl bz0 hh hh' (e0 i) (e0' i) I
   have m1 : ∀ i k, M.blk (τ, i) = some k → ∀ I, minorIJ (h' * (1 + Matrix.single cb ca t')) I (stepCols N j i) =
@@ -1714,7 +1714,7 @@ theorem normRhs_same : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fint
   have hprev : ∀ a' : Fin N, (a' : ℕ) + 1 = a → D a' = Real.log ‖β‖ := fun a' ha' => by
     have hne : a' ≠ a := fun e => by rw [e] at ha'; omega
     by_cases hp : IsProperStep N j a'
-    · rw [hproper a' hp hne, cols_prev hj hb hcase hca ha' hp, hβ]
+    · rw [hproper a' hp hne, cols_prev hb hcase hca ha' hp, hβ]
     · obtain ⟨g1, g2⟩ := fac_prev (j := j) hb ha' hp h
       obtain ⟨g3, -⟩ := fac_prev (j := j) hb ha' hp h'
       have hbl := (M.blk_none (τ, a')).2 hp
@@ -1725,7 +1725,7 @@ theorem normRhs_same : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fint
   have hzero : (a : ℕ) = 0 → Real.log ‖β‖ = 0 := fun h0 => by
     rw [hβ, cols_first hj hb hcase hca (Or.inl h0)]
     simp
-  obtain ⟨cn, hcbn, hcam⟩ := cols_next hj hb hcase hca hcb
+  obtain ⟨cn, hcbn, hcam⟩ := cols_next hb hcase hca hcb
   have hDb : D b = Real.log ‖∏ x ∈ stepCols N j b, B x x‖ := by
     have hne : b ≠ a := fun e => by rw [e] at hb; omega
     by_cases hp : IsProperStep N j b

@@ -309,8 +309,8 @@ theorem heisO_comm (u t : WO S T) (f : WO S T → ℂ) :
 
 def heisL (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (u : WO S T) : Module.End ℂ (WO S T → ℂ) where
   toFun := heisO ψ S T u
-  map_add' f f' := funext fun w => mul_add _ _ _
-  map_smul' c f := funext fun w => mul_left_comm _ _ _
+  map_add' _ _ := funext fun _ => mul_add _ _ _
+  map_smul' _ _ := funext fun _ => mul_left_comm _ _ _
 
 theorem exists_hO_eq (S T : HSp D) (i : Fin T.rank) (j : Fin S.rank) (e : D.host.E) :
     ∃ γ : WO S T, ∀ x, hO S T x γ = incA D e * x i j := by

@@ -90,7 +90,7 @@ theorem infPart_idemAt (P : Pl D.host.E) (e : AE D) (h : Formalism.L2.NTheta.IsI
 
 theorem idemAt_mul_idem {Q : Finset (Pl D.host.E)} (h : SplitSet Q) {P : Pl D.host.E} (hP : P ∈ Q) :
     idemAt P * idem Q = idemAt P :=
-  GlobalTheory.PlaceModelSum.mul_sum_orth (fun a ha => (h.isIdemAt ha).1) (fun a ha b hb hab => h.mul_eq_zero ha hb hab) hP
+  GlobalTheory.PlaceModelSum.mul_sum_orth (fun _ ha => (h.isIdemAt ha).1) (fun _ ha _ hb hab => h.mul_eq_zero ha hb hab) hP
 
 theorem idem_mul_self {Q : Finset (Pl D.host.E)} (h : SplitSet Q) : idem Q * idem Q = idem Q := by
   show (∑ P ∈ Q, idemAt P) * idem Q = idem Q

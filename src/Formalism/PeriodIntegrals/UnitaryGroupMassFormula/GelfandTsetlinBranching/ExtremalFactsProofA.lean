@@ -157,6 +157,6 @@ theorem extremalFacts_proof_A : ExtremalFacts := by
     rw [← key, Units.val_mul, Units.coe_prod]
     simp [zpow_natCast]
 
-theorem extremalFacts_of_A (_h : PI.HwIrred) : ExtremalFacts := extremalFacts_proof_A
+theorem extremalFacts_of_A : ExtremalFacts := extremalFacts_proof_A
 
 end PI.WGB

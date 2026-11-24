@@ -83,7 +83,7 @@ theorem pos_factor (a : ℝ) : 0 < (1 + a ^ 2) * Real.exp (-Real.pi * a ^ 2) :=
   mul_pos (by positivity) (Real.exp_pos _)
 
 theorem gaussian_weight_real_nonneg (x : mixedSpace F) : ∃ r : ℝ, 0 ≤ r ∧ phi1 F x = (r : ℂ) :=
-  ⟨_, (Finset.prod_pos fun v _ => pos_factor _).le, gaussian_weight_apply x⟩
+  ⟨_, (Finset.prod_pos fun _ _ => pos_factor _).le, gaussian_weight_apply x⟩
 
 theorem norm_real_test_matrix (x : mixedSpace F) :
     ‖phi1 F x‖ = ∏ v : InfinitePlace F, ((1 + (x.1 (rp v)) ^ 2) * Real.exp (-Real.pi * (x.1 (rp v)) ^ 2)) := by

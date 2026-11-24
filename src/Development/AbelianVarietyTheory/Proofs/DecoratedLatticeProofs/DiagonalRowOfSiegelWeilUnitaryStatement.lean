@@ -762,7 +762,7 @@ theorem stepNormals1_of : CorankOneIsEquivalenceOnRow → Formalism.L2.SG.NGCut.
         _ = _ := by ring
     exact le_of_mul_le_mul_right h' (by positivity)
   calc (S.card : ℝ) ≤ (T1.card : ℝ) * T2.card := by exact_mod_cast hcard
-    _ ≤ _ := count_bound D.R.f T T P _ _ hT1 hT2 hP1 hc1 hc2 (Nat.cast_nonneg _) (Nat.cast_nonneg _)
+    _ ≤ _ := count_bound D.R.f T T P _ _ hT1 hT2 hP1 hc1 hc2 (Nat.cast_nonneg _)
 
 end GlobalTheory.Core.One
 end -- clump:auto
@@ -1214,7 +1214,7 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.S Formal
 noncomputable section
 namespace GlobalTheory.Core.Deg
 
-theorem exp_le_inv_one_sub_pg (x : ℝ) (hx1 : x < 1) : Real.exp x * (1 - x) ≤ 1 := by
+theorem exp_le_inv_one_sub_pg (x : ℝ) : Real.exp x * (1 - x) ≤ 1 := by
   have h := Real.add_one_le_exp (-x)
   have hp := Real.exp_pos x
   have : Real.exp x * Real.exp (-x) = 1 := by rw [← Real.exp_add]; simp
@@ -1243,7 +1243,7 @@ theorem one_factor_sharp (k b g : ℝ) (f : ℕ) (hk : 1 ≤ k) (hb : 2 ≤ b) (
 
 theorem exp_pair_le_six_fifths : Real.exp (3 / 256) * Real.exp (3 / 256) ≤ 6 / 5 := by
   rw [← Real.exp_add]
-  have h := exp_le_inv_one_sub_pg (3 / 256 + 3 / 256) (by norm_num)
+  have h := exp_le_inv_one_sub_pg (3 / 256 + 3 / 256)
   have hp := Real.exp_pos (3 / 256 + 3 / 256 : ℝ)
   norm_num at h ⊢
   nlinarith

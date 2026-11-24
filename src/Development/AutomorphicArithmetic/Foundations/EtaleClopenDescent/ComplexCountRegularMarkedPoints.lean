@@ -378,7 +378,7 @@ theorem fixL_smul_vec_iff (y : grp G β) (z : Fin G.n → ℂ) {c : ℂ} (hc : c
 variable (G v β x t hx Kf K')
 
 def orbOfDat (d : Dat G v β) : MulAction.orbitRel.Quotient (grp G β) (Ys G v β x t hx Kf K') :=
-  Quotient.mk'' (LeftCosets.mk _ _ d.1, (Projectivization.mk ℂ d.2.1 (posV_val_ne_zero d.2) : PLv G v β))
+  Quotient.mk'' (LeftCosets.mk _ _ d.1, (Projectivization.mk ℂ d.2.1 (posV_val_ne_zero d.2) : PLv G))
 
 theorem orbOfDat_eq_of_same {a b : Dat G v β} (h : Same G v β x t hx Kf K' a b) :
     orbOfDat G v β x t hx Kf K' a = orbOfDat G v β x t hx Kf K' b := by
@@ -609,17 +609,17 @@ theorem cxF_smul_conj_gen : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (v : In
     rw [e, minpoly_units_conj]
 
   obtain ⟨c, hc, hrepl⟩ := rep_smul G v β η a.2
-  have hcond : (0 < (star (Projectivization.rep (((η • a).2 : PLv G v β) : Projectivization ℂ (Fin G.n → ℂ))) ⬝ᵥ
-        (herm G v β *ᵥ Projectivization.rep (((η • a).2 : PLv G v β) : Projectivization ℂ (Fin G.n → ℂ)))).re ∧
+  have hcond : (0 < (star (Projectivization.rep (((η • a).2 : PLv G) : Projectivization ℂ (Fin G.n → ℂ))) ⬝ᵥ
+        (herm G v β *ᵥ Projectivization.rep (((η • a).2 : PLv G) : Projectivization ℂ (Fin G.n → ℂ)))).re ∧
       FixL G v β (η * y * η⁻¹)
-        (Projectivization.rep (((η • a).2 : PLv G v β) : Projectivization ℂ (Fin G.n → ℂ)))) ↔
+        (Projectivization.rep (((η • a).2 : PLv G) : Projectivization ℂ (Fin G.n → ℂ)))) ↔
       (0 < (star (Projectivization.rep (a.2 : Projectivization ℂ (Fin G.n → ℂ))) ⬝ᵥ
         (herm G v β *ᵥ Projectivization.rep (a.2 : Projectivization ℂ (Fin G.n → ℂ)))).re ∧
       FixL G v β y (Projectivization.rep (a.2 : Projectivization ℂ (Fin G.n → ℂ)))) := by
-    change (0 < (star (Projectivization.rep ((η • a.2 : PLv G v β) : Projectivization ℂ (Fin G.n → ℂ))) ⬝ᵥ
-        (herm G v β *ᵥ Projectivization.rep ((η • a.2 : PLv G v β) : Projectivization ℂ (Fin G.n → ℂ)))).re ∧
+    change (0 < (star (Projectivization.rep ((η • a.2 : PLv G) : Projectivization ℂ (Fin G.n → ℂ))) ⬝ᵥ
+        (herm G v β *ᵥ Projectivization.rep ((η • a.2 : PLv G) : Projectivization ℂ (Fin G.n → ℂ)))).re ∧
       FixL G v β (η * y * η⁻¹)
-        (Projectivization.rep ((η • a.2 : PLv G v β) : Projectivization ℂ (Fin G.n → ℂ)))) ↔ _
+        (Projectivization.rep ((η • a.2 : PLv G) : Projectivization ℂ (Fin G.n → ℂ)))) ↔ _
     rw [hrepl, fixL_smul_iff G v β _ _ c hc, ← fixL_conj_iff p G v β y η,
       ← pos_iff_smul_toV p G v β η _ c hc]
   unfold cxF

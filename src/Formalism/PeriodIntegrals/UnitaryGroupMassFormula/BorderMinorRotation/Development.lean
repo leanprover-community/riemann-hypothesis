@@ -99,7 +99,7 @@ theorem bL_last {n m : ℕ} (e es : Fin n) (v : Fin m → Fin n) :
   | zero => simp [PI.bE]
   | succ j =>
     first
-    | simp [PI.bE, PI.bS, ← Fin.succ_castSucc]
+    | simp [PI.bE, PI.bS]
 
 private theorem mul_intCast_mul_eq_intCast_mul_mul {A : Type*} [Ring A] (s x : A) (z : ℤ) :
     s * ((z : A) * x) = (z : A) * (s * x) := by

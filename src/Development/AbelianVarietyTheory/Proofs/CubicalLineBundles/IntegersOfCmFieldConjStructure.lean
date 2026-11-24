@@ -82,7 +82,7 @@ theorem cm_generator_sq_quadratic_eq (H : ReciprocityTheory.ChartRestriction.G.G
   have h4ne : (4 : 𝓞 E) ≠ 0 := by exact_mod_cast (by norm_num : (4 : ℕ) ≠ 0)
   exact mul_left_cancel₀ h4ne h1
 
-theorem main : ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E] [inst_2 : NumberField.IsCMField E]
+theorem main : ∀ {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E]
     (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) {a : NumberField.RingOfIntegers E}, a ∈ GlobalTheory.CM.OK H →
     ∃ (u : ℤ) (v : ℤ), a = (↑u : NumberField.RingOfIntegers E) + (↑v : NumberField.RingOfIntegers E) *
       ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host.w0 H := by
@@ -257,8 +257,8 @@ def barOK (H : Host E) : OK H ≃+* OK H where
   invFun a := ⟨H.bar a, LevelExist.bar_mem_adjoin H a.2⟩
   left_inv a := Subtype.ext (bar_bar H a)
   right_inv a := Subtype.ext (bar_bar H a)
-  map_mul' a b := Subtype.ext (map_mul H.bar _ _)
-  map_add' a b := Subtype.ext (map_add H.bar _ _)
+  map_mul' _ _ := Subtype.ext (map_mul H.bar _ _)
+  map_add' _ _ := Subtype.ext (map_add H.bar _ _)
 
 theorem two_mul_finrank_OK (H : Host E) (M : Type) [AddCommGroup M] [Module (𝓞 E) M] [Module.Finite (𝓞 E) M] :
     2 * Module.finrank (OK H) M = Module.finrank ℚ E * Module.finrank (𝓞 E) M := by

@@ -91,14 +91,14 @@ theorem orderAt_controlledTransform_le (k : Type u) [Field k] [CharZero k]
     (hZ : HasStrictNormalCrossingsWith p Z E) (hπ : Blowup.IsBlowupAlongIdealSheaf π Z) (I : X.IdealSheafData) (m : ℕ)
     (hI : I ≤ Z ^ m) (z : X) (hz : orderAt I z ≤ (m : ℕ∞)) (x₁ : X₁)
     (hx₁ : π.base x₁ = z) :
-    orderAt (controlledTransform π Z I m hπ hI) x₁ ≤ (m : ℕ∞) := by
+    orderAt (controlledTransform π Z I m) x₁ ≤ (m : ℕ∞) := by
   subst hx₁
   have hsm : AlgebraicGeometry.Smooth (π ≫ p) := smooth_comp_of_isBlowupAlongIdealSheaf hZ hπ
   have h1 : stalkIdeal (derivIdealSheafIterate k p m I) (π.base x₁) = ⊤ :=
     (stalkIdeal_derivIdealSheafIterate_eq_top_iff_orderAt_le k p I m (π.base x₁)).2 hz
   have h2 : (derivIdealSheafIterate k p m I).comap π ≤
       Blowup.exceptionalIdeal π Z ^ (m - m) *
-        derivIdealSheafIterate k (π ≫ p) m (controlledTransform π Z I m hπ hI) :=
+        derivIdealSheafIterate k (π ≫ p) m (controlledTransform π Z I m) :=
     comap_derivIdealSheafIterate_le_exceptionalIdeal_pow_mul k p π Z E hZ hπ I m hI m le_rfl
   rw [Nat.sub_self, pow_zero, one_mul] at h2
   have h3 : stalkIdeal ((derivIdealSheafIterate k p m I).comap π) x₁ = ⊤ := by
@@ -106,14 +106,14 @@ theorem orderAt_controlledTransform_le (k : Type u) [Field k] [CharZero k]
   have h4 := stalkIdeal_mono h2 x₁
   rw [h3, top_le_iff] at h4
   exact (stalkIdeal_derivIdealSheafIterate_eq_top_iff_orderAt_le k (π ≫ p)
-    (controlledTransform π Z I m hπ hI) m x₁).1 h4
+    (controlledTransform π Z I m) m x₁).1 h4
 
 theorem orderAt_controlledTransform_le_of_orderAt_image_le (k : Type u) [Field k] [CharZero k]
     {X X₁ : Scheme.{u}} (p : X ⟶ Spec (CommRingCat.of k)) [AlgebraicGeometry.Smooth p]
     (π : X₁ ⟶ X) [IsLocallyNoetherian X₁] (Z : X.IdealSheafData) (E : List X.IdealSheafData)
     (hZ : HasStrictNormalCrossingsWith p Z E) (hπ : Blowup.IsBlowupAlongIdealSheaf π Z) (I : X.IdealSheafData) (m : ℕ)
     (hI : I ≤ Z ^ m) (x₁ : X₁) (hx₁ : orderAt I (π.base x₁) ≤ (m : ℕ∞)) :
-    orderAt (controlledTransform π Z I m hπ hI) x₁ ≤ (m : ℕ∞) :=
+    orderAt (controlledTransform π Z I m) x₁ ≤ (m : ℕ∞) :=
   orderAt_controlledTransform_le k p π Z E hZ hπ I m hI (π.base x₁) hx₁ x₁ rfl
 
 theorem orderAt_controlledTransform_le_of_not_succ_le (k : Type u) [Field k] [CharZero k]
@@ -122,7 +122,7 @@ theorem orderAt_controlledTransform_le_of_not_succ_le (k : Type u) [Field k] [Ch
     (hZ : HasStrictNormalCrossingsWith p Z E) (hπ : Blowup.IsBlowupAlongIdealSheaf π Z) (I : X.IdealSheafData) (m : ℕ)
     (hI : I ≤ Z ^ m) (z : X) (hz : ¬ (((m + 1 : ℕ) : ℕ∞) ≤ orderAt I z)) (x₁ : X₁)
     (hx₁ : π.base x₁ = z) :
-    orderAt (controlledTransform π Z I m hπ hI) x₁ ≤ (m : ℕ∞) :=
+    orderAt (controlledTransform π Z I m) x₁ ≤ (m : ℕ∞) :=
   orderAt_controlledTransform_le k p π Z E hZ hπ I m hI z
     ((orderAt_le_iff_notMem_orderAtLeastLocus I m z).2 hz) x₁ hx₁
 
@@ -131,7 +131,7 @@ theorem orderAt_controlledTransform_le_of_forall_le (k : Type u) [Field k] [Char
     (π : X₁ ⟶ X) [IsLocallyNoetherian X₁] (Z : X.IdealSheafData) (E : List X.IdealSheafData)
     (hZ : HasStrictNormalCrossingsWith p Z E) (hπ : Blowup.IsBlowupAlongIdealSheaf π Z) (I : X.IdealSheafData) (m : ℕ)
     (hI : I ≤ Z ^ m) (h : ∀ x : X, orderAt I x ≤ (m : ℕ∞)) (x₁ : X₁) :
-    orderAt (controlledTransform π Z I m hπ hI) x₁ ≤ (m : ℕ∞) :=
+    orderAt (controlledTransform π Z I m) x₁ ≤ (m : ℕ∞) :=
   orderAt_controlledTransform_le k p π Z E hZ hπ I m hI (π.base x₁) (h (π.base x₁)) x₁ rfl
 
 theorem orderAtLeastLocus_controlledTransform_subset_preimage (k : Type u) [Field k] [CharZero k]
@@ -139,7 +139,7 @@ theorem orderAtLeastLocus_controlledTransform_subset_preimage (k : Type u) [Fiel
     (π : X₁ ⟶ X) [IsLocallyNoetherian X₁] (Z : X.IdealSheafData) (E : List X.IdealSheafData)
     (hZ : HasStrictNormalCrossingsWith p Z E) (hπ : Blowup.IsBlowupAlongIdealSheaf π Z) (I : X.IdealSheafData) (m : ℕ)
     (hI : I ≤ Z ^ m) :
-    orderAtLeastLocus (controlledTransform π Z I m hπ hI) (m + 1) ⊆
+    orderAtLeastLocus (controlledTransform π Z I m) (m + 1) ⊆
       ⇑π.base ⁻¹' orderAtLeastLocus I (m + 1) := by
   intro x₁ hx₁
   by_contra hz

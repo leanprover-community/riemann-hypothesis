@@ -203,7 +203,7 @@ theorem gramC_eq {K : Type} [Field K] [NumberField K] {r k : ℕ} (H : Matrix (F
   rw [Matrix.mul_assoc]
   simp [gramC, embMat, Matrix.mul_apply, Matrix.mulVec, dotProduct, embVec]
 
-theorem embMat_injective {K : Type} [Field K] [NumberField K] {r k : ℕ} (S : HermForm K r)
+theorem embMat_injective {K : Type} [Field K] [NumberField K] {r k : ℕ}
     (σ : K →+* ℂ) (b : Fin k → Fin r → K) (hli : LinearIndependent K b) :
     Function.Injective (embMat σ b).mulVec := by
   classical
@@ -232,6 +232,6 @@ theorem gramC_posDef {K : Type} [Field K] [NumberField K] {r k : ℕ} (S : HermF
     (H : Matrix (Fin r) (Fin r) ℂ) (hH : H.PosDef) (σ : K →+* ℂ) (b : Fin k → Fin r → K)
     (hli : LinearIndependent K b) : (gramC H σ b).PosDef := by
   rw [gramC_eq]
-  exact hH.conjTranspose_mul_mul_same (embMat_injective S σ b hli)
+  exact hH.conjTranspose_mul_mul_same (embMat_injective σ b hli)
 
 end ReciprocityTheory.MultiplicativeHeights.SemiPt

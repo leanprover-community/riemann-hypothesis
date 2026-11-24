@@ -770,7 +770,7 @@ lemma int_pos_rpow {R κ : ℝ} (hR : 0 < R) (hκ : κ < 1) :
   have h1 : -κ + 1 = 1 - κ := by ring
   rw [h1, Real.zero_rpow (by linarith), sub_zero]
 
-lemma int_abs_rpow {R κ : ℝ} (hR : 0 < R) (hκ0 : 0 < κ) (hκ : κ < 1) :
+lemma int_abs_rpow {R κ : ℝ} (hR : 0 < R) (hκ : κ < 1) :
     ∫⁻ β in Icc (-R) R, ENNReal.ofReal (|β| ^ (-κ)) ≤ 2 * ENNReal.ofReal (R ^ (1 - κ) / (1 - κ)) := by
   have hpos : ∫⁻ β in Icc 0 R, ENNReal.ofReal (|β| ^ (-κ)) =
       ENNReal.ofReal (R ^ (1 - κ) / (1 - κ)) := by
@@ -869,7 +869,7 @@ theorem slowWeightBound' : SLOW := by
       _ = ENNReal.ofReal c * I * ∫⁻ β in Icc (-R) R, ENNReal.ofReal (|β| ^ (-κ)) :=
           lintegral_const_mul _ hw
       _ ≤ ENNReal.ofReal c * I * (2 * ENNReal.ofReal q) :=
-          by gcongr; exact int_abs_rpow hR hκ0 hκ1
+          by gcongr; exact int_abs_rpow hR hκ1
       _ = ENNReal.ofReal (c * (2 * q)) * I := by
           rw [ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_mul (by norm_num), ENNReal.ofReal_ofNat]
           try ring
@@ -945,7 +945,7 @@ namespace ReciprocityTheory.ChartRestriction.DS.Xi
 
 open Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B HermitianLiftIdentities
 
-theorem tLeftH (hIW : IW) (hB2 : InductiveHeisenbergInputs) : TLeft := by
+theorem tLeftH (hIW : IW) : TLeft := by
   intro k r s μG Φ hk hμ _ hK x hx
   obtain ⟨κ, hκ, hF⟩ := fsE_left hIW hk hx
   have h1 : ∀ g : Mt k r, κ⁻¹ * Matrix.of (lmulM κ g) = Matrix.of g := fun g => by
@@ -965,7 +965,7 @@ theorem tLeftH (hIW : IW) (hB2 : InductiveHeisenbergInputs) : TLeft := by
 theorem tBothH (hIW : IW) (hB2 : InductiveHeisenbergInputs) : TBoth := by
   intro k r s μG Φ hk hμ hΦ hK x hx y hy
   obtain ⟨κ, hκ, hF⟩ := fsE_right hIW hk hy
-  have hL := tLeftH hIW hB2 k r s μG Φ hk hμ hΦ (fun κ hκ g => (hK κ hκ g).1) x hx
+  have hL := tLeftH hIW k r s μG Φ hk hμ hΦ (fun κ hκ g => (hK κ hκ g).1) x hx
   have h1 : ∀ g : Mt k r, x⁻¹ * Matrix.of (rmulF κ g) = x⁻¹ * Matrix.of g * κ := fun g => by
     show x⁻¹ * (Matrix.of g * κ) = x⁻¹ * Matrix.of g * κ
     rw [Matrix.mul_assoc]
@@ -1562,10 +1562,10 @@ namespace ReciprocityTheory.ChartRestriction.DS.Xi
 
 theorem xiExists_of_in (h : InductiveHeisenbergInputs) : Formalism.FourierDecayAlt.B.XiExists :=
   xiExists_of_induction_steps (aStepBase_of h (tBothH iwB h))
-    (aStepSucc_of h iwB (tLeftH iwB h) FormulaFAux.formulaF_all (ch_of c1))
+    (aStepSucc_of h iwB (tLeftH iwB) FormulaFAux.formulaF_all (ch_of))
     (bStepBase_of h)
     (bStepSucc_of h iwB FormulaFAux.formulaF_all
-      (oscillatoryBound' (tailFin_of (ch_of c1)) c1 quadraticSublevelDecay' ker slow))
+      (oscillatoryBound' (tailFin_of (ch_of)) c1 quadraticSublevelDecay' ker slow))
     (coefStep_of h (tBothH iwB h) (det_of h)) (xiIntH h)
 
 theorem xiExists : Formalism.FourierDecayAlt.B.XiExists := xiExists_of_in heisenbergHaarFacts_hold

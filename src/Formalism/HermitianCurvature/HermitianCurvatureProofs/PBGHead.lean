@@ -120,7 +120,7 @@ theorem AAx_omit {A : Type} [Ring A] [Algebra ℂ A] (k r m : ℕ) (hm : m + 1 �
           simp only [Matrix.of_apply]; exact hz _ _ (by simp) hl), zero_smul]
     · rfl
 
-theorem inv_last {m : ℕ} (Z : Matrix (Fin (m + 1)) (Fin (m + 1)) ℂ) (hZ : Z.det ≠ 0) (b : Fin (m + 1)) :
+theorem inv_last {m : ℕ} (Z : Matrix (Fin (m + 1)) (Fin (m + 1)) ℂ) (b : Fin (m + 1)) :
     Z⁻¹ b (Fin.last m) = Z.det⁻¹ * ((-1) ^ (m + (b : ℕ)) * (Z.submatrix Fin.castSucc b.succAbove).det) := by
   rw [Matrix.inv_def, Matrix.smul_apply, Matrix.adjugate_fin_succ_eq_det_submatrix, Fin.succAbove_last, Fin.val_last,
     smul_eq_mul, Ring.inverse_eq_inv']
@@ -277,7 +277,7 @@ theorem _root_.Formalism.FourierDecayAlt.P.head_algebra_relations : Formalism.Fo
   congr 1
   apply Finset.sum_congr rfl
   intro l _
-  rw [map_smul, smul_smul, inv_last Z hZ]
+  rw [map_smul, smul_smul, inv_last Z]
   congr 1
   have hs : ((-1 : ℂ) ^ (m + (l : ℕ))) * (-1) ^ (m + (l : ℕ)) = 1 := by
     rw [← pow_add, ← two_mul, pow_mul]; norm_num

@@ -410,7 +410,7 @@ theorem step_exists (hL : LatStepP X) :
   refine ⟨(gA X hk hYk hYs).1, hγ, (gA X hk hYk hYs).1⁻¹ * x * s⁻¹, fun v => ?_, s, hsS, by group⟩
   rw [Mv_mul, Mv_mul, Mv_inv, Mv_inv, Mv_gA, hMs]
   have h := step_mat (JBv_graded X v) (JBv'_graded X v) (JBv_herm X v) (JBv'_herm X v) (JBv'_mul X v)
-    (JBv_mul X v) (2 * D.R.rS + 1) (Mv_unitary X v x) (hx v) (inPat_map (X.B.I.φ v) hYk) (skew_map X v hYs)
+    (JBv_mul X v) (2 * D.R.rS + 1) (Mv_unitary X v x) (hx v) (inPat_map (X.B.I.φ v) hYk)
   exact inPat_mono (by omega) h
 
 theorem noCocompact_of (hL : LatStepP X) : NOCocompact X u := by

@@ -269,7 +269,7 @@ theorem continuous_actO_pair {D : D7} (S T : HSp D) :
   simpa [Function.comp_def, inv_inv] using h
 
 theorem lintegral_enorm_le_of_sq {α : Type} [MeasurableSpace α] (m : Measure α) (u : α → ℂ)
-    (hu : AEStronglyMeasurable u m) (ε : ℝ) (hε : 0 ≤ ε)
+    (hu : AEStronglyMeasurable u m) (ε : ℝ)
     (h2 : ∫⁻ a, ‖u a‖ₑ ^ 2 ∂m ≤ m Set.univ * ENNReal.ofReal ε ^ 2) :
     ∫⁻ a, ‖u a‖ₑ ∂m ≤ m Set.univ * ENNReal.ofReal ε := by
   have h := eLpNorm_le_eLpNorm_mul_rpow_measure_univ (p := 1) (q := 2) (by norm_num) hu
@@ -367,7 +367,7 @@ theorem lintegral_om_actO_le : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S 
   have s3 : ∫⁻ w in Formalism.IndefR.PHeisFC.FD T S, ‖H w‖ₑ ∂ν ≤
       ν (Formalism.IndefR.PHeisFC.FD T S) * ENNReal.ofReal ε := by
     have := lintegral_enorm_le_of_sq (ν.restrict (Formalism.IndefR.PHeisFC.FD T S)) H
-      hH.cont.aestronglyMeasurable ε hε0 ?_
+      hH.cont.aestronglyMeasurable ε ?_
     · simpa [Measure.restrict_apply_univ] using this
     rw [Measure.restrict_apply_univ, hom.om_unit ν _ hν hFD q h hh]
     calc ∫⁻ w in Formalism.IndefR.PHeisFC.FD T S, ‖h w‖ₑ ^ 2 ∂ν

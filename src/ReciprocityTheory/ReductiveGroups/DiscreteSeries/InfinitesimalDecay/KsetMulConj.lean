@@ -70,7 +70,7 @@ theorem inner_dS_add (hσ : IsURepOn (UJset ε) σ) {X : Matrix (Fin n) (Fin n) 
       (fun t : ℝ => inner ℂ (σ (NormedSpace.exp ((t : ℂ) • X)) y) (σ (NormedSpace.exp ((t : ℂ) • X)) v))
       (inner ℂ (σ (NormedSpace.exp (((0 : ℝ) : ℂ) • X)) y) (dS σ X v) +
         inner ℂ (dS σ X y) (σ (NormedSpace.exp (((0 : ℝ) : ℂ) • X)) v)) 0 :=
-    (hasDerivAt_dS hσ hX hy).inner ℂ (hasDerivAt_dS hσ hX hv)
+    (hasDerivAt_dS hX hy).inner ℂ (hasDerivAt_dS hX hv)
   have hc : (fun t : ℝ => inner ℂ (σ (NormedSpace.exp ((t : ℂ) • X)) y)
       (σ (NormedSpace.exp ((t : ℂ) • X)) v)) = fun _ => inner ℂ y v := by
     funext t
@@ -141,7 +141,7 @@ theorem dS_conj (hσ : IsURepOn (UJset ε) σ) {k X : Matrix (Fin n) (Fin n) ℂ
         Matrix.one_mul]
     rw [← ContinuousLinearMap.comp_apply, ← hσ.1.2 _ (_root_.ReciprocityTheory.ChartRestriction.DS.exp_smul_mem_UJset hX t) _ hkU, he,
       hσ.1.2 _ hkU _ (_root_.ReciprocityTheory.ChartRestriction.DS.exp_smul_mem_UJset hY t), ContinuousLinearMap.comp_apply]
-  have hd := hasDerivAt_dS hσ hY hv
+  have hd := hasDerivAt_dS hY hv
   have hd2 : HasDerivAt (fun t : ℝ => σ k (σ (NormedSpace.exp ((t : ℂ) • (kᴴ * X * k))) v))
       (σ k (dS σ (kᴴ * X * k) v)) 0 :=
     ((σ k).restrictScalars ℝ).hasFDerivAt.comp_hasDerivAt (0 : ℝ) hd

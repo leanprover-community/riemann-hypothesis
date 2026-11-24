@@ -98,7 +98,7 @@ theorem exists_proj (ψ : AddChar k Circle) (n : ℕ) : ∀ (j : ℕ) (τ : MRep
       rw [Submodule.map_le_iff_le_comap]
       refine Submodule.span_le.2 ?_
       rintro _ ⟨u, v, rfl⟩
-      obtain ⟨u₁, a, hu⟩ := GlobalTheory.CompanionTheory.BZMirStep.derUnipM_decomp hnm u
+      obtain ⟨u₁, a, hu⟩ := GlobalTheory.CompanionTheory.BZMirStep.derUnipM_decomp u
       obtain ⟨hu₁, h₁⟩ := GlobalTheory.CompanionTheory.BZMirStep.MirUin_step ψ hnm u₁
       obtain ⟨ha, h₂⟩ := GlobalTheory.CompanionTheory.BZMirStep.levi_step ψ hnm a
       have hθ : derCharM k ψ (n + j + 1) n u = mirChar k ψ (n + j) u₁ * derCharM k ψ (n + j) n a := by

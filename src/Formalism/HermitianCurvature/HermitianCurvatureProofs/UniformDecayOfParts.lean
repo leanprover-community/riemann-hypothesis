@@ -322,7 +322,7 @@ theorem continuous_fsv₂ : Continuous (fun q : ℂ × ℂ => fsv q.1 q.2) := by
   exact Complex.continuous_exp.comp ((continuous_fst.mul continuous_snd).sub
     ((Complex.continuous_conj.comp continuous_fst).mul (Complex.continuous_conj.comp continuous_snd)))
 
-theorem integrable_fsv_mul {φ : ℂ → ℂ} (hφ : Continuous φ) (hi : Integrable φ) (a : ℂ) :
+theorem integrable_fsv_mul {φ : ℂ → ℂ} (hi : Integrable φ) (a : ℂ) :
     Integrable (fun t => fsv a t * φ t) := by
   refine hi.bdd_mul (c := 1) ?_ (Filter.Eventually.of_forall fun t => (norm_fsv a t).le)
   exact (continuous_fsv₂.comp (continuous_const.prodMk continuous_id)).aestronglyMeasurable
@@ -627,10 +627,10 @@ theorem transform_diff3 {φ : ℂ → ℂ} (hφ : Continuous φ) (hi : Integrabl
       rw [fsv_mul_fsv, fsv_mul_fsv, fsv_mul_fsv]; congr 1; ring
     rw [e1, e2, e3]; ring
   simp only [e]
-  have i0 := integrable_fsv_mul hφ hi s
-  have i1 := integrable_fsv_mul hφ hi (s + σ)
-  have i2 := integrable_fsv_mul hφ hi (s + 2 * σ)
-  have i3 := integrable_fsv_mul hφ hi (s + 3 * σ)
+  have i0 := integrable_fsv_mul hi s
+  have i1 := integrable_fsv_mul hi (s + σ)
+  have i2 := integrable_fsv_mul hi (s + 2 * σ)
+  have i3 := integrable_fsv_mul hi (s + 3 * σ)
   have j1 : Integrable (fun t => fsv (s + 3 * σ) t * φ t - 3 * (fsv (s + 2 * σ) t * φ t)) := i3.sub (i2.const_mul 3)
   have j2 : Integrable (fun t => fsv (s + 3 * σ) t * φ t - 3 * (fsv (s + 2 * σ) t * φ t) +
       3 * (fsv (s + σ) t * φ t)) := j1.add (i1.const_mul 3)

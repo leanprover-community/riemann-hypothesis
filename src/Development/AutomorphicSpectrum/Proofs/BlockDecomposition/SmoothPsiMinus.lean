@@ -64,7 +64,7 @@ noncomputable def UpperTheory.Reformulated.B.DYhc8.eLast :
     fun (k : Type) [Field k] (n : ℕ) ↦ Pi.single (Fin.last n) (1 : k)
 
 theorem UpperTheory.Reformulated.B.DYhc8.aux2 :
-    ∀ (k : Type) [inst : Field k] (n : ℕ) {a b : GL (Fin (n + (1 : ℕ))) k},
+    ∀ (k : Type) [Field k] (n : ℕ) {a b : GL (Fin (n + (1 : ℕ))) k},
       a ∈
           {g : GL (Fin (n + (1 : ℕ))) k |
             Matrix.vecMul (UpperTheory.Reformulated.B.DYhc8.eLast k n) (↑g : Matrix (Fin (n + (1 : ℕ))) (Fin (n + (1 : ℕ))) k) =
@@ -82,7 +82,7 @@ theorem UpperTheory.Reformulated.B.DYhc8.aux2 :
   rw [Units.val_mul, ← Matrix.vecMul_vecMul, ha, hb]
 
 theorem UpperTheory.Reformulated.B.DYhc8.aux3 :
-    ∀ (k : Type) [inst : Field k] (n : ℕ),
+    ∀ (k : Type) [Field k] (n : ℕ),
       Matrix.vecMul (UpperTheory.Reformulated.B.DYhc8.eLast k n)
           (↑(1 : GL (Fin (n + (1 : ℕ))) k) : Matrix (Fin (n + (1 : ℕ))) (Fin (n + (1 : ℕ))) k) =
         UpperTheory.Reformulated.B.DYhc8.eLast k n := by
@@ -90,7 +90,7 @@ theorem UpperTheory.Reformulated.B.DYhc8.aux3 :
   rw [Units.val_one, Matrix.vecMul_one]
 
 theorem UpperTheory.Reformulated.B.DYhc8.aux4 :
-    ∀ (k : Type) [inst : Field k] (n : ℕ) {a : GL (Fin (n + (1 : ℕ))) k},
+    ∀ (k : Type) [Field k] (n : ℕ) {a : GL (Fin (n + (1 : ℕ))) k},
       a ∈
           {g : GL (Fin (n + (1 : ℕ))) k |
             Matrix.vecMul (UpperTheory.Reformulated.B.DYhc8.eLast k n) (↑g : Matrix (Fin (n + (1 : ℕ))) (Fin (n + (1 : ℕ))) k) =
@@ -107,7 +107,7 @@ theorem UpperTheory.Reformulated.B.DYhc8.aux4 :
   rw [Matrix.vecMul_vecMul, h, Matrix.vecMul_one]
 
 noncomputable def UpperTheory.Reformulated.B.DYhc8.Mir :
-    (k : Type) → [inst : Field k] → (n : ℕ) → Subgroup (GL (Fin (n + (1 : ℕ))) k) :=
+    (k : Type) → [Field k] → (n : ℕ) → Subgroup (GL (Fin (n + (1 : ℕ))) k) :=
     fun (k : Type) [inst : Field k] (n : ℕ) ↦
       {
         carrier :=
@@ -119,19 +119,19 @@ noncomputable def UpperTheory.Reformulated.B.DYhc8.Mir :
 
 noncomputable def UpperTheory.Reformulated.B.DYhc8.IsSmooth :
     {k G V : Type} →
-      [inst : Field k] →
-        [inst_1 : Group G] →
-          [inst_2 : AddCommGroup V] → [inst_3 : _root_.Module k V] → [TopologicalSpace G] → Representation k G V → Prop :=
+      [Field k] →
+        [Group G] →
+          [AddCommGroup V] → [_root_.Module k V] → [TopologicalSpace G] → Representation k G V → Prop :=
     fun {k G V : Type} [Field k] [Group G] [AddCommGroup V] [_root_.Module k V] [TopologicalSpace G]
         (ρ : Representation k G V) ↦
       ∀ (v : V), IsOpen {g : G | ((ρ : G → V →ₗ[k] V) g : V → V) v = v}
 
 noncomputable def UpperTheory.Reformulated.B.DYhc8.twKer :
     {k G V : Type} →
-      [inst : Field k] →
-        [inst_1 : Group G] →
-          [inst_2 : AddCommGroup V] →
-            [inst_3 : _root_.Module k V] → Representation k G V → (N : Subgroup G) → (↥N →* kˣ) → Submodule k V :=
+      [Field k] →
+        [Group G] →
+          [AddCommGroup V] →
+            [_root_.Module k V] → Representation k G V → (N : Subgroup G) → (↥N →* kˣ) → Submodule k V :=
     fun {k G V : Type} [Field k] [Group G] [AddCommGroup V] [_root_.Module k V] (ρ : Representation k G V) (N : Subgroup G)
         (ψ : ↥N →* kˣ) ↦
       Submodule.span k
@@ -139,10 +139,10 @@ noncomputable def UpperTheory.Reformulated.B.DYhc8.twKer :
 
 @[reducible] noncomputable def UpperTheory.Reformulated.B.DYhc8.TwJacquet :
     {k G V : Type} →
-      [inst : Field k] →
-        [inst_1 : Group G] →
-          [inst_2 : AddCommGroup V] →
-            [inst_3 : _root_.Module k V] → Representation k G V → (N : Subgroup G) → (↥N →* kˣ) → Type :=
+      [Field k] →
+        [Group G] →
+          [AddCommGroup V] →
+            [_root_.Module k V] → Representation k G V → (N : Subgroup G) → (↥N →* kˣ) → Type :=
     fun {k G V : Type} [Field k] [Group G] [AddCommGroup V] [_root_.Module k V] (ρ : Representation k G V) (N : Subgroup G)
         (ψ : ↥N →* kˣ) ↦
       V ⧸ UpperTheory.Reformulated.B.DYhc8.twKer ρ N ψ
@@ -199,7 +199,7 @@ private theorem one_sub_mul_one_add (k : Type) [Field k] (n : ℕ) (v : Fin n �
   simp
 
 theorem UpperTheory.Reformulated.B.DYhc8.laurent_T_neg_one_mul_T_one :
-    ∀ (k : Type) [inst : Field k] (n : ℕ) (v : Multiplicative (Fin n → k)),
+    ∀ (k : Type) [Field k] (n : ℕ) (v : Multiplicative (Fin n → k)),
       ((1 : Matrix (Fin (n + (1 : ℕ))) (Fin (n + (1 : ℕ))) k) +
             UpperTheory.Reformulated.B.DYhc8.colMat k n ((Multiplicative.toAdd : Multiplicative (Fin n → k) → Fin n → k) v)) *
           ((1 : Matrix (Fin (n + (1 : ℕ))) (Fin (n + (1 : ℕ))) k) -
@@ -208,7 +208,7 @@ theorem UpperTheory.Reformulated.B.DYhc8.laurent_T_neg_one_mul_T_one :
   exact fun k _ n v => one_add_mul_one_sub k n _
 
 theorem UpperTheory.Reformulated.B.DYhc8.aux11 :
-    ∀ (k : Type) [inst : Field k] (n : ℕ) (v : Multiplicative (Fin n → k)),
+    ∀ (k : Type) [Field k] (n : ℕ) (v : Multiplicative (Fin n → k)),
       ((1 : Matrix (Fin (n + (1 : ℕ))) (Fin (n + (1 : ℕ))) k) -
             UpperTheory.Reformulated.B.DYhc8.colMat k n ((Multiplicative.toAdd : Multiplicative (Fin n → k) → Fin n → k) v)) *
           ((1 : Matrix (Fin (n + (1 : ℕ))) (Fin (n + (1 : ℕ))) k) +
@@ -217,7 +217,7 @@ theorem UpperTheory.Reformulated.B.DYhc8.aux11 :
   exact fun k _ n v => one_sub_mul_one_add k n _
 
 theorem UpperTheory.Reformulated.B.DYhc8.aux12 :
-    ∀ (k : Type) [inst : Field k] (n : ℕ),
+    ∀ (k : Type) [Field k] (n : ℕ),
       ((1 : Matrix (Fin (n + (1 : ℕ))) (Fin (n + (1 : ℕ))) k) +
             UpperTheory.Reformulated.B.DYhc8.colMat k n
               ((Multiplicative.toAdd : Multiplicative (Fin n → k) → Fin n → k) (1 : Multiplicative (Fin n → k)))) *
@@ -228,7 +228,7 @@ theorem UpperTheory.Reformulated.B.DYhc8.aux12 :
   exact fun k _ n => one_add_mul_one_sub k n _
 
 theorem UpperTheory.Reformulated.B.DYhc8.algebra_smulCommClass_complex :
-    ∀ (k : Type) [inst : Field k] (n : ℕ),
+    ∀ (k : Type) [Field k] (n : ℕ),
       ((1 : Matrix (Fin (n + (1 : ℕ))) (Fin (n + (1 : ℕ))) k) -
             UpperTheory.Reformulated.B.DYhc8.colMat k n
               ((Multiplicative.toAdd : Multiplicative (Fin n → k) → Fin n → k) (1 : Multiplicative (Fin n → k)))) *
@@ -239,7 +239,7 @@ theorem UpperTheory.Reformulated.B.DYhc8.algebra_smulCommClass_complex :
   exact fun k _ n => one_sub_mul_one_add k n _
 
 theorem UpperTheory.Reformulated.B.DYhc8.zero_contDiffOn_supported :
-    ∀ (k : Type) [inst : Field k] (n : ℕ),
+    ∀ (k : Type) [Field k] (n : ℕ),
       {
           val :=
             (1 : Matrix (Fin (n + (1 : ℕ))) (Fin (n + (1 : ℕ))) k) +
@@ -258,7 +258,7 @@ theorem UpperTheory.Reformulated.B.DYhc8.zero_contDiffOn_supported :
   rw [colMat_zero, add_zero]
 
 theorem UpperTheory.Reformulated.B.DYhc8.sign_action_map_comm :
-    ∀ (k : Type) [inst : Field k] (n : ℕ) (v w : Multiplicative (Fin n → k)),
+    ∀ (k : Type) [Field k] (n : ℕ) (v w : Multiplicative (Fin n → k)),
       ((1 : Matrix (Fin (n + (1 : ℕ))) (Fin (n + (1 : ℕ))) k) +
             UpperTheory.Reformulated.B.DYhc8.colMat k n ((Multiplicative.toAdd : Multiplicative (Fin n → k) → Fin n → k) (v * w))) *
           ((1 : Matrix (Fin (n + (1 : ℕ))) (Fin (n + (1 : ℕ))) k) -
@@ -267,7 +267,7 @@ theorem UpperTheory.Reformulated.B.DYhc8.sign_action_map_comm :
   exact fun k _ n v w => one_add_mul_one_sub k n _
 
 theorem UpperTheory.Reformulated.B.DYhc8.column_matrix_mul_inverse :
-    ∀ (k : Type) [inst : Field k] (n : ℕ) (v w : Multiplicative (Fin n → k)),
+    ∀ (k : Type) [Field k] (n : ℕ) (v w : Multiplicative (Fin n → k)),
       ((1 : Matrix (Fin (n + (1 : ℕ))) (Fin (n + (1 : ℕ))) k) -
             UpperTheory.Reformulated.B.DYhc8.colMat k n ((Multiplicative.toAdd : Multiplicative (Fin n → k) → Fin n → k) (v * w))) *
           ((1 : Matrix (Fin (n + (1 : ℕ))) (Fin (n + (1 : ℕ))) k) +
@@ -276,7 +276,7 @@ theorem UpperTheory.Reformulated.B.DYhc8.column_matrix_mul_inverse :
   exact fun k _ n v w => one_sub_mul_one_add k n _
 
 theorem UpperTheory.Reformulated.B.DYhc8.complex_normed_instance_compat :
-    ∀ (k : Type) [inst : Field k] (n : ℕ) (v w : Multiplicative (Fin n → k)),
+    ∀ (k : Type) [Field k] (n : ℕ) (v w : Multiplicative (Fin n → k)),
       {
           val :=
             (1 : Matrix (Fin (n + (1 : ℕ))) (Fin (n + (1 : ℕ))) k) +
@@ -317,7 +317,7 @@ theorem UpperTheory.Reformulated.B.DYhc8.complex_normed_instance_compat :
   abel
 
 noncomputable def UpperTheory.Reformulated.B.DYhc8.unip :
-    (k : Type) → [inst : Field k] → (n : ℕ) → Multiplicative (Fin n → k) →* GL (Fin (n + (1 : ℕ))) k :=
+    (k : Type) → [Field k] → (n : ℕ) → Multiplicative (Fin n → k) →* GL (Fin (n + (1 : ℕ))) k :=
     fun (k : Type) [Field k] (n : ℕ) ↦
       {
         toFun := fun (v : Multiplicative (Fin n → k)) ↦
@@ -334,16 +334,16 @@ noncomputable def UpperTheory.Reformulated.B.DYhc8.unip :
         Multiplicative (Fin n → k) →* GL (Fin (n + (1 : ℕ))) k }
 
 noncomputable def UpperTheory.Reformulated.B.DYhc8.MirU :
-    (k : Type) → [inst : Field k] → (n : ℕ) → Subgroup (GL (Fin (n + (1 : ℕ))) k) :=
+    (k : Type) → [Field k] → (n : ℕ) → Subgroup (GL (Fin (n + (1 : ℕ))) k) :=
     fun (k : Type) [Field k] (n : ℕ) ↦ (UpperTheory.Reformulated.B.DYhc8.unip k n).range
 
 noncomputable def UpperTheory.Reformulated.B.DYhc8.MirUin :
-    (k : Type) → [inst : Field k] → (n : ℕ) → Subgroup ↥(UpperTheory.Reformulated.B.DYhc8.Mir k n) :=
+    (k : Type) → [Field k] → (n : ℕ) → Subgroup ↥(UpperTheory.Reformulated.B.DYhc8.Mir k n) :=
     fun (k : Type) [Field k] (n : ℕ) ↦ (UpperTheory.Reformulated.B.DYhc8.MirU k n).subgroupOf (UpperTheory.Reformulated.B.DYhc8.Mir k n)
 
 theorem UpperTheory.Reformulated.B.DYhc8.conj_invariant_character_mem :
-    ∀ {G V : Type} [inst : Group G] [inst_1 : AddCommGroup V] [inst_2 : _root_.Module ℂ V] (ρ : Representation ℂ G V)
-      (N : Subgroup G) (θ : ↥N →* ℂˣ) {M : Type} [inst_3 : Group M] (s : M →* G),
+    ∀ {G V : Type} [Group G] [AddCommGroup V] [_root_.Module ℂ V] (ρ : Representation ℂ G V)
+      (N : Subgroup G) (θ : ↥N →* ℂˣ) {M : Type} [Group M] (s : M →* G),
       (∀ (m : M) (n : ↥N),
           ∃ (h : (s : M → G) m * (↑n : G) * ((s : M → G) m)⁻¹ ∈ N),
             (θ : ↥N → ℂˣ) (⟨(s : M → G) m * (↑n : G) * ((s : M → G) m)⁻¹, h⟩ : ↥N) = (θ : ↥N → ℂˣ) n) →
@@ -368,8 +368,8 @@ theorem UpperTheory.Reformulated.B.DYhc8.conj_invariant_character_mem :
   exact Submodule.subset_span ⟨_, _, rfl⟩
 
 theorem UpperTheory.Reformulated.B.DYhc8.rootGL_mem_unitary :
-    ∀ {G V : Type} [inst : Group G] [inst_1 : AddCommGroup V] [inst_2 : _root_.Module ℂ V] (ρ : Representation ℂ G V)
-      (N : Subgroup G) (θ : ↥N →* ℂˣ) {M : Type} [inst_3 : Group M] (s : M →* G),
+    ∀ {G V : Type} [Group G] [AddCommGroup V] [_root_.Module ℂ V] (ρ : Representation ℂ G V)
+      (N : Subgroup G) (θ : ↥N →* ℂˣ) {M : Type} [Group M] (s : M →* G),
       (∀ (m : M) (n : ↥N),
           ∃ (h : (s : M → G) m * (↑n : G) * ((s : M → G) m)⁻¹ ∈ N),
             (θ : ↥N → ℂˣ) (⟨(s : M → G) m * (↑n : G) * ((s : M → G) m)⁻¹, h⟩ : ↥N) = (θ : ↥N → ℂˣ) n) →
@@ -380,8 +380,8 @@ theorem UpperTheory.Reformulated.B.DYhc8.rootGL_mem_unitary :
   exact UpperTheory.Reformulated.B.DYhc8.conj_invariant_character_mem ρ N θ s hs 1
 
 theorem UpperTheory.Reformulated.B.DYhc8.conj_invariant_character_transport :
-    ∀ {G V : Type} [inst : Group G] [inst_1 : AddCommGroup V] [inst_2 : _root_.Module ℂ V] (ρ : Representation ℂ G V)
-      (N : Subgroup G) (θ : ↥N →* ℂˣ) {M : Type} [inst_3 : Group M] (s : M →* G)
+    ∀ {G V : Type} [Group G] [AddCommGroup V] [_root_.Module ℂ V] (ρ : Representation ℂ G V)
+      (N : Subgroup G) (θ : ↥N →* ℂˣ) {M : Type} [Group M] (s : M →* G)
       (hs :
         ∀ (m : M) (n : ↥N),
           ∃ (h : (s : M → G) m * (↑n : G) * ((s : M → G) m)⁻¹ ∈ N),
@@ -396,8 +396,8 @@ theorem UpperTheory.Reformulated.B.DYhc8.conj_invariant_character_transport :
   simp [Submodule.mapQ_apply]
 
 theorem UpperTheory.Reformulated.B.DYhc8.span_sub_smul_le_comap_mul_twKer :
-    ∀ {G V : Type} [inst : Group G] [inst_1 : AddCommGroup V] [inst_2 : _root_.Module ℂ V] (ρ : Representation ℂ G V)
-      (N : Subgroup G) (θ : ↥N →* ℂˣ) {M : Type} [inst_3 : Group M] (s : M →* G),
+    ∀ {G V : Type} [Group G] [AddCommGroup V] [_root_.Module ℂ V] (ρ : Representation ℂ G V)
+      (N : Subgroup G) (θ : ↥N →* ℂˣ) {M : Type} [Group M] (s : M →* G),
       (∀ (m : M) (n : ↥N),
           ∃ (h : (s : M → G) m * (↑n : G) * ((s : M → G) m)⁻¹ ∈ N),
             (θ : ↥N → ℂˣ) (⟨(s : M → G) m * (↑n : G) * ((s : M → G) m)⁻¹, h⟩ : ↥N) = (θ : ↥N → ℂˣ) n) →
@@ -409,8 +409,8 @@ theorem UpperTheory.Reformulated.B.DYhc8.span_sub_smul_le_comap_mul_twKer :
   exact UpperTheory.Reformulated.B.DYhc8.conj_invariant_character_mem ρ N θ s hs (a * b)
 
 theorem UpperTheory.Reformulated.B.DYhc8.conj_invariant_character_apply :
-    ∀ {G V : Type} [inst : Group G] [inst_1 : AddCommGroup V] [inst_2 : _root_.Module ℂ V] (ρ : Representation ℂ G V)
-      (N : Subgroup G) (θ : ↥N →* ℂˣ) {M : Type} [inst_3 : Group M] (s : M →* G)
+    ∀ {G V : Type} [Group G] [AddCommGroup V] [_root_.Module ℂ V] (ρ : Representation ℂ G V)
+      (N : Subgroup G) (θ : ↥N →* ℂˣ) {M : Type} [Group M] (s : M →* G)
       (hs :
         ∀ (m : M) (n : ↥N),
           ∃ (h : (s : M → G) m * (↑n : G) * ((s : M → G) m)⁻¹ ∈ N),
@@ -431,14 +431,14 @@ theorem UpperTheory.Reformulated.B.DYhc8.conj_invariant_character_apply :
 
 noncomputable def UpperTheory.Reformulated.B.DYhc8.twAct :
     {G V : Type} →
-      [inst : Group G] →
-        [inst_1 : AddCommGroup V] →
-          [inst_2 : _root_.Module ℂ V] →
+      [Group G] →
+        [AddCommGroup V] →
+          [_root_.Module ℂ V] →
             (ρ : Representation ℂ G V) →
               (N : Subgroup G) →
                 (θ : ↥N →* ℂˣ) →
                   {M : Type} →
-                    [inst_3 : Group M] →
+                    [Group M] →
                       (s : M →* G) →
                         (∀ (m : M) (n : ↥N),
                             ∃ (h : (s : M → G) m * (↑n : G) * ((s : M → G) m)⁻¹ ∈ N),
@@ -460,11 +460,11 @@ noncomputable def UpperTheory.Reformulated.B.DYhc8.twAct :
 noncomputable def UpperTheory.Reformulated.B.DYhc8.glEmbMat :
     (k : Type) → [Field k] → (n : ℕ) → Matrix (Fin n) (Fin n) k → Matrix (Fin (n + (1 : ℕ))) (Fin (n + (1 : ℕ))) k :=
     fun (k : Type) [Field k] (n : ℕ) (A : Matrix (Fin n) (Fin n) k) (i j : Fin (n + (1 : ℕ))) ↦
-      Fin.lastCases (Fin.lastCases (1 : k) (fun (x : Fin n) ↦ (0 : k)) j)
+      Fin.lastCases (Fin.lastCases (1 : k) (fun (_ : Fin n) ↦ (0 : k)) j)
         (fun (i' : Fin n) ↦ Fin.lastCases (0 : k) (fun (j' : Fin n) ↦ A i' j') j) i
 
 theorem UpperTheory.Reformulated.B.DYhc8.glEmbMat_one_eq_one :
-    ∀ (k : Type) [inst : Field k] (n : ℕ),
+    ∀ (k : Type) [Field k] (n : ℕ),
       UpperTheory.Reformulated.B.DYhc8.glEmbMat k n (1 : Matrix (Fin n) (Fin n) k) = (1 : Matrix (Fin (n + (1 : ℕ))) (Fin (n + (1 : ℕ))) k) := by
   intro k _ n
   ext i j
@@ -480,7 +480,7 @@ theorem UpperTheory.Reformulated.B.DYhc8.glEmbMat_one_eq_one :
     | cast j => simp [Matrix.one_apply]
 
 theorem UpperTheory.Reformulated.B.DYhc8.glEmbMat_mul_eq_mul :
-    ∀ (k : Type) [inst : Field k] (n : ℕ) (A B : Matrix (Fin n) (Fin n) k),
+    ∀ (k : Type) [Field k] (n : ℕ) (A B : Matrix (Fin n) (Fin n) k),
       UpperTheory.Reformulated.B.DYhc8.glEmbMat k n (A * B) = UpperTheory.Reformulated.B.DYhc8.glEmbMat k n A * UpperTheory.Reformulated.B.DYhc8.glEmbMat k n B := by
   intro k _ n A B
   ext i j
@@ -497,18 +497,18 @@ theorem UpperTheory.Reformulated.B.DYhc8.glEmbMat_mul_eq_mul :
     | cast j => simp [Matrix.mul_apply]
 
 noncomputable def UpperTheory.Reformulated.B.DYhc8.glEmbHom :
-    (k : Type) → [inst : Field k] → (n : ℕ) → Matrix (Fin n) (Fin n) k →* Matrix (Fin (n + (1 : ℕ))) (Fin (n + (1 : ℕ))) k :=
+    (k : Type) → [Field k] → (n : ℕ) → Matrix (Fin n) (Fin n) k →* Matrix (Fin (n + (1 : ℕ))) (Fin (n + (1 : ℕ))) k :=
     fun (k : Type) [Field k] (n : ℕ) ↦
       { toFun := UpperTheory.Reformulated.B.DYhc8.glEmbMat k n, map_one' := UpperTheory.Reformulated.B.DYhc8.glEmbMat_one_eq_one k n,
         map_mul' := UpperTheory.Reformulated.B.DYhc8.glEmbMat_mul_eq_mul k n :
         Matrix (Fin n) (Fin n) k →* Matrix (Fin (n + (1 : ℕ))) (Fin (n + (1 : ℕ))) k }
 
 noncomputable def UpperTheory.Reformulated.B.DYhc8.glEmb :
-    (k : Type) → [inst : Field k] → (n : ℕ) → GL (Fin n) k →* GL (Fin (n + (1 : ℕ))) k :=
+    (k : Type) → [Field k] → (n : ℕ) → GL (Fin n) k →* GL (Fin (n + (1 : ℕ))) k :=
     fun (k : Type) [Field k] (n : ℕ) ↦ Units.map (UpperTheory.Reformulated.B.DYhc8.glEmbHom k n)
 
 theorem UpperTheory.Reformulated.B.DYhc8.glEmb_mem_mirabolic :
-    ∀ (k : Type) [inst : Field k] (n : ℕ) (g : GL (Fin n) k),
+    ∀ (k : Type) [Field k] (n : ℕ) (g : GL (Fin n) k),
       (UpperTheory.Reformulated.B.DYhc8.glEmb k n : GL (Fin n) k → GL (Fin (n + (1 : ℕ))) k) g ∈ UpperTheory.Reformulated.B.DYhc8.Mir k n := by
   intro k _ n g
   change Matrix.vecMul (UpperTheory.Reformulated.B.DYhc8.eLast k n) (UpperTheory.Reformulated.B.DYhc8.glEmbMat k n (↑g)) = UpperTheory.Reformulated.B.DYhc8.eLast k n
@@ -519,7 +519,7 @@ theorem UpperTheory.Reformulated.B.DYhc8.glEmb_mem_mirabolic :
   | cast j => simp [UpperTheory.Reformulated.B.DYhc8.glEmbMat]
 
 noncomputable def UpperTheory.Reformulated.B.DYhc8.levi :
-    (k : Type) → [inst : Field k] → (n : ℕ) → GL (Fin n) k →* ↥(UpperTheory.Reformulated.B.DYhc8.Mir k n) :=
+    (k : Type) → [Field k] → (n : ℕ) → GL (Fin n) k →* ↥(UpperTheory.Reformulated.B.DYhc8.Mir k n) :=
     fun (k : Type) [Field k] (n : ℕ) ↦
       (UpperTheory.Reformulated.B.DYhc8.glEmb k n).codRestrict (UpperTheory.Reformulated.B.DYhc8.Mir k n) (UpperTheory.Reformulated.B.DYhc8.glEmb_mem_mirabolic k n)
 
@@ -564,7 +564,7 @@ private theorem conj_unip (k : Type) [Field k] (n : ℕ) (g : GL (Fin n) k)
   rw [mul_add, add_mul, mul_one, one_mul, glEmbMat_mul_colMat, colMat_mul_glEmbMat]
 
 theorem UpperTheory.Reformulated.B.DYhc8.levi_conj_unipotent_mem :
-    ∀ {k : Type} [inst : Field k] [inst_1 : ValuativeRel k] [inst_2 : TopologicalSpace k] [IsNonarchimedeanLocalField k]
+    ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
       (n : ℕ) (m : GL (Fin n) k) (u : ↥(UpperTheory.Reformulated.B.DYhc8.MirUin k n)),
       ∃ (h :
         (UpperTheory.Reformulated.B.DYhc8.levi k n : GL (Fin n) k → ↥(UpperTheory.Reformulated.B.DYhc8.Mir k n)) m * (↑u : ↥(UpperTheory.Reformulated.B.DYhc8.Mir k n)) *
@@ -590,14 +590,14 @@ theorem UpperTheory.Reformulated.B.DYhc8.levi_conj_unipotent_mem :
 
 noncomputable def UpperTheory.Reformulated.B.DYhc8.psiMinus :
     (k : Type) →
-      [inst : Field k] →
-        [inst_1 : ValuativeRel k] →
-          [inst_2 : TopologicalSpace k] →
+      [Field k] →
+        [ValuativeRel k] →
+          [TopologicalSpace k] →
             [IsNonarchimedeanLocalField k] →
               {n : ℕ} →
                 {V : Type} →
-                  [inst_4 : AddCommGroup V] →
-                    [inst_5 : _root_.Module ℂ V] →
+                  [AddCommGroup V] →
+                    [_root_.Module ℂ V] →
                       (τ : Representation ℂ (↥(UpperTheory.Reformulated.B.DYhc8.Mir k n)) V) →
                         Representation ℂ (GL (Fin n) k)
                           (UpperTheory.Reformulated.B.DYhc8.TwJacquet τ (UpperTheory.Reformulated.B.DYhc8.MirUin k n)
@@ -609,9 +609,9 @@ noncomputable def UpperTheory.Reformulated.B.DYhc8.psiMinus :
 
 noncomputable def UpperTheory.Reformulated.B.DYhc8.SmPsiMinus :
     (k : Type) →
-      [inst : Field k] → [inst_1 : ValuativeRel k] → [inst_2 : TopologicalSpace k] → [IsNonarchimedeanLocalField k] → Prop :=
+      [Field k] → [ValuativeRel k] → [TopologicalSpace k] → [IsNonarchimedeanLocalField k] → Prop :=
     fun (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] ↦
-      ∀ (n : ℕ) (V : Type) [inst_4 : AddCommGroup V] [inst_5 : _root_.Module ℂ V]
+      ∀ (n : ℕ) (V : Type) [AddCommGroup V] [_root_.Module ℂ V]
         (τ : Representation ℂ (↥(UpperTheory.Reformulated.B.DYhc8.Mir k n)) V),
         UpperTheory.Reformulated.B.DYhc8.IsSmooth τ → UpperTheory.Reformulated.B.DYhc8.IsSmooth (UpperTheory.Reformulated.B.DYhc8.psiMinus k τ)
 
@@ -655,8 +655,8 @@ private theorem isOpen_fixed {G W : Type} [Group G] [TopologicalSpace G] [IsTopo
   exact S.isOpen_of_mem_nhds (g := 1) (Filter.mem_of_superset (hU.mem_nhds h1) hsub)
 
 theorem UpperTheory.Reformulated.B.DYhc8.main :
-    ∀ (k : Type) [inst : Field k] [inst_1 : ValuativeRel k] [inst_2 : TopologicalSpace k]
-      [inst_3 : IsNonarchimedeanLocalField k], UpperTheory.Reformulated.B.DYhc8.SmPsiMinus k := by
+    ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
+      [IsNonarchimedeanLocalField k], UpperTheory.Reformulated.B.DYhc8.SmPsiMinus k := by
   intro k _ _ _ _ n V _ _ τ hτ x
   obtain ⟨v, rfl⟩ := Submodule.Quotient.mk_surjective _ x
   refine isOpen_fixed (UpperTheory.Reformulated.B.DYhc8.psiMinus k τ) _

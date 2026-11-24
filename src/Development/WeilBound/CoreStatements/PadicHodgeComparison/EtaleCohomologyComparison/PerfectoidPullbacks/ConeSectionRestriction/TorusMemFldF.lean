@@ -179,7 +179,7 @@ theorem fldF_findim_pf_mem (t : Fin (n + 1) → Rˣ) :
   have := hle hr
   rwa [Subalgebra.mem_comap, IsScalarTower.coe_toAlgHom', IntermediateField.mem_toSubalgebra] at this
 
-theorem fldF_findim_pf (t : Fin (n + 1) → Rˣ) (Bu : Subalgebra K R) (hTB : torusS K t Finset.univ ≤ Bu) (hFG : Bu.FG)
+theorem fldF_findim_pf (t : Fin (n + 1) → Rˣ) (Bu : Subalgebra K R) (hFG : Bu.FG)
     (hInt : ∀ b ∈ Bu, IsIntegral (torusS K t Finset.univ) b)
     (hFrac : ∀ r : R, ∃ b ∈ Bu, ∃ b' ∈ Bu, b' ≠ 0 ∧ r * b' = b) :
     FiniteDimensional (fldF K t) (FractionRing R) := by
@@ -294,7 +294,7 @@ theorem torus_mem_fldF (t : Fin (n + 1) → Rˣ) (S : Finset (Fin (n + 2))) :
   fldF_findim_pf_mem t r (torusS_le_univ t S hr)
 
 theorem trace_deriv [CharZero K] (t : Fin (n + 1) → Rˣ) [FiniteDimensional (fldF K t) (FractionRing R)] (D : Derivation K R R)
-    (hD : ∀ j, D (t j : R) ∈ Set.range (algebraMap K R)) (y b : R) (hb : b ∈ torusS K t Finset.univ)
+    (hD : ∀ j, D (t j : R) ∈ Set.range (algebraMap K R)) (y b : R)
     (hy : algebraMap (fldF K t) (FractionRing R)
       (Algebra.trace (fldF K t) (FractionRing R) (algebraMap R (FractionRing R) y)) = algebraMap R (FractionRing R) b) :
     algebraMap (fldF K t) (FractionRing R)

@@ -326,7 +326,7 @@ theorem nInv_act {b : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (h
   show (Matrix.of a)⁻¹ * (b * Matrix.of y.1.2) = (b⁻¹ * Matrix.of a)⁻¹ * Matrix.of y.1.2
   rw [Matrix.mul_inv_rev, Matrix.nonsing_inv_nonsing_inv b hd, Matrix.mul_assoc]
 
-theorem Phi_inv (hg : g ∈ UH (Hpk k r)) (hμ : IsHaarOn (RStab k r g) μR) (hK : ∀ m, IsClosed (K m))
+theorem Phi_inv (hμ : IsHaarOn (RStab k r g) μR) (hK : ∀ m, IsClosed (K m))
     {b : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hb : b ∈ RStab k r g) (m : ℕ) (y : PairSp k r) :
     Phi g μR K m (stabAct g b y) = Phi g μR K m y := by
   have hbU : b ∈ UH (Hpk k r) := hb.1.1
@@ -431,7 +431,7 @@ theorem theta_at (hg : g ∈ UH (Hpk k r)) (hμ : IsHaarOn (RStab k r g) μR) (h
     theta g μR K (stabAct g (Matrix.of a)⁻¹ y) = (K m).indicator 1 (nInv g a y) * (Phi g μR K m y)⁻¹ := by
   have hinvR := rstab_inv hg ha
   have hPhi : ∀ j, Phi g μR K j (stabAct g (Matrix.of a)⁻¹ y) = Phi g μR K j y :=
-    fun j => Phi_inv hg hμ hK hinvR j y
+    fun j => Phi_inv hμ hK hinvR j y
   have hE : ∀ j, stabAct g (Matrix.of a)⁻¹ y ∈ Eset g μR K j ↔ y ∈ Eset g μR K j := by
     intro j
     show (Phi g μR K j (stabAct g (Matrix.of a)⁻¹ y) ≠ 0 ∧ ∀ i < j, Phi g μR K i (stabAct g (Matrix.of a)⁻¹ y) = 0) ↔

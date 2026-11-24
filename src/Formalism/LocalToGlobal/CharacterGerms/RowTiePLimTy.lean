@@ -80,7 +80,7 @@ theorem isCv_lim {σ : Type} {γ : ℕ → σ → PowerSeries C} {Γ : σ → Po
   exact eq_zero_of_tends_const_zero h0
 
 theorem constantCoeff_lin {d : ℕ} {I : Fin 2 → Type} [∀ g, Fintype (I g)] {κ : Type}
-    (X : RawChart C d I κ) (l : ℕ) (hl : 2 ≤ l) (g : Fin 2) (b : I g → ℕ → C) (i : κ) :
+    (X : RawChart C d I κ) (l : ℕ) (g : Fin 2) (b : I g → ℕ → C) (i : κ) :
     MvPowerSeries.constantCoeff (∑ c : I g, X.u g c i • tyS l (b c)) = 0 := by
 
   rw [map_sum]
@@ -113,11 +113,11 @@ theorem lim_mem {d : ℕ} {I : Fin 2 → Type} [∀ g, Fintype (I g)] {κ : Type
   have hT0 : ∀ k i, MvPowerSeries.constantCoeff (T k i) = 0 := by
     intro k i
     rw [hTdef]
-    exact constantCoeff_lin X V.l hl g (fun c s => x k s (Sum.inl c)) i
+    exact constantCoeff_lin X V.l g (fun c s => x k s (Sum.inl c)) i
   have hT'0 : ∀ i, MvPowerSeries.constantCoeff (T' i) = 0 := by
     intro i
     rw [hT'def]
-    exact constantCoeff_lin X V.l hl g (fun c s => x' s (Sum.inl c)) i
+    exact constantCoeff_lin X V.l g (fun c s => x' s (Sum.inl c)) i
   have hTlim : ∀ i, TendsS V (fun k => T k i) (T' i) := by
     intro i
     simp only [hTdef, hT'def]

@@ -102,33 +102,33 @@ def amb (U : Set (Mat k r)) : Set (Mt k r) := {x | Matrix.of x ∈ U}
 
 theorem amb_closed {U : Set (Mat k r)} (hU : IsClosedSubgroup U) : IsClosed (amb U) := hU.closed
 
-def Gp (U : Set (Mat k r)) (_hU : IsClosedSubgroup U) : Type := {x : Mt k r // x ∈ amb U}
+def Gp (U : Set (Mat k r)) : Type := {x : Mt k r // x ∈ amb U}
 
 variable {U : Set (Mat k r)} {hU : IsClosedSubgroup U}
 
-instance : TopologicalSpace (Gp U hU) := inferInstanceAs (TopologicalSpace {x : Mt k r // x ∈ amb U})
-instance : MeasurableSpace (Gp U hU) := inferInstanceAs (MeasurableSpace {x : Mt k r // x ∈ amb U})
-instance : BorelSpace (Gp U hU) := inferInstanceAs (BorelSpace {x : Mt k r // x ∈ amb U})
-instance : SecondCountableTopology (Gp U hU) :=
+instance : TopologicalSpace (Gp U) := inferInstanceAs (TopologicalSpace {x : Mt k r // x ∈ amb U})
+instance : MeasurableSpace (Gp U) := inferInstanceAs (MeasurableSpace {x : Mt k r // x ∈ amb U})
+instance : BorelSpace (Gp U) := inferInstanceAs (BorelSpace {x : Mt k r // x ∈ amb U})
+instance : SecondCountableTopology (Gp U) :=
   inferInstanceAs (SecondCountableTopology {x : Mt k r // x ∈ amb U})
 
-def inc (x : Gp U hU) : Mt k r := x.1
+def inc (x : Gp U) : Mt k r := x.1
 
-theorem inc_mem (x : Gp U hU) : Matrix.of (inc x) ∈ U := x.2
+theorem inc_mem (x : Gp U) : Matrix.of (inc x) ∈ U := x.2
 
-theorem inc_cont : Continuous (inc : Gp U hU → Mt k r) := continuous_subtype_val
+theorem inc_cont : Continuous (inc : Gp U → Mt k r) := continuous_subtype_val
 
-theorem inc_closedEmb : IsClosedEmbedding (inc : Gp U hU → Mt k r) :=
+theorem inc_closedEmb : IsClosedEmbedding (inc : Gp U → Mt k r) :=
   (amb_closed hU).isClosedEmbedding_subtypeVal
 
-theorem inc_memb : MeasurableEmbedding (inc : Gp U hU → Mt k r) :=
+theorem inc_memb : MeasurableEmbedding (inc : Gp U → Mt k r) :=
   MeasurableEmbedding.subtype_coe (amb_closed hU).measurableSet
 
-theorem range_inc : Set.range (inc : Gp U hU → Mt k r) = amb U := Subtype.range_coe
+theorem range_inc : Set.range (inc : Gp U → Mt k r) = amb U := Subtype.range_coe
 
-instance : LocallyCompactSpace (Gp U hU) := inc_closedEmb.locallyCompactSpace
+instance : LocallyCompactSpace (Gp U) := inc_closedEmb.locallyCompactSpace
 
-instance : Group (Gp U hU) where
+instance : Group (Gp U) where
   mul a b := ⟨mulM (a.1, b.1), hU.mul_mem _ a.2 _ b.2⟩
   one := ⟨(1 : Mat k r), hU.one_mem⟩
   inv a := ⟨invM a.1, hU.inv_mem _ a.2⟩
@@ -137,9 +137,9 @@ instance : Group (Gp U hU) where
   mul_one a := Subtype.ext (Matrix.mul_one (Matrix.of a.1 : Mat k r))
   inv_mul_cancel a := Subtype.ext (Matrix.nonsing_inv_mul (Matrix.of a.1 : Mat k r) (hU.unit _ a.2))
 
-theorem inc_mul (a b : Gp U hU) : inc (a * b) = lmulM (Matrix.of (inc a)) (inc b) := rfl
+theorem inc_mul (a b : Gp U) : inc (a * b) = lmulM (Matrix.of (inc a)) (inc b) := rfl
 
-instance : IsTopologicalGroup (Gp U hU) where
+instance : IsTopologicalGroup (Gp U) where
   continuous_mul := by
     refine Continuous.subtype_mk (mulM_cont.comp ?_) _
     exact (continuous_subtype_val.comp continuous_fst).prodMk (continuous_subtype_val.comp continuous_snd)
@@ -147,7 +147,7 @@ instance : IsTopologicalGroup (Gp U hU) where
     refine Continuous.subtype_mk ?_ _
     exact invM_contOn.comp_continuous continuous_subtype_val (fun x => (hU.unit _ x.2).ne_zero)
 
-def pull (hU : IsClosedSubgroup U) (μ : Measure (Mt k r)) : Measure (Gp U hU) := μ.comap inc
+def pull (hU : IsClosedSubgroup U) (μ : Measure (Mt k r)) : Measure (Gp U) := μ.comap inc
 
 theorem map_pull (μ : Measure (Mt k r)) (h : μ Uᶜ = 0) : (pull hU μ).map inc = μ := by
   rw [pull, inc_memb.map_comap, range_inc]

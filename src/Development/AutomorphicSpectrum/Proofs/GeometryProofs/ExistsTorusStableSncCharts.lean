@@ -333,7 +333,7 @@ private lemma torusSmul_mem_mcPts' {K : Type} [Fintype K] {J : K → Type} [∀ 
 
 theorem mcPts_finite_cover_up_to_torus :
     ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (P : Ideal (MRing J))
-    (hP : ReciprocityTheory.AnForm.R.IsMultiHomogIdeal (pC P)) (C : Type) (O : C → Set ((Σ k, J k) → ℂ)),
+    (_ : ReciprocityTheory.AnForm.R.IsMultiHomogIdeal (pC P)) (C : Type) (O : C → Set ((Σ k, J k) → ℂ)),
     (∀ i, IsOpen (O i)) → (∀ z ∈ mcPts P, ∃ i, z ∈ O i) →
     ∃ (m : ℕ) (e : Fin m → C), ∀ z ∈ mcPts P, ∃ (a : Fin m) (c : K → ℂ), (∀ k, c k ≠ 0) ∧
       torusSmul c z ∈ O (e a) ∧ torusSmul c z ∈ mcPts P := by
@@ -598,7 +598,7 @@ theorem eq_zero_of_fderiv_eq_zero {σ : Type} [Fintype σ] {n m : ℕ} (e : σ �
   exact (smul_eq_zero.mp h1.symm).resolve_left hε
 
 theorem sncChart_of_regular_parameters : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (P : Ideal (MRing J))
-    (hP : ReciprocityTheory.AnForm.R.IsMultiHomogIdeal (pC P)) (n : ℕ) (Bd : Set ((Σ k, J k) → ℂ)) (c : (k : K) → J k)
+    (_ : ReciprocityTheory.AnForm.R.IsMultiHomogIdeal (pC P)) (n : ℕ) (Bd : Set ((Σ k, J k) → ℂ)) (c : (k : K) → J k)
     (w : (Σ k, J k) → ℂ), w ∈ mcPts P → (∀ k, w ⟨k, c k⟩ ≠ 0) →
     ∀ (a : ℕ) (r : Fin n → MvPolynomial (Fin (Fintype.card (Σ k, J k))) ℂ)
       (h : MvPolynomial (Fin (Fintype.card (Σ k, J k))) ℂ)
@@ -667,7 +667,7 @@ theorem sncChart_of_regular_parameters : ∀ (K : Type) [Fintype K] (J : K → T
   have hchart : ∀ t ∈ Metric.ball (0 : Fin n → ℂ) 1,
       gm t ∈ ReciprocityTheory.AnForm.R.conePts (pC P) ∧ ∀ k, gm t ⟨k, c k⟩ = 1 := by
     intro t ht
-    have h1 := ReciprocityTheory.AnForm.R.conePts_of_chartIdeal hP c (gm t)
+    have h1 := ReciprocityTheory.AnForm.R.conePts_of_chartIdeal c (gm t)
       (eval_unren_eq_zero _ _ (hzs t ht))
     exact ⟨h1.1, h1.2.1⟩
   have hcoord : ∀ t ∈ Metric.ball (0 : Fin n → ℂ) 1,
@@ -1046,7 +1046,7 @@ theorem snc_params : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype
     have hzc : ∀ g ∈ CI, eval v' g = 0 := fun g hg => by
       rw [← hev']
       exact hv _ (hrenI g hg)
-    have hcone := ReciprocityTheory.AnForm.R.conePts_of_chartIdeal hPh c v' (by rw [← hCI]; exact hzc)
+    have hcone := ReciprocityTheory.AnForm.R.conePts_of_chartIdeal c v' (by rw [← hCI]; exact hzc)
     have hvP : v' ∈ mcPts (mCoordIdeal y) := (mem_mcPts_iff_conePts_pC _ _).2 hcone.1
     obtain ⟨φ, hφ⟩ := hhom ℂ (eval v') hzc (isUnit_iff_ne_zero.2 (by rw [← hev']; exact hvF))
     have hvφ : ∀ i, φ (z i) * eval v Fr ^ kk i = eval v (Zr i) := by

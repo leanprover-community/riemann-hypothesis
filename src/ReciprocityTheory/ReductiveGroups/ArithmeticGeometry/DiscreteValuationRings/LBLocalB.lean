@@ -29,7 +29,7 @@ theorem exists_genHasVal (hϖ : Irreducible ϖ) {X : Scheme.{0}} (L : LB X) (hL 
     ∃ n, GenHasVal ϖ L φ φ' hφ ε t n := by
   obtain rfl : φ' = fun k => jK V ≫ φ k := funext hφ
   obtain ⟨e, he⟩ := exists_gen_of_local L hL φ ε
-  obtain ⟨j₀, htop⟩ := exists_chart_top L hL φ ε
+  obtain ⟨j₀, htop⟩ := exists_chart_top L hL φ
   have hK : (⊤ : (Spec (CommRingCat.of (FractionRing V))).Opens) ≤
       LB.wchart L (fun k => jK V ≫ φ k) j₀ := by
     intro y _
@@ -104,7 +104,7 @@ theorem genHasVal_unique (hϖ : Irreducible ϖ) {X : Scheme.{0}} (L : LB X) (hL 
     (hφ : ∀ k, φ' k = jK V ≫ φ k) (ε : Ix → ℤ) (t : LB.Gen (LB.LinComb L φ' ε)) {n m : ℤ}
     (hn : GenHasVal ϖ L φ φ' hφ ε t n) (hm : GenHasVal ϖ L φ φ' hφ ε t m) : n = m := by
   obtain rfl : φ' = fun k => jK V ≫ φ k := funext hφ
-  obtain ⟨j₀, htop⟩ := exists_chart_top L hL φ ε
+  obtain ⟨j₀, htop⟩ := exists_chart_top L hL φ
   have hK : (⊤ : (Spec (CommRingCat.of (FractionRing V))).Opens) ≤
       LB.wchart L (fun k => jK V ≫ φ k) j₀ := by
     intro y _
@@ -135,7 +135,7 @@ lemma sumElim_hφ {X : Scheme.{0}} {Ix Ix' : Type}
 
 
 
-theorem genHasVal_mulGen (hϖ : Irreducible ϖ) {X : Scheme.{0}} (L : LB X) (hL : L.IsLB) {Ix Ix' : Type} [Fintype Ix] [Fintype Ix']
+theorem genHasVal_mulGen (hϖ : Irreducible ϖ) {X : Scheme.{0}} (L : LB X) {Ix Ix' : Type} [Fintype Ix] [Fintype Ix']
     (φ₁ : Ix → (Spec (CommRingCat.of V) ⟶ X)) (φ₁' : Ix → (Spec (CommRingCat.of (FractionRing V)) ⟶ X))
     (hφ₁ : ∀ k, φ₁' k = jK V ≫ φ₁ k) (ε₁ : Ix → ℤ)
     (φ₂ : Ix' → (Spec (CommRingCat.of V) ⟶ X)) (φ₂' : Ix' → (Spec (CommRingCat.of (FractionRing V)) ⟶ X))
@@ -212,7 +212,7 @@ theorem genHasVal_mulGen (hϖ : Irreducible ϖ) {X : Scheme.{0}} (L : LB X) (hL 
     obtain ⟨C₂, hC₂v, hC₂e⟩ := hC₂ (j ∘ Sum.inr)
     exact key2 _ _ _ _ _ _ _ _ _ _ C₁ _ C₂ _ _ hC₁e hC₂e hC₁v hC₂v
 
-theorem genHasVal_invGen {X : Scheme.{0}} (L : LB X) (hL : L.IsLB) {Ix : Type} [Fintype Ix]
+theorem genHasVal_invGen {X : Scheme.{0}} (L : LB X) {Ix : Type} [Fintype Ix]
     (φ : Ix → (Spec (CommRingCat.of V) ⟶ X)) (φ' : Ix → (Spec (CommRingCat.of (FractionRing V)) ⟶ X))
     (hφ : ∀ k, φ' k = jK V ≫ φ k) (ε : Ix → ℤ) (t : LB.Gen (LB.LinComb L φ' ε)) {n : ℤ}
     (hn : GenHasVal ϖ L φ φ' hφ ε t n) :
@@ -424,7 +424,7 @@ theorem genHasVal_ge_of_in (hϖ : Irreducible ϖ) {X : Scheme.{0}} (L : LB X) (h
             ((Spec (CommRingCat.of (FractionRing V))).presheaf.map (homOfLE h).op).hom (t.s j).val)
     {n : ℤ} (hn : GenHasVal ϖ L (fun _ => x) (fun _ => x') (fun _ => hx) (fun _ => ε) t n) : (k : ℤ) ≤ n := by
   subst hx
-  obtain ⟨j₀, htop⟩ := exists_chart_top L hL (fun _ : PUnit => x) (fun _ => ε)
+  obtain ⟨j₀, htop⟩ := exists_chart_top L hL (fun _ : PUnit => x)
   have hK : (⊤ : (Spec (CommRingCat.of (FractionRing V))).Opens) ≤
       LB.wchart L (fun _ : PUnit => jK V ≫ x) j₀ := by
     intro y _

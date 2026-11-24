@@ -579,7 +579,7 @@ def inc (E : Type) [Field E] [NumberField E] (n : ℕ) : (Fin n → 𝓞 E) →�
 
 theorem inc_apply (x : Fin n → 𝓞 E) (j : Fin n) : (inc E n x : Fin n → E) j = x j := rfl
 
-theorem inc_injective : Function.Injective (inc E n) := fun x y h =>
+theorem inc_injective : Function.Injective (inc E n) := fun _ _ h =>
   funext fun j => RingOfIntegers.ext (congrFun (congrArg Subtype.val h) j)
 
 theorem inc_surjective : Function.Surjective (inc E n) := fun v => by

@@ -376,7 +376,7 @@ theorem Psi_fin_zero {R : Type*} [CommRing R] {N : ℕ} (mu : Fin (N + 1) → Fi
     Psi R mu I = 1 := by
   simp [Psi, column_kernel_fin_zero]
 
-theorem canonical_Psi_ne_zero_of_path_basis (D : Formalism.BasicNotions.D7) (h17 : PathBasisOverRing D) (R : Type) [CommRing R] [Nontrivial R] {N n : ℕ}
+theorem canonical_Psi_ne_zero_of_path_basis (D : Formalism.BasicNotions.D7) (h17 : PathBasisOverRing) (R : Type) [CommRing R] [Nontrivial R] {N n : ℕ}
     {LL : Letters (Fin N)} {B : Fin N → ℕ} (P : PPath n N LL B) : Psi R P.mu (Ican P.mu) ≠ 0 := by
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · rw [Psi_fin_zero]; exact one_ne_zero
@@ -386,7 +386,7 @@ theorem canonical_Psi_ne_zero_of_path_basis (D : Formalism.BasicNotions.D7) (h17
       {x : PPath n N LL B × (ℤ → Finset (Fin n)) // IsSt x.1.mu x.2})
     exact this
 
-theorem canonical_Psi_linear_independent (D : Formalism.BasicNotions.D7) (h17 : PathBasisOverRing D) (F : Type) [Field F] {N n : ℕ}
+theorem canonical_Psi_linear_independent (D : Formalism.BasicNotions.D7) (h17 : PathBasisOverRing) (F : Type) [Field F] {N n : ℕ}
     (LL : Letters (Fin N)) (B : Fin N → ℕ) (mu : Fin n → ℤ) :
     LinearIndependent F (fun P : {P : PPath n N LL B // pEnd P.mu = mu} => Psi F P.1.mu (Ican P.1.mu)) := by
   rcases Nat.eq_zero_or_pos n with rfl | hn
@@ -920,7 +920,7 @@ theorem weight_of_canonical_Psi_support {B : Fin N → ℕ} (Pa : PPath n N LL B
 
 end wt
 
-theorem automorphicSideConclusion_of_pathBasis (D : Formalism.BasicNotions.D7) (h17 : PathBasisOverRing D) : AutomorphicSideConclusion D := by
+theorem automorphicSideConclusion_of_pathBasis (D : Formalism.BasicNotions.D7) (h17 : PathBasisOverRing) : AutomorphicSideConclusion := by
   intro p _ O _ _ _ _ N n LL B mu
   refine ⟨?_, canonical_Psi_linear_independent D h17 (FF O) LL B mu⟩
   rintro P rfl

@@ -65,7 +65,7 @@ section Abstract
 
 variable {R P A : Type} [CommRing R] [AddCommGroup P] [Module R P] [AddCommGroup A] [Module R A]
 
-theorem exists_nsmul {B : LinearMap.BilinForm ℤ P} (hB : Function.Bijective B) {m : ℕ} (hm : m ≠ 0) {x : P}
+theorem exists_nsmul {B : LinearMap.BilinForm ℤ P} (hB : Function.Bijective B) {m : ℕ} {x : P}
     (h : ∀ y, (m : ℤ) ∣ B x y) : ∃ z, x = m • z := by
   let f : P →ₗ[ℤ] ℤ :=
     { toFun := fun y => B x y / m
@@ -122,7 +122,7 @@ theorem mem_of_dvd (hm : m ≠ 0) (hmI : (m : R) ∈ I) (hss : ∀ a, s (s a) = 
     (hc : c ∈ I) (hc1 : c - 1 ∈ J) (hB : Function.Bijective B)
     (aB : ∀ (a : R) x y, B (a • x) y = B x (s a • y)) {x : P}
     (h : ∀ y ∈ I • (⊤ : Submodule R P), (m : ℤ) ∣ B x y) : x ∈ I • (⊤ : Submodule R P) := by
-  obtain ⟨z, hz⟩ := exists_nsmul hB hm (x := s c • x) fun y => by
+  obtain ⟨z, hz⟩ := exists_nsmul hB (x := s c • x) fun y => by
     rw [aB, hss]; exact h _ (Submodule.smul_mem_smul hc trivial)
   have : x = m • z - s (c - 1) • x := by rw [map_sub, map_one, sub_smul, one_smul, hz]; simp
   rw [this]
@@ -221,7 +221,7 @@ theorem mark_eq_of_dual (hIJ : J * I ≤ Ideal.span {(m : R)}) (hm : m ≠ 0) (h
     (h' : ∀ x, ∀ a ∈ I • (⊤ : Submodule R A), (m : ℤ) ∣ k * C x a + B (δ' x) (mk' a))
     (hs : ∀ v, ∃ x, v - δ x ∈ I • (⊤ : Submodule R P)) (hd : ∀ x, δ x - δ' x ∈ I • (⊤ : Submodule R P))
     {a : A} (ha : a ∈ I • (⊤ : Submodule R A)) : ∃ u, mk a - mk' a = m • u := by
-  refine exists_nsmul hB hm fun y => ?_
+  refine exists_nsmul hB fun y => ?_
   obtain ⟨x, hx⟩ := hs y
   have h1 := dvd_of_mem hIJ ‹_› aB hx (sub_mem (map_mem mk ha) (map_mem mk' ha))
   have h2 := dvd_of_mem hIJ ‹_› aB (hd x) (map_mem mk' ha)

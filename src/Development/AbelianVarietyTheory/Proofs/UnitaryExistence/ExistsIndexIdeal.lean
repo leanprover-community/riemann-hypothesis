@@ -322,7 +322,7 @@ theorem bdd_of_unimod [IsCMField E] (Λ : GenLat E n) (h : Λ.Unimod) : Bdd Λ.L
     exact Finset.prod_ne_zero_iff.2 fun i _ => ha0 i
   · obtain ⟨b, hb⟩ := (h _).1 (hA j) v hv
     refine ⟨b, ?_⟩
-    rw [Finset.sum_eq_single j (fun i _ hi => by simp [Pi.single_apply, hi]) (by simp)] at hb
+    rw [Finset.sum_eq_single j (fun i _ hi => by simp [hi]) (by simp)] at hb
     change _ = ((IsCMField.ringOfIntegersComplexConj E (∏ i, a i) : 𝓞 E) : E) * v j
     rw [IsCMField.coe_ringOfIntegersComplexConj]
     simpa [Algebra.smul_def] using hb

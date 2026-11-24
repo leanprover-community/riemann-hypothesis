@@ -1493,7 +1493,7 @@ variable (μ) in
 theorem isOpen_level (hUo : IsOpen (U : Set (GL (Fin a) (Af E)))) (hUc : IsCompact (U : Set (GL (Fin a) (Af E))))
     {β : Lie E a → ℂ} (hβ : IsTest β) {Fl : GA E a → ℂ} (hFl : LocallyIntegrable Fl μ) :
     IsOpen {k | finRep E a k ⟨_, cv_mem_Sm μ hUo hUc hβ hFl⟩ = ⟨_, cv_mem_Sm μ hUo hUc hβ hFl⟩} :=
-  isOpen_stab_of_mem_nhds _ _ (Filter.mem_of_superset (hUo.mem_nhds U.one_mem) fun u hu =>
+  isOpen_stab_of_mem_nhds _ _ (Filter.mem_of_superset (hUo.mem_nhds U.one_mem) fun _ hu =>
     Subtype.ext (funext fun x => cv_fin μ U β Fl hu x))
 
 theorem smooth_rep (H : Submodule ℂ (L2 (latticeGL E a) μ)) (hH : H ≤ L2cusp μ)

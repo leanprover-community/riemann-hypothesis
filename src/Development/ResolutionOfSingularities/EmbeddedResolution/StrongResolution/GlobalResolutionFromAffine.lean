@@ -440,7 +440,7 @@ theorem exists_affine_etale_cover_pullback_sigmaOpensDesc {k : Type u} [Field k]
     [LocallyOfFiniteType p] [QuasiCompact p]
     {ι : Type u} [Finite ι] (U : ι → Y.Opens) (hU : ∀ i, IsAffineOpen (U i))
     (W' : Scheme.{u}) [IsAffine W'] [IsReduced W'] (q : W' ⟶ Spec (CommRingCat.of k))
-    [LocallyOfFiniteType q] [QuasiCompact q] (g' : W' ⟶ Y) [Etale g'] (_hg : g' ≫ p = q) :
+    [LocallyOfFiniteType q] [QuasiCompact q] (g' : W' ⟶ Y) [Etale g'] :
     ∃ (V : Scheme.{u}) (s : V ⟶ Spec (CommRingCat.of k))
       (r : V ⟶ pullback g' (sigmaOpensDesc Y U)),
       IsAffine V ∧ IsReduced V ∧ LocallyOfFiniteType s ∧ QuasiCompact s ∧
@@ -568,7 +568,7 @@ theorem existsGluedBlowupSequence_of_center_ne_top (R : AffineResolutionRule.{u}
     surjective_sigmaOpensDesc Y U hUtop
   obtain ⟨V, sV, r, hVaff, hVred, hsft, hsqc, hret, hrsurj, hrq⟩ :=
     exists_affine_etale_cover_pullback_sigmaOpensDesc Y p U hUaff (sigmaOpens Y U)
-      (sigmaOpensDesc Y U ≫ p) (sigmaOpensDesc Y U) rfl
+      (sigmaOpensDesc Y U ≫ p) (sigmaOpensDesc Y U)
   have : AlgebraicGeometry.Etale
       (r ≫ pullback.fst (sigmaOpensDesc Y U) (sigmaOpensDesc Y U)) :=
     etale_comp_fst_pullback_sigmaOpensDesc Y U (sigmaOpens Y U) (sigmaOpensDesc Y U) V r
@@ -608,7 +608,7 @@ theorem existsGluedBlowupSequence_of_center_ne_top (R : AffineResolutionRule.{u}
   intro W' q' hq'ft hq'qc hW'red hW'aff φ hφet hφq hφsurj
   have : AlgebraicGeometry.Surjective φ := ⟨hφsurj⟩
   obtain ⟨V', sV', r', hV'aff, hV'red, hs'ft, hs'qc, hr'et, hr'surj, hr'q⟩ :=
-    exists_affine_etale_cover_pullback_sigmaOpensDesc Y p U hUaff W' q' φ hφq
+    exists_affine_etale_cover_pullback_sigmaOpensDesc Y p U hUaff W' q' φ
   have : AlgebraicGeometry.Etale (r' ≫ pullback.fst φ (sigmaOpensDesc Y U)) :=
     etale_comp_fst_pullback_sigmaOpensDesc Y U W' φ V' r'
   have : AlgebraicGeometry.Etale (r' ≫ pullback.snd φ (sigmaOpensDesc Y U)) :=

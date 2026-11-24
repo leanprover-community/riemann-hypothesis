@@ -113,7 +113,7 @@ private theorem cT_aeval_eq_aeval_cT_map (c : O →+* O) (B : Matrix n n O) (q :
 open IsDedekindDomain NumberField in
 open scoped TensorProduct Matrix in
 variable {O L : Type} [CommRing O] [CommRing L] {n : Type} [Fintype n] [DecidableEq n] in
-theorem _root_.GlobalTheory.UnitaryDoubleCoset.exists_poly_norm {c : O →+* O} (hc : ∀ x, c (c x) = x)
+theorem _root_.GlobalTheory.UnitaryDoubleCoset.exists_poly_norm {c : O →+* O}
     (hN : ∀ f : Polynomial O, f.Monic → f.map c = f → IsUnit (f.coeff 0) →
       ∃ p : Polynomial O, f ∣ p * p.map c - Polynomial.X)
     {B : Matrix n n O} (hB : _root_.Formalism.UG.cT c B = B) (hu : IsUnit B) :
@@ -181,7 +181,7 @@ theorem _root_.GlobalTheory.UnitaryDoubleCoset.exists_unitary_factors (ι : O �
   have hHu : IsUnit H := by
     refine IsUnit.mul (IsUnit.of_mul_eq_one (_root_.Formalism.UG.cT c ((h⁻¹ : GL n O) : Matrix n n O)) ?_) h.isUnit
     rw [← hmul, Units.inv_mul, hone]
-  obtain ⟨p, hp⟩ := _root_.GlobalTheory.UnitaryDoubleCoset.exists_poly_norm hc hN hH hHu
+  obtain ⟨p, hp⟩ := _root_.GlobalTheory.UnitaryDoubleCoset.exists_poly_norm hN hH hHu
   set P := Polynomial.aeval H p with hPdef
   have hPu : IsUnit P := isUnit_of_mul_isUnit_right (hp.symm ▸ hHu)
   set k₁ : GL n L := _root_.Formalism.UG.bc ι (h * hPu.unit⁻¹) with hk₁def

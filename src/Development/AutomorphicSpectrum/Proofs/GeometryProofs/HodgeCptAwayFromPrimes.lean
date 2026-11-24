@@ -71,27 +71,27 @@ section -- clump:auto
 namespace UpperTheory.Reformulated.B.RegularUnitPoints
 
 noncomputable def genPt : {X : AlgebraicGeometry.Scheme} →
-  {Ω : Type} → [inst : Field Ω] → (AlgebraicGeometry.Spec ↧Ω ⟶ X) → ↥X :=
-  fun {X} {Ω} [Field Ω] ξ => ξ (IsLocalRing.closedPoint Ω)
+  {Ω : Type} → [Field Ω] → (AlgebraicGeometry.Spec ↧Ω ⟶ X) → ↥X :=
+  fun {_} {Ω} [Field Ω] ξ => ξ (IsLocalRing.closedPoint Ω)
 
 noncomputable def Cpt : {X : AlgebraicGeometry.Scheme} →
-  {Ω : Type} → [inst : Field Ω] → (AlgebraicGeometry.Spec ↧Ω ⟶ X) → Type :=
-  fun {X} {Ω} [Field Ω] ξ => { p // genPt ξ ⤳ p }
+  {Ω : Type} → [Field Ω] → (AlgebraicGeometry.Spec ↧Ω ⟶ X) → Type :=
+  fun {_} {Ω} [Field Ω] ξ => { p // genPt ξ ⤳ p }
 
-theorem aux4 : ∀ {X : AlgebraicGeometry.Scheme} {Ω : Type} [inst : Field Ω]
+theorem aux4 : ∀ {X : AlgebraicGeometry.Scheme} {Ω : Type} [Field Ω]
   (ξ : AlgebraicGeometry.Spec ↧Ω ⟶ X) (p : Cpt ξ),
   genPt ξ ⤳ p.val := by
   intro X Ω inst ξ p
   exact p.2
 
-theorem aux5 : ∀ {Ω : Type} [inst : Field Ω], IsLocalRing (CommRingCat.of Ω) := by
+theorem aux5 : ∀ {Ω : Type} [Field Ω], IsLocalRing (CommRingCat.of Ω) := by
   intro Ω inst
   show IsLocalRing Ω
   infer_instance
 
 noncomputable def genMap : {X : AlgebraicGeometry.Scheme} →
   {Ω : Type} →
-    [inst : Field Ω] →
+    [Field Ω] →
       (ξ : AlgebraicGeometry.Spec ↧Ω ⟶ X) →
         (p : Cpt ξ) → ↑(X.presheaf.stalk p.val) →+* Ω :=
   fun {X} {Ω} [Field Ω] ξ p =>
@@ -102,26 +102,26 @@ noncomputable def genMap : {X : AlgebraicGeometry.Scheme} →
 
 noncomputable def regAt : {X : AlgebraicGeometry.Scheme} →
   {Ω : Type} →
-    [inst : Field Ω] →
+    [Field Ω] →
       (ξ : AlgebraicGeometry.Spec ↧Ω ⟶ X) → Cpt ξ → Subring Ω :=
-  fun {X} {Ω} [Field Ω] ξ p => (genMap ξ p).range
+  fun {_} {Ω} [Field Ω] ξ p => (genMap ξ p).range
 
 noncomputable def unitAt : {X : AlgebraicGeometry.Scheme} →
   {Ω : Type} →
-    [inst : Field Ω] →
+    [Field Ω] →
       (ξ : AlgebraicGeometry.Spec ↧Ω ⟶ X) → Cpt ξ → Ω → Prop :=
-  fun {X} {Ω} [Field Ω] ξ p a =>
+  fun {_} {Ω} [Field Ω] ξ p a =>
     a ≠ 0 ∧
       a ∈ regAt ξ p ∧
         a⁻¹ ∈ regAt ξ p
 
 noncomputable def InFibre : {X : AlgebraicGeometry.Scheme} →
   {Ω : Type} →
-    [inst : Field Ω] →
+    [Field Ω] →
       (ξ : AlgebraicGeometry.Spec ↧Ω ⟶ X) → ℕ → Cpt ξ → Prop :=
-  fun {X} {Ω} [Field Ω] ξ p q => ¬unitAt ξ q ↑p
+  fun {_} {Ω} [Field Ω] ξ p q => ¬unitAt ξ q ↑p
 
-theorem main : ∀ {X : AlgebraicGeometry.Scheme} {Ω : Type} [inst : Field Ω]
+theorem main : ∀ {X : AlgebraicGeometry.Scheme} {Ω : Type} [Field Ω]
   {ξ : AlgebraicGeometry.Spec ↧Ω ⟶ X} {q : Cpt ξ},
   (∀ (r : ℕ), Nat.Prime r → ¬InFibre ξ r q) →
     ∀ (n : ℕ), n ≠ 0 → unitAt ξ q ↑n := by

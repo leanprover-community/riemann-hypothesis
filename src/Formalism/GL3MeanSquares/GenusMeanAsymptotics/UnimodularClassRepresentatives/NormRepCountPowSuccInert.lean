@@ -193,7 +193,7 @@ theorem normRepCount_pow_succ_inert (hK : Formalism.HermitianLatticesTheory.IsCM
     (isCoprime_span_of_notMem hP hnP) hn q hq M k hM hk
 
 theorem normRepCount_pow_succ_split (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) {P : Ideal (𝓞 K)}
-    (hP : P.IsMaximal) (hc : Formalism.HermitianLatticesTheory.conjIdeal (K := K) P ≠ P) (M k : ℕ) (hM : 1 ≤ M)
+    (hP : P.IsMaximal) (M k : ℕ) (hM : 1 ≤ M)
     (hk : 1 ≤ k) (n : 𝓞 K) (hn : conjO K n = n) (hnP : n ∉ P) :
     normRepCount K ((P * Formalism.HermitianLatticesTheory.conjIdeal (K := K) P) ^ (k + 1)) M n =
       Ideal.absNorm P ^ (2 * M - 1) *

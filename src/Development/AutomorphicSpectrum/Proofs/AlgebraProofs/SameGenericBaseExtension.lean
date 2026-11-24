@@ -406,7 +406,7 @@ theorem main : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing
       simp⟩
   obtain ⟨-, f, g, hfp⟩ := _root_.GlobalTheory.CompanionTheory.Ar.FlagPairOfFrames.main O Ω _ _ (joinCoord (joinCoord x z) z₁)
     ϖ hϖ d hM₁ N V (F 0) (F 1) hs₁ w w _ _ (hF 0).2 (hF 1).2 (fun i j hij => by
-      simp [Finsupp.single_apply, hij.ne])
+      simp [hij.ne])
   have hσ := assocEquiv_fst ι ι' ι₁
   obtain ⟨hI, hK, hc, hE⟩ := relabel (O := O) (Equiv.sumAssoc K K' K₁) (assocEquiv ι ι' ι₁) hσ
     (joinCoord x (joinCoord z z₁)) _ (join_assoc x z z₁)

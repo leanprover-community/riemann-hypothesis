@@ -249,7 +249,7 @@ theorem exists_sum_mul_pow_div_eq_one [Fintype J] (t : J → Ω) (ht : ∃ i, t 
 end
 
 theorem exists_tuple_normalisation_charts (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω]
-    [IsDedekindDomain o] [CharZero Ω] (_hinj : Function.Injective (algebraMap o Ω)) (J : Type)
+    [IsDedekindDomain o] [CharZero Ω] (J : Type)
     [Fintype J] (t : J → Ω) (ht : ∃ i, t i ≠ 0)
     (hfin : Module.Finite
       (Subfield.closure (Set.range (algebraMap o Ω) ∪ {x | ∃ i j, x = t j / t i})) Ω) :
@@ -430,7 +430,7 @@ theorem exists_mul_isIntegral_chart {o Ω : Type} [CommRing o] [Field Ω] [Algeb
 
 theorem exists_isNm_isProjOver : ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [IsDedekindDomain o] [CharZero Ω], Function.Injective (algebraMap o Ω) → ∀ (J : Type) [Fintype J] (t : J → Ω), (∃ i, t i ≠ 0) → Module.Finite (Subfield.closure (Set.range (algebraMap o Ω) ∪ {x | ∃ i j, x = t j / t i})) Ω → ∃ M : RatModel o Ω, M.IsNm t ∧ IsProjOver M.s := by
   intro o Ω _ _ _ _ _ hinj J _ t ht hfin
-  obtain ⟨e, n, z, he, hk, hint, hsum⟩ := GlobalTheory.exists_tuple_normalisation_charts o Ω hinj J t ht hfin
+  obtain ⟨e, n, z, he, hk, hint, hsum⟩ := GlobalTheory.exists_tuple_normalisation_charts o Ω J t ht hfin
   obtain ⟨i, hi⟩ := ht
   obtain ⟨k, hzk⟩ := hk i
   have hL : ∀ y ∈ Algebra.adjoin o (Set.range fun l => z l / t i ^ e),

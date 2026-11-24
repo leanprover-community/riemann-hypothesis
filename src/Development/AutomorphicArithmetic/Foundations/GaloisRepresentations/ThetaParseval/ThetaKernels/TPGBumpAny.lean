@@ -543,7 +543,7 @@ private theorem common_bound_pk (v : Pl F) {c₁ c₂ : Fv F v} (h₁ : c₁ ≠
 end UpperTheory.SeparatedDualCondition
 open UpperTheory.SeparatedDualCondition in
 theorem UpperTheory.exists_separating_of_not_mem_lattice_coset :
-    ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E) (n d : ℕ) (X : Spc F E n) (W : Spc F E d) (M : Model σ X W) (r s r' s' : ℕ), _root_.UpperTheory.TP.W.GoodK σ B → X.IsHerm σ B r s → W.IsSkew σ B r' s' → ∀ v : Pl F, ∀ g ∈ UAt σ X (evFin F v), ∀ y : Matrix (Fin n) (Fin d) (AE F E), At (evFin F v) y → (∀ a ∈ latAtV X W v, ∀ b ∈ latAtV X W v, y ≠ a + mat g⁻¹ * b) → ∃ u ∈ latAtV X W v, mat g * u ∈ latAtV X W v ∧ B.ψ (symp (R := AF F) (cA σ) (-1) (incM F X.J) (incM F W.J) u y) ≠ 1 := by
+    ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E) (n d : ℕ) (X : Spc F E n) (W : Spc F E d) (_ : Model σ X W) (r s r' s' : ℕ), _root_.UpperTheory.TP.W.GoodK σ B → X.IsHerm σ B r s → W.IsSkew σ B r' s' → ∀ v : Pl F, ∀ g ∈ UAt σ X (evFin F v), ∀ y : Matrix (Fin n) (Fin d) (AE F E), At (evFin F v) y → (∀ a ∈ latAtV X W v, ∀ b ∈ latAtV X W v, y ≠ a + mat g⁻¹ * b) → ∃ u ∈ latAtV X W v, mat g * u ∈ latAtV X W v ∧ B.ψ (symp (R := AF F) (cA σ) (-1) (incM F X.J) (incM F W.J) u y) ≠ 1 := by
   intro F E _ _ _ _ _ σ B n d X W M r s r' s' hB hX hW v g _ y hy hne
   classical
   have hat := (GlobalTheory.LatVac.latAtV_at_stable X W v).1
@@ -1632,8 +1632,8 @@ end Schr
 section Alg
 private theorem cong_key_pk {A : Type} [Ring A] {e s m m' α β q q' : A} (hs : ∀ a : A, s * a = a * s)
     (h : m * (e - s * β) = e + s * α) (hmm : m' * m = 1) (hq : (e - s * β) * q = e) (hq' : (e + s * α) * q' = e)
-    (eq : e * q = q) (eq' : e * q' = q') (eα : α * e = α) (eβ : β * e = β) (e1 : e * α = α) (e2 : e * β = β)
-    (e3 : e * e = e) (hm : (m - 1) * e = m - 1) (hm' : (m' - 1) * e = m' - 1) :
+    (eq : e * q = q) (eq' : e * q' = q') (eα : α * e = α) (eβ : β * e = β)
+    (hm : (m - 1) * e = m - 1) (hm' : (m' - 1) * e = m' - 1) :
     m - 1 = s * (α + β * q + s * (α * (β * q))) ∧ m' - 1 = s * (-β - α * q' + s * (β * (α * q'))) := by
   have a1 : q = e + s * (β * q) := by
     have : e * q - s * β * q = e := by rw [← sub_mul]; exact hq
@@ -1902,7 +1902,7 @@ theorem _root_.UpperTheory.TP.bumpAny_k : _root_.UpperTheory.TP.Tools_k → _roo
       have eR : ∀ x : Matrix (Fin n) (Fin n) (AE F E), At (evFin F v) x → x * eM v n = x := fun x hx => by
         rw [Matrix.mul_smul, Matrix.mul_one, sg_one_smul_pk hx]
       obtain ⟨c1, c2⟩ := cong_key_pk (s := S) (m := mat g⁻¹) (m' := mat g) hcomm hkey hgm hq1 hq1' (eL q hq) (eL q' hq')
-        (eR _ (D.at_mem _ hα)) (eR _ (D.at_mem _ hβ)) (eL _ hα) (eL _ hβ) (eL _ D.one_mem) (eR _ hg') (eR _ hg)
+        (eR _ (D.at_mem _ hα)) (eR _ (D.at_mem _ hβ)) (eR _ hg') (eR _ hg)
       simp only [hSx] at c1 c2
       exact (memH g).2 ⟨hg, ⟨_, add_mem (sub_mem (neg_mem hβ) (D.mul_mem _ hα _ hq')) (hsΛ _ (D.mul_mem _ hβ _ (D.mul_mem _ hα _ hq'))), c2⟩,
         ⟨_, add_mem (add_mem hα (D.mul_mem _ hβ _ hq)) (hsΛ _ (D.mul_mem _ hα _ (D.mul_mem _ hβ _ hq))), c1⟩⟩

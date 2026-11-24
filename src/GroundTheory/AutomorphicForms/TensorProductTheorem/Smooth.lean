@@ -29,7 +29,7 @@ variable {ι : Type*} {G : ι → Type*} [∀ v, Group (G v)] [∀ v, Topologica
 instance totallyDisconnectedSpace_restrictedProduct [∀ v, TotallyDisconnectedSpace (G v)] :
     TotallyDisconnectedSpace (Πʳ v, [G v, K v]) :=
   ⟨fun s _ hs => Set.subsingleton_of_image
-    (f := ((↑) : (Πʳ v, [G v, K v]) → ∀ v, G v)) (fun x y h => Subtype.ext h)
+    (f := ((↑) : (Πʳ v, [G v, K v]) → ∀ v, G v)) (fun _ _ h => Subtype.ext h)
     s (isTotallyDisconnected_of_totallyDisconnectedSpace _ _ (Set.subset_univ _)
       (hs.image _ RestrictedProduct.continuous_coe.continuousOn))⟩
 
@@ -291,7 +291,7 @@ include hK'c hK'e in
 omit hKc in
 theorem isCompact_boxSubgroup_of_eq :
     IsCompact (boxSubgroup K K' : Set (Πʳ v, [G v, K v])) :=
-  isCompact_boxSubgroup hK'c (hK'e.mono fun v h => h.le)
+  isCompact_boxSubgroup hK'c (hK'e.mono fun _ h => h.le)
 
 
 include hπ hξ hK'c hK'o hK'e in

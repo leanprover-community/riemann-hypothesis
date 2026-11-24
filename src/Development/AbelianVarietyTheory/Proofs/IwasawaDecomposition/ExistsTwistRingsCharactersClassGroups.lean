@@ -879,7 +879,7 @@ theorem exists_ringSpec (hA : GlobalTheory.Published.GlobalArtinReciprocity) : �
       (j := (liftC w).comp (mapO w)) (k := (algebraMap (PadicAlgCl (lw w)) ℂ_[lw w]).comp (κ w)) (RingHom.ext fun y => by
         simp only [RingHom.comp_apply]
         rw [hκy]
-        simp only [mapO, liftC, IsFractionRing.map, IsLocalization.map_eq, IsFractionRing.lift_algebraMap]
+        simp only [mapO, liftC, IsFractionRing.map, IsLocalization.map_eq]
         erw [IsFractionRing.lift_algebraMap]
         exact htoO w y)
     exact DFunLike.congr_fun h z

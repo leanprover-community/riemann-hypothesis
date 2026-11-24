@@ -298,7 +298,7 @@ theorem chart {X : Scheme.{0}} {O : Type} [CommRing O] [IsLocalRing O] (s : X �
     haveI := hU.isLocalization_stalk ⟨x, hxU⟩
     exact alg O Γ(X, U) (X.presheaf.stalk x) D (hU.primeIdealOf ⟨x, hxU⟩).asIdeal π hπ hd h0
 
-theorem val_stalk {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X} (hξ : IsCptGen ξ)
+theorem val_stalk {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X}
     (x : Cpt ξ) {R : Type} [CommRing R] [IsLocalRing R] (φ : X.presheaf.stalk x.1 →+* R)
     (h : genPt ξ ⤳ centre (Spec.map (CommRingCat.ofHom φ) ≫ X.fromSpecStalk x.1)) (σ : X.presheaf.stalk x.1) :
     ValAt ξ (Spec.map (CommRingCat.ofHom φ) ≫ X.fromSpecStalk x.1) (genMap ξ x σ) (φ σ) ∧
@@ -416,12 +416,12 @@ theorem PositivityTheory.Xgn.exists_curve_through_special_point : ∀ (X : Schem
       rw [← Category.assoc, ← Spec.map_comp]
       rfl, hcomp φ'⟩
   have h0 : ValAt ξ η (algebraMap O Ω ϖ) 0 := by
-    have := (val_stalk hξ x φ hη (β ϖ)).1
+    have := (val_stalk x φ hη (β ϖ)).1
     rwa [hβo, hφq _ hϖq] at this
   refine ⟨{ k := ResidueField O, κ := FractionRing D, fg := hfg, trdeg := htr, C := C, w_pos := hw, triv := htriv,
             all := hall, η := η, η_spec := hη, η_zero := h0, z := fun j => (hz j).choose,
             z_gen := fun j => (hz j).choose_spec.1.1 }, i, hyη,
-    (val_stalk hξ x φ hη γ).2 (IsUnit.mk0 _ hφγ), ?_⟩
+    (val_stalk x φ hη γ).2 (IsUnit.mk0 _ hφγ), ?_⟩
   change centre (hz i).choose = x.1
   rw [← hzi]
   change X.fromSpecStalk x.1 (PrimeSpectrum.comap φ' (closedPoint _)) = x.1

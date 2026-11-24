@@ -75,7 +75,7 @@ theorem minimumSq_two_sided_bounds {x y : Frame X.Ψ r} (hx : x ∈ X.dom) (hy :
     exact Finset.sum_le_sum fun τ _ =>
       (mul_le_mul_of_nonneg_left (hup τ _) (hc τ)).trans_eq (mul_left_comm _ _ _)
 
-theorem sqrt_rpow_le (A : ℝ) {k1 k2 L Ly : ℝ} (hk1 : 0 < k1) (hk12 : k1 ≤ k2) (hL : 0 ≤ L)
+theorem sqrt_rpow_le (A : ℝ) {k1 k2 L Ly : ℝ} (hk1 : 0 < k1) (hL : 0 ≤ L)
     (h1 : k1 * L ≤ Ly) (h2 : Ly ≤ k2 * L) :
     Real.sqrt Ly ^ (-A) ≤ max (k1 ^ (-A / 2)) (k2 ^ (-A / 2)) * Real.sqrt L ^ (-A) := by
   rcases hL.eq_or_lt with hL0 | hLpos
@@ -126,7 +126,7 @@ theorem growth (la : Wt X.Ψ r) (P : Frame X.Ψ r → ℂ) (C A : ℝ)
   have hnx := nfac_pos X la hx
   obtain ⟨b1, b2⟩ := minimumSq_two_sided_bounds X hx hy hk1.le (lt_of_lt_of_le hk1 hk12) hlow hup
   have hla : X.la1 y ^ (-A) ≤ max (k1 ^ (-A / 2)) (k2 ^ (-A / 2)) * X.la1 x ^ (-A) :=
-    sqrt_rpow_le A hk1 hk12 (minimumSq_nonneg X hx) b1 b2
+    sqrt_rpow_le A hk1 (minimumSq_nonneg X hx) b1 b2
   have hq0 : 0 ≤ X.nfac la x / X.nfac la y := div_nonneg hnx.le hny.le
   have hR0 : 0 ≤ R := le_trans hq0 hR
   have hC0 : 0 ≤ max C 0 := le_max_right _ _

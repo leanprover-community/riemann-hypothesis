@@ -197,7 +197,7 @@ theorem dvd_of_comb {ϖ : V} (hϖ : Irreducible ϖ) (D : DegPre V) (F : Type) [F
   have h1 : 0 < v (algebraMap V F ϖ) := by
     have := hv (algebraMap V (FractionRing V) ϖ) 1 ⟨1, by simp⟩
     exact lt_of_lt_of_eq (by exact_mod_cast (zero_lt_one : (0 : ℚ) < 1)) this.symm
-  obtain ⟨g, hg⟩ := dvd_of_tensor hϖ v ((algebraMap (FractionRing V) F).injective.comp (IsFractionRing.injective V _))
+  obtain ⟨g, hg⟩ := dvd_of_tensor hϖ v
     (ReciprocityTheory.ChartRestriction.G.DVR.GC.v_alg_nonneg hϖ hv) h1 b hb _ _ key
   refine ⟨gs (𝟙 _) y U g, (gs_res (𝟙 _) y le hyU _).symm.trans ((congrArg (gs (𝟙 _) y U) hg).trans
     ((gs_mul _ y U hyU _ _).trans (congrArg₂ (· * ·) ?_ rfl)))⟩

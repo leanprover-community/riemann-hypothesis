@@ -492,7 +492,7 @@ section Main
 
 variable {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] {r : ℕ}
 
-theorem ne_zero_of_unitDist (ϖ : O) (hϖ : Irreducible ϖ) (d : ℕ) (p : PowerSeries O)
+theorem ne_zero_of_unitDist (ϖ : O) (d : ℕ) (p : PowerSeries O)
     (hp : UnitDist ϖ d p) : p ≠ 0 := by
   obtain ⟨u, E, hu, hE, -, rfl⟩ := hp
   have hE0 : (E : PowerSeries O) ≠ 0 := by
@@ -604,7 +604,7 @@ theorem descent_estimate_up_down : MUD := by
     intro s hs hne
     rw [hLLprod, ← hPne s hne]
     exact Finset.dvd_prod_of_mem _ (Finset.mem_range.2 hs)
-  have hG : p s₀ ^ H s₀ ≠ 0 := pow_ne_zero _ (ne_zero_of_unitDist ϖ hϖ _ _ (hUD s₀ h0ell))
+  have hG : p s₀ ^ H s₀ ≠ 0 := pow_ne_zero _ (ne_zero_of_unitDist ϖ _ _ (hUD s₀ h0ell))
   constructor
   ·
     intro hII
@@ -675,7 +675,7 @@ theorem descent_estimate_up_down : MUD := by
         rw [hpow1] at hj
         linear_combination hj
       have hne : p s₁ ^ (H s₁ - b s₁) ≠ 0 :=
-        pow_ne_zero _ (ne_zero_of_unitDist ϖ hϖ _ _ (hUD s₁ h1ell))
+        pow_ne_zero _ (ne_zero_of_unitDist ϖ _ _ (hUD s₁ h1ell))
       exact dvd_of_dvd_mul_coprimeRat ϖ _ Q1 _ (hSat s₁ h1ell _) hcopQ1 (N + kk s₁)
         ⟨_, mul_left_cancel₀ hne hj'⟩
     choose zW hzW using hfW

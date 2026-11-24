@@ -100,7 +100,7 @@ def valAt (O : OMDat C R i Tp tup) (cc : (C.U ((i : ℕ) + 1) O.s0).Comp → ℂ
     (g : GA D (Wc D i)) : ℂ :=
   cc (O.dict g).1 * (O.mu g * rdU (unfBC O.hle (C.U ((i : ℕ) + 1)) (inC O.c')) f (O.dict g).1 (O.dict g).2)
 
-def ExactAt (O : OMDat C R i Tp tup) (_κ : WeightFamilies.Wt D ((i : ℕ) + 1)) (v₀ : (R.MW i (sg0 D A)).Vec)
+def ExactAt (O : OMDat C R i Tp tup) (v₀ : (R.MW i (sg0 D A)).Vec)
     (cc : (C.U ((i : ℕ) + 1) O.s0).Comp → ℂ) (S a : ℂ) : Prop :=
   ∀ (t : Tp) (h : O.Cl' t → GA D (Vc D i)) (J' : Subgroup (Bridge.Gf (Vc D i))),
     RepsR R i (tup t) h (O.bad t) J' (O.Lh t) (O.gam t) (O.vol t) →
@@ -135,7 +135,7 @@ theorem ser_of_exact (hL : LawsM C) (O : OMDat C R i Unit (fun _ => A.μ0)) (M :
     (hlev : M.lev = O.lev) {κ : WeightFamilies.Wt D ((i : ℕ) + 1)} (hn : κ.n = (Vc D i).rank) {v₀ ι x₀ x₁} (hO : O.Pins κ v₀ ι x₀)
     (hM : M.Pins κ v₀ ι x₁) (hspan : ClassSumsSpan O κ) (cE cF : ∀ s : C.Q.c.F →+* ℂ, (C.U ((i : ℕ) + 1) s).Comp → ℂ)
     {ph S a b : ℂ} (hrow : O.OneMapOf κ v₀ (cE O.s0) ph) (ha : ∃ m : ℕ, 0 < m ∧ a ^ m = 1) (hb : ∃ m : ℕ, 0 < m ∧ b ^ m = 1)
-    (eO : ExactAt O κ v₀ (cF O.s0) S a) (eM : ExactAt M κ v₀ (cF M.s0) S b)
+    (eO : ExactAt O v₀ (cF O.s0) S a) (eM : ExactAt M v₀ (cF M.s0) S b)
     (hrule : ∀ t x, ∃ f ∈ cuspOver M κ, IsSum M t x f) :
     ∃ (ζ : ℂ) (z : G), (∃ m : ℕ, 0 < m ∧ ζ ^ m = 1) ∧ z ∈ Subgroup.center G ∧
       ∀ (t : Tp) (h : M.Cl' t → GA D (Vc D i)) (J' : Subgroup (Bridge.Gf (Vc D i))),
@@ -320,8 +320,8 @@ theorem exists_common (hCI : Formalism.MainNotions.ModuliIntegralCharts.H1.Chart
     (hO : O.Pins (κ i) (v₀ i (sg0 D A)) (iotaW T i) (T.x₀ ((i : ℕ) + 1) O.s0))
     (hM : M.Pins (κ i) (v₀ i (sg0 D A)) (iotaW T i) (T.x₀ ((i : ℕ) + 1) M.s0)) (he : O.c0' O.hw = M.c0' M.hw) :
     ∃ (S a b : ℂ) (cF : ∀ s : T.Q.c.F →+* ℂ, (T.U ((i : ℕ) + 1) s).Comp → ℂ), (∃ m : ℕ, 0 < m ∧ a ^ m = 1) ∧
-      (∃ m : ℕ, 0 < m ∧ b ^ m = 1) ∧ ExactAt O (κ i) (v₀ i (sg0 D A)) (cF O.s0) S a ∧
-      ExactAt M (κ i) (v₀ i (sg0 D A)) (cF M.s0) S b := by
+      (∃ m : ℕ, 0 < m ∧ b ^ m = 1) ∧ ExactAt O (v₀ i (sg0 D A)) (cF O.s0) S a ∧
+      ExactAt M (v₀ i (sg0 D A)) (cF M.s0) S b := by
   have hs : O.s0 = T.toCore.σ₀ := sOv_eq _ _ _
   obtain ⟨h1, h2, -⟩ := GlobalTheory.PtId.dict_cast T hT.laws _ (inR i) O.s0 (hs ▸ T.toCore.good_σ₀) (Wc D i) O.hV (rank_Wc i)
   obtain ⟨δ, hδ⟩ := GlobalTheory.AdTh.ShortSeriesCore.thetaKO_eq_short_series_core D G Pl0 T0 A _ R F hC i hO.lift.std _ _ (iotaW T i) h1 h2

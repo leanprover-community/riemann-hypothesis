@@ -103,7 +103,7 @@ variable {F : Type} [Field F] [NumberField F] {ι : Type} [Fintype ι] [Decidabl
 
 theorem exists_test : ∃ f ∈ schwartzBruhatPi (K := F) (ι := ι), HasCompactSupport f ∧ f 0 ≠ 0 := _root_.GlobalTheory.CompanionTheory.Hypotheses₂.CompactTest.exists_compactSupport_ne_zero F ι
 
-theorem selfDual_eq (G : Matrix ι ι F) (hs : G.IsSymm) (hG : G.det ≠ 0) (ν : Measure (ι → 𝔸[F]))
+theorem selfDual_eq (G : Matrix ι ι F) (hG : G.det ≠ 0) (ν : Measure (ι → 𝔸[F]))
     (h : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.SelfDual ν (chiG G)) : ν = adeleMeasurePi F := by
   obtain ⟨f0, hf0, hcs, h0⟩ := exists_test (F := F) (ι := ι)
   have hu : IsUnit G.det := isUnit_iff_ne_zero.mpr hG

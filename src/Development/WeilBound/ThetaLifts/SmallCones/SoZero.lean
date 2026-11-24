@@ -57,7 +57,7 @@ theorem soZeroA'_of (hL : LinEx) (hX : MixX) (hE : ThetaExp) (hU : EvUniq) : SoZ
   have pg := pg_herm hB hH hXh
   have pg' := pg_skew hB hH' hW
   have hne := comp_ne (polX (W := W₁) pg (skew_det hP₁.skew)) hE hB hM hM₁ hM₀ he₀ heX
-  have hc := isEv_comp (K := isoA H H') hB.std hM hM₁ hM₀ he₀ heX hne (by
+  have hc := isEv_comp (K := isoA H H') hM he₀ heX hne (by
     rintro u (h | ⟨z, rfl⟩)
     · exact Or.inl h
     · exact Or.inr ⟨_, ⟨z, rfl⟩, by rw [incM_one, Matrix.one_mul, vv_mul_r]⟩)

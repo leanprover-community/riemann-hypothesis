@@ -86,7 +86,7 @@ theorem one_le_sizeZ (b C : ℝ) (Z : GramM D) : 1 ≤ sizeZ D b C Z := by
   unfold sizeZ
   exact one_le_prod_real fun τ _ => one_le_prod_real fun l _ => le_max_left _ _
 
-theorem prod_Gz_le {b C B T T' : ℝ} (hb : 1 ≤ b) (hC : 0 ≤ C) (hr : 1 ≤ D.R.rS) (hT : 1 ≤ T * T') (hB : T * T' ≤ B)
+theorem prod_Gz_le {b C B T T' : ℝ} (hb : 1 ≤ b) (hr : 1 ≤ D.R.rS) (hT : 1 ≤ T * T') (hB : T * T' ≤ B)
     (Z : GramM D) :
     ∏ τ, Gz D T T' Z τ ≤ (B * (b ^ (C * (D.R.m : ℝ) ^ 2)) ^ 2) ^ D.R.f * sizeZ D b C Z ^ 2 := by
   obtain ⟨hcard, -, -, -, hrd, -⟩ := GlobalTheory.real_places_facts D
@@ -180,7 +180,7 @@ theorem sizes {b C CT : ℝ} (hb : 1 ≤ b) (hC : 2 ≤ C) (hCT : CT ≤ C) (hr 
   · have hTT : 1 ≤ T * T' := one_le_mul_of_one_le_of_one_le h1 h1'
     have hB : T * T' ≤ b ^ (CT * D.R.m) * b ^ (CT * D.R.m) :=
       mul_le_mul hT hT' (by linarith) (Real.rpow_nonneg hb0 _)
-    have hP := prod_Gz_le (C := C) hb (by linarith) hr hTT hB Z
+    have hP := prod_Gz_le (C := C) hb hr hTT hB Z
     have eB : (b ^ (CT * D.R.m) * b ^ (CT * D.R.m) * (b ^ (C * (D.R.m : ℝ) ^ 2)) ^ 2) ^ D.R.f =
         b ^ ((2 * CT * D.R.m + 2 * C * (D.R.m : ℝ) ^ 2) * D.R.f) := by
       rw [← Real.rpow_add hbp, ← Real.rpow_mul_natCast hb0 _ 2, ← Real.rpow_add hbp,

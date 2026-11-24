@@ -751,7 +751,7 @@ open Finset Polynomial
 
 namespace Formalism.IrreducibleCountingLemmas.GaloisIrreducibility
 
-theorem primeToPart_eq_self_of_not_dvd {M : Type} [Monoid M] {l n : ℕ} (hl : l.Prime) (hn : n ≠ 0)
+theorem primeToPart_eq_self_of_not_dvd {M : Type} [Monoid M] {l n : ℕ}
     {x : M} (hx : x ^ n = 1) (hln : ¬ l ∣ n) : primeToPart l x = x := by
   have hdvd : orderOf x ∣ n := orderOf_dvd_of_pow_eq_one hx
   have hnd : ¬ l ∣ orderOf x := fun h => hln (h.trans hdvd)
@@ -993,9 +993,9 @@ theorem mem_e3SB {N : ℕ} {c : Fin N → K} (hc : c ∈ sqSet K N) {l : ℕ} (h
   have hldiv : l ∣ Fintype.card K ^ δ - 1 ∨ l ∣ Fintype.card K ^ δ' - 1 := by
     by_contra! hcon
     apply hne
-    calc x = primeToPart l x := (primeToPart_eq_self_of_not_dvd hl (hn δ hδ1) hxp hcon.1).symm
+    calc x = primeToPart l x := (primeToPart_eq_self_of_not_dvd hxp hcon.1).symm
       _ = primeToPart l y := hxy
-      _ = y := primeToPart_eq_self_of_not_dvd hl (hn δ' hδ') hyp hcon.2
+      _ = y := primeToPart_eq_self_of_not_dvd hyp hcon.2
   have hcop : IsCoprime (monicOf c') (monicOf c'') := by
     rw [hi'.coprime_iff_not_dvd]
     intro hdvd
@@ -1063,9 +1063,9 @@ theorem square_set_mem_exceptional_union {N : ℕ} {c : Fin N → K} (hc : c ∈
       by_contra hcon
       apply hne
       calc x = primeToPart l x :=
-            (primeToPart_eq_self_of_not_dvd hl hn (pow_card_pow_sub_one_eq_one_of_aeval_monicOf hi1 h01 hx1) hcon).symm
+            (primeToPart_eq_self_of_not_dvd (pow_card_pow_sub_one_eq_one_of_aeval_monicOf hi1 h01 hx1) hcon).symm
         _ = primeToPart l y := hxy
-        _ = y := primeToPart_eq_self_of_not_dvd hl hn (pow_card_pow_sub_one_eq_one_of_aeval_monicOf hi1 h01 hy1) hcon
+        _ = y := primeToPart_eq_self_of_not_dvd (pow_card_pow_sub_one_eq_one_of_aeval_monicOf hi1 h01 hy1) hcon
     have h2δ1 : 2 ≤ δ1 := by
       by_contra hlt
       obtain rfl : δ1 = 1 := by omega

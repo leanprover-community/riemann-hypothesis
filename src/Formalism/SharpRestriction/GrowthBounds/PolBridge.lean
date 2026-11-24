@@ -180,7 +180,7 @@ theorem mem_ycond_iff (D : Formalism.BasicNotions.D7) (LL : ChainLetters N) (j :
     have hS : chStable K LL j W := fun c d x hx => hgen _ (glAct_mem_gens _ _ c d) x hx
     exact le_sSup (show W ∈ {S | S ≤ _ ∧ chStable K LL j S} from ⟨hR, hS⟩) (self_mem_generated_submodule _ _ G)
 
-theorem hwv_dominant (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2 D) (Lt : Letters (Fin N)) (S : Set (Fin N))
+theorem hwv_dominant (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2) (Lt : Letters (Fin N)) (S : Set (Fin N))
     (mu : Fin r → ℤ) (v : MvPolynomial (Fin N × Fin r) K) (hv : IsHWV (glOps K r Lt S) mu v) : Dominant mu := by
   obtain ⟨T, hTfin, hvT, hTst⟩ := polynomial_locally_finite K (Fin N) Lt r S v
   have hst : ∀ a b, ∀ x ∈ T, glOps K r Lt S a b x ∈ T := hTst
@@ -192,7 +192,7 @@ theorem hwv_dominant (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions
   · exact (hres.2.1 mu ⟨v, hvT⟩).2 hv.2.1
   · intro a b hab; exact Subtype.ext (hv.2.2 a b hab)
 
-theorem isoSub_eq_bot (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2 D) (Lt : Letters (Fin N)) (S : Set (Fin N))
+theorem isoSub_eq_bot (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2) (Lt : Letters (Fin N)) (S : Set (Fin N))
     (mu : Fin r → ℤ) (hmu : ¬ Dominant mu) : isoSub (glOps K r Lt S) mu = ⊥ := by
   rw [isoSub, Submodule.span_eq_bot]
   rintro x ⟨u, _, v, hv, rfl⟩
@@ -239,7 +239,7 @@ theorem map_mem_Pol_iff {O : Type} [CommRing O] [IsDomain O] (f : O →+* K) (hf
     MvPolynomial.map f G ∈ Pol K r d ↔ G ∈ Pol O r d := by
   simp only [Pol, MvPolynomial.mem_restrictSupport_iff, MvPolynomial.support_map_of_injective G hf]
 
-theorem lowest_degree_le_iff_types (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2 D) (Lt : Letters (Fin N)) (S : Set (Fin N))
+theorem lowest_degree_le_iff_types (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2) (Lt : Letters (Fin N)) (S : Set (Fin N))
     (e : (Fin r → ℤ) → Module.End K (MvPolynomial (Fin N × Fin r) K)) (he : ∀ mu, IsIsoProj (glOps K r Lt S) mu (e mu))
     (G : MvPolynomial (Fin N × Fin r) K) (M : ℤ) :
     lam1S Lt S G ≤ (M : WithBot ℤ) ↔ ∀ mu, e mu G ≠ 0 → mu 0 ≤ M :=
@@ -247,8 +247,8 @@ theorem lowest_degree_le_iff_types (D : Formalism.BasicNotions.D7) (h2 : Formali
 
 
 open Classical in
-theorem combined_weight_of_nested_sets (D : Formalism.BasicNotions.D7) (X : Formalism.MainNotions.flipOneThree.Inst) (h2 : Formalism.MainNotions.CovariantDegrees.adm2 D)
-    (h15 : Formalism.MainNotions.CovariantDegrees.SaturatedLowerSetSpan D) : Formalism.MainNotions.flipOneThree.adm8 D X := by
+theorem combined_weight_of_nested_sets (D : Formalism.BasicNotions.D7) (X : Formalism.MainNotions.flipOneThree.Inst) (h2 : Formalism.MainNotions.CovariantDegrees.adm2)
+    (h15 : Formalism.MainNotions.CovariantDegrees.SaturatedLowerSetSpan) : Formalism.MainNotions.flipOneThree.adm8 X := by
   intro N LL q J M hJ
   have hp := X.std.1.prime
   have hKz : CharZero (KK X.O) := dvr_fraction_field_charZero X.setting hp

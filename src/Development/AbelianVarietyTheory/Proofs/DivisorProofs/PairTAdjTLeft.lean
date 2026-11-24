@@ -141,7 +141,7 @@ noncomputable abbrev GmO (O : Type) [CommRing O] : Over (Spec (CommRingCat.of O)
   Gm (Spec (CommRingCat.of O))
 
 noncomputable def taut (p : ℕ) : Tv (GmO O) p where
-  χ n := torsion.ι _ _
+  χ _ := torsion.ι _ _
   isChar _ _ _ _ _ h := h
   compat _ _ _ _ h := h
 

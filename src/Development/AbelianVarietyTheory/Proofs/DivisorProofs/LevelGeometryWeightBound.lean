@@ -108,7 +108,7 @@ theorem bergOn_le_of_sup (D : D7) (j : ℕ) (H : ReciprocityTheory.ChartRestrict
     (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ D.R.r)
     (dict : ∀ σ : c.F →+* ℂ, GA D (D.sp.W j) → Σ k, ReciprocityTheory.ChartRestriction.G.FD.Frame ((U σ).X k).Ψ D.R.r)
     (hL : GlobalTheory.LevGeo.Laws D j Xo c U dict) (σ : c.F →+* ℂ) (hσ : GoodEmb c σ)
-    (G : WTZ D.host.E) (_hG : Even G.2) (K : ℝ)
+    (G : WTZ D.host.E) (K : ℝ)
     (hsup : ∀ P ∈ Formalism.L2.Pj.holSub (U σ).X (AllWt.modelWt (U σ) G),
       Formalism.L2.Pj.supE (U σ).X (AllWt.modelWt (U σ) G) P ^ 2 ≤
         ENNReal.ofReal K * AllWt.petE (D.sp.W j) (dict σ) (muQ1 (D.sp.W j)) (AllWt.modelWt (U σ) G) P ^ 2)
@@ -188,7 +188,7 @@ theorem bergOn_le_of_sup (D : D7) (j : ℕ) (H : ReciprocityTheory.ChartRestrict
 
 theorem bergOn_le_supConst : GlobalTheory.Published.TamagawaSpecialUnitary → ∀ (D : D7) (j : ℕ) (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host D.host.E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (U : ∀ σ : c.F →+* ℂ, Unf Xo c σ D.R.r) (dict : ∀ σ : c.F →+* ℂ, GA D (D.sp.W j) → Σ k, ReciprocityTheory.ChartRestriction.G.FD.Frame ((U σ).X k).Ψ D.R.r), GlobalTheory.LevGeo.Laws D j Xo c U dict → ∀ σ, GoodEmb c σ → ∀ (G : WTZ D.host.E), Even G.2 → ∀ (w : ℝ), 0 < w → (∀ k, (∑ τ, ((U σ).X k).spread (AllWt.modelWt (U σ) G k) τ) ≤ w) → ∀ (Z : Comp Xo c) (y : FPt (U σ).X), (⟨y.1, y.2.1⟩ : Σ k, ReciprocityTheory.ChartRestriction.G.FD.Frame ((U σ).X k).Ψ D.R.r) ∈ AllWt.framesOn (U σ) Z → AllWt.bergOn (U σ) (D.sp.W j) (dict σ) Z G y ≤ ENNReal.ofReal (GlobalTheory.LevGeo.supConst D.host.E D.R.r D.host.d l.M w) :=
   fun hT D j H Dw l Xo c U dict hL σ hσ G hG w hw hsp Z y hy =>
-    bergOn_le_of_sup D j H Dw l Xo c U dict hL σ hσ G hG _
+    bergOn_le_of_sup D j H Dw l Xo c U dict hL σ hσ G _
       (_root_.GlobalTheory.supPetersson_of_tamagawa hT D j H Dw l Xo c U dict hL σ hσ
         (AllWt.modelWt (U σ) G) w hw hsp (GlobalTheory.AllWt.Model.chi_modelWt (U σ) (hL.chiTriv σ hσ) G hG))
       Z y hy

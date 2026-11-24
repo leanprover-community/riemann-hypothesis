@@ -194,7 +194,7 @@ theorem valDiv2 (d : ℕ) (L : PeriodPair) (hsq : Squarefree d) (hd4 : d % 4 = 3
   have hP : ι (∏ z ∈ T, L0.weierstrassP z) ∈ MaximalUnramifiedExtension l := by
     have := hk ((MaximalUnramifiedExtension l).comap (ι : ℂ →+* ℂ_[l])) (by rw [Subfield.mem_comap]; simpa [ig2] using mc)
       (by rw [Subfield.mem_comap]; simpa [ig3] using mc)
-      (by rw [Subfield.mem_comap]; exact omega_mem_kur d hsq hd4 l hld ι)
+      (by rw [Subfield.mem_comap]; exact omega_mem_kur d hd4 l hld ι)
     rwa [Subfield.mem_comap] at this
   have hU := unit_prod L0 l ι h5 μ hμ n4.le n6lt.le 2 N (Or.inr ⟨rfl, n6lt⟩) hlN h2N T hT
   have hP0 : ι (∏ z ∈ T, L0.weierstrassP z) ≠ 0 := by
@@ -438,7 +438,7 @@ theorem valDiv3 (d : ℕ) (L : PeriodPair) (hsq : Squarefree d) (hd4 : d % 4 = 3
     have := hk ((MaximalUnramifiedExtension l).comap (ι : ℂ →+* ℂ_[l]))
       (by rw [Subfield.mem_comap]; simpa [hι2] using hcK)
       (by rw [Subfield.mem_comap]; simpa [hι3] using hcK)
-      (by rw [Subfield.mem_comap]; exact omega_mem_kur d hsq hd4 l hld ι)
+      (by rw [Subfield.mem_comap]; exact omega_mem_kur d hd4 l hld ι)
     simpa [Subfield.mem_comap] using this
   have hP0 : ι (∏ z ∈ T, L0.weierstrassP z) ≠ 0 := by
     intro h

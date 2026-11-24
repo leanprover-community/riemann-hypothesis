@@ -62,6 +62,6 @@ namespace GlobalTheory.SchwartzTranslation
 
 theorem schA_add_const : ∀ {F : Type} [Field F] [NumberField F] {κ : Type} [Fintype κ] (c : κ → AF F),
     ∀ Φ ∈ GlobalTheory.WeilM.schA F κ, (fun y => Φ (y + c)) ∈ GlobalTheory.WeilM.schA F κ :=
-  fun {F} _ _ {_} _ c Φ hΦ => GlobalTheory.SchwartzTranslate.schA_translate F c hΦ
+  fun {F} _ _ {_} _ c _ hΦ => GlobalTheory.SchwartzTranslate.schA_translate F c hΦ
 
 end GlobalTheory.SchwartzTranslation

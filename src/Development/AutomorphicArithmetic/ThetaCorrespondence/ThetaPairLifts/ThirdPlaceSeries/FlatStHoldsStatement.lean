@@ -388,7 +388,7 @@ theorem X_pint : ∀ (D : D7) (Q : Finset (Pl D.host.E)) (e : AE D), IsIdemSum e
   by_cases hk : k.val < r
   · rwa [e2, ite_eq_left hk, one_mul] at h2
   · rw [ite_eq_right hk] at e2
-    refine GlobalTheory.DilKer.mem_int_of_mul he hϖ (congrFun (congrFun hv k) l) (e2 ▸ h2) fun PP hPP => ?_
+    refine GlobalTheory.DilKer.mem_int_of_mul he hϖ (congrFun (congrFun hv k) l) fun PP hPP => ?_
     rw [← e2]
     refine (GlobalTheory.AdIsom.resS_eq_zero_iff_cpt PP ⟨_, h2⟩).1 ?_
     have h3 : redM PP (diagW D n r (ϖ : D.host.E) * v * Γ * Γ') k l = 0 := by
@@ -990,7 +990,7 @@ theorem flat_conj_eq_unit_smul_om : ∀ (D : D7) (G : Type) [Group G] [Fintype G
     X_chr D G Pl0 T0 A Ks R F hC i t B ψ hB hψ hQ hxi PP (hL hPP)
       ((GlobalTheory.FlatThreeSteps.mem_or_conj_mem hsp hQ' hid (hL hPP)).resolve_left ((mf PP).1 hPP).2) u
   have hsub : idem (R.Q t) * et = et := by rw [← idem_eq het]; exact idem_mul_of_subset hsp hL
-  refine ⟨g, _, hg.1, suppAt_mono hsub het.2 hsp.isIdemSum.2 hg.1,
+  refine ⟨g, _, hg.1, suppAt_mono hsub hsp.isIdemSum.2 hg.1,
     GlobalTheory.BigOn.Exp.TupLe.unitOff_mul (GlobalTheory.BigOn.Exp.TupLe.unitOff_mul hchi hs) (GlobalTheory.BigOn.Exp.TupLe.unitOff_root hc₀.choose_spec.1.ne' hc₀.choose_spec.2),
     fun f₁ f₂ h₁ h₂ => ?_⟩
   obtain ⟨Tm, hTm⟩ := h₁.1

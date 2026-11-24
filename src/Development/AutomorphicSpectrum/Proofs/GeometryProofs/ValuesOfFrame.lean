@@ -183,7 +183,7 @@ theorem exists_model_of_eq {R : Type} [CommRing R] {z z' : Sp R ⟶ X} (h : z = 
   exact ⟨M, fun _ => rfl⟩
 
 theorem stalk_model [IsCommMonObj G] [Smooth G.hom] {Li : Type} [AddCommGroup Li] [Module Ω Li] (M : LieModel G ξ Li)
-    (hξ : IsCptGen ξ) {L : Type} [Field L] (z : Sp L ⟶ X) (h : genPt ξ ⤳ centre z) {V : Type} [AddCommGroup V]
+    {L : Type} [Field L] (z : Sp L ⟶ X) (h : genPt ξ ⤳ centre z) {V : Type} [AddCommGroup V]
     [Module L V] (Mz : LieModel G z V) :
     ∃ (T : Type) (_ : AddCommGroup T) (_ : Module (X.presheaf.stalk (centre z)) T)
       (M0 : LieModel (R := X.presheaf.stalk (centre z)) G (X.fromSpecStalk (centre z)) T) (i : T →+ Li) (β : T →+ V),
@@ -306,7 +306,7 @@ theorem values_core (𝔐 : HodgeCpt Y S y) {L : Type} [Field L] (z : Sp L ⟶ �
   obtain ⟨M₁, hM₁⟩ := (LiePull.lieModel_pullback _ _ 𝔐.t.G tK.G z mp.φ mp.cart L (𝟙 _) V).2 MV
   obtain ⟨Mz, hMz⟩ := exists_model_of_eq (Category.id_comp z) M₁
   have hM : ∀ e, (MV.pt e).left ≫ mp.φ = (Mz.pt e).left := fun e => (hM₁ e).trans (hMz e).symm
-  obtain ⟨T, iT, mT, M0, i, β, hext, hβ, hsi, hsβ, honto, hlift, hgen⟩ := stalk_model 𝔐.M hξ z (𝔐.all _) Mz
+  obtain ⟨T, iT, mT, M0, i, β, hext, hβ, hsi, hsβ, honto, hlift, hgen⟩ := stalk_model 𝔐.M z (𝔐.all _) Mz
   have hilat : ∀ t, i t ∈ 𝔐.M.lat q := fun t => (𝔐.M.mem_lat_iff q _).2 ⟨_, hext t⟩
   have hinj : Function.Injective i := fun t t' e =>
     M0.inj ((hext t).unique (hξ.inj q) (by rw [e]; exact hext t'))

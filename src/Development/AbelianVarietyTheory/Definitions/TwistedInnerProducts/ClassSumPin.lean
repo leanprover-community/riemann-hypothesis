@@ -63,6 +63,6 @@ def ClassSumPin (p : PtAt ex Csz) : Prop :=
       NChoice.thPe D ex.nch w ((i : ℕ) + 1) (ex.nch.eMt w ((i : ℕ) + 1) x) =
         ∑ k, ex.nch.embW w (a k) ⊗ₜ[D.ntw.O (ex.nch.twI w)]
           (p.nexp.eF (ex.nch.twI w) ((i : ℕ) + 1) (ex.nch.sd w) h1 h2).symm
-            ((1 : KB p.Sx (ex.nch.twI w) (ex.nch.sd w)) ⊗ₜ[p.Sx.Ks] f k)
+            ((1 : KB (ex.nch.twI w)) ⊗ₜ[p.Sx.Ks] f k)
 
 end GlobalTheory.ExportPin

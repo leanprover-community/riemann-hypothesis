@@ -139,8 +139,8 @@ def FibU.map (N : ℕ) {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) : 
 def fibCat (N : ℕ) : CommRingCat.{0} ⥤ Cat.{0,0} where
   obj A := Cat.of (FibU N A)
   map f := (FibU.map N f.hom).toCatHom
-  map_id A := rfl
-  map_comp f g := rfl
+  map_id _ := rfl
+  map_comp _ _ := rfl
 
 def Fib (N : ℕ) : Spc := ofCat (fibCat N)
 
@@ -345,11 +345,11 @@ theorem twPi_twSigma (E : Spc) {N : ℕ} (V : E ⟶ ofCat (glCat N)) : twPi E V 
   exact (twistC_toGL _ _).symm
 
 def ptimes.snd (P : PSh) (S : Spc) : ptimes P S ⟶ S where
-  app n := { app := fun U => TypeCat.ofHom fun y => y.2, naturality := fun _ _ _ => rfl }
+  app _ := { app := fun _ => TypeCat.ofHom fun y => y.2, naturality := fun _ _ _ => rfl }
   naturality _ _ _ := rfl
 
 def ptimes.fst (P : PSh) (S : Spc) : ptimes P S ⟶ disc.obj P where
-  app n := { app := fun U => TypeCat.ofHom fun y => y.1, naturality := fun _ _ _ => rfl }
+  app _ := { app := fun _ => TypeCat.ofHom fun y => y.1, naturality := fun _ _ _ => rfl }
   naturality _ _ _ := rfl
 
 def twLine (E : Spc) {N : ℕ} (V : E ⟶ ofCat (glCat N)) :

@@ -192,7 +192,7 @@ theorem realLow_of (h : WROrd) : RealLow := by
   obtain ⟨cμ, -, hcμ⟩ := exists_map_eq_smul (volume : Measure (ι → Fin M → Fin n → ℂ)) μ eC
   obtain ⟨cb, -, hcb⟩ := exists_map_eq_smul (volume : Measure (ι → WR.E n)) ν eb
   have hl : ∀ i, l i ≠ 0 := hP.ne
-  have hβ : ∀ i, (herm (ygAll σ θ g T i)).det ≠ 0 := det_herm_ygAll σ hCM ψ θ l hP g T hT
+  have hβ : ∀ i, (herm (ygAll σ θ g T i)).det ≠ 0 := det_herm_ygAll σ ψ θ l hP g T hT
   have hw : ∀ i, ∃ W : ℂ → ℂ, Differentiable ℂ W ∧ ∃ σ₀ : ℝ, ∀ z : ℂ, σ₀ < z.re →
       Integrable (fw (fun _ : Fin M => e i) (l i) (1 : PX M n) (ygAll σ θ g T i) z) ∧
       z ^ (n - M) * W z = ∫ y, fw (fun _ : Fin M => e i) (l i) (1 : PX M n) (ygAll σ θ g T i) z y := by

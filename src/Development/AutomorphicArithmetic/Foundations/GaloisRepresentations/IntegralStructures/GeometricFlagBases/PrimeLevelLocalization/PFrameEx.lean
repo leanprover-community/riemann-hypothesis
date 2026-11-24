@@ -227,7 +227,7 @@ private def muHom : R ⊗[ℚ] Matrix (Fin n) (Fin n) E →ₐ[ℚ] Matrix (Fin 
     (((Algebra.ofId (R ⊗[ℚ] E) (Matrix (Fin n) (Fin n) (R ⊗[ℚ] E))).restrictScalars ℚ).comp
       Algebra.TensorProduct.includeLeft)
     (AlgHom.mapMatrix Algebra.TensorProduct.includeRight)
-    (fun r x => Algebra.commutes _ _)
+    (fun _ _ => Algebra.commutes _ _)
 
 private theorem muHom_tmul (r : R) (x : Matrix (Fin n) (Fin n) E) (i k : Fin n) :
     muHom R E n (r ⊗ₜ x) i k = r ⊗ₜ x i k := by
@@ -899,7 +899,7 @@ private theorem inv_part (Φ : R →+* R') {ε : R} (he : ε * ε = ε) (hker : 
 private theorem star_part (Φ : R →+* R') (σ : R →+* R) (σ' : R' →+* R') {ε t : R}
     (hσ : ∀ x, Φ (σ x) = σ' (Φ x)) (he : ε * ε = ε) (hσe : σ ε = ε)
     (hker : ∀ z, Φ z = 0 → (1 - ε) * z = 0)
-    {a a' D Y : Matrix (Fin n) (Fin n) R} (haa : a * a' = 1) (ha' : a' * a = 1)
+    {a a' D Y : Matrix (Fin n) (Fin n) R} (haa : a * a' = 1)
     (hD : (a.map σ)ᵀ * D * a = 1)
     (hX : ((Y.map Φ).map σ')ᵀ * D.map Φ * Y.map Φ = Φ t • D.map Φ) :
     ((((1 - ε) • (a' * Y * a) + ε • (1 : Matrix (Fin n) (Fin n) R))).map σ)ᵀ *
@@ -939,7 +939,7 @@ private theorem star_part (Φ : R →+* R') (σ : R →+* R) (σ' : R' →+* R')
   rw [smul_eq_of_map Φ hker h1, smul_smul, ← add_smul]
 
 private theorem conj_part (Φ : R →+* R') {ε : R} (hΦe : Φ ε = 0)
-    {a a' Y : Matrix (Fin n) (Fin n) R} (haa : a * a' = 1) (ha' : a' * a = 1) :
+    {a a' Y : Matrix (Fin n) (Fin n) R} (haa : a * a' = 1) :
     (a * ((1 - ε) • (a' * Y * a) + ε • (1 : Matrix (Fin n) (Fin n) R)) * a').map Φ = Y.map Φ := by
   have e : a * ((1 - ε) • (a' * Y * a) + ε • (1 : Matrix (Fin n) (Fin n) R)) * a' = (1 - ε) • Y + ε • (1 : Matrix (Fin n) (Fin n) R) := by
     have e1 : a * (a' * Y * a) * a' = Y := by
@@ -1065,8 +1065,8 @@ theorem UpperTheory.Gal.W2.Seed.pJSurj :
   have hA' : (a⁻¹).val * a.val = 1 := Units.inv_mul a
   have hGG := inv_part T.Φ heps hker hA hA' (Y := Y) (Y' := Y') (by rw [hY, hY', hXX])
   have hGG' := inv_part T.Φ heps hker hA hA' (Y := Y') (Y' := Y) (by rw [hY, hY', hXX'])
-  have hStar := star_part T.Φ (conjFin (conjE E)) (conjT E (AfP p)) (t := finiteAdeleMap ℚ E s0) T.Φ_conj heps hσe hker hA hA' hD hX
-  have hConj := conj_part T.Φ hΦe hA hA' (Y := Y)
+  have hStar := star_part T.Φ (conjFin (conjE E)) (conjT E (AfP p)) (t := finiteAdeleMap ℚ E s0) T.Φ_conj heps hσe hker hA hD hX
+  have hConj := conj_part T.Φ hΦe hA (Y := Y)
   have h01 : (1 - e) * (s0 * s1 - 1) = 0 := hkerQ _ (by rw [map_sub, map_mul, hs0, hs1, map_one, Units.mul_inv, sub_self])
   have hss : ((1 - e) * s0 + e) * ((1 - e) * s1 + e) = 1 := by
     linear_combination h01 + (s0 * s1 - s0 - s1 + 1) * heeQ

@@ -220,7 +220,7 @@ private theorem exists_ofS_actL_eq_of_fixes_one (hN : 1 ≤ N) (u : Gp L N) (hu 
   rw [hs, one_smul]
 
 theorem mean_inv (hN : 1 ≤ N) (d : Dom L N) {q : ℕ} (ω : Form (HS L N) q)
-    (hγ : ∀ γ, FInv ω (emb L N γ)) (hs : ∀ s, FInv ω (scal L N s))
+    (hγ : ∀ γ, FInv ω (emb L N γ))
     (hi : IntegrableOn (fun x => fr ω (ofS L N x)) d.D d.μ) {u : Gp L N}
     (hu : actL u (one L N).1 = (one L N).1) :
     (∫ y in d.D, fr ω (ofS L N y) ∂d.μ).compContinuousLinearMap (actL u) =
@@ -282,7 +282,7 @@ theorem sMean_of : SMean := by
   have hM : ∀ u : Gp L N, actL u (one L N).1 = (one L N).1 →
       M.compContinuousLinearMap (actL u) = M := by
     intro u hu
-    have h1 := MeanLatticeAction.mean_inv hN d ω hγ hs hi hu
+    have h1 := MeanLatticeAction.mean_inv hN d ω hγ hi hu
     ext v
     have h2 := congrArg (fun F : HS L N [⋀^Fin q]→L[ℝ] ℝ => F v) h1
     simp only [ContinuousAlternatingMap.compContinuousLinearMap_apply] at h2
@@ -1236,7 +1236,7 @@ namespace PositivityTheory.KB.JoinReconstruction
 
 open PositivityTheory.KB
 
-theorem lem_form (hHt : SHt) (hPU : SPU) (hWhit : SWhit) (hCen : SCen) (L : Type) [Field L] [NumberField L]
+theorem lem_form (hHt : SHt) (hWhit : SWhit) (hCen : SCen) (L : Type) [Field L] [NumberField L]
     (hC : IsTotallyComplex L) (k a N : ℕ) (h1N : 1 ≤ N) (hPUa : Nonempty (PU L N fun x => ht x ^ a))
     (c : (Fin (k + 2) → Gm L N) → ℝ) (hcI : Inv (MonoidHom.id (Gm L N)) c) (hcd : dC c = 0) :
     ∃ ω' : Form (HS L N) (k + 1), Good ω' ∧ (∀ γ, FInv ω' (emb L N γ)) ∧ (∀ s, FInv ω' (scal L N s)) ∧
@@ -1289,7 +1289,7 @@ theorem key (hPrime : SPrime) (hHecke : SHecke) (hHt : SHt) (hPU : SPU) (hMom : 
   refine ⟨N, hn₀, fun c hcI hcd => ?_⟩
   obtain ⟨d, hd⟩ := hN₁ N hN1
   obtain ⟨ω', hω'G, hω'γ, hω's, hω'z, K, hK⟩ :=
-    lem_form hHt hPU hWhit hCen L hC k a N h1N (hPUa N h1N) c hcI hcd
+    lem_form hHt hWhit hCen L hC k a N h1N (hPUa N h1N) c hcI hcd
   obtain ⟨_, _, ⟨c0, hc0, hc0le⟩, _⟩ := hHt L hC N h1N
   have hht0 : ∀ x, 0 ≤ ht x := fun x => hc0.le.trans (hc0le x)
   haveI : IsFiniteMeasure (d.μ.restrict d.D) := isFiniteMeasure_restrict.2 d.fin.ne

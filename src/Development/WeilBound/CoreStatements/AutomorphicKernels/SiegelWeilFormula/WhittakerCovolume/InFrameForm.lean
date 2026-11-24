@@ -77,7 +77,7 @@ theorem sigR_eq_cA (z : AE F E) : Formalism.MainNotions.GlobalTheoryTheory.Genus
   | add x y hx hy => rw [map_add (f := _), map_add (f := _), hx, hy]
 
 theorem bottom_onto {S : Type} [CommRing S] (O : Subring S) {n : Type} [Fintype n] [DecidableEq n]
-    (k k' : Matrix (n ⊕ n) (n ⊕ n) S) (hkk : k * k' = 1) (hk : ∀ i j, k i j ∈ O) (hk' : ∀ i j, k' i j ∈ O) (y : n → S)
+    (k k' : Matrix (n ⊕ n) (n ⊕ n) S) (hkk : k * k' = 1) (hk' : ∀ i j, k' i j ∈ O) (y : n → S)
     (hy : ∀ i, y i ∈ O) : ∃ y₁ y₂ : n → S, (∀ i, y₁ i ∈ O) ∧ (∀ i, y₂ i ∈ O) ∧
       k.toBlocks₂₁.mulVec y₁ + k.toBlocks₂₂.mulVec y₂ = y := by
   classical

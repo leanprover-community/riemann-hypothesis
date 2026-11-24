@@ -98,13 +98,13 @@ theorem projAt_isInfEmb [IsTotallyReal F] (τ : E →+* ℂ) : IsInfEmb τ (proj
 
 def inlA : Ainf F →ₗ[F] AF F where
   toFun a := pairA F a 0
-  map_add' a b := Prod.ext rfl (add_zero (0 : Af F)).symm
-  map_smul' c a := Prod.ext rfl (smul_zero (A := Af F) c).symm
+  map_add' _ _ := Prod.ext rfl (add_zero (0 : Af F)).symm
+  map_smul' c _ := Prod.ext rfl (smul_zero (A := Af F) c).symm
 
 def inrA : Af F →ₗ[F] AF F where
   toFun b := pairA F 0 b
-  map_add' a b := Prod.ext (add_zero (0 : Ainf F)).symm rfl
-  map_smul' c a := Prod.ext (smul_zero (A := Ainf F) c).symm rfl
+  map_add' _ _ := Prod.ext (add_zero (0 : Ainf F)).symm rfl
+  map_smul' c _ := Prod.ext (smul_zero (A := Ainf F) c).symm rfl
 
 def pairE (a : Ainf F ⊗[F] E) (b : Af F ⊗[F] E) : AF F ⊗[F] E :=
   TensorProduct.map (inlA (F := F)) LinearMap.id a + TensorProduct.map (inrA (F := F)) LinearMap.id b

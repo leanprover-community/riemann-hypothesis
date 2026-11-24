@@ -1489,7 +1489,7 @@ theorem muAt_one (i : ℕ) : muAt Ch sel mu cst i P 1 = 1 := by
   unfold LocE.unitV
   rw [dite_eq_left h1, show h1.unit = 1 from Units.ext (TopStep.reduction_one₂), map_one, Units.val_one]
 
-theorem chiTriv_mid (hc : cst.Ok) (hs : cst.sharp = true) (hd : DegOneUnram P.1)
+theorem chiTriv_mid (hc : cst.Ok) (hd : DegOneUnram P.1)
     (hD : P.1 ∉ Pr.vGs → 2 * (R.m - 1) + 1 ≤ cst.D P) {i : ℕ} (hi : i + 3 ≤ R.m)
     {hal : AutY X R i} {h : AutY X R (i + 1)} (h1 : admitted Pr i P.1 hal) (h2 : admitted Pr (i + 1) P.1 h)
     (H : FiniteSumNonzeroLargeDepth Ch sel mu cst i P hal h) : ChiTriv Ch sel mu cst (i + 1) P h := by
@@ -1713,7 +1713,7 @@ theorem exists_chIdx_of_cst {G : ChGlob X R.m} (hd : ∀ P : rowSG Pr sel mu, De
   have htriv : ∀ P i, ∀ h ∈ F P (i + 1), ChiTriv Ch sel mu cst (i + 1) P h := fun P i h hh => by
     rcases (Nat.le_of_succ_le_succ (hle P _ h hh)).lt_or_eq with e | e
     · obtain ⟨a, ha, hE⟩ := (hmid P i e).1 h hh
-      exact chiTriv_mid hc hs (hd P) (hD P) (by omega) ((hR P i).2 a ha).1 ((hR P _).2 h hh).1 hE
+      exact chiTriv_mid hc (hd P) (hD P) (by omega) ((hR P i).2 a ha).1 ((hR P _).2 h hh).1 hE
     · exact chiTriv_last (by unfold cOf; omega) (hmul P _ h hh)
   have hlG : ∀ j (w : {w // w ∈ Pr.vGs}), ∀ h ∈ F ⟨w.1, Finset.mem_union_left _ w.2⟩ j,
       ∃ lev : Lev (𝓞 X.E ⧸ w.1.asIdeal) X.K (R.N j), GrpG sel mu cst j ⟨w.1, Finset.mem_union_left _ w.2⟩ h lev ∧

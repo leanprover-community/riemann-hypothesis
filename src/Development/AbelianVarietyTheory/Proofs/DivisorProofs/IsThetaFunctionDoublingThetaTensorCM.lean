@@ -69,7 +69,7 @@ def sndH (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
   map_add' x y := by ext; simp [botR]; ring
 
 theorem continuous_topH (nS nT : ℕ) : Continuous (topH F E nS nT) :=
-  continuous_matrix fun i j => continuous_id.matrix_elem _ j
+  continuous_matrix fun _ j => continuous_id.matrix_elem _ j
 
 theorem continuous_sndH (nS nT : ℕ) : Continuous (sndH F E nS nT) := by
   haveI : IsTopologicalRing (AF F ⊗[F] E) := IsModuleTopology.isTopologicalRing (AF F) _

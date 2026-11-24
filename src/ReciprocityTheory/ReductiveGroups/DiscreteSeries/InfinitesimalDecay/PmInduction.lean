@@ -174,17 +174,17 @@ theorem cns_ofSum_core (dual : Bool) {ε : Fin n → Bool} {μ lam' : Fin n → 
           (tensGrp dual (rreg ε) g (fun d => ((F d : smD ε (rreg ε)) : L2 ε)) c) := by
   obtain ⟨⟨h, hh, hth⟩, hgap, hP, hv, hpos, hW, hG⟩ := hok
   obtain ⟨⟨h', hh', hth'⟩, hgap', hP', hv', hpos', hW', hG'⟩ := hok'
-  haveI := Hlam_nontrivial hgap hP hv
-  haveI := Hlam_nontrivial hgap' hP' hv'
+  haveI := Hlam_nontrivial hP hv
+  haveI := Hlam_nontrivial hP' hv'
   obtain ⟨w, hw⟩ := exists_ne (0 : Hlam ε Ψ T.w)
   obtain ⟨w', hw'⟩ := exists_ne (0 : Hlam ε Ψ' T'.w)
   obtain ⟨⟨ι, hι, -, -⟩, -⟩ := cc_gk dual hgap hP hv hgap' hP' hv' hh hth hh' hth' hpos hpos' hW hW' hG hG'
     s hlam' hw hw'
   have hσ := rreg_isURepOn ε
   have hD := isDerivedOn_smE hσ
-  obtain ⟨f, hf, hfe⟩ := (coef_of_emb dual hσ hD hgap (datumV_isKIrrHW hP hv) (datumV_casimir hP T.w)
-    (datumV_kStable hP T.w) hgap' (datumV_isKIrrHW hP' hv') (datumV_casimir hP' T'.w)
-    (datumV_kStable hP' T'.w) hι).2 z' hz' x' hx'
+  obtain ⟨f, hf, hfe⟩ := (coef_of_emb dual hσ hD (datumV_isKIrrHW hP hv) (datumV_casimir hP T.w)
+    hgap' (datumV_isKIrrHW hP' hv') (datumV_casimir hP' T'.w)
+    hι).2 z' hz' x' hx'
   exact ⟨f, ι x', hf, hι.1 x' hx', hfe⟩
 
 end ReciprocityTheory.ChartRestriction.DS
@@ -521,7 +521,7 @@ theorem psiFor_pos_gelfand {ε : Fin n → Bool} {lam : Fin n → ℝ} {T : S7.K
       have hk1 : S7.toMK (1 : S7.KG ε) = 1 := rfl
       rwa [hk1, one_mul] at this
     rw [heq' _ hX1]
-    exact psi_exp_isPositive T Ψ' μ hμ (h8 μ hμ) X hX
+    exact psi_exp_isPositive T Ψ' μ (h8 μ hμ) X hX
   · obtain ⟨e1, e2⟩ := h7 k g hg
     refine ⟨?_, ?_⟩
     · rw [opGelfand_congr _ rightE_congr k heq' hg, e1, heq' g hg]
@@ -893,7 +893,7 @@ theorem standard_gap_data {ε : Fin n → Bool} {lam : Fin n → ℝ} {T : S7.KT
       HasGelfandChar (smE ε (rreg ε)) lam (genSub (smE ε (rreg ε)) (datumV ε Ψ v₀)) := by
   have hstd : StdGap ε lam := ⟨hlam.1, h, hgap, (swA_thr hth).1⟩
   obtain ⟨hpos, hGel⟩ := psiFor_pos_gelfand hlam hgap hth hq hP
-  exact ⟨hstd, hpos, square_integrable_generated_vectors hlam hgap hth hq hP hv₀, hasGelfandChar_sigLam hstd hP hv₀ hGel⟩
+  exact ⟨hstd, hpos, square_integrable_generated_vectors hlam hgap hth hq hP hv₀, hasGelfandChar_sigLam hP hGel⟩
 
 theorem tensor_inner_single_coef {ε : Fin n → Bool} {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) (g : Matrix (Fin n) (Fin n) ℂ) {D : Submodule ℂ H}
@@ -960,8 +960,8 @@ theorem regular_term_bound {ε : Fin n → Bool} {lam : Fin n → ℝ} {T : S7.K
           ∏ t, ‖g (idx t).1 (idx t).2‖ ≤
         C * NE (smE ε (rreg ε)) ((m + 1) * (n - 1)) x * NE (smE ε (rreg ε)) ((m + 1) * (n - 1)) y := by
   obtain ⟨⟨h', hh', hth'⟩, hgap', hP', hv', hpos', hW', hG'⟩ := hok
-  have := Hlam_nontrivial hstd hP hv₀
-  have := Hlam_nontrivial hgap' hP' hv'
+  have := Hlam_nontrivial hP hv₀
+  have := Hlam_nontrivial hP' hv'
   obtain ⟨w, hw⟩ := exists_ne (0 : Hlam ε Ψ v₀)
   obtain ⟨w', hw'⟩ := exists_ne (0 : Hlam ε Ψ' T'.w)
   obtain ⟨⟨ι, hι, hιe, hιs⟩, -⟩ := cc_gk false hstd hP hv₀ hgap' hP' hv' hh hth hh' hth' hpos hpos' hW hW' hG hG'

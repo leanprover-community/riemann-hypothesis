@@ -54,7 +54,7 @@ theorem mem_iff_fixed (h : K ≤ L) (x : PadicAlgCl p) : x ∈ L ↔ ∀ σ ∈ 
     InfiniteGalois.fixedField_fixingSubgroup]
   rfl
 
-theorem subG_le_iff {L' : IntermediateField ℚ_[p] (PadicAlgCl p)} (h : K ≤ L) :
+theorem subG_le_iff {L' : IntermediateField ℚ_[p] (PadicAlgCl p)} :
     subG p K L' ≤ subG p K L ↔ L ≤ K ⊔ L' := by
   constructor
   · intro hle x hx
@@ -103,7 +103,7 @@ theorem degLK_eq_finrank (h : K ≤ L) :
   rw [IntermediateField.finrank_eq_fixingSubgroup_index, ← subG_eq_fixingSubgroup h]
   rfl
 
-theorem finrank_eq_degLK_mul (h : K ≤ L) (hL : FiniteDimensional ℚ_[p] L) :
+theorem finrank_eq_degLK_mul (h : K ≤ L) :
     Module.finrank ℚ_[p] L = degLK p K L * Module.finrank ℚ_[p] K := by
   rw [degLK_eq_finrank h, mul_comm]
   set_option synthInstance.maxHeartbeats 200000 in

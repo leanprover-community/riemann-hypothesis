@@ -54,7 +54,7 @@ private theorem log_max_norm_le_circleAverage_of_analyticOnNhd {h : ℂ → ℂ}
           · simp [hx0]
           · exact Real.log_le_log (norm_pos_iff.2 hx0) (le_max_left _ _))
 
-theorem isPsh_logmax {D : ℕ} {U : Set (Fin D → ℂ)} (hU : IsOpen U) {f : (Fin D → ℂ) → ℂ}
+theorem isPsh_logmax {D : ℕ} {U : Set (Fin D → ℂ)} {f : (Fin D → ℂ) → ℂ}
     (hf : AnalyticOnNhd ℂ f U) {ε : ℝ} (hε : 0 < ε) :
     ReciprocityTheory.AnForm.A.IsPsh U (fun z => Real.log (max ‖f z‖ ε)) := by
   refine ⟨?_, fun z w hdisc => ?_⟩
@@ -118,7 +118,7 @@ theorem integrableOn_log_norm_closedBall {D : ℕ} {U : Set (Fin D → ℂ)} (hU
   set φ : ℕ → (Fin D → ℂ) → ℝ := fun n x => Real.log (max ‖f x‖ (ε n)) with hφdef
   set φ1 : (Fin D → ℂ) → ℝ := fun x => Real.log (max ‖f x‖ 1) with hφ1def
   have hsub : ∀ n, IntegrableOn (φ n) B ∧ φ n z0 ≤ ⨍ x in B, φ n x := fun n =>
-    ReciprocityTheory.AnForm.A.subMeanPolydisc_thm D U (φ n) z0 t hU (isPsh_logmax hU hf (hε0 n)) ht hBU
+    ReciprocityTheory.AnForm.A.subMeanPolydisc_thm D U (φ n) z0 t hU (isPsh_logmax hf (hε0 n)) ht hBU
   have hφc : ∀ n, ContinuousOn (φ n) B := fun n =>
     ContinuousOn.log (ContinuousOn.sup (ContinuousOn.norm hfc) continuousOn_const)
       (fun x _ => (lt_max_of_lt_right (hε0 n)).ne')

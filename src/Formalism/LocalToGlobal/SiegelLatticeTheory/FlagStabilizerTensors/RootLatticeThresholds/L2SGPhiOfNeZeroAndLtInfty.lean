@@ -20,7 +20,7 @@ set_option linter.unusedVariables false
 
 namespace Formalism.L2.SG.Pf.GoodS
 
-theorem nu_conc {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} (hz : Formalism.QuantumDeterminants.inWb k r z) (hT : 0 < Formalism.QuantumDeterminants.Tz k r z)
+theorem nu_conc {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ}
     {μG μS ν : Measure (Formalism.QuantumDeterminants.Mt k r)} (hG : Formalism.MainNotions.S.IsHaarOn (Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r)) μG)
     (hS : Formalism.MainNotions.S.IsHaarOn (Formalism.QuantumDeterminants.Sset k r z) μS) (hq : Formalism.MainNotions.S.IsQuotMeas μG μS ν) :
     ν {x | Matrix.of x ∉ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r)} = 0 := by
@@ -127,7 +127,7 @@ theorem l2SG_phiOf_ne_zero_and_lt_infty (C : Choice X θ) (hLF : LocFactor C) (h
   have hHG := Formalism.L2.SG.Pf.haarTr C τ
   have hq := C.nuS_q u τ
   have hy := C.y_mem τ
-  have hconc := nu_conc hz hT hHG hSH hq
+  have hconc := nu_conc hHG hSH hq
   have hπ := Formalism.MainNotions.BridgeLemma₃.lbRepOfHC_proved D.R.k D.R.rS _ _ _ _ hz hT (Formalism.L2.SG.Pf.colsTypeTr C u τ)
   have hinv : ∀ s ∈ Formalism.QuantumDeterminants.Sset D.R.k D.R.rS (zB X (C.Qi τ) u τ), ∀ x ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk D.R.k D.R.rS),
       ‖wT C u τ (s * x)‖ = ‖wT C u τ x‖ := by

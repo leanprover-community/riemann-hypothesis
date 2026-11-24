@@ -82,7 +82,7 @@ def bc {T T' : Scheme.{0}} (c : T' ⟶ T) (g : T ⟶ S) (k : T' ⟶ S) (w : c �
 lemma isPullback_bc {T T' : Scheme.{0}} (c : T' ⟶ T) (g : T ⟶ S) (k : T' ⟶ S) (w : c ≫ g = k) :
     IsPullback (bc z c g k w) (pullback.snd z k) (pullback.snd z g) c := by
   subst w
-  refine IsPullback.of_right ?_ (by simp only [bc, pullback.map, pullback.lift_fst, pullback.lift_snd, pullback.lift_fst_assoc, pullback.lift_snd_assoc, Category.comp_id, Category.assoc]) (IsPullback.of_hasPullback z g)
+  refine IsPullback.of_right ?_ (by simp only [bc, pullback.map, pullback.lift_snd, Category.comp_id]) (IsPullback.of_hasPullback z g)
   have e : bc z c g (c ≫ g) rfl ≫ pullback.fst z g = pullback.fst z (c ≫ g) := by simp only [bc, pullback.map, pullback.lift_fst, Category.comp_id]
   rw [e]
   exact IsPullback.of_hasPullback z (c ≫ g)
@@ -146,8 +146,8 @@ variable (z r)
 def hilbFunctor : Scheme.{0}ᵒᵖ ⥤ Type where
   obj T := HPt z r T.unop
   map c := TypeCat.ofHom (HPt.map c.unop)
-  map_id T := ConcreteCategory.hom_ext _ _ fun x => HPt.map_id x
-  map_comp a b := ConcreteCategory.hom_ext _ _ fun x => HPt.map_comp _ _ x
+  map_id _ := ConcreteCategory.hom_ext _ _ fun x => HPt.map_id x
+  map_comp _ _ := ConcreteCategory.hom_ext _ _ fun x => HPt.map_comp _ _ x
 
 def hilbProj : hilbFunctor z r ⟶ yoneda.obj S where
   app T := TypeCat.ofHom fun x => x.1

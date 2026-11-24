@@ -198,7 +198,7 @@ theorem traceA [FiniteDimensional ℂ V] (hB : B.Fin) (hf : s.IsTest f) (hD : HD
       refine Set.Finite.of_preimage (f := MulAction.toPerm (s.θ.symm g)) (hf.fin.subset fun x hx h => hx ?_) (Equiv.surjective _)
       rw [e, h, zero_smul]
     obtain ⟨t1, t2⟩ := finsum_triv B.Γ₀ (triv0 B) k kf
-    obtain ⟨c1, c2⟩ := countC B.Γ₀ B.Γ₀ (triv0 B) le_rfl (stab0 B hB) k (fun z hz y => by rw [triv0 B z hz]) t1
+    obtain ⟨c1, c2⟩ := countC B.Γ₀ B.Γ₀ le_rfl (stab0 B hB) k (fun z hz y => by rw [triv0 B z hz]) t1
     rw [t2, finsum_curry _ c1, finsum_eq_sum_of_fintype, ← finsum_comp_equiv (MulAction.toPerm (s.θ.symm g))] at c2
     simp only [e] at c2
     refine c2.symm.trans (Finset.sum_congr rfl fun o _ => ?_)
@@ -325,7 +325,7 @@ private theorem termC [FiniteDimensional ℂ V] (hB : B.Fin) (hf : s.IsTest f) (
       simp [mul_assoc]
     rw [e]
     exact B.U.inv_mem hu
-  obtain ⟨-, hC⟩ := countC B.Γ₀ (s.Cent δ) (triv0 B) hle (stab0 B hB) (FF s f δ) hinv hfin
+  obtain ⟨-, hC⟩ := countC B.Γ₀ (s.Cent δ) hle (stab0 B hB) (FF s f δ) hinv hfin
   have lhs : (fun a : orbitRel.Quotient Γ (G ⧸ B.U) × (Γ ⧸ s.Cent δ) =>
       (B.Γ₀.relIndex (stabilizer Γ a.1.out) : ℂ)⁻¹ * FF s f (a.2.out * δ * s.θΓ a.2.out⁻¹) a.1.out) =
       fun a => (B.Γ₀.relIndex (stabilizer Γ a.1.out) : ℂ)⁻¹ • FF s f δ (a.2.out⁻¹ • a.1.out) := by

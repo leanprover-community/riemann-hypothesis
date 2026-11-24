@@ -404,7 +404,7 @@ namespace GlobalTheory
 
 theorem existsUnique_algHom_of_padic_localization {O A E B : Type} [CommRing O] [CommRing A]
     [CommRing E] [CommRing B] [Algebra O A] [Algebra O E] [Algebra O B] (p : ℕ) (x : A)
-    (ι : A →ₐ[O] E) (f : A →ₐ[O] B) (_hι : IsUnit (ι x)) (hf : IsUnit (f x))
+    (ι : A →ₐ[O] E) (f : A →ₐ[O] B) (hf : IsUnit (f x))
     (hB : IsAdicComplete (Ideal.span {(p : B)}) B)
     (hd : ∀ (y : E) (k : ℕ), ∃ (a : A) (m : ℕ), (p : E) ^ k ∣ y * ι (x ^ m) - ι a)
     (hi : ∀ (a : A) (k : ℕ), (p : E) ^ k ∣ ι a → (p : A) ^ k ∣ a) :
@@ -478,7 +478,7 @@ theorem existsUnique_algHom_of_padic_localization {O A E B : Type} [CommRing O] 
     have h1 := hg (y * y') k (a * a') (m + m') (by
       have := dvd_add (h.mul_left (y' * ι (x ^ m'))) (h'.mul_left (ι a))
       convert this using 1
-      simp only [map_add (f := _), map_mul, map_pow]; ring)
+      simp only [map_mul, map_pow]; ring)
     have := dvd_sub (dvd_sub h1 ((hg y k a m h).mul_left (g y')))
       ((hg y' k a' m' h').mul_left (f a * v ^ m))
     convert this using 1
@@ -748,7 +748,7 @@ theorem exists_eeTie [IsDomain O] [CharZero O] [NeZero n] (hp : PD.p = l) (R : F
     rw [pi_dvd_iff] at h ⊢
     exact fun i => R.EE_sat (a i) k (h i)
   have up := fun (f : LetA O n →ₐ[O] W.EE) (hf : IsUnit (f letπ)) =>
-    GlobalTheory.existsUnique_algHom_of_padic_localization PD.p letπ ι f hι hf W.EE_complete hdense hsat
+    GlobalTheory.existsUnique_algHom_of_padic_localization PD.p letπ ι f hf W.EE_complete hdense hsat
   obtain ⟨jE, hjE, -⟩ := up (ι'.comp (letγ j)) hf
   have hjsat : ∀ (a : O⟦X⟧) (k : ℕ), (PD.p : O⟦X⟧) ^ k ∣ j a → (PD.p : O⟦X⟧) ^ k ∣ a := by
     rintro a k ⟨c, hc⟩

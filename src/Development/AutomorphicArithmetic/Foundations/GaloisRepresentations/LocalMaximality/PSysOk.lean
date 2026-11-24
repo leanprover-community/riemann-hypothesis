@@ -60,10 +60,10 @@ private lemma mem_rgt' {ι κ : Type} [LinearOrder ι] [LinearOrder κ] (s : Fin
   simp [rgt, Finset.mem_toRight]
 
 private lemma lft_mono' {ι κ : Type} [LinearOrder ι] [LinearOrder κ] {s s' : Finset (ι ⊕ₗ κ)} (h : s ⊆ s') :
-    lft s ⊆ lft s' := fun a ha => (mem_lft' _ _).2 (h ((mem_lft' _ _).1 ha))
+    lft s ⊆ lft s' := fun _ ha => (mem_lft' _ _).2 (h ((mem_lft' _ _).1 ha))
 
 private lemma rgt_mono' {ι κ : Type} [LinearOrder ι] [LinearOrder κ] {s s' : Finset (ι ⊕ₗ κ)} (h : s ⊆ s') :
-    rgt s ⊆ rgt s' := fun a ha => (mem_rgt' _ _).2 (h ((mem_rgt' _ _).1 ha))
+    rgt s ⊆ rgt s' := fun _ ha => (mem_rgt' _ _).2 (h ((mem_rgt' _ _).1 ha))
 
 private lemma pk_mem' {d : ℕ} {I : Finset (Fin (d + 1))} (h : I.Nonempty) : pk I ∈ I := by
   unfold pk

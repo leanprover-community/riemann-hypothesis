@@ -98,7 +98,6 @@ theorem tensorLat_mul (R K : Type*) [CommRing R] [CommRing K] [Algebra R K] {S :
   exact key (Submodule.mul_mem_mul hx hy)
 
 theorem V_mul (Kf : Type*) [Field Kf] {n' m : ℕ} {lam mu nu : Fin n' → Fin (m + 1) → ℤ} (hnu : nu = lam + mu)
-    (h1 : IsDominant lam) (h2 : IsDominant mu)
     {x y : MvPolynomial (Fin n' × (Fin (m + 1) × Fin (m + 1))) Kf} (hx : x ∈ Vsp Kf lam) (hy : y ∈ Vsp Kf mu) :
     x * y ∈ Vsp Kf nu := by
   subst hnu
@@ -124,7 +123,7 @@ theorem V_mul (Kf : Type*) [Field Kf] {n' m : ℕ} {lam mu nu : Fin n' → Fin (
 
 def mulV {Kf : Type*} [Field Kf] {n' m : ℕ} {lam mu nu : Fin n' → Fin (m + 1) → ℤ} (hnu : nu = lam + mu)
     (h1 : IsDominant lam) (h2 : IsDominant mu) (x : Vsp Kf lam) (y : Vsp Kf mu) : Vsp Kf nu :=
-  ⟨(x : MvPolynomial (Fin n' × (Fin (m + 1) × Fin (m + 1))) Kf) * y, V_mul Kf hnu h1 h2 x.2 y.2⟩
+  ⟨(x : MvPolynomial (Fin n' × (Fin (m + 1) × Fin (m + 1))) Kf) * y, V_mul Kf hnu x.2 y.2⟩
 
 @[simp] theorem mulV_coe {Kf : Type*} [Field Kf] {n' m : ℕ} {lam mu nu : Fin n' → Fin (m + 1) → ℤ}
     (hnu : nu = lam + mu) (h1 : IsDominant lam) (h2 : IsDominant mu) (x : Vsp Kf lam) (y : Vsp Kf mu) :
@@ -161,7 +160,7 @@ theorem toV_mul (D : Formalism.BasicNotions.D7) (hM : tableLineDegreeFive.LevelP
   have hmem : ((x0 : MvPolynomial (Fin n' × (Fin (m + 1) × Fin (m + 1))) Kf) * y0) ∈ Hten O (lam + mu) Λ :=
     hM O Kf n' m lam mu Λ h1 h2 _ (Submodule.mem_comap.1 hx0) _ (Submodule.mem_comap.1 hy0)
   refine Submodule.mem_map.2 ⟨⟨(x0 : MvPolynomial (Fin n' × (Fin (m + 1) × Fin (m + 1))) Kf) * y0,
-    V_mul Kf rfl h1 h2 x0.2 y0.2⟩, hmem, ?_⟩
+    V_mul Kf rfl x0.2 y0.2⟩, hmem, ?_⟩
   apply Subtype.ext
   rw [hz]
   show (α * β) • ((x0 : MvPolynomial (Fin n' × (Fin (m + 1) × Fin (m + 1))) Kf) *

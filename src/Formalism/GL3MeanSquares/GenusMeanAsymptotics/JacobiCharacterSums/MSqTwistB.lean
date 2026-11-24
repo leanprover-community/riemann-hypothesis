@@ -152,7 +152,7 @@ private theorem exists_jacobiSym_neg_one_in_residue_class (m₀ s : ℕ) (h1 : 1
   rwa [Int.gcd_natCast_natCast] at hg1
 
 theorem sum_jac_cls_eq_zero (m₀ s a₀ : ℕ) [NeZero (m₀ * s)] (h1 : 1 < s) (hodd : Odd s)
-    (hsq : Squarefree s) (hcop : m₀.Coprime s) (ha : a₀.Coprime m₀) :
+    (hsq : Squarefree s) (hcop : m₀.Coprime s) :
     ∑ b ∈ clsB m₀ s a₀, (jacobiSym (b : ℤ) s : ℝ) = 0 := by
   have hN : 0 < m₀ * s := Nat.pos_of_ne_zero (NeZero.ne _)
   obtain ⟨u, hu1, hus, hJu⟩ := exists_jacobiSym_neg_one_in_residue_class m₀ s h1 hodd hsq hcop
@@ -171,7 +171,7 @@ theorem main_twist_bound (m₀ s a₀ : ℕ) [NeZero (m₀ * s)] (hm : 0 < m₀)
       2 * r * ∑ b ∈ clsB m₀ s a₀, |mainAP e b X| := by
   have hN : 0 < m₀ * s := Nat.pos_of_ne_zero (NeZero.ne _)
   have hφ : (0 : ℝ) < ((m₀ * s).totient : ℝ) := by exact_mod_cast Nat.totient_pos.mpr hN
-  have hsum0 := sum_jac_cls_eq_zero m₀ s a₀ h1 hodd hsq hcop ha
+  have hsum0 := sum_jac_cls_eq_zero m₀ s a₀ h1 hodd hsq hcop
   have hRHS : 0 ≤ 2 * r * ∑ b ∈ clsB m₀ s a₀, |mainAP e b X| := by positivity
   rcases e with _ | ⟨χ, β⟩
   · simp only [mainAP]

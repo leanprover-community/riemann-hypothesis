@@ -243,7 +243,7 @@ theorem fo_col (F : Fin d → PS k 2 d) (hF : ∀ u v, Function.Commute (Dof F u
         ext l'; simp [colM, Finsupp.single_apply]
       rw [hc, fo_single _ _ (Finset.nodup_toList _) _ (by simp)]
       simp [colD]
-    · rw [fo_of_zero _ _ _ (fun a _ => by simp [colM, Finsupp.single_apply, hcb])]
+    · rw [fo_of_zero _ _ _ (fun a _ => by simp [colM, hcb])]
       simp [colD, hcb]
 
 theorem cc_inCol (b : Fin n) (f : PS k 1 d) : constantCoeff (inCol b f) = constantCoeff f :=

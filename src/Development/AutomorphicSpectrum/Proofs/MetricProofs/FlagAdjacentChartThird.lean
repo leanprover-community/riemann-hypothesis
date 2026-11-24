@@ -84,7 +84,7 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
     · by_cases e : τ' = τ
       · subst e
         rw [Function.update_self]
-        refine ⟨(hHB τ').1.mul (blockDiag_transvection (_root_.GlobalTheory.CompanionTheory.Ar.PB.WSq.Pts.same_summand hb hbj hca hcb) _), ?_⟩
+        refine ⟨(hHB τ').1.mul (blockDiag_transvection (_root_.GlobalTheory.CompanionTheory.Ar.PB.WSq.Pts.same_summand hb hca hcb) _), ?_⟩
         rw [Matrix.det_mul, det_transvection' hc, mul_one]
         exact (hHB τ').2
       · rw [Function.update_of_ne e]

@@ -76,7 +76,7 @@ theorem span_perp {w : Fin k → Fin n → ℂ} (F : Frm ε e p z w T) (a : ℕ)
   | add x y _ _ hx hy => rw [UnitaryIsometries.hJ_add_left, hx, hy, add_zero]
   | smul c x _ hx => rw [UnitaryIsometries.hJ_smul_left, hx, mul_zero]
 
-theorem spanLt_le (a : ℕ) (h : a ≤ r) : spanLt e a ≤ spanLt e r := by
+theorem spanLt_le (a : ℕ) : spanLt e a ≤ spanLt e r := by
   unfold spanLt
   refine Submodule.span_mono ?_
   rintro _ ⟨b, hb, rfl⟩
@@ -146,7 +146,7 @@ theorem mem_NH {w : Fin k → Fin n → ℂ} (Fw : Frm ε e p z w T) (hdim : n =
     simp only [syn, mulVec_add, mulVec_sum, mulVec_smul, hv, zero_smul, Finset.sum_const_zero, add_zero]
     refine Submodule.add_mem _ (Submodule.add_mem _ (Submodule.sum_mem _ fun a _ => Submodule.smul_mem _ _ ?_)
       (Submodule.smul_mem _ _ ?_)) (Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (hmy j))
-    · rw [hme]; exact spanLt_le a.1 (le_of_lt a.2) (hs.1 a)
+    · rw [hme]; exact spanLt_le a.1 (hs.1 a)
     · rw [hmz]; exact hs.2
 
 end Formalism.L2.SG.RealObj.InfCut.NilradicalHermitianFrames.NH

@@ -252,7 +252,7 @@ theorem infEmb_mul_eq (g : AdelicGLn.AdelicGL K n) (X : archGroup K n) :
   rw [← hg, mul_assoc (infEmb K n a) (finEmb K n f), ← infEmb_mul_finEmb_comm, ← mul_assoc,
     ← map_mul, ← mul_assoc, ← map_mul, show a * (a⁻¹ * X * a) = X * a by group]
 
-theorem infEmb_expG_dirMat (k : ℕ) (hk : k < n) (p : Fin k × BIdx K) (s : ℝ) :
+theorem infEmb_expG_dirMat (k : ℕ) (p : Fin k × BIdx K) (s : ℝ) :
     infEmb K n ((isExpLieAlgebra K n).expG (s • ⟨dirMat k p, Submodule.mem_top⟩)) =
       colGL k (torusPt (Pi.single p s)) := by
   set v : Fin k → 𝔸[K] := torusPt (Pi.single p s)
@@ -318,7 +318,7 @@ theorem infEmb_expG_dirMat (k : ℕ) (hk : k < n) (p : Fin k × BIdx K) (s : ℝ
 theorem colGL_torusPt_single_mul (k : ℕ) (hk : k < n) (g : AdelicGLn.AdelicGL K n)
     (p : Fin k × BIdx K) (s : ℝ) :
     colGL k (torusPt (Pi.single p s)) * g = g * oneParam (dirY k g p) s := by
-  rw [oneParam, expG_smul_dirY, ← infEmb_expG_dirMat k hk, infEmb_mul_eq]
+  rw [oneParam, expG_smul_dirY, ← infEmb_expG_dirMat k, infEmb_mul_eq]
 
 end FourierWhittaker
 

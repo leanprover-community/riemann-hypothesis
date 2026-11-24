@@ -125,14 +125,14 @@ theorem localDensity : LocalDensity := by
     have h1 : ((normRepCount K ((P * Formalism.HermitianLatticesTheory.conjIdeal (K := K) P) ^ 1) M n : ℕ) : ℝ) =
         (Ideal.absNorm P : ℝ) ^ (2 * M - 1) * (1 - (Ideal.absNorm P : ℝ) ^ (-(M : ℤ))) := by
       rw [pow_one]
-      have h3 := normRepCount_split_one hK hP hc M hM n hn hnP
+      have h3 := normRepCount_split_one hP hc M hM n hn hnP
       have h2 : ((normRepCount K (P * Formalism.HermitianLatticesTheory.conjIdeal (K := K) P) M n : ℕ) : ℝ) =
           (Ideal.absNorm P : ℝ) ^ (2 * M - 1) - (Ideal.absNorm P : ℝ) ^ (M - 1) := by
         exact_mod_cast h3
       rw [h2, C2.split_alg _ hN M hM]
     exact C2.cast_geom (fun j => normRepCount K ((P * Formalism.HermitianLatticesTheory.conjIdeal (K := K) P) ^ j) M n)
       (Ideal.absNorm P) (2 * M - 1) _
-      (fun j hj => normRepCount_pow_succ_split hK hP hc M j hM hj n hn hnP) h1 k hk
+      (fun j hj => normRepCount_pow_succ_split hK hP M j hM hj n hn hnP) h1 k hk
 
 variable {K : Type} [Field K] [NumberField K] [StarRing K]
 
@@ -150,7 +150,7 @@ theorem normRepCount_eq_eulerFac_split (hK : Formalism.HermitianLatticesTheory.I
       (Ideal.absNorm P : ℝ) ^ ((2 * M - 1) * k) *
         (Formalism.HermitianLatticesTheory.eulerFac K M P * Formalism.HermitianLatticesTheory.eulerFac K M (Formalism.HermitianLatticesTheory.conjIdeal (K := K) P))⁻¹ := by
   have hc' : Formalism.HermitianLatticesTheory.conjIdeal (K := K) (Formalism.HermitianLatticesTheory.conjIdeal (K := K) P) ≠ Formalism.HermitianLatticesTheory.conjIdeal (K := K) P :=
-    fun h => hc ((conjIdeal_conjIdeal hK P).symm.trans h).symm
+    fun h => hc ((conjIdeal_conjIdeal P).symm.trans h).symm
   have hPbot : P ≠ ⊥ := Ring.ne_bot_of_isMaximal_of_not_isField hP (RingOfIntegers.not_isField K)
   have hN0 : Ideal.absNorm P ≠ 0 := by
     rwa [Ne, Ideal.absNorm_eq_zero_iff]

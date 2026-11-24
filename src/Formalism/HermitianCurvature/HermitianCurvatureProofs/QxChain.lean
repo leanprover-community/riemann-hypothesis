@@ -423,7 +423,7 @@ def sfData (E : Type*) [NormedAddCommGroup E] [NormedSpace ℂ E] (L : Fin (r + 
     {Dc : (Fin r → ℂ) → Set (Mx k r)} (ho : IsOpen (UU Dc)) : HatData (Fn k r E) :=
   mkData L Dc (SmoothFam k r L (UU Dc)) Qx3.sf_zero (fun _ _ h h' => Qx3.sf_add h h')
     (fun s _ h => Qx3.sf_csmul s h)
-    (fun Φ h => Qx3.sf_congr_on ho (fun _ hx => hx) (fun x hx hxG => cutP_on Φ hx.1 hxG hx.2) h)
+    (fun Φ h => Qx3.sf_congr_on ho (fun _ hx => hx) (fun _ hx hxG => cutP_on Φ hx.1 hxG hx.2) h)
 
 theorem sf_ext (ho : IsOpen (UU Dc)) {Ψ Ψ' : (sfData E L ho).V}
     (h : ∀ c ∈ OmX r, ∀ g ∈ Glev k r L, g ∈ Dc c → (Ψ : Fn k r E) c g = (Ψ' : Fn k r E) c g) : Ψ = Ψ' := by

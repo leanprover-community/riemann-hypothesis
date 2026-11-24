@@ -98,7 +98,7 @@ def twRep {i : ℕ} (st : TwSt X Pr R (QE sel (mu : Chr X.F X.E X.K)) i) (P : tw
 
 open Classical in
 def twNext {i : ℕ} (st : TwSt X Pr R (QE sel (mu : Chr X.F X.E X.K)) i) : TwSt X Pr R (QE sel (mu : Chr X.F X.E X.K)) (i + 1) where
-  β := {d : ∀ P : twQOff (Pr := Pr) sel mu, ↥(twCFin Ch sel mu cst st P) //
+  β := {_ : ∀ P : twQOff (Pr := Pr) sel mu, ↥(twCFin Ch sel mu cst st P) //
     ∀ P : rowSG Pr sel mu, P.1 ∈ Pr.vGs → ∃ al : st.β, FiniteSumNonzeroLargeDepth Ch sel mu cst i P (st.h al P) 1}
   h d P := if hP : P.1 ∈ twQOff (Pr := Pr) sel mu then twRep Ch sel mu cst st ⟨P.1, hP⟩ (d.1 ⟨P.1, hP⟩).1 else 1
 

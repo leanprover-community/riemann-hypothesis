@@ -445,7 +445,7 @@ theorem dual_isLocalRing [IsLocalRing W] : IsLocalRing (DualNumber W) := by
   exact IsLocalRing.isUnit_or_isUnit_one_sub_self a.fst
 
 theorem fstHom_isLocalHom : IsLocalHom (TrivSqZeroExt.fstHom W W W).toRingHom :=
-  ⟨fun a ha => TrivSqZeroExt.isUnit_iff_isUnit_fst.2 ha⟩
+  ⟨fun _ ha => TrivSqZeroExt.isUnit_iff_isUnit_fst.2 ha⟩
 
 abbrev red (W : Type) [CommRing W] : Sp W ⟶ Sp (DualNumber W) := spMap (TrivSqZeroExt.fstHom W W W).toRingHom
 

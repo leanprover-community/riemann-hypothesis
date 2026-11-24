@@ -539,7 +539,7 @@ open Formalism.MainNotions.G Formalism.MainNotions.CovariantDegrees
 
 theorem finite_full_submodule_isLattice {O : Type} [CommRing O] [IsDomain O]
     {V : Type} [AddCommGroup V] [Module (KK O) V] [Module O V] [IsScalarTower O (KK O) V]
-    (M : Submodule O V) (hfg : M.FG) (hM : MQ (K := KK O) M = ⊤) : Submodule.IsLattice (KK O) M :=
+    (M : Submodule O V) (hfg : M.FG) : Submodule.IsLattice (KK O) M :=
   Submodule.IsLattice.of_fg (KK O) hfg
 
 theorem exists_nonzero_multiple_mem_lattice {O : Type} [CommRing O] [IsDomain O]
@@ -550,7 +550,7 @@ theorem exists_nonzero_multiple_mem_lattice {O : Type} [CommRing O] [IsDomain O]
 theorem dual_lattice_values_mem_scaled : DualLatticeDivisibility := by
   intro O _ _ _ V _ _ _ _ _ M hfg hM t z hz
   have : Submodule.IsFullLattice (KK O) M :=
-    { toIsLattice := finite_full_submodule_isLattice M hfg hM
+    { toIsLattice := finite_full_submodule_isLattice M hfg
       span_eq_top := hM }
   have : Module.Free O M := Submodule.IsLattice.free (KK O) M
   have : Module.Finite O M := Submodule.IsLattice.finite (KK O) M
@@ -823,7 +823,7 @@ theorem integral_enveloping_preserves_lattice {O : Type} [CommRing O] [IsDomain 
   | one => intro z hz; simpa using hz
   | mul x y _ _ hx hy => intro z hz; rw [Module.End.mul_apply]; exact hx _ (hy z hz)
 
-theorem generated_lattice_corollary_of_thm (D : Formalism.BasicNotions.D7) (h12 : NablaDeltaComparisonField D) (hB : GeneratedMultipleOfHWV) : GeneratedLatticeCorollary := by
+theorem generated_lattice_corollary_of_thm (D : Formalism.BasicNotions.D7) (h12 : NablaDeltaComparisonField) (hB : GeneratedMultipleOfHWV) : GeneratedLatticeCorollary := by
   intro p n' O _ _ _ S hG n _ V _ _ _ _ _ E hE M hM lam hlam π hπ h hhM hhHW hh0 c y hy hyp
   have hIrr := generated_restriction_irreducible hE lam hlam h hhHW hh0
   have hT := (h12 p n' O S hG n lam (generatedSubrep E h) (restrictOperators E (generatedSubrep E h) (generated_subrep_stable E h))
@@ -1143,12 +1143,12 @@ theorem isotypic_stable_under_operators (E : GLOps n K V) (mu : Fin n → ℤ) (
 
 end
 
-theorem isotypic_subspaces_span_top (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (K V : Type) [Field K] [CharZero K] [AddCommGroup V]
+theorem isotypic_subspaces_span_top (D : Formalism.BasicNotions.D7) (h2 : adm2) (K V : Type) [Field K] [CharZero K] [AddCommGroup V]
     [Module K V] [FiniteDimensional K V] (n : ℕ) (E : GLOps n K V) (hE : IsGLRep E) :
     (⨆ mu : Fin n → ℤ, isoSub E mu) = ⊤ := by
   apply Formalism.MainNotions.G.GLWeightTheory.complete_reducibility_findim <;> assumption
 
-theorem isotypic_projector_fixed_mem (D : Formalism.BasicNotions.D7) (h2 : adm2 D) : IsotypicProjectorFixedMem := by
+theorem isotypic_projector_fixed_mem (D : Formalism.BasicNotions.D7) (h2 : adm2) : IsotypicProjectorFixedMem := by
   intro K V _ _ _ _ _ n E hE lam e he Y hY
   have hY' : Y ∈ (⨆ mu : Fin n → ℤ, isoSub E mu) := by
     rw [isotypic_subspaces_span_top D h2 K V n E hE]; exact Submodule.mem_top
@@ -1178,7 +1178,7 @@ namespace Formalism.MainNotions.G.GLWeightTheory
 
 open Formalism.MainNotions.G Formalism.MainNotions.CovariantDegrees
 
-theorem isotypic_lattice_corollary (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (h12 : NablaDeltaComparisonField D) : TranslateCorollaryField D :=
+theorem isotypic_lattice_corollary (D : Formalism.BasicNotions.D7) (h2 : adm2) (h12 : NablaDeltaComparisonField) : TranslateCorollaryField :=
   isotypic_lattice_of_five_parts D (isotypic_projector_fixed_mem D h2) hwv_generated_multiple_of_hwv dual_lattice_values_mem_scaled lattice_inter_subspace_basis (generated_lattice_corollary_of_thm D h12 hwv_generated_multiple_of_hwv)
 
 end Formalism.MainNotions.G.GLWeightTheory
@@ -1199,13 +1199,13 @@ namespace Formalism.MainNotions.G.GLWeightTheory
 
 open Formalism.MainNotions.G Formalism.MainNotions.CovariantDegrees
 
-theorem exponent_condition_holds (D : Formalism.BasicNotions.D7) : adm3 D := by
+theorem exponent_condition_holds (D : Formalism.BasicNotions.D7) : adm3 := by
   intro p hp m k b hkm hb
   haveI : Fact p.Prime := ⟨hp⟩
   rw [Nat.padicValNat_def]
   exact multiplicity_choose hkm hb
 
-theorem key_positivity_condition (D : Formalism.BasicNotions.D7) : ArchimedeanSignatureMatching D := by
+theorem key_positivity_condition (D : Formalism.BasicNotions.D7) : ArchimedeanSignatureMatching := by
   intro A _ _ _ σ w hw F G h
   have hp : Prime w := UniqueFactorizationMonoid.irreducible_iff_prime.mp hw
   haveI : (Ideal.span {w}).IsPrime := (Ideal.span_singleton_prime hp.ne_zero).mpr hp
@@ -1243,7 +1243,7 @@ private theorem sub_one_mod_eq_ite (a n : ℕ) (hn : 1 ≤ n) (ha : 1 ≤ a) :
     have e : a - 1 = (n - 1) + y := by omega
     rw [e, ← hy, Nat.add_mul_mod_self_left, Nat.mod_eq_of_lt (by omega)]
 
-theorem true_derivative_digit_class (D : Formalism.BasicNotions.D7) : TrueDerivativeDigitClass D := by
+theorem true_derivative_digit_class (D : Formalism.BasicNotions.D7) : TrueDerivativeDigitClass := by
   classical
   intro R _ σ P hP rho k F hF
   have hF' : ∀ m ∈ F.support, digitOfL P m = rho := fun m hm =>
@@ -1268,18 +1268,18 @@ theorem true_derivative_digit_class (D : Formalism.BasicNotions.D7) : TrueDeriva
     · rw [Function.update_of_ne hjk, Finsupp.tsub_apply]
       simp [Ne.symm hjk, hdj]
 
-theorem unit_function_expansion (D : Formalism.BasicNotions.D7) : UnitFunctionExpansion D := mahler_decay_products_of D (fun p hp => hDec_of hp (hdU_proved hp)) (fun p hp => hMul_proved hp)
+theorem unit_function_expansion (D : Formalism.BasicNotions.D7) : UnitFunctionExpansion := mahler_decay_products_of D (fun _ hp => hDec_of hp (hdU_proved hp)) (fun _ hp => hMul_proved hp)
 
-theorem lemma_five_two_first_holds (D : Formalism.BasicNotions.D7) : FactorialUnitDecomposition D := unit_function_mahler_decay_of D (fun p hp => hDec_of hp (hdU_proved hp)) (fun p hp => hMul_proved hp)
-    (fun p hp => hUnit_of hp (hdU_proved hp))
+theorem lemma_five_two_first_holds (D : Formalism.BasicNotions.D7) : FactorialUnitDecomposition := unit_function_mahler_decay_of D (fun _ hp => hDec_of hp (hdU_proved hp)) (fun _ hp => hMul_proved hp)
+    (fun _ hp => hUnit_of hp (hdU_proved hp))
 
-theorem support_coprimality_lemma_holds (D : Formalism.BasicNotions.D7) : ConclusionE D := prvE_of_gl_operators_form_representation D (height_bound_of_weights hSupp_proved hCop_proved)
+theorem support_coprimality_lemma_holds (D : Formalism.BasicNotions.D7) : ConclusionE := prvE_of_gl_operators_form_representation D (height_bound_of_weights hSupp_proved hCop_proved)
 
-theorem section_five_lemmas_hold (D : Formalism.BasicNotions.D7) : UnitProductLemmas D := ⟨unit_function_expansion D, show FactorialUnitDecomposition D ∧ DegreeTruncationLemma D from ⟨lemma_five_two_first_holds D, degree_truncation D⟩⟩
+theorem section_five_lemmas_hold (D : Formalism.BasicNotions.D7) : UnitProductLemmas D := ⟨unit_function_expansion D, show FactorialUnitDecomposition ∧ DegreeTruncationLemma D from ⟨lemma_five_two_first_holds D, degree_truncation D⟩⟩
 
-theorem lattice_index_lemma_holds (D : Formalism.BasicNotions.D7) : DerivativeLemmaField D := show DerivativeValuationBound D ∧ DerivativeDigitExpansion D ∧ TrueDerivativeDigitClass D from ⟨derivative_valuation_bound D, derivative_digit_expansion D, true_derivative_digit_class D⟩
+theorem lattice_index_lemma_holds (D : Formalism.BasicNotions.D7) : DerivativeLemmaField D := show DerivativeValuationBound D ∧ DerivativeDigitExpansion ∧ TrueDerivativeDigitClass from ⟨derivative_valuation_bound D, derivative_digit_expansion D, true_derivative_digit_class D⟩
 
-theorem valuation_field_of_adm2 (D : Formalism.BasicNotions.D7) (h2 : adm2 D) : ValuationLemmaField D := show ValuationsAdditive D ∧ ShaLengthVersionTwo D from ⟨valuationsAdditive_D7 D, generated_weight_lemma_of_reducibility D h2 (valuationsAdditive_D7 D)⟩
+theorem valuation_field_of_adm2 (D : Formalism.BasicNotions.D7) (h2 : adm2) : ValuationLemmaField D := show ValuationsAdditive ∧ ShaLengthVersionTwo D from ⟨valuationsAdditive_D7 D, generated_weight_lemma_of_reducibility D h2 (valuationsAdditive_D7 D)⟩
 
 theorem valuation_field (D : Formalism.BasicNotions.D7) : ValuationLemmaField D := valuation_field_of_adm2 D (weight_condition_from_integral_form D)
 
@@ -1287,13 +1287,13 @@ theorem invariant_projection_sup_norm_denominator (D : Formalism.BasicNotions.D7
 
 theorem invariantProjectionDenominator (D : Formalism.BasicNotions.D7) : InvariantProjectionDenominator := denominator_lemma_without_projector D (weight_condition_from_integral_form D)
 
-theorem nabla_delta_comparison_field (D : Formalism.BasicNotions.D7) : NablaDeltaComparisonField D := integral_form_of_linf_lemma D (weight_condition_from_integral_form D) (invariant_projection_sup_norm_denominator D)
+theorem nabla_delta_comparison_field (D : Formalism.BasicNotions.D7) : NablaDeltaComparisonField := integral_form_of_linf_lemma D (weight_condition_from_integral_form D) (invariant_projection_sup_norm_denominator D)
 
-theorem isotypic_projector_theorem_field (D : Formalism.BasicNotions.D7) : IsotypicProjectorTheoremField D := isotypicProjectorTheoremField_of_linfty_bound D (weight_condition_from_integral_form D) (invariant_projection_sup_norm_denominator D)
+theorem isotypic_projector_theorem_field (D : Formalism.BasicNotions.D7) : IsotypicProjectorTheoremField := isotypicProjectorTheoremField_of_linfty_bound D (weight_condition_from_integral_form D) (invariant_projection_sup_norm_denominator D)
 
-theorem translate_corollary_field (D : Formalism.BasicNotions.D7) : TranslateCorollaryField D := isotypic_lattice_corollary D (weight_condition_from_integral_form D) (nabla_delta_comparison_field D)
+theorem translate_corollary_field (D : Formalism.BasicNotions.D7) : TranslateCorollaryField := isotypic_lattice_corollary D (weight_condition_from_integral_form D) (nabla_delta_comparison_field D)
 
-theorem filtered_projector_corollary_field (D : Formalism.BasicNotions.D7) : FilteredProjectorCorollaryField D := polynomial_isotypic_lattice_corollary D (weight_condition_from_integral_form D) (isotypic_projector_theorem_field D)
+theorem filtered_projector_corollary_field (D : Formalism.BasicNotions.D7) : FilteredProjectorCorollaryField := polynomial_isotypic_lattice_corollary D (weight_condition_from_integral_form D) (isotypic_projector_theorem_field D)
 
 def InvariantProductFormula : Prop :=
   ∀ (p n' : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (_S : UniformizedDVR p O),
@@ -1305,21 +1305,21 @@ def InvariantProductFormula : Prop :=
         (∀ π : Module.End (KK O) V, IsWtProj E 0 π → ∀ ord, NormalOrder n ord →
           ∀ T : ℕ, Module.finrank (KK O) V ≤ T → Inv = pp E 0 ord T * π)
 
-theorem invariant_projection_of_product_formula (D : Formalism.BasicNotions.D7) (h : InvariantProductFormula) : InvariantProjectionField D := by
+theorem invariant_projection_of_product_formula (D : Formalism.BasicNotions.D7) (h : InvariantProductFormula) : InvariantProjectionField := by
   intro p n' O _ _ _ S hG n V _ _ _ _ _ E hE M hM hMQ Inv hInv
   exact ⟨h p n' O S hG n V E hE M hM hMQ Inv hInv, invariantProjectionDenominator D p n' O S hG n V E hE M hM hMQ Inv hInv⟩
 
-theorem product_formula_of_extremal_projector (D : Formalism.BasicNotions.D7) (h5 : adm5 D) : InvariantProductFormula := by
+theorem product_formula_of_extremal_projector (D : Formalism.BasicNotions.D7) (h5 : adm5) : InvariantProductFormula := by
   intro p n' O _ _ _ S hG n V _ _ _ _ _ E hE M hM hMQ Inv hInv π hπ ord hord T hT
   haveI := dvr_fraction_field_charZero_prime S hG.prime
   exact invariant_projection_extremal_formula D (weight_condition_from_integral_form D) h5 E hE Inv hInv π hπ ord hord T hT
 
-theorem counting_statement_of_block_form (D : Formalism.BasicNotions.D7) (h : InvariantProductFormula) : Conclusion1 D := show ProjectionTheorems D ∧ ValuationLemmaField D ∧ ConclusionE D ∧ UnitProductLemmas D ∧ DerivativeLemmaField D from
-    ⟨show InvariantProjectionField D ∧ NablaDeltaComparisonField D ∧ IsotypicProjectorTheoremField D ∧ TranslateCorollaryField D ∧ FilteredProjectorCorollaryField D from
+theorem counting_statement_of_block_form (D : Formalism.BasicNotions.D7) (h : InvariantProductFormula) : Conclusion1 D := show ProjectionTheorems D ∧ ValuationLemmaField D ∧ ConclusionE ∧ UnitProductLemmas D ∧ DerivativeLemmaField D from
+    ⟨show InvariantProjectionField ∧ NablaDeltaComparisonField ∧ IsotypicProjectorTheoremField ∧ TranslateCorollaryField ∧ FilteredProjectorCorollaryField from
       ⟨invariant_projection_of_product_formula D h, nabla_delta_comparison_field D, isotypic_projector_theorem_field D, translate_corollary_field D, filtered_projector_corollary_field D⟩,
      valuation_field D, support_coprimality_lemma_holds D, section_five_lemmas_hold D, lattice_index_lemma_holds D⟩
 
-theorem part_one_of_extremal_projector (D : Formalism.BasicNotions.D7) (h5 : adm5 D) : Conclusion1 D := counting_statement_of_block_form D (product_formula_of_extremal_projector D h5)
+theorem part_one_of_extremal_projector (D : Formalism.BasicNotions.D7) (h5 : adm5) : Conclusion1 D := counting_statement_of_block_form D (product_formula_of_extremal_projector D h5)
 
 theorem problem_holds (D : Formalism.BasicNotions.D7) : IntegralityFromMetric D := fun hA => part_one_of_extremal_projector D (show admitted D from hA).2.2.2.2
 

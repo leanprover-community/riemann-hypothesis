@@ -57,7 +57,7 @@ section Tensor
 variable {T : Type} [Fintype T] [DecidableEq T] {N : T → ℕ} {n : ℕ}
 
 theorem rhoMat_one (la : Fin n → ℕ) (K : Type) [Field K] [CharZero K] : rhoMat la (1 : Matrix _ _ K) = 1 := by
-  simp [rhoMat, ← Module.End.one_eq_id, LinearMap.toMatrix_one]
+  simp [rhoMat, LinearMap.toMatrix_one]
 
 theorem rhoMat_mul (la : Fin n → ℕ) {K : Type} [Field K] [CharZero K] (g h : Matrix (Fin n) (Fin n) K) :
     rhoMat la (g * h) = rhoMat la h * rhoMat la g := by

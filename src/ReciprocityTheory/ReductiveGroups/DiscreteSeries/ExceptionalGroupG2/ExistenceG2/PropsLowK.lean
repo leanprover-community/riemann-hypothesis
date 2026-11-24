@@ -34,7 +34,7 @@ theorem data_lowK_eq (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ) (hD :
   have hSf : FiniteDimensional ℂ S := hST.1
   have hSK : ∀ k ∈ Kset ε, ∀ x ∈ S, σ k x ∈ S := hST.2.1
   have hSgen : S ≤ (genSub E V).map D.subtype :=
-    ReciprocityTheory.ChartRestriction.DS.G2.data_kfin_le ⟨hmono, h, hh, hbig⟩ hσ hD hV hc hVK S hS hSf hSK
+    ReciprocityTheory.ChartRestriction.DS.G2.data_kfin_le ⟨hmono, h, hh, hbig⟩ hσ hD hV hc S hS hSf hSK
   have hSD : S ≤ D := fun x hx => by
     obtain ⟨y, -, rfl⟩ := hSgen hx
     exact y.2
@@ -54,7 +54,7 @@ theorem data_lowK_eq (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ) (hD :
   have hwV : w ∈ V := by
     rw [hwsum, Finset.sum_eq_zero (fun j _ => hz j), add_zero]
     exact hw₀V
-  have hVT := ReciprocityTheory.ChartRestriction.DS.G2.data_isKTypeOf ⟨hmono, h, hh, hbig⟩ hσ hD hV hc hVK
+  have hVT := ReciprocityTheory.ChartRestriction.DS.G2.data_isKTypeOf hσ hD hV hVK
   have hwVm : (w : H) ∈ V.map D.subtype := ⟨w, hwV, rfl⟩
   have hwne : (w : H) ≠ 0 := fun h0 => hw0 (Submodule.coe_eq_zero.1 h0)
   have hinf : S ⊓ V.map D.subtype = S := by

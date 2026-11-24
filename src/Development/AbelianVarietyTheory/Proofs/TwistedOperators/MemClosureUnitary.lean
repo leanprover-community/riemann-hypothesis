@@ -285,7 +285,7 @@ private theorem exists_norm_one_isUnit_det_one_add_smul {K R : Type} [Field K] [
 open GlobalTheory.UnRep.WeakApprox in
 theorem mem_closure_unitary {K R : Type} [Field K] [CharZero K] [CommRing R] [TopologicalSpace R]
     [IsTopologicalRing R] [IsArtinianRing R] [Nontrivial R] (ι : K →+* R) (c : K →+* K) (σ : R →+* R)
-    (hσι : ∀ x, σ (ι x) = ι (c x)) (hc : ∀ x, c (c x) = x) (hne : ∃ z, c z ≠ z) (hσ : ∀ x, σ (σ x) = x)
+    (hσι : ∀ x, σ (ι x) = ι (c x)) (hc : ∀ x, c (c x) = x) (hne : ∃ z, c z ≠ z)
     (hσc : Continuous σ) (hd : DenseRange ι) (h1 : IsOpen {x : R | IsUnit x})
     (h2 : ∀ x : R, IsUnit x → ContinuousAt Ring.inverse x) {n : ℕ}
     (G : Matrix (Fin n) (Fin n) K) (hG : (G.map c)ᵀ = G) (hdet : G.det ≠ 0)
@@ -419,7 +419,7 @@ theorem dense_unitary {K R : Type} [Field K] [CharZero K] [CommRing R] [Topologi
     rw [eT]; simpa only [mul_assoc] using this
   have hG : ((Jᵀ).map c)ᵀ = Jᵀ := by rw [Matrix.transpose_map, hJ2]
   have hdetT : (Jᵀ).det ≠ 0 := by rwa [Matrix.det_transpose]
-  have hcl := mem_closure_unitary ι c σ hσι hc hne hσ hσc hd h1 h2 Jᵀ hG hdetT _ hg
+  have hcl := mem_closure_unitary ι c σ hσι hc hne hσc hd h1 h2 Jᵀ hG hdetT _ hg
   refine closure_mono ?_ (mem_closure_image hFc.continuousAt hcl)
   rintro _ ⟨m, ⟨γ, hγ, rfl⟩, rfl⟩
   have hγ' : cT c γ * J * γ = J := by

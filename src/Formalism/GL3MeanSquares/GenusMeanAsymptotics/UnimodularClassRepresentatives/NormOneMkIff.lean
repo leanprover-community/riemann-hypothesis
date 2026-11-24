@@ -205,7 +205,7 @@ variable {V : Type} [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Modul
   [IsScalarTower (𝓞 K) K V]
 variable {L : Submodule (𝓞 K) V} {𝔭 : Ideal (𝓞 F)} {e : V} {h : V →ₗ⋆[K] V →ₗ[K] K}
 
-theorem cond_of_mem (hF : IsFixF K F) (hs : h.IsSymm) (hLi : Formalism.HermitianLatticesTheory.IsIntegralLat h L)
+theorem cond_of_mem (hF : IsFixF K F) (hLi : Formalism.HermitianLatticesTheory.IsIntegralLat h L)
     (h𝔭 : 𝔭.IsMaximal) (he : IsGen L 𝔭 e) {n : 𝓞 F} (hn : h e e = algebraMap F K (n : F))
     {v k : ℕ} (hv : n ∈ 𝔭 ^ v) (hvk : v ≤ k) {b : 𝓞 K}
     (hc : conjO K b * b - 1 ∈ extP K 𝔭 ^ (k - v)) (x y x' y' : ↥L)
@@ -267,7 +267,7 @@ theorem cond_of_mem (hF : IsFixF K F) (hs : h.IsSymm) (hLi : Formalism.Hermitian
     simp only [Submodule.coe_sub, Submodule.coe_smul, map_sub, LinearMap.sub_apply, hsmul1, hsmul2]
     ring
 
-theorem mem_of_cond (hF : IsFixF K F) (h𝔭 : 𝔭.IsMaximal) {n : 𝓞 F}
+theorem mem_of_cond (h𝔭 : 𝔭.IsMaximal) {n : 𝓞 F}
     (hn : h e e = algebraMap F K (n : F)) {v k : ℕ} (hv : n ∈ 𝔭 ^ v) (hv' : n ∉ 𝔭 ^ (v + 1))
     {b : 𝓞 K} (H : CongrP 𝔭 k (h (b • e) (b • e)) (h e e)) :
     conjO K b * b - 1 ∈ extP K 𝔭 ^ (k - v) := by
@@ -334,14 +334,14 @@ theorem cond_iff (hF : IsFixF K F) (hs : h.IsSymm) (hLi : Formalism.HermitianLat
       conjO K b * b - 1 ∈ extP K 𝔭 ^ (k - v) := by
   constructor
   · intro H
-    apply mem_of_cond hF h𝔭 hn hv hv'
+    apply mem_of_cond h𝔭 hn hv hv'
     have h1 : (Submodule.Quotient.mk (b • (⟨e, he.1⟩ : ↥L)) : Qk L 𝔭 k) =
         algebraMap (𝓞 K) (Module.End (𝓞 K) (Qk L 𝔭 k)) b (Submodule.Quotient.mk ⟨e, he.1⟩) := by
       rw [Module.algebraMap_end_apply, Submodule.Quotient.mk_smul]
     exact H _ _ _ _ h1 h1
   · intro hc x y x' y' hx hy
     rw [Module.algebraMap_end_apply, ← Submodule.Quotient.mk_smul, Submodule.Quotient.eq] at hx hy
-    exact cond_of_mem hF hs hLi h𝔭 he hn hv hvk hc x y x' y' hx hy
+    exact cond_of_mem hF hLi h𝔭 he hn hv hvk hc x y x' y' hx hy
 
 def NormOne (Q : Ideal (𝓞 K)) (z : 𝓞 K ⧸ Q) : Prop :=
   ∃ y : 𝓞 K, Ideal.Quotient.mk Q y = z ∧

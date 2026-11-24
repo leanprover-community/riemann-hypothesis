@@ -65,7 +65,7 @@ def IsSkew {r : ℕ} (D Y : Matrix (Fin r) (Fin r) ℂ) : Prop := Yᵀ * D + D *
 theorem cj_mul {r : ℕ} (A B : Matrix (Fin r) (Fin r) ℂ) : cj (A * B) = cj A * cj B :=
   Matrix.map_mul
 
-theorem isSkew_conj {r : ℕ} {D D' k l Y : Matrix (Fin r) (Fin r) ℂ} (hlk : l * k = 1) (hkl : k * l = 1)
+theorem isSkew_conj {r : ℕ} {D D' k l Y : Matrix (Fin r) (Fin r) ℂ} (hkl : k * l = 1)
     (h : kᵀ * D * cj k = D') (hY : IsSkew D' Y) : IsSkew D (k * Y * l) := by
   unfold IsSkew at *
   have e1 : kᵀ * D = D' * cj l := by
@@ -232,12 +232,12 @@ theorem mem_comap_iff {E : Type} [Field E] [NumberField E] [IsCMField E] {r p : 
   have e : Matrix.of (fromFrame x Y τ) = mat x τ * blk Y τ * (mat x τ)⁻¹ := rfl
   rw [e, herm_skew_iff, trace_conj h2]
   refine and_congr Iff.rfl ⟨fun h => ?_, fun h => ?_⟩
-  · have := isSkew_conj h1 h2 h3 h
+  · have := isSkew_conj h2 h3 h
     have e2 : (mat x τ)⁻¹ * (mat x τ * blk Y τ * (mat x τ)⁻¹) * mat x τ = blk Y τ := by
       calc _ = ((mat x τ)⁻¹ * mat x τ) * blk Y τ * ((mat x τ)⁻¹ * mat x τ) := by simp only [Matrix.mul_assoc]
         _ = _ := by rw [h2]; simp
     rwa [e2] at this
-  · exact isSkew_conj h2 h1 (by rw [← gram_eq]; exact hx τ) h
+  · exact isSkew_conj h1 (by rw [← gram_eq]; exact hx τ) h
 
 theorem det_adjoint_eq {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
     (A : V →ₗ[ℝ] V) : LinearMap.det (LinearMap.adjoint A) = LinearMap.det A := by
@@ -289,7 +289,7 @@ theorem theta_mem {ι : Type} [Fintype ι] {r p : ℕ} (Y : WW ι r)
       IsSkew (sgnMat r p) (blk (cjW (fun _ => sgnMat r p) (fun _ => sgnMat r p) Y) t) := by
   rw [blk_cjW]
   refine ⟨by rw [trace_conj (sgnMat_mul r p)]; exact (hY t).1,
-    isSkew_conj (sgnMat_mul r p) (sgnMat_mul r p) ?_ (hY t).2⟩
+    isSkew_conj (sgnMat_mul r p) ?_ (hY t).2⟩
   rw [sgnMat_transpose, cj_sgnMat, sgnMat_mul, Matrix.one_mul]
 
 theorem riemHaar_frame_indep : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r p0 p1 : ℕ)
@@ -324,12 +324,12 @@ theorem riemHaar_frame_indep : ∀ (E : Type) [Field E] [NumberField E] [IsCMFie
     fun Y hY => (m1 _).2 fun τ => by
       rw [blk_cjW]
       exact ⟨by rw [trace_conj (hlk τ)]; exact ((m2 Y).1 hY τ).1,
-        isSkew_conj (hlk τ) (hkl τ) (hK τ) ((m2 Y).1 hY τ).2⟩
+        isSkew_conj (hkl τ) (hK τ) ((m2 Y).1 hY τ).2⟩
   have hKV : ∀ Y ∈ (realLie Ψ G).comap (fromFrame x), cjW l k Y ∈ (realLie Ψ G).comap (fromFrame y) :=
     fun Y hY => (m2 _).2 fun τ => by
       rw [blk_cjW]
       exact ⟨by rw [trace_conj (hkl τ)]; exact ((m1 Y).1 hY τ).1,
-        isSkew_conj (hkl τ) (hlk τ) (hL τ) ((m1 Y).1 hY τ).2⟩
+        isSkew_conj (hlk τ) (hL τ) ((m1 Y).1 hY τ).2⟩
   let L : (realLie Ψ G).comap (fromFrame y) ≃ₗ[ℝ] (realLie Ψ G).comap (fromFrame x) :=
     LinearEquiv.ofLinear ((cjW k l).restrict hLV) ((cjW l k).restrict hKV)
       (by ext1 Y; exact Subtype.ext (cjW_cjW hkl Y.1)) (by ext1 Y; exact Subtype.ext (cjW_cjW hlk Y.1))

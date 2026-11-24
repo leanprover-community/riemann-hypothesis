@@ -612,11 +612,11 @@ theorem hs_cT (y : Mat n) : GlobalTheory.CompanionTheory.LengthGL.hs yᴴ = Glob
   rw [Finset.sum_comm]
   simp [Matrix.conjTranspose_apply]
 
-theorem lg_cT {y : Mat n} (hy : y ∈ GLs n) : lg yᴴ = lg y := by
+theorem lg_cT {y : Mat n} : lg yᴴ = lg y := by
   rw [GlobalTheory.CompanionTheory.LengthGL.lg_eq, GlobalTheory.CompanionTheory.LengthGL.lg_eq, hs_cT, ← Matrix.conjTranspose_nonsing_inv, hs_cT]
 
 theorem lg_cT_inv {y : Mat n} (hy : y ∈ GLs n) : lg yᴴ⁻¹ = lg y := by
-  rw [GlobalTheory.CompanionTheory.LengthGL.lg_inv (cT_mem_GLs hy), lg_cT hy]
+  rw [GlobalTheory.CompanionTheory.LengthGL.lg_inv (cT_mem_GLs hy), lg_cT]
 
 theorem diag_unitary {z : Fin n → ℂ} (hz : ∀ a, ‖z a‖ = 1) : diagonal z ∈ Matrix.unitaryGroup (Fin n) ℂ := by
   rw [Matrix.mem_unitaryGroup_iff]

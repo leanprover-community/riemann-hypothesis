@@ -245,7 +245,7 @@ noncomputable section
 
 namespace GlobalTheory.GLZetaBound
 
-theorem norm_mul_sub_one_le {a b : ℂ} {c : ℝ} (hc : 0 ≤ c) {m k : ℕ}
+theorem norm_mul_sub_one_le {a b : ℂ} {c : ℝ} {m k : ℕ}
     (ha : ‖a - 1‖ ≤ (1 + c) ^ m - 1) (hb : ‖b - 1‖ ≤ (1 + c) ^ k - 1) :
     ‖a * b - 1‖ ≤ (1 + c) ^ (m + k) - 1 := by
   have e : a * b - 1 = (a - 1) * (b - 1) + (a - 1) + (b - 1) := by ring
@@ -278,7 +278,7 @@ theorem norm_eulerFac_sub_one_le {B : Multiset ℂˣ} {x : ℂ} {δ : ℝ} (hδ0
     have h1 := ih fun c hc => h c (Multiset.mem_cons_of_mem hc)
     have h2 := h b (Multiset.mem_cons_self _ _)
     rw [Multiset.map_cons, Multiset.prod_cons, Multiset.card_cons, add_comm B.card 1]
-    refine norm_mul_sub_one_le (by linarith) ?_ h1
+    refine norm_mul_sub_one_le ?_ h1
     rw [pow_one]
     have := norm_inv_one_sub_sub_one_le (h2.trans hδ)
     linarith
@@ -292,7 +292,7 @@ theorem norm_prod_one_sub_sub_one_le {ι : Type*} (s : Finset ι) (z : ι → �
     have h1 := ih fun c hc => h c (Finset.mem_insert_of_mem hc)
     have h2 := h a (Finset.mem_insert_self _ _)
     rw [Finset.prod_insert ha, Finset.card_insert_of_notMem ha, add_comm s.card 1]
-    refine norm_mul_sub_one_le (by linarith) ?_ h1
+    refine norm_mul_sub_one_le ?_ h1
     rw [pow_one]
     have e : (1 - z a) - 1 = -z a := by ring
     rw [e, norm_neg]
@@ -359,8 +359,8 @@ theorem norm_trivial_sub_one_le : ∀ (q : ℕ), 2 ≤ q → ∀ (r t : ℕ), r 
   rw [Multiset.card_map] at h2
   rw [Nat.card_Ioc, show r + t - t = r by omega] at h3
   rw [hB] at h1 h2
-  have h12 := norm_mul_sub_one_le (by linarith) h1 h2
-  have h123 := norm_mul_sub_one_le (by linarith) h12 h3
+  have h12 := norm_mul_sub_one_le h1 h2
+  have h123 := norm_mul_sub_one_le h12 h3
   have h4 := one_add_two_mul_pow_sub_one_le hδ0 hδ (r + r + r)
   have e27 : (3 : ℝ) ^ (r + r + r) = 27 ^ r := by
     rw [show r + r + r = 3 * r by ring, pow_mul]; norm_num

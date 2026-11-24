@@ -599,7 +599,7 @@ def conjPt {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} {X X' : 
   left_inv _ := by funext τ k a; simp
   right_inv _ := by funext τ k a; simp
 
-theorem vac_eq_unit_mul : ∀ (D : D7) (S T : HSp D) (r g : ℕ) (hr : T.rank = r) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (X : Data D.host.E r) (eT : D.what₂.Tau ≃ X.Ψ) (bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ) (idx : Fin g ≃ X.Ψ × Fin r) (hS : IsSet ψ θ S T hr X eT bas), ∀ w : D.host.E, IsIntegral ℤ w → w + cc w = 1 → GlobalTheory.Ker.IdemTwo w → ∀ Z : Fam T, IsONeg T X.p0 Z → ∀ (LT : Lt D.host.E T.rank) (L : Lt D.host.E r), SelfD X L → GlobalTheory.Ker.IsAA (latW hr L) LT → ∀ f, IsVacO ψ θ S T (fun _ => 1) (cartZ T X.p0 Z) (stdL D.host.E S.rank : Set (Fin S.rank → D.host.E)) (LT : Set (Fin T.rank → D.host.E)) f → ∀ th : (Fin g → ℂ) → ℂ, IsTheta1 X bas idx w (frOf hr eT Z) L th → MeanOne X bas idx (frOf hr eT Z) L th → ∃ a : ℂ, ‖a‖ = 1 ∧ ∀ p : WO S T, GlobalTheory.Ker.IsRealPt p → f p = a * (GlobalTheory.Ker.gaussR X bas idx (frOf hr eT Z) (GlobalTheory.Ker.zR X idx (frOf hr eT Z) (rePt θ hr eT p)) * ∏ b, th (GlobalTheory.Ker.zR X idx (frOf hr eT Z) (rePt θ hr eT p) b)) := by
+theorem vac_eq_unit_mul : ∀ (D : D7) (S T : HSp D) (r g : ℕ) (hr : T.rank = r) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (X : Data D.host.E r) (eT : D.what₂.Tau ≃ X.Ψ) (bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ) (idx : Fin g ≃ X.Ψ × Fin r) (_ : IsSet ψ θ S T hr X eT bas), ∀ w : D.host.E, IsIntegral ℤ w → w + cc w = 1 → GlobalTheory.Ker.IdemTwo w → ∀ Z : Fam T, IsONeg T X.p0 Z → ∀ (LT : Lt D.host.E T.rank) (L : Lt D.host.E r), SelfD X L → GlobalTheory.Ker.IsAA (latW hr L) LT → ∀ f, IsVacO ψ θ S T (fun _ => 1) (cartZ T X.p0 Z) (stdL D.host.E S.rank : Set (Fin S.rank → D.host.E)) (LT : Set (Fin T.rank → D.host.E)) f → ∀ th : (Fin g → ℂ) → ℂ, IsTheta1 X bas idx w (frOf hr eT Z) L th → MeanOne X bas idx (frOf hr eT Z) L th → ∃ a : ℂ, ‖a‖ = 1 ∧ ∀ p : WO S T, GlobalTheory.Ker.IsRealPt p → f p = a * (GlobalTheory.Ker.gaussR X bas idx (frOf hr eT Z) (GlobalTheory.Ker.zR X idx (frOf hr eT Z) (rePt θ hr eT p)) * ∏ b, th (GlobalTheory.Ker.zR X idx (frOf hr eT Z) (rePt θ hr eT p) b)) := by
   intro D S T r g hr ψ θ X eT bas idx hS w hw hw' hw2 Z hZ LT L hL hA f hf th hth hmean
   subst hr
   obtain ⟨X', m, hq', bas', idx', hs, π, hΛ, hEF, hhe, H⟩ :=
@@ -868,7 +868,6 @@ theorem blocks {r p : ℕ} (G B k : Matrix (Fin r) (Fin r) ℂ) (S : Matrix (Fin
     rw [div_eq_mul_inv, inv_inv, mul_comm]
 
 theorem Th_mvB (D : D7) (S T : HSp D) (C : GlobalTheory.Ker.Ctx S T) (B : C.Bas) (hB : C.IsB B) (k : GA D T)
-    (_hk : k ∈ GinfC T)
     (hc : ∀ τ, compAt C.θ τ (Formalism.L2.Theta.mt T k) * C.sB B τ = C.sB B τ * compAt C.θ τ (Formalism.L2.Theta.mt T k))
     (φ : TF S.rank C.g) (hφ : GlobalTheory.SW.IsSB φ) :
     C.Th (C.xB (C.mvB k B)) φ = vacChar C.θ T (C.sB B) S.rank (fun _ => 0) k • C.Th (C.xB B) φ := by
@@ -1166,7 +1165,7 @@ theorem om_real (C : GlobalTheory.Ker.Ctx S T) {χS χT η : (AE D)ˣ →* Circl
       have e1 := om_compact C hW hη (fun τ => ((hJ B hB).2.2.1 τ).1) hk (fun τ => (hc τ).symm) (hrt k)
         (GlobalTheory.Ker.ZakEx.isZak_Th D S T C _ hd φ hφ).1.1 ((GlobalTheory.Ker.fvec_Th_zero D S T C).2 B hB φ hφ).1
       have e2 := hχ k hk B hB φ hφ
-      have e3 := GlobalTheory.FrameEquiv.CompactMove.Th_mvB D S T C B hB k hk hc φ hφ
+      have e3 := GlobalTheory.FrameEquiv.CompactMove.Th_mvB D S T C B hB k hc φ hφ
       rw [← smul_smul, ← e3, e2] at e1
       have e4 := smul_left_injective ℂ (th_ne_zero C
         (GlobalTheory.FrameEquiv.RealChar.xB_mem_dom C ((hJ B hB).2.2.2.2.2 k).1) hφ h0) e1
@@ -1216,7 +1215,7 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open GlobalTheory.OneMapRef GlobalTheory.WeilParts
 
 
-theorem _root_.GlobalTheory.T.real_point_moves_adelic_theta_by_det_character : ∀ (D : D7) (S T : HSp D) (r g : ℕ) (hr : T.rank = r) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (X : Data D.host.E r) (eT : D.what₂.Tau ≃ X.Ψ) (bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ) (idx : Fin g ≃ X.Ψ × Fin r) (hS : IsSet ψ θ S T hr X eT bas), ∀ (χS χT : (AE D)ˣ →* Circle) (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)), IsWeilDatumO ψ S T χS χT om → (∃ η, IsEtaTilde D η) → ∀ Z : Fam T, IsONeg T X.p0 Z → ∀ a ∈ GinfC T, ∀ y : (AE D)ˣ, IsDetRoot T a y → ∀ φ : TF S.rank g, GlobalTheory.SW.IsSB φ → ∀ f, Zak ψ θ hr eT bas idx (frOf hr eT Z) φ f → Zak ψ θ hr eT bas idx (frOf hr eT (mvZ θ a Z)) (((χS y : Circle) : ℂ) • φ) (om (1, a) f) := by
+theorem _root_.GlobalTheory.T.real_point_moves_adelic_theta_by_det_character : ∀ (D : D7) (S T : HSp D) (r g : ℕ) (hr : T.rank = r) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (X : Data D.host.E r) (eT : D.what₂.Tau ≃ X.Ψ) (bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ) (idx : Fin g ≃ X.Ψ × Fin r) (_ : IsSet ψ θ S T hr X eT bas), ∀ (χS χT : (AE D)ˣ →* Circle) (om : GA D S × GA D T →* Module.End ℂ (WO S T → ℂ)), IsWeilDatumO ψ S T χS χT om → (∃ η, IsEtaTilde D η) → ∀ Z : Fam T, IsONeg T X.p0 Z → ∀ a ∈ GinfC T, ∀ y : (AE D)ˣ, IsDetRoot T a y → ∀ φ : TF S.rank g, GlobalTheory.SW.IsSB φ → ∀ f, Zak ψ θ hr eT bas idx (frOf hr eT Z) φ f → Zak ψ θ hr eT bas idx (frOf hr eT (mvZ θ a Z)) (((χS y : Circle) : ℂ) • φ) (om (1, a) f) := by
   first | exact @GlobalTheory.OneMapRef.RealMove.zak_om_real
 end -- clump:auto
 end -- clump:auto

@@ -313,8 +313,8 @@ theorem nondeg_BR [Algebra.IsSeparable F E] (σ : E →ₐ[F] E) (hσ : ∀ x, �
     intro w
     have := h (Pi.single p (Pi.single i (sigR (Fv F v) σ w)))
     simp only [BR, hR, Formalism.UG.hform] at this
-    rw [Finset.sum_eq_single p (fun p' _ hp' => by simp [Pi.single_apply, hp']) (by simp)] at this
-    rw [Finset.sum_eq_single i (fun i' _ hi' => by simp [Pi.single_apply, hi']) (by simp)] at this
+    rw [Finset.sum_eq_single p (fun p' _ hp' => by simp [hp']) (by simp)] at this
+    rw [Finset.sum_eq_single i (fun i' _ hi' => by simp [hi']) (by simp)] at this
     simp only [Pi.single_eq_same, sigR_invol (Fv F v) σ hσ] at this
     simpa [Matrix.mulVec, dotProduct, Finset.mul_sum, mul_assoc] using this
   have hdet : IsUnit ((1 : Matrix (Fin M) (Fin M) (Fv F v ⊗[F] E)) * JR (Fv F v) J).det := by

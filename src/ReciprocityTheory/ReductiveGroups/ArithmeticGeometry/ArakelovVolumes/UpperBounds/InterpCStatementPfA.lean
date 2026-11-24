@@ -102,7 +102,7 @@ private lemma leviO_fderiv_lemma {m : ℕ} (c : ℝ) (f : V m → ℂ) (y : V m)
       rw [fderiv_zero_of_not_differentiableAt hf, fderiv_zero_of_not_differentiableAt h2, smul_zero]
 
 theorem leviO_smul {r : ℕ} (X : Data E r) (x0 : Frame X.Ψ r) (g : Frame X.Ψ r → ℝ) (t : ℝ)
-    {z : V (nd X)} (hg : ContDiffAt ℝ 2 (fun w => g (cpt X x0 w)) z) (ξ : Fin (nd X) → ℂ) :
+    {z : V (nd X)} (ξ : Fin (nd X) → ℂ) :
     leviO X x0 (fun x => t * g x) z ξ = t * leviO X x0 g z ξ := by
   show (leviV (nd X) (fun w => (((t * g (cpt X x0 w)) : ℝ) : ℂ)) z ξ).re =
     t * (leviV (nd X) (fun w => ((g (cpt X x0 w) : ℝ) : ℂ)) z ξ).re
@@ -155,7 +155,7 @@ theorem interpC_of (hP : PoinStatement (E := E)) (hK : KronHolPsiStatement (E :=
     refine ⟨bb, m, hbb, hbm, fun x0 ho z hz ξ => ?_⟩
     have hca : ContDiffAt ℝ 2 (fun w => Xa.ps0 (cpt X x0 w)) z :=
       ((hsm x0 ho).contDiffAt ((ExF.isOpen_OmF X x0).mem_nhds hz)).of_le (show (2 : WithTop ℕ∞) ≤ (⊤ : ℕ∞) from WithTop.coe_le_coe.2 le_top)
-    rw [show leviO X x0 ψ z ξ = t * leviO X x0 Xa.ps0 z ξ from IC.leviO_smul X x0 Xa.ps0 t hca ξ]
+    rw [show leviO X x0 ψ z ξ = t * leviO X x0 Xa.ps0 z ξ from IC.leviO_smul X x0 Xa.ps0 t ξ]
     exact hm x0 ho z hz ξ
   have hQ : ∀ j, ∃ Q ∈ X.SSgt Xa.Fp Xa.c1, Q (Fl.xs j) ≠ 0 ∧ ∀ j', j' ≠ j → Q (Fl.xs j') = 0 := by
     intro j

@@ -164,16 +164,16 @@ def isColimitRingCocone (k : Type) [CommRing k] (A : Type) [CommRing A] [Algebra
 
 def bcDiagram : (Finset A)ᵒᵖ ⥤ Scheme.{0} where
   obj s := pullback pB (spMap (algebraMap k (Algebra.adjoin k (s.unop : Set A))))
-  map {s t} h := bcMap pB
+  map {_ _} h := bcMap pB
     (Subalgebra.inclusion (Algebra.adjoin_mono (Finset.coe_subset.mpr h.unop.le)))
-  map_id s := bcMap_eq_id pB _ fun _ ↦ rfl
-  map_comp f g := (bcMap_comp_of_eq pB _ _ _ fun _ ↦ rfl).symm
+  map_id _ := bcMap_eq_id pB _ fun _ ↦ rfl
+  map_comp _ _ := (bcMap_comp_of_eq pB _ _ _ fun _ ↦ rfl).symm
 
 def bcCone : Cone (bcDiagram pB A) where
   pt := pullback pB (spMap (algebraMap k A))
   π :=
     { app s := bcMap pB (Algebra.adjoin k (s.unop : Set A)).val
-      naturality s t f := (Category.id_comp _).trans (bcMap_comp_of_eq pB _ _ _ fun _ ↦ rfl).symm }
+      naturality _ _ _ := (Category.id_comp _).trans (bcMap_comp_of_eq pB _ _ _ fun _ ↦ rfl).symm }
 
 def isLimitBcCone : IsLimit (bcCone pB A) := by
   classical

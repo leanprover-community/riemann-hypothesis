@@ -48,17 +48,17 @@ attribute [instance] RatDat.fKs RatDat.nfKs RatDat.algKs RatDat.acgWL RatDat.mod
 
 variable {tw : NTw R H what₂ LL0 N} (S : RatDat tw)
 
-def KB (_S : RatDat tw) (i : tw.Tw) (_b : Bool) : Type := FractionRing (tw.O i)
+def KB (i : tw.Tw) : Type := FractionRing (tw.O i)
 
-instance (i : tw.Tw) (b : Bool) : Field (KB S i b) := inferInstanceAs (Field (FractionRing (tw.O i)))
+instance (i : tw.Tw) (b : Bool) : Field (KB i) := inferInstanceAs (Field (FractionRing (tw.O i)))
 
-def readLL0 (i : tw.Tw) (b : Bool) : ↥LL0 →+* KB S i b :=
+def readLL0 (i : tw.Tw) (b : Bool) : ↥LL0 →+* KB i :=
   (IsFractionRing.map (A := tw.O0 i) (B := tw.O i) (K := FractionRing (tw.O0 i)) (L := FractionRing (tw.O i))
     (tw.O_inj i)).comp (if b then tw.emb0 i else tw.emb0b i)
 
-def ιK (i : tw.Tw) (b : Bool) : S.Ks →+* KB S i b := (readLL0 S i b).comp S.kKs
+def ιK (i : tw.Tw) (b : Bool) : S.Ks →+* KB i := (readLL0 S i b).comp S.kKs
 
-instance (i : tw.Tw) (b : Bool) : Algebra S.Ks (KB S i b) := (ιK S i b).toAlgebra
+instance (i : tw.Tw) (b : Bool) : Algebra S.Ks (KB i) := (ιK S i b).toAlgebra
 
 def FmK (j : ℕ) : Type := ↥(S.A j).WK
 
@@ -66,13 +66,13 @@ instance (j : ℕ) : AddCommGroup (FmK S j) := inferInstanceAs (AddCommGroup ↥
 
 instance (j : ℕ) : Module S.Ks (FmK S j) := inferInstanceAs (Module S.Ks ↥(S.A j).WK)
 
-def Fm (i : tw.Tw) (j : ℕ) (b : Bool) : Type := KB S i b ⊗[S.Ks] FmK S j
+def Fm (i : tw.Tw) (j : ℕ) (b : Bool) : Type := KB i ⊗[S.Ks] FmK S j
 
 instance acgFm (i : tw.Tw) (j : ℕ) (b : Bool) : AddCommGroup (Fm S i j b) :=
-  inferInstanceAs (AddCommGroup (KB S i b ⊗[S.Ks] FmK S j))
+  inferInstanceAs (AddCommGroup (KB i ⊗[S.Ks] FmK S j))
 
-instance modKB (i : tw.Tw) (j : ℕ) (b : Bool) : Module (KB S i b) (Fm S i j b) :=
-  inferInstanceAs (Module (KB S i b) (KB S i b ⊗[S.Ks] FmK S j))
+instance modKB (i : tw.Tw) (j : ℕ) (b : Bool) : Module (KB i) (Fm S i j b) :=
+  inferInstanceAs (Module (KB i) (KB i ⊗[S.Ks] FmK S j))
 
 instance modFmK (i : tw.Tw) (j : ℕ) (b : Bool) : Module (FractionRing (tw.O i)) (Fm S i j b) :=
   modKB S i j b
@@ -87,7 +87,7 @@ instance towFm (i : tw.Tw) (j : ℕ) (b : Bool) :
 def Bsup (i : tw.Tw) (j : ℕ) (b : Bool) : Submodule (tw.O i) (Fm S i j b) :=
   Submodule.span (tw.O i)
     {f | ∃ x : FmK S j, (show ↥(S.A j).WK from x).1 ∈ (S.A j).MK ∧
-      f = ((1 : KB S i b) ⊗ₜ[S.Ks] x : KB S i b ⊗[S.Ks] FmK S j)}
+      f = ((1 : KB i) ⊗ₜ[S.Ks] x : KB i ⊗[S.Ks] FmK S j)}
 
 end Dat
 
@@ -126,9 +126,9 @@ def rhoKG (j : ℕ) (hst : RhoStab S j) : S.G →* Module.End S.Ks (FmK S j) whe
     rfl
 
 def actEnd (i : tw.Tw) (j : ℕ) (b : Bool) (hst : RhoStab S j) (hχ : ChiInLL0 S j) :
-    S.G →* Module.End (KB S i b) (KB S i b ⊗[S.Ks] FmK S j) where
+    S.G →* Module.End (KB i) (KB i ⊗[S.Ks] FmK S j) where
   toFun g := (readLL0 S i b (chiL S j hχ g))⁻¹ •
-    Module.End.baseChangeHom S.Ks (KB S i b) (FmK S j) (rhoKG S j hst g)
+    Module.End.baseChangeHom S.Ks (KB i) (FmK S j) (rhoKG S j hst g)
   map_one' := by
     rw [chiL_one, map_one, inv_one, one_smul, map_one, map_one]
   map_mul' g h := by
@@ -137,7 +137,7 @@ def actEnd (i : tw.Tw) (j : ℕ) (b : Bool) (hst : RhoStab S j) (hχ : ChiInLL0 
 
 def actG (i : tw.Tw) (j : ℕ) (b : Bool) (hst : RhoStab S j) (hχ : ChiInLL0 S j) :
     G0g N →* (Fm S i j b ≃ₗ[FractionRing (tw.O i)] Fm S i j b) :=
-  (LinearMap.GeneralLinearGroup.generalLinearEquiv (KB S i b) (KB S i b ⊗[S.Ks] FmK S j)).toMonoidHom.comp
+  (LinearMap.GeneralLinearGroup.generalLinearEquiv (KB i) (KB i ⊗[S.Ks] FmK S j)).toMonoidHom.comp
     (MonoidHom.toHomUnits ((actEnd S i j b hst hχ).comp S.eG.symm.toMonoidHom))
 
 instance : Algebra S.Ks ↥LL0 := S.kKs.toAlgebra
@@ -173,7 +173,7 @@ def thK {Dat : Type} (j : ℕ) (σ0 : what₂.LL →+* ℂ) (thC : Dat → S.W j
     ↥LL0 ⊗[S.Ks] FmK S j :=
   (h d).choose
 
-def readLL0Ks (i : tw.Tw) (b : Bool) : ↥LL0 →ₗ[S.Ks] KB S i b where
+def readLL0Ks (i : tw.Tw) (b : Bool) : ↥LL0 →ₗ[S.Ks] KB i where
   toFun := readLL0 S i b
   map_add' := map_add _
   map_smul' c x := by
@@ -183,7 +183,7 @@ def readLL0Ks (i : tw.Tw) (b : Bool) : ↥LL0 →ₗ[S.Ks] KB S i b where
 
 def thOf {Dat : Type} (i : tw.Tw) (j : ℕ) (b : Bool) (σ0 : what₂.LL →+* ℂ) (thC : Dat → S.W j σ0)
     (h : ThExists S j σ0 thC) (d : Dat) : Fm S i j b :=
-  (LinearMap.rTensor (FmK S j) (readLL0Ks S i b) (thK S j σ0 thC h d) : KB S i b ⊗[S.Ks] FmK S j)
+  (LinearMap.rTensor (FmK S j) (readLL0Ks S i b) (thK S j σ0 thC h d) : KB i ⊗[S.Ks] FmK S j)
 
 end Act
 

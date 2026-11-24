@@ -1023,13 +1023,13 @@ private instance : IsFiltered (FI k Ω) := isFiltered_of_directed_le_nonempty _
 private def Dg : FI k Ω ⥤ CommRingCat.{0} where
   obj L := .of L.1
   map f := CommRingCat.ofHom (IntermediateField.inclusion (leOfHom f)).toRingHom
-  map_id L := rfl
-  map_comp f g := rfl
+  map_id _ := rfl
+  map_comp _ _ := rfl
 
 private def cg : Cocone (Dg k Ω) where
   pt := .of Ω
   ι := { app := fun L => CommRingCat.ofHom (algebraMap L.1 Ω)
-         naturality := fun L L' f => rfl }
+         naturality := fun _ _ _ => rfl }
 
 private theorem exists_rep [Algebra.IsAlgebraic k Ω] (x : Ω) : ∃ (L : FI k Ω) (y : L.1), algebraMap L.1 Ω y = x :=
   ⟨⟨IntermediateField.adjoin k {x}, IntermediateField.adjoin.finiteDimensional
@@ -1106,7 +1106,7 @@ variable (k Ω) in
 private def cn : Cone (Gd k Ω p) where
   pt := geom Ω p
   π := { app := fun L => LateralTheory.EWeil.StabPf.proj L.unop.1 p
-         naturality := fun L L' f => (Category.id_comp _).trans (pj_tr p (leOfHom f.unop)).symm }
+         naturality := fun _ _ f => (Category.id_comp _).trans (pj_tr p (leOfHom f.unop)).symm }
 
 private def bt : FI k Ω := ⟨⊥, inferInstance⟩
 

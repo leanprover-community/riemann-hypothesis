@@ -110,7 +110,7 @@ open Filter Topology Asymptotics Metric Set Complex in
 open scoped Real in
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] in
 private theorem isLittleO_sub_inv_sub_of_log_bound {ψ h : ℂ → ℂ} {s₀ : ℂ} (hψ : AnalyticAt ℂ ψ s₀)
-    (hz : ψ s₀ = 0) (hne : ∀ᶠ s in 𝓝[≠] s₀, ψ s ≠ 0) {C : ℝ} {k : ℕ}
+    (hne : ∀ᶠ s in 𝓝[≠] s₀, ψ s ≠ 0) {C : ℝ} {k : ℕ}
     (hb : ∀ᶠ s in 𝓝 s₀, ψ s ≠ 0 → ‖h s‖ ≤ C * (1 + |Real.log ‖ψ s‖|) ^ k) :
     (fun s => h s - h s₀) =o[𝓝[≠] s₀] fun s => (s - s₀)⁻¹ := by
   have hnz : ¬ ∀ᶠ z in 𝓝 s₀, ψ z = 0 := by
@@ -228,7 +228,7 @@ private theorem exists_differentiableOn_ball_of_log_bound {ψ h : ℂ → ℂ} {
     refine ⟨_, hN, Function.update h s₀ (limUnder (𝓝[≠] s₀) h), ?_, ?_⟩
     · apply differentiableOn_update_limUnder_of_isLittleO hN
       · exact hh.mono fun s hs => ⟨hs.1.1, hs.1.2 hs.2⟩
-      · exact isLittleO_sub_inv_sub_of_log_bound (han s₀ hs₀) hz (hiso s₀ hs₀) hCk
+      · exact isLittleO_sub_inv_sub_of_log_bound (han s₀ hs₀) (hiso s₀ hs₀) hCk
     · intro s hs
       have hne : s ≠ s₀ := fun h' => hs.2.2 (by rw [h']; exact hz)
       simp [Function.update_of_ne hne]

@@ -139,7 +139,7 @@ theorem continuous_gramRP [FiniteDimensional F E] [TopologicalSpace R] [IsTopolo
 end Alg
 
 def DetNZ : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf fibInf,
-    PushHyp X u' ψ hT μinf νinf fibInf →
+    PushHyp X u' ψ μinf νinf fibInf →
     (gramE X.B.I.cm.sig X.B.I.J (tupH (frameOf X u'))).det ≠ 0
 
 theorem orbM_mem {D : D7} (X : HidaSetting D) (u' : D.what₂.Word)
@@ -169,7 +169,7 @@ theorem measurableSet_FbI {D : D7} (X : HidaSetting D) (u' : D.what₂.Word)
     (isOpen_IndI X).measurableSet
 
 theorem pushSupp_of (hD : DetNZ) : ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf fibInf,
-    PushHyp X u' ψ hT μinf νinf fibInf →
+    PushHyp X u' ψ μinf νinf fibInf →
     X.measG.μGinf.map (orbM X u') (FbI X u' hT)ᶜ = 0 := by
   intro D X u' ψ hT μinf νinf fibInf hP
   rw [Measure.map_apply (measurable_orbM X u') (measurableSet_FbI X u' hT).compl]
@@ -180,7 +180,7 @@ theorem pushSupp_of (hD : DetNZ) : ∀ {D : D7} (X : HidaSetting D) (u' : D.what
   rw [this, measure_empty]
 
 def PushLFin : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf fibInf,
-    PushHyp X u' ψ hT μinf νinf fibInf →
+    PushHyp X u' ψ μinf νinf fibInf →
     LFI X (X.measG.μGinf.map (orbM X u'))
 
 theorem lfPush_of (hD : DetNZ) (hL : PushLFin) : LFPush := by

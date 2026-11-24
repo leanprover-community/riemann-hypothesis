@@ -930,7 +930,7 @@ theorem X_dvd_of_X_mul {σ K : Type} [Field K] {s t : σ} (hst : t ≠ s) {g : M
   classical
   rw [MvPowerSeries.X_dvd_iff] at h ⊢
   intro n hn
-  have h1 := h (n + Finsupp.single t 1) (by simp [Finsupp.single_apply, hst, hn])
+  have h1 := h (n + Finsupp.single t 1) (by simp [hst, hn])
   rw [MvPowerSeries.X, MvPowerSeries.coeff_monomial_mul] at h1
   simpa using h1
 

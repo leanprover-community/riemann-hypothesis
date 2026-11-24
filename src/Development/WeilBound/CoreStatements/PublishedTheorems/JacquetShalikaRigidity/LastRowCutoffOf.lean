@@ -454,8 +454,8 @@ theorem sum_add_single (f z : Fin k → Af E) (i : Fin k) (a : Af E) :
 
 variable [_root_.NumberField.IsTotallyComplex E]
 
-theorem box_fourier {ψ : AddChar (Ad E) ℂ} (hψ : ∀ x, ‖ψ x‖ = 1) (_hc : Continuous ψ)
-    (L : AddSubgroup (Af E)) (_hLc : IsCompact (L : Set (Af E))) (hLo : IsOpen (L : Set (Af E)))
+theorem box_fourier {ψ : AddChar (Ad E) ℂ} (hψ : ∀ x, ‖ψ x‖ = 1)
+    (L : AddSubgroup (Af E)) (hLo : IsOpen (L : Set (Af E)))
     (c z : Fin k → Af E) :
     ‖∫ f, (((boxL (L : Set (Af E)) c).indicator (fun _ => (1 : ℝ)) f : ℝ) : ℂ) *
         ψ (sFin E (∑ i, f i * z i)) ∂nuFin E k‖ ≤ (nuFin E k).real (boxL (L : Set (Af E)) c) ∧
@@ -493,7 +493,7 @@ theorem box_fourier {ψ : AddChar (Ad E) ℂ} (hψ : ∀ x, ‖ψ x‖ = 1) (_hc
     exact mul_right_cancel₀ hI (key.trans (one_mul _).symm)
 
 theorem box_fourier_main : ∀ {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {k : ℕ} {ψ : AddChar (Ad E) ℂ}, (∀ x, ‖ψ x‖ = 1) → Continuous ψ → ∀ (L : AddSubgroup (Af E)), IsCompact (L : Set (Af E)) → IsOpen (L : Set (Af E)) → ∀ (c z : Fin k → Af E), ‖∫ f, (((boxL (L : Set (Af E)) c).indicator (fun _ => (1 : ℝ)) f : ℝ) : ℂ) * ψ (sFin E (∑ i, f i * z i)) ∂nuFin E k‖ ≤ (nuFin E k).real (boxL (L : Set (Af E)) c) ∧ (∫ f, (((boxL (L : Set (Af E)) c).indicator (fun _ => (1 : ℝ)) f : ℝ) : ℂ) * ψ (sFin E (∑ i, f i * z i)) ∂nuFin E k ≠ 0 → ∀ i, ∀ a ∈ L, ψ (sFin E (a * z i)) = 1) :=
-  fun h1 h2 L h3 h4 c z => box_fourier h1 h2 L h3 h4 c z
+  fun h1 h2 L h3 h4 c z => box_fourier h1 L h4 c z
 
 end GlobalTheory.CompanionTheory.CutOff.FinFT
 end
@@ -1098,7 +1098,7 @@ theorem cut_of (h0 : PositivityTheory.jumpWindows.G0) (h4 : S4) (h8 : S8) (hk : 
         rw [sub_self]
         exact zero_mem _
       rwa [etaOf_eq hm, h1]
-    · simp only [sOf, glue, h1, h3, rowGL_eRow hk, map_one]
+    · simp only [sOf, glue, h1, h3, rowGL_eRow, map_one]
       simp
   ·
     intro g _ hy

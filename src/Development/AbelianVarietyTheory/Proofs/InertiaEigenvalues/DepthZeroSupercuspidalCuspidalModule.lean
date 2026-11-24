@@ -172,7 +172,7 @@ theorem conj_up (hP : P * P = P) {k : GL (Fin n) ℤ_[g]} (hk : red g n k ∈ U 
   have hp' : ∀ r, φ P * (φ P * r) = φ P * r := fun r => by rw [← mul_assoc, hp]
   obtain ⟨M, hM⟩ := exists_div (N := (1 - P) * k.val * P) (by
     rw [map_mul, map_mul, map_sub, map_one, hx]
-    simp only [mul_add, add_mul, mul_sub, sub_mul, mul_assoc, hp, hp', mul_one, one_mul, sub_self, add_zero])
+    simp only [mul_add, mul_sub, sub_mul, hp, hp', mul_one, one_mul, sub_self, add_zero])
   have hx2 : (1 - φ P) * (φ M * φ P) * ((1 - φ P) * (φ M * φ P)) = 0 := by
     simp only [mul_sub, sub_mul, mul_assoc, hp', one_mul, sub_self]
   obtain ⟨k', h1, h2⟩ := exists_unit (P * k.val * P + (1 - P) * k.val * (1 - P) +

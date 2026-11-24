@@ -54,7 +54,7 @@ namespace GlobalTheory.CompanionTheory.OpenSubgroupTransversal
 
 theorem finite_transversal {X : Type} [TopologicalSpace X] [AddCommGroup X]
     [IsTopologicalAddGroup X] (A H : AddSubgroup X) (hA : IsCompact (A : Set X))
-    (hH : IsOpen (H : Set X)) (_hHA : H ≤ A) :
+    (hH : IsOpen (H : Set X)) :
     ∃ T : Finset X, (∀ t ∈ T, t ∈ A) ∧ ∀ a ∈ A, ∃! t, t ∈ T ∧ a - t ∈ H := by
   classical
   haveI : CompactSpace A := isCompact_iff_compactSpace.mp hA
@@ -83,6 +83,6 @@ theorem finite_transversal {X : Type} [TopologicalSpace X] [AddCommGroup X]
 theorem main : ∀ {X : Type} [TopologicalSpace X] [AddCommGroup X] [IsTopologicalAddGroup X]
     (A H : AddSubgroup X), IsCompact (A : Set X) → IsOpen (H : Set X) → H ≤ A →
     ∃ T : Finset X, (∀ t ∈ T, t ∈ A) ∧ ∀ a ∈ A, ∃! t, t ∈ T ∧ a - t ∈ H :=
-  fun A H hA hH hHA => GlobalTheory.CompanionTheory.OpenSubgroupTransversal.finite_transversal A H hA hH hHA
+  fun A H hA hH hHA => GlobalTheory.CompanionTheory.OpenSubgroupTransversal.finite_transversal A H hA hH
 
 end GlobalTheory.CompanionTheory.OpenSubgroupTransversal

@@ -142,7 +142,7 @@ theorem mem_unimod {Λ : Submodule (𝓞 E) S.V} (hu : Formalism.HermitianLattic
 
 def StarStable (I : FI E) : Prop := ∀ x ∈ I, star x ∈ I
 
-theorem starStable_one : StarStable (1 : FI E) := fun x hx =>
+theorem starStable_one : StarStable (1 : FI E) := fun _ hx =>
   (mem_one_iff _).2 (star_int ((mem_one_iff _).1 hx))
 
 theorem StarStable.mul {I J : FI E} (hI : StarStable I) (hJ : StarStable J) : StarStable (I * J) := by

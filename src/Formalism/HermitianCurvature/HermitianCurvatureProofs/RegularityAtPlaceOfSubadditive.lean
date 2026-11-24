@@ -169,7 +169,7 @@ theorem orbJ_smul_ae {k r : ℕ} (Ds : B.RealPlaceData k r Wp Wq) (γ : B.Mat k 
     rw [hq, smul_comm])
 
 theorem vec_Gpow (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq →L[ℂ] Wp)) (p₀ : ℕ) {γ : C.LPt}
-    (_hγ : D.IsLocPt γ (P.r + 1)) (hG : 0 < Gp p γ) :
+    (hG : 0 < Gp p γ) :
     p.V (fun g => ((Gf P.k P.r p.T.base.z p.T.base.z' g ^ p₀ : ℝ) : ℂ) • F g) γ =
       ((Gp p γ ^ p₀ : ℝ) : ℂ) • p.V F γ := by
   have hc : ((Gp p γ ^ p₀ : ℝ) : ℂ) ≠ 0 := by exact_mod_cast (pow_pos hG p₀).ne'
@@ -280,8 +280,8 @@ theorem normAt_fpm (p : KB.Pl P Wp Wq) (f : B.Mat P.k P.r → (Wq →L[ℂ] Wp))
     (hnm : ∀ γ, D.IsLocPt γ (P.r + 1) → 0 < Gp p γ → ‖AmPt γ‖ ^ 2 ≤ (Gp p γ / Tq p) ^ n₀) :
     NormAt p f (fpm p f Ap p₀) (fpm p f Am p₀) b n₀ p₀ := by
   exact normAt_of_pts p f _ _ ApPt AmPt b n₀ p₀
-    (fun γ hγ hG => (vec_Gpow p (fun g => (f g).comp (Ap g)) p₀ hγ hG).trans (by rw [hAp γ hγ hG]))
-    (fun γ hγ hG => (vec_Gpow p (fun g => (f g).comp (Am g)) p₀ hγ hG).trans (by rw [hAm γ hγ hG]))
+    (fun γ hγ hG => (vec_Gpow p (fun g => (f g).comp (Ap g)) p₀ hG).trans (by rw [hAp γ hγ hG]))
+    (fun γ hγ hG => (vec_Gpow p (fun g => (f g).comp (Am g)) p₀ hG).trans (by rw [hAm γ hγ hG]))
     hlow hnp hnm
 
 end norm

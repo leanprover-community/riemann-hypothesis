@@ -269,7 +269,7 @@ theorem map_conj_of_bounded (R : Subgroup G) (hR : IsClosed (R : Set G)) (ν : M
         rfl
     _ = ν := by rw [hμα, hν]
 
-theorem conj_of_decomp (R : Subgroup G) (hR : IsClosed (R : Set G)) (ν : Measure G) (_hs : SigmaFinite ν)
+theorem conj_of_decomp (R : Subgroup G) (hR : IsClosed (R : Set G)) (ν : Measure G)
     (h0 : ν ≠ 0) (hc : ν (R : Set G)ᶜ = 0) (hK : ∀ K : Set G, IsCompact K → ν K < ⊤)
     (hl : ∀ r ∈ R, ν.map (fun x => r * x) = ν) (hi : ν.map (fun x => x⁻¹) = ν) (k n : G)
     (hk : ∀ r, r ∈ R ↔ k⁻¹ * r * k ∈ R) (hn : n ∈ R) (hC : ∃ C : Set G, IsCompact C ∧ ∀ m : ℤ, k ^ m ∈ C) :
@@ -544,7 +544,7 @@ theorem shift_general (μ : Measure G) [SigmaFinite μ] [μ.IsMulLeftInvariant]
     (R Γ : Subgroup G) [Countable Γ] {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
     (f : G → E) (Ω : Set G) (h : G) (ν : Measure G)
     (hΓR : Γ ≤ R) (hK : ∃ K : Set G, IsCompact K ∧ ∀ r ∈ R, ∃ s ∈ Γ, s * r ∈ K)
-    (hn : ∀ r, r ∈ R ↔ h⁻¹ * r * h ∈ R) (hσ : SigmaFinite ν) (hne : ν ≠ 0) (hcon : ν (R : Set G)ᶜ = 0)
+    (hσ : SigmaFinite ν) (hne : ν ≠ 0) (hcon : ν (R : Set G)ᶜ = 0)
     (hfin : ∀ K : Set G, IsCompact K → ν K < ⊤) (hleft : ∀ r ∈ R, ν.map (fun x => r * x) = ν)
     (hinvν : ν.map (fun x => x⁻¹) = ν) (hconj : ν.map (fun x => h⁻¹ * x * h) = ν)
     (hf : ∀ r ∈ R, ∀ x, f (r * x) = f x) (hΩ : SF (Γ : Set G) Ω) (hfi : IntegrableOn f Ω μ) :
@@ -645,7 +645,7 @@ namespace Formalism.L2.SG.CovariantRepresentation
 theorem shiftCore : ShiftCore := by
   intro G _ _ _ _ _ _ μ _ _ R Γ _ V _ _ f Ω h ν _ hΓR hK hn hσ hne hcon hfin hleft hinv hconj hf hΩ hfi
   by_cases hV : CompleteSpace V
-  · exact Formalism.L2.SG.MeasureShiftInvariance.shift_general μ R Γ f Ω h ν hΓR hK hn hσ hne hcon hfin hleft hinv hconj
+  · exact Formalism.L2.SG.MeasureShiftInvariance.shift_general μ R Γ f Ω h ν hΓR hK hσ hne hcon hfin hleft hinv hconj
       hf hΩ hfi
   · rw [integral_of_not_completeSpace hV, integral_of_not_completeSpace hV]
 
@@ -1251,7 +1251,7 @@ theorem rHaarRel0_holds (hN : NLamNinf) (hG : PsiInfChar) (h1 : RClosedC) (h2 : 
       ⟨K, hK, fun r hr => hKc r hr⟩
   obtain ⟨k, n, rfl, hn, hk, hC⟩ := fixedDecompositionZero_holds D X Y u u' t hr hGt h hh
   exact ⟨ν, hs, h0, hc, hKf, hl, hi,
-    conj_of_decomp (Rsub hG t) (h1 D X Y u u' t) ν hs h0 hc hKf hl hi k n hk hn hC⟩
+    conj_of_decomp (Rsub hG t) (h1 D X Y u u' t) ν h0 hc hKf hl hi k n hk hn hC⟩
 
 def CovariantRepresentationZero : Prop :=
   ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u u' : D.what₂.Word)

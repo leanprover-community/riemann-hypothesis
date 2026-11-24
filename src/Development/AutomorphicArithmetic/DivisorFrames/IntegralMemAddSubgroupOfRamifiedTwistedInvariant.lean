@@ -987,7 +987,7 @@ theorem support_finite (hϖ : IsUnif ϖ) (hram : ¬ IsUnram ν) (hcond : CondLE 
     {φ : Matrix (Fin a) (Fin a) k → ℂ} (hφ : φ ∈ SB (Matrix (Fin a) (Fin a) k)) (w : ℂ) :
     (Function.support fun m : {m : Fin a → ℤ // Antitone m} =>
       shell (haarVol (KO k (Fin a))) ϖ ν w φ m.1).Finite :=
-  (finite_shells hϖ hram hcond hφ).subset fun m hm => ⟨w, hm⟩
+  (finite_shells hϖ hram hcond hφ).subset fun _ hm => ⟨w, hm⟩
 
 theorem integral_eq_shellSum (hϖ : IsUnif ϖ) (hram : ¬ IsUnram ν) (hcond : CondLE ϖ e ν) {a : ℕ}
     {φ : Matrix (Fin a) (Fin a) k → ℂ} (hφ : φ ∈ SB (Matrix (Fin a) (Fin a) k)) {w : ℂ}

@@ -458,7 +458,6 @@ lemma norm_shift (hn : 1 ≤ n) {W : Submodule ℂ (Fin n → ℂ)} {ν : Measur
     (hν : IsHaarSub (NW ε W) ν) {β : UJ ε → ENNReal} (hβ : Measurable β) (hβt : ∀ y, β y ≠ ⊤)
     (hβ1 : ∀ y, ∫⁻ m, β (m⁻¹ * y) ∂ν = 1) {x : UJ ε} {r : ℝ}
     (h1 : ν.map (fun m => x * m * x⁻¹) = ENNReal.ofReal (Real.exp r) • ν)
-    (h2 : ν.map (fun m => x⁻¹ * m * x⁻¹⁻¹) = ENNReal.ofReal (Real.exp (-r)) • ν)
     {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
     {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} {d c : ℝ} (hσ : IsURepOn (UJset ε) σ)
     (hd : IsFdeg (muG ε) σ d) (hc : 8 * n * rkR ε < c) {v u : H}
@@ -599,7 +598,7 @@ theorem torus_lipschitz : ∀ (n : ℕ) (ε : Fin n → Bool) (W : Submodule ℂ
     intro i t ht
     have h2 : ν.map (fun m => (a t)⁻¹ * m * (a t)⁻¹⁻¹) = ENNReal.ofReal (Real.exp (-(κ * t))) • ν := by
       have := hκ (-t); rw [← hainv t, mul_neg] at this; exact this
-    obtain ⟨hI, hE⟩ := norm_shift hn hW hν hβ hβt hβ1 (hκ t) h2 hσ hd hc (hvL (E i) (hE1 i).1) hvv
+    obtain ⟨hI, hE⟩ := norm_shift hn hW hν hβ hβt hβ1 (hκ t) hσ hd hc (hvL (E i) (hE1 i).1) hvv
     refine ⟨hI, ?_⟩
     have h0 : 0 ≤ ∫ g, (β g).toReal * ‖∫ m, ⟪v, σ (umat (m * (a t * g))) (L (E i))⟫_ℂ ∂ν‖ ^ 2 ∂(muG ε) :=
       integral_nonneg (fun g => mul_nonneg ENNReal.toReal_nonneg (sq_nonneg _))

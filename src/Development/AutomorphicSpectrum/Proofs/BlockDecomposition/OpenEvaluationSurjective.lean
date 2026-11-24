@@ -111,7 +111,7 @@ theorem bump_right_inv {H : Subgroup G} {ρ : Representation ℂ H W} {K : Subgr
     rintro ⟨a, x, hx, e⟩
     exact h ⟨a, x * z⁻¹, mul_mem hx (inv_mem hz), by rw [← mul_assoc, ← e]; group⟩
 
-theorem sum_translate {M : Type} [AddCommMonoid M] (K₁ K₂ : Subgroup G) (h₂₁ : K₂ ≤ K₁) (φ : G → M)
+theorem sum_translate {M : Type} [AddCommMonoid M] (K₁ K₂ : Subgroup G) (φ : G → M)
     (hφ : ∀ g, ∀ z ∈ K₂, φ (g * z) = φ g) [Fintype (K₁ ⧸ K₂.subgroupOf K₁)] (y : K₁) :
     ∑ x : K₁ ⧸ K₂.subgroupOf K₁, φ ((y : G) * ((x.out : K₁) : G)) =
       ∑ x : K₁ ⧸ K₂.subgroupOf K₁, φ ((x.out : K₁) : G) := by
@@ -153,7 +153,7 @@ theorem bump_mem_of_bump {G W : Type} [Group G] [TopologicalSpace G] [IsTopologi
   have hTr : ∀ g, ∀ y ∈ K₁, T.1.1.1 (g * y) = T.1.1.1 g := by
     intro g y hy
     rw [hTv, hTv]
-    have := sum_translate K₁ K₂ h₂₁ (fun u => b.1.1.1 (g * u))
+    have := sum_translate K₁ K₂ (fun u => b.1.1.1 (g * u))
       (fun u z hz => by
         show b.1.1.1 (g * (u * z)) = b.1.1.1 (g * u)
         rw [← mul_assoc]; exact bump_right_inv hb _ z hz) ⟨y, hy⟩
@@ -481,7 +481,7 @@ open scoped TensorProduct
 noncomputable section
 namespace GlobalTheory.CompanionTheory.BZPhiPG.OntoO
 
-theorem muD_toReal_ne_zero : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (t : ℕ) (E C : Set (Fin t → k)) (hE : IsOpen E) (hn : E.Nonempty) (hC : IsCompact C) (hEC : E ⊆ C),
+theorem muD_toReal_ne_zero : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (t : ℕ) (E C : Set (Fin t → k)) (_ : IsOpen E) (_ : E.Nonempty) (_ : IsCompact C) (_ : E ⊆ C),
     (muD (k := k) t E).toReal ≠ 0 := by
   intro k _ _ _ _ t E C hE hn hC hEC
   unfold muD
@@ -764,7 +764,7 @@ open scoped TensorProduct
 
 namespace GlobalTheory.CompanionTheory.BZPhiPG.OntoO
 
-theorem sigX_fix_nhds : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ) (τ : MRep k (i + 1)) (σ : GRep k (t + 1)) (hτ : IsSmooth τ.ρ) (hσ : IsSmooth σ.ρ)
+theorem sigX_fix_nhds : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (i t : ℕ) (τ : MRep k (i + 1)) (σ : GRep k (t + 1)) (_ : IsSmooth τ.ρ) (_ : IsSmooth σ.ρ)
     (v : τ.V ⊗[ℂ] σ.V), ∃ O ∈ 𝓝 (1 : Mir k ((i + 1) + t + 1)), ∀ a : HPG k (i + 1) (t + 1),
       (a : Mir k ((i + 1) + (t + 1))) ∈ O → sigX τ σ a v = v :=
   GlobalTheory.CompanionTheory.BZPhiPG.Onto.sigX_fix

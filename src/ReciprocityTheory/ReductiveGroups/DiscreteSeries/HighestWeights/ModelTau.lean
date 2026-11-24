@@ -885,7 +885,7 @@ private theorem derOp_fn_eq_deriv_kcurve (ε : Fin n → Bool) (m : Fin n → �
       rw [dite_eq_right hX]
     simp [derOp, hk]
 
-theorem derOp_fn (ε : Fin n → Bool) (m : Fin n → ℤ) {X : Matrix (Fin n) (Fin n) ℂ} (hX : inK ε X) (f : MV ε m)
+theorem derOp_fn (ε : Fin n → Bool) (m : Fin n → ℤ) {X : Matrix (Fin n) (Fin n) ℂ} (f : MV ε m)
     (x : KG ε) : (derOp ε (tauM ε m) X f).fn x = deriv (fun t : ℝ => f.fn (x * kcurve ε X t)) 0 := by
   exact derOp_fn_eq_deriv_kcurve ε m X f x
 
@@ -905,7 +905,7 @@ theorem derOp_fn_eq (ε : Fin n → Bool) (m : Fin n → ℤ) {X : Matrix (Fin n
     (f : MV ε m) (x : KG ε) {F : Matrix (Fin n) (Fin n) ℂ → ℂ} (hF : Differentiable ℂ F)
     (hfF : ∀ k, f.fn k = F (toMK k)) :
     (derOp ε (tauM ε m) X f).fn x = fderiv ℂ F (toMK x) (toMK x * X) := by
-  rw [derOp_fn ε m hX f x]
+  rw [derOp_fn ε m f x]
   exact (hasDerivAt_of_mem_Vsp ε m f.mem hF hfF hX x).deriv
 
 theorem rLinOnK_derOp (ε : Fin n → Bool) (m : Fin n → ℤ) : RLinOnK ε (derOp ε (tauM ε m)) := by
@@ -976,7 +976,7 @@ theorem derived_action_highest_vector (ε : Fin n → Bool) {m : Fin n → ℤ} 
   apply MV.ext
   funext x
   rw [dTau_fn, MV.fn_zero, Pi.zero_apply]
-  exact rdc_f0K_hw ε hm hab he x
+  exact rdc_f0K_hw ε hab he x
 
 theorem dTau_wt (ε : Fin n → Bool) {m : Fin n → ℤ} (hm : NonnegDom ε m) (a : Fin n) :
     dTau ε m (Matrix.single a a 1) (wN ε m) = (((m a : ℝ)) : ℂ) • wN ε m := by

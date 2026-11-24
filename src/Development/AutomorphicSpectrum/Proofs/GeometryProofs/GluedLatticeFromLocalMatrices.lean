@@ -710,7 +710,7 @@ theorem exists_bezout {A B : Submodule (𝓞 L) W} (v : FinitePlace L)
   exact ⟨s, u, hu, by rw [add_comm]; exact huz⟩
 
 theorem relIndex_locAt (L : Type) [Field L] [NumberField L] (W : Type) [AddCommGroup W]
-    [Module (𝓞 L) W] (v : FinitePlace L) (A B : Submodule (𝓞 L) W) (hBA : B ≤ A)
+    [Module (𝓞 L) W] (v : FinitePlace L) (A B : Submodule (𝓞 L) W)
     (hfin : B.toAddSubgroup.relIndex A.toAddSubgroup ≠ 0)
     (hloc : ∀ w : FinitePlace L, w ≠ v → locAt w A = locAt w B) :
     (locAt v B).toAddSubgroup.relIndex (locAt v A).toAddSubgroup =
@@ -915,8 +915,8 @@ theorem gIdx_eq_locAt {W : Type} [AddCommGroup W] [Module (𝓞 L) W] (v : Finit
     rw [locAt_inf, ← h w hw, inf_idem]
   have hB : ∀ w : FinitePlace L, w ≠ v → locAt w B = locAt w (B ⊓ A) := fun w hw => by
     rw [locAt_inf, h w hw, inf_idem]
-  have n1 := _root_.GlobalTheory.CompanionTheory.Ar.Cusp.LocIndex.relIndex_locAt L W v A (A ⊓ B) inf_le_left (by rwa [eA]) hA
-  have n2 := _root_.GlobalTheory.CompanionTheory.Ar.Cusp.LocIndex.relIndex_locAt L W v B (B ⊓ A) inf_le_left (by rwa [eA]) hB
+  have n1 := _root_.GlobalTheory.CompanionTheory.Ar.Cusp.LocIndex.relIndex_locAt L W v A (A ⊓ B) (by rwa [eA]) hA
+  have n2 := _root_.GlobalTheory.CompanionTheory.Ar.Cusp.LocIndex.relIndex_locAt L W v B (B ⊓ A) (by rwa [eA]) hB
   rw [eA, locAt_inf, eA] at n1
   rw [eA, locAt_inf, eA] at n2
   rw [gIdx, gIdx, n1, n2]

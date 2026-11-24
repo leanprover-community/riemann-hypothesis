@@ -67,7 +67,7 @@ def natCoef {R : Type} [CommRing R] {C : Type} [Category.{0} C] {F F' : C ⥤ Co
 
 variable {X₀ X₁ : Scheme.{0}} {s₀ : X₀ ⟶ Sp R₀} {s₁ : X₁ ⟶ Sp R₁} {pr : X₁ ⟶ X₀}
 
-def prSec (w : pr ≫ s₀ = s₁ ≫ spMap (algebraMap R₀ R₁)) (U : X₀.affineOpens) (hU : IsAffineOpen (pr ⁻¹ᵁ U.1)) :
+def prSec (U : X₀.affineOpens) (hU : IsAffineOpen (pr ⁻¹ᵁ U.1)) :
     Sec s₀ U.1 →+* Sec s₁ (pr ⁻¹ᵁ U.1) :=
   GlobalTheory.CechDR.secPull (φ := pr) s₀ s₁ ⟨(⟨pr ⁻¹ᵁ U.1, hU⟩, U), le_rfl⟩
 
@@ -76,19 +76,19 @@ def tensHom (w : pr ≫ s₀ = s₁ ≫ spMap (algebraMap R₀ R₁)) (U : X₀.
   letI : Algebra R₀ (Sec s₁ (pr ⁻¹ᵁ U.1)) := ((algebraMap R₁ _).comp (algebraMap R₀ R₁)).toAlgebra
   haveI : IsScalarTower R₀ R₁ (Sec s₁ (pr ⁻¹ᵁ U.1)) := IsScalarTower.of_algebraMap_eq fun _ ↦ rfl
   Algebra.TensorProduct.lift (Algebra.ofId R₁ _)
-    { prSec w U hU with commutes' := fun r ↦ (semiHom_secPull w (⟨(⟨pr ⁻¹ᵁ U.1, hU⟩, U), le_rfl⟩ : Pair pr)).map_algebraMap r }
+    { prSec U hU with commutes' := fun r ↦ (semiHom_secPull w (⟨(⟨pr ⁻¹ᵁ U.1, hU⟩, U), le_rfl⟩ : Pair pr)).map_algebraMap r }
     (fun _ _ ↦ Commute.all _ _)
 
 theorem tensHom_tmul (w : pr ≫ s₀ = s₁ ≫ spMap (algebraMap R₀ R₁)) (U : X₀.affineOpens)
     (hU : IsAffineOpen (pr ⁻¹ᵁ U.1)) (r : R₁) (b : Sec s₀ U.1) :
-    tensHom w U hU (r ⊗ₜ b) = algebraMap R₁ _ r * prSec w U hU b := by
+    tensHom w U hU (r ⊗ₜ b) = algebraMap R₁ _ r * prSec U hU b := by
   simp [tensHom, Algebra.ofId_apply]; rfl
 
 variable [IsAffineHom pr]
 
 theorem prSec_res (w : pr ≫ s₀ = s₁ ≫ spMap (algebraMap R₀ R₁)) {U V : AffOp X₀} (a : U ⟶ V) (b : Sec s₀ U.unop.1) :
-    prSec w V.unop ((isAffine_aff V.unop).preimage pr) (mp (OAff s₀) a b) =
-      Sec.res s₁ (pr.preimage_mono (leOfHom a.unop)) (prSec w U.unop ((isAffine_aff U.unop).preimage pr) b) :=
+    prSec V.unop ((isAffine_aff V.unop).preimage pr) (mp (OAff s₀) a b) =
+      Sec.res s₁ (pr.preimage_mono (leOfHom a.unop)) (prSec U.unop ((isAffine_aff U.unop).preimage pr) b) :=
   (pairPull w).naturality (T := op ⟨(⟨pr ⁻¹ᵁ U.unop.1, (isAffine_aff U.unop).preimage pr⟩, U.unop), le_rfl⟩)
     (T' := op ⟨(⟨pr ⁻¹ᵁ V.unop.1, (isAffine_aff V.unop).preimage pr⟩, V.unop), le_rfl⟩)
     (homOfLE (show (⟨(⟨pr ⁻¹ᵁ V.unop.1, (isAffine_aff V.unop).preimage pr⟩, V.unop), le_rfl⟩ : Pair pr) ≤

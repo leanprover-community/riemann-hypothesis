@@ -762,7 +762,7 @@ theorem symmetrization_perm_sub_mem (hE : GlRel E) (j : ℕ) (F : Arr V n (j + 1
 
 end U1Theta
 
-theorem thetaFil_of (hp : PfilFacts) : ThetaFil := by
+theorem thetaFil_of : ThetaFil := by
   intro V _ _ n ε E u hE
   exact ⟨theta_noncompact_mem_pfil ε E u, pfil_succ_le_theta_image_sup ε E u, symmetrization_perm_sub_mem ε E u hE⟩
 
@@ -770,6 +770,6 @@ theorem arr_module_facts : ArrModule := by
   intro V _ _ n ε E j
   exact ⟨fun hE => ⟨arr_operators_gl_relation E hE, symmetrization_equivariant E hE⟩, arr_operators_compact_unitary ε E⟩
 
-theorem theta_filtration_holds : ThetaFil := thetaFil_of pfil_facts_hold
+theorem theta_filtration_holds : ThetaFil := thetaFil_of
 
 end Formalism.REAL

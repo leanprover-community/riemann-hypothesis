@@ -136,7 +136,7 @@ theorem slice_of : Dict → FinTr → Slice := by
     have e : lev (Ad E) r s (m₁, splitCentre E s t * m₂) =
         splitCentre E (r + s) t * (aT E (r + s) r (-t) * lev (Ad E) r s (m₁, m₂)) := by
       rw [show ((m₁, splitCentre E s t * m₂) : GA E r × GA E s) = (1, splitCentre E s t) * (m₁, m₂) by simp,
-        map_mul, splitCentre_eq_aT, lev_aT_right r s s le_rfl, splitCentre_eq_aT, mul_assoc]
+        map_mul, splitCentre_eq_aT, lev_aT_right r s s, splitCentre_eq_aT, mul_assoc]
     rw [hψ, hψ, e, mul_assoc, hsplit φ hφ, mul_assoc, heig φ hφ]
     congr 2
     push_cast

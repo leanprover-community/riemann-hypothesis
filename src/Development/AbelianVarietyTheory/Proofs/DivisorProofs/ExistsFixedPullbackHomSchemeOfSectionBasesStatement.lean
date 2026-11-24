@@ -1282,7 +1282,7 @@ theorem liftTop (Rg : Type) [CommRing Rg] (A : Over (Sp Rg)) (R : Type) [CommRin
   let a0 : A'.left ⟶ (⊤ : (Sp Rg).Opens).toScheme :=
     IsOpenImmersion.lift (⊤ : (Sp Rg).Opens).ι (A'.hom ≫ t) (by simp)
   let X : Over (Sp Rg) := Over.mk (A'.hom ≫ t)
-  let a : X ⟶ topS Rg := Over.homMk a0 (by simp only [a0, X, topS, overRes, baseOver, Over.mk_hom, Category.comp_id]; exact IsOpenImmersion.lift_fac _ _ _)
+  let a : X ⟶ topS Rg := Over.homMk a0 (by simp only [a0, X, topS, overRes, baseOver, Over.mk_hom]; exact IsOpenImmersion.lift_fac _ _ _)
   let b : X ⟶ A := Over.homMk φA' hpb.w
   refine ⟨(lift a b).left, ?_⟩
   rw [← Over.comp_left, lift_snd]

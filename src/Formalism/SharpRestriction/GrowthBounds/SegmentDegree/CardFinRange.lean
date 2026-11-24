@@ -346,7 +346,7 @@ theorem two_r_le (hV : F.Valid L₁ N₁) (j : ℤ) : 2 * r ≤ segN F j - r := 
   rw [card_LLset hV j] at h1
   omega
 
-theorem card_LLset_le (hV : F.Valid L₁ N₁) (i : Fin (segN F j)) (hi : r ≤ i.val) (hi2 : i.val < segN F j - r) :
+theorem card_LLset_le (hV : F.Valid L₁ N₁) (i : Fin (segN F j)) (hi2 : i.val < segN F j - r) :
     ((F.LLset j).filter (· ≤ segE F j i)).card = i.val + 1 - r := by
   have hiv := i.isLt
   rw [LLset_eq_image hV j]
@@ -377,7 +377,7 @@ theorem dict_lateV (hV : F.Valid L₁ N₁) (i : Fin (segN F j)) (h : segN F j -
     rw [he]
     exact (hTT j _ hi').2
   · have hin : segE F j i ∈ F.LLset j := (dict_LL hV i).mpr ⟨by omega, by omega⟩
-    have hcnt := card_LLset_le hV i (by omega) (by omega)
+    have hcnt := card_LLset_le hV i (by omega)
     have hcard := card_LLset hV j
     exact (((hLL j).2.1 _ hin) (Or.inr (by rw [hcnt, hcard]; omega))).1
 

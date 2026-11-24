@@ -142,7 +142,7 @@ theorem exists_isCell_of_contact (O : Type) [CommRing O] [IsDedekindDomain O] [C
       · subst h; simp
       · simp [h]
     · funext i
-      rw [Finset.sum_apply, Finset.sum_eq_single k (fun j _ hj => by simp [Pi.single_apply, hj]) (by simp)]
+      rw [Finset.sum_apply, Finset.sum_eq_single k (fun j _ hj => by simp [hj]) (by simp)]
       simp
   have hγR : ∀ k, toReal (∑ i, v k i • u i) = ∑ i, (v k i : ℝ) • toReal (u i) := fun k => toReal_sum_nsmul _ _
   have hγbal : ∀ k, (∑ i, v k i • u i) ∈ balForms bar X := by

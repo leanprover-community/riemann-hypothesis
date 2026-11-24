@@ -96,7 +96,7 @@ structure Frame0 (hR : Rd.ReadLimit) (π : Submodule ℂ (UA E n → ℂ)) (S : 
     Subgroup.closure {γ | γ.1 ∈ MB.congK n w (kB w)}) else KL n w
   fix_def : ∀ a (ha : a ≤ n), ∀ w, d₀.fix a w = if w ∈ d₀.Bad then (if IsSplitAt w then
     ctMu (Nat.add_sub_cancel' ha) w (d₀.μ w) (U.lone (d₀.KB w)) else
-    fun y => (((d₀.KB w).relIndex (KL n w) : ℕ) : ℂ) * MB.pairIndicatorMatch n a (n - a) w (kB w) y) else 0
+    fun y => (((d₀.KB w).relIndex (KL n w) : ℕ) : ℂ) * MB.pairIndicatorMatch a (n - a) w (kB w) y) else 0
   K'_lev : ∀ w ∈ d₀.S₀, IsLevel (MonoidHom.id _) (KL n w) ((d₀.K' w).subgroupOf (UL n w))
   levFam : IsLevelFam (fun w : Pl E => MonoidHom.id (UL n w)) (KL n) d₀.KU
   level : ∀ K' : ∀ w : Pl E, Subgroup (UL n w), (∀ w, K' w ≤ d₀.KU w) → HasLevel Sec π K'

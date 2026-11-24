@@ -162,15 +162,15 @@ theorem pairK_pos (lam : ι → DomWeight n) (B : ι → GL (Fin n) ℂ) (x : VV
   rw [eq_ratCast, ← Complex.ofReal_ratCast]
   exact Complex.zero_lt_real.2 (by exact_mod_cast hq)
 
-def HV (lam : ι → DomWeight n) (_B : ι → GL (Fin n) ℂ) : Type := VV ℂ lam
+def HV (lam : ι → DomWeight n) : Type := VV ℂ lam
 
 variable (lam : ι → DomWeight n) (B : ι → GL (Fin n) ℂ)
 
-instance : AddCommGroup (HV lam B) := inferInstanceAs (AddCommGroup (VV ℂ lam))
+instance : AddCommGroup (HV lam) := inferInstanceAs (AddCommGroup (VV ℂ lam))
 
-instance : Module ℂ (HV lam B) := inferInstanceAs (Module ℂ (VV ℂ lam))
+instance : Module ℂ (HV lam) := inferInstanceAs (Module ℂ (VV ℂ lam))
 
-@[reducible] def core : InnerProductSpace.Core ℂ (HV lam B) where
+@[reducible] def core : InnerProductSpace.Core ℂ (HV lam) where
   inner x y := pairK lam (gramOf B) x y
   conj_inner_symm x y := (pairSymm ℂ ι n lam (gramOf B) fun τ => by simp [gramOf]).eq _ _
   re_inner_nonneg x := by
@@ -184,27 +184,27 @@ instance : Module ℂ (HV lam B) := inferInstanceAs (Module ℂ (VV ℂ lam))
     by_contra h
     exact (pairK_pos lam B x h).ne' hx
 
-instance : NormedAddCommGroup (HV lam B) := @InnerProductSpace.Core.toNormedAddCommGroup ℂ _ _ _ _ (core lam B)
+instance : NormedAddCommGroup (HV lam) := @InnerProductSpace.Core.toNormedAddCommGroup ℂ _ _ _ _ (core lam B)
 
-instance : InnerProductSpace ℂ (HV lam B) := InnerProductSpace.ofCore (core lam B).toCore
+instance : InnerProductSpace ℂ (HV lam) := InnerProductSpace.ofCore (core lam B).toCore
 
-instance : FiniteDimensional ℂ (HV lam B) := (bVV ℂ lam).finiteDimensional_of_finite
+instance : FiniteDimensional ℂ (HV lam) := (bVV ℂ lam).finiteDimensional_of_finite
 
-theorem inner_HV (x y : HV lam B) : inner ℂ x y = pairK lam (gramOf B) x y := rfl
+theorem inner_HV (x y : HV lam) : inner ℂ x y = pairK lam (gramOf B) x y := rfl
 
-instance : Nontrivial (HV lam B) :=
+instance : Nontrivial (HV lam) :=
   ⟨⟨_, (0 : VV ℂ lam), fun h => GlobalTheory.Proof.TensorMapDescent.ten_ne_zero (fun τ => extremal ℂ n (lam τ))
-    (fun τ => Formalism.GradedWeylDivisibility.hwNe ℂ n n le_rfl _) (congrArg Subtype.val (h : (⟨_, GlobalTheory.Proof.TensorMapDescent.ten_mem lam _
-      fun τ => Formalism.GradedWeylDivisibility.hwMem ℂ n n le_rfl _ (natW_antitone _)⟩ : VV ℂ lam) = 0))⟩⟩
+    (fun _ => Formalism.GradedWeylDivisibility.hwNe ℂ n n le_rfl _) (congrArg Subtype.val (h : (⟨_, GlobalTheory.Proof.TensorMapDescent.ten_mem lam _
+      fun _ => Formalism.GradedWeylDivisibility.hwMem ℂ n n le_rfl _ (natW_antitone _)⟩ : VV ℂ lam) = 0))⟩⟩
 
 theorem continuous_HV {X : Type} [TopologicalSpace X] (g : X → ι → GL (Fin n) ℂ)
-    (hg : ∀ τ, Continuous fun x => (g x τ : Matrix (Fin n) (Fin n) ℂ)) (v : HV lam B) :
-    Continuous (X := X) (Y := HV lam B) fun x => rhoK lam (g x) v := by
-  have : (fun x => (rhoK lam (g x) v : HV lam B)) = fun x => ∑ i,
-      pairP lam (gramOf B) (Subtype.val (stdOrthonormalBasis ℂ (HV lam B) i)) (actP lam (g x) (Subtype.val v)) •
-        stdOrthonormalBasis ℂ (HV lam B) i := by
+    (hg : ∀ τ, Continuous fun x => (g x τ : Matrix (Fin n) (Fin n) ℂ)) (v : HV lam) :
+    Continuous (X := X) (Y := HV lam) fun x => rhoK lam (g x) v := by
+  have : (fun x => (rhoK lam (g x) v : HV lam)) = fun x => ∑ i,
+      pairP lam (gramOf B) (Subtype.val (stdOrthonormalBasis ℂ (HV lam) i)) (actP lam (g x) (Subtype.val v)) •
+        stdOrthonormalBasis ℂ (HV lam) i := by
     funext x
-    exact ((stdOrthonormalBasis ℂ (HV lam B)).sum_repr' _).symm
+    exact ((stdOrthonormalBasis ℂ (HV lam)).sum_repr' _).symm
   rw [this]
   exact continuous_finsetSum _ fun i _ => (continuous_actP lam g hg _ _).smul continuous_const
 

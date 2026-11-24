@@ -296,7 +296,7 @@ open scoped ContDiff
 
 namespace GlobalTheory.CompanionTheory.Ar.PuncturedDisc
 
-theorem le_zero_of_bddAbove_punctured (g : ℂ → ℝ) (ρ C : ℝ) (hρ : 0 < ρ)
+theorem le_zero_of_bddAbove_punctured (g : ℂ → ℝ) (ρ C : ℝ)
     (hc : ContinuousOn g {z : ℂ | 0 < ‖z‖ ∧ ‖z‖ ≤ ρ})
     (hh : ∀ z : ℂ, 0 < ‖z‖ → ‖z‖ < ρ → InnerProductSpace.HarmonicAt g z)
     (h0 : ∀ z : ℂ, ‖z‖ = ρ → g z ≤ 0)
@@ -454,7 +454,7 @@ theorem poisson_formula_punctured (f : ℂ → ℝ) (ρ R M : ℝ) (hρ : 0 < ρ
     by_cases hzl : ‖z‖ < ρ
     · simpa only [Φ, ite_eq_left hzl] using hPbd z hzl
     · simpa only [Φ, ite_eq_right hzl] using hB z (norm_pos_iff.mp hz0) (lt_of_le_of_lt hzρ hρR)
-  have hA := le_zero_of_bddAbove_punctured (fun z => f z - Φ z) ρ (2 * M) hρ
+  have hA := le_zero_of_bddAbove_punctured (fun z => f z - Φ z) ρ (2 * M)
     (hfS.sub (hΦcont.mono hS))
     (fun z hz0 hzρ => (hH z (norm_pos_iff.mp hz0) (lt_trans hzρ hρR)).sub (hPharm z hzρ))
     (fun z hz => by simp only [hΦb z hz, sub_self, le_refl])
@@ -463,7 +463,7 @@ theorem poisson_formula_punctured (f : ℂ → ℝ) (ρ R M : ℝ) (hρ : 0 < ρ
       have h2 := abs_le.mp (hΦbd z hz0 hzρ)
       linarith [h1.1, h1.2, h2.1, h2.2])
     w (norm_pos_iff.mpr hw0) hwρ
-  have hA' := le_zero_of_bddAbove_punctured (fun z => Φ z - f z) ρ (2 * M) hρ
+  have hA' := le_zero_of_bddAbove_punctured (fun z => Φ z - f z) ρ (2 * M)
     ((hΦcont.mono hS).sub hfS)
     (fun z hz0 hzρ => (hPharm z hzρ).sub (hH z (norm_pos_iff.mp hz0) (lt_trans hzρ hρR)))
     (fun z hz => by simp only [hΦb z hz, sub_self, le_refl])
@@ -878,7 +878,7 @@ namespace GlobalTheory.CompanionTheory.Metric
 
 theorem smoothOn_comp_compatChart (e : ℕ) (X : Type) [TopologicalSpace X] (A : FinHolAtlas e X)
     (ψ : OpenPartialHomeomorph X (Fin e → ℂ)) (O : Set (Fin e → ℂ)) (G : (Fin e → ℂ) → ℝ)
-    (hψ : IsCompatChart A ψ) (hO : IsOpen O) (_hOt : O ⊆ ψ.target)
+    (hψ : IsCompatChart A ψ) (hO : IsOpen O)
     (hG : ContDiffOn ℝ ∞ G O) : A.SmoothOn (ψ.source ∩ ψ ⁻¹' O) (G ∘ ψ) := by
   intro j y hy
   obtain ⟨hyt, hys, hyO⟩ := hy
@@ -890,7 +890,7 @@ theorem smoothOn_comp_compatChart (e : ℕ) (X : Type) [TopologicalSpace X] (A :
   exact (hGat.comp y hτ).contDiffWithinAt
 
 theorem smoothOn_comp_compatChart' : ∀ (e : ℕ) (X : Type) [TopologicalSpace X] (A : FinHolAtlas e X) (ψ : OpenPartialHomeomorph X (Fin e → ℂ)) (O : Set (Fin e → ℂ)) (G : (Fin e → ℂ) → ℝ), IsCompatChart A ψ → IsOpen O → O ⊆ ψ.target → ContDiffOn ℝ ∞ G O → A.SmoothOn (ψ.source ∩ ψ ⁻¹' O) (G ∘ ψ) :=
-  fun e X _ A ψ O G h1 h2 h3 h4 => smoothOn_comp_compatChart e X A ψ O G h1 h2 h3 h4
+  fun e X _ A ψ O G h1 h2 h3 h4 => smoothOn_comp_compatChart e X A ψ O G h1 h2 h4
 
 end GlobalTheory.CompanionTheory.Metric
 end -- clump:auto

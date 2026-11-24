@@ -210,7 +210,7 @@ theorem phi_one_Wm (hE : IsGlRep E) (hU : IsInfUnitary ε E) (hV : IsKIrrHW ε E
   by_contra hne
   have := finiteDimensional_ncV (ε := ε) hV.1 1
   have hfdW : FiniteDimensional ℂ (Wm ε E V) := Submodule.finiteDimensional_of_le Wm_le_ncV
-  have hWst : IsKStableSub ε (bAct E 1) (Wm ε E V) := Wm_kStable hE hU hV
+  have hWst : IsKStableSub ε (bAct E 1) (Wm ε E V) := Wm_kStable hE hV
   set T : Submodule ℂ M := (Wm ε E V).map (phi E 1) with hTdef
   have hfdT : FiniteDimensional ℂ T := inferInstance
   have hTst : IsKStableSub ε E T := by

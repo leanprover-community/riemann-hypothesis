@@ -853,7 +853,7 @@ private theorem herm_Hpk_smul_right_eq_star_mul (c : ℂ) (x y : Fin (2 * r + k 
   show star (c • y) ⬝ᵥ (Formalism.QuantumDeterminants.Hpk k r *ᵥ x) = star c * (star y ⬝ᵥ (Formalism.QuantumDeterminants.Hpk k r *ᵥ x))
   rw [star_smul, smul_dotProduct, smul_eq_mul]
 
-lemma unitH_facts {z v : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) (hv : v ∈ Wsp k r z) :
+lemma unitH_facts {z v : Fin (2 * r + k + 1) → ℂ} (hv : v ∈ Wsp k r z) :
     unitH k r v ∈ Wsp k r z ∧ (herm (Hpk k r) (unitH k r v) (unitH k r v)).re ≤ 1 := by
   obtain ⟨hw, ho⟩ := hv
   set s : ℝ := (Real.sqrt (Formalism.QuantumDeterminants.herm (Formalism.QuantumDeterminants.Hpk k r) v v).re)⁻¹ with hs
@@ -946,7 +946,7 @@ lemma embedding_mul_vec_factorization (z z' : Fin (2 * r + k + 1) → ℂ) (g : 
   show (PI.UnitaryGroupMassFormula.GsFr.Phi k r z z' g * PpG z z' g) *ᵥ v = _
   rw [← Matrix.mulVec_mulVec]
 
-lemma sq_bound {x C : ℝ} (hx : 0 ≤ x) (hC : 0 ≤ C) (h : x ^ 2 ≤ C) : x ≤ C + 1 := by
+lemma sq_bound {x C : ℝ} (hC : 0 ≤ C) (h : x ^ 2 ≤ C) : x ≤ C + 1 := by
   nlinarith [sq_nonneg (x - 1)]
 
 end S5
@@ -962,16 +962,16 @@ theorem geometry_boundedness_at_zero : GeomBd0 := by
   have hM0 : 0 ≤ M := Finset.sum_nonneg fun _ _ => abs_nonneg _
   have hν : ∀ g, ‖nuG z z' g‖ ≤ C1 + 1 := by
     intro g
-    have hu := unitH_facts hz (prW_mem hz (xcof k r z z' g))
+    have hu := unitH_facts (prW_mem hz (xcof k r z z' g))
     have h1 := hW _ hu.1.1 hu.1.2
-    refine sq_bound (norm_nonneg _) hC1 (h1.trans ?_)
+    refine sq_bound hC1 (h1.trans ?_)
     have := mul_le_mul_of_nonneg_left hu.2 hC1
     simpa [nuG, omW] using this
   have hν' : ∀ g, ‖nuG' z z' g‖ ≤ C2 + 1 := by
     intro g
-    have hu := unitH_facts hz' (prW_mem hz' (g⁻¹ *ᵥ xcofL k r z z' g))
+    have hu := unitH_facts (prW_mem hz' (g⁻¹ *ᵥ xcofL k r z z' g))
     have h1 := hW' _ hu.1.1 hu.1.2
-    refine sq_bound (norm_nonneg _) hC2 (h1.trans ?_)
+    refine sq_bound hC2 (h1.trans ?_)
     have := mul_le_mul_of_nonneg_left hu.2 hC2
     simpa [nuG', omW'] using this
   refine ⟨(C1 + 1) + (C2 + 1) + (C1 * M + 1), fun g hg => ⟨?_, ?_, ?_⟩⟩
@@ -994,7 +994,7 @@ theorem geometry_boundedness_at_zero : GeomBd0 := by
         |(herm (Hpk k r) (PI.UnitaryGroupMassFormula.GsFr.prW k r z' (Pi.single j 1))
           (PI.UnitaryGroupMassFormula.GsFr.prW k r z' (Pi.single j 1))).re|) (fun _ _ => abs_nonneg _) (Finset.mem_univ j))
     have h2 : ‖q‖ ^ 2 ≤ C1 * M := h1.trans (mul_le_mul_of_nonneg_left (hle.trans hpM) hC1)
-    have h3 := sq_bound (norm_nonneg q) hCM h2
+    have h3 := sq_bound hCM h2
     have e : ioG z z' g i j = q i := by
       rw [hq, ← embedding_mul_vec_factorization]
       simp
@@ -1315,7 +1315,7 @@ theorem geometry_equivariance_embedding : GeomEqvIo := by
   have hd : (Zhat k r z z' g).det ≠ 0 := det_ne_of_G hz hz' hg.2
   have hdy : (Zhat k r z z' y).det ≠ 0 := by rw [hyA]; exact det_tilde hz hz' hn hh hn' hh' hd
   have hom : omW' k r z z' g = h' *ᵥ omW' k r z z' y := by
-    rw [hyA, omW'_UW hz hz' (Wz.inv_mem h hh) hh', omW'_N hz hz' (Nc.inv_mem n hn) hn' hg.1, mulVec_mulVec,
+    rw [hyA, omW'_UW hz' (Wz.inv_mem h hh) hh', omW'_N hz hz' (Nc.inv_mem n hn) hn' hg.1, mulVec_mulVec,
       Matrix.mul_nonsing_inv _ (Wz'.unit h' hh'), one_mulVec]
   have hν' : nuG' z z' g = h' *ᵥ nuG' z z' y := by
     unfold nuG'; rw [hom, unitH_UH hh'.1]
@@ -1409,7 +1409,7 @@ theorem geometry_equivariance_first_vector : GeomEqvNu := by
     rw [hy, omW_UW hz hhi hh', omW_N hz hz' hni hn', unitH_UH hhi.1, Matrix.mulVec_mulVec, hu,
       Matrix.one_mulVec]
   · show unitH k r (omW' k r z z' g) = h' *ᵥ unitH k r (omW' k r z z' (h⁻¹ * n⁻¹ * g * n' * h'))
-    rw [hy, omW'_UW hz hz' hhi hh', omW'_N hz hz' hni hn' hg.1, unitH_UH hhi'.1, Matrix.mulVec_mulVec,
+    rw [hy, omW'_UW hz' hhi hh', omW'_N hz hz' hni hn' hg.1, unitH_UH hhi'.1, Matrix.mulVec_mulVec,
       hu', Matrix.one_mulVec]
 
 end

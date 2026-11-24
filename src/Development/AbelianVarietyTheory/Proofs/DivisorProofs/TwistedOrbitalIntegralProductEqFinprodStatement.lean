@@ -724,8 +724,6 @@ theorem relIndex_inf_conj_eq_finprod_of_restricted_product
     (hT : ∀ x, x ∈ T ↔ ∀ i, p i x ∈ TH i)
     (hC : ∀ x, x ∈ C ↔ x ∈ T ∧ ∀ i, p i x ∈ CH i)
     (hCT : ∀ i, CH i ≤ TH i)
-    (_hloc : ∀ i, TH i ⊓ (KH i).map (MulAut.conj (p i g)).toMonoidHom ≤ CH i ∧
-      (TH i ⊓ (KH i).map (MulAut.conj (p i g)).toMonoidHom).relIndex (CH i) ≠ 0)
     (hCK : ∀ᶠ i in cofinite, CH i ≤ KH i) :
     (T ⊓ K.map (MulAut.conj g).toMonoidHom).relIndex C =
       ∏ᶠ i, (TH i ⊓ (KH i).map (MulAut.conj (p i g)).toMonoidHom).relIndex (CH i) := by
@@ -851,7 +849,7 @@ theorem twOrb_restrProd : ∀ (ι G : Type) [Group G] [TopologicalSpace G] [IsTo
   have hs : ∀ g, GlobalTheory.TwOrbConj.summand (MonoidHom.id G) K δ (fun x => ∏ᶠ i, f i (p i x)) g =
       ∏ᶠ i, GlobalTheory.TwOrbConj.summand (MonoidHom.id (H i)) (KH i) (p i δ) (f i) (p i g) := by
     intro g
-    have hrel := _root_.GlobalTheory.relIndex_inf_conj_eq_finprod_of_restricted_product ι G H p K _ _ KH _ _ g hglue hfin hK hT hC hCT (fun i => hloc i (p i g))
+    have hrel := _root_.GlobalTheory.relIndex_inf_conj_eq_finprod_of_restricted_product ι G H p K _ _ KH _ _ g hglue hfin hK hT hC hCT
       (hgood.mono fun i h => h.2.2.2)
     have hu1 : ∀ᶠ i in cofinite, ∀ k : KH i, f i ((p i g * k)⁻¹ * p i δ * (p i g * k)) = 1 := by
       filter_upwards [hgood, hfin g] with i h hg k

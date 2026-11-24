@@ -500,7 +500,7 @@ theorem UpperTheory.Lit.Cas.centred :
     rw [norm_mul, hc1, mul_one] at hz1
     have hdz : ((detChar (Fin δ.1) χ z : ℂˣ) : ℂ) = ((χ a : ℂˣ) : ℂ) ^ δ.1 := by
       have hdet : Matrix.GeneralLinearGroup.det z = a ^ δ.1 := Units.ext (by
-        simp [z, Matrix.GeneralLinearGroup.scalar, Matrix.algebraMap_eq_diagonal, Matrix.det_diagonal])
+        simp [z, Matrix.GeneralLinearGroup.scalar, Matrix.det_diagonal])
       rw [detChar_apply, hdet, map_pow, Units.val_pow_eq_pow_val]
     rw [hdz, norm_pow] at hz1
     exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) hpos.ne').1 hz1
@@ -1036,7 +1036,7 @@ open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.Loc
 
 namespace GlobalTheory.CompanionTheory.TemperedCore
 
-theorem exists_lFactors_unitary : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], Zc.LSocleGL k → Zl.CasselmanNecTemp k → Zc.LSegExists k → ∀ (𝔪 : Multiset (Segment k)) (N : ℕ) {V : Type} [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin N) k) V), 1 ≤ N → IsSmooth π → π.IsIrreducible → IsTemperedCoeff π → IsL 𝔪 π → ∃ (h : ℕ) (x : Fin h → IrrGL (k := k)) (hd : ∑ a, (x a).1 = N), LFactors 𝔪 x ∧ ∀ (a : Fin h) (t : kˣ) (c : ℂ), Zl.ScalarBy (x a) t c → ‖c‖ = 1 := by
+theorem exists_lFactors_unitary : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], Zc.LSocleGL k → Zl.CasselmanNecTemp k → Zc.LSegExists k → ∀ (𝔪 : Multiset (Segment k)) (N : ℕ) {V : Type} [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin N) k) V), 1 ≤ N → IsSmooth π → π.IsIrreducible → IsTemperedCoeff π → IsL 𝔪 π → ∃ (h : ℕ) (x : Fin h → IrrGL (k := k)) (_ : ∑ a, (x a).1 = N), LFactors 𝔪 x ∧ ∀ (a : Fin h) (t : kˣ) (c : ℂ), Zl.ScalarBy (x a) t c → ‖c‖ = 1 := by
   intro k _ _ _ _ hSoc hCas hSeg 𝔪 N V _ _ π hN hsm hirr htemp hL
   have hy : ∀ Δ : Segment k, ∃ y : IrrGL (k := k), IsLSeg Δ y.rep := fun Δ => by
     obtain ⟨ρ, hρ⟩ := hSeg Δ
@@ -1136,7 +1136,7 @@ namespace GlobalTheory.CompanionTheory.LkSegSocle
 theorem dec_injective {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
     [IsNonarchimedeanLocalField k] (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (Δ : Segment k) :
     Function.Injective (dec Δ) :=
-  (_root_.GlobalTheory.CompanionTheory.SegTerm.term_injective hA Δ).comp Fin.rev_injective
+  (_root_.GlobalTheory.CompanionTheory.SegTerm.term_injective Δ).comp Fin.rev_injective
 
 theorem ncard_perm_dec_le_one {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
     [IsNonarchimedeanLocalField k] (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (Δ : Segment k) :
@@ -1152,7 +1152,7 @@ theorem ncard_perm_dec_le_one {k : Type} [Field k] [ValuativeRel k] [Topological
     _ = 1 := Set.ncard_singleton _
 
 theorem exists_isSocle_prodIrr_dec : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
-    [IsNonarchimedeanLocalField k] (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (Δ : Segment k) {N : ℕ}
+    [IsNonarchimedeanLocalField k] (_ : GlobalTheory.Published.IrreducibleAdmissibleGL) (Δ : Segment k) {N : ℕ}
     (hd : ∑ a, (dec Δ a).1 = N), ∃ τ : IrrRep (GL (Fin N) k), IsSocle τ.ρ (prodIrr (dec Δ) hd) := by
   intro k _ _ _ _ hA Δ N hd
   apply GlobalTheory.CompanionTheory.SocleJm.exists_isSocle_of_jm_le_one hA (dec Δ) hd
@@ -1186,7 +1186,7 @@ theorem hasFiniteLength_prodIrr {k : Type} [Field k] [ValuativeRel k] [Topologic
     (isSmooth_piTensor fun a => (x a).snd.rep.smooth)
     (hasFiniteLength_of_isIrreducible (GlobalTheory.CompanionTheory.SocleJm.isIrreducible_piTensor hA x))
 
-theorem exists_isLSeg : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (Δ : Segment k), ∃ π : IrrRep (GL (Fin Δ.deg) k), IsLSeg Δ π.ρ := by
+theorem exists_isLSeg : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (_ : GlobalTheory.Published.IrreducibleAdmissibleGL) (Δ : Segment k), ∃ π : IrrRep (GL (Fin Δ.deg) k), IsLSeg Δ π.ρ := by
   intro k _ _ _ _ hA Δ
   have hd : ∑ a, (Δ.term a).1 = Δ.deg := Δ.sum_term_fst
   obtain ⟨hd', ⟨φ⟩⟩ := _root_.GlobalTheory.CompanionTheory.SegIncDual.contra_prodIrr_term hA Δ hd

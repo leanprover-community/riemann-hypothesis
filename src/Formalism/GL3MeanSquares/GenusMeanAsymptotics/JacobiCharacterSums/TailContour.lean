@@ -240,7 +240,7 @@ noncomputable section
 namespace Formalism.HermitianLattices.Ext.BoxTail
 
 theorem tc_left_pt {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) (z η σ M : ℝ) (hz : 0 < z)
-    (hη : 0 ≤ η) (hη1 : η ≤ 1) (hσ0 : 0 < σ) (hσ1 : σ < 1) (u : ℝ)
+    (hη : 0 ≤ η) (hσ0 : 0 < σ) (hσ1 : σ < 1) (u : ℝ)
     (hM : ‖Formalism.ZeroFreeDirichlet.negLD χ ((σ : ℂ) + (u : ℂ) * I)‖ ≤ M) :
     ‖Formalism.ZeroFreeDirichlet.Fchi χ (z + z * η) ((σ : ℂ) + (u : ℂ) * I) - Formalism.ZeroFreeDirichlet.Fchi χ z ((σ : ℂ) + (u : ℂ) * I)‖ ≤
       M * (4 * η * z ^ σ) * (1 / ‖(σ : ℂ) + (u : ℂ) * I - 1‖) := by
@@ -415,7 +415,7 @@ theorem tc_left_int {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) (hχ : 
       ‖Formalism.ZeroFreeDirichlet.Fchi χ (z + z * η) ((σ : ℂ) + (u : ℂ) * I) - Formalism.ZeroFreeDirichlet.Fchi χ z ((σ : ℂ) + (u : ℂ) * I)‖ ≤
         M * (4 * η * z ^ σ) * (2 / (δ + |u|)) := by
     intro u hu
-    refine (tc_left_pt χ z η σ M hz hη hη1 hσpos hσ1' u (hM u hu)).trans ?_
+    refine (tc_left_pt χ z η σ M hz hη hσpos hσ1' u (hM u hu)).trans ?_
     apply mul_le_mul_of_nonneg_left _ hK
     have hre : ((σ : ℂ) + (u : ℂ) * I - 1).re = σ - 1 := by simp
     have him : ((σ : ℂ) + (u : ℂ) * I - 1).im = u := by simp

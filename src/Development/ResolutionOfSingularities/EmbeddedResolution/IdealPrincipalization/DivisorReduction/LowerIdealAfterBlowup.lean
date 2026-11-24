@@ -204,9 +204,9 @@ theorem succ {hres : FunctorialResolution.Blowup.StrictTransformIsBlowupOfClosed
   have hNt1 : AlgebraicGeometry.IsNoetherian ((ambientBlowupSeq hres hno T j hj I₀ E₀ s hpr).obj (t + 1)) :=
     isNoetherian_ambientBlowupSeq_schemeAt hres hno T j hj I₀ E₀ s hpr (t + 1) (by omega)
   have hNs1 : AlgebraicGeometry.IsNoetherian (s.toSequenceOfBlowups.schemeAt (t + 1)) :=
-    MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hV s (t + 1) (by omega)
+    MarkedSequenceOfBlowups.isNoetherian_schemeAt hV s (t + 1) (by omega)
   have hNs : AlgebraicGeometry.IsNoetherian (s.toSequenceOfBlowups.schemeAt t) :=
-    MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hV s t (by omega)
+    MarkedSequenceOfBlowups.isNoetherian_schemeAt hV s t (by omega)
   have hci : AlgebraicGeometry.IsClosedImmersion
       (restrictedEmbedding T j hj I₀ E₀ s hres hno hpr U₀ t) :=
     isClosedImmersion_restrictedEmbedding T j hj I₀ E₀ s hres hno hpr U₀ hU t
@@ -789,15 +789,11 @@ theorem exists_isClosed_opens_goingUpInvariantOnOpen (hres : FunctorialResolutio
     (hbal : ∀ [_inst : AlgebraicGeometry.LocallyOfFiniteType T.structMap],
       IsDerivBalanced T.base T.structMap T.ideal T.mult)
     (j : ℕ) (hj : j < T.boundary.length)
-    (_hZ : containedComponentsIdeal T j hj ≠ ⊤)
     (hb : Blowup.IsBlowupAlongIdealSheaf (CategoryTheory.CategoryStruct.id T.scheme) (containedComponentsIdeal T j hj))
     (hVlow : (restrictTwistedToDivisor T j hj).IsAdmissible)
     (s : (restrictTwistedToDivisor T j hj).SequenceOfBlowups)
     (hpr : (MarkedBlowupSequenceData.ofMarkedSequence s).toBlowupSequenceData.CentersContainNoComponent)
-    (_hsm : AlgebraicGeometry.Smooth
-      (CategoryTheory.CategoryStruct.comp (containedComponentsIdeal T j hj).subschemeι T.structMap))
     (hsnc : HasStrictNormalCrossingsWith T.structMap (containedComponentsIdeal T j hj) T.boundary)
-    (_hsup : ((containedComponentsIdeal T j hj).support : Set ↥T.scheme) ⊆ orderAtLeastLocus T.ideal T.mult)
     (hfac : ∃ J, containedComponentsIdeal T j hj ^ T.mult * J = T.ideal)
     (hopen : IsOpen (⇑(T.boundary.get ⟨j, hj⟩).subschemeι ⁻¹'
       ((containedComponentsIdeal T j hj).support : Set ↥T.scheme))) :
@@ -885,8 +881,8 @@ theorem isMarked_prepend_ambientBlowupSeq (hres : FunctorialResolution.Blowup.St
         (ambientBlowupSeq hres hno T j hj (lowerIdealAfterBlowup T j hj)
           (lowerBoundaryAfterBlowup T j hj) s hpr)).IsMarked T.structMap T.ideal T.mult T.boundary := by
   obtain ⟨U₀, hUcl, hUsupp, hbalLow, hinv⟩ :=
-    exists_isClosed_opens_goingUpInvariantOnOpen hres hno hlift T hV hord hbal j hj hZ hb hVlow s hpr hsm hsnc
-      hsup hfac hopen
+    exists_isClosed_opens_goingUpInvariantOnOpen hres hno hlift T hV hord hbal j hj hb hVlow s hpr hsnc
+      hfac hopen
   obtain ⟨hch, hft, _, hm, _, hsmT, _⟩ := id hV
   have : CharZero T.base := hch
   have : AlgebraicGeometry.LocallyOfFiniteType T.structMap := hft
@@ -994,8 +990,8 @@ theorem comap_controlledTransform_prepend_ambientBlowupSeq (hres : FunctorialRes
         (embeddingIntoAmbient hres hno T j hj (lowerIdealAfterBlowup T j hj) (lowerBoundaryAfterBlowup T j hj) s hpr t) =
       s.ideal t := by
   obtain ⟨_, _, _, _, hinv⟩ :=
-    exists_isClosed_opens_goingUpInvariantOnOpen hres hno hlift T hV hord hbal j hj hZ hb hVlow s hpr hsm hsnc
-      hsup hfac hopen
+    exists_isClosed_opens_goingUpInvariantOnOpen hres hno hlift T hV hord hbal j hj hb hVlow s hpr hsnc
+      hfac hopen
   obtain ⟨hch, hft, _, _, _, hsmT, _⟩ := id hV
   have : CharZero T.base := hch
   have : AlgebraicGeometry.LocallyOfFiniteType T.structMap := hft

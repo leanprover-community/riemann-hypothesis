@@ -450,7 +450,7 @@ def gxOf (h : Crv D cc δ) (hM : DataIn D (tor0 D cc δ) (imM ι)) (a : D.what�
   Om τ s := Real.exp (-logMet (imM ι) (lamOf D cc δ) (rhoOf ι s) (a τ))
   Om_pos _ _ := Real.exp_pos _
   thOne s := Real.sqrt (th0NormSq D (imM ι) (lamOf D cc δ) (rhoOf ι s))
-  thOne_pos s := Real.sqrt_pos.2 (th0NormSq_pos h hM _)
+  thOne_pos _ := Real.sqrt_pos.2 (th0NormSq_pos h hM _)
 
 theorem extraTie_gxOf (h : Crv D cc δ) (hM : DataIn D (tor0 D cc δ) (imM ι)) {a : D.what₂.Tau → imM ι}
     (ha : ∀ τ, Submodule.span (𝓞 (imM ι)) {a τ} = ellT D (imM ι) τ) :

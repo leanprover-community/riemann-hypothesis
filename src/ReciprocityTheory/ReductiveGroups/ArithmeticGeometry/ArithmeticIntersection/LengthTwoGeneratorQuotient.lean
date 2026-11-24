@@ -365,7 +365,7 @@ theorem length_ne_top_of_killed {A N : Type*} [CommRing A] [AddCommGroup N] [Mod
     isArtinian_of_surjective _ Φ hΦ⟩
 
 theorem length_ker_ne_top {A : Type u} [CommRing A] [IsDomain A] [IsNoetherianRing A] (a b : A)
-    (ha : a ≠ 0) (hb : b ≠ 0) (hfin : Module.length A (A ⧸ Ideal.span {a, b}) ≠ ⊤) :
+    (hfin : Module.length A (A ⧸ Ideal.span {a, b}) ≠ ⊤) :
     Module.length A (LinearMap.ker (LinearMap.lsmul A (A ⧸ Ideal.span {a}) b)) ≠ ⊤ := by
   apply length_ne_top_of_killed (Ideal.span {a, b}) _ hfin
   rintro r hr ⟨k, hk⟩
@@ -535,7 +535,7 @@ theorem length_two_generator_quotient : LocalLengthMultiplicativity := by
   have h1 := length_quotient_pair_formula h2 ha b hfin
   have h1' := length_quotient_pair_formula h2 hb a hfin'
   have hs := length_ker_swap a b ha hb
-  have ht := length_ker_ne_top a b ha hb hfin
+  have ht := length_ker_ne_top a b hfin
   refine ⟨h1, ⟨hs, ht⟩, ?_⟩
   rw [Set.pair_comm, h1, ← hs] at h1'
   exact ENat.add_right_injective_of_ne_top ht h1'

@@ -256,26 +256,26 @@ theorem Scal.place (s : Scal ι e i i' b κ) (q : KsIso ι eK γ (S.A j) (S'.A j
   s.read' (x := S.kKs c) (x' := S'.kKs (eK c)) (by rw [S.kKs_spec, S'.kKs_spec, q.alg])
 
 def fmOf (s : Scal ι e i i' b κ) (q : KsIso ι eK γ (S.A j) (S'.A j')) : NX.Fm S i j b ≃+ NX.Fm S' i' j' b :=
-  tensEquiv (K := NX.KB S i b) (K' := NX.KB S' i' b) (M := NX.FmK S j) (M' := NX.FmK S' j') eK (fracEquiv κ).toAddEquiv q.φ
+  tensEquiv (K := NX.KB i) (K' := NX.KB i') (M := NX.FmK S j) (M' := NX.FmK S' j') eK (fracEquiv κ).toAddEquiv q.φ
     (fun c a => (map_mul (fracEquiv κ) (NX.ιK S i b c) a).trans (congrArg (· * _) (s.place q c))) q.smul
 
 variable (s : Scal ι e i i' b κ) (q : KsIso ι eK γ (S.A j) (S'.A j'))
 
 theorem fmOf_smul (c : FractionRing (tw.O i)) (x : NX.Fm S i j b) : fmOf s q (c • x) = fracEquiv κ c • fmOf s q x :=
-  DFunLike.congr_fun (tens_ext (R := S.Ks) (K := NX.KB S i b) (M := NX.FmK S j)
+  DFunLike.congr_fun (tens_ext (R := S.Ks) (K := NX.KB i) (M := NX.FmK S j)
     (f := (fmOf s q).toAddMonoidHom.comp (DistribSMul.toAddMonoidHom (NX.Fm S i j b) c))
     (g := (DistribSMul.toAddMonoidHom (NX.Fm S' i' j' b) (fracEquiv κ c)).comp (fmOf s q).toAddMonoidHom)
-    fun a x => congrArg (fun z : NX.KB S' i' b => (z ⊗ₜ[S'.Ks] (show NX.FmK S' j' from q.φ x) :
-      NX.KB S' i' b ⊗[S'.Ks] NX.FmK S' j')) (map_mul (fracEquiv κ) c a)) x
+    fun a x => congrArg (fun z : NX.KB i' => (z ⊗ₜ[S'.Ks] (show NX.FmK S' j' from q.φ x) :
+      NX.KB i' ⊗[S'.Ks] NX.FmK S' j')) (map_mul (fracEquiv κ) c a)) x
 
 theorem fmOf_smulO (c : tw.O i) (x : NX.Fm S i j b) : fmOf s q (c • x) = κ c • fmOf s q x := by
   rw [← algebraMap_smul (FractionRing (tw.O i)) c, fmOf_smul, IsFractionRing.ringEquivOfRingEquiv_algebraMap, algebraMap_smul]
 
 theorem fmOf_mem_Bsup (x : NX.Fm S i j b) : fmOf s q x ∈ NX.Bsup S' i' j' b ↔ x ∈ NX.Bsup S i j b := by
-  have h1 : ∀ y : NX.FmK S j, fmOf s q ((1 : NX.KB S i b) ⊗ₜ[S.Ks] y : NX.KB S i b ⊗[S.Ks] NX.FmK S j) =
-      ((1 : NX.KB S' i' b) ⊗ₜ[S'.Ks] (show NX.FmK S' j' from q.φ y) : NX.KB S' i' b ⊗[S'.Ks] NX.FmK S' j') := fun y =>
-    congrArg (fun z : NX.KB S' i' b => (z ⊗ₜ[S'.Ks] (show NX.FmK S' j' from q.φ y) :
-      NX.KB S' i' b ⊗[S'.Ks] NX.FmK S' j')) (map_one (fracEquiv κ))
+  have h1 : ∀ y : NX.FmK S j, fmOf s q ((1 : NX.KB i) ⊗ₜ[S.Ks] y : NX.KB i ⊗[S.Ks] NX.FmK S j) =
+      ((1 : NX.KB i') ⊗ₜ[S'.Ks] (show NX.FmK S' j' from q.φ y) : NX.KB i' ⊗[S'.Ks] NX.FmK S' j') := fun y =>
+    congrArg (fun z : NX.KB i' => (z ⊗ₜ[S'.Ks] (show NX.FmK S' j' from q.φ y) :
+      NX.KB i' ⊗[S'.Ks] NX.FmK S' j')) (map_one (fracEquiv κ))
   refine ⟨fun h => ?_, fun h => ?_⟩
   · rw [← (fmOf s q).symm_apply_apply x]
     refine map_mem_of_span (f := (fmOf s q).symm.toAddMonoidHom) (symm_smul (fmOf_smulO s q)) ?_ h
@@ -300,33 +300,33 @@ theorem KsIso.chiInLL0 (he : ∀ x : ↥LL0', ι (e x : what₂.LL) = (x : rows'
   exact Subtype.property _
 
 theorem fmOf_baseChange (u : Module.End S.Ks (NX.FmK S j)) (u' : Module.End S'.Ks (NX.FmK S' j'))
-    (hu : ∀ y : NX.FmK S j, q.φ (u y) = u' (q.φ y)) (x : NX.KB S i b ⊗[S.Ks] NX.FmK S j) :
-    fmOf s q (Module.End.baseChangeHom S.Ks (NX.KB S i b) (NX.FmK S j) u x) =
-      Module.End.baseChangeHom S'.Ks (NX.KB S' i' b) (NX.FmK S' j') u' (fmOf s q x) :=
-  DFunLike.congr_fun (tens_ext (R := S.Ks) (K := NX.KB S i b) (M := NX.FmK S j)
-    (f := (fmOf s q).toAddMonoidHom.comp (Module.End.baseChangeHom S.Ks (NX.KB S i b) (NX.FmK S j) u).toAddMonoidHom)
-    (g := (Module.End.baseChangeHom S'.Ks (NX.KB S' i' b) (NX.FmK S' j') u').toAddMonoidHom.comp (fmOf s q).toAddMonoidHom)
-    fun a y => congrArg (fun z : NX.FmK S' j' => ((show NX.KB S' i' b from fracEquiv κ a) ⊗ₜ[S'.Ks] z :
-      NX.KB S' i' b ⊗[S'.Ks] NX.FmK S' j')) (hu y)) x
+    (hu : ∀ y : NX.FmK S j, q.φ (u y) = u' (q.φ y)) (x : NX.KB i ⊗[S.Ks] NX.FmK S j) :
+    fmOf s q (Module.End.baseChangeHom S.Ks (NX.KB i) (NX.FmK S j) u x) =
+      Module.End.baseChangeHom S'.Ks (NX.KB i') (NX.FmK S' j') u' (fmOf s q x) :=
+  DFunLike.congr_fun (tens_ext (R := S.Ks) (K := NX.KB i) (M := NX.FmK S j)
+    (f := (fmOf s q).toAddMonoidHom.comp (Module.End.baseChangeHom S.Ks (NX.KB i) (NX.FmK S j) u).toAddMonoidHom)
+    (g := (Module.End.baseChangeHom S'.Ks (NX.KB i') (NX.FmK S' j') u').toAddMonoidHom.comp (fmOf s q).toAddMonoidHom)
+    fun a y => congrArg (fun z : NX.FmK S' j' => ((show NX.KB i' from fracEquiv κ a) ⊗ₜ[S'.Ks] z :
+      NX.KB i' ⊗[S'.Ks] NX.FmK S' j')) (hu y)) x
 
 theorem fmOf_actG (hst : NX.RhoStab S j) (hχ : NX.ChiInLL0 S j) (hst' : NX.RhoStab S' j') (hχ' : NX.ChiInLL0 S' j')
     (g : G0g N) (g' : G0g N') (hg : S'.eG.symm g' = γ (S.eG.symm g)) (x : NX.Fm S i j b) :
     fmOf s q (NX.actG S i j b hst hχ g x) = NX.actG S' i' j' b hst' hχ' g' (fmOf s q x) := by
   change fmOf s q ((show FractionRing (tw.O i) from (NX.readLL0 S i b (NX.chiL S j hχ (S.eG.symm g)))⁻¹) •
-      (show NX.Fm S i j b from Module.End.baseChangeHom S.Ks (NX.KB S i b) (NX.FmK S j) (NX.rhoKG S j hst (S.eG.symm g)) x)) =
+      (show NX.Fm S i j b from Module.End.baseChangeHom S.Ks (NX.KB i) (NX.FmK S j) (NX.rhoKG S j hst (S.eG.symm g)) x)) =
     (show FractionRing (tw'.O i') from (NX.readLL0 S' i' b (NX.chiL S' j' hχ' (S'.eG.symm g')))⁻¹) •
       (show NX.Fm S' i' j' b from
-        Module.End.baseChangeHom S'.Ks (NX.KB S' i' b) (NX.FmK S' j') (NX.rhoKG S' j' hst' (S'.eG.symm g')) (fmOf s q x))
+        Module.End.baseChangeHom S'.Ks (NX.KB i') (NX.FmK S' j') (NX.rhoKG S' j' hst' (S'.eG.symm g')) (fmOf s q x))
   rw [fmOf_smul, hg]
   refine congrArg₂ (· • ·) ?_ (fmOf_baseChange s q _ _ (fun y => Subtype.ext ((q.rho _ y _).1 rfl).symm) x)
   exact (map_inv₀ (fracEquiv κ) _).trans (congrArg _ (s.read' (q.chi _)))
 
 theorem fmOf_restrict (u : Module.End what₂.LL (S.WL j)) (u' : Module.End rows'.LL (S'.WL j'))
     (hs : ∀ x ∈ (S.A j).WK, u x ∈ (S.A j).WK) (hs' : ∀ x ∈ (S'.A j').WK, u' x ∈ (S'.A j').WK)
-    (hu : ∀ y : (S.A j).WK, (q.φ ⟨u y, hs _ y.2⟩ : S'.WL j') = u' (q.φ y)) (x : NX.KB S i b ⊗[S.Ks] NX.FmK S j) :
-    fmOf s q (Module.End.baseChangeHom S.Ks (NX.KB S i b) (NX.FmK S j)
+    (hu : ∀ y : (S.A j).WK, (q.φ ⟨u y, hs _ y.2⟩ : S'.WL j') = u' (q.φ y)) (x : NX.KB i ⊗[S.Ks] NX.FmK S j) :
+    fmOf s q (Module.End.baseChangeHom S.Ks (NX.KB i) (NX.FmK S j)
         ((u.restrictScalars S.Ks).restrict (p := (S.A j).WK) (q := (S.A j).WK) hs) x) =
-      Module.End.baseChangeHom S'.Ks (NX.KB S' i' b) (NX.FmK S' j')
+      Module.End.baseChangeHom S'.Ks (NX.KB i') (NX.FmK S' j')
         ((u'.restrictScalars S'.Ks).restrict (p := (S'.A j').WK) (q := (S'.A j').WK) hs') (fmOf s q x) :=
   fmOf_baseChange s q _ _ (fun y => Subtype.ext (hu y)) x
 

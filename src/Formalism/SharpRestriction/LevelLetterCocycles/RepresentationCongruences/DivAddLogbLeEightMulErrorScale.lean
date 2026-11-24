@@ -96,8 +96,8 @@ private theorem real_bounds_logb_and_nonneg_inv_mul_of_eleven_le (l : ℕ) (hl :
   unfold Sg
   ring
 
-theorem case1c (l : ℕ) (hl : 11 ≤ l) (b wm w S η b₀ : ℕ) (hb : 1 ≤ b) (hη : 20 * η ≤ b) (hS : 20 * S ≤ b)
-    (hwm : 20 * wm ≤ b) (hw : w ≤ wm) (hb₀ : b ≤ b₀) (hb₀' : b₀ ≤ b + η)
+theorem case1c (l : ℕ) (hl : 11 ≤ l) (b wm w S η b₀ : ℕ) (hb : 1 ≤ b)
+    (hb₀ : b ≤ b₀) (hb₀' : b₀ ≤ b + η)
     (h1 : l * (w + S) ≤ b₀) (h2 : b₀ ≤ l * (w + S + η) + η) (de : ℝ)
     (hde : de ≤ max 0 ((b₀ : ℝ) / l - (w + S) + 2 + Real.logb l b₀) + 1) :
     de + 6 * Sg l (b + η + S) wm S η ≤ η + 9 * Sg l (b + η + S) wm S η ∧
@@ -144,7 +144,7 @@ theorem case1c (l : ℕ) (hl : 11 ≤ l) (b wm w S η b₀ : ℕ) (hb : 1 ≤ b)
   rw [abs_le]
   constructor <;> linarith
 
-theorem case2b (l : ℕ) (hl : 11 ≤ l) (b wm w S η b₀ : ℕ) (hb : 1 ≤ b) (hη : 20 * η ≤ b) (hS : 20 * S ≤ b)
+theorem case2b (l : ℕ) (hl : 11 ≤ l) (b wm w S η b₀ : ℕ) (hb : 1 ≤ b)
     (hwm : 20 * wm ≤ b) (hw : w ≤ wm) (hw1 : 1 ≤ w) (hb₀ : b ≤ b₀) (hb₀' : b₀ ≤ b + η) (A : ℝ)
     (hA : A ≤ ((b₀ : ℝ) + S + η) / l + 2 * Sg l (b + η + S) wm S η) (hwA : (w : ℝ) ≤ A + η) :
     (w : ℝ) - ((b₀ : ℝ) + S) / l + 2 + Real.logb l w ≤ η + 5 * Sg l (b + η + S) wm S η - 1 ∧
@@ -192,8 +192,8 @@ theorem case2b (l : ℕ) (hl : 11 ≤ l) (b wm w S η b₀ : ℕ) (hb : 1 ≤ b)
       mul_nonneg (show (0:ℝ) ≤ (l:ℝ) - 4 by linarith)
         (show (0:ℝ) ≤ Sg l (b + η + S) wm S η by linarith)]
 
-theorem floor_succ_le_ten_mul_errorScale (l : ℕ) (hl : 11 ≤ l) (b wm S η : ℕ) (hb : 1 ≤ b) (hη : 20 * η ≤ b) (hS : 20 * S ≤ b)
-    (hwm : 20 * wm ≤ b) (σ A : ℝ) (hσ0 : 0 ≤ σ) (hσ : σ ≤ 3 * Sg l (b + η + S) wm S η) (hA0 : 0 ≤ A)
+theorem floor_succ_le_ten_mul_errorScale (l : ℕ) (hl : 11 ≤ l) (b wm S η : ℕ) (hb : 1 ≤ b)
+    (σ A : ℝ) (hσ0 : 0 ≤ σ) (hσ : σ ≤ 3 * Sg l (b + η + S) wm S η) (hA0 : 0 ≤ A)
     (hA : A ≤ (((b + η + S : ℕ) : ℝ) + η) / ((l : ℝ) - 1) + 1) :
     ((⌊(11 / 10 : ℝ) * (2 * σ + ((η : ℝ) + A) / l + 2 + Real.logb l (2 * ((b + η + S : ℕ) : ℝ)))⌋₊ + 1 : ℕ) : ℝ) ≤
       10 * Sg l (b + η + S) wm S η := by
@@ -218,7 +218,7 @@ theorem floor_succ_le_ten_mul_errorScale (l : ℕ) (hl : 11 ≤ l) (b wm S η : 
   linarith
 
 theorem one_le_sub_sub_sub (l : ℕ) (hl : 11 ≤ l) (b wm S η b₁ : ℕ) (hb : 1 ≤ b) (hη : 20 * η ≤ b) (hS : 20 * S ≤ b)
-    (hwm : 20 * wm ≤ b) (hb₁ : b ≤ b₁) (hsm : 40 * Sg l (b + η + S) wm S η ≤ (b : ℝ) / 4) (A s₁ : ℝ)
+    (hb₁ : b ≤ b₁) (hsm : 40 * Sg l (b + η + S) wm S η ≤ (b : ℝ) / 4) (A s₁ : ℝ)
     (hA : A ≤ (((b + η + S : ℕ) : ℝ) + η) / ((l : ℝ) - 1) + 1) (hs₁ : s₁ ≤ 10 * Sg l (b + η + S) wm S η) :
     1 ≤ (b₁ : ℝ) - η - A - s₁ + 1 := by
   obtain ⟨e0, e1, p0, q0, p11, q10, hqp, e2⟩ := natCast_inv_and_sub_one_inv_bounds_of_eleven_le l hl
@@ -253,8 +253,8 @@ theorem not_le_max_of_lt (l : ℕ) (hl : 11 ≤ l) (h : ℕ) (h1 : 1 ≤ h) (σ 
   · linarith
   · linarith
 
-theorem div_add_logb_le_eight_mul_errorScale (l : ℕ) (hl : 11 ≤ l) (b wm S η b₁ H : ℕ) (hb : 1 ≤ b) (hη : 20 * η ≤ b) (hS : 20 * S ≤ b)
-    (hwm : 20 * wm ≤ b) (hb₁ : b ≤ b₁) (hb₁' : b₁ ≤ b + η) (hH : H ≤ b + 2 * η + S) (a : ℝ) (ha0 : 1 ≤ a)
+theorem div_add_logb_le_eight_mul_errorScale (l : ℕ) (hl : 11 ≤ l) (b wm S η b₁ H : ℕ) (hb : 1 ≤ b)
+    (hb₁ : b ≤ b₁) (hb₁' : b₁ ≤ b + η) (hH : H ≤ b + 2 * η + S) (a : ℝ)
     (ha : a ≤ (H : ℝ) * (2 * l - 1) / ((l : ℝ) - 1) ^ 2 + cW l H + 1) :
     (3 * a + S + 2 * η - 2) / ((l : ℝ) - 1) + Real.logb l ((b₁ : ℝ) + η - 1) ≤ 8 * Sg l (b + η + S) wm S η := by
   obtain ⟨e0, e1, p0, q0, p11, q10, hqp, e2⟩ := natCast_inv_and_sub_one_inv_bounds_of_eleven_le l hl
@@ -308,8 +308,8 @@ theorem sub_le_fourteen_mul_errorScale (l : ℕ) (hl : 11 ≤ l) (b wm S η : �
   have f2 := mul_le_mul_of_nonneg_right hB (sq_nonneg (l:ℝ)⁻¹)
   linarith
 
-theorem le_band_add_errorScale (l : ℕ) (hl : 11 ≤ l) (b wm w S η b₁ : ℕ) (hb : 1 ≤ b) (hη : 20 * η ≤ b) (hS : 20 * S ≤ b)
-    (hwm : 20 * wm ≤ b) (hw : w ≤ wm) (hb₁ : b ≤ b₁) (hb₁' : b₁ ≤ b + η) (A σ s Cb : ℝ) (hCb : 2 ≤ Cb)
+theorem le_band_add_errorScale (l : ℕ) (hl : 11 ≤ l) (b wm w S η b₁ : ℕ) (hb : 1 ≤ b)
+    (hb₁ : b ≤ b₁) (hb₁' : b₁ ≤ b + η) (A σ s Cb : ℝ) (hCb : 2 ≤ Cb)
     (hA : A ≤ ((b₁ : ℝ) + S + η) / l + 5 / 2 * Sg l (b + η + S) wm S η) (hσ : σ ≤ 3 * Sg l (b + η + S) wm S η)
     (hth : (w : ℝ) < A + η + 2 * σ + 2)
     (hs : s ≤ max 1 ((w : ℝ) - ((b₁ : ℝ) + S) / l + 16 / 5 * Sg l (b + η + S) wm S η)) :

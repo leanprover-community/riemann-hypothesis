@@ -336,7 +336,7 @@ theorem continuous_repQ {P : LocPrime l} (AI : LocAinf l P) (K LL : FinExt l)
     (fun t => h1.eventually (eventually_actTZ LL T r t))
     (fun q => h2.eventually (eventually_actQab AI a b hab r q)) x
 
-theorem continuous_orbit_tensor_Qab : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW), ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let S := sit D.loc HW l (D.locA l) K s LL h; let E : S.Comparison₂ := ((F l).E K s LL h).tie; ∀ (T : LocLat S.G S.Qp S.LL S.O) (a b : ℤ) (j : ℕ) (hle : Gj K j ≤ GK K), a ≤ b → letI := zlMod LL T; letI : TopologicalSpace (TensorProduct ℤ_[l] ↥T.L.T (Qab (AinfSub l) (xiU (D.locA l)) a b)) := (Ideal.span {(l : ℤ_[l])}).adicModuleTopology _; ∀ x, Continuous fun g => (repQ (D.locA l) (Gj K j) ((actTZ LL T).comp (Subgroup.inclusion hle)) a b) g x := by
+theorem continuous_orbit_tensor_Qab : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW), ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let S := sit D.loc HW l (D.locA l) K s LL h; let _ : S.Comparison₂ := ((F l).E K s LL h).tie; ∀ (T : LocLat S.G S.Qp S.LL S.O) (a b : ℤ) (j : ℕ) (hle : Gj K j ≤ GK K), a ≤ b → letI := zlMod LL T; letI : TopologicalSpace (TensorProduct ℤ_[l] ↥T.L.T (Qab (AinfSub l) (xiU (D.locA l)) a b)) := (Ideal.span {(l : ℤ_[l])}).adicModuleTopology _; ∀ x, Continuous fun g => (repQ (D.locA l) (Gj K j) ((actTZ LL T).comp (Subgroup.inclusion hle)) a b) g x := by
   intro D HW F l _ K s LL h S E T a b j hle hab
   exact continuous_repQ (D.locA l) K LL T a b (Gj K j) hle hab
 

@@ -294,7 +294,7 @@ noncomputable section
 
 namespace GlobalTheory.FockTransl
 
-theorem integrable_exp_lin_sub_sq_norm_complex {c r : ℝ} (hc : 0 < c) (hr : 0 ≤ r) :
+theorem integrable_exp_lin_sub_sq_norm_complex {c r : ℝ} (hc : 0 < c) :
     Integrable fun w : ℂ => Real.exp (r * ‖w‖ - c * ‖w‖ ^ 2 / 2) := by
   have hg : Integrable fun w : ℂ => Real.exp (-(c / 4) * ‖w‖ ^ 2) := by
     have h := (GaussianFourier.integrable_cexp_neg_mul_sq_norm_add (V := ℂ) (b := ((c / 4 : ℝ) : ℂ))
@@ -329,7 +329,7 @@ theorem integrable_exp_lin_sub_gq (ι : Type) [Fintype ι] (a b : ℕ) (c : ι �
     ∏ j, Real.exp (‖(c τ : ℂ) * z₀ τ i j‖ * ‖y j‖ - c τ * ‖y j‖ ^ 2 / 2)) fun i => ?_
   refine Integrable.fintype_prod (f := fun j (w : ℂ) =>
     Real.exp (‖(c τ : ℂ) * z₀ τ i j‖ * ‖w‖ - c τ * ‖w‖ ^ 2 / 2)) fun j => ?_
-  exact integrable_exp_lin_sub_sq_norm_complex (hc τ) (norm_nonneg _)
+  exact integrable_exp_lin_sub_sq_norm_complex (hc τ)
 
 end GlobalTheory.FockTransl
 

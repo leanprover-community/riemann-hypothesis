@@ -322,10 +322,9 @@ theorem comapSubschemeHom_comp_subschemeι {X Y : Scheme.{u}} (W : X.IdealSheafD
     comapSubschemeHom W g ≫ W.subschemeι = (W.comap g).subschemeι ≫ g :=
   (isPullback_comapSubschemeHom W g).w
 
-theorem exists_intersectionComponents_mapsTo_of_flat (T : MarkedIdealWithBoundary.{u}) (_hT : T.IsAdmissible)
+theorem exists_intersectionComponents_mapsTo_of_flat (T : MarkedIdealWithBoundary.{u})
     (Y : Scheme.{u}) (k' : Type u) [Field k'] (q : Y ⟶ Spec (CommRingCat.of k'))
     (g : Y ⟶ T.scheme) [AlgebraicGeometry.Flat g]
-    (_hT' : (T.pullbackOverField Y k' q g).IsAdmissible)
     (J : Finset (Fin T.boundary.length)) (C' : Set ↥Y)
     (hC' : C' ∈ intersectionComponents (T.pullbackOverField Y k' q g).boundary
       (J.image (pullbackOverFieldIndex T Y k' q g))) :
@@ -351,10 +350,9 @@ theorem exists_intersectionComponents_mapsTo_of_flat (T : MarkedIdealWithBoundar
   rw [h1]
   exact h2.eq hξ
 
-theorem exists_mem_intersectionComponents_pullbackOverField_of_flat (T : MarkedIdealWithBoundary.{u}) (_hT : T.IsAdmissible)
+theorem exists_mem_intersectionComponents_pullbackOverField_of_flat (T : MarkedIdealWithBoundary.{u})
     (Y : Scheme.{u}) (k' : Type u) [Field k'] (q : Y ⟶ Spec (CommRingCat.of k'))
     (g : Y ⟶ T.scheme) [AlgebraicGeometry.Flat g]
-    (_hT' : (T.pullbackOverField Y k' q g).IsAdmissible)
     (J : Finset (Fin T.boundary.length)) (C : Set ↥T.scheme)
     (hC : C ∈ intersectionComponents T.boundary J) (y : ↥Y) (hy : g y ∈ C) :
     ∃ C' ∈ intersectionComponents (T.pullbackOverField Y k' q g).boundary
@@ -455,9 +453,9 @@ theorem comap_componentUnionIdeal_of_flat (T : MarkedIdealWithBoundary.{u}) (hT 
       exact ⟨C, hC𝒞, hmaps hyC'⟩
     · rintro ⟨C, hC𝒞, hyC⟩
       obtain ⟨C', hC'mem, hyC', hgen⟩ :=
-        exists_mem_intersectionComponents_pullbackOverField_of_flat T hT Y k' q g hT' J C (h𝒞 hC𝒞) y hyC
+        exists_mem_intersectionComponents_pullbackOverField_of_flat T Y k' q g J C (h𝒞 hC𝒞) y hyC
       obtain ⟨C₀, hC₀mem, hmaps0, hgen0⟩ :=
-        exists_intersectionComponents_mapsTo_of_flat T hT Y k' q g hT' J C' hC'mem
+        exists_intersectionComponents_mapsTo_of_flat T Y k' q g J C' hC'mem
       obtain ⟨ξ', hξ'⟩ := IsIrreducibleComponentOf.exists_isGenericPoint
         ((mem_intersectionComponents_pullbackOverField_iff T Y k' q g J C').mp hC'mem) hSclosed'
       obtain ⟨ξ, hξ⟩ := IsIrreducibleComponentOf.exists_isGenericPoint

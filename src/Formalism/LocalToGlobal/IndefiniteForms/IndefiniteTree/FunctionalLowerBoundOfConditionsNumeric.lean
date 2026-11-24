@@ -831,7 +831,7 @@ end Leaves
 theorem size_arith (f k m N L PPF Bw C b lx Sg cs np Rp lg l1 l2 l3 EM hI FP Arch Del T : ℝ)
     (hm : 1 ≤ m) (hf : 1 ≤ f) (hfk : f ≤ k) (hrN : k + m - 1 ≤ N) (hb : 1 ≤ b) (hL : 1 ≤ L) (hC : 1 ≤ C)
     (hSg0 : 0 ≤ Sg) (hSg : Sg ≤ 2 * PPF) (hcs0 : 0 ≤ cs) (hcs : cs ≤ 45 * f * L) (hlx : lx ≤ 2 * L)
-    (hnp0 : 0 ≤ np) (hnp : np ≤ 2 * m * (k + m - 1)) (hRp0 : 0 ≤ Rp) (hRp : Rp ≤ C * m * N ^ 3 * b)
+    (hnp : np ≤ 2 * m * (k + m - 1)) (hRp0 : 0 ≤ Rp) (hRp : Rp ≤ C * m * N ^ 3 * b)
     (hlg0 : 0 ≤ lg) (hlg : lg ≤ 4 * L) (hl1 : l1 ≤ 1 + L) (hl2 : l2 ≤ C * L + 1 + L) (hl3 : l3 ≤ 1 + L + C * L)
     (hBw0 : 0 ≤ Bw) (hBw : Bw ≤ C * b)
     (hEM : EM = 4 * f * np * Rp * lg)
@@ -998,7 +998,7 @@ theorem Sig0_nonneg (O : FunData K Df) (C b : ℝ) : 0 ≤ O.Sig0 C b := by
 
 
 
-theorem size_le (O : FunData K Df) (C x CH b : ℝ) (hC : 1 ≤ C) (hx : 1 ≤ x)
+theorem size_le (O : FunData K Df) (C x CH b : ℝ) (hC : 1 ≤ C)
     (hL1 : 1 ≤ Real.log b) (hLx : Real.log b + Real.log x ≤ 3 * Real.log b)
     (hH1 : leafHypothesesConst O) (hB5 : DegreeAndSizeBounds O C b) (hB7 : PrimePowerModuliSumBound O C b) (hCS : LeafCS O b) (hWt : LeafWt O C b)
     (hPol : LeafPol O C x CH b) :
@@ -1067,7 +1067,7 @@ theorem size_le (O : FunData K Df) (C x CH b : ℝ) (hC : 1 ≤ C) (hx : 1 ≤ x
     O.cS O.np (O.Rp C) (Real.log (O.np * O.Rp C)) (Real.log ((O.f : ℝ) * (2 * (O.N : ℝ))))
     (Real.log (O.Bw * (2 * (O.N : ℝ)))) (Real.log ((O.f : ℝ) * (2 * (O.N : ℝ)) * O.Bw)) (O.EMM C) (O.bIP C b)
     (O.bFP C b) (O.bArch C b) (O.bDel C b) (O.bTH C x b) hm hf hfk' hrN hb hL1 hC hSg0 hB7b hcs0 hCS' hlx
-    (by linarith) hB5c (by linarith) hB5d hlg0 hB5e hl1 hl2 hl3 (by linarith) hWt2 rfl rfl rfl rfl rfl rfl
+    hB5c (by linarith) hB5d hlg0 hB5e hl1 hl2 hl3 (by linarith) hWt2 rfl rfl rfl rfl rfl rfl
   exact le_trans key (mul_le_mul_of_nonneg_right hP (by linarith))
 
 end Sizes
@@ -1525,7 +1525,7 @@ theorem functional_lower_bound_of_conditions [_root_.NumberField.IsTotallyComple
     (hhh : N.hh = x ^ CH * b)
     (hMM : LeafMM O C) (hCc : LeafC S O) (hKer : LeafKer O) (hFP : LeafFP O S.μ C b) (hIP : LeafIP S O C b)
     (hSq : LeafOneSquare O S.μ C b) (hN0 : PrimeCountingSumBound O C x b) (hINT : LeafINT O C b) (hARCH : LeafARCH O C b)
-    (hTHB : LeafTHB O C x b) (hH1 : leafHypothesesConst O) (hH7 : LatticeConstantBound O b) (hB5 : DegreeAndSizeBounds O C b) (hB7 : PrimePowerModuliSumBound O C b)
+    (hTHB : LeafTHB O C x b) (hH1 : leafHypothesesConst O) (hB5 : DegreeAndSizeBounds O C b) (hB7 : PrimePowerModuliSumBound O C b)
     (hCS : LeafCS O b) (hWt : LeafWt O C b) (hPol : LeafPol O C x CH b) :
     S.FUN N := by
   classical
@@ -1604,7 +1604,7 @@ theorem functional_lower_bound_of_conditions [_root_.NumberField.IsTotallyComple
     (O.bDel C b) (fun w _ => by simp [hadef]) hdl hSd (fun ij s h1 h2 => (hN0s ij s h1 h2).1) hSe hrr hdd hdN
     (fun ij => by have := hyy ij; omega) hcc (fun w _ ij => hsq w ij) hnorm
     (fun ij s => htLe_mono (hT ij s) (le_max_right _ _)) (fun ij c s => htLe_mono (hTd ij c s) (le_max_right _ _))
-    hBN0 (fun ij s h1 h2 => (hN0s ij s h1 h2).2) hBδ (size_le O C x CH b hC hx hL1 hLx hH1 hB5 hB7 hCS hWt hPol)
+    hBN0 (fun ij s h1 h2 => (hN0s ij s h1 h2).2) hBδ (size_le O C x CH b hC hL1 hLx hH1 hB5 hB7 hCS hWt hPol)
   show S.muMaxRR ≤ N.hh - meanLog S.κ
   rw [hhh]
   unfold IndefData.muMaxRR
@@ -1624,7 +1624,7 @@ theorem functional_lower_bound_of_conditions_numeric [_root_.NumberField.IsTotal
     (hPol : LeafPol O C Z.x CH Z.b) :
     S.FUN (Z.num C₀ CH) :=
   functional_lower_bound_of_conditions wf S (Z.num C₀ CH) O C Z.x CH Z.b hD hH0 hl1a hl1c hXE hRR hRRw hC hx hL1 hLx rfl
-    hMM hCc hKer hFP hIP hSq hN0 hINT hARCH hTHB hH1 hH7 hB5 hB7 hCS hWt hPol
+    hMM hCc hKer hFP hIP hSq hN0 hINT hARCH hTHB hH1 hB5 hB7 hCS hWt hPol
 
 end Main
 

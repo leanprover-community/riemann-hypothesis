@@ -313,7 +313,7 @@ theorem vol_gLie_ball (ρ : ℝ) : volume (Metric.ball (0 : ↥(Gauge.gLie (εT 
   rw [Formalism.L2.SG.Pf.BH.ballDim]
   exact ball_cast' _ _ (by have h := finrank_gLie (k := k); change _ = k + 2 * Fintype.card (Low k) at h; omega) ρ
 
-theorem norm_lt_of_Bρ {ρ : ℝ} (hρ : 0 < ρ) {x : UCo k} (hx : x ∈ Bρ k ρ) : ‖x‖ < ρ := by
+theorem norm_lt_of_Bρ {ρ : ℝ} {x : UCo k} (hx : x ∈ Bρ k ρ) : ‖x‖ < ρ := by
   have hx' : ‖RLk (skMat x)‖ < ρ := hx
   refine lt_of_le_of_lt ?_ hx'
   have hsq := norm_skMat_sq x
@@ -385,7 +385,7 @@ theorem ratio_bounds {η : ℝ} (hη : 0 < η) :
   obtain ⟨δ, hδ, hd⟩ := volU_density μK η hη
   refine ⟨δ, hδ, fun ρ hρ hρδ => ?_⟩
   have hBm : MeasurableSet (Bρ k ρ) := (isOpen_Bρ ρ).measurableSet
-  have hBs : ∀ x ∈ Bρ k ρ, ‖x‖ < δ := fun x hx => lt_trans (norm_lt_of_Bρ hρ hx) hρδ
+  have hBs : ∀ x ∈ Bρ k ρ, ‖x‖ < δ := fun x hx => lt_trans (norm_lt_of_Bρ hx) hρδ
   obtain ⟨hup, hlo⟩ := hd (Bρ k ρ) hBm hBs
   have hK : μK (volUSet (Bρ k ρ)) = μ (Gauge.expSet (εT k) (Metric.ball 0 ρ)) := by
     rw [hμK, MeasurableEquiv.map_apply, expSet_eq]; rfl

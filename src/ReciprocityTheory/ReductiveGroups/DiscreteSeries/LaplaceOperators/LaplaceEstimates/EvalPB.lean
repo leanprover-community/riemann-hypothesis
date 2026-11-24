@@ -78,7 +78,7 @@ namespace CapelliMinorRestriction
 variable {k r : ℕ}
 
 theorem frameGl {n : ℕ} {M : Type*} [AddCommGroup M] [Module ℂ M] (Q : Matrix (Fin n) (Fin n) ℂ)
-    (E : Fin n → Fin n → Module.End ℂ M) (hQ : Q * Q⁻¹ = 1) (hQ' : Q⁻¹ * Q = 1) (hE : IsGlRep E) :
+    (E : Fin n → Fin n → Module.End ℂ M) (hQ : Q * Q⁻¹ = 1) (hE : IsGlRep E) :
     IsGlRep (frameE Q E) :=
   frameE_glRep Q hQ E hE
 

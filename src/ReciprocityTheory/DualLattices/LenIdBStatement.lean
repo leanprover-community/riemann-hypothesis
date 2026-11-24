@@ -27,8 +27,8 @@ def inclE (εL : Fin m → Matrix (Fin g) (Fin g) R) (i j : Fin m) :
 def projE (εL : Fin m → Matrix (Fin g) (Fin g) R) (i j : Fin m) :
     qE εL i j →ₗ[R] LinearMap.range (Matrix.mulVecLin (εL j)ᵀ) where
   toFun q := ⟨(q : Fin g ⊕ Fin g → R) ∘ Sum.inl, q.2.1⟩
-  map_add' x y := rfl
-  map_smul' c x := rfl
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
 
 abbrev sxE (Ht Bt : Matrix (Fin g) (Ix g) R) (εT : Fin m → Matrix (Ix g) (Ix g) R)
     (εL : Fin m → Matrix (Fin g) (Fin g) R) (π : Equiv.Perm (Fin m)) (i : Fin m) :
@@ -85,7 +85,7 @@ theorem xModE_len {C : Type} [Field C] {v : Valuation C NNReal} [Algebra R C]
       HasLen v R ((κ → R) ⧸ LinearMap.range X.mulVecLin) (v (algebraMap R C X.det)))
     (Ht Bt : Matrix (Fin g) (Ix g) R) (εT : Fin m → Matrix (Ix g) (Ix g) R)
     (εL : Fin m → Matrix (Fin g) (Fin g) R) (π : Equiv.Perm (Fin m)) (i : Fin m)
-    (hHt : Ht * εT i = (εL (π i))ᵀ * Ht) (hBt : Bt * εT i = εL i * Bt) {y c₂ : NNReal}
+    (hBt : Bt * εT i = εL i * Bt) {y c₂ : NNReal}
     (hy : HasLen v R (yModE Ht Bt εT εL π i) y)
     (hc : HasLen v R (cokE Ht εT εL (π i) i) c₂) :
     HasLen v R (xModE Ht Bt εT εL π i) (y * c₂) := by
@@ -172,7 +172,7 @@ theorem lenId_of
     c₁ c₂ hc₁ hc₂
   obtain ⟨y, hy, hyc⟩ := hB C v R hv g m Ht Bt E cp hcp hE hform εT εL π hπ hεT hsumT hεL hsumL hHt hBt
     hεE i d hd c₁ hc₁
-  refine ⟨y * c₂, xModE_len (hS2 C v R hv) Ht Bt εT εL π i (hHt i) (hBt i) hy hc₂, ?_⟩
+  refine ⟨y * c₂, xModE_len (hS2 C v R hv) Ht Bt εT εL π i (hBt i) hy hc₂, ?_⟩
   rw [mul_right_comm, hyc]
 
 end ReciprocityTheory.PGsh.Up

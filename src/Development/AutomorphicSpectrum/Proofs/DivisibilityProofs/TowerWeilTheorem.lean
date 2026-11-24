@@ -1710,9 +1710,9 @@ theorem log_div_le {B : ℕ} (h : 3 ≤ B) (a : ℝ) (ha : 1 ≤ a) :
   calc Real.log (B / (a / B) ^ 2) ≤ Real.log ((B : ℝ) ^ 3) := Real.log_le_log h2 h1
     _ = 3 * Real.log B := by rw [Real.log_pow]; norm_num
 
-theorem three_terms {q a p cs c3 c2 cp c8 v n θ L Ls md dist s : ℝ} (hcs : 0 ≤ cs) (hc8 : 0 ≤ c8) (hcp : 0 ≤ cp)
-    (hv : 0 ≤ v) (hn : 0 ≤ n) (hθ : 0 < θ) (hθ1 : θ ≤ 1) (hL : 1 ≤ L) (hs : s = θ ^ 2)
-    (hLs : Ls ≤ 3 * L) (hLs0 : 0 ≤ Ls) (hmd0 : 0 ≤ md) (hmd : md ≤ v * (c8 * (2 * θ)))
+theorem three_terms {q a p cs c3 c2 cp c8 v n θ L Ls md dist s : ℝ} (hcs : 0 ≤ cs) (hcp : 0 ≤ cp)
+    (hn : 0 ≤ n) (hθ : 0 < θ) (hθ1 : θ ≤ 1) (hL : 1 ≤ L) (hs : s = θ ^ 2)
+    (hLs : Ls ≤ 3 * L) (hmd0 : 0 ≤ md) (hmd : md ≤ v * (c8 * (2 * θ)))
     (hsq : |a| ≤ cs * Ls * md) (hap : |a - p| ≤ c3 * s)
     (hpq : |p - q| ≤ cp * (|c2| * L) * (dist + |s - 0|)) (hdist : dist ≤ 2 * θ + n * θ ^ 2) :
     |q| ≤ (|c3| + 6 * cs * c8 * v + cp * |c2| * (3 + n)) * (θ * L) := by
@@ -1830,7 +1830,7 @@ theorem thmW_tower : ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.Kl
     have hq : T.PPc II B c (linRoot l ^ (dimFl Ψ N + 1)) = (T.M B c).PP II (linA l 0 ^ (dimFl Ψ N + 1)) := by
       simp only [RootTower.PPc, toA_linRoot_pow]
     rw [hq]
-    exact three_terms hCs hC8 hCp hv.le (norm_nonneg _) hθ hθ1 hL hs hLs hLs0 hm0 hmd hsqc hI2c hLipc hdist'
+    exact three_terms hCs hCp (norm_nonneg _) hθ hθ1 hL hs hLs hm0 hmd hsqc hI2c hLipc hdist'
   have hsum : |T.PB II B l| ≤
       (∑ c, (|C3| + 6 * Cs * C8 * T.vol c + Cp * |C2| * (3 + ‖T.nu‖))) * (θ * Real.log B) := by
     rw [Finset.sum_mul]

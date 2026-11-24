@@ -316,8 +316,8 @@ theorem psiIn (y : X) (J : Ideal K) (r : K) (hr : r ∈ J) (h : (q y : FractionR
 
 theorem lieMult_zero (O : Type) [CommRing O] [StarRing O] [Module O X] (h) {F : Type} [Field F] (f : K →+* F)
     (τ : O →+* F) :
-    LieMult (ofRingAct (toricOAct q O h).onB.toRingAct) (spMap f) τ 0 := ⟨Fin.elim0, fun i => i.elim0, fun w _ => ⟨Fin.elim0, ⟨Fin.elim0, fun i => i.elim0, toUnit_unique _ _⟩,
-    fun c _ => funext fun i => i.elim0⟩⟩
+    LieMult (ofRingAct (toricOAct q O h).onB.toRingAct) (spMap f) τ 0 := ⟨Fin.elim0, fun i => i.elim0, fun _ _ => ⟨Fin.elim0, ⟨Fin.elim0, fun i => i.elim0, toUnit_unique _ _⟩,
+    fun _ _ => funext fun i => i.elim0⟩⟩
 
 variable (F : Type) [Field F] [Algebra (FractionRing K) F]
 

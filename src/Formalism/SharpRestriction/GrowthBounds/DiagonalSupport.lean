@@ -644,7 +644,7 @@ theorem ontoAll : OntoAll := by
       obtain ⟨P, hP, Q, hQ, rfl⟩ := hx
       have hPV := Hten_le_V hfd _ hΛ P hP
       have hQV := Hten_le_V hdr _ hΛ Q hQ
-      refine ⟨V_mul Kf hlam hfd hdr hPV hQV, Submodule.subset_span
+      refine ⟨V_mul Kf hlam hPV hQV, Submodule.subset_span
         ⟨cw ^ (-Ar r (flW (m := m) d)) • ⟨P, hPV⟩, mem_scale.2 ⟨⟨P, hPV⟩, hP, rfl⟩,
           cw ^ (-Ar r rest) • ⟨Q, hQV⟩, mem_scale.2 ⟨⟨Q, hQV⟩, hQ, rfl⟩, ?_⟩⟩
       simp only [Submodule.coe_smul]

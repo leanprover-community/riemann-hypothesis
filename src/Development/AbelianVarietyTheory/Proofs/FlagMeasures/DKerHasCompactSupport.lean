@@ -165,7 +165,7 @@ theorem contDiff_deriv_snoc {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E
     (le_of_eq rfl)
   exact h2.clm_apply (contDiff_const (c := (1 : ℝ)))
 
-theorem dR_mem (hG : IsUnit G) (hπ : IsURepOn (Formalism.QuantumDeterminants.UH G) ρ) {w : H} (hw : SmV (lieOf G) ρ w)
+theorem dR_mem (hπ : IsURepOn (Formalism.QuantumDeterminants.UH G) ρ) {w : H} (hw : SmV (lieOf G) ρ w)
     {X : Matrix (Fin n) (Fin n) ℂ} (hX : X ∈ lieOf G) : SmV (lieOf G) ρ (dR ρ X w) := by
   intro k Xs hXs
   have h1 := hw (k + 1) (Fin.snoc Xs X) (fun i => by

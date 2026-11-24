@@ -116,7 +116,7 @@ theorem jointCont {φ : Sm E a} (hφ : LO φ) (g : GA E a) :
 theorem continuous_chart {φ : Sm E a} (hφ : LO φ) (g : GA E a) {y : Lie E a} (hy : y ∈ invSet E a) :
     Continuous fun x : BlockIx a r → Ad E => chart φ.1 (unip x * g) y :=
   (jointCont hφ g).comp_continuous (continuous_id.prodMk continuous_const)
-    fun x => Set.mem_prod.2 ⟨Set.mem_univ _, hy⟩
+    fun _ => Set.mem_prod.2 ⟨Set.mem_univ _, hy⟩
 
 theorem chart_periodic {φ : Sm E a} (hφ : LO φ) (g : GA E a) (q : BlockIx a r → E) (x : BlockIx a r → Ad E) :
     chart φ.1 (unip ((fun p => algebraMap E (Ad E) (q p)) + x) * g) = chart φ.1 (unip x * g) := by
@@ -196,7 +196,7 @@ theorem fderiv_fun (φ : Sm E a) (g : GA E a) {y : Lie E a} (hy : y ∈ invSet E
     (fun x : BlockIx a r → Ad E => fderiv ℝ (chart φ.1 (unip x * g)) y) = fun x => ∑ i : Ix E a,
       StrongDual.smulRightL ℝ (Lie E a) ℂ (coordL i (invL y))
         (chart (lie E a (bs E a i) φ).1 (unip x * g) y) :=
-  funext fun x => fderiv_chart_eq φ _ hy
+  funext fun _ => fderiv_chart_eq φ _ hy
 
 theorem integrable_fderiv {φ : Sm E a} (hφ : LO φ) (g : GA E a) {y : Lie E a} (hy : y ∈ invSet E a) :
     Integrable (fun x : BlockIx a r → Ad E => fderiv ℝ (chart φ.1 (unip x * g)) y) ν := by

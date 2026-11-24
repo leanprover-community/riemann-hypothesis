@@ -166,7 +166,7 @@ theorem mulChi_mem_shift (z : ℂ) {N : ℕ} (t : Tr E N) :
 
 theorem twShift : TwShift := by
   rintro E _ _ _ N V t z hV ⟨f, hf, hinj, heq⟩
-  refine ⟨twMap N z f, ?_, twMap_ne hinj, twMap_equiv hV heq⟩
+  refine ⟨twMap N z f, ?_, twMap_ne hinj, twMap_equiv heq⟩
   rintro _ ⟨φ, hφ, rfl⟩
   change twMap N z f (mulChi N (Model.absC E z) φ) ∈ _
   rw [twMap_apply, mulChi_absC_neg]

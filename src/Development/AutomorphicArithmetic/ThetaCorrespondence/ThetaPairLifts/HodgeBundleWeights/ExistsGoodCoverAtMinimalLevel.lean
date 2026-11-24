@@ -611,7 +611,7 @@ theorem fg_of_trivAt_two {E : Type} [Field E] [NumberField E] {n : ℕ} (Λ : Ge
   exact hle (Submodule.smul_mem_smul (Ideal.subset_span rfl) hv)
 
 theorem exponent_le (o L Lb K F R DFr : ℝ) (hF1 : 1 ≤ F) (hR1 : 1 ≤ R) (hL1 : 1 ≤ Lb) (hK1 : 1 ≤ K)
-    (hLb : L ≤ 50 * Lb) (hL0 : 0 ≤ L) (hDF0 : 0 ≤ DFr) (hDF : DFr ≤ 2 * F * R * K)
+    (hLb : L ≤ 50 * Lb) (hDF0 : 0 ≤ DFr) (hDF : DFr ≤ 2 * F * R * K)
     (ho : o ≤ 391 * (F * R * Lb) ^ 2) : o / 2 + 140 * R * L * DFr ≤ 20000 * (F * R * Lb) ^ 2 * K := by
   have hF0 : 0 ≤ F := by linarith
   have hR0 : 0 ≤ R := by linarith
@@ -743,7 +743,7 @@ theorem harm_short : ∀ (D : D7) (T : CoreJ D) (j : ℕ) (Y : Deep T.toCore j) 
   refine (mul_le_mul_of_nonneg_right hsq (Real.exp_pos _).le).trans ?_
   rw [← Real.exp_add]
   refine Real.exp_le_exp.2 ?_
-  exact exponent_le o L Lb K _ _ _ hF1 hR1 hL1 hK1 hLb hL0 (Nat.cast_nonneg _) hDF ho
+  exact exponent_le o L Lb K _ _ _ hF1 hR1 hL1 hK1 hLb (Nat.cast_nonneg _) hDF ho
 
 end GlobalTheory.CovGmin.PrismSpan
 

@@ -1051,8 +1051,8 @@ theorem injective_of_isLocalized [Module.IsTorsionFree A V] (j : V →ₗ[A] T)
 
 def resMap (j : V →ₗ[A] T) (W : Submodule K T) : (W.restrictScalars A).comap j →ₗ[A] W where
   toFun x := ⟨j x, x.2⟩
-  map_add' x y := Subtype.ext (map_add j _ _)
-  map_smul' c x := Subtype.ext (map_smul j c _)
+  map_add' _ _ := Subtype.ext (map_add j _ _)
+  map_smul' c _ := Subtype.ext (map_smul j c _)
 
 theorem isLocalized_resMap [Module.IsTorsionFree A V] (j : V →ₗ[A] T)
     [IsLocalizedModule (nonZeroDivisors A) j] (W : Submodule K T) :

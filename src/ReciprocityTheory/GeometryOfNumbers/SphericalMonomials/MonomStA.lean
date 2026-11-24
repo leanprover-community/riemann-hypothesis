@@ -108,7 +108,7 @@ section key
 variable {N : ℕ}
 
 theorem sphMonom_sqN_nonneg (z : Fin N → ℂ) : 0 ≤ sqN z :=
-  Finset.sum_nonneg fun i _ => sq_nonneg _
+  Finset.sum_nonneg fun _ _ => sq_nonneg _
 
 theorem sphMonom_key [NeZero N] {k : ℕ} (f : (Fin N → ℂ) → ℂ)
     (hf : ∀ (r : ℝ) (z : Fin N → ℂ), f (r • z) = (r : ℂ) ^ k * f z) :

@@ -129,7 +129,7 @@ theorem hasDerivAt_curve (hπ : IsURepOn (UJset ε) π) {v : H} (hv : v ∈ smD 
       open scoped Matrix.Norms.Frobenius in exact hasDerivAt_exp_smul_const (𝕂 := ℝ) Y 0
     simpa using a
   have b1 := key _ (by simp) hexp (Filter.Eventually.of_forall fun t => exp_indefinite_unitary_holds m ε Y hY t)
-  have b2 := ReciprocityTheory.ChartRestriction.DS.hasDerivAt_dS hπ hY ((mem_smD_iff ε π v).1 hv)
+  have b2 := ReciprocityTheory.ChartRestriction.DS.hasDerivAt_dS hY ((mem_smD_iff ε π v).1 hv)
   rw [b2.unique b1]
   exact key c h0 hc hG
 

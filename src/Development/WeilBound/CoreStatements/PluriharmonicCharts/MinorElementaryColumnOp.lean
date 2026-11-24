@@ -163,7 +163,7 @@ theorem elem_lowerUni (hcb : (cb : ℕ) = ca + 1) (t : R) : IsLowerUni (1 + Matr
     rintro ⟨rfl, rfl⟩
     rw [Fin.lt_def] at h; omega
 
-theorem same_blk (hj : j ≤ N) (hb : (b : ℕ) = a + 1) (hab : (b : ℕ) < j ∨ j ≤ (a : ℕ))
+theorem same_blk (hj : j ≤ N) (hb : (b : ℕ) = a + 1)
     (hca : (ca : ℕ) = lastCol N j a) (hcb : (cb : ℕ) = ca + 1) : ((ca : ℕ) < N - j ↔ (cb : ℕ) < N - j) := by
   have := b.2
   unfold lastCol at hca
@@ -187,7 +187,7 @@ theorem lowerUni_mul {A B : Matrix (Fin N) (Fin N) R} (hA : IsLowerUni A) (hB : 
     · rw [hA.2 _ _ h', zero_mul]
     · rw [hB.2 _ _ (h'.trans_lt h), mul_zero]
 
-theorem minor_other (hj : j ≤ N) (hb : (b : ℕ) = a + 1) (hab : (b : ℕ) < j ∨ j ≤ (a : ℕ))
+theorem minor_other (hj : j ≤ N) (hb : (b : ℕ) = a + 1)
     (hca : (ca : ℕ) = lastCol N j a) (hcb : (cb : ℕ) = ca + 1) (h : Matrix (Fin N) (Fin N) R) (I : Finset (Fin N))
     (t : R) {i : Fin N} (hi : i ≠ a) :
     minorIJ (h * (1 + Matrix.single cb ca t)) I (stepCols N j i) = minorIJ h I (stepCols N j i) := by
@@ -308,7 +308,7 @@ theorem image_snd (hb : (b : ℕ) = a + 1) (hab : (b : ℕ) < j ∨ j ≤ (a : �
       (fun q => aeval_X _ q) y M.y_base M.y_step
     rw [mCoordIdeal_eq ev.toRingHom hind _ _ c hc hz]
     let φ := algebraMap Φ (RatFunc Φ)
-    have hS := same_blk M.j_le hb hab hca hcb
+    have hS := same_blk M.j_le hb hca hcb
     have hdiag : ∀ c, B τ c c ≠ 0 := fun c h0 => by
       have h1 : (M.g τ).det * (B τ).det = 1 := by rw [← det_mul, (hB τ).2.2.det]
       have h2 : ∏ i, B τ i i = 0 := Finset.prod_eq_zero (Finset.mem_univ c) h0
@@ -373,7 +373,7 @@ theorem image_snd (hb : (b : ℕ) = a + 1) (hab : (b : ℕ) < j ∨ j ≤ (a : �
         congr 1
         simp only [G]
         split_ifs with e'
-        · rw [minor_other M.j_le hb hab hca hcb, CPts.minorIJ_map, e']
+        · rw [minor_other M.j_le hb hca hcb, CPts.minorIJ_map, e']
           rintro e''
           apply e
           have : p = (τ, a) := Prod.ext e' e''

@@ -247,9 +247,8 @@ private theorem exists_isIntegral_pow_mul_of_isIntegral_of_denom {F K : Type} [F
   exact hq
 
 private lemma split_form {F K : Type} [Field F] [Field K] [Algebra ℂ F] [Algebra ℂ K] [Algebra F K] [IsScalarTower ℂ F K]
-    {d : ℕ} (x : Fin (d + 1) → Fˣ) (hc : IsFinCover ℂ K (xv x))
-    (a : ℕ) (hmono : ∀ s t : Finset (Fin (d + 1)), s.Nonempty → s ⊆ t →
-      omB ℂ K (rB ℂ K (xv x) s) a ≤ omB ℂ K (rB ℂ K (xv x) t) a)
+    {d : ℕ} (x : Fin (d + 1) → Fˣ)
+    (a : ℕ)
     (I J : Finset (Fin (d + 1))) (j : Fin (d + 1)) (hj : j ∈ J) (w : DR ℂ K)
     (hw : w ∈ omB ℂ K (rB ℂ K (xv x) (I ∪ J)) a) :
     ∃ g ∈ rA ℂ (xv x) I, ∃ w' ∈ omB ℂ K (rB ℂ K (xv x) J) a, w = algebraMap F K g • w' := by
@@ -405,7 +404,7 @@ theorem UpperTheory.Gal.productCup_of_system.pLift_of :
     rw [dite_eq_left hJ]
     exact Finset.min'_mem J hJ
   obtain ⟨-, hPg, hmono⟩ := hGood F K d x hcov a
-  obtain ⟨g, hg, w', hw', rfl⟩ := split_form x hcov a hmono I J (pk J) hj w hw
+  obtain ⟨g, hg, w', hw', rfl⟩ := split_form x a I J (pk J) hj w hw
   obtain ⟨τ, hτ⟩ := hcov.exists_isTop
   obtain ⟨-, -, -, -, hmulP, -⟩ := hActs F K d x hcov τ hτ a
   obtain ⟨-, hom, -⟩ := hLat F d x hcov.pd I (pk I) hi

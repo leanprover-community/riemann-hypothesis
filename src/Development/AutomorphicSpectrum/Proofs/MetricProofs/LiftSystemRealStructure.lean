@@ -67,7 +67,7 @@ theorem pot_holoOn_mono {V W : Set X} {g : X → ℂ} (h : A.HoloOn V g) (hW : W
     A.HoloOn W g :=
   fun j w hw => h j w ⟨hw.1, hW hw.2⟩
 
-theorem pot_holoOn_continuousOn {V : Set X} (hV : IsOpen V) {g : X → ℂ} (h : A.HoloOn V g) :
+theorem pot_holoOn_continuousOn {V : Set X} {g : X → ℂ} (h : A.HoloOn V g) :
     ContinuousOn g V := by
   intro y hy
   obtain ⟨j, hj⟩ := A.cover y
@@ -141,7 +141,7 @@ theorem pot_conj_pluriharmonic : ∀ {K : Type} [Fintype K] {ι : K → Type} [�
     starRingEnd ℂ (lift (c x) (c y) ⟨k, i k⟩) / lift x y ⟨k, i k⟩
   let D : K → Set X := fun k => U x ∩ (fun y => lift x y ⟨k, i k⟩) ⁻¹' {0}ᶜ
   have hDo : ∀ k, IsOpen (D k) := fun k =>
-    (pot_holoOn_continuousOn (hUo x) (hUh x _)).isOpen_inter_preimage (hUo x) isOpen_compl_singleton
+    (pot_holoOn_continuousOn (hUh x _)).isOpen_inter_preimage (hUo x) isOpen_compl_singleton
   let W₁ : Set X := (U x ∩ c ⁻¹' U (c x)) ∩ ⋂ k, D k
   have hW₁o : IsOpen W₁ :=
     ((hUo x).inter ((hUo (c x)).preimage hcc)).inter (isOpen_iInter_of_finite hDo)
@@ -168,7 +168,7 @@ theorem pot_conj_pluriharmonic : ∀ {K : Type} [Fintype K] {ι : K → Type} [�
     pot_holoOn_div (hbH k) (fun j w _ => analyticAt_const) fun _ _ => hbne x hxW₁ k
   let B : K → Set X := fun k => W₁ ∩ (fun y => b k y / b k x) ⁻¹' Metric.ball 1 1
   have hBo : ∀ k, IsOpen (B k) := fun k =>
-    (pot_holoOn_continuousOn hW₁o (hqH k)).isOpen_inter_preimage hW₁o Metric.isOpen_ball
+    (pot_holoOn_continuousOn (hqH k)).isOpen_inter_preimage hW₁o Metric.isOpen_ball
   let W₂ : Set X := W₁ ∩ ⋂ k, B k
   let V : Set X := (W₂ ∩ V₁) ∩ c ⁻¹' V₂
   have hVo : IsOpen V :=

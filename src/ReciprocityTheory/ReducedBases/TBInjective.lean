@@ -38,7 +38,7 @@ private lemma eq_sum_smul_gs {E : Type*} [NormedAddCommGroup E] [InnerProductSpa
   simp
 
 theorem det_gram_eq {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] {m : ℕ}
-    (v : Fin m → E) (hv : LinearIndependent ℝ v) :
+    (v : Fin m → E) :
     (Matrix.gram ℝ v).det = ∏ j, ‖gs v j‖ ^ 2 := by
   set C : Matrix (Fin m) (Fin m) ℝ := Matrix.of fun a b =>
     if b = a then (1 : ℝ) else if b < a then ⟪gs v b, v a⟫_ℝ / ‖gs v b‖ ^ 2 else 0 with hCdef

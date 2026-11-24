@@ -594,7 +594,7 @@ theorem eisStrong_of_k : _root_.GlobalTheory.ThK.Dbl.EisBL_k → _root_.Positivi
   have hr : ∀ s : ℂ, t < s.re → An.Reg (fun x : d.G => (ht2 x : ℝ)) Ê s := fun s hs => by
     obtain ⟨k, H, a, e⟩ := hp s
     exact a.remove one_le_height_GL2 e ((isOpen_lt continuous_const Complex.continuous_re).mem_nhds hs) hdiff
-  obtain ⟨U, p, G, hUo, hUr, hs₀, hp0, hreg, heq⟩ := strip one_le_height_GL2 hp hr s₀
+  obtain ⟨U, p, G, hUo, hUr, hs₀, hp0, hreg, heq⟩ := strip hp hr s₀
   obtain ⟨hGd, hGc⟩ := diff_cont_of_reg hreg
   obtain ⟨t2, hmaj⟩ := _root_.PositivityTheory.SiegelWeilFormula.Khead.majorant_k d ⟨r', s', hY⟩ hf
   have hinv := _root_.GlobalTheory.CompanionTheory.EisRat.eis_left_rat_k F E σ d.B d.n d.Y r' s' d.ok.good d.ok.hn hY d.b d.K d.a d.ok.frame d.ok.stdK d.ok.hgt d.χ s₁ f hf

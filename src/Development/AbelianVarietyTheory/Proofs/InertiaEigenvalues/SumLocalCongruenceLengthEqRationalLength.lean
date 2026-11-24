@@ -965,7 +965,7 @@ private theorem mem_span_image_inf_ker {K F R : Type} [Field K] [NumberField K] 
     [CommRing R] [Algebra R F] (e : K →+* F) {V V' : Type} [AddCommGroup V] [Module K V]
     [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] [AddCommGroup V'] [Module F V'] [Module R V']
     [IsScalarTower R F V'] (iV : V →ₛₗ[e] V')
-    (he : ∀ a : 𝓞 K, e (a : K) ∈ (algebraMap R F).range) (φ : V →ₗ[K] K) (ψ : V' →ₗ[F] F)
+    (φ : V →ₗ[K] K) (ψ : V' →ₗ[F] F)
     (hψ : ∀ v, ψ (iV v) = e (φ v)) (A : Submodule (𝓞 K) V) {x : V'}
     (hx : x ∈ Submodule.span R (iV '' (A : Set V))) (h0 : ψ x = 0) :
     x ∈ Submodule.span R
@@ -1059,7 +1059,7 @@ theorem _root_.GlobalTheory.LatticeInterBaseChange.span_inf_baseChange : ∀ (K 
         simpa using hy
       | insert j s hj ih =>
         intro A' y hy h0
-        have h1 := mem_span_image_inf_ker e iV he (f j) (ψ j) (hψ j) A' hy
+        have h1 := mem_span_image_inf_ker e iV (f j) (ψ j) (hψ j) A' hy
           (h0 j (Finset.mem_insert_self j s))
         have h2 := ih _ y h1 fun i hi => h0 i (Finset.mem_insert_of_mem hi)
         refine Submodule.span_mono (Set.image_mono ?_) h2

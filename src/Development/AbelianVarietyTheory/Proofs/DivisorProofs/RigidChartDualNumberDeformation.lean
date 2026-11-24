@@ -246,8 +246,8 @@ theorem isKS_unique_model : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
     obtain ⟨⟨φ, hφ⟩, -⟩ := GlobalTheory.KS.DlogPol.dlog_independent K P₀ n u dd hu hdd _ θm Y.t.PP.L Y.t.PP.isLB hiso
     obtain ⟨J, W, j, d, hcov, hWj, hf, hl, hdiff⟩ := hK
     obtain ⟨J', W', j', d', hcov', hWj', hf', hl', hdiff'⟩ := hK'
-    have hP := pull_diff Y.t (interior Y) U v hv Θ W j d hWj hdiff x0 hU P₀.A θm hpb u hu' dd hdd φ hφ
-    have hP' := pull_diff Y.t (interior Y) U v hv Θ' W' j' d' hWj' hdiff' x0 hU P₀.A θm hpb u hu' dd hdd φ hφ
+    have hP := pull_diff Y.t U v hv Θ W j d hWj hdiff x0 hU P₀.A θm hpb u hu' dd hdd φ hφ
+    have hP' := pull_diff Y.t U v hv Θ' W' j' d' hWj' hdiff' x0 hU P₀.A θm hpb u hu' dd hdd φ hφ
     have hWU : ∀ i, W i ≤ Y.t.G.hom ⁻¹ᵁ U.1 := fun i p hp => by
       have : p ∈ Y.t.G.hom ⁻¹ᵁ (U.1 ⊓ interior Y) := hcov ▸ (le_iSup W i) hp
       exact this.1

@@ -278,7 +278,7 @@ private theorem eq_of_isPosJ_of_eigen_sgnV_I (hS : SigB) (hJL : JLine) (hPT : Pl
     rw [(hJL G.n _ (K v') (sgnV L v') hS'.1 (sgn_pm L v') (hK v')).2.1 (hS'.2.2 hsig'),
       (hJL G.n _ (K' v') (sgnV L v') hS'.1 (sgn_pm L v') (hK' v')).2.1 (hS'.2.2 hsig')]
 
-private theorem lubinTateSeries_eq_of_coeff_one_eq (hS : SigB) (hPE : PerExt) (hJS : JStruct) (hJL : JLine) (hPT : PlaceT) (ha : D.a = 1)
+private theorem lubinTateSeries_eq_of_coeff_one_eq (hS : SigB) (hJS : JStruct) (hJL : JLine) (hPT : PlaceT) (ha : D.a = 1)
     (A : ArchFrame L) {v : InfinitePlace G.F} (hsig : sigPosH (G.gram_herm v) = 1) {t₀ : D.F →+* ℂ}
     (ht : ∀ i, D.tau i = t₀) (B : GlobalTheory.LKCx.Form G) {ρ : D.O →+* Matrix (Fin D.g) (Fin D.g) ℂ}
     (Q Q' : VQ D →+ (Fin D.g → ℂ)) (z z' : GlobalTheory.LKCx.PosV G v B.β) (hQ : IsPerQ L B.β ρ Q) (hQ' : IsPerQ L B.β ρ Q')
@@ -363,6 +363,6 @@ theorem UpperTheory.Gal.W2.rDicEx_of :
     per := fun z => by
       obtain ⟨Q, R, hQ, hR, hI⟩ := hRP p D G L ha v hsig t₀ ht ρ hρ A B z
       exact ⟨Q, hQ, R, hR, hI⟩
-    uniq := fun Q Q' z z' hQ hQ' hr hr' => lubinTateSeries_eq_of_coeff_one_eq hS hPE hJS hJL hPT ha A hsig ht B Q Q' z z' hQ hQ' hr hr'
+    uniq := fun Q Q' z z' hQ hQ' hr hr' => lubinTateSeries_eq_of_coeff_one_eq hS hJS hJL hPT ha A hsig ht B Q Q' z z' hQ hQ' hr hr'
     equiv := fun y Q Q' z h hr => period_relation_equivariant A v y Q Q' z h hr
     mark := fun y Q z H lam hQ hr hH hz => period_relation_eigenvector hPE hPT ha A hsig ht y Q z H lam hQ hr hH hz }⟩

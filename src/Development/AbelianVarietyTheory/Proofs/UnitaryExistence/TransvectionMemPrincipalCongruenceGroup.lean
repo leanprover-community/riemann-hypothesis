@@ -56,7 +56,7 @@ theorem transv_mem_princ : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
   have hξ' : IsCMField.complexConj E ξ₀ = -ξ₀ := hξ
   have hG := h.2.2.1
   have hint := (GlobalTheory.HermModel.rank_integral_selfDual E H Di r (-ξ₀) Gm φ0
-    (by simp [cc, hξ']) h).2.2.1
+    h).2.2.1
   have hM : 0 < l.M := lt_of_lt_of_le (by norm_num) l.three_le
   set d : ℕ := (NumberField.discr E).natAbs with hd
   have hd0 : 0 < d := Int.natAbs_pos.2 (NumberField.discr_ne_zero E)

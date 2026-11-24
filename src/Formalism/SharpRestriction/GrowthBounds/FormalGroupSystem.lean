@@ -559,33 +559,33 @@ def volE (v : X.Pl) (j : ℕ) (L : (X.Pj j).Tup) (L' : (X.Pj (j + 1)).Tup) : ℤ
 
 end Pend
 
-def adm1 (_D : Formalism.BasicNotions.D7) : Prop := ∀ (p : ℕ) [Fact p.Prime], DworkLemma p
+def adm1 : Prop := ∀ (p : ℕ) [Fact p.Prime], DworkLemma p
 
-def adm2 (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
+def adm2 {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
   ∀ v, ∀ j < X.mm, ∀ (La : X.Lt j) (La' : X.Lt (j + 1)), (X.Pj j).IsLatTup La.2 → (X.Pj (j + 1)).IsLatTup La'.2 →
     ∀ (φ : Y.Frm j La La'), ExtensionLocalCondition p Y.Kc Y.Oc Y.be (Y.ThV v j La La' φ)
 
-def adm2b (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
+def adm2b {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
   ∀ j < X.mm, ∀ (La : X.Lt j) (La' : X.Lt (j + 1)), (X.Pj j).IsLatTup La.2 → (X.Pj (j + 1)).IsLatTup La'.2 →
     ∀ (φ : Y.Frm j La La'), ExtensionGeneratorCondition p Y.Kc Y.Oc Y.be (Y.ThA j La La' φ)
 
-def adm2c (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop := BeProp p Y.be
+def adm2c {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop := BeProp p Y.be
 
-def adm3 (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
+def adm3 {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
   ∀ j < X.mm, ∀ (La : X.Lt j) (La' : X.Lt (j + 1)), (X.Pj j).IsLatTup La.2 → (X.Pj (j + 1)).IsLatTup La'.2 →
     ∀ (φ : Y.Frm j La La') (I : X.ColCh j) (n : X.FrI j →₀ ℕ),
       Y.geC (AddMonoidAlgebra.coeff (applyD (X.PI j I fun _ => 0) (X.ThZA Y.Kc j (Y.ThA j La La' φ))) n) 0
 
-def adm3b (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) : Prop :=
+def adm3b {p : ℕ} [Fact p.Prime] (X : Sys p) : Prop :=
   ∀ j < X.mm, ∀ F ∈ X.FQ j, X.Kz j F ∈ X.FQ (j + 1)
 
-def ExpansionEquality (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) (j : ℕ) : Prop :=
+def ExpansionEquality {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) (j : ℕ) : Prop :=
   ∃ cK : Y.Kc, cK ∈ Y.Oc ∧ cK⁻¹ ∈ Y.Oc ∧
     ∀ F ∈ X.FQ j, ∀ (c' : X.Lv.comp (j + 1)) (L' : (X.Pj (j + 1)).Tup), (X.Pj (j + 1)).IsLatTup L' →
       MvPolynomial.map (algebraMap X.G.Kf Y.Kc) (X.Kz j F c' L') =
         ∑ La ∈ Y.Rep j, (((X.stab j La : Y.Kc))⁻¹ * cK) • Y.ker j La (c', L') (F La.1 La.2)
 
-def ExpansionDecomposition (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) (j : ℕ) : Prop :=
+def ExpansionDecomposition {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) (j : ℕ) : Prop :=
   ∃ cK : Y.Kc, cK ∈ Y.Oc ∧ cK⁻¹ ∈ Y.Oc ∧
     ∃ (Cl Yb : Type) (_ : Fintype Cl) (_ : Fintype Yb) (wt : Cl → ℕ) (La : Cl → Yb → X.Lt j),
       (∀ x y, (X.Pj j).IsLatTup (La x y).2) ∧
@@ -601,22 +601,22 @@ def ExpansionDecomposition (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Pr
           ∑ x : Cl, ((wt x : Y.Kc))⁻¹ • ∑ y : Yb, Y.ker j (La x y) La' (X.Tm v i j F (La x y).1 (La x y).2)
 
 def ArchimedeanSignatureMatching (D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
-  (∀ j, j + 1 < X.mm → ExpansionEquality D X Y j) ∧ ∀ j, j + 1 = X.mm → ExpansionDecomposition D X Y j
+  (∀ j, j + 1 < X.mm → ExpansionEquality X Y j) ∧ ∀ j, j + 1 = X.mm → ExpansionDecomposition X Y j
 
-def adm5 (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
+def adm5 {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
   ∀ v, ∀ j < X.mm, ∃ u u' : X.G.Kf, X.vEqK u 0 ∧ X.vEqK u' 0 ∧
     ∀ (La : X.Lt j) (La' : X.Lt (j + 1)), (X.Pj j).IsLatTup La.2 → (X.Pj (j + 1)).IsLatTup La'.2 →
       Y.ThF j La La' = (u ^ (Y.len v j La.2) * u' ^ (Y.len v (j + 1) La'.2) *
         (p : X.G.Kf) ^ (-(((X.G.P.n' v / 2 : ℕ) : ℤ) * Y.volE v j La.2 La'.2))) •
         Y.Xi v j (Y.aw v j La La') (X.ind v j La.2 La'.2)
 
-def MinkowskiCounting (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
+def MinkowskiCounting {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
   ∀ j < X.mm, ∀ (c : X.Lv.comp j) (L : (X.Pj j).Tup) (La' : X.Lt (j + 1)) (γ : (X.Lv.lev j c).Γ)
     (G : (X.Pj j).Xsp), G ∈ (X.Pj j).Vtup → (X.Pj j).IsLatTup L → (X.Pj (j + 1)).IsLatTup La'.2 →
       Y.ker j (c, (X.Lv.lev j c).smul γ L) La' ((((X.Lv.lev j c).χ γ : X.G.Oˣ) : X.G.O) • (X.Lv.lev j c).actX γ G) =
         Y.ker j (c, L) La' G
 
-def adm6 (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
+def adm6 {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
   ∀ j ≤ X.mm, ∀ (v' : Fin (X.Pj j).nV) (i : ℕ) (φ : X.Lv.comp j → (X.Pj j).Tup → (X.Pj j).Tup → Y.Kc),
     (∀ c (γ : (X.Lv.lev j c).Γ) L L1, φ c ((X.Lv.lev j c).smul γ L) ((X.Lv.lev j c).smul γ L1) = φ c L L1) →
     ∑ La ∈ Y.Rep j, ((X.stab j La : Y.Kc))⁻¹ *
@@ -626,7 +626,7 @@ def adm6 (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (
         ∑ᶠ (L0 : Submodule ((X.Pj j).W v') (Fin ((X.Pj j).m + 1) → (X.Pj j).Qq v'))
           (_ : IsEdge p ((X.Pj j).n' v') i ⟨L0, La1.2 v'⟩), φ La1.1 (Function.update La1.2 v' L0) La1.2
 
-def adm7 (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
+def adm7 {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
   ∀ j < X.mm, ∀ (La : X.Lt j) (c' : X.Lv.comp (j + 1)) (L' L'' : (X.Pj (j + 1)).Tup) (i0 : X.Pl → ℕ),
     (X.Pj j).IsLatTup La.2 → (X.Pj (j + 1)).IsLatTup L' → (∀ v, i0 v ≤ X.G.P.r) →
     (∀ v' : Fin (X.Pj (j + 1)).nV, (i0 (X.vB (j + 1) v') = 0 ∧ L'' v' = L' v') ∨
@@ -638,28 +638,28 @@ def adm7 (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (
           Y.kerF j La (c', L'') (linSub (Y.bc j La (c', L'') φ) f) G)
 
 def adm8 (D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) : Prop :=
-  Formalism.MainNotions.SelectionLemmas.adm3 D X.G ∧ ∀ v, ∀ F ∈ X.G.M, X.G.yv v F ∈ X.G.M
+  Formalism.MainNotions.SelectionLemmas.adm3 X.G ∧ ∀ v, ∀ F ∈ X.G.M, X.G.yv v F ∈ X.G.M
 
-def adm11 (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
+def adm11 {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
   ∀ v, ∀ j < X.mm, Y.LowAt j v 0
 
 def Conclusion0 (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) : Prop :=
   ∀ j < X.mm, ∀ G ∈ X.Int j, X.vGe (j + 1) (X.Kz j G) (-(X.dG j : ℝ))
 
-def VolumeRatio₂ (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
+def VolumeRatio₂ {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
   ∀ v, ∀ j < X.mm, Y.LowAt j v (X.g0v v (j + 1))
 
 def MassRatio₂ (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) : Prop :=
   ∀ v, ∀ j < X.mm, ∀ G ∈ X.Int j, X.vGe (j + 1) (X.Kz j G)
     (X.gv v (j + 1) - X.alEven v + ∑ v' ∈ univ.erase v, X.g0v v' (j + 1) - X.dG j)
 
-def PointsLemma (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) : Prop :=
+def PointsLemma {p : ℕ} [Fact p.Prime] (X : Sys p) : Prop :=
   ∀ v, ∀ j < X.mm,
     (∀ i ∈ Icc 1 X.G.P.r, ∀ F ∈ X.Int (j + 1), X.Tt v i (j + 1) F ∈ X.Int (j + 1)) ∧
     (∀ i ∈ Icc 1 X.G.P.r, ∀ G ∈ X.Int j, X.vGe (j + 1) (X.Tt v i (j + 1) (X.Kz j G))
       (X.gv v (j + 1) + ∑ v' ∈ univ.erase v, X.g0v v' (j + 1) - X.dG j))
 
-def Conclusion4 (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) : Prop :=
+def Conclusion4 {p : ℕ} [Fact p.Prime] (X : Sys p) : Prop :=
   ∀ v, ∃ u m : ℕ → X.G.Kf, (∀ l ∈ Icc 1 X.mm, X.vEqK (u l) 0) ∧ (∀ l ∈ Icc 1 X.mm, X.vEqK (m l) (X.vm v l)) ∧
     ∀ j < X.mm,
       (∀ F ∈ X.FQ 0, X.Zop v u m (j + 1) (X.chainK (j + 1) F) =
@@ -671,7 +671,7 @@ def Conclusion4 (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : S
 
 def mHat {K : Type} [Field K] (u m : ℕ → K) (l : ℕ) : K := m l * (∏ l' ∈ Icc 1 (l - 1), u l')⁻¹
 
-def KernelCommutationUpToUnits (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) : Prop :=
+def KernelCommutationUpToUnits {p : ℕ} [Fact p.Prime] (X : Sys p) : Prop :=
   ∀ v, ∃ u m : ℕ → X.G.Kf, (∀ l ∈ Icc 1 X.mm, X.vEqK (u l) 0) ∧ (∀ l ∈ Icc 1 X.mm, X.vEqK (m l) (X.vm v l)) ∧
     ∀ j < X.mm,
       (∀ i : ℕ, ∀ F ∈ X.FQ j, X.ecal v i (j + 1) (X.Kz j F) =
@@ -685,12 +685,12 @@ def KernelCommutationUpToUnits (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact 
       (∀ G ∈ X.Int j, X.vGe (j + 1) (X.Zop v u (mHat u m) (j + 1) (X.Kz j G))
         (X.gv v (j + 1) + ∑ v' ∈ univ.erase v, X.g0v v' (j + 1) - X.dG j))
 
-def RelativePresentationLiterature (_D : Formalism.BasicNotions.D7) : Prop :=
+def RelativePresentationLiterature : Prop :=
   ∀ (p n' k1 t m c r : ℕ) (TT : Finset (Fin n')) (a b : Fin n' → ℤ) (lam0 : Fin n' → Fin (k1 + 1) → ℤ)
     (w : ℕ → Fin n' → ℤ), Std p n' k1 t m c r TT a b lam0 w →
     Sv p t m r TT lam0 w ≤ (m : ℝ) * gam p * ∑ s ∈ TT, (al TT lam0 s : ℝ)
 
-def LowTermBound (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
+def LowTermBound {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
   ∀ (Gn G0n PRn : X.Pl → ℕ → ℝ) (S : X.Pl → ℝ) (VV : Finset X.Pl),
     (∀ v ∈ VV, ∀ j ∈ Icc 1 X.mm, Gn v j ≤ X.gv v j) →
     (∀ v, ∀ j < X.mm, Y.LowAt j v (G0n v (j + 1))) →
@@ -700,8 +700,8 @@ def LowTermBound (_D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : 
       (∑ j ∈ Icc 1 X.mm, (∑ v ∈ VV, max (Gn v j - PRn v j) (G0n v j) + ∑ v ∈ univ \ VV, G0n v j) -
         ∑ j ∈ range X.mm, (X.dG j : ℝ))
 
-theorem lowAt_max (D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) (hU : VolumeRatio₂ D X Y)
-    (hZ : adm11 D X Y) (v : X.Pl) (j : ℕ) (hj : j < X.mm) (g : ℝ) (hg : g ≤ max (X.g0v v (j + 1)) 0) :
+theorem lowAt_max (D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) (hU : VolumeRatio₂ X Y)
+    (hZ : adm11 X Y) (v : X.Pl) (j : ℕ) (hj : j < X.mm) (g : ℝ) (hg : g ≤ max (X.g0v v (j + 1)) 0) :
     Y.LowAt j v g := by
   rcases le_max_iff.mp hg with h | h
   · exact Pend.LowAt.mono Y h (hU v j hj)
@@ -744,26 +744,26 @@ def NumericalComparisonUniform : Prop :=
   ∃ C₀ : ℝ, ∀ (D : Formalism.BasicNotions.D7) (L : SizeData₂ D) (X : Inst D L) (Y : LatInst D), NumericalComparisonAt D L X Y C₀
 
 def admitted (D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
-  adm1 D ∧ adm2 D X Y ∧ adm2b D X Y ∧ adm2c D X Y ∧ adm3 D X Y ∧ adm3b D X ∧ ArchimedeanSignatureMatching D X Y ∧ adm5 D X Y ∧ MinkowskiCounting D X Y ∧ adm6 D X Y ∧
-    adm7 D X Y ∧ adm8 D X ∧ adm11 D X Y
+  adm1 ∧ adm2 X Y ∧ adm2b X Y ∧ adm2c X Y ∧ adm3 X Y ∧ adm3b X ∧ ArchimedeanSignatureMatching D X Y ∧ adm5 X Y ∧ MinkowskiCounting X Y ∧ adm6 X Y ∧
+    adm7 X Y ∧ adm8 D X ∧ adm11 X Y
 
 def Conclusion₂ (D : Formalism.BasicNotions.D7) {p : ℕ} [Fact p.Prime] (X : Sys p) (Y : Pend X) : Prop :=
-  Conclusion0 D X ∧ VolumeRatio₂ D X Y ∧ MassRatio₂ D X ∧ PointsLemma D X ∧ Conclusion4 D X ∧ LowTermBound D X Y
+  Conclusion0 D X ∧ VolumeRatio₂ X Y ∧ MassRatio₂ D X ∧ PointsLemma X ∧ Conclusion4 X ∧ LowTermBound X Y
 
 def Stmt (D : Formalism.BasicNotions.D7) : Prop :=
-  (∀ (p : ℕ) [Fact p.Prime] (X : Sys p) (Y : Pend X), admitted D X Y → Conclusion₂ D X Y) ∧ RelativePresentationLiterature D
+  (∀ (p : ℕ) [Fact p.Prime] (X : Sys p) (Y : Pend X), admitted D X Y → Conclusion₂ D X Y) ∧ RelativePresentationLiterature
 
 def ErrorExponentStatement (D : Formalism.BasicNotions.D7) : Prop :=
   ∀ (u : D.what₂.Word) (w : D.what₂.places.Pl) [Fact (D.what₂.places.resChar w).Prime]
     (h : Formalism.BasicNotions.GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) (X : Sys (D.what₂.places.resChar w)) (Y : Pend X),
     X.G = D.gat u w h → admitted D X Y → Conclusion₂ D X Y
 
-def adm9 (D : Formalism.BasicNotions.D7) {p : ℕ} (G : GAtP p) : Prop := Formalism.MainNotions.SelectionLemmas.Conclusion1 D G
+def adm9 (D : Formalism.BasicNotions.D7) {p : ℕ} (G : GAtP p) : Prop := Formalism.MainNotions.SelectionLemmas.Conclusion1 G
 
-def adm12 (_D : Formalism.BasicNotions.D7) {p : ℕ} (G : GAtP p) : Prop :=
+def adm12 {p : ℕ} (G : GAtP p) : Prop :=
   (∀ v, ∀ F ∈ G.Mna, G.yv v F ∈ G.Mna) ∧ ∀ v, ∀ F ∈ G.M, G.yv v F ∈ G.M
 
-def adm13 (D : Formalism.BasicNotions.D7) {p : ℕ} (G : GAtP p) : Prop := Formalism.MainNotions.SelectionLemmas.adm2 D G
+def adm13 (D : Formalism.BasicNotions.D7) {p : ℕ} (G : GAtP p) : Prop := Formalism.MainNotions.SelectionLemmas.adm2 G
 
 def LemmaVVolumeGeneral (D : Formalism.BasicNotions.D7) (L : SizeData₂ D) (X : Inst D L) (Y : LatInst D) (K : Consts) : Prop :=
   ∀ (u : D.what₂.Word) (w : D.what₂.places.Pl)
@@ -784,7 +784,7 @@ def LemmaVVolumeGeneral (D : Formalism.BasicNotions.D7) (L : SizeData₂ D) (X :
 
 def RamifiedSublatticeVolumeOfAdmissible (D : Formalism.BasicNotions.D7) (L : SizeData₂ D) (X : Inst D L) (Y : LatInst D) (K : Consts) : Prop :=
   (∀ (u : D.what₂.Word) (w : D.what₂.places.Pl) (h : Formalism.BasicNotions.GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)),
-    adm9 D (D.gat u w h) ∧ adm12 D (D.gat u w h) ∧ adm13 D (D.gat u w h) ∧ Formalism.MainNotions.SelectionLemmas.adm3 D (D.gat u w h)) →
+    adm9 D (D.gat u w h) ∧ adm12 (D.gat u w h) ∧ adm13 D (D.gat u w h) ∧ Formalism.MainNotions.SelectionLemmas.adm3 (D.gat u w h)) →
     LemmaVVolumeGeneral D L X Y K
 
 end Formalism.MainNotions.FormalGroupSystem

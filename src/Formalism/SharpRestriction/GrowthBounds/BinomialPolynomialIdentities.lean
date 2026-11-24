@@ -114,7 +114,7 @@ theorem weight_projector_mem_weight_space {n : ℕ} {K V : Type*} [Field K] [Add
     rw [map_add (f := _)]
     exact add_mem ha hb
 
-theorem adm_eleven (D : Formalism.BasicNotions.D7) : GradedLatticeStable D := by
+theorem adm_eleven (D : Formalism.BasicNotions.D7) : GradedLatticeStable := by
   intro p _ O _ _ _ _ _S n V _ _ _ _ E mu La hrep _hdom _hiso hlat hproj
 
   have hstab : ∀ u ∈ UZmon E, ∀ x ∈ La, u x ∈ La := by
@@ -143,7 +143,7 @@ section -- clump:auto
 
 namespace Formalism.MainNotions.G.ColumnFamilies
 
-theorem admissible_lowerSet_span (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CovariantDegrees.SaturatedLowerSetSpan D := saturatedLowerSetSpan_of_lowerSetTypesSpan D (lower_set_types_span D)
+theorem admissible_lowerSet_span (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CovariantDegrees.SaturatedLowerSetSpan := saturatedLowerSetSpan_of_lowerSetTypesSpan D (lower_set_types_span D)
 
 end Formalism.MainNotions.G.ColumnFamilies
 end -- clump:auto
@@ -734,7 +734,7 @@ section gen
 variable {n : ℕ} {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
   {V : Type} [AddCommGroup V] [Module (KK O) V] [Module O V] [IsScalarTower O (KK O) V]
 
-theorem contragredient_span_highestWeight_eq_top (D : Formalism.BasicNotions.D7) [CharZero (KK O)] {E : GLOps n (KK O) V} {mu : Fin n → ℤ} {v : V}
+theorem contragredient_span_highestWeight_eq_top [CharZero (KK O)] {E : GLOps n (KK O) V} {mu : Fin n → ℤ} {v : V}
     {v' : Module.Dual (KK O) V} (hI : IsIrrHW E mu v) (hv0 : v' ≠ 0) :
     Submodule.span (KK O) {x | ∃ u ∈ Umon (dualOps E), x = u v'} = ⊤ := by
   have hfd : FiniteDimensional (KK O) V := irreducible_highest_weight_findim hI
@@ -821,7 +821,7 @@ theorem contragredientIrreducible_generated (D : Formalism.BasicNotions.D7) : Co
     have hWt : W = ⊤ := top_le_iff.1 hle
     subst hWt
     exact Module.Finite.equiv (LinearEquiv.ofTop (⊤ : Submodule (KK O) V) rfl)
-  exact ⟨dualOperators_isGLRep E hI.1, dominant_dualWeight hI.2.1, hH, contragredient_span_highestWeight_eq_top D hI hH.1⟩
+  exact ⟨dualOperators_isGLRep E hI.1, dominant_dualWeight hI.2.1, hH, contragredient_span_highestWeight_eq_top hI hH.1⟩
 
 theorem dualFunctional_lowestWeight_injective (D : Formalism.BasicNotions.D7) : DualFunctionalInjectiveOnLowestWeightSpace := by
   intro p _ O _ _ _ _ S n V _ _ _ _ E mu v v' hI hv'
@@ -883,7 +883,7 @@ open MvPolynomial Finset Formalism.MainNotions.G Formalism.MainNotions.Covariant
 
 namespace Formalism.MainNotions.LemmaBAlt
 
-theorem canonical_translate_jet_identity (D : Formalism.BasicNotions.D7) : CanonicalTranslateJetIdentity D := by
+theorem canonical_translate_jet_identity (D : Formalism.BasicNotions.D7) : CanonicalTranslateJetIdentity := by
   intro p f _ O _ _ _ _ S hp5 hf hsq N r K _ _ _ LL B z hK hmono hz P g hg c hpos J
   have H : ColOK LL P.mu c := colOK_of_path LL B hK P c
   refine ⟨column_kernel_components_integral p f LL g hg z P.mu c J, fun m hm i hi => lifted_column_multidegree p f LL g z P.mu c hmono hz J m hm i hi,
@@ -909,7 +909,7 @@ open MvPolynomial Finset Formalism.MainNotions.G Formalism.MainNotions.Covariant
 
 namespace Formalism.MainNotions.LemmaBAlt
 
-theorem nested_sets_lemma_of_admitted (D : Formalism.BasicNotions.D7) (h14 : JointComponentsPaths D) (h16 : PairedPathIndependence D) : ConclusionB3 D :=
+theorem nested_sets_lemma_of_admitted (D : Formalism.BasicNotions.D7) (h14 : JointComponentsPaths) (h16 : PairedPathIndependence) : ConclusionB3 :=
   lemma_B3 D h16 (lemma_B2 D) (integral_joint_type_sum D h14 h16)
 
 end Formalism.MainNotions.LemmaBAlt
@@ -927,7 +927,7 @@ namespace Formalism.MainNotions.G.ColumnFamilies
 
 open Formalism.MainNotions.CovariantDegrees Formalism.MainNotions.LemmaBAlt Formalism.MainNotions.G.GLWeightTheory
 
-theorem splitting_third_part_holds (D : Formalism.BasicNotions.D7) : DefiniteRankOne D := by
+theorem splitting_third_part_holds (D : Formalism.BasicNotions.D7) : DefiniteRankOne := by
   intro p _ O _ _ _ _ N n _ LL B th M
   exact ⟨lemma_A3_over_domain LL B D word_valuation_bounds (valuation_field D).1 (admissible_standardPath_basis D) (admissible_word_basis D) O th M,
     lemma_A3_over_field LL B D word_valuation_bounds (valuation_field D).1 (admissible_standardPath_basis D) (admissible_word_basis D) (Formalism.MainNotions.G.FF O) th M⟩

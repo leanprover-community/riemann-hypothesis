@@ -221,7 +221,7 @@ theorem exists_tensor (hF : Γ.IsFinOpenSub U) (s : Γ(Γ.G.left, U)) :
     rw [hρ, ← Spec.map_comp, ← CommRingCat.ofHom_comp]
     congr 2
     ext r
-    simp [iR, Algebra.TensorProduct.algebraMap_apply'])
+    simp [iR])
   have hx : ∀ z, x.left z ∈ U := fun z => by
     simpa [x] using fromSpec_mem hU _
   have hy : ∀ z, y.left z ∈ U := fun z => by

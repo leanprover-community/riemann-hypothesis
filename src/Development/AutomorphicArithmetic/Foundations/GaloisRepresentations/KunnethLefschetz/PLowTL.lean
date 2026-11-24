@@ -267,7 +267,7 @@ theorem ps_split {q : ℕ} [NeZero q] {A : Type} [CommRing A] {ζ ξ : A} (hq : 
         _ = c * S i * η i * ζ ^ (i : ℕ) := by simp only [η]; rw [mul_pow]; ring
         _ = c * S i * ζ ^ (i : ℕ) := by rw [h1]
 
-theorem PrimSplit_of : PrimSplit := fun q _ A _ ζ ξ => ps_split ζ.2.1 ζ.2.2 ξ.2.2
+theorem PrimSplit_of : PrimSplit := fun _ _ _ _ ζ ξ => ps_split ζ.2.1 ζ.2.2 ξ.2.2
 
 end LateralTheory.EtaleTrace
 end -- clump:auto
@@ -613,7 +613,7 @@ end LateralTheory.EtaleFoundations.TwSecLocPf
 namespace LateralTheory.EtaleFoundations.TwSecLocPf
 
 def ZarPow : Prop := ∀ (q : ℕ) [NeZero q] (V : Scheme.{0}) (ζ ξ : Prim q Γ(V, ⊤)),
-  Loc V fun W h => ∃ a : (ZMod q)ˣ, (ξ.map h.appTop.hom).1 = (ζ.map h.appTop.hom).1 ^ (a : ZMod q).val
+  Loc V fun _ h => ∃ a : (ZMod q)ˣ, (ξ.map h.appTop.hom).1 = (ζ.map h.appTop.hom).1 ^ (a : ZMod q).val
 
 theorem twF_single_pow (q : ℕ) [NeZero q] (i : ℤ) (A : CommRingCat.{0}) (ζ ξ : Prim q A) (a : (ZMod q)ˣ)
     (h : ξ.1 = ζ.1 ^ (a : ZMod q).val) (b : ULift.{1} (ZMod q)) :

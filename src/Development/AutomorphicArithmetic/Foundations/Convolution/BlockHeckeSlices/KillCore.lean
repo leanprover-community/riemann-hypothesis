@@ -344,7 +344,7 @@ theorem tail {V : Type} [NormedAddCommGroup V] [CompleteSpace V] (y : ℕ → V)
 
 variable {ev B}
 
-theorem fix_mul (hB : ∀ R, Commute B (ev R)) {W T : H →L[ℂ] H} (hW : am ev * B * W = W) (h1 : Commute T (am ev)) (h2 : Commute T B) :
+theorem fix_mul {W T : H →L[ℂ] H} (hW : am ev * B * W = W) (h1 : Commute T (am ev)) (h2 : Commute T B) :
     am ev * B * (T * W) = T * W := by
   rw [← mul_assoc, ← (h1.mul_right h2).eq, mul_assoc, hW]
 
@@ -369,7 +369,7 @@ theorem trunc_mul (hc : ∀ c : ℂ, ev (C (C c)) = c • 1) (hB : ∀ R, Commut
     have e : rename some (monomial α (p.coeff α) : MvPolynomial (Ix K n) ℂ) = C (p.coeff α) * rename some (monomial α 1) := by
       rw [rename_monomial, rename_monomial, C_mul_monomial, mul_one]
     have e2 : am ev ^ d = am ev ^ (d - α.degree) * am ev ^ α.degree := by rw [← pow_add]; congr 1; omega
-    have e3 := fix_pow hB (fix_mul hB hV (T := zm ev α) (ev_comm ev _ _) (hB _).symm) α.degree
+    have e3 := fix_pow hB (fix_mul hV (T := zm ev α) (ev_comm ev _ _) (hB _).symm) α.degree
     rw [e, map_mul, map_mul, map_mul, map_mul, map_pow, map_pow, hc, e2]
     simp only [smul_mul_assoc, mul_smul_comm, one_mul, mul_assoc, e3]
     rfl
@@ -386,7 +386,7 @@ theorem trunc_mul (hc : ∀ c : ℂ, ev (C (C c)) = c • 1) (hB : ∀ R, Commut
     refine Commute.mul_right ?_ (ev_comm ev _ _)
     rw [tp_eq]
     exact Commute.sum_right _ _ _ fun α _ => (((hB _).symm.pow_right _).mul_right (ev_comm ev _ _)).smul_right _
-  rw [e, map_mul, mul_assoc, h1 _ _ hd (fix_mul hB hW (ev_comm ev _ _) (hB _).symm), ← mul_assoc (am ev), hA.eq,
+  rw [e, map_mul, mul_assoc, h1 _ _ hd (fix_mul hW (ev_comm ev _ _) (hB _).symm), ← mul_assoc (am ev), hA.eq,
     mul_assoc _ (am ev), ← mul_assoc (am ev), hW, mul_assoc]
 
 end UpperTheory.ConvolutionTheory.BW.Op
@@ -441,13 +441,13 @@ private theorem app_abs {M : Type} [AddCommGroup M] [Module ℂ M] (S : Set (Upp
   have h1 : ∀ (V : H →L[ℂ] H), am ev * B * V = V → ∀ x, L ((B * zm ev (Finsupp.single x 1) * V) u) = z (X x) (L (V u)) := by
     intro V hV x
     refine hz _ _ _ ?_
-    have := fix_mul hB hV (T := zm ev (Finsupp.single x 1)) (ev_comm ev _ _) (hB _).symm
+    have := fix_mul hV (T := zm ev (Finsupp.single x 1)) (ev_comm ev _ _) (hB _).symm
     rw [← zm_single, ← ContinuousLinearMap.mul_apply, ← ContinuousLinearMap.mul_apply, mul_assoc B, ← mul_assoc, this]
   have h2 : ∀ (α : Ix K n →₀ ℕ) (V : H →L[ℂ] H), am ev * B * V = V →
       L ((B ^ α.degree * zm ev α * V) u) = z (monomial α 1) (L (V u)) := by
     have fx : ∀ (α : Ix K n →₀ ℕ) (V : H →L[ℂ] H), am ev * B * V = V →
         am ev * B * (B ^ α.degree * zm ev α * V) = B ^ α.degree * zm ev α * V := fun α V hV =>
-      fix_mul hB hV (((hB _).pow_left _).mul_left (ev_comm ev _ _)) (((Commute.refl B).pow_left _).mul_left (hB _).symm)
+      fix_mul hV (((hB _).pow_left _).mul_left (ev_comm ev _ _)) (((Commute.refl B).pow_left _).mul_left (hB _).symm)
     have ad : ∀ a b : Ix K n →₀ ℕ, (∀ (V : H →L[ℂ] H), am ev * B * V = V →
         L ((B ^ a.degree * zm ev a * V) u) = z (monomial a 1) (L (V u))) → (∀ (V : H →L[ℂ] H), am ev * B * V = V →
         L ((B ^ b.degree * zm ev b * V) u) = z (monomial b 1) (L (V u))) → ∀ (V : H →L[ℂ] H), am ev * B * V = V →
@@ -505,7 +505,7 @@ private theorem app_abs {M : Type} [AddCommGroup M] [Module ℂ M] (S : Set (Upp
 
   rw [yk, ContinuousLinearMap.sum_apply, map_sum, LinearMap.sum_apply]
   refine Finset.sum_congr rfl fun β hβ => ?_
-  rw [mul_assoc, h3 _ _ (fix_mul hB hW (ev_comm ev _ _) (hB _).symm), Module.End.mul_apply, ContinuousLinearMap.mul_apply,
+  rw [mul_assoc, h3 _ _ (fix_mul hW (ev_comm ev _ _) (hB _).symm), Module.End.mul_apply, ContinuousLinearMap.mul_apply,
     ← h6 β _ fun p hp => hg β hβ p (Finset.mem_toList.1 hp), Finset.prod_map_toList, monomial_eq, C_1, one_mul]
   rfl
 
@@ -528,7 +528,7 @@ private theorem core_abs {M : Type} [AddCommGroup M] [Module ℂ M] (S : Set (Up
   set X₀ := fcalc χ A with hX₀
   have hB : ∀ R, Commute B (ev R) := fun R => (hcm _ (hA ▸ ev_comm ev R _)).1.symm
   have hW : am ev * B * X₀ = X₀ := hA ▸ hBX
-  have hW' : am ev * B * (B * X₀) = B * X₀ := fix_mul hB hW (hB _) (Commute.refl B)
+  have hW' : am ev * B * (B * X₀) = B * X₀ := fix_mul hW (hB _) (Commute.refl B)
   have hoff : ∀ k, ∀ β ∈ (G k).support, ∀ p ∈ β.support, p.1 ∉ S := fun k β hβ => hsS β (hs k hβ)
   obtain ⟨c, x, hc0, hx, hyk⟩ := yk_norm ev B (B * X₀) G s K₀ hs hG
   obtain ⟨hsum, C', hC'⟩ := tail _ c x hc0 hx hyk ‖Q‖ (norm_nonneg _)

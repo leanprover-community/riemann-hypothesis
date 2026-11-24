@@ -1002,7 +1002,7 @@ private theorem block_part {K : Type} [CommRing K] {X : M4 K} (hX : Par X) : IsB
     simp
   · exact absurd (hi.trans hj.symm) hij
 
-private theorem split_of_block {K : Type} [CommRing K] {a m : M4 K} (h : a * m = 1) (h' : m * a = 1) (ha : Par a) (hm : Par m) :
+private theorem split_of_block {K : Type} [CommRing K] {a m : M4 K} (h' : m * a = 1) (ha : Par a) (hm : Par m) :
     ∃ Y : M4 K, (∀ i j, ¬ lamW i < lamW j → Y i j = 0) ∧ ∀ X, IsBlock (a * X * m) → IsBlock ((1 - Y) * X * (1 + Y)) := by
   let Ba : M4 K := a + pA K * a - a * pA K
   let Bm : M4 K := m + pA K * m - m * pA K
@@ -1104,7 +1104,7 @@ theorem UpperTheory.V.Ws.Lab.starConj :
         · exact hnot (Or.inr (Or.inl ⟨g, i, j, hw, hne'⟩))
         · exact hnot (Or.inr (Or.inr ⟨g, i, j, hw, hne'⟩))
       · exact Par.mul (Par.mul hadjPar (hpr g)) hmPar i j hgt
-    obtain ⟨Y, hYs, hYb⟩ := split_of_block hma hmm hadjPar hmPar
+    obtain ⟨Y, hYs, hYb⟩ := split_of_block hmm hadjPar hmPar
     exact hno ⟨Y, hYs, fun g => hYb (r g) (hblock g)⟩
 end -- clump:auto
 end -- clump:auto

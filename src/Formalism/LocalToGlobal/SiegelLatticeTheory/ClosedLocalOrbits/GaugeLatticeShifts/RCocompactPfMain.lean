@@ -352,7 +352,7 @@ theorem rCocompactC_of (h1 : RatApprox) (h2 : RatMem) : RCocompactC := by
       ?_, by group⟩
     · rw [Mv_mul, Mv_mul, Mv_inv, Mv_inv, hgM' v, hcM v]
       have := step_mat (JBv_graded X v) (JBv'_graded X v) (JBv_herm X v) (JBv'_herm X v) (JBv'_mul X v)
-        (JBv_mul X v) (2 * D.R.rS + 1) (Mv_unitary X v x) (hxl v) (hYvk v) (hYvs v)
+        (JBv_mul X v) (2 * D.R.rS + 1) (Mv_unitary X v x) (hxl v) (hYvk v)
       exact inPat_mono (by omega) this
     · intro v _
       refine ⟨Z v, ?_, rfl⟩

@@ -256,8 +256,8 @@ theorem spanEq_holds : SpanEq := by
     have rS : ∀ k, rowM g U V k ∈ rowLat (1 : Matrix (Fin (N + 2)) (Fin (N + 2)) L) ⊔ rowLat g :=
       fun k => add_mem (sum_smem (hU k) fun l => eS _) (sum_smem (hV k) fun l => gS _)
     have hgl : g (Fin.last (N + 1)) = ϖ ^ (-a) • (1 : Matrix (Fin (N + 2)) (Fin (N + 2)) L) (Fin.last (N + 1)) :=
-      vec_ext (by simp [hgl0, Matrix.one_apply]) (fun j => by simp [hglm, Matrix.one_apply, last_ne_mid])
-        (by simp [hgll, Matrix.one_apply])
+      vec_ext (by simp [hgl0]) (fun j => by simp [hglm, last_ne_mid])
+        (by simp [hgll])
     have hw : vecOf 0 (fun j => ϖ ^ a.toNat * r j) (ϖ ^ a.toNat * c) = if 0 ≤ a then
         g 0 - ϖ ^ a.toNat • (1 : Matrix (Fin (N + 2)) (Fin (N + 2)) L) 0
         else ϖ ^ (-a).toNat • g 0 - (1 : Matrix (Fin (N + 2)) (Fin (N + 2)) L) 0 := by

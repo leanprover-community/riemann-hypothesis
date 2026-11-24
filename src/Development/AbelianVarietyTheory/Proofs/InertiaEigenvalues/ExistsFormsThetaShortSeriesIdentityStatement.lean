@@ -603,7 +603,7 @@ theorem thetaSum_value_emb : ∀ (D : D7) (H : Geo.Tor.Host D.host.E) (Dw : Datu
         θ W hr dict ι g0 e0 F0 ik φ0 th0 x₀ hθ hMod hX0 hth0 hDL Wt k
       exact ⟨k1, γ, k2, k3⟩
   obtain ⟨hx, g', Dc, γ, mk, v, ϑ, κ', B, hat, hsd, hm, hBm, hma, hϑ, hv, hκ, hrd⟩ :=
-    GlobalTheory.PtId.exists_point U hσ hU h1 hA θ V W hr dict ι x₀ hmk a hDom mu om f₀ cc hcc g
+    GlobalTheory.PtId.exists_point U hσ hU h1 θ V W hr dict ι x₀ hmk a hDom mu om f₀ cc hcc g
   obtain ⟨hγ, hΛk, hfr⟩ := hat
 
   have hrpq : r = Dw.p + Dw.q := hU.1

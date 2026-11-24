@@ -45,7 +45,7 @@ import Mathlib.Topology.Sheaves.Init
 
 namespace Formalism.MainNotions.G.ColumnFamilies
 
-theorem admissible_standardPath_basis (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CovariantDegrees.PathBasisOverRing D :=
+theorem admissible_standardPath_basis (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CovariantDegrees.PathBasisOverRing :=
   word_basis_of_path_restrictions D restPathTo restPathFrom restStd restPsi restPol
 
 theorem admissible_polynomial_basis (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CovariantDegrees.PathColumnBasis D := Formalism.MainNotions.CovariantDegrees.path_basis_of_field_basis D (admissible_standardPath_basis D)

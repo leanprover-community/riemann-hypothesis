@@ -1199,7 +1199,7 @@ theorem norm_entry_le_opNorm {m n : Type} [Fintype m] [Fintype n] [DecidableEq n
   exact h2.trans h1
 
 theorem gB_nonneg {r : ℕ} (p0 : ℕ) (w : Low r → ℂ) : 0 ≤ gB p0 w :=
-  Finset.prod_nonneg fun k _ => zpow_nonneg (norm_nonneg _) _
+  Finset.prod_nonneg fun _ _ => zpow_nonneg (norm_nonneg _) _
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 

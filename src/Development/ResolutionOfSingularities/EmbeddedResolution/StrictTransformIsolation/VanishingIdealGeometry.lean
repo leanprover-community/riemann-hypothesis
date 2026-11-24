@@ -289,7 +289,6 @@ theorem smooth_comap_subschemeι_of_isOpenImmersion {X Y S : Scheme.{u}} (f : X 
 
 theorem smooth_vanishingIdeal_comap_subschemeι {k : Type u} [Field k] {W : Scheme.{u}}
     (p : W ⟶ Spec (CommRingCat.of k)) (U : W.Opens) (H : (U.toScheme).IdealSheafData)
-    (_hH : FunctorialResolution.EmbeddedResolution.IsSmoothDivisor (U.ι ≫ p) H)
     (T : Closeds ↥W) (S : Closeds ↥(H.subscheme))
     (hS : (S : Set ↥(H.subscheme)) = (H.subschemeι ≫ U.ι).base ⁻¹' (T : Set ↥W))
     (hTsubH : (U.ι.base ⁻¹' (T : Set ↥W)) ⊆ (H.support : Set ↥(U.toScheme)))
@@ -312,7 +311,6 @@ theorem smooth_vanishingIdeal_comap_subschemeι {k : Type u} [Field k] {W : Sche
 
 theorem orderAt_vanishingIdeal_eq_one {k : Type u} [Field k] [CharZero k] {W : Scheme.{u}}
     (p : W ⟶ Spec (CommRingCat.of k)) (hp : AlgebraicGeometry.Smooth p) (T : Closeds ↥W)
-    (_hirr : IsIrreducible (T : Set ↥W))
     (hsm : AlgebraicGeometry.Smooth ((Scheme.IdealSheafData.vanishingIdeal T).subschemeι ≫ p))
     (hcomp : ∀ C ∈ irreducibleComponents ↥W, ¬ C ⊆ (T : Set ↥W))
     (x : ↥W) (hx : x ∈ (T : Set ↥W)) :

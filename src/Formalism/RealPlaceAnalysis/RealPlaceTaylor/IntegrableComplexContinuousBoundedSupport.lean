@@ -1197,7 +1197,7 @@ lemma lie_operators_gl_relations : GlRel (lieOperatorQuotient ε) := by
   apply Submodule.linearMap_qext
   refine LinearMap.ext fun u => ?_
   have hGl := fun g (hg : inUJ ε g) => eabGl_of complex_parts_mem_lie_algebra_holds right_derivative_linear
-    (rdBracket_of right_derivative_extends (rdSmooth_of right_derivative_extends)) (rdSmooth_of right_derivative_extends) n ε u a b c d g
+    (rdBracket_of right_derivative_extends) (rdSmooth_of right_derivative_extends) n ε u a b c d g
     u.2 hg
   simp only [LinearMap.comp_apply, Submodule.mkQ_apply, LinearMap.sub_apply, Module.End.mul_apply]
   change lieOperatorQuotient ε a b (lieOperatorQuotient ε c d (quotientMkAlt u)) - lieOperatorQuotient ε c d (lieOperatorQuotient ε a b (quotientMkAlt u)) =
@@ -1388,7 +1388,7 @@ lemma compact_casimir_preserves_filtration (hsm : ∀ w ∈ W, SmoothOnG ε w)
     exact compact_lie_operator_preserves_filtration hsm hstab h (compact_lie_operator_preserves_filtration hsm hstab h.symm hx)
   · rw [LinearMap.zero_apply]; exact zero_mem _
 
-lemma casimir_scalar_on_filtration (hsm : ∀ w ∈ W, SmoothOnG ε w) {c : ℂ}
+lemma casimir_scalar_on_filtration {c : ℂ}
     (hcas : ∀ w ∈ W, ∀ g, inUJ ε g → CasF ε w g = c * w g)
     {k : ℕ} {x : SmoothFunctionsModGroup ε} (hx : x ∈ wordFiltration ε W k) : Cas (lieOperatorQuotient ε) x = c • x := by
   have hcomm := (casimir_central_holds (Module.End ℂ (SmoothFunctionsModGroup ε)) n ε (lieOperatorQuotient ε) lie_operators_gl_relations).1
@@ -1413,7 +1413,7 @@ lemma signedCasimir_preserves_filtration (hsm : ∀ w ∈ W, SmoothOnG ε w)
     {c : ℂ} (hcas : ∀ w ∈ W, ∀ g, inUJ ε g → CasF ε w g = c * w g)
     {k : ℕ} {x : SmoothFunctionsModGroup ε} (hx : x ∈ wordFiltration ε W k) : signedCasimirQuotient ε x ∈ wordFiltration ε W k := by
   unfold signedCasimirQuotient
-  rw [signed_casimir_identity, LinearMap.sub_apply, LinearMap.smul_apply, casimir_scalar_on_filtration hsm hcas hx]
+  rw [signed_casimir_identity, LinearMap.sub_apply, LinearMap.smul_apply, casimir_scalar_on_filtration hcas hx]
   exact sub_mem (Submodule.smul_mem _ _ (compact_casimir_preserves_filtration hsm hstab hx)) (Submodule.smul_mem _ _ hx)
 
 end F4BAlg2

@@ -272,7 +272,7 @@ def admitted (χ : AddChar k Circle) (s : kˣ) (g : (n → k) → ℂ) : Prop :=
 omit [MeasurableSpace k] [BorelSpace k] in
 theorem isAdmissibleBoxForCharacter_of_subset {s : kˣ} {g : (n → k) → ℂ}
     (h : box n s ⊆ {t : n → k | ∀ η ∈ tsupport g, χ (η ⬝ᵥ t) = 1}) : admitted χ s g :=
-  fun η hη t ht => h ht η (subset_tsupport _ hη)
+  fun η hη _ ht => h ht η (subset_tsupport _ hη)
 
 
 theorem ratio_indep (hχ : HasConductor χ c) (μ : Measure (n → k)) [μ.IsAddHaarMeasure]

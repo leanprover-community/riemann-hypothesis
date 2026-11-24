@@ -295,7 +295,7 @@ end GlobalTheory.ThetaKFactor
 end
 theorem _root_.GlobalTheory.T.thetaIntegral_factors_through_kType : _root_.GlobalTheory.FunPr.ThetaLocalInputs → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.ThetaIntegralsAgree → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.LocalMatching →
   ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D), IsStdChar D ψ (-1) → IsInfFam θ →
-    ∀ (W W₁ X : HSp D) (A : GlobalTheory.ChainFr.Fr W) (A₁ : GlobalTheory.ChainFr.Fr W₁) (B : GlobalTheory.ChainFr.Fr X) (a b : D.what₂.Tau → ℚ),
+    ∀ (W W₁ X : HSp D) (A : GlobalTheory.ChainFr.Fr W) (_ : GlobalTheory.ChainFr.Fr W₁) (B : GlobalTheory.ChainFr.Fr X) (a b : D.what₂.Tau → ℚ),
     ∃ (Pr : ModuleCat.{0} ℂ) (q : PolF D X.rank W.rank →ₗ[ℂ] Pr), ∀ α β : (AE D)ˣ →* Circle,
       GlobalTheory.SquareComm.IsTriple W W₁ X α β → (∀ τ, HasInfExp D α τ (a τ) ∧ HasInfExp D β τ (b τ)) →
       ∀ (ν : MeasureTheory.Measure (GA D W)) (𝓕 : Set (GA D W)), GlobalTheory.SquareComm.IsHaarFD W ν 𝓕 →

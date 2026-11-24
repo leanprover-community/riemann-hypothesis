@@ -185,7 +185,7 @@ theorem continuousAt_frame_constant {X : Scheme.{0}} {G : Over X} [GrpObj G] {L 
     (W := fun j => {bz ∈ C ×ˢ (Set.univ : Set (Fin g → ℂ)) | ⊤ ≤ e bz.1 bz.2 ⁻¹ᵁ L.U j})
     (f := fun j bz => valAt' (e bz.1 bz.2) (L.U j) (sec.f j))
     (r := fun j b => valAt' (pt b) ((L.pull (eSec G)).U fun _ => j) (rig.s fun _ => j).val)
-    (fun j => (hol (L.U j) 0).1) (fun j w hw => hw.1.1) (fun j => (hol (L.U j) (sec.f j)).2)
+    (fun j => (hol (L.U j) 0).1) (fun j => (hol (L.U j) (sec.f j)).2)
     (fun k hk j => ?_) (fun k hk => ?_) f₃ (fun j b z hz => ?_) (hCo.mem_nhds hC₀) (fun z => ?_)
     (fun k hk ρ h1 h2 h3 => ?_) fun j hj => ?_
   · rw [hθ]

@@ -225,7 +225,7 @@ theorem vermaCoord_e_pow (lam : Fin n → ℂ) {a : Fin n × Fin n} (ha : IsLowe
     vermaCoord lam (e a ^ m) = Finsupp.single (Finsupp.single a m) 1 := by
   have hnu : ¬ HasUpper (Finsupp.single a m) := by
     rintro ⟨b, hb, hne⟩
-    have hba : b = a := by by_contra h; exact hne (by simp [Finsupp.single_apply, Ne.symm h])
+    have hba : b = a := by by_contra h; exact hne (by simp [Ne.symm h])
     exact not_lower_of_upper hb (hba ▸ ha)
   have hlow : lowPart (Finsupp.single a m) = Finsupp.single a m := by
     ext b

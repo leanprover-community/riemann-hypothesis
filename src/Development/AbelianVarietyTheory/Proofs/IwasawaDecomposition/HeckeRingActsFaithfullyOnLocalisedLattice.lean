@@ -219,7 +219,7 @@ theorem mem_MtSub (hss : SemisimpleTw B) (hI : HeckeIntTw B) (hC : PartCompl B) 
     have e : (⟨(t : Module.End (FractionRing (OOf B i)) (B.V (jOf B i) (wOf B i))) ((o • a : partOf B i) : B.V (jOf B i) (wOf B i)),
         mem_part hss i t (o • a).2⟩ : partOf B i) =
         o • (⟨(t : Module.End (FractionRing (OOf B i)) (B.V (jOf B i) (wOf B i))) a, mem_part hss i t a.2⟩ : partOf B i) :=
-      Subtype.ext (by simp [Submodule.coe_smul_of_tower, LinearMap.map_smul_of_tower])
+      Subtype.ext (by simp [LinearMap.map_smul_of_tower])
     rw [e]; exact Submodule.smul_mem _ _ ha
 
 def resL (hss : SemisimpleTw B) (hI : HeckeIntTw B) (hC : PartCompl B) (i : LocT B) (t : hAlg B i) :

@@ -385,7 +385,7 @@ noncomputable def wProjL (j : ℤ) : H →L[ℂ] H :=
 
 noncomputable def compr (j : ℤ) (g : FiltrationCocycleLiftCriterion) : weightSpace σ j →L[ℂ] weightSpace σ j :=
   ((wProjL σ j).comp ((σ g).comp (weightSpace σ j).subtypeL)).codRestrict (weightSpace σ j)
-    (fun x => wProj_mem σ j _)
+    (fun _ => wProj_mem σ j _)
 
 @[simp] theorem coe_compr_apply (j : ℤ) (g : FiltrationCocycleLiftCriterion) (v : weightSpace σ j) :
     ((compr σ j g v : weightSpace σ j) : H) = wProj σ j (σ g v) := rfl

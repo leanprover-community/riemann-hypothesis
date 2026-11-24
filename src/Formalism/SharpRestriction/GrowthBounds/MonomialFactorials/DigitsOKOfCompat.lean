@@ -130,7 +130,7 @@ theorem mem_cbox' {dl : DCl X} {aTop : Fin X.s → ℕ} (ha : aTop ∈ cbox C0 C
   exact ha
 
 theorem idx_sub (hS : SegFacts C0 CE1 CE2 X) (dl : DCl X) (aTop aTop' : Fin X.s → ℕ)
-    (ha : aTop ∈ cbox C0 CE1 CE2 X dl) (ha' : aTop' ∈ cbox C0 CE1 CE2 X dl) :
+    (ha' : aTop' ∈ cbox C0 CE1 CE2 X dl) :
     idx C0 CE1 CE2 X dl aTop ⊆ idx C0 CE1 CE2 X dl aTop' := by
   haveI : NeZero X.r := ⟨X.hm⟩
   have hF := hS.hF
@@ -213,7 +213,7 @@ theorem idx_sub (hS : SegFacts C0 CE1 CE2 X) (dl : DCl X) (aTop aTop' : Fin X.s 
     exact (hx'.1 i).1.trans (((hk.2.1 _ (uTop_ge i)).1).trans (hAC _))
 
 theorem restFree_proved (hS : SegFacts C0 CE1 CE2 X) : RestFree C0 CE1 CE2 X := fun dl _ aTop ha aTop' ha' =>
-  Finset.Subset.antisymm (idx_sub hS dl aTop aTop' ha ha') (idx_sub hS dl aTop' aTop ha' ha)
+  Finset.Subset.antisymm (idx_sub hS dl aTop aTop' ha') (idx_sub hS dl aTop' aTop ha)
 
 end Formalism.MainNotions.G.SymmetricFormBlocks
 

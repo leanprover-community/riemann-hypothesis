@@ -97,7 +97,7 @@ theorem exists_hom_le (hS : Submodule.IsFullLattice D.host.E ΛS) (hT : Submodul
   exact exists_uniform (Module.Finite.iff_fg.1 (homLat_fg hS hT.fg)) B fun x _ =>
     GlobalTheory.LatVacFull.latRat_full D S T ΛS ΛT hS hT x
 
-theorem exists_le_hom (hS : Submodule.IsLattice D.host.E ΛS) (hT : Submodule.IsLattice D.host.E ΛT) :
+theorem exists_le_hom (hS : Submodule.IsLattice D.host.E ΛS) :
     ∃ k : ℕ, 0 < k ∧ ∀ x ∈ latRat S T ΛS ΛT, k • x ∈ homLat ΛS ΛT := by
   classical
   obtain ⟨A, hA, ha⟩ := exists_den_fg (Λ := (D.host.AA : Submodule (𝓞 D.host.E) D.host.E))
@@ -132,7 +132,7 @@ theorem isSBHalf_cosInd (hS : Submodule.IsFullLattice D.host.E ΛS) (hT : Submod
     (he : e * e = e) (hinf : infPart D e = 0) {𝔪 : Ideal (𝓞 D.host.E)} (h𝔪 : 𝔪 ≠ ⊥) (κ : Cos ΛS ΛT 𝔪) :
     IsSBHalf e (latO S T ΛS ΛT fun _ => True) (cosInd e κ) := by
   obtain ⟨a, ha, h1⟩ := exists_hom_le hS hT
-  obtain ⟨b, hb, h2⟩ := exists_le_hom hS.toIsLattice hT.toIsLattice
+  obtain ⟨b, hb, h2⟩ := exists_le_hom hS.toIsLattice
   have hN : 0 < Ideal.absNorm 𝔪 := Nat.pos_of_ne_zero fun h => h𝔪 (Ideal.absNorm_eq_zero_iff.1 h)
   have k1 : ∀ u ∈ latO S T ΛS ΛT fun _ => True, (b * Ideal.absNorm 𝔪) • u ∈ hatMx (𝔪 • homLat ΛS ΛT) := fun u hu => by
     refine latO_induction (p := fun u => (b * Ideal.absNorm 𝔪) • u ∈ hatMx (𝔪 • homLat ΛS ΛT)) ?_ ?_ ?_ ?_ hu

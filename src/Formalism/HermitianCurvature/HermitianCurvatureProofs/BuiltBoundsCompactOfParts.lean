@@ -775,7 +775,7 @@ theorem re_mix_le (S : C.HidaSetting E Wp Wq) (v : Fin S.f) (ε : ℝ) (i : ℕ)
   exact mul_le_mul_of_nonneg_left
     ((Complex.re_le_norm _).trans ((hB u hu).trans (le_max_left _ _))) (hθ u)
 
-private lemma two_mul_norm_le_add_of_psdOn_pair {α : Type} [DecidableEq α] (G : α → α → ℂ) (p q : α) (hpq : p ≠ q)
+private lemma two_mul_norm_le_add_of_psdOn_pair {α : Type} [DecidableEq α] (G : α → α → ℂ) (p q : α)
     (h : TB.PSDOn ({p, q} : Finset α) G) : 2 * ‖G p q‖ ≤ ‖G p p‖ + ‖G q q‖ := by
   set Y : Finset α := {p, q} with hY
   let e : Fin 2 → Y := ![⟨p, by simp [Y]⟩, ⟨q, by simp [Y]⟩]
@@ -820,7 +820,7 @@ theorem gN_entry (S : C.HidaSetting E Wp Wq) (hpos : C.ThmPPos S) (v : Fin S.f) 
   · subst hpq
     exact hp
   have hps := hpos v ε hε j hj w {p, q}
-  have hcs := two_mul_norm_le_add_of_psdOn_pair (S.gramLoc v ε j (w.1 v)) p q hpq hps
+  have hcs := two_mul_norm_le_add_of_psdOn_pair (S.gramLoc v ε j (w.1 v)) p q hps
   unfold KB.gN at hp hq ⊢
   rw [norm_div] at hp hq ⊢
   rcases (norm_nonneg (S.sizeAt v (w.1 v) : ℂ)).eq_or_lt with h0 | hs
@@ -1157,7 +1157,7 @@ theorem germ_step (S : C.HidaSetting E Wp Wq) (hpos : C.ThmPPos S) (hI : KB.IntA
     (Λ : ℕ → ℕ → Fin S.f → ℝ) (hLL : ∀ v, KB.LiftLoc S v fun b s => Λ b s v) (hGL : ∀ v, KB.GermLoc S v)
     (hΛ0 : ∀ b s, 1 ≤ b → 1 ≤ s → b + s ≤ S.G.r + 1 → ∀ v, 0 ≤ Λ b s v) (ε : ℝ) (hε : 0 < ε) (n : ℕ)
     (hn : 2 ≤ n) (b : ℕ) (hb : 1 ≤ b) (hbn : b + n ≤ S.G.r + 2) (P' : ℝ) (hP' : GSup S ε b (n - 1) P')
-    (hP'0 : 0 ≤ P') (w' : S.W) (hw' : w' ∈ S.base.Wall) (hcnt : S.base.cnt w' + n * C.Kst ≤ S.Ntop)
+    (w' : S.W) (hw' : w' ∈ S.base.Wall) (hcnt : S.base.cnt w' + n * C.Kst ≤ S.Ntop)
     (La : Submodule ℤ (crystallineComparison.V S.f)) [DiscreteTopology La] [IsZLattice ℝ La]
     (hsm : Summable fun σ : crystallineComparison.dualSet La => crystallineComparison.mL C.Kst (fun v => Λ b (n - 1) v) ((S.g : ℝ) • (σ : crystallineComparison.V S.f))) :
     ∃ θ : S.W → ℝ, TB.IsProb (S.base.Wb (S.base.cnt w' + n * C.Kst)) θ ∧
@@ -1343,7 +1343,7 @@ theorem gsup_succ (S : C.HidaSetting E Wp Wq) (hpos : C.ThmPPos S) (hI : KB.IntA
   refine ⟨(∏ _v : Fin S.f, KB.dlB S b n) * M / R ^ (2 * S.f) * P', by positivity,
     mul_le_mul_of_nonneg_right hsz hP'0, ?_⟩
   intro w' hw' hcnt
-  obtain ⟨θ, hθ, H⟩ := germ_step S hpos hI hg Λ hLL hGL hΛ0 ε hε n hn b hb hbn P' hP' hP'0 w' hw' hcnt
+  obtain ⟨θ, hθ, H⟩ := germ_step S hpos hI hg Λ hLL hGL hΛ0 ε hε n hn b hb hbn P' hP' w' hw' hcnt
     (Lstd S.f R) hsm
   refine ⟨θ, hθ, fun Y hY κ hκ t ht => ?_⟩
   have h1 := H Y hY κ hκ t {t} (by simp) (by simpa using ht)
@@ -1410,11 +1410,10 @@ theorem nst_eq_nstV (S : C.HidaSetting E Wp Wq) (ε : ℝ) (i s : ℕ) (hi : i �
     List.map_cons, List.map_nil]
   rfl
 
-theorem sumFormConcrete_of (S : C.HidaSetting E Wp Wq) (hg1 : 0 < S.G.g1) (hg2 : 0 < S.G.g2) (hU : S6.Unram E)
+theorem sumFormConcrete_of (S : C.HidaSetting E Wp Wq) (hg1 : 0 < S.G.g1) (hg2 : 0 < S.G.g2)
     (hpos : C.ThmPPos S) (hI : KB.IntAll S) (X : ℕ → Fin S.f → ℝ) (hW : ∀ v, KB.WaveLoc S v fun i => X i v)
     (hXt : JC.HidaCurvatureBarriers S X) (Λ : ℕ → ℕ → Fin S.f → ℝ) (hLL : ∀ v, KB.LiftLoc S v fun b s => Λ b s v)
     (hΛt : ∀ b s, 1 ≤ b → 1 ≤ s → b + s ≤ S.G.r + 1 → ∀ v, 0 ≤ Λ b s v ∧ Λ b s v ≤ S.base.szL b s v)
-    (hthr : ∀ b s v, 1 ≤ b → 1 ≤ s → 0 < J.thrS S.G S.CA S.de S.de' S.T S.T' S.l b s (S.pl v))
     (hGL : ∀ v, KB.GermLoc S v) (Cs : ℝ) (hCs1 : 1 ≤ Cs) (hCs : SumBound S.f Cs) (B : ℝ) (hB1 : 1 ≤ B)
     (hSz : ∀ b n, 1 ≤ b → 1 ≤ n → ∃ R : ℝ, 0 < R ∧
       (∏ _v : Fin S.f, KB.dlB S b n) * (∏ v, Cs * (1 + (R * thr S b n v / S.g) ^ 2)) / R ^ (2 * S.f) ≤
@@ -1473,7 +1472,7 @@ theorem sumFormConcrete_of (S : C.HidaSetting E Wp Wq) (hg1 : 0 < S.G.g1) (hg2 :
     have : s * C.Kst ≤ (s + 1) * C.Kst := Nat.mul_le_mul_right _ (by omega)
     omega
   have hP'' : GSup S ε b (s - 1) P' := hP'
-  obtain ⟨θ, hθ, H⟩ := germ_step S hpos hI hg Λ hLL hGL hΛ0 ε hε s hs b hb (by omega) P' hP'' hP'0 w hw hcnt
+  obtain ⟨θ, hθ, H⟩ := germ_step S hpos hI hg Λ hLL hGL hΛ0 ε hε s hs b hb (by omega) P' hP'' w hw hcnt
     (latV S (J.LaB E S.g S.G.r b s)) hsm
   set M := ∑' σ : crystallineComparison.dualSet (latV S (J.LaB E S.g S.G.r b s)),
     crystallineComparison.mL C.Kst (fun v => Λ b (s - 1) v) ((S.g : ℝ) • (σ : crystallineComparison.V S.f))
@@ -1530,7 +1529,7 @@ theorem sumFormOfLoc : KB.SumFormOfLoc := by
   obtain ⟨A, hA1, hBLall⟩ := pbc_blockLatV
   refine ⟨max A B, le_max_of_le_left hA1, ?_⟩
   intro E _ _ _ Wp Wq _ _ _ _ S X Λ hg1 hg2 hU hpos hG hI hW hXt hL hΛt hthr hGL
-  exact sumFormConcrete_of S hg1 hg2 hU hpos hI X hW hXt Λ hL hΛt hthr hGL Cs hCs1
+  exact sumFormConcrete_of S hg1 hg2 hpos hI X hW hXt Λ hL hΛt hGL Cs hCs1
     (fun R g L hR hg hL => hCs S.f R g L hR hg hL) B hB1
     (fun b n hb hn => hSzAll E Wp Wq S hg1 hg2 hU b n hb hn fun v => hthr b n v hb hn) A hA1
     (fun b s hb hs => hBLall E Wp Wq S hg1 hg2 hU b s hb hs) (max A B) (le_max_left _ _) (le_max_right _ _)

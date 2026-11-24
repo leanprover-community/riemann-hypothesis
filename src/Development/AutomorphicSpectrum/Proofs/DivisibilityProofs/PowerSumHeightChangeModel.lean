@@ -968,9 +968,9 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qp9.locPair_val_linear :
-    ∀ (O : Type) [inst : CommRing O] [inst_1 : IsDomain O]
-    [inst_2 : IsDiscreteValuationRing O] (K : Type) [Fintype K] [inst_4 : DecidableEq K] (ι : K → Type)
-    [(k : K) → Fintype (ι k)] (σ : Type) [inst_6 : Fintype σ] (T : GlobalTheory.CompanionTheory.Ar.Num.LocPair ι O σ)
+    ∀ (O : Type) [CommRing O] [IsDomain O]
+    [IsDiscreteValuationRing O] (K : Type) [Fintype K] [DecidableEq K] (ι : K → Type)
+    [(k : K) → Fintype (ι k)] (σ : Type) [Fintype σ] (T : GlobalTheory.CompanionTheory.Ar.Num.LocPair ι O σ)
     (P : Ideal (GroundTheory.Heights₂.Heights.NumbersDVR.MRing ι O)),
     (∀ (Gs Hs : σ → MvPolynomial (σ ⊕ σ) ℝ), T.val P (Gs + Hs) = T.val P Gs + T.val P Hs) ∧
       (∀ (c : ℝ) (Gs : σ → MvPolynomial (σ ⊕ σ) ℝ),

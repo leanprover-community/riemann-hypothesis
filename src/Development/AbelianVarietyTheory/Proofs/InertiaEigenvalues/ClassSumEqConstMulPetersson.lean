@@ -183,7 +183,7 @@ theorem refine_eq (hβ : IsInvForm a β) {J J' : Subgroup (GAf L n)} {T T' : Fin
     {f f' : GAf L n → a.W} (hf : f ∈ NG.AFall L n a.ρ) (hf' : f' ∈ NG.AFall L n a.ρ)
     (hinv : ∀ κ ∈ J, ∀ g, β (f (g * κ)) (f' (g * κ)) = β (f g) (f' g)) :
     classSum a β J' T' f f' = (J'.relIndex J : ℂ) * classSum a β J T f f' := by
-  obtain ⟨F, hFJ, hFu, hFc⟩ := exists_cosetReps hle hne
+  obtain ⟨F, hFJ, hFu, hFc⟩ := exists_cosetReps hne
   rw [GlobalTheory.ClassRefine.classSum_smaller_level L n a β hβ J J' T T' hJ hle hne hT hT' f hf f' hf' (fun κ hκ g => hinv κ (hle hκ) g) F hFJ hFu]
   rw [classSum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun t _ => ?_

@@ -248,7 +248,7 @@ theorem fock_norm_substitution_bound (U : ι → Matrix (Fin n) (Fin n) ℂ) : �
         _ = _ := by rw [h2, hprod]; ring
     exact le_of_mul_le_mul_left h5 (by positivity)
 
-theorem fockSubNorm : FockSubNorm := fun ι _ n U d F hF => fock_norm_substitution_bound U _ d rfl F hF
+theorem fockSubNorm : FockSubNorm := fun _ _ _ U d F hF => fock_norm_substitution_bound U _ d rfl F hF
 
 end Block
 

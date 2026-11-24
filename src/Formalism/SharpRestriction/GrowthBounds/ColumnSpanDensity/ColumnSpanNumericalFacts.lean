@@ -251,7 +251,7 @@ private theorem sum_piFinset_Icc_shift_eq {ι : Type} [Fintype ι] [DecidableEq 
   · intro A _
     rfl
 
-theorem mean_of (K : Cst) (hKp : K.Pos) (X : Dat) (hF : ColumnSpanNumericalFacts K X) (R : RS X.p X.n') (h0 : Avg K X R 0)
+theorem mean_of (K : Cst) (X : Dat) (hF : ColumnSpanNumericalFacts K X) (R : RS X.p X.n') (h0 : Avg K X R 0)
     (hc : Avg K X R X.ccl) (hx : MeanX K X R) :
     meanKap X.TT X.m X.Y X.ar X.bl X.bu (X.kText K R) ≤ K.Cmean * X.TT.card * X.N₁ / X.Y := by
   classical

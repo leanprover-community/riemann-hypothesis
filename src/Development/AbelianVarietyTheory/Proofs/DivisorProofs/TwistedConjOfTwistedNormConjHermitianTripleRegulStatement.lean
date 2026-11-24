@@ -115,7 +115,7 @@ theorem exists_phi_eq : ∀ (p : ℕ) [Fact p.Prime] (K : IntermediateField ℚ_
   refine Matrix.ext fun a c => ?_
   simp only [GlobalTheory.PolyTensor.phi_tmul, Matrix.sum_apply, mul_algebraMap_apply, Matrix.map_apply]
   have hv : ∀ i, GlobalTheory.PolyTensor.val p K n γ (y i) = Xc i := fun i => rfl
-  simp only [hv, Xc, Matrix.map_apply, inclK_mul, ← bQ_apply]
+  simp only [hv, Xc, Matrix.map_apply, inclK_mul]
   simp only [e, ← bQ_apply, Module.Basis.coord_apply]
   have hsub : ((bQ p K r).repr (X a c)).support ⊆ s := fun i hi =>
     Finset.mem_biUnion.2 ⟨(a, c), Finset.mem_univ _, hi⟩

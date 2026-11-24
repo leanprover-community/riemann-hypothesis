@@ -830,7 +830,7 @@ private theorem fderiv_PhiM_of_lead_curve (μ : Fin n → ℤ) {z V : Matrix (Fi
       ((∑ i : Fin n, (((-(μ i - muNext μ i)) : ℤ) : ℂ) * ∑ a ∈ Finset.range ((i : ℕ) + 1), D a) *
         PhiM μ z) 0 := by
     have h := (HasDerivAt.finsetProd (u := Finset.univ) (fun i _ => hfd i)).mul_const (PhiM μ z)
-    refine (h.congr_deriv (by simp [hp0, Finset.prod_apply])).congr_of_eventuallyEq
+    refine (h.congr_deriv (by simp [hp0])).congr_of_eventuallyEq
       (Filter.Eventually.of_forall fun t => ?_)
     simp [Finset.prod_apply]
   have htel : ∀ N : ℕ, ∑ k ∈ Finset.range N, (m (k + 1) - m k) * ∑ a ∈ Finset.range (k + 1), D a =

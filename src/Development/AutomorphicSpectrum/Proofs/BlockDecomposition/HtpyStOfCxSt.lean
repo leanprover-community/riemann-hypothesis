@@ -119,8 +119,8 @@ abbrev Cyl : D × Bool ⥤ CommAlgCat.{0} R := CategoryTheory.Prod.fst D Bool �
 def P {k n : ℕ} (a : ⦋k⦌ ⟶ ⦋n⦌) (l : Fin (k + 1) →o Bool) : Cn (Cyl G) k →ₗ[R] Cn G n where
   toFun f c := mp G (c.map (homOfLE (Fin.le_last (a.toOrderHom (Fin.last k)))))
     (f ((a.toOrderHom.monotone.functor ⋙ c).prod' l.monotone.functor))
-  map_add' f g := funext fun c ↦ map_add _ _ _
-  map_smul' r f := funext fun c ↦ map_smul _ _ _
+  map_add' _ _ := funext fun _ ↦ map_add _ _ _
+  map_smul' _ _ := funext fun _ ↦ map_smul _ _ _
 
 theorem cof_P {k n : ℕ} (a : ⦋k⦌ ⟶ ⦋n⦌) (l : Fin (k + 1) →o Bool) (i : Fin (n + 2)) (f : Cn (Cyl G) k) :
     cof G n i (P G a l f) = P G (a ≫ SimplexCategory.δ i) l f := by

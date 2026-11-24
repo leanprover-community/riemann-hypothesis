@@ -1165,7 +1165,7 @@ theorem sec_mem_latV_iff (q : SplitPt D k) (S : HSp D) (L : Lat S)
       have hi := (hmem x).1 hx
       have e : x = ∑ i, (⟨x i, hi i⟩ : 𝓞 D.host.E) • (Pi.single i 1 : Fin S.rank → D.host.E) := by
         funext j
-        rw [Finset.sum_apply, Finset.sum_eq_single j (fun b _ hb => by simp [Pi.single_apply, Ne.symm hb]) (by simp)]
+        rw [Finset.sum_apply, Finset.sum_eq_single j (fun b _ hb => by simp [Ne.symm hb]) (by simp)]
         simp [Algebra.smul_def]
       rw [e]
       exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span (by simp [G]))
@@ -1186,7 +1186,7 @@ theorem sec_mem_latV_iff (q : SplitPt D k) (S : HSp D) (L : Lat S)
   · intro h
     have e : w = ∑ i, (⟨w i, h i⟩ : 𝒪[k]) • FullLatFrame.aux₃ q (S := S) (Pi.single i 1) := by
       funext j
-      rw [Finset.sum_apply, Finset.sum_eq_single j (fun b _ hb => by simp [FullLatFrame.aux₃, Pi.single_apply, Ne.symm hb]) (by simp)]
+      rw [Finset.sum_apply, Finset.sum_eq_single j (fun b _ hb => by simp [FullLatFrame.aux₃, Ne.symm hb]) (by simp)]
       simp [FullLatFrame.aux₃]
       change _ = w j * 1
       rw [mul_one]

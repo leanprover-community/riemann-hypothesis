@@ -140,7 +140,7 @@ theorem absMain {G M : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup 
     (l : M → G) (hl : Continuous l) (a : ℝ → G) (ha : Continuous a) (F : M → ℂ) (hF : Continuous F) (W : G → ℂ) (hW : Continuous W)
     (hb : ∀ C : Set G, IsCompact C → ∃ B : ℝ, ∀ m, ∀ g ∈ C, ‖F m‖ * ‖W (l m * g)‖ ≤ B) (x : U → M) (hx : Continuous x)
     (key : ∀ (u : U) m t k, W (l m * (a t * k)) = W (l (m * x u) * (a t * ((u : G)⁻¹ * k))))
-    (I : G → ℂ) (hI : ∀ g, I g = ∫ m, conj (F m) * W (l m * g) ∂ν) (hIc : Continuous I)
+    (I : G → ℂ) (hIc : Continuous I)
     (htr : ∀ g y, ∫ m, conj (F (m * y)) * W (l (m * y) * g) ∂ν = I g) (t₀ : ℝ) (f : G → ℂ)
     (hv : ∀ m (k : Kc), f (l m * k) = ∫ u : U, F (m * x u) * I (a t₀ * ((u : G)⁻¹ * k)) ∂lam)
     (h0 : ∀ β : ℝ → ℂ, Continuous β → HasCompactSupport β →
@@ -791,7 +791,7 @@ theorem unfZero [_root_.NumberField.IsTotallyComplex K] (μ : Measure (G1 K (2 +
   haveI : CompactSpace (KG K (2 + 2)) := isCompact_iff_compactSpace.1 hK
   obtain ⟨κ, _, _⟩ := ex_prob (KG K (2 + 2))
   refine absMain ((fd μ₂).prod (fd μ₂)) (KG K (2 + 2)) U hUK κ lam (fun m => lv m.1 m.2 0) hlv0 (fun t => lv 1 1 t) hlv1
-    (fun m => φ₁ m.1 * φ₂ m.2) hF W hWc hb x hx (fun u m t k => ?_) I hI hIc (fun g y => ?_) t₀ f
+    (fun m => φ₁ m.1 * φ₂ m.2) hF W hWc hb x hx (fun u m t k => ?_) I hIc (fun g y => ?_) t₀ f
     (fun m k => ?_) (pair0 μ μ₂ τ₁ τ₂ D A h₁ h₂ v Φ W hΦ hΓ hrep hJ hW f hsec hff κ) ⟨k₀, hk₀⟩
   · obtain ⟨X, hX⟩ := hux u
     obtain ⟨Y, hY⟩ := lv_nn m.1 m.2 t X

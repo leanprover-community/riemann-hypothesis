@@ -716,7 +716,7 @@ def SS : CC D n ⥤ CC D n where
 
 def uu : 𝟭 (CC D n) ⟶ SS Λ where
   app T := ObjectProperty.homMk (ObjectProperty.homMk ⟨ll Λ T, le_rfl⟩)
-  naturality {T T'} f := hom_ext' (smap_spec Λ f).1.symm
+  naturality {_ _} f := hom_ext' (smap_spec Λ f).1.symm
 
 variable (h : ∀ U, LevE D.κ D.t D.i (n + 1) (Λ.toE.obj U))
 
@@ -724,7 +724,7 @@ abbrev ell : AffOp D.X ⥤ CC D n := (LevE D.κ D.t D.i (n + 1)).lift Λ.toE h
 
 def ww : qq D n ⋙ ell Λ h ⟶ SS Λ where
   app T := ObjectProperty.homMk (ObjectProperty.homMk ⟨rr Λ T, le_rfl⟩)
-  naturality {T T'} f := hom_ext' (smap_spec Λ f).2.symm
+  naturality {_ _} f := hom_ext' (smap_spec Λ f).2.symm
 
 def eps : 𝟭 (AffOp D.X) ⟶ ell Λ h ⋙ qq D n where
   app U := 𝟙 U

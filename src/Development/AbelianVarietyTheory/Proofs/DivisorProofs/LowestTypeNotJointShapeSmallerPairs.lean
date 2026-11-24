@@ -118,7 +118,7 @@ theorem countP_le_of_image (A : List ℚ) (hA : A.Nodup) (P : ℚ → Bool) (N :
     _ ≤ N := by simpa using Finset.card_image_le (s := Finset.range N) (f := φ)
 
 theorem bound_pos (A B C D : List ℚ) (m : ℚ) (hA : A.Nodup) (hAm : ∀ e ∈ A, ∃ k : ℕ, e = m + k)
-    (hB : ∀ e ∈ B, e < m) (hD : ∀ e ∈ D, e < m) (x : ℚ) (hx : x ∈ A) :
+    (hD : ∀ e ∈ D, e < m) (x : ℚ) (hx : x ∈ A) :
     m + D.length - B.length + ((A.length : ℚ) + B.length - C.length - D.length - 1) / 2 ≤
       x + rl (A ++ B) (C ++ D) x := by
   obtain ⟨N, hN⟩ := hAm x hx
@@ -150,7 +150,7 @@ theorem bound_pos (A B C D : List ℚ) (m : ℚ) (hA : A.Nodup) (hAm : ∀ e ∈
   linarith
 
 theorem bound_neg (A B C D : List ℚ) (m : ℚ) (hB : B.Nodup) (hBm : ∀ e ∈ B, ∃ k : ℕ, e = -m - k)
-    (hA : ∀ e ∈ A, -m < e) (hC : ∀ e ∈ C, -m < e) (x : ℚ) (hx : x ∈ B) :
+    (hC : ∀ e ∈ C, -m < e) (x : ℚ) (hx : x ∈ B) :
     x + rl (A ++ B) (C ++ D) x ≤
       -(m + C.length - A.length + ((A.length : ℚ) + B.length - C.length - D.length - 1) / 2) := by
   obtain ⟨N, hN⟩ := hBm x hx
@@ -336,10 +336,10 @@ theorem lowestType_not_jointShape : ∀ (t : ℕ) (al be ga de : List ℚ), HypA
     obtain ⟨e2, e3⟩ := shape_lists (al ++ be) (ga ++ de) _ _ _ (by simp) (by simp)
       (pad_length _ _ _ l1) (pad_length _ _ _ l2) e1
     have k1 := len_pos ga de _ _ _ _ hd e3 fun x hx => by
-      have := bound_pos ga de al be _ nga cga (lde _ le_rfl) (lbe _ le_rfl) x hx
+      have := bound_pos ga de al be _ nga cga (lbe _ le_rfl) x hx
       simp only [cPair]; push_cast; linarith
     have k2 := len_neg al be _ _ _ _ ha e2 fun x hx => by
-      have := bound_neg al be ga de _ nbe cbe (lal _ le_rfl) (lga _ le_rfl) x hx
+      have := bound_neg al be ga de _ nbe cbe (lga _ le_rfl) x hx
       simp only [cPair]; push_cast; linarith
     omega
   · obtain ⟨a, b, c, d, ha, hc, hb, hd, -, -, -, -, l1, l2, l3, l4, e1, -⟩ := hJ
@@ -347,10 +347,10 @@ theorem lowestType_not_jointShape : ∀ (t : ℕ) (al be ga de : List ℚ), HypA
     obtain ⟨e2, e3⟩ := shape_lists (al ++ be) (ga ++ de) _ _ _ (by simp) (by simp)
       (pad_length _ _ _ l1) (pad_length _ _ _ l2) e1
     have k1 := len_pos al be _ _ _ _ hb e2 fun x hx => by
-      have := bound_pos al be ga de _ nal cal (lbe _ le_rfl) (lde _ le_rfl) x hx
+      have := bound_pos al be ga de _ nal cal (lde _ le_rfl) x hx
       simp only [cPair]; push_cast; linarith
     have k2 := len_neg ga de _ _ _ _ hc e3 fun x hx => by
-      have := bound_neg ga de al be _ nde cde (lga _ le_rfl) (lal _ le_rfl) x hx
+      have := bound_neg ga de al be _ nde cde (lal _ le_rfl) x hx
       simp only [cPair]; push_cast; linarith
     omega
   · obtain ⟨a, b, c, d, ha, hc, hb, hd, -, -, -, -, l1, l2, l3, l4, -, e1⟩ := hJ
@@ -359,21 +359,21 @@ theorem lowestType_not_jointShape : ∀ (t : ℕ) (al be ga de : List ℚ), HypA
       (by simp [hbll]; omega) (by simp) (pad_length _ _ _ l3) (pad_length _ _ _ l4) e1
     rcases hne with hne | hne
     · have k1 := len_neg ga be _ _ _ _ hc e3 fun x hx => by
-        have := bound_neg ga be (al ++ block t) de _ nbe cbe (lga _ le_rfl) (up al lal _ le_rfl) x hx
+        have := bound_neg ga be (al ++ block t) de _ nbe cbe (up al lal _ le_rfl) x hx
         simp only [cPair, List.length_append, hbll] at this ⊢; push_cast at this ⊢; linarith
       rw [List.append_assoc] at e2
       have k2 := len_pos al (block t ++ de) _ _ _ _ hd e2 fun x hx => by
         have := bound_pos al (block t ++ de) ga be _ nal (fun e he => up_strict _ e (cal e he)
-          fun h => hne (h ▸ entry_lamA al be ga de e (by simp [he]))) (dn de lde _ m1) (lbe _ m1) x hx
+          fun h => hne (h ▸ entry_lamA al be ga de e (by simp [he]))) (lbe _ m1) x hx
         simp only [cPair, List.length_append, hbll] at this ⊢; push_cast at this ⊢; linarith
       omega
     · have k2 := len_neg (al ++ block t) de _ _ _ _ ha e2 fun x hx => by
         have := bound_neg (al ++ block t) de ga be _ nde (fun e he => down_strict _ e (cde e he)
-          fun h => hne (h ▸ entry_lamA al be ga de e (by simp [he]))) (up al lal _ m1) (lga _ m1) x hx
+          fun h => hne (h ▸ entry_lamA al be ga de e (by simp [he]))) (lga _ m1) x hx
         simp only [cPair, List.length_append, hbll] at this ⊢; push_cast at this ⊢; linarith
       rw [List.append_assoc] at e3
       have k1 := len_pos ga be _ _ _ _ hb e3 fun x hx => by
-        have := bound_pos ga be al (block t ++ de) _ nga cga (lbe _ le_rfl) (dn de lde _ le_rfl) x hx
+        have := bound_pos ga be al (block t ++ de) _ nga cga (dn de lde _ le_rfl) x hx
         simp only [cPair, List.length_append, hbll] at this ⊢; push_cast at this ⊢; linarith
       omega
   · obtain ⟨a, b, c, d, ha, hc, hb, hd, -, -, -, -, l1, l2, l3, l4, -, e1⟩ := hJ
@@ -382,21 +382,21 @@ theorem lowestType_not_jointShape : ∀ (t : ℕ) (al be ga de : List ℚ), HypA
       (by simp) (by simp [hbll]; omega) (pad_length _ _ _ l3) (pad_length _ _ _ l4) e1
     rcases hne with hne | hne
     · have k1 := len_neg al de _ _ _ _ ha e2 fun x hx => by
-        have := bound_neg al de (ga ++ block t) be _ nde cde (lal _ le_rfl) (up ga lga _ le_rfl) x hx
+        have := bound_neg al de (ga ++ block t) be _ nde cde (up ga lga _ le_rfl) x hx
         simp only [cPair, List.length_append, hbll] at this ⊢; push_cast at this ⊢; linarith
       rw [List.append_assoc] at e3
       have k2 := len_pos ga (block t ++ be) _ _ _ _ hb e3 fun x hx => by
         have := bound_pos ga (block t ++ be) al de _ nga (fun e he => up_strict _ e (cga e he)
-          fun h => hne (h ▸ entry_lamA al be ga de e (by simp [he]))) (dn be lbe _ m1) (lde _ m1) x hx
+          fun h => hne (h ▸ entry_lamA al be ga de e (by simp [he]))) (lde _ m1) x hx
         simp only [cPair, List.length_append, hbll] at this ⊢; push_cast at this ⊢; linarith
       omega
     · have k2 := len_neg (ga ++ block t) be _ _ _ _ hc e3 fun x hx => by
         have := bound_neg (ga ++ block t) be al de _ nbe (fun e he => down_strict _ e (cbe e he)
-          fun h => hne (h ▸ entry_lamA al be ga de e (by simp [he]))) (up ga lga _ m1) (lal _ m1) x hx
+          fun h => hne (h ▸ entry_lamA al be ga de e (by simp [he]))) (lal _ m1) x hx
         simp only [cPair, List.length_append, hbll] at this ⊢; push_cast at this ⊢; linarith
       rw [List.append_assoc] at e2
       have k1 := len_pos al de _ _ _ _ hd e2 fun x hx => by
-        have := bound_pos al de ga (block t ++ be) _ nal cal (lde _ le_rfl) (dn be lbe _ le_rfl) x hx
+        have := bound_pos al de ga (block t ++ be) _ nal cal (dn be lbe _ le_rfl) x hx
         simp only [cPair, List.length_append, hbll] at this ⊢; push_cast at this ⊢; linarith
       omega
 

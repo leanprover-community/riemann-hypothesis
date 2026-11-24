@@ -106,7 +106,7 @@ private theorem discr_neg {K : Type} [Field K] [NumberField K] (hK : Module.finr
 
 private theorem quad_ex {Ω : Type} [Field Ω] [CharZero Ω] {K : Type} [Field K] [NumberField K] [Algebra K Ω]
     (hK : Module.finrank ℚ K = 2) (h : IsTotallyComplex K) (η : G ℚ Ω →* ℤˣ) (hη : η.ker = galOf ℚ K Ω) (σ : G ℚ Ω)
-    (φ : Ω →+* ℂ) (hφ : ∀ x, φ (σ x) = starRingEnd ℂ (φ x)) (hσ : η σ = -1) :
+    (φ : Ω →+* ℂ) :
     ∃ δ : Ω, δ ^ 2 = -((discr K).natAbs : Ω) ∧ ∀ s : G ℚ Ω, s δ = (η s : ℤ) • δ := by
   obtain ⟨δ0, hδ0⟩ := sqrt_discr hK
   have hneg := discr_neg hK h
@@ -281,7 +281,7 @@ theorem UpperTheory.V.Fr.gen_gd :
     exact Nat.mul_ne_zero (Nat.mul_ne_zero hl hN) hd
   · exact Dvd.dvd.mul_right (Dvd.dvd.mul_left (even_iff_two_dvd.mp gd.N_even) l) _
   · obtain ⟨φ, hφ⟩ := D.conj
-    obtain ⟨δ, hδ, hs⟩ := quad_ex gd.quad gd.imag D.η D.η_ker D.cc φ hφ hηcc
+    obtain ⟨δ, hδ, hs⟩ := quad_ex gd.quad gd.imag D.η D.η_ker D.cc φ
     exact ⟨_, δ, by omega, fun q _ hq => Dvd.dvd.mul_left hq _, hδ, hs⟩
   · refine ⟨1, ?_, ?_⟩
     · rw [pow_one]

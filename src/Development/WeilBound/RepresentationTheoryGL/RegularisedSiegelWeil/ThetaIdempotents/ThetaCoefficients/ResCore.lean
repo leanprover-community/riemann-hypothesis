@@ -617,7 +617,7 @@ theorem uj_smul {A : Type} [CommRing A] (σ : A →+* A) {n : ℕ} (J : Matrix (
   rw [Matrix.mul_smul, Matrix.smul_mul]
   exact hδ.smul_left_cancel
 
-theorem jst_cases (D : D7) (n : ℕ) (P : Fin (n + n) → Fin (n + n) → Prop)
+theorem jst_cases (n : ℕ) (P : Fin (n + n) → Fin (n + n) → Prop)
     (h : ∀ a b, P (finSumFinEquiv a) (finSumFinEquiv b)) : ∀ i j, P i j := by
   intro i j
   obtain ⟨a, rfl⟩ := finSumFinEquiv.surjective i
@@ -627,7 +627,7 @@ theorem jst_cases (D : D7) (n : ℕ) (P : Fin (n + n) → Fin (n + n) → Prop)
 theorem jst_transpose (D : D7) (n : ℕ) : (Jst D n)ᵀ = -Jst D n := by
   ext i j
   revert i j
-  refine jst_cases D n _ fun a b => ?_
+  refine jst_cases n _ fun a b => ?_
   simp only [Jst, blk4, Matrix.transpose_apply, Matrix.submatrix_apply, Matrix.neg_apply, Equiv.symm_apply_apply]
   rcases a with a | a <;> rcases b with b | b <;>
     simp [Matrix.one_apply, eq_comm]
@@ -635,7 +635,7 @@ theorem jst_transpose (D : D7) (n : ℕ) : (Jst D n)ᵀ = -Jst D n := by
 theorem jst_map (D : D7) (n : ℕ) : (Jst D n).map (D.sp.cm.sig : D.host.E →+* D.host.E) = Jst D n := by
   ext i j
   revert i j
-  refine jst_cases D n _ fun a b => ?_
+  refine jst_cases n _ fun a b => ?_
   simp only [Jst, blk4, Matrix.map_apply, Matrix.submatrix_apply, Equiv.symm_apply_apply]
   rcases a with a | a <;> rcases b with b | b <;>
     simp [Matrix.one_apply, apply_ite]
@@ -644,7 +644,7 @@ theorem jst_mul (D : D7) (n : ℕ) : Jst D n * Jst D n = -1 := by
   simp only [Jst, blk4, Matrix.submatrix_mul_equiv, Matrix.fromBlocks_multiply]
   ext i j
   revert i j
-  refine jst_cases D n _ fun a b => ?_
+  refine jst_cases n _ fun a b => ?_
   simp only [Matrix.submatrix_apply, Matrix.neg_apply, Equiv.symm_apply_apply]
   rw [← Matrix.submatrix_one_equiv (finSumFinEquiv.symm : Fin (n + n) ≃ Fin n ⊕ Fin n)]
   simp only [Matrix.submatrix_apply]

@@ -389,7 +389,7 @@ def GLint (P : HeightOneSpectrum (𝓞 E)) : Subgroup (Sp E n ≃ₗ[E] Sp E n) 
 variable (ST SG Q : Finset (HeightOneSpectrum (𝓞 E)))
 
 def DecoF : Type :=
-  {p : DecoSet (E := E) (n := n) (ST := ST) (SG := SG) × (∀ P : Q, Sp E n ≃ₗ[E] Sp E n) //
+  {p : DecoSet (E := E) (n := n) (ST := ST) (SG := SG) × (∀ _ : Q, Sp E n ≃ₗ[E] Sp E n) //
     ∀ (P : Q) (x : Sp E n), p.2 P x ∈ p.1.1.at P.1 ↔ x ∈ stdAt E n P.1}
 
 abbrev GLQ : Type := ∀ P : Q, ↥(GLint E n P.1)

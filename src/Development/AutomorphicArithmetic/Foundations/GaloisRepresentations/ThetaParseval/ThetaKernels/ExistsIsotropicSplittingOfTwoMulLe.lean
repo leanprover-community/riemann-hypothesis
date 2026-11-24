@@ -162,13 +162,13 @@ private theorem mem_Oh_pk {x : AE F E} (hx : At (evFin F v) x) (h : compFin F E 
   rw [h1]
   exact sgE_mem_Oh_pk h
 private theorem at_sgEM_pk {ι κ : Type} (M : Matrix ι κ (Fv F v ⊗[F] E)) : At (evFin F v) (M.map (PositivityTheory.ThKH.Iwas.sgE E v)) :=
-  fun u hu => Matrix.ext fun i j => PositivityTheory.ThKH.Iwas.at_sgE _ u hu
+  fun u hu => Matrix.ext fun _ _ => PositivityTheory.ThKH.Iwas.at_sgE _ u hu
 private theorem comp_sgEM_pk {ι κ : Type} (M : Matrix ι κ (Fv F v ⊗[F] E)) :
     (M.map (PositivityTheory.ThKH.Iwas.sgE E v)).map (compFin F E v) = M :=
-  Matrix.ext fun i j => PositivityTheory.ThKH.Iwas.comp_sgE _
+  Matrix.ext fun _ _ => PositivityTheory.ThKH.Iwas.comp_sgE _
 end
 theorem UpperTheory.exists_isotropic_splitting_of_two_mul_le :
-    ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E) (n d : ℕ) (W : Spc F E d) (r s : ℕ), _root_.UpperTheory.TP.W.GoodK σ B → W.IsSkew σ B r s → 2 * n ≤ d → ∀ (v : Pl F) (t : E →ₐ[F] Fv F v), ∃ Y R, IsIsoW σ W v (n := n) Y R := by
+    ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E) (n d : ℕ) (W : Spc F E d) (r s : ℕ), _root_.UpperTheory.TP.W.GoodK σ B → W.IsSkew σ B r s → 2 * n ≤ d → ∀ (v : Pl F) (_ : E →ₐ[F] Fv F v), ∃ Y R, IsIsoW σ W v (n := n) Y R := by
   intro F E _ _ _ _ _ σ B n d W r s hB hW hnd v t
   have hc := hB.cm
   have hσ := cm_conj_conj hc

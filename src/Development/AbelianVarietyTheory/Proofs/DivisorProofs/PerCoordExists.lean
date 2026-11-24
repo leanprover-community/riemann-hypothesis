@@ -114,7 +114,7 @@ theorem perCoord_exists : ∀ (O : Type) [Ring O] (bar : O → O) (g : ℕ) (ρ 
   have hQper : ∀ b, Cof b ∈ U → IsPeriod D ρ (Q b) := fun b hb => by
     obtain ⟨hY, hX, hpos⟩ := hUg hb
     have hT : (Cof b)ᵀ * M₀ ∈ Tsp bar ρ := by rw [hCofT]; exact hιT b
-    obtain ⟨hMh, hMim⟩ := _root_.GlobalTheory.PeriodCoord.riemann_converse M₀ (Cof b) hM₀h hdet₀ hT.1 hY
+    obtain ⟨hMh, hMim⟩ := _root_.GlobalTheory.PeriodCoord.riemann_converse M₀ (Cof b) hM₀h hT.1 hY
     refine _root_.GlobalTheory.PELU.isPeriod_comp_realLinear D ρ P₀ (realMap 1 (Cof b)) _ hP₀ (realMap_one_injective hX) (fun a x => ?_) hMh hpos (fun x y => ?_)
     · rw [realMap_apply, realMap_apply, one_mulVec, one_mulVec, star_mulVec_map, mulVec_mulVec,
         ← comm_of_mem_Tsp hP₀ hM₀ hdet₀ hT a, ← mulVec_mulVec, mulVec_add]

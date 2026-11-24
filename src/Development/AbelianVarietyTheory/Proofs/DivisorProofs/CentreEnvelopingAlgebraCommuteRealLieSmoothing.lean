@@ -387,7 +387,7 @@ def transFam (φ : Sm E a) (g : GA E a) (y : Lie E a) : Cv E a :=
     fun x hx => by simp [chart, show ¬ IsUnit (Matrix.of (rmul y x)) from not_isUnit_rmul_left hx y]⟩
 
 theorem js_transFam (φ : Sm E a) (g : GA E a) : JS (transFam φ g) :=
-  (φ.2 g).comp contDiff_mulL.contDiffOn fun p hp => isUnit_rmul hp.1 hp.2
+  (φ.2 g).comp contDiff_mulL.contDiffOn fun _ hp => isUnit_rmul hp.1 hp.2
 
 theorem chart_one (φ : GA E a → ℂ) (g : GA E a) : chart φ g (oneL E a) = φ g := by
   have e := chart_val φ g 1

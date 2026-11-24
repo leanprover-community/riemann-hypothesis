@@ -191,7 +191,6 @@ theorem exists_lift (hϖ : ϖ ≠ 0) (φ : PowerSeries V →+* LaurentSeries K) 
 
 theorem denominators_gen {σ R L S S' : Type} [CommRing R] [CommRing L] [CommRing S] [CommRing S'] [IsDomain S]
     [Algebra (MvPolynomial σ R) S] (c Δ : MvPolynomial σ R) [IsLocalization.Away (c * Δ) S]
-    (hinj : Function.Injective (algebraMap (MvPolynomial σ R) S))
     (j : MvPolynomial σ L →+* S') (hj : Function.Injective j) (a : σ → R) (ha : MvPolynomial.eval a Δ = 1)
     (φ : R →+* L) (hφ : Function.Injective φ) (ψ : S →+* S')
     (hψ : ∀ B, ψ (algebraMap (MvPolynomial σ R) S B) = j (MvPolynomial.map φ B))
@@ -232,7 +231,7 @@ theorem denominators (hϖ : ϖ ≠ 0) (φ : PowerSeries V →+* LaurentSeries K)
   have hinjL : Function.Injective (algebraMap (MvPolynomial (ArcLt Dw) (LaurentSeries K)) (ArcS Dw K)) :=
     IsLocalization.injective (M := Submonoid.powers (arcDet Dw K)) _
       (powers_le_nonZeroDivisors_of_noZeroDivisors hD)
-  exact denominators_gen (MvPolynomial.C (PowerSeries.C ϖ * PowerSeries.X)) (arcDetR Dw V) hinj _ hinjL _
+  exact denominators_gen (MvPolynomial.C (PowerSeries.C ϖ * PowerSeries.X)) (arcDetR Dw V) _ hinjL _
     (eval_arcDetR Dw V) φ hφ ψ (fun B => RingHom.congr_fun hψ B) f P hP
 
 theorem comp_eq_of_letters (φ : PowerSeries V →+* PowerSeries K) (ψ : ArcSR Dw V ϖ →+* ArcS Dw K) :

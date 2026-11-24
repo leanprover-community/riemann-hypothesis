@@ -228,7 +228,7 @@ theorem ratVec_single_add_single {n : ℕ} (i i' : Fin n) (a c : K) :
   by_cases h1 : k = i <;> by_cases h2 : k = i' <;>
     simp [Pi.single_apply, h1, h2, apply_ite (algebraMap K 𝔸[K])]
 
-theorem exists_reduced_of {C : ℝ} (hC : 0 < C)
+theorem exists_reduced_of {C : ℝ}
     (hD : ∀ (α δ : IdeleGroup K) (u : 𝔸[K]), ∃ x : Fin 2 → K, x ≠ 0 ∧
       adelicNorm (ratVec x ᵥ* !![(α : 𝔸[K]), u; 0, (δ : 𝔸[K])]) ≤
         C * √(ideleModule K (α * δ) : ℝ)) :
@@ -420,7 +420,7 @@ theorem exists_reduced : ∃ t₀ : ℝ, 0 < t₀ ∧ ∀ (n : ℕ) (g : AdelicG
   obtain ⟨C, hC, hD⟩ := exists_adelicNorm_vecMul_le (K := K)
   have hC2 : 0 < C ^ 2 := pow_pos hC 2
   refine ⟨(C ^ 2)⁻¹, inv_pos.2 hC2, fun n g => ?_⟩
-  obtain ⟨γ, b, hb, k, hk, heq, hr⟩ := exists_reduced_of hC hD n g
+  obtain ⟨γ, b, hb, k, hk, heq, hr⟩ := exists_reduced_of hD n g
   refine ⟨γ, b, hb, k, hk, heq, fun i j hij => ?_⟩
   rw [inv_mul_le_iff₀ hC2]
   exact hr i j hij

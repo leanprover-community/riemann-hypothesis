@@ -561,10 +561,10 @@ section -- clump:auto
 
 noncomputable def UpperTheory.Reformulated.B.IdempotentMatrixMonoidHom.prM :
     {R A : Type} →
-      [inst : CommRing R] →
-        [inst_1 : CommRing A] →
+      [CommRing R] →
+        [CommRing A] →
           [Algebra R A] →
-            (e : R) → e * e = e → (ι : Type) → [inst : Fintype ι] → [inst_3 : DecidableEq ι] → Matrix ι ι A →* Matrix ι ι A :=
+            (e : R) → e * e = e → (ι : Type) → [Fintype ι] → [DecidableEq ι] → Matrix ι ι A →* Matrix ι ι A :=
   fun {R A} _ _ _ e he ι _ _ =>
     { toFun := fun M => e • M + (1 - e) • (1 : Matrix ι ι A)
       map_one' := by rw [← add_smul, add_sub_cancel, one_smul]
@@ -1414,7 +1414,7 @@ theorem exists_local_iso_scalar_of_reG : _root_.GlobalTheory.FunPr.ThetaLocalInp
   have hf := hM.fin
   have hP := GlobalTheory.ThK.Inhab.pairV hT
   have hP' := GlobalTheory.ThK.Inhab.pairV' hT
-  have hAE := _root_.GlobalTheory.ThK.LocalOps.theta_kernel_local_operators_act hK
+  have hAE := _root_.GlobalTheory.ThK.LocalOps.theta_kernel_local_operators_act
   have h1V : (1 : UA σ G.V.J) ∈ UAt σ G.V (evFin F v) := fun u _ => by
     show u • ((1 : UA σ G.V.J).1.1 - 1) = 0
     rw [show (1 : UA σ G.V.J).1.1 = 1 from rfl, sub_self, smul_zero]

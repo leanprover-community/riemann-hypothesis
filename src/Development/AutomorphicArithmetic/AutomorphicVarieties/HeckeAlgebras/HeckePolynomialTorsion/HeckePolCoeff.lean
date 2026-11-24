@@ -70,14 +70,14 @@ section -- clump:auto
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.Qk6.heckePol :
-    {A : Type} → [inst : CommRing A] → ℕ → ℕ → (ℕ → A) → Polynomial A :=
+    {A : Type} → [CommRing A] → ℕ → ℕ → (ℕ → A) → Polynomial A :=
     fun {A : Type} [CommRing A] (n q : ℕ) (a : ℕ → A) ↦
       ∑ j ∈ Finset.range (n + (1 : ℕ)),
         (Polynomial.C : A → Polynomial A) ((-1 : A) ^ j * (↑q : A) ^ (j * (j - (1 : ℕ)) / (2 : ℕ)) * a j) *
           Polynomial.X ^ (n - j)
 
 theorem UpperTheory.Reformulated.B.Qk6.heckePol_map :
-    ∀ {A B : Type} [inst : CommRing A] [inst_1 : CommRing B] (f : A →+* B) (n q : ℕ) (a : ℕ → A),
+    ∀ {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) (n q : ℕ) (a : ℕ → A),
       Polynomial.map f (UpperTheory.Reformulated.B.Qk6.heckePol n q a) = UpperTheory.Reformulated.B.Qk6.heckePol n q fun (j : ℕ) ↦ (f : A → B) (a j) := by
   intro A B _ _ f n q a
   unfold UpperTheory.Reformulated.B.Qk6.heckePol

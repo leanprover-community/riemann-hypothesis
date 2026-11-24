@@ -160,7 +160,6 @@ theorem toBlowupOfMapCenter_cocycle {W Y X : Scheme.{u}} (g : W ⟶ Y) [Algebrai
     [AlgebraicGeometry.QuasiCompact g] (t : SequenceOfBlowups W) {n : ℕ} (hn : n < t.length) (π : X ⟶ Y)
     {γ : t.schemeAt n ⟶ X} (hflat : AlgebraicGeometry.Flat γ)
     (hc : ((t.center n).map γ).comap γ = t.center n)
-    (_hsq : IsPullback γ (t.projectionToBase n) π g)
     (e : pullbackFstSchemeAt g t n ≅ pullbackSndSchemeAt g t n)
     (e' : pullbackFstSchemeAt g t (n + 1) ≅ pullbackSndSchemeAt g t (n + 1))
     (hee : e'.hom ≫ t.pullbackTransitionMap (pullback.snd g g) (Nat.le_succ n)
@@ -250,7 +249,7 @@ def descendedBlowupData {W Y : Scheme.{u}} (g : W ⟶ Y) [AlgebraicGeometry.Flat
     sq_comm := toBlowupOfMapCenter_comp_proj hn hfl hc
     isPullback_sq := isPullback_toBlowupOfMapCenter hn hfl hc
     isPullback_base := isPullback_toBlowupOfMapCenter_projectionToBase g t hn π hfl hc hsq
-    hom_comparison := toBlowupOfMapCenter_cocycle g t hn π hfl hc hsq e e' hee hgamma
+    hom_comparison := toBlowupOfMapCenter_cocycle g t hn π hfl hc e e' hee hgamma
     structY_eq := rfl }
 
 end FunctorialResolution.EmbeddedResolution

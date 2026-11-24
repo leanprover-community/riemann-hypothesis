@@ -294,7 +294,7 @@ theorem exists_finite_homogeneous_generators : ∀ (K : Type) [CommRing K] (D c 
       · simp only [Pi.add_apply, Finset.sum_add_distrib, Finset.sum_pi_single']
         simp; omega
       · have : ∏ i, x i ^ (Pi.single l 1 : Fin (D + 1) → ℕ) i = x l := by
-          rw [Finset.prod_eq_single l (fun b _ hb => by simp [Pi.single_apply, hb]) (by simp)]
+          rw [Finset.prod_eq_single l (fun b _ hb => by simp [hb]) (by simp)]
           simp
         simp only [Pi.add_apply, pow_add, Finset.prod_mul_distrib, this]; ring
     | zero => simpa using (A (q + 1)).zero_mem

@@ -174,7 +174,7 @@ theorem fold_good (hSm : CVSmooth) (hCC : CVCC) (hSu : CVSupp) {D : B.RealPlaceD
 theorem fold_smooth (hSm : CVSmooth) (s : ℂ) : ∀ (a : List (Bool × ℝ)) (H : B.Mat k r → (Wq →L[ℂ] Wp)),
     B.CkOn ⊤ (B.GV k r) H → B.CkOn ⊤ (B.GV k r) (a.foldr (opL k r s) H)
   | [], _, h => h
-  | x :: a, H, h => hSm k r Wp Wq s _ _ (fold_smooth hSm s a H h)
+  | _ :: a, H, h => hSm k r Wp Wq s _ _ (fold_smooth hSm s a H h)
 
 theorem adj_step (hA : CapAdj) (hF : CapThFacts) (hB : BetaCongr) (D : B.RealPlaceData k r Wp Wq) {A : ℝ}
     (hAB : B.AB k r ≤ A) {c : ℝ} (hc : 0 < c) {s : ℂ} (hs : conj s = s) (x : Bool × ℝ)

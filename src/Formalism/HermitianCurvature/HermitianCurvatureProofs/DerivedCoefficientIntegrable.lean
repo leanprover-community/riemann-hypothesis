@@ -760,7 +760,7 @@ theorem norm_add_sq_le (x y : ℂ) (c : ℝ) (hc : 0 ≤ c) : c * ‖x + y‖ ^ 
   have h4 : c * ‖x + y‖ ^ 2 ≤ c * (‖x‖ + ‖y‖) ^ 2 := mul_le_mul_of_nonneg_left h2 hc
   nlinarith
 
-theorem shift_pt {B : Base} (S : Step B) (CR Cd : ℝ) (hCR : 0 ≤ CR) (hCd : 0 ≤ Cd) (hW : S.WPos) (h5 : S.ShiftFormula)
+theorem shift_pt {B : Base} (S : Step B) (CR Cd : ℝ) (hCR : 0 ≤ CR) (hW : S.WPos) (h5 : S.ShiftFormula)
     (hRes : S.Residues CR) (hWR : S.WeightRatio Cd) (Y s : ℝ) (hY : Y ∈ S.J) (hYs : Y + s ∈ S.J) (ω : B.Ω) :
     LE.sq B (S.d Y) (S.gs Y s) ω ≤ (1 + CR) ^ 2 * (Cd * LE.sq B (S.d (Y + s)) (S.gX (Y + s)) ω) := by
   set u1 : S.ι → ℂ := fun i => S.gX (Y + s) ω (false, i) with hu1
@@ -832,7 +832,7 @@ theorem shiftBound : ShiftBound := by
         (Finset.sum_nonneg (fun a _ => mul_nonneg (hW.2 Y hY ω a).le (by positivity))))
     · exact hint.const_mul _
     · exact Filter.Eventually.of_forall (fun ω => by
-        have := mul_le_mul_of_nonneg_left (shift_pt S CR Cd hCR hCd hW h5 hRes hWR Y s hY hYs ω) (th_nonneg B ε σ hε ω)
+        have := mul_le_mul_of_nonneg_left (shift_pt S CR Cd hCR hW h5 hRes hWR Y s hY hYs ω) (th_nonneg B ε σ hε ω)
         simp only
         calc _ ≤ _ := this
           _ = _ := by ring)

@@ -351,7 +351,7 @@ private theorem dc_inv {G : Type} [Group G] (U : Subgroup G) (y z : G) :
   simpa using h
 
 private theorem comm_abs {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] {V : Submodule ℂ H}
-    (A B E E' X Y : H →L[ℂ] H) (Z : H →L[ℂ] H)
+    (A B E E' X Y : H →L[ℂ] H)
     (hAB : ContinuousLinearMap.adjoint A = B) (hEE : ContinuousLinearMap.adjoint E = E')
     (h1 : E = X ∘L A) (h2 : E' = Y ∘L B) (hc : X * prj V = prj V * X)
     (h4 : ContinuousLinearMap.adjoint (Y ∘L prj V) = X ∘L prj V) (hPB : prj V ∘L B = B) :
@@ -451,7 +451,7 @@ private theorem hopComm {K : Type} [Field K] [NumberField K] {n : ℕ} (hn : 0 <
     have := UpperTheory.rhoF_comp_Ofin_of_left_invariant K n μ m e' u (fun z => by
       rw [he', he', mul_inv_rev, hUi _ (inv_mem hu)])
     exact congrArg (fun T : LL μ →L[ℂ] LL μ => T v) this
-  exact comm_abs (H := LL μ) (V := fixF μ U) _ _ _ _ _ _ 0 hAB hEE h1 h2 hc.eq h4 hPB
+  exact comm_abs (H := LL μ) (V := fixF μ U) _ _ _ _ _ _ hAB hEE h1 h2 hc.eq h4 hPB
 
 private theorem smooth_star {K : Type} [Field K] [NumberField K] {n : ℕ} (β β' : TI K n)
     (h : ∀ a, β' a = conj (β a⁻¹)) (hb : SmoothT β) : SmoothT β' := by

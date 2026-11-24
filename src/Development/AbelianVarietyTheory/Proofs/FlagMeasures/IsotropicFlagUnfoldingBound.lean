@@ -1472,7 +1472,7 @@ theorem bound : ∀ (I I₀ : AutInst) (e : I₀.E ≃+* I.E) (xf : I.Gf) (a : �
     rw [this, mul_zero]
     exact zero_le
   obtain ⟨g₀, hg₀⟩ := Set.nonempty_iff_ne_empty.2 hA
-  have hsat := _root_.GlobalTheory.FlagBase.AdSat.isSatFlag_of_isAdapted I I₀ e xf a j S Λ x₀ T T' T₀ hj had
+  have hsat := _root_.GlobalTheory.FlagBase.AdSat.isSatFlag_of_isAdapted I I₀ e xf a j S Λ x₀ T T' T₀ had
   have hiso := _root_.GlobalTheory.FlagMeas.isIsoFlag_flagAt_of_isSatFlag I _ a j S hsat
   obtain ⟨-, hrd, hrd1, hf, hcard, -⟩ := _root_.GlobalTheory.FlagMeas.instance_numbers I
   have hf0 : I.f ≠ 0 := by omega

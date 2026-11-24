@@ -109,8 +109,8 @@ theorem psiInv_of (hL : LieSkewU) (hS : SkewLieU) (hC : CaySkewU) (hI : CayIdU) 
   have hXs := hC n ε (Mf p) hMU hu
   have hv : (WithLp.equiv 2 _).symm (realifyFun X) ∈ m ⊔ h := by rw [hmh]; exact hS n ε X hXs
 
-  have hrec : (L₀ (psiE ε m h L₀ L₁ p).1 : EuclideanSpace ℝ (Fin n × Fin n × Bool)) +
-      (L₁ (psiE ε m h L₀ L₁ p).2 : EuclideanSpace ℝ (Fin n × Fin n × Bool)) = (WithLp.equiv 2 _).symm (realifyFun X) := by
+  have hrec : (L₀ (psiE m h L₀ L₁ p).1 : EuclideanSpace ℝ (Fin n × Fin n × Bool)) +
+      (L₁ (psiE m h L₀ L₁ p).2 : EuclideanSpace ℝ (Fin n × Fin n × Bool)) = (WithLp.equiv 2 _).symm (realifyFun X) := by
     obtain ⟨u, hu', w, hw, huw⟩ := Submodule.mem_sup.1 hv
     have h1 : w ∈ mᗮ := by rw [Submodule.mem_orthogonal]; intro z hz; exact horth z hz w hw
     have h2 : u ∈ hᗮ := by rw [Submodule.mem_orthogonal]; intro z hz; rw [real_inner_comm]; exact horth u hu' z hz

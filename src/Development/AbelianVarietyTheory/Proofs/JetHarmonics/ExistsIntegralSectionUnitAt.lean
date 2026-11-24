@@ -135,7 +135,7 @@ theorem exists_ratio_local {R : Type} [CommRing R] [IsLocalRing R] {X : Scheme.{
     (s : LB.Sec (LB.LinComb L φ ε)) (G : LB.Gen (LB.LinComb L φ ε)) (hG : G.IsGen) :
     ∃ x : Γ(Spec (CommRingCat.of R), ⊤), ∀ (Z : Scheme.{0}) (r : Z ⟶ Spec (CommRingCat.of R)) (z : Z) (J),
       Good L z J → sval s r z J = gs r z ⊤ x * (val G r z J).val := by
-  obtain ⟨j, hj⟩ := exists_chart_top L hL φ ε
+  obtain ⟨j, hj⟩ := exists_chart_top L hL φ
   have le : (⊤ : (Spec (CommRingCat.of R)).Opens) ≤ LB.wchart L φ j := hj.ge
   refine ⟨((Spec (CommRingCat.of R)).presheaf.map (homOfLE le).op).hom
     ((show Γ(Spec (CommRingCat.of R), LB.wchart L φ j) from s.f j) *

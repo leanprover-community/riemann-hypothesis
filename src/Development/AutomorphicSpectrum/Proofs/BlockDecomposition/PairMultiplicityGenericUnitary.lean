@@ -875,7 +875,7 @@ theorem FW_mono (Fil : ℕ → Submodule ℂ Z) : Monotone (FW Fil) := fun k l h
     rintro _ ⟨k₁, k₂, z, w, hz, hw, hk, rfl⟩
     exact ⟨k₁, k₂, z, w, hz, hw, hk.trans hkl, rfl⟩)
 
-theorem FW_exh (Fil : ℕ → Submodule ℂ Z) (hm : Monotone Fil) (he : ∀ z, ∃ k, z ∈ Fil k) (t : Z ⊗[ℂ] Z) :
+theorem FW_exh (Fil : ℕ → Submodule ℂ Z) (he : ∀ z, ∃ k, z ∈ Fil k) (t : Z ⊗[ℂ] Z) :
     ∃ k, t ∈ FW Fil k := by
   induction t using TensorProduct.induction_on with
   | zero => exact ⟨0, Submodule.zero_mem _⟩
@@ -993,7 +993,7 @@ theorem freeR (n : ℕ) : ∃ (W : Type) (_ : AddCommGroup W) (_ : Module ℂ W)
     rw [← hLm, ← hLm, h.eq]
   have hRLc : ∀ S T, Commute (R S) (L T) := fun S T => rT_lT_comm S T
   refine ⟨Z ⊗[ℂ] Z, inferInstance, inferInstance, fun c e => R (M c e), fun c e => L (M c e), χ', z₀ ⊗ₜ z₀, aR, dR,
-    FW Fil, ⟨?_, ?_, ?_⟩, by simp [hχ, h1], ?_, ?_, ⟨?_, ?_, ?_, FW_mono Fil, FW_exh Fil hF.mono hF.exh, ?_, ?_, ?_, ?_⟩⟩
+    FW Fil, ⟨?_, ?_, ?_⟩, by simp [hχ, h1], ?_, ?_, ⟨?_, ?_, ?_, FW_mono Fil, FW_exh Fil hF.exh, ?_, ?_, ?_, ?_⟩⟩
   · intro a' b c e
     have := congrArg R (hM a' b c e)
     rw [hRs, hRm, hRm, hRs] at this
@@ -1601,7 +1601,7 @@ theorem single_degree_zero (v : V) : DegQ 0 (Pi.single ∅ v : Cq n V) := by
   intro A hA
   by_contra h
   have : A ≠ ∅ := fun h0 => h (by simp [h0])
-  exact hA (by simp [Pi.single_apply, this])
+  exact hA (by simp [this])
 
 theorem eq_single {x : Cq n V} (hx : DegQ 0 x) : x = Pi.single ∅ (x ∅) := by
   funext A
@@ -1661,7 +1661,7 @@ theorem single_one_deg (i : Lt n) (y : V) : DegQ 1 (Pi.single {i} y : Cq n V) :=
   intro A hA
   by_contra h
   have : A ≠ {i} := fun h0 => h (by simp [h0])
-  exact hA (by simp [Pi.single_apply, this])
+  exact hA (by simp [this])
 
 theorem ann_single (k i : Lt n) (y : V) :
     annq k (Pi.single {i} y : Cq n V) = if k = i then Pi.single ∅ y else 0 := by
@@ -1712,7 +1712,7 @@ theorem single_one_supp {P : Lt n → Prop} {i : Lt n} (hi : P i) (y : V) : Supp
   · subst h
     rw [mem_singleton.1 hl]
     exact hi
-  · exact absurd (by simp [Pi.single_apply, h]) hA
+  · exact absurd (by simp [h]) hA
 
 theorem gl_of_inj {T : V →ₗ[ℂ] W} (hT : Function.Injective T) {E : Fin n → Fin n → Module.End ℂ V}
     {F : Fin n → Fin n → Module.End ℂ W} (h : ∀ a b y, T (E a b y) = F a b (T y)) (hF : GlRel F) : GlRel E := by

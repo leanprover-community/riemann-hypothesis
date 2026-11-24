@@ -787,7 +787,7 @@ alias _root_.GlobalTheory.CuspGL.generalLinearGroupCardComplex_finiteField_ne_ze
 open Polynomial in
 theorem _root_.GlobalTheory.CuspGL.sum_coef_mul_eq_pair (F : Type) [Field F] [Finite F] (θ : AlgebraicClosure F →* ℂ)
     (hθ : ∀ x y : AlgebraicClosure F, x ≠ 0 → y ≠ 0 → θ x = θ y → x = y) (d : ℕ) (hd : 0 < d)
-    (χ χ' : GL (Fin d) F → ℂ) (h : _root_.GlobalTheory.BI.IsChar ℂ ℂ χ) (h' : _root_.GlobalTheory.BI.IsChar ℂ ℂ χ')
+    (χ χ' : GL (Fin d) F → ℂ) (h' : _root_.GlobalTheory.BI.IsChar ℂ ℂ χ')
     (hp : _root_.GlobalTheory.CuspGL.IsPrimitive (_root_.GlobalTheory.CuspGL.extZero χ)) (hp' : _root_.GlobalTheory.CuspGL.IsPrimitive (_root_.GlobalTheory.CuspGL.extZero χ')) (a b : ℕ → ℤ)
     (ha : ∀ k : ℕ, _root_.GlobalTheory.CuspGL.ipGL (_root_.GlobalTheory.CuspGL.extZero χ) (fun g : Module.End F (Fin d → F) => _root_.GlobalTheory.CuspGL.rootSum θ k (LinearMap.charpoly g))
       = a k * _root_.GlobalTheory.CuspGL.glCard F d)
@@ -982,17 +982,17 @@ theorem _root_.GlobalTheory.CuspGL.eq_of_isPrimitive_of_eq_on_elliptic (F : Type
   have hself := _root_.GlobalTheory.BI.pair_self_of_isIrrChar_algClosed ℂ _ χ hi
   have hself' := _root_.GlobalTheory.BI.pair_self_of_isIrrChar_algClosed ℂ _ χ' hi'
   have hsa : ∑ k ∈ Finset.range (Nat.card F ^ d - 1), a k ^ 2 = d := by
-    have := _root_.GlobalTheory.CuspGL.sum_coef_mul_eq_pair F θ hθ d hd χ χ hc hc hp hp a a ha ha
+    have := _root_.GlobalTheory.CuspGL.sum_coef_mul_eq_pair F θ hθ d hd χ χ hc hp hp a a ha ha
     rw [hself, mul_one] at this
     simp_rw [sq]
     exact_mod_cast this
   have hsb : ∑ k ∈ Finset.range (Nat.card F ^ d - 1), b k ^ 2 = d := by
-    have := _root_.GlobalTheory.CuspGL.sum_coef_mul_eq_pair F θ hθ d hd χ' χ' hc' hc' hp' hp' b b hb hb
+    have := _root_.GlobalTheory.CuspGL.sum_coef_mul_eq_pair F θ hθ d hd χ' χ' hc' hp' hp' b b hb hb
     rw [hself', mul_one] at this
     simp_rw [sq]
     exact_mod_cast this
   have hab : ∑ k ∈ Finset.range (Nat.card F ^ d - 1), a k * b k = 0 := by
-    have := _root_.GlobalTheory.CuspGL.sum_coef_mul_eq_pair F θ hθ d hd χ χ' hc hc' hp hp' a b ha hb
+    have := _root_.GlobalTheory.CuspGL.sum_coef_mul_eq_pair F θ hθ d hd χ χ' hc' hp hp' a b ha hb
     rw [_root_.GlobalTheory.BI.pair_eq_zero_of_isIrrChar_ne _ χ χ' hi hi' hne, mul_zero] at this
     exact_mod_cast this
 

@@ -88,7 +88,7 @@ def toB : DpstUr P ρ →ₗ[↥(MaximalUnramifiedExtension l)] Bst P ⊗[ℚ_[l
   map_add' x y := by simp
   map_smul' c x := comm_mulV P c _
 
-theorem toB_injective : Function.Injective (toB P ρ) := fun x y h =>
+theorem toB_injective : Function.Injective (toB P ρ) := fun _ _ h =>
   (toUr P ρ).symm.injective (Subtype.ext ((TensorProduct.comm ℚ_[l] V (Bst P)).injective h))
 
 end GlobalTheory.PstRank

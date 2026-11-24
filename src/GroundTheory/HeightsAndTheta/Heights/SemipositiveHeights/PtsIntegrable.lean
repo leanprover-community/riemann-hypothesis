@@ -85,6 +85,6 @@ theorem PtsIntegrable.of_resExists (hE : ResExistsStatement) : PtsIntegrableStat
   obtain ⟨J, ⟨R⟩⟩ := exists_anLogRes hE hP
   exact (pushForward_integrable R.A (fun j => potOf R (L j)) (fun j => potOf_isPotential R (L j) (hL j))
     (brQ R Ψ) (brBad R Ψ) (brBad_null R Ψ hP hΨ) (brGood R Ψ) (brFib_finite R Ψ hP hΨ) _
-    (brIntegrable R L A s hP hL hA hs)).congr ((brFibreSum_ae R Ψ L A s hP hΨ hL hA hs).mono fun y hy => hy.symm)
+    (brIntegrable R L A s hL hA hs)).congr ((brFibreSum_ae R Ψ L A s hP hΨ hL hA hs).mono fun y hy => hy.symm)
 
 end GroundTheory.Heights₂.Heights.ForSecondHalf

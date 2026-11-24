@@ -95,7 +95,7 @@ theorem isItW_of_mem_span {χS χT : (AE D)ˣ →* Circle} {ω : WRep S T} (hω 
       rw [hL, hL, GlobalTheory.FockTranslate.dRho_sum hω.std.1.1 hθ hF τ z c.support (fun a => a.1) c fun a _ => a.2]
   have hpt : ∀ Q, IsThetaFunO ψ S T (pureTensorO ψ θ S T sS sT BS BT f₀ Q) ∧
       L (pureTensorO ψ θ S T sS sT BS BT f₀ Q) = pureTensorO ψ θ S T sS sT BS BT (L f₀) Q := fun Q => by
-    refine GlobalTheory.OrientedHeis.pureTensorL_intertwine (IsThetaFunO ψ S T) GlobalTheory.OrientedHeis.theta_zero
+    refine GlobalTheory.OrientedHeis.pureTensorL_intertwine (IsThetaFunO ψ S T)
       (fun _ _ => GlobalTheory.OrientedHeis.theta_add) (fun c _ => GlobalTheory.OrientedHeis.theta_smul c) _ _ L (fun k F hF => ?_) f₀ h₀ Q
     obtain ⟨τ, i, j⟩ := k
     refine ⟨GlobalTheory.OrientedHeis.theta_smul _ (GlobalTheory.OrientedHeis.theta_sub (GlobalTheory.OrientedHeis.theta_dRho hθ hω.std τ _ hF)

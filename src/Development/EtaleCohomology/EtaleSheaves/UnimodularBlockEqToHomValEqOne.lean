@@ -139,8 +139,8 @@ def unimodularBlockCategoryMapRingHom (a b : ℕ) {A B : Type} [CommRing A] [Com
 def cat1 (a b : ℕ) : CommRingCat.{0} ⥤ Cat.{0,0} where
   obj A := Cat.of (U1 a b A)
   map f := (unimodularBlockCategoryMapRingHom a b f.hom).toCatHom
-  map_id A := rfl
-  map_comp f g := rfl
+  map_id _ := rfl
+  map_comp _ _ := rfl
 
 def toProd (a b : ℕ) (A : Type) [CommRing A] : U1 a b A ⥤ SingleObj (GL (Fin a) A) × SingleObj (GL (Fin b) A) where
   obj _ := (SingleObj.star _, SingleObj.star _)
@@ -186,7 +186,7 @@ def rho (a b : ℕ) : cat1 a b ⟶ pglCat a where
 
 def fstNat (C D : CommRingCat.{0} ⥤ Cat.{0,0}) : prodCat C D ⟶ C where
   app A := (CategoryTheory.Prod.fst (C.obj A) (D.obj A)).toCatHom
-  naturality A B f := rfl
+  naturality _ _ _ := rfl
 
 def glNat (N : ℕ) : pglCat N ⟶ glCat N := { app := fun A => (Um.toGL N A).toCatHom, naturality := fun _ _ _ => rfl }
 

@@ -101,7 +101,7 @@ theorem gt_eq_weyl (lam : Fin n → ℤ) (hlam : Antitone lam) (t : Fin n → �
   have hw := wden_ne t hinj
   field_simp
 
-theorem rmLaws' : RmLaws := fun n lam => ⟨rm_one lam, rm_mul lam, rm_smooth lam⟩
+theorem rmLaws' : RmLaws := fun _ lam => ⟨rm_one lam, rm_mul lam, rm_smooth lam⟩
 
 theorem rmChar' : RmChar := by
   intro n lam hlam t ht hinj

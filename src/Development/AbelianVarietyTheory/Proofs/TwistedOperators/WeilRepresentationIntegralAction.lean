@@ -242,7 +242,7 @@ theorem isCompact_intPts (κ : Type) : IsCompact (intPts F κ) :=
 
 theorem isOpen_intPts (κ : Type) [Finite κ] : IsOpen (intPts F κ) :=
   isOpen_set_pi Set.finite_univ fun _ _ =>
-    RestrictedProduct.isOpen_forall_mem (fun v => Valued.isOpen_valuationSubring _)
+    RestrictedProduct.isOpen_forall_mem (fun _ => Valued.isOpen_valuationSubring _)
 
 theorem zero_mem_intPts (κ : Type) : (0 : κ → FiniteAdeleRing (𝓞 F) F) ∈ intPts F κ :=
   fun _ _ v => zero_mem (v.adicCompletionIntegers F)

@@ -290,7 +290,7 @@ private theorem orderAt_vanishingIdealAssignment_eq_one :
       ∀ x ∈ (T : Set ↥W), FunctorialResolution.EmbeddedResolution.orderAt (vanishingIdealAssignment W T) x = 1 := by
   intro k _ _ W p hp T hirr hsm hcomp x hx
   rw [vanishingIdealAssignment_apply] at hsm ⊢
-  exact orderAt_vanishingIdeal_eq_one p hp T hirr hsm hcomp x hx
+  exact orderAt_vanishingIdeal_eq_one p hp T hsm hcomp x hx
 
 private theorem smooth_opens_ι_comp_of_smooth :
     ∀ (k : Type u) [Field k] [CharZero k] (W : Scheme.{u})
@@ -310,7 +310,7 @@ private theorem smooth_vanishingIdealAssignment_of_isSmoothDivisor :
         Smooth ((vanishingIdealAssignment H.subscheme S).subschemeι ≫ (H.subschemeι ≫ (U.ι ≫ p))) := by
   intro k _ _ W p U H hH T S hS hTsubH hT
   rw [vanishingIdealAssignment_apply] at hT ⊢
-  exact smooth_vanishingIdeal_comap_subschemeι p U H hH T S hS hTsubH hT
+  exact smooth_vanishingIdeal_comap_subschemeι p U H T S hS hTsubH hT
 
 private theorem smooth_vanishingIdealAssignment_restrict_opens :
     ∀ (k : Type u) [Field k] [CharZero k] (W : Scheme.{u})

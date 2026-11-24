@@ -626,8 +626,8 @@ def diagU (z : TorPt n) : Matrix.unitaryGroup (Fin n) ℂ :=
 
 def dualAct (E : KMod n) (k : Matrix.unitaryGroup (Fin n) ℂ) : Module.End ℂ (E.V →L[ℂ] ℂ) where
   toFun ξ := ξ ∘L E.ρ k⁻¹
-  map_add' x y := ContinuousLinearMap.add_comp _ _ _
-  map_smul' c x := ContinuousLinearMap.smul_comp _ _ _
+  map_add' _ _ := ContinuousLinearMap.add_comp _ _ _
+  map_smul' _ _ := ContinuousLinearMap.smul_comp _ _ _
 
 theorem diagU_comm (z w : TorPt n) : diagU z * diagU w = diagU w * diagU z := by
   apply Subtype.ext
@@ -771,7 +771,7 @@ theorem evL_pPL (z : Fin n → ℂˣ) : evL z (pPL n) = ∏ a, ∏ b, (1 + (z a 
   refine Finset.prod_congr rfl fun a _ => Finset.prod_congr rfl fun b _ => ?_
   congr 1
   have key : ∀ a : Fin n, ∏ c, (z c : ℂ) ^ ((Pi.single a (1 : ℤ) : Fin n → ℤ) c) = z a := fun a => by
-    rw [Finset.prod_eq_single a (fun c _ hc => by simp [Pi.single_apply, hc]) (fun h => absurd (Finset.mem_univ a) h)]
+    rw [Finset.prod_eq_single a (fun c _ hc => by simp [hc]) (fun h => absurd (Finset.mem_univ a) h)]
     simp
   simp only [Pi.sub_apply, zpow_sub₀ (Units.ne_zero _), Finset.prod_div_distrib, key]
 

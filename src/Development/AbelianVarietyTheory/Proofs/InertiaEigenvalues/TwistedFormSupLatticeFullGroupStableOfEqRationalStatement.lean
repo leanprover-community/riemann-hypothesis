@@ -138,22 +138,22 @@ variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R} [NumberField what₂.L
 open NX
 
 theorem exists_int_read (i : tw.Tw) (b : Bool) (a : 𝓞 S.Ks) :
-    ∃ o : tw.O i, algebraMap (tw.O i) (FractionRing (tw.O i)) o = (ιK S i b (a : S.Ks) : KB S i b) := by
+    ∃ o : tw.O i, algebraMap (tw.O i) (FractionRing (tw.O i)) o = (ιK S i b (a : S.Ks) : KB i) := by
   let f : S.Ks →+* FractionRing (tw.O i) := ιK S i b
   have h : IsIntegral (tw.O i) (f (a : S.Ks)) :=
     (RingOfIntegers.isIntegral_coe a).map_of_comp_eq (Int.castRingHom (tw.O i)) f (RingHom.ext_int _ _)
   exact IsIntegrallyClosed.isIntegral_iff.1 h
 
 theorem exists_chi_read [Finite S.G] (i : tw.Tw) (b : Bool) (j : ℕ) (hχ : ChiInLL0 S j) (g : S.G) :
-    ∃ o : tw.O i, algebraMap (tw.O i) (FractionRing (tw.O i)) o = ((readLL0 S i b (chiL S j hχ g))⁻¹ : KB S i b) := by
+    ∃ o : tw.O i, algebraMap (tw.O i) (FractionRing (tw.O i)) o = ((readLL0 S i b (chiL S j hχ g))⁻¹ : KB i) := by
   have hn : 0 < orderOf g := orderOf_pos g
   have h1 : chiL S j hχ g ^ orderOf g = 1 := by
     apply Subtype.ext
     change (((S.A j).chi g : what₂.LLˣ) : what₂.LL) ^ orderOf g = 1
     rw [← Units.val_pow_eq_pow_val, ← map_pow, pow_orderOf_eq_one, map_one, Units.val_one]
-  let x : FractionRing (tw.O i) := ((readLL0 S i b (chiL S j hχ g))⁻¹ : KB S i b)
+  let x : FractionRing (tw.O i) := ((readLL0 S i b (chiL S j hχ g))⁻¹ : KB i)
   have h2 : x ^ orderOf g = 1 := by
-    change ((readLL0 S i b (chiL S j hχ g))⁻¹ : KB S i b) ^ orderOf g = 1
+    change ((readLL0 S i b (chiL S j hχ g))⁻¹ : KB i) ^ orderOf g = 1
     rw [inv_pow, ← map_pow, h1, map_one, inv_one]
   have h3 : IsIntegral (tw.O i) x := IsIntegral.of_pow hn (by rw [h2]; exact isIntegral_one)
   exact IsIntegrallyClosed.isIntegral_iff.1 h3
@@ -164,9 +164,9 @@ def mkF (y : S.WL j) (h : y ∈ (S.A j).WK) : FmK S j := ⟨y, h⟩
 
 def rdF (c : S.Ks) : FractionRing (tw.O i) := ιK S i b c
 
-def rdK (a : KB S i b) : FractionRing (tw.O i) := a
+def rdK (a : KB i) : FractionRing (tw.O i) := a
 
-def oneT (x : FmK S j) : Fm S i j b := ((1 : KB S i b) ⊗ₜ[S.Ks] x : KB S i b ⊗[S.Ks] FmK S j)
+def oneT (x : FmK S j) : Fm S i j b := ((1 : KB i) ⊗ₜ[S.Ks] x : KB i ⊗[S.Ks] FmK S j)
 
 theorem oneT_zero : oneT S i j b 0 = 0 := TensorProduct.tmul_zero _ _
 
@@ -175,12 +175,12 @@ theorem oneT_add (x y : FmK S j) : oneT S i j b (x + y) = oneT S i j b x + oneT 
 
 theorem oneT_smul (c : S.Ks) (x : FmK S j) :
     oneT S i j b (c • x) = (rdF S i b c) • oneT S i j b x := by
-  change (1 : KB S i b) ⊗ₜ[S.Ks] (c • x) = (ιK S i b c : KB S i b) • ((1 : KB S i b) ⊗ₜ[S.Ks] x)
+  change (1 : KB i) ⊗ₜ[S.Ks] (c • x) = (ιK S i b c : KB i) • ((1 : KB i) ⊗ₜ[S.Ks] x)
   rw [← TensorProduct.smul_tmul, TensorProduct.smul_tmul']
   congr 1
 
 theorem oneT_smul_int (c : 𝓞 S.Ks) (y : S.WL j) (h : y ∈ (S.A j).WK) (h' : c • y ∈ (S.A j).WK) (o : tw.O i)
-    (ho : algebraMap (tw.O i) (FractionRing (tw.O i)) o = (ιK S i b (c : S.Ks) : KB S i b)) :
+    (ho : algebraMap (tw.O i) (FractionRing (tw.O i)) o = (ιK S i b (c : S.Ks) : KB i)) :
     oneT S i j b (mkF S j (c • y) h') = o • oneT S i j b (mkF S j y h) := by
   have h1 : (mkF S j (c • y) h') = (c : S.Ks) • (mkF S j y h) :=
     Subtype.ext (algebraMap_smul S.Ks c y).symm
@@ -267,21 +267,21 @@ theorem Bsup_span (hF : (S.A j).MKFull) :
         oneT_smul S i j b c (mkF S j x h1)
       rw [this]
       exact Submodule.smul_mem _ _ h2
-  have hall : ∀ (a : KB S i b) (x : FmK S j),
-      ((a ⊗ₜ[S.Ks] x : KB S i b ⊗[S.Ks] FmK S j) : Fm S i j b) ∈ B := by
+  have hall : ∀ (a : KB i) (x : FmK S j),
+      ((a ⊗ₜ[S.Ks] x : KB i ⊗[S.Ks] FmK S j) : Fm S i j b) ∈ B := by
     intro a x
     have hx : (show ↥(S.A j).WK from x).1 ∈ Submodule.span S.Ks ((S.A j).MK : Set (S.WL j)) := by
       rw [hS]; exact (show ↥(S.A j).WK from x).2
     obtain ⟨h, h'⟩ := aux _ hx
-    have e : ((a ⊗ₜ[S.Ks] x : KB S i b ⊗[S.Ks] FmK S j) : Fm S i j b) =
+    have e : ((a ⊗ₜ[S.Ks] x : KB i ⊗[S.Ks] FmK S j) : Fm S i j b) =
         (rdK S i b a) • oneT S i j b x := by
-      change a ⊗ₜ[S.Ks] x = a • ((1 : KB S i b) ⊗ₜ[S.Ks] x)
+      change a ⊗ₜ[S.Ks] x = a • ((1 : KB i) ⊗ₜ[S.Ks] x)
       rw [TensorProduct.smul_tmul', smul_eq_mul, mul_one]
     rw [e]
     exact Submodule.smul_mem _ _ h'
   refine eq_top_iff.2 fun t _ => ?_
   change t ∈ B
-  induction (show KB S i b ⊗[S.Ks] FmK S j from t) using TensorProduct.induction_on with
+  induction (show KB i ⊗[S.Ks] FmK S j from t) using TensorProduct.induction_on with
   | zero => exact Submodule.zero_mem _
   | tmul a x => exact hall a x
   | add x y hx hy => exact Submodule.add_mem _ hx hy
@@ -293,12 +293,12 @@ theorem actG_Bsup [Finite S.G] (hst : RhoStab S j) (hχ : ChiInLL0 S j)
   induction hf using Submodule.span_induction with
   | mem f hf =>
     obtain ⟨x, hx, rfl⟩ := hf
-    have e : actG S i j b hst hχ g ((1 : KB S i b) ⊗ₜ[S.Ks] x : KB S i b ⊗[S.Ks] FmK S j) =
+    have e : actG S i j b hst hχ g ((1 : KB i) ⊗ₜ[S.Ks] x : KB i ⊗[S.Ks] FmK S j) =
         o • oneT S i j b (rhoKG S j hst (S.eG.symm g) x) := by
       rw [← algebraMap_smul (FractionRing (tw.O i)) o, ho]
       change ((readLL0 S i b (chiL S j hχ (S.eG.symm g)))⁻¹ •
-        Module.End.baseChangeHom S.Ks (KB S i b) (FmK S j) (rhoKG S j hst (S.eG.symm g)))
-          ((1 : KB S i b) ⊗ₜ[S.Ks] x) = _
+        Module.End.baseChangeHom S.Ks (KB i) (FmK S j) (rhoKG S j hst (S.eG.symm g)))
+          ((1 : KB i) ⊗ₜ[S.Ks] x) = _
       rw [LinearMap.smul_apply]
       rfl
     rw [e]

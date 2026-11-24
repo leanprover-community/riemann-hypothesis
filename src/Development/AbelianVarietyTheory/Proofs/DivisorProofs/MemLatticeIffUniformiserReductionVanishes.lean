@@ -88,7 +88,6 @@ theorem val_cpt_eToEAf {D : D7} (PP : Pl D.host.E) (x : D.host.E) :
 
 theorem mem_int_of_mul {D : D7} {Q : Finset (Pl D.host.E)} {e : AE D} (he : IsIdemSum e Q) {ϖ : 𝓞 D.host.E}
     (hϖ : ∀ PP ∈ Q, ϖ ∈ PP.asIdeal ∧ ϖ ∉ PP.asIdeal ^ 2) {m : EAf D} (hm : toEAf D e * m = m)
-    (hy : eToEAf D (ϖ : D.host.E) * m ∈ Formalism.L2.Herm.intAf D.host.F D.host.E)
     (hr : ∀ PP ∈ Q, Valued.v (cpt PP (eToEAf D (ϖ : D.host.E) * m)) < 1) :
     m ∈ Formalism.L2.Herm.intAf D.host.F D.host.E := by
   obtain ⟨⟨es, hes, rfl⟩, -⟩ := he
@@ -137,7 +136,7 @@ theorem mem_localLattice_iff_redM : ∀ (D : D7) (G : Type) [Group G] [Fintype G
     rw [frMapO_dil] at hN
     have hN' : ∀ k l, eToEAf D (ϖ : D.host.E) * frMapO (Vc D i) (Wc D i) (R.βV i) (R.βW i) z k l ∈
         Formalism.L2.Herm.intAf D.host.F D.host.E := fun k l => hN k l
-    refine (hI z hz).1 fun k l => mem_int_of_mul he hϖ (frMapO_half i _ _ hz k l) (hN' k l) fun PP hPP => ?_
+    refine (hI z hz).1 fun k l => mem_int_of_mul he hϖ (frMapO_half i _ _ hz k l) fun PP hPP => ?_
     have h1 := congrFun (congrFun (hred PP hPP) k) l
     simp only [redM, Matrix.smul_apply, smul_eq_mul, Matrix.zero_apply, dite_eq_left (hN' k l)] at h1
     exact (GlobalTheory.AdIsom.resS_eq_zero_iff_cpt PP ⟨_, hN' k l⟩).1 h1

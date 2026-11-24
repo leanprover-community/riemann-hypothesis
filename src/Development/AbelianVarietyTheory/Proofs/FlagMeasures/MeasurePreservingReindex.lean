@@ -85,7 +85,7 @@ theorem multiplicity_le (I : AutInst) (g : ℕ) (S : Set I.Ginf) (y z : I.GA) (h
     rw [Set.ncard_empty, Nat.cast_zero]
     positivity
   · obtain ⟨hCfin, hCcard⟩ :=
-      GlobalTheory.RationalCount.count_le I y y (fun _ => Real.log 2) hn (fun _ => (Real.log_pos one_lt_two).le)
+      GlobalTheory.RationalCount.count_le I y y (fun _ => Real.log 2) hn
 
     have hf : ∀ γ ∈ {γ : GlobalTheory.RatDiscrete.ratSub I | y⁻¹ * (γ.1 * z) ∈ S ×ˢ I.Kg g},
         (fun γ : GlobalTheory.RatDiscrete.ratSub I => γ.1 * γ0.1⁻¹) γ ∈

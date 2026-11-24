@@ -288,7 +288,7 @@ theorem gamDig_one_zero {r : ℕ} (be : Fin r → ℕ) : Formalism.MainNotions.P
   have : ((be a).factorial : ℚ) ≠ 0 := by exact_mod_cast (Nat.factorial_ne_zero _)
   simp [this]
 
-theorem digit_identity_of_decomposition (D : Formalism.BasicNotions.D7) (h : Formalism.MainNotions.CovariantDegrees.FactorialUnitDecomposition D) : Formalism.MainNotions.PlaneGramData.adm5 D := by
+theorem digit_identity_of_decomposition (D : Formalism.BasicNotions.D7) (h : Formalism.MainNotions.CovariantDegrees.FactorialUnitDecomposition) : Formalism.MainNotions.PlaneGramData.adm5 := by
   intro p O _ _ _ _ hset g r rho hrho
   obtain ⟨⟨S⟩, n', hG⟩ := hset
   have hp := hG.prime
@@ -447,7 +447,7 @@ theorem der_term {K : Type*} [Field K] {r : ℕ} (P : ℕ) (M rho l be : Fin r �
       Finset.prod_eq_zero (Finset.mem_univ a) (by rw [Nat.choose_eq_zero_of_lt ha]; simp)
     rw [h0, mul_zero, map_zero, zero_mul, zero_mul, zero_mul]
 
-theorem derivation_valuation_at_prime (D : Formalism.BasicNotions.D7) (h : Formalism.MainNotions.CovariantDegrees.DerivativeDigitExpansion D) (p : ℕ) (hp : p.Prime) (h5 : 5 ≤ p)
+theorem derivation_valuation_at_prime (D : Formalism.BasicNotions.D7) (h : Formalism.MainNotions.CovariantDegrees.DerivativeDigitExpansion) (p : ℕ) (hp : p.Prime) (h5 : 5 ≤ p)
     (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     (hvk : ∀ (c : ℕ) (o : O), geQ (vK p ((p : KK O) ^ c * algebraMap O (KK O) o)) (c : ℝ)) :
     DerivativeCongruenceAtRing p O := by
@@ -486,15 +486,15 @@ theorem derivation_valuation_at_prime (D : Formalism.BasicNotions.D7) (h : Forma
     · have := hvk c 0
       simpa using this
 
-theorem derivation_of_valuation_bound (D : Formalism.BasicNotions.D7) (h : Formalism.MainNotions.CovariantDegrees.DerivativeDigitExpansion D)
+theorem derivation_of_valuation_bound (D : Formalism.BasicNotions.D7) (h : Formalism.MainNotions.CovariantDegrees.DerivativeDigitExpansion)
     (hvk : ∀ (p : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O], UniformizedDVR p O →
       ∀ (c : ℕ) (o : O), geQ (vK p ((p : KK O) ^ c * algebraMap O (KK O) o)) (c : ℝ)) :
-    Formalism.MainNotions.PlaneGramData.adm6 D := by
+    Formalism.MainNotions.PlaneGramData.adm6 := by
   intro p O _ _ _ _ hS
   obtain ⟨⟨S⟩, n', hR⟩ := hS
   exact derivation_valuation_at_prime D h p hR.prime hR.five_le O (hvk p O S)
 
-theorem derivation_of_lattice_index (D : Formalism.BasicNotions.D7) (h : Formalism.MainNotions.CovariantDegrees.DerivativeDigitExpansion D) : Formalism.MainNotions.PlaneGramData.adm6 D :=
+theorem derivation_of_lattice_index (D : Formalism.BasicNotions.D7) (h : Formalism.MainNotions.CovariantDegrees.DerivativeDigitExpansion) : Formalism.MainNotions.PlaneGramData.adm6 :=
   derivation_of_valuation_bound D h fun _ _ _ _ _ S c o => geQ_vK_pow_mul S c o
 
 end Formalism.MainNotions.G.Joints
@@ -881,7 +881,7 @@ theorem span_column_clauses_at (O : Type) [CommRing O] [IsDomain O] [IsDiscreteV
   exact ⟨fun c Jc i => col_clause1 O P.mu c Jc i, fun i => col_clause2 P i, fun c i h => col_clause3 P c i h,
     fun c hc i => col_clause4 P c hc i, fun c hc hcov I hI => col_clause5 O P c hc hcov I hI⟩
 
-theorem span_column_clauses (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.PlaneGramData.IntegralityRemainder D :=
+theorem span_column_clauses (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.PlaneGramData.IntegralityRemainder :=
   fun _ O _ _ _ _ _ => span_column_clauses_at O
 
 end Formalism.MainNotions.G.Joints
@@ -1217,7 +1217,7 @@ theorem twisted_valuation_second_sentence_at (O : Type) [CommRing O] [IsDomain O
   intro r _ ι _ LL S
   exact ⟨fun V hV F => valS_le_union LL S V hV F, fun V d hVS hV F hF => valS_le_diff LL S V d hVS hV F hF⟩
 
-theorem twisted_valuation_second_sentence (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.PlaneGramData.adm2b D :=
+theorem twisted_valuation_second_sentence (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.PlaneGramData.adm2b :=
   fun _ O _ _ _ _ _ => twisted_valuation_second_sentence_at O
 
 end Formalism.MainNotions.G.Joints
@@ -1686,7 +1686,7 @@ theorem proj_exponent_le (p r dS : ℕ) :
   rw [h1, Nat.cast_mul]
   exact mul_le_mul_of_nonneg_left h2 (Nat.cast_nonneg _)
 
-theorem projection_at_of_isotypic (D : Formalism.BasicNotions.D7) (hC : Formalism.MainNotions.CovariantDegrees.FilteredProjectorCorollaryField D) (hV : Formalism.MainNotions.CovariantDegrees.ShaLengthVersionTwo D) (hdec : PolIsoDecompB)
+theorem projection_at_of_isotypic (D : Formalism.BasicNotions.D7) (hC : Formalism.MainNotions.CovariantDegrees.FilteredProjectorCorollaryField) (hV : Formalism.MainNotions.CovariantDegrees.ShaLengthVersionTwo D) (hdec : PolIsoDecompB)
     (p : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CharZero O]
     (hS : Formalism.MainNotions.PlaneGramData.HidaSetting p O) : Formalism.MainNotions.PlaneGramData.FockProjectorAtRing p O := by
   intro r _ ι _ LL d S th
@@ -1758,8 +1758,8 @@ theorem projection_at_of_isotypic (D : Formalism.BasicNotions.D7) (hC : Formalis
     have := proj_exponent_le p r (degIn d S)
     linarith
 
-theorem projection_of_isotypic_decomposition (D : Formalism.BasicNotions.D7) (hC : Formalism.MainNotions.CovariantDegrees.FilteredProjectorCorollaryField D) (hV : Formalism.MainNotions.CovariantDegrees.ShaLengthVersionTwo D) (hdec : PolIsoDecompB) :
-    Formalism.MainNotions.PlaneGramData.ArchimedeanSignatureMatching D :=
+theorem projection_of_isotypic_decomposition (D : Formalism.BasicNotions.D7) (hC : Formalism.MainNotions.CovariantDegrees.FilteredProjectorCorollaryField) (hV : Formalism.MainNotions.CovariantDegrees.ShaLengthVersionTwo D) (hdec : PolIsoDecompB) :
+    Formalism.MainNotions.PlaneGramData.ArchimedeanSignatureMatching :=
   fun p O _ _ _ _ hS => projection_at_of_isotypic D hC hV hdec p O hS
 
 end Formalism.MainNotions.G.Joints
@@ -2219,7 +2219,7 @@ theorem crRes_isGLRep (E : GLOps n K V) (h : GLRel E) (P : Submodule K V) [Finit
     rw [dite_eq_left hmu]
     exact Submodule.mem_iSup_of_mem mu (crRes_weight E P hP mu _ (hf mu hmu).1)
 
-theorem cr_in (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2 D) {n : ℕ} {K V : Type} [Field K] [CharZero K]
+theorem cr_in (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2) {n : ℕ} {K V : Type} [Field K] [CharZero K]
     [AddCommGroup V] [Module K V] (E : GLOps n K V) (h : GLRel E) (P : Submodule K V) [FiniteDimensional K P]
     (hP : Stab E P)
     (hPwt : ∀ x ∈ P, ∃ (T : Finset (Fin n → ℤ)) (f : (Fin n → ℤ) → V),
@@ -2547,12 +2547,12 @@ section Main
 
 variable {n : ℕ} {K V : Type} [Field K] [CharZero K] [AddCommGroup V] [Module K V] (E : GLOps n K V)
 
-theorem cr_of (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2 D) (hE : IsGLRep E) (P : Submodule K V) [FiniteDimensional K P]
+theorem cr_of (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2) (hE : IsGLRep E) (P : Submodule K V) [FiniteDimensional K P]
     (hP : Stab E P) (W : Submodule K V) (hWP : W ≤ P) (hW : Stab E W) :
     ∃ W' : Submodule K V, W' ≤ P ∧ Stab E W' ∧ W ⊓ W' = ⊥ ∧ W ⊔ W' = P :=
   cr_in D h2 E hE.1 P hP (fun x hx => stab_wt_decomp E hE.2.2 P (fun a y hy => hP a a y hy) x hx) W hWP hW
 
-theorem isoSub_top (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2 D) (hE : IsGLRep E) : (⨆ mu, isoSub E mu) = ⊤ := by
+theorem isoSub_top (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2) (hE : IsGLRep E) : (⨆ mu, isoSub E mu) = ⊤ := by
   rw [eq_top_iff]
   intro x _
   obtain ⟨P, hfd, hxP, hP⟩ := hE.2.1 x
@@ -2593,7 +2593,7 @@ theorem isoSet_env (hE : IsGLRep E) (Om : Set (Fin n → ℤ)) (x : V) (hx : x �
     obtain ⟨P, f, s, m⟩ := hy
     exact ⟨P, f, s, Submodule.smul_mem _ _ m⟩
 
-theorem hwv_wt_mem (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2 D) (hE : IsGLRep E) (Om : Set (Fin n → ℤ))
+theorem hwv_wt_mem (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2) (hE : IsGLRep E) (Om : Set (Fin n → ℤ))
     (lam : Fin n → ℤ) (w : V) (hw : IsHWV E lam w) (hmem : w ∈ Submodule.span K (isoSet E Om ⊤)) : lam ∈ Om := by
   by_contra hlam
   obtain ⟨P, hfd, hP, hwN⟩ := isoSet_env E hE Om w hmem
@@ -2644,7 +2644,7 @@ theorem hwv_wt_mem (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.C
   rw [hdis'] at h7
   exact ha.1 ((Submodule.mem_bot K).1 h7)
 
-theorem isoSub_indep (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2 D) (hE : IsGLRep E) : iSupIndep (isoSub E) := by
+theorem isoSub_indep (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2) (hE : IsGLRep E) : iSupIndep (isoSub E) := by
   intro mu
   rw [disjoint_iff]
   by_contra hne
@@ -2668,21 +2668,21 @@ theorem isoSub_indep (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions
   have h2' : lam ∈ {nu : Fin n → ℤ | nu ≠ mu} := hwv_wt_mem E D h2 hE _ lam w hw (hle hwMP.1.2)
   exact h2' h1
 
-theorem isoDecomp (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2 D) (hE : IsGLRep E) :
+theorem isoDecomp (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2) (hE : IsGLRep E) :
     ∃ e : (Fin n → ℤ) → Module.End K V, DecSys (isoSub E) e :=
   decomp_of_indep_top (isoSub E) (isoSub_indep E D h2 hE) (isoSub_top E D h2 hE)
 
 end Main
 
-theorem polIsoDecompB_of (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2 D) : PolIsoDecompB := by
+theorem polIsoDecompB_of (D : Formalism.BasicNotions.D7) (h2 : Formalism.MainNotions.CovariantDegrees.adm2) : PolIsoDecompB := by
   intro K _ _ ι _ LL r _ S
   obtain ⟨e, sys⟩ := isoDecomp (glOps K r LL S) D h2 (isGLRep_glOps K ι LL r S)
   refine ⟨e, fun mu => ⟨sys.id_on mu, fun nu hne x hx => sys.zero_on mu nu hne x hx⟩, fun G => ?_⟩
   obtain ⟨T, hT⟩ := sys.cover G
   exact ⟨T, hT, fun mu => sys.mem mu G⟩
 
-theorem projection_of_integral_corollary (D : Formalism.BasicNotions.D7) (hC : Formalism.MainNotions.CovariantDegrees.FilteredProjectorCorollaryField D) (hV : Formalism.MainNotions.CovariantDegrees.ShaLengthVersionTwo D)
-    (h2 : Formalism.MainNotions.CovariantDegrees.adm2 D) : Formalism.MainNotions.PlaneGramData.ArchimedeanSignatureMatching D :=
+theorem projection_of_integral_corollary (D : Formalism.BasicNotions.D7) (hC : Formalism.MainNotions.CovariantDegrees.FilteredProjectorCorollaryField) (hV : Formalism.MainNotions.CovariantDegrees.ShaLengthVersionTwo D)
+    (h2 : Formalism.MainNotions.CovariantDegrees.adm2) : Formalism.MainNotions.PlaneGramData.ArchimedeanSignatureMatching :=
   projection_of_isotypic_decomposition D hC hV (polIsoDecompB_of D h2)
 
 end Formalism.MainNotions.G.Joints

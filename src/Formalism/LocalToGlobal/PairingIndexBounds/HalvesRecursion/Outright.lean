@@ -231,7 +231,7 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Fo
 
 theorem eqOff_refl (D : D7) (P : IsDedekindDomain.HeightOneSpectrum (𝓞 D.host.E)) {N : ℕ}
     (L : Submodule (𝓞 D.host.E) (Fin N → D.host.E)) : EqOff D P L L :=
-  ⟨0, fun a b _ _ => ⟨fun x hx => L.smul_mem _ hx, fun x hx => L.smul_mem _ hx⟩⟩
+  ⟨0, fun _ _ _ _ => ⟨fun _ hx => L.smul_mem _ hx, fun _ hx => L.smul_mem _ hx⟩⟩
 
 theorem volP_self (D : D7) (P : IsDedekindDomain.HeightOneSpectrum (𝓞 D.host.E)) {N N' : ℕ}
     (Y : AddSubgroup (Matrix (Fin N') (Fin N) (EP D P))) : volP Y Y = 1 := by

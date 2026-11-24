@@ -92,7 +92,7 @@ theorem card_qk_eq_mul {R : Type} [CommRing R] [IsDomain R] {D : DegPre R} {F : 
     · rw [nsmul_sub, hr, hy, nsmul_add, qk_nsmul hB, map_add (f := _), map_nsmul, sub_self]
     · exact add_sub_cancel _ _
 
-theorem card_qk : LL → AllD fun {R} _ _ {I} D F _ _ => ∀ (k : ℕ), 1 ≤ k → Nat.card (Quot (QkPt.Equiv D.toPre F (k := k))) = k ^ (2 * (D.toPre.rank + D.toPre.P.g)) := by
+theorem card_qk : LL → AllD fun {_} _ _ {_} D F _ _ => ∀ (k : ℕ), 1 ≤ k → Nat.card (Quot (QkPt.Equiv D.toPre F (k := k))) = k ^ (2 * (D.toPre.rank + D.toPre.P.g)) := by
   intro hL R _ _ _ I hA D F _ _ _ k hk
   have : IsNoetherianRing R := hA.1
   have : CharZero F := charZero_of_injective_algebraMap (algebraMap (FractionRing R) F).injective

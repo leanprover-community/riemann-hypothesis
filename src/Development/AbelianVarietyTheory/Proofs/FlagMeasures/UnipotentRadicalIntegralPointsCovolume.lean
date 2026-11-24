@@ -671,7 +671,6 @@ theorem exists_unitary_of_skew_layer (R K : Type) [CommRing R] [Field K] [StarRi
     (hw : algebraMap R K w + star (algebraMap R K w) = 1)
     (hA : ∀ c, A (c + 1) ≤ A c) (hm : A m = ⊥)
     (hmul : ∀ c, ∀ X ∈ A c, ∀ Y ∈ A 0, X * Y ∈ A (c + 1) ∧ Y * X ∈ A (c + 1))
-    (_hadj : ∀ c, ∀ X ∈ A c, J⁻¹ * Xᴴ * J ∈ A c)
     (c : ℕ) (X : Matrix (Fin n) (Fin n) K) (hX : X ∈ A c) (hskew : J⁻¹ * Xᴴ * J = -X) :
     ∃ Y ∈ A (c + 1), (1 + X + Y)ᴴ * J * (1 + X + Y) = J := by
   classical
@@ -1744,7 +1743,7 @@ theorem radicalCovolume : RadicalCovolume := by
     lowers_eq_bot (hW v).1.2.1 (hW v).1.2.2.1 (by rw [(hW v).2]; simp)
   have hadj : ∀ v c, ∀ X ∈ lowers (W v) c,
       Formalism.REAL.Jm (I.ε v) * Xᴴ * Formalism.REAL.Jm (I.ε v) ∈ lowers (W v) c := fun v c X hX =>
-    lowers_adj (Formalism.REAL.Jm_conjTranspose _) (hW v).1 hX
+    lowers_adj (hW v).1 hX
       (by rw [← Matrix.mul_assoc, ← Matrix.mul_assoc, Formalism.REAL.Jm_mul_self, Matrix.one_mul])
       (fun y _ => by rw [(hW v).2]; trivial)
   choose B hB hBG hBs using fun v => _root_.GlobalTheory.SkewBasis.exists_skew_basis I.n (dimN I.n j) m (I.ε v) (lowers (W v)) deg
@@ -1773,7 +1772,7 @@ theorem radicalCovolume : RadicalCovolume := by
   have hkeep : ∀ c, ∀ Y ∈ lowers F c, ∀ y ∈ F m, Y *ᵥ y ∈ F m := fun c Y hY y hy =>
     hY m y (by rwa [hF.2.2.1 _ (by omega)])
   have hadjF : ∀ c, ∀ Y ∈ lowers F c, I.J⁻¹ * Yᴴ * I.J ∈ lowers F c := fun c Y hY =>
-    lowers_adj hJ hF hY
+    lowers_adj hF hY
       (by rw [Matrix.mul_assoc, Matrix.mul_nonsing_inv_cancel_left _ _ I.J_det.isUnit])
       (hadjL Y (hkeep c Y hY))
   obtain ⟨Γ, hΓ⟩ := _root_.GlobalTheory.AlgCutSubgroup.exists_subgroup I xf (fun v => lowers (W v) 0)
@@ -1837,7 +1836,7 @@ theorem radicalCovolume : RadicalCovolume := by
       have hX' := sub_mem hY' (hadjF c _ hY')
       obtain ⟨Z, hZ, hU'⟩ := _root_.GlobalTheory.RadCov.exists_unitary_of_skew_layer (𝓞 I.E) I.E I.n m I.J (lowers F) w hJ I.J_det hw
         (lowers_succ_le hF.1) (lowers_eq_bot hF.2.1 hF.2.2.1 hsp)
-        (fun c X hX Y hY => lowers_mul_zero hX hY) hadjF c _ hX' (by
+        (fun c X hX Y hY => lowers_mul_zero hX hY) c _ hX' (by
           have hu := I.J_det.isUnit
           rw [Matrix.conjTranspose_sub, Matrix.conjTranspose_mul, Matrix.conjTranspose_mul,
             Matrix.conjTranspose_nonsing_inv, hJ, Matrix.conjTranspose_conjTranspose, Matrix.mul_sub,

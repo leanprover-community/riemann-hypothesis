@@ -354,8 +354,8 @@ theorem stalkIdeal_eq_prod_of_isMonomialOnOpen (E : List X.IdealSheafData) (M : 
 theorem orderAt_genericPoint_eq_of_isMonomialSplitting {k : Type u} [Field k] [CharZero k]
     [TopologicalSpace.NoetherianSpace ↥X] [IsLocallyNoetherian X]
     (p : X ⟶ Spec (CommRingCat.of k)) [AlgebraicGeometry.Smooth p] [LocallyOfFiniteType p]
-    (E : List X.IdealSheafData) (_hE : InStrictNormalCrossingPosition p E) {I M N : X.IdealSheafData}
-    (_hI : NonzeroOnComponents I) (hsplit : IsMonomialSplitting E I M N)
+    (E : List X.IdealSheafData) {I M N : X.IdealSheafData}
+    (hsplit : IsMonomialSplitting E I M N)
     {D : X.IdealSheafData} (hD : D ∈ E) {C : Set X} (hC : IsIrreducibleComponentOfSupport D C) :
     orderAt M hC.isIrreducible.genericPoint = orderAt I hC.isIrreducible.genericPoint := by
   have hmax' : ∀ C' : Set X, IsIrreducible C' → C' ⊆ (D.support : Set X) → C ⊆ C' → C' ⊆ C := by
@@ -378,7 +378,7 @@ theorem orderAt_genericPoint_eq_of_isMonomialSplitting {k : Type u} [Field k] [C
 theorem exponent_le_orderAlongComponent {k : Type u} [Field k] [CharZero k]
     [TopologicalSpace.NoetherianSpace ↥X] [IsLocallyNoetherian X]
     (p : X ⟶ Spec (CommRingCat.of k)) [AlgebraicGeometry.Smooth p] [LocallyOfFiniteType p]
-    (E : List X.IdealSheafData) (_hE : InStrictNormalCrossingPosition p E) {I M N : X.IdealSheafData}
+    (E : List X.IdealSheafData) {I M N : X.IdealSheafData}
     (hI : NonzeroOnComponents I) (hsplit : IsMonomialSplitting E I M N)
     (U : X.Opens) (a : Fin E.length → ℕ) (ha : IsMonomialOnOpen E M U a)
     (l : Fin E.length) {C' : Set X} (hC' : IsIrreducibleComponentOfSupport (E.get l) C')
@@ -529,7 +529,7 @@ theorem exponent_eq_orderAlongComponent {k : Type u} [Field k] [CharZero k]
         have hlocl : IsEtaleLocallyCoordinateDivisor p (E.get l) :=
           isEtaleLocallyCoordinateDivisor_of_inStrictNormalCrossingPosition p E hE (E.get l) hDl
         have hle : a l ≤ orderAlongComponent I hC'.isIrreducible :=
-          exponent_le_orderAlongComponent p E hE hI hsplit U a ha l hC'
+          exponent_le_orderAlongComponent p E hI hsplit U a ha l hC'
             hC.isIrreducible.genericPoint hηU hηC'
         have hmeml : stalkIdeal (monomialPartAlongDivisor I (E.get l)) hC.isIrreducible.genericPoint =
             stalkIdeal (E.get l) hC.isIrreducible.genericPoint ^
@@ -602,7 +602,7 @@ theorem exponent_eq_orderAlongComponent {k : Type u} [Field k] [CharZero k]
       hC.subset_support hC.maximal
   have hMI : orderAt M hC.isIrreducible.genericPoint =
       orderAt I hC.isIrreducible.genericPoint :=
-    orderAt_genericPoint_eq_of_isMonomialSplitting p E hE hI hsplit hD hC
+    orderAt_genericPoint_eq_of_isMonomialSplitting p E hsplit hD hC
   have hfin : orderAt M hC.isIrreducible.genericPoint ≠ ⊤ := by
     rw [hMI]
     exact orderAt_ne_top_of_nonzeroOnComponents I hI hC.isIrreducible.genericPoint
@@ -809,10 +809,10 @@ theorem monomialGeometryHypotheses_of_monomialCaseHypotheses (hR : MonomialCaseH
     blowup_total_transform := hR.blowup_total_transform
     flat_components_down := by
       intro T hT Y k' hk q g hg hT' J C' hC'
-      exact FunctorialResolution.EmbeddedResolution.exists_intersectionComponents_mapsTo_of_flat T hT Y k' q g hT' J C' hC'
+      exact FunctorialResolution.EmbeddedResolution.exists_intersectionComponents_mapsTo_of_flat T Y k' q g J C' hC'
     flat_components_up := by
       intro T hT Y k' hk q g hg hT' J C hC y hy
-      exact FunctorialResolution.EmbeddedResolution.exists_mem_intersectionComponents_pullbackOverField_of_flat T hT Y k' q g hT' J C hC y hy
+      exact FunctorialResolution.EmbeddedResolution.exists_mem_intersectionComponents_pullbackOverField_of_flat T Y k' q g J C hC y hy
     smooth_components_down := by
       intro T hT Y q h hsm hq hV J C' hC'
       have : AlgebraicGeometry.Flat h := inferInstance
@@ -827,7 +827,7 @@ theorem monomialGeometryHypotheses_of_monomialCaseHypotheses (hR : MonomialCaseH
           (Finset.image (pullbackOverFieldIndex T Y T.base q h) J) := by
         rw [e]
         exact hC'
-      exact FunctorialResolution.EmbeddedResolution.exists_intersectionComponents_mapsTo_of_flat T hT Y T.base q h hV' J C' hC''
+      exact FunctorialResolution.EmbeddedResolution.exists_intersectionComponents_mapsTo_of_flat T Y T.base q h J C' hC''
     smooth_components_up := by
       intro T hT Y q h hsm hq hV J C hC y hy
       have : AlgebraicGeometry.Flat h := inferInstance
@@ -839,7 +839,7 @@ theorem monomialGeometryHypotheses_of_monomialCaseHypotheses (hR : MonomialCaseH
         apply Fin.ext
         rw [pullbackOverFieldIndex_val, pullbackAlongIndex_val]
       obtain ⟨C', hC'mem, hyC', hgen⟩ :=
-        FunctorialResolution.EmbeddedResolution.exists_mem_intersectionComponents_pullbackOverField_of_flat T hT Y T.base q h hV' J C hC y hy
+        FunctorialResolution.EmbeddedResolution.exists_mem_intersectionComponents_pullbackOverField_of_flat T Y T.base q h J C hC y hy
       refine ⟨C', ?_, hyC', hgen⟩
       rw [← e]
       exact hC'mem
@@ -984,7 +984,7 @@ theorem orderAt_controlledTransform_le_of_orderAt_eq_on_center :
     exact (mem_orderAtLeastLocus_iff J c x).2 (hJ x hx).ge
   have hI : J ≤ Z ^ c :=
     le_pow_of_hasStrictNormalCrossingsWith T.structMap Z J T.boundary hZsnc c hsub
-  have hJ'eq : J' = controlledTransform π Z J c hπ hI :=
+  have hJ'eq : J' = controlledTransform π Z J c :=
     eq_controlledTransform_of_mul_eq_comap π Z J c hπ hI J' hJ'
   rw [hJ'eq]
   refine orderAt_controlledTransform_le_of_orderAt_image_le T.base T.structMap π Z T.boundary
@@ -1348,7 +1348,7 @@ theorem monomialCaseHypotheses_of_monomialCenterHypotheses (h : MonomialCenterHy
     transformed_components := h.transformed_components
     stratum_smooth := MonomialChart.smooth_intersectionIdeal_subscheme
     orderAt_comap_off_exceptional := fun T hT X' π Z hπ x' hx' A =>
-      orderAt_comap_eq_of_notMem_exceptionalIdeal T hT Z X' π hπ x' hx' A
+      orderAt_comap_eq_of_notMem_exceptionalIdeal T Z X' π hπ x' hx' A
     orderAt_boundary_eq_one := MonomialChart.orderAt_boundary_eq_one }
 
 end MonomialCenterCase
@@ -1548,7 +1548,7 @@ private theorem false_of_restrictIdeal_eq_coordIdeal {X : Scheme.{u}} {k : Type 
     (c : EtaleChart p V m) (Z D : X.IdealSheafData) (S : Finset (Fin m)) (s : Fin m)
     (hs : s ∉ S) (hZ : restrictIdeal Z V = c.coordIdeal S)
     (hD : restrictIdeal D V = c.coordIdeal {s})
-    (ξ : ↥X) (hξV : ξ ∈ V) (hξZ : ξ ∈ Z.support) (_hξD : ξ ∈ D.support)
+    (ξ : ↥X) (hξV : ξ ∈ V) (hξZ : ξ ∈ Z.support)
     (hmin : ∀ η : ↥X, η ∈ Z.support → ξ ∈ closure ({η} : Set ↥X) → η ∈ D.support) : False := by
   classical
   have hIZ : Ideal.map c.coordRingHom (mvPolynomialCoordIdeal k m S) = Z.ideal ⟨V, hV⟩ :=
@@ -1690,7 +1690,7 @@ private theorem not_subset_boundary_support_of_notMem (T : MarkedIdealWithBounda
       rw [htt, ← hres]
       exact le_biSup (fun j : Fin T.boundary.length => restrictIdeal (T.boundary.get j) V) hj
   refine false_of_restrictIdeal_eq_coordIdeal hV cV (intersectionIdeal T.boundary J) (T.boundary.get i)
-    S si hsiS hZV hDi hirr'.genericPoint hxiV hxiZ hxiD ?_
+    S si hsiS hZV hDi hirr'.genericPoint hxiV hxiZ ?_
   intro η hηZ hηxi
   have hirr2 : IsIrreducible (closure ({η} : Set ↥T.scheme)) := isIrreducible_singleton.closure
   have hs1 : C ⊆ closure ({η} : Set ↥T.scheme) := by

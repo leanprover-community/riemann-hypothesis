@@ -175,7 +175,7 @@ theorem oks (hd : d.Ok) (hS : IsSection Sec) (hP : (↑d.P : Set (Pl E)) ⊆ Sec
     (∀ L, d.IsGen a ha L → (ptW A d Sec wa wb L).Ok) ∧ (ptW A d Sec wa wb (d.betaL a ha)).Ok ∧
       (ptW A d Sec wa wb (d.fixL a)).Ok ∧ ∀ (u₁ : GL (Fin a) E) (u₂ : GL (Fin (n - a)) E),
         (A.pt wa wb (rt u₁ u₂ (ψL A d Sec (d.eL a))) (PositivityTheory.Rg.BcB.F.sizeOf (rt u₁ u₂ (ψL A d Sec (d.eL a))))).Ok :=
-  ⟨fun L hL => ptW_ok hS hP wa wb (gen_ok hd ha hL), ptW_ok hS hP wa wb (BlockFiniteConvolution.locOk₀ E n d hd a ha).2.1,
+  ⟨fun _ hL => ptW_ok hS hP wa wb (gen_ok hd ha hL), ptW_ok hS hP wa wb (BlockFiniteConvolution.locOk₀ E n d hd a ha).2.1,
     ptW_ok hS hP wa wb (BlockFiniteConvolution.locOk₀ E n d hd a ha).2.2.1,
     fun u₁ u₂ => ptRt_ok hS hP wa wb (gen_ok hd ha (L := d.eL a) (Or.inl rfl)) u₁ u₂⟩
 

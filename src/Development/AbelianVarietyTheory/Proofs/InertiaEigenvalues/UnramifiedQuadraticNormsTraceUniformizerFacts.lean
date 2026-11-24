@@ -161,7 +161,7 @@ private theorem isUnit_iff_notMem_maximalIdeal {x : K.O} : IsUnit x ↔ x ∉ ma
 open IsLocalRing Polynomial in
 variable (K : _root_.GlobalTheory.UnitLemma.UQ) in
 private theorem exists_mul_apply_eq_of_fixed_involution {F : Type} [Field F] [Finite F] (σ : F ≃+* F)
-    (hσ : ∀ x, σ (σ x) = x) (hne : ∃ x, σ x ≠ x) (u : F) (hu : u ≠ 0) (hfix : σ u = u) :
+    (hσ : ∀ x, σ (σ x) = x) (hne : ∃ x, σ x ≠ x) (u : F) (hfix : σ u = u) :
     ∃ z, z * σ z = u := by
   classical
   haveI : Fact (ringChar F).Prime := ⟨CharP.char_is_prime F (ringChar F)⟩
@@ -259,7 +259,7 @@ theorem _root_.GlobalTheory.UnitLemma.UnramNorm.unram_quadratic_facts :
     have hu0 : residue K.O (u : K.O) ≠ 0 := by
       rw [ne_eq, residue_eq_zero_iff, ← isUnit_iff_notMem_maximalIdeal K] at *
       simp [u.isUnit]
-    obtain ⟨zb, hzb⟩ := exists_mul_apply_eq_of_fixed_involution (ResidueField.mapEquiv σ) hσb hne _ hu0
+    obtain ⟨zb, hzb⟩ := exists_mul_apply_eq_of_fixed_involution (ResidueField.mapEquiv σ) hσb hne _
       (by rw [hres, hσu])
     obtain ⟨z0, rfl⟩ := residue_surjective zb
     rw [hres, ← map_mul] at hzb

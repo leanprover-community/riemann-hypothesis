@@ -242,7 +242,7 @@ theorem val_res_eq {O E A₁ A₂ : Type} [CommRing O] [IsDomain O] [IsDiscreteV
   exact (zpow_right_injective₀ (by linarith) hq.ne' c1).symm
 
 theorem separable_of_adjoin {E A : Type} [Field E] [CharZero E] [CommRing A] [Algebra E A] [Module.Finite E A]
-    (g Y : A) (h₁ : Y ∈ Algebra.adjoin E ({g} : Set A)) (h₂ : g ∈ Algebra.adjoin E ({Y} : Set A))
+    (g Y : A) (h₂ : g ∈ Algebra.adjoin E ({Y} : Set A))
     (hg : (LinearMap.mulLeft E g).charpoly.Separable) : (LinearMap.mulLeft E Y).charpoly.Separable := by
   obtain ⟨ht, hr⟩ := _root_.GlobalTheory.SepGen.adjoin_eq_top_and_isReduced E A g hg
   refine _root_.GlobalTheory.charpoly_mulLeft_separable_of_adjoin_eq_top E A Y (eq_top_iff.2 ?_) hr
@@ -401,7 +401,7 @@ theorem identity_of_residually_unipotent : UnitLemmaLie → ∀ (K : UQ), K.Odd 
   have hsepC : ((withG B₁ Y₁).P * (withG B₂ Y₂).P).Separable := by
     rw [← Orbit.prod_P]
     have := separable_of_adjoin (E := K.E) (A := B₁.A × B₂.A) (B₁.g, B₂.g) (Y₁, Y₂)
-      (mem_adjoin_of_mem (O := K.O) adjP.1) (mem_adjoin_of_mem (O := K.O) adjP.2) hsepP
+      (mem_adjoin_of_mem (O := K.O) adjP.2) hsepP
     exact this
   have hId := hL K (withG B₁ Y₁) (withG B₂ Y₂) sa₁ sa₂ hsepC
 

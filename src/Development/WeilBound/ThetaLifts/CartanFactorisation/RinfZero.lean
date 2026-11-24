@@ -59,7 +59,7 @@ open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.Inde
 
 theorem absMax {Q Q' P ι : Type} [AddCommGroup Q] [Module ℂ Q] [AddCommGroup Q'] [Module ℂ Q'] [AddCommGroup P] [Module ℂ P]
     {p : Q →ₗ[ℂ] P} {p' : Q' →ₗ[ℂ] P} {S : Submodule ℂ Q} {S' : Submodule ℂ Q'} {R : ι → Q → Q → Prop} {R' : ι → Q' → Q' → Prop}
-    (on : S.map p = ⊤) (on' : S'.map p' = ⊤) (ex : ∀ i, ∀ x ∈ S, ∃ y, R i x y) (ex' : ∀ i, ∀ x ∈ S', ∃ y, R' i x y)
+    (on' : S'.map p' = ⊤) (ex : ∀ i, ∀ x ∈ S, ∃ y, R i x y) (ex' : ∀ i, ∀ x ∈ S', ∃ y, R' i x y)
     (z : ∀ i, R i 0 0) (z' : ∀ i, R' i 0 0)
     (eqv : ∀ i, ∀ x ∈ S, ∀ x' ∈ S', ∀ y y', R i x y → R' i x' y' → p x = p' x' → p y = p' y')
     (irr : ∀ N : Submodule ℂ P, (∀ i, ∀ x ∈ S, ∀ y, R i x y → p x ∈ N → p y ∈ N) → N = ⊥ ∨ N = ⊤) :
@@ -203,7 +203,7 @@ theorem maxFinP (m : IsMatched B G X om om' R Rf) (v : Pl F) :
       hecke_div m.triple.chars.heckeα m.triple.chars.heckeβ, m.triple.chars.resα,
       res_div m.triple.chars.resα m.triple.chars.resβ (add_comm _ _), m.triple.weil'⟩
   have := absMax (R := fun (i : UAt σ G.W (evFin F v)) x y => y ∈ SB _ ∧ Acts (evFin F v) (om (1, i.1)) x y)
-    (R' := fun (i : UAt σ G.W (evFin F v)) x y => y ∈ SB _ ∧ Acts (evFin F v) (om' (1, i.1)) x y) (m.fin.onto v) (m.fin.onto' v)
+    (R' := fun (i : UAt σ G.W (evFin F v)) x y => y ∈ SB _ ∧ Acts (evFin F v) (om' (1, i.1)) x y) (m.fin.onto' v)
     (ex_fin p1 v) (ex_fin p2 v)
     (fun _ => ⟨zero_mem _, acts_zero _ _⟩) (fun _ => ⟨zero_mem _, acts_zero _ _⟩)
     (fun i x hx x' hx' y y' h h' => m.fin.equiv v i i.2 x hx x' hx' y h.1 y' h'.1 h.2 h'.2)
@@ -233,7 +233,7 @@ theorem maxInfP (hO : ArchOp) (hL : ArchLie) (hQ : ArchUniq) (m : IsMatched B G 
     ⟨m.triple.base, m.triple.geo.hV', m.triple.geo.hW, m.triple.geo.hM', m.triple.chars.heckeα,
       hecke_div m.triple.chars.heckeα m.triple.chars.heckeβ, m.triple.chars.resα,
       res_div m.triple.chars.resα m.triple.chars.resβ (add_comm _ _), m.triple.weil'⟩
-  have := absMax (R := RInf B om) (R' := RInf B om') m.real.quot.onto m.real.quot'.onto
+  have := absMax (R := RInf B om) (R' := RInf B om') m.real.quot'.onto
     (fun i x hx => let ⟨g, _, e⟩ := rinf_ex hO hL hQ p1 i hx; ⟨g, (e g).2 rfl⟩)
     (fun i x hx => let ⟨g, _, e⟩ := rinf_ex hO hL hQ p2 i hx; ⟨g, (e g).2 rfl⟩) rinf_zero rinf_zero
     (by

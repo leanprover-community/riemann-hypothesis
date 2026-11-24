@@ -249,8 +249,8 @@ def eigenSecs (P : PolAV S) (N : ℕ) {T : Over S} {I : Type} (h : I → (T ⟶ 
   smul_mem' := fun r s hs V i U hU => by
     rw [pullSec_smul, smul_comm]; exact (isActOf_comb U (hs V i U hU) (hs V i U hU) _).2
 
-def VVWeight (P : PolAV S) (N m : ℕ) {T : Over S} (_hodd : Odd N)
-    (_hinv : IsUnit (N : Γ(T.left, ⊤))) {I : Type} (h : I → (T ⟶ P.A)) (_hh : ∀ i, h i ^ N = 1)
+def VVWeight (P : PolAV S) (N m : ℕ) {T : Over S}
+    {I : Type} (h : I → (T ⟶ P.A))
     (χ : I → Γ(T.left, ⊤)ˣ) : Submodule Γ(T.left, ⊤) (Secs P.A P.L N T) :=
   VV P N m T ⊓ eigenSecs P N h χ
 

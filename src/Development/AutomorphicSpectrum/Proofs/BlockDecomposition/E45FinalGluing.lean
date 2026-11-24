@@ -1780,7 +1780,7 @@ open PositivityTheory.Rg.BcB.E PositivityTheory.Rg.BcB.SpectralAccumulation
 namespace GlobalTheory.CompanionTheory.EGlue
 
 theorem eFinalGlue_of (hCS : ConvStrip) (hCC : ConvComp) (hFS : FactorStep) (hLL : LimLists) (hOS : OneStep)
-    (hFL : FactorLim) (hMC : MCloseFacts) (hPE : PairEmb) (hPS : PairSlices) (hST : SliceType) : InfinitesimalCharacterGlue := by
+    (hFL : FactorLim) (hMC : MCloseFacts) (hPE : PairEmb) (hPS : PairSlices) : InfinitesimalCharacterGlue := by
   intro hE3 hSep hLim hGraft hTw hTr hLV hAD hUn hInf E _ _ _ a b W₁ W₂ hW₁ hW₂
   obtain ⟨Ωs₁, hΩs₁, S₁⟩ := hFS hSep E a W₁ hW₁
   obtain ⟨Ωs₂, hΩs₂, S₂⟩ := hFS hSep E b W₂ hW₂
@@ -1868,7 +1868,7 @@ theorem eFinalGlue : PositivityTheory.Rg.BcB.SpectralAccumulation.InfinitesimalC
   eFinalGlue_of hCS hCC _root_.GlobalTheory.CompanionTheory.EGlue.factorStep_holds (_root_.GlobalTheory.CompanionTheory.EGlue.limLists hCS _root_.GlobalTheory.CompanionTheory.EGlue.convShift_holds hCC)
     (_root_.GlobalTheory.CompanionTheory.EGlue.OneStepProof.oneStep_of_parts hPS _root_.GlobalTheory.CompanionTheory.EGlue.pairRestrict_holds _root_.GlobalTheory.CompanionTheory.EGlue.pairFD_holds _root_.GlobalTheory.CompanionTheory.EGlue.SliceTypePf.main hP1 hP2 _root_.GlobalTheory.CompanionTheory.EGlue.hullGen hCE)
     (_root_.GlobalTheory.CompanionTheory.EGlue.FactorLimProof.factorLim_of_parts hCC (_root_.GlobalTheory.CompanionTheory.EGlue.LimT.limTrees hCC) (_root_.GlobalTheory.CompanionTheory.EGlue.LeafB.leafBound hDI hTI hIE) (_root_.GlobalTheory.CompanionTheory.EGlue.ConvInfProof.convInf_of_discInf_topInf hDI hTI) hIE hCE hMC)
-    hMC (_root_.GlobalTheory.CompanionTheory.EGlue.pairEmb_of_steps hPS hP1 hP2) hPS _root_.GlobalTheory.CompanionTheory.EGlue.SliceTypePf.main
+    hMC (_root_.GlobalTheory.CompanionTheory.EGlue.pairEmb_of_steps hPS hP1 hP2) hPS
 
 end GlobalTheory.CompanionTheory.EGlue
 

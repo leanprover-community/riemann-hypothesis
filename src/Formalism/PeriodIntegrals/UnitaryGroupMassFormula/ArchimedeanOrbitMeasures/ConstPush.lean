@@ -54,10 +54,10 @@ open MeasureTheory Topology Filter NumberField Formalism.BasicNotions Formalism.
 open scoped TensorProduct
 
 def FrameIndependentAtInfinity : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf fibInf,
-    PushHyp X u' ψ hT μinf νinf fibInf → Y0 X u' ∈ IndI X
+    PushHyp X u' ψ μinf νinf fibInf → Y0 X u' ∈ IndI X
 
 def ProperOrb : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf fibInf,
-    PushHyp X u' ψ hT μinf νinf fibInf →
+    PushHyp X u' ψ μinf νinf fibInf →
     ∀ K : Set (TupI X), IsCompact K → K ⊆ IndI X →
       ∃ N ∈ 𝓝 (1 : MfI X), ∃ C : Set (HA (Ainf X.B.I.F) X.B.I.cm.sig X.B.I.J), IsCompact C ∧
         ∀ b ∈ N, ∀ g : HA (Ainf X.B.I.F) X.B.I.cm.sig X.B.I.J, g • rmulT X b (Y0 X u') ∈ K → g ∈ C

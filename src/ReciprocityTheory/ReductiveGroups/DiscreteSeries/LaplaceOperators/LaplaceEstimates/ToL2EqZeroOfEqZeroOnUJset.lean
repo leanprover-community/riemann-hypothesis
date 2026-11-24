@@ -218,8 +218,8 @@ def finKer {k r : ℕ} {ε : Fin (2 * r + k + 1) → Bool} {Λ : Fin (2 * r + k 
 
 theorem finB_frob_nonneg {k r : ℕ} (g : Mat k r) : 0 ≤ frob g := Real.sqrt_nonneg _
 
-theorem product_bound_three_factors (A B X p1 p2 Φ C0 C1 V : ℝ) (hA : 0 ≤ A) (hB : 0 ≤ B) (hX : 0 ≤ X)
-    (hC0 : 0 ≤ C0) (hC1 : 0 ≤ C1) (hV : 0 ≤ V) (hp1 : 0 ≤ p1) (hp2 : 0 ≤ p2)
+theorem product_bound_three_factors (A B X p1 p2 Φ C0 C1 V : ℝ) (hB : 0 ≤ B) (hX : 0 ≤ X)
+    (hC0 : 0 ≤ C0) (hC1 : 0 ≤ C1) (hV : 0 ≤ V) (hp1 : 0 ≤ p1)
     (h1 : A ≤ C0 * p1) (h2 : B ≤ C1 * V * p2) (h3 : p1 * p2 ≤ Φ) :
     A * (B * X) ≤ C0 * C1 * V * X * Φ := by
   have e1 : A * (B * X) ≤ (C0 * p1) * ((C1 * V * p2) * X) :=
@@ -397,9 +397,9 @@ theorem finFub_int' (hIS : S0.IntSStatement) (k r : ℕ) (ε : Fin (2 * r + k + 
       _ = _ := by ring
   have hpair := finB_pair β hβ0 hY hg hYg
   rw [norm_smul, norm_smul, hchi]
-  exact product_bound_three_factors _ _ _ _ _ _ _ _ _ (norm_nonneg _) (norm_nonneg _) (norm_nonneg _) (le_max_right _ _)
+  exact product_bound_three_factors _ _ _ _ _ _ _ _ _ (norm_nonneg _) (norm_nonneg _) (le_max_right _ _)
     (le_max_right _ _) (by positivity) (Real.rpow_nonneg (finB_frob_nonneg _) _)
-    (Real.rpow_nonneg (finB_frob_nonneg _) _) hF1 hK1 hpair
+    hF1 hK1 hpair
 
 end ReciprocityTheory.ChartRestriction.DS.Lap
 end -- clump:auto
@@ -422,7 +422,7 @@ theorem finFub (hIS : S0.IntSStatement) (k r : ℕ) (ε : Fin (2 * r + k + 1) �
     (z : Fin (2 * r + k + 1) → ℂ) (c : Fin r → ℂ) (Vp : Type) [NormedAddCommGroup Vp]
     [InnerProductSpace ℂ Vp] [CompleteSpace Vp] (π : Mat k r → (Vp →L[ℂ] Vp)) (μW μN : Measure (Formalism.QuantumDeterminants.Mt k r))
     (P : Mat k r) (hP : Formalism.MainNotions.S.IsCayley k r ε P) (hB : IsBData z c u π μW μN)
-    (hp : pOf ε = k + r) (hq : qOf ε = r + 1) (hgap : StepGap ε r h) (hlam : S7.IsHCParam lam')
+    (hgap : StepGap ε r h) (hlam : S7.IsHCParam lam')
     (hgl : GapAtLeast ε lam' h) (T' : S7.KType ε (lowK ε lam')) (μ' : Fin (2 * r + k + 1) → ℤ)
     (hμ : S7.IsMu lam' μ') (v₁ v₂ : T'.V) (ξ : Vp) (F : Mat k r → ℂ) (C : ℝ)
     (hFc : ContinuousOn F (UJset ε)) (hFb : ∀ g ∈ UJset ε, ‖F g‖ ≤ C * frob g ^ (1 - aExp ε h))
@@ -554,10 +554,10 @@ theorem closed_irreducible_lowest_type_data (ε : Fin n → Bool) (lam' : Fin n 
     rw [hb] at hw
     exact hw0 ((Submodule.mem_bot ℂ).1 hw)
   obtain ⟨φ, hφK, hφI⟩ := KTypeIsomorphism.exists_phi hσ hD hirr hσ hD hV2
-  have huniv := rigid_universal hσ hD hirr hcas hK hσ hD hV2 hc2 hVK2 hstd φ hφK hφI
-  have hjw := datumEmbedding_highest_ne_zero hstd hP hv₀
-  have hstab := closGen_stable hstd hσ hD hirr hcas hK
-  obtain ⟨U0, hU0⟩ := data_unitary_equiv hstd hσ hD hirr hcas hK hW0 hσ hD hV2 hc2 hVK2 hV20
+  have huniv := rigid_universal hσ hD hirr hcas hK hσ hD hc2 hstd φ hφK hφI
+  have hjw := datumEmbedding_highest_ne_zero hP hv₀
+  have hstab := closGen_stable hσ hD hirr hcas
+  obtain ⟨U0, hU0⟩ := data_unitary_equiv hstd hσ hD hirr hcas hK hW0 hσ hD hV2 hc2 hVK2
   let U : closGen (smE ε (rreg ε)) W' ≃ₗᵢ[ℂ] Hlam ε (S7.PsiM T' μ') T'.w := U0
   have hU : ∀ g ∈ UJset ε, ∀ x y : closGen (smE ε (rreg ε)) W', (x : L2 ε) = rreg ε g (y : L2 ε) →
       ((U x : Hlam ε (S7.PsiM T' μ') T'.w) : L2 ε) = rreg ε g ((U y : Hlam ε (S7.PsiM T' μ') T'.w) : L2 ε) :=
@@ -771,7 +771,6 @@ theorem finProj (k r : ℕ) (ε : Fin (2 * r + k + 1) → Bool) (lam' : Fin (2 *
     (hp : pOf ε = k + r) (hq : qOf ε = r + 1) (hgap : StepGap ε r h) (hlam : S7.IsHCParam lam')
     (hgl : GapAtLeast ε lam' h) (Wf : Submodule ℂ (Mat k r → ℂ)) (W' : Submodule ℂ (smD ε (rreg ε)))
     (hWf : ∀ F ∈ Wf, ContinuousOn F (UJset ε) ∧ ∃ C : ℝ, ∀ g ∈ UJset ε, ‖F g‖ ≤ C * frob g ^ (1 - aExp ε h))
-    (hW' : ∀ v : smD ε (rreg ε), v ∈ W' ↔ ∃ F ∈ Wf, (v : L2 ε) = toL2 ε F)
     (hirr : IsKIrrHW ε (smE ε (rreg ε)) (lowK ε lam') W')
     (hcas : ∀ v ∈ W', casimir (smE ε (rreg ε)) v = (casVal lam' : ℂ) • v)
     (hK : ∀ k' ∈ Kset ε, ∀ v ∈ W', ∃ v'' ∈ W', (v'' : L2 ε) = rreg ε k' (v : L2 ε))
@@ -864,9 +863,9 @@ theorem finStep : FinStatement := by
     exact hw0 (Subtype.ext (hwF.trans h0))
   obtain ⟨x, hx, hxne⟩ := hne
   obtain ⟨T', μ', v₁, v₂, hμ, hrep⟩ :=
-    finProj k r ε lam' h hp hq hgap hlam hgl Wf W' hWf hW' hirr hcas hK F hF ⟨w, hwW, hw0, hwF⟩
+    finProj k r ε lam' h hp hq hgap hlam hgl Wf W' hWf hirr hcas hK F hF ⟨w, hwW, hw0, hwF⟩
   obtain ⟨hFc, C, hFb⟩ := hWf F hF
-  obtain ⟨x₀, hx₀, hne0⟩ := finFub hIS k r ε u lam' h z c Vp π μW μN P hP hB hp hq hgap hlam hgl T' μ' hμ v₁ v₂ ξ F C
+  obtain ⟨x₀, hx₀, hne0⟩ := finFub hIS k r ε u lam' h z c Vp π μW μN P hP hB hgap hlam hgl T' μ' hμ v₁ v₂ ξ F C
     hFc hFb hrep x hx hxne
   exact ⟨T', μ', P, z, c, Vp, inferInstance, inferInstance, inferInstance, π, μW, μN, hμ, hP, hB,
     v₁, v₂, ξ, x₀, x, hx₀, hx, hne0⟩

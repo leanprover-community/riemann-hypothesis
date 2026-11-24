@@ -81,7 +81,7 @@ end GlobalTheory.UnimodMass
 namespace GlobalTheory.UnimodMass
 
 theorem fiber_card_mul_stabCard {G : Type} [Group G] (Γ W K : Subgroup G) (hWK : W ≤ K) (t : G)
-    (ht : Finite {γ : Γ // t⁻¹ * (γ : G) * t ∈ K}) (k : K) :
+    (k : K) :
     Nat.card {x : K ⧸ W.subgroupOf K // dcOfCoset Γ W K t x = dcOfCoset Γ W K t (k : K ⧸ W.subgroupOf K)} *
       stabCard Γ W (t * k) = stabCard Γ K t := by
   classical
@@ -194,7 +194,7 @@ theorem mass_eq_relIndex_mul {G : Type} [Group G] (Γ W K : Subgroup G) (hWK : W
     · obtain ⟨x, rfl⟩ := hne
       induction x using QuotientGroup.induction_on with
       | H k =>
-        have h1 := fiber_card_mul_stabCard Γ W K hWK 1 (hfin 1) k
+        have h1 := fiber_card_mul_stabCard Γ W K hWK 1 k
         have h2 := stabCard_pos (Γ := Γ) (K := K) 1 (hfin 1)
         have h3 : 0 < Nat.card {x : K ⧸ W.subgroupOf K //
             dcOfCoset Γ W K 1 x = dcOfCoset Γ W K 1 (k : K ⧸ W.subgroupOf K)} := by
@@ -234,7 +234,7 @@ theorem mass_eq_relIndex_mul {G : Type} [Group G] (Γ W K : Subgroup G) (hWK : W
     refine Finset.sum_congr rfl (fun d hd => ?_)
     simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hd
     obtain ⟨k, rfl⟩ := dcOfCoset_surj hWK t _ (hd.trans hct)
-    have h1 := fiber_card_mul_stabCard Γ W K hWK t (hfin t) k
+    have h1 := fiber_card_mul_stabCard Γ W K hWK t k
     rw [dcOfCoset_mk, stabCard_out]
     rw [← Fintype.card_subtype, ← Nat.card_eq_fintype_card, ← dcOfCoset_mk]
     have hsW : (0 : ℚ) < stabCard Γ W (t * k) := by

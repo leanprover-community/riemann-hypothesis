@@ -78,7 +78,7 @@ theorem indicator_intPts_mem_SB : (intPts F κ).indicator (1 : (κ → Af F) →
   · filter_upwards [hK.isClosed.isOpen_compl.mem_nhds hx] with y hy
     simp [Set.indicator_of_notMem hy, Set.indicator_of_notMem hx]
 
-theorem zero_mem_intPts : (0 : κ → Af F) ∈ intPts F κ := fun _ _ v => zero_mem _
+theorem zero_mem_intPts : (0 : κ → Af F) ∈ intPts F κ := fun _ _ _ => zero_mem _
 
 def ptAt (a : κ → mixedEmbedding.mixedSpace F) (y : κ → Af F) : κ → AF F :=
   fun i => ((InfiniteAdeleRing.ringEquiv_mixedSpace F).symm (a i), y i)

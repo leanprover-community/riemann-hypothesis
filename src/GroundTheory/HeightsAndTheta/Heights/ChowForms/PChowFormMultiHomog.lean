@@ -12,7 +12,7 @@ namespace GroundTheory.Heights₂.Heights
 theorem chowFormMultiHomog : ChowFormMultiHomog.Statement :=
   fun _ _ _ _ _ _ hP hf => hf.exists_multiHomog hP
 
-theorem ChowFormMultiHomog.proof (_h₁ : ProjNullstellensatz.Statement) :
+theorem ChowFormMultiHomog.proof :
     ChowFormMultiHomog.Statement :=
   chowFormMultiHomog
 

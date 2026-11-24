@@ -805,7 +805,7 @@ def conB (he : ∀ j, s.app j ≫ t.app j = CommRingCat.ofHom φ) (j : J) : limB
 
 def excAB : sysA I1 I2 D s ⟶ sysB I1 I2 D s where
   app j := excMap (oj D s I1 j.unop) (oj D s I2 j.unop)
-  naturality a b f := exc_nat _ _ _ _ _ (oj_pre D s I1 f.unop).le (oj_pre D s I2 f.unop).le _
+  naturality _ _ f := exc_nat _ _ _ _ _ (oj_pre D s I1 f.unop).le (oj_pre D s I2 f.unop).le _
 
 theorem t_nat {j k : J} (f : j ⟶ k) : D.map f ≫ t.app k = t.app j := by
   have := t.naturality f

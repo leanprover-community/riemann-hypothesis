@@ -515,7 +515,7 @@ theorem restKey_of (D : Formalism.BasicNotions.D7) (hAdm : AdmB D) (C₀ : ℝ) 
   have hNK : segN X.F j + r ≤ K := le_trans (Nat.add_le_add_right (hX.card j) r) hX.NsK
   have hN : segN X.F j - r + r = segN X.F j := Nat.sub_add_cancel hrN
   have h10 : BracketPolynomialSpan D := hAdm.2.2.2.2.2.2.2.2.2.1
-  have h12 : NestedTypeBound D := hAdm.2.2.2.2.2.2.2.2.2.2.2.1
+  have h12 : NestedTypeBound := hAdm.2.2.2.2.2.2.2.2.2.2.2.1
   have hw := (h12 p O S n' r K X.F X.L₁ X.N₁ j (fun _ => 0) (fun _ => 0) (fun _ => 0) hV hNK
     (fun _ => le_rfl)).2.1
   have hH : ∀ q : X.Idx p K j (X.restr j b),

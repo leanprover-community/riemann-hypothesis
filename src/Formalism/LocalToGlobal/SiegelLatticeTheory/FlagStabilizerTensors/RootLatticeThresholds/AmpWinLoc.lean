@@ -314,7 +314,7 @@ theorem loc_id {β : Formalism.REAL.UJ (X.B.I.ε (vOf X τ)) → ℝ≥0∞} (h�
 
   have h2 := C.nuS_q u τ f hfm
 
-  have hconc := Formalism.L2.SG.Pf.GoodS.nu_conc hz hT (Formalism.L2.SG.Pf.haarTr C τ) (Formalism.L2.SG.Pf.LocF.muS_haar C u τ)
+  have hconc := Formalism.L2.SG.Pf.GoodS.nu_conc (Formalism.L2.SG.Pf.haarTr C τ) (Formalism.L2.SG.Pf.LocF.muS_haar C u τ)
     (C.nuS_q u τ)
   have hae : ∀ᵐ x ∂(C.nuS u τ), Matrix.of x ∈ UH (Hpk D.R.k D.R.rS) := by
     rw [ae_iff]; exact hconc
@@ -357,7 +357,7 @@ theorem l2SG_phiOf_eq_l2SG_wT (hLF : LocFactor C) (hB : WuBessel C) :
   have hHG := Formalism.L2.SG.Pf.haarTr C τ
   have hq := C.nuS_q u τ
   have hy := C.y_mem τ
-  have hconc := Formalism.L2.SG.Pf.GoodS.nu_conc hz hT hHG hSH hq
+  have hconc := Formalism.L2.SG.Pf.GoodS.nu_conc hHG hSH hq
   have hπ := Formalism.MainNotions.BridgeLemma₃.lbRepOfHC_proved D.R.k D.R.rS _ _ _ _ hz hT (Formalism.L2.SG.Pf.colsTypeTr C u τ)
   have hinv : ∀ s ∈ Sset D.R.k D.R.rS (zB X (C.Qi τ) u τ), ∀ x ∈ UH (Hpk D.R.k D.R.rS),
       ‖wT C u τ (s * x)‖ = ‖wT C u τ x‖ := by

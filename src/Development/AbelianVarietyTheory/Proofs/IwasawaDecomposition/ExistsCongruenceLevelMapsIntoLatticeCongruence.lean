@@ -214,7 +214,7 @@ def Keeps (K : AddSubgroup (Fin r → R)) (X : Matrix (Fin n) (Fin n) A) : Prop 
 
 variable {e β β'}
 
-theorem sub_one_mulVec_mem (hββ' : β * β' = 1) (hβ'β : β' * β = 1) (K : AddSubgroup (Fin r → R)) (T : Subring A)
+theorem sub_one_mulVec_mem (hββ' : β * β' = 1) (K : AddSubgroup (Fin r → R)) (T : Subring A)
     (hT : ∀ c ∈ T, ∀ w ∈ K, e c • w ∈ K) (hsign : ∀ j : Fin n, Keeps e β β' K (signAt j))
     (hperm : ∀ i j : Fin n, ∀ X, Keeps e β β' K X → Keeps e β β' K ((Equiv.swap i j).permMatrix A * X))
     (N : ℕ) (X : Matrix (Fin n) (Fin n) A)
@@ -292,7 +292,7 @@ theorem finCong_of_cong {D : D7} {V : HSp D} {n : ℕ} {P : principalLevelFrame.
     rwa [hmat κ] at e1
   intro z hz
   rw [pj_latHat_eq] at hz ⊢
-  obtain ⟨w, hw, hw'⟩ := sub_one_mulVec_mem (e := (swapCast hF).symm.toRingHom) hββ' hβ'β
+  obtain ⟨w, hw, hw'⟩ := sub_one_mulVec_mem (e := (swapCast hF).symm.toRingHom) hββ'
     (Formalism.MainNotions.StandardLattice.latHat D.host.F D.host.E (L0c D V)) (ALint D.host.E)
     (fun c hc w hw => swapCast_symm_smul_mem hF (L0c D V) (selfDual_lattice_coords_smul_ringOfIntegers_mem V) hc hw)
     (fun j => hU (ofUnitary _ (signAt_unitary j)) (signAt_mem_Umax j))

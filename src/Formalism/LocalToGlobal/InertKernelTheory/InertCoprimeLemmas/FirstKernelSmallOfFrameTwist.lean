@@ -297,7 +297,7 @@ theorem low_order_vanishing_of_admissible (D : Formalism.BasicNotions.D7) {p : �
     (E : CEmbC X.G) (hfin : ∀ j c, (X.Lv.lev j c).FinClasses) (hst : FinStab X.Lv) {g : Formalism.MainNotions.GL3Theta.G1 p}
     (hLT : LTIso g) {T : Type} (pos : (Σ v : X.Pl, Fin (X.G.P.n' v)) ≃ T)
     (F : ∀ j, X.Lt j → X.Lt (j + 1) → MvPowerSeries (T × Fin ((X.Pj (j + 1)).m + 1) × Fin ((X.Pj j).m + 1)) ℂ_[p]) :
-    Formalism.MainNotions.FormalGroupSystem.adm11 D X (pendT X E hfin hst hLT pos F) → ∀ j < X.mm, ∀ v, LowZC X (beLT hLT) j v :=
+    Formalism.MainNotions.FormalGroupSystem.adm11 X (pendT X E hfin hst hLT pos F) → ∀ j < X.mm, ∀ v, LowZC X (beLT hLT) j v :=
   fun h j hj v => h v j hj
 
 
@@ -306,8 +306,8 @@ theorem admissible_third_of_second_eleventh (D : Formalism.BasicNotions.D7) {p :
     (E : CEmbC X.G) (hfin : ∀ j c, (X.Lv.lev j c).FinClasses) (hst : FinStab X.Lv) {g : Formalism.MainNotions.GL3Theta.G1 p}
     (hLT : LTIso g) {T : Type} (pos : (Σ v : X.Pl, Fin (X.G.P.n' v)) ≃ T)
     (F : ∀ j, X.Lt j → X.Lt (j + 1) → MvPowerSeries (T × Fin ((X.Pj (j + 1)).m + 1) × Fin ((X.Pj j).m + 1)) ℂ_[p]) :
-    Formalism.MainNotions.FormalGroupSystem.adm2b D X (pendT X E hfin hst hLT pos F) → Formalism.MainNotions.FormalGroupSystem.adm11 D X (pendT X E hfin hst hLT pos F) →
-      Formalism.MainNotions.FormalGroupSystem.adm3 D X (pendT X E hfin hst hLT pos F) :=
+    Formalism.MainNotions.FormalGroupSystem.adm2b X (pendT X E hfin hst hLT pos F) → Formalism.MainNotions.FormalGroupSystem.adm11 X (pendT X E hfin hst hLT pos F) →
+      Formalism.MainNotions.FormalGroupSystem.adm3 X (pendT X E hfin hst hLT pos F) :=
   fun h2b h11 => (adm_three_iff_representative D X E hfin hst hLT pos F).2
     (admissible_third_of_low_kernel_law X E hfin _ pos F (low_order_vanishing_of_admissible D X E hfin hst hLT pos F h11)
       ((adm_two_pendant_iff_representative D X E hfin hst hLT pos F).1 h2b))

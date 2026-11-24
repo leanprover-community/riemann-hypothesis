@@ -254,7 +254,7 @@ theorem gtBox_anti {n : ℕ} {μ : Fin (n + 1) → ℤ} {κ : Fin n → ℤ} (h�
     have hle : i.succ ≤ j.castSucc := Fin.le_def.2 (by simp only [Fin.val_succ, Fin.coe_castSucc]; omega)
     exact le_trans (hκ j).2 (le_trans (hμ hle) (hκ i).1)
 
-theorem heights_of_gtBox {n : ℕ} {μ : Fin (n + 1) → ℤ} {κ : Fin n → ℤ} (hμ : Antitone μ)
+theorem heights_of_gtBox {n : ℕ} {μ : Fin (n + 1) → ℤ} {κ : Fin n → ℤ}
     (hκ : κ ∈ gtBox μ) (c : ℤ) : colHeight κ c ≤ colHeight μ c ∧ colHeight μ c ≤ colHeight κ c + 1 := by
   rw [mem_gtBox] at hκ
   constructor
@@ -363,7 +363,7 @@ theorem tab_extd {n : ℕ} {μ : Fin (n + 1) → ℤ} {κ : Fin n → ℤ} (hμ 
     TabP μ fun c => extd (T' c) (colHeight κ c < colHeight μ c) := by
   have hcard : ∀ c, (extd (T' c) (colHeight κ c < colHeight μ c)).card = colHeight μ c := by
     intro c
-    have h3 := heights_of_gtBox hμ hκ c
+    have h3 := heights_of_gtBox hκ c
     rw [card_extd, hT.1 c]
     split_ifs <;> omega
   unfold TabP

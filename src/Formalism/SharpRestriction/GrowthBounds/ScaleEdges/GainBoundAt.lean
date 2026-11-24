@@ -147,7 +147,7 @@ def E0 (p r k N₁ G' c' : ℕ) : ℕ := 15 * c' * (N₁ + r * k) * (p ^ G') ^ 2
 private lemma mul_le_of_abs_le (c C u v : ℝ) (hu : 0 ≤ u) (huv : u ≤ v) (hc : |c| ≤ C) : c * u ≤ C * v :=
   (mul_le_mul_of_nonneg_right (le_abs_self c) hu).trans (mul_le_mul hc huv hu ((abs_nonneg c).trans hc))
 
-theorem symbol_space_at (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) (h26 : Formalism.MainNotions.SelectionLemmas.Conclusion2 D CLa Ck Crk Cdeg) :
+theorem symbol_space_at (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) (h26 : Formalism.MainNotions.SelectionLemmas.Conclusion2 CLa Ck Crk Cdeg) :
     ∃ C₁ : ℝ, 1 ≤ C₁ ∧ ∀ C : ℝ, C₁ ≤ C →
     ∀ (p : ℕ) (W Qq O Kf : Type) [CommRing W] [IsDomain W] [IsDiscreteValuationRing W] [Field Qq] [Algebra W Qq]
       [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field Kf] [Algebra O Kf]

@@ -394,7 +394,7 @@ open GroundTheory.Heights₂.Heights.ObjectsChow (ChowDegreeSection.Statement Ch
 
 theorem dim_closure_add_one_le {Z : Scheme.{0}} {z z' : Z} (h : z' ⤳ z) (hne : z ≠ z') :
     topologicalKrullDim (closure {z} : Set Z) + 1 ≤ topologicalKrullDim (closure {z'} : Set Z) :=
-  topologicalKrullDim_add_one_le isClosed_closure isClosed_closure fun x hx =>
+  topologicalKrullDim_add_one_le isClosed_closure isClosed_closure fun _ hx =>
     ⟨z', subset_closure rfl, fun h' => hne (h.antisymm (specializes_iff_mem_closure.2 h')).eq.symm,
       h.trans (specializes_iff_mem_closure.2 hx)⟩
 

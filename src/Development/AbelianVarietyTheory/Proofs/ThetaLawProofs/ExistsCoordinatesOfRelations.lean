@@ -91,7 +91,7 @@ open scoped Topology in
 theorem _root_.GlobalTheory.ThetaValueCont.continuousAt_constant {V V' K ι : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] [FiniteDimensional ℂ V]
     [NormedAddCommGroup V'] [NormedSpace ℂ V'] [FiniteDimensional ℂ V'] {B : Set V} {b₀ : V}
     {W : ι → Set (V × V')} {f : ι → V × V' → ℂ} {θ : K → V × V' → ℂ} {C : Set K} (hC : C.Finite) {κ : V → K}
-    {c : V → ℂ} {r : ι → V → ℂ} (hW : ∀ j, IsOpen (W j)) (hWB : ∀ j, ∀ w ∈ W j, w.1 ∈ B)
+    {c : V → ℂ} {r : ι → V → ℂ} (hW : ∀ j, IsOpen (W j))
     (hf : ∀ j, DifferentiableOn ℂ (f j) (W j)) (hθ : ∀ k ∈ C, ∀ j, DifferentiableOn ℂ (θ k) (W j))
     (hnz : ∀ k ∈ C, ∀ b ∈ B, ∀ z, ∃ᶠ w in 𝓝 z, θ k (b, w) ≠ 0) (hκ : ∀ b ∈ B, κ b ∈ C)
     (hq : ∀ j b z, (b, z) ∈ W j → ∃ ρ : V' → ℂ, ρ z ≠ 0 ∧ (z = 0 → ρ 0 = c b * r j b) ∧

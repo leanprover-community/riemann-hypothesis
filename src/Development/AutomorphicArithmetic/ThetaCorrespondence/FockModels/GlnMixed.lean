@@ -1551,7 +1551,7 @@ theorem mixed {r : ℕ} (t : ℕ) {π : Representation ℂ (GL (Fin r) k) V} (s 
     (prod₂ π (detRep (Fin t) χ)).IsIrreducible :=
   UpperTheory.Lit.Full.top geometricLemma GlobalTheory.bernsteinZelevinskyFiniteness_holds polynomialRing k r t V π χ s i u hs hu
 
-theorem prod₂_detRep' (_H : GlobalTheory.Published.BernsteinUnitaryProductIrreducible) {r : ℕ} (t : ℕ)
+theorem prod₂_detRep' {r : ℕ} (t : ℕ)
     {π : Representation ℂ (GL (Fin r) k) V} (s : IsSmooth π) (i : π.IsIrreducible)
     (u : IsUnitarisable π) {χ : kˣ →* ℂˣ} (hs : IsSmoothChar χ) (hu : IsUnitaryChar χ) :
     (prod₂ π (detRep (Fin t) χ)).IsIrreducible := mixed t s i u hs hu

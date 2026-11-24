@@ -402,7 +402,7 @@ theorem valuation_lowest_degree_map_fraction_field (O : Type) [CommRing O] [IsDo
       lam1S LL S (MvPolynomial.map (algebraMap O (KK O)) A) = lam1S LL S A :=
   ⟨valS_map _ (IsFractionRing.injective O (KK O)) LL S A, lowest_degree_map_of_injective _ (IsFractionRing.injective O (KK O)) LL S A⟩
 
-theorem transport_statement_holds (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.SelectionLemmas.TypeDecompositionsCommute D :=
+theorem transport_statement_holds (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.SelectionLemmas.TypeDecompositionsCommute :=
   ⟨fun R _ ι κ f n _ LL S A hf => Formalism.MainNotions.SelectionLemmas.valuation_lowest_degree_rename R ι κ f n LL S A hf,
     fun O _ _ ι n _ LL S A => valuation_lowest_degree_map_fraction_field O ι n LL S A⟩
 
@@ -418,7 +418,7 @@ theorem exists_finset_letters {R : Type} [CommRing R] {ι : Type} {n : ℕ} (F G
   · rw [rename_rename, hF]; rfl
   · rw [rename_rename, hG]; rfl
 
-theorem valuation_transport_of_lemma (D : Formalism.BasicNotions.D7) (h : Formalism.MainNotions.CovariantDegrees.ValuationsAdditive D) : Formalism.MainNotions.SelectionLemmas.admB2 D := by
+theorem valuation_transport_of_lemma (D : Formalism.BasicNotions.D7) (h : Formalism.MainNotions.CovariantDegrees.ValuationsAdditive) : Formalism.MainNotions.SelectionLemmas.admB2 := by
   intro O _ _ _ ι n _ LL S
   refine ⟨fun F G => ?_, fun l hl c => coord_clauses LL S l hl c, fun y hinj hy => ?_⟩
   · obtain ⟨t, F', G', rfl, rfl⟩ := exists_finset_letters F G
@@ -1827,7 +1827,7 @@ def SpaceStatementAtRing (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuati
     ∃ P ∈ XX' O r K F j m th o,
       MvPolynomial.map (IsLocalRing.residue O) P = plEmb (FF O) r K A * nmEmb (FF O) r K G)
 
-theorem space_statement_iff_forall_dvr (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.SelectionLemmas.NestedTypeBound D ↔
+theorem space_statement_iff_forall_dvr (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.SelectionLemmas.NestedTypeBound ↔
     ∀ (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (_S : UniformizedDVR p O),
       SpaceStatementAtRing O := Iff.rfl
 
@@ -1985,7 +1985,7 @@ theorem comb_sat_iff [NeZero r] {K : ℕ} [NeZero K] (m : ℤ → ℤ) (th : ℤ
       · rw [ite_eq_right hev]; exact cO hev
     · exact Int.ceil_le.mpr (h i hW).2.2
 
-theorem segPairs_iff (D : Formalism.BasicNotions.D7) (hB1 : Formalism.MainNotions.CovariantDegrees.RotatedSumBound D) [NeZero r] {K : ℕ} [NeZero K] (L₁ N₁ : ℕ)
+theorem segPairs_iff (D : Formalism.BasicNotions.D7) (hB1 : Formalism.MainNotions.CovariantDegrees.RotatedSumBound) [NeZero r] {K : ℕ} [NeZero K] (L₁ N₁ : ℕ)
     (hV : F.Valid L₁ N₁) (hK : segN F j + r ≤ K) (m : ℤ → ℤ) (hm : ∀ x, 0 ≤ m x) (th o : ℤ → ℝ)
     (b' b'' : Fin (segN F j) → ℕ) (P1 : PPath r (segN F j) (segLL F j) b')
     (P2 : PPath K (segN F j) (segLL F j) b'') :
@@ -2037,7 +2037,7 @@ theorem segPairs_iff (D : Formalism.BasicNotions.D7) (hB1 : Formalism.MainNotion
     obtain ⟨cE, cO, cR⟩ := hs i hW
     exact ⟨fun he => ⟨cE he, ((hord i).2 hW).1 he⟩, fun he => ⟨cO he, ((hord i).2 hW).2 he⟩, cR⟩
 
-theorem segPPB_paths (D : Formalism.BasicNotions.D7) (hB1 : Formalism.MainNotions.CovariantDegrees.RotatedSumBound D) [NeZero r] {K : ℕ} [NeZero K]
+theorem segPPB_paths (D : Formalism.BasicNotions.D7) (hB1 : Formalism.MainNotions.CovariantDegrees.RotatedSumBound) [NeZero r] {K : ℕ} [NeZero K]
     (hK : segN F j + r ≤ K) (m : ℤ → ℤ) (th : ℤ → ℝ) (B : Fin (segN F j) → ℕ)
     (q : (Fin (segN F j + 1) → Fin r → ℤ) × (Fin (segN F j + 1) → Fin K → ℤ))
     (hq : q ∈ segPPB F j K m th B) :
@@ -2533,7 +2533,7 @@ def LastInequalityClause (O : Type) [CommRing O] [IsDomain O] : Prop :=
         ⨆ q ∈ {q : (Fin (N + 1) → Fin r → ℤ) × (Fin (N + 1) → Fin K → ℤ) |
           (∃ P : PPath (r + K) N LL B, P.mu = joinPT q.1 q.2) ∧ ∀ e ∈ L, e.Sat q.1 q.2}, jointType (KK O) LL q.1 q.2}
 
-theorem last_inequality_clause_of_lemma (D : Formalism.BasicNotions.D7) (h : ConclusionB3 D) (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] [IsDomain O]
+theorem last_inequality_clause_of_lemma (D : Formalism.BasicNotions.D7) (h : ConclusionB3) (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] [IsDomain O]
     [IsDiscreteValuationRing O] (S : UniformizedDVR p O) : LastInequalityClause O := by
   intro N r K _ _ LL B hK L
   have hanti : StrictAnti (fun i : Fin N => N - i.val) := by
@@ -2547,7 +2547,7 @@ theorem last_inequality_clause_of_lemma (D : Formalism.BasicNotions.D7) (h : Con
     {q | (∃ P : PPath (r + K) N LL B, P.mu = joinPT q.1 q.2) ∧ ∀ e ∈ L, e.Sat q.1 q.2}
     (fun q hq => hq.1)).2.2 L rfl
 
-theorem fourth_clause_of_lemmas (D : Formalism.BasicNotions.D7) (hB1 : RotatedSumBound D) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
+theorem fourth_clause_of_lemmas (D : Formalism.BasicNotions.D7) (hB1 : RotatedSumBound) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     (h3 : StandardBasisAllData O) (hB3 : LastInequalityClause O) : FourthClauseAtRing O := by
   intro n' r K _ _ _ F L₁ N₁ j m th o hV hK hm hchar
   have : CharZero O := hchar
@@ -2558,8 +2558,8 @@ theorem fourth_clause_of_lemmas (D : Formalism.BasicNotions.D7) (hB1 : RotatedSu
     (fun B q hq => segPPB_paths F j D hB1 hK m th B q hq)
     (fun B => hB3 _ r K (segLL F j) B hK (segL F j m th))
 
-theorem space_statement_of_lemmas (D : Formalism.BasicNotions.D7) (hA2 : HyperplaneRank D) (hA3 : DefiniteRankOne D) (hB1 : RotatedSumBound D) (hB3 : ConclusionB3 D) :
-    Formalism.MainNotions.SelectionLemmas.NestedTypeBound D := by
+theorem space_statement_of_lemmas (D : Formalism.BasicNotions.D7) (hA2 : HyperplaneRank D) (hA3 : DefiniteRankOne) (hB1 : RotatedSumBound) (hB3 : ConclusionB3) :
+    Formalism.MainNotions.SelectionLemmas.NestedTypeBound := by
   rw [space_statement_iff_forall_dvr]
   intro p _ O _ _ _ S
   have h3 : StandardBasisAllData O := fun N n _ LL B th M => (hA3 p O S N n LL B th M).1
@@ -2572,7 +2572,7 @@ section Fin3
 
 open Formalism.MainNotions.SelectionLemmas Formalism.MainNotions.CovariantDegrees
 
-theorem space_criterion_of_standard_basis (D : Formalism.BasicNotions.D7) (hA3 : DefiniteRankOne D) : Formalism.MainNotions.SourceCleaning.SpaceCriterionModuloUniformiser D := by
+theorem space_criterion_of_standard_basis (D : Formalism.BasicNotions.D7) (hA3 : DefiniteRankOne) : Formalism.MainNotions.SourceCleaning.SpaceCriterionModuloUniformiser := by
   intro p _ O _ _ _ S n' r K _ _ _ Fr j m th o
   have h3 : StandardBasisAllData O := fun N n _ LL B th M => (hA3 p O S N n LL B th M).1
   have h3F : StandardBasisAllData (FF O) := fun N n _ LL B th M => (hA3 p O S N n LL B th M).2

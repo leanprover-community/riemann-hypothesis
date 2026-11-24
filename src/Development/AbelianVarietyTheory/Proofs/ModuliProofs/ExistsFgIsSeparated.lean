@@ -57,7 +57,6 @@ theorem _root_.GlobalTheory.SpreadSep.exists_isClosed_preimage_diff {I : Type u}
     (hc : IsLimit c) [IsCofiltered I] [∀ {i j} (f : i ⟶ j), IsAffineHom (D.map f)]
     [∀ i, CompactSpace (D.obj i)] [∀ i, QuasiSeparatedSpace (D.obj i)] {i : I}
     (O O' : (D.obj i).Opens) (hO : IsCompact (O : Set (D.obj i)))
-    (hO' : IsCompact (O' : Set (D.obj i)))
     (H : IsClosed (c.π.app i ⁻¹' ((O : Set (D.obj i)) \ O'))) :
     ∃ (j : I) (f : j ⟶ i), IsClosed (D.map f ⁻¹' ((O : Set (D.obj i)) \ O')) := by
   have hw : ∀ {a b : I} (g : a ⟶ b) (x : c.pt), D.map g (c.π.app a x) = c.π.app b x := by
@@ -283,7 +282,7 @@ theorem _root_.GlobalTheory.SpreadSep.exists_fg_isSeparated (k V : Type) [CommRi
       exact (hset (c.π.app i₀ x)).trans
         (Iff.of_eq (congrArg (· ∈ Set.range (pullback.diagonal p)) (hπ i₀ x)))
     rwa [hs]
-  obtain ⟨j, f, hj⟩ := _root_.GlobalTheory.SpreadSep.exists_isClosed_preimage_diff D c hc O O' (hcpt _) (hcpt _) H
+  obtain ⟨j, f, hj⟩ := _root_.GlobalTheory.SpreadSep.exists_isClosed_preimage_diff D c hc O O' (hcpt _) H
   refine ⟨Algebra.adjoin k (↑(Opposite.unop j) : Set V), Subalgebra.fg_adjoin_finset _, ?_⟩
   rw [isSeparated_pullback_snd_spMap_iff_isClosed_preimage]
   have hs : D.map f ⁻¹' ((O : Set (D.obj i₀)) \ O') =

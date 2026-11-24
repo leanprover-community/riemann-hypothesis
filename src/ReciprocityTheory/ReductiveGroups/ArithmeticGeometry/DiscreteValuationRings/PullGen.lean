@@ -270,7 +270,7 @@ theorem exists_pullGen (hL : D.toPre.P.L.IsLB) (oa : D.toPre.OAct O) (w0 : O)
   have c1 := corr_pullGen (corr_symm hcW) z
   have c2 := corr_pullGen_mulGen v' rT z
   have c4 := corr_trans hL (corr_pullGen_comp r p z)
-    (corr_trans hL (corr_pullGen_of_eq r hr _ _ hzp) (corr_pullGen_id r))
+    (corr_trans hL (corr_pullGen_of_eq r _ _ hzp) (corr_pullGen_id r))
   have c3 := corr_mulGen (corr_one_of (fun j hj => hv1 j hj)) c4
   have c5 := corr_mulGen_one r
   exact corr_trans hL c1 (corr_trans hL c2 (corr_trans hL c3 c5))

@@ -46,7 +46,7 @@ import Mathlib.Topology.Sheaves.Init
 namespace Bl.ThirdBlockLemmaB
 
 noncomputable def goal1 :
-  {S : Type} →   [inst : CommRing S] →     {A A' : Type} →       [inst_1 : CommRing A] →         [inst_2 : Algebra S A] →           [inst_3 : CommRing A'] → [inst_4 : Algebra S A'] → AlgHom S A A' → AlgHom S (DualNumber A) (DualNumber A') :=
+  {S : Type} →   [CommRing S] →     {A A' : Type} →       [CommRing A] →         [Algebra S A] →           [CommRing A'] → [Algebra S A'] → AlgHom S A A' → AlgHom S (DualNumber A) (DualNumber A') :=
   fun {S} _ {A A'} _ _ _ _ φ =>
     TrivSqZeroExt.lift ((TrivSqZeroExt.inlAlgHom S A' A').comp φ)
       (((TrivSqZeroExt.inrHom A' A').restrictScalars S).comp φ.toLinearMap)

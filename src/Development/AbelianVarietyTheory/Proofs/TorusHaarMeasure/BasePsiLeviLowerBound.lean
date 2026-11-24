@@ -238,7 +238,7 @@ theorem curvDe_eq_omRh (X : Data E r) {x0 : Frame X.Ψ r} (ho : IsOrth X x0) {z 
   simp only [de2, CurvMargin.blockWt]
   split_ifs <;> push_cast <;> ring
 
-theorem margin_of_gaps (X : Data E r) (hp : 0 < X.p0) (la : Wt X.Ψ r) (m : ℝ)
+theorem margin_of_gaps (X : Data E r) (la : Wt X.Ψ r) (m : ℝ)
     (hgap : ∀ τ a b, IsGap X a b → la τ b ≤ la τ a)
     (hpair : ∀ τ (a b : Fin r), (a : ℕ) = 0 → (b : ℕ) + 1 = r → m ≤ (la τ b : ℝ) - la τ a)
     {x0 : Frame X.Ψ r} (ho : IsOrth X x0) {z : V (nd X)} (hz : z ∈ OmF X x0)

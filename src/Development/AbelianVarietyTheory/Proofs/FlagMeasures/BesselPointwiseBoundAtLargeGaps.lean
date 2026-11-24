@@ -190,7 +190,7 @@ theorem bcWeight_scale (k r : ℕ) (T T' : ℝ) (s : Fin r → ℝ) (hs : ∀ a,
     field_simp
   · simp
 
-theorem gamLev_inv_eq (k r : ℕ) (t : ℝ) (ht : 0 < t) :
+theorem gamLev_inv_eq (k r : ℕ) (t : ℝ) :
     (D.GamLev k r t⁻¹ 1 0)⁻¹ = (∏ a : Fin r, ((t ^ (2 * (r - a.val))) ^ (2 * (Mdim k r a - 2)))⁻¹) *
       ∏ a : Fin r, ((t ^ (2 * (r - a.val))) ^ 2)⁻¹ := by
   unfold D.GamLev
@@ -251,7 +251,7 @@ theorem energy_change_of_frame : ∀ (k r : ℕ) (L : Formalism.MainNotions.S.Lo
     simp only [B.gq, hμ, A, s]
     ring
   rw [lintegral_congr hpt, lintegral_const_mul' _ _ ENNReal.ofReal_ne_top, lintegral_comp_scale s hs G,
-    hG, ← mul_assoc, ← ENNReal.ofReal_mul hA, div_eq_mul_inv, gamLev_inv_eq k r _ ht]
+    hG, ← mul_assoc, ← ENNReal.ofReal_mul hA, div_eq_mul_inv, gamLev_inv_eq k r _]
   simp only [A, s, mul_assoc]
 
 end GlobalTheory.ThA

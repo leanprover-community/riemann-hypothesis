@@ -221,7 +221,7 @@ section -- clump:auto
 namespace GlobalTheory.UpperTriangularMul
 
 theorem upperTriangular_mul :
-    ∀ {n : ℕ} {R : Type} [inst : CommRing R] {M N : Matrix (Fin n) (Fin n) R},
+    ∀ {n : ℕ} {R : Type} [CommRing R] {M N : Matrix (Fin n) (Fin n) R},
       (∀ (a i : Fin n), i < a → M a i = (0 : R)) →
       (∀ (a i : Fin n), i < a → N a i = (0 : R)) →
       (∀ (a i : Fin n), i < a → (M * N) a i = (0 : R)) ∧

@@ -62,7 +62,7 @@ section -- clump:auto
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.LocalHeightDeterminant.locHeight.{u_1} :
-    {E : Type u_1} → [inst : NormedField E] → {n : ℕ} → GL (Fin n) E → ℝ :=
+    {E : Type u_1} → [NormedField E] → {n : ℕ} → GL (Fin n) E → ℝ :=
     fun {E : Type u_1} [NormedField E] {n : ℕ} (g : GL (Fin n) E) ↦
       Max.max (1 : ℝ)
         (↑(Finset.univ.sup fun (p : Fin n × Fin n) ↦
@@ -70,7 +70,7 @@ noncomputable def UpperTheory.Reformulated.B.LocalHeightDeterminant.locHeight.{u
           ℝ)
 
 theorem UpperTheory.Reformulated.B.LocalHeightDeterminant.norm_det_le_pow.{u_1} :
-    ∀ {R : Type u_1} [inst : NormedField R] [IsUltrametricDist R] {n : ℕ} (g : GL (Fin n) R),
+    ∀ {R : Type u_1} [NormedField R] [IsUltrametricDist R] {n : ℕ} (g : GL (Fin n) R),
       ‖(↑g : Matrix (Fin n) (Fin n) R).det‖ ≤ UpperTheory.Reformulated.B.LocalHeightDeterminant.locHeight g ^ n := by
   intro R _ _ n g
   have h1 : (1 : ℝ) ≤ UpperTheory.Reformulated.B.LocalHeightDeterminant.locHeight g := le_max_left _ _
@@ -149,8 +149,8 @@ private theorem heightOff_inv (q : Pl F) (g : AdelicGLn.AdelicGL E n) : heightOf
   simp only [heightOff, infAt_inv, finAt_inv, locHeight_inv]
 
 private theorem heightOff_nonneg (q : Pl F) (g : AdelicGLn.AdelicGL E n) : 0 ≤ heightOff q g :=
-  mul_nonneg (Finset.prod_nonneg fun w _ => pow_nonneg (locHeight_pos _).le _)
-    (finprod_nonneg fun w => finprod_nonneg fun _ => (locHeight_pos _).le)
+  mul_nonneg (Finset.prod_nonneg fun _ _ => pow_nonneg (locHeight_pos _).le _)
+    (finprod_nonneg fun _ => finprod_nonneg fun _ => (locHeight_pos _).le)
 
 private theorem module_le (q : Pl F) (x : AdelicGLn.FiniteAdelicGL E n)
     (hq : ∀ w : PlacesOver E q, ‖((finAt w.1 (finEmb E n x) : GL (Fin n) (w.1.adicCompletion E)) :

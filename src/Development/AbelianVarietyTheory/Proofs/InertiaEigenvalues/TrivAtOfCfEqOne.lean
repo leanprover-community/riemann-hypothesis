@@ -61,7 +61,7 @@ variable {D : D7}
 def cf (V : HSp D) (v : HeightOneSpectrum (𝓞 D.host.F)) : GfC V →* GfC V where
   toFun g := ⟨GlobalTheory.LevelProduct.cmp V v g, GlobalTheory.LevelProduct.cmp_mem_GfC V v g⟩
   map_one' := Subtype.ext (map_one _)
-  map_mul' x y := Subtype.ext (map_mul _ _ _)
+  map_mul' _ _ := Subtype.ext (map_mul _ _ _)
 
 theorem cf_val (V : HSp D) (v : HeightOneSpectrum (𝓞 D.host.F)) (g : GfC V) :
     (cf V v g : GA D V) = GlobalTheory.LevelProduct.cmp V v g := rfl

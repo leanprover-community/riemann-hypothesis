@@ -139,7 +139,7 @@ theorem lintegral_pmat_le (ε : Fin n → Bool) :
   show H (pmat (phiF ε B)) = _
   rw [pmat_phiF]
 
-theorem haar_polar_le (ε : Fin n → Bool) (hq : 1 ≤ q0 ε) (ν : Measure (UJ ε)) [ν.IsHaarMeasure] :
+theorem haar_polar_le (ε : Fin n → Bool) (ν : Measure (UJ ε)) [ν.IsHaarMeasure] :
     ∃ C : ℝ≥0∞, C ≠ ⊤ ∧ ∀ f : UJ ε → ℝ≥0∞, Measurable f →
       ∫⁻ g, f g ∂ν ≤
         C * ∫⁻ B : Pt ε → Qt ε → ℂ,

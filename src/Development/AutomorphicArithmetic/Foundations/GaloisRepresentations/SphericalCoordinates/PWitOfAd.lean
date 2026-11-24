@@ -585,7 +585,7 @@ theorem main (N : ℕ) (hN : 0 < N) (hNp : N.Coprime p) :
       obtain ⟨e₁, he₁, r₁⟩ := hf n hn hnp a
       have h1 : X.r (f n a : VQ D) = n • X.r (e : VQ D) := by
         rw [he, AddSubgroup.coe_nsmul, r_nsmul]
-      refine GlobalTheory.LKGeo.LatDvd.exists_eq_nsmul_of_inAf p D n hn hnp
+      refine GlobalTheory.LKGeo.LatDvd.exists_eq_nsmul_of_inAf p D n
         (GlobalTheory.LKGeo.IntDvd.int_dvd_of_eq_mul_isIntAf p n hn hnp) a
         ⟨X.r (e : VQ D) - e₁, sub_mem e.2.2 he₁, ?_⟩
       rw [smul_sub, ← h1, r₁]; abel

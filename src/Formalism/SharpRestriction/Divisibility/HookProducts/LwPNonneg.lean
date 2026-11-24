@@ -63,7 +63,7 @@ theorem gC_nonneg (L : SizeData₂ D) {C : ℝ} (hC : 0 ≤ C) (p : ℕ) : 0 ≤
   · exact le_refl 0
 
 theorem sumSz_le (C : ℝ) (hC : 0 ≤ C) (y : D.what₂.places.Pl → ℝ)
-    (hy : ∀ w, y w ≤ gC L C (D.what₂.places.resChar w)) (hM : Formalism.MainNotions.CornerGLContinuity.MertensBound D) :
+    (hy : ∀ w, y w ≤ gC L C (D.what₂.places.resChar w)) (hM : Formalism.MainNotions.CornerGLContinuity.MertensBound) :
     ∑ w ∈ L.supp, SizeData₂.sz w (y w) ≤ 4 * C * Real.log (L.sc.X'' D.R.n + 1) := by
   classical
   have ha := a_nonneg L
@@ -240,7 +240,7 @@ theorem F_le (hFD : L.FDef) (hS : SizesAt L) (j : ℕ) (hj : j ∈ SizeData₂.l
     linarith
   · exact hg0
 
-theorem fo_le_pol (hFD : L.FDef) (hS : SizesAt L) (hM : Formalism.MainNotions.CornerGLContinuity.MertensBound D) :
+theorem fo_le_pol (hFD : L.FDef) (hS : SizesAt L) (hM : Formalism.MainNotions.CornerGLContinuity.MertensBound) :
     L.Fo ≤ 256 * Formalism.MainNotions.DIV.Proofs.szPol L ^ 9 * L.sc.b := by
   have hx1 := L.sc.one_lt_alt
   have hx0 : 0 < L.sc.x := lt_trans zero_lt_one hx1

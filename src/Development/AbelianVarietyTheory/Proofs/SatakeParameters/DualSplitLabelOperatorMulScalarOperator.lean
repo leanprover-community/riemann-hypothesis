@@ -264,7 +264,7 @@ theorem dual_rel : ∀ {D : D7} (V : HSp D) (P : Pl D.host.E), conjPl P ≠ P �
   have S0 := shift (GlobalTheory.SplitHecke.suppAt_one V)
     (GlobalTheory.SphLabelOps.divAt_one V he.1.1 (GlobalTheory.SphLabelOps.tie_of_isPrimeIdem (Or.inl ⟨he, rfl⟩)) (ϖ : D.host.E))
     (fun γ hγ => by rw [Finset.mem_singleton.1 hγ]; exact GlobalTheory.SplitHecke.suppAt_one V) one
-    (by rw [label_shift_zero]; simp [splitLab, List.pairwise_append, List.pairwise_replicate])
+    (by rw [label_shift_zero]; simp [splitLab, List.pairwise_replicate])
   rw [label_shift_zero] at S0
   have S1 : SphOp V P (dualLab (splitLab V.rank j)) R := sphOp_of he h1 h2
     (by simp [dualLab, splitLab, List.pairwise_append, List.pairwise_replicate]) hα.2.1 hDα r1 r2

@@ -237,7 +237,7 @@ theorem bigH_one_le (C : ℝ) (hC : 0 ≤ C) (m f : ℕ) {b : ℝ} (hb : 1 ≤ b
   unfold Formalism.HermitianLatticeCounting.LatticeSumBounds.bigH
   exact Real.one_le_rpow hb (by positivity)
 
-theorem bigH_mono {C D : ℝ} (hC : 0 ≤ C) (hCD : C ≤ D) (m f : ℕ) {b : ℝ} (hb : 1 ≤ b) :
+theorem bigH_mono {C D : ℝ} (hCD : C ≤ D) (m f : ℕ) {b : ℝ} (hb : 1 ≤ b) :
     Formalism.HermitianLatticeCounting.LatticeSumBounds.bigH C m f b ≤ Formalism.HermitianLatticeCounting.LatticeSumBounds.bigH D m f b := by
   unfold Formalism.HermitianLatticeCounting.LatticeSumBounds.bigH
   apply Real.rpow_le_rpow_of_exponent_le hb
@@ -255,7 +255,7 @@ theorem xiHyp_mono {C D : ℝ} (hC : 1 ≤ C) (hCD : C ≤ D) {k m f : ℕ} {b v
   have hD0 : (0:ℝ) ≤ D := by linarith
   have hH1 := bigH_one_le C hC0 m f hb
   have hHD1 := bigH_one_le D hD0 m f hb
-  have hHm := bigH_mono hC0 hCD m f hb
+  have hHm := bigH_mono hCD m f hb
   refine ⟨fun s hs hsk => ?_, fun s hs => ?_⟩
   · obtain ⟨h0, h1⟩ := h.1 s hs hsk
     refine ⟨h0, h1.trans ?_⟩
@@ -316,7 +316,7 @@ theorem ndRow_mono {C Gam : ℝ} (hC : 1 ≤ C) {k m f s : ℕ} {b g v : ℝ} {X
   have hCD : C ≤ Real.exp 1 * C := le_mul_of_one_le_left hC0 (Real.one_le_exp (by norm_num))
   have hD0 : (0:ℝ) ≤ Real.exp 1 * C := by linarith
   have hH1 := bigH_one_le C hC0 m f hb
-  have hHm := bigH_mono hC0 hCD m f hb
+  have hHm := bigH_mono hCD m f hb
   have hHDpos : 0 < bigH (Real.exp 1 * C) m f b := lt_of_lt_of_le zero_lt_one (hH1.trans hHm)
   have hHCpos : 0 < bigH C m f b := lt_of_lt_of_le zero_lt_one hH1
   have e0 : 0 ≤ (2 / g) ^ ((s - 1) * k * f) * ((k : ℝ) * v) ^ (k * f) * Xi s := by positivity
@@ -352,7 +352,7 @@ theorem degRow_mono {C Gam : ℝ} (hC : 1 ≤ C) {k m f s : ℕ} {b g v : ℝ} {
   have hCD : C ≤ Real.exp 1 * C := le_mul_of_one_le_left hC0 (Real.one_le_exp (by norm_num))
   have hD0 : (0:ℝ) ≤ Real.exp 1 * C := by linarith
   have hH1 := bigH_one_le C hC0 m f hb
-  have hHm := bigH_mono hC0 hCD m f hb
+  have hHm := bigH_mono hCD m f hb
   have hHDpos : 0 < bigH (Real.exp 1 * C) m f b := lt_of_lt_of_le zero_lt_one (hH1.trans hHm)
   have hHCpos : 0 < bigH C m f b := lt_of_lt_of_le zero_lt_one hH1
   have hlb : 0 ≤ Real.log b := Real.log_nonneg hb
@@ -1001,7 +1001,7 @@ theorem GlobalTheory.Core.Deg.exists_termLoop_of_standingHypotheses : ∀ (D : D
         (Formalism.L2.SG.Pf.LoopBPin.pinAll_holds u u) (Formalism.L2.SG.Pf.LoopBPin.covolPos_holds u u)
         (GlobalTheory.T.localBesselJFactor_all_words_of_gap D X Y hF hI C hB u u hG)
         (Formalism.L2.SG.Pf.LoopBCovN.covN_pos hCF one_pos C u u)
-        (Formalism.L2.SG.Pf.LoopBCovN.covWinN_of hCF C large₂ zero_le_one hup u u) hwin), ?_, fun t => rfl⟩
+        (Formalism.L2.SG.Pf.LoopBCovN.covWinN_of hCF C large₂ hup u u) hwin), ?_, fun t => rfl⟩
   exact ⟨Formalism.L2.SG.LoopsFinal.jtPin_of _ hI _ _ _ (Formalism.L2.SG.Pf.FibreCounting.AmpFibreConst_holds Y),
     Formalism.L2.SG.Pf.WittFlags.WRowPin_holds hF hI _ _ _ _,
     Formalism.L2.SG.Pf.FibreCounting.FibreCount_holds Y,
@@ -1207,7 +1207,7 @@ theorem pairsDegOfType_holds : PairsDegOfType := by
       _ ≤ _ := this
   have hA : (∑ j ∈ Finset.Icc 1 D.R.rS, k2A1 large₂ C Ch Cc j) ^ 2 ≤ k2B D large₂ (k2Cf C Ch Cc) := by
     unfold k2B
-    exact pow_le_pow_left₀ (Finset.sum_nonneg fun j _ => kloostermanTermA_nonneg large₂ hC0 hCh hCc j)
+    exact pow_le_pow_left₀ (Finset.sum_nonneg fun j _ => kloostermanTermA_nonneg large₂ hC0 j)
       (Finset.sum_le_sum fun j hj => rank_contribution_le large₂ hC0 j hj) 2
   have hclose := final_bound_closes D large₂ (k2Cf C Ch Cc) hCf _ hdu hk
   have hGB : (Y.tO u u).Gam1 * B ≤ duC X Y u * (∑ j ∈ Finset.Icc 1 D.R.rS, k2A1 large₂ C Ch Cc j) ^ 2 := by

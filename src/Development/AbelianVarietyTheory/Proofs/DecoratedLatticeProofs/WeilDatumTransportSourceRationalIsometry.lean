@@ -61,7 +61,7 @@ variable {D : D7}
 def rmul {k m n : ℕ} (P : Mx D m n) : Mx D k m →+ Mx D k n where
   toFun w := w * P
   map_zero' := Matrix.zero_mul _
-  map_add' x y := Matrix.add_mul _ _ _
+  map_add' _ _ := Matrix.add_mul _ _ _
 
 @[simp] theorem rmul_apply {k m n : ℕ} (P : Mx D m n) (w : Mx D k m) : rmul P w = w * P := rfl
 

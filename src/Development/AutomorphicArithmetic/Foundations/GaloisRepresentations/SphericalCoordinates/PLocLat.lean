@@ -66,8 +66,8 @@ private theorem colM_mulVec {K : Type*} [Field K] {n : ℕ} (b : Fin n → Fin n
   simp [colM, Matrix.mulVec, dotProduct, Finset.sum_apply, mul_comm]
 
 private theorem exists_frame {K : Type*} [Field K] (f : K → ℝ) (h0 : f 0 = 0)
-    (hm : ∀ x y, f (x * y) = f x * f y) (hpos : ∀ x, x ≠ 0 → 0 < f x) (hnn : ∀ x, 0 ≤ f x)
-    (ha : ∀ x y, f (x + y) ≤ max (f x) (f y)) {n : ℕ} (s : Finset (Fin n → K))
+    (hm : ∀ x y, f (x * y) = f x * f y) (hpos : ∀ x, x ≠ 0 → 0 < f x)
+    {n : ℕ} (s : Finset (Fin n → K))
     (hs : Submodule.span K (s : Set (Fin n → K)) = ⊤) :
     ∃ b : Fin n → Fin n → K, (colM b).det ≠ 0 ∧ (∀ i, b i ∈ s) ∧
       ∀ y ∈ s, ∃ c : Fin n → K, (∀ i, f (c i) ≤ 1) ∧ colM b *ᵥ c = y := by
@@ -134,7 +134,7 @@ private theorem exists_gl {K : Type} [Field K] (f : K → ℝ) (h0 : f 0 = 0)
       (∀ i, f ((((g⁻¹ : GL (Fin n) K) : Matrix (Fin n) (Fin n) K) *ᵥ z) i) ≤ 1) ↔
         ∃ a : (Fin n → K) → K, (∀ y, f (a y) ≤ 1) ∧ z = ∑ y ∈ s, a y • y := by
   classical
-  obtain ⟨b, hdet, hbs, hcoord⟩ := exists_frame f h0 hm hpos hnn ha s hs
+  obtain ⟨b, hdet, hbs, hcoord⟩ := exists_frame f h0 hm hpos s hs
   have hu : IsUnit (colM b) := (Matrix.isUnit_iff_isUnit_det _).mpr (isUnit_iff_ne_zero.mpr hdet)
   refine ⟨hu.unit, ?_⟩
   have hl : ((hu.unit⁻¹ : GL (Fin n) K) : Matrix (Fin n) (Fin n) K) * colM b = 1 := by

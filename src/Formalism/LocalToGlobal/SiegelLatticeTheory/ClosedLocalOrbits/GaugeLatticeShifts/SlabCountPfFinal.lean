@@ -441,7 +441,7 @@ theorem gd_piW {σ : (VS D).V ≃ₗ[D.host.E] (VS D).V} (hσ : Gd X u' σ) {x :
 
 def psiL (σ : (VS D).V ≃ₗ[D.host.E] (VS D).V) : Wsp X u' →ₗ[D.host.E] Wsp X u' :=
   LinearMap.codRestrict (Wsp X u') ((piWL X u').comp (σ.toLinearMap.comp (Wsp X u').subtype))
-    (fun w => piW_mem X u' _)
+    (fun _ => piW_mem X u' _)
 
 theorem psiL_coe (σ : (VS D).V ≃ₗ[D.host.E] (VS D).V) (w : Wsp X u') :
     ((psiL σ w : Wsp X u') : (VS D).V) = piWL X u' (σ w) := rfl

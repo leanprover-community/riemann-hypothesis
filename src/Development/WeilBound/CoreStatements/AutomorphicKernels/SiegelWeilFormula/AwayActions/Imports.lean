@@ -78,7 +78,7 @@ theorem mapSmulE₀ {Ω G : Type} [Field Ω] [FunLike G E Ω] [RingHomClass G E 
   ext a b
   simp
 
-theorem fam_isEH (hcm : IsCMExt F E σ) {n : ℕ} (ε : ℤ) (hε : ε * ε = 1) (δ : E) (hδ : σ δ = -δ)
+theorem fam_isEH {n : ℕ} (ε : ℤ) (hε : ε * ε = 1) (δ : E) (hδ : σ δ = -δ)
     (i : Fin n × Fin n × Bool) : IsEH σ ε (fam σ ε δ i) := by
   obtain ⟨j, k, b⟩ := i
   have hε' : (ε : E) * (ε : E) = 1 := by exact_mod_cast hε
@@ -94,7 +94,7 @@ theorem fam_isEH (hcm : IsCMExt F E σ) {n : ℕ} (ε : ℤ) (hε : ε * ε = 1)
   rw [e]
   abel
 
-theorem span_fam (hcm : IsCMExt F E σ) {n : ℕ} (ε : ℤ) (δ : E) (hδ0 : δ ≠ 0) (hδ : σ δ = -δ) {Ω : Type} [Field Ω]
+theorem span_fam {n : ℕ} (ε : ℤ) (δ : E) (hδ0 : δ ≠ 0) (hδ : σ δ = -δ) {Ω : Type} [Field Ω]
     (ψ : AE F E →+* Ω) (T : Matrix (Fin n) (Fin n) Ω) :
     ∃ x : Fin n × Fin n × Bool → Ω, T = ∑ i, x i • (fam σ ε δ i).map (ψ.comp (inclR (F := F) (AF F))) := by
   classical
@@ -193,7 +193,7 @@ theorem exists_point (hcm : IsCMExt F E σ) {n : ℕ} (ε : ℤ) (hε : ε * ε 
       rw [← RingHom.mapMatrix_apply, ← RingHom.map_det]
       exact (hX.map (ψ k)).ne_zero
     obtain ⟨T, hT⟩ := exists_T_field (X.map (ψ k)) hXk
-    obtain ⟨x, hx⟩ := span_fam hcm ε δ hδ0 hδ (ψ k) T
+    obtain ⟨x, hx⟩ := span_fam ε δ hδ0 hδ (ψ k) T
     have := hev k x
     rw [h0, map_zero] at this
     apply hT
@@ -210,7 +210,7 @@ theorem exists_point (hcm : IsCMExt F E σ) {n : ℕ} (ε : ℤ) (hε : ε * ε 
   choose s hsx using fun i => hx i (Set.mem_univ i)
   have hxs : x = fun i => φ (algebraMap F (AE F E) (s i)) := funext fun i => (hsx i).symm
   rw [map_mul, hxs] at hx0
-  refine ⟨∑ i, s i • fam σ ε δ i, isEH_sum ε _ (fun i => fam_isEH hcm ε hε δ hδ i) s, ?_, ?_⟩
+  refine ⟨∑ i, s i • fam σ ε δ i, isEH_sum ε _ (fun i => fam_isEH ε hε δ hδ i) s, ?_, ?_⟩
   · have := hval false s
     change φ _ = _ at this
     rw [this]

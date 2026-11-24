@@ -16,7 +16,7 @@ open Formalism.IncomingBounds ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
 
 variable {C : Type} [Field C]
 
-theorem tyS_add {l : ℕ} (hl : 2 ≤ l) (a b : ℕ → C) : tyS l (fun s => a s + b s) = tyS l a + tyS l b := by
+theorem tyS_add {l : ℕ} (a b : ℕ → C) : tyS l (fun s => a s + b s) = tyS l a + tyS l b := by
   ext n
   simp only [tyS, PowerSeries.coeff_mk, map_add (f := _), ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun s _ => ?_
@@ -41,7 +41,7 @@ theorem add_mem (V : VF C) (g : Fin 2) (hA : X.AddCvSt V) (hu : ∀ g c i, V.Ge 
   obtain ⟨γ', lam', hγ', hlam', h1', h2'⟩ := hy
   obtain ⟨γ'', hγ'', hL, hS⟩ := hA γ γ' hγ hγ'
   have hty : ∀ n, tyS V.l (fun s => (x + y) s n) = tyS V.l (fun s => x s n) + tyS V.l (fun s => y s n) :=
-    fun n => tyS_add hl2 _ _
+    fun n => tyS_add _ _
   refine ⟨γ'', fun q => lam q + lam' q + (alongCv γ'' (X.sg (X.u (1 - g) q)) - alongCv γ (X.sg (X.u (1 - g) q)) -
     alongCv γ' (X.sg (X.u (1 - g) q))), hγ'', ?_, ?_, ?_⟩
   · intro q

@@ -69,6 +69,6 @@ def stalkHom (TF : TorFlag Xo c) (Z : Comp Xo c) (x : X₀ TF.Y Z) (U : TF.Y.X.a
 theorem algebraMap_comp_stalkAlg (TF : TorFlag Xo c) (Z : Comp Xo c) [IsIntegral (X₀ TF.Y Z)] (x : X₀ TF.Y Z) :
     (algebraMap ((X₀ TF.Y Z).presheaf.stalk x) (X₀ TF.Y Z).functionField).comp (stalkAlg TF Z x) =
       GlobalTheory.Cartier.constFn (s₀ TF.Y Z) :=
-  RingHom.ext fun a => GlobalTheory.Cartier.algebraMap_germ (U := ⊤) trivial _
+  RingHom.ext fun _ => GlobalTheory.Cartier.algebraMap_germ (U := ⊤) trivial _
 
 end GlobalTheory.LogKSDiv

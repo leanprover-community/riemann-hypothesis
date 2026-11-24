@@ -1080,7 +1080,7 @@ variable {σ : E →ₐ[F] E} {B : Base F E} {nS nT : ℕ} {JS : Matrix (Fin nS)
   {Om : GAF σ JS × GAF σ JT →* Module.End ℂ (thetaSubF σ JS JT ξ₀ B.ψ)}
   {s : Matrix (IxF F nS nT) (IxF F nS nT) ℂ}
 variable {η : (AEF F E)ˣ →* Circle} {ε : AEF F E} {of oi : GAF σ JS × GAF σ JT →* Module.End ℂ (WOF F E nS nT → ℂ)}
-theorem datum_of_aut_k (C : _root_.PositivityTheory.ThKW.Ctx_k σ B JS JT ξ₀ θ ι) (hG : GoodLat Λ) (hO : _root_.UpperTheory.TP.W.IsLatRepL σ JS JT ξ₀ B.ψ hc Λ w lam Om)
+theorem datum_of_aut_k (C : _root_.PositivityTheory.ThKW.Ctx_k σ B JS JT ξ₀ θ ι) (hO : _root_.UpperTheory.TP.W.IsLatRepL σ JS JT ξ₀ B.ψ hc Λ w lam Om)
     (h1 : IsHeckeCharF η) (h2 : ResEtaF η 1) (hf : IsFinWeilF σ JS JT ξ₀ B.ψ (η ^ nS) (η ^ nT) of)
     (hof : ∀ p, ∃ z : ℂ, ∀ f : thetaSubF σ JS JT ξ₀ B.ψ, of p f = z • (Om p f : WOF F E nS nT → ℂ))
     (hi : IsInfWeilF σ JS JT ξ₀ B.ψ oi)
@@ -1344,7 +1344,7 @@ theorem datumK_of_k (hK : KapEx) (hE : EtaProdK) (hI : IdxSign) : ∀ (F E : Typ
   obtain ⟨oi, hi, hvac⟩ := _root_.PositivityTheory.ThKW.exists_inf_k C
   have P : _root_.UpperTheory.TP.W.PartsK_k C hc lam Om (η * κ) (η ^ nS) (η ^ nT) ε of oi := ⟨resEta_mul h2 hκ, hε, hprod, hf, hof, hi, hvac⟩
   have hcomm := _root_.PositivityTheory.ThKW.fin_inf_comm_A_k C hO (fun p => ⟨_, hof p⟩) hi
-  refine _root_.PositivityTheory.ThKW.datum_of_aut_k C hG hO h1 h2 hf (fun p => ⟨_, hof p⟩) hi fun γ hγ γ' hγ' f hf' => ?_
+  refine _root_.PositivityTheory.ThKW.datum_of_aut_k C hO h1 h2 hf (fun p => ⟨_, hof p⟩) hi fun γ hγ γ' hγ' f hf' => ?_
   have := _root_.PositivityTheory.ThKW.rat_gen_k C (fun p => IsScalarF B ξ₀ of oi p 1)
     (fun p q _ _ q1 q2 a b => mul_one (1 : ℂ) ▸ a.mul_k C hi hcomm b q1 q2)
     (fun p s p1 p2 hs hcm => _root_.UpperTheory.TP.W.isScalar_one_of_commK_k C hG hR hO P hs p1 p2 hcm) (γ, γ') hγ hγ' f hf'

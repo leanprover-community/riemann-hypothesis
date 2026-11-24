@@ -65,7 +65,7 @@ theorem nnreal_eq_of_smul (μ : Measure A) [μ.IsAddHaarMeasure] {a b : ℝ≥0}
   simp only [Measure.smul_apply, nnreal_smul_coe_apply] at hK
   exact_mod_cast (ENNReal.mul_left_inj h0 ht).1 hK
 
-theorem char_eq_of_map (μ : Measure A) [μ.IsAddHaarMeasure] [μ.Regular] (φ : A ≃ₜ+ A) {c : ℝ≥0} (hc : c ≠ 0)
+theorem char_eq_of_map (μ : Measure A) [μ.IsAddHaarMeasure] [μ.Regular] (φ : A ≃ₜ+ A) {c : ℝ≥0}
     (h : μ.map φ = c • μ) : addEquivAddHaarChar φ = c⁻¹ := by
   have h1 := addEquivAddHaarChar_smul_map μ φ
   rw [h, smul_smul] at h1
@@ -84,7 +84,7 @@ theorem char_transport (e : A ≃ₜ+ B) (φ : A ≃ₜ+ A) :
   have : ((addHaar : Measure A).map e).IsAddHaarMeasure := e.isAddHaarMeasure_map _
   have : ((addHaar : Measure A).map e).Regular := Regular.map e.toHomeomorph
   refine (char_eq_of_map ((addHaar : Measure A).map e) _
-    (inv_ne_zero (addEquivAddHaarChar_pos φ).ne') ?_).trans (inv_inv _)
+    ?_).trans (inv_inv _)
   have hcomp : ((e.symm.trans φ).trans e : B → B) ∘ e = e ∘ φ := by
     funext x
     simp
@@ -111,8 +111,7 @@ theorem char_prod (φ : A ≃ₜ+ A) (ψ : B ≃ₜ+ B) :
       ← Measure.map_prod_map _ _ (map_continuous φ).measurable (map_continuous ψ).measurable,
       map_char (addHaar : Measure A) φ, map_char (addHaar : Measure B) ψ,
       Measure.prod_smul_left, Measure.prod_smul_right, smul_smul]
-  rw [char_eq_of_map _ _ (mul_ne_zero (inv_ne_zero (addEquivAddHaarChar_pos φ).ne')
-    (inv_ne_zero (addEquivAddHaarChar_pos ψ).ne')) hmap, mul_inv, inv_inv, inv_inv]
+  rw [char_eq_of_map _ _ hmap, mul_inv, inv_inv, inv_inv]
 
 end Gen
 

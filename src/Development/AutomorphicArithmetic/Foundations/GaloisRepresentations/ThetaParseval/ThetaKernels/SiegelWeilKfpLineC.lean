@@ -308,7 +308,7 @@ theorem sndA_crd_of_k (Z : Mx F E d.m d.n) (hZ : finOne F • Z = 0) (k : Fin d.
   have h3 : (1 : FiniteAdeleRing (𝓞 F) F) * ((Algebra.TensorProduct.basis (AF F) d.bs).repr (Z k.1 k.2.1) k.2.2).2 = 0 :=
     congrArg Prod.snd h2
   rwa [one_mul] at h3
-theorem fin_add_of'_k (R : _root_.PositivityTheory.SiegelWeilFormula.RD_k d) {Z : Mx F E d.m d.n} (hZ : finOne F • Z = 0) (X : Mx F E d.m d.n) :
+theorem fin_add_of'_k {Z : Mx F E d.m d.n} (hZ : finOne F • Z = 0) (X : Mx F E d.m d.n) :
     _root_.PositivityTheory.SiegelWeilFormula.KFP.fin_k d (X + Z) = _root_.PositivityTheory.SiegelWeilFormula.KFP.fin_k d X := by
   funext k
   show (d.crd (X + Z) k).2 = (d.crd X k).2
@@ -505,7 +505,7 @@ theorem piInf_hT_k (R : _root_.PositivityTheory.SiegelWeilFormula.RD_k d) (W : M
 end Psi
 open Psi
 variable {d : _root_.PositivityTheory.SiegelWeilFormula.SD_k σ}
-theorem psi_tw'_k (R : _root_.PositivityTheory.SiegelWeilFormula.RD_k d) {W : Mx F E d.m d.n} (hW : finOne F • W = 0) (t : ℝ) (X : Mx F E d.m d.n) :
+theorem psi_tw'_k (R : _root_.PositivityTheory.SiegelWeilFormula.RD_k d) {W : Mx F E d.m d.n} (t : ℝ) (X : Mx F E d.m d.n) :
     d.B.ψ (d.tt (d.gram (realAd F t • _root_.PositivityTheory.SiegelWeilFormula.KFP.tw_k R W) X)) =
       Complex.exp (4 * Real.pi * Complex.I * t * ⟪_root_.PositivityTheory.SiegelWeilFormula.KFP.arc_k R W, _root_.PositivityTheory.SiegelWeilFormula.KFP.arc_k R X⟫_ℝ) := by
   rw [_root_.PositivityTheory.SiegelWeilFormula.KFP.Psi.psi_tt_arch_k _ (_root_.PositivityTheory.SiegelWeilFormula.KFP.Psi.fin_gram_tw_k R W t X), _root_.PositivityTheory.SiegelWeilFormula.KFP.Psi.inner_arc_k]
@@ -517,7 +517,7 @@ theorem psi_tw'_k (R : _root_.PositivityTheory.SiegelWeilFormula.RD_k d) {W : Mx
   simp only [e]
   push_cast
   rw [Finset.mul_sum, Finset.mul_sum]
-  simp only [← Finset.sum_neg_distrib, ← Finset.mul_sum]
+  simp only [← Finset.mul_sum]
   ring_nf
 theorem psi_sp'_k (R : _root_.PositivityTheory.SiegelWeilFormula.RD_k d) {W : Mx F E d.m d.n} (hW : finOne F • W = 0) (s t : ℝ) :
     d.B.ψ (-(⅟(2 : AF F) * _root_.PositivityTheory.SiegelWeilFormula.KFP.spf_k d ((realAd F s • W) * (incM F d.b.1.toCols₂)ᵀ)

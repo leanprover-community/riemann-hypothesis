@@ -114,7 +114,7 @@ theorem UpperTheory.BaseChangeIdentities.ascComp : UpperTheory.BaseChangeIdentit
   refine ⟨fun a π ha hn => ?_, fun V hV a d π hn e =>
     Re.Asc.hasSpehComp ascSeed_holds2.2 PositivityTheory.Rg.HF.GL.automorphicFormsFiniteGL hN hV hn e⟩
   subst ha
-  exact ⟨π.V, PositivityTheory.RSHS.L1.cuspDiscrete E _ hN π (GlobalTheory.SpehPair.isUnitary_of_isNormalised hn) hn,
+  exact ⟨π.V, PositivityTheory.RSHS.L1.cuspDiscrete E _ π (GlobalTheory.SpehPair.isUnitary_of_isNormalised hn) hn,
     PDich.ascEmb_one (Setoid.refl π)⟩
 end -- clump:auto
 end -- clump:auto

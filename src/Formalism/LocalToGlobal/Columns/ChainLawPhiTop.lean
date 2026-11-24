@@ -49,9 +49,9 @@ variable {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K] {P : Heig
 theorem clPf_sum_fIdx {M : Type} [AddCommMonoid M] {k₀ c n : ℕ} (hk : k₀ ≤ n) (f : ℕ → M) :
     ∑ u ∈ Finset.range (n + c), f (LocE.fIdx k₀ c n u) = ∑ u ∈ Finset.range (n + c), f u :=
   Finset.sum_nbij' (fun u => LocE.fIdx k₀ c n u) (fun u => LocE.fPos k₀ c n u)
-    (fun _ ha => Finset.mem_range.2 (symFIdx_lt hk (Finset.mem_range.1 ha)))
+    (fun _ ha => Finset.mem_range.2 (symFIdx_lt (Finset.mem_range.1 ha)))
     (fun _ ha => Finset.mem_range.2 (framePos_lt hk (Finset.mem_range.1 ha)))
-    (fun _ ha => symFPos_fIdx hk (Finset.mem_range.1 ha)) (fun _ ha => frameIndex_framePos hk (Finset.mem_range.1 ha)) (fun _ _ => rfl)
+    (fun _ ha => symFPos_fIdx hk (Finset.mem_range.1 ha)) (fun _ ha => frameIndex_framePos (Finset.mem_range.1 ha)) (fun _ _ => rfl)
 
 theorem clPf_bEnt_compR (hq0 : (q : E) ≠ 0) {n' c' n c : ℕ} (y : HomE E (n' + c') (n + c)) (κ : Sp E (n' + c') →ₗ[E] Sp E (n' + c'))
     {l s : ℕ} (hl : l < n + c) (hs : s < n' + c') :
@@ -70,7 +70,7 @@ theorem clPf_entB_compL (hq0 : (q : E) ≠ 0) {k₀ n' c' n c : ℕ} (hk : k₀ 
     LocE.entB q k₀ c' n' c n (fun i => i + 1) (fun i => i + 1) (g ∘ₗ y) p p' =
       ∑ u ∈ Finset.range (n + c), LocE.entB q k₀ c n c n (fun i => i + 1) (fun i => i + 1) g p u *
         LocE.entB q k₀ c' n' c n (fun i => i + 1) (fun i => i + 1) y u p' := by
-  rw [ocbBEnt_entB, ocbT_bEnt_comp hq0 g y (symFIdx_lt hk hp) (symFIdx_lt hk' hp'),
+  rw [ocbBEnt_entB, ocbT_bEnt_comp hq0 g y (symFIdx_lt hp) (symFIdx_lt hp'),
     Fin.sum_univ_eq_sum_range (fun m => ocbBEnt n n q g (LocE.fIdx k₀ c n p) m * ocbBEnt n' n q y m (LocE.fIdx k₀ c' n' p')) (n + c),
     ← clPf_sum_fIdx hk]
   rfl
@@ -80,7 +80,7 @@ theorem clPf_entB_compR (hq0 : (q : E) ≠ 0) {k₀ n' c' n c : ℕ} (hk : k₀ 
     LocE.entB q k₀ c' n' c n (fun i => i + 1) (fun i => i + 1) (y ∘ₗ κ) p p' =
       ∑ v ∈ Finset.range (n' + c'), LocE.entB q k₀ c' n' c n (fun i => i + 1) (fun i => i + 1) y p v *
         LocE.entB q k₀ c' n' c' n' (fun i => i + 1) (fun i => i + 1) κ v p' := by
-  rw [ocbBEnt_entB, clPf_bEnt_compR hq0 y κ (symFIdx_lt hk hp) (symFIdx_lt hk' hp'),
+  rw [ocbBEnt_entB, clPf_bEnt_compR hq0 y κ (symFIdx_lt hp) (symFIdx_lt hp'),
     Fin.sum_univ_eq_sum_range (fun m => ocbBEnt n' n q y (LocE.fIdx k₀ c n p) m * ocbBEnt n' n' q κ m (LocE.fIdx k₀ c' n' p')) (n' + c'),
     ← clPf_sum_fIdx hk']
   rfl
@@ -287,10 +287,10 @@ theorem clPf_lamGBS (hq0 : (q : E) ≠ 0) (ψ₀ : AddChar (𝓞 E ⧸ P.asIdeal
 theorem clPf_top_ob2M {k₀ n c : ℕ} (hk : k₀ ≤ n) (γ : Sp E (n + c) ≃ₗ[E] Sp E (n + c)) :
     (clPfTop (n + c) (clPfRed P q k₀ c n c n γ.toLinearMap)).det = (ob2M P q γ).det := by
   let eσ : Fin (n + c) ≃ Fin (n + c) :=
-    { toFun := fun s => ⟨LocE.fIdx k₀ c n s.1, symFIdx_lt hk s.2⟩
+    { toFun := fun s => ⟨LocE.fIdx k₀ c n s.1, symFIdx_lt s.2⟩
       invFun := fun l => ⟨LocE.fPos k₀ c n l.1, framePos_lt hk l.2⟩
       left_inv := fun s => Fin.ext (symFPos_fIdx hk s.2)
-      right_inv := fun l => Fin.ext (frameIndex_framePos hk l.2) }
+      right_inv := fun l => Fin.ext (frameIndex_framePos l.2) }
   have h1 : clPfTop (n + c) (clPfRed P q k₀ c n c n γ.toLinearMap) = (ob2M P q γ).submatrix eσ eσ := by
     ext s s'
     exact reduction_frameEntry_eq_matrix hk s.2 s'.2 γ
@@ -468,7 +468,7 @@ private theorem fIdx_injective {k₀ c n s s' : ℕ} (hk : k₀ ≤ n) (hs : s <
 private theorem clPfRed_one_eq_ite {k₀ n c : ℕ} (hk : k₀ ≤ n) {p p' : ℕ} (hp : p < n + c) (hp' : p' < n + c) :
     clPfRed P q k₀ c n c n (1 : Sp E (n + c) ≃ₗ[E] Sp E (n + c)).toLinearMap p p' = if p = p' then 1 else 0 := by
   unfold clPfRed LocE.entB
-  have hf := _root_.Formalism.L2.Col.symFIdx_lt (k₀ := k₀) (c := c) hk hp
+  have hf := _root_.Formalism.L2.Col.symFIdx_lt (k₀ := k₀) (c := c) hp
   simp only [LinearEquiv.coe_toLinearMap, LinearEquiv.coe_one, id]
   unfold Loc.atN Loc.eN
   rw [dite_eq_left hf]

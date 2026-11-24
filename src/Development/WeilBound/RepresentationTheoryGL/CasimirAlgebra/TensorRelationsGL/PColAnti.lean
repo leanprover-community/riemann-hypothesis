@@ -168,7 +168,7 @@ namespace ColumnAntisymmetry
 
 variable {n : ℕ} {M : Type} [AddCommGroup M] [Module ℂ M]
 
-theorem split {m : ℕ} (E : Fin n → Fin n → Module.End ℂ M) (col : Fin m → ℕ) (hmono : Monotone col)
+theorem split {m : ℕ} (E : Fin n → Fin n → Module.End ℂ M) (col : Fin m → ℕ)
     (hc : ∀ i j : Fin m, Commute (xJ E i) (xJ E j))
     (hP : ∀ i j : Fin m, (i : ℕ) + 1 = j →
       xJ E j * pm (Equiv.swap i j) = pm (Equiv.swap i j) * xJ E i + 1 ∧
@@ -404,7 +404,7 @@ theorem Q_adj (E : Fin n → Fin n → Module.End ℂ M) (ℓ : M →ₗ[ℂ] �
     Q (ℓ ∘ₗ LinearMap.proj (fun _ => top) ∘ₗ colD E col) (Equiv.swap i j) := by
   have hne : i ≠ j := by intro h; rw [h] at hij; omega
   rw [Q_swap_iff _ hne]
-  obtain ⟨R, hD, hR⟩ := split E col hmono hc hP i j hij hcol
+  obtain ⟨R, hD, hR⟩ := split E col hc hP i j hij hcol
   set P : Module.End ℂ (TV n M (Fin m)) := pm (Equiv.swap i j) with hPdef
   have hx := (hP i j hij).1
   have PP : P * P = 1 := by rw [hPdef, ← pm_mul, Equiv.swap_mul_self, pm_one]

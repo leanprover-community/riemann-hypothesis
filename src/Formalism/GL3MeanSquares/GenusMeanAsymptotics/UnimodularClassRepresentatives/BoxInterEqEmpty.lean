@@ -85,8 +85,8 @@ theorem repMass_eq_sum {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm) (hd : 
   simp only [repMass, dite_eq_left hex]
   rw [← e2, e1]
 
-theorem integral_of_mem_genus {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm) {L M : Submodule (𝓞 K) V}
-    (hL : Submodule.IsLattice K L) (hLi : Formalism.HermitianLatticesTheory.IsIntegralLat h L)
+theorem integral_of_mem_genus {h : V →ₗ⋆[K] V →ₗ[K] K} {L M : Submodule (𝓞 K) V}
+    (hLi : Formalism.HermitianLatticesTheory.IsIntegralLat h L)
     (hM : M ∈ Formalism.HermitianLatticesTheory.genus h L) : Formalism.HermitianLatticesTheory.IsIntegralLat h M := by
   exact Formalism.HermitianLatticesTheory.genusBasic_int (IsFractionRing.injective (𝓞 K) K)
     (fun r => Formalism.HermitianLatticesTheory.star_algebraMap_ringOfIntegers_mem_range r) h L M hM.2 hLi
@@ -182,7 +182,7 @@ theorem sum_ballCount (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF :
         (repCount h M (algebraMap F K (n : F)) : ℝ) / ((Nat.card (Formalism.ThetaLiftIndependence.autL h M) : ℕ) : ℝ) := by
     intro M hMs
     have hMg := hsr.1 M hMs
-    rw [ballCount_eq hK hF hs hd hMg.1.toIsLattice (integral_of_mem_genus hs hL hLi hMg) hT]
+    rw [ballCount_eq hK hF hs hd hMg.1.toIsLattice (integral_of_mem_genus hLi hMg) hT]
     push_cast
     rw [add_div, one_div, Finset.sum_div]
   rw [Finset.sum_congr rfl hsplit, Finset.sum_add_distrib, Finset.sum_comm]

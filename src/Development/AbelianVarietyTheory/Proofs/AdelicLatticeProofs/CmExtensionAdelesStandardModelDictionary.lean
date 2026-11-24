@@ -148,7 +148,7 @@ theorem exists_equiv_mixedSpace :
     intro w
     apply Subtype.ext
     rw [← InfinitePlace.mk_embedding (t (p w)).1, ← InfinitePlace.mk_embedding w.1]
-    rcases GlobalTheory.InfAdeleCM.eq_or_conj c hc' hδ0 hcδ hs _ _ (GlobalTheory.InfAdeleCM.mk_eq_iff (ht (p w))) with e | e
+    rcases GlobalTheory.InfAdeleCM.eq_or_conj c hc' hcδ hs _ _ (GlobalTheory.InfAdeleCM.mk_eq_iff (ht (p w))) with e | e
     · rw [e]
     · rw [e, InfinitePlace.mk_conjugate_eq]
   let A : (({w : InfinitePlace E // w.IsComplex}) → ℝ) → InfiniteAdeleRing F := fun y v => (r v).symm (y (t v))

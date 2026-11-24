@@ -106,8 +106,8 @@ def TU.map (N : ℕ) {A B : Type} [CommRing A] [CommRing B] (f : A →+* B) : TU
 def tuCat (N : ℕ) : CommRingCat.{0} ⥤ Cat.{0,0} where
   obj A := Cat.of (TU N A)
   map f := (TU.map N f.hom).toCatHom
-  map_id A := rfl
-  map_comp f g := rfl
+  map_id _ := rfl
+  map_comp _ _ := rfl
 
 def TU.toUm (N : ℕ) (A : Type) [CommRing A] : TU N A ⥤ Um N A where
   obj v := v
@@ -493,7 +493,7 @@ private theorem mem_basicOpen_or (T : Scheme.{0}) (a b : Γ(T, ⊤)) (h : Ideal.
     exact isUnit_of_mul_isUnit_right hy
 
 theorem UpperTheory.locally_isUnit_or_isUnit_of_span_pair_eq_top :
-    ∀ (T : Scheme.{0}) (a b : Γ(T, ⊤)), Ideal.span {a, b} = ⊤ → Loc T fun V g => IsUnit (g.appTop.hom a) ∨ IsUnit (g.appTop.hom b) := by
+    ∀ (T : Scheme.{0}) (a b : Γ(T, ⊤)), Ideal.span {a, b} = ⊤ → Loc T fun _ g => IsUnit (g.appTop.hom a) ∨ IsUnit (g.appTop.hom b) := by
   intro T a b h
   let U : Bool → T.Opens := fun i => bif i then T.basicOpen a else T.basicOpen b
   have hU : TopologicalSpace.IsOpenCover U := by
@@ -528,7 +528,7 @@ section -- clump:auto
     fun (q : ℕ) ↦ LaurentPolynomial (Localization.Away (↑q : ℤ))
 
 theorem UpperTheory.Reformulated.B.LocalQuotientHomExt.hom_ext :
-    ∀ (q : ℕ) {R : Type} [inst : CommRing R] {f g : UpperTheory.Reformulated.B.LocalQuotientHomExt.LqR q →+* R},
+    ∀ (q : ℕ) {R : Type} [CommRing R] {f g : UpperTheory.Reformulated.B.LocalQuotientHomExt.LqR q →+* R},
       (f : UpperTheory.Reformulated.B.LocalQuotientHomExt.LqR q → R) (LaurentPolynomial.T (1 : ℤ)) =
           (g : UpperTheory.Reformulated.B.LocalQuotientHomExt.LqR q → R) (LaurentPolynomial.T (1 : ℤ)) →
         f = g := by
@@ -867,7 +867,7 @@ theorem gch_loc {p : ℕ} {U : Scheme.{0}} (y : Sx (E ⨯ Dv 2) p U) :
   · exact Or.inr (key 1 h)
 
 theorem gch_cover (R : Type) [CommRing R] : Cover2 R (gch (E := E) 0) (gch (E := E) 1) :=
-  ⟨inferInstance, inferInstance, fun n => UpperTheory.epi_freeBiprodDesc_of_zariskiLocally_surjective R _ _ fun U y => gch_loc (p := n.unop.len) y⟩
+  ⟨inferInstance, inferInstance, fun n => UpperTheory.epi_freeBiprodDesc_of_zariskiLocally_surjective R _ _ fun _ y => gch_loc (p := n.unop.len) y⟩
 
 def wc {S : Scheme.{0}} (T : Scheme.{0}) (y : Sx (WS E S) 0 T) : (Γ(T, ⊤))ˣ := (cu_unit pc y 0).unit
 

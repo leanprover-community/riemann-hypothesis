@@ -198,7 +198,7 @@ variable {Ω : Type} [Field Ω] (V : ValuationSubring Ω)
 
 def liftV (x : HahnSeries ℚ Ω) (h : ∀ r, x.coeff r ∈ V) : HahnSeries ℚ V where
   coeff r := ⟨x.coeff r, h r⟩
-  isPWO_support' := x.isPWO_support.mono fun r hr h0 => hr (Subtype.ext h0)
+  isPWO_support' := x.isPWO_support.mono fun _ hr h0 => hr (Subtype.ext h0)
 
 def hahnSeriesCoeffRingHomMap {R S : Type} [CommRing R] [CommRing S] (f : R →+* S) : HahnSeries ℚ R →+* HahnSeries ℚ S where
   toFun x := x.map f

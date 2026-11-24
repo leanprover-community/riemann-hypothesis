@@ -190,7 +190,7 @@ private theorem det_one_add_of_support_blkB_blkA (j : ℕ) (S' : Matrix (Fin n) 
     simp [blkA, blkB] at h1 h2
     omega
 
-theorem Fd_kpart (m j : ℕ) (x : M2 n) (hx : x ∈ Dom n)
+theorem Fd_kpart (m j : ℕ) (x : M2 n)
     (P' S' : Matrix (Fin n) (Fin n) ℂ) (hP : ∀ a b, P' a b ≠ 0 → a ∈ blkA j ∧ b ∈ blkB j)
     (hS : ∀ a b, S' a b ≠ 0 → a ∈ blkB j ∧ b ∈ blkA j) : Fd m (x * mX (1 + P') 0 0 (1 + S')) = Fd m x := by
   have hPd : det (1 + P') = 1 := det_one_add_of_support_blkA_blkB j P' hP

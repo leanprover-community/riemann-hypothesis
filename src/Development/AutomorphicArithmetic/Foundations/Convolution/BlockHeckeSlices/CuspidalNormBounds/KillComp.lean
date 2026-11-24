@@ -83,7 +83,7 @@ open PositivityTheory.Rg.Fx UpperTheory.ConvolutionTheory.BW
 
 open Filter Topology in
 private theorem taylor_seq (g : ℕ → ℝ → ℂ) (hg : ∀ k s, HasDerivAt (g k) (g (k + 1) s) s) (M A : ℝ)
-    (hA0 : 0 ≤ A) (bnd0 : ∀ (k : ℕ) (t : ℝ), t ∈ Set.Icc (0 : ℝ) 1 → ‖g k t‖ ≤ M * A ^ k) :
+    (bnd0 : ∀ (k : ℕ) (t : ℝ), t ∈ Set.Icc (0 : ℝ) 1 → ‖g k t‖ ≤ M * A ^ k) :
     HasSum (fun k : ℕ => (k.factorial : ℂ)⁻¹ * g k 0) (g 0 1) := by
   have key : ∀ j, iteratedDeriv j (g 0) = g j := by
     intro j
@@ -295,7 +295,7 @@ theorem UpperTheory.ConvolutionTheory.FX.abs_taylor :
   have hM0 : 0 ≤ M := Finset.sum_nonneg fun j _ => mul_nonneg (abs_nonneg _) (by positivity)
   have := taylor_seq (fun k s => c (T ^ k • φ) (x + s • v)) (fun k s => by
     have := line_deriv _ _ v (hv (T ^ k • φ)) x s
-    rwa [← mul_smul, ← pow_succ'] at this) B M hM0 (fun k s hs => by
+    rwa [← mul_smul, ← pow_succ'] at this) B M (fun k s hs => by
     have := hgrow (x + s • v) (by
       refine (norm_add_le _ _).trans (add_le_add le_rfl ?_)
       rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg hs.1]
@@ -782,7 +782,7 @@ private def Op (S : Set (Pl E)) (C : ℝ) (k : GA E n) (T : Module.End ℂ (Sm E
 variable {S : Set (Pl E)} {C : ℝ} {k : GA E n}
 
 private theorem Q_zero (hb : BandOps E) (hC : 0 ≤ C) : Q S C (0 : Sm E n) :=
-  ⟨(hb n C hC).1, fun w _ x _ => map_zero _⟩
+  ⟨(hb n C hC).1, fun _ _ _ _ => map_zero _⟩
 
 private theorem Q_add (hb : BandOps E) (hC : 0 ≤ C) {ψ χ : Sm E n} (h : Q S C ψ) (h' : Q S C χ) : Q S C (ψ + χ) :=
   ⟨((hb n C hC).2 ψ h.1).1 χ h'.1, fun w hw x hx => by rw [map_add (f := _), h.2 w hw x hx, h'.2 w hw x hx]⟩
@@ -790,7 +790,7 @@ private theorem Q_add (hb : BandOps E) (hC : 0 ≤ C) {ψ χ : Sm E n} (h : Q S 
 private theorem Op_zero (hb : BandOps E) (hC : 0 ≤ C) : Op S C k (0 : Module.End ℂ (Sm E n)) := fun ψ _ =>
   ⟨Q_zero hb hC, by simp⟩
 
-private theorem Op_one : Op S C k (1 : Module.End ℂ (Sm E n)) := fun ψ h => ⟨h, rfl⟩
+private theorem Op_one : Op S C k (1 : Module.End ℂ (Sm E n)) := fun _ h => ⟨h, rfl⟩
 
 private theorem Op_add (hb : BandOps E) (hC : 0 ≤ C) {T T' : Module.End ℂ (Sm E n)} (h : Op S C k T) (h' : Op S C k T') :
     Op S C k (T + T') := fun ψ hψ =>
@@ -811,7 +811,7 @@ private theorem Q_rt (hh : HkOps E) (hb : BandOps E) (hC : 0 ≤ C) (k : KA E n)
   ⟨((hb n C hC).2 ψ h.1).2.2.2.1 _, fun w hw =>
     ((((hh n w 0).2.2.2 S ψ hw h.2).2.2.1 k).1) w hw⟩
 
-private theorem Op_mul {k : KA E n} (hh : HkOps E) (hb : BandOps E) (hC : 0 ≤ C) {T T' : Module.End ℂ (Sm E n)}
+private theorem Op_mul {k : KA E n} {T T' : Module.End ℂ (Sm E n)}
     (h : Op S C (k : GA E n) T) (h' : Op S C (k : GA E n) T') : Op S C (k : GA E n) (T * T') := fun ψ hψ =>
   ⟨(h _ (h' ψ hψ).1).1, by
     rw [Module.End.mul_apply, Module.End.mul_apply, (h _ (h' ψ hψ).1).2, (h' ψ hψ).2]⟩
@@ -820,7 +820,7 @@ private theorem Op_pow {k : KA E n} (hh : HkOps E) (hb : BandOps E) (hC : 0 ≤ 
     (h : Op S C (k : GA E n) T) (m : ℕ) : Op S C (k : GA E n) (T ^ m) := by
   induction m with
   | zero => simpa using Op_one
-  | succ m ih => rw [pow_succ]; exact Op_mul hh hb hC ih h
+  | succ m ih => rw [pow_succ]; exact Op_mul ih h
 
 private theorem Op_prod {k : KA E n} (hh : HkOps E) (hb : BandOps E) (hC : 0 ≤ C) (L : List (Module.End ℂ (Sm E n)))
     (h : ∀ T ∈ L, Op S C (k : GA E n) T) : Op S C (k : GA E n) L.prod := by
@@ -828,7 +828,7 @@ private theorem Op_prod {k : KA E n} (hh : HkOps E) (hb : BandOps E) (hC : 0 ≤
   | nil => simpa using Op_one
   | cons a L ih =>
     rw [List.prod_cons]
-    exact Op_mul hh hb hC (h a List.mem_cons_self) (ih fun T hT => h T (List.mem_cons_of_mem a hT))
+    exact Op_mul (h a List.mem_cons_self) (ih fun T hT => h T (List.mem_cons_of_mem a hT))
 
 private theorem Op_hk {k : KA E n} (hh : HkOps E) (hb : BandOps E) (hC : 0 ≤ C) {w : Pl E} (hw : w ∉ S) (j : ℕ) :
     Op S C (k : GA E n) (hk n w j) := fun ψ hψ =>
@@ -849,7 +849,7 @@ private theorem Op_zop (hb : BandOps E) (hC : 0 ≤ C) (P : MvPolynomial ((E →
 private theorem Op_app {k : KA E n} (hh : HkOps E) (hb : BandOps E) (hC : 0 ≤ C)
     {G : MvPolynomial (Pl E × Fin n) (MvPolynomial ((E →+* ℂ) × Fin n) ℂ)}
     (hG : ∀ β ∈ G.support, ∀ p ∈ β.support, p.1 ∉ S) : Op S C (k : GA E n) (app G) := by
-  refine Op_sum hb hC _ fun β hβ => Op_mul hh hb hC (Op_zop hb hC _) (Op_prod hh hb hC _ fun T hT => ?_)
+  refine Op_sum hb hC _ fun β hβ => Op_mul (Op_zop hb hC _) (Op_prod hh hb hC _ fun T hT => ?_)
   obtain ⟨p, hp, rfl⟩ := List.mem_map.1 hT
   exact Op_pow hh hb hC (Op_hk hh hb hC (hG β hβ p (Finset.mem_toList.1 hp)) _) _
 

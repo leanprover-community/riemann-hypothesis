@@ -191,7 +191,7 @@ end GlobalTheory.BaseClassSum
 
 namespace GlobalTheory.TwInputs
 
-theorem spanGood_of_sumOnto : ∀ (D : D7) (ρ : Setup D.ntw) (hρ : ρ.Good) (rd : Rds D.nexp ρ), ∀ i, SumOnto rd i → SpanGood rd i := by
+theorem spanGood_of_sumOnto : ∀ (D : D7) (ρ : Setup D.ntw) (_ : ρ.Good) (rd : Rds D.nexp ρ), ∀ i, SumOnto rd i → SpanGood rd i := by
   intro D ρ hρ rd i hS j b x hx
   obtain ⟨F, hF, e⟩ := hS j b x hx
   rw [e]

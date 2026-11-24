@@ -246,7 +246,7 @@ namespace GlobalTheory
 open Formalism.BasicNotions.Loc
 
 theorem res_cor_H1f : ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW),
-    LiftingTheory.adm20 D HW F := by
+    LiftingTheory.adm20 D HW := by
   intro D HW F l _ K K' _ hle LL
   haveI := K.2
   haveI := K'.2

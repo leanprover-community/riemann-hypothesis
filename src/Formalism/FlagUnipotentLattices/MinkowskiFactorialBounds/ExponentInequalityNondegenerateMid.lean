@@ -210,8 +210,8 @@ private lemma exponentMidTermsBound (C K F M L lk lg lC S : ℝ)
   linarith only [hY, hA, hB, hP, hP0, hU]
 
 lemma exponent_inequality_single (C K F M L lk lg lC l2 : ℝ) (hC : 1 ≤ C) (h4M : 4 ≤ M) (hMF : M ≤ F) (hFK : F ≤ K)
-    (hL : 0.69 ≤ L) (hlk : 1 ≤ lk) (hlC0 : 0 ≤ lC) (hlC : 32 * lC ≤ lk) (hlg : 8 * (lk + L) ≤ lg)
-    (hl20 : 0 ≤ l2) (hl2 : l2 ≤ L) (hX : 16 * C ^ 32 * (M ^ 5 * F * L) ≤ K) (R lGam : ℝ) (hR : 1 ≤ R) (hMR : M = 2 * R + 2)
+    (hL : 0.69 ≤ L) (hlk : 1 ≤ lk) (hlC : 32 * lC ≤ lk) (hlg : 8 * (lk + L) ≤ lg)
+    (hX : 16 * C ^ 32 * (M ^ 5 * F * L) ≤ K) (R lGam : ℝ) (hR : 1 ≤ R)
     (hG : lGam ≤ C * M ^ 5 * F * L) :
     F * lC + (C * M ^ 2 * F * L) * (C * M ^ 3) + lGam + C * M ^ 6 * F * L +
       (K * F) * (lC - (2 * R + 1) * lg - R * lk) / 2 ≤ -(K * F * lk) := by
@@ -235,9 +235,9 @@ lemma exponent_inequality_single (C K F M L lk lg lC l2 : ℝ) (hC : 1 ≤ C) (h
   have hC25 := hY 2 5 (by decide) (by decide)
   linarith only [hGam, hM6, hLk, hKF, hNeg, hC25, hP, hK0]
 
-lemma exponent_inequality_nondegenerate_mid (C K F M L lk lg lC l2 : ℝ) (hC : 1 ≤ C) (h4M : 4 ≤ M) (hMF : M ≤ F) (hFK : F ≤ K)
-    (hL : 0.69 ≤ L) (hlk : 1 ≤ lk) (hlC0 : 0 ≤ lC) (hlC : 32 * lC ≤ lk) (hlg : 8 * (lk + L) ≤ lg)
-    (hl20 : 0 ≤ l2) (hl2 : l2 ≤ L) (hX : 16 * C ^ 32 * (M ^ 5 * F * L) ≤ K) (S lGam : ℝ) (hS2 : 2 ≤ S) (hSK : S ≤ K)
+lemma exponent_inequality_nondegenerate_mid (C K F M L lk lg lC l2 : ℝ) (hC : 1 ≤ C) (h4M : 4 ≤ M) (hMF : M ≤ F)
+    (hL : 0.69 ≤ L) (hlk : 1 ≤ lk) (hlC : 32 * lC ≤ lk) (hlg : 8 * (lk + L) ≤ lg)
+    (hl2 : l2 ≤ L) (hX : 16 * C ^ 32 * (M ^ 5 * F * L) ≤ K) (S lGam : ℝ) (hS2 : 2 ≤ S)
     (hG : lGam ≤ C * M ^ 5 * F * L) :
     ((S - 1) * K * F) * (l2 - lg) + (C * M ^ 2 * F * L * C + S * K * F * lC) + K * F * lC +
       (C * M ^ 2 * F * L) * (C * (S + M) * M ^ 2) + 6 * S * F * (lC + 2 * lk) + lGam ≤
@@ -250,9 +250,9 @@ lemma exponent_inequality_nondegenerate_mid (C K F M L lk lg lC l2 : ℝ) (hC : 
   exact exponentMidTermsBound C K F M L lk lg lC S hF hL hlk hlg hlC hS2 hK
     (hY 2 2 (by decide) (by decide))
 
-lemma exponent_inequality_nondegenerate_top (C K F M L lk lg lC l2 : ℝ) (hC : 1 ≤ C) (h4M : 4 ≤ M) (hMF : M ≤ F) (hFK : F ≤ K)
-    (hL : 0.69 ≤ L) (hlk : 1 ≤ lk) (hlC0 : 0 ≤ lC) (hlC : 32 * lC ≤ lk) (hlg : 8 * (lk + L) ≤ lg)
-    (hl20 : 0 ≤ l2) (hl2 : l2 ≤ L) (hX : 16 * C ^ 32 * (M ^ 5 * F * L) ≤ K) (S lGam : ℝ) (hS2 : 2 ≤ S) (hSK : S ≤ K) (hKS : K - 1 ≤ S)
+lemma exponent_inequality_nondegenerate_top (C K F M L lk lg lC l2 : ℝ) (hC : 1 ≤ C) (h4M : 4 ≤ M) (hMF : M ≤ F)
+    (hL : 0.69 ≤ L) (hlk : 1 ≤ lk) (hlC : 32 * lC ≤ lk) (hlg : 8 * (lk + L) ≤ lg)
+    (hl2 : l2 ≤ L) (hX : 16 * C ^ 32 * (M ^ 5 * F * L) ≤ K) (S lGam : ℝ) (hS2 : 2 ≤ S) (hKS : K - 1 ≤ S)
     (hG : lGam ≤ C * M ^ 5 * F * L) :
     ((S - 1) * K * F) * (l2 - lg) + (K * F * (lk + L) + (K * F * (lC + lk) +
         ((C * M ^ 2 * F * L) * (C * M) + C * M * F * L) * (C * K))) + K * F * lC +
@@ -269,9 +269,9 @@ lemma exponent_inequality_nondegenerate_top (C K F M L lk lg lC l2 : ℝ) (hC : 
   have hP0 : 0 ≤ K * F * lk := by positivity
   linarith only [hTop, hP0]
 
-lemma exponent_inequality_degenerate_mid (C K F M L lk lg lC l2 : ℝ) (hC : 1 ≤ C) (h4M : 4 ≤ M) (hMF : M ≤ F) (hFK : F ≤ K)
-    (hL : 0.69 ≤ L) (hlk : 1 ≤ lk) (hlC0 : 0 ≤ lC) (hlC : 32 * lC ≤ lk) (hlg : 8 * (lk + L) ≤ lg)
-    (hl20 : 0 ≤ l2) (hl2 : l2 ≤ L) (hX : 16 * C ^ 32 * (M ^ 5 * F * L) ≤ K) (S lGam : ℝ) (hS2 : 2 ≤ S) (hSK : S ≤ K) (hG0 : 0 ≤ lGam)
+lemma exponent_inequality_degenerate_mid (C K F M L lk lg lC l2 : ℝ) (hC : 1 ≤ C) (h4M : 4 ≤ M) (hMF : M ≤ F)
+    (hL : 0.69 ≤ L) (hlk : 1 ≤ lk) (hlC : 32 * lC ≤ lk) (hlg : 8 * (lk + L) ≤ lg)
+    (hl2 : l2 ≤ L) (hX : 16 * C ^ 32 * (M ^ 5 * F * L) ≤ K) (S lGam : ℝ) (hS2 : 2 ≤ S)
     (hG : lGam ≤ C * M ^ 5 * F * L) :
     ((S - 2) * K * F) * (l2 - lg) + (C * M ^ 2 * F * L * C + S * K * F * lC) + K * F * lC +
       (C * M ^ 2 * F * L) * (C * (S + M) * M ^ 2) + 6 * S * F * (lC + 2 * lk) + lGam +
@@ -284,10 +284,10 @@ lemma exponent_inequality_degenerate_mid (C K F M L lk lg lC l2 : ℝ) (hC : 1 �
   exact exponentMidTermsBound C K F M L lk lg lC S hF hL hlk hlg hlC hS2 hK
     (hY 2 2 (by decide) (by decide))
 
-lemma exponent_inequality_degenerate_top (C K F M L lk lg lC l2 : ℝ) (hC : 1 ≤ C) (h4M : 4 ≤ M) (hMF : M ≤ F) (hFK : F ≤ K)
-    (hL : 0.69 ≤ L) (hlk : 1 ≤ lk) (hlC0 : 0 ≤ lC) (hlC : 32 * lC ≤ lk) (hlg : 8 * (lk + L) ≤ lg)
-    (hl20 : 0 ≤ l2) (hl2 : l2 ≤ L) (hX : 16 * C ^ 32 * (M ^ 5 * F * L) ≤ K) (S lGam : ℝ) (hS2 : 2 ≤ S) (hSK : S ≤ K) (hKS : K - 1 ≤ S)
-    (hG0 : 0 ≤ lGam) (hG : lGam ≤ C * M ^ 5 * F * L) :
+lemma exponent_inequality_degenerate_top (C K F M L lk lg lC l2 : ℝ) (hC : 1 ≤ C) (h4M : 4 ≤ M) (hMF : M ≤ F)
+    (hL : 0.69 ≤ L) (hlk : 1 ≤ lk) (hlC : 32 * lC ≤ lk) (hlg : 8 * (lk + L) ≤ lg)
+    (hl2 : l2 ≤ L) (hX : 16 * C ^ 32 * (M ^ 5 * F * L) ≤ K) (S lGam : ℝ) (hS2 : 2 ≤ S) (hKS : K - 1 ≤ S)
+    (hG : lGam ≤ C * M ^ 5 * F * L) :
     ((S - 2) * K * F) * (l2 - lg) + (K * F * (lk + L) + (K * F * (lC + lk) +
         ((C * M ^ 2 * F * L) * (C * M) + C * M * F * L) * (C * K))) + K * F * lC +
       (C * M ^ 2 * F * L) * (C * (S + M) * M ^ 2) + 6 * S * F * (lC + 2 * lk) + lGam +
@@ -496,7 +496,7 @@ theorem sumNondegenerateRowsLe : NonDegSum := by
     · obtain ⟨hXi0, hA⟩ := massRatio_bound_of_mid C hC k m f s b v NT Xi hb0 hXi hs2 hmid
       obtain ⟨-, hc⟩ := commonFactor_nonneg_and_le C hC k m f s b v Gam Xi _ hb0 hv0 hGam0 (by omega) hsk hf1 hfkN hXi0 hA
       have hcore := exponent_inequality_nondegenerate_mid C k f m (Real.log b) (Real.log k) (Real.log g) (Real.log C) (Real.log 2) hC hm4 hmf
-        hfk hlb hlk hlC0 hlC hlg hl20 hl2 hX s (Real.log Gam) hs2R hskR hlG
+        hlb hlk hlC hlg hl2 hX s (Real.log Gam) hs2R hlG
       refine le_trans (mul_le_mul_of_nonneg_left hc (Real.exp_pos _).le) ?_
       rw [← Real.exp_add]
       exact Real.exp_le_exp.2 (by linarith)
@@ -507,7 +507,7 @@ theorem sumNondegenerateRowsLe : NonDegSum := by
       obtain ⟨hXi0, hA⟩ := massRatio_bound_of_top C hC k m f s b v NT Xi hb0 hv0 hNT0 hk1 hlv hlNT hXi htop
       obtain ⟨-, hc⟩ := commonFactor_nonneg_and_le C hC k m f s b v Gam Xi _ hb0 hv0 hGam0 (by omega) hsk hf1 hfkN hXi0 hA
       have hcore := exponent_inequality_nondegenerate_top C k f m (Real.log b) (Real.log k) (Real.log g) (Real.log C) (Real.log 2) hC hm4 hmf
-        hfk hlb hlk hlC0 hlC hlg hl20 hl2 hX s (Real.log Gam) hs2R hskR hKS hlG
+        hlb hlk hlC hlg hl2 hX s (Real.log Gam) hs2R hKS hlG
       refine le_trans (mul_le_mul_of_nonneg_left hc (Real.exp_pos _).le) ?_
       rw [← Real.exp_add]
       exact Real.exp_le_exp.2 (by linarith)
@@ -561,7 +561,7 @@ theorem sumDegenerateRowsLe : DegSum := by
     · obtain ⟨hXi0, hA⟩ := massRatio_bound_of_mid C hC k m f s b v NT Xi hb0 hXi hs2 hmid
       obtain ⟨-, hc⟩ := commonFactor_nonneg_and_le C hC k m f s b v Gam Xi _ hb0 hv0 hGam0 (by omega) hsk hf1 hfkN hXi0 hA
       have hcore := exponent_inequality_degenerate_mid C k f m (Real.log b) (Real.log k) (Real.log g) (Real.log C) (Real.log 2) hC hm4 hmf
-        hfk hlb hlk hlC0 hlC hlg hl20 hl2 hX s (Real.log Gam) hs2R hskR hlG0 hlG
+        hlb hlk hlC hlg hl2 hX s (Real.log Gam) hs2R hlG
       refine le_trans (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right
         (mul_le_mul_of_nonneg_left hc (Real.exp_pos _).le) (Real.exp_pos _).le) (Real.exp_pos _).le) ?_
       rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
@@ -573,7 +573,7 @@ theorem sumDegenerateRowsLe : DegSum := by
       obtain ⟨hXi0, hA⟩ := massRatio_bound_of_top C hC k m f s b v NT Xi hb0 hv0 hNT0 hk1 hlv hlNT hXi htop
       obtain ⟨-, hc⟩ := commonFactor_nonneg_and_le C hC k m f s b v Gam Xi _ hb0 hv0 hGam0 (by omega) hsk hf1 hfkN hXi0 hA
       have hcore := exponent_inequality_degenerate_top C k f m (Real.log b) (Real.log k) (Real.log g) (Real.log C) (Real.log 2) hC hm4 hmf
-        hfk hlb hlk hlC0 hlC hlg hl20 hl2 hX s (Real.log Gam) hs2R hskR hKS hlG0 hlG
+        hlb hlk hlC hlg hl2 hX s (Real.log Gam) hs2R hKS hlG
       refine le_trans (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right
         (mul_le_mul_of_nonneg_left hc (Real.exp_pos _).le) (Real.exp_pos _).le) (Real.exp_pos _).le) ?_
       rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
@@ -604,7 +604,7 @@ theorem singleRowBound : SingleRowBound := by
     linarith
   have hMR : ((2 * r + 2 : ℕ) : ℝ) = 2 * (r : ℝ) + 2 := by push_cast; ring
   have hcore := exponent_inequality_single C k f ((2 * r + 2 : ℕ) : ℝ) (Real.log b) (Real.log k) (Real.log g) (Real.log C)
-    (Real.log 2) hC hm4 hmf hfk hlb hlk hlC0 hlC hlg hl20 hl2 hX r (Real.log Gam) hR hMR hlG
+    (Real.log 2) hC hm4 hmf hfk hlb hlk hlC hlg hX r (Real.log Gam) hR hlG
   have hg1 : 0 < g⁻¹ ^ (2 * r + 1) := pow_pos (inv_pos.2 hg0) _
   have hk1 : 0 < ((k : ℝ) ^ r)⁻¹ := inv_pos.2 (pow_pos hk0 _)
   have hin : 0 < C * g⁻¹ ^ (2 * r + 1) * ((k : ℝ) ^ r)⁻¹ := mul_pos (mul_pos hC0 hg1) hk1

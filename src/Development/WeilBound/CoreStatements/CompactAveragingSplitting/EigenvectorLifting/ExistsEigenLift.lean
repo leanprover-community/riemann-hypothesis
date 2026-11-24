@@ -231,7 +231,7 @@ section Main
 variable {a a' : ℕ} {B : Base F E} {G : Geo σ a a'} {X : Chars F E} {om : Rep σ G.V G.W} {om' : Rep σ G.V' G.W} {v : Pl F}
 
 theorem finAt_of {ω ρ ω' ρ'} (L : IsLocRep G.M B.ψ om v ω ρ) (L' : IsLocRep G.M' B.ψ om' v ω' ρ') (hv : v ∉ X.T)
-    (hs : G.M.vac v ∈ SB _) (hs' : G.M'.vac v ∈ SB _)
+    (hs' : G.M'.vac v ∈ SB _)
     (hirr : ∀ N : Submodule ℂ (_ → ℂ), augAt om' v ≤ N → N ≤ SB _ → (∀ h ∈ UAt σ G.W (evFin F v), ∀ φ ∈ N, ∀ φ₁ ∈ SB _,
       Acts (evFin F v) (om' (1, h)) φ φ₁ → φ₁ ∈ N) → N = augAt om' v ∨ N = SB _)
     (p : Fn F a (a + a') v →ₗ[ℂ] (Fn F a' (a + a') v ⧸ augAt om' v))
@@ -391,7 +391,7 @@ theorem finInert_of (hKS : CompAtTriple) (hR : CoinvEmbeds) (hA : LocRepEx) (hB1
     (fun k => ⟨c k, by rw [map_sub, map_smul, hf' k, hc k, ← hcc k, smul_sub, smul_comm]⟩)
     (by rw [map_sub, map_smul, smul_eq_mul, ht, div_mul_cancel₀ _ hl0, sub_self]))
   rw [LinearMap.mem_ker, map_sub, map_smul, hpf', sub_eq_zero] at hz
-  refine finAt_of L L' hv hs hs' hirr (t • p) ((Submodule.map_smul _ _ _ ht0).trans h1)
+  refine finAt_of L L' hv hs' hirr (t • p) ((Submodule.map_smul _ _ _ ht0).trans h1)
     (fun φ hφ => by rw [LinearMap.mem_ker, LinearMap.smul_apply, h2 hφ, smul_zero]) (fun h hh φ hφ φ' hφ' e => ?_) hz.symm h5
   rw [LinearMap.smul_apply, ← map_smul] at e ⊢
   rw [← map_smul]

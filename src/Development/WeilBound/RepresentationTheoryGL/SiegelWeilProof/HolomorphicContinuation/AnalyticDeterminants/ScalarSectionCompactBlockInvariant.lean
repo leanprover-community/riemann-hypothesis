@@ -171,12 +171,12 @@ theorem wM_mul_par {P : M2 n} (hP : InP P) (x : M2 n) : wM (P * x) = wM x := by
     ← Matrix.mul_assoc (P.toBlocks₂₂)⁻¹, Matrix.nonsing_inv_mul _ ((Matrix.isUnit_iff_isUnit_det _).1 hD),
     Matrix.one_mul]
 
-theorem hF_law (j : ℕ) (p q : ℤ) {P x : M2 n} (hP : InP P) (hx : x ∈ Dom n) :
+theorem hF_law (j : ℕ) (p q : ℤ) {P x : M2 n} (hP : InP P) :
     hF j p q (P * x) = c1 p q P * hF j p q x := by
   simp only [hF, wM_mul_par hP, f0, c1, automorphy_first_mul_parabolic x hP.2, automorphy_second_mul_parabolic x hP.2, det_mul, mul_zpow]
   ring
 
-theorem fV_law (p q : ℤ) {P x : M2 n} (hP : InP P) (hx : x ∈ Dom n) :
+theorem fV_law (p q : ℤ) {P x : M2 n} (hP : InP P) :
     fV p q (P * x) = c2 p q P * fV p q x := by
   simp only [fV, c2, automorphy_first_mul_parabolic x hP.2, automorphy_second_mul_parabolic x hP.2, inverse_first_block_mul_parabolic hP.2 (isUnit_det_of_inG' hP.1), det_mul,
     det_nonsing_inv, Ring.inverse_eq_inv', mul_zpow, _root_.inv_zpow', neg_neg, zpow_natCast]

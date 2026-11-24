@@ -100,7 +100,7 @@ def Bridge : Prop := Hyps → ∀ (q : ℕ) [NeZero q] (k : Type) [Field k], IsU
     ∀ (j : J) (f : j0 ⟶ j), (T.Rm.map f).hom x0 = 0 →
       ∃ (U' : B.Etale) (a : U' ⟶ U), u ∈ Set.range a.left ∧ rY q i p ι a m z = 0
 
-theorem goal_of (hF : PairFive) (_hO : ObsExact) (_hN : ObsNat) (hB : Bridge) : LeafKillNbhd := by
+theorem goal_of (hF : PairFive) (hB : Bridge) : LeafKillNbhd := by
   intro hH q _ k _ hq i B W Y toK ι _ p hp U m z hz u
   obtain ⟨J, _, _, T, j0, x0, A, _, t, hSH, hlim, hst⟩ := hB hH q k hq i toK ι p hp U m z u
   obtain ⟨j, f, hf⟩ := hF J T j0 x0 (hlim (hz A t hSH))

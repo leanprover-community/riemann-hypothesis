@@ -108,7 +108,7 @@ def rimCat {ι : Type} (Θs : ι → B.DiffOp k r Wp Wq) : List ι → B.DiffOp 
 
 theorem rimCat_poly {ι : Type} {Θs : ι → B.DiffOp k r Wp Wq} {t κ : ℕ} (h : ∀ i, PolyOp t κ (Θs i)) :
     ∀ l, PolyOp t κ (rimCat Θs l)
-  | [] => fun T hT => absurd hT List.not_mem_nil
+  | [] => fun _ hT => absurd hT List.not_mem_nil
   | i :: l => QMinOp.polyOp_append (h i) (rimCat_poly h l)
 
 theorem rimCat_apply {ι : Type} (Θs : ι → B.DiffOp k r Wp Wq) (F : B.Mat k r → (Wq →L[ℂ] Wp)) (g : B.Mat k r) :

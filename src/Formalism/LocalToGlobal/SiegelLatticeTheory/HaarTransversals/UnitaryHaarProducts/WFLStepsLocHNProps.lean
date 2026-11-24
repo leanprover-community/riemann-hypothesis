@@ -42,7 +42,7 @@ theorem mulVec_mem_of {g : Matrix (Fin n) (Fin n) ℂ} (hg : ∀ a : Fin r, (g -
     exact add_mem (spanLt_mono e hb'.le (hg b)) (Submodule.subset_span ⟨b, hb', rfl⟩)
   exact key hx
 
-theorem inv_mulVec_mem_of {g gi : Matrix (Fin n) (Fin n) ℂ} (h1 : g * gi = 1) (h2 : gi * g = 1)
+theorem inv_mulVec_mem_of {g gi : Matrix (Fin n) (Fin n) ℂ} (h2 : gi * g = 1)
     (hg : ∀ a : Fin r, (g - 1) *ᵥ e a ∈ spanLt e a.1) (a : ℕ) {x : Fin n → ℂ} (hx : x ∈ spanLt e a) :
     gi *ᵥ x ∈ spanLt e a := by
   have hmap : ∀ y ∈ spanLt e a, Matrix.mulVecLin g y ∈ spanLt e a := fun y hy => mulVec_mem_of hg a hy
@@ -87,9 +87,9 @@ theorem inN_inv {A Ai : Matrix (Fin n) (Fin n) ℂ} (h1 : A * Ai = 1) (h2 : Ai *
     InN ε e z Ai := by
   obtain ⟨⟨hA1, hA2⟩, hA3⟩ := hA
   refine ⟨⟨fun a => ?_, ?_⟩, fun y hy => ?_⟩ <;> rw [inv_sub_one_mulVec h2] <;> refine neg_mem ?_
-  · exact inv_mulVec_mem_of h1 h2 hA1 _ (hA1 a)
-  · exact inv_mulVec_mem_of h1 h2 hA1 _ hA2
-  · exact inv_mulVec_mem_of h1 h2 hA1 _ (hA3 y hy)
+  · exact inv_mulVec_mem_of h2 hA1 _ (hA1 a)
+  · exact inv_mulVec_mem_of h2 hA1 _ hA2
+  · exact inv_mulVec_mem_of h2 hA1 _ (hA3 y hy)
 
 theorem fix_of_span {g : Matrix (Fin n) (Fin n) ℂ} (hge : ∀ a, g *ᵥ e a = e a) (a : ℕ) {x : Fin n → ℂ}
     (hx : x ∈ spanLt e a) : g *ᵥ x = x := by

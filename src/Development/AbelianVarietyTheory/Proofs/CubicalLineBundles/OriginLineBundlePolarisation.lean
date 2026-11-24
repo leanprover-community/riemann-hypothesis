@@ -100,7 +100,7 @@ theorem appLE_sec_pull_originLB_eq_zero {R : Type} [CommRing R] (W : Weierstrass
   rw [hc j, map_mul, h1, mul_zero]
 
 theorem originLB_polarisation (R : Type) [CommRing R] (W : WeierstrassCurve R) [GrpObj (schemeOver W)]
-    (_hc : IsCommMonObj (schemeOver W)) (he : η[schemeOver W].left = zero W) :
+    (he : η[schemeOver W].left = zero W) :
     Out.Rigidified (schemeOver W) (originLB W) ∧ Out.Sym (schemeOver W) (originLB W) ∧
       Out.RelAmple (schemeOver W) (originLB W) ∧ Out.KTriv (schemeOver W) (originLB W) := by
   have he' : eSec (schemeOver W) = zero W := he

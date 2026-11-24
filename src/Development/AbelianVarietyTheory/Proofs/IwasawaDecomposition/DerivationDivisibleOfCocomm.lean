@@ -121,7 +121,7 @@ theorem supNorm_mul_le [Module.Finite ↥(intO C) M] [Coalgebra ↥(intO C) M]
   exact mul_le_mul (le_supNorm f _) (le_supNorm g _) (norm_nonneg _) (supNorm_nonneg _)
 
 theorem supNorm_le_of_tmul {f : WithConv (M ⊗[↥(intO C)] M →ₗ[↥(intO C)] C)} {r : ℝ}
-    (hr : 0 ≤ r) (h : ∀ a b, ‖f.ofConv (a ⊗ₜ b)‖ ≤ r) : supNorm f ≤ r := by
+    (h : ∀ a b, ‖f.ofConv (a ⊗ₜ b)‖ ≤ r) : supNorm f ≤ r := by
   refine supNorm_le fun t => ?_
   induction t with
   | tmul a b => exact h a b
@@ -133,7 +133,7 @@ theorem supNorm_eq_mul [Module.Finite ↥(intO C) M] (f g : WithConv (M →ₗ[�
     (hh : ∀ a b, h.ofConv (a ⊗ₜ b) = f.ofConv a * g.ofConv b) :
     supNorm h = supNorm f * supNorm g := by
   apply le_antisymm
-  · refine supNorm_le_of_tmul (mul_nonneg (supNorm_nonneg _) (supNorm_nonneg _)) fun a b => ?_
+  · refine supNorm_le_of_tmul fun a b => ?_
     rw [hh, norm_mul]
     exact mul_le_mul (le_supNorm f _) (le_supNorm g _) (norm_nonneg _) (supNorm_nonneg _)
   · rw [supNorm.eq_1 f, Real.iSup_mul_of_nonneg (supNorm_nonneg g)]
@@ -279,7 +279,7 @@ theorem dvd_mul_of_groupLike (C : Type) [NontriviallyNormedField C] [IsUltrametr
     (fun f => supNorm_le fun t => le_supNorm f _)
     (fun f g => supNorm_eq_mul f g _ fun a b => by rw [inlHom_mul_inrHom, extProd_tmul])
     y (exists_supNorm_pow_le hint)
-    (supNorm_le_of_tmul zero_le_one fun a b => by
+    (supNorm_le_of_tmul fun a b => by
       have h := (dvd_iff_norm hq _).1 (hD a b)
       convert h using 2
       change y.ofConv (a * b) - (extProd y 1).ofConv (a ⊗ₜ b) - (extProd 1 y).ofConv (a ⊗ₜ b) = _

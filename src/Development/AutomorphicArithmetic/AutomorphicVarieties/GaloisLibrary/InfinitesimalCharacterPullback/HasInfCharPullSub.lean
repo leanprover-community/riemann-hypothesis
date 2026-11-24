@@ -181,8 +181,8 @@ variable (a) in
 def lieMap : Lie E a →L[ℝ] Lie F a :=
   LinearMap.toContinuousLinearMap
     { toFun := fun X i k => cinf j (X i k)
-      map_add' := fun X Y => funext fun i => funext fun k => map_add (cinf j) _ _
-      map_smul' := fun t X => funext fun i => funext fun k => funext fun u => coord_smul _ t _ }
+      map_add' := fun _ _ => funext fun _ => funext fun _ => map_add (cinf j) _ _
+      map_smul' := fun t _ => funext fun _ => funext fun _ => funext fun _ => coord_smul _ t _ }
 
 omit [_root_.NumberField.IsTotallyComplex E] [_root_.NumberField.IsTotallyComplex F] in
 theorem continuous_cinf : Continuous (cinf j) :=

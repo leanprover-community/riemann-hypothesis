@@ -780,7 +780,7 @@ theorem b_gap (C : ℝ) (hS : LowsOver D g) (τ : D.what₂.Tau) {l l' : ℕ} (h
   have := _root_.GlobalTheory.FunObj.num_b_le D C τ h1 (show l ≤ a + 1 by omega) (by omega)
   linarith
 
-theorem gap_true (C : ℝ) (hS : LowsOver D g) (τ : D.what₂.Tau) {i j l : ℕ} (hi : i ≤ D.R.m) (hl1 : j + 2 ≤ l)
+theorem gap_true (C : ℝ) (hS : LowsOver D g) (τ : D.what₂.Tau) {i j l : ℕ} (hl1 : j + 2 ≤ l)
     (hl2 : l ≤ D.R.m) (hodd : ¬ Even (l - j - 1)) {y : ℚ} (hy : (y, true) ∈ (num D C τ).parD i j) :
     g < |y - -((num D C τ).b l : ℚ)| := by
   have top : -((num D C τ).b 1 : ℚ) < y → g < |y - -((num D C τ).b l : ℚ)| := fun h => by
@@ -820,7 +820,7 @@ theorem gapOver_parD (C : ℝ) (hS : LowsOver D g) (τ : D.what₂.Tau) {i : ℕ
     · obtain ⟨rfl, es⟩ := Prod.mk.inj e
       have hn : ¬ (l ≤ j + 1 ∨ Even (l - j - 1)) := by simpa using es.symm
       push Not at hn
-      exact gap_true C hS τ hi (by omega) h2 (by simpa using hn.2) hy
+      exact gap_true C hS τ (by omega) h2 (by simpa using hn.2) hy
     · exact absurd h (by simp)
     · exact absurd h (by simp)
   rintro ⟨x, s⟩ hx ⟨y, s'⟩ hy hne

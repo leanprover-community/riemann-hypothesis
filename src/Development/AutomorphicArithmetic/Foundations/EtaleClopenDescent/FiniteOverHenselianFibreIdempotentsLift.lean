@@ -240,7 +240,7 @@ private lemma pair_of_maps (B C : Subalgebra A K) (t : K) (hc : Charts B C t) {F
 private def resHom (A : Type) [CommRing A] [IsLocalRing A] (S : Type) [CommRing S] [Algebra A S] :
     IsLocalRing.ResidueField A →+* S ⧸ mI A S :=
   Ideal.Quotient.lift (IsLocalRing.maximalIdeal A) ((Ideal.Quotient.mk (mI A S)).comp (algebraMap A S))
-    (fun a ha => Ideal.Quotient.eq_zero_iff_mem.2 (Ideal.mem_map_of_mem _ ha))
+    (fun _ ha => Ideal.Quotient.eq_zero_iff_mem.2 (Ideal.mem_map_of_mem _ ha))
 
 private lemma fibre_map {Z : Scheme.{0}} (p : Z ⟶ Spec (CommRingCat.of A)) {S : Type} [CommRing S] [Algebra A S]
     (j : Spec (CommRingCat.of S) ⟶ Z) (hj : j ≫ p = Spec.map (CommRingCat.ofHom (algebraMap A S))) :

@@ -313,7 +313,7 @@ theorem _root_.GlobalTheory.DivisionVolume.margin_iff (h0 : 0 < X.p0) (h1 : X.p0
       linarith
   · intro hG x0 hx0 z hz ξ
     rw [leviWeight_sub_leviDensity_eq_lemma hx0 la hz ξ]
-    refine _root_.GlobalTheory.FrameThetaCompare.margin_of_gaps X h0 (la - _root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.kapW X) m ?_ ?_ hx0 hz ξ
+    refine _root_.GlobalTheory.FrameThetaCompare.margin_of_gaps X (la - _root_.ReciprocityTheory.ChartRestriction.G.AR.Inst.kapW X) m ?_ ?_ hx0 hz ξ
     · intro τ a b hab
       exact (hG τ).1 a b hab.1 hab.2
     · intro τ a b ha hb

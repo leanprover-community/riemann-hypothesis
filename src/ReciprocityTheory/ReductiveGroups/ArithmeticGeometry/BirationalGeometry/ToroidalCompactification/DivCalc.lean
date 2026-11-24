@@ -17,7 +17,7 @@ open ReciprocityTheory.ChartRestriction.G.Semi
 
 theorem dvd_of_tensor {V F A : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [Field F] [Algebra V F]
     [CommRing A] [Algebra V A] [Module.Flat V A] {ϖ : V} (hϖ : Irreducible ϖ) (v : AddValuation F (WithTop ℚ))
-    (hinj : Function.Injective (algebraMap V F)) (h0 : ∀ t, 0 ≤ v (algebraMap V F t)) (h1 : 0 < v (algebraMap V F ϖ))
+    (h0 : ∀ t, 0 ≤ v (algebraMap V F t)) (h1 : 0 < v (algebraMap V F ϖ))
     {n : ℕ} (b : Fin n → F) (hb : ∀ i, 0 < v (b i)) (a : A) (c : Fin n → A)
     (h : a ⊗ₜ[V] (1 : F) = ∑ i, c i ⊗ₜ[V] b i) : algebraMap V A ϖ ∣ a := by
   classical

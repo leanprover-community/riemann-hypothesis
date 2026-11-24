@@ -192,7 +192,7 @@ theorem exponent_window_subset_short (g h S : ℕ) (hgh : g ≤ h) (kind : Kind)
     simp only [Finset.mem_union, Finset.mem_Ico]
     omega
 
-theorem exponent_window_subset_long (g G S η h : ℕ) (hG : G ≤ g) (hS : S ≤ g) (hη : η ≤ g) (hgh : g ≤ h) (kind : Kind)
+theorem exponent_window_subset_long (g G S η h : ℕ) (hG : G ≤ g) (hS : S ≤ g) (hgh : g ≤ h) (kind : Kind)
     (b : ℕ) (hb : kind ≠ Kind.thin → b + S ≤ h) :
     ∃ w ∈ wins g h, Formalism.ExponentWindows.E.win4 kind g G S η b ⊆
       Finset.Ico (-(max G η : ℕ) - (g : ℤ)) (-(max G η : ℕ) - (g : ℤ) + (2 * max G η + g : ℕ)) ∪ w := by
@@ -263,8 +263,8 @@ theorem kapOK_arc (l g G S η h ell L : ℕ) (hG : G ≤ g) (hS : S ≤ g) (hη 
       simp only [Formalism.ExponentWindows.E.win2, Finset.mem_Icc] at hxs
       simp only [Finset.mem_Ico]
       omega
-  · obtain ⟨w₀, hw₀, hs₀⟩ := exponent_window_subset_long g G S η h hG hS hη hgh (kind t₀) (b t₀) (hb t₀)
-    obtain ⟨w₁, hw₁, hs₁⟩ := exponent_window_subset_long g G S η h hG hS hη hgh (kind t₁) (b t₁) (hb t₁)
+  · obtain ⟨w₀, hw₀, hs₀⟩ := exponent_window_subset_long g G S η h hG hS hgh (kind t₀) (b t₀) (hb t₀)
+    obtain ⟨w₁, hw₁, hs₁⟩ := exponent_window_subset_long g G S η h hG hS hgh (kind t₁) (b t₁) (hb t₁)
     refine le_trans (kappa_exponent_le_valuation l (ell - 1) L ?_ (by omega))
       (vPP1_le_kapPar l g h L (central_window_mem_long g G η h hG hη hgh) hw₀ hw₁)
     intro x hx

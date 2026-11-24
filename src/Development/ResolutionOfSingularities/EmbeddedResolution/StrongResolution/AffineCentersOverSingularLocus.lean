@@ -538,7 +538,7 @@ private theorem agreeNear_vanishingIdeal_image_of_avoidsCenters_le_of_disjoint_z
       have hcb : (U.ι ≫ (D.toEmbeddedBlowupSequence A).blowdown i).base z
           = ((D.toEmbeddedBlowupSequence A).blowdown i).base (U.ι.base z) := rfl
       have hiff := EmbeddedBlowupSequence.mem_image_strictTransformι_iff_of_notMem_ambientCenter
-        (D.toEmbeddedBlowupSequence A) hN i hi' C η hηgen C' hη' (U.ι.base z) (hmemU z)
+        (D.toEmbeddedBlowupSequence A) i hi' C η hηgen C' hη' (U.ι.base z) (hmemU z)
       constructor
       · intro hz
         have hz1 : U.ι.base z ∈ ⇑((D.toEmbeddedBlowupSequence A).strictTransformι (i + 1)).base '' C := hz

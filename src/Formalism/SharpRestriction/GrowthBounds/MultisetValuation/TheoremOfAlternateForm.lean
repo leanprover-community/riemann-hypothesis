@@ -571,7 +571,7 @@ theorem vEqK_mHat (v : X.Pl) (u m : ℕ → X.G.Kf) (hu : ∀ l ∈ Icc 1 X.mm, 
   simpa using vEqK_mul X hfr (hm l hl) (vEqK_inv X hfr
     (vEqK_prod_units X hfr he _ _ fun l' hl' => hu l' (by rw [mem_Icc] at hl hl' ⊢; omega)))
 
-theorem theorem_of_alternate_form (D : Formalism.BasicNotions.D7) (h : KernelCommutationUpToUnits D X) : Conclusion4 D X := by
+theorem theorem_of_alternate_form (D : Formalism.BasicNotions.D7) (h : KernelCommutationUpToUnits X) : Conclusion4 X := by
   intro v
   obtain ⟨u, m, hu, hm, H⟩ := h v
   exact ⟨u, mHat u m, hu, vEqK_mHat X v u m hu hm, fun j hj => (H j hj).2⟩
@@ -616,7 +616,7 @@ theorem CiiiGen (v : X.Pl) (u mh : ℕ → X.G.Kf) (j : ℕ) (hu : ∀ l ∈ Icc
     refine vGe_mono X hfr (le_of_eq ?_) h
     ring
 
-theorem Ciii (D : Formalism.BasicNotions.D7) (h3 : PointsLemma D X) (h2b : MassRatio₂ D X) (v : X.Pl) (u m : ℕ → X.G.Kf)
+theorem Ciii (D : Formalism.BasicNotions.D7) (h3 : PointsLemma X) (h2b : MassRatio₂ D X) (v : X.Pl) (u m : ℕ → X.G.Kf)
     (hu : ∀ l ∈ Icc 1 X.mm, X.vEqK (u l) 0) (hm : ∀ l ∈ Icc 1 X.mm, X.vEqK (m l) (X.vm v l)) (j : ℕ)
     (hj : j < X.mm) : ∀ G ∈ X.Int j, X.vGe (j + 1) (X.Zop v u m (j + 1) (X.Kz j G))
       (X.gv v (j + 1) + ∑ v' ∈ univ.erase v, X.g0v v' (j + 1) - X.dG j) := by

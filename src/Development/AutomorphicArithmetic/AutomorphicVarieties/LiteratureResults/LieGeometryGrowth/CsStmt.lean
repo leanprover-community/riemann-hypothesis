@@ -82,7 +82,7 @@ theorem Sz.congr {k : ℕ} {f g : V → F} {p : V} {b : ℝ} (h : Sz k f p b) (e
   fun i hi => by rw [← (e.iteratedFDeriv ℝ i).eq_of_nhds]; exact h i hi
 
 theorem exists_sz (k : ℕ) (f : V → F) (p : V) : ∃ b, Sz k f p b :=
-  ⟨∑ i ∈ Finset.range (k + 1), ‖iteratedFDeriv ℝ i f p‖, fun i hi =>
+  ⟨∑ i ∈ Finset.range (k + 1), ‖iteratedFDeriv ℝ i f p‖, fun _ hi =>
     Finset.single_le_sum (f := fun i => ‖iteratedFDeriv ℝ i f p‖) (fun _ _ => norm_nonneg _)
       (Finset.mem_range.2 (Nat.lt_succ_of_le hi))⟩
 

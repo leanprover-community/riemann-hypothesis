@@ -597,7 +597,7 @@ theorem potOf_isPotential (R : AnLogRes P J e) (L : HermLine ι) (hL : IsSmoothH
 theorem logAbsLocInt : LogAbsLocIntStatement := logAbsLocInt'
 
 theorem brIntegrable (R : AnLogRes P J e) (L : Fin e → HermLine ι) (A : HermLine ι) (s : MRing ι)
-    (hP : IsArithVar P (e + 1)) (hL : ∀ j, IsSmoothHerm (L j)) (hA : IsSmoothHerm A)
+    (hL : ∀ j, IsSmoothHerm (L j)) (hA : IsSmoothHerm A)
     (hs : IsSectionOn P A s) :
     MIntegrable R.A (fun j => potOf R (L j)) (fun x => logNorm A s (R.lift x x)) :=
   brIntegrable_of logAbsLocInt R L A s hL hA hs

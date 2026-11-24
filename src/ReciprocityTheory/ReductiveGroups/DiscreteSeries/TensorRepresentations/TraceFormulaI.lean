@@ -90,7 +90,7 @@ theorem tf_sqInt_of_hW {lam : Fin n → ℝ} {H : Type*} [NormedAddCommGroup H] 
       2 (Formalism.REAL.muG ε)) :
     Formalism.MainNotions.S.IsSqIntOn ε (tfClRep σ (closGen E V)) := by
   have hU := tfClRep_isURepOn hgap hσ hD hV hc hVK
-  have hst := closGen_stable hgap hσ hD hV hc hVK
+  have hst := closGen_stable hσ hD hV hc
   set ρ : Formalism.REAL.UJ ε → (closGen E V →L[ℂ] closGen E V) :=
     fun g => tfClRep σ (closGen E V) (Formalism.MainNotions.S.umat g) with hρ
   have hone : ρ 1 = 1 := by

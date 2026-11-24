@@ -55,7 +55,7 @@ namespace GlobalTheory.TwoStepRed
 
 theorem redM_part_eq {D : D7} (S T : HSp D) (βS : GL (Fin S.rank) (EAf D))
     (βT : GL (Fin T.rank) (EAf D)) (P R : Finset (Pl D.host.E)) (e f : AE D)
-    (hP : IsIdemSum e P) (hR : IsIdemSum f R) (hd : Disjoint P R) (x : WO S T)
+    (hR : IsIdemSum f R) (hd : Disjoint P R) (x : WO S T)
     (hx : IsHalf (cA D (e + f)) x) (hN : IsIntM (frMapAdj S T βS βT x)) :
     ∀ PP ∈ P, redM PP (frMapAdj S T βS βT (cA D e • x)) = redM PP (frMapAdj S T βS βT x) := by
   intro PP hPP
@@ -80,7 +80,7 @@ theorem redM_part_eq {D : D7} (S T : HSp D) (βS : GL (Fin S.rank) (EAf D))
 
 theorem redM_twoStep : ∀ (D : D7) (S T : HSp D) (βS : GL (Fin S.rank) (EAf D)) (βT : GL (Fin T.rank) (EAf D)) (Pg Q : Finset (Pl D.host.E)) (eg eQ : AE D), IsIdemSum eg Pg → IsIdemSum eQ Q → Disjoint Pg Q → IsIdemSum (eg + eQ) (Pg ∪ Q) → ∀ x : WO S T, IsHalf (cA D (eg + eQ)) x → IsIntM (frMapAdj S T βS βT x) → (∀ PP ∈ Pg, redM PP (frMapAdj S T βS βT (cA D eg • x)) = redM PP (frMapAdj S T βS βT x)) ∧ (∀ PP ∈ Q, redM PP (frMapAdj S T βS βT (cA D eQ • x)) = redM PP (frMapAdj S T βS βT x)) := by
   intro D S T βS βT Pg Q eg eQ hg hQ hd _ x hx hN
-  exact ⟨redM_part_eq S T βS βT Pg Q eg eQ hg hQ hd x hx hN,
-    redM_part_eq S T βS βT Q Pg eQ eg hQ hg hd.symm x (by rwa [add_comm]) hN⟩
+  exact ⟨redM_part_eq S T βS βT Pg Q eg eQ hQ hd x hx hN,
+    redM_part_eq S T βS βT Q Pg eQ eg hg hd.symm x (by rwa [add_comm]) hN⟩
 
 end GlobalTheory.TwoStepRed

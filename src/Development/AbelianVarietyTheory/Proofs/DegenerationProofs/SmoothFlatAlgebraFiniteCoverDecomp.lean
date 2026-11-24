@@ -785,7 +785,6 @@ alias exists_dil := _root_.GlobalTheory.FiniteFieldCountEstimate.main
 
 theorem exists_ext {R B B' S : Type} [CommRing R] [CommRing B] [CommRing B'] [CommRing S] [Algebra R B] [Algebra R B']
     [Algebra R S] (φ : B →ₐ[R] B') (π : R) (I : Ideal B) (hinj : Function.Injective φ)
-    (hden : ∀ b' : B', ∃ (n : ℕ) (b : B), algebraMap R B' π ^ n * b' = φ b)
     (hgen : ∀ Q : B' → Prop, (∀ b, Q (φ b)) → (∀ g ∈ I, ∀ b', algebraMap R B' π * b' = φ g → Q b') →
         (∀ x y, Q x → Q y → Q (x + y)) → (∀ x y, Q x → Q y → Q (x * y)) → ∀ x, Q x)
     (a : B →ₐ[R] S) (hreg : algebraMap R S π ∈ nonZeroDivisors S) (ha : ∀ g ∈ I, algebraMap R S π ∣ a g) :
@@ -887,7 +886,7 @@ theorem dilatation_lowers_defect : ∀ (R : Type) [CommRing R] [IsDomain R] [IsD
   intro R' _ _ a c ha hdef
   obtain ⟨_, _, hirr⟩ := hE R' a ha
   have hreg : algebraMap R R' π ∈ nonZeroDivisors R' := mem_nonZeroDivisors_of_ne_zero hirr.ne_zero
-  obtain ⟨a', ha'⟩ := exists_ext φ π I hinj hden hgen a hreg (fun g hg => (hI g).1 hg R' a ha)
+  obtain ⟨a', ha'⟩ := exists_ext φ π I hinj hgen a hreg (fun g hg => (hI g).1 hg R' a ha)
   refine ⟨a', ha', ?_⟩
   letI := a.toRingHom.toAlgebra
   letI := a'.toRingHom.toAlgebra

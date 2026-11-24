@@ -127,7 +127,7 @@ theorem continuous_sm_of_ker : ∀ (K : Type) [Field K] [NumberField K] (n : ℕ
     (hFx x).continuousOn.integrableOn_compact hs
   have e : ∀ x, sm ν β f x = ∫ y in tsupport β, F (x, y) ∂ν := fun x =>
     (setIntegral_eq_integral_of_forall_compl_eq_zero fun y hy => by
-      simp [hFdef, image_eq_zero_of_notMem_tsupport hy]).symm
+      simp [image_eq_zero_of_notMem_tsupport hy]).symm
   rw [continuous_iff_continuousAt]
   intro x₀
   rw [Metric.continuousAt_iff']
@@ -361,7 +361,7 @@ theorem ennreal_sqrt_sq (x : ENNReal) : (x ^ (1/2 : ℝ)) ^ 2 = x := by
   rw [sq]; exact ennreal_sqrt_mul_sqrt x
 
 theorem GlobalTheory.CompanionTheory.Conc.WeightedCauchySchwarzLintegral.sq_lintegral_mul_le.{u_1} :
-    ∀ {X : Type u_1} [inst_h0 : MeasurableSpace X] (ν : MeasureTheory.Measure X) {a b : X → ENNReal}, Measurable a → Measurable b → HPow.hPow (β := ℕ) (∫⁻ (w : X), a w * b w ∂ν) (OfNat.ofNat (nat_lit 2)) ≤ (∫⁻ (w : X), a w ∂ν) * ∫⁻ (w : X), a w * HPow.hPow (β := ℕ) (b w) (OfNat.ofNat (nat_lit 2)) ∂ν := by
+    ∀ {X : Type u_1} [MeasurableSpace X] (ν : MeasureTheory.Measure X) {a b : X → ENNReal}, Measurable a → Measurable b → HPow.hPow (β := ℕ) (∫⁻ (w : X), a w * b w ∂ν) (OfNat.ofNat (nat_lit 2)) ≤ (∫⁻ (w : X), a w ∂ν) * ∫⁻ (w : X), a w * HPow.hPow (β := ℕ) (b w) (OfNat.ofNat (nat_lit 2)) ∂ν := by
   intro X _ ν a b ha hb
   have hf : AEMeasurable (fun w => a w ^ (1/2:ℝ)) ν := (ha.pow_const _).aemeasurable
   have hg : AEMeasurable (fun w => a w ^ (1/2:ℝ) * b w) ν := ((ha.pow_const _).mul hb).aemeasurable
@@ -1309,7 +1309,7 @@ theorem norm_integral_ker_le {K : Type} [Field K] [NumberField K] {n : ℕ}
 theorem uBnd_sm (K : Type) [Field K] [NumberField K] (n : ℕ)
     [MeasurableSpace (archGroup K n)] [BorelSpace (archGroup K n)]
     (ν : Measure (archGroup K n)) [ν.IsHaarMeasure] (β : archGroup K n → ℝ) (ι : Type)
-    (f : ι → AdelicGLn.AdelicGL K n → ℂ) (m : ℕ → ℝ) (hk : Ker ν β) (_hf : ∀ i, Continuous (f i))
+    (f : ι → AdelicGLn.AdelicGL K n → ℂ) (m : ℕ → ℝ) (hk : Ker ν β)
     (hb : UBnd f m) : UBnd (fun i => sm ν β (f i)) m := by
   intro ω hω hsub t₀ Q hQ
   have hQ' : IsCompact (Q * infEmb K n '' tsupport β) :=
@@ -1451,7 +1451,7 @@ theorem step {β : archGroup K n → ℝ} (hβ : Ker ν β) {ι : Type} {f : ι 
       ∀ z, (p i).IsRoot z → ‖z‖ ≤ Real.exp κ') :
     UBnd (fun i => sm ν β (f i)) (Function.update m r (max (m r - 1) κ)) := by
   have hf₁ : UFam (fun i => sm ν β (f i)) := _root_.GlobalTheory.CompanionTheory.Conc.uFam_sm K n ν β ι f hβ hf
-  have hb₁ : UBnd (fun i => sm ν β (f i)) m := _root_.GlobalTheory.CompanionTheory.Conc.uBnd_sm K n ν β ι f m hβ hf.cont hb
+  have hb₁ : UBnd (fun i => sm ν β (f i)) m := _root_.GlobalTheory.CompanionTheory.Conc.uBnd_sm K n ν β ι f m hβ hb
   have hct := _root_.GlobalTheory.CompanionTheory.Conc.ubnd_ctn_step K n ι (fun i => sm ν β (f i)) m r D κ' κ p h0 h1 hf₁ hb₁ hk hp
   have hdiff := _root_.GlobalTheory.CompanionTheory.Conc.diffStepU K n ι f (fun i => sm ν β (f i)) m r h0 h1 hf₁ (fun R => by
     obtain ⟨Q₀, C, hQ₀, hC, h⟩ := _root_.GlobalTheory.CompanionTheory.Conc.sm_lip_of_sq_zero K n ν β hβ R

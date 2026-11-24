@@ -388,7 +388,7 @@ section Fold
 
 variable {E E' : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] [NormedAddCommGroup E'] [NormedSpace ℂ E']
 
-lemma top_smooth (hD : IsOpen D) (c : ℂ) (p q : Fin (mdim k r i)) (f : Mx k r → E)
+lemma top_smooth (c : ℂ) (p q : Fin (mdim k r i)) (f : Mx k r → E)
     (hf : SmoothLev k r i D f) :
     SmoothLev k r i D (Top (EH k r) c (posL k r i p) (posL k r i q) f) := by
   refine sl_add (f := fun g => if posL k r i p = posL k r i q then c • f g else 0) ?_ (eh_smooth p q f hf)
@@ -426,7 +426,7 @@ lemma iteratedOperator_smooth (hD : IsOpen D) (l : List (ℂ × Fin (mdim k r i)
     (f : Mx k r → E) (hf : SmoothLev k r i D f) : SmoothLev k r i D (foldP k r i l f) := by
   induction l with
   | nil => rw [iteratedOperator_nil]; exact hf
-  | cons x l ih => rw [iteratedOperator_cons]; exact top_smooth hD _ _ _ _ ih
+  | cons x l ih => rw [iteratedOperator_cons]; exact top_smooth _ _ _ _ ih
 
 lemma iteratedOperator_congr (hD : IsOpen D) (l : List (ℂ × Fin (mdim k r i) × Fin (mdim k r i)))
     (f f' : Mx k r → E) (h : ∀ x ∈ Glev k r i ∩ D, f x = f' x) :

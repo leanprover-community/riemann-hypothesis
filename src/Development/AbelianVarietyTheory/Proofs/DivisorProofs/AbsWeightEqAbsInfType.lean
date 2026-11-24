@@ -87,7 +87,7 @@ theorem exps_eq_zero {L I : Type} [Field L] [NumberField L] [Fintype I] (φ : I 
   have := congrFun this (Sum.inl i)
   simpa using this
 
-theorem embTau_inj (D : D7) : Function.Injective (Formalism.L2.Host.embTau D) := fun i j h =>
+theorem embTau_inj (D : D7) : Function.Injective (Formalism.L2.Host.embTau D) := fun _ _ h =>
   D.eTau.injective (GlobalTheory.HalfIntChars.embPsi_inj D.host h)
 
 theorem embTau_ne_conj (D : D7) (i j : D.what₂.Tau) :

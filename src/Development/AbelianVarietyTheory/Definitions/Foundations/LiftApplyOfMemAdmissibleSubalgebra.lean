@@ -56,7 +56,7 @@ def admissibleLettersSubalgebra (R : Type) [CommRing R] (N l : ℕ) : Subalgebra
 def SSPotB (N l w : ℕ) (lam : Letter → ℂ) : Prop :=
   ∃ P ∈ admissibleLettersSubalgebra ℂ N l, FreeAlgebra.lift ℂ lam P = 1 ∧ ∀ F ∈ Pot ℂ w (Gam N l), ∀ T : Letter, admitted N l T →
     (opL ℂ N l T - lam T • (1 : Module.End ℂ (ℂ → MvPolynomial (Fin 2) ℂ)))
-      (FreeAlgebra.lift ℂ (opL ℂ N l) P F) ∈ Triv ℂ w (Gam N l)
+      (FreeAlgebra.lift ℂ (opL ℂ N l) P F) ∈ Triv ℂ (Gam N l)
 
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ}
 

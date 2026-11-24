@@ -302,7 +302,7 @@ theorem isPrim_of_isPartOfBasis {v : Fin m → balForms bar X} (h : IsPartOfBasi
 
 omit [Module.Finite O X] in
 theorem eq_of_isPrim {x y : LinearMap.BilinForm ℤ X} (hx : x ∈ balForms bar X) (hy : y ∈ balForms bar X)
-    (px : IsPrim bar ⟨x, hx⟩) (py : IsPrim bar ⟨y, hy⟩) {k n : ℕ} (hk : 0 < k) (hn : 0 < n)
+    (px : IsPrim bar ⟨x, hx⟩) (py : IsPrim bar ⟨y, hy⟩) {k n : ℕ} (hk : 0 < k)
     (h : (k : ℤ) • x = (n : ℤ) • y) : x = y := by
   have hg : 0 < Nat.gcd k n := Nat.gcd_pos_of_pos_left _ hk
   have hc : Nat.Coprime (k / Nat.gcd k n) (n / Nat.gcd k n) := Nat.coprime_div_gcd_div_gcd hg
@@ -742,7 +742,7 @@ theorem onModule (hD : ∀ (X : Type) [AddCommGroup X] [Module O X] [Module.Fini
     · refine Set.Finite.subset (hS0f.biUnion (t := fun β₀ => {β | ∃ h : β ∈ balForms bar X, IsPrim bar ⟨β, h⟩ ∧
         ∃ k n : ℕ, 0 < k ∧ 0 < n ∧ (k : ℤ) • β₀ = (n : ℤ) • β}) fun β₀ _ => Set.Subsingleton.finite ?_) ?_
       · rintro x ⟨hx, px, k, n, hk, hn, hkn⟩ y ⟨hy, py, k', n', hk', hn', hkn'⟩
-        refine eq_of_isPrim hx hy px py (k := k' * n) (n := k * n') (Nat.mul_pos hk' hn) (Nat.mul_pos hk hn') ?_
+        refine eq_of_isPrim hx hy px py (k := k' * n) (n := k * n') (Nat.mul_pos hk' hn) ?_
         calc ((k' * n : ℕ) : ℤ) • x = (k' : ℤ) • ((n : ℤ) • x) := by rw [smul_smul, Nat.cast_mul]
           _ = (k' : ℤ) • ((k : ℤ) • β₀) := by rw [hkn]
           _ = (k : ℤ) • ((k' : ℤ) • β₀) := by rw [smul_smul, smul_smul, mul_comm]
@@ -787,7 +787,7 @@ theorem onModule (hD : ∀ (X : Type) [AddCommGroup X] [Module O X] [Module.Fini
     have hxy : γ i = γ j := by
       refine eq_of_isPrim (hγ.mem i) (hγ.mem j) (isPrim_of_isPartOfBasis hγ.basis i)
         (isPrim_of_isPartOfBasis hγ.basis j) (k := kj * ni) (n := ki * nj) (Nat.mul_pos hkj hni)
-        (Nat.mul_pos hki hnj) ?_
+        ?_
       calc ((kj * ni : ℕ) : ℤ) • γ i = (kj : ℤ) • ((ni : ℤ) • γ i) := by rw [smul_smul, Nat.cast_mul]
         _ = (kj : ℤ) • ((ki : ℤ) • δ li) := by rw [hi]
         _ = (ki : ℤ) • ((kj : ℤ) • δ li) := by rw [smul_smul, smul_smul, mul_comm]

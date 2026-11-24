@@ -63,8 +63,8 @@ abbrev PfC (p : ℕ) (R : Type) [CommRing R] : Type 1 := ObjectProperty.FullSubc
 def tensF (p : ℕ) (R : Type) [CommRing R] (N : Type) [AddCommGroup N] [Module R N] : PfC p R ⥤ ModuleCat.{0} R where
   obj A := ModuleCat.of R (N ⊗[R] A.obj)
   map f := ModuleCat.ofHom (f.hom.hom.toLinearMap.lTensor N)
-  map_id A := ModuleCat.hom_ext (TensorProduct.ext' fun _ _ => rfl)
-  map_comp f g := ModuleCat.hom_ext (TensorProduct.ext' fun _ _ => rfl)
+  map_id _ := ModuleCat.hom_ext (TensorProduct.ext' fun _ _ => rfl)
+  map_comp _ _ := ModuleCat.hom_ext (TensorProduct.ext' fun _ _ => rfl)
 
 variable (l : ℕ) [Fact l.Prime]
 

@@ -67,7 +67,7 @@ def annihilator (ψ : AddChar k Circle) (n : ℕ) (b : k) : AddSubgroup (Fin n �
   neg_mem' := fun {x} hx t ht => by
     rw [dotProduct_neg, mul_neg, AddChar.map_neg_eq_inv, hx t ht, inv_one]
 
-theorem isOpen_annihilator (ψ : AddChar k Circle) (hψ : Continuous ψ) (n : ℕ) (b : k) (hb : b ≠ 0) :
+theorem isOpen_annihilator (ψ : AddChar k Circle) (hψ : Continuous ψ) (n : ℕ) (b : k) :
     IsOpen (annihilator ψ n b : Set (Fin n → k)) := by
   obtain ⟨γ, hγ0, hγ⟩ := GlobalTheory.CharDualMat.exists_ball_trivial ψ hψ
   apply AddSubgroup.isOpen_of_mem_nhds
@@ -148,7 +148,7 @@ theorem isCompact_isOpen_annihilator :
       rw [AddChar.one_apply]
       by_contra hy
       exact h ⟨y, hy⟩)
-  refine ⟨?_, isOpen_annihilator ψ hψ n b hb⟩
+  refine ⟨?_, isOpen_annihilator ψ hψ n b⟩
   exact (isCompact_univ_pi fun _ => IsNonarchimedeanLocalField.isCompact_closedBall k _).of_isClosed_subset
     (isClosed_annihilator ψ hψ n b) (annihilator_subset ψ n b hb y₀ hy)
 

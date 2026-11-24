@@ -1146,7 +1146,7 @@ theorem tendsto_right (hH : HermRepUnram) (hLI : LIStat) (hK : Formalism.Hermiti
 end Step
 
 theorem massConst_succ (hH : HermRepUnram) (hLI : LIStat) (hK : Formalism.HermitianLatticesTheory.IsCMUnram K)
-    (hF : IsFixF K F) {m : ℕ} (hm : 2 ≤ m) {c : ℝ} (hc0 : 0 < c) (hc : MassConst K F (m - 1) c) :
+    (hF : IsFixF K F) {m : ℕ} (hm : 2 ≤ m) {c : ℝ} (hc : MassConst K F (m - 1) c) :
     MassConst K F m (c * Formalism.HermitianLatticesTheory.massRatioRightSide K m) := by
   unfold MassConst
   intro V _ _ _ _ _ h L hs hd hfin hL hLi

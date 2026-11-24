@@ -471,16 +471,16 @@ private theorem avg {Q N : Type} [Group Q] [Fintype Q] [AddCommGroup N] [Module 
       rw [Equiv.coe_mulLeft, ← Module.End.mul_apply (ξ _), ← map_mul, mul_inv_rev, inv_mul_cancel_right, map_mul,
         Module.End.mul_apply]
 
-private def Tw (_γ : ℂ ≃+* ℂ) (V : Type) : Type := V
+private def Tw (V : Type) : Type := V
 
-private instance (γ : ℂ ≃+* ℂ) (V : Type) [h : AddCommGroup V] : AddCommGroup (Tw γ V) := h
+private instance (γ : ℂ ≃+* ℂ) (V : Type) [h : AddCommGroup V] : AddCommGroup (Tw V) := h
 
-private instance (γ : ℂ ≃+* ℂ) (V : Type) [AddCommGroup V] [Module ℂ V] : Module ℂ (Tw γ V) :=
+private instance (γ : ℂ ≃+* ℂ) (V : Type) [AddCommGroup V] [Module ℂ V] : Module ℂ (Tw V) :=
   Module.compHom V γ.toRingHom
 
 private theorem twist {G : Type} [Group G] [TopologicalSpace G] (γ : ℂ ≃+* ℂ) (σ' : SmIrr G) :
     ∃ (σ : SmIrr G) (f : σ.V ≃+ σ'.V), (∀ (z : ℂ) v, f (z • v) = γ z • f v) ∧ ∀ g v, f (σ.ρ g v) = σ'.ρ g (f v) := by
-  let ρ : Representation ℂ G (Tw γ σ'.V) :=
+  let ρ : Representation ℂ G (Tw σ'.V) :=
     { toFun := fun g =>
         { toFun := fun v => σ'.ρ g v
           map_add' := fun x y => map_add (σ'.ρ g) x y
@@ -488,7 +488,7 @@ private theorem twist {G : Type} [Group G] [TopologicalSpace G] (γ : ℂ ≃+* 
       map_one' := LinearMap.ext fun v => LinearMap.congr_fun (map_one σ'.ρ) v
       map_mul' := fun a b => LinearMap.ext fun v => LinearMap.congr_fun (map_mul σ'.ρ a b) v }
   obtain ⟨h0, h⟩ := (isIrreducible_iff _).1 σ'.irred
-  refine ⟨⟨Tw γ σ'.V, ρ, σ'.smooth, (isIrreducible_iff _).2 ⟨h0, fun W hW => ?_⟩⟩, AddEquiv.refl _, fun _ _ => rfl,
+  refine ⟨⟨Tw σ'.V, ρ, σ'.smooth, (isIrreducible_iff _).2 ⟨h0, fun W hW => ?_⟩⟩, AddEquiv.refl _, fun _ _ => rfl,
     fun _ _ => rfl⟩
   let W' : Submodule ℂ σ'.V :=
     { carrier := W.carrier

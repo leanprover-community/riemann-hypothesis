@@ -115,7 +115,7 @@ section -- clump:auto
 namespace GlobalTheory
 
 theorem semilinear_fixed_span (L : Type) [Field L] (s : L ≃+* L) (r : ℕ) (hr : 0 < r)
-    (hsr : ∀ x, (⇑s)^[r] x = x) (hsi : ∀ i, 0 < i → i < r → ∃ x, (⇑s)^[i] x ≠ x)
+    (hsi : ∀ i, 0 < i → i < r → ∃ x, (⇑s)^[i] x ≠ x)
     (V : Type) [AddCommGroup V] [Module L V] [FiniteDimensional L V] (F : V →+ V)
     (hF : ∀ (a : L) (v : V), F (a • v) = s a • F v) (hFr : ∀ v, (⇑F)^[r] v = v) :
     Submodule.span L {v | F v = v} = ⊤ := by
@@ -338,7 +338,7 @@ theorem hilbert90_frobenius_tensor_unramified_padic : ∀ (p : ℕ) [Fact p.Prim
     rw [hFi, hτr, AlgEquiv.symm_apply_apply]
   have hsr : ∀ x, (⇑s)^[r] x = x := fun x => padicUnramifiedFrobenius_iterate_degree_apply_eq p r hr x
   have hsi : ∀ i, 0 < i → i < r → ∃ x, (⇑s)^[i] x ≠ x := fun i h0 h1 => exists_ne_padicUnramifiedFrobenius_iterate_lt_degree p r hr i h0 h1
-  have hspan := GlobalTheory.semilinear_fixed_span (Qr p r) s r hr hsr hsi (Qr p r ⊗[ℚ_[p]] B) F hF hFr
+  have hspan := GlobalTheory.semilinear_fixed_span (Qr p r) s r hr hsi (Qr p r ⊗[ℚ_[p]] B) F hF hFr
 
   have hkey : ∀ m : Ideal (B ⊗[ℚ_[p]] Qr p r), m.IsMaximal → ∃ w ∈ W, w ∉ m := by
     intro m hm

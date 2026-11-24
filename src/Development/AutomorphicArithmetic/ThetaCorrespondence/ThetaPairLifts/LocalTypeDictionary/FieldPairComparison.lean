@@ -448,7 +448,7 @@ theorem bigN_le {D : D7} {large₂ : SizeData₂ D} (hs : GlobalTheory.Indefinit
   push_cast at this
   linarith
 
-theorem log_prod_le {ι : Type} [Fintype ι] (a : ι → ℝ) (c : ℝ) (h0 : ∀ i, 0 ≤ a i) (hc : 0 ≤ c)
+theorem log_prod_le {ι : Type} [Fintype ι] (a : ι → ℝ) (c : ℝ) (hc : 0 ≤ c)
     (h : ∀ i, Real.log (a i) ≤ c) : Real.log (∏ i, a i) ≤ Fintype.card ι * c := by
   by_cases hz : ∃ i, a i = 0
   · obtain ⟨i, hi⟩ := hz
@@ -512,7 +512,7 @@ theorem GlobalTheory.InfSize.main : ∃ CF0 : ℝ, ∀ CF : ℝ, CF0 ≤ CF → 
       _ ≤ 5 * (bigN D : ℝ) * B * (c2 * Real.log large₂.sc.b) := by gcongr
       _ = 5 * c * c2 * (bigN D : ℝ) * large₂.sc.b * Real.log large₂.sc.b := by rw [hB]; ring
   have h0 : 0 ≤ 5 * c * c2 * (bigN D : ℝ) * large₂.sc.b * Real.log large₂.sc.b := by positivity
-  refine (log_prod_le _ _ (fun τ => sq_nonneg _) h0 hτ).trans (le_of_eq ?_)
+  refine (log_prod_le _ _ h0 hτ).trans (le_of_eq ?_)
   rw [D.what₂.card_Tau]
   ring
 end -- clump:auto

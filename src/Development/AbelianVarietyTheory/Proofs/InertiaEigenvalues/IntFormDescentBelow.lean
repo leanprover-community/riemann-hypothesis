@@ -125,7 +125,6 @@ theorem locBasis_of_bounded {F : Type} [Field F] [NumberField F] (p : HeightOneS
     (d : ℕ) (M : Set (Fin d → F)) (h0 : (0 : Fin d → F) ∈ M)
     (hadd : ∀ x ∈ M, ∀ y ∈ M, x + y ∈ M)
     (hsmul : ∀ a : F, p.valuation F a ≤ 1 → ∀ x ∈ M, a • x ∈ M)
-    (hstd : ∀ i, Pi.single i 1 ∈ M)
     (hbd : ∃ D : F, D ≠ 0 ∧ ∀ x ∈ M, ∀ i, p.valuation F (D * x i) ≤ 1) :
     ∃ (m : ℕ) (b : Fin m → Fin d → F), (∀ k, b k ∈ M) ∧
       (∀ x ∈ M, ∃ a : Fin m → F, (∀ k, p.valuation F (a k) ≤ 1) ∧ x = ∑ k, a k • b k) ∧
@@ -1320,7 +1319,6 @@ theorem exists_local_basis {F : Type} [Field F] [NumberField F] (p : HeightOneSp
   obtain ⟨m, b, hbM, hbsp, hbli⟩ := _root_.GlobalTheory.locBasis_of_bounded p _ S (by show Int (e 0); rw [map_zero]; exact h0)
     (fun x hx y hy => by show Int (e (x + y)); rw [map_add (f := _)]; exact hadd _ _ hx hy)
     (fun a ha x hx => by show Int (e (a • x)); rw [map_smul]; exact hsmul _ _ ha hx)
-    (fun i => by show Int (e _); rw [hsingle]; exact hκ i)
     ⟨algebraMap (𝓞 F) F d, (map_ne_zero_iff _ (IsFractionRing.injective _ _)).2 (nonZeroDivisors.coe_ne_zero d),
       fun x hx i => by
         obtain ⟨o, ho, hxo⟩ := hgen (e x) (heC x) hx

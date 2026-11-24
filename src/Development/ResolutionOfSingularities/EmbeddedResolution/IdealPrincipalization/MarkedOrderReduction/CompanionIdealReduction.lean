@@ -214,7 +214,7 @@ theorem isMonomialSplitting_controlledTransform_of_le_length (hG : Principalizat
         have : AlgebraicGeometry.Smooth (MarkedSequenceOfBlowups.projectionToSpec t (n + 1)) :=
           MarkedSequenceOfBlowups.smooth_projectionToSpec hECNC hT' t (n + 1) hn
         have : AlgebraicGeometry.IsNoetherian (t.schemeAt (n + 1)) :=
-          MarkedSequenceOfBlowups.isNoetherian_schemeAt hECNC hT' t (n + 1) hn
+          MarkedSequenceOfBlowups.isNoetherian_schemeAt hT' t (n + 1) hn
         have hsmn : AlgebraicGeometry.Smooth
             ((t.center n).subschemeι ≫ MarkedSequenceOfBlowups.projectionToSpec t n) := by
           rw [MarkedSequenceOfBlowups.projectionToSpec_eq]
@@ -280,8 +280,8 @@ theorem isMonomialSplitting_controlledTransform_of_le_length (hG : Principalizat
             Blowup.exceptionalIdeal (t.transitionMapSucc n) (t.center n) ^ T.mult * Cc
               = (MarkedSequenceOfBlowups.controlledMonomialTransform t M T.mult s n).comap (t.transitionMapSucc n) *
                 Blowup.exceptionalIdeal (t.transitionMapSucc n) (t.center n) ^ s :=
-          exists_exceptionalIdeal_pow_mul_eq_comap_mul_pow hG _ hTn (t.center n) hsmn hsncn _
-            (t.transitionMapSucc n) hbl _ _ _ T.mult s ih2 hZP hZord _ hPtw' _ hAtw'
+          exists_exceptionalIdeal_pow_mul_eq_comap_mul_pow _ hTn (t.center n) hsncn _
+            (t.transitionMapSucc n) hbl _ _ _ T.mult s ih2 hZP hZord _ _
         have hCtw : t.exceptionalDivisor n ^ T.mult * MarkedSequenceOfBlowups.controlledMonomialTransform t M T.mult s (n + 1)
             = (MarkedSequenceOfBlowups.controlledMonomialTransform t M T.mult s n).comap (t.transitionMapSucc n) *
               t.exceptionalDivisor n ^ s := by
@@ -371,7 +371,7 @@ theorem exists_exceptionalDivisor_pow_mul_eq_comap_of_lt_length (hG : Principali
   have hsmooth : AlgebraicGeometry.Smooth (t.projectionToSpec i) :=
     MarkedSequenceOfBlowups.smooth_projectionToSpec hECNC hadm t i (le_of_lt hi)
   have hnoeth : AlgebraicGeometry.IsNoetherian (t.schemeAt (i + 1)) :=
-    MarkedSequenceOfBlowups.isNoetherian_schemeAt hECNC hadm t (i + 1) hi
+    MarkedSequenceOfBlowups.isNoetherian_schemeAt hadm t (i + 1) hi
   obtain ⟨hideal_i, hsplit_i, hord_i⟩ :=
     isMonomialSplitting_controlledTransform_of_le_length hG hT hsplit hs hord t i (le_of_lt hi)
   have hexc : t.exceptionalDivisor i = Blowup.exceptionalIdeal (t.transitionMapSucc i) (t.center i) := by
@@ -416,12 +416,12 @@ theorem exists_exceptionalDivisor_pow_mul_eq_comap_of_lt_length (hG : Principali
     (MarkedSequenceOfBlowups.controlledTransform t T.ideal T.mult i) T.mult hbl hPle
   obtain ⟨A', hA', -⟩ := existsUnique_pow_mul_eq_comap_of_isBlowupAlongIdealSheaf (t.transitionMapSucc i) (t.center i)
     (MarkedSequenceOfBlowups.controlledNonMonomialTransform t N s i) s hbl hAle
-  obtain ⟨C', hC'⟩ := exists_exceptionalIdeal_pow_mul_eq_comap_mul_pow hG _ hlevel
-    (t.center i) hsm hsncc (t.schemeAt (i + 1)) (t.transitionMapSucc i) hbl
+  obtain ⟨C', hC'⟩ := exists_exceptionalIdeal_pow_mul_eq_comap_mul_pow _ hlevel
+    (t.center i) hsncc (t.schemeAt (i + 1)) (t.transitionMapSucc i) hbl
     (MarkedSequenceOfBlowups.controlledTransform t T.ideal T.mult i)
     (MarkedSequenceOfBlowups.controlledMonomialTransform t M T.mult s i)
     (MarkedSequenceOfBlowups.controlledNonMonomialTransform t N s i) T.mult s hsplit_i hZP
-    (fun x hx => (key x hx).1) B' hB' A' hA'
+    (fun x hx => (key x hx).1) B' A'
   refine ⟨fun x hx => (key x hx).1, hZP, ⟨B', ?_⟩, ⟨A', ?_⟩, ⟨C', ?_⟩⟩
   · rw [hexc]
     exact hB'
@@ -541,7 +541,7 @@ theorem orderAt_companionIdeal_le (hG : PrincipalizationGeometryHypotheses.{u}) 
     ∀ x : ↥(s.obj s.length),
       orderAt (companionIdeal T s) x ≤ ((T.mult * maxOrderNonMonomialOnOrderLocus T s : ℕ) : ℕ∞) := by
   have hs : 1 ≤ maxOrderNonMonomialOnOrderLocus T s := (companionIdealReductionContinues_iff T s).mp hcont
-  have hT' : (tripleAtLength T s (s.ideal s.length) T.mult).IsAdmissible := isAdmissible_tripleAtLength hG hT s
+  have hT' : (tripleAtLength T s (s.ideal s.length) T.mult).IsAdmissible := isAdmissible_tripleAtLength hT s
   have hord := orderAt_lastNonMonomialPart_le_maxOrderNonMonomialOnOrderLocus hG hT s
   intro x
   exact (isAdmissible_withIdealAndMult_pow_sup_pow hT' hs hord).2 x
@@ -549,7 +549,7 @@ theorem orderAt_companionIdeal_le (hG : PrincipalizationGeometryHypotheses.{u}) 
 theorem companionTriple_isAdmissible (hG : PrincipalizationGeometryHypotheses.{u}) {T : MarkedIdealWithBoundary.{u}} (hT : T.IsAdmissible)
     (s : MarkedBlowupSequenceData T.structMap T.ideal T.mult T.boundary) (hcont : CompanionIdealReductionContinues T s) :
     (companionTriple T s).IsAdmissible := by
-  have h1 : (tripleAtLength T s (s.ideal s.length) T.mult).IsAdmissible := isAdmissible_tripleAtLength hG hT s
+  have h1 : (tripleAtLength T s (s.ideal s.length) T.mult).IsAdmissible := isAdmissible_tripleAtLength hT s
   have hv : 1 ≤ maxOrderNonMonomialOnOrderLocus T s := (companionIdealReductionContinues_iff T s).mp hcont
   exact (isAdmissible_withIdealAndMult_pow_sup_pow h1 hv
     (orderAt_lastNonMonomialPart_le_maxOrderNonMonomialOnOrderLocus hG hT s)).1
@@ -562,7 +562,7 @@ theorem isMarked_seqAtEnd_companionIdeal (hG : PrincipalizationGeometryHypothese
             (tripleAtLength_dim_le hG hT s _ _))).toBlowupSequenceData.IsMarked
       (s.proj s.length ≫ T.structMap) (s.ideal s.length) T.mult (s.boundary s.length) := by
   have hs : 1 ≤ maxOrderNonMonomialOnOrderLocus T s := (companionIdealReductionContinues_iff T s).mp hcont
-  have hT' : (tripleAtLength T s (s.ideal s.length) T.mult).IsAdmissible := isAdmissible_tripleAtLength hG hT s
+  have hT' : (tripleAtLength T s (s.ideal s.length) T.mult).IsAdmissible := isAdmissible_tripleAtLength hT s
   have hsplit := isMonomialSplitting_lastNonMonomialPart hG hT s
   have hord := orderAt_lastNonMonomialPart_le_maxOrderNonMonomialOnOrderLocus hG hT s
   exact isMarked_ofMarkedSequence_of_isMonomialSplitting hG hT' hsplit hs hord
@@ -680,7 +680,7 @@ theorem maxOrderNonMonomialOnOrderLocus_extendByCompanionIdeal_lt (hG : Principa
   have hs1 : 1 ≤ maxOrderNonMonomialOnOrderLocus T s := (companionIdealReductionContinues_iff T s).mp hcont
   have ht : 0 < (continuationByCompanionIdeal hG hT A s hcont).length :=
     seqAtEnd_companionIdeal_length_pos hG hspec hT hdim s hcont
-  have hT2 : (tripleAtLength T s (s.ideal s.length) T.mult).IsAdmissible := isAdmissible_tripleAtLength hG hT s
+  have hT2 : (tripleAtLength T s (s.ideal s.length) T.mult).IsAdmissible := isAdmissible_tripleAtLength hT s
   have hsplit := isMonomialSplitting_lastNonMonomialPart hG hT s
   have hord := orderAt_lastNonMonomialPart_le_maxOrderNonMonomialOnOrderLocus hG hT s
   have hboundaryEq : (continuationByCompanionIdeal hG hT A s hcont).boundary (continuationByCompanionIdeal hG hT A s hcont).length
@@ -725,7 +725,7 @@ theorem maxOrderNonMonomialOnOrderLocus_extendByCompanionIdeal_lt (hG : Principa
         (maxOrderNonMonomialOnOrderLocus T s) (companionIdealPrincipalizationSeq hG hT A s).length) := by
     rw [hboundaryEq, hidealEq]
     exact hsp
-  have hT' := isAdmissible_tripleAtLength hG hT2 (continuationByCompanionIdeal hG hT A s hcont)
+  have hT' := isAdmissible_tripleAtLength hT2 (continuationByCompanionIdeal hG hT A s hcont)
   have hNM0 := hG.nonMonomialPart_eq_of_isMonomialSplitting _ hT' _ _ hsp'
   have hnonMon : nonMonomialPart
       ((continuationByCompanionIdeal hG hT A s hcont).boundary (continuationByCompanionIdeal hG hT A s hcont).length)
@@ -953,7 +953,7 @@ theorem isLocallyMonomialTriple_tripleAtLength_companionIdealReduction (hG : Pri
     MonomialCenter.IsLocallyMonomialTriple
       (tripleAtLength T (companionIdealReduction hinv T (principalizationOfDimLe T A))
         ((companionIdealReduction hinv T (principalizationOfDimLe T A)).ideal (companionIdealReduction hinv T (principalizationOfDimLe T A)).length) T.mult) := by
-  refine ⟨isAdmissible_tripleAtLength hG hT (companionIdealReduction hinv T (principalizationOfDimLe T A)), ?_⟩
+  refine ⟨isAdmissible_tripleAtLength hT (companionIdealReduction hinv T (principalizationOfDimLe T A)), ?_⟩
   intro x hx
   have hx' : x ∈ orderAtLeastLocus ((companionIdealReduction hinv T (principalizationOfDimLe T A)).ideal
       (companionIdealReduction hinv T (principalizationOfDimLe T A)).length) T.mult := hx

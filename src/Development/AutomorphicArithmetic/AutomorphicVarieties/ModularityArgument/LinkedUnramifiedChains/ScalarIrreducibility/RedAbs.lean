@@ -566,15 +566,15 @@ private theorem one_gen {A B : Type} [CommRing A] [IsDomain A] [CommRing B] [IsD
 end UpperTheory.Reformulated.B.Ra5
 
 theorem UpperTheory.Reformulated.B.Ra5.main_fin :
-    ∀ (A : Type) [inst : CommRing A] [IsDomain A]
-    (s : Finset A) (B : Type) [inst_2 : CommRing B] [IsDomain B] [inst_4 : Algebra B A],
+    ∀ (A : Type) [CommRing A] [IsDomain A]
+    (s : Finset A) (B : Type) [CommRing B] [IsDomain B] [Algebra B A],
     Algebra.adjoin B (↑s : Set A) = ⊤ →
       Function.Injective (⇑(Algebra.algebraMap B A) : B → A) →
         ∀ (a : A),
           a ≠ (0 : A) →
             ∃ (b : B),
               b ≠ (0 : B) ∧
-                ∀ (K : Type) [inst_5 : Field K] [IsAlgClosed K] (y : B →+* K),
+                ∀ (K : Type) [Field K] [IsAlgClosed K] (y : B →+* K),
                   (y : B → K) b ≠ (0 : K) →
                     ∃ (ξ : A →+* K), ξ.comp (Algebra.algebraMap B A) = y ∧ (ξ : A → K) a ≠ (0 : K) := by
   intro A _ _ s
@@ -1418,7 +1418,7 @@ private theorem td_pt {l : ℕ} [Fact l.Prime] (c : Coef l) {F : Fr.Frame l (Res
 
 private theorem max_pt {l : ℕ} [Fact l.Prime] (c : Coef l) {F : Fr.Frame l (ResidueField c.O)} {n : ℕ} (S : Fr.Space c.O F n)
     (ξ : S.A →ₐ[c.O] Qbar l) (h : ∀ a, ‖(ξ : S.A →+* Qbar l) a‖ ≤ 1) : (nx (ξ : S.A →+* Qbar l) h).IsMaximal :=
-  nx_max _ h (zA c S.A) fun t => (ξ.commutes _).trans rfl
+  nx_max _ h (zA c S.A) fun _ => (ξ.commutes _).trans rfl
 
 private theorem dim_up {l : ℕ} [Fact l.Prime] {c : Coef l} [Fr.IsCoef l c.O] {F : Fr.Frame l (ResidueField c.O)} {C₀ n : ℕ}
     (hF : F.Ok C₀) (hn : n = 2 ∨ n = 3) (S : Fr.Space c.O F n) (ξ : S.A →ₐ[c.O] Qbar l) (h : ∀ a, ‖ξ a‖ ≤ 1)

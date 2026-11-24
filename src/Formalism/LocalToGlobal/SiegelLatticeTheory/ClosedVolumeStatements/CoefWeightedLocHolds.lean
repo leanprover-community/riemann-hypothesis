@@ -316,7 +316,7 @@ theorem exists_bruhat_left (μS : Measure G) [SFinite μS] (S : Set G) (hSc : μ
     _ = 1 := ENNReal.mul_inv_cancel hZ0 hZtop
 
 theorem weil_of_bruhat (μG μS : Measure G) [SFinite μG] [μG.IsMulLeftInvariant] [SFinite μS]
-    (S : Set G) (_hS : MeasurableSet S) (hSc : μS Sᶜ = 0)
+    (S : Set G) (hSc : μS Sᶜ = 0)
     (hinv : ∀ t ∈ S, μS.map (fun x => t * x) = μS)
     (hpos : ∀ U : Set G, IsOpen U → (1 : G) ∈ U → 0 < μS U)
     (hfin : ∀ K : Set G, IsCompact K → μS K < ⊤) :
@@ -351,7 +351,7 @@ end Bruhat
 theorem generic_weil_representation : GenWeil := by
   unfold GenWeil
   intro G _ _ _ _ _ _ _ _ μG μS _ _ _ S hS hSc hinv hpos hfin
-  exact weil_of_bruhat μG μS S hS hSc hinv hpos hfin
+  exact weil_of_bruhat μG μS S hSc hinv hpos hfin
 
 end PI.ScMuExists.UnitaryGroupMassFormula
 end -- clump:auto

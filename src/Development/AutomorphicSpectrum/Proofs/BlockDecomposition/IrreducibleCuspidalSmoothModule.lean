@@ -119,7 +119,7 @@ private theorem integral_norm_sq_lemma_4 {α : Type} [MeasurableSpace α] {m : M
 
 private theorem setIntegral_norm_le_lemma_5 {α : Type} [MeasurableSpace α] {m : Measure α} {S : Set α}
     (hS : m S < ∞) (F : Lp ℂ 2 m) :
-    ∫ q in S, ‖F q‖ ∂m ≤ ((∫ q in S, (1 : ℝ) ∂m) + ‖F‖ ^ 2) / 2 := by
+    ∫ q in S, ‖F q‖ ∂m ≤ ((∫ _ in S, (1 : ℝ) ∂m) + ‖F‖ ^ 2) / 2 := by
   haveI : IsFiniteMeasure (m.restrict S) := isFiniteMeasure_restrict.2 hS.ne
   have hsq : Integrable (fun q => ‖F q‖ ^ 2) m := (Lp.memLp F).norm.integrable_sq
   have hint1 : Integrable (fun q => (1 + ‖F q‖ ^ 2) / 2) (m.restrict S) :=

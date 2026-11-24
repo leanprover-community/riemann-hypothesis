@@ -306,7 +306,7 @@ theorem comap_lint (C : Choice X θ) (τ : D.what₂.Tau) {μ : Measure (Formali
   rw [← hE.lintegral_map, hE.map_comap, Measure.restrict_eq_self_of_ae_mem hae]
 
 theorem sigmaFinite_comap (C : Choice X θ) (τ : D.what₂.Tau) {μ : Measure (Formalism.QuantumDeterminants.Mt D.R.k D.R.rS)}
-    [SigmaFinite μ] (hμ : μ {m | Matrix.of m ∉ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk D.R.k D.R.rS)} = 0) :
+    [SigmaFinite μ] :
     SigmaFinite (μ.comap (Tm C τ)) := by
   have hE := Tm_emb C τ
   first

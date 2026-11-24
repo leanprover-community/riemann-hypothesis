@@ -248,7 +248,7 @@ open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions F
 
 
 
-theorem comp_read_on_model : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (hj : InR D j) (hG : GenFrEx (T.Q.Xo j) T.Q.c) (σ : T.Q.c.F →+* ℂ), GoodEmb T.Q.c σ → (∀ Z : Comp (T.Q.Xo j) T.Q.c, ∃ k : (T.U j σ).Comp, ∀ (u : WeightFamilies.Wt D j) (F : (recB h.toLawsCore).Cusp j u), evC hG Z F.1 = 0 ↔ ∀ x ∈ ((T.U j σ).X k).dom, rdU (T.U j σ) F.1 k x = 0) ∧ ∀ k : (T.U j σ).Comp, ∃ Z : Comp (T.Q.Xo j) T.Q.c, ∀ (u : WeightFamilies.Wt D j) (F : (recB h.toLawsCore).Cusp j u), evC hG Z F.1 = 0 ↔ ∀ x ∈ ((T.U j σ).X k).dom, rdU (T.U j σ) F.1 k x = 0 := by
+theorem comp_read_on_model : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (_ : InR D j) (hG : GenFrEx (T.Q.Xo j) T.Q.c) (σ : T.Q.c.F →+* ℂ), GoodEmb T.Q.c σ → (∀ Z : Comp (T.Q.Xo j) T.Q.c, ∃ k : (T.U j σ).Comp, ∀ (u : WeightFamilies.Wt D j) (F : (recB h.toLawsCore).Cusp j u), evC hG Z F.1 = 0 ↔ ∀ x ∈ ((T.U j σ).X k).dom, rdU (T.U j σ) F.1 k x = 0) ∧ ∀ k : (T.U j σ).Comp, ∃ Z : Comp (T.Q.Xo j) T.Q.c, ∀ (u : WeightFamilies.Wt D j) (F : (recB h.toLawsCore).Cusp j u), evC hG Z F.1 = 0 ↔ ∀ x ∈ ((T.U j σ).X k).dom, rdU (T.U j σ) F.1 k x = 0 := by
   intro D T h j hj hG σ hσ
   have hU : Formalism.L2.PjFree.IsUnf (Formalism.L2.PjFree.Unf.ofPj (T.U j σ)) := h.unf j hj σ hσ
   have hs : ∀ (u : WeightFamilies.Wt D j) (F : (recB h.toLawsCore).Cusp j u),

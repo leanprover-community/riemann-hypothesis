@@ -388,8 +388,8 @@ def antiPart : GlobalTheory.BalRank.balBil H.bar X →ₗ[ℤ] balForms H.bar X 
 
 def symIncl : balForms H.bar X →ₗ[ℤ] GlobalTheory.BalRank.balBil H.bar X where
   toFun s := ⟨s.1, s.2.2⟩
-  map_add' s t := rfl
-  map_smul' n t := rfl
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
 
 def rtPart : balForms H.bar X →ₗ[ℤ] GlobalTheory.BalRank.balBil H.bar X where
   toFun t := ⟨t.1 ∘ₗ rtMul H X, comp_rt_mem_balBil t.2.2⟩

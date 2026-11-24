@@ -235,7 +235,7 @@ theorem two_unit (c : Coef l) (hl : l ≠ 2) : IsUnit (2 : c.O) := by
     exact Ideal.sub_mem _ (Ideal.mul_mem_right _ _ h2) hlm
   exact (maximalIdeal.isMaximal c.O).ne_top ((Ideal.eq_top_iff_one _).2 h1)
 
-theorem res_inj (K' : IntermediateField ℚ Ω) : Function.Injective (resQ K') := fun a b h =>
+theorem res_inj (K' : IntermediateField ℚ Ω) : Function.Injective (resQ K') := fun _ _ h =>
   AlgEquiv.ext fun x => DFunLike.congr_fun h x
 
 theorem setup (K' : IntermediateField ℚ Ω) [NumberField K'] (hK : Module.finrank ℚ K' = 2) :

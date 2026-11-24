@@ -280,7 +280,7 @@ theorem mono_lt {a C ρ₁ ρ₂ ρ : ℝ} {n : ℕ} {e : ℤ} (h1 : 0 < ρ₁) 
   · have c2 := red ρ₂ hρ2 b2
     exact lt_of_lt_of_le (mul_lt_mul_of_pos_left (zpow_lt_zpow_left₀ hpos hρ.le hr) ha) c2
 
-theorem iSup_lt {d : ℕ → ℝ} {ρ T : ℝ} (h0 : ∀ n, 0 ≤ d n) (h1 : ∀ n, d n ≤ 1) (hρ : 0 < ρ) (hρ1 : ρ < 1)
+theorem iSup_lt {d : ℕ → ℝ} {ρ T : ℝ} (h1 : ∀ n, d n ≤ 1) (hρ : 0 < ρ) (hρ1 : ρ < 1)
     (hT : 0 < T) (h : ∀ n, d n * ρ ^ n < T) : (⨆ n, d n * ρ ^ n) < T := by
   obtain ⟨M, hM⟩ := exists_pow_lt_of_lt_one hT hρ1
   obtain ⟨i, -, hi⟩ := Finset.exists_max_image (Finset.range (M + 1)) (fun n => d n * ρ ^ n)
@@ -311,7 +311,7 @@ theorem lead (c : ℕ → ℝ) (h0 : ∀ n, 0 ≤ c n) (h1 : ∀ n, c n ≤ 1) {
     intro ρ hρ d hd0 hdc hde
     have hρ0 : 0 < ρ := hρ₁.trans hρ.1
     have hρ1 : ρ < 1 := hρ.2.trans hρ₂
-    refine iSup_lt hd0 (fun n => (hdc n).trans (h1 n)) hρ0 hρ1 (mul_pos hC (zpow_pos hρ0 e)) fun n => ?_
+    refine iSup_lt (fun n => (hdc n).trans (h1 n)) hρ0 hρ1 (mul_pos hC (zpow_pos hρ0 e)) fun n => ?_
     by_cases hn : (n : ℤ) = e
     · rw [← hn, zpow_natCast]
       exact mul_lt_mul_of_pos_right (hde n hn) (pow_pos hρ0 n)

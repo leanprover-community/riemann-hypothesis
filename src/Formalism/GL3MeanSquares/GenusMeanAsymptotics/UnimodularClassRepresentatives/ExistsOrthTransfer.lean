@@ -111,7 +111,7 @@ theorem sd_main (hS : IsHermSemilocal S) (hπ : IsUnif S π) (hs : h.IsSymm)
 
 theorem exists_orth_transfer (hd : ∀ x, h x x = 0 → x = 0) {W₁ W₂ : Submodule K V}
     {ψ : V ≃ₗ[K] V} (hψ : ∀ a b, h (ψ a) (ψ b) = h a b) (hW : ∀ v ∈ W₁, ψ v ∈ W₂) {z₁ z₂ ξ : V}
-    (hz₁ : z₁ ∈ W₁) (hz₁0 : z₁ ≠ 0) (hz₂ : z₂ ∈ W₂) (hz₂0 : z₂ ≠ 0) (hξ : ξ ∈ W₁) (hξ0 : ξ ≠ 0)
+    (hz₁ : z₁ ∈ W₁) (hz₁0 : z₁ ≠ 0) (hξ : ξ ∈ W₁) (hξ0 : ξ ≠ 0)
     (hzξ : h z₁ ξ = 0) : ∃ η ∈ W₂, η ≠ 0 ∧ h z₂ η = 0 := by
   have ha : ψ z₁ ∈ W₂ := hW z₁ hz₁
   have hb : ψ ξ ∈ W₂ := hW ξ hξ
@@ -224,7 +224,7 @@ theorem asd_main (hS : IsHermSemilocal S) (hπ : IsUnif S π) (hs : h.IsSymm)
     by_cases h1 : ∃ ξ ∈ W₁, ξ ≠ 0 ∧ h z₁ ξ = 0
     · obtain ⟨ξ, hξ, hξ0, hzξ⟩ := h1
       obtain ⟨η, hη, hη0, hzη⟩ := exists_orth_transfer hd hφ' (fun v hv => (hW v).mp hv)
-        (hM.le _ hM.z_mem) hM.z_ne (hN.le _ hN.z_mem) hN.z_ne hξ hξ0 hzξ
+        (hM.le _ hM.z_mem) hM.z_ne hξ hξ0 hzξ
       obtain ⟨x, hx, hu⟩ := hM.exists_unit_norm hS hπ hs hd hξ hξ0 hzξ
       obtain ⟨w₀, hw₀, hw₀u⟩ := hN.exists_unit_norm hS hπ hs hd hη hη0 hzη
       obtain ⟨X, hX, hXu⟩ := hN.exists_norm hS hπ hs hd ((hW x).mp (hM.le x hx)) hu (hφ' x x)
@@ -246,6 +246,6 @@ theorem asd_main (hS : IsHermSemilocal S) (hπ : IsUnif S π) (hs : h.IsSymm)
         rw [← hφ', φ.apply_symm_apply, φ.apply_symm_apply]
       exact exists_orth_transfer hd hsym
         (fun v hv => by rw [hW, φ.apply_symm_apply]; exact hv)
-        (hN.le _ hN.z_mem) hN.z_ne (hM.le _ hM.z_mem) hM.z_ne hη hη0 hzη
+        (hN.le _ hN.z_mem) hN.z_ne hη hη0 hzη
 
 end Formalism.HermitianLattices.Ext.L3.U0

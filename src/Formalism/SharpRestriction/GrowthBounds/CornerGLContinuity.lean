@@ -102,7 +102,7 @@ def OrbitFrames (n' : ℕ) [NeZero n'] (TT : Finset (Fin n')) (r L₁ L₂ u G' 
 
 def SegmentCountBounds (n' N G' N₁ : ℕ) : Prop := n' ≤ N * G' ∧ N * G' ≤ N₁ * (n' + G')
 
-def OrbitPositions (_D : D7) : Prop :=
+def OrbitPositions : Prop :=
   ∀ (n' : ℕ) [NeZero n'] (TT : Finset (Fin n')) (r L₁ L₂ u M₀ G' N₁ : ℕ) (hr : 1 ≤ r),
     OrbitRaw n' TT r L₁ L₂ u M₀ G' N₁ →
     MarkedTileMaxima n' (TT.map Fin.valEmbedding) r u ∧
@@ -112,7 +112,7 @@ def OrbitPositions (_D : D7) : Prop :=
     SegmentCountBounds n' TT.card G' N₁ ∧
     (Even n' → 2 ≤ r → OrbitFrames n' TT r L₁ L₂ u G' N₁)
 
-def OrbitSizeBounds (_D : D7) : Prop :=
+def OrbitSizeBounds : Prop :=
   (∀ (r : ℕ) (h : ℝ), 1 ≤ r → 0 ≤ h → ∃ Ce : ℝ, 0 < Ce ∧ ∀ de x : ℝ, 0 < de → de ≤ 1 → 3 ≤ x →
     (goodG' r de h x : ℝ) ≤ Ce * Real.log x / de ∧ (orbitWindowCount r de h x : ℝ) ≤ Ce * Real.log x ∧
     (orbitWindowCount r de h x : ℝ) ≤ 20 * (goodG' r de h x : ℝ) * de ∧
@@ -121,7 +121,7 @@ def OrbitSizeBounds (_D : D7) : Prop :=
   ∀ eps : ℝ, 0 < eps → eps < 1 / 52 → ∃ x₀ : ℝ, ∀ x : ℝ, x₀ ≤ x → ∀ n' : ℕ, x ^ (eps / 4) ≤ n' →
     3 * goodG' (⌈8 * ((2 + 8 * eps) + 2) / eps⌉₊ + 1) (x ^ (-(eps / 8))) (2 + 8 * eps) x ≤ n'
 
-def OrbitPositionsAndSizeBounds (D : D7) : Prop := OrbitPositions D ∧ OrbitSizeBounds D
+def OrbitPositionsAndSizeBounds (D : D7) : Prop := OrbitPositions ∧ OrbitSizeBounds
 
 def LargeScaleConditions (D : D7) (L : SizeData₂ D) : Prop :=
   L2 D L.sc < goodU L.sc.delta1 ∧
@@ -131,7 +131,7 @@ def LargeScaleConditions (D : D7) (L : SizeData₂ D) : Prop :=
 def EstimatedPrimesExceedScale (D : D7) (L : SizeData₂ D) : Prop :=
   ∀ p : ℕ, p.Prime → IsResidueClassZero D p → L.sc.x ^ (L.sc.ez / 5) < (p : ℝ)
 
-def MertensBound (_D : D7) : Prop :=
+def MertensBound : Prop :=
   ∀ y : ℝ, 1 ≤ y → ∑ p ∈ (Finset.range ⌈y⌉₊).filter Nat.Prime, Real.log p / p ≤ 2 * Real.log y
 
 
@@ -181,7 +181,7 @@ def LatticeGrowthBound' (D : D7) (L : SizeData₂ D) (X : Inst D L) (Y : LatInst
 
 def MLatticeCond (D : D7) : Prop :=
   ∀ (u : D.what₂.Word) (w : D.what₂.places.Pl) (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)),
-    Formalism.MainNotions.SelectionLemmas.Conclusion1 D (D.gat u w hg)
+    Formalism.MainNotions.SelectionLemmas.Conclusion1 (D.gat u w hg)
 
 def ServiceLatticeCondition (D : D7) (L : SizeData₂ D) (X : Inst D L) (Y : LatInst D) (K : Consts) : Prop :=
   Formalism.MainNotions.FormalGroupSystem.LemmaVVolumeGeneral D L X Y K
@@ -240,7 +240,7 @@ def FamilyWindowLogBound : Prop := ∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, 
 
 def FamilyInertPrimesLarge : Prop := ∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, EstimatedPrimesExceedScale (Fm.D x i) (Fm.L x i)
 
-def FamilyMertensBound : Prop := ∀ x (i : Fm.Ix x), MertensBound (Fm.D x i)
+def FamilyMertensBound : Prop := ∀ x (i : Fm.Ix x), MertensBound
 
 def FamilyCutSizes : Prop :=
   ∃ C x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, CutSizes (Fm.D x i) (Fm.L x i) (Fm.Gx x i) Fm.GK C

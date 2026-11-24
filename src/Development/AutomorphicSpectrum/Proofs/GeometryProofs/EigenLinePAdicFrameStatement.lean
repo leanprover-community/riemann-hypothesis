@@ -1088,7 +1088,7 @@ theorem comb_single {R : Subring Ω} {g : ℕ} (ℓ : Fin g → Vs) (j : Fin g) 
     comb (R := R) ℓ (Pi.single j 1) = ℓ j := by
   classical
   unfold comb
-  rw [Finset.sum_eq_single j (fun i _ h => by simp [Pi.single_apply, h]) (by simp)]
+  rw [Finset.sum_eq_single j (fun i _ h => by simp [h]) (by simp)]
   simp
 
 theorem exists_comb {R : Subring Ω} {g : ℕ} {ℓ : Fin g → Vs} {v : Vs}
@@ -1621,7 +1621,7 @@ theorem eig_eq : ∀ (E : Type) [Field E] [NumberField E] (K W : Type) [Field K]
   rw [h a]
   rfl
 
-theorem log_end {F : Type} [NormedField F] (M : ℕ) (a : ℤ) (x pp mu : F) (hM : 0 < M) (hx : x ≠ 0) (hp : pp ≠ 0)
+theorem log_end {F : Type} [NormedField F] (M : ℕ) (a : ℤ) (x pp mu : F) (hM : 0 < M)
     (hmu : ‖mu‖ = 1) (h : x ^ M = pp ^ a * mu) : Real.log ‖x‖ = (a / M) * Real.log ‖pp‖ := by
   have h1 := congrArg norm h
   rw [norm_pow, norm_mul, hmu, _root_.mul_one, norm_zpow] at h1
@@ -1903,7 +1903,7 @@ theorem value_at_point : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
   have hκ0 : κ (β ϖ) ≠ 0 := by rw [← hκπ]; exact (map_ne_zero j).2 hβ0
   have hmu : ‖j (algebraMap V K uV)‖ = 1 := norm_eq_one_of _ (j (algebraMap V K (uV⁻¹ : Vˣ))) ((hj _).2 ⟨_, rfl⟩) ((hj _).2 ⟨_, rfl⟩)
     (by rw [← map_mul, ← map_mul, Units.mul_inv, map_one, map_one])
-  have hlog := log_end M a (j (ψ dR)) (κ (β ϖ)) (j (algebraMap V K uV)) hM hx0 hκ0 hmu (by
+  have hlog := log_end M a (j (ψ dR)) (κ (β ϖ)) (j (algebraMap V K uV)) hM hmu (by
     rw [← hκπ, ← map_pow, huV, map_mul, map_zpow₀])
   have hε1 : ‖algebraMap (OCp p) ℂ_[p] ε‖ = 1 := norm_eq_one_of _ (algebraMap (OCp p) ℂ_[p] (ε⁻¹ : (OCp p)ˣ)) ((hnorm _).1 ⟨_, rfl⟩) ((hnorm _).1 ⟨_, rfl⟩)
     (by rw [← map_mul, Units.mul_inv, map_one])

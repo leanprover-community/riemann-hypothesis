@@ -377,7 +377,7 @@ theorem stab_fix_vac : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp 
     rw [h1, Matrix.one_mulVec]
   have single : ∀ v, P v → ∀ y y', InK S LS (· = v) y → InK T LT (· = v) y' → om (y, y') f = f :=
     fun v hv y y' hy hy' => GlobalTheory.VacStabFixed.vacFixedAt D v ψ S T χS χT om hW (hP v hv).2.1 (hP v hv).2.2 LS LT hS hT f
-      hloc.1 (hloc.2 v hv).2 y y' (_root_.GlobalTheory.KStabBridge.inStabAt_of_inK D S LS v y hS hy) (_root_.GlobalTheory.KStabBridge.inStabAt_of_inK D T LT v y' hT hy')
+      hloc.1 (hloc.2 v hv).2 y y' (_root_.GlobalTheory.KStabBridge.inStabAt_of_inK D S LS v y hy) (_root_.GlobalTheory.KStabBridge.inStabAt_of_inK D T LT v y' hy')
   have listS : ∀ l : List (GA D S), (∀ y ∈ l, ∃ v, P v ∧ InK S LS (· = v) y) → om (l.prod, 1) f = f := by
     intro l
     induction l with

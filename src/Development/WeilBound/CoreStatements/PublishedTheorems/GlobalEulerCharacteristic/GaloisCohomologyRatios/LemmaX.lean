@@ -584,9 +584,9 @@ noncomputable def dualIntEquiv (D : Rep.{0} (ULift.{0} ℤ) G) (hD : ∀ d : D, 
     dualRep D (intRep M) ≃+ dualRep (zmodRepOfTorsion ℓ D hD) M where
   toFun f := toZLin D hD M f
   invFun g := ofZLin D hD M g
-  left_inv f := rfl
-  right_inv g := rfl
-  map_add' f g := rfl
+  left_inv _ := rfl
+  right_inv _ := rfl
+  map_add' _ _ := rfl
 
 theorem dualIntEquiv_comm (D : Rep.{0} (ULift.{0} ℤ) G) (hD : ∀ d : D, ℓ • d = 0)
     (M : Rep.{0} (ZMod ℓ) G) (g : G) (f : dualRep D (intRep M)) :

@@ -165,7 +165,7 @@ def EMtTheta (Y : R3.Read (A3 := A3) R.toRealDat F.lv2 X0) (YS : NExpRealS R cG 
         Y.mj.eW i (D.what₂.thetaP (D.what₂.muTw w) (i.1 + 1) (D.what₂.jMt (D.what₂.muTw w) (i.1 + 1) x)) →
       NChoice.thPe D c w (i.1 + 1) (c.eMt w (i.1 + 1) x) =
         ∑ k, c.embW w (a k) ⊗ₜ[D.ntw.O (c.twI w)]
-          (YS.eF (c.twI w) (i.1 + 1) (c.sd w) (by omega) (by omega)).symm ((1 : KB S (c.twI w) (c.sd w)) ⊗ₜ[S.Ks] f k)
+          (YS.eF (c.twI w) (i.1 + 1) (c.sd w) (by omega) (by omega)).symm ((1 : KB (c.twI w)) ⊗ₜ[S.Ks] f k)
 
 end Rows
 

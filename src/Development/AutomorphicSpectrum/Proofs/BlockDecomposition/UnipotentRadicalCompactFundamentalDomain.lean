@@ -94,7 +94,7 @@ theorem compact_mod_near_of_filtration (S₀ : Subring S) (h : S)
         ∀ g, (st g * g = 1 ∧ g * st g = 1) ∧ g - 1 ∈ N 0 →
           ∃ γ ∈ S₀, ((st γ * γ = 1 ∧ γ * st γ = 1) ∧ γ - 1 ∈ N 0) ∧ ∃ k ∈ K', g = γ * k := by
   have h1 : st 1 = 1 := GlobalTheory.TwoStepUnipotent.st_one hm hi
-  have hsh : st h = h := GlobalTheory.TwoStepUnipotent.st_half hm hi hh hc
+  have hsh : st h = h := GlobalTheory.TwoStepUnipotent.st_half hm hi hh
   have hhx : ∀ x, h * x + h * x = x := fun x => by rw [← add_mul, hh, one_mul]
   have hhN : ∀ i, ∀ x ∈ N i, h * x ∈ N i := fun i x hx => by
     have : h * x = p i (h * x) := by

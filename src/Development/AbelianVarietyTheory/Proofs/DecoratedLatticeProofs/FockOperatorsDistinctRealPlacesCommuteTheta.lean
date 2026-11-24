@@ -85,8 +85,7 @@ theorem pure_comm {B : (X → ℂ) → (X → ℂ)} (hadd : ∀ f f', P f → P 
     rw [map_add (f := _), map_add (f := _), Badd _ _ (GlobalTheory.FockIndep.pure_mem hadd hsm hA hf _) (GlobalTheory.FockIndep.pure_mem hadd hsm hA hf _),
       hp, hq]
 
-theorem pure_fun_add (hA : ∀ i f, P f → P (A i f)) (hadd : ∀ f f', P f → P f' → P (f + f'))
-    (hsm : ∀ (a : ℂ) f, P f → P (a • f))
+theorem pure_fun_add (hA : ∀ i f, P f → P (A i f))
     (Aadd : ∀ i f f', P f → P f' → A i (f + f') = A i f + A i f') {f f' : X → ℂ} (hf : P f) (hf' : P f')
     (Q : MvPolynomial ι ℂ) : pureTensorL A (f + f') Q = pureTensorL A f Q + pureTensorL A f' Q := by
   have hl : ∀ l : List ι, l.foldr (fun i g => A i g) (f + f') =
@@ -231,7 +230,7 @@ theorem twoPlace_comm : ∀ (D : D7) (V W : HSp D) (S S' : D.what₂.Tau → SPa
   · symm
     refine pure_comm (B := fun g => pureTensorL (fun k : Fin W.rank × Fin V.rank =>
         aPlus (heisO ψ V W) θ τ' (cplxO (cart M τ') (cart M' τ')) (unitMap (onb M τ') (onb M' τ') k.1 k.2)) g Q)
-      hadd hsm (hA τ) (fun _ _ h h' => pure_fun_add (hA τ') hadd hsm (Aadd τ') h h' Q)
+      hadd hsm (hA τ) (fun _ _ h h' => pure_fun_add (hA τ') (Aadd τ') h h' Q)
       (fun a _ h => pure_fun_smul (hA τ') (Asm τ') a h Q) (fun k g hg => ?_) hF P
     exact (pure_comm hadd hsm (hA τ') (Aadd τ k) (Asm τ k)
       (fun j h hh => aPlus_comm_ne hψ hθ hne _ _ _ _ hh) hg Q).symm

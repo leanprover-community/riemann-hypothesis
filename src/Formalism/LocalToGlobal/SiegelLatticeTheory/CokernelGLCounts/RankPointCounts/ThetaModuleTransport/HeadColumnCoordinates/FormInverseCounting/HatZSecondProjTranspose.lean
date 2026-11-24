@@ -454,7 +454,7 @@ theorem dot_adj {n : Type} [Fintype n] [DecidableEq n] (A D G₁ G₂ : Matrix n
   rw [dotProduct_comm, Matrix.dotProduct_mulVec, ← Matrix.mulVec_transpose, dotProduct_comm, Matrix.mulVec_mulVec,
     h2, ← Matrix.mulVec_mulVec]
 
-theorem gHat_unit (hs : M.split = some g) {T T' : F} {TT : M.R} {Zh : Matrix (Fin (r + 1)) (Fin (r + 1)) E}
+theorem gHat_unit {T T' : F} {TT : M.R} {Zh : Matrix (Fin (r + 1)) (Fin (r + 1)) E}
     {Z Zσ : M.Mat (r + 1)} (h : GHyp M g T T' TT Zh Z Zσ) : IsUnit (gHat g Zh T T').det := by
   have hq := q_ne g
   have hU := gramUnit_split_holds F E M g r T T' TT Zh Z Zσ h
@@ -475,8 +475,8 @@ theorem stepDuF_of (hL : StepLiftG) : StepDuF := by
   have hS₁ := h₁.2.2.2.2.1
   have hS₂ := h₂.2.2.2.2.1
   have hTT := h₁.2.2.1
-  have hG₁ := gHat_unit hs h₁
-  have hG₂ := gHat_unit hs h₂
+  have hG₁ := gHat_unit h₁
+  have hG₂ := gHat_unit h₂
 
   have wl : ∀ (Zh : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (Z : M.Mat (r + 1)),
       Z.Z.map M.R.subtype = HermSp.ZZplusOf M Zh T T' → IsUnit (gHat g Zh T T').det →

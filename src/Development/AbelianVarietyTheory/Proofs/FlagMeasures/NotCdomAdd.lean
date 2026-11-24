@@ -134,7 +134,7 @@ theorem kType_iff : ∀ (n : ℕ) (ε : Fin n → Bool) (H : Type) [NormedAddCom
   have hR : KRel ε E := glRel_kRel ε E hD.1
   have hU : KUnit ε E := isUnitary_kUnit ε E hD.2.1
   have hIrr : KIrr := kIrr_of highestWeightExists_holds
-    (kHiUniq_of compact_lowering_holds compact_weight_orthogonal (kOrth_of compact_lowering_holds compact_weight_orthogonal))
+    (kHiUniq_of compact_lowering_holds (kOrth_of compact_lowering_holds compact_weight_orthogonal))
   have hmc : ∀ S : Submodule ℂ H, S ≤ V → (S.comap V.subtype).map V.subtype = S := by
     intro S hS
     rw [Submodule.map_comap_subtype, inf_eq_right.mpr hS]

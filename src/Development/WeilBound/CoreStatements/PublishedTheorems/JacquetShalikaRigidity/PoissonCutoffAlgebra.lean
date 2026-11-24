@@ -102,7 +102,7 @@ theorem B_ker {ψ : AddChar (Ad E) ℂ} (hψ : StdPsi ψ) (x : Fin k → Ad E) :
       have := h (fun j => algebraMap E (Ad E) ((Pi.single i c : Fin k → E) j)) (algebraMap_mem_vecLattice _)
       have e : (∑ j, (fun j => algebraMap E (Ad E) ((Pi.single i c : Fin k → E) j)) j * x j) =
           x i * algebraMap E (Ad E) c := by
-        rw [Finset.sum_eq_single i (fun j _ hj => by simp [Pi.single_apply, hj])
+        rw [Finset.sum_eq_single i (fun j _ hj => by simp [hj])
           (fun h => absurd (Finset.mem_univ i) h)]
         simp [mul_comm]
       simp only [B] at this

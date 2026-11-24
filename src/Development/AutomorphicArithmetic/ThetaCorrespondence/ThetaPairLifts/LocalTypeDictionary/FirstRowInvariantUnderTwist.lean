@@ -816,7 +816,7 @@ open GlobalTheory.FunObj.Comparison₂
 variable {S κ K : Type} [CommRing S] [CommRing κ] [Field K] [ValuativeRel K] [TopologicalSpace K]
   [IsNonarchimedeanLocalField K] {φ : S →+* κ} {ψ : S →+* K} {r t j a : ℕ} {ea : Ix (Fin r) (Fin t) j ≃ Fin a}
 
-theorem iter_lam_eq {μ : ℕ → Kˣ →* ℂˣ} (hμ : ∀ c, IsTame (μ c)) (h : IsRed φ ψ) (ha : IsIx ea) {χ : ℕ → κˣ →* ℂˣ}
+theorem iter_lam_eq {μ : ℕ → Kˣ →* ℂˣ} (hμ : ∀ c, IsTame (μ c)) (ha : IsIx ea) {χ : ℕ → κˣ →* ℂˣ}
     (hχ : ∀ c, c < j → Compat φ ψ (χ (c + 1)) (μ (c + 1))) (N : Matrix (Fin a) (Fin a) S) {g : GL (Fin a) κ}
     (hg : g ∈ blockTri (blkOf r t)) (hgN : g.val = N.map φ)
     (g' : ((TypeDatum.principal K (Fin r)).iter (Fin t) μ hμ j).J)
@@ -854,7 +854,7 @@ theorem block_triangular_second_diagonal_block_det_eq (ha : IsIx ea) {g : GL (Fi
   refine (Matrix.det_submatrix_equiv_self (Equiv.ofBijective f hf) _).symm.trans ?_
   congr 1
 
-theorem parahoric_lam_eq {δ : Kˣ →* ℂˣ} (hδ : IsTame δ) (h : IsRed φ ψ) (ha : IsIx ea) {χ : κˣ →* ℂˣ}
+theorem parahoric_lam_eq {δ : Kˣ →* ℂˣ} (hδ : IsTame δ) (ha : IsIx ea) {χ : κˣ →* ℂˣ}
     (hχ : Compat φ ψ χ δ) (N : Matrix (Fin a) (Fin a) S) {g : GL (Fin a) κ}
     (hg : g ∈ blockTri (blk2 r)) (hgN : g.val = N.map φ)
     (g' : (parahoric (Fin r) (Fin j × Fin t) δ hδ).J)
@@ -920,7 +920,7 @@ theorem stepType_lam {μ₀ : T} (hL : L.Is μ₀) (t : T) {j n : ℕ} (hj : j �
     rw [hT]
     refine ⟨hk, ?_⟩
     rw [ite_eq_left hP', ite_eq_right hQ', mul_one]
-    exact iter_lam_eq (isTame_muBase w) hred ha (χ := fun c => L.chi c w)
+    exact iter_lam_eq (isTame_muBase w) ha (χ := fun c => L.chi c w)
       (fun c hc => compat_chi w hL hP' (by omega)) N (hP hP') hr ⟨κ, hk⟩ hv
   · by_cases hQ' : w ∈ L.Q t
     · have h0 := isTame_loc (hL.xi_tame t w)
@@ -943,7 +943,7 @@ theorem stepType_lam {μ₀ : T} (hL : L.Is μ₀) (t : T) {j n : ℕ} (hj : j �
       rw [hT]
       refine ⟨hk2, ?_⟩
       rw [ite_eq_right hP', ite_eq_left hQ', one_mul]
-      exact parahoric_lam_eq htame hred ha hχ N (hQ hQ') hr ⟨κ, hk2⟩ hv
+      exact parahoric_lam_eq htame ha hχ N (hQ hQ') hr ⟨κ, hk2⟩ hv
     · have hn : ¬ (w ∈ L.Q t ∧ IsTame ((L.xiH t).loc w)⁻¹) := fun h => hQ' h.1
       have hT : stepType L t w j = TypeDatum.full _ _ := by
         simp only [stepType, ite_eq_right hP', dite_eq_right hn]

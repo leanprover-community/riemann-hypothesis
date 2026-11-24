@@ -53,7 +53,7 @@ namespace GlobalTheory.Dec
 theorem exists_measurable_cutoff_fibre_integral_one (G : Type) [Group G] [TopologicalSpace G]
     [IsTopologicalGroup G] [LocallyCompactSpace G] [SecondCountableTopology G] [T2Space G]
     [MeasurableSpace G] [BorelSpace G] (N : Subgroup G) (ν : Measure G)
-    (_hN : IsClosed (N : Set G)) (hν : IsHaarSub (N : Set G) ν) :
+    (hν : IsHaarSub (N : Set G) ν) :
     ∃ β : G → ENNReal, Measurable β ∧ (∀ y, β y ≠ ⊤) ∧ ∀ y, ∫⁻ m, β (m⁻¹ * y) ∂ν = 1 := by
   classical
   obtain ⟨hne, hfin, hcompl, hinv⟩ := hν

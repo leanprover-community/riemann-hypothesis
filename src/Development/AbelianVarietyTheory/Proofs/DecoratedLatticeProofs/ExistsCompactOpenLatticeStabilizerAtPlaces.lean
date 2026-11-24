@@ -183,7 +183,7 @@ theorem moves_of_levelOpen (S : HSp D) (L : Lat S) (hL : L.FG) (P : Pl D → Pro
   rw [mem_latV_iff S L P y hy, mem_latV_iff S L P _ (supp_mulVec S P g hy), fin_mulVec]
   exact (GlobalTheory.AdelicU.mem_levelOpen_iff_latHat _ _ hL g).1 hg _
 
-theorem keeps_of_core {R : Type} [CommRing R] {n : ℕ} (H : AddSubgroup (Fin n → R)) (e : R) (hee : e * e = e)
+theorem keeps_of_core {R : Type} [CommRing R] {n : ℕ} (H : AddSubgroup (Fin n → R)) (e : R)
     (h1 : ∀ z ∈ H, e • z ∈ H) (h2 : ∀ z ∈ H, (1 - e) • z ∈ H) (M : Matrix (Fin n) (Fin n) R)
     (hN : ∀ i j, e * (M - 1) i j = (M - 1) i j)
     (hcore : ∀ z, e • z ∈ H ↔ M *ᵥ (e • z) ∈ H) (y : Fin n → R) : y ∈ H ↔ M *ᵥ y ∈ H := by
@@ -213,7 +213,6 @@ theorem levelOpen_of_inK (S : HSp D) (L : Lat S) (hL : L.FG) (P : Pl D → Prop)
   have hI := (SetCut.mem_congGrp_iff S _ g).1 hg.1
   refine keeps_of_core (latHat D.host.F D.host.E (L : Set (Fin S.rank → D.host.E)))
     (indP D P ⊗ₜ[D.host.F] (1 : D.host.E))
-    (e_mul_of_supp P _ fun w hw => by rw [compFin_e, ite_eq_right hw])
     (fun z hz => GlobalTheory.KStabBridge.latHat_smul _ (indicatorAdele_integral P) hz) (fun z hz => ?_) _ (fun i j => ?_) (fun z => ?_)
   · have := GlobalTheory.KStabBridge.latHat_smul _ (one_sub_indP_int P) hz
     rwa [TensorProduct.sub_tmul, ← Algebra.TensorProduct.one_def] at this

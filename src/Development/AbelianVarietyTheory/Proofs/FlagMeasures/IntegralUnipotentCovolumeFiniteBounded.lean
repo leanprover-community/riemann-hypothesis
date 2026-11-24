@@ -465,7 +465,7 @@ theorem trI_inv {D : D7} {X : HidaSetting D} (C : Choice X 1) (s : X.B.I.Ginf) :
         rw [h2, Matrix.mul_one, Matrix.mul_assoc (C.Qi τ), hu, Matrix.mul_one]
     _ = 1 := h1
 
-theorem cov_grp : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u : D.what₂.Word) (C : Choice X 1),
+theorem cov_grp : ∀ (D : D7) (X : HidaSetting D) (_ : Full X) (u : D.what₂.Word) (C : Choice X 1),
     (trI C '' Formalism.L2.SG.PoincareInHH.PoincareSetting.NOinf X u).Countable ∧
     (fun _ => Matrix.of.symm 1) ∈ trI C '' Formalism.L2.SG.PoincareInHH.PoincareSetting.NOinf X u ∧
     (∀ m ∈ trI C '' Formalism.L2.SG.PoincareInHH.PoincareSetting.NOinf X u, ∀ m' ∈ trI C '' Formalism.L2.SG.PoincareInHH.PoincareSetting.NOinf X u,
@@ -509,7 +509,7 @@ open MeasureTheory Matrix NumberField Formalism.BasicNotions Formalism.MainNotio
   Formalism.L2.SG.LocWSOf Formalism.MainNotions.S.Cnt Formalism.L2.SG.KappaOffDiagonal Formalism.MainNotions.LatticeGluingRadicals GlobalTheory.TypeAsm
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.realIntegralUnipotent_besselModels_countable_subgroup : ∀ (D : D7) (X : HidaSetting D) (Y : Full X) (u : D.what₂.Word) (C : Choice X 1),
+theorem _root_.GlobalTheory.T.realIntegralUnipotent_besselModels_countable_subgroup : ∀ (D : D7) (X : HidaSetting D) (_ : Full X) (u : D.what₂.Word) (C : Choice X 1),
     (trI C '' Formalism.L2.SG.PoincareInHH.PoincareSetting.NOinf X u).Countable ∧
     (fun _ => Matrix.of.symm 1) ∈ trI C '' Formalism.L2.SG.PoincareInHH.PoincareSetting.NOinf X u ∧
     (∀ m ∈ trI C '' Formalism.L2.SG.PoincareInHH.PoincareSetting.NOinf X u, ∀ m' ∈ trI C '' Formalism.L2.SG.PoincareInHH.PoincareSetting.NOinf X u,
@@ -532,7 +532,7 @@ open MeasureTheory Matrix NumberField Formalism.BasicNotions Formalism.MainNotio
   Formalism.L2.SG.LocWSOf Formalism.MainNotions.S.Cnt Formalism.L2.SG.KappaOffDiagonal Formalism.MainNotions.LatticeGluingRadicals GlobalTheory.TypeAsm
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem _root_.GlobalTheory.T.real_points_base_lattice_stabilizer_fixed_frame_unipotent : ∀ (D : D7) (large₂ : SizeData₂ D) (X : HidaSetting D) (Y : Full X) (u : D.what₂.Word) (C : Choice X 1), Std D large₂ →
+theorem _root_.GlobalTheory.T.real_points_base_lattice_stabilizer_fixed_frame_unipotent : ∀ (D : D7) (large₂ : SizeData₂ D) (X : HidaSetting D) (_ : Full X) (u : D.what₂.Word) (C : Choice X 1), Std D large₂ →
     ∀ N : GlobalTheory.DegCnt.NF (HV D) D.R.rS, N.F = F0 X u → N.F' = F0 X u →
       GlobalTheory.DegVol.realPts (fun τ => phiV C τ) (N.Gam (VS D).L0 : Set ((VS D).V ≃ₗ[D.host.E] (VS D).V)) =
         trI C '' Formalism.L2.SG.PoincareInHH.PoincareSetting.NOinf X u := by

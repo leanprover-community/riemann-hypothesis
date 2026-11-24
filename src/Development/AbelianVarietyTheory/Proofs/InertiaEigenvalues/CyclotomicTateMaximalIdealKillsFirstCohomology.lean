@@ -249,7 +249,7 @@ theorem step (act : GQ l →* (PadicComplex l ≃+* PadicComplex l)) (hact : IsA
     simpa [hc1] using hε
   rw [eventually_nhdsWithin_iff] at hev
   obtain ⟨L, S, hL, hst, hS, hS', hW⟩ := exists_field (Kinf K) _ hev
-  obtain ⟨b, hbL, hb1, hb⟩ := _root_.GlobalTheory.Cyc.trace_almost_onto l K L S hL hst hS hS' a₀ ha₀ (by simpa using ha1)
+  obtain ⟨b, hbL, hb1, hb⟩ := _root_.GlobalTheory.Cyc.trace_almost_onto l K L S hL hS hS' a₀ ha₀ (by simpa using ha1)
   refine _root_.GlobalTheory.PermutationExistence.main act hact.2 (Hinf K) L.fixingSubgroup S hS hS' _ (b : PadicComplex l)
     (by simpa using hb1) (fun g hg => ?_) ?_ c hc t ε ht0 hε.le ht (fun g hg hg' => (hW g hg' hg).le)
   · rw [hact.1, (IntermediateField.mem_fixingSubgroup_iff _ _).1 hg b hbL]

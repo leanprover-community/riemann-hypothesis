@@ -156,7 +156,7 @@ private theorem dvd_of_jacobiSym_agree_on_residue_class (m₀ s₁ s₂ : ℕ) (
   rw [hJ1, hJs] at this
   norm_num at this
 
-theorem jacobi_separate (m₀ s₁ s₂ : ℕ) (hm : 0 < m₀) (h1 : Odd s₁) (h2 : Odd s₂) (hq1 : Squarefree s₁)
+theorem jacobi_separate (m₀ s₁ s₂ : ℕ) (h1 : Odd s₁) (h2 : Odd s₂) (hq1 : Squarefree s₁)
     (hq2 : Squarefree s₂) (hc1 : s₁.Coprime m₀) (hc2 : s₂.Coprime m₀)
     (h : ∀ u : ℕ, u % m₀ = 1 % m₀ → u.Coprime (s₁ * s₂) → jacobiSym (u : ℤ) s₁ = jacobiSym (u : ℤ) s₂) :
     s₁ = s₂ := by

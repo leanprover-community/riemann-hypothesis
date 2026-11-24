@@ -297,7 +297,7 @@ theorem isPullback_of_lift {Z P G B : C} {f : Z ⟶ P} {g : Z ⟶ G} {h : P ⟶ 
   ⟨⟨w⟩, ⟨PullbackCone.IsLimit.mk _ (fun s => (hl s.fst s.snd s.condition).choose)
     (fun s => (hl s.fst s.snd s.condition).choose_spec.1)
     (fun s => (hl s.fst s.snd s.condition).choose_spec.2)
-    (fun s m h1 h2 => hm (h1.trans (hl s.fst s.snd s.condition).choose_spec.1.symm)
+    (fun s _ h1 h2 => hm (h1.trans (hl s.fst s.snd s.condition).choose_spec.1.symm)
       (h2.trans (hl s.fst s.snd s.condition).choose_spec.2.symm))⟩⟩
 
 end General
@@ -943,7 +943,7 @@ theorem flat_of_fibreMap_flat (R P Q : Type) [CommRing R] [IsLocalRing R] [IsNoe
     [Module.Finite R P] [Module.Finite R Q] [Module.Flat R Q]
     (h : (fibreMap R (IsLocalRing.ResidueField R) P Q).Flat) : Module.Flat P Q :=
   Module.flat_of_isLocalized_maximal Q Q (fun n _ => Localization.AtPrime n)
-    (fun n _ => Algebra.linearMap Q _) (fun n _ => flat_localization_of_fibre R P Q h n)
+    (fun _ _ => Algebra.linearMap Q _) (fun n _ => flat_localization_of_fibre R P Q h n)
 
 theorem ringHom_flat_of_fibre_flat : ∀ (R P Q : Type) [CommRing R] [IsLocalRing R]
     [IsNoetherianRing R] [CommRing P] [CommRing Q] [Algebra R P] [Algebra R Q]
@@ -1554,7 +1554,7 @@ theorem tau_i (U : UnifPre I D A G) (e : ℕ) :
     have c2 := t_torus' (U.gt (e + 1)) χ (tau R I e D.toPre.X)
     have c3 := corr_pullGen (U.gt_t e χ) ii.left
     have c4 := corr_pull_comp D.toPre.P.L ((U.gt (e + 1)).t χ) (thickMap R I e G) ii.left _ hthick
-    have c5 := corr_pullGen_of_eq ((U.gt e).t χ) ((U.gt e).t_gen χ) (δ ≫ (U.gt e).i).left ii.left
+    have c5 := corr_pullGen_of_eq ((U.gt e).t χ) (δ ≫ (U.gt e).i).left ii.left
       (congrArg (fun z => z.left) hδ)
     have e1 := eq_of_corr_constGen D.toPre.P.L (corr_trans hL (corr_symm c1) (corr_trans hL c5
       (corr_trans hL (corr_symm c3) (corr_trans hL c4 c2))))

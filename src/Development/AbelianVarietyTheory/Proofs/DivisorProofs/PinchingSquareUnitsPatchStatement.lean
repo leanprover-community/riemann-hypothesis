@@ -83,7 +83,7 @@ theorem closedImmersion_baseChange_ker_mem_map : ∀ (X X' Z Z' : Scheme.{0}) (p
   have hw : e ≫ p = t ≫ i := by
     have h1 := IsAffineOpen.SpecMap_appLE_fromSpec p hW hU' le_rfl
     have h2 := IsAffineOpen.SpecMap_appLE_fromSpec i hW hZ le_rfl
-    simp only [e, t, Category.assoc, ← h1, ← h2, ← Spec.map_comp, ← Scheme.Hom.app_eq_appLE]
+    simp only [e, t, Category.assoc, ← h1, ← h2, ← Scheme.Hom.app_eq_appLE]
     simp only [← Spec.map_comp_assoc]
     congr 2
     ext x

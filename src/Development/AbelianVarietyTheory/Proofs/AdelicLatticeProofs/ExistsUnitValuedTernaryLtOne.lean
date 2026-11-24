@@ -80,7 +80,7 @@ theorem quadForm_totalDegree_le {k : Type u_1} [Field k] (a : Fin 3 → Fin 3 �
     _ = 2 := by simp [totalDegree_C, totalDegree_X]
 
 theorem exists_nonzero_isotropic :
-    ∀ {k : Type u_1} [inst : Field k] [Finite k] (a : Fin (3 : ℕ) → Fin (3 : ℕ) → k),
+    ∀ {k : Type u_1} [Field k] [Finite k] (a : Fin (3 : ℕ) → Fin (3 : ℕ) → k),
       ∃ (x : Fin (3 : ℕ) → k), x ≠ (0 : Fin (3 : ℕ) → k) ∧
         ∑ i : Fin (3 : ℕ), ∑ j : Fin (3 : ℕ), a i j * x i * x j = (0 : k) := by
   intro k _ _ a

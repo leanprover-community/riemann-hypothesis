@@ -86,7 +86,7 @@ def Q (ψ : AddChar k Circle) {n : ℕ} : (j : ℕ) → (τ : MRep k (n + j)) �
   | j + 1, τ => (Q ψ j (MRep.phiM k ψ τ)) ∘ₗ (twKer τ.ρ (MirUin k (n + j + 1)) (mirChar k ψ (n + j))).mkQ
 
 theorem Q_surj (ψ : AddChar k Circle) {n : ℕ} : ∀ (j : ℕ) (τ : MRep k (n + j)), Function.Surjective (Q k ψ j τ)
-  | 0, τ => Submodule.mkQ_surjective _
+  | 0, _ => Submodule.mkQ_surjective _
   | j + 1, τ => (Q_surj ψ j (MRep.phiM k ψ τ)).comp (Submodule.mkQ_surjective _)
 
 theorem ker_Q (ψ : AddChar k Circle) {n : ℕ} : ∀ (j : ℕ) (τ : MRep k (n + j)),
@@ -101,7 +101,7 @@ theorem ker_Q (ψ : AddChar k Circle) {n : ℕ} : ∀ (j : ℕ) (τ : MRep k (n 
       ((levi k (n + j + 1)).comp (Mir k (n + j)).subtype) (fun _ _ => rfl) (derUnipM k (n + j) n)
       (derCharM k ψ (n + j) n) (derUnipM k (n + j + 1) n) (derCharM k ψ (n + j + 1) n)
       (GlobalTheory.CompanionTheory.BZMirStep.MirUin_step ψ hnm) (GlobalTheory.CompanionTheory.BZMirStep.levi_step ψ hnm)
-      (GlobalTheory.CompanionTheory.BZMirStep.derUnipM_decomp hnm)
+      (GlobalTheory.CompanionTheory.BZMirStep.derUnipM_decomp)
     ext v
     have e1 := Submodule.ext_iff.1 H v
     rw [Submodule.mem_comap] at e1
@@ -118,7 +118,7 @@ def E {n : ℕ} : (j : ℕ) → GL (Fin n) k →* Mir k (n + j)
 
 theorem Q_equiv (ψ : AddChar k Circle) {n : ℕ} : ∀ (j : ℕ) (τ : MRep k (n + j)) (g : GL (Fin n) k) (v : τ.V),
     Q k ψ j τ (τ.ρ (E k j g) v) = derivM k ψ j τ g (Q k ψ j τ v)
-  | 0, τ, g, v => rfl
+  | 0, _, _, _ => rfl
   | j + 1, τ, g, v => Q_equiv ψ j (MRep.phiM k ψ τ) g (Submodule.Quotient.mk v)
 
 theorem E_val_zero {n : ℕ} (g : GL (Fin n) k) (i l : Fin (n + 1)) :

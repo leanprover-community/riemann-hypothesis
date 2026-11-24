@@ -305,7 +305,7 @@ theorem isPerfect_resForm (H : IsHerm c h) (P : IsPerfect h) {x y : V} (hy : IsH
     rw [herm_perp_left H m.2, hv]
     simp [projP_coe]
 
-theorem isMaxEven_pullLat (H : IsHerm c h) {p : V ≃ₗ[R] V} (hp : ∀ a b, h (p a) (p b) = h a b)
+theorem isMaxEven_pullLat {p : V ≃ₗ[R] V} (hp : ∀ a b, h (p a) (p b) = h a b)
     {L : Submodule 𝔬 V} (hL : IsMaxEven c 𝔬 h L) : IsMaxEven c 𝔬 h (pullLat 𝔬 p L) := by
   have hEq : pullLat 𝔬 p L = L.map (p.symm.toLinearMap.restrictScalars 𝔬) := by
     ext z
@@ -522,7 +522,7 @@ theorem flag_step (hR : IsHermRing c 𝔬) [Module.Finite R V] (H : IsHerm c h) 
       hyp'.xx, hyp'.yx H]
     constructor <;> ring
   obtain ⟨T, hT, hTa, hTb, hTz⟩ := exists_glue hR H P hyp hyp' ψ hψ hψ'
-  have hL₂ := isMaxEven_pullLat H hT hL'
+  have hL₂ := isMaxEven_pullLat hT hL'
   have ha₂ : a ∈ pullLat 𝔬 T L' := by rw [mem_pullLat, hTa]; exact haL'
   have hb₂ : b ∈ pullLat 𝔬 T L' := by rw [mem_pullLat, hTb]; exact hbL'
 

@@ -217,7 +217,7 @@ theorem exists_smul_mem_of_span {E : Type} [Field E] [NumberField E] {r : ℕ}
     rw [e]
     exact hL n _ hcx
 
-theorem exists_smul_mem_lattice : ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E] [inst_2 : NumberField.IsCMField E] {r : ℕ} (X : ReciprocityTheory.ChartRestriction.G.FD.Data E r) (v : Fin r → E), ∃ (c : NumberField.RingOfIntegers E), c ≠ (0 : NumberField.RingOfIntegers E) ∧ (↑c : E) • v ∈ ReciprocityTheory.ChartRestriction.G.FD.Data.Λ X := by
+theorem exists_smul_mem_lattice : ∀ {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E] {r : ℕ} (X : ReciprocityTheory.ChartRestriction.G.FD.Data E r) (v : Fin r → E), ∃ (c : NumberField.RingOfIntegers E), c ≠ (0 : NumberField.RingOfIntegers E) ∧ (↑c : E) • v ∈ ReciprocityTheory.ChartRestriction.G.FD.Data.Λ X := by
   intro E _ _ _ r X v
   refine exists_smul_mem_of_span X.Λ v ?_
   rw [X.Λ_span]
@@ -865,7 +865,7 @@ open ReciprocityTheory.ChartRestriction.G.I2
 namespace GlobalTheory
 
 theorem theta_bound_tStatement : TStatement :=
-  tOf ext_all_inputs _root_.ReciprocityTheory.ChartRestriction.G.I2.split_holds (gSup ext_all_inputs.1) dim
+  tOf ext_all_inputs _root_.ReciprocityTheory.ChartRestriction.G.I2.split_holds (gSup ext_all_inputs.1)
 
 end GlobalTheory
 end -- clump:auto
@@ -886,7 +886,7 @@ private theorem UpperTheory.Reformulated.B.Ue6.herm_smul_right {E : Type} [Field
   ring
 
 theorem UpperTheory.Reformulated.B.Ue6.even_im_hermitian_sub :
-    ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E] [inst_2 : NumberField.IsCMField E] {r : ℕ}
+    ∀ {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E] {r : ℕ}
       (X : ReciprocityTheory.ChartRestriction.G.FD.DataX E r) (w0 : NumberField.RingOfIntegers E),
       ReciprocityTheory.ChartRestriction.G.FD.cc (↑w0 : E) = (1 : E) - (↑w0 : E) →
         ∀ u ∈ X.Λ,
@@ -943,7 +943,7 @@ theorem exists_isIso (X : ReciprocityTheory.ChartRestriction.G.FD.Data E r) {ρ 
 
 end General
 
-theorem extra_weight_exists : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (hj : InR D j) (large₂ : SizeData₂ D) (w : WeightFamilies.Wt D j), GamAt T.toCore → ReciprocityTheory.ChartRestriction.G.PullbackSections.SupBoundPageRows D large₂ w → 2 ≤ large₂.sc.L → D.R.r ≤ w.n → j < D.R.m → (D.R.f : ℝ) ^ 2 ≤ D.host.rdE → 16 ≤ D.host.rdE → D.R.m ^ 4 ≤ D.R.f → ∀ k : (T.U j T.σ₀).Comp, BasePotentialExistence ((T.U j T.σ₀).X k) (de2W ((T.U j T.σ₀).X k)) D.R.r (1 / (2 * (5 : ℝ) ^ 4 * |(NumberField.discr D.host.E : ℝ)| ^ ((1 : ℝ) / D.R.f))) := by
+theorem extra_weight_exists : ∀ (D : D7) (T : Top D) (_ : LawsP T) (j : ℕ) (_ : InR D j) (large₂ : SizeData₂ D) (w : WeightFamilies.Wt D j), GamAt T.toCore → ReciprocityTheory.ChartRestriction.G.PullbackSections.SupBoundPageRows D large₂ w → 2 ≤ large₂.sc.L → D.R.r ≤ w.n → j < D.R.m → (D.R.f : ℝ) ^ 2 ≤ D.host.rdE → 16 ≤ D.host.rdE → D.R.m ^ 4 ≤ D.R.f → ∀ k : (T.U j T.σ₀).Comp, BasePotentialExistence ((T.U j T.σ₀).X k) (de2W ((T.U j T.σ₀).X k)) D.R.r (1 / (2 * (5 : ℝ) ^ 4 * |(NumberField.discr D.host.E : ℝ)| ^ ((1 : ℝ) / D.R.f))) := by
   intro D T h j hj large₂ w hG hP hL hrn hjm hf2 hrd hm4 k
   obtain ⟨e, -⟩ := GlobalTheory.CuspDataBounds.cusp_data_bounds D T h hG large₂ j hj w hP hL hrn T.σ₀ T.good_σ₀
   have hfr : Module.finrank ℚ D.host.E = 2 * D.R.f := by
@@ -1016,7 +1016,7 @@ theorem sq_le_of_mul_le_exp {a b i p q : ℝ} (ha : 0 < a) (hb : 0 ≤ b) (h : a
 theorem archAt_of_run : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (hj : InR D j) (large₂ : SizeData₂ D) (H : KHyp) (C2 A2 CT : ℝ) (ka wL wF : WeightFamilies.Wt D j) (Tn nP nW : ℕ) (h0 : ℝ) (EX : ErrX D) (p : ℕ) (S : Scal (recB h.toLawsCore)) (nus : HeightOneSpectrum (𝓞 (recB h.toLawsCore).KO) → ℝ), ParOK T EX p j → PageOK large₂ (recPJ h j hj) H C2 A2 CT ka wL wF Tn nP nW h0 → HypC large₂ (recPJ h j hj) H C2 A2 7 0 CT S ka wL wF Tn nP nW h0 nus → j < D.R.m → ∀ G : GlobalFamilyData (recPJ h j hj) ka wL wF, GenOK h j hj large₂ G S (cc D large₂ C2 A2 7 wL) → EtaOK h j hj large₂ wL G.iet G.et → Nonempty (GlobalTheory.Shares.ArchAt h j G.w wF Tn (WeightFamilies.c1 D 7 Tn (cc D large₂ C2 A2 7 wL) j)) := by
   intro D T h j hj large₂ H C2 A2 CT ka wL wF Tn nP nW h0 EX p S nus _ hP hC hjm G hGen hEta
   obtain ⟨t1, t2, t3, t4, t5, t6⟩ := hP.tie
-  have ht : TieC ⟨1, 2, 1, 2, 1, 2, 1, 4, 7⟩ H 1 4 0 11 C2 A2 7 :=
+  have ht : TieC ⟨1, 2, 1, 2, 1, 2, 1, 4, 7⟩ H 1 4 11 C2 A2 7 :=
     ⟨t1, t2, t3, t4, t5, rfl, rfl, t6, le_rfl, le_rfl, le_rfl, le_rfl, le_rfl, le_rfl, le_rfl⟩
   obtain ⟨n1, n2, n3, n4, -, n6, -⟩ := GlobalTheory.ExtraWeight.numbers D _ _ j _ _ 1 4 0 11 large₂ H C2 A2 7 CT ka wL wF Tn nP nW h0
     hP.hyp ht hP.page hjm hj.1 (le_trans (by norm_num) hP.df)

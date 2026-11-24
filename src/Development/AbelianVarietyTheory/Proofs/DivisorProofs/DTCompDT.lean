@@ -190,7 +190,7 @@ theorem dT_comp_dT (a b c d k : ℕ) (hk : c + d = k) :
     dsimp only
     rw [this, comp_zero, smul_zero]
 
-theorem dT_sq (a b c d : ℕ) (_h : c + d + 2 = a + b) :
+theorem dT_sq (a b c d : ℕ) :
     ∑ x ∈ Finset.HasAntidiagonal.antidiagonal (c + d + 1), dT a b x.1 x.2 ≫ dT x.1 x.2 c d = 0 :=
   dT_comp_dT a b c d (c + d) rfl
 

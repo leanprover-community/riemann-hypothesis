@@ -698,8 +698,8 @@ private theorem UpperTheory.Reformulated.B.FactorConjugationCancel.exists_factor
   exact ⟨_, Measure.isAddLeftInvariant_eq_smul _ ν⟩
 
 theorem UpperTheory.Reformulated.B.FactorConjugationCancel.map_eq_of_conj :
-    ∀ {G : Type} [inst : AddCommGroup G] [inst_1 : TopologicalSpace G]
-    [IsTopologicalAddGroup G] [LocallyCompactSpace G] [SecondCountableTopology G] [inst_5 : MeasurableSpace G]
+    ∀ {G : Type} [AddCommGroup G] [TopologicalSpace G]
+    [IsTopologicalAddGroup G] [LocallyCompactSpace G] [SecondCountableTopology G] [MeasurableSpace G]
     [BorelSpace G] (m s : G ≃ₜ+ G) (ν : MeasureTheory.Measure G) [ν.IsAddHaarMeasure] (c : NNReal),
     (∀ (x : G), (s : G → G) ((s : G → G) x) = x) →
       MeasureTheory.Measure.map (fun (x : G) ↦ (s : G → G) ((m : G → G) ((s : G → G) ((m : G → G) x)))) ν = (c * c) • ν →
@@ -1476,7 +1476,7 @@ theorem scale_one (v : HeightOneSpectrum (𝓞 F)) (Q : Set (Fv F v)) (hQ : IsCo
     ∃ N : ℕ, 0 < N ∧ ∀ t ∈ Q, (N : Fv F v) * t ∈ v.adicCompletionIntegers F := by
   apply _root_.GlobalTheory.CompanionTheory.SW.LS.scale_one <;> assumption
 
-theorem scale_lat [NumberField E] (σ : E →ₐ[F] E) (hcm : IsCMExt F E σ) {d : ℕ} (b : Module.Basis (Fin d) F E)
+theorem scale_lat [NumberField E] (σ : E →ₐ[F] E) {d : ℕ} (b : Module.Basis (Fin d) F E)
     (v : HeightOneSpectrum (𝓞 F)) (K : Set (Fin 1 → Fin 1 → Fv F v ⊗[F] E)) (hK : IsCompact K) :
     ∃ N : ℕ, 0 < N ∧ ∀ Y ∈ K, (fun a i => (N : Fv F v ⊗[F] E) * Y a i) ∈ latV b v := by
   apply _root_.GlobalTheory.CompanionTheory.SW.RankOneSiegelWeil.Box.scale_lat <;> assumption
@@ -1501,7 +1501,7 @@ theorem exists_compact {F E : Type} [Field F] [NumberField F] [Field E] [NumberF
   obtain ⟨u1, u2⟩ := _root_.GlobalTheory.CompanionTheory.SW.Cpt.compact_tuples F E σ hcm d b 1 1
   have hSc : ∀ v, ∃ N : ℕ, 0 < N ∧ (v ∈ S → ∀ Y ∈ A v, (fun a i => (N : Fv F v ⊗[F] E) * Y a i) ∈ latV b v) := fun v => by
     by_cases hv : v ∈ S
-    · obtain ⟨N, h0, h1⟩ := scale_lat σ hcm b v (A v) (hAS v hv).1
+    · obtain ⟨N, h0, h1⟩ := scale_lat σ b v (A v) (hAS v hv).1
       exact ⟨N, h0, fun _ => h1⟩
     · exact ⟨1, one_pos, fun h => absurd h hv⟩
   choose n hn0 hn using hSc

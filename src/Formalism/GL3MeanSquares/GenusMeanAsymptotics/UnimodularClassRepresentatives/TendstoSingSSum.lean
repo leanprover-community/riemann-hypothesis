@@ -649,7 +649,7 @@ theorem exists_abs_alphaN_le (hK : Formalism.HermitianLatticesTheory.IsCMUnram K
 theorem tendsto_sum_box_ideal (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F)
     {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm) (hd : IsTotPosDef h) {L : Submodule (𝓞 K) V}
     (hL : Submodule.IsFullLattice K L) (hLi : Formalism.HermitianLatticesTheory.IsIntegralLat h L) (hm : 2 ≤ finrank K V) (S : Finset {𝔭 : Ideal (𝓞 F) // 𝔭.IsMaximal})
-    (hS : ∀ 𝔭 : {𝔭 : Ideal (𝓞 F) // 𝔭.IsMaximal}, vd h L 𝔭.1 ≠ 0 → 𝔭 ∈ S) {b : Ideal (𝓞 F)} (hb : b ≠ ⊥)
+    {b : Ideal (𝓞 F)} (hb : b ≠ ⊥)
     (hbS : ∀ 𝔭 ∈ S, b ⊔ 𝔭.1 = ⊤) :
     Tendsto (fun j : ℕ => ((j : ℝ) ^ 2) ^ (-((Formalism.HermitianLatticesTheory.fDeg K * finrank K V : ℕ) : ℤ)) *
         ∑ᶠ n ∈ {n : 𝓞 F | n ∈ boxSet K F ((j : ℝ) ^ 2) ∧ n ∈ b},
@@ -1050,7 +1050,7 @@ theorem tendsto_singS_sum (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (
     have hb : n ∈ boxSet K F ((j : ℝ) ^ 2) := (Set.Finite.mem_toFinset _).mp hn
     rw [singS_eq hK hF hs hd (by first | exact hL) hLi hm hS (ne_zero_of_mem_boxSet hb), mul_assoc]
   · intro v hv
-    have ht := tendsto_sum_box_ideal hK hF hs hd hL hLi hm S hS (bId_ne_bot v)
+    have ht := tendsto_sum_box_ideal hK hF hs hd hL hLi hm S (bId_ne_bot v)
       (fun 𝔭 h𝔭 => bId_sup_eq_top (Finset.disjoint_right.mp hv h𝔭))
     simp_rw [coe_filter_box hK hF, finsum_mem_coe_finset] at ht
     rw [absNorm_bId] at ht
@@ -1065,7 +1065,7 @@ theorem tendsto_singS_sum (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (
     have : (1 : ℝ) ≤ (j : ℝ) := by exact_mod_cast hj
     nlinarith
   · intro S' hS'
-    have ht := tendsto_sum_box_ideal hK hF hs hd hL hLi hm S' (fun 𝔭 h𝔭 => hS' (hS 𝔭 h𝔭))
+    have ht := tendsto_sum_box_ideal hK hF hs hd hL hLi hm S'
       (b := ⊤) (by simp) (fun 𝔭 _ => by simp)
     simp only [Submodule.mem_top, and_true, Ideal.absNorm_top, Nat.cast_one, div_one] at ht
     refine ht.congr fun j => ?_

@@ -49,7 +49,7 @@ open GlobalTheory.KZ GlobalTheory.Ord2
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ}
 
 def AdmissibleNewformZetaData {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (e : ℕ) (gN : Newform (2 * e + 1)) (A : ValuationSubring Ω) (W : R2 Ω l)
-    (X : Tower Ω ε) (pr : X.Fn l → Fin 2 → Qbar l) (N : ℕ) [NeZero N] (x : ZMod N) (c d : ℕ) (gm : (ZMod l)ˣ → SL(2, ℤ))
+    (X : Tower Ω ε) (pr : X.Fn l → Fin 2 → Qbar l) (N : ℕ) [NeZero N] (c d : ℕ) (gm : (ZMod l)ˣ → SL(2, ℤ))
     (ψ : ZMod l → Qbar l) (cf : Coef l) : Prop :=
   1 < c ∧ 1 < d ∧ Nat.Coprime c (6 * l * N) ∧ Nat.Coprime d (6 * l * N) ∧
     (∀ b b', pr (b + b') = pr b + pr b') ∧
@@ -69,6 +69,6 @@ def AdmissibleNewformZetaData {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (
 def AdmWn {l : ℕ} [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (e : ℕ) (gN : Newform (2 * e + 1)) (A : ValuationSubring Ω) (W : R2 Ω l)
     (X : Tower Ω ε) (pr : X.Fn l → Fin 2 → Qbar l) (N : ℕ) [NeZero N] (cw : ZMod N → Qbar l) (c d : ℕ) (gm : (ZMod l)ˣ → SL(2, ℤ))
     (ψ : ZMod l → Qbar l) (cf : Coef l) : Prop :=
-  (∀ x, cw x ≠ 0 → AdmissibleNewformZetaData ι e gN A W X pr N x c d gm ψ cf) ∧ ∀ x, cw x ∈ cf.O
+  (∀ x, cw x ≠ 0 → AdmissibleNewformZetaData ι e gN A W X pr N c d gm ψ cf) ∧ ∀ x, cw x ∈ cf.O
 
 end GlobalTheory.K4

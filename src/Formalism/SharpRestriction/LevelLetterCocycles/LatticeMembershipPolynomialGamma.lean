@@ -805,7 +805,7 @@ def UnivLiftL (D : D7) (HW : HWOf D.loc) : Prop :=
 
 theorem universal_general_of_frame_sections (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (Cm : CmpOf D.loc D.locA HW F) (hAdm : AdmUnivA D HW F Cm) (h9 : Formalism.MainNotions.DeltaInvariantLattices.P9 D HW F)
-    (_hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW F) (hFr : UnivFrameL D HW) (hSec : UnivSecL D HW)
+    (hFr : UnivFrameL D HW) (hSec : UnivSecL D HW)
     (hGen : UnivGenL D HW) (hLift : UnivLiftL D HW) : UniversalComponentCaseA D HW F Cm := by
   intro l _ K LL hG hA h5
   have hR := ring_condition_uniformizer_polynomial D HW F h9 l K LL hA

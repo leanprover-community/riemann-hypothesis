@@ -138,7 +138,7 @@ theorem compact_highest_weight_unique (hl : KLow) (hw : KWtOrth) {ε : Fin n →
 end U2
 
 section U2b
-theorem hVCoeff_of (hl : KLow) (hw : KWtOrth) (ha : ArrModule) : HVCoeff := by
+theorem hVCoeff_of (hl : KLow) (hw : KWtOrth) : HVCoeff := by
   intro V _ _ n ε E Λ μ u F hg hu hΛ hF hFh hF0
   classical
   set f : Fin n × Fin n → V := fun p => F (fun _ => p) with hf
@@ -475,7 +475,7 @@ theorem omega_eigenvalue_on_span (hk : KCasSpan) (hca : CasArr) (ha : ArrModule)
     _ = (((ckv ε μ - n - ckv ε Λ) / 2 : ℝ) : ℂ) • G := by
         rw [h4, smul_smul]; congr 1; push_cast; ring
 
-theorem omPlus_of (hd : KDecomp) (ho : KOrth) (hk : KCasSpan) (hca : CasArr) (ha : ArrModule) :
+theorem omPlus_of (ho : KOrth) (hk : KCasSpan) (hca : CasArr) (ha : ArrModule) :
     OmPlus := by
   intro V _ _ n ε E lam g u hg hu hΛ hfd hgap F hF
   classical

@@ -104,7 +104,7 @@ theorem sum_embeddings_base_change : ∀ (k k' A : Type) [Field k] [NumberField 
   push_cast
   ring
 
-theorem finsum_const_mul {α : Type} (c : ℝ) (_hc : c ≠ 0) (g : α → ℝ) : ∑ᶠ p, c * g p = c * ∑ᶠ p, g p :=
+theorem finsum_const_mul {α : Type} (c : ℝ) (g : α → ℝ) : ∑ᶠ p, c * g p = c * ∑ᶠ p, g p :=
   (mul_finsum g c).symm
 
 theorem logNorms_ext_degree_adelic : ∀ (k k' : Type) [Field k] [NumberField k] [Field k'] [NumberField k'] (f : k →+* k') (N : LogNorms k), (N.ext f).deg = N.deg ∧ ((N.ext f).IsAdelic ↔ N.IsAdelic) := by
@@ -123,7 +123,7 @@ theorem logNorms_ext_degree_adelic : ∀ (k k' : Type) [Field k] [NumberField k]
     ring
   refine ⟨?_, ?_⟩
   · show -(∑ s : k' →+* ℂ, N.inf (s.comp f) + ∑ᶠ p, (N.ext f).finSum p) / (Module.finrank ℚ k' : ℝ) = N.deg
-    rw [hinf, finsum_congr hfin, finsum_const_mul c hc, ← mul_add, LogNorms.deg, hc_def]
+    rw [hinf, finsum_congr hfin, finsum_const_mul c, ← mul_add, LogNorms.deg, hc_def]
     field_simp
   · have hset : {p : Nat.Primes | ∃ ι : k' →+* ℂ_[(p:ℕ)], (N.ext f).fin p ι ≠ 0} =
         {p : Nat.Primes | ∃ ι : k →+* ℂ_[(p:ℕ)], N.fin p ι ≠ 0} := by

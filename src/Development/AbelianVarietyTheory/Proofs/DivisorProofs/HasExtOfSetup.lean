@@ -793,7 +793,7 @@ theorem valL_mk (g : NumDenSameDeg (piece hN) P.primeCompl) :
 variable (F) in
 def eqR : F ≃+* (cL F).range :=
   RingEquiv.ofBijective (cL F).rangeRestrict
-    ⟨fun a b h => cL_injective (congrArg Subtype.val h), RingHom.rangeRestrict_surjective _⟩
+    ⟨fun _ _ h => cL_injective (congrArg Subtype.val h), RingHom.rangeRestrict_surjective _⟩
 
 def valR : AtPrime (piece hN) P →+* (cL F).range :=
   (valL hN P).codRestrict (cL F).range fun y => by

@@ -274,7 +274,7 @@ theorem cr_compl [CharZero K] [FiniteDimensional K V] (E : GLOps n K V) (hR : Sa
     · have h2 := (cr_mem_Hs E mu v2).1 hv2Hs
       exact Submodule.mem_iSup_of_mem mu (Submodule.subset_span ⟨u, hu, v2, ⟨hv2Hs, hv2⟩, ⟨h0, h2.1, h2.2⟩, rfl⟩)
 
-theorem weight_condition_from_integral_form (D : Formalism.BasicNotions.D7) : adm2 D := by
+theorem weight_condition_from_integral_form (D : Formalism.BasicNotions.D7) : adm2 := by
   intro K V _ _ _ _ _ n E hE W hW
   exact cr_compl E hE.1 hE.2.2 W hW
 

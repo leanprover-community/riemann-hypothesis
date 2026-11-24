@@ -224,7 +224,7 @@ theorem iv_real (d1 d2 C T f Nm l lp : ℝ) (hC : C ≤ f) (hT : T ≤ f) (hC0 :
       ≤ f * (|d1| * Nm ^ 2 * l) + f * (2 * |d2| * l ^ 2) := add_le_add t1 t2
     _ = f * (|d1| * Nm ^ 2 * l + 2 * |d2| * l ^ 2) := by ring
 
-theorem i_real (lp gm T B p f b : ℝ) (hlp : 0 ≤ lp) (hp : 0 < p) (hg : gm ≤ 2 / p) (hg0 : 0 ≤ gm)
+theorem i_real (lp gm T B p f b : ℝ) (hlp : 0 ≤ lp) (hp : 0 < p) (hg : gm ≤ 2 / p)
     (hT : T ≤ f) (hT0 : 0 ≤ T) (hB : B ≤ 6 * b) (hB0 : 0 ≤ B) :
     lp * (gm * T * B) ≤ 12 * f * b * (lp / p) := by
   have hf0 : 0 ≤ f := hT0.trans hT
@@ -294,7 +294,7 @@ theorem prime_weighted_remainder_bound (K : Consts) (ce : ErrC) (D : D7) (L : Si
     congr 1
     ring
   have h1 := i_real (Real.log p) (gam p) ((topsBC D p).card : ℝ) (L.sc.b + L.etaSz + 1 + 3 * L.Sc) p
-    (D.R.f : ℝ) L.sc.b hlp0.le hp0 (gam_le p hp.two_le) (gam_nonneg p hp.two_le) (card_topsBC_le p)
+    (D.R.f : ℝ) L.sc.b hlp0.le hp0 (gam_le p hp.two_le) (card_topsBC_le p)
     (Nat.cast_nonneg _) (by linarith) (by linarith)
   have hw : ∀ z ∈ kindBC D p, 0 ≤ wPl D j z ∧ wPl D j z ≤ 5 * L.sc.b := fun z _ => by
     have := stepW D L hSz hbb j hj z

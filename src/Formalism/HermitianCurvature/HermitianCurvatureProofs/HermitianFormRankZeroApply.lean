@@ -733,7 +733,7 @@ lemma cont_Phi (z : Fin (2 * r + k + 1) → ℂ) : Continuous (Phi (k := k) (r :
   ((cont_tauU z).comp continuous_fst).matrix_mul continuous_snd
 
 lemma cont_utc {m : ℕ} : Continuous (StabilizerDisintegration.utc (m := m)) :=
-  continuous_pi fun q => continuous_apply_apply _ _
+  continuous_pi fun _ => continuous_apply_apply _ _
 
 def bC (z : Fin (2 * r + k + 1) → ℂ) (a : B.Mat k r) (u : G.UT (r + 1) → ℂ) : B.Mat k r :=
   Hpk k r * (C2.tauM k r z (C2.uMap k r z a * G.upper u))ᴴ * Hpk k r * a * C2.tauM k r z (G.upper u)
@@ -873,8 +873,8 @@ end Formalism.FourierDecayAlt.P.StabilizerDisintegration.HC
 
 namespace Formalism.FourierDecayAlt.P.StabilizerDisintegration
 
-theorem exists_haar_stabilizer : ExistsHaarStabilizer := fun k r z hz => ⟨HC.mu0 z, HC.isHaar_stabilizer_measure hz⟩
+theorem exists_haar_stabilizer : ExistsHaarStabilizer := fun _ _ z hz => ⟨HC.mu0 z, HC.isHaar_stabilizer_measure hz⟩
 
-theorem disintN : DisintN := fun k r z hz μ0 μN h0 hN => HC.disint hz h0 hN
+theorem disintN : DisintN := fun _ _ _ hz _ _ h0 hN => HC.disint hz h0 hN
 
 end Formalism.FourierDecayAlt.P.StabilizerDisintegration

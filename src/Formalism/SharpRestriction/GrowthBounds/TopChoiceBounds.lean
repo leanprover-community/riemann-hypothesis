@@ -245,11 +245,11 @@ theorem bc_seg {n' : ℕ} {TT : Finset (Fin n')} {r L₁ L₂ u M₀ G' N₁ : �
     rw [e2]
     omega
 
-def RestFrames (_D : D7) : Prop :=
+def RestFrames : Prop :=
   ∀ (n' : ℕ) [NeZero n'] (TT : Finset (Fin n')) (r L₁ L₂ u M₀ G' N₁ : ℕ),
     OrbitRaw n' TT r L₁ L₂ u M₀ G' N₁ → Even n' → 2 ≤ r → OrbitFrames n' TT r L₁ L₂ u G' N₁
 
-theorem orbit_positions_of_frames (D : D7) (hR : RestFrames D) : OrbitPositions D := by
+theorem orbit_positions_of_frames (D : D7) (hR : RestFrames) : OrbitPositions := by
   intro n' _ TT r L₁ L₂ u M₀ G' N₁ hr h
   exact ⟨bc_tile h, bc_seg hr h, bc_old hr h, bc_next hr h, bc_count hr h,
     fun hn h2 => hR n' TT r L₁ L₂ u M₀ G' N₁ h hn h2⟩
@@ -448,7 +448,7 @@ theorem period_ge_three_gap_eventually (eps : ℝ) (he : 0 < eps) : ∃ x₀ : �
   rw [em]
   exact_mod_cast fin
 
-theorem master_orbit_sizes_hold (D : D7) : OrbitSizeBounds D :=
+theorem master_orbit_sizes_hold (D : D7) : OrbitSizeBounds :=
   ⟨fun r h hr hh => segment_count_log_bounds r h hr hh, fun eps he _ => period_ge_three_gap_eventually eps he⟩
 
 section Frames
@@ -610,7 +610,7 @@ theorem bc_oldest_far {r : ℕ} (F : Frames n' r) (L₁ L₂ : ℕ) (hr : 1 ≤ 
   rw [Finset.card_univ, Fintype.card_fin] at hcard
   omega
 
-theorem restFrames_proved (D : D7) : RestFrames D := by
+theorem restFrames_proved (D : D7) : RestFrames := by
   intro n' _ TT r L₁ L₂ u M₀ G' N₁ h hn hr
   obtain ⟨c0, c1, c2, c3⟩ := bc_hyps h
   obtain ⟨hL, hLu, hG, h3, hA, hTiles, hInt⟩ := h
@@ -637,7 +637,7 @@ theorem restFrames_proved (D : D7) : RestFrames D := by
 
 end Frames
 
-theorem orbit_positions_hold (D : D7) : OrbitPositions D := orbit_positions_of_frames D (restFrames_proved D)
+theorem orbit_positions_hold (D : D7) : OrbitPositions := orbit_positions_of_frames D (restFrames_proved D)
 
 theorem master_orbit_lemma_holds (D : D7) : OrbitPositionsAndSizeBounds D := ⟨orbit_positions_hold D, master_orbit_sizes_hold D⟩
 
@@ -805,7 +805,7 @@ namespace Formalism.MainNotions.G.TopChoiceBounds
 
 open Formalism.MainNotions.G Formalism.MainNotions
 
-theorem orbit_positions_of_master (D : Formalism.BasicNotions.D7) (hL : CornerGLContinuity.OrbitPositionsAndSizeBounds D) : tableLineDegreeFive.adm1 D := by
+theorem orbit_positions_of_master (D : Formalism.BasicNotions.D7) (hL : CornerGLContinuity.OrbitPositionsAndSizeBounds D) : tableLineDegreeFive.adm1 := by
   intro n' TT r L₁ L₂ de h x hr hO
   obtain ⟨hg, h12, hLu, h3⟩ := hO
   have hu : 0 < goodU de := by omega
@@ -823,7 +823,7 @@ theorem orbit_positions_of_master (D : Formalism.BasicNotions.D7) (hL : CornerGL
   · intro s s' f f' hN hE hE'
     exact c2 s s' f f' hN hE hE'
 
-theorem orbit_counts_of_master (D : Formalism.BasicNotions.D7) (hL : CornerGLContinuity.OrbitPositionsAndSizeBounds D) : tableLineDegreeFive.adm2 D := by
+theorem orbit_counts_of_master (D : Formalism.BasicNotions.D7) (hL : CornerGLContinuity.OrbitPositionsAndSizeBounds D) : tableLineDegreeFive.adm2 := by
   intro eps he0 he1
   obtain ⟨hA, hB⟩ := hL.2
   obtain ⟨Ce, _, hC⟩ := hA (⌈8 * ((2 + 8 * eps) + 2) / eps⌉₊ + 1) (2 + 8 * eps) (by omega) (by positivity)
@@ -848,13 +848,13 @@ namespace Formalism.MainNotions.G.TopChoiceBounds
 
 open Formalism.BasicNotions Formalism.MainNotions.G
 
-theorem symbol_space_orbit_of_master (D : D7) (h : Formalism.MainNotions.CornerGLContinuity.OrbitPositionsAndSizeBounds D) : Formalism.MainNotions.SelectionLemmas.PathPairCorrespondence D := by
+theorem symbol_space_orbit_of_master (D : D7) (h : Formalism.MainNotions.CornerGLContinuity.OrbitPositionsAndSizeBounds D) : Formalism.MainNotions.SelectionLemmas.PathPairCorrespondence := by
   intro n' _ TT r L₁ L₂ u M₀ G' N₁ hn hr hL hLu hG h3 hg
   obtain ⟨_, _, _, _, _, hF⟩ := h.1 n' TT r L₁ L₂ u M₀ G' N₁ (by omega) ⟨hL, hLu, hG, h3, hg⟩
   obtain ⟨F, hTT, hV, c1, c2, _, _, _⟩ := hF hn hr
   exact ⟨F, hTT, hV, c1, c2⟩
 
-theorem localiser_orbit_clauses_of_master (D : D7) (h : Formalism.MainNotions.CornerGLContinuity.OrbitPositionsAndSizeBounds D) : Formalism.MainNotions.G.WittFrameLocaliserOrders.bd_RestOrbit D := by
+theorem localiser_orbit_clauses_of_master (D : D7) (h : Formalism.MainNotions.CornerGLContinuity.OrbitPositionsAndSizeBounds D) : Formalism.MainNotions.G.WittFrameLocaliserOrders.bd_RestOrbit := by
   intro r hh hr _ n' _ TT L₁ L₂ de x hn _ hL12 _ _ _ hLu h3 hg u G' N₁ T ell
   obtain ⟨_, _, _, _, _, hF⟩ := h.1 n' TT r L₁ L₂ (goodU de) (orbitSmallMultiplicity r hh x) (goodG' r de hh x) (orbitWindowCount r de hh x)
     (by omega) ⟨by omega, hLu, rfl, h3, hg⟩
@@ -864,7 +864,7 @@ theorem localiser_orbit_clauses_of_master (D : D7) (h : Formalism.MainNotions.Co
   obtain ⟨s, hs, hm, hc⟩ := c1 j
   exact ⟨s, hs, hm, hc i hi⟩
 
-theorem goodOrbitPositions_of_orbitLemmaFull (D : D7) (h : Formalism.MainNotions.CornerGLContinuity.OrbitPositionsAndSizeBounds D) : Formalism.MainNotions.SourceCleaning.GoodOrbitPositions D :=
+theorem goodOrbitPositions_of_orbitLemmaFull (D : D7) (h : Formalism.MainNotions.CornerGLContinuity.OrbitPositionsAndSizeBounds D) : Formalism.MainNotions.SourceCleaning.GoodOrbitPositions :=
   Formalism.MainNotions.G.WittFrameLocaliserOrders.good_orbits_of_frames D (localiser_orbit_clauses_of_master D h)
 
 end Formalism.MainNotions.G.TopChoiceBounds
@@ -1818,7 +1818,7 @@ theorem bt_real_tI {sm kappaThresholdOne kappaThresholdTwo N N1 v br n' c B : �
     show (4 + 2 * kappaThresholdOne + kappaThresholdTwo) * (N * B) =
       4 * (N * B) + 2 * kappaThresholdOne * (N * B) + kappaThresholdTwo * (N * B) by ring]
 
-theorem bt_real_NE {S Np N E lb B : ℝ} (hS : 40 ≤ S) (hN : 0 ≤ N) (hNp : Np ≤ 40 * S * N) (hNp0 : 0 ≤ Np)
+theorem bt_real_NE {S Np N E lb B : ℝ} (hS : 40 ≤ S) (hN : 0 ≤ N) (hNp : Np ≤ 40 * S * N)
     (hE0 : 0 ≤ E) (hE : E ≤ S ^ 8) (hl0 : 0 ≤ lb) (hl : lb ≤ S) (hB : S ^ 20 ≤ B) : Np * E * lb ≤ N * B := by
   have hS0 : 0 ≤ S := by linarith
   have a1 : Np * E * lb ≤ (40 * S * N) * S ^ 8 * S := by
@@ -1944,7 +1944,7 @@ theorem pow_sum_le_pow_eight {S u v w : ℝ} (hS : 40 ≤ S) (hu0 : 0 ≤ u) (hu
   have b4 : 0 < S ^ 5 := by positivity
   linarith
 
-theorem mul_pow_add_pow_le_pow_eight {S z u w : ℝ} (hS : 40 ≤ S) (hz0 : 0 ≤ z) (hz : z ≤ S) (hu0 : 0 ≤ u) (hu : u ≤ S) (hw0 : 0 ≤ w)
+theorem mul_pow_add_pow_le_pow_eight {S z u w : ℝ} (hS : 40 ≤ S) (hz : z ≤ S) (hu0 : 0 ≤ u) (hu : u ≤ S) (hw0 : 0 ≤ w)
     (hw : w ≤ S) : z * (u ^ 5 + w ^ 3) ≤ S ^ 8 := by
   have a1 := pow_le_pow_left₀ hu0 hu 5
   have a2 := pow_le_pow_left₀ hw0 hw 3
@@ -2196,7 +2196,7 @@ theorem bt_II (X : Inst D L) (K : Consts) (hK : K.Nonneg) (Ce S Ce9 : ℝ) (H : 
     refine bt_fin (c1 := K.DII + 3 * (rG L.sc : ℝ)) (by linarith only [hDII, hr0])
       (by unfold bt_C; linarith only [hr0, hrC, htI1, htI2, hDI, h90]) hNB ?_
     refine bt_real_DII hDII hr0 ?_ A5 ?_
-    · exact bt_real_NE hS hN0 O.Np hNp0 (by positivity)
+    · exact bt_real_NE hS hN0 O.Np (by positivity)
         (pow_sum_le_pow_eight hS (by positivity) hN1S hr0 H.r hk0.le H.k) O.lb0 O.lb O.SB
     · exact mul_le_of_density_bounds H.cl0 hN0 ha0 hX0 hp0 hpp hNC hc0n hc00 H.pX
 
@@ -2231,7 +2231,7 @@ theorem bt_I (X : Inst D L) (K : Consts) (hK : K.Nonneg) (Ce S Ce9 : ℝ) (H : b
   have hB0 : 0 ≤ L.sc.a / p := by positivity
   have hE0 : 0 ≤ (L.sc.x ^ (Scale.A / 2)) ^ 2 * ((N1 L.sc : ℝ) ^ 5 + (D.R.k : ℝ) ^ 3) := by positivity
   have hE : (L.sc.x ^ (Scale.A / 2)) ^ 2 * ((N1 L.sc : ℝ) ^ 5 + (D.R.k : ℝ) ^ 3) ≤ S ^ 8 :=
-    mul_pow_add_pow_le_pow_eight hS (by positivity) (by rw [rpow_half_sq_eq]; exact H.xA) (by positivity) hN1S hk0.le H.k
+    mul_pow_add_pow_le_pow_eight hS (by rw [rpow_half_sq_eq]; exact H.xA) (by positivity) hN1S hk0.le H.k
   have hDeq : DIf K L p (addOrderOf (hP D p)) = ⌈K.DI * NplusF L.sc (addOrderOf (hP D p)) *
       ((L.sc.x ^ (Scale.A / 2)) ^ 2 * ((N1 L.sc : ℝ) ^ 5 + (D.R.k : ℝ) ^ 3)) * Real.logb p L.sc.a⌉₊ := by
     unfold DIf
@@ -2272,7 +2272,7 @@ theorem bt_I (X : Inst D L) (K : Consts) (hK : K.Nonneg) (Ce S Ce9 : ℝ) (H : b
         (by positivity) O.nS O.SB
   · rw [hDeq]
     refine bt_fin (c1 := K.DI) hDI (by unfold bt_C; linarith only [hr0, hrC, hDII, htI1, htI2, h90]) hNB ?_
-    have := bt_real_NE hS hN0 O.Np hNp0 hE0 hE O.lb0 O.lb O.SB
+    have := bt_real_NE hS hN0 O.Np hE0 hE O.lb0 O.lb O.SB
     have h2 := mul_le_mul_of_nonneg_left this hDI
     linarith only [h2]
 
@@ -2719,7 +2719,7 @@ theorem bt_tau_pt (X : Inst D L) (K : Consts) (C : ℝ) (hC : 0 ≤ C) (hT : Cor
 
 
 open Classical in
-theorem bt_Ta_at (X : Inst D L) (K : Consts) (C : ℝ) (hC : 0 ≤ C) (hM : CornerGLContinuity.MertensBound D)
+theorem bt_Ta_at (X : Inst D L) (K : Consts) (C : ℝ) (hC : 0 ≤ C) (hM : CornerGLContinuity.MertensBound)
     (hF : ∀ w, L.tau w = tauP X K (aL L) (bL L) (D.what₂.places.resChar w)) (hT : CornerGLContinuity.CutSizes D L X K C)
     (hNB : ∀ p t0, t0 ∈ VV X K (aL L) (bL L) p → 1 ≤ (Nv X p t0 : ℝ) * (L.sc.a / p)) :
     CornerGLContinuity.WeightSumBound D L (4 * (2 * C + 1)) (2 * (C * D.R.f * (D.R.k : ℝ) ^ 2 * Real.log L.sc.a * (⌈L.sc.X'⌉₊ : ℝ))) := by
@@ -2782,8 +2782,8 @@ theorem bt_X'S (s : Scale) : s.X' ≤ Real.exp (s.x ^ (s.eps / 2)) := by
   apply Real.exp_le_exp.2
   exact Real.rpow_le_rpow_of_exponent_le s.one_lt_alt.le (by have := s.eps_pos; linarith)
 
-theorem bt_bo {S C f n k la X c : ℝ} (hS : 40 ≤ S) (hC0 : 0 ≤ C) (hC : C ≤ S) (hf : f = 2 * n) (hn0 : 0 ≤ n) (hn : n ≤ S)
-    (hk0 : 0 ≤ k) (hk : k ≤ S) (hl0 : 0 ≤ la) (hl : 2 * la ≤ S) (hX1 : 1 ≤ X) (hX : X ≤ S) (hc0 : 0 ≤ c)
+theorem bt_bo {S C f n k la X c : ℝ} (hS : 40 ≤ S) (hC : C ≤ S) (hf : f = 2 * n) (hn0 : 0 ≤ n) (hn : n ≤ S)
+    (hk0 : 0 ≤ k) (hk : k ≤ S) (hl0 : 0 ≤ la) (hl : 2 * la ≤ S) (hX : X ≤ S) (hc0 : 0 ≤ c)
     (hc : c ≤ X + 1) : 2 * (C * f * k ^ 2 * la * c) ≤ S ^ 8 := by
   have hS0 : (0 : ℝ) ≤ S := by linarith
   have h1 : C * f * k ^ 2 * la * c ≤ S * (2 * S) * S ^ 2 * S * (2 * S) := by
@@ -2863,8 +2863,8 @@ theorem stmtFTa_proved {eps : ℝ} (Fm : FamP eps) : CornerGLContinuity.FamilyWe
   have hX1 : (1 : ℝ) ≤ (Fm.L x i).sc.X' := by
     unfold Scale.X'
     exact Real.one_le_exp (Real.rpow_nonneg (lt_trans one_pos (Fm.L x i).sc.one_lt_alt).le _)
-  refine bt_bo H.forty_le_bound (le_max_right _ _) ?_ (n := ((Fm.D x i).R.n : ℝ)) ?_ (Nat.cast_nonneg _) H.n (Nat.cast_nonneg _) H.k
-    (Real.log_nonneg ha1.le) H.la hX1 (bt_X'S _) (Nat.cast_nonneg _) (Nat.ceil_lt_add_one (by linarith only [hX1])).le
+  refine bt_bo H.forty_le_bound ?_ (n := ((Fm.D x i).R.n : ℝ)) ?_ (Nat.cast_nonneg _) H.n (Nat.cast_nonneg _) H.k
+    (Real.log_nonneg ha1.le) H.la (bt_X'S _) (Nat.cast_nonneg _) (Nat.ceil_lt_add_one (by linarith only [hX1])).le
   · rw [hX, hE]
     linarith only [hCy, Real.add_one_le_exp (x ^ (eps / 2))]
   · unfold Ranks.f
@@ -3168,10 +3168,10 @@ namespace Formalism.MainNotions.G.TopChoiceBounds
 open Formalism.BasicNotions Formalism.MainNotions.G Formalism.MainNotions
 
 theorem family_master_orbit_holds {eps : ℝ} (Fm : FamP eps) : CornerGLContinuity.FamilyOrbitPositionsAndSizeBounds Fm := fun x i => master_orbit_lemma_holds (Fm.D x i)
-theorem orbit_positions_admitted_holds (D : D7) : tableLineDegreeFive.adm1 D := orbit_positions_of_master D (master_orbit_lemma_holds D)
-theorem orbit_counts_admitted_holds (D : D7) : tableLineDegreeFive.adm2 D := orbit_counts_of_master D (master_orbit_lemma_holds D)
-theorem symbol_space_orbit_holds (D : D7) : SelectionLemmas.PathPairCorrespondence D := symbol_space_orbit_of_master D (master_orbit_lemma_holds D)
-theorem localiser_orbit_holds (D : D7) : SourceCleaning.GoodOrbitPositions D := goodOrbitPositions_of_orbitLemmaFull D (master_orbit_lemma_holds D)
+theorem orbit_positions_admitted_holds (D : D7) : tableLineDegreeFive.adm1 := orbit_positions_of_master D (master_orbit_lemma_holds D)
+theorem orbit_counts_admitted_holds (D : D7) : tableLineDegreeFive.adm2 := orbit_counts_of_master D (master_orbit_lemma_holds D)
+theorem symbol_space_orbit_holds (D : D7) : SelectionLemmas.PathPairCorrespondence := symbol_space_orbit_of_master D (master_orbit_lemma_holds D)
+theorem localiser_orbit_holds (D : D7) : SourceCleaning.GoodOrbitPositions := goodOrbitPositions_of_orbitLemmaFull D (master_orbit_lemma_holds D)
 theorem family_uniform_constant_holds {eps : ℝ} (Fm : FamP eps) :
     ∃ C : ℝ, 0 < C ∧ ∃ x0 : ℝ, ∀ x ≥ x0, ∀ i : Fm.Ix x, AuxBlock8.adm1 (Fm.D x i) (Fm.L x i) (Fm.Gx x i) C :=
   family_uniform_constant_of_master Fm (family_master_orbit_holds Fm)

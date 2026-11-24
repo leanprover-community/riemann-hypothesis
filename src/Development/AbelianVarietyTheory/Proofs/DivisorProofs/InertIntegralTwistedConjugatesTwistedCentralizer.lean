@@ -927,7 +927,7 @@ end GlobalTheory.UnitDiscAlg.QuotAlg
 
 namespace GlobalTheory.UnitDiscAlg.QuotAlg
 
-theorem eq_one_of_mul_eq_one {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) (ha1 : a ≤ 1) (hb1 : b ≤ 1)
+theorem eq_one_of_mul_eq_one {a b : ℝ} (ha : 0 ≤ a) (ha1 : a ≤ 1) (hb1 : b ≤ 1)
     (hab : a * b = 1) : a = 1 := by nlinarith
 
 theorem inv_comm {E : Type} [Field E] {n : ℕ} {x N : Matrix (Fin n) (Fin n) E}
@@ -1125,7 +1125,7 @@ theorem quotient_integral_unit : ∀ (E : Type) [NontriviallyNormedField E] [IsU
     have h2 := GlobalTheory.norm_det_le_one_of_entries_le_one E n Y'.1 IY'
     have h3 : ‖Y.1.det‖ * ‖Y'.1.det‖ = 1 := by
       rw [← norm_mul, ← Matrix.det_mul, hYYv, Matrix.det_one, norm_one]
-    exact eq_one_of_mul_eq_one (norm_nonneg _) (norm_nonneg _) h1 h2 h3
+    exact eq_one_of_mul_eq_one (norm_nonneg _) h1 h2 h3
   exact ⟨u1, u2, u3, u4, by rw [Qm]; exact IY, by rw [Qm]; exact hdY⟩
 
 end GlobalTheory.UnitDiscAlg.QuotAlg

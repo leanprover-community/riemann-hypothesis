@@ -472,7 +472,7 @@ private theorem exp_quad (x : ℝ) : Real.exp x ≤ 1 + x + x ^ 2 * Real.exp |x|
         le_mul_of_one_le_right (sq_nonneg x) (Real.one_le_exp (by linarith))
       nlinarith
 
-private theorem up_pt (q u ε : ℝ) (hq : 0 ≤ q) (h0 : 0 ≤ ε) (h4 : ε ≤ 1 / 4) (hu : |u| ≤ ε * q) :
+private theorem up_pt (q u ε : ℝ) (hq : 0 ≤ q) (h4 : ε ≤ 1 / 4) (hu : |u| ≤ ε * q) :
     Real.exp (-Real.pi * (q + u)) ≤ Real.exp (-Real.pi * q) + -Real.pi * (u * Real.exp (-Real.pi * q)) +
       32 * ε ^ 2 * Real.exp (-Real.pi * (1 / 2 * q)) := by
   have hpi := Real.pi_pos
@@ -578,10 +578,10 @@ theorem UpperTheory.two_sided_bound_of_pointwise_bounds :
     (hsum1.hasSum.add (hsumM.hasSum.mul_left _)).add (hsumh.hasSum.mul_left _)
   have hsum' : Summable fun i => Real.exp (-Real.pi * (q i + u i)) :=
     Summable.of_nonneg_of_le (fun i => (Real.exp_pos _).le)
-      (fun i => up_pt (q i) (u i) ε (hq i) h0 h4 (hu i)) hR.summable
+      (fun i => up_pt (q i) (u i) ε (hq i) h4 (hu i)) hR.summable
   have hup : Z' ≤ Z + -Real.pi * M + 32 * ε ^ 2 * S := by
     rw [← hR.tsum_eq]
-    exact Summable.tsum_le_tsum (fun i => up_pt (q i) (u i) ε (hq i) h0 h4 (hu i)) hsum' hR.summable
+    exact Summable.tsum_le_tsum (fun i => up_pt (q i) (u i) ε (hq i) h4 (hu i)) hsum' hR.summable
   set m := -Real.pi * M / Z with hm
   have hmZ : m * Z = -Real.pi * M := by rw [hm]; exact div_mul_cancel₀ _ hZpos.ne'
   have hlow : Real.exp m * Z ≤ Z' := by
@@ -874,13 +874,13 @@ end
 
 private def rmul (M : Matrix (Fin a) (Fin a) (Cinf E)) : (Fin a → Cinf E) →ₗ[ℝ] (Fin a → Cinf E) where
   toFun v := v ᵥ* M
-  map_add' v w := Matrix.add_vecMul _ _ _
-  map_smul' c v := Matrix.smul_vecMul _ _ _
+  map_add' _ _ := Matrix.add_vecMul _ _ _
+  map_smul' _ _ := Matrix.smul_vecMul _ _ _
 
 private def lmul (v : Fin a → Cinf E) : Matrix (Fin a) (Fin a) (Cinf E) →ₗ[ℝ] (Fin a → Cinf E) where
   toFun M := v ᵥ* M
-  map_add' M M' := Matrix.vecMul_add _ _ _
-  map_smul' c M := Matrix.vecMul_smul _ _ _
+  map_add' _ _ := Matrix.vecMul_add _ _ _
+  map_smul' _ _ := Matrix.vecMul_smul _ _ _
 
 private theorem order (ι : Type) (x : ι → Fin a → Cinf E) (N : ℕ) (hx : Scale (fun i => qf (x i)) N) (n : ℕ) :
     ∀ P ∈ poly E a, ContDiffOn ℝ n (msum x P) (invSet E a) := by

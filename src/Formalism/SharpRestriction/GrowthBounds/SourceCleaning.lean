@@ -205,14 +205,14 @@ end Keys
 
 def CommonHypotheses (p n' r k : ℕ) : Prop := 13 ≤ p ∧ 2 ≤ r ∧ r ≤ k ∧ 2 ≤ n' ∧ Even n'
 
-def Conclusion1 (_D : Formalism.BasicNotions.D7) : Prop :=
+def Conclusion1 : Prop :=
   ∀ (p n' r k : ℕ) [Fact p.Prime] [NeZero n'] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     [Algebra (WF p n') O] (S : UniformizedDVR p O), OHyp p n' O S → CommonHypotheses p n' r k →
   ∀ (Fr : Frames n' r) (L₁ N₁ : ℕ), Fr.Valid L₁ N₁ →
   ∀ g g' : Matrix (Fin k) (Fin k) (WF p n'), IsGLW g → IsGLW g' →
     ratPlane p n' r g' ≠ ratPlane p n' r g → ordGe p n' O S.w n' r g' (Rloc p n' O Fr g) 1
 
-def Conclusion2 (_D : Formalism.BasicNotions.D7) : Prop :=
+def Conclusion2 : Prop :=
   ∀ (p n' r k : ℕ) [Fact p.Prime] [NeZero n'] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     [Algebra (WF p n') O] (S : UniformizedDVR p O), OHyp p n' O S → CommonHypotheses p n' r k →
   ∀ (Fr : Frames n' r) (L₁ N₁ : ℕ), Fr.Valid L₁ N₁ →
@@ -226,7 +226,7 @@ def Conclusion2 (_D : Formalism.BasicNotions.D7) : Prop :=
           (∏ j ∈ Finset.range Fr.J, (subst p n' O S.w n' r g (Del p n' O Fr g j)) ^ ex i j) *
           MvPolynomial.map (algebraMap O (KK O)) (H i)
 
-def PointsLemma (_D : Formalism.BasicNotions.D7) : Prop :=
+def PointsLemma : Prop :=
   ∀ (p n' r k : ℕ) [Fact p.Prime] [NeZero n'] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     [Algebra (WF p n') O] (S : UniformizedDVR p O), OHyp p n' O S → ∀ hH : CommonHypotheses p n' r k,
   ∀ (Fr : Frames n' r) (L₁ N₁ : ℕ), Fr.Valid L₁ N₁ → ∀ Q : ℕ, TwistBound p Fr Q →
@@ -238,7 +238,7 @@ def PointsLemma (_D : Formalism.BasicNotions.D7) : Prop :=
       X (s, b) * subst p n' O S.w n' r g (Dtop p n' O Fr hH.2.2.1 g (s.val : ℤ)) =
         ∑ i, MvPolynomial.map (algebraMap O (KK O)) (H i) * (C (wInv S.w) * ka0 i)
 
-def Conclusion4 (_D : Formalism.BasicNotions.D7) : Prop :=
+def Conclusion4 : Prop :=
   ∀ (p n' r k : ℕ) [Fact p.Prime] [NeZero n'] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     [Algebra (WF p n') O] (S : UniformizedDVR p O), OHyp p n' O S → ∀ hH : CommonHypotheses p n' r k,
   ∀ (Fr : Frames n' r) (L₁ N₁ : ℕ), Fr.Valid L₁ N₁ → ∀ Q : ℕ, TwistBound p Fr Q →
@@ -261,7 +261,7 @@ def Dhat {O : Type} [CommRing O] {σN : Type} {M r : ℕ} (A : Fin r → Fin M) 
     MvPolynomial (Fin M × Fin r) (MvPolynomial σN O) :=
   (Matrix.of fun l b : Fin r => X (A l, b)).det
 
-def Conclusion5 (_D : Formalism.BasicNotions.D7) : Prop :=
+def Conclusion5 : Prop :=
   ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (σN : Type) (M r : ℕ) [NeZero r]
     (LL : Letters (Fin M)) (s : Fin M) (A : Fin r → Fin M)
     (G : MvPolynomial (Fin M × Fin r) (MvPolynomial σN O)) (th : ℤ),
@@ -319,7 +319,7 @@ def Realisable (w : O) (n' r : ℕ) {k : ℕ} (g : Matrix (Fin k) (Fin k) (WF p 
 
 end Real
 
-def Conclusion6 (_D : Formalism.BasicNotions.D7) (CLa CD Csz : ℝ) : Prop :=
+def Conclusion6 (CLa CD Csz : ℝ) : Prop :=
   ∀ (p n' r K : ℕ) [Fact p.Prime] [NeZero n'] [NeZero r] [NeZero K] (O : Type) [CommRing O] [IsDomain O]
     [IsDiscreteValuationRing O] [Algebra (WF p n') O] (S : UniformizedDVR p O), OHyp p n' O S →
     CommonHypotheses p n' r (r + K) →
@@ -339,7 +339,7 @@ def Conclusion6 (_D : Formalism.BasicNotions.D7) (CLa CD Csz : ℝ) : Prop :=
   ∀ o : ℕ, (∀ m ∈ (monPh O K p Fr mon xi).support, normDeg r m = o) →
     Realisable p n' S.w n' r g c' o (MvPolynomial.map (algebraMap O (KK O)) (monPh O K p Fr mon xi))
 
-def GoodOrbitPositions (_D : Formalism.BasicNotions.D7) : Prop :=
+def GoodOrbitPositions : Prop :=
   ∀ (r : ℕ) (h : ℝ), 2 ≤ r → 0 ≤ h → ∃ Ce : ℝ, 0 < Ce ∧
   ∀ (n' : ℕ) [NeZero n'] (TT : Finset (Fin n')) (L₁ L₂ : ℕ) (de x : ℝ),
     Even n' → 1 ≤ L₁ → 2 * L₁ ≤ L₂ → 0 < de → de ≤ 1 → 3 ≤ x → L₂ < goodU de →
@@ -372,49 +372,49 @@ def GoodOrbitPositions (_D : Formalism.BasicNotions.D7) : Prop :=
 
     (∀ y : ℤ, ((Finset.Ico y (y + L₂)).filter fun t => posOf n' t ∈ TT).card ≤ r - 1)
 
-def BlochKatoExtensionCriterion (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.adm5 D
+def BlochKatoExtensionCriterion (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.adm5
 
-def InvariantProjectionLemma (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.InvariantProjectionField D
+def InvariantProjectionLemma (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.InvariantProjectionField
 
-def NablaDeltaComparison (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.NablaDeltaComparisonField D
+def NablaDeltaComparison (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.NablaDeltaComparisonField
 
-def IsotypicProjectorTheorem (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.IsotypicProjectorTheoremField D
+def IsotypicProjectorTheorem (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.IsotypicProjectorTheoremField
 
-def TranslateCorollary (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.TranslateCorollaryField D
+def TranslateCorollary (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.TranslateCorollaryField
 
-def FilteredProjectorCorollary (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.FilteredProjectorCorollaryField D
+def FilteredProjectorCorollary (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.FilteredProjectorCorollaryField
 
 def ValuationLemma (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.ValuationLemmaField D
 
-def ValuationsOfProducts (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.AutomorphicSideConclusion D
+def ValuationsOfProducts (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.AutomorphicSideConclusion
 
 def PathColumnBasis (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.HyperplaneRank D
 
-def StandardMonomialSpanBis (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D
+def StandardMonomialSpanBis (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.DefiniteRankOne
 
-def PathPairCorrespondence (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.RotatedSumBound D
+def PathPairCorrespondence (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.RotatedSumBound
 
-def admB2 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.PathWeightComponents D
+def admB2 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.PathWeightComponents
 
-def admB3 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.ConclusionB3 D
+def admB3 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.ConclusionB3
 
 def CoefficientDependenceLemma (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.CoefficientDependence D
 
-def CoefficientValuationLemma (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.CanonicalTranslateJetIdentity D
+def CoefficientValuationLemma (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.CanonicalTranslateJetIdentity
 
-def LargePrimeLengthVanishing (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.ConclusionE D
+def LargePrimeLengthVanishing (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.ConclusionE
 
-def CharpolyCoeffsLemmaFamily (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.UnitFunctionExpansion D
+def CharpolyCoeffsLemmaFamily (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.UnitFunctionExpansion
 
 def SpanQuotientLemma (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.UnitProductSecondLemma D
 
 def DividedDerivativeLemma (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.DerivativeLemma D
 
-def SegmentPositions (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.SelectionLemmas.PathPairCorrespondence D
+def SegmentPositions (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.SelectionLemmas.PathPairCorrespondence
 
-def ValuationsOnPolynomials (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.SelectionLemmas.admB2 D
+def ValuationsOnPolynomials (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.SelectionLemmas.admB2
 
-def SpaceCriterionModuloUniformiser (_D : Formalism.BasicNotions.D7) : Prop :=
+def SpaceCriterionModuloUniformiser : Prop :=
   ∀ (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (_S : UniformizedDVR p O)
     (n' r K : ℕ) [NeZero n'] [NeZero r] [NeZero K]
     (Fr : Frames n' r) (j : ℤ) (m : ℤ → ℤ) (th o : ℤ → ℝ),
@@ -443,15 +443,15 @@ def SpaceCriterionModuloUniformiser (_D : Formalism.BasicNotions.D7) : Prop :=
     ∃ P ∈ XX' O r K Fr j m th o,
       MvPolynomial.map (IsLocalRing.residue O) P = plEmb (FF O) r K A * nmEmb (FF O) r K G)
 
-def admG2 (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) : Prop := Formalism.MainNotions.SelectionLemmas.Conclusion2 D CLa Ck Crk Cdeg
+def admG2 (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) : Prop := Formalism.MainNotions.SelectionLemmas.Conclusion2 CLa Ck Crk Cdeg
 
 def admitted (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) : Prop :=
-  GoodOrbitPositions D ∧ BlochKatoExtensionCriterion D ∧ InvariantProjectionLemma D ∧ NablaDeltaComparison D ∧ IsotypicProjectorTheorem D ∧ TranslateCorollary D ∧ FilteredProjectorCorollary D ∧ ValuationLemma D ∧ ValuationsOfProducts D ∧ PathColumnBasis D ∧
+  GoodOrbitPositions ∧ BlochKatoExtensionCriterion D ∧ InvariantProjectionLemma D ∧ NablaDeltaComparison D ∧ IsotypicProjectorTheorem D ∧ TranslateCorollary D ∧ FilteredProjectorCorollary D ∧ ValuationLemma D ∧ ValuationsOfProducts D ∧ PathColumnBasis D ∧
     StandardMonomialSpanBis D ∧ PathPairCorrespondence D ∧ admB2 D ∧ admB3 D ∧ CoefficientDependenceLemma D ∧ CoefficientValuationLemma D ∧ LargePrimeLengthVanishing D ∧ CharpolyCoeffsLemmaFamily D ∧ SpanQuotientLemma D ∧ DividedDerivativeLemma D ∧
-    SegmentPositions D ∧ ValuationsOnPolynomials D ∧ SpaceCriterionModuloUniformiser D ∧ admG2 D CLa Ck Crk Cdeg
+    SegmentPositions D ∧ ValuationsOnPolynomials D ∧ SpaceCriterionModuloUniformiser ∧ admG2 D CLa Ck Crk Cdeg
 
 def aux₃ (D : Formalism.BasicNotions.D7) (CLa' CD Csz : ℝ) : Prop :=
-  Conclusion1 D ∧ Conclusion2 D ∧ PointsLemma D ∧ Conclusion4 D ∧ Conclusion5 D ∧ Conclusion6 D CLa' CD Csz
+  Conclusion1 ∧ Conclusion2 ∧ PointsLemma ∧ Conclusion4 ∧ Conclusion5 ∧ Conclusion6 CLa' CD Csz
 
 def ClosedFormOfAdmitted (D : Formalism.BasicNotions.D7) : Prop :=
   ∀ CLa Ck Crk Cdeg : ℝ, admitted D CLa Ck Crk Cdeg →

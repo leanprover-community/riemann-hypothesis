@@ -388,7 +388,7 @@ theorem isIdTorusElt_mul {F E : Type} [Field F] [NumberField F] [Field E] [Numbe
   · rw [map_mul, Units.val_mul, Matrix.mul_assoc, hb1, ← Matrix.mul_assoc, ha1, Matrix.mul_assoc, diagonal_mul_diagonal]
     exact congrArg _ (congrArg _ (funext fun k => by simp))
   · rw [map_mul, Units.val_mul, Matrix.mul_assoc, hb2, ← Matrix.mul_assoc, ha2, Matrix.mul_assoc, diagonal_mul_diagonal]
-    exact congrArg _ (congrArg _ (funext fun k => by simp [map_mul, mul_inv, Units.val_mul, mul_comm]))
+    exact congrArg _ (congrArg _ (funext fun k => by simp [map_mul, Units.val_mul, mul_comm]))
   · rw [map_mul, Units.val_mul, ← Matrix.mulVec_mulVec, hb3 z hz, ha3 z hz]
 end GlobalTheory.IdTorus
 end -- clump:auto
@@ -855,8 +855,8 @@ def latEquiv (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [A
     [_root_.NumberField.IsTotallyComplex E] (k : ℕ) : GlobalTheory.UnitaryBC.latticeGL E k ≃ latR F E k where
   toFun g := ⟨(glTens F E k).symm g, symm_mem_latR g.2⟩
   invFun x := ⟨glTens F E k x, latR_le k x.2⟩
-  left_inv g := Subtype.ext ((glTens F E k).apply_symm_apply _)
-  right_inv x := Subtype.ext ((glTens F E k).symm_apply_apply _)
+  left_inv _ := Subtype.ext ((glTens F E k).apply_symm_apply _)
+  right_inv _ := Subtype.ext ((glTens F E k).symm_apply_apply _)
 
 theorem finvol_tens : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
     [_root_.NumberField.IsTotallyComplex E] (k : ℕ) [MeasurableSpace (GL (Fin k) (AF F ⊗[F] E))]
@@ -905,7 +905,7 @@ lemma c_neg {c : ℝ → G} (hca : ∀ x y, c (x + y) = c x * c y) (r : ℝ) : (
 def cHom (c : ℝ → G) (hca : ∀ x y, c (x + y) = c x * c y) : Multiplicative ℝ →* G where
   toFun x := c (Multiplicative.toAdd x)
   map_one' := c_zero hca
-  map_mul' x y := hca _ _
+  map_mul' _ _ := hca _ _
 
 lemma c_int {c : ℝ → G} (hca : ∀ x y, c (x + y) = c x * c y) (n : ℤ) : c n = c 1 ^ n := by
   have h := map_zpow (cHom c hca) (Multiplicative.ofAdd (1:ℝ)) n

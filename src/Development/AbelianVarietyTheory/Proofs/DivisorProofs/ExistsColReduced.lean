@@ -155,11 +155,11 @@ theorem exists_col_reduced (g : GL (Fin n) F) :
       (fun i j hij => by
         have h1 : ¬ (k = i ∧ c = j) := by
           rintro ⟨rfl, rfl⟩; exact absurd hkc (not_lt.2 hij.le)
-        simp [Matrix.transvection, Matrix.one_apply_ne (ne_of_gt hij), Matrix.single_apply, h1])
+        simp [Matrix.transvection, Matrix.one_apply_ne (ne_of_gt hij), h1])
       (fun i => by
         have h1 : ¬ (k = i ∧ c = i) := by
           rintro ⟨rfl, h⟩; exact absurd h (ne_of_gt hkc)
-        simp [Matrix.transvection, Matrix.single_apply, h1])
+        simp [Matrix.transvection, h1])
     have hval : ((g * (u * t) : GL (Fin n) F) : Matrix (Fin n) (Fin n) F) =
         H * Matrix.transvection k c (-(H (s c) c / H (s c) k)) := by
       rw [← mul_assoc, Units.val_mul, htv]

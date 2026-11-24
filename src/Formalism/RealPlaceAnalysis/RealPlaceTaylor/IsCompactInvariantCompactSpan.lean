@@ -103,7 +103,7 @@ theorem eigenvalue_real {V : Type*} [NormedAddCommGroup V] [InnerProductSpace �
   have hvv : ⟪v, v⟫_ℂ ≠ 0 := inner_self_ne_zero.2 hv
   exact Complex.conj_eq_iff_re.1 (mul_right_cancel₀ hvv h)
 
-theorem kHiUniq_of (hl : KLow) (_hw : KWtOrth) (ho : KOrth) : KHiUniq := by
+theorem kHiUniq_of (hl : KLow) (ho : KOrth) : KHiUniq := by
   intro V _ _ n ε F μ ν x y hrel hunit hx hyx hy
   by_cases hμν : ν = μ
   · right

@@ -204,7 +204,7 @@ private lemma beta_add_right' (d : ℕ) {H : Matrix (Fin g) (Fin g) ℂ} (hH : H
 
 open scoped ComplexConjugate BigOperators ComplexOrder in
 variable {g : ℕ} in
-private lemma div_mem_of_norms_dvd_lemma_9 {d k q : ℕ} (hd : 0 < d) (hk : 4 * k = d + 1) (hq : q.Prime)
+private lemma div_mem_of_norms_dvd_lemma_9 {d k q : ℕ} (hk : 4 * k = d + 1) (hq : q.Prime)
     (hqd : ¬ q ∣ d) {H : Matrix (Fin g) (Fin g) ℂ} (hH : H.IsHermitian) {w₁ w₂ : Fin g → ℂ}
     (hb : _root_.Formalism.L2.Ker.JMB.beta d H w₁ w₂ ∈ _root_.Formalism.L2.Ker.JMB.OK d)
     (h₁ : ∃ n : ℤ, _root_.Formalism.L2.Ker.JMB.beta d H w₁ w₁ = q * n) (h₂ : ∃ n : ℤ, _root_.Formalism.L2.Ker.JMB.beta d H w₂ w₂ = q * n)
@@ -357,7 +357,7 @@ private lemma exists_orthogonal_vector_norm_coprime {q : ℕ} (hq : q.Prime) (S 
     exact ⟨m, by rw [hnw]; push_cast; ring⟩
   have hdiv : ∀ y ∈ S.La, ∀ z ∈ S.La, _root_.Formalism.L2.Ker.JMB.beta S.d S.Hm (P y) z / q ∈ _root_.Formalism.L2.Ker.JMB.OK S.d := by
     intro y hy z hz
-    have hpol := div_mem_of_norms_dvd_lemma_9 hd hk hq hqd hH.1 (hint _ (hPL y hy) _ (hPL z hz))
+    have hpol := div_mem_of_norms_dvd_lemma_9 hk hq hqd hH.1 (hint _ (hPL y hy) _ (hPL z hz))
       (hdivall y hy) (hdivall z hz)
       (by rw [← map_add (f := _)]; exact hdivall _ (S.La.add_mem hy hz))
       (by rw [← LinearMap.map_smul, ← map_add (f := _)]; exact hdivall _ (S.La.add_mem hy (hω z hz)))

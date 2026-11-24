@@ -452,7 +452,7 @@ theorem measurable_inv_mulVec_embWb_of_measSec {s : ℂ → Matrix (Fin (k + 1))
     mvM_cont.measurable.comp (h1.prodMk measurable_const)
   exact mvM_cont.measurable.comp ((invM_meas.comp measurable_snd).prodMk h2)
 
-theorem nu_hyp (CWb : ClosedWb) (CW : ClosedW) (UF : UWbFacts) (z z' : Vc k r)
+theorem nu_hyp (CWb : ClosedWb) (UF : UWbFacts) (z z' : Vc k r)
     {s : ℂ → Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} (hs : MeasSec s) (hsu : ∀ ζ, (s ζ)ᴴ * Hb k * s ζ = Hb k)
     {μW μW' : Measure (Mt k r)} (hW : IsHaarOn (UWset k r z) μW) [SFinite μW] [SFinite μW']
     (f : Mt k r → ℝ≥0∞) (hf : Measurable f) (G : Vc k r → ℝ≥0∞) (hG : Measurable G)
@@ -509,8 +509,8 @@ theorem nu_left (CWb : ClosedWb) (CW : ClosedW) (UF : UWbFacts) (HI : HypInv) (z
   obtain ⟨G, hG, hFG⟩ := exists_G CWb z' (fun m => ∫⁻ h', f (mulM (m, h')) ∂μW') (FF_meas μW' f hf)
     (fun m h hh => FF_inv hW' f hf m h hh)
   have hFG' : ∀ m ∈ UWb k r, (∫⁻ h', f (mulM (m, h')) ∂μW') = G (m *ᵥ z') := hFG
-  have h1 := nu_hyp CWb CW UF z z' hs hsu hW f hf G hG hFG' a ha
-  have h2 := nu_hyp CWb CW UF z z' hs hsu hW f hf G hG hFG' 1 hWb.one_mem
+  have h1 := nu_hyp CWb UF z z' hs hsu hW f hf G hG hFG' a ha
+  have h2 := nu_hyp CWb UF z z' hs hsu hW f hf G hG hFG' 1 hWb.one_mem
   have hHI := HI k r z z' s μW hk hz hz' hT hT' hsec hW a ha
   have hav : Measurable fun v : Vc k r => a *ᵥ v :=
     (mvM_cont.comp (continuous_const.prodMk continuous_id)).measurable
@@ -537,7 +537,7 @@ theorem ae_both (z z' : Vc k r) {μW μW' : Measure (Mt k r)} (hW : IsHaarOn (UW
     Measure.quasiMeasurePreserving_snd.ae (ae_mem hW')
   exact Measure.quasiMeasurePreserving_snd.ae (hA.and hB)
 
-theorem nu_conc (CWb : ClosedWb) (CW : ClosedW) (UF : UWbFacts) (z z' : Vc k r)
+theorem nu_conc (CWb : ClosedWb) (UF : UWbFacts) (z z' : Vc k r)
     {s : ℂ → Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ} (hs : MeasSec s) (hsu : ∀ ζ, (s ζ)ᴴ * Hb k * s ζ = Hb k)
     {μW μW' : Measure (Mt k r)} (hW : IsHaarOn (UWset k r z) μW) (hW' : IsHaarOn (UWset k r z') μW') :
     (nu z z' s μW μW') (UWb k r)ᶜ = 0 := by
@@ -708,7 +708,7 @@ theorem rank_one_formula_of_parts : Formalism.FourierDecayAlt.B2.AssembleRankOne
   have hss : IsSection k r z z' (secF k r z z' μsec) := secF_section hsec
   have hsu : ∀ ζ, (secF k r z z' μsec ζ)ᴴ * Hb k * secF k r z z' μsec ζ = Hb k := secF_unit hsec
   obtain ⟨c, hc⟩ := HU k r (UWb k r) μb (nu z z' (secF k r z z' μsec) μW μW') (CWb k r) hb
-    (nu_conc CWb CW UF z z' hsm hsu hW hW')
+    (nu_conc CWb UF z z' hsm hsu hW hW')
     (fun a ha => nu_left CWb CW UF HI z z' hsm hsu hk hz hz' hT hT' hss hW hW' a ha)
     (fun K hK => nu_finite KW RM z z' hsm hz hz' hT hT' hss hW hW' K hK)
   have hc0 : c ≠ 0 := by

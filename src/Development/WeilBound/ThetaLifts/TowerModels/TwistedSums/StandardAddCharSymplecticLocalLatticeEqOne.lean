@@ -116,7 +116,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.TraceMixedEmbedding.trace_mixedEmbedding :
-    ∀ {F : Type} [inst : Field F] [inst_1 : NumberField F] (y : F),
+    ∀ {F : Type} [Field F] [NumberField F] (y : F),
     (Algebra.trace ℝ (NumberField.mixedEmbedding.mixedSpace F) : NumberField.mixedEmbedding.mixedSpace F → ℝ)
         ((NumberField.mixedEmbedding F : F → NumberField.mixedEmbedding.mixedSpace F) y) =
       (↑((Algebra.trace ℚ F : F → ℚ) y) : ℝ) := by

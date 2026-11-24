@@ -190,7 +190,7 @@ private def stab {V : Type} [AddCommGroup V] [Module ℂ V] (M : Submodule ℂ V
   carrier := {a | ∀ x ∈ M, a x ∈ M}
   mul_mem' := fun ha hb x hx => ha _ (hb x hx)
   add_mem' := fun ha hb x hx => M.add_mem (ha x hx) (hb x hx)
-  algebraMap_mem' := fun c x hx => M.smul_mem c hx
+  algebraMap_mem' := fun c _ hx => M.smul_mem c hx
 
 private theorem exists_poly {A : Type} [Ring A] [Algebra ℂ A] {R : Type} [CommRing R] [Algebra ℂ R]
     (φ : R →ₐ[ℂ] A) {n : ℕ} (E : Fin n → Fin n → A) (h : ∀ u, qdet E u ∈ φ.range) :

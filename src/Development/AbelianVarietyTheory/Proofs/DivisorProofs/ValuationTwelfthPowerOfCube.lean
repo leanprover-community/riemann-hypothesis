@@ -61,7 +61,7 @@ open scoped IntermediateField BigOperators Topology
 
 namespace GlobalTheory
 
-private lemma twelfth_power_clear_denom_three_mod_eight (p : ℕ) (D A Q s : ℂ) (n : ℕ) (hp0 : (p:ℂ) ≠ 0) (hD0 : D ≠ 0)
+private lemma twelfth_power_clear_denom_three_mod_eight (p : ℕ) (D A Q s : ℂ) (n : ℕ) (hp0 : (p:ℂ) ≠ 0)
     (hQ0 : Q ≠ 0) (hs2 : s^2 = 1) (hε : Q^4 * (p:ℂ)^3 = s * D^(4*n+1)) :
     (A*D^n/(Q*p))^12 * (p:ℂ)^3 * D^3 * s = A^12 := by
   have h3 : Q^12 * (p:ℂ)^9 = s * D^(12*n+3) := by
@@ -120,7 +120,7 @@ theorem valuation_twelfth_power_of_cube :
     refine ⟨A * D^n / (Q * p), div_mem (mul_mem hA (pow_mem hD n)) (mul_mem hQ (natCast_mem F p)),
       div_ne_zero (mul_ne_zero hA0 (pow_ne_zero _ hD0)) (mul_ne_zero hQ0 hp0), ?_⟩
     rw [ite_eq_left (by omega)]
-    exact twelfth_cancel V D A _ _ s 3 hD0 hs2 hv (twelfth_power_clear_denom_three_mod_eight p D A Q s n hp0 hD0 hQ0 hs2 hε)
+    exact twelfth_cancel V D A _ _ s 3 hD0 hs2 hv (twelfth_power_clear_denom_three_mod_eight p D A Q s n hp0 hQ0 hs2 hε)
   · rw [show 2 * (2 * n + 1) + 1 = 4 * n + 3 by ring] at hε
     refine ⟨A * Q / D^(n+1), div_mem (mul_mem hA hQ) (pow_mem hD _),
       div_ne_zero (mul_ne_zero hA0 hQ0) (pow_ne_zero _ hD0), ?_⟩

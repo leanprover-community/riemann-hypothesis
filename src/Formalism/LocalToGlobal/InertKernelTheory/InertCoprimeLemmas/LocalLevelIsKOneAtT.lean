@@ -142,7 +142,7 @@ theorem resV_X [Finite ι] {f : κ → ι} (hf : Function.Injective f) (k : κ) 
     apply Finsupp.mapDomain_injective hf
     rw [h', Finsupp.mapDomain_single]
 
-theorem resV_X_off [Finite ι] {f : κ → ι} (hf : Function.Injective f) (i : ι) (hi : ∀ k, f k ≠ i) :
+theorem resV_X_off [Finite ι] {f : κ → ι} (i : ι) (hi : ∀ k, f k ≠ i) :
     resV f (MvPowerSeries.X i : MvPowerSeries ι R) = 0 := by
   classical
   ext n
@@ -202,7 +202,7 @@ theorem resV_diag [Finite ι] [Finite κ] {f : κ → ι} (hf : Function.Injecti
   · obtain ⟨L', hL'⟩ := PowerSeries.X_dvd_iff.mpr hL
     have hs : PowerSeries.HasSubst (MvPowerSeries.X i : MvPowerSeries ι R) :=
       PowerSeries.HasSubst.of_constantCoeff_zero (MvPowerSeries.constantCoeff_X i)
-    rw [hL', PowerSeries.subst_mul hs, PowerSeries.subst_X hs, resV_mul hf, resV_X_off hf i hi, zero_mul]
+    rw [hL', PowerSeries.subst_mul hs, PowerSeries.subst_X hs, resV_mul hf, resV_X_off i hi, zero_mul]
 
 theorem hasSubst_negX [Finite ι] :
     MvPowerSeries.HasSubst (fun i : ι => -(MvPowerSeries.X i : MvPowerSeries ι R)) :=
@@ -213,7 +213,7 @@ theorem resV_negX [Finite ι] [Finite κ] {f : κ → ι} (hf : Function.Injecti
       MvPowerSeries.subst (fun k => -(MvPowerSeries.X k : MvPowerSeries κ R)) (resV f g) := by
   refine resV_subst_diag hf hasSubst_negX hasSubst_negX (fun k => ?_) (fun i hi => ?_) g
   · rw [resV_neg, resV_X hf]
-  · rw [resV_neg, resV_X_off hf i hi, neg_zero]
+  · rw [resV_neg, resV_X_off i hi, neg_zero]
 
 end Res
 
@@ -309,7 +309,7 @@ theorem resV_beSum {ι κ : Type} [Fintype ι] [Fintype κ] {g : κ → ι} (hg 
       · simp only [Sum.map_inr, Sum.inr.injEq] at hk
         exact hi ⟨k, hk⟩
     rw [restrict_formalSum hgg _ (MvPowerSeries.constantCoeff_X _) (MvPowerSeries.constantCoeff_X _),
-      resV_X_off hgg _ hl, resV_X_off hgg _ hr, formalSum_zero_zero hbe]
+      resV_X_off _ hl, resV_X_off _ hr, formalSum_zero_zero hbe]
   · intro k
     have hl := resV_X (R := K0 p) hgg (Sum.inl k)
     have hr := resV_X (R := K0 p) hgg (Sum.inr k)
@@ -350,7 +350,7 @@ theorem admissible_second_of_variant (D : Formalism.BasicNotions.D7) {p : ℕ} [
     (E : CEmbC X.G) (hfin : ∀ j c, (X.Lv.lev j c).FinClasses) (hst : FinStab X.Lv) {g : Formalism.MainNotions.GL3Theta.G1 p}
     (hLT : LTIso g) {T : Type} (pos : (Σ v : X.Pl, Fin (X.G.P.n' v)) ≃ T)
     (F : ∀ j, X.Lt j → X.Lt (j + 1) → MvPowerSeries (T × Fin ((X.Pj (j + 1)).m + 1) × Fin ((X.Pj j).m + 1)) ℂ_[p]) :
-    Formalism.MainNotions.FormalGroupSystem.adm2b D X (pendT X E hfin hst hLT pos F) → Formalism.MainNotions.FormalGroupSystem.adm2 D X (pendT X E hfin hst hLT pos F) :=
+    Formalism.MainNotions.FormalGroupSystem.adm2b X (pendT X E hfin hst hLT pos F) → Formalism.MainNotions.FormalGroupSystem.adm2 X (pendT X E hfin hst hLT pos F) :=
   fun h => (adm_two_iff_local_representative D X E hfin hst hLT pos F).2
     (first_kernel_local_of_general X E hfin _ pos F ((adm_two_pendant_iff_representative D X E hfin hst hLT pos F).1 h))
 

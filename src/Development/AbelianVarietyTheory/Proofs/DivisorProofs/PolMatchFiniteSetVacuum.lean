@@ -96,8 +96,8 @@ end Extend
 theorem polMatchOn_insert : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
     (B : Base F E) (a a' : ℕ) (G : Geo σ a a') (X : Chars F E) (R : RealMaps F a a') (Rf : FinMaps F a a') (v : Pl (F := F)),
     Rf.p v (G.M.vac v) = Rf.p' v (G.M'.vac v) → ∀ (T : Finset (Pl (F := F))) (Φ : (Fin a × Fin (a + a') → AF F) → ℂ)
-    (Φ' : (Fin a' × Fin (a + a') → AF F) → ℂ), GlobalTheory.ThK.PolynomialMatching.PolMatchOn B G X R Rf T Φ Φ' →
-    GlobalTheory.ThK.PolynomialMatching.PolMatchOn B G X R Rf (insert v T) Φ Φ' := by
+    (Φ' : (Fin a' × Fin (a + a') → AF F) → ℂ), GlobalTheory.ThK.PolynomialMatching.PolMatchOn B G R Rf T Φ Φ' →
+    GlobalTheory.ThK.PolynomialMatching.PolMatchOn B G R Rf (insert v T) Φ Φ' := by
   intro F E _ _ _ _ _ σ B a a' G X R Rf v hv T Φ Φ' hM
   obtain ⟨m, m', f, φ, f', φ', hφ, hφ', hΦ, hΦ', hsum⟩ := hM
   refine ⟨m, m', f, φ, f', φ',

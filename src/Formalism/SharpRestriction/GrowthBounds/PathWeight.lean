@@ -53,7 +53,7 @@ namespace Formalism.MainNotions.G.symbolGeneratorData
 open Formalism.MainNotions.G Formalism.MainNotions.SourceCleaning Formalism.MainNotions.G.WittFrameLocaliserOrders
 
 theorem classMap_estimate_of_admissible : ∃ C : ℝ, 1 ≤ C ∧ ∀ D : Formalism.BasicNotions.D7, StandardMonomialSpanBis D → PathPairCorrespondence D → admB2 D → admB3 D → CoefficientValuationLemma D → LargePrimeLengthVanishing D →
-    Conclusion6 D C (C + 1) C := by
+    Conclusion6 C (C + 1) C := by
   by_cases hE : FieldMultidegreeDivisibility
   · obtain ⟨C, hC, hD⟩ := restDivM hE
     exact ⟨C, hC, fun D hA3 hB1 hB2 hB3 hC1 _ => lemma4_of_remaining_statements D C (C + 1) C restModel (hD restGeom)

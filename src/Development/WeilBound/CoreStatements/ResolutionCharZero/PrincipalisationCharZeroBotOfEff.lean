@@ -336,7 +336,7 @@ theorem gIso : GIso := fun _ _ _ _ _ _ _ hs =>
   PositivityTheory.ResPlug.FromRes.isIso_topMap_restrict_of_isPrincipalizingSequence hs
 
 theorem gSnc : GSnc := fun _ _ _ _ _ _ _ _ _ _ _ hL hs =>
-  PositivityTheory.ResPlug.FromRes.isStrictNormalCrossings_of_isPrincipalizingSequence hL hs
+  PositivityTheory.ResPlug.FromRes.isStrictNormalCrossings_of_isPrincipalizingSequence hs
 
 theorem principalisationCharZero_of_eff (hB : GBoundary) (hc : GEff) : PrincipalisationCharZero :=
   principalisationCharZero'' hB gIso gSnc hc

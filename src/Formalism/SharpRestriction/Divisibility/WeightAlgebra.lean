@@ -401,7 +401,7 @@ def H3 (large₂ : SizeData₂ D) (H : KHyp) (C2 A2 CR Bx : ℝ) (wL : WeightFam
   (D.R.f : ℝ) * (D.R.m : ℝ) ^ 3 * WeightFamilies.RRv D CR ^ 2 * cc D large₂ H.Cc H.Ac H.CRc wL ≤ 1 / 2 ∧
   ((WeightFamilies.dimY D j + 4) * DF wL : ℝ) ≤ (qq D : ℝ) - 2
 
-def H4 (large₂ : SizeData₂ D) (X : PJ D B P j) (_H : KHyp) (C2 A2 CR : ℝ) (ka wL wF : WeightFamilies.Wt D j) (T nW : ℕ) : Prop :=
+def H4 (large₂ : SizeData₂ D) (X : PJ D B P j) (C2 A2 CR : ℝ) (ka wL wF : WeightFamilies.Wt D j) (T nW : ℕ) : Prop :=
   large₂.sc.b ≤ ka.size ∧ (T : ℝ) * wL.size ≤ 2 * ka.size ∧
   wF.size ≤ ((WeightFamilies.dimY D j : ℝ) + 2) * wL.size + 5 * D.R.f * (D.R.r : ℝ) ^ 2 * T ∧
   WeightFamilies.PPv D large₂ C2 A2 ^ 3 * (T : ℝ) ^ 2 ≤ large₂.sc.b ∧
@@ -429,7 +429,7 @@ def Hyp (large₂ : SizeData₂ D) (X : PJ D B P j) (H : KHyp) (C2 A2 CR Bx CT :
     (ka wL wF : WeightFamilies.Wt D j) (T nP nW : ℕ) (h0 : ℝ) (nus : HeightOneSpectrum (𝓞 B.KO) → ℝ) : Prop :=
   ParA large₂ H.CA ∧ SetC large₂ X H.CK H.C1 H.A1 ka wL wF T nP nW h0 ∧ ScalB large₂ X H.C1 H.A1 S ka wL wF T ∧
     H1 large₂ X H S wL nus ∧ H2 X S ka wL wF ∧ H3 large₂ H C2 A2 CR Bx wL T ∧
-    H4 large₂ X H C2 A2 CR ka wL wF T nW ∧ (T : ℝ) ≤ large₂.sc.x ^ CT
+    H4 large₂ X C2 A2 CR ka wL wF T nW ∧ (T : ℝ) ≤ large₂.sc.x ^ CT
 
 end J
 
@@ -442,7 +442,7 @@ def Conclusion1 (large₂ : SizeData₂ D) (X : Prov D B P) (H : KHyp) (C2 A2 CR
 
 def adm1 (B : WeightFamilies.Prov D) : Prop := WeightFamilies.adm1 B
 
-def adm2 (large₂ : SizeData₂ D) (X : Prov D B P) (CA _C1 _A1 CG AG : ℝ) : Prop :=
+def adm2 (large₂ : SizeData₂ D) (X : Prov D B P) (CA CG AG : ℝ) : Prop :=
   (ParA large₂ CA → OPO large₂ B → ∀ j (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) (w : WeightFamilies.Wt D j), 8 * D.R.f * D.R.r + 4 ≤ w.n →
     Submodule.span B.KO ((X j h1 h2).shortTh w : Set (B.Cusp j w)) = ⊤ ∧
     ∃ S : Finset (B.Cusp j w),
@@ -459,7 +459,7 @@ def adm3 (large₂ : SizeData₂ D) (X : Prov D B P) (CA Cf Af : ℝ) : Prop :=
       (X j h1 h2.le).vAt la y ((X j h1 h2.le).inc _ et)) ∧
     ∀ σ, Real.log (B.supN j _ σ et) / i ≤ WeightFamilies.PPv D large₂ Cf Af
 
-def ArchimedeanSignatureMatching (large₂ : SizeData₂ D) (X : Prov D B P) (CA _C1 _A1 CW AW : ℝ) : Prop :=
+def ArchimedeanSignatureMatching (large₂ : SizeData₂ D) (X : Prov D B P) (CA CW AW : ℝ) : Prop :=
   ParA large₂ CA → OPO large₂ B → ∀ j (h1 : 1 ≤ j) (h2 : j ≤ D.R.m) (w : WeightFamilies.Wt D j), 8 * D.R.f * D.R.r + 4 ≤ w.n →
     w.LastPos →
     (∃ S : Finset (B.Cusp j w),
@@ -478,7 +478,7 @@ def adm7 (large₂ : SizeData₂ D) (B : WeightFamilies.Prov D) (CRm Ck Ch Ah Cq
   WeightFamilies.PointsLemma large₂ B CRm Ck Ch Ah Cq Aq
 
 def admitted (large₂ : SizeData₂ D) (X : Prov D B P) (K : KAdm) (H : KHyp) (Ch Ah Cq Aq : ℝ) : Prop :=
-  adm1 B ∧ adm2 large₂ X H.CA H.C1 H.A1 K.CG K.AG ∧ adm3 large₂ X H.CA K.Cf K.Af ∧ ArchimedeanSignatureMatching large₂ X H.CA H.C1 H.A1 K.CW K.AW ∧
+  adm1 B ∧ adm2 large₂ X H.CA K.CG K.AG ∧ adm3 large₂ X H.CA K.Cf K.Af ∧ ArchimedeanSignatureMatching large₂ X H.CA K.CW K.AW ∧
     adm5 large₂ B K.CL K.AL ∧ adm6 B K.CRm ∧ adm7 large₂ B K.CRm H.CK Ch Ah Cq Aq
 
 section Family
@@ -492,7 +492,7 @@ end Family
 def PageAt (large₂ : SizeData₂ D) (C2 A2 : ℝ) : Prop :=
   ∃ (Q : ParameterChoice' D large₂) (PT : ParamsT D large₂ Q), Formalism.MainNotions.SizesAt large₂ ∧ PT.CP = C2 ∧ PT.eP = A2
 
-def TieC (K : KAdm) (H : KHyp) (Ch Ah _Cq Aq C2 A2 CR : ℝ) : Prop :=
+def TieC (K : KAdm) (H : KHyp) (Ch Ah Aq C2 A2 CR : ℝ) : Prop :=
   H.C1 = C2 ∧ H.A1 = A2 ∧ H.Cc = C2 ∧ H.Ac = A2 ∧ H.CRc = 7 ∧ CR = 7 ∧ K.CRm = 7 ∧ 12 ≤ A2 ∧
     K.AG ≤ 2 ∧ K.Af ≤ 2 ∧ K.AW ≤ 2 ∧ K.AL ≤ 4 ∧ 1 ≤ Ch ∧ 4 ≤ Ah ∧ Aq ≤ 11
 

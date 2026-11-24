@@ -100,7 +100,7 @@ theorem isL_add_segment_of_injective_of_not_precedes [CharZero k] (HS : GlobalTh
     IsL (𝔫 + {s}) x.rep := by
   apply CompanionTheory.Exh.isL_add_segment_of_injective_of_not_precedes <;> assumption
 
-theorem peelGoodP (h1 : GlobalTheory.Published.StandardCosocleGL) (h2 : Zc.LSocleGL k) (_h3 : RefineP k) [CharZero k] :
+theorem peelGoodP (h1 : GlobalTheory.Published.StandardCosocleGL) (h2 : Zc.LSocleGL k) [CharZero k] :
     Zc.PeelGoodP k := by
   intro x y hd Δ 𝔫 hs hn hf hp
   exact isL_add_segment_of_injective_of_not_precedes h1 h2 x y hd Δ 𝔫 hs hn hf hp
@@ -151,7 +151,7 @@ theorem exhaustion_of_three (H : ∀ (k : Type) [Field k] [ValuativeRel k] [Topo
   obtain ⟨hM, hR, hS⟩ := H k
   have hC := cuspEmbP_of_refine k hR
   exact ⟨hM, hR, hS, hC, suppP k, juxtP_of_fineUniq hA hM hR hS hC (_root_.GlobalTheory.CompanionTheory.CuspShuffle.inShW_of_wd hA (_root_.GlobalTheory.CompanionTheory.SegCoarse.lSegJacquet hA hZ)) (_root_.GlobalTheory.CompanionTheory.SegUniq.isLSeg_of_dec hA hZ),
-    linkP, minP, peelGoodP (standardCosocle_of hZ hI) (lSocleGL_of hI k) hR⟩
+    linkP, minP, peelGoodP (standardCosocle_of hZ hI) (lSocleGL_of hI k)⟩
 
 include hZ hI in
 theorem multisegments_of (hE : GlobalTheory.Published.LanglandsExhaustionGL) : GlobalTheory.Published.LanglandsMultisegments :=

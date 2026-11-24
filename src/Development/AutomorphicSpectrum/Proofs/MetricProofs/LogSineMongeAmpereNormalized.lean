@@ -234,7 +234,7 @@ def selA {d : ℕ} (c : Fin (d + 2)) : Fin (d + 1) → Fin (d + 2) :=
 
 def selT {d : ℕ} : Fin d → Fin (d + 2) := fun i => i.succ.succ
 
-theorem selT_injective {d : ℕ} : Function.Injective (selT (d := d)) := fun a b h =>
+theorem selT_injective {d : ℕ} : Function.Injective (selT (d := d)) := fun _ _ h =>
   Fin.succ_injective _ (Fin.succ_injective _ h)
 
 theorem selA_injective {d : ℕ} {c : Fin (d + 2)} (hc : ∀ i : Fin d, i.succ.succ ≠ c) :

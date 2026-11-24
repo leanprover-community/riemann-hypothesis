@@ -183,7 +183,7 @@ def rootPoly (n : ℕ) : (LaurentRing n)[X] := ∏ a : Fin n, (X - C (varL a))
 
 open Polynomial in
 theorem rootPoly_monic : (rootPoly n).Monic :=
-  monic_prod_of_monic _ _ fun a _ => monic_X_sub_C _
+  monic_prod_of_monic _ _ fun _ _ => monic_X_sub_C _
 
 open Polynomial in
 theorem natDegree_rootPoly : (rootPoly n).natDegree = n := by
@@ -235,7 +235,7 @@ theorem alternant_natCast_eq (hn : 0 < n) (m : Fin n → ℕ) :
   exact Finset.sum_congr rfl fun k _ => mul_comm _ _
 
 open Polynomial in
-theorem remMat_staircase (hn : 0 < n) :
+theorem remMat_staircase :
     remMat (fun b : Fin n => n - 1 - (b : ℕ)) = Fin.revPerm.permMatrix (LaurentRing n) := by
   ext k b
   simp only [remMat, Matrix.of_apply, remCoeff, Equiv.Perm.permMatrix, PEquiv.toMatrix_apply,
@@ -273,7 +273,7 @@ theorem exists_alternant_eq_mul (μ : Fin n → ℤ) :
     rw [← Int.cast_mul, ← Units.val_mul, Int.units_mul_self]
     simp
   have hδ : alternant (staircase n) = vdm.det * s := by
-    rw [staircase_eq_natCast, alternant_natCast_eq hn, remMat_staircase hn, Matrix.det_permutation]
+    rw [staircase_eq_natCast, alternant_natCast_eq hn, remMat_staircase, Matrix.det_permutation]
   have hV : vdm.det = alternant (staircase n) * s := by
     rw [hδ, mul_assoc, hs, mul_one]
 

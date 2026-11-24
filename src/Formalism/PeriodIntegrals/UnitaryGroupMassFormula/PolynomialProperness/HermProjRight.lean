@@ -186,7 +186,7 @@ theorem herm_proj_right (H : Matrix (Fin n) (Fin n) ℂ) (hH : Hᴴ = H) (Γi : 
   rw [herm_sum_right H hH]
   simp [herm_smul_right H hH, hx]
 
-theorem lincomb_bound (c : ι → ℂ) (q : ι → Fin n → ℂ) (a R : ℝ) (_hR : 0 ≤ R)
+theorem lincomb_bound (c : ι → ℂ) (q : ι → Fin n → ℂ) (a R : ℝ)
     (hc : ∀ i, ‖c i‖ ≤ a) (hq : ∀ i, eN (q i) ≤ R) :
     eN (∑ i, c i • q i) ≤ (Fintype.card ι : ℝ) * a * R := by
   calc eN (∑ i, c i • q i) ≤ ∑ i, eN (c i • q i) := eN_sum _ _
@@ -220,7 +220,7 @@ theorem proj_bound (H : Matrix (Fin n) (Fin n) ℂ) (hH : Hᴴ = H) (hHH : H * H
     (y : Fin n → ℂ) :
     eN (proj H Γi p y) ≤
       (Fintype.card ι : ℝ) * ((∑ j, ∑ k, ‖Γi j k‖) * (eN y * R)) * R :=
-  lincomb_bound _ _ _ R hR (fun i => coef_bound H hH hHH Γi p R hp y i) hp
+  lincomb_bound _ _ _ R (fun i => coef_bound H hH hHH Γi p R hp y i) hp
 
 end proj
 

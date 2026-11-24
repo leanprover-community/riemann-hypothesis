@@ -51,7 +51,7 @@ abbrev ZQ (S W' : Submodule ℂ (Module.Dual ℂ V)) := ↥S ⧸ W'.comap S.subt
 def zop (S W' : Submodule ℂ (Module.Dual ℂ V)) (T : ↥(stabD S ⊓ stabD W')) : Module.End ℂ (ZQ S W') :=
   (W'.comap S.subtype).mapQ (W'.comap S.subtype)
     ((T : Module.End ℂ V).dualMap.restrict fun φ hφ => (Algebra.mem_inf.1 T.2).1 φ hφ)
-    fun x hx => (Algebra.mem_inf.1 T.2).2 _ hx
+    fun _ hx => (Algebra.mem_inf.1 T.2).2 _ hx
 
 theorem zop_mk (S W' : Submodule ℂ (Module.Dual ℂ V)) (T : ↥(stabD S ⊓ stabD W')) (x : ↥S) :
     zop S W' T (Submodule.Quotient.mk x) =

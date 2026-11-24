@@ -86,7 +86,7 @@ private lemma mono_closure (x : Fin (d + 1) → F) (hx : x 0 ≠ 0) (y : F)
     obtain ⟨b, rfl⟩ := hz
     exact ⟨a + b, (mono_add x a b).symm⟩
 
-private lemma rho_mono (x : Fin (d + 1) → F) (hx : x 0 ≠ 0) (ρ : F →ₗ[ℂ] ℂ) (hρ : IsRes ℂ x ρ) (a : Fin d → ℕ)
+private lemma rho_mono (x : Fin (d + 1) → F) (ρ : F →ₗ[ℂ] ℂ) (hρ : IsRes ℂ x ρ) (a : Fin d → ℕ)
     (ha : a ≠ 0) : ρ (mono x a) = 0 := by
   obtain ⟨_, hρ2⟩ := hρ
   set m : Fin (d + 1) → ℤ := Fin.cons (-(∑ l, (a l : ℤ))) (fun l => (a l : ℤ)) with hm
@@ -130,7 +130,7 @@ theorem UpperTheory.Gal.productCup_of_system.resVal_of :
       have h1 : (⟨algebraMap F K (mono (xv x) 0), h⟩ : rB ℂ K (xv x) {0}) = 1 :=
         Subtype.ext (by simp [mono_zero])
       rw [h1, map_one, mono_zero, hρ.1]
-    · rw [rho_mono (xv x) hx0 ρ hρ a ha]
+    · rw [rho_mono (xv x) ρ hρ a ha]
       have h1 : (⟨algebraMap F K (mono (xv x) a), h⟩ : rB ℂ K (xv x) {0}) =
           ∏ l, (⟨algebraMap F K (xv x l.succ / xv x 0), tco_mem ℂ K (xv x) l⟩ : rB ℂ K (xv x) {0}) ^ a l :=
         Subtype.ext (by simp [mono, map_prod, map_pow])

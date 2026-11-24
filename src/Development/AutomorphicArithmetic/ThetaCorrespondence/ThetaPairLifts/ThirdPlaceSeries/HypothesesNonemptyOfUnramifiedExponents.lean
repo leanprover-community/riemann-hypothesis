@@ -754,7 +754,7 @@ namespace GlobalTheory.SnFamTop
 theorem stepFamG_of_SWXS (hSW : PI.VolStabS.MassDataS.SWXS) :
     Formalism.L2.SG.Pf.MainEqFam.StepFamG :=
   _root_.GlobalTheory.SnFam.Gen.stepFamG_of_fam
-    (fun D h => GlobalTheory.localMass_le_genericMass_nine _ _ h)
+    (fun _ h => GlobalTheory.localMass_le_genericMass_nine _ _ h)
     _root_.GlobalTheory.HTieLeaf.main GlobalTheory.T.genericScalarClassTerms_formFamily _root_.GlobalTheory.SnFam.familyRowWeightSumUnfoldingIdentity_proof (GlobalTheory.T.familyGenericMassPositiveBounded_proof hSW) _root_.GlobalTheory.FamilyNormRational.familyGroupSumFactorsRowWeightAmplitude _root_.GlobalTheory.SnFam.existFam
 
 end GlobalTheory.SnFamTop
@@ -1265,7 +1265,7 @@ theorem tuple_labels {D : D7} {s : ∀ k, D.nd.PlG k → (ZMod (D.host.g k))[X]}
   · exact h1.2.2.2.1 ℓ hℓ hℓne v ⟨D.nd.j i - 1, by have := D.nd.j_range i; omega⟩ _ hmem rfl
   · exact h2.2.2.2.1 ℓ hℓ hℓne v ⟨D.nd.j i - 1, by have := D.nd.j_range i; omega⟩ _ hmem rfl
 
-theorem nc_of_type (D : D7) (Q : PairedCharacterCondition.Pend D) (hDZ : PairedCharacterCondition.admDZ Q) (h1 : SumRepresentations.adm1 D) (h0 : SumRepresentations.tie0 D) (i : D.nd.Loc) (PI : D.naut.AV i)
+theorem nc_of_type (D : D7) (Q : PairedCharacterCondition.Pend D) (hDZ : PairedCharacterCondition.admDZ Q) (h1 : SumRepresentations.adm1 D) (i : D.nd.Loc) (PI : D.naut.AV i)
     {s : ∀ k, D.nd.PlG k → (ZMod (D.host.g k))[X]} (hg : D.ntypes.goodTuple s)
     (hs : ∀ k v, ∃ τ ∈ Q.kty i PI k v, (Q.lz k).lab τ = s k v) (k : Fin 2) (w : PlE D.host)
     (hw : w ∈ placesOver D.host.E (D.host.g k)) : UpperTheory.GalS.Nc D.nd D.naut (D.naut.locV i PI w) := by
@@ -1325,7 +1325,7 @@ theorem exists_good_alt (hCen : ∀ (D : D7) (_ : PairedCharacterCondition.Pend 
         rw [hact, e, smul_zero, map_zero, zero_smul]) u hu
       rw [this, zero_smul]
   · obtain ⟨s, hg, hs⟩ := exists_tuple D _ _ F hne
-    have hn := nc_of_type D Q hDZ h1 h0 i PI hg (fun k v => exists_type D Q i PI F hF k v _ (hs k v)) k w hw
+    have hn := nc_of_type D Q hDZ h1 i PI hg (fun k v => exists_type D Q i PI F hF k v _ (hs k v)) k w hw
     obtain ⟨Pa, hB⟩ := h1 i PI
     obtain ⟨Pa', hB'⟩ := h1 i P
     have hperm : Pa.Perm Pa' := ((h41 i).2.1 PI P (by rw [hPI]; exact Option.some_ne_none x)

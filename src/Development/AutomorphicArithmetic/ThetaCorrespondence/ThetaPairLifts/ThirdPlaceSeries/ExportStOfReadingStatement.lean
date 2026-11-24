@@ -485,7 +485,7 @@ theorem canEx_at (p : PtAt ex Csz) (w : D.what₂.places.Pl) (j : Fin D.R.m) :
     exact Submodule.sum_mem _ fun k _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨k, rfl⟩))
   set eF := p.nexp.eF (ex.nch.twI w) ((j : ℕ) + 1) (ex.nch.sd w) (Nat.le_add_left _ _) j.2 with heF
   let m : Fin n → D.nexp.Fm (ex.nch.twI w) ((j : ℕ) + 1) (ex.nch.sd w) := fun k =>
-    eF.symm ((1 : NX.KB p.Sx (ex.nch.twI w) (ex.nch.sd w)) ⊗ₜ[p.Sx.Ks] f k)
+    eF.symm ((1 : NX.KB (ex.nch.twI w)) ⊗ₜ[p.Sx.Ks] f k)
   let t : Fin n → Tgt ex w j := fun k => (1 : FractionRing (ex.nch.Oe w)) ⊗ₜ[D.ntw.O (ex.nch.twI w)] m k
   let β : Module.Basis (Fin n) D.what₂.LL (Fin ((R2 p).nW j) → D.what₂.LL) := Module.Basis.mk hliL hspL.ge
   have hβ : ∀ k, β k = b k := fun k => Module.Basis.mk_apply _ _ _
@@ -504,26 +504,26 @@ theorem canEx_at (p : PtAt ex Csz) (w : D.what₂.places.Pl) (j : Fin D.R.m) :
       exact (algebraMap_smul D.what₂.LL _ _).symm
     have hterm : ∀ k, ex.nch.embW w (algebraMap p.Sx.Ks D.what₂.LL (a k)) • t k =
         (1 : FractionRing (ex.nch.Oe w)) ⊗ₜ[D.ntw.O (ex.nch.twI w)]
-          eF.symm ((1 : NX.KB p.Sx (ex.nch.twI w) (ex.nch.sd w)) ⊗ₜ[p.Sx.Ks] (a k • f k)) := fun k => by
+          eF.symm ((1 : NX.KB (ex.nch.twI w)) ⊗ₜ[p.Sx.Ks] (a k • f k)) := fun k => by
       simp only [t, m]
       rw [TensorProduct.smul_tmul', smul_eq_mul, mul_one, embW_tmul_eq p.Sx ex.nch ex.nch_tie w]
       congr 1
-      rw [TensorProduct.tmul_smul, ← algebraMap_smul (NX.KB p.Sx (ex.nch.twI w) (ex.nch.sd w)) (a k)]
+      rw [TensorProduct.tmul_smul, ← algebraMap_smul (NX.KB (ex.nch.twI w)) (a k)]
       exact (eF.symm.map_smul _ _).symm
     refine (hrd _).trans ?_
     rw [hx, LinearEquiv.apply_symm_apply, Finset.sum_congr rfl fun k _ => hterm k, ← TensorProduct.tmul_sum]
     congr 1
     rw [TensorProduct.tmul_sum]
     exact (map_sum eF.symm _ _).symm
-  · have hB : LinearIndependent (NX.KB p.Sx (ex.nch.twI w) (ex.nch.sd w)) fun k =>
-        ((1 : NX.KB p.Sx (ex.nch.twI w) (ex.nch.sd w)) ⊗ₜ[p.Sx.Ks] f k :
-          NX.KB p.Sx (ex.nch.twI w) (ex.nch.sd w) ⊗[p.Sx.Ks] NX.FmK p.Sx ((j : ℕ) + 1)) := by
-      have := (Algebra.TensorProduct.basis (NX.KB p.Sx (ex.nch.twI w) (ex.nch.sd w)) bK).linearIndependent
+  · have hB : LinearIndependent (NX.KB (ex.nch.twI w)) fun k =>
+        ((1 : NX.KB (ex.nch.twI w)) ⊗ₜ[p.Sx.Ks] f k :
+          NX.KB (ex.nch.twI w) ⊗[p.Sx.Ks] NX.FmK p.Sx ((j : ℕ) + 1)) := by
+      have := (Algebra.TensorProduct.basis (NX.KB (ex.nch.twI w)) bK).linearIndependent
       convert this using 1
       funext k
       rw [Algebra.TensorProduct.basis_apply, Module.Basis.mk_apply]
     let u : Fin n → NX.Fm p.Sx (ex.nch.twI w) ((j : ℕ) + 1) (ex.nch.sd w) := fun k =>
-      (1 : NX.KB p.Sx (ex.nch.twI w) (ex.nch.sd w)) ⊗ₜ[p.Sx.Ks] f k
+      (1 : NX.KB (ex.nch.twI w)) ⊗ₜ[p.Sx.Ks] f k
     have hB' : LinearIndependent (FractionRing (D.ntw.O (ex.nch.twI w))) u := hB
     have hm : LinearIndependent (FractionRing (D.ntw.O (ex.nch.twI w))) m := hB'.map' eF.symm.toLinearMap eF.symm.ker
     have hO : Function.Injective (algebraMap (D.ntw.O (ex.nch.twI w)) (FractionRing (ex.nch.Oe w))) := by
@@ -636,7 +636,7 @@ theorem rd_eOp {D : D7} {c : NChoice D} {w : D.what₂.places.Pl} (ht : NChTie D
     (eC : Gp → D.what₂.LL) (heC : ∀ h, eC h = (D.nexp.eLL0 (I h) : D.what₂.LL))
     (rd : WL' →ₛₗ[c.embW w] FractionRing (c.Oe w) ⊗[D.ntw.O (c.twI w)] D.nexp.Fm (c.twI w) j (c.sd w))
     (hrd : ∀ f : FmK S j, rd (fi.e (Subtype.val f)) =
-      (1 : FractionRing (c.Oe w)) ⊗ₜ[D.ntw.O (c.twI w)] eF.symm ((1 : KB S (c.twI w) (c.sd w)) ⊗ₜ[S.Ks] f))
+      (1 : FractionRing (c.Oe w)) ⊗ₜ[D.ntw.O (c.twI w)] eF.symm ((1 : KB (c.twI w)) ⊗ₜ[S.Ks] f))
     (y : WL') :
     rd (A'.eOp eC y) = GlobalTheory.IndefiniteRowSideFullHecke.ToricLatticeDenominators.eExt D.nexp (c.twI w) j (c.sd w) (c.Oe w) (rd y) := by
   classical

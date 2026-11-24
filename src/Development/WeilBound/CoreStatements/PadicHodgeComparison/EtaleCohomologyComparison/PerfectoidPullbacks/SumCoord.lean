@@ -591,7 +591,7 @@ theorem fmap_of (r : Res l K) (Amp : ∀ M : Model l K, E.LineData M.X → Prop)
     (hσw : ∀ g w, (per l K).σA g (r.w w) = r.w w)
     (hfin : ∀ M : Model l K, M.Sm → ∀ j, Module.Finite (WittVector l r.k) (LW r M j))
     (hid : ∀ M : Model l K, M.Sm → ∀ j (x : r.iso.D M j), r.iso.pull (𝟙 M.X) (Category.id_comp _) j x = x) :
-    Nonempty (FMap Model.Sm (perCOf r C₀ c ι φ σ q k) r.iso (dat Amp) (fun {M N u hu a b} _ j =>
+    Nonempty (FMap Model.Sm (perCOf r C₀ c ι φ σ q k) r.iso (dat Amp) (fun {M N u hu _ _} _ j =>
       (Model.pullH (M := M) (N := N) u hu true j).lim.toAddMonoidHom)) := by
   refine ⟨{ k := N
             ψ := fun {M} _ j => psiF r F c k hk hl M j

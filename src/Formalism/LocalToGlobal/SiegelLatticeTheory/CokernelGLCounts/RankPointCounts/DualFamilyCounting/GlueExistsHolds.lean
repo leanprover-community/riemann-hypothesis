@@ -131,7 +131,7 @@ theorem family_dual_holds : FamDual := by
 
   have cf0 : ∀ i, vF 𝔭 (a i) = 0 → f (Sum.inl i) ∈ SP K 𝔭 := by
     intro i hi
-    have hu' := UnitPairSolutions.unit_part hK hF h𝔭 hu (ha0 i)
+    have hu' := UnitPairSolutions.unit_part h𝔭 hu (ha0 i)
     rw [hi, pow_zero, mul_one] at hu'
     have e : f (Sum.inl i) = (f (Sum.inl i) * algebraMap F K (a i : F)) *
         (algebraMap F K (a i : F))⁻¹ := by field_simp [hA0 i]
@@ -139,7 +139,7 @@ theorem family_dual_holds : FamDual := by
   have cf1 : ∀ i, vF 𝔭 (a i) ≠ 0 →
       f (Sum.inl i) * algebraMap F K (π : F) ^ vF 𝔭 (a i) ∈ SP K 𝔭 := by
     intro i hi
-    have hu' := UnitPairSolutions.unit_part hK hF h𝔭 hu (ha0 i)
+    have hu' := UnitPairSolutions.unit_part h𝔭 hu (ha0 i)
     have e : f (Sum.inl i) * algebraMap F K (π : F) ^ vF 𝔭 (a i) =
         (f (Sum.inl i) * algebraMap F K (a i : F)) *
           ((algebraMap F K (a i : F))⁻¹ * algebraMap F K (π : F) ^ vF 𝔭 (a i)) := by
@@ -147,8 +147,8 @@ theorem family_dual_holds : FamDual := by
     rw [e]; exact (SP K 𝔭).mul_mem (hα i) hu'
   have cf2 : ∀ i, vF 𝔭 (a i) ≠ 0 → f (Sum.inr (τ i)) - f (Sum.inl i) ∈ SP K 𝔭 := by
     intro i hi
-    obtain ⟨hC0, huc⟩ := UnitPairSolutions.unit_part_c hK hF h𝔭 hu (ha0 i) hi (hcong i hi)
-    have hua := UnitPairSolutions.unit_part hK hF h𝔭 hu (ha0 i)
+    obtain ⟨hC0, huc⟩ := UnitPairSolutions.unit_part_c h𝔭 hu (ha0 i) hi (hcong i hi)
+    have hua := UnitPairSolutions.unit_part h𝔭 hu (ha0 i)
     have hr := mem_SP_of_inP hu (hcong i hi)
     have hq0 : algebraMap F K (π : F) ^ vF 𝔭 (a i) ≠ 0 := pow_ne_zero _ hϖ0
     have e : f (Sum.inr (τ i)) - f (Sum.inl i) =
@@ -356,7 +356,7 @@ theorem family_meet_holds : FamMeet := by
       ((p)⁻¹ ^ vF 𝔭 (a i)) • (b i + w (τ i)) := fun i => rfl
   have hGr : ∀ j, G (Sum.inr j) = w j := fun j => rfl
   have hUloc : locF 𝔭 (U.restrictScalars (𝓞 K)) = U.restrictScalars (𝓞 K) :=
-    Formalism.L2.SG.Pf.G7.locF_subspace U h𝔭.isPrime
+    Formalism.L2.SG.Pf.G7.locF_subspace U
   apply le_antisymm
   ·
     rintro x ⟨hx, hxU⟩
@@ -598,7 +598,7 @@ private theorem span_locF_eq (L : Submodule (𝓞 K) V) {𝔭 : Ideal (𝓞 F)} 
     Submodule.span K (locF 𝔭 L : Set V) = Submodule.span K (L : Set V) := by
   refine le_antisymm (Submodule.span_le.mpr ?_) (Submodule.span_mono (LocF.le_locF 𝔭 L))
   show locF 𝔭 L ≤ (Submodule.span K (L : Set V)).restrictScalars (𝓞 K)
-  rw [← locF_subspace (Submodule.span K (L : Set V)) hp]
+  rw [← locF_subspace (Submodule.span K (L : Set V))]
   exact LocF.locF_mono 𝔭 (fun _ hx => Submodule.subset_span hx)
 
 theorem glueExists_of_local (hloc : GlueLocal) : GlueExists := by
@@ -634,7 +634,7 @@ theorem glueExists_of_local (hloc : GlueLocal) : GlueExists := by
       exact ⟨hTm 𝔭, hTd 𝔭⟩
     · rw [hBs 𝔭 hp]
       refine ⟨?_, ?_⟩
-      · rw [← hsM 𝔭 hp, LIOrb.locF_inf_locF 𝔭.2, locF_subspace U 𝔭.2.isPrime]
+      · rw [← hsM 𝔭 hp, LIOrb.locF_inf_locF 𝔭.2, locF_subspace U]
       · rw [← locF_dual hF h hΛ₀.fg 𝔭.2.isPrime]
         exact congrArg (locF 𝔭.1) hΛ₀u
   refine ⟨Λ, hΛ, ?_, ?_⟩
@@ -645,7 +645,7 @@ theorem glueExists_of_local (hloc : GlueLocal) : GlueExists := by
     exact (key ⟨𝔭, h𝔭⟩).2
   · apply eq_of_locF (F := F)
     intro 𝔭 h𝔭
-    rw [LIOrb.locF_inf_locF h𝔭, locF_subspace U h𝔭.isPrime]
+    rw [LIOrb.locF_inf_locF h𝔭, locF_subspace U]
     exact (key ⟨𝔭, h𝔭⟩).1
 
 end Formalism.L2.SG.Pf.G7
@@ -1400,7 +1400,7 @@ theorem last_unit_holds : LastUnit := by
     · have := mem_SP_of_inP (K := K) hU0 (inP_vF (K := K) h𝔭 (ha0 i))
       rw [hv] at this
       simpa using this
-    · have := unit_part hCM hFix h𝔭 hU0 (ha0 i)
+    · have := unit_part h𝔭 hU0 (ha0 i)
       rw [hv] at this
       simpa using this
   have hunitC : ∀ k : Fin (finrank K (orthK h U)), (k : ℕ) + 1 < finrank K (orthK h U) →
@@ -1413,8 +1413,8 @@ theorem last_unit_holds : LastUnit := by
   have hpairNU : ∀ i, vF 𝔭 (a i) ≠ 0 →
       NU 𝔭 (algebraMap F K (a i : F) * algebraMap F K (c (τ i))) := by
     intro i hv
-    obtain ⟨-, hCu⟩ := unit_part_c hCM hFix h𝔭 hU0 (ha0 i) hv (hpair i hv)
-    have hAu := unit_part hCM hFix h𝔭 hU0 (ha0 i)
+    obtain ⟨-, hCu⟩ := unit_part_c h𝔭 hU0 (ha0 i) hv (hpair i hv)
+    have hAu := unit_part h𝔭 hU0 (ha0 i)
     have hAd := mem_SP_of_inP (K := K) hU0 (inP_vF (K := K) h𝔭 (ha0 i))
     have hs := mem_SP_of_inP (K := K) hU0 (hpair i hv)
     rw [map_add (f := _)] at hs

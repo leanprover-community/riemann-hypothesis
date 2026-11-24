@@ -173,7 +173,7 @@ section Lines
 
 variable {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X}
 
-theorem zpow_mem_span {A : Subring Ω} {s σ : Ω} (hs : s ≠ 0) (hσ : σ ≠ 0)
+theorem zpow_mem_span {A : Subring Ω} {s σ : Ω} (hσ : σ ≠ 0)
     (h : Submodule.span A {σ} = Submodule.span A {s}) (a : ℤ) : σ ^ a ∈ Submodule.span A {s ^ a} := by
   have h1 : σ ∈ Submodule.span A {s} := by
     rw [← h]
@@ -212,7 +212,7 @@ theorem unit_of_tens (Λ : Lat ξ Ω) (q : Cpt ξ) (a : ℤ) {s M : Ω} (hs : Λ
     rintro t ⟨σ', hσ', rfl⟩
     have hσ := hσ' ()
     have heq : Submodule.span (regAt ξ q) {σ' ()} = Submodule.span (regAt ξ q) {s} := hσ.2.symm.trans hs.2
-    simpa using zpow_mem_span hs0 hσ.1 heq a
+    simpa using zpow_mem_span hσ.1 heq a
   have hMmem : M ∈ Lat.tens (fun _ : Unit => Λ) (fun _ => a) q := by
     rw [hM]
     exact Submodule.mem_span_singleton_self M

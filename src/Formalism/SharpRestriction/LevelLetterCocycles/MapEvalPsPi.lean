@@ -1016,7 +1016,7 @@ def NbS (kind : ℕ → Kind) (b : ℕ → ℕ) (η : ℕ) (s : ℕ) :
   smul_mem' := fun a e he => by
     simp only [Set.mem_ofPred_eq] at he ⊢
     rw [prL_smul]
-    exact xi_module_structure LL (KsW W s) (Dc W T c) _ (Formalism.ExponentWindows.G.SlopeTestRemainingChoices.nbK_mono _ _ (by positivity) _) _ _ he
+    exact xi_module_structure LL (KsW W s) (Dc W T c) _ (Formalism.ExponentWindows.G.SlopeTestRemainingChoices.nbK_mono _ _ _) _ _ he
 
 def FlS (Λ f' : PowerSeries O) (s : ℕ) : Submodule (PowerSeries O) (LvT hR uZ ιZ T c hΔ ell) where
   carrier := {e | ∃ x ∈ Xi (KsW W s) (Tw (LL := LL) (D := Dc W T c) 0),
@@ -1095,7 +1095,7 @@ theorem prL_gEL (H : LvHyp Lb hR uZ ιZ C c ell Λ κ lam) (s' : ℕ) (hs' : s' 
   rfl
 
 def cstL (hΔ : DeltaRho hR uZ ιZ c) (ell : ℕ) (d : Dc W T c) : LvT hR uZ ιZ T c hΔ ell :=
-  fun s => ⟨cstD (KsW W s) d, fun j => Formalism.ExponentWindows.G.SlopeTestRemainingChoices.grd_cst _ _ d⟩
+  fun s => ⟨cstD (KsW W s) d, fun _ => Formalism.ExponentWindows.G.SlopeTestRemainingChoices.grd_cst _ _ d⟩
 
 theorem prL_cstL {hΔ : DeltaRho hR uZ ιZ c} (s' : ℕ) (hs' : s' < ell) (d : Dc W T c) :
     prL s' (cstL hΔ ell d) = cstD (KsW W s') d := by

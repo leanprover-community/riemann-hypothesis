@@ -141,7 +141,7 @@ theorem tensQ_mem_Dpst (hf : ∀ g v, f (ρ g v) = ρ' g (f v)) (x : V ⊗[ℚ_[
 def dQ (hf : ∀ g v, f (ρ g v) = ρ' g (f v)) : ↥(Dpst P ρ) →+ ↥(Dpst P ρ') where
   toFun x := ⟨tensQ P f x, tensQ_mem_Dpst P hf x x.2⟩
   map_zero' := Subtype.ext (map_zero _)
-  map_add' x y := Subtype.ext (map_add _ _ _)
+  map_add' _ _ := Subtype.ext (map_add _ _ _)
 
 @[simp] theorem coe_dQ (hf : ∀ g v, f (ρ g v) = ρ' g (f v)) (x : ↥(Dpst P ρ)) :
     (dQ P hf x : V' ⊗[ℚ_[l]] Bst P) = tensQ P f x := rfl

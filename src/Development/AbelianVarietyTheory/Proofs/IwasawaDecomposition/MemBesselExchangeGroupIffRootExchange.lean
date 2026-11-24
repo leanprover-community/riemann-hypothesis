@@ -104,7 +104,7 @@ theorem isK_eps {ε : AE D} (h0 : ε * cA D ε = 0) {v y : Fin B.rank → AE D} 
     (hk : IsK B v y k) (x) : ε • ((mt B k).mulVec x - x) = -(hA B x v • y) := by
   rw [hk, add_sub_assoc, add_sub_cancel_left, smul_sub, smul_smul, eps_hA h0 hy, zero_smul, zero_sub, smul_comm, hy]
 
-theorem isK_supp {ε : AE D} (h1 : ε * ε = ε) (h0 : ε * cA D ε = 0) {v y : Fin B.rank → AE D} (hy : ε • y = y)
+theorem isK_supp {ε : AE D} (h0 : ε * cA D ε = 0) {v y : Fin B.rank → AE D} (hy : ε • y = y)
     {k : GA D B} (hk : IsK B v y k) : SuppAt ε B k := by
   rw [suppAt_iff_vec]
   intro x
@@ -147,7 +147,7 @@ theorem mem_exSet (d : BesselDatum A B ι) {ε : AE D} (h1 : ε * ε = ε) (h0 :
   have hy : ε • iA ι t = iA ι t := by rw [← iA_smul, ht]
   obtain ⟨p1, p2, -⟩ := GlobalTheory.T.besselDatum_adelicVector_decomposition D A B ι d
   unfold actV
-  refine ⟨isK_supp h1 h0 hy hk, fun x => ?_, fun l => ?_, fun l hl => ?_, ?_⟩
+  refine ⟨isK_supp h0 hy hk, fun x => ?_, fun l => ?_, fun l hl => ?_, ?_⟩
   · rw [isK_eps h0 hy hk, vec_dual, zero_smul, neg_zero]
   · rw [isK_eps h0 hy hk, hA_vec, p2, map_zero, zero_smul, neg_zero]
   · rw [isK_eps h0 hy hk, hA_vec, p1, ite_eq_right hl, map_zero, zero_smul, neg_zero]

@@ -374,10 +374,10 @@ theorem scalar_rule (D : D7) (S T : HSp D) (χT : (AE D)ˣ →* Circle) (hrT : R
     (t : GL (Fin S.rank) (AF D.host.F ⊗[D.host.F] D.host.E)) :
     ((χT⁻¹ (conjUnit D.sp.cm.sig (Matrix.GeneralLinearGroup.det t)) : Circle) : ℂ) *
         npow (absA D (conjUnit D.sp.cm.sig (Matrix.GeneralLinearGroup.det t))) (GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero.sZero S T + (S.rank : ℂ) / 2) =
-      GlobalTheory.DiagSiegel.ruleFac (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA D.sp.cm.sig) (GlobalTheory.WeilM.adeleClass D.host.F) χT
+      GlobalTheory.DiagSiegel.ruleFac (GlobalTheory.WeilM.adeleClass D.host.F) χT
         (Fintype.card (Fin T.rank)) t := by
   rw [MonoidHom.inv_apply, chi_conj D χT T.rank hrT, inv_inv, absA_conj, absA_eq_modu]
-  unfold GlobalTheory.DiagSiegel.ruleFac GlobalTheory.Doubling.npow GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero.sZero
+  unfold GlobalTheory.DiagSiegel.ruleFac GlobalTheory.IndefiniteRowSideFullHecke.SphericalZero.sZero
   rw [Complex.ofReal_cpow (NNReal.coe_nonneg _)]
   congr 2
   rw [Fintype.card_fin]
@@ -414,7 +414,7 @@ theorem thetaDiagInt_omdOf : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsSt
             GlobalTheory.DblSchr.omdOf omd₀ p Φ ∈ GlobalTheory.WeilM.schA D.host.F (κ ⊕ κ) ∧
             GlobalTheory.DiagSiegel.thetaDiagInt ν 𝓕 (GlobalTheory.WeilSchrodinger.thetaTr D.host.F (GlobalTheory.DblSchr.ddr co) ψ
                          (GlobalTheory.DblSchr.omdOf omd₀ p Φ)) =
-              GlobalTheory.DiagSiegel.ruleFac (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA D.sp.cm.sig) (GlobalTheory.WeilM.adeleClass D.host.F) χT (Fintype.card (Fin T.rank)) t *
+              GlobalTheory.DiagSiegel.ruleFac (GlobalTheory.WeilM.adeleClass D.host.F) χT (Fintype.card (Fin T.rank)) t *
                 GlobalTheory.DiagSiegel.thetaDiagInt ν 𝓕 (GlobalTheory.WeilSchrodinger.thetaTr D.host.F (GlobalTheory.DblSchr.ddr co) ψ Φ) := by
   intro D ψ hψ S T JA JB ξ hA hB κ _ co hco ν 𝓕 hν χS χT hχS hχT hrS hrT ωd hW omd₀ hTr p t hpt Φ hΦ
   have hBd := GlobalTheory.DblSchr.dblGram_xi D S JB ξ hB

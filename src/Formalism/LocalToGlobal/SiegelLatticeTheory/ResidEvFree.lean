@@ -132,10 +132,10 @@ theorem splitsE_g (D : D7) (i : Fin 2) : S.SplitsCompl D.host.E (D.host.g i) := 
   exact h
 
 theorem residEv_free {eps : ℝ} (Fm : FamP eps) : S.ResidEv Fm :=
-  ⟨0, fun x _ i => ⟨S.root_discriminant_ge_two _ (UnusedSlot33.ramification_two_and_conjugation_at_q_and_d _),
+  ⟨0, fun x _ i => ⟨S.root_discriminant_ge_two _,
     fun u => S.splitsCompl_of_ncard _ _ ((Fm.D x i).mem u).A.T_prime
       (Formalism.L2.GlobalTheoryTheory.FiltrationCocycleLiftCriterion.split_clause _ cycSplit_holds _ ((Fm.D x i).mem u).A.T_prime (S.level_norm_one_mod_conductor _ u)).2,
-    splitsE_g _ 0, splitsE_g _ 1, S.discriminant_eq_base_sq _ (UnusedSlot33.ramification_two_and_conjugation_at_q_and_d _)⟩⟩
+    splitsE_g _ 0, splitsE_g _ 1, S.discriminant_eq_base_sq _⟩⟩
 
 theorem residEv_closed_free (𝒞 : FamClass) : Closed 𝒞 fun Fm _ => S.ResidEv Fm :=
   Closed.of_class fun Fm _ _ => residEv_free Fm

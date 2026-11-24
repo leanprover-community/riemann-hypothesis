@@ -314,7 +314,6 @@ theorem apply_eq_zero (h : NADual V χ μ) {T : (V → ℂ) → (V → ℂ)}
 
 theorem schur_translations_characters (V : Type) [AddCommGroup V] [TopologicalSpace V] [MeasurableSpace V]
     (χ : V → V → ℂ) (μ : Measure V) (h : NADual V χ μ) (T : (V → ℂ) → (V → ℂ))
-    (hSB : ∀ φ, SB φ → SB (T φ))
     (hadd : ∀ φ φ', SB φ → SB φ' → T (φ + φ') = T φ + T φ')
     (hsmul : ∀ (c : ℂ) φ, SB φ → T (c • φ) = c • T φ)
     (hchar : ∀ y φ, SB φ → T (fun u => χ u y * φ u) = fun u => χ u y * T φ u)
@@ -1081,7 +1080,7 @@ theorem exists_arch_operator (hψ : IsStd ψ)
   have hsch : ∀ ξ : Fin n × Fin d → mixedEmbedding.mixedSpace F, ∃ c : ℂ, ∀ g, GlobalTheory.CompanionTheory.SW.Core.SB g →
       (fun y => om (1, k) (pureA F f g) (pt ξ y)) = c • g := fun ξ => by
     refine GlobalTheory.CompanionTheory.SW.SchurChar.schur_translations_characters (Fin n × Fin d → Af F) _ μ hD
-      (fun g y => om (1, k) (pureA F f g) (pt ξ y)) (fun φ hφ => slice_sb (hC φ hφ) ξ) ?_ ?_ ?_ ?_
+      (fun g y => om (1, k) (pureA F f g) (pt ξ y)) ?_ ?_ ?_ ?_
     · intro φ φ' _ _
       have e : pureA F f (φ + φ') = pureA F f φ + pureA F f φ' := by
         funext x

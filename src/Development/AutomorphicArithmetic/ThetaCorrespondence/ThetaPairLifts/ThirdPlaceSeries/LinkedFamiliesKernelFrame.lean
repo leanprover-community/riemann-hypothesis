@@ -49,7 +49,7 @@ variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : MainNotions.G.Inst 
   {cX : ExtraC}
 structure TiedDataSKAlt (ex : Extra D L hT Gi Gl K Y cX) extends toTiedDataS : _root_.Formalism.L2.TiedDataSAlt ex where
   ker : Ker.KerEntTied ex
-  crd : ∀ (u : D.what₂.Word) i, i ≤ D.R.m → GL (Fin (D.R.N i)) D.host.E
+  crd : ∀ (_ : D.what₂.Word) i, i ≤ D.R.m → GL (Fin (D.R.N i)) D.host.E
   crd_gram : ∀ u i (hi : i ≤ D.R.m),
     cT (Forms.sigD D : D.host.E →+* D.host.E) (crd u i hi).1 * (crd u i hi).1 = Forms.gramN D i hi
   crd_lat : ∀ u i (hi : i ≤ D.R.m) (x : Fin (D.R.N i) → D.host.E),

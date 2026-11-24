@@ -494,7 +494,7 @@ theorem absTheta_mono (V : HSp D) {f M : Mx D V.rank n → ℂ} (hfM : ∀ x, �
 
 theorem absThetaInt_mono (V : HSp D) (ν : Measure (GA D V)) {f M : Mx D V.rank n → ℂ} (hfM : ∀ x, ‖f x‖ ≤ ‖M x‖) :
     absThetaInt V ν f ≤ absThetaInt V ν M :=
-  lintegral_mono fun q => absTheta_mono V hfM _
+  lintegral_mono fun _ => absTheta_mono V hfM _
 
 theorem absThetaInt_smul_lt (V : HSp D) (ν : Measure (GA D V)) (c : ℂ) {M : Mx D V.rank n → ℂ}
     (hM : absThetaInt V ν M < ⊤) : absThetaInt V ν (c • M) < ⊤ := by
@@ -1278,7 +1278,7 @@ theorem gIdil_of' (hWTC : GlobalTheory.Published.WeilThetaConvergence) (hDecA : 
       ∂autMeasure V ν) = _
     rw [key]; rfl
 
-theorem gIdil_of (hWTC : GlobalTheory.Published.WeilThetaConvergence) (_hGZ : GZSch) (hDecA : DecompAway) (hAway : AwayAct)
+theorem gIdil_of (hWTC : GlobalTheory.Published.WeilThetaConvergence) (hDecA : DecompAway) (hAway : AwayAct)
     (hLF : LocFact) (hGL : GaussLaw) (hAI : AwayIn) (hLL2 : LocalL2Isometry) : GIdil :=
   gIdil_of' hWTC hDecA hAway hLF hGL hAI hLL2 schFP lNe dCalc
 

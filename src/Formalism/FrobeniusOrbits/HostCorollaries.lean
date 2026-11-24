@@ -248,7 +248,7 @@ open Formalism.FrobeniusOrbits
 theorem conj : HostConj := hostConj_of hostGalois hostGalSpec
 theorem real : HostReal := hostReal_of hostGalois hostGalSpec conj
 theorem f1 : TwoPowerCyclotomicLayerRealSubfieldCharacterization := real_subfield_of_galois_spec hostGalSpec
-theorem cmType : HostCMType := hostCMType_of hostGalois hostGalSpec
+theorem cmType : HostCMType := hostCMType_of hostGalois
 theorem frob : HostFrob := hostFrob_of hostGalois hostGalSpec
 theorem splitK : HostSplitK := hostSplitK_of (hostFrob_of hostGalois hostGalSpec)
 theorem efgTwo : HostEFGTwo := hostEFGTwo_of hostInertia hostDecomp

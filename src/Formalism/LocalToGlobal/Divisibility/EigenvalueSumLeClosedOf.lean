@@ -1656,7 +1656,7 @@ theorem nf_consts_rec (P5 : ParameterChoice' D L) (hS : SizesAt L) (hx : 9 ≤ L
   refine ⟨h1, hce, hCh, ?_, constant_mul_Lp_le L Del h0 P5 hS hx Ch C0 hCh h2⟩
   exact (le_mul_of_one_le_right hCh hc).trans h2
 
-theorem mul_rpow_le_exp_rpow {x eps c e : ℝ} (hx1 : 1 ≤ x) (heps : 0 < eps) (he : 0 ≤ e)
+theorem mul_rpow_le_exp_rpow {x eps c e : ℝ} (hx1 : 1 ≤ x) (heps : 0 < eps)
     (hxc : c * (Nat.factorial ⌈(e + 1) / eps⌉₊ : ℝ) ≤ x) : c * x ^ e ≤ Real.exp (x ^ eps) := by
   set N := ⌈(e + 1) / eps⌉₊ with hNdef
   have hx0 : 0 < x := by linarith
@@ -1688,7 +1688,7 @@ theorem mul_rpow_le_exp_rpow {x eps c e : ℝ} (hx1 : 1 ≤ x) (heps : 0 < eps) 
 
 theorem mul_rpow_le_b {c e : ℝ} (he : 0 ≤ e)
     (hxc : c * (Nat.factorial ⌈(e + 1) / L.sc.eps⌉₊ : ℝ) ≤ L.sc.x) : c * L.sc.x ^ e ≤ L.sc.b :=
-  mul_rpow_le_exp_rpow L.sc.one_lt_alt.le L.sc.eps_pos he hxc
+  mul_rpow_le_exp_rpow L.sc.one_lt_alt.le L.sc.eps_pos hxc
 
 section Bound
 

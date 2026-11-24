@@ -147,7 +147,7 @@ end OnePole
 
 open OnePole AnalyticIdentityTheoremsZetaFacts
 
-theorem ellipticOnePole_of (hN : EllipticNoPole) (hE : EllipticEntire) (hq : ZetaQuasi)
+theorem ellipticOnePole_of (hE : EllipticEntire) (hq : ZetaQuasi)
     (hL : Legendre) : EllipticOnePole := by
   intro L f p hmer hper hord hp
   obtain ⟨r, k, hk, hfk⟩ := simple_local (hmer p) hp
@@ -615,7 +615,7 @@ namespace Formalism.L2.Th1.F
 
 alias ellipticNoPole := _root_.Formalism.L2.Th1.F.elliptic_no_pole_const
 theorem ellipticOnePole : EllipticOnePole :=
-  ellipticOnePole_of ellipticNoPole _root_.Formalism.L2.Th1.F.elliptic_entire_const zetaQuasi legendre
+  ellipticOnePole_of _root_.Formalism.L2.Th1.F.elliptic_entire_const zetaQuasi legendre
 theorem sigmaOrder : SigmaOrder := sigmaOrder_of sigmaEntire sigmaZero sigmaSimple
 theorem sigmaAdd : SigmaAdd :=
   sigmaAdd_of ellipticNoPole sigmaEntire _root_.Formalism.L2.Th1.F.sigma_odd sigmaZero sigmaSimple sigmaQuasi sigmaOrder

@@ -73,7 +73,7 @@ section SubQuot
 variable {F G V : Type} [Field F] [Group G] [AddCommGroup V] [Module F V] {ρ : Representation F G V}
 
 theorem isSubquotient_subQuot (S T : Subrepresentation ρ) : IsSubquotient (subQuot S T) ρ :=
-  ⟨S, ⟨(Submodule.comap S.toSubmodule.subtype T.toSubmodule).mkQ, fun g => LinearMap.ext fun x => rfl⟩,
+  ⟨S, ⟨(Submodule.comap S.toSubmodule.subtype T.toSubmodule).mkQ, fun _ => LinearMap.ext fun _ => rfl⟩,
     Submodule.mkQ_surjective _⟩
 
 theorem subQuot_top_bot (ρ : Representation F G V) :

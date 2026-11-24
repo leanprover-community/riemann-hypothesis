@@ -712,7 +712,7 @@ theorem GermD.propG (hG : GermD s β ε Y ut bt SS) :
         (tendsto_rhoR s σ).eventually_ne one_ne_zero
       have hT := tendsto_pairD hG.hs hG.hβ hG.hε (hG.memLp_bz hh).1 (hG.memLp_bz hh').1 (l := cocompact ℂ)
         id (fun x => x + σ) (rhoR s σ) σ hρ0 (tendsto_rhoR s σ) (tendsto_shift s hs1 σ)
-        (fun ζ _ hζ => tendsto_shift_ne s hs1 σ ζ hζ)
+        (fun ζ _ hζ => tendsto_shift_ne s σ ζ hζ)
       refine hT.congr' ?_
       filter_upwards [eventually_ne_zero_add σ] with x hx
       exact (pairD_of_cvec hG.hs β ε (bt h) (bt h') σ x hx.1 hx.2).symm

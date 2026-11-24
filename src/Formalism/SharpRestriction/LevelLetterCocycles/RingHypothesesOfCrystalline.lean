@@ -98,7 +98,7 @@ theorem dl_add {i : ZMod n} {x y : W.DD T} (hx : DL W T i x) (hy : DL W T i y) :
   ⟨by rw [smul_add, hx.1, hy.1], fun δ hδ => by rw [map_add (f := _), hx.2 δ hδ, hy.2 δ hδ]⟩
 
 theorem dl_zero (i : ZMod n) : DL W T i (0 : W.DD T) :=
-  ⟨smul_zero _, fun δ _ => map_zero _⟩
+  ⟨smul_zero _, fun _ _ => map_zero _⟩
 
 theorem dl_neg {i : ZMod n} {x : W.DD T} (hx : DL W T i x) : DL W T i (-x) :=
   ⟨by rw [smul_neg, hx.1], fun δ hδ => by rw [map_neg, hx.2 δ hδ]⟩
@@ -233,7 +233,7 @@ theorem avD_of_inv {x : W.DD T} (hx : ∀ δ ∈ W.DelF, W.γD T δ x = x) :
 
 theorem avD_mem_pullJ {i : ZMod n} {j : ℕ} {p : W.DD T} (hp : p ∈ pullJ W T i j) :
     avD W p ∈ pullJ W T i j :=
-  Submodule.sum_mem _ fun δ hδ => γD_mem_pullJ W hδ hp
+  Submodule.sum_mem _ fun _ hδ => γD_mem_pullJ W hδ hp
 
 end Avg
 

@@ -211,7 +211,7 @@ theorem exists_affine_le_coheight {X : Scheme.{0}} [NoetherianSpace X]
 
 theorem ringKrullDim_le_of_quasiFinite (R S : Type) [CommRing R] [CommRing S] [Algebra R S]
     [Algebra.QuasiFinite R S] : ringKrullDim S ≤ ringKrullDim R :=
-  Order.krullDim_le_of_strictMono (PrimeSpectrum.comap (algebraMap R S)) fun P Q h =>
+  Order.krullDim_le_of_strictMono (PrimeSpectrum.comap (algebraMap R S)) fun _ _ h =>
     lt_of_le_of_ne (Ideal.comap_mono h.le) fun e => h.ne (PrimeSpectrum.ext
       (Algebra.QuasiFinite.eq_of_le_of_under_eq (R := R) _ _ h.le (congrArg PrimeSpectrum.asIdeal e)))
 

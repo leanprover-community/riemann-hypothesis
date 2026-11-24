@@ -85,7 +85,7 @@ theorem locF_mem_fibSet (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF
   refine ⟨locF_idem 𝔭 Λ, ?_, le_locF 𝔭 Λ hx, ?_⟩
   · obtain ⟨g, hg, e⟩ := hgen P hP
     refine ⟨g, hg, ?_⟩
-    rw [← hPc, locF_eq_loc hK hF hP, locF_eq_loc hK hF hP]
+    rw [← hPc, locF_eq_loc hF hP, locF_eq_loc hF hP]
     exact e
   · rw [cut_locF, hc]
 
@@ -107,7 +107,7 @@ private theorem star_algebraMap_of_fixed_field_eq (hF : IsFixF K F) (t : 𝓞 F)
   first
   | rw [IsScalarTower.algebraMap_apply (𝓞 F) F K]; rfl
 
-theorem adjoin_integral_of_nonempty (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F)
+theorem adjoin_integral_of_nonempty (hF : IsFixF K F)
     (S : VecSplit h h') {L : Submodule (𝓞 K) V} (hLi : Formalism.HermitianLatticesTheory.IsIntegralLat h L)
     {Λ' : Submodule (𝓞 K) V'}
     (H : ∀ 𝔭 : {𝔭 : Ideal (𝓞 F) // 𝔭.IsMaximal}, (fibSet S L 𝔭.1 Λ').Nonempty) :
@@ -275,7 +275,7 @@ theorem card_fibG_eq_card_pi (hK : Formalism.HermitianLatticesTheory.IsCMUnram K
         have h𝔭 : (P.comap (algebraMap (𝓞 F) (𝓞 K))).IsMaximal := comap_algebraMap_isMaximal_of_isMaximal P hP
         obtain ⟨-, ⟨g', hg', e'⟩, -, -⟩ := hBmem ⟨_, h𝔭⟩
         refine ⟨g', hg', ?_⟩
-        rw [← locF_eq_loc hK hF hP, ← locF_eq_loc hK hF hP]
+        rw [← locF_eq_loc hF hP, ← locF_eq_loc hF hP]
         rw [hMloc ⟨_, h𝔭⟩]
         exact e'
       · rw [Submodule.mem_iInf]
@@ -394,7 +394,7 @@ theorem card_fibG_eq_prod (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (
   by_cases hne : ∀ 𝔭 : {𝔭 : Ideal (𝓞 F) // 𝔭.IsMaximal}, (LocalizedFibreSets.fibSet S L 𝔭.1 Λ').Nonempty
   · haveI := hL
     haveI hN := isFullLattice_adjoin S hΛ'
-    have hNi := LocalizedFibreSets.adjoin_integral_of_nonempty hK hF S hLi hne
+    have hNi := LocalizedFibreSets.adjoin_integral_of_nonempty hF S hLi hne
     obtain ⟨t, ht⟩ : ∃ t : Finset {𝔭 : Ideal (𝓞 F) // 𝔭.IsMaximal},
         ∀ 𝔭 ∉ t, vd h L 𝔭.1 = 0 ∧ vd h (S.adjoin Λ') 𝔭.1 = 0 := by
       have hfin := (finite_vd_ne_zero hK hF hs hd hL hLi).union (finite_vd_ne_zero hK hF hs hd hN hNi)

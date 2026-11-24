@@ -326,7 +326,6 @@ theorem γR_mem {c : ZMod n} {j M g sig : ℕ} {w τ : V} (hB : B.Good j M g)
 
 theorem cobound_of_small {M : ℕ} (hX : B.γ X ∈ Ideal.span {(X : PowerSeries O)})
     (h1 : ∀ i, ∀ v ∈ L.N i, L.γ i v - v ∈ sm X (L.N i))
-    (h2 : ∀ i, ∀ v ∈ sm (X ^ M) (L.N (i - 1)), L.φ i v ∈ sm (X ^ M) (L.N i))
     (h3 : ∀ t : ZMod n → V, (∀ i, t i ∈ sm (X ^ M) (L.N i)) →
       ∃! z : ZMod n → V, (∀ i, z i ∈ sm (X ^ M) (L.N i)) ∧ L.dφ z = t)
     {y z : ZMod n → V} (hc : L.IsCocycle y z) (hy : ∀ i, y i ∈ sm (X ^ M) (L.N i))
@@ -447,7 +446,7 @@ theorem rho_map_linear : RhoLin := by
       <;> abel
     rw [e]
     exact h4 c hc hmem
-  apply cobound_of_small hB.1 h1 h2 h3
+  apply cobound_of_small hB.1 h1 h3
   · have a : L.dγ y = L.dφ z := hcy
     have a' : L.dγ y' = L.dφ z' := hcy'
     show L.dγ (y' - C m • y) = L.dφ (z' - C m • z)

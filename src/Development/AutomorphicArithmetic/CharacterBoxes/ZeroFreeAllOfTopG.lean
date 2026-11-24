@@ -166,7 +166,7 @@ theorem windowHypU_of_windowHyp_fun (R : ℝ → ℝ) (θ : ℝ) :
   congr 2
   ring
 
-theorem windowHypU_of_windowHyp (F : CharFamily) {θ δ : ℝ} (hδ : 0 < δ) (h : WindowHyp F θ δ) :
+theorem windowHypU_of_windowHyp (F : CharFamily) {θ δ : ℝ} (h : WindowHyp F θ δ) :
     WindowHypU (gm F) θ δ := by
   intro η hη U₀
   obtain ⟨Y, hY, R, hint, hR, hbound⟩ := h η hη (Real.exp U₀)
@@ -1203,7 +1203,7 @@ theorem lemmaL (F : CharFamily) {θ δ : ℝ} (hθ : 0 ≤ θ) (hδ : 0 < δ) (h
     ZeroFree F θ := by
   intro i s hs hzero
   obtain ⟨Φ, hP⟩ := poleData F
-  have hZ := landau_window hP hδ (windowHypU_of_windowHyp F hδ h)
+  have hZ := landau_window hP hδ (windowHypU_of_windowHyp F h)
   have hmem : s ∈ zeroSet F := ⟨lt_of_le_of_lt hθ hs, i, Or.inl hzero⟩
   exact (not_le_of_gt hs) (hZ s hmem)
 

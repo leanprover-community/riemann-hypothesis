@@ -102,7 +102,7 @@ theorem relIndex_ne_zero_of_cover {H K : Subgroup G} (F : Finset G) (hF : ∀ κ
   show (H.subgroupOf K).index ≠ 0
   exact Subgroup.index_ne_zero_of_finite
 
-theorem exists_cosetReps {H K : Subgroup G} (hle : H ≤ K) (hne : H.relIndex K ≠ 0) :
+theorem exists_cosetReps {H K : Subgroup G} (hne : H.relIndex K ≠ 0) :
     ∃ F : Finset G, (∀ u ∈ F, u ∈ K) ∧ (∀ κ ∈ K, ∃! u, u ∈ F ∧ u⁻¹ * κ ∈ H) ∧ F.card = H.relIndex K := by
   classical
   haveI : (H.subgroupOf K).FiniteIndex := ⟨hne⟩

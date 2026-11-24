@@ -318,7 +318,7 @@ theorem det_mul_vol_mul_conj (H : Host E) (D : Datum H) (ξ : E) (Gm : Matrix (F
       FractionalIdeal.spanSingleton (𝓞 E)⁰ ((ξ / ((n : E) * FD.cc (n : E))) ^ r * Gm.det) *
         ((I * I.map (H.bar : 𝓞 E →+* 𝓞 E) : Ideal (𝓞 E)) : FractionalIdeal (𝓞 E)⁰ E) =
       FractionalIdeal.dual ℤ ℚ (1 : FractionalIdeal (𝓞 E)⁰ E) ^ r := by
-  obtain ⟨-, -, -, hdual⟩ := HermModel.rank_integral_selfDual E H D r ξ Gm φ hξ h
+  obtain ⟨-, -, -, hdual⟩ := HermModel.rank_integral_selfDual E H D r ξ Gm φ h
   obtain ⟨-, hspan, -, hdet, -⟩ := h
   have hsm : ∀ (a : 𝓞 E) (x : D.La), φ (a • x) = (a : E) • φ x := fun a x => by
     rw [map_smul]; rfl
@@ -427,8 +427,8 @@ theorem det_ideal (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E
       simpa using this
     rw [hz0, map_zero] at hz
     exact hYd (Matrix.det_eq_zero_of_row_eq_zero ⟨0, hr⟩ fun j => by rw [← hz]; rfl)
-  obtain ⟨-, hfg, -, -⟩ := HermModel.rank_integral_selfDual E H D r ξ Gm φ hξ h
-  obtain ⟨-, hfg', -, -⟩ := HermModel.rank_integral_selfDual E H D' r ξ Gm' φ' hξ h'
+  obtain ⟨-, hfg, -, -⟩ := HermModel.rank_integral_selfDual E H D r ξ Gm φ h
+  obtain ⟨-, hfg', -, -⟩ := HermModel.rank_integral_selfDual E H D' r ξ Gm' φ' h'
   obtain ⟨n, hn, hint⟩ := exists_denominator _ (hfg.sup hfg')
   have hn0 : n ≠ 0 := nonZeroDivisors.ne_zero hn
   obtain ⟨J, hJ, hJe⟩ := det_mul_vol_mul_conj H D ξ Gm φ hξ hξ0 h n hn0
@@ -553,7 +553,7 @@ theorem model_in_same_space : (∀ (E : Type) [Field E] [NumberField E] [IsCMFie
   intro hL hH E _ _ _ H D D' r ξ Gm φ hp hq hξ hM
   have hr : r = D'.p + D'.q := by
     rw [hp, hq]
-    exact (GlobalTheory.HermModel.rank_integral_selfDual E H D r ξ Gm φ hξ hM).1
+    exact (GlobalTheory.HermModel.rank_integral_selfDual E H D r ξ Gm φ hM).1
   by_cases h0 : ξ = 0
   · obtain ⟨Gm', ψ, hinj, hspan, -, -, -⟩ :=
       GlobalTheory.exists_herm_coord_of_datum E H D' (H.rt : E) (cc_rt H) (rt_ne H) r hr

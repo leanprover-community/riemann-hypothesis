@@ -195,7 +195,7 @@ theorem exists_u (hG : GlobalFnsSt) (D : DegPre R) {O : Type} [Ring O] [StarRing
   rw [Category.id_comp]
   exact e'
 
-theorem endU_of_oLinear : LL → AllU fun {R} _ _ {I} {D} {A} {G} _ _ U => ∀ (O : Type) [Ring O] [StarRing O] [Module O D.toPre.X] (ιD : D.toPre.OAct O) (ιA : A.OAct O) (ιG : RingAct G O), U.toUnifPre.OLinear O ιD ιA ιG → ∀ a : O, ∃ E : EndU U.toUnifPre, E.aG = ιG.act a ∧ E.aA = ιA.act a ∧ E.aB = ιD.onB.act a ∧ (∀ χ, E.h χ = star a • χ) ∧ ∀ (F : Type) [Field F] [Algebra (FractionRing R) F] (g g' : GtPtF D.toPre F), E.Act g g' ↔ GtPtAct ιD a g g' := by
+theorem endU_of_oLinear : LL → AllU fun {R} _ _ {_} {D} {A} {G} _ _ U => ∀ (O : Type) [Ring O] [StarRing O] [Module O D.toPre.X] (ιD : D.toPre.OAct O) (ιA : A.OAct O) (ιG : RingAct G O), U.toUnifPre.OLinear O ιD ιA ιG → ∀ a : O, ∃ E : EndU U.toUnifPre, E.aG = ιG.act a ∧ E.aA = ιA.act a ∧ E.aB = ιD.onB.act a ∧ (∀ χ, E.h χ = star a • χ) ∧ ∀ (F : Type) [Field F] [Algebra (FractionRing R) F] (g g' : GtPtF D.toPre F), E.Act g g' ↔ GtPtAct ιD a g g' := by
   intro hL R _ _ _ I _ D A G _ _ _ U O _ _ _ ιD ιA ιG hO a
   have hG := hL.1.globalFns
   have := ιD.onB.hom a

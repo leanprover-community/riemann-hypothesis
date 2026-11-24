@@ -505,7 +505,7 @@ theorem inner_c_le (hB2 : InductiveHeisenbergInputs) (hIW : IW) (hT : TLeft) (hk
   simp_rw [hin]
   rw [inner_eq k r' hB2 hIW hT hk A s μ₁ hμ₁ x c hc]
   gcongr
-  have hG0 := (yx_ga hB2 hIW k r' hk x).1
+  have hG0 := (yx_ga hB2 k r' x).1
   have hD : 0 < Dx k r' x := Real.sqrt_pos.mpr hG0
   exact Qf_le k r' A C0 hC0 _ μ₁ hμ₁ _ (mul_ne_zero hc (Complex.ofReal_ne_zero.mpr hD.ne'))
 
@@ -556,7 +556,7 @@ theorem aStep_fin (hB2 : InductiveHeisenbergInputs) (hIW : IW) (hT : TLeft) (hF 
   have hJ1 := hA' _ hs1 μ₁ hμ₁ _ hAB
   obtain ⟨J1, hJ1d⟩ : ∃ J1, J1 = JInt μ₁ (A - ((4 * r' + 2 * k + 3 : ℕ) : ℝ)) (fun l => s (sc r' l)) := ⟨_, rfl⟩
   rw [← hJ1d] at hJ1
-  obtain ⟨C0, hC0⟩ := eInt_bound hGNL hHA hHC hHCL hHCLM k r' hk A hdA
+  obtain ⟨C0, hC0⟩ := eInt_bound hGNL hHA hHCL hHCLM k r' A hdA
   obtain ⟨C, -, hOS⟩ := hOSI k r' μG μ₁ hμG hμ₁
   have hfm : Measurable (fun g : Mt k (1 + r') =>
       ENNReal.ofReal (gN (Matrix.of g) ^ (-A)) * FsE k (1 + r') s (Matrix.of g)) :=
@@ -605,7 +605,7 @@ theorem aStep_fin (hB2 : InductiveHeisenbergInputs) (hIW : IW) (hT : TLeft) (hF 
       rw [exponentShift_eq_levelExponent k r' hk]; ring
   have hTh : ∫⁻ x, ENNReal.ofReal (Psi k r' s x) * ENNReal.ofReal (Dx k r' x ^ (-(aw + 2))) < ⊤ := by
     refine lt_of_le_of_lt (le_of_eq (lintegral_congr fun x => ?_)) (th_fin hB2 hF hCH k r' hk _ hCHc)
-    have hg := yx_ga hB2 hIW k r' hk x
+    have hg := yx_ga hB2 k r' x
     exact th_ident k r' s aw x hg.1 hg.2
   calc ∫⁻ c, ENNReal.ofReal (‖c‖ ^ (2 * (2 * r' + k + 1))) *
         ∫⁻ p : (HPar k r' × HPar k r') × Mt k r',
@@ -631,7 +631,7 @@ theorem aStep_fin (hB2 : InductiveHeisenbergInputs) (hIW : IW) (hT : TLeft) (hF 
             ∫⁻ c : ℂ, ENNReal.ofReal (‖c‖ ^ aw) * ENNReal.ofReal (mw k r' c)) := by
         congr 1
         refine lintegral_congr fun x => ?_
-        have hD : 0 < Dx k r' x := Real.sqrt_pos.mpr (yx_ga hB2 hIW k r' hk x).1
+        have hD : 0 < Dx k r' x := Real.sqrt_pos.mpr (yx_ga hB2 k r' x).1
         rw [← scale_c k r' aw _ hD, ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
         refine lintegral_congr fun c => ?_; ring
     _ = ENNReal.ofReal |C0| * J1 * ((∫⁻ c : ℂ, ENNReal.ofReal (‖c‖ ^ aw) * ENNReal.ofReal (mw k r' c)) *

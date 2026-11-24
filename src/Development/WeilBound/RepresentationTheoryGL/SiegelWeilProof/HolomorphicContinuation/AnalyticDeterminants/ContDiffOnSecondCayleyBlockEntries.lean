@@ -138,17 +138,17 @@ theorem cdo_id (s : Set (M2 n)) : ∀ i j, ContDiffOn ℂ ∞ (fun x : M2 n => x
 theorem cdo_wM (s : Set (M2 n)) (hs : ∀ x ∈ s, (u2 x).det ≠ 0) : ∀ i j, ContDiffOn ℂ ∞ (fun x => wM x i j) s :=
   cdo_mul (cdo_inv (contDiffOn_second_cayley_block_entries s) hs) (contDiffOn_first_cayley_block_entries s)
 
-theorem det_wM (x : M2 n) (h2 : (u2 x).det ≠ 0) : (wM x).det = ((u2 x).det)⁻¹ * (u1 x).det := by
+theorem det_wM (x : M2 n) : (wM x).det = ((u2 x).det)⁻¹ * (u1 x).det := by
   rw [wM, Matrix.det_mul, Matrix.det_nonsing_inv, Ring.inverse_eq_inv']
 
 theorem cdo_wM_inv (s : Set (M2 n)) (hs : ∀ x ∈ s, (u1 x).det ≠ 0 ∧ (u2 x).det ≠ 0) :
     ∀ i j, ContDiffOn ℂ ∞ (fun x => (wM x)⁻¹ i j) s :=
   cdo_inv (cdo_wM s fun x hx => (hs x hx).2) fun x hx => by
-    rw [det_wM x (hs x hx).2]; exact mul_ne_zero (inv_ne_zero (hs x hx).2) (hs x hx).1
+    rw [det_wM x.2]; exact mul_ne_zero (inv_ne_zero (hs x hx).2) (hs x hx).1
 
 theorem cdo_minorOn {s : Set E} (t : Finset (Fin n)) {M : E → Matrix (Fin n) (Fin n) ℂ}
     (hM : ∀ i j, ContDiffOn ℂ ∞ (fun x => M x i j) s) : ContDiffOn ℂ ∞ (fun x => minorOn t (M x)) s :=
-  cdo_det fun i j => hM _ _
+  cdo_det fun _ _ => hM _ _
 
 theorem contDiffOn_inverse_first_block (s : Set (M2 n)) (hs : ∀ x ∈ s, IsUnit x.det) : ∀ i j, ContDiffOn ℂ ∞ (fun x => ub1 x i j) s := by
   intro i j

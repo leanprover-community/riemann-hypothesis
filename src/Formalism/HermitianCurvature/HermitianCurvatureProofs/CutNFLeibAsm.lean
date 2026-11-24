@@ -124,7 +124,7 @@ theorem nfLeib_opApply_contOn (Bs : B.RealPlaceData k r Wp Wq) (L : B.DiffOp k r
 
 end cont
 
-theorem nfLeib_thr (Cb c₃ R Kk W o κ A : ℝ) (hR : 0 ≤ R) (hK : 0 ≤ Kk) (hW : 0 ≤ W) (ho0 : 0 ≤ o) (hκ0 : 0 ≤ κ)
+theorem nfLeib_thr (Cb c₃ R Kk W o κ A : ℝ) (hR : 0 ≤ R) (hK : 0 ≤ Kk) (hW : 0 ≤ W) (ho0 : 0 ≤ o)
     (ho : o ≤ Cb * W * (2 * R + Kk + 1)) (hκ : κ ≤ Cb * (R + 1) * o)
     (hA : (max Cb 0 ^ 2 + 5 * max Cb 0 + max c₃ 0) * (R + 1) ^ 4 *
       (W * (2 * R + Kk + 1) ^ 2 + (2 * R + Kk + 1) ^ 3) ≤ A) :
@@ -224,7 +224,7 @@ theorem nfLeibV_of (hO : NFLeibOps) (hB : NFLeibBd) (hV : NFVLin) : NFLeibV := b
       rwa [ee] at this
     have hthr : c₃ * ((P.r : ℝ) + 1) ^ 2 * ((P.r : ℝ) * ((2 * P.r + P.k + 1 : ℕ) : ℝ) + 1) ≤ A - m := by
       have h0 := nfLeib_thr Cb c₃ P.r P.k w.length o κ A (by positivity) (by positivity) (by positivity)
-        (by positivity) (by positivity) (by push_cast at ho; linarith) hκ (by linarith)
+        (by positivity) (by push_cast at ho; linarith) hκ (by linarith)
       push_cast
       rw [hm]
       linarith

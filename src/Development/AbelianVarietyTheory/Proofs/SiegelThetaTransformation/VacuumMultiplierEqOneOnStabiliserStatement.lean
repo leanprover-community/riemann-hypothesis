@@ -198,7 +198,7 @@ theorem wG_vac_eq : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : 
     have h1 : IsCMField.complexConj E X.ξ0 = -X.ξ0 := X.ξ0_im
     rcases X.κ0_xi with h | h <;> simp [cc, h, h1, neg_div]
   obtain ⟨D, ψ, hp, hq, hψL, hψi, -, -, -, hψE⟩ := LatticeDatum.exists_datum_of_selfDual E H Dw r
-    (-(X.κ0 / 2)) X.Gm φ L hξ ⟨hφi, hφs, X.Gm_herm, X.Gm_det, hφE⟩ hL.1 (TensLat.span_of_selfD X hL)
+    (-(X.κ0 / 2)) X.Gm φ L ⟨hφi, hφs, X.Gm_herm, X.Gm_det, hφE⟩ hL.1 (TensLat.span_of_selfD X hL)
     (fun u => (hL.2 u).symm)
   replace hψE : ∀ a b, ((D.EF a b : ℤ) : ℚ) = EF X (ψ a) (ψ b) := hψE
   have hg : g = Module.finrank ℚ E / 2 * (D.p + D.q) := by

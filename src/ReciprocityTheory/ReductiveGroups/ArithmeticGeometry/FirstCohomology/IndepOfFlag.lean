@@ -36,7 +36,7 @@ lemma finite_ball [FiniteDimensional ℝ E] (X : Submodule ℤ E) [DiscreteTopol
     | exact ⟨‹DiscreteTopology X›⟩
   exact Metric.finite_isBounded_inter_isClosed hdisc Metric.isBounded_closedBall hc
 
-lemma indep_of_flag [FiniteDimensional ℝ E] {d : ℕ} (hd : d = finrank ℝ E) (f : Fin d → E)
+lemma indep_of_flag [FiniteDimensional ℝ E] {d : ℕ} (f : Fin d → E)
     (h : ∀ k, f k ∉ V f k.val) : LinearIndependent ℝ f := by
   rw [Fintype.linearIndependent_iff]
   intro g hg

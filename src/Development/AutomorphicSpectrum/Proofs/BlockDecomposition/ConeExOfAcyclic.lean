@@ -277,8 +277,8 @@ theorem gp_comp (F : C ⥤ ModuleCat.{0} R) {l m n : ℕ} (θ : Fin (l + 1) →o
 def cosim (F : C ⥤ ModuleCat.{0} R) : CosimplicialObject (ModuleCat.{0} R) where
   obj Δ := ModuleCat.of R (MCn F Δ.len)
   map θ := ModuleCat.ofHom (gp F θ.toOrderHom)
-  map_id Δ := ModuleCat.hom_ext (LinearMap.ext fun f ↦ gp_id F _ f)
-  map_comp θ η := ModuleCat.hom_ext (LinearMap.ext fun f ↦ gp_comp F _ _ f)
+  map_id _ := ModuleCat.hom_ext (LinearMap.ext fun f ↦ gp_id F _ f)
+  map_comp _ _ := ModuleCat.hom_ext (LinearMap.ext fun f ↦ gp_comp F _ _ f)
 
 def mdn (F : C ⥤ ModuleCat.{0} R) (n : ℕ) : MCn F n →ₗ[R] MCn F (n + 1) :=
   ∑ i : Fin (n + 2), ((-1 : R) ^ (i : ℕ)) • gp F (Fin.succAboveOrderEmb i).toOrderHom
@@ -366,8 +366,8 @@ def coker {F F' : C ⥤ ModuleCat.{0} R} (φ : F ⟶ F') : C ⥤ ModuleCat.{0} R
   map_comp g g' := ModuleCat.hom_ext (Submodule.linearMap_qext _ (LinearMap.ext fun v ↦ by simp))
 
 def cokerπ {F F' : C ⥤ ModuleCat.{0} R} (φ : F ⟶ F') : F' ⟶ coker φ where
-  app x := ModuleCat.ofHom (Submodule.mkQ _)
-  naturality x y g := ModuleCat.hom_ext (LinearMap.ext fun v ↦ rfl)
+  app _ := ModuleCat.ofHom (Submodule.mkQ _)
+  naturality _ _ _ := ModuleCat.hom_ext (LinearMap.ext fun _ ↦ rfl)
 
 theorem ptSES_coker {F F' : C ⥤ ModuleCat.{0} R} {φ : F ⟶ F'} (h : ∀ x, Function.Injective (φ.app x).hom) :
     PtSES φ (cokerπ φ) :=
@@ -573,7 +573,7 @@ def coind {E : Type} [Category.{0} E] (B : E → ModuleCat.{0} R) : E ⥤ Module
 def coindD {E : Type} [Category.{0} E] (B : E → ModuleCat.{0} R) : CoD (coind B) B where
   ev {x y} f := LinearMap.proj (R := R) (φ := fun p : (Σ y : E, (x ⟶ y)) ↦ (B p.1 : Type)) ⟨y, f⟩
   ev_map _ _ _ := rfl
-  ext v h := funext fun p ↦ h p.1 p.2
+  ext _ h := funext fun p ↦ h p.1 p.2
   ex b := ⟨fun p ↦ b p.1 p.2, fun _ _ ↦ rfl⟩
 
 def coindη {E : Type} [Category.{0} E] (G : E ⥤ ModuleCat.{0} R) : G ⟶ coind G.obj where
@@ -647,7 +647,7 @@ abbrev I : C × D ⥤ ModuleCat.{0} R := coind τ.G.obj
         LinearMap.proj (R := R) (φ := fun U : D ↦ (τ.G.obj (p.1.1, U) : Type)) p.1.2 ∘ₗ
         LinearMap.proj (R := R) (φ := fun q : (Σ T' : C, (x.1 ⟶ T')) ↦ ((ModuleCat.of R (∀ U : D, τ.G.obj (q.1, U))) : Type))
           ⟨p.1.1, p.2.1⟩)
-      naturality := fun x x' φ ↦ ModuleCat.hom_ext (LinearMap.ext fun v ↦ rfl) }
+      naturality := fun _ _ _ ↦ ModuleCat.hom_ext (LinearMap.ext fun _ ↦ rfl) }
 
 def ηF : τ.F ⟶ τ.J where
   app T := ModuleCat.ofHom (LinearMap.pi fun p : (Σ T' : C, (T ⟶ T')) ↦ LinearMap.pi fun U : D ↦
@@ -774,7 +774,7 @@ theorem ηG_pt : PtSES τ.ηG (cokerπ τ.ηG) := ptSES_coker (coindη_inj τ.G)
 def coneSES (h : ∀ T, Function.Injective (τ.fib T)) :
     SES (cone τ.pull) (cone τ.up.pull) (cone τ.quo.pull) :=
   SES.cone (cnSES (τ.ηF_pt h)) (cnSES τ.ηG_pt) τ.pull τ.up.pull τ.quo.pull
-    (fun n f ↦ funext fun c ↦ τ.comm _ _) (fun n f ↦ rfl)
+    (fun _ _ ↦ funext fun _ ↦ τ.comm _ _) (fun _ _ ↦ rfl)
 
 theorem ptFib (T : C) : PtSES (Functor.whiskerLeft (CategoryTheory.Prod.sectR T D) τ.ηG)
     (Functor.whiskerLeft (CategoryTheory.Prod.sectR T D) (cokerπ τ.ηG)) :=
@@ -793,7 +793,7 @@ def augSES (h : ∀ T, Function.Injective (τ.fib T)) (T : C) : SES (τ.aug T) (
         | 0 => (cokerπ τ.ηF |>.app T).hom
         | k + 1 => (post (Functor.whiskerLeft (CategoryTheory.Prod.sectR T D) (cokerπ τ.ηG))).f k
       f_d
-        | 0, x => rfl
+        | 0, _ => rfl
         | k + 1, x => (post (Functor.whiskerLeft (CategoryTheory.Prod.sectR T D) (cokerπ τ.ηG))).f_d k x }
   inj
     | 0 => (τ.ηF_pt h).inj T
@@ -838,7 +838,7 @@ def trOf {F : C ⥤ CommAlgCat.{0} R} {G : C × D ⥤ CommAlgCat.{0} R} (m : Pro
   G := modOf G
   α :=
     { app := fun x ↦ ModuleCat.ofHom (m.α x).toLinearMap
-      naturality := fun x x' φ ↦ ModuleCat.hom_ext (LinearMap.ext fun b ↦ m.naturality φ b) }
+      naturality := fun _ _ φ ↦ ModuleCat.hom_ext (LinearMap.ext fun b ↦ m.naturality φ b) }
 
 end Bridge
 

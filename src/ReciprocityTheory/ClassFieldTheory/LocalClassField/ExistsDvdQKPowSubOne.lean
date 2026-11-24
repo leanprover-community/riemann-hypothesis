@@ -192,7 +192,7 @@ theorem subG_Kur_eq_inertiaK (hK : FiniteDimensional ℚ_[p] K) : subG p K (Maxi
   rw [inertiaK, h, Subgroup.closure_eq]
 
 theorem degLK_Kn (hK : FiniteDimensional ℚ_[p] K) {n : ℕ} (hn : 0 < n) : degLK p K (Kn p K n) = n := by
-  have h1 := finrank_eq_degLK_mul (le_Kn p K n) (finiteDimensional_Kn p K hK hn)
+  have h1 := finrank_eq_degLK_mul (le_Kn p K n)
   rw [finrank_Kn p K hK hn] at h1
   have hd : 0 < Module.finrank ℚ_[p] K := Module.finrank_pos
   exact (Nat.eq_of_mul_eq_mul_right hd h1).symm
@@ -237,7 +237,7 @@ theorem isZHat_GalKur (hK : FiniteDimensional ℚ_[p] K) :
       rw [(QuotientGroup.eq_one_iff σ).2 hσ]
       exact C.one_mem
     have hMur : M ≤ MaximalUnramifiedExtension p K := by
-      have := (subG_le_iff hKM).1 hNH
+      have := (subG_le_iff).1 hNH
       rwa [sup_eq_right.2 le_Kur] at this
     have hfr : frobK p K ∈ subG p K M := by
       rw [hM]
@@ -286,11 +286,11 @@ theorem exists_Kn_of_isOpen (hK : FiniteDimensional ℚ_[p] K) (U : Subgroup (GK
     ∃ n, 0 < n ∧ U = subG p K (Kn p K n) := by
   obtain ⟨M, hKM, hM, rfl⟩ := exists_subG_eq_of_isOpen hK U hU
   have hMur : M ≤ MaximalUnramifiedExtension p K := by
-    have := (subG_le_iff hKM).1 h
+    have := (subG_le_iff).1 h
     rwa [sup_eq_right.2 le_Kur] at this
   obtain ⟨N, hN, hMN⟩ := exists_le_Kn_of_le_Kur hK hM hMur
   refine ⟨degLK p K M, degLK_pos hM, ?_⟩
-  rw [← eq_Kn_of_norm p K hK hKM (degLK_pos hM) (finrank_eq_degLK_mul hKM hM)
+  rw [← eq_Kn_of_norm p K hK hKM (degLK_pos hM) (finrank_eq_degLK_mul hKM)
     (fun x hx => norm_Kn p K hK hN (hMN hx))]
 
 theorem IsFrob.pow_apply (hK : FiniteDimensional ℚ_[p] K) {σ : GK p K} (h : IsFrob p K σ) {m : ℕ}

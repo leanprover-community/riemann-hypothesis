@@ -309,11 +309,11 @@ theorem sum_FY' (T : KType ε Λ) (μ : Fin n → ℤ) (lam : Fin n → ℝ) (h�
         rw [hDsmul, hD2smul1]
         ring)
       (fun X Y Y' => by
-        simp only [Matrix.mul_add, Matrix.add_mul]
+        simp only [Matrix.add_mul]
         rw [hDadd, hD2add2]
         ring)
       (fun c X Y => by
-        simp only [Matrix.mul_smul, Matrix.smul_mul, smul_eq_mul]
+        simp only [Matrix.smul_mul, smul_eq_mul]
         rw [hDsmul, hD2smul2]
         ring)
   have hB : ∀ X Y, B X Y = D (Matrix.of.symm (Y * X * zq)) +
@@ -459,7 +459,7 @@ theorem psiM_smooth (T : KType ε (lowK ε lam)) (μ : Fin n → ℤ) (hμ : IsM
   refine ⟨W, fun g => ContinuousLinearMap.mul ℂ (T.V →L[ℂ] T.V) (T.op k₀) (psM T μ (g⁻¹ * toMK k₀)),
     hWo, hgW, ?_, fun g hg hgu => by rw [hloc g hg hgu]; rfl⟩
   exact contDiffOn_of_local hUo
-    ((ContinuousLinearMap.mul ℂ (T.V →L[ℂ] T.V) (T.op k₀)).differentiable.comp_differentiableOn hd) hWo hWU
+    ((ContinuousLinearMap.mul ℂ (T.V →L[ℂ] T.V) (T.op k₀)).differentiable.comp_differentiableOn hd) hWU
 
 theorem psiM_continuousOn (T : KType ε (lowK ε lam)) (μ : Fin n → ℤ) (hμ : IsMu lam μ) :
     ContinuousOn (PsiM T μ) {g | inUJ ε g} := by

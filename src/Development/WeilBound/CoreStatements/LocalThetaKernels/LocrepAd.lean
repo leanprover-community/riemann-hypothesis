@@ -105,7 +105,7 @@ theorem continuous_put (hev : Continuous ev) (hι : Continuous ι) : Continuous 
   exact (continuous_fst.sub (hι.comp (hev.comp continuous_fst))).add (hι.comp continuous_snd)
 
 omit [IsTopologicalAddGroup K] in
-theorem Pm_mem_SB (h : ∀ y, ev (ι y) = y) (hev : Continuous ev) (hι : Continuous ι) {φ : K → ℂ} (hφ : φ ∈ SB K) (y : K)
+theorem Pm_mem_SB (hev : Continuous ev) (hι : Continuous ι) {φ : K → ℂ} (hφ : φ ∈ SB K) (y : K)
     {g : A → ℂ} (hg : g ∈ SB A) : Pm ev ι φ y g ∈ SB A := by
   have hφ' : IsLocallyConstant φ ∧ HasCompactSupport φ := hφ
   have hg' : IsLocallyConstant g ∧ HasCompactSupport g := hg
@@ -348,7 +348,7 @@ theorem pureA_mem (f : SInf F κ) {g : (κ → Af F) → ℂ} (hg : g ∈ SB _) 
 omit [Fintype κ] in
 theorem PF_mem {φ : (κ → Fv F v) → ℂ} (hφ : φ ∈ SB _) (y : κ → Fv F v) {g : (κ → Af F) → ℂ} (hg : g ∈ SB _) :
     Pm (evF κ v) (inF κ v) φ y g ∈ SB _ :=
-  Pm_mem_SB (evF_inF v) (continuous_evF v) (continuous_inF v) hφ y hg
+  Pm_mem_SB (continuous_evF v) (continuous_inF v) hφ y hg
 
 theorem PA_mem {φ : (κ → Fv F v) → ℂ} (hφ : φ ∈ SB _) (y : κ → Fv F v) {Φ : (κ → AF F) → ℂ} (hΦ : Φ ∈ schA F κ) :
     PA v φ y Φ ∈ schA F κ := by

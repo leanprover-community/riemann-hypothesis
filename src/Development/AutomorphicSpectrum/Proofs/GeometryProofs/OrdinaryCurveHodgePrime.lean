@@ -185,15 +185,15 @@ section -- clump:auto
 
 noncomputable def UpperTheory.Reformulated.B.Qi34.flagSub :
     {F : Type} →
-      [inst : Field F] →
+      [Field F] →
         {N : Type} →
-          [inst_1 : AddCommGroup N] → [inst_2 : _root_.Module F N] → {n : ℕ} → Module.Basis (Fin n) F N → ℕ → Submodule F N :=
+          [AddCommGroup N] → [_root_.Module F N] → {n : ℕ} → Module.Basis (Fin n) F N → ℕ → Submodule F N :=
     fun {F : Type} [Field F] {N : Type} [AddCommGroup N] [_root_.Module F N] {n : ℕ} (b : Module.Basis (Fin n) F N)
         (i : ℕ) ↦
       Submodule.span F ((⇑b : Fin n → N) '' {j : Fin n | (↑j : ℕ) < i})
 
 theorem UpperTheory.Reformulated.B.Qi34.mem_flagSub_iff :
-    ∀ {F : Type} [inst : Field F] {n : ℕ} (i : ℕ) (x : Fin n → F),
+    ∀ {F : Type} [Field F] {n : ℕ} (i : ℕ) (x : Fin n → F),
       x ∈ UpperTheory.Reformulated.B.Qi34.flagSub (Pi.basisFun F (Fin n)) i ↔ ∀ (j : Fin n), i ≤ (↑j : ℕ) → x j = (0 : F) := by
   intro F _ n i x
   unfold UpperTheory.Reformulated.B.Qi34.flagSub
@@ -1280,7 +1280,7 @@ theorem testFacts (hF : GlobalTheory.CompanionTheory.Ar.HT.FarguesHodgeTate) (hQ
   haveI : CharZero Ω := (RingHom.charZero_iff 𝔐.cst.injective).1 inferInstance
   haveI : CharZero C := (RingHom.charZero_iff (algebraMap Ω C).injective).1 inferInstance
   haveI : Finite (𝓞 E ⧸ Ideal.span {(p : 𝓞 E)}) := Ideal.finiteQuotientOfFreeOfNeBot _ (by
-    simp [Ideal.span_singleton_eq_bot, (Fact.out : p.Prime).ne_zero])
+    simp [(Fact.out : p.Prime).ne_zero])
   letI : Fintype (TestPt.NAdd E (D.p + D.q) p) := Fintype.ofFinite _
   have hInt : v.Integers RC := ⟨Subtype.val_injective, fun x => (hv _).1 x.2, fun {x} h => ⟨⟨x, (hv _).2 h⟩, rfl⟩⟩
   have hw : algebraMap O C w = algebraMap Ω C (algebraMap O Ω w) := IsScalarTower.algebraMap_apply O Ω C w

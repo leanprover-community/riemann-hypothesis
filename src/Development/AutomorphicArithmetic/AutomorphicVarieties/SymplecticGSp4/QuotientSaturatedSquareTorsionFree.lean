@@ -712,7 +712,7 @@ private theorem zOf_coc (D : Raw Ω c) (r' : G ℚ Ω →* M4 (DualNumber c.O)) 
   simp only [zOf, Matrix.of_apply, h1, mul_inv_rev, map_mul (D.ps j), Units.val_mul]
   linear_combination (r' g i j).snd * (D.ps j g⁻¹ : c.O) * ps_inv D j h
 
-private theorem zOf_sp (D : Raw Ω c) (hD : D.Good) (r' : G ℚ Ω →* M4 (DualNumber c.O))
+private theorem zOf_sp (D : Raw Ω c) (r' : G ℚ Ω →* M4 (DualNumber c.O))
     (hf : ∀ g i j, (r' g i j).fst = D.r0 g i j) (hm : D.Mult r') (g : G ℚ Ω) : zOf D r' g ∈ sp4 c.O := by
   have hs : ∀ i, sgn i * sgn i = 1 := by decide
   show adj _ = -_
@@ -747,7 +747,7 @@ private theorem zOf_tan (D : Raw Ω c) (hD : D.Good) (r' : G ℚ Ω →* M4 (Dua
     (hf : ∀ g i j, (r' g i j).fst = D.r0 g i j) (w : ℤ × ℤ) (hw : ∀ g i j, wt i j ≠ w → (r' g i j).snd = 0) :
     (fun g : D.Gp l => zOf D r' g) ∈ D.tanSet l (fun _ _ _ ρ => D.eqL ρ) w := by
   obtain ⟨p1, -, -, p4, -⟩ := ptIn D hD _ r' hr
-  refine ⟨fun g => ⟨zOf_sp D hD r' hf p1 g, ?_⟩, fun i j N => (zOf_adic D hD r' hr i j N).comp_continuous continuous_subtype_val,
+  refine ⟨fun g => ⟨zOf_sp D r' hf p1 g, ?_⟩, fun i j N => (zOf_adic D hD r' hr i j N).comp_continuous continuous_subtype_val,
     _, p4, fun g i j => ⟨hf g i j, ?_⟩⟩
   · simp only [SetLike.mem_coe, Submodule.mem_iInf]
     intro i j h
@@ -862,7 +862,7 @@ theorem UpperTheory.V.GradeZeroInterpolatingElement.tanGlob :
     have h2 : (i = 2 ∧ j = 0) ∨ (i = 3 ∧ j = 1) := by revert i j; decide
     rcases h2 with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
     · exact h1
-    · have h3 := congrFun (congrFun (zOf_sp D hD r' hf (ptIn D hD _ r' hr).1 g) 2) 0
+    · have h3 := congrFun (congrFun (zOf_sp D r' hf (ptIn D hD _ r' hr).1 g) 2) 0
       rw [adj_apply, Matrix.neg_apply, h1] at h3
       simpa [sgn, Fin.rev] using h3
   · obtain rfl := (wt_eq_zero i j).1 hij

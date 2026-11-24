@@ -23,10 +23,10 @@ theorem mem_pull_iff {M : LB X} (f : Y ⟶ X) (j : PUnit → M.ι) (y : Y) :
     y ∈ (M.pull f).U j ↔ f y ∈ M.U (j ⟨⟩) := ⟨fun h => Set.mem_iInter.1 h ⟨⟩, fun h => Set.mem_iInter.2 fun ⟨⟩ => h⟩
 
 theorem le_div_left {L M : LB X} (f : Y ⟶ X) (J : PUnit → M.ι × L.ι) :
-    ((LB.div M L).pull f).U J ≤ (M.pull f).U (fun _ => (J ⟨⟩).1) := fun y hy => Set.mem_iInter.2 fun _ => And.left (Set.mem_iInter.1 hy ⟨⟩)
+    ((LB.div M L).pull f).U J ≤ (M.pull f).U (fun _ => (J ⟨⟩).1) := fun _ hy => Set.mem_iInter.2 fun _ => And.left (Set.mem_iInter.1 hy ⟨⟩)
 
 theorem le_div_right {L M : LB X} (f : Y ⟶ X) (J : PUnit → M.ι × L.ι) :
-    ((LB.div M L).pull f).U J ≤ (L.pull f).U (fun _ => (J ⟨⟩).2) := fun y hy => Set.mem_iInter.2 fun _ => And.right (Set.mem_iInter.1 hy ⟨⟩)
+    ((LB.div M L).pull f).U J ≤ (L.pull f).U (fun _ => (J ⟨⟩).2) := fun _ hy => Set.mem_iInter.2 fun _ => And.right (Set.mem_iInter.1 hy ⟨⟩)
 
 def divPullGen {L M : LB X} (f : Y ⟶ X) (a : LB.Gen (L.pull f)) (b : LB.Gen (M.pull f)) :
     LB.Gen ((LB.div M L).pull f) where

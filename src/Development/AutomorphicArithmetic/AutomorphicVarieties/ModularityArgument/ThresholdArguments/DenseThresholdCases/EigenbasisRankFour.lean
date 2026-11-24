@@ -727,7 +727,7 @@ theorem UpperTheory.V.Ws.Eb.conjOf :
       rfl
   have hyg : y g * (ρ g : Matrix (Fin n) (Fin n) K) = 1 * (ρ g : Matrix (Fin n) (Fin n) K) * X + (1 * 0 + -X * (ρ g : Matrix (Fin n) (Fin n) K)) * 1 := by
     rw [hy g]
-    simp only [Loc.adGL, MonoidHom.coe_mk, OneHom.coe_mk, LinearMap.coe_mk, AddHom.coe_mk, mul_assoc, ← Matrix.coe_units_inv, Units.inv_mul, mul_one, one_mul, mul_zero, zero_add, neg_mul, sub_eq_add_neg]
+    simp only [Loc.adGL, MonoidHom.coe_mk, OneHom.coe_mk, LinearMap.coe_mk, AddHom.coe_mk, mul_assoc, mul_one, one_mul, mul_zero, zero_add, neg_mul, sub_eq_add_neg]
     rw [add_mul, mul_assoc, mul_assoc, Units.inv_mul, mul_one, neg_mul]
   ext i j : 2
   rw [Units.val_mul, Units.val_mul, hp, Units.inv_mk]

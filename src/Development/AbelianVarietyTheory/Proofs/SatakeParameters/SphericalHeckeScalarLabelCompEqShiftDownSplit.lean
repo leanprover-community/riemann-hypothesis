@@ -100,7 +100,7 @@ theorem shift {P : Pl D.host.E} (hP : conjPl P ≠ P) {V : HSp D} {d : List ℤ}
   have S0 := sh (GlobalTheory.SplitHecke.suppAt_one V)
     (GlobalTheory.SphLabelOps.divAt_one V he.1.1 (GlobalTheory.SphLabelOps.tie_of_isPrimeIdem (Or.inl ⟨he, rfl⟩)) (ϖ : D.host.E))
     (fun γ hγ => by rw [Finset.mem_singleton.1 hγ]; exact GlobalTheory.SplitHecke.suppAt_one V) one
-    (by rw [label_shift_zero]; simp [splitLab, List.pairwise_append, List.pairwise_replicate])
+    (by rw [label_shift_zero]; simp [splitLab, List.pairwise_replicate])
   rw [label_shift_zero, Finset.image_singleton, one_mul] at S0
   refine ⟨z, fun γ hγ => hzc γ (hRs γ hγ), S0, sh hα hD hRs hc ?_⟩
   exact List.pairwise_map.2 (hd.imp fun h => by omega)

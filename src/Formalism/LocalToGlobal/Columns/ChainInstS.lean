@@ -44,7 +44,7 @@ theorem symFPos_fIdx {k₀ c n p : ℕ} (hk : k₀ ≤ n) (hp : p < n + c) : Loc
   unfold LocE.fPos LocE.fIdx
   split_ifs <;> omega
 
-theorem symFIdx_lt {k₀ c n p : ℕ} (hk : k₀ ≤ n) (hp : p < n + c) : LocE.fIdx k₀ c n p < n + c := by
+theorem symFIdx_lt {k₀ c n p : ℕ} (hp : p < n + c) : LocE.fIdx k₀ c n p < n + c := by
   unfold LocE.fIdx
   split_ifs <;> omega
 
@@ -55,7 +55,7 @@ theorem JGsym_entry (hq0 : (q : E) ≠ 0) {k₀ rS r t n c : ℕ} (hk : k₀ ≤
   have hm := (hκ.2.2 (symIdx k₀ rS p') (symIdx_lt hr hp')).2
   unfold LocE.bvecS LocE.flagS at hm
   rw [symIdxInv_symIdx, ciMem_sclLat] at hm
-  have h3 := hm ⟨LocE.fIdx k₀ c n p, symFIdx_lt hk hp⟩
+  have h3 := hm ⟨LocE.fIdx k₀ c n p, symFIdx_lt hp⟩
   have hbd : LocE.bd5 k₀ rS (symIdx k₀ rS p') ≤ symIdx k₀ rS p := by
     rcases hb with hb | ⟨h1, h2⟩
     · exact le_trans (LocE.symmetric_level_bound_le _ _ _) hb
@@ -66,14 +66,14 @@ theorem JGsym_entry (hq0 : (q : E) ≠ 0) {k₀ rS r t n c : ℕ} (hk : k₀ ≤
   unfold LocE.bvecG at h3
   rw [map_smul, Pi.sub_apply, Pi.smul_apply, Pi.smul_apply, smul_eq_mul, smul_eq_mul] at h3
   have hat : Loc.atN (κ.toLinearMap (Loc.eN E (n + c) (LocE.fIdx k₀ c n p'))) (LocE.fIdx k₀ c n p) =
-      κ (Loc.eN E (n + c) (LocE.fIdx k₀ c n p')) ⟨LocE.fIdx k₀ c n p, symFIdx_lt hk hp⟩ := by
+      κ (Loc.eN E (n + c) (LocE.fIdx k₀ c n p')) ⟨LocE.fIdx k₀ c n p, symFIdx_lt hp⟩ := by
     unfold Loc.atN
-    rw [dite_eq_left (symFIdx_lt hk hp)]
+    rw [dite_eq_left (symFIdx_lt hp)]
     rfl
   unfold LocE.entB
   rw [hat]
-  generalize κ (Loc.eN E (n + c) (LocE.fIdx k₀ c n p')) ⟨LocE.fIdx k₀ c n p, symFIdx_lt hk hp⟩ = Xv at h3 ⊢
-  have he : Loc.eN E (n + c) (LocE.fIdx k₀ c n p') ⟨LocE.fIdx k₀ c n p, symFIdx_lt hk hp⟩ = if p = p' then 1 else 0 := by
+  generalize κ (Loc.eN E (n + c) (LocE.fIdx k₀ c n p')) ⟨LocE.fIdx k₀ c n p, symFIdx_lt hp⟩ = Xv at h3 ⊢
+  have he : Loc.eN E (n + c) (LocE.fIdx k₀ c n p') ⟨LocE.fIdx k₀ c n p, symFIdx_lt hp⟩ = if p = p' then 1 else 0 := by
     unfold Loc.eN
     by_cases hpp : p = p'
     · subst hpp

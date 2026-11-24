@@ -1035,7 +1035,7 @@ theorem laurent_clause_of_admitted' (hA : admitted D HW F Cm CR CA CB CK) : Form
 theorem uniformizer_clause_of_admitted (hA : admitted D HW F Cm CR CA CB CK) : Formalism.MainNotions.DeltaInvariantLattices.P9 D HW F :=
   fun l _ K s LL h => (hA.1 l K s LL h).2.2.2.2.2.2.2.2.1
 
-theorem level_tools_of_admitted' (hA : admitted D HW F Cm CR CA CB CK) : Formalism.MainNotions.WachCoordinates.adm7 D HW F Cm :=
+theorem level_tools_of_admitted' (hA : admitted D HW F Cm CR CA CB CK) : Formalism.MainNotions.WachCoordinates.adm7 D HW F :=
   Formalism.MainNotions.UnusedSlot80.tools_unramified_statement D HW F Cm ⟨fun l _ K s LL h => (hA.1 l K s LL h).2.2.1, laurent_clause_of_admitted' D HW F Cm hA,
     uniformizer_clause_of_admitted D HW F Cm hA⟩
 

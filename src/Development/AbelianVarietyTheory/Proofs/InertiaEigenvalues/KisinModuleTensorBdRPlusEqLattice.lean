@@ -93,7 +93,7 @@ theorem inclV_smul (r : OA l O) (c : ι → OA l O) : inclV l O ι (r • c) = i
   funext i
   simp only [inclV_apply, Pi.smul_apply, smul_eq_mul, map_mul]
 
-theorem inclV_inj [Module.Free ℤ_[l] O] : Function.Injective (inclV l O ι) := fun c d h =>
+theorem inclV_inj [Module.Free ℤ_[l] O] : Function.Injective (inclV l O ι) := fun _ _ h =>
   funext fun i => inclO_injective (congrFun h i)
 
 end Incl

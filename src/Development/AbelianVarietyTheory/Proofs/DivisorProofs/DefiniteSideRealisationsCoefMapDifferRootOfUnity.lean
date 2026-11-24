@@ -228,7 +228,7 @@ theorem sum_gen {E : Type} [CommRing E] (σ : E →+* E) {n : ℕ} {κ : Type} [
     and_comm]
 
 theorem eq_zero_of_vanish_skew (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
-    (σ : E →ₐ[F] E) (hσ : ∀ x, σ (σ x) = x) (hσ1 : σ ≠ AlgHom.id F E) (_h2 : Module.finrank F E = 2)
+    (σ : E →ₐ[F] E) (hσ : ∀ x, σ (σ x) = x) (hσ1 : σ ≠ AlgHom.id F E)
     {ι : Type} [Fintype ι] (ψ : ι → (E →+* ℂ))
     (hψ : Function.Injective (fun τ => (ψ τ).comp (algebraMap F E)))
     (n : ℕ) (J : Matrix (Fin n) (Fin n) E) (hJ : Formalism.UG.cT (σ : E →+* E) J = J) (hdet : J.det ≠ 0)
@@ -480,7 +480,7 @@ theorem ratDense (D : D7) (V : Formalism.BasicNotions.TH.HSp D)
     simp only [pt, Matrix.inv_def, Matrix.mul_smul, Matrix.smul_apply, Ring.inverse_eq_inv', smul_eq_mul]
     rw [div_eq_inv_mul]
   have hQ' : G * ∏ σ, (1 - Vv σ).det = 0 := by
-    refine _root_.GlobalTheory.SkewDense.eq_zero_of_vanish_skew D.host.F D.host.E D.sp.cm.sig (fun x => star_star x) (sig_ne_id D) D.sp.cm.deg2
+    refine _root_.GlobalTheory.SkewDense.eq_zero_of_vanish_skew D.host.F D.host.E D.sp.cm.sig (fun x => star_star x) (sig_ne_id D)
       (Formalism.BasicNotions.TH.tauE D) ?_ V.rank V.gram (GlobalTheory.ParIndex.gram_herm D V) (GlobalTheory.ParIndex.gram_det_ne D V) _ ?_
     · intro τ τ' h
       exact (GlobalTheory.CMTypePlaces.places_bijective D).1 (by simp only at h ⊢; rw [h])

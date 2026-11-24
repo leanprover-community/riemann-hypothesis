@@ -334,7 +334,7 @@ theorem v_nat (V : VF C) {u : ℕ} (hu : ¬ V.l ∣ u) : V.v (u : C) = 0 := by
   rw [h1]
   exact PlaceProj.mm_sub (PlaceProj.mm_mul (VF.ge_natCast m) h) (PlaceProj.mm_l_mul (VF.ge_natCast _))
 
-theorem coeff_option_exp {σ : Type} {F : MvPowerSeries (Option σ) C} (hc : constantCoeff F = 0)
+theorem coeff_option_exp {σ : Type} {F : MvPowerSeries (Option σ) C}
     (h0 : PowerSeries.constantCoeff (optionEquivLeft σ C F) = 0) (n : ℕ) :
     PowerSeries.coeff n (optionEquivLeft σ C (mvExp F)) =
       ∑ k ∈ Finset.range (n + 1), ((k.factorial : C))⁻¹ • PowerSeries.coeff n (optionEquivLeft σ C F ^ k) := by
@@ -470,7 +470,7 @@ theorem cocycle_pow_coboundary : ∀ (C : Type) [Field C] (V : VF C) (d : ℕ) [
     rw [map_smul, smul_eq_mul, mul_inv_cancel_left₀ hu0]
     exact hx μ) _ h0 (by
     intro n
-    rw [← coeff_option_exp hc h0, ← GaugeCocycle.intS_iff_ig]
+    rw [← coeff_option_exp h0, ← GaugeCocycle.intS_iff_ig]
     intro μ
     rw [coeff_coeff_optionEquivLeft]
     exact hF _)

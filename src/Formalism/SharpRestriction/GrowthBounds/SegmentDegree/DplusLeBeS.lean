@@ -72,7 +72,7 @@ theorem stg_plPart {K : ℕ} (μ : Fin (N + 1) → Fin (r + K) → ℤ) (i : ℕ
   unfold stg
   split_ifs <;> rfl
 
-theorem colH_step {ν ν' : Fin r → ℤ} (hν : Antitone ν) (hν' : Antitone ν') (ha : ∀ a, ν a ≤ ν' a)
+theorem colH_step {ν ν' : Fin r → ℤ} (ha : ∀ a, ν a ≤ ν' a)
     (hb : ∀ (a : Fin r) (h : a.val + 1 < r), ν' ⟨a.val + 1, h⟩ ≤ ν a) (c : ℤ) :
     colH ν c ≤ colH ν' c ∧ colH ν' c ≤ colH ν c + 1 := by
   constructor
@@ -244,7 +244,7 @@ theorem plHyp_of (hX : X.Hyp p K) (j : ℤ) (b : ℤ → ℕ) (μ : Fin (segN X.
     rwa [stg_succ μ, hlv, show segN X.F j - r + (r - 1) + 1 = segN X.F j by omega] at this
   · intro t ht c
     obtain ⟨l, hlv, hl, hs⟩ := htau t ht
-    refine colH_step (hdom _ (by omega)) (hdom _ (by omega)) ?_ ?_ c
+    refine colH_step ?_ ?_ c
     · intro a
       rw [stg_plPart, stg_plPart]
       exact hs.1 _

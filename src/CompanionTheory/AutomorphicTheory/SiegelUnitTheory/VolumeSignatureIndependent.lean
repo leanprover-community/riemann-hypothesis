@@ -583,7 +583,7 @@ theorem loc (hcm : IsCMExt F E σ) {M : ℕ} {J : Matrix (Fin M) (Fin M) E} (hJ 
     fun fib hf x hx => QTie.fib_eq_gramFib F E σ hcm M J hJ R hR _ _ hμ hν n1 n2 fib hf _ G x hx⟩
 
 theorem units_Ainf : {c : Ainf F | ∀ w, c w ≠ 0} = {c | IsUnit c} :=
-  Set.ext fun c => (Pi.isUnit_iff.trans (forall_congr' fun _ => isUnit_iff_ne_zero)).symm
+  Set.ext fun _ => (Pi.isUnit_iff.trans (forall_congr' fun _ => isUnit_iff_ne_zero)).symm
 
 theorem units_Fv (v : HeightOneSpectrum (𝓞 F)) : {c : Fv F v | c ≠ 0} = {c | IsUnit c} :=
   Set.ext fun _ => isUnit_iff_ne_zero.symm

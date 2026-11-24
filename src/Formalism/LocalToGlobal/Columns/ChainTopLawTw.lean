@@ -266,8 +266,8 @@ theorem kOneType_block_matrix (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hq0 : (
   · have hn : n = r + d := by omega
     rw [hAe]; exact blk_D hn _ hB
 
-theorem tlq_phiQ_supp (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hu : ((q : ℕ) : 𝓞 E) ∉ P.asIdeal ^ 2) (ξ : (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ)
-    {k₀ r c' n' n : ℕ} (hc' : c' = 0) (hn' : r ≤ n') (hn : r ≤ n) (x : HomE E n' (n + 0)) :
+theorem tlq_phiQ_supp (ξ : (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ)
+    {k₀ r c' n' n : ℕ} (hc' : c' = 0) (x : HomE E n' (n + 0)) :
     LocE.PhiQ q ξ k₀ r c' n' 0 n (x ∘ₗ LinearMap.funLeft E E (Fin.castAdd c')) ≠ 0 → ∀ s l, IntAt P (x (Pi.single s 1) l) := by
   subst hc'
   intro hne s l
@@ -320,7 +320,7 @@ private theorem intAt_q_inv_mul_sub_of_redP_eq (hq : ((q : ℕ) : 𝓞 E) ∈ P.
           rw [mul_comm, mul_assoc, mul_inv_cancel₀ hq0, mul_one]
 
 theorem tlq_phiQ_red (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hu : ((q : ℕ) : 𝓞 E) ∉ P.asIdeal ^ 2) (ξ : (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ)
-    {k₀ r c' n' n : ℕ} (hc' : c' = 0) (hn' : r ≤ n') (hn : r ≤ n) (x x' : HomE E n' (n + 0))
+    {k₀ r c' n' n : ℕ} (hc' : c' = 0) (x x' : HomE E n' (n + 0))
     (hx : ∀ s l, IntAt P (x (Pi.single s 1) l)) (hx' : ∀ s l, IntAt P (x' (Pi.single s 1) l)) (hred : redMQ P x = redMQ P x') :
     LocE.PhiQ q ξ k₀ r c' n' 0 n (x ∘ₗ LinearMap.funLeft E E (Fin.castAdd c')) =
       LocE.PhiQ q ξ k₀ r c' n' 0 n (x' ∘ₗ LinearMap.funLeft E E (Fin.castAdd c')) := by

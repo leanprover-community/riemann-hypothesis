@@ -791,7 +791,7 @@ theorem baseChange_preserves_unitary_of (W : TwLoc D Y) (hV : CmpV c Dx T W) (hG
   classical
   intro ht hE u w hw hg' μ hUs hμ x hin
   rcases hin with ⟨hg, hx⟩ | ⟨hVV, hx⟩
-  · exact kernel_valuation_served W hV hG ht hE u w hg (not_exc_of_gIdx hg) μ hUs hμ x hx
+  · exact kernel_valuation_served W hV hG ht hE u w hg μ hUs hμ x hx
   · have hlow := hc ht.fdef hE u w hw hg' μ hUs hμ x hx
     rw [totS_eq]
     by_cases h1 : (IsResidueClassZero D (D.what₂.places.resChar w) ∨ IsSg D (D.what₂.places.resChar w)) ∧ ¬ Exc D (D.what₂.places.resChar w)
@@ -1081,7 +1081,7 @@ def SysUAt (D : D7) (L : SizeData₂ D) (X : Inst D L) (Y : LatInst D) (u : D.wh
   ∃ (_ : Fact (D.what₂.places.resChar w).Prime) (std : _) (vp : _) (unif : _) (eO : _) (eO_spec : _) (dG : _)
     (dG_spec : _) (om : _) (Y5 : Formalism.MainNotions.FormalGroupSystem.Pend (Formalism.MainNotions.FormalGroupSystem.Sys.mk (D.gat u w hg) (Y.Fl u w hg) (Y.Lv u w hg)
       (Y.Ch u w hg) std vp unif eO eO_spec dG dG_spec om)),
-    Formalism.MainNotions.FormalGroupSystem.VolumeRatio₂ D _ Y5 ∧ Formalism.MainNotions.FormalGroupSystem.adm11 D _ Y5 ∧ Formalism.MainNotions.FormalGroupSystem.LowTermBound D _ Y5 ∧
+    Formalism.MainNotions.FormalGroupSystem.VolumeRatio₂ _ Y5 ∧ Formalism.MainNotions.FormalGroupSystem.adm11 _ Y5 ∧ Formalism.MainNotions.FormalGroupSystem.LowTermBound _ Y5 ∧
     Function.Injective (algebraMap (D.gat u w hg).O (D.gat u w hg).Kf) ∧
     ∃ Fn : Fin (D.gat u w hg).P.nV → ℕ → ℝ,
       (∀ v, v ∉ (reps X (D.what₂.places.resChar w)).image (Y.vOf u w hg) → ∀ j < D.R.m, Y5.LowAt j v (Fn v (j + 1))) ∧
@@ -1364,7 +1364,7 @@ section Sz
 
 open Formalism.MainNotions.G
 
-theorem szCt_fam {eps : ℝ} (Fm : FamP eps) : ∃ x0 : ℝ, ∀ x ≥ x0, ∀ (hx : Fm.x1 < x) (i : Fm.Ix x),
+theorem szCt_fam {eps : ℝ} (Fm : FamP eps) : ∃ x0 : ℝ, ∀ x ≥ x0, ∀ (_ : Fm.x1 < x) (i : Fm.Ix x),
     ∀ j ∈ SizeData₂.lifts (Fm.D x i), ∀ u : (Fm.D x i).what₂.Word, ∑ t : HH (Fm.D x i), ctD (Fm.D x i) u j t ≤
       2 * ((Fm.D x i).host.TT.card : ℝ) * (Fm.L x i).sc.b + 2 * ((Fm.D x i).R.f : ℝ) * (Fm.D x i).R.k * (Fm.L x i).sc.b' := by
   obtain ⟨x0, hx0⟩ := sz_constant_term eps Fm.Ct Fm.CGam Fm.Cc Fm.CT2 Fm.PK
@@ -1373,7 +1373,7 @@ theorem szCt_fam {eps : ℝ} (Fm : FamP eps) : ∃ x0 : ℝ, ∀ x ≥ x0, ∀ (
     (by rw [Fm.L_x x i hx1]; exact hx) (Fm.sizes x hx1 i)⟩
 
 theorem szEatI_fam {eps : ℝ} (Fm : FamP eps) : ∃ C : ℝ, 0 ≤ C ∧ ∃ x0 : ℝ, ∀ x ≥ x0,
-    ∀ (hx : Fm.x1 < x) (i : Fm.Ix x), ∀ j ∈ SizeData₂.lifts (Fm.D x i), ∀ S : Finset ℕ,
+    ∀ (_ : Fm.x1 < x) (i : Fm.Ix x), ∀ j ∈ SizeData₂.lifts (Fm.D x i), ∀ S : Finset ℕ,
       (∀ p ∈ S, p.Prime ∧ (IsResidueClassZero (Fm.D x i) p ∨ IsSg (Fm.D x i) p) ∧ ¬ (IsResidueClassZero (Fm.D x i) p ∧ hP (Fm.D x i) p = 0) ∧
         (p : ℝ) ≤ (Fm.L x i).sc.X'' (Fm.D x i).R.n) →
       ∑ p ∈ S, Real.log p * (EatI (Fm.L x i) Fm.GK Fm.cX.err j p - max 0 (WeilJacquetShalikaLaw.FkindA (Fm.D x i) j p)) ≤
@@ -1507,7 +1507,7 @@ theorem closed_large_pos {𝒞 : FamClass} {P Q : ∀ {eps : ℝ}, FamP eps → 
       fun c hc => (le_max_right _ _).trans (h3 c hc), fun c hc => (le_max_right _ _).trans (h4 c hc)⟩
   exact h Fm CH he hLK0 (hK Fm CH hC hLK)
 
-theorem three_le_split {eps : ℝ} (Fm : FamP eps) (h0 : 0 < eps) {x : ℝ} (hx : (3 : ℝ) ^ (5 / Fm.ez) ≤ x) (h1 : Fm.x1 < x)
+theorem three_le_split {eps : ℝ} (Fm : FamP eps) {x : ℝ} (hx : (3 : ℝ) ^ (5 / Fm.ez) ≤ x) (h1 : Fm.x1 < x)
     (i : Fm.Ix x) : 3 ≤ (Fm.D x i).host.splitBound := by
   have hez : 0 < Fm.ez := by rw [← Fm.L_ez x i]; exact (Fm.L x i).sc.ez_pos
   have hL := (Fm.L x i).split_tie
@@ -1523,7 +1523,7 @@ theorem sum_over_primes_service (𝒞 : FamClass) (hD : Closed 𝒞 fun Fm _ => 
   have hpdv := h.pdv
   have h01 : OrbitPlaces.OrbitLetterBoundsAll 11 1 := DIV.Bridge.DworkPowerSeriesWeights.split_bound_eleven_one
   refine closed_large_pos ⟨0, fun _ => 0, fun _ => 0, fun _ => 0⟩
-    (hD.and (h.twU.and (hpdv.and (G.num_closed 𝒞 FormalGroupSystem.Pf.stmtNumE))))
+    (hD.and (h.twU.and (hpdv.and (G.num_closed 𝒞))))
     fun {eps} Fm CH hpos hL ⟨hDg, ⟨xb, hb⟩, ⟨xc, hc⟩, ⟨xn, hnum⟩⟩ => ?_
   have hpr1 : 1 ≤ Fm.GK.Pr1 := le_of_eq Fm.fixed.1.symm
   have hCL : OrbitPlaces.CLarge 11 1 Fm.GK Fm.cX.err :=
@@ -1538,7 +1538,7 @@ theorem sum_over_primes_service (𝒞 : FamClass) (hD : Closed 𝒞 fun Fm _ => 
     (G.TopChoiceBounds.hLarge_proved _ _ Fm.GK_nonneg hpr1 (Fm.params x h1 i))
   obtain ⟨E, ⟨hUn, hR, hKF, hS0⟩, ep, be, sg, b0, b0c, a', ei, sd, sh⟩ := hc x ec h1 i
   have gd : OrbitPlaces.TypePrimeNotDiscriminant (Fm.D x i) := fun k => typeG_ne_d (Fm.params x h1 i) k
-  have o := DIV.Inh.orbit_admissible_of_split_bound (Fm.D x i) (three_le_split Fm hpos ef h1 i)
+  have o := DIV.Inh.orbit_admissible_of_split_bound (Fm.D x i) (three_le_split Fm ef h1 i)
   have hW : OrbitPlaces.SB E := fun _ _ _ _ _ _ B hB => (DIV.Lemmas.theta_isometry_facts_hold (Fm.D x i) _ _ _ _ _ B).1 hB
   have hK : OrbitPlaces.KForm (OrbitPlaces.ofKer (nuRowOK (Fm.D x i)) E ep be sg) (Fm.X x i) (Fm.ex x h1 i).tw 1 :=
     OrbitPlaces.kform_of_ker E _ (fun _ _ => rfl) rfl hW hUn hR hKF

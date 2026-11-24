@@ -666,17 +666,16 @@ private theorem cast_sub_le_of_cast_le_add {a : ℕ∞} {m s : ℕ}
     have h'' : m - s ≤ n := by omega
     exact_mod_cast h''
 
-theorem exists_exceptionalIdeal_pow_mul_eq_comap_mul_pow (_hG : PrincipalizationGeometryHypotheses.{u}) (T : MarkedIdealWithBoundary.{u})
+theorem exists_exceptionalIdeal_pow_mul_eq_comap_mul_pow (T : MarkedIdealWithBoundary.{u})
     (hT : T.IsAdmissible) (Z : T.scheme.IdealSheafData)
-    (_hsm : AlgebraicGeometry.Smooth (Z.subschemeι ≫ T.structMap))
     (hsnc : HasStrictNormalCrossingsWith T.structMap Z T.boundary)
     (X' : Scheme.{u}) (π : X' ⟶ T.scheme) (hbl : Blowup.IsBlowupAlongIdealSheaf π Z)
     (Bd Mon Ad : T.scheme.IdealSheafData) (m sdeg : ℕ)
     (hsplit : IsMonomialSplitting T.boundary Bd Mon Ad)
     (hZsub : (↑Z.support : Set ↥T.scheme) ⊆ orderAtLeastLocus Bd m)
     (hordA : ∀ x ∈ Z.support, orderAt Ad x = (sdeg : ℕ∞))
-    (B' : X'.IdealSheafData) (_hB' : Blowup.exceptionalIdeal π Z ^ m * B' = Bd.comap π)
-    (A' : X'.IdealSheafData) (_hA' : Blowup.exceptionalIdeal π Z ^ sdeg * A' = Ad.comap π) :
+    (B' : X'.IdealSheafData)
+    (A' : X'.IdealSheafData) :
     ∃ C : X'.IdealSheafData,
       Blowup.exceptionalIdeal π Z ^ m * C = Mon.comap π * Blowup.exceptionalIdeal π Z ^ sdeg := by
   rcases Nat.lt_or_ge sdeg m with hms | hms

@@ -480,7 +480,7 @@ theorem splitLat_of_one_one : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
   obtain ⟨φ, hM⟩ := GlobalTheory.model_in_same_space (GlobalTheory.LocalQuad.landherrSt_of_hasseNormSt GlobalTheory.QNorm.hasseNormSt)
     GlobalTheory.QNorm.hasseNormSt E H D₀ D _ (H.rt : E) G φ₀ ep.symm eq.symm hξ hM₀
   have hz := exists_isotropic h1 D₀ (ep.trans hp) (eq.trans hq) G φ₀ hM₀
-  obtain ⟨-, hfg, -, hdual⟩ := rank_integral_selfDual E H D _ _ G φ hξ hM
+  obtain ⟨-, hfg, -, hdual⟩ := rank_integral_selfDual E H D _ _ G φ hM
   obtain ⟨inj₀, span₀, hG, hdet, hEF₀⟩ := hM₀
   obtain ⟨inj, span, -, -, hEF⟩ := hM
   have hc : IsCompl Lp Lm := by

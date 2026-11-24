@@ -85,7 +85,7 @@ theorem alphaStd_one (𝔭 : Ideal (𝓞 F)) :
 theorem normRepCount_extP (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F) {𝔭 : Ideal (𝓞 F)}
     (h𝔭 : 𝔭.IsMaximal) {j : ℕ} (hj : 1 ≤ j) :
     (normRepCount K (extP K 𝔭 ^ j) 1 1 : ℝ) = (Ideal.absNorm 𝔭 : ℝ) ^ j * alphaStd K 𝔭 1 := by
-  obtain ⟨P, hP, rfl⟩ := exists_maximal_over hK hF h𝔭
+  obtain ⟨P, hP, rfl⟩ := exists_maximal_over h𝔭
   have h1 : (1 : 𝓞 K) ∉ P := fun h => hP.ne_top ((Ideal.eq_top_iff_one P).2 h)
   have hd := localDensity K hK P hP 1 j le_rfl hj 1 (map_one _) h1
   rw [alphaStd_one, etaF_comap hK hF hP]

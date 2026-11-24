@@ -138,12 +138,12 @@ theorem mul_mem_supMx {g : Matrix (Fin ρ) (Fin ρ) (AE D)} (hg : BlockTriangula
 instance actSup : DistribMulAction (triGrp D ρ) (supMx D ρ) where
   smul g s := ⟨(g : GL (Fin ρ) (AE D)).1 * s.1, mul_mem_supMx g.2 s.2⟩
   one_smul s := Subtype.ext (Matrix.one_mul s.1)
-  mul_smul a b s := Subtype.ext (Matrix.mul_assoc _ _ _)
-  smul_zero g := Subtype.ext (Matrix.mul_zero _)
-  smul_add g s t := Subtype.ext (Matrix.mul_add _ _ _)
+  mul_smul _ _ _ := Subtype.ext (Matrix.mul_assoc _ _ _)
+  smul_zero _ := Subtype.ext (Matrix.mul_zero _)
+  smul_add _ _ _ := Subtype.ext (Matrix.mul_add _ _ _)
 
 theorem ccs (D : D7) (ρ : ℕ) : ContinuousConstSMul (triGrp D ρ) (supMx D ρ) :=
-  ⟨fun g => Continuous.subtype_mk (continuous_const.matrix_mul continuous_subtype_val) _⟩
+  ⟨fun _ => Continuous.subtype_mk (continuous_const.matrix_mul continuous_subtype_val) _⟩
 
 attribute [local instance] ccs
 

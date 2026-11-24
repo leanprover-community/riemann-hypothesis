@@ -304,7 +304,7 @@ end CoboundarySeries
 
 open CoboundarySeries
 
-theorem StepH_of (h2 : LemmaTwo) (hSw : SwapRules) (_hL : LawSymm) : StepH := by
+theorem StepH_of (h2 : LemmaTwo) (hSw : SwapRules) : StepH := by
   intro K _ _ _ _ p σ hU F hF G γ γ' hG hI1 hI2
   have hp : 2 ≤ p := hU.2.1.le
   obtain ⟨-, -, -, -, -, hHsw⟩ := hSw K p σ G γ γ' hp

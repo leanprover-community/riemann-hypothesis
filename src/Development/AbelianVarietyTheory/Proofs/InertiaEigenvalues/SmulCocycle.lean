@@ -243,7 +243,7 @@ theorem over_K (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.lo
   exact key.trans (Submodule.Quotient.mk_smul _ _ _)
 
 theorem main : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW),
-    Formalism.MainNotions.HerrComplexNaturality.HerrExtensionUpToUnit D HW F :=
+    Formalism.MainNotions.HerrComplexNaturality.HerrExtensionUpToUnit D HW :=
   fun D HW F l _ K s LL h => ⟨over_Ks D HW F l K s LL h, over_K D HW F l K s LL h⟩
 
 end GlobalTheory.HerrExtUnit

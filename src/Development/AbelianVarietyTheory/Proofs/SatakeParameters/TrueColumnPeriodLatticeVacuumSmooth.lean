@@ -51,7 +51,7 @@ noncomputable section
 
 namespace GlobalTheory.Mem.Col2.TC
 
-theorem laHyp_eSmooth_true : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)),
+theorem laHyp_eSmooth_true : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (_ : TC.Later B (I.cols l)),
     ∀ (a : I.ι) (u : B.Word) (i : ℕ), i < B.R.m →
       I.A.LaHyp (B.R.N i) (B.R.N (i + 1)) (ColIn.Sb I a u) ∧ I.A.ESmooth (B.R.N i) (B.R.N (i + 1)) := by
   intro B X I h _ l Z a u i _

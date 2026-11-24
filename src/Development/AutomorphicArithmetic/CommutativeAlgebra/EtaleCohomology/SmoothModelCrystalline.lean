@@ -260,7 +260,7 @@ variable {l : ℕ} [Fact l.Prime] {K : IntermediateField ℚ_[l] (PadicAlgCl l)}
 theorem isMu_mmG (r : Res l K) (M : Model l K) (n : ℕ) {N : ℕ} (hT : Pb.Mid.TeichmullerCongruence r N) :
     IsMu r M n N (mm r M n hT) :=
   isMuG (B.schFn M.p) (b₀ := Wc.bs l r.k n) (b₁ := B.bs l true n) (h₀ := rfl) (h₁ := rfl) (Pb.Mid.wn r n) (l ^ N) _
-    (Pb.Mid.mIn r M n hT) (Pb.Mid.wn_mk r n) (fun _ => rfl) (fun _ _ => rfl) (fun B₀ y φ hφ =>
+    (Pb.Mid.mIn r M n hT) (Pb.Mid.wn_mk r n) (fun _ => rfl) (fun _ _ => rfl) (fun _ y _ hφ =>
       congrArg (fun g => (B.schFn M.p).Pt.map (CommRingCat.ofHom g) y.1.2)
         (RingHom.ext fun x => (Pb.Mid.frbN_apply _ N x).trans (hφ x).symm))
 

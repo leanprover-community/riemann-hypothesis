@@ -612,9 +612,9 @@ theorem isLocallyMonomialPrincipalization_monomialPrincipalization
       smooth_pullback_strict := ?_
       trivial_of_coSupport_empty := fun T hT _ => hmonomial.trivial_of_coSupport_empty T hT }
   · intro T hT _ Y q h hsmooth hq E' hE hT' _
-    exact monomialPrincipalization_isPullbackBlowupSequence_of_smooth hGeom hinv T hT Y q h hq E' hE hT'
+    exact monomialPrincipalization_isPullbackBlowupSequence_of_smooth hGeom hinv T hT Y q h E' hE hT'
   · intro T hT _ Y q h hsmooth instSurj hq E' hE hT' _
-    exact (monomialPrincipalization_isPullbackBlowupSequence_of_smooth hGeom hinv T hT Y q h hq E' hE
+    exact (monomialPrincipalization_isPullbackBlowupSequence_of_smooth hGeom hinv T hT Y q h E' hE
       hT').isStrictPullback_of_surjective (hne T hT)
 
 end FunctorialResolution.EmbeddedResolution

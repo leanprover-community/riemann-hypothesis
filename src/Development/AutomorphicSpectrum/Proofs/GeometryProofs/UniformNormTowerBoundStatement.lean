@@ -500,7 +500,7 @@ theorem homN_nat_eq {σ : c.F →+* ℂ} (V : Unf Xo c σ r) (hσ : GoodEmb c σ
     rw [← GlobalTheory.AllWt.modelWt_congr V hσ hV hG, GlobalTheory.AllWt.modelWt_wtZ]
   have hl : lact γ x₁ ∈ (V.X k).dom := ReciprocityTheory.ChartRestriction.G.AR.Up.OntoS.dom_lact _ hγ hx₁
   show _ * (V.X k).pnorm _ _ _ = _ * (V.X k).pnorm _ _ _
-  rw [hm, GlobalTheory.Up.DivMetricPf.pnorm_rmul ReciprocityTheory.ChartRestriction.G.AR.Inst.normFactor_rightBorel_holds hsec hl hb,
+  rw [hm, GlobalTheory.Up.DivMetricPf.pnorm_rmul hsec hl hb,
     GlobalTheory.Up.DivMetricPf.pnorm_lact ReciprocityTheory.ChartRestriction.G.AR.Inst.normFactor_leftAction_holds hsec hγ hx₁]
 
 theorem homN_eq_of_frBor {σ : c.F →+* ℂ} (U : Unf Xo c σ r) (hσ : GoodEmb c σ) (hU : IsUnf U) (hpq : 1 ≤ Dw.p + Dw.q)

@@ -210,7 +210,7 @@ theorem dividedPower_mem_pt {ϖ : OCb l} (hϖ : ϖ.untilt = (l : Per.OC l)) (x :
     push_cast
     linear_combination (-(l : Per.AinfP l) ^ e * y) * h2
 
-theorem acris0_le (hl2 : 2 ≤ l) {ϖ : OCb l} (hϖ : ϖ.untilt = (l : Per.OC l)) : Per.Acris0 l ≤ Qs ϖ :=
+theorem acris0_le {ϖ : OCb l} (hϖ : ϖ.untilt = (l : Per.OC l)) : Per.Acris0 l ≤ Qs ϖ :=
   GlobalTheory.RingIface.Acris0_le_of_dividedPowers l _ (dividedPower_mem_pt hϖ)
 
 theorem exists_of_dvd {n : ℕ} {y : Ainf l}
@@ -256,7 +256,7 @@ theorem pow_dvd_cc (hl2 : 2 ≤ l) {ϖ : OCb l} (hϖ : ϖ.untilt = (l : Per.OC l
     (h : (l : Per.Acris l) ^ n ∣ algebraMap (Ainf l) (Per.Acris l) y) :
     ϖ ^ ((l - 1) * n) ∣ WittVector.constantCoeff y := by
   obtain ⟨z, hz0, hz⟩ := exists_of_dvd h
-  obtain ⟨m, a, ha, hza⟩ := acris0_le hl2 hϖ hz0
+  obtain ⟨m, a, ha, hza⟩ := acris0_le hϖ hz0
   have hinj : Function.Injective (algebraMap (Per.Ainf l) (Per.AinfP l)) :=
     IsLocalization.injective (Per.AinfP l) (powers_le_nonZeroDivisors_of_noZeroDivisors l_ne_zero_ainf)
   have h1 : (l : Ainf l) ^ m * y = (l : Ainf l) ^ n * a := by

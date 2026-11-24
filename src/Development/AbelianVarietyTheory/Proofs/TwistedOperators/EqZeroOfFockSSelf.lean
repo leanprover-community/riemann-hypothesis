@@ -385,7 +385,7 @@ def bilF (n : ℕ) : Formalism.L2.DIV.Pol ℂ ι n →ₗ[ℂ] Formalism.L2.DIV.
   LinearMap.mk₂ ℂ (fun F F' => fockS (map (starRingEnd ℂ) F) F')
     (fun F₁ F₂ F' => by simp only [map_add (f := _), ← fockL_apply, LinearMap.add_apply])
     (fun c F F' => by
-      simp only [← fockL_apply, smul_eq_C_mul, map_mul, map_C, RingHom.coe_comp, Function.comp_apply]
+      simp only [← fockL_apply, smul_eq_C_mul, map_mul, map_C]
       rw [← smul_eq_C_mul, LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul]
       simp)
     (fun F F₁ F₂ => by simp only [← fockL_apply, map_add (f := _)])

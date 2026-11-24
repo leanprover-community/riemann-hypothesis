@@ -1015,7 +1015,7 @@ theorem flatDeg_sub_le (A : FlagPair E Ψ a b) (h : Ψ × Fin (a + b) → ℝ) (
   rw [e, abs_le]
   constructor <;> nlinarith [h1.1, h1.2, h2.1, h2.2]
 
-theorem lamDeg_le (A : FlagPair E Ψ a b) (h : Ψ × Fin (a + b) → ℝ) (C : ℝ) (hC : 0 ≤ C)
+theorem lamDeg_le (A : FlagPair E Ψ a b) (h : Ψ × Fin (a + b) → ℝ) (C : ℝ)
     (hW : ∀ τ (i : Fin a), |h (τ, Fin.castAdd b i) - (A.W τ).grDeg i| ≤ C)
     (hS : ∀ τ (i : Fin b), |h (τ, Fin.natAdd a i) + (A.S τ).grDeg i.rev| ≤ C)
     (mu : Ψ → Fin (a + b) → ℝ) (hmu : ∀ τ i, |mu τ i| ≤ 2) :
@@ -1209,7 +1209,7 @@ theorem refLower_of_fibre (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (j k : ℕ) 
     rwa [hm, hyy]
   have hent : ∀ τ i, |mu τ i| ≤ 2 := fun τ i => (abs_entry_le mu τ i).trans hmu
   have hlow := _root_.GlobalTheory.CompanionTheory.Ar.LowerAny.lamDeg_lower L' E Ψ j k A mu 2 m Cf (fun τ a b hab => hd τ a b hab) hent hm0 hsl hfl
-  have hup := lamDeg_le A (fun r => lineHt (R.x 1 r) L w) C hC0 hW hS mu hent
+  have hup := lamDeg_le A (fun r => lineHt (R.x 1 r) L w) C hW hS mu hent
   simp only [← ha, ← hb, ← hf] at hup
   have hab : (j : ℝ) + 1 + ((k : ℝ) + 1) = a + b := by
     rw [ha, hb]

@@ -292,7 +292,7 @@ private theorem ker_le {n : ℕ} {k Γ H : Type} [Field k] [CharZero k] [Group �
   have h1 : ∀ z, (ρ z : Matrix (Fin n) (Fin n) k).charpoly = D.chi (MonoidAlgebra.single (φ z) 1) := fun z =>
     ((AlgebraTools.Det.repApi (W.mat ρ)).2.1 z).symm.trans (by rw [← e, chi_comap])
   rw [Matrix.trace_eq_neg_charpoly_coeff, Matrix.trace_eq_neg_charpoly_coeff, h1, h1, map_mul, hg, mul_one]
-theorem UpperTheory.V.Z.Desc.W.isRecT_of_isRecT (_P : _root_.UpperTheory.V.Af.Hypotheses') {L Ω : Type} [Field L] [NumberField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω]
+theorem UpperTheory.V.Z.Desc.W.isRecT_of_isRecT {L Ω : Type} [Field L] [NumberField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω]
     {w : Plc L} {A : ValuationSubring Ω} {h : IsPlaceOver A w} {rc : IrrGL (k := w.adicCompletion L) → WD h} (k : IsRecT h rc) : IsRecT h rc := k
 theorem UpperTheory.V.Z.Desc.W.jPT_of_alt :
     RecTExists → CompatT → PlainRec → Same → _root_.UpperTheory.V.Z.Desc.W.SphTAlt → _root_.UpperTheory.V.Z.Desc.W.PseudoLocalDescent → UnlOf → _root_.UpperTheory.V.Af.HypothesesH' → Z.Desc.DescWeak → ∀ (l : ℕ) [Fact l.Prime] (L Ω : Type) [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] (s : HidaSetting l L Ω) (n : ℕ), 1 ≤ n →
@@ -390,5 +390,5 @@ theorem UpperTheory.V.Z.Desc.W.jPT_of_alt :
   · obtain ⟨ω, h1, h2⟩ := (hab v).1
     exact ⟨τ₀ _, ω, hloc _ (hsp _ (hin _ (hlv v))) _ (hτ₀ _), h1, h2⟩
   · rw [hcl _ (hsp _ (by rw [hwv]; exact V.sub (Or.inr (Or.inl u.2)))) τ hτ]
-    exact heq _ hu _ (s.hw u) rc (_root_.UpperTheory.V.Z.Desc.W.isRecT_of_isRecT P hrc) _ (hτ₀ _)
+    exact heq _ hu _ (s.hw u) rc (_root_.UpperTheory.V.Z.Desc.W.isRecT_of_isRecT hrc) _ (hτ₀ _)
 end

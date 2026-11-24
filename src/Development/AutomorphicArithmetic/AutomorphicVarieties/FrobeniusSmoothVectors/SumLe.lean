@@ -317,7 +317,7 @@ private theorem db_counts : ∀ π : Fin 3 → ZMod 2, (∃ a, π a = 0) → (�
   decide +kernel
 
 theorem UpperTheory.V.Fr.ep_dimb :
-    ∀ {l : ℕ} [Fact l.Prime] {k : Type} [Field k] {F : Frame l k} {K : Type} [Field K], (2 : K) ≠ 0 → ∀ (B : Box F 3 K) (π : F.V → Fin 3 → ZMod 2) (h : B.Ev π), ∀ v, 4 ≤ Module.finrank K (B.bp 0 v) ∧ 2 ≤ Module.finrank K (B.bp 1 v) := by
+    ∀ {l : ℕ} [Fact l.Prime] {k : Type} [Field k] {F : Frame l k} {K : Type} [Field K], (2 : K) ≠ 0 → ∀ (B : Box F 3 K) (π : F.V → Fin 3 → ZMod 2) (_ : B.Ev π), ∀ v, 4 ≤ Module.finrank K (B.bp 0 v) ∧ 2 ≤ Module.finrank K (B.bp 1 v) := by
   intro l _ k _ F K _ _ B π h v
   have h0 : pq 1 = 0 := by decide
   have h1 : pq 0 = 1 := by decide
@@ -1041,7 +1041,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.PowerSeriesMemSpanIndexedVariables.ep_odd_span_X :
-    ∀ {O σ ι : Type} [inst : CommRing O] (e : ι → σ) (s : Finset ι)
+    ∀ {O σ ι : Type} [CommRing O] (e : ι → σ) (s : Finset ι)
     (f : MvPowerSeries σ O),
     (∀ (n : σ →₀ ℕ),
         (∀ i ∈ s, (n : σ → ℕ) (e i) = (0 : ℕ)) → (MvPowerSeries.coeff n : MvPowerSeries σ O → O) f = (0 : O)) →
@@ -1184,7 +1184,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qf39.ev_decomp :
-    ∀ {O σ : Type} [inst : CommRing O] [inst_1 : Fintype σ]
+    ∀ {O σ : Type} [CommRing O] [Fintype σ]
     (f : MvPowerSeries σ O),
     ∃ (h : σ → MvPowerSeries σ O),
       f =

@@ -146,7 +146,7 @@ open Formalism.QuantumDeterminants Formalism.MainNotions.S Formalism.FourierDeca
 variable {k r : ℕ}
 
 theorem pairMaj_inv (L : LocBessel k r) {γ : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
-    (hγ : γ ∈ UH (Hpk k r)) (b : ℝ) {x : PairSp k r} (hx : Good L x)
+    (hγ : γ ∈ UH (Hpk k r)) (b : ℝ) {x : PairSp k r}
     {a : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (ha : a ∈ RStab k r γ) :
     Formalism.MainNotions.S.Pv.AmpDD.pairMaj γ b (stabAct γ a x) = Formalism.MainNotions.S.Pv.AmpDD.pairMaj γ b x := by
   have hg : IsUnit γ.det := PIQnLT.isUnit_det_of_UH γ hγ

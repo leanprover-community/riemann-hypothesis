@@ -321,7 +321,7 @@ lemma cut_cont {U : Set (E d)} (hU : IsOpen U) {u : E d → ℂ} (hu : Continuou
 lemma tsupport_cut (χ : E d → ℝ) (u : E d → ℂ) : tsupport (cut χ u) ⊆ tsupport χ := by
   exact (tsupport_mul_subset_left).trans (tsupport_comp_subset Complex.ofReal_zero χ)
 
-lemma psi_props (x0 : E d) (ψ0 : E d → ℝ) (r : ℝ) (hψ : ContDiff ℝ ∞ ψ0) (hψc : HasCompactSupport ψ0)
+lemma psi_props (x0 : E d) (ψ0 : E d → ℝ) (r : ℝ) (hψ : ContDiff ℝ ∞ ψ0)
     (hψ1 : ∀ y ∈ ball (0 : E d) 1, ψ0 y = 1) (hψs : tsupport ψ0 ⊆ ball 0 2) (hr : 0 < r) :
     ContDiff ℝ ∞ (fun x => ((ψ0 (r⁻¹ • (x - x0)) : ℝ) : ℂ)) ∧
     HasCompactSupport (fun x => ((ψ0 (r⁻¹ • (x - x0)) : ℝ) : ℂ)) ∧
@@ -376,7 +376,7 @@ theorem frozenDecompositionOfParts : DecomposeOf := by
   obtain ⟨hUo, hA, -, hu, -⟩ := id hyp
   have hχU : tsupport χ ⊆ U := hχs.trans ((ball_subset_ball (by linarith)).trans hball)
   obtain ⟨c, hc, hcw⟩ := hWF d ι P U u hyp i χ χ' hχ hχc hχU hχ' hχ'c hχ's hχχ'
-  obtain ⟨hψC, hψH, hψT, hψ1'⟩ := Dec.psi_props x0 ψ0 r hψ hψc hψ1 hψs hr
+  obtain ⟨hψC, hψH, hψT, hψ1'⟩ := Dec.psi_props x0 ψ0 r hψ hψ1 hψs hr
   obtain ⟨hgc, hgs⟩ := Dec.cut_cont hUo hu hχ hχc hχU
   obtain ⟨hg'c, hg's⟩ := Dec.cut_cont hUo hu hχ' hχ'c hχ's
   set m := P.ord i with hm
@@ -687,7 +687,7 @@ lemma norm_fourier_comp_dil (c : V → ℂ) (r : ℝ) (hr : 0 < r) (x0 w : V) :
   rw [MeasureTheory.integral_const_mul, norm_smul, norm_mul, Complex.norm_exp_ofReal_mul_I, one_mul,
     Real.norm_eq_abs, abs_of_nonneg (by positivity)]
 
-lemma lintegral_dil_weight (r : ℝ) (hr : 0 < r) (D : ℝ) (hD : (Module.finrank ℝ V : ℝ) < D) :
+lemma lintegral_dil_weight (r : ℝ) (hr : 0 < r) (D : ℝ) :
     (∫⁻ w : V, ENNReal.ofReal (r ^ Module.finrank ℝ V * (1 + ‖r • w‖) ^ (-D))) =
       ∫⁻ w : V, ENNReal.ofReal ((1 + ‖w‖) ^ (-D)) := by
   have hr0 : r ≠ 0 := hr.ne'
@@ -813,7 +813,7 @@ theorem frozenKernelSmall : KernelSmall := by
           lintegral_mono hpt
       _ = ENNReal.ofReal (2 ^ n * (1 + 2 ^ n) * K * r) * I := by
           rw [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top,
-            lintegral_dil_weight r hr _ (by rw [hn]; push_cast; linarith)]
+            lintegral_dil_weight r hr _]
       _ = ENNReal.ofReal (2 ^ n * (1 + 2 ^ n) * K * I.toReal * r) := by
           rw [← ENNReal.ofReal_toReal hI.ne, ← ENNReal.ofReal_mul hAKr, ENNReal.toReal_ofReal
             ENNReal.toReal_nonneg]

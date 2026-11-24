@@ -722,7 +722,7 @@ open Classical in
 theorem iso_fiber [Fintype L] {n c q : ℕ} {M : Matrix (Fin n) (Fin n) L}
     (hadd : ∀ a b : L, (a + b) ^ q = a ^ q + b ^ q) (hinv : ∀ a : L, (a ^ q) ^ q = a)
     (hM : IsHerm q M) (W : Submodule L (Fin n → L)) (x y : Fin n → L)
-    (hxW : x ∈ W) (hyW : y ∈ W) (hxx : hf q M x x = 0) (hxy : hf q M x y = 1) :
+    (hxW : x ∈ W) (hxx : hf q M x x = 0) (hxy : hf q M x y = 1) :
     (Finset.univ.filter (fun X : Fin (c + 1) → Fin n → L => isoP q M W X ∧ X 0 = x)).card =
       Fintype.card (Fin c → L) * (Finset.univ.filter (isoP (m := c) q M
         (W ⊓ LinearMap.ker (hfL q M x) ⊓ LinearMap.ker (hfL q M y)))).card := by
@@ -752,7 +752,7 @@ theorem iso_fiber [Fintype L] {n c q : ℕ} {M : Matrix (Fin n) (Fin n) L}
     · have h := hli
       rw [← Fin.cons_self_tail X, hX0] at h
       exact iso_li_tail x _ _ h
-    · simp only [hf_sub_left, hf_sub_right hq hadd, hf_smul_left, hf_smul_right]
+    · simp only [hf_sub_left, hf_sub_right hadd, hf_smul_left, hf_smul_right]
       rw [← hX0]
       simp [hiso]
   · rintro ⟨a, U⟩ hp
@@ -901,7 +901,7 @@ theorem isoPeel_of_valCount (hv : ValCount) : IsoPeel := by
       omega
     have hkW' := hk W' hnd hdim
     rw [iso_cntT_zero_eq] at hkW'
-    rw [Finset.filter_filter, iso_fiber hadd hinv hM W x y hxW hyW hxx hxy]
+    rw [Finset.filter_filter, iso_fiber hadd hinv hM W x y hxW hxx hxy]
     push_cast
     rw [hkW', Fintype.card_fun, Fintype.card_fin, hcardL]
     push_cast

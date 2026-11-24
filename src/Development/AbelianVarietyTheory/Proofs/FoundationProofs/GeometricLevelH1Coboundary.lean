@@ -433,7 +433,7 @@ theorem tau_pow_qq (T : Tower p Ω) {τ : Gal p Ω} (hτ : τ ∈ Ggeo (p := p) 
       ggeo_apply ((Ggeo (p := p) Ω).pow_mem hτ s) (isAlgZp_zeta T n), pow_succ]
     ring
 
-theorem dense_tau_pow_mul (p : ℕ) [Fact p.Prime] (_hp2 : p ≠ 2) (Ω : Type) [Field Ω]
+theorem dense_tau_pow_mul (p : ℕ) [Fact p.Prime] (Ω : Type) [Field Ω]
     [Algebra (O0 p) Ω] (hΩ : IsClo p Ω) (T : Tower p Ω) (τ : Gal p Ω) (hτ : τ ∈ Ggeo (p := p) Ω)
     (hτq : ∀ n, τ (T.qq n) = T.ζ n * T.qq n) :
     ∀ g ∈ Ggeo (p := p) Ω, ∀ S : Finset Ω, ∃ s : ℕ, ∃ h ∈ Ggeo (p := p) Ω ⊓ ⨅ n, Gn T n,
@@ -1298,7 +1298,7 @@ theorem coker_part (hp : p ≠ 2) (hΩ : IsClo p Ω) (T : Tower p Ω) (k : ℕ) 
     classical
     intro g hg
     obtain ⟨S, hS⟩ := ha.2 g hg
-    obtain ⟨s, h, hh, hag⟩ := _root_.GlobalTheory.K5.Dense.dense_tau_pow_mul p hp Ω hΩ T τ hτG hτq g hg (insert x1 (insert w (insert (T.qq k) S)))
+    obtain ⟨s, h, hh, hag⟩ := _root_.GlobalTheory.K5.Dense.dense_tau_pow_mul p Ω hΩ T τ hτG hτq g hg (insert x1 (insert w (insert (T.qq k) S)))
     have hg' : τ ^ s * h ∈ Ggeo p Ω := mul_mem (pow_mem hτG s) (mem_Hi hh).1
     have e0 : Cong (p := p) k (b (τ ^ s * h)) 0 :=
       _root_.GlobalTheory.K5.TateGeo.cong_trans' (bcoc _ (pow_mem hτG s) h (mem_Hi hh).1)
@@ -1326,7 +1326,7 @@ theorem coker_part (hp : p ≠ 2) (hΩ : IsClo p Ω) (T : Tower p Ω) (k : ℕ) 
 
 theorem kern_part (hp : p ≠ 2) (hΩ : IsClo p Ω) (T : Tower p Ω) (k : ℕ) (hk : 1 ≤ k)
     (κ : Gal p Ω → ZMod (p ^ k)) (hκ : IsKum T k (Ggeo p Ω) (T.qq k) κ)
-    (o : Ω) (ho : IsInt (p := p) o) (hoG : ∀ g ∈ Ggeo p Ω, g o = o) (x : Ω) (hx : IsInt (p := p) x)
+    (o : Ω) (hoG : ∀ g ∈ Ggeo p Ω, g o = o) (x : Ω) (hx : IsInt (p := p) x)
     (hxc : ∀ g ∈ Ggeo p Ω, Cong (p := p) k (o * ((κ g).val : Ω)) (g x - x)) :
     Cong (p := p) k ((p : Ω) ^ 3 * o) 0 := by
   have hπ := isInt_pi (p := p) T
@@ -1375,7 +1375,7 @@ theorem top : ∀ (p : ℕ) [Fact p.Prime], p ≠ 2 → ∃ c : ℕ, ∀ (Ω : T
         (fun g hg h hh => by simpa using hc g hg h hh)
       exact ⟨o, ho, hoG, X, hX, fun g hg => by simpa using hXc g hg⟩
     · obtain ⟨x, hx, hxc⟩ := hc
-      exact kern_part hp hΩ T k hk κ hκ o ho hoG x hx (fun g hg => by simpa using hxc g hg)
+      exact kern_part hp hΩ T k hk κ hκ o hoG x hx (fun g hg => by simpa using hxc g hg)
 
 end GlobalTheory.K5.TopGeo
 end -- clump:auto

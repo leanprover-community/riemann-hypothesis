@@ -847,7 +847,7 @@ namespace Formalism.MainNotions.G.ColumnFamilies
 
 theorem restOne : RestOne := restOne_of restWord restTop restSplit
 
-theorem admissible_word_basis (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CovariantDegrees.FirstLettersLowerSet D := firstLettersLowerSet_of_restWord_restOne D restWord restOne
+theorem admissible_word_basis (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CovariantDegrees.FirstLettersLowerSet := firstLettersLowerSet_of_restWord_restOne D restWord restOne
 
 end Formalism.MainNotions.G.ColumnFamilies
 end -- clump:auto

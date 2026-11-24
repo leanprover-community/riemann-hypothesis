@@ -184,7 +184,7 @@ theorem hermCovol : HermCovol := by
   haveI : IsTopologicalAddGroup (HermR (AF F) σ n) := inferInstance
   haveI : BorelSpace (HermR (AF F) σ n) := ⟨rfl⟩
   have hsd : ν.map e = adeleMeasurePi F := by
-    refine GlobalTheory.CompanionTheory.Hypotheses₂.OneV.Fth.selfDual_eq _ hs hdet _
+    refine GlobalTheory.CompanionTheory.Hypotheses₂.OneV.Fth.selfDual_eq _ hdet _
       (GlobalTheory.CompanionTheory.Hypotheses₂.OneV.Fth.selfDual_transport e ?_ _ _ ?_ ν hν)
     · intro x y
       exact hermVec_add (AF F) b n x y

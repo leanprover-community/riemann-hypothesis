@@ -337,7 +337,7 @@ theorem alConjInv_mul' (h : (N : ℤ) * a * d - l * b * c = 1) (hN : 0 < N) (hl 
         rw [alConjInv_mul h hNl B hB, Matrix.mul_assoc]
     _ = _ := (Matrix.mul_assoc _ _ _).symm
 
-theorem alConj_00_N (h : (N : ℤ) * a * d - l * b * c = 1) (hN : 0 < N) (hl : 0 < l) (M : M2) :
+theorem alConj_00_N (h : (N : ℤ) * a * d - l * b * c = 1) (M : M2) :
     (N : ℤ) ∣ alConj N l a b c d M 0 0 - M 1 1 := by
   simp only [alConj, Matrix.of_apply, Matrix.cons_val', Matrix.cons_val_zero, Matrix.empty_val',
     Matrix.cons_val_fin_one]
@@ -425,7 +425,7 @@ theorem weight_alConj (χ : DirichletCharacter ℂ N) (h : (N : ℤ) * a * d - l
     ch χ (δ 0 0) = ch χ m * ch χ⁻¹ (alConj N l a b c d δ 0 0) := by
   have hN10 : (N : ℤ) ∣ δ 1 0 := dvd_trans ⟨l, by push_cast; ring⟩ hδ
   have e1 : ((alConj N l a b c d δ 0 0 : ℤ) : ZMod N) = ((δ 1 1 : ℤ) : ZMod N) :=
-    ((ZMod.intCast_eq_intCast_iff_dvd_sub _ _ _).2 (alConj_00_N h hN hl δ)).symm
+    ((ZMod.intCast_eq_intCast_iff_dvd_sub _ _ _).2 (alConj_00_N h δ)).symm
   have e2 : ((δ 0 0 : ℤ) : ZMod N) * ((δ 1 1 : ℤ) : ZMod N) = (m : ZMod N) := by
     have e3 : ((δ.det : ℤ) : ZMod N) = (m : ZMod N) := by rw [hdet]; simp
     rw [Matrix.det_fin_two] at e3

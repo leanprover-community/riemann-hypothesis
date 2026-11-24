@@ -513,7 +513,7 @@ theorem D_comm_bd {lev : Fin n → ℕ} (hlev : Monotone lev) {E1 E2 : Fin n →
     abel
 
 theorem cre_ann_mem {lev : Fin n → ℕ} {j : ℕ} {y : Cq n V} (hy : y ∈ chU lev j) {k l : Lt n} (hk : inUU lev k)
-    (hl : inUU lev l) : creL k (annL l y) ∈ chU lev j := by
+    : creL k (annL l y) ∈ chU lev j := by
   constructor
   · intro A hA m hm
     obtain ⟨h1, h2⟩ := creL_ne hA
@@ -535,7 +535,7 @@ theorem cE_aE_mem {lev : Fin n → ℕ} {j : ℕ} {y : Cq n V} (hy : y ∈ chU l
   by_cases h1 : Sx lev a c
   · by_cases h2 : Sx lev b d
     · rw [dite_eq_left h1, dite_eq_left h2]
-      exact cre_ann_mem hy h1.2 h2.2
+      exact cre_ann_mem hy h1.2
     · simp [h2]
   · simp [h1]
 

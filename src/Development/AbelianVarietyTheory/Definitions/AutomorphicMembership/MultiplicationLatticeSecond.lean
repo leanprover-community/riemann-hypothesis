@@ -363,8 +363,8 @@ structure ThbSt (ct : At S κ p) (un : UniSt ct) : Type 1 where
   PPq : ∀ La, LBGq La
   symmG : ∀ {La}, LBG La → Prop
   rigG : ∀ {La}, LBG La → Prop
-  LBGt : ∀ (y : ct.Pt ct.Xm), un.Unim → Type
-  LBB : ∀ (y : ct.Pt ct.Xm), un.Unim → Type
+  LBGt : ∀ (_ : ct.Pt ct.Xm), un.Unim → Type
+  LBB : ∀ (_ : ct.Pt ct.Xm), un.Unim → Type
   resGt : ∀ {La}, LBG La → ∀ y, LBGt y La
   prPull : ∀ {y La}, LBB y La → LBGt y La
   principal : ∀ {y La}, LBB y La → Prop
@@ -467,7 +467,7 @@ structure JetSt (ct : At S κ p) (un : UniSt ct) (tg : ThgSt ct un) : Type 1 whe
   [jMod : ∀ y La n DF, Module (ct.fld y).C (Jet y La n DF)]
   intJet : ∀ y La n DF, AddSubgroup (Jet y La n DF)
   jet : ∀ y La n DF, tg.Sn y La n →ₗ[(ct.fld y).C] Jet y La n DF
-  FB : ∀ (y : ct.Pt ct.Xm) (nW n : ℕ), (Fin nW → ct.chX y) → Type
+  FB : ∀ (y : ct.Pt ct.Xm) (nW _ : ℕ), (Fin nW → ct.chX y) → Type
   [fbAdd : ∀ y nW n χ, AddCommGroup (FB y nW n χ)]
   [fbMod : ∀ y nW n χ, Module (ct.fld y).C (FB y nW n χ)]
   nB : ∀ {y nW n χ}, FB y nW n χ → ℝ

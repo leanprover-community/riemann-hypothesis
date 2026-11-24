@@ -50,7 +50,7 @@ open scoped WithZero
 namespace GlobalTheory.QNorm
 
 theorem intValuation_of_span_eq_mul {R : Type} [CommRing R] [IsDedekindDomain R]
-    (v : HeightOneSpectrum R) (I : Ideal R) (hI : I ≠ 0) (hv : ¬ v.asIdeal ∣ I) (x : R)
+    (v : HeightOneSpectrum R) (I : Ideal R) (hv : ¬ v.asIdeal ∣ I) (x : R)
     (hx0 : x ≠ 0) (hx : v.asIdeal * I = Ideal.span {x}) :
     v.intValuation x = WithZero.exp (-1) := by
   have hvd : v.asIdeal ∣ Ideal.span {x} := ⟨I, hx.symm⟩
@@ -117,7 +117,7 @@ theorem exists_admissible_superset_finite_places : ∀ (F : Type) [Field F] [Num
       exact (mul_ne_zero v.ne_bot (nonZeroDivisors.coe_ne_zero (J c))) hy'
     refine ⟨algebraMap (𝓞 F) F y, ?_, ?_⟩
     · rw [HeightOneSpectrum.valuation_of_algebraMap]
-      exact intValuation_of_span_eq_mul v _ (nonZeroDivisors.coe_ne_zero _) (houtJ v hv c) y hy0 hy'
+      exact intValuation_of_span_eq_mul v _ (houtJ v hv c) y hy0 hy'
     · intro w hw hwv
       rw [HeightOneSpectrum.valuation_of_algebraMap, HeightOneSpectrum.intValuation_eq_one_iff]
       intro hyw

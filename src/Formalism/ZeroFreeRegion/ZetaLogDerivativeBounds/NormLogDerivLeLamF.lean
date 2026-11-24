@@ -68,7 +68,7 @@ lemma term_vonMangoldt_real (σ : ℝ) (n : ℕ) :
   exact (RCLike.norm_of_nonneg'
     (term_nonneg (by exact_mod_cast vonMangoldt_nonneg) σ)).symm
 
-lemma lamF_eq_norm {σ : ℝ} (_hσ : 1 < σ) : lamF σ = ‖L ↗Λ (σ : ℂ)‖ := by
+lemma lamF_eq_norm {σ : ℝ} : lamF σ = ‖L ↗Λ (σ : ℂ)‖ := by
   have h : L ↗Λ (σ : ℂ) = ((lamF σ : ℝ) : ℂ) := by
     rw [LSeries, lamF, Complex.ofReal_tsum]; exact tsum_congr (term_vonMangoldt_real σ)
   have hnn : 0 ≤ lamF σ := tsum_nonneg fun _ => norm_nonneg _

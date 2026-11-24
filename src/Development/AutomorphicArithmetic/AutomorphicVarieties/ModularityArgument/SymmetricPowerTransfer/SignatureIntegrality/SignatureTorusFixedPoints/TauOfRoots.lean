@@ -98,7 +98,7 @@ noncomputable section
 
 open ValuativeRel Matrix Polynomial GlobalTheory.SmGL GlobalTheory.SplitWeil UpperTheory.V.Hi UpperTheory.V.AlgebraTools UpperTheory.V.Z.Sym UpperTheory.V.Z.Sym.Sig UpperTheory.V.Z.Sym.Loc UpperTheory.V.Z.Sym.Glob
 
-private theorem tau_of_roots {k : Type} [Field k] (h2 : (2 : k) ≠ 0) (a : kˣ) (τ : k)
+private theorem tau_of_roots {k : Type} [Field k] (a : kˣ) (τ : k)
     (h : (X - C (a : k)) * (X - C 1) * (X - C ((a⁻¹ : kˣ) : k)) = ((X - 1) * (X ^ 2 - C τ * X + 1) : k[X])) :
     τ = (a : k) + ((a⁻¹ : kˣ) : k) := by
   have hu : C (a : k) * C ((a⁻¹ : kˣ) : k) = 1 := by
@@ -214,7 +214,7 @@ theorem UpperTheory.V.Z.Sym.Sig.okG :
       rw [Units.val_mul, Units.val_mul, Matrix.coe_units_inv, charpoly_units_conj, charpoly_dg,
         inv_div, Units.val_one]
     rw [hc2] at hcp
-    have hτ' := tau_of_roots h2 (x / z) τ hcp
+    have hτ' := tau_of_roots (x / z) τ hcp
     rw [Ind.eq_1]
     refine ⟨x / z / t, hH, ?_⟩
     have hm : t * (x / z / t) = x / z := by

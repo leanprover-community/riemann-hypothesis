@@ -112,7 +112,7 @@ theorem gramFibFree_basic : ∀ (F E : Type) [Field F] [NumberField F] [Field E]
     obtain ⟨M, hM⟩ := hD.exists_bound_of_continuousOn (hco.mono (Set.subset_univ D))
     refine ⟨M.toNNReal, fun S hS => ?_⟩
     calc m S C ≤ ∫⁻ v, ENNReal.ofReal (φ v) ∂(m S) :=
-          GlobalTheory.CompanionTheory.SW.FibreFam.le_lintegral_bump _ hC h0 hone
+          GlobalTheory.CompanionTheory.SW.FibreFam.le_lintegral_bump _ hC hone
       _ = ENNReal.ofReal (∫ v, φ v ∂(m S)) :=
           (ofReal_integral_eq_lintegral_ofReal (hi S (Set.mem_univ S))
             (Filter.Eventually.of_forall h0)).symm

@@ -191,8 +191,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qh12.ell :
-    ∀ (O Λ Γ X : Type) [inst : CommRing O] [inst_1 : CommRing Λ] [inst_2 : Algebra O Λ]
-    [inst_3 : CommGroup Γ] [inst_4 : AddCommGroup X] [inst_5 : _root_.Module O X] (th₀ : Λ →ₐ[O] O) (d : Λ →ₗ[O] X)
+    ∀ (O Λ Γ X : Type) [CommRing O] [CommRing Λ] [Algebra O Λ]
+    [CommGroup Γ] [AddCommGroup X] [_root_.Module O X] (th₀ : Λ →ₐ[O] O) (d : Λ →ₗ[O] X)
     (χ : Γ →* Multiplicative X),
     (∀ (a b : Λ), (d : Λ → X) (a * b) = (th₀ : Λ → O) a • (d : Λ → X) b + (th₀ : Λ → O) b • (d : Λ → X) a) →
       ∃ (th : MonoidAlgebra Λ Γ →ₐ[O] O) (ell : MonoidAlgebra Λ Γ →ₗ[O] X),

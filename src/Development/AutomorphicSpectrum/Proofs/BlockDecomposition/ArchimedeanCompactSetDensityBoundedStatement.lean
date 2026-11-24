@@ -396,7 +396,7 @@ def pairC (n : ℕ) (c : W → ℝ) : (W → hermC n) →ₗ[ℝ] (W → hermC n
       refine Finset.sum_congr rfl fun w _ => ?_
       ring)
     (fun u v v' => by
-      simp [Matrix.mul_add, Matrix.trace_add, mul_add, Finset.sum_add_distrib])
+      simp [Matrix.trace_add, mul_add, Finset.sum_add_distrib])
     (fun r u v => by
       simp [coe_smul_hermC, Matrix.trace_smul, Finset.mul_sum]
       refine Finset.sum_congr rfl fun w _ => ?_

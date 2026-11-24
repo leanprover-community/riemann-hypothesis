@@ -69,7 +69,7 @@ theorem finrank_quot_kerIdeal_mul_of_idem (p : ℕ) [Fact p.Prime] (k : Type) [F
     have h := G.rank_eq n q
     rw [Module.rankAtStalk_eq_finrank_of_free] at h
     simpa using h
-  have hker := _root_.GlobalTheory.PDivGroup.ker_app_eq_kerIdeal_of_idempotents p k G u v huv h1 h2 n
+  have hker := _root_.GlobalTheory.PDivGroup.ker_app_eq_kerIdeal_of_idempotents p k G u v huv h1 n
   have hord := finrank_eq_ker_mul_range k (G.A n) (G.A n) (u.app n)
   have hr : Module.finrank k (LinearMap.range ((u.app n : G.A n →ₐ[k] G.A n).toLinearMap)) =
       Module.finrank k (G.A n ⧸ kerIdeal (v.app n)) := by

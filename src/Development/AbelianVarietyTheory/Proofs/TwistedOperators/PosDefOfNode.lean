@@ -108,12 +108,12 @@ theorem path {X : Node} {F : Fn G X} (hF : IsInvCont X F) : ∀ {Y : Node} (p : 
 theorem all_colFam {S : Arrow T → Type} {P : ∀ a, S a → Prop} (t : T) :
     ∀ n (f : ∀ j : Fin n, S (.col t j)), (∀ j, P _ (f j)) → Path.Fam.All P (colFam t n f)
   | 0, _, _ => trivial
-  | n + 1, f, h => ⟨all_colFam t n _ fun j => h j.castSucc, h (Fin.last n)⟩
+  | n + 1, _, h => ⟨all_colFam t n _ fun j => h j.castSucc, h (Fin.last n)⟩
 
 theorem all_rowFam {S : Arrow T → Type} {P : ∀ a, S a → Prop} (j : ℕ) :
     ∀ n (f : ∀ i : Fin n, S (.right i j)), (∀ i, P _ (f i)) → Path.Fam.All P (rowFam j n f)
   | 0, _, _ => trivial
-  | n + 1, f, h => ⟨all_rowFam j n _ fun i => h i.castSucc, h (Fin.last n)⟩
+  | n + 1, _, h => ⟨all_rowFam j n _ fun i => h i.castSucc, h (Fin.last n)⟩
 
 end GlobalTheory.DefConv
 

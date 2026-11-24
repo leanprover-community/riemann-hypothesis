@@ -1629,7 +1629,7 @@ open GlobalTheory.IndefiniteRowSideFullHecke.OmegaFactorization GlobalTheory.Hec
 noncomputable section
 namespace GlobalTheory.ZetaPole
 
-theorem tendsto_pow_mul (F : Type) [Field F] [NumberField F] (C C' : ClassGroup (𝓞 F)) (Z Z' : ℂ → ℂ)
+theorem tendsto_pow_mul (F : Type) [Field F] [NumberField F] (C' : ClassGroup (𝓞 F)) (Z Z' : ℂ → ℂ)
     (hZ' : IsPartialZeta C' Z')
     (hfe : ∀ s : ℂ, (∀ n : ℕ, s ≠ -2 * n) → (∀ n : ℕ, 1 - s ≠ -2 * n) →
       (dF F : ℂ) ^ (s / 2) * Complex.Gammaℝ s ^ Module.finrank ℚ F * Z s =
@@ -1772,7 +1772,7 @@ theorem zeta_simple_pole : ∀ (F : Type) [Field F] [NumberField F] [NumberField
   have hdiff : ∀ s : ℂ, s ≠ 1 → DifferentiableAt ℂ Z s := fun s hs =>
     hZ.1.differentiableAt (isOpen_compl_singleton.mem_nhds hs)
 
-  obtain ⟨L, hL⟩ := tendsto_pow_mul F C C' Z Z' hZ' hfe
+  obtain ⟨L, hL⟩ := tendsto_pow_mul F C' Z Z' hZ' hfe
   set h : ℂ → ℂ := fun s => (s - 1) ^ f * Z s
   have hHd : DifferentiableOn ℂ (Function.update h 1 (limUnder (𝓝[≠] 1) h)) Set.univ := by
     refine differentiableOn_update_limUnder_of_isLittleO Filter.univ_mem ?_ ?_

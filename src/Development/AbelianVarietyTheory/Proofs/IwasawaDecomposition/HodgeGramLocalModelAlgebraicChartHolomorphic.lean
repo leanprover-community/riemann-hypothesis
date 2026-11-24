@@ -622,7 +622,7 @@ theorem exists_analytic_frame_lift : ∀ (E : Type) [Field E] [NumberField E] [I
     obtain ⟨q₀, hq₀, hu₀⟩ := hq _ hb₀
     have hne : ¬ LiesIn (cxOf e σ hj y) (genBd T.Z) := by
       rw [← c'.e.left_inv hyc, ← hq₀]; exact not_liesIn_cxPt q₀
-    obtain ⟨k, x, -, hkx⟩ := GlobalTheory.HodgeSmooth.exists_orth (Z := T.Z) hσ hU hne
+    obtain ⟨k, x, -, hkx⟩ := GlobalTheory.HodgeSmooth.exists_orth (Z := T.Z) hU hne
     have hg : IsEmpty (Fin W.g) := by
       refine ⟨fun a => ?_⟩
       have := (W.e a).2.2
@@ -1003,7 +1003,7 @@ theorem GlobalTheory.HodgeGramGen.hodge_gram_frame : ∀ (E : Type) [Field E] [N
     rw [hg, transpose_smul]
     congr 1
     by_cases h : τ (H.rt : E) = H.rt0
-    · have hK := coef_eq_coW_change (U.X k') hj hp hx hx1 (ρ τ h) (hmo _)
+    · have hK := coef_eq_coW_change (U.X k') hj hp hx1 (ρ τ h) (hmo _)
       set e : Fin (Dw.mult τ) ≃ Fin Dw.p := finCongr (mult_of_mem Dw h) with he
       have hKe : (Matrix.of fun b i : Fin (Dw.mult τ) => coef (U.X k') x x1 (Formalism.L2.PjFree.relab c σ τ) b i) =
           ((coW (U.X k') hj x1 (ρ τ h))⁻¹ * coW (U.X k') hj x (ρ τ h)).submatrix e e := by

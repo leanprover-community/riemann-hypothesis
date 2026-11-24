@@ -118,7 +118,7 @@ theorem refN_map_kapL {n r k : ℕ} (hn : n = 2 * r + k + 1) (ε : Fin n → Boo
         have h1 : s ∈ NLoc ε e (Qm e f w (z0v T z) *ᵥ zBv k r T) := by rw [hNz]; exact hs
         exact h1
       have h0 : Qi ε e f w (z0v T z) * uMat s * Qm e f w (z0v T z) ∈ Nset k r :=
-        conj_mem_Nset hFJ hz0 (uMat_mem s) hs'
+        conj_mem_Nset hFJ (uMat_mem s) hs'
       set m0 := Qi ε e f w (z0v T z) * uMat s * Qm e f w (z0v T z) with hm0
       have hfun : Ψ ∘ (fun x => s * x) = lmulM m0 ∘ Ψ := by
         funext x
@@ -152,7 +152,7 @@ theorem refN_map_kapL {n r k : ℕ} (hn : n = 2 * r + k + 1) (ε : Fin n → Boo
     have hg' : InN ε e (Qm e f w (z0v T z) *ᵥ zBv k r T) (uMat g) := by
       have h1 : g ∈ NLoc ε e (Qm e f w (z0v T z) *ᵥ zBv k r T) := by rw [hNz]; exact hg
       exact h1
-    exact kapL_eq hFJ hT g (conj_mem_Nset hFJ hz0 (uMat_mem g) hg')
+    exact kapL_eq hT g (conj_mem_Nset hFJ (uMat_mem g) hg')
   have hdet := det_LyM_ne (k := k) (r := r) hT
   set c : ℝ≥0∞ := ENNReal.ofReal |(LinearMap.det (LyM (k := k) (r := r) T))⁻¹| with hc
   have hc0 : c ≠ 0 := by rw [hc]; exact (ENNReal.ofReal_pos.2 (abs_pos.2 (inv_ne_zero hdet))).ne'

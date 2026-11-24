@@ -311,7 +311,7 @@ theorem weight_type_of_isotypic_projections [NeZero n] (hCR : StableSubspaceComp
 
 end concrete
 
-theorem generated_weight_lemma_char_zero (D : Formalism.BasicNotions.D7) (hV1 : ValuationsAdditive D) (hCR : StableSubspaceCompleteReducibility) (hHW : HighestWeightModuleWeightBounds) (hRel : PolynomialOperatorsGLRelations) (hWt : MonomialsAreWeightVectors)
+theorem generated_weight_lemma_char_zero (D : Formalism.BasicNotions.D7) (hV1 : ValuationsAdditive) (hCR : StableSubspaceCompleteReducibility) (hHW : HighestWeightModuleWeightBounds) (hRel : PolynomialOperatorsGLRelations) (hWt : MonomialsAreWeightVectors)
     (hFin : PolynomialLocallyFinite) (hDP : DividedPowerFormulaCharZero) (hBin : BinomialFormulaCharZero) : ShaLengthVersionTwo D := by
   intro R _ _ ι _ LL n _ S e he
   obtain ⟨_, _, _, _, h5, h6⟩ := hV1 R ι LL n S

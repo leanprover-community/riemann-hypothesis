@@ -364,15 +364,15 @@ theorem two_gram {n : ℕ} (J : Matrix (Fin n) (Fin n) E) {a b a' b' p q r u : E
   induction i using Fin.cases with
   | zero =>
     induction j using Fin.cases with
-    | zero => simp [blk, two, Fin.tail, hform, h1, -Fin.succ_zero_eq_one, -Fin.succ_zero_eq_one', ← add_assoc]
+    | zero => simp [blk, two, Fin.tail, hform, h1, -Fin.succ_zero_eq_one, -Fin.succ_zero_eq_one']
     | succ j =>
       cases j using Fin.cases <;>
-        simp [blk, two, Fin.tail, hform, h2, -Fin.succ_zero_eq_one, -Fin.succ_zero_eq_one', ← add_assoc]
+        simp [blk, two, Fin.tail, hform, h2, -Fin.succ_zero_eq_one, -Fin.succ_zero_eq_one']
   | succ i =>
     induction j using Fin.cases with
     | zero =>
       cases i using Fin.cases <;>
-        simp [blk, two, Fin.tail, hform, h3, -Fin.succ_zero_eq_one, -Fin.succ_zero_eq_one', ← add_assoc]
+        simp [blk, two, Fin.tail, hform, h3, -Fin.succ_zero_eq_one, -Fin.succ_zero_eq_one']
     | succ j =>
       cases i using Fin.cases <;> cases j using Fin.cases <;>
         simp [blk, two, Fin.tail, hform, h4, -Fin.succ_zero_eq_one, -Fin.succ_zero_eq_one', ← add_assoc,
@@ -468,7 +468,7 @@ section Chain
 
 variable {E : Type} [Field E] [CharZero E] {s : E →+* E}
 
-theorem exists_aniso (hs : ∀ x, s (s x) = x) {n : ℕ} {J : Matrix (Fin (n + 1)) (Fin (n + 1)) E}
+theorem exists_aniso {n : ℕ} {J : Matrix (Fin (n + 1)) (Fin (n + 1)) E}
     (hJ : HN s J) : ∃ x, hform s J x x ≠ 0 := by
   by_contra! h
   have hd : ∀ i, J i i = 0 := fun i => by
@@ -573,10 +573,10 @@ theorem chain (hs : ∀ x, s (s x) = x) {n : ℕ} {a a' : E} {J₁ J₂ : Matrix
   have h₂ : HN s (blk a' J₂) := h.hn hs h₁
   obtain ⟨R, hR, hRJ⟩ := h.symm
   let tl : (Fin (n + 1 + 1) → E) →ₗ[E] (Fin (n + 1) → E) := LinearMap.funLeft E E Fin.succ
-  obtain ⟨w₁, hw₁⟩ := exists_aniso hs ((hn_blk s _ _).1 h₁).2.2
-  obtain ⟨w₂, hw₂⟩ := exists_aniso hs ((hn_blk s _ _).1 h₂).2.2
+  obtain ⟨w₁, hw₁⟩ := exists_aniso ((hn_blk s _ _).1 h₁).2.2
+  obtain ⟨w₂, hw₂⟩ := exists_aniso ((hn_blk s _ _).1 h₂).2.2
   obtain ⟨z, hz, hz₁, hz₂⟩ := exists_three (quad_hform (s := s) (blk a J₁) LinearMap.id)
-    (quad_hform (s := s) J₁ tl) (quad_hform (s := s) J₂ (tl ∘ₗ R.mulVecLin)) (exists_aniso hs h₁)
+    (quad_hform (s := s) J₁ tl) (quad_hform (s := s) J₂ (tl ∘ₗ R.mulVecLin)) (exists_aniso h₁)
     ⟨Fin.cons 0 w₁, hw₁⟩ ⟨R⁻¹ *ᵥ Fin.cons 0 w₂, by
       simp only [LinearMap.comp_apply, mulVecLin_apply, mulVec_mulVec,
         Matrix.mul_nonsing_inv _ (Ne.isUnit hR), one_mulVec]
@@ -609,7 +609,7 @@ theorem pot_succ (C : ∀ n : ℕ, E → Matrix (Fin n) (Fin n) E → Γ) {n : �
 theorem exists_blk [CharZero E] (hs : ∀ x, s (s x) = x) {n : ℕ}
     {J : Matrix (Fin (n + 1)) (Fin (n + 1)) E} (hJ : HN s J) :
     ∃ p : E × Matrix (Fin n) (Fin n) E, Cong s J (blk p.1 p.2) := by
-  obtain ⟨x, hx⟩ := exists_aniso hs hJ
+  obtain ⟨x, hx⟩ := exists_aniso hJ
   obtain ⟨P, J', h1, -, h2⟩ := exists_compl hs hJ x hx
   exact ⟨(_, J'), P, h1, h2⟩
 
@@ -799,7 +799,7 @@ theorem exists_coboundary : ∀ (F E : Type) [Field F] [NumberField F] [Field E]
           ext i j
           rw [mul_incl]
           cases i using Fin.cases <;>
-            simp [blk, incl, Matrix.mul_apply, Matrix.one_apply, Fin.succ_ne_zero, (Fin.succ_ne_zero _).symm])
+            simp [blk, incl, Matrix.mul_apply, Matrix.one_apply, (Fin.succ_ne_zero _).symm])
       rw [← this]
       simp [cT_blk, blk_mul])
     (by
@@ -1713,7 +1713,7 @@ theorem rowLay_of (l : Lv4 𝒮 K w Z) (Y : DivX (w.D Z)) (hMj : MjAre l.what₂
     idx := l.what₂.idx Y hMj
     kapR_def := hk _ }
 
-theorem stepW_core (_h2b : StandardLattice.SiegelMassRatioCM) : ∀ 𝒮 : Slots, AmbEx 𝒮 → DivEx 𝒮 → ThEx 𝒮 →
+theorem stepW_core : ∀ 𝒮 : Slots, AmbEx 𝒮 → DivEx 𝒮 → ThEx 𝒮 →
     StepW (pinAnd (Has4 𝒮)) (HasC (BuiltE 𝒮)) := by
   intro 𝒮 hA hD hT
   have hp : StepW (pinAnd (Has4 𝒮)) Pinned := StepW.of_all fun _ _ _ _ _ _ _ h => h.1

@@ -418,7 +418,7 @@ theorem sval_zero {X Y Z : Scheme.{0}} {L : LB X} {K : Type} [Fintype K] {φ : K
 theorem exists_constHom {W : Type} [CommRing W] {Y Z : Scheme.{0}} (p : Y ⟶ Spec (CommRingCat.of W)) (r : Z ⟶ Y)
     (z : Z) : ∃ c : W →+* Z.presheaf.stalk z, ∀ w, gs r z ⊤ (scal p w) = c w :=
   ⟨((Z.presheaf.germ (r ⁻¹ᵁ ⊤) z trivial).hom.comp (r.app ⊤).hom).comp
-    (p.appTop.hom.comp (Scheme.ΓSpecIso (CommRingCat.of W)).inv.hom), fun w => gs_eq r z ⊤ trivial _⟩
+    (p.appTop.hom.comp (Scheme.ΓSpecIso (CommRingCat.of W)).inv.hom), fun _ => gs_eq r z ⊤ trivial _⟩
 
 theorem sum_eq_zero {V : Type} [CommRing V] [IsDomain V] (I : Ideal V) (D : DegPre V) (k : ℕ) (α : D.X)
     {W : Type} [CommRing W] [Algebra V W] (a : Multiplicative D.X →* Wˣ)
@@ -695,7 +695,7 @@ variable {e : ℕ} (g : GtCoord I D e G) {W : Type} [CommRing W]
     {T : Over (Spec (CommRingCat.of (R ⧸ I ^ (e + 1))))} (r : T.left ⟶ Spec (CommRingCat.of W))
 
 theorem coord_one : Coord g r 1 (1 : T ⟶ thickObj R I e G) :=
-  ⟨GlobalTheory.TorusCoord.im_one g, fun χ z J hJ => (GlobalTheory.TorusCoord.val_unit g χ hJ).trans (map_one _).symm⟩
+  ⟨GlobalTheory.TorusCoord.im_one g, fun χ _ _ hJ => (GlobalTheory.TorusCoord.val_unit g χ hJ).trans (map_one _).symm⟩
 
 theorem val_mul_of (hG : GlobalFnsSt) {y y' : T ⟶ thickObj R I e G} (h : GlobalTheory.TorusCoord.im g y = 1)
     (χ : D.X) (z : T.left) (J) (hJ : Good D.P.L z J) :

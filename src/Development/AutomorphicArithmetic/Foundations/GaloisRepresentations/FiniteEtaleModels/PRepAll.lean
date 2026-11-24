@@ -310,7 +310,7 @@ variable {S : Scheme.{0}}
 def postHom {T A : Over S} [GrpObj A] (φ : A ⟶ A) [IsMonHom φ] : (T ⟶ A) →* (T ⟶ A) where
   toFun f := f ≫ φ
   map_one' := MonObj.one_comp _
-  map_mul' f g := MonObj.mul_comp _ _ _
+  map_mul' _ _ := MonObj.mul_comp _ _ _
 
 theorem bilin_ext {M La Q I J : Type} [AddCommGroup M] [AddCommGroup La] [CommGroup Q] [Fintype I] [Fintype J]
     (bM : Module.Basis I ℤ M) (bL : Module.Basis J ℤ La) (F G : M → La → Q)
@@ -445,7 +445,7 @@ theorem exists_finiteEtale_linTorsHom : ∀ (p : ℕ) [Fact p.Prime] (D : Datum 
     (Out.powIsLimit K n).hom_ext fun ⟨j⟩ => by
       have := e (bb j)
       rw [hb] at this
-      exact hcan _ _ (by simp only [x, Category.assoc] at this; exact this)
+      exact hcan _ _ (by simp only [x] at this; exact this)
   obtain ⟨h', hh'⟩ := (Hi T h).1 ((HU T h).1 fun c a => by rw [hhe, hllin, ← hhe a, Category.assoc])
   refine ⟨h', fun a => by beta_reduce; rw [← Category.assoc, hh', hhe], fun g hg => ?_⟩
   exact (cancel_mono i).1 (hext _ _ fun a => by

@@ -773,7 +773,7 @@ open Polynomial
 
 namespace UpperTheory.Gal.LocalSmoothExtension
 
-theorem invPolProps_of (hR : InvRoots) : InvPolProps := by
+theorem invPolProps_of : InvPolProps := by
   intro F _ _ P hP
   have hP0 : P ≠ 0 := fun h => hP (by simp [h])
   have hc : (P.coeff 0)⁻¹ ≠ 0 := inv_ne_zero hP
@@ -1251,7 +1251,7 @@ section -- clump:auto
 
 namespace UpperTheory.Gal.LocalSmoothExtension
 
-theorem InvPolProps_holds : InvPolProps := invPolProps_of _root_.UpperTheory.Gal.LocalSmoothExtension.invRoots_of
+theorem InvPolProps_holds : InvPolProps := invPolProps_of
 theorem RootW_holds : RootW :=
   rootW_of _root_.UpperTheory.Gal.W2.rootSumW_of _root_.UpperTheory.Gal.W2.rootSumWOff_of listsEx_of schWEq_of
 theorem EigOf_holds : EigOf := eigOf_of UpperTheory.Gal.CertificateRingHomMap.pProjOne_holds

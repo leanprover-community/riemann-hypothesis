@@ -1522,7 +1522,7 @@ theorem lpow_hecke {n : ℕ} {w : Pl E} {K' : Subgroup (UL n w)} (hO : IsOpen (K
     exact this
 
 theorem initial_generator_isHecke {n : ℕ} (d : LocData E n) (hd : d.Ok) (hM : MLM.MOk d) {w : Pl E}
-    (hO : IsOpen (d.KU w : Set (UL n w))) (hKK : d.KU w ≤ KL n w) (hw : w ∈ d.B) : IsHecke (d.KU w) (d.g₀ w) := by
+    (hO : IsOpen (d.KU w : Set (UL n w))) (hKK : d.KU w ≤ KL n w) : IsHecke (d.KU w) (d.g₀ w) := by
   by_cases hT : w ∈ d.T
   · have hs := (hM.T w hT).1
     have e1 : d.KU w = iwU n w (d.b w) := by simp only [LocData.KU, ite_eq_left hT]
@@ -1554,7 +1554,7 @@ theorem locMatch (h : LocWord) (h1 : MLM.MatchLMB2) (h2 : MLM.MatchLMWordS) (h3 
   obtain ⟨N, hN⟩ : ∃ N, m * k = N + 1 := ⟨m * k - 1, by have := Nat.mul_pos hm hk; omega⟩
   have hO : ∀ w, IsOpen (d.KU w : Set (UL n w)) := fun w => (hLev.2.1.1 w).1
   have hKK : ∀ w, d.KU w ≤ KL n w := fun w => (hLev.2.1.1 w).2.1
-  have hg0 : ∀ w ∈ d.B, IsHecke (d.KU w) (d.g₀ w) := fun w hw => initial_generator_isHecke d hd hM (hO w) (hKK w) hw
+  have hg0 : ∀ w ∈ d.B, IsHecke (d.KU w) (d.g₀ w) := fun w hw => initial_generator_isHecke d hd hM (hO w) (hKK w)
   have hfamB : ∀ w ∈ d.B, U.fam d.B d.KU (d.gU m) k lU w = d.gU (N + 1) w := by
     intro w hw
     simp only [U.fam, ite_eq_left hw, LocData.gU]
@@ -1692,7 +1692,7 @@ theorem hg_adj (hd : d.Ok) {a : ℕ} (ha : a ≤ n) {L : LM d.kap a (n - a)} (h 
     fun w => ((idB d hd ha w).2.2 _ (h.2.2 w)).2.2⟩
 
 theorem hgBeta (hd : d.Ok) {a : ℕ} (ha : a ≤ n) : HG d a (d.betaL a ha) :=
-  ⟨fun w hw x y => LocComm.hecke_beta d (PositivityTheory.Rg.BcN.F2.LocOpPf.locOp3 E) hd ha hw x y, fun w _ => (idA d hd ha w).1,
+  ⟨fun _ hw x y => LocComm.hecke_beta d (PositivityTheory.Rg.BcN.F2.LocOpPf.locOp3 E) hd ha hw x y, fun w _ => (idA d hd ha w).1,
     fun w => (idB d hd ha w).1⟩
 
 theorem hgGen (hd : d.Ok) {a : ℕ} (ha : a ≤ n) {L : LM d.kap a (n - a)} (hL : d.IsGen a ha L) : HG d a L := by

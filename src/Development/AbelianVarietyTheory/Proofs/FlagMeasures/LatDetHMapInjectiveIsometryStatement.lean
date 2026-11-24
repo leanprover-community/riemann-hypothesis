@@ -79,7 +79,7 @@ theorem length_quot_map (f : U →ₗ[R] V) (hf : Function.Injective f) (A B : S
   exact (Submodule.Quotient.equiv _ _ e he).length_eq.symm
 
 theorem localization_map₂ (hRK : Function.Injective (algebraMap R K)) (i : U →ₗ[K] V)
-    (hi : Function.Injective i) (p : Ideal R) [p.IsPrime] (A : Submodule R U) :
+    (p : Ideal R) [p.IsPrime] (A : Submodule R U) :
     Formalism.HermitianLatticesTheory.localization₂ p (A.map (i.restrictScalars R)) = (Formalism.HermitianLatticesTheory.localization₂ p A).map (i.restrictScalars R) := by
   ext x
   constructor
@@ -103,7 +103,7 @@ theorem locLen_map (hRK : Function.Injective (algebraMap R K)) (i : U →ₗ[K] 
     Formalism.HermitianLatticesTheory.locLen p (A.map (i.restrictScalars R)) (B.map (i.restrictScalars R)) =
       Formalism.HermitianLatticesTheory.locLen p A B := by
   unfold Formalism.HermitianLatticesTheory.locLen
-  rw [localization_map₂ hRK i hi p A, localization_map₂ hRK i hi p B,
+  rw [localization_map₂ hRK i p A, localization_map₂ hRK i p B,
     length_quot_map (i.restrictScalars R) (by simpa using hi)]
 
 theorem lidx_map (hRK : Function.Injective (algebraMap R K)) (i : U →ₗ[K] V)

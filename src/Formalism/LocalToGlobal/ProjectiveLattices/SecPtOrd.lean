@@ -82,7 +82,7 @@ lemma vV_unit_alg (u : Vˣ) : vV V (algebraMap V F (u : V)) = 0 := by
   rw [valV_unit_lemma]
   simp
 
-lemma vV_pow_gen {x : F} (hx : x ≠ 0) (k : ℕ) : vV V (x ^ k) = k * vV V x := by
+lemma vV_pow_gen {x : F} (k : ℕ) : vV V (x ^ k) = k * vV V x := by
   unfold vV valV
   rw [map_pow]
   first
@@ -222,7 +222,7 @@ private theorem toE_ordAt_lemma_3 (h : IsUnif A ϖ) (hι : AddValPres ζ ι) (x 
       vV_locMap (F := F) hι (ENat.coe_toNat hϖT).symm
     have hva : vV V (locMap ζ F ι a) = k := vV_locMap (F := F) hι hk.symm
     have hv : (m : ℤ) * ((vL ζ (algebraMap O ↥(As O A) ϖ)).toNat : ℤ) + vV V (phiAt ζ F ι h hι x) = k := by
-      rw [← hva, ← hkey, vV_mul_lemma_4 (V₁ := V) (pow_ne_zero _ hu) hφ, vV_pow_gen (V := V) hu, hvu]
+      rw [← hva, ← hkey, vV_mul_lemma_4 (V₁ := V) (pow_ne_zero _ hu) hφ, vV_pow_gen (V := V), hvu]
     have hz : vV V (phiAt ζ F ι h hι x) = (k : ℤ) - m * (ep ϖ ζ : ℤ) := by
       unfold ep
       linarith

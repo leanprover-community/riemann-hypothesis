@@ -226,7 +226,7 @@ theorem Tri.XX (h : Tri p d F₀ N) {i j : Fin ρ} (hij : i ≤ j) :
 theorem Tri.YY (h : Tri p d F₀ N) {i j : Fin ρ} (hij : i ≤ j) :
     ((adj d.jX * gA S).map p.π * N * d.jY.map p.π) i j = 0 := by
   rw [← d.pY_eq]
-  exact h (Sum.inr (Sum.inr i)) (Sum.inr (Sum.inr j)) (by simp only [wlev, Sum.elim_inr, Sum.elim_inl]; omega)
+  exact h (Sum.inr (Sum.inr i)) (Sum.inr (Sum.inr j)) (by simp only [wlev, Sum.elim_inr]; omega)
 
 theorem mem_flagN {g : GA D S} (hg : SuppAt p.e S g) (h : Tri p d F₀ ((mt S g).map p.π - 1))
     (h' : Tri p d F₀ ((mt S g⁻¹).map p.π - 1)) : g ∈ flagN d := by

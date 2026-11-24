@@ -382,7 +382,7 @@ theorem tie_holds : TieSt := by
       subst this
       rfl
     · rw [← heq]
-      have hval := isValueAt_pullScale hL (k : ℤ) (Formalism.L2.Pj.homAt y.x (jφ φ m)) hP₂ hV₁ (unitΓ u ^ k)
+      have hval := isValueAt_pullScale (k : ℤ) (Formalism.L2.Pj.homAt y.x (jφ φ m)) hP₂ hV₁ (unitΓ u ^ k)
       have hb : constantCoeff (compL φ (C.B.hL S C.h H.w0)) = 0 := by
         unfold compL
         rw [const_subst0 (a := famL φ) (fun p => hφ.const p.2)]

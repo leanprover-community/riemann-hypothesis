@@ -356,7 +356,7 @@ lemma step_down [Fintype ι] (d : ℕ) (u : U)
       exact (mul_eq_zero.mp h1).resolve_right hne
     · intro s _ hs
       have hiff := pair_ne_zero_iff e hcomm π hder χ a ha hδ ((s : Multiset ι).toList) s0
-        (by simp [s.2, s0.2])
+        (by simp [s.2])
       have h0 : χ (π (W s) (testProd a s0)) = 0 := by
         by_contra hh
         exact hs (Sym.coe_injective (by simpa using hiff.mp hh))

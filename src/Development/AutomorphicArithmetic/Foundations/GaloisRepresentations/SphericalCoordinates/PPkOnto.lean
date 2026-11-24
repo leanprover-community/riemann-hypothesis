@@ -264,7 +264,7 @@ private theorem small_mul {a b d K : ℝ} (hK : 0 < K) (ha0 : 0 ≤ a) (ha : a <
     _ < d / K * K := mul_lt_mul_of_pos_right ha hK
     _ = d := div_mul_cancel₀ d hK.ne'
 
-private theorem twoVariableSeriesVanishesBelowDegree_one_shiftVariable (s : ℝ) (hs : 0 ≤ s) {t : ℝ} (h : t ≤ 1 / (s + 1)) (ht : 0 ≤ t) : s * t ≤ 1 := by
+private theorem twoVariableSeriesVanishesBelowDegree_one_shiftVariable (s : ℝ) (hs : 0 ≤ s) {t : ℝ} (h : t ≤ 1 / (s + 1)) : s * t ≤ 1 := by
   have h1 : 0 < s + 1 := by linarith
   calc s * t ≤ s * (1 / (s + 1)) := mul_le_mul_of_nonneg_left h hs
     _ ≤ 1 := by
@@ -328,12 +328,12 @@ private theorem core (hFA : FApprox) (hFI : FInt) (A : PFrame L β) {M : AddSubg
     ring
   have hsmall1 : ‖(s : ℚ_[p]) * pairL (A.T' x) (fun w => (a w - G.embW w xF) • A.T y w)‖ ≤ 1 := by
     rw [norm_mul]
-    refine twoVariableSeriesVanishesBelowDegree_one_shiftVariable S hS0 (hsm₁ _ fun w i => ?_) (norm_nonneg _)
+    refine twoVariableSeriesVanishesBelowDegree_one_shiftVariable S hS0 (hsm₁ _ fun w i => ?_)
     rw [Pi.smul_apply, smul_eq_mul, IntermediateField.coe_mul, norm_mul]
     exact small_mul hK₁ (norm_nonneg _) ((hda w).trans_le hε1) (norm_nonneg _) (hb₁ w i)
   have hsmall2 : ‖(s : ℚ_[p]) * pairL (A.T x) (A.T' y')‖ ≤ 1 := by
     rw [norm_mul]
-    refine twoVariableSeriesVanishesBelowDegree_one_shiftVariable S hS0 (hsm₂ _ fun w i => ?_) (norm_nonneg _)
+    refine twoVariableSeriesVanishesBelowDegree_one_shiftVariable S hS0 (hsm₂ _ fun w i => ?_)
     rw [hy', T'_F, Pi.smul_apply, smul_eq_mul, IntermediateField.coe_mul, norm_mul]
     exact small_mul hK₂ (norm_nonneg _) ((hdc w).trans_le hε2) (norm_nonneg _) (hb₂ w i)
   rw [hdecomp]

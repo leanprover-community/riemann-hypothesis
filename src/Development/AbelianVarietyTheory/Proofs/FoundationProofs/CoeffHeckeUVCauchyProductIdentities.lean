@@ -111,7 +111,7 @@ theorem uo_dep (l : ℕ) (a : ℕ → R) : Uo l (dep l a) = 0 := by
 theorem uo_vo (l : ℕ) (hl : 0 < l) (a : ℕ → R) : Uo l (Vo l a) = a := by
   funext n; simp [Uo, Vo, Nat.mul_div_cancel_left _ hl]
 
-theorem dep_add (l : ℕ) (hl : 0 < l) (a : ℕ → R) : a = dep l a + Vo l (Uo l a) := by
+theorem dep_add (l : ℕ) (a : ℕ → R) : a = dep l a + Vo l (Uo l a) := by
   funext n
   by_cases h : l ∣ n
   · simp [dep, Vo, Uo, h, Nat.mul_div_cancel' h]
@@ -122,7 +122,7 @@ theorem uo_add (l : ℕ) (x y : ℕ → R) : Uo l (x + y) = Uo l x + Uo l y := r
 theorem uo_mul_dep (l : ℕ) (hl : 0 < l) (a b : ℕ → R) :
     Uo l (mul (dep l a) (dep l b)) = Uo l (mul a b) - mul (Uo l a) (Uo l b) := by
   have e : Uo l (mul a b) = Uo l (mul (dep l a) (dep l b)) + mul (Uo l a) (Uo l b) := by
-    conv_lhs => rw [dep_add l hl a, dep_add l hl b]
+    conv_lhs => rw [dep_add l a, dep_add l b]
     rw [mul_add_left', mul_add_right', mul_add_right', uo_add, uo_add, uo_add,
       uo_mul_vo l hl, uo_dep, zero_mul', mul_comm' (Vo l (Uo l a)) (dep l b), uo_mul_vo l hl, uo_dep,
       zero_mul', uo_mul_vo l hl, uo_vo l hl]

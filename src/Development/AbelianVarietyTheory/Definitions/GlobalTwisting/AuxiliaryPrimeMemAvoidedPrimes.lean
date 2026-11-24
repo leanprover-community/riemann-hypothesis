@@ -147,7 +147,7 @@ def ObjC (Q : PtProp) : Prop :=
     ∀ C : FC, Std C → C.P.Cpde = C8 → C.Large K0 C.P.CF → ∃ c1 : ℝ, ∀ cD ≥ c1, ∃ c2 : ℝ, ∀ ch ≥ c2, ∃ x0 : ℝ,
       ∀ (s : Scale) (R : Ranks) (H : Host R) (q0 : ℕ) (a b : R.A → ℤ) (M : ℕ)
         (c : Fin M → Fin (R.k - 2) → Bool) (u0 : ℕ), s.eps = eps → x0 ≤ s.x → RankVal s R → H.CT2 = C.CT2 →
-        HostGood s C8 C5 c6 Cb H q0 → q0 = q0H H → WinOK s C.GK H a b →
+        HostGood s C8 C5 Cb H q0 → q0 = q0H H → WinOK s C.GK H a b →
         M = ⌈3 * Real.exp (C.CGam * (R.m : ℝ) ^ 5 * R.f * s.L) ^ 2 * s.x ^ C.P.CF⌉₊ → Function.Injective c → u0 < R.n →
         ∃ p : Pt C, p.L.sc = s ∧ Val C cD ch p.L ∧ HostArith p.D.host ∧ p.From H a b c u0 ∧ CanonInst p.ta.Gx ∧ p.Has Q
 
@@ -157,7 +157,7 @@ def HostWW (la : ℝ) (P : HostReq) : Prop :=
     ∀ C : FC, Std C → C.CT2 = CT2 → C.P.Cpde = C8 → C.Large K0 C.P.CF → ∃ c1 : ℝ, ∀ cD ≥ c1, ∃ c2 : ℝ, ∀ ch ≥ c2, ∃ x0 : ℝ,
       ∃ S : Scales la, ∀ s : Scale, s.eps = eps → x0 ≤ s.x → S.Mem s →
         ∃ (R : Ranks) (H : Host R) (q0 : ℕ) (a b : R.A → ℤ),
-          RankVal s R ∧ H.CT2 = CT2 ∧ HostGood s C8 C5 c6 Cb H q0 ∧ q0 = q0H H ∧
+          RankVal s R ∧ H.CT2 = CT2 ∧ HostGood s C8 C5 Cb H q0 ∧ q0 = q0H H ∧
           (∀ t, t ∉ H.TT → a t = 0 ∧ b t = 0) ∧ WinOK s C.GK H a b ∧ WOK s cD ch C.GK H a b ∧ P C5 s R H q0
 
 def WClosed : Prop :=

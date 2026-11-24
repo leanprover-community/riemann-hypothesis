@@ -692,7 +692,7 @@ theorem unimodular_partner_aff : ∀ (R : Type) [CommRing R] (s : ℕ), StableRa
     have h1 : f0 (Finsupp.single k c) = c * a k := by
       rw [← Finsupp.smul_single_one, map_smul, smul_eq_mul]
     rw [hφ, h1, Finset.sum_eq_single k
-      (fun b _ hb => by simp [Finsupp.single_apply, Ne.symm hb])
+      (fun b _ hb => by simp [Ne.symm hb])
       (fun h => absurd (Finset.mem_range.2 hk) h)]
     simp only [Finsupp.single_eq_same, Finsupp.single_apply, ite_eq_right (show k ≠ j by omega), mul_zero,
       sub_zero]
@@ -700,7 +700,7 @@ theorem unimodular_partner_aff : ∀ (R : Type) [CommRing R] (s : ℕ), StableRa
   have hφj : φ (Finsupp.single j 1) = 0 := by
     rw [hφ, Finset.sum_eq_zero (fun i hi => by
       have := Finset.mem_range.1 hi
-      simp [Finsupp.single_apply, show j ≠ i by omega])]
+      simp [show j ≠ i by omega])]
     simp [a]
   let b' : R := φ v + a j * v j
   let r : Fin (n + 1) → R := fun i => if (i : ℕ) < n then v i else b'

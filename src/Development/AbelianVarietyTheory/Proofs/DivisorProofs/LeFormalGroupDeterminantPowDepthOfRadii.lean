@@ -71,7 +71,7 @@ theorem prod_X_col {i : ℕ} (b : Fin i) (d : Fin i →₀ ℕ) :
 
 theorem hasSubst_col {i : ℕ} (b : Fin i) :
     HasSubst (fun a : Fin i => (X ⟨b, a⟩ : MvPowerSeries (Σ _ : Fin i, Fin i) C)) :=
-  hasSubst_of_constantCoeff_zero (fun a => constantCoeff_X _)
+  hasSubst_of_constantCoeff_zero (fun _ => constantCoeff_X _)
 
 theorem constantCoeff_col {i : ℕ} (b : Fin i) (g : MvPowerSeries (Fin i) C)
     (hg : constantCoeff g = 0) :

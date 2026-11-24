@@ -47,7 +47,7 @@ namespace Formalism.MainNotions.N
 
 open Formalism.BasicNotions
 
-theorem class_map_naturality_of_herr (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h : Formalism.MainNotions.LocalSituation.ClassMapInjectiveBijectiveNorms D HW F) : Formalism.MainNotions.LiftingTheory.adm21 D HW F := by
+theorem class_map_naturality_of_herr (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h : Formalism.MainNotions.LocalSituation.ClassMapInjectiveBijectiveNorms D HW F) : Formalism.MainNotions.LiftingTheory.adm21 D HW := by
   intro l _ K s LL hg
   obtain ⟨hA, -, hN⟩ := h l K s LL hg
   refine ⟨hN, fun _ hl => ?_⟩

@@ -55,7 +55,7 @@ namespace Formalism.FourierDecayAlt.P.CutMP.TVG
 
 open Formalism.FourierDecayAlt Formalism.FourierDecayAlt.C3 Formalism.REAL Formalism.QuantumDeterminants Formalism.FourierDecayAlt.P.SignAntidiagonal
 
-theorem colsVm_castSucc {k r m : ℕ} (hm : m + 1 ≤ r) :
+theorem colsVm_castSucc {k r m : ℕ} :
     colsVm k r (m + 1) ∘ Fin.castSucc = colsVm k r m := by
   funext j; ext; simp [colsVm]
 
@@ -65,7 +65,7 @@ theorem mirror_chain_expansion_holds : MirrorChainExpansion := by
   set a := colsVm k r (m + 2) with hadef
   have hav : ∀ l : Fin (m + 2), (a l).val = r + k + 1 + l.val := by
     intro l; have := l.isLt; simp [a, colsVm]; omega
-  have hcs : a ∘ Fin.castSucc = colsVm k r (m + 1) := colsVm_castSucc hm
+  have hcs : a ∘ Fin.castSucc = colsVm k r (m + 1) := colsVm_castSucc
   have hexp := Formalism.FourierDecayAlt.P.expansion_last_column A _ (m + 1) E a a u
 
   rw [hexp, map_sum, Fin.sum_univ_castSucc, Fin.sum_univ_castSucc]
@@ -128,7 +128,7 @@ theorem mirror_chain_expansion_holds : MirrorChainExpansion := by
       have hne : esI k r ⟨r - m - 2, by omega⟩ ≠ colsVm k r (m + 1) (Fin.last m) := by
         rw [hx]; intro h'; have := congrArg Fin.val h'; simp [esI] at this; omega
       rw [tm_offdiag _ _ hne, hx, hL _ ⟨r - m - 1, by omega⟩ (by simp; omega), ite_eq_left rfl]
-      rw [colsVm_castSucc (by omega), smul_smul, smul_smul]
+      rw [colsVm_castSucc, smul_smul, smul_smul]
       congr 1
       simp only [Fin.val_last]
       push_cast

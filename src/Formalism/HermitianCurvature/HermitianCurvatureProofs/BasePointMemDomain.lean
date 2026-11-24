@@ -293,15 +293,15 @@ include hc in
 theorem rel_c : Rel (rdL hn y hdom) (mkP (X.op ⟨0, by omega⟩ 1) (X.op ⟨0, by omega⟩ 4))
     (site1 (E := Wq →L[ℂ] Wp) (kapM n k)).c :=
   rel_mulop hn y hc hdom X 1 4 _ _ cd_id cd_conj
-    (fun Φ τ hτ => (operators_at_base_point hn hc hτ _ (PBH.diff_rad Φ.2 _ (pointWithZeroSecondCoord_mem_chart_of_restricted hn hc hτ))).2.1)
-    (fun Φ τ hτ => (operators_at_base_point hn hc hτ _ (PBH.diff_rad Φ.2 _ (pointWithZeroSecondCoord_mem_chart_of_restricted hn hc hτ))).2.2.2.2.1)
+    (fun Φ _ hτ => (operators_at_base_point hn hc hτ _ (PBH.diff_rad Φ.2 _ (pointWithZeroSecondCoord_mem_chart_of_restricted hn hc hτ))).2.1)
+    (fun Φ _ hτ => (operators_at_base_point hn hc hτ _ (PBH.diff_rad Φ.2 _ (pointWithZeroSecondCoord_mem_chart_of_restricted hn hc hτ))).2.2.2.2.1)
 
 include hc in
 theorem rel_ci : Rel (rdL hn y hdom) (mkP (X.op ⟨0, by omega⟩ 2) (X.op ⟨0, by omega⟩ 5))
     (site1 (E := Wq →L[ℂ] Wp) (kapM n k)).ci :=
   rel_mulop hn y hc hdom X 2 5 _ _ cd_inv cd_conjinv
-    (fun Φ τ hτ => (operators_at_base_point hn hc hτ _ (PBH.diff_rad Φ.2 _ (pointWithZeroSecondCoord_mem_chart_of_restricted hn hc hτ))).2.2.1)
-    (fun Φ τ hτ => (operators_at_base_point hn hc hτ _ (PBH.diff_rad Φ.2 _ (pointWithZeroSecondCoord_mem_chart_of_restricted hn hc hτ))).2.2.2.2.2)
+    (fun Φ _ hτ => (operators_at_base_point hn hc hτ _ (PBH.diff_rad Φ.2 _ (pointWithZeroSecondCoord_mem_chart_of_restricted hn hc hτ))).2.2.1)
+    (fun Φ _ hτ => (operators_at_base_point hn hc hτ _ (PBH.diff_rad Φ.2 _ (pointWithZeroSecondCoord_mem_chart_of_restricted hn hc hτ))).2.2.2.2.2)
 
 
 include hc in

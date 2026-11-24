@@ -162,9 +162,9 @@ structure MtInput (D : D7) (M : MtFam D) (tup : D.what₂.Tup → Fin D.R.m → 
 def hkF (D : D7) {tw : NTw D.R D.host D.what₂ D.LL0 D.nd} (S : RatDat tw) (i : tw.Tw) (j : ℕ) (b : Bool)
     (hL : ℕ → PlE D.host → Module.End D.what₂.LL (S.WL j)) (hs : ∀ k P (x : S.WL j), x ∈ (S.A j).WK → hL k P x ∈ (S.A j).WK)
     (k : ℕ) (P : PlE D.host) : Module.End (FractionRing (tw.O i)) (Fm S i j b) :=
-  (Module.End.baseChangeHom S.Ks (KB S i b) (FmK S j)
+  (Module.End.baseChangeHom S.Ks (KB i) (FmK S j)
       (((hL k P).restrictScalars S.Ks).restrict (p := (S.A j).WK) (q := (S.A j).WK) fun x hx => hs k P x hx) :
-    Module.End (KB S i b) (KB S i b ⊗[S.Ks] FmK S j))
+    Module.End (KB i) (KB i ⊗[S.Ks] FmK S j))
 
 def actL (D : D7) {tw : NTw D.R D.host D.what₂ D.LL0 D.nd} (S : RatDat tw) (j : ℕ) (g : G0g D.nd) : Module.End D.what₂.LL (S.WL j) :=
   ((((S.A j).chi (S.eG.symm g) : D.what₂.LLˣ) : D.what₂.LL))⁻¹ • (S.A j).ρ (S.eG.symm g)
@@ -274,7 +274,7 @@ structure ChoiceSide (D : D7) (cf : CharFrame D) (mt : MtFam D) (exp : NExpTied 
   adm : ∀ w, TwistedAt D w → NX.AdmTw D (C.twI w) (C.k' w) (C.Q w) ((C.psi' w).comp (D.ntw.art (C.twI w) (C.Q w)))
   psi : PsiChoiceCompatible D cf C tp
   eMt_level : ∀ (w : D.what₂.places.Pl) (j : ℕ) (h1 : 1 ≤ j) (h2 : j ≤ D.R.m)
-    (hw : TwistedAt D w) (hA : NX.AdmTw D (C.twI w) (C.k' w) (C.Q w) ((C.psi' w).comp (D.ntw.art (C.twI w) (C.Q w)))),
+    (_ : TwistedAt D w) (hA : NX.AdmTw D (C.twI w) (C.k' w) (C.Q w) ((C.psi' w).comp (D.ntw.art (C.twI w) (C.Q w)))),
     ∃ ι : FractionRing (C.Oe w) →+* ℂ, (∀ x : D.what₂.LL, ι (C.embW w x) = D.what₂.embLL x) ∧
       (mt (D.what₂.muTw w) j h1 h2).J =
         (exp.mtV (C.twI w) j (C.sd w) (C.k' w) (C.Q w) ((C.psi' w).comp (D.ntw.art (C.twI w) (C.Q w))) h1 h2 hA).J ∧
@@ -324,7 +324,7 @@ structure NdSpec (Pl : PlSide D) (M : MtFam D) (C : NChoice D) (big : D.what₂.
     y ∈ NCov.part (heckeAlg B j w) (mx j w i) ↔ ∃ z, Psi j w i h z = y
   Psi_pr : ∀ j w i (h : i ∈ X.nd.locs j w) (x : D.what₂.MtL (X.nd.mu i) (X.nd.j i)),
     Psi j w i h (X.nd.prMt i x) - B.iV j w (castX X h x) ∈ NCov.off (heckeAlg B j w) (mx j w i)
-  ptX : ∀ j w i (h : i ∈ X.nd.locs j w), X.nd.X i ≃
+  ptX : ∀ j w i (_ : i ∈ X.nd.locs j w), X.nd.X i ≃
     {ψ : heckeAlg B j w →ₐ[B.Oc j w] B.Oc j w //
       NCov.cls ψ = mx j w i ∧ NCov.W (heckeAlg B j w) (NCov.pt ψ) ≠ ⊥}
   ptX_hT : ∀ j w i (h : i ∈ X.nd.locs j w) (x : X.nd.X i) (v : PlE D.host) (k : ℕ)

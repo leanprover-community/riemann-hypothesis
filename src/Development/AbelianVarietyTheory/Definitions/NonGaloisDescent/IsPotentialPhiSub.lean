@@ -66,7 +66,7 @@ theorem xi_unit (d : (unitMod l a e O K ι).D) : (unitMod l a e O K ι).xi d = c
     rw [PhiMod.phi_apply, mx_unitMod, Matrix.one_mulVec]
     ext1 i
     rw [cst_apply, PhiMod.phiD_apply, PhiMod.mx0, mx_unitMod, Matrix.map_one _ (map_zero _) (map_one _), Matrix.one_mulVec]
-    simp [PhiMod.phiD_apply, PhiMod.mx0, mx_unitMod, frob_C]) d).symm
+    simp [frob_C]) d).symm
 
 
 omit [NeZero a] [NeZero e] [Algebra ℤ_[l] O] [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O]
@@ -222,7 +222,7 @@ def unitPack {LL : FinExt l} [HasUnr a LL] [TameDescentExponentData ↥LL.1 l e 
   n := _
   D := unitDat l a e _ _ _ η H
   R := unitGal _ ϖ (sQ l) η H T hT (latBasis T)
-  isBK := isBK_unitIdent (thetaW a LL) ϖ (T := resF T (ϖ.field a)) (fun g x => hT _ x) (latBasis T)
+  isBK := isBK_unitIdent (thetaW a LL) ϖ (T := resF T (ϖ.field a)) (fun _ x => hT _ x) (latBasis T)
 
 
 omit [TameDescentExponentData K l e a] in

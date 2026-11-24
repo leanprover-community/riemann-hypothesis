@@ -130,7 +130,7 @@ theorem sumw_pos (Xa : ArchInM X) {x : Frame X.Ψ r} (hx : x ∈ X.dom) :
 theorem sums_pos {Xa : ArchInM X} (Fl : FlatM X Xa) {x : Frame X.Ψ r} {k0 : Fin (nd X)}
     (h : Fl.s k0 x ≠ 0) : 0 < ∑ k, Complex.normSq (Fl.s k x) :=
   lt_of_lt_of_le (Complex.normSq_pos.mpr h)
-    (Finset.single_le_sum (f := fun k => Complex.normSq (Fl.s k x)) (fun k _ => Complex.normSq_nonneg _)
+    (Finset.single_le_sum (f := fun k => Complex.normSq (Fl.s k x)) (fun _ _ => Complex.normSq_nonneg _)
       (Finset.mem_univ k0))
 
 theorem PsK_eq (Xa : ArchInM X) (Fl : FlatM X Xa) {x : Frame X.Ψ r} (hx : x ∈ X.dom)

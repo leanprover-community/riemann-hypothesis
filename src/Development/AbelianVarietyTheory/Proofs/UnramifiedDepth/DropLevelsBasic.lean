@@ -59,7 +59,7 @@ namespace GlobalTheory.BasicFlow
 lemma pivot {ι κ : Type} [DecidableEq ι] [Fintype κ] (s : Finset ι)
     (T : (ι → ℝ) →ₗ[ℝ] (κ → ℝ)) (φ : (ι → ℝ) →ₗ[ℝ] ℝ)
     (hT : ∀ v : ι → ℝ, (∀ i, i ∉ s → v i = 0) → (∀ i, 0 ≤ v i) → T v = 0 → v = 0)
-    (x : ι → ℝ) (hx : ∀ i, 0 ≤ x i) (hs : ∀ i, i ∉ s → x i = 0)
+    (x : ι → ℝ) (hx : ∀ i, 0 ≤ x i)
     (hc : Fintype.card κ < (s.filter fun i => x i ≠ 0).card) :
     ∃ y : ι → ℝ, (∀ i, 0 ≤ y i) ∧ T y = T x ∧ φ x ≤ φ y ∧ (∀ i, x i = 0 → y i = 0) ∧
       (s.filter fun i => y i ≠ 0).card < (s.filter fun i => x i ≠ 0).card := by
@@ -135,7 +135,7 @@ lemma basic {ι κ : Type} [DecidableEq ι] [Fintype κ] (s : Finset ι)
     with n ih generalizing x
   by_cases hc : (s.filter fun i => x i ≠ 0).card ≤ Fintype.card κ
   · exact ⟨x, hx, rfl, le_rfl, fun _ h => h, hc⟩
-  · obtain ⟨y, h1, h2, h3, h4, h5⟩ := pivot s T φ hT x hx hs (not_le.1 hc)
+  · obtain ⟨y, h1, h2, h3, h4, h5⟩ := pivot s T φ hT x hx (not_le.1 hc)
     obtain ⟨z, g1, g2, g3, g4, g5⟩ :=
       ih _ (h ▸ h5) y h1 (fun i hi => h4 i (hs i hi)) rfl
     exact ⟨z, g1, g2.trans h2, h3.trans g3, fun i hi => g4 i (h4 i hi), g5⟩

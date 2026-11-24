@@ -104,7 +104,7 @@ theorem height_add_one_le_height_comap_of_surjective {A S : Type*} [CommRing A] 
   rwa [height_eq_order_height_lemma q, height_eq_order_height_lemma (q.comap φ)]
 
 theorem height_le_height_comap_of_eval₂_surjective {R S : Type*} [CommRing R] [IsDomain R]
-    [IsNoetherianRing R] [CommRing S] [IsDomain S] (f : R →+* S) (hf : Function.Injective f) (x : S)
+    [IsNoetherianRing R] [CommRing S] [IsDomain S] (f : R →+* S) (x : S)
     (hgen : Function.Surjective (eval₂RingHom f x)) (halg : ∃ g : R[X], g ≠ 0 ∧ eval₂ f x g = 0)
     (q : Ideal S) [q.IsPrime] : q.height ≤ (q.comap f).height := by
   have hker : RingHom.ker (eval₂RingHom f x) ≠ ⊥ := by

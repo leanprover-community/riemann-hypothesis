@@ -269,7 +269,7 @@ end
 
 theorem exists_hom_of_coords [IsReduced X] (η : Sp L ⟶ X) [IsDominant η] (f : X ⟶ Sp o)
     (hf : η ≫ f = spMap (algebraMap o L)) {ι : Type} (U : ι → X.Opens) (hU : ⨆ a, U a = ⊤)
-    (hη : ∀ a, ⊤ ≤ η ⁻¹ᵁ U a) {z : Fin (M + 1) → L} (hz : z ≠ 0) (c : ι → Fin (M + 1))
+    {z : Fin (M + 1) → L} (hz : z ≠ 0) (c : ι → Fin (M + 1))
     (hc : ∀ a, z (c a) ≠ 0) (u : ∀ a, Fin (M + 1) → Γ(X, U a))
     (hu : ∀ a k, valR η (U a) (u a k) = z k / z (c a)) :
     ∃ φ : X ⟶ PSpace o M, η ≫ φ = point o z hz ∧ φ ≫ PSpace.str o M = f ∧

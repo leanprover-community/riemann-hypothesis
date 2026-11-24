@@ -108,7 +108,7 @@ theorem isIrredOn_conj (hP : IsUnit P) (hG : Pᴴ * Formalism.REAL.Jm ε * P = G
       _ = g := by rw [h1]; simp
   simpa only [e] using this
 
-theorem arr_injective {q : ℕ} (hq : q ≤ n) : Function.Injective (arr q : Fin n → Fin n) := by
+theorem arr_injective {q : ℕ} : Function.Injective (arr q : Fin n → Fin n) := by
   intro a b h
   have h' := congrArg Fin.val h
   have := a.2
@@ -118,7 +118,7 @@ theorem arr_injective {q : ℕ} (hq : q ≤ n) : Function.Injective (arr q : Fin
   split_ifs at h' <;> simp only at h' <;> omega
 
 def arrEquiv {q : ℕ} (hq : q ≤ n) : Fin n ≃ Fin n :=
-  Equiv.ofBijective (arr q) (Finite.injective_iff_bijective.1 (arr_injective hq))
+  Equiv.ofBijective (arr q) (Finite.injective_iff_bijective.1 (arr_injective))
 
 theorem orth_sub (hP : IsUnit P) (hG : Pᴴ * Formalism.REAL.Jm ε * P = G) (f : Fin n → Fin n) :
     ((P⁻¹).submatrix id f)ᴴ * G * (P⁻¹).submatrix id f = (Formalism.REAL.Jm ε).submatrix f f := by
@@ -153,7 +153,7 @@ theorem model_rep : ∀ (D : D7) (V : HSp D) (S : D.what₂.Tau → SPar) (M : D
   · obtain ⟨-, p, hp, h⟩ := hs τ
     have := orth_sub (M.fr_unit τ) (M.fr_gram τ) (arr (nNeg (M.ε τ)))
     refine this.trans ?_
-    have hinj := arr_injective (nNeg_le (M.ε τ))
+    have hinj := arr_injective
     unfold Formalism.REAL.Jm
     rw [Matrix.submatrix_diagonal _ _ hinj]
     congr 1

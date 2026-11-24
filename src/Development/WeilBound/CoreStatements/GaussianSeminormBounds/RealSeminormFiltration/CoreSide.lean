@@ -314,7 +314,7 @@ theorem root_of_hw {p q r s : ℕ} (c : ℂ) (c0 : ℚ) (hc : c = c0) (La : Ix r
     have hlg : PI.FockOneDegW.lowOp c1 d1 g ∈ polChi p q r s c := polChi_low c hcd hgC
     have hlD : PI.FockOneDegW.lowOp c1 d1 g ∈ homog (Ix p q × Ix r s) d0 := low_homog c1 d1 hgD
     have hJ : PI.FockOneDegW.lowOp c1 d1 g ∈ jHarm p q r s :=
-      (mem_jHarm_iff _).2 ⟨harmonic_stable_lowering hcd hgH, fun c' d' h' => hlow0 _ hlg hlD c' d' h'⟩
+      (mem_jHarm_iff _).2 ⟨harmonic_stable_lowering hgH, fun c' d' h' => hlow0 _ hlg hlD c' d' h'⟩
     have hc1d1 : c1 ≠ d1 := fun h => hcd (h ▸ PI.FockOneDegW.HwC.sameBlock_refl' c1)
     have hK2 : PI.FockOneDegW.lowOp c1 d1 g ∈ hwSub (fockAct2 p q r s)
         (fun x => (ν x + if x = c1 then 1 else 0) - if x = d1 then 1 else 0) := by

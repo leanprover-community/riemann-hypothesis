@@ -76,7 +76,7 @@ theorem latMap_bijective {L : PeriodPair} {c : ℂ} {τ : ℍ} (h : IsTauOf L c 
     obtain ⟨u, v, rfl⟩ := (h.2 x).1 hx
     exact ⟨![u, v], by simp [latMap]⟩
 
-theorem G_eq {L : PeriodPair} {c : ℂ} {τ : ℍ} (h : IsTauOf L c τ) {k : ℕ} (hk : 3 ≤ k) (hk2 : Even k) :
+theorem G_eq {L : PeriodPair} {c : ℂ} {τ : ℍ} (h : IsTauOf L c τ) {k : ℕ} (hk : 3 ≤ k) :
     L.G k = (c ^ k)⁻¹ * (2 * riemannZeta k) * E hk τ := by
   have hE : E hk τ = (1 / 2 : ℂ) * eisensteinSeries (N := 1) 0 k τ := by
     rw [show E hk τ = (1 / 2 : ℂ) • eisensteinSeriesSIF (N := 1) 0 k τ from rfl,
@@ -94,7 +94,7 @@ theorem sixVal : riemannZeta 6 = (Real.pi : ℂ) ^ 6 / 945 := by
 
 theorem g₂_eq {L : PeriodPair} {c : ℂ} {τ : ℍ} (h : IsTauOf L c τ) :
     L.g₂ = (c ^ 4)⁻¹ * (4 * (Real.pi : ℂ) ^ 4 / 3) * E₄ τ := by
-  rw [PeriodPair.g₂, G_eq h (k := 4) (by norm_num) ⟨2, rfl⟩,
+  rw [PeriodPair.g₂, G_eq h (k := 4) (by norm_num),
     show ((4 : ℕ) : ℂ) = 4 by norm_num, riemannZeta_four]
   have hE : E (k := 4) (by norm_num) τ = E₄ τ := rfl
   rw [hE]
@@ -102,7 +102,7 @@ theorem g₂_eq {L : PeriodPair} {c : ℂ} {τ : ℍ} (h : IsTauOf L c τ) :
 
 theorem g₃_eq {L : PeriodPair} {c : ℂ} {τ : ℍ} (h : IsTauOf L c τ) :
     L.g₃ = (c ^ 6)⁻¹ * (8 * (Real.pi : ℂ) ^ 6 / 27) * E₆ τ := by
-  rw [PeriodPair.g₃, G_eq h (k := 6) (by norm_num) ⟨3, rfl⟩,
+  rw [PeriodPair.g₃, G_eq h (k := 6) (by norm_num),
     show ((6 : ℕ) : ℂ) = 6 by norm_num, sixVal]
   have hE : E (k := 6) (by norm_num) τ = E₆ τ := rfl
   rw [hE]

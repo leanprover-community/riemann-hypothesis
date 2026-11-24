@@ -159,7 +159,7 @@ private theorem central_fixed (σ : E ≃ₐ[F] E) (s : {r : ℝ // 0 < r}) :
   rw [← hroot, ← UpperTheory.centralSection_baseChange F E n]
   exact (UpperTheory.adele_galois_action_baseChange_compat F E σ n).2.2.2.2.1 _
 
-private theorem galois_twist_finite_adelic_point (σ : E ≃ₐ[F] E) (hn : 0 < n) {μ : Measure (G1 E n)} [μ.IsHaarMeasure] {θ : Twist μ}
+private theorem galois_twist_finite_adelic_point (σ : E ≃ₐ[F] E) {μ : Measure (G1 E n)} [μ.IsHaarMeasure] {θ : Twist μ}
     (hθ : IsGalTwist σ θ) {x x' : FA E n} (h : mapGL n (galAd σ) (finEmb E n x) = finEmb E n x') :
     θ.e (fin1 x) = fin1 x' := by
   change θ.e (retractOne (finEmb E n x)) = retractOne (finEmb E n x')
@@ -404,7 +404,7 @@ private theorem twist_stable (σ : E ≃ₐ[F] E) (hn : 0 < n) (SE : Finset (Pl 
     have e2 : T4.pI E n (finEmb E n x) = 1 := by rw [← e1, prodEquiv_finEmb]
     change 1 = _
     rw [e1, c1, e2, map_one]
-  refine ⟨_, ?_, galois_twist_finite_adelic_point σ hn hθ hI.symm⟩
+  refine ⟨_, ?_, galois_twist_finite_adelic_point σ hθ hI.symm⟩
   rw [mem_levOn_iff SE U hU, hI]
   intro w
   have h1 := (mem_levOn_iff SE U hU x).1 hx

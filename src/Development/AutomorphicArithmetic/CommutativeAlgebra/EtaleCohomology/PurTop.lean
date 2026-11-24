@@ -1048,7 +1048,7 @@ theorem univ_of_eval {J C D : Type*} [Category J] [Category C] [Category D] [Has
 
 theorem spc_univ {A : Type} (F : Discrete A ⥤ Spc) (c : Cocone F) (hc : IsColimit c) : IsUniversalColimit c :=
   univ_of_eval (C := SimplexCategoryᵒᵖ) (D := PSh) F c fun n =>
-    univ_of_eval (C := Scheme.{0}ᵒᵖ) (D := Type) _ _ fun Y =>
+    univ_of_eval (C := Scheme.{0}ᵒᵖ) (D := Type) _ _ fun _ =>
       types_univ _ (isColimitOfPreserves _ (isColimitOfPreserves ((evaluation _ _).obj n) hc))
 
 theorem pb_of_eq {C : Type*} [Category C] {P X Y Z : C} {fst : P ⟶ X} {snd : P ⟶ Y} {f f' : X ⟶ Z} {g : Y ⟶ Z}

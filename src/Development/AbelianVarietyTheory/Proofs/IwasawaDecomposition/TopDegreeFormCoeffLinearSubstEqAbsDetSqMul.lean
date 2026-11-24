@@ -104,7 +104,7 @@ theorem topCoeff_prod_X_of_ne {k : ℕ} (hk : k ≠ n) (f : Fin k → Fin n × F
 
 theorem graph_apply (g : Fin n → Fin n) (x y : Fin n) :
     (∑ a, Finsupp.single (a, g a) 1 : Fin n × Fin n →₀ ℕ) (x, y) = if g x = y then 1 else 0 := by
-  rw [Finsupp.finsetSum_apply, Finset.sum_eq_single x (fun c _ hc => by simp [Finsupp.single_apply, hc]) (by simp)]
+  rw [Finsupp.finsetSum_apply, Finset.sum_eq_single x (fun c _ hc => by simp [hc]) (by simp)]
   simp [Finsupp.single_apply]
 
 theorem graph_eq_iff (g h : Fin n → Fin n) :

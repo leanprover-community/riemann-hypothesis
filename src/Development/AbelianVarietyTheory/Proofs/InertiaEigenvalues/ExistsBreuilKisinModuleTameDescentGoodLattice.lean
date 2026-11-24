@@ -468,7 +468,7 @@ theorem stable_of_desc (I : Ident t ϖ P T) (s : G →* GQ l) {Δ : Descent P} (
       rw [PhiMod.phi_bas]
       ext1 i
       simp only [Matrix.mulVec, dotProduct, Matrix.col_apply]
-      rw [Finset.sum_eq_single j (fun x _ hx => by simp [Pi.single_apply, hx]) (by simp)]
+      rw [Finset.sum_eq_single j (fun x _ hx => by simp [hx]) (by simp)]
       simp
   rintro _ ⟨c, rfl⟩
 

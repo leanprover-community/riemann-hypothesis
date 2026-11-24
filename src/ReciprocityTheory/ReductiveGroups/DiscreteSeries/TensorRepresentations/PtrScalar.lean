@@ -123,7 +123,7 @@ theorem ptr_comm {dual : Bool} (hE : IsGlRep E) (hA : IsGKEndo dual ε σ E (gen
 theorem tpsc_kDiag (dual : Bool) (k : Matrix (Fin n) (Fin n) ℂ) (f : Fin n → H) (c : Fin n) :
     kDiag dual σ k f c = ∑ d, tpscK dual k c d • σ k (f d) := rfl
 
-theorem ptr_kcomm {dual : Bool} (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D E)
+theorem ptr_kcomm {dual : Bool}
     (hA : IsGKEndo dual ε σ E (genSub E V) A) :
     ∀ k ∈ Kset ε, ∀ x ∈ genSub E V, ∀ y ∈ genSub E V, (y : H) = σ k (x : H) →
       ((ptr A y : D) : H) = σ k ((ptr A x : D) : H) := by
@@ -170,7 +170,6 @@ theorem ptr_scalar (dual : Bool) {lam : Fin n → ℝ} {H : Type*} [NormedAddCom
     (hc : ∀ v ∈ V, casimir E v = (casVal lam : ℂ) • v)
     (hVK : ∀ k ∈ Kset ε, ∀ v ∈ V, ∃ w ∈ V, (w : H) = σ k v) {A : Module.End ℂ (Fin n → D)} (hA : IsGKEndo dual ε σ E (genSub E V) A) :
     ∃ c : ℂ, ∀ x ∈ genSub E V, ptr A x = c • x :=
-  data_end_scalar hgap hσ hD hV hc hVK (ptr A) (ptr_mem hA) (fun a b => ptr_comm hD.glRep hA a b)
-    (ptr_kcomm hσ hD hA)
+  data_end_scalar hgap hσ hD hV hc (ptr A) (ptr_mem hA) (fun a b => ptr_comm hD.glRep hA a b)
 
 end ReciprocityTheory.ChartRestriction.DS

@@ -242,7 +242,7 @@ section Main3
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {σ : E →ₐ[F] E} {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {r : ℕ} {X Y : Matrix (Fin n) (Fin r) E}
 
-theorem Q_mulVec_col (hCM : IsCMExt F E σ) (hJ : IsHermND σ J) (hW : IsWittFrame σ J X Y) (I : Set (Fin r))
+theorem Q_mulVec_col (I : Set (Fin r))
     {C : Matrix (Fin n) (Fin r) E} (hC : P σ J X Y I * C = C * diagonal (ind I : Fin r → E)) {i : Fin r} (hi : i ∈ I) :
     adMat F (P σ J X Y I) *ᵥ (adMat F C)ᵀ i = (adMat F C)ᵀ i := by
   classical
@@ -259,12 +259,12 @@ theorem Q_fix_span (hCM : IsCMExt F E σ) (hJ : IsHermND σ J) (hW : IsWittFrame
   have hle : colSpan F X I ⊔ colSpan F Y I ≤ S := by
     refine sup_le (Submodule.span_le.2 ?_) (Submodule.span_le.2 ?_)
     · rintro _ ⟨i, hi, rfl⟩
-      exact Q_mulVec_col hCM hJ hW I (proj_mul_X hCM hJ hW I) hi
+      exact Q_mulVec_col I (proj_mul_X hCM hJ hW I) hi
     · rintro _ ⟨i, hi, rfl⟩
-      exact Q_mulVec_col hCM hJ hW I (proj_mul_Y hW I) hi
+      exact Q_mulVec_col I (proj_mul_Y hW I) hi
   exact hle hy
 
-theorem Q_mul_init (hCM : IsCMExt F E σ) (hJ : IsHermND σ J) (hW : IsWittFrame σ J X Y) {T : Finset (Fin r)}
+theorem Q_mul_init {T : Finset (Fin r)}
     {C : Matrix (Fin n) (Fin r) E} (hC : P σ J X Y (upTo T) * C = C * diagonal (ind (upTo T) : Fin r → E))
     {k : Fin r} (hk : k ∈ T) :
     adMat F (P σ J X Y (upTo T)) * adMat F (initCols C k) = adMat F (initCols C k) := by
@@ -311,8 +311,8 @@ theorem onFrame_mem_levi (hCM : IsCMExt F E σ) (hJ : IsHermND σ J) (hW : IsWit
   obtain ⟨B, -, hB⟩ := (hg' k hk).1
   obtain ⟨C, -, hC⟩ := (hg' k hk).2
   refine ⟨⟨B, Subgroup.mem_top _, ?_⟩, ⟨C, Subgroup.mem_top _, ?_⟩⟩
-  · rw [matHom_onFrame, onPart_mul_fix (Q_mul_init hCM hJ hW (proj_mul_X hCM hJ hW _) hk), hB]
-  · rw [matHom_onFrame, onPart_mul_fix (Q_mul_init hCM hJ hW (proj_mul_Y hW _) hk), hC]
+  · rw [matHom_onFrame, onPart_mul_fix (Q_mul_init (proj_mul_X hCM hJ hW _) hk), hB]
+  · rw [matHom_onFrame, onPart_mul_fix (Q_mul_init (proj_mul_Y hW _) hk), hC]
 
 theorem mul_inv_onFrame_mem_uPart (hCM : IsCMExt F E σ) (hJ : IsHermND σ J) (hW : IsWittFrame σ J X Y)
     (T : Finset (Fin r)) (g : GAd σ J) (hg : g ∈ levi σ J X Y T) :
@@ -323,7 +323,7 @@ theorem mul_inv_onFrame_mem_uPart (hCM : IsCMExt F E σ) (hJ : IsHermND σ J) (h
   rw [← hQy, mulVec_mulVec,
     mul_onPart_inv (adMat_P_idempotent hCM hJ hW _) (matHom_mul_inv g)]
 
-theorem Q_fix_of_uPart (hCM : IsCMExt F E σ) (hJ : IsHermND σ J) (hW : IsWittFrame σ J X Y) {T : Finset (Fin r)}
+theorem Q_fix_of_uPart {T : Finset (Fin r)}
     {t : GAd σ J} (ht : t ∈ uPart σ J X Y T) :
     (matHom (AF F) σ J t).1 * adMat F (P σ J X Y (upTo T)) = adMat F (P σ J X Y (upTo T)) := by
   have key : ∀ v, (matHom (AF F) σ J t).1 *ᵥ (adMat F (P σ J X Y (upTo T)) *ᵥ v) =
@@ -348,7 +348,7 @@ theorem comm_onFrame (hCM : IsCMExt F E σ) (hJ : IsHermND σ J) (hW : IsWittFra
       show (J.map (inclR (F := F) (E := E) (AF F))).det = inclR (F := F) (E := E) (AF F) J.det from
       (RingHom.map_det (inclR (F := F) (E := E) (AF F)) J).symm]
     exact (isUnit_iff_ne_zero.2 hJ.2).map (inclR (F := F) (E := E) (AF F))
-  have htQ := Q_fix_of_uPart hCM hJ hW ht
+  have htQ := Q_fix_of_uPart ht
   have hQt := GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.Comm.mul_eq_of_unitary hJu (matHom_unitary t) (adMat_P_selfAdjoint hCM hJ _) htQ
   have hc := comm_onPart htQ hQt (comm_Q hCM hJ hW hg)
   refine GlobalTheory.AdelicU.matHom_injective (AF F) σ J ?_

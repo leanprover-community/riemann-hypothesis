@@ -239,7 +239,7 @@ private theorem tf_trace_data_of_closed_stability (dual : Bool) [CompleteSpace H
   have hrep : ∀ v ∈ HP, ∀ c, ((v c : L2 ε) : Formalism.REAL.UJ ε → ℂ) =ᵐ[Formalism.REAL.muG ε]
       fun g => inner ℂ (w c) (tfRdiag ε (Formalism.MainNotions.S.umat g) v) :=
     tf_rep_closure (fun g => tfRdiag ε (Formalism.MainNotions.S.umat g))
-      (fun g x => le_of_eq ((tfRdiag_isURepOn ε).2.1 _ (umat_mem_UJset ε g) x)) w S hrepS
+      w S hrepS
 
   have hT1 : c0 * (Nr : ℂ) = ∑ b, tfSgn ε b *
       tfFormBH ε (fun i => ((P (Pi.single b y) i : D) : H)) (fun i => ((P (Pi.single b y) i : D) : H)) := by
@@ -361,7 +361,7 @@ theorem tf_trace_data (dual : Bool) {lam : Fin n → ℝ} [CompleteSpace H] {ε 
   have hyG : y ∈ genSub E V := rorth_le_genSub hyV
   have hyC : (y : H) ∈ closGen E V := Submodule.le_topologicalClosure _ ⟨y, hyG, rfl⟩
   exact tf_trace_data_of_closed_stability dual hσ hP hPP hPB hc0 hyV hy0 hd
-    (closGen_stable hgap hσ hD hV hc hVK)
+    (closGen_stable hσ hD hV hc)
     (tf_closure_stable dual hσ hD hsm hgap hV hc hVK hW hP hEP hyG)
     (fun hf => tf_ph_memLp dual hσ hD hsm hgap hV hc hVK hW hyG hf)
     (fun hζ hζ' hm hm' => tensor_functor_separation dual hσ hD hgap hV hc hVK hd hyC hζ hζ' hm hm')

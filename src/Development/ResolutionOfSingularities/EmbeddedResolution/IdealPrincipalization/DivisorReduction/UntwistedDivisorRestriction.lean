@@ -247,7 +247,7 @@ theorem nonzeroOnComponents_comap_lowerIdealWithoutBlowup (T : MarkedIdealWithBo
   exact absurd hZ (ker_ι_comp_ne_top hNoe _ _ x hxV)
 
 theorem isAdmissible_restrictToDivisor (T : MarkedIdealWithBoundary.{u}) (hV : T.IsAdmissible)
-    (_hOB : T.IsOrderBoundedByMult) (hBalanced : T.IsBalanced hV.locallyOfFiniteType) (j : ℕ)
+    (hBalanced : T.IsBalanced hV.locallyOfFiniteType) (j : ℕ)
     (hj : j < T.boundary.length) (hZ : DivisorReduction.containedComponentsIdeal T j hj = ⊤) :
     (DivisorReduction.restrictToDivisor T j hj).IsAdmissible := by
   have := hV.charZero

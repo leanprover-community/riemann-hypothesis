@@ -133,7 +133,7 @@ theorem zeros_null (hU : IsOpen U) {g : V n → ℂ} (hg : DifferentiableOn ℂ 
 def nsq (s : Fin n → V n → ℂ) (y : V n) : ℝ := ∑ k, Complex.normSq (s k y)
 
 theorem nsq_nonneg (s : Fin n → V n → ℂ) (y : V n) : 0 ≤ nsq s y :=
-  Finset.sum_nonneg fun k _ => Complex.normSq_nonneg _
+  Finset.sum_nonneg fun _ _ => Complex.normSq_nonneg _
 
 theorem nsq_pos {s : Fin n → V n → ℂ} {y : V n} {k : Fin n} (h : s k y ≠ 0) : 0 < nsq s y := by
   unfold nsq
@@ -148,7 +148,7 @@ theorem nsq_contDiffAt (hU : IsOpen U) {s : Fin n → V n → ℂ} (hs : ∀ k, 
 
 theorem nsq_continuousOn (hU : IsOpen U) {s : Fin n → V n → ℂ} (hs : ∀ k, DifferentiableOn ℂ (s k) U) :
     ContinuousOn (nsq s) U :=
-  fun y hy => (nsq_contDiffAt hU hs hy).continuousAt.continuousWithinAt
+  fun _ hy => (nsq_contDiffAt hU hs hy).continuousAt.continuousWithinAt
 
 def wgt (ψ : V n → ℝ) (s : Fin n → V n → ℂ) (y : V n) : ℝ := ψ y + n * Real.log (nsq s y)
 
@@ -347,7 +347,7 @@ theorem interp_euclid (hU : IsOpen U) (e : V n → ℝ) (he : ContDiffOn ℝ ∞
             ((measure_mono Set.diff_subset).trans_lt measure_ball_lt_top), ENNReal.mul_lt_top
             ENNReal.ofReal_lt_top ?_⟩
           exact ((lintegral_mono_set hSU).trans hest).trans_lt hRHS
-  obtain ⟨F, hFd, hFeq⟩ := ext_glue hU (s k0) G (hs k0) hgn hGd hL
+  obtain ⟨F, hFd, hFeq⟩ := ext_glue (s k0) G (hs k0) hgn hGd hL
   refine ⟨F, hFd, ?_⟩
   have hnull := zeros_null hU (hs k0) hgn
   have hUsplit : U ⊆ U' ∪ {y | y ∈ U ∧ s k0 y = 0} := fun y hy => by

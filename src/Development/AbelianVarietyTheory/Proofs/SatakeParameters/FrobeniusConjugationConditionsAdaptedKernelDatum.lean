@@ -186,9 +186,9 @@ theorem expShape_of_integralClass : ∀ (D : D7) (p : ℕ) [Fact p.Prime] (g2 g3
   have hO := Formalism.L2.Th1.D.oneLetterHalf (MaximalUnramifiedExtension p) p σ hσ F hF _ f1 f2 ζ hζ _ hph
   have h2 := (_root_.Formalism.InvariantFactorPaths.G7.mapSimeq_statement (MaximalUnramifiedExtension p) ℂ_[p] Unit (MaximalUnramifiedExtension p).subtype (Formalism.L2.Th1.D.FAux.norm_coe p)).1 _ _ hO
   have hsL0 : MvPowerSeries.HasSubst (fun _ : ZMod 2 => (lgF (MaximalUnramifiedExtension p) p : MvPowerSeries Unit (MaximalUnramifiedExtension p))) :=
-    MvPowerSeries.hasSubst_of_constantCoeff_zero (fun _ => Formalism.L2.Th1.D.Pair.cc_lgF hl)
+    MvPowerSeries.hasSubst_of_constantCoeff_zero (fun _ => Formalism.L2.Th1.D.Pair.cc_lgF)
   have hsL : MvPowerSeries.HasSubst (fun _ : ZMod 2 => (lgF ℂ_[p] p : MvPowerSeries Unit ℂ_[p])) :=
-    MvPowerSeries.hasSubst_of_constantCoeff_zero (fun _ => Formalism.L2.Th1.D.Pair.cc_lgF hl)
+    MvPowerSeries.hasSubst_of_constantCoeff_zero (fun _ => Formalism.L2.Th1.D.Pair.cc_lgF)
   have e2 : MvPowerSeries.map (MaximalUnramifiedExtension p).subtype (MvPowerSeries.C ((2 : MaximalUnramifiedExtension p)⁻¹) *
       MvPowerSeries.subst (fun _ : ZMod 2 => (lgF (MaximalUnramifiedExtension p) p : MvPowerSeries Unit (MaximalUnramifiedExtension p))) B) =
       MvPowerSeries.C ((2 : ℂ_[p])⁻¹) *
@@ -233,7 +233,7 @@ theorem expShape_of_integralClass : ∀ (D : D7) (p : ℕ) [Fact p.Prime] (g2 g3
   have hnf0 : MvPowerSeries.constantCoeff (-f) = 0 := by rw [map_neg, hf0, neg_zero]
 
   have hsA : MvPowerSeries.HasSubst (fun i : OrbitPlaces.Pl D × Fin N × Fin N' => at1 i (lgF ℂ_[p] p)) :=
-    MvPowerSeries.hasSubst_of_constantCoeff_zero fun i => Formalism.L2.Th1.D.Pair.constantCoeff_inVar_eq_zero i (Formalism.L2.Th1.D.Pair.cc_lgF hl)
+    MvPowerSeries.hasSubst_of_constantCoeff_zero fun i => Formalism.L2.Th1.D.Pair.constantCoeff_inVar_eq_zero i (Formalism.L2.Th1.D.Pair.cc_lgF)
   have hsE : MvPowerSeries.HasSubst (fun v : OrbitPlaces.Pl D × Fin N × Fin N' =>
       (MvPowerSeries.C ep * MvPowerSeries.X v : MvPowerSeries (OrbitPlaces.Pl D × Fin N × Fin N') ℂ_[p])) :=
     MvPowerSeries.hasSubst_of_constantCoeff_zero fun v => by simp
@@ -275,7 +275,7 @@ theorem expShape_of_integralClass : ∀ (D : D7) (p : ℕ) [Fact p.Prime] (g2 g3
     congr 2
     ring
   have hE0 : MvPowerSeries.constantCoeff E' = 0 := by
-    rw [← HostLog.constantCoeff_subst (fun i => Formalism.L2.Th1.D.Pair.constantCoeff_inVar_eq_zero i (Formalism.L2.Th1.D.Pair.cc_lgF hl)) E',
+    rw [← HostLog.constantCoeff_subst (fun i => Formalism.L2.Th1.D.Pair.constantCoeff_inVar_eq_zero i (Formalism.L2.Th1.D.Pair.cc_lgF)) E',
       hsubE, hng0]
   have hsum : (∑ z : OrbitPlaces.Pl D, ((-1 : ℂ_[p]) / 2) • ∑ a : Fin N, ∑ b : Fin N',
       MvPowerSeries.subst (fun s : ZMod 2 => if s = 0 then
@@ -590,7 +590,7 @@ theorem exists_congr_one [IsLocalRing R] (hR : UnramDatum R) {n : Type*} [Fintyp
         simp [Matrix.mulVec_smul, starRingEnd_apply])
   have hg : gram h (Pi.basisFun R n) = G := by
     ext i j
-    simp [gram, h, ← Pi.single_star]
+    simp [gram, h]
   have hh : IsHerm h := (isHerm_iff_gram h (Pi.basisFun R n)).2 (by rw [hg]; exact hG)
   have hu : IsUnimod h := (isUnimod_iff_gram h (Pi.basisFun R n)).2 (by rw [hg]; exact hd)
   obtain ⟨b, hb⟩ := exists_orthonormal_basis_unimodular hR (Fintype.card n) (n → R) h hh hu
@@ -1293,7 +1293,7 @@ theorem UpperTheory.integral_mvExp_sum_logS_of_odd_period :
   have hys : MvPowerSeries.HasSubst y := MvPowerSeries.hasSubst_of_constantCoeff_zero hy0
   have hat : MvPowerSeries.HasSubst (fun e : ({r // r ∈ R} × Fin i) × β =>
       (at1 e (lgF ℂ_[p] p) : MvPowerSeries (({r // r ∈ R} × Fin i) × β) ℂ_[p])) :=
-    MvPowerSeries.hasSubst_of_constantCoeff_zero (fun e => Pair.constantCoeff_inVar_eq_zero e (Pair.cc_lgF hl2))
+    MvPowerSeries.hasSubst_of_constantCoeff_zero (fun e => Pair.constantCoeff_inVar_eq_zero e (Pair.cc_lgF))
   have hlin : MvPowerSeries.HasSubst (fun e : ({r // r ∈ R} × Fin i) × β =>
       linS j σ i pos (σ^[i] (om e.1.2)) e.1.1.1 e.2) := by
     refine MvPowerSeries.hasSubst_of_constantCoeff_zero (fun e => ?_)

@@ -236,7 +236,7 @@ theorem induced_eq (H : Subgroup G) (hcl : IsClosed (H : Set G)) (μ : Measure G
     apply hmne
     rw [hm]
     ext s _
-    simp [← hcdef, ENNReal.coe_eq_zero.1 h0]
+    simp [ENNReal.coe_eq_zero.1 h0]
   have hctop : (c : ℝ≥0∞) ≠ ⊤ := ENNReal.coe_ne_top
   refine ⟨(c : ℝ≥0∞)⁻¹, ENNReal.inv_ne_zero.2 hctop, ENNReal.inv_ne_top.2 hc0, fun f hf => ?_⟩
   rw [← hmf f hf, hm]

@@ -217,7 +217,7 @@ namespace GlobalTheory.HeightCounting.Up.SizePar
 theorem stepW_start_ev {Q : Ctx → Prop} (h : Ev Q) : StepW Start fun K _ _ _ _ => Q K :=
   Step.of_evG ((evG_of_ev h).imp fun _ _ _ _ _ H _ _ _ _ _ _ _ _ _ => H)
 
-theorem aj_zero_at_state : StepW Start fun K B f T w => ∀ (P : Pre2 K w) (x : St P),
+theorem aj_zero_at_state : StepW Start fun K _ _ _ w => ∀ (P : Pre2 K w) (x : St P),
     ∀ v, (Dof x).what₂.muAt v = (Dof x).what₂.mu0 → ∀ j, 1 ≤ j → j ≤ (Dof x).R.m → (Dof x).what₂.Aj j v = 0 := by
   refine StepW.of_all fun K B f T w hO hF hS P x v hv j h1 h2 => ?_
   have hex : P.Wt = x.m.z.W1 (F0K K.s (w.D x.o.Z)) := by

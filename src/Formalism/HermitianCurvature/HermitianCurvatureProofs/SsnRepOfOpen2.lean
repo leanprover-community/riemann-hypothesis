@@ -706,7 +706,7 @@ theorem second_shift_entry_holds : SSn.Rep.Core.SSEntry := by
   intro Wp Wq _ _ _ _ _ _ P Bs hk X d hA e he hSSF l hl S hS ζ hζ π ρ
   obtain ⟨hpl, hL, hSt, hRel, hQQ⟩ := hA
   have hTz : Tz P.k P.r Bs.z * Tz P.k P.r Bs.z' = P.TT := Gauge.GC.tz_TT P Bs hpl
-  have hRB := Gauge.GC.radBase_of P Bs hpl
+  have hRB := Gauge.GC.radBase_of P Bs
   let c0 : Fin P.r → ℂ := fun _ => 1
   have hc0 : c0 ∈ OmX P.r := fun _ => one_ne_zero
 
@@ -837,7 +837,7 @@ theorem second_shift_pointwise_holds : SSn.Rep.Core.SSPointwise := by
     exact ((Formalism.FourierDecayAlt.P.normal_form_order_zero Wp Wq P Bs.z Bs.z' Bs.π Bs.π' hpl X d hL hS hRel hQQ f hf W W₁ W₂
       hW hW₁ hW₂).2.1 l hl).1
 
-  have hRB0 : NF.RadBase P.k P.r Bs.z Bs.z' μ0 Bs.π Bs.π' := Gauge.GC.radBase_of P Bs0 hpl
+  have hRB0 : NF.RadBase P.k P.r Bs.z Bs.z' μ0 Bs.π Bs.π' := Gauge.GC.radBase_of P Bs0
   let c0 : Fin P.r → ℂ := fun _ => 1
   have hc0 : c0 ∈ OmX P.r := fun _ => one_ne_zero
   have hsec : ∀ ρ, ((NF.QR P.k P.r Bs.z Bs.z').indicator fun q : (Fin P.r → ℂ) × ℂ => e0 ρ q.2) ∈

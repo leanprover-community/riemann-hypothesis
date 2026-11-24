@@ -1425,7 +1425,7 @@ namespace GlobalTheory.BigTop.Fun
 
 theorem sqRatio_mem_of {D : D7} {T : Type} {Lc : LevCh D T} {sc : GlobalTheory.ChiGrid.Consts} (G : GridData Lc sc) (μ₀ : T)
     (W : G.Weil) (S : GridChoice W Set.univ) (ρ : RealMatch W) (c : Fin D.R.m → Fin D.R.m → T → ℂ)
-    (hstd : IsStdChar D W.ψ (-1)) (hN : NumbersIn D.what₂.embLL S μ₀)
+    (hN : NumbersIn D.what₂.embLL S μ₀)
     (hC : ∀ i j t, SquareNonzero W S.B ρ t i j ∧ c i j t ≠ 0) (hK : ∀ i j t, IsSquareConst W S.B ρ t i j (c i j t))
     (hLN : ∀ i j : Fin D.R.m, (∀ t, ∃ Λ, GlobalTheory.CMVal.IsHeckeL (nuH G t i j) Λ ∧
       ∀ s : ℤ, 1 - (GlobalTheory.SqTop.e0 D i j : ℤ) ≤ s → s ≤ halfRank D i j → Λ s ≠ 0))
@@ -1539,7 +1539,7 @@ theorem square_ratio_at_point_of_leading_term_alt : _root_.GlobalTheory.FunPr.Th
     (by rw [Fm.L_x x i hx]; exact l7) hrec _ _ _ hset.core.lev G
   have hc := g3 x hx l3 i p hp G W n a ha
   have hstd : IsStdChar (Fm.D x i) W.ψ (-1) := (ha.is.weil.ψ : a.ch.W.ψ = _) ▸ hset.std
-  exact fun i' j' t => sqRatio_mem_of G _ W a.S.toGridChoice a.rm a.c hstd ha.field hc ha.is.const
+  exact fun i' j' t => sqRatio_mem_of G _ W a.S.toGridChoice a.rm a.c ha.field hc ha.is.const
     (fun i j => (hLN' i j).1) (hTX' W hstd) (hTW' W a.S.toGridChoice a.rm hstd ha.field) (hBF' W hstd) i' j' t
 end GlobalTheory.BigTop.Fun
 end
@@ -1567,7 +1567,7 @@ theorem sqRank_half {D : D7} (ij : Sq D) : sqRank D ij / 2 = GlobalTheory.FunObj
 
 theorem htLe_nonneg {K : Type} [Field K] [NumberField K] [StarRing K] {g : Formalism.PairingDivisionLocalBalance.Pl K → ℤ} {z : K} {B : ℝ}
     (h : Formalism.PairingDivisionLocalBalance.HtLe g z B) : 0 ≤ B :=
-  (finsum_nonneg fun w => mul_nonneg (div_nonneg (Real.log_natCast_nonneg _) (Nat.cast_nonneg _)) (abs_nonneg _)).trans h.2
+  (finsum_nonneg fun _ => mul_nonneg (div_nonneg (Real.log_natCast_nonneg _) (Nat.cast_nonneg _)) (abs_nonneg _)).trans h.2
 
 theorem htLe_one_zero {K : Type} [Field K] [NumberField K] [StarRing K] {B : ℝ} (hB : 0 ≤ B) :
     Formalism.PairingDivisionLocalBalance.HtLe (fun _ => (0 : ℤ)) (1 : K) B := by

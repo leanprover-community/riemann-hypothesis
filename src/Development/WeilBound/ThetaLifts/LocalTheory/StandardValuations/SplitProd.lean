@@ -240,11 +240,11 @@ theorem int_cone (hm : IsVol m) (hϖ : IsUnif ϖ) {b : ℕ} {jc : Fin d₁ → F
       have := hY _ ha
       simp only [submatrix_apply, id, Matrix.add_apply, this, tm, of_apply, cut, ite_eq_left ha, add_zero]
     rcases hAB with ⟨x1, x2⟩ | ⟨x1, x2⟩
-    · rw [detB _ (fun j hj => by simp [tm, cut, hYd, x1 j hj, ext_off y (Or.inl m0), single_apply, hei.eq_iff, hj.symm])
-        (fun i => by simp [tm, cut, hYd, x2 i, ext_off y (Or.inr h0), single_apply, m0]), e1, e2, e3]
+    · rw [detB _ (fun j hj => by simp [tm, cut, hYd, x1 j hj, ext_off y (Or.inl m0), hei.eq_iff, hj.symm])
+        (fun i => by simp [tm, cut, hYd, x2 i, ext_off y (Or.inr h0), m0]), e1, e2, e3]
       ring
-    · rw [detA _ (fun i hi => by simp [tm, cut, hYd, x1 i hi, ext_off y (Or.inr h1), single_apply, hi.symm])
-        (fun j => by simp [tm, cut, hYd, x2 j, ext_off y (Or.inl ml), single_apply, l0.symm]), e1, e2, e3]
+    · rw [detA _ (fun i hi => by simp [tm, cut, hYd, x1 i hi, ext_off y (Or.inr h1), hi.symm])
+        (fun j => by simp [tm, cut, hYd, x2 j, ext_off y (Or.inl ml), l0.symm]), e1, e2, e3]
       ring
   have hr : ∀ j, jc j ∈ Set.range e ↔ j ∈ Set.range e₁ := fun j => by
     refine ⟨fun ⟨i, hi⟩ => ?_, fun ⟨i, hi⟩ => ⟨mid i, by rw [← he, hi]⟩⟩

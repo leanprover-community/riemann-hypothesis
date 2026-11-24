@@ -139,7 +139,7 @@ private theorem lift_frob (hk : (p : k) = 0) (hT : (p : DualNumber k) = 0)
   have e₁ := GrpMor.pull_pull F' (liftMor (epsDP k) h) M (fun _ ↦ rfl) rfl c
   have e₂ := GrpMor.pull_pull (resMor h) F₀ N (fun _ ↦ rfl) rfl c
   have e₃ := GrpMor.pull_pull N (constMor A₀) M (fun r ↦ by
-    simp [frobR_apply, pow_dual hk r]) (by simpa using frob_sq hk hT) c
+    simp [pow_dual hk r]) (by simpa using frob_sq hk hT) c
   exact e₁.trans (e₃.symm.trans (congrArg _ e₂.symm))
 
 private theorem res_iter (hk : (p : k) = 0) (hT : (p : DualNumber k) = 0)
@@ -385,7 +385,7 @@ private theorem ks_core {k H C : Type*} [Field k] [AddCommGroup H] [Module k H] 
 
 theorem UpperTheory.Gal.Ord.ks :
     ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [CommRing R] (b : Base D R) (N : ℕ), 3 ≤ N → N.Coprime p → D.m = 1 →
-      ∀ (k : Type) [Field k] [IsAlgClosed k] (hk : (p : k) = 0) (β : R →+* k) (o : Obj b N (spMap β)) (i : Fin D.a) (w : Ideal (𝓞 D.F)) (f : ℕ),
+      ∀ (k : Type) [Field k] [IsAlgClosed k] (_ : (p : k) = 0) (β : R →+* k) (o : Obj b N (spMap β)) (i : Fin D.a) (w : Ideal (𝓞 D.F)) (f : ℕ),
       RingHom.ker (β.comp (b.t i)) = w → Ideal.absNorm w = p ^ f → 0 < f → ∀ π : Par p w f,
       ∀ φ : LinearMap.BilinForm k (HdR o.A), GlobalTheory.AbDual.IsCorrForm (dp0 k) (𝟙 _) o.A o.A o.P φ → ∀ x ∈ Fil o.A, hom o π.ε x = x →
       (∃ y, (∀ c, coh o c y = β (b.t i c) • y) ∧ x y ≠ 0) →
@@ -461,7 +461,7 @@ open scoped TensorProduct
 namespace UpperTheory.Gal.Ord
 
 private lemma not_le_span_image {k P : Type*} [Field k] [AddCommGroup P] [Module k P] [FiniteDimensional k P]
-    (G : Submodule k P) (A : P →+ P) (q : ℕ) (hq : 0 < q) (hA : ∀ (l : k) x, A (l • x) = l ^ q • A x)
+    (G : Submodule k P) (A : P →+ P) (q : ℕ) (hA : ∀ (l : k) x, A (l • x) = l ^ q • A x)
     (v : P) (hv : v ∈ G) (hv0 : v ≠ 0) (hAv : A v = 0) :
     ¬ G ≤ Submodule.span k (A '' G) := by
   intro hle
@@ -711,7 +711,7 @@ private lemma exists_not_mem {k C P : Type*} [Field k] [IsAlgClosed k] [CommRing
       have h1 : (ρ a ^ e * ρ ε) u' = 0 := by rw [he]; rfl
       rwa [Module.End.mul_apply, hεG u' hu'] at h1
     rwa [eq, h0, add_zero]
-  exact not_le_span_image G A q hq hsemi v hvG hv0 hAv hGW
+  exact not_le_span_image G A q hsemi v hvG hv0 hAv hGW
 
 end UpperTheory.Gal.Ord
 
@@ -879,7 +879,7 @@ private lemma approx {w B : Ideal C} {a : C} (ha : Ideal.span {a} = w * B) (hc :
   have : x - a ^ m * u = z := by rw [← hyz]; ring
   rwa [this]
 
-private lemma divA {w B : Ideal C} (hw : w.IsMaximal) (hw0 : w ≠ ⊥) {a : C}
+private lemma divA {w B : Ideal C} (hw0 : w ≠ ⊥) {a : C}
     (ha : Ideal.span {a} = w * B) (hc : IsCoprime w B)
     (m : ℕ) {x : C} (hx : a * x ∈ w ^ (m + 1)) : x ∈ w ^ m := by
   have h1 : w ^ (m + 1) ∣ Ideal.span {a * x} := by
@@ -1049,7 +1049,7 @@ private lemma exPar (p : ℕ) (hp0 : (p : C) ≠ 0) {w : Ideal C} (hw : w.IsMaxi
     · exact Ideal.sub_mem _ (Ideal.mul_mem_right _ _ hεB) (Ideal.mul_mem_right _ _ haBB)
   have hannA : ∀ (x : C), (p : C) ∣ a * x → ∃ u, (p : C) ∣ j * x - j * a ^ n * u := by
     intro x hx
-    have hx2 : x ∈ w ^ n := divA hw hw0 hB' hcB' n (hPle _ hx)
+    have hx2 : x ∈ w ^ n := divA hw0 hB' hcB' n (hPle _ hx)
     obtain ⟨u, hu⟩ := approx hB' hcB' n 1 hx2
     refine ⟨u, hmemP _ ?_ ?_⟩
     · have e : j * x - j * a ^ n * u = j * (x - a ^ n * u) := by ring
@@ -1361,7 +1361,7 @@ end UpperTheory.Gal.Ord
 
 theorem UpperTheory.Gal.Ord.desc :
     ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [CommRing R] (b : Base D R) (N : ℕ) (w : Ideal (𝓞 D.F)) (f : ℕ) (π : Par p w f)
-      (κ k T : Type) [Field κ] [Field k] [CommRing T] (hκ : (p : κ) = 0) (hk : (p : k) = 0) (hT : (p : T) = 0) (σ : κ →+* k) (τ : κ →+* T)
+      (κ k T : Type) [Field κ] [Field k] [CommRing T] (_ : (p : κ) = 0) (hk : (p : k) = 0) (hT : (p : T) = 0) (σ : κ →+* k) (τ : κ →+* T)
       (s : Sp κ ⟶ Sp R) (s₀ : Sp k ⟶ Sp R) (s' : Sp T ⟶ Sp R) (o : Obj b N s) (o₀ : Obj b N s₀) (o' : Obj b N s'),
       ObjMap o₀ o (spMap σ) → ObjMap o' o (spMap τ) → NOo hk o₀ π → NOo hT o' π := by
   intro p _ D R _ b N w f π κ k T _ _ _ hκ hk hT σ τ s s₀ s' o o₀ o' m₀ m' hN

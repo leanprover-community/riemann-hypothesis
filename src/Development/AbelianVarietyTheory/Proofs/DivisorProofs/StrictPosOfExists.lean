@@ -187,12 +187,12 @@ theorem levi_zpow (hφ : φ.IsSmooth R) (n : ℤ) {j : PUnit → B.ι} (hy : y �
   exact AlgChart.levi_const_mul _ (hφ.contDiffAt_two hy hj) ξ
 
 theorem SemiPos.tens (h' : ψ.SemiPos R) (h : φ.SemiPos R) (hψ : ψ.IsSmooth R)
-    (hφ : φ.IsSmooth R) : (ψ.tens φ).SemiPos R := fun i c y hy ξ =>
+    (hφ : φ.IsSmooth R) : (ψ.tens φ).SemiPos R := fun _ c y hy ξ =>
   (add_nonneg (h' _ c y ⟨hy.1, (mem_ptsIn_inf.1 hy.2).1⟩ ξ)
     (h _ c y ⟨hy.1, (mem_ptsIn_inf.1 hy.2).2⟩ ξ)).trans_eq (levi_tens hψ hφ hy.1 hy.2 ξ).symm
 
 theorem SemiPos.zpow (h : φ.SemiPos R) (hφ : φ.IsSmooth R) {n : ℤ} (hn : 0 ≤ n) :
-    (φ.zpow n).SemiPos R := fun j c y hy ξ =>
+    (φ.zpow n).SemiPos R := fun _ c y hy ξ =>
   (mul_nonneg (Int.cast_nonneg hn) (h _ c y ⟨hy.1, mem_pow_iff.1 hy.2⟩ ξ)).trans_eq
     (levi_zpow hφ n hy.1 (mem_pow_iff.1 hy.2) ξ).symm
 

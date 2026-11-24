@@ -61,7 +61,7 @@ theorem mem_of_inCell {F : Type} [Field F] {E : Type} [Field E] [Algebra F E] (c
   exact U.mul_mem (U.mul_mem (hP hp) hw) (hP hq)
 
 theorem sieg_weyl_generate : ∀ (F : Type) [Field F] [CharZero F] (E : Type) [Field E] [Algebra F E] (c : E →ₐ[F] E)
-    (δ : E) (hE : IsQuad c δ) (ν : Type) [Fintype ν] [DecidableEq ν] (U : Subgroup (UG c (stdJ ν E))),
+    (δ : E) (_ : IsQuad c δ) (ν : Type) [Fintype ν] [DecidableEq ν] (U : Subgroup (UG c (stdJ ν E))),
     sieg c ν ≤ U → weyl c ν ∈ U → U = ⊤ := by
   intro F _ _ E _ _ c δ hE ν _ _ U hP hw
   classical

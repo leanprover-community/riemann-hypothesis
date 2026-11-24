@@ -280,7 +280,7 @@ theorem integrable_uncurry_translate (lam : Measure A) [lam.IsAddHaarMeasure] [S
 theorem integral_mul_char_eq_of_hasDerivAt (A : Type) [AddCommGroup A] [TopologicalSpace A]
     [IsTopologicalAddGroup A] [MeasurableSpace A] [BorelSpace A] (lam : Measure A)
     [lam.IsAddHaarMeasure] [SFinite lam] (c : ℝ →+ A) (hc : Continuous c) (F G : A → ℂ)
-    (hF : Continuous F) (hG : Continuous G) (hFi : Integrable F lam) (hGi : Integrable G lam)
+    (hG : Continuous G) (hFi : Integrable F lam) (hGi : Integrable G lam)
     (χ : AddChar A ℂ) (hχ : Continuous χ) (hn : ∀ x, ‖χ x‖ = 1) (f : ℝ)
     (hf : ∀ s : ℝ, χ (c s) = Complex.exp (-(2 * Real.pi * Complex.I * ((s * f : ℝ) : ℂ))))
     (hd : ∀ (b : A) (s : ℝ),
@@ -1130,7 +1130,7 @@ theorem W_mult {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsCharAF D.host.F ψ) {θ
       Complex.exp (2 * Real.pi * Complex.I * ((s * multM θ α V a y : ℝ) : ℂ)) := fun s y => by
     rw [tq_path]
     exact hph _ s
-  exact _root_.GlobalTheory.CompanionTheory.OneParamFourier.integral_mul_char_eq_of_hasDerivAt (hermA D r) lam' (path hσ a) (continuous_path hσ a) _ _ (cont φ hφ) (cont _ hMφ)
+  exact _root_.GlobalTheory.CompanionTheory.OneParamFourier.integral_mul_char_eq_of_hasDerivAt (hermA D r) lam' (path hσ a) (continuous_path hσ a) _ _ (cont _ hMφ)
     (intg φ hφ) (intg _ hMφ) (chi ψ β) (continuous_chi hψ β) (norm_chi hψ β) (pairF θ α a β)
     (chi_path hσ hph a β)
     (hasDeriv_Jt hψ V μ (GlobalTheory.T.integrable_of_mem_schwartzA D θ hθ _ _ μ φ hφ) hMc.measurable

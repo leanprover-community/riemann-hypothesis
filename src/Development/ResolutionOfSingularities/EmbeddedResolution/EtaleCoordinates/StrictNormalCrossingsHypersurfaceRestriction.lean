@@ -238,7 +238,7 @@ theorem etaleChart_numCoords_add_one_of_hypersurface (p : P ⟶ Spec (CommRingCa
     [AlgebraicGeometry.LocallyOfFiniteType (H.subschemeι ≫ p)]
     {U : P.Opens} (hU : IsAffineOpen U) {n : ℕ} (c : EtaleChart p U n) (j₁ : Fin n)
     (hH : restrictIdeal H U = c.coordIdeal {j₁})
-    {V : H.subscheme.Opens} (_hV : IsAffineOpen V) {m' : ℕ}
+    {V : H.subscheme.Opens} {m' : ℕ}
     (c' : EtaleChart (H.subschemeι ≫ p) V m')
     (y : H.subscheme) (hyU : y ∈ H.subschemeι ⁻¹ᵁ U) (hyV : y ∈ V) :
     m' + 1 = n := by
@@ -522,7 +522,6 @@ theorem hasStrictNormalCrossingsWith_ker_cons_of_hasLocalCoordsOnSmoothHypersurf
     [AlgebraicGeometry.Smooth p] (H : P.IdealSheafData) (N : List P.IdealSheafData)
     (Z : H.subscheme.IdealSheafData)
     (hN : InStrictNormalCrossingPosition p (H :: N))
-    (_hZ : HasStrictNormalCrossingsWith (H.subschemeι ≫ p) Z (N.map fun D => D.comap H.subschemeι))
     (hdata : HasLocalCoordsOnSmoothHypersurface p H N Z) :
     HasStrictNormalCrossingsWith p (Z.subschemeι ≫ H.subschemeι).ker (H :: N) := by
   classical
@@ -1289,7 +1288,7 @@ theorem hasLocalCoordsOnSmoothHypersurface_of_comap (p : P ⟶ Spec (CommRingCat
       restrictIdeal_eq_restrict_coordIdeal_of_le hV₁V c' Z S' hZV
     exact restrictIdeal_eq_restrict_coordIdeal_of_le hW'V₁ (c'.restrict hV₁V) Z S' h1
   have hmn : m + 1 = n :=
-    etaleChart_numCoords_add_one_of_hypersurface p H hU'aff (c.restrict hU'U) j₀ hHU' hW'aff
+    etaleChart_numCoords_add_one_of_hypersurface p H hU'aff (c.restrict hU'U) j₀ hHU'
       ((c'.restrict hV₁V).restrict hW'V₁) y hyU' hyU'
   have hPx' : (hU'aff.primeIdealOf ⟨x, hxU'⟩).asIdeal
       = Ideal.comap (H.subschemeι.appLE U' (H.subschemeι ⁻¹ᵁ U') le_rfl).hom
@@ -1683,7 +1682,7 @@ theorem hasStrictNormalCrossingsWith_ker_cons_of_comap :
         HasStrictNormalCrossingsWith (H.subschemeι ≫ p) Z (N.map fun D => D.comap H.subschemeι) →
         HasStrictNormalCrossingsWith p (Z.subschemeι ≫ H.subschemeι).ker (H :: N) := by
   intro k _ _ P p _ H N hN Z hZ
-  exact hasStrictNormalCrossingsWith_ker_cons_of_hasLocalCoordsOnSmoothHypersurface p H N Z hN hZ
+  exact hasStrictNormalCrossingsWith_ker_cons_of_hasLocalCoordsOnSmoothHypersurface p H N Z hN
     (hasLocalCoordsOnSmoothHypersurface_of_comap p H N Z hN hZ)
 
 end FunctorialResolution.EmbeddedResolution

@@ -74,7 +74,7 @@ theorem rootsBar_prod {p : ℕ} [Fact p.Prime] {ι : Type} (s : Finset ι) (φ :
 theorem dg_eq {p : ℕ} [Fact p.Prime] {r : ℕ} {b : Fin r → Fin r} {x : Cyc b → Fbar p}
     (hx : ∀ c, x c ^ (p ^ cycLen b c - 1) = 1) (hinj : Function.Injective (rootElt x)) (c : Cyc b) :
     dg (x c) = cycLen b c := by
-  obtain ⟨k, hk⟩ := exists_dg_mul (cycLen_pos b c) (hx c)
+  obtain ⟨k, hk⟩ := exists_dg_mul (hx c)
   have h0 := cycLen_pos b c
   have hle : dg (x c) ≤ cycLen b c := Nat.le_of_dvd h0 ⟨k, hk⟩
   by_contra hne

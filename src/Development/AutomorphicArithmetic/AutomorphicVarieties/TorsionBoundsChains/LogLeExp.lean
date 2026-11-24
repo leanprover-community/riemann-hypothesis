@@ -278,7 +278,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qi35.torsSat_mult :
-    ∀ {M : Type} [inst : AddCommGroup M] (L : Set M)
+    ∀ {M : Type} [AddCommGroup M] (L : Set M)
     (N : Submodule ℤ M),
     (∀ x ∈ L, ∃ (n : ℤ), n ≠ (0 : ℤ) ∧ n • x ∈ N) → ∀ x ∈ Submodule.span ℤ L, ∃ (n : ℤ), n ≠ (0 : ℤ) ∧ n • x ∈ N := by
   intro M _ L N h x hx
@@ -461,7 +461,7 @@ noncomputable def UpperTheory.Reformulated.B.Qf15.TorsLe :
     fun (M : Type) [AddCommGroup M] (B : ℕ) ↦ Finite ↥(AddCommGroup.torsion M) ∧ Nat.card ↥(AddCommGroup.torsion M) ≤ B
 
 theorem UpperTheory.Reformulated.B.Qf15.torsStep :
-    ∀ (A B C : Type) [inst : AddCommGroup A] [inst_1 : AddCommGroup B] [inst_2 : AddCommGroup C] (f : A →+ B) (g : B →+ C)
+    ∀ (A B C : Type) [AddCommGroup A] [AddCommGroup B] [AddCommGroup C] (f : A →+ B) (g : B →+ C)
       (a c : ℕ),
       Function.Exact (⇑f : A → B) (⇑g : B → C) →
         UpperTheory.Reformulated.B.Qf15.CardLe A a → UpperTheory.Reformulated.B.Qf15.TorsLe C c → UpperTheory.Reformulated.B.Qf15.TorsLe B (a * c) := by

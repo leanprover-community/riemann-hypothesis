@@ -140,8 +140,8 @@ theorem norm_sig (v : HeightOneSpectrum (𝓞 F)) (z : v.adicCompletion F ⊗[F]
 theorem fin_index (hcm : HeckeCharacterZeroLocus.SiegelWeilU.IsCMExt F E σ) (v : HeightOneSpectrum (𝓞 F)) (n : ℕ)
     (t u D β h : Matrix (Fin n) (Fin n) (v.adicCompletion F ⊗[F] E)) (η e : v.adicCompletion F ⊗[F] E)
     (k k' : Matrix (Fin n ⊕ Fin n) (Fin n ⊕ Fin n) (v.adicCompletion F ⊗[F] E))
-    (ht : IsUnit t.det) (hD : IsUnit D.det) (htu : tᵀ * u.map (HeckeCharacterZeroLocus.SiegelWeilU.sigR (v.adicCompletion F) σ) = 1)
-    (hη : IsUnit η) (he : IsUnit e) (he1 : ‖Algebra.norm (v.adicCompletion F) e‖ = 1) (hβ : β = -(η • hᵀ))
+    (ht : IsUnit t.det) (hD : IsUnit D.det)
+    (he : IsUnit e) (he1 : ‖Algebra.norm (v.adicCompletion F) e‖ = 1) (hβ : β = -(η • hᵀ))
     (hh : ∀ a b, HeckeCharacterZeroLocus.SiegelWeilU.sigR (v.adicCompletion F) σ (h b a) = h a b) (hkk : k * k' = 1)
     (hk : ∀ i j, k i j ∈ OE E v) (hk' : ∀ i j, k' i j ∈ OE E v)
     (h1 : e • t = D * k.toBlocks₂₁) (h2 : e • (β * u) = D * k.toBlocks₂₂)
@@ -192,7 +192,7 @@ theorem fin_index (hcm : HeckeCharacterZeroLocus.SiegelWeilU.IsCMExt F E σ) (v 
       simp only [Matrix.neg_mulVec, Matrix.mulVec_neg, neg_neg, Matrix.smul_mulVec, Matrix.mulVec_smul,
         smul_add]
     · rintro ⟨_, ⟨z, hz, rfl⟩, rfl⟩
-      obtain ⟨y₁, y₂, hy₁, hy₂, hyz⟩ := bottom_onto (OEsub E v) k k' hkk hk hk' z ((mem_lat v z).1 hz)
+      obtain ⟨y₁, y₂, hy₁, hy₂, hyz⟩ := bottom_onto (OEsub E v) k k' hkk hk' z ((mem_lat v z).1 hz)
       refine ⟨t.map sg *ᵥ sv y₁ + h *ᵥ ((η • u).map sg *ᵥ (-sv y₂)),
         ⟨_, ⟨sv y₁, hsvO _ ((mem_lat v _).2 hy₁), rfl⟩, _, ⟨-sv y₂, neg_mem (hsvO _ ((mem_lat v _).2 hy₂)), rfl⟩, rfl⟩, ?_⟩
       dsimp only

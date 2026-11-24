@@ -201,7 +201,7 @@ theorem law_superdiag {F : Type} [Field F] (A : Matrix (Fin k) (Fin k) F) (hkm :
   simp only [hG]
   rw [dite_eq_right (by omega)]
 
-theorem law (hG0 : jumpWindows.G0) (hK5e : CornerEmbedding) (hK5a : TransformsEmbedding) (hK7 : K7) (hK8a : LocalHeckeAlgebra) (hk : 1 ≤ k) (hkm : k < m)
+theorem law (hK5e : CornerEmbedding) (hK5a : TransformsEmbedding) (hK7 : K7) (hK8a : LocalHeckeAlgebra) (hk : 1 ≤ k) (hkm : k < m)
     {ψ : AddChar (Ad E) ℂ} (hψ : StdPsi ψ) {S : Finset (Pl E)} (hS : ∀ w, w ∉ S → Cond ψ w)
     {ι : GA E k →* GA E m} (hι : IsEmb ι) (α : Off E S → Fin m → ℂˣ) (α' : Off E S → Fin k → ℂˣ)
     {φ : XB E m} (hφ : Good ψ (m - 1) (φ : GA E m → ℂ))
@@ -334,7 +334,7 @@ theorem kernel_less_first_of : jumpWindows.G0 → jumpWindows.G5 → D0 → P2 �
       good := hφ'.good
       inv := hφ'.inv
       dec := hφ'.dec
-      law := PKLt1.law hG0 hK5e hK5a hK7 hK8a hk hkm hψ hS hι α α' hφ.good hφ.sat hφ'.good hφ'.sat
+      law := PKLt1.law hK5e hK5a hK7 hK8a hk hkm hψ hS hι α α' hφ.good hφ.sat hφ'.good hφ'.sat
       sph := hsph
       one := by
         obtain ⟨C, -, -, -, -, ⟨t, ht, hW⟩, -⟩ := hφ.bump

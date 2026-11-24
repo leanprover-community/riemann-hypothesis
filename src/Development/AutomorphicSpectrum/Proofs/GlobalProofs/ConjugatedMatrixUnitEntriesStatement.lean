@@ -77,7 +77,7 @@ structure GramShape (m : ℕ) (G : Matrix (Fin n) (Fin n) R) : Prop where
   mid : ∀ i b : Fin n, ¬ Outer m i → G i b ≠ 0 → ¬ Outer m b
   one : ∀ i b : Fin n, Outer m i → i.val + b.val + 1 = n → G i b = 1
 
-theorem rev_outer (i : Fin n) (hi : Outer m i) (h2 : 2 * m ≤ n) : Outer m (Fin.rev i) := by
+theorem rev_outer (i : Fin n) (hi : Outer m i) : Outer m (Fin.rev i) := by
   have hil := i.isLt
   unfold Outer at hi ⊢
   rw [Fin.val_rev]
@@ -86,7 +86,7 @@ theorem rev_outer (i : Fin n) (hi : Outer m i) (h2 : 2 * m ≤ n) : Outer m (Fin
 theorem inv_row (h2 : 2 * m ≤ n) (hG : GramShape m G) (hGW : G * W = 1) (a q : Fin n) (ha : Outer m a)
     (hne : W a q ≠ 0) : a.val + q.val + 1 = n := by
   have hal := a.isLt
-  have hout := rev_outer a ha h2
+  have hout := rev_outer a ha
   have hra : (Fin.rev a).val + a.val + 1 = n := by rw [Fin.val_rev]; omega
   have key : (G * W) (Fin.rev a) q = W a q := by
     rw [Matrix.mul_apply, Finset.sum_eq_single a]
@@ -114,7 +114,7 @@ theorem inv_row (h2 : 2 * m ≤ n) (hG : GramShape m G) (hGW : G * W = 1) (a q :
 theorem inv_col (h2 : 2 * m ≤ n) (hG : GramShape m G) (hWG : W * G = 1) (a q : Fin n) (hq : Outer m q)
     (hne : W a q ≠ 0) : a.val + q.val + 1 = n := by
   have hql := q.isLt
-  have hout := rev_outer q hq h2
+  have hout := rev_outer q hq
   have hrq : q.val + (Fin.rev q).val + 1 = n := by rw [Fin.val_rev]; omega
   have key : (W * G) a (Fin.rev q) = W a q := by
     rw [Matrix.mul_apply, Finset.sum_eq_single q]

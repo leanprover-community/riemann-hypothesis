@@ -203,7 +203,7 @@ private theorem cell_unif_lemma {L : Type} [Field L] [Valued L (WithZero (Multip
     simp only [he_def]
     rw [map_div₀, hgv i, div_self]
     exact (Valuation.ne_zero_iff _).2 (hg0 ϖ' (hne ϖ' hU') i)
-  have hDK : D ∈ KU c n := Formalism.UG.P.fSatake_diag_mem_K hD hD' hev
+  have hDK : D ∈ KU c n := Formalism.UG.P.fSatake_diag_mem_K hD hev
   have hDD : (((D⁻¹ : GU c n) : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) *
       (((D : GU c n) : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) = 1 := by
     rw [← Units.val_mul, ← Subgroup.coe_mul, inv_mul_cancel]

@@ -150,7 +150,7 @@ def InS (l : ℕ) (σ : K →+* K) (be0 : MvPowerSeries (Fin 2) K) (α : K) : Pr
       (subst ![at1 (0 : Fin 2) (lgF K l), C (σ α) * at1 (1 : Fin 2) (lgF K l)] (addC l be0))
 
 theorem integral_part_at_variable {l : ℕ} (hp : l.Prime) (σ : K →+* K) (x : Fin 2) : IP l σ (at1 x (lgF K l)) :=
-  ⟨constantCoeff_inVar_eq_zero _ (cc_lgF hp.two_le), by
+  ⟨constantCoeff_inVar_eq_zero _ (cc_lgF), by
     rw [TranslateJetMomentLawAnyIdempotentLevel.artin_hasse_log_frobenius_shift hp]
     exact KernelCokernelKilling.integral_X' _⟩
 
@@ -315,8 +315,8 @@ theorem f_of_beta_hypotheses : FOfBetaHyp := by
     exact han k
   have hlimσ : Filter.Tendsto (fun k => σ (a k)) Filter.atTop (nhds (σ α)) :=
     (hcont.tendsto α).comp hlim
-  have hG0 : constantCoeff (at1 (0 : Fin 2) (lgF K l)) = 0 := constantCoeff_inVar_eq_zero _ (cc_lgF hl)
-  have hH0 : constantCoeff (at1 (1 : Fin 2) (lgF K l)) = 0 := constantCoeff_inVar_eq_zero _ (cc_lgF hl)
+  have hG0 : constantCoeff (at1 (0 : Fin 2) (lgF K l)) = 0 := constantCoeff_inVar_eq_zero _ (cc_lgF)
+  have hH0 : constantCoeff (at1 (1 : Fin 2) (lgF K l)) = 0 := constantCoeff_inVar_eq_zero _ (cc_lgF)
   have key := simeq_closed K l σ hU (Fin 2)
     (fun k => subst ![C (a k) * at1 (0 : Fin 2) (lgF K l), at1 (1 : Fin 2) (lgF K l)] (addC l be0) -
       subst ![at1 (0 : Fin 2) (lgF K l), C (σ (a k)) * at1 (1 : Fin 2) (lgF K l)] (addC l be0))

@@ -746,7 +746,7 @@ section Mat
 
 variable {k : Type} [CommRing k] {n n' r t : ℕ}
 
-theorem blkOf_eq (h : n = r + t) (ht : 0 < t) : blkOf (n := n) r t = blk2 r := by
+theorem blkOf_eq (h : n = r + t) : blkOf (n := n) r t = blk2 r := by
   funext a
   unfold blkOf blk2
   split_ifs with ha
@@ -769,7 +769,7 @@ theorem colMat_blocks (hn : n' = n) (h : n = r + t) (ht : 0 < t) (hr : r ≤ n')
     simpa [colMat, Matrix.one_apply, Matrix.vecMulVec_apply, Pi.single_apply] using this
   have hb : x ∈ blockTri (blk2 r) := mem_twoBlockTriangular_of_blockTriangular fun a c ha hc => by
     rw [hx', ite_eq_right (by rintro rfl; omega), ite_eq_right (by rintro rfl; omega)]; simp
-  rw [blkOf_eq h ht]
+  rw [blkOf_eq h]
   refine ⟨hb, Units.ext ?_, Units.ext ?_⟩
   · rw [diag_block_det_val 1 hb]
     have hm1 : blk2 r m = 1 := by unfold blk2; rw [ite_eq_right (by omega)]
@@ -819,7 +819,7 @@ theorem conj_blocks (hn : n' = n) (h : n = r + t) (ht : 0 < t) (hr : r ≤ n) (h
     ext a c
     rw [Matrix.submatrix_apply, he, dite_eq_left ⟨a.2, c.2⟩]
     rfl
-  rw [blkOf_eq h ht]
+  rw [blkOf_eq h]
   refine ⟨mul_mem (mul_mem hb' he') (inv_mem hb'), ?_, ?_⟩
   · rw [diag_block_det_mul (mul_mem hb' he') (inv_mem hb'), diag_block_det_mul hb' he', hd, mul_one, ← diag_block_det_mul hb' (inv_mem hb'), mul_inv_cancel]
     exact blockDiagonalExtendByOnePrimeField_one _ _

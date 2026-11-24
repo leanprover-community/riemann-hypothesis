@@ -2992,7 +2992,7 @@ theorem pd_phi_deriv (m : ℕ) : ∃ C : ℝ, 0 ≤ C ∧ ∀ w, admitted m w �
     have hz : ∀ M' ∈ {M : Mat k r | 4 < pdSq M}, pdPhi M' = (fun _ => (0 : ℂ)) M' := by
       intro M' hM'
       simp [pdPhi, pd_chi_zero (le_of_lt hM')]
-    rw [pd_Dw_congr_open hU hz w M (by simp only [Set.mem_setOf_eq]; simp only [Set.mem_setOf_eq, not_le] at hM; linarith), Dw_zero]
+    rw [pd_Dw_congr_open hU hz w M (by simp only [Set.mem_setOf_eq]; simp only [not_le] at hM; linarith), Dw_zero]
     simpa using hC0
 
 theorem pd_psi_deriv (m : ℕ) : ∃ C : ℝ, 0 ≤ C ∧ ∀ R : ℝ, 0 < R → ∀ w, admitted m w → ∀ g : Mat k r,

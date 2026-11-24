@@ -150,13 +150,13 @@ theorem tateTraceHat_mem (n : ℕ) {x : ℂ_[p]} (hx : x ∈ cyclotomicCompletio
 theorem tateTraceHat_coe_of_mem {n : ℕ} {a : PadicAlgCl p} (ha : a ∈ cyclotomicLayer K n) :
     tateTraceHat K n (a : ℂ_[p]) = a :=
   extendToClosure_coe_of_mem (tateTrace_add_of_mem n) (norm_tateTrace_le_of_mem n)
-    (cyclotomicLayer_le_cyclotomicLimit K n) (fun a ha => tateTrace_of_mem K ha) ha
+    (cyclotomicLayer_le_cyclotomicLimit K n) (fun _ ha => tateTrace_of_mem K ha) ha
 
 theorem tateTraceHat_mul {n : ℕ} {a : PadicAlgCl p} (ha : a ∈ cyclotomicLayer K n) {x : ℂ_[p]}
     (hx : x ∈ cyclotomicCompletion K) :
     tateTraceHat K n ((a : ℂ_[p]) * x) = (a : ℂ_[p]) * tateTraceHat K n x :=
   extendToClosure_mul (tateTrace_add_of_mem n) (norm_tateTrace_le_of_mem n)
-    (cyclotomicLayer_le_cyclotomicLimit K n) (fun a ha y _ => tateTrace_mul_of_mem K ha y) ha hx
+    (cyclotomicLayer_le_cyclotomicLimit K n) (fun _ ha y _ => tateTrace_mul_of_mem K ha y) ha hx
 
 theorem gal_mem_cyclotomicLimit (σ : Gal(PadicAlgCl p/K)) {y : PadicAlgCl p}
     (hy : y ∈ cyclotomicLimit K) : σ y ∈ cyclotomicLimit K :=

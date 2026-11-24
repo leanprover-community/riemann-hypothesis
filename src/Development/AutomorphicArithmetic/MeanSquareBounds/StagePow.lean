@@ -1354,7 +1354,7 @@ theorem twistK :
     obtain ⟨sq2, ne2, L2, _, lt2⟩ := (hE (m₀ * s₂) hM2 (dvd_mul_of_dvd_left h8 _)).1 _ he2
     have hag := hpage Z (m₀ * s₁) (m₀ * s₂) χ₁ χ₂ β₁ β₂ hZ3 (hMZ _ hN1') (hMZ _ hN2') sq1 sq2 ne1 ne2 L1 L2
       (sub_lt_comm.1 hlt1) (sub_lt_comm.1 hlt2) lt1 lt2
-    apply jacobi_separate m₀ s₁ s₂ hm ho1 ho2 hq1 hq2 hc1 hc2
+    apply jacobi_separate m₀ s₁ s₂ ho1 ho2 hq1 hq2 hc1 hc2
     intro u hu hus
     have hum : u.Coprime m₀ := by
       unfold Nat.Coprime; rw [Nat.ModEq.gcd_eq (show u ≡ 1 [MOD m₀] from hu)]; simp

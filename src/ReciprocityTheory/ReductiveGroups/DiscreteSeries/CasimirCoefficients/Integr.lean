@@ -106,7 +106,7 @@ theorem lintegral_lt_top_of_polar (hq : 1 ≤ q0 ε) (ν : Measure (UJ ε)) [ν.
       F (toUJ ε (toMK k * NormedSpace.exp X)) ≤
         ENNReal.ofReal (M * Real.exp (-(δ + n * Real.sqrt (2 * q0 ε)) * Real.sqrt (hs X)))) :
     ∫⁻ g, F g ∂ν < ⊤ := by
-  obtain ⟨C, hC, hpol⟩ := haar_polar_le ε hq ν
+  obtain ⟨C, hC, hpol⟩ := haar_polar_le ε ν
   have := compactSpace_KG ε
   have hK : muK ε Set.univ ≠ ⊤ := (isCompact_univ.measure_lt_top).ne
   set c := Real.sqrt (2 * q0 ε) with hcdef

@@ -72,9 +72,9 @@ theorem mul_mem_hatO {c : Ideal (OF E)} {n : OF E} (hn : n ∈ c) {y : Af E}
 def intR (E : Type) [Field E] [NumberField E] : Subring (Af E) where
   carrier := {y | ∀ v, y v ∈ v.adicCompletionIntegers E}
   mul_mem' ha hb v := mul_mem (ha v) (hb v)
-  one_mem' v := one_mem _
+  one_mem' _ := one_mem _
   add_mem' ha hb v := add_mem (ha v) (hb v)
-  zero_mem' v := zero_mem _
+  zero_mem' _ := zero_mem _
   neg_mem' ha v := neg_mem (ha v)
 
 theorem finite_quot {N : ℕ} (hN : N ≠ 0) : Finite (intR E ⧸ Ideal.span {(N : intR E)}) := by

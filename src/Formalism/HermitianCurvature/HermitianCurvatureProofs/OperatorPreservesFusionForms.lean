@@ -216,7 +216,7 @@ theorem qmBorderFull_of (hES : PI.QmBorderES) (hCol : PI.QmColExp) (hRow : PI.Qm
   obtain ⟨hFR, hLR⟩ := hRow
   obtain ⟨hS1, hS2⟩ := hSkip
   exact UnitaryGroupMassFormula.QmBorderFull.borderFull_of hFC hS
-    (bfMid_of_expLastCol_expLastRow_skipSucc_bfCross hLC hLR hS1 (UnitaryGroupMassFormula.QmBorderFull.Four.bfCross_of ⟨hFR, hLR⟩ ⟨hS1, hS2⟩))
+    (bfMid_of_expLastCol_expLastRow_skipSucc_bfCross hLC hLR hS1 (UnitaryGroupMassFormula.QmBorderFull.Four.bfCross_of ⟨hFR, hLR⟩))
 
 end PI
 end -- clump:auto
@@ -1794,7 +1794,7 @@ theorem Formalism.FourierDecayAlt.P.rtt_sandwich : Formalism.FourierDecayAlt.Q.R
 
 theorem Formalism.FourierDecayAlt.P.level_group_image : Formalism.FourierDecayAlt.Q.GlevImage := by
   obtain ⟨hH, hU, -⟩ := level_basics
-  exact _root_.QnGlevImageW.glevImage_of hH hU
+  exact _root_.QnGlevImageW.glevImage_of hU
 
 theorem Formalism.FourierDecayAlt.P.level_transfer : Formalism.FourierDecayAlt.Q.LevelTransfer := by
   exact level_transfer_of_levHom level_basics.1

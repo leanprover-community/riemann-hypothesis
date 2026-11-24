@@ -38,7 +38,7 @@ theorem aevalS_eig (f : Module.End S M) {x : S} {m : M} (hm : f m = x • m) (P 
 
 def lagr (x : ι → K) (τ : ι) : K[X] := Lagrange.basis Finset.univ x τ
 
-theorem X_sub_mul_lagr (x : ι → K) (hx : Function.Injective x) (τ : ι) :
+theorem X_sub_mul_lagr (x : ι → K) (τ : ι) :
     (X - C (x τ)) * lagr x τ = C (∏ τ' ∈ Finset.univ.erase τ, (x τ - x τ')⁻¹) * ∏ τ', (X - C (x τ')) := by
   unfold lagr
   rw [Lagrange.basis]
@@ -76,7 +76,7 @@ theorem sum_proj [Nonempty ι] (hα : Function.Injective fun τ => χ τ α) : �
 theorem proj_eig_alpha (hα : Function.Injective fun τ => χ τ α) (f : ℤ[X]) (hf : aeval α f = 0)
     (hfs : f.map (Int.castRingHom K) = ∏ τ, (X - C (χ τ α))) (τ : ι) (m : M) :
     ρ α (proj ρ χ α τ m) = algebraMap K S (χ τ α) • proj ρ χ α τ m := by
-  have hk := congrArg (Polynomial.map (algebraMap K S)) (X_sub_mul_lagr (fun τ => χ τ α) hα τ)
+  have hk := congrArg (Polynomial.map (algebraMap K S)) (X_sub_mul_lagr (fun τ => χ τ α) τ)
   rw [← hfs] at hk
   rw [Polynomial.map_mul, Polynomial.map_mul, Polynomial.map_sub, Polynomial.map_X, Polynomial.map_C,
     Polynomial.map_C, Polynomial.map_map] at hk

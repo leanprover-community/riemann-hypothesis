@@ -366,24 +366,24 @@ theorem openC_of_steps [NeZero n] (W : LocWach PD LL O v n) (hG : LatticeFiniteC
 
 end Core
 
-def localLiftingConditionsGlobal (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def localLiftingConditionsGlobal (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K LL : Loc.FinExt l) (hg : Loc.Good K 1 LL)
     [NeZero (Module.finrank ℚ_[l] ↥(Loc.K0 K))], LocalLiftingConditions ((HW l).W K 1 LL hg)
 
 theorem openKR_of_steps (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
-    (hG : Formalism.MainNotions.LocalTheoryWindows.H1fGeneratorBoundAll D.loc) (hS : localLiftingConditionsGlobal D HW F) : openKR D HW F (fun _ => True) 25 := by
+    (hG : Formalism.MainNotions.LocalTheoryWindows.H1fGeneratorBoundAll D.loc) (hS : localLiftingConditionsGlobal D HW) : openKR D HW (fun _ => True) 25 := by
   intro l _ K LL hg _
   exact openC_of_steps _ (generator_lemma_of_count _ (hG l K LL)) (hS l K LL hg)
 
 theorem theorem_of_lifting_steps (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (CA CB CK : ℝ)
-    (h10 : adm10 D HW F CA CB CK) (hG : Formalism.MainNotions.LocalTheoryWindows.H1fGeneratorBoundAll D.loc) (hS : localLiftingConditionsGlobal D HW F) :
+    (h10 : adm10 D HW F CA CB CK) (hG : Formalism.MainNotions.LocalTheoryWindows.H1fGeneratorBoundAll D.loc) (hS : localLiftingConditionsGlobal D HW) :
     aux₃ D HW F 25 := Theorem_C_of_open D HW F 25 CA CB CK h10 (openKR_of_steps D HW F hG hS)
 
 theorem generator_count_iff (D : D7) : adm19 D ↔ Formalism.MainNotions.LocalTheoryWindows.H1fGeneratorBoundAll D.loc := by
   exact Iff.rfl
 
 theorem stmt_of_stepsAdm (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
-    (CR CA CB CK : ℝ) (hS : admitted D HW F Cm CR CA CB CK → localLiftingConditionsGlobal D HW F) : Stmt D HW F Cm 25 CR CA CB CK := by
+    (CR CA CB CK : ℝ) (hS : admitted D HW F Cm CR CA CB CK → localLiftingConditionsGlobal D HW) : Stmt D HW F Cm 25 CR CA CB CK := by
   intro hA
   exact theorem_of_lifting_steps D HW F CA CB CK hA.2.2.2.2.2.2.2.2.2.1
     ((generator_count_iff D).1 hA.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2) (hS hA)
@@ -938,40 +938,40 @@ theorem lattice_bounds_of_local [NeZero n] (W : LocWach PD LL O v n) (h12 : Cocy
 
 end Steps
 
-def cocyclesToWachVectorsBoundAtGoodExtensions (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def cocyclesToWachVectorsBoundAtGoodExtensions (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K LL : Loc.FinExt l) (hg : Loc.Good K 1 LL)
     [NeZero (Module.finrank ℚ_[l] ↥(Loc.K0 K))], CocyclesToWachVectorsBound ((HW l).W K 1 LL hg)
 
-def wachVectorSubmoduleChainBoundAtGoodExtensions (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def wachVectorSubmoduleChainBoundAtGoodExtensions (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K LL : Loc.FinExt l) (hg : Loc.Good K 1 LL)
     [NeZero (Module.finrank ℚ_[l] ↥(Loc.K0 K))], WachVectorSubmoduleChainBound ((HW l).W K 1 LL hg)
 
-def rhoLift (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def rhoLift (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K LL : Loc.FinExt l) (hg : Loc.Good K 1 LL)
     [NeZero (Module.finrank ℚ_[l] ↥(Loc.K0 K))], RhoLift ((HW l).W K 1 LL hg)
 
 theorem lattice_bounds_of_three_parts (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
-    (h12 : cocyclesToWachVectorsBoundAtGoodExtensions D HW F) (h36 : wachVectorSubmoduleChainBoundAtGoodExtensions D HW F) (hR : rhoLift D HW F) : localLiftingConditionsGlobal D HW F := by
+    (h12 : cocyclesToWachVectorsBoundAtGoodExtensions D HW) (h36 : wachVectorSubmoduleChainBoundAtGoodExtensions D HW) (hR : rhoLift D HW) : localLiftingConditionsGlobal D HW := by
   intro l _ K LL hg _
   exact lattice_bounds_of_local _ (h12 l K LL hg) (h36 l K LL hg) (hR l K LL hg)
 
-def wachVectorLiftingBoundAtGoodExtensions (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def wachVectorLiftingBoundAtGoodExtensions (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K LL : Loc.FinExt l) (hg : Loc.Good K 1 LL)
     [NeZero (Module.finrank ℚ_[l] ↥(Loc.K0 K))], WachVectorLiftingBound ((HW l).W K 1 LL hg)
 
-def steps6 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def steps6 (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K LL : Loc.FinExt l) (hg : Loc.Good K 1 LL)
     [NeZero (Module.finrank ℚ_[l] ↥(Loc.K0 K))], LatticeBoundSix ((HW l).W K 1 LL hg)
 
 theorem lattice_bounds_of_admissible (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (Cm : CmpOf D.loc D.locA HW F) (CR CA CB CK : ℝ)
-    (h : admitted D HW F Cm CR CA CB CK → cocyclesToWachVectorsBoundAtGoodExtensions D HW F ∧ wachVectorSubmoduleChainBoundAtGoodExtensions D HW F ∧ rhoLift D HW F) :
-    admitted D HW F Cm CR CA CB CK → localLiftingConditionsGlobal D HW F := fun hA =>
+    (h : admitted D HW F Cm CR CA CB CK → cocyclesToWachVectorsBoundAtGoodExtensions D HW ∧ wachVectorSubmoduleChainBoundAtGoodExtensions D HW ∧ rhoLift D HW) :
+    admitted D HW F Cm CR CA CB CK → localLiftingConditionsGlobal D HW := fun hA =>
   lattice_bounds_of_three_parts D HW F (h hA).1 (h hA).2.1 (h hA).2.2
 
 theorem stmt_of_lemmas (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (Cm : CmpOf D.loc D.locA HW F) (CR CA CB CK : ℝ)
-    (h : admitted D HW F Cm CR CA CB CK → cocyclesToWachVectorsBoundAtGoodExtensions D HW F ∧ wachVectorSubmoduleChainBoundAtGoodExtensions D HW F ∧ rhoLift D HW F) :
+    (h : admitted D HW F Cm CR CA CB CK → cocyclesToWachVectorsBoundAtGoodExtensions D HW ∧ wachVectorSubmoduleChainBoundAtGoodExtensions D HW ∧ rhoLift D HW) :
     Stmt D HW F Cm 25 CR CA CB CK :=
   stmt_of_stepsAdm D HW F Cm CR CA CB CK (lattice_bounds_of_admissible D HW F Cm CR CA CB CK h)
 

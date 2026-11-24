@@ -477,14 +477,14 @@ section -- clump:auto
     fun (l : ℕ) [Fact (Nat.Prime l)] ↦ GroundTheory.PAdicHodge.AInf ℂ_[l] l
 
 noncomputable def UpperTheory.Reformulated.B.Qi53.zA :
-    (l : ℕ) → [inst : Fact (Nat.Prime l)] → ℤ_[l] →+* UpperTheory.Reformulated.B.Qi53.Acris l :=
+    (l : ℕ) → [Fact (Nat.Prime l)] → ℤ_[l] →+* UpperTheory.Reformulated.B.Qi53.Acris l :=
     fun (l : ℕ) [Fact (Nat.Prime l)] ↦
       (Algebra.algebraMap (UpperTheory.Reformulated.B.Qi53.Ainf l) (UpperTheory.Reformulated.B.Qi53.Acris l)).comp
         (GroundTheory.PAdicHodge.IsPerfectoidField.padicIntToWitt l)
 
 theorem UpperTheory.Reformulated.B.Qi53.zA_smul.{u_1} :
-    ∀ {l : ℕ} [inst : Fact (Nat.Prime l)] {N : Type u_1} [inst_1 : AddCommGroup N]
-      [inst_2 : _root_.Module (UpperTheory.Reformulated.B.Qi53.Acris l) N] (n : ℕ),
+    ∀ {l : ℕ} [Fact (Nat.Prime l)] {N : Type u_1} [AddCommGroup N]
+      [_root_.Module (UpperTheory.Reformulated.B.Qi53.Acris l) N] (n : ℕ),
       (∀ (y : N), (↑l : UpperTheory.Reformulated.B.Qi53.Acris l) ^ n • y = (0 : N)) →
         ∀ (z : ℤ_[l]) (y : N),
           (UpperTheory.Reformulated.B.Qi53.zA l : ℤ_[l] → UpperTheory.Reformulated.B.Qi53.Acris l) z • y =
@@ -1198,7 +1198,7 @@ private theorem chain1 {R : Type} {Q Γ : Type*} {Mn : ℕ → Type*} [CommRing 
 private theorem chain2 {R : Type} {Q : Type*} {Mn : ℕ → Type*} [CommRing R] [AddCommGroup Q] [Module R Q]
     [∀ n, AddCommGroup (Mn n)] [∀ n, Module R (Mn n)] (S : Sys R) (l : ℕ) (t : R) (φ : R →+* R)
     (b₀ : ∀ n, S.M n →ₗ[R] Mn n) (P : S.lim → S.lim) (ϕ : ∀ n, Mn n →ₛₗ[φ] Mn n) (u r N e a' b' : ℕ) (α : S.lim → Q) (β : Q →ₗ[R] S.lim) (h : S.lim) (q : Q)
-    (E E' : ∀ n, Mn n) (hh : ∀ n, b₀ n (h.1 n) = t ^ u • E n) (hl : φ^[N] (l : R) = l) (ht : φ^[N] t = (l : R) ^ N * t)
+    (E E' : ∀ n, Mn n) (hh : ∀ n, b₀ n (h.1 n) = t ^ u • E n) (ht : φ^[N] t = (l : R) ^ N * t)
     (hy : ((l : R) ^ a' * t ^ b') • α h = t ^ (b' + (u + r)) • q) (fac : β (α h) = (l : R) ^ e • P^[N] h)
     (hphi : ∀ (x : S.lim) n, b₀ n ((P x).1 n) = ϕ n (b₀ n (x.1 n)))
     (hE : ∀ n, (ϕ n : Mn n → Mn n)^[N] (E n) = E' n) (n : ℕ) :
@@ -1270,7 +1270,7 @@ theorem UpperTheory.Ru.crystallineComparison.absInvOf :
     (fun n => B.β (B.schFn M.p) (okToOC l K) true n j) (fun x => Pb.phiL M j x) (fun n => (phiMor M.P n).pull j)
     u s (f * N') (F.e M j) a' b' (F.α M j) (F.β M j) h
     ((1 : Pb.AW r) ⊗ₜ y) (fun n => evE e M j n v c) (fun n => evE e M j n v fun k => (phiA l)^[f * N'] (c k)) hh
-    (phiA_iter_l _) (phiA_iterate_tA _) hab (F.fac M hM j h) (fun x n => hphi x n)
+    (phiA_iterate_tA _) hab (F.fac M hM j h) (fun x n => hphi x n)
     (fun n => UpperTheory.crisFrobenius_iterate_evalEtaleFamily e he.phi M j n _ v c) n
   exact hc.trans (congrArg _ (hx2 n))
 end -- clump:auto

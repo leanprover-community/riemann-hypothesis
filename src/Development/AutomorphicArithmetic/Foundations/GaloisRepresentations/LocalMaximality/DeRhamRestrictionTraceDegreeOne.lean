@@ -106,7 +106,7 @@ theorem ker_aeval_zero (k : Type) [Field k] (d : ℕ) :
     simp
 
 theorem res_aeval (k : Type) [Field k] (F : Type) [Field F] [Algebra k F] (d : ℕ) (x : Fin (d + 1) → F)
-    (hx : IsPd k x) (ρ : F →ₗ[k] k) (hρ : IsRes k x ρ) (p : MvPolynomial (Fin d) k) :
+    (ρ : F →ₗ[k] k) (hρ : IsRes k x ρ) (p : MvPolynomial (Fin d) k) :
     ρ (aeval (fun j : Fin d ↦ x j.succ / x 0) p) = aeval (R := k) (fun _ : Fin d ↦ (0 : k)) p := by
   induction p using MvPolynomial.induction_on' with
   | monomial n c =>
@@ -150,7 +150,7 @@ theorem GlobalTheory.PD.ResEv.chart0 : ∀ (k : Type) [Field k] (F : Type) [Fiel
       simp [he]
     exact congrArg (fun f => f p) (congrArg DFunLike.coe h1)
   refine ⟨(aeval (R := k) (fun _ : Fin d ↦ (0 : k))).comp e.symm.toAlgHom, fun a => ?_, ?_⟩
-  · have := GlobalTheory.PD.ResEv.res_aeval k F d x hx ρ hρ (e.symm a)
+  · have := GlobalTheory.PD.ResEv.res_aeval k F d x ρ hρ (e.symm a)
     rw [← hv, AlgEquiv.apply_symm_apply] at this
     simpa using this
   · have ht : (Set.range fun j : Fin d => (⟨x j.succ / x 0, Algebra.subset_adjoin ⟨0, Finset.mem_singleton_self 0, j.succ, rfl⟩⟩ : rA k x {0})) = (e.toRingEquiv : MvPolynomial (Fin d) k →+* rA k x {0}) '' Set.range X := by

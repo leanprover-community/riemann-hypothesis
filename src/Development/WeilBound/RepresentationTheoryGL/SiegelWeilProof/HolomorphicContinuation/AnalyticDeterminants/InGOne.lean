@@ -243,8 +243,8 @@ theorem lv_of (hC : Cayley) (hU : UAct) (hDj : DjSec) (hDp : DpDual) (hHI : HolI
   rw [show (detD fun T : Matrix (blkA j) (blkA j) ℂ => detD fun S : Matrix (blkB j) (blkB j) ℂ =>
       Ψ (1 + LR (blkA j) 1 T + LQ (blkB j) 1 S)) = _ from hsph] at hzero
   have htr := transpose_detD hII (hF j (p:ℤ) (q:ℤ)) (fV (p:ℤ) (q:ℤ)) (c1 (p:ℤ) (q:ℤ)) (c2 (p:ℤ) (q:ℤ))
-    (contDiffOn_hF j _ _) (contDiffOn_fV _ _) (fun P x hP hx => hF_law j _ _ hP hx)
-    (fun P x hP hx => fV_law _ _ hP hx) (fun P hP => modulus_characters_product _ _ hP) Kg μ ι hι hK
+    (contDiffOn_hF j _ _) (contDiffOn_fV _ _) (fun P x hP hx => hF_law j _ _ hP)
+    (fun P x hP hx => fV_law _ _ hP) (fun P hP => modulus_characters_product _ _ hP) Kg μ ι hι hK
     (LR (blkA j) 1) (LQ (blkB j) 1) (by
       intro T T' S S'
       simp only [LR_apply, LQ_apply, one_mul]

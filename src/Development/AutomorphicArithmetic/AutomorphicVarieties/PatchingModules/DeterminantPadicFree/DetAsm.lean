@@ -167,7 +167,7 @@ private theorem mul_apply_eq_zero_of_block_parity {X : Type} [CommRing X] {n a :
     rw [hQ m k h2, mul_zero]
   · rw [hP i m h1, zero_mul]
 
-private theorem ofPar_lemma {A X : Type} [CommRing A] [CommRing X] [Algebra A X] {n a : ℕ} (p : Prop)
+private theorem ofPar_lemma {A X : Type} [CommRing A] [CommRing X] [Algebra A X] {n a : ℕ}
     (P : Matrix (Fin n) (Fin n) X) :
     (P ∈ blkMat n a (⊤ : Submodule A X) ⊥ → ∀ i j : Fin n, ¬(((i : ℕ) < a ↔ (j : ℕ) < a) ↔ True) → P i j = 0) ∧
     (P ∈ blkMat n a (⊥ : Submodule A X) ⊤ → ∀ i j : Fin n, ¬(((i : ℕ) < a ↔ (j : ℕ) < a) ↔ False) → P i j = 0) ∧
@@ -185,7 +185,7 @@ private theorem ev_od_graded_mul_mem {A X : Type} [CommRing A] [CommRing X] [Alg
     (P ∈ Ev A X n a → Q ∈ Od A X n a → P * Q ∈ Od A X n a) ∧
     (P ∈ Od A X n a → Q ∈ Ev A X n a → P * Q ∈ Od A X n a) ∧
     (P ∈ Od A X n a → Q ∈ Od A X n a → P * Q ∈ Ev A X n a) := by
-  have c := ofPar_lemma (A := A) (X := X) (n := n) (a := a) True
+  have c := ofPar_lemma (A := A) (X := X) (n := n) (a := a)
   refine ⟨fun hP hQ => ?_, fun hP hQ => ?_, fun hP hQ => ?_, fun hP hQ => ?_⟩
   · exact (c (P * Q)).2.2.1 fun i k h =>
       mul_apply_eq_zero_of_block_parity True True P Q ((c P).1 hP) ((c Q).1 hQ) i k (by tauto)
@@ -200,8 +200,8 @@ private theorem map_algebraMap_mem_ev_of_mem_and_mem_od_of_mem {A X : Type} [Com
     (P : Matrix (Fin n) (Fin n) A) :
     (P ∈ Ev A A n a → P.map (algebraMap A X) ∈ Ev A X n a) ∧
     (P ∈ Od A A n a → P.map (algebraMap A X) ∈ Od A X n a) := by
-  have c := ofPar_lemma (A := A) (X := A) (n := n) (a := a) True P
-  have d := ofPar_lemma (A := A) (X := X) (n := n) (a := a) True (P.map (algebraMap A X))
+  have c := ofPar_lemma (A := A) (X := A) (n := n) (a := a) P
+  have d := ofPar_lemma (A := A) (X := X) (n := n) (a := a) (P.map (algebraMap A X))
   refine ⟨fun hP => d.2.2.1 fun i j h => ?_, fun hP => d.2.2.2 fun i j h => ?_⟩
   · rw [Matrix.map_apply, c.1 hP i j h, map_zero]
   · rw [Matrix.map_apply, c.2.1 hP i j h, map_zero]
@@ -211,9 +211,9 @@ private theorem mem_pairedDualFirstOrderDualMatrixSpace_of_mem_od_of_mem_ev {A X
     (he' : ∀ c, T.map (fun d => d.ep' c) ∈ Od A X n a) (ht : T.map DD.eta ∈ Ev A X n a) :
     T ∈ pairedDualFirstOrderDualMatrixSpace n A X g a := by
   intro i j
-  have h1 := (ofPar_lemma (A := A) True (T.map DD.eta)).1 ht i j
+  have h1 := (ofPar_lemma (A := A) (T.map DD.eta)).1 ht i j
   have h2 : ∀ c, ¬(((i : ℕ) < a ↔ (j : ℕ) < a) ↔ False) → (T i j).ep' c = 0 := fun c =>
-    (ofPar_lemma (A := A) True (T.map fun d => d.ep' c)).2.1 (he' c) i j
+    (ofPar_lemma (A := A) (T.map fun d => d.ep' c)).2.1 (he' c) i j
   refine ⟨fun h => ?_, fun h => ?_⟩
   · exact ⟨fun _ => congrFun (congrFun ha i) j, fun _ => funext fun c => congrFun (congrFun (he c) i) j,
       fun _ => funext fun c => h2 c (by tauto), fun hf => absurd hf (by decide)⟩

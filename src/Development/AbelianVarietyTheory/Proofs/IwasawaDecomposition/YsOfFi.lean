@@ -69,7 +69,7 @@ section Keep
 
 variable (D : D7) (Dat : D.ntw.Tw → ℕ → Bool → Type) (th : ∀ i j b, Dat i j b → D.nexp.Fm i j b)
   (lev : ∀ i j b, Dat i j b → Finset (PlE D.host))
-  (thPsi : ∀ i j b k (Q : Finset (PlE D.host)) (ψ : G D.host.E D.nd.Om →* (D.ntw.Ok i k)ˣ), Dat i j b →
+  (thPsi : ∀ i j b k (_ : Finset (PlE D.host)) (_ : G D.host.E D.nd.Om →* (D.ntw.Ok i k)ˣ), Dat i j b →
     Set (D.ntw.Ok i k ⊗[D.ntw.O i] D.nexp.Fm i j b))
   (h1 : ∀ i j b k (d : Dat i j b), thPsi i j b k ∅ 1 d = {(1 : D.ntw.Ok i k) ⊗ₜ[D.ntw.O i] th i j b d})
   (thU : ∀ i j b (Q : Finset (PlE D.host)) (M : ℕ), Dat i j b →

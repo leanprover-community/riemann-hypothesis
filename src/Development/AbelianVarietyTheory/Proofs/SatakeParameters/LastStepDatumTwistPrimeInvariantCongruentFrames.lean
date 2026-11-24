@@ -290,7 +290,7 @@ end GlobalTheory.TopFrameQ
 
 namespace GlobalTheory.TopFrameQ
 
-theorem topDat_frames_tie : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a => ∀ (P : SB t μ), P.1 ∉ t.Pr.vGs →
+theorem topDat_frames_tie : UnderTie (fun {D _ _ _ _ _ _ _ _ t _ μ _} _ _ _ => ∀ (P : SB t μ), P.1 ∉ t.Pr.vGs →
   ∀ (κ : Sp t.X.E (D.R.N (t.m2 + 1)) ≃ₗ[t.X.E] Sp t.X.E (D.R.N (t.m2 + 1)))
     (κ' : Sp t.X.E (D.R.N (t.m2 + 1 + 1)) ≃ₗ[t.X.E] Sp t.X.E (D.R.N (t.m2 + 1 + 1))),
   κ ∈ GLint t.X.E _ P.1 → (∀ w ∈ stdAt t.X.E _ P.1, ((qOf P.1 : t.X.E) ^ (t.cst μ).D P)⁻¹ • (κ w - w) ∈ stdAt t.X.E _ P.1) →

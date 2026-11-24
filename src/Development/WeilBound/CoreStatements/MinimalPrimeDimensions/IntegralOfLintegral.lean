@@ -470,7 +470,7 @@ theorem lintegral_cone [IsIntegral Z] (hE : Emb p s) (hφ : φ.IsCInf) (hF : IsF
     rw [hx_of a x y hyx, hvx a y hy, hx_of a' x' y' hyx', hvx a' y' hy'] at heq
     have h2 := congrArg h.pointOf heq
     rw [hpt_smul, hpt_smul, pointOf_euc, pointOf_euc] at h2
-    have hyy : y = y' := eq_of_loc hE (hsub a (hAs a hy)) (hsub a' (hAs a' hy')) ht ht' h2
+    have hyy : y = y' := eq_of_loc hE (hsub a (hAs a hy)) (hsub a' (hAs a' hy')) ht h2
     subst hyy
     have haa : a = a' := by
       by_contra hna

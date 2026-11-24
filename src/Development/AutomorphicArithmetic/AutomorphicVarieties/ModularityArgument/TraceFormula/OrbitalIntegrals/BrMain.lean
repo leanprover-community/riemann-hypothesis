@@ -207,7 +207,7 @@ open scoped ENNReal
 
 private theorem map_comp_apply {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (n : ℕ) (f : A →+* B) (g : B →+* C) (h : A →+* C)
     (e : ∀ x, g (f x) = h x) (x : GL (Fin n) A) : mapGL n g (mapGL n f x) = mapGL n h x :=
-  Units.ext (Matrix.ext fun i j => e _)
+  Units.ext (Matrix.ext fun _ _ => e _)
 
 private theorem cont_map {A B : Type} [CommRing A] [CommRing B] [TopologicalSpace A] [TopologicalSpace B] (n : ℕ) (f : A →+* B)
     (hf : Continuous f) : Continuous (mapGL n f) :=

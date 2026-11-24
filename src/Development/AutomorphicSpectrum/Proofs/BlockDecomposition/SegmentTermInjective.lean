@@ -50,7 +50,7 @@ open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.Loc
 namespace GlobalTheory.CompanionTheory.SegTerm
 
 theorem term_injective {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-    (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (Δ : Segment k) : Function.Injective Δ.term :=
+    (Δ : Segment k) : Function.Injective Δ.term :=
   Segment.term_injective Δ
 
 end GlobalTheory.CompanionTheory.SegTerm

@@ -89,8 +89,8 @@ def projOnto (h : ∀ (i j : ι), i ≠ j → ∀ (f : M i →ₗ[R] M j), f = 0
 
 end
 
-theorem main : ∀ {R : Type u_1} [inst : Ring R] {ι : Type u_2} [Fintype ι] [inst_2 : DecidableEq ι]
-    (M : ι → Type u_3) [inst_3 : (i : ι) → AddCommGroup (M i)] [inst_4 : (i : ι) → Module R (M i)]
+theorem main : ∀ {R : Type u_1} [Ring R] {ι : Type u_2} [Fintype ι] [DecidableEq ι]
+    (M : ι → Type u_3) [(i : ι) → AddCommGroup (M i)] [(i : ι) → Module R (M i)]
     [∀ (i : ι), IsSimpleModule R (M i)],
     (∀ (i j : ι), i ≠ j → ∀ (f : M i →ₗ[R] M j), f = (0 : M i →ₗ[R] M j)) →
     ∀ (i₀ : ι) (s : (i : ι) → Finset (M i)), ∃ (r : R), ∀ (i : ι), ∀ m ∈ s i,

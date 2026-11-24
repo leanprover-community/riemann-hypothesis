@@ -154,7 +154,7 @@ theorem choose_shift_binomial_expansion (P rho M e : ℕ) :
         rw [binomial_expansion_coeff_zero_of_gt P rho M l (by omega)]
         simp
 
-theorem derivative_digit_expansion (D : Formalism.BasicNotions.D7) : DerivativeDigitExpansion D := by
+theorem derivative_digit_expansion (D : Formalism.BasicNotions.D7) : DerivativeDigitExpansion := by
   intro p hp _ t σ _ rho M _ c
   classical
   have hP : 0 < p ^ t := pow_pos hp.pos t

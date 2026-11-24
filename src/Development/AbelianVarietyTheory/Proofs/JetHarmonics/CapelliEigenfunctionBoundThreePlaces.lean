@@ -378,7 +378,7 @@ theorem integral_topDensity_eq_levelZero : GlobalTheory.HCXi.BesselXiIntegrable 
   have hpol := hCc Wp Wq P p f χ A N w hDD hχ hf hCC hthr1 hw hN
   obtain ⟨δ, hδ, hδχ⟩ := hχ.2.1
   have hcut := fun (ε : ℝ) (hε : 0 < ε) (c : Fin (P.r + 1) → ℂ) =>
-    _root_.GlobalTheory.TopVec.tv_cutF Wp Wq P p Cb χ δ ε f w c hDD hw hχ hδχ hε hf
+    _root_.GlobalTheory.TopVec.tv_cutF Wp Wq P p Cb χ δ ε f w c hDD hw hχ hδχ hε
   set X := List.foldr (fun (a : Bool × ℝ) G => M.sgn P p.l0 • Q.CV P.k P.r (a.2 : ℂ) G) f w with hXdef
   have hXCC : B.InCC A 5 X := by
     obtain ⟨K, -, hK⟩ := GlobalTheory.capelli_fold_ccle P.k P.r Wp Wq (M.sgn P p.l0) w 5
@@ -481,10 +481,10 @@ theorem Ew_cutF_eventually_eq : ∀ (Wp Wq : Type) [NormedAddCommGroup Wp] [Inne
   simp only [Ew_eq_norm_tv_sq]
   by_cases hG : 0 < TBB.Gp p (TBB.bigPt P.r c)
   · filter_upwards [Ioo_mem_nhdsGT hG] with ε hε
-    rw [(_root_.GlobalTheory.TopVec.tv_cutF Wp Wq P p Cb χ δ ε f w c hΘ hw hχ hδχ hε.1 hf).1 hε.2]
+    rw [(_root_.GlobalTheory.TopVec.tv_cutF Wp Wq P p Cb χ δ ε f w c hΘ hw hχ hδχ hε.1).1 hε.2]
   · filter_upwards [self_mem_nhdsWithin] with ε hε
     have hε' : 0 < ε := hε
-    have h := _root_.GlobalTheory.TopVec.tv_cutF Wp Wq P p Cb χ δ ε f w c hΘ hw hχ hδχ hε' hf
+    have h := _root_.GlobalTheory.TopVec.tv_cutF Wp Wq P p Cb χ δ ε f w c hΘ hw hχ hδχ hε'
     rw [h.2.1 ((not_lt.1 hG).trans_lt (mul_pos hδ hε')), h.2.2 (not_lt.1 hG)]
 
 end GlobalTheory.TopVec

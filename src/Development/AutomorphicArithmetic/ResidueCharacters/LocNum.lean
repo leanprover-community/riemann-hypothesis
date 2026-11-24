@@ -198,7 +198,7 @@ theorem mN_le (l s h : ℕ) (hl : l.Prime) : LocalSituation.mN l s (h + h) ≤ 2
       _ ≤ _ := Nat.le_mul_of_pos_right _ h2
   unfold LocalSituation.mN; omega
 
-theorem rI_le (l m h n : ℕ) (hl : l.Prime) (U : Finset ℤ) (U' : Set ℤ) (hU : U' ⊆ U) (hn : U.card ≤ n)
+theorem rI_le (l m h n : ℕ) (U : Finset ℤ) (U' : Set ℤ) (hU : U' ⊆ U) (hn : U.card ≤ n)
     (hb : ∀ u ∈ U, -(h : ℤ) ≤ u ∧ u ≤ h) (i : ℤ) (hi : 0 ≤ i) (hi' : i ≤ h) :
     LocalSituation.rI l m U' i ≤ n * (m + Nat.log l (2 * h)) := by
   classical
@@ -234,7 +234,7 @@ theorem cLL_le (l N h n k vd : ℕ) (hl : l.Prime) (U : Finset ℤ) (U' : Set �
   have hterm : ∀ i ∈ Finset.Ico (0 : ℤ) (k : ℤ), 2 + max 1 (LocalSituation.rI l M U' i) ≤ 3 * (n + 1) * lamN l N h := by
     intro i hi
     rw [Finset.mem_Ico] at hi
-    have hr := rI_le l M h n hl U U' hU hn hb i hi.1 (by omega)
+    have hr := rI_le l M h n U U' hU hn hb i hi.1 (by omega)
     have hr2 : n * (M + Nat.log l (2 * h)) ≤ n * (2 * lamN l N h) :=
       Nat.mul_le_mul_left _ (by omega)
     have hmax : max 1 (LocalSituation.rI l M U' i) ≤ 1 + LocalSituation.rI l M U' i := max_le (by omega) (by omega)

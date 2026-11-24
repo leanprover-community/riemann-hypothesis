@@ -201,7 +201,7 @@ section Eich
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ}
 
-theorem eich_exists {T : E} (Λ : Submodule (𝓞 E) S.V) (hUn : Formalism.HermitianLatticesTheory.IsUnimodular S.hT Λ) (F : LFlag S r T)
+theorem eich_exists {T : E} (Λ : Submodule (𝓞 E) S.V) (F : LFlag S r T)
     (a : Fin r → S.V) (s : Matrix (Fin r) (Fin r) E) (hea : ∀ c d, S.hT (F.fl.e c) (a d) = 0)
     (hs : ∀ c d, s c d + star (s d c) = -S.hT (a c) (a d))
     (hΛ : ∀ v ∈ Λ, nilF F.fl.e a s v ∈ Λ) :
@@ -625,7 +625,7 @@ theorem nLamOnto_holds : TupLift.NLamOnto := by
 
   have hea : ∀ c d, (VS D).hT (G.e c) (aE y₀ v d) = 0 := fun c d => by
     rw [hT_aE_right, (hL y₀ hy₀ c).1, mul_zero, neg_zero]
-  obtain ⟨νz, hνz, hνzv⟩ := eich_exists Λ hUn (lf D G) (aE y₀ v) (sE (α : D.host.E) y₀ v) hea
+  obtain ⟨νz, hνz, hνzv⟩ := eich_exists Λ (lf D G) (aE y₀ v) (sE (α : D.host.E) y₀ v) hea
     (sE_herm (α : D.host.E) hα y₀ v)
     (eich_keeps (aaS D) G.e f L hΛeq G.e_iso hef hL hint y₀ hy₀ v hv α)
   have hez : ∀ i, νz (G.e i) = G.e i := fun i => by

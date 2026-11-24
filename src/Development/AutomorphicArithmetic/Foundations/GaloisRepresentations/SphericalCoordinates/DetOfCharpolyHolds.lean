@@ -984,7 +984,7 @@ theorem perNear_of : PerNear := by
   · intro b hb
     obtain ⟨h1, h2, h3⟩ := ht (co b) hb
     have hT : (co b)ᵀ * M₀ ∈ Tsp bar ρ := hco b
-    obtain ⟨hH, hF⟩ := _root_.GlobalTheory.PeriodCoord.riemann_converse M₀ (co b) hHerm hdet hT.1 h1
+    obtain ⟨hH, hF⟩ := _root_.GlobalTheory.PeriodCoord.riemann_converse M₀ (co b) hHerm hT.1 h1
     have hcomm := comm_of_mem_Tsp hP hIm hdet hT
     refine _root_.GlobalTheory.PELU.isPeriod_comp_realLinear D ρ P₀ (realMap 1 (co b)) (M₀ * (1 - (co b).map star * co b)⁻¹) hP
       (realMap_one_injective h2) ?_ hH h3 ?_

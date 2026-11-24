@@ -83,14 +83,14 @@ theorem trace_single_pair (Q : Matrix α α E) (y : Matrix α ν E) (i : α) (j 
 
 def prLin (Q : Matrix α α E) : Matrix α ν E →ₗ[F] Matrix α ν E →ₗ[F] F :=
   LinearMap.mk₂ F (fun x y => 2⁻¹ * Algebra.trace F E (Matrix.trace (Qᵀ * (x * (y.map c)ᵀ))))
-    (fun x x' y => by simp [Matrix.add_mul, Matrix.mul_add, mul_add])
-    (fun t x y => by simp [Matrix.smul_mul, Matrix.mul_smul, mul_left_comm])
+    (fun x x' y => by simp [Matrix.add_mul, mul_add])
+    (fun t x y => by simp [Matrix.smul_mul, mul_left_comm])
     (fun x y y' => by
       rw [show (y + y').map c = y.map c + y'.map c from Matrix.map_add _ (map_add c) _ _]
-      simp [Matrix.add_mul, Matrix.mul_add, mul_add])
+      simp [Matrix.mul_add, mul_add])
     (fun t x y => by
       rw [show (t • y).map c = t • y.map c from by ext i j; simp [map_smul]]
-      simp [Matrix.smul_mul, Matrix.mul_smul, mul_left_comm])
+      simp [Matrix.mul_smul, mul_left_comm])
 
 end PairAlg
 
@@ -99,7 +99,7 @@ end GlobalTheory.KSp
 namespace GlobalTheory.KSp
 
 theorem pr_alg : ∀ (F : Type) [Field F] [CharZero F] (E : Type) [Field E] [Algebra F E] (c : E →ₐ[F] E) (δ : E)
-    (hE : IsQuad c δ) (α : Type) [Fintype α] [DecidableEq α] (ν : Type) [Fintype ν] [DecidableEq ν]
+    (_ : IsQuad c δ) (α : Type) [Fintype α] [DecidableEq α] (ν : Type) [Fintype ν] [DecidableEq ν]
     (Q : Matrix α α E) (_ : IsHerm c Q), ∃ β : Matrix α ν E →ₗ[F] Matrix α ν E →ₗ[F] F,
       (∀ x y, β x y = pr c Q x y) ∧ (∀ x y, β x y = β y x) ∧ (∀ y, (∀ x, β x y = 0) → y = 0) ∧
       (∀ (x y : Matrix α ν E) (a : Matrix ν ν E), β (x * a) y = β x (y * (a.map c)ᵀ)) ∧

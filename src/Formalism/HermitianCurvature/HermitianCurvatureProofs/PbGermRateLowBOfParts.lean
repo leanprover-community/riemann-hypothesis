@@ -284,7 +284,7 @@ theorem toStd_PPt (r : ℕ) (g : ℝ) (b s : ℕ) (hb : 1 ≤ b) (hs : 2 ≤ s) 
     simp only [PPt, ptG, qq]
     rw [(GermFibreKernels.toStd_germPts r g h s 1 1 z).2, e1, e4]
 
-theorem cD_eq (r : ℕ) {g : ℝ} (b s : ℕ) (hs : 2 ≤ s) (x D : ℂ) (hx : x ≠ 0) :
+theorem cD_eq (r : ℕ) {g : ℝ} (b s : ℕ) (x D : ℂ) (hx : x ≠ 0) :
     GermFibreKernels.fs r g (b + s - 1) 1 (x ^ (s - 1) * D) * GermFibreKernels.fs r g b (s - 1) x⁻¹ ^ (s - 1) = kapD r g b s * D := by
   unfold kapD
   rw [fs_eq r g (b + s - 1) 1, fs_eq r g b (s - 1) x⁻¹, mul_pow, inv_pow]
@@ -300,7 +300,7 @@ theorem okG_qq (r : ℕ) {g : ℝ} (hg : 0 < g) (b s : ℕ) (hs : 2 ≤ s) (K : 
   | none =>
     simp only [qq, okG]
     refine ⟨fs_ne_zero r hg b (s - 1) (inv_ne_zero hx), ⟨D, hD, ?_⟩⟩
-    rw [e3, cD_eq r b s hs x D hx]
+    rw [e3, cD_eq r b s x D hx]
   | some z =>
     simp only [qq, okG]
     have hj' : z ∈ G.rootSet s D := Finset.mem_insertNone.1 hj z rfl
@@ -309,7 +309,7 @@ theorem okG_qq (r : ℕ) {g : ℝ} (hg : 0 < g) (b s : ℕ) (hs : 2 ≤ s) (K : 
     have hb1 : b + (s - 1) = b + s - 1 := by omega
     have key := (GermFibreKernels.roots_std r g hg b s hs x⁻¹ (x ^ (s - 1) * D) z).2 (by
       rw [hz, inv_pow]; field_simp)
-    rw [hb1, cD_eq r b s hs x D hx] at key
+    rw [hb1, cD_eq r b s x D hx] at key
     rwa [e4, e5]
 
 end frame2
@@ -415,7 +415,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {Wp Wq : InfinitePla
 
 theorem kernel_PPt (hGN : GNSetC) (S : C.HidaSetting E Wp Wq) (p : ∀ v, KB.Pl (D.parOf S v) (Wp (S.pl v)) (Wq (S.pl v)))
     (f : ∀ v : Fin S.f, B.Mat S.G.k S.G.r → (Wq (S.pl v) →L[ℂ] Wp (S.pl v))) (χ : ℝ → ℝ) (n : ℕ) (v : Fin S.f)
-    (ε : ℝ) (hg : (0 : ℝ) < (S.g : ℝ)) (b s : ℕ) (hb : 1 ≤ b) (hs : 2 ≤ s) (hi : b + s - 1 ≤ S.G.r)
+    (ε : ℝ) (b s : ℕ) (hb : 1 ≤ b) (hs : 2 ≤ s) (hi : b + s - 1 ≤ S.G.r)
     (a : List C.Letter) (h : C.LPt) (hh : D.ptSize h = b - 1) (hloc : ∀ y ∈ h, 1 ≤ y.1 ∧ y.2 ≠ 0) (x Dc : ℂ)
     (hx : x ≠ 0) (hD : Dc ≠ 0) {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V]
     (Bf : V →ₗ[ℂ] V →ₗ⋆[ℂ] ℂ) (Φ : G.Mat (s - 2 + 2) → V) (Kc : Set ℂ)
@@ -497,7 +497,7 @@ theorem germRateLowB_of (hGP : GermPlace) (hGN : GNSetC) (hGC : GermConst) : Ger
   obtain ⟨z0, hz0⟩ := IsAlgClosed.exists_pow_nat_eq D (by omega : 0 < m + 2)
   rw [utOf_sub_mainD _ (m + 2) hs _ _ Vec h x D hD0]
   have hKcj := fun j hj => okG_qq S.G.r hg b (m + 2) hs K x D hx hD j hj
-  have hyy := kernel_PPt hGN S p f χ n v ε hg b (m + 2) hb hs hi a h hh hloc x D hx hD0 Bf Φ Kc hKcj hsz hker
+  have hyy := kernel_PPt hGN S p f χ n v ε b (m + 2) hb hs hi a h hh hloc x D hx hD0 Bf Φ Kc hKcj hsz hker
   have hle := norm_sum_le_of_form (KB.gN (PBL.setC S p (PBASM.cutSeq S p f χ n)) v ε (b + (m + 2) - 1) a) Vec hVec
     Bf Cp hCp hBf (Finset.insertNone (G.rootSet (m + 2) D))
     (aCo (PBL.setC S p (PBASM.cutSeq S p f χ n)) (m + 2)
@@ -510,7 +510,7 @@ theorem germRateLowB_of (hGP : GermPlace) (hGN : GNSetC) (hGC : GermConst) : Ger
     (fun j => lamP S v a (b + (m + 2) - 1) (PPt (m + 2) h x D j)) (hμ x D z0 hx hD0 hz0).1
     (fun z hz => (hμ x D z hx hD0 ((mem_rootSet4 (by omega)).1 hz)).2)
   have hT0 : GermFibreKernels.fs S.G.r (S.g : ℝ) b (m + 1) x⁻¹ ≠ 0 := fs_ne_zero _ hg _ _ (inv_ne_zero hx)
-  have hg' := hgerm _ _ hT0 ⟨D, hD, (cD_eq S.G.r b (m + 2) hs x D hx).symm⟩
+  have hg' := hgerm _ _ hT0 ⟨D, hD, (cD_eq S.G.r b (m + 2) x D hx).symm⟩
   have hle2 := hle.trans_eq (congrArg (fun X => Cp * ‖X‖) hcs)
   simp only [norm_smul, Complex.norm_real, Real.norm_eq_abs] at hle2
   have hnT : ‖GermFibreKernels.fs S.G.r (S.g : ℝ) b (m + 1) x⁻¹‖ = ‖GermFibreKernels.fs S.G.r (S.g : ℝ) b (m + 1) 1‖ * ‖x‖⁻¹ := by

@@ -388,11 +388,11 @@ theorem ex_syA (hch : IsChartG t x0 d F act tg uvec x) (i0 : t.PP.L.ι) (hi0 : (
       ![fun j => MvPolynomial.X ((1 : Fin 2), j), fun j => MvPolynomial.X ((0 : Fin 2), j)])
     (fun m => hpe m _) (fun m => frA hch i0 hi0 m) heg
     (fun m U _ h => by
-      try simp only [pe_pt, pt_sub, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, pt_X]
+      try simp only [pe_pt, pt_sub, Matrix.cons_val_zero, Matrix.cons_val_one, pt_X]
       try simp only [cφG]
       rw [prod_cube2_swap (fun p : jOG x0 d m 2 ⟶ t.G => h p.left)]
       erw [prod_cube2 t.G (fun p : jOG x0 d m 2 ⟶ t.G => h p.left)]
-      simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons]
+      simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
       apply ofMul_eq
       simp only [ofMul_mul, ofMul_inv, _root_.mul_one]
       abel)
@@ -481,13 +481,13 @@ theorem ex_adA (hch : IsChartG t x0 d F act tg uvec x) (i0 : t.PP.L.ι) (hi0 : (
         (val_pull hI _ _ _).trans ((congrArg (fun r => val (frA hch i0 hi0 0) r y I) (Category.id_comp _)).trans
           (val_fr_oneA hch i0 hi0 0 (T := jOG x0 d 0 2) _ (1 ≫ t.act.act a) 1
             (by rw [pt_sub]; simp only [Matrix.cons_val_zero]; rw [pt_act hch, hj0])
-            (by rw [pt_sub]; simp only [Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_zero]; rw [pt_X, hj0]) (Or.inr rfl) y I hI))
+            (by rw [pt_sub]; simp only [Matrix.cons_val_one, Matrix.cons_val_zero]; rw [pt_X, hj0]) (Or.inr rfl) y I hI))
       have hB : val (peG t x0 d x (frA hch i0 hi0) 0
           ![fun j => MvPolynomial.X ((0 : Fin 2), j), fun j => psIn d 0 ![1] (act (H.bar a) j)]) (𝟙 _) y I = 1 :=
         (val_pull hI _ _ _).trans ((congrArg (fun r => val (frA hch i0 hi0 0) r y I) (Category.id_comp _)).trans
           (val_fr_oneA hch i0 hi0 0 (T := jOG x0 d 0 2) _ 1 (1 ≫ t.act.act (H.bar a))
             (by rw [pt_sub]; simp only [Matrix.cons_val_zero]; rw [pt_X, hj0])
-            (by rw [pt_sub]; simp only [Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_zero]; rw [pt_act hch, hj0]) (Or.inl rfl)
+            (by rw [pt_sub]; simp only [Matrix.cons_val_one, Matrix.cons_val_zero]; rw [pt_act hch, hj0]) (Or.inl rfl)
             y I hI))
       rw [val_mul hI, hA1, hA2, hB, _root_.one_mul, _root_.mul_one] at e1
       rw [map_one]

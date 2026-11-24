@@ -137,8 +137,8 @@ theorem prodLeft_eq_maps {F A B E : Type} [Field F] [CommRing A] [CommRing B] [C
     rw [map_add (f := _), hx, hy, map_add (f := _), map_add (f := _)]
     rfl
 
-theorem main : ∀ {F A B E : Type} [inst : Field F] [inst_1 : CommRing A] [inst_2 : CommRing B]
-    [inst_3 : CommRing E] [inst_4 : Algebra F A] [inst_5 : Algebra F B] [inst_6 : Algebra F E]
+theorem main : ∀ {F A B E : Type} [Field F] [CommRing A] [CommRing B]
+    [CommRing E] [Algebra F A] [Algebra F B] [Algebra F E]
     (z : TensorProduct F (A × B) E),
     (Algebra.TensorProduct.map (AlgHom.fst F A B) (AlgHom.id F E) :
         TensorProduct F (A × B) E → TensorProduct F A E) z = (0 : TensorProduct F A E) →

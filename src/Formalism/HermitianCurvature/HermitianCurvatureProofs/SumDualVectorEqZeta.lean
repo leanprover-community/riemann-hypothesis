@@ -315,7 +315,7 @@ theorem rd_lin {f f₂ : Mx k r → E} (hf : SmoothLev k r i D f) (hf₂ : Smoot
   have h2 := rd_hasDeriv hf₂ hg hX
   exact (h1.add (h2.const_smul s)).deriv
 
-theorem smooth_zero : SmoothLev k r i D (fun _ => (0 : E)) := fun g₀ _ => ⟨Set.univ, fun _ => 0, isOpen_univ, Set.mem_univ _, contDiffOn_const, fun _ _ _ => rfl⟩
+theorem smooth_zero : SmoothLev k r i D (fun _ => (0 : E)) := fun _ _ => ⟨Set.univ, fun _ => 0, isOpen_univ, Set.mem_univ _, contDiffOn_const, fun _ _ _ => rfl⟩
 
 theorem smooth_add {f f₂ : Mx k r → E} (hf : SmoothLev k r i D f) (hf₂ : SmoothLev k r i D f₂) :
     SmoothLev k r i D (fun x => f x + f₂ x) := by
@@ -339,7 +339,7 @@ structure Good (k r : ℕ) (i : Fin (r + 1)) (D : Set (Mx k r)) (T : (Mx k r →
   lin : ∀ f f₂ (s : ℂ), SmoothLev k r i D f → SmoothLev k r i D f₂ → ∀ x ∈ Glev k r i ∩ D,
     T (fun y => f y + s • f₂ y) x = T f x + s • T f₂ x
 
-theorem good_id : Good k r i D (fun f : Mx k r → E => f) := ⟨fun f hf => hf, fun f f₂ h x hx => h x hx, fun f f₂ s _ _ x _ => rfl⟩
+theorem good_id : Good k r i D (fun f : Mx k r → E => f) := ⟨fun _ hf => hf, fun _ _ h x hx => h x hx, fun _ _ _ _ _ _ _ => rfl⟩
 
 theorem good_zero : Good k r i D (fun _ : Mx k r → E => fun _ => (0 : E)) := ⟨fun f _ => smooth_zero, fun _ _ _ _ _ => rfl, fun _ _ _ _ _ _ _ => by simp⟩
 
@@ -370,8 +370,8 @@ theorem Good.smul {T : (Mx k r → E) → Mx k r → E} (hT : Good k r i D T) (c
     rw [hT.lin f f₂ s hf hf₂ x hx, smul_add, smul_comm c s]
 
 theorem good_rd (hD : IsOpen D) {X : Mx k r} (hX : inLieLev k r i X) :
-    Good k r i D (fun f : Mx k r → E => RdV X f) := ⟨fun f hf => rd_smooth hf hX, fun f f₂ h x hx => rd_loc hD h hx hX,
-    fun f f₂ s hf hf₂ x hx => rd_lin hf hf₂ s hx hX⟩
+    Good k r i D (fun f : Mx k r → E => RdV X f) := ⟨fun _ hf => rd_smooth hf hX, fun _ _ h _ hx => rd_loc hD h hx hX,
+    fun _ _ s hf hf₂ _ hx => rd_lin hf hf₂ s hx hX⟩
 
 theorem good_eh (hD : IsOpen D) (a b : Fin (mdim k r i)) :
     Good k r i D (fun f : Mx k r → E => EH k r (posL k r i a) (posL k r i b) f) := Good.add (good_rd hD (hpart_lev i a b).1) (Good.smul (good_rd hD (hpart_lev i a b).2) Complex.I)

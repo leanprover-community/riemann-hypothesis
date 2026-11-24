@@ -282,7 +282,7 @@ theorem dL {d : ℝ} (hd : d ≤ A * (q0 + r * (TO + D2 + 2 * r))) : d ≤ 2 * A
 
 end Rn
 
-theorem absorb {k b c : ℝ} (hk : 1 ≤ k) (hb : 10 ^ 100 ≤ b) (hc0 : 0 ≤ c) (hc : c ≤ 10 ^ 100) {i j : ℕ} (hi : i ≤ 8)
+theorem absorb {k b c : ℝ} (hk : 1 ≤ k) (hb : 10 ^ 100 ≤ b) (hc : c ≤ 10 ^ 100) {i j : ℕ} (hi : i ≤ 8)
     (hj : j + 1 ≤ 8) : c * k ^ i * b ^ j ≤ (k * b) ^ 8 := by
   have hb1 : (1 : ℝ) ≤ b := le_trans (by norm_num) hb
   have hk0 : (0 : ℝ) ≤ k := by linarith
@@ -333,7 +333,7 @@ theorem h3a {d q : ℝ} (hd0 : 0 ≤ d) (hd : d ≤ 2 * A * b) (hq : (k * b) ^ 8
   have s3 : sb * sb * (16 * k ^ 4 * b ^ 2) = 16 * k ^ 4 * b ^ 3 := by
     rw [h.sb_sq]; ring
   have s4 : 16 * k ^ 4 * b ^ 3 ≤ (k * b) ^ 8 :=
-    absorb h.k1 h.toBs.b_ge (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+    absorb h.k1 h.toBs.b_ge (by norm_num) (by norm_num) (by norm_num)
   linarith
 
 theorem r_le : r ≤ k ^ 2 := by linarith [sq_nonneg k, h.rA, h.Ak]
@@ -357,7 +357,7 @@ theorem h3b {d q : ℝ} (hd0 : 0 ≤ d) (hd : d ≤ 2 * A * b) (hq : (k * b) ^ 8
   have s4 : TO * (1250 * r) * rd ^ 2 * PP * d ^ 2 ≤ b * (1250 * k ^ 2) * b * b * (16 * k ^ 4 * b ^ 2) :=
     mul_le_mul s3 hd2 (sq_nonneg d) n3
   have s5 : 20000 * k ^ 6 * b ^ 5 ≤ (k * b) ^ 8 :=
-    absorb h.k1 B.b_ge (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+    absorb h.k1 B.b_ge (by norm_num) (by norm_num) (by norm_num)
   have s6 : b * (1250 * k ^ 2) * b * b * (16 * k ^ 4 * b ^ 2) = 20000 * k ^ 6 * b ^ 5 := by ring
   linarith
 
@@ -379,7 +379,7 @@ theorem h3e {d q fm : ℝ} (hd0 : 0 ≤ d) (hd : d ≤ 2 * A * b) (hq : (k * b) 
   have t4 : fm * (rd ^ 2) ^ 2 * (rd ^ 2 * PP * d ^ 2) ≤ k ^ 4 * b * (b * b * (16 * k ^ 4 * b ^ 2)) :=
     mul_le_mul t1 t3 (mul_nonneg (mul_nonneg (sq_nonneg rd) hPP0) (sq_nonneg d)) (mul_nonneg (by positivity) hb0)
   have t5 : 32 * k ^ 8 * b ^ 5 ≤ (k * b) ^ 8 :=
-    absorb h.k1 B.b_ge (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+    absorb h.k1 B.b_ge (by norm_num) (by norm_num) (by norm_num)
   have t6 : 2 * (k ^ 4 * b * (b * b * (16 * k ^ 4 * b ^ 2))) = 32 * k ^ 8 * b ^ 5 := by ring
   linarith
 
@@ -394,7 +394,7 @@ theorem h3f {d q : ℝ} (hd0 : 0 ≤ d) (hd : d ≤ 2 * A * b) (hq : (k * b) ^ 8
   have hb2 : (1 : ℝ) ≤ b ^ 2 := one_le_pow₀ hb1
   have h4 : 1 * 1 ≤ k ^ 2 * b ^ 2 := mul_le_mul hk1 hb2 zero_le_one (by linarith)
   have h5 : 10 * k ^ 2 * b ^ 2 ≤ (k * b) ^ 8 :=
-    absorb h.k1 B.b_ge (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+    absorb h.k1 B.b_ge (by norm_num) (by norm_num) (by norm_num)
   linarith [hT]
 
 theorem g_gt {s q : ℝ} (hs : s ≤ 4 * A * b) (hq : (k * b) ^ 8 ≤ q) : 2 * s + 2 < q := by
@@ -404,7 +404,7 @@ theorem g_gt {s q : ℝ} (hs : s ≤ 4 * A * b) (hq : (k * b) ^ 8 ≤ q) : 2 * s
   have hk : (64 : ℝ) ≤ k ^ 2 := by linarith [pow_le_pow_left₀ (by norm_num) h.k8 2]
   have h2 : 64 * 1 ≤ k ^ 2 * b := mul_le_mul hk hb1 zero_le_one (by linarith)
   have h3 : 18 * k ^ 2 * b ^ 1 ≤ (k * b) ^ 8 :=
-    absorb h.k1 B.b_ge (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+    absorb h.k1 B.b_ge (by norm_num) (by norm_num) (by norm_num)
   have h4 : b ^ 1 = b := pow_one b
   rw [h4] at h3
   linarith

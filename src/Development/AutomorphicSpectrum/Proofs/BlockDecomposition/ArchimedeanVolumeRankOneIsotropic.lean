@@ -584,7 +584,7 @@ section Family
 variable {V X Y : Type} [MeasurableSpace V] [TopologicalSpace V] [TopologicalSpace X] [MeasurableSpace X]
   {μ : Measure V} {ν : Measure X} {f : V → Y} {g : V → X} {ι : X → Y} {U : Set V} {fib : X → Measure V}
 
-theorem lintegral_slice (h : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsFibreFamily μ f ι U ν univ fib) (hUm : MeasurableSet U)
+theorem lintegral_slice (h : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsFibreFamily μ f ι U ν univ fib)
     (hι : Function.Injective ι) (hg : Measurable g) (hfg : ∀ v, f v = ι (g v)) {w : V → ℝ≥0∞}
     (hw : Measurable w) (hw0 : ∀ v, v ∉ U → w v = 0) {A : Set X} (hA : MeasurableSet A) :
     ∫⁻ v in f ⁻¹' (ι '' A), w v ∂μ = ∫⁻ s in A, ∫⁻ v, w v ∂(fib s) ∂ν := by
@@ -623,7 +623,7 @@ theorem lintegral_slice_test (h : Formalism.MainNotions.GlobalTheoryTheory.Genus
   have hw0 : ∀ v, v ∉ U → ENNReal.ofReal (ψ v) = 0 := by
     intro v hv
     rw [image_eq_zero_of_notMem_tsupport (fun h' => hv (hψU h')), ENNReal.ofReal_zero]
-  rw [lintegral_slice (w := fun v => ENNReal.ofReal (ψ v)) h hUm hι hg hfg
+  rw [lintegral_slice (w := fun v => ENNReal.ofReal (ψ v)) h hι hg hfg
     (ENNReal.measurable_ofReal.comp hψ.measurable) hw0 hA]
   refine lintegral_congr fun s => ?_
   rw [ofReal_integral_eq_lintegral_ofReal ((h.2.2 ψ hψ hψc hψU).1 s (Set.mem_univ s))
@@ -827,7 +827,7 @@ lemma volume_near_le {a : ℕ} {Q : (P → ι → ℝ) → (P → ℝ)} {C : ℝ
     (hbox : ∀ t : P → ℝ, (∀ w, 0 < t w) → ∀ U : Set (P → ℝ), MeasurableSet U →
       (volume : Measure (P → ι → ℝ)) (Q ⁻¹' U ∩ boxR t) ≤
         (C : ℝ≥0∞) * ENNReal.ofReal (∏ w, t w ^ a) * volume U)
-    {δ : ℝ} (hδ : 0 < δ) (hδ1 : δ ≤ 1) (v : P) {U : Set (P → ℝ)} (hU : MeasurableSet U)
+    {δ : ℝ} (hδ : 0 < δ) (v : P) {U : Set (P → ℝ)} (hU : MeasurableSet U)
     (j : ℕ) :
     (volume : Measure (P → ι → ℝ)) ((Q ⁻¹' U ∩ {x | ‖x v‖ < δ}) ∩ boxR (fun _ => (2 : ℝ) ^ j)) ≤
       ((C : ℝ≥0∞) * ENNReal.ofReal (δ ^ a) * volume U) *
@@ -926,7 +926,7 @@ theorem tail_small : ∀ (P ι : Type) [Fintype P] [Fintype ι] (a : ℕ), 0 < a
       (hQ hU).inter (measurableSet_lt (continuous_apply v).norm.measurable measurable_const)
     have := setLIntegral_le_of_dyadic f hf0 M C1 hC1n _ hT (fun x _ => hC1 x)
       ((C : ℝ≥0∞) * ENNReal.ofReal (δ ^ a) * volume U)
-      (fun j => by rw [hM]; exact volume_near_le hbox hδ hδ1 v hU j)
+      (fun j => by rw [hM]; exact volume_near_le hbox hδ v hU j)
     refine this.trans (le_of_eq ?_)
     rw [hA1, hCc, mul_assoc (2 * C1 * 2 ^ (M + 1)) c,
       ENNReal.ofReal_mul (by positivity : (0 : ℝ) ≤ 2 * C1 * 2 ^ (M + 1)),

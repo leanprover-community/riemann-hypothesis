@@ -288,7 +288,6 @@ theorem exists_primes (hdeg : Module.finrank F E = 2) {σ : E →ₐ[F] E}
     fun a => Iff.rfl, fun a => Iff.rfl⟩
 
 theorem map_eq_primeOf (p : E ⊗[F] v.adicCompletion F →+* v.adicCompletion F)
-    (hp : ∀ x ∈ intV E v, Valued.v (p x) ≤ 1)
     (h1 : ∀ a : v.adicCompletion F, p ((1 : E) ⊗ₜ[F] a) = a)
     (q : E ⊗[F] v.adicCompletion F →+* v.adicCompletion F)
     (hq : ∀ x ∈ intV E v, Valued.v (q x) ≤ 1)
@@ -352,12 +351,12 @@ theorem map_primes {σ : E →ₐ[F] E} {P Pb : HeightOneSpectrum (𝓞 E)}
   have hm : ∀ a b : v.adicCompletion F, Valued.v a ≤ 1 → Valued.v b ≤ 1 → s.symm (a, b) ∈ intV E v :=
     fun a b ha hb => (h3 _).2 (by rw [s.apply_symm_apply]; exact ⟨ha, hb⟩)
   constructor
-  · refine map_eq_primeOf _ hp (fun a => by rw [e1, h1]) (GlobalTheory.IndefiniteRowSideFullHecke.SplittingProjection.prPbar s) hq
+  · refine map_eq_primeOf _ (fun a => by rw [e1, h1]) (GlobalTheory.IndefiniteRowSideFullHecke.SplittingProjection.prPbar s) hq
       (fun a b ha hb => ⟨s.symm (a, b), hm a b ha hb, ?_, ?_⟩)
       (fun x y h h' => s.injective (Prod.ext h h')) P Pb hne hP hQ
     · rw [e1, s.apply_symm_apply]
     · rw [e2, s.apply_symm_apply]
-  · refine map_eq_primeOf _ hq (fun a => by rw [e2, h1]) (GlobalTheory.IndefiniteRowSideFullHecke.SplittingProjection.prP s) hp
+  · refine map_eq_primeOf _ (fun a => by rw [e2, h1]) (GlobalTheory.IndefiniteRowSideFullHecke.SplittingProjection.prP s) hp
       (fun a b ha hb => ⟨s.symm (b, a), hm b a hb ha, ?_, ?_⟩)
       (fun x y h h' => s.injective (Prod.ext h' h)) Pb P hne.symm hQ hP
     · rw [e2, s.apply_symm_apply]

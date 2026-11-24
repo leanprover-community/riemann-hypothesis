@@ -95,7 +95,7 @@ def conjN (N : Subgroup G) (s : K →* G) (hc : ∀ n ∈ N, ∀ h, s h * n * (s
 theorem conjN_apply (N : Subgroup G) (s : K →* G) (hc : ∀ n ∈ N, ∀ h, s h * n * (s h)⁻¹ ∈ N) (g : K) (n : N) :
     ((conjN N s hc g n : N) : G) = s g * n * (s g)⁻¹ := rfl
 
-theorem conjN_null (N : Subgroup G) (s : K →* G) (hN : IsClosed (N : Set G)) (hs : Continuous s)
+theorem conjN_null (N : Subgroup G) (s : K →* G) (hN : IsClosed (N : Set G))
     (hc : ∀ n ∈ N, ∀ h, s h * n * (s h)⁻¹ ∈ N) (ν : Measure N) [ν.IsHaarMeasure] (g : K) {A : Set N}
     (hA : ν A = 0) : ν ((conjN N s hc g) ⁻¹' A) = 0 := by
   haveI : LocallyCompactSpace N := hN.locallyCompactSpace
@@ -200,7 +200,7 @@ theorem isFundamentalDomain_semi (N : Subgroup G) (s : K →* G) (hN : IsClosed 
     have hNγ : ∀ γ : ΓK, ∀ᵐ n ∂ν, ∃ m : ΓG.subgroupOf N, m • conjN N s hc γ n ∈ 𝓝 := by
       intro γ
       rw [ae_iff]
-      exact conjN_null N s hN hs hc ν γ (ae_iff.1 h𝓝.ae_covers)
+      exact conjN_null N s hN hc ν γ (ae_iff.1 h𝓝.ae_covers)
     have hN' : ∀ᵐ p ∂(μ.prod ν), ∀ γ : ΓK, ∃ m : ΓG.subgroupOf N, m • conjN N s hc γ p.2 ∈ 𝓝 :=
       Measure.quasiMeasurePreserving_snd.ae (ae_all_iff.2 hNγ)
     filter_upwards [hH, hN'] with p hp1 hall
@@ -263,7 +263,7 @@ theorem isFundamentalDomain_semi (N : Subgroup G) (s : K →* G) (hN : IsClosed 
           group
         rw [heq]; exact h2
       · rw [measure_preimage_mul]
-        exact conjN_null N s hN hs hc ν g⁻¹ hZ
+        exact conjN_null N s hN hc ν g⁻¹ hZ
     · refine mul_eq_zero_of_left ?_ _
       have hne' : (⟨g, hgK⟩ : ΓK) ≠ ⟨g', hgK'⟩ := fun h => hgg (congrArg Subtype.val h)
       have h5 : μ (((⟨g, hgK⟩ : ΓK) • 𝓕) ∩ ((⟨g', hgK'⟩ : ΓK) • 𝓕)) = 0 := h𝓕.aedisjoint hne'

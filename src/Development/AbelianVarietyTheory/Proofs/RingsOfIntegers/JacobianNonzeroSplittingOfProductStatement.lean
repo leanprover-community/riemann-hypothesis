@@ -648,7 +648,7 @@ section -- clump:auto
 
 namespace GlobalTheory.SmoothEvaluation
 
-theorem main : ∀ {A R : Type} [inst : CommRing A] [inst_1 : CommRing R] [inst_2 : Algebra A R] {r : ℕ} (b : Fin r → R), (∀ (f : R), ∃! cf : Fin r → A, f = ∑ i : Fin r, (Algebra.algebraMap A R : A → R) (cf i) * b i) → ∃ (e : Module.Basis (Fin r) A R), ∀ (i : Fin r), (e : Fin r → R) i = b i := by
+theorem main : ∀ {A R : Type} [CommRing A] [CommRing R] [Algebra A R] {r : ℕ} (b : Fin r → R), (∀ (f : R), ∃! cf : Fin r → A, f = ∑ i : Fin r, (Algebra.algebraMap A R : A → R) (cf i) * b i) → ∃ (e : Module.Basis (Fin r) A R), ∀ (i : Fin r), (e : Fin r → R) i = b i := by
   intro A R _ _ _ r b h
   have hli : LinearIndependent A b := by
     rw [Fintype.linearIndependent_iff]
@@ -800,7 +800,7 @@ theorem map_subst_eq_zero {k σ τ Ω : Type} [CommRing k] [CommRing Ω] [Algebr
 
 theorem left_inv_of_right {O : Type} [CommRing O] [IsDomain O] {n : ℕ} (p q s : Matrix (Fin n) (Fin n) O) (c : O)
     (hc : c ≠ 0) (h1 : s * (p * q) = c • (1 : Matrix (Fin n) (Fin n) O))
-    (h2 : (p * q) * s = c • (1 : Matrix (Fin n) (Fin n) O)) : (q * s) * p = c • (1 : Matrix (Fin n) (Fin n) O) := by
+    : (q * s) * p = c • (1 : Matrix (Fin n) (Fin n) O) := by
   have hd : q.det ≠ 0 := by
     intro h
     have := congrArg Matrix.det h1
@@ -869,7 +869,7 @@ end
 theorem sum_shift_kerM_mul : ∀ (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [IsAdicComplete (maximalIdeal V) V] [CharZero V] (d : ℕ) (O : Type) [CommRing O] [StarRing O] (B : FB V d O), FinHt B → ∀ (n : ℕ) (p q s : Matrix (Fin n) (Fin n) O) (N : ℕ), 1 ≤ N → s * (p * q) = (N : O) • (1 : Matrix (Fin n) (Fin n) O) → (p * q) * s = (N : O) • (1 : Matrix (Fin n) (Fin n) O) → IsDomain O → (N : O) ≠ 0 → jacM B (p * q) ≠ 0 → SplitKer B (p * q) → ∀ f : PS V n d, (∀ α ∈ kerM B q, shift B.G.F α f = f) → (kerM B (p * q)).Finite ∧ ∃ g : PS V n d, ∑ᶠ α ∈ kerM B (p * q), shift B.G.F α f = MvPowerSeries.C (((kerM B q).ncard : V) * jacM B p) * pullM B (p * q) g := by
   intro V _ _ _ _ _ d O _ _ B hB n p q s N hN h1 h2 hO hN0 hj hsp f hf
   have hq : (s * p) * q = (N : O) • (1 : Matrix (Fin n) (Fin n) O) := by rw [_root_.mul_assoc, h1]
-  have hp := left_inv_of_right p q s _ hN0 h1 h2
+  have hp := left_inv_of_right p q s _ hN0 h1
   have hjm := jacM_mul B p q
   have hjp : jacM B p ≠ 0 := fun h => hj (by rw [hjm, h, zero_mul])
   have hjq : jacM B q ≠ 0 := fun h => hj (by rw [hjm, h, mul_zero])

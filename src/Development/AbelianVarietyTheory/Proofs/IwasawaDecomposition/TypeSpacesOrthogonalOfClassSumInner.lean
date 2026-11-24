@@ -114,7 +114,7 @@ theorem pos_zero (hB : GlobalTheory.TypeOrthogonality.Good ρ B) {x : GAf L n �
 
 theorem isoTyp_orth (hB : GlobalTheory.TypeOrthogonality.Good ρ B) (hfin : ∀ N : ℕ, 0 < N → FiniteDimensional ℂ ↥(Submodule.span ℂ
       {f | f ∈ NG.AFall L n ρ ∧ ∀ κ, NG.Cong L n N κ → ∀ g, f (g * κ) = f g}))
-    {S S' : Submodule ℂ (GAf L n → W)} (hS : NG.IsIrrRep ρ S) (hS' : NG.IsIrrRep ρ S')
+    {S S' : Submodule ℂ (GAf L n → W)} (hS' : NG.IsIrrRep ρ S')
     (hne : ¬ NG.IsoRep S S') : ∀ x ∈ NG.isoTyp ρ S, ∀ y ∈ NG.isoTyp ρ S', B x y = 0 := by
   intro x hx y hy
   have step : ∀ U, NG.IsIrrRep ρ U → NG.IsoRep S U → ∀ a ∈ U, ∀ b ∈ NG.isoTyp ρ S', B a b = 0 := by
@@ -278,7 +278,7 @@ theorem typeSp_decomp : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (
     rintro q ⟨-, S, hS, rfl⟩ q' ⟨-, S', hS', rfl⟩ hne x hx y hy
     by_cases hi : NG.IsoRep S S'
     · exact absurd (by rw [isoTyp_eq hS.1.stable hi]) hne
-    · exact isoTyp_orth hG hfin hS hS' hi x hx.1 y hy.1
+    · exact isoTyp_orth hG hfin hS' hi x hx.1 y hy.1
   have hPfin : Finite P := by
     let t : P → Submodule ℂ V := fun q => (q : Submodule ℂ (GAf L n → a.W)).comap V.subtype
     have hind : iSupIndep t := by
@@ -311,10 +311,10 @@ theorem typeSp_decomp : ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (
     obtain ⟨x, hx, hx0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hne
     have hxi : x ∈ (i : Submodule ℂ (GAf L n → a.W)) := hx
     rw [hSq i] at hxi
-    exact hx0 (pos_zero hG (hVA hx.2) (isoTyp_orth hG hfin (hSirr i) hS' hni x hxi.1 x hx.1))
+    exact hx0 (pos_zero hG (hVA hx.2) (isoTyp_orth hG hfin hS' hni x hxi.1 x hx.1))
   have hne : ∀ i : P, NG.isoTyp a.ρ (S i) ⊓ V ≠ ⊥ := fun i => by rw [← hSq i]; exact i.2.1
   have horth : ∀ i j : P, i ≠ j → ∀ x ∈ NG.isoTyp a.ρ (S i), ∀ y ∈ NG.isoTyp a.ρ (S j), B x y = 0 :=
-    fun i j hij => isoTyp_orth hG hfin (hSirr i) (hSirr j) (fun h => hij (hinj i j h))
+    fun i j hij => isoTyp_orth hG hfin (hSirr j) (fun h => hij (hinj i j h))
   have hindep : iSupIndep fun i : P => NG.isoTyp a.ρ (S i) :=
     indep_of_orth (fun x => B x) _ (fun i x hx h0 => pos_zero hG (isoTyp_le _ hx) h0) horth
   refine ⟨P, hPfin, S, hSirr, hinj, hcover, hne, hindep, ?_⟩

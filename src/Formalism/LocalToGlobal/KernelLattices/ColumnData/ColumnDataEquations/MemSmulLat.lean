@@ -179,7 +179,7 @@ theorem pull_core {B : Cd.Base D cc δ} (hL : B.LatAll) {N N' : ℕ} (φ : Taylo
       (Ker.formV (TaylorLogMetric.area (TaylorLogMetric.tor0 D cc δ).abelian₂) D.what₂.Tau N N') (φ : TaylorLogMetric.VC D N N' →ₗ[ℂ] TaylorLogMetric.VC D N N'))
     (hα : ∀ x, TaylorLogMetric.al D (TaylorLogMetric.tor0 D cc δ) (φ x) = TaylorLogMetric.al D (TaylorLogMetric.tor0 D cc δ) x)
     {L L₁ M M₁ : Submodule (𝓞 D.host.E) (Fin N → D.host.E)} {L' L₁' M' M₁' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)}
-    (a1 : TaylorLogMetric.admitted D N N' L L') (a2 : TaylorLogMetric.admitted D N N' L₁ L₁')
+    (a2 : TaylorLogMetric.admitted D N N' L₁ L₁')
     (i1 : imgLat (φ : TaylorLogMetric.VC D N N' →ₗ[ℂ] TaylorLogMetric.VC D N N') (TaylorLogMetric.La D (TaylorLogMetric.tor0 D cc δ) L L') = TaylorLogMetric.La D (TaylorLogMetric.tor0 D cc δ) M M')
     (i2 : imgLat (φ : TaylorLogMetric.VC D N N' →ₗ[ℂ] TaylorLogMetric.VC D N N') (TaylorLogMetric.La D (TaylorLogMetric.tor0 D cc δ) L₁ L₁') =
       TaylorLogMetric.La D (TaylorLogMetric.tor0 D cc δ) M₁ M₁')
@@ -229,6 +229,6 @@ theorem pullIop_of {B : Cd.Base D cc δ} (hL : B.LatAll) : PullIop D B.tor := by
   simp only [Cd.Base.tor, pull_eq (cc := cc) (δ := δ) (γ : Matrix (Fin N) (Fin N) D.host.E)
     (γ' : Matrix (Fin N') (Fin N') D.host.E) h1 h2 h1' h2']
   exact pull_core hL (phiL _ _ h1 h2 h1' h2') (phiL_isom _ _ h1 h2 h1' h2' _) (al_phi _ _ h1 h2 h1' h2')
-    ⟨hN, hN', hSL, hSL'⟩ ⟨hN, hN', hSL₁, hSL₁'⟩ (la_img _ _ h1 h2 h1' h2' L L') (la_img _ _ h1 h2 h1' h2' L₁ L₁') G hG
+    ⟨hN, hN', hSL₁, hSL₁'⟩ (la_img _ _ h1 h2 h1' h2' L L') (la_img _ _ h1 h2 h1' h2' L₁ L₁') G hG
 
 end Formalism.L2.Ker.Cd.PairingIndexBounds.Eq

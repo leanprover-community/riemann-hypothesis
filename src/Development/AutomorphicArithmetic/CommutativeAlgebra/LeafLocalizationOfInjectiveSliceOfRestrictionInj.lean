@@ -896,7 +896,7 @@ private def coneM {B : Scheme.{0}} {G₁ G₂ G₁' G₂' : B.Etale ⥤ Scheme.{
       (rmap_comp' _ _ _ _ _ _ _ _ c2 (cc U)).symm)
 
 private theorem pm_y {B Y Y' U V : Scheme.{0}} (p : Y ⟶ B) (g : Y' ⟶ Y) (x : U ⟶ B) (y : V ⟶ B) (a : U ⟶ V)
-    (h : x = a ≫ y) (c₁ c₂ c₃ c₄ c₅ c₆ c₇ c₈) :
+    (c₁ c₂ c₃ c₄ c₅ c₆ c₇ c₈) :
     pullback.map (g ≫ p) x (g ≫ p) y (𝟙 Y') a (𝟙 B) c₁ c₂ ≫ pullback.map (g ≫ p) y p y g (𝟙 V) (𝟙 B) c₃ c₄ =
       pullback.map (g ≫ p) x p x g (𝟙 U) (𝟙 B) c₅ c₆ ≫ pullback.map p x p y (𝟙 Y) a (𝟙 B) c₇ c₈ := by
   apply pullback.hom_ext <;> simp [pullback.map]
@@ -911,7 +911,7 @@ private theorem pm_w {A₁ A₂ A₃ A₄ W B : Scheme.{0}} (s₁ : A₁ ⟶ B) 
 
 private theorem mY_nat {B Y Y' : Scheme.{0}} (p : Y ⟶ B) (g : Y' ⟶ Y) {U V : B.Etale} (a : U ⟶ V) :
     resY (g ≫ p) a ≫ mY p g V = mY p g U ≫ resY p a :=
-  pm_y p g U.hom V.hom a.left (by simpa using a.w.symm) _ _ _ _ _ _ _ _
+  pm_y p g U.hom V.hom a.left _ _ _ _ _ _ _ _
 
 private theorem bY_nat {B Y : Scheme.{0}} (p : Y ⟶ B) {U V : B.Etale} (a : U ⟶ V) :
     resY p a ≫ toBY p V = toBY p U ≫ a.left :=

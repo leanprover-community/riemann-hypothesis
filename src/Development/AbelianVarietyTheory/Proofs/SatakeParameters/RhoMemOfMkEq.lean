@@ -487,7 +487,7 @@ namespace GlobalTheory.Hk3.ShiftPhase
 open Matrix
 
 theorem conjT_mul_int {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))] {a b : ℕ} (σ : L →+* L)
-    (hσσ : ∀ x, σ (σ x) = x) (hσ : ∀ x, Valued.v (σ x) = Valued.v x)
+    (hσ : ∀ x, Valued.v (σ x) = Valued.v x)
     (C : Matrix (Fin a) (Fin a) L) (hC : ∀ i j, σ (C i j) = - C j i)
     (x : Matrix (Fin a) (Fin b) L) (hCx : ∀ i j, (C * x) i j ∈ Formalism.UG.intL L) :
     ∀ i j, (Matrix.transpose (x.map σ) * C) i j ∈ Formalism.UG.intL L := by
@@ -528,7 +528,7 @@ theorem shift : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ
   set X := Matrix.transpose (x.map σ) with hX
   set Y := Matrix.transpose (l.map σ) with hY
   have hYi : ∀ i j, Y i j ∈ Formalism.UG.intL L := conjT_int σ hσv l hl
-  have hXC : ∀ i j, (X * C) i j ∈ Formalism.UG.intL L := conjT_mul_int σ hσσ hσv C hC x hCx
+  have hXC : ∀ i j, (X * C) i j ∈ Formalism.UG.intL L := conjT_mul_int σ hσv C hC x hCx
   have hd : Matrix.trace (C * (x * A * X)) - Matrix.trace (C * ((x - l) * A * (X - Y)))
       = Matrix.trace (C * x * A * Y) + Matrix.trace (X * C * l * A) - Matrix.trace (C * l * A * Y) := by
     have h3 : Matrix.trace (C * (l * A * X)) = Matrix.trace (X * C * l * A) := by

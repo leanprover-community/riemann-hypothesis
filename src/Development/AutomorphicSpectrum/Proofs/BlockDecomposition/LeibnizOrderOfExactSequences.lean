@@ -307,7 +307,7 @@ theorem pgProj_zero_fst (i : ℕ) (h : HPG k i 0) : (pgProj k i 0 h).1 = (h : Mi
   rw [ePG_zero, ePG_zero]
 
 instance subsingleton_GL_zero : Subsingleton (GL (Fin 0) k) :=
-  ⟨fun a b => Units.ext (Subsingleton.elim _ _)⟩
+  ⟨fun _ _ => Units.ext (Subsingleton.elim _ _)⟩
 
 theorem nonempty_prodPG_zero {i : ℕ} {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
     (ρ : Representation ℂ (Mir k i) V) (σ : Representation ℂ (GL (Fin 0) k) W) (hρ : IsSmooth ρ) :
@@ -662,7 +662,7 @@ theorem nonempty_equiv_cInd {G V W : Type} [Group G] [TopologicalSpace G] [IsTop
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-instance subsingleton_GL0 : Subsingleton (GL (Fin 0) k) := ⟨fun x y => Units.ext (Subsingleton.elim _ _)⟩
+instance subsingleton_GL0 : Subsingleton (GL (Fin 0) k) := ⟨fun _ _ => Units.ext (Subsingleton.elim _ _)⟩
 
 theorem absPow_zero_apply (s : ℂ) (hs : s = 0) (x : kˣ) : absPow k s x = 1 := by
   subst hs

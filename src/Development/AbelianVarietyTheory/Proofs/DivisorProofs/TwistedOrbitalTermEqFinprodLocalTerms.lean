@@ -109,7 +109,7 @@ theorem twTerm_eq_finprod : ∀ {X V : Type} {Y : V → Type} [Group X] [Topolog
     simp only [hloc]
     exact _root_.GlobalTheory.RelIdxRestr.relIndex_iInf_comap pf K hX (fun v => cptPart (twCent (θv v) (pf v δ)))
       (fun v => (K v).map (MulAut.conj (pf v x)).toMonoidHom)
-      (fun v => by rw [← hloc]; exact (hwt v (pf v x)).2) hCH
+      hCH
   let u : ∀ v, K v → ℂ := fun v k => fv v ((pf v x * k)⁻¹ * pf v δ * θv v (pf v x * k))
   have hfun : (fun k : (⨅ v, (K v).comap (pf v) : Subgroup X) => f ((x * k)⁻¹ * δ * θ (x * k))) =
       fun k : (⨅ v, (K v).comap (pf v) : Subgroup X) => ∏ᶠ v, u v ⟨pf v k, Subgroup.mem_iInf.1 k.2 v⟩ := by

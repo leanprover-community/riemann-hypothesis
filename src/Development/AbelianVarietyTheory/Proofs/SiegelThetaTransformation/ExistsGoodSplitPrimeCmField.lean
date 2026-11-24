@@ -221,7 +221,7 @@ open Matrix Complex NumberField Filter Topology in
 open scoped ComplexConjugate ComplexOrder Real Classical in
 open Polynomial in
 theorem _root_.GlobalTheory.SW.SplitPrime.exists_degree_one {E : Type} [Field E] [NumberField E] (θ : 𝓞 E)
-    (hθ : θ ≠ 0) (d : ℤ) (hd : d ≠ 0) (hden : ∀ a : 𝓞 E, ∃ g : ℤ[X], (d : 𝓞 E) * a = aeval θ g)
+    (d : ℤ) (hd : d ≠ 0) (hden : ∀ a : 𝓞 E, ∃ g : ℤ[X], (d : 𝓞 E) * a = aeval θ g)
     (N : ℤ) (hN : N ≠ 0) :
     ∃ P : Ideal (𝓞 E), P.IsMaximal ∧ (N : 𝓞 E) ∉ P ∧
       Function.Surjective (Int.castRingHom (𝓞 E ⧸ P)) := by
@@ -329,7 +329,7 @@ theorem _root_.GlobalTheory.SW.SplitPrime.exists_goodPrime : ∀ (E : Type) [Fie
     refine mul_ne_zero (mul_ne_zero (by exact_mod_cast hm.ne')
       (mul_ne_zero two_ne_zero (discr_ne_zero E))) ?_
     rw [Ne, Algebra.norm_eq_zero_iff]; exact hβ
-  obtain ⟨P, hP, hNP, hs⟩ := _root_.GlobalTheory.SW.SplitPrime.exists_degree_one θ hθ d hd hden Nv hNv0
+  obtain ⟨P, hP, hNP, hs⟩ := _root_.GlobalTheory.SW.SplitPrime.exists_degree_one θ d hd hden Nv hNv0
   have hq := _root_.GlobalTheory.SW.SplitPrime.absNorm_prime P hP hs
   have hqN : ¬ ((Ideal.absNorm P : ℕ) : ℤ) ∣ Nv := by
     rintro ⟨k, hk⟩

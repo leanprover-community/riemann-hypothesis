@@ -655,7 +655,7 @@ namespace GlobalTheory.LoopC.PerpFlags
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {S : HSpace E} {r : ℕ}
 
-theorem orth_anti {U U' : Submodule E S.V} (h : U ≤ U') : orth S U' ≤ orth S U := fun v hv =>
+theorem orth_anti {U U' : Submodule E S.V} (h : U ≤ U') : orth S U' ≤ orth S U := fun _ hv =>
   (_root_.Formalism.MainNotions.mem_orth_iff _ _).2 fun x hx => (_root_.Formalism.MainNotions.mem_orth_iff _ _).1 hv x (h hx)
 
 theorem xplus_le {T : E} {Λ : Submodule (𝓞 E) S.V} (hΛ : Submodule.IsFullLattice E Λ) (F : LFlag S r T)

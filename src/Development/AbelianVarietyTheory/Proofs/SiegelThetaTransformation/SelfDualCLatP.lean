@@ -210,7 +210,7 @@ theorem sum_eq_herm (T : HSp D) (x y : Fin T.rank → D.host.E) :
   ring
 
 theorem selfDualC_latP {T : HSp D} {X : Data D.host.E T.rank} (hG : X.Gm = T.gramᵀ) (hk : X.κ0 = 2 * D.host.xi0)
-    {L : Lt D.host.E T.rank} (hL : SelfD X L) (hsp : Submodule.span D.host.E (L : Set (Fin T.rank → D.host.E)) = ⊤) :
+    {L : Lt D.host.E T.rank} (hL : SelfD X L) :
     IsSelfDualC T (lattice₂ D L) := by
   have hP := Formalism.IndefR.Fin.factPrincipalDatum
   have hF := dual_of_selfD hk hL
@@ -280,7 +280,7 @@ theorem exists_base {S T : HSp D} (C : Ctx S T) (Lv : GlobalTheory.SW.Level C.X)
       rw [this]
       exact ⟨Matrix.one_mul _, by simp, by rw [Matrix.one_mul]; exact Matrix.PosDef.one⟩)
     (fun τ => cartan_of_on (sgnM_sq _) (sgnM_herm _) (hB τ)) _ _ (selfDualC_stdL C.m.gS)
-    (selfDualC_latP C.m.gT C.m.ka hsd hsp)
+    (selfDualC_latP C.m.gT C.m.ka hsd)
   have h1 := hf 1
   simp only [one_mul] at h1
   have hle := hatA_le C.m.gS (Lv.sh C.X.Λ)

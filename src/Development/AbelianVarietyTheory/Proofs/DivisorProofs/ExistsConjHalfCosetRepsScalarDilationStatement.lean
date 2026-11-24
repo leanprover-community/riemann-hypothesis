@@ -106,7 +106,7 @@ theorem unitOff_sqrt_of_dvd {c N n : ℕ} (hc : c ≠ 0) (hd : c ∣ N ^ n) :
     rw [hN]; field_simp
   rw [e]; exact (natCast_isIntegral m).mul hint
 
-theorem exists_reps {G : Type} [AddCommGroup G] (H K : AddSubgroup G) (hKH : K ≤ H) (N : ℕ) (hN : N ≠ 0)
+theorem exists_reps {G : Type} [AddCommGroup G] (H K : AddSubgroup G) (N : ℕ) (hN : N ≠ 0)
     (hinj : ∀ x y : G, N • x = N • y → x = y) (hNH : ∀ w ∈ H, N • w ∈ K)
     (R : Finset G) (hR : ∀ u ∈ K, ∃ r ∈ R, ∃ v ∈ K, u = r + N • v) :
     ∃ Rr : Finset G, (∀ u ∈ Rr, u ∈ H) ∧ (∀ w ∈ H, ∃! v, v ∈ Rr ∧ w - v ∈ K) ∧
@@ -226,7 +226,7 @@ theorem exists_reps' {G : Type} [AddCommGroup G] (L half : AddSubgroup G) (f : G
     intro u hu
     obtain ⟨r, hr, v, hv, hvh, huv⟩ := hR u hu.2 hu.1
     exact ⟨r, hr, v, ⟨hvh, hv⟩, huv⟩
-  obtain ⟨Rr, hRr1, hRr2, hRr3⟩ := exists_reps H K hKH N hN hinj hNH R hR'
+  obtain ⟨Rr, hRr1, hRr2, hRr3⟩ := exists_reps H K N hN hinj hNH R hR'
   refine ⟨Rr, fun u hu => ⟨(hRr1 u hu).2, (hRr1 u hu).1⟩, fun w hw1 hw2 => ?_, hRr3⟩
   obtain ⟨v, ⟨hv, hwv⟩, huniq⟩ := hRr2 w ⟨hw2, hw1⟩
   refine ⟨v, ⟨hv, hwv.2⟩, fun v' hv' => huniq v' ⟨hv'.1, half.sub_mem hw2 (hRr1 v' hv'.1).1, hv'.2⟩⟩

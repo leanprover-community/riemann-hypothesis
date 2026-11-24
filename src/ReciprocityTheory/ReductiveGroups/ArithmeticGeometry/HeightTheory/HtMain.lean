@@ -306,7 +306,7 @@ theorem sphereMean_fubini {F : MvPolynomial (Fin (d.D + 1) × Fin (d.N + 1)) ℂ
   haveI := blockSphereMeasure_isProbability (B := d.D) hn
   set G : UnitSphereC (d.N + 1) × BlockSphere d.D (d.N + 1) → ℝ :=
     fun p => Real.log ‖MvPolynomial.eval (hintPt (spherePoint p.1) p.2) F‖ with hG
-  have hmp := hint_mpSplit d.D (d.N + 1) hn
+  have hmp := hint_mpSplit d.D (d.N + 1)
   have hint : Integrable G ((sphereProb (d.N + 1)).prod (blockSphereProb d.D (d.N + 1))) := by
     rw [← hmp.integrable_comp_emb
       (MeasurableEquiv.piFinSuccAbove (fun _ : Fin (d.D + 1) => UnitSphereC (d.N + 1)) 0).measurableEmbedding]
@@ -805,7 +805,7 @@ theorem isMultiHomogeneous_one {R : Type*} [CommSemiring R] {B n : ℕ} :
     simp
   · exact absurd rfl hs
 
-theorem height_one_eq_zero {K : Type} [Field K] [NumberField K] {B n : ℕ} (hn : 0 < n) :
+theorem height_one_eq_zero {K : Type} [Field K] [NumberField K] {B n : ℕ} :
     h0 (1 : MvPolynomial (Fin B × Fin n) K) = 0 := by
   classical
   first
@@ -816,7 +816,7 @@ theorem height_pow_multiHomogeneous {K : Type} [Field K] [NumberField K] {B n : 
     (hg : IsMultiHomogeneous a g) (e : ℕ) :
     g ^ e ≠ 0 ∧ IsMultiHomogeneous (e • a) (g ^ e) ∧ h0 (g ^ e) = e * h0 g := by
   induction e with
-  | zero => simp [height_one_eq_zero hn, isMultiHomogeneous_one]
+  | zero => simp [height_one_eq_zero, isMultiHomogeneous_one]
   | succ e ih =>
     obtain ⟨h1, h2, h3⟩ := ih
     refine ⟨pow_ne_zero _ hg0, ?_, ?_⟩
@@ -831,7 +831,7 @@ theorem height_prod_pow_multiHomogeneous {K : Type} [Field K] [NumberField K] {B
       h0 (∏ i ∈ T, g i ^ e i) = ∑ i ∈ T, (e i : ℝ) * h0 (g i) := by
   classical
   induction T using Finset.induction_on with
-  | empty => simp [height_one_eq_zero hn]; exact ⟨0, isMultiHomogeneous_one⟩
+  | empty => simp [height_one_eq_zero]; exact ⟨0, isMultiHomogeneous_one⟩
   | insert q T hq ih =>
     obtain ⟨h1, ⟨a1, h2⟩, h3⟩ := ih fun i hi => hg i (Finset.mem_insert_of_mem hi)
     obtain ⟨hq0, aq, hqa⟩ := hg q (Finset.mem_insert_self q T)
@@ -1359,12 +1359,12 @@ theorem heights (hd : d.AxH 𝒜) (h : d.S1) (hH1 : d.FinitePlaceHyp) (hF1d : d.
     (∑ k, meanK (fun sg => Real.log (d.supN sg d.wF (d.thp (hd.sel k)))))
     (d.del * Real.log d.del)
     (by exact_mod_cast hd.D_ge) (Nat.cast_nonneg _) hL hd.cc_nonneg hd.cc_le hd.ccg0 (Nat.cast_nonneg _)
-    (by exact_mod_cast hd.i_ge) ⟨hPP0', hPN, hP14, hP16, hPI4, hPrw, hGc, hPet⟩
+    ⟨hPP0', hPN, hP14, hP16, hPI4, hPrw, hGc, hPet⟩
     (by linarith) hlr hlw1 hhN hd.DF_le hlaW hnu
     (by simpa [add_assoc] using hUP) hb1
-    haL (div_nonneg (by exact_mod_cast hade0) hn1.le) (by rw [div_le_iff₀ hn1]; have := (Int.cast_le (R := ℝ)).mpr hade; push_cast at this; linarith) (div_nonneg (by exact_mod_cast haG10) (by norm_num))
-    (by rw [div_le_iff₀ (by norm_num : (0:ℝ) < 2)]; have := (Int.cast_le (R := ℝ)).mpr haG1; push_cast at this; linarith) (by exact_mod_cast haF0)
-    (by exact_mod_cast haF) (by exact_mod_cast haG20) (by exact_mod_cast haG2)
+    haL (div_nonneg (by exact_mod_cast hade0) hn1.le) (by rw [div_le_iff₀ hn1]; have := (Int.cast_le (R := ℝ)).mpr hade; push_cast at this; linarith)
+    (by rw [div_le_iff₀ (by norm_num : (0:ℝ) < 2)]; have := (Int.cast_le (R := ℝ)).mpr haG1; push_cast at this; linarith)
+    (by exact_mod_cast haF) (by exact_mod_cast haG2)
     h7a h7b h7c hdi1 hdn
   obtain ⟨ar1, ar2⟩ := arith
   have hsI : (Function.support fun la => d.IL h hd.sel hd.a4.choose la * logNorm la).Finite :=

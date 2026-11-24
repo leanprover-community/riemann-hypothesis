@@ -158,7 +158,7 @@ end Alg
 
 theorem deriv_memC {H : Type} [NormedAddCommGroup H] [NormedSpace ℂ H] {S : Submodule ℂ H} (hS : IsClosed (S : Set H))
     {f : ℝ → H} {y : H} (hf : HasDerivAt f y 0) (hm : ∀ t, f t ∈ S) : y ∈ S :=
-  hS.mem_of_tendsto (hasDerivAt_iff_tendsto_slope_zero.1 hf) (Eventually.of_forall fun t =>
+  hS.mem_of_tendsto (hasDerivAt_iff_tendsto_slope_zero.1 hf) (Eventually.of_forall fun _ =>
     S.smul_of_tower_mem _ (S.sub_mem (hm _) (hm _)))
 
 def kdC {n : ℕ} {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] (ε : Fin n → Bool)

@@ -124,7 +124,7 @@ theorem st_fst {P : M.Par} {z z' : Fin (2 * P.r + P.k + 1) → ℂ} {π : Mx P.k
   rw [hQQ Y, Matrix.smul_apply, ActualOps.QQ, Matrix.of_apply, Qx8.smul_mkP]
   rfl
 
-theorem t_slice_congr (X : ActualOps k r z z' π π') (Y : ℂ) (a b : Fin 2) (Ψ : RadSp k r z z' π π')
+theorem t_slice_congr (Y : ℂ) (a b : Fin 2) (Ψ : RadSp k r z z' π π')
     (F : Fn k r (Wq →L[ℂ] Wp)) (x : (Fin r → ℂ) × Mx k r) (hx : x ∈ DomR k r z z')
     (hF : ∀ y ∈ Glev k r (Fin.last r) ∩ Qx8.Dp k r z z', (Ψ : Fn k r (Wq →L[ℂ] Wp)) x.1 y = F x.1 y) :
     tL k r z z' (Fin.last r) Y a b ((Ψ : Fn k r (Wq →L[ℂ] Wp)) x.1) x.2 =
@@ -173,7 +173,7 @@ theorem spectral_right_rho_action : RDSRhR := by
   simp only [CutMP.dMul, CutMP.rhGrp, Submodule.coe_add, Pi.add_apply, LinearMap.smul_apply,
     Submodule.coe_smul, Pi.smul_apply, QL, grp]
   rw [X.t_apply Y 1 0 _ x hx, X.t_apply Y 1 1 _ x hx,
-    t_slice_congr X Y 1 0 _ _ x hx hA, t_slice_congr X Y 1 1 _ _ x hx hB]
+    t_slice_congr Y 1 0 _ _ x hx hA, t_slice_congr Y 1 1 _ _ x hx hB]
   simp only [smul_add, smul_comm (CutMP.drbF P.r x.1) (M.sgn P l0)]
 
 end Formalism.FourierDecayAlt.P.CutSE

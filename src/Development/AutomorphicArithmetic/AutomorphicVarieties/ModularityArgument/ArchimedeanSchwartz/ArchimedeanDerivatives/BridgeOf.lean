@@ -114,14 +114,14 @@ private def linC : Lie K n ≃L[ℝ] (Fin n × Fin n → mixedSpace K) :=
   LinearEquiv.toContinuousLinearEquiv
     { toFun := fun x p => Cm.mixEq K (x p.1 p.2)
       invFun := fun z i j => (Cm.mixEq K).symm (z (i, j))
-      map_add' := fun x y => funext fun p => map_add (Cm.mixEq K) _ _
-      map_smul' := fun c x => funext fun p => map_smul (Cm.mixEq K) c _
-      left_inv := fun x => funext fun i => funext fun j => (Cm.mixEq K).symm_apply_apply _
-      right_inv := fun z => funext fun p => (Cm.mixEq K).apply_symm_apply _ }
+      map_add' := fun _ _ => funext fun _ => map_add (Cm.mixEq K) _ _
+      map_smul' := fun c _ => funext fun _ => map_smul (Cm.mixEq K) c _
+      left_inv := fun _ => funext fun _ => funext fun _ => (Cm.mixEq K).symm_apply_apply _
+      right_inv := fun _ => funext fun _ => (Cm.mixEq K).apply_symm_apply _ }
 
 private theorem archSchwartz_grpC (φ : 𝓢(Fin n × Fin n → mixedSpace K, ℂ)) (y : GL (Fin n) (Cinf K)) :
     archSchwartz φ (grpC K n y).val = φ (linC K n (toL y.val)) :=
-  congrArg φ (funext fun p => hms_infEq K _)
+  congrArg φ (funext fun _ => hms_infEq K _)
 
 private theorem trace_mixEq (x : Cinf K) : mixedTrace K (Cm.mixEq K x) = 2 * ∑ w, (x w).re := by
   haveI : IsEmpty {w : InfinitePlace K // w.IsReal} :=

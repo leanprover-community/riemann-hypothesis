@@ -34,7 +34,7 @@ theorem phi_one_Wm (hE : IsGlRep E) (hU : IsInfUnitary ε E) (hV : IsKIrrHW ε E
   by_contra hne
   have := finiteDimensional_ncV (ε := ε) hV.1 1
   have hfdW : FiniteDimensional ℂ (Wm ε E V) := Submodule.finiteDimensional_of_le Wm_le_ncV
-  have hWst : IsKStableSub ε (bAct E 1) (Wm ε E V) := Wm_kStable hE hU hV
+  have hWst : IsKStableSub ε (bAct E 1) (Wm ε E V) := Wm_kStable hE hV
   set T : Submodule ℂ M := (Wm ε E V).map (phi E 1) with hTdef
   have hfdT : FiniteDimensional ℂ T := inferInstance
   have hTst : IsKStableSub ε E T := by
@@ -61,7 +61,7 @@ theorem phi_one_Wm (hE : IsGlRep E) (hU : IsInfUnitary ε E) (hV : IsKIrrHW ε E
   have hcas : casimir E (phi E 1 x₀) = (casVal lam : ℂ) • phi E 1 x₀ :=
     casimir_genSub hE hc _ (layer_le_genSub (ε := ε) 1 hlay)
   rw [hμ] at hyμ
-  exact hy0 (khw_lowK_sub_root_eq_zero ε hE hU lam hab hε
+  exact hy0 (khw_lowK_sub_root_eq_zero ε hE hU lam hab
     (sch_gap ⟨hmono, h, hh, hbig⟩ hab hε) hyμ hcas)
 
 theorem sch_coord_apply {k : ℕ} (κ : Fin k → Fin n × Fin n) (F : Big n k M) : coord k κ F = F κ := rfl

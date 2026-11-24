@@ -114,7 +114,7 @@ theorem log_mu {e : Per.Fl l} (he : IsEps e) {y : Per.BdRp l} (hy : Per.IsLog l 
   have hm : algebraMap (Per.Ainf l) (Per.AinfP l) (Per.tm e - 1) ∈ Per.kerP l := by
     refine GlobalTheory.RingIface.alg_mem_kerP l ?_
     rw [map_sub, WittVector.fontaineTheta_teichmuller, he.1, map_one, sub_self]
-  have h := GlobalTheory.CrisIncl.factorial_mul_ev l e y he.1 hy 2
+  have h := GlobalTheory.CrisIncl.factorial_mul_ev l e y hy 2
   rw [GlobalTheory.RingIface.mem_filtration_iff_mem_kerTheta_pow]
   change Per.ev l 2 (algebraMap (Per.AinfP l) (Per.BdRp l)
     (algebraMap (Per.Ainf l) (Per.AinfP l) (Per.tm e - 1)) - y) = 0

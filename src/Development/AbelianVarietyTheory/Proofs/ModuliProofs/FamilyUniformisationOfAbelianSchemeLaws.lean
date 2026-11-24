@@ -852,7 +852,7 @@ theorem isHolTo_point_and_exp : (∀ (E : Type) [Field E] [NumberField E] [IsCMF
     ℂ)), IsOpen U → DifferentiableOn ℂ f U → Set.InjOn f U → ∀ a ∈ U, Function.Bijective (fderiv ℂ f
     a)) → (∀ (k : Type) [Field k] (σ : k →+* ℂ) (X : Scheme.{0}) (s : X ⟶ Sp k) (d : ℕ) (y₀
     : Sp ℂ ⟶ X), SmoothOfRelativeDimension d s → y₀ ≫ s = spMap σ → ∃ (B : Set (Fin d → ℂ)) (y
-    : (Fin d → ℂ) → (Sp ℂ ⟶ X)) (U : X.Opens) (f : Fin d → Γ(X, U)) (n : ℕ) (r : Fin n → Γ(X,
+    : (Fin d → ℂ) → (Sp ℂ ⟶ X)) (U : X.Opens) (_ : Fin d → Γ(X, U)) (n : ℕ) (r : Fin n → Γ(X,
     U)), IsOpen B ∧ (0
     : Fin d → ℂ) ∈ B ∧ y 0 = y₀ ∧ (∀ b ∈ B, y b ≫ s = spMap σ) ∧ IsHolTo B y ∧ Set.InjOn y B ∧ ⊤ ≤ y₀ ⁻¹ᵁ U ∧ ∃ ε : ℝ, 0 < ε ∧ ∀ x : Sp ℂ ⟶ X, x ≫ s = spMap σ → ⊤ ≤ x ⁻¹ᵁ U → (∀ i, ‖valAt' x U (r
     i) - valAt' y₀ U (r i)‖ < ε) → x ∈ y '' B) → ∀ (E : Type) [Field E] [NumberField E] [IsCMField

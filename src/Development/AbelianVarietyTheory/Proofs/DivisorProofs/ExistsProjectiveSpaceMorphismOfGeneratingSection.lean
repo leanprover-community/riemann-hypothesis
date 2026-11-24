@@ -290,7 +290,7 @@ open GlobalTheory.HSAmp
 namespace GlobalTheory.HSAmp
 
 theorem finrank_ratF_eq_mul_rank (k K : Type) [CommRing k] [IsDomain k] [Module.Finite ℤ k] [Field K] [CharZero K]
-    (ι : k →+* K) (D : ℕ) (x : Fin (D + 1) → K) (hι : Function.Injective ι)
+    (ι : k →+* K) (D : ℕ) (x : Fin (D + 1) → K)
     (hy : AlgebraicIndependent ℤ (fun j : Fin D => x j.succ / x 0)) :
     Module.finrank (ratF x) K = Module.finrank (Subfield.closure (Set.range ι ∪ Set.range fun j : Fin D => x j.succ / x 0)) K * Module.finrank ℤ k ∧ Function.Injective (MvPolynomial.eval₂Hom ι fun j : Fin D => x j.succ / x 0) := by
   classical
@@ -652,7 +652,7 @@ theorem toProj_gens : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) [IsIntegral X
     simpa only [map_natCast] using this)⟩
   obtain ⟨hP, -, -⟩ := _root_.GlobalTheory.PSpaceDeg.main k D
   haveI : IsIntegral (PSpace k D) := hP.isIntegral
-  obtain ⟨hdeg, hev⟩ := _root_.GlobalTheory.HSAmp.finrank_ratF_eq_mul_rank k X.functionField (GlobalTheory.toFunctionField p) D x hι hind
+  obtain ⟨hdeg, hev⟩ := _root_.GlobalTheory.HSAmp.finrank_ratF_eq_mul_rank k X.functionField (GlobalTheory.toFunctionField p) D x hind
   obtain ⟨π, hπ, hc, hiso⟩ := _root_.GlobalTheory.HSAmp.GenMap.toProj_gens k X p D hX P e x hg (hx 0)
   have hgen := _root_.GlobalTheory.GenericImage.map_genericPoint_eq k X p D π hπ x (hx 0) hc hev
   have hr := _root_.GlobalTheory.GenericResidueDegree.residueDegree_eq_finrank_quotients k X p D π hπ x (hx 0) hc hgen

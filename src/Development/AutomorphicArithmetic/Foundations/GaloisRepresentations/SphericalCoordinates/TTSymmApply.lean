@@ -170,7 +170,7 @@ private theorem place_eq_inv {M : Matrix (Fin n) (Fin n) ℂ} (h : M.IsHermitian
     linear_combination (-hv M (a • z + x') (b • z + y')) * Complex.I_sq
 
 private theorem place_eq_pos {M : Matrix (Fin n) (Fin n) ℂ} (h : M.IsHermitian) {z x' : Fin n → ℂ} (a s : ℂ)
-    (hs : s = 1 ∨ s = -1) (hx : hv M x' z = 0) (him : (hv M z z).im = 0) :
+    (hs : s = 1 ∨ s = -1) (hx : hv M x' z = 0) :
     (-s * Complex.I * hv M ((s * Complex.I) • (a • z - x')) (a • z + x')).re =
       Complex.normSq a * (hv M z z).re - (hv M x' x').re := by
   rw [hv_smul_l, (pair_form h a a hx hx).2, Complex.mul_conj]
@@ -297,7 +297,7 @@ private theorem core {P : Type} [Fintype P] {n g : ℕ} (hJ : HermOfJ) (H : P �
     intro x v'
     rcases eq_or_ne v' v with rfl | h
     · obtain ⟨a, y', e1, e2, e3⟩ := hJv x
-      rw [e3, e1, place_eq_pos (hH v') a (s v') (hs v') e2 hzim]
+      rw [e3, e1, place_eq_pos (hH v') a (s v') (hs v') e2]
       have hy0 : (hv (H v') y' y').re ≤ 0 := by
         by_cases hy : y' = 0
         · subst hy; simp [hv]

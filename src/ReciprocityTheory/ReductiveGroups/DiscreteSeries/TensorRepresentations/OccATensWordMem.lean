@@ -48,7 +48,7 @@ theorem occA_coef_Eword (dual : Bool) (hσ : IsURepOn (UJset ε) σ) (hD : IsDer
     rw [Formalism.REAL.lie_derivative_congr p.1 p.2 (fun x hx => ih hx) hg]
     exact occA_coef_Eab dual hσ hD η (tensWord dual E w f) p.1 p.2 hg
 
-theorem occA_coef_smooth (dual : Bool) (hσ : IsURepOn (UJset ε) σ) (η f : Fin n → H)
+theorem occA_coef_smooth (dual : Bool) (η f : Fin n → H)
     (hf : ∀ d, IsSmoothVecU ε σ (f d)) : Formalism.REAL.SmoothOnG ε (occCoef dual σ η f) := by
   exact tensor_coef_smooth dual η f hf
 

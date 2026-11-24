@@ -130,7 +130,7 @@ theorem Rc_cont : Continuous (Rc (k := k) (r := r)) := by
   · simp only [Rc_idx]
     exact (continuous_apply a).comp continuous_snd
 
-theorem volume_reim (P Q : Set ℝ) (hP : MeasurableSet P) (hQ : MeasurableSet Q) :
+theorem volume_reim (P Q : Set ℝ) :
     (volume : Measure ℂ) {z | LsNc5.reim z false ∈ P ∧ LsNc5.reim z true ∈ Q} = volume P * volume Q := by
   have h : {z : ℂ | LsNc5.reim z false ∈ P ∧ LsNc5.reim z true ∈ Q} =
       Complex.measurableEquivRealProd ⁻¹' (P ×ˢ Q) := by
@@ -166,7 +166,7 @@ theorem map_Rc : (volume : Measure ((WlocSk.NB.CI k r → ℂ) × (Fin r → ℝ
         exact h2 a
   rw [Measure.map_apply Rc_cont.measurable (MeasurableSet.univ_pi hs), hpre, Measure.volume_eq_prod,
     Measure.prod_prod, volume_pi_pi, volume_pi_pi]
-  simp only [volume_reim _ _ (hs _) (hs _)]
+  simp only [volume_reim _ _]
   conv_rhs => rw [← eIdx.prod_comp, Fintype.prod_sum_type, Fintype.prod_prod_type]
   simp only [Fintype.prod_bool, Finset.prod_mul_distrib]
   ring
@@ -290,7 +290,7 @@ private theorem col_of_unipotent_entries {m : Matrix (Fin (2 * r + k + 1)) (Fin 
     rwa [he] at this
   · exact h2 i j (by omega) hj (by omega)
 
-theorem kapL_eq {z : Fin (2 * r + k + 1) → ℂ} {T : ℝ} (hF : IsFrameJ ε e f w (z0v T z)) (hT : 0 < T)
+theorem kapL_eq {z : Fin (2 * r + k + 1) → ℂ} {T : ℝ} (hT : 0 < T)
     (g : Formalism.REAL.UJ ε) (hg : Qi ε e f w (z0v T z) * uMat g * Qm e f w (z0v T z) ∈ Nset k r) :
     kapL ε e f w z g = Kc T (cM (ε := ε) (Qi ε e f w (z0v T z)) (Qm e f w (z0v T z)) g) := by
   dsimp only [cM]
@@ -435,7 +435,7 @@ theorem lebLoc {n r k : ℕ} (hn : n = 2 * r + k + 1) (ε : Fin n → Bool) (e f
         have h1 : s ∈ NLoc ε e (Qm e f w (z0v T z) *ᵥ zBv k r T) := by rw [hNz]; exact hs
         exact h1
       have h0 : Qi ε e f w (z0v T z) * uMat s * Qm e f w (z0v T z) ∈ Nset k r :=
-        conj_mem_Nset hFJ hz0 (uMat_mem s) hs'
+        conj_mem_Nset hFJ (uMat_mem s) hs'
       set m0 := Qi ε e f w (z0v T z) * uMat s * Qm e f w (z0v T z) with hm0
       have hfun : Ψ ∘ (fun x => s * x) = lmulM m0 ∘ Ψ := by
         funext x
@@ -469,7 +469,7 @@ theorem lebLoc {n r k : ℕ} (hn : n = 2 * r + k + 1) (ε : Fin n → Bool) (e f
     have hg' : InN ε e (Qm e f w (z0v T z) *ᵥ zBv k r T) (uMat g) := by
       have h1 : g ∈ NLoc ε e (Qm e f w (z0v T z) *ᵥ zBv k r T) := by rw [hNz]; exact hg
       exact h1
-    exact kapL_eq hFJ hT g (conj_mem_Nset hFJ hz0 (uMat_mem g) hg')
+    exact kapL_eq hT g (conj_mem_Nset hFJ (uMat_mem g) hg')
   have hdet := det_LyM_ne (k := k) (r := r) hT
   set c : ℝ≥0∞ := ENNReal.ofReal |(LinearMap.det (LyM (k := k) (r := r) T))⁻¹| with hc
   have hc0 : c ≠ 0 := by rw [hc]; exact (ENNReal.ofReal_pos.2 (abs_pos.2 (inv_ne_zero hdet))).ne'

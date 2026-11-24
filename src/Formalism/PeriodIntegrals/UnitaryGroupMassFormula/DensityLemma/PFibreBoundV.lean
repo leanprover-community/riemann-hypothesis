@@ -518,6 +518,6 @@ end NBk
 
 theorem unipotent_eq_block : ∀ (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ), C2.StdZ k r z →
     ∀ n ∈ C2.N0set k r z, ∃ (Bm : Matrix (Fin r) (Fin (k + 1)) ℂ) (S : Matrix (Fin r) (Fin r) ℂ),
-      Bm *ᵥ zW k r z = 0 ∧ Sᴴ = -S ∧ n = unipotentBlockMatrix k r Bm S := fun k r z hz n hn => NBk.nb_fwd hz n hn
+      Bm *ᵥ zW k r z = 0 ∧ Sᴴ = -S ∧ n = unipotentBlockMatrix k r Bm S := fun _ _ _ hz n hn => NBk.nb_fwd hz n hn
 
 end PI.UnitaryGroupMassFormula.DLm

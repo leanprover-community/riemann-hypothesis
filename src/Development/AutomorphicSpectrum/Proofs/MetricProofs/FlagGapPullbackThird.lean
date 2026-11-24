@@ -102,7 +102,7 @@ theorem holo_prod {T : Type} (s : Finset T) {F : T → X → ℂ} (h : ∀ a ∈
     simp only [Finset.prod_insert ha]
     exact holo_mul (h a (Finset.mem_insert_self _ _)) (ih fun b hb => h b (Finset.mem_insert_of_mem hb))
 
-theorem holo_continuousOn (hW : IsOpen W) (h : A.HoloOn W f) : ContinuousOn f W := by
+theorem holo_continuousOn (h : A.HoloOn W f) : ContinuousOn f W := by
   intro t ht
   obtain ⟨j, hj⟩ := A.cover t
   have h1 : AnalyticAt ℂ (f ∘ (A.chart j).symm) (A.chart j t) :=
@@ -299,7 +299,7 @@ theorem chart_some (hyp : IsStepHyp M BM p κ v R pr) (x y₀ : R.X) (hy₀ : y�
   rw [← plk_eq hyp _ hp hv₀] at hne₀
   obtain ⟨C, B, hCB⟩ := GrChart.exists_isGrChart N j p.2 I₀ M.j_le hI₀
   let W : Set R.X := W₁ ∩ (fun t => w t I₀) ⁻¹' {0}ᶜ
-  have hW : IsOpen W := (holo_continuousOn hW₁ (hw I₀)).isOpen_inter_preimage hW₁ isOpen_compl_singleton
+  have hW : IsOpen W := (holo_continuousOn (hw I₀)).isOpen_inter_preimage hW₁ isOpen_compl_singleton
   have hs : W ⊆ W₁ := Set.inter_subset_left
   have hne : ∀ t ∈ W, w t I₀ ≠ 0 := fun t ht => ht.2
   have hy : y₀ ∈ W := ⟨⟨⟨hy₀, hl⟩, Set.mem_iInter.2 hyq⟩, hne₀⟩

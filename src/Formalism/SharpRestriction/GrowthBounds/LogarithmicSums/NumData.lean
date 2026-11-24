@@ -98,7 +98,7 @@ def rE (eps : ℝ) : ℕ := ⌈8 * (2 + 8 * eps + 2) / eps⌉₊ + 1
 
 theorem rG_rE (s : Scale) : rG s = rE s.eps := rfl
 
-theorem first_bound_arith (C c η l X' xn Y b : ℝ) (hC0 : 0 ≤ C) (hc0 : 0 ≤ c) (hη0 : 0 ≤ η) (hl0 : 0 ≤ l) (hxn0 : 0 ≤ xn)
+theorem first_bound_arith (C c η l X' xn Y b : ℝ) (hc0 : 0 ≤ c) (hη0 : 0 ≤ η) (hl0 : 0 ≤ l) (hxn0 : 0 ≤ xn)
     (hC : C ≤ Y) (hc : c ≤ Y) (hη : η ≤ Y) (hl : l ≤ Y) (hxn : xn ≤ Y) (hX : 1 ≤ X') (hY : 10 ≤ Y)
     (hb : Y ^ 7 * X' ≤ b) : C * (c + η) * l * (X' * xn + 2) ≤ b := by
   have hY0 : 0 ≤ Y := by linarith
@@ -123,7 +123,7 @@ theorem first_bound_arith (C c η l X' xn Y b : ℝ) (hC0 : 0 ≤ C) (hc0 : 0 �
     _ ≤ Y ^ 7 * X' := mul_le_mul_of_nonneg_right h4 hX0
     _ ≤ b := hb
 
-theorem n1'_arith (C f Nm la X' xn Y b : ℝ) (hC0 : 0 ≤ C) (hf0 : 0 ≤ f) (hN0 : 0 ≤ Nm) (hl0 : 0 ≤ la) (hxn0 : 0 ≤ xn)
+theorem n1'_arith (C f Nm la X' xn Y b : ℝ) (hf0 : 0 ≤ f) (hN0 : 0 ≤ Nm) (hl0 : 0 ≤ la) (hxn0 : 0 ≤ xn)
     (hC : C ≤ Y) (hf : f ≤ Y) (hN : Nm ≤ Y) (hl : la ≤ Y) (hxn : xn ≤ Y) (hX : 1 ≤ X') (hY : 10 ≤ Y)
     (hb : Y ^ 7 * X' ≤ b) : C * f * (Nm ^ 2 * la + la ^ 2 / Real.log 2) * (X' * xn + 2) ≤ b := by
   have hY0 : 0 ≤ Y := by linarith

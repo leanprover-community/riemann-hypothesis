@@ -287,7 +287,7 @@ namespace KStar.Tree
 open Matrix
 
 theorem polar_cocycle_conj_eq {Γ A : Type} [Group Γ] [CommRing A] {r : ℕ}
-    (T : Γ →* Matrix (Fin r) (Fin r) A) (L : Subgroup Γ) (hL : L.Normal)
+    (T : Γ →* Matrix (Fin r) (Fin r) A) (L : Subgroup Γ)
     (hT : ∀ h ∈ L, T h = 1) (x : Γ → Fin r → A)
     (hx : ∀ g h, x (g * h) = x g + (T g).mulVec (x h)) (g h : Γ) (hh : h ∈ L) :
     x (g * h * g⁻¹) = (T g).mulVec (x h) := by
@@ -327,18 +327,18 @@ theorem twist_mul_coord_eq_zero : ∀ (Γ A : Type) [Group Γ] [CommRing A] [IsL
     intro u hu v hv
     have hzu : z * u * z⁻¹ ∈ L := hL.conj_mem u hu z
     have ex : x (z * u * z⁻¹) = (d : A) • x u := by
-      rw [polar_cocycle_conj_eq T L hL (fun k hk => (hTL k hk).1) x hx z u hu, hTz,
+      rw [polar_cocycle_conj_eq T L (fun k hk => (hTL k hk).1) x hx z u hu, hTz,
         Matrix.smul_mulVec, Matrix.one_mulVec]
     have ey : y (z * u * z⁻¹) = ((d⁻¹ : Aˣ) : A) • y u := by
-      rw [polar_cocycle_conj_eq T' L hL (fun k hk => (hTL k hk).2) y hy z u hu, hT'z,
+      rw [polar_cocycle_conj_eq T' L (fun k hk => (hTL k hk).2) y hy z u hu, hT'z,
         Matrix.smul_mulVec, Matrix.one_mulVec]
     have ecx : x (c (z * u * z⁻¹)) = ((d⁻¹ : Aˣ) : A) • x (c u) := by
       rw [map_mul, map_mul, map_inv,
-        polar_cocycle_conj_eq T L hL (fun k hk => (hTL k hk).1) x hx (c z) (c u) (hcL u hu), hTcz,
+        polar_cocycle_conj_eq T L (fun k hk => (hTL k hk).1) x hx (c z) (c u) (hcL u hu), hTcz,
         Matrix.smul_mulVec, Matrix.one_mulVec]
     have ecy : y (c (z * u * z⁻¹)) = (d : A) • y (c u) := by
       rw [map_mul, map_mul, map_inv,
-        polar_cocycle_conj_eq T' L hL (fun k hk => (hTL k hk).2) y hy (c z) (c u) (hcL u hu), hT'cz,
+        polar_cocycle_conj_eq T' L (fun k hk => (hTL k hk).2) y hy (c z) (c u) (hcL u hu), hT'cz,
         Matrix.smul_mulVec, Matrix.one_mulVec]
     have s1 := sym u hu v hv
     have s2 := sym (z * u * z⁻¹) hzu v hv
@@ -356,9 +356,9 @@ theorem twist_mul_coord_eq_zero : ∀ (Γ A : Type) [Group Γ] [CommRing A] [IsL
   · intro g
     have hgh : g * h * g⁻¹ ∈ L := hL.conj_mem h hh g
     rw [polar_trace_mul_vecMulVec_eq,
-      ← polar_cocycle_conj_eq T L hL (fun k hk => (hTL k hk).1) x hx g h hh,
+      ← polar_cocycle_conj_eq T L (fun k hk => (hTL k hk).1) x hx g h hh,
       key h' hh' _ hgh, map_mul, map_mul, map_inv,
-      polar_cocycle_conj_eq T' L hL (fun k hk => (hTL k hk).2) y hy (c g) (c h) (hcL h hh),
+      polar_cocycle_conj_eq T' L (fun k hk => (hTL k hk).2) y hy (c g) (c h) (hcL h hh),
       dotProduct_comm, ← polar_trace_mul_vecMulVec_eq, hT' g]
     set Jm := (J : Matrix (Fin r) (Fin r) A)
     set Ji := ((J⁻¹ : GL (Fin r) A) : Matrix (Fin r) (Fin r) A)

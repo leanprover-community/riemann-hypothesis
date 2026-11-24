@@ -204,7 +204,7 @@ theorem norm_eq_of_le_one_iff {Ω L : Type} [Field Ω] [NormedField L] (j j' : �
 
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
 
-theorem exists_mulEquiv_galLoc (A : ValuationSubring Ω) (w : HeightOneSpectrum (𝓞 E)) (h : IsPlaceOver A w)
+theorem exists_mulEquiv_galLoc (A : ValuationSubring Ω) (w : HeightOneSpectrum (𝓞 E))
     (ι : Ω →ₐ[E] Kbar w) (hι : IsLocEmb A w ι) :
     ∃ θ : Dec (F := E) A ≃* GalLoc w, Continuous θ ∧ Continuous θ.symm ∧
       ∀ σ : Dec (F := E) A, Lifts ι (θ σ) (σ : G E Ω) := by
@@ -297,7 +297,7 @@ theorem exists_mulEquiv_galLoc (A : ValuationSubring Ω) (w : HeightOneSpectrum 
   rw [hρ]
   exact congrArg (fun σ : Dec (F := E) A => ι ((σ : Ω ≃ₐ[E] Ω) x)) (e.apply_symm_apply σ)
 
-theorem decomposition_mulEquiv_galLoc : ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (A : ValuationSubring Ω) (w : HeightOneSpectrum (𝓞 E)) (h : IsPlaceOver A w) (ι : Ω →ₐ[E] Kbar w), IsLocEmb A w ι → ∃ θ : Dec (F := E) A ≃* GalLoc w, Continuous θ ∧ Continuous θ.symm ∧ ∀ σ : Dec (F := E) A, Lifts ι (θ σ) (σ : G E Ω) :=
-  fun _ _ _ _ _ _ _ A w h ι hι => exists_mulEquiv_galLoc A w h ι hι
+theorem decomposition_mulEquiv_galLoc : ∀ (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] (A : ValuationSubring Ω) (w : HeightOneSpectrum (𝓞 E)) (_ : IsPlaceOver A w) (ι : Ω →ₐ[E] Kbar w), IsLocEmb A w ι → ∃ θ : Dec (F := E) A ≃* GalLoc w, Continuous θ ∧ Continuous θ.symm ∧ ∀ σ : Dec (F := E) A, Lifts ι (θ σ) (σ : G E Ω) :=
+  fun _ _ _ _ _ _ _ A w h ι hι => exists_mulEquiv_galLoc A w ι hι
 
 end GlobalTheory.LocDec

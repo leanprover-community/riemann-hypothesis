@@ -76,7 +76,7 @@ variable {V : Type} [AddCommGroup V] [Module ℝ V] [FiniteDimensional ℝ V]
 
 theorem _root_.GlobalTheory.DatumSign.trace_eq :
     ∀ {V : Type} [AddCommGroup V] [Module ℝ V] [FiniteDimensional ℝ V] (T : V →ₗ[ℝ] V) (s : ℝ),
-      ∀ (hs : (0 : ℝ) < s) (hT : ∀ (x : V), T (T x) = (s * s) • x),
+      ∀ (_ : (0 : ℝ) < s) (_ : ∀ (x : V), T (T x) = (s * s) • x),
         LinearMap.trace ℝ V T =
           s * ((2 : ℝ) * (Module.finrank ℝ (T - s • LinearMap.id).ker : ℝ) -
             (Module.finrank ℝ V : ℝ)) := by

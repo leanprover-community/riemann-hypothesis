@@ -108,7 +108,7 @@ end
 
 variable {A₀ B₀ X T : Scheme.{0}} {N : LB A₀} {H : LB B₀} {mA mB : ℕ}
 
-theorem exists_combSec (hN : N.IsLB) (a : Fin mA → LB.Sec N) (φ : X ⟶ A₀) (p : X ⟶ T)
+theorem exists_combSec (a : Fin mA → LB.Sec N) (φ : X ⟶ A₀) (p : X ⟶ T)
     (c : Fin mA → Fin mB → Γ(T, ⊤)) : ∃ s : Fin mB → LB.Sec (N.pull φ), ∀ j z q, φ z ∈ N.U q →
       gs (𝟙 X) z ((N.pull φ).U (fun _ => q)) ((s j).f (fun _ => q)) = comb a φ p c z q j := by
   have le : ∀ J : PUnit → N.ι, (N.pull φ).U J ≤ φ ⁻¹ᵁ N.U (J PUnit.unit) := fun J _ hy => mem_pull.1 hy
@@ -157,7 +157,7 @@ theorem formsOK_iff_exists_proport : ∀ (Rg : Type) [CommRing Rg] (A₀ B₀ X 
         exact j.elim0⟩
       exact ⟨isInitialOfIsEmpty.to B₀, isInitialOfIsEmpty.hom_ext _ _, fun z => (IsEmpty.false z).elim⟩
     | succ n =>
-      obtain ⟨s, hs⟩ := exists_combSec (mB := n + 1) hN a φ p c
+      obtain ⟨s, hs⟩ := exists_combSec (mB := n + 1) a φ p c
       have hva : GlobalTheory.AbLaw.VeryAmpleBy fB H b := (GlobalTheory.AmpleSpan.embedsBy_spec_iff fB b).1 hE
       have hcov : ⨆ j, nonzeroLocus (s j) = ⊤ := by
         refine eq_top_iff.2 fun z _ => ?_

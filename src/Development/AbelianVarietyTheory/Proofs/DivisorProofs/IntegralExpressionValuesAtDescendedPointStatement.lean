@@ -208,7 +208,7 @@ theorem ratM_mul (hP : PowPts f q) (hk : ∀ a, ev (f a) ∈ k₀) {x y : Over.m
   show (τ ≫ Φ (x * y) a).left = _
   rw [map_mul, Pi.mul_apply, MonObj.comp_mul, e hx, e hy]
 
-theorem ratP_mul (hP : PowPts f q) (hk : ∀ a, ev (f a) ∈ k₀) {x y : Over.mk (spMap ev) ⟶ A}
+theorem ratP_mul (hP : PowPts f q) {x y : Over.mk (spMap ev) ⟶ A}
     (hx : RatP q k₀ x.left) (hy : RatP q k₀ y.left) : RatP q k₀ (x * y).left := fun a => by
   obtain ⟨Φ, hΦ⟩ := hP (Over.mk (spMap ev)) _ rfl
   erw [← hΦ]
@@ -298,7 +298,7 @@ theorem galois_gen (H : Desc f q ev k₀ u) {P v} (G : SymFrame.GRep D.P.L (Over
   obtain ⟨t, ht, vt⟩ := G.out D.P.isLB φ ε hP
   obtain ⟨κ, hκ, hval⟩ := galois_sec H.hk₀ H.hP H.hk D.P.isLB H.hL₂ u H.hu H.hπ φ ε hφ (genSec t ht) (fun s => by
     obtain ⟨w, hw⟩ := exists_sec D.P.isLB (K' := PEmpty) (φ' := PEmpty.elim) (ε' := PEmpty.elim)
-      (fun U _ hh => by simp [Fintype.prod_sum_type, ← Finset.prod_mul_distrib])
+      (fun U _ hh => by simp [Fintype.prod_sum_type])
       (pullMulSec s (𝟙 _) (LB.invGen D.P.L _ _ t) (DVR.invGen_isGen _ _ _ _ ht))
     have le : (⊤ : (Over.mk (spMap ev) ⊗ D.P.A).left.Opens) ≤
         LB.wchart D.P.L (K := PEmpty) (Y := (Over.mk (spMap ev) ⊗ D.P.A).left) PEmpty.elim PEmpty.elim :=
@@ -426,7 +426,7 @@ theorem chi_mem : ∀ (V₁ : Type) [CommRing V₁] [IsDomain V₁] [IsLocalRing
     intro i
     induction i with
     | zero => rw [pow_zero]; exact hone
-    | succ i ih => rw [pow_succ]; exact Coef.Idx.ratP_mul hP hk ih pb
+    | succ i ih => rw [pow_succ]; exact Coef.Idx.ratP_mul hP ih pb
   set x := toUnit (Over.mk (spMap ev)) ≫ D.c a with hx
   set y := toUnit (Over.mk (spMap ev)) ≫ b with hy
   have hyN : y ^ N₁ = 1 := by rw [hy, ← MonObj.comp_pow, hb, MonObj.comp_one]
@@ -1338,7 +1338,7 @@ theorem galois_genV (H : DescV f β ev k₀ u) {P v} (G : SymFrame.GRep D.P.L (O
   obtain ⟨t, ht, vt⟩ := G.out D.P.isLB φ ε hP
   obtain ⟨κ, hκ, hval⟩ := galois_secV H.hk₀ H.hP H.hk D.P.isLB H.hL₂ u H.hu H.hπ φ ε hφ (genSec t ht) (fun s => by
     obtain ⟨w, hw⟩ := exists_sec D.P.isLB (K' := PEmpty) (φ' := PEmpty.elim) (ε' := PEmpty.elim)
-      (fun U _ hh => by simp [Fintype.prod_sum_type, ← Finset.prod_mul_distrib])
+      (fun U _ hh => by simp [Fintype.prod_sum_type])
       (pullMulSec s (𝟙 _) (LB.invGen D.P.L _ _ t) (DVR.invGen_isGen _ _ _ _ ht))
     have le : (⊤ : (Over.mk (spMap ev) ⊗ D.P.A).left.Opens) ≤
         LB.wchart D.P.L (K := PEmpty) (Y := (Over.mk (spMap ev) ⊗ D.P.A).left) PEmpty.elim PEmpty.elim :=

@@ -68,7 +68,7 @@ private theorem lift_unique (D : Ext h g n) {t : Ine (F := E) A} {s s' : Ine (F 
     (e' : (t : G E Ω) = AlgEquiv.restrictScalars E (s' : G D.E' Ω)) : s = s' :=
   Subtype.ext (AlgEquiv.restrictScalars_injective E (e.symm.trans e'))
 
-private theorem finrank_K (D : Ext h g n) (hn : 0 < n) : Module.finrank (ZMod g) D.K = n := by
+private theorem finrank_K (D : Ext h g n) : Module.finrank (ZMod g) D.K = n := by
   have hgp : g.Prime := Fact.out
   have e : (𝓞 D.E' ⧸ RingHom.ker D.red) ≃+* D.K := RingHom.quotientKerEquivOfSurjective D.surj
   have hc : Nat.card D.K = g ^ n := by
@@ -124,9 +124,9 @@ theorem UpperTheory.Zero.LLC.resEx :
       have := hw.2 x hx
       rwa [e] at this
     have hq : normV w = g := normV_eq_of_padic w g i hi
-    refine ⟨hn, hq, finrank_K D hn, ?_, ?_, hwild, ?_⟩
+    refine ⟨hn, hq, finrank_K D, ?_, ?_, hwild, ?_⟩
     · intro z
-      obtain ⟨t', x, hx, hv⟩ := exists_ine_of_res g A D.w' D.h' n hn D.card D.a' D.ha' D.K D.red D.surj D.ker z
+      obtain ⟨t', x, hx, hv⟩ := exists_ine_of_res g A D.w' D.h' n D.a' D.ha' D.K D.red D.surj D.ker z
       exact ⟨⟨AlgEquiv.restrictScalars E (t' : G D.E' Ω), GlobalTheory.AboveL.ResEx.res_mem_Ine t'.2⟩,
         hR _ t' x z rfl hx hv⟩
     ·

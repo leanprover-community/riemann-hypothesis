@@ -99,7 +99,7 @@ theorem kap_gw {X' : Scheme.{0}} {L : LB X} {L' : LB X'} {F : X' ⟶ X} (w : LB.
     (z : Z) (r : Y ⟶ X') (j k) : kap σ z (gw w r (σ z) j k) = gw w (σ ≫ r) z j k := kap_gm _ _ _ _ _
 
 theorem appTop_eq_iff (a b : Γ(Z, ⊤)ˣ) : a.val = b.val ↔ ∀ z, gm (𝟙 Z) z ⊤ a = gm (𝟙 Z) z ⊤ b :=
-  ⟨fun h z => congrArg _ (Units.ext h), fun h => congrArg Units.val (unit_ext fun z _ => h z)⟩
+  ⟨fun h _ => congrArg _ (Units.ext h), fun h => congrArg Units.val (unit_ext fun z _ => h z)⟩
 
 theorem appLE_eq_of_gm (r r' : Z ⟶ Y) (U : Y.Opens) (h : ⊤ ≤ r ⁻¹ᵁ U) (h' : ⊤ ≤ r' ⁻¹ᵁ U) (a : Γ(Y, U)ˣ)
     (e : ∀ z, gm r z U a = gm r' z U a) : (r.appLE U ⊤ h).hom a.val = (r'.appLE U ⊤ h').hom a.val := by

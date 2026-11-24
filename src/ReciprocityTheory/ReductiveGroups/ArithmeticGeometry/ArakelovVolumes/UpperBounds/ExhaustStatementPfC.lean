@@ -21,7 +21,7 @@ theorem two_le_infty : (2 : WithTop ℕ∞) ≤ ∞ := by
   | exact WithTop.coe_le_coe.mpr le_top
 
 theorem sqNorm_nonneg' {m : ℕ} (g : Fin m → ℂ) : 0 ≤ sqNorm g :=
-  Finset.sum_nonneg fun i _ => Complex.normSq_nonneg _
+  Finset.sum_nonneg fun _ _ => Complex.normSq_nonneg _
 
 end ReciprocityTheory.ChartRestriction.G.AR.Up.ExhE
 

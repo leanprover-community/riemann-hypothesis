@@ -138,7 +138,7 @@ def stabAlg (π : CuspSub E n) : Subalgebra ℂ (Module.End ℂ (Sm E n)) where
   carrier := {T | ∀ ψ ∈ π.V, T ψ ∈ π.V}
   mul_mem' ha hb ψ hψ := ha _ (hb ψ hψ)
   add_mem' ha hb ψ hψ := π.V.add_mem (ha ψ hψ) (hb ψ hψ)
-  algebraMap_mem' c ψ hψ := π.V.smul_mem c hψ
+  algebraMap_mem' c _ hψ := π.V.smul_mem c hψ
 
 theorem Eop_mem_stabAlg (π : CuspSub E n) (τ : E →+* ℂ) (i j : Fin n) : Eop (a := n) τ i j ∈ stabAlg π := by
   have hL : ∀ X, lie E n X ∈ stabAlg π := fun X ψ hψ => π.stable (.lie X) ψ hψ

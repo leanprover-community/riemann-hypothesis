@@ -291,8 +291,8 @@ theorem hasChi_smul {N : ℕ} {k : ℤ} {χ : DirichletCharacter ℂ N} {f : ℍ
 
 noncomputable def coeL (N : ℕ) (k : ℤ) : CuspForm (CongruenceSubgroup.Gamma1 N) k →ₗ[ℂ] (ℍ → ℂ) where
   toFun f := ⇑f
-  map_add' f g := rfl
-  map_smul' c f := rfl
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
 
 def chiSpace (N : ℕ) (k : ℤ) (χ : DirichletCharacter ℂ N) : Submodule ℂ (ℍ → ℂ) where
   carrier := {G | ∃ f : CuspForm (CongruenceSubgroup.Gamma1 N) k, ⇑f = G ∧ HasChi N k χ G}

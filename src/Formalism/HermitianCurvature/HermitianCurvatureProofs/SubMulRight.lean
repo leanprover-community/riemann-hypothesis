@@ -78,11 +78,11 @@ theorem sub_mul_right {r : ℕ} (A B : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ)
 
 theorem LT_sub {r : ℕ} {L : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ} (hL : L ∈ C2.LTset (r + 1)) :
     L.submatrix Fin.castSucc Fin.castSucc ∈ C2.LTset r :=
-  ⟨fun i j h => hL.1 _ _ (Fin.castSucc_lt_castSucc_iff.2 h), fun i => hL.2 _⟩
+  ⟨fun _ _ h => hL.1 _ _ (Fin.castSucc_lt_castSucc_iff.2 h), fun _ => hL.2 _⟩
 
 theorem UT_sub {r : ℕ} {U : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ} (hU : U ∈ C2.UTset (r + 1)) :
     U.submatrix Fin.castSucc Fin.castSucc ∈ C2.UTset r :=
-  ⟨fun i j h => hU.1 _ _ (Fin.castSucc_lt_castSucc_iff.2 h), fun i => hU.2 _⟩
+  ⟨fun _ _ h => hU.1 _ _ (Fin.castSucc_lt_castSucc_iff.2 h), fun _ => hU.2 _⟩
 
 theorem minorsLU : MinorsLU := by
   unfold MinorsLU
@@ -289,7 +289,7 @@ def eSp {m : ℕ} (w : Equiv.Perm (Fin m)) : ((C2.Lstidx w → ℂ) × (C2.LPidx
     rw [← Equiv.image_eq_preimage_symm]
     exact hemb.measurableSet_image.2 hs
 
-theorem splitUT : SplitUT := fun m w => ⟨eSp w, fSp_mp w, fun p => upper_fSp w p⟩
+theorem splitUT : SplitUT := fun _ w => ⟨eSp w, fSp_mp w, fun p => upper_fSp w p⟩
 
 section cell
 

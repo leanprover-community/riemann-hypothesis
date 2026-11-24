@@ -65,7 +65,7 @@ variable {HW i r w hw Cx hG}
 
 end Pts
 
-theorem zeta_of_good {l : ℕ} [Fact l.Prime] (P : LocPrime l) {K LL : FinExt l} (h : Good K 1 LL) :
+theorem zeta_of_good {l : ℕ} [Fact l.Prime] {K LL : FinExt l} (h : Good K 1 LL) :
     ∃ ζ : ↥LL.1, IsPrimitiveRoot ζ l := by
   have hl : 0 < l := (Fact.out : l.Prime).pos
   haveI : NeZero (l : Om l) := ⟨by exact_mod_cast hl.ne'⟩

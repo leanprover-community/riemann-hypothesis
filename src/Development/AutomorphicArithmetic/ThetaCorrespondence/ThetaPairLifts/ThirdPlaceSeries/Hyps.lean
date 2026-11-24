@@ -71,7 +71,7 @@ structure HypsAlt (N : FamClass → Prop) (DR : _root_.GlobalTheory.Fc.R1.Defini
       DcPtG ((_root_.GlobalTheory.Fc.baseLevelChoiceOfRawSelection σ) Fm hc x hx h i).1
   hTu : Closed (WithTw (WithSm (WithChN 𝒜))) fun {eps} Fm _ => cT eps Fm.CYL ≤ Fm.CTu → TuSize Fm
   hn4 : Closed (WithTw (WithSm (WithChN 𝒜))) fun Fm _ => ∀ x (hx : Fm.x1 < x) (i : Fm.Ix x),
-      StandardLattice.ClassNumberFormula₂ (Fm.D x i) (Fm.ex x hx i).lev
+      StandardLattice.ClassNumberFormula₂ (Fm.D x i).lev
   hLit : LitThin
   hWu : Formalism.L2.SG.Pf.WuDecayOfGap
   hRF : Formalism.L2.SG.RowsDef.RowsFinDim
@@ -86,7 +86,7 @@ structure HypsAlt (N : FamClass → Prop) (DR : _root_.GlobalTheory.Fc.R1.Defini
       ⟨((_root_.GlobalTheory.Fc.familySelection σ) Fm (d3_a hc)).1, fun x hx h i => ((_root_.GlobalTheory.Fc.spectralConditionOfRawSelection σ) Fm (d3_a hc) x hx h i).toSTies⟩
   h30 : Closed (D3 3 𝒜) fun Fm _ => Formalism.MainNotions.S.CountE.CountAllPointsClass Formalism.L2.SG.ThmSOwn.PLevT' Fm (c30 Fm.cOut).n0 (c30 Fm.cOut).A
       (c30 Fm.cOut).C (c30 Fm.cOut).c (c30 Fm.cOut).cb
-  hInstR : ∀ {eps : ℝ} (Fm : FamP eps) (hc : 𝒜 Fm) (x : ℝ) (hx : Fm.x1 < x) (h : ((_root_.GlobalTheory.Fc.familySelection σ) Fm hc).1 ≤ x) (i : Fm.Ix x),
+  hInstR : ∀ {eps : ℝ} (Fm : FamP eps) (hc : 𝒜 Fm) (x : ℝ) (_ : Fm.x1 < x) (_ : ((_root_.GlobalTheory.Fc.familySelection σ) Fm hc).1 ≤ x) (i : Fm.Ix x),
       Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.VolSigIndep (Fm.D x i) ∧ Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.ClassItemsAt (Fm.D x i) ((Fm.D x i).sp.Y 0).rank
   selJ : ∀ {eps : ℝ} (Fm : FamP eps) (hc : 𝒜 Fm) (x : ℝ) (hx : Fm.x1 < x) (h : (_root_.GlobalTheory.Fc.familySelection σ Fm hc).1 ≤ x) (i : Fm.Ix x),
       _root_.Formalism.L2.SG.JoinSI.IndefiniteRealisationJoin (R := (_root_.GlobalTheory.Fc.familySelection σ Fm hc).2 x hx h i) (S := _root_.GlobalTheory.Fc.spectralConditionOfRawSelection σ Fm hc x hx h i) (Q := (_root_.GlobalTheory.Fc.selectionBundleOfRawSelection σ Fm hc x hx h i).Q)

@@ -182,7 +182,7 @@ theorem mem_principalRay_of_eq {I J : Ideal (𝓞 K)} (hI0 : I ≠ ⊥) (hJ0 : J
   simp only [Units.val_mul, coe_idealUnit]
   rw [← FractionalIdeal.coeIdeal_mul, ← FractionalIdeal.coeIdeal_mul, mul_comm J, mul_comm I, h]
 
-theorem exists_integral (h𝔮 : 𝔮 ≠ ⊥) (x : (FractionalIdeal (𝓞 K)⁰ K)ˣ) (hx : x ∈ rayI 𝔮) :
+theorem exists_integral (x : (FractionalIdeal (𝓞 K)⁰ K)ˣ) (hx : x ∈ rayI 𝔮) :
     ∃ (I : Ideal (𝓞 K)) (hI0 : I ≠ ⊥), IsCoprime I 𝔮 ∧ (idealUnit I hI0)⁻¹ * x ∈ rayP 𝔮 := by
   unfold rayI at hx
   induction hx using Subgroup.closure_induction with
@@ -247,7 +247,7 @@ theorem exists_injective (h𝔮 : 𝔮 ≠ ⊥) :
     ∃ F : (rayI 𝔮 ⧸ (rayP 𝔮).subgroupOf (rayI 𝔮)) → ClassGroup (𝓞 K) × (𝓞 K ⧸ 𝔮), Function.Injective F := by
   have H1 : ∀ ξ : rayI 𝔮 ⧸ (rayP 𝔮).subgroupOf (rayI 𝔮), ∃ (I : Ideal (𝓞 K)) (hI0 : I ≠ ⊥),
       IsCoprime I 𝔮 ∧ (idealUnit I hI0)⁻¹ * (ξ.out : (FractionalIdeal (𝓞 K)⁰ K)ˣ) ∈ rayP 𝔮 :=
-    fun ξ => exists_integral h𝔮 _ ξ.out.2
+    fun ξ => exists_integral _ ξ.out.2
   choose I hI0 hIc hIr using H1
   obtain ⟨c, hc⟩ : ∃ c : rayI 𝔮 ⧸ (rayP 𝔮).subgroupOf (rayI 𝔮) → ClassGroup (𝓞 K),
       ∀ ξ, c ξ = ClassGroup.mk0 ⟨I ξ, mem_nonZeroDivisors_of_ne_zero (hI0 ξ)⟩ := ⟨_, fun _ => rfl⟩

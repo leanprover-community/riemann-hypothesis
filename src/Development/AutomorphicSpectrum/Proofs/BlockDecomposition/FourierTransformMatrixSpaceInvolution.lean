@@ -167,7 +167,7 @@ theorem inner_gaussian (a : ℝ) (R : V ≃ₗᵢ[ℝ] V) {b : ℂ} (hb : 0 < b.
     simp only [Complex.I_sq]
     ring
 
-theorem integral_gauss_kerOp (C : ℂ) (a : ℝ) (ha : a ≠ 0) (R : V ≃ₗᵢ[ℝ] V) {b : ℂ} (hb : 0 < b.re)
+theorem integral_gauss_kerOp (C : ℂ) (a : ℝ) (R : V ≃ₗᵢ[ℝ] V) {b : ℂ} (hb : 0 < b.re)
     (f : 𝓢(V, ℂ)) :
     ∫ t : V, cexp (-b * ((‖t‖ ^ 2 : ℝ) : ℂ)) * kerOp C a R f t =
       C * (Real.pi / b) ^ (Module.finrank ℝ V / 2 : ℂ) *
@@ -330,7 +330,7 @@ theorem integral_chirp_kerOp (C : ℂ) (k a : ℝ) (hk : k ≠ 0) (ha : a = 2 * 
       fun δ : ℝ => C * (Real.pi / b δ : ℂ) ^ (Module.finrank ℝ V / 2 : ℂ) * ∫ v : V, f v *
         cexp (-((Real.pi : ℂ) ^ 2 * (a : ℂ) ^ 2 * ((‖v‖ ^ 2 : ℝ) : ℂ) / b δ)) := by
     filter_upwards [hpos] with δ hδ
-    exact integral_gauss_kerOp C a ha0 R (by rw [hbre]; exact hδ) f
+    exact integral_gauss_kerOp C a R (by rw [hbre]; exact hδ) f
   exact tendsto_nhds_unique (h1.congr' h5) h4
 
 theorem exists_chain (C : ℂ) (k a : ℝ) (hC : C ≠ 0) (hk : k ≠ 0) (ha : a = 2 * |k|)

@@ -188,7 +188,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qi18.norm_pow_sub_pow_le.{u_1} :
-    ∀ {K : Type u_1} [inst : NormedField K]
+    ∀ {K : Type u_1} [NormedField K]
     [IsUltrametricDist K] (x y : K), ‖x‖ ≤ (1 : ℝ) → ‖y‖ ≤ (1 : ℝ) → ∀ (e : ℕ), ‖x ^ e - y ^ e‖ ≤ ‖x - y‖ := by
   intro K _ _ x y hx hy e
   induction e with

@@ -389,12 +389,12 @@ theorem lastStepDatumLaw_K1Depth_twiceM : ∀ {X : Fields} {Pr : Primes X} {R : 
     (fun x h => by
       unfold PhiTopG at h
       (try rw [ite_eq_right hw] at h)
-      exact tlq_phiQ_supp hqm hu ξ hc0 hr' hrA' x h)
+      exact tlq_phiQ_supp ξ hc0 x h)
     (fun x x' hx hx' hred => by
       show PhiTopG Ch mu cst.sharp (m2 + 1) (m2 + 1 + 1) (R.N (m2 + 1 + 1)) w.1 _ = PhiTopG Ch mu cst.sharp (m2 + 1) (m2 + 1 + 1) (R.N (m2 + 1 + 1)) w.1 _
       unfold PhiTopG
       rw [ite_eq_right hw]
-      exact tlq_phiQ_red hqm hu ξ hc0 hr' hrA' x x' hx hx' hred)
+      exact tlq_phiQ_red hqm hu ξ hc0 x x' hx hx' hred)
     (fun η => ftY sel mu cst w η y₁)
     (fun η h => by
       unfold ftY at h

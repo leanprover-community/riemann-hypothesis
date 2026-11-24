@@ -618,7 +618,7 @@ theorem below_iff_rows (t : k) (Y Y₀ : Matrix (Fin n) (Fin d) k) : Below t Y Y
     rw [← this]
     congr 1
     show ∑ x, (c i (Sum.inr x) : k) * (t • (Pi.single x 1 : Fin d → k)) j = _
-    rw [Finset.sum_eq_single j (fun b _ hb => by simp [Pi.single_apply, Ne.symm hb]) (by simp)]
+    rw [Finset.sum_eq_single j (fun b _ hb => by simp [Ne.symm hb]) (by simp)]
     simp [mul_comm]
 
 end Int

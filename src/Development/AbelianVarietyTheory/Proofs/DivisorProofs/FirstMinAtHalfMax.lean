@@ -193,7 +193,7 @@ theorem firstMin_at_halfMax (hLw : Laws D j Xo c U dict) {σ : c.F →+* ℂ} (h
     obtain ⟨τ0, hτ0⟩ := hmax _ (hsub v hv) (smul_ne_zero hb0 hv0)
     have hemb : Data.emb τ0.1 (b • v) = τ0.1 b • Data.emb τ0.1 v := by
       funext a; simp [Data.emb]
-    rw [hemb, FinrankRieszBounds.maj_csmul hz0] at hτ0
+    rw [hemb, FinrankRieszBounds.maj_csmul] at hτ0
     have hm0 := fun τ => MajorantConjugateTransfer.maj_nonneg Xx.toData hz0 τ (Data.emb τ.1 v)
     have hterm : ∀ τ, 0 ≤ Xx.toData.c τ * Xx.toData.maj z0 τ (Data.emb τ.1 v) := fun τ =>
       mul_nonneg (by rw [hc]; positivity) (hm0 τ)

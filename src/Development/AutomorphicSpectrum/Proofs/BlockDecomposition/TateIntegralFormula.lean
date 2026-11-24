@@ -106,7 +106,7 @@ end GlobalTheory.CompanionTheory.TateRes
 namespace GlobalTheory.CompanionTheory.TateRes
 variable {F : Type} [Field F] [NumberField F]
 
-theorem md_ray (hF : IsTotallyReal F) {θ : ℝ →+* HeckeCharacterZeroLocus.SiegelWeilU.Ainf F} (hθ : Continuous θ) {r : ℝ → IdeleGroup F}
+theorem md_ray (hF : IsTotallyReal F) {θ : ℝ →+* HeckeCharacterZeroLocus.SiegelWeilU.Ainf F} {r : ℝ → IdeleGroup F}
     (hr : IsRay θ r) {δ : ℝ} (hδ : 0 < δ) : md (r δ) = δ ^ Module.finrank ℚ F := by
   have hn : ∀ w : InfinitePlace F, ‖θ δ w‖ = δ := by
     intro w
@@ -405,7 +405,7 @@ theorem tendsto_fiber (hF : IsTotallyReal F) {θ : ℝ →+* HeckeCharacterZeroL
     have hx : 0 < md a ^ (1 / (d : ℝ)) := Real.rpow_pos_of_pos (md_pos a) _
     refine ⟨r _, hrH _ hx, ?_⟩
     have hm : md (r (md a ^ (1 / (d : ℝ)))) = md a := by
-      rw [md_ray hF hθ hr hx, ← Real.rpow_natCast, ← Real.rpow_mul (md_pos a).le,
+      rw [md_ray hF hr hx, ← Real.rpow_natCast, ← Real.rpow_mul (md_pos a).le,
         one_div_mul_cancel hd0, Real.rpow_one]
     rw [normOneSubgroup, MonoidHom.mem_ker, map_mul, map_inv,
       show ideleModule F (r (md a ^ (1 / (d : ℝ)))) = ideleModule F a from Subtype.ext hm, mul_inv_cancel]
@@ -441,7 +441,7 @@ theorem tendsto_fiber (hF : IsTotallyReal F) {θ : ℝ →+* HeckeCharacterZeroL
     exact tendsto_id.atBot_div_const (by positivity)
   refine (hray.comp hx).congr fun y => ?_
   have hm : md (moduleSection w (expPos y)) = md (r (Real.exp (y / d))) := by
-    rw [md_ray hF hθ hr (Real.exp_pos _), ← Real.exp_nat_mul, mul_div_cancel₀ _ hd0]
+    rw [md_ray hF hr (Real.exp_pos _), ← Real.exp_nat_mul, mul_div_cancel₀ _ hd0]
     simp [md]
   rw [show expPos y = ⟨Real.exp y, Real.exp_pos y⟩ from rfl, fiber_eq w f (Real.exp_pos y)]
   exact (fiber_translate _ _ hm).symm

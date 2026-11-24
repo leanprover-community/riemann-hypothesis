@@ -462,7 +462,7 @@ theorem hasDerivAt_translate_secondColumns {Φ : d.Fn} (hΦ : Φ ∈ d.sch) {Z :
         (Pi.single j (1 : mixedEmbedding.mixedSpace F) : d.κ → mixedEmbedding.mixedSpace F) i := fun i =>
       congrFun (Dense.evI_pt (Pi.single j (1 : mixedEmbedding.mixedSpace F)) 0) i
     simp only [e4] at e3
-    rw [Finset.sum_eq_single j (fun i _ hi => by simp [Pi.single_apply, hi]) (by simp)] at e3
+    rw [Finset.sum_eq_single j (fun i _ hi => by simp [hi]) (by simp)] at e3
     have e0 : evI F (0 : AF F) = 0 := map_zero (InfiniteAdeleRing.ringEquiv_mixedSpace F)
     simpa [Box.nf, e0] using e3
   have hu0 : Z * (_root_.PositivityTheory.SiegelWeilFormula.KK.secondFrameColumns d)ᵀ = 0 := _root_.PositivityTheory.SiegelWeilFormula.KK.eq_zero_of_nf_k hu ha h2

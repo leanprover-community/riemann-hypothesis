@@ -151,7 +151,7 @@ private theorem exists_etale_mvPolynomialHom_castAdd_coord (p : X ⟶ Spec (Comm
   have : Algebra.FormallyEtale (MvPolynomial (ULift.{u} (Fin d)) Γ(X, W)) Γ(Y, V) :=
     chartAlgebra_formallyEtale hW hV g
   set χ : MvPolynomial (ULift.{u} (Fin m) ⊕ ULift.{u} (Fin d)) k →+* Γ(Y, V) :=
-    (chartEvalHom hW g).comp
+    (chartEvalHom g).comp
       (EtaleCoordinates.sumEval k (ULift.{u} (Fin m)) (ULift.{u} (Fin d)) Γ(X, W)).toRingHom
     with hχdef
   let _ : Algebra (MvPolynomial (ULift.{u} (Fin m) ⊕ ULift.{u} (Fin d)) k) Γ(Y, V) := χ.toAlgebra

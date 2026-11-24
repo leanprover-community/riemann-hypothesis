@@ -295,7 +295,7 @@ lemma primeLogSum_small :
   norm_num
   linarith
 
-lemma primeLogSum_nat (N : ℕ) (hN : 1 ≤ N) :
+lemma primeLogSum_nat (N : ℕ) :
     ∑ p ∈ (Finset.Iic N).filter Nat.Prime, Real.log p / ((p : ℝ) - 1) ≤ Real.log N + 2.2 := by
   have h : Finset.Iic N = Finset.range (N + 1) := by ext; simp
   rw [h]

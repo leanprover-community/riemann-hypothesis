@@ -78,7 +78,7 @@ theorem powVal_zero (r : Z ⟶ Y) (z : Z) {i : L.ι} (hi : g (r z) ∈ L.U i) :
 
 theorem powVal_ext (hL : L.IsLB) {a b : LB.Sec (LB.LinComb L (K := Fin 1) (fun _ => g) (fun _ => k))}
     (h : ∀ y i, g y ∈ L.U i → powVal a (𝟙 Y) y i = powVal b (𝟙 Y) y i) : a = b :=
-  sec_ext' hL fun y J hJ => h y _ (hJ (𝟙 Y ≫ g))
+  sec_ext' hL fun y _ hJ => h y _ (hJ (𝟙 Y ≫ g))
 
 end Pow
 

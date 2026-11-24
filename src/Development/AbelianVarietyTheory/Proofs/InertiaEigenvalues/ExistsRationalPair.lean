@@ -297,7 +297,7 @@ private theorem toUnit_comp_pow_eq_one_of_pow_eq_one {S : Scheme.{0}} {G : Over 
   simp
 
 theorem exists_rational_pair {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {R : Type}
-    [CommRing R] [IsDomain R] [CharZero R] {I : Ideal R} (hA : AdmBase R I) {t : SAB H (Sp R)} (P : PELUnif I t)
+    [CommRing R] [IsDomain R] [CharZero R] {I : Ideal R} {t : SAB H (Sp R)} (P : PELUnif I t)
     (hT : P.TorsionIso) {S : Scheme.{0}} (t₀ : SAB H S) (z : Sp (FractionRing R) ⟶ S) (ψ : P.A.A.left ⟶ t₀.G.left)
     (hψ : IsGrpPullback P.A.A t₀.G z ψ) {k : ℕ} (hk : 0 < k)
     (rat : ∀ q : QkPt P.D.toPre (AlgebraicClosure (FractionRing R)) k, ∃ p : QkPt P.D.toPre (FractionRing R) k,

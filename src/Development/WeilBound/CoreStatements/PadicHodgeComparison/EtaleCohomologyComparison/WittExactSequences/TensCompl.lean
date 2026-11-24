@@ -418,7 +418,7 @@ theorem side {T : Type} [CommRing T] (t : T) (hu : ∀ x : T, IsUnit (1 + t * x)
     linear_combination E * hw - E * t * w * hab - f * hE
   exact ⟨v * (E * t * w * b), by linear_combination -v * key + E * f * hv⟩
 
-theorem mid {T : Type} [CommRing T] (P Q E f F f' F' k v v' u' : T) (hP : P * P = P) (hQ : Q * Q = Q)
+theorem mid {T : Type} [CommRing T] (P Q E f F f' F' k v v' u' : T) (hQ : Q * Q = Q)
     (hA : P * f = P * F * v) (hB : Q * f' = Q * F' * v') (hu : v' * u' = 1)
     (hk : k * F' = P * Q * E * F) : ∃ c, c * f' = P * Q * E * f := by
   exact ⟨v * k * Q * u', by
@@ -447,9 +447,9 @@ theorem core {T : Type} [CommRing T] (t : T) (hu : ∀ x : T, IsUnit (1 + t * x)
   obtain ⟨u₁, hu₁⟩ := (hu (s' * d')).exists_right_inv
   obtain ⟨u₂, hu₂⟩ := (hu (s * d)).exists_right_inv
   obtain ⟨c₃, hc₃⟩ := GlobalTheory.CompanionTheory.ComplVal.mid (1 - E₁) (1 - E₂) E f F f' F' k (1 + t * (s * d))
-    (1 + t * (s' * d')) u₁ hP hQ hA hB hu₁ hk
+    (1 + t * (s' * d')) u₁ hQ hA hB hu₁ hk
   obtain ⟨c₄, hc₄⟩ := GlobalTheory.CompanionTheory.ComplVal.mid (1 - E₂) (1 - E₁) (1 - E) f' F' f F k' (1 + t * (s' * d'))
-    (1 + t * (s * d)) u₂ hQ hP hB hA hu₂ (by linear_combination hk')
+    (1 + t * (s * d)) u₂ hP hB hA hu₂ (by linear_combination hk')
   refine ⟨E₁ + (1 - E₁) * (1 - E₂) * E, ?_, ?_, ?_⟩
   · show (E₁ + (1 - E₁) * (1 - E₂) * E) * (E₁ + (1 - E₁) * (1 - E₂) * E) = E₁ + (1 - E₁) * (1 - E₂) * E
     linear_combination (1 - 2 * (1 - E₂) * E + (1 - E₂) ^ 2 * E ^ 2) * h₁ + (1 - E₁) * E ^ 2 * h₂
@@ -615,7 +615,7 @@ theorem isColim : IsColim f (ι f) := by
 end GlobalTheory.CompanionTheory.ColimEx
 
 theorem GlobalTheory.CompanionTheory.ColimEx.exists_isColim : ∀ (A : Type) [CommRing A](G : ℕ → Type) [∀ n, CommRing (G n)] [∀ n, Algebra A (G n)] (f : ∀ n, G n →ₐ[A] G (n + 1)), ∃ (L : Type) (_ : CommRing L) (_ : Algebra A L), ∃ ι : ∀ n, G n →ₐ[A] L, IsColim f ι :=
-  fun A _ G _ _ f => ⟨GlobalTheory.CompanionTheory.ColimEx.Lim f, inferInstance, inferInstance, GlobalTheory.CompanionTheory.ColimEx.ι f,
+  fun _ _ _ _ _ f => ⟨GlobalTheory.CompanionTheory.ColimEx.Lim f, inferInstance, inferInstance, GlobalTheory.CompanionTheory.ColimEx.ι f,
     GlobalTheory.CompanionTheory.ColimEx.isColim f⟩
 end -- clump:auto
 end -- clump:auto

@@ -792,9 +792,9 @@ theorem yMul_factorization_le {k : ℕ} (p : ℕ) (m : XY k →₀ ℕ) :
     multinomial_factorization_le p Finset.univ (fun i : Fin k => m (Sum.inr i))
 
 theorem xFact_ne_zero {k : ℕ} (m : XY k →₀ ℕ) : xFact m ≠ 0 :=
-  Finset.prod_ne_zero_iff.2 (fun i _ => Nat.factorial_ne_zero _)
+  Finset.prod_ne_zero_iff.2 (fun _ _ => Nat.factorial_ne_zero _)
 theorem yFact_ne_zero {k : ℕ} (m : XY k →₀ ℕ) : yFact m ≠ 0 :=
-  Finset.prod_ne_zero_iff.2 (fun i _ => Nat.factorial_ne_zero _)
+  Finset.prod_ne_zero_iff.2 (fun _ _ => Nat.factorial_ne_zero _)
 
 section std
 variable {K : Type} [Field K] [CharZero K] {k A B : ℕ} (R : Subring K)

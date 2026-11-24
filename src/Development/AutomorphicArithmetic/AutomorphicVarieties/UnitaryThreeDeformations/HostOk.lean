@@ -108,8 +108,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.LocallyConstantOfOpen.ho_locConst :
-    ∀ {Γ A : Type} [inst : Group Γ] [inst_1 : TopologicalSpace Γ]
-    [IsTopologicalGroup Γ] [inst_3 : Group A] (ψ : Γ →* A), IsOpen (↑ψ.ker : Set Γ) → IsLocallyConstant (⇑ψ : Γ → A) := by
+    ∀ {Γ A : Type} [Group Γ] [TopologicalSpace Γ]
+    [IsTopologicalGroup Γ] [Group A] (ψ : Γ →* A), IsOpen (↑ψ.ker : Set Γ) → IsLocallyConstant (⇑ψ : Γ → A) := by
   exact UpperTheory.Reformulated.B.LocallyConstantOfKernel.lc_of_ker
 end -- clump:auto
 end -- clump:auto

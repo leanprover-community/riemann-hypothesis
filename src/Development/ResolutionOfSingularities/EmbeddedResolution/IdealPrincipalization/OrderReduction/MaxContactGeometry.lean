@@ -140,8 +140,7 @@ def weakTransform {k : Type u} [Field k] {V : Scheme.{u}}
     (i : ℕ) (hi : i < u.length) (b : (u.schemeAt i).IdealSheafData) (hb : b ≤ u.center i) :
     (u.schemeAt (i + 1)).IdealSheafData :=
   haveI : AlgebraicGeometry.IsLocallyNoetherian (u.schemeAt (i + 1)) := hN (i + 1) hi
-  controlledTransform (u.transitionMapSucc i) (u.center i) b 1 (u.isBlowupAlongIdealSheaf_blowupMorphism i hi)
-    (le_pow_one_of_le hb)
+  controlledTransform (u.transitionMapSucc i) (u.center i) b 1
 
 theorem exceptionalIdeal_mul_weakTransform {k : Type u} [Field k] {V : Scheme.{u}}
     {q : V ⟶ Spec (CommRingCat.of k)} {A : V.IdealSheafData} {μ : ℕ}
@@ -1248,7 +1247,7 @@ theorem isLocallyNoetherian_schemeAt : ∀ (T : MarkedIdealWithBoundary.{u}), T.
     i ≤ s.length → AlgebraicGeometry.IsLocallyNoetherian (s.schemeAt i) := by
   intro T hT s i hi
   have : AlgebraicGeometry.IsNoetherian (s.schemeAt i) :=
-    MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hT s i hi
+    MarkedSequenceOfBlowups.isNoetherian_schemeAt hT s i hi
   infer_instance
 
 theorem isBalanced_comap_of_smooth : ∀ (T : MarkedIdealWithBoundary.{u}), T.IsAdmissible → ∀ (Y : Scheme.{u})
@@ -1269,7 +1268,7 @@ theorem isBalanced_comap_of_smooth : ∀ (T : MarkedIdealWithBoundary.{u}), T.Is
 
 theorem maxContactIdealComapLeControlled : MaxContactIdealComapLeControlled.{u} := by
   intro k _ _ X X₁ p _ _ π Z E hZ hπ _ _ _ A μ hμ hA A₁ hA₁
-  have hct : A₁ = controlledTransform π Z A μ hπ hA :=
+  have hct : A₁ = controlledTransform π Z A μ :=
     eq_controlledTransform_of_mul_eq_comap π Z A μ hπ hA A₁ hA₁
   have key := comap_derivIdealSheafIterate_le_exceptionalIdeal_pow_mul k p π Z E hZ hπ A μ hA
     (μ - 1) (Nat.sub_le μ 1)

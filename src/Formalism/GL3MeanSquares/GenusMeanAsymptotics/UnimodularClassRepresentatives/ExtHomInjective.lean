@@ -393,7 +393,7 @@ theorem pair (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K
   have hr₂' : ((extP K 𝔭) ^ r₂ • A₂ : Submodule (𝓞 K) V) ≤ B := le_inf hr₂ Submodule.smul_le_right
   have hlA₁ : locF 𝔭 A₁ = A₁ := LocalizedFibreSets.locF_idem 𝔭 M₁
   have hlA₂ : locF 𝔭 A₂ = A₂ := LocalizedFibreSets.locF_idem 𝔭 M₂
-  have hlB : locF 𝔭 B = B := locF_inf h𝔭 hlA₁ hlA₂
+  have hlB : locF 𝔭 B = B := locF_inf hlA₁ hlA₂
   have hCB : ∀ g ∈ C, Formalism.HermitianLatticesTheory.gmap g B = B := by
     rintro g ⟨hg1, hg2⟩
     have e : Formalism.HermitianLatticesTheory.gmap g B = Formalism.HermitianLatticesTheory.gmap g A₁ ⊓ Formalism.HermitianLatticesTheory.gmap g A₂ :=
@@ -443,9 +443,9 @@ theorem pair (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K
     fun A r hr hrk => (_root_.Formalism.HermitianLattices.Ext.L3.D2.smul_anti 𝔭 A hrk).trans hr
   have hfinB := finite_quot_inf hM₁.toIsLattice hM₂.toIsLattice h𝔭 k
   have s₁ := cnt_sub hF (h := h) h𝔭 hlA₁ hlB (GoodPrimeTerms.isIntegralAt_locF h𝔭.isPrime hF hM₁i) inf_le_left
-    (hle A₁ r₁ hr₁' (by omega)) hfinB n hΩB (hst A₁ r₁ hr₁' (by omega))
+    (hle A₁ r₁ hr₁' (by omega)) n hΩB (hst A₁ r₁ hr₁' (by omega))
   have s₂ := cnt_sub hF (h := h) h𝔭 hlA₂ hlB (GoodPrimeTerms.isIntegralAt_locF h𝔭.isPrime hF hM₂i) inf_le_right
-    (hle A₂ r₂ hr₂' (by omega)) hfinB n hΩB (hst A₂ r₂ hr₂' (by omega))
+    (hle A₂ r₂ hr₂' (by omega)) n hΩB (hst A₂ r₂ hr₂' (by omega))
   have i0 := card_quot_inf_ne_zero (M₁ := M₁) (M₂ := M₂) inferInstance inferInstance h𝔭
   have im := card_quot_inf_mul hK hF hs hd (M₁ := M₁) (M₂ := M₂)
     inferInstance hM₁i inferInstance hM₂i h𝔭
@@ -607,7 +607,7 @@ theorem inf_fixS_eq_map (S : VecSplit h h') (M : Submodule (𝓞 K) V) :
   · rintro ⟨g', hg', rfl⟩
     exact ⟨hg', SplitBAux.extOf_x₀ S g'⟩
 
-theorem relIndex_fix_eq (hs : h.IsSymm) (S : VecSplit h h') (M₁ M₂ : Submodule (𝓞 K) V) :
+theorem relIndex_fix_eq (S : VecSplit h h') (M₁ M₂ : Submodule (𝓞 K) V) :
     (autSub h M₂ ⊓ fixS S.x₀).relIndex (autSub h M₁ ⊓ fixS S.x₀) =
       (autExt S M₂).relIndex (autExt S M₁) := by
   rw [inf_fixS_eq_map, inf_fixS_eq_map, Subgroup.relIndex_map_map_of_injective _ _ (extHom_injective S)]
@@ -718,7 +718,7 @@ theorem kap_eq (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF
   rw [← LocalizedFibreSets.cut_locF, ← LocalizedFibreSets.cut_locF, ← hQ, ← hR] at h3
   filter_upwards [pair hK hF hs hd (by first | exact hM₁) hM₁i (by first | exact hM₂) hM₂i h𝔭 hn hx hx₁ hx₂] with J hJ
   filter_upwards [hJ] with k hk
-  rw [relIndex_fix_eq hs, relIndex_fix_eq hs, ← hP, ← hW] at hk
+  rw [relIndex_fix_eq, relIndex_fix_eq, ← hP, ← hW] at hk
   unfold kap oM
   rw [← hP, ← hW, ← hQ, ← hR]
   refine kap_alg (pow_pos hq _).ne' (pow_pos hq _).ne'

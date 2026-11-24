@@ -80,7 +80,7 @@ private theorem part_eq {D : Dom E n 0} {π : CuspSub E n} {U Uπ : Hs (ι := ι
   rw [map_sub, sub_eq_zero] at h2
   rw [h2, h1]
 
-private theorem vec_int {D : Dom E n 0} (w : Lp ℂ 2 D.ν) (c : ι → ℂ) (j : ι) {φ : H E n 0 → ℂ} (hφ : IsTestH φ)
+private theorem vec_int {D : Dom E n 0} (w : Lp ℂ 2 D.ν) (c : ι → ℂ) (j : ι) {φ : H E n 0 → ℂ}
     (x : H E n 0) :
     ∫ y, kerH φ x y * ((vecM w c) j : H E n 0 → ℂ) y ∂D.ν = c j * ∫ y, kerH φ x y * (w : H E n 0 → ℂ) y ∂D.ν := by
   have e : ((vecM w c) j : H E n 0 → ℂ) =ᵐ[D.ν] fun y => c j * (w : H E n 0 → ℂ) y := by
@@ -116,7 +116,7 @@ theorem ker_pf :
       rw [part_eq m.pp, hPC E n s.pos s.D s.π s.fix ι s.Φ₂ s.T₂ s.t₂ s.o₂, hPD E n s.D s.π ι]
     rw [e1, hPR E n ι s m.Φ (s.T₁ * m.U * s.T₂) m.t m.o (m.U (s.T₂ (vecM w fun l => s.M l i)))
       (vecM w fun l => s.M l i) rfl x i]
-    exact Finset.sum_congr rfl fun j _ => vec_int w _ j (m.t i j) x
+    exact Finset.sum_congr rfl fun j _ => vec_int w _ j x
   refine ⟨?_, ?_⟩
   · simpa only [hG] using integrable_finsetSum _ fun i _ => hI i
   · simp only [hG]

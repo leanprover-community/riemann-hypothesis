@@ -48,10 +48,10 @@ theorem isUpUni_of {A : Matrix (Fin n) (Fin n) B} (h : IsUpU A) : Formalism.Doub
   ⟨fun i j hij => h.2 i j hij, h.1⟩
 
 theorem isLoU_of {A : Matrix (Fin n) (Fin n) B} (h : Formalism.DoubleCosetMeasures.IsLowUni A) : IsLoU A :=
-  ⟨h.2, fun i j hij => h.1 hij⟩
+  ⟨h.2, fun _ _ hij => h.1 hij⟩
 
 theorem isUpU_of {A : Matrix (Fin n) (Fin n) B} (h : Formalism.DoubleCosetMeasures.IsUpUni A) : IsUpU A :=
-  ⟨h.2, fun i j hij => h.1 hij⟩
+  ⟨h.2, fun _ _ hij => h.1 hij⟩
 
 theorem isLoU_mul {A A' : Matrix (Fin n) (Fin n) B} (h : IsLoU A) (h' : IsLoU A') : IsLoU (A * A') :=
   isLoU_of (Formalism.DoubleCosetMeasures.isLowUni_mul B (isLowUni_of h) (isLowUni_of h'))

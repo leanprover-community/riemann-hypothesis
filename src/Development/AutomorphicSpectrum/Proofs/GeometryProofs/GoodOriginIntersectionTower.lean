@@ -1402,7 +1402,7 @@ theorem one_coord₂ (hBr : ResBridgeStatement) (hG : GoodProjExistsStatement) {
   have hpot : ∀ i, IsPotential R.A (potOf R (L i)) := fun i => potOf_isPotential R (L i) (hL i)
   have hlin := mIntLinear R.A (fun j => potOf R (L j)) hpot (-1)
     (fun x => logNorm M' g (R.lift x x)) (fun x => logNorm M f (R.lift x x))
-    (brIntegrable R L M' g hP hL hM' hsg) (brIntegrable R L M f hP hL hM hsf)
+    (brIntegrable R L M' g hL hM' hsg) (brIntegrable R L M f hL hM hsf)
   obtain ⟨Ψ, hΨ⟩ := hG K ι P e hP
   have hw' : mInt R.A (fun j => potOf R (L j)) (fun x => w (R.lift x x)) =
       mInt R.A (fun j => potOf R (L j))

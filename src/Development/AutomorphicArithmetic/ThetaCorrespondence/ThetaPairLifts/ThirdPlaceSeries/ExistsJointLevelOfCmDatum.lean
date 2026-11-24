@@ -155,7 +155,7 @@ section Dat
 variable {iso : ∀ kv : (Σ kk : Fin 2, D.nd.PlG kk), ZMod (D.host.g kv.1) ≃+* kP (NX.pG D kv)}
   {Pq : HeightOneSpectrum (𝓞 (maximalRealSubfield D.host.E)) → PlE D.host} {f : Formalism.IndefR.NX.U D.nd → ℂ}
 
-theorem ut_one {m r : ℕ} {k : Type} [CommRing k] : UT r (1 : Matrix (Fin m) (Fin m) k) := fun a c _ _ =>
+theorem ut_one {m r : ℕ} {k : Type} [CommRing k] : UT r (1 : Matrix (Fin m) (Fin m) k) := fun a _ _ _ =>
   ⟨fun h => Matrix.one_apply_ne h.ne', fun h => h ▸ Matrix.one_apply_eq a⟩
 
 theorem mem_lev_of_red {V : HSp D} {L : Formalism.L2.DIV.LevDat D.host.E ℂ V.rank} (hL : UniDat iso Pq f L) (g : Formalism.L2.Theta.GA D V)
@@ -401,7 +401,7 @@ theorem joint_of {Y : R3.Read (A3 := A3) R.toRealDat F.lv2 X0} {M : MtFam D} (ad
       exact blockSizes_sub_eq_twoBlock _
     · obtain ⟨q, hq, hcard, -, hqg⟩ := (hlev.Q_pl _ PP hPP).1
       exact GlobalTheory.LevelTypePlace.not_two_primes PP.asIdeal (D.host.g_prime k) hq (hqg k).symm hk
-        (GlobalTheory.LevelTypePlace.natCast_mem_of_card PP hcard hq.ne_zero)
+        (GlobalTheory.LevelTypePlace.natCast_mem_of_card PP hcard)
     · have := rat.lvl (R.eG.symm (cG.symm g))
       rwa [MulEquiv.trans_apply, MulEquiv.apply_symm_apply, MulEquiv.apply_symm_apply] at this
     · have e : (R.eG.trans cG) (R.eG.symm (cG.symm g)) = g := by

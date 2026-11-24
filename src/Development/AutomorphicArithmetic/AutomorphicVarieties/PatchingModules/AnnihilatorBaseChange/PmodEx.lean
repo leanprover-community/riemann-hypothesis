@@ -824,8 +824,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.FiniteModuleMaximalIdealAnnihilation.exists_pow_maximalIdeal_smul_finite_eq_zero :
-    ∀ (R Q : Type) [inst : CommRing R] [inst_1 : IsLocalRing R]
-    [inst_2 : AddCommGroup Q] [inst_3 : _root_.Module R Q] [Finite Q],
+    ∀ (R Q : Type) [CommRing R] [IsLocalRing R]
+    [AddCommGroup Q] [_root_.Module R Q] [Finite Q],
     ∃ (c : ℕ), ∀ a ∈ IsLocalRing.maximalIdeal R ^ c, ∀ (z : Q), a • z = (0 : Q) := by
   intro R Q _ _ _ _ _
   haveI : Finite (Submodule R Q) :=
@@ -1085,7 +1085,7 @@ private theorem const_bij {R X : Type} [CommRing R] [AddCommGroup X] [Module R X
 
 private theorem comp_smul {R : Type} [CommRing R] (F : Filter ℕ) (I : ℕ → Ideal R) (M M' : ℕ → Type)
     [∀ N, AddCommGroup (M N)] [∀ N, Module R (M N)] [∀ N, AddCommGroup (M' N)] [∀ N, Module R (M' N)]
-    (ν : ℕ → ℕ) (hν : Tendsto ν F atTop) (hI : Antitone I) (f : R)
+    (ν : ℕ → ℕ) (f : R)
     (φ : ∀ N, (M N ⧸ (I (ν N) • ⊤ : Submodule R (M N))) →ₗ[R] (M' N ⧸ (I (ν N) • ⊤ : Submodule R (M' N))))
     (ψ : ∀ N, (M' N ⧸ (I (ν N) • ⊤ : Submodule R (M' N))) →ₗ[R] (M N ⧸ (I (ν N) • ⊤ : Submodule R (M N))))
     (h : ∀ᶠ N in F, ∀ z, ψ N (φ N z) = f • z)
@@ -1127,8 +1127,8 @@ theorem UpperTheory.V.Pa.Core.exists_ultraLimit_pair_of_eventual_quotient_maps :
   have hgood := hP.mono fun N hN => hφψ N (hN _ le_rfl)
   obtain ⟨Φ, hΦ⟩ := ulimQuot R U I (fun _ => X) M ν φ hanti hν
   obtain ⟨Ψ, hΨ⟩ := ulimQuot R U I M (fun _ => X) ν ψ hanti hν
-  have h1 := comp_smul U I (fun _ => X) M ν hν hanti f φ ψ (hgood.mono fun _ hN => hN.2) Φ Ψ hΦ hΨ
-  have h2 := comp_smul U I M (fun _ => X) ν hν hanti f ψ φ (hgood.mono fun _ hN => hN.1) Ψ Φ hΨ hΦ
+  have h1 := comp_smul U I (fun _ => X) M ν f φ ψ (hgood.mono fun _ hN => hN.2) Φ Ψ hΦ hΨ
+  have h2 := comp_smul U I M (fun _ => X) ν f ψ φ (hgood.mono fun _ hN => hN.1) Ψ Φ hΨ hΦ
   have hc : IsAdicComplete m X :=
     (IsAdicComplete.map_algebraMap_iff (S := R) (maximalIdeal Λ) X).2 (AnnihilatorQuotientFinite.finCompl Λ X _)
   have hf : ∀ j : ℕ, Finite (X ⧸ (m ^ j • ⊤ : Submodule R X)) := by

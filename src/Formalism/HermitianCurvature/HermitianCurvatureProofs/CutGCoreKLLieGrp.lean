@@ -174,7 +174,7 @@ theorem stab_exp {z e : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hT : 0 <
     · exact hhe
   have hCd := dual_fix hh.1 hC'
   obtain ⟨e1, e2⟩ := decomp hc g3 h hC hCd
-  obtain ⟨B, hBs, hBe⟩ := unitary_log _ (unitary_of Qx8.hpk_herm hh.1 g1 e1)
+  obtain ⟨B, hBs, hBe⟩ := unitary_log _ (unitary_of hh.1 g1 e1)
   refine ⟨B, hBs, ?_⟩
   rw [exp_lift hc g1 g2 B, hBe, ← e2]
 

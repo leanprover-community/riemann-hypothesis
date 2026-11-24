@@ -173,7 +173,7 @@ variable {V : Type} [AddCommGroup V] [Module ℂ V]
 theorem levOp_id_mem (ρ : Representation ℂ G V) (K K' : Subgroup G) (hK'o : IsOpen (K' : Set G)) {f : G → ℂ}
     (hf : IsHecke K' f) : ∀ v ∈ fixed ρ K', levOp ρ K K' f LinearMap.id v ∈ fixed ρ K' :=
   fun v hv => GlobalTheory.TwTrLevel.levOp_mem_fixed ρ (MonoidHom.id G) (fun _ => rfl) LinearMap.id (fun _ => rfl) K K'
-    hK'o (fun k hk => hk) f hf v hv
+    hK'o (fun _ hk => hk) f hf v hv
 
 theorem rho_mem_fixed (ρ : Representation ℂ G V) {K K' : Subgroup G} (hle : K' ≤ K)
     (hn : (K'.subgroupOf K).Normal) {j : G} (hj : j ∈ K) : ∀ v ∈ fixed ρ K', ρ j v ∈ fixed ρ K' := by

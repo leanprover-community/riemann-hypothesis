@@ -127,7 +127,7 @@ theorem finite_uQ (hP : Ext.PackingCount) (R : ℝ) : {c : Qc X I | ‖uQ X I c�
 
 end Wsec
 
-theorem cs_tsum {κ : Type} (w N : κ → ℝ) (hw : ∀ c, 0 ≤ w c) (hN : ∀ c, 0 ≤ N c) (h1 : Summable w)
+theorem cs_tsum {κ : Type} (w N : κ → ℝ) (hw : ∀ c, 0 ≤ w c) (h1 : Summable w)
     (h2 : Summable (fun c => w c * N c ^ 2)) (h3 : Summable (fun c => w c * N c)) :
     (∑' c, w c * N c) ^ 2 ≤ (∑' c, w c) * ∑' c, w c * N c ^ 2 := by
   have key : ∀ t : ℝ, 0 ≤ (∑' c, w c) * t * t + (-2 * ∑' c, w c * N c) * t + ∑' c, w c * N c ^ 2 := by
@@ -430,7 +430,7 @@ theorem ptwise (x : Vsp X.dim) :
   have hnorm : ‖sP X I P.q β x‖ ≤ Real.exp (P.q * Real.pi * ‖x‖ ^ 2 / 2) * ∑' c, w c * N c := by
     refine (norm_tsum_le_tsum_norm hTs).trans (le_of_eq ?_)
     simp only [hT, tsum_mul_left]
-  have hcs := cs_tsum w N hw0 hN0 hw_s hwN2 hwN
+  have hcs := cs_tsum w N hw0 hw_s hwN2 hwN
   have hf : ‖sP X I P.q β x‖ ^ 2 * Real.exp (-(P.q * Real.pi) * ‖x‖ ^ 2) ≤
       2 * ∑' c, w c * N c ^ 2 := by
     set E1 := Real.exp (P.q * Real.pi * ‖x‖ ^ 2 / 2)

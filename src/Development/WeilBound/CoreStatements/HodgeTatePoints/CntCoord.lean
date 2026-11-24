@@ -341,9 +341,9 @@ noncomputable def rowEquiv {ι : Type} [Fintype ι] [DecidableEq ι] (Λ : Matri
     (ι → R) ≃ₗ[R] (ι → R) :=
   LinearEquiv.ofLinear (Matrix.vecMulLinear Λ) (Matrix.vecMulLinear Λ⁻¹)
     (LinearMap.ext fun x => by
-      simp [Matrix.vecMulLinear_apply, Matrix.vecMul_vecMul, Matrix.nonsing_inv_mul _ h])
+      simp [Matrix.vecMul_vecMul, Matrix.nonsing_inv_mul _ h])
     (LinearMap.ext fun x => by
-      simp [Matrix.vecMulLinear_apply, Matrix.vecMul_vecMul, Matrix.mul_nonsing_inv _ h])
+      simp [Matrix.vecMul_vecMul, Matrix.mul_nonsing_inv _ h])
 
 theorem rowEquiv_apply {ι : Type} [Fintype ι] [DecidableEq ι] (Λ : Matrix ι ι R)
     (h : IsUnit Λ.det) (x : ι → R) : rowEquiv Λ h x = ∑ j, x j • Λ j := by

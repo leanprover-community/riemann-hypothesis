@@ -1207,7 +1207,7 @@ theorem liftObj_of_noetherian (P : AbelianDeRham)
     (H : ∀ (R : Type) [CommRing R] [IsNoetherianRing R] (I : Ideal R) (hI : I ^ 2 = 0) (R₀ : Type) [CommRing R₀]
       (π : R →+* R₀), Function.Surjective π → RingHom.ker π = I → LiftObj (divided₂ hI) π ∧ LiftHom (divided₂ hI) π)
     (R : Type) [CommRing R] (I : Ideal R) (hI : I ^ 2 = 0) (R₀ : Type) [CommRing R₀] (π : R →+* R₀)
-    (hπ : Function.Surjective π) (hk : RingHom.ker π = I) : LiftObj (divided₂ hI) π := by
+    (hk : RingHom.ker π = I) : LiftObj (divided₂ hI) π := by
   intro g A₀ _ A' _ i' h' hA hg F ⟨⟨N, hN⟩, hF⟩
   obtain ⟨e, he, rfl⟩ : ∃ e : HdR A' →ₗ[R] HdR A', (∀ x, e (e x) = e x) ∧ F = LinearMap.range e :=
     ⟨Submodule.projection _ _ hN, fun x ↦ Submodule.projection_apply_left hN
@@ -1320,7 +1320,7 @@ theorem iota_injective (hI : RingHom.ker π = I) (S : Subring R) : Function.Inje
   exact ha
 
 def trans {S S' : Subring R} (h : S ≤ S') : S ⧸ I.comap S.subtype →+* S' ⧸ I.comap S'.subtype :=
-  Ideal.quotientMap _ (Subring.inclusion h) fun x hx => hx
+  Ideal.quotientMap _ (Subring.inclusion h) fun _ hx => hx
 
 theorem iota_comp_trans (hI : RingHom.ker π = I) {S S' : Subring R} (h : S ≤ S') :
     (iota I π hI S').comp (trans I h) = iota I π hI S := by
@@ -1402,7 +1402,7 @@ theorem isIso_spMap {A B : Type} [CommRing A] [CommRing B] (f : A ≃+* B) : IsI
 noncomputable def redEquiv {R R₀ : Type} [CommRing R] [CommRing R₀] (I : Ideal R) (π : R →+* R₀)
     (hI : RingHom.ker π = I) (S : Subring R) : S ⧸ I.comap S.subtype ≃+* (iota I π hI S).range :=
   RingEquiv.ofBijective (iota I π hI S).rangeRestrict
-    ⟨fun x y hxy => iota_injective I π hI S (congrArg Subtype.val hxy), (iota I π hI S).rangeRestrict_surjective⟩
+    ⟨fun _ _ hxy => iota_injective I π hI S (congrArg Subtype.val hxy), (iota I π hI S).rangeRestrict_surjective⟩
 
 theorem iota_redEquiv_symm {R R₀ : Type} [CommRing R] [CommRing R₀] (I : Ideal R) (π : R →+* R₀)
     (hI : RingHom.ker π = I) (S : Subring R) :
@@ -1423,7 +1423,7 @@ theorem iota_redInv {R R₀ : Type} [CommRing R] [CommRing R₀] (I : Ideal R) (
     (iota I π hI S).comp (redInv I π hI S) = (iota I π hI S).range.subtype :=
   iota_redEquiv_symm I π hI S
 
-theorem morphism_descends_to_reduction : ∀ (R : Type) [CommRing R] (I : Ideal R) (R₀ : Type) [CommRing R₀] (π : R →+* R₀) (hπ : Function.Surjective π) (hI : RingHom.ker π = I) (S : Subring R) (X X₀ Y₀ : Scheme.{0}) (p : X ⟶ Sp R₀) (a : X₀ ⟶ Sp (S ⧸ I.comap S.subtype)) (b : Y₀ ⟶ Sp (S ⧸ I.comap S.subtype)) (π' : X ⟶ X₀) [QuasiCompact a] [QuasiSeparated a] [LocallyOfFinitePresentation b] (φ : X ⟶ Y₀), IsPullback π' p a (spMap (GlobalTheory.AbHomDesc.iota I π hI S)) → φ ≫ b = π' ≫ a → ∃ F : Finset R, ∀ (S' : Subring R) (h : S ≤ S'), (F : Set R) ⊆ S' → ∀ (X₁ : Scheme.{0}) (a₁ : X₁ ⟶ Sp (S' ⧸ I.comap S'.subtype)) (π₁ : X₁ ⟶ X₀) (k : X ⟶ X₁), IsPullback π₁ a₁ a (spMap (GlobalTheory.AbHomDesc.trans I h)) → k ≫ π₁ = π' → k ≫ a₁ = p ≫ spMap (GlobalTheory.AbHomDesc.iota I π hI S') → ∃ ψ : X₁ ⟶ Y₀, k ≫ ψ = φ ∧ ψ ≫ b = π₁ ≫ a := by
+theorem morphism_descends_to_reduction : ∀ (R : Type) [CommRing R] (I : Ideal R) (R₀ : Type) [CommRing R₀] (π : R →+* R₀) (_ : Function.Surjective π) (hI : RingHom.ker π = I) (S : Subring R) (X X₀ Y₀ : Scheme.{0}) (p : X ⟶ Sp R₀) (a : X₀ ⟶ Sp (S ⧸ I.comap S.subtype)) (b : Y₀ ⟶ Sp (S ⧸ I.comap S.subtype)) (π' : X ⟶ X₀) [QuasiCompact a] [QuasiSeparated a] [LocallyOfFinitePresentation b] (φ : X ⟶ Y₀), IsPullback π' p a (spMap (GlobalTheory.AbHomDesc.iota I π hI S)) → φ ≫ b = π' ≫ a → ∃ F : Finset R, ∀ (S' : Subring R) (h : S ≤ S'), (F : Set R) ⊆ S' → ∀ (X₁ : Scheme.{0}) (a₁ : X₁ ⟶ Sp (S' ⧸ I.comap S'.subtype)) (π₁ : X₁ ⟶ X₀) (k : X ⟶ X₁), IsPullback π₁ a₁ a (spMap (GlobalTheory.AbHomDesc.trans I h)) → k ≫ π₁ = π' → k ≫ a₁ = p ≫ spMap (GlobalTheory.AbHomDesc.iota I π hI S') → ∃ ψ : X₁ ⟶ Y₀, k ≫ ψ = φ ∧ ψ ≫ b = π₁ ≫ a := by
   intro R _ I R₀ _ π hπ hI S X X₀ Y₀ p a b π' _ _ _ φ hpb hφ
   classical
   have hpb' : IsPullback π' p (a ≫ spMap (redInv I π hI S)) (spMap (iota I π hI S).range.subtype) := by
@@ -1819,7 +1819,7 @@ namespace GlobalTheory.SqLift
 theorem sqLifting_of_noetherian : AbelianDeRham → (∀ (R : Type) [CommRing R] [IsNoetherianRing R] (I : Ideal R) (hI : I ^ 2 = 0) (R₀ : Type) [CommRing R₀] (π : R →+* R₀),
     Function.Surjective π → RingHom.ker π = I → LiftObj (divided₂ hI) π ∧ LiftHom (divided₂ hI) π) → SqLifting := by
   intro P H R _ I h R₀ _ π hπ hI
-  refine ⟨_root_.GlobalTheory.NoethLiftObj.liftObj_of_noetherian P H R I h R₀ π hπ hI, ?_⟩
+  refine ⟨_root_.GlobalTheory.NoethLiftObj.liftObj_of_noetherian P H R I h R₀ π hI, ?_⟩
   intro g A₀ _ A _ i hA hAa hg g' B₀ _ B _ j hB hBa hg' f₀ _ hf
   obtain ⟨φ, hφ⟩ := GlobalTheory.T.liftHom_exists_of_noetherian_alt P H R I h R₀ π hπ hI g A₀ A i hA hAa hg g' B₀ B j hB hBa hg' f₀ hf
   exact GlobalTheory.T.existsUnique_isMonHom_lift_of_grpPullback_abelian R R₀ π hπ ⟨2, by rw [hI]; exact h⟩ A₀ B₀ A B i j hA hB hAa hBa f₀ φ hφ

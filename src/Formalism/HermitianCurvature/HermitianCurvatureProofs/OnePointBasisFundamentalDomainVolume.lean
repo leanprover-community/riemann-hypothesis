@@ -188,7 +188,7 @@ theorem ysOf_mem {K d : ℕ} {Y : Finset ℝ} (grid : Fin K → Fin (d + 1) → 
 
 end grid
 
-theorem scal_cs (α α₁ α₂ Pp q Q₁ Q₂ f₁ f₂ : ℝ) (hα : 0 ≤ α) (hαα : α ^ 2 = α₁ * α₂) (h₁ : 0 ≤ α₁) (h₂ : 0 ≤ α₂)
+theorem scal_cs (α α₁ α₂ Pp q Q₁ Q₂ f₁ f₂ : ℝ) (hα : 0 ≤ α) (hαα : α ^ 2 = α₁ * α₂)
     (hq : 0 < q) (hQ₁ : 0 < Q₁) (hQ₂ : 0 < Q₂) (hP : 0 ≤ Pp) (hf₁ : 0 ≤ f₁) (hf₂ : 0 ≤ f₂)
     (hcs : Pp ^ 2 * q ≤ f₁ * f₂) :
     α * Pp ≤ Real.sqrt (Q₁ * Q₂ / q) * Real.sqrt ((α₁ * f₁ / Q₁) * (α₂ * f₂ / Q₂)) := by

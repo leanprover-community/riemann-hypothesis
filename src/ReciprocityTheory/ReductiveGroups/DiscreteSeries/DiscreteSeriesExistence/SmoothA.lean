@@ -156,8 +156,8 @@ theorem actM_sub (X Y : Matrix (Fin n) (Fin n) ℂ) : actM E (X - Y) = actM E X 
 theorem actM_single (a b : Fin n) : actM E (Matrix.single a b 1) = E a b := by
   unfold actM
   rw [Finset.sum_eq_single a (fun x _ hx => Finset.sum_eq_zero fun y _ => by
-      simp [Matrix.single_apply, hx, Ne.symm hx]) (fun h => absurd (Finset.mem_univ a) h),
-    Finset.sum_eq_single b (fun y _ hy => by simp [Matrix.single_apply, hy, Ne.symm hy])
+      simp [Ne.symm hx]) (fun h => absurd (Finset.mem_univ a) h),
+    Finset.sum_eq_single b (fun y _ hy => by simp [Ne.symm hy])
       (fun h => absurd (Finset.mem_univ b) h)]
   simp
 
@@ -200,7 +200,7 @@ theorem Tm_add (hσ : IsURepOn (UJset ε) σ) {X Y : Matrix (Fin n) (Fin n) ℂ}
     (hY : inG ε Y) : Tm hσ (X + Y) = Tm hσ X + Tm hσ Y := by
   ext v
   rw [LinearMap.add_apply, Submodule.coe_add, Tm_apply hσ (inG_add hX hY), Tm_apply hσ hX, Tm_apply hσ hY]
-  have := dS_add_smul hσ hX hY 1 v.2
+  have := dS_add_smul hX hY 1 v.2
   simpa using this
 
 private theorem dS_real_smul (hσ : IsURepOn (UJset ε) σ) {X : Matrix (Fin n) (Fin n) ℂ}
@@ -208,7 +208,7 @@ private theorem dS_real_smul (hσ : IsURepOn (UJset ε) σ) {X : Matrix (Fin n) 
     dS σ ((r : ℂ) • X) v = (r : ℂ) • dS σ X v := by
   have hg' : HasDerivAt (fun t : ℝ => σ (NormedSpace.exp ((t : ℂ) • X)) v) (dS σ X v) (r * 0) := by
     rw [mul_zero]
-    exact hasDerivAt_dS hσ hX hv
+    exact hasDerivAt_dS hX hv
   have hh : HasDerivAt (fun t : ℝ => r * t) r 0 := by
     simpa using (hasDerivAt_id (0 : ℝ)).const_mul r
   have hc : HasDerivAt ((fun t : ℝ => σ (NormedSpace.exp ((t : ℂ) • X)) v) ∘ (fun t : ℝ => r * t))
@@ -322,7 +322,7 @@ private theorem single_one_mul_single_one' (a b c d : Fin n) :
     Matrix.single a b (1 : ℂ) * Matrix.single c d 1 = if b = c then Matrix.single a d 1 else 0 := by
   ext i j
   rw [Matrix.mul_apply, Finset.sum_eq_single b
-    (fun k _ hk => by simp [Matrix.single_apply, hk, Ne.symm hk])
+    (fun k _ hk => by simp [Matrix.single_apply, Ne.symm hk])
     (fun h => absurd (Finset.mem_univ b) h)]
   by_cases hbc : b = c
   · subst hbc
@@ -343,9 +343,9 @@ theorem actM_EcL (hσ : IsURepOn (UJset ε) σ) (X : Matrix (Fin n) (Fin n) ℂ)
     ext i j
     simp only [Matrix.sum_apply, Matrix.smul_apply, Matrix.single_apply, smul_eq_mul, mul_ite, mul_one,
       mul_zero]
-    rw [Finset.sum_eq_single i (fun k _ hk => Finset.sum_eq_zero fun l _ => by simp [hk, Ne.symm hk])
+    rw [Finset.sum_eq_single i (fun k _ hk => Finset.sum_eq_zero fun l _ => by simp [hk])
         (fun h => absurd (Finset.mem_univ i) h),
-      Finset.sum_eq_single j (fun l _ hl => by simp [hl, Ne.symm hl])
+      Finset.sum_eq_single j (fun l _ hl => by simp [hl])
         (fun h => absurd (Finset.mem_univ j) h)]
     simp
   unfold actM

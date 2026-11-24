@@ -347,7 +347,7 @@ theorem exists_surjective_coordMap_equivMap : ∀ (R : Type) [CommRing R] [IsDom
         erw [e₁, hβ, ← Category.assoc, hβ, hff]
       · refine (Category.assoc _ _ _).trans (Eq.trans ?_ (Category.assoc _ _ _).symm)
         erw [e₂, hβ', ← Category.assoc, Over.w f']
-    obtain ⟨m₂, hm₂⟩ := endChar_exists_of_isMonHom N hNb _ hG₂ D₂ A₂ U₂ _ hf₂
+    obtain ⟨m₂, hm₂⟩ := endChar_exists_of_isMonHom N _ D₂ A₂ U₂ _ hf₂
     have h₁ := hE₁ f _ hf hf₂ e₁ m m₂ hm hm₂ y
     exact (congrArg ρ h₁).trans (hE₂ _ f' hf₂ hf' e₃ m₂ m' hm₂ hm' _)
 

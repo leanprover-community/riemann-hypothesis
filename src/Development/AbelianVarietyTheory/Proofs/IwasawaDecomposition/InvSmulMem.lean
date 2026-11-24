@@ -327,7 +327,7 @@ theorem TC.cosetIn_rep_up (hX : B.fields.Ok) (hPr : (B.primes X).Ok) (u : B.Word
     have r : SameG ((I.stp u a i).rep c) (((I.atIn u a).A i).upPt v c x) :=
       SameG.up' ((I.stp u a i).rep c) v (moveHyp_of_ok hPr u v) _ (Quotient.out x).2
     exact cosetIn_eq_of_sameG (R := B.R) (sel := I.sel) (mu := I.tup a) (cst := I.cst a)
-      (u := u) (j := i) hX hPr
+      (u := u) (j := i)
       (SameG.smul (Λ := levGAt I.sel (I.tup a) (I.idx a) (I.Tp a) i c.1)
         (Θ := levQAt I.sel (I.tup a) (I.idx a) (I.Tp a) i c.1) h r)
   · have h0 : ∀ q : PtAt B.R I.sel (I.tup a) (I.cst a) u i, cosetIn q = fun _ => ∅ := by

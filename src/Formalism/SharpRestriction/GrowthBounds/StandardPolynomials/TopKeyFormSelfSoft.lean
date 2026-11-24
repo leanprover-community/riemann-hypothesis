@@ -174,7 +174,7 @@ theorem EhatT_wh (wt : VarH X → ℕ) (n : ℕ) (x : X.TT) (P : ℕ) (h : ∀ a
     (isWeightedHomogeneous_X (KK O) wt ((x, false), a))).pow P
   rwa [h a, smul_eq_mul] at h1
 
-theorem hpow_congr (S : UniformizedDVR X.p O) (hS : S.SqP) (x : X.TT) (e : ℕ) :
+theorem hpow_congr (S : UniformizedDVR X.p O) (x : X.TT) (e : ℕ) :
     InWj S.w (hTop O X x ^ (X.p ^ e) - EhatT O X x (X.p ^ e)) 1 := by
   classical
   set D : MvPolynomial (VarH X) O :=
@@ -201,7 +201,7 @@ theorem softH (S : UniformizedDVR X.p O) (hS : S.SqP) (x : X.TT) (e : ℕ) :
     { fac := by
         have := ((softOK_hTop S.w x).pow (X.p ^ e)).fac
         rw [mul_one] at this
-        exact this.congr_sg (hpow_congr S hS x e) ((mem_intSub O _).1 (EhatT_int x _))
+        exact this.congr_sg (hpow_congr S x e) ((mem_intSub O _).1 (EhatT_int x _))
       sgHom := ndHom_iff.2 (by
         have := EhatT_wh (O := O) (wN X) 1 x (X.p ^ e) (wN_pair x)
         rwa [mul_one] at this)

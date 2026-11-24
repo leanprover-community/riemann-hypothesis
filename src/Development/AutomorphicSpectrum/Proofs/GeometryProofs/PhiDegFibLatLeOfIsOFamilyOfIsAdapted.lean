@@ -646,7 +646,7 @@ theorem finite_finSum {k : Type} [Field k] [NumberField k] {N : Fl.LogNorms k} (
 
 theorem deg_eq_sub {k L L' : Type} [Field k] [NumberField k] [Field L] [NumberField L] [Field L'] [NumberField L']
     (β : k →+* L') (e : L →+* L') (N : Fl.LogNorms k) (N₁ N₂ : Fl.LogNorms L) (a : L') (ha : a ≠ 0)
-    (hN : N.IsAdelic) (h₁ : N₁.IsAdelic) (h₂ : N₂.IsAdelic)
+    (h₁ : N₁.IsAdelic) (h₂ : N₂.IsAdelic)
     (hinf : ∀ s : L' →+* ℂ, N.inf (s.comp β) = Real.log ‖s a‖ + N₁.inf (s.comp e) - N₂.inf (s.comp e))
     (hfin : ∀ (p : Nat.Primes) (j : L' →+* ℂ_[p]),
       N.fin p (j.comp β) = Real.log ‖j a‖ + N₁.fin p (j.comp e) - N₂.fin p (j.comp e)) :
@@ -1158,7 +1158,7 @@ theorem flat_hermitian_fibre_signature (hG : _root_.GlobalTheory.CompanionTheory
   obtain ⟨N₂, a₂, d₂, i₂, f₂⟩ := exists_logNorms B _ x₂ hx₂.1 hx₂.2.1 r₂
   have hfr : IsFramed U τ β y (fun k => vec (x₁ k)) fun k => vec (x₂ k) :=
     ⟨hy, hU, hs₁ ▸ k4 s₁ _ x₁ hx₁.1 hx₁.2.1 hx₁.2.2, hs₂ ▸ k4 s₂ _ x₂ hx₂.1 hx₂.2.1 hx₂.2.2⟩
-  have key := deg_eq_sub β e N N₁ N₂ _ (hφ.ne F β y _ _ hfr) had a₁ a₂
+  have key := deg_eq_sub β e N N₁ N₂ _ (hφ.ne F β y _ _ hfr) a₁ a₂
     (fun s => by
       rw [i₁, i₂]
       exact inf_norm MB hρ hfib n mf hy hU hφ hs₁ hs₂ k1 k2 hx₁ hx₂ hfr s (hinf _))

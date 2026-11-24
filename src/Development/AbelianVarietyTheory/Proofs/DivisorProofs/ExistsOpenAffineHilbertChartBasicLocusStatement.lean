@@ -345,7 +345,7 @@ theorem exists_local_det {R M : Type} [CommRing R] [AddCommGroup M] [Module R M]
       have h1 := hK w
       rw [hw] at h1
       have hsingle : ∑ k, (Pi.single j (f * t) : Fin r → R) k • m k = f • t • m j := by
-        rw [Finset.sum_eq_single j (fun k _ hk => by simp [Pi.single_apply, hk]) (by simp)]
+        rw [Finset.sum_eq_single j (fun k _ hk => by simp [hk]) (by simp)]
         simp [mul_smul]
       obtain ⟨τ, hτ, hτc⟩ := linIndep_at_of_gen_at q (hr q) m hgm
         (A.mulVec w - Pi.single j (f * t)) (by

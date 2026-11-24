@@ -746,7 +746,7 @@ section Index
 
 theorem relIndex_ne_zero_and_le_of_nsmul_mem {W : Type*} [AddCommGroup W]
     [Module.IsTorsionFree ℤ W] {L P : AddSubgroup W} {Q : Submodule ℤ W} [Module.Finite ℤ Q]
-    (hLP : L ≤ P) (hPQ : P.toIntSubmodule ≤ Q) {n : ℕ} (hn : n ≠ 0) (hnL : ∀ y ∈ P, n • y ∈ L) :
+    (hPQ : P.toIntSubmodule ≤ Q) {n : ℕ} (hn : n ≠ 0) (hnL : ∀ y ∈ P, n • y ∈ L) :
     L.relIndex P ≠ 0 ∧ L.relIndex P ≤ n ^ finrank ℤ Q := by
   haveI : Module.Finite ℤ P.toIntSubmodule :=
     Module.Finite.of_injective (Submodule.inclusion hPQ) (Submodule.inclusion_injective hPQ)
@@ -952,7 +952,7 @@ end Span
 theorem isTorsionFree_int_of_module (K' V' : Type*) [Field K'] [CharZero K'] [AddCommGroup V']
     [Module K' V'] : Module.IsTorsionFree ℤ V' :=
   Module.IsTorsionFree.comap (S := K') (fun n : ℤ => (n : K'))
-    (fun r hr => isRegular_iff_ne_zero.2 (Int.cast_ne_zero.2 (isRegular_iff_ne_zero.1 hr)))
+    (fun _ hr => isRegular_iff_ne_zero.2 (Int.cast_ne_zero.2 (isRegular_iff_ne_zero.1 hr)))
     (fun r m => Int.cast_smul_eq_zsmul K' r m)
 
 section DIntegral
@@ -1051,7 +1051,7 @@ theorem isDIntegral_dictLattice {d : ℤ} (hd0 : d ≠ 0)
     have := hcoordL _ (hnL y hy) i k
     rw [repr_repr_nsmul] at this
     rwa [mul_assoc]
-  obtain ⟨hne, hle⟩ := relIndex_ne_zero_and_le_of_nsmul_mem hLP hPQ hM0 hnL
+  obtain ⟨hne, hle⟩ := relIndex_ne_zero_and_le_of_nsmul_mem hPQ hM0 hnL
   refine ⟨⟨fun a x hx => ?_, ?_, ?_⟩, fun x hx y hy => (mem_integralClosure_iff ℤ E).2 (hint x hx y hy),
     hne, hle.trans (Nat.pow_le_pow_right (Nat.pos_of_ne_zero hM0)
       (LinearMap.finrank_range_le (coordSpan b v (c * M.natAbs))))⟩

@@ -478,23 +478,23 @@ namespace UpperTheory.Reformulated.B.Qn18
 @[reducible] noncomputable def MP : (C : Type) → [Field C] → ℕ → Type :=
   fun C [Field C] N ↦ MvPolynomial (Fin N × Fin N) C
 
-noncomputable def ev : {C : Type} → [inst : Field C] → {N : ℕ} → Mat C N → MP C N → C :=
-  fun {C} [Field C] {N} x f ↦ MvPolynomial.eval (fun p ↦ x p.1 p.2) f
+noncomputable def ev : {C : Type} → [Field C] → {N : ℕ} → Mat C N → MP C N → C :=
+  fun {C} [Field C] {_} x f ↦ MvPolynomial.eval (fun p ↦ x p.1 p.2) f
 
 noncomputable def dAt :
-    {C : Type} → [inst : Field C] → {N : ℕ} → MP C N → Mat C N → Mat C N → C :=
+    {C : Type} → [Field C] → {N : ℕ} → MP C N → Mat C N → Mat C N → C :=
   fun {C} [Field C] {N} f x Y ↦
     ∑ p : Fin N × Fin N, ev x (MvPolynomial.pderiv p f) * Y p.1 p.2
 
 noncomputable def Chain : Prop :=
-  ∀ (C : Type) [inst : Field C] (N M : ℕ) (φ : Mat C N →ₗ[C] Mat C M) (f : MP C M),
+  ∀ (C : Type) [Field C] (N M : ℕ) (φ : Mat C N →ₗ[C] Mat C M) (f : MP C M),
     ∃ (f' : MP C N),
       (∀ (x : Mat C N), ev x f' = ev (φ x) f) ∧
       ∀ (x Y : Mat C N), dAt f' x Y = dAt f (φ x) (φ Y)
 
 noncomputable def OpenCoset : Prop :=
-  ∀ (Γ C : Type) [inst : Group Γ] [inst_1 : TopologicalSpace Γ] [IsTopologicalGroup Γ]
-    [CompactSpace Γ] [inst_4 : Field C] (n : ℕ) (r : Γ →* GL (Fin n) C)
+  ∀ (Γ C : Type) [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ]
+    [CompactSpace Γ] [Field C] (n : ℕ) (r : Γ →* GL (Fin n) C)
     (f : MP C n) (O : Set Γ), IsOpen O → O.Nonempty →
     (∀ g ∈ O, ev ↑(r g) f = 0) →
     ∃ (U : Subgroup Γ),

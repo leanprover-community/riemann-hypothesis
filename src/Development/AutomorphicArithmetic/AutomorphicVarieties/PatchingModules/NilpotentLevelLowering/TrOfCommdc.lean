@@ -276,7 +276,7 @@ private theorem trOf_commdc {A H M : Type} [CommRing A] [Group H] [AddCommGroup 
   exact gen _ fun q => h _
 
 private theorem trOf_sum {A G M : Type} [CommRing A] [Group G] [AddCommGroup M] [Module A M]
-    (ρ : Representation A G M) (K I : Subgroup G) (S : Set G) (hf : S.Finite) (hS : ∀ τ ∈ S, τ ∈ K)
+    (ρ : Representation A G M) (K I : Subgroup G) (S : Set G) (hf : S.Finite)
     (h : ∀ g ∈ K, ∃ τ ∈ S, τ⁻¹ * g ∈ I) : FinOrb K I 1 ∧ ∃ s : Finset G, (∀ τ ∈ s, τ ∈ S) ∧
       ∀ v : fixd ρ I, (hk2 ρ K I 1 v : M) = ∑ y ∈ s, ρ y v := by
   classical
@@ -390,7 +390,7 @@ private theorem trOf_main (Θ1) (h1 : IsThetaQ ρ C Θ1) (Θw) (hw : IsThetaQ ρ
     intro j _
     exact hτg j
   obtain ⟨hfin, s, hsS, hsum⟩ :=
-    trOf_sum ρ (UC n w fun _ => ⊤) (UC n w C) _ hSfin hSK hSg'
+    trOf_sum ρ (UC n w fun _ => ⊤) (UC n w C) _ hSfin hSg'
   refine ⟨hfin, ?_⟩
   have hle : UC n w C ≤ UC n w (fun _ => ⊤) := by
     intro g hg

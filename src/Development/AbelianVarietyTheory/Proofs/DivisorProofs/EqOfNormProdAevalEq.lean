@@ -147,7 +147,7 @@ theorem monic_eq_one_of_no_root {P : ℚ_[l][X]} (hP : P.Monic)
   exact h a (mem_aroots.2 ⟨hP.ne_zero, ha⟩)
 
 open Classical in
-theorem exists_root_minpoly_eq_of_card_eq (P Q : ℚ_[l][X]) (hQ : Q ≠ 0)
+theorem exists_root_minpoly_eq_of_card_eq (P Q : ℚ_[l][X])
     (hc : ∀ a : PadicAlgCl l, ((P.aroots (PadicAlgCl l)).filter fun b => aeval b (minpoly ℚ_[l] a) = 0).card =
       ((Q.aroots (PadicAlgCl l)).filter fun b => aeval b (minpoly ℚ_[l] a) = 0).card)
     (a : PadicAlgCl l) (ha : a ∈ P.aroots (PadicAlgCl l)) :
@@ -170,7 +170,7 @@ theorem eq_of_card_filter (n : ℕ) : ∀ P Q : ℚ_[l][X], P.natDegree = n → 
   by_cases hr : ∃ a : PadicAlgCl l, a ∈ P.aroots (PadicAlgCl l)
   · obtain ⟨a, ha⟩ := hr
     have hint : IsIntegral ℚ_[l] a := Algebra.IsIntegral.isIntegral a
-    obtain ⟨b, hbQ, hab⟩ := exists_root_minpoly_eq_of_card_eq P Q hQ.ne_zero hc a ha
+    obtain ⟨b, hbQ, hab⟩ := exists_root_minpoly_eq_of_card_eq P Q hc a ha
     have hMQ : minpoly ℚ_[l] a ∣ Q := by rw [hab]; exact minpoly.dvd _ _ (mem_aroots.1 hbQ).2
     have hMP : minpoly ℚ_[l] a ∣ P := minpoly.dvd _ _ (mem_aroots.1 ha).2
     have hM : (minpoly ℚ_[l] a).Monic := minpoly.monic hint
@@ -190,7 +190,7 @@ theorem eq_of_card_filter (n : ℕ) : ∀ P Q : ℚ_[l][X], P.natDegree = n → 
   · push Not at hr
     have hr' : ∀ b : PadicAlgCl l, b ∉ Q.aroots (PadicAlgCl l) := by
       intro b hb
-      obtain ⟨a, haP, hab⟩ := exists_root_minpoly_eq_of_card_eq Q P hP.ne_zero (fun c => (hc c).symm) b hb
+      obtain ⟨a, haP, hab⟩ := exists_root_minpoly_eq_of_card_eq Q P (fun c => (hc c).symm) b hb
       have hint : IsIntegral ℚ_[l] b := Algebra.IsIntegral.isIntegral b
       exact hr a haP
     rw [monic_eq_one_of_no_root hP hr, monic_eq_one_of_no_root hQ hr']

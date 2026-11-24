@@ -58,7 +58,7 @@ def pw {κ : Pl E → Type} [∀ w, Fintype (κ w)] {a b : ℕ} (L : LM κ a b) 
 def muAt (d : LocData E n) (w : Pl E) : (w.adicCompletion E)ˣ →* ℂˣ := if w ∈ d.S₀ ∨ (w ∈ d.Bad ∧ IsSplitAt w) then d.μ w else 1
 
 def MatchLMUnit : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ (n : ℕ) (d : LocData E n), d.Ok →
-  ∀ (a : ℕ) (ha : a ≤ n) (w : Pl E), w ∉ d.B → (IsSplitAt w → d.Good w) →
+  ∀ (a : ℕ) (_ : a ≤ n) (w : Pl E), w ∉ d.B → (IsSplitAt w → d.Good w) →
     Match n a (n - a) w (if IsSplitAt w then d.μ w else 1) ((KL n w : Set (UL n w)).indicator 1) ((d.eL a).tr d.P d.one w)
 
 def MatchLMId : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (d : LocData E n), d.Ok →
@@ -83,7 +83,7 @@ structure MOk (d : LocData E n) : Prop where
     ∀ (a : ℕ) (ha : a ≤ n), d.fix a w = ctMu (Nat.add_sub_cancel' ha) w (d.μ w) (U.lone (d.KB w))
   badI : ∀ w ∈ d.Bad, ¬ IsSplitAt w → ∃ k, 1 ≤ k ∧ IsLevel (MonoidHom.id _) (KL n w) (d.KB w) ∧
     (∀ γ : UL n w, γ ∈ d.KB w ↔ γ.1 ∈ MB.congK n w k) ∧
-    ∀ a ≤ n, d.fix a w = fun y => (((d.KB w).relIndex (KL n w) : ℕ) : ℂ) * MB.pairIndicatorMatch n a (n - a) w k y
+    ∀ a ≤ n, d.fix a w = fun y => (((d.KB w).relIndex (KL n w) : ℕ) : ℂ) * MB.pairIndicatorMatch a (n - a) w k y
 
 def MatchLMB2 : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ (n : ℕ) (d : LocData E n), d.Ok → MOk d →
   ∀ (a : ℕ) (ha : a ≤ n) (m : ℕ), ∀ w ∈ d.B,

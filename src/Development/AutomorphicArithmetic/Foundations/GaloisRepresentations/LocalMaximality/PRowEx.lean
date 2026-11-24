@@ -321,7 +321,7 @@ private lemma den_insert {F K K' : Type} [Field F] [Field K] [Field K'] [Algebra
     (x : Fin (d + 1) → Fˣ) (j2 : K →ₐ[ℂ] K') (I : Finset (Fin (d + 1)))
     (hmap : ∀ I, ∀ b ∈ rB ℂ K (xv x) I, algebraMap K K' b ∈ rB ℂ K' (xv x) I ∧ j2 b ∈ R2 (xv x) j2 I)
     (hlast : ∀ J, ∀ j ∈ J, ∀ j', ∀ y ∈ R2 (xv x) j2 (insert j' J), ∃ N : ℕ, y * j2 (algebraMap F K ((x j' : F) / x j)) ^ N ∈ R2 (xv x) j2 J)
-    (hBR : ∀ J, rB ℂ K' (xv x) I ≤ RY (xv x) j2 I J) (h0 : RY (xv x) j2 I ∅ = rB ℂ K' (xv x) I)
+    (hBR : ∀ J, rB ℂ K' (xv x) I ≤ RY (xv x) j2 I J)
     (e : rB ℂ K' (xv x) I →ₐ[ℂ] ℂ) (j' : Fin (d + 1)) (hloc : R2 (xv x) j2 {j'} ≤ loc (rB ℂ K' (xv x) I) e)
     (J : Finset (Fin (d + 1))) : RY (xv x) j2 I (insert j' J) ≤ den _ (RY (xv x) j2 I J) (hBR J) e := by
   refine sup_le (fun v hv => ⟨1, by simp, by simpa using hBR J hv⟩) ?_
@@ -365,7 +365,7 @@ theorem UpperTheory.Gal.productCup_of_system.rowEx_of :
     exact hmono _ _ _ _ (Finset.singleton_subset_iff.2 hi) subset_rfl
   obtain ⟨j', hj'⟩ := hY.cov i (e.comp (Subalgebra.inclusion hle))
   have hloc : R2 (xv x) j2 {j'} ≤ loc (rB ℂ K' (xv x) I) e := hj'.trans (loc_mono _ _ hle e)
-  exact ⟨j', fun J => locM_le_locM _ _ _ (hBR J) (hBR _) e (den_insert x j2 I hmap hlast hBR (h0 I) e j' hloc J) q⟩
+  exact ⟨j', fun J => locM_le_locM _ _ _ (hBR J) (hBR _) e (den_insert x j2 I hmap hlast hBR e j' hloc J) q⟩
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.LocalMaximality.PRowEx =====

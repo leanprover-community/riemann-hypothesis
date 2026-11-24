@@ -146,7 +146,7 @@ theorem ph_sub {K : Type} [Field K] [CharZero K] {l : ℕ} (hl : 2 ≤ l) (g2 g3
         PowerSeries.X * (lU θ * PowerSeries.subst θ (lU L)) := by
       calc PowerSeries.X * (PowerSeries.C ε * lU (lgF K l))
           = PowerSeries.C ε * (PowerSeries.X * lU (lgF K l)) := by ring
-        _ = PowerSeries.C ε * lgF K l := by rw [Formalism.L2.Th1.B.Ph.X_mul_lU (Pair.cc_lgF hl)]
+        _ = PowerSeries.C ε * lgF K l := by rw [Formalism.L2.Th1.B.Ph.X_mul_lU (Pair.cc_lgF)]
         _ = θ * PowerSeries.subst θ (lU L) := h1
         _ = (PowerSeries.X * lU θ) * PowerSeries.subst θ (lU L) := by
             rw [Formalism.L2.Th1.B.Ph.X_mul_lU hθ0]

@@ -198,8 +198,8 @@ theorem exists_diagonalize (γ : Matrix (Fin n) (Fin n) K) (u : Fin n → K) (hu
 def revOn (S : Finset (Fin n)) (hS : ∀ i ∈ S, Fin.rev i ∈ S) : Equiv.Perm S where
   toFun i := ⟨Fin.rev i.1, hS _ i.2⟩
   invFun i := ⟨Fin.rev i.1, hS _ i.2⟩
-  left_inv i := Subtype.ext (Fin.rev_rev _)
-  right_inv i := Subtype.ext (Fin.rev_rev _)
+  left_inv _ := Subtype.ext (Fin.rev_rev _)
+  right_inv _ := Subtype.ext (Fin.rev_rev _)
 
 theorem det_submatrix_rev (A : Matrix (Fin n) (Fin n) K) (hA : ∀ i j, j ≠ Fin.rev i → A i j = 0)
     (S : Finset (Fin n)) (hS : ∀ i ∈ S, Fin.rev i ∈ S) :

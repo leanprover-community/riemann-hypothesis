@@ -108,7 +108,7 @@ theorem eZ_lt_mul_Qc (hX : X.Hyp p K) (la : Fin n' → Fin (r + K) → ℕ) (e :
   rw [hq] at hmem
   exact hmem.1
 
-theorem sum_la_lt (hX : X.Hyp p K) (la : Fin n' → Fin (r + K) → ℕ) (hla : la ∈ X.LA p K) (j x : ℤ)
+theorem sum_la_lt (la : Fin n' → Fin (r + K) → ℕ) (hla : la ∈ X.LA p K) (j x : ℤ)
     (hx : x ∈ X.toLate j) : ∑ c, la (posOf n' x) c < (r + K) * X.Pz p K j x := by
   classical
   have hmem := Fintype.mem_piFinset.1 hla (posOf n' x)
@@ -154,7 +154,7 @@ theorem restPad : RestPad 1088 := by
     rw [← hPQ]
     unfold Dat.nz
     exact div_mul_sub_le_div_sub_div _ _ _ _ _ (r + K) r (Pz_pos hp _ _) (by unfold Dat.Qc; exact pow_pos hp _)
-      (sum_la_lt hX la hla (j - 1) _ (sum_frlate X hV (j - 1) ⟨i, hi⟩)) (eZ_lt_mul_Qc hX la e he (j - 1) ⟨i, hi⟩)
+      (sum_la_lt la hla (j - 1) _ (sum_frlate X hV (j - 1) ⟨i, hi⟩)) (eZ_lt_mul_Qc hX la e he (j - 1) ⟨i, hi⟩)
   · intro x hx
     have hl := sum_LLsub X hV j x hx
     obtain ⟨h1, h2, -, -⟩ := sum_late_mem hl.1

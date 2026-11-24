@@ -238,7 +238,6 @@ theorem tateCond_transport (D : Datum p) (R : Type) [CommRing R] (b : Base D R) 
     (S : Scheme.{0}) (s : S ⟶ Sp R) (o : Obj b N s) (Rh : Type) [CommRing Rh] [HenselianLocalRing Rh]
     [IsAlgClosed (IsLocalRing.ResidueField Rh)] (t : Sp Rh ⟶ S) (lvR : D.La → (Over.mk t ⟶ o.A))
     (hadd : ∀ x y, lvR (x + y) = lvR x * lvR y) (hker : ∀ x, lvR (N' • x) = 1)
-    (hlin : ∀ (c : D.O) x, lvR (c • x) = lvR x ≫ o.act.act c)
     {k k' : Type} [Field k] [Field k'] (i : Sp k ⟶ Sp Rh) (i' : Sp k' ⟶ Sp Rh) :
     (∃ I : TateIsoO D k (Over.mk (i ≫ t) ⟶ o.A) (fun c g => g ≫ o.act.act c)
         (fun n g g' z => Out.WeilIs o.A (o.P.pull (lift (𝟙 o.A) (𝟙 o.A)).left) n g g' (unitOn z)),
@@ -360,14 +359,14 @@ theorem tateIsoO_iff_of_specializes : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p)
     have h1 := tateCond_congr o.A o.act (o.P.pull (lift (𝟙 o.A) (𝟙 o.A)).left) N' e1 _
       (fun a => (Over.homMk i rfl : Over.mk (i ≫ r ≫ T.hom) ⟶ Over.mk (r ≫ T.hom)) ≫ lvR a)
       (fun a => by simp only [lvR, ← Category.assoc]; congr 1; ext; simp [hi]) h
-    have h2 := tateCond_transport D R b N N' hN'p S s o Rh (r ≫ T.hom) lvR hadd' hker' hlin' i i' h1
+    have h2 := tateCond_transport D R b N N' hN'p S s o Rh (r ≫ T.hom) lvR hadd' hker' i i' h1
     exact tateCond_congr o.A o.act _ N' e2.symm _ _
       (fun a => by simp only [lvR, ← Category.assoc]; congr 1; ext; simp [hi']) h2
   · intro h
     have h1 := tateCond_congr o.A o.act (o.P.pull (lift (𝟙 o.A) (𝟙 o.A)).left) N' e2 _
       (fun a => (Over.homMk i' rfl : Over.mk (i' ≫ r ≫ T.hom) ⟶ Over.mk (r ≫ T.hom)) ≫ lvR a)
       (fun a => by simp only [lvR, ← Category.assoc]; congr 1; ext; simp [hi']) h
-    have h2 := tateCond_transport D R b N N' hN'p S s o Rh (r ≫ T.hom) lvR hadd' hker' hlin' i' i h1
+    have h2 := tateCond_transport D R b N N' hN'p S s o Rh (r ≫ T.hom) lvR hadd' hker' i' i h1
     exact tateCond_congr o.A o.act _ N' e1.symm _ _
       (fun a => by simp only [lvR, ← Category.assoc]; congr 1; ext; simp [hi]) h2
 

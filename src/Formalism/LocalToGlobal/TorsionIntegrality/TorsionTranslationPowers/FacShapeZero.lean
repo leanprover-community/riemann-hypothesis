@@ -107,7 +107,7 @@ alias unitAtRules := _root_.Formalism.L2.Th1.E.unit_at_rules
 theorem facShape : FacShape := FacShape_of intRules unitAtRules unitKap unitPsi2 unitDiff _root_.UpperTheory.Reformulated.B.SeriesSubgroup.XTShape_holds
 theorem transPower : TransPower := translate_power
 theorem transUnit : TransUnit := TransUnit_of intRules unitAtRules _root_.Formalism.L2.Th1.E.root_integral_alt facShape transPower
-theorem transGauss : TransGauss := TransGauss_of intRules unitAtRules transUnit
+theorem transGauss : TransGauss := TransGauss_of unitAtRules transUnit
 
 alias prodInt := _root_.Formalism.L2.Th1.E.product_integral
 end Formalism.L2.Th1.E

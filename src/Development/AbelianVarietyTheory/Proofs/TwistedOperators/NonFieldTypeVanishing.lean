@@ -1041,7 +1041,7 @@ def radSub (ε : Matrix (Fin r) (Fin r) k) : Submodule k (Matrix (Fin r) (Fin r)
     simp only [Set.mem_setOf_eq] at hX ⊢
     rw [Matrix.mul_smul, Matrix.smul_mul, hX]
 
-theorem exists_twist_eq {ε : Matrix (Fin r) (Fin r) k} (hε : ε * ε = ε) {γ : GL (Fin r) k} (hγ : IsRegSS γ.1)
+theorem exists_twist_eq {ε : Matrix (Fin r) (Fin r) k} {γ : GL (Fin r) k}
     (hγε : γ.1 * ε = ε * γ.1) (hcore : ∀ Z, ε * Z * (1 - ε) = Z → Z - γ⁻¹.1 * Z * γ.1 = 0 → Z = 0)
     {Y : Matrix (Fin r) (Fin r) k} (hY : ε * Y * (1 - ε) = Y) :
     ∃ X, ε * X * (1 - ε) = X ∧ X - γ⁻¹.1 * X * γ.1 = Y := by
@@ -1132,7 +1132,7 @@ theorem integral_twist [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLo
     exact Subtype.ext (Units.ext (sub_eq_zero.1 this))
   have hsurj : Function.Surjective ψ := by
     intro m
-    obtain ⟨X, hX, hXY⟩ := exists_twist_eq hε hγ hγε hcore ((hN _).1 m.2)
+    obtain ⟨X, hX, hXY⟩ := exists_twist_eq hγε hcore ((hN _).1 m.2)
     have hXX := mul_mul_eq_zero (A := 1) hε hX hX (by rw [one_mul, mul_one])
     rw [mul_one] at hXX
     let u : GL (Fin r) k := ⟨1 + X, 1 - X, by noncomm_ring; rw [hXX]; simp, by noncomm_ring; rw [hXX]; simp⟩

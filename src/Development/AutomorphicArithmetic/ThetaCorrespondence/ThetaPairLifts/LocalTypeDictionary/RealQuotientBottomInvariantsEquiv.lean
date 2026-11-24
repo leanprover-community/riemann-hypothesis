@@ -922,7 +922,7 @@ theorem idem_mem (hL : LieRel q q' n) (τ : ι) (S : Matrix (Fin d) (Fin d) ℂ)
   intro P P' h
   have hinv : (1 + (t - 1) • S)⁻¹ = 1 + (t⁻¹ - 1) • S := by
     apply Matrix.inv_eq_left_inv
-    simp only [add_mul, mul_add, one_mul, mul_one, smul_mul_assoc, mul_smul_comm, hS, add_assoc, ← add_smul]
+    simp only [add_mul, mul_add, one_mul, mul_one, smul_mul_assoc, mul_smul_comm, hS, add_assoc]
     have : t⁻¹ - 1 + (t - 1) * (1 + (t⁻¹ - 1)) = 0 := by field_simp; ring
     simp only [smul_add, smul_smul, ← add_smul]
     have h2 : t⁻¹ - 1 + (t - 1 + (t - 1) * (t⁻¹ - 1)) = 0 := by rw [← this]; ring
@@ -1424,7 +1424,7 @@ open scoped TensorProduct
 theorem GlobalTheory.RealQuotBot.real_quotient_invariants_equiv : GlobalTheory.Published.HoweDualityReal → _root_.GlobalTheory.FunPr.ThetaLocalInputs → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.ThetaIntegralsAgree → GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.LocalMatching →
   ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D), IsStdChar D ψ (-1) → IsInfFam θ →
   ∀ (A A' WW : HSp D) (FA : GlobalTheory.ChainFr.Fr A) (FA' : GlobalTheory.ChainFr.Fr A') (FW : GlobalTheory.ChainFr.Fr WW) (a b : D.what₂.Tau → ℚ)
-    (had : A.rank + A'.rank = WW.rank),
+    (_ : A.rank + A'.rank = WW.rank),
     (∀ τ, Formalism.UG.HasSignature (gramAt D A τ) A.rank 0) → (∀ τ, Formalism.UG.HasSignature (gramAt D A' τ) A'.rank 0) →
     (∀ τ, Formalism.UG.HasSignature (gramAt D WW τ) WW.rank 0) →
     (∃ α β, GlobalTheory.SquareComm.IsTriple A A' WW α β ∧ ∀ τ, HasInfExp D α τ (a τ) ∧ HasInfExp D β τ (b τ)) →

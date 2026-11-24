@@ -61,7 +61,7 @@ theorem word_theorem_a_admissible (D : D7) (u u' : D.what₂.Word) : VanishingOn
 
 section FamAdm
 variable {eps : ℝ} (Fm : FamP eps)
-theorem family_word_theorem_a : VanishingOnXAndXPlus.FamilyFourteenthHypothesis Fm := fun x i u u' => word_theorem_a_admissible _ u u'
+theorem family_word_theorem_a : VanishingOnXAndXPlus.FamilyFourteenthHypothesis Fm := fun _ _ u u' => word_theorem_a_admissible _ u u'
 end FamAdm
 
 theorem cnt_stdLat_isOrtho (K : Type) [Field K] [NumberField K] [StarRing K] (j : ℕ) :

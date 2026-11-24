@@ -431,7 +431,7 @@ private def fam (S : Sys q i p ι U m u) : Fam S.J where
   X := towY S
   Z := towW S
   pr j := prU p ι (S.V j)
-  prt f := (pullback.lift_fst _ _ _).symm
+  prt _ := (pullback.lift_fst _ _ _).symm
   prL := prS p ι (S.t ≫ U.hom)
   sq := S.sq
 
@@ -790,7 +790,7 @@ private theorem contY (hA : A2) (hB : B1) [QuasiCompact (pullback.snd p π)] [Is
     (hq : IsUnit (q : R)) (i n : ℤ) :
     ContP q i n (fun j => sch.obj (pullback p (s j))) (sch.obj (pullback p sL))
       (fun j => sch.map (mY p (Spec.map (c.ι.app j)) (h1 j)))
-      (fun {j k} f => sch.map (mY p (Spec.map (D.map f)) (h2 f))) := by
+      (fun {_ _} f => sch.map (mY p (Spec.map (D.map f)) (h2 f))) := by
   refine transfer (fun j => sch.mapIso (eY p π (Spec.map (u j)) (s j) (hs j)))
     (sch.mapIso (eY p π (Spec.map v) sL hsL)) (fun j => ?_) (fun {j k} f => ?_)
     (contOf hc hu hv hA hB (pullback.snd p π) hq i n)
@@ -809,7 +809,7 @@ private theorem contW (hA : A2) (hB : B1) [QuasiCompact (p2 p ι π)] [IsSeparat
     ContP q i n (fun j => sch.obj (pullback (pullback.snd p (s j) ≫ s j) ι))
       (sch.obj (pullback (pullback.snd p sL ≫ sL) ι))
       (fun j => sch.map (mW p ι (Spec.map (c.ι.app j)) (h1 j)))
-      (fun {j k} f => sch.map (mW p ι (Spec.map (D.map f)) (h2 f))) := by
+      (fun {_ _} f => sch.map (mW p ι (Spec.map (D.map f)) (h2 f))) := by
   refine transfer (fun j => sch.mapIso (eW p ι π (Spec.map (u j)) (s j) (hs j)))
     (sch.mapIso (eW p ι π (Spec.map v) sL hsL)) (fun j => ?_) (fun {j k} f => ?_)
     (contOf hc hu hv hA hB (p2 p ι π) hq i n)
@@ -1191,7 +1191,7 @@ section -- clump:auto
 
 theorem UpperTheory.Cb.etale_cohomology_class_killed_on_neighborhood :
     LateralTheory.E.SecondDegreeKilling.Nbhd.LeafKillNbhd :=
-  LateralTheory.E.NeighbourhoodKilling.goal_of UpperTheory.etaleCohomology_class_killed_on_nbhd_pair UpperTheory.Cb.neighbourhood_cohomology_obstruction_exact UpperTheory.relativeCohomology_connecting_naturality
+  LateralTheory.E.NeighbourhoodKilling.goal_of UpperTheory.etaleCohomology_class_killed_on_nbhd_pair
     (LateralTheory.E.Bridge_yfiPf.Bridge_of_geo_pack
       (LateralTheory.E.GeoProof.Geo_of (UpperTheory.Cb.affineGeometricCase_of_obstructionExact_natural UpperTheory.Cb.neighbourhood_cohomology_obstruction_exact UpperTheory.relativeCohomology_connecting_naturality)
         (UpperTheory.Cb.neighbourhoodShrinking_of_obstructionExact_natural UpperTheory.Cb.neighbourhood_cohomology_obstruction_exact UpperTheory.relativeCohomology_connecting_naturality))

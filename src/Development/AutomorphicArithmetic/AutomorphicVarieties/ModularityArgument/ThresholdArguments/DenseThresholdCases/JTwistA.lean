@@ -684,8 +684,8 @@ theorem UpperTheory.V.Z.Desc.W.jTwist_of_alt : TypeGd → _root_.UpperTheory.V.Z
   · obtain ⟨τ, h1, h2⟩ := t5 w hs τ' hτ'
     obtain ⟨g1, g2⟩ := hSp P L Ω n κ w τ τ' b hb' h2
     exact _root_.UpperTheory.V.Z.Desc.W.satFrobT_alt PH.toClassicalTheorems L Ω l ι n _ hcont w hw τ' b hb' fun A hA rc hrc =>
-      _root_.UpperTheory.V.Z.Win.WDT.of_isWDOf (hTw P L Ω l ι n _ hρ art κ 0 _ ha hβc hκ w hw τ τ' g1 h2 A hA rc (_root_.UpperTheory.V.Z.Desc.W.isRecT_of_isRecT PH.toClassicalTheorems hrc)
-        (_root_.UpperTheory.V.Z.Desc.W.woGd' (_root_.UpperTheory.V.Z.Desc.W.lgAway' (s1 w hs τ h1) hw A hA rc hrc) (g2 A hA rc (_root_.UpperTheory.V.Z.Desc.W.isRecT_of_isRecT PH.toClassicalTheorems hrc))))
+      _root_.UpperTheory.V.Z.Win.WDT.of_isWDOf (hTw P L Ω l ι n _ hρ art κ 0 _ ha hβc hκ w hw τ τ' g1 h2 A hA rc (_root_.UpperTheory.V.Z.Desc.W.isRecT_of_isRecT hrc)
+        (_root_.UpperTheory.V.Z.Desc.W.woGd' (_root_.UpperTheory.V.Z.Desc.W.lgAway' (s1 w hs τ h1) hw A hA rc hrc) (g2 A hA rc (_root_.UpperTheory.V.Z.Desc.W.isRecT_of_isRecT hrc))))
   · obtain ⟨A, hA⟩ := (exists_isPlaceOver Ω w : ∃ A : ValuationSubring Ω, IsPlaceOver A w)
     exact t3 w A hA (fun g hg => (congrArg β (pr_ine V hw hA hg)).trans β.map_one) (s3 w hw)
   · obtain ⟨τ₀, s5⟩ := Up.comp_ex hσ (split_at_base_place (s := s))
@@ -732,9 +732,9 @@ theorem UpperTheory.V.Z.Desc.W.jTwist_of_alt : TypeGd → _root_.UpperTheory.V.Z
       · rw [Function.update_of_ne e]
         exact hloc _) u rc hrc
     rw [Function.update_self] at hT
-    obtain ⟨g1, g2⟩ := hTy L Ω n _ _ (s.hw u) τ rc (_root_.UpperTheory.V.Z.Desc.W.isRecT_of_isRecT PH.toClassicalTheorems hrc)
+    obtain ⟨g1, g2⟩ := hTy L Ω n _ _ (s.hw u) τ rc (_root_.UpperTheory.V.Z.Desc.W.isRecT_of_isRecT hrc)
       (fun i => W.pushCh (ι.toRingHom.comp (algebraMap c.O (Qbar l))) ((t i).comp V.pr)) hT
-    exact hTw P L Ω l ι n _ hρ art κ 0 _ ha hβc hκ _ hu τ τ' g1 h2 _ (s.hw u) rc (_root_.UpperTheory.V.Z.Desc.W.isRecT_of_isRecT PH.toClassicalTheorems hrc)
+    exact hTw P L Ω l ι n _ hρ art κ 0 _ ha hβc hκ _ hu τ τ' g1 h2 _ (s.hw u) rc (_root_.UpperTheory.V.Z.Desc.W.isRecT_of_isRecT hrc)
       (_root_.UpperTheory.V.Z.Desc.W.woGd' (_root_.UpperTheory.V.Z.Desc.W.lgAway' (s1 _ (hsp u) τ h1) hu _ (s.hw u) rc hrc) g2)
 end
 end -- clump:auto

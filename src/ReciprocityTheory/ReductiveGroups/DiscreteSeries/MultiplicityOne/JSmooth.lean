@@ -512,7 +512,7 @@ private theorem expGV_lemma_9 {Y : Mat k r} (hY : inLie k r Y) (s : ℝ) :
     ← Matrix.exp_add_of_commute _ _ ((Commute.refl ((s : ℂ) • Yᴴ)).neg_right), add_neg_cancel,
     NormedSpace.exp_zero, Matrix.one_mul]
 
-theorem sig_exp {Φ : Mat k r → ℂ} (hΦ : TG Φ) {Y : Mat k r} (hY : inLie k r Y) (t : ℝ) :
+theorem sig_exp {Φ : Mat k r → ℂ} {Y : Mat k r} (hY : inLie k r Y) (t : ℝ) :
     X.σ (NormedSpace.exp (t • Y)) (V D X Φ) = V D X (fun x => Φ (NormedSpace.exp (t • (-Y)) * x)) := by
   haveI := X.hC
   have hrep := X.rep
@@ -572,7 +572,7 @@ theorem RdV_cf {Φ Φ' : Mat k r → ℂ} (hΦ : TG Φ) {Y : Mat k r} (hY : inLi
     funext t
     rw [cast_smul]
     unfold cf mc
-    rw [sig_mul hg (exp_mem hY t), sig_exp hΦ hY t]
+    rw [sig_mul hg (exp_mem hY t), sig_exp hY t]
   rw [hfun]
   have hd := V_hasDerivAt (D := D) (X := X) hΦ.1 hΦ.2 (-Y)
   let L : X.Hs →L[ℂ] ℂ := (innerSL ℂ (V D X Φ')).comp (X.σ g)
@@ -592,7 +592,7 @@ theorem LdV_cf {Φ Φ' : Mat k r → ℂ} (hΦ' : TG Φ') {Y : Mat k r} (hY : in
     have he := exp_negY_mem hY t
     rw [cast_smul, ← smul_neg]
     unfold cf mc
-    rw [sig_mul he hg, sig_adj he, exp_negY_inv, sig_exp hΦ' hY t]
+    rw [sig_mul he hg, sig_adj he, exp_negY_inv, sig_exp hY t]
   rw [hfun]
   have hd := V_hasDerivAt (D := D) (X := X) hΦ'.1 hΦ'.2 (-Y)
   have h3 := hd.inner ℂ (hasDerivAt_const (0 : ℝ) (X.σ g (V D X Φ)))

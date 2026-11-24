@@ -138,7 +138,7 @@ theorem nsq_sum_root_le (ε : Fin n → Bool) (Ph : Finset (Fin n × Fin n))
         exact Finset.sum_congr rfl fun x hx => oppCount_add ε (hnc x hx)
     _ = n * Ph.card := by rw [Finset.sum_const, nsmul_eq_mul, mul_comm]
 
-theorem kernel_lemma (ε : Fin n → Bool) (μ : Fin n → ℝ) {h : ℝ} (_hh : 0 < h) (Ph : Finset (Fin n × Fin n))
+theorem kernel_lemma (ε : Fin n → Bool) (μ : Fin n → ℝ) {h : ℝ} (Ph : Finset (Fin n × Fin n))
     (hnc : ∀ x ∈ Ph, ε x.1 ≠ ε x.2) (hpos : ∀ x ∈ Ph, h ≤ μ x.1 - μ x.2) :
     nsq (μ - ∑ x ∈ Ph, root x.1 x.2) ≤ nsq μ - (2 * h - n) * Ph.card := by
   have hexp : nsq (μ - ∑ x ∈ Ph, root x.1 x.2) =
@@ -289,7 +289,7 @@ theorem dirac_sharp {ε : Fin n → Bool} {lam : Fin n → ℝ} (hg : Gap3 ε la
     intro x hx
     have := hh x.1 x.2 (hnc x hx)
     rwa [abs_of_pos (sub_pos.mpr (hmono (hPh x hx).1))] at this
-  have hker := kernel_lemma ε lam (h := h) (by linarith) Ph hnc hpos
+  have hker := kernel_lemma ε lam (h := h) Ph hnc hpos
   have hcard : (1 : ℝ) ≤ Ph.card := by
     exact_mod_cast Finset.card_pos.mpr ⟨x0, hx0⟩
   have hneg : nsq (lam - phSum Ph) - nsq lam < 0 := by

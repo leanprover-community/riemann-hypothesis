@@ -350,7 +350,7 @@ theorem exists_int_conj {n : ℕ} (γ : GL (Fin n) K)
     have h0 : a = 0 := by
       ext p i
       have h1 := hmax (p, i) (Finset.mem_univ _)
-      simp only [← hc_def, hc, map_zero] at h1
+      simp only [hc, map_zero] at h1
       exact (Valuation.zero_iff _).1 (le_antisymm h1 zero_le')
     have h2 : (1 : Matrix (Fin n) (Fin n) K) = 0 := by rw [← hab, h0, Matrix.zero_mul]
     have := congrFun (congrFun h2 ⟨0, hn⟩) ⟨0, hn⟩

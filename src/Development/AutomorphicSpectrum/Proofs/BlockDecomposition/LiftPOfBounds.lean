@@ -687,7 +687,7 @@ theorem top_part (c : b.R) (hT : ∀ (T : Q.FullSubcategory) (x : (sP Q).A.obj T
     (∀ x : ∀ n, HM Q none (c ^ n) j, (∀ n, trM Q none c n j (x (n + 1)) = x n) →
       ∃ z : HO Q j, ∀ n, redM Q none (c ^ n) j z = c ^ (2 * k) • x n) ∧
     ∀ z : HO Q j, (∀ n, redM Q none (c ^ n) j z = 0) → c ^ k • z = 0 :=
-  gen_top c (fun n => stdI Q none (c ^ n)) (stdI_le Q none c) (fun n T x => mem_none Q _ T x) hT j k h1 h2 h3
+  gen_top c (fun n => stdI Q none (c ^ n)) (stdI_le Q none c) (fun _ T x => mem_none Q _ T x) hT j k h1 h2 h3
 
 theorem mem_some (r : ℤ) (c : b.R) (T : Q.FullSubcategory) (x : (sP Q).A.obj T) :
     x ∈ (stdI Q (some r) c).S T ↔ ∃ y : (sP Q).A.obj T, x - c • y ∈ (sFil Q r).S T := by

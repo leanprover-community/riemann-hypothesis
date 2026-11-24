@@ -225,12 +225,12 @@ theorem glRep_Edd (ε : Fin n → Bool) {E : Fin n → Fin n → Module.End ℂ 
     | (congr 1; unfold sg; split_ifs <;> module)
     | (rw [← ofD_neg]; congr 1; unfold sg; split_ifs <;> module)
     | (apply ofD_injective; unfold sg; split_ifs <;> module)
-    | (simp only [← ofD_neg, ← ofD_sub, ← ofD_zero]; congr 1; unfold sg; split_ifs <;> module)
+    | (simp only [← ofD_sub, ← ofD_zero]; congr 1; unfold sg; split_ifs <;> module)
   · subst d
     have hbc' : ¬ Fin.rev c = Fin.rev b := fun h => hbc (Fin.rev_injective h).symm
     simp only [ite_true, ite_eq_right hbc, ite_eq_right (Ne.symm hbc), LinearMap.zero_apply, Edd_ofD,
       zero_sub]
-    simp only [← ofD_neg, ← ofD_sub]
+    simp only [← ofD_neg]
     congr 1
     unfold sg
     split_ifs <;> module

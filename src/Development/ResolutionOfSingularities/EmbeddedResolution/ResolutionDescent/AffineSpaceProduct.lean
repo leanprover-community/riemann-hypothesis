@@ -305,7 +305,7 @@ theorem isPullback_prodMapOnPreimage (k : Type u) [Field k] (n m c : ℕ)
   exact (hstar'.of_bot (morphismRestrict_projLeft_comp k n m c U φ hφ)
     (isPullback_projLeft_projRight k c m)).flip
 
-theorem smooth_prodMapOnPreimage (_hs : AffineSpaceIsSmooth.{u}) (k : Type u) [Field k] (n m c : ℕ)
+theorem smooth_prodMapOnPreimage (k : Type u) [Field k] (n m c : ℕ)
     (U : (affineSpaceIndexedBy k (ULift.{u} (Fin n))).Opens)
     (φ : U.toScheme ⟶ affineSpaceIndexedBy k (ULift.{u} (Fin c)))
     [AlgebraicGeometry.Smooth φ]

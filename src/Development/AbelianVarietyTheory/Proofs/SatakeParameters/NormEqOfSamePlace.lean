@@ -158,9 +158,9 @@ variable {l : ℕ} [Fact l.Prime] {E : Type} [Field E] [NumberField E]
 theorem norm_eq_of_samePlace (τ φ : E →+* Om l) (w : HeightOneSpectrum (𝓞 E)) (hw : w ∈ placesOver E l)
     (hτ : ∀ x : 𝓞 E, ‖τ (x : E)‖ < 1 ↔ x ∈ w.asIdeal) (hφ : ∀ x : 𝓞 E, ‖φ (x : E)‖ < 1 ↔ x ∈ w.asIdeal)
     (x : E) : ‖τ x‖ = ‖φ x‖ := by
-  have e1 := PI.CompDegEF.isEquiv_adicAbv_normAbv τ w hw
+  have e1 := PI.CompDegEF.isEquiv_adicAbv_normAbv τ w
     (fun x => ⟨PI.CompDegEF.norm_le_one_of_integer τ x, hτ x⟩)
-  have e2 := PI.CompDegEF.isEquiv_adicAbv_normAbv φ w hw
+  have e2 := PI.CompDegEF.isEquiv_adicAbv_normAbv φ w
     (fun x => ⟨PI.CompDegEF.norm_le_one_of_integer φ x, hφ x⟩)
   obtain ⟨c, hc, hce⟩ := AbsoluteValue.isEquiv_iff_exists_rpow_eq.1 (e1.symm.trans e2)
   have hl := congrFun hce ((l : ℕ) : E)

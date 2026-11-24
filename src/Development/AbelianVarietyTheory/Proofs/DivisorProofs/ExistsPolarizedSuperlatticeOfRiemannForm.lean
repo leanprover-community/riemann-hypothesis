@@ -209,7 +209,7 @@ theorem imForm_isAlt {g : ℕ} {Hm : Matrix (Fin g) (Fin g) ℂ} (h : Hm.IsHermi
   rw [star_star] at hq
   exact Complex.conj_eq_iff_im.mp hq
 
-theorem imForm_nondegenerate {g : ℕ} {Hm : Matrix (Fin g) (Fin g) ℂ} (h : Hm.IsHermitian)
+theorem imForm_nondegenerate {g : ℕ} {Hm : Matrix (Fin g) (Fin g) ℂ}
     (hp : ∀ z : Fin g → ℂ, z ≠ 0 → 0 < (z ⬝ᵥ Hm.mulVec (star z)).re) :
     (imForm Hm).Nondegenerate := by
   have hL : ∀ z : Fin g → ℂ, (∀ w, imForm Hm z w = 0) → z = 0 := by
@@ -243,7 +243,7 @@ theorem exists_unimodular_overlattice :
       (∀ a b : Λ₁, (Ef a b : ℝ) = (hermForm Hm a b).im) ∧ Function.Bijective Ef := by
   intro g Λ Hm hd hs hH hp hint
   obtain ⟨M, N, Ef, h1, h2, h3, h4, h5, h6, h7⟩ :=
-    exists_unimodular (imForm Hm) (imForm_nondegenerate hH hp) (imForm_isAlt hH) Λ hs
+    exists_unimodular (imForm Hm) (imForm_nondegenerate hp) (imForm_isAlt hH) Λ hs
       (fun x hx y hy => by
         obtain ⟨n, hn⟩ := hint x hx y hy
         exact Submodule.mem_one.2 ⟨n, by rw [imForm_apply, hn]; simp⟩)

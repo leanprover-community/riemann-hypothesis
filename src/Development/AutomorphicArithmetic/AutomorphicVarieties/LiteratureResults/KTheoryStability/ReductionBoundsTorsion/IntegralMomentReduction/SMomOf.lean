@@ -376,7 +376,7 @@ theorem primal_y (hL : IsTotallyComplex L) (hN : 1 ≤ N) {g : GL (Fin N) L} {z 
   have hplace := fun w => primal_place hN hc hp hs hk y hzero w
   set Z := ∑ w : InfinitePlace L, ‖z w‖ ^ 2 + 1 with hZdef
   have hZ : 0 < Z := by positivity
-  have hsum := sum_sq_ge hL hd hi0mem (int_d hdi y i0)
+  have hsum := sum_sq_ge hd hi0mem (int_d hdi y i0)
   have he : Real.exp (-s imax) ≤ Real.exp (-s i0) := Real.exp_le_exp.mpr (by linarith [himax i0])
   have hterm : ∀ w, (M⁻¹) ^ 2 * Z⁻¹ * Real.exp (-s imax) ^ 2 * ‖w.embedding (v i0)‖ ^ 2 ≤
       ∑ i, ‖(MomentRationality.mt (c * (p * dg L N s hs * k))⁻¹ w *ᵥ toR y w) i‖ ^ 2 := by
@@ -432,7 +432,7 @@ theorem dual_y (hL : IsTotallyComplex L) (hN : 1 ≤ N) {g : GL (Fin N) L} {z : 
   have hplace := fun w => dual_place hc hp hs hk y hzero w
   set Z := ∑ w : InfinitePlace L, ‖z w‖⁻¹ ^ 2 + 1 with hZdef
   have hZ : 0 < Z := by positivity
-  have hsum := sum_sq_ge hL hd hi1mem (int_d hdg y i1)
+  have hsum := sum_sq_ge hd hi1mem (int_d hdg y i1)
   have he : Real.exp (s imin) ≤ Real.exp (s i1) := Real.exp_le_exp.mpr (himin i1)
   have hterm : ∀ w, (M⁻¹) ^ 2 * Z⁻¹ * Real.exp (s imin) ^ 2 * ‖w.embedding (v i1)‖ ^ 2 ≤
       ∑ i, ‖((MomentRationality.mt (c * (p * dg L N s hs * k)) w)ᵀ *ᵥ toR y w) i‖ ^ 2 := by

@@ -68,7 +68,7 @@ theorem index_pi_univ {ι : Type} [Fintype ι] {G : ι → Type} [∀ i, Group (
 theorem relIndex_iInf_comap {X V : Type} {Y : V → Type} [Group X] [TopologicalSpace X] [∀ v, Group (Y v)]
     [∀ v, TopologicalSpace (Y v)] (pf : ∀ v, X →* Y v) (K : ∀ v, Subgroup (Y v))
     (hX : GlobalTheory.RestrMeas.IsRestrGroup (GlobalTheory.RestrMeas.noArch X) pf K) (C H : ∀ v, Subgroup (Y v))
-    (_hfin : ∀ v, (H v).relIndex (C v) ≠ 0) (hev : ∀ᶠ v in cofinite, C v ≤ H v) :
+    (hev : ∀ᶠ v in cofinite, C v ≤ H v) :
     (⨅ v, (H v).comap (pf v)).relIndex (⨅ v, (C v).comap (pf v)) = ∏ᶠ v, (H v).relIndex (C v) := by
   classical
   set S : Finset V := (Filter.eventually_cofinite.1 hev).toFinset with hS

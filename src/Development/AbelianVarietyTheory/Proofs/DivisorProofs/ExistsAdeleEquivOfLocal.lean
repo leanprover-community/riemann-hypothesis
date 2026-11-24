@@ -121,11 +121,11 @@ abbrev Af : Type := FiniteAdeleRing (𝓞 ℚ) ℚ
 
 def Zhat : Subring Af where
   carrier := {a | ∀ v : HeightOneSpectrum (𝓞 ℚ), a v ∈ v.adicCompletionIntegers ℚ}
-  mul_mem' := fun {a b} ha hb v => (v.adicCompletionIntegers ℚ).mul_mem _ _ (ha v) (hb v)
+  mul_mem' := fun {_ _} ha hb v => (v.adicCompletionIntegers ℚ).mul_mem _ _ (ha v) (hb v)
   one_mem' := fun v => (v.adicCompletionIntegers ℚ).one_mem
-  add_mem' := fun {a b} ha hb v => (v.adicCompletionIntegers ℚ).add_mem _ _ (ha v) (hb v)
+  add_mem' := fun {_ _} ha hb v => (v.adicCompletionIntegers ℚ).add_mem _ _ (ha v) (hb v)
   zero_mem' := fun v => (v.adicCompletionIntegers ℚ).zero_mem
-  neg_mem' := fun {a} ha v => (v.adicCompletionIntegers ℚ).neg_mem _ (ha v)
+  neg_mem' := fun {_} ha v => (v.adicCompletionIntegers ℚ).neg_mem _ (ha v)
 
 def ZhatUnits : Subgroup Afˣ := Zhat.toSubmonoid.units
 

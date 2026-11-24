@@ -698,7 +698,7 @@ theorem sep {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ) {s s' : Fv F v} (h : ∀ 
     field_simp
     ring
   rw [h2, map_add (f := _), AddChar.map_add_eq_mul] at h1
-  exact (mul_eq_right₀ (std_ne_zero hψ _)).1 h1
+  exact (mul_eq_right₀ (std_ne_zero _)).1 h1
 
 theorem map_form (t : E →ₐ[F] Fv F v) (J : Matrix (Fin d) (Fin d) E) (x y : Fin d → E) :
     t (form σ J x y) = (fun i => t (x i)) ⬝ᵥ J.map t *ᵥ fun i => (t.comp σ) (y i) := by

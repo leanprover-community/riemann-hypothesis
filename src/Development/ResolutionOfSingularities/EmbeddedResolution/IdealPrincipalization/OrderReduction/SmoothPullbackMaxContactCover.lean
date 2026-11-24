@@ -524,7 +524,7 @@ theorem orderAt_ideal_le_mult_along_sequence (T : MarkedIdealWithBoundary.{u}) (
       have hlt : k < s.toSequenceOfBlowups.length := hk
       have hprev := ih (le_of_lt hlt)
       have hnoeth : AlgebraicGeometry.IsNoetherian (s.toSequenceOfBlowups.schemeAt (k + 1)) :=
-        MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hT s (k + 1) hk
+        MarkedSequenceOfBlowups.isNoetherian_schemeAt hT s (k + 1) hk
       have : AlgebraicGeometry.IsLocallyNoetherian (s.toSequenceOfBlowups.schemeAt (k + 1)) := inferInstance
       have hsmooth : AlgebraicGeometry.Smooth (s.projectionToSpec k) :=
         MarkedSequenceOfBlowups.smooth_projectionToSpec effectiveCartierSupportContainsNoComponent hT s k (le_of_lt hlt)
@@ -536,7 +536,7 @@ theorem orderAt_ideal_le_mult_along_sequence (T : MarkedIdealWithBoundary.{u}) (
           (s.boundary k) hS T.mult (s.center_order k hlt)
       have hEq : s.ideal (k + 1) =
           controlledTransform (s.toSequenceOfBlowups.transitionMapSucc k) (s.toSequenceOfBlowups.center k)
-            (s.ideal k) T.mult (s.toSequenceOfBlowups.isBlowupAlongIdealSheaf_blowupMorphism k hlt) hI :=
+            (s.ideal k) T.mult :=
         eq_controlledTransform_of_mul_eq_comap (s.toSequenceOfBlowups.transitionMapSucc k) (s.toSequenceOfBlowups.center k)
           (s.ideal k) T.mult (s.toSequenceOfBlowups.isBlowupAlongIdealSheaf_blowupMorphism k hlt) hI
           (s.ideal (k + 1)) (s.ideal_succ k hlt)
@@ -708,11 +708,11 @@ theorem comap_maxContactIdeal_le_exceptionalIdeal_mul (k : Type u) [Field k] [Ch
     (htr : Blowup.exceptionalIdeal π Z ^ μ * A₁ = A.comap π) :
     (maxContactIdeal k p A μ).comap π ≤
       Blowup.exceptionalIdeal π Z * maxContactIdeal k (π ≫ p) A₁ μ := by
-  have hA1 : controlledTransform π Z A μ hπ hA = A₁ :=
+  have hA1 : controlledTransform π Z A μ = A₁ :=
     (eq_controlledTransform_of_mul_eq_comap π Z A μ hπ hA A₁ htr).symm
   have h : (derivIdealSheafIterate k p (μ - 1) A).comap π ≤
       Blowup.exceptionalIdeal π Z ^ (μ - (μ - 1)) *
-        derivIdealSheafIterate k (π ≫ p) (μ - 1) (controlledTransform π Z A μ hπ hA) :=
+        derivIdealSheafIterate k (π ≫ p) (μ - 1) (controlledTransform π Z A μ) :=
     comap_derivIdealSheafIterate_le_exceptionalIdeal_pow_mul k p π Z E hZ hπ A μ hA (μ - 1)
       (Nat.sub_le μ 1)
   rw [hA1] at h
@@ -742,7 +742,7 @@ theorem mem_orderAtLeastLocus_base_of_mem_orderAtLeastLocus_transform (k : Type 
       omega
     rw [hpow]
     exact mul_le_left_idealSheafData _ _
-  have hEA : Blowup.exceptionalIdeal π Z * A₁ = controlledTransform π Z A (μ - 1) hπ hA' := by
+  have hEA : Blowup.exceptionalIdeal π Z * A₁ = controlledTransform π Z A (μ - 1) := by
     refine eq_controlledTransform_of_mul_eq_comap π Z A (μ - 1) hπ hA' _ ?_
     calc Blowup.exceptionalIdeal π Z ^ (μ - 1) * (Blowup.exceptionalIdeal π Z * A₁)
         = Blowup.exceptionalIdeal π Z ^ (μ - 1 + 1) * A₁ := by rw [pow_succ, mul_assoc]
@@ -1054,7 +1054,6 @@ theorem isMaxContactHypersurface_strictTransform_of_orderAt_le (k : Type u) [Fie
     [LocallyOfFiniteType p] (π : P₁ ⟶ P) [IsLocallyNoetherian P₁] [LocallyOfFiniteType (π ≫ p)]
     (Z : P.IdealSheafData) (E : List P.IdealSheafData) (hZ : HasStrictNormalCrossingsWith p Z E)
     (hπ : Blowup.IsBlowupAlongIdealSheaf π Z) (A : P.IdealSheafData) (A₁ : P₁.IdealSheafData) (μ : ℕ) (hμ : 1 ≤ μ)
-    (_hord : ∀ x : P, orderAt A x ≤ (μ : ℕ∞))
     (hsupp : (Z.support : Set ↥P) ⊆ orderAtLeastLocus A μ)
     (htr : Blowup.exceptionalIdeal π Z ^ μ * A₁ = A.comap π) (H : P.IdealSheafData) :
     IsMaxContactHypersurface k p A μ H →
@@ -1196,7 +1195,7 @@ theorem isAdmissible_coverTriple_of_validPullbackAlongSmooth (hpb : OrderReducti
   exact @hpb (MaxContactOpenCover.tunedTriple T hv) hvt (chosenCoverData T hv).disjointUnion
     (coverMap T hv ≫ T.structMap) (coverMap T hv) (MaxContactCoverData.instSmoothCoverMap T hv) hqc rfl
 
-theorem isSmoothDivisor_coverMaxContactIdeal (_hpb : OrderReduction.ValidPullbackAlongSmooth.{u})
+theorem isSmoothDivisor_coverMaxContactIdeal
     (T : MarkedIdealWithBoundary.{u}) (hv : T.IsAdmissible)
     (hgood : MaxContactReduction.IsMaxContactCover T (chosenCoverData T hv) hv.locallyOfFiniteType
       (balancedTunedIdeal T hv) (tunedMult T)) :
@@ -1230,7 +1229,7 @@ theorem maxContactCoverProperties_of_tunedSheafProperties (htf : TunedSheafPrope
       coverContact_snc := ?_
       tuning := htf }
   · intro k _ _ P P₁ p _ _ _ π _ Z E hZ hπ A A₁ μ hμ hordA hsupp htr H hH
-    exact FunctorialResolution.EmbeddedResolution.isMaxContactHypersurface_strictTransform_of_orderAt_le k p π Z E hZ hπ A A₁ μ hμ hordA
+    exact FunctorialResolution.EmbeddedResolution.isMaxContactHypersurface_strictTransform_of_orderAt_le k p π Z E hZ hπ A A₁ μ hμ
       hsupp htr H hH
   · intro X X₁ π Z hπ A A₁ μ htr hsupp
     exact FunctorialResolution.EmbeddedResolution.OrderLocusBlowup.orderAtLeastLocus_subset_preimage_of_isBlowupAlongIdealSheaf π Z hπ A A₁ μ htr hsupp
@@ -1252,7 +1251,7 @@ theorem maxContactCoverProperties_of_tunedSheafProperties (htf : TunedSheafPrope
     exact MaxContactCoverGeometry.isMaxContactHypersurface_coverMaxContactIdeal T hv hgood
   · intro T hv hgood
     exact MaxContactCoverGeometry.inStrictNormalCrossingPosition_of_isMaxContactCover T hv hgood
-      (MaxContactCoverData.isSmoothDivisor_coverMaxContactIdeal hpb T hv hgood)
+      (MaxContactCoverData.isSmoothDivisor_coverMaxContactIdeal T hv hgood)
 
 end OrderReduction
 

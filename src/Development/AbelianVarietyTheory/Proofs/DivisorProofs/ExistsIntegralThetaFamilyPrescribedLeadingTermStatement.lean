@@ -345,10 +345,10 @@ theorem commGroup_mul_eq_mul_mul_div {G : Type} [CommGroup G] (T A B : G) : T * 
 variable [IsLocalRing R] (D : DegPre R)
 
 def ch (χ : D.X) : PUnit → D.P.L.ι :=
-  (DVR.exists_chart_top D.P.L D.P.isLB (fun _ : PUnit => GlobalTheory.ThFam.ptR D χ) (fun _ => (-1 : ℤ))).choose
+  (DVR.exists_chart_top D.P.L D.P.isLB (fun _ : PUnit => GlobalTheory.ThFam.ptR D χ)).choose
 
 theorem ch_top (χ : D.X) : LB.wchart D.P.L (fun _ : PUnit => GlobalTheory.ThFam.ptR D χ) (ch D χ) = ⊤ :=
-  (DVR.exists_chart_top D.P.L D.P.isLB (fun _ : PUnit => GlobalTheory.ThFam.ptR D χ) (fun _ => (-1 : ℤ))).choose_spec
+  (DVR.exists_chart_top D.P.L D.P.isLB (fun _ : PUnit => GlobalTheory.ThFam.ptR D χ)).choose_spec
 
 def gen (χ : D.X) : LB.Gen (LB.LinComb D.P.L (K := PUnit) (fun _ => GlobalTheory.ThFam.ptR D χ) (fun _ => -1)) :=
   (DVR.exists_gen_of_local D.P.L D.P.isLB (fun _ : PUnit => GlobalTheory.ThFam.ptR D χ) (fun _ => (-1 : ℤ))).choose
@@ -404,7 +404,7 @@ section
 variable {R : Type} [CommRing R] [IsDomain R]
 
 theorem unitAt_inj (z : (TK R).left) :
-    Function.Injective (GlobalTheory.ThFam.unitAt (R := R) (𝟙 (Spec (CommRingCat.of (FractionRing R)))) z) := fun a b h =>
+    Function.Injective (GlobalTheory.ThFam.unitAt (R := R) (𝟙 (Spec (CommRingCat.of (FractionRing R)))) z) := fun _ _ h =>
   Units.ext (RingHom.injective _ (congrArg Units.val h))
 
 theorem toGen_unit (z : (TK R).left) (u : Rˣ) :

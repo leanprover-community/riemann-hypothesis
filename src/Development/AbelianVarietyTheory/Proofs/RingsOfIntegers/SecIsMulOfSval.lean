@@ -68,7 +68,7 @@ theorem exists_psi_val {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R] {I :
         (val (D.psi χ) r z J).val = cst (r ≫ jK R) z a * (val e (r ≫ jK R) z J).val := by
   have hL := D.P.isLB
   obtain ⟨e, he⟩ := exists_gen_of_local (V := R) D.P.L hL (K := PUnit) (fun _ => (D.c χ).left) (fun _ => -1)
-  obtain ⟨j, hj⟩ := exists_chart_top (V := R) D.P.L hL (K := PUnit) (fun _ => (D.c χ).left) (fun _ => -1)
+  obtain ⟨j, hj⟩ := exists_chart_top (V := R) D.P.L hL (K := PUnit) (fun _ => (D.c χ).left)
   have le : (⊤ : (Spec (CommRingCat.of R)).Opens) ≤ LB.wchart D.P.L (K := PUnit) (fun _ => (D.c χ).left) j := hj.ge
   have hx : D.xK χ = jK R ≫ (D.c χ).left := by
     simp [DegPre.xK, ptK]

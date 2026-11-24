@@ -83,7 +83,7 @@ theorem st3 (Λ : E.Lift G D) (x : ∀ n, Hc (schFn q) κ k n 2) (hx : IsFirstCh
     ∃ (z : CH.Cn (G ⋙ CH.modF (AcrEl (PX q κ) n)) 2) (hz : CH.d _ 2 z = 0), Λ.IsCoc n z ∧
       (CH.cx _).cls z hz = (CH.Mor.restrict (CH.modF (AcrEl (PX q κ) n)) G).pull 2 (β (schFn q) κ k n 2 (x n)) :=
   pull_transport' (Oc (schFn q) κ k n) (CH.modF (AcrEl ((schFn q).pt κ) n)) (βMor (schFn q) κ k n) G (x n)
-    (st1 k n Λ x hx) (fun z => Λ.IsCoc n z) (fun z c hs hc s => st2 k n Λ s _ ((hs s).trans (congrArg _ (congrFun hc s))))
+    (st1 k n Λ x hx) (fun z => Λ.IsCoc n z) (fun _ _ hs hc s => st2 k n Λ s _ ((hs s).trans (congrArg _ (congrFun hc s))))
 end
 
 theorem main : ∀ (l : ℕ) [Fact l.Prime], FirstChernCompatible l := by

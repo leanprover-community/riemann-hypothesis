@@ -285,7 +285,7 @@ private theorem fib_sum {I J : Type} (g : I → J) (wt : I → ℝ) (ω : J → 
 
 open Classical in
 theorem bcSumD (l : ℕ) (W W' : Type) (q : W → ℕ) (q' : W' → ℕ) (u : W' → W) (f : W' → ℕ) (c : W → ℂ) (hl : 1 ≤ l)
-    (hq : ∀ v, 1 ≤ q v) (hC : Cover l q q' u f c) (A B A' B' : Type) [Fintype A] [Fintype B] [Fintype A'] [Fintype B']
+    (hC : Cover l q q' u f c) (A B A' B' : Type) [Fintype A] [Fintype B] [Fintype A'] [Fintype B']
     (α : W → A → ℂ) (β : W → B → ℂ) (ξ : W' → A' → ℂ) (ζ : W' → B' → ℂ) (s : ℂ)
     (hξ : ∀ w (k : ℕ), ∑ a, ξ w a ^ k = ∑ a, α (u w) a ^ (f w * k)) (hζ : ∀ w (k : ℕ), ∑ b, ζ w b ^ k = ∑ b, β (u w) b ^ (f w * k))
     (hs : Summable fun p => ‖lterm q α β s p‖) : (Summable fun p => ‖lterm q' ξ ζ s p‖) ∧
@@ -375,7 +375,7 @@ theorem bcSumD (l : ℕ) (W W' : Type) (q : W → ℕ) (q' : W' → ℕ) (u : W'
     simp
 
 theorem bcSum_holds : BCSum := fun l W W' q q' u f c hl hq hC A B A' B' _ _ _ _ α β ξ ζ σ h1 h2 h3 =>
-  bcSumD l W W' q q' u f c hl hq hC A B A' B' α β ξ ζ σ h1 h2 h3
+  bcSumD l W W' q q' u f c hl hC A B A' B' α β ξ ζ σ h1 h2 h3
 
 end UpperTheory.ConvolutionTheory.R
 end -- clump:auto

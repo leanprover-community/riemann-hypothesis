@@ -244,7 +244,7 @@ private theorem locWach_map_letA_smul_comm (W : LocWach PD LL O v n) {T Y : LocL
 theorem pullback_span_of_exact (W : LocWach PD LL O v n) {T Y : LocLat G Qp LL O} (ι : LatHom T.L Y.L)
     (π : LatHom Y.L W.one.L) (hY : IsCrys PD Y.ρ) (hO : IsCrys PD W.one.ρ)
     (hker : ∀ x, W.map π x = 0 ↔ ∃ y, W.map ι y = x) (hsat : ∀ x, W.map ι x ∈ W.N Y → x ∈ W.N T)
-    (hinj : Function.Injective (W.map ι)) (π' : LetA O n) (hmT : Formalism.MainNotions.DeltaInvariantLattices.wachModuleOverLetters W T π')
+    (π' : LetA O n) (hmT : Formalism.MainNotions.DeltaInvariantLattices.wachModuleOverLetters W T π')
     (e' : W.DD W.one) (hspan : W.N W.one = Submodule.span (LetA O n) {e'}) (i : ZMod n) (N : ℕ)
     (ε : W.DD Y) (hεN : ε ∈ W.N Y)
     (hεπ : W.map π ε = ((PD.p : ℕ) : LetA O n) ^ N • (letE (i - 1) : LetA O n) • e') :
@@ -516,7 +516,7 @@ theorem extDataOne_exists [NeZero n] (W : LocWach PD LL O v n)
       rw [smul_sub]
       exact sub_mem (Submodule.smul_mem _ _ (Submodule.subset_span ⟨ε (i - 1), hεNl (i - 1), rfl⟩))
         (extDataOne_Qqp W R hs _ _ _ (hY5.2.1 i _ (hεNl i)))
-    obtain ⟨p, hp, β, hβe, hβ0⟩ := pullback_span_of_exact W ι π hY hOc hker hsat hinj W.π₀ hmT e' hspan' i N
+    obtain ⟨p, hp, β, hβe, hβ0⟩ := pullback_span_of_exact W ι π hY hOc hker hsat W.π₀ hmT e' hspan' i N
       (ε (i - 1)) (hεΔ (i - 1)).1 (hεπ'' (i - 1)) _ hxY
     have hβz : β • W.φD Y (ε (i - 1)) = 0 := by
       have hπ0 : W.map π (((PD.p : ℕ) : LetA O n) ^ N • (qp W ^ hi i • (W.φD Y (ε (i - 1)) - ε i))) = 0 := by
@@ -1669,7 +1669,7 @@ open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.Basi
 set_option maxHeartbeats 800000 in
 theorem lemK_D (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (Cm : CmpOf D.loc D.locA HW F) (CR CA CB CK : ℝ) (hA : Formalism.MainNotions.RamifiedCoefficientChains.admitted D HW F Cm CR CA CB CK)
-    (hL : Formalism.MainNotions.UnusedSlot80.LevCoeff D HW F) :
+    (hL : Formalism.MainNotions.UnusedSlot80.LevCoeff D HW) :
     Formalism.MainNotions.WachCoordinates.AtCaseA fun l _ K LL h => Formalism.MainNotions.RamifiedCoefficientChains.Sh.LemK ((HW l).W K 1 LL h.2.2) := by
   intro l _ K LL hA' h5
   have : FiniteDimensional ℚ_[l] ↥LL.1 := LL.2
@@ -1723,15 +1723,15 @@ theorem laurent_clause_of_admitted' (hA : admitted D HW F Cm CR CA CB CK) : Form
 theorem uniformizer_clause_of_admitted (hA : admitted D HW F Cm CR CA CB CK) : Formalism.MainNotions.DeltaInvariantLattices.P9 D HW F :=
   fun l _ K s LL h => (hA.1 l K s LL h).2.2.2.2.2.2.2.2.1
 
-theorem level_tools_of_admitted' (hA : admitted D HW F Cm CR CA CB CK) : Formalism.MainNotions.WachCoordinates.adm7 D HW F Cm :=
+theorem level_tools_of_admitted' (hA : admitted D HW F Cm CR CA CB CK) : Formalism.MainNotions.WachCoordinates.adm7 D HW F :=
   Formalism.MainNotions.UnusedSlot80.tools_unramified_statement D HW F Cm ⟨fun l _ K s LL h => (hA.1 l K s LL h).2.2.1, laurent_clause_of_admitted' D HW F Cm hA,
     uniformizer_clause_of_admitted D HW F Cm hA⟩
 
 
 
-theorem local_lemmas_of_literature (hA : admitted D HW F Cm CR CA CB CK) (h23 : Formalism.MainNotions.LiftingTheory.adm23 D HW F)
-    (hHerr : Formalism.MainNotions.ElementDenominator.HerrClassNaturalExtension D.loc D.locA HW F) (a22 : Formalism.MainNotions.CrystallineLiftingBounds.adm22 D HW F)
-    (hFont : Formalism.MainNotions.InvariantsGenerators.LitFont D HW F) : cocyclesToWachVectorsBoundAtGoodExtensions D HW F := by
+theorem local_lemmas_of_literature (hA : admitted D HW F Cm CR CA CB CK) (h23 : Formalism.MainNotions.LiftingTheory.adm23 D HW)
+    (hHerr : Formalism.MainNotions.ElementDenominator.HerrClassNaturalExtension D.loc D.locA HW) (a22 : Formalism.MainNotions.CrystallineLiftingBounds.adm22 D HW)
+    (hFont : Formalism.MainNotions.InvariantsGenerators.LitFont D HW F) : cocyclesToWachVectorsBoundAtGoodExtensions D HW := by
   intro l _ K LL hg _
   intro d T₁ T₂ F' b S η m hset
   have hCA : Formalism.MainNotions.LiftingTheory.CaseA ((HW l).W K 1 LL hg) := hset.1

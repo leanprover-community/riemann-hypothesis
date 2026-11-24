@@ -1192,7 +1192,7 @@ theorem finite_subgroups {k : Type} [Field k] [IsAlgClosed k] {A B₁ : Over (Sp
     (hline : ∀ v₁ v₂ : epsR k ⟶ A, IsTangent v₁ → IsTangent v₂ → v₁ ≫ g = 1 → v₂ ≫ g = 1 →
       ∃ c : k, v₁.left = spMap (epsScaleR c) ≫ v₂.left ∨ v₂.left = spMap (epsScaleR c) ≫ v₁.left) :
     Set.Finite {P : ∀ T : Over (Sp k), (T ⟶ A) → Prop | ∃ (B : Over (Sp k)) (_ : GrpObj B) (ψ : A ⟶ B),
-      IsAbelianScheme B ∧ IsMonHom ψ ∧ P = fun T x => x ≫ π₀ = 1 ∧ x ≫ g = 1 ∧ x ≫ ψ = 1} := by
+      IsAbelianScheme B ∧ IsMonHom ψ ∧ P = fun _ x => x ≫ π₀ = 1 ∧ x ≫ g = 1 ∧ x ≫ ψ = 1} := by
   let x₀ : A.left := (η[A]).left.base (IsLocalRing.closedPoint k)
   have hx₀ : x₀ ∈ Set.range (η[A]).left.base := ⟨_, rfl⟩
   obtain ⟨J₁, hJ₁⟩ := GlobalTheory.KerIdeal.kernel_ideal k A A π₀ hA x₀
@@ -1517,7 +1517,7 @@ end GlobalTheory.UPel.HT.ES.KerFin
 
 
 open GlobalTheory.UPel.HT.ES.KerFin in
-theorem GlobalTheory.UPel.HT.ES.KerFin.finite_kernels : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [CommRing R] (b : Base D R) (N : ℕ), 3 ≤ N → N.Coprime p → D.m = 1 → ∀ (c : ℕ) (k : Type) [Field k] [IsAlgClosed k] [CharP k p] (s : Sp k ⟶ Sp R) (o : Obj b N s), Set.Finite {P : ∀ T : Over (Sp k), (T ⟶ o.A) → Prop | ∃ (o' : Obj b N s) (ψ : o.A ⟶ o'.A), IsPIsog c o o' ψ ∧ P = fun T x => x ≫ ψ = 1} := by
+theorem GlobalTheory.UPel.HT.ES.KerFin.finite_kernels : ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [CommRing R] (b : Base D R) (N : ℕ), 3 ≤ N → N.Coprime p → D.m = 1 → ∀ (c : ℕ) (k : Type) [Field k] [IsAlgClosed k] [CharP k p] (s : Sp k ⟶ Sp R) (o : Obj b N s), Set.Finite {P : ∀ T : Over (Sp k), (T ⟶ o.A) → Prop | ∃ (o' : Obj b N s) (ψ : o.A ⟶ o'.A), IsPIsog c o o' ψ ∧ P = fun _ x => x ≫ ψ = 1} := by
   intro p _ D R _ b N _ _ hm c k _ _ _ s o
   classical
   obtain ⟨β, rfl⟩ : ∃ β : R →+* k, spMap β = s := ⟨(Spec.preimage s).hom, by simp [spMap]⟩

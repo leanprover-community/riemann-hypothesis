@@ -661,7 +661,7 @@ private theorem fsLog_smul_of_ne_zero {m : ℕ} (h : HermNorm m) (w : Fin m → 
     exact Finset.sum_congr rfl fun j _ => by ring]
   rw [norm_mul, mul_div_mul_left _ _ (norm_ne_zero_iff.mpr hc)]
 
-theorem log_pull (hE : Emb p s) {σ : 𝓞 K →+* ℂ} {h₀ : HermNorm m} (hF : IsFS (L.φ σ) s h₀)
+theorem log_pull {σ : 𝓞 K →+* ℂ} {h₀ : HermNorm m} (hF : IsFS (L.φ σ) s h₀)
     {Z : Scheme.{0}} (i : Z ⟶ X) [IsClosedImmersion i] {u : Fin m → 𝓞 K} {su : L.B.Sec} (hu : IsComb p s u su)
     (y : CxPts (i ≫ p) σ) (hy : y ∈ ptsIn (i ≫ p) σ (nonzeroLocus (GlobalTheory.secPull su i))) :
     Real.log ((L.φ σ).nsq (secVal p σ su) (PtsOver.map i rfl _ y)) / 2 =
@@ -731,7 +731,7 @@ theorem arch_pull (hA : StArch) (hX : IsArithVar p D) (hE : Emb p s)
         (coords (i ≫ p) _ (LB.isLB_pull L.isLB i) (fun k => GlobalTheory.secPull (s k) i) y) := by
     funext y
     by_cases hy : y ∈ ptsIn (i ≫ p) (σ.comp (algebraMap (𝓞 K) K)) (nonzeroLocus (GlobalTheory.secPull su i))
-    · exact log_pull hE (hF σ) i hu y hy
+    · exact log_pull (hF σ) i hu y hy
     · have hy1 := hy
       rw [hset] at hy1
       simp only [Set.mem_setOf_eq, not_not] at hy1

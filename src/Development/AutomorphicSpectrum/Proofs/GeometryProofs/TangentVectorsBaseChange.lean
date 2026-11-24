@@ -78,7 +78,7 @@ theorem mem_eigSp {K : Type} [Field K] {ρ : O →+* Module.End K (Fin N → K)}
 theorem comp_smul (c : F) (w : Fin N → F) : f ∘ (c • w) = f c • (f ∘ w) := by
   funext i; simp
 
-theorem comp_inj : Function.Injective fun w : Fin N → F => f ∘ w := fun w w' h =>
+theorem comp_inj : Function.Injective fun w : Fin N → F => f ∘ w := fun _ _ h =>
   funext fun i => f.injective (congrFun h i)
 
 theorem comp_add (w w' : Fin N → F) : f ∘ (w + w') = f ∘ w + f ∘ w' := by funext i; simp
@@ -110,7 +110,7 @@ theorem comp_mem_span {ι : Type} (g : ι → Fin N → F) (w : Fin N → F) (hw
   | smul c x _ hx => rw [comp_smul]; exact Submodule.smul_mem _ _ hx
 
 theorem span_comp_eq (hρ : ∀ a u, ρ' a (f ∘ u) = f ∘ ρ a u) {n : ℕ} (b : Fin n → Fin N → F)
-    (hli : LinearIndependent F b) (hsp : Submodule.span F (Set.range b) = eigSp ρ τ) :
+    (hsp : Submodule.span F (Set.range b) = eigSp ρ τ) :
     Submodule.span F' (Set.range fun k => f ∘ b k) = eigSp ρ' (f.comp τ) := by
   classical
   have hbW : ∀ k, b k ∈ eigSp ρ τ := fun k => hsp ▸ Submodule.subset_span ⟨k, rfl⟩
@@ -219,7 +219,7 @@ theorem core (hρ : ∀ a u, ρ' a (f ∘ u) = f ∘ ρ a u) {n : ℕ} (u : Fin 
       (LinearIndependent F' (fun k => f ∘ u k) ∧ Submodule.span F' (Set.range fun k => f ∘ u k) = eigSp ρ' (f.comp τ)) := by
   constructor
   · rintro ⟨hli, hsp⟩
-    exact ⟨(linIndep_comp (ι' := Fin N) u).2 hli, span_comp_eq hρ u hli hsp⟩
+    exact ⟨(linIndep_comp (ι' := Fin N) u).2 hli, span_comp_eq hρ u hsp⟩
   · rintro ⟨hli', hsp'⟩
     have hli := (linIndep_comp (ι' := Fin N) u).1 hli'
     refine ⟨hli, ?_⟩
@@ -235,7 +235,7 @@ theorem core (hρ : ∀ a u, ρ' a (f ∘ u) = f ∘ ρ a u) {n : ℕ} (u : Fin 
     have hbsp : Submodule.span F (Set.range b) = W := by
       have : Set.range b = W.subtype '' Set.range bW := by rw [← Set.range_comp]; rfl
       rw [this, Submodule.span_image, bW.span_eq, Submodule.map_top, Submodule.range_subtype]
-    have hW' := span_comp_eq hρ b hbli hbsp
+    have hW' := span_comp_eq hρ b hbsp
     have e1 : Module.finrank F' (eigSp ρ' (f.comp τ)) = n := by
       rw [← hsp', finrank_span_eq_card hli', Fintype.card_fin]
     have e2 : Module.finrank F' (eigSp ρ' (f.comp τ)) = Module.finrank F W := by

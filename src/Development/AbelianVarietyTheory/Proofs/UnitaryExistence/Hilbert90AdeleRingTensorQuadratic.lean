@@ -58,7 +58,7 @@ open scoped TensorProduct Matrix nonZeroDivisors
 
 namespace GlobalTheory.AdLat
 
-theorem hilbert90_involution_of_idempotent_unit {R : Type} [CommRing R] (σ : R →+* R) (hσ : ∀ x, σ (σ x) = x)
+theorem hilbert90_involution_of_idempotent_unit {R : Type} [CommRing R] (σ : R →+* R)
     (u d e s : R) (hu : u * σ u = 1) (hd : σ d = -d) (hdu : IsUnit d) (h2 : IsUnit (2 : R))
     (he : e * e = e) (hσe : σ e = e) (hs : u + σ u = 2 * s)
     (hun : IsUnit (e * (1 + s) + (1 - e) * (1 - s))) :
@@ -144,7 +144,7 @@ theorem hilbert90_adeleRing_tensor_quadratic : ∀ (F E : Type) [Field F] [Numbe
   have hι : ∀ a, ι a = a ⊗ₜ 1 := fun a => rfl
   let κ : E →ₐ[F] AdeleRing (𝓞 F) F ⊗[F] E := Algebra.TensorProduct.includeRight
   have hκ : ∀ a, κ a = 1 ⊗ₜ a := fun a => rfl
-  refine hilbert90_involution_of_idempotent_unit (sg (AdeleRing (𝓞 F) F) c : _ →+* _) hσ u (κ (y - c y)) (ι e)
+  refine hilbert90_involution_of_idempotent_unit (sg (AdeleRing (𝓞 F) F) c : _ →+* _) u (κ (y - c y)) (ι e)
     (ι ((2 : F)⁻¹ • t)) hu ?_ ?_ ?_ ?_ ?_ ?_ ?_
   · change sg _ c _ = _
     rw [← map_neg, hκ, hκ, hsg, map_sub, hcc, neg_sub]

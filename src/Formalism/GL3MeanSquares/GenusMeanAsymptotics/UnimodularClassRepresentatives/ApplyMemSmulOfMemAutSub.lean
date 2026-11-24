@@ -71,7 +71,7 @@ theorem exists_pow_smul_le {M₁ M₂ : Submodule (𝓞 K) V} (hM₁ : Submodule
   apply Formalism.HermitianLattices.Ext.L3.D2.exists_smul_le <;> assumption
 
 set_option linter.unusedVariables false in
-theorem locF_inf {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {A B : Submodule (𝓞 K) V}
+theorem locF_inf {𝔭 : Ideal (𝓞 F)} {A B : Submodule (𝓞 K) V}
     (hA : locF 𝔭 A = A) (hB : locF 𝔭 B = B) : locF 𝔭 (A ⊓ B) = A ⊓ B := by
   apply le_antisymm
   · refine le_inf ?_ ?_
@@ -94,7 +94,7 @@ theorem locF_inf_locF {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) (A B : Su
       exact B.smul_mem _ htx
 
 theorem isLattice_inf {M₁ M₂ : Submodule (𝓞 K) V} (hM₁ : Submodule.IsLattice K M₁)
-    (hM₂ : Submodule.IsLattice K M₂) : Submodule.IsLattice K (M₁ ⊓ M₂) := by
+    : Submodule.IsLattice K (M₁ ⊓ M₂) := by
   have := hM₁
   exact Submodule.IsLattice.inf_left K M₁ M₂
 
@@ -103,7 +103,7 @@ theorem finite_quot_inf {M₁ M₂ : Submodule (𝓞 K) V} (hM₁ : Submodule.Is
     Finite (↥(locF 𝔭 M₁ ⊓ locF 𝔭 M₂) ⧸
       ((extP K 𝔭) ^ k • ⊤ : Submodule (𝓞 K) ↥(locF 𝔭 M₁ ⊓ locF 𝔭 M₂))) := by
   rw [← locF_inf_locF h𝔭]
-  exact finite_quot (isLattice_inf hM₁ hM₂) h𝔭 k
+  exact finite_quot (isLattice_inf hM₁) h𝔭 k
 
 theorem apply_mem_of_mem_autSub {h : V →ₗ⋆[K] V →ₗ[K] K} {A : Submodule (𝓞 K) V} {g : V ≃ₗ[K] V}
     (hg : g ∈ autSub h A) {z : V} (hz : z ∈ A) : g z ∈ A := by

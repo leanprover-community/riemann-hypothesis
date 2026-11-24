@@ -32,7 +32,7 @@ theorem rdE_ge_one (D : D7) : 1 ≤ 2 * D.host.v := by
   linarith
 
 theorem covWinN_of (hF : CovNFormula) {D : D7} {X : HidaSetting D} {Y : Full X} (C : Choice X 1) (large₂ : SizeData₂ D) {C1 : ℝ}
-    (hC1 : 0 ≤ C1) (hup : eN D * Real.log (2 * D.host.v) ≤ C1 * (D.R.m : ℝ) ^ 2 * Real.log large₂.sc.b)
+    (hup : eN D * Real.log (2 * D.host.v) ≤ C1 * (D.R.m : ℝ) ^ 2 * Real.log large₂.sc.b)
     (u u' : D.what₂.Word) : LoopTerm.CovWinN (Y := Y) C large₂ C1 u u' := by
   have hbpos : 0 < large₂.sc.b := by
     unfold Scale.b
@@ -130,7 +130,7 @@ theorem covWinN_sizes (hF : CovNFormula) {D : D7} {X : HidaSetting D} {Y : Full 
   have he := eN_le D
   have hb : 0 ≤ Real.log large₂.sc.b := by linarith
   have hm : 0 ≤ (D.R.m : ℝ) ^ 2 := by positivity
-  refine covWinN_of hF C large₂ (by linarith) ?_ u u'
+  refine covWinN_of hF C large₂ ?_ u u'
   calc eN D * Real.log (2 * D.host.v) ≤ ((D.R.m : ℝ) ^ 2 / 2) * (Real.log large₂.sc.b / 72) :=
         mul_le_mul he hl hl0 (by positivity)
     _ = 1 / 144 * (D.R.m : ℝ) ^ 2 * Real.log large₂.sc.b := by ring

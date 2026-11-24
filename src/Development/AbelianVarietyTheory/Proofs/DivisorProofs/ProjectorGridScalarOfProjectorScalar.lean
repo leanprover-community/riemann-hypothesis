@@ -130,7 +130,7 @@ theorem listProd_mem {M : Type} [AddCommGroup M] [Module ℚ M] {S : Submodule �
 theorem rootP_mem {N : ℕ} {e : ℕ → ℕ → Module.End ℚ V} {lam : ℕ → ℤ} {s : Finset ℕ} (he : GlRel N e)
     {i j : ℕ} (hi : i < N) (hj : j < N) (hs : i ∈ s ↔ j ∈ s) (K : ℕ) :
     ∀ U ∈ vanSub N e lam s, rootP (fun c d => adj (e c d)) K i j U ∈ vanSub N e lam s :=
-  proj_mem (fun U hU => adj_mem_vanSub he hi hj hs hU) (fun U hU => adj_mem_vanSub he hj hi hs.symm hU) _ _
+  proj_mem (fun _ hU => adj_mem_vanSub he hi hj hs hU) (fun _ hU => adj_mem_vanSub he hj hi hs.symm hU) _ _
 
 theorem rowP_mem {N : ℕ} {e : ℕ → ℕ → Module.End ℚ V} {lam : ℕ → ℤ} {t : Finset ℕ} (he : GlRel N e)
     {i s n : ℕ} (hi : i < N) (hsn : s + n ≤ N) (hS : ∀ j, s ≤ j → j < s + n → (i ∈ t ↔ j ∈ t)) (K : ℕ) :

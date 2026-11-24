@@ -186,7 +186,7 @@ theorem grid_blockC {i : ℕ} (h1 : 1 ≤ i) (h2 : i ≤ D.R.m) {x : ℚ} (hx : 
 end Facts
 
 theorem gapOver_parD (D : D7) (hS : GlobalTheory.IndefiniteRowSideFullHecke.CuspAlongSmoothLifts.Sizes D) (τ : D.what₂.Tau) (i j : ℕ) (hi : i ≤ D.R.m)
-    (hj : j ≤ D.R.m) : GapOver ((grid D τ).parD i j) (2 * (bigN D : ℚ) ^ 3) := by
+    : GapOver ((grid D τ).parD i j) (2 * (bigN D : ℚ) ^ 3) := by
   have hm := D.R.two_le_m
   have hk := D.R.m_add_three_le_k
   have hN : (0 : ℚ) ≤ 2 * (bigN D : ℚ) ^ 3 := by positivity
@@ -279,7 +279,7 @@ theorem blockC_above {l : ℕ} (h1 : 1 ≤ l) (h2 : l ≤ D.R.m) {x : ℚ} (hx :
 
 end Side
 
-theorem farFrom_parD (D : D7) (τ : D.what₂.Tau) (i j : ℕ) (hi : i ≤ D.R.m) (hj : j < D.R.m) :
+theorem farFrom_parD (D : D7) (τ : D.what₂.Tau) (i j : ℕ) (hj : j < D.R.m) :
     FarFrom (-((grid D τ).e (j + 1) : ℚ)) (((D.R.t : ℚ) + 3) / 2) ((grid D τ).parD i j) := by
   intro x hx
   obtain ⟨s, hs⟩ := mem_entries.1 hx
@@ -323,7 +323,7 @@ theorem partner_true_eq (t : ℕ) (c c' : ℚ) (P : SPar) : partner t true c c' 
       rw [sub_mem_block, show c + (c' - c) = c' by ring] at h1
       exact Or.inr ⟨a, h1, rfl, h2.symm⟩
 
-theorem parD_succ (D : D7) (τ : D.what₂.Tau) (i j : ℕ) (hi : i ≤ D.R.m) (hj : j < D.R.m) :
+theorem parD_succ (D : D7) (τ : D.what₂.Tau) (i j : ℕ) (hj : j < D.R.m) :
     (grid D τ).parD i (j + 1) = liftPlus (-((grid D τ).e (j + 1) : ℚ)) D.R.t ((grid D τ).parD i j) := by
   have ht0 : (0 : ℚ) ≤ D.R.t := by positivity
   ext ⟨a, s⟩
@@ -345,7 +345,7 @@ theorem parD_succ (D : D7) (τ : D.what₂.Tau) (i j : ℕ) (hi : i ≤ D.R.m) (
         by_cases hl : l ≤ j + 1 + 1
         · have e2 : l - (j + 1) - 1 = 0 := by omega
           simp [hl, e2, show ¬ l ≤ j + 1 by omega]
-        · simp [hl, show ¬ l ≤ j + 1 by omega, ← Nat.not_even_iff_odd]
+        · simp [hl, show ¬ l ≤ j + 1 by omega]
     · rcases (Nat.lt_or_eq_of_le hlj) with h' | h'
       · exact Or.inl ⟨by linarith [blockM_above D τ hj hl1 (by omega) h], Or.inr (Or.inr (Or.inl ⟨l, hl1, by omega, h, rfl⟩))⟩
       · subst h'; exact Or.inr (Or.inr ⟨h, rfl⟩)
@@ -383,7 +383,7 @@ theorem parD_succ (D : D7) (τ : D.what₂.Tau) (i j : ℕ) (hi : i ≤ D.R.m) (
         by_cases hl : l ≤ j + 1 + 1
         · have e2 : l - (j + 1) - 1 = 0 := by omega
           simp [hl, e2, h]
-        · simp [hl, h, ← Nat.not_even_iff_odd]
+        · simp [hl, h]
       · linarith [blockM_above D τ hj hl1 hlj h]
       · linarith [blockC_above D τ hj (by omega) hlm h]
     · exact Or.inr (Or.inr (Or.inl ⟨j + 1, by omega, le_rfl, h, rfl⟩))
@@ -397,7 +397,7 @@ theorem partner_parD (D : D7) (τ : D.what₂.Tau) (i j : ℕ) (hi : i ≤ D.R.m
     lift_shift .pos _ h D.R.t _
   have hss : ∀ (a b : ℚ) (S : SPar), shift a (shift b S) = shift (b + a) S := by
     intro a b S; ext x; simp only [mem_shift]; ring_nf
-  rw [partner_true_eq, hl, parD_succ D τ i j hi hj, hss]
+  rw [partner_true_eq, hl, parD_succ D τ i j hj, hss]
   congr 1; ring
 
 theorem card_parD_le (D : D7) (τ : D.what₂.Tau) (i j : ℕ) (hi : i ≤ D.R.m) : ((grid D τ).parD i j).card ≤ rkV D i j := by
@@ -482,12 +482,12 @@ theorem removeBlock_pairPar : ∀ D : D7, GlobalTheory.IndefiniteRowSideFullHeck
     have h2 : D.R.m ≤ D.R.m * (D.R.t + sLen D + 1) := Nat.le_mul_of_pos_right _ (by omega)
     unfold bigN; unfold Ranks.r at h1
     omega
-  have hgap : GapOver P (2 * (bigN D : ℚ) ^ 3) := gapOver_shift (gapOver_parD D hS τ i j hi hj.le)
+  have hgap : GapOver P (2 * (bigN D : ℚ) ^ 3) := gapOver_shift (gapOver_parD D hS τ i j hi)
   have hgap' : GapOver (partner D.R.t true (-(G.e (j + 1) : ℚ) + δ) (-(G.e (j + 1) : ℚ) + δ') P)
       (2 * (bigN D : ℚ) ^ 3) := by
-    rw [hP, ← hpart]; exact gapOver_shift (gapOver_parD D hS τ i (j + 1) hi hj)
+    rw [hP, ← hpart]; exact gapOver_shift (gapOver_parD D hS τ i (j + 1) hi)
   have hreg : IsRegular P := isRegular_of_gapOver (by positivity) hgap
-  have hfar3 : FarFrom (-(G.e (j + 1) : ℚ) + δ) (((D.R.t : ℚ) + 3) / 2) P := farFrom_shift (farFrom_parD D τ i j hi hj)
+  have hfar3 : FarFrom (-(G.e (j + 1) : ℚ) + δ) (((D.R.t : ℚ) + 3) / 2) P := farFrom_shift (farFrom_parD D τ i j hj)
   have hfar1 : FarFrom (-(G.e (j + 1) : ℚ) + δ) (((D.R.t : ℚ) + 1) / 2) P := fun x hx =>
     le_trans (by linarith) (hfar3 x hx)
   have hne : P.Nonempty := by

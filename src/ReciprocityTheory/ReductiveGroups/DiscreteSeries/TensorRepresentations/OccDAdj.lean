@@ -129,7 +129,7 @@ theorem adjB_emb (dual : Bool) (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn 
     have h2 := congrFun h1 c
     simp only [kDiag, Pi.zero_apply, ZeroMemClass.coe_zero, map_zero, smul_zero, Finset.sum_const_zero] at h2
     exact Subtype.ext h2
-  rcases data_genSub_irred hgap' hσ hD hV' hc' hVK' N inf_le_left hNE hNK with h | h
+  rcases data_genSub_irred hgap' hσ hD hV' hc' N inf_le_left hNE with h | h
   · have : x ∈ N := ⟨hx, LinearMap.mem_ker.2 hx0⟩
     rw [h] at this
     exact (Submodule.mem_bot ℂ).1 this

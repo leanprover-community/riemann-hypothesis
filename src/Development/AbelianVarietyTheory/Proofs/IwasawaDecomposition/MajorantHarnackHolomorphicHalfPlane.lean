@@ -130,7 +130,7 @@ theorem rho_sq {T : ℝ} {w w' : ℂ} (hw : T < w.im) (hw' : T < w'.im) :
   have := norm_pos_iff.mpr hden
   field_simp
 
-theorem real_bound {a b p q ρ d m s : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) (hp : 0 ≤ p) (hq : 0 ≤ q)
+theorem real_bound {a b p q ρ d m s : ℝ} (hb : 0 ≤ b) (hq : 0 ≤ q)
     (hρ : 0 ≤ ρ) (hd : 0 ≤ d) (hm : 0 < m) (hρd : ρ ^ 2 * (d + 4 * m) = d) (hba : b ≤ ρ * a)
     (hs : s = a ^ 2 - b ^ 2) (hs' : s ≤ p * a + q * b) :
     2 * s - (p ^ 2 - q ^ 2) ≤ (2 + d / m) * (p ^ 2 + q ^ 2) := by
@@ -350,7 +350,7 @@ theorem maj_harnack : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (N 
   have key := real_bound (s := (hermC τ.1 X.Gm u u).re)
     (p := Real.sqrt (X.maj (x w) τ (X.ppos (x w) τ v)))
     (q := Real.sqrt (X.maj (x w) τ (v - X.ppos (x w) τ v)))
-    (Real.sqrt_nonneg _) (Real.sqrt_nonneg _) (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
+    (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
     (norm_nonneg _) (sq_nonneg _) (mul_pos (sub_pos.mpr hw) (sub_pos.mpr hw')) (rho_sq hw hw') hba
     (by rw [Real.sq_sqrt (nn _), Real.sq_sqrt (nn _), herm_self_re X h0])
     (by

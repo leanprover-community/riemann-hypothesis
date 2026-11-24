@@ -517,7 +517,7 @@ private theorem BxTriv.inv {X Y : Scheme.{0}} {L : LB X} {F : ∀ (U : Type) [Co
   simp only [zpow_neg, Finset.prod_inv_distrib]
 
 private theorem BxTriv.pull {X Y W : Scheme.{0}} {L : LB X} {f : W ⟶ X} (t : (L.pull f).Gen) (ht : t.IsGen)
-    (r : Y ⟶ W) {g : Y ⟶ X} (hg : r ≫ f = g) : BxTriv L Y (fun U _ h => h g) :=
+    (r : Y ⟶ W) {g : Y ⟶ X} (hg : r ≫ f = g) : BxTriv L Y (fun _ _ h => h g) :=
   ⟨PUnit, inferInstance, _, _, LB.pullGen L _ _ t r, DVR.pullGen_isGen _ _ _ _ ht r, fun U _ h => by
     rw [Fintype.prod_unique, zpow_one, hg]⟩
 

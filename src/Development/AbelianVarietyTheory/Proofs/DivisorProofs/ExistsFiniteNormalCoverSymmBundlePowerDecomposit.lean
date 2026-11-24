@@ -994,7 +994,7 @@ noncomputable def reForm {g : ℕ} (H : Matrix (Fin g) (Fin g) ℂ) :
     (Fin g → ℂ) →ₗ[ℝ] (Fin g → ℂ) →ₗ[ℝ] ℝ :=
   LinearMap.mk₂ ℝ (fun z w => (z ⬝ᵥ H *ᵥ star w).re)
     (by intro a b c; simp [add_dotProduct])
-    (by intro c a b; simp [smul_dotProduct, Complex.smul_re])
+    (by intro c a b; simp [smul_dotProduct])
     (by intro a b c; simp [star_add, mulVec_add, dotProduct_add])
     (by intro c a b
         have : star (c • b) = c • star b := by
@@ -1442,7 +1442,7 @@ noncomputable section
 
 namespace GlobalTheory.SqDecBC
 
-theorem sqDec_baseChange : ∀ (k R S : Type) [Field k] [CommRing R] [CommRing S] [Algebra k R] [Algebra k S] (ρ : R →ₐ[k] S) (A₀ : Over (Sp k)) [GrpObj A₀] (L M : LB A₀.left), L.IsLB → M.IsLB → SqDec ((Over.pullback (spMap (algebraMap k R))).obj A₀) (L.pull (pullback.fst A₀.hom (spMap (algebraMap k R)))) (M.pull (pullback.fst A₀.hom (spMap (algebraMap k R)))) → SqDec ((Over.pullback (spMap (algebraMap k S))).obj A₀) (L.pull (pullback.fst A₀.hom (spMap (algebraMap k S)))) (M.pull (pullback.fst A₀.hom (spMap (algebraMap k S)))) := by
+theorem sqDec_baseChange : ∀ (k R S : Type) [Field k] [CommRing R] [CommRing S] [Algebra k R] [Algebra k S] (_ : R →ₐ[k] S) (A₀ : Over (Sp k)) [GrpObj A₀] (L M : LB A₀.left), L.IsLB → M.IsLB → SqDec ((Over.pullback (spMap (algebraMap k R))).obj A₀) (L.pull (pullback.fst A₀.hom (spMap (algebraMap k R)))) (M.pull (pullback.fst A₀.hom (spMap (algebraMap k R)))) → SqDec ((Over.pullback (spMap (algebraMap k S))).obj A₀) (L.pull (pullback.fst A₀.hom (spMap (algebraMap k S)))) (M.pull (pullback.fst A₀.hom (spMap (algebraMap k S)))) := by
   intro k R S _ _ _ _ _ ρ A₀ _ L M hL hM hD
   obtain ⟨N, a₀, r, a, β, hN, ha₀, hβ, H⟩ := hD
   set bc := GlobalTheory.Spread.bcMap A₀.hom ρ with hbc

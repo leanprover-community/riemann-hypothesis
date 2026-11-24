@@ -68,7 +68,7 @@ def OrderAtPullbackInvariant (T : MarkedIdealWithBoundary.{u}) {Y : Scheme.{u}} 
     ∀ (A : B.IdealSheafData) (y : ↥Q),
       orderAt (A.comap q) y = orderAt A (q.base y)
 
-theorem orderAtPullbackInvariant_of_smooth (T : MarkedIdealWithBoundary.{u}) (_hT : T.IsAdmissible)
+theorem orderAtPullbackInvariant_of_smooth (T : MarkedIdealWithBoundary.{u})
     {Y : Scheme.{u}} (g : Y ⟶ T.scheme) [AlgebraicGeometry.Smooth g] :
     OrderAtPullbackInvariant T g := by
   intro B b pB IB EB hB hcomm Q q p hpb A y

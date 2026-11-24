@@ -179,7 +179,7 @@ theorem nrm_cont (k : I → ℕ) : Continuous (nrm k : X I → ℝ) := by
     fun _ => Or.inr (by positivity)
 
 theorem Kap_nonneg (hC : B1c) (k : I → ℕ) (z w : X I) : 0 ≤ Kap k z w :=
-  Finset.prod_nonneg fun v _ => Real.rpow_nonneg (hC.1 _ _).1 _
+  Finset.prod_nonneg fun _ _ => Real.rpow_nonneg (hC.1 _ _).1 _
 
 theorem Kap_symm (hC : B1c) (k : I → ℕ) (z w : X I) : Kap k z w = Kap k w z := by
   unfold Kap

@@ -486,7 +486,7 @@ private theorem exists_inclusion_mul_eq_mul_inclusion_of_normal {K : Type} [Grou
   apply Subtype.ext
   simp [mul_assoc]
 
-private theorem exists_ext (ρ : Representation R G M) (hρ : ContAction ρ) {U' U : Subgroup G} [U'.Normal] (h : U' ≤ U)
+private theorem exists_ext (ρ : Representation R G M) {U' U : Subgroup G} [U'.Normal] (h : U' ≤ U)
     (ho : IsOpen (U'.subgroupOf U : Set U)) (z : Z1U ρ U') (hz : Submodule.Quotient.mk z ∈ invariantsUnderSubgroupH1 ρ U U') :
     ∃ y : U → M, Continuous y ∧ y 1 = 0 ∧
       (∀ (u : U') (g : U), y (Subgroup.inclusion h u * g) = z.1 u + ρ u (y g)) ∧
@@ -758,7 +758,7 @@ theorem length_restriction_coker_le_H2 (ρ : Representation R G M) (hρ : ContAc
       have hz3 : (Submodule.Quotient.mk z : H1U ρ U') = x := hz
       rw [hz3]
       exact x.2
-    have hex := exists_ext ρ hρ h ho z hz'
+    have hex := exists_ext ρ h ho z hz'
     obtain ⟨y, hy, hy1, hL, hR⟩ := hex
     obtain ⟨w, hw⟩ := exists_infl ρ h z.1 y hL hR
     refine ⟨⟨(z, y, w), hz', hy, fun u => ?_, hw⟩, ?_⟩
@@ -1262,7 +1262,7 @@ private theorem sum_split {ι : Type} (T : ℕ → Finset ι) (O : Finset ι) (v
         add_le_add (mul_le_mul_of_nonneg_left hA hL) (mul_le_mul_of_nonneg_right hB hNK)
 
 private theorem final_le (M L l q N t B : ℝ) (a b C : ℕ) (hM : M = N * t) (h3 : 3 ≤ M) (hL : L ≤ l)
-    (hl : 0 ≤ l) (hlM : l ≤ M) (hq : 0 ≤ q) (hqM : q ≤ M) (hB : 0 ≤ B) (hC : a + 2 * b + 9 ≤ C) (hC' : l * q ≤ C) :
+    (hlM : l ≤ M) (hq : 0 ≤ q) (hqM : q ≤ M) (hB : 0 ≤ B) (hC : a + 2 * b + 9 ≤ C) (hC' : l * q ≤ C) :
     L * (q * (B + M ^ a)) + t * (N * (M ^ 2) ^ b) + L * (N * (t * M ^ 6)) ≤ M ^ C + C * B := by
   have hM0 : 0 ≤ M := by linarith
   have hM1 : 1 ≤ M := by linarith
@@ -1458,7 +1458,7 @@ theorem UpperTheory.V.HV.sumIn :
     rw [hqC]
     exact_mod_cast Nat.le_add_left _ _
   have hfin := final_le M L ((l : ℕ) : ℝ) (h.q : ℝ) (h.N : ℝ) (t : ℝ) B C4 Cm (C4 + 2 * Cm + 9 + (l : ℕ) * χ.N)
-    hMdef hM3 hLl (by linarith) hlM (Nat.cast_nonneg _) hqM hB (by omega) hlqC
+    hMdef hM3 hLl hlM (Nat.cast_nonneg _) hqM hB (by omega) hlqC
   refine ⟨?_, ?_⟩
   · intro l' hl' e he0 het
     rw [Finset.mem_singleton] at hl'

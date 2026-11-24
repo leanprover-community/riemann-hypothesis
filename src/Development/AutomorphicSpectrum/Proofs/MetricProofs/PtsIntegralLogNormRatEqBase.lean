@@ -109,8 +109,8 @@ theorem PositivityTheory.Xgp.t_re_bridge : ResExistsStatement → ∀ (K : Type)
       (GroundTheory.Heights₂.Heights.ForSecondHalf.PtsIntegrable.of_resExists hE) hP hL hAm hB hsf hsg,
     ptsIntegral_eq_mInt' hE resBridge R hP hL hAB hsf, ptsIntegral_eq_mInt' hE resBridge R hP hL hB hsg,
     ← (degreeFormulaInt A R.A π hπ dg br hdeg Φ hΦ u hI).2]
-  have hlin := mIntLinear R.A _ hQ (-1) _ _ (brIntegrable R L _ g hP hL hB hsg)
-    (brIntegrable R L _ f hP hL hAB hsf)
+  have hlin := mIntLinear R.A _ hQ (-1) _ _ (brIntegrable R L _ g hL hB hsg)
+    (brIntegrable R L _ f hL hAB hsf)
   have hnull := PositivityTheory.Xgp.re_bridge.isNull_union hN (PositivityTheory.Xgp.re_bridge.isNull_union
     (PositivityTheory.Xgp.re_bridge.isNull_zeros R hP hf hfP) (PositivityTheory.Xgp.re_bridge.isNull_zeros R hP hg hgP))
   have key := (mInt_congr_samePot D R.X R.A

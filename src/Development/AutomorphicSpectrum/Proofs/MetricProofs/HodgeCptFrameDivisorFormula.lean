@@ -511,7 +511,7 @@ private theorem colFrame_inj_lemma_2 {c : Fin r → M} (hc : LinearIndependent G
   exact sub_eq_zero.mp (Fintype.linearIndependent_iff.mp hc _ hs a)
 
 theorem dual_change {c : Fin r → M} (hc : LinearIndependent G c) (w : Fin r → N)
-    {F u B : Matrix (Fin r) (Fin r) G} (hF : IsUnit F.det) (hu : IsUnit u.det)
+    {F u B : Matrix (Fin r) (Fin r) G} (hu : IsUnit u.det)
     (h : colFrame c u = colFrame (colFrame c F) B) :
     colFrame w Fᵀ⁻¹ = colFrame (colFrame w uᵀ⁻¹) Bᵀ := by
   rw [colFrame_colFrame_lemma] at h ⊢
@@ -554,7 +554,7 @@ theorem step_le {c : Fin r → M} (hc : LinearIndependent G c) (w : Fin r → N)
     apply hd l
     simp only [Set.mem_setOf_eq, not_lt]
     exact hkl
-  rw [dual_change hc w hF hu h']
+  rw [dual_change hc w hu h']
   unfold flagStep
   apply Submodule.span_le.mpr
   rintro _ ⟨k, hk, rfl⟩
@@ -591,7 +591,7 @@ theorem span_le {c : Fin r → M} (hc : LinearIndependent G c) (w : Fin r → N)
     have hcoef := coeff_lemma_3 hf B (fun l => (d l : G)) k ((congrFun h' k).symm.trans hdx.symm)
     rw [hcoef l]
     exact (d l).2
-  rw [dual_change hc w hF hu h']
+  rw [dual_change hc w hu h']
   apply Submodule.span_le.mpr
   rintro _ ⟨k, rfl⟩
   change ∑ a, Bᵀ a k • colFrame w uᵀ⁻¹ a ∈ _

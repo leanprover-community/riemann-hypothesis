@@ -107,7 +107,7 @@ private lemma tele {R : Type*} [CommRing R] (π : R) (f : ℕ → R)
 end PrecompleteLimitOfPowDvd
 
 theorem UpperTheory.Reformulated.B.Yra6.main.{u_1} :
-    ∀ {R : Type u_1} [inst : CommRing R] {π : R},
+    ∀ {R : Type u_1} [CommRing R] {π : R},
       IsPrecomplete (Ideal.span {π}) R →
         ∀ (f : ℕ → R), (∀ (n : ℕ), π ^ n ∣ f (n + (1 : ℕ)) - f n) → ∃ (L : R), ∀ (n : ℕ), π ^ n ∣ f n - L := by
   intro R _ π hP f h
@@ -1277,7 +1277,7 @@ theorem tensMap_surjective (n : ℕ) : Function.Surjective (tensMap A n) := by
 theorem mem_span_of_tensMap_eq_zero (n : ℕ) (z : TensorProduct (Ainf l) (Acris l) A.W) (hz : tensMap A n z = 0) :
     z ∈ Ideal.span {(l : TensorProduct (Ainf l) (Acris l) A.W) ^ n} :=
   mem_span_pow_of_compatible l (B := A.Acr) (tensMap A) (fun n => A.red (Nat.le_succ n))
-    (fun n => A.red (Nat.le_add_left 1 n)) (fun n z => red_tensMap A _ z) (fun n z => red_tensMap A _ z)
+    (fun n => A.red (Nat.le_add_left 1 n)) (fun _ z => red_tensMap A _ z) (fun _ z => red_tensMap A _ z)
     (fun n x => ((_root_.GlobalTheory.CompanionTheory.PerfAlg.lseq A n 1).2.2.1 x).1) (_root_.GlobalTheory.CompanionTheory.TensOne.main A) n z hz
 
 theorem tensMap_eq_zero_of_mem (n : ℕ) (z : TensorProduct (Ainf l) (Acris l) A.W)

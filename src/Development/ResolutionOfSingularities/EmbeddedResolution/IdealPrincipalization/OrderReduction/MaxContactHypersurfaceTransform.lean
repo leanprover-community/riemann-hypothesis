@@ -258,7 +258,7 @@ theorem inStrictNormalCrossingPosition_iteratedStrictTransform_cons_drop (hstar 
       have hlj : AlgebraicGeometry.LocallyOfFiniteType (u.proj j ≫ S.structMap) :=
         locallyOfFiniteType_of_smooth_morphism hsmj
       have hnoeth : AlgebraicGeometry.IsNoetherian (u.obj (j + 1)) :=
-        MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hv u.toMarkedSequenceOfBlowups (j + 1)
+        MarkedSequenceOfBlowups.isNoetherian_schemeAt hv u.toMarkedSequenceOfBlowups (j + 1)
           (by rw [MarkedBlowupSequenceData.toMarkedSequence_length]; exact hj)
       have hnsp : TopologicalSpace.NoetherianSpace ↥(u.obj (j + 1)) := inferInstance
       have hsncj : InStrictNormalCrossingPosition (u.proj j ≫ S.structMap)

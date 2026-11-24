@@ -111,7 +111,7 @@ theorem wp_congr {k : ℕ} {p p' q q' : N.QT k} (hp : N.QEq p p') (hq : N.QEq q 
   simp
 
 def wpQ (k : ℕ) (x y : Qq N k) : Oˣ :=
-  Quotient.liftOn₂' x y (fun p q => N.wp p q) fun p q p' q' hp hq =>
+  Quotient.liftOn₂' x y (fun p q => N.wp p q) fun _ _ _ _ hp hq =>
     wp_congr N ((qEq_iff_mk_eq N _ _).2 (Quotient.sound' hp)) ((qEq_iff_mk_eq N _ _).2 (Quotient.sound' hq))
 
 theorem wpQ_mk (k : ℕ) (p q : N.QT k) : wpQ N k (QuotientGroup.mk p) (QuotientGroup.mk q) = N.wp p q := rfl

@@ -180,7 +180,6 @@ abbrev e0 : Sp S ⟶ t.G.left := (1 : overAt x0 S ⟶ t.G).left
 
 theorem exists_chart_covering_index : ∃ i0 : t.PP.L.ι, (e0 t x0) ⁻¹ᵁ t.PP.L.U i0 = ⊤ := by
   obtain ⟨j, hj⟩ := ReciprocityTheory.ChartRestriction.G.DVR.exists_chart_top (V := S) t.PP.L t.PP.isLB (fun _ : Fin 1 => e0 t x0)
-    (fun _ => 1)
   exact ⟨j 0, top_unique (by rw [← hj]; exact LB.wchart_le _ _ j 0)⟩
 
 theorem vec2 {α : Type*} (f : Fin 2 → α) : (![f 0, f 1] : Fin 2 → α) = f := by

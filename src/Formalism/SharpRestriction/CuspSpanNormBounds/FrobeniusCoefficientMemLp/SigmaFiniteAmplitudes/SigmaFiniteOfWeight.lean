@@ -122,7 +122,7 @@ theorem pairMeas_eq_map (hμR : IsHaarOn (RStab k r γ) μR) (hOQ : IsOrbQuot L 
     lintegral_prod (fun q => s.indicator 1 (mStab γ q)) (hf.comp (measurable_mStab γ)).aemeasurable]
   rfl
 
-theorem unfold_G (hμR : IsHaarOn (RStab k r γ) μR)
+theorem unfold_G
     (hQ : PI.BesselPeriodGGP.IsQuotMeas μG (μR.map (fun x => fun i j => (γ⁻¹ * Matrix.of x * γ) i j)) νR) :
     ∀ f : Mt k r → ℝ≥0∞, Measurable f → ∫⁻ x, f x ∂μG = ∫⁻ x, ∫⁻ a, f (qG γ (x, a)) ∂μR ∂νR := by
   intro f hf
@@ -143,14 +143,14 @@ theorem muG_eq_map (hμR : IsHaarOn (RStab k r γ) μR)
     (hQ : PI.BesselPeriodGGP.IsQuotMeas μG (μR.map (fun x => fun i j => (γ⁻¹ * Matrix.of x * γ) i j)) νR) :
     μG = (νR.prod μR).map (qG γ) := by
   have : SigmaFinite μR := hμR.1
-  exact map_of_unfold μG νR μR (qG γ) (continuous_qG γ).measurable (unfold_G hμR hQ)
+  exact map_of_unfold μG νR μR (qG γ) (continuous_qG γ).measurable (unfold_G hQ)
 
 theorem sigmaFinite_nuR (hμG : IsHaarOn (UH (Hpk k r)) μG) (hμR : IsHaarOn (RStab k r γ) μR)
     (hQ : PI.BesselPeriodGGP.IsQuotMeas μG (μR.map (fun x => fun i j => (γ⁻¹ * Matrix.of x * γ) i j)) νR) :
     SigmaFinite νR := by
   have : SigmaFinite μR := hμR.1
   have : SigmaFinite μG := hμG.1
-  exact sigmaFinite_of_unfold μG νR μR hμR.2.1 (qG γ) (continuous_qG γ).measurable (unfold_G hμR hQ)
+  exact sigmaFinite_of_unfold μG νR μR hμR.2.1 (qG γ) (continuous_qG γ).measurable (unfold_G hQ)
 
 end Cell
 

@@ -620,7 +620,7 @@ theorem exists_lower [DecidableEq ι] [Nonempty ι] (G : Matrix ι ι ℝ) (hG :
 
 end PSymplMinExists
 
-theorem SymplMinExists.proof (h1 : SymplQuadDiag.Statement) : SymplMinExists.Statement := by
+theorem SymplMinExists.proof : SymplMinExists.Statement := by
   intro ι _ _ _ G hG
   obtain ⟨μ, hμ, hlow⟩ := PSymplMinExists.exists_lower G hG
   obtain ⟨i₀⟩ := ‹Nonempty ι›
@@ -1447,7 +1447,7 @@ theorem SymplMinkowskiBox.full : SymplMinkowskiBox.Statement :=
   SymplMinkowskiBox.proof SymplBoxVolume.full
 
 theorem SymplMinExists.full : SymplMinExists.Statement :=
-  SymplMinExists.proof SymplQuadDiag.full
+  SymplMinExists.proof
 
 theorem SymplReduceMem.full : SymplReduceMem.Statement :=
   SymplReduceMem.proof SymplOmegaMem.full SymplCons.full

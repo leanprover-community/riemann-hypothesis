@@ -757,7 +757,7 @@ theorem bijective_place {F E : Type} [Field F] [NumberField F] [Field E] [Number
   constructor
   · intro i j hij
     apply hτ.1
-    rcases GlobalTheory.InfAdeleCM.eq_or_conj c hc' h0 hcδ hs _ _ (GlobalTheory.InfAdeleCM.mk_eq_iff hij) with e | e
+    rcases GlobalTheory.InfAdeleCM.eq_or_conj c hc' hcδ hs _ _ (GlobalTheory.InfAdeleCM.mk_eq_iff hij) with e | e
     · simp only [e]
     · simp only [e, InfinitePlace.mk_conjugate_eq]
   · intro w

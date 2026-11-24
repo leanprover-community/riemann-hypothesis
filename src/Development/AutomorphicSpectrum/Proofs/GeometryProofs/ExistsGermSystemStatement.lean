@@ -699,10 +699,10 @@ theorem FrBC.trunc (h : FrBC t f x y e e₂) (hf : FrTrunc t x d y e) : FrTrunc 
       ((val_corr hJ (hf m) _).trans (h m _ _ z J hJ).symm)
 
 theorem FrBC.axes (h : FrBC t f x y e e₂) (hf : FrAxes t x d y e) : FrAxes t (spMap f ≫ x) d (yBC t f x y) e₂ :=
-  fun m => ⟨corr_of_val t.PP.isLB fun z J hJ =>
+  fun m => ⟨corr_of_val t.PP.isLB fun _ _ hJ =>
     (h.pe _ _ _ _ (fun _ => (map_zero _).symm) (fun _ => (MvPolynomial.map_X f _).symm) _ hJ).trans
       ((val_corr hJ (hf m).1 _).trans ((val_one _).trans (val_one _).symm)),
-    corr_of_val t.PP.isLB fun z J hJ =>
+    corr_of_val t.PP.isLB fun _ _ hJ =>
     (h.pe _ _ _ _ (fun _ => (MvPolynomial.map_X f _).symm) (fun _ => (map_zero _).symm) _ hJ).trans
       ((val_corr hJ (hf m).2 _).trans ((val_one _).trans (val_one _).symm))⟩
 

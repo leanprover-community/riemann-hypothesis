@@ -94,7 +94,7 @@ private theorem abs_irr {G κ B : Type} [Group G] [TopologicalSpace G] [IsTopolo
   let ρ := glPart η r hm
   have hρ : ∀ g : η.ker, (ρ g : Matrix (Fin 3) (Fin 3) κ) = mats r g := fun _ => rfl
   obtain ⟨φ, hφ1, -, hφ3, M, hM⟩ := exists_selfTwist ρ (χ.comp η.ker.subtype).ker
-    (fun a b => by simp [MonoidHom.mem_ker, mul_right_comm])
+    (fun a b => by simp [MonoidHom.mem_ker])
     (fun W hW => ho _ hη le_rfl W fun g hg => hW ⟨g, hg⟩ trivial)
     (fun h => hred fun W hW => h W fun g hg => hW g ⟨g.2, hg⟩)
   have hiff : ∀ g, φ g = 1 ↔ (M : Matrix (Fin 3) (Fin 3) κ) * mats r g = mats r g * M := by

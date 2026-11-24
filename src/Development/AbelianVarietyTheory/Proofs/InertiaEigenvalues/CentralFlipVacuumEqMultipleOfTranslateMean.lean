@@ -308,7 +308,7 @@ theorem sum_idem {D : D7} {ι : Type} (s : Finset ι) (cs : ι → AE D)
   rw [Finset.mul_sum, Finset.sum_eq_single i (fun j hj hji => ho i hi' j hj (Ne.symm hji))
     (fun h => absurd hi' h), hi i hi']
 
-theorem sum_orth {D : D7} {ι : Type} (s : Finset ι) (cs : ι → AE D) (i : ι) (hi : i ∉ s)
+theorem sum_orth {D : D7} {ι : Type} (s : Finset ι) (cs : ι → AE D) (i : ι)
     (ho : ∀ j ∈ s, cs i * cs j = 0) : cs i * (∑ j ∈ s, cs j) = 0 := by
   rw [Finset.mul_sum]; exact Finset.sum_eq_zero ho
 
@@ -411,7 +411,7 @@ theorem GlobalTheory.DivPtFourier.card_DQ_sum : ∀ {D : D7} {S T : HSp D} (Λ :
     rw [Finset.sum_insert his, Finset.prod_insert his,
       GlobalTheory.DivPtFourier.Prod.card_add Λ hst _ _ (hi i (Finset.mem_insert_self i s))
         (GlobalTheory.DivPtFourier.Prod.sum_idem s cs hi' ho')
-        (GlobalTheory.DivPtFourier.Prod.sum_orth s cs i his fun j hj =>
+        (GlobalTheory.DivPtFourier.Prod.sum_orth s cs i fun j hj =>
           ho i (Finset.mem_insert_self i s) j (Finset.mem_insert_of_mem hj) (fun h => his (h ▸ hj))),
       ih hi' ho']
 end -- clump:auto
@@ -477,7 +477,7 @@ theorem flip_reps : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D
     · intro i hi; rw [← map_mul, (hes i hi).1.1]
     · intro i hi j hj hij; rw [← map_mul, GlobalTheory.Tow.idemAt_orth (hes i hi) (hes j hj) hij, map_zero]
   have hfin : Finite (GlobalTheory.DivPtFourier.DQ Λ (cA D eT) m) :=
-    Nat.finite_of_card_ne_zero (by rw [hcard]; exact flipIdx_ne_zero V W T hm0.ne')
+    Nat.finite_of_card_ne_zero (by rw [hcard]; exact flipIdx_ne_zero V W T)
   letI := Fintype.ofFinite (GlobalTheory.DivPtFourier.DQ Λ (cA D eT) m)
   have hhalf : ∀ y : WO V W, cA D eT • y = y → IsHalf (cA D eT) y := fun y hy =>
     (GlobalTheory.PlaceModel.isHalf_iff V W).2 ((GlobalTheory.PlaceModel.mem_half V W).2 hy)

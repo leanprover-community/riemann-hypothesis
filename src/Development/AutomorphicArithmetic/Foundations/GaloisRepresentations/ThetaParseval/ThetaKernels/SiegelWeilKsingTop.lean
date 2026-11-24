@@ -83,7 +83,7 @@ theorem fc_avg_k (d : _root_.PositivityTheory.SiegelWeilFormula.SD_k σ) (R : _r
     (hinv : ∀ γ ∈ rat2 σ d.Y, ∀ g, f (γ * g) = f g)
     (ψ₀ : (Fin d.n → Fin d.n → ℝ) → ℂ) (hψc : Continuous ψ₀) (hψs : HasCompactSupport ψ₀)
     (nr : (Fin d.n → Fin d.n → ℝ) → GR d.n) (hnr : ∀ x, mR (nr x) = nU (herm x))
-    (β : (Fin d.n → Fin d.n → ℝ) → nA σ d.Y d.b) (hβc : Continuous β) (hβ : ∀ x, R.ι w (nr x) = nb (β x))
+    (β : (Fin d.n → Fin d.n → ℝ) → nA σ d.Y d.b) (hβ : ∀ x, R.ι w (nr x) = nb (β x))
     (T : nF σ d.Y d.b) (z : d.G) :
     fc d.B.ψ d.b nb lam 𝓖 (fun y => ∫ x, f (R.ι w (nr x) * y) * ψ₀ x) T z =
       fc d.B.ψ d.b nb lam 𝓖 f T z * ∫ x, ψ₀ x * d.B.ψ (d.tt (T.1.1 * (β x).1)) := by
@@ -193,7 +193,7 @@ theorem fourierStep_k (hCE : _root_.PositivityTheory.SiegelWeilFormula.CoefEx_k)
     rw [hβ x, ← mul_assoc, ← _root_.PositivityTheory.SiegelWeilFormula.KSing.nb_add_k d hCD.1, add_comm, _root_.PositivityTheory.SiegelWeilFormula.KSing.nb_add_k d hCD.1, mul_assoc, hinv _ (_root_.PositivityTheory.SiegelWeilFormula.KSing.nb_rat_k d hCD.1 hβ₀)]
   have hφco : ∀ T g, fc d.B.ψ d.b nb lam 𝓖 (fun y : d.G => ∫ x, f (R.ι w (nr x) * y) * ψ₀ x) T g = 0 := by
     intro T g
-    rw [_root_.PositivityTheory.SiegelWeilFormula.KSing.fc_avg_k d R w hG hCD f hf hinv ψ₀ hψ.1 hψ.2.1 nr hnr β hβc hβ T g]
+    rw [_root_.PositivityTheory.SiegelWeilFormula.KSing.fc_avg_k d R w hG hCD f hf hinv ψ₀ hψ.1 hψ.2.1 nr hnr β hβ T g]
     by_cases hT : T.1.1.det = 0
     · obtain ⟨β', hβ'h, hβ'd, hβ'e⟩ := _root_.PositivityTheory.SiegelWeilFormula.KSing.charW_k d R w hCD.1 nr hnr β hβ T
       simp_rw [hβ'e]

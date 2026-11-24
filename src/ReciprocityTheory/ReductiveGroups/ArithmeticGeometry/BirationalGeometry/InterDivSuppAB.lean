@@ -289,7 +289,7 @@ theorem le_add_one_of_add_eq (a b D : WithBot ℕ∞) (x c : ℕ∞) (hx : x ≠
   exact_mod_cast h4
 
 theorem specialFibre_dim_ge {σ : Type*} [Finite σ] (P : Ideal (MvPolynomial σ ℤ)) [P.IsPrime]
-    (hP : P.comap MvPolynomial.C = ⊥) (ℓ : ℤ) (hℓ : Prime ℓ)
+    (ℓ : ℤ)
     (q : Ideal (MvPolynomial σ ℤ ⧸ P))
     (hq : q ∈ (Ideal.span {((ℓ : ℤ) : MvPolynomial σ ℤ ⧸ P)}).minimalPrimes) :
     ringKrullDim (MvPolynomial σ ℤ ⧸ P) ≤ ringKrullDim ((MvPolynomial σ ℤ ⧸ P) ⧸ q) + 1 := by
@@ -370,7 +370,7 @@ theorem height_eq_of_isMaximal_int_charZero {σ : Type*} [Finite σ]
       (by rw [Ideal.mk_ker]; exact hqM)
   have h1 := height_add_height_map_le (q := q) (M := M) hqM
   have h2 := height_eq_ringKrullDim_of_forall hEq _ hMb
-  have h3 := specialFibre_dim_ge P hP ℓ hℓ q hq
+  have h3 := specialFibre_dim_ge P ℓ q hq
   calc ringKrullDim A ≤ ringKrullDim (A ⧸ q) + 1 := h3
     _ = ((M.map (Ideal.Quotient.mk q)).height : WithBot ℕ∞) + ((1 : ℕ∞) : WithBot ℕ∞) := by
         rw [h2]; rfl

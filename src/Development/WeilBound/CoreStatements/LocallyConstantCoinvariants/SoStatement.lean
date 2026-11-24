@@ -97,7 +97,7 @@ theorem mult' (hψ : IsStd ψ) {t : E →ₐ[F] Fv F v} {ι} (hι : M.IsLinBar �
     (hu : At (evFin F v) u) (h1 : u.map (piW (t.comp σ)) = 0) (hx : At (evFin F v) x) (h0 : x.map (piW t) = 0) {φ}
     (hφ : φ ∈ SB (Fin n × Fin d → Fv F v)) :
     ι (locRho M ψ v u φ) (coB σ X W t x) = ψ (symp (cA σ) (-1) (incM F X.J) (incM F W.J) x u) * ι φ (coB σ X W t x) :=
-  hι.mult u hu h1 φ hφ _ (locRho_mem M hψ u hφ) (fun r hr => rho_tens M ψ hu φ hr.1) x hx h0
+  hι.mult u hu h1 φ hφ _ (locRho_mem M hψ u hφ) (fun _ hr => rho_tens M ψ hu φ hr.1) x hx h0
 
 theorem eigen_kill (h : IsCMExt F E σ) (hψ : IsStd ψ) (hX : X.J.det ≠ 0) (hW : W.J.det ≠ 0) {t : E →ₐ[F] Fv F v} {ι}
     (hι : M.IsLinBar ψ t 1 1 ι) (l : ((Fin n × Fin d → Fv F v) → ℂ) →ₗ[ℂ] ℂ) {x₁ : Matrix (Fin n) (Fin d) (AE F E)}

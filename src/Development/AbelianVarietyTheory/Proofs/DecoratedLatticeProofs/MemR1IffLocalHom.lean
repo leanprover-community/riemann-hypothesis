@@ -127,12 +127,12 @@ theorem R1cond_of_colCond {x : Sp E (M + c) ≃ₗ[E] Sp E (M + c)} (h : ColCond
   · by_cases hc : M < M + c
     · rw [eN_eq_single hc]
       funext l
-      exact h l _ (by simp only [stepAt, Fin.val_mk]; split_ifs <;> omega) (Or.inr le_rfl)
+      exact h l _ (by simp only [stepAt]; split_ifs <;> omega) (Or.inr le_rfl)
     · rw [eN_eq_zero (by omega), map_zero]
   · by_cases hc : M + i < M + c
     · rw [mem_Ufl, eN_eq_single hc]
       intro l hl
-      rw [Pi.sub_apply, h l _ (by simp only [stepAt, Fin.val_mk]; split_ifs <;> omega) (Or.inr (by simp)), sub_self]
+      rw [Pi.sub_apply, h l _ (by simp only [stepAt]; split_ifs <;> omega) (Or.inr (by simp)), sub_self]
     · rw [eN_eq_zero (by omega), map_zero, sub_zero]
       exact zero_mem _
 

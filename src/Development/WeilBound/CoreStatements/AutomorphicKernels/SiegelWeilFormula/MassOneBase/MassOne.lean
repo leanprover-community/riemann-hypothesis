@@ -464,7 +464,7 @@ theorem count_good (F E : Type) [Field F] [NumberField F] [Field E] [NumberField
     intro w w'
     rw [hlev, funext_iff]
     simp only [res_eq_iff]
-    rw [zOf_ker b v ϖ hϖ0 hϖ1 hϖd w w']
+    rw [zOf_ker b v ϖ hϖ1 hϖd w w']
     rfl
   have hhalf : ((2 : Fv F v)⁻¹) ∈ v.adicCompletionIntegers F := by
     rw [HeightOneSpectrum.mem_adicCompletionIntegers, map_inv₀, hv2', inv_one]

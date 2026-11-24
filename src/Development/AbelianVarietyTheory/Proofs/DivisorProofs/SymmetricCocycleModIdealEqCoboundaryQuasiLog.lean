@@ -101,9 +101,9 @@ theorem map_formalGroupLawCoboundaryTwo (h : R →+* S) (μ : Fin d → MvPowerS
     map_op h μ _ _ _root_.GlobalTheory.Katz.CobCob.constantCoeff_threeGroupsFirstVariables _root_.GlobalTheory.Katz.CobCob.constantCoeff_threeGroupsSecondVariables, map_op h μ _ _ _root_.GlobalTheory.Katz.CobCob.constantCoeff_threeGroupsSecondVariables _root_.GlobalTheory.Katz.CobCob.constantCoeff_threeGroupsThirdVariables, _root_.GlobalTheory.CobSymCoc.map_threeGroupsFirstVariables, _root_.GlobalTheory.CobSymCoc.map_threeGroupsSecondVariables, _root_.GlobalTheory.CobSymCoc.map_threeGroupsThirdVariables]
 
 theorem cYX : ∀ i : Fin d, constantCoeff (X (Sum.inr i) : MvPowerSeries (Fin d ⊕ Fin d) R) = 0 :=
-  fun i => constantCoeff_X _
+  fun _ => constantCoeff_X _
 theorem cXX : ∀ i : Fin d, constantCoeff (X (Sum.inl i) : MvPowerSeries (Fin d ⊕ Fin d) R) = 0 :=
-  fun i => constantCoeff_X _
+  fun _ => constantCoeff_X _
 
 theorem swap_smul (r : R) (c : MvPowerSeries (Fin d ⊕ Fin d) R) : swap (r • c) = r • swap c :=
   powerSeriesEvalTwoGroups_smul c r _ _ cYX cXX

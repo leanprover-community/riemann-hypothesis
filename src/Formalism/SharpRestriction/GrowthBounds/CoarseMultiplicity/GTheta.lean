@@ -72,7 +72,7 @@ theorem yjtZ_mono (LL : ChainLetters N) {q : ℕ} (J : Fin q → ℕ) {thr thr' 
 theorem le_add_nat (x : WithTop ℤ) (b : ℕ) : x ≤ x + ((b : ℤ) : WithTop ℤ) :=
   le_add_of_nonneg_right (by exact_mod_cast Int.natCast_nonneg b)
 
-theorem otherE_free {D : BlockData N} (hT : TieOK D) (j : Fin D.T.t → ℕ) (i : Fin D.T.t) {v : BVar N r D.T.t}
+theorem otherE_free {D : BlockData N} (j : Fin D.T.t → ℕ) (i : Fin D.T.t) {v : BVar N r D.T.t}
     (h : ∀ i', i' ≠ i → v ∉ (D.Ehat O (r := r) i').vars) : FreeV v (otherE O r D j i) := by
   classical
   unfold otherE
@@ -118,7 +118,7 @@ theorem cth_gen (D7 : Formalism.BasicNotions.D7) {D : BlockData N} (hT : TieOK D
           nv_mul (nv_X (hemb fun h => Finset.ne_of_mem_erase hc' (congrArg Prod.snd h).symm))
             (nv_X (hemb fun h => tieW_ne_tieE hT i i (congrArg Prod.fst h)))))
       · simp only [Bool.false_eq_true, ite_false, zero_add, map_mul, rename_X]
-      · refine otherE_free hT j i fun i' hi' => nv_Ehat hT i' (hZS i').1 (hZS i').2
+      · refine otherE_free j i fun i' hi' => nv_Ehat hT i' (hZS i').1 (hZS i').2
           (fun c' => hemb fun h => hi' (hT.inj _ _ (congrArg Fin.val (congrArg Prod.fst h)).symm))
           (fun c' => hemb fun h => tieW_ne_tieE hT i i' (congrArg Prod.fst h))
     · by_cases hE : ∃ i, a0 = tieE hT i
@@ -135,7 +135,7 @@ theorem cth_gen (D7 : Formalism.BasicNotions.D7) {D : BlockData N} (hT : TieOK D
               (nv_X (hemb fun h => Finset.ne_of_mem_erase hc' (congrArg Prod.snd h).symm))))
         · simp only [Bool.false_eq_true, ite_false, zero_add, map_mul, rename_X]
           ring
-        · refine otherE_free hT j i fun i' hi' => nv_Ehat hT i' (hZS i').1 (hZS i').2
+        · refine otherE_free j i fun i' hi' => nv_Ehat hT i' (hZS i').1 (hZS i').2
             (fun c' => hemb fun h => tieW_ne_tieE hT i' i (congrArg Prod.fst h).symm)
             (fun c' => hemb fun h => hi' (hT.inj _ _ (by
               have := congrArg Fin.val (congrArg Prod.fst h)
@@ -155,7 +155,7 @@ theorem cth_gen (D7 : Formalism.BasicNotions.D7) {D : BlockData N} (hT : TieOK D
     have hch : ∀ x, chainEmb N r D.T.t x ≠ (Sum.inr (Fin.castSucc i, s) : BVar N r D.T.t) := fun x => by
       simp [chainEmb]
     have hoth : FreeV (Sum.inr (Fin.castSucc i, s) : BVar N r D.T.t) (otherE O r D j i) := by
-      refine otherE_free hT j i fun i' hi' => nv_Ehat hT i' ?_ ?_ (fun c' => (hch _).symm) (fun c' => (hch _).symm)
+      refine otherE_free j i fun i' hi' => nv_Ehat hT i' ?_ ?_ (fun c' => (hch _).symm) (fun c' => (hch _).symm)
       · simp only [scalZ, ne_eq, Sum.inr.injEq, Prod.mk.injEq, Fin.castSucc_inj, not_and]
         exact fun h => absurd h.symm hi'
       · simp only [scalS, ne_eq, Sum.inr.injEq, Prod.mk.injEq, Fin.castSucc_inj, not_and]

@@ -22,7 +22,7 @@ variable {D : D7} {A T : HSp D} {ι : A.V →ₗ[D.host.E] T.V} {s : GA D A →*
 
 
 
-theorem map_formula_one {R : Type*} [CommRing R] (φ : AE D →+* R) (hι : HSpace.IsIsomEmb A T ι) (h : GA D A)
+theorem map_formula_one {R : Type*} [CommRing R] (φ : AE D →+* R) (h : GA D A)
     (hh : (mt A h).map φ = 1) :
     ((frameMat T A ι).map (incA D) * mt A h * (embP' A T ι).map (incA D) +
       (1 - (frameMat T A ι * embP' A T ι).map (incA D))).map φ = 1 := by
@@ -44,7 +44,7 @@ theorem s_mem_GinfC (hι : HSpace.IsIsomEmb A T ι) (hemb : IsEmbHom ι s) {a : 
   show finHom T (s a) = 1
   apply Units.ext
   rw [key, Units.val_one, mt_of_embRel hι (hemb a)]
-  exact map_formula_one _ hι a hh
+  exact map_formula_one _ a hh
 
 end Formalism.IndefR.Mi
 

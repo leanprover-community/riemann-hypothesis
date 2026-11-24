@@ -55,7 +55,7 @@ namespace GlobalTheory.CompanionTheory.Ar.SabModel
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 
-theorem isPrincipal_dim {K : Type} [Field K] {t : SAB H (Sp K)} (_h : IsPrincipal t) :
+theorem isPrincipal_dim {K : Type} [Field K] {t : SAB H (Sp K)} :
     ∃ d, SmoothOfRelativeDimension d t.G.hom := by
   letI := t.grp
   haveI hs : IsSemiAbelian t.G := t.semi
@@ -72,8 +72,8 @@ theorem isPrincipal_dim {K : Type} [Field K] {t : SAB H (Sp K)} (_h : IsPrincipa
 def pol {K : Type} [Field K] (t : SAB H (Sp K)) (h : IsPrincipal t) : Out.PolAV (Sp K) where
   A := t.G
   isAb := ⟨inferInstance, t.semi.smooth, h.1, t.semi.geomConnected⟩
-  g := (isPrincipal_dim h).choose
-  smoothDim := (isPrincipal_dim h).choose_spec
+  g := (isPrincipal_dim).choose
+  smoothDim := (isPrincipal_dim).choose_spec
   L := t.PP.L
   isLB := t.PP.isLB
   rigid := ⟨t.PP.rig, t.PP.rigGen⟩

@@ -284,7 +284,7 @@ theorem B_low_mul_low (hpq : p < q) (b : {x : PPos n {p, q} // ¬ IsTop p x} →
       have := B_low_apply_ne hpq b h'
       omega
 
-theorem B_parEntry_join (_hpq : p < q) (a : {x : PPos n {p, q} // IsTop p x} → R)
+theorem B_parEntry_join (a : {x : PPos n {p, q} // IsTop p x} → R)
     (b : {x : PPos n {p, q} // ¬ IsTop p x} → R) :
     parEntry (joinPos a b) = B_low b + blockEntry (fun x => a ((topEquiv (S := {p, q}) (by simp)).symm x)) := by
   ext i j
@@ -306,7 +306,7 @@ theorem B_parGL_bot (hpq : p < q) (a : {x : PPos n {p, q} // IsTop p x} → R)
     parGL (joinPos a b) = parGL (joinPos 0 b) * unipGL (fun x => a ((topEquiv (S := {p, q}) (by simp)).symm x)) := by
   apply Units.ext
   simp only [Units.val_mul, coe_parGL, coe_unipGL]
-  rw [parMatrix, parMatrix, unipMatrix, B_parEntry_join hpq a b,
+  rw [parMatrix, parMatrix, unipMatrix, B_parEntry_join a b,
     show parEntry (joinPos (r := p) 0 b) = B_low b from rfl]
   simp only [add_mul, mul_add, one_mul, mul_one, B_low_mul_block hpq, add_zero]
   abel

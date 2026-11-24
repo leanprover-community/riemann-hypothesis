@@ -160,7 +160,7 @@ theorem mem_stepCols_block {N j : ℕ} {i c : Fin N} (hj : j ≤ N) (hc : c ∈ 
   · exact hc.1
   · omega
 
-theorem support_stepCols {N j : ℕ} {i : Fin N} (hj : j ≤ N) (bb : Matrix (Fin N) (Fin N) R)
+theorem support_stepCols {N j : ℕ} {i : Fin N} (bb : Matrix (Fin N) (Fin N) R)
     (hd : IsBlockDiag j bb) (ht : bb.BlockTriangular id) (k c : Fin N) (hc : c ∈ stepCols N j i)
     (hk : k ∉ stepCols N j i) : bb k c = 0 := by
   by_cases hkc : c < k
@@ -223,7 +223,7 @@ theorem minors_main : ∀ (R : Type) [CommRing R] (N j : ℕ) (i : Fin N), j ≤
   intro R _ N j i hj
   refine ⟨minorIJ_mul, fun h I hd hI => Or.inl (minor_stepCols_eq_zero hj h I hd hI), ?_, ?_⟩
   · intro h bb I hd ht
-    rw [minorIJ_mul_of_support h bb I _ (support_stepCols hj bb hd ht),
+    rw [minorIJ_mul_of_support h bb I _ (support_stepCols bb hd ht),
       minorIJ_self_of_triangular bb ht]
   · exact fun T h hT hh => ⟨isBlockDiag_mul hT hh, detFac_mul i hh⟩
 

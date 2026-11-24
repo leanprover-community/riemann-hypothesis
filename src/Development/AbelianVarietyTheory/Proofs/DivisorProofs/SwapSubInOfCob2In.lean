@@ -1087,7 +1087,7 @@ theorem prod_choose_pred {d : ℕ} (α : Fin d →₀ ℕ) (i : Fin d) (hi : α 
 
 theorem build {p : ℕ} [Fact p.Prime] {O : Type} [CommRing O] {θ : B →+* O} (hF : IsFrame p Q θ)
     {d : ℕ} {μ : Fin d → MvPowerSeries (Fin d ⊕ Fin d) B} (hμ : IsLift θ μ) {N J : Ideal B}
-    (hNJ : N ≤ J) {m : ℕ} (hm : 2 ≤ m) {c : MvPowerSeries (Fin d ⊕ Fin d) Q}
+    {m : ℕ} (hm : 2 ≤ m) {c : MvPowerSeries (Fin d ⊕ Fin d) Q}
     (hV : ∀ α, coeff α c ∈ (V p J : Submodule B Q)) (h2 : In N (cob2 (up Q μ) c))
     (hs : In N (swap c - c)) (hlow : ∀ α : Fin d ⊕ Fin d →₀ ℕ, α.degree < m → coeff α c ∈ (NS N : Submodule B Q)) :
     ∃ h : MvPowerSeries (Fin d) Q, (∀ α : Fin d →₀ ℕ, α.degree ≠ m → coeff α h = 0) ∧
@@ -1237,7 +1237,7 @@ theorem step {p : ℕ} [Fact p.Prime] {O : Type} [CommRing O] {θ : B →+* O} (
       (∀ α, coeff α h ∈ (V p J : Submodule B Q)) ∧ Inv p μ N J (m + 1) (c - cob1 (up Q μ) h) := by
   obtain ⟨hor, h0, hV, h2, hs, hlow⟩ := hc
   by_cases hm2 : 2 ≤ m
-  · obtain ⟨h, hhom, hhV, hdin, hcong⟩ := build hF hμ hNJ hm2 hV h2 hs hlow
+  · obtain ⟨h, hhom, hhV, hdin, hcong⟩ := build hF hμ hm2 hV h2 hs hlow
     refine ⟨h, fun α hα => hhom α (by omega), hhV, ?_⟩
     have hor' : IsLaw μ ∨ (DIn N c ∧ DIn N h) := by
       rcases hor with hl | hd

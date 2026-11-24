@@ -873,7 +873,7 @@ theorem nilp (P g : R) (m : ℕ) (hPP : P * P = P) (hgQ : (g - 1) * (1 - P) = 0)
 
 variable [StarRing R]
 
-theorem unitK (H P h : R) (hH : star H = H) (hPH : star P * H = H * P) (hPP : P * P = P)
+theorem unitK (H P h : R) (hPH : star P * H = H * P) (hPP : P * P = P)
     (hh : star h * H * h = H) (hU : P * h * (1 - P) = 0) :
     star (h * (1 - P) + P) * H * (h * (1 - P) + P) = H := by
   have r1 : star P * H - H * P = 0 := sub_eq_zero.mpr hPH
@@ -1106,7 +1106,7 @@ theorem stabilizer_splitting_of_parts (hFS : FixSub) (hSF : SubFlag) (hUN : Unip
     intro h hh
     have hhG := H_GV h hh
     have hU := HU h hh
-    have hκG : h * (1 - P) + P ∈ B.GV k r := Alg.unitK (Hpk k r) P h hHh hPH hPP hhG hU
+    have hκG : h * (1 - P) + P ∈ B.GV k r := Alg.unitK (Hpk k r) P h hPH hPP hhG hU
     have hκY : (h * (1 - P) + P) * Y = Y := by
       rw [Matrix.add_mul, Matrix.mul_assoc, Matrix.sub_mul, Matrix.one_mul, hPY, sub_self,
         Matrix.mul_zero, zero_add]

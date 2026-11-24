@@ -317,7 +317,7 @@ theorem indep_phi_cmp (hdom : IsDomain O) (hFr : IsFractionRing O LL)
       exact Finset.sum_congr rfl fun m _ => by rw [map_smul, (he.1 m).2.2 δ hδ]
   have hcz : W.cmp T ⟨z, hzN⟩ = 0 := by
     have e1 : (⟨z, hzN⟩ : ↥(W.N T)) = ∑ m, o m • (⟨e m, (he.1 m).1⟩ : ↥(W.N T)) :=
-      Subtype.ext (by simp [hz, Submodule.coe_sum])
+      Subtype.ext (by simp [hz])
 
     rw [e1, map_sum]
     simp only [W.cmp_smul]

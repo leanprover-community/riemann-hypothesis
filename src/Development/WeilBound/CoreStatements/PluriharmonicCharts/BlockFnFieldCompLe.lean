@@ -729,7 +729,7 @@ theorem minor_lowerUni {A : Matrix (Fin N) (Fin N) R} (hA : IsLowerUni A) (S : F
   · intro x y hxy
     exact hA.2 _ _ ((S.orderEmbOfFin rfl).strictMono hxy)
 
-theorem minor_transv {a b ca cb i : Fin N} (hj : j ≤ N) (hb : (b : ℕ) = a + 1) (hab : (b : ℕ) < j ∨ j ≤ (a : ℕ))
+theorem minor_transv {a b ca cb i : Fin N} (hj : j ≤ N) (hb : (b : ℕ) = a + 1)
     (hca : (ca : ℕ) = lastCol N j a) (hcb : (cb : ℕ) = ca + 1) (hi : i ≠ a) (A : Matrix (Fin N) (Fin N) R) (t : R)
     (I : Finset (Fin N)) :
     minorIJ (A * (1 + Matrix.single cb ca t)) I (stepCols N j i) = minorIJ A I (stepCols N j i) := by
@@ -915,7 +915,7 @@ theorem Sw.wCo_v₁ (S : Sw M τ a b k₀ ca cb) :
       by_cases e' : τ' = τ
       · subst e'
         have hi : i ≠ a := fun h => e (by rw [h, S.hk] at hp; exact (Option.some.inj hp).symm)
-        simp only [flag₁, Function.update_self, minor_transv M.j_le S.hb S.hab S.hca S.hcb hi]
+        simp only [flag₁, Function.update_self, minor_transv M.j_le S.hb S.hca S.hcb hi]
       · simp only [flag₁, Function.update_of_ne e']
 
 end Gen
@@ -1002,7 +1002,7 @@ theorem graph_alt {M : FlagModel y Ψ N j} {M' : FlagModel y' Ψ N j} (Cv : Flag
   haveI : CharZero (RatFunc Φ') := charZero_of_injective_algebraMap (algebraMap Φ' (RatFunc Φ')).injective
   obtain ⟨G, hG⟩ := exists_genLow M'
   have hG₀ := hG.flag₀
-  have hG₁ := hG.flag₁ τ S.hcb (Pts.same_summand S.hb S.hab S.hca S.hcb)
+  have hG₁ := hG.flag₁ τ S.hcb (Pts.same_summand S.hb S.hca S.hcb)
   let ML := reModel M' _ G hG
   let MT := reModel M _ G (hG.restrict Cv.φ)
   have SL : Sw ML τ a b k₀' ca cb := ⟨S.hb, S.hab, S'.hk, S.hca, S.hcb, S.wa⟩

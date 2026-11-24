@@ -245,7 +245,7 @@ theorem bOf_balance {ϖ : V} (hϖ : Irreducible ϖ) {Q : D.toPre.X → ℤ} {O :
   obtain ⟨_, _, hsB, hB⟩ := tau_val hϖ D hQ χ (star a • χ')
   have hu0 := genHasVal_pullGen_of (ϖ := ϖ) D.toPre.P.L _ _ u hu (lift (D.toPre.c χ) (D.toPre.c χ')).left
     (D.toPre.pt2 χ χ') (by simp [DegPre.pt2, ← CartesianMonoidalCategory.comp_lift])
-  have h1 := genHasVal_mulGen hϖ D.toPre.P.L hL _ _ _ _ _ _ _ _ _ _ hA hu0
+  have h1 := genHasVal_mulGen hϖ D.toPre.P.L _ _ _ _ _ _ _ _ _ _ hA hu0
   have := genHasVal_unique hϖ D.toPre.P.L hL _ _ _ _ _
     (genHasVal_corr hϖ D.toPre.P.L hL D.toPre.P.A.hom _ _ _ _ _ _ _ _
       (sumElim_sec hsA (fun k => by
@@ -416,7 +416,7 @@ theorem costTwo_bound (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Re
     have h3 : ∑ p ∈ P, Real.log p / ((p : ℝ) - 1) ≤ Real.log N + 2.2 := by
       have hPe : P = (Finset.Iic N).filter Nat.Prime := by
         ext p; simp [hP]
-      rw [hPe]; exact ReciprocityTheory.ChartRestriction.G.H1.primeLogSum_nat N (by omega)
+      rw [hPe]; exact ReciprocityTheory.ChartRestriction.G.H1.primeLogSum_nat N
     have hL1 : 1 ≤ Real.log ((N : ℝ) + 1) := by
       rw [Real.le_log_iff_exp_le (by linarith)]
       linarith [Real.exp_one_lt_d9]

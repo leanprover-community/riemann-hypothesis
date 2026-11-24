@@ -1146,7 +1146,7 @@ def Corr (p : LocF.PP Lc n) (r : LocF.PP Lc' n) : Prop :=
 variable {e}
 
 theorem vec_surj (e : Lc'.K ≃+* Lc.K) (y : Fin n → Lc.K) : ∃ x : Fin n → Lc'.K, y = fun a => e (x a) :=
-  ⟨fun a => e.symm (y a), funext fun a => (e.apply_symm_apply _).symm⟩
+  ⟨fun a => e.symm (y a), funext fun _ => (e.apply_symm_apply _).symm⟩
 
 theorem Corr.eq_iff {p p' : LocF.PP Lc n} {r r' : LocF.PP Lc' n} (h : Corr e p r) (h' : Corr e p' r') : p = p' ↔ r = r' := by
   constructor

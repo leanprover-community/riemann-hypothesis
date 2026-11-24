@@ -375,7 +375,7 @@ private theorem finrank_perp [FiniteDimensional K V] {v : V} (hv : h v v = 1) {n
   change finrank K (LinearMap.ker (h.flip v)) = n
   omega
 
-private theorem res_nondeg (hh : ∀ x y, h y x = star (h x y))
+private theorem res_nondeg
     (hnd : ∀ x, (∀ y, h x y = 0) → x = 0) {v : V} (hv : h v v = 1) (x : perp h v)
     (hx : ∀ y, res h v x y = 0) : x = 0 := by
   apply Subtype.ext
@@ -437,7 +437,7 @@ private theorem exists_frame [Finite K] (hs : ∃ a : K, star a ≠ a) (n : ℕ)
       push Not at hne
       exact hx (hnd x hne)
     obtain ⟨v, hv⟩ := exists_apply_self_eq_one hs hh hy
-    obtain ⟨s, hs⟩ := ih (perp h v) (res h v) (fun x y => hh x y) (res_nondeg hh hnd hv)
+    obtain ⟨s, hs⟩ := ih (perp h v) (res h v) (fun x y => hh x y) (res_nondeg hnd hv)
       (finrank_perp hv hn)
     exact ⟨_, isOrthonormal_cons hh hv hs⟩
 
@@ -487,7 +487,7 @@ private theorem card_frames [Finite K] {q : ℕ} (hq : Nat.card K = q ^ 2)
       ← card_apply_self_eq_one hq hs hh hnd hn]
     push_cast
     rw [Finset.sum_congr rfl fun (v : {v : V // h v v = 1}) _ => ih (perp h v) (res h v)
-      (fun x y => hh x y) (res_nondeg hh hnd v.2) (finrank_perp v.2 hn)]
+      (fun x y => hh x y) (res_nondeg hnd v.2) (finrank_perp v.2 hn)]
     rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, Nat.card_eq_fintype_card, mul_comm]
 
 end Frames

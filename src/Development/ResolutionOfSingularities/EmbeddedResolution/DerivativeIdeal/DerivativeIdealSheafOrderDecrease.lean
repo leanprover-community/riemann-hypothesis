@@ -351,8 +351,7 @@ private theorem formallySmooth_of_charZero (k : Type u) [Field k] [CharZero k] (
 theorem formallySmooth_residueField (k : Type u) [Field k] [CharZero k] {X : Scheme.{u}}
     (p : X ⟶ Spec (CommRingCat.of k)) [AlgebraicGeometry.Smooth p] (x : X)
     [Algebra k (IsLocalRing.ResidueField (X.presheaf.stalk x))]
-    (_h : algebraMap k (IsLocalRing.ResidueField (X.presheaf.stalk x)) =
-      (IsLocalRing.residue (X.presheaf.stalk x)).comp (stalkAlgebraMap k p x)) :
+    :
     Algebra.FormallySmooth k (IsLocalRing.ResidueField (X.presheaf.stalk x)) :=
   formallySmooth_of_charZero k (IsLocalRing.ResidueField (X.presheaf.stalk x))
 
@@ -373,7 +372,7 @@ theorem orderAt_derivIdealSheafIterate_eq_sub (k : Type u) [Field k] [CharZero k
       (IsLocalRing.ResidueField (X.presheaf.stalk x)) :=
     IsScalarTower.of_algebraMap_eq' rfl
   have _hFSres : Algebra.FormallySmooth k (IsLocalRing.ResidueField (X.presheaf.stalk x)) :=
-    formallySmooth_residueField k p x rfl
+    formallySmooth_residueField k p x
   obtain ⟨h, y, δ, hspan, hδ⟩ := exists_local_parameters_and_dual_derivations k (X.presheaf.stalk x)
   have hI' : idealOrder (stalkIdeal I x) = (r : ℕ∞) := by
     rw [← orderAt_eq_idealOrder]; exact hr

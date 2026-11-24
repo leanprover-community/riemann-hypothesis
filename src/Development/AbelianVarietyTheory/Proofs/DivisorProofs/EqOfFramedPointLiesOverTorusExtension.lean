@@ -84,7 +84,7 @@ theorem sumF_scale {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} (hI : AdmB
   rw [e, show (c - 1) * v + v = c * v by ring] at hl
   exact (GlobalTheory.AdicSum.sumF_calculus R I hI F Ix (fun i => c * x i) x v' (c * v)).1 h' hl
 
-theorem eq_of_liesOver : LL → AllU fun {R} _ _ {I} {D} {A} {G} _ _ U => ∀ (F : Type) [Field F] [Algebra (FractionRing R) F] (w₀ : W0 U.toUnifPre), w₀.IsGen → ∀ (g : GtPtF D.toPre F) (w w' : Frm D.toPre F 1 g.b) (x x' : TFK (R := R) F ⟶ A.A) (fr : FrAt x) (fr' : FrAt x'), w.IsGen → w'.IsGen → fr.IsGen → fr'.IsGen → LiesOver U.toUnifPre w₀ g w x fr → LiesOver U.toUnifPre w₀ g w' x' fr' → x = x' := by
+theorem eq_of_liesOver : LL → AllU fun {R} _ _ {_} {D} {A} {_} _ _ U => ∀ (F : Type) [Field F] [Algebra (FractionRing R) F] (w₀ : W0 U.toUnifPre), w₀.IsGen → ∀ (g : GtPtF D.toPre F) (w w' : Frm D.toPre F 1 g.b) (x x' : TFK (R := R) F ⟶ A.A) (fr : FrAt x) (fr' : FrAt x'), w.IsGen → w'.IsGen → fr.IsGen → fr'.IsGen → LiesOver U.toUnifPre w₀ g w x fr → LiesOver U.toUnifPre w₀ g w' x' fr' → x = x' := by
   intro hL R _ _ _ I hI D A G _ _ hG U F _ _ w₀ hw₀ g w w' x x' fr fr' hw hw' hfr hfr' H H'
   obtain ⟨wk, hwk, hvk⟩ := exists_frm_pow w hw 4
   obtain ⟨wk', hwk', hvk'⟩ := exists_frm_pow w' hw' 4

@@ -465,16 +465,16 @@ private def dt (t : K) (h : t ≠ 0) : GL (Fin 2) K :=
   ⟨!![t, 0; 0, 1], !![t⁻¹, 0; 0, 1], by simp [Matrix.one_fin_two, h], by simp [Matrix.one_fin_two, h]⟩
 
 private theorem upper_elementary_add (x y : K) : e12 (x + y) = e12 x * e12 y :=
-  Units.ext (by simp [e12, Matrix.mul_fin_two, add_comm])
+  Units.ext (by simp [e12, add_comm])
 
 private theorem lower_elementary_add (x y : K) : e21 (x + y) = e21 x * e21 y :=
-  Units.ext (by simp [e21, Matrix.mul_fin_two, add_comm])
+  Units.ext (by simp [e21, add_comm])
 
 private theorem hom_trivial_on_upper_elementary (t : K) (h : t ≠ 0) (y : K) : dt t h * e12 y = e12 (t * y) * dt t h :=
-  Units.ext (by simp [e12, dt, Matrix.mul_fin_two])
+  Units.ext (by simp [e12, dt])
 
 private theorem diagonal_conj_lower_elementary (t : K) (h : t ≠ 0) (y : K) : dt t h * e21 (y * t) = e21 y * dt t h :=
-  Units.ext (by simp [e21, dt, Matrix.mul_fin_two])
+  Units.ext (by simp [e21, dt])
 
 private theorem diagonal_conj_upper_elementary (D : GL (Fin 2) K →* G) (t : K) (h0 : t ≠ 0) (h1 : t ≠ 1) (x : K) : D (e12 x) = 1 := by
   have hs : t - 1 ≠ 0 := sub_ne_zero.2 h1
@@ -587,7 +587,7 @@ private theorem sec_Kall (w : Plc L) (hw : IsSplitAt w) (g : GL (Fin 2) (Kw w)) 
   · rw [Subgroup.mem_comap, locU_off (h1 g) h]
     exact one_mem _
 
-private theorem sec_SU (w : Plc L) (hw : IsSplitAt w) (g : GL (Fin 2) (Kw w)) (hg : (g.val).det = 1) :
+private theorem sec_SU (w : Plc L) (g : GL (Fin 2) (Kw w)) (hg : (g.val).det = 1) :
     secW 2 w g ∈ SUA L := by
   have h2 : (algebraMap L (Kw w) 2) ≠ 0 := by simp
   have h3 : (algebraMap L (Kw w) 2) ≠ 1 := by
@@ -673,7 +673,7 @@ theorem UpperTheory.V.Z.Sym.So.translate :
     simpa [Matrix.GeneralLinearGroup.val_det_apply] using congrArg Units.val e
   obtain ⟨s, hs1, hs2⟩ := exProd S hSp hInj (fun w => cLoc w y)
   have hsm : s ∈ finU (E := L) (n := 2) ⊓ SUA L := hs1 _ fun w hw =>
-    Subgroup.mem_inf.2 ⟨(Subgroup.mem_inf.1 ((hsec w (hSp w hw)).1 _)).1, sec_SU w (hSp w hw) _ (hdy w hw)⟩
+    Subgroup.mem_inf.2 ⟨(Subgroup.mem_inf.1 ((hsec w (hSp w hw)).1 _)).1, sec_SU w _ (hdy w hw)⟩
   refine ⟨s⁻¹ * y, mul_mem (inv_mem (Subgroup.mem_inf.1 hsm).1) hyfin, ?_, s, hsm, ?_⟩
   · intro w hw v hv
     obtain ⟨c, hc, hcu⟩ := hloc w y hyfin

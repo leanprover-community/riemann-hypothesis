@@ -508,7 +508,7 @@ theorem int_sum {α : Type} (s : Finset α) (q : ℚ) (f : α → ℚ)
 
 theorem partialSum_int {l K r : ℕ} {i : Fin r} {v : (Fin r → ℕ) → ℚ} (h : IntW l K v) :
     IntW l K (partialSum i v) :=
-  fun m => int_sum _ _ _ fun k _ => h _
+  fun _ => int_sum _ _ _ fun _ _ => h _
 
 theorem intW_partialSumMean {l K r : ℕ} {i : Fin r} {v : (Fin r → ℕ) → ℚ} (hl : 0 < l) (h : IntW l K v) :
     IntW l (K + 1) (meanP l i v) := by

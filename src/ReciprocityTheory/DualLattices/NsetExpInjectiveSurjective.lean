@@ -32,7 +32,7 @@ structure ATower (R₀ : Type u) [CommRing R₀] (p : ℕ) where
   cp_spec : ∀ n, (π n).1 (cp n) = (q n).1 c
   zh : ∀ n, (R' n : Type u)ˣ
   zh_pow : ∀ n, (zh n : (R' n : Type u)) ^ (p ^ (n + 1)) = 1 + cp n * ξ n
-  ζ : ∀ n, (O : Type u)ˣ
+  ζ : ∀ _, (O : Type u)ˣ
   ζ_spec : ∀ n, (q n).1 (ζ n : (O : Type u)) = (π n).1 (zh n : (R' n : Type u))
 
 variable {R₀ : Type u} [CommRing R₀]

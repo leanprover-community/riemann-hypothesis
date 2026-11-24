@@ -239,7 +239,7 @@ theorem fract_mem (x : N p) : Int.fract (x : ℚ) ∈ N p := by
   ring
 
 noncomputable def fr (a : Q p d) : I p d :=
-  ⟨fun k => ⟨Int.fract (a k : ℚ), fract_mem _⟩, fun k => Int.fract_lt_one _⟩
+  ⟨fun k => ⟨Int.fract (a k : ℚ), fract_mem _⟩, fun _ => Int.fract_lt_one _⟩
 
 noncomputable def T (a : Q p d) : D := ∏ k, t k ^ ⌊(a k : ℚ)⌋₊
 

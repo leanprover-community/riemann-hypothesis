@@ -137,7 +137,7 @@ theorem exists_antisymm_hlFactor_eq (t : ℂ) :
 
 theorem evalAt_varL (w : Fin n → ℂˣ) (a : Fin n) : evalAt w (varL a) = w a := by
   rw [varL, monomial, evalAt_single, one_mul, monomialChar_apply,
-    Finset.prod_eq_single a (fun b _ hb => by simp [Pi.single_apply, hb])
+    Finset.prod_eq_single a (fun b _ hb => by simp [hb])
       (fun h => absurd (Finset.mem_univ a) h)]
   simp
 
@@ -158,7 +158,7 @@ theorem evalAt_antisymm (w : Fin n → ℂˣ) (p : LaurentRing n) :
 theorem alternant_staircase_eq_vdm (hn : 0 < n) :
     alternant (staircase n) =
       vdm.det * ((Equiv.Perm.sign (Fin.revPerm : Equiv.Perm (Fin n)) : ℤ) : LaurentRing n) := by
-  rw [staircase_eq_natCast, alternant_natCast_eq hn, remMat_staircase hn, Matrix.det_permutation]
+  rw [staircase_eq_natCast, alternant_natCast_eq hn, remMat_staircase, Matrix.det_permutation]
 
 theorem evalAt_vdm_det (w : Fin n → ℂˣ) :
     evalAt w vdm.det = (Matrix.vandermonde fun i => (w i : ℂ)).det := by
@@ -389,7 +389,7 @@ theorem hlR_zero (t : ℂ) (ht : Function.Injective fun k : ℕ => t ^ k) :
   ·
     intro σ _ hσ
     obtain ⟨a, b, hab, hσab⟩ := exists_succ_of_ne_rev hσ
-    rw [evalAt_hlFactor, Finset.prod_eq_zero (i := (a, b)) (by simp [hP, hab]), mul_zero]
+    rw [evalAt_hlFactor, Finset.prod_eq_zero (i := (a, b)) (by simp [hab]), mul_zero]
     simp only [Function.comp_apply, hzv]
     rw [← pow_succ']
     have := (σ b).2

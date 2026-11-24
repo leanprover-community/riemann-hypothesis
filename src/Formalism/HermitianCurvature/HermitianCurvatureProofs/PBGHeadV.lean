@@ -223,7 +223,7 @@ theorem headAlg_gen (A : Type) [Ring A] [Algebra ℂ A] (M : Type) [AddCommGroup
   congr 1
   apply Finset.sum_congr rfl
   intro l _
-  rw [map_smul, smul_smul, inv_last Z hZ]
+  rw [map_smul, smul_smul, inv_last Z]
   congr 1
   have hs : ((-1 : ℂ) ^ (m + (l : ℕ))) * (-1) ^ (m + (l : ℕ)) = 1 := by
     rw [← pow_add, ← two_mul, pow_mul]; norm_num

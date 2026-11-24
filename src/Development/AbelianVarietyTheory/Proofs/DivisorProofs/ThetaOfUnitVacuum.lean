@@ -68,7 +68,7 @@ theorem theta_of_unit_vacuum : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (θ
   obtain ⟨-, -, h3⟩ := GlobalTheory.T.self_dual_lattice_pairing_dual D ψ S T ΛS ΛT hψ hSd hTd
   refine ⟨hΦd.comp ((differentiable_id).const_smul δ⁻¹), ?_⟩
   intro x hx Y
-  obtain ⟨v, hv, rfl⟩ := mem_La_frame_sd S T frS frT hS hT Ls Lt hLs δ x hx
+  obtain ⟨v, hv, rfl⟩ := mem_La_frame_sd S T frS frT hS Ls Lt hLs δ x hx
   rw [← hΛS, ← hΛT] at hv
   have hv' : GlobalTheory.VacUnique.finRat S T (-v) ∈ latO S T (ΛS : Set _) (ΛT : Set _) (fun _ => True) := by
     rw [AddMonoidHom.map_neg]; exact neg_mem hv

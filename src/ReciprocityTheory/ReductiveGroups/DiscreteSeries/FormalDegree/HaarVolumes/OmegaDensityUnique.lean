@@ -1457,7 +1457,7 @@ end UpperTriangularPsiTransport
 open UpperTriangularPsiTransport in
 theorem muCD_eq_cd_vol (cd : Formalism.BasicNotions.CDHaar) {P Q : ℕ} (e : Fin P ⊕ Fin Q ≃ Fin n) {ε : Fin n → Bool}
     (he1 : ∀ i, ε (e (Sum.inl i)) = true) (he2 : ∀ j, ε (e (Sum.inr j)) = false)
-    (A : Set (Formalism.REAL.UJ ε)) (hA : MeasurableSet A) :
+    (A : Set (Formalism.REAL.UJ ε)) :
     muCD ε A = cd.cd P Q {g | ∃ a ∈ A, Formalism.MainNotions.S.umat a = Matrix.reindex e e (Formalism.BasicNotions.UpqT.mat g)} := by
   obtain ⟨a, -, hrel⟩ := key cd e he1 he2
   have hn : P + Q = n := by simpa using Fintype.card_congr e

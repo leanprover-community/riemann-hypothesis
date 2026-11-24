@@ -901,7 +901,7 @@ theorem s1 (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (ϖ : (w.adicCompletion
     (∃ p₀, OneCoset (thL a w) (iwGL a w) δ {g | dcos a w (tdiag ϖ y) g ≠ 0} p₀) ∧
       CentOK (thL a w) (GlobalTheory.LFun.KGL w (n := a)) (iwGL a w) δ ∧ HasVals (nrmL a w δ).val.charpoly (nv y) := by
   obtain ⟨p, hp⟩ := hP
-  obtain ⟨m, hm, τ, hτ, hmτ⟩ := _root_.PositivityTheory.Rg.Bc.ArchbcB.B.M4.contr_tw_tl hU w hw ϖ hϖ a y hy _ hp
+  obtain ⟨m, hm, τ, hτ, hmτ⟩ := _root_.PositivityTheory.Rg.Bc.ArchbcB.B.M4.contr_tw_tl w hw ϖ hϖ a y hy _ hp
   obtain ⟨hKo, hKc, -, hIlev, -, -, -⟩ := _root_.PositivityTheory.Rg.Bc.ArchbcB.B.M4.iw_facts_pf w hw a (tdiag ϖ y)
   have hIo : IsOpen (iwGL a w : Set (GLw a w)) := hIlev.1
   have hIc : IsCompact (iwGL a w : Set (GLw a w)) :=
@@ -953,7 +953,7 @@ theorem s1 (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (ϖ : (w.adicCompletion
     simp only [Set.mem_ofPred_eq]
     constructor
     · intro hq
-      obtain ⟨m', hm', τ', hτ', e'⟩ := _root_.PositivityTheory.Rg.Bc.ArchbcB.B.M4.contr_tw_tl hU w hw ϖ hϖ a y hy _ hq
+      obtain ⟨m', hm', τ', hτ', e'⟩ := _root_.PositivityTheory.Rg.Bc.ArchbcB.B.M4.contr_tw_tl w hw ϖ hϖ a y hy _ hq
       have hh : ((p * m)⁻¹ * q * m')⁻¹ * (tdiag ϖ y * τ) * thL a w ((p * m)⁻¹ * q * m') = tdiag ϖ y * τ' := by
         rw [← e', ← h0]
         simp only [map_mul, map_inv]
@@ -1284,8 +1284,8 @@ theorem aL_unqT (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (ϖ : (w.adicCompl
     (h' : dcos a w (tdiag ϖ y) δ' ≠ 0)
     (hQ : (nrmL a w δ').val.charpoly = (nrmL a w δ).val.charpoly) :
     ∃ g : GLw a w, δ' = g⁻¹ * δ * thL a w g := by
-  obtain ⟨m, -, τ, hτ, hmτ⟩ := _root_.PositivityTheory.Rg.Bc.ArchbcB.B.M4.contr_tw_tl hU w hw ϖ hϖ a y hy δ h
-  obtain ⟨m', -, τ', hτ', hmτ'⟩ := _root_.PositivityTheory.Rg.Bc.ArchbcB.B.M4.contr_tw_tl hU w hw ϖ hϖ a y hy δ' h'
+  obtain ⟨m, -, τ, hτ, hmτ⟩ := _root_.PositivityTheory.Rg.Bc.ArchbcB.B.M4.contr_tw_tl w hw ϖ hϖ a y hy δ h
+  obtain ⟨m', -, τ', hτ', hmτ'⟩ := _root_.PositivityTheory.Rg.Bc.ArchbcB.B.M4.contr_tw_tl w hw ϖ hϖ a y hy δ' h'
   have hc : (nrmL a w (tdiag ϖ y * τ)).val.charpoly = (nrmL a w (tdiag ϖ y * τ')).val.charpoly := by
     rw [← hmτ, ← hmτ', _root_.PositivityTheory.Rg.Bc.ArchbcB.B.M4.nrm_twconj_pf w hw, _root_.PositivityTheory.Rg.Bc.ArchbcB.B.M4.nrm_twconj_pf w hw, hQ]
   obtain ⟨g, -, hg⟩ := unq_diag hU w hw ϖ hϖ a y hy τ τ' hτ hτ' hc
@@ -1296,10 +1296,10 @@ theorem aL_unqT (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (ϖ : (w.adicCompl
   simp only [map_mul, map_inv]
   group
 
-theorem asmL_A (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (n a : ℕ) (ha : a ≤ n) (b : GLw n w)
-    (hb : IsWitt n w b) (ϖ : (w.adicCompletion E)ˣ) (hϖ : IsUnifAt ϖ) (x : Fin n → ℤ) (hx : StrictAnti x)
-    (hc : Cone (lOf x)) (Q₁ Q₂ : (w.adicCompletion E)[X]) (hm₁ : Q₁.Monic) (hm₂ : Q₂.Monic)
-    (hd₁ : Q₁.natDegree = a) (hd₂ : Q₂.natDegree = n - a) (hs : (Q₁ * Q₂).Separable) (hc₁ : IsCsr w Q₁)
+theorem asmL_A (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (n a : ℕ) (b : GLw n w)
+    (ϖ : (w.adicCompletion E)ˣ) (hϖ : IsUnifAt ϖ) (x : Fin n → ℤ) (hx : StrictAnti x)
+    (Q₁ Q₂ : (w.adicCompletion E)[X]) (hm₁ : Q₁.Monic) (hm₂ : Q₂.Monic)
+    (hc₁ : IsCsr w Q₁)
     (hc₂ : IsCsr w Q₂) (s : Finset (Fin (n / 2))) (hA : CaseA w n a x Q₁ Q₂ s) :
     stTw2 a (n - a) w Q₁ Q₂ (phiX n w b ϖ x a) =
       (-qh w) ^ (-vRes n a (lOf x) s) * (((iwU n w b).relIndex (KL n w) : ℕ) : ℂ)⁻¹ := by
@@ -1363,11 +1363,10 @@ theorem asmL_A (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (n a : ℕ) (ha : a
       _ = ((g₁, g₂) * p⁻¹)⁻¹ * (δ₁, δ₂) * θ ((g₁, g₂) * p⁻¹) := by
         rw [hy, map_mul, map_inv]; group
 
-theorem asmL_B (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (n a : ℕ) (ha : a ≤ n) (b : GLw n w)
-    (hb : IsWitt n w b) (ϖ : (w.adicCompletion E)ˣ) (hϖ : IsUnifAt ϖ) (x : Fin n → ℤ) (hx : StrictAnti x)
-    (hc : Cone (lOf x)) (Q₁ Q₂ : (w.adicCompletion E)[X]) (hm₁ : Q₁.Monic) (hm₂ : Q₂.Monic)
-    (hd₁ : Q₁.natDegree = a) (hd₂ : Q₂.natDegree = n - a) (hs : (Q₁ * Q₂).Separable) (hc₁ : IsCsr w Q₁)
-    (hc₂ : IsCsr w Q₂) (hB : ∀ s, ¬ CaseA w n a x Q₁ Q₂ s) :
+theorem asmL_B (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (n a : ℕ) (b : GLw n w)
+    (ϖ : (w.adicCompletion E)ˣ) (hϖ : IsUnifAt ϖ) (x : Fin n → ℤ) (hx : StrictAnti x)
+    (Q₁ Q₂ : (w.adicCompletion E)[X])
+    (hB : ∀ s, ¬ CaseA w n a x Q₁ Q₂ s) :
     stTw2 a (n - a) w Q₁ Q₂ (phiX n w b ϖ x a) = 0 := by
   unfold stTw2
   apply _root_.PositivityTheory.Rg.Bc.ArchbcB.B.M4.g2zero_pf
@@ -1491,14 +1490,14 @@ theorem uniqR (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (n : ℕ) (b : GLw n
 theorem asmR_A (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (n a : ℕ) (ha : a ≤ n) (b : GLw n w)
     (hb : IsWitt n w b) (ϖ : (w.adicCompletion E)ˣ) (hϖ : IsUnifAt ϖ) (x : Fin n → ℤ) (hx : StrictAnti x)
     (hc : Cone (lOf x)) (Q₁ Q₂ : (w.adicCompletion E)[X]) (hm₁ : Q₁.Monic) (hm₂ : Q₂.Monic)
-    (hd₁ : Q₁.natDegree = a) (hd₂ : Q₂.natDegree = n - a) (hs : (Q₁ * Q₂).Separable) (hc₁ : IsCsr w Q₁)
+    (hc₁ : IsCsr w Q₁)
     (hc₂ : IsCsr w Q₂) (s : Finset (Fin (n / 2))) (hA : CaseA w n a x Q₁ Q₂ s) :
     delta w 1 Q₁ Q₂ * kapOrb n w Q₁ Q₂ (fU n w b ϖ (lOf x)) =
       (-qh w) ^ (-vRes n a (lOf x) s) * (((iwU n w b).relIndex (KL n w) : ℕ) : ℂ)⁻¹ := by
   have hdel := v1 w hw n a ha x hx Q₁ Q₂ s hA
   have hvals := _root_.PositivityTheory.Rg.Bc.ArchbcB.B.M4.combine_caseA_pf w hw n a ha x hx Q₁ Q₂ s hA
   obtain ⟨γ₀, hγ₀, hγ₀Q⟩ :=
-    _root_.PositivityTheory.Rg.Bc.ArchbcB.B.M4.exu_pf hU w hw n b hb ϖ hϖ (lOf x) hc (Q₁ * Q₂) (hm₁.mul hm₂) (isCsr_mul w hc₁ hc₂) hvals
+    _root_.PositivityTheory.Rg.Bc.ArchbcB.B.M4.exu_pf hU w hw n b hb ϖ hϖ (lOf x) hc (Q₁ * Q₂) (isCsr_mul w hc₁ hc₂) hvals
   have key : ∀ γ : UL n w, γ.1.val.charpoly = Q₁ * Q₂ → (∃ p : UL n w, fU n w b ϖ (lOf x) (p⁻¹ * γ * p) ≠ 0) →
       kapSign n w Q₁ γ.1 * twOrb (MonoidHom.id (UL n w)) (KL n w) γ (fU n w b ϖ (lOf x)) =
         1 * (((iwU n w b).relIndex (KL n w) : ℕ) : ℂ)⁻¹ := fun γ hQ hP => by
@@ -1535,7 +1534,7 @@ theorem asmR_B (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (n a : ℕ) (ha : a
   have hδ' : δ.1.val.charpoly = Q₁ * Q₂ := hδ
   obtain ⟨-, -, hv⟩ := s2 hU w hw n b hb ϖ hϖ (lOf x) hc δ (meets_of_ne _ _ _ (right_ne_zero_of_mul hne))
   rw [hδ'] at hv
-  obtain ⟨s, hs⟩ := _root_.PositivityTheory.Rg.Bc.ArchbcB.B.M4.split_caseA_pf w hw n a ha x hx Q₁ Q₂ hm₁ hm₂ hd₁ hd₂ hc₁ hc₂ hv
+  obtain ⟨s, hs⟩ := _root_.PositivityTheory.Rg.Bc.ArchbcB.B.M4.split_caseA_pf w hw n a ha x hx Q₁ Q₂ hm₁ hm₂ hd₁ hd₂ hc₁ hv
   exact hB s hs
 
 theorem asmReg_mem_symIdx {n : ℕ} {mid : Prop} [Decidable mid] {s : Finset (Fin (n / 2))} {k : Fin n} :
@@ -1630,9 +1629,9 @@ theorem asmReg_sep {w : Pl E} {n a b : ℕ} (x : Fin n → ℤ) (hx : StrictAnti
       (by rw [← h1]; exact S₂.orderEmbOfFin_mem h₂ i)).elim
   · exact congrArg _ ((S₂.orderEmbOfFin h₂).injective h1)
 
-theorem asmReg (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (n a : ℕ) (ha : a ≤ n) (b : GLw n w)
-    (hb : IsWitt n w b) (ϖ : (w.adicCompletion E)ˣ) (hϖ : IsUnifAt ϖ) (x : Fin n → ℤ) (hx : StrictAnti x)
-    (hc : Cone (lOf x)) : RegAt2 a (n - a) w (phiX n w b ϖ x a) := by
+theorem asmReg (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (n a : ℕ) (b : GLw n w)
+    (ϖ : (w.adicCompletion E)ˣ) (hϖ : IsUnifAt ϖ) (x : Fin n → ℤ) (hx : StrictAnti x)
+    : RegAt2 a (n - a) w (phiX n w b ϖ x a) := by
   intro y hy
   unfold phiX at hy
   obtain ⟨s, -, hs⟩ := Finset.exists_ne_zero_of_sum_ne_zero hy
@@ -1650,14 +1649,14 @@ theorem asmReg (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (n a : ℕ) (ha : a
 
 theorem m4 : M4 := by
   intro E _ _ _ hU w hw n a ha b hb ϖ hϖ x hx hc
-  refine ⟨?_, asmReg hU w hw n a ha b hb ϖ hϖ x hx hc⟩
+  refine ⟨?_, asmReg hU w hw n a b ϖ hϖ x hx⟩
   intro Q₁ Q₂ hm₁ hm₂ hd₁ hd₂ hs hc₁ hc₂
   by_cases hA : ∃ s, CaseA w n a x Q₁ Q₂ s
   · obtain ⟨s, hA⟩ := hA
-    rw [asmL_A hU w hw n a ha b hb ϖ hϖ x hx hc Q₁ Q₂ hm₁ hm₂ hd₁ hd₂ hs hc₁ hc₂ s hA,
-      asmR_A hU w hw n a ha b hb ϖ hϖ x hx hc Q₁ Q₂ hm₁ hm₂ hd₁ hd₂ hs hc₁ hc₂ s hA]
+    rw [asmL_A hU w hw n a b ϖ hϖ x hx Q₁ Q₂ hm₁ hm₂ hc₁ hc₂ s hA,
+      asmR_A hU w hw n a ha b hb ϖ hϖ x hx hc Q₁ Q₂ hm₁ hm₂ hc₁ hc₂ s hA]
   · push Not at hA
-    rw [asmL_B hU w hw n a ha b hb ϖ hϖ x hx hc Q₁ Q₂ hm₁ hm₂ hd₁ hd₂ hs hc₁ hc₂ hA,
+    rw [asmL_B hU w hw n a b ϖ hϖ x hx Q₁ Q₂ hA,
       asmR_B hU w hw n a ha b hb ϖ hϖ x hx hc Q₁ Q₂ hm₁ hm₂ hd₁ hd₂ hs hc₁ hc₂ hA, mul_zero]
 
 end PositivityTheory.Rg.Bc.ArchbcB.B.M4

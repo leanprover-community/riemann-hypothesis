@@ -4679,7 +4679,7 @@ theorem sgs_Tp (uA : IsUnit hA.det) (uB : IsUnit hB.det) (p : B.SS k r) (γ : B.
   rw [Matrix.nonsing_inv_mul_cancel_left _ _ uA, Matrix.nonsing_inv_mul_cancel_left _ _ uB]
 
 theorem act_Tp (uA : IsUnit hA.det) (vA : IsUnit nA.det) (uB : IsUnit hB.det) (vB : IsUnit nB.det) (γ : B.Mat k r)
-    (uγ : IsUnit γ.det) (y : B.Mat k r) (p : B.SS k r) :
+    (y : B.Mat k r) (p : B.SS k r) :
     Tp hA nA hB nB (C6.actR ((hA * nA)⁻¹ * γ * (hB * nB)) ((hA * nA)⁻¹ * y * (hA * nA)) p) =
       C6.actR γ y (Tp hA nA hB nB p) := by
   have sA : IsUnit (hA * nA).det := by rw [Matrix.det_mul]; exact uA.mul vA
@@ -4824,7 +4824,7 @@ theorem cut_Tp (hhA : hA ∈ UWset k r S.z) (hnA : nA ∈ Nset k r) (hhB : hB �
       (continuous_const.prodMk continuous_id))).measurable
   rw [integral_map (cont_conjA hA nA).measurable.aemeasurable hm.aestronglyMeasurable]
   simp only [Function.comp, conjA, Equiv.apply_symm_apply]
-  simp_rw [act_Tp uA vA uB vB γ uγ]
+  simp_rw [act_Tp uA vA uB vB γ]
   exact hθ.2.2 _ (inSS_Tp S hhA hnA hhB hnB hp)
 
 theorem cut_Tq (hhA : hA ∈ UWset k r S.z) (hnA : nA ∈ Nset k r) (hhB : hB ∈ UWset k r S.z') (hnB : nB ∈ Nset k r)
@@ -4839,7 +4839,7 @@ theorem cut_Tq (hhA : hA ∈ UWset k r S.z) (hnA : nA ∈ Nset k r) (hhB : hB �
   have key : ∀ y : Mt k r, Tq hA nA hB nB (C6.actR γ (Matrix.of y) q) =
       C6.actR ((hA * nA)⁻¹ * γ * (hB * nB)) (Matrix.of (conjA hA nA y)) (Tq hA nA hB nB q) := by
     intro y
-    have := act_Tp uA vA uB vB γ uγ (Matrix.of y) (Tq hA nA hB nB q)
+    have := act_Tp uA vA uB vB γ (Matrix.of y) (Tq hA nA hB nB q)
     rw [Tp_Tq uA vA uB vB] at this
     rw [← this, Tq_Tp uA vA uB vB]; rfl
   have hm : Measurable fun x : Mt k r => θ (C6.actR ((hA * nA)⁻¹ * γ * (hB * nB)) (Matrix.of x) (Tq hA nA hB nB q)) :=
@@ -6111,8 +6111,8 @@ theorem measurePreserving_prod_middle_swap (μa : Measure α) (μb : Measure β)
 def dropE (T Y : Type) [MeasurableSpace T] [MeasurableSpace Y] [Unique T] : T × Y ≃ᵐ Y where
   toFun p := p.2
   invFun y := (default, y)
-  left_inv p := Prod.ext (Subsingleton.elim _ _) rfl
-  right_inv y := rfl
+  left_inv _ := Prod.ext (Subsingleton.elim _ _) rfl
+  right_inv _ := rfl
   measurable_toFun := measurable_snd
   measurable_invFun := measurable_const.prodMk measurable_id
 
@@ -6295,7 +6295,7 @@ instance isProbabilityMeasure_pi_fin_zero {X : Type} [MeasureSpace X] : IsProbab
 
 instance uniqueT (P : ℕ) : Unique ((Fin 0 → Fin P → ℂ) × (Fin P → Fin 0 → ℂ)) where
   default := (fun i => i.elim0, fun _ i => i.elim0)
-  uniq p := Prod.ext (funext fun i => i.elim0) (funext fun _ => funext fun i => i.elim0)
+  uniq _ := Prod.ext (funext fun i => i.elim0) (funext fun _ => funext fun i => i.elim0)
 
 theorem probT (P : ℕ) : IsProbabilityMeasure (volume : Measure ((Fin 0 → Fin P → ℂ) × (Fin P → Fin 0 → ℂ))) := by
   have : IsProbabilityMeasure (volume : Measure (Fin P → Fin 0 → ℂ)) := by

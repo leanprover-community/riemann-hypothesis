@@ -56,7 +56,7 @@ variable {k r : ℕ}
 theorem sigmaFinite_restrict_subgroup {U : Set (Mat k r)} (hU : IsClosedSubgroup U) (μ : Measure (Mt k r)) [SigmaFinite μ] :
     SigmaFinite (pull hU μ) := by
   refine (Measure.FiniteSpanningSetsIn.sigmaFinite (C := Set.univ)
-    ⟨fun n => (inc : Gp U hU → Mt k r) ⁻¹' spanningSets μ n, fun _ => trivial, fun n => ?_, ?_⟩)
+    ⟨fun n => (inc : Gp U → Mt k r) ⁻¹' spanningSets μ n, fun _ => trivial, fun n => ?_, ?_⟩)
   · rw [pull, inc_memb.comap_apply]
     exact lt_of_le_of_lt (measure_mono (Set.image_preimage_subset _ _)) (measure_spanningSets_lt_top μ n)
   · rw [← Set.preimage_iUnion, iUnion_spanningSets, Set.preimage_univ]
@@ -91,9 +91,9 @@ theorem left_haar_eq_smul_biinvariant {U : Set (Mat k r)} (hU : IsClosedSubgroup
     intro h
     obtain ⟨n, hn⟩ := exists_pos_measure_of_cover (iUnion_spanningSets (pull hU μ)) hμ0
     have hfin := measure_spanningSets_lt_top (pull hU μ) n
-    have e0 : ∀ s : Set (Gp U hU), pull hU μ s = ∞ * pull hU ν s := by
+    have e0 : ∀ s : Set (Gp U), pull hU μ s = ∞ * pull hU ν s := by
       intro s
-      have := congrArg (fun m : Measure (Gp U hU) => m s) key
+      have := congrArg (fun m : Measure (Gp U) => m s) key
       simpa only [Measure.smul_apply, smul_eq_mul, h] using this
     have e := e0 (spanningSets (pull hU μ) n)
     by_cases hz : pull hU ν (spanningSets (pull hU μ) n) = 0

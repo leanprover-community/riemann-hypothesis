@@ -809,7 +809,7 @@ noncomputable section
 namespace GlobalTheory.HeckeFamilyMatrices.CocBound
 
 def rho (w : ℕ) (g : SL(2, ℤ)) : degreeLT ℂ (w + 1) →ₗ[ℂ] degreeLT ℂ (w + 1) :=
-  ((slP w (mat g)).comp (degreeLT ℂ (w + 1)).subtype).codRestrict _ (fun p => (polySlash_action w).1 _ _)
+  ((slP w (mat g)).comp (degreeLT ℂ (w + 1)).subtype).codRestrict _ (fun _ => (polySlash_action w).1 _ _)
 
 theorem rho_mul (w : ℕ) (g h : SL(2, ℤ)) (v : degreeLT ℂ (w + 1)) :
     rho w (g * h) v = rho w h (rho w g v) := by

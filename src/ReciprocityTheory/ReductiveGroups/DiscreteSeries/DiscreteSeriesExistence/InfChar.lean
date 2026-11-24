@@ -312,10 +312,10 @@ theorem icxGood_ePow (A : Fin n → Fin n → Module.End ℂ (smD ε (rreg ε)))
       by_cases h : a = b
       · subst h
         simpa [ePow, Bl.ThirdBlockLemmaA.goal1, Matrix.one_apply, S7.opPow] using hx
-      · exact icxGood_congr icxGood_zero (by simp [ePow, Bl.ThirdBlockLemmaA.goal1, Matrix.one_apply, h]) fun g _ => by simp [S7.opPow, h]
+      · exact icxGood_congr icxGood_zero (by simp [ePow, Bl.ThirdBlockLemmaA.goal1, h]) fun g _ => by simp [S7.opPow, h]
   | k + 1, a, b => by
       have := icxGood_sum Finset.univ fun c _ => hAB a c _ _ (icxGood_ePow A B hAB hx k c b)
-      exact icxGood_congr this (by simp [ePow, Bl.ThirdBlockLemmaA.goal1, pow_succ', Matrix.mul_apply, LinearMap.sum_apply, Module.End.mul_apply]) fun g _ => by
+      exact icxGood_congr this (by simp [ePow, Bl.ThirdBlockLemmaA.goal1, pow_succ', Matrix.mul_apply, LinearMap.sum_apply]) fun g _ => by
         simp [S7.opPow, Finset.sum_apply]
 
 theorem icxGood_gelfand (A : Fin n → Fin n → Module.End ℂ (smD ε (rreg ε)))
@@ -467,7 +467,7 @@ theorem icx_good_datum (hP : IsPsiFor ε lam T Ψ) {y : smD ε (rreg ε)} {v : T
     (hv : (y : L2 ε) = uniformisationL2 ε Ψ v₀ v) : IcxGood ε (pdA_coef v₀ v) y Ψ :=
   ⟨hP.2.2.1, datumFunction_isSmoothL2 hP v₀ v, hv⟩
 
-theorem capelli_sigLam (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0)
+theorem capelli_sigLam (hP : IsPsiFor ε lam T Ψ)
     (hcap : ∀ (Y : ℂ) (g : Matrix (Fin n) (Fin n) ℂ), inUJ ε g →
       Formalism.QuantumDeterminants.capelli ε (Y + ((n : ℂ) - 1) / 2) Ψ g = Formalism.QuantumDeterminants.capP (fun s => (lam s : ℂ)) Y • Ψ g)
     (Y : ℂ) (x : smD ε (rreg ε)) (hx : x ∈ genSub (smE ε (rreg ε)) (datumV ε Ψ v₀)) :
@@ -481,7 +481,7 @@ theorem capelli_sigLam (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀
   obtain ⟨v, hv⟩ := (mem_datumV_iff hP v₀ y).1 hy
   exact icx_val (icxGood_qdet (icx_good_datum hP hv) _) hv _ fun g hg => hcap Y g hg
 
-theorem hasGelfandChar_sigLam (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0)
+theorem hasGelfandChar_sigLam (hP : IsPsiFor ε lam T Ψ)
     (hG : ∀ (k : ℕ) (g : Matrix (Fin n) (Fin n) ℂ), inUJ ε g →
       S7.opGelfand (S7.rightE ε) k Ψ g = gval (icShift lam) k • Ψ g ∧
         S7.opGelfand (S7.rightEanti ε) k Ψ g = gval (icShift (-lam)) k • Ψ g) :

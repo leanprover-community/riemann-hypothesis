@@ -163,7 +163,7 @@ theorem kap_surjective (hR : RepRoot) (hK : KapSpec) (hg : InGen) {q : ℕ} [NeZ
     have h := (hK q i U ζ f).1 (V u) (g u) (c u) (hagree u)
     rw [h, hc u, ((hR q i U ζ).1 _ (g u)).1]
 
-theorem kapBij : LcCover → RepRoot → KapSpec → KapBij := fun _ hR hK hg q _ i _ ζ =>
+theorem kapBij : LcCover → RepRoot → KapSpec → KapBij := fun _ hR hK hg _ _ i _ ζ =>
   ⟨kap_injective hK hg i ζ, kap_surjective hR hK hg i ζ⟩
 
 end GlobalTheory.CompanionTheory.KapBij

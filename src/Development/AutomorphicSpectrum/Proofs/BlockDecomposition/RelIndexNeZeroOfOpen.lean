@@ -225,11 +225,11 @@ theorem map_list_prod_embed_of_nodup {ι Γ : Type} [Group Γ] {Hl : ι → Type
 
 theorem exists_local_levels_le_open : ∀ {ι Γ : Type} [Group Γ] {Hl : ι → Type} [∀ i, Group (Hl i)] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [∀ i, TopologicalSpace (Hl i)] [∀ i, T2Space (Hl i)]
     (p : ∀ i, Γ →* Hl i) (e : ∀ i, Hl i →* Γ) (K : Subgroup Γ) (KH : ∀ i, Subgroup (Hl i))
-    (hpc : ∀ i, Continuous (p i)) (hec : ∀ i, Continuous (e i))
-    (hpe : ∀ i m, p i (e i m) = m) (hpe' : ∀ i j m, i ≠ j → p j (e i m) = 1)
-    (hsep : ∀ x y : Γ, (∀ i, p i x = p i y) → x = y)
-    (hK : ∀ x, x ∈ K ↔ ∀ i, p i x ∈ KH i) (hKc : IsCompact (K : Set Γ))
-    (hKo : ∀ i, IsOpen (KH i : Set (Hl i))) (U : Subgroup Γ) (hU : IsOpen (U : Set Γ)),
+    (_ : ∀ i, Continuous (p i)) (_ : ∀ i, Continuous (e i))
+    (_ : ∀ i m, p i (e i m) = m) (_ : ∀ i j m, i ≠ j → p j (e i m) = 1)
+    (_ : ∀ x y : Γ, (∀ i, p i x = p i y) → x = y)
+    (_ : ∀ x, x ∈ K ↔ ∀ i, p i x ∈ KH i) (_ : IsCompact (K : Set Γ))
+    (_ : ∀ i, IsOpen (KH i : Set (Hl i))) (U : Subgroup Γ) (_ : IsOpen (U : Set Γ)),
     ∃ V : ∀ i, Subgroup (Hl i), (∀ i, IsOpen (V i : Set (Hl i))) ∧ (∀ i, V i ≤ KH i) ∧
       (∀ᶠ i in cofinite, V i = KH i) ∧ ∀ u, (∀ i, p i u ∈ V i) → u ∈ U := by
   intro ι Γ _ Hl _ _ _ _ _ p e K KH hpc hec hpe hpe' hsep hK hKc hKo U hU
@@ -662,14 +662,14 @@ theorem sum_comp {p : ∀ i, Γ →* Hl i} {e : ∀ i, Hl i →* Γ} {KH V : ∀
     field_simp
 
 theorem sum_formula : ∀ {ι Γ : Type} [Group Γ] {Hl : ι → Type} [∀ i, Group (Hl i)] (p : ∀ i, Γ →* Hl i) (e : ∀ i, Hl i →* Γ) (KH V : ∀ i, Subgroup (Hl i)) (f : ∀ i, Hl i → ℂ)
-    (hpe : ∀ i m, p i (e i m) = m) (hpe' : ∀ i j m, i ≠ j → p j (e i m) = 1)
-    (hsep : ∀ x y : Γ, (∀ i, p i x = p i y) → x = y)
-    (hev : ∀ x, ∀ᶠ i in cofinite, p i x ∈ KH i)
-    (hVK : ∀ i, V i ≤ KH i) (hVi : ∀ i, (V i).relIndex (KH i) ≠ 0)
-    (hVe : ∀ᶠ i in cofinite, V i = KH i)
-    (hfV : ∀ i, ∀ u ∈ V i, ∀ x, f i (x * u) = f i x)
-    (hfs : ∀ i, {q : Hl i ⧸ V i | f i q.out ≠ 0}.Finite)
-    (T : List ι) (hT : T.Nodup) (g : Γ → ℂ) (hg : ∀ u, (∀ i, p i u ∈ V i) → ∀ x, g (x * u) = g x) (y : Γ),
+    (_ : ∀ i m, p i (e i m) = m) (_ : ∀ i j m, i ≠ j → p j (e i m) = 1)
+    (_ : ∀ x y : Γ, (∀ i, p i x = p i y) → x = y)
+    (_ : ∀ x, ∀ᶠ i in cofinite, p i x ∈ KH i)
+    (_ : ∀ i, V i ≤ KH i) (_ : ∀ i, (V i).relIndex (KH i) ≠ 0)
+    (_ : ∀ᶠ i in cofinite, V i = KH i)
+    (_ : ∀ i, ∀ u ∈ V i, ∀ x, f i (x * u) = f i x)
+    (_ : ∀ i, {q : Hl i ⧸ V i | f i q.out ≠ 0}.Finite)
+    (T : List ι) (_ : T.Nodup) (g : Γ → ℂ) (_ : ∀ u, (∀ i, p i u ∈ V i) → ∀ x, g (x * u) = g x) (y : Γ),
     ∑ᶠ q : Γ ⧸ (⨅ i, (V i).comap (p i)),
         (∏ᶠ j, if j ∈ T then f j (p j q.out) else (V j : Set (Hl j)).indicator (1 : Hl j → ℂ) (p j q.out)) * g (y * q.out) =
       (T.map fun i => (((V i).relIndex (KH i) : ℕ) : ℂ)).prod *
@@ -740,17 +740,17 @@ theorem out_finite_of_relIndex {H : Type} [Group H] (V K : Subgroup H) (hi : V.r
 
 theorem hint_prod_eq_foldr : ∀ {ι Γ : Type} [Group Γ] {Hl : ι → Type} [∀ i, Group (Hl i)] (p : ∀ i, Γ →* Hl i) (e : ∀ i, Hl i →* Γ) (K : Subgroup Γ) (KH V : ∀ i, Subgroup (Hl i))
     (f : ∀ i, Hl i → ℂ)
-    (hpe : ∀ i m, p i (e i m) = m) (hpe' : ∀ i j m, i ≠ j → p j (e i m) = 1)
-    (hsep : ∀ x y : Γ, (∀ i, p i x = p i y) → x = y)
-    (hev : ∀ x, ∀ᶠ i in cofinite, p i x ∈ KH i)
-    (hK : ∀ x, x ∈ K ↔ ∀ i, p i x ∈ KH i)
-    (hVK : ∀ i, V i ≤ KH i) (hVi : ∀ i, (V i).relIndex (KH i) ≠ 0)
-    (hVe : ∀ᶠ i in cofinite, V i = KH i ∧ f i = (KH i : Set (Hl i)).indicator 1)
-    (hfV : ∀ i, ∀ u ∈ V i, ∀ x, f i (x * u) = f i x)
-    (hfs : ∀ i, {q : Hl i ⧸ V i | f i q.out ≠ 0}.Finite)
-    (g : Γ → ℂ) (hg : ∀ u, (∀ i, p i u ∈ V i) → ∀ x, g (x * u) = g x)
-    (l : List ι) (hl : l.Nodup)
-    (hfix : ∀ i, i ∉ l → (fun x => hint (KH i) fun m => f i m * g (x * e i m)) = g),
+    (_ : ∀ i m, p i (e i m) = m) (_ : ∀ i j m, i ≠ j → p j (e i m) = 1)
+    (_ : ∀ x y : Γ, (∀ i, p i x = p i y) → x = y)
+    (_ : ∀ x, ∀ᶠ i in cofinite, p i x ∈ KH i)
+    (_ : ∀ x, x ∈ K ↔ ∀ i, p i x ∈ KH i)
+    (_ : ∀ i, V i ≤ KH i) (_ : ∀ i, (V i).relIndex (KH i) ≠ 0)
+    (_ : ∀ᶠ i in cofinite, V i = KH i ∧ f i = (KH i : Set (Hl i)).indicator 1)
+    (_ : ∀ i, ∀ u ∈ V i, ∀ x, f i (x * u) = f i x)
+    (_ : ∀ i, {q : Hl i ⧸ V i | f i q.out ≠ 0}.Finite)
+    (g : Γ → ℂ) (_ : ∀ u, (∀ i, p i u ∈ V i) → ∀ x, g (x * u) = g x)
+    (l : List ι) (_ : l.Nodup)
+    (_ : ∀ i, i ∉ l → (fun x => hint (KH i) fun m => f i m * g (x * e i m)) = g),
     hint K (fun x => (∏ᶠ i, f i (p i x)) * g x) =
       l.foldr (fun i g' x => hint (KH i) fun m => f i m * g' (x * e i m)) g 1 := by
   intro ι Γ _ Hl _ p e K KH V f hpe hpe' hsep hev hK hVK hVi hVe hfV hfs g hg l hl hfix

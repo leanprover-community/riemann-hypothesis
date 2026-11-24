@@ -84,7 +84,7 @@ theorem selE_mul_transpose {r n : ℕ} (hr : r ≤ n) :
     simp [hne]
   · intro h; exact absurd (Finset.mem_univ _) h
 
-theorem transpose_selE_mul {r n : ℕ} (hr : r ≤ n) :
+theorem transpose_selE_mul {r n : ℕ} :
     (selE K r n)ᵀ * selE K r n = eId K n r := by
   ext j k
   simp only [Matrix.mul_apply, Matrix.transpose_apply, selE, eId, Matrix.diagonal_apply]
@@ -109,7 +109,7 @@ theorem cT_selE (σ : K →+* K) {r n : ℕ} : cT σ (selE K r n) = (selE K r n)
   simp only [cT, Matrix.transpose_apply, Matrix.map_apply, selE]
   split_ifs <;> simp
 
-theorem extB_eq_selE {r n : ℕ} (hr : r ≤ n) (b : Matrix (Fin r) (Fin r) K) :
+theorem extB_eq_selE {r n : ℕ} (b : Matrix (Fin r) (Fin r) K) :
     extB (n := n) b = (selE K r n)ᵀ * b * selE K r n := by
   ext i j
   simp only [extB, Matrix.mul_apply, Matrix.transpose_apply, selE]
@@ -186,13 +186,13 @@ theorem exists_hermitian_lowerLeft :
           rw [← hM]; simp only [Matrix.mul_assoc]
       _ = c * cT σ D * cT σ L := by rw [← Matrix.mul_assoc, hLT, Matrix.one_mul]
   · have hSP : selE K r n * eId K n r = selE K r n := by
-      rw [← transpose_selE_mul hr, ← Matrix.mul_assoc, selE_mul_transpose hr, Matrix.one_mul]
+      rw [← transpose_selE_mul, ← Matrix.mul_assoc, selE_mul_transpose hr, Matrix.one_mul]
     have hSB : selE K r n * extB (n := n) (c * cT σ D * cT σ L) = (c * cT σ D * cT σ L) * selE K r n := by
-      rw [extB_eq_selE hr, ← Matrix.mul_assoc, ← Matrix.mul_assoc, selE_mul_transpose hr, Matrix.one_mul]
+      rw [extB_eq_selE, ← Matrix.mul_assoc, ← Matrix.mul_assoc, selE_mul_transpose hr, Matrix.one_mul]
     have hCa : C * a⁻¹ = T * selE K r n := by
       rw [hC, hca, Matrix.mul_assoc T, Matrix.mul_assoc, ha, Matrix.mul_one]
     rw [hCa, Matrix.mul_assoc T (selE K r n), Matrix.mul_sub (selE K r n), Matrix.mul_sub (selE K r n), Matrix.mul_one, hSP, hSB,
-      sub_self, zero_sub, Matrix.mul_neg, ← transpose_selE_mul hr, ← Matrix.mul_assoc (D * cT σ a), hM]
+      sub_self, zero_sub, Matrix.mul_neg, ← transpose_selE_mul, ← Matrix.mul_assoc (D * cT σ a), hM]
     simp only [Matrix.mul_assoc, neg_add_cancel]
 
 end GlobalTheory.CompanionTheory.BruhatCell

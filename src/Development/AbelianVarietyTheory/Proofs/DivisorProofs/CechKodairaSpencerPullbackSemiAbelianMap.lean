@@ -305,7 +305,7 @@ theorem glue_ex (he : ∀ i, IsField (V i) (e i))
     (hc : ∀ i j (O : Z.Opens), O ≤ V i → O ≤ V j → ∀ f, e i O f = e j O f) {O : Z.Opens}
     (hO : O ≤ ⨆ i, V i) (f : Γ(Z, O)) :
     ∃! s : Γ(Z, O), ∀ i, resG Z (inf_le_left : O ⊓ V i ≤ O) s = loc V e O f i :=
-  Z.sheaf.existsUnique_gluing' (fun i => O ⊓ V i) O (fun i => homOfLE inf_le_left)
+  Z.sheaf.existsUnique_gluing' (fun i => O ⊓ V i) O (fun _ => homOfLE inf_le_left)
     ((le_inf le_rfl hO).trans (inf_iSup_eq _ _).le) (loc V e O f) (compat he hc O f)
 
 theorem glue_eq (he : ∀ i, IsField (V i) (e i))

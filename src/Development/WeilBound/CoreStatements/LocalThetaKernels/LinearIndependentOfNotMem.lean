@@ -95,7 +95,7 @@ private lemma key {R : Type} [NormedRing R] [NormedAlgebra ℂ R] {a : R}
 end EqOneOfPowersNearOne
 
 theorem UpperTheory.Reformulated.B.Yhd7.main :
-    ∀ {R : Type} [inst : NormedRing R] [NormedAlgebra ℂ R] {a : R},
+    ∀ {R : Type} [NormedRing R] [NormedAlgebra ℂ R] {a : R},
       (∀ (p : ℕ), ‖a ^ p - (1 : R)‖ < (1 / 2 : ℝ)) → a = (1 : R) := by
   intro R _ _ a h
   by_contra hne
@@ -144,7 +144,7 @@ theorem linearIndependent_of_notMem {V : Type} [AddCommGroup V] [Module ℂ V] (
     · exact ih hsum i hi
 
 theorem exists_finite_orbit {G V : Type} [Group G] [TopologicalSpace G] [AddCommGroup V] [Module ℂ V]
-    (K : ℕ → Subgroup G) (hanti : Antitone K) (hbasis : ∀ U ∈ 𝓝 (1 : G), ∃ n, (K n : Set G) ⊆ U)
+    (K : ℕ → Subgroup G) (hbasis : ∀ U ∈ 𝓝 (1 : G), ∃ n, (K n : Set G) ⊆ U)
     (f : G → V) (h1 : f 1 = 0) (hcont : ∀ l : V →ₗ[ℂ] ℂ, Continuous fun g => l (f g)) :
     ∃ n, ∃ s : Finset V, ∀ k ∈ K n, f k ∈ Submodule.span ℂ (s : Set V) := by
   classical
@@ -177,7 +177,7 @@ theorem smooth_of_weak {G V : Type} [Group G] [TopologicalSpace G] [AddCommGroup
     ∀ φ ∈ W, ∃ n, ∀ k ∈ K n, ω k φ = φ := by
   classical
   intro φ hφ
-  obtain ⟨n, s, hs⟩ := exists_finite_orbit K hanti hbasis (fun g => ω g φ - φ) (by simp [hone φ hφ]) fun l => by
+  obtain ⟨n, s, hs⟩ := exists_finite_orbit K hbasis (fun g => ω g φ - φ) (by simp [hone φ hφ]) fun l => by
     simp only [map_sub]
     exact (hcont l φ hφ).sub continuous_const
   have h0 : ∀ k ∈ K n, k ∈ K 0 := fun k hk => hanti (Nat.zero_le n) hk

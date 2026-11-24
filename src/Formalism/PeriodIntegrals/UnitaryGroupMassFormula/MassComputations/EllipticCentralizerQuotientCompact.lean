@@ -54,8 +54,8 @@ open scoped TensorProduct
 namespace MassDataMassesW
 
 theorem prod_rect_of_ne_zero {α β : Type*} [MeasurableSpace α] [MeasurableSpace β] (μ : Measure α)
-    (ν : Measure β) (h0 : μ.prod ν ≠ 0) {s : Set α} {t : Set β} (hs : MeasurableSet s)
-    (ht : MeasurableSet t) : μ.prod ν (s ×ˢ t) = μ s * ν t := by
+    (ν : Measure β) (h0 : μ.prod ν ≠ 0) {s : Set α} {t : Set β}
+    : μ.prod ν (s ×ˢ t) = μ s * ν t := by
   have hν : SFinite ν := by
     by_contra hν
     exact h0 (Measure.prod_eq_zero_of_not_sfinite hν)
@@ -170,7 +170,7 @@ theorem elliptic_centralizer_quotient_compact (hKo : KCompactOpen) : N4 := by
   erw [← Measure.map_apply measurable_subtype_coe (hm hRm)]
   rw [← Measure.map_apply hm hRm]
   change ((amb (X.measW u).μN).map (splitA X.B.I.cm.sig X.B.I.J)) _ = _
-  rw [hN, prod_rect_of_ne_zero _ _ h0 hTm hKm, (hTie.2.2.2 u).1,
+  rw [hN, prod_rect_of_ne_zero _ _ h0, (hTie.2.2.2 u).1,
     Measure.map_apply (measurable_toInf_of X hb hS) hTm, Set.preimage_image_eq _ (toInf_injective X hb hS),
     Measure.map_apply measurable_subtype_coe hKm]
 

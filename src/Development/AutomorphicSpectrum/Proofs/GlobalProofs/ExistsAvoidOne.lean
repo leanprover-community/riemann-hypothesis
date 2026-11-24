@@ -690,8 +690,8 @@ theorem rayRel_of_mul_left {F : Type} [Field F] [NumberField F] {𝔣 𝔠 I J :
   refine ⟨a, b, ha, hb, ha', hb', hp, mul_left_cancel₀ h𝔠 ?_⟩
   rw [mul_left_comm, e, mul_left_comm]
 
-theorem shift_perm (F : Type) [Field F] [NumberField F] (𝔣 𝔠 : Ideal (𝓞 F)) (S : Finset (Ideal (𝓞 F))) (_h𝔣 : 𝔣 ≠ ⊥)
-    (_hp : 𝔠.IsPrime) (h0 : 𝔠 ≠ ⊥) (hs : 𝔠 ⊔ 𝔣 = ⊤)
+theorem shift_perm (F : Type) [Field F] [NumberField F] (𝔣 𝔠 : Ideal (𝓞 F)) (S : Finset (Ideal (𝓞 F)))
+    (h0 : 𝔠 ≠ ⊥) (hs : 𝔠 ⊔ 𝔣 = ⊤)
     (hS : ∀ a ∈ S, CoprimeTo F 𝔣 a) (hu : ∀ a ∈ S, ∀ b ∈ S, RayRel F 𝔣 a b → a = b)
     (hr : ∀ I, CoprimeTo F 𝔣 I → ∃ a ∈ S, RayRel F 𝔣 I a) :
     ∃ τ : Equiv.Perm S, ∀ c : S,
@@ -810,7 +810,7 @@ theorem exists_classZeta (𝔣 : Ideal (𝓞 F)) (h𝔣 : 𝔣 ≠ ⊥) (S : Fin
       rintro rfl
       simp only [Ideal.absNorm_bot] at hl
       exact Nat.not_prime_zero hl
-    obtain ⟨τ, hτ⟩ := _root_.GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.shift_perm F 𝔣 𝔠 S h𝔣 hpr h𝔠0 hcop hS hd hc
+    obtain ⟨τ, hτ⟩ := _root_.GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.shift_perm F 𝔣 𝔠 S h𝔠0 hcop hS hd hc
     choose T hTd hTs hTq using hWt 𝔠 hpr hl hav
     refine ⟨𝔠, hl, hB, τ, T, hTd, fun c s hs => ?_, hTq⟩
     obtain ⟨e, he⟩ := hτ c

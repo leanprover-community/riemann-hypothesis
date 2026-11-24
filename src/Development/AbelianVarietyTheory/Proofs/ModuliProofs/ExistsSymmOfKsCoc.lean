@@ -430,7 +430,7 @@ theorem dl_diff {g : ℕ} {m : Y ⟶ X} {D : R → K}
     (hd₂' : LocDerK q₂ s₂ m₂ D Q' d₂') {π : X₂ ⟶ X} {n p : Z ⟶ Y}
     (sq : m₂ ≫ π = n ≫ m) (l : Q₀ ≤ Q) (l' : Q₀ ≤ Q') {T : Y.Opens} (θ : Fin g → Γ(Y, T))
     (hT : m₂ ⁻¹ᵁ Q₀ ≤ p ⁻¹ᵁ T) {dd : Fin g → ∀ O : Y.Opens, Γ(Y, O) → Γ(Y, O)}
-    {w : Fin g → ∀ O : Z.Opens, Γ(Z, O) → Γ(Z, O)} (hw : ∀ a, IsVF q₂ (w a))
+    {w : Fin g → ∀ O : Z.Opens, Γ(Z, O) → Γ(Z, O)}
     (hdiff : ∀ O, O ≤ Q₀ → ∀ f : Γ(X₂, O), d₂' O f - d₂ O f = ∑ a, pbT p (θ a) _ * w a _ (pbT m₂ f _))
     (ε : ℕ) (w₁ : ∀ a (V : Y.Opens) (h : Γ(Y, V)) O, O ≤ n ⁻¹ᵁ V → w a O (pbT n h O) = ε * pbT n (dd a V h) O)
     {L : LB X} {φ : Fin g → C1 (fun i => m ⁻¹ᵁ L.U i)} (hφ : IsDlog m L dd φ) (i j : L.ι) {O : Z.Opens}
@@ -664,13 +664,13 @@ theorem exists_square_data {K R : Type} [Field K] [CommRing R] {g : ℕ} {X X₂
       rw [← sq₁] at h1
       rw [← sq₂] at h2
       exact And.intro h1 h2
-    have E0 := dl_diff (hd₂ i j) (hd₂ i' j) sq₀ hQ₀ hQ₀' (fun a => θ a i i') hT hw (df i i' j) 1
+    have E0 := dl_diff (hd₂ i j) (hd₂ i' j) sq₀ hQ₀ hQ₀' (fun a => θ a i i') hT (df i i' j) 1
       (fun a V h O hO => by rw [w₀ a V h O hO, Nat.cast_one, _root_.one_mul]) hφ α.1 β.1 hOQ
       (fun x hx => hs0 α (hO hx).1.2) (fun x hx => hs0 β (hO hx).2)
-    have E1 := dl_diff (hd₂ i j) (hd₂ i' j) sq₁ hQ₀ hQ₀' (fun a => θ a i i') hT hw (df i i' j) 1
+    have E1 := dl_diff (hd₂ i j) (hd₂ i' j) sq₁ hQ₀ hQ₀' (fun a => θ a i i') hT (df i i' j) 1
       (fun a V h O hO => by rw [w₁ a V h O hO, Nat.cast_one, _root_.one_mul]) hφ α.2.1 β.2.1 hOQ
       (fun x hx => hs1 α (hO hx).1.2) (fun x hx => hs1 β (hO hx).2)
-    have E2 := dl_diff (hd₂ i j) (hd₂ i' j) sq₂ hQ₀ hQ₀' (fun a => θ a i i') hT hw (df i i' j) 0
+    have E2 := dl_diff (hd₂ i j) (hd₂ i' j) sq₂ hQ₀ hQ₀' (fun a => θ a i i') hT (df i i' j) 0
       (fun a V h O hO => by rw [w₂ a V h O hO, Nat.cast_zero, MulZeroClass.zero_mul]) hφ α.2.2 β.2.2 hOQ
       (fun x hx => hs2 α (hO hx).1.2) (fun x hx => hs2 β (hO hx).2)
     have key : ∀ a, pbT p₁ (θ a i i') O * (pbT p₂ (φ a α.2.2 j) O - rsT (b a α) O - (pbT p₂ (φ a β.2.2 j) O - rsT (b a β) O)) =
@@ -720,13 +720,13 @@ theorem exists_square_data {K R : Type} [Field K] [CommRing R] {g : ℕ} {X X₂
       rw [← sq₁] at h1
       rw [← sq₂] at h2
       exact And.intro h1 h2
-    have E0 := dl_diff (hd₂ i j) (hd₂ i j') sq₀ hQ₀ hQ₀' (fun a => θ a j j') hT hw' (df' i j j') 1
+    have E0 := dl_diff (hd₂ i j) (hd₂ i j') sq₀ hQ₀ hQ₀' (fun a => θ a j j') hT (df' i j j') 1
       (fun a V h O hO => by rw [w₀' a V h O hO, Nat.cast_one, _root_.one_mul]) hφ α.1 β.1 hOQ
       (fun x hx => hs0 α (hO hx).1.2) (fun x hx => hs0 β (hO hx).2)
-    have E1 := dl_diff (hd₂ i j) (hd₂ i j') sq₁ hQ₀ hQ₀' (fun a => θ a j j') hT hw' (df' i j j') 0
+    have E1 := dl_diff (hd₂ i j) (hd₂ i j') sq₁ hQ₀ hQ₀' (fun a => θ a j j') hT (df' i j j') 0
       (fun a V h O hO => by rw [w₁' a V h O hO, Nat.cast_zero, MulZeroClass.zero_mul]) hφ α.2.1 β.2.1 hOQ
       (fun x hx => hs1 α (hO hx).1.2) (fun x hx => hs1 β (hO hx).2)
-    have E2 := dl_diff (hd₂ i j) (hd₂ i j') sq₂ hQ₀ hQ₀' (fun a => θ a j j') hT hw' (df' i j j') 1
+    have E2 := dl_diff (hd₂ i j) (hd₂ i j') sq₂ hQ₀ hQ₀' (fun a => θ a j j') hT (df' i j j') 1
       (fun a V h O hO => by rw [w₂' a V h O hO, Nat.cast_one, _root_.one_mul]) hφ α.2.2 β.2.2 hOQ
       (fun x hx => hs2 α (hO hx).1.2) (fun x hx => hs2 β (hO hx).2)
     have key : ∀ a, pbT p₂ (θ a j j') O * (pbT p₁ (φ a α.2.1 i) O - rsT (b a α) O - (pbT p₁ (φ a β.2.1 i) O - rsT (b a β) O)) =

@@ -302,7 +302,7 @@ def subEquiv {ρ : Representation ℂ H X} (U : Subrepresentation ρ) :
   LinearEquiv.ofBijective
     ((modMap (σ := U.toRepresentation) (ρ := ρ) U.toSubmodule.subtype (fun _ _ => rfl)).codRestrict
       U.asSubmodule (fun x => (U.toRepresentation.asModuleEquiv x).2))
-    ⟨fun a b h => U.toRepresentation.asModuleEquiv.injective (Subtype.ext (congrArg Subtype.val h)),
+    ⟨fun _ _ h => U.toRepresentation.asModuleEquiv.injective (Subtype.ext (congrArg Subtype.val h)),
      fun y => ⟨U.toRepresentation.asModuleEquiv.symm ⟨ρ.asModuleEquiv y.1, y.2⟩, rfl⟩⟩
 
 variable [TopologicalSpace H]

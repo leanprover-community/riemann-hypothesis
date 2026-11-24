@@ -117,7 +117,7 @@ theorem ordX_holds : OrdX := by
     unfold omon
     have hb := lprod_bump a ha (fun j => m (Sum.inl j))
       (fun j => (m + Finsupp.single (Sum.inl i) 1 : Fin r ⊕ Fin s →₀ ℕ) (Sum.inl j)) i
-      (by simp) (fun i' hi' => by simp [Finsupp.single_apply, Ne.symm hi'])
+      (by simp) (fun i' hi' => by simp [Ne.symm hi'])
     rw [hb, mul_assoc]
     simp
   · rw [mul_add, ordEval_add, ordEval_add, hp, hq, mul_add]

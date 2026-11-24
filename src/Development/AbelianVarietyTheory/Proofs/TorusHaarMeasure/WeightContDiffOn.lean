@@ -172,7 +172,7 @@ theorem kronSolve : (∀ (r : ℕ) (X : Data E r) (la L : Wt X.Ψ r) (w0 : Frame
   have hf0 : f 0 = 0 := by
     ext k
     simp [hf, hc0, hs0 k]
-  obtain ⟨δ, hδ, hiso⟩ := HE.iso_zero hfd.hasFDerivAt hdet hf0
+  obtain ⟨δ, hδ, hiso⟩ := HE.iso_zero hfd.hasFDerivAt hdet
   obtain ⟨k0, hk0⟩ := HE.coord_ne_of_det (f := f) hn hdet
   have hk0' : ¬ (fun z => s k0 (cpt X x0 z)) =ᶠ[𝓝 0] 0 := by
     intro h

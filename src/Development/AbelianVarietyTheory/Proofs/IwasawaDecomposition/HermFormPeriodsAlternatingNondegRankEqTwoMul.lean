@@ -73,10 +73,10 @@ noncomputable def hermFormImBilin {g : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) :
     (Fin g → ℂ) →ₗ[ℝ] (Fin g → ℂ) →ₗ[ℝ] ℝ :=
   LinearMap.mk₂ ℝ (fun y w => (hermForm Hm y w).im)
     (fun a b w => by simp [hermForm, add_dotProduct])
-    (fun c a w => by simp [hermForm, smul_dotProduct, Complex.smul_im])
+    (fun c a w => by simp [hermForm, smul_dotProduct])
     (fun y a b => by simp [hermForm, Matrix.mulVec_add, dotProduct_add])
     (fun c y a => by
-      simp [hermForm, star_smul, Matrix.mulVec_smul, dotProduct_smul, Complex.smul_im])
+      simp [hermForm, star_smul, Matrix.mulVec_smul, dotProduct_smul])
 
 theorem hermForm_periods_alternating_nondeg :
     ∀ (g r : ℕ) (x : Fin r → Fin g → ℂ) (M : Matrix (Fin r) (Fin r) ℝ) (Hm : Matrix (Fin g) (Fin g) ℂ), LinearIndependent ℝ x → Submodule.span ℝ (Set.range x) = ⊤ → Hm.IsHermitian → (∀ z : Fin g → ℂ, z ≠ 0 → 0 < (hermForm Hm z z).re) → (∀ i j, (hermForm Hm (x i) (x j)).im = M i j) → Mᵀ = -M ∧ M.det ≠ 0 ∧ r = 2 * g := by

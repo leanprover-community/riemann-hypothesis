@@ -461,7 +461,7 @@ theorem corank_one_numeric_ineq {f r k : ℕ} {b pe cr c C δ C0 Γ Ex Yc Yt rD 
       (C ^ f * b ^ eH * Γ * EC * Real.sqrt (Yt ^ (k * f))) * rD := by
   have hb0 : 0 < b := by linarith
   have hP0 : 0 < b ^ pe := Real.rpow_pos_of_pos hb0 _
-  have hQ := rows_num_Q (f := f) (r := r) (pe := pe) (E1 := 2 * cr) (cr := cr) hb hδ0 hδ
+  have hQ := rows_num_Q (f := f) (r := r) (pe := pe) (E1 := 2 * cr) (cr := cr) hb hδ
   have e1 : ((b ^ pe) ^ (2 * cr)) ^ 2 = ((b ^ pe) ^ cr) ^ 2 * ((b ^ pe) ^ cr) ^ 2 := by
     rw [show 2 * cr = cr + cr by ring, Real.rpow_add hP0]; ring
   rw [e1] at hQ

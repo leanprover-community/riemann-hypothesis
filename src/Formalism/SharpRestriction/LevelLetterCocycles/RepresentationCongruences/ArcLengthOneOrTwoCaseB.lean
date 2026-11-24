@@ -92,7 +92,7 @@ theorem coeff_relation {O : Type*} [CommRing O] [IsDomain O] {d₁ d : ℕ} (p :
   have h2 := sub_eq_zero.mp ((mul_eq_zero.mp h1).resolve_left (pow_ne_zero _ hp))
   rw [h2]
   split_ifs with hj
-  · simp [← map_pow, mul_assoc, coeff_C_mul, coeff_X_pow_mul', hkS]
+  · simp [mul_assoc, coeff_C_mul, coeff_X_pow_mul', hkS]
   · exact map_zero _
 
 end Formalism.MainNotions.N.FrobeniusPowerSeries.ArcLengthTwo
@@ -235,7 +235,7 @@ theorem isUnit_ps [FiniteDimensional Qp LL] (W : LocWach PD LL O v n) (hcase : F
   exact isUnit_EE_of_UPi W (UPi_qpow W h3 h6 s)
 
 theorem phi_sq_pi0_pow_eq_pi0_lambda_sq (W : LocWach PD LL O v n) (hR : GS.RD W) (Λ : LetA O n) (hΛ : Λ ∈ W.AΔ)
-    (hΛu : IsUnit (algebraMap (LetA O n) W.EE (W.π₀ * Λ ^ 2))) (G₀ M : ℕ) (u : LetA O n) (hu : u ∈ W.AΔ)
+    (hΛu : IsUnit (algebraMap (LetA O n) W.EE (W.π₀ * Λ ^ 2))) (G₀ M : ℕ) (u : LetA O n)
     (hJ : W.φA (Formalism.MainNotions.LiftingTheory.JJ W 1 (2 * G₀) M) = W.π₀ * Λ ^ 2 * u) :
     ∃ N : ℕ, ∃ w ∈ W.AΔ, ((W.φA ^ 2) W.π₀) ^ N = W.π₀ * Λ ^ 2 * w := by
   obtain ⟨h₀, hh₀⟩ := GS.φpow_π₀ (W := W) hR 0
@@ -259,7 +259,7 @@ theorem dv_eq_sum_single (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) (e : �
     (c₀ : Fin d → LL) : dv W T e b c₀ = ∑ m, c₀ m • dv W T e b (Pi.single m 1) := by
   unfold dv
   refine Finset.sum_congr rfl fun m _ => ?_
-  rw [Finset.sum_eq_single m (fun j _ hj => by simp [Pi.single_apply, hj]) (by simp), Pi.single_eq_same,
+  rw [Finset.sum_eq_single m (fun j _ hj => by simp [hj]) (by simp), Pi.single_eq_same,
     one_smul]
 
 theorem filS_anti (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) (a : ZMod n) (s : ℕ) {u u' : ℤ}
@@ -464,12 +464,12 @@ theorem arc_length_one_or_two_case_b [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsD
     rw [hLj, pow_one, hAj] at hu'
     rw [hlen]
     exact ArcLengthTwoLifting.phi_sq_pi0_pow_eq_pi0_lambda_sq W (GS.ringData_of_caseA_of_p9 W hcase hP9) Λ hΛA
-      (by rw [map_mul, map_pow]; exact hπu.mul (hΛu.pow 2)) _ _ u hu hu'
+      (by rw [map_mul, map_pow]; exact hπu.mul (hΛu.pow 2)) _ _ u hu'
   obtain ⟨K, hK⟩ := repVV_zero_coord W hcase hP9 hinj T₂ hT₂ (c - ((L : ℕ) : ZMod n)) L (A.M PD.p) hM Λ hΛA hΛu
     hN bb sol hbb _ Rd
   rw [hcc] at hK
 
-  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T₁ hT₁ hO hinj
+  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T₁ hT₁ hO
   haveI : Fact PD.p.Prime := ⟨PD.hp⟩
   set Φ : LetA O n := ps W 1 ^ η * ps W 0 ^ (b₀ + S) with hΦ
   have hpsPi : ∀ s, ps W s ∈ PiPs W := fun s => Submonoid.subset_closure (Set.mem_insert_of_mem _ ⟨s, rfl⟩)

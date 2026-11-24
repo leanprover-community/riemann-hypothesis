@@ -167,7 +167,7 @@ theorem nset_loc {n : ℕ} (hn : n = 2 * r + k + 1) (ε : Fin n → Bool) (Q : M
     intro a
     rw [← hE]
     exact hF.ez a
-  have h := conj_mem_Nset hF ⟨1, by rw [one_smul]⟩ hU hN'
+  have h := conj_mem_Nset hF hU hN'
   rwa [Qm_of_tr, Qi_of_tr h2 hg] at h
 
 theorem uw_loc {n : ℕ} (hn : n = 2 * r + k + 1) (ε : Fin n → Bool) (Q : Matrix (Fin n) (Fin (2 * r + k + 1)) ℂ)

@@ -1201,7 +1201,7 @@ theorem ofRoots_sub_one {K : Type} [Field K] {N : ℕ} (φ : K →+* ℂ) (R : F
 theorem discrete_lattice {K : Type} [Field K] [NumberField K] {ι : Type} [Fintype ι]
     (τ : ι → (K →+* ℂ)) (hτ : ∀ w : InfinitePlace K, ∃ v, InfinitePlace.mk (τ v) = w) {N : ℕ}
     (U : Matrix (Fin N) (Fin N) K) (hU : IsUnit U.det) (R : Finset (Fin N × Fin N))
-    (hR : ∀ q ∈ R, q.1 < q.2) (J : Ideal (𝓞 K)) (Λ : Submodule ℤ (ι → R → ℂ))
+    (J : Ideal (𝓞 K)) (Λ : Submodule ℤ (ι → R → ℂ))
     (hΛ : ∀ c ∈ Λ, ∃ x : Matrix (Fin N) (Fin N) K, (∀ i j, (i, j) ∉ R → (U * x * U⁻¹) i j = 0) ∧
       EntIn J x ∧ ∀ v (q : R), c v q = τ v ((U * x * U⁻¹) q.1.1 q.1.2)) :
     DiscreteTopology Λ := by
@@ -1289,10 +1289,10 @@ theorem covolume_congruence_stabiliser : ∀ (K : Type) [Field K] [NumberField K
     refine (hΛ₀ c).2 ⟨x, hx, fun i j => ?_, hxc⟩
     obtain ⟨o, -, e⟩ := hxJ i j
     exact ⟨o, Submodule.mem_top, e⟩
-  haveI hd₀ : DiscreteTopology Λ₀ := discrete_lattice τ hτ' U hUdet _ hRlt ⊤ Λ₀ (fun c hc => by
+  haveI hd₀ : DiscreteTopology Λ₀ := discrete_lattice τ hτ' U hUdet _ ⊤ Λ₀ (fun c hc => by
     obtain ⟨x, hx, hxT, hxc⟩ := (hΛ₀ c).1 hc
     exact ⟨x, hsupp x hx, hxT, hxc⟩)
-  have hd' : DiscreteTopology Λ' := discrete_lattice τ hτ' U hUdet _ hRlt _ Λ' (fun c hc => by
+  have hd' : DiscreteTopology Λ' := discrete_lattice τ hτ' U hUdet _ _ Λ' (fun c hc => by
     obtain ⟨x, hx, hxT, hxc⟩ := (hΛ' c).1 hc
     exact ⟨x, hsupp x hx, hxT, hxc⟩)
   haveI : Countable Λ₀ := GlobalTheory.LoopV.Cover.countable_of_discrete Λ₀

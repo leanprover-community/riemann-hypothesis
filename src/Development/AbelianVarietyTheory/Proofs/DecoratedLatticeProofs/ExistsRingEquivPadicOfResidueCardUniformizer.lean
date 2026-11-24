@@ -307,7 +307,7 @@ theorem valuation_T_ne_zero (hirr : Irreducible (T : 𝒪[k])) : valuation k (T 
   rw [ne_eq, map_eq_zero]
   exact fun h => hirr.ne_zero (Subtype.ext (by simpa using h))
 
-theorem valuation_le_T_pow_iff (hirr : Irreducible (T : 𝒪[k])) (o : 𝒪[k]) (n : ℕ) :
+theorem valuation_le_T_pow_iff (o : 𝒪[k]) (n : ℕ) :
     valuation k (o : k) ≤ valuation k (T : k) ^ n ↔ (T : 𝒪[k]) ^ n ∣ o := by
   rw [(Valuation.integer.integers (valuation k)).dvd_iff_le]
   simp only [map_pow, map_natCast]
@@ -378,7 +378,7 @@ theorem exists_ringEquiv_padic : ∀ (k : Type) [Field k] [ValuativeRel k] [Topo
     have hy1 : valuation k y < valuation k (T : k) ^ n := hy
     have hyO : valuation k y ≤ 1 :=
       hy1.le.trans (pow_le_one₀ zero_le' (valuation_T_lt_one hirr).le)
-    obtain ⟨w, hw⟩ := (valuation_le_T_pow_iff hirr ⟨y, hyO⟩ n).mp hy1.le
+    obtain ⟨w, hw⟩ := (valuation_le_T_pow_iff ⟨y, hyO⟩ n).mp hy1.le
     have hy' : y = (T : k) ^ n * (w : k) := by
       simpa using congrArg (fun t : 𝒪[k] => (t : k)) hw
     have hw1 : ‖φ.symm (w : k)‖ ≤ 1 := (hmem _).mp (by rw [RingEquiv.apply_symm_apply]; exact w.2)

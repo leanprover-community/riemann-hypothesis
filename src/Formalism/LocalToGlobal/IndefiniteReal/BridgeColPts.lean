@@ -134,7 +134,7 @@ def colClassPres (hS : Col.DecoPtSurj hc n ST SG) (h : S.Ok) {W : Type} [NormedA
     (hgl : ∀ (γ : Col.URat hc n) (k : colJ hc n ST SG H) (v : S.V),
       coef (S.ρ (colGl o (γ, k)) v) = ((χ k)⁻¹ : ℂˣ) • ρ γ (coef v)) :
     ClassPres (Col.ratIn hc n) (S.toCSD h) σ ρ (colJ hc n ST SG H) χ :=
-  classPresOf (colAdPts o hS) h σ ρ χ coef hli hspan hpair hK1 hgl
+  classPresOf (colAdPts o hS) h σ ρ χ coef hli hspan hpair hgl
 
 end ColPts
 

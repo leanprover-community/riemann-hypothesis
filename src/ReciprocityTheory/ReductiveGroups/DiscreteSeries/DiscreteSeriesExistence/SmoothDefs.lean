@@ -204,7 +204,7 @@ theorem IsSmoothVecU.smul (c : ℂ) {v : H} (hv : IsSmoothVecU ε σ v) : IsSmoo
   rw [map_smul]
   exact congrArg (c • ·) (hE g hgU hgJ)
 
-theorem hasDerivAt_dS (hσ : IsURepOn (UJset ε) σ) {X : Matrix (Fin n) (Fin n) ℂ} (hX : inG ε X) {v : H}
+theorem hasDerivAt_dS {X : Matrix (Fin n) (Fin n) ℂ} (hX : inG ε X) {v : H}
     (hv : IsSmoothVecU ε σ v) :
     HasDerivAt (fun t : ℝ => σ (NormedSpace.exp ((t : ℂ) • X)) v) (dS σ X v) 0 := by
   obtain ⟨D, hD⟩ := smd_orbit_deriv hv
@@ -225,7 +225,7 @@ theorem IsSmoothVecU.kStable (hσ : IsURepOn (UJset ε) σ) {k : Matrix (Fin n) 
 
 theorem dS_add_vec (hσ : IsURepOn (UJset ε) σ) {X : Matrix (Fin n) (Fin n) ℂ} (hX : inG ε X) {v w : H}
     (hv : IsSmoothVecU ε σ v) (hw : IsSmoothVecU ε σ w) : dS σ X (v + w) = dS σ X v + dS σ X w := by
-  have h := (hasDerivAt_dS hσ hX hv).add (hasDerivAt_dS hσ hX hw)
+  have h := (hasDerivAt_dS hX hv).add (hasDerivAt_dS hX hw)
   show deriv (fun t : ℝ => σ (NormedSpace.exp ((t : ℂ) • X)) (v + w)) 0 = _
   have hf : (fun t : ℝ => σ (NormedSpace.exp ((t : ℂ) • X)) (v + w)) =
       fun t : ℝ => σ (NormedSpace.exp ((t : ℂ) • X)) v + σ (NormedSpace.exp ((t : ℂ) • X)) w := by
@@ -239,7 +239,7 @@ theorem dS_smul_vec (c : ℂ) (X : Matrix (Fin n) (Fin n) ℂ) (v : H) : dS σ X
   simp only [map_smul]
   exact deriv_const_smul_field (f := fun t : ℝ => σ (NormedSpace.exp ((t : ℂ) • X)) v) (x := 0) c
 
-theorem dS_add_smul (hσ : IsURepOn (UJset ε) σ) {X Y : Matrix (Fin n) (Fin n) ℂ} (hX : inG ε X) (hY : inG ε Y)
+theorem dS_add_smul {X Y : Matrix (Fin n) (Fin n) ℂ} (hX : inG ε X) (hY : inG ε Y)
     (r : ℝ) {v : H} (hv : IsSmoothVecU ε σ v) :
     dS σ (X + (r : ℂ) • Y) v = dS σ X v + (r : ℂ) • dS σ Y v := by
   obtain ⟨D, hD⟩ := smd_orbit_deriv hv

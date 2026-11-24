@@ -314,7 +314,7 @@ theorem exists_ideal_traceForm_of_rank_one : ∀ (E : Type) [Field E] [NumberFie
   have hξ : FD.cc (((ε : ℤ) : E) / H.rt) = -(((ε : ℤ) : E) / H.rt) := by
     rw [FD.cc, map_div₀, map_intCast, conj_rt, div_neg]
   obtain ⟨G, φ, hm⟩ := exists_herm_coord_of_datum E H D _ hξ (div_ne_zero hε0 hrt) 1 hr.symm
-  obtain ⟨-, hfg, -, hdual⟩ := HermModel.rank_integral_selfDual E H D 1 _ G φ hξ hm
+  obtain ⟨-, hfg, -, hdual⟩ := HermModel.rank_integral_selfDual E H D 1 _ G φ hm
   obtain ⟨hinj, hspan, hG, hdet, hEF⟩ := hm
   rw [Matrix.det_fin_one] at hdet
   have hherm : ∀ x y, FD.herm G x y = G 0 0 * x 0 * IsCMField.complexConj E (y 0) := fun x y => by
@@ -618,7 +618,7 @@ theorem span_embeddings_eq_top {E K L I : Type} [Field E] [NumberField E] [Field
   intro g hg i
   have := hli (fun i => g i * σ i (e a₀)) (funext fun s => by
     have := congrFun hg (s • a₀)
-    simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, map_smul, Algebra.smul_def, map_mul, Pi.zero_apply] at this
+    simp only [Finset.sum_apply, Algebra.smul_def, Pi.zero_apply] at this
     simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply, Function.comp]
     rw [← this]
     refine Finset.sum_congr rfl fun i _ => ?_

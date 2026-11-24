@@ -335,11 +335,11 @@ def HerrExt (W : LocWach PD LL O v n) {RA RW : Type} [CommRing RA] [CommRing RW]
 
 end Herr
 
-def TopTheoremLocal (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) (F : FonOf LT A HW) : Prop :=
+def TopTheoremLocal (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (hA : CaseA K LL) (lam : ↥(OL LL)), Irreducible lam →
     TopCore ((LT l).PD K) ((HW l).W K 1 LL hA.2.2).emb lam (IK K)
 
-def aux₃ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := TopTheoremLocal D.loc D.locA HW F
+def aux₃ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := TopTheoremLocal D.loc D.locA HW
 
 def adm1 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.DeltaInvariantLattices.WachLatticeFreeGlobal D HW F
 

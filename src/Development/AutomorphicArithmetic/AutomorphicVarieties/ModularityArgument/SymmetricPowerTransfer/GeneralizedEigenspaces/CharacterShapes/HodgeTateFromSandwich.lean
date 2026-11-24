@@ -844,7 +844,7 @@ def ExtF : Prop :=
         dcF (U.subgroupOf S) a ψ = c • ψ → dcF U (a : G) Φ = c • Φ
 
 def SLev : Prop :=
-  ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (B : Bridge L), B.Ok → ∀ (T : Spl B) (S : Finset (Plc L)) (VL : ∀ w : Plc L, Lev (Kw w)) (A : SD B.Δ), A.Ok → Fit T S VL A → ∀ w ∈ S, ∀ (h : IsSplitAt w) (S₁ : Finset (Plc L)), w ∈ S₁ → S₁ ⊆ S → VL w = iw w → ∀ U : Subgroup (UA L 2), Full U {w} →
+  ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] (B : Bridge L), B.Ok → ∀ (T : Spl B) (S : Finset (Plc L)) (VL : ∀ w : Plc L, Lev (Kw w)) (A : SD B.Δ), A.Ok → Fit T S VL A → ∀ w ∈ S, ∀ (_ : IsSplitAt w) (S₁ : Finset (Plc L)), w ∈ S₁ → S₁ ⊆ S → VL w = iw w → ∀ U : Subgroup (UA L 2), Full U {w} →
     ∀ y : DA B.Δ, A.dat.Off y → (∀ g : SA B.Δ, (B.bS g : UA L 2) ∈ lev U S₁ iw → g ∈ A.lvS y) →
     ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (ψ : SA B.Δ → V), (∀ u ∈ A.lvS y, ∀ g, ψ (g * u) = ψ g) → ∀ (g : SA B.Δ) (d : Fin 2 → (Kw w)ˣ), (B.bS g : UA L 2) = secW 2 w (Sig.dg d) →
     dcF (((lev U S₁ iw).subgroupOf (finU (E := L) (n := 2) ⊓ SUA L)).comap B.bS.toMonoidHom) g ψ = dcF (A.lvS y) g ψ

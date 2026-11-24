@@ -1363,7 +1363,7 @@ open Formalism.MainNotions.DIV.Cons (intO)
 namespace GlobalTheory
 
 theorem preimage_opens_eq_range_of_valuative (F Z X : Scheme.{0}) (j : F ⟶ Z) (π : Z ⟶ X) (U : X.Opens)
-    (hj : IsOpenImmersion j) (hd : Dense (Set.range j)) (hπ : IsSeparated π)
+    (hd : Dense (Set.range j)) (hπ : IsSeparated π)
     (hF : TopologicalSpace.NoetherianSpace F) (hU : Set.range (j ≫ π) ⊆ (U : Set X))
     (hv : ∀ (A K : Type) [CommRing A] [IsDomain A] [ValuationRing A] [Field K] [Algebra A K]
       [IsFractionRing A K] (a : Sp K ⟶ F) (b : Sp A ⟶ X), Set.range b ⊆ (U : Set X) →
@@ -1443,7 +1443,7 @@ theorem preimage_iUnion_eq_range_cells : ∀ (O K : Type) [CommRing O] [Field K]
   have hU : ((⨆ b, (V b).1 : X.Opens) : Set X) = ⋃ b, ((V b).1 : Set X) := by
     simp
   rw [← hU]
-  refine GlobalTheory.preimage_opens_eq_range_of_valuative F Z X j (ν ≫ p0) _ hj hd hsep hF ?_ ?_
+  refine GlobalTheory.preimage_opens_eq_range_of_valuative F Z X j (ν ≫ p0) _ hd hsep hF ?_ ?_
   · rintro _ ⟨x, rfl⟩
     obtain ⟨b, w, y, rfl⟩ := hcov x
     rw [hU, hjf, ← Scheme.Hom.comp_apply, hcb b w]

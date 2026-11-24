@@ -530,7 +530,7 @@ open GroundTheory.Global GroundTheory.Automorphic GroundTheory.Automorphic.Adele
 namespace GlobalTheory.CompanionTheory.EisRankOne
 
 theorem weakFEPair_Λ₀_of_smul (P Q : WeakFEPair ℂ) (c : ℂ) (hf : Q.f = c • P.f)
-    (hg : Q.g = c • P.g) (hk : Q.k = P.k) (hε : Q.ε = P.ε) (hf₀ : Q.f₀ = c • P.f₀)
+    (hk : Q.k = P.k) (hε : Q.ε = P.ε) (hf₀ : Q.f₀ = c • P.f₀)
     (hg₀ : Q.g₀ = c • P.g₀) : Q.Λ₀ = c • P.Λ₀ := by
   have hmod : Q.f_modif = c • P.f_modif := by
     funext x
@@ -1310,7 +1310,7 @@ theorem entireForm_fe (A : GL ι 𝔸[k]) (z : ℂ) :
   have hPf₀ : P.f₀ = d⁻¹ * Q.g₀ := by
     rw [hQg₀, ← mul_assoc, inv_mul_cancel₀ hd0, one_mul]
   have key : P.Λ₀ = d⁻¹ • Q.symm.Λ₀ :=
-    GlobalTheory.CompanionTheory.EisRankOne.weakFEPair_Λ₀_of_smul Q.symm P d⁻¹ hPf hPg rfl
+    GlobalTheory.CompanionTheory.EisRankOne.weakFEPair_Λ₀_of_smul Q.symm P d⁻¹ hPf rfl
       (show (1 : ℂ) = (1 : ℂ)⁻¹ by simp) hPf₀ hPg₀
   have hfe := Q.functional_equation₀ z
   have hQk : ((Q.k : ℝ) : ℂ) = (Fintype.card ι : ℂ) := by

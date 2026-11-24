@@ -229,7 +229,7 @@ theorem alg_indep {A B gN gj F F' u u' : ℂ} {m : ℕ} (hgN : gN ≠ 0) (hgj : 
   rw [mul_pow]
   field_simp
 
-theorem dualNumber_unit_mul_decomposition {T A0 r Aw q F ϑ : ℂ} {m n : ℕ} (hr : r ≠ 0) (hq : q ≠ 0) (hF : F ≠ 0) (hA0 : A0 ≠ 0)
+theorem dualNumber_unit_mul_decomposition {T A0 r Aw q F ϑ : ℂ} {m n : ℕ} (hr : r ≠ 0) (hF : F ≠ 0) (hA0 : A0 ≠ 0)
     (hE : T * (A0 * r ^ m) ^ n = (ϑ * q ^ n) ^ m * Aw ^ n) (hc : Aw * q ^ m / F = A0 * r ^ m / r) :
     T * r ^ n = ϑ ^ m * F ^ n := by
   have hc0 : A0 * r ^ m / r ≠ 0 := div_ne_zero (mul_ne_zero hA0 (pow_ne_zero _ hr)) hr
@@ -388,7 +388,7 @@ theorem norm_of_torsVal {n : ℕ} (s : Out.H0 P.L n) (θ : (Fin g → ℂ) → �
   have hrig := a.rig i₀ h0
   rw [← hrig] at hE
   rw [hθ i w hi] at hE
-  have key := dualNumber_unit_mul_decomposition (fi_ne a h0') (fi_ne a hi') (fi_ne a hNw)
+  have key := dualNumber_unit_mul_decomposition (fi_ne a h0') (fi_ne a hNw)
     (valF_unit_ne (a.pt 0) (t.s ![i₀, i₀]) (mem_wc a hN0 h0')) hE hW
   have hn := congrArg norm key
   simp only [norm_mul, norm_pow] at hn

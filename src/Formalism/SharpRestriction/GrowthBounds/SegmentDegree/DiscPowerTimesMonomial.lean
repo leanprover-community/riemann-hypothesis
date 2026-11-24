@@ -52,7 +52,7 @@ open Formalism.MainNotions.G Formalism.MainNotions.SelectionLemmas Formalism.Mai
 
 section Kit
 
-variable (D : Formalism.BasicNotions.D7) (hV : admB2 D) {R : Type} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
+variable (D : Formalism.BasicNotions.D7) (hV : admB2) {R : Type} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
   {n : ℕ} [NeZero n] (S : Set ℤ)
 
 include hV

@@ -337,7 +337,7 @@ theorem Lh_unitary (ht : FrameTab (σ := σ) (J := J) P c T) {s : HA R σ J} (hs
   rw [hR_add_left, hermForm_add_right_bis, hermForm_add_right_bis, inW_left ht hpu, inW_right ht hpv]
 
 theorem Lh_inv (ht : FrameTab (σ := σ) (J := J) P c T) {s : HA R σ J} (hs : s ∈ Ssub R σ J P)
-    (hs' : s⁻¹ ∈ Ssub R σ J P) (v : Fin n → R ⊗[F] E) : Lh P c s (Lh P c s⁻¹ v) = v := by
+    (v : Fin n → R ⊗[F] E) : Lh P c s (Lh P c s⁻¹ v) = v := by
   set w := piW (σ := σ) (J := J) P c v
   have hw := piW_inW (c := c) ht v
   set p := piW (σ := σ) (J := J) P c (lin R σ J s⁻¹ w)
@@ -411,14 +411,14 @@ def gL (ht : FrameTab (σ := σ) (J := J) P c T) {s : HA R σ J} (hs : s ∈ Ssu
     rw [← LinearMap.toMatrix'_comp]
     have : Lh P c s ∘ₗ Lh P c s⁻¹ = LinearMap.id := LinearMap.ext fun v => by
       rw [LinearMap.comp_apply, LinearMap.id_apply]
-      exact Lh_inv ht hs hs' v
+      exact Lh_inv ht hs v
     rw [this, LinearMap.toMatrix'_id]
   inv_val := by
     rw [← LinearMap.toMatrix'_comp]
     have hs'' : s⁻¹⁻¹ ∈ Ssub R σ J P := by rw [inv_inv]; exact hs
     have : Lh P c s⁻¹ ∘ₗ Lh P c s = LinearMap.id := LinearMap.ext fun v => by
       rw [LinearMap.comp_apply, LinearMap.id_apply]
-      have := Lh_inv ht hs' hs'' v
+      have := Lh_inv ht hs' v
       rwa [inv_inv] at this
     rw [this, LinearMap.toMatrix'_id]
 

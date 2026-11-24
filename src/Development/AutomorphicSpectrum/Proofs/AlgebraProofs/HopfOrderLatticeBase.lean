@@ -132,7 +132,7 @@ theorem avg_mem {C V X F : Type} [Field C] [AddCommGroup V] [Module C V] [Field 
       ← Nat.cast_smul_eq_nsmul C, smul_smul, mul_comm, hu', one_smul]
 
 theorem avg_smul {C X F : Type} [Field C] [Field F] [Fintype F] [DecidableEq F] [AddCommGroup X]
-    [Module F X] (χ : F → C) (hmul : ∀ a b, χ (a * b) = χ a * χ b) (h1 : χ 1 = 1) (u : C)
+    [Module F X] (χ : F → C) (hmul : ∀ a b, χ (a * b) = χ a * χ b) (u : C)
     (h : X → C) (b : Fˣ) (x : X) :
     u * ∑ a : Fˣ, χ ((a⁻¹ : Fˣ) : F) * h ((a : F) • (b : F) • x) =
       χ (b : F) * (u * ∑ a : Fˣ, χ ((a⁻¹ : Fˣ) : F) * h ((a : F) • x)) := by
@@ -267,7 +267,7 @@ theorem stepGraph_snd_eq_kk : ∀ {o C : Type} [CommRing o] [Field C] [Algebra o
         rw [Pi.smul_apply, hk' j hj, smul_zero]
       rw [smul_add, hhinv _ _ hak]
     have hsm' : ∀ (b : Fˣ) y, H' ((b : F) • y) = χ τ (b : F) * H' y := fun b y =>
-      avg_smul (χ τ) hmul h1 _ h b y
+      avg_smul (χ τ) hmul _ h b y
     have h0' : H' 0 = 0 := by
       show ((Fintype.card Fˣ : ℕ) : C)⁻¹ * ∑ a : Fˣ, χ τ ((a⁻¹ : Fˣ) : F) * h ((a : F) • (0 : Fin n → F)) = 0
       simp [hh0]

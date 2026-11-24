@@ -380,7 +380,7 @@ theorem sum_mapDomain_kz (D : D7) {N0 N1 : ℕ} (k : Pl D × Fin N0 × Fin N1 �
   · intro h
     exact absurd (Finset.mem_univ z0) h
 
-theorem hs_logPl (D : D7) (hn : nP D p = 1) (N0 N1 : ℕ) : HasSubst (logPl D p (β := Fin N0 × Fin N1)) := by
+theorem hs_logPl (D : D7) (N0 N1 : ℕ) : HasSubst (logPl D p (β := Fin N0 × Fin N1)) := by
   refine MvPowerSeries.hasSubst_of_constantCoeff_zero fun v => ?_
   rw [← MvPowerSeries.coeff_zero_eq_constantCoeff_apply]
   show logPl D p v 0 = 0
@@ -423,10 +423,10 @@ theorem prod_rename_exp_jet_series (D : D7) (hn : nP D p = 1) (N0 N1 : ℕ) (ep 
       funext v
       rw [jetLogG_one, rename_psubst _ (PowerSeries.HasSubst.of_constantCoeff_zero
         (MvPowerSeries.constantCoeff_X v)), MvPowerSeries.rename_X, logPl_one p D hn]
-    rw [Y1, rename_subst' _ (hasSubst_log_jet N0 N1), hl, ← subst_rename' _ (hs_logPl D hn N0 N1), OJ.expS,
+    rw [Y1, rename_subst' _ (hasSubst_log_jet N0 N1), hl, ← subst_rename' _ (hs_logPl D N0 N1), OJ.expS,
       OJ.expS, rename_psubst _ (PowerSeries.HasSubst.of_constantCoeff_zero
         (constantCoeff_jet_series N0 N1 (ep z) (sg z) (be z) (hcc z))), rename_jet_series]
-  rw [Finset.prod_congr rfl (fun z _ => hz z), ← MvPowerSeries.coe_substAlgHom (hs_logPl D hn N0 N1),
+  rw [Finset.prod_congr rfl (fun z _ => hz z), ← MvPowerSeries.coe_substAlgHom (hs_logPl D N0 N1),
     ← map_prod]
   congr 1
   rw [show fAll D N0 N1 ep sg be = ∑ z, g z from rfl, hE,

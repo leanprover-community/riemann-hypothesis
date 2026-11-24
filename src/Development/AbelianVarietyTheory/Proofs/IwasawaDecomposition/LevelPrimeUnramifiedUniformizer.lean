@@ -51,7 +51,7 @@ namespace GlobalTheory.LevelUnram
 open Formalism.BasicNotions Formalism.L2.Forms Formalism.UG Formalism.L2.GlobalTheoryTheory.LocalLatticeBases NumberField IsDedekindDomain Matrix GlobalTheory.LevelHecke
 open scoped TensorProduct
 
-theorem exists_mul_eq {R : Type} [CommRing R] [IsDedekindDomain R] (P : Ideal R) (hP : P.IsPrime) (t : R)
+theorem exists_mul_eq {R : Type} [CommRing R] [IsDedekindDomain R] (P : Ideal R) (t : R)
     (ht : t ∈ P) (ht2 : t ∉ P ^ 2) (a : R) (ha : a ∈ P) : ∃ s b, s ∉ P ∧ s * a = t * b := by
   obtain ⟨I, hI⟩ : P ∣ Ideal.span {t} := by
     rw [Ideal.dvd_iff_le, Ideal.span_singleton_le_iff_mem]; exact ht
@@ -149,7 +149,7 @@ theorem unram (D : D7) (u : D.what₂.Word) (A : AtTTied u) (v : (D.mem u).A.vT)
         Nat.card_congr (RingHom.quotientKerEquivOfSurjective (A.res_surj w)).toEquiv, Nat.card_eq_fintype_card,
         (D.mem u).A.card_Fv w])
     v (A.res_conj v _ (hsc _))
-  exact ⟨hT0, fun a h => exists_mul_eq _ (RingHom.ker_isPrime _) _ hT0 h2 a h⟩
+  exact ⟨hT0, fun a h => exists_mul_eq _ _ hT0 h2 a h⟩
 
 end GlobalTheory.LevelUnram
 

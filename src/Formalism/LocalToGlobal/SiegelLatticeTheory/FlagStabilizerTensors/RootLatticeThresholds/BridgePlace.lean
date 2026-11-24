@@ -448,7 +448,7 @@ theorem bridge_place (hT : TrHyp F Qm Qim c) (hT' : TrHyp F' Qm Qim c) {sc : ℝ
     {g gi H Hi H' H'i : Matrix (Fin n) (Fin n) ℂ} (hgi : g * gi = 1)
     (hH : Hᴴ * Formalism.REAL.Jm ε * H = Formalism.REAL.Jm ε) (hHi : H * Hi = 1) (hiH : Hi * H = 1)
     (hHe : ∀ a, H *ᵥ F.e a = F.e a) (hHf : ∀ a, H *ᵥ F.fd a = F.fd a) (hHz : H *ᵥ F.z = F.z)
-    (hH' : H'ᴴ * Formalism.REAL.Jm ε * H' = Formalism.REAL.Jm ε) (hH'i : H' * H'i = 1) (hiH' : H'i * H' = 1)
+    (hH' : H'ᴴ * Formalism.REAL.Jm ε * H' = Formalism.REAL.Jm ε) (hH'i : H' * H'i = 1)
     (hH'e : ∀ a, H' *ᵥ F'.e a = F'.e a) (hH'f : ∀ a, H' *ᵥ F'.fd a = F'.fd a) (hH'z : H' *ᵥ F'.z = F'.z)
     {i0 : Fin k}
     (hD : Formalism.L2.SG.RealObj.IsDFrame ε (famSc sc F.e F.z) (famSc sc F'.e F'.z) g gi F.wb F'.wb i0 i0

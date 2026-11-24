@@ -1134,7 +1134,7 @@ end LemTwo
 
 
 open LemTwo in
-theorem LemmaTwo_of (h1 : LemmaOne) (hL : LawSymm) : LemmaTwo := by
+theorem LemmaTwo_of (h1 : LemmaOne) : LemmaTwo := by
   open LemTwo in
   intro K _ _ _ _ p σ hU F hF H hH hd hd'
   obtain ⟨hp, -, hnp, -, -⟩ := id hU
@@ -1900,14 +1900,14 @@ theorem theorem_s_from_k_one : CyclicPowerClassOfExpEquiv := theorem_s_from_k_on
 
 theorem deIntegral : DeIntegral := DeIntegral_of _root_.Formalism.InvariantFactorPaths.G7.divided_derivative _root_.Formalism.InvariantFactorPaths.G7.formal_law_symmetric
 theorem lemmaOne : LemmaOne := LemmaOne_of deIntegral _root_.Formalism.InvariantFactorPaths.G7.formal_law_symmetric
-theorem lemmaTwo : LemmaTwo := LemmaTwo_of lemmaOne _root_.Formalism.InvariantFactorPaths.G7.formal_law_symmetric
+theorem lemmaTwo : LemmaTwo := LemmaTwo_of lemmaOne
 theorem lamModule : LamModule := LamModule_of _root_.Formalism.InvariantFactorPaths.G7.dwork_multivariable
 theorem zeroCondition : StepZero := StepZero_of lamModule simeqRules _root_.Formalism.InvariantFactorPaths.G7.formal_law_symmetric
 theorem firstDeriv : FirstDeriv := FirstDeriv_of _root_.Formalism.InvariantFactorPaths.G7.formal_law_symmetric
 theorem cobLin : CobLin := CobLin_of _root_.Formalism.InvariantFactorPaths.G7.formal_law_symmetric
 theorem stepI : StepI := StepI_of lemmaOne firstDeriv cobLin
 theorem stepII : StepII := StepII_of _root_.Formalism.InvariantFactorPaths.G7.dwork_multivariable _root_.Formalism.InvariantFactorPaths.G7.divided_derivative deIntegral _root_.Formalism.InvariantFactorPaths.G7.formal_law_symmetric
-theorem stepH : StepH := StepH_of lemmaTwo _root_.Formalism.InvariantFactorPaths.G7.swap_rules _root_.Formalism.InvariantFactorPaths.G7.formal_law_symmetric
+theorem stepH : StepH := StepH_of lemmaTwo _root_.Formalism.InvariantFactorPaths.G7.swap_rules
 theorem stepIV : StepIV := StepIV_of _root_.Formalism.InvariantFactorPaths.G7.dwork_multivariable
 theorem betaIsG : BetaIsG :=
   BetaIsG_of zeroCondition stepI stepII stepH _root_.Formalism.InvariantFactorPaths.G7.c_add_sigma_c_eq_zero stepIV _root_.Formalism.InvariantFactorPaths.G7.swap_rules simeqRules

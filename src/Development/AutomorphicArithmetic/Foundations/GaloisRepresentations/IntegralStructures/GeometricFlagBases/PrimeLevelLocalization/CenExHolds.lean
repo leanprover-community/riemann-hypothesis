@@ -476,7 +476,7 @@ private theorem stdU_map_le (g : GL (Fin n) κ) (j : ℕ)
   · rw [hg a b ha hb, zero_mul]
   · rw [hx b (not_lt.1 hb), mul_zero]
 
-private theorem map_stdU_iff (g : GL (Fin n) κ) (hj : j ≤ n) :
+private theorem map_stdU_iff (g : GL (Fin n) κ) :
     (stdU n j κ).map (g : Matrix (Fin n) (Fin n) κ).mulVecLin = stdU n j κ ↔
       ∀ a b : Fin n, j ≤ (a : ℕ) → (b : ℕ) < j → (g : Matrix (Fin n) (Fin n) κ) a b = 0 := by
   constructor
@@ -511,7 +511,7 @@ private def stabS (n j : ℕ) (κ : Type) [Field κ] (hj : j ≤ n) : Subgroup (
 private theorem mem_stabS (hj : j ≤ n) (g : GL (Fin n) κ) :
     g ∈ stabS n j κ hj ↔
       ∀ a b : Fin n, j ≤ (a : ℕ) → (b : ℕ) < j → (g : Matrix (Fin n) (Fin n) κ) a b = 0 := by
-  rw [← map_stdU_iff g hj]
+  rw [← map_stdU_iff g]
   letI := actGr (κ := κ) (n := n) j
   show g • x0 n j κ hj = x0 n j κ hj ↔ _
   exact ⟨fun h => congrArg Subtype.val h, fun h => Subtype.ext h⟩

@@ -32,10 +32,9 @@ variable {Ψ : Matrix (Fin n) (Fin n) ℂ → (T.V →L[ℂ] T.V)} {v₀ : T.V}
 
 theorem rreg_mem_Hlam (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) :
     ∀ g ∈ UJset ε, ∀ x ∈ Hlam ε Ψ v₀, rreg ε g x ∈ Hlam ε Ψ v₀ :=
-  ReciprocityTheory.ChartRestriction.DS.G2.closGen_stable hgap (ReciprocityTheory.ChartRestriction.DS.rreg_isURepOn ε)
+  ReciprocityTheory.ChartRestriction.DS.G2.closGen_stable (ReciprocityTheory.ChartRestriction.DS.rreg_isURepOn ε)
     (ReciprocityTheory.ChartRestriction.DS.isDerivedOn_smE (ReciprocityTheory.ChartRestriction.DS.rreg_isURepOn ε))
     (ReciprocityTheory.ChartRestriction.DS.datumV_isKIrrHW hP hv₀) (ReciprocityTheory.ChartRestriction.DS.datumV_casimir hP v₀)
-    (ReciprocityTheory.ChartRestriction.DS.datumV_kStable hP v₀)
 
 theorem sigLam_coe (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) {g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UJset ε) (x : Hlam ε Ψ v₀) :
     ((sigLam ε Ψ v₀ g x : Hlam ε Ψ v₀) : L2 ε) = rreg ε g x := by
@@ -107,7 +106,7 @@ theorem sigLam_irred (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ :
     rw [h, Submodule.map_subtype_top]
     rfl
 
-theorem Hlam_nontrivial (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) : Nontrivial (Hlam ε Ψ v₀) := by
+theorem Hlam_nontrivial (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) : Nontrivial (Hlam ε Ψ v₀) := by
   by_contra h
   rw [not_nontrivial_iff_subsingleton] at h
   apply ReciprocityTheory.ChartRestriction.DS.datumV_ne_bot hP hv₀
@@ -166,7 +165,7 @@ theorem sigLam_kType_bounds (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (
   have hint := ReciprocityTheory.ChartRestriction.DS.G2.subtype_sigLam hgap hP hv₀
   rw [ReciprocityTheory.ChartRestriction.DS.isKTypeOf_map_iff (Hlam ε Ψ v₀).subtype hinj hint] at hS
   have hle := ReciprocityTheory.ChartRestriction.DS.map_subtype_le_closGen S
-  exact ⟨ReciprocityTheory.ChartRestriction.DS.G2.data_vogan hgap hσ hD hV hc hVK _ hle hS,
-    fun h hh hbig hμ => ReciprocityTheory.ChartRestriction.DS.G2.data_casValK_gap hgap hσ hD hV hc hVK hh hbig _ hle hS hμ⟩
+  exact ⟨ReciprocityTheory.ChartRestriction.DS.G2.data_vogan hgap hσ hD hV hc _ hle hS,
+    fun h hh hbig hμ => ReciprocityTheory.ChartRestriction.DS.G2.data_casValK_gap hgap hσ hD hV hc hh hbig _ hle hS hμ⟩
 
 end ReciprocityTheory.ChartRestriction.DS.G2

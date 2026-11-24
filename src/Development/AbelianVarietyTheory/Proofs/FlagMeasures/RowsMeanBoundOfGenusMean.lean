@@ -924,7 +924,7 @@ private theorem full_of_unimodular {K V : Type} [Field K] [NumberField K] [StarR
     (isField_of_isIntegral_of_isField (IsFractionRing.injective (𝓞 K) K) (Field.toIsField K))
 
 
-theorem mem_genus_of_isUnimodular : ∀ (D : D7) (large₂ : SizeData₂ D), GlobalTheory.TypeAsm.Std D large₂ → ∀ (X : HidaSetting D) (u : D.what₂.Word) (Λ : Submodule (𝓞 D.host.E) (VS D).V), Submodule.IsLattice D.host.E Λ → Formalism.HermitianLatticesTheory.IsUnimodular (VS D).hT Λ → Λ ∈ Formalism.HermitianLatticesTheory.genus (VS D).hT (VS D).L0 := by
+theorem mem_genus_of_isUnimodular : ∀ (D : D7) (large₂ : SizeData₂ D), GlobalTheory.TypeAsm.Std D large₂ → ∀ (_ : HidaSetting D) (_ : D.what₂.Word) (Λ : Submodule (𝓞 D.host.E) (VS D).V), Submodule.IsLattice D.host.E Λ → Formalism.HermitianLatticesTheory.IsUnimodular (VS D).hT Λ → Λ ∈ Formalism.HermitianLatticesTheory.genus (VS D).hT (VS D).L0 := by
   intro D large₂ hS _ _ Λ hΛ hU
   have hCM : Formalism.HermitianLatticesTheory.IsCMUnram D.host.E := (GlobalTheory.TypeAsm.hostC D large₂ hS).1
 
@@ -1452,7 +1452,7 @@ theorem sameGenus_refl (h : V →ₗ⋆[K] V →ₗ[K] K) (L : Submodule (𝓞 K
   fun _ _ => ⟨1, one_mem _, genusBasic_gmap_one _⟩
 
 theorem genus_eq_iff (h : V →ₗ⋆[K] V →ₗ[K] K) {L M : Submodule (𝓞 K) V}
-    (hL : Submodule.IsFullLattice K L) (hM : Submodule.IsFullLattice K M) :
+    (hL : Submodule.IsFullLattice K L) :
     genus h L = genus h M ↔ L ∈ genus h M := by
   constructor
   · intro e; rw [← e]; exact ⟨hL, sameGenus_refl h L⟩
@@ -1492,8 +1492,8 @@ def stabEquiv (h : V →ₗ⋆[K] V →ₗ[K] K) (M : Submodule (𝓞 K) V) :
     MulAction.stabilizer (isom h) M ≃ Formalism.ThetaLiftIndependence.autL h M where
   toFun g := ⟨g.1.1, g.1.2, g.2⟩
   invFun a := ⟨⟨a.1, a.2.1⟩, a.2.2⟩
-  left_inv g := rfl
-  right_inv a := rfl
+  left_inv _ := rfl
+  right_inv _ := rfl
 
 theorem mass_le_orbMass (h : V →ₗ⋆[K] V →ₗ[K] K) (L : Submodule (𝓞 K) V) :
     ENNReal.ofReal (mass h L) ≤ orbMass (isom h) (genus h L) := by
@@ -1578,7 +1578,7 @@ theorem rowsMean : RowsMeanC := by
   rw [ENNReal.ofReal_sum_of_nonneg fun Λ _ => hw Λ]
   refine GlobalTheory.RowsMean.sum_le_of_classes (Y.what₂ u) (fun Λ => GlobalTheory.DegAsm.lat0 (F0 X u) W.subtype Λ)
     (Formalism.HermitianLatticesTheory.genus HW.B.flip) (Submodule.IsFullLattice D.host.E) (fun Λ hΛ => (hLat Λ hΛ).1.1)
-    (fun a b ha hb => GlobalTheory.RowsMean.genus_eq_iff _ ha hb) _ _ _ ?_
+    (fun a b ha hb => GlobalTheory.RowsMean.genus_eq_iff _ ha) _ _ _ ?_
   intro Λ₀ hΛ₀
   have h1 := hOrb φ hφ Λ₀ hΛ₀
   have h2 := hOrb (fun _ => 1) (fun _ _ => rfl) Λ₀ hΛ₀

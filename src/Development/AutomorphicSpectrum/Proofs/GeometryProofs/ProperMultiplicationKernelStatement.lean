@@ -963,7 +963,7 @@ theorem exists_hopf {k : Type} [Field k] {G : Over (Sp k)} [GrpObj G] [IsCommMon
         (includeRight : A ⊗[k] A →ₐ[k] A ⊗[k] (A ⊗[k] A)).comp Δ := by ext x; simp
       rw [← AlgHom.comp_assoc, mul, mul, e₁, e₂, mul, mul, _root_.mul_assoc]
       exact congrArg₂ (· * ·) (cg (by ext x; simp [a, Algebra.TensorProduct.one_def])) (congrArg₂ (· * ·)
-        (cg (by ext x; simp [a, Algebra.TensorProduct.one_def])) (cg (by ext x; simp [a, Algebra.TensorProduct.one_def])))))
+        (cg (by ext x; simp [a])) (cg (by ext x; simp [Algebra.TensorProduct.one_def])))))
     (pt_inj h₁ h₂ (by
       have e₁ : (Algebra.TensorProduct.map ε (.id k A)).comp includeLeft =
         (includeLeft : k →ₐ[k] k ⊗[k] A).comp ε := by ext x; simp

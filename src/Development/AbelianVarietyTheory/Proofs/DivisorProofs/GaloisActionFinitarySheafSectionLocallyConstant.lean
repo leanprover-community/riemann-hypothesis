@@ -87,7 +87,7 @@ theorem incl_comp_subtype {s t : Finset Ω} (h : s ≤ t) :
 
 def diag : Finset Ω ⥤ CommRingCat.{0} where
   obj s := CommRingCat.of (sr Ω s)
-  map {s t} h := incl Ω h.le
+  map {_ _} h := incl Ω h.le
   map_id s := incl_id Ω s
   map_comp f g := incl_comp Ω f.le g.le
 

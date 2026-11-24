@@ -157,7 +157,7 @@ theorem theoremS_transport_link_zero (𝒞 : FamClass) (sel : SSel 𝒞)
   have hFX := Formalism.L2.SG.Pf.finXC_of hWu hRF
   have hOK := selOK_of C0 hFX hWu sel hLoc hTF
   have hE : Closed 𝒞 fun Fm _ => ConcEv C0 Fm :=
-    closed_with hOK (fun _ => 0) (fun _ => 0) fun Fm _ hc h _ _ _ => concEv_of_sel C0 (h hc)
+    closed_with hOK (fun _ => 0) (fun _ => 0) fun _ _ hc h _ _ _ => concEv_of_sel C0 (h hc)
   have hRows : Closed 𝒞 fun Fm _ => ∃ xR : ℝ, ∀ x ≥ xR, Fm.x1 < x → ∀ i : Fm.Ix x, ∃ X : RowsAut,
       CountE.RowsTieP PLevT' (Fm.D x i) X :=
     closed_of_th (fun _ => 0) (fun _ => 0) fun Fm _ hc _ _ _ =>

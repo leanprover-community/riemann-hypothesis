@@ -701,7 +701,7 @@ private theorem projectionToBase_mem_orderAtLeastLocus {T : MarkedIdealWithBound
       refine ih (Nat.le_of_succ_le hi) _ ?_
       exact blowupMorphism_mem_orderAtLeastLocus s hV.one_le_mult
         (fun j hj => MarkedSequenceOfBlowups.smooth_projectionToSpec effectiveCartierSupportContainsNoComponent hV s j hj)
-        (fun j hj => MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hV s j hj)
+        (fun j hj => MarkedSequenceOfBlowups.isNoetherian_schemeAt hV s j hj)
         i (Nat.lt_of_succ_le hi) z hz
 
 theorem center_disjoint_range_of_preimage_orderAtLeastLocus_eq_empty
@@ -736,12 +736,10 @@ theorem isPullbackSequenceOfBlowups_of_preimage_orderAtLeastLocus_empty
 theorem divisorFamily_isPullbackSequenceOfBlowups_of_orderAtLeastLocus_empty
     (hres : FunctorialResolution.Blowup.StrictTransformIsBlowupOfClosedSubscheme.{u})
     (L : PrincipalizationAssignment.{u}) (j : ℕ) (T : MarkedIdealWithBoundary.{u})
-    (hV : T.IsAdmissible) (_hj : j < T.boundary.length)
+    (hV : T.IsAdmissible)
     (Y : Scheme.{u}) (q : Y ⟶ Spec (CommRingCat.of T.base)) (h : Y ⟶ T.scheme)
     [AlgebraicGeometry.Smooth h]
-    (_hq : h ≫ T.structMap = q) (E' : List Y.IdealSheafData)
-    (_hV' : ((T.pullbackAlong Y q h).withBoundary E').IsAdmissible)
-    (_hne : (orderAtLeastLocus T.ideal T.mult).Nonempty)
+    (E' : List Y.IdealSheafData)
     (hempty : orderAtLeastLocus ((T.pullbackAlong Y q h).withBoundary E').ideal T.mult = ∅)
     (B' : SequenceOfBlowups Y) (hB' : B'.length = 0) :
     IsPullbackBlowupSequence h B' ((canonicalAlgorithmRules hres).divisorFamily L j T).toSequenceOfBlowups := by
@@ -893,10 +891,6 @@ theorem lowerIdealAfterBlowup_pullbackAlong_of_smooth
   exact key
 
 theorem lowerBoundaryAfterBlowup_sameNontrivialBoundary_of_smooth
-    (_htwist : ∀ (T : MarkedIdealWithBoundary.{u}), T.IsAdmissible →
-      (∀ x : ↥T.scheme, orderAt T.ideal x ≤ (T.mult : ℕ∞)) →
-      ∀ (j : ℕ) (hj : j < T.boundary.length),
-        ∃ B : T.scheme.IdealSheafData, B * containedComponentsIdeal T j hj ^ T.mult = T.ideal)
     (hblow : ∀ (T : MarkedIdealWithBoundary.{u}), T.IsAdmissible →
       ∀ (j : ℕ) (hj : j < T.boundary.length), Blowup.IsBlowupAlongIdealSheaf (𝟙 T.scheme) (containedComponentsIdeal T j hj)) :
     ∀ (T : MarkedIdealWithBoundary.{u}), T.IsAdmissible →
@@ -930,8 +924,6 @@ theorem comap_lowerIdealAfterBlowup_eq_comap_lowerIdealWithoutBlowup
       (∀ x : ↥T.scheme, orderAt T.ideal x ≤ (T.mult : ℕ∞)) →
       ∀ (j : ℕ) (hj : j < T.boundary.length),
         ∃ B : T.scheme.IdealSheafData, B * containedComponentsIdeal T j hj ^ T.mult = T.ideal)
-    (_hblow : ∀ (T : MarkedIdealWithBoundary.{u}), T.IsAdmissible →
-      ∀ (j : ℕ) (hj : j < T.boundary.length), Blowup.IsBlowupAlongIdealSheaf (𝟙 T.scheme) (containedComponentsIdeal T j hj))
     (T : MarkedIdealWithBoundary.{u}) (hV : T.IsAdmissible)
     (hO : ∀ x : ↥T.scheme, orderAt T.ideal x ≤ (T.mult : ℕ∞))
     (j : ℕ) (hj : j < T.boundary.length) (Y : Scheme.{u}) (h : Y ⟶ T.scheme)
@@ -950,12 +942,6 @@ theorem comap_lowerIdealAfterBlowup_eq_comap_lowerIdealWithoutBlowup
   exact hup
 
 theorem comap_lowerBoundaryAfterBlowup_sameNontrivialBoundary_of_eq_top
-    (_htwist : ∀ (T : MarkedIdealWithBoundary.{u}), T.IsAdmissible →
-      (∀ x : ↥T.scheme, orderAt T.ideal x ≤ (T.mult : ℕ∞)) →
-      ∀ (j : ℕ) (hj : j < T.boundary.length),
-        ∃ B : T.scheme.IdealSheafData, B * containedComponentsIdeal T j hj ^ T.mult = T.ideal)
-    (_hblow : ∀ (T : MarkedIdealWithBoundary.{u}), T.IsAdmissible →
-      ∀ (j : ℕ) (hj : j < T.boundary.length), Blowup.IsBlowupAlongIdealSheaf (𝟙 T.scheme) (containedComponentsIdeal T j hj))
     (T : MarkedIdealWithBoundary.{u}) (hV : T.IsAdmissible)
     (j : ℕ) (hj : j < T.boundary.length) (Y : Scheme.{u}) (h : Y ⟶ T.scheme)
     (htop : (containedComponentsIdeal T j hj).comap h = ⊤) :
@@ -1143,7 +1129,7 @@ private theorem exists_mul_containedComponentsIdeal_pow_eq_ideal_of_orderAt_le :
 private theorem orderAtComapOffExceptionalLocus : OrderAtComapOffExceptionalLocus.{u} := by
   delta OrderAtComapOffExceptionalLocus
   exact fun T hT X' π Z hπ x' hx' A =>
-    orderAt_comap_eq_of_notMem_exceptionalIdeal T hT Z X' π hπ x' hx' A
+    orderAt_comap_eq_of_notMem_exceptionalIdeal T Z X' π hπ x' hx' A
 
 private theorem smoothPullbackCompatibility_of_divisorReductionTermination (hres : FunctorialResolution.Blowup.StrictTransformIsBlowupOfClosedSubscheme.{u})
     (hfacts : DivisorReductionTerminationProperties hres blowupPreservesNoetherian) :
@@ -1151,11 +1137,11 @@ private theorem smoothPullbackCompatibility_of_divisorReductionTermination (hres
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · exact comap_ne_top_of_surjective
   · intro T hV Y q h inst hq m
-    exact DivisorReduction.orderAtLeastLocus_comap_of_smooth T hV Y q h hq m
+    exact DivisorReduction.orderAtLeastLocus_comap_of_smooth T hV Y q h m
   · exact DivisorReduction.isPullback_subschemeMapOfComap
   · exact DivisorReduction.smooth_of_isPullback
   · exact DivisorReduction.lowerIdealAfterBlowup_pullbackAlong_of_smooth exists_mul_containedComponentsIdeal_pow_eq_ideal_of_orderAt_le isBlowupAlongIdealSheaf_id_containedComponentsIdeal
-  · exact DivisorReduction.lowerBoundaryAfterBlowup_sameNontrivialBoundary_of_smooth exists_mul_containedComponentsIdeal_pow_eq_ideal_of_orderAt_le
+  · exact DivisorReduction.lowerBoundaryAfterBlowup_sameNontrivialBoundary_of_smooth
       isBlowupAlongIdealSheaf_id_containedComponentsIdeal
   · exact DivisorReduction.containedComponentsIdeal_pullbackAlong_of_smooth hfacts
 
@@ -1163,10 +1149,10 @@ private theorem emptyPulledBackCenterCompatibility : DivisorReduction.EmptyPulle
   refine ⟨?_, ?_⟩
   · intro T hV hO j hj Y h htop
     exact DivisorReduction.comap_lowerIdealAfterBlowup_eq_comap_lowerIdealWithoutBlowup exists_mul_containedComponentsIdeal_pow_eq_ideal_of_orderAt_le
-      isBlowupAlongIdealSheaf_id_containedComponentsIdeal T hV hO j hj Y h htop
+      T hV hO j hj Y h htop
   · intro T hV j hj Y h htop
-    exact DivisorReduction.comap_lowerBoundaryAfterBlowup_sameNontrivialBoundary_of_eq_top exists_mul_containedComponentsIdeal_pow_eq_ideal_of_orderAt_le
-      isBlowupAlongIdealSheaf_id_containedComponentsIdeal T hV j hj Y h htop
+    exact DivisorReduction.comap_lowerBoundaryAfterBlowup_sameNontrivialBoundary_of_eq_top
+      T hV j hj Y h htop
 
 private theorem pushedBlowupSequenceProperties_canonicalAlgorithmRules (hres : FunctorialResolution.Blowup.StrictTransformIsBlowupOfClosedSubscheme.{u}) :
     PushedBlowupSequenceProperties hres blowupPreservesNoetherian := by
@@ -1194,7 +1180,7 @@ private theorem pushedBlowupSequenceProperties_canonicalAlgorithmRules (hres : F
       hOB hbal j hj hpre hlow s hpr hmk t ht
   · intro T hV hOB hbal j hj hne hb hlow inst s hpr hmk t ht
     exact DivisorReduction.isSmoothDivisor_ker_embeddingIntoAmbient hres blowupPreservesNoetherian
-      orderAtComapOffExceptionalLocus T hV hOB j hj hb hlow s hpr hmk
+      T hV hOB j hj hb hlow s hpr hmk
       (fun t _ => DivisorReduction.embeddingIntoAmbient_comp_projectionToBase_eq_comp_subschemeι hres
         blowupPreservesNoetherian T j hj (DivisorReduction.lowerIdealAfterBlowup T j hj)
         (DivisorReduction.lowerBoundaryAfterBlowup T j hj) s hpr t) t ht
@@ -1224,8 +1210,8 @@ theorem divisorReductionHypotheses_canonicalAlgorithmRules (hres : FunctorialRes
       divisorReduction := hstepProps
       pushedBlowupSequenceProperties := pushedBlowupSequenceProperties_canonicalAlgorithmRules hres }
   intro L j T hV hj Y q h inst hq E' hV' hne hempty B' hB'
-  exact DivisorReductionEmptyOrderLocus.divisorFamily_isPullbackSequenceOfBlowups_of_orderAtLeastLocus_empty hres L j T hV hj Y q h hq E' hV'
-    hne hempty B' hB'
+  exact DivisorReductionEmptyOrderLocus.divisorFamily_isPullbackSequenceOfBlowups_of_orderAtLeastLocus_empty hres L j T hV Y q h E'
+    hempty B' hB'
 
 end FunctorialResolution.EmbeddedResolution
 end -- clump:auto

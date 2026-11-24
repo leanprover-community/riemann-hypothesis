@@ -176,7 +176,7 @@ theorem graft : Graft := by
   obtain ⟨f₂, hf₂, hi₂, he₂⟩ := h₂
   rw [node_space, node_space]
   exact emb_ind (isStable_tw hs₁ _) (isStable_tw hs₂ _) (twMap_mem hf₁) (twMap_mem hf₂) (twMap_ne hi₁)
-    (twMap_ne hi₂) (twMap_equiv hs₁ he₁) (twMap_equiv hs₂ he₂)
+    (twMap_ne hi₂) (twMap_equiv he₁) (twMap_equiv he₂)
 
 end PositivityTheory.Rg.BcB.SpectralAccumulation.Trees
 

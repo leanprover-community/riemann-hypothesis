@@ -207,7 +207,7 @@ theorem isoExpl (H : Matrix (Fin n) (Fin n) ℂ) (m : ι → Fin n → ℂ) (hH 
       simp_rw [mulVec_smul]
     rw [h1]
     have h2 := lincomb_bound (coef H Γi m x) (fun i => s *ᵥ m i) (A * (eN x * R0)) (Real.sqrt K)
-      (Real.sqrt_nonneg _) (fun i => hA ▸ coef_bound H hH hHH Γi m R0 hmR0 x i) hsmR
+      (fun i => hA ▸ coef_bound H hH hHH Γi m R0 hmR0 x i) hsmR
     rw [← hN] at h2
     calc _ ≤ N * (A * (eN x * R0)) * Real.sqrt K := h2
       _ = N * A * R0 * Real.sqrt K * eN x := by ring
@@ -314,7 +314,7 @@ theorem fix_of_S (z : Fin (2 * r + k + 1) → ℂ) (hz : C2.StdZ k r z) {s : B.M
   rw [((unipotent_map_frame k r z hz).1 s hs).1 b, hu]
   simp [Matrix.one_apply]
 
-theorem uw_fix (z : Fin (2 * r + k + 1) → ℂ) (hz : C2.StdZ k r z) {h : B.Mat k r} (hh : h ∈ UWset k r z)
+theorem uw_fix (z : Fin (2 * r + k + 1) → ℂ) {h : B.Mat k r} (hh : h ∈ UWset k r z)
     (b : Fin (r + 1)) : h *ᵥ fvec k r z b = fvec k r z b := by
   obtain ⟨-, h1, h2⟩ := hh
   unfold fvec
@@ -451,10 +451,10 @@ theorem fibreProper (z z' : Fin (2 * r + k + 1) → ℂ) (hstd : C2.Std k r z z'
     rw [htdef]
     exact GN.mul_mem (GN.inv_mem hhG) (GN.inv_mem hnG)
   have htf : ∀ a, t *ᵥ fvec k r z a = fvec k r z a := fun a => by
-    rw [htdef, ← mulVec_mulVec, inv_fix hnG (flagStabilizer_fixes_frame z hz hn a), inv_fix hhG (uw_fix z hz hh a)]
+    rw [htdef, ← mulVec_mulVec, inv_fix hnG (flagStabilizer_fixes_frame z hz hn a), inv_fix hhG (uw_fix z hh a)]
   have hty : ∀ b, t *ᵥ (g *ᵥ fvec k r z' b) = y *ᵥ fvec k r z' b := fun b => by
     rw [hydef, htdef]
-    conv_rhs => rw [← mulVec_mulVec, uw_fix z' hz' hh' b, ← mulVec_mulVec, flagStabilizer_fixes_frame z' hz' hn' b]
+    conv_rhs => rw [← mulVec_mulVec, uw_fix z' hh' b, ← mulVec_mulVec, flagStabilizer_fixes_frame z' hz' hn' b]
     rw [mulVec_mulVec]
   have ht := hC1 g hg t htG K hK0 (fun i => by
     rcases i with a | b
@@ -474,14 +474,14 @@ theorem fibreProper (z z' : Fin (2 * r + k + 1) → ℂ) (hstd : C2.Std k r z z'
     rw [ht'def]
     exact GN.mul_mem (GN.inv_mem hh'G) (GN.inv_mem hn'G)
   have ht'f : ∀ b, t' *ᵥ fvec k r z' b = fvec k r z' b := fun b => by
-    rw [ht'def, ← mulVec_mulVec, inv_fix hn'G (flagStabilizer_fixes_frame z' hz' hn' b), inv_fix hh'G (uw_fix z' hz' hh' b)]
+    rw [ht'def, ← mulVec_mulVec, inv_fix hn'G (flagStabilizer_fixes_frame z' hz' hn' b), inv_fix hh'G (uw_fix z' hh' b)]
   have hyinv : y⁻¹ = h'⁻¹ * n'⁻¹ * g⁻¹ * n * h := by
     rw [hydef]
     simp only [Matrix.mul_inv_rev, Matrix.nonsing_inv_nonsing_inv _ (GN.det_isUnit hnG),
       Matrix.nonsing_inv_nonsing_inv _ (GN.det_isUnit hhG), Matrix.mul_assoc]
   have ht'y : ∀ a, t' *ᵥ (g⁻¹ *ᵥ fvec k r z a) = y⁻¹ *ᵥ fvec k r z a := fun a => by
     rw [hyinv, ht'def]
-    conv_rhs => rw [← mulVec_mulVec, uw_fix z hz hh a, ← mulVec_mulVec, flagStabilizer_fixes_frame z hz hn a]
+    conv_rhs => rw [← mulVec_mulVec, uw_fix z hh a, ← mulVec_mulVec, flagStabilizer_fixes_frame z hz hn a]
     rw [mulVec_mulVec]
   have ht' := hC2 g hg t' ht'G K hK0 (fun i => by
     rcases i with a | b

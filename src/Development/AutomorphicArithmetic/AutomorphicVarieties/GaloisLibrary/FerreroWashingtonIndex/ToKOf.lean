@@ -205,7 +205,7 @@ theorem UpperTheory.V.FW.phiDvd :
     simp [hψ, tw_single, hπ]
   have hψT : ψ T ^ l ^ K = 0 := by
     rw [← map_pow, hT, phiDvd_pow l K k, map_sub, map_pow, map_one]
-    simp [hψ, MonoidAlgebra.of_apply, MonoidAlgebra.single_pow, ← map_pow, hπγ, MonoidAlgebra.one_def]
+    simp [hψ, MonoidAlgebra.of_apply, MonoidAlgebra.single_pow, hπγ, MonoidAlgebra.one_def]
   obtain ⟨c, hc⟩ := hdvd
   have h1 : tw χ π θ = ψ (tw χ p θ) := by rw [← hcomp]; rfl
   rw [h1, hc, map_mul, map_pow, hψT, zero_mul]

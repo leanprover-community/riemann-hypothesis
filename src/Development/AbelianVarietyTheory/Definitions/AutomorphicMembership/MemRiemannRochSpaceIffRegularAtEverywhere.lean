@@ -351,7 +351,7 @@ abbrev Fn : Type := Y.X.functionField
 instance algebraFn : Algebra F Y.Fn := (Cartier.constFn Y.str).toAlgebra
 
 instance isScalarTower_Fn : IsScalarTower F Γ(Y.X, ⊤) Y.Fn :=
-  .of_algebraMap_eq fun a => congrArg (fnOf ⊤ trivial) (LB.resG_self (X := Y.X) le_top _)
+  .of_algebraMap_eq fun _ => congrArg (fnOf ⊤ trivial) (LB.resG_self (X := Y.X) le_top _)
 
 theorem regAt_algebraMap (x : Y.X) (a : F) : RegAt x (algebraMap F Y.Fn a) :=
   regAt_fnOf (U := ⊤) trivial trivial _

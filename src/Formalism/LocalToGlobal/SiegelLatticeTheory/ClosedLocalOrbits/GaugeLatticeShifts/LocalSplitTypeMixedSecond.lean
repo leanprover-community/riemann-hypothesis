@@ -695,7 +695,7 @@ def Amat (Λ : Submodule (𝓞 D.host.E) (VS D).V) {T T' : D.host.E} (F : LFlag 
   ZhatL F F' * ((admXi D Λ F F')⁻¹).map (algebraMap (𝓞 D.host.E) D.host.E)
 
 theorem local_split_type_zero_first (Z : LocDat D) (Λ : Submodule (𝓞 D.host.E) (VS D).V) {T T' : D.host.E}
-    (F : LFlag (D.sp.Y 0) D.R.rS T) (F' : LFlag (D.sp.Y 0) D.R.rS T') (Tn T'n : ℕ) (w : Point D.host.E (D.R.rS + 1)) (p : PlF D)
+    (F : LFlag (D.sp.Y 0) D.R.rS T) (F' : LFlag (D.sp.Y 0) D.R.rS T') (Tn T'n : ℕ) (p : PlF D)
     (sg : Loc.SplitAt (D.s.atP p).Fp (D.s.atP p).Ep (D.s.atP p).cj (Loc.resChar p))
     (hR : (D.s.atP p).split = some sg) (g : Loc.SplitG (Z.M p).L) (hM : (Z.M p).split = some g)
     (hge : g.e = sg.e) (hgq : g.q = sg.q) :
@@ -726,7 +726,7 @@ theorem local_split_type_zero_first (Z : LocDat D) (Λ : Submodule (𝓞 D.host.
   split_ifs <;> ring
 
 theorem local_split_type_zero_second (Z : LocDat D) (Λ : Submodule (𝓞 D.host.E) (VS D).V) {T T' : D.host.E}
-    (F : LFlag (D.sp.Y 0) D.R.rS T) (F' : LFlag (D.sp.Y 0) D.R.rS T') (Tn T'n : ℕ) (w : Point D.host.E (D.R.rS + 1)) (p : PlF D)
+    (F : LFlag (D.sp.Y 0) D.R.rS T) (F' : LFlag (D.sp.Y 0) D.R.rS T') (Tn T'n : ℕ) (p : PlF D)
     (sg : Loc.SplitAt (D.s.atP p).Fp (D.s.atP p).Ep (D.s.atP p).cj (Loc.resChar p))
     (hR : (D.s.atP p).split = some sg) (g : Loc.SplitG (Z.M p).L) (hM : (Z.M p).split = some g)
     (hge : g.e = sg.e) (hgq : g.q = sg.q) :
@@ -761,8 +761,8 @@ theorem local_split_type_zero_second (Z : LocDat D) (Λ : Submodule (𝓞 D.host
 theorem local_split_type_mixed_first (Z : LocDat D) (Λ : Submodule (𝓞 D.host.E) (VS D).V) {T T' : D.host.E}
     (F : LFlag (D.sp.Y 0) D.R.rS T) (F' : LFlag (D.sp.Y 0) D.R.rS T') (Tn T'n : ℕ) (w : Point D.host.E (D.R.rS + 1)) (p : PlF D)
     (sg : Loc.SplitAt (D.s.atP p).Fp (D.s.atP p).Ep (D.s.atP p).cj (Loc.resChar p))
-    (hR : (D.s.atP p).split = some sg) (g : Loc.SplitG (Z.M p).L) (hM : (Z.M p).split = some g)
-    (hge : g.e = sg.e) (hgq : g.q = sg.q) :
+    (hR : (D.s.atP p).split = some sg) (g : Loc.SplitG (Z.M p).L)
+    :
     (modMat Z.δ Tn T'n p w).map (p1 sg.e) =
       (sg.q : (D.s.atP p).Fp)⁻¹ • (Matrix.diagonal (cf Z p) * (ptMat w).map ((p1 sg.e).comp (D.s.atP p).ιE) * Matrix.diagonal (cf Z p)) -
         (if sgF w (Fin.last D.R.rS) = Fin.last D.R.rS then -(Tn : (D.s.atP p).Fp) / (sg.q : (D.s.atP p).Fp) else 0) •
@@ -816,8 +816,8 @@ theorem local_split_type_mixed_first (Z : LocDat D) (Λ : Submodule (𝓞 D.host
 theorem local_split_type_mixed_second (Z : LocDat D) (Λ : Submodule (𝓞 D.host.E) (VS D).V) {T T' : D.host.E}
     (F : LFlag (D.sp.Y 0) D.R.rS T) (F' : LFlag (D.sp.Y 0) D.R.rS T') (Tn T'n : ℕ) (w : Point D.host.E (D.R.rS + 1)) (p : PlF D)
     (sg : Loc.SplitAt (D.s.atP p).Fp (D.s.atP p).Ep (D.s.atP p).cj (Loc.resChar p))
-    (hR : (D.s.atP p).split = some sg) (g : Loc.SplitG (Z.M p).L) (hM : (Z.M p).split = some g)
-    (hge : g.e = sg.e) (hgq : g.q = sg.q) :
+    (hR : (D.s.atP p).split = some sg) (g : Loc.SplitG (Z.M p).L)
+    :
     (modMat Z.δ Tn T'n p w).map (p2 sg.e) =
       (-(sg.q : (D.s.atP p).Fp)⁻¹) • (Matrix.diagonal (cf Z p) * (Sg (D.s.atP p).Fp D.R.rS * (ptMat w).map ((p2 sg.e).comp (D.s.atP p).ιE) *
         Sg (D.s.atP p).Fp D.R.rS) * Matrix.diagonal (cf Z p)) -
@@ -921,10 +921,10 @@ theorem atPt_typed (Z : LocDat D) (Λ : Submodule (𝓞 D.host.E) (VS D).V) {T T
     rw [hA', Matrix.map_mul, Matrix.map_mul, Matrix.map_mul, sg_map]
     exact fact2 _ _ _ _ (sg_sq _) (Matrix.diagonal_transpose _) (by rw [← Matrix.transpose_map, ptMat_transpose])
   refine goal_of (isLo_glue sg.e hL1 hL2) (isUp_glue sg.e hU1 hU2) (mat_eq sg.e ?_ ?_)
-  · rw [Matrix.map_mul, Matrix.map_mul, glue_map_fst, glue_map_fst, local_split_type_zero_first Z Λ F F' Tn T'n w p sg hR g hM hge hgq, hf',
-      Matrix.map_mul, Matrix.map_mul, h1, local_split_type_mixed_first Z Λ F F' Tn T'n w p sg hR g hM hge hgq]
-  · rw [Matrix.map_mul, Matrix.map_mul, glue_map_snd, glue_map_snd, local_split_type_zero_second Z Λ F F' Tn T'n w p sg hR g hM hge hgq, e2, h2,
-      local_split_type_mixed_second Z Λ F F' Tn T'n w p sg hR g hM hge hgq]
+  · rw [Matrix.map_mul, Matrix.map_mul, glue_map_fst, glue_map_fst, local_split_type_zero_first Z Λ F F' Tn T'n p sg hR g hM hge hgq, hf',
+      Matrix.map_mul, Matrix.map_mul, h1, local_split_type_mixed_first Z Λ F F' Tn T'n w p sg hR g]
+  · rw [Matrix.map_mul, Matrix.map_mul, glue_map_snd, glue_map_snd, local_split_type_zero_second Z Λ F F' Tn T'n p sg hR g hM hge hgq, e2, h2,
+      local_split_type_mixed_second Z Λ F F' Tn T'n w p sg hR g]
 
 end Formalism.L2.SG.Pf.AtPt
 

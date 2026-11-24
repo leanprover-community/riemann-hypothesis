@@ -101,7 +101,7 @@ theorem infPart_smul (u : AF D.host.F) (a : AE D) :
 
 
 theorem realAd_smul_eq {θ : InfFam D} (hθ : IsInfFam θ) {S T : HSp D} {w : WO S T}
-    (hw : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.At (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.evI D.host.F) w) (t : ℝ) :
+    (t : ℝ) :
     GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.realAd D.host.F t • w = ∑ τ, lineAt θ τ (compAt θ τ w) t := by
   classical
   have hL : ∀ τ, IsLineAt θ τ (compAt θ τ w) (lineAt θ τ (compAt θ τ w)) := fun τ =>
@@ -213,7 +213,7 @@ theorem hasDerivAt_realAd_smul : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (
       G ∘ (fun t : ℝ => fun _ : D.what₂.Tau => t) := by
     funext t
     simp only [Function.comp, G, hΛ]
-    rw [realAd_smul_eq hθ hw t]
+    rw [realAd_smul_eq hθ t]
   have hdiag : HasDerivAt (fun t : ℝ => (fun _ : D.what₂.Tau => t)) (fun _ => (1 : ℝ)) 0 :=
     hasDerivAt_pi.2 fun _ => hasDerivAt_id 0
   have hG0 : HasFDerivAt G (fderiv ℝ G 0) ((fun t : ℝ => fun _ : D.what₂.Tau => t) 0) := (hGd 0).hasFDerivAt
@@ -234,7 +234,7 @@ theorem hasDerivAt_realAd_smul : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (
       fun t => heisO ψ S T (lineAt θ τ (compAt θ τ w) t) f x := by
     funext t
     simp only [Function.comp, G, hΛ]
-    rw [Finset.sum_eq_single τ (fun b _ hb => by simp [Pi.single_apply, hb]) (by simp)]
+    rw [Finset.sum_eq_single τ (fun b _ hb => by simp [hb]) (by simp)]
     simp
   rw [e] at h3
   exact h3.deriv.symm

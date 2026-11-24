@@ -189,7 +189,7 @@ open Finset in
 open scoped Pointwise in
 variable {F L : Type} [Field F] [Field L] [Algebra F L] in
 private lemma valuation_sum_lower_div_pow_eq_one_and_lt_one {L : Type} [Field L] (U U' : ValuationSubring L) (n k : ℕ)
-    (a : ℕ → L) (x : L) (hk : k ≤ n) (hxU : x ∈ U) (hxU' : x ∉ U') (ha : ∀ j, a j ∈ U)
+    (a : ℕ → L) (x : L) (hk : k ≤ n) (hxU : x ∈ U) (hxU' : x ∉ U')
     (ha' : ∀ j, a j ∈ U') (hbig : ∀ j, k < j → U.valuation (a j) < 1) (hak : a k = 1)
     (hrel : ∑ j ∈ Finset.range (n + 1), a j * x ^ j = 0) :
     U.valuation (∑ j ∈ Finset.range k, a j * x ^ j / x ^ k) = 1 ∧
@@ -277,7 +277,7 @@ private lemma mem_of_mem_of_inv_core_mem [FiniteDimensional F L] (W₁ W₂ U U'
   by_contra hx'
   obtain ⟨n, k, a, hk, ha, hbig, hak, hrel⟩ := exists_normalized_integral_relation (F := F) U x
   have hx0 : x ≠ 0 := fun h => hx' (h ▸ zero_mem U')
-  obtain ⟨h1, h2⟩ := valuation_sum_lower_div_pow_eq_one_and_lt_one U U' n k (fun j => algebraMap F L (a j)) x hk hx hx' ha
+  obtain ⟨h1, h2⟩ := valuation_sum_lower_div_pow_eq_one_and_lt_one U U' n k (fun j => algebraMap F L (a j)) x hk hx hx'
     (fun j => hUU' _ (ha j)) hbig (by simp [hak]) hrel
   set s := ∑ j ∈ Finset.range k, algebraMap F L (a j) * x ^ j / x ^ k with hs
   have hsS : s ∈ _root_.GlobalTheory.ValConj.core F W₁ W₂ := by

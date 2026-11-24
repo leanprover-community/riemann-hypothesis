@@ -803,9 +803,9 @@ theorem UpperTheory.HilbertEisensteinWeightOne.low_weight_holds : SPois → SInt
   apply Subtype.ext
   funext g
   show UpperTheory.V.TR.lieD (XA v) (Eis ω (Phi c)) g = Complex.I * UpperTheory.V.TR.lieD (XB v) (Eis ω (Phi c)) g
-  obtain ⟨iA, eA⟩ := UpperTheory.HilbertEisensteinWeightOne.lieD_Eis_eq_integral hP hI H g (XA v)
-  obtain ⟨iB, eB⟩ := UpperTheory.HilbertEisensteinWeightOne.lieD_Eis_eq_integral hP hI H g (XB v)
-  obtain ⟨-, eZ⟩ := UpperTheory.HilbertEisensteinWeightOne.lieD_Eis_eq_integral hP hI H (g * UpperTheory.V.TR.infGL F 2 (eps v)) (XZ v)
+  obtain ⟨iA, eA⟩ := UpperTheory.HilbertEisensteinWeightOne.lieD_Eis_eq_integral hP H g (XA v)
+  obtain ⟨iB, eB⟩ := UpperTheory.HilbertEisensteinWeightOne.lieD_Eis_eq_integral hP H g (XB v)
+  obtain ⟨-, eZ⟩ := UpperTheory.HilbertEisensteinWeightOne.lieD_Eis_eq_integral hP H (g * UpperTheory.V.TR.infGL F 2 (eps v)) (XZ v)
   have hZ0 := lieD_XZ_eq_zero hP hI hS H hs v (g * UpperTheory.V.TR.infGL F 2 (eps v))
   have hsum : ∀ h : GA F 2, Summable (fun ξ : {ξ : Fin 2 → F // ξ ≠ 0} =>
       Phi c (rowA ξ.1 ᵥ* (h : Matrix (Fin 2) (Fin 2) (Ad F)))) := fun h =>

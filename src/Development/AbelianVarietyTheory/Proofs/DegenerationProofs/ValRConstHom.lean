@@ -222,7 +222,7 @@ theorem crd_pullPow {L : LB X} {N : ℕ} (g : Y ⟶ X) (t : I → (lbPow L N).Se
   exact congrArg (fun r => (c : R) * r) (valR_appLE x g _ _ (pow_chart_le L N g l) hl ((t i).f fun _ => l 0))
 
 theorem exists_transport {L : LB X} {M : LB X'} (hL : L.IsLB) (hM : M.IsLB)
-    (g : Y ⟶ X) (gi : X ⟶ Y) (e₁ : gi ≫ g = 𝟙 X) (e₂ : g ≫ gi = 𝟙 Y) (p : Y ⟶ X')
+    (g : Y ⟶ X) (gi : X ⟶ Y) (p : Y ⟶ X')
     (H : LBIso (L.pull g) (M.pull p)) (k : ℕ) (t : I → (lbPow L k).Sec) :
     ∃ s : I → (LB.LinComb M (K := Fin 1) (fun _ => p) (fun _ => (k : ℤ))).Sec,
       ∀ (R : Type) [CommRing R] [IsLocalRing R] (x : Sp R ⟶ Y) (v : I → R), Crd _ s x v →

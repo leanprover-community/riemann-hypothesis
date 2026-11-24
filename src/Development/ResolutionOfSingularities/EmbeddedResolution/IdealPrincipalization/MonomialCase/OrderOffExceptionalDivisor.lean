@@ -52,7 +52,7 @@ open CategoryTheory AlgebraicGeometry TopologicalSpace
 namespace FunctorialResolution.EmbeddedResolution
 
 theorem orderAt_comap_eq_of_notMem_exceptionalIdeal
-    (T : MarkedIdealWithBoundary.{u}) (_hT : T.IsAdmissible) (Z : T.scheme.IdealSheafData)
+    (T : MarkedIdealWithBoundary.{u}) (Z : T.scheme.IdealSheafData)
     (X' : Scheme.{u}) (π : X' ⟶ T.scheme) (hπ : Blowup.IsBlowupAlongIdealSheaf π Z)
     (x' : X') (hx' : x' ∉ (Blowup.exceptionalIdeal π Z).support)
     (A : T.scheme.IdealSheafData) :

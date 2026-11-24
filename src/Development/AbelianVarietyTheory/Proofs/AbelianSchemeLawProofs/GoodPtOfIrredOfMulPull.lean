@@ -184,7 +184,7 @@ theorem exists_invariant_gen (hL : L.IsLB) (t : G → (Y ⟶ Y)) (t₁ : t 1 = �
       obtain ⟨U', hU', hv'⟩ := exists_gen hL (φ' := fun k => M ≫ ![t ((x ^ n) ^ (i + 1)), 𝟙 Y] k) (ε' := ![1, -1])
         (fun U _ h => by
           have e : (x ^ i) ^ n = (x ^ n) ^ i := pow_right_comm _ _ _
-          simp [Fin.prod_univ_succ, Fintype.prod_sum_type, reassoc_of% (tM (x ^ i)), tM, tm, e, pow_succ, mul_comm])
+          simp [Fin.prod_univ_succ, Fintype.prod_sum_type, reassoc_of% (tM (x ^ i)), tm, e, pow_succ, mul_comm])
         (LB.mulGen L _ _ _ _ U (LB.pullGen L _ _ u (t (x ^ i))))
         (DVR.mulGen_isGen _ _ _ _ _ _ _ hU (DVR.pullGen_isGen _ _ _ _ hu _))
       refine ⟨U', hU', fun w c hw y J hJ => ?_⟩
@@ -335,12 +335,12 @@ theorem exists_frame_of_isUnit [Subsingleton T.left] {k : ℤ} (s : LB.Sec (LPow
 def vanishing (L : LB A.left) (k : ℤ) (B : Set (T ⟶ A)) : Submodule Γ(T.left, ⊤) (SecM A L k T) where
   carrier := {f | ∀ q ∈ B, ∀ z J, Good L z J →
     powVal (SecM.toSec A f) (ptSecT A q).left z J ∈ IsLocalRing.maximalIdeal _}
-  add_mem' := fun {f g} hf hg q hq z J hJ =>
+  add_mem' := fun {_ _} hf hg q hq z J hJ =>
     (congrArg (· ∈ IsLocalRing.maximalIdeal _) (gs_add _ z _ (hJ.mem (fun _ : Fin 1 => (snd T A).left) _) _ _)).mpr
       (Ideal.add_mem _ (hf q hq z J hJ) (hg q hq z J hJ))
-  zero_mem' := fun q _ z J _ =>
+  zero_mem' := fun _ _ z _ _ =>
     (congrArg (· ∈ IsLocalRing.maximalIdeal _) (gs_zero _ z _)).mpr (Ideal.zero_mem _)
-  smul_mem' := fun c f hf q hq z J hJ =>
+  smul_mem' := fun _ _ hf q hq z J hJ =>
     (congrArg (· ∈ IsLocalRing.maximalIdeal _) (gs_mul _ z _ (hJ.mem (fun _ : Fin 1 => (snd T A).left) _) _ _)).mpr
       (Ideal.mul_mem_left _ _ (hf q hq z J hJ))
 

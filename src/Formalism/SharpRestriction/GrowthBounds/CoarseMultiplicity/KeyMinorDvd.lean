@@ -50,7 +50,7 @@ namespace Formalism.MainNotions.ColumnSystems.Pf
 
 open Formalism.MainNotions.G MvPolynomial Formalism.MainNotions.LemmaBAlt
 
-theorem key_pow_dvd {A : Type} [CommRing A] (p : ℕ) (hp : p.Prime) (w : A) (hw : w ^ 2 = (p : A)) (k e : ℕ)
+theorem key_pow_dvd {A : Type} [CommRing A] (p : ℕ) (w : A) (hw : w ^ 2 = (p : A)) (k e : ℕ)
     (u v : Fin (k + 1) → A) (M N' N : Fin (k + 1) → Fin (k + 1) → A)
     (hMN : ∀ b a, ∃ T, M b a ^ (p ^ e) = N' b a + p * T)
     (hinv : ∀ b b', ∑ a, N' b a * N a b' = if b = b' then 1 else 0)
@@ -171,14 +171,14 @@ theorem kS_ord (X : Loc) [Fact X.p.Prime] (O : Type) [CommRing O] [IsDomain O] [
   have hv0 : (C S.w : A) ∣ v 0 := by
     have : dW O S.w (hhLetters X.TT) 1 y (0 : Fin (X.m + 1)) = S.w := by simp [dW, hhLetters, y]
     exact ⟨MvPolynomial.X (y, 0), by simp only [v, this]⟩
-  obtain ⟨Q, hQ⟩ := key_pow_dvd X.p hp (C S.w : A) hw X.m d u v M N' N hMN hinv hu hv0
+  obtain ⟨Q, hQ⟩ := key_pow_dvd X.p (C S.w : A) hw X.m d u v M N' N hMN hinv hu hv0
   unfold InWjRg
   rw [hlift, hQ]
   intro m
   refine ⟨Q.coeff m, ?_⟩
   rw [coeff_map, coeff_C_mul, pow_one, map_mul]
 
-theorem key_minor_dvd {A : Type} [CommRing A] (p : ℕ) (hp : p.Prime) (w : A) (hw : w ^ 2 = (p : A)) (k e : ℕ)
+theorem key_minor_dvd {A : Type} [CommRing A] (p : ℕ) (w : A) (hw : w ^ 2 = (p : A)) (k e : ℕ)
     (u u' : Fin (k + 1) → A) (M N' : Fin (k + 1) → Fin (k + 1) → A)
     (hMN : ∀ b a, ∃ T, M b a ^ (p ^ e) = N' b a + p * T)
     (hu : ∀ b, b ≠ 0 → w ∣ u b) (hu' : ∀ b, b ≠ 0 → w ∣ u' b) (c : Fin (k + 1)) :
@@ -263,7 +263,7 @@ theorem kW_ord (X : Loc) [Fact X.p.Prime] (O : Type) [CommRing O] [IsDomain O] [
       have : 1 ≤ (b : ℕ) := Nat.one_le_iff_ne_zero.2 (fun h => hb (Fin.ext h))
       simp [dW, hhLetters, z, this]
     exact ⟨MvPolynomial.X (z, b), by simp only [u', this]⟩
-  obtain ⟨Q, hQ⟩ := key_minor_dvd X.p hp (C S.w : A) hw X.m d u u' M N' hMN hu hu' c
+  obtain ⟨Q, hQ⟩ := key_minor_dvd X.p (C S.w : A) hw X.m d u u' M N' hMN hu hu' c
   unfold InWjRg
   rw [hlift, hQ]
   intro m

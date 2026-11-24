@@ -106,7 +106,7 @@ lemma ht_εT (hS : HodgeTateSetting p v R O σ cp) (H : HodgeTateDatum p g v R O
         exact Ne.symm hb
     _ = (U.εL (U.cj i))ᵀ * H.Ht := by rw [← Matrix.mul_sum, U.εT_sum, Matrix.mul_one]
 
-lemma sum_r (hS : HodgeTateSetting p v R O σ cp) (H : HodgeTateDatum p g v R O σ cp)
+lemma sum_r (H : HodgeTateDatum p g v R O σ cp)
     (U : UnramData p g v R O σ cp H) : ∑ i, U.r i = g := by
   haveI : Nontrivial R := (algebraMap R C).domain_nontrivial
   have hproj : ∀ i j (w : Fin g → R), w ∈ LinearMap.range (Matrix.mulVecLin (U.εL j)) →
@@ -288,7 +288,7 @@ theorem unramifiedCokernelLength_of_length_eigenLengthProduct (hLen : LenIdState
     push Not at hc
     have h4 := mul_lt_mul_of_neg_right hc hL0
     linarith
-  have hr : ∑ j, (U.r j : ℝ) = g := by exact_mod_cast sum_r hS H U
+  have hr : ∑ j, (U.r j : ℝ) = g := by exact_mod_cast sum_r H U
   have e1 : ∑ j, y (U.φ j) = ∑ j, y j := Equiv.sum_comp U.φ y
   have e2 : ∑ j, (U.r (U.φ j) : ℝ) = ∑ j, (U.r j : ℝ) := Equiv.sum_comp U.φ (fun j => (U.r j : ℝ))
   have hsumdiff : ∑ j, ((p : ℝ) * y j - (y (U.φ j) + U.r (U.φ j))) = 0 := by

@@ -57,7 +57,7 @@ def congK (m : ℕ) (w : Pl E) (k : ℕ) : Set (GLw m w) :=
   {g | g ∈ GlobalTheory.LFun.KGL w (n := m) ∧ ∀ i j, Valued.v (g.val i j - (1 : Matrix (Fin m) (Fin m) (w.adicCompletion E)) i j) ≤
     WithZero.exp (-(k : ℤ))}
 
-def pairIndicatorMatch (_n a b : ℕ) (w : Pl E) (k : ℕ) (y : GLw a w × GLw b w) : ℂ :=
+def pairIndicatorMatch (a b : ℕ) (w : Pl E) (k : ℕ) (y : GLw a w × GLw b w) : ℂ :=
   ((-((Real.sqrt (qV E w : ℝ) : ℝ) : ℂ)) ^ (k * a * b))⁻¹ *
     (if y.1 ∈ GlobalTheory.LFun.KGL w (n := a) ∧ nrmL a w y.1 ∈ congK a w k ∧ y.2 ∈ GlobalTheory.LFun.KGL w (n := b) ∧ nrmL b w y.2 ∈ congK b w k then 1
       else 0)
@@ -79,7 +79,7 @@ def MatchBadS : Prop :=
 def MatchBadI : Prop :=
   ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ w : Pl E, ¬ IsSplitAt w → ∀ (n a b k : ℕ), a + b = n →
     1 ≤ k → ∀ K' : Subgroup (UL n w), IsLevel (MonoidHom.id _) (KL n w) K' → (∀ γ : UL n w, γ ∈ K' ↔ γ.1 ∈ congK n w k) →
-      ∀ m : ℕ, Match n a b w 1 (lpow K' (lone K') m) (fun y => ((K'.relIndex (KL n w) : ℕ) : ℂ) * pairIndicatorMatch n a b w k y)
+      ∀ m : ℕ, Match n a b w 1 (lpow K' (lone K') m) (fun y => ((K'.relIndex (KL n w) : ℕ) : ℂ) * pairIndicatorMatch a b w k y)
 
 def MatchUnitI : Prop :=
   ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], Unr E → ∀ w : Pl E, ¬ IsSplitAt w → ∀ n a : ℕ, a ≤ n →

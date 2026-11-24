@@ -120,7 +120,7 @@ theorem dx_shell {M : ℕ} {fib : ℝ → Measure (Sp M 0)} (h : IsDxDq fib) (a 
     dx M 0 (qf ⁻¹' Set.Ioc a b) = ∫⁻ t in Set.Ioc a b, fib t Set.univ := by
   have hq : Measurable (qf : Sp M 0 → ℝ) := GlobalTheory.RealPlaceCompare.continuous_qf.measurable
   have hO : MeasurableSet {x : Sp M 0 | x ≠ 0} := isOpen_ne.measurableSet
-  have key := GlobalTheory.IsFibreFamily_lintegral_preimage hq isOpen_ne subset_rfl h
+  have key := GlobalTheory.IsFibreFamily_lintegral_preimage hq subset_rfl h
     (({x : Sp M 0 | x ≠ 0}).indicator 1) (measurable_one.indicator hO)
     (fun v hv => Set.indicator_of_notMem hv _) (Set.Ioc a b) measurableSet_Ioc
   have hsub : qf ⁻¹' Set.Ioc a b ⊆ {x : Sp M 0 | x ≠ 0} := by

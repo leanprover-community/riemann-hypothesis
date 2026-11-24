@@ -69,7 +69,7 @@ theorem mu_mem_kerP (e : Per.Fl l) (he : e.untilt = 1) :
 
 theorem isLog_mem_fil (e : Per.Fl l) (he : e.untilt = 1) (y : Per.BdRp l) (hy : Per.IsLog l e y) :
     y ∈ Per.FilP l 1 := by
-  have h := GlobalTheory.CrisIncl.factorial_mul_ev l e y he hy 1
+  have h := GlobalTheory.CrisIncl.factorial_mul_ev l e y hy 1
   rw [Finset.sum_range_one] at h
   simp only [Nat.factorial_one, Nat.cast_one, one_mul, pow_zero, zero_add, Nat.div_one, pow_one] at h
   rw [GlobalTheory.RingIface.mem_filtration_iff_mem_kerTheta_pow, h, Ideal.Quotient.eq_zero_iff_mem, pow_one]

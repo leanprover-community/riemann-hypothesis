@@ -163,7 +163,7 @@ namespace GlobalTheory.BottomWt
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
 theorem relIndex_KO_ne_zero {n : Type} [Fintype n] [DecidableEq n] {J : Subgroup (GL n k)}
-    (hJ : J ≤ KO k n) (ho : IsOpen (J : Set (GL n k))) : J.relIndex (KO k n) ≠ 0 := by
+    (ho : IsOpen (J : Set (GL n k))) : J.relIndex (KO k n) ≠ 0 := by
   haveI : CompactSpace (KO k n) := isCompact_iff_compactSpace.1 SplitFlip.isCompact_KO
   haveI : Finite ((KO k n) ⧸ J.subgroupOf (KO k n)) :=
     Subgroup.quotient_finite_of_isOpen _ (ho.preimage continuous_subtype_val)
@@ -268,10 +268,10 @@ theorem QExt.bottom_one : ∀ (D : D7) (c : Comm D) (v : VCom c) (B : GlobalTheo
   · intro j hj
     rcases Nat.lt_or_ge j (G.s + 2) with hl | hl
     · rw [E.idx_mid j (G.s + 1 - j) (by omega)]
-      exact relIndex_KO_ne_zero (E.le _ _ _) (E.reg.2.2 _ _ _).1
+      exact relIndex_KO_ne_zero (E.reg.2.2 _ _ _).1
     · obtain rfl : j = G.s + 1 + 1 := by omega
       rw [E.idx_top]
-      exact relIndex_KO_ne_zero E.leT E.openT
+      exact relIndex_KO_ne_zero E.openT
 
 end GlobalTheory.QTw
 end -- clump:auto

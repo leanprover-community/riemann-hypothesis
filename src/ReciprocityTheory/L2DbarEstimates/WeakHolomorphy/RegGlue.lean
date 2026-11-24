@@ -15,7 +15,7 @@ theorem ae_eq_eqOn {n : ℕ} {Ω : Set (V n)} {U U' : V n → ℂ} (hΩ : IsOpen
     (hU : ContinuousOn U Ω) (hU' : ContinuousOn U' Ω) (h : U =ᵐ[volume.restrict Ω] U') :
     EqOn U U' Ω := Measure.eqOn_open_of_ae_eq h hΩ hU hU'
 
-theorem reg_glue {n : ℕ} {Ω : Set (V n)} {u : V n → ℂ} (hΩ : IsOpen Ω)
+theorem reg_glue {n : ℕ} {Ω : Set (V n)} {u : V n → ℂ}
     (hloc : ∀ x ∈ Ω, ∃ r > 0, ball x r ⊆ Ω ∧
       ∃ U : V n → ℂ, DifferentiableOn ℂ U (ball x r) ∧ u =ᵐ[volume.restrict (ball x r)] U) :
     ∃ U : V n → ℂ, DifferentiableOn ℂ U Ω ∧ u =ᵐ[volume.restrict Ω] U := by

@@ -198,12 +198,12 @@ theorem exists_detect {F E : Type} [Field F] [NumberField F] [Field E] [NumberFi
   · have hh : hOF σ JS JT (Matrix.single d a (e * z)) y = (P * Y * Q) a d * z := by
       rw [← hem, mul_assoc, hval]
       unfold hOF
-      rw [Finset.sum_eq_single a (fun a' _ ha => by simp [Matrix.single_apply, Ne.symm ha])
+      rw [Finset.sum_eq_single a (fun a' _ ha => by simp [Ne.symm ha])
         (fun h => absurd (Finset.mem_univ a) h), Finset.sum_mul]
       refine Finset.sum_congr rfl fun b _ => ?_
       rw [Finset.sum_mul]
       refine Finset.sum_congr rfl fun c _ => ?_
-      rw [Finset.sum_eq_single d (fun d' _ hd => by simp [Matrix.single_apply, Ne.symm hd])
+      rw [Finset.sum_eq_single d (fun d' _ hd => by simp [Ne.symm hd])
         (fun h => absurd (Finset.mem_univ d) h), Matrix.single_apply_same]
     have h2 : algebraMap F (AF F) (1 / 2) + algebraMap F (AF F) (1 / 2) = 1 := by
       rw [← map_add (f := _), show (1 / 2 : F) + 1 / 2 = 1 by norm_num, map_one]

@@ -45,7 +45,7 @@ theorem coef_embed (dual : Bool) {lam : Fin n → ℝ} {H : Type*} [NormedAddCom
         ∀ g ∈ UJset ε, coefMap dual σ (fun c => ((η c : D) : H)) (fun c => ((f c : D) : H)) (g * k) =
           coefMap dual σ (fun c => ((η c : D) : H)) (fun c => ((f' c : D) : H)) g := by
   intro f hf
-  refine ⟨⟨occA_coef_smooth dual hσ _ _ (fun d => hsm (f d)), fun w => ?_⟩,
+  refine ⟨⟨occA_coef_smooth dual _ _ (fun d => hsm (f d)), fun w => ?_⟩,
     fun a b g hg => occA_coef_Eab dual hσ hD _ f a b hg, ?_⟩
   · refine (occA_coef_memLp dual hσ hW η (tensWord dual E w f) hη (occA_tensWord_mem dual w f hf)).ae_eq ?_
     exact Filter.Eventually.of_forall fun g => (occA_coef_Eword dual hσ hD _ w f g.2).symm
@@ -70,7 +70,7 @@ theorem occ_exists (dual : Bool) {ε : Fin n → Bool} {lam lam' : Fin n → ℝ
       ∀ x ∈ genSub (smE ε (rreg ε)) (datumV ε Ψ' v₀'), eeF dual (smE ε (rreg ε)) (ι x) = poleF dual lam s • ι x := by
   have hB := occB_pairing_ne dual hP hP' hv₀' hpos hpos' (_root_.ReciprocityTheory.ChartRestriction.DS.psi_weighted_memLp hgap hP hv₀ hW) s hlam'
   obtain ⟨ps, hps, hne⟩ :=
-    occC_exists_ps dual hgap hP hv₀ hgap' hP' hv₀' hW (_root_.ReciprocityTheory.ChartRestriction.DS.occurrence_pairing dual hgap hP hv₀ hP' hW hB)
+    occC_exists_ps dual hP hv₀ hgap' hP' hv₀' hW (_root_.ReciprocityTheory.ChartRestriction.DS.occurrence_pairing dual hgap hP hv₀ hP' hW hB)
   obtain ⟨ι, hι⟩ := occAdj_emb dual hgap hP hv₀ hgap' hP' hv₀' hps hne
   exact ⟨ι, hι, occD_eeF dual hP hP' s hlam' hι⟩
 

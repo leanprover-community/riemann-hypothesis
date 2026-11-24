@@ -60,7 +60,7 @@ def W (w : ℤ) (f : MvPowerSeries σ K) : Prop :=
 
 variable {c}
 
-theorem W_one (hc : 0 < c) (_hc1 : c ≤ 1) : W c 0 (1 : MvPowerSeries σ K) := by
+theorem W_one (hc : 0 < c) : W c 0 (1 : MvPowerSeries σ K) := by
   classical
   intro e
   rw [MvPowerSeries.coeff_one]
@@ -85,7 +85,7 @@ theorem W_mul (hc : 0 < c) {w₁ w₂ : ℤ} {f g : MvPowerSeries σ K} (hf : W 
 theorem W_pow (hc : 0 < c) (hc1 : c ≤ 1) {w : ℤ} {f : MvPowerSeries σ K} (hf : W c w f) (n : ℕ) :
     W c (n * w) (f ^ n) := by
   induction n with
-  | zero => simpa using W_one hc hc1
+  | zero => simpa using W_one hc
   | succ n ih => rw [pow_succ]; push_cast; rw [add_mul, one_mul]; exact W_mul hc ih hf
 
 theorem W_E (E : PowerSeries K) (hE : constantCoeff E = 0)
@@ -110,7 +110,7 @@ theorem W_prod (hc : 0 < c) (hc1 : c ≤ 1) (a : σ → MvPowerSeries σ K) (ha 
     push_cast; rfl
   rw [hdeg]
   induction d.support using Finset.induction_on with
-  | empty => simpa using W_one hc hc1
+  | empty => simpa using W_one hc
   | insert s S hs ih =>
     rw [Finset.prod_insert hs, Finset.sum_insert hs]
     have := W_pow hc hc1 (ha s) (d s)

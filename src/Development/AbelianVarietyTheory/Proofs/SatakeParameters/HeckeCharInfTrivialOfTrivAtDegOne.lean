@@ -605,7 +605,7 @@ theorem infinitePlace_eq_of_embedding_comp_algebraMap_eq (F E : Type) [Field F] 
   obtain ⟨b, hb⟩ := mkAlg (ComplexEmbedding.conjugate w₁.embedding) (by
     ext r
     have := RingHom.congr_fun hτreal r
-    simp only [RingHom.comp_apply, ComplexEmbedding.conjugate_coe_eq, Function.comp_apply]
+    simp only [RingHom.comp_apply, ComplexEmbedding.conjugate_coe_eq]
     simpa [ComplexEmbedding.conjugate_coe_eq, hτ] using this)
   obtain ⟨c, hc⟩ := mkAlg w₂.embedding h.symm
   have hab : a ≠ b := by
@@ -778,7 +778,7 @@ def cplxUnit : ({w : InfinitePlace E // w.IsComplex} → ℂˣ) →* (mixedSpace
     Prod.ext (funext fun _ => mul_one _) (funext fun w => (z w).mul_inv),
     Prod.ext (funext fun _ => mul_one _) (funext fun w => (z w).inv_mul)⟩
   map_one' := Units.ext (Prod.ext rfl (funext fun _ => rfl))
-  map_mul' z z' := Units.ext (Prod.ext (funext fun _ => (mul_one _).symm) (funext fun _ => rfl))
+  map_mul' _ _ := Units.ext (Prod.ext (funext fun _ => (mul_one _).symm) (funext fun _ => rfl))
 
 def infUnit : ({w : InfinitePlace E // w.IsComplex} → ℂˣ) →* (InfiniteAdeleRing E)ˣ :=
   (Units.map (InfiniteAdeleRing.ringEquiv_mixedSpace E).symm.toRingHom.toMonoidHom).comp (cplxUnit E)

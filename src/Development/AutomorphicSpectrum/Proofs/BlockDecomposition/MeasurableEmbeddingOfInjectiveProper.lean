@@ -57,7 +57,7 @@ theorem fibreFamily_eq_inter (V X Y : Type) [TopologicalSpace V] [LocallyCompact
     [IsLocallyFiniteMeasure μ] [IsLocallyFiniteMeasure ν] [ν.IsOpenPosMeasure]
     (f : V → Y) (g : V → X) (ι : X → Y) (hι : Function.Injective ι) (hg : Continuous g)
     (hf : ∀ v, f v = ι (g v)) (W : Set V) (hW : IsOpen W)
-    (B B' : Set X) (hB : IsOpen B) (hB' : IsOpen B') (hBB : B' ⊆ B)
+    (B B' : Set X) (hB' : IsOpen B') (hBB : B' ⊆ B)
     (fib fib' : X → Measure V)
     (h : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsFibreFamily μ f ι (g ⁻¹' B ∩ W) ν B fib)
     (h' : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsFibreFamily μ f ι (g ⁻¹' B' ∩ W) ν B' fib')

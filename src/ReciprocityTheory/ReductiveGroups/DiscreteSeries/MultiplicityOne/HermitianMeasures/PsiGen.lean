@@ -48,8 +48,8 @@ theorem ellA_mul {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z)
       rw [hz0, mul_zero, mul_zero, mul_zero, add_zero]
 
 open Formalism.QuantumDeterminants.WeylGroupFacts in
-theorem ellA_conj {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) {h m : Mat k r}
-    (hh : h ∈ UWset k r z) (hm : m ∈ Nset k r) (a : Fin r) :
+theorem ellA_conj {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} {h m : Mat k r}
+    (hh : h ∈ UWset k r z) (a : Fin r) :
     Formalism.MainNotions.S.ellA k r z (h * m * h⁻¹) a = Formalism.MainNotions.S.ellA k r z m a := by
   have hb := uw_block hh
   have hb' := uw_block (uw_inv hh)
@@ -81,7 +81,7 @@ theorem psiGen_conj {k r : ℕ} {z : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r
     Formalism.MainNotions.S.psiGen k r z c (h * m * h⁻¹) = Formalism.MainNotions.S.psiGen k r z c m := by
   unfold Formalism.MainNotions.S.psiGen
   have e : ∑ a, c a * Formalism.MainNotions.S.ellA k r z (h * m * h⁻¹) a = ∑ a, c a * Formalism.MainNotions.S.ellA k r z m a :=
-    Finset.sum_congr rfl fun a _ => by rw [ellA_conj hz hh hm a]
+    Finset.sum_congr rfl fun a _ => by rw [ellA_conj hh a]
   rw [e]
 
 end ReciprocityTheory.ChartRestriction.DS.Mult1.S0.A

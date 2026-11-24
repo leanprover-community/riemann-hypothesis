@@ -1170,7 +1170,7 @@ private theorem card_filter_fin_val_lt' {n c : ℕ} (hc : c ≤ n) :
       exact ⟨⟨b, by omega⟩, by simpa using hb', rfl⟩
   rw [e, Finset.card_range]
 
-theorem sum_shape_lt {n K : ℕ} (sz : Fin K → ℕ) (hsz : ∀ k, sz k ≤ n) (t : ℕ) (ht : t ≤ n) :
+theorem sum_shape_lt {n K : ℕ} (sz : Fin K → ℕ) (t : ℕ) (ht : t ≤ n) :
     ∑ a ∈ Finset.univ.filter (fun a : Fin n => a.1 < t), shapeDeg sz a = ∑ k, min t (sz k) := by
   unfold shapeDeg
   have e : ∀ k : Fin K, min t (sz k) = (Finset.univ.filter fun a : Fin n => a.1 < t ∧ a.1 < sz k).card := by
@@ -1199,7 +1199,7 @@ theorem top_entries {n K : ℕ} (sz : Fin K → ℕ) (hsz : ∀ k, sz k ≤ n) (
           _ = t := card_filter_fin_val_lt' ht
       · exact (Finset.card_filter_le _ _).trans (by simp)
     have hsum : ∑ k, (Finset.univ.filter fun p : Fin (sz k) => (J k p).1 < t).card = ∑ k, min t (sz k) := by
-      rw [sum_cnt_lt J t, hc, sum_shape_lt sz hsz t ht]
+      rw [sum_cnt_lt J t, hc, sum_shape_lt sz t ht]
     exact fun k => (Finset.sum_eq_sum_iff_of_le hle).mp hsum k (Finset.mem_univ _)
   have h1 := key (sz k) (hsz k) k
   rw [min_self] at h1

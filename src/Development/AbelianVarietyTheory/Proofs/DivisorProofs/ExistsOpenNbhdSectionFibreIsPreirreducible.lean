@@ -740,7 +740,7 @@ def fwd1 : (MvPolynomial σ A ⧸ Ideal.span {f}) →ₐ[A] Lk f g k :=
     obtain ⟨c, rfl⟩ := Ideal.mem_span_singleton'.1 ha
     rw [map_mul, fibreHypersurfaceForwardPolynomial_apply f g k f]
     have : rhoK f g k (MvPolynomial.map (algebraMap A k) f) = 0 := by
-      simp [rhoK, Ideal.Quotient.eq_zero_iff_mem, Ideal.mem_span_singleton_self]
+      simp [rhoK]
     rw [this, mul_zero])
 
 lemma fibreHypersurfaceForwardQuotient_mk (p : MvPolynomial σ A) :
@@ -774,7 +774,7 @@ def bwd1 : (MvPolynomial σ k ⧸ Ik f k) →ₐ[k] k ⊗[A] LA f g :=
     obtain ⟨c, rfl⟩ := Ideal.mem_span_singleton'.1 ha
     rw [map_mul, fibreHypersurfaceBackwardPolynomial_map]
     have : rhoA f g f = 0 := by
-      simp [rhoA, Ideal.Quotient.eq_zero_iff_mem, Ideal.mem_span_singleton_self]
+      simp [rhoA]
     rw [this, map_zero, mul_zero])
 
 lemma fibreHypersurfaceBackwardQuotient_mk (p : MvPolynomial σ k) : bwd1 f g k (Ideal.Quotient.mk _ p) = bwd0 f g k p := rfl
@@ -1154,7 +1154,7 @@ theorem isPullback_comp_mono_right_of_isPullback {𝒞 : Type*} [Category 𝒞] 
 
 theorem preirreducibleSpace_tensor_of_pullback :
     ∀ (X S : Scheme.{0}) (f : X ⟶ S) (V : S.Opens) (W : X.Opens) (h : W ≤ f ⁻¹ᵁ V)
-      (hV : IsAffineOpen V) (hW : IsAffineOpen W) (k : Type) [Field k] [Algebra Γ(S, V) k]
+      (hV : IsAffineOpen V) (_ : IsAffineOpen W) (k : Type) [Field k] [Algebra Γ(S, V) k]
       [Algebra Γ(S, V) Γ(X, W)], algebraMap Γ(S, V) Γ(X, W) = (f.appLE V W h).hom →
       PreirreducibleSpace ↥(pullback (W.ι ≫ f)
         (Spec.map (CommRingCat.ofHom (algebraMap Γ(S, V) k)) ≫ hV.fromSpec)) →

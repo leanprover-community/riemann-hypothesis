@@ -583,7 +583,7 @@ theorem exists_common_charts_of_isMaxContactHypersurface (A : X.IdealSheafData) 
       chartPartialDeriv hV (c'.restrict hVU') j g ∉
         (hV.primeIdealOf ⟨x, hxV⟩).asIdeal :=
     exists_unlabeled_index_partialDeriv_notMem_primeIdealOf hV (c'.restrict hVU') hxV N γ
-      H₂ g hlab hγinj (hsnc₂'.2 x) hg hxH₂ hxN
+      H₂ g hlab (hsnc₂'.2 x) hg hxH₂ hxN
   have hjdpd' :
       chartPartialDeriv hV (c'.restrict hVU') jd g ∉ (hV.primeIdealOf ⟨x, hxV⟩).asIdeal := hjdpd
   obtain ⟨c'', hcj₀, hclab, hpd⟩ : ∃ c'' : EtaleChart p V n',

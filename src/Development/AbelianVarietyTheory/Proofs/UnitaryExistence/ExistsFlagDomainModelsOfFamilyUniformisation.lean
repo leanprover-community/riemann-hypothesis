@@ -90,7 +90,7 @@ theorem exists_den_herm_model (E : Type) [Field E] [NumberField E] [IsCMField E]
     rintro _ ⟨x, rfl⟩ _ ⟨y, rfl⟩
     rw [hz y, map_zero, GlobalTheory.HermModel.herm_zero_right, mul_zero]
     exact isIntegral_zero
-  · have hint := (GlobalTheory.HermModel.rank_integral_selfDual E H D r ξ Gm φ hξ h).2.2.1
+  · have hint := (GlobalTheory.HermModel.rank_integral_selfDual E H D r ξ Gm φ h).2.2.1
     have halg : IsAlgebraic ℤ ξ :=
       (IsFractionRing.isAlgebraic_iff ℤ ℚ E).2 (Algebra.IsAlgebraic.isAlgebraic ξ)
     obtain ⟨n, hn0, hn⟩ := halg.exists_integral_multiple
@@ -234,7 +234,7 @@ theorem exists_modelsOf : GlobalTheory.Published.HasseNormSt → ∀ (E : Type) 
   have hξ' : cc (-ξ₀) = -(-ξ₀) := by
     unfold cc at hξ ⊢
     rw [map_neg, hξ]
-  have hrk : r = Dw.p + Dw.q := (GlobalTheory.HermModel.rank_integral_selfDual E H Dw r (-ξ₀) Gm φ hξ' hφ).1
+  have hrk : r = Dw.p + Dw.q := (GlobalTheory.HermModel.rank_integral_selfDual E H Dw r (-ξ₀) Gm φ hφ).1
   have hq : Dw.q ≤ r := by omega
   have hΨ : ∀ τ : E →+* ℂ, τ ∈ Ψ ↔ ComplexEmbedding.conjugate τ ∉ Ψ := fun τ => by
     rw [hmem, hmem]; exact _root_.GlobalTheory.PrincFree.cmType_of_rt H τ

@@ -139,7 +139,6 @@ theorem reduceAlongHypersurface_isomorphic_of_isMaxContactHypersurface
     (hinv : ComapIsoInvariance.{u}) (P : ℕ → Prop) (hmono : ∀ a b : ℕ, a ≤ b → P b → P a)
     (A : ℕ → PrincipalizationAssignment.{u}) (B : PrincipalizationAssignment.{u})
     (hspec : ∀ j : ℕ, IsBoundaryDivisorReduction P j (A j) B)
-    (_hshift : IsBoundaryPositionInvariant P A)
     (hstar0 : _root_.FunctorialResolution.EmbeddedResolution.MaxContactCoverProperties.{u}) (hin : OrderReduction.OrderReductionHypotheses.{u})
     (hMC : BoundarySeparationBaseChange.IsMaxContactInvariantBalancedTuned.{u})
     (hAdm : BoundarySeparationBaseChange.MaxContactHypersurfaceSmoothPullback.{u})
@@ -574,8 +573,6 @@ private theorem withoutIsoBlowups_isomorphic_of_smoothPullbackTriple_eq
     (hP₁ : P S₁.krullDimSucc) (hP₂ : P S₂.krullDimSucc)
     (hord₁ : ∀ x : ↥S₁.scheme, orderAt S₁.ideal x ≤ (S₁.mult : ℕ∞))
     (hord₂ : ∀ x : ↥S₂.scheme, orderAt S₂.ideal x ≤ (S₂.mult : ℕ∞))
-    (_hcsn₁ : (orderAtLeastLocus S₁.ideal S₁.mult).Nonempty)
-    (_hcsn₂ : (orderAtLeastLocus S₂.ideal S₂.mult).Nonempty)
     (hbd₁ : ∀ D ∈ S₁.boundary, D ≠ ⊤) (hbd₂ : ∀ D ∈ S₂.boundary, D ≠ ⊤)
     (hsuc₁ : AlgebraicGeometry.Surjective (MaxContactCoverData.coverMap S₁ hv₁))
     (hsuc₂ : AlgebraicGeometry.Surjective (MaxContactCoverData.coverMap S₂ hv₂))
@@ -755,7 +752,7 @@ private theorem withoutIsoBlowups_isomorphic_of_smoothPullbackTriple_eq
       (MaxContactReduction.reduceAlongHypersurface hinv S₂ (lowerDimensionalFamily A S₂)
         (smoothPullbackTriple (MaxContactCoverData.coverTriple S₁ hv₁) π₁)
         ((MaxContactCoverData.coverMaxContactIdeal S₁ hv₁).comap π₁)).toMarkedSequenceOfBlowups.toSequenceOfBlowups :=
-    reduceAlongHypersurface_isomorphic_of_isMaxContactHypersurface hinv P hmono A B hspec hshift hstar0
+    reduceAlongHypersurface_isomorphic_of_isMaxContactHypersurface hinv P hmono A B hspec hstar0
       hin hMC hAdm
       S₂ hP₂ (smoothPullbackTriple (MaxContactCoverData.coverTriple S₁ hv₁) π₁) hdv₁ hdord₁ hdim
       ((MaxContactCoverData.coverMaxContactIdeal S₂ hv₂).comap π₂)
@@ -892,7 +889,7 @@ theorem maxContactPrincipalization_isPullbackBlowupSequence_of_smooth
     intro v v' hvv hvv'
     exact withoutIsoBlowups_isomorphic_of_smoothPullbackTriple_eq hinv P hmono A B hspec hshift hstar0 hin hMC hAdm hdel htv
       (MaxContactReduction.dropTrivialBoundary T) (dropTrivialBoundaryPullback T qY h E') htrimv hpbv hP hP'
-      hord hord₂ hypS₁.coSupport_nonempty hypS₂.coSupport_nonempty hbdT hbdP
+      hord hord₂ hbdT hbdP
       hsu₁ hsu₂ hcord₁ hcord₂
       (Limits.pullback.snd (MaxContactCoverData.coverMap (dropTrivialBoundaryPullback T qY h E') hpbv ≫ h)
         (MaxContactCoverData.coverMap (MaxContactReduction.dropTrivialBoundary T) htrimv))

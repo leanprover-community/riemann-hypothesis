@@ -141,7 +141,6 @@ theorem mulVec_mulVec_inv {n : ℕ} {R : Type} [CommRing R] (X : GL (Fin n) R) (
   rw [Matrix.mulVec_mulVec, Units.mul_inv, Matrix.one_mulVec]
 
 theorem keepPair (S : GridChoice W U) {i : ℕ} (hi : i + 1 ≤ D.R.m) (x : GA D (G.V (.grid i D.R.m))) (y : GA D (G.V (.grid (i + 1) D.R.m)))
-    (hxf : x ∈ GfC (G.V (.grid i D.R.m))) (hyf : y ∈ GfC (G.V (.grid (i + 1) D.R.m)))
     (hx : ∀ v, v ∈ Formalism.L2.Herm.hatL (F := D.host.F) (colLat (S.N.fr (.grid i D.R.m))) ↔
       (Formalism.IndefR.Lev.finE (G.V (.grid i D.R.m)) x).1 *ᵥ v ∈ Formalism.L2.Herm.hatL (F := D.host.F) (colLat (S.N.fr (.grid i D.R.m))))
     (hy : ∀ v, v ∈ Formalism.L2.Herm.hatL (F := D.host.F) (colLat (S.N.fr (.grid (i + 1) D.R.m))) ↔
@@ -188,7 +187,7 @@ theorem keepLow (S : GridChoice W U) {t : T} (j : ℕ) (hj : j + 1 < D.R.m) (k :
     rw [e1]
   have h2 : moved S j k ∈ GfC (G.V (.grid (j + 1) D.R.m)) := ((S.N.u (.grid (j + 1) D.R.m))⁻¹ * k * S.N.u _).2
   have h3 := _root_.GlobalTheory.RowVertexInv.moved_keeps_std S j hj k hk
-  exact keepPair S (i := j) (by omega) 1 (moved S j k) (one_mem _) h2 h1 h3 u
+  exact keepPair S (i := j) (by omega) 1 (moved S j k) h1 h3 u
 
 theorem keepHigh (S : GridChoice W U) {t : T} (j : ℕ) (hj : j + 1 < D.R.m) (k : FinPt G (.grid (j + 1) D.R.m))
     (hk : finG (G.V (.grid (j + 1) D.R.m)) k ∈ S.levRow t (j + 1) hj.le) (u : WO (G.pS (.chi (j + 1) D.R.m : Pair T)) (G.pT (.chi (j + 1) D.R.m : Pair T))) :
@@ -203,7 +202,7 @@ theorem keepHigh (S : GridChoice W U) {t : T} (j : ℕ) (hj : j + 1 < D.R.m) (k 
     rw [e1]
   have h2 : moved S j k ∈ GfC (G.V (.grid (j + 1) D.R.m)) := ((S.N.u (.grid (j + 1) D.R.m))⁻¹ * k * S.N.u _).2
   have h3 := _root_.GlobalTheory.RowVertexInv.moved_keeps_std S j hj k hk
-  exact keepPair S (i := j + 1) (by omega) (moved S j k) 1 h2 (one_mem _) h3 h1 u
+  exact keepPair S (i := j + 1) (by omega) (moved S j k) 1 h3 h1 u
 
 theorem selfDual (S : GridChoice W U) {i : ℕ} (hi : i + 1 ≤ D.R.m) :
     IsSelfDualC (G.pS (.chi i D.R.m : Pair T)) (S.N.latS (.chi i D.R.m)) ∧ IsSelfDualC (G.pT (.chi i D.R.m : Pair T)) (S.N.latT (.chi i D.R.m)) :=
@@ -295,7 +294,7 @@ theorem vecOf_eq_intertwiner : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Con
         (actO _ _ (G.toPair (.chi (j + 1) D.R.m) (moved S j k) 1)⁻¹.1 (G.toPair (.chi (j + 1) D.R.m) (moved S j k) 1)⁻¹.2 x) := by
       unfold movFn; exact Function.update_self _ _ _
     rw [e1, e2, e3]
-    exact om_theta_eq (W.om_is _ (by simp only [Pair.InRange, Pair.big, Node.InRange]; omega)) hee hinf
+    exact om_theta_eq (W.om_is _ (by simp only [Pair.InRange, Node.InRange]; omega)) hee hinf
       (selfDual S hj2).1 (selfDual S hj2).2 (S.Z.vac_is (.chi (j + 1) D.R.m) ⟨hj2, rfl⟩).2.theta _ (keepHigh S j hj k hk)
       (scalar_ne_zero _ (vac_ne_zero S hj2) hc₂) hc₂ (hTm d hd (.inr ⟨j + 1, hj⟩)).1 (hth d hd (.inr ⟨j + 1, hj⟩))
   by_cases h1 : a = .inr ⟨j, by omega⟩
@@ -310,7 +309,7 @@ theorem vecOf_eq_intertwiner : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Con
         (actO _ _ (G.toPair (.chi j D.R.m) 1 (moved S j k))⁻¹.1 (G.toPair (.chi j D.R.m) 1 (moved S j k))⁻¹.2 x) := by
       unfold movFn; exact (Function.update_of_ne hne _ _).trans (Function.update_self _ _ _)
     rw [e1, e2, e3]
-    exact om_theta_eq (W.om_is _ (by simp only [Pair.InRange, Pair.big, Node.InRange]; omega)) hee hinf
+    exact om_theta_eq (W.om_is _ (by simp only [Pair.InRange, Node.InRange]; omega)) hee hinf
       (selfDual S hj1).1 (selfDual S hj1).2 (S.Z.vac_is (.chi j D.R.m) ⟨hj1, rfl⟩).2.theta _ (keepLow S j hj k hk)
       (scalar_ne_zero _ (vac_ne_zero S hj1) hc₁) hc₁ (hTm d hd (.inr ⟨j, by omega⟩)).1 (hth d hd (.inr ⟨j, by omega⟩))
   · have e1 : moveV S j hj k (vecOf S d) a = vecOf S d a := by

@@ -984,7 +984,7 @@ open NumberField IsDedekindDomain Representation Formalism.ConjugateSelfDual Rec
 namespace GlobalTheory.CompanionTheory.PTIso
 
 theorem isTotallyComplex_of_ringEquiv : ∀ (F F' : Type) [Field F] [NumberField F] [Field F']
-    [NumberField F'] (e : F ≃+* F'), IsTotallyComplex F → IsTotallyComplex F' := by
+    [NumberField F'] (_ : F ≃+* F'), IsTotallyComplex F → IsTotallyComplex F' := by
   intro F F' _ _ _ _ e h
   refine ⟨fun w => ?_⟩
   rw [← InfinitePlace.not_isReal_iff_isComplex]

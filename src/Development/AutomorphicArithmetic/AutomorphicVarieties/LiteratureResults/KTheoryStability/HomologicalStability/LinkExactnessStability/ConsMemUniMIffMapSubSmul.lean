@@ -53,7 +53,7 @@ open GlobalTheory.SeqCx Matrix
 namespace GlobalTheory.UniModVec
 
 theorem mem_uniM_iff_nat (R M : Type) [CommRing R] [AddCommGroup M] [Module R M] (l : List M) :
-    l ∈ uniM R M ↔ ∃ f : ℕ → M →ₗ[R] R, ∀ (i j : ℕ) (hi : i < l.length) (hj : j < l.length),
+    l ∈ uniM R M ↔ ∃ f : ℕ → M →ₗ[R] R, ∀ (i j : ℕ) (_ : i < l.length) (hj : j < l.length),
       f i l[j] = if i = j then 1 else 0 := by
   constructor
   · rintro ⟨f, hf⟩

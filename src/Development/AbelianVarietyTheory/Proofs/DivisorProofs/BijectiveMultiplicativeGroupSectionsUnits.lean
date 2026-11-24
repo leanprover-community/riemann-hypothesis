@@ -104,7 +104,7 @@ private theorem isSheaf_etaleTopology_units :
     intro Y₁ Y₂ Z g₁ g₂ f₁ f₂ h₁ h₂ w
     have := congrArg (fun t => (((_root_.GlobalTheory.EtC.GmSec.uval t)⁻¹ : Γ(Z, ⊤)ˣ) : Γ(Z, ⊤)))
       (hx g₁ g₂ h₁ h₂ w)
-    simp only [gmSec_uval_map_eq_units_map, ← map_inv] at this
+    simp only [gmSec_uval_map_eq_units_map] at this
     exact this
   have hA := hG.isAmalgamation ha
   have hB := hG.isAmalgamation hb

@@ -177,7 +177,7 @@ def red : A O ϖ →+* O ⧸ Ideal.span {ϖ} :=
     intro a ha
     rw [Ideal.mem_span_singleton'] at ha
     obtain ⟨c, rfl⟩ := ha
-    simp [Ideal.Quotient.eq_zero_iff_mem, Ideal.mem_span_singleton_self])
+    simp [Ideal.Quotient.eq_zero_iff_mem])
 
 theorem reduction_uniformizerPoint (k : Fin 2) : red O ϖ (T O ϖ k) = 0 := by simp [red, T]
 

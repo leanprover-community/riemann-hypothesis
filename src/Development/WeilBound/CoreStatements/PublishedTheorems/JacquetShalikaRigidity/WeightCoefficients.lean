@@ -114,7 +114,7 @@ theorem hypB (hN3 : N3) (hN4b : OneMoreAdelicColumn) {m : ℕ} (hmk : m < k) {β
   rw [rhoB, lintegral_map (measI hβ.1 g) (meas_blkU m)]
   exact (hN4b E k m hmk _ (hβ.1.comp (measurable_mul_const g))).symm.trans (wtB hN3 hN4b hmk hβ g)
 
-theorem hypA (hN0 : N0) (hN3 : N3) (hN4a : CosetIntegralParabolic) (hN4b : OneMoreAdelicColumn) {m : ℕ} (hm1 : 1 ≤ m) (hmk : m < k)
+theorem hypA (hN3 : N3) (hN4a : CosetIntegralParabolic) (hN4b : OneMoreAdelicColumn) {m : ℕ} (hm1 : 1 ≤ m) (hmk : m < k)
     {β : GA E k → ℝ≥0∞} (hβ : IsWt (nuP E k m) β) (g : GA E k) :
     ∫⁻ r, ∫⁻ h, β (r⁻¹ * h * g) ∂nuP E k (m - 1) ∂rhoA m = 1 := by
   haveI := ((hN3 E k).1 (m - 1) (by omega)).1
@@ -281,7 +281,7 @@ theorem twistedGeometricSide_unfolding : Q1 → Q2 → N0 → N3 → CosetIntegr
       intro f hf
       have hcf : Pre ψ (m - 1) (colT ψ m f) := (hP1 E k ψ hψ m hm1 hmk f hf).1
       rw [hQ1 (GA E k) μ (nuP E k (m - 1)) (WeightCoefficients.rhoA m) (WeightCoefficients.HS (m - 1)) (WeightCoefficients.bA m β) β hPm1.2.1 hPm1.2.2 hwA hβ.1
-          (WeightCoefficients.hypA hN0 hN3 hN4a hN4b hm1 hmk hβ) (fun g => ‖colT ψ m f g‖ₑ ^ 2)
+          (WeightCoefficients.hypA hN3 hN4a hN4b hm1 hmk hβ) (fun g => ‖colT ψ m f g‖ₑ ^ 2)
           (hcf.cont.measurable.enorm.pow_const 2) (WeightCoefficients.inv_sq hP2 hψ hcf),
         hQ1 (GA E k) μ (nuP E k m) (WeightCoefficients.rhoB m) (WeightCoefficients.HS m) β β hPm.2.1 hPm.2.2 hβ hβ.1
           (WeightCoefficients.hypB hN3 hN4b hmk hβ) (fun g => ‖f g‖ₑ ^ 2) (hf.cont.measurable.enorm.pow_const 2) (WeightCoefficients.inv_sq hP2 hψ hf)]
@@ -301,7 +301,7 @@ theorem twistedGeometricSide_unfolding : Q1 → Q2 → N0 → N3 → CosetIntegr
       (WeightCoefficients.hypB hN3 hN4b hmk hβ) (fun g => f g * conj (φ g)) c1.measurable (WeightCoefficients.inv_prod hP2 hψ hf hφp)
       (WeightCoefficients.int_mul hf.cont hφp.cont hf2 hφ2)).2
     have ha := (hQ2 (GA E k) μ (nuP E k (m - 1)) (WeightCoefficients.rhoA m) (WeightCoefficients.HS (m - 1)) (WeightCoefficients.bA m β) β hPm1.2.1 hPm1.2.2 hwA
-      hβ.1 (WeightCoefficients.hypA hN0 hN3 hN4a hN4b hm1 hmk hβ) (fun g => colT ψ m f g * conj (colT ψ m φ g)) c2.measurable
+      hβ.1 (WeightCoefficients.hypA hN3 hN4a hN4b hm1 hmk hβ) (fun g => colT ψ m f g * conj (colT ψ m φ g)) c2.measurable
       (WeightCoefficients.inv_prod hP2 hψ hcf hcφ)
       (WeightCoefficients.int_mul hcf.cont hcφ.cont ((hA f hf).trans_lt hf2) ((hA φ hφp).trans_lt hφ2))).2
     rw [hb, ha]

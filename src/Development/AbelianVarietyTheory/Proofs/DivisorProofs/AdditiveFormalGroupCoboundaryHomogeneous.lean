@@ -230,7 +230,7 @@ theorem neA {d : ℕ} (a β : Fin d →₀ ℕ) (j : Fin d) (h : β j = 0) :
   simp at this
   omega
 
-theorem eqB {d : ℕ} (a β : Fin d →₀ ℕ) (j i : Fin d) (hji : j ≠ i) (h : 1 ≤ β j) :
+theorem eqB {d : ℕ} (a β : Fin d →₀ ℕ) (j i : Fin d) (h : 1 ≤ β j) :
     a = β - Finsupp.single j 1 + Finsupp.single i 1 ↔ a + Finsupp.single j 1 = β + Finsupp.single i 1 := by
   constructor
   · rintro rfl
@@ -363,14 +363,14 @@ theorem coeff_prod_addLaw (d n : ℕ) : ∀ α : Fin d →₀ ℕ, α.degree = n
             simp [this]
           · simp [hab]
       · rw [ite_eq_right (c := Finsupp.single (Sum.inr j) 1 ≤ _)
-          (by rw [Finsupp.single_le_iff]; simp [mdl_inr, Finsupp.single_apply, Ne.symm hji]), add_zero]
+          (by rw [Finsupp.single_le_iff]; simp [mdl_inr, Ne.symm hji]), add_zero]
         have hi : (((a + Finsupp.single j 1 : Fin d →₀ ℕ) i : ℕ) : R) = (a i : R) := by
           simp [hji]
         rw [hi]
         by_cases hb : 1 ≤ β j
         · rw [ite_eq_left (by rw [Finsupp.single_le_iff]; simpa [mdl_inl] using hb), subB, (ih a ha _).2,
             mul_one]
-          simp only [eqB a β j i hji hb]
+          simp only [eqB a β j i hb]
         · rw [ite_eq_right (by rw [Finsupp.single_le_iff]; simpa [mdl_inl] using hb),
             ite_eq_right (neB a β j i hji (by omega))]
 

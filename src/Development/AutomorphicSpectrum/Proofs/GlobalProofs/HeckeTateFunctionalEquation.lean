@@ -930,7 +930,7 @@ def adelicAddChar (E : Type) [Field E] [NumberField E] : AddChar (Formalism.Main
 theorem adelicAddChar_apply (E : Type) [Field E] [NumberField E] (a : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF E) :
     adelicAddChar E a = (adelicChar E a : ℂ) := rfl
 
-theorem isStdChar_adelicAddChar (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) :
+theorem isStdChar_adelicAddChar (E : Type) [Field E] [NumberField E] :
     GlobalTheory.IndefiniteRowSideFullHecke.LocalDualIndex.IsStdChar E (adelicAddChar E) := by
   refine ⟨⟨?_, ?_, ?_, ?_⟩, ?_⟩
   · exact continuous_subtype_val.comp continuous_adelicChar
@@ -1194,7 +1194,7 @@ private theorem stdChar_finiteAdele_eq (E : Type) [Field E] [NumberField E]
 theorem psiAt_eq_localAdelicChar : ∀ (E : Type) [Field E] [NumberField E] (w : HeightOneSpectrum (𝓞 E)) (x : w.adicCompletion E), psiAt w x = (localAdelicChar E w x : ℂ) := by
   intro E _ _ w x
   have h := stdChar_finiteAdele_eq E (GlobalTheory.HeckeEps.stdChar E) (adelicAddChar E)
-    (GlobalTheory.HeckeEps.isStdChar_stdChar E) (isStdChar_adelicAddChar E w) (finiteAdeleSingleAdd w x)
+    (GlobalTheory.HeckeEps.isStdChar_stdChar E) (isStdChar_adelicAddChar E) (finiteAdeleSingleAdd w x)
   rwa [localAdelicChar_apply, finitePlaceIncl_apply, ← adelicAddChar_apply]
 
 end GlobalTheory.CompanionTheory.PsiStd

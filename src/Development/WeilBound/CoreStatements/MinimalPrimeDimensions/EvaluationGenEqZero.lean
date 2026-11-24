@@ -146,7 +146,7 @@ theorem loc_ratio {k : Fin m} {t : Fin m → Γ(Z, nonzeroLocus (s k))}
   simpa [loc] using h
 
 theorem eq_of_loc (hE : Emb p s) (hi : y ∈ ptsIn p σ (B.U i)) (hj : y' ∈ ptsIn p σ (B.U j)) {c c' : ℂ}
-    (hc : c ≠ 0) (hc' : c' ≠ 0) (h : c • loc p s σ i y = c' • loc p s σ j y') : y = y' := by
+    (hc : c ≠ 0) (h : c • loc p s σ i y = c' • loc p s σ j y') : y = y' := by
   obtain ⟨k, hk⟩ := exists_mem_ptsIn hE.cover y
   obtain ⟨hA, t, hsurj, ht⟩ := hE.chart k
   have hyk : loc p s σ i y k ≠ 0 := (loc_ne_zero_iff hi k).2 hk

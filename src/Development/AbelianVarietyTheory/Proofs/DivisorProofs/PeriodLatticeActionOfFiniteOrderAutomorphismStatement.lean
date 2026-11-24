@@ -141,7 +141,7 @@ theorem lift_mem (f : P.A ⟶ P.A) (hf : IsMonHom f) {z} (hz : z ∈ u.Λ) : lif
 
 def liftZ (f : P.A ⟶ P.A) (hf : IsMonHom f) : Module.End ℤ u.Λ where
   toFun x := ⟨lift u hl f hf x, lift_mem u hl f hf x.2⟩
-  map_add' x y := Subtype.ext (map_add _ _ _)
+  map_add' _ _ := Subtype.ext (map_add _ _ _)
   map_smul' c x := Subtype.ext (map_zsmul (lift u hl f hf) c (x : Fin P.g → ℂ))
 
 @[simp] theorem liftZ_val (f : P.A ⟶ P.A) (hf : IsMonHom f) (x : u.Λ) :

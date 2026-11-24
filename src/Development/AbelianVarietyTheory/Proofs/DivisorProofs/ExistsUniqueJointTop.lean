@@ -111,7 +111,6 @@ theorem row_invariant [DecidableEq σ] (z : Fin k × Fin m → σ) (hz : Functio
       bind₁ (fun s => X s + ∑ i, if s = z (b, i) then C t * X (z (a, i)) else 0) P = P := by
   rw [rowOp_apply]
   exact (rowAdd_invariant_iff (fun k => z (a, k)) (fun k => z (b, k))
-      (fun k l e => by simpa using hz e)
       (fun k l e => hab.ne (congrArg Prod.fst (hz e))) P).out 3 2
 
 theorem polar_homog (u v : σ) {d : ℕ} {P : MvPolynomial σ ℂ} (h : P.IsHomogeneous d) :
@@ -132,7 +131,7 @@ theorem colOp_homog {I J : Type} [Fintype I] (z : I × J → σ) (i j : J) {d : 
   exact Submodule.sum_mem _ fun _ _ => polar_homog _ _ h
 
 theorem finite_homog [Finite σ] (d : ℕ) : FiniteDimensional ℂ (homogeneousSubmodule σ ℂ d) :=
-  Submodule.finiteDimensional_of_le (S₂ := restrictTotalDegree σ ℂ d) fun P hP =>
+  Submodule.finiteDimensional_of_le (S₂ := restrictTotalDegree σ ℂ d) fun _ hP =>
     (mem_restrictTotalDegree _ _ _).2 (IsHomogeneous.totalDegree_le hP)
 
 theorem polar_rename (f : τ → σ) (hf : Function.Injective f) (u v : τ) (Q : MvPolynomial τ ℂ) :

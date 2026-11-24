@@ -354,7 +354,7 @@ theorem dt_infGL_le (x : GL (Fin k) (Cinf E)) (T : ℝ) (hT : ‖(Matrix.of.symm
 
 omit [NumberField E] [_root_.NumberField.IsTotallyComplex E] in
 theorem height_product_arith {H H' P Dx Dxr A F Ta Tb : ℝ} (hH : H ≤ P * H') (hP : P ≤ A * Ta) (hH0 : 0 ≤ H')
-    (hDxr0 : 0 ≤ Dxr) (hDxr : Dxr ≤ 1 + Dx) (hDx : Dx ≤ F * Tb) (hA : 0 ≤ A) (hTa : 0 ≤ Ta) (hF : 0 ≤ F)
+    (hDxr0 : 0 ≤ Dxr) (hDxr : Dxr ≤ 1 + Dx) (hDx : Dx ≤ F * Tb) (hA : 0 ≤ A) (hTa : 0 ≤ Ta)
     (hTb : 1 ≤ Tb) : H * Dxr ≤ A * (1 + F) * (Ta * Tb) * H' := by
   have h3 : 0 ≤ A * Ta * H' := mul_nonneg (mul_nonneg hA hTa) hH0
   calc H * Dxr ≤ (P * H') * Dxr := mul_le_mul_of_nonneg_right hH hDxr0
@@ -399,7 +399,7 @@ theorem c6 (hD : D0) : ∃ (B : ℝ) (N : ℕ), 0 ≤ B ∧ ∀ (x : GL (Fin k) 
   generalize Dt g ^ ((k : ℝ)⁻¹) = Dgr at hDgr ⊢
   have hT0 : 0 ≤ T := by linarith
   have key := height_product_arith hH hP hH0 hDxr.le hR hDx (by positivity) (by positivity)
-    (by positivity) (one_le_pow₀ hT1)
+    (one_le_pow₀ hT1)
   rw [← pow_add] at key
   rw [div_le_iff₀ hDgr, mul_div_assoc', div_mul_eq_mul_div, le_div_iff₀ (mul_pos hDgr hDxr)]
   calc H * (Dgr * Dxr) = (H * Dxr) * Dgr := by ring

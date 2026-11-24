@@ -57,7 +57,7 @@ theorem prime_of_regular_params [IsRegularLocalRing R] {n : ℕ} (f : Fin n → 
 
 theorem eq_unit_mul_monomial [IsRegularLocalRing R] {n : ℕ} (f : Fin n → R)
     (hspan : Ideal.span (Set.range f) = maximalIdeal R) (hdim : (n : WithBot ℕ∞) = ringKrullDim R)
-    (J : Finset (Fin n)) {x : R} (hx0 : x ≠ 0) (hrad : (∏ i ∈ J, f i) ∈ (Ideal.span {x}).radical) :
+    (J : Finset (Fin n)) {x : R} (hrad : (∏ i ∈ J, f i) ∈ (Ideal.span {x}).radical) :
     ∃ (u : Rˣ) (m : Fin n → ℕ), (∀ i, i ∉ J → m i = 0) ∧ x = u * ∏ i ∈ J, f i ^ m i := by
   obtain ⟨k, hk⟩ := hrad
   rw [Ideal.mem_span_singleton] at hk

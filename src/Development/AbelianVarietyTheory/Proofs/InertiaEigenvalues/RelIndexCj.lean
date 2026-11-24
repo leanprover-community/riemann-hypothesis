@@ -98,7 +98,7 @@ theorem Cover.mono {Γ H H' : Subgroup G} (h : Cover Γ H') (hle : H' ≤ H) : C
 
 theorem Cover.of_relIndex {Γ H H' : Subgroup G} (h : Cover Γ H) (hne : H'.relIndex H ≠ 0) : Cover Γ H' := by
   rw [← Subgroup.inf_relIndex_right] at hne
-  obtain ⟨U, -, hU, -⟩ := exists_cosetReps (inf_le_right : H' ⊓ H ≤ H) hne
+  obtain ⟨U, -, hU, -⟩ := exists_cosetReps hne
   obtain ⟨S, hS⟩ := h
   refine ⟨(S ×ˢ U).image fun p => p.1 * p.2, fun g => ?_⟩
   obtain ⟨t, ht, γ, κ, hκ, e⟩ := hS g
@@ -137,7 +137,7 @@ theorem dsum_sum (Γ H : Subgroup G) {ι : Type} (s : Finset ι) (Φ : ι → G 
 theorem dsum_index {Γ H H' : Subgroup G} (hle : H' ≤ H) (hne : H'.relIndex H ≠ 0) (hc : Cover Γ H') {Φ : G → ℂ}
     (hl : ∀ (γ : Γ) g, Φ ((γ : G) * g) = Φ g) (hr : ∀ κ ∈ H, ∀ g, Φ (g * κ) = Φ g) :
     dsum Γ H' Φ = (H'.relIndex H : ℂ) * dsum Γ H Φ := by
-  obtain ⟨F, h1, h2, h3⟩ := exists_cosetReps hle hne
+  obtain ⟨F, h1, h2, h3⟩ := exists_cosetReps hne
   rw [dsum_refine hle hc hl (fun κ hκ => hr κ (hle hκ)) h1 h2, ← dsum_mul]
   congr 1
   funext g
@@ -205,7 +205,7 @@ theorem ind_right {Δ H : Subgroup G} {x κ : G} (hκ : κ ∈ H) (g : G) : ind 
 
 theorem mass_refine (Δ : Subgroup G) {H H' : Subgroup G} (hle : H' ≤ H) (hne : H'.relIndex H ≠ 0) :
     ∃ n : ℕ, n ≠ 0 ∧ ∀ Γ : Subgroup G, Γ ≤ Δ → Cover Γ H' → dsum Γ H' (ind Δ H' 1) = n * dsum Γ H (ind Δ H 1) := by
-  obtain ⟨F, h1, h2, -⟩ := exists_cosetReps hle hne
+  obtain ⟨F, h1, h2, -⟩ := exists_cosetReps hne
   refine ⟨(F.filter fun u => ∃ δ ∈ Δ, ∃ κ ∈ H', u = δ * 1 * κ).card, ?_, fun Γ hΓ hc => ?_⟩
   · obtain ⟨u, ⟨hu, hu'⟩, -⟩ := h2 1 H.one_mem
     exact Finset.card_ne_zero_of_mem (Finset.mem_filter.2 ⟨hu, 1, Δ.one_mem, u, by simpa using hu', by simp⟩)

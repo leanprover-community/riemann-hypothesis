@@ -1163,7 +1163,7 @@ theorem comp_lmul_map_id (ε : H →ₐ[K] K) (f : H →ₐ[K] H) (t : H ⊗[K] 
       AlgHom.comp_apply, Algebra.ofId_apply, map_mul, AlgHom.commutes]
   | add s t hs ht => simp only [map_add (f := _), hs, ht]
 
-theorem counit_pw (Δ : H →ₐ[K] H ⊗[K] H) (ε : H →ₐ[K] K) (hL : CounitL Δ ε) (hR : CounitR Δ ε) (n : ℕ) :
+theorem counit_pw (Δ : H →ₐ[K] H ⊗[K] H) (ε : H →ₐ[K] K) (hL : CounitL Δ ε) (n : ℕ) :
     ε.comp (pw Δ ε n) = ε := by
   induction n with
   | zero => ext x; simp [pw]
@@ -1216,7 +1216,7 @@ theorem pw_sub_mem (Δ : H →ₐ[K] H ⊗[K] H) (ε : H →ₐ[K] K) (hL : Coun
   induction n with
   | zero => simp [pw, hx0]
   | succ n ih =>
-    have h1 := gen (pw Δ ε n) (counit_pw Δ ε hL hR n) (Δ x)
+    have h1 := gen (pw Δ ε n) (counit_pw Δ ε hL n) (Δ x)
     have hLx := DFunLike.congr_fun hL x
     have hRx := DFunLike.congr_fun hR x
     simp only [AlgHom.comp_apply, AlgHom.id_apply] at hLx hRx
@@ -1256,7 +1256,7 @@ theorem pw_charP (p : ℕ) [Fact p.Prime] [CharP K p] (Δ : H →ₐ[K] H ⊗[K]
   induction r generalizing x with
   | zero =>
     rw [pow_zero, pow_zero, pow_one, RingHom.mem_ker]
-    have h := AlgHom.congr_fun (counit_pw Δ ε hL hR 1) x
+    have h := AlgHom.congr_fun (counit_pw Δ ε hL 1) x
     rw [AlgHom.comp_apply] at h
     rw [h]
     exact RingHom.mem_ker.1 hx

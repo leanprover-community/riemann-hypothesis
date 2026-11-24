@@ -362,7 +362,7 @@ theorem exists_short_vectors {n : ℕ} (Λ : Submodule (𝓞 E) (Fin n → E)) (
       | smul a x _ hx =>
         obtain ⟨k, h⟩ := hx
         exact ⟨a * k, by rw [map_zsmul, h, zsmul_eq_mul]; push_cast; ring⟩
-    have h1 := trace_dual_min Λ hint hdual u hu htr
+    have h1 := trace_dual_min Λ hdual u hu htr
     rw [traceHerm_self, hl2]
     exact h1
   obtain ⟨v, hvΛ, hvli, hvB⟩ := transference_rat b (traceHerm n) (traceHerm_isSymm n)

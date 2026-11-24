@@ -309,7 +309,7 @@ theorem mem_pow_of_coeff_mem (a n : ℕ) :
         rwa [map_add, Finsupp.degree_single, show n + 1 - (d.degree + 1) = n - d.degree by omega] at this
       · exact zero_mem _
 
-theorem main : ∀ {O : Type} [inst : CommRing O] [inst_1 : IsLocalRing O]
+theorem main : ∀ {O : Type} [CommRing O] [IsLocalRing O]
     [IsPrecomplete (IsLocalRing.maximalIdeal O) O] (a : ℕ),
     IsPrecomplete (IsLocalRing.maximalIdeal (MvPowerSeries (Fin a) O)) (MvPowerSeries (Fin a) O) := by
   intro O _ _ hO a
@@ -346,7 +346,7 @@ section -- clump:auto
 
 namespace GlobalTheory.NoetherianLocalHausdorff
 
-theorem noeth_local_hausdorff : ∀ (B : Type) [inst : CommRing B] [inst_1 : IsLocalRing B] [IsNoetherianRing B],
+theorem noeth_local_hausdorff : ∀ (B : Type) [CommRing B] [IsLocalRing B] [IsNoetherianRing B],
     IsHausdorff (IsLocalRing.maximalIdeal B) B := by
   intro B _ _ _
   refine ⟨fun x hx => ?_⟩

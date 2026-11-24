@@ -125,7 +125,7 @@ private theorem inr_Dp {j k : J} (f : j ⟶ k) :
 
 private def toDp : D ⟶ Dp φ D t ht where
   app j := pushout.inr φ (t j)
-  naturality j k f := (inr_Dp φ D t ht f).symm
+  naturality _ _ f := (inr_Dp φ D t ht f).symm
 
 variable (c : Cocone D) (hc : IsColimit c) {Y' : CommRingCat.{0}} (w : Y ⟶ Y') (φ' : c.pt ⟶ Y')
   (cc : A ⟶ c.pt) (hcc : ∀ j, t j ≫ c.ι.app j = cc) (hp : IsPushout φ cc w φ')

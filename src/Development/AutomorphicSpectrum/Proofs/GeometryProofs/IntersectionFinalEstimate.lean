@@ -1023,7 +1023,7 @@ open MvPolynomial MeasureTheory Filter Topology ReciprocityTheory.AnForm Recipro
 namespace GlobalTheory.CompanionTheory.Ar.Giv.Mix.TwicePos
 
 theorem isPsh_add_zero_add (e : ℕ) (X : Type) [TopologicalSpace X] (A : FinHolAtlas e X)
-    (Θ : LocPot X) (hΘ : IsPotential A Θ) (hpos : IsPosPot A Θ) :
+    (Θ : LocPot X) (hpos : IsPosPot A Θ) :
     IsPsh A (Θ + LocPot.ofFun (fun _ => (0 : ℝ)) + Θ) := by
   unfold ReciprocityTheory.AnForm.M.IsPsh
   intro x j y hy w
@@ -1314,7 +1314,7 @@ theorem term_tendsto (X : ComponentSetting D O Lt) (B : ℕ) (Θ : LocPot X.M.Xc
     rcases hcases j with ⟨-, hP, -, hT⟩ | ⟨-, -, hP, -, hT⟩ | ⟨-, -, hP, -, hT⟩ <;> rw [hP, hT t]
     · exact ⟨ht.2.1, ht.2.2.2, fun x hx => hbd x hx _ (ht.2.2.1 x hx).1 (ht.2.2.1 x hx).2⟩
     · exact ⟨h₀.2.1, h₀.2.2.2, fun x hx => hbd x hx _ (h₀.2.2.1 x hx).1 (h₀.2.2.1 x hx).2⟩
-    · refine ⟨hsm0, _root_.GlobalTheory.CompanionTheory.Ar.Giv.Mix.TwicePos.isPsh_add_zero_add _ _ _ _ hΘ hΘp, fun x hx => ?_⟩
+    · refine ⟨hsm0, _root_.GlobalTheory.CompanionTheory.Ar.Giv.Mix.TwicePos.isPsh_add_zero_add _ _ _ _ hΘp, fun x hx => ?_⟩
       have := hrpos x hx
       have h2 : 0 ≤ b * Real.log (R.r x) := mul_nonneg hb0 this
       simp only [abs_zero]

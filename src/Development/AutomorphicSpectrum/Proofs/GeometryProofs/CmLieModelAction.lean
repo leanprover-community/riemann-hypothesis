@@ -145,7 +145,7 @@ def bK : epsAt (pK X) ⟶ epsR (𝓞 X.K) :=
     simp only [Over.mk_hom, Category.id_comp]
     rw [isogeny_decomposition_product.spMap_comp, isogeny_decomposition_product.spMap_comp]
     congr 1
-    ext a <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl, TrivSqZeroExt.inr_zero])
+    ext a <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl])
 
 theorem bK_left : (bK X).left = spMap (dualMap (algebraMap (𝓞 X.K) X.K)) := rfl
 

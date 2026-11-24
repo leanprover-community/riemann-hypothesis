@@ -324,7 +324,7 @@ namespace RootFieldNumerics.A1
 
 open ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P Filter Topology GlobalTheory.CompanionTheory.Ar.PB
 
-theorem scale_le {s : ℝ} (hs : 0 < s) (h1 : s ≤ 1) : Real.exp (-(s ^ 2)⁻¹) ≤ s := by
+theorem scale_le {s : ℝ} (hs : 0 < s) : Real.exp (-(s ^ 2)⁻¹) ≤ s := by
   have h := Real.one_sub_inv_le_log_of_pos hs
   have hu : 0 < s⁻¹ := inv_pos.2 hs
   have e : (s ^ 2)⁻¹ = s⁻¹ ^ 2 := by rw [inv_pow]
@@ -372,7 +372,7 @@ theorem psh_sum_potentials_small_parameter : ∀ (e : ℕ) (σ : Type) [Fintype 
   have hs1 : s ≤ 1 := le_trans hss (le_trans (min_le_right _ _) (min_le_left _ _))
   have hst : s ≤ S.t₀ := le_trans hss (le_trans (min_le_right _ _) (min_le_right _ _))
   have hss₁ : s ≤ s₁ := le_trans hss (min_le_left _ _)
-  have htt : Real.exp (-(s ^ 2)⁻¹) ≤ S.t₀ := (scale_le hs hs1).trans hst
+  have htt : Real.exp (-(s ^ 2)⁻¹) ≤ S.t₀ := (scale_le hs).trans hst
   refine ⟨htt, fun c hca' hsum hpos => ?_⟩
   set t := Real.exp (-(s ^ 2)⁻¹) with ht
   have htp : 0 < t := Real.exp_pos _

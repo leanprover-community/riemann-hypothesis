@@ -174,7 +174,7 @@ theorem lchar_eq_one_iff (a : InfinitePlace L → ℕ) (v : (𝓞 L)ˣ) :
   · intro h
     rw [h, Real.log_one]
 
-theorem lchar_nontrivial (hC : IsTotallyComplex L) (a : InfinitePlace L → ℕ) (ha : 0 < ∑ w, a w)
+theorem lchar_nontrivial (a : InfinitePlace L → ℕ) (ha : 0 < ∑ w, a w)
     (hm : ∑ w, a w < nrComplexPlaces L) : ∃ v, lchar a v ≠ 1 := by
   classical
   have hcard : ∑ w, a w < Fintype.card (InfinitePlace L) := by
@@ -217,7 +217,7 @@ theorem lchar_nontrivial (hC : IsTotallyComplex L) (a : InfinitePlace L → ℕ)
 theorem lchar_ker_not_finiteIndex (hC : IsTotallyComplex L) (a : InfinitePlace L → ℕ) (ha : 0 < ∑ w, a w)
     (hm : ∑ w, a w < nrComplexPlaces L) : ¬ (lchar a).ker.FiniteIndex := by
   intro hfi
-  obtain ⟨v, hv⟩ := lchar_nontrivial hC a ha hm
+  obtain ⟨v, hv⟩ := lchar_nontrivial a ha hm
   apply hv
   have hmem := (lchar a).ker.pow_index_mem v
   rw [MonoidHom.mem_ker, map_pow] at hmem

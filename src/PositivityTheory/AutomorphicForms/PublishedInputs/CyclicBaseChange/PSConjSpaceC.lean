@@ -144,13 +144,13 @@ theorem Lx_symm' (σ : E ≃+* E) (x : Cinf E) : Lx σ.symm (Lx σ x) = x := by
   simpa using Lx_symm σ.symm x
 
 theorem continuous_Lx (σ : E ≃+* E) : Continuous (Lx σ) :=
-  continuous_pi fun w => continuous_cc _
+  continuous_pi fun _ => continuous_cc _
 
 theorem Lx_smul (σ : E ≃+* E) (r : ℝ) (x : Cinf E) : Lx σ (r • x) = r • Lx σ x :=
-  funext fun w => cc_smul _ r x
+  funext fun _ => cc_smul _ r x
 
 theorem Lx_star (σ : E ≃+* E) (x : Cinf E) : Lx σ (star x) = star (Lx σ x) :=
-  funext fun w => cc_star _ x
+  funext fun _ => cc_star _ x
 
 theorem Lx_atEmb (σ : E ≃+* E) (τ : E →+* ℂ) (z : ℂ) :
     Lx σ (atEmb τ z) = atEmb (τ.comp (σ.symm : E →+* E)) z := by

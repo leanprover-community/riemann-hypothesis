@@ -322,7 +322,7 @@ theorem exists_norm {ϖ : w.adicCompletion E} {q : ℕ} (hU : IsUnramInv ϖ c q)
     change Valued.v (x - c x) = 1
     rw [Valuation.map_sub_swap, hx2]
   have h1 : cT d B.1 = B.1 := Matrix.ext fun i j => Subtype.ext (congrFun (congrFun hB' i) j)
-  obtain ⟨p, hp⟩ := GlobalTheory.UnitaryDoubleCoset.exists_poly_norm hd
+  obtain ⟨p, hp⟩ := GlobalTheory.UnitaryDoubleCoset.exists_poly_norm
     (GlobalTheory.InertNorm.exists_dvd_mul_map_sub_X (w.adicCompletionIntegers E) (IsLocalRing.maximalIdeal _) d hd
       (fun x hx hu => hx (by simpa [hd] using hu.map d)) ⟨_, hω⟩) h1 B.isUnit
   have h2 : IsUnit (Polynomial.aeval B.1 p) := isUnit_of_mul_isUnit_right (hp ▸ B.isUnit)

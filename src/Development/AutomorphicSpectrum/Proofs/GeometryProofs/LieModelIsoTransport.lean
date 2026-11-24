@@ -69,7 +69,7 @@ variable {X X' : Scheme.{0}} {G : Over X} {G' : Over X'} [GrpObj G] [GrpObj G'] 
   {g : X ⟶ X'} {ψ : G.left ⟶ G'.left} {Ω : Type} [Field Ω] {ξ : Sp Ω ⟶ X} {ξ' : Sp Ω ⟶ X'}
   {V : Type} [AddCommGroup V] [Module Ω V]
 
-theorem extends_pull (hψ : IsGrpPullback G G' g ψ) (fg : f ≫ g = 𝟙 _) (hξ : ξ' ≫ f = ξ)
+theorem extends_pull (hψ : IsGrpPullback G G' g ψ) (fg : f ≫ g = 𝟙 _)
     {M : LieModel G ξ V} {M' : LieModel G' ξ' V} (hM : ∀ e, (M.pt e).left ≫ ψ = (M'.pt e).left)
     (q' : Cpt ξ') (q : Cpt ξ) (σ : X.presheaf.stalk q.1 →+* X'.presheaf.stalk q'.1)
     (h1 : spMap σ ≫ X.fromSpecStalk q.1 = X'.fromSpecStalk q'.1 ≫ f) (h2 : (genMap ξ' q').comp σ = genMap ξ q)
@@ -100,13 +100,13 @@ theorem lat_le (hψ : IsGrpPullback G G' g ψ) (fg : f ≫ g = 𝟙 _) (hξ : ξ
   induction he using Submodule.span_induction with
   | mem e he =>
     obtain ⟨v, hv⟩ := he
-    obtain ⟨v', hv', -⟩ := extends_pull hψ fg hξ hM q' q σ h1 h2 e v hv
+    obtain ⟨v', hv', -⟩ := extends_pull hψ fg hM q' q σ h1 h2 e v hv
     exact Submodule.subset_span ⟨v', hv'⟩
   | zero => exact zero_mem _
   | add a b _ _ ha hb => exact add_mem ha hb
   | smul c a _ ha => exact (M'.lat q').smul_mem ⟨c, mv_regAt_le hξ q' q hq c.2⟩ ha
 
-theorem htAt_push (hψ : IsGrpPullback G G' g ψ) (fg : f ≫ g = 𝟙 _) (gf : g ≫ f = 𝟙 _)
+theorem htAt_push (hψ : IsGrpPullback G G' g ψ) (fg : f ≫ g = 𝟙 _)
     (φψ : φ ≫ ψ = 𝟙 _) (ψφ : ψ ≫ φ = 𝟙 _) (hξ : ξ' ≫ f = ξ)
     {M : LieModel G ξ V} {M' : LieModel G' ξ' V} (hM : ∀ e, (M.pt e).left ≫ ψ = (M'.pt e).left)
     {L : LB G.left} {L' : LB G'.left} {n : ℕ}
@@ -149,7 +149,7 @@ theorem htAt_push (hψ : IsGrpPullback G G' g ψ) (fg : f ≫ g = 𝟙 _) (gf : 
     exact mv_secVal_comp g0.left ψ g0'.left rfl W' s' h h'
   · intro e v hv h
     obtain ⟨σ, h1, h2, -⟩ := mv_stalk hξ q' q hq
-    obtain ⟨v', hv', hvl⟩ := extends_pull hψ fg hξ hM q' q σ h1 h2 e v hv
+    obtain ⟨v', hv', hvl⟩ := extends_pull hψ fg hM q' q σ h1 h2 e v hv
     have hh : ⊤ ≤ (spMap (dualMap σ) ≫ v.left) ⁻¹ᵁ (ψ ⁻¹ᵁ W') := fun p _ => h trivial
     have h' : ⊤ ≤ v'.left ⁻¹ᵁ W' := by
       rw [hvl]
@@ -183,7 +183,7 @@ theorem htOm_le (hφ : IsGrpPullback G' G f φ) (hψ : IsGrpPullback G G' g ψ) 
     obtain ⟨x', hx', hw⟩ := hw
     obtain ⟨x, hx⟩ := mv_push hφ.1.w hξ x'
     exact Submodule.subset_span ⟨x, mv_pow hφ hξ hx hx',
-      htAt_push hψ fg gf φψ ψφ hξ hM hW q' q hq x' x hx w hw⟩
+      htAt_push hψ fg φψ ψφ hξ hM hW q' q hq x' x hx w hw⟩
   | zero => exact zero_mem _
   | add a b _ _ ha hb => exact add_mem ha hb
   | smul c a _ ha => exact (M.htOm L n q).smul_mem ⟨c, mv_regAt_le hξ' q q' hq' c.2⟩ ha

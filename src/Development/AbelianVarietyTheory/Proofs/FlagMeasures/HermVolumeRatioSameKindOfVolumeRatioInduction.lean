@@ -366,7 +366,7 @@ theorem volU_pos (i : ℕ) : 0 < volU i := by
   unfold volU
   positivity
 
-theorem ennreal_volume_ratio_step_cancel (X Y : ENNReal) (r a b ρ : ℝ) (hr : 0 ≤ r) (ha : 0 < a) (hb : 0 < b)
+theorem ennreal_volume_ratio_step_cancel (X Y : ENNReal) (r a b ρ : ℝ) (ha : 0 < a) (hb : 0 < b)
     (hρ : ρ * a = r * b)
     (h : X / ENNReal.ofReal a = Y / ENNReal.ofReal b * ENNReal.ofReal ρ) :
     X = Y * ENNReal.ofReal r := by
@@ -404,7 +404,7 @@ theorem step (hstep : VolumeStep) (I : AutInst) (P Q : ℕ) (h : HasSig I P Q) (
   have hR := _root_.GlobalTheory.FlagMeas.mass_ratio_mul_unitary_volume I.E I.n (by omega)
   rw [hf, show I.n - 1 = I'.n by omega] at hR
   rw [hn]
-  exact ennreal_volume_ratio_step_cancel _ _ _ _ _ _ (rankFac_nonneg _) (pow_pos (volU_pos _) _) (pow_pos (volU_pos _) _) hR
+  exact ennreal_volume_ratio_step_cancel _ _ _ _ _ _ (pow_pos (volU_pos _) _) (pow_pos (volU_pos _) _) hR
     (hv c μf c' μf' hc hc')
 
 theorem volumeRatio_of_volumeStep : VolumeStep → VolumeRatio := by

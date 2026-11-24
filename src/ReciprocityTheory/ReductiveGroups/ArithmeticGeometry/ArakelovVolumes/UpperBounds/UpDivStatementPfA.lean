@@ -50,7 +50,7 @@ theorem skoda_open (hU : IsOpen U) (S : EtaleStein n U) (hz : S.z = Subtype.val)
   have hemb : MeasurableEmbedding (Subtype.val : U → V n) := MeasurableEmbedding.subtype_coe hU.measurableSet
   have hvol : vol n (Subtype.val : U → V n) = (volume : Measure (V n)).comap Subtype.val := by
     ext A hA
-    rw [vol_image n Subtype.val hzl Set.univ isOpen_univ Subtype.val_injective.injOn A hA (Set.subset_univ _),
+    rw [vol_image n Subtype.val hzl Set.univ Subtype.val_injective.injOn A hA (Set.subset_univ _),
       hemb.comap_apply]
   have htgt : ∀ (e : OpenPartialHomeomorph U (V n)), IsChart n Subtype.val e → e.target ⊆ U := by
     intro e he y hy

@@ -136,7 +136,7 @@ theorem phase_invariance_of_truncation : PhaseInvOfCut := by
     have : B.hsVec (0 : Wq →L[ℂ] Wp) = 0 := (Formalism.FourierDecayAlt.P.JFxI.hsVecL (Wp := Wp) (Wq := Wq)).map_zero
     rw [this, inner_zero_left] at hEρn
     exact zero_ne_one hEρn
-  have hRB : NF.RadBase P.k P.r Bs.z Bs.z' Bs.μsec Bs.π Bs.π' := Gauge.GC.radBase_of P Bs hpl
+  have hRB : NF.RadBase P.k P.r Bs.z Bs.z' Bs.μsec Bs.π Bs.π' := Gauge.GC.radBase_of P Bs
 
   have hmk : ∀ E ∈ NF.Fib P.k P.r Bs.z Bs.z' Bs.μsec Bs.π Bs.π' ζ₁, ∃ Φ : Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π',
       ∀ c ∈ OmX P.r, ∀ ζ ∈ Gauge.GC.Ann P, (Φ : Q.Fn P.k P.r (Wq →L[ℂ] Wp)) c (NF.muZ P.k P.r Bs.μsec ζ) = E := by

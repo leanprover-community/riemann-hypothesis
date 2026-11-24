@@ -333,7 +333,7 @@ open scoped ENNReal
 
 namespace GlobalTheory.ImageDegree
 
-theorem growth_eq_of_tendsto (D : ℕ) (r : ℕ → ℕ) {c : ℝ} (hc : 0 ≤ c)
+theorem growth_eq_of_tendsto (D : ℕ) (r : ℕ → ℕ) {c : ℝ}
     (h : Tendsto (fun m : ℕ => (r m : ℝ) / (m : ℝ) ^ D) atTop (nhds (c / D.factorial))) :
     growth D (fun m => (r m : ℕ∞)) = ENNReal.ofReal c := by
   have hf : (0 : ℝ) < D.factorial := by positivity
@@ -403,7 +403,7 @@ theorem degree_image_eq_topSelf : Quoted → ∀ (F : Type) [Field F] [NumberFie
   have hnef : IsNef F S.L := IsGenerated.isNef_of_isProjOver ⟨S.N, S.b, hb⟩ hV.proj
   have hYd := topologicalKrullDim_eq S hV
   have h0 := Q.nef.2.2.topSelf_nonneg hproj hYd hnef
-  have hG := growth_eq_of_tendsto S.D (fun m => lbH0 F (lbPow S.L m)) (Int.cast_nonneg h0)
+  have hG := growth_eq_of_tendsto S.D (fun m => lbH0 F (lbPow S.L m))
     (Q.nef.2.2.tendsto hproj hYd hnef)
   have hle1 : growth S.D (fun m => (Module.finrank F (quotPiece S.imageIdeal (m : ℤ)) : ℕ∞)) ≤
       growth S.D (fun m => (lbH0 F (lbPow S.L m) : ℕ∞)) :=

@@ -228,7 +228,7 @@ theorem cols_of_congAt {D : D7} {X : Fields} (s : Seam D X) {n : ℕ} (P : Heigh
 
 
 
-theorem frame_lev : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a =>
+theorem frame_lev : UnderTie (fun {D _ _ _ _ _ _ _ _ t _ μ St} A _ a =>
   ∀ (i : ℕ) (hi : i ≤ D.R.m) (β : (St i hi).Ch) (x x₁ : UA D i hi) (κ : ((St i hi).K β).lev.U),
     x₁.1 = x.1 * κ.1 → ∀ p p₁, IsPtAd A a i hi β x p → IsPtAd A a i hi β x₁ p₁ →
     ∀ (P : SB t μ), P.1 ∈ t.Pr.vGs → ∀ (dep : SB t μ → ℕ), dep P = 1 → ∀ (Gg : GLint t.X.E (D.R.N i) P.1),

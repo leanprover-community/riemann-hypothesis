@@ -573,7 +573,7 @@ lemma four_add_le (h2 : ‖(2 : K)‖ = 2⁻¹) (hb4 : ‖b4‖ ≤ 1) (hb6 : �
   rw [norm_mul, norm_pow, hx, norm_neg] at hm
   linarith [norm_nonneg (4 * x + b2)]
 
-lemma psi_zero_unique (h2 : ‖(2 : K)‖ = 2⁻¹) (hb2 : ‖b2‖ ≤ 1) (hb4 : ‖b4‖ ≤ 1) (hb6 : ‖b6‖ ≤ 1)
+lemma psi_zero_unique (h2 : ‖(2 : K)‖ = 2⁻¹) (hb4 : ‖b4‖ ≤ 1) (hb6 : ‖b6‖ ≤ 1)
     {x' : K} (hx : ‖x‖ = 4) (hx' : ‖x'‖ = 4)
     (h0 : 4 * x ^ 3 + b2 * x ^ 2 + 2 * b4 * x + b6 = 0)
     (h0' : 4 * x' ^ 3 + b2 * x' ^ 2 + 2 * b4 * x' + b6 = 0) : x = x' := by
@@ -748,7 +748,7 @@ lemma two_torsion_kernel_norm_unique (hW : IntCurve W) (h2 : ‖(2 : K)‖ = 2�
         rw [← e]
         ring
       have hx4' : ‖x'‖ = 4 := psi_zero_eq (x := x') h2 hb2 hb4 hb6 hQE h0'
-      have hxx := psi_zero_unique h2 hb2.le hb4 hb6 hx4 hx4' h0 h0'
+      have hxx := psi_zero_unique h2 hb4 hb6 hx4 hx4' h0 h0'
       subst hxx
       have hyy : y = y' := by
         have e2 : (2 : K) * y = 2 * y' := by linear_combination hd - hd'

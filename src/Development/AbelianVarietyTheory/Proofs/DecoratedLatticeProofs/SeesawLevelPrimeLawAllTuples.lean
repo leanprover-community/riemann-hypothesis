@@ -871,7 +871,7 @@ theorem heisO_zero (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (u : WO S T) :
 
 theorem vac_zero (ψ : AddChar (AF D.host.F) ℂ) (S T : HSp D) (LS : Lat S) (LT : Lat T) (P : Pl D → Prop) :
     Vac ψ S T LS LT P (fun _ => 0) :=
-  ⟨GlobalTheory.OrientedHeis.theta_zero, fun u _ => heisO_zero ψ S T _, fun _ _ u _ _ => heisO_zero ψ S T u⟩
+  ⟨GlobalTheory.OrientedHeis.theta_zero, fun _ _ => heisO_zero ψ S T _, fun _ _ u _ _ => heisO_zero ψ S T u⟩
 
 theorem biVacAt_zero (ψ : AddChar (AF D.host.F) ℂ) {A S A' : HSp D} (LA : Lat A) (LS : Lat S) (LA' : Lat A')
     (P : Pl D → Prop) : BiVacAt ψ LA LS LA' P (fun _ _ => 0) :=

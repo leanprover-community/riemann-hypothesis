@@ -248,7 +248,7 @@ def tB (σ : E →ₐ[F] E) : LinearMap.BilinForm F (hermF σ r) :=
       simp only [tF, Submodule.coe_smul, Matrix.smul_mul, Matrix.trace_smul, map_smul, smul_eq_mul]
       ring)
     (fun a b c => by
-      simp only [tF, Submodule.coe_add, Matrix.mul_add, Matrix.trace_add, map_add (f := _), mul_add])
+      simp only [tF, Submodule.coe_add, Matrix.trace_add, map_add (f := _), mul_add])
     (fun c a b => by
       simp only [tF, Submodule.coe_smul, Matrix.mul_smul, Matrix.trace_smul, map_smul, smul_eq_mul]
       ring)

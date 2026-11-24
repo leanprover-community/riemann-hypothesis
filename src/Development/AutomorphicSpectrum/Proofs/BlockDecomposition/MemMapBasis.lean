@@ -1316,7 +1316,7 @@ noncomputable def eE {T₁ T₂ : Thick L} (f : T₁ ⟶ T₂) {ι E : Type} [Co
       rw [h1, map_smul, Algebra.smul_def, map_mul, hθ, Thick.Hom.comm f] }
 
 theorem eE_single {T₁ T₂ : Thick L} (f : T₁ ⟶ T₂) {ι E : Type} [CommRing E] [Algebra T₁.B E]
-    (bb : Module.Basis ι T₁.B E) (e₀ : E →+* T₂.B) (he₀ : Function.Bijective e₀)
+    (bb : Module.Basis ι T₁.B E) (e₀ : E →+* T₂.B)
     (hθ : ∀ z, e₀ (algebraMap T₁.B E z) = Thick.Hom.φ f z) (a : ι) (m : T₁.B) :
     e₀ (bb.repr.symm (Finsupp.single a m)) = Thick.Hom.φ f m * e₀ (bb a) := by
   rw [Module.Basis.repr_symm_single, Algebra.smul_def, map_mul, hθ]
@@ -1349,14 +1349,14 @@ theorem ni_of_basis {ρ : ℕ → ℕ} (hρ : Slow ρ) (μ : Λ₀) (hμ : c μ 
     Thick.Hom.comm _
   refine GlobalTheory.CompanionTheory.ReesBasis.main (pdFlt L c ρ hρ μ hμ) ι₁ ι₂ θ a₀ (eE c (θ.app _) bb e₀ he₀ hθ) χ ?_ ?_ hχ ?_ ?_
   · intro m
-    refine (eE_single (θ.app _) bb e₀ he₀ hθ a₀ m).trans ?_
+    refine (eE_single (θ.app _) bb e₀ hθ a₀ m).trans ?_
     rw [hb₀, map_one, mul_one]
     rfl
   · intro g a m
     have hn : ∀ x, Thick.Hom.φ (θ.app (SingleObj.star _)) (Thick.Hom.φ (ι₁.map (X := SingleObj.star _) (Y := SingleObj.star _) g) x) =
         Thick.Hom.φ (ι₂.map (X := SingleObj.star _) (Y := SingleObj.star _) g) (Thick.Hom.φ (θ.app (SingleObj.star _)) x) := fun x =>
       RingHom.congr_fun (congrArg Thick.Hom.φ (θ.naturality (X := SingleObj.star _) (Y := SingleObj.star _) g)) x
-    refine (congrArg _ (eE_single (θ.app _) bb e₀ he₀ hθ a m)).trans (Eq.trans ?_ (eE_single (θ.app _) bb e₀ he₀ hθ a _).symm)
+    refine (congrArg _ (eE_single (θ.app _) bb e₀ hθ a m)).trans (Eq.trans ?_ (eE_single (θ.app _) bb e₀ hθ a _).symm)
     show Thick.Hom.φ (ι₂.map (X := SingleObj.star _) (Y := SingleObj.star _) g) (Thick.Hom.φ (θ.app (SingleObj.star _)) m * e₀ (bb a)) =
       Thick.Hom.φ (θ.app (SingleObj.star _)) ((ι₁.obj (SingleObj.star _)).i (c (χ g a)) * Thick.Hom.φ (ι₁.map (X := SingleObj.star _) (Y := SingleObj.star _) g) m) * e₀ (bb a)
     rw [map_mul, map_mul, heig, hn, hi]

@@ -273,7 +273,7 @@ theorem le_of_comb {ρ : Setup D.ntw} (hρ : ρ.Good) {ν : ℂ} {rd : Can p w j
     refine (rdL_tmul _ e hO _ _).trans ?_
     rw [map_one, one_smul]
     refine (realRd_tmul p.nexp p.v₀ hρ _ j _ ν 1 ⟨bb k, hbK k⟩).trans ?_
-    rw [show ρ.e (ex.nch.twI w) (ex.nch.sd w) (1 : NX.KB p.Sx (ex.nch.twI w) (ex.nch.sd w)) = 1 from map_one _, mul_one]
+    rw [show ρ.e (ex.nch.twI w) (ex.nch.sd w) (1 : NX.KB (ex.nch.twI w)) = 1 from map_one _, mul_one]
   refine Submodule.span_le.2 ?_
   rintro _ ⟨x, hx, rfl⟩
   change rd x ∈ twLat p w j hρ ν

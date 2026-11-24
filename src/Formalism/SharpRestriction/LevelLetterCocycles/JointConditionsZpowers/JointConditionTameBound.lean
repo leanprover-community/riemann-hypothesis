@@ -165,7 +165,7 @@ def trivZ (hinj : Function.Injective (algebraMap O LL)) : LocLat G Qp LL O :=
 
 end Ker
 
-def JointConditionTameBound (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (i : D.nd.Loc) (r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i)))
+def JointConditionTameBound (D : D7) (HW : HWOf D.loc) (i : D.nd.Loc) (r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i)))
     (π : D.nd.X i) (M0 h0 cB : ℕ) : Prop :=
   D.nd.l i ≠ 2 ∧ ∀ (w : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers D.host.E))
     (hw : w ∈ placesOver D.host.E (D.nd.l i)),

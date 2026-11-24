@@ -106,7 +106,7 @@ theorem reprod_gen {n : ℕ} (hn : n = 2 * r + k + 1) (ε : Fin n → Bool) {Q :
         (eFun ((Formalism.REAL.muG ε).map (fun γ => Matrix.of.symm (Formalism.L2.SG.RealObj.trG Q Qi γ))) (fun M => σ (Q * M * Qi)) w)
         (wTg Q Qi W) x' = wTg Q Qi W x' := by
   subst hn
-  have hCP : CayPair ε Q Qi := ⟨hg, qi_eq rfl ε h2 hg⟩
+  have hCP : CayPair ε Q Qi := ⟨hg, qi_eq ε h2 hg⟩
   have hmap : (fun γ : Formalism.REAL.UJ ε => Matrix.of.symm (Formalism.L2.SG.RealObj.trG Q Qi γ)) = cM Qi Q := rfl
   rw [hmap]
   intro x' hx'

@@ -182,14 +182,14 @@ theorem graphMap_box (e : Num G i j) (T₁ : (HomV G i j → ℂ) →ₗ[ℂ] (H
 def transPair (Γ : GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.Geo G i j) (ψ : AddChar (AF D.host.F) ℂ) (x : Pt G i j) :
     ((Pt G i j → ℂ) × (Pt G i j → ℂ)) →ₗ[ℂ] ((Pt G i j → ℂ) × (Pt G i j → ℂ)) where
   toFun p := (fun u => p.1 (u + x), heisPt Γ ψ x p.2)
-  map_add' p q := Prod.ext rfl (funext fun u => mul_add _ _ _)
-  map_smul' c p := Prod.ext rfl (funext fun u => mul_left_comm _ _ _)
+  map_add' _ _ := Prod.ext rfl (funext fun _ => mul_add _ _ _)
+  map_smul' _ _ := Prod.ext rfl (funext fun _ => mul_left_comm _ _ _)
 
 def modulPair (Γ : GlobalTheory.IndefiniteRowSideFullHecke.UnitaryConjugation.Geo G i j) (ψ : AddChar (AF D.host.F) ℂ) (y : Pt G i j) :
     ((Pt G i j → ℂ) × (Pt G i j → ℂ)) →ₗ[ℂ] ((Pt G i j → ℂ) × (Pt G i j → ℂ)) where
   toFun p := (fun u => ψ (sympPt Γ u y) * p.1 u, heisPt Γ ψ y p.2)
-  map_add' p q := Prod.ext (funext fun u => mul_add _ _ _) (funext fun u => mul_add _ _ _)
-  map_smul' c p := Prod.ext (funext fun u => mul_left_comm _ _ _) (funext fun u => mul_left_comm _ _ _)
+  map_add' _ _ := Prod.ext (funext fun _ => mul_add _ _ _) (funext fun _ => mul_add _ _ _)
+  map_smul' _ _ := Prod.ext (funext fun _ => mul_left_comm _ _ _) (funext fun _ => mul_left_comm _ _ _)
 
 end GlobalTheory.BigDat
 

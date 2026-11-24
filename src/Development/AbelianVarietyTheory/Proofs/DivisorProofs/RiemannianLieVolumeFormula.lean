@@ -295,7 +295,7 @@ theorem hAdj_mem_endLat (G : Matrix (Fin r) (Fin r) E) (Λ : Submodule (𝓞 E) 
 end GlobalTheory.LieDisc
 
 theorem GlobalTheory.LieDisc.hAdj_mem_endLat_main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (G : Matrix (Fin r) (Fin r) E) (Λ : Submodule (𝓞 E) (Fin r → E)) (Y : Matrix (Fin r) (Fin r) E), SelfDualLat G Λ → Y ∈ endLat Λ → hAdj G Y ∈ endLat Λ :=
-  fun _ _ _ _ r G Λ Y h hY => GlobalTheory.LieDisc.hAdj_mem_endLat G Λ Y h hY
+  fun _ _ _ _ _ G Λ Y h hY => GlobalTheory.LieDisc.hAdj_mem_endLat G Λ Y h hY
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -1391,7 +1391,7 @@ theorem gram_eq (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (P : Matrix (F
   exact Finset.sum_comm
 
 theorem riemLie_eq_smul_formLie (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r)
-    (x : Frame X.Ψ r) (e : Fin (r ^ 2 - 1) → Matrix (Fin r) (Fin r) E) (_hr : 2 ≤ r) (ho : IsOrth X x)
+    (x : Frame X.Ψ r) (e : Fin (r ^ 2 - 1) → Matrix (Fin r) (Fin r) E) (ho : IsOrth X x)
     (he : ∀ i, (e i).trace = 0 ∧ ∀ u w, herm X.Gm (e i *ᵥ u) w + herm X.Gm u (e i *ᵥ w) = 0)
     (hli : LinearIndependent (maximalRealSubfield E) e) :
     riemLie X.Ψ X.Gm x = ENNReal.ofReal (Real.sqrt
@@ -1548,7 +1548,7 @@ namespace GlobalTheory.LieCovol
 
 theorem riemLie_eq_sqrt_index_smul_formLie : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (Λ : Submodule (𝓞 E) (Fin r → E)) (x : Frame X.Ψ r) (e : Fin (r ^ 2 - 1) → Matrix (Fin r) (Fin r) E), 2 ≤ r → Unr E → SelfDualLat X.Gm Λ → IsOrth X x → (∀ i, e i ∈ lieLat X.Gm Λ) → LinearIndependent (maximalRealSubfield E) e → riemLie X.Ψ X.Gm x = ENNReal.ofReal (Real.sqrt r ^ fdeg E * ((Submodule.span (𝓞 (maximalRealSubfield E)) (Set.range e)).toAddSubgroup.relIndex (lieLat X.Gm Λ) : ℝ)) • formLie X.Ψ e := by
   intro E _ _ _ r X Λ x e hr hU hΛ hx he hli
-  rw [_root_.GlobalTheory.SUVol.LieMeas.riemLie_eq_smul_formLie E r X x e hr hx (fun i => ⟨(he i).1, (he i).2.1⟩) hli]
+  rw [_root_.GlobalTheory.SUVol.LieMeas.riemLie_eq_smul_formLie E r X x e hx (fun i => ⟨(he i).1, (he i).2.1⟩) hli]
   congr 1
   congr 1
   have h1 := _root_.GlobalTheory.cm_type_normSq_prod_eq_abs_norm E X.Ψ X.cmType (Matrix.of fun i j => Matrix.trace (e i * e j)).det

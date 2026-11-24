@@ -657,12 +657,11 @@ end Local
 
 
 theorem found_side_inv' (Kf : FiniteSubfield) [NumberField Kf.1] [IsAlgClosure Kf.1 (AlgebraicClosure ℚ)]
-    (S : Set (HeightOneSpectrum (𝓞 Kf.1))) [Fintype S] {l r : ℕ} [Fact l.Prime] (hr : 0 < r)
-    (hS : ∀ v : HeightOneSpectrum (𝓞 Kf.1), ((l : ℕ) : 𝓞 Kf.1) ∈ v.asIdeal → v ∈ S)
+    (S : Set (HeightOneSpectrum (𝓞 Kf.1))) [Fintype S] {l r : ℕ} [Fact l.Prime]
     (ζ : AlgebraicClosure ℚ) (hζ : IsPrimitiveRoot ζ (l ^ r))
     (ιs : ∀ v : S, AlgebraicClosure ℚ →ₐ[Kf.1]
       AlgebraicClosure ((v : HeightOneSpectrum (𝓞 Kf.1)).adicCompletion Kf.1))
-    (v : S) (A : ValuationSubring (AlgebraicClosure ℚ)) (hA : IsPlaceOver A v.1)
+    (v : S) (A : ValuationSubring (AlgebraicClosure ℚ))
     (ev : (AlgebraicClosure ((v : HeightOneSpectrum (𝓞 Kf.1)).adicCompletion Kf.1) ≃ₐ[
         (v : HeightOneSpectrum (𝓞 Kf.1)).adicCompletion Kf.1]
         AlgebraicClosure ((v : HeightOneSpectrum (𝓞 Kf.1)).adicCompletion Kf.1)) ≃* Dec (F := Kf.1) A)
@@ -876,7 +875,7 @@ theorem found_side' (Kf : FiniteSubfield) [NumberField Kf.1] [IsAlgClosure Kf.1 
   have key := @exists_root_of_unity_preimage Kf ‹_› ‹_› S ‹_› l r ‹_› ιs v A ev hev ζ hζ u hu y hy0 κ hκ χ hχadd hχlc
   obtain ⟨x0, hx0⟩ := key
   have hx0' := fun s => @coe_rvF_of_eq Kf ‹_› ‹_› S ‹_› l r ‹_› ιs v ζ u hu _ _ (hx0 s)
-  exact ⟨x0, hx0', @TL.found_side_inv' Kf ‹_› ‹_› S ‹_› l r ‹_› hr hS ζ hζ ιs v A hA ev hev ϖ hϖ y hy κ hκ χ hχ
+  exact ⟨x0, hx0', @TL.found_side_inv' Kf ‹_› ‹_› S ‹_› l r ‹_› ζ hζ ιs v A ev hev ϖ hϖ y hy κ hκ χ hχ
     x0 hx0'⟩
 
 end PositivityTheory.Lit1.PTN
@@ -1200,13 +1199,13 @@ theorem cls_nsmul_of_match {L D : Type} [Group L] [TopologicalSpace L] [IsTopolo
 
 
 theorem invMatch_nsmul_B (Kf : FiniteSubfield) [NumberField Kf.1] [IsAlgClosure Kf.1 (AlgebraicClosure ℚ)]
-    (S : Set (HeightOneSpectrum (𝓞 Kf.1))) [Fintype S] {l r : ℕ} [Fact l.Prime] (hr : 0 < r)
+    (S : Set (HeightOneSpectrum (𝓞 Kf.1))) [Fintype S] {l r : ℕ} [Fact l.Prime]
     (hS : ∀ v : HeightOneSpectrum (𝓞 Kf.1), ((l : ℕ) : 𝓞 Kf.1) ∈ v.asIdeal → v ∈ S)
     (ζ : AlgebraicClosure ℚ) (hζ : IsPrimitiveRoot ζ (l ^ r))
-    (inv : InvFam Kf.1 (AlgebraicClosure ℚ) l r) (hinv : InvNormalised ζ inv)
+    (inv : InvFam Kf.1 (AlgebraicClosure ℚ) l r)
     (ιs : ∀ v : S, AlgebraicClosure ℚ →ₐ[Kf.1]
       AlgebraicClosure ((v : HeightOneSpectrum (𝓞 Kf.1)).adicCompletion Kf.1))
-    (v : S) (A : ValuationSubring (AlgebraicClosure ℚ)) (hA : IsPlaceOver A v.1)
+    (v : S) (A : ValuationSubring (AlgebraicClosure ℚ))
     (ev : (AlgebraicClosure ((v : HeightOneSpectrum (𝓞 Kf.1)).adicCompletion Kf.1) ≃ₐ[
         (v : HeightOneSpectrum (𝓞 Kf.1)).adicCompletion Kf.1]
         AlgebraicClosure ((v : HeightOneSpectrum (𝓞 Kf.1)).adicCompletion Kf.1)) ≃* Dec (F := Kf.1) A)
@@ -1311,7 +1310,7 @@ theorem invCmp' (Kf : FiniteSubfield) [NumberField Kf.1] [IsAlgClosure Kf.1 (Alg
       (inv A (Submodule.Quotient.mk z)).val • Submodule.Quotient.mk key.choose := by
     apply hbij.1
     rw [map_nsmul, hz0, nsmul_eq_mul, mul_one, ZMod.natCast_zmod_val]
-  have hx := @invMatch_nsmul_B Kf ‹_› ‹_› S ‹_› l r ‹_› hr hS ζ hζ inv hinv ιs v A hA ev hev hevc
+  have hx := @invMatch_nsmul_B Kf ‹_› ‹_› S ‹_› l r ‹_› hS ζ hζ inv ιs v A ev hev hevc
     z key.choose x key.choose_spec.choose hzx hm0 _ hz
   have E := (congrArg (gsLocalInvRootsQZ S ιs (l ^ r) v) hx).trans
     ((map_nsmul (gsLocalInvRootsQZ S ιs (l ^ r) v) _ _).trans

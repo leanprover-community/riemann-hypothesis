@@ -792,7 +792,7 @@ theorem herm_mulVec_right {K : Type} [Field K] (σ : K →+* K)
   ring
 
 theorem selfDual_matLat_stdLat {O K : Type} [CommRing O] [Field K] [Algebra O K] (σ : K →+* K)
-    (_hinv : ∀ x, σ (σ x) = x) (hO : ∀ a : O, ∃ b : O, σ (algebraMap O K a) = algebraMap O K b)
+    (hO : ∀ a : O, ∃ b : O, σ (algebraMap O K a) = algebraMap O K b)
     (n : ℕ) (g : Matrix (Fin n) (Fin n) K) (hg : (g.map σ)ᵀ * g = 1) :
     SelfDual O σ (matLat O g (stdLat O n)) := by
   have hg' : g * (g.map σ)ᵀ = 1 := mul_eq_one_comm.mp hg
@@ -966,7 +966,7 @@ theorem orbit_main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n :
         simpa [UJ, cT] using this
       have sd : ∀ g : UL n w, SelfDual (w.adicCompletionIntegers E) (cj w)
           (matLat (w.adicCompletionIntegers E) g.1.val (stdLat (w.adicCompletionIntegers E) n)) :=
-        fun g => _root_.GlobalTheory.LatOrb.selfDual_matLat_stdLat (cj w) hcc hσO n _ (hUL g)
+        fun g => _root_.GlobalTheory.LatOrb.selfDual_matLat_stdLat (cj w) hσO n _ (hUL g)
       have hc := _root_.GlobalTheory.LatOrb.matLat_adj_mul_eq_of_selfDual (cj w) hcc n (aeval γ.1.val p) hpu _ (sd g₁) (hp ▸ sd g₂)
       obtain ⟨t, ht1, htc, htM⟩ := _root_.GlobalTheory.LatOrb.exists_unitary_matLat_eq n P₀ hcop γ.1.val hγ (cj w) hcc hσO (hUL γ) _ (_root_.GlobalTheory.LatOrb.matLat_stdLat_isLatV n g₁.1)
         (st g₁ h₁) p hpu hc

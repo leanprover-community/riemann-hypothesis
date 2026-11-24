@@ -1016,7 +1016,7 @@ theorem leaf_of (hC : Core) (hP : GrowPHolds) : Leaf := by
     hC E N (tw U (-w)) hU'st hU'A hU'P _ ⟨φ, hφU, rfl⟩ hφ'A2 hφ'0
   have hUle : ∀ ψ ∈ U, ψ ∈ tw (tw U (-w)) w := fun ψ hψ => ⟨_, ⟨ψ, hψ, rfl⟩, mulChi_absC_neg' N w ψ⟩
   refine ⟨.leaf V w, twMap N w p, Or.inr ⟨hN, hV, re_tw hz⟩, hN,
-    fun o ψ hψ => twMap_equiv hU'st hpe o ψ (hUle ψ hψ), fun ψ hψ => twMap_mem hpV ψ (hUle ψ hψ), ?_⟩
+    fun o ψ hψ => twMap_equiv hpe o ψ (hUle ψ hψ), fun ψ hψ => twMap_mem hpV ψ (hUle ψ hψ), ?_⟩
   rw [twMap_apply, Ne, LinearEquiv.map_eq_zero_iff]
   exact hp0
 
@@ -1088,7 +1088,7 @@ theorem node_holds : Node := by
 
   have hI := indMap_holds E r s U (tw W₁ ((s : ℂ) / 2)) (tw W₂ (-(r : ℂ) / 2)) T (twMap r ((s : ℂ) / 2) p₁)
     (twMap s (-(r : ℂ) / 2) p₂) hU.1 hU.2 (isStable_tw hW₁.1 _) (isStable_tw hW₂.1 _) hTe hmem
-    (twMap_equiv hW₁.1 hp₁e) (twMap_equiv hW₂.1 hp₂e)
+    (twMap_equiv hp₁e) (twMap_equiv hp₂e)
   obtain ⟨T', hT'e, hT'u, hT's⟩ := hI
   have hT'm : ∀ φ ∈ U, MemInd2 (tw t₁.space ((s : ℂ) / 2)) (tw t₂.space (-(r : ℂ) / 2)) (T' φ) := by
     intro φ hφ
@@ -1295,7 +1295,7 @@ open TwistConcentration in
 theorem twConc_holds : TwConc := by
   intro E _ _ _ N U z hz hU φ _ hc
   obtain ⟨t, T, ht, hpos, hTe, hTm, hT0⟩ := hc
-  refine ⟨twT z t, ParabolicProjection.twMap N z T, good_twT hz t ht, pos_twT z t hpos, ParabolicProjection.twMap_equiv hU.1 hTe, fun ψ hψ => ?_, ?_⟩
+  refine ⟨twT z t, ParabolicProjection.twMap N z T, good_twT hz t ht, pos_twT z t hpos, ParabolicProjection.twMap_equiv hTe, fun ψ hψ => ?_, ?_⟩
   · rw [space_twT]
     exact ParabolicProjection.twMap_mem hTm ψ hψ
   · rw [ParabolicProjection.twMap_apply, ParabolicProjection.mulChi_absC_neg]
@@ -1895,7 +1895,7 @@ theorem sliceU_of_noLog2 (hNL : NoLog) : SliceU := by
     have e : lev (Ad E) r s (m₁, splitCentre E s t * m₂) =
         splitCentre E (r + s) t * (aT E (r + s) r (-t) * lev (Ad E) r s (m₁, m₂)) := by
       rw [show ((m₁, splitCentre E s t * m₂) : GA E r × GA E s) = (1, splitCentre E s t) * (m₁, m₂) by simp,
-        map_mul, splitCentre_eq_aT, lev_aT_right r s s le_rfl, splitCentre_eq_aT, mul_assoc]
+        map_mul, splitCentre_eq_aT, lev_aT_right r s s, splitCentre_eq_aT, mul_assoc]
     rw [hχ, hχ, e, mul_assoc, hsplit ψ hψ, mul_assoc, heig ψ hψ]
     congr 2
     push_cast

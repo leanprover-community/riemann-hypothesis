@@ -768,7 +768,7 @@ theorem continuous_uGL (e : ι ≃ Fin a ⊕ Fin b) : Continuous (uGL e : (Fin a
   exact Units.continuous_iff.2 ⟨hu, hu.comp continuous_neg⟩
 
 theorem continuous_coord (e : ι ≃ Fin a ⊕ Fin b) : Continuous (coord e : GL ι K → Fin a → Fin b → K) :=
-  continuous_pi fun i => continuous_pi fun j => Units.continuous_val.matrix_elem _ _
+  continuous_pi fun _ => continuous_pi fun _ => Units.continuous_val.matrix_elem _ _
 
 theorem lam_open_compact (e : ι ≃ Fin a ⊕ Fin b) (K' : Subgroup (GL ι K)) (ho : IsOpen (K' : Set (GL ι K)))
     (hc : IsCompact (K' : Set (GL ι K))) :

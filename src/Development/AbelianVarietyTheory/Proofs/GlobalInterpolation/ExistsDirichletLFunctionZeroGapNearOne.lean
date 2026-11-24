@@ -200,7 +200,7 @@ lemma log_le_sqrt {x : ℝ} (hx : 1 ≤ x) : Real.log (3 * x) ≤ 4 * √x := by
   push_cast at h1
   linarith
 
-lemma real_case {x a C c δ : ℝ} (hx : 1 ≤ x) (hC : 0 < C) (hδ : 0 ≤ δ) (hc : 0 < c)
+lemma real_case {x a C c δ : ℝ} (hx : 1 ≤ x) (hC : 0 < C) (hδ : 0 ≤ δ)
     (hca : c ≤ a / (4 * C))
     (h : a / x ^ ((3 : ℝ) / 2) ≤ C * Real.log (3 * x) ^ 2 * δ) :
     c / (x ^ 2 * Real.log (3 * x)) ≤ δ := by
@@ -251,7 +251,7 @@ theorem exists_gap : ∃ c : ℝ, 0 < c ∧ ∀ (q : ℕ) [NeZero q] (χ : Diric
   by_cases h3 : 1 / Real.log (3 * q) ≤ 1 - ρ.re
   · exact (weaken hq hc ((min_le_left _ _).trans (min_le_left _ _))).trans h3
   push Not at h3
-  refine real_case hq hC (by linarith) hc ((min_le_left _ _).trans (min_le_right _ _)) ?_
+  refine real_case hq hC (by linarith) ((min_le_left _ _).trans (min_le_right _ _)) ?_
   refine (Ha q χ h1 hsq).trans ?_
   have hconv : Convex ℝ {z : ℂ | z.im = 0 ∧ ρ.re ≤ z.re ∧ z.re ≤ 1} := by
     intro x hx y hy s t hs ht hst

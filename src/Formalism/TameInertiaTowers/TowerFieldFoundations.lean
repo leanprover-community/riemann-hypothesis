@@ -989,7 +989,7 @@ section -- clump:auto
 
 namespace Formalism.TwoAdicCyclotomicDecomposition
 
-theorem layerConj : LayerConj := layerConj_of layerGalois
+theorem layerConj : LayerConj := layerConj_of
 theorem layerReal : LayerReal := layerReal_of layerGalois layerConj
 theorem layerDecompTwo : LayerDecompTwo := layerDecompTwo_of layerGalois
 theorem layerInertiaTwo : LayerInertiaTwo := layerInertiaTwo_of layerGalois

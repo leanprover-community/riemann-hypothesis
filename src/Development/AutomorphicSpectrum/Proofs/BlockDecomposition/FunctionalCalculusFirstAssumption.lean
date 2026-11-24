@@ -110,7 +110,7 @@ theorem sob_trans (hO : SobOps) (hL : LgFacts) (hU : Unimod) (hR : RCalc) {f : M
     (h : G n) : Sob μ (fun y => f (y * h.val)) :=
   ((hO n μ V hL hU hR f hf).2.2.2.2 h (ContinuousLinearMap.id ℂ V)).1
 
-theorem rR_cls (hC : ClsFacts) (hO : SobOps) (hL : LgFacts) (hU : Unimod) (hR : RCalc) {f : Mat n → V}
+theorem rR_cls (hC : ClsFacts) (hU : Unimod) {f : Mat n → V}
     (hf : Sob μ f) (h : G n) : rR μ V h (cls μ f) = cls μ (fun y => f (y * h.val)) :=
   (hC n μ V hU).2.2.2.1 h f (sob_memLp hf)
 
@@ -137,7 +137,7 @@ theorem comm_rR (hC : ClsFacts) (hO : SobOps) (hL : LgFacts) (hU : Unimod) (hR :
     (hΩ : ∀ (f : Mat n → V) (hf : cls μ f ∈ Msob μ V), Sob μ f → (Ω ⟨cls μ f, hf⟩ : Lp V 2 μ) = cls μ (Om f))
     (g : C₀(ℝ, ℂ)) (h : G n) : F.Φ g * rR μ V h = rR μ V h * F.Φ g :=
   (comm_of hC hO hL hU hR F hrep hΩ (rR μ V h) (ContinuousLinearMap.id ℂ V) h
-    (fun _ hf => rR_cls hC hO hL hU hR hf h) g).symm
+    (fun _ hf => rR_cls hC hU hf h) g).symm
 
 theorem pres (hC : ClsFacts) (hO : SobOps) (hL : LgFacts) (hU : Unimod) (hR : RCalc) (hSG : SobG) (hP : PresSob)
     (F : FCalc (Lp V 2 μ) (Msob μ V) Ω T) (hrep : ∀ x ∈ Msob μ V, ∃ f, Sob μ f ∧ cls μ f = x)
@@ -179,7 +179,7 @@ theorem sec_pres (E : KMod n) [CompleteSpace E.V] {Ω : Msob μ E.V →ₗ[ℂ] 
   have hS : ∀ f : Mat n → E.V, Sob μ f → S (cls μ f) = cls μ (fun y => E.ρ k (f (y * (kk k).val))) := by
     intro f hf
     show (E.ρ k).compLpL 2 μ (rR μ E.V (kk k) (cls μ f)) = _
-    rw [rR_cls hC hO hL hU hR hf, (hC n μ E.V hU).2.2.2.2 _ _ (sob_memLp (sob_trans hO hL hU hR hf _))]
+    rw [rR_cls hC hU hf, (hC n μ E.V hU).2.2.2.2 _ _ (sob_memLp (sob_trans hO hL hU hR hf _))]
   have hsob : ∀ f : Mat n → E.V, Sob μ f → Sob μ (fun y => E.ρ k (f (y * (kk k).val))) := fun f hf =>
     ((hO n μ E.V hL hU hR f hf).2.2.2.2 (kk k) (E.ρ k)).1
   have hfix : S (cls μ f) = cls μ f := by

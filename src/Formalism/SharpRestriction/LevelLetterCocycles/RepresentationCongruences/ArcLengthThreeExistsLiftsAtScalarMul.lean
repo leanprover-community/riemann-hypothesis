@@ -517,7 +517,7 @@ theorem arc_length_three_hyp_second (W : LocWach PD LL O v n) (hcase : Formalism
     (hP5 : Formalism.MainNotions.DeltaInvariantLattices.P5W W) (A : ArcP n) (c : ZMod n) (hlen : A.len c = 3) {T₂ : LocLat G Qp LL O}
     (hT₂ : IsCrys PD T₂.ρ) (Mi' hi' : ZMod n → ℕ) (hJL : Formalism.MainNotions.DeltaInvariantLattices.JumpsLet W T₂ Mi' hi') {b₁ w' A₀ : ℕ}
     (hM1 : Mi' (c - 2) = w' + A.S) (hM2 : Mi' (c - 1) = A.η)
-    (hN : b₁ + A₀ + A.η ≤ (PD.p - 1) * A.M PD.p) (hM : 1 ≤ A.M PD.p) (lam : W.DD T₂)
+    (hN : b₁ + A₀ + A.η ≤ (PD.p - 1) * A.M PD.p) (lam : W.DD T₂)
     (hlamγ : InFP W T₂ (c - ((A.len c : ℕ) : ZMod n)) 2 (W.φA (Formalism.MainNotions.LiftingTheory.JJ W 1 (2 * A.G₀) (A.M PD.p)))
       (W.γ T₂ lam - lam))
     (s : W.EE) (hs : algebraMap (LetA O n) W.EE (qA W ^ b₁) * s =
@@ -1288,7 +1288,7 @@ noncomputable section
 namespace Formalism.MainNotions.N.FrobeniusPowerSeries
 
 theorem numeric_bound_two_a_le_b1 (l : ℕ) (hl : 11 ≤ l) (b wm S η b₁ H : ℕ) (hb : 1 ≤ b) (hη : 20 * η ≤ b) (hS : 20 * S ≤ b)
-    (hwm : 20 * wm ≤ b) (hb₁ : b ≤ b₁) (hH : H ≤ b + 2 * η + S)
+    (hb₁ : b ≤ b₁) (hH : H ≤ b + 2 * η + S)
     (hsm : 40 * Formalism.MainNotions.N.FrobeniusPowerSeries.Sg l (b + η + S) wm S η ≤ (b : ℝ) / 4) (a : ℝ)
     (ha : a ≤ (H : ℝ) * (2 * l - 1) / ((l : ℝ) - 1) ^ 2 + cW l H + 1) :
     2 * a + η + 1 ≤ (b₁ : ℝ) := by
@@ -1327,7 +1327,7 @@ theorem numeric_bound_exponent_eg (l : ℕ) (hl : 11 ≤ l) (b wm S η b₁ H : 
     exact mul_nonneg (Nat.cast_nonneg _) (by linarith)
   have ha' : max (A : ℝ) 1 ≤ (H : ℝ) * (2 * l - 1) / ((l : ℝ) - 1) ^ 2 + cW l H + 1 :=
     max_le ha (by linarith)
-  have h5 := div_add_logb_le_eight_mul_errorScale l hl b wm S η b₁ H hb hη hS hwm hb₁ hb₁' hH (max (A : ℝ) 1) (le_max_right _ _) ha'
+  have h5 := div_add_logb_le_eight_mul_errorScale l hl b wm S η b₁ H hb hb₁ hb₁' hH (max (A : ℝ) 1) ha'
   have hmono : ((3 * (A : ℝ) + S + 2 * η : ℝ) - 2) / ((l : ℝ) - 1) ≤
       (3 * max (A : ℝ) 1 + S + 2 * η - 2) / ((l : ℝ) - 1) := by
     apply div_le_div_of_nonneg_right _ hl0.le
@@ -1510,7 +1510,7 @@ theorem arc_length_three_first_level [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsD
   have hcW : (Formalism.MainNotions.LiftingTheory.cH PD.p (Formalism.MainNotions.LiftingTheory.Hmax n Mi' hi') : ℝ) = (cW PD.p (Formalism.MainNotions.LiftingTheory.Hmax n Mi' hi') : ℝ) := rfl
   rw [hcW] at hAr
   have hsm' : 40 * Formalism.MainNotions.N.FrobeniusPowerSeries.Sg PD.p (b + η + S) w S η ≤ (b : ℝ) / 4 := by rw [← eSg]; exact hsm
-  have hk6 := numeric_bound_two_a_le_b1 PD.p hp11 b w S η b₁ _ hb1 hηb hSb hwb hT1.1 hHle hsm' ((Ai + ri : ℕ) : ℝ) hAr
+  have hk6 := numeric_bound_two_a_le_b1 PD.p hp11 b w S η b₁ _ hb1 hηb hSb hT1.1 hHle hsm' ((Ai + ri : ℕ) : ℝ) hAr
   have hb : 2 * (Ai + ri) + η + 1 ≤ b₁ := by
     have : ((2 * (Ai + ri) + η + 1 : ℕ) : ℝ) ≤ b₁ := by push_cast at hk6 ⊢; linarith
     exact_mod_cast this
@@ -1553,7 +1553,7 @@ theorem arc_length_three_first_level [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsD
     generalize (PD.p - 1) * (2 * A.h / (PD.p - 1) + 1) = Z at h1 ⊢
     omega
   have hM : 1 ≤ A.M PD.p := Nat.le_add_left _ _
-  have hH2 := arc_length_three_hyp_second W hcase hP9 hP5 A c hlen hW₂.1 Mi' hi' hJ₂ hM1 hM2 hN hM lam hlamγ s₀ hs₀eq
+  have hH2 := arc_length_three_hyp_second W hcase hP9 hP5 A c hlen hW₂.1 Mi' hi' hJ₂ hM1 hM2 hN lam hlamγ s₀ hs₀eq
 
   obtain ⟨x₁, hx₁, hmap⟩ := existsLiftMapEqPrimePowSmul W hcase hP9 (c - 1) F hSur hW₁.1 hW₂.1 Ai ri hKA hKr b₁ S η hU hb
     (gamma_pi0_eq_pi0_mul_one_add_unit_mul_q W hcase hP9) (fun k hk => gamma_level_eq_mul W hcase hP9 k hk) hA4 hl0 hO hOv hinj
@@ -1595,28 +1595,18 @@ variable [FiniteDimensional Qp LL]
 theorem arc_length_three_le_valuation_constant_term [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsDomain O] [IsDiscreteValuationRing O] [IsAdicComplete (IsLocalRing.maximalIdeal O) O] (W : LocWach PD LL O v n) (hcase : Formalism.MainNotions.LiftingTheory.CaseA W)
     {T₁ T₂ : LocLat G Qp LL O} (F : LatHom T₁.L T₂.L) {b w S η m : ℕ} {up : ZMod n → Bool}
     {size Mi hi : ZMod n → ℕ} (hB : HypB PD W T₁ T₂ F b w S η m up size Mi hi)
-    (CR : ℝ) (hWR : Formalism.MainNotions.LiftingTheory.coreWR W CR)
-    (hW₁ : Win W (arcOf b w S η up size) T₁) (hW₂ : Win W (arcOf b w S η up size) T₂) (hH : Formalism.MainNotions.LiftingTheory.coreH W) (hTr : Formalism.MainNotions.LiftingTheory.coreTr W)
-    (hRelay : RelayCore W) (hArc : ArcCore W) (hArcL : ArcLCore W) (hNN : UnivNNCore W)
-    (hSat : SATcore W) (hSatP : Formalism.MainNotions.ArcLiftingSetup.SATPcore W) (hKill : KillerLevCore W) (hR2 : R2)
-    (hO : ∀ x : O, 0 ≤ v (algebraMap O LL x)) (hOv : ∀ x : LL, 0 ≤ v x → ∃ y : O, algebraMap O LL y = x)
+    (CR : ℝ)
+    (hW₁ : Win W (arcOf b w S η up size) T₁)
+    (hO : ∀ x : O, 0 ≤ v (algebraMap O LL x))
     (hinj : Function.Injective (algebraMap O LL))
-    (hP2 : Formalism.MainNotions.DeltaInvariantLattices.P2W W) (hP9 : Formalism.MainNotions.DeltaInvariantLattices.P9W W) (hpi0 : ∃ u ∈ W.AΔ, W.γA W.gam W.π₀ = W.π₀ * u)
-    (hSec : ArcSecMapCore W) (hGL : ArcGamLiftCore W) (hHF : HorFrameCore W) (hFL : ArcFilLowCore W)
-    (rr : ℕ) (hrr : (rr : ℝ) ≤ 3 * Formalism.MainNotions.N.Ln17.Sg PD.p b w S η size)
-    (hkill : ∀ c ∈ (arcOf b w S η up size).cuts, Formalism.MainNotions.LiftingTheory.KillsΔ W F c (Formalism.MainNotions.LiftingTheory.lp W rr))
-    (c : ZMod n) (hc : c ∈ (arcOf b w S η up size).cuts) {d : ℕ} (bb : Fin d → W.DD T₂)
+    (hP9 : Formalism.MainNotions.DeltaInvariantLattices.P9W W)
+    (rr : ℕ)
+    (c : ZMod n) {d : ℕ} (bb : Fin d → W.DD T₂)
     (sol : Fin d → ℕ → Fin d → LL)
-    (hbb : IsHor W T₂ (c - (((arcOf b w S η up size).len c : ℕ) : ZMod n)) bb sol) (k₀ : Fin d)
-    (hk₀ : InLpp W (arcOf b w S η up size) T₂ c bb k₀) (f : W.EE) (hf : InFF W (arcOf b w S η up size) c f) (Pt : ZMod n → LL → (K →ₐ[Qp] LL) → Prop) (hP3 : Formalism.MainNotions.DeltaInvariantLattices.P3W W) (hP4 : Formalism.MainNotions.DeltaInvariantLattices.P4W W Pt)
-    (hPtEx : ∀ (i : ZMod n) (τ : K →ₐ[Qp] LL), Formalism.MainNotions.LiftingTheory.Over W τ i →
-      ∃ ζ : LL, ζ ^ PD.p = 1 ∧ ζ ≠ 1 ∧ Pt i ζ τ)
-    (hC4 : Formalism.MainNotions.N.LetterConditionLocal W)
-    (hP5 : Formalism.MainNotions.DeltaInvariantLattices.P5W W) (Cb : ℝ) (hCb : 2 ≤ Cb) (halt : Alt b η up size)
-    (hsm : 40 * Formalism.MainNotions.N.Ln17.Sg PD.p b w S η size ≤ (b : ℝ) / 4)
-    (hlen : (arcOf b w S η up size).len c = 3) (hD : up (c - 2) = false)
-    (hOK : (arcOf b w S η up size).OK) (hσ : (((arcOf b w S η up size).σ PD.p : ℕ) : ℝ) ≤ 3 * Formalism.MainNotions.N.Ln17.Sg PD.p b w S η size)
-    (hy : size (c - 1) < PD.p * (size (c - 2) + S + η))
+    (k₀ : Fin d)
+    (f : W.EE) (Pt : ZMod n → LL → (K →ₐ[Qp] LL) → Prop)
+    (Cb : ℝ)
+    (hlen : (arcOf b w S η up size).len c = 3)
     (f₂ : W.EE) (hf₂ : InFr W c (ps W 2 ^ (size (c - 2) + S)) (ps W 1 ^ size (c - 1)) f₂) (κ₀ : ℕ) (X₀ : O) (hX₀ : InFr W c (ps W 0 ^ (size c + S)) (ps W 1 ^ size (c - 1))
       (lE W κ₀ * f₂ - algebraMap (LetA O n) W.EE (letE c) * algebraMap O W.EE X₀)) :
     ∀ r : ℚ, v (algebraMap O LL X₀) = ((r : ℚ) : WithTop ℚ) →
@@ -1626,7 +1616,7 @@ theorem arc_length_three_le_valuation_constant_term [NeZero n] [Fintype (K →�
   classical
   have : Fact PD.p.Prime := ⟨PD.hp⟩
   obtain ⟨hcr, -⟩ := hW₁
-  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T₁ hcr hO hinj
+  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T₁ hcr hO
   obtain ⟨hl11, hSet, -, hη20, hS20, -⟩ := hB
   obtain ⟨-, -, hsz, -⟩ := hSet
 
@@ -1846,7 +1836,7 @@ theorem arc_length_three_exists_liftsAt_scalar_mul [NeZero n] [Fintype (K →ₐ
       (∃ r : ℚ, v (algebraMap O LL t₃) = ((r : ℚ) : WithTop ℚ) ∧ (r : ℝ) ≤ 14 * Formalism.MainNotions.N.Ln17.Sg PD.p b w S η size) ∧
       LiftsAt W (arcOf b w S η up size) F c bb sol k₀ (algebraMap O W.EE t₃ * f₂) e := by
   obtain ⟨κ₀, X₀, hX₀⟩ := hf₂0
-  have hx0 := arc_length_three_le_valuation_constant_term W hcase F hB CR hWR hW₁ hW₂ hH hTr hRelay hArc hArcL hNN hSat hSatP hKill hR2 hO hOv hinj hP2 hP9 hpi0 hSec hGL hHF hFL rr hrr hkill c hc bb sol hbb k₀ hk₀ f hf Pt hP3 hP4 hPtEx hC4 hP5 Cb hCb halt hsm hlen hD hOK hσ hy f₂ hf₂ κ₀ X₀ hX₀
+  have hx0 := arc_length_three_le_valuation_constant_term W hcase F hB CR hW₁ hO hinj hP9 rr c bb sol k₀ f Pt Cb hlen f₂ hf₂ κ₀ X₀ hX₀
   obtain ⟨lam, κ, Hh, hlam, hlamγ, hHh, h4a⟩ := arc_length_three_exists_lambda_near_horizontal W hcase F hB CR hWR hW₁ hW₂ hH hTr hRelay hArc hArcL hNN hSat hSatP hKill hR2 hO hOv hinj hP2 hP9 hpi0 hSec hGL hHF hFL rr hrr hkill c hc bb sol hbb k₀ hk₀ f hf Pt hP3 hP4 hPtEx hC4 hP5 Cb hCb halt hsm hlen hD hOK hσ hy
   obtain ⟨n₁, E, hn₁, hE, hmap⟩ := arc_length_three_first_level W hcase F hB CR hWR hW₁ hW₂ hH hTr hRelay hArc hArcL hNN hSat hSatP hKill hR2 hO hOv hinj hP2 hP9 hpi0 hSec hGL hHF hFL rr hrr hkill c hc bb sol hbb k₀ hk₀ f hf Pt hP3 hP4 hPtEx hC4 hP5 Cb hCb halt hsm hlen hD hOK hσ hy lam hlam hlamγ κ Hh hHh h4a
   obtain ⟨y₁, σ₁, hy₁⟩ := arc_length_three_first_lift W hcase F hB CR hWR hW₁ hW₂ hH hTr hRelay hArc hArcL hNN hSat hSatP hKill hR2 hO hOv hinj hP2 hP9 hpi0 hSec hGL hHF hFL rr hrr hkill c hc bb sol hbb k₀ hk₀ f hf Pt hP3 hP4 hPtEx hC4 hP5 Cb hCb halt hsm hlen hD hOK hσ hy lam hlam hlamγ κ Hh hHh h4a n₁ E hn₁ hmap

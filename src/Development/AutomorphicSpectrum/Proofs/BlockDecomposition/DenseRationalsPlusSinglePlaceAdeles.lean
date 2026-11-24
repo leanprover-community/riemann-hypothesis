@@ -133,7 +133,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qo8.exists_supported :
-    ∀ {F : Type} [inst : Field F] [NumberField F]
+    ∀ {F : Type} [Field F] [NumberField F]
     (p : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers F)),
     ∃ (π : NumberField.RingOfIntegers F),
       π ≠ (0 : NumberField.RingOfIntegers F) ∧

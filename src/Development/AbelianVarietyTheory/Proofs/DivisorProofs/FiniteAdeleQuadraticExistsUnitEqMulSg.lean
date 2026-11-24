@@ -103,7 +103,7 @@ theorem finiteAdele_quadratic_exists_unit_eq_mul_sg (c : E ≃ₐ[F] E) (hcc : �
   have h2 : IsUnit (2 : RA F E) := by
     have := (IsUnit.mk0 (2 : F) two_ne_zero).map (algebraMap F (RA F E))
     rwa [map_ofNat] at this
-  refine hilbert90_involution_of_idempotent_unit (sg (FiniteAdeleRing (𝓞 F) F) c : _ →+* _) (sg_sg c hcc) u (κ (y - c y)) (ι e)
+  refine hilbert90_involution_of_idempotent_unit (sg (FiniteAdeleRing (𝓞 F) F) c : _ →+* _) u (κ (y - c y)) (ι e)
     (ι ((2 : F)⁻¹ • t)) hu ?_ ?_ h2 ?_ ?_ ?_ ?_
   · change sg _ c _ = _
     rw [← map_neg, hκ, hκ, sg_tmul, map_sub, hcc, neg_sub]

@@ -540,7 +540,7 @@ variable {R : Type} [CommRing R] [IsDomain R] [IsLocalRing R] {I : Ideal R}
   {D : DegData R I} {A : PolAV (Spec (CommRingCat.of (FractionRing R)))}
   {G : Over (Spec (CommRingCat.of R))} [GrpObj G] [IsCommMonObj G]
 
-theorem isTheta_of_nonzeroOnSpecial' (hLaws : Laws) (hL4 : Laws4) (hR : CLND R)
+theorem isTheta_of_nonzeroOnSpecial' (hLaws : Laws) (hL4 : Laws4)
     [IsDiscreteValuationRing R] (hI : I = maximalIdeal R) (U : Unif I D A G) (s : H0 U.LG.L 1)
     (hs : NonzeroOnSpecial U s) : IsTheta U s := by
   have := flat_G U.toUnifPre

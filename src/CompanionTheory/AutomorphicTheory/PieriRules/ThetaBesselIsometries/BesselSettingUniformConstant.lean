@@ -134,7 +134,7 @@ theorem besPhInt_xi_cont {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [Inn
 
 private theorem isUnit_det_of_mem_UH_Hpk_of_inv_mem {k r : ℕ} (hk : 1 ≤ k)
     {g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
-    (hg : g ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r)) (hg' : g⁻¹ ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r)) :
+    (hg' : g⁻¹ ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r)) :
     IsUnit g.det := by
   by_contra hu
   rw [Matrix.nonsing_inv_apply_not_isUnit g hu] at hg'
@@ -193,8 +193,8 @@ theorem integral_xi_mul_Ph : HypsG → ∀ (k r : ℕ) (ε : Fin (2 * r + k + 1)
     have hHinvG := (h54.2.2.2.2.1 _ hHinv _ hHinv).2.2
     have hNG := h54.2.2.2.2.2 _ hN
     have hNinvG := h54.2.2.2.2.2 _ hNinv
-    have huH := isUnit_det_of_mem_UH_Hpk_of_inv_mem D.k_pos hH.1 hHinv.1
-    have huN := isUnit_det_of_mem_UH_Hpk_of_inv_mem D.k_pos hN.1 hNinv.1
+    have huH := isUnit_det_of_mem_UH_Hpk_of_inv_mem D.k_pos hHinv.1
+    have huN := isUnit_det_of_mem_UH_Hpk_of_inv_mem D.k_pos hNinv.1
     have hin : ⟪x, (R.σ ((Matrix.of q.1)⁻¹ * (Matrix.of q.2)⁻¹)) x'⟫_ℂ =
         ⟪(R.σ (Matrix.of q.2 * Matrix.of q.1)) x, x'⟫_ℂ := by
       rw [hmul _ hNG _ hHG, hmul _ hHinvG _ hNinvG]
@@ -220,7 +220,7 @@ theorem integral_xi_mul_Ph : HypsG → ∀ (k r : ℕ) (ε : Fin (2 * r + k + 1)
       Formalism.FourierDecayAlt.ThreeDimData.beInt D.z' Formalism.QuantumDeterminants.cStd D.π' R.σ y y' (Ψ q) = V q := by
     intro q hH hN
     have hHinv := (h54'.2.2.2.2.1 _ hH _ hH).2.1
-    have huH := isUnit_det_of_mem_UH_Hpk_of_inv_mem D.k_pos hH.1 hHinv.1
+    have huH := isUnit_det_of_mem_UH_Hpk_of_inv_mem D.k_pos hHinv.1
     have hψc := (h54'.2.2.2.1 _ hH _ hN).2.2.2
     have hm : Matrix.of q.1 * ((Matrix.of q.1)⁻¹ * Matrix.of q.2 * Matrix.of q.1) =
         Matrix.of q.2 * Matrix.of q.1 := by

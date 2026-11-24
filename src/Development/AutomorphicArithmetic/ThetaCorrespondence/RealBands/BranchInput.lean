@@ -926,7 +926,7 @@ theorem derBounds_of : EmbLaws → PowInt → DecPow → LieBound → DerBounds 
   set v := π g₀ v₀ with hv
   have hsmv : SmV (lieOf (Jm ε)) π v := GlobalTheory.SmLinSub.rep_mem hJ hU' hsm0 hg₀
   set d1 := dR π X' v with hd1
-  have hsm1 : SmV (lieOf (Jm ε)) π d1 := GlobalTheory.SmLinSub.dR_mem hJ hU' hsmv hX'
+  have hsm1 : SmV (lieOf (Jm ε)) π d1 := GlobalTheory.SmLinSub.dR_mem hU' hsmv hX'
   set d2 := dR π X' d1 with hd2
   have hv1 : ‖v‖ = 1 := by rw [hv, hU.2.1 g₀ hg₀]; exact hv₀.1
   have hR1 : 1 ≤ R := (hUJ g₀ hg₀).1.trans (hcolle g₀)
@@ -946,7 +946,7 @@ theorem derBounds_of : EmbLaws → PowInt → DecPow → LieBound → DerBounds 
     set X'' := g₀⁻¹ * X' * g₀ with hX''def
     have hX'' : X'' ∈ lieOf (Jm ε) := GlobalTheory.SmLinSub.conj_mem_lie hJ hg₀ hX'
     have e1 : d1 = π g₀ (dR π X'' v₀) := GlobalTheory.SmLinSub.dR_rep hJ hU' hsm0 hg₀ hX'
-    have hsm0' := GlobalTheory.SmLinSub.dR_mem hJ hU' hsm0 hX''
+    have hsm0' := GlobalTheory.SmLinSub.dR_mem hU' hsm0 hX''
     have e2 : d2 = π g₀ (dR π X'' (dR π X'' v₀)) := by
       rw [hd2, e1]; exact GlobalTheory.SmLinSub.dR_rep hJ hU' hsm0' hg₀ hX'
     have hb := hLw [X'', X''] (by simp [hX'']) (by simp)
@@ -1174,7 +1174,7 @@ theorem rpow_neg_anti {x y k : ℝ} (hx : 0 < x) (hxy : x ≤ y) (hk : 0 ≤ k) 
   rw [Real.rpow_neg (hx.le.trans hxy), Real.rpow_neg hx.le]
   exact inv_anti₀ (Real.rpow_pos_of_pos hx k) (Real.rpow_le_rpow hx.le hxy hk)
 
-theorem decay_real {a y G k k2 : ℝ} (ha : 0 < a) (hy : 0 < y) (hG : 0 < G) (hya : y ≤ G ^ 2 * a) (hk : 0 ≤ k)
+theorem decay_real {a y G k k2 : ℝ} (hy : 0 < y) (hG : 0 < G) (hya : y ≤ G ^ 2 * a) (hk : 0 ≤ k)
     (hk2 : k2 = 2 * k) : a ^ (-k) ≤ G ^ k2 * y ^ (-k) := by
   have hyG : y / G ^ 2 ≤ a := by rw [div_le_iff₀ (by positivity)]; linarith [mul_comm (G ^ 2) a]
   calc a ^ (-k) ≤ (y / G ^ 2) ^ (-k) := rpow_neg_anti (by positivity) hyG hk
@@ -1294,7 +1294,7 @@ theorem intBounds_of (hE : EmbLaws) (hBo : Boost) (hP : PowInt) (hD : DecPow) : 
         _ ≤ (hsn g₀ * hsn (g₀⁻¹ * X * g₀)) * hsn g₀ := by
           rw [(hUJ g₀ hg₀).2]; exact mul_le_mul_of_nonneg_right (hsub _ _) (hsn_nonneg _)
         _ = hsn g₀ ^ 2 * hsn (g₀⁻¹ * X * g₀) := by ring
-    exact decay_real (by linarith [hone _ hx]) (by linarith [hone _ hX]) (by linarith [hone _ hg₀]) hle (by positivity)
+    exact decay_real (by linarith [hone _ hX]) (by linarith [hone _ hg₀]) hle (by positivity)
       (by ring)
   refine ⟨fun g hg => ?_, Real.exp (100 * ((n : ℝ) + 1) ^ 3) * hsn g₀ ^ (80 * ((n : ℝ) + 1) ^ 2), fun X hX => ?_⟩
   swap

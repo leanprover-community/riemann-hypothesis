@@ -114,7 +114,7 @@ theorem shift_smulLat_span (a : K) (f : Fin d → Fin d → K) :
   rw [smulLat, Submodule.map_span, ← Set.range_comp]
   rfl
 
-theorem shift_vw_pow (w : HeightOneSpectrum (𝓞 K)) (a : K) (ha : a ≠ 0) (n : ℕ) :
+theorem shift_vw_pow (w : HeightOneSpectrum (𝓞 K)) (a : K) (n : ℕ) :
     vw w (a ^ n) = (n : ℤ) * vw w a := by
   simp only [vw]
   rw [← FractionalIdeal.spanSingleton_pow, FractionalIdeal.count_pow]
@@ -138,7 +138,7 @@ theorem shift_idx_smulLat (w : HeightOneSpectrum (𝓞 K)) (N : Submodule (𝓞 
       ← localizationAt_smul w a ha]
   have h3 := idxChange_at w (smulLat a N) f hf (Matrix.diagonal fun _ : Fin d => a)
     (by rw [hdet]; exact pow_ne_zero d ha) h2
-  rw [hdet, shift_vw_pow w a ha] at h3
+  rw [hdet, shift_vw_pow w a] at h3
   rw [← h3]
   unfold idx
   exact idxChange_lidx_congr w.asIdeal h1.symm rfl
@@ -403,9 +403,9 @@ theorem shift_exists_val (w : HeightOneSpectrum (𝓞 K)) (s : ℤ) : ∃ a : K,
   have hϖ : (ϖ : K) ≠ 0 := shift_coe_ne_zero hϖ0
   rcases Int.eq_nat_or_neg s with ⟨n, rfl | rfl⟩
   · refine ⟨(ϖ : K) ^ n, pow_ne_zero n hϖ, ?_⟩
-    rw [shift_vw_pow w _ hϖ, hϖ1, mul_one]
+    rw [shift_vw_pow w _, hϖ1, mul_one]
   · refine ⟨((ϖ : K) ^ n)⁻¹, inv_ne_zero (pow_ne_zero n hϖ), ?_⟩
-    rw [(valuation_basic_properties K w).2.2.2.2.2.1, shift_vw_pow w _ hϖ, hϖ1, mul_one]
+    rw [(valuation_basic_properties K w).2.2.2.2.2.1, shift_vw_pow w _, hϖ1, mul_one]
 
 end Unit
 

@@ -127,7 +127,7 @@ theorem tens_iff {p : ∀ i, N i → M i → P} (hp : Bal R p) :
 
 def tmap {M₂ : ι → Type w} [∀ i, AddCommGroup (M₂ i)] [∀ i, Module R (M₂ i)] (a : ∀ i, M i →ₗ[R] M₂ i) :
     (∀ i, N i ⊗[R] M i) →+ ∀ i, N i ⊗[R] M₂ i :=
-  AddMonoidHom.mk' (fun t i => (a i).lTensor (N i) (t i)) fun s t => funext fun i => map_add _ _ _
+  AddMonoidHom.mk' (fun t i => (a i).lTensor (N i) (t i)) fun _ _ => funext fun _ => map_add _ _ _
 
 theorem tmap_single {M₂ : ι → Type w} [∀ i, AddCommGroup (M₂ i)] [∀ i, Module R (M₂ i)]
     (a : ∀ i, M i →ₗ[R] M₂ i) (i : ι) (n : N i) (x : M i) :
@@ -189,7 +189,7 @@ theorem tens_five [∀ i, Module.Flat R (N i)] {M₁ M₂ M₃ M₄ M₅ : ι �
     (tmap_exact a₁ a₂ ea₁) (tmap_exact a₂ a₃ ea₂) (tmap_exact a₃ a₄ ea₃) eb₁ eb₂ eb₃ t₁.2 t₂ t₄ t₅.1
 
 theorem tens_of_bij {M₂ : ι → Type w} [∀ i, AddCommGroup (M₂ i)] [∀ i, Module R (M₂ i)] {P₂ : Type w'} [AddCommGroup P₂]
-    {p : ∀ i, N i → M i → P} {q : ∀ i, N i → M₂ i → P₂} (hp : Bal R p) (hq : Bal R q)
+    {p : ∀ i, N i → M i → P} {q : ∀ i, N i → M₂ i → P₂}
     (e : ∀ i, M₂ i ≃ₗ[R] M i) (b : P₂ ≃+ P) (c : ∀ i n x, b (q i n x) = p i n (e i x))
     (t : Tens R (N := N) (M := M) (M' := P) p) : Tens R (N := N) (M := M₂) (M' := P₂) q := by
   obtain ⟨g, hg⟩ := t
@@ -402,17 +402,17 @@ def prodHom {K L : Cx.{w} R} {K' L' : Cx.{w'} R'} (φ : Cx.Hom K K' σ) (ψ : Cx
     Cx.Hom (prodCx K L) (prodCx K' L') σ where
   f n :=
     { toFun := fun x => (φ.f n x.1, ψ.f n x.2)
-      map_add' := fun x y => Prod.ext (map_add _ _ _) (map_add _ _ _)
-      map_smul' := fun r x => Prod.ext (map_smulₛₗ _ _ _) (map_smulₛₗ _ _ _) }
+      map_add' := fun _ _ => Prod.ext (map_add _ _ _) (map_add _ _ _)
+      map_smul' := fun _ _ => Prod.ext (map_smulₛₗ _ _ _) (map_smulₛₗ _ _ _) }
   comm n x := Prod.ext (φ.comm n x.1) (ψ.comm n x.2)
 
 def inlHom (K L : Cx.{w} R) : Cx.Hom K (prodCx K L) (RingHom.id R) where
   f n := LinearMap.inl R (K.X n) (L.X n)
-  comm n x := Prod.ext rfl (map_zero (L.d n))
+  comm n _ := Prod.ext rfl (map_zero (L.d n))
 
 def sndHom (K L : Cx.{w} R) : Cx.Hom (prodCx K L) L (RingHom.id R) where
   f n := LinearMap.snd R (K.X n) (L.X n)
-  comm n x := rfl
+  comm _ _ := rfl
 
 theorem bc_prod [Fintype ι] [DecidableEq ι] [∀ i, Module.Flat R (N i)] {K L : ι → Cx.{w} R} {K' L' : Cx.{w'} R'}
     (φ : ∀ i, N i → Cx.Hom (K i) K' σ) (ψ : ∀ i, N i → Cx.Hom (L i) L' σ) (hφ : Lin φ) (hψ : Lin ψ)
@@ -555,7 +555,7 @@ variable {G F F' τ hτ}
 theorem phi_lin (hadd : ∀ i n n' T x, τ i (n + n') T x = τ i n T x + τ i n' T x)
     (hsm : ∀ i (r : R) n T x, τ i (r • n) T x = σ r • τ i n T x) {W : ObjectProperty C} {W' : ObjectProperty C'}
     (h : ∀ T, W' T → W (G.obj T)) : Lin (Phi G F F' τ hτ h) :=
-  ⟨fun i n n' k x => funext fun s => hadd i n n' _ _, fun i r n k x => funext fun s => hsm i r n _ _⟩
+  ⟨fun i n n' _ _ => funext fun _ => hadd i n n' _ _, fun i r n _ _ => funext fun _ => hsm i r n _ _⟩
 
 theorem lin_prod {K L : ι → Cx.{w} R} {K' L' : Cx.{w'} R'} {φ : ∀ i, N i → Cx.Hom (K i) K' σ}
     {ψ : ∀ i, N i → Cx.Hom (L i) L' σ} (hφ : Lin φ) (hψ : Lin ψ) : Lin fun i n => prodHom (φ i n) (ψ i n) :=
@@ -704,7 +704,7 @@ theorem tens_top [Fintype ι] [DecidableEq ι]
   have lq : Lin (K := fun i => CH.cx (F i)) (K' := CH.cx F') (σ := σ)
       fun i n => (⟨G, τ i n, hτ i n⟩ : CH.Mor (F i) F' σ).hom :=
     ⟨fun i n n' k x => funext fun s => hadd i n n' _ _, fun i r n k x => funext fun s => hsm i r n _ _⟩
-  refine tens_of_bij (bal_mapH (phi_lin hadd hsm h) j) (bal_mapH lq j) (fun i => resEquiv (F i) hall j)
+  refine tens_of_bij (fun i => resEquiv (F i) hall j)
     (resEquiv F' hall' j).toAddEquiv (fun i n x => ?_) (t j)
   obtain ⟨a, ha, rfl⟩ := CrystallineSemistableComparison.CechClassBoundaries.clsSurj x
   rfl
@@ -716,9 +716,9 @@ theorem base_change_of_cover : ∀ {R R' : Type} [CommRing R] [CommRing R'] {σ 
     [∀ i, Module.Flat R (N i)] (F : ι → (C ⥤ ModuleCat.{0} R)) (F' : C' ⥤ ModuleCat.{0} R')
     (τ : ∀ i, N i → ∀ T : C', (F i).obj (G.obj T) →ₛₗ[σ] F'.obj T) (hτ : ∀ i n {T T' : C'} (φ : T ⟶ T') x,
       τ i n T' (((F i).map (G.map φ)).hom x) = (F'.map φ).hom (τ i n T x))
-    (hadd : ∀ i n n' T x, τ i (n + n') T x = τ i n T x + τ i n' T x) (hsm : ∀ i (r : R) n T x, τ i (r • n) T x = σ r • τ i n T x)
-    {A : Type} [Fintype A] (U : A → ObjectProperty C) (U' : A → ObjectProperty C') (hU : ∀ α, Cosieve (U α))
-    (hU' : ∀ α, Cosieve (U' α)) (hc : ∀ T, ∃ α, U α T) (hc' : ∀ T, ∃ α, U' α T) (h : ∀ α T, U' α T → U α (G.obj T)),
+    (_ : ∀ i n n' T x, τ i (n + n') T x = τ i n T x + τ i n' T x) (_ : ∀ i (r : R) n T x, τ i (r • n) T x = σ r • τ i n T x)
+    {A : Type} [Fintype A] (U : A → ObjectProperty C) (U' : A → ObjectProperty C') (_ : ∀ α, Cosieve (U α))
+    (_ : ∀ α, Cosieve (U' α)) (_ : ∀ T, ∃ α, U α T) (_ : ∀ T, ∃ α, U' α T) (h : ∀ α T, U' α T → U α (G.obj T)),
     (∀ S : Finset A, S.Nonempty → ∀ j, Tens R (N := N) (M := fun i => HU (F i) (capS U S) j) (M' := HU F' (capS U' S) j)
       fun i n x => (morU (⟨G, τ i n, hτ i n⟩ : CH.Mor (F i) F' σ) (U := capS U S) (U' := capS U' S)
         fun T hT α hα => h α T (hT α hα)).pull j x) →

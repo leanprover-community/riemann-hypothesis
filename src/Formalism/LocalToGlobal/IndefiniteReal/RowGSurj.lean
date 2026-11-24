@@ -590,7 +590,7 @@ theorem pLat_of (_hJt : I.PJt) : I.PLat := by
   have : Finite T := hH.ok.ok2.tup_fin
   exact Sand.glue_lattice I.A3.fam3.base3.μ0 I.X.μ
     (fun t => matLat (I.X.rowMat I.cg false t) ((lv (faceOf3 I.A3 ⊥ 1 I.P1 I.ψ1 I.Dc I.Sp I.Zsc I.X.zs) false).abelian₂ t))
-    (fun t => GluingInclusion.matLat_lattice' _ (rowG_surj hH t) _
+    (fun t => GluingInclusion.matLat_lattice' _ _
       (show Submodule.IsLattice K ((I.A.fam.R t).abelian₂ (Lvl.full I.A.fam.X) (I.X.Z t)) from
         BlockDat.Lam_lat hH.ok.ok2.conj (hH.ok.ok2.what₂ t) hH.ok.ok2.irr))
 

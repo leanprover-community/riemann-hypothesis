@@ -265,7 +265,7 @@ theorem bd_der (μ : Measure (GA D V)) [μ.IsHaarMeasure] (hθ : IsInfFam θ) {�
     (bd_ktype μ hθ hP ρ hρ (hy b) (hYl b)).mono fun φ hφ => hE φ hφ
   have hCq : C = quad hθ hX hYl := LinearMap.ext fun φ => Subtype.ext (by
     rw [← hC, hq φ.1 (smooth_of_mem φ), quad_apply]
-    simp [Submodule.coe_sum, der])
+    simp [der])
   have bX := bd_of_quad μ hθ E hX hYl (hCq ▸ hb) bK
   obtain ⟨_, b'⟩ := bd_span μ hθ E (Set.range X ∪ Set.range fun b => P⁻¹ * y b * P) (by
     rintro _ (⟨a, rfl⟩ | ⟨b, rfl⟩)

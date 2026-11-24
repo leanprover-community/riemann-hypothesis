@@ -994,7 +994,7 @@ theorem det_mul_star {ι Γ : Type} [Group Γ] [TopologicalSpace Γ] {n : ℕ} {
 end SemiInvariantDeterminant
 
 open SemiInvariantDeterminant in
-theorem semiZero_of (hQ : QdetFacts) (_hW : WallAlg) (hL : LieInv) (hWQ : WallQuot) : SemiZero := by
+theorem semiZero_of (hQ : QdetFacts) (hL : LieInv) (hWQ : WallQuot) : SemiZero := by
   intro n hn M _ _ ι _ _ Γ _ _ bar κ E ρ hK hG s φ hφ hS
   obtain ⟨lab, c, ξ, -, hact, I, w, hw, hwξ⟩ := hS
   have hρ : ∀ γ, ρ γ (ξ I) = (∏ τ, (κ τ γ).det ^ c τ) • ξ I := by
@@ -1306,7 +1306,7 @@ theorem main (hT : Trans) (N : ℕ) : TAk N := by
 
 end TA
 
-theorem transAll_of (_h1 : TensorGl) (h2 : Trans) : TransAll := by
+theorem transAll_of (h2 : Trans) : TransAll := by
   intro n M _ _ ι _ _ E hE hC l hl ℓ hℓ hW P _ _ lab C _ col b co h1' h2' h3'
   exact TA.main h2 (Fintype.card P) n M ι E hE hC l hl ℓ hℓ hW P rfl lab C col b co h1' h2' h3'
 
@@ -1532,7 +1532,7 @@ open Formalism.REAL Matrix
 namespace PositivityTheory.Rg.Cz
 
 open WallAlgP in
-theorem wallAlg_of (hA : TensorGl) (_hJ : JMComm) (hQ : QdetFacts) (hS : Spectrum) : WallAlg := by
+theorem wallAlg_of (hA : TensorGl) (hQ : QdetFacts) (hS : Spectrum) : WallAlg := by
   unfold WallAlg
   intro n M _ _ E₁ E₂ h₁ h₂ hcomm s₁ s₂ c hc₁ hc₂ m X hX hperm hOm htot
   obtain ⟨ξ0, hξ0X, hξ0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hX
@@ -1821,12 +1821,12 @@ theorem kType_holds : KType := by
   have ca := colAnti_of tg jm ht
   have tf := transFin_of tg jm sf qd sp ch ca
   have tr := trans_of tf
-  have ta := transAll_of tg tr
+  have ta := transAll_of tr
   have tk := tensorGK_of tg
-  have wa := wallAlg_of tg jm qd sp
+  have wa := wallAlg_of tg qd sp
   have li := lieInv_holds
   have co := contract_of tg qd wa tk li wq
-  have sz := semiZero_of qd wa li wq
+  have sz := semiZero_of qd li wq
   have sa := sphAll_of swStart_holds co sz
   exact kType_of tg ta tk sa young_holds
 

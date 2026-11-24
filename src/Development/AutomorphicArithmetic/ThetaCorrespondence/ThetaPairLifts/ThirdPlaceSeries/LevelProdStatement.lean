@@ -338,7 +338,7 @@ theorem prX_le_of_prCat (X : Formalism.L2.Col.Fields) (Pr : Formalism.L2.Col.Pri
   have hV : IsOpen {v : GL (XIx (Fin R.k) (Fin R.t) j) k |
       v⁻¹ * z ∈ ((GlobalTheory.StepData.prX (Cgrp J g) ⊓ K : Subgroup _) : Set _)} :=
     (hpo.inter hKo).preimage (by fun_prop)
-  obtain ⟨y, hy⟩ := GlobalTheory.denseGL_completion ι hcompl.dense e' z _ hV (by simp [one_mem, hz])
+  obtain ⟨y, hy⟩ := GlobalTheory.denseGL_completion ι hcompl.dense e' z _ hV (by simp [one_mem])
   have hy1 : (φ' y)⁻¹ * z ∈ GlobalTheory.StepData.prX (Cgrp J g) := hy.1
   have hy2 : (φ' y)⁻¹ * z ∈ K := hy.2
   have hyC : φ' y ∈ GlobalTheory.StepData.prX (Cgrp J g) := by

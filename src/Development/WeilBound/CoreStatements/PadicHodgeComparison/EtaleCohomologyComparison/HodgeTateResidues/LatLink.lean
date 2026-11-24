@@ -229,12 +229,12 @@ theorem isAdicComplete_span_tBdR (l : ℕ) [Fact l.Prime] :
 theorem pInv_rangeRestrict (l : ℕ) [Fact l.Prime] (b : BdRp l) :
     pInv l ((algebraMap (BdRp l) (BdR l)).rangeRestrict b) = b :=
   RingEquiv.symm_apply_apply (RingEquiv.ofBijective (algebraMap (BdRp l) (BdR l)).rangeRestrict
-    ⟨fun x y h => IsPerfectoidField.algebraMap_bDeRham_injective (K := ℂ_[l]) (p := l)
+    ⟨fun _ _ h => IsPerfectoidField.algebraMap_bDeRham_injective (K := ℂ_[l]) (p := l)
       (congrArg Subtype.val h), RingHom.rangeRestrict_surjective _⟩) b
 
 theorem pInv_injective (l : ℕ) [Fact l.Prime] : Function.Injective (pInv l) :=
   (RingEquiv.ofBijective (algebraMap (BdRp l) (BdR l)).rangeRestrict
-    ⟨fun x y h => IsPerfectoidField.algebraMap_bDeRham_injective (K := ℂ_[l]) (p := l)
+    ⟨fun _ _ h => IsPerfectoidField.algebraMap_bDeRham_injective (K := ℂ_[l]) (p := l)
       (congrArg Subtype.val h), RingHom.rangeRestrict_surjective _⟩).symm.injective
 
 theorem existsUnique_bdRp_of_compatible (l : ℕ) [Fact l.Prime]

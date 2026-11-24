@@ -222,7 +222,7 @@ variable {C A : Type} [AddCommGroup C] [CommGroup A]
 
 theorem idemAt_mul_idem {Q : Finset (Pl D.host.E)} (h : SplitSet Q) {P : Pl D.host.E} (hP : P ∈ Q) :
     idemAt P * idem Q = idemAt P :=
-  GlobalTheory.PlaceModelSum.mul_sum_orth (fun a ha => (h.isIdemAt ha).1) (fun a ha b hb hab => h.mul_eq_zero ha hb hab) hP
+  GlobalTheory.PlaceModelSum.mul_sum_orth (fun _ ha => (h.isIdemAt ha).1) (fun _ ha _ hb hab => h.mul_eq_zero ha hb hab) hP
 
 theorem idemAt_mul_conj_idem {Q : Finset (Pl D.host.E)} (h : SplitSet Q) {P : Pl D.host.E} (hP : P ∈ Q) :
     idemAt P * cA D (idem Q) = 0 := by

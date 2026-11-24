@@ -133,7 +133,7 @@ theorem stepNormalsG_of (hA : NmlInvG) (hB : NormCount) (hO : StepNormOneG) : St
         _ = _ := by ring
     exact le_of_mul_le_mul_right h' (by positivity)
   calc (S.card : ℝ) ≤ (T1.card : ℝ) * T2.card := by exact_mod_cast hcard
-    _ ≤ _ := count_bound D.R.f T T P _ _ hT1 hT2 hP1 hc1 hc2 (Nat.cast_nonneg _) (Nat.cast_nonneg _)
+    _ ≤ _ := count_bound D.R.f T T P _ _ hT1 hT2 hP1 hc1 hc2 (Nat.cast_nonneg _)
 
 end Formalism.L2.SG.NGCut.NormalInvariants.Gen
 end -- clump:auto

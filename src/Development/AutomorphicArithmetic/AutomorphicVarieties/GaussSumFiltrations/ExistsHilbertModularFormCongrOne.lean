@@ -627,14 +627,14 @@ private theorem hasQ_const (c : ℂ) :
   refine ⟨⟨1, one_pos, fun ξ hξ => ?_⟩, fun z => ?_⟩
   · have h0 : ξ = 0 := by
       by_contra hne
-      exact hξ (by simp [Set.indicator_apply, hne])
+      exact hξ (by simp [hne])
     subst h0
     refine ⟨Or.inl rfl, ?_⟩
     rw [mul_zero]
     exact isIntegral_zero
   · have h := hasSum_single
       (f := fun ξ : F => (({0} : Set F).indicator (fun _ => c) ξ) * ez ξ z) 0
-      (fun b hb => by simp [Set.indicator_apply, hb])
+      (fun b hb => by simp [hb])
     convert h using 1
     simp [ez, reAt]
 

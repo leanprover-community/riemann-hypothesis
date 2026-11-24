@@ -326,7 +326,7 @@ lemma step1 (N : Submodule O V) (hN : N.FG) (W U : Submodule (FractionRing O) V)
 
 lemma split {M P : Type*} [AddCommGroup M] [Module O M] [AddCommGroup P] [Module O P]
     (A B : Submodule O M) (hAB : A ≤ B) (i : P →ₗ[O] M) (C : Submodule O P)
-    (hiB : ∀ p, i p ∈ B) (hC : C ≤ A.comap i) (hB : B ≤ A ⊔ LinearMap.range i) :
+    (hC : C ≤ A.comap i) (hB : B ≤ A ⊔ LinearMap.range i) :
     Module.length O (M ⧸ A) ≤ Module.length O (M ⧸ B) + Module.length O (P ⧸ C) := by
   let q : (M ⧸ A) →ₗ[O] (M ⧸ B) := Submodule.factor hAB
   have hqs : Function.Surjective q := Submodule.factor_surjective hAB
@@ -502,7 +502,7 @@ theorem core {X : Type*} (E : Set (Module.End (FractionRing O) V))
         have hmN' : (m : V) ∈ N' := hN'ge (Submodule.mem_inf.mpr ⟨m.2, hmU⟩)
         exact Submodule.mem_sup_right ⟨⟨(m : V), hmN'⟩, Subtype.ext rfl⟩
     have hsplit := split (Dsub E N U) (Dsub E N U ⊔ B₀) le_sup_left (Submodule.inclusion hN'N)
-      (Dsub E N' U) hiB hC hB
+      (Dsub E N' U) hC hB
     have hq := quot_mono (M := N) (le_sup_right : B₀ ≤ Dsub E N U ⊔ B₀)
     rw [Finset.sum_insert hxS]
     calc Module.length O (N ⧸ Dsub E N U)

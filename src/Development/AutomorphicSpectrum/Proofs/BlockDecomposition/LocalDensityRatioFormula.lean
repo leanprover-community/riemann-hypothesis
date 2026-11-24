@@ -600,11 +600,11 @@ theorem pure_le {w : ∀ v : HeightOneSpectrum (𝓞 F), Fv F v → ℝ} (hG0 : 
   unfold PositivityTheory.Rg.Base1.pure
   refine ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_left ?_ (mul_nonneg (hG0 _) (Finset.prod_nonneg fun v _ => hg0 v _)))
   set U := (finite_mulSupport_off hw a S).toFinset ∪ (finite_mulSupport_off h1 a S).toFinset with hU
-  rw [finprod_eq_prod_of_mulSupport_subset (s := U) _ (fun x hx => by simp [hU, Set.Finite.mem_toFinset] at hx ⊢; exact Or.inl hx),
-    finprod_eq_prod_of_mulSupport_subset (s := U) _ (fun x hx => by simp [hU, Set.Finite.mem_toFinset] at hx ⊢; exact Or.inr hx)]
+  rw [finprod_eq_prod_of_mulSupport_subset (s := U) _ (fun x hx => by simp [hU] at hx ⊢; exact Or.inl hx),
+    finprod_eq_prod_of_mulSupport_subset (s := U) _ (fun x hx => by simp [hU] at hx ⊢; exact Or.inr hx)]
   exact Finset.prod_le_prod₀ (fun x _ => (hw x.1).2.2.1 _) (fun x _ => (hw x.1).2.2.2 _)
 
-theorem eventually_pure_eq (he : ∀ v, e v = 1 ∨ e v = -1) (a : (AF F)ˣ) :
+theorem eventually_pure_eq (a : (AF F)ˣ) :
     ∀ᶠ T : Finset (Off S) in atTop, PositivityTheory.Rg.Base1.pure S G g (wT e S T) a = PositivityTheory.Rg.Base1.pure S G g (fun v => rv v (e v)) a := by
   have h := eventually_cofinite.1 (eventually_val_eq_one a)
   have h' : {x : Off S | ¬ Valued.v ((a : AF F).2 x.1) = 1}.Finite := h.preimage Subtype.val_injective.injOn
@@ -687,7 +687,7 @@ theorem zi_one_ne_top (hG : Continuous G) (hG0 : ∀ y, 0 ≤ G y) (hg : ∀ v �
       PositivityTheory.Rg.Base1.pure S G g (fun v => rv v 1) a * ENNReal.ofReal (md a ^ s) := by
     intro a
     refine Tendsto.liminf_eq (tendsto_const_nhds.congr' ?_)
-    filter_upwards [hu.eventually (eventually_pure_eq (S := S) (G := G) (g := g) (e := fun _ => 1) he1 a)] with n hn
+    filter_upwards [hu.eventually (eventually_pure_eq (S := S) (G := G) (g := g) (e := fun _ => 1) a)] with n hn
     rw [hn]
   have hfat : ∫⁻ a, Filter.liminf (fun n => PositivityTheory.Rg.Base1.pure S G g (wT (fun _ => 1) S (u n)) a * ENNReal.ofReal (md a ^ s)) atTop ∂(ideleMeasure F) ≤
       Filter.liminf (fun n => ∫⁻ a, PositivityTheory.Rg.Base1.pure S G g (wT (fun _ => 1) S (u n)) a * ENNReal.ofReal (md a ^ s) ∂(ideleMeasure F)) atTop :=
@@ -718,7 +718,7 @@ theorem euler (hG : Continuous G) (hG0 : ∀ y, 0 ≤ G y) (hg : ∀ v ∈ S, Co
       (Eventually.of_forall fun T => Eventually.of_forall fun a => ?_) hb (Eventually.of_forall fun a => ?_)
     · exact mul_le_mul_left (pure_le hG0 hg0 (good_wT he T) a) _
     · refine tendsto_const_nhds.congr' ?_
-      filter_upwards [eventually_pure_eq (S := S) (G := G) (g := g) he a] with T hT
+      filter_upwards [eventually_pure_eq (S := S) (G := G) (g := g) a] with T hT
       rw [hT]
 
   have hsum : Summable fun x : Off S => -(e x.1 * (Ideal.absNorm x.1.asIdeal : ℝ) ^ (-s)) := by

@@ -347,7 +347,7 @@ private theorem on_form {R : Type} [CommRing R] (X : Matrix (Fin 2) (Fin 2) R)
   first
     | linear_combination e + (X 1 0 + X 0 1) * h10
 
-private theorem on_inv {R : Type} [CommRing R] (X Y : Matrix (Fin 2) (Fin 2) R) (a1 : X 1 1 = X 0 0) (b1 : X 1 0 = X 0 1)
+private theorem on_inv {R : Type} [CommRing R] (X Y : Matrix (Fin 2) (Fin 2) R)
     (a2 : Y 1 1 = Y 0 0) (b2 : Y 1 0 = Y 0 1) (h : X * Y = 1) :
     (X 0 0 + X 0 1) * (Y 0 0 + Y 0 1) = 1 ∧ (X 0 0 - X 0 1) * (Y 0 0 - Y 0 1) = 1 := by
   have e00 : X 0 0 * Y 0 0 + X 0 1 * Y 1 0 = 1 := by
@@ -490,7 +490,7 @@ theorem UpperTheory.V.Cu.irrOf4_of : AlNe → IrrOf4 := by
   have hne : (f (d.τ (resQ T.F (hT * t * hT⁻¹ * t⁻¹)) 0 0) + f (d.τ (resQ T.F (hT * t * hT⁻¹ * t⁻¹)) 0 1)) ^ 2 ≠
       (f (d.τ (resQ T.F (hT * t * hT⁻¹ * t⁻¹)) 0 0) - f (d.τ (resQ T.F (hT * t * hT⁻¹ * t⁻¹)) 0 1)) ^ 2 := by
     intro heq
-    obtain ⟨i1, i2⟩ := on_inv _ _ onh.1 onh.2 onhi.1 onhi.2 hXh
+    obtain ⟨i1, i2⟩ := on_inv _ _ onhi.1 onhi.2 hXh
     have fm := on_form _ (d.tau.form h) onh.2
     have kp : d.τ (resQ T.F (hT * t * hT⁻¹ * t⁻¹)) 0 0 + d.τ (resQ T.F (hT * t * hT⁻¹ * t⁻¹)) 0 1 =
         (d.τ h 0 0 + d.τ h 0 1) ^ 2 := by

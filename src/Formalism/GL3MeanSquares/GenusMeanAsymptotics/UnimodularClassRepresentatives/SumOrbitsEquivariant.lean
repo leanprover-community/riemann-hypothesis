@@ -103,8 +103,8 @@ theorem exists_move (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hs : h
       have := hp.2.2
       rw [h0] at this
       exact S.hx₀ (by simpa using this.symm)
-    obtain ⟨g, hg, hgx⟩ := exists_isom_map_of_eq hK hs hd hne hp.2.2
-    refine ⟨⟨g, hg⟩, fun _ => ⟨Prod.ext rfl hgx, OrbitRepresentatives.gmap_mem_genus hs hp.1 hg, ?_, rfl⟩⟩
+    obtain ⟨g, hg, hgx⟩ := exists_isom_map_of_eq hs hd hp.2.2
+    refine ⟨⟨g, hg⟩, fun _ => ⟨Prod.ext rfl hgx, OrbitRepresentatives.gmap_mem_genus hp.1 hg, ?_, rfl⟩⟩
     rw [← hgx]
     exact apply_mem_gmap g hp.2.1
   · exact ⟨1, fun h => absurd h hp⟩
@@ -113,7 +113,7 @@ theorem fibG_smul (hs : h.IsSymm) (S : VecSplit h h') {L : Submodule (𝓞 K) V}
     {Λ' : Submodule (𝓞 K) V'} {Λ : Submodule (𝓞 K) V} (hΛ : Λ ∈ fibG S L Λ')
     {g' : V' ≃ₗ[K] V'} (hg' : g' ∈ Formalism.HermitianLatticesTheory.isom h') :
     Formalism.HermitianLatticesTheory.gmap (extOf S g') Λ ∈ fibG S L (Formalism.HermitianLatticesTheory.gmap g' Λ') := by
-  refine ⟨OrbitRepresentatives.gmap_mem_genus hs hΛ.1 (extOf_mem_isom hs S hg'), ?_, ?_⟩
+  refine ⟨OrbitRepresentatives.gmap_mem_genus hΛ.1 (extOf_mem_isom hs S hg'), ?_, ?_⟩
   · have := apply_mem_gmap (extOf S g') hΛ.2.1
     rwa [extOf_x₀] at this
   · rw [cut_gmap_extOf, hΛ.2.2]

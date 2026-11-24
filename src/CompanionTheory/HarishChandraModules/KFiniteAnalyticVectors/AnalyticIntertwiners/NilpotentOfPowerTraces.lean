@@ -47,7 +47,7 @@ theorem single_comm_A {a b : Fin n} (hab : ε a = ε b) :
 theorem dS_mem_of_inK_A (hσ : Formalism.MainNotions.S.IsURepOn (Formalism.MainNotions.S.UJset ε) σ) {S : Submodule ℂ H}
     [FiniteDimensional ℂ S] (hK : Formalism.MainNotions.S.IsKStableOn ε σ S) {Z : Matrix (Fin n) (Fin n) ℂ} (hZ : inK ε Z)
     {s : H} (hs : s ∈ S) (hsm : s ∈ smD ε σ) : dS σ Z s ∈ S := by
-  have hd := hasDerivAt_dS hσ hZ.1 ((mem_smD_iff ε σ s).1 hsm)
+  have hd := hasDerivAt_dS hZ.1 ((mem_smD_iff ε σ s).1 hsm)
   have ht := hd.tendsto_slope_zero
   have hcl : IsClosed (S : Set H) := Submodule.closed_of_finiteDimensional S
   refine hcl.mem_of_tendsto ht (Eventually.of_forall fun t => ?_)

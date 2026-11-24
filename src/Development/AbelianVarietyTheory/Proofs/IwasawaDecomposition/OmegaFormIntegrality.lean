@@ -84,7 +84,7 @@ theorem pi_eq_stdL (E : Type) [Field E] [NumberField E] (n : ℕ) :
       exact Submodule.mem_one.2 ⟨1, by simp⟩
     · simp [h]
 
-theorem arr_injective {n : ℕ} {q : ℕ} (hq : q ≤ n) : Function.Injective (arr q : Fin n → Fin n) := by
+theorem arr_injective {n : ℕ} {q : ℕ} : Function.Injective (arr q : Fin n → Fin n) := by
   intro a b h
   have h' := congrArg Fin.val h
   have := a.2
@@ -124,7 +124,7 @@ theorem isONeg_x0Mat : IsONeg V q (x0Mat M) := by
       _ = _ := by rw [h1]; simp
   have h3 : (x0Mat M τ)ᴴ * gramAt D V τ * x0Mat M τ =
       ((onb M τ)ᴴ * gramAt D V τ * onb M τ).submatrix (arr (nNeg (M.ε τ))) (arr (nNeg (M.ε τ))) := rfl
-  rw [h3, h2, negM_eq M hpq hε τ, Formalism.REAL.Jm, Matrix.submatrix_diagonal _ _ (arr_injective (nNeg_le _))]
+  rw [h3, h2, negM_eq M hpq hε τ, Formalism.REAL.Jm, Matrix.submatrix_diagonal _ _ (arr_injective)]
   rfl
 
 theorem cart_eq_cartZ : cart M = cartZ V q (x0Mat M) := by

@@ -118,7 +118,7 @@ private lemma sum_embeddings_eq_real_add_complex {F : Type} [Field F] [NumberFie
 end UpperTheory.Reformulated.B.DYhb7
 
 theorem UpperTheory.Reformulated.B.DYhb7.main :
-    ∀ {F : Type} [inst : Field F] [inst_1 : NumberField F] (y : F),
+    ∀ {F : Type} [Field F] [NumberField F] (y : F),
       (Algebra.trace ℝ (NumberField.mixedEmbedding.mixedSpace F) : NumberField.mixedEmbedding.mixedSpace F → ℝ)
           ((NumberField.mixedEmbedding F : F → NumberField.mixedEmbedding.mixedSpace F) y) =
         (↑((Algebra.trace ℚ F : F → ℚ) y) : ℝ) := by

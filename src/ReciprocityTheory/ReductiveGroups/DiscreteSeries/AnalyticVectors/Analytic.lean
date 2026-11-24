@@ -37,7 +37,7 @@ variable {M : Type*} [NormedAddCommGroup M] [InnerProductSpace ℂ M] {ε : Fin 
   {E : Fin n → Fin n → Module.End ℂ M} {V : Submodule ℂ M}
 
 theorem actM_mem_layer_succ (hE : IsGlRep E) (hV : IsKStableSub ε E V)
-    {X : Matrix (Fin n) (Fin n) ℂ} (hX : inP ε X) {k : ℕ} {x : M} (hx : x ∈ layer ε E V k) :
+    {X : Matrix (Fin n) (Fin n) ℂ} {k : ℕ} {x : M} (hx : x ∈ layer ε E V k) :
     actM E X x ∈ layer ε E V (k + 1) := by
   unfold actM
   rw [LinearMap.sum_apply]
@@ -101,7 +101,7 @@ theorem actM_pow_mem_layer (hE : IsGlRep E) (hV : IsKStableSub ε E V)
   | zero => simpa using hx
   | succ m ih =>
     rw [pow_succ', Module.End.mul_apply, ← add_assoc]
-    exact actM_mem_layer_succ hE hV hX ih
+    exact actM_mem_layer_succ hE hV ih
 
 theorem norm_actM_pow_le (hE : IsGlRep E) (hV : IsKStableSub ε E V) {R d : ℝ} (hR0 : 0 ≤ R)
     (hR : ∀ k : ℕ, ∀ x ∈ layer ε E V k,

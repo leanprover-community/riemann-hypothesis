@@ -92,7 +92,7 @@ theorem wordAct_sum (hψ : IsStdChar D ψ (-1)) (hθ : IsInfFam θ) (l : List (D
   | insert i s hi ih =>
     rw [Finset.sum_insert hi, Finset.sum_insert hi, wordAct_add hψ hθ l (hg i) (theta_finsetSum s fun j _ => hg j), ih]
 
-theorem entry_bound (θ : InfFam D) (A : Matrix (Fin W.rank) (Fin W.rank) ℂ) (B : Matrix (Fin V.rank) (Fin V.rank) ℂ)
+theorem entry_bound (A : Matrix (Fin W.rank) (Fin W.rank) ℂ) (B : Matrix (Fin V.rank) (Fin V.rank) ℂ)
     (i0 : Fin W.rank) (j0 : Fin V.rank) (c : ℂ) (i : Fin W.rank) (j : Fin V.rank) :
     (A * Matrix.single i0 j0 c * B) i j = A i i0 * c * B j0 j := by
   simp [Matrix.mul_apply, Matrix.single_apply, ite_and, ite_mul, Finset.sum_ite_eq]
@@ -207,7 +207,7 @@ theorem heisDer_om {χS χT : (AE D)ˣ →* Circle} {ω : GA D V × GA D W →* 
 theorem norm_moveDir_le (θ : InfFam D) (τ : D.what₂.Tau) (g : GA D V) (h : GA D W) (i0 : Fin W.rank) (j0 : Fin V.rank)
     (b : Bool) (i : Fin W.rank) (j : Fin V.rank) :
     ‖moveDir θ τ g h (Matrix.single i0 j0 (if b then Complex.I else 1)) i j‖ ≤ normInf θ W h * normInf θ V g := by
-  rw [moveDir, entry_bound θ, norm_mul, norm_mul]
+  rw [moveDir, entry_bound, norm_mul, norm_mul]
   have hc : ‖(if b then Complex.I else 1 : ℂ)‖ = 1 := by cases b <;> simp
   rw [hc, mul_one]
   have h1 := GlobalTheory.Mem.LiftBound.entry_le θ W h τ i i0

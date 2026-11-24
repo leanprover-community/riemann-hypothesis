@@ -706,7 +706,7 @@ theorem num_mid (a b mk M de N C f : ℝ) (j s : ℕ) (ha : 0 ≤ a) (hb : 0 ≤
         rw [div_pow, e3]; field_simp
     _ ≤ _ := by gcongr
 
-theorem num_top (c₀ C L rd HH de N E : ℝ) (k m f : ℕ) (hc : 0 < c₀) (hC : 16 ≤ C) (hC' : 1 / c₀ ≤ C) (hL : 0 ≤ L)
+theorem num_top (c₀ C L rd HH de N E : ℝ) (k m f : ℕ) (hC : 16 ≤ C) (hC' : 1 / c₀ ≤ C) (hL : 0 ≤ L)
     (hrd : 1 ≤ rd) (hrd' : Real.log rd ≤ L / c₀) (hk : 1 ≤ k) (hm : 1 ≤ m)
     (hH : Real.exp L ^ (C * (m : ℝ) ^ 2 * f) ≤ HH) (hde : 1 ≤ de) (hN : 1 ≤ N) (hE : 0 ≤ E) :
     (9 * rd) ^ (k * f) * de ^ k ≤ (de / N) ^ k * (de * N) ^ E * ((C * k) ^ (k * f) * (HH * N) ^ (C * k)) := by
@@ -830,7 +830,7 @@ theorem main : ∀ c₀ : ℝ, 0 < c₀ → ∃ C₀ : ℝ, ∀ C : ℝ, C₀ �
     exact H2
   · have hk : 1 ≤ D.R.k := by omega
     have H2 := num_top c₀ C large₂.sc.L D.host.rdE HH de (Cnt.NT D u) (C * s + C * Real.log D.R.f) D.R.k D.R.m D.R.f
-      hc₀ hC1 hC2 hL (one_le_rdE D) hrd' hk (le_trans one_le_two D.R.two_le_m) hHH hde' hN
+      hC1 hC2 hL (one_le_rdE D) hrd' hk (le_trans one_le_two D.R.two_le_m) hHH hde' hN
       (by have := Real.log_nonneg hf'; positivity)
     obtain ⟨o1, o2, -⟩ := GlobalTheory.Mass.OrbMono.main (isom h) (Submodule (𝓞 D.host.E) (D.sp.X 0).V)
     refine (o1 _ _ _ (fun _ => ENNReal.ofReal ((9 * D.host.rdE) ^ (D.R.k * D.R.f) * (de : ℝ) ^ D.R.k))

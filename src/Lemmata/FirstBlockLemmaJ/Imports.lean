@@ -27,7 +27,7 @@ universe u_1
 namespace Bl.FirstBlockLemmaJ
 
 theorem goal1 :
-  ∀ {V : Type u_1} [inst : NormedAddCommGroup.{u_1} V] [inst_1 : NormedSpace.{0, u_1} Complex V] {g : V → Complex} {x : V}
+  ∀ {V : Type u_1} [NormedAddCommGroup.{u_1} V] [NormedSpace.{0, u_1} Complex V] {g : V → Complex} {x : V}
   {ε : Real},
   DifferentiableOn.{0, u_1, 0} Complex g (Metric.ball.{u_1} x ε) →
     ∀ {z : V},

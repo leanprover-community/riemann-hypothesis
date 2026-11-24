@@ -137,7 +137,7 @@ open Polynomial
 
 variable {l : ℕ} [Fact l.Prime]
 
-theorem exists_step (e : Per.Fl l) (he : GlobalTheory.MemLoc.IsEps e) (n : ℕ) (hn : 0 < n) (c : Per.Ainf l) :
+theorem exists_step (e : Per.Fl l) (n : ℕ) (hn : 0 < n) (c : Per.Ainf l) :
     ∃ y : Per.Fl l, (l : Per.Ainf l) ∣
       c + ((⇑(Per.φA l))^[n] (Per.tm y) - GlobalTheory.MemLoc.xi e * Per.tm y) := by
   have hq : 1 < l ^ n := Nat.one_lt_pow hn.ne' (Fact.out : l.Prime).one_lt
@@ -193,7 +193,7 @@ theorem period_solution : ∀ (l : ℕ) [Fact l.Prime] (e : Per.Fl l), GlobalThe
     intro k w
     by_cases hw : (l : Per.Ainf l) ^ (k + 1) ∣ F w
     · obtain ⟨c, hc⟩ := hw
-      obtain ⟨y, d, hd⟩ := exists_step e he n hn c
+      obtain ⟨y, d, hd⟩ := exists_step e n hn c
       refine ⟨w + (l : Per.Ainf l) ^ (k + 1) * Per.tm y, fun _ => ⟨⟨d, ?_⟩, ⟨Per.tm y, by ring⟩⟩⟩
       rw [F_lin, hc, ← mul_add]
       have : F (Per.tm y) = (⇑(Per.φA l))^[n] (Per.tm y) - ξ * Per.tm y := by simp only [F, hΦ]

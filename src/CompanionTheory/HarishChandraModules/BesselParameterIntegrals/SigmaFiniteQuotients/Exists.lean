@@ -50,12 +50,12 @@ theorem map_comap_toM (hG : IsMatGroup G) {μ : Measure (MtM m)}
   exact restrict_eq_self_of_ae_mem h0
 
 theorem comap_map_mul (hG : IsMatGroup G) {μ : Measure (MtM m)} (h0 : ∀ᵐ x ∂μ, Matrix.of x ∈ G)
-    (g : MG G hG) (hl : μ.map (lmulQ g.mat) = μ) :
+    (g : MG G) (hl : μ.map (lmulQ g.mat) = μ) :
     (μ.comap (MG.toM (hG := hG))).map (g * ·) = μ.comap MG.toM := by
   have hι := MG.measurableEmbedding_toM (hG := hG)
   apply hι.map_injective
   rw [map_map hι.measurable (measurable_const_mul g)]
-  have : MG.toM ∘ (fun x : MG G hG => g * x) = lmulQ g.mat ∘ MG.toM := rfl
+  have : MG.toM ∘ (fun x : MG G => g * x) = lmulQ g.mat ∘ MG.toM := rfl
   rw [this, ← map_map (measurable_lmulQ _) hι.measurable, map_comap_toM hG h0, hl]
 
 theorem IsHaarOnM.lt_top_of_isCompact (hG : IsMatGroup G) {μ : Measure (MtM m)}
@@ -63,7 +63,7 @@ theorem IsHaarOnM.lt_top_of_isCompact (hG : IsMatGroup G) {μ : Measure (MtM m)}
   obtain ⟨hσ, -, h0, hl⟩ := hμ
   have hι := MG.measurableEmbedding_toM (hG := hG)
   have hmap := map_comap_toM hG h0
-  haveI : T2Space (MG G hG) := MG.isClosedEmbedding_mat.isEmbedding.t2Space
+  haveI : T2Space (MG G) := MG.isClosedEmbedding_mat.isEmbedding.t2Space
   haveI : SigmaFinite (μ.comap (MG.toM (hG := hG))) :=
     SigmaFinite.of_map _ hι.measurable.aemeasurable (by rwa [hmap])
   haveI : IsMulLeftInvariant (μ.comap (MG.toM (hG := hG))) :=

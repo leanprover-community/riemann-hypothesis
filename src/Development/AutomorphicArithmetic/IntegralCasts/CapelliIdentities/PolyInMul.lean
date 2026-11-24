@@ -51,12 +51,12 @@ public import Mathlib.Algebra.BigOperators.Ring.Finset
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.Qk18.PolyIn :
-    {R : Type} → [inst : Ring R] → [Algebra ℂ R] → (ℂ → R) → ℕ → Prop :=
+    {R : Type} → [Ring R] → [Algebra ℂ R] → (ℂ → R) → ℕ → Prop :=
     fun {R : Type} [Ring R] [Algebra ℂ R] (f : ℂ → R) (d : ℕ) ↦
       ∃ (a : ℕ → R), ∀ (s : ℂ), f s = ∑ k ∈ Finset.range (d + (1 : ℕ)), s ^ k • a k
 
 theorem UpperTheory.Reformulated.B.Qk18.polyIn_mul :
-    ∀ {R : Type} [inst : Ring R] [inst_1 : Algebra ℂ R] {f g : ℂ → R} {d₁ d₂ : ℕ},
+    ∀ {R : Type} [Ring R] [Algebra ℂ R] {f g : ℂ → R} {d₁ d₂ : ℕ},
       UpperTheory.Reformulated.B.Qk18.PolyIn f d₁ →
         UpperTheory.Reformulated.B.Qk18.PolyIn g d₂ → UpperTheory.Reformulated.B.Qk18.PolyIn (fun (t : ℂ) ↦ f t * g t) (d₁ + d₂) := by
   intro R _ _ f g d₁ d₂ hf hg

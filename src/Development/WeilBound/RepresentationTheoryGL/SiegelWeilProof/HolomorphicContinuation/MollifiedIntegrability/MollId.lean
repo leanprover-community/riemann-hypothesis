@@ -129,7 +129,7 @@ theorem norm_gauss_le (ε : ℝ) (hε : 0 < ε) (y : E n) : ‖Complex.exp (-((�
   rw [this, Real.exp_le_one_iff]
   nlinarith
 
-theorem kraw_eq (ε : ℝ) (hε : 0 < ε) (t : ℝ) (ht : t ≠ 0) (u : E n) :
+theorem kraw_eq (ε : ℝ) (hε : 0 < ε) (t : ℝ) (u : E n) :
     (((|t| / (2 * Real.pi)) ^ (n ^ 2) : ℝ) : ℂ) *
         ∫ y : E n, Complex.exp (-((ε * ip y y : ℝ) : ℂ)) * Complex.exp (Complex.I * t * ip y u) =
       (((|t| / (2 * Real.sqrt ε)) ^ (n ^ 2) * gK ((|t| / (2 * Real.sqrt ε)) • u) : ℝ) : ℂ) := by
@@ -265,7 +265,7 @@ theorem continuous_gam (ε : ℝ) : Continuous (gam (n := n) ε) := by
 
 def kr (ε t : ℝ) (u : E n) : ℂ := ∫ y, gam ε y * Complex.exp (Complex.I * t * ip y u)
 
-theorem norm_kr_le (ε t : ℝ) (hε : 0 < ε) (u : E n) : ‖kr ε t u‖ ≤ ∫ y, ‖gam (n := n) ε y‖ := by
+theorem norm_kr_le (ε t : ℝ) (u : E n) : ‖kr ε t u‖ ≤ ∫ y, ‖gam (n := n) ε y‖ := by
   unfold kr
   refine (norm_integral_le_integral_norm _).trans (le_of_eq ?_)
   congr 1; ext y
@@ -289,7 +289,7 @@ theorem finrank_E : Module.finrank ℝ (E n) = n ^ 2 := by
 
 def mM (ψ : E n → ℂ) (l : ℝ) (w : E n) : ℂ := ∫ v, ψ (w - l⁻¹ • v) * (gK v : ℂ)
 
-theorem norm_mM_le (ψ : E n → ℂ) (B : ℝ) (hB : ∀ x, ‖ψ x‖ ≤ B) (hψ : Continuous ψ) (l : ℝ) (w : E n) :
+theorem norm_mM_le (ψ : E n → ℂ) (B : ℝ) (hB : ∀ x, ‖ψ x‖ ≤ B) (l : ℝ) (w : E n) :
     ‖mM ψ l w‖ ≤ B := by
   unfold mM
   calc ‖∫ v, ψ (w - l⁻¹ • v) * (gK v : ℂ)‖ ≤ ∫ v, B * gK (n := n) v := by

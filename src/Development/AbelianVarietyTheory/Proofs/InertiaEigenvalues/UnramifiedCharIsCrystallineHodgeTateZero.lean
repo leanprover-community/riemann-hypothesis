@@ -87,7 +87,7 @@ def unitLat (K LL : FinExt l) (μ : ↥(GK K) →* (↥LL.1)ˣ)
     (hμ : Continuous fun g => ((μ g : (↥LL.1)ˣ) : ↥LL.1)) : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL) where
   V := ↥LL.1
   ρ := charRep μ
-  cont := fun x => hμ.mul continuous_const
+  cont := fun _ => hμ.mul continuous_const
   L := GlobalTheory.IndefiniteRowSideFullHecke.SelmerFiniteUnramified.charLat Subtype.val_injective μ fun g => ⟨⟨_, val_mem_OL K LL μ hμ g⟩, rfl⟩
 
 theorem isCrys_and_multV_eq : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P), LocTied l P AI → ∀ (K LL : FinExt l) (μ : ↥(GK K) →* (↥LL.1)ˣ), Continuous (fun g => ((μ g : (↥LL.1)ˣ) : ↥LL.1)) → (∀ g ∈ IK K, μ g = 1) → IsCrys (P.PD K) (charRep μ) ∧ ∀ (τ : ↥K.1 →ₐ[ℚ_[l]] ↥LL.1) (b : ℤ), multV (P.PD K) (charRep μ) τ b = if b = 0 then 1 else 0 := by

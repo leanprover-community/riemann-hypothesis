@@ -495,7 +495,7 @@ theorem mem_pplus (ε : Fin n → Bool) (E : Fin n → Fin n → Module.End ℂ 
   · simp
 
 theorem stab_pplus (ε : Fin n → Bool) (E : Fin n → Fin n → Module.End ℂ V) (hE : GlRel E) {c d : Fin n}
-    (hc : ε c = false) (hd : ε d = false) : ∀ v ∈ pplus ε E, E c d v ∈ pplus ε E := by
+    (hd : ε d = false) : ∀ v ∈ pplus ε E, E c d v ∈ pplus ε E := by
   rintro _ ⟨w, rfl⟩
 
   rw [map_sum]
@@ -524,7 +524,7 @@ theorem Tm_stab (ε : Fin n → Bool) (E : Fin n → Fin n → Module.End ℂ V)
   intro v hv
   cases ha : ε a
   · rw [Tm, LinearMap.add_apply]
-    refine Submodule.add_mem _ ?_ (stab_pplus ε E hE ha hb v hv)
+    refine Submodule.add_mem _ ?_ (stab_pplus ε E hE hb v hv)
     split_ifs
     · rw [Module.algebraMap_end_apply]
       exact Submodule.smul_mem _ _ hv

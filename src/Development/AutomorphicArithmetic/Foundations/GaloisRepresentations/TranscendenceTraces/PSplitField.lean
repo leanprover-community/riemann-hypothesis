@@ -61,14 +61,14 @@ open Polynomial
 
 noncomputable def UpperTheory.Reformulated.B.SplittingFieldConstruction.SplitField :
     Prop :=
-    ∀ (A B : Type) [inst : CommRing A] [inst_1 : IsDomain A] [inst_2 : CommRing B] [inst_3 : Algebra A B]
+    ∀ (A B : Type) [CommRing A] [IsDomain A] [CommRing B] [Algebra A B]
       [Module.Finite A B],
-      ∃ (L : Type) (x : Field L) (x_1 : Algebra A L) (x_2 : Algebra (FractionRing A) L) (_ :
+      ∃ (L : Type) (_ : Field L) (_ : Algebra A L) (_ : Algebra (FractionRing A) L) (_ :
         IsScalarTower A (FractionRing A) L),
         FiniteDimensional (FractionRing A) L ∧
           Normal (FractionRing A) L ∧
             Finite (B →ₐ[A] ↥(integralClosure A L)) ∧
-              ∀ (Ω : Type) [inst_5 : Field Ω] (φ : ↥(integralClosure A L) →+* Ω) (z : B →+* Ω),
+              ∀ (Ω : Type) [Field Ω] (φ : ↥(integralClosure A L) →+* Ω) (z : B →+* Ω),
                 Function.Injective (⇑(φ.comp (Algebra.algebraMap A ↥(integralClosure A L))) : A → Ω) →
                   z.comp (Algebra.algebraMap A B) = φ.comp (Algebra.algebraMap A ↥(integralClosure A L)) →
                     ∃! σ : B →ₐ[A] ↥(integralClosure A L), φ.comp (↑σ : B →+* ↥(integralClosure A L)) = z

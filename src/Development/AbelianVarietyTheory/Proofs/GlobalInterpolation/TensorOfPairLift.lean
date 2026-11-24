@@ -102,9 +102,9 @@ open Formalism.MainNotions.G Formalism.MainNotions.ColumnSystems Formalism.MainN
 
 theorem core_roomR {b' g A P Q k c de be eps N Y N1 ka : ℝ} (hb : 0 < b') (hAP : g - k * P < A * P)
     (hbT : b' * (1 - be) ≤ g) (hbe : be ≤ de / 2 - 18 * eps) (heps : 0 ≤ eps) (hde6 : de < 1 / 6)
-    (hde40 : 40 * eps ≤ de) (hepsk : 1 / k ≤ eps) (hk5 : 5 ≤ k) (hQ1 : 1 ≤ Q) (hP0 : 0 < P) (hPQ : P ≤ Q)
+    (hde40 : 40 * eps ≤ de) (hepsk : 1 / k ≤ eps) (hk5 : 5 ≤ k) (hQ1 : 1 ≤ Q) (hPQ : P ≤ Q)
     (sq_level_le_degree : 2 * N1 + 3 ≤ k) (hN2 : 2 ≤ N) (hY1 : 1 ≤ Y) (hHc : 1 * k ^ 3 * N * Q ^ 4 * c * Y ≤ b')
-    (hc1 : 1 ≤ c) (hA0 : 0 ≤ A) (hN10 : 0 ≤ N1) (hka : ka = 13 * k * N1 * Q) :
+    (hc1 : 1 ≤ c) (hA0 : 0 ≤ A) (hka : ka = 13 * k * N1 * Q) :
     c * (ka + 2 * Q + 3 * k) + 4 ≤ de / 4 * A := by
   have hk0 : 0 < k := by linarith
   have hQ0 : 0 < Q := by linarith
@@ -190,8 +190,8 @@ theorem core_room (St : Formalism.MainNotions.ColumnSystems.Pf.Std C0 Cde CE1 CE
   have hbT : X.b' * (1 - _root_.Formalism.MainNotions.ColumnSystems.Pf.be X C0) ≤ (X.bT (segPos X.TT j i) : ℝ) :=
     (St.winB _ (pos_mem X.TT j i).1).1
   have hc1 : (1 : ℝ) ≤ (X.c : ℝ) := by exact_mod_cast hc
-  exact core_roomR St.bpos hAP hbT St.be18 St.eps0 St.de6 St.forty_epsilon_le_delta St.eps_ge St.k5 St.Q1 hP0 (hPQ.trans hQ) St.N1k
-    St.N2 St.Y1 St.Hc hc1 (Nat.cast_nonneg _) (Nat.cast_nonneg _) rfl
+  exact core_roomR St.bpos hAP hbT St.be18 St.eps0 St.de6 St.forty_epsilon_le_delta St.eps_ge St.k5 St.Q1 (hPQ.trans hQ) St.N1k
+    St.N2 St.Y1 St.Hc hc1 (Nat.cast_nonneg _) rfl
 
 theorem core_floor {x y : ℝ} {z : ℤ} (h : x + z ≤ y) : ⌊x⌋ + z ≤ ⌊y⌋ := by
   apply Int.le_floor.2
@@ -599,7 +599,7 @@ theorem keptPair_thr : RestPairS :=
 
 theorem keptBlocks : KeptBlocksBeyondThreshold := kept_blocks_of_S_line keptPair_thr
 
-theorem closed_of_bounds {D : Formalism.BasicNotions.D7} (h3 : adm3 D)
+theorem closed_of_bounds {D : Formalism.BasicNotions.D7} (h3 : adm3)
     (hU : Formalism.MainNotions.ColumnSystems.Pf.RestUp) (hL : Formalism.MainNotions.ColumnSystems.Pf.RestLow) (hL1 : PartnersToFactors)
     (hLift : RestLift) : Closed (ExtendedAllConclusions D) :=
   have hA2 : RemainderSegmentBoundSecond D := restAlt2_of (restSegLow_of hL) (dimHH_of h3) charZeroAt
@@ -665,7 +665,7 @@ theorem inputs : Loc8All := by
 
 theorem rangeOne_abs :
     ∃ (T0 : ℝ) (T2 C : ℝ → ℝ), 0 < T0 ∧ ∀ C₀ : ℝ, T0 ≤ C₀ → 0 < T2 C₀ ∧ 0 < C C₀ ∧ ∀ CH : ℝ, T2 C₀ ≤ CH →
-      ∀ D : Formalism.BasicNotions.D7, Formalism.MainNotions.flipOneThree.Conclusion2 D C₀ CH (C C₀) :=
+      ∀ D : Formalism.BasicNotions.D7, Formalism.MainNotions.flipOneThree.Conclusion2 C₀ CH (C C₀) :=
   first_theorem_threshold_functions tools inputs
 
 end GlobalTheory.EX.RangeOne

@@ -74,7 +74,7 @@ theorem IsHolFamily.precomp {E' : Type} [NormedAddCommGroup E'] [NormedSpace ℂ
     IsHolFamily (fun z => c (T z)) := fun U f =>
   ⟨(h U f).1.preimage hT.continuous, (h U f).2.comp hT.differentiableOn fun _ hz => hz⟩
 
-theorem isHolFamily_const {Z : Scheme.{0}} (x : Sp ℂ ⟶ Z) : IsHolFamily (fun _ : E => x) := fun U f =>
+theorem isHolFamily_const {Z : Scheme.{0}} (x : Sp ℂ ⟶ Z) : IsHolFamily (fun _ : E => x) := fun _ _ =>
   ⟨isOpen_const, differentiableOn_const _⟩
 
 theorem isHolFamily_tensor (X Y : Over (Sp ℂ)) (c : E → (𝟙_ (Over (Sp ℂ)) ⟶ X ⊗ Y))

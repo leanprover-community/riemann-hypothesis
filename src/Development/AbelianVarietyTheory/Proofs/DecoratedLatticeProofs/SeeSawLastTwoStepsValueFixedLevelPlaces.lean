@@ -195,7 +195,7 @@ end Local
 
 variable {D : D7} {c : Comm D} {v : VCom c}
 
-theorem lst_theta (hc : c.Is) (j : ℕ) (h : j + 2 * 0 + 2 = D.R.m)
+theorem lst_theta (j : ℕ) (h : j + 2 * 0 + 2 = D.R.m)
     (hτ : (v.τ j h)ᴴ * ((c.bes j 0 h).L.gram * v.τ j h) = (-(D.host.xi0 * star D.host.xi0)) • c.Lz.gram)
     (s₁ : StepBF c.ψ (c.B j 0 h) (c.J j 0 h)) {X₁ X₂} (h₁ : IsThetaFunO c.ψ _ _ X₁) (h₂ : IsThetaFunO c.ψ _ _ X₂) :
     (∀ y, IsThetaFunO c.ψ _ _ fun u => c.lst j h (v.τ j h) s₁ X₁ X₂ u y) ∧
@@ -329,7 +329,7 @@ theorem last_value : ∀ (D : D7) (c : Comm D) (v : VCom c) (n : ℕ) (G : Fin n
       exact one_place hc hv (G a) j h hr hτ s₁ (e a) (he a)
         (vac_foldr hc.std (fun i => (G i).q.v) _ c₁ _ _ a l hne _ (v₁ a))
         (vac_foldr hc.std (fun i => (G i).q.v) _ c₂ _ _ a l hne _ (v₂ a))
-  have hθ := lst_theta hc j h hτ s₁ h₁.1 h₂.1
+  have hθ := lst_theta j h hτ s₁ h₁.1 h₂.1
   rw [one_smul, hG.eG j (by omega) _ h₁.1, hE _ h₂.1, key _ (List.nodup_finRange n),
     biComb_eq_foldr D c.ψ _ _ _ (v.dG j) (v.dG (j + 1)) ((List.finRange n).map fun i => ((G i).cg j, (G i).cg (j + 1)))
       (fun f hf => by rw [hG.dG j (by omega) f hf, List.foldr_map])

@@ -79,7 +79,7 @@ theorem sum_norm_unitary {U : Matrix n n ℂ} (hU : U ∈ unitaryGroup n ℂ) (u
   rw [h, one_mulVec]
 
 theorem single_le_sum_sq (u : n → ℂ) (i : n) : ‖u i‖ ^ 2 ≤ ∑ j, ‖u j‖ ^ 2 :=
-  Finset.single_le_sum (f := fun j => ‖u j‖ ^ 2) (fun j _ => sq_nonneg _) (Finset.mem_univ i)
+  Finset.single_le_sum (f := fun j => ‖u j‖ ^ 2) (fun _ _ => sq_nonneg _) (Finset.mem_univ i)
 
 end Lin
 

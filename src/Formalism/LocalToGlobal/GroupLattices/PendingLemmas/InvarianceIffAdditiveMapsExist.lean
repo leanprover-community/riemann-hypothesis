@@ -56,7 +56,7 @@ variable (X : Sys p) [IsFractionRing X.G.O X.G.Kf] (E : CEmbC X.G)
 abbrev pendT : Pend X := pendR X E.toCEmb hfin hst (beLT hLT) (thFOf X pos F)
 
 theorem invariance_iff_additive_maps_exist (D : Formalism.BasicNotions.D7) :
-    Formalism.MainNotions.FormalGroupSystem.adm5 D X (pendT X E hfin hst hLT pos F) ↔
+    Formalism.MainNotions.FormalGroupSystem.adm5 X (pendT X E hfin hst hLT pos F) ↔
       ∀ v, ∀ j < X.mm, letI := algKfC E.toCEmb; XiEx X ℂ_[p] (pendT X E hfin hst hLT pos F).ThF v j :=
   condition_iff_additive_maps X E.toCEmb hfin hst (beLT hLT) _ _ _ D
 

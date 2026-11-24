@@ -91,7 +91,7 @@ theorem dataNW_of_val {C : Formalism.MainNotions.Inhab.FC} {cD ch : ℝ} (hC : S
   refine ⟨data1 L, data2, ?_, ?_, ?_, ?_, data7, data8,
     fun u => ⟨GlobalTheory.CollCompare.splits_level D u, T_mod D u⟩, hdu,
     Formalism.L2.SG.ResidEvFree.splitsE_g D 0, Formalism.L2.SG.ResidEvFree.splitsE_g D 1,
-    discriminant_eq_base_sq D (Formalism.MainNotions.UnusedSlot33.ramification_two_and_conjugation_at_q_and_d D),
+    discriminant_eq_base_sq D,
     fun u => ne_of_mod (D.host.g_prime 0).two_le (D.host.g_prime 1).two_le (T_mod D u)⟩
   · intro u τ
     rw [e1, e2, ← hSc]

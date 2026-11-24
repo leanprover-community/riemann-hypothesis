@@ -348,7 +348,6 @@ theorem epInf_sq (F : Type) [Field F] [NumberField F] : epInf F * epInf F = epIn
   rw [epInf, pairA_mul, mul_one, mul_zero]
 
 theorem exists_mem_grpH (N : ℕ) (hN : N ≠ 0) (δ : 𝓞 D.host.E) (Δ : 𝓞 D.host.F)
-    (hδ : D.sp.cm.sig (δ : D.host.E) = -δ) (hδ0 : (δ : D.host.E) ≠ 0)
     (hΔ : algebraMap D.host.F D.host.E Δ = δ * δ) (α β : D.host.F) (hn : α * α - Δ * (β * β) ≠ 0)
     (T : Finset (HeightOneSpectrum (𝓞 D.host.F))) (hg : ∀ v ∉ T, GoodAt N (Δ : D.host.F) α β v)
     (hT : ∀ v ∈ T, ∃ e, IsSplitIdem D e ∧ e + cA D e = algebraMap (AF D.host.F) (AE D) (epv v)) :
@@ -442,7 +441,7 @@ theorem mem_closure_grpH_of_finPart_eq_one (D : D7) (N : ℕ) (hN : 0 < N) (z : 
   obtain ⟨m1, m2⟩ := pt_inj _ hδ hδ0 hmul
   have hch := fun k : ℕ => exists_pair v₀ N hN.ne' Δ hΔ0 hns a.1 b.1 (1 / ((k : ℝ) + 1)) Nat.one_div_pos_of_nat
   choose α β hα0 hα hβ T hg hT using hch
-  have hG := fun k => exists_mem_grpH N hN.ne' δ Δ hδ hδ0 hΔ (α k) (β k) (hns _ _ (hα0 k)) (T k) (hg k) fun v hv => by
+  have hG := fun k => exists_mem_grpH N hN.ne' δ Δ hΔ (α k) (β k) (hns _ _ (hα0 k)) (T k) (hg k) fun v hv => by
     rcases hT k v hv with rfl | ⟨s, hs⟩
     · exact ⟨e₀, he₀, hee₀⟩
     · exact exists_splitIdem' _ hδ hδ0 _ hΔ v s hs

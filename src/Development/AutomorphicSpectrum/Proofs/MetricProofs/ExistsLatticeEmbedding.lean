@@ -137,7 +137,7 @@ theorem exists_bilin_ext {Λ V : Type*} [AddCommGroup Λ] [AddCommGroup V] [Modu
       have := key (c • u) v (c.den * k u) (k v) (c.num • x u) (x v)
         (mul_ne_zero c.den_nz (hk u)) (hk v) (hsm c u) (hx v)
       rw [this]
-      simp only [map_zsmul, LinearMap.smul_apply, B0, zsmul_eq_mul, smul_eq_mul]
+      simp only [map_zsmul, LinearMap.smul_apply, B0, smul_eq_mul]
       have hu := hkq u
       have hv := hkq v
       have hd : (c.den : ℚ) ≠ 0 := Nat.cast_ne_zero.mpr c.den_nz
@@ -163,7 +163,7 @@ theorem exists_bilin_ext {Λ V : Type*} [AddCommGroup Λ] [AddCommGroup V] [Modu
       have := key u (c • v) (k u) (c.den * k v) (x u) (c.num • x v)
         (hk u) (mul_ne_zero c.den_nz (hk v)) (hx u) (hsm c v)
       rw [this]
-      simp only [map_zsmul, B0, zsmul_eq_mul, smul_eq_mul]
+      simp only [map_zsmul, B0, smul_eq_mul]
       have hu := hkq u
       have hv := hkq v
       have hd : (c.den : ℚ) ≠ 0 := Nat.cast_ne_zero.mpr c.den_nz
@@ -547,7 +547,7 @@ theorem span_eq_top {E : Type} [Field E] {Ψ : Type} [Fintype Ψ] (N : ℕ) (s :
             (LinearMap.single ℝ (fun _ : Fin N => ℂ) i (s τ x)) := by
         funext τ' j
         rw [Finset.sum_apply, Finset.sum_apply, Finset.sum_eq_single τ'
-          (fun b _ hb => by simp [Pi.single_apply, hb.symm]) (by simp)]
+          (fun b _ hb => by simp [hb.symm]) (by simp)]
         by_cases hj : j = i
         · subst hj
           simp

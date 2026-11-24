@@ -316,7 +316,7 @@ theorem semiMeas_haar_inv (hp : ∃ p : (N ⊔ s.range : Subgroup G) → H, Cont
     conv_rhs => rw [← map_cj_of_cocompact N s hN hs hnorm Γ ν h𝓝 hfin hK
       (fun h => let ⟨δ, h1, h2⟩ := hcov h; ⟨δ, hΛ δ h1, h2⟩) h]
     exact (Measure.map_map measurable_subtype_coe (map_continuous (cj N s hnorm h)).measurable).symm
-  haveI := semiMeas_isMulLeftInvariant N s hN hs hnorm hp μ ν inferInstance inferInstance hc
+  haveI := semiMeas_isMulLeftInvariant N s hN hs hnorm μ ν inferInstance inferInstance hc
   obtain ⟨i1, i2⟩ := semiMeas_finite_on_compacts_and_open_pos N s hN hs hnorm hp μ ν inferInstance inferInstance hc
   haveI : (semiMeas N s μ ν).IsHaarMeasure := {}
   haveI := rightInv_of_fd Λ μ h𝓕 (fd_ne_top Λ hK hcov μ h𝓕)

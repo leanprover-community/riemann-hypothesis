@@ -58,7 +58,7 @@ noncomputable section
 
 namespace GlobalTheory.RowCusp
 
-theorem level_comp_Re (B : RowsAut) (k : B.I.Gf) (hk : k ∈ B.I.Kg B.g) (hg : 1 ≤ B.g) :
+theorem level_comp_Re (B : RowsAut) (k : B.I.Gf) (hk : k ∈ B.I.Kg B.g) :
     (B.R (1, k)).comp B.Re = B.Re := by
   obtain ⟨hR1, hRmul, hRnorm, -, -⟩ := GlobalTheory.RightRegFund.rightReg_unitary_continuous B
 
@@ -153,7 +153,7 @@ theorem row_isCuspFn : StrictLow → ∀ (B : RowsAut) (d : InfinitePlace B.I.F 
     intro k hk
     rw [hAc]
     exact congrArg (fun L : B.I.L2 B.μf B.fund →L[ℂ] B.I.L2 B.μf B.fund => L (A₀ (B.tens B.w)))
-      (level_comp_Re B k hk hg)
+      (level_comp_Re B k hk)
   obtain ⟨C, hC⟩ := _root_.GlobalTheory.EvalBound.exists_contRep_bound hSL B d hd hn hg
   obtain ⟨f, hf, hfb⟩ := hC A hAS hfix
 

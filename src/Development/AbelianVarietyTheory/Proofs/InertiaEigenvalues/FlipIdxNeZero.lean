@@ -64,7 +64,7 @@ namespace GlobalTheory.LevelSeries
 def flipElt {D : D7} (e : AE D) (m : ℕ) : AE D :=
   e * (m : AE D) + cA D e * incA D ((m : D.host.E)⁻¹) + (1 - e - cA D e)
 
-theorem flipIdx_ne_zero {D : D7} (V W : HSp D) (T : Finset (Formalism.L2.DIV.Pl D.host.E)) {m : ℕ} (hm : m ≠ 0) :
+theorem flipIdx_ne_zero {D : D7} (V W : HSp D) (T : Finset (Formalism.L2.DIV.Pl D.host.E)) {m : ℕ} :
     flipIdx V W T m ≠ 0 := by
   unfold flipIdx
   rw [Finset.prod_ne_zero_iff]

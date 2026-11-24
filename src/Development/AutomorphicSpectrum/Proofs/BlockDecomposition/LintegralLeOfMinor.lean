@@ -283,7 +283,7 @@ theorem dens_seq {X N : Type} [TopologicalSpace X] [T2Space X] [LocallyCompactSp
     [SecondCountableTopology X] [MeasurableSpace X] [BorelSpace X] [MeasurableSpace N]
     (σ : Measure X) (lam : Measure N) [SFinite lam] (k : N → X → ℂ) (Y : Set X)
     (g : ℕ → N → ℂ) (G : ℕ → X → ℝ) (hσ : IsFiniteMeasureOnCompacts σ)
-    (hk : Measurable (Function.uncurry k)) (hk1 : ∀ x z, ‖k x z‖ ≤ 1) (hY : IsClosed Y) (hσY : σ Yᶜ = 0)
+    (hk : Measurable (Function.uncurry k)) (hk1 : ∀ x z, ‖k x z‖ ≤ 1) (hσY : σ Yᶜ = 0)
     (hg : ∀ j, Integrable (g j) lam ∧ (∀ x, ‖g j x‖ ≤ 1) ∧
       ∀ z ∈ Y, 0 ≤ G j z ∧ ∫ x, g j x * k x z ∂lam = G j z)
     (hg1 : ∀ x, Tendsto (g · x) atTop (𝓝 1)) :
@@ -356,7 +356,6 @@ theorem dens_seq {X N : Type} [TopologicalSpace X] [T2Space X] [LocallyCompactSp
       · simp [hfC z hz hzC]
 
 theorem re_tendsto {X : Type} [MeasurableSpace X] (m : ℕ → Measure X) (ν : Measure X) (f : X → ℝ)
-    (hf : ∀ j, Integrable f (m j)) (hfν : Integrable f ν)
     (h : Tendsto (fun j => ∫ z, ((f z : ℝ) : ℂ) ∂m j) atTop (𝓝 (∫ z, ((f z : ℝ) : ℂ) ∂ν))) :
     Tendsto (fun j => ∫ z, f z ∂m j) atTop (𝓝 (∫ z, f z ∂ν)) := by
   have := (Complex.continuous_re.tendsto _).comp h
@@ -396,7 +395,7 @@ theorem vague_real (σ ν : Measure X) [IsFiniteMeasureOnCompacts σ] [IsFiniteM
     (f : X → ℝ) (hf : Continuous f) (hc : HasCompactSupport f) :
     Tendsto (fun j => ∫ z, f z ∂m j) atTop (𝓝 (∫ z, f z ∂ν)) := by
   have hσf : Integrable f σ := hf.integrable_of_hasCompactSupport hc
-  refine re_tendsto m ν f (fun j => hmir j f hσf) (hf.integrable_of_hasCompactSupport hc) ?_
+  refine re_tendsto m ν f ?_
   exact hV (fun z => ((f z : ℝ) : ℂ)) (Complex.continuous_ofReal.comp hf)
     (hc.comp_left Complex.ofReal_zero)
 
@@ -498,7 +497,7 @@ end Tail
 
 theorem dens_main (hP : PositivityTheory.Rg.Rsw.L.PosExt) : PositivityTheory.Rg.Rsw.Em.Dens := by
   intro X N _ _ _ _ _ _ _ σ lam _ k A Z Y g G hσ hk hk1 hA hZ hY hσY hg hg1 hsmall hT
-  obtain ⟨m, hmc, hmY, hmi, hmir, hlim, hmsm⟩ := dens_seq σ lam k Y g G hσ hk hk1 hY hσY hg hg1
+  obtain ⟨m, hmc, hmY, hmi, hmir, hlim, hmsm⟩ := dens_seq σ lam k Y g G hσ hk hk1 hσY hg hg1
   have hAi : ∀ f ∈ A, Integrable f σ := fun f hf =>
     (hA.cc f hf).1.integrable_of_hasCompactSupport (hA.cc f hf).2
   have hlimA : ∀ f ∈ A, Tendsto (fun j => ∫ z, f z ∂m j) atTop (𝓝 (∫ x, ∫ z, f z * k x z ∂σ ∂lam)) :=

@@ -367,7 +367,7 @@ open NumberField Complex ReciprocityTheory.ChartRestriction.G.FD ReciprocityTheo
 
 noncomputable section
 
-lemma cube_int_shift {N : ℕ} (φ : (Fin N → ℝ) → ℂ) (hφ : Continuous φ)
+lemma cube_int_shift {N : ℕ} (φ : (Fin N → ℝ) → ℂ)
     (hp : ∀ (n : Fin N → ℤ) t, φ (t + fun i => (n i : ℝ)) = φ t) (s : Fin N → ℝ) :
     ∫ t in cube N, φ (t + s) = ∫ t in cube N, φ t := by
   classical
@@ -541,7 +541,7 @@ theorem Ich_Zb (hω : X.IsLZBasis g ω)
       G (X.Zb u (Bv ω t) x) * ech ω χ t
     rw [Bv_add, add_comm (Bv ω t), ← hadd, hper _ (hLZ n) _ (hdomH _ (Bv_herm ω hωh t) x hx),
       ech_add, ech_int (ω := ω) χ hk n, mul_one]
-  have hshift := cube_int_shift _ hcont hF s
+  have hshift := cube_int_shift _ hF s
   have hinv : ech ω χ s * cexp (4 * Real.pi * I * X.pairR χ (Bv ω s)) = 1 := by
     show cexp (-(4 * Real.pi * I) * (X.pairR χ (Bv ω s) : ℂ)) *
       cexp (4 * Real.pi * I * X.pairR χ (Bv ω s)) = 1

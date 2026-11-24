@@ -72,12 +72,12 @@ end Local
 section Theory
 
 def wachLatticeFreeLocal (LT : LocTheory) (HW : HWOf LT) (AI : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l))
-    (_F : FonOf LT AI HW) : Prop :=
+    : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     WachLatticeFree ((HW l).W K s LL h)
 
 def wachCharacterisationLocal (LT : LocTheory) (HW : HWOf LT) (AI : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l))
-    (_F : FonOf LT AI HW) : Prop :=
+    : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     WachCharacterisationLattice ((HW l).W K s LL h)
 
@@ -91,10 +91,10 @@ end Theory
 section Design
 
 def WachLatticeFreeGlobal (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
-  wachLatticeFreeLocal D.loc HW D.locA F
+  wachLatticeFreeLocal D.loc HW D.locA
 
 def WachCharacterisation (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
-  wachCharacterisationLocal D.loc HW D.locA F
+  wachCharacterisationLocal D.loc HW D.locA
 
 def gammaSemisimpleQuotientGlobal (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
   gammaSemisimpleLocal D.loc HW D.locA F

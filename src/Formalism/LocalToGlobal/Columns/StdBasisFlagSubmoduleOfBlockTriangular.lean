@@ -18,7 +18,7 @@ section Coord
 
 variable {E : Type} [Field E] [NumberField E] [StarRing E] {P : HeightOneSpectrum (𝓞 E)} {q : ℕ}
 
-theorem frameIndex_framePos {k₀ c n l : ℕ} (_hk : k₀ ≤ n) (hl : l < n + c) : LocE.fIdx k₀ c n (LocE.fPos k₀ c n l) = l := by
+theorem frameIndex_framePos {k₀ c n l : ℕ} (hl : l < n + c) : LocE.fIdx k₀ c n (LocE.fPos k₀ c n l) = l := by
   unfold LocE.fPos LocE.fIdx
   split_ifs <;> omega
 
@@ -113,17 +113,17 @@ theorem reducedMatrix_one {n c : ℕ} : ob2M P q (1 : Sp E (n + c) ≃ₗ[E] Sp 
 
 theorem frameEntry_eq_scaled_coord {k₀ n c p p' : ℕ} (hk : k₀ ≤ n) (hp : p < n + c) (hp' : p' < n + c) (κ : Sp E (n + c) ≃ₗ[E] Sp E (n + c)) :
     LocE.entB q k₀ c n c n (fun i => i + 1) (fun i => i + 1) κ.toLinearMap p p' =
-      κ (Pi.single (⟨LocE.fIdx k₀ c n p', symFIdx_lt hk hp'⟩ : Fin (n + c)) 1) ⟨LocE.fIdx k₀ c n p, symFIdx_lt hk hp⟩ *
+      κ (Pi.single (⟨LocE.fIdx k₀ c n p', symFIdx_lt hp'⟩ : Fin (n + c)) 1) ⟨LocE.fIdx k₀ c n p, symFIdx_lt hp⟩ *
         (q : E) ^ (LocE.scE n (fun i => i + 1) (LocE.fIdx k₀ c n p') - LocE.scE n (fun i => i + 1) (LocE.fIdx k₀ c n p)) := by
   unfold LocE.entB
-  rw [basisVec_eq_single (symFIdx_lt hk hp')]
+  rw [basisVec_eq_single (symFIdx_lt hp')]
   unfold Loc.atN
-  rw [dite_eq_left (symFIdx_lt hk hp)]
+  rw [dite_eq_left (symFIdx_lt hp)]
   rfl
 
 theorem reduction_frameEntry_eq_matrix {k₀ n c p p' : ℕ} (hk : k₀ ≤ n) (hp : p < n + c) (hp' : p' < n + c) (κ : Sp E (n + c) ≃ₗ[E] Sp E (n + c)) :
     redP P (LocE.entB q k₀ c n c n (fun i => i + 1) (fun i => i + 1) κ.toLinearMap p p') =
-      ob2M P q κ ⟨LocE.fIdx k₀ c n p, symFIdx_lt hk hp⟩ ⟨LocE.fIdx k₀ c n p', symFIdx_lt hk hp'⟩ := by
+      ob2M P q κ ⟨LocE.fIdx k₀ c n p, symFIdx_lt hp⟩ ⟨LocE.fIdx k₀ c n p', symFIdx_lt hp'⟩ := by
   rw [frameEntry_eq_scaled_coord hk hp hp']
   rfl
 
@@ -137,8 +137,8 @@ theorem reducedMatrix_eq_reduction_frameEntry {k₀ n c : ℕ} (hk : k₀ ≤ n)
     ob2M P q κ l l' = redP P (LocE.entB q k₀ c n c n (fun i => i + 1) (fun i => i + 1) κ.toLinearMap (LocE.fPos k₀ c n l.1) (LocE.fPos k₀ c n l'.1)) := by
   rw [reduction_frameEntry_eq_matrix hk (framePos_lt hk l.2) (framePos_lt hk l'.2)]
   congr 1
-  · exact Fin.ext (frameIndex_framePos hk l.2).symm
-  · exact Fin.ext (frameIndex_framePos hk l'.2).symm
+  · exact Fin.ext (frameIndex_framePos l.2).symm
+  · exact Fin.ext (frameIndex_framePos l'.2).symm
 
 end Coord
 
@@ -260,7 +260,7 @@ theorem stdBasis_flag_submodule_of_blockTriangular (hq : ((q : ℕ) : 𝓞 E) �
     (hs : s < r) : κ (LocE.bvecS E q k₀ rS n c s) - LocE.bvecS E q k₀ rS n c s ∈ LocE.flagS P q k₀ rS n c s := by
   have hq0 := ciQ_ne_zero hu
   have hp0 : symIdxInv k₀ rS s < r := _root_.Formalism.L2.Col.symIdxInv_lt hr.le hs
-  have hl0 : LocE.fIdx k₀ c n (symIdxInv k₀ rS s) < n + c := symFIdx_lt hk (by omega)
+  have hl0 : LocE.fIdx k₀ c n (symIdxInv k₀ rS s) < n + c := symFIdx_lt (by omega)
   have hpos0 : LocE.fPos k₀ c n (LocE.fIdx k₀ c n (symIdxInv k₀ rS s)) = symIdxInv k₀ rS s := symFPos_fIdx hk (by omega)
   have hsym0 : symIdx k₀ rS (symIdxInv k₀ rS s) = s := symIdx_symIdxInv k₀ rS s
   have hb : LocE.bvecS E q k₀ rS n c s = ((q : E) ^ LocE.scE n (fun i => i + 1) (LocE.fIdx k₀ c n (symIdxInv k₀ rS s))) •
@@ -306,7 +306,7 @@ theorem stdBasis_flag_submodule_of_blockTriangular (hq : ((q : ℕ) : 𝓞 E) �
         intro h
         apply hll
         apply Fin.ext
-        rw [← frameIndex_framePos hk l.2, ← frameIndex_framePos hk l0.2, h, hpos]
+        rw [← frameIndex_framePos l.2, ← frameIndex_framePos l0.2, h, hpos]
       have hlt := framePos_lt hk l.2
       show ob2M P q κ l l0 = 0
       by_cases hsp : s = rS + k₀
@@ -389,13 +389,13 @@ theorem reduction_parahoric_later_block_zero (hq : ((q : ℕ) : 𝓞 E) ∈ P.as
     unfold LocE.bd5
     rw [ite_eq_right (show r + (p - r) / t * t ≠ rS + k₀ by omega)]
   have hb : ((q : E) ^ LocE.scE n (fun i => i + 1) (LocE.fIdx k₀ c n p')) •
-      (Pi.single (⟨LocE.fIdx k₀ c n p', symFIdx_lt hk hp'⟩ : Fin (n + c)) (1 : E) : Sp E (n + c)) ∈
+      (Pi.single (⟨LocE.fIdx k₀ c n p', symFIdx_lt hp'⟩ : Fin (n + c)) (1 : E) : Sp E (n + c)) ∈
         LocE.flagS P q k₀ rS n c (r + (p - r) / t * t) := by
     unfold LocE.flagS
     rw [ciMem_sclLat]
     intro m
     rw [Pi.smul_apply, smul_eq_mul]
-    by_cases h : m = ⟨LocE.fIdx k₀ c n p', symFIdx_lt hk hp'⟩
+    by_cases h : m = ⟨LocE.fIdx k₀ c n p', symFIdx_lt hp'⟩
     · rw [h, Pi.single_eq_same, mul_one]
       rw [symFPos_fIdx hk hp', symIndex_of_le hr.le hrp', hbd, ite_eq_right (show ¬ r + (p - r) / t * t ≤ p' by omega), add_zero, inv_mul_cancel₀ (zpow_ne_zero _ hq0)]
       exact ciIntAt_one
@@ -404,15 +404,15 @@ theorem reduction_parahoric_later_block_zero (hq : ((q : ℕ) : 𝓞 E) ∈ P.as
   have hκb := (hst _).2 hb
   unfold LocE.flagS at hκb
   rw [ciMem_sclLat] at hκb
-  have h3 := hκb ⟨LocE.fIdx k₀ c n p, symFIdx_lt hk hp⟩
+  have h3 := hκb ⟨LocE.fIdx k₀ c n p, symFIdx_lt hp⟩
   rw [symFPos_fIdx hk hp, symIndex_of_le hr.le hrp, hbd, ite_eq_left (show r + (p - r) / t * t ≤ p by omega), map_smul, Pi.smul_apply, smul_eq_mul] at h3
   rw [frameEntry_eq_scaled_coord hk hp hp']
   refine (ciRed_of_div hq hq0 ?_).2
-  have e : κ (Pi.single (⟨LocE.fIdx k₀ c n p', symFIdx_lt hk hp'⟩ : Fin (n + c)) 1) ⟨LocE.fIdx k₀ c n p, symFIdx_lt hk hp⟩ *
+  have e : κ (Pi.single (⟨LocE.fIdx k₀ c n p', symFIdx_lt hp'⟩ : Fin (n + c)) 1) ⟨LocE.fIdx k₀ c n p, symFIdx_lt hp⟩ *
         (q : E) ^ (LocE.scE n (fun i => i + 1) (LocE.fIdx k₀ c n p') - LocE.scE n (fun i => i + 1) (LocE.fIdx k₀ c n p)) / (q : E) =
       ((q : E) ^ (LocE.scE n (fun i => i + 1) (LocE.fIdx k₀ c n p) + 1))⁻¹ *
         ((q : E) ^ LocE.scE n (fun i => i + 1) (LocE.fIdx k₀ c n p') *
-          κ (Pi.single (⟨LocE.fIdx k₀ c n p', symFIdx_lt hk hp'⟩ : Fin (n + c)) 1) ⟨LocE.fIdx k₀ c n p, symFIdx_lt hk hp⟩) := by
+          κ (Pi.single (⟨LocE.fIdx k₀ c n p', symFIdx_lt hp'⟩ : Fin (n + c)) 1) ⟨LocE.fIdx k₀ c n p, symFIdx_lt hp⟩) := by
     rw [zpow_sub₀ hq0, zpow_add₀ hq0, zpow_one]
     field_simp
   rw [e]

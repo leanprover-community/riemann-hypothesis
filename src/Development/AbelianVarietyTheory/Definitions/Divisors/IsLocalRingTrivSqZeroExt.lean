@@ -182,7 +182,7 @@ def val (φ : K₀ →ₐ[c.F] S) (y : FrPt Xo c S) : RulK Xo c K₀ →ₗ[c.F]
 @[simp] theorem val_tmul (φ : K₀ →ₐ[c.F] S) (y : FrPt Xo c S) (a : K₀) (f : Rul Xo c) :
     val φ y (a ⊗ₜ f) = φ a * evR Xo c f y := rfl
 
-theorem secK_induction {e : Ix Dw → ℤ} {P : RulK Xo c K₀ → Prop} (h0 : P 0)
+theorem secK_induction {e : Ix Dw → ℤ} {P : RulK Xo c K₀ → Prop}
     (h1 : ∀ a f, f ∈ secZ Xo c e → P (a ⊗ₜ f)) (h2 : ∀ s s', P s → P s' → P (s + s')) {s : RulK Xo c K₀}
     (hs : s ∈ secK Xo c K₀ e) : P s := by
   obtain ⟨z, rfl⟩ : ∃ z, (secZ Xo c e).subtype.baseChange K₀ z = s := hs
@@ -193,7 +193,7 @@ theorem secK_induction {e : Ix Dw → ℤ} {P : RulK Xo c K₀ → Prop} (h0 : P
 theorem val_frMap [IsLocalRing S] {e : Ix Dw → ℤ} {s : RulK Xo c K₀} (hs : s ∈ secK Xo c K₀ e)
     {φ : K₀ →ₐ[c.F] S} {ψ : S →ₐ[c.F] T} {χ : K₀ →ₐ[c.F] T} (hχ : ∀ a, ψ (φ a) = χ a) {y : FrPt Xo c S}
     {z : FrPt Xo c T} (h : FrMap ψ y z) : val χ z s = ψ (val φ y s) := by
-  refine secK_induction (P := fun s => val χ z s = ψ (val φ y s)) (by simp) (fun a f hf => ?_)
+  refine secK_induction (P := fun s => val χ z s = ψ (val φ y s)) (fun a f hf => ?_)
     (fun s s' k k' => ?_) hs
   · simp only [val_tmul, map_mul, hχ, evR_frMap hf.1 h]
   · simp only [map_add (f := _), k, k']
@@ -201,7 +201,7 @@ theorem val_frMap [IsLocalRing S] {e : Ix Dw → ℤ} {s : RulK Xo c K₀} (hs :
 theorem val_frBor [IsLocalRing S] {e : Ix Dw → ℤ} {s : RulK Xo c K₀} (hs : s ∈ secK Xo c K₀ e)
     (φ : K₀ →ₐ[c.F] S) {t : Ix Dw → Sˣ} {y y' : FrPt Xo c S} (h : FrBor t y y') :
     val φ y' s = ((∏ i, t i ^ e i : Sˣ) : S) * val φ y s := by
-  refine secK_induction (P := fun s => val φ y' s = ((∏ i, t i ^ e i : Sˣ) : S) * val φ y s) (by simp)
+  refine secK_induction (P := fun s => val φ y' s = ((∏ i, t i ^ e i : Sˣ) : S) * val φ y s)
     (fun a f hf => ?_) (fun s s' k k' => ?_) hs
   · simp only [val_tmul, evR_frBor hf h]; ring
   · simp only [map_add (f := _), k, k', mul_add]

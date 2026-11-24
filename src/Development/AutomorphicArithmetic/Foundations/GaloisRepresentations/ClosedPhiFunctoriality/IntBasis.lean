@@ -221,7 +221,7 @@ private theorem exists_bounded_independent_spanning_family {l : ℕ} [Fact (Nat.
             | cast j => simp [hc1 j]
           · simp [Fin.sum_univ_castSucc, hc2]
 
-theorem intBasis_holds : IntBasis := fun l _ F n x hx => exists_bounded_independent_spanning_family F n x hx
+theorem intBasis_holds : IntBasis := fun _ _ F n x hx => exists_bounded_independent_spanning_family F n x hx
 
 end UpperTheory.Gal.ClosedPhiFromClosedTrace
 

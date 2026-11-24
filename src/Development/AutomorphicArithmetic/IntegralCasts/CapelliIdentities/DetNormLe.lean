@@ -51,7 +51,7 @@ noncomputable def UpperTheory.Reformulated.B.Qi39.EB.{u_1, u_2} :
     fun {m : Type u_1} {n : Type u_2} (A : Matrix m n ℂ) (c : ℝ) ↦ ∀ (i : m) (j : n), ‖A i j‖ ≤ c
 
 theorem UpperTheory.Reformulated.B.Qi39.det_norm_le.{u_1} :
-    ∀ {n : Type u_1} [inst : Fintype n] [inst_1 : DecidableEq n] (A : Matrix n n ℂ) {m : ℝ},
+    ∀ {n : Type u_1} [Fintype n] [DecidableEq n] (A : Matrix n n ℂ) {m : ℝ},
       UpperTheory.Reformulated.B.Qi39.EB A m → ‖A.det‖ ≤ (↑(Fintype.card n).factorial : ℝ) * m ^ Fintype.card n := by
   intro n _ _ A m h
   have hterm : ∀ σ : Equiv.Perm n,

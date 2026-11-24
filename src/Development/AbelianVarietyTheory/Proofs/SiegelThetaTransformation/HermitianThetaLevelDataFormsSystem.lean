@@ -359,7 +359,7 @@ theorem red_rows : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : �
     exact ⟨t, ht, by rw [smul_comm]; exact Submodule.smul_mem_smul hM hy⟩
   exact ⟨Lev.red_congr (fun i => h2 _) hy.1, fun j hj => Lev.cong_trans (h2 j) (hy.2 j hj)⟩
 
-theorem heisG_congr : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (g : ℕ) (bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ) (idx : Fin g ≃ X.Ψ × Fin r) (n : ℕ), IsSympl X bas → Even n → ∀ (D : Level X) (M : ℕ), (M : 𝓞 E) ∈ D.𝔪 → ∀ L ∈ D.lats, ∀ Λ ∈ Vset E n M, ∀ u : TF n g, IsVac X bas D.w (tens Λ (D.sh L)) u → ∀ y ∈ tens Λ ((Ideal.span {2} * conjI D.𝔪) • L), ∀ y' ∈ tens Λ ((Ideal.span {2} * conjI D.𝔪) • L), (∀ k, Cong X D.𝔪 (y k) (y' k)) → heisG X bas y u = heisG X bas y' u := by
+theorem heisG_congr : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (g : ℕ) (bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ) (_ : Fin g ≃ X.Ψ × Fin r) (n : ℕ), IsSympl X bas → Even n → ∀ (D : Level X) (M : ℕ), (M : 𝓞 E) ∈ D.𝔪 → ∀ L ∈ D.lats, ∀ Λ ∈ Vset E n M, ∀ u : TF n g, IsVac X bas D.w (tens Λ (D.sh L)) u → ∀ y ∈ tens Λ ((Ideal.span {2} * conjI D.𝔪) • L), ∀ y' ∈ tens Λ ((Ideal.span {2} * conjI D.𝔪) • L), (∀ k, Cong X D.𝔪 (y k) (y' k)) → heisG X bas y u = heisG X bas y' u := by
   intro E _ _ _ r X g bas idx n hs hev D M hM L hL Λ hΛ u hu y hy y' hy' hc
   have half : ∀ v ∈ (Ideal.span {2} * conjI D.𝔪) • L, (2⁻¹ : E) • v ∈ L := fun v hv => by
     rw [Submodule.mul_smul] at hv
@@ -820,7 +820,7 @@ theorem exists_pairing (D : Level X) (hn : r ≤ n) (hX : SelfD X X.Λ) {M : ℕ
   rw [TensLat.EF_smul, Nbr.cc_cc]
   rfl
 
-theorem phi_no_coinvariants : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (g : ℕ) (bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ) (idx : Fin g ≃ X.Ψ × Fin r) (n : ℕ), IsSympl X bas → Even n → ∀ (D : Level X) (hn : r ≤ n) (M : ℕ), 0 < M → (M : 𝓞 E) ∈ D.𝔪 → ∀ v₀ : Lt E r → TF n g, (∀ L ∈ D.lats, IsVac X bas D.w (tens (stdL E n) (D.sh L)) (v₀ L)) → ∀ ξ : Fin r → E, ξ ≠ 0 → herm X.Gm ξ ξ = 0 → ∀ L ∈ D.lats, ∀ Λ ∈ Vset E n M, ∃ (s : Finset (Fin n → E)) (a : (Fin n → E) → ℂ), ∑ v ∈ s, a v ≠ 0 ∧ ∑ v ∈ s, a v • heisG X bas (vecMulVec v ξ) (D.phi bas hn v₀ L Λ) = 0 := by
+theorem phi_no_coinvariants : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (g : ℕ) (bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ) (_ : Fin g ≃ X.Ψ × Fin r) (n : ℕ), IsSympl X bas → Even n → ∀ (D : Level X) (hn : r ≤ n) (M : ℕ), 0 < M → (M : 𝓞 E) ∈ D.𝔪 → ∀ v₀ : Lt E r → TF n g, (∀ L ∈ D.lats, IsVac X bas D.w (tens (stdL E n) (D.sh L)) (v₀ L)) → ∀ ξ : Fin r → E, ξ ≠ 0 → herm X.Gm ξ ξ = 0 → ∀ L ∈ D.lats, ∀ Λ ∈ Vset E n M, ∃ (s : Finset (Fin n → E)) (a : (Fin n → E) → ℂ), ∑ v ∈ s, a v ≠ 0 ∧ ∑ v ∈ s, a v • heisG X bas (vecMulVec v ξ) (D.phi bas hn v₀ L Λ) = 0 := by
   intro E _ _ _ r X g bas idx n hs hev D hn M hM0 hM v₀ hv₀ ξ hξ hiso L hL Λ hΛ
   obtain ⟨-, hvac, h3, -⟩ := _root_.GlobalTheory.SW.RecSum.phi_sum_equivariant E r X g bas idx n hs hev D hn M hM0 hM v₀ hv₀ L hL Λ hΛ
   obtain ⟨t, -, ht, hphi, -⟩ := h3 L hL
@@ -1191,7 +1191,7 @@ theorem tail_le (hs : IsSympl X bas) (hn : 4 * (Module.finrank ℚ E * r) + 4 �
   have hlr : ∀ x y, EFBil X x y = EFBil X y x ∨ EFBil X x y = -EFBil X y x :=
     fun x y => Or.inr (show EF X x y = -EF X y x from hsw x y)
   obtain ⟨hLfg, hLd⟩ := selfD_int (h𝓛 L hL)
-  have key := card_selfDual_le (EFBil X) hB hrefl hlr _ hLfg hLd
+  have key := card_selfDual_le (EFBil X) hB _ hLfg hLd
   let f : {L' // L' ∈ 𝓛 ∧ L' ≠ L} → ℕ := fun L' => L'.1.toAddSubgroup.relIndex L.toAddSubgroup
   let G : {L' // L' ∈ 𝓛 ∧ L' ≠ L} → Submodule ℤ (Fin r → E) := fun L' => L'.1.restrictScalars ℤ
   have hGinj : Function.Injective G := fun a b hab =>

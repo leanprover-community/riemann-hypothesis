@@ -218,7 +218,7 @@ noncomputable def utMk (A : Matrix (Fin N) (Fin N) K) (h : IsUT A) : GL (Fin N) 
     ((utMk A h : GL (Fin N) K) : Matrix (Fin N) (Fin N) K) = A := rfl
 
 theorem IsUT.one : IsUT (1 : Matrix (Fin N) (Fin N) K) :=
-  ⟨fun i => Matrix.one_apply_eq i, fun i j h => Matrix.one_apply_ne (ne_of_gt h)⟩
+  ⟨fun i => Matrix.one_apply_eq i, fun _ _ h => Matrix.one_apply_ne (ne_of_gt h)⟩
 
 theorem IsUT.mul {A B : Matrix (Fin N) (Fin N) K} (hA : IsUT A) (hB : IsUT B) : IsUT (A * B) := by
   constructor
@@ -811,7 +811,7 @@ theorem flipG_flipG (x : GL (Fin N) K) : flipG (flipG x) = x := by
   rw [flipG_val, flipG_val, flipM_flipM]
 
 theorem IsUT.flip {A : Matrix (Fin N) (Fin N) K} (h : IsUT A) : IsUT (flipM A) :=
-  ⟨fun i => h.1 _, fun i j hij => h.2 _ _ (Fin.rev_lt_rev.mpr hij)⟩
+  ⟨fun _ => h.1 _, fun _ _ hij => h.2 _ _ (Fin.rev_lt_rev.mpr hij)⟩
 
 theorem edgeSum_flip (A : Matrix (Fin N) (Fin N) K) : edgeSum (flipM A) = edgeSum A := by
   unfold edgeSum

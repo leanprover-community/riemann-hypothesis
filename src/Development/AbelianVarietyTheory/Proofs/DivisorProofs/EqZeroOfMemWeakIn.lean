@@ -56,7 +56,7 @@ def IsTest (U : Set V) (α : V → ℂ) : Prop := ContDiff ℝ ∞ α ∧ HasCom
 
 theorem IsTest.continuous_mul (hU : IsOpen U) (h : IsTest U α) {G : V → ℂ} (hG : ContinuousOn G U) :
     Continuous fun x => α x * G x :=
-  continuous_of_tsupport fun x hx => h.1.continuous.continuousAt.mul
+  continuous_of_tsupport fun _ hx => h.1.continuous.continuousAt.mul
     (hG.continuousAt (hU.mem_nhds (h.2.2 (tsupport_mul_subset_left hx))))
 
 theorem IsTest.add {β : V → ℂ} (h : IsTest U α) (h' : IsTest U β) : IsTest U (α + β) :=

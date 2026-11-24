@@ -132,9 +132,9 @@ theorem isKTypeOf_not {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H
 def flipU : Formalism.REAL.UJ (fun a => !ε a) ≃* Formalism.REAL.UJ ε where
   toFun g := ⟨g.1, (inUJ_not ε _).1 g.2⟩
   invFun g := ⟨g.1, (inUJ_not ε _).2 g.2⟩
-  left_inv g := rfl
-  right_inv g := rfl
-  map_mul' g h := rfl
+  left_inv _ := rfl
+  right_inv _ := rfl
+  map_mul' _ _ := rfl
 
 theorem flipU_cont : Continuous (flipU ε) :=
   Continuous.subtype_mk continuous_subtype_val _

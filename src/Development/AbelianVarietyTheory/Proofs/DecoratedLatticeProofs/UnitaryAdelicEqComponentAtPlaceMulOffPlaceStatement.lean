@@ -119,7 +119,7 @@ theorem decompAt : ∀ (D : D7) (S : HSp D) (h : GA D S) (v : Pl D), ∃ hv ∈ 
     h = hv * h' := by
   intro D S h v
   obtain ⟨ε, α, hε, hv1, hv0⟩ := GlobalTheory.IdemSupport.exists_placeIdem (D := D) v
-  obtain ⟨h0, hc⟩ := placeIdempotent_infinite_and_finite_components D v ε α hε
+  obtain ⟨h0, hc⟩ := placeIdempotent_infinite_and_finite_components D ε α hε
   have hea : algebraMap (AF D.host.F) (AE D) ε = ε ⊗ₜ[D.host.F] (1 : D.host.E) := by
     rw [Algebra.TensorProduct.algebraMap_apply, Algebra.algebraMap_self, RingHom.id_apply]
   set e : AE D := algebraMap (AF D.host.F) (AE D) ε with he_def

@@ -145,7 +145,7 @@ namespace GlobalTheory.Mum.PrimCube
 
 open GlobalTheory.PrimNorm GlobalTheory.MulPull
 
-theorem evenOn_of_prim : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], Base R → ∀ (D : DegData R (maximalIdeal R)) (A : PolAV (Sp (FractionRing R))) (G : Over (Sp R)) [GrpObj G] [IsCommMonObj G], IsSemiAbelian G → ∀ U : Unif (maximalIdeal R) D A G, ∀ (P : GlobalTheory.UU.CP G) (a : G ⟶ G), IsMonHom a → LBIso P.L.L (cubeLB G ![𝟙 G, a] P.L.L) → EvenOn P := by
+theorem evenOn_of_prim : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocalRing R], Base R → ∀ (D : DegData R (maximalIdeal R)) (A : PolAV (Sp (FractionRing R))) (G : Over (Sp R)) [GrpObj G] [IsCommMonObj G], IsSemiAbelian G → ∀ _ : Unif (maximalIdeal R) D A G, ∀ (P : GlobalTheory.UU.CP G) (a : G ⟶ G), IsMonHom a → LBIso P.L.L (cubeLB G ![𝟙 G, a] P.L.L) → EvenOn P := by
   intro R _ _ _ hR D A G _ _ hS U P a ha hw
   have hp : IsProper (pullback.snd G.hom (jK R)) := by
     have := A.isAb.proper
@@ -280,7 +280,7 @@ theorem exists_polAV_generic : ∀ (R : Type) [CommRing R] [IsDomain R] [IsLocal
       refine Over.OverMorphism.ext ?_
       have e := congrArg (fun q => q.left) (hlin.ext w)
       simp only [Over.comp_left] at e
-      simp only [pushPt, Over.homMk_left, Over.comp_left, Over.id_left, Category.id_comp]
+      simp only [pushPt, Over.homMk_left, Over.comp_left, Over.id_left]
       exact e)
   have hpb := isGrpPullback_pullback G (jK R)
   have s4 := GlobalTheory.ShapePull.iso_cubeLB_pull hpb (pushPt hpb.1.w (𝟙 GK)) (GlobalTheory.PolBaseChange.lbIso_refl (pull_isLB hLG φ))

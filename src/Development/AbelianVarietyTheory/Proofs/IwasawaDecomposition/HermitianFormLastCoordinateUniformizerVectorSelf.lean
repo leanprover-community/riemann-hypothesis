@@ -218,7 +218,7 @@ theorem incl_coe_mem (r : 𝓞 E) : inclE (F := F) (FiniteAdeleRing (𝓞 F) F) 
   Subring.subset_closure (Or.inl ⟨⟨_, r, rfl⟩, rfl⟩)
 
 theorem iniH_extM {A : Type} [CommRing A] (g : Matrix (Fin n) (Fin n) A) (x : Fin N → A) :
-    iniH hN (extM hN g *ᵥ x) = g *ᵥ iniH hN x := funext fun i => extM_mulVec_iC hN g x i
+    iniH hN (extM g *ᵥ x) = g *ᵥ iniH hN x := funext fun i => extM_mulVec_iC hN g x i
 
 def zext {A : Type} [Zero A] (a : Fin n → A) : Fin N → A := fun j => if h : j.1 < n then a ⟨j.1, h⟩ else 0
 
@@ -330,7 +330,7 @@ theorem carries_ext {L : Submodule (𝓞 E) (Sp E n)} {M : Submodule (𝓞 E) (S
   rw [hatL_ext hN hM, hatL_ext hN (std_ext hN), extGL_inv_val, iniH_extM, extM_mulVec_iL]
   exact and_congr (hy _) Iff.rfl
 
-theorem cT_extM {A : Type} [CommRing A] (σ : A →+* A) (g : Matrix (Fin n) (Fin n) A) : cT σ (extM hN g) = extM hN (cT σ g) := by
+theorem cT_extM {A : Type} [CommRing A] (σ : A →+* A) (g : Matrix (Fin n) (Fin n) A) : cT σ (extM g) = extM (cT σ g) := by
   subst hN
   ext a b
   simp only [cT, Matrix.transpose_apply, Matrix.map_apply]
@@ -348,8 +348,8 @@ theorem extGL_mem_ustd {hc : Formalism.BasicNotions.CMData F E} {y : GL (Fin n) 
       (1 : Matrix (Fin n) (Fin n) E).map (inclE (F := F) (FiniteAdeleRing (𝓞 F) F)) * y =
       (1 : Matrix (Fin n) (Fin n) E).map (inclE (F := F) (FiniteAdeleRing (𝓞 F) F)) := hy
   rw [e1, mul_one] at h1
-  show cT (sigR hc.sig (FiniteAdeleRing (𝓞 F) F)) (extM hN y) *
-      (1 : Matrix (Fin N) (Fin N) E).map (inclE (F := F) (FiniteAdeleRing (𝓞 F) F)) * extM hN y =
+  show cT (sigR hc.sig (FiniteAdeleRing (𝓞 F) F)) (extM y) *
+      (1 : Matrix (Fin N) (Fin N) E).map (inclE (F := F) (FiniteAdeleRing (𝓞 F) F)) * extM y =
       (1 : Matrix (Fin N) (Fin N) E).map (inclE (F := F) (FiniteAdeleRing (𝓞 F) F))
   rw [e1, mul_one, cT_extM, ← extM_mul, h1, extM_one]
 
@@ -997,7 +997,7 @@ variable {E R : Type} [Field E] [CommRing R] {N n : ℕ} (hN : N = n + 1)
 theorem eq_extM_of_ext (φ : E →+* R) {a : E} (ha : a ≠ 0) {M : Matrix (Fin N) (Fin n) E}
     (hM : ∀ b j, M b j = if b = Br.iC hN j then 1 else 0) {g' : Matrix (Fin n) (Fin n) R} {g : Matrix (Fin N) (Fin N) R}
     (h1 : g * M.map φ = M.map φ * g') (h2 : g *ᵥ (fun b => φ ((Pi.single (Br.iL hN) a : Fin N → E) b)) = fun b => φ ((Pi.single (Br.iL hN) a : Fin N → E) b)) :
-    g = extM hN g' := by
+    g = extM g' := by
   subst hN
   have hphi : φ a * φ a⁻¹ = 1 := by rw [← map_mul, mul_inv_cancel₀ ha, map_one]
   refine eq_extM rfl (fun b j => ?_) (fun b => ?_)
@@ -1027,7 +1027,7 @@ theorem eq_extM_of_ext (φ : E →+* R) {a : E} (ha : a ≠ 0) {M : Matrix (Fin 
       · intro l _ hl
         rw [Pi.single_eq_of_ne hl, map_zero, mul_zero]
       · simp
-    show g b (Fin.last n) = extM rfl g' b (Fin.last n)
+    show g b (Fin.last n) = extM g' b (Fin.last n)
     refine Fin.lastCases ?_ (fun i => ?_) b
     · have e' := e (Fin.last n)
       rw [Pi.single_eq_same] at e'
@@ -1162,7 +1162,7 @@ theorem GlobalTheory.Mem.Col2.TC.til_ties : ∀ {B : Base} {X : PreX B.toPre} (I
   let Ta : TilAd Tl K :=
     { ka := ka
       til_ad := fun c g hg' => by
-        have e : g.1 = TilX.extM hN (KP.y c).1.1 := by
+        have e : g.1 = TilX.extM (KP.y c).1.1 := by
           refine TilX.eq_extM_of_ext hN (inclE (F := B.host.F) (FiniteAdeleRing (𝓞 B.host.F) B.host.F)) hpi0
             (TilX.iXm_apply hiX hN) hg'.1 ?_
           have h2 := hg'.2

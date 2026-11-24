@@ -100,7 +100,7 @@ theorem cMass_spec (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : Is
       rw [he, Finset.prod_empty, mul_one]
       exact cOne_spec hK hF
     · obtain ⟨h0, hc⟩ := ih hpos
-      have hstep := massConst_succ hermRepUnram liStat hK hF (m := m + 1) (by omega) h0
+      have hstep := massConst_succ hermRepUnram liStat hK hF (m := m + 1) (by omega)
         (by simpa using hc)
       have hr := massRatio_pos hK (m + 1) (by omega)
       have heq : cMass K F (m + 1) = cMass K F m * Formalism.HermitianLatticesTheory.massRatioRightSide K (m + 1) := by

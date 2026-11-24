@@ -906,7 +906,7 @@ theorem lam_ne_zero (ϖ : O) (hϖ : Irreducible ϖ) {ℓ ell : ℕ} {p : ℕ →
   unfold abelian₂
   rw [Finset.prod_ne_zero_iff]
   intro s hs
-  exact pow_ne_zero _ (ne_zero_of_unitDist ϖ hϖ _ _ (hp.1 s (Finset.mem_range.1 hs)))
+  exact pow_ne_zero _ (ne_zero_of_unitDist ϖ _ _ (hp.1 s (Finset.mem_range.1 hs)))
 
 theorem lamLess_eq (p : ℕ → PowerSeries O) (H : ℕ → ℕ) (ell s₁ b : ℕ) (hs : s₁ < ell) :
     LamLess p H ell s₁ b = abelian₂ p (Function.update H s₁ (H s₁ - b)) ell := by

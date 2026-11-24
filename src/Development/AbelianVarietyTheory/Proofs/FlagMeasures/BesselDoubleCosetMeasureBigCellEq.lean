@@ -384,10 +384,10 @@ theorem exists_prob (j : ℕ) :
     intro a
     rw [pi_norm_le_iff_of_nonneg zero_le_one]
     exact fun b => entry_norm_bound_of_unitary hx' a b
-  have : CompactSpace (GlobalTheory.MatHaar.Grp _ hG) := isCompact_iff_compactSpace.1 hc
-  set ν : Measure (GlobalTheory.MatHaar.Grp _ hG) := Measure.haarMeasure ⊤ with hν
+  have : CompactSpace (GlobalTheory.MatHaar.Grp _) := isCompact_iff_compactSpace.1 hc
+  set ν : Measure (GlobalTheory.MatHaar.Grp _) := Measure.haarMeasure ⊤ with hν
   have h1 : ν Set.univ = 1 := by
-    have := Measure.haarMeasure_self (K₀ := (⊤ : TopologicalSpace.PositiveCompacts (GlobalTheory.MatHaar.Grp _ hG)))
+    have := Measure.haarMeasure_self (K₀ := (⊤ : TopologicalSpace.PositiveCompacts (GlobalTheory.MatHaar.Grp _)))
     simpa using this
   have h2 : (ν.map GlobalTheory.MatHaar.inc) Set.univ = 1 := by
     rw [GlobalTheory.MatHaar.inc_memb.map_apply, Set.preimage_univ, h1]
@@ -397,8 +397,8 @@ theorem exists_prob (j : ℕ) :
     convert measure_empty (μ := ν)
     ext x
     simpa using GlobalTheory.MatHaar.inc_mem x
-  · let g : GlobalTheory.MatHaar.Grp _ hG := ⟨Matrix.of.symm s, hs⟩
-    have e : PI.lmulQ s ∘ (GlobalTheory.MatHaar.inc : GlobalTheory.MatHaar.Grp _ hG → _) = GlobalTheory.MatHaar.inc ∘ (g * ·) := by
+  · let g : GlobalTheory.MatHaar.Grp _ := ⟨Matrix.of.symm s, hs⟩
+    have e : PI.lmulQ s ∘ (GlobalTheory.MatHaar.inc : GlobalTheory.MatHaar.Grp _ → _) = GlobalTheory.MatHaar.inc ∘ (g * ·) := by
       funext x; rfl
     rw [Measure.map_map (GlobalTheory.MatHaar.lmulQ_cont s).measurable GlobalTheory.MatHaar.inc_memb.measurable, e,
       ← Measure.map_map GlobalTheory.MatHaar.inc_memb.measurable (continuous_const_mul g).measurable, map_mul_left_eq_self]

@@ -342,7 +342,7 @@ theorem exists_khw_of_not_sch (hE : IsGlRep E) (hU : IsInfUnitary ε E)
     intro a b hab v hv
     obtain ⟨x, hx, rfl⟩ := Submodule.mem_map.mp hv
     exact Submodule.mem_map.mpr
-      ⟨bAct E 1 a b x, Wm_kStable hE hU hV a b hab x hx, phi_bAct hE 1 hab x⟩
+      ⟨bAct E 1 a b x, Wm_kStable hE hV a b hab x hx, phi_bAct hE 1 hab x⟩
   have hTne : (Wm ε E V).map (phi E 1) ≠ ⊥ := by
     intro hbot
     have hm := Submodule.mem_map_of_mem (f := phi E 1) hx₀
@@ -351,7 +351,7 @@ theorem exists_khw_of_not_sch (hE : IsGlRep E) (hU : IsInfUnitary ε E)
   obtain ⟨w, hwT, hw0, μ, hkμ⟩ := exists_khw hE hKU inferInstance hTst hTne
   obtain ⟨x₁, hx₁, rfl⟩ := Submodule.mem_map.mp hwT
   obtain ⟨x, hx, -, hkx, hfx⟩ := lift_khw (bAct_isKUnitary hU 1) (phi E 1)
-    (fun a b hab y => phi_bAct hE 1 hab y) hfdW (Wm_kStable hE hU hV) hx₁ hkμ
+    (fun a b hab y => phi_bAct hE 1 hab y) hfdW (Wm_kStable hE hV) hx₁ hkμ
   have hx0 : x ≠ 0 := by
     intro h0
     apply hw0
@@ -549,7 +549,7 @@ theorem finiteDimensional_prodSub {V₁ : Submodule ℂ M₁} {V₂ : Submodule 
 theorem prodSub_kStable {ε : Fin n → Bool} {E₁ : Fin n → Fin n → Module.End ℂ M₁}
     {E₂ : Fin n → Fin n → Module.End ℂ M₂} {V₁ : Submodule ℂ M₁} {V₂ : Submodule ℂ M₂}
     (h₁ : IsKStableSub ε E₁ V₁) (h₂ : IsKStableSub ε E₂ V₂) :
-    IsKStableSub ε (prodE E₁ E₂) (prodSub V₁ V₂) := fun a b hab v hv =>
+    IsKStableSub ε (prodE E₁ E₂) (prodSub V₁ V₂) := fun a b hab _ hv =>
   mem_prodSub.2 ⟨h₁ a b hab _ (mem_prodSub.1 hv).1, h₂ a b hab _ (mem_prodSub.1 hv).2⟩
 
 end ProdSub
@@ -613,7 +613,7 @@ theorem casimir_eq_casVal_of_model {ε : Fin n → Bool} {lam : Fin n → ℝ} (
   have hcK := khw_map (casimir (prodE E₁ E₂)) hcomm hyK
   have hcS := khw_lowK_mem_of_no hE hU hS hNoS hgap
     (casimir_mem_genSub (prodE E₁ E₂) (self_mem_kLowSpan y)) hcK
-  obtain ⟨c, hc⟩ := kLowSpan_line hE hU hyK hy0 hcS hcK.1
+  obtain ⟨c, hc⟩ := kLowSpan_line hE hU hyK hcS hcK.1
 
   have h2 : casimir E₂ w₂ = c • w₂ := by
     have := casimir_map (E := prodE E₁ E₂) (E' := E₂) prSnd (fun a b x => prSnd_prodE a b x) y
@@ -706,7 +706,7 @@ theorem sc_no_of_schmid (hE : IsGlRep E) (hU : IsInfUnitary ε E) (hV : IsKIrrHW
     exact inner_self_eq_zero.1 h3
   rw [hxm_eq, zero_add] at hsum
   have hPWp : P ∈ Wp ε E V := hsum ▸ hxp
-  obtain ⟨r, s, -, -, hC⟩ := crossOp_khw hE hU hV hPnc hP0 hPμ
+  obtain ⟨r, s, -, -, hC⟩ := crossOp_khw hE hV hPnc hP0 hPμ
   have hroot : lowK ε lam - root a b = lowK ε lam + root b a := by
     ext x; simp only [Pi.sub_apply, Pi.add_apply, root]; ring
   have hneg := crossVal_neg hmono hh hab hε

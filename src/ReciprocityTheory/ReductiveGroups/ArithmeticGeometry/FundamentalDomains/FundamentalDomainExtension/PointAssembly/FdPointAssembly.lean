@@ -52,7 +52,7 @@ theorem div_le_exp_of_abs_log_sub_le {a b K : ℝ} (ha : 0 < a) (hb : 0 < b) (h 
   have h2 := neg_le_abs (Real.log b - Real.log a)
   linarith
 
-theorem small_power_bound {w r rh z : ℝ} (hr0 : 0 ≤ r) (hrw : r ≤ w) (hw : 0 ≤ w) (hrh : 0 ≤ rh)
+theorem small_power_bound {w r rh z : ℝ} (hrw : r ≤ w) (hw : 0 ≤ w) (hrh : 0 ≤ rh)
     (hwrh : w * rh ≤ 1 / 36) (hz0 : 0 ≤ z) (hz : z ≤ rh) : 4 * w * r * z ^ 2 ≤ 1 / 4 := by
   have h1 : w * r ≤ w * w := mul_le_mul_of_nonneg_left hrw hw
   have h2 : z ^ 2 ≤ rh ^ 2 := pow_le_pow_left₀ hz0 hz 2
@@ -201,7 +201,7 @@ theorem fundamentalDomain_of_parts {E : Type} [Field E] [NumberField E] [IsCMFie
       have hynf : 0 < X.nfac la (X.xZ x0 (t • Z)) := hNp r X.toData la _ hydom
       have hlog := hylog la w hspr
       have hsm : 4 * w * r * X.zN (t • Z) ^ 2 ≤ 1 / 4 :=
-        small_power_bound (by positivity) hrw (by linarith) hrh0.le hwrh (hZn r X.toData _) htb
+        small_power_bound hrw (by linarith) hrh0.le hwrh (hZn r X.toData _) htb
       have hratio : X.nfac la x0 / X.nfac la (X.xZ x0 (t • Z)) ≤ Real.exp (1 / 4) :=
         div_le_exp_of_abs_log_sub_le hx0nf hynf (by linarith)
       have htt : ∀ τ, (1 - rh) / (1 + rh) ≤ X.tt ξ (X.xZ x0 (t • Z)) τ ∧

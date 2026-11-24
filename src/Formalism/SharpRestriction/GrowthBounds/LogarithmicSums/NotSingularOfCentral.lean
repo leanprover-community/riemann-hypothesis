@@ -556,7 +556,7 @@ theorem gain_bounds (P : ParameterChoice' D L) (X : Inst D L) (K : Consts) (hK :
         ring
       linarith
 
-theorem top_small (a b : HH D → ℤ) (hW : InWin L a b) (p : ℕ) (hp : p.Prime) (hpX : L.sc.X' ≤ (p : ℝ))
+theorem top_small (a b : HH D → ℤ) (hW : InWin L a b) (p : ℕ) (hpX : L.sc.X' ≤ (p : ℝ))
     (s : HH D) (hs : s ∈ D.host.TT) (e : ℕ) (he : 1 ≤ e) :
     (a s : ℝ) / (p : ℝ) ^ e ≤ L.sc.b' + L.sc.b' / L.sc.x := by
   obtain ⟨h1, h2, -⟩ := hW s hs
@@ -600,7 +600,7 @@ theorem excl_small_of_ge (X : Inst D L) (a b : HH D → ℤ) (hW : InWin L a b) 
   obtain ⟨he, s', hs', -, -, hpart, -⟩ := hx
   have hb : ∀ t ∈ D.host.TT, L.sc.b' ≤ (b t : ℝ) := fun t ht => (hW t ht).2.2
   rw [hpart]
-  exact le_trans (top_small a b hW p hp hpX s hs e he.pos) (fill_top_ge X b hb j s' hs')
+  exact le_trans (top_small a b hW p hpX s hs e he.pos) (fill_top_ge X b hb j s' hs')
 
 theorem not_excl_of_sg (p : ℕ) (hsg : IsSg D p) (s : HH D) (e : ℕ) : ¬ Excl D p s e := by
   rintro ⟨he, s', _, _, _, hpart, _⟩
@@ -625,7 +625,7 @@ theorem hypothesis₂ (X : Inst D L) (a b : HH D → ℤ) (hW : InWin L a b) (p 
     split_ifs with he
     · have hpart : partner D p s e = (false, s) := by simp [partner, hns, hh]
       rw [hpart]
-      have h1 := top_small a b hW p hp hpX s hs e he.pos
+      have h1 := top_small a b hW p hpX s hs e he.pos
       have h2 := fill_top_ge X b (fun t ht => (hW t ht).2.2) j s hs
       exact max_eq_left (by linarith)
     · rfl

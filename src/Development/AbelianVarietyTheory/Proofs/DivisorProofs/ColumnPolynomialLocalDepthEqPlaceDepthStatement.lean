@@ -888,7 +888,7 @@ theorem constantCoeff_dpolyN_eq_derivAt0 : ∀ (C : Type) [Field C] [CharZero C]
   next P1 P2 h1 h2 =>
     intro g
     rw [map_add (f := _), hadd, map_add (f := _), h1, h2,
-      (derivAt0_linear C v Λ P1 P2 (subst (psi L β w) g) (subst (psi L β w) g) 0).2.2.1]
+      (derivAt0_linear C Λ P1 P2 (subst (psi L β w) g) (subst (psi L β w) g) 0).2.2.1]
   next Q l h =>
     intro g
     have hφ : MvPolynomial.aeval (fun l => ∑ j, MvPolynomial.C (β l j) * (MvPolynomial.X (t l j) : MvPolynomial ι C))

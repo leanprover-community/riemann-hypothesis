@@ -216,7 +216,7 @@ theorem tempered_of_true_cuspidal_alt (hF : GlobalTheory.Published.AutomorphicFo
   rw [Units.val_inv_eq_inv_val]
   exact k.inv (one_lt_q w)
 theorem allCuspidalOpenBound_of_cuspU_character_choice : GlobalTheory.Published.AutomorphicFormsFiniteGL → _root_.UpperTheory.GalS.CuspUAlt →
-    ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (D : D7) (P : _root_.GlobalTheory.NPin.CharacterChoiceData hL D), AllCuspidalOpenBound D.nd D.naut :=
+    ∀ (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (D : D7) (_ : _root_.GlobalTheory.NPin.CharacterChoiceData hL D), AllCuspidalOpenBound D.nd D.naut :=
   fun hF _ hL D P => _root_.UpperTheory.GalN.tempered_of_true_cuspidal_alt hF P.cg (_root_.GlobalTheory.TempGal.rankOneUnitary_of_charSide hF hL D P)
 theorem allCuspidalOpenBound_of_parIn (hP : _root_.GlobalTheory.HeightCounting.Up.PublishedInputsThirdLayerAlt) {hL : _root_.UpperTheory.Zero.LLC.RecTExists} {D : D7} {cf : CharFrame D} {rep Rw}
     (X : _root_.GlobalTheory.HeightCounting.Up.ParityConditions hL D cf rep Rw) : AllCuspidalOpenBound D.nd D.naut :=

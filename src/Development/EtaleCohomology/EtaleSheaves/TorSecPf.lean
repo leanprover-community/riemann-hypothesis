@@ -331,7 +331,7 @@ lemma sheetF (s : Tor f g hε →+* S) (hs : ∀ a, s (torMap f g hε a) = a) :
     (fun k => by
       have := hs' (t k * t k - torMap f g hε (f ^ N) * t k) (by
         show (t k : Amb f g q).1 * (t k : Amb f g q).1 - (fun _ => algebraMap S _ (f ^ N)) * (t k : Amb f g q).1 = 0
-        rw [ht k]; funext i; by_cases h : i = k <;> simp [Pi.single_apply, h])
+        rw [ht k]; funext i; by_cases h : i = k <;> simp [h])
       rw [map_sub, map_mul, map_mul, hs, map_sub, map_mul, map_mul, map_pow, sub_eq_zero] at this
       exact this)
     (fun j k hjk => by
@@ -339,7 +339,7 @@ lemma sheetF (s : Tor f g hε →+* S) (hs : ∀ a, s (torMap f g hε a) = a) :
         show (t j : Amb f g q).1 * (t k : Amb f g q).1 = 0
         rw [ht j, ht k]; funext i
         by_cases h : i = j
-        · subst h; simp [Pi.single_apply, hjk]
+        · subst h; simp [hjk]
         · simp [Pi.single_apply, h])
       rwa [map_mul, map_mul] at this)
     (by
@@ -363,7 +363,7 @@ lemma sheetG (s : Tor f g hε →+* S) (hs : ∀ a, s (torMap f g hε a) = a) :
     (fun k => by
       have := hs' (t k * t k - torMap f g hε (g ^ N) * t k) (by
         show (t k : Amb f g q).2 * (t k : Amb f g q).2 - (fun _ => algebraMap S _ (g ^ N)) * (t k : Amb f g q).2 = 0
-        rw [ht k]; funext i; by_cases h : i = k <;> simp [Pi.single_apply, h])
+        rw [ht k]; funext i; by_cases h : i = k <;> simp [h])
       rw [map_sub, map_mul, map_mul, hs, map_sub, map_mul, map_mul, map_pow, sub_eq_zero] at this
       exact this)
     (fun j k hjk => by
@@ -371,7 +371,7 @@ lemma sheetG (s : Tor f g hε →+* S) (hs : ∀ a, s (torMap f g hε a) = a) :
         show (t j : Amb f g q).2 * (t k : Amb f g q).2 = 0
         rw [ht j, ht k]; funext i
         by_cases h : i = j
-        · subst h; simp [Pi.single_apply, hjk]
+        · subst h; simp [hjk]
         · simp [Pi.single_apply, h])
       rwa [map_mul, map_mul] at this)
     (by

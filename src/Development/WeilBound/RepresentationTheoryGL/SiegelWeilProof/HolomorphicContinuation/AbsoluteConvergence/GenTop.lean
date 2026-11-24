@@ -468,7 +468,7 @@ variable {m n : ℕ} {ε : Fin m → Bool} {c t : ℝ} {p q : ℕ} {e : ℤ} {sL
   [SecondCountableTopology G] {Pp Γ : Subgroup G} {ι : GR n →* G} {s₀ : ℂ} {Ht : G → ℝ≥0}
   {sec I : PX m n →ₗ[ℂ] (G → ℂ)}
 
-theorem hz_bound (hD : CayleyBlocksInvertible) (hG : GlobCore ε c sL ρ G Pp Γ ι s₀ Ht sec I) {Q : PX m n} {C : ℝ} (hC0 : 0 ≤ C)
+theorem hz_bound (hD : CayleyBlocksInvertible) (hG : GlobCore ε c sL ρ G Pp Γ ι s₀ Ht sec I) {Q : PX m n} {C : ℝ}
     (hC : ∀ x, ‖sec Q x‖ ≤ C * ‖sec 1 x‖) {σ₁ σ₂ : ℝ} {z : ℂ} (h₁ : σ₁ ≤ z.re) (h₂ : z.re ≤ σ₂) (x : G) :
     ‖hz Ht sec s₀ z Q x‖ ≤ C * (‖hz Ht sec s₀ (σ₁ : ℂ) 1 x‖ + ‖hz Ht sec s₀ (σ₂ : ℂ) 1 x‖) := by
   rw [norm_hz hD hG, norm_hz hD hG, norm_hz hD hG, Complex.ofReal_re, Complex.ofReal_re]
@@ -517,7 +517,7 @@ theorem farHol (hI : Iwa) (hM : Mult) (hD : CayleyBlocksInvertible) (hL : LocDat
       · have hne : (((Ht (((q'.out : Γ) : G) * g) : ℝ) : ℂ)) ≠ 0 :=
           Complex.ofReal_ne_zero.mpr (Ht_pos hD hG _).ne'
         exact (((differentiable_id.sub_const s₀).const_cpow (Or.inl hne)).mul_const _).differentiableOn
-      · have h := hz_bound hD hG hC0 hC (σ₁ := σ₁) (σ₂ := σ₂) (z := w) hw.1.le hw.2.le (((q'.out : Γ) : G) * g)
+      · have h := hz_bound hD hG hC (σ₁ := σ₁) (σ₂ := σ₂) (z := w) hw.1.le hw.2.le (((q'.out : Γ) : G) * g)
         calc ‖GlobalTheory.Eis.term Pp Γ (hz Ht sec s₀ w Q) g q'‖ ≤ C * (‖GlobalTheory.Eis.term Pp Γ (hz Ht sec s₀ (σ₁ : ℂ) 1) g q'‖ +
               ‖GlobalTheory.Eis.term Pp Γ (hz Ht sec s₀ (σ₂ : ℂ) 1) g q'‖) := h
           _ ≤ C * (u₁ q' + u₂ q') := mul_le_mul_of_nonneg_left
@@ -807,7 +807,7 @@ private theorem diffAdj_lemma_4 {N : ℕ} {A : ℂ → Matrix (Fin N) (Fin N) �
   · exact h k l
 
 theorem genCore_of (hP : ProjOp) (hT : TSGenC) (hB : Basis) (hFar : FarRightC) (hS : SecZero) (hLC : LC)
-    (hH : HolParam) (hG : Glue) : GenCore := by
+    (hH : HolParam) : GenCore := by
   intro m n ε c t p q e sL ρ hL G _ _ _ _ _ _ Pp Γ ι s₀ Ht sec I hD hV P g
   show HolValueAt (fun z => GlobalTheory.Eis.cosetSum Pp Γ (hz Ht sec s₀ z P) g) s₀ (I P g)
   letI : MeasurableSpace (KR n) := borel (KR n)
@@ -1542,10 +1542,10 @@ namespace PositivityTheory.Rg.Sw.AbsSt
 theorem genCore : Iwa → CayleyBlocksInvertible → KAK → Mult → SecZero → DerivativeVacuumDilations → CycSec → HolParam → Glue → LC → GenCore :=
   fun hI hD hK hM hS hDF hC hH hG hLC =>
     genCore_of (Proj.projOp hI hM) (tsGenC_of hD hK hM hS hDF hH hLC tsbFacts) (_root_.PositivityTheory.Rg.Sw.AbsSt.BasisPf.basis_of hI hD hM hC hH)
-      (farRightC hI hD hM hH) hS hLC hH hG
+      (farRightC hI hD hM hH) hS hLC hH
 
 theorem absThm_of' (hV : VacOut) (hI : Iwa) (hD : CayleyBlocksInvertible) (hK : KAK) (hM : Mult) (hS : SecZero) (hDF : DerivativeVacuumDilations)
-    (hC : CycSec) (_hSph : Sph) (hH : HolParam) (hG : Glue) (hLC : LC) (_hN : NullIff) : AbsThm :=
+    (hC : CycSec) (hH : HolParam) (hG : Glue) (hLC : LC) : AbsThm :=
   absThm_gen hV (Proj.projOp hI hM) (tsGenC_of hD hK hM hS hDF hH hLC tsbFacts)
     (_root_.PositivityTheory.Rg.Sw.AbsSt.BasisPf.basis_of hI hD hM hC hH) (farRight hI hD hM hH) hS hLC hH hG
 

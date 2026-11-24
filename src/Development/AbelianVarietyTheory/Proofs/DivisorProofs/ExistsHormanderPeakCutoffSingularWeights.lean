@@ -1141,7 +1141,7 @@ theorem chain_drop (r p : ℕ) (f : ℕ → ℝ) (g : ℝ)
     push_cast
     linarith
 
-theorem coeff_la {r : ℕ} (X : Data E r) (la : Wt X.Ψ r) (g : ℝ) (hp0 : 0 < X.p0) (hpr : X.p0 < r)
+theorem coeff_la {r : ℕ} (X : Data E r) (la : Wt X.Ψ r) (g : ℝ)
     (hg0 : 0 ≤ g)
     (h1 : ∀ τ (a b : Fin r), (b : ℕ) = a + 1 → (b : ℕ) ≠ X.p0 → g ≤ (la τ a : ℝ) - la τ b)
     (h2 : ∀ τ (a b : Fin r), (a : ℕ) = 0 → (b : ℕ) = r - 1 → g ≤ (la τ b : ℝ) - la τ a)
@@ -1218,7 +1218,7 @@ theorem levi_margin_origin : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
     hs, Finset.mul_sum, Finset.mul_sum, ← Finset.sum_sub_distrib, ← Finset.sum_sub_distrib]
   refine Finset.sum_le_sum fun e _ => ?_
   obtain ⟨τ, ⟨a, b⟩, hab⟩ := e
-  have c1 := coeff_la X la g hp0 hpr hg0 h1 h2 τ a b hab
+  have c1 := coeff_la X la g hg0 h1 h2 τ a b hab
   have c2 := coeff_blk X τ a b hab
   have c3 := coeff_kap X τ a b hab
   set N := ‖ξ (Fintype.equivFin (Ent X) ⟨τ, ⟨(a, b), hab⟩⟩)‖ ^ 2

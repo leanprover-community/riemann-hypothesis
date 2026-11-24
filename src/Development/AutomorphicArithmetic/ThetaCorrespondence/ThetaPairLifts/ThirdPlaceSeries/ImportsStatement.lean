@@ -91,7 +91,7 @@ noncomputable section
 
 namespace GlobalTheory.Fam.IoTop
 
-theorem liftS_smul_domain {D : D7} {S T : HSp D} (om : Om S T) (ν μ : Measure (GA D T)) (c : ENNReal) (hc0 : c ≠ 0)
+theorem liftS_smul_domain {D : D7} {S T : HSp D} (om : Om S T) (ν μ : Measure (GA D T)) (c : ENNReal)
     (hμ : μ = c • ν) (hH : μ.IsHaarMeasure) {𝓕 𝓖 : Set (GA D T)} (h₁ : IsFundamentalDomain (GQ T) 𝓕 μ)
     (h₂ : IsFundamentalDomain (GQ T) 𝓖 ν) (G : GA D T → ℂ) (φ : WO S T → ℂ) (x : GA D S)
     (hinv : ∀ γ ∈ GQ T, ∀ y, om (x, γ * y) φ 0 * G (γ * y) = om (x, y) φ 0 * G y) :
@@ -181,7 +181,7 @@ theorem GlobalTheory.Fam.liftS_ptT_eq_cI_smul_ioT : ∀ {D : D7} {L : SizeData�
   have hfd := (hc.models.νX t).2
   show liftS (omT (_root_.GlobalTheory.Fam.pk_z W) t j h) f.g.volT.μ f.g.volT.𝓕 (F.1 v) _ = cIOf (_root_.GlobalTheory.Fam.pk_z W) (_root_.GlobalTheory.Fam.complexLevelStructure W) f.g t (j + 1) • _
   funext x
-  have e1 := liftS_smul_domain (omT (_root_.GlobalTheory.Fam.pk_z W) t j h) ((_root_.GlobalTheory.Fam.pk_z W).νX t) f.g.volT.μ _ hc0 hm f.g.volT.haar f.g.volT.fund hfd
+  have e1 := liftS_smul_domain (omT (_root_.GlobalTheory.Fam.pk_z W) t j h) ((_root_.GlobalTheory.Fam.pk_z W).νX t) f.g.volT.μ _ hm f.g.volT.haar f.g.volT.fund hfd
     (F.1 v) (pureTensorO (_root_.GlobalTheory.Fam.pk_z W).ψ (_root_.GlobalTheory.Fam.pk_z W).θ (Yc D (j + 1)) D.sp.X' (cart ((_root_.GlobalTheory.Fam.pk_z W).MY (j + 1))) (cart (_root_.GlobalTheory.Fam.pk_z W).MX)
       (onb ((_root_.GlobalTheory.Fam.pk_z W).MY (j + 1))) (onb (_root_.GlobalTheory.Fam.pk_z W).MX) ((f.row t).vT j h) P) x (fun γ hγ y => by
         have a1 : (omT (_root_.GlobalTheory.Fam.pk_z W) t j h) (x, γ * y) = (omT (_root_.GlobalTheory.Fam.pk_z W) t j h) (1, γ) * (omT (_root_.GlobalTheory.Fam.pk_z W) t j h) (x, y) := by

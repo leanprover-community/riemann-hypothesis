@@ -96,7 +96,7 @@ theorem lift_layer (hE : IsGlRep E) (hU : IsInfUnitary ε E) (hVfd : FiniteDimen
     have hm : H ∈ U ⊓ Uᗮ := ⟨⟨hHN, hphi⟩, hHo⟩
     rwa [Submodule.inf_orthogonal_eq_bot, Submodule.mem_bot] at hm
 
-  obtain ⟨l, hl, y, hy, hly⟩ := Submodule.mem_sup.mp (layer_succ_le hE hVk k hw)
+  obtain ⟨l, hl, y, hy, hly⟩ := Submodule.mem_sup.mp (layer_succ_le k hw)
   obtain ⟨G0, hG0, rfl⟩ := Submodule.mem_map.mp hy
   have hUmem : U.starProjection G0 ∈ U := by
     rw [Submodule.starProjection_apply]; exact SetLike.coe_mem _

@@ -40,7 +40,7 @@ theorem eabV_of_local (ε : Fin n → Bool) {F : Matrix (Fin n) (Fin n) ℂ → 
   rw [add_mul, smul_mul_assoc, map_add (f := _), map_smul, smul_neg, neg_add]
 
 theorem contDiffOn_of_local [CompleteSpace E] {F : Matrix (Fin n) (Fin n) ℂ → E} {V W : Set (Matrix (Fin n) (Fin n) ℂ)} {m : Matrix (Fin n) (Fin n) ℂ}
-    (hV : IsOpen V) (hF : DifferentiableOn ℂ F V) (hW : IsOpen W)
+    (hV : IsOpen V) (hF : DifferentiableOn ℂ F V)
     (hWV : ∀ g ∈ W, IsUnit g ∧ g⁻¹ * m ∈ V) : ContDiffOn ℝ ∞ (fun g => F (g⁻¹ * m)) W := by
   classical
   have hent : ∀ i j : Fin n, ContDiff ℂ ∞ (fun A : Matrix (Fin n) (Fin n) ℂ => A i j) := by

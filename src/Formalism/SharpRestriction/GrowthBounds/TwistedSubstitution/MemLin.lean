@@ -265,7 +265,7 @@ theorem geZ_min {a b : WithTop ℤ} {t : ℝ} (ha : geZ a t) (hb : geZ b t) : ge
   · rw [h] at hk; exact ha k hk
   · rw [h] at hk; exact hb k hk
 
-theorem geZ_top (t : ℝ) : geZ ⊤ t := fun k hk => absurd hk WithTop.top_ne_coe
+theorem geZ_top (t : ℝ) : geZ ⊤ t := fun _ hk => absurd hk WithTop.top_ne_coe
 
 section Val
 

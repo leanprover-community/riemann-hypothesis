@@ -233,8 +233,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.StabilizerIsOpen.stab_open.{u_1, u_2} :
-    ∀ {G : Type u_1} {V : Type u_2} [inst : Group G] [inst_1 : TopologicalSpace G] [IsTopologicalGroup G]
-    [inst_3 : AddCommGroup V] [inst_4 : _root_.Module ℂ V] (ρ : Representation ℂ G V) (v : V),
+    ∀ {G : Type u_1} {V : Type u_2} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
+    [AddCommGroup V] [_root_.Module ℂ V] (ρ : Representation ℂ G V) (v : V),
     {k : G | ((ρ : G → V →ₗ[ℂ] V) k : V → V) v = v} ∈ nhds (1 : G) →
       IsOpen {k : G | ((ρ : G → V →ₗ[ℂ] V) k : V → V) v = v} := by
   intro G V _ _ _ _ _ ρ v h

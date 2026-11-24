@@ -191,7 +191,7 @@ theorem contract_smul (hf : IsBaseChange L f) (l : L →ₗ[K] K) (a : L) (v : V
     contract hf l (a • f v) = l a • v := by
   simp [contract, hf.equiv_symm_apply, smul_tmul']
 
-theorem induction_smul (hf : IsBaseChange L f) {p : M → Prop} (x : M) (h0 : p 0)
+theorem induction_smul (hf : IsBaseChange L f) {p : M → Prop} (x : M)
     (hs : ∀ (a : L) (v : V), p (a • f v)) (ha : ∀ x y, p x → p y → p (x + y)) : p x := by
   obtain ⟨t, rfl⟩ := hf.equiv.surjective x
   induction t using TensorProduct.inductionOn with
@@ -201,7 +201,7 @@ theorem induction_smul (hf : IsBaseChange L f) {p : M → Prop} (x : M) (h0 : p 
 theorem contract_smul_left (hf : IsBaseChange L f) (l : L →ₗ[K] K) (a : L) (x : M) :
     contract hf l (a • x) = contract hf (l ∘ₗ LinearMap.mulLeft K a) x := by
   refine induction_smul hf (p := fun x =>
-    contract hf l (a • x) = contract hf (l ∘ₗ LinearMap.mulLeft K a) x) x (by simp) ?_ ?_
+    contract hf l (a • x) = contract hf (l ∘ₗ LinearMap.mulLeft K a) x) x ?_ ?_
   · intro c v
     rw [smul_smul, contract_smul, contract_smul]
     rfl
@@ -212,7 +212,7 @@ theorem exists_finsupp_contract (hf : IsBaseChange L f) {ι : Type*} (e : Basis 
     ∃ c : ι →₀ V, (∀ i, c i = contract hf (e.coord i) x) ∧ x = c.sum fun i v => e i • f v := by
   refine induction_smul hf (p := fun x => ∃ c : ι →₀ V,
     (∀ i, c i = contract hf (e.coord i) x) ∧ x = c.sum fun i v => e i • f v) x
-    ⟨0, by simp, by simp⟩ ?_ ?_
+    ?_ ?_
   · intro a v
     refine ⟨(e.repr a).mapRange (· • v) (zero_smul _ _), fun i => by simp, ?_⟩
     rw [Finsupp.sum_mapRange_index (by simp)]
@@ -266,7 +266,7 @@ theorem contract_map (hf : IsBaseChange L f) (hf' : IsBaseChange L f') (p : V �
     (F : M →ₗ[L] M') (hF : ∀ v, F (f v) = f' (p v)) (l : L →ₗ[K] K) (x : M) :
     contract hf' l (F x) = p (contract hf l x) := by
   refine induction_smul hf (p := fun x => contract hf' l (F x) = p (contract hf l x)) x
-    (by simp) ?_ ?_
+    ?_ ?_
   · intro a v
     rw [map_smul, hF, contract_smul, contract_smul, map_smul]
   · intro x y hx hy

@@ -40,7 +40,7 @@ theorem inS_one : InS e z (1 : Matrix (Fin n) (Fin n) ℂ) :=
 def SG : Subgroup (Formalism.REAL.UJ ε) where
   carrier := SLoc ε e z
   one_mem' := inS_one e z
-  mul_mem' {a b} ha hb := inS_mul e z ha hb
+  mul_mem' {_ _} ha hb := inS_mul e z ha hb
   inv_mem' {a} ha := Formalism.L2.SG.RealObj.InfCut.inS_inv _ _ (Formalism.MainNotions.S.uMat a) (Formalism.MainNotions.S.uMat a⁻¹)
     (Formalism.L2.SG.RealObj.InfCut.uMat_inv_mul' a) ha
 

@@ -396,16 +396,16 @@ theorem tool_algebra_of_ring_condition (D : D7) (HW : HWOf D.loc) (F : FonOf D.l
     exact Formalism.MainNotions.WachCoordinates.Br.complete_OL LL
   exact ⟨ToolsR.tools1 hR, ToolsR.tools2 hR hp0 hpu, ToolsR.tools3 hR, ToolsR.tools4 hR⟩
 
-def LevCoeff (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def LevCoeff (D : D7) (HW : HWOf D.loc) : Prop :=
   Formalism.MainNotions.WachCoordinates.AtCaseA fun l _ K LL h => Formalism.MainNotions.WachCoordinates.LevelMapHodgeFiltration ((HW l).W K 1 LL h.2.2)
 
 theorem tools_unramified_of_ring_condition (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
-    (Cm : CmpOf D.loc D.locA HW F) (h9 : Formalism.MainNotions.DeltaInvariantLattices.P9 D HW F) (hL : LevCoeff D HW F) :
+    (Cm : CmpOf D.loc D.locA HW F) (h9 : Formalism.MainNotions.DeltaInvariantLattices.P9 D HW F) (hL : LevCoeff D HW) :
     FiltrationPropertiesEtale D HW F Cm := fun l _ K LL h h5 =>
   ⟨tool_algebra_of_ring_condition D HW F h9 l K LL h h5, hL l K LL h h5⟩
 
 theorem tools_unramified_of_level_coeff (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
-    (Cm : CmpOf D.loc D.locA HW F) (hL : LevCoeff D HW F) : FiltrationPropertiesTheorem D HW F Cm := fun h =>
+    (Cm : CmpOf D.loc D.locA HW F) (hL : LevCoeff D HW) : FiltrationPropertiesTheorem D HW F Cm := fun h =>
   tools_unramified_of_ring_condition D HW F Cm h.2.2 hL
 
 end Formalism.MainNotions.UnusedSlot80

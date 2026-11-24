@@ -131,7 +131,7 @@ theorem classSum_index {a : NG.AlgWt L n} {β : a.W →ₗ⋆[ℂ] a.W →ₗ[�
     {T T' : Finset (GAf L n)} (hJ : IsBounded J) (hle : K ≤ J) (hne : K.relIndex J ≠ 0) (hT : IsClassReps J T)
     (hT' : IsClassReps K T') {χ : J →* ℂˣ} {f f' : GAf L n → a.W} (hf : f ∈ NG.TypeSp a.ρ J χ) (hf' : f' ∈ NG.TypeSp a.ρ J χ) :
     classSum a β K T' f f' = (K.relIndex J : ℂ) * classSum a β J T f f' := by
-  obtain ⟨F, h1, h2, h3⟩ := exists_cosetReps hle hne
+  obtain ⟨F, h1, h2, h3⟩ := exists_cosetReps hne
   have hi := form_inv β hJ hf hf'
   rw [GlobalTheory.ClassRefine.classSum_smaller_level L n a β hβ J K T T' hJ hle hne hT hT' f hf.1 f' hf'.1
     (fun κ hκ => hi κ (hle hκ)) F h1 h2, classSum, Finset.mul_sum]
@@ -159,7 +159,7 @@ theorem classSum_compare {a : NG.AlgWt L n} {β : a.W →ₗ⋆[ℂ] a.W →ₗ[
     refine ⟨u f₀, Finset.mem_image_of_mem _ h₀, ?_, J'.mul_mem (J'.inv_mem h2) hκ⟩
     have := J.mul_mem (J.inv_mem h3) (hNJ _ h₁)
     simpa [mul_assoc] using this
-  obtain ⟨U, hU1, hU2, -⟩ := exists_cosetReps (inf_le_right : J ⊓ J' ≤ J') hne'
+  obtain ⟨U, hU1, hU2, -⟩ := exists_cosetReps hne'
   obtain ⟨T₀, hT₀⟩ := exists_reps (J ⊓ J') ((T' ×ˢ U).image fun p => p.1 * p.2) fun g => by
     obtain ⟨t, ⟨ht, γ, κ, hκ, e⟩, -⟩ := hT' g
     obtain ⟨u, ⟨hu, hu'⟩, -⟩ := hU2 κ hκ

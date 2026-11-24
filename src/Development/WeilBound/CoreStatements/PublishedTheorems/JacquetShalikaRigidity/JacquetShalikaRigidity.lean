@@ -267,7 +267,7 @@ def splitE (a : ι) (T : Finset ι) (ha : a ∉ T) :
     ext w
     by_cases h : w = a
     · subst h; simp [Finsupp.update_apply]
-    · simp [Finsupp.update_apply, Finsupp.erase_apply, h])
+    · simp [Finsupp.update_apply])
   right_inv p := by
     have hpa : p.1.1 a = 0 := Finsupp.notMem_support_iff.1 fun h => ha (p.1.2 h)
     refine Prod.ext (Subtype.ext ?_) ?_
@@ -843,7 +843,7 @@ namespace PositivityTheory.RgJS
 
 namespace CauchyPositivity
 
-theorem exists_pos (A B x : ℝ) (hx : 0 ≤ x) (h : x * A * B < 1) :
+theorem exists_pos (A B x : ℝ) (h : x * A * B < 1) :
     ∃ δ : ℝ, 0 < δ ∧ x * max A δ * max B δ < 1 := by
   have hg : Continuous (fun δ : ℝ => x * max A δ * max B δ) := by fun_prop
   have h0 : x * max A 0 * max B 0 < 1 := by
@@ -864,7 +864,7 @@ end CauchyPositivity
 open CauchyPositivity in
 theorem cauchy_of_beta_bounds : BetaAll → SumBd → SchurJT → JTPad → Cauchy := by
   intro hBeta hSum hSchur hPad m m' hmm α β X A B hA hB hX
-  obtain ⟨δ, hδ, hlt⟩ := exists_pos A B ‖X‖ (norm_nonneg X) hX
+  obtain ⟨δ, hδ, hlt⟩ := exists_pos A B ‖X‖ hX
   have hA'pos : 0 < max A δ := lt_of_lt_of_le hδ (le_max_right _ _)
   have hB'pos : 0 < max B δ := lt_of_lt_of_le hδ (le_max_right _ _)
   have hαb : ∀ i, ‖((α i : ℂ))‖ ≤ max A δ := fun i => (hA i).trans (le_max_left _ _)
@@ -1271,7 +1271,7 @@ theorem padN_sum {m k : ℕ} (hk : k ≤ m) (l : Fin k → ℕ) : ∑ i, padN m 
   rw [Fin.sum_univ_add]
   simp [padN]
 
-theorem padN_antitone {m k : ℕ} (hk : k ≤ m) {l : Fin k → ℕ} (hl : Antitone l) : Antitone (padN m l) := by
+theorem padN_antitone {m k : ℕ} {l : Fin k → ℕ} (hl : Antitone l) : Antitone (padN m l) := by
   intro i j hij
   have hij' : (i : ℕ) ≤ j := hij
   simp only [padN]
@@ -1288,9 +1288,9 @@ theorem padN_inj {m k : ℕ} (hk : k ≤ m) {l l' : Fin k → ℕ} (h : padN m l
   simpa [padN] using this
 
 def padS {m k : ℕ} (hk : k ≤ m) (l : {l : Fin k → ℕ // Antitone l}) : {l : Fin m → ℕ // Antitone l} :=
-  ⟨padN m l.1, padN_antitone hk l.2⟩
+  ⟨padN m l.1, padN_antitone l.2⟩
 
-theorem padS_inj {m k : ℕ} (hk : k ≤ m) : Function.Injective (padS hk) := fun l l' h =>
+theorem padS_inj {m k : ℕ} (hk : k ≤ m) : Function.Injective (padS hk) := fun _ _ h =>
   Subtype.ext (padN_inj hk (congrArg Subtype.val h))
 
 def emb {k : ℕ} (l : {l : Fin k → ℕ // Antitone l}) : Fin k → ℤ := fun i => (l.1 i : ℤ)

@@ -158,12 +158,12 @@ theorem jumpsLet_win [NeZero n] (W : LocWach PD LL O v n) {d : ℕ} {T₁ T₂ :
 
 end Core
 
-def LocalBoundRange (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) (F : FonOf LT A HW) (R : ℕ → Prop) (k₁ k₂ k₃ k₄ k₅ C : ℝ) : Prop :=
+def LocalBoundRange (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) (R : ℕ → Prop) (k₁ k₂ k₃ k₄ k₅ C : ℝ) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K LL : Loc.FinExt l) (hg : Loc.Good K 1 LL)
     [NeZero (Module.finrank ℚ_[l] ↥(Loc.K0 K))],
     ThmCKR ((HW l).W K 1 LL hg) R k₁ k₂ k₃ k₄ k₅ C
 
-def ConclusionL (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) (F : FonOf LT A HW) (C : ℝ) : Prop := LocalBoundRange LT A HW F (fun _ => True) 32 4 10 4 (3 / 2) C
+def ConclusionL (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) (F : FonOf LT A HW) (C : ℝ) : Prop := LocalBoundRange LT A HW (fun _ => True) 32 4 10 4 (3 / 2) C
 
 section Lit
 
@@ -338,7 +338,7 @@ end Ties
 
 
 open Formalism.BasicNotions in
-def TheoremCConstantsRange (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (R : ℕ → Prop) (k₁ k₂ k₃ k₄ k₅ C : ℝ) : Prop := LocalBoundRange D.loc D.locA HW F R k₁ k₂ k₃ k₄ k₅ C
+def TheoremCConstantsRange (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (R : ℕ → Prop) (k₁ k₂ k₃ k₄ k₅ C : ℝ) : Prop := LocalBoundRange D.loc D.locA HW R k₁ k₂ k₃ k₄ k₅ C
 
 
 open Formalism.BasicNotions in
@@ -361,15 +361,15 @@ def adm3 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formal
 open Formalism.BasicNotions in
 def ArchimedeanSignatureMatching (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.DeltaInvariantLattices.lem3 D HW F
 
-def adm5 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.LiftingTheory.ConclusionL D HW F
+def adm5 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.LiftingTheory.ConclusionL D HW
 
 def adm6 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.LiftingTheory.ConclusionW D HW F
 
-def adm7 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (C : ℝ) : Prop := Formalism.MainNotions.LiftingTheory.WachAnnihilatorAll D HW F ∧ Formalism.MainNotions.LiftingTheory.WachExponentRecursionAll D HW F ∧ Formalism.MainNotions.LiftingTheory.WachResultConstant D HW F C
+def adm7 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (C : ℝ) : Prop := Formalism.MainNotions.LiftingTheory.WachAnnihilatorAll D HW ∧ Formalism.MainNotions.LiftingTheory.WachExponentRecursionAll D HW ∧ Formalism.MainNotions.LiftingTheory.WachResultConstant D HW C
 
-def adm8 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.LiftingTheory.ConclusionH D HW F
+def adm8 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.LiftingTheory.ConclusionH D HW
 
-def adm9 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.LiftingTheory.ExistsUnitClasses D HW F
+def adm9 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.LiftingTheory.ExistsUnitClasses D HW
 
 def adm10 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (CA CB CK : ℝ) : Prop := Formalism.MainNotions.LiftingTheory.LiftTheoremAllCases D HW F CA CB CK
 
@@ -397,11 +397,11 @@ def adm16 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : Loc.FinExt l) (s : ℕ) (LL : Loc.FinExt l) (h : Loc.Good K s LL),
     HerrExt ((HW l).W K s LL h)
 
-def adm17 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def adm17 (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : Loc.FinExt l) (s : ℕ) (LL : Loc.FinExt l) (h : Loc.Good K s LL),
     ((HW l).W K s LL h).ClNat ∧ Formalism.MainNotions.DeltaInvariantLattices.ClKNatG ((HW l).W K s LL h)
 
-def adm18 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def adm18 (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : Loc.FinExt l) (s : ℕ) (LL : Loc.FinExt l) (h : Loc.Good K s LL),
     DssLet ((HW l).W K s LL h)
 
@@ -411,8 +411,8 @@ def adm19 (D : D7) : Prop := H1fGeneratorBoundAll D.loc
 
 def admitted (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (CR CA CB CK : ℝ) : Prop :=
   adm1 D HW F Cm ∧ adm2 D HW F ∧ adm3 D HW F ∧ ArchimedeanSignatureMatching D HW F ∧ adm5 D HW F ∧ adm6 D HW F ∧ adm7 D HW F CR ∧ adm8 D HW F ∧ adm9 D HW F ∧
-    adm10 D HW F CA CB CK ∧ adm11 D ∧ adm12 D ∧ adm13 D ∧ adm14 D HW F ∧ adm15 D ∧ adm16 D HW F ∧ adm17 D HW F ∧
-    adm18 D HW F ∧ adm19 D
+    adm10 D HW F CA CB CK ∧ adm11 D ∧ adm12 D ∧ adm13 D ∧ adm14 D HW F ∧ adm15 D ∧ adm16 D HW F ∧ adm17 D HW ∧
+    adm18 D HW ∧ adm19 D
 
 def Stmt (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (C CR CA CB CK : ℝ) : Prop := admitted D HW F Cm CR CA CB CK → aux₃ D HW F C
 

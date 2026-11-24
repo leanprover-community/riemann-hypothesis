@@ -325,7 +325,7 @@ theorem dof_comp (q : Fin N) (g : PS S 1 d) :
   have hk : ∀ k : Fin d, pderiv (R := S) ((0 : Fin 1), q) (famL φ ((0 : Fin 1), k)) =
       ∑ i, subst (famL φ) (ev (n := 1) ![pt S d 0, 0] (pderiv (R := S) ((1 : Fin 2), i) (F k))) * C (w q i) :=
     fun k => key F φ h0 w hlin hhom q k
-  rw [dof_addF, Finset.sum_eq_single q (fun j _ hj => by simp [Pi.single_apply, hj]) (by simp)]
+  rw [dof_addF, Finset.sum_eq_single q (fun j _ hj => by simp [hj]) (by simp)]
   simp only [Pi.single_eq_same, map_one, one_mul]
   rw [pderiv_subst hL, Fintype.sum_prod_type, Fin.sum_univ_one]
   simp only [hk]
@@ -423,7 +423,7 @@ private theorem const_dpoly_lemma_3 {E : Type} [Field E] [NumberField E] [IsCMFi
       PS S 1 (dL Dw) → PS S 1 (dL Dw)) = pderiv (R := S) ((0 : Fin 1), q) := by
     intro q
     funext f
-    rw [dof_addF, Finset.sum_eq_single q (fun j _ hj => by simp [Pi.single_apply, hj]) (by simp)]
+    rw [dof_addF, Finset.sum_eq_single q (fun j _ hj => by simp [hj]) (by simp)]
     simp
   by_cases h1 : (1 : S) = 0
   · haveI : Subsingleton S := subsingleton_of_zero_eq_one h1.symm

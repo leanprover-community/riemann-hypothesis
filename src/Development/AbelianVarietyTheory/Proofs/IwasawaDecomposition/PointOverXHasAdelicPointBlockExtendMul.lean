@@ -61,16 +61,16 @@ section ExtM
 
 variable {A : Type} [CommRing A] {N n : ℕ} (hN : N = n + 1) (g : Matrix (Fin n) (Fin n) A)
 
-theorem extM_iC_iC (i j : Fin n) : TilX.extM hN g (Br.iC hN i) (Br.iC hN j) = g i j := by
+theorem extM_iC_iC (i j : Fin n) : TilX.extM g (Br.iC hN i) (Br.iC hN j) = g i j := by
   simp [TilX.extM, Br.iC]
 
-theorem extM_iC_iL (i : Fin n) : TilX.extM hN g (Br.iC hN i) (Br.iL hN) = 0 := by
+theorem extM_iC_iL (i : Fin n) : TilX.extM g (Br.iC hN i) (Br.iL hN) = 0 := by
   simp [TilX.extM, Br.iC, Br.iL]
 
-theorem extM_iL_iC (j : Fin n) : TilX.extM hN g (Br.iL hN) (Br.iC hN j) = 0 := by
+theorem extM_iL_iC (j : Fin n) : TilX.extM g (Br.iL hN) (Br.iC hN j) = 0 := by
   simp [TilX.extM, Br.iC, Br.iL]
 
-theorem extM_iL_iL : TilX.extM hN g (Br.iL hN) (Br.iL hN) = 1 := by
+theorem extM_iL_iL : TilX.extM g (Br.iL hN) (Br.iL hN) = 1 := by
   simp [TilX.extM, Br.iL]
 
 end ExtM
@@ -212,7 +212,7 @@ theorem pt_tilF_gen : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → P
     have hkP := adAt_of_bc_one P.1 (hk2 _ hTq)
     have e1 : adAt B.host.F P.1 (((TilX.extGL hN g' * k * (J0 B.sp.cm (B.R.N B.R.m) ((B.primes X).vT u)).subtype m :
         GA B (B.R.N B.R.m)) : Matrix (Fin (B.R.N B.R.m)) (Fin (B.R.N B.R.m)) (AfE B.host.F B.host.E)) i j) =
-        adAt B.host.F P.1 (TilX.extM hN g'.1 i j) *
+        adAt B.host.F P.1 (TilX.extM g'.1 i j) *
           adAt B.host.F P.1 ((((J0 B.sp.cm (B.R.N B.R.m) ((B.primes X).vT u)).subtype m : GA B (B.R.N B.R.m)) :
             Matrix (Fin (B.R.N B.R.m)) (Fin (B.R.N B.R.m)) (AfE B.host.F B.host.E)) j j) := by
 

@@ -102,7 +102,7 @@ theorem cubProd_of_generic : ∀ (V : Type) [CommRing V] [IsDomain V] (D : DegPr
           (h (cχ * b).left)⁻¹ * h cχ.left * h b.left *
             (h (1 : 𝟙_ (Over (Spec (CommRingCat.of V))) ⟶ D.P.A).left)⁻¹ := by
         rw [Fin.prod_univ_four, ← SymFrame.eta_eq]
-        simp [DegPre.gtε, zpow_neg, zpow_one]
+        simp [DegPre.gtε, zpow_neg]
       have hP : ∀ i, h (cχ * b ^ i * b).left * (h (cχ * b ^ i).left)⁻¹ * (h (cχ * b).left)⁻¹ *
           (h (b ^ i * b).left)⁻¹ * h cχ.left * h (b ^ i).left * h b.left *
           (h (1 : 𝟙_ (Over (Spec (CommRingCat.of V))) ⟶ D.P.A).left)⁻¹ =

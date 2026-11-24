@@ -208,7 +208,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Re1.lower_iff :
-    ∀ {n : ℕ} (P : Fin n → Prop) [inst : DecidablePred P],
+    ∀ {n : ℕ} (P : Fin n → Prop) [DecidablePred P],
     (∀ (a b : Fin n), a ≤ b → P b → P a) → ∀ (b : Fin n), P b ↔ (↑b : ℕ) < (Finset.filter P Finset.univ).card := by
   intro n P _ h b
   exact (Fin.lt_card_filter_univ_iff_apply_of_imp P (fun i j hij => h j i hij)).symm
@@ -886,7 +886,7 @@ theorem exists_Pb_mul_unitary : ∀ (n : ℕ) (lev : Fin n → ℕ), Monotone le
   have hu : IsUnit gᴴ := by
     rw [Matrix.isUnit_iff_isUnit_det, Matrix.det_conjTranspose]
     exact isUnit_iff_ne_zero.2 (by simpa using hdet)
-  obtain ⟨k, hk, b, hb, ht⟩ := GlobalTheory.CompanionTheory.QR.exists_unitary_mul_blockTriangular gᴴ hu
+  obtain ⟨k, hk, b, hb, ht⟩ := GlobalTheory.CompanionTheory.QR.exists_unitary_mul_blockTriangular gᴴ
   have hg' : g = bᴴ * kᴴ := by
     rw [← Matrix.conjTranspose_mul, ← hb, Matrix.conjTranspose_conjTranspose]
   have hkH : kᴴ ∈ Matrix.unitaryGroup (Fin n) ℂ := by

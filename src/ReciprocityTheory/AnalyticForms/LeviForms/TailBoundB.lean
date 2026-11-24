@@ -81,7 +81,7 @@ theorem lintegral_rW_le {e : ℕ} {X : Type} [TopologicalSpace X] [CompactSpace 
           integral_const, integral_const, smul_eq_mul, smul_eq_mul]
         ring
 
-theorem cons_pot {e : ℕ} {X : Type} [TopologicalSpace X] (_A : FinHolAtlas (e + 1) X)
+theorem cons_pot {e : ℕ} {X : Type} [TopologicalSpace X]
     (p : LocPot X → Prop) (Q : LocPot X) (Φ : Fin e → LocPot X) (hQ : p Q) (hΦ : ∀ i, p (Φ i)) :
     ∀ i, p ((Fin.cons Q Φ : Fin (e + 1) → LocPot X) i) := by
   intro i

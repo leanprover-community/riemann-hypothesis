@@ -114,7 +114,7 @@ theorem continuous_quad {r : ℕ} (G : Matrix (Fin r) (Fin r) ℝ) :
   continuous_id.dotProduct (continuous_const.matrix_mulVec continuous_id)
 
 theorem sup_real (d : HSMBlockDatum D K ι Ω) (n : ℕ) {r : ℕ} (f : Fin r → MRing ι)
-    (hf : ∀ k, IsMultiHomog (f k) (blockDeg d.k₀ n)) {c : ℝ} (hc : 0 < c)
+    (hf : ∀ k, IsMultiHomog (f k) (blockDeg d.k₀ n)) {c : ℝ}
     (hsup : ∀ F : MRing ι, IsMultiHomog F (blockDeg d.k₀ n) → ∀ z ∈ mcPts (mCoordIdeal d.y),
       ‖eval z (map (Int.castRingHom ℂ) F)‖ / d.A.h z ^ n ≤ c * blockL2Norm d n F)
     (a : Fin r → ℝ) {z : (Σ k, ι k) → ℂ} (hz : z ∈ mcPts (mCoordIdeal d.y)) :
@@ -189,7 +189,7 @@ theorem gram_posDef (d : HSMBlockDatum D K ι Ω) (n : ℕ) {r : ℕ} (f : Fin r
     have hz : ∀ z ∈ mcPts (mCoordIdeal d.y),
         ∑ k, ((a k : ℝ) : ℂ) * eval z (map (Int.castRingHom ℂ) (f k)) = 0 := by
       intro z hz
-      have h1 := sup_real d n f hf hc hsup a hz
+      have h1 := sup_real d n f hf hsup a hz
       rw [Real.sqrt_eq_zero'.2 hle, mul_zero] at h1
       have hp : 0 < d.A.h z ^ n := pow_pos (d.A.pos z hz.1) n
       have h2 : ‖comb f a z‖ ≤ 0 := by
@@ -252,7 +252,7 @@ theorem rank_le (d : HSMBlockDatum D K ι Ω) (n : ℕ) {r : ℕ} (f : Fin r →
       field_simp
     have hbd : ∀ a : Fin r → ℝ, ‖comb f a w‖ / H ≤ c * Real.sqrt (a ⬝ᵥ (G *ᵥ a)) := fun a => by
       rw [hGdef]
-      exact sup_real d n f hf hc hsup a hw
+      exact sup_real d n f hf hsup a hw
     have hxa : ∀ a, (a ⬝ᵥ x) ^ 2 ≤ c ^ 2 * (a ⬝ᵥ (G *ᵥ a)) := by
       intro a
       have e : a ⬝ᵥ x = (comb f a w).re / H := by

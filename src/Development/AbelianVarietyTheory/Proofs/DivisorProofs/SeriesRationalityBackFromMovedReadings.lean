@@ -97,7 +97,7 @@ theorem evW_moved (j : Fin D.R.m) (x : S.WL ((j : ℕ) + 1)) :
   rw [(YS.fi j).rho, MulEquiv.apply_symm_apply]
 
 theorem evK_moved {ρ : Setup D.ntw} (hρ : ρ.Good) (i : D.ntw.Tw) (j : Fin D.R.m) (b : Bool)
-    (x : NX.KB S i b ⊗[S.Ks] NX.FmK S ((j : ℕ) + 1)) :
+    (x : NX.KB i ⊗[S.Ks] NX.FmK S ((j : ℕ) + 1)) :
     ∃ y, evK (movedYS YS w) v₀ hρ i j b x = evK YS v₀ hρ i j b y := by
   induction x using TensorProduct.induction_on with
   | zero => exact ⟨0, (map_zero _).trans (map_zero _).symm⟩
@@ -158,5 +158,5 @@ theorem rat_of_sub (h : ∀ f, ∃ f', rd' f = rd f') (h' : Rat hρ rd') : Rat h
 end GlobalTheory.UnframeForms
 
 theorem GlobalTheory.UnframeForms.ratRow_back : ∀ {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 I0 T0 : Type} {A3 : FamIn3 D.what₂.LL Γ Pl0 I0 (List ℕ) T0 D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (Rl : RealDat3 D A3 Ks) (cG : G0 Rl.Pg D.R.r ≃* G0g D.nd) (S : NX.RatDat D.ntw) (YS : NX.NExpRealS Rl cG S) (w : Fin D.R.m → (D.what₂.LL →+* ℂ) → Γ), (∀ i σ, w i σ ∈ Subgroup.center Γ) → ∃ (S' : NX.RatDat D.ntw) (YS' : NX.NExpRealS (fullHeckeRealDatMovedReadings Rl w) cG S'), ∀ (v₀ : ∀ (j : Fin D.R.m) (σ : D.what₂.LL →+* ℂ), (Rl.MW j σ).Vec) (ρ : Setup D.ntw) (hρ : ρ.Good) (i : D.ntw.Tw) (j : Fin D.R.m) (b : Bool), RatRow YS' v₀ hρ i j b → RatRow YS v₀ hρ i j b :=
-  fun Rl _ _ YS w _ => ⟨GlobalTheory.UnframeForms.movedS YS w, GlobalTheory.UnframeForms.movedYS YS w, fun v₀ _ hρ i j b ⟨ν, hn, hr⟩ =>
+  fun _ _ _ YS w _ => ⟨GlobalTheory.UnframeForms.movedS YS w, GlobalTheory.UnframeForms.movedYS YS w, fun v₀ _ hρ i j b ⟨ν, hn, hr⟩ =>
     ⟨ν, hn, GlobalTheory.UnframeForms.rat_of_sub hρ (GlobalTheory.UnframeForms.realRd_moved YS w v₀ hρ i j b ν) hr⟩⟩

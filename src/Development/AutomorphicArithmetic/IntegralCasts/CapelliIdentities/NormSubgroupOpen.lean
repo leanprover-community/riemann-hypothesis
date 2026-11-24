@@ -59,7 +59,7 @@ public import Mathlib.Topology.Algebra.OpenSubgroup
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.WittVectorTrivializingMatrix.zlW :
-    (l : ℕ) → [inst : Fact (Nat.Prime l)] → (R : Type) → [inst_1 : CommRing R] → [CharP R l] → ℤ_[l] →+* WittVector l R :=
+    (l : ℕ) → [Fact (Nat.Prime l)] → (R : Type) → [CommRing R] → [CharP R l] → ℤ_[l] →+* WittVector l R :=
     fun (l : ℕ) [Fact (Nat.Prime l)] (R : Type) [CommRing R] [CharP R l] ↦
       (WittVector.map (ZMod.castHom (dvd_refl l) R)).comp (WittVector.equiv l).symm.toRingHom
 
@@ -568,8 +568,8 @@ end
 end UpperTheory.Reformulated.B.WittVectorTrivializingMatrix
 
 theorem UpperTheory.Reformulated.B.WittVectorTrivializingMatrix.exists_alg :
-    ∀ {p : ℕ} [hp : Fact (Nat.Prime p)] {G : Type} [inst : Group G] {R : Type} [inst_1 : CommRing R] (ρ : G →* R ≃+* R)
-      [inst_2 : TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G] [IsDomain R] [inst_6 : CharP R p],
+    ∀ {p : ℕ} [Fact (Nat.Prime p)] {G : Type} [Group G] {R : Type} [CommRing R] (ρ : G →* R ≃+* R)
+      [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G] [IsDomain R] [CharP R p],
       (∀ (y : R) (m : ℕ), (0 : ℕ) < m → y ^ p ^ m = y → ∀ᶠ (g : G) in nhds (1 : G), ((ρ : G → R ≃+* R) g : R → R) y = y) →
         ∀ {r : ℕ} (M : G →* Matrix (Fin r) (Fin r) ℤ_[p]),
           Continuous (⇑M : G → Matrix (Fin r) (Fin r) ℤ_[p]) →

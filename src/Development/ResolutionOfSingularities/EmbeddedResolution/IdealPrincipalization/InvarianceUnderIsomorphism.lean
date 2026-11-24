@@ -166,7 +166,7 @@ private theorem principalizationCertificate_comap_iso_of_orderCertificate {k : T
     (p : W ⟶ Spec (CommRingCat.of k)) (I : W.IdealSheafData) (m : ℕ) (Mem : Set ↥W)
     (Z : W.IdealSheafData) (M N : W.IdealSheafData) (μ : ℕ) (hI : I = M * N)
     (hM : (M.support : Set ↥W) ⊆ Mem) (hmu : m ≤ μ)
-    (hZ : (Z.support : Set ↥W) ⊆ orderAtLeastLocus N μ) (_hcert : OrderCertificate W p N μ Mem Z)
+    (hZ : (Z.support : Set ↥W) ⊆ orderAtLeastLocus N μ)
     (ih : ∀ (W' : Scheme.{u}) (e : W' ≅ W),
       OrderCertificate W' (e.hom ≫ p) (N.comap e.hom) μ (⇑e.hom.base ⁻¹' Mem) (Z.comap e.hom))
     (W' : Scheme.{u}) (e : W' ≅ W) :
@@ -182,9 +182,6 @@ private theorem certificate_comap_iso_of_opens_cover {k : Type u} [Field k] {isO
     (W : Scheme.{u}) (p : W ⟶ Spec (CommRingCat.of k)) (I : W.IdealSheafData) (m : ℕ)
     (Mem : Set ↥W) (Z : W.IdealSheafData) (U : ∀ z : ↥W, z ∈ Z.support → W.Opens)
     (hU : ∀ (z : ↥W) (hz : z ∈ Z.support), z ∈ U z hz)
-    (_hcert : ∀ (z : ↥W) (hz : z ∈ Z.support),
-      ResolutionCertificate isOrder (U z hz).toScheme ((U z hz).ι ≫ p) (I.comap (U z hz).ι) m
-        (⇑(U z hz).ι.base ⁻¹' Mem) (Z.comap (U z hz).ι))
     (ih : ∀ (z : ↥W) (hz : z ∈ Z.support) (X : Scheme.{u}) (f : X ≅ (U z hz).toScheme),
       ResolutionCertificate isOrder X (f.hom ≫ ((U z hz).ι ≫ p))
         ((I.comap (U z hz).ι).comap f.hom) m
@@ -263,9 +260,9 @@ private theorem resolutionCertificate_comap_iso (hT : OrderCertificateIsoInvaria
     (fun {_ W p I m Mem Z} hm => certificate_comap_iso_of_two_le W p I m Mem Z hm)
     (fun {W p I m Mem Z} M N μ hI hM hmu hZ hcert ihc =>
       principalizationCertificate_comap_iso_of_orderCertificate W p I m Mem Z M N μ hI hM hmu hZ
-        hcert ihc)
+        ihc)
     (fun {_ W p I m Mem Z} U hU hcert ihc =>
-      certificate_comap_iso_of_opens_cover W p I m Mem Z U hU hcert ihc)
+      certificate_comap_iso_of_opens_cover W p I m Mem Z U hU ihc)
     (fun {W p N μ Mem Z} U hU H hH hNsubH hZH J hJnone hJcomp hJloc hJcert ihc =>
       orderCertificate_comap_iso_of_smoothDivisor_cover hT W p N μ Mem Z U hU H hH hNsubH hZH J
         hJnone hJcomp hJloc hJcert ihc)

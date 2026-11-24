@@ -264,7 +264,7 @@ private theorem rk_zero_right_of_hs (p : HS L N) : rk p 0 = 0 := by
 private theorem abs_ratio_perturbation_bound_of_estimates (s Zh FinalFormK Ah Ak Q δ M C1 K : ℝ) (hs : 0 < s) (hZh : 0 < Zh)
     (hZk : 0 < FinalFormK) (hAh0 : 0 ≤ Ah) (hAh : Ah ≤ 4 * s * Q * Zh)
     (hA : |Ak - Ah| ≤ (128 * K + 40) * δ * s * Q * M) (hZ : |FinalFormK - Zh| ≤ 8 * K * δ * M)
-    (hM : M ≤ C1 * FinalFormK) (hδ : 0 ≤ δ) (hQ : 0 ≤ Q) (hK : 0 ≤ K) (hM0 : 0 ≤ M) :
+    (hM : M ≤ C1 * FinalFormK) (hδ : 0 ≤ δ) (hQ : 0 ≤ Q) (hK : 0 ≤ K) :
     |(s ^ 2 * FinalFormK)⁻¹ * Ak - (s ^ 2 * Zh)⁻¹ * Ah| ≤ (160 * K + 40) * C1 * δ / s * Q := by
   have e : (s ^ 2 * FinalFormK)⁻¹ * Ak - (s ^ 2 * Zh)⁻¹ * Ah =
       ((Ak - Ah) * Zh + Ah * (Zh - FinalFormK)) / (s ^ 2 * FinalFormK * Zh) := by
@@ -467,7 +467,7 @@ theorem pf_GTLip : GTLip := by
       rfl
     rw [hTk, hTh]
     exact abs_ratio_perturbation_bound_of_estimates s _ _ _ _ (qR h z) δ S.card C1 K hs hZhpos hZkpos hAh0 hAh hA hZ hM hδ0
-      hQ hK0 (Nat.cast_nonneg _)
+      hQ hK0
 
 end GTLipPf
 

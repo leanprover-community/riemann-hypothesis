@@ -199,7 +199,7 @@ theorem exists_kap [IsNoetherianRing R] (hM : MulPullSt) (n : ℕ) :
     (fun U _ h => by
       rw [Fin.prod_univ_three, one_pow]
       apply Additive.ofMul.injective
-      simp [ofMul_mul, ofMul_inv, ofMul_zpow, ofMul_pow]
+      simp [ofMul_mul, ofMul_inv, ofMul_zpow]
       module)
     (fun y J hJ => by
       rw [Category.comp_id, MonObj.comp_one, mul_inv_cancel])
@@ -214,7 +214,7 @@ theorem exists_nu [IsNoetherianRing R] (hM : MulPullSt) (n : ℕ) : ∃ ν : LB.
     (fun U _ h => by
       rw [Fin.prod_univ_four]
       apply Additive.ofMul.injective
-      simp [ofMul_mul, ofMul_inv, ofMul_zpow, ofMul_pow]
+      simp [ofMul_mul, ofMul_inv, ofMul_zpow]
       module)
     (fun y J hJ => by
       rw [Category.comp_id, normd_one hκ hJ, normd_one hκ' hJ, mul_inv_cancel])
@@ -318,7 +318,7 @@ theorem tau_self (hE : D.PsiEven) (hB : D.TauBimult) (y : D.X) {z : (TF (R := R)
   simp only [ofMul_mul, ofMul_inv, ofMul_pow, ofMul_one] at a₀ a₁ a₂ ⊢
   linear_combination (norm := module) - a₁ + a₀ + a₂
 
-theorem main : LL → AllD fun {R} _ _ {I} D F _ _ => ∀ (N : ℕ), Odd N → ∀ p : QkPt D.toPre F N, (∃ w, TXFrame N p w) ∧ ∀ w w', TXFrame N p w → TXFrame N p w' → ∀ z J, Good D.toPre.P.L z J → val w (𝟙 _) z J = val w' (𝟙 _) z J := by
+theorem main : LL → AllD fun {_} _ _ {_} D F _ _ => ∀ (N : ℕ), Odd N → ∀ p : QkPt D.toPre F N, (∃ w, TXFrame N p w) ∧ ∀ w w', TXFrame N p w → TXFrame N p w' → ∀ z J, Good D.toPre.P.L z J → val w (𝟙 _) z J = val w' (𝟙 _) z J := by
   rintro ⟨hL, -⟩ R _ _ _ I hI D F _ _ _ N ⟨k, hk⟩ p
   haveI : IsNoetherianRing R := hI.1
   obtain ⟨ν, hν⟩ := exists_nu (D := D.toPre) hL.mulPull N

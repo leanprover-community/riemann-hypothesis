@@ -1281,7 +1281,7 @@ private lemma num_core {s : ℕ} (k m : Fin s → ℕ) (N : ℕ) (hm : ∀ i, 1 
   have h3 : k i0 ≤ ∑ i, k i := Finset.single_le_sum (fun i _ => Nat.zero_le _) (Finset.mem_univ i0)
   omega
 
-private lemma not_dvd_der {Λ : Type} [CommRing Λ] [IsDomain Λ] [CharZero Λ] (g : Λ[X]) (hg : g.Monic)
+private lemma not_dvd_der {Λ : Type} [CommRing Λ] [IsDomain Λ] [CharZero Λ] (g : Λ[X])
     (hd : 0 < g.natDegree) : ¬ g ∣ derivative g := by
   intro hdvd
   have hne : derivative g ≠ 0 := fun h0 => by
@@ -1396,7 +1396,7 @@ theorem UpperTheory.V.Z.Desc.V0.unrAlgW :
         · rw [hno y hy hd, mul_zero]
       obtain ⟨hprime, hiff, _⟩ := UpperTheory.V.J.cmpPrime O Λ B lam J t s g hC i
       rcases hprime.mem_or_mem hmem with h1 | h1
-      · exact UpperTheory.V.J.not_dvd_der (g i) (hF.monic i) hdeg ((hiff _).1 h1)
+      · exact UpperTheory.V.J.not_dvd_der (g i) hdeg ((hiff _).1 h1)
       · exact hb₀ (RingHom.mem_ker.1 (hcx h1))
     have hgp := UpperTheory.V.J.good_point lam J t g hC y (hG y hy𝒢).1 i hyd hye m
     have hmu := UpperTheory.V.J.muLe O Λ B K lam M h.hs y t

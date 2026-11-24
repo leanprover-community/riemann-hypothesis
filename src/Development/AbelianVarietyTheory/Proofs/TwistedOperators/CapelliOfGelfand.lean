@@ -106,7 +106,7 @@ theorem capQ_eval (m : ℕ) (χ : Fin (m+1) → ℂ) (u : ℂ) :
   simp [capQ, eval_prod]; refine prod_congr rfl fun s _ => by ring
 
 theorem capQ_monic (m : ℕ) (χ : Fin (m+1) → ℂ) : (capQ m χ).Monic :=
-  monic_prod_of_monic _ _ fun s _ => monic_X_add_C _
+  monic_prod_of_monic _ _ fun _ _ => monic_X_add_C _
 
 theorem capQ_natDegree (m : ℕ) (χ : Fin (m+1) → ℂ) : (capQ m χ).natDegree = m + 1 := by
   unfold capQ

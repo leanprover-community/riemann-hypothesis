@@ -385,7 +385,7 @@ theorem subMap_finite (X : Scheme.{0}) (_hX : IsNoetherian X) (F : X.Opensᵒᵖ
     (α : X.presheaf ⟶ F)
     (hα : ((Scheme.AffineZariskiSite.toOpensFunctor X).op.whiskerLeft α).Coequifibered)
     (hint : ∀ U : X.Opens, IsAffineOpen U → (α.app (op U)).hom.IsIntegral)
-    {ι : Type} (V : ι → X.Opens) (_hV : ∀ j, IsAffineOpen (V j)) (hcov : ∀ x : X, ∃ j, x ∈ V j)
+    {ι : Type} (V : ι → X.Opens) (hcov : ∀ x : X, ∃ j, x ∈ V j)
     (T : ∀ j, Set (F.obj (op (V j)))) (hT : ∀ j, (T j).Finite) (W : X.Opens)
     (hW : IsAffineOpen W) : (subMap F α V T W).Finite := by
   haveI : IsNoetherianRing Γ(X, W) := IsLocallyNoetherian.component_noetherian ⟨W, hW⟩
@@ -593,7 +593,7 @@ theorem exists_finite_coequifibered_subalgebra : ∀ (X : Scheme.{0}), IsNoether
   refine ⟨subFunctor F α V T, subNat F α V T, subIncl F α V T,
     _root_.GlobalTheory.QcSub.coequifibered_subNat X F α hα V T (_root_.GlobalTheory.QcSub.pow_mul_mem_sub_of_res_basicOpen X hX F α hα V hV T), subNat_comp_subIncl F α V T,
     subIncl_injective F α V T,
-    fun W => _root_.GlobalTheory.QcSub.subMap_finite X hX F α hα hint V hV hcov T hTfin W.unop.1 W.unop.2,
+    fun W => _root_.GlobalTheory.QcSub.subMap_finite X hX F α hα hint V hcov T hTfin W.unop.1 W.unop.2,
     fun k x hx => ⟨⟨x, hST (.inl k) (Finset.mem_coe.mpr hx)⟩, rfl⟩⟩
 
 end GlobalTheory.QcSub

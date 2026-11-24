@@ -121,7 +121,7 @@ theorem frMulK' (hF : MatrixFrechetDerivativeAtZeroLaws) (hA : Avg) : FrMulK := 
   simp only [mul_assoc]
   rw [← mul_assoc (Ring.inverse (sqQ lam)) (sqQ lam), h2, one_mul]
 
-theorem frIso' (_hF : MatrixFrechetDerivativeAtZeroLaws) (hA : Avg) : FrIso := by
+theorem frIso' (hA : Avg) : FrIso := by
   intro n lam k v
   obtain ⟨h1, h2⟩ := sq_inv hA lam
   have hs : star (sqQ (n := n) lam) = sqQ lam := (hA n lam).2.1.star_eq
@@ -147,7 +147,7 @@ theorem frIso' (_hF : MatrixFrechetDerivativeAtZeroLaws) (hA : Avg) : FrIso := b
     rw [← inner_self_eq_norm_sq (𝕜 := ℂ), ← inner_self_eq_norm_sq (𝕜 := ℂ), hin]
   exact (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).1 h3
 
-theorem frCont' (hF : MatrixFrechetDerivativeAtZeroLaws) (hA : Avg) : FrCont := by
+theorem frCont' (hF : MatrixFrechetDerivativeAtZeroLaws) : FrCont := by
   intro n lam
   simp only [lefFr_eq]
   have h1 : ContinuousOn (fr0 (n := n) lam) (GLs n) := ((hF n lam).2.2).continuousOn
@@ -259,8 +259,8 @@ theorem avg : Avg := avg_of fr0Laws
 
 theorem frOne : FrOne := frOne' fr0Laws avg
 theorem frMulK : FrMulK := frMulK' fr0Laws avg
-theorem frIso : FrIso := frIso' fr0Laws avg
-theorem frCont : FrCont := frCont' fr0Laws avg
+theorem frIso : FrIso := frIso' avg
+theorem frCont : FrCont := frCont' fr0Laws
 
 end PositivityTheory.RgBcC
 end -- clump:auto

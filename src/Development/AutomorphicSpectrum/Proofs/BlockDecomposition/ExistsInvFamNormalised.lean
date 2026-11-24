@@ -771,7 +771,7 @@ theorem apply_eq_pow_cycMod (l : ℕ) [Fact l.Prime] (r : ℕ) (g : G F Ω) {ζ 
   have : CharZero Ω := charZero_of_injective_algebraMap (algebraMap F Ω).injective
   exact cyclotomicCharacter.spec l (MulSemiringAction.toRingAut (G F Ω) Ω g) ζ hζ
 
-theorem exists_cochain_cup (l : ℕ) [Fact l.Prime] (r : ℕ) (hr : 0 < r) {ζ : Ω}
+theorem exists_cochain_cup (l : ℕ) [Fact l.Prime] (r : ℕ) {ζ : Ω}
     (hζ : IsPrimitiveRoot ζ (l ^ r)) {A : ValuationSubring Ω} {v : HeightOneSpectrum (𝓞 F)}
     (hA : IsPlaceOver A v) {ϖ ϖ' : 𝓞 F} (h1 : ϖ ∈ v.asIdeal) (h2 : ϖ ∉ v.asIdeal ^ 2)
     (h1' : ϖ' ∈ v.asIdeal) (h2' : ϖ' ∉ v.asIdeal ^ 2) {t : Ω}
@@ -887,7 +887,7 @@ theorem cup_class_eq : ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [A
     have hgy : ζ ^ (κ g).val ≠ 0 := pow_ne_zero _ (hζ.ne_zero hN.ne')
     rw [map_div₀, hκ, hκ', e]
     field_simp
-  obtain ⟨c, hc, hc2⟩ := exists_cochain_cup l r hr hζ hA h1 h2 h1' h2' ht hκt hχa hχI hχF
+  obtain ⟨c, hc, hc2⟩ := exists_cochain_cup l r hζ hA h1 h2 h1' h2' ht hκt hχa hχI hχF
   refine ((Submodule.Quotient.eq _).2 ?_).symm
   refine (separated_dvr_second_cohomology_mem _ _).2 ⟨c, hc, funext fun p => ?_⟩
   obtain ⟨g, h⟩ := p

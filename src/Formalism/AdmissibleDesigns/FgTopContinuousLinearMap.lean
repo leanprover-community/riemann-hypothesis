@@ -689,7 +689,7 @@ theorem csK (h : ContinuousMul (FractionRing O)) :
   infer_instance
 
 def modT (w : ℕ) : Module (FractionRing O) (H1 (Dat r χ bl ρk ε Aw hK hε hM w).ρT) :=
-  moduleH1FractionField _ (csK bl hK) (fun g c v => Matrix.mulVec_smul _ c v)
+  moduleH1FractionField _ (csK bl hK) (fun _ c v => Matrix.mulVec_smul _ c v)
 
 theorem towerT (w : ℕ) :
     @IsScalarTower O (FractionRing O) (H1 (Dat r χ bl ρk ε Aw hK hε hM w).ρT) _

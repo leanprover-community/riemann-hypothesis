@@ -133,7 +133,7 @@ theorem idem_eq_zero {R : Type} [CommRing R] {e : R} (he : e * e = e) (h : e ∈
   linear_combination -he
 
 theorem mem_jac_of_pow {R : Type} [CommRing R] {t u : R} (hu : IsUnit u) {n : ℕ}
-    (h : u * t ^ n ∈ Ideal.jacobson (⊥ : Ideal R)) (hn : n ≠ 0) : t ∈ Ideal.jacobson (⊥ : Ideal R) := by
+    (h : u * t ^ n ∈ Ideal.jacobson (⊥ : Ideal R)) : t ∈ Ideal.jacobson (⊥ : Ideal R) := by
   rw [Ideal.jacobson, Ideal.mem_sInf] at h ⊢
   intro J hJ
   haveI := hJ.2.isPrime
@@ -159,9 +159,9 @@ theorem abstract (j : A →+* E) (f : E →+* W) (g : A →+* B) (c : B →+* W)
   have hpW : (p : W) = f (j U) * f (j t) ^ (n + 1) := by rw [← map_natCast f, hpE]; simp
   have hUE : IsUnit (j U) := hU.map j
   have hUW : IsUnit (f (j U)) := hUE.map f
-  have htW : f (j t) ∈ Ideal.jacobson (⊥ : Ideal W) := mem_jac_of_pow hUW (hpW ▸ hWJ) (by omega)
+  have htW : f (j t) ∈ Ideal.jacobson (⊥ : Ideal W) := mem_jac_of_pow hUW (hpW ▸ hWJ)
   have htE : j t ∈ Ideal.jacobson (⊥ : Ideal E) := by
-    refine mem_jac_of_pow hUE (n := n + 1) ?_ (by omega)
+    refine mem_jac_of_pow hUE (n := n + 1) ?_
     rw [← hpE]
     exact IsAdicComplete.le_jacobson_bot _ (Ideal.mem_span_singleton_self _)
   have hsep : ∀ x : E, (∀ k, (p : E) ^ k ∣ x) → x = 0 := by
@@ -390,7 +390,7 @@ theorem idem_ne_zero {O E W : Type} [CommRing O] [CommRing E] [CommRing W] [Nont
 
 set_option maxHeartbeats 1000000 in
 theorem ioE_injective_saturated_inter (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P) (K : FinExt l)
-    (s : ℕ) (LL : FinExt l) (_h : Good K s LL) (Γ : GamS P K s LL) (R : WSer Γ) (I : IoS AI R) (_hI : IoW I) :
+    (s : ℕ) (LL : FinExt l) (Γ : GamS P K s LL) (R : WSer Γ) (I : IoS AI R) :
     Function.Injective I.ioE ∧ (∀ x : R.EE, IsUnit (I.ioE x) → IsUnit x) ∧
       (∀ (x : R.EE) (y : RW LL), I.ioE x = ((l : ℕ) : RW LL) * y → ∃ x', x = ((l : ℕ) : R.EE) * x') ∧
       ∀ x : R.EE, (∃ y, inclR LL y = I.ioE x) →

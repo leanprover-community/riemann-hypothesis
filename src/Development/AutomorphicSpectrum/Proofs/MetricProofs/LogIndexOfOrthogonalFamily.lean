@@ -826,7 +826,7 @@ theorem map_eigenLat [NumberField L] (hcard : Fintype.card (E →+* L) = Module.
       exact hz
     · rw [← h5, h4]
 
-theorem map_familyLat [NumberField L] (hcard : Fintype.card (E →+* L) = Module.finrank ℚ E)
+theorem map_familyLat [NumberField L]
     (ρ : 𝓞 E →+* Module.End L V) {r : ℕ} (v : Fin r → V) (t : E →+* L) :
     (familyLat t (fun a => (Pi.single a 1 : Fin r → E))).map (phi ρ v t) =
       Submodule.span (𝓞 L) (Set.range fun a => HT.eigProj ρ t (v a)) := by
@@ -942,7 +942,7 @@ theorem genIndex_tor (hE : EigenLatDifferent.Statement)
     exact DifferentLatIndex.proof Em K N J m w hw s
   have hT := hT E L ι (exists_split (V := V) hcard ι) r (lat ρ v I hst) r _ hnz t
   rw [hidx] at hT
-  rw [← hT, ← map_eigenLat hcard ρ hv hst hI, ← map_familyLat hcard ρ v t, genIndex, genIndex,
+  rw [← hT, ← map_eigenLat hcard ρ hv hst hI, ← map_familyLat ρ v t, genIndex, genIndex,
     map_toAddSubgroup, map_toAddSubgroup]
   have hinj : Function.Injective (phi ρ v t).toAddMonoidHom := phi_injective hcard ρ hv hst hI t
   rw [AddSubgroup.relIndex_map_map_of_injective _ _ hinj,

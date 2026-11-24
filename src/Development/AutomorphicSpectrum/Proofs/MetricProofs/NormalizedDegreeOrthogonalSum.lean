@@ -71,8 +71,7 @@ theorem disjoint_of_orth (E : HermitianBundle.{0} K) {F G : Submodule (𝓞 K) E
   linarith
 
 theorem gramDet_sumElim (E : HermitianBundle.{0} K) (σ : K →+* ℂ) {a b : ℕ}
-    {s : Fin a → E.carrier} {t : Fin b → E.carrier} (hs : LinearIndependent (𝓞 K) s)
-    (ht : LinearIndependent (𝓞 K) t)
+    {s : Fin a → E.carrier} {t : Fin b → E.carrier}
     (h : ∀ i j, inner ℂ (fibreVec E.metric σ (s i)) (fibreVec E.metric σ (t j)) = 0) :
     gramDet E.metric σ (Sum.elim s t) = gramDet E.metric σ s * gramDet E.metric σ t := by
   have hconj : ∀ i j, inner ℂ (fibreVec E.metric σ (t j)) (fibreVec E.metric σ (s i)) = 0 := by
@@ -124,7 +123,7 @@ theorem degree_sup (E : HermitianBundle.{0} K) {F G : Submodule (𝓞 K) E.carri
   have hlog : ∀ σ : K →+* ℂ, Real.log (GroundTheory.Heights₂.Heights.gramDet E.metric σ (Sum.elim s t)) =
       Real.log (GroundTheory.Heights₂.Heights.gramDet E.metric σ s) + Real.log (GroundTheory.Heights₂.Heights.gramDet E.metric σ t) := by
     intro σ
-    have hgram := gramDet_sumElim E σ hs ht (fun i j => by
+    have hgram := gramDet_sumElim E σ (fun i j => by
       have h1 := h σ _ (hsF i) _ (htG j)
       rw [← FibreSpace.inner_equiv E.metric σ] at h1
       exact h1)

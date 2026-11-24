@@ -28,7 +28,7 @@ section Der
 variable {g : ℕ} {Y : Scheme.{0}}
 
 instance isLocalHom_fst : IsLocalHom (TrivSqZeroExt.fstHom ℂ ℂ ℂ).toRingHom :=
-  ⟨fun a ha => TrivSqZeroExt.isUnit_iff_isUnit_fst.mpr ha⟩
+  ⟨fun _ ha => TrivSqZeroExt.isUnit_iff_isUnit_fst.mpr ha⟩
 
 instance isLocalHom_epsMul (cc : ℂ) : IsLocalHom (epsMul cc) :=
   ⟨fun a ha => TrivSqZeroExt.isUnit_iff_isUnit_fst.mpr (by

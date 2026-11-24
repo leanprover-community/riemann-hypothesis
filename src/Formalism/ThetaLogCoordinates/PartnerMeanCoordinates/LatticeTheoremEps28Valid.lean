@@ -405,14 +405,14 @@ theorem termF_IVPE (LL : Letters (N + 1)) (ρ : Fin r) (hr : 1 ≤ r) (B : ℕ)
     intro m
     unfold termF
     rw [X_pow_mul_monomial, Dop_pow_monomial_lt _ _ hxy a _ h
-      (by simp [Finsupp.single_apply, hxy]; exact h1), fock_zero_left]
+      (by simp [hxy]; exact h1), fock_zero_left]
     simp
   by_cases h2 : γ (xW ρ) < a'
   · apply (IVP.zero (p := p) _).congr
     intro m
     unfold termF
     rw [X_pow_mul_monomial (yE ρ) m γ, Dop_pow_monomial_lt _ _ hxy a' _ h'
-      (by simp [Finsupp.single_apply, hxy]; exact h2), fock_zero_right']
+      (by simp [hxy]; exact h2), fock_zero_right']
     simp
   push Not at h1 h2
   have hle : ∀ (δ : Fin (N + 1 + 1) × Fin r →₀ ℕ) (t : ℕ), t ≤ δ (xW ρ) → δ (xW ρ) ≤ δ (yE ρ) → t • s ≤ δ := by

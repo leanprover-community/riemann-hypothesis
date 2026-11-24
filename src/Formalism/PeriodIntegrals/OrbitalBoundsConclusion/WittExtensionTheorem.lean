@@ -211,7 +211,7 @@ namespace PI.Witt
 
 variable {K V : Type} [Field K] [StarRing K] [AddCommGroup V] [Module K V]
 
-theorem riesz [FiniteDimensional K V] (B : V →ₗ⋆[K] V →ₗ[K] K) (hB : ∀ x y, star (B x y) = B y x)
+theorem riesz [FiniteDimensional K V] (B : V →ₗ⋆[K] V →ₗ[K] K)
     (hnd : ∀ x, (∀ y, B x y = 0) → x = 0) (φ : V →ₗ[K] K) : ∃ v, ∀ z, B v z = φ z := by
   classical
   let b := Module.finBasis K V
@@ -293,7 +293,7 @@ theorem enlarge_step [FiniteDimensional K V] (B : V →ₗ⋆[K] V →ₗ[K] K)
     exact hr0 ((Module.forall_dual_apply_eq_zero_iff K r).1 h)
   set φ : V →ₗ[K] K := (φ0 r)⁻¹ • φ0 with hφdef
   have hφr : φ r = 1 := by simp [hφdef, hφ0]
-  obtain ⟨p0, hp0⟩ := riesz B hB hnd φ
+  obtain ⟨p0, hp0⟩ := riesz B hnd φ
   obtain ⟨p, hpp, hpU'⟩ := partner B hB r p0 (hr r hrU) (by rw [hp0, hφr])
   have hpU : ∀ u ∈ U, B p u = φ u := fun u hu => by rw [hpU' u (hr u hu), hp0]
 
@@ -302,7 +302,7 @@ theorem enlarge_step [FiniteDimensional K V] (B : V →ₗ⋆[K] V →ₗ[K] K)
   have hχf : ∀ u : U, χ (f u) = φ u := fun u => by
     have := LinearMap.congr_fun hχ (e u)
     simpa [he] using this
-  obtain ⟨q0, hq0⟩ := riesz B hB hnd χ
+  obtain ⟨q0, hq0⟩ := riesz B hnd χ
   set r' : U := ⟨r, hrU⟩ with hr'
   have hφr' : φ (r' : V) = 1 := hφr
   have hfr : ∀ u : U, B (f r') (f u) = 0 := fun u => by rw [hf]; exact hr u u.2

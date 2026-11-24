@@ -70,7 +70,7 @@ def LocSp : Prop :=
 def UnitEv : Prop :=
   ∀ (L Ω : Type) [Field L] [NumberField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] (l : ℕ) [Fact l.Prime] (n : ℕ) (c : Coef l)
     (H : HSet L Ω l n c), H.Ax → ∀ (A : Type) [CommRing A] [Algebra c.O A] [Alg.IsCO c.O A] (θ : H.X.I.T →* Aˣ), H.IsWt θ →
-    ∀ (ι : Qbar l ≃+* ℂ) (K : H.Lev) (a : H.Op → c.O) [Fact (CommOn (H.MK θ a K) (H.op A))] [Module.Finite A (H.MK θ a K)] (I : Ideal (H.TK θ a K))
+    ∀ (_ : Qbar l ≃+* ℂ) (K : H.Lev) (a : H.Op → c.O) [Fact (CommOn (H.MK θ a K) (H.op A))] [Module.Finite A (H.MK θ a K)] (I : Ideal (H.TK θ a K))
     (D : W.GDet n (H.TK θ a K) H.Gq) (ψ : ∀ v, Fin n → Dec (F := L) (H.pl v) →* (H.TK θ a K)ˣ), H.IsUniv θ a K I D ψ →
     ∀ (z : H.TK θ a K →ₐ[c.O] Qbar l) v j, ‖z (H.gen θ a K (.inr (v, j)))‖ = 1
 

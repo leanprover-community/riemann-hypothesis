@@ -778,7 +778,7 @@ theorem mem_span_iff_vecMul {W : Type} [CommRing W] {n : ℕ} (g : Matrix (Fin n
   · rintro ⟨a, rfl⟩; exact vecMul_mem_span g a
 
 theorem rational_rows (R W : Type) [CommRing R] [IsDomain R] [IsDiscreteValuationRing R]
-    [CommRing W] [IsDomain W] [Algebra R W] (hinj : Function.Injective (algebraMap R W))
+    [CommRing W] [IsDomain W] [Algebra R W]
     (n : ℕ) (g : Matrix (Fin n) (Fin n) W) (hg : g.det ≠ 0) (d : R) (hd : d ≠ 0)
     (hdN : ∀ w : Fin n → W, algebraMap R W d • w ∈ Submodule.span W (Set.range g))
     (hspan : Submodule.span W (Set.range g) = Submodule.span W
@@ -973,7 +973,7 @@ theorem matrix_descent_unramified (R K W K' : Type) [CommRing R] [IsDomain R]
     rw [e]; exact vecMul_mem_span G _
   have hspan := stable_lattice_descent_unramified R W hm D' hres' n r N hlat hstab'
   obtain ⟨A, h, hhu, hA⟩ :=
-    rational_rows R W hinjR n G hdet' (ϖ ^ r) (pow_ne_zero r hϖ.ne_zero) hdN hspan
+    rational_rows R W n G hdet' (ϖ ^ r) (pow_ne_zero r hϖ.ne_zero) hdN hspan
   refine ⟨h, (algebraMap R K c)⁻¹ • A.map (algebraMap R K), hhu, ?_⟩
   ext i j
   have e1 := congrFun (congrFun hA i) j

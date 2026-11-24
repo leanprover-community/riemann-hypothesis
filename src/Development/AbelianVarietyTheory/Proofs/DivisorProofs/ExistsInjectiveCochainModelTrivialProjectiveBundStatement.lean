@@ -761,11 +761,11 @@ theorem pval_res {U : Scheme.{0}} {m w : ℤ} (hw : m + n = w) (a : Sec (I₁.X 
 
 def cval {U : Scheme.{0}} {m w : ℤ} (hw : m + n = w) (a : Sec (I₁.X m) U) :
     Cochain ((chains R).obj (sch.obj U ⨯ fibQ q N)) K w :=
-  (CupSpec.ev_exists (pval μ z hw a) (fun p s hs V' V g y => pval_res μ z hw a p s hs g y)).choose
+  (CupSpec.ev_exists (pval μ z hw a) (fun p s hs _ _ g y => pval_res μ z hw a p s hs g y)).choose
 
 theorem cval_ev {U : Scheme.{0}} {m w : ℤ} (hw : m + n = w) (a : Sec (I₁.X m) U) (p : ℕ) (s : ℤ) (hs : -(p : ℤ) + w = s)
     (V : Scheme.{0}) (y : Sx (sch.obj U ⨯ fibQ q N) p V) : ev (R := R) (cval μ z hw a) p s hs V y = pval μ z hw a p s hs V y :=
-  (CupSpec.ev_exists (pval μ z hw a) (fun p s hs V' V g y => pval_res μ z hw a p s hs g y)).choose_spec p s hs V y
+  (CupSpec.ev_exists (pval μ z hw a) (fun p s hs _ _ g y => pval_res μ z hw a p s hs g y)).choose_spec p s hs V y
 
 theorem cval_add {U : Scheme.{0}} {m w : ℤ} (hw : m + n = w) (a b : Sec (I₁.X m) U) :
     cval μ z hw (a + b) = cval μ z hw a + cval μ z hw b := by
@@ -801,7 +801,7 @@ def pmor {m w : ℤ} (hw : m + n = w) : (I₁.X m).obj ⟶ cotPre R q N K w wher
 def smor {m w : ℤ} (hw : m + n = w) : I₁.X m ⟶ (Jcx R q N K).X w :=
   ObjectProperty.homMk (pmor μ z hw ≫ toSheafify Scheme.etaleTopology.{0} (cotPre R q N K w))
 
-def psiC : Cochain I₁ (Jcx R q N K) n := Cochain.mk fun m w hw => smor μ z hw
+def psiC : Cochain I₁ (Jcx R q N K) n := Cochain.mk fun _ _ hw => smor μ z hw
 
 theorem psiC_v {m w : ℤ} (hw : m + n = w) : (psiC μ z).v m w hw = smor μ z hw := Cochain.mk_v _ _ _ _
 

@@ -229,7 +229,7 @@ variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [Norm
   {L : R.LevelData (Pr (RadSp P.k P.r z z' π π')) P.r} {st : Fr.Start (Pr (RadSp P.k P.r z z' π π'))}
   {K : Fin (P.r + 1) → Submodule ℂ (RadSp P.k P.r z z' π π')}
 
-theorem level_integrand_aestronglyMeasurable (hM : TopDensMeas S P z z' π π' μ L st K) (w : List (Letter ℂ S))
+theorem level_integrand_aestronglyMeasurable (hM : TopDensMeas S P z z' π π' L st K) (w : List (Letter ℂ S))
     (x y : Ix S → RadSp P.k P.r z z' π π') (hx : InK (K (Fin.last P.r)) x) (hy : InK (K (Fin.last P.r)) y)
     (i : Fin (P.r + 1)) (c : Fin P.r → ℂ) :
     AEStronglyMeasurable (fun q : Cf P.r i × Mt P.k P.r => ((∏ l, ‖q.1 l‖ ^ (-2 : ℤ) : ℝ) : ℂ) *

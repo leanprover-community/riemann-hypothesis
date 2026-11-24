@@ -115,7 +115,7 @@ namespace PositivityTheory.UnitarySelfGeneration.HolomorphicMinorCharts
 
 open ReciprocityTheory.AnForm Filter Topology Set Metric Complex
 
-theorem exists_re_of_levi_zero {e : ℕ} {d : (Fin e → ℂ) → ℝ} {c : Fin e → ℂ} {r : ℝ} (hr : 0 < r)
+theorem exists_re_of_levi_zero {e : ℕ} {d : (Fin e → ℂ) → ℝ} {c : Fin e → ℂ} {r : ℝ}
     (hd : ContDiffOn ℝ 2 d (ball c r)) (h0 : ∀ z ∈ ball c r, ∀ w, levi d z w = 0) :
     ∃ G : (Fin e → ℂ) → ℂ, AnalyticOnNhd ℂ G (ball c r) ∧ ∀ z ∈ ball c r, d z = (G z).re := by
   have hUo : IsOpen (ball c r) := isOpen_ball
@@ -265,7 +265,7 @@ theorem r_pluri : ∀ (e : ℕ) (X : Type) [TopologicalSpace X] [CompactSpace X]
     apply hvM.1
     apply hzero (ψ u) (hball hvM.2)
     rwa [ψ.left_inv hus]
-  obtain ⟨G0, hG0an, hG0eq⟩ := exists_re_of_levi_zero hr hd2 hlevi
+  obtain ⟨G0, hG0an, hG0eq⟩ := exists_re_of_levi_zero hd2 hlevi
   refine ⟨ψ.source ∩ ψ ⁻¹' Metric.ball (ψ x) r, ψ.isOpen_inter_preimage Metric.isOpen_ball,
     ⟨hxj, Metric.mem_ball_self hr⟩, fun y => G0 (ψ y), ?_, ?_⟩
   · exact holoOn_of_compat (isCompatChart_chart A j) Set.inter_subset_left (fun y hy => hG0an _ hy.2)

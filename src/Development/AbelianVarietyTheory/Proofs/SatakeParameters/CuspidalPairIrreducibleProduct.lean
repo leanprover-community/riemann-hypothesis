@@ -162,7 +162,7 @@ theorem smInd_central {G W : Type} [Group G] [TopologicalSpace G] [IsTopological
   exact (F.1.2 ⟨z, hz⟩ x).trans (hc _)
 
 theorem one_case (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-    (σ : Fin 2 → Irr k 1) (hσ : ∀ i, 0 < 1 ∧ IsCuspidal (σ i).π)
+    (σ : Fin 2 → Irr k 1)
     (hnt : ¬ Nonempty ((σ 0).π.Equiv (twist (σ 1).π (detChar (Fin 1) (unrChar k 1))))) :
     ∃ (z : Levi k fun _ : Fin 2 => Fin 1) (c c' : ℂ), (∀ g, g * z = z * g) ∧ c ≠ c' ∧
       (∀ x, (piTensor fun j => (σ (Equiv.swap 0 1 j)).π) z x = c • x) ∧
@@ -275,7 +275,7 @@ theorem exists_central_scalar_ne_cell : ∀ (k : Type) [Field k] [ValuativeRel k
       · exact hd0
       · exact hd1
     subst hd
-    exact one_case k σ hσ (hnt rfl 1)
+    exact one_case k σ (hnt rfl 1)
   · refine ⟨1, 1, 2, fun g => by simp, by norm_num, fun x => by simp, ?_⟩
     intro b hb f g y
     have hr0 := b.2.1 0

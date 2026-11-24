@@ -609,8 +609,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qe20.irrCases :
-    ∀ {G V : Type} [inst : Group G]
-    [inst_1 : AddCommGroup V] [inst_2 : _root_.Module ℂ V] (ρ : Representation ℂ G V),
+    ∀ {G V : Type} [Group G]
+    [AddCommGroup V] [_root_.Module ℂ V] (ρ : Representation ℂ G V),
     ρ.IsIrreducible →
       ∀ (W : Submodule ℂ V), (∀ (g : G), ∀ v ∈ W, ((ρ : G → V →ₗ[ℂ] V) g : V → V) v ∈ W) → W = ⊥ ∨ W = ⊤ := by
   intro G V _ _ _ ρ hρ W hW
@@ -715,7 +715,7 @@ private theorem memTrans (e : G₁ ≃* G₂) (he : Continuous e) (j₁ : H₁ �
     rw [map_mul]
     exact this
 
-private theorem simpleTrans (e : G₁ ≃* G₂) (he : Continuous e) (he' : Continuous e.symm) (j₁ : H₁ →* G₁) (j₂ : H₂ →* G₂)
+private theorem simpleTrans (e : G₁ ≃* G₂) (he' : Continuous e.symm) (j₁ : H₁ →* G₁) (j₂ : H₂ →* G₂)
     (eh : H₁ ≃* H₂) (hj : ∀ h, e (j₁ h) = j₂ (eh h)) (y₁ : Representation ℂ H₁ Y) (y₂ : Representation ℂ H₂ Y)
     (hy : ∀ h, y₁ h = y₂ (eh h)) (γ : Γ → Y →ₗ[ℂ] Y) (hS : SimpleG (IndF j₂ y₂ ⊤) γ) : SimpleG (IndF j₁ y₁ ⊤) γ := by
   have hback : ∀ {f : G₁ → Y}, f ∈ IndF j₁ y₁ ⊤ → (fun x => f (e.symm x)) ∈ IndF j₂ y₂ ⊤ := by
@@ -1169,7 +1169,7 @@ theorem UpperTheory.V.Z.InvariantSubmoduleMonicPolynomial.IwahoriBlocks.indProdG
       show y (eP.symm (1, 1), c) = y (1, c)
       rw [show eP.symm ((1 : P 0), (1 : ∀ i : Fin r, P i.succ)) = 1 from map_one eP.symm]
     rw [hγ] at hfin
-    refine simpleTrans (consG G) consCont consCont' (piIncl P) _ eP (fun h => rfl) _ (y3 (P 0) y') (fun h => ?_) _ hfin
+    refine simpleTrans (consG G) consCont' (piIncl P) _ eP (fun h => rfl) _ (y3 (P 0) y') (fun h => ?_) _ hfin
     show y (h, 1) = y (eP.symm (eP h), 1)
     rw [MulEquiv.symm_apply_apply]
 end -- clump:auto

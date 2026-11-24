@@ -113,7 +113,7 @@ lemma dc_entries {N l : ℕ} (p : ℕ) (γ₁ γ₂ : SL(2, ℤ)) (h₁ : γ₁ 
   rw [lev_iff] at h₁ h₂
   exact det_and_entries_mul_dg_mul_mod p (mat γ₁) (mat γ₂) (sl2_entry_det_eq_one γ₁) (sl2_entry_det_eq_one γ₂) h₁.1 h₁.2.2.1 h₁.2.2.2 h₂.1 h₂.2.2.1 h₂.2.2.2
 
-lemma exists_upper {N l p : ℕ} (hp : p.Prime) (hpN : IsUnit (p : ZMod N)) (M : Matrix (Fin 2) (Fin 2) ℤ)
+lemma exists_upper {N l p : ℕ} (hp : p.Prime) (M : Matrix (Fin 2) (Fin 2) ℤ)
     (hdet : M 0 0 * M 1 1 - M 0 1 * M 1 0 = p) (ha : ((M 0 0 : ℤ) : ZMod N) = 1)
     (hc : ((M 1 0 : ℤ) : ZMod N) = 0) (hcl : ((M 1 0 : ℤ) : ZMod l) = 0)
     (hnd : ¬ (((M 0 0 : ℤ) : ZMod p) = 0 ∧ ((M 1 0 : ℤ) : ZMod p) = 0)) :
@@ -209,7 +209,7 @@ lemma diam_facts {N l : ℕ} {d : ZMod N} {σ : SL(2, ℤ)} (hσ : IsDiam N l d 
   push_cast at e
   linear_combination e - ((mat σ 0 0 : ℤ) : ZMod N) * h1 + ((mat σ 0 1 : ℤ) : ZMod N) * hN
 
-lemma diam_case {N l q : ℕ} (hq0 : q ≠ 0) (hqN : IsUnit (q : ZMod N)) (hql : IsUnit (q : ZMod l))
+lemma diam_case {N l q : ℕ} (hq0 : q ≠ 0) (hql : IsUnit (q : ZMod l))
     (σ : SL(2, ℤ)) (hσ : IsDiam N l (q : ZMod N) σ) (M : Matrix (Fin 2) (Fin 2) ℤ)
     (hdet : M 0 0 * M 1 1 - M 0 1 * M 1 0 = q) (ha : ((M 0 0 : ℤ) : ZMod N) = 1)
     (hc : ((M 1 0 : ℤ) : ZMod N) = 0) (hcl : ((M 1 0 : ℤ) : ZMod l) = 0)
@@ -322,7 +322,7 @@ lemma diag_mem {N l q : ℕ} (hq : q.Prime) (hqNl : ¬ q ∣ N * l) (hqN : IsUni
     have e := congrArg (Int.cast : ℤ → ZMod q) hσd
     push_cast at e
     exact one_ne_zero (by linear_combination -e + ((mat σ 0 0 : ℤ) : ZMod q) * hs11q - ((mat σ 1 0 : ℤ) : ZMod q) * hs01 : (1 : ZMod q) = 0)
-  obtain ⟨j, -, γ, hγ, hM⟩ := exists_upper hq hqN
+  obtain ⟨j, -, γ, hγ, hM⟩ := exists_upper hq
     !![mat σ 0 0 * q + mat σ 0 1 * n, mat σ 0 1; mat σ 1 0 * q + mat σ 1 1 * n, mat σ 1 1] hdetM haM hcM hclM hndM
   have hdet2 : (1 - (j : ℤ) * n) * 1 - (j : ℤ) * (-n) = 1 := by ring
   refine ⟨⟨γ, hγ⟩, ⟨slMk (1 - (j : ℤ) * n) j (-n) 1 hdet2, slMk_mem_lev hdet2 ?_ (by simp) ?_ ?_⟩, ?_⟩
@@ -359,10 +359,10 @@ theorem tq_reps {N l q : ℕ} (hq : q.Prime) (hqNl : ¬ q ∣ N * l) (σ : SL(2,
     have key : ∃ i, ∃ γ : Lev N l, mat γ₁ * dg 1 q * mat γ₂ = mat γ * tqFam q σ i := by
       by_cases hnd : (((mat γ₁ * dg 1 q * mat γ₂) 0 0 : ℤ) : ZMod q) = 0 ∧
           (((mat γ₁ * dg 1 q * mat γ₂) 1 0 : ℤ) : ZMod q) = 0
-      · obtain ⟨γ, hγ, hM⟩ := diam_case hq.ne_zero hqN hql σ hσ _ hdet ha hc hcl
+      · obtain ⟨γ, hγ, hM⟩ := diam_case hq.ne_zero hql σ hσ _ hdet ha hc hcl
           ((CharP.intCast_eq_zero_iff (ZMod q) q _).1 hnd.1) ((CharP.intCast_eq_zero_iff (ZMod q) q _).1 hnd.2)
         exact ⟨Fin.last q, ⟨γ, hγ⟩, by rw [tqFam_ge σ _ (by simp)]; exact hM⟩
-      · obtain ⟨j, hj, γ, hγ, hM⟩ := exists_upper hq hqN _ hdet ha hc hcl hnd
+      · obtain ⟨j, hj, γ, hγ, hM⟩ := exists_upper hq _ hdet ha hc hcl hnd
         exact ⟨⟨j, by omega⟩, ⟨γ, hγ⟩, by rw [tqFam_lt σ _ hj]; exact hM⟩
     obtain ⟨i, γ, hγ⟩ := key
     exact ⟨i, ⟨γ, hγ⟩, fun i' ⟨γ', hγ'⟩ => tq_inj hq σ γ' γ i' i (hγ'.symm.trans hγ)⟩
@@ -395,7 +395,7 @@ theorem ul_reps {N l : ℕ} (hl : l.Prime) (hlN : ¬ l ∣ N) : IsDCReps (Lev N 
   have h₂ := γ₂.2
   rw [lev_iff] at h₁ h₂
   have hx := mul_dg_mul_entry_ne_zero_mod_prime l (mat γ₁) (mat γ₂) (sl2_entry_det_eq_one γ₁) (sl2_entry_det_eq_one γ₂) h₁.2.2.2 h₂.2.2.2
-  obtain ⟨j, hj, γ, hγ, hM⟩ := exists_upper hl hlN' _ hdet ha hc hcl (fun h => hx h.1)
+  obtain ⟨j, hj, γ, hγ, hM⟩ := exists_upper hl _ hdet ha hc hcl (fun h => hx h.1)
   refine ⟨⟨j, hj⟩, ⟨⟨γ, hγ⟩, hM⟩, fun i' ⟨γ', hγ'⟩ => ?_⟩
   exact Fin.ext (upper_rel i'.2 hj _ (cancel_left γ' γ (hγ'.symm.trans hM)))
 

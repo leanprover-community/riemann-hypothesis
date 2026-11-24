@@ -1658,7 +1658,7 @@ theorem vacFixW {B : Base F E} (hB : B.IsGood σ) {X : Spc F E n} {W : Spc F E d
       rw [es]
       refine at_conj (CC_Ci b) fun u hu => ?_
       have : u • (Vf.eps v : AE F E) = 0 := at_eps u hu
-      ext (i | i) (j | j) <;> simp [SS, Matrix.one_apply, smul_ite, this, apply_ite (u • ·)] <;> split_ifs <;> simp [this])
+      ext (i | i) (j | j) <;> simp [SS, Matrix.one_apply, this, apply_ite (u • ·)] <;> split_ifs <;> simp [this])
     (by rw [inv_eq_of_mul_eq_one_right ss, es]; exact (pC.mul ⟨_, pe', _, pe, _, pe, _, pe', rfl⟩).mul pCi)
   obtain ⟨a', ha'⟩ := ev n₀ (by
       rw [en]
@@ -1791,7 +1791,7 @@ theorem vacFixX {B : Base F E} (hB : B.IsGood σ) {X : Spc F E n} {W : Spc F E d
       rw [es]
       refine at_conj (CC_Ci b) fun u hu => ?_
       have : u • (Vf.eps v : AE F E) = 0 := at_eps u hu
-      ext (i | i) (j | j) <;> simp [SS, Matrix.one_apply, smul_ite, this, apply_ite (u • ·)] <;> split_ifs <;> simp [this])
+      ext (i | i) (j | j) <;> simp [SS, Matrix.one_apply, this, apply_ite (u • ·)] <;> split_ifs <;> simp [this])
     (by rw [inv_eq_of_mul_eq_one_right ss, es]; exact (pC.mul ⟨_, pe', _, pe, _, pe, _, pe', rfl⟩).mul pCi)
   obtain ⟨a', ha'⟩ := ev n₀ (by
       rw [en]

@@ -970,7 +970,7 @@ theorem exists_flatHerm_unit : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀
             κ_pos := fun σ => norm_pos_iff.2 ((map_ne_zero σ).2 hα)
             κ_conj := fun σ => by simp [ComplexEmbedding.conjugate_coe_eq]
             norm := ?_ }, rfl, fun _ => rfl⟩
-  · rw [isUnitSec_iff_chart K ι Ω y G _ m m hy hG (UnitChart.homog_cMon c m) hfn hgn]
+  · rw [isUnitSec_iff_chart K ι Ω y G _ m m hG (UnitChart.homog_cMon c m) hfn hgn]
     intro c' hc'
     simp only [sub_self, neg_zero, zpow_zero, Finset.prod_const_one, mul_one, hq]
     exact ⟨hR c' hc' _, hinv ▸ hR c' hc' _⟩
@@ -1215,7 +1215,7 @@ theorem tens_h : ∀ (N : ℕ) (x : Fin N → HermLine ι) z, (tens N x).h z = �
 
 theorem tens_smooth : ∀ (N : ℕ) (x : Fin N → HermLine ι), (∀ i, IsSmoothHerm (x i)) → IsSmoothHerm (tens N x)
   | 0, _, _ => smooth_ofWeight _ _ contDiffOn_const
-  | N + 1, x, hx => smooth_tensor (tens_smooth N _ fun _ => hx _) (hx _)
+  | N + 1, _, hx => smooth_tensor (tens_smooth N _ fun _ => hx _) (hx _)
 
 theorem ptsIntegral_zero (W : Ideal (MRing ι)) {e : ℕ} (φ : Fin e → ((Σ k, ι k) → ℂ) → ℝ) :
     ptsIntegral W φ (fun _ => 0) = 0 := by

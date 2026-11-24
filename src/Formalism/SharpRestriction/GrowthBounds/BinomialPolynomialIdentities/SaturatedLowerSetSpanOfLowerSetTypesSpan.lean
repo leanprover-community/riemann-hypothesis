@@ -128,7 +128,7 @@ theorem span_words_eq_polynomials (R : Type) [CommRing R] : Submodule.span R (Se
 
 end
 
-theorem saturatedLowerSetSpan_of_lowerSetTypesSpan (D : Formalism.BasicNotions.D7) (hN2 : LowerSetTypesSpan) : SaturatedLowerSetSpan D := by
+theorem saturatedLowerSetSpan_of_lowerSetTypesSpan (D : Formalism.BasicNotions.D7) (hN2 : LowerSetTypesSpan) : SaturatedLowerSetSpan := by
   classical
   intro O _ _ _ _ N n LL B pi hpi
   have hinj : Function.Injective (algebraMap O (KK O)) := IsFractionRing.injective O (KK O)

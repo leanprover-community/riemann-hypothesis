@@ -207,7 +207,7 @@ theorem UpperTheory.Gal.projectedFormsSystemPart.autAway_alt (PH : _root_.UpperT
       · rw [Function.update_of_ne e]
         exact hloc _)) ⟨_, hu⟩ rc hrc
   rw [Function.update_self] at k
-  exact typePlain L Ω n hn π _ _ (s.hw _) τ hτ' rc (_root_.UpperTheory.V.Z.Desc.W.isRecT_of_isRecT PH.toClassicalTheorems hrc)
+  exact typePlain L Ω n hn π _ _ (s.hw _) τ hτ' rc (_root_.UpperTheory.V.Z.Desc.W.isRecT_of_isRecT hrc)
     (fun i => W.pushCh (ι.toRingHom.comp (algebraMap c.O (Qbar l))) ((t i).comp V.pr)) k
 end
 end -- clump:auto
@@ -579,7 +579,7 @@ private theorem aux₂ {C : Type} [CommGroup C] {x y e μ : C} {m : ℕ} (h : (x
     y ^ m = (x * e) ^ m := by
   simp only [mul_pow, inv_pow] at h ⊢
   have h' : (x ^ m)⁻¹ = (y ^ m)⁻¹ * e ^ m := by
-    have := mul_right_cancel (b := μ ^ m) (a := (x ^ m)⁻¹) (c := (y ^ m)⁻¹ * e ^ m) (by rw [h]; simp [mul_comm, mul_left_comm, mul_assoc])
+    have := mul_right_cancel (b := μ ^ m) (a := (x ^ m)⁻¹) (c := (y ^ m)⁻¹ * e ^ m) (by rw [h]; simp [mul_comm, mul_left_comm])
     exact this
   have h2 : x ^ m = y ^ m * (e ^ m)⁻¹ := by
     have := congrArg (·⁻¹) h'
@@ -690,7 +690,7 @@ private theorem rel_conj [IsCMField E] {τ : E ≃+* E} {σ : Ω ≃+* Ω} (h : 
       have := congrArg (fun X => (dualRep ρ s : Matrix (Fin n) (Fin n) (Qbar l)) * X) hpair
       simpa only [Matrix.mul_smul, ← Matrix.mul_assoc, hD, Matrix.one_mul] using this
     have h2 := congrArg (fun X => ((P⁻¹ : GL (Fin n) (Qbar l)) : Matrix (Fin n) (Fin n) (Qbar l)) * X) h1
-    simp only [← Matrix.mul_assoc, ← Units.val_mul, Matrix.mul_smul] at h2
+    simp only [← Units.val_mul, Matrix.mul_smul] at h2
     rwa [inv_mul_cancel_left, ← mul_assoc] at h2
   have ht : ρ t.1 = ρ u * ρ s' * (ρ u)⁻¹ := by
     simp only [s', map_mul, map_inv]

@@ -115,7 +115,7 @@ theorem stabilizer_fixes_isotropic_f {r : ℕ} (P : Frame E n r) {h : HA R σ J}
     simp [ratTup, tupH, F0, ratV]
   rwa [e1] at h1
 
-theorem stabilizer_fixes_span {r : ℕ} (P : Frame E n r) {h : HA R σ J} (hh : h ∈ Hsub R σ J P) (Y : Fin r → Fin n → E)
+theorem stabilizer_fixes_span {r : ℕ} (P : Frame E n r) {h : HA R σ J} (Y : Fin r → Fin n → E)
     (hY : ∀ a, lin R σ J h (ratV (F := F) R (Y a)) = ratV (F := F) R (Y a))
     (y : Fin n → R ⊗[F] E) (hy : y ∈ spanR (F := F) R Y Set.univ) : lin R σ J h y = y := by
   induction hy using Submodule.span_induction with
@@ -233,8 +233,8 @@ theorem leviIntH : LeviIntH := by
       lin _ X.B.I.cm.sig X.B.I.J g (ratV (F := X.B.I.F) (Fv X.B.I.F p.1) y) = ratV (F := X.B.I.F) (Fv X.B.I.F p.1) y := by
     intro g hg y hy
     rcases hy with hy | hy
-    · exact stabilizer_fixes_span (frameOf X w) hg _ (stabilizer_fixes_isotropic_e (frameOf X w) hg) _ (rational_vector_mem_span _ y (had.1 y hy))
-    · exact stabilizer_fixes_span (frameOf X w) hg _ (stabilizer_fixes_isotropic_f (frameOf X w) hg) _ (rational_vector_mem_span _ y (had.2.1 y hy))
+    · exact stabilizer_fixes_span (frameOf X w) _ (stabilizer_fixes_isotropic_e (frameOf X w) hg) _ (rational_vector_mem_span _ y (had.1 y hy))
+    · exact stabilizer_fixes_span (frameOf X w) _ (stabilizer_fixes_isotropic_f (frameOf X w) hg) _ (rational_vector_mem_span _ y (had.2.1 y hy))
 
   have hW1 : ∀ y ∈ LatW.LW X, lin _ X.B.I.cm.sig X.B.I.J h (ratV (F := X.B.I.F) (Fv X.B.I.F p.1) y) ∈ M := by
     intro y hy
@@ -253,7 +253,7 @@ theorem leviIntH : LeviIntH := by
     have hx' := hn'.2 y' (fun a => (hy' a).1)
     set x' := lin _ X.B.I.cm.sig X.B.I.J n⁻¹ y' - y'
     have hfix : lin _ X.B.I.cm.sig X.B.I.J h⁻¹ x' = x' :=
-      stabilizer_fixes_span (frameOf X w) hh' _ (stabilizer_fixes_isotropic_e (frameOf X w) hh') _ hx'
+      stabilizer_fixes_span (frameOf X w) _ (stabilizer_fixes_isotropic_e (frameOf X w) hh') _ hx'
     have hm : x' + lin _ X.B.I.cm.sig X.B.I.J h⁻¹ y' ∈ M := by
       have := (hKi' _).1 (hWgen y hy)
       rw [mul_inv_rev, lin_mul] at this

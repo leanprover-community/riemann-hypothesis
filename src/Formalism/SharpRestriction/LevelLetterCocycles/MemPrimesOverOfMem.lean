@@ -674,12 +674,11 @@ theorem etaSum_le (L : SizeData₂ D) (tb : Tab L) (C : ℝ) (P : ParameterChoic
     rw [heq]
     exact Summable.sum_le_tsum S (fun l _ => vvTerm_nonneg D l) hsumm
   have hvh : ∑ l ∈ S, Real.log l * vhE D l ≤ Real.log (Formalism.MainNotions.N.hE D.host : ℝ) := by
-    have := Sums.sum_padicVal_log_le S hSp (Formalism.MainNotions.N.hE D.host) (by
-      unfold Formalism.MainNotions.N.hE NumberField.classNumber; exact Fintype.card_ne_zero)
+    have := Sums.sum_padicVal_log_le S hSp (Formalism.MainNotions.N.hE D.host)
     refine le_of_eq_of_le (Finset.sum_congr rfl (fun l _ => ?_)) this
     unfold vhE; ring
   have hvG : ∑ l ∈ S, Real.log l * vG l ≤ Real.log (D.what₂.restRowsFiniteGroupCard : ℝ) := by
-    have := Sums.sum_padicVal_log_le S hSp D.what₂.restRowsFiniteGroupCard D.what₂.restRowsFiniteGroupCard_pos.ne'
+    have := Sums.sum_padicVal_log_le S hSp D.what₂.restRowsFiniteGroupCard
     refine le_of_eq_of_le (Finset.sum_congr rfl (fun l _ => ?_)) this
     simp only [vG]; ring
   have hsplit : ∑ l ∈ S, Real.log l * U l = ∑ l ∈ S, Real.log l * sig l + ∑ l ∈ S, Real.log l * lamG L tb C l +

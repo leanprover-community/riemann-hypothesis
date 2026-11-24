@@ -344,7 +344,7 @@ theorem isFiniteQC_twist (hL : L.IsLB) [h : QCoh.IsFiniteQC F] : QCoh.IsFiniteQC
 variable (L) in
 def unitTwistIso : twist (unitMod X) L ≅ toMod L :=
   isoOfLinear
-    (fun V =>
+    (fun _ =>
       { toFun := fun s => LB.mkSec (coord s) (coord_mem s)
         invFun := fun s => mkSec (F := unitMod X) (LB.coord s) (LB.coord_mem s)
         map_add' := fun _ _ => rfl

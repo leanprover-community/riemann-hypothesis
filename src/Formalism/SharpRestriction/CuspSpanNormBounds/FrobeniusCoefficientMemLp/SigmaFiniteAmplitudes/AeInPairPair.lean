@@ -114,7 +114,7 @@ theorem ae_inPair_nu (L : LocBessel k r) {γ : Matrix (Fin (2 * r + k + 1)) (Fin
   exact (mul_eq_zero.mp h2).resolve_left hμR0
 
 theorem ae_uh_nuR {μG : Measure (Mt k r)} {γ : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
-    {μR νR : Measure (Mt k r)} (hγ : γ ∈ UH (Hpk k r)) (hμG : IsHaarOn (UH (Hpk k r)) μG)
+    {μR νR : Measure (Mt k r)} (hμG : IsHaarOn (UH (Hpk k r)) μG)
     (hμR : IsHaarOn (RStab k r γ) μR)
     (hQ : PI.BesselPeriodGGP.IsQuotMeas μG (μR.map (fun x => fun i j => (γ⁻¹ * Matrix.of x * γ) i j)) νR) :
     ∀ᵐ x ∂νR, Matrix.of x ∈ UH (Hpk k r) := by

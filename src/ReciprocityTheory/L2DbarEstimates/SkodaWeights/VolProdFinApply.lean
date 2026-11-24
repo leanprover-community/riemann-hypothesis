@@ -145,7 +145,7 @@ theorem near_continuous_of_smoothR {M : Type*} [TopologicalSpace M] (n : ℕ) (z
   exact (Complex.continuous_re.comp hc).congr fun x => by simp
 
 theorem near_smooth_slice {M : Type*} [TopologicalSpace M] [T2Space M] (n : ℕ) (z : M → V n)
-    (hz : IsLocalHomeomorph z) {p : ℕ} (g : Fin p → M → ℂ) (hg : ∀ l, Holo n z (g l))
+    {p : ℕ} (g : Fin p → M → ℂ) (hg : ∀ l, Holo n z (g l))
     (hN : ∀ x, gv g x ≠ 0) (u : M → ℂ) (hu : Holo n z u) (i : Fin p) :
     Smooth n z (fun y => u y * (starRingEnd ℂ) (g i y) / ((vsq (gv g y) : ℝ) : ℂ)) := by
   intro e he
@@ -194,7 +194,7 @@ theorem skodaNear (n : ℕ) (M : Type*) [TopologicalSpace M] [T2Space M]
         (continuous_const.mul hNc) fun x => (mul_pos ht (hNp x)).ne'
     exact this.measurable
   have hsl : ∀ i, Smooth n X.z (fun x => F0f (x, i)) := fun i =>
-    near_smooth_slice n X.z hz g hg hN u' hu' i
+    near_smooth_slice n X.z g hg hN u' hu' i
   have hF0fm : Measurable F0f := measurable_from_prod_countable_left fun i =>
     (Smooth.continuous n X.z hz _ (hsl i)).measurable
   have hF0fs : Smooth n (fun q : M × Fin p => X.z q.1) F0f :=

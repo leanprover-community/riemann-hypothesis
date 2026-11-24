@@ -191,7 +191,7 @@ section
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.N Polynomial GlobalTheory.GalOfCusp UpperTheory.V.Af
 
 private theorem norm_inv_pow_le_sqrt_and_pos_of_one_lt_sqrt_mul_norm (p : ℕ) (hp : 1 ≤ p) (h : ℕ) (b : ℂ)
-    (h1 : 1 < √(p : ℝ) * ‖b‖) (h2 : ‖b‖ < √(p : ℝ) * 1) :
+    (h1 : 1 < √(p : ℝ) * ‖b‖) :
     ‖b⁻¹ ^ h‖ ≤ √((p ^ h : ℕ) : ℝ) ∧ 0 < ‖b⁻¹ ^ h‖ := by
   have hs : 0 < √(p : ℝ) := Real.sqrt_pos.2 (by exact_mod_cast (show 0 < p by omega))
   have hr : 0 < ‖b‖ := by
@@ -228,8 +228,8 @@ theorem traces_from_eigenvalues_rank2 :
     have hc : ((p : ℝ)) ^ ((((0 : ℤ)) : ℝ) / 2) = 1 := by simp
     rw [hc] at hw
     obtain ⟨hw1, hw2⟩ := hw
-    have k1 := norm_inv_pow_le_sqrt_and_pos_of_one_lt_sqrt_mul_norm p hp h b1 (by simpa using (hw1 b1 (by simp)).1) (hw1 b1 (by simp)).2
-    have k2 := norm_inv_pow_le_sqrt_and_pos_of_one_lt_sqrt_mul_norm p hp h b2 (by simpa using (hw1 b2 (by simp)).1) (hw1 b2 (by simp)).2
+    have k1 := norm_inv_pow_le_sqrt_and_pos_of_one_lt_sqrt_mul_norm p hp h b1 (by simpa using (hw1 b1 (by simp)).1).2
+    have k2 := norm_inv_pow_le_sqrt_and_pos_of_one_lt_sqrt_mul_norm p hp h b2 (by simpa using (hw1 b2 (by simp)).1).2
     have hprod : ‖b1‖ * ‖b2‖ = 1 := by simpa [norm_mul] using hw2
     have hp2 : ‖b1⁻¹ ^ h‖ * ‖b2⁻¹ ^ h‖ = 1 := by
       rw [norm_pow, norm_pow, norm_inv, norm_inv, ← mul_pow, ← mul_inv, hprod, inv_one, one_pow]
@@ -525,7 +525,7 @@ private theorem finite_and_card_map_pow_eq_le_two_pow_of_le_two (f : ℕ) (hf : 
         Nat.card_eq_finsetCard _
     _ ≤ _ := (Multiset.toFinset_card_le _).trans (card_sections_map_nthRoots_le_two_pow_of_le_two f hf2 β)
 
-private theorem win_of_map_pow_eq_of_win_pow (p f : ℕ) (hp : 0 < p) (hf : 0 < f) (wt : ℤ) (B β : Multiset ℂ)
+private theorem win_of_map_pow_eq_of_win_pow (p f : ℕ) (hf : 0 < f) (wt : ℤ) (B β : Multiset ℂ)
     (h : Multiset.map (fun x => x ^ f) B = β) (hw : Win (p ^ f) (wt : ℝ) β) : Win p (wt : ℝ) B := by
   unfold Win WinC at *
   have hp0 : (0 : ℝ) ≤ p := Nat.cast_nonneg p
@@ -609,7 +609,7 @@ theorem rootSum :
     rw [he, key]
     exact (Multiset.map_injective σ.injective).eq_iff.symm
   · intro x
-    exact win_of_map_pow_eq_of_win_pow p (f x.1) hp (hf0 x.1) wt _ _ x.2.1.2
+    exact win_of_map_pow_eq_of_win_pow p (f x.1) (hf0 x.1) wt _ _ x.2.1.2
       (by rw [← (hf x.1).2.2]; exact (D x.1).pure x.2.1.1.1)
   · intro a ha x b hb
     have hm : b ^ f x.1 ∈ (D x.1).β x.2.1.1.1 := x.2.1.2 ▸ Multiset.mem_map_of_mem _ hb

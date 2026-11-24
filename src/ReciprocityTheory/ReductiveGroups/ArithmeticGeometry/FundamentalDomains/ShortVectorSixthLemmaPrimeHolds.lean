@@ -1394,7 +1394,7 @@ lemma flow_eq_Zb (X : Data E r) (u : Fin 2 → Fin r → E) (ξ : Fin r → E) (
 lemma fz_zero_of_inv (X : Data E r) (u : Fin 2 → Fin r → E) (hu : ∀ i k, herm X.Gm (u i) (u k) = 0)
     (g : ℕ) (χ : X.Ψ → Fin 2 → Fin 2 → ℂ) (hcond : IsHermFam χ ∧ X.IsFreqZ g χ)
     (hωex : ∃ ω, X.IsLZBasis g ω) (la : Wt X.Ψ r) (P : Frame X.Ψ r → ℂ) (hPc : ContinuousOn P X.dom)
-    (C : ℝ) (hC : ∀ y ∈ X.dom, X.pnorm la P y ≤ C) (ξ : Fin r → E) (hξ : herm X.Gm ξ ξ = 0)
+    (C : ℝ) (hC : ∀ y ∈ X.dom, X.pnorm la P y ≤ C) (ξ : Fin r → E)
     (a : X.Ψ → Fin 2 → ℂ) (hemb : ∀ τ : X.Ψ, Data.emb τ.1 ξ = X.uvec u a τ)
     (hcusp : ∀ y ∈ X.dom, X.fj la ξ 0 P y = 0) {x0 : Frame X.Ψ r} (hx0 : x0 ∈ X.dom)
     (hinv : ∀ s : X.Ψ → ℝ, X.fz u g χ P (X.flow ξ (fun τ => (s τ : ℂ)) x0) = X.fz u g χ P x0) :
@@ -1591,7 +1591,7 @@ theorem nonvanishing_coefficient_positivity_of (h2 : UnipotentLatticeLift (E := 
           hek k, zero_mul]
       rw [h1, map_zero]
     simp [hz]
-  exact hfz (fz_zero_of_inv X.toData u hu.1 X.g _ hcond hωex la P hPsec.1.continuousOn C hC ξ hξξ _
+  exact hfz (fz_zero_of_inv X.toData u hu.1 X.g _ hcond hωex la P hPsec.1.continuousOn C hC ξ _
     hemb (hcusp ξ ⟨hξΛ, hξξ, hξ0⟩) hx1 hinv)
 
 end

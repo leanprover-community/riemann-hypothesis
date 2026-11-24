@@ -965,7 +965,7 @@ theorem idempotent_split_of_isLocalRing (G : PDivGroup p O) (u : G ⟶ G) (hu : 
   have h1 : u ≫ v = 0 := by rw [hv, Preadditive.comp_sub, hu, Category.comp_id, sub_self]
   have h2 : v ≫ u = 0 := by rw [hv, Preadditive.sub_comp, hu, Category.id_comp, sub_self]
   have hker : ∀ n, RingHom.ker (u.app n) = kerIdeal (v.app n) :=
-    ker_app_eq_kerIdeal_of_idempotents p O G u v huv h1 h2
+    ker_app_eq_kerIdeal_of_idempotents p O G u v huv h1
 
   let k := IsLocalRing.ResidueField O
   let uk := baseChangeMap k u
@@ -981,7 +981,7 @@ theorem idempotent_split_of_isLocalRing (G : PDivGroup p O) (u : G ⟶ G) (hu : 
   obtain ⟨h₀, hrk⟩ := kerIdeal_finrank_eq_pow_of_idempotent p k (G.baseChange k) vk uk
     hvuk h2k h1k
   have hkerk : ∀ n, RingHom.ker (uk.app n) = kerIdeal (vk.app n) :=
-    ker_app_eq_kerIdeal_of_idempotents p k (G.baseChange k) uk vk huvk h1k h2k
+    ker_app_eq_kerIdeal_of_idempotents p k (G.baseChange k) uk vk huvk h1k
 
   let e : ∀ n, G.A n →ₗ[O] G.A n := fun n => ((u.app n : G.A n →ₐ[O] G.A n)).toLinearMap
   have he : ∀ n, e n ∘ₗ e n = e n := fun n => LinearMap.ext fun a =>

@@ -70,7 +70,7 @@ open UpperTheory.Zero.LLC UpperTheory.V.Z.Win
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 namespace UpperTheory.Gal.SV
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] {l : ℕ} [Fact l.Prime]
-theorem ratioW_of_hasSat_alt [IsTotallyReal F] (_P : _root_.UpperTheory.V.Af.Hypotheses') {n : ℕ} {π : TR.CuspSub F n} {ι : Qbar l ≃+* ℂ} {r : G F Ω →* GL (Fin n) (Qbar l)}
+theorem ratioW_of_hasSat_alt [IsTotallyReal F] {n : ℕ} {π : TR.CuspSub F n} {ι : Qbar l ≃+* ℂ} {r : G F Ω →* GL (Fin n) (Qbar l)}
     {wt : ℤ} {HT : (F →+* Qbar l) → Multiset ℤ} (H : IsGalRS π ι r wt HT) {w : HeightOneSpectrum (𝓞 F)}
     (hl : ((l : ℕ) : 𝓞 F) ∉ w.asIdeal) {A : ValuationSubring Ω} (h : IsPlaceOver A w) {B : Multiset ℂˣ} (hB : π.HasSat w B) :
     UpperTheory.GalN.V.RatioW (wdOf h hl ι r) := H.ratio w hl A h (H.plain w B hB)
@@ -247,7 +247,7 @@ theorem UpperTheory.V.Sd.ordinary_irreducible_of_printed_hida :
     have hinf : Infinite (HeightOneSpectrum (𝓞 F)) := _root_.GlobalTheory.LvT.Inh.ResFin.infinite_places F
     obtain ⟨w, hw, ⟨B, hB, hF⟩, hu⟩ := (hl.and (hr.att.2.and (GlobalTheory.Mem.UnrAe.unr_ae_and_level F χ).1)).exists
     obtain ⟨A, hA⟩ := exists_isPlaceOver Ω w
-    have hR := _root_.UpperTheory.Gal.SV.ratioW_of_hasSat_alt P.toClassicalTheorems hG hw hA hB
+    have hR := _root_.UpperTheory.Gal.SV.ratioW_of_hasSat_alt hG hw hA hB
     have r1 : ((r ((frob hA : Weil hA) : G F Ω)⁻¹ : Matrix (Fin 2) (Fin 2) (Qbar l)).charpoly.map ι.toRingHom).IsRoot
         (ι (c₁ (frob hA : G F Ω)⁻¹ : Qbar l)) := IsRoot.map (f := ι.toRingHom) (by rw [hch]; simp)
     have r2 : ((r ((frob hA : Weil hA) : G F Ω)⁻¹ : Matrix (Fin 2) (Fin 2) (Qbar l)).charpoly.map ι.toRingHom).IsRoot

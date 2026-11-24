@@ -450,7 +450,7 @@ theorem latAt_of_uTest_over : ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra
   choose eA heA heA' using fun i => exists_endo_pull hφB (e i) (he i)
   choose F hF using fun i => (GlobalTheory.Published.SemiAbelianHomExtension.fractionField_of_isGrpPullback
     GlobalTheory.semiAbelianHomExtension_holds u.semi u.semi hgen hgen (eA i)).exists
-  choose m hm using fun i => endChar_exists_of_isMonHom u.V hB u.G u.semi u.D u.A u.U (F i) (hF i).1
+  choose m hm using fun i => endChar_exists_of_isMonHom u.V u.G u.D u.A u.U (F i) (hF i).1
   choose c hc using fun t : S.perp l.yy.ker => PerpTorus.exists_form S l.yy l.yy_onto t.1 t.2
   refine ⟨m, c, fun i => ⟨F i, eA i, (hF i).1, heA' i, (hF i).2, hm i⟩, hc, ?_⟩
   obtain ⟨V', _, _, _, fV, fK, κ', iV, ξ, hfV, hfK, hκ, hiV, hiκ, hξ⟩ :=

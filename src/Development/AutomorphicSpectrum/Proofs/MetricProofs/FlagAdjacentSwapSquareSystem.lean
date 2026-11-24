@@ -845,7 +845,7 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.PB.WMan.Transv
 
-theorem lastCol_mem {N j : ℕ} {a ca : Fin N} (hj : j ≤ N) (hca : (ca : ℕ) = lastCol N j a) :
+theorem lastCol_mem {N j : ℕ} {a ca : Fin N} (hca : (ca : ℕ) = lastCol N j a) :
     ca ∈ stepCols N j a ∧ ∀ r ∈ stepCols N j a, r ≤ ca := by
   unfold lastCol at hca
   refine ⟨?_, ?_⟩
@@ -867,7 +867,7 @@ theorem main : ∀ (N j : ℕ) (a ca cb : Fin N) (L U : Matrix (Fin N) (Fin N) �
     intro h
     have h1 := congrArg Fin.val h
     omega
-  obtain ⟨hcaS, hmax⟩ := lastCol_mem hj hca
+  obtain ⟨hcaS, hmax⟩ := lastCol_mem hca
   have hLM : L * U * (1 + Matrix.single cb ca t') = L * (U * (1 + Matrix.single cb ca t')) :=
     Matrix.mul_assoc _ _ _
   set M := U * (1 + Matrix.single cb ca t') with hMdef
@@ -1090,7 +1090,7 @@ theorem main : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι 
   obtain ⟨hmem, hsrc, hV, hden, hden2⟩ := hz
   obtain ⟨hzb, hG, horb, h', t', hh', Hf, Hs⟩ := _root_.GlobalTheory.CompanionTheory.Ar.PB.WMan.Onto.norm K ι Φ y Ψ N j M n d Rb τ a b k₀ ca cb F kb V bl r h hctx z
     ⟨hmem, hsrc, hV, hden, hden2⟩
-  have hS := Pts.same_summand hb hab hca hcb
+  have hS := Pts.same_summand hb hca hcb
   have hj := M.j_le
   set zb := baseOf M k₀ z with hzbdef
   set w := wRho M Rb τ k₀ ca cb F kb r h ε z with hw
@@ -1452,7 +1452,7 @@ theorem dim_eq_of_res {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (
   have hhg : ∀ x, h (g x) = x := fun x => R.inj _ _ (hemp _) (orbit_trans (ho (g x)) (go x))
   exact dim_eq_of_holo_inverse R.A R'.A g h hg hh hhg hgh (h x)
 
-theorem flagAn_dim : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (n d : ℕ) (BM : BaseMetric M n) (FA : FlagAn BM d), d + 1 = n + Fintype.card Ψ * (j.choose 2 + (N - j).choose 2) := by
+theorem flagAn_dim : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (n d : ℕ) (BM : BaseMetric M n) (_ : FlagAn BM d), d + 1 = n + Fintype.card Ψ * (j.choose 2 + (N - j).choose 2) := by
   intro K _ ι _ Φ _ y Ψ _ _ N j M n d BM FA
   have hk : ∀ k, k ∈ Set.range (id : K → K) ↔
       ((∀ p, M.blk p ≠ some k) ∨ ∃ p, (fun _ : Ψ × Fin N => True) p ∧ M.blk p = some k) := fun k =>

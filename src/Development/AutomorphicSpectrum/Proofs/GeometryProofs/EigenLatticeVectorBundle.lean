@@ -157,7 +157,7 @@ theorem gen_over (Z : CptOver Y U) : (Z.ξ₀ ≫ Y.j) ≫ Y.s = spMap (Z.inc.co
   rw [Category.assoc, h1, ← Category.assoc, Z.over_inc]
   simp only [spMap, CommRingCat.ofHom_comp, Spec.map_comp]
 
-theorem inc_mem_regAt (Z : CptOver Y U) (hβ : Function.Injective β)
+theorem inc_mem_regAt (Z : CptOver Y U)
     (hfr : ∀ x : c.F, ∃ a b : O, β b ≠ 0 ∧ x * β b = β a) (p : Cpt (Z.ξ₀ ≫ Y.j)) (hp : p ∈ Z.genFib) (x : c.F) :
     Z.inc x ∈ regAt (Z.ξ₀ ≫ Y.j) p := by
   let t : Spec (Y.X.presheaf.stalk p.1) ⟶ Spec (CommRingCat.of O) := Y.X.fromSpecStalk p.1 ≫ Y.s
@@ -377,10 +377,10 @@ theorem isVBOn_eig_genFib : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
     haveI := Y.t.act.hom a
     exact lat_stable Z.M _ (Z.ρ a) (Z.act a) p he
   have hreg : ∀ p ∈ Z.genFib, ∀ s a, σ s a ∈ regAt (Z.ξ₀ ≫ Y.j) p :=
-    fun p hp s a => inc_mem_regAt Z hinj hfr p hp (tauIn c s a)
+    fun p hp s a => inc_mem_regAt Z hfr p hp (tauIn c s a)
   have hdisc : ∀ p ∈ Z.genFib, unitAt (Z.ξ₀ ≫ Y.j) p ((discr E : ℤ) : Z.Ω) := by
     intro p hp
-    have hmem := inc_mem_regAt Z hinj hfr p hp
+    have hmem := inc_mem_regAt Z hfr p hp
     have e : ((discr E : ℤ) : Z.Ω) = Z.inc ((discr E : ℤ) : c.F) := by simp
     have h0 : ((discr E : ℤ) : c.F) ≠ 0 := Int.cast_ne_zero.2 (discr_ne_zero E)
     refine ⟨by rw [e]; exact (map_ne_zero _).2 h0, by rw [e]; exact hmem _, ?_⟩

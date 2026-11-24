@@ -216,8 +216,8 @@ theorem heisFun_mem {ψ : AddChar F ℂ} (hψ : Continuous ψ) (Q : Matrix α α
 def Heisenberg₂ {ψ : AddChar F ℂ} (hψ : Continuous ψ) (Q : Matrix α α E) (w : Matrix α (ν ⊕ ν) E) :
     Module.End ℂ (SB (Matrix α ν E)) where
   toFun φ := ⟨heisFun c ψ Q w φ, heisFun_mem c hψ Q w φ.2⟩
-  map_add' φ φ' := Subtype.ext (funext fun x => mul_add _ _ _)
-  map_smul' z φ := Subtype.ext (funext fun x => mul_left_comm _ _ _)
+  map_add' _ _ := Subtype.ext (funext fun _ => mul_add _ _ _)
+  map_smul' _ _ := Subtype.ext (funext fun _ => mul_left_comm _ _ _)
 
 theorem heis_apply {ψ : AddChar F ℂ} (hψ : Continuous ψ) (Q : Matrix α α E) (w : Matrix α (ν ⊕ ν) E)
     (φ : SB (Matrix α ν E)) : (Heisenberg₂ c hψ Q w φ : Matrix α ν E → ℂ) = heisFun c ψ Q w φ := rfl

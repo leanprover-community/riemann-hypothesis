@@ -769,7 +769,7 @@ theorem local_of_mem_delAtr {E K : Type} [Field E] [NumberField E] [Field K] [Nu
     (pw : Pl.Pl → HeightOneSpectrum (𝓞 K))
     (hval : ∀ w (x : K), x ≠ 0 → Pl.val w x = ((vAdd (pw w) x : ℤ) : WithTop ℤ))
     {ι : Type} [Fintype ι] {n : ℕ} (emb : ι → E →+* K) (s : K →+* ℂ) (eT : ι → E →+* ℂ)
-    (he : embAt s emb = eT) (hpw : Function.Surjective pw) (J : Matrix (Fin n) (Fin n) E)
+    (he : embAt s emb = eT) (J : Matrix (Fin n) (Fin n) E)
     (lam lam' : ι → DomWeight n) (hn : ∀ τ, (lam τ).natW = (lam' τ).natW)
     (M : Submodule (𝓞 E) (Fin n → E)) (hM : Submodule.IsFullLattice E M) (F : VV K lam) (hF : F ∈ delAtr emb lam M)
     (w : Pl.Pl) (B : GL (Fin n) E) (hB : IsLocBasis (Pl.resChar w) (M : Set (Fin n → E)) B) :
@@ -819,7 +819,7 @@ theorem mem_SP_of_coord_integral (D : D7) (u : D.what₂.Word) (Ch : ℕ → Typ
     exact hs c hc
   · refine (Tf.valP.lat _).2 fun w' c B' hB' => ?_
     rw [hval]
-    refine local_of_mem_delAtr D.what₂.places D.plEq D.val_eq _ D.what₂.embLL (embT D) he D.plEq.surjective (gramP D) (sgT u)
+    refine local_of_mem_delAtr D.what₂.places D.plEq D.val_eq _ D.what₂.embLL (embT D) he (gramP D) (sgT u)
       (D.fm u).sg (fun τ => natW_shW _ _) (Tf.clsP.lat c) (hK c) _ ?_ w' B' hB'
     have e : (∏ c', s c') = (∏ c' ∈ Finset.univ.erase c, s c') * s c := (Finset.prod_erase_mul _ _ (Finset.mem_univ c)).symm
     have key : ∀ r : 𝓞 D.what₂.LL, val (r • y) c = r • val y c := fun r => by

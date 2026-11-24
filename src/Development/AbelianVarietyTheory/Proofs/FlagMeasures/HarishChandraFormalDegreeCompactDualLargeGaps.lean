@@ -84,7 +84,7 @@ theorem muCD_eq_scaled (cd : CDHaar) (sc : ∀ n : ℕ, (Fin n → Bool) → NNR
     {N : ℕ} (ε : Fin N → Bool) :
     ReciprocityTheory.ChartRestriction.DS.muCD ε = (sc N ε : ENNReal) • Formalism.REAL.muG ε := by
   ext A hA
-  rw [ReciprocityTheory.ChartRestriction.DS.muCD_eq_cd_vol cd (plusFirst ε) (plusFirst_inl ε) (plusFirst_inr ε) A hA]
+  rw [ReciprocityTheory.ChartRestriction.DS.muCD_eq_cd_vol cd (plusFirst ε) (plusFirst_inl ε) (plusFirst_inr ε) A]
   exact (hc N ε _ _ (plusFirst ε) (plusFirst_inl ε) (plusFirst_inr ε) A hA).symm
 
 theorem one_le_p {N : ℕ} {ε : Fin N → Bool} (h : ∃ a, ε a = true) : 1 ≤ ReciprocityTheory.ChartRestriction.DS.pOf ε := by
@@ -133,7 +133,7 @@ theorem fdeg_gap : ∀ (cd : CDHaar) (sc : ∀ n : ℕ, (Fin n → Bool) → NNR
     exact ⟨T, _, (ReciprocityTheory.ChartRestriction.DS.Lap.Base.psiFor N ε μ h T m hμ hm hμg hq0 h8).1⟩
   obtain ⟨w, hw⟩ := exists_ne (0 : H)
   have hdim : fdegOf (ReciprocityTheory.ChartRestriction.DS.muCD ε) σ w = ReciprocityTheory.ChartRestriction.DS.dimVlam lam :=
-    ReciprocityTheory.ChartRestriction.DS.fdCons_cd hp1 hq1 hlam hgap hh' hΨ hσ hw
+    ReciprocityTheory.ChartRestriction.DS.fdCons_cd hp1 hq1 hlam hgap hh' hσ hw
   obtain ⟨d, hd⟩ := Formalism.MainNotions.BridgeCSchur.fdeg_of_DS lam σ hσ
   have hpos : (0 : ℝ) < (sc N ε : ℝ) := by
     rcases (sc N ε).coe_nonneg.lt_or_eq with hlt | heq

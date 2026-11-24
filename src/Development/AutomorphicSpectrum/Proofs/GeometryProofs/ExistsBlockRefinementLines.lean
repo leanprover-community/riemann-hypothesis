@@ -204,7 +204,7 @@ theorem exists_deg {κ : Type} (x : κ → Ω) {c c' : κ} (hc : x c ≠ 0) (hc'
     exact mul_mem (h₁ _ le_rfl) (h₂ _ (Nat.le_add_right _ _))
 
 theorem pair {κ : Type} {x : κ → Ω} {Λ : Lat ξ Ω} (hT : CoordTie ℤ ξ x) {c c' : κ} (hc : x c ≠ 0)
-    (hc' : x c' ≠ 0) {g g' b b' : Ω} {e : ℕ} (hgR : g ∈ chartSub x c) (hg0 : g ≠ 0)
+    (hc' : x c' ≠ 0) {g g' b b' : Ω} {e : ℕ} (hg0 : g ≠ 0)
     (hg'R : g' ∈ chartSub x c') (hg'0 : g' ≠ 0) (hb' : b' ≠ 0)
     (hΛ : ∀ q : Cpt ξ, InChart ξ x c q → unitAt ξ q g → Λ q = Submodule.span (regAt ξ q) {b})
     (hΛ' : ∀ q : Cpt ξ, InChart ξ x c' q → unitAt ξ q g' → Λ q = Submodule.span (regAt ξ q) {b'})
@@ -298,7 +298,7 @@ theorem line_twist_generated : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ :
   choose e₀ he₀ using fun ij : I × I => exists_deg x (hcc ij.1) (hcc ij.2) (hgR ij.1)
   obtain ⟨e, he⟩ := Finite.exists_le e₀
 
-  choose M₀ hM₀ using fun ij : I × I => pair hT (hcc ij.1) (hcc ij.2) (hgR ij.1) (hg0 ij.1) (hgR ij.2)
+  choose M₀ hM₀ using fun ij : I × I => pair hT (hcc ij.1) (hcc ij.2) (hg0 ij.1) (hgR ij.2)
     (hg0 ij.2) (hb0 ij.2) (hΛi ij.1) (hΛi ij.2) (he₀ ij e (he ij))
   obtain ⟨M, hM⟩ := Finite.exists_le M₀
   let n : ℕ := (e + 1) * M

@@ -106,7 +106,7 @@ open scoped TensorProduct Classical
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.L2.Ker
 
-theorem GlobalTheory.Transport.TwistCpl.psiAt_transport_tw : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X) (hI : I.Ok) (l : I.Laws) (u : B.Word) (a : I.ι) (i : ℕ) (hm : i + 2 = B.R.m) (al : (I.idx a).β i) (P : Formalism.L2.Col.rowSG (B.primes X) I.sel (I.tup a))
+theorem GlobalTheory.Transport.TwistCpl.psiAt_transport_tw : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X) (_ : I.Ok) (_ : I.Laws) (u : B.Word) (a : I.ι) (i : ℕ) (_ : i + 2 = B.R.m) (al : (I.idx a).β i) (P : Formalism.L2.Col.rowSG (B.primes X) I.sel (I.tup a))
     (p q : PtAt B.R I.sel (I.tup a) (I.cst a) u (i)) (p' q' : PtAt B.R I.sel (I.tup a) (I.cst a) u (i + 1))
     (k y : TC.GA B (B.R.N (i))) (k' y' : TC.GA B (B.R.N (i + 1))),
     TC.PtOf k p.1.1 → p.1.1.deco.1.N = Formalism.L2.Col.stdLat B.fields.E (B.R.N (i)) →
@@ -171,7 +171,7 @@ open scoped TensorProduct Classical
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.L2.Ker
 
-theorem _root_.GlobalTheory.T.beforeLastStep_datum_transport_badPrime : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X) (hI : I.Ok) (l : I.Laws) (u : B.Word) (a : I.ι) (i : ℕ) (hm : i + 2 = B.R.m) (al : (I.idx a).β i) (P : Formalism.L2.Col.rowSG (B.primes X) I.sel (I.tup a))
+theorem _root_.GlobalTheory.T.beforeLastStep_datum_transport_badPrime : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X) (_ : I.Ok) (_ : I.Laws) (u : B.Word) (a : I.ι) (i : ℕ) (_ : i + 2 = B.R.m) (al : (I.idx a).β i) (P : Formalism.L2.Col.rowSG (B.primes X) I.sel (I.tup a))
     (p q : PtAt B.R I.sel (I.tup a) (I.cst a) u (i)) (p' q' : PtAt B.R I.sel (I.tup a) (I.cst a) u (i + 1))
     (k y : TC.GA B (B.R.N (i))) (k' y' : TC.GA B (B.R.N (i + 1))),
     TC.PtOf k p.1.1 → p.1.1.deco.1.N = Formalism.L2.Col.stdLat B.fields.E (B.R.N (i)) →
@@ -321,7 +321,7 @@ theorem mle_map_iff {A : Matrix (Fin a) (Fin b) E} {γ : WithZero (Multiplicativ
     MLe Valued.v (A.map (algebraMap E (P.adicCompletion E))) γ ↔ MLe (P.valuation E) A γ :=
   forall₂_congr fun i j => by rw [Matrix.map_apply, GlobalTheory.Mem.Col2.valued_algebraMap]
 
-theorem intAt_inv_mul {c z : E} (hc : c ≠ 0) (h : P.valuation E z ≤ P.valuation E c) : IntAt P (c⁻¹ * z) := by
+theorem intAt_inv_mul {c z : E} (h : P.valuation E z ≤ P.valuation E c) : IntAt P (c⁻¹ * z) := by
   rw [qth_intAt_iff, map_mul, map_inv₀]
   exact inv_mul_le_one_of_le₀ h zero_le'
 
@@ -375,7 +375,7 @@ theorem eq_of_near {K : Type} (Ξ : HomE E a b → K) {c d : E} (hc0 : c ≠ 0) 
   have hk : ∀ {n : ℕ} {w s : Matrix (Fin n) (Fin n) E} (h1 : w * s = 1) (h2 : s * w = 1), MLe (P.valuation E) (w - 1) (P.valuation E c) →
       ∀ j l, IntAt P (c⁻¹ * (Matrix.toLin'OfInv h2 h1 (Pi.single j (1 : E)) l - (Pi.single j (1 : E) : Sp E n) l)) :=
     fun {n w s} h1 h2 hw j l => by
-      refine intAt_inv_mul hc0 ?_
+      refine intAt_inv_mul ?_
       convert hw l j using 2
       simp [Matrix.one_apply, Pi.single_apply]
   have e : x' = inFr (Matrix.toLin'OfInv ht2 ht1) (Matrix.toLin'OfInv ht2' ht1') x + Matrix.toLin' (t' * (u' * X' - X * u)) := by
@@ -388,7 +388,7 @@ theorem eq_of_near {K : Type} (Ξ : HomE E a b → K) {c d : E} (hc0 : c ≠ 0) 
       · exact LinearMap.toMatrix'_toLin' _
     rw [map_add (f := _), e1, LinearMap.toMatrix'_toLin', Matrix.mul_sub, ← Matrix.mul_assoc t' u', ht2', Matrix.one_mul]
     abel
-  refine (congrArg Ξ e).trans ((hinv _ _ fun s l => intAt_inv_mul hd0 ?_).trans (hcong _ _ (hk ht1 ht2 n1) (hk ht1' ht2' n2) x))
+  refine (congrArg Ξ e).trans ((hinv _ _ fun s l => intAt_inv_mul ?_).trans (hcong _ _ (hk ht1 ht2 n1) (hk ht1' ht2' n2) x))
   have e2 : Matrix.toLin' (t' * (u' * X' - X * u)) (Pi.single s 1) l = (t' * (u' * X' - X * u)) l s := by
     rw [Matrix.toLin'_apply, Matrix.mulVec_single_one, Matrix.col_apply]
   rw [e2]
@@ -573,7 +573,7 @@ namespace GlobalTheory.Transport.EntryAny
 
 open GlobalTheory.Transport.Entry
 
-theorem entry_transport_any : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X) (hI : I.Ok) (l : I.Laws) (u : B.Word) (a : I.ι) (i : ℕ) (hm : i + 2 < B.R.m) (al : (I.idx a).β i) (be : (I.idx a).β (i + 1)) (P : Formalism.L2.Col.rowSG (B.primes X) I.sel (I.tup a))
+theorem entry_transport_any : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X) (_ : I.Ok) (_ : I.Laws) (u : B.Word) (a : I.ι) (i : ℕ) (_ : i + 2 < B.R.m) (al : (I.idx a).β i) (be : (I.idx a).β (i + 1)) (P : Formalism.L2.Col.rowSG (B.primes X) I.sel (I.tup a))
     (p q : PtAt B.R I.sel (I.tup a) (I.cst a) u (i)) (p' q' : PtAt B.R I.sel (I.tup a) (I.cst a) u (i + 1))
     (k y : TC.GA B (B.R.N (i))) (k' y' : TC.GA B (B.R.N (i + 1))),
     TC.PtOf k p.1.1 → p.1.1.deco.1.N = Formalism.L2.Col.stdLat B.fields.E (B.R.N (i)) →
@@ -617,7 +617,7 @@ theorem entry_transport_any : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X) (hI
     have e : z₁ = z₀ + (z₁ - z₀) := by abel
     rw [e]
     refine (hL.xiInv i (by omega) al be P z₀ (z₁ - z₀) fun s l => ?_).symm
-    refine intAt_inv_mul (pow_ne_zero _ hq0) ?_
+    refine intAt_inv_mul ?_
     have e2 : (z₁ - z₀) (Pi.single s 1) l = (LinearMap.toMatrix' z₁ - LinearMap.toMatrix' z₀) l s := by
       rw [Matrix.sub_apply, LinearMap.toMatrix'_apply, LinearMap.toMatrix'_apply, LinearMap.sub_apply, Pi.sub_apply]
     rw [e2]
@@ -639,7 +639,7 @@ open scoped TensorProduct Classical
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.L2.Ker
 
-theorem _root_.GlobalTheory.T.entryDatum_transport_badPrime_anyTuple : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X) (hI : I.Ok) (l : I.Laws) (u : B.Word) (a : I.ι) (i : ℕ) (hm : i + 2 < B.R.m) (al : (I.idx a).β i) (be : (I.idx a).β (i + 1)) (P : Formalism.L2.Col.rowSG (B.primes X) I.sel (I.tup a))
+theorem _root_.GlobalTheory.T.entryDatum_transport_badPrime_anyTuple : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X) (_ : I.Ok) (_ : I.Laws) (u : B.Word) (a : I.ι) (i : ℕ) (_ : i + 2 < B.R.m) (al : (I.idx a).β i) (be : (I.idx a).β (i + 1)) (P : Formalism.L2.Col.rowSG (B.primes X) I.sel (I.tup a))
     (p q : PtAt B.R I.sel (I.tup a) (I.cst a) u (i)) (p' q' : PtAt B.R I.sel (I.tup a) (I.cst a) u (i + 1))
     (k y : TC.GA B (B.R.N (i))) (k' y' : TC.GA B (B.R.N (i + 1))),
     TC.PtOf k p.1.1 → p.1.1.deco.1.N = Formalism.L2.Col.stdLat B.fields.E (B.R.N (i)) →
@@ -1169,7 +1169,7 @@ theorem rep_sub_intQ {u : Pr.Word} {j : ℕ} (h : j + 1 = R.m) (p q : PtAt R sel
 
 end TopQ
 
-theorem locTop_transport_tw : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X) (l : I.Laws) (ok : I.Ok) (u : B.Word) (a : I.ι) (n : ℕ) (h : n + 1 + 1 = B.R.m) (P : Formalism.L2.Col.rowSG (B.primes X) I.sel (I.tup a))
+theorem locTop_transport_tw : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X) (_ : I.Laws) (_ : I.Ok) (u : B.Word) (a : I.ι) (n : ℕ) (h : n + 1 + 1 = B.R.m) (P : Formalism.L2.Col.rowSG (B.primes X) I.sel (I.tup a))
     (p q : PtAt B.R I.sel (I.tup a) (I.cst a) u (n + 1)) (p' q' : PtAt B.R I.sel (I.tup a) (I.cst a) u (n + 1 + 1))
     (k y : TC.GA B (B.R.N (n + 1))) (k' y' : TC.GA B (B.R.N (n + 1 + 1))),
     TC.PtOf k p.1.1 → p.1.1.deco.1.N = Formalism.L2.Col.stdLat B.fields.E (B.R.N (n + 1)) →
@@ -1255,7 +1255,7 @@ open scoped TensorProduct Classical
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 open Formalism.L2.Ker
 
-theorem _root_.GlobalTheory.T.lastStep_datum_transport_badPrime : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X) (l : I.Laws) (ok : I.Ok) (u : B.Word) (a : I.ι) (n : ℕ) (h : n + 1 + 1 = B.R.m) (P : Formalism.L2.Col.rowSG (B.primes X) I.sel (I.tup a))
+theorem _root_.GlobalTheory.T.lastStep_datum_transport_badPrime : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X) (_ : I.Laws) (_ : I.Ok) (u : B.Word) (a : I.ι) (n : ℕ) (h : n + 1 + 1 = B.R.m) (P : Formalism.L2.Col.rowSG (B.primes X) I.sel (I.tup a))
     (p q : PtAt B.R I.sel (I.tup a) (I.cst a) u (n + 1)) (p' q' : PtAt B.R I.sel (I.tup a) (I.cst a) u (n + 1 + 1))
     (k y : TC.GA B (B.R.N (n + 1))) (k' y' : TC.GA B (B.R.N (n + 1 + 1))),
     TC.PtOf k p.1.1 → p.1.1.deco.1.N = Formalism.L2.Col.stdLat B.fields.E (B.R.N (n + 1)) →
@@ -1304,8 +1304,8 @@ theorem phiT_tw {B : Base} {X : PreX B.toPre} (I : TC B X) (u : B.Word) (a : I.�
   exact GlobalTheory.Transport.LevelDatum.phiT_eq B.fields.K (B.R.N_pos i) (B.R.N_pos (i + 1)) hp hpN hp' hpN' hq hq' x x₀
     fun P hP r s => lt_of_le_of_lt (h P hP r s) (GlobalTheory.Transport.LevelDatum.val_natCast_lt hM hP)
 
-theorem xiAt_transport_tw : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X) (l : I.Laws) (hok : I.Ok) (u : B.Word) (a : I.ι) (i : ℕ)
-    (hi : i + 1 ≤ B.R.m)
+theorem xiAt_transport_tw : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X) (_ : I.Laws) (_ : I.Ok) (u : B.Word) (a : I.ι) (i : ℕ)
+    (_ : i + 1 ≤ B.R.m)
     (b : Idx I.sel (I.tup a) (I.idx a) i) (b' : Idx I.sel (I.tup a) (I.idx a) (i + 1))
     (p q : PtAt B.R I.sel (I.tup a) (I.cst a) u i) (p' q' : PtAt B.R I.sel (I.tup a) (I.cst a) u (i + 1))
     (k y : TC.GA B (B.R.N i)) (k' y' : TC.GA B (B.R.N (i + 1))),

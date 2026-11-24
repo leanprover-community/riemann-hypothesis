@@ -590,7 +590,7 @@ theorem exists_nat_dvd {E : Type} [Field E] [NumberField E] (d : 𝓞 E) (hd : d
     exact hd
   · exact Ideal.mem_span_singleton.mp (Ideal.absNorm_mem _)
 
-theorem full_of_span_eq_top : ∀ {E : Type} [inst : Field E] [NumberField E] {n : ℕ}
+theorem full_of_span_eq_top : ∀ {E : Type} [Field E] [NumberField E] {n : ℕ}
     (N : Submodule (NumberField.RingOfIntegers E) (Formalism.L2.Col.Sp E n)),
     Submodule.span E (↑N : Set (Formalism.L2.Col.Sp E n)) = ⊤ → GlobalTheory.ThetaMove.Full N := by
   intro E _ _ n N hN x
@@ -978,7 +978,7 @@ def levelZeroCharacter (hstd : Formalism.L2.Theta.IsStdChar (I.rec7 l Z) (_root_
   sFB := fun _ _ _ => Classical.choice (GlobalTheory.Unf.Inhab.nonempty_stepFB hstd _ _)
   io := fun _ => 0
   ioT := fun _ _ => 0
-theorem isIdemAt_G_pl (hW : _root_.GlobalTheory.Fam.AllFamilyConditions W) (a : _root_.GlobalTheory.Fam.GeometricFamily W u) (ha : a.Is) (n : Fin a.n) :
+theorem isIdemAt_G_pl (a : _root_.GlobalTheory.Fam.GeometricFamily W u) (ha : a.Is) (n : Fin a.n) :
     Formalism.L2.NTheta.IsIdemAt (a.G n).q.e (a.pl n).1 :=
   ((ha.tie (fun t => _root_.GlobalTheory.Fam.TopLoc.LocalIdempotentDensity.levelZeroCharacter W.Q.stdChar a.g t) (fun t => _root_.GlobalTheory.Fam.trivialColumnChoice t)).2.idem n).1
 end GlobalTheory.Fam.TopLoc.LocalIdempotentDensity
@@ -1106,7 +1106,7 @@ theorem pr_repY_sub_mem_integers (hW : _root_.GlobalTheory.Fam.AllFamilyConditio
   have h3 := (isFr_ptFr p.1.1 P.1 _).2 h1
   rw [← frsF_eq_ptFr, LinearEquiv.apply_symm_apply, hN] at h3
   have h4 := (mem_localization_standardLattice P.1 _).1 h3 x
-  have h5 := pr_mem_of_intAt (D := I.rec7 l Z) (a.G n).q (_root_.GlobalTheory.Fam.TopLoc.LocalIdempotentDensity.isIdemAt_G_pl hW a ha n) h4
+  have h5 := pr_mem_of_intAt (D := I.rec7 l Z) (a.G n).q (_root_.GlobalTheory.Fam.TopLoc.LocalIdempotentDensity.isIdemAt_G_pl a ha n) h4
   have h6 := map_sub ((a.G n).q.pr.comp (incA (I.rec7 l Z))) (repY p'.1.2 x) (repY p.1.2 x)
   exact h6 ▸ h5
 

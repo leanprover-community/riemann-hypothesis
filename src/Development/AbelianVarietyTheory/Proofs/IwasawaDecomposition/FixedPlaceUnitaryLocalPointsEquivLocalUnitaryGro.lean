@@ -149,7 +149,7 @@ theorem finGL_mem (w : HeightOneSpectrum (𝓞 E)) (s : w.adicCompletion E →+*
       have h0' : h.val.map ((pLoc E v).comp (pFin E)) = 1 := h0
       rw [Matrix.map_mul, hc, h0', Matrix.mul_one, Matrix.map_one _ (map_zero _) (map_one _)]
 
-theorem finGL_mem_locU {w : HeightOneSpectrum (𝓞 E)} (hw : ConjPl (IsCMField.complexConj E).toRingEquiv w w)
+theorem finGL_mem_locU {w : HeightOneSpectrum (𝓞 E)}
     (g : GL (Fin n) (w.adicCompletion E)) (hU : finGL E n (locGL E n w g) ∈ UA E n) :
     (⟨_, hU⟩ : UA E n) ∈ locU n w := by
   refine Subgroup.mem_inf.2 ⟨pInf_finGL _, ?_⟩
@@ -190,7 +190,7 @@ theorem locU_equiv : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n :
     exact cT_cLoc w s hs hv _
   refine ⟨{ toFun := fun x => ⟨cLoc w (x : UA E n), hf x⟩
             invFun := fun g => ⟨⟨finGL E n (locGL E n w g.1), finGL_mem w s hs hv g.1 g.2⟩,
-              finGL_mem_locU hw g.1 _⟩
+              finGL_mem_locU g.1 _⟩
             left_inv := fun x => Subtype.ext (Subtype.ext (finGL_cLoc hw x))
             right_inv := fun g => Subtype.ext ?_
             map_mul' := fun x y => Subtype.ext (map_mul (cLoc w) (x : UA E n) y)

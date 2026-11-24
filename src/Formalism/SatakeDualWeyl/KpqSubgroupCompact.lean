@@ -563,7 +563,7 @@ theorem lattice_class_set_finite_local_holds : Formalism.UG.ClassSetFiniteL :=
   have hs := span_recovery_of_integral_adelic_approx integral_adele_approximation_holds
   classSetFiniteL_of sigma_involution_holds trace_form_positive hermitian_form_symmetry_holds unitary_isometry_lattice_holds
     global_lattice_isLattice_holds (class_injective_of_span_recovery hs global_lattice_equiv_holds) scale_bound_holds
-    (dual_lattice_bound_holds hs) (class_set_finite_bounded_holds covolume_of_dual_holds) standard_lattice_full_holds
+    (dual_lattice_bound_holds hs) (class_set_finite_bounded_holds covolume_of_dual_holds)
 
 theorem lattice_class_set_finite_holds : Formalism.UG.ClassSetFinite :=
   have hs := span_recovery_of_integral_adelic_approx integral_adele_approximation_holds

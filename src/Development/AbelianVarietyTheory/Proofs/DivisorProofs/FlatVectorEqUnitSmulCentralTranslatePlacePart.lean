@@ -97,7 +97,7 @@ theorem isHalf_mono {D : D7} {m n : ℕ} {a b : AE D} (hab : b * a = a) {u : Mx 
   intro k l
   rw [← hu k l, ← mul_assoc, hab]
 
-theorem suppAt_mono {D : D7} {V : HSp D} {a b : AE D} (hab : b * a = a) (ha : a * cA D a = 0) (hb : b * cA D b = 0)
+theorem suppAt_mono {D : D7} {V : HSp D} {a b : AE D} (hab : b * a = a) (hb : b * cA D b = 0)
     {g : GA D V} (hg : SuppAt a V g) : SuppAt b V g := by
   intro k l
   have hc : cA D b * cA D a = cA D a := by rw [← map_mul, hab]
@@ -263,7 +263,7 @@ theorem flat_eq_unit_smul_om_part : ∀ (D : D7) (G : Type) [Group G] [Fintype G
   have hsp := splitSet_tuple hC i t
   have hsub : idem (R.Q t) * ea = ea := by rw [← idem_eq hea]; exact idem_mul_of_subset hsp hSa
   have hsi := GlobalTheory.SplitHecke.Stab.suppAt_inv hsupp
-  refine ⟨z⁻¹, (κ * Gc)⁻¹, hsi, suppAt_mono hsub hea.2 hsp.isIdemSum.2 hsi, GlobalTheory.FlatLift.unitOff_inv_mul hκ hG,
+  refine ⟨z⁻¹, (κ * Gc)⁻¹, hsi, suppAt_mono hsub hsp.isIdemSum.2 hsi, GlobalTheory.FlatLift.unitOff_inv_mul hκ hG,
     fun h g hh hg => ?_⟩
   obtain ⟨Tm, hTm⟩ := hh.1
   have hfT := hh.2 Tm hTm

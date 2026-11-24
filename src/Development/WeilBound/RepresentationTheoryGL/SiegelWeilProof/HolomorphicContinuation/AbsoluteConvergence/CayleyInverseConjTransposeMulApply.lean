@@ -298,7 +298,7 @@ private theorem coshSinh_blocks_mul_C1_eq_exp_diag (X : Fin n → ℝ) :
   · ext i j
     by_cases h : i = j
     · subst h
-      simp [← Real.cosh_add_sinh, ← Real.cosh_sub_sinh]
+      simp [← Real.cosh_add_sinh]
       all_goals first
         | ring1
         | linear_combination (Complex.sinh (X i : ℂ) - Complex.cosh (X i : ℂ)) * Complex.I_sq

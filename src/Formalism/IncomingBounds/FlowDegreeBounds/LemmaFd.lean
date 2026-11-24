@@ -172,7 +172,7 @@ end FlowDualityReindexing
 
 open FlowDualityReindexing
 
-theorem incomingBound_of (hF : FlowAttained) (hA : LemmaFa) : IncomingBound := by
+theorem incomingBound_of (hF : FlowAttained) : IncomingBound := by
   intro l d _ hl hd hev D sig hD hopt
   obtain ⟨x, hx, hval⟩ := hF l d hl hd hev D hD
   have hl' : (3 : ℝ) ≤ l := by exact_mod_cast hl

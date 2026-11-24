@@ -141,7 +141,7 @@ theorem keep {h : Matrix (Fin n) (Fin n) K} (hh : h - 1 ∈ lam K a n n) (y : Ma
   simp only [Matrix.add_mul, Matrix.mul_add, Matrix.one_mul, Matrix.smul_mul, Matrix.mul_smul, smul_add]
   abel
 
-private theorem isLattice_lam_of_ne_zero [IsFractionRing O K] {a : O} {n d : ℕ} (h0 : a ≠ 0) :
+private theorem isLattice_lam_of_ne_zero [IsFractionRing O K] {a : O} {n d : ℕ} :
     (lam K a n d).IsLattice K := by
   classical
   refine ⟨?_, ?_⟩
@@ -151,7 +151,7 @@ private theorem isLattice_lam_of_ne_zero [IsFractionRing O K] {a : O} {n d : ℕ
   · exact fun _ _ hli => (LinearIndependent.iff_fractionRing _ _).mp hli
 
 private theorem isLattice_map_of_surjective {n d : ℕ} (L : Submodule O (Matrix (Fin n) (Fin d) K)) [L.IsLattice K]
-    (G : Matrix (Fin n) (Fin d) K →ₗ[K] Matrix (Fin n) (Fin d) K) (hG : Function.Surjective G) :
+    (G : Matrix (Fin n) (Fin d) K →ₗ[K] Matrix (Fin n) (Fin d) K) :
     (L.map (G.restrictScalars O)).IsLattice K := by
   refine ⟨(Submodule.IsLattice.fg (A := K) (M := L)).map _, ?_⟩
   have himg : ((L.map (G.restrictScalars O) : Submodule O (Matrix (Fin n) (Fin d) K)) :
@@ -187,7 +187,7 @@ theorem dich [IsLocalRing O] (ψ : AddChar K ℂ) (hψ : ∀ x, (∀ y : O, ψ (
     ⟨(h⁻¹).1 * Y, by
       show h.1 * ((h⁻¹).1 * Y) = Y
       rw [← Matrix.mul_assoc, Units.mul_inv, Matrix.one_mul]⟩
-  haveI : (lam K a n d).IsLattice K := isLattice_lam_of_ne_zero h0
+  haveI : (lam K a n d).IsLattice K := isLattice_lam_of_ne_zero
   haveI : (lam K a n d).IsFullLattice K := by
     refine { span_eq_top := ?_ }
     apply top_unique
@@ -207,7 +207,7 @@ theorem dich [IsLocalRing O] (ψ : AddChar K ℂ) (hψ : ∀ x, (∀ y : O, ψ (
       convert hs using 1
       ext k l
       simp [Matrix.single_apply, Algebra.smul_def, haK]
-  haveI : ((lam K a n d).map (G.restrictScalars O)).IsLattice K := isLattice_map_of_surjective _ G hGs
+  haveI : ((lam K a n d).map (G.restrictScalars O)).IsLattice K := isLattice_map_of_surjective _ G
   haveI : ((lam K a n d) ⊔ (lam K a n d).map (G.restrictScalars O)).IsLattice K :=
     Submodule.IsLattice.sup K _ _
   haveI : ((lam K a n d) ⊔ (lam K a n d).map (G.restrictScalars O)).IsFullLattice K :=

@@ -119,7 +119,7 @@ theorem pureTensorO_smul {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam 
     congr 1
     funext t
     ring
-  refine (GlobalTheory.OrientedHeis.pureTensorL_intertwine (fun _ => True) trivial (fun _ _ _ _ => trivial)
+  refine (GlobalTheory.OrientedHeis.pureTensorL_intertwine (fun _ => True) (fun _ _ _ _ => trivial)
     (fun _ _ _ => trivial) _ _ (c • (1 : Module.End ℂ (WO S T → ℂ))) (fun k f _ => ⟨trivial, ?_⟩) f trivial P).2.symm
   simp only [aPlusAll, Formalism.IndefR.Datum.aPlus, crea, LinearMap.smul_apply, Module.End.one_apply, hd]
   rw [smul_comm Complex.I c, ← smul_sub, smul_comm]

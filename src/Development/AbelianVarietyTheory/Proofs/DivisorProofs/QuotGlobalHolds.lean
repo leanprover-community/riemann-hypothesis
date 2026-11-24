@@ -144,7 +144,7 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.QuotGlue
 
-theorem exists_glueMap (S : Scheme.{0}) (𝒰 : S.OpenCover.{0}) (A H : Over S) [GrpObj A] [GrpObj H] (i : H ⟶ A)
+theorem exists_glueMap (S : Scheme.{0}) (𝒰 : S.OpenCover.{0}) (A H : Over S) [GrpObj A] [GrpObj H]
     (B : ∀ j, Over (𝒰.X j)) (q : ∀ j, (Over.pullback (𝒰.f j)).obj A ⟶ B j)
     (b : ∀ j k, pullback ((B j).hom ≫ 𝒰.f j) (𝒰.f k) ⟶ (B k).left)
     (G : Scheme.{0}) (F : G ⟶ S) (ψ : ∀ j, (B j).left ⟶ G)
@@ -727,7 +727,7 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory
 
-theorem cocycle_local_quotient_transition : ∀ (S : Scheme.{0}) (𝒰 : S.OpenCover.{0}) (A H : Over S) [GrpObj A] [GrpObj H] (i : H ⟶ A)
+theorem cocycle_local_quotient_transition : ∀ (S : Scheme.{0}) (𝒰 : S.OpenCover.{0}) (A H : Over S) [GrpObj A] [GrpObj H] (_ : H ⟶ A)
     (B : ∀ j, Over (𝒰.X j)) (q : ∀ j, (Over.pullback (𝒰.f j)).obj A ⟶ B j) (b : ∀ j k, pullback ((B j).hom ≫ 𝒰.f j) (𝒰.f k) ⟶ (B k).left),
     (∀ j, Flat (q j).left) → (∀ j, Surjective (q j).left) → (∀ j, QuasiCompact (q j).left) →
     (∀ j k, b j k ≫ (B k).hom = pullback.snd _ _) →
@@ -789,7 +789,7 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem _root_.GlobalTheory.T.local_quotient_transition_cocycle : ∀ (S : Scheme.{0}) (𝒰 : S.OpenCover.{0}) (A H : Over S) [GrpObj A] [GrpObj H] (i : H ⟶ A)
+theorem _root_.GlobalTheory.T.local_quotient_transition_cocycle : ∀ (S : Scheme.{0}) (𝒰 : S.OpenCover.{0}) (A H : Over S) [GrpObj A] [GrpObj H] (_ : H ⟶ A)
     (B : ∀ j, Over (𝒰.X j)) (q : ∀ j, (Over.pullback (𝒰.f j)).obj A ⟶ B j) (b : ∀ j k, pullback ((B j).hom ≫ 𝒰.f j) (𝒰.f k) ⟶ (B k).left),
     (∀ j, Flat (q j).left) → (∀ j, Surjective (q j).left) → (∀ j, QuasiCompact (q j).left) →
     (∀ j k, b j k ≫ (B k).hom = pullback.snd _ _) →
@@ -832,7 +832,7 @@ theorem quotGlobal_holds : QuotGlobal := by
     (fun j => S.affineCover.f j) (fun j => inferInstance) (fun j => (B j).hom)
     (fun j k => pullback ((B j).hom ≫ S.affineCover.f j) (S.affineCover.f k)) (fun j k => pullback.fst _ _) b
     (fun j k => by rw [hb1]; exact IsPullback.of_hasPullback _ _) hb2 hcoc
-  obtain ⟨Qm, hQF, hQm⟩ := _root_.GlobalTheory.QuotGlue.exists_glueMap S S.affineCover A H i B q b G0 F ψ hchar (fun j k => (hψ2 j k).w)
+  obtain ⟨Qm, hQF, hQm⟩ := _root_.GlobalTheory.QuotGlue.exists_glueMap S S.affineCover A H B q b G0 F ψ hchar (fun j k => (hψ2 j k).w)
     (fun j => (hψ j).w)
   let G : Over S := Over.mk F
   let Q : A ⟶ G := Over.homMk Qm hQF

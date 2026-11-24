@@ -116,7 +116,7 @@ theorem inP_dg (i₀ : Fin n) (h₀ : (i₀ : ℕ) = 0) (s : Fˣ) : inP 1 (dg i�
     · simp [h]
   exact ⟨fun i j hi => key i j (Or.inl hi), fun i j hj => key i j (Or.inr hj)⟩
 
-theorem dg_mul_col (hn : 1 < n) (i₀ : Fin n) (h₀ : (i₀ : ℕ) = 0) (s : Fˣ) (x : Fin (0 + 1) → F) :
+theorem dg_mul_col (i₀ : Fin n) (h₀ : (i₀ : ℕ) = 0) (s : Fˣ) (x : Fin (0 + 1) → F) :
     dg i₀ s * col n 0 x = col n 0 (fun i => (s : F) * x i) * dg i₀ s := by
   refine Units.ext ?_
   rw [Units.val_mul, Units.val_mul]
@@ -345,7 +345,7 @@ theorem coeff_unit (μ : Measure F) [μ.IsAddHaarMeasure] (hL0 : L0) (hψ : PsiO
   have hgK : g ∈ integralGL F n := dg_mem_integralGL i₀ e
   have hgu : ρ g u = u := by
     rw [hu, ← Module.End.mul_apply, ← map_mul, hg, dg_comm, map_mul, Module.End.mul_apply, hv _ hgK]
-  have hm := dg_mul_col hn i₀ h₀ t x
+  have hm := dg_mul_col i₀ h₀ t x
   have hmod : Measures.modulus (t : F) = 1 := modulus_unit μ hL0 hψ t
     (by rw [hcoe]; exact (e : 𝒪[F]).2)
     (by
@@ -405,7 +405,7 @@ theorem key (hL0 : L0) (hL2 : L2) (hL3c : ColumnsMirabolic) (hψ : PsiOK ψ) (hn
     intro x
     have h1 : ρ (col n 0 fun i => (s : F) * x i) u = ρ a (ρ (col n 0 x) v) := by
       have hm : (col n 0 fun i => (s : F) * x i) * a = a * col n 0 x :=
-        (dg_mul_col hn i₀ h₀ s x).symm
+        (dg_mul_col i₀ h₀ s x).symm
       calc ρ (col n 0 fun i => (s : F) * x i) u
           = ρ ((col n 0 fun i => (s : F) * x i) * a) v := by
             rw [map_mul, Module.End.mul_apply]

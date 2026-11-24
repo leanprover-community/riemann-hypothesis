@@ -762,7 +762,7 @@ theorem par_succ_iff {h G : Mat m K} (hh : Par k ⊤ h) (hG : Par k ⊤ G) (hk :
 variable {F : Type} [Field F] {Ω Ω' : Type} [Field Ω] [Algebra F Ω] [Field Ω'] [Algebra F Ω']
 
 theorem row_eq {φ : Ω →ₐ[F] Ω'} {O : Subring Ω} (hk : k τ < m τ) {A₀ A : Mat m Ω} (hA : ∀ τ, (A τ).det ≠ 0)
-    (hP : Par k O (A * A₀⁻¹)) (hd : (dualBlock k τ A₀ A).det ≠ 0) {s : Rest m k τ → Ω'} {A' : Mat m Ω'} {a : Ω'}
+    (hP : Par k O (A * A₀⁻¹)) {s : Rest m k τ → Ω'} {A' : Mat m Ω'} {a : Ω'}
     (ha : ∀ j : Rest m k τ, (A' * (A₀.map φ)⁻¹) τ ⟨k τ, hk⟩ j.1 = a * s j) (j : Rest m k τ) :
     (A' * (A.map φ)⁻¹) τ ⟨k τ, hk⟩ j.1 = a * ((dualBlock k τ A₀ A).map φ).mulVec s j := by
   have hPφ : Par k ⊤ ((A * A₀⁻¹).map φ) := hP.map (φ : Ω →+* Ω') fun _ _ => Subring.mem_top _
@@ -831,7 +831,7 @@ theorem existsUnique_bears (F Ω Ω' : Type) [Field F] [Field Ω] [Algebra F Ω]
       rw [hS] at hA'
       obtain ⟨hpar, a, ha⟩ := hA'
       exact ⟨hpar A (by rw [hfq]; exact hA), a,
-        fun j => row_eq hk (fun σ => Fr.det_ne hA σ) hA0P hB.1 ha j⟩
+        fun j => row_eq hk (fun σ => Fr.det_ne hA σ) hA0P ha j⟩
     have hW : ∀ A' ∈ S'.S (q (IsLocalRing.closedPoint K)),
         Par k ⊤ ((A' * (A.map φ)⁻¹).map (M'.val q)) := fun A' hA' =>
       (hstep A' hA').1.map_of (M'.val q)

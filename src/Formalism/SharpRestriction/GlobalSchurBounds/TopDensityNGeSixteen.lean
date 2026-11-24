@@ -155,7 +155,7 @@ def RankHyp (D : D7) : Prop :=
   StandardLattice.GBig D ∧ (∀ i, StandardLattice.SplitsF D (D.host.g i)) ∧
     ∀ u : D.what₂.Word, StandardLattice.SplitsF D (D.mem u).A.T ∧ StandardLattice.Mu0Tie D u
 
-theorem rank_formula_of_part_four (Lv : LevelData D) (h : StandardLattice.Conclusion4f D Lv) (hR : RankHyp D) : RankM D :=
+theorem rank_formula_of_part_four (Lv : LevelData D) (h : StandardLattice.Conclusion4f D) (hR : RankHyp D) : RankM D :=
   fun u => h hR.1 hR.2.1 u (hR.2.2 u).1 (hR.2.2 u).2
 
 def RankHypF {eps : ℝ} (Fm : FamP eps) : Prop :=

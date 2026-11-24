@@ -118,7 +118,7 @@ theorem coreLC_of' (hBi : Bicomm) (hEL : EquivLift) (hRep : RepB) (hFF : FormFac
       rw [ht' _ (hKV (i, j) f hf), ht' f hf]
       exact e
     obtain ⟨w, hw, hwt⟩ := hEL m n ε c hc R t' h1 h2
-    obtain ⟨-, hBw⟩ := adjoin_first_operators_preserves_family ε c B hBF hBcomm w hw
+    obtain ⟨-, hBw⟩ := adjoin_first_operators_preserves_family ε c B hBcomm w hw
     refine LinearMap.ext fun v => Subtype.ext ?_
     simp only [Module.End.mul_apply, x, LinearMap.restrict_coe_apply]
     have hv1 : (t v : PX m n) = w v := by rw [← hwt v v.2, ht' v v.2]

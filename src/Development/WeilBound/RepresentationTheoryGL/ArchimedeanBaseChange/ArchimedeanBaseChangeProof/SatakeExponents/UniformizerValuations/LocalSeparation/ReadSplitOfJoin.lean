@@ -1065,10 +1065,10 @@ def Pre.restr {n : ℕ} (P : Pre E n) {k r : ℕ} (ι : Fin k → Fin P.c) (h : 
   V i := P.V (ι i)
   σ i := P.σ (ι i)
   m i := P.m (ι i)
-  pos i := P.pos _
-  discrete i := P.discrete _
-  loc i := P.loc _
-  inf i := P.inf _
+  pos _ := P.pos _
+  discrete _ := P.discrete _
+  loc _ := P.loc _
+  inf _ := P.inf _
 
 theorem exists_split {n r s : ℕ} (P : Pre E n) (A B : List (Σ M : ℕ, Submodule ℂ (Sm E M))) (hAB : parts P = A ++ B)
     (hA : (A.map (·.1)).sum = r) (hB : (B.map (·.1)).sum = s) :

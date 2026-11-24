@@ -803,7 +803,7 @@ theorem det_ne_zero_of_hypJ {M₁ : ℕ} (A : Matrix (Fin M₁) (Fin M₁) E) (h
     · have := congrFun hAv a
       simpa [Matrix.mulVec, dotProduct, hypJ, Fin.sum_univ_succ] using this
 
-theorem selfDualLattice_projection_mem_of_unit_length (hσ : ∀ a, σ (σ a) = a) (h2 : (2 : E) ≠ 0) {M₁ : ℕ}
+theorem selfDualLattice_projection_mem_of_unit_length (hσ : ∀ a, σ (σ a) = a) {M₁ : ℕ}
     {J : Matrix (Fin (M₁ + 2)) (Fin (M₁ + 2)) E} (hJ : IsHermND σ J)
     {x y : Fin (M₁ + 2) → E} (hxx : hE σ J x x = 0) (hyy : hE σ J y y = 0)
     (hxy : hE σ J x y = 1) :
@@ -882,7 +882,7 @@ theorem splitHyp : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberF
   obtain ⟨y, hxy, hyy⟩ := exists_partner hσ hJ h2 x hx hxx
   have hfr := finrank_perp hσ hJ.1 hxx hyy hxy
   obtain ⟨M₁, rfl⟩ : ∃ M₁, M = M₁ + 2 := ⟨_, hfr.symm⟩
-  obtain ⟨g, J₁, h1, h3⟩ := selfDualLattice_projection_mem_of_unit_length hσ h2 hJ hxx hyy hxy
+  obtain ⟨g, J₁, h1, h3⟩ := selfDualLattice_projection_mem_of_unit_length hσ hJ hxx hyy hxy
   exact ⟨M₁, rfl, g, J₁, h1, h3⟩
 
 end GlobalTheory.CompanionTheory.SW.HypSplit

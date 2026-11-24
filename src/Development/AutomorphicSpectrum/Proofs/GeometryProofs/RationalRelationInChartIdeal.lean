@@ -99,7 +99,7 @@ theorem exists_homog {K : Type} [Fintype K] {J : K → Type} {Ω : Type} [Field 
     exact Finset.prod_congr rfl fun k _ => by rw [Pi.add_apply, pow_add]
   have hS : ∀ a, ∏ k, w k ^ (Pi.single a 1 : K → ℕ) k = w a := by
     intro a
-    rw [Finset.prod_eq_single a (fun b _ hb => by simp [Pi.single_apply, hb]) (by simp)]
+    rw [Finset.prod_eq_single a (fun b _ hb => by simp [hb]) (by simp)]
     simp
   have hCc : ∀ n : ℤ, mConeMap y (MvPolynomial.C n) = MvPolynomial.C (n : Ω) := by
     intro n

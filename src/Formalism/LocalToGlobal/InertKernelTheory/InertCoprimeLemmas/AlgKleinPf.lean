@@ -175,7 +175,7 @@ theorem coeff1_taylor0 (f : ℂ → ℂ) : PowerSeries.coeff 1 (taylor0 f) = der
   simp
 
 theorem analyticAt_of_eventually {f : ℂ → ℂ} (h : ∀ᶠ z in 𝓝 (0 : ℂ), DifferentiableAt ℂ f z) : AnalyticAt ℂ f 0 :=
-  DifferentiableOn.analyticAt (fun z hz => DifferentiableAt.differentiableWithinAt hz) h
+  DifferentiableOn.analyticAt (fun _ hz => DifferentiableAt.differentiableWithinAt hz) h
 
 theorem caseA (L : PeriodPair) (ω₀ s : ℂ) (hω : ω₀ ∈ L.lattice) (hh : ω₀ / 2 ∉ L.lattice)
     (hu : s + ω₀ / 2 ∉ L.lattice) (M : IntermediateField ℚ ℂ) (h2 : L.g₂ ∈ M) (hs2 : s2 L ∈ M)

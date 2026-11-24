@@ -100,7 +100,7 @@ theorem tauE_sig (D : D7) (τ : D.what₂.Tau) (x : D.host.E) : tauE D τ (D.sp.
   exact NumberField.IsCMField.complexEmbedding_complexConj _ (tauE D τ) _
 
 theorem skew_rect {m n : ℕ} {H : Matrix (Fin n) (Fin n) ℂ} {H' : Matrix (Fin m) (Fin m) ℂ} {a : Matrix (Fin m) (Fin n) ℂ}
-    {b : Matrix (Fin n) (Fin m) ℂ} (hb : bᴴ * H * b = H') (hba : b * a = 1) (hab : a * b = 1) {X : Matrix (Fin n) (Fin n) ℂ}
+    {b : Matrix (Fin n) (Fin m) ℂ} (hb : bᴴ * H * b = H') (hba : b * a = 1) {X : Matrix (Fin n) (Fin n) ℂ}
     (hX : Xᴴ * H + H * X = 0) : (a * X * b)ᴴ * H' + H' * (a * X * b) = 0 := by
   have h1 : H' * a = bᴴ * H := by rw [← hb, Matrix.mul_assoc, hba, Matrix.mul_one]
   have h2 : aᴴ * H' = H * b := by
@@ -113,7 +113,7 @@ theorem skew_rect {m n : ℕ} {H : Matrix (Fin n) (Fin n) ℂ} {H' : Matrix (Fin
 
 theorem bar_rect {m n : ℕ} {H : Matrix (Fin n) (Fin n) ℂ} {H' : Matrix (Fin m) (Fin m) ℂ} {a : Matrix (Fin m) (Fin n) ℂ}
     {b : Matrix (Fin n) (Fin m) ℂ} (hu : IsUnit H.det) (hu' : IsUnit H'.det) (hb : bᴴ * H * b = H') (hba : b * a = 1)
-    (hab : a * b = 1) (Z : Matrix (Fin n) (Fin n) ℂ) : -(H'⁻¹ * (a * Z * b)ᴴ * H') = a * (-(H⁻¹ * Zᴴ * H)) * b := by
+    (Z : Matrix (Fin n) (Fin n) ℂ) : -(H'⁻¹ * (a * Z * b)ᴴ * H') = a * (-(H⁻¹ * Zᴴ * H)) * b := by
   have h1 : H' * a = bᴴ * H := by rw [← hb, Matrix.mul_assoc, hba, Matrix.mul_one]
   have h2 : aᴴ * H' = H * b := by
     rw [← hb, ← Matrix.mul_assoc, ← Matrix.mul_assoc, ← conjTranspose_mul, hba, conjTranspose_one, Matrix.one_mul]
@@ -300,11 +300,11 @@ theorem infMat_kap (hθ : IsInfFam θ) (τ : D.what₂.Tau) (g : GA D V) :
 def adP (τ : D.what₂.Tau) (X : Matrix (Fin V.rank) (Fin V.rank) ℂ) : Matrix (Fin V'.rank) (Fin V'.rank) ℂ := I.pT τ * X * I.qT τ
 
 theorem adP_mem {τ : D.what₂.Tau} {X : Matrix (Fin V.rank) (Fin V.rank) ℂ} (hX : X ∈ lieAt V τ) : I.adP τ X ∈ lieAt V' τ :=
-  skew_rect (I.qT_gram τ) (I.qT_pT τ) (I.pT_qT τ) hX
+  skew_rect (I.qT_gram τ) (I.qT_pT τ) hX
 
 theorem conjAt_adP (τ : D.what₂.Tau) (Z : Matrix (Fin V.rank) (Fin V.rank) ℂ) :
     conjAt V' τ (I.adP τ Z) = I.adP τ (conjAt V τ Z) :=
-  bar_rect (GlobalTheory.SmoothAutCheck.gramAt_unit V τ) (GlobalTheory.SmoothAutCheck.gramAt_unit V' τ) (I.qT_gram τ) (I.qT_pT τ) (I.pT_qT τ) Z
+  bar_rect (GlobalTheory.SmoothAutCheck.gramAt_unit V τ) (GlobalTheory.SmoothAutCheck.gramAt_unit V' τ) (I.qT_gram τ) (I.qT_pT τ) Z
 
 theorem kap_oneP (hθ : IsInfFam θ) {τ : D.what₂.Tau} {X : Matrix (Fin V.rank) (Fin V.rank) ℂ} (hX : X ∈ lieAt V τ) (t : ℝ) :
     I.kap (oneP θ V τ X t) = oneP θ V' τ (I.adP τ X) t := by

@@ -139,7 +139,7 @@ theorem fd_one {H : Type} [Group H] [MeasurableSpace H] [MeasurableSingletonClas
 theorem haar_count {H : Type} [Group H] [Finite H] [TopologicalSpace H] [DiscreteTopology H] [MeasurableSpace H]
     [BorelSpace H] : (Measure.count : Measure H).IsHaarMeasure :=
   { toIsFiniteMeasureOnCompacts := inferInstance, toIsMulLeftInvariant := inferInstance,
-    open_pos := fun U _ hU h => hU.ne_empty (Measure.count_eq_zero_iff.1 h) }
+    open_pos := fun _ _ hU h => hU.ne_empty (Measure.count_eq_zero_iff.1 h) }
 
 theorem semiLat_finite {G : Type} [Group G] [Finite G] [TopologicalSpace G] [DiscreteTopology G] [MeasurableSpace G]
     [BorelSpace G] (N M : Subgroup G) [hN : N.Normal] (hd : ∀ g ∈ N, g ∈ M → g = 1) (hs : ∀ g, ∃ u ∈ N, ∃ m ∈ M, g = u * m) :

@@ -968,7 +968,7 @@ theorem degNum_eq (hI : PB.Inputs) {d : ℕ} {σ : Type} {S : PB.AnSys d σ} {P 
         rw [show (Re.π ⁻¹' E m).indicator (fun _ => (1 : ℝ)) = fun y => (E m).indicator (fun _ => 1) (Re.π y) from
           funext fun y => Set.indicator_comp_right Re.π (s := E m) (g := fun _ => (1 : ℝ)) (x := y)]
         obtain ⟨hV, hVk, hW, hdis, hpre, hbij⟩ := hsh m
-        exact (degree_piece Re.holo Φ (fun j => hth (w j)) A B (hEm m) (hEV m) hV hVk hW hdis hpre hbij _ hΦ).2
+        exact (degree_piece Re.holo Φ (fun j => hth (w j)) A B (hEm m) (hEV m) hVk hW hdis hpre hbij _ hΦ).2
       simp only [hp] at hYsum
       rw [mIntEq Re.R.A B Ψ (fun j => hpb (w j)) _ hΨ, mIntEq S.A A Φ (fun j => hth (w j)) _ hΦ]
       exact HasSum.unique hYsum (hXsum.mul_left _)
@@ -995,7 +995,7 @@ open GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cmp RootFie
 open ReciprocityTheory.ChartRestriction.G.AI.I1 (IsBlockMap pullDeg)
 open ReciprocityTheory.ChartRestriction.G.AI.I4 (IsPullHerm imageZ blockFnField)
 
-theorem cmp_arith {a b e₁ e₂ d₁ d₂ m : ℝ} (p₁ : e₁ ≠ 0) (p₂ : e₂ ≠ 0) (hm : m ≠ 0) (h : e₁ * (m * d₁) = e₂ * d₂) :
+theorem cmp_arith {a b e₁ e₂ d₁ d₂ m : ℝ} (p₁ : e₁ ≠ 0) (p₂ : e₂ ≠ 0) (h : e₁ * (m * d₁) = e₂ * d₂) :
     (a / d₁ - (e₁ * a - e₂ * b) / (e₁ * d₁)) / m = b / d₂ := by
   rw [sub_div (e₁ * a), mul_div_mul_left _ _ p₁, sub_sub_cancel, div_div, show e₁ * d₁ * m = e₂ * d₂ by rw [← h]; ring,
     mul_div_mul_left _ _ p₂]
@@ -1038,7 +1038,7 @@ theorem poly_smul_of_sameSing (hN : SheetDecomposition.NumPull) (hIn : PB.Inputs
       have := (c₁.sub ((hW w).div_const ((e₁ : ℝ) * Re₁.deg))).div_const (m : ℝ)
       rw [zero_div, sub_zero] at this
       refine this.congr fun t => ?_
-      exact cmp_arith p₁ p₂ pm hdeg'
+      exact cmp_arith p₁ p₂ hdeg'
     rw [show Re₂.limNum II w = _ from c₂.limUnder_eq, mul_div_cancel₀ _ pm]
   · rw [PB.AnSys.degPoly, PB.AnSys.degPoly, ← PB.formPoly_const_mul]
     refine congrArg (PB.formPoly D) (funext fun w => ?_)

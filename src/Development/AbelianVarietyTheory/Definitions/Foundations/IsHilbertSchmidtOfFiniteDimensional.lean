@@ -152,7 +152,7 @@ theorem IsHilbertSchmidt.of_norm_le {T : H →L[ℂ] K} {S : H →L[ℂ] L} (h :
 omit [CompleteSpace K] [CompleteSpace L] in
 theorem IsHilbertSchmidt.comp_left {T : H →L[ℂ] K} (h : IsHilbertSchmidt T) (A : K →L[ℂ] L) :
     IsHilbertSchmidt (A ∘L T) :=
-  h.of_norm_le ‖A‖ fun x => A.le_opNorm _
+  h.of_norm_le ‖A‖ fun _ => A.le_opNorm _
 
 theorem IsHilbertSchmidt.comp_right {T : H →L[ℂ] K} (h : IsHilbertSchmidt T) (A : L →L[ℂ] H) :
     IsHilbertSchmidt (T ∘L A) := by

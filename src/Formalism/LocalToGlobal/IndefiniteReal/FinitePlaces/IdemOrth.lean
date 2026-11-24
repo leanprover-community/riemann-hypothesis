@@ -62,7 +62,7 @@ theorem idemAt_eq_split {P : HeightOneSpectrum (𝓞 D.host.E)} (hP : ¬ Lev.IsC
   obtain ⟨e₀, ι, he₀, -, hs₀, hz, hκ⟩ := idem_data P hP (belowPl P) rfl
   have key : ∀ f : AE D, Formalism.L2.NTheta.IsIdemAt f P → f = e₀ := by
     intro f hf
-    rcases idem_class P hP e₀ ι hs₀ hz hκ he₀.1.1 he₀.1.2.1 f hf.1.1 hf.1.2.1 (below_of_idemAt hf) with h | h
+    rcases idem_class P e₀ ι hs₀ hz he₀.1.1 he₀.1.2.1 f hf.1.1 hf.1.2.1 (below_of_idemAt hf) with h | h
     · exact h
     exfalso
     exact hP (conj_of_cA he₀ hf h)
@@ -78,7 +78,7 @@ theorem idem_orth {P Q : HeightOneSpectrum (𝓞 D.host.E)} (hP : ¬ Lev.IsConjP
   · obtain ⟨e₀, ι, he₀, -, hs₀, hz, hκ⟩ := idem_data P hP (belowPl P) rfl
     have h0 : e = e₀ := idemAt_eq_split hP he he₀
     rw [← hv] at hs'
-    rcases idem_class P hP e₀ ι hs₀ hz hκ he₀.1.1 he₀.1.2.1 e' he'.1.1 he'.1.2.1 hs' with h | h
+    rcases idem_class P e₀ ι hs₀ hz he₀.1.1 he₀.1.2.1 e' he'.1.1 he'.1.2.1 hs' with h | h
     · exfalso
       apply hPQ
       apply HeightOneSpectrum.ext
@@ -103,7 +103,7 @@ theorem idem_orth_conj {P Q : HeightOneSpectrum (𝓞 D.host.E)} (hP : ¬ Lev.Is
   · obtain ⟨e₀, ι, he₀, -, hs₀, hz, hκ⟩ := idem_data P hP (belowPl P) rfl
     have h0 : e = e₀ := idemAt_eq_split hP he he₀
     rw [← hv] at hs'
-    rcases idem_class P hP e₀ ι hs₀ hz hκ he₀.1.1 he₀.1.2.1 e' he'.1.1 he'.1.2.1 hs' with h | h
+    rcases idem_class P e₀ ι hs₀ hz he₀.1.1 he₀.1.2.1 e' he'.1.1 he'.1.2.1 hs' with h | h
     · rw [h, h0]; exact he₀.1.2.1
     · exfalso
       exact hPQ (conj_of_cA he he' (h.trans (congrArg (cA D) h0.symm)))

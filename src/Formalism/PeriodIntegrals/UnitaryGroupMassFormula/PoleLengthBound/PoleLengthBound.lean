@@ -338,7 +338,7 @@ theorem length_residue (hfin : Module.Finite O ↥(As O A)) (ζ : Pts O A) :
 variable {V : Type*} [AddCommGroup V] [Module A V] [Module O V] [IsScalarTower O A V] {e : V}
 
 theorem ballO_mono [∀ ζ : Pts O A, IsDVRAt ζ] (h : IsUnif (A := A) ϖ) (he : IsGen (A := A) e)
-    {c c' : Pts O A → ℤ} (hc : ∀ ζ, c ζ ≤ c' ζ) : ballO ϖ e c ≤ ballO ϖ e c' := fun v hv => ball_mono h he hc hv
+    {c c' : Pts O A → ℤ} (hc : ∀ ζ, c ζ ≤ c' ζ) : ballO ϖ e c ≤ ballO ϖ e c' := fun _ hv => ball_mono h he hc hv
 
 
 open scoped Classical in

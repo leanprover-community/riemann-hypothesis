@@ -1797,12 +1797,12 @@ section B2
 end B2
 
 section B9
-theorem global_sections_schur (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CovariantDegrees.GlobalSectionsSchur D := fun n _ mu R _ _ hR =>
+theorem global_sections_schur (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CovariantDegrees.GlobalSectionsSchur := fun n _ mu R _ _ hR =>
   Formalism.InvariantFactorPaths.ColumnFamilies.highest_weight_corollary_one n mu R hR
 end B9
 
 section lowerOffDiagonalCoeff
-theorem bracket_polynomial_span (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CovariantDegrees.BracketPolynomialSpan D := fun n _ mu hmu =>
+theorem bracket_polynomial_span (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CovariantDegrees.BracketPolynomialSpan := fun n _ mu hmu =>
   Formalism.InvariantFactorPaths.ColumnFamilies.highest_weight_corollary_two n mu hmu
 end lowerOffDiagonalCoeff
 

@@ -110,7 +110,7 @@ def Xgrep {a : ℕ} (x : Fin a → D.nd.X i)
     GRep (Br.G D.nbr i w hw) ℚ_[D.nd.l i] (Br.LL D.nbr i w hw) (Br.OLL D.nbr i w hw) :=
   haveI := isTopRing i w hw
   GRep.sub (GRep.sum (Qp := ℚ_[D.nd.l i]) (O := Br.OLL D.nbr i w hw) (fun j : Fin a => fam i w hw r (x j))
-    (fun j v => (hc j).matrix_mulVec continuous_const) id) (XV i w hw Y) (XV_stable i w hw r x Y hst)
+    (fun j _ => (hc j).matrix_mulVec continuous_const) id) (XV i w hw Y) (XV_stable i w hw r x Y hst)
 
 def pushSet {k : ℕ} (M : GE D.nd →* Matrix (Fin k) (Fin k) (D.nd.O i)) {a : ℕ} (x : Fin a → D.nd.X i)
     (E : Fin a → Fin D.R.nV → KK D.nd i) (Y : Submodule (D.nd.O i) (Fin a → Fin D.R.nV → KK D.nd i))

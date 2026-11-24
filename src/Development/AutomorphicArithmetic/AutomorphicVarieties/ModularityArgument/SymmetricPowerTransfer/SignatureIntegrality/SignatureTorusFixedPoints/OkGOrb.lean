@@ -153,9 +153,9 @@ private theorem hasTau_of (hd : IsDat c d m) (h : Models c d m δ ι Q) : HasTau
   have hB : ∀ v, B *ᵥ v = R v := fun v => by simp [B, LinearMap.toMatrix'_mulVec]
   have hB' : ∀ v, B' *ᵥ v = R.symm v := fun v => by simp [B', LinearMap.toMatrix'_mulVec]
   have h1 : B * B' = 1 := Matrix.toLin'.injective (LinearMap.ext fun v => by
-    simp [← Matrix.mulVec_mulVec, hB, hB'])
+    simp [hB, hB'])
   have h2 : B' * B = 1 := Matrix.toLin'.injective (LinearMap.ext fun v => by
-    simp [← Matrix.mulVec_mulVec, hB, hB'])
+    simp [hB, hB'])
   have h3 : ((δ * theta Δ δ : U3 Δ) : Matrix (Fin 3) (Fin 3) (Lsq K Δ)) * B = B * A0 Δ τ :=
     Matrix.toLin'.injective (LinearMap.ext fun v => by
       simp only [Matrix.toLin'_apply, ← Matrix.mulVec_mulVec, hB]

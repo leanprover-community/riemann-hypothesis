@@ -50,7 +50,7 @@ theorem coeff_tyS_congr {l : ℕ} (hl : 2 ≤ l) (a b : ℕ → C) (N : ℕ) (ha
     exact absurd hm (not_lt.2 h1)
   · rw [ite_eq_right hs, ite_eq_right hs]
 
-theorem constantCoeff_tyS {l : ℕ} (hl : 2 ≤ l) (a : ℕ → C) : PowerSeries.constantCoeff (tyS l a) = 0 := by
+theorem constantCoeff_tyS {l : ℕ} (a : ℕ → C) : PowerSeries.constantCoeff (tyS l a) = 0 := by
   rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply]
   simp only [tyS, PowerSeries.coeff_mk]
   simp
@@ -109,7 +109,7 @@ theorem sumV_mem (V : VF C) (g : Fin 2) (hlg0 : ∀ i, MvPowerSeries.constantCoe
     apply Finset.sum_eq_zero
     intro c _
     rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply, PowerSeries.coeff_smul,
-      PowerSeries.coeff_zero_eq_constantCoeff_apply, constantCoeff_tyS hl2, smul_zero]
+      PowerSeries.coeff_zero_eq_constantCoeff_apply, constantCoeff_tyS, smul_zero]
   set γ : κ → PowerSeries C := fun i => alongCv A (X.ex i) with hγdef
   have hγ0 : ∀ i, PowerSeries.constantCoeff (γ i) = 0 := fun i => constantCoeff_subst_zero hA0 (hex0 i)
   have hlgγ : ∀ i, alongCv γ (X.lg i) = A i := by

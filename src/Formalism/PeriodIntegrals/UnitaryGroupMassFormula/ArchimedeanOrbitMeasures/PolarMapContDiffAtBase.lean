@@ -342,7 +342,7 @@ def TinvI {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) : MfI X :=
   (gramE X.B.I.cm.sig X.B.I.J (tupH (frameOf X u')))⁻¹.map (inclR (Ainf X.B.I.F))
 
 def SquareChartC1 : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf fibInf,
-    PushHyp X u' ψ hT μinf νinf fibInf → ∃ Ω a, IsChart X u' hT Ω a ∧
+    PushHyp X u' ψ μinf νinf fibInf → ∃ Ω a, IsChart X u' hT Ω a ∧
       ∀ {η μ' : Type} [Fintype η] [Fintype μ'] (eH : HmI X ≃ₜ EuclideanSpace ℝ η)
         (eM : MfI X ≃ₜ EuclideanSpace ℝ μ'),
         (∀ x y, eH (x + y) = eH x + eH y) → (∀ x y, eM (x + y) = eM x + eM y) →
@@ -445,7 +445,7 @@ theorem loc_glue {E F : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [Finite
 
 open Classical in
 theorem tupJac_of_pieces {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT
-    (μinf : Measure (TupI X)) (νinf : Measure (HmI X)) fibInf (hP : PushHyp X u' ψ hT μinf νinf fibInf)
+    (μinf : Measure (TupI X)) (νinf : Measure (HmI X)) fibInf (hP : PushHyp X u' ψ μinf νinf fibInf)
     (Ω : Set (HmI X)) (a : HmI X → MfI X) (hC : IsChart X u' hT Ω a) {ι : Type} [Fintype ι]
     (κ : EuclideanSpace ℝ ι → HA (Ainf X.B.I.F) X.B.I.cm.sig X.B.I.J) {η : Type} [Fintype η]
     (eH : HmI X ≃ₜ EuclideanSpace ℝ η) (cν : ℝ) (hν : νinf.map eH = ENNReal.ofReal cν • volume)
@@ -509,7 +509,7 @@ theorem tupJac_of_pieces {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ 
     rwa [hbase, hid, abs_one, mul_one, div_div]
 
 def TupPieces : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf
-    fibInf, PushHyp X u' ψ hT μinf νinf fibInf → ∃ Ω a, IsChart X u' hT Ω a ∧
+    fibInf, PushHyp X u' ψ μinf νinf fibInf → ∃ Ω a, IsChart X u' hT Ω a ∧
     ∃ (η : Type) (_ : Fintype η) (eH : HmI X ≃ₜ EuclideanSpace ℝ η) (cν : ℝ), νinf.map eH = ENNReal.ofReal cν • volume ∧
     ∀ (hb : Formalism.L2.SG.AdBridge.AdBridgeIso X.B.I) (c : X.B.I.Ginf)
     (S : NumberField.InfinitePlace X.B.I.F → Finset (Fin X.B.I.n)) {ι : Type} [Fintype ι]
@@ -558,7 +558,7 @@ theorem euc_coords {V W : Type} [AddCommGroup V] [TopologicalSpace V] [Measurabl
     exact R.continuous.measurable.aemeasurable
 
 def HermEuc : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf
-    fibInf, PushHyp X u' ψ hT μinf νinf fibInf →
+    fibInf, PushHyp X u' ψ μinf νinf fibInf →
     ∃ (η : Type) (_ : Fintype η) (eH : HmI X ≃ₜ EuclideanSpace ℝ η) (cν : ℝ),
       (∀ S T, eH (S + T) = eH S + eH T) ∧ νinf.map eH = ENNReal.ofReal cν • volume
 
@@ -599,7 +599,7 @@ def ChartD {D : D7} (X : HidaSetting D) (u' : D.what₂.Word)
       (1 / 2 : ℝ) • eM (TinvI X u' * ((eH.symm v : HmI X) : Matrix _ _ _))
 
 def PolarMapContDiffAtBase : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf
-    fibInf, PushHyp X u' ψ hT μinf νinf fibInf → ∀ Ω a, IsChart X u' hT Ω a → ChartD X u' hT a →
+    fibInf, PushHyp X u' ψ μinf νinf fibInf → ∀ Ω a, IsChart X u' hT Ω a → ChartD X u' hT a →
     ∀ {η : Type} [Fintype η] (eH : HmI X ≃ₜ EuclideanSpace ℝ η), (∀ S T, eH (S + T) = eH S + eH T) →
     ∀ (hb : Formalism.L2.SG.AdBridge.AdBridgeIso X.B.I) (c : X.B.I.Ginf)
     (S : NumberField.InfinitePlace X.B.I.F → Finset (Fin X.B.I.n)) {ι : Type} [Fintype ι]
@@ -607,7 +607,7 @@ def PolarMapContDiffAtBase : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.wh
     StdConj X hb u' c S → LieCompl X S L → PolarChartContDiffAt X u' hT a (kap0 X hb c L) eH
 
 def TupDet : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf
-    fibInf, PushHyp X u' ψ hT μinf νinf fibInf → ∀ Ω a, IsChart X u' hT Ω a → ChartD X u' hT a →
+    fibInf, PushHyp X u' ψ μinf νinf fibInf → ∀ Ω a, IsChart X u' hT Ω a → ChartD X u' hT a →
     ∀ {η : Type} [Fintype η] (eH : HmI X ≃ₜ EuclideanSpace ℝ η) (cν : ℝ), (∀ S T, eH (S + T) = eH S + eH T) →
     νinf.map eH = ENNReal.ofReal cν • volume →
     ∀ (hb : Formalism.L2.SG.AdBridge.AdBridgeIso X.B.I) (c : X.B.I.Ginf)
@@ -740,7 +740,7 @@ theorem psiC_eq {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (a : HmI X �
   simp only [PsiC, Rm, KapOrb, Homeomorph.symm_apply_apply, smul_rmulT]
 
 def LieComplementChartContDiffAt : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf
-    fibInf, PushHyp X u' ψ hT μinf νinf fibInf →
+    fibInf, PushHyp X u' ψ μinf νinf fibInf →
     ∀ (hb : Formalism.L2.SG.AdBridge.AdBridgeIso X.B.I) (c : X.B.I.Ginf)
     (S : NumberField.InfinitePlace X.B.I.F → Finset (Fin X.B.I.n)) {ι : Type} [Fintype ι]
     (L : EuclideanSpace ℝ ι →ₗ[ℝ] (NumberField.InfinitePlace X.B.I.F → Matrix (Fin X.B.I.n) (Fin X.B.I.n) ℂ)),
@@ -755,7 +755,7 @@ def LamMap {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) {ι η : Type} [Fi
 
 open Classical in
 def LamDet : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf
-    fibInf, PushHyp X u' ψ hT μinf νinf fibInf →
+    fibInf, PushHyp X u' ψ μinf νinf fibInf →
     ∀ {η : Type} [Fintype η] (eH : HmI X ≃ₜ EuclideanSpace ℝ η) (cν : ℝ), (∀ S T, eH (S + T) = eH S + eH T) →
     νinf.map eH = ENNReal.ofReal cν • volume →
     ∀ (hb : Formalism.L2.SG.AdBridge.AdBridgeIso X.B.I) (c : X.B.I.Ginf)
@@ -769,7 +769,7 @@ def LamDet : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ 
         Real.sqrt |(matI X).det| / (Dv * cν) = tVal X u'
 
 def KapSm : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf
-    fibInf, PushHyp X u' ψ hT μinf νinf fibInf →
+    fibInf, PushHyp X u' ψ μinf νinf fibInf →
     ∀ (hb : Formalism.L2.SG.AdBridge.AdBridgeIso X.B.I) (c : X.B.I.Ginf)
     (S : NumberField.InfinitePlace X.B.I.F → Finset (Fin X.B.I.n)) {ι : Type} [Fintype ι]
     (L : EuclideanSpace ℝ ι →ₗ[ℝ] (NumberField.InfinitePlace X.B.I.F → Matrix (Fin X.B.I.n) (Fin X.B.I.n) ℂ)),

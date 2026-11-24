@@ -106,7 +106,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.ConjugateRootZeroSecond.rt0_conj_neg_ne_zero :
-    ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E] [inst_2 : NumberField.IsCMField E]
+    ∀ {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E]
       (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E), (starRingEnd ℂ : ℂ → ℂ) H.rt0 = -H.rt0 := by
   intro E _ _ _ H
   have h := H.sqrt_neg_disc_sq
@@ -269,7 +269,7 @@ def push (hφ : IsGrpPullback G' G f φ) {T : Over S'} (x : T ⟶ G') : Over.mk 
   Over.homMk (x.left ≫ φ) (by
     have h1 := hφ.1.w
     have h2 := Over.w x
-    simp only [Over.mk_hom, Category.assoc, Functor.id_obj, Functor.const_obj_obj, Over.mk_left]
+    simp only [Over.mk_hom, Category.assoc, Over.mk_left]
     rw [h1, ← Category.assoc, h2])
 
 theorem push_mul (hφ : IsGrpPullback G' G f φ) {T : Over S'} (x y : T ⟶ G') :

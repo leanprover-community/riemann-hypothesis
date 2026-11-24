@@ -122,7 +122,7 @@ def GlOperatorsFormRepresentation : Prop :=
       ∀ th : ℤ, (th : WithTop ℤ) ≤ valS LL S G → (degOther LL S A d : ℤ) < th →
         (detA (R := R) A) ^ (th - degOther LL S A d).toNat ∣ G)
 
-theorem prvE_of_gl_operators_form_representation (D : Formalism.BasicNotions.D7) (h : GlOperatorsFormRepresentation) : ConclusionE D := by
+theorem prvE_of_gl_operators_form_representation (D : Formalism.BasicNotions.D7) (h : GlOperatorsFormRepresentation) : ConclusionE := by
   intro R _ ι _ LL r _ S A hA hAS
   exact ⟨h R ι LL r S A hA hAS,
     fun G H m hG S' => valuation_bound_det_power_factor R ι LL r A hA (fun l => (hAS l).2) G H m hG S'⟩
@@ -134,7 +134,7 @@ def GeneratedModuleWeightDescription : Prop :=
     (∀ (G : MvPolynomial (ι × Fin n) R) (M : ℤ), (lam1S LL S G ≤ (M : WithBot ℤ) ↔
       ∀ mu ∈ polWts LL S (polGenSub R LL S G), mu 0 ≤ M))
 
-theorem valuations_additive_of_generated_weight_description (D : Formalism.BasicNotions.D7) (h : GeneratedModuleWeightDescription) : ValuationsAdditive D := by
+theorem valuations_additive_of_generated_weight_description (D : Formalism.BasicNotions.D7) (h : GeneratedModuleWeightDescription) : ValuationsAdditive := by
   intro R _ ι _ LL n _ S
   exact ⟨mul_valS_mul LL S, mul_valS_add LL S, mul_lam1S_mul LL S, mul_lam1S_add LL S,
     (h R ι LL n S).1, (h R ι LL n S).2⟩

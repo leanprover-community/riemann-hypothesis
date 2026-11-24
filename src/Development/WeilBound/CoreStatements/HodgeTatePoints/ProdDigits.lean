@@ -111,7 +111,7 @@ end UpperTheory.Reformulated.B.AddCharacterCount.Helpers
 
 open UpperTheory.Reformulated.B.AddCharacterCount.Helpers in
 theorem UpperTheory.Reformulated.B.AddCharacterCount.main :
-    ∀ {C F : Type} [inst : Field C] [inst_1 : Field F] [Fintype F] [DecidableEq F] (ψ : AddChar F C),
+    ∀ {C F : Type} [Field C] [Field F] [Fintype F] [DecidableEq F] (ψ : AddChar F C),
       ψ ≠ (1 : AddChar F C) →
         ∃ (e : F ≃ AddChar F C),
           (∀ (h h' : F), (e : F → AddChar F C) (h + h') = (e : F → AddChar F C) h * (e : F → AddChar F C) h') ∧
@@ -154,7 +154,7 @@ private lemma card_le (F K : Type) [Field F] [Fintype F] [Field K] :
 end AddCharEqMulShift
 
 theorem UpperTheory.Reformulated.B.Yde4.main :
-    ∀ {F K : Type} [inst : Field F] [Fintype F] [inst_2 : Field K] (ψ₀ ψ : AddChar F K),
+    ∀ {F K : Type} [Field F] [Fintype F] [Field K] (ψ₀ ψ : AddChar F K),
       ψ₀ ≠ (1 : AddChar F K) → ∃ (c : F), ψ = ψ₀.mulShift c := by
   intro F K _ _ _ ψ₀ ψ h
   obtain ⟨hfin, hle⟩ := AddCharEqMulShift.card_le F K

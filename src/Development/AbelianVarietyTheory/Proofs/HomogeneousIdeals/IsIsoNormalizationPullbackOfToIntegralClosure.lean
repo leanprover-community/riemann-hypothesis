@@ -929,7 +929,7 @@ theorem normalizationActionOver_normalizationMap (hπ : ∀ g, (ρ g).asIso.hom 
     (normalizationActionOver f ρ hρ g).asIso.hom ≫ normalizationMap f f' π (𝟙 Y) hf =
       normalizationMap f f' π (𝟙 Y) hf :=
   normalization_hom_ext f f'.fromNormalization (by simp [reassoc_of% hπ])
-    (by simp [reassoc_of% hπ, normalizationActionOver_fromNormalization])
+    (by simp [normalizationActionOver_fromNormalization])
 
 
 include hπ in

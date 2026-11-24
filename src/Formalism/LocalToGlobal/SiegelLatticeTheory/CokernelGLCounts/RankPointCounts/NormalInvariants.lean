@@ -98,7 +98,7 @@ theorem rd_cancel (D : D7) :
 
 theorem count_bound (f : ℕ) (T T' P c1 c2 : ℝ) (hT1 : 3 ≤ T) (hT2 : 3 ≤ T') (hP1 : 1 ≤ P)
     (hc1 : c1 ≤ 8 * (f : ℝ) ^ 2 * (T ^ (2 * f) * P ^ 2)) (hc2 : c2 ≤ 8 * (f : ℝ) ^ 2 * (T' ^ (2 * f) * P ^ 2))
-    (_h1 : 0 ≤ c1) (h2 : 0 ≤ c2) :
+    (h2 : 0 ≤ c2) :
     c1 * c2 ≤ (T * T') ^ (6 * f) * P ^ 6 := by
   have hf := nat_bound f
   have hT0 : (0 : ℝ) ≤ T := by linarith
@@ -217,7 +217,7 @@ theorem stepNormals_of (hA : NmlInv) (hB : NormCount) (hO : StepNormOne) : StepN
         _ = _ := by ring
     exact le_of_mul_le_mul_right h' (by positivity)
   calc (S.card : ℝ) ≤ (T1.card : ℝ) * T2.card := by exact_mod_cast hcard
-    _ ≤ _ := count_bound D.R.f T T' P _ _ hT1 hT2 hP1 hc1 hc2 (Nat.cast_nonneg _) (Nat.cast_nonneg _)
+    _ ≤ _ := count_bound D.R.f T T' P _ _ hT1 hT2 hP1 hc1 hc2 (Nat.cast_nonneg _)
 
 def NormCountG : Prop :=
   ∀ (E : Type) [Field E] [NumberField E] [NumberField.IsCMField E]

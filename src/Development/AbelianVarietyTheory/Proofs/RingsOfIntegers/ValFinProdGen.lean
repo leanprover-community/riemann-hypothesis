@@ -125,7 +125,7 @@ theorem sv_unit' (ξ : Spec (CommRingCat.of (FractionRing V))) {X : Scheme.{0}} 
   rw [← gm_pull (jK V) p ξ U h]
   exact sv_unit ξ _ hU _
 
-theorem sv_gen (hϖ : Irreducible ϖ) (ξ : Spec (CommRingCat.of (FractionRing V))) {X : Scheme.{0}} {L : LB X}
+theorem sv_gen (ξ : Spec (CommRingCat.of (FractionRing V))) {X : Scheme.{0}} {L : LB X}
     {Ix : Type} [Fintype Ix]
     {φ : Ix → (Spec (CommRingCat.of V) ⟶ X)} {φ' : Ix → (Spec (CommRingCat.of (FractionRing V)) ⟶ X)}
     {hφ : ∀ k, φ' k = jK V ≫ φ k} {ε : Ix → ℤ} {t : LB.Gen (LB.LinComb L φ' ε)} {n : ℤ}
@@ -177,7 +177,7 @@ theorem mapsAt_val (w : LB.Iso M' (LB.LinComb M pr (fun _ => 1))) (p : Y ⟶ X')
 theorem val_finProdGen {K I : Type} [Fintype K] [Fintype I] (φ : I → K → (Y ⟶ X)) (ε : I → K → ℤ)
     (t : ∀ i, LB.Gen (LB.LinComb M (φ i) (ε i))) {Z : Scheme.{0}} (r : Z ⟶ Y) (z : Z) {J} (hJ : Good M z J) :
     val (GeneratorPullback.finProdGen M φ ε t) r z J = ∏ i, val (t i) r z J :=
-  (map_prod _ _ _).trans (Finset.prod_congr rfl fun i _ =>
+  (map_prod _ _ _).trans (Finset.prod_congr rfl fun _ _ =>
     gm_res r z _ (hJ.mem (fun p : I × K => φ p.1 p.2) r) _)
 
 end Box
@@ -193,9 +193,9 @@ theorem main : ∀ (V : Type) [CommRing V] [IsDomain V] [IsDiscreteValuationRing
   have e1 := mapsAt_val pD.w _ _ _ b hb ξ hJ hJ'
   have e2 := (val_corr hJ hcorr (𝟙 _)).trans (val_finProdGen _ _ _ _ _ hJ)
   have s1 : SV ϖ ξ (val (D'.toPre.psi x) (𝟙 _) ξ J') m :=
-    sv_gen hϖ ξ hm hJ' fun _ => hJc' _ (Over.w _)
+    sv_gen ξ hm hJ' fun _ => hJc' _ (Over.w _)
   have s2 := SV.prod hϖ Finset.univ fun i : Fin j =>
-    sv_gen hϖ ξ (hQ (pD.xe x i)) hJ fun _ => hJc _ (Over.w _)
+    sv_gen ξ (hQ (pD.xe x i)) hJ fun _ => hJc _ (Over.w _)
   have hx : D'.toPre.xK x = jK V ≫ (D'.toPre.c x).left := QForm.ptK_eq _ x
   have s3 : SV ϖ ξ (bw pD.w (D'.toPre.xK x) ξ (fun i => J (D'.toPre.xK x ≫ (pD.pw.pr i).left))
       (J' (D'.toPre.xK x))) 0 := by

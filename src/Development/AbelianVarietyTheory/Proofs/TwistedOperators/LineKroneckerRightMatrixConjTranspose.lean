@@ -98,7 +98,7 @@ theorem exists_orth {V H : Type*} [AddCommGroup V] [Module ℂ V] [NormedAddComm
   exact Submodule.inner_right_of_mem_orthogonal (Submodule.mem_map_of_mem hv) ho
 
 instance finite_homog {σ : Type} [Finite σ] (d : ℕ) : FiniteDimensional ℂ (homog σ d) :=
-  Submodule.finiteDimensional_of_le (S₂ := restrictTotalDegree σ ℂ d) fun P hP =>
+  Submodule.finiteDimensional_of_le (S₂ := restrictTotalDegree σ ℂ d) fun _ hP =>
     (mem_restrictTotalDegree _ _ _).2 (IsHomogeneous.totalDegree_le hP)
 
 section Parts

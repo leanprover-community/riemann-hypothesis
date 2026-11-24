@@ -122,7 +122,7 @@ theorem red_norm_sq_le (b : Fin d → E) (hr : IsRed b) (m D : ℝ) (hm0 : 0 < m
       Fintype.card_fin] at this
     exact this
   have hdet : ‖gs b i‖ ^ 2 * ∏ j ∈ univ.erase i, ‖gs b j‖ ^ 2 ≤ D := by
-    rw [Finset.mul_prod_erase univ (fun j => ‖gs b j‖ ^ 2) (mem_univ i), ← det_gram_eq b hb]
+    rw [Finset.mul_prod_erase univ (fun j => ‖gs b j‖ ^ 2) (mem_univ i), ← det_gram_eq b]
     exact hD
   have hGi : ‖gs b i‖ ^ 2 * L ^ (d - 1) ≤ D :=
     le_trans (mul_le_mul_of_nonneg_left hprod (sq_nonneg _)) hdet

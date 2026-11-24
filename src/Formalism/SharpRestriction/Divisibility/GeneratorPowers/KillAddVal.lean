@@ -103,7 +103,7 @@ theorem single_add_single_at (a b x : Fin 1 × Fin N) :
     (Finsupp.single a 1 + Finsupp.single b 1 : Fin 1 × Fin N →₀ ℕ) x = (if a = x then 1 else 0) + (if b = x then 1 else 0) := by
   simp [Finsupp.single_apply]
 
-theorem quad_form (q : MvPowerSeries (Fin 1 × Fin N) S) (hq0 : constantCoeff q = 0)
+theorem quad_form (q : MvPowerSeries (Fin 1 × Fin N) S)
     (hq2 : ∀ m, coeff m q ≠ 0 → m.degree = 2) :
     q = ∑ i, ∑ j, C (qβ q i j) * X ((0 : Fin 1), i) * X ((0 : Fin 1), j) := by
   classical
@@ -209,7 +209,7 @@ theorem killAddVal_of (hPsi : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
     · exact absurd rfl h
   let ren : Fin n → MvPowerSeries (Fin 1 × Fin (dL Dw)) S →ₐ[S] MvPowerSeries (Fin n × Fin (dL Dw)) S :=
     fun b => MvPowerSeries.rename (fun p : Fin 1 × Fin (dL Dw) => ((b, p.2) : Fin n × Fin (dL Dw)))
-  have hq_form := KAVal.quad_form q hq0 hq2
+  have hq_form := KAVal.quad_form q hq2
   have hren_q : ∀ b, ren b q = ∑ i, ∑ j, MvPowerSeries.C (β i j) * MvPowerSeries.X (b, i) * MvPowerSeries.X (b, j) := by
     intro b
     conv_lhs => rw [hq_form]

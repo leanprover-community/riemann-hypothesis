@@ -311,7 +311,7 @@ theorem cmpt_lowK_add_rho {ε : Fin n → Bool} (he : ∀ a b, ε a = ε b) (lam
   ring
 
 theorem isDS_compact {ε : Fin n → Bool} {lam : Fin n → ℝ} (hpq : pOf ε = 0 ∨ qOf ε = 0)
-    (hlam : S7.IsHCParam lam) (T : S7.KType ε (lowK ε lam)) :
+    (T : S7.KType ε (lowK ε lam)) :
     ∃ σ : Matrix (Fin n) (Fin n) ℂ → (T.V →L[ℂ] T.V), Formalism.MainNotions.S.IsDS ε lam σ ∧ CasOnSmooth ε lam σ ∧
       ∀ k : S7.KG ε, σ (S7.toMK k) = T.op k := by
   have he := cmpt_eps_eq hpq

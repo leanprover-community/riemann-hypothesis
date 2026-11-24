@@ -808,7 +808,7 @@ theorem dual_congr {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommG
     [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] {H : HermSpace K V} {r : ℕ} (N : NF H r)
     (𝔫 : Ideal (𝓞 K)) (hn : ∀ x ∈ 𝔫, ∃ y ∈ 𝔫, (y : K) = star (x : K)) (τ : 𝓞 K) (s : V ≃ₗ[K] V)
     (hF : ∀ x y, H.B (s x) (s y) = H.B x y) (Q : Submodule (𝓞 K) V)
-    (hQ : ∀ b : Fin r, ∀ t ∈ N.aa b, s.symm (t • N.F.e b.castSucc) ∈ Q) (hzQ : N.F.z ∈ Q)
+    (hQ : ∀ b : Fin r, ∀ t ∈ N.aa b, s.symm (t • N.F.e b.castSucc) ∈ Q)
     (hc1 : ∀ x ∈ Q, s x - x ∈ 𝔫 • N.P0) (h' : V) (hh' : h' ∈ 𝔫 • N.P0)
     (eh : (N.T : K) • h' = s N.F.z - N.F.z) (x : V) (hx : x ∈ Pst N) (hx' : x ∈ N.Ist) :
     trans H (s N.F.z - N.F.z) N.F.z N.T τ (qI N (s x)) - x ∈ 𝔫 • N.P0 := by
@@ -914,7 +914,7 @@ private theorem lift_congruence_lemma_6 {K V : Type} [Field K] [NumberField K] [
     unfold NF.Ist
     exact Submodule.smul_mem _ t (Submodule.subset_span ⟨a, ha, rfl⟩)
   rw [hs'I _ hxI]
-  exact dual_congr N 𝔫 hn τ s hF _ (symm_smul_e_castSucc_mem_P0_inf_of_unipotent N 𝔫 s hun hc) hzQ
+  exact dual_congr N 𝔫 hn τ s hF _ (symm_smul_e_castSucc_mem_P0_inf_of_unipotent N 𝔫 s hun hc)
     (sub_mem_smul_P0_of_congr_T_mul N 𝔫 s hc) h' hh' eh _ (mem_Pst N a ha ht) hxI
 
 private theorem sub_mem_smul_P0_of_eqOn_V0 {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V]

@@ -264,7 +264,7 @@ theorem update_id_apply {N : ι → Type} [∀ σ, AddCommGroup (N σ)] [∀ σ,
 theorem lift_sliceML_map_update (ψ : ∀ σ, Module.Dual ℂ (M σ)) (τ : ι) (f : M τ →ₗ[ℂ] M τ)
     (y : PiTensorProduct ℂ M) :
     PiTensorProduct.lift (sliceML ψ τ)
-        (PiTensorProduct.map (Function.update (fun σ => LinearMap.id) τ f) y) =
+        (PiTensorProduct.map (Function.update (fun _ => LinearMap.id) τ f) y) =
       f (PiTensorProduct.lift (sliceML ψ τ) y) := by
   induction y using PiTensorProduct.induction_on with
   | smul_tprod r t =>
@@ -288,7 +288,7 @@ variable {V W : ι → Type} [∀ τ, AddCommGroup (V τ)] [∀ τ, Module ℂ (
 theorem piTensorHomMap_map_update (y : PiTensorProduct ℂ (fun σ => V σ →ₗ[ℂ] W σ)) (τ : ι)
     (p : (V τ →ₗ[ℂ] V τ) × (W τ →ₗ[ℂ] W τ)) :
     PiTensorProduct.piTensorHomMap
-        (PiTensorProduct.map (Function.update (fun σ => LinearMap.id) τ (commDefect p)) y) =
+        (PiTensorProduct.map (Function.update (fun _ => LinearMap.id) τ (commDefect p)) y) =
       PiTensorProduct.piTensorHomMap y ∘ₗ
           PiTensorProduct.map (Function.update (fun σ => (LinearMap.id : V σ →ₗ[ℂ] V σ)) τ p.1) -
         PiTensorProduct.map (Function.update (fun σ => (LinearMap.id : W σ →ₗ[ℂ] W σ)) τ p.2) ∘ₗ

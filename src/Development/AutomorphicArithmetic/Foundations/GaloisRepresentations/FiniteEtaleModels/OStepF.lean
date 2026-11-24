@@ -81,7 +81,7 @@ variable {p : ℕ} [Fact p.Prime] {D : Datum p} {R : Type} [CommRing R]
 def forgetMap {b : Base D R} {N' : ℕ} {S S' : Scheme.{0}} {s : S ⟶ Sp R} {s' : S' ⟶ Sp R} {o' : Obj b N' s'}
     {o : Obj b N' s} {f : S' ⟶ S} (m : ObjMap o' o f) (N : ℕ) (hd : N ∣ N') (hc : N'.Coprime p) :
     ObjMap (o'.forget N hd hc) (o.forget N hd hc) f :=
-  ⟨m.φ, m.φ₂, m.cart, m.sq, m.act, m.pol, fun y => m.eta _⟩
+  ⟨m.φ, m.φ₂, m.cart, m.sq, m.act, m.pol, fun _ => m.eta _⟩
 
 end GlobalTheory.UPel.HT.EtLev.LevForget
 end -- clump:auto

@@ -1071,8 +1071,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.DYhc4.main :
-    ∀ {K A : Type} [inst : Field K] [inst_1 : CommRing A] [inst_2 : Algebra K A] [Algebra.FiniteType K A] (σ : K →+* ℂ)
-      (p : Ideal A) [hp : p.IsPrime] {b : A},
+    ∀ {K A : Type} [Field K] [CommRing A] [Algebra K A] [Algebra.FiniteType K A] (σ : K →+* ℂ)
+      (p : Ideal A) [p.IsPrime] {b : A},
       b ∉ p →
         ∃ (ψ : A →+* ℂ), ψ.comp (Algebra.algebraMap K A) = σ ∧ (∀ a ∈ p, (ψ : A → ℂ) a = (0 : ℂ)) ∧ (ψ : A → ℂ) b ≠ (0 : ℂ) := by
   intro K A _ _ _ _ σ p hp b hb
@@ -1323,7 +1323,7 @@ theorem spec_centre {V : X.Opens} (hV : IsAffineOpen V) (χ : Γ(X, V) →+* ℂ
   obtain ⟨t, h1, h2⟩ := hV.exists_basicOpen_le (V := ⟨U, hU⟩) ⟨_, hc⟩ (centre_mem hV χ)
   exact h1 (h t ((centre_mem_basicOpen hV χ t).1 h2))
 
-theorem gen_mem_basicOpen (hξ : IsCptGen ξ) {V : X.Opens} (h : genPt ξ ∈ V) (t : Γ(X, V)) :
+theorem gen_mem_basicOpen {V : X.Opens} (h : genPt ξ ∈ V) (t : Γ(X, V)) :
     genPt ξ ∈ X.basicOpen t ↔ (Scheme.stalkClosedPointTo ξ).hom (X.presheaf.germ V (genPt ξ) h t) ≠ 0 := by
   rw [X.mem_basicOpen t _ h]
   exact ⟨fun hu => (hu.map _).ne_zero, fun h0 => (Scheme.isLocalHom_stalkClosedPointTo' ξ).map_nonunit _ h0.isUnit⟩
@@ -1383,13 +1383,13 @@ theorem PositivityTheory.Xgn.exists_holomorphic_disc_avoiding_pole : ∀ (K : Ty
   have fab : f * φ a = φ b := by
     rw [← hφ, ← hφ, ← hab, map_mul, ← _root_.mul_assoc, hfw, _root_.one_mul]
   have a0 : φ a ≠ 0 := fun h0 => (hub.map (genMap ξ x)).ne_zero (by rw [hφ, ← fab, h0, mul_zero])
-  have h0 : φ h ≠ 0 := (gen_mem_basicOpen hξ hg h).1 h2
+  have h0 : φ h ≠ 0 := (gen_mem_basicOpen hg h).1 h2
   obtain ⟨ψ, C, b₁, b₂, b₃, b₄⟩ := disc_ring (S := X.presheaf.stalk x.1) (hV.primeIdealOf ⟨x.1, hx⟩).asIdeal σ
     (c := h * a) (a := a) (b := b.1)
     (fun h' => mul_ne_zero h0 a0 (by rw [← hφ, ← hφ, ← map_mul, ← map_mul, h', map_zero]))
     ((IsLocalization.AtPrime.to_map_mem_maximal_iff (X.presheaf.stalk x.1) _ a).1 (hab ▸ Ideal.mul_mem_right _ _ hw)) b.2
   have sp : ∀ z, genPt ξ ⤳ centre (spMap (ψ z) ≫ hV.fromSpec) := fun z => spec_centre hV _ fun t ht =>
-    (gen_mem_basicOpen hξ hg t).2 fun h' => ht (b₃ z t (hξ.inj x ((hφ t).trans (h'.trans (map_zero _).symm))))
+    (gen_mem_basicOpen hg t).2 fun h' => ht (b₃ z t (hξ.inj x ((hφ t).trans (h'.trans (map_zero _).symm))))
   refine ⟨V, hV, ψ, fun z => ψ z b / ψ z a, C, hVN, b₁, fun z hz => ⟨(over_iff s hV σ _).2 (b₂ z hz), sp z⟩,
     fun z hz => ?_⟩
   obtain ⟨c₁, c₂, c₃⟩ := b₄ z hz
@@ -1669,7 +1669,7 @@ theorem unitAt_div {p : Cpt ξ} {a b : Ω} (ha : unitAt ξ p a) (hb : unitAt ξ 
 
 theorem unitAt_of_forms (hz : genPt ξ ⤳ centre z) (hw : CoordsAt ξ y z w) (c : ∀ k, J k)
     (hc : ∀ k, IsUnit (w ⟨k, c k⟩)) {d : K → ℕ} {G Hf : MRing J} (hG : IsMultiHomog G d) (hH : IsMultiHomog Hf d)
-    {ε : Ω} (hHy : aeval y Hf ≠ 0) (hGy : aeval y G = ε * aeval y Hf) (hGw : aeval w G ≠ 0) (hHw : aeval w Hf ≠ 0) :
+    {ε : Ω} (hGy : aeval y G = ε * aeval y Hf) (hGw : aeval w G ≠ 0) (hHw : aeval w Hf ≠ 0) :
     unitAt ξ ⟨centre z, hz⟩ ε := by
   have hy : ∀ k, y ⟨k, c k⟩ ≠ 0 := fun k => (hw.2 k (c k) (hc k)).1
   have hw0 : ∀ k, w ⟨k, c k⟩ ≠ 0 := fun k => (hc k).ne_zero
@@ -1753,7 +1753,7 @@ theorem GlobalTheory.CompanionTheory.RootForm.exists_form : ∀ (E : Type) [Fiel
       rw [ya, ← Or.y_eq]
       exact Lat.block_ratio_mem hch' Or.k₀ (Or.ix j)
   have heff := (Or.eff ⟨GlobalTheory.CompanionTheory.Ar.centre z, hz⟩ (fun r hr => GlobalTheory.CompanionTheory.Ar.Small.RepAt.not_inFibre hz hr) _ _ hchi ht).2
-  have hu := unitAt_of_forms hz hco cc hcc hG hH hHy hGy hGw hHw
+  have hu := unitAt_of_forms hz hco cc hcc hG hH hGy hGw hHw
   exact (Or.interior x z hco).1 (not_not.1 fun h => heff h hu)
 end -- clump:auto
 end -- clump:auto

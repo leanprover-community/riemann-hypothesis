@@ -127,7 +127,7 @@ private theorem clFin_key {Γ Ga Gp : Type} [Group Γ] [Group Ga] [Group Gp] (X 
     have := congrFun (congrFun (congrFun (hU u⁻¹ (inv_mem hu)) i) (x * (1, r) * ((u : Ga), 1))) k
     rw [← this]
     change ((τ u⁻¹).val *ᵥ fun j => F j (x * (1, r) * ((u : Ga), 1) * (((u⁻¹ : X.Ub) : Ga), 1)) k) i = _
-    simp [mulVec, dotProduct, mul_assoc, ← Prod.one_eq_mk]
+    simp [mulVec, dotProduct, mul_assoc]
   have e4 : ((W.ξ (X.glob γ * (x * (1, r) * ((u : Ga), 1) * (1, e'⁻¹))).2)⁻¹).val * (W.ξ (X.glob γ).2).val
       = (W.ξ e').val * ((W.ξ (x * (1, r)).2)⁻¹).val := by
     rw [← Units.val_mul, ← Units.val_mul]

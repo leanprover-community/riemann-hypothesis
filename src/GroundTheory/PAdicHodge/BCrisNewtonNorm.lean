@@ -1073,7 +1073,7 @@ theorem convergesAt_coeffB_mul (hρ0 : 0 < ρ) (hρ1 : ρ < 1) (hb : ConvergesAt
   push_cast
   rw [neg_add, zpow_add₀ hρ0.ne']; ring
 
-theorem gaussNorm_single_zero_one_le {ρ : ℝ} (hρ0 : 0 < ρ) : gaussNorm (Pi.single 0 (1 : L)) ρ ≤ 1 := by
+theorem gaussNorm_single_zero_one_le {ρ : ℝ} : gaussNorm (Pi.single 0 (1 : L)) ρ ≤ 1 := by
   refine gaussNorm_le fun n => ?_
   rw [Pi.single_apply]
   split_ifs with h
@@ -1355,7 +1355,7 @@ theorem gn_pow (hρ0 : 0 < ρ) (hρ1 : ρ < 1) (z : 𝔸) (n : ℕ) : gn K p ρ 
     unfold gn
     rw [map_one, ← map_one (algebraMap (WittVector p K♭) (teichLift K p).B),
       TeichLift.coeffB_algebraMap, TeichLift.zcoeff_one]
-    refine le_antisymm (TeichLift.gaussNorm_single_zero_one_le (L := K♭) hρ0) ?_
+    refine le_antisymm (TeichLift.gaussNorm_single_zero_one_le (L := K♭)) ?_
     have := (TeichLift.convergesAt_pi_single (0 : ℤ) (1 : K♭) ρ).le_gaussNorm 0
     simpa using this
   | succ n ih => rw [pow_succ, gn_mul hρ0 hρ1, ih, pow_succ]

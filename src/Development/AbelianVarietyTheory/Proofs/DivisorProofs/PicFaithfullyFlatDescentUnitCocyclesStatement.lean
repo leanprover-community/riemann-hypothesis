@@ -340,7 +340,7 @@ theorem isUnit_descMod [Module.FaithfullyFlat A B] {u : (B ⊗[A] B)ˣ} (hu : UC
   IsUnit.of_mul_eq_one _ (descMod_mul_inv hu)
 
 theorem descMod_mul [Module.FaithfullyFlat A B] {u v : (B ⊗[A] B)ˣ} (hu : UCoc A B u)
-    (hv : UCoc A B v) : descMod A B (u * v) = descMod A B u * descMod A B v := by
+    : descMod A B (u * v) = descMod A B u * descMod A B v := by
   refine le_antisymm ?_ (descMod_mul_le u v)
   calc descMod A B (u * v) = descMod A B (u * v) * (descMod A B u * descMod A B u⁻¹) := by
         rw [descMod_mul_inv hu, mul_one]
@@ -445,7 +445,7 @@ theorem GlobalTheory.pic_cech_descent : ∀ (A : Type) [CommRing A], ∃ δ : �
     dsimp only
     rw [δ_eq hu, δ_eq hv, δ_eq huv, ← map_mul]
     congr 1
-    exact Units.ext (descMod_mul hu hv)
+    exact Units.ext (descMod_mul hu)
   · intro u hu
     dsimp only
     rw [δ_eq hu, ← MonoidHom.mem_ker, Submodule.ker_unitsToPic, ← descMod_eq_span_iff hu]

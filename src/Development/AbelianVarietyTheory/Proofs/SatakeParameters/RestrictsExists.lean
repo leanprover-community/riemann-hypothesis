@@ -91,7 +91,7 @@ theorem res_mem_Weil (h : IsPlaceOver A v) (h' : IsPlaceOver A v') (σ : Weil h'
 def resW (h : IsPlaceOver A v) (h' : IsPlaceOver A v') : Weil h' →* Weil h where
   toFun σ := ⟨AlgEquiv.restrictScalarsHom K (σ : G L Ω), res_mem_Weil h h' σ⟩
   map_one' := Subtype.ext (map_one _)
-  map_mul' σ τ := Subtype.ext (map_mul _ _ _)
+  map_mul' _ _ := Subtype.ext (map_mul _ _ _)
 
 def resI : Ine (F := L) A →* Ine (F := K) A :=
   ((AlgEquiv.restrictScalarsHom K).comp (Ine (F := L) A).subtype).codRestrict (Ine (F := K) A)

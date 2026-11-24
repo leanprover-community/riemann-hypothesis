@@ -55,6 +55,6 @@ import Mathlib.Topology.Sheaves.Init
 namespace PositivityTheory.Rg.Sw.LC
 
 theorem coreLC_of (hF : PositivityTheory.Rg.Sw.FFT) : CoreLC :=
-  Core.coreLC_of' bicomm (equivLift_of hF semiFam dens symKComm invOp formFacts) repB formFacts
+  Core.coreLC_of' bicomm (equivLift_of hF dens symKComm invOp formFacts) repB formFacts
 
 end PositivityTheory.Rg.Sw.LC

@@ -165,7 +165,7 @@ structure LocB (D : Formalism.BasicNotions.D7) {r j p : ℕ} (L : ModuliIntegral
   dimB : L.Pt L.Xm → ℕ
   dimB_add : ∀ y, dimB y + L.dP y = D.R.f * r
 
-  FB : ∀ (y : L.Pt L.Xm) (nW n : ℕ), (Fin nW → chX y) → Type
+  FB : ∀ (y : L.Pt L.Xm) (nW _ : ℕ), (Fin nW → chX y) → Type
   [fbAdd : ∀ y nW n χ, AddCommGroup (FB y nW n χ)]
   [fbMod : ∀ y nW n χ, Module (L.fld y).C (FB y nW n χ)]
 

@@ -613,7 +613,7 @@ theorem exists_lift_lam : ∀ (R R₀ : Type) [CommRing R] [IsLocalRing R] [IsNo
       have hcf : (crysRedMor κ rfl Y₀).Corr f y := shift d f y (by rw [← hfj, add_sub_cancel_left]; exact hj) hc
       exact (hAdm y).2 ⟨crysToDR κ h' f, hf, (corr_crysToDR_iff rfl h' bij.2 f y).2 hcf⟩
 
-  obtain ⟨A, _, i, h, hA, hgA, hEq⟩ := GlobalTheory.RMDeform.exists_lift_abelian GD ADR κ hκ π hπ rfl h' hA' hg E ⟨N', hEN⟩ hFE
+  obtain ⟨A, _, i, h, hA, hgA, hEq⟩ := GlobalTheory.RMDeform.exists_lift_abelian GD κ hκ π hπ rfl h' hA' hg E ⟨N', hEN⟩ hFE
   obtain ⟨l, l₁, l₂⟩ := exists_prod_pullback h h
   obtain ⟨Q, hQ, -, -, a₁, a₂, eQ⟩ := GlobalTheory.BirigidLift.exists_lift GD ADR ADC hκ hπ rfl hA hgA hA hgA h h l₁ l₂
     hL₀ hamp hL₀ hamp hΛ.isLB hΛ.zero_left hΛ.zero_right hφ₀ (by rw [hEq]; exact hEiso)

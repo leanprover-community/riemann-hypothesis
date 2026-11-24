@@ -130,9 +130,9 @@ theorem nondegOn_orth {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm) (hnd : 
     exact hx' u hu
   rw [← hs.eq u x, h1, map_zero]
 
-theorem integral_of_fib (hF : IsFixF K F) {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm) (hnd : Nondeg h)
-    {U : Submodule K V} (hUc : IsCompl U (orthK h U)) {M T : Submodule (𝓞 K) V} (hM : IsLatIn U M)
-    (hT : IsLatIn (orthK h U) T) (hfib : ∀ 𝔭 : Ideal (𝓞 F), 𝔭.IsMaximal → fibP h U 𝔭 M T ≠ 0) :
+theorem integral_of_fib {h : V →ₗ⋆[K] V →ₗ[K] K}
+    {U : Submodule K V} {M T : Submodule (𝓞 K) V}
+    (hfib : ∀ 𝔭 : Ideal (𝓞 F), 𝔭.IsMaximal → fibP h U 𝔭 M T ≠ 0) :
     Formalism.HermitianLatticesTheory.IsIntegralLat h T := by
   intro x hx y hy
   rw [← Formalism.HermitianLattices.Ext.L3.LocF.iInf_locF (K := K) (F := F) (1 : Submodule (𝓞 K) K),
@@ -169,8 +169,8 @@ theorem genus_of_fib (h1 : JordanExists) (h2 : JordanInv) (h6 : GlueLoc) (hI : I
   have hfib₀ : ∀ 𝔮 : Ideal (𝓞 F), 𝔮.IsMaximal →
       fibP h U 𝔮 M (Λ₀ ⊓ (orthK h U).restrictScalars (𝓞 K)) ≠ 0 := fun 𝔮 h𝔮 =>
     fibP_ne_zero_of_genus hF hs hnd hUc hM hΛ₀ hrefl h𝔮
-  have hint := integral_of_fib hF hs hnd hUc hM hT hfib
-  have hint₀ := integral_of_fib hF hs hnd hUc hM hT₀ hfib₀
+  have hint := integral_of_fib hfib
+  have hint₀ := integral_of_fib hfib₀
   have hnd' := nondegOn_orth hs hnd hUc
   obtain ⟨b, a, hb⟩ := (h1 K F V hK hF h hs).1 (orthK h U) _ hnd' hT₀ hint₀ 𝔭 h𝔭
   obtain ⟨b', a', hb'⟩ := (h1 K F V hK hF h hs).1 (orthK h U) T hnd' hT hint 𝔭 h𝔭
@@ -467,7 +467,7 @@ end Line
 
 theorem exists_norm_congr_pow {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {c : 𝓞 F} (hc : c ∉ 𝔭) {k : ℕ}
     (hk : 1 ≤ k) : ∃ α : 𝓞 K, conjO K α * α - ι c ∈ extP K 𝔭 ^ k := by
-  obtain ⟨P, hP, rfl⟩ := exists_maximal_over hK hF h𝔭
+  obtain ⟨P, hP, rfl⟩ := exists_maximal_over h𝔭
   have hcP : ι c ∉ P := fun h => hc (Ideal.mem_comap.2 h)
   have hN := IdealNormInequalities.one_lt_absNorm hP
   obtain ⟨h1, h2⟩ := localDensity K hK P hP 1 k le_rfl hk (ι c) (idealPowerSpanBounds.conjO_map hF c) hcP
@@ -647,7 +647,7 @@ theorem exactAt_locRing (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF
     intro hc
     have hu' := hr
     rw [hcs] at hu'
-    have h1 := (WA.isUnitIn_div_iff hPp (ι c) (U0.mem_hcompl_of_notMem hF hPp hs₀)).1 hu'
+    have h1 := (WA.isUnitIn_div_iff hPp (ι c) (U0.mem_hcompl_of_notMem hF hs₀)).1 hu'
     exact ((WA.mem_hcompl_iff hPp _).1 h1).1 hc
   have hcs𝔭 : c * s ∉ 𝔭 := fun hm => (hp.mem_or_mem hm).elim hc₀ hs₀
   have hD0 : κ (ι d₀) ≠ 0 := _root_.Formalism.HermitianLattices.Ext.L3.HU.jι_ne_zero (notMem_zero hd₀)
@@ -675,7 +675,7 @@ theorem exactAt_locRing (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF
     obtain ⟨g, hg⟩ := (Submodule.mem_span_range_iff_exists_fun (𝓞 K)).1 hty
     have ht0 : κ (ι t) ≠ 0 := _root_.Formalism.HermitianLattices.Ext.L3.HU.jι_ne_zero (notMem_zero ht)
     refine ⟨fun i => κ (g i * ι (d i)) / κ (ι t),
-      fun i => U0.div_mem_locRing hPp _ (U0.mem_hcompl_of_notMem hF hPp ht), ?_⟩
+      fun i => U0.div_mem_locRing hPp _ (U0.mem_hcompl_of_notMem hF ht), ?_⟩
     have e1 : y = (κ (ι t))⁻¹ • (ι t • y) := by
       rw [← algebraMap_smul K (ι t) y, smul_smul, inv_mul_cancel₀ ht0, one_smul]
     rw [e1, ← hg, Finset.smul_sum]
@@ -749,7 +749,7 @@ theorem exactAt_locRing (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF
   obtain ⟨y, hyL, hyy, -⟩ := hv 1 le_rfl x hxL hε
   obtain ⟨g, hg, rfl⟩ := hmemS y hyL
   have hinv : (κ (ι d₀))⁻¹ ∈ locRing P := by
-    have := U0.div_mem_locRing hPp 1 (U0.mem_hcompl_of_notMem hF hPp hd₀)
+    have := U0.div_mem_locRing hPp 1 (U0.mem_hcompl_of_notMem hF hd₀)
     rwa [map_one, one_div] at this
   refine ⟨(κ (ι d₀))⁻¹ • ∑ i, g i • b i, ⟨fun i => (κ (ι d₀))⁻¹ * g i,
     fun i => (locRing P).mul_mem hinv (hg i), by rw [Finset.smul_sum]; simp only [smul_smul]⟩, ?_⟩
@@ -1579,9 +1579,9 @@ namespace Formalism.L2.SG.Pf.G3
 open Formalism.HermitianLattices.Ext.L3 Formalism.HermitianLattices.Ext.L3.U0 Formalism.HermitianLattices.Ext.L3.WA
 
 theorem jordanIsom_of (hE : ExactVec) (hR : Rebase) (hL : LocSpan) (hU : UnifVal)
-    (hJ : JordSpan) : Formalism.L2.SG.Pf.Cnt.JordanIsom := by
+    : Formalism.L2.SG.Pf.Cnt.JordanIsom := by
   intro K F V _ _ _ _ _ _ _ _ _ _ _ hK hF h hs hd L L' hLl hLl' 𝔭 h𝔭 b a b' a' hb hb' hv
-  obtain ⟨P, hP, rfl⟩ := exists_maximal_over hK hF h𝔭
+  obtain ⟨P, hP, rfl⟩ := exists_maximal_over h𝔭
   obtain ⟨π, hπ, hval⟩ := hU K F hK hF P hP
   have hda := LocF.aniso_of_totPosDef hd
   obtain ⟨-, hbL, hbo, hbn, hba⟩ := hb
@@ -1611,7 +1611,7 @@ theorem jordanIsom_of (hE : ExactVec) (hR : Rebase) (hL : LocSpan) (hU : UnifVal
       rw [hsp, hsp']
       exact ⟨fun _ => Submodule.mem_top, fun _ => Submodule.mem_top⟩)
   refine ⟨g, hg, gmap_eq_of_iff fun v => ?_⟩
-  rw [← hbL, ← hbL', locF_eq_loc hK hF hP, locF_eq_loc hK hF hP, hL K F V hK hF P hP,
+  rw [← hbL, ← hbL', locF_eq_loc hF hP, locF_eq_loc hF hP, hL K F V hK hF P hP,
     hL K F V hK hF P hP]
   exact hgm v
 
@@ -1621,7 +1621,7 @@ namespace Formalism.L2.SG.Pf.Cnt
 
 theorem jordan_isometry_holds : JordanIsom :=
   Formalism.L2.SG.Pf.G3.jordanIsom_of Formalism.L2.SG.Pf.TemperedBoundGL3.exact_vector_holds Formalism.L2.SG.Pf.TemperedBoundGL3.rebasing_holds
-    Formalism.L2.SG.Pf.G3.local_span_holds Formalism.L2.SG.Pf.TemperedBoundGL3.uniformizer_valuation_holds Formalism.L2.SG.Pf.G3.jordan_span_holds
+    Formalism.L2.SG.Pf.G3.local_span_holds Formalism.L2.SG.Pf.TemperedBoundGL3.uniformizer_valuation_holds
 
 end Formalism.L2.SG.Pf.Cnt
 end -- clump:auto

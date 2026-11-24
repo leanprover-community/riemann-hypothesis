@@ -88,7 +88,7 @@ theorem tailEnergyStep {e : ℕ} {X : Type} [TopologicalSpace X] [CompactSpace X
   have hvc : Continuous v := projLine_continuous_of_smooth A hv
   have hvpot := isPotential_ofFun A v hv
   have hadd := mIntAdd A P (LocPot.ofFun v) Φ hP hvpot hΦ (logNormSec L s)
-    (hI _ (cons_pot A _ P Φ hP hΦ)) (hI _ (cons_pot A _ _ Φ hvpot hΦ))
+    (hI _ (cons_pot _ P Φ hP hΦ)) (hI _ (cons_pot _ _ Φ hvpot hΦ))
   have hpl := poincareLelong A L s m W B hL hs hsnc hB v hv Φ hΦ
   have hW : ∀ k, -(M + 1) * mInt (B k) (fun i => (Φ i).pullback Subtype.val continuous_subtype_val)
       (fun _ => 1) ≤ mInt (B k) (fun i => (Φ i).pullback Subtype.val continuous_subtype_val)
@@ -105,13 +105,13 @@ theorem tailEnergyStep {e : ℕ} {X : Type} [TopologicalSpace X] [CompactSpace X
   have hCLi : mInt A (Fin.cons L Φ) v ≤ C * ((M + 1) * mInt A (Fin.cons P Φ) (fun _ => 1)) := by
     have hPC := isPotentialRsmul A C P hP
     have ha := mIntAdd A (P.rsmul C) L Φ hPC hL hΦ v
-      (mIntegrableCont A _ (cons_pot A _ _ Φ hPC hΦ) v hvc)
-      (mIntegrableCont A _ (cons_pot A _ _ Φ hL hΦ) v hvc)
+      (mIntegrableCont A _ (cons_pot _ _ Φ hPC hΦ) v hvc)
+      (mIntegrableCont A _ (cons_pot _ _ Φ hL hΦ) v hvc)
     have hr := mIntRsmul A C P Φ hP hΦ v
     have hn := mInt_nonpos A (Fin.cons (P.rsmul C + L) Φ)
-      (cons_pot A _ _ Φ (isPotentialAdd A _ _ hPC hL) hΦ) (cons_pot A _ _ Φ hCL hΦp) v hvc
+      (cons_pot _ _ Φ (isPotentialAdd A _ _ hPC hL) hΦ) (cons_pot _ _ Φ hCL hΦp) v
       (fun y => (hvb y).2)
-    have hlo := mInt_lower A (Fin.cons P Φ) (cons_pot A _ _ Φ hP hΦ) (cons_pot A _ _ Φ hPp hΦp)
+    have hlo := mInt_lower A (Fin.cons P Φ) (cons_pot _ _ Φ hP hΦ) (cons_pot _ _ Φ hPp hΦp)
       v hvc (M + 1) (fun y => by linarith [(hvb y).1])
     rw [ha, hr] at hn
     have := mul_le_mul_of_nonneg_left hlo hC

@@ -159,7 +159,7 @@ theorem rhoAtG_of_pair (D : Formalism.BasicNotions.D7) {p n' : ℕ} {W Qq O Kf :
   obtain ⟨xb, -⟩ := Formalism.L2.G.Model.hlSpans p n' W Qq O Kf ι σ j w h m (flW (m := m) d) hfd e.tgt he.2.1
   have : Module.Finite Kf (Vsp Kf (flW (m := m) d)) := Module.Finite.of_basis xb
   let mulR : Vsp Kf rest → (Vsp Kf (flW (m := m) d) →ₗ[Kf] Vsp Kf lam) := fun β =>
-    (LinearMap.mulRight Kf (β : MvPolynomial (Fin n' × (Fin (m + 1) × Fin (m + 1))) Kf)).restrict (fun x hx => V_mul Kf hlam hfd hdr hx β.2)
+    (LinearMap.mulRight Kf (β : MvPolynomial (Fin n' × (Fin (m + 1) × Fin (m + 1))) Kf)).restrict (fun x hx => V_mul Kf hlam hx β.2)
   have hmulR : ∀ β y, ((mulR β y : Vsp Kf lam) : MvPolynomial (Fin n' × (Fin (m + 1) × Fin (m + 1))) Kf) = (y : MvPolynomial (Fin n' × (Fin (m + 1) × Fin (m + 1))) Kf) * (β : MvPolynomial (Fin n' × (Fin (m + 1) × Fin (m + 1))) Kf) := fun β y => rfl
   let Λ : Vsp Kf rest → (Module.Dual Kf (Vsp Kf (flW (m := m) d)) →ₗ[Kf] Module.Dual Kf (Vsp Kf lam)) := fun β =>
     ((p : Kf) ^ κ0) • (Ψ0.symm.toLinearMap ∘ₗ mulR β ∘ₗ Ψf.toLinearMap)
@@ -348,7 +348,7 @@ theorem cloudBStep_of_rho (D : Formalism.BasicNotions.D7) (C CK CLa : ℝ) (hR :
     obtain ⟨z, hz, hze⟩ := mem_scale.1 h2
     rw [← hze]
     simpa using hz
-  refine cloudBAt_of_rho hSet.1 Formalism.L2.G.Model.bePerfect r TT lam0 hdom c0 _ _ e he FsB Θ ?_
+  refine cloudBAt_of_rho hSet.1 r TT lam0 c0 _ _ e FsB Θ ?_
     (hR p W Qq O Kf ι σ j w n' m r TT L₁ L₂ de h x lam0 aT bT a Y cpp c0 Dp cStar hSet H φ hφ e he htgt hm g hhm hg hbasis
       Θ hΘ)
   intro b s u hs hu

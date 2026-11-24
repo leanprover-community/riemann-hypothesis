@@ -265,7 +265,7 @@ private theorem muMin_sup_le_muMin_of_orthogonal {R : Type u} {V : Type v} {E : 
   rw [e]
   linarith
 
-theorem hnSum_of (h1 : DegSupermod.{u, v, w}) (h2 : MuChar.{u, v, w}) (h3 : SatBasic.{u, v, w}) :
+theorem hnSum_of (h1 : DegSupermod.{u, v, w}) (h2 : MuChar.{u, v, w}) :
     HNSum.{u, v, w, x} := by
   classical
   intro R V E _ _ _ _ _ _ ρ
@@ -329,7 +329,7 @@ theorem hnSum_of (h1 : DegSupermod.{u, v, w}) (h2 : MuChar.{u, v, w}) (h3 : SatB
           (min_le_left _ _) (min_le_right _ _)
 
 theorem polygon_slope_sum : HNSum :=
-  hnSum_of degree_supermodular slope_characterization saturation_basic_properties
+  hnSum_of degree_supermodular slope_characterization
 
 end Formalism.HN
 end -- clump:auto

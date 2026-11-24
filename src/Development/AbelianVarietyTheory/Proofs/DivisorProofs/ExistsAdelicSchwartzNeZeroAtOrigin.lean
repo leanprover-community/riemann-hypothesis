@@ -82,7 +82,7 @@ theorem isOpen_intPts (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype 
   isOpen_set_pi Set.finite_univ fun _ _ =>
     RestrictedProduct.isOpen_forall_mem
       (A := fun v : HeightOneSpectrum (𝓞 F) => (v.adicCompletionIntegers F : Set (v.adicCompletion F)))
-      (fun v => Valued.isOpen_valuationSubring _)
+      (fun _ => Valued.isOpen_valuationSubring _)
 
 theorem isCompact_intPts (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype κ] : IsCompact (intPts F κ) :=
   isCompact_univ_pi fun _ => GlobalTheory.AdeleCocompact.isCompact_integral F

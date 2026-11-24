@@ -111,11 +111,11 @@ theorem intAE_mul {z z' : Af D.host.F ⊗[D.host.F] D.host.E} (hz : z ∈ intAE 
 
 
 
-theorem idem_class (P : HeightOneSpectrum (𝓞 D.host.E)) (hP : ¬ Lev.IsConjPl (D := D) P P)
+theorem idem_class (P : HeightOneSpectrum (𝓞 D.host.E))
     (e₀ : AE D) (ι : D.host.E →ₐ[D.host.F] (belowPl P).adicCompletion D.host.F)
     (hs₀ : e₀ + cA D e₀ = phiE (belowPl P) 1)
     (hz : ∀ z : AE D, z * e₀ = e₀ * phiE (belowPl P) (compV (belowPl P) ι (finPart D z)))
-    (hκ : compV (belowPl P) ι (finPart D e₀) = 1) (he₀ : e₀ * e₀ = e₀) (hc₀ : e₀ * cA D e₀ = 0)
+    (he₀ : e₀ * e₀ = e₀) (hc₀ : e₀ * cA D e₀ = 0)
     (e : AE D) (h1 : e * e = e) (h2 : e * cA D e = 0) (h3 : e + cA D e = phiE (belowPl P) 1) :
     e = e₀ ∨ e = cA D e₀ := by
   have hκφ : compV (belowPl P) ι (finPart D (phiE (belowPl P) 1)) = 1 := compV_phiE (belowPl P) ι 1

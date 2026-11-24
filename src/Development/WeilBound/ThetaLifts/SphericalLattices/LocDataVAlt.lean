@@ -715,7 +715,7 @@ end GlobalTheory.InertPlace
 
 open GlobalTheory.InertPlace in
 theorem GlobalTheory.InertPlace.exists_hom_inert : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (v : Pl (F := F))
-    (w : HeightOneSpectrum (𝓞 E)) (hw : Formalism.UG.IsInertAt F E v w) (h : w.under (𝓞 F) = v)
+    (w : HeightOneSpectrum (𝓞 E)) (_ : Formalism.UG.IsInertAt F E v w) (h : w.under (𝓞 F) = v)
     (σL : w.adicCompletion E →+* w.adicCompletion E), IsConjAt σ h σL →
     ∀ {n : ℕ} (X : Spc F E n) (P : GL (Fin n) (w.adicCompletion E)) (δ : w.adicCompletion E),
       (P : Matrix (Fin n) (Fin n) (w.adicCompletion E))ᵀ * X.J.map (algebraMap E (w.adicCompletion E)) *

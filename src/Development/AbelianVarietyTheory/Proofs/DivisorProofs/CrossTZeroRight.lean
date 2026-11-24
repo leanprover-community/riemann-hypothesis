@@ -157,14 +157,14 @@ theorem crossVal_res (a b : ℕ) (s : ℤ) (h : -((a + b : ℕ) : ℤ) + k = s) 
   rw [Units.smul_def, Units.smul_def, Sec.res, map_zsmul, ← Sec.res, μ.nat, ev_res, ev_res, baseS_res, vertS_res]
 
 def crossT : Cochain (totChains R (twX E V)) K k :=
-  (evT_exists (crossVal V ℓ μ hk α z) (fun a b s h W U g y => crossVal_res V ℓ μ hk α z a b s h g y)).choose
+  (evT_exists (crossVal V ℓ μ hk α z) (fun a b s h _ _ g y => crossVal_res V ℓ μ hk α z a b s h g y)).choose
 
 theorem evT_crossT (a b : ℕ) (s : ℤ) (h : -((a + b : ℕ) : ℤ) + k = s) (U : Scheme.{0}) (y : BSx (twX E V) a b U) :
     evT (crossT V ℓ μ hk α z) a b s h U y =
       (m * (a : ℤ)).negOnePow • μ.mul U (-(a : ℤ) + n) (-(b : ℤ) + m) s (by push_cast at h; omega)
         (_root_.GlobalTheory.EtC.ev (R := R) α a _ rfl U (baseS V y))
         (_root_.GlobalTheory.EtC.ev (R := R) z b _ rfl U (vertS V ℓ y)) :=
-  (evT_exists (crossVal V ℓ μ hk α z) (fun a b s h W U g y => crossVal_res V ℓ μ hk α z a b s h g y)).choose_spec a b s h U y
+  (evT_exists (crossVal V ℓ μ hk α z) (fun a b s h _ _ g y => crossVal_res V ℓ μ hk α z a b s h g y)).choose_spec a b s h U y
 
 theorem evT_add {X : SimplicialObject Spc} {L : Cx R} {t : ℤ} (γ γ' : Cochain (totChains R X) L t) (a b : ℕ) (s : ℤ)
     (h : -((a + b : ℕ) : ℤ) + t = s) (U : Scheme.{0}) (y : BSx X a b U) :

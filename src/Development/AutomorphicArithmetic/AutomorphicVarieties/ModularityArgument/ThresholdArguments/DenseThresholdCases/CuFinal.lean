@@ -1335,7 +1335,7 @@ namespace AlgType
 variable {K Ω : Type} [Field K] [NumberField K] [Field Ω] [Algebra K Ω] [IsAlgClosure K Ω] {l : ℕ} [Fact l.Prime]
 end AlgType
 open AlgType in
-theorem algType_alt (hP : _root_.UpperTheory.V.Af.Hypotheses') : AlgType := by
+theorem algType_alt : AlgType := by
   intro K Ω _ _ _ _ _ l _ ι art Y a κ ha h1 h2 n j
   have H : Good art ι a κ := ⟨Y, h1, h2⟩
   have H1 : Good art ι (fun _ => 1) (cycBar K Ω l) := good_cyc ha ι
@@ -1374,7 +1374,7 @@ section -- clump:auto
     fun (l : ℕ) [Fact (Nat.Prime l)] ↦ PadicAlgCl l
 
 theorem UpperTheory.Reformulated.B.Qk14.norm_eq_one :
-    ∀ {l : ℕ} [inst : Fact (Nat.Prime l)] {x : UpperTheory.Reformulated.B.Qk14.Qbar l},
+    ∀ {l : ℕ} [Fact (Nat.Prime l)] {x : UpperTheory.Reformulated.B.Qk14.Qbar l},
       ‖x - (1 : UpperTheory.Reformulated.B.Qk14.Qbar l)‖ < (1 : ℝ) → ‖x‖ = (1 : ℝ) := by
   intro l _ x h
   have hne : ‖x - 1‖ ≠ ‖(1 : UpperTheory.Reformulated.B.Qk14.Qbar l)‖ := by
@@ -1814,7 +1814,7 @@ section
 open UpperTheory.V UpperTheory.V.Ws UpperTheory.V.Sd UpperTheory.V.GradeZeroInterpolatingElement
 namespace UpperTheory.V.Cu
 theorem main4_alt : _root_.UpperTheory.V.Cu.AutomorphyRankFourDense := _root_.UpperTheory.V.Cu.modularity_rank_four_of_promodularity_case_three (_root_.UpperTheory.V.Cu.promodularity_case_three_of_chain_reduction existsTensorSeedTower_holds (_root_.UpperTheory.V.Cu.chain_rank_four_of_red_a_y_coin_fib_y (redA_of redTanA) yCoin (fibY_of torusY)) chainDesc4 _root_.UpperTheory.V.Cu.chainIV_alt)
-theorem tauEx' : _root_.UpperTheory.V.Cu.TauExAlt := fun hP => _root_.UpperTheory.V.Cu2.tauEx' (_root_.UpperTheory.V.Cu2.kapEx_alt Cu2.twistIne (_root_.UpperTheory.V.Cu2.algType_alt hP)) Cu2.tauOf hP
+theorem tauEx' : _root_.UpperTheory.V.Cu.TauExAlt := fun hP => _root_.UpperTheory.V.Cu2.tauEx' (_root_.UpperTheory.V.Cu2.kapEx_alt Cu2.twistIne (_root_.UpperTheory.V.Cu2.algType_alt)) Cu2.tauOf hP
 end UpperTheory.V.Cu
 end
 end -- clump:auto

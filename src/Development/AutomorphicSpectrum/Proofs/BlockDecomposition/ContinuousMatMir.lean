@@ -93,7 +93,7 @@ theorem continuous_matMir (n : ℕ) :
   Units.continuous_val.comp continuous_subtype_val
 
 theorem continuous_rowQ (n : ℕ) : Continuous (rowQ k n) :=
-  continuous_pi fun j => (continuous_apply _).comp ((continuous_apply _).comp (continuous_matMir n))
+  continuous_pi fun _ => (continuous_apply _).comp ((continuous_apply _).comp (continuous_matMir n))
 
 theorem continuous_unipM (n : ℕ) :
     Continuous fun v : Fin (n + 1) → k => unipM k n (Multiplicative.ofAdd v) := by

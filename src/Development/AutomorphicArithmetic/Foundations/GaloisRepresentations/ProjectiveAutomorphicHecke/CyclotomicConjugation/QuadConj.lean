@@ -61,7 +61,7 @@ section -- clump:auto
 @[expose] public section
 
 @[reducible] noncomputable def UpperTheory.Reformulated.B.CMConjugationOfSqrtNeg.conjE :
-    (E : Type) → [inst : Field E] → [inst_1 : NumberField E] → [NumberField.IsCMField E] → E ≃+* E :=
+    (E : Type) → [Field E] → [NumberField E] → [NumberField.IsCMField E] → E ≃+* E :=
     fun (E : Type) [Field E] [NumberField E] [NumberField.IsCMField E] ↦ (NumberField.IsCMField.complexConj E).toRingEquiv
 
 private theorem UpperTheory.Reformulated.B.CMConjugationOfSqrtNeg.conj_eq_neg_of_sq {z : ℂ} {r : ℝ} (hr : 0 < r)
@@ -79,7 +79,7 @@ private theorem UpperTheory.Reformulated.B.CMConjugationOfSqrtNeg.conj_eq_neg_of
   apply Complex.ext <;> simp [h0]
 
 theorem UpperTheory.Reformulated.B.CMConjugationOfSqrtNeg.conj_alt_bis :
-    ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E] [inst_2 : NumberField.IsCMField E] {d : ℕ} {x : E},
+    ∀ {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E] {d : ℕ} {x : E},
       (0 : ℕ) < d → x ^ (2 : ℕ) = -(↑d : E) → (UpperTheory.Reformulated.B.CMConjugationOfSqrtNeg.conjE E : E → E) x = -x := by
   intro E _ _ _ d x hd hx
   obtain ⟨φ⟩ : Nonempty (E →+* ℂ) := inferInstance

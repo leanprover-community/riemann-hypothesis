@@ -167,7 +167,7 @@ theorem unrAE {L : Type} [Field L] [NumberField L] : UnrAE L := by
   have h' : ‖(((χ (localIdele L v x)) ^ n : ℂˣ) : ℂ) - 1‖ < 1 := this
   rwa [Units.val_zpow_eq_zpow_val] at h'
 
-theorem unrAe {L : Type} [Field L] [NumberField L] (χ : HChar L) : ∀ᶠ v in cofinite, χ.UnrAt v := (unrAE (L := L) χ.1 χ.2.1).mono fun v hv x hx => hv x hx
+theorem unrAe {L : Type} [Field L] [NumberField L] (χ : HChar L) : ∀ᶠ v in cofinite, χ.UnrAt v := (unrAE (L := L) χ.1 χ.2.1).mono fun _ hv x hx => hv x hx
 
 section UnitsTriv
 

@@ -567,7 +567,7 @@ theorem arith_big (n K S : ℝ) (hn : 0 ≤ n) (hK : 0 ≤ K) (hS : 0 ≤ S) :
   calc n * (K + S) ≤ n * ((K + 1) * (1 + S)) := mul_le_mul_of_nonneg_left h hn
     _ = _ := by ring
 
-theorem arith₁ (n b K S₁ S₂ D₁ D₂ : ℝ) (hn : 0 ≤ n) (hb0 : 0 ≤ b) (hb : b ≤ n) (hK : 0 ≤ K) (h₁ : 0 ≤ S₁)
+theorem arith₁ (n b K S₁ S₂ D₁ D₂ : ℝ) (hn : 0 ≤ n) (hb : b ≤ n) (hK : 0 ≤ K) (h₁ : 0 ≤ S₁)
     (h₂ : 0 ≤ S₂) (key : 2 * (D₁ - D₂) ≤ b * (K + S₂)) : D₁ ≤ D₂ + n * (K + 1) * (1 + (S₁ + S₂)) := by
   have a := arith_big n K (S₁ + S₂) hn hK (add_nonneg h₁ h₂)
   have c : b * (K + S₂) ≤ n * (K + (S₁ + S₂)) :=
@@ -629,7 +629,7 @@ theorem clause₁ (hWF : WedgeF) (hWI : WedgeI) (hMF : MulF) (hMI : MulI) (hPF :
   rw [hsB] at g2
   rw [g1, g2] at key
   rw [logSize_eq]
-  exact arith₁ n b (cK E n) _ _ _ _ (Nat.cast_nonneg _) (Nat.cast_nonneg _) (by exact_mod_cast hcard)
+  exact arith₁ n b (cK E n) _ _ _ _ (Nat.cast_nonneg _) (by exact_mod_cast hcard)
     cK_nonneg (logSizeM_nonneg _) (logSizeM_nonneg _) key
 
 theorem clause₂ (hMF : MulF) (hMI : MulI) (hSz : SzFin) (hL : LogAbsBasic) (hC : ConjPlaces) (hB : DegBasisG)

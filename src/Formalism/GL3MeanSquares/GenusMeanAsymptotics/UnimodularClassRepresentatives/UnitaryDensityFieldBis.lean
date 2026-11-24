@@ -290,7 +290,7 @@ theorem exists_frame (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : 
     ∃ (z : Fin (finrank K V) → ↥L) (g : Fin (finrank K V) → 𝓞 K),
       (∀ i j, i ≠ j → h (z i : V) (z j : V) = 0) ∧
       (∀ i, h (z i : V) (z i : V) = algebraMap (𝓞 K) K (g i)) ∧ ∀ i, g i - 1 ∈ extP K 𝔭 ^ k := by
-  obtain ⟨P, hP, rfl⟩ := exists_maximal_over hK hF h𝔭
+  obtain ⟨P, hP, rfl⟩ := exists_maximal_over h𝔭
   have hPp := hP.isPrime
   have hda := LocF.aniso_of_totPosDef hd
   have hu := (isUnimodularAt_iff_vd hK hF hs hd hL hLi hP).2 hv

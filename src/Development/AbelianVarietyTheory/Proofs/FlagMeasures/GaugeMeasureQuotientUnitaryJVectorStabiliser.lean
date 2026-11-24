@@ -747,7 +747,7 @@ theorem shell {fib : ℝ → Measure (Sp P Q)} (h : IsDxDq fib) (a b : ℝ) (hab
   have hO : MeasurableSet {x : Sp P Q | x ≠ 0} := isOpen_ne.measurableSet
   have hg : Measurable fun y : Sp P Q => ENNReal.ofReal (gaussSp y) :=
     ENNReal.measurable_ofReal.comp continuous_gaussSp.measurable
-  have key := GlobalTheory.IsFibreFamily_lintegral_preimage hq isOpen_ne subset_rfl h
+  have key := GlobalTheory.IsFibreFamily_lintegral_preimage hq subset_rfl h
     (({x : Sp P Q | x ≠ 0}).indicator fun y => ENNReal.ofReal (gaussSp y)) (hg.indicator hO)
     (fun v hv => Set.indicator_of_notMem hv _) (Set.Ioc a b) measurableSet_Ioc
   have hsub : qf ⁻¹' Set.Ioc a b ⊆ {x : Sp P Q | x ≠ 0} := by
@@ -1088,7 +1088,7 @@ theorem gauge_transport : ∀ (n : ℕ) (ε : Fin n → Bool) (c : ℝ) (P Q : �
   filter_upwards [self_mem_nhdsWithin, hBfin] with r hr hB
   have hr0 : (0 : ℝ) < r := hr
   have hball : ballVol ((P + Q) ^ 2) r = ENNReal.ofReal (r ^ (n ^ 2)) * ENNReal.ofReal V := by
-    have := ballVol_mul ((P + Q) ^ 2) r 1 hr0 one_pos
+    have := ballVol_mul ((P + Q) ^ 2) r 1 hr0
     rw [mul_one] at this
     rw [this, hPQ, hVdef, ENNReal.ofReal_toReal hVfin]
     rfl
@@ -1117,7 +1117,7 @@ open scoped ENNReal NNReal Pointwise
 
 variable {P Q P' Q' : ℕ}
 
-theorem tanBall_mul (t r : ℝ) (ht : 0 < t) (_hr : 0 < r) :
+theorem tanBall_mul (t r : ℝ) (ht : 0 < t) :
     (volume : Measure (ℝ × Sp P Q)) {x | tanSq x < (t * r) ^ 2} =
       ENNReal.ofReal (t ^ Module.finrank ℝ (ℝ × Sp P Q)) *
         volume {x : ℝ × Sp P Q | tanSq x < r ^ 2} := by
@@ -1183,7 +1183,7 @@ theorem tendsto_fibSq (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q)) (he
     refine GlobalTheory.CompactDualQuot.tendsto_div_of_squeeze
       (F := fun r : ℝ => (volume : Measure (ℝ × Sp P' Q')) {x | tanSq x < r ^ 2})
       (V := fun r : ℝ => (volume : Measure (ℝ × Sp P' Q')) {x | tanSq x < r ^ 2})
-      ENNReal.one_ne_top (fun t r ht hr => tanBall_mul t r ht hr) hVV ?_
+      ENNReal.one_ne_top (fun t r ht hr => tanBall_mul t r ht) hVV ?_
     intro t ht
     have hti : t⁻¹ < 1 := inv_lt_one_of_one_lt₀ ht
     have htp : 0 < t⁻¹ := inv_pos.2 (by linarith)
@@ -1288,7 +1288,7 @@ private lemma indicator_one_le_indicator_one_of_imp {α β : Type*} {S : Set α}
 
 theorem const_eq_one (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q)) (he : SignCompat e)
     {fib : ℝ → Measure (Sp P Q)} (hf : IsDxDq fib) (j : UpqT P' Q' →* UpqT P Q)
-    (hj : IsBlockEmb e j) (hjc : Continuous j) (hjs : ∀ g, act (j g) (baseVec e) = baseVec e)
+    (hj : IsBlockEmb e j) (hjs : ∀ g, act (j g) (baseVec e) = baseVec e)
     {μ : Measure (UpqT P Q)} {μ' : Measure (UpqT P' Q')} [μ'.IsHaarMeasure]
     (h : HasEuclDensity μ) (h' : HasEuclDensity μ')
     (κ : ℝ≥0) (hκ : ∀ s : Sp P Q → UpqT P Q, IsSection (sg (e none)) (baseVec e) s →
@@ -1443,7 +1443,7 @@ theorem const_eq_one (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q)) (he 
     (V := ballVol ((P + Q) ^ 2))
     (A := fun r : ℝ => ∫⁻ y, (∫⁻ g', {g : UpqT P Q | hsDist g < r ^ 2}.indicator 1
       (σ y * j g') ∂μ') ∂(fib (sg (e none))))
-    ENNReal.one_ne_top (fun t r ht hr => ballVol_mul _ t r ht hr) hF hA
+    ENNReal.one_ne_top (fun t r ht hr => ballVol_mul _ t r ht) hF hA
   have hκV : Tendsto (fun r : ℝ => (∫⁻ y, (∫⁻ g', {g : UpqT P Q | hsDist g < r ^ 2}.indicator 1
       (σ y * j g') ∂μ') ∂(fib (sg (e none)))) / ballVol ((P + Q) ^ 2) r) (𝓝[>] 0)
       (𝓝 ((κ : ℝ≥0∞) * 1)) := by
@@ -1477,7 +1477,7 @@ theorem quot_formula (e : Option (Fin P' ⊕ Fin Q') ≃ (Fin P ⊕ Fin Q)) (he 
     have hm : j₀ g ∈ Set.range j₀ := ⟨g, rfl⟩
     rw [hj₀r] at hm
     exact hm
-  have hκ1 := const_eq_one e he hf j₀ hj₀ hj₀c.continuous hjs h h' κ hκ
+  have hκ1 := const_eq_one e he hf j₀ hj₀ hjs h h' κ hκ
   have hs' : IsSection (sg (e none)) (baseVec e) (fun y => s y * g₀) := by
     refine ⟨hs.1.mul_const g₀, fun y hy => ?_⟩
     rw [GlobalTheory.RealPlaceCompare.act_mul, hg₀, hs.2 y hy]

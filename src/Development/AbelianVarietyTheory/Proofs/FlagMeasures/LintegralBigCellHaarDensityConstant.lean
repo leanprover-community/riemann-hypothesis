@@ -1181,7 +1181,7 @@ theorem volume_image_eq (A B F : Type) [NormedAddCommGroup A] [InnerProductSpace
         change ‖L (Ψ x)‖ = ‖x‖
         rw [← sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _), hL, hΨ, WithLp.prod_norm_sq_eq_of_L2,
           WithLp.prod_norm_sq_eq_of_L2, WithLp.prod_norm_sq_eq_of_L2, EuclideanSpace.norm_sq_eq]
-        simp [mul_pow, Finset.mul_sum, ← mul_assoc, add_assoc] }
+        simp [mul_pow, Finset.mul_sum, add_assoc] }
   have h0 := (measurePreserving_inv_sqrt_two_smul r).comp
     (GlobalTheory.volume_preserving_ofLp_complex (Fin r))
   haveI : SFinite (((2 : ℝ≥0∞) ^ r) • (volume : Measure (Fin r → ℂ))) := inferInstance

@@ -660,10 +660,10 @@ namespace GlobalTheory.UsideLeaf.UnitaryLocalCharpoly
 variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))]
 
 theorem lattice_step {n : ℕ} (γ γi : Matrix (Fin n) (Fin n) L) (Q₀ : (intL L)[X])
-    (hγ : ∀ i j, γ i j ∈ intL L) (hγi : ∀ i j, γi i j ∈ intL L) (hγγ : γ * γi = 1)
+    (hγ : ∀ i j, γ i j ∈ intL L)
     (hch : γ.charpoly = Q₀.map (intL L).subtype) (hsep : Q₀.Separable) (k : GL (Fin n) L)
     (hk : ∀ i j, ((k⁻¹ : GL (Fin n) L).val * γ * k.val) i j ∈ intL L)
-    (hki : ∀ i j, ((k⁻¹ : GL (Fin n) L).val * γi * k.val) i j ∈ intL L) :
+    :
     ∃ a g : GL (Fin n) L, a.val * γ = γ * a.val ∧ k = a * g ∧ (∀ i j, g.val i j ∈ intL L) ∧
       (∀ i j, (g⁻¹ : GL (Fin n) L).val i j ∈ intL L) := by
   set f : intL L →+* L := (intL L).subtype with hf
@@ -1015,8 +1015,8 @@ theorem local_good (E : Type) [Field E] [NumberField E] [IsCMField E] (hU : Unr 
     rw [show (k⁻¹ * GeneralLinearGroup.map φ γ₀ * k)⁻¹ = k⁻¹ * GeneralLinearGroup.map φ γ₀⁻¹ * k by
       rw [map_inv]; group]
     rfl
-  obtain ⟨a, g, hac, rfl, ig, igi⟩ := GlobalTheory.UsideLeaf.UnitaryLocalCharpoly.lattice_step γw γiw Q₀ iγ iγi hγγ hch hsep k
-    (fun i j => hkv ▸ hk1 i j) (fun i j => hkiv ▸ hk2 i j)
+  obtain ⟨a, g, hac, rfl, ig, igi⟩ := GlobalTheory.UsideLeaf.UnitaryLocalCharpoly.lattice_step γw γiw Q₀ iγ hch hsep k
+    (fun i j => hkv ▸ hk1 i j)
   obtain ⟨im, imi⟩ := (mem_KGL_iff w _).1 hm
 
   set σ := cj w

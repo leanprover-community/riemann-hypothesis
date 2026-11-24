@@ -159,7 +159,7 @@ open scoped TensorProduct
 theorem isUniUp_iff {k : Type} [Field k] {r : ℕ} (g : GL (Fin r) k) :
     IsUniUp (g : Matrix (Fin r) (Fin r) k) ↔ g ∈ unitri r k :=
   ⟨fun h => ⟨fun a b hab => (h a b).1 hab, fun a => (h a a).2 rfl⟩,
-    fun h a b => ⟨fun hab => h.1 hab, fun e => e ▸ h.2 a⟩⟩
+    fun h a _ => ⟨fun hab => h.1 hab, fun e => e ▸ h.2 a⟩⟩
 
 theorem sum_entN {k : Type} [Field k] {r : ℕ} (M : Matrix (Fin r) (Fin r) k) :
     ∑ i ∈ Finset.range (r - 1), entN M i (i + 1) = superDiag M := by

@@ -105,7 +105,7 @@ theorem mat_iota_nU {θ : InfFam D} (hθ : IsInfFam θ) {τ : D.what₂.Tau} {n 
       rfl
     · rw [h2 τ' h, e2 τ' h, one_eq_block_matrix]
 
-theorem theta_half (θ : InfFam D) (_hθ : IsInfFam θ) (ρ : D.what₂.Tau) :
+theorem theta_half (θ : InfFam D) (ρ : D.what₂.Tau) :
     θ ρ (algebraMap D.host.F (Ainf D.host.F) (1 / 2) ⊗ₜ[D.host.F] (1 : D.host.E)) = 1 / 2 := by
   have h2 : θ ρ (algebraMap D.host.F (Ainf D.host.F) 2 ⊗ₜ[D.host.F] (1 : D.host.E)) = 2 := by
     have : (algebraMap D.host.F (Ainf D.host.F) 2 ⊗ₜ[D.host.F] (1 : D.host.E)) = 2 := by
@@ -170,7 +170,7 @@ theorem psi_unip {θ : InfFam D} (hθ : IsInfFam θ) {ψ : AddChar (AF D.host.F)
     rw [show ((algebraMap D.host.F (Ainf D.host.F) (1 / 2) * fstA D.host.F (Algebra.trace (AF D.host.F) (AE D) z)) ⊗ₜ[D.host.F]
         (1 : D.host.E)) = (algebraMap D.host.F (Ainf D.host.F) (1 / 2) ⊗ₜ[D.host.F] (1 : D.host.E)) *
         (fstA D.host.F (Algebra.trace (AF D.host.F) (AE D) z) ⊗ₜ[D.host.F] (1 : D.host.E)) by
-      rw [Algebra.TensorProduct.tmul_mul_tmul, mul_one], map_mul, theta_half θ hθ, GlobalTheory.PhaseReal.theta_trace θ hθ]
+      rw [Algebra.TensorProduct.tmul_mul_tmul, mul_one], map_mul, theta_half θ, GlobalTheory.PhaseReal.theta_trace θ hθ]
     push_cast
     ring
   simp only [hterm]

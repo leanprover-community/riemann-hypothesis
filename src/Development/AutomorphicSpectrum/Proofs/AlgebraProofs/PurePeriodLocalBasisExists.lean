@@ -522,7 +522,7 @@ theorem family_orthogonal_sum_injective (D : Datum H) {p : ℕ} (x' : Fin p → 
   rw [h1, _root_.zero_add] at h
   exact Submodule.coe_eq_zero.mp h
 
-theorem finrank_orthogonal_family (D : Datum H) {p q : ℕ} (x' : Fin p → D.La) (ℓ : Nat.Primes) (hpq : p + q = D.p + D.q)
+theorem finrank_orthogonal_family (D : Datum H) {p q : ℕ} (x' : Fin p → D.La) (hpq : p + q = D.p + D.q)
     (hdet : (gramE D x').det ≠ 0) (m : ℕ) (hm0 : m ≠ 0) (hm : ∀ y a, ∃ g : 𝓞 E, (g : E) = m * projectionCoeffs D x' y a) :
     Module.finrank (𝓞 E) (orthogonalFamilyAlt D x') = q := by
   classical
@@ -571,7 +571,7 @@ theorem exists_orthogonal_local_basis_extension (D : Datum H) (p q : ℕ) (ℓ :
   haveI := D.fin
   haveI := D.proj
   set L2 := orthogonalFamilyAlt D x' with hL2
-  have hfr : Module.finrank (𝓞 E) L2 = q := finrank_orthogonal_family D x' ℓ hpq hdet m hm0 hm
+  have hfr : Module.finrank (𝓞 E) L2 = q := finrank_orthogonal_family D x' hpq hdet m hm0 hm
   obtain ⟨b0, hb0⟩ := exists_local_basis_cm_order.locBasis' (𝓞 E) (ℓ : ℕ) ℓ.prop (M := L2)
   let b : Fin q → L2 := b0 ∘ Fin.cast hfr.symm
   have hbli : LinearIndependent (𝓞 E) b := hb0.1.comp _ (Fin.cast_injective _)
@@ -667,7 +667,7 @@ variable {Ix : Type} [Fintype Ix] (x : Ix → D.La) (hx : LinearIndependent (�
 
 def toSpan : D.La →ₗ[𝓞 E] Submodule.span (𝓞 E) (Set.range x) where
   toFun y := ⟨n • y, hn y⟩
-  map_add' y y' := Subtype.ext (smul_add _ _ _)
+  map_add' _ _ := Subtype.ext (smul_add _ _ _)
   map_smul' c y := Subtype.ext (smul_comm n c y)
 
 def coef : D.La →ₗ[𝓞 E] (Ix →₀ 𝓞 E) := hx.repr ∘ₗ toSpan D x n hn

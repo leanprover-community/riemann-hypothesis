@@ -1361,7 +1361,7 @@ theorem locHyp_of_k (hT : _root_.PositivityTheory.SiegelWeilFormula.TAll_k) (hA 
     exact ⟨k, fun y a ha hy f hf => hk y a ha hy f hf⟩
   · obtain ⟨C, s, κ, ε, hs, hκ, h4, hf, -, hs2, hη⟩ := R.locOp_nbar hT hA hG hL
     exact ⟨C, s, κ, ((ε : ℤ) : ℂ) * R.ζ⁻¹ * R.ζ⁻¹, hs, hκ, hs2, hη, h4, fun y c hc hy f hf' => hf y c hc hy f hf'⟩
-theorem locInst_of_k (hT : _root_.PositivityTheory.SiegelWeilFormula.TAll_k) (hA : _root_.PositivityTheory.SiegelWeilFormula.SiegelWeilDatumProperties) (_hF : _root_.PositivityTheory.SiegelWeilFormula.FockMem_k) (_hLi : _root_.PositivityTheory.SiegelWeilFormula.LiftEx_k) : _root_.PositivityTheory.SiegelWeilFormula.LocInst_k := by
+theorem locInst_of_k (hT : _root_.PositivityTheory.SiegelWeilFormula.TAll_k) (hA : _root_.PositivityTheory.SiegelWeilFormula.SiegelWeilDatumProperties) : _root_.PositivityTheory.SiegelWeilFormula.LocInst_k := by
   intro F E _ _ _ _ _ σ d R w L hL
   obtain ⟨sL, ρ, e, hD, h1, h2⟩ := locData_of (_root_.PositivityTheory.SiegelWeilFormula.KLI.locHyp_of_k hT hA R hL)
   exact ⟨sL, ρ, pOf (R.sg w) d.m, qOf (R.sg w) d.m, e, fun hnm => goodSig_pq _ hnm, hD, h1, h2⟩
@@ -1383,7 +1383,7 @@ section
 noncomputable section
 open GlobalTheory.ThK.Dbl PositivityTheory.Rg.Sw
 namespace PositivityTheory.SiegelWeilFormula.Fin
-theorem locInst_of_k (hT : _root_.PositivityTheory.SiegelWeilFormula.TAll_k) : _root_.PositivityTheory.SiegelWeilFormula.LocInst_k := _root_.PositivityTheory.SiegelWeilFormula.KLI.locInst_of_k hT _root_.PositivityTheory.SiegelWeilFormula.kfour.auxiliaryExistence_holds _root_.PositivityTheory.SiegelWeilFormula.KFock.fockMem_k (_root_.PositivityTheory.SiegelWeilFormula.KFock.liftEx_k hT.1)
+theorem locInst_of_k (hT : _root_.PositivityTheory.SiegelWeilFormula.TAll_k) : _root_.PositivityTheory.SiegelWeilFormula.LocInst_k := _root_.PositivityTheory.SiegelWeilFormula.KLI.locInst_of_k hT _root_.PositivityTheory.SiegelWeilFormula.kfour.auxiliaryExistence_holds
 theorem siegelWeilStd_mid_k (hW : _root_.PositivityTheory.SiegelWeilFormula.TWeyl_k) (hKP : _root_.PositivityTheory.SiegelWeilFormula.KFinPoly_k) (hLD : _root_.PositivityTheory.SiegelWeilFormula.LDEx_k) (hCT : _root_.PositivityTheory.SiegelWeilFormula.CTSplit_k) : _root_.GlobalTheory.ThK.Dbl.SiegelWeilStd_k :=
   have hT := _root_.PositivityTheory.SiegelWeilFormula.Fin.tAll_of_k hW
   _root_.PositivityTheory.SiegelWeilFormula.Fin.siegelWeilStd_of_k hT (_root_.PositivityTheory.SiegelWeilFormula.Fin.locInst_of_k hT)

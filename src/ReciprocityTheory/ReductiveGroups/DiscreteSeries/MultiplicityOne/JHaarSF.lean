@@ -38,6 +38,6 @@ theorem haarUniqueSF' : HaarUniqueSF := by
     HaarSigmaFiniteUniqueness.map_comap_val (U := U) μ₀ hcν]
   exact (HaarSigmaFiniteUniqueness.mEmb (U := U)).measurable.aemeasurable
 
-theorem haarUniqueSF (_h : UnitaryGroupStructuralFacts) : HaarUniqueSF := haarUniqueSF'
+theorem haarUniqueSF : HaarUniqueSF := haarUniqueSF'
 
 end ReciprocityTheory.ChartRestriction.DS.Mult1

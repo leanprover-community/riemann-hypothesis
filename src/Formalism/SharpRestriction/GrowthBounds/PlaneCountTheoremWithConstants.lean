@@ -862,7 +862,7 @@ open Formalism.BasicNotions
 
 structure ExtremalProjectorTools : Prop where
 
-  extremalProjectorAlt : ∀ D : D7, CovariantDegrees.adm5 D
+  extremalProjectorAlt : ∀ D : D7, CovariantDegrees.adm5
 
 theorem tool_statements_hold (h : ExtremalProjectorTools) (D : D7) : CovariantDegrees.Conclusion1 D ∧ CovariantDegrees.Conclusion2 D ∧ CovariantDegrees.HyperplaneRank D := by
   have a : CovariantDegrees.admitted D := ⟨GLWeightTheory.positivity_condition_holds D, GLWeightTheory.weight_condition_from_integral_form D, GLWeightTheory.exponent_condition_holds D, GLWeightTheory.key_positivity_condition D, h.extremalProjectorAlt D⟩
@@ -900,7 +900,7 @@ theorem gauss_binomial_ge (q : ℕ) : ∀ n k : ℕ, k ≤ n → q ^ (k * (n - k
       rw [Nat.sub_add_comm hkn, Nat.mul_add, Nat.mul_one, pow_add, mul_comm]
       exact (Nat.mul_le_mul_left _ h1).trans (Nat.le_add_left _ _)
 
-theorem rational_planes_count (D : D7) : SelectionLemmas.ColumnFamilyClosure D := by
+theorem rational_planes_count (D : D7) : SelectionLemmas.ColumnFamilyClosure := by
   intro FF _ _ k r hr
   have h := Formalism.G0.Top.subspaceCount (F := FF) (W := Fin k → FF) r
   rw [Module.finrank_fin_fun] at h
@@ -915,11 +915,11 @@ structure Loc6 : Prop where
 
   p39B : ∀ D : D7, SelectionLemmas.SecondPartClosed D
 
-  rationalPlanesClauseThree : ∀ D : D7, SelectionLemmas.admB3 D
+  rationalPlanesClauseThree : ∀ D : D7, SelectionLemmas.admB3
 
-  rationalPlanesClauseFour : ∀ D : D7, SelectionLemmas.ColumnFamilyLowerSet D
+  rationalPlanesClauseFour : ∀ D : D7, SelectionLemmas.ColumnFamilyLowerSet
 
-  rationalPlanesClauseFive : ∀ D : D7, SelectionLemmas.GenericProjectionCriterion D
+  rationalPlanesClauseFive : ∀ D : D7, SelectionLemmas.GenericProjectionCriterion
 
   dualInclusionLattices : DualHeightInclusion
   bePerfect : BePerfect
@@ -931,15 +931,15 @@ structure Loc6 : Prop where
 
   wittIdent : WittIdent
 
-  criterionClauseElevenB : ∀ D : D7, tableLineDegreeFive.FilteredProjectionCriterion D
+  criterionClauseElevenB : ∀ D : D7, tableLineDegreeFive.FilteredProjectionCriterion
 
-  criterionClauseTwentyTwo : ∀ D : D7, tableLineDegreeFive.adm22 D
+  criterionClauseTwentyTwo : ∀ D : D7, tableLineDegreeFive.adm22
 
-  criterionClauseThirtyFive : ∀ D : D7, tableLineDegreeFive.FewBadOrbits D
+  criterionClauseThirtyFive : ∀ D : D7, tableLineDegreeFive.FewBadOrbits
 
   criterionClauseThirtySix : ∀ D : D7, tableLineDegreeFive.LevelPrimesProviso D
 
-theorem plane_count_theorem_with_constants (h70 : ExtremalProjectorTools) (h : Loc6) (D : D7) : ∃ CLa Ck Crk Cdeg : ℝ, SelectionLemmas.Conclusion2 D CLa Ck Crk Cdeg := by
+theorem plane_count_theorem_with_constants (h70 : ExtremalProjectorTools) (h : Loc6) (D : D7) : ∃ CLa Ck Crk Cdeg : ℝ, SelectionLemmas.Conclusion2 CLa Ck Crk Cdeg := by
   obtain ⟨⟨_, hV, _, _, _⟩, ⟨_, hA3, hB1, _, hB3, _, _⟩, hA2⟩ := tool_statements_hold h70 D
   have b : SelectionLemmas.AdmB D := ⟨TopChoiceBounds.symbol_space_orbit_holds D, Joints.valuation_transport_of_lemma D hV.1, h.rationalPlanesClauseThree D, h.rationalPlanesClauseFour D, h.rationalPlanesClauseFive D,
     rational_planes_count D, Joints.degree_bound_gives_symbol_space D hA2, Joints.reducibility_gives_symbol_space D hV, Joints.third_degree_bound_gives_symbol_space D hA3,
@@ -948,7 +948,7 @@ theorem plane_count_theorem_with_constants (h70 : ExtremalProjectorTools) (h : L
   obtain ⟨Crk, Cdeg, _, _, hp⟩ := hC C₀ C₀ le_rfl le_rfl
   exact ⟨C₀, C₀, Crk, Cdeg, hp⟩
 
-theorem derived_statements_with_constants (h70 : ExtremalProjectorTools) (h : Loc6) (D : D7) (CLa Ck Crk Cdeg : ℝ) (h39 : SelectionLemmas.Conclusion2 D CLa Ck Crk Cdeg) :
+theorem derived_statements_with_constants (h70 : ExtremalProjectorTools) (D : D7) (CLa Ck Crk Cdeg : ℝ) (h39 : SelectionLemmas.Conclusion2 CLa Ck Crk Cdeg) :
     ∃ CLa' CD Csz : ℝ, 0 < CLa' ∧ 0 < CD ∧ 0 < Csz ∧ SourceCleaning.aux₃ D CLa' CD Csz := by
   obtain ⟨⟨⟨hT11, hT12, hT13, hC14, hC15⟩, hV, hE, ⟨hL51, hL52⟩, hL61⟩, ⟨hA1, hA3, hB1, hB2, hB3, hC0, hC1⟩, hA2⟩ :=
     tool_statements_hold h70 D
@@ -960,7 +960,7 @@ theorem derived_statements_with_constants (h70 : ExtremalProjectorTools) (h : Lo
     Joints.second_decomposition_gives_localiser D hL52, Joints.lattice_index_gives_localiser D hL61, TopChoiceBounds.symbol_space_orbit_holds D,
     Joints.valuation_transport_of_lemma D hV.1, Joints.space_criterion_of_standard_basis D hA3, Joints.rank_degree_bounds_give_localiser D CLa Ck Crk Cdeg h39⟩
 
-theorem split_theorem_with_constants (h70 : ExtremalProjectorTools) (h : Loc6) (D : D7) :
+theorem split_theorem_with_constants (h70 : ExtremalProjectorTools) (D : D7) :
     ∃ FormalChartAtZero CE C6 C18 : ℝ, 0 < FormalChartAtZero ∧ 0 < CE ∧ 0 < C6 ∧ 0 < C18 ∧ ∀ CH : ℝ, FormalChartAtZero ≤ CH → PlaneGramData.aux₃ D CH CE C6 C18 := by
   obtain ⟨⟨⟨_, _, _, _, hC15⟩, hV, _, ⟨_, hL52⟩, hL61⟩, ⟨_, hA3, _, _, _, _, _⟩, hA2⟩ := tool_statements_hold h70 D
   obtain ⟨FormalChartAtZero, CE, C6, C18, h0, h1, h2, h3, hS⟩ := (Formalism.MainNotions.PlaneGram.stmtE D)
@@ -985,7 +985,7 @@ theorem second_theorem_closed_everywhere (h70 : ExtremalProjectorTools) (h : Loc
     Joints.second_decomposition_gives_orbit_count D hL52, Joints.lattice_index_gives_count D hL61, Joints.valuation_transport_of_lemma D hV.1,
     Joints.rank_degree_bounds_give_orbit_count D CLa Ck Crk Cdeg h39, h.wittIdent, h.flatTop, h.dualHeightBasis, h.hlSpans, h.testSide,
     Joints.space_statement_of_lemmas D hA2 hA3 hB1 hB3, TopChoiceBounds.symbol_space_orbit_holds D, Joints.transport_statement_holds D, h.criterionClauseThirtyFive D, h.criterionClauseThirtySix D⟩
-    (derived_statements_with_constants h70 h D CLa Ck Crk Cdeg h39) (split_theorem_with_constants h70 h D)
+    (derived_statements_with_constants h70 D CLa Ck Crk Cdeg h39) (split_theorem_with_constants h70 D)
 
 theorem second_theorem_absolute_constant (h70 : ExtremalProjectorTools) (h : Loc6) : ∃ C₀ : ℝ, 0 ≤ C₀ ∧ ∀ D : D7, tableLineDegreeFive.aux₃ D C₀ := by
   by_cases hne : Nonempty D7
@@ -1008,9 +1008,9 @@ structure Loc8All : Prop where
 
   p15 : ∀ D : D7, ColumnSystems.ExtendedClosedForm D
 
-  windowClauseTwo : ∀ D : D7, ColumnSystems.adm2 D
+  windowClauseTwo : ∀ D : D7, ColumnSystems.adm2
 
-  windowClauseThree : ∀ D : D7, ColumnSystems.adm3 D
+  windowClauseThree : ∀ D : D7, ColumnSystems.adm3
 
   lWeylV : flipOneThree.WeylV
 
@@ -1036,21 +1036,21 @@ structure Loc8All : Prop where
 
   tCartanOnto : flipOneThree.CartanOnto
 
-  tKP1 : ∀ D : D7, flipOneThree.ArchimedeanSignatureMatching D
+  tKP1 : ∀ D : D7, flipOneThree.ArchimedeanSignatureMatching
 
-  tKP2 : ∀ D : D7, flipOneThree.adm5 D
+  tKP2 : ∀ D : D7, flipOneThree.adm5
 
-  tKP3 : ∀ D : D7, flipOneThree.adm6 D
+  tKP3 : ∀ D : D7, flipOneThree.adm6
 
-  tRES : ∀ D : D7, flipOneThree.adm7 D
+  tRES : ∀ D : D7, flipOneThree.adm7
 
   thresholdClauseOne : ∀ D : D7, flipOneThree.TransportedAlt fun C0 CYb Cde Ck CD Cb CE1 CE2 Cc =>
-    ∀ X : flipOneThree.Inst, flipOneThree.adm1 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X
+    ∀ X : flipOneThree.Inst, flipOneThree.adm1 C0 CYb Cde Ck CD Cb CE1 CE2 Cc X
 
   thresholdClauseThree : ∀ D : D7, flipOneThree.TransportedAlt fun C0 CYb Cde Ck CD Cb CE1 CE2 Cc =>
-    ∀ X : flipOneThree.Inst, flipOneThree.adm3 D C0 CYb Cde Ck CD Cb CE1 CE2 Cc X
+    ∀ X : flipOneThree.Inst, flipOneThree.adm3 C0 CYb Cde Ck CD Cb CE1 CE2 Cc X
 
-  instanceClauseEight : ∀ (D : D7) (X : flipOneThree.Inst), flipOneThree.adm8 D X
+  instanceClauseEight : ∀ (D : D7) (X : flipOneThree.Inst), flipOneThree.adm8 X
 
 theorem thresholds_and {P Q : ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → Prop} (hP : flipOneThree.TransportedAlt P) (hQ : flipOneThree.TransportedAlt Q) :
     flipOneThree.TransportedAlt fun C0 CYb Cde Ck CD Cb CE1 CE2 Cc =>
@@ -1108,7 +1108,7 @@ theorem first_theorem_admitted_closed (h70 : ExtremalProjectorTools) (h : Loc8Al
   obtain ⟨Ckap, Ct, Cs, k1, k2, k3, hExt, h2Ext, _, _, _, hAlt2, hAlt3, h4Ext, hR2, _⟩ := h15 CH CH CH CH CH ha ha ha ha ha
   obtain ⟨hS1, ha1, ha3⟩ := hT CH CH CH CH CH hb hb hb hb hb
   obtain ⟨CA, hCA, hSt⟩ := hS1 Ckap (Cs + Ckap)
-  have hconds1 : ∀ X : flipOneThree.Inst, flipOneThree.Conclusion1 D C₀ CH CH CH CH CH CE1 CE2 Cc CA X := fun X =>
+  have hconds1 : ∀ X : flipOneThree.Inst, flipOneThree.Conclusion1 C₀ CH CH CH CH CH CE1 CE2 Cc CA X := fun X =>
     hSt X ⟨ha1 X, Joints.weight_condition_of_integral_form D X hT12, ha3 X, h.tKP1 D, h.tKP2 D, h.tKP3 D, h.tRES D, h.instanceClauseEight D X,
       Joints.extension_gives_ratio_bound D C₀ CH CH CH CH CH CE1 CE2 Cm Ckap Cc Cs X k1.le hCm hAlt2 h2Ext,
       Joints.fourth_extension_gives_ratio_bound D C₀ CH CH CH CH CH CE1 CE2 Cc X h4Ext,
@@ -1123,7 +1123,7 @@ theorem first_theorem_with_constants (h70 : ExtremalProjectorTools) (h : Loc8All
 
 theorem first_theorem_uniform_thresholds (h70 : ExtremalProjectorTools) (h : Loc8All) :
     ∃ T0 : ℝ, 0 < T0 ∧ ∀ C₀ : ℝ, T0 ≤ C₀ → ∃ T2 C : ℝ, 0 < T2 ∧ 0 < C ∧ ∀ CH : ℝ, T2 ≤ CH →
-      ∀ D : D7, flipOneThree.Conclusion2 D C₀ CH C := by
+      ∀ D : D7, flipOneThree.Conclusion2 C₀ CH C := by
   by_cases hne : Nonempty D7
   · obtain ⟨D0⟩ := hne
     obtain ⟨T0, hT0, hp⟩ := first_theorem_with_constants h70 h D0
@@ -1134,7 +1134,7 @@ theorem first_theorem_uniform_thresholds (h70 : ExtremalProjectorTools) (h : Loc
 
 theorem first_theorem_threshold_functions (h70 : ExtremalProjectorTools) (h : Loc8All) :
     ∃ (T0 : ℝ) (T2 C : ℝ → ℝ), 0 < T0 ∧ ∀ C₀ : ℝ, T0 ≤ C₀ → 0 < T2 C₀ ∧ 0 < C C₀ ∧ ∀ CH : ℝ, T2 C₀ ≤ CH →
-      ∀ D : D7, flipOneThree.Conclusion2 D C₀ CH (C C₀) := by
+      ∀ D : D7, flipOneThree.Conclusion2 C₀ CH (C C₀) := by
   classical
   obtain ⟨T0, hT0, hp⟩ := first_theorem_uniform_thresholds h70 h
   choose! T2 C hTC using hp
@@ -1148,9 +1148,9 @@ structure Loc8 : Prop where
 
   p15 : ∀ D : D7, ColumnSystems.ExtendedClosedForm D
 
-  windowClauseTwo : ∀ D : D7, ColumnSystems.adm2 D
+  windowClauseTwo : ∀ D : D7, ColumnSystems.adm2
 
-  windowClauseThree : ∀ D : D7, ColumnSystems.adm3 D
+  windowClauseThree : ∀ D : D7, ColumnSystems.adm3
 
   lWeylV : flipOneThree.WeylV
 
@@ -1160,13 +1160,13 @@ structure Loc8 : Prop where
 
   tCartanOnto : flipOneThree.CartanOnto
 
-  tKP2 : ∀ D : D7, flipOneThree.adm5 D
+  tKP2 : ∀ D : D7, flipOneThree.adm5
 
-  tKP3 : ∀ D : D7, flipOneThree.adm6 D
+  tKP3 : ∀ D : D7, flipOneThree.adm6
 
-  tRES : ∀ D : D7, flipOneThree.adm7 D
+  tRES : ∀ D : D7, flipOneThree.adm7
 
-theorem loc8All_of (h70 : ExtremalProjectorTools) (h6 : Loc6) (h : Loc8) : Loc8All := by
+theorem loc8All_of (h6 : Loc6) (h : Loc8) : Loc8All := by
   exact {
     p13B := h.p13B
     p13A := h.p13A
@@ -1378,7 +1378,7 @@ def TrivialStabiliserFiniteClasses (D : D7) : Prop :=
 
 def OperatorsPreserveLattices (D : D7) : Prop :=
   ∀ (u : D.what₂.Word) (w : D.what₂.places.Pl) (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)),
-    FormalGroupSystem.adm12 D (D.gat u w hg)
+    FormalGroupSystem.adm12 (D.gat u w hg)
 
 theorem stability_of_trivial_stabilisers (hE : TrivialStabiliserFiniteClasses D) : CornerGLContinuity.MLatticeCond D :=
   fun u w hg => LatticeSystems.theta_kernel_expansion D _ ⟨(hE u w hg).1, (hE u w hg).2, LatticeSystems.exponent_condition_holds D _⟩
@@ -1466,7 +1466,7 @@ theorem le_lmax (f : ℝ → ℝ) {l : List ℝ} {c : ℝ} (h : c ∈ l) : f c �
 
 theorem first_theorem_closed_form (𝒞 : FamClass)
     (h13 : ∃ (T0 : ℝ) (T2 C : ℝ → ℝ), 0 < T0 ∧ ∀ C₀ : ℝ, T0 ≤ C₀ → 0 < T2 C₀ ∧ 0 < C C₀ ∧ ∀ CH : ℝ, T2 C₀ ≤ CH →
-      ∀ D : D7, flipOneThree.Conclusion2 D C₀ CH (C C₀)) :
+      ∀ D : D7, flipOneThree.Conclusion2 C₀ CH (C C₀)) :
     Closed 𝒞 fun Fm _ => FirstTheoremAtFamily Fm := by
   obtain ⟨T0, T2, C, _, h⟩ := h13
   refine ⟨1, one_pos, fun eps _ _ => ⟨⟨0, fun _ => 0, fun _ => T0,
@@ -1528,7 +1528,7 @@ theorem numCmpF_fixed {eps : ℝ} (Fm : FamP eps) : NumCmpF Fm := by
   exact ⟨x0, fun x hx i => FormalGroupSystem.Pf.numeric_comparison_of_constants _ _ _ _ Fm.GK Fm.fixed.2.1.ge Fm.fixed.2.2.1.ge Fm.fixed.1.ge
     (hx0 x hx i).1.2 (by rw [Fm.L_x x i (hx0 x hx i).1.1]; exact (hx0 x hx i).2) (Fm.sizes x (hx0 x hx i).1.1 i)⟩
 
-theorem num_closed (𝒞 : FamClass) (_hN : FormalGroupSystem.NumericalComparisonUniform) : Closed 𝒞 fun Fm _ => NumCmpF Fm :=
+theorem num_closed (𝒞 : FamClass) : Closed 𝒞 fun Fm _ => NumCmpF Fm :=
   ⟨1, one_pos, fun _ _ _ => ⟨⟨0, fun _ => 0, fun _ => 0, fun _ => 0⟩, fun Fm _ _ _ => numCmpF_fixed Fm⟩⟩
 
 theorem cb_closed (𝒞 : FamClass) : Closed 𝒞 fun Fm _ => Ev Fm fun x i => CbLarge Fm.GK (Fm.L x i).sc := by

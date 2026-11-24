@@ -344,7 +344,7 @@ instance : LocallyCompactSpace (Gp k r) :=
   (amb_closed (k := k) (r := r)).isClosedEmbedding_subtypeVal.locallyCompactSpace
 
 theorem isMatGroup_uwb : PI.IsMatGroup (UWb k r) :=
-  ⟨amb_closed, uwb_one, fun _ ha _ hb => uwb_mul ha hb, fun a ha => ⟨uwb_inv ha, Matrix.mul_nonsing_inv _ (uwb_unit ha)⟩⟩
+  ⟨amb_closed, uwb_one, fun _ ha _ hb => uwb_mul ha hb, fun _ ha => ⟨uwb_inv ha, Matrix.mul_nonsing_inv _ (uwb_unit ha)⟩⟩
 
 theorem exists_haarOn (k r : ℕ) : ∃ νh : Measure (Mt k r), IsHaarOn (UWb k r) νh := by
   let μ : Measure (Gp k r) := Measure.haar

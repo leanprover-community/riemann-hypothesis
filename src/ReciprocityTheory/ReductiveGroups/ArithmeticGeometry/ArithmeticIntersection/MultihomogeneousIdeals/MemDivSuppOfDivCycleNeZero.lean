@@ -192,7 +192,7 @@ theorem mem_divSupp_mul_left {V W : Ideal (MRingOver F ι)} (hV : V.IsPrime) {f 
 theorem mem_divSupp_of_mul {V W : Ideal (MRingOver F ι)} {f g : MRingOver F ι}
     (hW : W ∈ divSupp V (f * g)) (hf : f ∈ W) : W ∈ divSupp V f :=
   ⟨⟨⟨hW.1.1.1, sup_le (le_sup_left.trans hW.1.1.2) (Ideal.span_singleton_le_iff_mem _ |>.mpr hf)⟩,
-    fun Q hQ hQW => hW.1.2 ⟨hQ.1, (sup_span_mul_le V f g).trans hQ.2⟩ hQW⟩, hW.2⟩
+    fun _ hQ hQW => hW.1.2 ⟨hQ.1, (sup_span_mul_le V f g).trans hQ.2⟩ hQW⟩, hW.2⟩
 
 theorem mem_of_mem_divSupp {V W : Ideal (MRingOver F ι)} {f : MRingOver F ι} (hW : W ∈ divSupp V f) :
     f ∈ W :=

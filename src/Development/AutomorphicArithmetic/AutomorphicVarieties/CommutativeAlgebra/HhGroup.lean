@@ -54,7 +54,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qk1.triple_ne :
-    ∀ {R ι : Type} [inst : CommRing R] [inst_1 : Fintype ι]
+    ∀ {R ι : Type} [CommRing R] [Fintype ι]
     {A Y B : Matrix ι ι R} {a b : ι},
     (A * Y * B) a b ≠ (0 : R) → ∃ (c : ι) (d : ι), A a c ≠ (0 : R) ∧ Y c d ≠ (0 : R) ∧ B d b ≠ (0 : R) := by
   intro R ι _ _ A Y B a b h

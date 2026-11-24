@@ -186,7 +186,7 @@ theorem rowM_eRow : rowM (eRow R k) = 1 := by
     · rw [ite_eq_right hc, ite_eq_right (fun h : i = c => hc (h ▸ hi))]
   · rw [rowM_apply_ne _ _ _ hi]
 
-theorem rowGL_eRow (hk : 1 ≤ k) : rowGL (eRow R k) = 1 := by
+theorem rowGL_eRow : rowGL (eRow R k) = 1 := by
   by_cases h : IsUnit (lastEnt (eRow R k))
   · exact Units.ext ((rowGL_val h).trans rowM_eRow)
   · simp [rowGL, h]

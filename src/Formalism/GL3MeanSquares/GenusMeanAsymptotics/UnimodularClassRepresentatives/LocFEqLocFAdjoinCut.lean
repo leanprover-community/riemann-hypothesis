@@ -87,7 +87,7 @@ private theorem VecSplit_adjoin_le_locF_of_le_locF (S : VecSplit h h') {𝔭 : I
     rw [← map_smul]
     exact Submodule.mem_sup_right (Submodule.mem_map_of_mem hta)
 
-theorem locF_adjoin_congr (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F) (S : VecSplit h h')
+theorem locF_adjoin_congr (S : VecSplit h h')
     {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) {T T' : Submodule (𝓞 K) V'} (e : locF 𝔭 T = locF 𝔭 T') :
     locF 𝔭 (S.adjoin T) = locF 𝔭 (S.adjoin T') := by
   have key : ∀ {A B : Submodule (𝓞 K) V'}, locF 𝔭 A = locF 𝔭 B →
@@ -150,7 +150,7 @@ theorem vd_cut (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF
     ext i j
     simp [S.isom]
   have hspan : locF 𝔭 (Submodule.span (𝓞 K) (Set.range bb)) = locF 𝔭 L := by
-    rw [hbb, span_range_cons S b', locF_adjoin_congr hK hF S h𝔭 hb', S.adjoin_cut h1 hLi hx]
+    rw [hbb, span_range_cons S b', locF_adjoin_congr S h𝔭 hb', S.adjoin_cut h1 hLi hx]
   rw [vd_eq_of_basis hF h h𝔭 S.finrank_add_one.symm bb hspan (hg₀.trans hgram.symm),
     vd_eq_of_basis hF h' h𝔭 rfl b' hb' hg₀]
 
@@ -159,7 +159,7 @@ theorem locF_eq_locF_adjoin_cut (hK : Formalism.HermitianLatticesTheory.IsCMUnra
     {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) (hx : S.x₀ ∈ locF 𝔭 B) :
     locF 𝔭 B = locF 𝔭 (S.adjoin (S.cut B)) := by
   obtain ⟨P, hP, rfl⟩ := LocalizedFibreSets.exists_max_over (K := K) h𝔭
-  simp only [locF_eq_loc hK hF hP] at hx ⊢
+  simp only [locF_eq_loc hF hP] at hx ⊢
   refine UnimodularLocalization.loc_eq_loc_adjoin_cut S hP.isPrime hBi hx ?_
   rw [h1, inv_one]
   exact ⟨1, Submonoid.one_mem _, by rw [one_smul]; exact Submodule.mem_one.mpr ⟨1, map_one _⟩⟩
@@ -228,7 +228,7 @@ theorem exists_isom_cut (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF
   · rw [hg'e, LocalizedFibreSets.gmap_locF, LocalizedFibreSets.cut_locF]
   · rw [LocalizedFibreSets.gmap_locF g 𝔭 L, locF_eq_locF_adjoin_cut hK hF S h1 hLi h𝔭 hxL, LocalizedFibreSets.gmap_locF,
       SplitBAux.gmap_extOf S g' rfl, locF_eq_locF_adjoin_cut hK hF S h1 hMi h𝔭 hxM]
-    exact locF_adjoin_congr hK hF S h𝔭 (by rw [← LocalizedFibreSets.gmap_locF]; exact hg'e)
+    exact locF_adjoin_congr S h𝔭 (by rw [← LocalizedFibreSets.gmap_locF]; exact hg'e)
 
 theorem fibLoc_cut (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F) (hs : h.IsSymm)
     (hd : IsTotPosDef h) (S : VecSplit h h') (h1 : h S.x₀ S.x₀ = 1) {L : Submodule (𝓞 K) V}
@@ -245,7 +245,7 @@ theorem fibLoc_cut (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : Is
   rw [LocalizedFibreSets.gmap_locF] at hΛx hΛc ⊢
   rw [locF_eq_locF_adjoin_cut hK hF S h1 hMi h𝔭 hΛx,
     locF_eq_locF_adjoin_cut hK hF S h1 hLi h𝔭 hxL]
-  apply locF_adjoin_congr hK hF S h𝔭
+  apply locF_adjoin_congr S h𝔭
   rw [← LocalizedFibreSets.cut_locF, hΛc, LocF.locF_idem]
 
 theorem isLocReps_cut (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F) (hs : h.IsSymm)
@@ -278,7 +278,7 @@ theorem exists_aut_map (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF 
   have hy0 : y ≠ 0 := by
     rintro rfl
     simp at hyy
-  obtain ⟨g₁, hg₁, hg₁y⟩ := exists_isom_map_of_eq hK hs hd hy0 (hyy.trans h1.symm)
+  obtain ⟨g₁, hg₁, hg₁y⟩ := exists_isom_map_of_eq hs hd (hyy.trans h1.symm)
   have hxg : S.x₀ ∈ Formalism.HermitianLatticesTheory.gmap g₁ (locF 𝔭 L) := by
     rw [← hg₁y]
     exact Submodule.mem_map_of_mem hy

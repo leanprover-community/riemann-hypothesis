@@ -128,7 +128,7 @@ theorem sign_eq_one (hY : GlobalTheory.UnivChar.IsUnivChar Y) {i : X.Tw} {S : Fi
   rw [GlobalTheory.GalChar.pair_eq hc, hσ, toAdd_ofAdd, mul_one] at e
   exact e.symm
 
-theorem spread_conj (hY : GlobalTheory.UnivChar.IsUnivChar Y) {i : X.Tw} {M : ℕ} {ch : Set (Pl D.host.E)} (hch : IsChoice ch)
+theorem spread_conj (hY : GlobalTheory.UnivChar.IsUnivChar Y) {i : X.Tw} {M : ℕ} {ch : Set (Pl D.host.E)}
     {S : Finset (Pl D.host.E)} (hS : admissibleConjugatePairPlaces X i S M = S) (x : ↥(half ch (admissibleConjugatePairPlaces X i S M)) → ZMod (X.l i ^ M))
     {v P : Pl D.host.E} (hvS : v ∈ S) (hvc : v ∉ ch) (hvP : IsConjPl D.host v P)
     (hPh : P ∈ half ch (admissibleConjugatePairPlaces X i S M)) :
@@ -161,7 +161,7 @@ theorem spread_restrict : ∀ (D : D7) (N : NData D.R D.host D.what₂) (X : NTw
       exact hc ((hch.pair _ _ hvP hne).2 h)
     have hPa' : P ∈ admissibleConjugatePairPlaces X i Q' M := conj_mem_admissibleConjugatePairPlaces hva hvP
     have hPh' : P ∈ half ch (admissibleConjugatePairPlaces X i Q' M) := mem_half.2 ⟨hPa', hPc⟩
-    rw [spread_conj hY hch hQ c (hQQ hv) hc hvP (hsub P hPh'), spread_conj hY hch hQ' _ hv hc hvP hPh']
+    rw [spread_conj hY hQ c (hQQ hv) hc hvP (hsub P hPh'), spread_conj hY hQ' _ hv hc hvP hPh']
 
 end GlobalTheory.SpreadRestrict
 

@@ -145,7 +145,7 @@ theorem kbound (B : Wp →L[ℂ] Wp) (e f : Wp) : ‖⟪e, B f⟫_ℂ‖ ≤ ‖
     _ = _ := by ring
 
 theorem joint_int (D : RealPlaceData k r Wp Wp) (X : SigData k r) (hGN : GNIntSharp)
-    (ha0 : 0 ≤ X.a) {b Cl : ℝ} (hCl0 : 0 ≤ Cl) (hab : AB k r ≤ X.a - b) (Λ : X.Hs → ℂ)
+    (ha0 : 0 ≤ X.a) {b Cl : ℝ} (hab : AB k r ≤ X.a - b) (Λ : X.Hs → ℂ)
     (hlm : AEStronglyMeasurable (fun y : Mt k r => Λ (X.σ (Matrix.of y) X.w)) D.μG)
     (hCl : ∀ y ∈ GV k r, ‖Λ (X.σ y X.w)‖ ≤ Cl * gN y ^ b) {φ : Mat k r → ℂ} (hφ : IsTestG φ) :
     Integrable (fun z : Mt k r × Mt k r => φ (Matrix.of z.2) *
@@ -213,7 +213,7 @@ theorem step_ii (D : RealPlaceData k r Wp Wp) (X : SigData k r) (hGN : GNIntShar
     unfold sigInt
     rw [← integral_inner hint]
     simp only [inner_smul_right]
-  have hFi := joint_int D X hGN ha0 hCl0 hab Λ hlm hCl hφ
+  have hFi := joint_int D X hGN ha0 hab Λ hlm hCl hφ
   have e1 : Λ (sigInt D X φ X.w) = (d : ℂ) * ∫ y : Mt k r, (∫ x : Mt k r, φ (Matrix.of x) *
       ⟪X.σ (Matrix.of y) X.w, X.σ (Matrix.of x) X.w⟫_ℂ ∂D.μG) * Λ (X.σ (Matrix.of y) X.w) ∂D.μG := by
     rw [hR _ (dd_mem D X ha0 hφ)]

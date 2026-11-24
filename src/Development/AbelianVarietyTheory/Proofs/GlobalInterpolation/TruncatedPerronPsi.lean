@@ -259,7 +259,7 @@ lemma rect_left (L : ℝ) {a b T : ℝ} (ha : a < 0) (hb : 0 < b) (hT : 0 < T) :
       simpa using hsplit w hw0)
   simpa [Formalism.FX.rectInt] using hres
 
-lemma le_of_forall_large {x B K c : ℝ} (hc : 0 < c) (hK : 0 ≤ K)
+lemma le_of_forall_large {x B K c : ℝ}
     (h : ∀ U : ℝ, c ≤ U → x ≤ B + K / U) : x ≤ B := by
   have h0 : Filter.Tendsto (fun U : ℝ => K / U) Filter.atTop (nhds 0) :=
     tendsto_const_nhds.div_atTop Filter.tendsto_id
@@ -282,7 +282,7 @@ lemma norm_le_three {x p q r : ℂ} (h : I * x = p - q + I * r ∨ I * x = q - p
 lemma far_neg {L c T : ℝ} (hL : L < 0) (hc : 0 < c) (hT : 0 < T) :
     ‖∫ t in (-T)..T, cexp (L * ((c : ℂ) + t * I)) / ((c : ℂ) + t * I)‖
       ≤ 2 * Real.exp (L * c) / (T * |L|) := by
-  apply le_of_forall_large (c := c) hc (K := 2 * T * Real.exp (L * c)) (by positivity)
+  apply le_of_forall_large (c := c) (K := 2 * T * Real.exp (L * c))
   intro U hU
   have hU0 : 0 < U := lt_of_lt_of_le hc hU
   have hR := rect_right L T hc hU
@@ -313,7 +313,7 @@ lemma far_neg {L c T : ℝ} (hL : L < 0) (hc : 0 < c) (hT : 0 < T) :
 lemma far_pos {L c T : ℝ} (hL : 0 < L) (hc : 0 < c) (hT : 0 < T) :
     ‖(∫ t in (-T)..T, cexp (L * ((c : ℂ) + t * I)) / ((c : ℂ) + t * I)) - 2 * Real.pi‖
       ≤ 2 * Real.exp (L * c) / (T * |L|) := by
-  apply le_of_forall_large (c := c) hc (K := 2 * T) (by positivity)
+  apply le_of_forall_large (c := c) (K := 2 * T)
   intro U hU
   have hU0 : 0 < U := lt_of_lt_of_le hc hU
   have hR := rect_left L (a := -U) (b := c) (T := T) (by linarith) hc hT

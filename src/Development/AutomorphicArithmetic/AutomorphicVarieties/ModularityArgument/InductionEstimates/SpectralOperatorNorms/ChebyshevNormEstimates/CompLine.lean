@@ -116,7 +116,7 @@ private theorem rep_ae {K : Type} [Field K] [NumberField K] {μ : Measure (G1 K 
     rfl
 
 private theorem long_swap {K : Type} [Field K] [NumberField K] (F : G1 K (2 + 2) → ℂ) (m m₂ : G1 K 2) (s : ℝ)
-    (k : G1 K (2 + 2)) (hF : Continuous F) :
+    (k : G1 K (2 + 2)) :
     (∫ X, F (w0 K * nn X * (lv m m₂ s * k)) ∂unipMeasure K (2 + 2) 2) =
       (Real.exp (4 * s) : ℝ) • ∫ X, F (lv m₂ m (-s) * (w0 K * nn X * k)) ∂unipMeasure K (2 + 2) 2 := by
   obtain ⟨e, he, hm⟩ := adMeas m m₂ s
@@ -206,7 +206,7 @@ theorem UpperTheory.constantTerm_pairing_vanishes_of_orthogonal :
    have hT : ∀ y : RightCosetSpace (Gam K 2),
        (∫ X, F (w0 K * nn X * (lv (Quotient.out y) m₂ s * k)) ∂unipMeasure K (2 + 2) 2) * starRingEnd ℂ (h (Quotient.out y)) =
          (Real.exp (4 * s) : ℝ) • ∫ X in C, P y X * starRingEnd ℂ (H y) ∂unipMeasure K (2 + 2) 2 := fun y => by
-     rw [long_swap F _ m₂ s k hP.cont, smul_mul_assoc, integral_mul_const]
+     rw [long_swap F _ m₂ s k, smul_mul_assoc, integral_mul_const]
      congr 2
      exact (setIntegral_eq_integral_of_forall_compl_eq_zero fun X hX => hsupp _ X hX).symm
    have hZ : ∀ X, ∫ y, P y X * starRingEnd ℂ (H y) ∂quotientMeasure (Gam K 2) μ₂ = 0 := fun X => by

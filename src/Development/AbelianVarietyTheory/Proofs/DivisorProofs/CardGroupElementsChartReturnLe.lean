@@ -76,15 +76,15 @@ namespace GlobalTheory.LatCount
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 
-def MajV (X : Data E r) (_x : Frame X.Ψ r) : Type := ↥X.Ψ → Fin r → ℂ
+def MajV (X : Data E r) : Type := ↥X.Ψ → Fin r → ℂ
 
 variable (X : Data E r) (x : Frame X.Ψ r)
 
-instance : AddCommGroup (MajV X x) := inferInstanceAs (AddCommGroup (↥X.Ψ → Fin r → ℂ))
-instance : Module ℝ (MajV X x) := inferInstanceAs (Module ℝ (↥X.Ψ → Fin r → ℂ))
-instance : FiniteDimensional ℝ (MajV X x) := inferInstanceAs (FiniteDimensional ℝ (↥X.Ψ → Fin r → ℂ))
+instance : AddCommGroup (MajV X) := inferInstanceAs (AddCommGroup (↥X.Ψ → Fin r → ℂ))
+instance : Module ℝ (MajV X) := inferInstanceAs (Module ℝ (↥X.Ψ → Fin r → ℂ))
+instance : FiniteDimensional ℝ (MajV X) := inferInstanceAs (FiniteDimensional ℝ (↥X.Ψ → Fin r → ℂ))
 
-def majIp (u w : MajV X x) : ℝ := ∑ τ, (X.Hf x τ (u τ) (w τ)).re
+def majIp (u w : MajV X) : ℝ := ∑ τ, (X.Hf x τ (u τ) (w τ)).re
 
 theorem Hf_add_left (τ : X.Ψ) (u u' w : Fin r → ℂ) :
     X.Hf x τ (u + u') w = X.Hf x τ u w + X.Hf x τ u' w := by
@@ -114,7 +114,7 @@ theorem re_Hf_self_nonneg {x : Frame X.Ψ r} (hx : x ∈ X.dom) (τ : X.Ψ) (v :
   · rw [Data.Hf_self X hx, Complex.ofReal_re]
     exact (X.maj_pos hx τ h).le
 
-def majCore {x : Frame X.Ψ r} (hx : x ∈ X.dom) : InnerProductSpace.Core ℝ (MajV X x) where
+def majCore {x : Frame X.Ψ r} (hx : x ∈ X.dom) : InnerProductSpace.Core ℝ (MajV X) where
   inner u w := majIp X x u w
   conj_inner_symm u w := by
     simp only [conj_trivial, majIp]
@@ -165,7 +165,7 @@ theorem card_cmType : X.Ψ.card = fdeg E := by
   unfold fdeg
   omega
 
-theorem finrank_majV : Module.finrank ℝ (MajV X x) = 2 * fdeg E * r := by
+theorem finrank_majV : Module.finrank ℝ (MajV X) = 2 * fdeg E * r := by
   change Module.finrank ℝ (↥X.Ψ → Fin r → ℂ) = _
   rw [Module.finrank_pi_fintype]
   simp [Module.finrank_pi_fintype, Complex.finrank_real_complex, card_cmType]
@@ -178,7 +178,7 @@ namespace GlobalTheory.LatCount
 open scoped ENNReal
 
 theorem encard_le (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : DataX E r)
-    (x : Frame X.Ψ r) (ε R : ℝ) (hx : x ∈ X.dom) (hε : 0 < ε) (hR : 0 ≤ R)
+    (x : Frame X.Ψ r) (ε R : ℝ) (hx : x ∈ X.dom) (hε : 0 < ε)
     (hsep : ∀ v ∈ X.L', v ≠ 0 → ε ≤ ∑ τ, X.maj x τ (Data.emb τ.1 v)) :
     ({v | v ∈ X.L' ∧ ∑ τ, X.maj x τ (Data.emb τ.1 v) ≤ R}.encard : ℝ≥0∞) ≤
       ENNReal.ofReal ((1 + 2 * Real.sqrt (R / ε)) ^ (2 * fdeg E * r)) := by
@@ -186,10 +186,10 @@ theorem encard_le (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (
   set Q : (Fin r → E) → ℝ := fun v => ∑ τ, X.maj x τ (Data.emb τ.1 v) with hQ
   set S : Set (Fin r → E) := {v | v ∈ X.L' ∧ Q v ≤ R} with hS
   set B : ℝ := (1 + 2 * Real.sqrt (R / ε)) ^ (2 * fdeg E * r) with hB
-  letI core : InnerProductSpace.Core ℝ (MajV X.toData x) := majCore X.toData hx
-  letI : NormedAddCommGroup (MajV X.toData x) := InnerProductSpace.Core.toNormedAddCommGroup (𝕜 := ℝ)
-  letI : InnerProductSpace ℝ (MajV X.toData x) := InnerProductSpace.ofCore core.toCore
-  let g : (Fin r → E) → MajV X.toData x := fun v τ => Data.emb τ.1 v
+  letI core : InnerProductSpace.Core ℝ (MajV X.toData) := majCore X.toData hx
+  letI : NormedAddCommGroup (MajV X.toData) := InnerProductSpace.Core.toNormedAddCommGroup (𝕜 := ℝ)
+  letI : InnerProductSpace ℝ (MajV X.toData) := InnerProductSpace.ofCore core.toCore
+  let g : (Fin r → E) → MajV X.toData := fun v τ => Data.emb τ.1 v
   have hg : ∀ v, ‖g v‖ = Real.sqrt (Q v) := by
     intro v
     have h2 : ‖g v‖ ^ 2 = Q v := by
@@ -393,7 +393,7 @@ theorem chart_mult_le : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (
   have hd : 0 ≤ dE E := abs_nonneg _
   have hBd0 : 0 ≤ Bd := by positivity
   set T : Set (Fin r → E) := {v | v ∈ X.L' ∧ ∑ τ, X.maj x τ (Data.emb τ.1 v) ≤ 4 * Bd} with hT
-  have hTc := _root_.GlobalTheory.LatCount.encard_le E r X x ε (4 * Bd) hdom hε (by positivity) hmin
+  have hTc := _root_.GlobalTheory.LatCount.encard_le E r X x ε (4 * Bd) hdom hε hmin
   have hTfin : T.Finite := by
     rw [← Set.encard_ne_top_iff]
     intro htop

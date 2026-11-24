@@ -134,7 +134,7 @@ theorem exists_lintegral_le (Γ : Subgroup G) [DiscreteTopology Γ] [Countable �
 
 theorem lintegral_average_le (μ : Measure G) [μ.IsMulLeftInvariant] [SFinite μ] {X : Type} [MeasurableSpace X]
     (m : Measure X) [IsFiniteMeasure m] {j : X → G} (hj : Measurable j) {K Ω : Set G}
-    (hΩ : IsCompact Ω) (hm : ∀ᵐ z ∂m, j z ∈ K) {h : G → ℂ} (hh : Continuous h) :
+    (hm : ∀ᵐ z ∂m, j z ∈ K) {h : G → ℂ} (hh : Continuous h) :
     ∫⁻ g in Ω, ‖∫ z, h (j z * g) ∂m‖ₑ ∂μ ≤ m Set.univ * ∫⁻ x in K * Ω, ‖h x‖ₑ ∂μ := by
   have hmeas : Measurable fun p : G × X => ‖h (j p.2 * p.1)‖ₑ :=
     hh.enorm.measurable.comp ((hj.comp measurable_snd).mul measurable_fst)
@@ -215,7 +215,7 @@ theorem average_eq_zero_of_mem_closure [LocallyCompactSpace G] (Γ : Subgroup G)
       simp only [Pi.sub_apply]
       rw [integral_sub (hint ψ hψ g) (hint h hh g), h0, sub_zero]
     simp only [e1]
-    refine (lintegral_average_le μ m hj.measurable hΩ (K := j '' s)
+    refine (lintegral_average_le μ m hj.measurable (K := j '' s)
       (hm.mono fun z hz => Set.mem_image_of_mem j hz) hd).trans ?_
     rw [hc, mul_assoc, mul_assoc]
     refine mul_le_mul_right ((hN _ hd.enorm.measurable fun γ hγ g => ?_).trans (mul_le_mul_right ?_ _)) _
@@ -615,8 +615,8 @@ private theorem single_one_mul_single_one' (p q : Mt n) (a b : Fin n) :
   have hl : (p * Matrix.single a b 1 * q : Mt n) x y = p x a * q b y := by
     simp [Matrix.mul_apply, Matrix.single_apply, ite_and, Finset.sum_ite_eq, ite_mul, mul_ite]
   rw [hl, Matrix.sum_apply, Fintype.sum_eq_single x (fun c hc => by
-      rw [Matrix.sum_apply]; simp [Matrix.single_apply, hc]),
-    Matrix.sum_apply, Fintype.sum_eq_single y (fun c hc => by simp [Matrix.single_apply, hc])]
+      rw [Matrix.sum_apply]; simp [hc]),
+    Matrix.sum_apply, Fintype.sum_eq_single y (fun c hc => by simp [hc])]
   simp
 
 private theorem mul_inv_mul_eq_mul_inv_mul_of_factorizations (c d : ℂ) (x : A) :
@@ -795,7 +795,7 @@ theorem gelfRep_eq (hh : Hm.IsHermitian) (hd : Hm.det ≠ 0) (hσ : IsURepOn (Fo
 
 
 omit [CompleteSpace H] in
-theorem eq_zero_of_inner_orbit (hd : Hm.det ≠ 0) (hσ : IsURepOn (Formalism.QuantumDeterminants.UH Hm) σ)
+theorem eq_zero_of_inner_orbit (hσ : IsURepOn (Formalism.QuantumDeterminants.UH Hm) σ)
     (hi : IsIrredOn (Formalism.QuantumDeterminants.UH Hm) σ) {v₀ : H} (h0 : v₀ ≠ 0) {y : H}
     (hy : ∀ g ∈ Formalism.QuantumDeterminants.UH Hm, ⟪y, σ g v₀⟫_ℂ = 0) : y = 0 := by
   obtain ⟨⟨hσ1, hσmul⟩, -, -⟩ := hσ
@@ -940,7 +940,7 @@ theorem gelfRep_scalar : ∀ (n : ℕ) (Hm : Mt n) (q : ℕ) (x₀ : Mt n) (w : 
   refine ⟨(starRingEnd ℂ) c, fun v hv => ?_⟩
   have hvs : v ∈ GlobalTheory.SmVec.smSub Hm σ := hv
   rw [← sub_eq_zero]
-  apply eq_zero_of_inner_orbit hd hσ hi hv₀
+  apply eq_zero_of_inner_orbit hσ hi hv₀
   intro g hg
   have hgs : σ g (v₀s : H) ∈ GlobalTheory.SmVec.smSub Hm σ := GlobalTheory.SmVec.rep_mem hHu hσ v₀s.2 hg
   have e1 : gelfRep Hm σ k v = ((opM (dEnd hh hd hσ) 1 1 ^ (k + 1)).trace ⟨v, hvs⟩ : H) :=

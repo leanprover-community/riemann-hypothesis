@@ -302,7 +302,7 @@ theorem eigenProj_exists (dual : Bool) {lam : Fin n → ℝ} {H : Type*} [Normed
       (∀ f ∈ tensSub (genSub E V), eeF dual E f = z • f → P f = f) ∧
       ∀ f ∈ tensSub (genSub E V), ∀ z' : ℂ, z' ≠ z → eeF dual E f = z' • f → P f = 0 := by
   obtain ⟨B, hB⟩ := dc_ee_nodal dual hσ hD hgap hV hc hVK hW
-  refine ⟨dc_lagProj (eeF dual E) B z, ?_, dc_lagProj_props (dc_eeF_mem dual) hB z⟩
+  refine ⟨dc_lagProj (eeF dual E) B z, ?_, dc_lagProj_props hB z⟩
   unfold dc_lagProj
   split_ifs
   · exact dc_isGKEndo_aeval (isGKEndo_eeF hσ hD V dual) _

@@ -401,7 +401,7 @@ theorem exists_norm (h : IsCMExt F E σ) (hU : Algebra.Unramified (𝓞 F) (𝓞
   have hI : I ≤ I.comap s := Ideal.map_le_iff_le_comap.2 fun c hc => by
     rw [Ideal.mem_comap, Ideal.mem_comap, hk]
     exact Ideal.mem_map_of_mem _ hc
-  obtain ⟨p, hp⟩ := GlobalTheory.UnitaryDoubleCoset.exists_poly_norm hs
+  obtain ⟨p, hp⟩ := GlobalTheory.UnitaryDoubleCoset.exists_poly_norm
     (GlobalTheory.InertNorm.exists_dvd_mul_map_sub_X O I s hs (fun y hy => hI hy) (exists_isUnit_sub_conj h hU v)) hB hu
   have h2 : IsUnit (Polynomial.aeval B p) := isUnit_of_mul_isUnit_right (hp ▸ hu)
   exact ⟨h2.unit, hp⟩

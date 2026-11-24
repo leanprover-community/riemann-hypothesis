@@ -152,7 +152,7 @@ theorem isOpen_integral :
     IsOpen {a : FiniteAdeleRing (𝓞 F) F | ∀ v, a v ∈ HeightOneSpectrum.adicCompletionIntegers F v} :=
   RestrictedProduct.isOpen_forall_mem
     (A := fun v : HeightOneSpectrum (𝓞 F) => (v.adicCompletionIntegers F : Set (v.adicCompletion F)))
-    (fun v => Valued.isOpen_valuationSubring _)
+    (fun _ => Valued.isOpen_valuationSubring _)
 
 theorem local_bound (ψ : AddChar (AdeleRing (𝓞 F) F) ℂ) (hψ : ∀ x, ‖ψ x‖ = 1)
     (f : SchwartzMap (κ → mixedEmbedding.mixedSpace F) ℂ) {g : (κ → FiniteAdeleRing (𝓞 F) F) → ℂ}

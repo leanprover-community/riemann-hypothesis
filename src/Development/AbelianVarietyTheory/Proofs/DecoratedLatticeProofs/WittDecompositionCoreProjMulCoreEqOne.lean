@@ -98,12 +98,12 @@ theorem qY_e' : d.qY * d.e' = 1 := by
   simpa only [Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, gram_conjTranspose,
     Matrix.conjTranspose_one, HypDec.qY, Matrix.mul_assoc] using h
 theorem wittDecomposition_coreProj_mul_e_eq_zero : d.q0 * d.e = 0 := by
-  simp only [HypDec.q0, Matrix.mul_assoc, ← Matrix.mul_assoc d.i₀ᴴ, d.i₀e, Matrix.mul_zero]
+  simp only [HypDec.q0, Matrix.mul_assoc, d.i₀e, Matrix.mul_zero]
 theorem wittDecomposition_coreProj_mul_core_eq_one : d.q0 * d.i₀ = 1 := by
   rw [HypDec.q0, Matrix.mul_assoc, d.iso,
     Matrix.nonsing_inv_mul _ (isUnit_iff_ne_zero.mpr (gram_det_ne S₀))]
 theorem wittZeroProjection_mul_dualBasis_eq_zero : d.q0 * d.e' = 0 := by
-  simp only [HypDec.q0, Matrix.mul_assoc, ← Matrix.mul_assoc d.i₀ᴴ, d.i₀e', Matrix.mul_zero]
+  simp only [HypDec.q0, Matrix.mul_assoc, d.i₀e', Matrix.mul_zero]
 
 theorem gram_eq : S.gram = d.qYᴴ * d.qX + d.q0ᴴ * (S₀.gram * d.q0) + d.qXᴴ * d.qY := by
   have h0 : d.q0ᴴ * S₀.gram = S.gram * d.i₀ := by

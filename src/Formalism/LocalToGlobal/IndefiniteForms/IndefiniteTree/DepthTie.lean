@@ -546,7 +546,7 @@ theorem leafDepthRam_core (N : IndefNum Bs) (Nd : NumDatum) (hL : LawsPi T Dd) (
     (hSat : ∀ j, ChartSaturated (T.Q.Xo (ι j)) T.Q.c) (hPg : LeafPage O) (hSz : LeafSizes O) (tF : ContentEqualsDatumContent N Nd ι) (tP : TiePrimes O Nd) (tK : TieFK O Nd)
     (Dk : Bs.J → ℝ) (C₀ : ℝ) (iD : DegScale O (fun j => (DF (T.Q.Dw (ι j)) (Dd.aL (ι j)) : ℝ)) Dk)
     (iW : DegWeight O Dk C₀) (iP : PageRam O C₀) (iB : WtRam O Nd ι) : LeafDepthRam N O := leafDepthRam_depth T.Q.Xo T.Q.c Dd O ι N Nd hE hσ hT hpr hL.piSplit hstar hEx hSat
-    (fun j σ i k hik => (hL.wts _ (hι j)).1 σ hik) (fun j => card_of_laws T Dd hL hp (ι j) (hι j)) hPg hSz tF tP tK Dk C₀ iD iW iP iB
+    (fun j σ _ _ hik => (hL.wts _ (hι j)).1 σ hik) (fun j => card_of_laws T Dd hL hp (ι j) (hι j)) hPg hSz tF tP tK Dk C₀ iD iW iP iB
 
 end Core
 

@@ -312,7 +312,7 @@ theorem orderAtLeastLocus_coverMarkedBlowupData_eq_empty (hstar : MaxContactCove
         ((MarkedBlowupSequenceData.ofMarkedSequence
           (A 0 (reduceAlongHypersurfaceTriple T h.valid hinv A hft))).toBlowupSequenceData.obj i) := by
     intro i hi
-    exact isLocallyNoetherian_tunedMarkedBlowupSeq_schemeAt hstar (MaxContactCoverData.coverTriple T h.valid) hScV
+    exact isLocallyNoetherian_tunedMarkedBlowupSeq_schemeAt (MaxContactCoverData.coverTriple T h.valid)
       (separateAllBoundary T h.valid hinv A) hft
       [MaxContactReduction.strictTransformAtLength (separateAllBoundary T h.valid hinv A)
         (MaxContactCoverData.coverMaxContactIdeal T h.valid)]

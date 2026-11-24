@@ -93,7 +93,7 @@ theorem tz_TT (P : M.Par) (Bs : B.RealPlaceData P.k P.r Wp Wq) (hpl : Q.IsPlace 
   rw [hpl.2.2.2.1, hpl.2.2.2.2.1]
   rfl
 
-theorem radBase_of (P : M.Par) (Bs : B.RealPlaceData P.k P.r Wp Wq) (hpl : Q.IsPlace P Bs.z Bs.z' Bs.π Bs.π') :
+theorem radBase_of (P : M.Par) (Bs : B.RealPlaceData P.k P.r Wp Wq) :
     NF.RadBase P.k P.r Bs.z Bs.z' Bs.μsec Bs.π Bs.π' := by
   exact ⟨Bs.k_pos, Bs.z_mem, Bs.z'_mem, Bs.T_pos, Bs.T'_pos, Bs.sec, Bs.π_rep, Bs.π'_rep, Bs.π_cont,
     Bs.π'_cont⟩
@@ -127,7 +127,7 @@ theorem key_slice (P : M.Par) (Bs : B.RealPlaceData P.k P.r Wp Wq) (hpl : Q.IsPl
       ∑ ρ, inner ℂ (B.hsVec (e ρ ζ)) (B.hsVec ((Φ : Q.Fn P.k P.r (Wq →L[ℂ] Wp)) c (NF.muZ P.k P.r Bs.μsec ζ))) •
         (T (Ψ ρ) : Q.Fn P.k P.r (Wq →L[ℂ] Wp)) c0 (NF.muZ P.k P.r Bs.μsec ζ) := by
   have hTz := tz_TT P Bs hpl
-  have hRB := radBase_of P Bs hpl
+  have hRB := radBase_of P Bs
   let F : M.Ty P → ℂ → ℂ := fun ρ ζ' => inner ℂ (B.hsVec (e ρ ζ'))
     (B.hsVec ((Φ : Q.Fn P.k P.r (Wq →L[ℂ] Wp)) c (NF.muZ P.k P.r Bs.μsec ζ')))
   have hFs : ∀ ρ, ContDiffOn ℝ ∞ (F ρ) {ζ | P.TT < Complex.normSq ζ} := fun ρ =>
@@ -174,7 +174,7 @@ theorem second_shift_matrix_form : GTSSLMat := by
   intro Wp Wq _ _ _ _ _ _ P Bs X d hH e he hSL
   obtain ⟨hpl, hk, -, hL, hS, hRel, hQQ⟩ := hH
   have hTz := tz_TT P Bs hpl
-  have hRB := radBase_of P Bs hpl
+  have hRB := radBase_of P Bs
   let c0 : Fin P.r → ℂ := fun _ => 1
   have hc0 : c0 ∈ OmX P.r := fun _ => one_ne_zero
   have hsec : ∀ ρ, ((NF.QR P.k P.r Bs.z Bs.z').indicator fun q : (Fin P.r → ℂ) × ℂ => e ρ q.2) ∈

@@ -335,7 +335,7 @@ theorem levelRowCard_of_card (hR : RowLevCard) (D : D7) : Conclusion4a D := by
   rw [e1, e2]
   refine ⟨by nlinarith, by nlinarith, by nlinarith, by nlinarith⟩
 
-theorem levelDimension_of_admissible (D : D7) (Lv : LevelData D) (h17 : adm17 D Lv) (hp : Conclusion4p D Lv) : SmallOrderPrimeLogSumBound D Lv := by
+theorem levelDimension_of_admissible (D : D7) (Lv : LevelData D) (h17 : adm17 D Lv) (hp : Conclusion4p D Lv) : SmallOrderPrimeLogSumBound D := by
   let _ := D.host.cmStar
   intro hg u c
   have h := h17 hg u (hp u) c

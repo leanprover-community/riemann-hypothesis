@@ -159,7 +159,7 @@ theorem exists_galois_quotient_of_ideleNorm_eq_one_quadratic (hE : Module.finran
     have := congrArg (fun g : E ≃ₐ[ℚ] E => g y) hcc
     simpa using this
   have key : ∃ x : (𝔸[E])ˣ, (x : 𝔸[E]) = z * σ x := by
-    refine GlobalTheory.AdLat.hilbert90_involution_of_idempotent_unit σ hσ (z : 𝔸[E]) (algebraMap E 𝔸[E] (y - c y)) (am e)
+    refine GlobalTheory.AdLat.hilbert90_involution_of_idempotent_unit σ (z : 𝔸[E]) (algebraMap E 𝔸[E] (y - c y)) (am e)
       (am (algebraMap ℚ 𝔸[ℚ] (1 / 2) * a)) hu ?_ ?_ ?_ ?_ (hamσ e) ?_ ?_
     · rw [hσd, AdeleBaseChange.smul_algebraMap, map_sub, hcy, ← map_neg, neg_sub]
     · exact (IsUnit.mk0 _ (sub_ne_zero.2 hy.symm)).map (algebraMap E 𝔸[E])

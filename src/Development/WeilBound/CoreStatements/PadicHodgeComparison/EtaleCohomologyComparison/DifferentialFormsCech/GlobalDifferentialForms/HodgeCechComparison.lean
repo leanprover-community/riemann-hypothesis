@@ -739,7 +739,7 @@ def ofCap : (capT (Vk q U a) i).FullSubcategory ⥤ (KS q (a + 1) {capO U.U i}).
     ⟨T.obj.property.1, capO U.U i, rfl, (inU_capO U.U i T.obj.obj).2 T.property⟩
 
 def capAdj : toCap q U a n i ⊣ ofCap q U a n i := Adjunction.mkOfHomEquiv
-  { homEquiv := fun A B =>
+  { homEquiv := fun _ _ =>
       { toFun := fun g => ObjectProperty.homMk g.hom.hom
         invFun := fun g => ObjectProperty.homMk (ObjectProperty.homMk g.hom)
         left_inv := fun _ => rfl
@@ -907,7 +907,7 @@ namespace GlobalTheory.CompanionTheory.OmGlobPush
 
 theorem push_kc : ∀ {K : Type} [CommRing K] {X Y : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K)) (p : Y ⟶ Spec (CommRingCat.of K))
     (u : X ⟶ Y) (hu : u ≫ p = q) (U : Cov q) (W : Cov p) (τ : U.ι → W.ι)
-    (hτ : ∀ n (i : Fin (n + 1) → U.ι), capO U.U i ≤ u ⁻¹ᵁ capO W.U (τ ∘ i)) (a : ℕ),
+    (_ : ∀ n (i : Fin (n + 1) → U.ι), capO U.U i ≤ u ⁻¹ᵁ capO W.U (τ ∘ i)) (a : ℕ),
     ∃ hG : ∀ T, KC q U a T → KC p W a ((pullM u hu a).G.obj T),
       ∀ α T, Vk q U a α T → Vk p W a (τ α) ((morU (pullM u hu a) (U := KC p W a) (U' := KC q U a) hG).G.obj T) := by
   intro K _ X Y q p u hu U W τ hτ a
@@ -952,7 +952,7 @@ variable {K : Type} [CommRing K] {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.o
 theorem inU_mono {V W : X.Opens} (h : V ≤ W) (T : Thick (smFun X q))
     (hT : InU (γ := dividedPowersBot K) (p := 0) (q := q) (κ := Ideal.Quotient.mk ⊥) V T) :
     InU (γ := dividedPowersBot K) (p := 0) (q := q) (κ := Ideal.Quotient.mk ⊥) W T :=
-  fun x hx => h (hT hx)
+  fun _ hx => h (hT hx)
 
 theorem coe_capO {ι : Type} (U : ι → X.Opens) {n : ℕ} (i : Fin n → ι) :
     ((capO U i : X.Opens) : Set X) = ⋂ k, (U (i k) : Set X) := by
@@ -1602,7 +1602,7 @@ theorem term : ∀ (K : Type) [Field K] [CharZero K],
       HU (Fk q U a) (capT (Vk q U a) i) a ≃ₗ[K] OmU q (capO U.U i) a,
     (∀ {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K)) [Smooth q] (U : Cov q) (a m n : ℕ) (i : Fin (n + 1) → U.ι)
       (θ : Fin (m + 1) → Fin (n + 1)) (x : HU (Fk q U a) (capT (Vk q U a) (i ∘ θ)) a),
-      t q U a n i ((resU (Fk q U a) (U := capT (Vk q U a) (i ∘ θ)) (V := capT (Vk q U a) i) fun T hT k => hT (θ k)).pull a x) =
+      t q U a n i ((resU (Fk q U a) (U := capT (Vk q U a) (i ∘ θ)) (V := capT (Vk q U a) i) fun _ hT k => hT (θ k)).pull a x) =
         formRes q (capO_comp U.U i θ) a (t q U a m (i ∘ θ) x)) ∧
     ∀ {X Y : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K)) (p : Y ⟶ Spec (CommRingCat.of K)) [Smooth q] [Smooth p]
       (u : X ⟶ Y) (hu : u ≫ p = q) (U : Cov q) (W : Cov p) (τ : U.ι → W.ι)

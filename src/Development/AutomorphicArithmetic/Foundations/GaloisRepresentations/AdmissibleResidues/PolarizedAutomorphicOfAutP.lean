@@ -52,7 +52,7 @@ section
 variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω] {l : ℕ} [Fact l.Prime] {n : ℕ}
   {ι : Qbar l ≃+* ℂ} {r r' : G F Ω →* GL (Fin n) (Qbar l)}
 
-theorem Wit.iso' [IsCMField F] (e : RepIso r r') (hU : Wit ι r) : Wit ι r' := by
+theorem Wit.iso' [IsCMField F] (e : RepIso r r') (hU : Wit r) : Wit r' := by
   intro w hw A hA hfin
   obtain ⟨g, hg⟩ := e
   have hfin' : (r '' (Ine (F := F) A : Set (G F Ω))).Finite := by

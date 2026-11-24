@@ -193,7 +193,7 @@ theorem heisS_cosetInd_char {R : ℕ} (hR : 0 < R) (q : Matrix κ ι ℚ ⧸ per
   have h : ∀ k, (0 : Matrix κ ι ℚ) k = 0 := fun _ => rfl
   have hs : (∑ k', (2 * (x k' ⬝ᵥ Matrix.single k i (R : ℚ)⁻¹ k') -
       Matrix.single k i (R : ℚ)⁻¹ k' ⬝ᵥ (0 : Matrix κ ι ℚ) k') : ℚ) = 2 * (x k i / R) := by
-    simp [dotProduct, Matrix.single, ite_and, div_eq_mul_inv, ← Finset.mul_sum]
+    simp [dotProduct, Matrix.single, ite_and, div_eq_mul_inv]
   rw [heisS, hs, sub_zero, Pi.smul_apply, smul_eq_mul, mul_comm]
   by_cases hx : (x : Matrix κ ι ℚ ⧸ perSub ℚ κ ι R) = q
   · congr 1

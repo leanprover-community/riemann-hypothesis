@@ -65,7 +65,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Rd3.exists_infiniteAdelicChar_ne_one :
-    ∀ {F : Type} [inst : Field F] [inst_1 : NumberField F]
+    ∀ {F : Type} [Field F] [NumberField F]
     (w : NumberField.InfinitePlace F),
     ∃ (z : w.Completion),
       (GroundTheory.Global.infiniteAdelicChar F w : w.Completion → Circle) z ≠
@@ -141,7 +141,7 @@ private lemma UpperTheory.Reformulated.B.AdelicCharacterNormOne.eq_one_of_tendst
       ((tendsto_pow_atTop_atTop_of_one_lt hgt).comp hf) 1)
 
 theorem UpperTheory.Reformulated.B.AdelicCharacterNormOne.norm_eq_one :
-    ∀ {F : Type} [inst : Field F] [inst_1 : NumberField F]
+    ∀ {F : Type} [Field F] [NumberField F]
     (ψ : AddChar (NumberField.AdeleRing (NumberField.RingOfIntegers F) F) ℂ),
     Continuous (⇑ψ : NumberField.AdeleRing (NumberField.RingOfIntegers F) F → ℂ) →
       (∀ (a : F),
@@ -571,7 +571,7 @@ private theorem adele_bounded (C : Set (AdeleRing (RingOfIntegers F) F)) (hC : I
 end Adele
 
 theorem UpperTheory.Reformulated.B.UnitaryAnnihilator.unitary_and_annihilator_eq :
-    ∀ (F : Type) [inst : Field F] [inst_1 : NumberField F]
+    ∀ (F : Type) [Field F] [NumberField F]
     [LocallyCompactSpace (NumberField.AdeleRing (NumberField.RingOfIntegers F) F)]
     [Invertible (2 : NumberField.AdeleRing (NumberField.RingOfIntegers F) F)]
     (ψ : AddChar (NumberField.AdeleRing (NumberField.RingOfIntegers F) F) ℂ),

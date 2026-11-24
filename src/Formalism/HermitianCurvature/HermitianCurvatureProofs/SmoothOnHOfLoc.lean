@@ -255,7 +255,7 @@ section nf
 
 variable {k r : ℕ}
 
-theorem zb_last_row (i0 s : ℕ) (hh : Matrix (Fin i0) (Fin i0) ℂ) (t : ℂ) (hs : 2 ≤ s) (a b : ℕ) (ha : a ≠ i0)
+theorem zb_last_row (i0 s : ℕ) (hh : Matrix (Fin i0) (Fin i0) ℂ) (t : ℂ) (a b : ℕ) (ha : a ≠ i0)
     (ha' : a + 1 < i0 + s) (hb : b = i0) : C3.Zb i0 s hh t a b = 0 := by
   subst hb
   unfold C3.Zb
@@ -271,7 +271,7 @@ theorem corner_matrix_last_entry (i0 s : ℕ) (hh : Matrix (Fin i0) (Fin i0) ℂ
   unfold C3.Zb
   split_ifs <;> first | rfl | omega
 
-theorem corner_matrix_first_line_zero (i0 s : ℕ) (hh : Matrix (Fin i0) (Fin i0) ℂ) (t : ℂ) (hs : 2 ≤ s) (b : ℕ) (hb : b + 1 < i0 + s) :
+theorem corner_matrix_first_line_zero (i0 s : ℕ) (hh : Matrix (Fin i0) (Fin i0) ℂ) (t : ℂ) (b : ℕ) (hb : b + 1 < i0 + s) :
     C3.Zb i0 s hh t i0 b = 0 := by
   unfold C3.Zb
   split_ifs <;> first | rfl | omega
@@ -326,7 +326,7 @@ theorem nf_top (z z' : Fin (2 * r + k + 1) → ℂ) (hz' : inWb k r z') (hT' : h
       intro a ha
       rw [hyS]
       have : C3.Zb i0 (s'' + 2) hh t a.val i0 = 0 :=
-        zb_last_row i0 _ hh t (by omega) a.val i0 (fun h => ha (Fin.ext h)) (by omega) rfl
+        zb_last_row i0 _ hh t a.val i0 (fun h => ha (Fin.ext h)) (by omega) rfl
       show star (C3.Zb i0 (s'' + 2) hh t a.val i0) = 0
       rw [this, star_zero])
     (by
@@ -335,7 +335,7 @@ theorem nf_top (z z' : Fin (2 * r + k + 1) → ℂ) (hz' : inWb k r z') (hT' : h
       have hpe : p = esI k _ ⟨2 * (i0 + s'' + 1) + k - p.val, hb⟩ := by ext; simp [esI]; omega
       rw [hpe, hyS]
       have : C3.Zb i0 (s'' + 2) hh t i0 (2 * (i0 + s'' + 1) + k - p.val) = 0 :=
-        corner_matrix_first_line_zero i0 _ hh t (by omega) _ (by omega)
+        corner_matrix_first_line_zero i0 _ hh t _ (by omega)
       simp [hi, this])
     (by
       have hP := third_polynomial_expansion i0 s'' hh t
@@ -396,7 +396,7 @@ theorem nf_top (z z' : Fin (2 * r + k + 1) → ℂ) (hz' : inWb k r z') (hT' : h
       rw [htau, hsg, one_mul, hsame _ (by simp [esI]; omega), hyS, star_star]
       by_cases hpi : p.val = i0
       · rw [ite_eq_right (by omega)]
-        exact zb_last_row i0 _ hh t (by omega) a.val p.val ha (by omega) hpi
+        exact zb_last_row i0 _ hh t a.val p.val ha (by omega) hpi
       · rw [ite_eq_left ⟨hp, hpi⟩]
     · rw [ite_eq_right (by omega)]
       have hle : (WeylGroupFacts.tau k _ p).val ≤ i0 + s'' + 1 + k := by

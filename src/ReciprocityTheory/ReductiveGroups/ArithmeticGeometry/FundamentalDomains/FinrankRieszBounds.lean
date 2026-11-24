@@ -19,7 +19,7 @@ open scoped ComplexConjugate
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ} {X : Data E r}
 
-theorem maj_csmul {z : Frame X.Ψ r} (hz : z ∈ X.dom) (τ : X.Ψ) (c : ℂ) (v : Fin r → ℂ) :
+theorem maj_csmul {z : Frame X.Ψ r} (τ : X.Ψ) (c : ℂ) (v : Fin r → ℂ) :
     X.maj z τ (c • v) = ‖c‖ ^ 2 * X.maj z τ v := by
   have hl : ∀ w, hermC τ.1 X.Gm (c • v) w = c * hermC τ.1 X.Gm v w := by
     intro w

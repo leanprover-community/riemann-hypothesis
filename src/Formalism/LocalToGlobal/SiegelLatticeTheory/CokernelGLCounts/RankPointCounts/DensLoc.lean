@@ -499,7 +499,7 @@ theorem alphaStd_split (𝔭 : Ideal (𝓞 F)) {j n : ℕ} (h : j ≤ n) :
   rw [hU, Finset.prod_union hD]
 
 theorem ratio_bounds (𝔭 : Ideal (𝓞 F)) (hN : (2 : ℝ) ≤ (Ideal.absNorm 𝔭 : ℝ)) {j n s : ℕ} (hjn : j ≤ n)
-    (hs : s ≤ j + 1) (_hs1 : 1 ≤ s) :
+    (hs : s ≤ j + 1) :
     0 < alphaStd K 𝔭 n / alphaStd K 𝔭 j ∧
       alphaStd K 𝔭 n / alphaStd K 𝔭 j ≤ Real.exp (2 * ((Ideal.absNorm 𝔭 : ℝ))⁻¹ ^ s) ∧
       ((3 : ℝ) ≤ (Ideal.absNorm 𝔭 : ℝ) →
@@ -596,7 +596,7 @@ theorem densLocBound_at {D : Formalism.BasicNotions.D7} (h5 : DensAllAt D) : Den
       rw [hqe, inv_pow]
     obtain ⟨h1, h2, h3⟩ := ratio_bounds (K := D.host.E) p.asIdeal hq2
       (j := D.R.k - 1 - Cnt.cJ (VS D).hT (Cnt.UPair D F0 F') (Cnt.MMof D F0 F') p.asIdeal) (n := D.R.r)
-      (s := D.R.k - 2 * D.R.rS - 2) (by omega) (by omega) (by omega)
+      (s := D.R.k - 2 * D.R.rS - 2) (by omega) (by omega)
     rw [hd p, hinv]
     exact ⟨h1, h2, fun h => h3 (hqe ▸ h)⟩
   refine ⟨fun p => ?_, ?_⟩

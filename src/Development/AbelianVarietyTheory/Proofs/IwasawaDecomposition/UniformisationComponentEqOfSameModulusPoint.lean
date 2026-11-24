@@ -236,7 +236,7 @@ theorem hodgeMet_gram_frame {U : Formalism.L2.PjFree.Unf Xo c σ (Dw.p + Dw.q)} 
       Matrix.of fun b i : Fin Dw.p => coef (U.X k) f.1 f'.1 τ'.1 b i := by
     ext b i; rw [hτ]; rfl
   obtain ⟨hco1, -⟩ := hodge_co (U.X k) hj hp h1 τ'
-  rw [hKe, coef_eq_coW_change (U.X k) hj hp f.2 f'.2 τ' (hmo τ'), hmo τ',
+  rw [hKe, coef_eq_coW_change (U.X k) hj hp f'.2 τ' (hmo τ'), hmo τ',
     eq_of_conj_eq_one (isUnit_coW _ _ hp f'.2 _) hco1]
   congr 1
   simp only [conjTranspose_mul, Matrix.mul_assoc]

@@ -899,7 +899,7 @@ theorem of_iso (h : FiniteCohTwists k F) (e : F ≅ G) : FiniteCohTwists k G :=
   fun M hM ↦ (h M hM).of_iso ((twistFunctor M).mapIso e)
 
 theorem twist (h : FiniteCohTwists k F) (hM : M.IsLB) : FiniteCohTwists k (twist F M) :=
-  fun N hN ↦ (nonempty_twist_twist_iso_of_cls_eq F hM hN (isLB_tens hM hN) rfl).elim
+  fun _ hN ↦ (nonempty_twist_twist_iso_of_cls_eq F hM hN (isLB_tens hM hN) rfl).elim
     fun e ↦ (h _ (isLB_tens hM hN)).of_iso e.symm
 
 variable {S : ShortComplex X.Modules}

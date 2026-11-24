@@ -98,12 +98,12 @@ structure Geo (F : Type) [Field F] [NumberField F] [StarRing F] where
 
   hdim : ∀ Y, ℕ → Dv Y → ℕ
 
-  pts : ∀ Y, (F →+* ℂ) → Type
+  pts : ∀ _, (F →+* ℂ) → Type
   [ptsMeas : ∀ Y σ, MeasurableSpace (pts Y σ)]
 
   vol : ∀ Y σ, Measure (pts Y σ)
 
-  FnC : ∀ Y, (F →+* ℂ) → Type
+  FnC : ∀ _, (F →+* ℂ) → Type
   [fnCRing : ∀ Y σ, CommRing (FnC Y σ)]
   [fnCAlg : ∀ Y σ, Algebra ℂ (FnC Y σ)]
 
@@ -135,7 +135,7 @@ structure Geo (F : Type) [Field F] [NumberField F] [StarRing F] where
 
   Adl : Var → Type
 
-  ofW : ∀ Y (L : Dv Y) (W : HLat F), (W.V →ₗ[F] Fn Y) → Adl Y
+  ofW : ∀ Y (_ : Dv Y) (W : HLat F), (W.V →ₗ[F] Fn Y) → Adl Y
 
   twist : ∀ Y, Adl Y → (InfinitePlace F → ℝ) → (HeightOneSpectrum (𝓞 F) → ℝ) → Adl Y
 

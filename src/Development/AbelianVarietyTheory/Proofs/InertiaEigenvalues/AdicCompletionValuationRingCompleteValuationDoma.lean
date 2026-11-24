@@ -131,7 +131,7 @@ theorem algebraMap_pow_ne_zero (hx0 : x ≠ 0) (hxu : ¬ IsUnit x) (m : ℕ) : (
     Ideal.span_singleton_pow, Ideal.mem_span_singleton] at h2
   exact not_pow_succ_dvd_pow hx0 hxu m h2
 
-theorem exists_eq_mul_unit (hx0 : x ≠ 0) (hxu : ¬ IsUnit x) (y : AdicCompletion (Ideal.span {x}) V) (hy : y ≠ 0) :
+theorem exists_eq_mul_unit (y : AdicCompletion (Ideal.span {x}) V) (hy : y ≠ 0) :
     ∃ (a : V) (n : ℕ), a ∣ x ^ n ∧ ∃ u : (AdicCompletion (Ideal.span {x}) V)ˣ, y = algebraMap V (AdicCompletion (Ideal.span {x}) V) a * u := by
   obtain ⟨n, hn⟩ : ∃ n, AdicCompletion.evalₐ (Ideal.span {x}) n y ≠ 0 := by
     by_contra! hc
@@ -176,8 +176,8 @@ theorem GlobalTheory.adicCompletion_valuationRing_props : ∀ (V : Type) [CommRi
   have hdom : IsDomain (AdicCompletion (Ideal.span {x}) V) := by
     refine @NoZeroDivisors.to_isDomain _ _ hnt ⟨fun {y z} hyz => ?_⟩
     by_contra! hc
-    obtain ⟨a, n, ⟨c, hc1⟩, u, rfl⟩ := exists_eq_mul_unit hx0 hxu y hc.1
-    obtain ⟨b, m, ⟨d, hd1⟩, w, rfl⟩ := exists_eq_mul_unit hx0 hxu z hc.2
+    obtain ⟨a, n, ⟨c, hc1⟩, u, rfl⟩ := exists_eq_mul_unit y hc.1
+    obtain ⟨b, m, ⟨d, hd1⟩, w, rfl⟩ := exists_eq_mul_unit z hc.2
     apply algebraMap_pow_ne_zero hx0 hxu (n + m)
     have h1 : algebraMap V (AdicCompletion (Ideal.span {x}) V) a * algebraMap V (AdicCompletion (Ideal.span {x}) V) b = 0 := by
       have h2 : algebraMap V (AdicCompletion (Ideal.span {x}) V) a * algebraMap V (AdicCompletion (Ideal.span {x}) V) b * ((u : AdicCompletion (Ideal.span {x}) V) * w) = 0 := by
@@ -192,8 +192,8 @@ theorem GlobalTheory.adicCompletion_valuationRing_props : ∀ (V : Type) [CommRi
     · exact ⟨0, Or.inr (by rw [hy, mul_zero])⟩
     by_cases hz : z = 0
     · exact ⟨0, Or.inl (by rw [hz, mul_zero])⟩
-    obtain ⟨a, n, -, u, rfl⟩ := exists_eq_mul_unit hx0 hxu y hy
-    obtain ⟨b, m, -, w, rfl⟩ := exists_eq_mul_unit hx0 hxu z hz
+    obtain ⟨a, n, -, u, rfl⟩ := exists_eq_mul_unit y hy
+    obtain ⟨b, m, -, w, rfl⟩ := exists_eq_mul_unit z hz
     obtain ⟨c, hc | hc⟩ := PreValuationRing.cond a b
     · refine ⟨algebraMap V (AdicCompletion (Ideal.span {x}) V) c * ((u⁻¹ : (AdicCompletion (Ideal.span {x}) V)ˣ) : AdicCompletion (Ideal.span {x}) V) * w, Or.inl ?_⟩
       rw [← hc, map_mul]

@@ -514,7 +514,7 @@ end Field
 
 
 
-def newGeo {C : Formalism.L2.Pj.CoreJ D} [Algebra C.Q.c.F D.what₂.LL] {R : RealDat3 D A3 C.Q.c.F} (lam : type_of% R.lam3)
+def newGeo {C : Formalism.L2.Pj.CoreJ D} [Algebra C.Q.c.F D.what₂.LL] {R : RealDat3 D A3 C.Q.c.F}
     (err : type_of% R.err0) (g : GlobalTheory.RealGeo.GeoHalf C R.toRealDat fun _ => 1) :
     GlobalTheory.RealGeo.GeoHalf C (GlobalTheory.RealGeo.Upd.upE C R.toRealDat R.kap R.lam err) fun _ => 1 :=
   ⟨g.κ, g.v₀, GlobalTheory.RealGeo.Upd.updFWT C R.toRealDat R.kap R.lam err g.fw, g.bar,
@@ -525,7 +525,7 @@ def newGeo {C : Formalism.L2.Pj.CoreJ D} [Algebra C.Q.c.F D.what₂.LL] {R : Rea
 
 theorem inGeo_new {C : Formalism.L2.Pj.CoreJ D} [Algebra C.Q.c.F D.what₂.LL] {R : RealDat3 D A3 C.Q.c.F} (lam : type_of% R.lam3)
     (err : type_of% R.err0) {g : GlobalTheory.RealGeo.GeoHalf C R.toRealDat fun _ => 1} (h : GlobalTheory.RealGeo.InGeo g) :
-    GlobalTheory.RealGeo.InGeo (newGeo lam err g) := by
+    GlobalTheory.RealGeo.InGeo (newGeo err g) := by
   set_option backward.isDefEq.lazyWhnfCore false in
   set_option backward.isDefEq.lazyProjDelta false in
     exact ⟨h.jEvExists, h.jEvBar, h.evInj, h.jUnif, h.geoAct, h.latFull, h.dimMatch⟩
@@ -560,7 +560,7 @@ def newTw (hC : GlobalTheory.Published.DiscreteSeriesCover ∧ GlobalTheory.Publ
   R := newR R lam err
   F := reFace F Dc Sp Zsc
   cG := cG
-  geo := (by exact ((newGeo lam err g) :))
+  geo := (by exact ((newGeo err g) :))
   pins := hP
   err := hE
   Y := Y'

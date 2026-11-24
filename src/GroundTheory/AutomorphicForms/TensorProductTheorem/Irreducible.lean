@@ -311,7 +311,7 @@ theorem isSimpleUnder_heckeOps_box (hπ : ∀ v, IsAdmissible (π v))
             by_contra hcon
             push Not at hcon
             exact hkk (funext hcon)
-          rw [Finset.prod_eq_zero (Finset.mem_univ v) (by simp [Finsupp.single_apply, hv]),
+          rw [Finset.prod_eq_zero (Finset.mem_univ v) (by simp [hv]),
             zero_smul]
       rw [key, LinearMap.smulRight_apply, Basis.coord_apply]
     rw [hrs, map_smul] at hall

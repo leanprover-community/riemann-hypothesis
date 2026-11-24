@@ -396,7 +396,7 @@ private theorem common_eigenvector_commuting_family {T D : Type}
 
 theorem UpperTheory.Reformulated.B.CommonEigenvectorExistence.common_eigenvector :
     ∀ {T D : Type}
-    [inst : AddCommGroup D] [inst_1 : _root_.Module ℂ D] [FiniteDimensional ℂ D] [Nontrivial D] (φ : T → Module.End ℂ D),
+    [AddCommGroup D] [_root_.Module ℂ D] [FiniteDimensional ℂ D] [Nontrivial D] (φ : T → Module.End ℂ D),
     (∀ (s t : T), Commute (φ s) (φ t)) → ∃ (l : D) (a : T → ℂ), l ≠ (0 : D) ∧ ∀ (t : T), (φ t : D → D) l = a t • l := by
   intro T D _ _ _ _ φ hc
   exact common_eigenvector_commuting_family φ hc _ ⊤ rfl top_ne_bot (fun _ _ _ => Submodule.mem_top)
@@ -430,7 +430,7 @@ theorem eigZero : EigZero := by
     ext g y
     have h := congrArg (fun F : Module.End ℂ J => F y) (hcomm s t).eq
     simp only [Module.End.mul_apply] at h
-    simp [Module.End.mul_apply, LinearMap.dualMap_apply, h])
+    simp [LinearMap.dualMap_apply, h])
   have hact : ∀ t y, l (ρ t y) = a t * l y := fun t y => by
     have := congrArg (fun g : Module.Dual ℂ J => g y) (hl t)
     simpa [LinearMap.dualMap_apply] using this

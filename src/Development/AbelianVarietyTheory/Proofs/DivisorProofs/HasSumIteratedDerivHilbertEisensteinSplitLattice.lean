@@ -611,7 +611,7 @@ theorem hasLineDerivAt_prod {I : Type} [Fintype I] [DecidableEq I] (φ : I → �
   exact (h2.mul_const _).const_mul A
 
 theorem iterD_prod_ball {I : Type} [Fintype I] [DecidableEq I] (u : List I) (r : ℝ)
-    (ψ : I → ℂ → ℂ) (A : ℂ) (hr : 0 < r) (hψ : ∀ i, DifferentiableOn ℂ (ψ i) (Metric.ball 0 r)) :
+    (ψ : I → ℂ → ℂ) (A : ℂ) (hψ : ∀ i, DifferentiableOn ℂ (ψ i) (Metric.ball 0 r)) :
     ∀ z ∈ Metric.ball (0 : I → ℂ) r, iterD u (fun z ↦ A * ∏ i, ψ i (z i)) z
       = A * ∏ i, iteratedDeriv (u.count i) (ψ i) (z i) := by
   induction u with
@@ -636,7 +636,7 @@ theorem iterD_prod_ball {I : Type} [Fintype I] [DecidableEq I] (u : List I) (r :
 
 theorem iterD_prod : ∀ (I : Type) [Fintype I] [DecidableEq I] (u : List I) (r : ℝ) (ψ : I → ℂ → ℂ) (A : ℂ), 0 < r → (∀ i, DifferentiableOn ℂ (ψ i) (Metric.ball 0 r)) → iterD u (fun z ↦ A * ∏ i, ψ i (z i)) 0 = A * ∏ i, iteratedDeriv (u.count i) (ψ i) 0 := by
   intro I _ _ u r ψ A hr hψ
-  exact iterD_prod_ball u r ψ A hr hψ 0 (Metric.mem_ball_self hr)
+  exact iterD_prod_ball u r ψ A hψ 0 (Metric.mem_ball_self hr)
 
 end GlobalTheory.IterDProd
 end -- clump:auto

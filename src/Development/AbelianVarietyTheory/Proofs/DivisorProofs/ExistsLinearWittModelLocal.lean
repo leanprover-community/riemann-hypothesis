@@ -118,7 +118,7 @@ section -- clump:auto
 
 namespace GlobalTheory.FourTermSumSwap
 
-theorem sum_four_swap : ∀ {R α β : Type} [inst : AddCommMonoid R] [inst_1 : Fintype α] [inst_2 : Fintype β]
+theorem sum_four_swap : ∀ {R α β : Type} [AddCommMonoid R] [Fintype α] [Fintype β]
     (f : α → β → α → β → R),
     ∑ a : α, ∑ b : β, ∑ c : α, ∑ e : β, f a b c e = ∑ c : α, ∑ e : β, ∑ a : α, ∑ b : β, f a b c e := by
   intro R α β _ _ _ f

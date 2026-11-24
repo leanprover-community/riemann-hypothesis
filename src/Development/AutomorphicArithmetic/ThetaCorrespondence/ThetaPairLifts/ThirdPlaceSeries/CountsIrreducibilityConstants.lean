@@ -97,25 +97,25 @@ end Serv
 end GlobalTheory.Cp
 namespace GlobalTheory.Fc.R1
 open GlobalTheory.Fc GlobalTheory.Cp
-def P_hRB_alt : BdP _root_.GlobalTheory.Fc.BundleCondition := fun D O _ b =>
+def P_hRB_alt : BdP _root_.GlobalTheory.Fc.BundleCondition := fun _ _ _ b =>
   _root_.Formalism.IndefR.IndefiniteRealisationBoundedRows b.B
 def SlotRowBoundCondition (Q : V4.Slot) (Lk : LkT _root_.GlobalTheory.Fc.BundleCondition) : Prop := Row Q Lk (AtAll _root_.GlobalTheory.Fc.R1.P_hRB_alt)
-def TwistBundleCondition : BdP _root_.GlobalTheory.Fc.BundleCondition := fun D O _ b =>
+def TwistBundleCondition : BdP _root_.GlobalTheory.Fc.BundleCondition := fun _ O _ b =>
   Formalism.L2.DIV.TieTwRec O.L b.P.S0.Tw
 def SlotTwistCondition (Q : V4.Slot) (Lk : LkT _root_.GlobalTheory.Fc.BundleCondition) : Prop := Row Q Lk (AtAll _root_.GlobalTheory.Fc.R1.TwistBundleCondition)
-def PrimitivityBundleCondition : BdP _root_.GlobalTheory.Fc.BundleCondition := fun D O _ b =>
+def PrimitivityBundleCondition : BdP _root_.GlobalTheory.Fc.BundleCondition := fun _ _ _ b =>
   Formalism.IndefR.Links.PrimRows3 b.B.Q.Rl b.B.Q.F ∧ b.P.A3.fam3.TypesSep3
 def SlotPrimitivityCondition (Q : V4.Slot) (Lk : LkT _root_.GlobalTheory.Fc.BundleCondition) : Prop := Row Q Lk (AtAll _root_.GlobalTheory.Fc.R1.PrimitivityBundleCondition)
-def LambdaPrimeBundleCondition : BdP _root_.GlobalTheory.Fc.BundleCondition := fun D O _ b =>
+def LambdaPrimeBundleCondition : BdP _root_.GlobalTheory.Fc.BundleCondition := fun _ _ _ b =>
   Formalism.L2.Rows.RowsHoldLam3 b.P
 def SlotLambdaPrimeCondition (Q : V4.Slot) (Lk : LkT _root_.GlobalTheory.Fc.BundleCondition) : Prop := Row Q Lk (AtAll _root_.GlobalTheory.Fc.R1.LambdaPrimeBundleCondition)
-def DivisorBundleCondition : BdP _root_.GlobalTheory.Fc.BundleCondition := fun D O _ b =>
+def DivisorBundleCondition : BdP _root_.GlobalTheory.Fc.BundleCondition := fun _ _ _ b =>
   DivRows3G b.P
 def SlotDivisorCondition (Q : V4.Slot) (Lk : LkT _root_.GlobalTheory.Fc.BundleCondition) : Prop := Row Q Lk (AtAll _root_.GlobalTheory.Fc.R1.DivisorBundleCondition)
-def DecompositionPointBundle : BdP _root_.GlobalTheory.Fc.BundleCondition := fun D O _ b =>
+def DecompositionPointBundle : BdP _root_.GlobalTheory.Fc.BundleCondition := fun _ _ _ b =>
   DcPtG b.P
 def SlotDecompositionPointCondition (Q : V4.Slot) (Lk : LkT _root_.GlobalTheory.Fc.BundleCondition) : Prop := Row Q Lk (AtAll _root_.GlobalTheory.Fc.R1.DecompositionPointBundle)
-def SelectionJumpBundleCondition : BdP _root_.GlobalTheory.Fc.BundleCondition := fun D O _ b =>
+def SelectionJumpBundleCondition : BdP _root_.GlobalTheory.Fc.BundleCondition := fun _ _ _ b =>
   Nonempty (_root_.Formalism.L2.SG.JoinSI.IndefiniteRealisationJoin (R := b.R) (S := b.S) (Q := b.B.Q))
 def SlotSelectionJumpCondition (Q : V4.Slot) (Lk : LkT _root_.GlobalTheory.Fc.BundleCondition) : Prop := Row Q Lk (AtAll _root_.GlobalTheory.Fc.R1.SelectionJumpBundleCondition)
 def LeafUniqueMap {D : D7} {O : Obj D} {c : ℝ} (b : _root_.GlobalTheory.Fc.BundleCondition D O c) : Prop :=

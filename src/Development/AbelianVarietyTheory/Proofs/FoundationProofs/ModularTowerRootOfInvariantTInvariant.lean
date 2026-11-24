@@ -107,7 +107,7 @@ private lemma t_inv_mul_mul_t_mul_inv_mem_gamma {M : ℕ} (δ : SL(2, ℤ)) (hc 
   fin_cases i <;> fin_cases j <;>
     simp [Matrix.mul_apply, Fin.sum_univ_two, ModularGroup.coe_T, hc', had'] <;> ring
 
-theorem exists_delta (N M l n : ℕ) (hl : l.Prime) (hlN : ¬ l ∣ N) (hN : 1 ≤ N) (hM : 0 < M) :
+theorem exists_delta (N M l n : ℕ) (hl : l.Prime) (hlN : ¬ l ∣ N) (hM : 0 < M) :
     ∃ δ : SL(2, ℤ), δ ∈ CongruenceSubgroup.Gamma1 N ∧ -δ ∈ CongruenceSubgroup.Gamma (l ^ n) ∧
       ModularGroup.T⁻¹ * δ * ModularGroup.T * δ⁻¹ ∈ CongruenceSubgroup.Gamma M := by
   obtain ⟨e, m, hlm, hM'⟩ := Nat.exists_eq_pow_mul_and_not_dvd hM.ne' l hl.one_lt.ne'
@@ -164,7 +164,7 @@ theorem sl_T_eq {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosed Ω] {ε : �
     exact mul_right_cancel₀ huL (h1.trans (one_mul _).symm)
   have hζfix : ∀ h : GQ, X.sl h ζ = ζ := fun h => sl_eq_self_of_pow_eq_one X hL hζL h
   obtain ⟨M, hM, hMu⟩ := X.level u
-  obtain ⟨δ, hδ1, hδl, hδM⟩ := exists_delta N M l n hl hlN hN hM
+  obtain ⟨δ, hδ1, hδl, hδM⟩ := exists_delta N M l n hl hlN hM
   obtain ⟨g, hg, hgL⟩ := hδ δ hδ1 hδl
   have hsu : X.sl (ofSL δ) u ≠ 0 := fun h =>
     hu ((X.sl (ofSL δ)).injective (h.trans (map_zero _).symm))

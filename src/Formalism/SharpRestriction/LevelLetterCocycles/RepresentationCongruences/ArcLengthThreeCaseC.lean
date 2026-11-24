@@ -676,9 +676,9 @@ theorem numerics (l b w S η b₁ w' σ A : ℕ) (hl : 11 ≤ l) (hη20 : 20 * �
     rw [hs₁def]; push_cast; exact Nat.lt_floor_add_one _
   have hten : (s₁ : ℝ) ≤ 10 * Formalism.MainNotions.N.FrobeniusPowerSeries.Sg l (b + η + S) w S η := by
     rw [hs₁def]
-    exact Formalism.MainNotions.N.FrobeniusPowerSeries.floor_succ_le_ten_mul_errorScale l hl b w S η hb hη20 hS20 hw20 (σ : ℝ) (A : ℝ)
+    exact Formalism.MainNotions.N.FrobeniusPowerSeries.floor_succ_le_ten_mul_errorScale l hl b w S η hb (σ : ℝ) (A : ℝ)
       (Nat.cast_nonneg _) hσ (Nat.cast_nonneg _) hA
-  have hsub := Formalism.MainNotions.N.FrobeniusPowerSeries.one_le_sub_sub_sub l hl b w S η b₁ hb hη20 hS20 hw20 hb₁ hsm (A : ℝ) (s₁ : ℝ) hA hten
+  have hsub := Formalism.MainNotions.N.FrobeniusPowerSeries.one_le_sub_sub_sub l hl b w S η b₁ hb hη20 hS20 hb₁ hsm (A : ℝ) (s₁ : ℝ) hA hten
   have hnat : A + s₁ + η ≤ b₁ := by
     have : (A : ℝ) + s₁ + η ≤ b₁ := by linarith
     exact_mod_cast this
@@ -934,7 +934,7 @@ theorem arc_length_three_case_c [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsDomain
   have h2l : 2 ≤ (arcOf b w S η up size).len c := by rw [hlen]; norm_num
   have hT₁ : IsCrys PD T₁.ρ := hW₁.1
   have hT₂ : IsCrys PD T₂.ρ := hW₂.1
-  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T₁ hT₁ hO hinj
+  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T₁ hT₁ hO
   obtain ⟨-, hqu, hΔu⟩ := lemG_units W hcase hP9 hT₁ hO hOv hinj
   have hpu : IsUnit (algebraMap (LetA O n) W.EE (ps W 1)) := by
     have e : algebraMap (LetA O n) W.EE (ps W 1) = W.φE (algebraMap (LetA O n) W.EE (qA W)) := by

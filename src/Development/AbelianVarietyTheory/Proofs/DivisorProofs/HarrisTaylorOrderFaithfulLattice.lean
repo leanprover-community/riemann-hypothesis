@@ -288,7 +288,7 @@ theorem GlobalTheory.HTFaith.faithful : ∀ (p : ℕ) [Fact p.Prime] (D : Global
     rw [Matrix.sum_apply]
     by_cases hab : a = b
     · subst hab
-      rw [Finset.sum_eq_single a (fun k _ hk => by simp [Matrix.single_apply, hk]) (by simp)]
+      rw [Finset.sum_eq_single a (fun k _ hk => by simp [hk]) (by simp)]
       simp
     · rw [Finset.sum_eq_zero (fun k _ => by simp [Matrix.single_apply]; intro h1 h2; exact absurd (h1.symm.trans h2) hab)]
       simp [Matrix.scalar_apply, hab]

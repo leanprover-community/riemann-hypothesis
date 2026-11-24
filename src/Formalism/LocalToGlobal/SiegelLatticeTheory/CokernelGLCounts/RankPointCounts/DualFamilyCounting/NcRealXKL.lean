@@ -53,7 +53,7 @@ theorem mOf_facts {n r k : ℕ} (hn : n = 2 * r + k + 1) (ε : Fin n → Bool) (
     ⟨(((Real.sqrt T)⁻¹ : ℝ) : ℂ), by rw [hQz]; rfl⟩
   have hmem : ∀ g : Formalism.REAL.UJ ε, g ∈ NLoc ε e z → mOf rfl ε e f w (z0v T z) g ∈ Nset k r := fun g hg => by
     have hg' : InN ε e (Qm e f w (z0v T z) *ᵥ zBv k r T) (uMat g) := by rw [hQz]; exact hg
-    exact conj_mem_Nset hFJ hz0 (uMat_mem g) hg'
+    exact conj_mem_Nset hFJ (uMat_mem g) hg'
   have hcol : ∀ (g : Formalism.REAL.UJ ε) b j, hJ ε (f b) (uMat g *ᵥ colQ e f w (z0v T z) j) =
       mOf rfl ε e f w (z0v T z) g (eI k r b) j := fun g b j => hJ_f_col g b j
   refine ⟨fun g g' => ?_, hmem, fun g b a => ?_, fun g b j => ?_, fun g b => ?_, fun g hg => ?_⟩

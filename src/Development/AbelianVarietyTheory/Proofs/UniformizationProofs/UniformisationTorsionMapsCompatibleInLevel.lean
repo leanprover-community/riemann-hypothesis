@@ -72,7 +72,7 @@ theorem qkNsmul_one {R : Type} [CommRing R] [IsDomain R] {D : DegPre R} {F : Typ
     [Algebra (FractionRing R) F] (hB : D.TauBimult) {k : ℕ} (p : QkPt D F k) : qkNsmul hB 1 p = p :=
   qk_ext (one_nsmul p.y) (one_nsmul p.g)
 
-theorem qkToAkU_level : LL → AllUF fun {R} _ _ {I} {D} {A} {G} _ _ U F _ _ => ∀ (k n N : ℕ), 1 ≤ k → 1 ≤ n → N = k * n → ∀ (p : QkPt D.toPre F k) (q : QkPt D.toPre F N) x, (q.y = n • p.y → q.g = p.g → (QkToAkU U.toUnifPre F k p x ↔ QkToAkU U.toUnifPre F N q x)) ∧ (p.y = q.y → GtPtF.IsNsmul n q.g p.g → QkToAkU U.toUnifPre F N q x → QkToAkU U.toUnifPre F k p (x ^ n)) := by
+theorem qkToAkU_level : LL → AllUF fun {_} _ _ {_} {D} {_} {_} _ _ U F _ _ => ∀ (k n N : ℕ), 1 ≤ k → 1 ≤ n → N = k * n → ∀ (p : QkPt D.toPre F k) (q : QkPt D.toPre F N) x, (q.y = n • p.y → q.g = p.g → (QkToAkU U.toUnifPre F k p x ↔ QkToAkU U.toUnifPre F N q x)) ∧ (p.y = q.y → GtPtF.IsNsmul n q.g p.g → QkToAkU U.toUnifPre F N q x → QkToAkU U.toUnifPre F k p (x ^ n)) := by
   intro hL R _ _ _ I hI D A G _ _ hG U F _ _ _ k n N hk hn hN
   have hN1 : 1 ≤ N := hN ▸ Nat.mul_pos hk hn
   obtain ⟨f, hf, -⟩ := GlobalTheory.TorsionIso.torsion_eq hL R I hI D A G hG U F k hk

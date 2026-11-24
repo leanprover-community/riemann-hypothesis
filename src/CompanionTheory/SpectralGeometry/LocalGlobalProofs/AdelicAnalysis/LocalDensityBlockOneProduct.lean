@@ -340,7 +340,7 @@ theorem fibre_block_stages : ∀ (F E : Type) [Field F] [NumberField F] [Field E
   rw [hU'] at hfib
   have hmT : fib (hermOf R σ _ hT') = m (hermOf R σ _ hT') :=
     _root_.GlobalTheory.CompanionTheory.SW.FibreUniq.fibreFamily_eq _ _ _ (coordW R b lam (n + 1) (M + 1)) (coordHerm R σ b lam (n + 1))
-      (gramR R σ (blockOne (algebraMap F E t) J)) g Subtype.val Subtype.val_injective hgc hg _ B hB₀ hBo hBu
+      (gramR R σ (blockOne (algebraMap F E t) J)) g Subtype.val Subtype.val_injective hgc hg _ B hBo hBu
       m fib hm₀ hfib _ hTB
   have hBa := hBorel (n + 1) (M + 1)
   have hBb := hBorel n M

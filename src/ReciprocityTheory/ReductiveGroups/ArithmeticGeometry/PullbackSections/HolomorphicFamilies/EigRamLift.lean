@@ -69,7 +69,7 @@ theorem actP_fst_eig (B : FB R d O) (χ : O →+* k) {n : ℕ} (b : Fin n → O)
   show c i • (dAct k B (b i)).mulVec ξ.1 = _
   rw [hv, smul_smul]
 
-theorem hset_snd_int {h : PS k 2 d} {X : Fin d → k} (hX : ((0 : Fin d → k), X) ∈ Hset (R := R) k h) (_hinj : Function.Injective (algebraMap R k)) :
+theorem hset_snd_int {h : PS k 2 d} {X : Fin d → k} (hX : ((0 : Fin d → k), X) ∈ Hset (R := R) k h) :
     ∀ i, X i ∈ (algebraMap R k).range := by
   intro i
   obtain ⟨u, φ, hξ⟩ := hX
@@ -210,7 +210,7 @@ theorem eigLiftRam_core (hRQ : IsRQ (R := R) k) (B : FB R d O) (h : PS k 2 d) (h
       · funext i
         simp [Algebra.smul_def]
     rw [e2] at hsum
-    exact hset_snd_int hsum hinj i
+    exact hset_snd_int hsum i
   ·
     obtain ⟨a, ha⟩ := hχsep (ty ℓ) (ty ℓ') hne
     have hv1 : ∀ b : O, OactH k B b ((fun j => algebraMap R k (u ℓ j)), (0 : Fin d → k)) =

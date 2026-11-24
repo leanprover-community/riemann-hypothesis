@@ -372,7 +372,7 @@ private theorem cc_zero_lemma_3 (r : ℕ) (g g' : Matrix (Fin k) (Fin k) (WF p n
   · simp [hl]
 
 theorem tgt_le_of_plane (φ : WF p n' ≃+* W) (r : ℕ) (hpQ : (p : Qq) ≠ 0)
-    (g g' : Matrix (Fin k) (Fin k) (WF p n')) (hg : IsGLW g) (hg' : IsGLW g')
+    (g g' : Matrix (Fin k) (Fin k) (WF p n')) (hg' : IsGLW g')
     (h : Matrix (Fin k) (Fin k) Qq) (hpl : ratPlane p n' r g ≤ ratPlane p n' r g') :
     colSpan W (h * (Ng φ g).map (algebraMap W Qq) * dD Qq p r k) ≤
       colSpan W (h * (Ng φ g').map (algebraMap W Qq) * dD Qq p r k) := by
@@ -558,7 +558,7 @@ theorem edgePlane : EdgePlane := by
       refine ⟨by rw [hs, hs'], ?_⟩
       rw [ht, ht']
       apply le_antisymm
-      · exact tgt_le_of_plane φ r hpQ g g' hg hg' h hpl.le
-      · exact tgt_le_of_plane φ r hpQ g' g hg' hg h hpl.ge
+      · exact tgt_le_of_plane φ r hpQ g g' hg' h hpl.le
+      · exact tgt_le_of_plane φ r hpQ g' g hg h hpl.ge
 
 end Formalism.MainNotions.Pf14

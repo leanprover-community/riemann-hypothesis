@@ -154,7 +154,7 @@ theorem levelFourierDatum_mk (c : Coeff l) {n : ℕ} (x0 x : Fin n → Dw.La) :
     x0Dat c x0 (fun b => (Submodule.Quotient.mk (x b) : LevQ Dw l)) = zetaM c ^ pairL (l := l) x0 x :=
   zpow_congr c (pairL_congr _ _ _ _ (fun b => by simp) (fun b => levRep_mk (x b)))
 
-theorem exists_eq_smul_of_dvd (x : Dw.La) (m : ℕ) (hm : m ≠ 0) (h : ∀ y, (m : ℤ) ∣ Dw.EF x y) :
+theorem exists_eq_smul_of_dvd (x : Dw.La) (m : ℕ) (h : ∀ y, (m : ℤ) ∣ Dw.EF x y) :
     ∃ z, x = (m : ℤ) • z := by
   let f : Dw.La →ₗ[ℤ] ℤ :=
     { toFun := fun y => Dw.EF x y / m
@@ -171,7 +171,7 @@ theorem exists_eq_smul_of_dvd (x : Dw.La) (m : ℕ) (hm : m ≠ 0) (h : ∀ y, (
 theorem mem_of_dvd {x : Dw.La} (h : ∀ y, (l.M : ℤ) ∣ Dw.EF x (cSep l • y)) :
     x ∈ (Mfr l • ⊤ : Submodule (𝓞 E) Dw.La) := by
   have hM : l.M ≠ 0 := by have := l.three_le; omega
-  obtain ⟨z, hz⟩ := exists_eq_smul_of_dvd (H.bar (cSep l) • x) l.M hM (fun y => by
+  obtain ⟨z, hz⟩ := exists_eq_smul_of_dvd (H.bar (cSep l) • x) l.M (fun y => by
     rw [Dw.adj, bar_bar]; exact h y)
   have h1 : H.bar (cSep l - 1) ∈ Mfr l := Ideal.mem_map_of_mem (H.bar : 𝓞 E →+* 𝓞 E) (cSep_spec l).2
   have hMm : (l.M : 𝓞 E) ∈ Mfr l := by

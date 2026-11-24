@@ -131,7 +131,7 @@ theorem locTr0_B (Kf : FiniteSubfield) [NumberField Kf.1]
     {M : Type} [AddCommGroup M] [Module (ZMod (l ^ r)) M] [Finite M] [TopologicalSpace M]
     [DiscreteTopology M]
     (ρ : Representation (ZMod (l ^ r)) (GS (AlgebraicClosure ℚ) (S : Set (HeightOneSpectrum (𝓞 Kf.1)))) M)
-    (hρ : ContAction ρ) (d : FoundData Kf S l r ζ Av μ M ρ) [IsDiscreteRep d.A] [Finite d.A] (v : S)
+    (d : FoundData Kf S l r ζ Av μ M ρ) [IsDiscreteRep d.A] [Finite d.A] (v : S)
     [IsDiscreteRep (Rep.res (gsFinFamily (S : Set (HeightOneSpectrum (𝓞 Kf.1))) d.ιs ⟨v.1, Finset.mem_coe.2 v.2⟩).toMonoidHom
       (dualRep (gsRoots (S : Set (HeightOneSpectrum (𝓞 Kf.1))) (l ^ r)) d.A))]
     (E : ↥(H0 (ρ.comp (locFam S Av v))) ≃+ cohomology (Rep.res (gsFinFamily (S : Set (HeightOneSpectrum (𝓞 Kf.1))) d.ιs ⟨v.1, Finset.mem_coe.2 v.2⟩).toMonoidHom d.A) 0)
@@ -516,7 +516,7 @@ theorem locTr2' (Kf : FiniteSubfield) [NumberField Kf.1]
     {M : Type} [AddCommGroup M] [Module (ZMod (l ^ r)) M] [Finite M] [TopologicalSpace M]
     [DiscreteTopology M]
     (ρ : Representation (ZMod (l ^ r)) (GS (AlgebraicClosure ℚ) (S : Set (HeightOneSpectrum (𝓞 Kf.1)))) M)
-    (hρ : ContAction ρ) (d : FoundData Kf S l r ζ Av μ M ρ) [IsDiscreteRep d.A] [Finite d.A] (v : S)
+    (d : FoundData Kf S l r ζ Av μ M ρ) [IsDiscreteRep d.A] [Finite d.A] (v : S)
     [IsDiscreteRep (Rep.res (gsFinFamily (S : Set (HeightOneSpectrum (𝓞 Kf.1))) d.ιs ⟨v.1, Finset.mem_coe.2 v.2⟩).toMonoidHom
       (dualRep (gsRoots (S : Set (HeightOneSpectrum (𝓞 Kf.1))) (l ^ r)) d.A))]
     (E : H2 (ρ.comp (locFam S Av v)) ≃+ cohomology (Rep.res (gsFinFamily (S : Set (HeightOneSpectrum (𝓞 Kf.1))) d.ιs ⟨v.1, Finset.mem_coe.2 v.2⟩).toMonoidHom d.A) 2)
@@ -1041,8 +1041,8 @@ theorem tate_duality_degree_zero_left (Kf : FiniteSubfield) [NumberField Kf.1]
         (∀ s, cochainOf (dualRep (gsRoots (S : Set (HeightOneSpectrum (𝓞 Kf.1))) (l ^ r)) d.A) (cocycleι (dualRep (gsRoots (S : Set (HeightOneSpectrum (𝓞 Kf.1))) (l ^ r)) d.A) 0 x) s = d.eD z.1) → E z = cohomologyπ (dualRep (gsRoots (S : Set (HeightOneSpectrum (𝓞 Kf.1))) (l ^ r)) d.A) 0 x) ∧
       (∀ (v : S) (z : ↥(H0 ((twDual μ ρ).comp (locFam S Av v)))) (x : cocycles (Rep.res (gsFinFamily (S : Set (HeightOneSpectrum (𝓞 Kf.1))) d.ιs ⟨v.1, Finset.mem_coe.2 v.2⟩).toMonoidHom (dualRep (gsRoots (S : Set (HeightOneSpectrum (𝓞 Kf.1))) (l ^ r)) d.A)) 0),
         (∀ s, cochainOf _ (cocycleι _ 0 x) s = d.eD z.1) → Ev v z = cohomologyπ _ 0 x) :=
-  resCmpChar0' d.e (locFam S Av) (continuous_locFam S Av) (fun v : S => gsFinFamily (S : Set (HeightOneSpectrum (𝓞 Kf.1))) d.ιs ⟨v.1, Finset.mem_coe.2 v.2⟩)
-    d.ev (fun v => (d.hev_cont v).1) (fun v => (d.hev_cont v).2) d.hev (twDual μ ρ) hρ' (dualRep (gsRoots (S : Set (HeightOneSpectrum (𝓞 Kf.1))) (l ^ r)) d.A) d.eD d.hD
+  resCmpChar0' d.e (locFam S Av) (fun v : S => gsFinFamily (S : Set (HeightOneSpectrum (𝓞 Kf.1))) d.ιs ⟨v.1, Finset.mem_coe.2 v.2⟩)
+    d.ev d.hev (twDual μ ρ) (dualRep (gsRoots (S : Set (HeightOneSpectrum (𝓞 Kf.1))) (l ^ r)) d.A) d.eD d.hD
 
 end PositivityTheory.Lit1.PTN
 end -- clump:auto
@@ -1080,8 +1080,8 @@ theorem tate_duality_degree_zero_middle (Kf : FiniteSubfield) [NumberField Kf.1]
         (∀ s, cochainOf d.A (cocycleι d.A 0 x) s = d.eM z.1) → E z = cohomologyπ d.A 0 x) ∧
       (∀ (v : S) (z : ↥(H0 (ρ.comp (locFam S Av v)))) (x : cocycles (Rep.res (gsFinFamily (S : Set (HeightOneSpectrum (𝓞 Kf.1))) d.ιs ⟨v.1, Finset.mem_coe.2 v.2⟩).toMonoidHom d.A) 0),
         (∀ s, cochainOf _ (cocycleι _ 0 x) s = d.eM z.1) → Ev v z = cohomologyπ _ 0 x) :=
-  resCmpChar0' d.e (locFam S Av) (continuous_locFam S Av) (fun v : S => gsFinFamily (S : Set (HeightOneSpectrum (𝓞 Kf.1))) d.ιs ⟨v.1, Finset.mem_coe.2 v.2⟩)
-    d.ev (fun v => (d.hev_cont v).1) (fun v => (d.hev_cont v).2) d.hev ρ hρ d.A d.eM d.hM
+  resCmpChar0' d.e (locFam S Av) (fun v : S => gsFinFamily (S : Set (HeightOneSpectrum (𝓞 Kf.1))) d.ιs ⟨v.1, Finset.mem_coe.2 v.2⟩)
+    d.ev d.hev ρ d.A d.eM d.hM
 
 end PositivityTheory.Lit1.PTN
 end -- clump:auto
@@ -1163,9 +1163,9 @@ theorem nineAdd_core (Kf : FiniteSubfield)
     (fun x y => poitouTateNineTerm_transgressionOne_apply S Av μ (invAt S Av μ hμ inv) ρ hρ x y)
     (fun x y => poitouTateNineTerm_transgressionTwo_apply S Av μ (invAt S Av μ hμ inv) ρ x y)
     hM0 hM1 hM2 hD0 hD1 hD2
-    (fun Ev Fv c c' k a b => locTr0_B Kf S hr ζ hζ inv hinv hS Av hAv μ hμ ρ hρ d k (Ev k) (c k) (Fv k) (c' k) a b)
+    (fun Ev Fv c c' k a b => locTr0_B Kf S hr ζ hζ inv hinv hS Av hAv μ hμ ρ d k (Ev k) (c k) (Fv k) (c' k) a b)
     (fun Ev Fv c c' k a b => locTr1_C Kf S hr ζ hζ inv hinv hS Av hAv μ hμ ρ hρ d k (Ev k) (c k) (Fv k) (c' k) a b)
-    (fun Ev Fv c c' k a b => locTr2' Kf S hr ζ hζ inv hinv hS Av hAv μ hμ ρ hρ d k (Ev k) (c k) (Fv k) (c' k) a b)
+    (fun Ev Fv c c' k a b => locTr2' Kf S hr ζ hζ inv hinv hS Av hAv μ hμ ρ d k (Ev k) (c k) (Fv k) (c' k) a b)
 
 end PositivityTheory.Lit1.PTN
 end -- clump:auto

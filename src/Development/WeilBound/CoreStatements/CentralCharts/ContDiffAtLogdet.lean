@@ -118,7 +118,7 @@ theorem tame_logdet {a₀ k r : ℕ} {Λ : Type} [AddCommGroup Λ] (L : Flat.Log
     · exact Filter.Eventually.of_forall fun z h => absurd h hi
   refine tame_of (C₁ := r * (|Real.log c| + |Real.log C| + 1))
     (C₂ := 3 * r ^ 4 * (max 1 c⁻¹) ^ 2 * max (max 1 c⁻¹) C * C) (e := 1) hε (by positivity)
-    (by positivity) zero_le_one ?_
+    ?_
   intro y hy hy1 hy0
   have hB1 := hB' y hy hy1 hy0
   have hpd := hPD y hy hy1 hy0
@@ -128,8 +128,8 @@ theorem tame_logdet {a₀ k r : ℕ} {Λ : Type} [AddCommGroup Λ] (L : Flat.Log
   refine ⟨contDiffAt_logdet (Γ := G) (hentry y hy hy0) hpd, ?_, ?_⟩
   · have hlo := logdet_mono (posDef_smul_one (r := r) hc) hpd.inv hB1.1
     have hhi := logdet_mono hpd.inv (posDef_smul_one (r := r) hK) hB1.2.1
-    rw [logdet_smul_one hc, logdet_inv hpd] at hlo
-    rw [logdet_smul_one hK, logdet_inv hpd, Real.log_mul hC.ne' (by linarith)] at hhi
+    rw [logdet_smul_one, logdet_inv hpd] at hlo
+    rw [logdet_smul_one, logdet_inv hpd, Real.log_mul hC.ne' (by linarith)] at hhi
     have hr : (0 : ℝ) ≤ r := Nat.cast_nonneg r
     have h1 : -|Real.log c| ≤ Real.log c := neg_abs_le _
     have h2 : Real.log C ≤ |Real.log C| := le_abs_self _

@@ -120,7 +120,7 @@ theorem conj_mul_self_chr {SG : Finset (HeightOneSpectrum (𝓞 X.E))} (σ : X.K
   rw [mul_comm, Complex.mul_conj, Complex.normSq_eq_norm_sq, h2]
   simp
 
-theorem pairB_conj_cls_eq : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X) (hX : B.fields.Ok) (a : I.ι) (F G : MtCx I a)
+theorem pairB_conj_cls_eq : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X) (_ : B.fields.Ok) (a : I.ι) (F G : MtCx I a)
     (d d' : (rowS I a).D), (rowS I a).cls d = (rowS I a).cls d' →
     pairB B.wts.sgTrue (MvPolynomial.map (starRingEnd ℂ) (F.1 d)) (G.1 d) =
       pairB B.wts.sgTrue (MvPolynomial.map (starRingEnd ℂ) (F.1 d')) (G.1 d') := by
@@ -148,7 +148,7 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Df
 attribute [local instance] GlobalTheory.Mem.Col2.starE
 
-theorem _root_.GlobalTheory.T.pairing_complexForms_const_on_row_classes : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X) (hX : B.fields.Ok) (a : I.ι) (F G : MtCx I a) (d d' : (rowS I a).D), (rowS I a).cls d = (rowS I a).cls d' → pairB B.wts.sgTrue (MvPolynomial.map (starRingEnd ℂ) (F.1 d)) (G.1 d) = pairB B.wts.sgTrue (MvPolynomial.map (starRingEnd ℂ) (F.1 d')) (G.1 d') := by
+theorem _root_.GlobalTheory.T.pairing_complexForms_const_on_row_classes : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X) (_ : B.fields.Ok) (a : I.ι) (F G : MtCx I a) (d d' : (rowS I a).D), (rowS I a).cls d = (rowS I a).cls d' → pairB B.wts.sgTrue (MvPolynomial.map (starRingEnd ℂ) (F.1 d)) (G.1 d) = pairB B.wts.sgTrue (MvPolynomial.map (starRingEnd ℂ) (F.1 d')) (G.1 d') := by
   first | exact @GlobalTheory.Mem.Df.pairB_conj_cls_eq
 end -- clump:auto
 end -- clump:auto
@@ -177,7 +177,7 @@ private theorem finset_sum_univ_eq_of_equiv {α β M : Type*} [AddCommMonoid M] 
     @Finset.sum α M _ (@Finset.univ α i1) f = @Finset.sum β M _ (@Finset.univ β i2) g :=
   @Fintype.sum_equiv α β M i1 i2 _ e f g h
 
-theorem ipMt_eq_cSum : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (hX : B.fields.Ok) (Z : TC.Later B (I.cols l)) (u : B.Word) (a : I.ι) (F G : (I.per l u a).Mt) (F' G' : MtCx I a), SameForm I l u a F' F → SameForm I l u a G' G → I.ipMt l u a F G = cSum I hX a F' G' := by
+theorem ipMt_eq_cSum : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (hX : B.fields.Ok) (_ : TC.Later B (I.cols l)) (u : B.Word) (a : I.ι) (F G : (I.per l u a).Mt) (F' G' : MtCx I a), SameForm I l u a F' F → SameForm I l u a G' G → I.ipMt l u a F G = cSum I hX a F' G' := by
   intro B X I hOk hP l hX Z u a F G F' G' hF hG
   rw [GlobalTheory.Mem.Col2.IpMt.ipMt_sum I hOk hP l Z u a F G]
   have hd : Disjoint (B.primes X).vGs (QE I.sel (I.tup a : Chr B.fields.F B.fields.E B.fields.K)) :=
@@ -215,7 +215,7 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV GlobalTheory.Mem GlobalTheory.Mem.Col2 GlobalTheory.Mem.Df
 attribute [local instance] GlobalTheory.Mem.Col2.starE
 
-theorem _root_.GlobalTheory.T.rowFormMetric_eq_classSumMetric : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (hX : B.fields.Ok) (Z : TC.Later B (I.cols l)) (u : B.Word) (a : I.ι) (F G : (I.per l u a).Mt) (F' G' : MtCx I a), SameForm I l u a F' F → SameForm I l u a G' G → I.ipMt l u a F G = cSum I hX a F' G' := by
+theorem _root_.GlobalTheory.T.rowFormMetric_eq_classSumMetric : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (hX : B.fields.Ok) (_ : TC.Later B (I.cols l)) (u : B.Word) (a : I.ι) (F G : (I.per l u a).Mt) (F' G' : MtCx I a), SameForm I l u a F' F → SameForm I l u a G' G → I.ipMt l u a F G = cSum I hX a F' G' := by
   first | exact @GlobalTheory.Mem.Df.ipMt_eq_cSum
 end -- clump:auto
 end -- clump:auto

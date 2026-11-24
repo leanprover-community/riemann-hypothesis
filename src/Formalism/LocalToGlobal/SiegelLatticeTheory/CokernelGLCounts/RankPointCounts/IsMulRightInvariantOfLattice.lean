@@ -98,7 +98,7 @@ theorem map_mul_right_eq_modular (μ : Measure H) [IsHaarMeasure μ] (g : H) :
 
 theorem modular_eq_one_of_mem (μ : Measure H) [IsHaarMeasure μ] (Γ : Subgroup H) [Countable Γ]
     [DiscreteTopology Γ] {K : Set H} (hK : IsCompact K) (hcov : ∀ x : H, ∃ s ∈ Γ, s * x ∈ K)
-    {δ : H} (hδ : δ ∈ Γ) : modularCharacterFun δ = 1 := by
+    {δ : H} : modularCharacterFun δ = 1 := by
   set I := ∫⁻ x, lwt Γ K x ∂μ with hI
   have hw := measurable_lwt Γ hK
   have hItop : I ≠ ∞ := by
@@ -139,7 +139,7 @@ theorem haar_map_mul_right_of_lattice (μ : Measure H) [IsHaarMeasure μ] (Γ : 
     intro r
     obtain ⟨s, hs, hsr⟩ := hcov r
     have hmul : modularCharacterFun r = modularCharacterFun (s * r) := by
-      rw [modularCharacterFun_map_mul, modular_eq_one_of_mem μ Γ hK hcov hs, one_mul]
+      rw [modularCharacterFun_map_mul, modular_eq_one_of_mem μ Γ hK hcov, one_mul]
     rw [hmul]
     have h1 : (modularCharacterFun (s * r) : ℝ≥0∞) * μ V ≤ μ (V * K⁻¹) := by
       have e := congrArg (fun m : Measure H => m V) (map_mul_right_eq_modular μ (s * r))

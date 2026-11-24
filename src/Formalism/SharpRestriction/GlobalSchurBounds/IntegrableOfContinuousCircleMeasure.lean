@@ -239,7 +239,7 @@ private lemma ziii_log {a L v x : ℝ} (ha : 1 ≤ a) (hv : 1 ≤ v) (hL : 1 ≤
     linarith
   linarith
 
-private lemma ziii_place {C₀ K b' S L lkv logT W lst lg U : ℝ} (hC : 0 ≤ C₀) (hK : 1 ≤ K)
+private lemma ziii_place {C₀ K b' S L lkv logT W lst lg U : ℝ} (hC : 0 ≤ C₀)
     (hlkv : 0 ≤ lkv) (hT : 0 ≤ logT)
     (hW : W ≤ U + 4 * K * (b' + S)) (hlg : lg ≤ 8 * L) (hlst : lst ≤ (2 + C₀) * (b' + S)) :
     W * (C₀ * lkv) + K ^ 2 * lg + lst * logT ≤
@@ -273,7 +273,7 @@ private lemma ziii_top {C₀ K a b' S L v logT W p lst At bt : ℝ} (hC : 0 ≤ 
       linarith)
   have hlst : lst ≤ (2 + C₀) * (b' + S) := by
     linarith [mul_nonneg hC (by linarith : (0:ℝ) ≤ b' + S)]
-  have := ziii_place (U := 2 * a) hC hK hlkv hT hW' hlg hlst
+  have := ziii_place (U := 2 * a) hC hlkv hT hW' hlg hlst
   linarith
 
 private lemma ziii_other {C₀ K a b' S L v logT W p lst : ℝ} (hC : 0 ≤ C₀) (hK : 1 ≤ K)
@@ -300,7 +300,7 @@ private lemma ziii_other {C₀ K a b' S L v logT W p lst : ℝ} (hC : 0 ≤ C₀
       linarith)
   have hlst : lst ≤ (2 + C₀) * (b' + S) := by
     linarith [mul_nonneg hC (by linarith : (0:ℝ) ≤ b')]
-  have := ziii_place (U := 0) hC hK hlkv hT hW' hlg hlst
+  have := ziii_place (U := 0) hC hlkv hT hW' hlg hlst
   linarith
 
 private lemma final_part_arithmetic_bound {C₀ nT f a lkv K b' S logT L : ℝ} (hC : 0 ≤ C₀) (hnT : 0 ≤ nT) (hf : 0 ≤ f)

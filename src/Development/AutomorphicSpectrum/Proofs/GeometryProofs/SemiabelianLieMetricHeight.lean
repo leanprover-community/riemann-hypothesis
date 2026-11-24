@@ -1169,7 +1169,7 @@ variable {S : Scheme.{0}} {X : Type} [AddCommGroup X] {A : Type} [CommRing A]
 noncomputable def cv {a : Sp A ⟶ S} (t : Over.mk a ⟶ splitTorus S X) : Multiplicative X →* A where
   toFun χ := charVal t χ.toAdd
   map_one' := ((_root_.GlobalTheory.CompanionTheory.Ar.TorusPoints.main S X A a).2.2.2.1 t).1
-  map_mul' χ χ' := ((_root_.GlobalTheory.CompanionTheory.Ar.TorusPoints.main S X A a).2.2.2.1 t).2 _ _
+  map_mul' _ _ := ((_root_.GlobalTheory.CompanionTheory.Ar.TorusPoints.main S X A a).2.2.2.1 t).2 _ _
 
 theorem cv_inj {a : Sp A ⟶ S} {t t' : Over.mk a ⟶ splitTorus S X} (h : cv t = cv t') : t = t' :=
   (_root_.GlobalTheory.CompanionTheory.Ar.TorusPoints.main S X A a).1 t t' fun χ =>
@@ -1605,10 +1605,10 @@ theorem isGrpPullback_comp {S S' S'' : Scheme.{0}} {G : Over S} {G' : Over S'} {
     rintro _ rfl x₀ y₀ hx hy
     let x₁ : Over.mk (T.hom ≫ g) ⟶ G' := Over.homMk (x.left ≫ ψ) (by
       have := h'.1.w
-      simp only [Over.mk_hom, Category.assoc, this, Over.w_assoc, Over.w])
+      simp only [Over.mk_hom, Category.assoc, this, Over.w_assoc])
     let y₁ : Over.mk (T.hom ≫ g) ⟶ G' := Over.homMk (y.left ≫ ψ) (by
       have := h'.1.w
-      simp only [Over.mk_hom, Category.assoc, this, Over.w_assoc, Over.w])
+      simp only [Over.mk_hom, Category.assoc, this, Over.w_assoc])
     have e₁ := h'.2 T x y x₁ y₁ rfl rfl
     have e₂ := h.2 (Over.mk (T.hom ≫ g)) x₁ y₁ x₀ y₀ (by simpa [x₁] using hx) (by simpa [y₁] using hy)
     rw [e₂, e₁]

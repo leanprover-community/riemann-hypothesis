@@ -225,8 +225,8 @@ theorem leadMinor_r {r : ℕ} (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) E) :
   rw [this, one_mul, Fin.succAbove_last]
   rfl
 
-theorem gram_block_unit {r : ℕ} (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (T T' : E) (hTs : star T = T)
-    (hT's : star T' = T') (hZ : IsUnit Z.det)
+theorem gram_block_unit {r : ℕ} (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (T T' : E)
+    (hZ : IsUnit Z.det)
     (hG : Formalism.MainNotions.S.leadMinorE Z (r + 1) * star (Formalism.MainNotions.S.leadMinorE Z (r + 1)) -
       T * T' * (Formalism.MainNotions.S.leadMinorE Z r * star (Formalism.MainNotions.S.leadMinorE Z r)) ≠ 0)
     (Gr : Matrix (Fin (r + 1) ⊕ Fin (r + 1)) (Fin (r + 1) ⊕ Fin (r + 1)) E)
@@ -383,7 +383,7 @@ theorem gram_gg : gramOf (gg F F') =
 theorem gram_gg_unit (hTs : star T = T) (hT's : star T' = T') (hZ : IsUnit (Formalism.MainNotions.S.Zhat F F').det)
     (hG : Formalism.MainNotions.S.Gflag F F' ≠ 0) : IsUnit (gramOf (gg F F')).det := by
   rw [gram_gg]
-  refine gram_block_unit (Formalism.MainNotions.S.Zhat F F') T T' hTs hT's hZ hG _ (fun a b => ?_) (fun a b => ?_)
+  refine gram_block_unit (Formalism.MainNotions.S.Zhat F F') T T' hZ hG _ (fun a b => ?_) (fun a b => ?_)
     (fun a b => ?_) (fun a b => ?_)
   · simp [Jc]
   · simp

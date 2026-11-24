@@ -294,7 +294,7 @@ theorem PSh.prod {a b : Fin N} {ι : Type} (s : Finset ι) (u : ι → Fin N →
     rw [Finset.prod_insert hi, Finset.sum_insert hi]
     exact (h i (Finset.mem_insert_self _ _)).mul (ih fun k hk => h k (Finset.mem_insert_of_mem hk))
 
-theorem PSh_rowGen_X (a b : Fin N) (hab : a ≠ b) (v : Fin N × Fin N) :
+theorem PSh_rowGen_X (a b : Fin N) (v : Fin N × Fin N) :
     PSh a b (wZ N v) (rowGen O a b (X v)) := by
   intro j
   simp only [rowGen, aeval_X]
@@ -339,7 +339,7 @@ theorem PSh_rowGen (a b : Fin N) (hab : a ≠ b) (u : Fin N → ℤ) (f : MvPoly
     rw [monomial_eq, map_mul, Finsupp.prod, map_prod]
     have h1 := (PSh_rowGen_C a b (AddMonoidAlgebra.coeff f d)).mul
       (PSh.prod d.support (fun v => d v • wZ N v) (fun v => rowGen O a b (X v ^ d v)) fun v _ => by
-        rw [map_pow]; exact (PSh_rowGen_X a b hab v).pow (d v))
+        rw [map_pow]; exact (PSh_rowGen_X a b v).pow (d v))
     rw [zero_add] at h1
     convert h1 using 1
     rw [← hw, Finsupp.weight_apply, Finsupp.sum]

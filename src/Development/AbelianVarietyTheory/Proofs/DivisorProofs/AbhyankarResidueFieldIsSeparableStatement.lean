@@ -156,7 +156,7 @@ theorem kummer_step_one (T V : Type) [CommRing T] [IsDomain T] [IsDiscreteValuat
     [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] [Algebra T V]
     [IsLocalHom (algebraMap T V)]
     (γ : V) (ϖ u : T) (k : ℕ) (hϖ : Irreducible ϖ) (hu : IsUnit u) (hk : IsUnit (k : T))
-    (hk0 : 0 < k) (hγ : γ ^ k = algebraMap T V u) (h : T[X])
+    (hγ : γ ^ k = algebraMap T V u) (h : T[X])
     (hm : aeval γ h ∈ maximalIdeal V) :
     ∃ ν r : T[X], IsUnit (aeval γ ν) ∧
       aeval γ h * aeval γ ν = algebraMap T V ϖ * aeval γ r := by
@@ -231,7 +231,7 @@ theorem kummer_valuation : ∀ (T V : Type) [CommRing T] [IsDomain T] [IsDiscret
   by_cases hunit : IsUnit (aeval γ h)
   · exact ⟨0, h, 1, by simp, hunit, by simp⟩
   have hm : aeval γ h ∈ maximalIdeal V := (mem_maximalIdeal _).mpr hunit
-  obtain ⟨ν, r, hν, hr⟩ := kummer_step_one T V γ ϖ u k hϖ hu hk hk0 hγ h hm
+  obtain ⟨ν, r, hν, hr⟩ := kummer_step_one T V γ ϖ u k hϖ hu hk hγ h hm
   have hr0 : aeval γ r ≠ 0 := by
     intro h'
     rw [h', mul_zero] at hr
@@ -1081,7 +1081,7 @@ theorem abhyankar_residueField_isSeparable : ∀ (S K L : Type) [CommRing S] [Is
     exact IsLocalization.mk'_zero _
   have hπP : algebraMap S (integralClosure S L) π ∈ P :=
     (Ideal.mem_of_liesOver P (maximalIdeal S) π).mp ((IsLocalRing.mem_maximalIdeal π).2 hπ.not_isUnit)
-  obtain ⟨ϖ, hϖ, u', hπu'⟩ := _root_.GlobalTheory.pi_eq_pow_ramificationIdx_mul_unit S K L π e D P hπ hπP
+  obtain ⟨ϖ, hϖ, u', hπu'⟩ := _root_.GlobalTheory.pi_eq_pow_ramificationIdx_mul_unit S K L π D P hπ hπP
   set u : Localization.AtPrime P := (u' : Localization.AtPrime P) with hu_def
   have hu : IsUnit u := u'.isUnit
   have hπu : algebraMap S (Localization.AtPrime P) π = u * ϖ ^ P.ramificationIdx S := by

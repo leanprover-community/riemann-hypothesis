@@ -1385,7 +1385,7 @@ theorem mem_perGrp_of_integral (hs : IsSympl X bas) (hx : x ∈ X.dom) {L : Lt E
 
 theorem mem_smul_iff {L : Lt E r} (hL : SelfD X L) {M : ℕ} (hM : M ≠ 0) {P Q : Ideal (𝓞 E)}
     (cj : 𝓞 E → 𝓞 E) (hcj : ∀ a, ((cj a : 𝓞 E) : E) = cc (a : E)) (hPQ : Q * P = Ideal.span {(M : 𝓞 E)})
-    (h1 : ∀ a ∈ P, cj a ∈ Q) (h2 : ∀ b ∈ Q, cj b ∈ P) {w : Fin r → E} (hw : w ∈ L) :
+    (h1 : ∀ a ∈ P, cj a ∈ Q) (h2 : ∀ b ∈ Q, cj b ∈ P) {w : Fin r → E} :
     (∀ u ∈ P • L, ∃ k : ℤ, EF X u w = M * k) ↔ w ∈ P • L := by
   have hME : (M : E) ≠ 0 := Nat.cast_ne_zero.2 hM
   have hMQ : (M : ℚ) ≠ 0 := Nat.cast_ne_zero.2 hM
@@ -1497,11 +1497,11 @@ theorem exists_jet_ne_zero (hs : IsSympl X bas) (hd : x ∈ X.dom) {L : Lt E r} 
           change (hermForm _ (pv X idx x ((M : 𝓞 E) • u)) v).im = _ at hk
           rw [Nat.cast_smul_eq_nsmul, pv_nsmul, _root_.GlobalTheory.AppellHumbertTrivial.hermForm_smul_left, ← ofReal_natCast, im_ofReal_mul] at hk
           exact ⟨k, mul_left_cancel₀ hMR hk⟩
-        refine ⟨t, (mem_smul_iff hL hM cj hcj hPQ h1 h2 ht).1 fun u hu => ?_, rfl⟩
+        refine ⟨t, (mem_smul_iff hL hM cj hcj hPQ h1 h2).1 fun u hu => ?_, rfl⟩
         obtain ⟨k, hk⟩ := h _ ⟨u, hu, rfl⟩
         exact ⟨k, by exact_mod_cast (him u t).symm.trans hk⟩
       · rintro ⟨t, ht, rfl⟩ _ ⟨u, hu, rfl⟩
-        obtain ⟨k, hk⟩ := (mem_smul_iff hL hM cj hcj hPQ h1 h2 (Submodule.smul_le_right ht)).2 ht u hu
+        obtain ⟨k, hk⟩ := (mem_smul_iff hL hM cj hcj hPQ h1 h2).2 ht u hu
         exact ⟨k, (him u t).trans (by exact_mod_cast hk)⟩)
     n R hR hdeg
   choose u hu huy using fun b => (mem_perGrp idx x).1 (hy b)

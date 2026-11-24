@@ -167,7 +167,7 @@ theorem dsUnique_of_cas {ε : Fin n → Bool} {lam : Fin n → ℝ} (hgap : StdG
   have htop := data_closGen_eq_top hgap hσ (isDerivedOn_smE hσ) hV hc hVK hDS.2.2.2.1 hV0
   have htop' := data_closGen_eq_top hgap hσ' (isDerivedOn_smE hσ') hV' hc' hVK' hDS'.2.2.2.1 hV0'
   obtain ⟨U, hU⟩ := data_unitary_equiv hgap hσ (isDerivedOn_smE hσ) hV hc hVK hV0
-    hσ' (isDerivedOn_smE hσ') hV' hc' hVK' hV0'
+    hσ' (isDerivedOn_smE hσ') hV' hc' hVK'
   refine ⟨((LinearIsometryEquiv.ofTop _ _ htop).symm.trans U).trans (LinearIsometryEquiv.ofTop _ _ htop'),
     fun g hg x => ?_⟩
   simp only [LinearIsometryEquiv.trans_apply, LinearIsometryEquiv.ofTop_apply]

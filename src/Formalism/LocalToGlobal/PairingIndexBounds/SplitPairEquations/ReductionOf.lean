@@ -79,7 +79,7 @@ theorem e3b (hP : PullIop D B.tor) (hSq : SqP D B.tor) (hTR : Tr0R D B.tor) (hSm
     show TaylorLogMetric.Iop D B.tor _ _ (TaylorLogMetric.Iop D B.tor _ _ (B.thZero N N')) = _
     rw [iopSelf D B.tor N N' _ _ (mem_ThSp_of' _ _ _ _ h0)]
   have t := hTR N N' _ _ hN hN' hγ0 hγL' _ (mem_ThSp_of' _ _ _ _ h0)
-  rw [S1 hSq hL hN hN' h0 hLs h1, p1, p2, j, hself, Iop_smulF, Iop_smulF, t, S1 hSq hL hN hN' h0 hLs hγL']
+  rw [S1 hSq hN hN' h0 hLs h1, p1, p2, j, hself, Iop_smulF, Iop_smulF, t, S1 hSq hN hN' h0 hLs hγL']
 
 theorem reduction_of (hM : DetMul D) (hS : DetSmul D) (hU : NormOneUnitIdeal D) (hSm : SmulSD D)
     (χ : TaylorLogMetric.IdE D → ℂ) (hχ : TaylorLogMetric.IsChi D χ) (hL : B.LatAll)

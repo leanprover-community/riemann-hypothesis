@@ -178,7 +178,7 @@ lemma uh_inv_fix {g : Mx k r} (hg : g ∈ UH (Hpk k r)) {v w : Fin (2 * r + k + 
   B2x8.al_inv_mulVec (uh_unit hg) h
 
 lemma glev_one (i : Fin (r + 1)) : (1 : Mx k r) ∈ Glev k r i :=
-  ⟨uh_one, fun a _ => ⟨Matrix.one_mulVec _, Matrix.one_mulVec _⟩⟩
+  ⟨uh_one, fun _ _ => ⟨Matrix.one_mulVec _, Matrix.one_mulVec _⟩⟩
 lemma glev_mul {i : Fin (r + 1)} {g h : Mx k r} (hg : g ∈ Glev k r i) (hh : h ∈ Glev k r i) : g * h ∈ Glev k r i :=
   ⟨uh_mul hg.1 hh.1, fun a ha => ⟨by rw [← Matrix.mulVec_mulVec, (hh.2 a ha).1, (hg.2 a ha).1],
     by rw [← Matrix.mulVec_mulVec, (hh.2 a ha).2, (hg.2 a ha).2]⟩⟩

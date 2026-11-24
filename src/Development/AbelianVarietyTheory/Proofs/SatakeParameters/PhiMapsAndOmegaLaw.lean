@@ -124,7 +124,7 @@ def Pat (k rS r t a : ℕ) (A : ℕ → ℕ → κ) : Prop :=
   (∀ p', p' < r → A p' p' = 1 ∧ ∀ p, p < a → p ≠ p' → Zs k rS r p p' → A p p' = 0) ∧
     (∀ p p', r ≤ p' → p' < a → p < a → (p' - r) / t < (p - r) / t → A p p' = 0)
 
-theorem zs_trans {k rS r p s p' : ℕ} (hr : k + rS ≤ r) (h1 : s ≠ p') (h2 : ¬ Zs k rS r s p') (h3 : p ≠ s)
+theorem zs_trans {k rS r p s p' : ℕ} (h2 : ¬ Zs k rS r s p') (h3 : p ≠ s)
     (h4 : ¬ Zs k rS r p s) : p ≠ p' ∧ ¬ Zs k rS r p p' := by
   have e1 := SymLevelInv.symIdx_cases k rS p
   have e2 := SymLevelInv.symIdx_cases k rS s
@@ -132,7 +132,7 @@ theorem zs_trans {k rS r p s p' : ℕ} (hr : k + rS ≤ r) (h1 : s ≠ p') (h2 :
   unfold Zs at *
   constructor <;> omega
 
-theorem zs_adj {k rS r p s : ℕ} (hp : p + 1 ≠ k) (h1 : s ≠ p + 1) (h2 : ¬ Zs k rS r s (p + 1)) (h3 : p ≠ s) :
+theorem zs_adj {k rS r p s : ℕ} (h1 : s ≠ p + 1) (h2 : ¬ Zs k rS r s (p + 1)) (h3 : p ≠ s) :
     Zs k rS r p s := by
   have e1 := SymLevelInv.symIdx_cases k rS p
   have e2 := SymLevelInv.symIdx_cases k rS s
@@ -158,7 +158,7 @@ theorem Pat.mul (hr : k + rS ≤ r) (ha : r ≤ a) (hA : Pat k rS r t a A) (hB :
     · intro s hs hne
       refine hA.term hB (by omega) (Finset.mem_range.1 hs) hp' hne fun hz => ⟨hne.symm, ?_⟩
       by_contra h4
-      exact (zs_trans hr hne hz hne.symm h4).1 rfl
+      exact (zs_trans hz hne.symm h4).1 rfl
     · intro h
       exact absurd (Finset.mem_range.2 (by omega)) h
   · rw [hC _ _ hp (by omega)]
@@ -169,7 +169,7 @@ theorem Pat.mul (hr : k + rS ≤ r) (ha : r ≤ a) (hA : Pat k rS r t a A) (hB :
       have h3 : p ≠ s := fun h => hz' (h ▸ hz)
       refine ⟨h3, ?_⟩
       by_contra h4
-      exact (zs_trans hr h1 hz' h3 h4).2 hz
+      exact (zs_trans hz' h3 h4).2 hz
   · rw [hC _ _ h3 h2]
     have hpr : r ≤ p := by
       by_contra hh
@@ -189,7 +189,7 @@ theorem Pat.superdiag (ha : r ≤ a) (hA : Pat k rS r t a A) (hB : Pat k rS r t 
   rw [hC _ _ (by omega) (by omega), Finset.sum_eq_add_of_mem p (p + 1) (by simp; omega) (by simp; omega) (by omega),
     (hA.1 p (by omega)).1, (hB.1 (p + 1) hp).1, one_mul, mul_one, add_comm]
   rintro s hs ⟨h1, h2⟩
-  exact hA.term hB (by omega) (Finset.mem_range.1 hs) hp h2 fun hz => ⟨h1.symm, zs_adj hk h2 hz h1.symm⟩
+  exact hA.term hB (by omega) (Finset.mem_range.1 hs) hp h2 fun hz => ⟨h1.symm, zs_adj h2 hz h1.symm⟩
 
 theorem Pat.block (hA : Pat k rS r t a A) (hB : Pat k rS r t a B)
     (hC : ∀ p p', p < a → p' < a → C p p' = ∑ l ∈ Finset.range a, A p l * B l p') {i : ℕ} (hi : r + i * t + t ≤ a) :

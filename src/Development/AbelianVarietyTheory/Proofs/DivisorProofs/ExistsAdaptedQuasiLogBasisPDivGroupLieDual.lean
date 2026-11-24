@@ -1147,7 +1147,7 @@ theorem main : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C]
       have hl' : ∀ j, coeff (Finsupp.single i 1) (e (Sum.inl j)) =
           (Pi.single j (1 : E) : Fin d → E) i := fun j => congrFun (hlin j) i
       simp only [hl', hw]
-      rw [Finset.sum_eq_single i (fun j _ hj => by simp [Pi.single_apply, Ne.symm hj]) (by simp)]
+      rw [Finset.sum_eq_single i (fun j _ hj => by simp [Ne.symm hj]) (by simp)]
       simp
     · let L : MvPowerSeries (Fin d) E →+ MvPowerSeries (Fin d ⊕ Fin d) E :=
         AddMonoidHom.mk' (cob1 (up E c.μ)) (formalCoboundary_add hc0)

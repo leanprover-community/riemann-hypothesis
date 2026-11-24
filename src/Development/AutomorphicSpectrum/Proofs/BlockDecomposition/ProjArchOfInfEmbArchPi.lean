@@ -82,7 +82,7 @@ theorem eq_diagonal_of_upperTriangular_of_unitary {r : ℕ} (B : Matrix (Fin r) 
 
 theorem flag_isometry_diagonal_on_frame (n r : ℕ) (J P p : Matrix (Fin n) (Fin n) ℂ)
     (X Y : Matrix (Fin n) (Fin r) ℂ) (hJ : IsUnit J.det) (hXY : Xᴴ * J * Y = 1)
-    (_hP : P.PosDef) (_hPJ : P * J⁻¹ * P = J) (hPX : P * X = J * Y)
+    (hPX : P * X = J * Y)
     (hpJ : pᴴ * J * p = J) (hpP : pᴴ * P * p = P)
     (B : Matrix (Fin r) (Fin r) ℂ) (hB : B.BlockTriangular id) (hpX : p * X = X * B) :
     ∃ d : Fin r → ℂ, p * X = X * diagonal d ∧ p * Y = Y * diagonal d := by
@@ -399,7 +399,7 @@ theorem exists_lift (hcm : IsCMExt F E σ) (hdet : J.det ≠ 0) (τ : EmbOver E 
   rfl
 
 theorem archMat_injective (hcm : IsCMExt F E σ) (τ : EmbOver E w) : Function.Injective (archMat σ J τ) :=
-  fun a b e => (GlobalTheory.Orb.isEmbedding_archMat J hcm τ).injective (congrArg (fun m i j => m i j) e)
+  fun _ _ e => (GlobalTheory.Orb.isEmbedding_archMat J hcm τ).injective (congrArg (fun m i j => m i j) e)
 
 
 variable (σ) in
@@ -676,7 +676,7 @@ theorem exists_kInf : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numb
   refine ⟨kInf σ J τ P, kInf_le J τ P, isCompact_kInf J hcm hJ.2 τ hPd, ?_, ?_⟩
   · exact iwasawa J hcm hJ.2 τ hQ fun w => GlobalTheory.CompanionTheory.WittIwasawa.iwasawa_witt_flag n r _ _ _ _ (hher w) (hu w) (hxx w) (hyy w) (hxy w) (hPd w) (hPJ w) (hPX w)
   · exact good J hcm τ hQ hW.xy fun w p h1 h2 B hB hpB =>
-      GlobalTheory.CompanionTheory.RealPlace.flag_isometry_diagonal_on_frame n r _ _ p _ _ (hu w) (hxy w) (hPd w) (hPJ w) (hPX w) h1 h2 B hB hpB
+      GlobalTheory.CompanionTheory.RealPlace.flag_isometry_diagonal_on_frame n r _ _ p _ _ (hu w) (hxy w) (hPX w) h1 h2 B hB hpB
 
 end GlobalTheory.CompanionTheory.SiegelArch
 end -- clump:auto

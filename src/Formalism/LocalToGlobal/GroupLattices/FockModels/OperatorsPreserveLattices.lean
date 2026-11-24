@@ -49,7 +49,7 @@ theorem rowDiv_hom (R : Type) [CommRing R] {r n : ℕ} (a b : Fin r) (k : ℕ) (
   rw [weight_wc] at h1
   omega
 
-theorem applyWord_hom (R : Type) [CommRing R] {r n : ℕ} (hn : n ≤ r) (ν : Fin n → ℕ) (hν : Antitone ν)
+theorem applyWord_hom (R : Type) [CommRing R] {r n : ℕ} (hn : n ≤ r) (ν : Fin n → ℕ)
     (wd : List (Fin r × Fin r × ℕ)) : ∃ μ, IsWeightedHomogeneous (rowW r n) (applyWord R wd (hw R hn ν)) μ := by
   have hwhom : ∃ μ0, IsWeightedHomogeneous (rowW r n) (hw R hn ν) μ0 :=
     ⟨_, IsWeightedHomogeneous.prod _ _ _ fun s _ => (lpMinor_rowHom R (s.val + 1) _ _).pow _⟩
@@ -99,7 +99,7 @@ theorem weyl_scale (O Kf : Type) [CommRing O] [IsDomain O] [Field Kf] [Algebra O
     show T f ∈ Submodule.map (mapAlgHom (Algebra.ofId O Kf)).toLinearMap (weyl O k k le_rfl ν)
     by_cases h0 : f = 0
     · rw [h0, map_zero]; exact Submodule.zero_mem _
-    obtain ⟨μ, hμ⟩ := applyWord_hom O le_rfl ν hν wd
+    obtain ⟨μ, hμ⟩ := applyWord_hom O le_rfl ν wd
     obtain ⟨d0, hd0⟩ := MvPolynomial.support_nonempty.mpr h0
     have hdom := ((mem_restrictSupport_iff O).1 (dom_support O k k ν r (weylLeDual O k k le_rfl ν hν hfW))) hd0
     have hwt : ∀ a, rowDeg d0 a = μ a := by
@@ -327,7 +327,7 @@ theorem yv_pres (G : GAtP p) (v : Fin G.P.nV)
     · have := hlat u
       rwa [hne L L'' u huv] at this
 
-theorem operators_preserve_lattices (D : Formalism.BasicNotions.D7) (G : GAtP p) : Formalism.MainNotions.FormalGroupSystem.adm12 D G := by
+theorem operators_preserve_lattices (D : Formalism.BasicNotions.D7) (G : GAtP p) : Formalism.MainNotions.FormalGroupSystem.adm12 G := by
   refine ⟨fun v => ?_, fun v => ?_⟩
   · exact yv_pres G v (fun u Lu => Hten G.O (G.P.lam0 u) fun s => extO G.O (G.P.ι u) (G.P.σ u) s.val Lu)
       (fun e he => steps_gen G v (fun lam Λ => H0 G.O G.P.m lam Λ)

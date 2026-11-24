@@ -225,8 +225,8 @@ theorem exists_arcIn_of_unif {V : ValuationSubring c.F} (Y : Model Xo c V.subtyp
     have hm : (l.M : 𝓞 E) ∈ l.Mb * l.Mb.map (H.bar : 𝓞 E →+* 𝓞 E) := by
       rw [l.prod]; exact Ideal.mem_span_singleton_self _
     exact Submodule.smul_mem_smul ((Ideal.mul_le_inf hm).1) Submodule.mem_top
-  choose pM hpM using fun v => exists_rational_pair hA P hT Y.oF.t z ψ gψ hM0 (rat _ dM) _ (tM v)
-  choose pA hpA using fun v => exists_rational_pair hA P hT Y.oF.t z ψ gψ l.A_pos (rat _ dA) _ (tA v)
+  choose pM hpM using fun v => exists_rational_pair P hT Y.oF.t z ψ gψ hM0 (rat _ dM) _ (tM v)
+  choose pA hpA using fun v => exists_rational_pair P hT Y.oF.t z ψ gψ l.A_pos (rat _ dA) _ (tA v)
   refine ⟨{ D₀ := twist P.D.toPre H.w0 tf
             mod := P.mod
             oa := twistAct hw ht P.oD

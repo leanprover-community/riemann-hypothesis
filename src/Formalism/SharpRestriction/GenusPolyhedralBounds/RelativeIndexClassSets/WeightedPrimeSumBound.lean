@@ -53,7 +53,7 @@ def WeightedPrimeSumBoundAlt (large₂ : SizeData₂ D) (X : PJ D B P j) (wL : W
 def HypC (large₂ : SizeData₂ D) (X : PJ D B P j) (H : KHyp) (C2 A2 CR Bx CT : ℝ) (S : Scal B)
     (ka wL wF : WeightFamilies.Wt D j) (T nP nW : ℕ) (h0 : ℝ) (nus : HeightOneSpectrum (𝓞 B.KO) → ℝ) : Prop :=
   ParA large₂ H.CA ∧ SetC large₂ X H.CK H.C1 H.A1 ka wL wF T nP nW h0 ∧ ScalB large₂ X H.C1 H.A1 S ka wL wF T ∧
-    WeightedPrimeSumBoundAlt large₂ X wL nus ∧ H2 X S ka wL wF ∧ H3 large₂ H C2 A2 CR Bx wL T ∧ H4 large₂ X H C2 A2 CR ka wL wF T nW ∧
+    WeightedPrimeSumBoundAlt large₂ X wL nus ∧ H2 X S ka wL wF ∧ H3 large₂ H C2 A2 CR Bx wL T ∧ H4 large₂ X C2 A2 CR ka wL wF T nW ∧
     (T : ℝ) ≤ large₂.sc.x ^ CT
 
 variable {X : PJ D B P j} {ka wL wF : WeightFamilies.Wt D j}

@@ -622,7 +622,7 @@ open Formalism.L2.Th1
 
 theorem phNorm_int {K : Type} [Field K] [CharZero K] (R : Subring K) (l linv ph : PowerSeries K)
     (hF : C.Frame R l linv ph) (h1 : C.F1 R l linv ph) (hneg : C.PhNormAt R l linv ph (-1) (-1))
-    (h2 : (2 : K)⁻¹ ∈ R) (n : ℤ) : C.PhNormAt R l linv ph (n : K) (n : K) := by
+    (n : ℤ) : C.PhNormAt R l linv ph (n : K) (n : K) := by
   have hl : C.IsLogPair l linv := hF.1
   have hX : MvPowerSeries.constantCoeff (PowerSeries.X : MvPowerSeries Unit K) = 0 :=
     PowerSeries.constantCoeff_X
@@ -804,7 +804,7 @@ theorem sq_formula (l : ℕ) [Fact l.Prime] (hl : l ≠ 2) (L : PeriodPair) (ι 
     (by simpa only [hb2, add_zero] using hIF)
   have hFr : C.Frame (unitBall ℂ_[l]) (A.logSer W) (A.expSer W) ph := ⟨hLP, hFG, hPh.1⟩
   have hN := phNorm_int (unitBall ℂ_[l]) (A.logSer W) (A.expSer W) ph hFr
-    (G.weierstrass_biadditive_mod_equiv ℂ_[l] W hco h2 s2) (G.curveNegNorm ℂ_[l] (unitBall ℂ_[l]) W hco h2R s2) h2R (n : ℤ)
+    (G.weierstrass_biadditive_mod_equiv ℂ_[l] W hco h2 s2) (G.curveNegNorm ℂ_[l] (unitBall ℂ_[l]) W hco h2R s2) (n : ℤ)
   rw [Int.cast_natCast] at hN
   have hMul : (uSer g2 g3).subst (C (n : ℂ_[l]) * lgS g2 g3)
       = C.mulBy (A.logSer W) (A.expSer W) (n : ℂ_[l]) := by

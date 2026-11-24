@@ -86,7 +86,7 @@ theorem finProd_isGen {I K : Type} [Fintype I] [Fintype K] (φ : I → K → (Y 
 theorem val_finProd {I K : Type} [Fintype I] [Fintype K] (φ : I → K → (Y ⟶ X)) (ε : I → K → ℤ)
     (t : ∀ i, LB.Gen (LB.LinComb L (φ i) (ε i))) {Z : Scheme.{0}} (r : Z ⟶ Y) (z : Z) {J} (hJ : Good L z J) :
     val (GeneratorPullback.finProdGen L φ ε t) r z J = ∏ i, val (t i) r z J :=
-  (map_prod _ _ _).trans (Finset.prod_congr rfl fun i _ =>
+  (map_prod _ _ _).trans (Finset.prod_congr rfl fun _ _ =>
     gm_res r z _ (hJ.mem (fun p : I × K => φ p.1 p.2) r) _)
 
 end Helpers

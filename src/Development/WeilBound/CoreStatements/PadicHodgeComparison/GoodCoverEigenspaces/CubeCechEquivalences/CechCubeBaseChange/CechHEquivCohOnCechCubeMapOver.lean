@@ -153,7 +153,7 @@ theorem sign_collision (τ : κ → ι) {t : Finset κ} {a b : κ} (ha : a ∈ t
   have hr' : r = (t.erase b).erase a := Finset.erase_right_comm
   have hbm : b ∈ t.erase a := Finset.mem_erase.2 ⟨hab.symm, hb⟩
   have ham : a ∈ t.erase b := Finset.mem_erase.2 ⟨hab, ha⟩
-  have hs : Set.InjOn τ (r : Finset κ) := hi.mono (by simp [hr, Finset.erase_subset])
+  have hs : Set.InjOn τ (r : Finset κ) := hi.mono (by simp [hr])
   have hx : ∀ c ∈ r, τ c ≠ τ b := fun c hc e => by
     have h1 := Finset.mem_erase.1 hc
     exact h1.1 (hi h1.2 hbm e)

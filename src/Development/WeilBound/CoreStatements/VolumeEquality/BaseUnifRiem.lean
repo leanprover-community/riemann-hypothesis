@@ -91,7 +91,7 @@ theorem span_top (R : RiemLat E g Λ) : Submodule.span ℝ (Set.range R.P) = ⊤
 
     simp only [map_sum, map_smul, map_zero, imB_P, hy, Module.Basis.coord_apply, Module.Basis.repr_self,
     smul_eq_mul] at h
-    rw [Finset.sum_eq_single l (fun k _ hk => by simp [Finsupp.single_apply, hk]) (by simp)] at h
+    rw [Finset.sum_eq_single l (fun k _ hk => by simp [hk]) (by simp)] at h
     simpa using h
   have hcard : Fintype.card (Fin (2 * g)) = Module.finrank ℝ (Fin g → ℂ) := by
     simp [Module.finrank_pi_fintype, Complex.finrank_real_complex, mul_comm]

@@ -862,16 +862,16 @@ theorem classPresOf_ext (A : AdPts S ι J) (h : S.Ok) (σ : K →+* ℂ) (ρ : �
     (hpair : ∀ x x', inner ℂ (coef x) (coef x') = σ (S.pair x x')) (hK1 : ∀ k : J, (k : G) ∈ A.K1 → χ k = 1)
     (hgl : ∀ (γ : Γ) (k : J) (v : S.V), coef (S.ρ (A.gl (γ, k)) v) = ((χ k)⁻¹ : ℂˣ) • ρ γ (coef v))
     (f : (S.toCSD h).Forms) (g : G) :
-    (classPresOf A h σ ρ χ coef hli hspan hpair hK1 hgl).ext (f : S.Cl → S.V) g =
+    (classPresOf A h σ ρ χ coef hli hspan hpair hgl).ext (f : S.Cl → S.V) g =
       coef ((((S.res h).symm f : S.EqFun) : S.D → S.V) (A.q g)) := by
 
   have key : ∀ (γ : Γ) (c : S.Cl) (k : J),
-      (classPresOf A h σ ρ χ coef hli hspan hpair hK1 hgl).ext (f : S.Cl → S.V) (ι γ * A.y c * k) =
+      (classPresOf A h σ ρ χ coef hli hspan hpair hgl).ext (f : S.Cl → S.V) (ι γ * A.y c * k) =
         coef ((((S.res h).symm f : S.EqFun) : S.D → S.V) (A.q (ι γ * A.y c * k))) := by
     intro γ c k
-    have e1 : (classPresOf A h σ ρ χ coef hli hspan hpair hK1 hgl).ext (f : S.Cl → S.V) (ι γ * A.y c * k) =
+    have e1 : (classPresOf A h σ ρ χ coef hli hspan hpair hgl).ext (f : S.Cl → S.V) (ι γ * A.y c * k) =
         (χ k : ℂ) • ρ γ (coef ((f : S.Cl → S.V) c)) :=
-      ClassPres.ext_eq (classPresOf A h σ ρ χ coef hli hspan hpair hK1 hgl) f γ c k
+      ClassPres.ext_eq (classPresOf A h σ ρ χ coef hli hspan hpair hgl) f γ c k
     have e2 : A.q (ι γ * A.y c * k) = A.gl (γ, k⁻¹) • S.outSec.rep c := by
       rw [A.q_mul, A.q_y]
     have e3 : (((S.res h).symm f : S.EqFun) : S.D → S.V) (S.outSec.rep c) = (f : S.Cl → S.V) c := by
@@ -881,7 +881,7 @@ theorem classPresOf_ext (A : AdPts S ι J) (h : S.Ok) (σ : K →+* ℂ) (ρ : �
       rw [LinearEquiv.apply_symm_apply]
     have e4 := (S.mem_EqFun _).1 ((S.res h).symm f).2 (A.gl (γ, k⁻¹)) (S.outSec.rep c)
     rw [e1, e2, e4, e3, hgl, map_inv, inv_inv, Units.smul_def]
-  rw [(classPresOf A h σ ρ χ coef hli hspan hpair hK1 hgl).dec_spec g]
+  rw [(classPresOf A h σ ρ χ coef hli hspan hpair hgl).dec_spec g]
   exact key _ _ _
 
 variable {G' Γ' : Type} [Group G'] [Group Γ'] {ι' : Γ' →* G'} {ρ : Γ →* Module.End ℂ W} {ρ' : Γ' →* Module.End ℂ W}

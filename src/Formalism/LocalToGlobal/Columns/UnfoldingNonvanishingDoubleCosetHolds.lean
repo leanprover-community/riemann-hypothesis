@@ -91,7 +91,7 @@ theorem fPos_lt' {k₀ c n l : ℕ} (_hk : k₀ ≤ n) (hl : l < n + c) : fPos k
   unfold fPos
   split_ifs <;> omega
 
-theorem fIdx_fPos' {k₀ c n l : ℕ} (hk : k₀ ≤ n) (hl : l < n + c) : fIdx k₀ c n (fPos k₀ c n l) = l := by
+theorem fIdx_fPos' {k₀ c n l : ℕ} (hl : l < n + c) : fIdx k₀ c n (fPos k₀ c n l) = l := by
   unfold fIdx fPos
   split_ifs <;> omega
 
@@ -160,7 +160,7 @@ theorem test_function_support : PhiSuppP := by
     rw [ite_eq_right (fun h => hc h.1)]
   by_cases hs : s < n' + c'
   · have h1 := hc _ _ (fPos_lt' hk l.2) (fPos_lt' hk' hs)
-    simpa [entB, scE, fIdx_fPos' hk l.2, fIdx_fPos' hk' hs, atN, l.2] using h1
+    simpa [entB, scE, fIdx_fPos' l.2, fIdx_fPos' hs, atN, l.2] using h1
   · rw [eN_out (E := E) hs, map_zero]
     exact ⟨0, 1, fun h1 => P.isPrime.ne_top ((Ideal.eq_top_iff_one _).mpr h1), by simp⟩
 

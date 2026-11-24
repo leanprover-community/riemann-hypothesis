@@ -331,7 +331,7 @@ private theorem term_lemma_3 {ε : Fin n → Bool} {a b : Fin n} (he : ε a = ε
     simp only [e, e', ne_eq, not_false_eq_true, and_false, and_true, ite_false, Fin.lt_iff_val_lt_val, Fin.le_iff_val_le_val]
     split_ifs <;> first | (exfalso; omega) | norm_num
 
-private theorem sumR_lemma_4 {a b : Fin n} (hab : a < b) :
+private theorem sumR_lemma_4 {a b : Fin n} :
     ∑ c : Fin n, ((if a < c ∧ c ≤ b then 1 else 0 : ℝ) + (if a ≤ c ∧ c < b then 1 else 0)) = 2 * ((b.val - a.val : ℕ) : ℝ) := by
   rw [Finset.sum_add_distrib, Finset.sum_boole, Finset.sum_boole]
   have h1 : (Finset.univ.filter fun c : Fin n => a < c ∧ c ≤ b) = Finset.Ioc a b := by
@@ -349,7 +349,7 @@ theorem cns_hc_of_dom {ε : Fin n → Bool} (he : ∀ a b, ε a = ε b) {ν : Fi
   refine ⟨fun a b hab => ?_, hint⟩
   have hd := lowK_diff_lemma_2 ε ν a b
   have hs := Finset.sum_congr rfl fun c (_ : c ∈ Finset.univ) => (term_lemma_3 (he a b) hab c).2 (he c a)
-  rw [sumR_lemma_4 hab] at hs
+  rw [sumR_lemma_4] at hs
   have hk := hdom a b hab (he a b)
   have hba : (1 : ℝ) ≤ ((b.val - a.val : ℕ) : ℝ) := by
     have := Fin.lt_iff_val_lt_val.mp hab
@@ -361,7 +361,7 @@ theorem cns_dom_of_hc {ε : Fin n → Bool} {ν : Fin n → ℝ} (h : S7.IsHCPar
   intro a b hab he
   have hd := lowK_diff_lemma_2 ε ν a b
   have hs := Finset.sum_le_sum fun c (_ : c ∈ Finset.univ) => (term_lemma_3 he hab c).1
-  rw [sumR_lemma_4 hab] at hs
+  rw [sumR_lemma_4] at hs
   have hg := gap_lemma h (b.val - a.val) a b (by have := Fin.lt_iff_val_lt_val.mp hab; omega)
   linarith
 
@@ -427,9 +427,9 @@ theorem cns_zuck_cpt {ε : Fin n → Bool} (hpq : pOf ε = 0 ∨ qOf ε = 0) {μ
     intro s
     by_cases hs : S7.IsHCParam (shiftF false μ s)
     · obtain ⟨T'⟩ := HW.kType_exists ε _ hs
-      obtain ⟨σ', h1, -, h3⟩ := isDS_compact hpq hs T'
+      obtain ⟨σ', h1, -, h3⟩ := isDS_compact hpq T'
       exact ⟨_, T', σ', hs, h1, h3, fun _ => rfl⟩
-    · obtain ⟨σ', h1, -, h3⟩ := isDS_compact hpq hμ' T
+    · obtain ⟨σ', h1, -, h3⟩ := isDS_compact hpq T
       exact ⟨μ, T, σ', hμ', h1, h3, fun h => absurd h hs⟩
   choose lamS Ts σs hHC hDS hσT hsh using hdat
   obtain ⟨hP1, hP2, hP3⟩ := HW.pieriStd n ε (lowK ε μ) T
@@ -513,9 +513,9 @@ theorem cns_zuckd_cpt {ε : Fin n → Bool} (hpq : pOf ε = 0 ∨ qOf ε = 0) {�
     intro s
     by_cases hs : S7.IsHCParam (shiftF true μ s)
     · obtain ⟨T'⟩ := HW.kType_exists ε _ hs
-      obtain ⟨σ', h1, -, h3⟩ := isDS_compact hpq hs T'
+      obtain ⟨σ', h1, -, h3⟩ := isDS_compact hpq T'
       exact ⟨_, T', σ', hs, h1, h3, fun _ => rfl⟩
-    · obtain ⟨σ', h1, -, h3⟩ := isDS_compact hpq hμ' T
+    · obtain ⟨σ', h1, -, h3⟩ := isDS_compact hpq T
       exact ⟨μ, T, σ', hμ', h1, h3, fun h => absurd h hs⟩
   choose lamS Ts σs hHC hDS hσT hsh using hdat
   obtain ⟨hP1, hP2, hP3⟩ := HW.pieriDual n ε (lowK ε μ) T

@@ -115,7 +115,7 @@ theorem cyc_le {v : V} {T : Submodule ℂ V} (hT : ∀ a b, ∀ x ∈ T, E a b x
     rw [map_add (f := _), LinearMap.add_apply]
     exact T.add_mem (ha x hx) (hb x hx)
 
-theorem cas_comm (ε : Fin n → Bool) (hgl : GlRel E) (a b : Fin n) (x : V) : E a b (Cas E x) = Cas E (E a b x) := by
+theorem cas_comm (hgl : GlRel E) (a b : Fin n) (x : V) : E a b (Cas E x) = Cas E (E a b x) := by
   have key : E a b * Cas E - Cas E * E a b = 0 := by
     have h : ∀ c d, E a b * (E c d * E d c) - E c d * E d c * E a b =
         ((if b = c then E a d else 0) - (if d = a then E c b else 0)) * E d c +
@@ -204,7 +204,7 @@ theorem exists_closed_stable {H : Type} [NormedAddCommGroup H] [InnerProductSpac
     have hwK' : (Cas E - c • 1) w = 0 := hwK
     show (Cas E - c • 1) (E a b w) = 0
     simp only [LinearMap.sub_apply, LinearMap.smul_apply, Module.End.one_apply] at hwK' ⊢
-    rw [← cas_comm ε hD.glRep, ← map_smul, ← map_sub, hwK', map_zero]
+    rw [← cas_comm hD.glRep, ← map_smul, ← map_sub, hwK', map_zero]
   have hVc : ∀ w ∈ V, ReciprocityTheory.ChartRestriction.DS.casimir E w = ((c.re : ℝ) : ℂ) • w := by
     intro w hw
     have h3 : (Cas E - c • 1) w = 0 := hw.1.2
@@ -322,8 +322,8 @@ theorem core (hM : MultAlg) (hO : OrthCyc) {V : Type} [NormedAddCommGroup V] [In
   have hCas : KHighest ε E (lowK ε lam) (Cas E y) := by
     unfold Formalism.REAL.KHighest Formalism.REAL.IsWeight
     refine ⟨fun a => ?_, fun a b hab he => ?_⟩
-    · rw [cas_comm ε hgl, hyK'.1 a, map_smul]
-    · rw [cas_comm ε hgl, hyK'.2 a b hab he, map_zero]
+    · rw [cas_comm hgl, hyK'.1 a, map_smul]
+    · rw [cas_comm hgl, hyK'.2 a b hab he, map_zero]
   have hCasMem : Cas E y ∈ Cyc E y := by
     simp only [Cas, LinearMap.sum_apply, Module.End.mul_apply]
     exact Submodule.sum_mem _ fun a _ => Submodule.sum_mem _ fun b _ =>

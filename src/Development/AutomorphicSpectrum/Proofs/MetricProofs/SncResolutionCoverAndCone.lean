@@ -136,7 +136,7 @@ theorem lift_mem_conePts {P : Ideal (MvPolynomial (Σ k, ι k) ℂ)} (hP : IsMul
     (p : (k : K) → ι k) (x : Pts P) (hx : x ∈ src P p) :
     (fun q => eval (coord P p x) (lift p q)) ∈ conePts P := by
   rw [lift_vec p x hx]
-  exact (conePts_of_chartIdeal hP p _
+  exact (conePts_of_chartIdeal p _
     ((mem_conePts_iff_chartIdeal hP p (rep x) hx).1 (rep_mem x))).1
 
 theorem isMultiHomogIdeal_sup {P D : Ideal (MvPolynomial (Σ k, ι k) ℂ)}
@@ -162,7 +162,7 @@ theorem zero_bd_iff {P D : Ideal (MvPolynomial (Σ k, ι k) ℂ)} (hP : IsMultiH
       intro f hf
       rw [← eval_renC]
       exact h _ (Ideal.le_radical (Ideal.mem_map_of_mem _ hf))
-    have := (conePts_of_chartIdeal (isMultiHomogIdeal_sup hP hD) p _ hz).1
+    have := (conePts_of_chartIdeal p _ hz).1
     exact ⟨this.1, fun f hf => this.2 f (Ideal.mem_sup_right hf)⟩
   · intro hDm g hg
     have hle : chartIdeal (P ⊔ D) p ≤ RingHom.ker (eval (affCoord p (rep x))) := by

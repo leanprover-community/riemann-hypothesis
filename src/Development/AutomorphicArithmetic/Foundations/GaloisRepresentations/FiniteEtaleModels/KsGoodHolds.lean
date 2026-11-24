@@ -150,7 +150,7 @@ theorem admissible_of_integral_conj_le {k : ℕ} (T : KS L gb k) {h : G.GAf} {M�
     T.X.admitted (T.lev M₁) (T.lev M₂) h :=
   ⟨(T.Δ_eq _).2 hi, fun u hu => by rw [T.K_eq] at hu ⊢; exact ha u hu⟩
 
-theorem cls_of (hNum : NumEx) (hCls : ClsEx) {N₁ : ℕ} {𝔟 : Ideal (𝓞 D.F)} (X : Ext S N₁ 𝔟) {k : ℕ} (T : KS L gb k) (M : Lv p) (c : ℕ) (a : 𝓞 D.F)
+theorem cls_of (hCls : ClsEx) {N₁ : ℕ} {𝔟 : Ideal (𝓞 D.F)} (X : Ext S N₁ 𝔟) {k : ℕ} (T : KS L gb k) (M : Lv p) (c : ℕ) (a : 𝓞 D.F)
     (hn : X.site.Num M.1 c a) : Nonempty (X.site.Cl (T.M M).univ c a) :=
   (hCls q (datAt S.atq S.sp) (Ow w) E S.b gb _ S.mat M.1 _ c a _ hn.1 (lt_of_lt_of_le (by norm_num) M.2.1) X.lev.1 X.lev.2.1 hn.2 X.Y _ _
     (T.M M).univ).1
@@ -176,7 +176,7 @@ theorem forget_of (hSc : Sc D G) (hNum : NumEx) (hCls : ClsEx) (hInv : PiInv) (h
   obtain ⟨t, ht⟩ := hd
   have n₀' : X₀.site.Num M.1 (c₀ * t) (t * a₀) := by
     rw [ht]; exact (hNum p D E gb w q r 𝔴 _ X₀.site N.1 (lt_of_lt_of_le (by norm_num) N.2.1)).2 c₀ a₀ t n₀
-  obtain ⟨C₀'⟩ := cls_of hNum hCls X₀ T M _ _ n₀'
+  obtain ⟨C₀'⟩ := cls_of hCls X₀ T M _ _ n₀'
   have pb := (hP _ _ _ X₁.Y.univ.A X₀.Y.univ.A X₀.Y.univ.A d.t (𝟙 _) d.Φ (𝟙 _) d.w (by simp) k).1 pd
   have fs : IsFinite (d.pw k) := MorphismProperty.of_isPullback pb.flip fd
   have ets : Etale (d.pw k) := MorphismProperty.of_isPullback pb.flip ed
@@ -210,7 +210,7 @@ theorem transl_of (hSc : Sc D G) (hNum : NumEx) (hCls : ClsEx) (hP : PowCart) (h
     exact ⟨_, ok⟩
   · obtain ⟨X₂⟩ := hExt p D G hSc E gb w q r 𝔴 _ S N₀ 𝔞' ⟨X₀.lev.1, X₀.lev.2.1, X₀.lev.2.2.1, X₁.lev.2.2.2.1, X₁.lev.2.2.2.2⟩
     obtain ⟨c₂, a₂, n₂⟩ := (hNum p D E gb w q r 𝔴 _ X₂.site N₁.1 (lt_of_lt_of_le (by norm_num) N₁.2.1)).1 hN₁
-    obtain ⟨C₂⟩ := cls_of hNum hCls X₂ T N₁ c₂ a₂ n₂
+    obtain ⟨C₂⟩ := cls_of hCls X₂ T N₁ c₂ a₂ n₂
     obtain ⟨d₂, ok₂, -⟩ := ok_of hP T h₂ C₁ C₂ (fun _ => True) (admissible_of_integral_conj_le T i₂ ad₂) fun W =>
       (hA p D G L hSc E gb w q r 𝔴 _ S k T N₀ κ 𝔞' 𝔞' X₁ X₂ le_rfl _ i₂ hκ M N₁ c₁ c₂ a₁ a₂ n₁ n₂ C₁ C₂ W).imp fun _ h => ⟨h, trivial⟩
     obtain ⟨d₁, ok₁, -⟩ := ok_of hP T h₁ C₂ C₀ (fun _ => True) (admissible_of_integral_conj_le T i₁ ad₁) fun W =>
@@ -227,13 +227,13 @@ theorem ksGood_of (hSite : SiteEx) (hNum : NumEx) (hCls : ClsEx) (hCov : KSCover
   have pos : ∀ M : Lv p, 0 < M.1 := fun M => lt_of_lt_of_le (by norm_num) M.2.1
   obtain ⟨X₀⟩ := hExt p D G hSc E gb w q r 𝔴 _ S N₀ 𝔞 hlev
   obtain ⟨c₀, a₀, n₀⟩ := (hNum p D E gb w q r 𝔴 _ X₀.site N.1 (pos N)).1 hNm
-  obtain ⟨C₀⟩ := cls_of hNum hCls X₀ T N c₀ a₀ n₀
+  obtain ⟨C₀⟩ := cls_of hCls X₀ T N c₀ a₀ n₀
   obtain ⟨Cv⟩ := hCov p D G L E gb w q r 𝔴 _ X₀.site k T K₀ hK₀ N c₀ a₀ n₀ C₀ hNK J A g θ hdeck
   refine ⟨Cv.toCover, fun j => ?_⟩
   obtain ⟨κ, 𝔞', K₁, h₁, h₂, N₁, hlev', hK₁, hle, -, hMm, hdec, hh, i₁, i₂, hκ, hN₁, ad₂, ad₁, hcase⟩ := hall j
   obtain ⟨X₁⟩ := hExt p D G hSc E gb w q r 𝔴 _ S (N₀ * κ) 𝔞' hlev'
   obtain ⟨c₁, a₁, n₁⟩ := (hNum p D E gb w q r 𝔴 _ X₁.site (g j).M.1 (pos _)).1 hMm
-  obtain ⟨C₁⟩ := cls_of hNum hCls X₁ T (g j).M c₁ a₁ n₁
+  obtain ⟨C₁⟩ := cls_of hCls X₁ T (g j).M c₁ a₁ n₁
   obtain ⟨s, ok, q0, q1, fe⟩ := forget_of hSc hNum hCls hInv hP hQ hF hD hE T X₁ X₀ hle hK₀ hK₁ (g j).dvd n₁ n₀ C₁ C₀
   refine hL p D G L E gb k T N J A g θ (Ow w) Cv.toCover j K₀ K₁ _ (X₁.site.pi T C₁) s _ (lev_le hK₀ hK₁ hle) hNK q0 q1
     (fun a b => (ok.2 a b).symm) fe hdec fun x hx => ?_
@@ -492,7 +492,7 @@ private theorem exists_iso_of_cart {A B : Over X} [GrpObj A] [GrpObj B] {φ : A.
     intro T x y
     let i : Over.mk (T.hom ≫ 𝟙 X) ⟶ T := Over.homMk (𝟙 T.left) (by simp)
     have key := h.2 T x y (i ≫ x ≫ (Over.isoMk (asIso φ) hw).hom)
-      (i ≫ y ≫ (Over.isoMk (asIso φ) hw).hom) (by simp [i, hel]) (by simp [i, hel])
+      (i ≫ y ≫ (Over.isoMk (asIso φ) hw).hom) (by simp [i]) (by simp [i])
     rw [← MonObj.comp_mul] at key
     apply Over.OverMorphism.ext
     have hi : i.left = 𝟙 T.left := rfl
@@ -1858,22 +1858,22 @@ namespace UpperTheory.Gal.FiniteEtaleModels
 
 open UpperTheory.Gal.Int.Geo UpperTheory.Gal.Int.Geo.CovMain UpperTheory.Gal.crystallineComparison.Mod
 
-theorem stepA : StepA := stepA_holds (multUnit_of mIn) (latGen_of mIn) (clsEx_of mIn) (trEta_of mIn) (trBack_of mIn) (qComp_of mIn)
+theorem stepA : StepA := stepA_holds (multUnit_of) (latGen_of) (clsEx_of mIn) (trEta_of) (trBack_of) (qComp_of)
 
-theorem baseFet : BaseFet := baseFet_holds (powCart_of mIn) (piFet_of mIn)
+theorem baseFet : BaseFet := baseFet_holds (powCart_of) (piFet_of mIn)
 
 theorem stepB : StepB :=
   stepB_of (tjExG_of esNorm_link esGen_link objTri_holds pullIsog_holds pullKer_holds)
-    (bRead_of (isogG_of (trEta_of mIn) (trBack_of mIn) (multUnit_of mIn) (trTj_of mIn)) (qObj_of mIn) (qComp_of mIn) objTri_holds)
-    (bKer_of (secInjG_of pulledEx_holds pulledRead_holds pullKer_holds kerFromU_holds isoOfKer_holds) (trEtaPt_of mIn))
+    (bRead_of (isogG_of (trEta_of) (trBack_of) (multUnit_of) (trTj_of)) (qObj_of) (qComp_of) objTri_holds)
+    (bKer_of (secInjG_of pulledEx_holds pulledRead_holds pullKer_holds kerFromU_holds isoOfKer_holds) (trEtaPt_of))
     (bLev_of latB_holds etaPtB_holds etInj_holds) (descExt_of normExt_holds) baseFet O.baseOnto pulledEx_holds
 
-theorem quotOf : QuotOf := quotOf_holds (powCart_of mIn) (piInv_of mIn) (piFet_of mIn) (piSep_of mIn) (congCRT_of mIn) O.baseOnto
+theorem quotOf : QuotOf := quotOf_holds (powCart_of) (piInv_of mIn) (piFet_of mIn) (piSep_of mIn) (congCRT_of mIn) O.baseOnto
 
-theorem extEx : ExtEx := extEx_holds mIn (powProj_of mIn)
+theorem extEx : ExtEx := extEx_holds mIn (powProj_of)
 
 theorem ksGood_holds : KSGood :=
-  ksGood_of (siteEx_of mIn) (numEx_of mIn) (clsEx_of mIn) ksCover_holds (piInv_of mIn) (powCart_of mIn) extEx quotOf stepA stepB O.stepF
+  ksGood_of (siteEx_of mIn) (numEx_of mIn) (clsEx_of mIn) ksCover_holds (piInv_of mIn) (powCart_of) extEx quotOf stepA stepB O.stepF
     degGen_holds fEtExt_holds liesAbs_holds
 
 end UpperTheory.Gal.FiniteEtaleModels

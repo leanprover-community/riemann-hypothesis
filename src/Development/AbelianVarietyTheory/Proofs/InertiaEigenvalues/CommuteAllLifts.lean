@@ -141,8 +141,8 @@ theorem baseChange_comm (i : D.ntw.Tw) (j : ℕ) (b : Bool) {f : ℕ → PlE D.h
     ((f k P).restrictScalars S.Ks).restrict (p := (S.A j).WK) (q := (S.A j).WK) fun x hx => hs k P x hx
   have hr : r k P * r k' P' = r k' P' * r k P := LinearMap.ext fun x => Subtype.ext (LinearMap.congr_fun h.eq x.1)
   unfold hkFR Commute SemiconjBy
-  change (Module.End.baseChangeHom S.Ks (KB S i b) (FmK S j) (r k P)) * (Module.End.baseChangeHom S.Ks (KB S i b) (FmK S j) (r k' P')) =
-    (Module.End.baseChangeHom S.Ks (KB S i b) (FmK S j) (r k' P')) * (Module.End.baseChangeHom S.Ks (KB S i b) (FmK S j) (r k P))
+  change (Module.End.baseChangeHom S.Ks (KB i) (FmK S j) (r k P)) * (Module.End.baseChangeHom S.Ks (KB i) (FmK S j) (r k' P')) =
+    (Module.End.baseChangeHom S.Ks (KB i) (FmK S j) (r k' P')) * (Module.End.baseChangeHom S.Ks (KB i) (FmK S j) (r k P))
   rw [← map_mul, ← map_mul, hr]
 
 

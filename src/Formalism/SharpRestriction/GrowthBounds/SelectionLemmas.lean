@@ -67,16 +67,16 @@ def tau {ι : Type} (VV : Finset ι) (m D : ℕ) (t : ι → ℕ) : ℕ := ∑ v
 def IsSaturatedIn {X : Type} [AddCommGroup X] [Module O X] (M' M : Submodule O X) : Prop :=
   M' ≤ M ∧ ∀ (a : O) (x : X), x ∈ M → a ≠ 0 → a • x ∈ M' → x ∈ M'
 
-def adm1 (_D : Formalism.BasicNotions.D7) (G : GAtP p) : Prop := G.TrivStab
+def adm1 (G : GAtP p) : Prop := G.TrivStab
 
-def adm2 (_D : Formalism.BasicNotions.D7) (G : GAtP p) : Prop := G.FinClasses
+def adm2 (G : GAtP p) : Prop := G.FinClasses
 
-def adm3 (_D : Formalism.BasicNotions.D7) (G : GAtP p) : Prop :=
+def adm3 (G : GAtP p) : Prop :=
   ∀ (u v : Fin G.P.nV) (F : G.Fn), G.yv u (G.yv v F) = G.yv v (G.yv u F)
 
-def admitted (D : Formalism.BasicNotions.D7) (G : GAtP p) : Prop := adm1 D G ∧ adm2 D G ∧ adm3 D G
+def admitted (D : Formalism.BasicNotions.D7) (G : GAtP p) : Prop := adm1 G ∧ adm2 G ∧ adm3 G
 
-def Conclusion1 (_D : Formalism.BasicNotions.D7) (G : GAtP p) : Prop :=
+def Conclusion1 (G : GAtP p) : Prop :=
   ∀ (VV : Finset (Fin G.P.nV)) (t Sv : Fin G.P.nV → ℕ) (Dd cStar S m : ℕ) (κ : Fin G.P.nV → ℝ),
     1 ≤ m → (∀ v ∈ VV, Sv v ≤ S) →
     (∀ v ∈ VV, LPprime (W := G.P.W v) (Qq := G.P.Qq v) (O := G.O) (Kf := G.Kf) p (G.P.n' v) (G.P.ι v) (G.P.σ v) G.P.w G.P.r

@@ -84,7 +84,7 @@ theorem dual_third_group_integral : Formalism.FourierDecayAlt.L.DualLatticeInclu
     intro h0; rw [h0, _root_.inv_zero] at h1; exact dual_ne_zero ℤ ℚ (one_ne_zero (α := FractionalIdeal (nonZeroDivisors (𝓞 E)) E)) h1
   have hgE : (g : E) ≠ 0 := by exact_mod_cast hg
   have hJ : dd ^ ν * spanSingleton (nonZeroDivisors (𝓞 E)) ((g : E) ^ 2) ≠ 0 :=
-    mul_ne_zero (zpow_ne_zero _ hdd) (by simp [spanSingleton_eq_zero_iff, hgE])
+    mul_ne_zero (zpow_ne_zero _ hdd) (by simp [hgE])
   have hy : x * (g : E)⁻¹ ∈ dual ℤ ℚ (dd ^ ν * spanSingleton _ ((g : E) ^ 2)) := by
     rw [mem_dual hJ]
     intro a ha

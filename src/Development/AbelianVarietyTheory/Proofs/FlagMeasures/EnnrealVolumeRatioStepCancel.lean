@@ -741,7 +741,7 @@ open scoped TensorProduct
 namespace GlobalTheory.StabUnfold
 
 theorem translate_inter_null {G : Type} [Group G] [MeasurableSpace G] [MeasurableMul G] (Γ : Subgroup G)
-    (μ : Measure G) (fund : Set G) (hμ : ∀ γ ∈ Γ, μ.map (fun y => γ * y) = μ) (hf : MeasurableSet fund)
+    (μ : Measure G) (fund : Set G) (hμ : ∀ γ ∈ Γ, μ.map (fun y => γ * y) = μ)
     (hd : ∀ γ ∈ Γ, γ ≠ 1 → μ ((fun y => γ * y) '' fund ∩ fund) = 0) {a b : G} (ha : a ∈ Γ) (hb : b ∈ Γ)
     (hab : a ≠ b) :
     μ ((fun y => a⁻¹ * y) ⁻¹' fund ∩ (fun y => b⁻¹ * y) ⁻¹' fund) = 0 := by
@@ -809,7 +809,7 @@ theorem lintegral_tsum_cosets_eq_covol : ∀ (G : Type) [Group G] [MeasurableSpa
   have hnull : ∀ a b : G, a ∈ Γ → b ∈ Γ → a ≠ b →
       μ.withDensity Φ ((fun y => a⁻¹ * y) ⁻¹' fund ∩ (fun y => b⁻¹ * y) ⁻¹' fund) = 0 :=
     fun a b ha hb hab => withDensity_absolutelyContinuous μ Φ
-      (translate_inter_null Γ μ fund hμ hf hd ha hb hab)
+      (translate_inter_null Γ μ fund hμ hd ha hb hab)
   have hL : ∫⁻ g in fund, ∑' i, Φ (r i * g) ∂μ
       = μ.withDensity Φ (⋃ i, (fun y => (r i)⁻¹ * y) ⁻¹' fund) := by
     rw [lintegral_tsum (f := fun i g => Φ (r i * g)) fun i => (hΦ.comp (measurable_const_mul (r i))).aemeasurable]

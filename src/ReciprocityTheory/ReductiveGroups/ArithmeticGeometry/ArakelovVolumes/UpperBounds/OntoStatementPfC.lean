@@ -65,7 +65,7 @@ private theorem coe_symm_apply_of_isChart_val {e : OpenPartialHomeomorph U (V n)
   rw [he (e.map_target hy)]
   exact e.right_inv hy
 
-theorem smooth_of (hU : IsOpen U) [Nonempty U] {f : V n → ℂ} (hf : ContDiffOn ℝ ∞ f U) :
+theorem smooth_of [Nonempty U] {f : V n → ℂ} (hf : ContDiffOn ℝ ∞ f U) :
     Smooth n (Subtype.val : U → V n) (fun x => f x.1) := by
   intro e he
   refine (hf.mono ?_).congr ?_
@@ -79,7 +79,7 @@ theorem smooth_of (hU : IsOpen U) [Nonempty U] {f : V n → ℂ} (hf : ContDiffO
 theorem smoothR_of (hU : IsOpen U) [Nonempty U] {f : V n → ℝ} (hf : ContDiffOn ℝ ∞ f U) :
     SmoothR n (Subtype.val : U → V n) (fun x => f x.1) := by
   have h2 : ContDiffOn ℝ ∞ (fun y => (f y : ℂ)) U := Complex.ofRealCLM.contDiff.comp_contDiffOn hf
-  exact smooth_of hU h2
+  exact smooth_of h2
 
 private theorem comp_chart_symm_eventuallyEq_of_mem_source {e : OpenPartialHomeomorph U (V n)}
     (he : IsChart n (Subtype.val : U → V n) e) {x : U} (hx : x ∈ e.source) (g : V n → ℂ) :
@@ -176,7 +176,7 @@ theorem horm_open (hU : IsOpen U) (S : EtaleStein n U) (hSz : S.z = Subtype.val)
     exact hpsh x.1 x.2 ξ
   have hs3 : Smooth n S.z (fun y => F0 y.1) := by
     rw [hSz]
-    exact smooth_of hU hF0
+    exact smooth_of hF0
   have hs4 : Measurable (fun y : U => ENNReal.ofReal (hr y.1)) :=
     (hrc.restrict.measurable).ennreal_ofReal
   have hs5 : ∀ (x : U) (ξ : Fin n → ℂ),

@@ -141,7 +141,7 @@ theorem continuous_toMK (N : ℕ) :
 
 theorem continuous_blk : Continuous fun k : Formalism.REAL.KG (fun _ : Fin (NN ι A B) => true) =>
     blk (ι := ι) (A := A) (B := B) (Formalism.REAL.toMK k) :=
-  continuous_pi fun i => continuous_pi fun i' => (continuous_toMK _).matrix_elem _ _
+  continuous_pi fun _ => continuous_pi fun _ => (continuous_toMK _).matrix_elem _ _
 
 theorem eval_Tf (hA : Avg) (q : PV ι A B) (z : (ι × A) ⊕ (ι × B) → ℂ) :
     eval z (Tf hA q) = ∫ k : Formalism.REAL.KG (fun _ : Fin (NN ι A B) => true),
@@ -180,7 +180,7 @@ theorem Tf_deg (hA : Avg) (q : PV ι A B) : (Tf hA q).totalDegree ≤ q.totalDeg
   · simp only [resφ, Sum.elim_inr]
     cases h : invE A B j <;> simp [Option.elim, totalDegree_X]
 
-theorem integrable_eval_act (hA : Avg) (F G : Formalism.REAL.KG (fun _ : Fin (NN ι A B) => true) → Matrix ι ι ℂ)
+theorem integrable_eval_act (F G : Formalism.REAL.KG (fun _ : Fin (NN ι A B) => true) → Matrix ι ι ℂ)
     (hF : Continuous F) (hG : Continuous G) (z : (ι × A) ⊕ (ι × B) → ℂ) (q : PV ι A B) :
     Integrable (fun k => eval (act (F k) (G k) z) q) (Formalism.REAL.muK (fun _ : Fin (NN ι A B) => true)) :=
   integrableOn_univ.mp ((continuous_act_eval hF hG z q).continuousOn.integrableOn_compact isCompact_univ)
@@ -376,7 +376,7 @@ theorem integrable_eval_act_blk_toMK (hA : Avg) (z : (ι × A) ⊕ (ι × B) →
     Integrable (fun k : Formalism.REAL.KG (fun _ : Fin (NN ι A B) => true) =>
       eval (act (blk (Formalism.REAL.toMK k)) ((blk (Formalism.REAL.toMK k)).map star) z) q)
       (Formalism.REAL.muK (fun _ : Fin (NN ι A B) => true)) :=
-  integrable_eval_act hA _ _ continuous_blk (continuous_blk.matrix_map continuous_star) z q
+  integrable_eval_act _ _ continuous_blk (continuous_blk.matrix_map continuous_star) z q
 
 theorem Tf_add (hA : Avg) (q1 q2 : PV ι A B) : Tf hA (q1 + q2) = Tf hA q1 + Tf hA q2 :=
   MvPolynomial.funext fun z => by
@@ -473,7 +473,7 @@ theorem Tlin_injective (hS : Stable) (hE : Ext) (hA : Avg) (hP : Pos) (d : ℕ) 
     · refine Finset.sum_congr rfl fun z _ => ?_
       rw [eval_Tf_inv hE hA hqI z, integral_const_mul]
     · intro z _
-      exact (integrable_eval_act hA (fun _ => 1) (Mk (ι := ι) (A := A) (B := B)) continuous_const continuous_Mk z _).const_mul _
+      exact (integrable_eval_act (fun _ => 1) (Mk (ι := ι) (A := A) (B := B)) continuous_const continuous_Mk z _).const_mul _
   have hgip0 : gip (Tf hA (q : PV ι A B)) (q : PV ι A B) = 0 := by
     rw [hT0]; simp [gip]
   have hre : 0 < ∫ k, (gip (sub 1 (Mk (ι := ι) (A := A) (B := B) k) (q : PV ι A B)) (q : PV ι A B)).re

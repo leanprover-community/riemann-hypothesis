@@ -13,7 +13,7 @@ open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.Toroi
 
 namespace GlobalTheory.CompanionTheory.Ar.Fan
 
-theorem vorFun_value_le : ∀ (O : Type) [CommRing O] [IsDedekindDomain O] [CharZero O] [Module.Finite ℤ O] (bar : O → O) (g : ℕ)
+theorem vorFun_value_le : ∀ (O : Type) [CommRing O] [IsDedekindDomain O] [CharZero O] [Module.Finite ℤ O] (_ : O → O) (g : ℕ)
     (X : Type) [AddCommGroup X] [Module O X] [Module.Finite O X] (n : ℕ) (r : (Fin n → ℤ) →ₗ[ℤ] X)
     (a : (Fin n → ZMod (1 + 1)) → Fin n → ℤ), Function.Surjective r → (∀ y, redV 1 (a y) = y) →
     Covers2 (fun y => r (a y)) ∧ ∀ B : X →ₗ[ℤ] X →ₗ[ℤ] ℝ, (∀ y, 0 ≤ B y y) →

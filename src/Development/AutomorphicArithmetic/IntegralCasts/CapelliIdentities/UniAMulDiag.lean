@@ -44,7 +44,7 @@ import Mathlib.Topology.Sheaves.Init
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qh23.uniA_mul_diag :
-    ∀ {F : Type} [inst : Field F] {k : ℕ} (A B : Matrix (Fin k) (Fin k) F),
+    ∀ {F : Type} [Field F] {k : ℕ} (A B : Matrix (Fin k) (Fin k) F),
     A.BlockTriangular id → B.BlockTriangular id → ∀ (i : Fin k), (A * B) i i = A i i * B i i := by
   intro F _ k A B hA hB i
   rw [Matrix.mul_apply]

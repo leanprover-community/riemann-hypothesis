@@ -94,7 +94,7 @@ theorem germOf_inv_eq (hf : Total f) {x : X} {j j' : J} (hj : ∀ l, RegAt x (f 
   rw [inv_div]
   exact hj j'
 
-theorem isOpen_minSet [Finite J] (hf : Total f) (j : J) :
+theorem isOpen_minSet [Finite J] (j : J) :
     IsOpen {y : X | ∀ l, RegAt y (f l / f j)} := by
   refine isOpen_iff_forall_mem_open.2 fun y hy => ?_
   choose V hV hV' using fun l => regAt_nhds (hy l)
@@ -105,7 +105,7 @@ variable [Fintype J] [Nonempty J]
 
 def fsDiv (hf : Total f) : CartierDiv X :=
   show cartierGroup X from ⟨fun x => germOf x (inv hf (exists_min hf x).choose), fun x =>
-    ⟨⟨_, isOpen_minSet hf (exists_min hf x).choose⟩, (exists_min hf x).choose_spec,
+    ⟨⟨_, isOpen_minSet (exists_min hf x).choose⟩, (exists_min hf x).choose_spec,
       inv hf (exists_min hf x).choose, fun y hy =>
         germOf_inv_eq hf (exists_min hf y).choose_spec hy⟩⟩
 

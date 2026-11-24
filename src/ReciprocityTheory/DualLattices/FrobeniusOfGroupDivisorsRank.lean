@@ -1810,7 +1810,7 @@ theorem u7F3 : FrobeniusLengthBoundStatement := by
         intro c hc
         rw [Submodule.mem_comap, Submodule.subtype_apply] at hc
         obtain ⟨f, hf, hfc⟩ := hNsq _ hc
-        obtain ⟨c', hc', hsub⟩ := sub_lin_mem_sq hv D hdet hbasis (hsqle hf)
+        obtain ⟨c', hc', hsub⟩ := sub_lin_mem_sq D hdet hbasis (hsqle hf)
         have hcc : c' = (c : Ix g → R) := funext fun k => hinj ((hc' k).trans (hfc k).symm)
         rw [hcc] at hsub
         have hmem : sumX D (c : Ix g → R) ∈ LinearMap.ker H.φ := by
@@ -1824,7 +1824,7 @@ theorem u7F3 : FrobeniusLengthBoundStatement := by
     intro w
     obtain ⟨y, rfl⟩ := thetaQ_surj U τ w
     obtain ⟨f, rfl⟩ := H.cotangent_surjective y
-    obtain ⟨c0, -, hsub0⟩ := sub_lin_mem_sq hv D hdet hbasis f.2
+    obtain ⟨c0, -, hsub0⟩ := sub_lin_mem_sq D hdet hbasis f.2
     let c : blockL D τ :=
       ⟨fun k => if D.κ k = τ then c0 k else 0, fun k hk => by simp [hk]⟩
     refine ⟨Submodule.Quotient.mk c, ?_⟩

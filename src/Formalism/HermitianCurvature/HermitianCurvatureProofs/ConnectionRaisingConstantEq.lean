@@ -1503,7 +1503,7 @@ theorem sc_crd_ops {g : A} (hg : g ∈ L0.crdOps) : g ∈ L0.ops ∧ L0.GGi * g 
   · exact ⟨sc_mp L0 l, (L0.p_GGi l).symm⟩
   · exact ⟨sc_mpb L0 l, (L0.pb_GGi l).symm⟩
 
-theorem sc_lreg (h : SHyp P L0 QQ κ) {Y : ℂ} (hY : Reg P Y) : QQ Y 1 0 = L0.GG * xA κ Y * lA L0 QQ κ Y := by
+theorem sc_lreg {Y : ℂ} (hY : Reg P Y) : QQ Y 1 0 = L0.GG * xA κ Y * lA L0 QQ κ Y := by
   unfold lA
   have e : L0.GG * xA κ Y * (xiA κ Y * L0.GGi * QQ Y 1 0) = L0.GG * (xA κ Y * xiA κ Y) * L0.GGi * QQ Y 1 0 := by
     noncomm_ring
@@ -1977,7 +1977,7 @@ theorem connection_lowering_block (h : SHyp P L0 QQ κ) (hF : SForm P L0 QQ κ b
   · subst hst; rw [pj_idem, connection_lowering_eq, sub_mul, sc_B_pj h hF, smul_mul_assoc, sub_mul, smul_mul_assoc]
   · rw [pj_orth κ hst, mul_zero]
 
-theorem lower_sum_block_entry (hR : Raises κ SS) (Y : ℂ) (σ τ : M.Ty P) :
+theorem lower_sum_block_entry (Y : ℂ) (σ τ : M.Ty P) :
     proj κ σ * (∑ l ∈ Icc 1 (P.k - 1), SS l * κ (fun ρ => M.xEx P {l} ρ Y)) * proj κ τ =
       ∑ l ∈ Icc 1 (P.k - 1), M.xEx P {l} τ Y • (proj κ σ * SS l * proj κ τ) := by
   rw [Finset.mul_sum, Finset.sum_mul]
@@ -1993,7 +1993,7 @@ theorem connection_lower_left_regular (h : SHyp P L0 QQ κ) (hF : SForm P L0 QQ 
   rw [connection_lower_left_entry]
   apply eq_of_blocks κ
   intro σ τ
-  rw [sc_lreg h hY, mul_add, add_mul, lower_sum_block_entry hR, projection_gamma_coordinate h, projection_gamma_coordinate h, connection_lowering_block h hF]
+  rw [sc_lreg hY, mul_add, add_mul, lower_sum_block_entry, projection_gamma_coordinate h, projection_gamma_coordinate h, connection_lowering_block h hF]
   by_cases hst : σ = τ
   · subst hst
     rw [sc_ldiag hF hY, ite_eq_left rfl, Finset.sum_eq_zero, add_zero]
@@ -2138,7 +2138,7 @@ theorem lower_sum_block_structure (hR : Raises κ SS) (Y : ℂ) :
 theorem lower_sum_raising_block (hR : Raises κ SS) {l : ℕ} (hl : l ∈ Icc 1 (P.k - 1)) {ρ ρ' : M.Ty P} (hu : M.Up P l ρ ρ') (Y : ℂ) :
     proj κ ρ' * (∑ l ∈ Icc 1 (P.k - 1), SS l * κ (fun ρ => M.xEx P {l} ρ Y)) * proj κ ρ =
       M.xEx P {l} ρ Y • (SS l * proj κ ρ) := by
-  rw [lower_sum_block_entry hR, Finset.sum_eq_single l, pj_ss_pj κ hR hu]
+  rw [lower_sum_block_entry, Finset.sum_eq_single l, pj_ss_pj κ hR hu]
   · intro j hj hjl; rw [blk_ss κ hR j ρ' ρ (fun hu' => hjl (up_idx P hj hl hu' hu)), smul_zero]
   · intro hn; exact absurd hl hn
 

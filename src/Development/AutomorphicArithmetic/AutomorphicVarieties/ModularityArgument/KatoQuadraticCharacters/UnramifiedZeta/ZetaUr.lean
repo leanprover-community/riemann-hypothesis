@@ -987,7 +987,7 @@ theorem _root_.UpperTheory.V.Z.Kato.K5.hco : ∀ (Ω : Type) [Field Ω] [Algebra
     (∀ a b : ℕ, a % N = b % N → χ a = χ b) →
   ∀ (lam : (ℕ → Qbar l) →ₗ[Qbar l] Qbar l), GlobalTheory.KummerEisensteinGalois.IsLamFR2 X A N (2 * e - 1) χ j pr cf lam →
   ∀ (c₀ : ℕ), ∃ (c' : ℕ) (κ₀ : Qbar l) (per : ℕ → Qbar l), κ₀ ≠ 0 ∧ (∀ n, ‖per n‖ = 1 ∧ Cg n (per (n + 1)) (per n)) ∧ ∀ (x : ZMod N),
-  GlobalTheory.K4.AdmissibleNewformZetaData ι e gN A W X pr N x c d gm ψ cf →
+  GlobalTheory.K4.AdmissibleNewformZetaData ι e gN A W X pr N c d gm ψ cf →
   ∀ (Y : ∀ r : ℕ, (Ω ≃ₐ[ℚ] Ω) → (ZMod (l ^ r))ˣ → Fin 2 → Qbar l),
   IsZetaSystemFixedExponent X l pr W e ψ N x c d (2 * e + 1) gm cf c₀ Y →
   ∀ m : ℕ, 1 ≤ m → ∀ (y : (ZMod (l ^ m))ˣ) (β : ℕ) (t : ℤ),
@@ -1016,7 +1016,7 @@ theorem _root_.UpperTheory.V.Z.Kato.K5.hco : ∀ (Ω : Type) [Field Ω] [Algebra
   obtain ⟨v, hv⟩ : ∃ v : ℕ, ‖(l : Qbar l) ^ v‖ ≤ ‖M‖ := by
     obtain ⟨v, hv⟩ := exists_pow_lt_of_lt_one (norm_pos_iff.2 hM0) (GlobalTheory.LambdaValuationPowers.norm_natCast_lt_one (l := l))
     exact ⟨v, by rw [norm_pow]; exact hv.le⟩
-  by_cases hex : ∃ x, GlobalTheory.K4.AdmissibleNewformZetaData ι e gN A W X pr N x c d gm ψ cf
+  by_cases hex : ∃ x, GlobalTheory.K4.AdmissibleNewformZetaData ι e gN A W X pr N c d gm ψ cf
   swap
   · refine ⟨0, 1, per, one_ne_zero, fun n => ⟨(hper n).1, (hper n).2.1⟩, fun x hx => ?_⟩
     exact absurd ⟨x, hx⟩ hex
@@ -1721,7 +1721,7 @@ namespace UpperTheory.V.Z.Kato.Final
 
 theorem zetaUr : GlobalTheory.Ord2.ZetaUr := GlobalTheory.KZ.zetaUr_of_halves2 _
   (UpperTheory.V.Z.Kato.Joint.kato_global_unit_law_of_smoothed_classes UpperTheory.Kd.K4.kato_eulerSystem_integrality UpperTheory.V.Z.Kato.K5.smoothedZetaClass_hodgeTateLaw
-    (fun {Ω} _ _ _ => _root_.GlobalTheory.AdmProj.exists_admissible_hecke_projection_nonvanishing_alt))
+    (fun {_} _ _ _ => _root_.GlobalTheory.AdmProj.exists_admissible_hecke_projection_nonvanishing_alt))
   UpperTheory.Kd.C7.pLocu
 
 end UpperTheory.V.Z.Kato.Final

@@ -139,7 +139,7 @@ private theorem cont_symm (hs : Function.Surjective (completionMap v w))
 
 variable (n : ℕ)
 
-private theorem map_inj : Function.Injective (mapGL n (completionMap v w)) := fun a b h =>
+private theorem map_inj : Function.Injective (mapGL n (completionMap v w)) := fun _ _ h =>
   Units.ext (Matrix.ext fun i j => (completionMap v w).injective
     (congrArg (fun g : GL (Fin n) (w.adicCompletion E) => g i j) h))
 

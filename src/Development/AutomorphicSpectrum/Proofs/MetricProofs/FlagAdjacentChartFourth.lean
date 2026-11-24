@@ -171,7 +171,7 @@ theorem stepOf_mem (hj : j ≤ N) (c : Fin N) : c ∈ stepCols N j (stepOf N j c
   simp only [stepCols, Finset.mem_filter, Finset.mem_univ, true_and]
   split_ifs at hv ⊢ <;> omega
 
-theorem stepOf_top (hj : j ≤ N) (c d : Fin N) (hd : d ∈ stepCols N j (stepOf N j c)) : d ≤ c := by
+theorem stepOf_top (c d : Fin N) (hd : d ∈ stepCols N j (stepOf N j c)) : d ≤ c := by
   have := c.2
   have := d.2
   have hv := stepOf_val N j c
@@ -272,7 +272,7 @@ theorem lowRead_eq {F : FrameData ι Ψ N M.Ω M.blk} (hF : M.IsFrame F) {zb : (
   rw [hk]
   show twMinor M F zb (stepOf N j b') k (h τ')⁻¹ z _ / twMinor M F zb (stepOf N j b') k (h τ')⁻¹ z _ = _
   rw [e1, e1, minor_self_of_lowerUni hX, div_one]
-  exact minor_insert_of_lowerUni hX (stepOf_mem M.j_le b') (stepOf_top M.j_le b') hlt
+  exact minor_insert_of_lowerUni hX (stepOf_mem M.j_le b') (stepOf_top b') hlt
 
 end Flag
 

@@ -101,7 +101,7 @@ theorem _root_.GlobalTheory.T.levelPoint_smul_integral_of_fourierCoeff_ne_zero :
     · intro j _ hj
       simp [shift, single, Pi.single_eq_of_ne hj]
     · simp
-  obtain ⟨z, hz⟩ := LevelPairing.exists_eq_smul_of_dvd (s • (cSep l₂ • levRep (q b))) l₂.M hM (fun y => by
+  obtain ⟨z, hz⟩ := LevelPairing.exists_eq_smul_of_dvd (s • (cSep l₂ • levRep (q b))) l₂.M (fun y => by
     have halt := Dw.alt (y + s • (cSep l₂ • levRep (q b)))
     simp only [map_add (f := _), LinearMap.add_apply, Dw.alt, zero_add, add_zero] at halt
     have hskew : Dw.EF (s • (cSep l₂ • levRep (q b))) y = -Dw.EF y (s • (cSep l₂ • levRep (q b))) := by

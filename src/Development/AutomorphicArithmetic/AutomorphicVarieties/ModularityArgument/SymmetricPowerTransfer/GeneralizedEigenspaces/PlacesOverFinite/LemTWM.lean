@@ -587,7 +587,7 @@ theorem UpperTheory.V.Af.Tw.kron :
     let u : (𝓞 K)ˣ := Units.ofPowEqOne r m hrm hm.ne'
     have hu : u ∈ NumberField.Units.torsion K := by
       rw [NumberField.Units.torsion, CommGroup.mem_torsion, isOfFinOrder_iff_pow_eq_one]
-      exact ⟨m, hm, Units.ext (by simp [u, hrm])⟩
+      exact ⟨m, hm, Units.ext (by simp [u])⟩
     rw [← NumberField.Units.rootsOfUnity_eq_torsion, mem_rootsOfUnity] at hu
     apply Units.ext
     rw [Units.val_pow_eq_pow_val, Units.val_one, ← hr, ← map_pow]

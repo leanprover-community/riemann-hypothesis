@@ -400,7 +400,7 @@ theorem existsUnique_subst_eq {σ : Type*} [Finite σ] (hf : IsLubinTateSeries �
     ∃! φ : MvPowerSeries σ A,
       (2 : ℕ∞) ≤ order (φ - ℓ) ∧ PowerSeries.subst φ f = subst (substEach g) φ :=
   existsUnique_of_dvd_defect hf.constantCoeff_eq_zero hf.coeff_one hg.constantCoeff_eq_zero
-    hg.coeff_one (fun x hx => (mul_eq_zero.1 hx).resolve_left hπ.ne_zero)
+    hg.coeff_one (fun _ hx => (mul_eq_zero.1 hx).resolve_left hπ.ne_zero)
     (fun _ hn => isUnit_one_sub_pow hπ hn) (dvd_coeff_defect hπ hf hg) hℓ
 
 theorem existsUnique_subst_eq_linearForm {σ : Type*} [Fintype σ] (hf : IsLubinTateSeries π f)

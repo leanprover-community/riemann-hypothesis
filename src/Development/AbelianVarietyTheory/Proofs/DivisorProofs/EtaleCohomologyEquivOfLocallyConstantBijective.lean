@@ -52,12 +52,12 @@ open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComp
 
 namespace GlobalTheory.EtC
 
-theorem bij_of_subsingleton_pair {A B : Type*} [Subsingleton A] [Subsingleton B] (_b₀ : B) (a₀ : A) (φ : A → B) :
+theorem bij_of_subsingleton_pair {A B : Type*} [Subsingleton A] [Subsingleton B] (a₀ : A) (φ : A → B) :
     Function.Bijective φ :=
   ⟨fun _ _ _ ↦ Subsingleton.elim _ _, fun _ ↦ ⟨a₀, Subsingleton.elim _ _⟩⟩
 
 theorem eqv_of_gen_lc : ∀ (R : Type) [CommRing R] (F : Shv R) (S : Scheme.{0}) (g : Sec F S), Gen F S g →
-    ∀ (U V : Scheme.{0}) (s : U ⟶ S) (f : V ⟶ U), AcycF R (sch.obj U) F → AcycF R (sch.obj V) F →
+    ∀ (U V : Scheme.{0}) (_ : U ⟶ S) (f : V ⟶ U), AcycF R (sch.obj U) F → AcycF R (sch.obj V) F →
     Function.Bijective (fun φ : LocallyConstant U R ↦ φ.comap f.base.hom) → Eqv R (sch.map f) F := by
   intro R _ F S g hg U V s f hU hV hb n
   obtain ⟨hneg, e, he, -⟩ := _root_.GlobalTheory.EtC.etale_cohomology_vanishing_negative_degree_zero R F
@@ -65,7 +65,7 @@ theorem eqv_of_gen_lc : ∀ (R : Type) [CommRing R] (F : Shv R) (S : Scheme.{0})
   rcases lt_trichotomy n 0 with hn | rfl | hn
   · have := hneg (sch.obj U) n hn
     have := hneg (sch.obj V) n hn
-    exact bij_of_subsingleton_pair 0 0 _
+    exact bij_of_subsingleton_pair 0 _
   · have key : (fun x ↦ pull R (sch.map f) F 0 x) =
         (fun x ↦ e V (eL V (f ≫ s) (LocallyConstant.comap f.base.hom ((eL U s).symm ((e U).symm x))))) := by
       funext x
@@ -77,6 +77,6 @@ theorem eqv_of_gen_lc : ∀ (R : Type) [CommRing R] (F : Shv R) (S : Scheme.{0})
       (hb.comp ((eL U s).symm.bijective.comp (e U).symm.bijective)))
   · have := hU n hn
     have := hV n hn
-    exact bij_of_subsingleton_pair 0 0 _
+    exact bij_of_subsingleton_pair 0 _
 
 end GlobalTheory.EtC

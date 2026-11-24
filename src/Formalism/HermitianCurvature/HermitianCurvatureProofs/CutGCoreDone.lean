@@ -185,7 +185,7 @@ theorem dZb_sub {f g : ℂ → ℂ} {w : ℂ} (hf : DifferentiableAt ℝ f w) (h
   simp only [ContinuousLinearMap.sub_apply]
   ring
 
-theorem dzQ_one (P : M.Par) (hTT : 0 ≤ P.TT) : dzQ P (1 : MA.SmQ P.r P.TT) = 0 := by
+theorem dzQ_one (P : M.Par) : dzQ P (1 : MA.SmQ P.r P.TT) = 0 := by
   have hev : (MA.DQ P).ev M.vz 1 = 0 := by
     apply Subtype.ext
     funext q
@@ -198,7 +198,7 @@ theorem dzQ_one (P : M.Par) (hTT : 0 ≤ P.TT) : dzQ P (1 : MA.SmQ P.r P.TT) = 0
   show (MA.DQ P).mulOp ((MA.DQ P).inv ((MA.DQ P).x M.vz)) ((MA.DQ P).ev M.vz 1) = 0
   rw [hev, map_zero]
 
-theorem dzbQ_one (P : M.Par) (hTT : 0 ≤ P.TT) : dzbQ P (1 : MA.SmQ P.r P.TT) = 0 := by
+theorem dzbQ_one (P : M.Par) : dzbQ P (1 : MA.SmQ P.r P.TT) = 0 := by
   have hev : (MA.DQ P).ev M.vzb 1 = 0 := by
     apply Subtype.ext
     funext q
@@ -224,8 +224,7 @@ theorem actA_ggiA (P : M.Par) (g : M.Ty P → MA.SmQ P.r P.TT) (ρ : M.Ty P) :
     rfl
 
 theorem curvTr_core
-    (hmod : ∀ (P : M.Par) (ρ : M.Ty P) (ζ : ℂ), ζ ∈ Ann P →
-      NF.dZb (modA P ρ) ζ = -(((M.aC P ρ * P.TT : ℝ) : ℂ)) / ((Complex.normSq ζ : ℂ) - (P.TT : ℂ)) ^ 2) :
+    :
     GTCCurvTr := by
   intro Wp Wq _ _ _ _ _ _ P Bs X d hyp e he hK A B hAB hC hBA hcurv ρ ζ hζ
   have hTT : 0 ≤ P.TT := tt_nonneg_of_hyp hyp
@@ -254,9 +253,9 @@ theorem curvTr_core
     rw [hK, actA_kap, hΦ₀]
     simp [dTy]
   have hN : trR P Bs e (d.L.nab.1 ((d.κ (dTy P ρ)).1 Φ₀)) ρ = fnZ P (A ρ) := by
-    rw [(hC _ ρ).1, hΨ, dzQ_one P hTT, zero_add, mul_one]
+    rw [(hC _ ρ).1, hΨ, dzQ_one P, zero_add, mul_one]
   have hS : trR P Bs e (d.L.nabs.1 ((d.κ (dTy P ρ)).1 Φ₀)) ρ = fnZ P (B ρ) := by
-    rw [(hC _ ρ).2, hΨ, dzbQ_one P hTT, neg_zero, zero_add, mul_one]
+    rw [(hC _ ρ).2, hΨ, dzbQ_one P, neg_zero, zero_add, mul_one]
   have hSN : trR P Bs e (d.L.nabs.1 (d.L.nab.1 ((d.κ (dTy P ρ)).1 Φ₀))) ρ =
       -dzbQ P (fnZ P (A ρ)) + fnZ P (B ρ) * fnZ P (A ρ) := by
     rw [(hC _ ρ).2, hN]
@@ -282,7 +281,7 @@ theorem curvTr_core
   rw [hz1, hz2] at key
   have hAd : DifferentiableAt ℝ (A ρ) ζ := (hAs.contDiffAt ((ann_open P).mem_nhds hζ)).differentiableAt (by simp)
   have hmd : DifferentiableAt ℝ (modA P ρ) ζ :=
-    ((modA_smooth P ρ hTT).contDiffAt ((ann_open P).mem_nhds hζ)).differentiableAt (by simp)
+    ((modA_smooth P ρ).contDiffAt ((ann_open P).mem_nhds hζ)).differentiableAt (by simp)
   have hBeq : B ρ =ᶠ[nhds ζ] fun w => star (A ρ w) := by
     filter_upwards [(ann_open P).mem_nhds hζ] with w hw
     exact hBA ρ w hw
@@ -316,7 +315,7 @@ end Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.CurvTr
 
 namespace Formalism.FourierDecayAlt.P.CutMP.Gauge.GC
 
-theorem curvature_trace_holds : GTCCurvTr := CurvTr.curvTr_core (fun P ρ ζ hζ => dZb_modA P ρ hζ)
+theorem curvature_trace_holds : GTCCurvTr := CurvTr.curvTr_core
 
 end Formalism.FourierDecayAlt.P.CutMP.Gauge.GC
 end -- clump:auto
@@ -494,7 +493,7 @@ theorem th_shift_int (hTT : 0 ≤ TT) (hα : ContDiffOn ℝ ((⊤ : ℕ∞) : Wi
 theorem expI_th_eq (hTT : 0 ≤ TT) (hα : ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) α (An TT))
     (hcurv : ∀ ζ : ℂ, TT < Complex.normSq ζ → (wZb α ζ).re = 0)
     (hhol : ∃ n : ℤ, (circleIntegral α 0 (TT + 1)).im = Real.pi * n)
-    {w w' : ℂ} (hw : w ∈ Hh TT) (hw' : w' ∈ Hh TT) (he : Complex.exp w = Complex.exp w') :
+    {w w' : ℂ} (hw' : w' ∈ Hh TT) (he : Complex.exp w = Complex.exp w') :
     Complex.exp (I * (th TT α w : ℂ)) = Complex.exp (I * (th TT α w' : ℂ)) := by
   obtain ⟨n, hn⟩ := Complex.exp_eq_exp_iff_exists_int.1 he
   obtain ⟨m, hm⟩ := hhol
@@ -602,7 +601,7 @@ theorem uu_eq_br (hTT : 0 ≤ TT) (hα : ContDiffOn ℝ ((⊤ : ℕ∞) : WithTo
     uu TT α ζ = Complex.exp (I * (th TT α (br s ζ) : ℂ)) := by
   unfold uu
   have h0 := ne_zero_of_An hTT hζ
-  exact expI_th_eq hTT hα hcurv hhol (br_mem_Hh true hTT hζ) (br_mem_Hh s hTT hζ)
+  exact expI_th_eq hTT hα hcurv hhol (br_mem_Hh s hTT hζ)
     (by rw [Complex.exp_log h0, exp_br s h0])
 
 theorem norm_uu (ζ : ℂ) : ‖uu TT α ζ‖ = 1 := by
@@ -1776,7 +1775,7 @@ theorem vl_smul (P : M.Par) (Bs : B.RealPlaceData P.k P.r Wp Wq) [FiniteDimensio
 
 end vals
 
-theorem dzQ_one (P : M.Par) (hTT : 0 ≤ P.TT) : dzQ P (1 : MA.SmQ P.r P.TT) = 0 := by
+theorem dzQ_one (P : M.Par) : dzQ P (1 : MA.SmQ P.r P.TT) = 0 := by
   have h0 : MA.eulerQ (TT := P.TT) M.vz (1 : MA.SmQ P.r P.TT) = 0 := by
     have h := Formalism.FourierDecayAlt.P.analytic_leibniz P.r P.TT M.vz 1 1
     rw [mul_one, one_mul, mul_one] at h
@@ -1790,7 +1789,7 @@ theorem dzQ_one (P : M.Par) (hTT : 0 ≤ P.TT) : dzQ P (1 : MA.SmQ P.r P.TT) = 0
   show (MA.DQ P).mulOp ((MA.DQ P).inv ((MA.DQ P).x M.vz)) ((MA.DQ P).ev M.vz 1) = 0
   rw [h0', map_zero]
 
-theorem dzbQ_one (P : M.Par) (hTT : 0 ≤ P.TT) : dzbQ P (1 : MA.SmQ P.r P.TT) = 0 := by
+theorem dzbQ_one (P : M.Par) : dzbQ P (1 : MA.SmQ P.r P.TT) = 0 := by
   have h0 : MA.eulerQ (TT := P.TT) M.vzb (1 : MA.SmQ P.r P.TT) = 0 := by
     have h := Formalism.FourierDecayAlt.P.analytic_leibniz P.r P.TT M.vzb 1 1
     rw [mul_one, one_mul, mul_one] at h
@@ -1841,9 +1840,9 @@ theorem radial_gauge_transition_holds : GTRTrans := by
     rw [t0]
     rfl
   have t1 : trR P Bs e (d.L.nab.1 Ψ0) ρ = fnZ P (A ρ) := by
-    rw [(hC Ψ0 ρ).1, t0, GTRT.dzQ_one P hTT, mul_one, zero_add]
+    rw [(hC Ψ0 ρ).1, t0, GTRT.dzQ_one P, mul_one, zero_add]
   have t2 : trR P Bs e (d.L.nabs.1 Ψ0) ρ = fnZ P (B ρ) := by
-    rw [(hC Ψ0 ρ).2, t0, GTRT.dzbQ_one P hTT, mul_one, neg_zero, zero_add]
+    rw [(hC Ψ0 ρ).2, t0, GTRT.dzbQ_one P, mul_one, neg_zero, zero_add]
   have v1 : SSC.vl P Bs e (d.L.nab.1 Ψ0) ρ q0 = A ρ ζ := by
     unfold SSC.vl
     rw [t1, fnZ_val P (hAB ρ).1]
@@ -1853,7 +1852,7 @@ theorem radial_gauge_transition_holds : GTRTrans := by
 
   have vm : SSC.vl P Bs e ((ThetaNF P d).1 Ψ0) ρ q0 = m := by
     unfold SSC.vl
-    rw [hm Ψ0, t0, GTRT.dzQ_one P hTT, GTRT.dzbQ_one P hTT, mul_zero, mul_zero, sub_zero, zero_add]
+    rw [hm Ψ0, t0, GTRT.dzQ_one P, GTRT.dzbQ_one P, mul_zero, mul_zero, sub_zero, zero_add]
     show m * 1 = m
     ring
   have v3 : SSC.vl P Bs e ((d.κ (fun ρ => ((rhoSum P ρ : ℝ) : ℂ))).1 Ψ0) ρ q0 = ((rhoSum P ρ : ℝ) : ℂ) := by

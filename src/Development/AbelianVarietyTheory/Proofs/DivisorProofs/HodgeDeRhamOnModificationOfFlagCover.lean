@@ -301,7 +301,7 @@ open AlgebraicGeometry
 namespace GlobalTheory
 
 theorem affineOpen_exists_field_point_basicOpen_commonDenom :
-    ∀ {X : Scheme.{0}} {U : X.Opens} (hU : IsAffineOpen U) (p : X), p ∈ U →
+    ∀ {X : Scheme.{0}} {U : X.Opens} (_ : IsAffineOpen U) (p : X), p ∈ U →
       ∃ (K : Type) (_ : Field K) (ψ : Γ(X, U) →+* K), (∀ g, ψ g ≠ 0 → p ∈ X.basicOpen g) ∧
         ∀ (ι : Type) [Fintype ι] (m : ι → K), ∃ (a : ι → Γ(X, U)) (t : Γ(X, U)),
           ψ t ≠ 0 ∧ ∀ i, m i * ψ t = ψ (a i) := by
@@ -949,9 +949,9 @@ theorem conj_embK' {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host 
   show starRingEnd ℂ (τ ((H.bar z : 𝓞 E) : E)) = τ (z : E)
   rw [H.9 z, NumberField.IsCMField.complexEmbedding_complexConj, Complex.conj_conj]
 
-theorem ksFamily : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} (hP : GlobalTheory.Published.AbelianDeRham) {S : Type} [CommRing S] [Algebra c.F S]
-    (y : FrPt Xo c S) (x' : Sp (DualNumber S) ⟶ Xo.X) (h1 : x' ≫ Xo.s = sOf c (DualNumber S))
-    (h2 : spMap (TrivSqZeroExt.fstHom S S S).toRingHom ≫ x' = y.x), ∃ Mx : HIx Dw (psiSet H) → S, ∀ (K : Type) [Field K] [Algebra c.F K] (ψ : S →ₐ[c.F] K) (y' : FrPt Xo c K),
+theorem ksFamily : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} (_ : GlobalTheory.Published.AbelianDeRham) {S : Type} [CommRing S] [Algebra c.F S]
+    (y : FrPt Xo c S) (x' : Sp (DualNumber S) ⟶ Xo.X) (_ : x' ≫ Xo.s = sOf c (DualNumber S))
+    (_ : spMap (TrivSqZeroExt.fstHom S S S).toRingHom ≫ x' = y.x), ∃ Mx : HIx Dw (psiSet H) → S, ∀ (K : Type) [Field K] [Algebra c.F K] (ψ : S →ₐ[c.F] K) (y' : FrPt Xo c K),
       FrMap ψ y y' → GlobalTheory.FlagTan.IsKS (psiSet H) y' (spMap (Formalism.L2.Pj.dualMap ψ.toRingHom) ≫ x') (ψ ∘ Mx) := by
   intro E _ _ _ H Dw l Xo c hP S _ _ y x' h1 h2
   suffices hM : ∃ M, GlobalTheory.FlagTan.IsKSR (psiSet H) y x' M by
@@ -1077,9 +1077,9 @@ end GlobalTheory.HorFrame
 
 
 open GlobalTheory.HorFrame in
-theorem GlobalTheory.HorFrame.exists_horizontal_lift : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {Y : Model Xo c (RingHom.id c.F)} {X : GlobalTheory.FlagMod.FlagCover Y} {Z : Comp Xo c} (M : Modif (str₀ X Z) (U₀ X Z) (GlobalTheory.FlagTan.dimFlag Dw)) (hP : GlobalTheory.Published.AbelianDeRham)
-    (hKS : ∀ (K : Type) [Field K] [Algebra c.F K] (y : FrPt Xo c K), KSIso (psiSet H) y) (k : X.F.J)
-    (W : M.X.Opens) (hW : W ≤ M.off ⊓ (toFlag M) ⁻¹ᵁ X.F.U k) (p : M.X) (hp : p ∈ W), ∃ (W' : M.X.Opens) (hW' : IsAffineOpen W')
+theorem GlobalTheory.HorFrame.exists_horizontal_lift : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l} {Y : Model Xo c (RingHom.id c.F)} {X : GlobalTheory.FlagMod.FlagCover Y} {Z : Comp Xo c} (M : Modif (str₀ X Z) (U₀ X Z) (GlobalTheory.FlagTan.dimFlag Dw)) (_ : GlobalTheory.Published.AbelianDeRham)
+    (_ : ∀ (K : Type) [Field K] [Algebra c.F K] (y : FrPt Xo c K), KSIso (psiSet H) y) (k : X.F.J)
+    (W : M.X.Opens) (_ : W ≤ M.off ⊓ (toFlag M) ⁻¹ᵁ X.F.U k) (p : M.X) (_ : p ∈ W), ∃ (W' : M.X.Opens) (hW' : IsAffineOpen W')
       (e : HIx Dw (psiSet H) → (Γ(M.X, W') →+* DualNumber Γ(M.X, W'))),
       p ∈ W' ∧ W' ≤ W ∧ (∀ b s, (e b s).fst = s) ∧
       ∀ (K : Type) [Field K] [Algebra c.F K] (ψ : Γ(M.X, W') →+* K)

@@ -402,7 +402,7 @@ section Val
 
 variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))] {σ : L →+* L} {n : ℕ}
 
-theorem val_div_le {x u : L} (hu : u ≠ 0) (h : Valued.v x ≤ Valued.v u) : Valued.v (x / u) ≤ 1 := by
+theorem val_div_le {x u : L} (h : Valued.v x ≤ Valued.v u) : Valued.v (x / u) ≤ 1 := by
   rw [map_div₀]
   exact div_le_one_of_le₀ h zero_le'
 
@@ -519,7 +519,7 @@ theorem step (hσ : ∀ x, σ (σ x) = x) (hσv : ∀ x, Valued.v (σ x) = Value
   have hziso : ∑ c, z c * σ (z c.rev) = 0 := by
     rw [hz]; exact iso_scale hxp (row_isotropic g ha)
   obtain ⟨T, hT⟩ := exists_eich hσ hp hzp hziso
-  have hTI : T ∈ IwU σ n := eich_mem_iw hσv hT (fun c => by rw [hz]; exact val_div_le hxp (hmax c))
+  have hTI : T ∈ IwU σ n := eich_mem_iw hσv hT (fun c => by rw [hz]; exact val_div_le (hmax c))
     (fun c hc => by rw [hz]; exact val_div_lt hxp (hlt c hc))
   have hrow1 : ∀ l, mat g a l = u * mat T p l := by
     intro l

@@ -1014,7 +1014,7 @@ theorem GlobalTheory.selfDual_lattice_occurs : GlobalTheory.Published.HasseNormS
     rw [(hk _).2] at h
     unfold cc at h ⊢
     rw [map_neg, h]
-  obtain ⟨D', φ', hp, hq, hr, hφ'⟩ := _root_.GlobalTheory.LatticeDatum.exists_datum_of_selfDual E H Dw r (-ξ₀) Gm φ Λ' hξ hφ hfg hsp hsd
+  obtain ⟨D', φ', hp, hq, hr, hφ'⟩ := _root_.GlobalTheory.LatticeDatum.exists_datum_of_selfDual E H Dw r (-ξ₀) Gm φ Λ' hφ hfg hsp hsd
   let e : D'.La ≃ₗ[𝓞 E] Λ' := (LinearEquiv.ofInjective φ' hφ'.1).trans (LinearEquiv.ofEq _ _ hr)
   have he : ∀ x, φ' (e.symm x) = (x : Fin r → E) := fun x => by
     have : ∀ y, ((e y : Λ') : Fin r → E) = φ' y := fun y => rfl

@@ -78,7 +78,7 @@ lemma ut_mul_inv {m : ℕ} {v : Matrix (Fin m) (Fin m) ℂ} (hv : v ∈ UTset m)
 
 lemma mx_nonneg {m : ℕ} (v : Matrix (Fin m) (Fin m) ℂ) : 0 ≤ mx v := norm_nonneg _
 
-lemma real_sq_bound {C CA m n x : ℝ} {e : ℕ} (hm : 0 ≤ m) (hmx : m ≤ CA * x ^ e) (hx : 1 ≤ x)
+lemma real_sq_bound {C CA m n x : ℝ} {e : ℕ} (hm : 0 ≤ m) (hmx : m ≤ CA * x ^ e)
     (hn : n ≤ C * m ^ 2) : n ≤ |C| * CA ^ 2 * x ^ (2 * e) := by
   have h1 : m ^ 2 ≤ (CA * x ^ e) ^ 2 := pow_le_pow_left₀ hm hmx 2
   have h2 : C * m ^ 2 ≤ |C| * m ^ 2 := mul_le_mul_of_nonneg_right (le_abs_self C) (sq_nonneg m)
@@ -162,7 +162,7 @@ theorem bound_core (hG : GVGroup) (hN : NormInv) (hNF : GNFacts)
     | inl a =>
       show nsq (σ⁻¹ *ᵥ fvec k r z a) ≤ _
       rw [hσinv_f]
-      have h1 := real_sq_bound (mx_nonneg _) hbv hx1 (hCf v⁻¹ a)
+      have h1 := real_sq_bound (mx_nonneg _) hbv (hCf v⁻¹ a)
       have h2 : |Cf| * CA ^ 2 * x ^ (2 * (r * (r + 1))) ≤ |Cf| * CA ^ 2 * x ^ (2 * (r * (r + 1)) + 2) :=
         mul_le_mul_of_nonneg_left hxp (by positivity)
       have h3 : 0 ≤ |Cf'| * CA ^ 2 * x ^ (2 * (r * (r + 1)) + 2) := by positivity
@@ -172,7 +172,7 @@ theorem bound_core (hG : GVGroup) (hN : NormInv) (hNF : GNFacts)
       rw [hσinv_f']
       have h0 := hvec (σ⁻¹ * γ * s') (fmul k r z' u'⁻¹ b)
       rw [hxg] at h0
-      have h1 := real_sq_bound (mx_nonneg _) hbu hx1 (hCf' u'⁻¹ b)
+      have h1 := real_sq_bound (mx_nonneg _) hbu (hCf' u'⁻¹ b)
       have h2 : x ^ 2 * nsq (fmul k r z' u'⁻¹ b) ≤ x ^ 2 * (|Cf'| * CA ^ 2 * x ^ (2 * (r * (r + 1)))) :=
         mul_le_mul_of_nonneg_left h1 (by positivity)
       have h3 : x ^ 2 * (|Cf'| * CA ^ 2 * x ^ (2 * (r * (r + 1)))) =

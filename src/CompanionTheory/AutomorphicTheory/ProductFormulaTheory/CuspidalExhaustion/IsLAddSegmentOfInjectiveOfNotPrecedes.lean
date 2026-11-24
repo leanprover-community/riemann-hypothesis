@@ -53,7 +53,7 @@ theorem isL_add_segment_of_injective_of_not_precedes [CharZero k] (HS : GlobalTh
   obtain ⟨e⟩ := hsoc.equiv_of_embeds x.2.rep.irr ⟨F.comp f, hF.comp hf⟩
   exact hπL.of_equiv e.symm
 
-theorem peelGoodP (h1 : GlobalTheory.Published.StandardCosocleGL) (h2 : Zc.LSocleGL k) (_h3 : RefineP k) [CharZero k] :
+theorem peelGoodP (h1 : GlobalTheory.Published.StandardCosocleGL) (h2 : Zc.LSocleGL k) [CharZero k] :
     Zc.PeelGoodP k := by
   intro x y hd Δ 𝔫 hs hn hf hp
   exact isL_add_segment_of_injective_of_not_precedes h1 h2 x y hd Δ 𝔫 hs hn hf hp

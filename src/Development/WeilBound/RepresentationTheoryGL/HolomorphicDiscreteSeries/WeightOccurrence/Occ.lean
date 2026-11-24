@@ -729,7 +729,7 @@ theorem sum_signs (ε : Fin (n + 1) → Bool) (ε' : Fin n → Bool) (e : Fin n 
   simp [hl, hr, h1]
 
 theorem step_letters (ε : Fin (n + 1) → Bool) (d : Fin (n + 1) → ℝ) (ε' : Fin n → Bool)
-    (d' : Fin n → ℝ) (hv : Function.Injective (Sum.elim d d'))
+    (d' : Fin n → ℝ)
     (hw : PositivityTheory.UnitaryDecomposition.HeWord ε d ε' d') (x y : Fin (n + 1) ⊕ Fin n)
     (hxy : above d d' (Sum.elim d d' y) = above d d' (Sum.elim d d' x) + 1) :
     sg (Sum.elim ε ε' x) * sg x.isLeft * (-1 : ℤ) ^ above d d' (Sum.elim d d' x) =
@@ -780,7 +780,7 @@ theorem const_letters (ε : Fin (n + 1) → Bool) (d : Fin (n + 1) → ℝ) (ε'
         omega
       obtain ⟨y, hy⟩ := hsurj k hk
       rw [← ih y hy]
-      exact (step_letters ε d ε' d' hv hw y x (by rw [hx, hy])).symm
+      exact (step_letters ε d ε' d' hw y x (by rw [hx, hy])).symm
   exact fun x => key _ x rfl
 
 theorem heSign (n : ℕ) (ε : Fin (n + 1) → Bool) (d : Fin (n + 1) → ℝ) (ε' : Fin n → Bool)

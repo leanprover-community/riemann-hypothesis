@@ -86,7 +86,7 @@ theorem toCompl_bijective {w : Pl E} (hw : ¬ IsSplitAt w) {v : HeightOneSpectru
         rfl
   rw [← h1, (map_eq_zero_iff _ (GlobalTheory.LFun.finAdEquiv (maximalRealSubfield E) E).injective).1 h2, map_zero]
 
-def locJ (_hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (v : HeightOneSpectrum (𝓞 (maximalRealSubfield E)))
+def locJ (w : Pl E) (hw : ¬ IsSplitAt w) (v : HeightOneSpectrum (𝓞 (maximalRealSubfield E)))
     (hv : w.under (𝓞 (maximalRealSubfield E)) = v) :
     w.adicCompletion E ≃+* v.adicCompletion (maximalRealSubfield E) ⊗[maximalRealSubfield E] E :=
   (RingEquiv.ofBijective (GlobalTheory.LFun.toCompl hv) (toCompl_bijective hw hv)).symm
@@ -94,12 +94,12 @@ def locJ (_hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (v : HeightOneSpectrum (
 theorem locJ_symm_apply (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w)
     (v : HeightOneSpectrum (𝓞 (maximalRealSubfield E))) (hv : w.under (𝓞 (maximalRealSubfield E)) = v)
     (y : v.adicCompletion (maximalRealSubfield E) ⊗[maximalRealSubfield E] E) :
-    (locJ hU w hw v hv).symm y = GlobalTheory.LFun.toCompl hv y := rfl
+    (locJ w hw v hv).symm y = GlobalTheory.LFun.toCompl hv y := rfl
 
 theorem locJ_algebraMap (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w)
     (v : HeightOneSpectrum (𝓞 (maximalRealSubfield E))) (hv : w.under (𝓞 (maximalRealSubfield E)) = v) (e : E) :
-    locJ hU w hw v hv (algebraMap E _ e) = 1 ⊗ₜ e := by
-  refine (locJ hU w hw v hv).symm_apply_eq.1 ?_ |>.symm
+    locJ w hw v hv (algebraMap E _ e) = 1 ⊗ₜ e := by
+  refine (locJ w hw v hv).symm_apply_eq.1 ?_ |>.symm
   rw [locJ_symm_apply]
   have h := GlobalTheory.LFun.toCompl_tmul hv 1 e
   rw [map_one, one_mul] at h
@@ -108,10 +108,10 @@ theorem locJ_algebraMap (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w)
 theorem locJ_cj (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w)
     (v : HeightOneSpectrum (𝓞 (maximalRealSubfield E))) (hv : w.under (𝓞 (maximalRealSubfield E)) = v)
     (x : w.adicCompletion E) :
-    locJ hU w hw v hv (cj w x) = Algebra.TensorProduct.map
+    locJ w hw v hv (cj w x) = Algebra.TensorProduct.map
       (AlgHom.id (maximalRealSubfield E) (v.adicCompletion (maximalRealSubfield E)))
       ((IsCMField.complexConj E : E ≃ₐ[maximalRealSubfield E] E) : E →ₐ[maximalRealSubfield E] E)
-      (locJ hU w hw v hv x) := by
+      (locJ w hw v hv x) := by
   have hmain := GlobalTheory.ConjAtPlace.main E hU w
   have hσ := (hmain.2.2.2.1 hw).1
   have hF : ∀ a, cj w (GlobalTheory.LFun.complMap hv a) = GlobalTheory.LFun.complMap hv a := by
@@ -129,7 +129,7 @@ theorem locJ_cj (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w)
     | zero => simp
     | tmul a x => simp [GlobalTheory.LFun.toCompl_tmul, hF, hσ]
     | add a b ha hb => simp only [map_add (f := _), ha, hb]
-  obtain ⟨y, rfl⟩ := (locJ hU w hw v hv).symm.surjective x
+  obtain ⟨y, rfl⟩ := (locJ w hw v hv).symm.surjective x
   rw [RingEquiv.apply_symm_apply, locJ_symm_apply, hcomp, ← locJ_symm_apply hU w hw v hv,
     RingEquiv.apply_symm_apply]
 
@@ -137,7 +137,7 @@ def locPhi (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (v : HeightOneSpectrum 
     (hv : w.under (𝓞 (maximalRealSubfield E)) = v) {r : ℕ} (Q : SelfRecip E r) :
     (w.adicCompletion E)[X] →+* v.adicCompletion (maximalRealSubfield E) ⊗[maximalRealSubfield E] Fld Q :=
   eval₂RingHom ((inclBase Q (v.adicCompletion (maximalRealSubfield E))).toRingHom.comp
-    (locJ hU w hw v hv).toRingHom) ((1 : v.adicCompletion (maximalRealSubfield E)) ⊗ₜ alpha Q)
+    (locJ w hw v hv).toRingHom) ((1 : v.adicCompletion (maximalRealSubfield E)) ⊗ₜ alpha Q)
 
 theorem locPhi_atPl (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (v : HeightOneSpectrum (𝓞 (maximalRealSubfield E)))
     (hv : w.under (𝓞 (maximalRealSubfield E)) = v) {r : ℕ} (Q : SelfRecip E r) (p : E[X]) :
@@ -145,12 +145,12 @@ theorem locPhi_atPl (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (v : HeightOne
       (1 : v.adicCompletion (maximalRealSubfield E)) ⊗ₜ (AdjoinRoot.mk Q.1 p : Fld Q) := by
   set k := v.adicCompletion (maximalRealSubfield E)
   let ι : w.adicCompletion E →+* k ⊗[maximalRealSubfield E] Fld Q :=
-    (inclBase Q k).toRingHom.comp (locJ hU w hw v hv).toRingHom
+    (inclBase Q k).toRingHom.comp (locJ w hw v hv).toRingHom
   let g : Fld Q →+* k ⊗[maximalRealSubfield E] Fld Q :=
     (Algebra.TensorProduct.includeRight : Fld Q →ₐ[maximalRealSubfield E] k ⊗[maximalRealSubfield E] Fld Q).toRingHom
   have hι1 : ∀ e : E, ι (algebraMap E _ e) = (1 : k) ⊗ₜ algebraMap E (Fld Q) e := by
     intro e
-    change inclBase Q k (locJ hU w hw v hv (algebraMap E _ e)) = _
+    change inclBase Q k (locJ w hw v hv (algebraMap E _ e)) = _
     rw [locJ_algebraMap]
     simp [inclBase]
   have e : ι.comp (algebraMap E _) = g.comp (algebraMap E (Fld Q)) := RingHom.ext fun e => hι1 e

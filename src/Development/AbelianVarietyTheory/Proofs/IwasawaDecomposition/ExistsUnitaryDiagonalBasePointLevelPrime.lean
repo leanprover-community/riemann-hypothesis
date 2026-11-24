@@ -87,7 +87,7 @@ private lemma mem_RInt_of_valued_le_one {F E : Type} [Field F] [NumberField F] [
     (h : ∀ P : HeightOneSpectrum (𝓞 E), Valued.v (adAt F P y) ≤ 1) : y ∈ RInt F E :=
   (GlobalTheory.Mem.Col2.mem_rInt_iff F E y).2 h
 
-theorem exists_unit (hc : Formalism.BasicNotions.CMData F E) {π : 𝓞 E} (h0 : π ≠ 0) (h1 : cO E π ≠ 0) (hcp : IsCoprime π (cO E π)) :
+theorem exists_unit (hc : Formalism.BasicNotions.CMData F E) {π : 𝓞 E} (h1 : cO E π ≠ 0) (hcp : IsCoprime π (cO E π)) :
     ∃ a a' : AfE F E, a' * a = 1 ∧ sigR hc.sig (FiniteAdeleRing (𝓞 F) F) a = a' ∧ a ∈ RInt F E ∧ a' ∈ RInt F E ∧
       (∀ P ∈ divs π, adAt F P a' = algebraMap E _ (algebraMap (𝓞 E) E (cO E π))) ∧
       ∀ w : HeightOneSpectrum (𝓞 E), π * cO E π ∉ w.asIdeal → adAt F w a = 1 := by
@@ -162,7 +162,7 @@ theorem exists_base (hc : Formalism.BasicNotions.CMData F E) {π : 𝓞 E} {T : 
   have hT0 : ((T : ℕ) : 𝓞 E) ≠ 0 := Nat.cast_ne_zero.2 hT
   have h0 : π ≠ 0 := fun h => hT0 (by rw [← hπ, h, zero_mul])
   have h1 : cO E π ≠ 0 := fun h => hT0 (by rw [← hπ, h, mul_zero])
-  obtain ⟨a, a', haa, hσ, hai, hai', hP, hw⟩ := exists_unit hc h0 h1 hcp
+  obtain ⟨a, a', haa, hσ, hai, hai', hP, hw⟩ := exists_unit hc h1 hcp
   let d : Fin n → AfE F E := fun i => if i.1 + 1 = n then a else 1
   let d' : Fin n → AfE F E := fun i => if i.1 + 1 = n then a' else 1
   have hd : ∀ i, d' i * d i = 1 := fun i => by

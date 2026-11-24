@@ -439,7 +439,7 @@ theorem sum_xi (T : Fin N → ℝ) (a b : Fin N) (hb : (b : ℕ) = a + 1) (T0 : 
       exact hi (Fin.ext (by simp; omega))
     · simp
 
-theorem steps {N j : ℕ} {a b ca cb : Fin N} (hj : j ≤ N) (hb : (b : ℕ) = a + 1)
+theorem steps {N j : ℕ} {a b ca cb : Fin N} (hb : (b : ℕ) = a + 1)
     (hcase : (b : ℕ) < j ∨ j ≤ (a : ℕ)) (hca : (ca : ℕ) = lastCol N j a) (hcb : (cb : ℕ) = ca + 1) :
     ∃ lo : ℕ, (∀ c : Fin N, c ∈ stepCols N j a ↔ lo ≤ c ∧ (c : ℕ) ≤ ca) ∧
       (∀ c : Fin N, c ∈ stepCols N j b ↔ lo ≤ c ∧ (c : ℕ) ≤ cb) ∧
@@ -480,7 +480,7 @@ namespace GlobalTheory.CompanionTheory.Ar.PB
 open SchurCalc in
 theorem norm_three_steps : ∀ (N j : ℕ) (a b ca cb : Fin N) (G h : Matrix (Fin N) (Fin N) ℂ), j ≤ N → (b : ℕ) = a + 1 → ((b : ℕ) < j ∨ j ≤ (a : ℕ)) → (ca : ℕ) = lastCol N j a → (cb : ℕ) = ca + 1 → IsBlockDiag j G → G.PosDef → IsBlockDiag j h → h.det ≠ 0 → ∃ G₂ : Matrix (Fin 2) (Fin 2) ℂ, G₂.PosDef ∧ (∀ r s : Fin 2, G₂ r s = minorIJ (hᴴ * G * h) (insert (![ca, cb] r) ((stepCols N j a).erase ca)) (insert (![ca, cb] s) ((stepCols N j a).erase ca)) / minorIJ (hᴴ * G * h) ((stepCols N j a).erase ca) ((stepCols N j a).erase ca)) ∧ ∀ t : ℂ, (∑ i : Fin N, (xiCoef () a ((), i) : ℝ) * (blockPot j i G (h * (1 + Matrix.single cb ca t)) + if IsProperStep N j i then 0 else Real.log ‖if (i : ℕ) + 1 = j then (if (a : ℕ) < j then minorIJ h (wIdx N j) (wIdx N j) else 1) else minorIJ h (omIdx N j) (omIdx N j)‖)) = xiPot G₂ t := by
   intro N j a b ca cb G h hj hb hcase hca hcb hG hGp hh hdet
-  obtain ⟨lo, m1, m2, m3, m4, m5⟩ := steps hj hb hcase hca hcb
+  obtain ⟨lo, m1, m2, m3, m4, m5⟩ := steps hb hcase hca hcb
   obtain ⟨C, hCdef⟩ : ∃ C, C = (stepCols N j a).erase ca := ⟨_, rfl⟩
   rw [← hCdef]
   have hCm : ∀ c : Fin N, c ∈ C ↔ lo ≤ c ∧ (c : ℕ) < ca := fun c => by

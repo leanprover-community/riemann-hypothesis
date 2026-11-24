@@ -93,7 +93,7 @@ theorem four_mul_add_two_le_three_mul_five_pow (v : ℕ) : 4 * v + 2 ≤ 3 * 5 ^
     rw [pow_succ]
     omega
 
-theorem four_padicValNat_le (p s : ℕ) (hp : p.Prime) (hp5 : 5 ≤ p) (hs : 1 ≤ s) :
+theorem four_padicValNat_le (p s : ℕ) (hp5 : 5 ≤ p) (hs : 1 ≤ s) :
     4 * padicValNat p s + 2 ≤ 3 * s := by
   have hv := four_mul_add_two_le_three_mul_five_pow (padicValNat p s)
   have h1 : 5 ^ padicValNat p s ≤ p ^ padicValNat p s := Nat.pow_le_pow_left hp5 _
@@ -124,7 +124,7 @@ theorem padicValHarmonicPowerSumDivLowerBound : LogCoefVal := by
   have hk : (s : ℝ) - (padicValNat p s : ℝ) ≤ ((padicValRat p (X / s) : ℤ) : ℝ) := by
     exact_mod_cast key
   have h4 : 4 * (padicValNat p s : ℝ) + 2 ≤ 3 * (s : ℝ) := by
-    exact_mod_cast four_padicValNat_le p s hp hp5 hs
+    exact_mod_cast four_padicValNat_le p s hp5 hs
   have hq : (4 : ℝ) ≤ (p : ℝ) - 1 := by
     have : (5 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp5
     linarith

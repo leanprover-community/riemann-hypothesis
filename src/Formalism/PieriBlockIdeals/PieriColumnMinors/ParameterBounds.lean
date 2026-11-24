@@ -1196,7 +1196,7 @@ theorem h_add_Nr_bounds {P : Par} (H : P.Hyp) (G : P.Large) :
   have d : (1.1 : ℝ) = 11 / 10 := by norm_num
   rwa [d]
 
-theorem subset_primesLe_h_add_Nr {P : Par} (H : P.Hyp) (G : P.Large) {R : Finset ℕ}
+theorem subset_primesLe_h_add_Nr {P : Par} (H : P.Hyp) {R : Finset ℕ}
     (hR : ∀ l ∈ R, l.Prime ∧ P.lJ < (l : ℝ) ∧ (l : ℝ) ≤ P.h) : R ⊆ pr (P.h + (P.Nr : ℝ)) := by
   have hb := b_pos' P
   have h7 := b_add_seven_le_h H
@@ -1220,7 +1220,7 @@ theorem floor_h_bounds {P : Par} (H : P.Hyp) (G : P.Large) :
   have f2 : (⌊P.h⌋₊ : ℝ) ≤ P.h := Nat.floor_le hh0
   exact ⟨f1, f2, by linarith [hLJ.2.1], Real.log_nonneg f1, Real.log_le_log (by linarith) f2⟩
 
-theorem le_floor_h {P : Par} (H : P.Hyp) {z : ℤ} (hz : (z : ℝ) ≤ P.h) :
+theorem le_floor_h {P : Par} {z : ℤ} (hz : (z : ℝ) ≤ P.h) :
     z ≤ ((⌊P.h⌋₊ : ℕ) : ℤ) := by
   rcases le_or_gt z 0 with hz0 | hz0
   · have : (0 : ℤ) ≤ ((⌊P.h⌋₊ : ℕ) : ℤ) := by positivity
@@ -1239,7 +1239,7 @@ theorem sum_residueIndicator_mul_log_le {P : Par} (H : P.Hyp) (G : P.Large) {ι 
   obtain ⟨hmb0, hmbx, hxx, hxh, hS, _⟩ := hT τ hτ
   have hJ8 := eight_lt_lJ H G
   obtain ⟨f1, f2, f3, f4, f5⟩ := floor_h_bounds H G
-  have hxhN := le_floor_h H hxh
+  have hxhN := le_floor_h hxh
   have key := Formalism.CohomologicalDescent.residueIndicatorPrimeSum_holds ⌊P.h⌋₊ P.lJ (D.xlo τ) (D.xhi τ) (D.maxB τ) R
     (by linarith) f3 hmb0 hmbx hxx hxhN (fun l hl => ⟨(hR l hl).1, (hR l hl).2.1⟩)
   have hS0 := H.S_nonneg
@@ -1250,7 +1250,7 @@ theorem toNat_xlo_sub_maxB_bounds {P : Par} (H : P.Hyp) {ι : Type} {D : SizeDat
     (((D.xlo τ - D.maxB τ).toNat : ℕ) : ℤ) = D.xlo τ - D.maxB τ ∧
       1 ≤ (D.xlo τ - D.maxB τ).toNat ∧ (D.xlo τ - D.maxB τ).toNat ≤ ⌊P.h⌋₊ := by
   obtain ⟨hmb0, hmbx, hxx, hxh, _, _⟩ := hT τ hτ
-  have hxhN := le_floor_h H hxh
+  have hxhN := le_floor_h hxh
   refine ⟨by omega, by omega, by omega⟩
 
 theorem sum_gateTerm_mul_log_le {P : Par} (H : P.Hyp) (G : P.Large) {ι : Type} {D : SizeData₂ ι}
@@ -1662,7 +1662,7 @@ theorem largePrimeSumElementary_holds : SumDE := by
     have := mul_le_mul_of_nonneg_left hq98 (log_div_prime_nonneg hp)
     linarith
   have hNr0 : (0 : ℝ) ≤ P.Nr := Nat.cast_nonneg _
-  have hsub := subset_primesLe_h_add_Nr H G hR
+  have hsub := subset_primesLe_h_add_Nr H hR
   have s2 : ∑ l ∈ R, Real.log (l : ℝ) ≤ Real.log 4 * (P.h + (P.Nr : ℝ)) := by
     have a := chebyshevThetaElementary_holds (P.h + (P.Nr : ℝ)) (by linarith)
     have b : ∑ l ∈ R, Real.log (l : ℝ) ≤ ∑ p ∈ pr (P.h + (P.Nr : ℝ)), Real.log (p : ℝ) :=

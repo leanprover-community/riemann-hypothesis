@@ -64,7 +64,7 @@ open scoped ComplexConjugate in
 variable {k r : ℕ} {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
   [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wq] in
 variable [FiniteDimensional ℂ Wp] in
-theorem _root_.GlobalTheory.BetaSum.beta_sesq (hXi : _root_.Formalism.FourierDecayAlt.B.XiExists) (D : _root_.Formalism.FourierDecayAlt.B.RealPlaceData k r Wp Wq) {A : ℝ}
+theorem _root_.GlobalTheory.BetaSum.beta_sesq (D : _root_.Formalism.FourierDecayAlt.B.RealPlaceData k r Wp Wq) {A : ℝ}
     (hA : _root_.Formalism.FourierDecayAlt.B.AB k r ≤ A)
     {F F' G : _root_.Formalism.FourierDecayAlt.B.Mat k r → (Wq →L[ℂ] Wp)} (hF : _root_.Formalism.FourierDecayAlt.B.InCC A 5 F) (hF' : _root_.Formalism.FourierDecayAlt.B.InCC A 5 F')
     (hG : _root_.Formalism.FourierDecayAlt.B.InCC A 5 G) (c : ℂ) :

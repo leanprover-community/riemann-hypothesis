@@ -106,10 +106,10 @@ def imForm {g : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) :
     (Fin g → ℂ) →ₗ[ℝ] (Fin g → ℂ) →ₗ[ℝ] ℝ :=
   LinearMap.mk₂ ℝ (fun y w => (hermForm Hm y w).im)
     (fun a b w => by simp [hermForm, add_dotProduct])
-    (fun c a w => by simp [hermForm, smul_dotProduct, Complex.smul_im])
+    (fun c a w => by simp [hermForm, smul_dotProduct])
     (fun y a b => by simp [hermForm, Matrix.mulVec_add, dotProduct_add])
     (fun c y a => by
-      simp [hermForm, star_smul, Matrix.mulVec_smul, dotProduct_smul, Complex.smul_im])
+      simp [hermForm, star_smul, Matrix.mulVec_smul, dotProduct_smul])
 
 theorem imForm_apply {g : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) (z w : Fin g → ℂ) :
     imForm Hm z w = (hermForm Hm z w).im := rfl
@@ -347,7 +347,7 @@ theorem hodgeFrame_comp {U : Formalism.L2.PjFree.Unf Xo c σ r} (hσ : Formalism
       fun τ i => by rw [h6 τ i, spMap_dualMap_id, Category.id_comp]⟩
   · exact (not_good_conj c (σ := σ) hσ (h2 ▸ h3)).elim
 
-theorem exists_orth {U : Formalism.L2.PjFree.Unf Xo c σ r} (hσ : Formalism.L2.PjFree.GoodEmb c σ) (hU : Formalism.L2.PjFree.IsUnf U)
+theorem exists_orth {U : Formalism.L2.PjFree.Unf Xo c σ r} (hU : Formalism.L2.PjFree.IsUnf U)
     {y : CxPts (genStr Z) σ} (hy : ¬ LiesIn y (genBd Z)) :
     ∃ (k : U.Comp) (x : (U.X k).dom), IsOrth (U.X k) x.1 ∧ cxPt Z (U.un k x) = y := by
   have hr : Set.range y.1 ⊆ Set.range Z.jQ := by
@@ -640,7 +640,7 @@ theorem gram_smooth_near {U : Formalism.L2.PjFree.Unf Xo c σ (Dw.p + Dw.q)} (h�
     split_ifs at this <;> omega
   obtain ⟨W, hinj⟩ := exists_unfWit_inj hσ hU' h1
   obtain ⟨d, hd0, hd⟩ := exists_diag_riem hσ hU' W
-  obtain ⟨k₀, x₀, -, hq₀⟩ := exists_orth (Z := Z) hσ hU' hbd
+  obtain ⟨k₀, x₀, -, hq₀⟩ := exists_orth (Z := Z) hU' hbd
   obtain ⟨ch, hch⟩ := AlgChart.exists_mem_source (p := genStr Z) (σ := σ) (D := Dw.dim) y₀
   obtain ⟨i, B, P, hB, hb₀, hBt, hPer, hPhol, hPu⟩ :=
     GlobalTheory.ShFam.chart_lift_periods _ _ _ _ _ _ _ _ Z σ Dw.dim W.g _ W.F ch (U'.un k₀ x₀) (hq₀ ▸ hch)
@@ -696,7 +696,7 @@ theorem gram_smooth_near {U : Formalism.L2.PjFree.Unf Xo c σ (Dw.p + Dw.q)} (h�
     obtain ⟨c0, hc0, rfl⟩ : ∃ c0 ∈ B', ch.e.symm c0 = y := ⟨ch.e y, hyB, ch.e.left_inv hys⟩
     rw [ch.e.right_inv (hBt hc0.1)]
     have hex : ∃ g, IsHodgeFrame (unfFam U) (ch.e.symm c0) g := by
-      obtain ⟨k, x, hx, hkx⟩ := exists_orth (Z := Z) hσ hU' hc0.2.2
+      obtain ⟨k, x, hx, hkx⟩ := exists_orth (Z := Z) hU' hc0.2.2
       rw [← hkx]
       exact ⟨_, isHodgeFrame_cxFrame (U := unfFam U) hσ hx⟩
     have hg : (hodgeMet Z U).gram (ch.e.symm c0) f τ =

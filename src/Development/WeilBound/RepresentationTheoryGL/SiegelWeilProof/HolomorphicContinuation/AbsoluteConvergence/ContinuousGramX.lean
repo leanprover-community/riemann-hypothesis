@@ -210,7 +210,7 @@ theorem continuous_gs (c : ℝ) : Continuous (gs (m := m) (n := n) c) := by
   unfold gs; fun_prop
 
 theorem continuous_gramX (ε : Fin m → Bool) : Continuous (gramX (n := n) ε) :=
-  continuous_pi fun i => continuous_pi fun j => continuous_evX _
+  continuous_pi fun _ => continuous_pi fun _ => continuous_evX _
 
 theorem prod_aH (X : Fin n → ℝ) (h : ℝ) :
     (∏ j, aH X h j ^ (2 * m) : ℝ) = Real.exp (2 * (h * ((m : ℝ) * ∑ j, X j))) := by

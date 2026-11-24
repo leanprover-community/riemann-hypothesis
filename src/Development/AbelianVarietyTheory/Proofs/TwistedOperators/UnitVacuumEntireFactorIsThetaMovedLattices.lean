@@ -346,7 +346,6 @@ theorem finRat_frame_mem_latO_sd {S T : HSp D} (frS : GL (Fin S.rank) D.host.E) 
 
 theorem mem_La_frame_sd {D : D7} (S T : HSp D) (frS : GL (Fin S.rank) D.host.E) (frT : GL (Fin T.rank) D.host.E)
     (hS : Formalism.UG.cT (D.sp.cm.sig : D.host.E →+* D.host.E) frS.1 * S.gram * frS.1 = 1)
-    (hT : Formalism.UG.cT (D.sp.cm.sig : D.host.E →+* D.host.E) frT.1 * T.gram * frT.1 = 1)
     (Ls : Submodule (𝓞 D.host.E) (Fin S.rank → D.host.E)) (Lt : Submodule (𝓞 D.host.E) (Fin T.rank → D.host.E))
     (hLs : Formalism.MainNotions.StandardLatticesGL3.SD D Ls) (δ : ℂ) (x : Formalism.MainNotions.TaylorLogMetric.VC D S.rank T.rank)
     (hx : x ∈ Formalism.MainNotions.TaylorLogMetric.La D (Formalism.MainNotions.TaylorLogMetric.tor0 D D.host.ccK δ) Ls Lt) :
@@ -517,7 +516,7 @@ theorem theta_of_vacuum_moved : ∀ {D : D7} (ψ : AddChar (AF D.host.F) ℂ) (�
   obtain ⟨-, -, h3⟩ := GlobalTheory.T.self_dual_lattice_pairing_dual D ψ S T ΛS ΛT hψ hSd hTd
   refine ⟨hΦd.comp ((differentiable_id).const_smul δ⁻¹), ?_⟩
   intro x hx Y
-  obtain ⟨v, hv, rfl⟩ := mem_La_frame_sd S T frS frT hS hT Ls Lt hLs δ x hx
+  obtain ⟨v, hv, rfl⟩ := mem_La_frame_sd S T frS frT hS Ls Lt hLs δ x hx
   rw [← hΛS, ← hΛT] at hv
   have hv' : GlobalTheory.VacUnique.finRat S T (-v) ∈ latO S T (ΛS : Set _) (ΛT : Set _) (fun _ => True) := by
     rw [AddMonoidHom.map_neg]; exact neg_mem hv

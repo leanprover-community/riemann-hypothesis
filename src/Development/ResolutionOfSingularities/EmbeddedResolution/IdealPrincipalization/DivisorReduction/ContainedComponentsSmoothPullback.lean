@@ -61,7 +61,7 @@ theorem smooth_of_isPullback (X Y S S' : Scheme.{u}) (σ : S ⟶ X) (σ' : S' �
 
 theorem orderAtLeastLocus_comap_of_smooth (T : MarkedIdealWithBoundary.{u}) (hV : T.IsAdmissible) (Y : Scheme.{u})
     (q : Y ⟶ Spec (CommRingCat.of T.base)) (h : Y ⟶ T.scheme) [AlgebraicGeometry.Smooth h]
-    (_hq : h ≫ T.structMap = q) (m : ℕ) :
+    (m : ℕ) :
     orderAtLeastLocus (T.ideal.comap h) m = ⇑h ⁻¹' orderAtLeastLocus T.ideal m := by
   have : CharZero T.base := hV.charZero
   have : AlgebraicGeometry.Smooth T.structMap := hV.smooth

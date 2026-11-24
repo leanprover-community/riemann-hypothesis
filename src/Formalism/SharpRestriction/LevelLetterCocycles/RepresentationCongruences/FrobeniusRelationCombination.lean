@@ -1027,7 +1027,7 @@ theorem q_pow_mem_of_generator [IsDomain O] [IsDiscreteValuationRing O] [IsAdicC
     (x : W.DD T) (hx : InFP W T i 1 1 x) (hgx : ∃ k : ℕ, InFP W T i 1 (qA W ^ Bq) (lA W ^ k • g • x)) :
     InFP W T i 1 (qA W ^ Bq) x := by
 
-  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T hT hO hinj
+  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T hT hO
   obtain ⟨-, N, a, ha, b, hb, hN⟩ := l_pow_mem_levels_q_pow_ideal Br Bq hg
   obtain ⟨k, z, hz, hkz⟩ := hgx
   have hx1 : x ∈ Pp W T i 1 := by

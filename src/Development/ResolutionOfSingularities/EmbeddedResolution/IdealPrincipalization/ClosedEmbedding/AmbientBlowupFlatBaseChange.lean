@@ -222,7 +222,7 @@ theorem strictTransform_top_eq_comap {A B : Scheme.{u}} (π : B ⟶ A) (D : A.Id
 
 theorem strictTransform_isIso_comp {A B C : Scheme.{u}} [IsLocallyNoetherian B]
     [IsLocallyNoetherian C] (e : C ⟶ B) [IsIso e] (π : B ⟶ A) (Z D : A.IdealSheafData)
-    (_hπ : Blowup.IsBlowupAlongIdealSheaf π Z) :
+    :
     Blowup.strictTransform (e ≫ π) Z D = (Blowup.strictTransform π Z D).comap e := by
   have : QuasiCompact (strictTransformι (e ≫ π) Z D) := inferInstance
   have : QuasiCompact (strictTransformι (e ≫ π) Z D ≫ e) := inferInstance
@@ -397,7 +397,7 @@ theorem isPushforwardSequenceOfBlowups_withoutIsoBlowups {S X : Scheme.{u}} (j :
           rw [SequenceOfBlowups.blowupMorphism_eq_transitionMap]
           exact t.transitionMap_trans (Nat.le_of_succ_le hac) (Nat.le_succ c)
         rw [hk, ← strictTransform_isIso_comp (t.transitionMapSucc c) (t.transitionMap (Nat.le_of_succ_le hac))
-          (t.center a) ((σ a ha.le).ker) hbl, heq]
+          (t.center a) ((σ a ha.le).ker), heq]
   have h1 : ∀ (i : ℕ) (hi : i ≤ B.lengthWithoutIsoBlowups),
       IsClosedImmersion (σ (B.nontrivialIndex i) (B.nontrivialIndex_le_length hi) ≫
         eqToHom (congrArg t.schemeAt (hret i))) := by

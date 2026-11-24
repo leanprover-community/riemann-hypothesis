@@ -1424,8 +1424,8 @@ theorem smul_pow_two_mul {R M : Type} [CommRing R] [AddCommGroup M] [Module R M]
 
 def piMap {R R' n : Type} [CommRing R] [CommRing R'] (g : R →+* R') : (n → R) →ₛₗ[g] (n → R') where
   toFun z i := g (z i)
-  map_add' z z' := funext fun i => map_add g _ _
-  map_smul' r z := funext fun i => map_mul g _ _
+  map_add' _ _ := funext fun _ => map_add g _ _
+  map_smul' _ _ := funext fun _ => map_mul g _ _
 
 theorem piMap_apply {R R' n : Type} [CommRing R] [CommRing R'] (g : R →+* R') (z : n → R) :
     piMap g z = fun i => g (z i) := rfl

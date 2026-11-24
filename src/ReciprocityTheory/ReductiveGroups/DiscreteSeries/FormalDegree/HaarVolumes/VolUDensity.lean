@@ -1465,7 +1465,7 @@ theorem volU_density (μ : Measure (UNgrp N)) [μ.IsHaarMeasure] [IsProbabilityM
   have h2 := (ENNReal.ofReal_le_ofReal_iff (by positivity)).1 hlo
   have h3 := (ENNReal.ofReal_le_ofReal_iff hi0).1 hIlo
   have h4 := (ENNReal.ofReal_le_ofReal_iff (by positivity)).1 hIhi
-  obtain ⟨r1, r2⟩ := volU_real hV he0 ha0 hb0 hε0 hε1 hη hkey h1 h2 h3 h4
+  obtain ⟨r1, r2⟩ := volU_real hV he0 ha0 hb0 hε0 hε1 hkey h1 h2 h3 h4
   rw [ha', hb']
   constructor
   · rw [← ENNReal.ofReal_mul (by positivity)]

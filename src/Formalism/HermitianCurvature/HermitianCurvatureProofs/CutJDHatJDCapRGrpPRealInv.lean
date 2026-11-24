@@ -160,7 +160,7 @@ def riCat (Θs : Fin (k + 1) → B.DiffOp k r Wp Wq) : List (Fin (k + 1)) → B.
 
 theorem riCat_poly {Θs : Fin (k + 1) → B.DiffOp k r Wp Wq} {t κ : ℕ} (h : ∀ i, PolyOp t κ (Θs i)) :
     ∀ l, PolyOp t κ (riCat Θs l)
-  | [] => fun T hT => absurd hT List.not_mem_nil
+  | [] => fun _ hT => absurd hT List.not_mem_nil
   | i :: l => QMinOp.polyOp_append (h i) (riCat_poly h l)
 
 theorem riCat_apply (Θs : Fin (k + 1) → B.DiffOp k r Wp Wq) (F : B.Mat k r → (Wq →L[ℂ] Wp)) (g : B.Mat k r) :

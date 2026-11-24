@@ -804,7 +804,7 @@ theorem frameEx0_of (hW : WeightEx) (hun : Rig.UnrAE) (hMu : MuEx) (hSec : SecEx
     (fun w hw => (Finset.mem_union.1 hw).elim (fun a => (h.S₀ w a).1) fun a => (h.bad w a).1) (fun w => μ.loc w) hop d.L h.ok₀.L
   obtain ⟨W, w1, w2⟩ := hWx hR E n μ e lam C A
   have hk : ∀ w : Pl E, ∃ k : ℕ, w ∈ d.Bad → ¬ IsSplitAt w → 1 ≤ k ∧ (∀ γ : UL n w, γ ∈ d.KB w ↔ γ.1 ∈ MB.congK n w k) ∧
-      ∀ a ≤ n, d.fix a w = fun y => (((d.KB w).relIndex (KL n w) : ℕ) : ℂ) * MB.pairIndicatorMatch n a (n - a) w k y := fun w => by
+      ∀ a ≤ n, d.fix a w = fun y => (((d.KB w).relIndex (KL n w) : ℕ) : ℂ) * MB.pairIndicatorMatch a (n - a) w k y := fun w => by
     by_cases hw : w ∈ d.Bad ∧ ¬ IsSplitAt w
     · obtain ⟨k, a1, -, a2, a3⟩ := h.mok₀.badI w hw.1 hw.2
       exact ⟨k, fun _ _ => ⟨a1, a2, a3⟩⟩
@@ -1161,9 +1161,9 @@ theorem match_of {w : Pl E} (hw : ¬ IsSplitAt w) {n a b : ℕ} (μ : (w.adicCom
   rw [GlobalTheory.BCT.StTwLevel.clSum_const_mul]
   ring
 
-theorem bad_inert_pair_indicator_eq (n a b k : ℕ) (w : Pl E) : MB.pairIndicatorMatch n a b w k = fun y : GLw a w × GLw b w => ((-((Real.sqrt (qV E w : ℝ) : ℝ) : ℂ)) ^ (k * a * b))⁻¹ * (if y.1 ∈ GlobalTheory.LFun.KGL w (n := a) ∧ nrmL a w y.1 ∈ {g : GLw a w | g ∈ GlobalTheory.LFun.KGL w (n := a) ∧ ∀ i j, Valued.v (g.val i j - (1 : Matrix (Fin a) (Fin a) (w.adicCompletion E)) i j) ≤ WithZero.exp (-(k : ℤ))} ∧ y.2 ∈ GlobalTheory.LFun.KGL w (n := b) ∧ nrmL b w y.2 ∈ {g : GLw b w | g ∈ GlobalTheory.LFun.KGL w (n := b) ∧ ∀ i j, Valued.v (g.val i j - (1 : Matrix (Fin b) (Fin b) (w.adicCompletion E)) i j) ≤ WithZero.exp (-(k : ℤ))} then 1 else 0) := by
+theorem bad_inert_pair_indicator_eq (n a b k : ℕ) (w : Pl E) : MB.pairIndicatorMatch a b w k = fun y : GLw a w × GLw b w => ((-((Real.sqrt (qV E w : ℝ) : ℝ) : ℂ)) ^ (k * a * b))⁻¹ * (if y.1 ∈ GlobalTheory.LFun.KGL w (n := a) ∧ nrmL a w y.1 ∈ {g : GLw a w | g ∈ GlobalTheory.LFun.KGL w (n := a) ∧ ∀ i j, Valued.v (g.val i j - (1 : Matrix (Fin a) (Fin a) (w.adicCompletion E)) i j) ≤ WithZero.exp (-(k : ℤ))} ∧ y.2 ∈ GlobalTheory.LFun.KGL w (n := b) ∧ nrmL b w y.2 ∈ {g : GLw b w | g ∈ GlobalTheory.LFun.KGL w (n := b) ∧ ∀ i j, Valued.v (g.val i j - (1 : Matrix (Fin b) (Fin b) (w.adicCompletion E)) i j) ≤ WithZero.exp (-(k : ℤ))} then 1 else 0) := by
   funext y
-  unfold MB.pairIndicatorMatch MB.congK
+  unfold MB.pairIndicatorMatch
   congr 2
 
 end PositivityTheory.Rg.BcB.F.Ex0.BadInertP
@@ -1179,7 +1179,7 @@ theorem badInert2 (h2 : M2) : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
       Match n a (n - a) w μ (U.lone KB) (fixFn n a w μ m KB) := by
   intro E _ _ _ hE n a ha w hw μ _ m hm KB hKB
   have hM := h2 E hE w hw n a (n - a) m (Nat.add_sub_cancel' ha) hm
-  have e : fixFn n a w μ m KB = fun y => ((KB.relIndex (KL n w) : ℕ) : ℂ) * MB.pairIndicatorMatch n a (n - a) w m y := by
+  have e : fixFn n a w μ m KB = fun y => ((KB.relIndex (KL n w) : ℕ) : ℂ) * MB.pairIndicatorMatch a (n - a) w m y := by
     unfold fixFn
     rw [dite_eq_left ha, ite_eq_right hw]
   rw [e, BadInertP.bad_inert_pair_indicator_eq]

@@ -104,7 +104,7 @@ theorem pd_baseChange {A B : Type} [CommRing A] [IsNoetherianRing A] [CommRing B
 theorem pd_flat {A B : Type} [CommRing A] [IsNoetherianRing A] [CommRing B] [Algebra A B]
     [Module.Flat A B] (n : ℕ) (M : ModuleCat.{0} A) [Module.Finite A M]
     (h : HasProjectiveDimensionLE M n) : HasProjectiveDimensionLE (ModuleCat.of B (B ⊗[A] M)) n :=
-  pd_baseChange (fun _ => True) (fun _ _ f _ _ =>
+  pd_baseChange (fun _ => True) (fun _ _ _ _ _ =>
     ⟨trivial, Module.Flat.lTensor_preserves_injective_linearMap _ (Submodule.injective_subtype _)⟩)
     n M trivial h
 

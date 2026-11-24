@@ -516,7 +516,7 @@ section Mat
 
 variable {N j : ℕ}
 
-theorem same_summand {a b ca cb : Fin N} (hb : (b : ℕ) = a + 1) (hab : (b : ℕ) < j ∨ j ≤ (a : ℕ))
+theorem same_summand {a b ca cb : Fin N} (hb : (b : ℕ) = a + 1)
     (hca : (ca : ℕ) = lastCol N j a) (hcb : (cb : ℕ) = ca + 1) : ((ca : ℕ) < N - j ↔ (cb : ℕ) < N - j) := by
   have := a.2
   have := b.2
@@ -639,7 +639,7 @@ theorem fwd_flags {τ : Ψ} {a b ca cb : Fin N} {k₀ : K} (hb : (b : ℕ) = a +
     {h h' : Ψ → Matrix (Fin N) (Fin N) ℂ} (H : M.IsFlagOf F (fstPt k₀ z) h) (H' : M.IsFlagOf F (sndPt k₀ z) h') :
     ∃ (h : Ψ → Matrix (Fin N) (Fin N) ℂ) (t : ℂ), M.IsFlagOf F (fstPt k₀ z) h ∧
       M.IsFlagOf F (sndPt k₀ z) (Function.update h τ (h τ * (1 + Matrix.single cb ca t))) := by
-  have hS := same_summand hb hab hca hcb
+  have hS := same_summand hb hca hcb
   have hsnd := basePart_snd M hk z
   have hd : IsUnit (h τ).det := (H.2.1 τ).2.isUnit
   let C := (h τ)⁻¹ * h' τ
@@ -732,7 +732,7 @@ theorem back {τ : Ψ} {a b ca cb : Fin N} {k₀ : K} (hb : (b : ℕ) = a + 1) (
     {h : Ψ → Matrix (Fin N) (Fin N) ℂ} {t : ℂ} (H : M.IsFlagOf F (fstPt k₀ z) h)
     (H' : M.IsFlagOf F (sndPt k₀ z) (Function.update h τ (h τ * (1 + Matrix.single cb ca t)))) :
     z ∈ mcPts (mCoordIdeal (M.wCo (τ, a) k₀ ca cb RatFunc.X)) := by
-  have hS := same_summand hb hab hca hcb
+  have hS := same_summand hb hca hcb
   have hsnd := basePart_snd M hk z
   have hnz : ∀ o : Option K, ∃ i, z ⟨o, i⟩ ≠ 0 := by
     intro o

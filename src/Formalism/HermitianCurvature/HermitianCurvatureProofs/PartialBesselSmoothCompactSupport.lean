@@ -192,7 +192,7 @@ theorem loc_iot {m : ℕ∞} {f : Mat k r → E} {g : Mat k r} (h : CapelliWordS
 
 theorem ckOn_iot {m : ℕ∞} {f : Mat k r → E} (hf : CkOn m (GV k r) f) :
     CkOn m (GV k r) (fun y => f (iotL k r y)) :=
-  fun g hg => loc_iot (hf _ (iotL_mem hg))
+  fun _ hg => loc_iot (hf _ (iotL_mem hg))
 
 theorem ckOn_rtransl {m : ℕ∞} {f : Mat k r → E} (hf : CkOn m (GV k r) f) {t : Mat k r} (ht : t ∈ GV k r) :
     CkOn m (GV k r) (fun y => f (y * t)) := by

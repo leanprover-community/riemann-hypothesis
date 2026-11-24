@@ -72,7 +72,7 @@ private theorem UpperTheory.Reformulated.B.Uc15.exists_nsmul_integral {E : Type}
   rw [smul_smul, zsmul_eq_mul]
 
 theorem UpperTheory.Reformulated.B.Uc15.exists_nsmul_mem :
-    ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E] [inst_2 : NumberField.IsCMField E] {r : ℕ}
+    ∀ {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E] {r : ℕ}
       (X : ReciprocityTheory.ChartRestriction.G.FD.Data E r) (u : Fin r → E), ∃ (N : ℕ), N ≠ (0 : ℕ) ∧ N • u ∈ X.Λ := by
   intro E _ _ _ r X u
   have hu : u ∈ Submodule.span E (X.Λ : Set (Fin r → E)) := by
@@ -215,7 +215,7 @@ theorem perFr_add' (X : Data E r) (y : Frame X.Ψ r) (v w : Fin r → E) (τ : E
   · simp
 
 def pvHom (W : UnfAt U k x) : (Fin r → E) →+ (Fin W.g → ℂ) :=
-  AddMonoidHom.mk' (pv W) fun v w => funext fun j => perFr_add' _ _ _ _ _ _
+  AddMonoidHom.mk' (pv W) fun _ _ => funext fun _ => perFr_add' _ _ _ _ _ _
 
 theorem pv_nsmul (W : UnfAt U k x) (N : ℕ) (v : Fin r → E) : pv W ((N : E) • v) = (N : ℂ) • pv W v := by
   have h1 : (N : E) • v = N • v := by rw [Nat.cast_smul_eq_nsmul]

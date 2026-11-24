@@ -205,7 +205,7 @@ variable {R : Type} [CommRing R]
 
 def valOn (x : Sp R ⟶ I.subscheme) (i : B.ι) (hi : ⊤ ≤ (x ≫ I.subschemeι) ⁻¹ᵁ B.U i) :
     sectionsOnClosedSubscheme p B I →+ R :=
-  val x (fun _ => i) le_top fun z hz => mem_pull.2 (hi hz)
+  val x (fun _ => i) le_top fun _ hz => mem_pull.2 (hi hz)
 
 theorem valOn_resTo (h : SuppIn O I) (x : Sp R ⟶ I.subscheme) (i : B.ι)
     (hi : ⊤ ≤ (x ≫ I.subschemeι) ⁻¹ᵁ B.U i) (hO : ⊤ ≤ (x ≫ I.subschemeι) ⁻¹ᵁ O) (f : H0 p B O) :
@@ -763,7 +763,7 @@ theorem tr_chartPull (a : ChartPull B' B r) (z : T) {i j : B'.ι} (hi : z ∈ B'
 def chartPullTens (a : ChartPull A' A r) (b : ChartPull B' B r) :
     ChartPull (tens A' B') (tens A B) r where
   idx t := (a.idx t.1, b.idx t.2)
-  le t _ hz := ⟨a.le _ hz.1, b.le _ hz.2⟩
+  le _ _ hz := ⟨a.le _ hz.1, b.le _ hz.2⟩
   g z i j hi hj := (gm_tens A' B' (𝟙 T) z i j hi hj).trans ((congrArg₂ (· * ·)
     (a.g z _ _ hi.1 hj.1) (b.g z _ _ hi.2 hj.2)).trans (gm_tens A B r z (a.idx i.1, b.idx i.2)
       (a.idx j.1, b.idx j.2) ⟨a.le _ hi.1, b.le _ hi.2⟩ ⟨a.le _ hj.1, b.le _ hj.2⟩).symm)
@@ -771,7 +771,7 @@ def chartPullTens (a : ChartPull A' A r) (b : ChartPull B' B r) :
 def chartPullQuot (a : ChartPull A' A r) (b : ChartPull B' B r) :
     ChartPull (LB.div A' B') (LB.div A B) r where
   idx t := (a.idx t.1, b.idx t.2)
-  le t _ hz := ⟨a.le _ hz.1, b.le _ hz.2⟩
+  le _ _ hz := ⟨a.le _ hz.1, b.le _ hz.2⟩
   g z i j hi hj := (gm_div' A' B' (𝟙 T) z i j hi hj).trans ((congrArg₂ (· * ·⁻¹)
     (a.g z _ _ hi.1 hj.1) (b.g z _ _ hi.2 hj.2)).trans (gm_div' A B r z (a.idx i.1, b.idx i.2)
       (a.idx j.1, b.idx j.2) ⟨a.le _ hi.1, b.le _ hi.2⟩ ⟨a.le _ hj.1, b.le _ hj.2⟩).symm)

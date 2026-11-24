@@ -65,7 +65,7 @@ theorem alpha_injective (x : κ → Ω) (e : Fin (D + 1) → κ) (h : IsRatProjF
   have h2 : P l / (x ∘ e) 0 ^ n = 0 := congrArg Subtype.val (hg l)
   exact (div_eq_zero_iff.1 h2).resolve_right (pow_ne_zero _ hx0)
 
-theorem secTrace_add (x : κ → Ω) (e : Fin (D + 1) → κ) (_h : IsRatProjFrame x e) (n : ℕ) {s t : Ω}
+theorem secTrace_add (x : κ → Ω) (e : Fin (D + 1) → κ) (n : ℕ) {s t : Ω}
     (hs : s ∈ sec ℤ x n) (ht : t ∈ sec ℤ x n) :
     secTrace x e n (s + t) = secTrace x e n s + secTrace x e n t := by
   have hs' := _root_.ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.TraceNormBounds.sec_div_mem x (e 0) hs
@@ -122,7 +122,7 @@ noncomputable def betaMap (x : κ → Ω) (e : Fin (D + 1) → κ) (h : IsProjFr
       have h1 := Submodule.mul_mem_mul s.2 (hε l)
       have h2 := Submodule.mul_mem_mul t.2 (hε l)
       rw [sec_mul_sec] at h1 h2
-      exact secTrace_add x e h.isRatProjFrame (n + k) h1 h2)
+      exact secTrace_add x e (n + k) h1 h2)
 
 theorem finrank_sec_le (x : κ → Ω) (e : Fin (D + 1) → κ) (h : IsProjFrame x e) :
     ∃ k : ℕ, ∀ n, finrank ℤ (sec ℤ x n) ≤ projDeg x e * (n + k + D).choose D := by

@@ -127,7 +127,7 @@ theorem omW_UW {z z' : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) {α β 
     (hβ : β ∈ UWset k r z') (y : B.Mat k r) : omW k r z z' (α * y * β) = α *ᵥ omW k r z z' y := by
   unfold omW; rw [xcof_UW hα hβ, prW_UW hz hα]
 
-theorem omW'_UW {z z' : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) (hz' : C2.StdZ k r z') {α β : B.Mat k r}
+theorem omW'_UW {z z' : Fin (2 * r + k + 1) → ℂ} (hz' : C2.StdZ k r z') {α β : B.Mat k r}
     (hα : α ∈ UWset k r z) (hβ : β ∈ UWset k r z') (y : B.Mat k r) :
     omW' k r z z' (α * y * β) = β⁻¹ *ᵥ omW' k r z z' y := by
   have Wz := Formalism.FourierDecayAlt.P.weyl_subgroup_closed k r z

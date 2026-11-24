@@ -1498,7 +1498,7 @@ theorem UpperTheory.Gal.W2.Seed.pSetupEx :
   have perf : A.FormPerf n p := hFP E A n p hg.2
   obtain ⟨P⟩ := hP E A p hg.1
   obtain ⟨β, hβ⟩ := hR E n
-  have hok : RepOK A n (repOf β) := ⟨β, hβ, repOf_apply β⟩
+  have hok : RepOK n (repOf β) := ⟨β, hβ, repOf_apply β⟩
   obtain ⟨r1, r2, r3, r4⟩ := hL E A n (repOf β) hok
   have radj := hA E A n (repOf β) hok
   obtain ⟨J, j1, j2, j3, j4⟩ := hO E A n hn hs p P (repOf β) hok

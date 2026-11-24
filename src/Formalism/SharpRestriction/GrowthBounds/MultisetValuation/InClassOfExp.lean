@@ -150,7 +150,7 @@ theorem neg_pow_mem {R : Subring K} {c : K} (hc : ∀ k : ℕ, c ^ k * ((k.facto
   rw [neg_pow, mul_assoc]
   exact R.mul_mem (R.pow_mem (R.neg_mem R.one_mem) k) (hc k)
 
-theorem term_exp {pp c : K} (hpp : pp ≠ 0) (h : MvPowerSeries ι K) (i : ℕ) :
+theorem term_exp {pp c : K} (h : MvPowerSeries ι K) (i : ℕ) :
     MvPowerSeries.C ((i.factorial : K)⁻¹) * (-(MvPowerSeries.C (c / pp) * h)) ^ i =
       MvPowerSeries.C ((pp ^ i)⁻¹) * h ^ i * MvPowerSeries.C ((-c) ^ i * ((i.factorial : K))⁻¹) := by
   have e : -(MvPowerSeries.C (c / pp) * h) = MvPowerSeries.C (-c / pp) * h := by
@@ -181,7 +181,7 @@ theorem inClass_of_exp {R : Subring K} {pp c : K} (hpp : pp ≠ 0) (hc : ∀ k :
 
   rw [h2, expSum, Finset.sum_mul, map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
-  rw [term_exp hpp, ← MvPowerSeries.coeff_C_mul]
+  rw [term_exp, ← MvPowerSeries.coeff_C_mul]
   congr 1
   ring
 

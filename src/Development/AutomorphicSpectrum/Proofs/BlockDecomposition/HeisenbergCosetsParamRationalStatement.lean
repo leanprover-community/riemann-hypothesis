@@ -131,7 +131,7 @@ theorem cTBlk (σ : K →+* K) {n : ℕ} (a b c d : Matrix (Fin n) (Fin n) K) :
   simp only [Matrix.transpose_apply, Matrix.map_apply, Matrix.submatrix_apply]
   rcases finSumFinEquiv.symm i with i | i <;> rcases finSumFinEquiv.symm j with j | j <;> simp
 
-theorem siegel_relations (σ : K →+* K) (hσ : ∀ x, σ (σ x) = x) {p : ℕ}
+theorem siegel_relations (σ : K →+* K) {p : ℕ}
     {A B Dd : Matrix (Fin p) (Fin p) K}
     (hU : PositivityTheory.GramSchwartzFunctions.EC.IsUnitary σ (blk4 0 1 (-1) 0) (blk4 A B 0 Dd)) :
     Dd * PositivityTheory.GramSchwartzFunctions.EC.cT σ A = 1 ∧
@@ -160,7 +160,7 @@ theorem exists_change_rep : ∀ {K : Type} [Field K] (σ : K →+* K), (∀ x, �
     ∃ (ζ₂ : Matrix (Fin ρ) (Fin ρ) K) (η₂ : Matrix (Fin ρ) (Fin p) K) (T : Matrix (Fin n) (Fin n) K),
       cT σ ζ₂ = ζ₂ ∧ rowC hn η a c = T * rowC hn η₂ a₂ c₂ ∧ rowD hn σ ζ η b d = T * rowD hn σ ζ₂ η₂ b₂ d₂ := by
   intro K _ σ hσ n ρ p hn a b c d a₂ b₂ c₂ d₂ A B Dd hU hs ζ η hζ
-  obtain ⟨e4, e6⟩ := siegel_relations σ hσ hU
+  obtain ⟨e4, e6⟩ := siegel_relations σ hU
   rw [blkMul] at hs
   obtain ⟨rfl, rfl, rfl, rfl⟩ := blkInj hs
   refine ⟨ζ + η * B * PositivityTheory.GramSchwartzFunctions.EC.cT σ (η * A), η * A, bl hn 1 (-(η * B)) 0 Dd, ?_, ?_, ?_⟩

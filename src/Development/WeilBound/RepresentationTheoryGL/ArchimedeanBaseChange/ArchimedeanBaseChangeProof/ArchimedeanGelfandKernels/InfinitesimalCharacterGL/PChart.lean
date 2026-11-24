@@ -67,13 +67,13 @@ theorem chart_zero' (g : GA E a) (x : Lie E a) : chart (0 : GA E a → ℂ) g x 
   unfold chart; split_ifs <;> simp
 
 theorem along_add (w : InfinitePlace E) (g : GA E a) (φ ψ : GA E a → ℂ) :
-    along w g (φ + ψ) = along w g φ + along w g ψ := funext fun x => chart_add' φ ψ g _
+    along w g (φ + ψ) = along w g φ + along w g ψ := funext fun _ => chart_add' φ ψ g _
 
 theorem along_smul (w : InfinitePlace E) (g : GA E a) (c : ℂ) (φ : GA E a → ℂ) :
-    along w g (c • φ) = c • along w g φ := funext fun x => chart_smul' c φ g _
+    along w g (c • φ) = c • along w g φ := funext fun _ => chart_smul' c φ g _
 
 theorem along_zero (w : InfinitePlace E) (g : GA E a) : along w g (0 : GA E a → ℂ) = 0 :=
-  funext fun x => chart_zero' g _
+  funext fun _ => chart_zero' g _
 
 theorem along_sum {ι : Type} (S : Finset ι) (w : InfinitePlace E) (g : GA E a) (φ : ι → GA E a → ℂ) :
     along w g (∑ i ∈ S, φ i) = ∑ i ∈ S, along w g (φ i) := by

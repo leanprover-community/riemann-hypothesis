@@ -147,7 +147,7 @@ theorem tauBal_of_act (hG : GlobalFnsSt) {U : UnifPre I D A G} (E E' : EndU U) (
   exact (congrArg₂ (· * ·) (tau_symm (𝟙 (TF (R := R) F)) hJ _ _) e').trans
     (e.symm.trans (tau_symm (𝟙 (TF (R := R) F)) hJ _ _))
 
-theorem exists_oAct : LL → TwistBCSpanStatement → TWM.VRatioGtStatement → TWStatement → UUStatement → AllU fun {R} _ _ {I} {D} {A} {G} _ _ U => ∀ (O : Type) [CommRing O] [StarRing O] (ιA : A.OAct O) (ιG : RingAct G O), (∀ a, (Over.pullback (jK R)).map (ιG.act a) ≫ U.gen.hom = U.gen.hom ≫ ιA.act a) → (∀ a, LBIso (cubeLB G ![fst G G ≫ ιG.act a, snd G G] U.LG.L) (cubeLB G ![fst G G, snd G G ≫ ιG.act (star a)] U.LG.L)) → ∃ (_ : Module O D.toPre.X) (ιD : D.toPre.OAct O), U.toUnifPre.OLinear O ιD ιA ιG := by
+theorem exists_oAct : LL → TwistBCSpanStatement → TWM.VRatioGtStatement → TWStatement → UUStatement → AllU fun {R} _ _ {_} {D} {A} {G} _ _ U => ∀ (O : Type) [CommRing O] [StarRing O] (ιA : A.OAct O) (ιG : RingAct G O), (∀ a, (Over.pullback (jK R)).map (ιG.act a) ≫ U.gen.hom = U.gen.hom ≫ ιA.act a) → (∀ a, LBIso (cubeLB G ![fst G G ≫ ιG.act a, snd G G] U.LG.L) (cubeLB G ![fst G G, snd G G ≫ ιG.act (star a)] U.LG.L)) → ∃ (_ : Module O D.toPre.X) (ιD : D.toPre.OAct O), U.toUnifPre.OLinear O ιD ιA ιG := by
   intro hL h₁ h₂ h₃ h₄ R _ _ _ I hI D A G _ _ hS U O _ _ ιA ιG hext hros
   choose E EG EA using fun a => GlobalTheory.T.exists_endomorphism_action_uniformization_data hL R I hI D A G hS U (ιG.act a) (ιA.act a) (ιG.hom a) (ιA.hom a) (hext a)
   have hcalc := GlobalTheory.T.uniformizationEndomorphism_calculus hL R I hI D A G hS U (AlgebraicClosure (FractionRing R))

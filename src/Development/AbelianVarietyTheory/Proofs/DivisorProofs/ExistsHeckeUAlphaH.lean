@@ -53,7 +53,7 @@ noncomputable section
 namespace GlobalTheory.FunObj.SqNum
 
 theorem exists_heckeU_alphaH : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {μ₀ : T}, L.Is μ₀ →
-    ∀ (G : GridData L sc) (i j : Fin D.R.m), ∃ χ : HeckeU D (botSmall D i j),
+    ∀ (_ : GridData L sc) (i j : Fin D.R.m), ∃ χ : HeckeU D (botSmall D i j),
       ∀ x, χ.f x = (alphaH L μ₀ i j).1 (finIdl D x) := by
   intro D T L sc μ₀ hL _ i j
   obtain ⟨χ₁, h1, -⟩ := GlobalTheory.Mem.Col2.SplitChar.exists_of_isMu0 (N := 0) ⟨0, rfl⟩ (L.C.isMu0 j) fun g => (D.hc _).e_int j

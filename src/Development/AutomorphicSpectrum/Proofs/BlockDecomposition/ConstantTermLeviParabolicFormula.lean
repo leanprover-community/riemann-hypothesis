@@ -179,7 +179,7 @@ theorem continuous_nilM {S : Type} [CommRing S] [TopologicalSpace S] :
 
 theorem continuous_conj_block {S : Type} [CommRing S] [TopologicalSpace S] [IsTopologicalRing S]
     (B C : Matrix (Fin a) (Fin a) S) : Continuous (upperRightBlockConj B C : (BlockIx a r → S) → _) :=
-  continuous_pi fun p =>
+  continuous_pi fun _ =>
     ((continuous_const.matrix_mul continuous_nilM).matrix_mul continuous_const).matrix_elem _ _
 
 theorem conj_block_map {S : Type} [CommRing S] (f : R →+* S) (B C : Matrix (Fin a) (Fin a) R)

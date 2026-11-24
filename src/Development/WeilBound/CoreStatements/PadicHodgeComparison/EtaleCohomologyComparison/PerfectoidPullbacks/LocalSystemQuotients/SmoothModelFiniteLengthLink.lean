@@ -270,7 +270,7 @@ theorem qAll_all (T : Thick (nlFun (Wc.pd l k 1) l X q ((Wc.res l k 1).comp ρ))
 
 def toAll : CH.Mor (Wc.OM l (B.schFn q) ρ 1) (CH.modF (sP (QAll q ρ)).A) (Ideal.Quotient.mk _) where
   G := (QAll q ρ).ι
-  τ T := { toFun := fun z => z, map_add' := fun _ _ => rfl, map_smul' := fun _ _ => rfl }
+  τ _ := { toFun := fun z => z, map_add' := fun _ _ => rfl, map_smul' := fun _ _ => rfl }
   nat _ _ := rfl
 
 theorem toAll_inj (n : ℕ) : Function.Injective ((toAll q ρ).hom.f n) := by
@@ -605,7 +605,7 @@ theorem off_zero (hLoc : KH.LocGr) {Q : ObjectProperty (Thick L)} {d : ℕ} (E :
 
 theorem basis_gen {W₀ : Y.Opens} {d : ℕ} (t₀ : Fin d → Γ(Y, W₀)) (P₀ : ObjectProperty (Thick L))
     (hP₀ : ∀ T, P₀ T → InY 𝔭 W₀ T) (r : ℕ) :
-    ∃ ω : Idx r d → HU (GF L r) P₀ r, ∀ (W : Y.Opens) (hle : W ≤ W₀) (Q : ObjectProperty (Thick L)) (hQ₀ : Q ≤ P₀)
+    ∃ ω : Idx r d → HU (GF L r) P₀ r, ∀ (W : Y.Opens) (_ : W ≤ W₀) (Q : ObjectProperty (Thick L)) (hQ₀ : Q ≤ P₀)
       (hF : IsFil (sP Q) (sFil Q)) (hQW : ∀ T, Q T → InY 𝔭 W T)
       (_ : Free 𝔭 W Q r (fun k T => lft 𝔭 W₀ T (t₀ k))) (h : HU (GF L r) Q r),
       ∃! f : Idx r d → Γ(Y, W), h = ∑ k, fAct 𝔭 hF hQW r (f k) ((resU (GF L r) hQ₀).pull r (ω k)) := by

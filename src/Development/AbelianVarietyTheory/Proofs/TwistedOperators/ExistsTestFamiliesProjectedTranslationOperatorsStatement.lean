@@ -150,7 +150,7 @@ theorem fixed_of_forall_finLoc_mem : ∀ (D : D7) (V : HSp D) (W : Type) [AddCom
             simp [k', map_mul, fl_self]
           · simpa only [k', map_mul, fl_ne v a h, one_mul] using h1 v hv (by simp [h, hvT])
       have hkk : k = locFin V a (finLoc V a k) * k' := by
-        simp [k', ← mul_assoc, ← map_mul]
+        simp [k', ← mul_assoc]
       rw [hkk, map_mul, Module.End.mul_apply, hfix]
       exact hx a _ (hk a)
   exact step S g hg (fun v hv hvS => absurd hv hvS)

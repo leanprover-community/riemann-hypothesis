@@ -57,6 +57,6 @@ theorem pow_mem_frobKerIdeal {p : ℕ} {R H : Type} [CommRing R] [CommRing H] [B
 
 theorem frobKerIdeal_le_augIdeal {p : ℕ} (hp : p ≠ 0) (R H : Type) [CommRing R] [CommRing H]
     [Bialgebra R H] : frobKerIdeal p R H ≤ augIdeal R H :=
-  Ideal.span_le.2 fun _ ⟨a, ha, e⟩ => e ▸ Ideal.pow_mem_of_mem _ ha p (Nat.pos_of_ne_zero hp)
+  Ideal.span_le.2 fun _ ⟨_, ha, e⟩ => e ▸ Ideal.pow_mem_of_mem _ ha p (Nat.pos_of_ne_zero hp)
 
 end GlobalTheory.PDiv

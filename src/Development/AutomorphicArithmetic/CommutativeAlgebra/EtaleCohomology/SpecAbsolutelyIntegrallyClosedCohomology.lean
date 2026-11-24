@@ -185,7 +185,7 @@ theorem UpperTheory.Cb.augmentation_map_bijective :
     HasRingHomProperty.Spec_iff.mpr (RingHom.etale_algebraMap.mpr (cyc_etale q hq))
   have hs : Surjective (Spec.map φ) :=
     ⟨adjoinRoot_surj _ (cyclotomic.monic q _)
-      (by simp [natDegree_cyclotomic, Nat.totient_pos, Nat.pos_of_ne_zero hq0.out, hq0.out])⟩
+      (by simp [natDegree_cyclotomic, hq0.out])⟩
   refine ⟨pullback U.toSpecΓ (Spec.map φ), pullback.fst _ _, inferInstance, ?_, ?_⟩
   · intro u
     exact (Surjective.surj (f := pullback.fst U.toSpecΓ (Spec.map φ))) u
@@ -1678,7 +1678,7 @@ theorem n95 : LateralTheory.E.PartDiagCut.PartC := LateralTheory.E.PartCPfSplit.
 
 theorem n87 : LateralTheory.E.HensCut.PartDiag := LateralTheory.E.PartDiagCut.goal_of _root_.LateralTheory.E.PartDirectedPf.PartDirected_of _root_.LateralTheory.E.DiagIdPf.DiagId_of _root_.LateralTheory.E.DiagCompPf.DiagComp_of _root_.LateralTheory.E.DiagNatPf.DiagNat_of n92 _root_.LateralTheory.E.PartAPf.PartA_of _root_.LateralTheory.E.PartBPf.PartB_of n95
 
-theorem n82 : LateralTheory.E.QuotAcycCut.Hens := LateralTheory.E.HensCut.goal_of _root_.LateralTheory.E.LocalizationIntegralClosure.LocAIC_of _root_.LateralTheory.E.MonicSplitsPf.MonicSplits_of _root_.LateralTheory.E.IdemPartPf.IdemPart_of _root_.LateralTheory.E.ColimHensPf.ColimHens_of n87
+theorem n82 : LateralTheory.E.QuotAcycCut.Hens := LateralTheory.E.HensCut.goal_of _root_.LateralTheory.E.ColimHensPf.ColimHens_of n87
 
 theorem n78 : LateralTheory.E.t_E2Cut.QuotAcyc := LateralTheory.E.QuotAcycCut.goal_of n79 n82
 

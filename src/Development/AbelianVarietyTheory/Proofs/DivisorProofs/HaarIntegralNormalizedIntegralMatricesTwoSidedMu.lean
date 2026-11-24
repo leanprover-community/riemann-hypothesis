@@ -72,7 +72,7 @@ theorem hint_comp_equiv {H : Type} [Group H] (K : Subgroup H) (φ : H ≃* H) (h
   congr 1
   let e : H ⧸ S.comap (φ : H →* H) ≃ H ⧸ S :=
     Quotient.congr φ.toEquiv (fun a b => by
-      simp only [QuotientGroup.leftRel_apply, Subgroup.mem_comap, MulEquiv.coe_toMonoidHom, map_mul, map_inv]
+      simp only [QuotientGroup.leftRel_apply, Subgroup.mem_comap, map_mul, map_inv]
       rfl)
   rw [← finsum_comp_equiv e]
   refine finsum_congr fun q => ?_

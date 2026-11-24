@@ -92,7 +92,7 @@ theorem isotypic_projector_stable (S : Set (Fin N)) {e : (Fin n → ℤ) → Mod
   rw [← h]
   exact polProj_mem B _
 
-def jointDecompositionData (h13 : TypeDecompositionsCommute D) (hN2 : LowerSetTypesSpan) :
+def jointDecompositionData (h13 : TypeDecompositionsCommute) (hN2 : LowerSetTypesSpan) :
     JointData F (MvPolynomial (Fin N × Fin n) F) (Fin (N + 1)) (fun _ => Fin n → ℤ) (WI n N LL B) where
   le := fun _ => DomLE
   dom := fun _ => Dominant
@@ -135,7 +135,7 @@ def jointDecompositionData (h13 : TypeDecompositionsCommute D) (hN2 : LowerSetTy
 
 end
 
-theorem joint_components_paths_of_joint_dimension (D : Formalism.BasicNotions.D7) (h13 : TypeDecompositionsCommute D) (hN2 : LowerSetTypesSpan) (hDim : RestJointDim) : JointComponentsPaths D := by
+theorem joint_components_paths_of_joint_dimension (D : Formalism.BasicNotions.D7) (h13 : TypeDecompositionsCommute) (hN2 : LowerSetTypesSpan) (hDim : RestJointDim) : JointComponentsPaths := by
   intro F _ _ N n LL B lam
   have := standardPath_index_finite N n LL B
   have key := hDim F _ (Fin (N + 1)) (fun _ => Fin n → ℤ) (WI n N LL B) (jointDecompositionData D LL B h13 hN2) lam

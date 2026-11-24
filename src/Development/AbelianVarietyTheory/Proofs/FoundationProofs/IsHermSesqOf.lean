@@ -228,8 +228,8 @@ theorem GlobalTheory.ConjNorm.unitary_all : ∀ D : D7, IntertwinerUnitary D := 
     MeasureTheory.Measure.pi.isAddHaarMeasure _
   have : (MeasureTheory.volume : MeasureTheory.Measure (VC D N N')).IsAddHaarMeasure :=
     MeasureTheory.Measure.pi.isAddHaarMeasure _
-  have t₁ := discrete_of_selfDual hH d₁ f₁
-  have t₂ := discrete_of_selfDual hH d₂ f₂
+  have t₁ := discrete_of_selfDual d₁ f₁
+  have t₂ := discrete_of_selfDual d₂ f₂
   have hF : th ∈ Formalism.L2.Th1.H.fixedBy (sesqOf D (tor0 D cc δ) N N') (al D (tor0 D cc δ)) A₁ := hth.2
   exact ⟨fun x => mean_opU MeasureTheory.volume hH t₁ s₁ c₁ hth.1.continuous hF x,
     ⟨differentiable_inter (H := sesqOf D (tor0 D cc δ) N N') (α := al D (tor0 D cc δ)) A₁ A₂ hth.1,

@@ -158,13 +158,13 @@ def AtPEx : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (A : 
 def RepEx : Prop := ∀ (E : Type) [Field E] [NumberField E] (n : ℕ),
   ∃ (β : ℚ ⊗[ℤ] (Fin n → 𝓞 E) ≃ₗ[ℚ] (Fin n → E)), ∀ (v : Fin n → 𝓞 E) i, β (1 ⊗ₜ v) i = (v i : E)
 
-def RepOK {E : Type} [Field E] [NumberField E] [IsCMField E] (A : Arith E) (n : ℕ)
+def RepOK {E : Type} [Field E] [NumberField E] [IsCMField E] (n : ℕ)
     (rep : Matrix (Fin n) (Fin n) E →ₐ[ℚ] Module.End ℚ (ℚ ⊗[ℤ] (Fin n → 𝓞 E))) : Prop :=
   ∃ β : ℚ ⊗[ℤ] (Fin n → 𝓞 E) ≃ₗ[ℚ] (Fin n → E), (∀ (v : Fin n → 𝓞 E) i, β (1 ⊗ₜ v) i = (v i : E)) ∧
     ∀ x z, β (rep x z) = x *ᵥ β z
 
 def RepLaws : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (A : Arith E) (n : ℕ)
-  (rep : Matrix (Fin n) (Fin n) E →ₐ[ℚ] Module.End ℚ (ℚ ⊗[ℤ] (Fin n → 𝓞 E))), RepOK A n rep →
+  (rep : Matrix (Fin n) (Fin n) E →ₐ[ℚ] Module.End ℚ (ℚ ⊗[ℤ] (Fin n → 𝓞 E))), RepOK n rep →
   Function.Injective rep ∧
   (∀ M : Module.End ℚ (ℚ ⊗[ℤ] (Fin n → 𝓞 E)), (∃ x, rep x = M) ↔ ∀ b : 𝓞 E,
     M * (DistribSMul.toLinearMap ℤ (Fin n → 𝓞 E) b).baseChange ℚ =
@@ -174,12 +174,12 @@ def RepLaws : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (A 
     rep (x.map (algebraMap (𝓞 E) E)) ((1 : ℚ) ⊗ₜ[ℤ] v) = (1 : ℚ) ⊗ₜ[ℤ] (x *ᵥ v)
 
 def RepAdj : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (A : Arith E) (n : ℕ)
-  (rep : Matrix (Fin n) (Fin n) E →ₐ[ℚ] Module.End ℚ (ℚ ⊗[ℤ] (Fin n → 𝓞 E))), RepOK A n rep →
+  (rep : Matrix (Fin n) (Fin n) E →ₐ[ℚ] Module.End ℚ (ℚ ⊗[ℤ] (Fin n → 𝓞 E))), RepOK n rep →
   ∀ x v w, (A.EF n).baseChange ℚ (rep x v) w = (A.EF n).baseChange ℚ v (rep (hermStar (A.H n) (A.det_ne n) x).unop w)
 
 def Orient : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (A : Arith E) (n : ℕ) (hn : 1 ≤ n) (hs : A.SigOK n)
   (p : ℕ) [Fact p.Prime] (P : A.AtP p)
-  (rep : Matrix (Fin n) (Fin n) E →ₐ[ℚ] Module.End ℚ (ℚ ⊗[ℤ] (Fin n → 𝓞 E))), RepOK A n rep →
+  (rep : Matrix (Fin n) (Fin n) E →ₐ[ℚ] Module.End ℚ (ℚ ⊗[ℤ] (Fin n → 𝓞 E))), RepOK n rep →
   ∃ J : ℝ ⊗[ℚ] (A.grp hn hs P).C, J * J = -1 ∧ (starT (A.grp hn hs P).star ℝ J).unop = -J ∧
     (∀ x, x ≠ 0 → 0 < ((A.EF n).baseChange ℚ).baseChange ℝ (actOn (C := (A.grp hn hs P).C) rep ℝ J x) x) ∧
     ∀ v : InfinitePlace E, (open scoped Classical ComplexOrder in

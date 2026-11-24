@@ -267,7 +267,7 @@ theorem map_phiE (lam : Fin r → ℝ) (hlam : ∀ a, 0 < lam a) :
     pi_smul_const, Measure.map_smul, map_coordinate_change_volume]
   exact (e2 (r := r)).measurable.aemeasurable
 
-theorem const_eq (k : ℕ) (lam : Fin r → ℝ) (hlam : ∀ a, 0 < lam a) :
+theorem const_eq (k : ℕ) (lam : Fin r → ℝ) :
     (∏ i : Fin (r + 1), 2 * ((muS lam i) ^ 2)⁻¹) * kapC k lam =
       2 ^ (r + 1) * ∏ a : Fin r, (lam a ^ (2 * (Formalism.QuantumDeterminants.Mdim k r a - 1)))⁻¹ := by
   rw [Fin.prod_univ_castSucc]
@@ -321,7 +321,7 @@ theorem cv_core {r : ℕ} (k : ℕ) (hk : 1 ≤ k) (T T' : ℝ) (lam : Fin r →
   rw [show (∏ i, (cN lam i : ℝ≥0∞)) = ENNReal.ofReal (∏ i, 2 * ((muS lam i) ^ 2)⁻¹) from by
       rw [ENNReal.ofReal_prod_of_nonneg (fun i _ => by have := muS_pos lam hlam i; positivity)]; rfl,
     ← ENNReal.ofReal_mul (Finset.prod_nonneg fun i _ => by have := muS_pos lam hlam i; positivity),
-    const_eq k lam hlam]
+    const_eq k lam]
 
 theorem cv_inst {D : D7} (u u' : D.what₂.Word) (m : ℕ) (hm : m = D.R.rS) (lam : Fin m → ℝ) (hlam : ∀ a, 0 < lam a)
     (F : (Fin m → ℂ) × ℂ → ℝ) :

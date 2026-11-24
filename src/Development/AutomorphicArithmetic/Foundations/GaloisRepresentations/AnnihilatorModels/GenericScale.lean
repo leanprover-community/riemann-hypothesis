@@ -76,7 +76,7 @@ set_option synthInstance.maxHeartbeats 100000 in
 def NilWeil : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
     (A : ValuationSubring Ω) (w : HeightOneSpectrum (𝓞 E)) (h : IsPlaceOver A w) (O : Type) [CommRing O] [Algebra ℤ_[l] O]
-    [TopologicalSpace O] (Bw : LocBridge l E Ω (Dec (F := E) A) O) (hj : Induces Bw) (LL : FinExt l)
+    [TopologicalSpace O] (Bw : LocBridge l E Ω (Dec (F := E) A) O) (_ : Induces Bw) (LL : FinExt l)
     (V : Type) [AddCommGroup V] [Module ↥LL.1 V] [Module ℚ_[l] V] [IsScalarTower ℚ_[l] ↥LL.1 V] [FiniteDimensional ↥LL.1 V]
     (ρ : Representation ↥LL.1 ↥(GK Bw.Kw) V) (hV : IsPst P ρ), IsSst P ρ → ∀ Q : Polynomial ↥LL.1,
     NilD (σSt P Bw.Kw) (ψSt P (resDeg l w)) ρ Q → ∀ g : ↥(Weil h), deg g = -1 →

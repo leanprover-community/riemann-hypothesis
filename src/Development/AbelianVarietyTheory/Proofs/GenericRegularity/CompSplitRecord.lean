@@ -98,7 +98,7 @@ namespace GlobalTheory.Reg
 
 
 
-theorem compSplit_record : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (hj : InR D j)
+theorem compSplit_record : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (_ : InR D j)
     (hG : GenFrEx (T.Q.Xo j) T.Q.c), CompSplitSt h j hG := by
   intro D T h j hj hG Z w g
   obtain ⟨hL, -, -, hA⟩ := evLaws_genFr_atlas _ _ _ _ (T.Q.Xo j) T.Q.c

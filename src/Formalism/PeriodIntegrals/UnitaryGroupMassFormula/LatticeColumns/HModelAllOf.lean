@@ -136,7 +136,7 @@ private theorem glRed_hEmbGL {R S : Type} [CommRing R] [CommRing S] (π : R →+
 
 
 
-theorem hImU_of_model (X : HidaSetting D) (hb : AdBridgeIso X.B.I) (hK : X.LevelSubgroupCharacter) (hL : X.LevelSubgroupNormalized)
+theorem hImU_of_model (X : HidaSetting D) (hb : AdBridgeIso X.B.I)
     (u : D.what₂.Word) (p : TypX X) (h : HModelU X hb u p) : HImU X hb u p := by
   obtain ⟨ψ, c, π, d, hψ, hker, hH, hπ, hπker, hK2⟩ := h
   intro ρ hρ hρker
@@ -252,7 +252,7 @@ theorem locRedRest_of_models
       X.MeasTie hb → X.LevelSubgroupNormalized → ∀ p : TypX X, HModelU X hb u p) : LocRedRest := by
   intro D X hb hK u hM hL p
   have hm := h X hb hK u hM hL p
-  refine ⟨?_, hLatGL_of_model X u p (hModel_of_U X hb u p hm), hImU_of_model X hb hK hL u p hm⟩
+  refine ⟨?_, hLatGL_of_model X u p (hModel_of_U X hb u p hm), hImU_of_model X hb u p hm⟩
   obtain ⟨_ψ, _c, π, _d, _, _, _, hπ, hker, _⟩ := hm
   exact ⟨π, hπ, hker⟩
 

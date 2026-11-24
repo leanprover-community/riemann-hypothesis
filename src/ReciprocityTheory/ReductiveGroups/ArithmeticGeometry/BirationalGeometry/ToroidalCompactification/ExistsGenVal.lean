@@ -238,7 +238,7 @@ theorem exists_gen_val (hM : M.IsLB) (φ : K → (Sp F ⟶ X)) (ε : K → ℤ) 
         ((gm_res _ w (le j') h' _).trans (gm_linComb M _ ε (𝟙 _) w j' _ h' (all w))).symm))
   obtain ⟨f, hf⟩ := toStk_surj y (u * (val t₀ (𝟙 _) y J)⁻¹).val
   have f0 : f ≠ 0 := fun h => Units.ne_zero _ (hf.symm.trans (by rw [h, map_zero]))
-  refine ⟨scaleGen t₀ (cU f f0), scaleGen_isGen hM t₀ h₀ _, (gm_scaleGen t₀ _ (𝟙 _) y _ (all y)).trans ?_⟩
+  refine ⟨scaleGen t₀ (cU f f0), scaleGen_isGen t₀ h₀ _, (gm_scaleGen t₀ _ (𝟙 _) y _ (all y)).trans ?_⟩
   rw [show gm (𝟙 (Sp F)) y ⊤ (cU f f0) = _ from Units.ext ((gm_cU f f0 y).trans hf)]
   exact inv_mul_cancel_right _ _
 

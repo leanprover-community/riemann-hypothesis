@@ -223,7 +223,7 @@ theorem gam_e (hh : ∀ x y, star (h x y) = h y x) (hee : ∀ a b, h (e a) (e b)
   rw [gam_apply, cod_zero hcod hpi]
   simp [hd1', hee]
 
-theorem gam_f (hh : ∀ x y, star (h x y) = h y x) (hff1 : ∀ a b, h (f1 a) (f1 b) = 0)
+theorem gam_f (hff1 : ∀ a b, h (f1 a) (f1 b) = 0)
     (hd1 : ∀ a b, h (e a) (f1 b) = if a = b then 1 else 0)
     (hcod : ∀ v, P h e fY (pi h e f1 v) ∈ W) (g : W ≃ₗ[K] W) (b : Fin r) :
     gam h e fY f1 f2 W hcod g (f1 b) = f2 b := by
@@ -390,7 +390,7 @@ theorem GlobalTheory.RowsOrb.rows_eq_of_conj : ∀ (D : D7) (large₂ : SizeData
   have hγ : ∀ v, γ v = gam (VS D).hT X.eX X.fY f1 f2 (GlobalTheory.RowsOrb.Wb X) hcod g.1.1 v := fun v => rfl
   have hP2 := dual_symm hh hd2
   have hγe : ∀ b, γ (X.eX b) = X.eX b := fun b => by rw [hγ]; exact gam_e hh X.ee hd1 hcod _ b
-  have hγf : ∀ b, γ (f1 b) = f2 b := fun b => by rw [hγ]; exact gam_f hh hff1 hd1 hcod _ b
+  have hγf : ∀ b, γ (f1 b) = f2 b := fun b => by rw [hγ]; exact gam_f hff1 hd1 hcod _ b
   have hz : γ (X.zu u) = X.zu u := by
     obtain ⟨hm, hgz⟩ := gam_orth hcod g.1.1 (hL1 _ hz1)
     have hPz : P (VS D).hT X.eX X.fY (X.zu u) = X.zu u := by

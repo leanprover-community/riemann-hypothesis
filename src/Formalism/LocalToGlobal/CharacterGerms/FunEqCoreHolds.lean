@@ -200,7 +200,7 @@ theorem coeff_triple_multiplication_single (Y : FBChart C V O dd) (k i : Fin dd)
   exact (mul_right_cancel₀ hP h1).symm
 
 theorem triple_multiplication_frobenius (Y : FBChart C V O dd) (k : Fin dd) : FrobX V (m3 Y.B.G V.l k) := by
-  exact frobX_of (triple_multiplication_integral Y.B.G Y.intF V.l k) (fun j => pderiv_triple_multiplication_maximal Y k j)
+  exact frobX_of (fun j => pderiv_triple_multiplication_maximal Y k j)
 
 private theorem mm_zero_of_vf : V.MM (0 : C) := by
   unfold VF.MM
@@ -213,7 +213,7 @@ private theorem mm_add_character_germs {a b : C} (ha : V.MM a) (hb : V.MM b) : V
 
 private theorem mm_sum_character_germs {ι : Type} (s : Finset ι) (a : ι → C) (h : ∀ i ∈ s, V.MM (a i)) :
     V.MM (∑ i ∈ s, a i) :=
-  Finset.sum_induction a (fun x => V.MM x) (fun x y hx hy => mm_add_character_germs hx hy) mm_zero_of_vf h
+  Finset.sum_induction a (fun x => V.MM x) (fun _ _ hx hy => mm_add_character_germs hx hy) mm_zero_of_vf h
 
 private theorem mm_mul_ge_zero_right {a b : C} (ha : V.MM a) (hb : V.Ge 0 b) : V.MM (a * b) := by
   unfold VF.MM at *
@@ -647,9 +647,9 @@ theorem coeff_U_eq (Y : FBChart C V O dd) (u : Fin dd → C) (hu : ∀ i, V.Ge 0
   unfold Phi
   rw [← Finset.sum_sub_distrib, ← Finset.sum_sub_distrib, ← Finset.sum_sub_distrib, ← Finset.sum_add_distrib]
   refine GmExArith.mm_sum fun i _ => ?_
-  have cS := coeff_mul_cong iS iQ (frobX_of iS fS) (frobX_of iQ (QQ_frob Y)) oS (QQ_one Y) i γ
-  have cR1 := coeff_mul_cong i12 iP (frobX_of i12 f12) (frobX_of iP (second_pairing_pow_frobenius Y)) o12 (second_pairing_pow_restrict_one Y) i γ
-  have cR2 := coeff_mul_cong i1 i2 (frobX_of i1 f1) (frobX_of i2 f2) o1 o2 i γ
+  have cS := coeff_mul_cong iS iQ (frobX_of fS) (frobX_of (QQ_frob Y)) oS (QQ_one Y) i γ
+  have cR1 := coeff_mul_cong i12 iP (frobX_of f12) (frobX_of (second_pairing_pow_frobenius Y)) o12 (second_pairing_pow_restrict_one Y) i γ
+  have cR2 := coeff_mul_cong i1 i2 (frobX_of f1) (frobX_of f2) o1 o2 i γ
   rw [ident] at cS
   have e : u i ^ V.l * coeff (ix i V.l γ) (UU Y (SS Y.B.G)) - u i ^ V.l * coeff (ix i V.l γ) (UU Y (p3 1)) -
       u i ^ V.l * coeff (ix i V.l γ) (UU Y (p3 2)) - u i ^ V.l * coeff (ix i V.l γ) (Y.B.ph2 ^ V.l) +

@@ -427,7 +427,7 @@ private theorem exists_fibre_primitive_on_ball {P : Type} [NormedAddCommGroup P]
 set_option autoImplicit false in
 open Set Metric in
 private theorem cech_shift_lemma_2 {P : Type} [NormedAddCommGroup P] [NormedSpace ℂ P] [FiniteDimensional ℂ P] {g : ℕ} {K : Type} (W : K → Set (P × (Fin g → ℂ))) (c : K → K → P × (Fin g → ℂ) → ℂ) (ω : K → Fin g → P × (Fin g → ℂ) → ℂ) (S : Set (P × (Fin g → ℂ))) (j : K) (F : P × (Fin g → ℂ) → ℂ)
-  (hW : ∀ k, IsOpen (W k)) (hS : IsOpen S) (hSj : S ⊆ W j)
+  (hSj : S ⊆ W j)
   (hc : ∀ k l, AnalyticOnNhd ℂ (c k l) (W k ∩ W l))
   (hcoc : ∀ k l m, ∀ p ∈ W k, p ∈ W l → p ∈ W m → c k m p = c k l p + c l m p)
   (hdiff : ∀ k l a, ∀ p ∈ W k, p ∈ W l → ω k a p - ω l a p = fderiv ℂ (c k l) p (0, Pi.single a 1))
@@ -489,7 +489,7 @@ theorem _root_.GlobalTheory.exists_cechPrimitive_box_segment : ∀ {P : Type} [N
         ∀ k l, ∀ p ∈ W k, p ∈ W l → p ∈ Z ×ˢ C' → G k p - G l p = c k l p := by
     intro Z hZ w r k₀ hsub C' hC'
     obtain ⟨F, hF, hFd⟩ := exists_fibre_primitive_on_ball (W k₀) (hW k₀) (ω k₀) (hω k₀) (hcl k₀) Z hZ w r hsub
-    obtain ⟨h1, h2, h3⟩ := cech_shift_lemma_2 W c ω (Z ×ˢ ball w r) k₀ F hW (hZ.prod isOpen_ball) hsub hc hcoc hdiff hF hFd
+    obtain ⟨h1, h2, h3⟩ := cech_shift_lemma_2 W c ω (Z ×ˢ ball w r) k₀ F hsub hc hcoc hdiff hF hFd
     have hm : Z ×ˢ C' ⊆ Z ×ˢ ball w r := prod_mono subset_rfl hC'
     exact ⟨fun k p => F p - c k₀ k p, fun k => (h1 k).mono (inter_subset_inter_right _ hm),
       fun k a p hp hq => h2 k a p hp (hm hq), fun k l p hk hl hq => h3 k l p hk hl (hm hq)⟩

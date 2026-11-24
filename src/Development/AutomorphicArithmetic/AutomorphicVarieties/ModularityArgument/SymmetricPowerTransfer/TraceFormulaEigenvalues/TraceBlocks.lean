@@ -185,7 +185,7 @@ theorem card_fib (H : Subgroup Γ) (b : orbitRel.Quotient H Y) :
     obtain ⟨s, rfl⟩ := hsurj z
     exact ⟨Quotient.mk'' s, rfl⟩
 
-theorem countC (Γ₀ H : Subgroup Γ) [Γ₀.Normal] (h0 : ∀ z ∈ Γ₀, ∀ y : Y, z • y = y) (hH : Γ₀ ≤ H)
+theorem countC (Γ₀ H : Subgroup Γ) [Γ₀.Normal] (hH : Γ₀ ≤ H)
     (hs : ∀ y : Y, Γ₀.relIndex (stabilizer Γ y) ≠ 0) (k : Y → V) (hk : ∀ h ∈ H, ∀ y, k (h • y) = k y)
     (fin : {b : orbitRel.Quotient H Y | k b.out ≠ 0}.Finite) :
     (Function.support fun a : orbitRel.Quotient Γ Y × (Γ ⧸ H) =>

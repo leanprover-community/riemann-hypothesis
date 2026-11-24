@@ -185,7 +185,7 @@ end SrMult
 open SrMult in
 
 
-theorem jhMult_jac_multiProd (hG : GeometricLemma) {d l : ℕ} (hd : 0 < d) (hl : 0 < l)
+theorem jhMult_jac_multiProd {d l : ℕ} (hd : 0 < d)
     (σ : IrrRep (GL (Fin d) k)) (hσ : IsCuspidal σ.ρ) :
     jhMult (piTensor (segTerm σ.ρ l))
       (jac (consecBlocks l d) (multiProd (consecBlocks l d) (segTerm σ.ρ l))) = 1 := by

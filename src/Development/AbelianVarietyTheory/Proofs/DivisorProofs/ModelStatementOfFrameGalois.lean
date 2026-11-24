@@ -1260,7 +1260,7 @@ theorem comp_rowAct_transvection {O : Type} [CommRing O] {N : ℕ} (a b : Fin N)
           · subst hcb; simp [hca]; omega
           · simp [hca, hcb]
       · have h0 : rowDiv O a b 1 h = 0 :=
-          eq_zero_of_rowZ_neg _ _ hs b (by simp [Pi.single_apply, Ne.symm hab]; omega)
+          eq_zero_of_rowZ_neg _ _ hs b (by simp [Ne.symm hab]; omega)
         simp [h0]
     · rw [ite_eq_right hk1, ite_eq_right]
       intro he

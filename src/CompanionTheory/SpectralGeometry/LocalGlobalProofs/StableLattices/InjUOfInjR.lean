@@ -251,7 +251,7 @@ def SU (V : Type) [AddCommGroup V] [Module ℂ V] (lev : Fin n → ℕ) : Submod
 variable {lev : Fin n → ℕ} {x : Cn n V}
 
 theorem ann_mem (i : Pos n) (hx : x ∈ SU V lev) : ann i x ∈ SU V lev :=
-  fun A hA j hj => hx _ (CompanionTheory.D.LK.ann_ne hA).2 j (mem_insert_of_mem hj)
+  fun _ hA j hj => hx _ (CompanionTheory.D.LK.ann_ne hA).2 j (mem_insert_of_mem hj)
 
 theorem ann_zero {i : Pos n} (hi : ¬inU lev i) (hx : x ∈ SU V lev) : ann i x = 0 := by
   funext A

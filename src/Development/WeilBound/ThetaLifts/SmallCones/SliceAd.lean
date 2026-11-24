@@ -102,7 +102,7 @@ theorem sc_cont {Z : Type} [AddCommGroup Z] [Module ℂ Z] [TopologicalSpace Z] 
     Continuous (sc C p) := ((continuous_const (y := (C.toNNReal : ℝ))).mul h).congr fun f => by
   rw [sc, Seminorm.smul_apply, NNReal.smul_def, smul_eq_mul]; rfl
 
-theorem bd_P (m : ℕ) (f : SchwartzMap V ℂ) : Bd m f (2 ^ m * P V m f) := fun j hj x =>
+theorem bd_P (m : ℕ) (f : SchwartzMap V ℂ) : Bd m f (2 ^ m * P V m f) := fun _ hj x =>
   SchwartzMap.one_add_le_sup_seminorm_apply (𝕜 := ℂ) (m := (m, m)) le_rfl hj f x
 
 theorem Bd.nonneg {m : ℕ} {f : V → ℂ} {C : ℝ} (h : Bd m f C) : 0 ≤ C :=

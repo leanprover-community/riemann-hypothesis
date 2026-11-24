@@ -192,7 +192,7 @@ theorem extend (hU : IsOpen U) {s : Fin n → V n → ℂ} (k0 : Fin n)
             ∫⁻ y in {y | y ∈ U ∧ s k0 y ≠ 0}, integrand s ph t G y :=
           mul_le_mul (le_refl _) (lintegral_mono_set hAM) zero_le zero_le
       _ < ⊤ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top hI
-  obtain ⟨G', hG'd, hG'eq⟩ := HE.ext_glue hU (s k0) G (hs k0) hgn hG hloc
+  obtain ⟨G', hG'd, hG'eq⟩ := HE.ext_glue (s k0) G (hs k0) hgn hG hloc
   refine ⟨G', hG'd, hG'eq, ?_⟩
   have hnull : volume {y | y ∈ U ∧ s k0 y = 0} = 0 := HE.zeros_null hU (hs k0) hgn
   have hae : (U : Set (V n)) =ᵐ[volume] {y | y ∈ U ∧ s k0 y ≠ 0} := by
@@ -559,9 +559,9 @@ theorem Wfree_rmul (hN : NfacRmulStatement (E := E)) {x b : Frame X.Ψ r} (hx : 
       Wfree Xa Fl G n x / ENNReal.ofReal (‖bchar (G + n • Xa.L) b‖ ^ 2) := by
   have hxb : rmul x b ∈ X.dom := OntoS.dom_rmul X hx hb
   have hw : ∀ k, X.pnorm Xa.L (Xa.w k) (rmul x b) = X.pnorm Xa.L (Xa.w k) x := fun k =>
-    GlobalTheory.Up.DivMetricPf.pnorm_rmul hN (isBddSec_of_mem_SSgt (Xa.w_van k)).1 hx hb
+    GlobalTheory.Up.DivMetricPf.pnorm_rmul (isBddSec_of_mem_SSgt (Xa.w_van k)).1 hx hb
   have hs : ∀ k, X.pnorm Xa.L (Fl.s k) (rmul x b) = X.pnorm Xa.L (Fl.s k) x := fun k =>
-    GlobalTheory.Up.DivMetricPf.pnorm_rmul hN (isBddSec_of_mem_SSgt (Fl.s_van k)).1 hx hb
+    GlobalTheory.Up.DivMetricPf.pnorm_rmul (isBddSec_of_mem_SSgt (Fl.s_van k)).1 hx hb
   have h1 := GlobalTheory.Up.DivMetricPf.exp_neg_phla hxb (G + n • Xa.L)
   have h2 := GlobalTheory.Up.DivMetricPf.exp_neg_phla hx (G + n • Xa.L)
   have h3 := hN r X (G + n • Xa.L) x hx b hb
@@ -605,8 +605,8 @@ theorem Wfree_lower (hn : 1 ≤ n) : WLower X (G + n • Xa.L) (Wfree Xa Fl G n)
     linarith
   refine ⟨C ^ (-(1 / 2 : ℝ)) * D ^ (-((n : ℝ) - 1 / 2)),
     mul_pos (Real.rpow_pos_of_pos hC _) (Real.rpow_pos_of_pos hD _), fun x hx => ?_⟩
-  have e1 := GlobalTheory.Up.DivMetricPf.ofReal_rpow_neg_le hC (hCw x hx) (by norm_num : (0 : ℝ) ≤ 1 / 2)
-  have e2 := GlobalTheory.Up.DivMetricPf.ofReal_rpow_neg_le hD (hDs x hx) ht
+  have e1 := GlobalTheory.Up.DivMetricPf.ofReal_rpow_neg_le (hCw x hx) (by norm_num : (0 : ℝ) ≤ 1 / 2)
+  have e2 := GlobalTheory.Up.DivMetricPf.ofReal_rpow_neg_le (hDs x hx) ht
   rw [Wfree_eq_pnorm Xa Fl G n hx]
   calc ENNReal.ofReal (C ^ (-(1 / 2 : ℝ)) * D ^ (-((n : ℝ) - 1 / 2)) * Real.exp (-phla X (G + n • Xa.L) x))
       = ENNReal.ofReal (Real.exp (-phla X (G + n • Xa.L) x)) * ENNReal.ofReal (C ^ (-(1 / 2 : ℝ))) *
@@ -1226,7 +1226,7 @@ theorem phiW_inv (hN : NfacRmulStatement (E := E)) (hN' : NfacLactStatement (E :
     (ReciprocityTheory.ChartRestriction.G.AR.Up.PairUnfoldPf.lact_mem_dom_iff (X := X) hγ (rmul x b)).2 hxb
   have inv : ∀ {la : Wt X.Ψ r} {P : Frame X.Ψ r → ℂ}, X.IsSec la P →
       X.pnorm la P (lact γ (rmul x b)) = X.pnorm la P x := fun hP =>
-    (GlobalTheory.Up.DivMetricPf.pnorm_lact hN' hP hγ hxb).trans (GlobalTheory.Up.DivMetricPf.pnorm_rmul hN hP hx hb)
+    (GlobalTheory.Up.DivMetricPf.pnorm_lact hN' hP hγ hxb).trans (GlobalTheory.Up.DivMetricPf.pnorm_rmul hP hx hb)
   have hw : ∑ k, X.pnorm Xa.L (Xa.w k) (lact γ (rmul x b)) ^ 2 = ∑ k, X.pnorm Xa.L (Xa.w k) x ^ 2 :=
     Finset.sum_congr rfl fun k _ => by rw [inv (Xa.w_van k).1.1.1]
   have hs : ∑ k, X.pnorm Xa.L (Fl.s k) (lact γ (rmul x b)) ^ 2 = ∑ k, X.pnorm Xa.L (Fl.s k) x ^ 2 :=

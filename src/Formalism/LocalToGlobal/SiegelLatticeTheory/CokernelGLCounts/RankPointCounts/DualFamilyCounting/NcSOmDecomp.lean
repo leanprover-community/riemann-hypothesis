@@ -45,7 +45,7 @@ theorem projV_ext {d : ℕ} (b : Module.Basis (Fin d) F E) {a M : ℕ} {x y : Fi
   have e2 := PI.VolStabS.AdmissibleCompactSupport.crd_projV b y v i j k
   rw [← e1, ← e2, h v]
 
-theorem finCpt_of_int (σ : E →ₐ[F] E) {M a : ℕ} (J : Matrix (Fin M) (Fin M) E)
+theorem finCpt_of_int {M a : ℕ}
     (ν : Measure (Fin a → Fin M → AF F ⊗[F] E))
     (key : ∀ (d : ℕ) (b : Module.Basis (Fin d) F E) (Φ : (Fin a → Fin M → AF F ⊗[F] E) → ℂ)
       (Φinf : (Fin a → Fin M → Ainf F ⊗[F] E) → ℂ) (Φf : (Fin a → Fin M → Af F ⊗[F] E) → ℂ)
@@ -150,7 +150,7 @@ theorem omega_decomposition_holds : OmDecomp := by
     fun Φf Φv hp => (hQ _ b 0 0 Φf Φv continuous_const HasCompactSupport.zero hp
       (fun X => by simp)).2.1
   have hνXfin : ∀ K, IsCompact K → νX K < ⊤ :=
-    fun K hK => finCpt_of_int σ J νX (fun d b Φ Φinf Φf Φv h1 h2 h3 h4 => (hQ d b Φ Φinf Φf Φv h1 h2 h3 h4).1) K hK
+    fun K hK => finCpt_of_int νX (fun d b Φ Φinf Φf Φv h1 h2 h3 h4 => (hQ d b Φ Φinf Φf Φv h1 h2 h3 h4).1) K hK
   rcases PI.VolStabS.RestrProdA.rpTail_holds F E σ hStd.1 n J hStd.2.1 hSWa hSWc a ha hn X0 hT hdet
       fibV _ b hSB hmult with ⟨v0, hv0⟩ | hconv
   ·
@@ -215,7 +215,7 @@ theorem omega_decomposition_holds : OmDecomp := by
         ← hHP.tprod_eq]
     have hνeq : νX = P.map Γ := by
       refine PI.VolStabS.DeterminantAdmissible.detAdm_gen νX (P.map Γ) hνXfin
-        (finCpt_of_int σ J (P.map Γ) fun d b Φ Φinf Φf Φv h1 h2 h3 h4 =>
+        (finCpt_of_int (P.map Γ) fun d b Φ Φinf Φf Φv h1 h2 h3 h4 =>
           (hν0 d b Φ Φinf Φf Φv h1 h2 h3 h4).1) ?_
       rintro Φ ⟨d', b', Φinf, Φf, Φv, hc1, hc2, hp, hpr⟩
       rw [(hQ d' b' Φ Φinf Φf Φv hc1 hc2 hp hpr).2.2, (hν0 d' b' Φ Φinf Φf Φv hc1 hc2 hp hpr).2]

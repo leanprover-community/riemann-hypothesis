@@ -111,7 +111,7 @@ variable {A : Over (Sp ℂ)} [GrpObj A] {L : LB A.left} {g : ℕ} (u : HolUnif A
 theorem ex_zero : u.ex 0 = 1 := (u.ker 0).mpr u.Λ.zero_mem
 
 def exHom : Multiplicative (Fin g → ℂ) →* (𝟙_ (Over (Sp ℂ)) ⟶ A) :=
-  MonoidHom.mk' (fun z => u.ex z.toAdd) fun z w => u.ex_add _ _
+  MonoidHom.mk' (fun z => u.ex z.toAdd) fun _ _ => u.ex_add _ _
 
 theorem ex_zsmul (n : ℤ) (z : Fin g → ℂ) : u.ex (n • z) = u.ex z ^ n := by
   have h := map_zpow (exHom u) (Multiplicative.ofAdd z) n
@@ -359,7 +359,7 @@ private theorem eq_zero_of_mulVec_ofRealVec_add_eq_zero (hp : (τ.map Complex.im
     Complex.zero_re, zero_add] at this
   simpa [ReciprocityTheory.PTheta.ofRealVec.eq_1] using this
 
-theorem per_lattice (hs : τ.IsSymm) (hp : (τ.map Complex.im).PosDef) :
+theorem per_lattice (hp : (τ.map Complex.im).PosDef) :
     Function.Injective (per τ) ∧ DiscreteTopology (LinearMap.range (per τ)) ∧
       Submodule.span ℝ (LinearMap.range (per τ) : Set (Fin h → ℂ)) = ⊤ := by
   obtain ⟨P, hP⟩ : ∃ P : (Fin h ⊕ Fin h → ℝ) →ₗ[ℝ] (Fin h → ℂ), ∀ g, P g =
@@ -424,7 +424,7 @@ theorem per_lattice (hs : τ.IsSymm) (hp : (τ.map Complex.im).PosDef) :
 theorem exists_form (hs : τ.IsSymm) (hp : (τ.map Complex.im).PosDef) :
     ∃ Ef : LinearMap.BilinForm ℤ (LinearMap.range (per τ)),
       (∀ a b : LinearMap.range (per τ), (Ef a b : ℝ) = (hermForm (imInv τ) a b).im) ∧ Function.Bijective Ef := by
-  have hinj := (per_lattice hs hp).1
+  have hinj := (per_lattice hp).1
   set e := LinearEquiv.ofInjective (per τ) hinj with he
   have hpe : ∀ a : LinearMap.range (per τ), per τ (e.symm a) = a := fun a => by
     rw [← LinearEquiv.ofInjective_apply (per τ) (h := hinj) (e.symm a), ← he, e.apply_symm_apply]
@@ -780,8 +780,8 @@ theorem sharpClass_of_unif : Out.Laws → Out.Laws2 → (∀ (S : Scheme.{0}) (P
   intro laws laws2 hc hT o _ g k J b em w w' h W a bas σ EF _ _ hw _ hEF t τ m Q Hm ⟨hs, hp⟩ hm hQ
     ⟨_, _, Qspan, _, _, hQim⟩ ⟨u, χ', hAH, hΛ, hχ, hpt, hact⟩
   obtain ⟨Ef₀, hEf₀, hbij⟩ := exists_form hs hp
-  obtain ⟨P₀, u₀, χ₀, hg, hΛ₀, hAH₀, -, -⟩ := principalTorus_algebraic h _ (imInv τ) Ef₀ (per_lattice hs hp).2.1
-    (per_lattice hs hp).2.2 (imInv_isHermitian hp) (imInv_pos hp) hEf₀ hbij
+  obtain ⟨P₀, u₀, χ₀, hg, hΛ₀, hAH₀, -, -⟩ := principalTorus_algebraic h _ (imInv τ) Ef₀ (per_lattice hp).2.1
+    (per_lattice hp).2.2 (imInv_isHermitian hp) (imInv_pos hp) hEf₀ hbij
   subst hg
   let R : Fin 8 → (Fin g → ℂ) →ₗ[ℂ] (Fin P₀.g → ℂ) := fun i => LinearMap.funLeft ℂ ℂ fun j => σ (i, j)
   have hRQ : ∀ i x, R i (Q x) = per τ (x i) := fun i x => funext fun j => hQ x i j

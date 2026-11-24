@@ -143,7 +143,7 @@ private theorem ckOn_mono_lemma {F : Type*} [NormedAddCommGroup F] [NormedSpace 
   obtain ⟨U, f', hU, hg, hc, he⟩ := hf g₀ hg₀
   exact ⟨U, f', hU, hg, hc.of_le (by exact_mod_cast h), he⟩
 
-theorem fold_trn (L : E →L[ℂ] E') {a b : Mat k r} (ha : a ∈ GV k r) (hb : b ∈ GV k r)
+theorem fold_trn (L : E →L[ℂ] E') {a b : Mat k r}
     (Eop : Fin (2 * r + k + 1) → Fin (2 * r + k + 1) → (Mat k r → E') → (Mat k r → E'))
     (Eop' : Fin (2 * r + k + 1) → Fin (2 * r + k + 1) → (Mat k r → E) → (Mat k r → E))
     (hI : ∀ c d (f : Mat k r → E), CkOn ((1 : ℕ) : ℕ∞) (GV k r) f →
@@ -203,7 +203,7 @@ theorem qminor_trn (L : E →L[ℂ] E') {a b : Mat k r} (ha : a ∈ GV k r) (hb 
           (fun t => Top F t.1 t.2.1 t.2.2) := by
     intro F; rw [List.map_ofFn]; rfl
   rw [e1, e2]
-  have := fold_trn L ha hb Eop Eop' hI hC hS'
+  have := fold_trn L Eop Eop' hI hC hS'
     (List.ofFn fun j : Fin t => ((u - ((j : ℕ) : ℂ)), p (σ j), q j)) f (by simpa using hf) g hg
   simpa [trn] using this
 

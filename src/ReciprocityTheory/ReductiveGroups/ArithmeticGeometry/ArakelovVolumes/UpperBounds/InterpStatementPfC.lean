@@ -39,14 +39,14 @@ theorem comp_symm_eqOn (f : V n → ℂ) {e : OpenPartialHomeomorph U (V n)}
   rw [symm_val he hy]
 
 theorem smooth_val {f : V n → ℂ} (hf : ContDiffOn ℝ ∞ f U) :
-    Smooth n (Subtype.val : U → V n) (fun x => f x.1) := fun e he =>
+    Smooth n (Subtype.val : U → V n) (fun x => f x.1) := fun _ he =>
   (hf.mono (target_sub he)).congr (comp_symm_eqOn f he)
 
 theorem smoothR_val {f : V n → ℝ} (hf : ContDiffOn ℝ ∞ f U) :
     SmoothR n (Subtype.val : U → V n) (fun x => f x.1) :=
   smooth_val (f := fun y => (f y : ℂ)) (Complex.ofRealCLM.contDiff.comp_contDiffOn hf)
 
-theorem eventually_target (hU : IsOpen U) {e : OpenPartialHomeomorph U (V n)}
+theorem eventually_target {e : OpenPartialHomeomorph U (V n)}
     (he : IsChart n (Subtype.val : U → V n) e) {x : U} (hx : x ∈ e.source) :
     e.target ∈ 𝓝 x.1 := by
   have hx' : x.1 ∈ e.target := by
@@ -59,14 +59,14 @@ theorem levi_val (hU : IsOpen U) (f : V n → ℝ) (x : U) (ξ : Fin n → ℂ) 
   obtain ⟨e, he, hx⟩ := exists_chart n (Subtype.val : U → V n) (val_lh hU) x
   rw [levi_eq_leviV n _ e he _ x hx ξ]
   exact leviV_congr ((comp_symm_eqOn (fun y => (f y : ℂ)) he).eventuallyEq_of_mem
-    (eventually_target hU he hx)) ξ
+    (eventually_target he hx)) ξ
 
 theorem db_val (hU : IsOpen U) (f : V n → ℂ) (j : Fin n) (x : U) :
     db n (Subtype.val : U → V n) j (fun y => f y.1) x = wdb n j f x.1 := by
   obtain ⟨e, he, hx⟩ := exists_chart n (Subtype.val : U → V n) (val_lh hU) x
   rw [db_eq_wdb n _ e he j _ x hx]
   have hfe : ((fun y : U => f y.1) ∘ e.symm) =ᶠ[𝓝 x.1] f :=
-    (comp_symm_eqOn f he).eventuallyEq_of_mem (eventually_target hU he hx)
+    (comp_symm_eqOn f he).eventuallyEq_of_mem (eventually_target he hx)
   simp only [wdb]
   rw [hfe.fderiv_eq]
 
@@ -81,7 +81,7 @@ theorem differentiableOn_extendByZero (hU : IsOpen U) {F : U → ℂ} (hF : Holo
     DifferentiableOn ℂ (ext0 F) U := by
   intro y hy
   obtain ⟨e, he, hx⟩ := exists_chart n (Subtype.val : U → V n) (val_lh hU) ⟨y, hy⟩
-  have hT : e.target ∈ 𝓝 y := eventually_target hU he hx
+  have hT : e.target ∈ 𝓝 y := eventually_target he hx
   have hd : DifferentiableAt ℂ (F ∘ e.symm) y := (hF e he).differentiableAt hT
   have heq : (F ∘ e.symm) =ᶠ[𝓝 y] ext0 F := by
     refine Filter.eventuallyEq_of_mem hT fun w hw => ?_

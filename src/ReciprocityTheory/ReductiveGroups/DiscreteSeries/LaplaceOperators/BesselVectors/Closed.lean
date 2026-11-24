@@ -166,7 +166,7 @@ theorem psi_eq_PsiM {ε : Fin n → Bool} {lam : Fin n → ℝ} {T : S7.KType ε
     {Ψ : Matrix (Fin n) (Fin n) ℂ → (T.V →L[ℂ] T.V)}
     (hK : ∀ (k₁ k₂ : S7.KG ε) (g : Matrix (Fin n) (Fin n) ℂ), inUJ ε g →
       Ψ (S7.toMK k₁ * g * S7.toMK k₂) = T.op k₁ * Ψ g * T.op k₂)
-    {μ : Fin n → ℤ} (hμ : S7.IsMu lam μ)
+    {μ : Fin n → ℤ}
     (hF : ∀ X : Matrix (Fin n) (Fin n) ℂ, inP ε X →
       Ψ (NormedSpace.exp X) =
         ((Module.finrank ℂ T.V : ℂ) / ((S7.muK ε Set.univ).toReal : ℂ)) •
@@ -253,7 +253,7 @@ theorem sigZero (hAll : ∀ m : ℕ, S7.PsiAllStatement m) : Lap.SigZeroStatemen
     have h1 := T.w_norm
     rw [h0, norm_zero] at h1
     exact zero_ne_one h1
-  have hPsi := psi_eq_PsiM ha hμ (hF μ hμ)
+  have hPsi := psi_eq_PsiM ha (hF μ hμ)
   have hDS := isDS_sigLam hgap hP hv₀
   refine ⟨↥(Hlam ε Ψ T.w), inferInstance, inferInstance, inferInstance,
     fun g => sigLam ε Ψ T.w (P * g * P⁻¹), isDSHpk_of_isDS hPc hDS, isURepOn_UH_of hPc hDS.2.2.1, ?_⟩
@@ -282,7 +282,7 @@ theorem sigZero (hAll : ∀ m : ℕ, S7.PsiAllStatement m) : Lap.SigZeroStatemen
     rw [hz, norm_zero] at h1
     exact zero_ne_one h1
   have hc1 : ((‖uniformisationL2 ε Ψ T.w T.w‖ ^ 2 : ℝ) : ℂ) ≠ 0 :=
-    Complex.ofReal_ne_zero.2 (pow_ne_zero 2 (norm_ne_zero_iff.2 (datumEmbedding_highest_ne_zero hgap hP hv₀)))
+    Complex.ofReal_ne_zero.2 (pow_ne_zero 2 (norm_ne_zero_iff.2 (datumEmbedding_highest_ne_zero hP hv₀)))
   obtain ⟨C, hC⟩ := dec_gN_sigLam hgap hP hv₀ hq1 hdec v₁ v₁
   refine ⟨fun μG hμG => fdegB_of_isDS hPc hDS μG hμG,
     ⟨h / (8 * Real.sqrt (2 * (S7.q0 ε : ℝ))), C, hthr, fun g hg => ?_⟩,
@@ -496,7 +496,7 @@ theorem evalP : EvalPStatement := by
     Finset.prod_ne_zero_iff.mpr fun j _ => hfac j
   have hlv : l ⟨(v : D), hvS⟩ ≠ 0 := by
     rw [hl, hLdef]; exact hne
-  have hFE : IsGlRep (frameE Q E) := CapelliMinorRestriction.frameGl Q E hQQ' hQQ hE
+  have hFE : IsGlRep (frameE Q E) := CapelliMinorRestriction.frameGl Q E hQQ' hE
   have hRE : IsGlRep (CapelliMinorRestriction.resE (frameE Q E) S hSF) := CapelliMinorRestriction.isGlRep_resE (frameE Q E) S hSF hFE
   have hres : ∀ (R C : Fin (2 * r + k) → Fin (2 * r + k + 1)) (x : ℂ),
       l (Capelli.cminor (CapelliMinorRestriction.resE (frameE Q E) S hSF) R C x ⟨(v : D), hvS⟩) =
@@ -842,7 +842,7 @@ theorem k3V (n : ℕ) : QuotientHighestWeightTensorStandard n := by
     obtain ⟨z0', hz0W, hz00⟩ := hne
     have : FiniteDimensional ℂ (ncV ε W0 1) := finiteDimensional_ncV hW0.1 1
     have hfdW : FiniteDimensional ℂ (Wm ε EN W0) := Submodule.finiteDimensional_of_le Wm_le_ncV
-    have hWst : IsKStableSub ε (bAct EN 1) (Wm ε EN W0) := Wm_kStable hEN hUN hW0'
+    have hWst : IsKStableSub ε (bAct EN 1) (Wm ε EN W0) := Wm_kStable hEN hW0'
     have hT'st : IsKStableSub ε EN ((Wm ε EN W0).map (phi EN 1)) := by
       rintro a b hab _ ⟨z, hz, rfl⟩
       rw [← phi_bAct hEN 1 hab z]

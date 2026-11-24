@@ -351,7 +351,7 @@ theorem rel_of_torsion (ht : Γ.IsTorsionAlong G x N i) (hj : Γ.IsEmb (Γ.btOrd
         change (a ≫ y) ≫ Γ.G.hom = 𝟙 _
         rw [Category.assoc, y1, ha])) 1 (by
       rw [one_left_eq]
-      simp only [Over.homMk_left, Over.mk_hom, Category.id_comp, Category.assoc]
+      simp only [Over.homMk_left, Over.mk_hom, Category.assoc]
       rw [unit_i' Γ ht, y3]
       have := congrArg Over.Hom.left h1
       rw [one_left_eq, Over.comp_left] at this

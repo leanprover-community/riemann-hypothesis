@@ -71,7 +71,7 @@ private theorem pow_pow_dg_mul_eq_self (y : _root_.Formalism.CyclotomicNorms.Fba
 
 open Polynomial in
 variable {g : ℕ} [Fact g.Prime] in
-theorem _root_.GlobalTheory.GoodCharsCompare.exists_dg_mul {d : ℕ} (hd : 0 < d) {y : _root_.Formalism.CyclotomicNorms.Fbar g}
+theorem _root_.GlobalTheory.GoodCharsCompare.exists_dg_mul {d : ℕ} {y : _root_.Formalism.CyclotomicNorms.Fbar g}
     (hy : y ^ (g ^ d - 1) = 1) : ∃ k, d = _root_.GlobalTheory.GoodCharsCompare.dg y * k := by
   have hDpos := _root_.GlobalTheory.GoodCharsCompare.dg_pos y
   have hd' : y ^ g ^ d = y := _root_.GlobalTheory.GoodCharsCompare.pow_g_of hy

@@ -90,7 +90,7 @@ variable {D : D7} {L : SizeData₂ D} {hT : GatTies D} {Gi : G.Inst D L} {Gl : G
 
 theorem exists_basePlace_contains_every_chartLevelPrime {A : AdData t u μ St} {dtU : Formalism.L2.Herm.unitaryOneFiniteAdeles D.sp.cm →* D.Dt} {a : 𝓞 D.host.E} (H : AdTie A dtU a)
     (j : ℕ) (hj : j ≤ D.R.m) (P : t.Pr.vT (t.word u)) :
-    ∃ v : HeightOneSpectrum (𝓞 D.host.F), ∃ h : (((St j hj).T : ℕ) : 𝓞 D.host.F) ∈ v.asIdeal, IsOver v (seamP t.seam P.1) := by
+    ∃ v : HeightOneSpectrum (𝓞 D.host.F), ∃ _ : (((St j hj).T : ℕ) : 𝓞 D.host.F) ∈ v.asIdeal, IsOver v (seamP t.seam P.1) := by
   classical
   have hpi : t.Pr.piT (t.word u) ∈ P.1.asIdeal := by
     have h := P.2
@@ -117,7 +117,7 @@ theorem N_eq_latAdX {A : AdData t u μ St} {a : 𝓞 D.host.E} {j : ℕ} {hj : j
   show _ = latBack t.seam (latCo D.sp (gramN D j hj) (A.crd j hj) a y.1 ((St j hj).K β).lev.Lb)
   rw [← hq.lat, latBack_seam_lat]
 
-theorem ptAd_mul_lev_deco : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a =>
+theorem ptAd_mul_lev_deco : UnderTie (fun {D _ _ _ _ _ _ _ _ _ _ _ St} A _ a =>
     ∀ j (hj : j ≤ D.R.m) (β : (St j hj).Ch) (x x₁ : UA D j hj) (κ : ((St j hj).K β).lev.U), x₁.1 = x.1 * κ.1 →
     ∀ p p₁, IsPtAd A a j hj β x p → IsPtAd A a j hj β x₁ p₁ →
       p₁.deco.1.N = p.deco.1.N ∧ ∀ P w, p₁.deco.1.f P w = p.deco.1.f P w) := by
@@ -438,7 +438,7 @@ theorem conj_extE_cong {n c : ℕ} (j D : ℕ) (hjD : j + 1 ≤ D) (h : Sp E (n 
   exact smul_mem_locP (intAt_pow (intAt_nat _) d) hk
 
 theorem entry_cong {N : ℕ} (g : Sp E N ≃ₗ[E] Sp E N)
-    (hg : ∀ x ∈ stdAt E N P, ((qOf P : ℕ) : E)⁻¹ • (g x - x) ∈ stdAt E N P) (l i : ℕ) (hl : l < N) (hi : i < N) :
+    (hg : ∀ x ∈ stdAt E N P, ((qOf P : ℕ) : E)⁻¹ • (g x - x) ∈ stdAt E N P) (l i : ℕ) (hi : i < N) :
     IntAt P (Loc.atN (g (Loc.eN E N l)) i) ∧ redP P (Loc.atN (g (Loc.eN E N l)) i) = if i = l then 1 else 0 := by
   have hq := qOf_ne_zero (P := P)
   have he : Loc.eN E N l ∈ stdAt E N P := mem_stdAt.2 fun m => by
@@ -556,14 +556,14 @@ theorem cong_mem_prCat_twist : ∀ {X : Fields} {Pr : Primes X} {R : Ranks} {Ch 
     · intro s t
       have := s.2
       have := t.2
-      exact (entry_cong _ hg (R.k + j + t.1) (R.k + j + s.1) (by omega) (by omega)).1
+      exact (entry_cong _ hg (R.k + j + t.1) (R.k + j + s.1) (by omega)).1
     · ext s t
       have := s.2
       have := t.2
       rw [Matrix.map_apply, Matrix.one_apply]
       show redP P.1 (Loc.atN (((L.h j b P)⁻¹ * CongLevel.extE (cOf R j) C.1 * L.h j b P)
         (Loc.eN X.E (R.N j + cOf R j) (R.k + j + t.1))) (R.k + j + s.1)) = _
-      rw [(entry_cong _ hg (R.k + j + t.1) (R.k + j + s.1) (by omega) (by omega)).2]
+      rw [(entry_cong _ hg (R.k + j + t.1) (R.k + j + s.1) (by omega)).2]
       by_cases hst : s = t
       · subst hst
         simp
@@ -591,7 +591,7 @@ namespace GlobalTheory.MatFrames
 
 
 
-theorem frames_mat : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a =>
+theorem frames_mat : UnderTie (fun {D _ _ _ _ _ _ _ _ t _ μ St} A _ a =>
     ∀ j (hj : j < D.R.m), j ≤ t.m2 → ∀ (β : (St j hj.le).Ch) (x x₁ : UA D j hj.le) (κ : ((St j hj.le).K β).lev.U), x₁.1 = x.1 * κ.1 →
     ∀ p p₁, IsPtAd A a j hj.le β x p → IsPtAd A a j hj.le β x₁ p₁ →
     ∃ (k : GLQ t.X.E (D.R.N j) (SB t μ)) (c : SB t μ → t.X.Kˣ),
@@ -687,7 +687,7 @@ namespace GlobalTheory.TwV
 
 
 
-theorem levAt_mat : UnderTie (fun {D L hT Gi Gl Kc Y cX ex t u μ St} A dtU a =>
+theorem levAt_mat : UnderTie (fun {_ _ _ _ _ _ _ _ _ t u μ _} A dtU a =>
     PtEx A a → MuLaw t u μ dtU → ∀ i hi, i < t.m2 → PtAway A a i hi → LevAt A dtU a i hi) := by
   intro D L hT Gi Gl Kc Y cX ex t u μ St A dtU a hPin hTie hEx hMu i hi him _ β β' x x' x₁ x₁' κ κ' e1 e1' z
   have hm := m_eq t μ

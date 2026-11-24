@@ -110,7 +110,7 @@ theorem sumPl_twist_one {ι : Type} [Fintype ι] [DecidableEq ι] {P Q R S : ℕ
   simp only [sumPl, LinearMap.sum_apply, Finset.smul_sum, _root_.GlobalTheory.RealLift.atPl_tprod, _root_.GlobalTheory.RealLift.heisOp_twist_one]
   exact Finset.sum_congr rfl fun w _ => (PiTensorProduct.tprod ℂ).map_update_smul _ w Complex.I _
 
-theorem polRange_of (hL : ActsLaws) (_hD : DerEx) (hV : VacLine) : PolRange := by
+theorem polRange_of (hL : ActsLaws) (hV : VacLine) : PolRange := by
   apply GlobalTheory.RealLift.PolRangePf.polRange_of <;> assumption
 
 end PositivityTheory.ThKEnd.Comp.PR

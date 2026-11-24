@@ -196,7 +196,7 @@ theorem card_symIdx (n : ℕ) (mid : Prop) [Decidable mid] (s : Finset (Fin (n /
     Finset.card_map, hM]
   ring
 
-theorem symIdx_union (n a : ℕ) (ha : a ≤ n) (s : Finset (Fin (n / 2))) (hp : a % 2 + (n - a) % 2 = n % 2) :
+theorem symIdx_union (n a : ℕ) (s : Finset (Fin (n / 2))) (hp : a % 2 + (n - a) % 2 = n % 2) :
     symIdx n (a % 2 = 1) s ∪ symIdx n ((n - a) % 2 = 1) sᶜ = Finset.univ := by
   ext i
   have hlt := i.isLt
@@ -305,7 +305,7 @@ theorem combine_caseA_pf (w : Pl E) (hw : ¬ IsSplitAt w) (n a : ℕ) (ha : a �
   obtain ⟨_, _, hpar, h₁, h₂, hv₁, hv₂⟩ := hA
   obtain ⟨u₁, hQ₁, hu₁⟩ := prod_of_hasVals x _ (symIdx_rev n _ s) h₁ Q₁ hv₁
   obtain ⟨u₂, hQ₂, hu₂⟩ := prod_of_hasVals x _ (symIdx_rev n _ sᶜ) h₂ Q₂ hv₂
-  have hU := symIdx_union n a ha s hpar
+  have hU := symIdx_union n a s hpar
   set S₁ := symIdx n (a % 2 = 1) s with hS₁
   set S₂ := symIdx n ((n - a) % 2 = 1) sᶜ with hS₂
   have hD : Disjoint S₁ S₂ := by
@@ -335,7 +335,7 @@ theorem combine_caseA_pf (w : Pl E) (hw : ¬ IsSplitAt w) (n a : ℕ) (ha : a �
 
 theorem split_caseA_pf (w : Pl E) (hw : ¬ IsSplitAt w) (n a : ℕ) (ha : a ≤ n) (x : Fin n → ℤ) (hx : StrictAnti x)
     (Q₁ Q₂ : (w.adicCompletion E)[X]) (hm₁ : Q₁.Monic) (hm₂ : Q₂.Monic) (hd₁ : Q₁.natDegree = a)
-    (hd₂ : Q₂.natDegree = n - a) (hc₁ : IsCsr w Q₁) (hc₂ : IsCsr w Q₂) (hv : HasVals (Q₁ * Q₂) (wexp n (lOf x))) :
+    (hd₂ : Q₂.natDegree = n - a) (hc₁ : IsCsr w Q₁) (hv : HasVals (Q₁ * Q₂) (wexp n (lOf x))) :
     ∃ s, CaseA w n a x Q₁ Q₂ s := by
   obtain ⟨u, hP, hu⟩ := hv
   have hanti := wexp_strictAnti x hx

@@ -487,7 +487,7 @@ theorem conjugator_mem_unipotent (hA : Agree δ M p) (L U : Formalism.L2.SG.Pair
     g0 M δ hA L U hL hU ∈ UP p :=
   ⟨lOf_loUni M δ hA L U hL hU, ρOf_upUni M δ hA L U hL hU⟩
 
-theorem H_le_UP (X : MP p) : KP M p ⊓ StabX p X ≤ UP p := fun h hh =>
+theorem H_le_UP (X : MP p) : KP M p ⊓ StabX p X ≤ UP p := fun _ hh =>
   ⟨Formalism.L2.SG.Pf.ProdEP2Cut.loUni_of_int M hh.1.1, Formalism.L2.SG.Pf.ProdEP2Cut.upUni_of_int M hh.1.2⟩
 
 theorem XP_eq (hA : Agree δ M p) (L U : Formalism.L2.SG.PairVal.MatR D) (hL : IsLoUni L) (hU : IsUpUni U) :

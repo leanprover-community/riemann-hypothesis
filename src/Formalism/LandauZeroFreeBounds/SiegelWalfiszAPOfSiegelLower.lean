@@ -454,7 +454,7 @@ private theorem le_one_add_mul_log_one_add {h : ℝ} (hh : 0 ≤ h) : h ≤ (1 +
   have e : (1 + h) * (1 + h)⁻¹ = 1 := mul_inv_cancel₀ h1.ne'
   linarith [mul_le_mul_of_nonneg_left t h1.le]
 
-lemma abs_zero_term_second_difference_le {y h β : ℝ} (hy : 1 ≤ y) (hh : 0 < h) (_hh1 : h ≤ 1) (hβ1 : 1 / 2 ≤ β)
+lemma abs_zero_term_second_difference_le {y h β : ℝ} (hy : 1 ≤ y) (hh : 0 < h) (hβ1 : 1 / 2 ≤ β)
     (hβ2 : β < 1) :
     |(y * (1 + h)) * (y ^ β / (β * (β - 1))) - y * ((y * (1 + h)) ^ β / (β * (β - 1)))
         + y * h * (y ^ β / β)| ≤ 2 * y ^ 2 * h ^ 2 := by
@@ -663,7 +663,7 @@ lemma le_of_second_difference_bound {y c₀ C N eY ey h : ℝ} (hy : 2 ≤ y) (h
   refine le_of_mul_le_mul_left ?_ hP
   linarith
 
-lemma mul_le_of_log_bounds {y c₀ K lq : ℝ} (hy : 2 ≤ y) (hc0 : 0 < c₀) (hc01 : c₀ ≤ 1)
+lemma mul_le_of_log_bounds {y c₀ K lq : ℝ} (hy : 2 ≤ y) (hc01 : c₀ ≤ 1)
     (hK : K * Real.log 2 ≤ Real.log y) (hK0 : 0 ≤ K) (hlq0 : 0 ≤ lq)
     (hlq : lq ≤ c₀ / 4 * Real.sqrt (Real.log y)) :
     K * lq ≤ 16 * y * Real.exp (-(c₀ / 4) * Real.sqrt (Real.log y)) := by
@@ -795,7 +795,7 @@ lemma chebyshev_character_nonprincipal_bound {q : ℕ} [NeZero q] (χ : Dirichle
           apply Finset.sum_le_sum
           intro β hβB
           rw [Complex.norm_real, Real.norm_eq_abs]
-          exact abs_zero_term_second_difference_le (by linarith) hh0 hh1 (hβ β hβB).1 (hβ β hβB).2
+          exact abs_zero_term_second_difference_le (by linarith) hh0 (hβ β hβB).1 (hβ β hβB).2
       _ = (B.card : ℝ) * (2 * y ^ 2 * h ^ 2) := by rw [Finset.sum_const, nsmul_eq_mul]
       _ ≤ 1 * (2 * y ^ 2 * h ^ 2) := by
           apply mul_le_mul_of_nonneg_right _ (by positivity)
@@ -926,7 +926,7 @@ lemma chebyshev_principal_character_bound {q : ℕ} [NeZero q] {cg Kg c₀ y : �
   have hlq : Real.log q ≤ c₀ / 4 * Real.sqrt (Real.log y) := by
     have := Real.log_le_log (by linarith) hq
     rwa [Real.log_exp] at this
-  have hncb := mul_le_of_log_bounds hy hc0 hc01 hK (by positivity) hlq0 hlq
+  have hncb := mul_le_of_log_bounds hy hc01 hK (by positivity) hlq0 hlq
   have hnc0 : 0 ≤ nc := Finset.sum_nonneg fun n _ =>
     mul_nonneg vonMangoldt_nonneg (by split_ifs <;> norm_num)
   rw [hpsi]
@@ -1148,7 +1148,7 @@ lemma exceptional_zero_term_bound (x A q cE β : ℝ) (hx : 2 ≤ x) (hA : 0 < A
     have := mul_le_mul_of_nonneg_left hβ1 h6a.le; linarith
   linarith [h5, h6]
 
-lemma bounded_of_exp_sqrt_lt_pow (A c : ℝ) (hA : 0 < A) (hc : 0 < c) :
+lemma bounded_of_exp_sqrt_lt_pow (A c : ℝ) (hc : 0 < c) :
     ∃ U : ℝ, 0 ≤ U ∧ ∀ L : ℝ, 0 < L → Real.exp (c * Real.sqrt L) < L ^ A → L ≤ U := by
   have ho := (isLittleO_rpow_exp_pos_mul_atTop (2 * A) hc).comp_tendsto Real.tendsto_sqrt_atTop
   have hb := ho.bound (show (0:ℝ) < 1 / 2 by norm_num)
@@ -1173,7 +1173,7 @@ theorem siegel_walfisz_character_of : SiegelWalfiszOf := by
   have hc₁Z : c₁ ≤ cZ := min_le_left _ _
   obtain ⟨c, C, hc, hPC⟩ := hP c₁ hc₁0 hc₁20
   obtain ⟨cE, hcE, hEB⟩ := hE (1 / (2 * A)) (by positivity)
-  obtain ⟨U, hU0, hU⟩ := bounded_of_exp_sqrt_lt_pow A c hA hc
+  obtain ⟨U, hU0, hU⟩ := bounded_of_exp_sqrt_lt_pow A c hc
   set cf : ℝ := min c cE with hcf
   have hcf0 : 0 < cf := lt_min hc hcE
   have hK0 : 0 ≤ (U + 1) * Real.exp (cf * Real.sqrt U) :=
@@ -1540,7 +1540,7 @@ noncomputable section
 namespace Formalism.ZeroFreeDirichlet
 
 theorem perron_error_terms_sum_bound (C C₀ c₁ y T X L Pw Y ℓ : ℝ) (hc₁ : 0 < c₁) (hC : 0 ≤ C) (hC₀ : 0 ≤ C₀)
-    (hy0 : 0 < y) (hT1 : 1 ≤ T) (hTX : T * X = 1) (hL0 : 0 ≤ L) (hY : 0 ≤ Y)
+    (hy0 : 0 < y) (hT1 : 1 ≤ T) (hTX : T * X = 1) (hY : 0 ≤ Y)
     (hℓP : ℓ ≤ Pw) (hP1 : 1 ≤ Pw) (hL2P : L ^ 2 ≤ Pw) (hL3P : L ^ 3 ≤ Pw) (hLP : L ≤ Pw) :
     2 * Real.pi * ((ℓ + C₀) * (Real.exp 1 * y)) / T
         + (C * L ^ 2 + 1) * (Real.exp 1 * y) / T ^ 2 * 3
@@ -1743,7 +1743,7 @@ theorem smoothed_character_sum_of : SmoothChiOf := by
     linarith
   have hyσ0 : 0 ≤ y ^ σ₁ := Real.rpow_nonneg hy0.le _
   have hterms := perron_error_terms_sum_bound C C₀ c₁ y T X L ((s + 2) ^ 3) (y ^ σ₁) (Real.log y) hc₁ hC hC₀ hy0
-    hT1 hTX hL0 hyσ0 hℓP hP1 hL2P hL3P hLP
+    hT1 hTX hyσ0 hℓP hP1 hL2P hL3P hLP
   rw [← hAdef] at hterms
   have htot := hmain.trans hterms
   have hyX : 0 ≤ y * X := by positivity

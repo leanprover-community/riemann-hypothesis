@@ -735,7 +735,7 @@ theorem continuousOn_fibre_integral_of_subset : ∀ (V X Y : Type) [TopologicalS
     obtain ⟨M, hM⟩ := hD.exists_bound_of_continuousOn (hco.mono hDB)
     refine ⟨M.toNNReal, fun b hb => ?_⟩
     calc fib b C ≤ ∫⁻ v, ENNReal.ofReal (φ v) ∂(fib b) :=
-          GlobalTheory.CompanionTheory.SW.FibreFam.le_lintegral_bump _ hC h0 hone
+          GlobalTheory.CompanionTheory.SW.FibreFam.le_lintegral_bump _ hC hone
       _ = ENNReal.ofReal (∫ v, φ v ∂(fib b)) :=
           (ofReal_integral_eq_lintegral_ofReal (hi b (hDB hb))
             (Filter.Eventually.of_forall h0)).symm
@@ -1511,7 +1511,7 @@ theorem fibre_block_stages_free : ∀ (F E : Type) [Field F] [NumberField F] [Fi
   have hmT : fib (hermOf R σ _ hT') = m (hermOf R σ _ hT') :=
     _root_.GlobalTheory.CompanionTheory.SW.FibreUniq.fibreFamily_eq_inter _ _ _ (coordW R b lam (n + 1) (M + 1)) (coordHerm R σ b lam (n + 1))
       (gramR R σ (blockOne (algebraMap F E t) J)) g Subtype.val Subtype.val_injective hgc hg _ hfree
-      Set.univ B isOpen_univ hBo (Set.subset_univ _) m fib hm₀ hfib _ hTB
+      Set.univ B hBo (Set.subset_univ _) m fib hm₀ hfib _ hTB
   have hBa := hBorel (n + 1) (M + 1)
   have hBb := hBorel n M
   have hBc := hBorel 1 (M + 1)

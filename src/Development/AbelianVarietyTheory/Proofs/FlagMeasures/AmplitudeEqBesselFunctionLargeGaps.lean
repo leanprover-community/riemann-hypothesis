@@ -143,7 +143,7 @@ def flipRoot (p : Point ℂ (r + 1)) (q : rootPat p) : rootPat p :=
     simp only [permOf_symm, permOf_invol] at this ⊢
     exact ⟨this.2, this.1⟩⟩
 
-theorem flipRoot_invol (p : Point ℂ (r + 1)) : Function.Involutive (flipRoot p) := fun q =>
+theorem flipRoot_invol (p : Point ℂ (r + 1)) : Function.Involutive (flipRoot p) := fun _ =>
   Subtype.ext (Prod.ext (permOf_invol p _) (permOf_invol p _))
 
 theorem rootCoords_eq (z : Fin (2 * r + k + 1) → ℂ) (p : Point ℂ (r + 1)) (x : Mt k r) (q : rootPat p) :

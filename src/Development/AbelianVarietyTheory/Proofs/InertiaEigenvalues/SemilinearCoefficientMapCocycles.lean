@@ -88,8 +88,8 @@ variable {O K K' : Type} [CommRing O] [CommRing K] [CommRing K'] [Algebra O K] [
 
 def vecMap : (Fin r → K) →ₛₗ[(f : K →+* K')] (Fin r → K') where
   toFun m a := f (m a)
-  map_add' m m' := funext fun a => map_add f _ _
-  map_smul' c m := funext fun a => map_mul f _ _
+  map_add' _ _ := funext fun _ => map_add f _ _
+  map_smul' _ _ := funext fun _ => map_mul f _ _
 
 theorem vecMap_repOn {Γ : Type} [Group Γ] {r : ℕ} (ρ : Γ →* GL (Fin r) O) (g : Γ) (m : Fin r → K) :
     vecMap f r (repOn ρ (1 : Γ →* Kˣ) K g m) = repOn ρ (1 : Γ →* K'ˣ) K' g (vecMap f r m) := by

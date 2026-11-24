@@ -426,7 +426,7 @@ theorem indep_lead {L M ι : Type} [Field L] [AddCommGroup M] [Module L M] {w : 
 
 set_option synthInstance.maxHeartbeats 400000 in
 set_option maxHeartbeats 2000000 in
-theorem heights_from_jumps : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F), P5 D HW F := by
+theorem heights_from_jumps : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (_ : CmpOf D.loc D.locA HW F), P5 D HW F := by
   intro D HW F Cm l _ K s LL h T Mi hi hT hJ
   set W := (HW l).W K s LL h with hW
   let C := Cm l

@@ -440,7 +440,7 @@ theorem prW_tau_inv {z : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) {v : 
     (prW_tau hz.1 (hzz_ne hz) v ((C2.tauM k r z v)⁻¹ *ᵥ x)).symm
 
 theorem dframe_tau_inv (S : B.RealPlaceData k r Wp Wq) (ν' : Fin (2 * r + k + 1) → ℂ) (m₀ : B.Mat k r)
-    {γ : B.Mat k r} (hγ : γ ∈ B.GV k r) (hD : D.IsDFrame S ν' m₀ γ)
+    {γ : B.Mat k r} (hD : D.IsDFrame S ν' m₀ γ)
     {v u' : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ} (hv : v ∈ C2.UTset (r + 1)) (hu' : u' ∈ C2.UTset (r + 1)) :
     D.IsDFrame S ν' m₀ (C2.tauM k r S.z v * γ * (C2.tauM k r S.z' u')⁻¹) := by
   have hz : C2.StdZ k r S.z := ⟨S.z_mem, S.T_pos⟩

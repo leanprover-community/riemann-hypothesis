@@ -174,7 +174,7 @@ theorem Rep.single (anti : Antitone Fil) (exh : ∀ b, ∃ a, b ∈ Fil a)
   · rw [sub_zero]
     exact anti (by omega) ((pow_mul_mem_iff ht q e _).2 he)
 
-theorem Rep.conv (anti : Antitone Fil) (exh : ∀ b, ∃ a, b ∈ Fil a)
+theorem Rep.conv (anti : Antitone Fil)
     (mul : ∀ a b x y, x ∈ Fil a → y ∈ Fil b → x * y ∈ Fil (a + b))
     (ht : ∀ a b, t * b ∈ Fil (a + 1) ↔ b ∈ Fil a) (ι : LL → R) (hι : ∀ c, ι c ∈ Fil 0)
     (hp : ∀ c d, p (c • d) = ι c * p d) {e : PowerSeries LL} {ε : R}
@@ -254,7 +254,7 @@ theorem single_mem_iff {Fil : ℤ → Submodule K R} {t : R} (anti : Antitone Fi
     intro e a ha α
     have hv : ∀ j, ∀ r : ℤ, r < -(a : ℤ) → ex (nb j) r = 0 := fun j r hr => ha₀ j r (by omega)
     have := Rep.sum anti Finset.univ fun j =>
-      Rep.conv anti exh mul ht ι hι (hp α) (hev (e j)) (hv j) (hrep (nb j) a (hv j) α)
+      Rep.conv anti mul ht ι hι (hp α) (hev (e j)) (hv j) (hrep (nb j) a (hv j) α)
     convert this using 1
     rw [Finset.mul_sum]
     exact Finset.sum_congr rfl fun j _ => by ring

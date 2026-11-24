@@ -162,7 +162,7 @@ theorem exists_family_valuation_det_eq_one (hv : v.Integers R) (AA : HopfOrder (
       intro y
       simp only [hn_def]
       rw [map_prod, Finset.prod_congr rfl (fun k _ =>
-        valuation_det_cosetCoordinateMatrix_add hv AA K β hβ hAK G y k),
+        valuation_det_cosetCoordinateMatrix_add AA K β hβ G y k),
         Finset.prod_const, Finset.card_univ]
     have hDle : ∀ y, v (h3mm K β G y).det ≤ 1 := fun y =>
       valuation_det_le_one_of_entries_integral hv _ (fun i j =>

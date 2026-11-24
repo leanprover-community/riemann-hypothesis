@@ -112,7 +112,7 @@ theorem card_out_mem (𝔭 : Ideal (𝓞 F)) {j k : ℕ} (hjk : j ≤ k) :
 end MeanC
 
 theorem sum_nkCount (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F)
-    {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm) (hd : IsTotPosDef h) {L : Submodule (𝓞 K) V}
+    {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm) {L : Submodule (𝓞 K) V}
     (hL : Submodule.IsFullLattice K L) (hLi : Formalism.HermitianLatticesTheory.IsIntegralLat h L) {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal) (k : ℕ) :
     ∑ᶠ n' : 𝓞 F ⧸ 𝔭 ^ k, nkCount h L 𝔭 k (Quotient.out n') =
       Ideal.absNorm 𝔭 ^ (2 * finrank K V * k) := by
@@ -206,7 +206,7 @@ theorem tendsto_mean_alphaN (hK : Formalism.HermitianLatticesTheory.IsCMUnram K)
     letI := Fintype.ofFinite (𝓞 F ⧸ 𝔭 ^ k)
     have hsumr : ∑ n' : 𝓞 F ⧸ 𝔭 ^ k, (nkCount h L 𝔭 k (Quotient.out n') : ℝ) /
         (Ideal.absNorm 𝔭 : ℝ) ^ (k * (2 * finrank K V - 1)) = (Ideal.absNorm 𝔭 : ℝ) ^ k := by
-      have hS := sum_nkCount hK hF hs hd hL hLi h𝔭 k
+      have hS := sum_nkCount hK hF hs hL hLi h𝔭 k
       rw [finsum_eq_sum_of_fintype] at hS
       rw [← Finset.sum_div, ← Nat.cast_sum, hS]
       push_cast

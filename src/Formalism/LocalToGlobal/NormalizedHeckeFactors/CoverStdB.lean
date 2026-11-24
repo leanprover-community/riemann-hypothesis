@@ -163,7 +163,7 @@ namespace Formalism.L2
 variable {D : D7} {M : MtFam D}
 
 def GenOutBad (T : NormalizedLocalCompatibility D M) : Prop :=
-  ∀ j w i (h : i ∈ D.nd.locs j w) (v : PlE D.host) (k : ℕ) (s : SplitPlace D.host.E),
+  ∀ j w i (_ : i ∈ D.nd.locs j w) (v : PlE D.host) (k : ℕ) (s : SplitPlace D.host.E),
     GenAt D (D.what₂.places.resChar w) (T.B.Qc j w) v k → IsConjPl D.host v s.w → s.v ∉ badPl D i
 
 theorem hypOutside_transport {μ μ' : D.what₂.Tup} {j j' : ℕ} (hμ : μ = μ') (hj : j = j')

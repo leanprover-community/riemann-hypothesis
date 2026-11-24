@@ -604,7 +604,7 @@ theorem E_aT_right {r₂ : ℕ} (hr₂s : r₂ ≤ s) (t : ℝ) (m₁ : GA E r) 
     aT E (r + s) (r + r₂) t * (lev (Ad E) r s (m₁, m₂) * h) =
       aT E (r + s) r t * (lev (Ad E) r s (m₁, aT E s r₂ t * m₂) * h) := by
   have e1 : aT E (r + s) (r + r₂) t = lev (Ad E) r s (1, aT E s r₂ t) * aT E (r + s) r t := by
-    rw [lev_aT_right r s r₂ hr₂s, mul_assoc, ← aT_add, neg_add_cancel, aT_zero, mul_one]
+    rw [lev_aT_right r s r₂, mul_assoc, ← aT_add, neg_add_cancel, aT_zero, mul_one]
   have e2 : lev (Ad E) r s (m₁, aT E s r₂ t * m₂) = lev (Ad E) r s (1, aT E s r₂ t) * lev (Ad E) r s (m₁, m₂) := by
     rw [← map_mul, Prod.mk_mul_mk, one_mul]
   rw [e1, e2, (aT_comm_lev r s t _).symm]

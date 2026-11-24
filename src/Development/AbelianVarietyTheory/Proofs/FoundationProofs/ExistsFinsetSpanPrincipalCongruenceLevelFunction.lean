@@ -190,8 +190,7 @@ open Matrix in
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} in
 private lemma exists_differentiableOn_an_aeval_jK
     (X : _root_.GlobalTheory.KZ.Tower Ω ε)
-    (hj : ∃ φ : ℂ → ℂ, DifferentiableOn ℂ φ _root_.GlobalTheory.KZ.Hs ∧
-      X.an X.jK = (φ : _root_.GlobalTheory.KZ.Mero)) (q : Polynomial Ω) :
+    (q : Polynomial Ω) :
     ∃ φ : ℂ → ℂ, DifferentiableOn ℂ φ _root_.GlobalTheory.KZ.Hs ∧
       X.an (Polynomial.aeval X.jK q) = (φ : _root_.GlobalTheory.KZ.Mero) := by
   refine Polynomial.induction_on q ?_ ?_ ?_
@@ -405,7 +404,7 @@ private lemma mem_adjoin_jK_of_sl_invariant [IsAlgClosure ℚ Ω]
     rw [e, hexp, mul_zero]
   have hcK : ∀ i, ∃ φ : ℂ → ℂ, DifferentiableOn ℂ φ _root_.GlobalTheory.KZ.Hs ∧
       X.an (c i) = (φ : _root_.GlobalTheory.KZ.Mero) :=
-    fun i => exists_differentiableOn_an_aeval_jK X hj _
+    fun i => exists_differentiableOn_an_aeval_jK X _
   choose C hC hCe using hcK
   have hgerm : X.an (ℓ * h) ^ d + ∑ i ∈ Finset.range d,
       (C i : _root_.GlobalTheory.KZ.Mero) * X.an (ℓ * h) ^ i = 0 := by

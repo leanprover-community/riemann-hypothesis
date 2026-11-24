@@ -234,7 +234,7 @@ theorem back_line (H : Hyp ε S m A ν τ r Z M c₁ R₀ C) (hn : 0 < n) (j : F
     _ ≤ _ := mul_le_mul' le_rfl (setLIntegral_le_lintegral _ _)
 
 theorem line_est (hLC : LineChain) (H : Hyp ε S m A ν τ r Z M c₁ R₀ C) (hn : 0 < n) (s : ℝ) (hs : s ≤ 0) (hL : ∀ f ∈ S, LevelF ε f s)
-    (c'' : ℝ) (hc0 : 0 < c'') (hc1 : c'' ≤ 1) (j : Fin m) (hz : ∀ z ∈ Z j, z.re ≠ -(r j + s + c''))
+    (c'' : ℝ) (hc1 : c'' ≤ 1) (j : Fin m) (hz : ∀ z ∈ Z j, z.re ≠ -(r j + s + c''))
     (h : Matrix (Fin n) (Fin n) ℂ → ℂ) (hh : h ∈ S) :
     ∃ (Ψ : Matrix (Fin n) (Fin n) ℂ → ℝ≥0∞) (K : ℝ≥0∞), K ≠ ⊤ ∧ Measurable (fun g : S7.UJ ε => Ψ (S7.toM g)) ∧
       (∀ (g : S7.UJ ε) (k : S7.KG ε), Ψ (S7.toM g * S7.toMK k) = Ψ (S7.toM g)) ∧
@@ -431,7 +431,7 @@ theorem far_est (hLC : LineChain) (H : Hyp ε S m A ν τ r Z M c₁ R₀ C) (hn
       exact psiK_inv f w g k
     · rw [Set.indicator_of_notMem (fun h => hg (hmem.1 h)), Set.indicator_of_notMem hg]
   obtain ⟨T, Cf, hTS, hd⟩ := H.dom f hf
-  have hle := fun h (hh : h ∈ T) => line_est hLC H hn s hs hL c'' hc0 hc1 j hz h (hTS h hh)
+  have hle := fun h (hh : h ∈ T) => line_est hLC H hn s hs hL c'' hc1 j hz h (hTS h hh)
   choose! Ψ K hKT hΨm hΨK hΨi hΨae using hle
   set Kr : ℝ := C ^ (-s) * Real.exp (2 * c'') with hKr
   set Ψt : Matrix (Fin n) (Fin n) ℂ → ℝ≥0∞ := fun X => ∑ h ∈ T, Ψ h X with hΨt
@@ -560,7 +560,7 @@ theorem far_est (hLC : LineChain) (H : Hyp ε S m A ν τ r Z M c₁ R₀ C) (hn
   rw [e1, hform F hFm hFK]
   exact ENNReal.mul_lt_top hκT.lt_top hI
 
-theorem ball_est (hn : 0 < n) (f : Matrix (Fin n) (Fin n) ℂ → ℂ) (s w R₂ : ℝ) (hw : s ≤ w) (hR₂ : 1 ≤ R₂)
+theorem ball_est (hn : 0 < n) (f : Matrix (Fin n) (Fin n) ℂ → ℂ) (s w R₂ : ℝ) (hw : s ≤ w)
     (hf : LevelF ε f s) :
     ∫⁻ g : S7.UJ ε, {g | Formalism.REAL.hs (S7.toM g) ≤ R₂}.indicator
       (fun g => ‖f (S7.toM g)‖ₑ ^ 2 * ENNReal.ofReal (Formalism.REAL.hs (S7.toM g) ^ w)) g ∂Measure.haar < ⊤ := by
@@ -632,7 +632,7 @@ theorem step (hLC : LineChain) (H : Hyp ε S m A ν τ r Z M c₁ R₀ C) (hn : 
   unfold LevelF
   refine lt_of_le_of_lt (lintegral_mono hpt) ?_
   rw [lintegral_add_left hmball, lintegral_finsetSum _ hmfar]
-  refine ENNReal.add_lt_top.2 ⟨ball_est hn f s w R₂ hw1 hR₂1 (hL f hf), ?_⟩
+  refine ENNReal.add_lt_top.2 ⟨ball_est hn f s w R₂ hw1 (hL f hf), ?_⟩
   exact ENNReal.sum_lt_top.2 fun j _ => far_est hLC H hn s hs hL c'' hc0 hc1 j (hz j) (U j) (hUm j)
     (fun g k hg => hUK j g k hg) (hUτ j) R₂ hR₂1 hR₂' w hw1 hw2 f hf
 

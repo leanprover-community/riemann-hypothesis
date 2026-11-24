@@ -974,7 +974,7 @@ private theorem chartPullbackStalkMap_compat (k : Type u) [Field k] {X : Scheme.
 theorem stalkIdeal_comap_chartPullbackPoint_eq
     (k : Type u) [Field k] [CharZero k] {X : Scheme.{u}}
     (p : X ⟶ Spec (CommRingCat.of k)) [AlgebraicGeometry.Smooth p] [LocallyOfFiniteType p]
-    (I : X.IdealSheafData) {m : ℕ} (_hm : 1 ≤ m)
+    (I : X.IdealSheafData) {m : ℕ}
     (hinv : IsMaxContactInvariant k p I m)
     {U : X.Opens} (hU : IsAffineOpen U) {n : ℕ} (c₁ c₂ : EtaleChart p U n) (j : Fin n)
     (hcoord : ∀ i : Fin n, i ≠ j → c₁.coord i = c₂.coord i)
@@ -1245,8 +1245,7 @@ private theorem chartPullbackFstStalkMap_eq_snd_of_coord_eq_zero
 theorem fromSpecStalk_comp_subschemeι_chartPullback_eq
     (k : Type u) [Field k] [CharZero k] {X : Scheme.{u}}
     (p : X ⟶ Spec (CommRingCat.of k)) [AlgebraicGeometry.Smooth p] [LocallyOfFiniteType p]
-    (I : X.IdealSheafData) {m : ℕ} (_hm : 1 ≤ m)
-    (_hinv : IsMaxContactInvariant k p I m)
+    (I : X.IdealSheafData) {m : ℕ}
     {U : X.Opens} (hU : IsAffineOpen U) {n : ℕ} (c₁ c₂ : EtaleChart p U n) (j : Fin n)
     (hcoord : ∀ i : Fin n, i ≠ j → c₁.coord i = c₂.coord i)
     (x : X) (hx : x ∈ U)
@@ -1256,7 +1255,6 @@ theorem fromSpecStalk_comp_subschemeι_chartPullback_eq
       IsLocalRing.maximalIdeal ↑(X.presheaf.stalk x))
     (hg₂ : (X.presheaf.germ U x hx).hom (c₂.coord j) ∈
       IsLocalRing.maximalIdeal ↑(X.presheaf.stalk x))
-    (_hsupp : x ∈ (maxContactIdeal k p I m).support)
     [IsLocallyNoetherian (chartPullback c₁ c₂)]
     [IsLocallyNoetherian ((maxContactIdeal k p I m).comap (chartPullbackFst c₁ c₂)).subscheme]
     (h : ChartsAgreeAt c₁ c₂ x hx)
@@ -1344,7 +1342,7 @@ theorem exists_opens_chartPullback_eq_of_mem_maxContactIdeal
     chartsAgreeAt_of_coord_eq_of_germ_mem c₁ c₂ j x hx hcoord hg₁ hg₂
   have hst : stalkIdeal (I.comap (chartPullbackFst c₁ c₂)) (chartPullbackPoint c₁ c₂ x hx hagree) =
       stalkIdeal (I.comap (chartPullbackSnd c₁ c₂)) (chartPullbackPoint c₁ c₂ x hx hagree) :=
-    stalkIdeal_comap_chartPullbackPoint_eq k p I hm hinv hU c₁ c₂ j hcoord x hx hmem₁ hmem₂ hg₁ hg₂
+    stalkIdeal_comap_chartPullbackPoint_eq k p I hinv hU c₁ c₂ j hcoord x hx hmem₁ hmem₂ hg₁ hg₂
       hagree
   obtain ⟨W₁, hW₁mem, hW₁⟩ :=
     exists_opens_stalkIdeal_eq (I.comap (chartPullbackFst c₁ c₂)) (I.comap (chartPullbackSnd c₁ c₂))
@@ -1362,8 +1360,8 @@ theorem exists_opens_chartPullback_eq_of_mem_maxContactIdeal
     rw [Scheme.IdealSheafData.range_subschemeι]
     exact hsupp'
   obtain ⟨z, hz⟩ := hrange
-  have hmor := fromSpecStalk_comp_subschemeι_chartPullback_eq k p I hm hinv hU c₁ c₂ j hcoord x hx
-    hmem₁ hmem₂ hg₁ hg₂ hsupp hagree z hz
+  have hmor := fromSpecStalk_comp_subschemeι_chartPullback_eq k p I hU c₁ c₂ j hcoord x hx
+    hmem₁ hmem₂ hg₁ hg₂ hagree z hz
   obtain ⟨W', hzW', hW'⟩ :=
     AlgebraicGeometry.spread_out_unique_of_isGermInjective'
       (((maxContactIdeal k p I m).comap (chartPullbackFst c₁ c₂)).subschemeι ≫ chartPullbackFst c₁ c₂)

@@ -1279,7 +1279,7 @@ theorem relIndex_iSup_map_eq_pow : ∀ (K : Type) [Field K] [NumberField K] (W V
         by_cases h : b = a
         · subst h; simpa using hw
         · simp [h]
-      · rw [hΦ, Finset.sum_eq_single a (fun b _ hb => by simp [Pi.single_apply, hb]) (by simp)]
+      · rw [hΦ, Finset.sum_eq_single a (fun b _ hb => by simp [hb]) (by simp)]
         simp
   let Lp : Submodule (𝓞 K) (Fin p → W) := Submodule.pi Set.univ (fun _ => ℓ)
   let Np : Submodule (𝓞 K) (Fin p → W) := Submodule.pi Set.univ (fun _ => N)

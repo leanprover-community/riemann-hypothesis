@@ -378,7 +378,7 @@ theorem isometry_matrix (c : E ≃+* E) (J g : Matrix (Fin r) (Fin r) E)
 
 theorem maximal_isotropic_doubled (E : Type) [Field E] (c : E ≃+* E) (r : ℕ)
     (J : Matrix (Fin r) (Fin r) E) (hc : ∀ x, c (c x) = x) (hJ : J.det ≠ 0)
-    (_hJh : J.transpose.map c = J) (Y : Submodule E ((Fin r → E) × (Fin r → E)))
+    (Y : Submodule E ((Fin r → E) × (Fin r → E)))
     (hY : Module.finrank E Y = r)
     (hiso : ∀ y ∈ Y, ∀ y' ∈ Y, (fun i => c (y.1 i)) ⬝ᵥ J.mulVec y'.1 =
       (fun i => c (y.2 i)) ⬝ᵥ J.mulVec y'.2) :
@@ -648,7 +648,7 @@ theorem graphs : ∀ (D : D7) (W : HSp D), ∃ e : GQ W ≃ {Y : Lag W // Y.1.co
   have hsurj : Function.Surjective f := by
     rintro ⟨Y, hY⟩
     obtain ⟨g, hgU, hgY⟩ := ((GlobalTheory.Doubling.maximal_isotropic_doubled D.host.E starRingAut W.rank W.gram
-      (fun x => star_star x) (GlobalTheory.AutFunCounterexample.gram_det_ne W) (herm' W) Y.1 Y.2.1 Y.2.2).2.2).1 hY
+      (fun x => star_star x) (GlobalTheory.AutFunCounterexample.gram_det_ne W) Y.1 Y.2.1 Y.2.2).2.2).1 hY
     have hg : g ∈ Formalism.UG.UJ (D.sp.cm.sig : D.host.E →+* D.host.E) W.gram := hgU
     refine ⟨ofRat W g hg, Subtype.ext (Subtype.ext ?_)⟩
     have e1 : ratG W (ofRat W g hg) = g := bc_injective W ((mt_ratG W _).symm.trans rfl)

@@ -579,7 +579,7 @@ theorem prod_rows_pow_row_weight (d : Fin r → R) (m : Fin r × Fin n →₀ �
     Formalism.GradedWeylDivisibility.rowW, ← Finset.prod_pow_eq_pow_sum]
   rw [Finset.prod_comm]
   refine Finset.prod_congr rfl fun v _ => ?_
-  rw [Finset.prod_eq_single v.1 (fun b _ hb => by simp [Pi.single_apply, hb]) (by simp)]
+  rw [Finset.prod_eq_single v.1 (fun b _ hb => by simp [hb]) (by simp)]
   simp
 
 theorem row_action_diagonal_homogeneous (d : Fin r → R) (f : MvPolynomial (Fin r × Fin n) R) (μ : Fin r → ℕ)

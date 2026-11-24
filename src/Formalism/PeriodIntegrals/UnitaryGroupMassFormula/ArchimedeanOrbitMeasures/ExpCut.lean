@@ -150,7 +150,7 @@ theorem cayLiftU_of (h : CayPsiU) : CayLiftU := by
 
 theorem expProdU_of_psi (hC : CayProdU) (hP : CayPsiU) : ExpProdU := expProdU_of hC (cayLiftU_of hP)
 
-def psiE {n : ℕ} (ε : Fin n → Bool) (m h : Submodule ℝ (EuclideanSpace ℝ (Fin n × Fin n × Bool))) {ι η : Type}
+def psiE {n : ℕ} (m h : Submodule ℝ (EuclideanSpace ℝ (Fin n × Fin n × Bool))) {ι η : Type}
     [Fintype ι] [Fintype η] (L₀ : EuclideanSpace ℝ ι ≃ₗᵢ[ℝ] m) (L₁ : EuclideanSpace ℝ η ≃ₗᵢ[ℝ] h)
     (p : EuclideanSpace ℝ ι × EuclideanSpace ℝ η) : EuclideanSpace ℝ ι × EuclideanSpace ℝ η :=
   let M : Matrix (Fin n) (Fin n) ℂ := NormedSpace.exp (unrealify (L₀ p.1 : EuclideanSpace ℝ (Fin n × Fin n × Bool))) *
@@ -162,17 +162,17 @@ def psiE {n : ℕ} (ε : Fin n → Bool) (m h : Submodule ℝ (EuclideanSpace �
 def PsiSmoothU : Prop := ∀ (n : ℕ) (ε : Fin n → Bool) (m h : Submodule ℝ (EuclideanSpace ℝ (Fin n × Fin n × Bool))),
     m ⊔ h = gLie ε → (∀ x ∈ m, ∀ y ∈ h, inner ℝ x y = 0) →
     ∀ (ι η : Type) [Fintype ι] [Fintype η] (L₀ : EuclideanSpace ℝ ι ≃ₗᵢ[ℝ] m) (L₁ : EuclideanSpace ℝ η ≃ₗᵢ[ℝ] h),
-    ContDiffAt ℝ 1 (psiE ε m h L₀ L₁) 0 ∧ fderiv ℝ (psiE ε m h L₀ L₁) 0 = ContinuousLinearMap.id ℝ _
+    ContDiffAt ℝ 1 (psiE m h L₀ L₁) 0 ∧ fderiv ℝ (psiE m h L₀ L₁) 0 = ContinuousLinearMap.id ℝ _
 
 def PsiMeasU : Prop := ∀ (n : ℕ) (ε : Fin n → Bool) (m h : Submodule ℝ (EuclideanSpace ℝ (Fin n × Fin n × Bool)))
     (ι η : Type) [Fintype ι] [Fintype η] (L₀ : EuclideanSpace ℝ ι ≃ₗᵢ[ℝ] m) (L₁ : EuclideanSpace ℝ η ≃ₗᵢ[ℝ] h),
-    Measurable (psiE ε m h L₀ L₁)
+    Measurable (psiE m h L₀ L₁)
 
 def PsiInvU : Prop := ∀ (n : ℕ) (ε : Fin n → Bool) (m h : Submodule ℝ (EuclideanSpace ℝ (Fin n × Fin n × Bool))),
     m ⊔ h = gLie ε → (∀ x ∈ m, ∀ y ∈ h, inner ℝ x y = 0) →
     ∀ (ι η : Type) [Fintype ι] [Fintype η] (L₀ : EuclideanSpace ℝ ι ≃ₗᵢ[ℝ] m) (L₁ : EuclideanSpace ℝ η ≃ₗᵢ[ℝ] h),
-    ∀ᶠ p in 𝓝 0, cayR ε ((L₀ (psiE ε m h L₀ L₁ p).1 : EuclideanSpace ℝ (Fin n × Fin n × Bool)) +
-          (L₁ (psiE ε m h L₀ L₁ p).2 : EuclideanSpace ℝ (Fin n × Fin n × Bool))) =
+    ∀ᶠ p in 𝓝 0, cayR ε ((L₀ (psiE m h L₀ L₁ p).1 : EuclideanSpace ℝ (Fin n × Fin n × Bool)) +
+          (L₁ (psiE m h L₀ L₁ p).2 : EuclideanSpace ℝ (Fin n × Fin n × Bool))) =
         expR ε (L₀ p.1 : EuclideanSpace ℝ (Fin n × Fin n × Bool)) *
           expR ε (L₁ p.2 : EuclideanSpace ℝ (Fin n × Fin n × Bool))
 
@@ -182,7 +182,7 @@ theorem unrealify_zero' (n : ℕ) : unrealify (0 : EuclideanSpace ℝ (Fin n × 
 
 theorem psiE_zero {n : ℕ} (ε : Fin n → Bool) (m h : Submodule ℝ (EuclideanSpace ℝ (Fin n × Fin n × Bool)))
     {ι η : Type} [Fintype ι] [Fintype η] (L₀ : EuclideanSpace ℝ ι ≃ₗᵢ[ℝ] m) (L₁ : EuclideanSpace ℝ η ≃ₗᵢ[ℝ] h) :
-    psiE ε m h L₀ L₁ 0 = 0 := by
+    psiE m h L₀ L₁ 0 = 0 := by
   have hr : realifyFun (0 : Matrix (Fin n) (Fin n) ℂ) = 0 := by
     funext q
     simp [realifyFun]
@@ -191,7 +191,7 @@ theorem psiE_zero {n : ℕ} (ε : Fin n → Bool) (m h : Submodule ℝ (Euclidea
 theorem cayPsiU_of (hS : PsiSmoothU) (hM : PsiMeasU) (hI : PsiInvU) : CayPsiU := by
   intro n ε m h hmh horth ι η _ _ L₀ L₁
   obtain ⟨hc, hd⟩ := hS n ε m h hmh horth ι η L₀ L₁
-  exact ⟨psiE ε m h L₀ L₁, hc, psiE_zero ε m h L₀ L₁, hd, hM n ε m h ι η L₀ L₁,
+  exact ⟨psiE m h L₀ L₁, hc, psiE_zero ε m h L₀ L₁, hd, hM n ε m h ι η L₀ L₁,
     hI n ε m h hmh horth ι η L₀ L₁⟩
 
 theorem expProdU_of_parts (hC : CayProdU) (hS : PsiSmoothU) (hM : PsiMeasU) (hI : PsiInvU) : ExpProdU :=

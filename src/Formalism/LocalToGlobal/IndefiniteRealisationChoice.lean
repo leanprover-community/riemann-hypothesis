@@ -116,7 +116,7 @@ structure KsChoice (D : D7) where
 attribute [instance] KsChoice.f KsChoice.n KsChoice.a
 
 abbrev SelK (𝒜 : FamClass) (sel : Formalism.L2.TSel 𝒜) :=
-  ∀ {eps : ℝ} (Fm : FamP eps) (hc : 𝒜 Fm) (x : ℝ) (hx : Fm.x1 < x) (h : (sel Fm hc).1 ≤ x) (i : Fm.Ix x), KsChoice (Fm.D x i)
+  ∀ {eps : ℝ} (Fm : FamP eps) (hc : 𝒜 Fm) (x : ℝ) (_ : Fm.x1 < x) (_ : (sel Fm hc).1 ≤ x) (i : Fm.Ix x), KsChoice (Fm.D x i)
 
 abbrev IndefiniteRealisationChoice (𝒜 : FamClass) (sel : Formalism.L2.TSel 𝒜) (selS : SelS 𝒜 sel) (selP : BaseLevelCompatibleSelection 𝒜 sel) (selDH : SelDH 𝒜 sel)
     (selC : ColumnCompatibleSelection 𝒜 sel selP) (selK : SelK 𝒜 sel) :=

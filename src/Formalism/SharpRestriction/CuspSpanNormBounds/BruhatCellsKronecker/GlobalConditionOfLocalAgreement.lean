@@ -232,7 +232,7 @@ theorem scal_iff (S : Set A.Ep) (hS : ∀ b ∈ 𝒪[A.Fp], ∀ z ∈ S, algebra
   exact ⟨key b b' hb hv, key b' b hb' hv.symm⟩
 
 theorem O_scal : ∀ b ∈ 𝒪[A.Fp], ∀ z ∈ (A.O : Set A.Ep), algebraMap A.Fp A.Ep b * z ∈ (A.O : Set A.Ep) :=
-  fun b hb z hz => A.O.mul_mem (alg_mem_O A b hb) hz
+  fun b hb _ hz => A.O.mul_mem (alg_mem_O A b hb) hz
 
 theorem ιE_alg (a : F) : A.ιE (algebraMap F E a) = algebraMap A.Fp A.Ep (A.ιF a) := A.compat a
 

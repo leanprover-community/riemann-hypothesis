@@ -76,7 +76,7 @@ private theorem v_natCast_nonpos_of_not_dvd (V : VF C) (n : ℕ) (hn : ¬ V.l �
   rw [← h1, AddValuation.map_one] at this
   exact lt_irrefl _ this
 
-theorem frobX_of {f : PS C 3 dd} (hi : IntS V f) (hd : FrobD V f) : FrobX V f := by
+theorem frobX_of {f : PS C 3 dd} (hd : FrobD V f) : FrobX V f := by
   unfold FrobD MaximalIdealCongruence.MMS at hd
   rintro p ⟨j, hj⟩
   have hp0 : p ((0 : Fin 3), j) ≠ 0 := by

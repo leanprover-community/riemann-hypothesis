@@ -56,7 +56,7 @@ namespace GlobalTheory.IwConst
 theorem tendsto_scale_div_pow (b : ℝ → ENNReal) (d : ℕ) (v : ENNReal) (s : ℝ) (hs : 0 < s)
     (c : ℝ) (hc : 0 ≤ c)
     (hb : Tendsto (fun r : ℝ => b r / ENNReal.ofReal (r ^ d)) (𝓝[>] (0 : ℝ)) (𝓝 v))
-    (hv : v ≠ ⊤) :
+    :
     Tendsto (fun r : ℝ => ENNReal.ofReal c * b (s * r) / ENNReal.ofReal (r ^ d)) (𝓝[>] (0 : ℝ))
       (𝓝 (ENNReal.ofReal (c * s ^ d) * v)) := by
   have hs' : Tendsto (fun r : ℝ => s * r) (𝓝[>] (0 : ℝ)) (𝓝[>] (0 : ℝ)) := by
@@ -107,7 +107,7 @@ theorem tendsto_div_pow_of_squeeze (f : ℝ → ENNReal) (d : ℕ) (v : ENNReal)
     have h1η : (0 : ℝ) < 1 + η := by linarith
     obtain ⟨b, hb, hev⟩ := h η hη0
     have hL := tendsto_scale_div_pow b d v ((1 + η)⁻¹) (inv_pos.2 h1η) ((1 + η)⁻¹)
-      (inv_nonneg.2 h1η.le) hb hv
+      (inv_nonneg.2 h1η.le) hb
     filter_upwards [(tendsto_order.1 hL).1 a hη, hev] with r hr1 hr2
     refine lt_of_lt_of_le hr1 (ENNReal.div_le_div_right ?_ _)
     calc ENNReal.ofReal ((1 + η)⁻¹) * b ((1 + η)⁻¹ * r)
@@ -124,7 +124,7 @@ theorem tendsto_div_pow_of_squeeze (f : ℝ → ENNReal) (d : ℕ) (v : ENNReal)
     obtain ⟨η, hη, hηpos⟩ := ((tendsto_order.1 hT).2 a ha |>.and self_mem_nhdsWithin).exists
     have hη0 : (0 : ℝ) < η := hηpos
     obtain ⟨b, hb, hev⟩ := h η hη0
-    have hU := tendsto_scale_div_pow b d v (1 + η) (by linarith) (1 + η) (by linarith) hb hv
+    have hU := tendsto_scale_div_pow b d v (1 + η) (by linarith) (1 + η) (by linarith) hb
     filter_upwards [(tendsto_order.1 hU).2 a hη, hev] with r hr1 hr2
     exact lt_of_le_of_lt (ENNReal.div_le_div_right hr2.2 _) hr1
 

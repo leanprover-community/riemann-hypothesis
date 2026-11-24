@@ -390,7 +390,7 @@ private theorem eword_congr_on_UJset {ε : Fin n → Bool} {f f' : Matrix (Fin n
         Complex.I * Rd (cpart2 ε (Matrix.single p.1 p.2 1)) (Eword ε w f') g
     rw [key _ (cpartMem n ε _).1, key _ (cpartMem n ε _).2.1]
 
-lemma gelf_congr {ε : Fin n → Bool} {f f' : Matrix (Fin n) (Fin n) ℂ → ℂ} (hf : SmoothOnG ε f)
+lemma gelf_congr {ε : Fin n → Bool} {f f' : Matrix (Fin n) (Fin n) ℂ → ℂ}
     (h : ∀ g ∈ UJset ε, f g = f' g) (m : ℕ) {g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UJset ε) :
     gelf ε m f g = gelf ε m f' g := by
   unfold gelf
@@ -481,7 +481,7 @@ lemma compress_of_formula (hF : FormulaGap) {ε : Fin n → Bool} {lam : Fin n �
     linarith
   have hreal : star (Phi lam ((toMK k')ᴴ * NormedSpace.exp X * toMK k')) =
       Phi lam ((toMK k')ᴴ * NormedSpace.exp X * toMK k') :=
-    Complex.ext (by simp [Complex.star_def]) (by simp [Complex.star_def, him])
+    Complex.ext (by simp [Complex.star_def]) (by simp [him])
   rw [hreal]
 
 lemma two_mul_lt_gap {ε : Fin n → Bool} {lam : Fin n → ℝ} {h : ℝ} (hgap : GapAtLeast ε lam h)
@@ -542,7 +542,7 @@ theorem lowChar_of_formula (hF : FormulaGap) (n : ℕ) (ε : Fin n → Bool) (la
   have hcm : ∀ m, c m = gelfVal (fun a => (lam a : ℂ)) (m + 1) := by
     intro m
     have h1 := (hc w hwS w).2 m 1 h1UJ
-    have h2 := gelf_congr hfs (fun g hg => hcomp g hg ⟨w, hwS⟩ ⟨w, hwS⟩) m h1UJ
+    have h2 := gelf_congr (fun g hg => hcomp g hg ⟨w, hwS⟩ ⟨w, hwS⟩) m h1UJ
     have h3 := hEC.2.2 m 1 h1UJ
     have h4 := hcomp 1 h1UJ ⟨w, hwS⟩ ⟨w, hwS⟩
     have h5 : c m * ⟪w, σ 1 w⟫_ℂ = gelfVal (fun a => -(-(lam a : ℂ))) (m + 1) * ⟪w, σ 1 w⟫_ℂ := by

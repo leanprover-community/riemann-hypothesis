@@ -286,8 +286,8 @@ open GlobalTheory.CuspRep GlobalTheory.WeilDeligne GlobalTheory.Pst GlobalTheory
 open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.SplitWeil ValuativeRel Matrix UpperTheory.TNZ
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 namespace UpperTheory.NonzeroTypeTheory
-abbrev _root_.UpperTheory.NonzeroTypeTheory.typeData_of_s_ty : Prop := ∀ (P : _root_.GlobalTheory.Mem.LiteralAutomorphy.LiteratureRankNHypothesis) (a1 : ArtinTransferDecompositionCharacter) (a3 : LocalArtinCharacterProduct) (a4 : FiniteDimensionalTranslationCoordinates) (a5 : TwistedSphericalRepresentative) (a6 : DistinctOnUnitsDistinctOnInertia)
-    (a7 : SmoothVectorsFixedByCongruence) (gm : _root_.UpperTheory.TNZ.GMainAlt) (ge : GEmb) (gi : ArtinInertiaProp) (cm : _root_.GlobalTheory.Mem.LiteralAutomorphy.LiteratureRankNHypothesis → Need_CMain) (cp : Need_CProps) (gr : Need_Grp),
+abbrev _root_.UpperTheory.NonzeroTypeTheory.typeData_of_s_ty : Prop := ∀ (_ : _root_.GlobalTheory.Mem.LiteralAutomorphy.LiteratureRankNHypothesis) (_ : ArtinTransferDecompositionCharacter) (_ : LocalArtinCharacterProduct) (_ : FiniteDimensionalTranslationCoordinates) (_ : TwistedSphericalRepresentative) (_ : DistinctOnUnitsDistinctOnInertia)
+    (_ : SmoothVectorsFixedByCongruence) (_ : _root_.UpperTheory.TNZ.GMainAlt) (_ : GEmb) (_ : ArtinInertiaProp) (_ : _root_.GlobalTheory.Mem.LiteralAutomorphy.LiteratureRankNHypothesis → Need_CMain) (_ : Need_CProps) (_ : Need_Grp),
     _root_.UpperTheory.NonzeroTypeTheory.TypeDataAlt
 end UpperTheory.NonzeroTypeTheory
 end
@@ -660,9 +660,9 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w}
   {rc : IrrGL (k := w.adicCompletion E) → WD h}
-abbrev _root_.GlobalTheory.LocLanglands.IsRec.langlandsQuotient_s_ty : Prop := ∀ {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w} {rc : IrrGL (k := w.adicCompletion E) → WD h} (H : _root_.UpperTheory.Zero.LLC.IsRecT h rc) {𝔪 : Multiset (Segment (w.adicCompletion E))} {s N : ℕ}
-    {δ : Fin s → IrrGL (k := w.adicCompletion E)} (hδ : LFactors 𝔪 δ) (hd : ∑ i, (δ i).1 = N)
-    {π : IrrRep (GL (Fin N) (w.adicCompletion E))} (hπ : IsCosocle π.ρ (prodIrr δ hd)),
+abbrev _root_.GlobalTheory.LocLanglands.IsRec.langlandsQuotient_s_ty : Prop := ∀ {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω] {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w} {rc : IrrGL (k := w.adicCompletion E) → WD h} (_ : _root_.UpperTheory.Zero.LLC.IsRecT h rc) {𝔪 : Multiset (Segment (w.adicCompletion E))} {s N : ℕ}
+    {δ : Fin s → IrrGL (k := w.adicCompletion E)} (_ : LFactors 𝔪 δ) (hd : ∑ i, (δ i).1 = N)
+    {π : IrrRep (GL (Fin N) (w.adicCompletion E))} (_ : IsCosocle π.ρ (prodIrr δ hd)),
     rc (cls π) = sumList (List.ofFn fun i => rc (δ i))
 end GlobalTheory.LocLanglands
 end
@@ -812,10 +812,10 @@ private theorem smInd_conj {γ : ℂ ≃+* ℂ} {P : Subgroup G} {σ : Represent
     {j : V ≃+ W} (h : Cj γ σ τ j) : ∃ F, Cj γ (smInd P σ) (smInd P τ) F :=
   ⟨{ toFun := indMap h
      invFun := indMap h.symm
-     left_inv := fun φ => Subtype.ext (Subtype.ext (funext fun x => j.symm_apply_apply _))
-     right_inv := fun φ => Subtype.ext (Subtype.ext (funext fun x => j.apply_symm_apply _))
-     map_add' := fun φ ψ => Subtype.ext (Subtype.ext (funext fun x => map_add j _ _)) },
-   fun z φ => Subtype.ext (Subtype.ext (funext fun x => h.1 _ _)), fun g φ => rfl⟩
+     left_inv := fun _ => Subtype.ext (Subtype.ext (funext fun _ => j.symm_apply_apply _))
+     right_inv := fun _ => Subtype.ext (Subtype.ext (funext fun _ => j.apply_symm_apply _))
+     map_add' := fun _ _ => Subtype.ext (Subtype.ext (funext fun _ => map_add j _ _)) },
+   fun _ _ => Subtype.ext (Subtype.ext (funext fun _ => h.1 _ _)), fun _ _ => rfl⟩
 end General
 section Loc
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
@@ -1096,7 +1096,7 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 namespace UpperTheory.V.Z.Desc.P
 variable {E Ω : Type} [Field E] [NumberField E] [Field Ω] [Algebra E Ω] [IsAlgClosure E Ω]
   {A : ValuationSubring Ω} {w : HeightOneSpectrum (𝓞 E)} {h : IsPlaceOver A w} {rc : IrrGL (k := w.adicCompletion E) → WD h}
-theorem toTL'_alt (_N : _root_.GlobalTheory.Mem.LiteralAutomorphy.LiteratureRankNHypothesis) (k : IsRecT h rc) : IsRecT h rc := k
+theorem toTL'_alt (k : IsRecT h rc) : IsRecT h rc := k
 end UpperTheory.V.Z.Desc.P
 end
 end -- clump:auto
@@ -1157,7 +1157,7 @@ private theorem te_loc (P : _root_.GlobalTheory.Mem.LiteralAutomorphy.Literature
       ∀ π : SmIrr (GLw n w), (∃ y : Fin m → π.V, y ≠ 0 ∧ ∀ (k : KO (w.adicCompletion L) (Fin n)) i,
         ∑ a, algebraMap O ℂ (τ k i a) • π.ρ k (y a) = y i) ↔
         ∀ rc, _root_.UpperTheory.Zero.LLC.IsRecT h rc → IsTypeWD h (fun i => (χ i).comp (Subgroup.inclusion (Ine_le_Dec A))) (rc (algNorm π)) := by
-  obtain ⟨rc, hrc⟩ := _root_.UpperTheory.V.Z.Win.exRec'_alt P h
+  obtain ⟨rc, hrc⟩ := _root_.UpperTheory.V.Z.Win.exRec'_alt h
   have hsm : ∀ i, IsSmooth (h := h) ((χ i).comp (Subgroup.inclusion (Weil_le_Dec h))) := fun i =>
     (ho i).preimage (f := Subgroup.inclusion (Ine_le_Dec (F := L) A)) (continuous_inclusion (Ine_le_Dec (F := L) A))
   have hT := NZ L Ω A w h rc hrc n χ ho
@@ -1176,7 +1176,7 @@ private theorem te_loc (P : _root_.GlobalTheory.Mem.LiteralAutomorphy.Literature
         rwa [algNorm, H.nu_eq]
       have hg : UpperTheory.Zero.LLC.Good (algNorm π) := by
         obtain ⟨b, hb, -, hχ⟩ := h1
-        obtain ⟨z, hz, hc⟩ := UpperTheory.Zero.LLC.abConv L Ω A w h rc (_root_.UpperTheory.V.Z.Desc.P.toTL'_alt P hrc) (algNorm π)
+        obtain ⟨z, hz, hc⟩ := UpperTheory.Zero.LLC.abConv L Ω A w h rc (_root_.UpperTheory.V.Z.Desc.P.toTL'_alt hrc) (algNorm π)
           (fun j : Fin n => (χ j).comp (Subgroup.inclusion (Weil_le_Dec h))) fun t => by
             rw [← hb, WD.charPol_mk, hχ t, Matrix.charpoly_toLin', Matrix.charpoly_diagonal]
             rfl
@@ -1209,7 +1209,7 @@ private theorem te_root {O : Type} [CommRing O] [IsDomain O] [IsLocalRing O] [Fi
   · exact mul_inv_eq_one.1 (Units.ext (sub_eq_zero.1 h2))
 theorem UpperTheory.V.Z.Desc.P.exists_integral_type_for_residual_rep :
     _root_.GlobalTheory.Mem.LiteralAutomorphy.LiteratureRankNHypothesis → _root_.UpperTheory.NonzeroTypeTheory.NonzeroTypes → ∀ (l : ℕ) [Fact l.Prime] (L Ω : Type) [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] (s : HidaSetting l L Ω) (n : ℕ), 1 ≤ n →
-    ∀ (V : s.Lev) (Q : QData V) (c : Coef l), ∀ (r : Resid V.frame c.O n) (ι : Qbar l ≃+* ℂ), ∃ (m : ℕ) (τ₀ : KT n (wt s) →* GL (Fin m) c.O), _root_.UpperTheory.V.Hi.CaseU.TypeForAlt r ι τ₀ := by
+    ∀ (V : s.Lev) (_ : QData V) (c : Coef l), ∀ (r : Resid V.frame c.O n) (ι : Qbar l ≃+* ℂ), ∃ (m : ℕ) (τ₀ : KT n (wt s) →* GL (Fin m) c.O), _root_.UpperTheory.V.Hi.CaseU.TypeForAlt r ι τ₀ := by
   intro P NZ l _ L Ω _ _ _ _ _ _ s n _ V _ c r ι
   by_cases hex : ∃ t, r.IsTeich t
   swap
@@ -1810,7 +1810,7 @@ open scoped TensorProduct
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
 theorem UpperTheory.NonzeroTypeTheory.exists_type_for_residual_rep' :
-    _root_.GlobalTheory.Mem.LiteralAutomorphy.LiteratureRankNHypothesis → ∀ (l : ℕ) [Fact l.Prime] (L Ω : Type) [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] (s : HidaSetting l L Ω) (n : ℕ), 1 ≤ n → ∀ (V : s.Lev) (Q : QData V) (c : Coef l), ∀ (r : Resid V.frame c.O n) (ι : Qbar l ≃+* ℂ), ∃ (m : ℕ) (τ₀ : KT n (wt s) →* GL (Fin m) c.O), _root_.UpperTheory.V.Hi.CaseU.TypeForAlt r ι τ₀ :=
+    _root_.GlobalTheory.Mem.LiteralAutomorphy.LiteratureRankNHypothesis → ∀ (l : ℕ) [Fact l.Prime] (L Ω : Type) [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] (s : HidaSetting l L Ω) (n : ℕ), 1 ≤ n → ∀ (V : s.Lev) (_ : QData V) (c : Coef l), ∀ (r : Resid V.frame c.O n) (ι : Qbar l ≃+* ℂ), ∃ (m : ℕ) (τ₀ : KT n (wt s) →* GL (Fin m) c.O), _root_.UpperTheory.V.Hi.CaseU.TypeForAlt r ι τ₀ :=
   fun P => _root_.UpperTheory.V.Z.Desc.P.exists_integral_type_for_residual_rep P (_root_.UpperTheory.NonzeroTypeTheory.nonzero_types_of_literal_automorphy P )
 end
 section
@@ -1841,7 +1841,7 @@ attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalDat
 
 theorem UpperTheory.V.Hi.exists_integral_type_for_residual_rep :
     _root_.UpperTheory.V.Af.HypothesesH' → ∀ (l : ℕ) [Fact l.Prime] (L Ω : Type) [Field L] [NumberField L] [IsCMField L] [Field Ω] [Algebra L Ω] [IsAlgClosure L Ω] (s : HidaSetting l L Ω) (n : ℕ), 1 ≤ n →
-    ∀ (V : s.Lev) (Q : QData V) (c : Coef l), ∀ (r : Resid V.frame c.O n) (ι : Qbar l ≃+* ℂ), ∃ (m : ℕ) (τ₀ : KT n (wt s) →* GL (Fin m) c.O), _root_.UpperTheory.V.Hi.CaseU.TypeForAlt r ι τ₀ :=
+    ∀ (V : s.Lev) (_ : QData V) (c : Coef l), ∀ (r : Resid V.frame c.O n) (ι : Qbar l ≃+* ℂ), ∃ (m : ℕ) (τ₀ : KT n (wt s) →* GL (Fin m) c.O), _root_.UpperTheory.V.Hi.CaseU.TypeForAlt r ι τ₀ :=
   fun P => _root_.UpperTheory.NonzeroTypeTheory.exists_type_for_residual_rep' P.litN
 end
 end -- clump:auto

@@ -482,7 +482,7 @@ open scoped TensorProduct
 namespace GlobalTheory.CompanionTheory.BZRes
 
 theorem locSec_parab_mir_one (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-    {i t : ℕ} (h : (i + 1) + t = i + t + 1) (ht : 0 < t) :
+    {i t : ℕ} (h : (i + 1) + t = i + t + 1) :
     LocSec (parab k (two (stdSum h))) (Mir k (i + t)) 1 := by
   set e := GlobalTheory.SmGL.two (GlobalTheory.SmGL.stdSum h) with he
   obtain ⟨b, hbc, hb1, hbw⟩ := GlobalTheory.CompanionTheory.BZRes.exists_rowSec (k := k) (Fin.last (i + t))
@@ -973,7 +973,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Ylb7.main :
-    ∀ {G : Type} [inst : Group G] [inst_1 : TopologicalSpace G] {C : Set G},
+    ∀ {G : Type} [Group G] [TopologicalSpace G] {C : Set G},
       IsCompact C →
         ∀ {n : Set (G × G)}, IsOpen n → (∀ c ∈ C, (c, (1 : G)) ∈ n) → ∃ O ∈ nhds (1 : G), ∀ c ∈ C, ∀ u ∈ O, (c, u) ∈ n := by
   intro G _ _ C hC n hn h
@@ -1438,7 +1438,7 @@ theorem core0 (i j : ℕ) (h₀ : (i + 1) + (j + 1) = i + (j + 1) + 1) (h₁ : (
   have ho := (GlobalTheory.SplitFlip.isOpen_KO (k := k) (n := Fin (i + (j + 1) + 1))).mem_nhds (one_mem _)
   have ht : 0 < j + 1 := by omega
   refine two_orbits (Q := parab k (two (stdSum h₀))) (P := Mir k (i + (j + 1))) (w := wGL k h₀)
-    (_root_.GlobalTheory.CompanionTheory.BZRes.locSec_parab_mir_one k h₀ ht) (_root_.GlobalTheory.CompanionTheory.BZRes.locSec_wGL k h₀) (_root_.GlobalTheory.CompanionTheory.BZRes.MirClosed.isClosed_mirabolic k _)
+    (_root_.GlobalTheory.CompanionTheory.BZRes.locSec_parab_mir_one k h₀) (_root_.GlobalTheory.CompanionTheory.BZRes.locSec_wGL k h₀) (_root_.GlobalTheory.CompanionTheory.BZRes.MirClosed.isClosed_mirabolic k _)
     _ GlobalTheory.SplitFlip.isCompact_KO ho
     _ GlobalTheory.SplitFlip.isCompact_KO (fun g => ?_)
     (orbit_cover k h₀ ht) (isClosed_orbit k h₀ ht) (orbits_disjoint k h₀ ht)

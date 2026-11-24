@@ -161,7 +161,7 @@ lemma cechLev_base {f g : Arrow PSh} (F : f ⟶ g) (k : SimplexCategoryᵒᵖ) :
   erw [WidePullback.lift_base]
 
 theorem cech_level_limit (I : Type) [SmallCategory I] [IsCofiltered I] (A : I ⥤ Arrow PSh) (cA : Cone A)
-    (hl : IsLimit (Arrow.leftFunc.mapCone cA)) (_hA : ∀ ⦃i j : I⦄ (f : i ⟶ j), IsIso (A.map f).right)
+    (hl : IsLimit (Arrow.leftFunc.mapCone cA))
     (hR : ∀ i, IsIso (cA.π.app i).right) (k : SimplexCategoryᵒᵖ) :
     Nonempty (IsLimit (((evaluation _ PSh).obj k).mapCone (SimplicialObject.cechNerve.mapCone cA))) := by
   obtain ⟨i₀⟩ := IsCofiltered.nonempty (C := I)
@@ -392,7 +392,7 @@ theorem cont (R : Type) [CommRing R] (F : Shv R) (hF : Finitary F) (K Ω : Type)
   obtain ⟨hc⟩ := _root_.GlobalTheory.SepCech.ringCocone_isColimit K Ω
   obtain ⟨hl⟩ := _root_.GlobalTheory.SepCech.isLimit_leftFunc_arrCone K Ω hc
   refine _root_.GlobalTheory.EtC.contCone_of_levelwise R F _ _ _ (fun k => ?_)
-  obtain ⟨hk⟩ := _root_.GlobalTheory.cech_level_limit _ _ _ hl (fun _ _ _ => show IsIso (𝟙 _) from inferInstance)
+  obtain ⟨hk⟩ := _root_.GlobalTheory.cech_level_limit _ _ _ hl
     (fun _ => show IsIso (𝟙 _) from inferInstance) k
   refine _root_.GlobalTheory.contCone_of_represented R F hF _ _ _ hk (fun L => ?_) ?_
   · obtain ⟨Z, π, e, hπ, -⟩ := _root_.GlobalTheory.EtC.cech_level_representable @IsAffineHom _ _ (Spec.map (CommRingCat.ofHom (algebraMap K L.unop.1))) inferInstance k
@@ -912,7 +912,7 @@ theorem cechPt_map (k : ℕ) {U V : Scheme.{0}} (g : V ⟶ U) (x : U ⟶ X) (y :
 theorem cechPt_δ (m : ℕ) (i : Fin (m + 2)) {U : Scheme.{0}} (x : U ⟶ X) (y : Fin (m + 2) → (U ⟶ Y))
     (h : ∀ j, y j ≫ f = x) :
     ((cech f).δ i).app (op U) (cechPt f (m + 1) x y h) =
-      cechPt f m x (fun j => y (i.succAbove j)) (fun j => h _) := by
+      cechPt f m x (fun j => y (i.succAbove j)) (fun _ => h _) := by
   have key : WidePullback.lift (arrows := fun _ : Fin (m + 2) => yoneda.map f) (yoneda.map x)
       (fun j => yoneda.map (y j)) (fun j => by rw [← yoneda.map_comp, h j]) ≫ (cech f).δ i =
       WidePullback.lift (arrows := fun _ : Fin (m + 1) => yoneda.map f) (yoneda.map x)

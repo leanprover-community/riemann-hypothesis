@@ -14,7 +14,7 @@ namespace ReciprocityTheory.ChartRestriction.DS
 
 theorem tf_rep_closure {n : ℕ} {G : Type*} [MeasurableSpace G] {μ : Measure G}
     (ρ : G → (PiLp 2 (fun _ : Fin n => Lp ℂ 2 μ) →L[ℂ] PiLp 2 (fun _ : Fin n => Lp ℂ 2 μ)))
-    (hρ : ∀ g x, ‖ρ g x‖ ≤ ‖x‖) (w : Fin n → PiLp 2 (fun _ : Fin n => Lp ℂ 2 μ))
+    (w : Fin n → PiLp 2 (fun _ : Fin n => Lp ℂ 2 μ))
     (S : Submodule ℂ (PiLp 2 (fun _ : Fin n => Lp ℂ 2 μ)))
     (hS : ∀ v ∈ S, ∀ c, ((v c : Lp ℂ 2 μ) : G → ℂ) =ᵐ[μ] fun g => inner ℂ (w c) (ρ g v)) :
     ∀ v ∈ S.topologicalClosure, ∀ c, ((v c : Lp ℂ 2 μ) : G → ℂ) =ᵐ[μ] fun g => inner ℂ (w c) (ρ g v) := by

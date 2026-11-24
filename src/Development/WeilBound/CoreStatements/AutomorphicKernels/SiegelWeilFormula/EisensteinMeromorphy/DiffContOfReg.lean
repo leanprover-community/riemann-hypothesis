@@ -96,7 +96,7 @@ private theorem exists_local_regularization_of_reg_right_half {g : ℂ → X →
       hR.mono ((Metric.ball_subset_ball (min_le_left _ _)).trans hsub), fun s hs hne x => ?_⟩
     exact hE (lt_of_lt_of_le (Metric.mem_ball.mp hs) (min_le_right _ _)) (hne.resolve_right hz) x
 
-theorem strip (h1 : ∀ x, 1 ≤ h x) {g : ℂ → X → ℂ}
+theorem strip {g : ℂ → X → ℂ}
     (hp : ∀ s₀ : ℂ, ∃ (k : ℕ) (H : ℂ → X → ℂ), An.Reg h H s₀ ∧ ∀ᶠ s in 𝓝[≠] s₀, ∀ x, H s x = (s - s₀) ^ k * g s x)
     {t : ℝ} (hr : ∀ s : ℂ, t < s.re → An.Reg h g s) (s₀ : ℂ) :
     ∃ (U : Set ℂ) (p : Polynomial ℂ) (G : ℂ → X → ℂ), IsOpen U ∧ IsRightDomain U ∧ s₀ ∈ U ∧ p ≠ 0 ∧

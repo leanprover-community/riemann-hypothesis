@@ -493,7 +493,7 @@ theorem sd_scaleLat (hs : IsScale D ⊤ r) (n : ℕ) : SD D (scaleLat D r n) := 
       refine mem_scaleInv.2 fun α hα => ?_
       have h' := h (Pi.single i _) (mem_scaleLat'.2 (single_mem i (conj_mem_scaleInv hs hα)))
       unfold GlobalTheory.InertSign.hE at h'
-      rw [Finset.sum_eq_single i (fun j _ hj => by simp [Pi.single_apply, hj]) (by simp), Pi.single_eq_same,
+      rw [Finset.sum_eq_single i (fun j _ hj => by simp [hj]) (by simp), Pi.single_eq_same,
         map_mul, GlobalTheory.InertSign.conj_conj, GlobalTheory.InertSign.conj_conj] at h'
       convert h' using 1
       ring

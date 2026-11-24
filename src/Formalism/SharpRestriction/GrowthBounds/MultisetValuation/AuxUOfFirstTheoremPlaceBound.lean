@@ -94,7 +94,7 @@ def PlacewiseLowerBoundEvenShift (D : Formalism.BasicNotions.D7) : Prop :=
 def RestBU (D : Formalism.BasicNotions.D7) : Prop :=
   admitted D X Y → ∀ v, ∀ j < X.mm, ∀ i ∈ Icc 1 X.G.P.r, LowAtI X Y j v i (X.gv v (j + 1))
 
-def EntryBoundOfHypotheses (D : Formalism.BasicNotions.D7) : Prop := admitted D X Y → VolumeRatio₂ D X Y
+def EntryBoundOfHypotheses (D : Formalism.BasicNotions.D7) : Prop := admitted D X Y → VolumeRatio₂ X Y
 
 def RestPlaces (D : Formalism.BasicNotions.D7) : Prop :=
   admitted D X Y → ∀ j < X.mm, ∀ (i0 : X.Pl → ℕ) (gP : X.Pl → ℚ), (∀ v, LowAtI X Y j v (i0 v) (gP v)) →
@@ -102,7 +102,7 @@ def RestPlaces (D : Formalism.BasicNotions.D7) : Prop :=
 
 variable {X Y}
 
-theorem auxU_of_firstTheoremPlaceBound (D : Formalism.BasicNotions.D7) (h : EntryBoundOfHypotheses X Y D) (hA : admitted D X Y) : VolumeRatio₂ D X Y := h hA
+theorem auxU_of_firstTheoremPlaceBound (D : Formalism.BasicNotions.D7) (h : EntryBoundOfHypotheses X Y D) (hA : admitted D X Y) : VolumeRatio₂ X Y := h hA
 
 theorem restEnt_of_rest (D : Formalism.BasicNotions.D7) (hP : RestPlaces X Y D) (h2 : PlacewiseLowerBoundEvenShift X Y D) (hB : RestBU X Y D)
     (hA : admitted D X Y) : EntCondition X Y := by

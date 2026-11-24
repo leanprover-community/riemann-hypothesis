@@ -119,7 +119,7 @@ theorem isIntegral_tensor {O Ω₀ F : Type} [CommRing O] [Field Ω₀] [Field F
   | add x y hx hy => exact hx.add hy
 
 theorem exists_integral_multiple_of_injective {O : Type} [CommRing O] {F : IntermediateField ℚ ℂ}
-    [FiniteDimensional ℚ F] (β : O →+* F) (hβ : Function.Injective β) (u : F) :
+    [FiniteDimensional ℚ F] (β : O →+* F) (u : F) :
     letI := β.toAlgebra
     ∃ a : O, a ≠ 0 ∧ _root_.IsIntegral O (a • u) := by
   letI := β.toAlgebra
@@ -180,7 +180,7 @@ theorem mem_range_jQ {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Hos
   have := Y.jQ_open
   have := c.fin
   exact mem_of_dense_of_maximal Y.jQ.isOpenEmbedding.isOpen_range Y.jQ_dense fun y' h' =>
-    eq_of_specializes_of_fst Y.s β g₀ ξ₀ h₀ hs hg (exists_integral_multiple_of_injective β hβ) hy h'
+    eq_of_specializes_of_fst Y.s β g₀ ξ₀ h₀ hs hg (exists_integral_multiple_of_injective β) hy h'
 
 theorem mem_regAt_of_isIntegral {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X}
     (hg : IsCptGen ξ) (all : ∀ q : X, genPt ξ ⤳ q) (hn : IsNormalScheme X) (q : Cpt ξ) {a : Ω}

@@ -1069,7 +1069,7 @@ theorem fib_conn : ∀ (R : Type) [CommRing R] [IsLocalRing R] [IsNoetherianRing
     rfl
   let t := i ≫ pullback.fst π ρ
   let kk := i ≫ pullback.snd π ρ
-  obtain ⟨e, l, -, hl1, hl2⟩ := _root_.GlobalTheory.Mum.Emb.pullback_iso_of_closed R S π G' hG E T t kk inferInstance inferInstance
+  obtain ⟨e, l, -, hl1, hl2⟩ := _root_.GlobalTheory.Mum.Emb.pullback_iso_of_closed R S π G' hG E T t kk inferInstance
     (by show i ≫ pullback.fst π ρ ≫ π = (i ≫ pullback.snd π ρ) ≫ ρ; rw [pullback.condition, Category.assoc])
   apply lsurj l E.f ν
   · intro z
@@ -1653,7 +1653,7 @@ theorem range_inter_fibre_closed : ∀ (R : Type) [CommRing R] [IsLocalRing R] [
   haveI := hπ
   haveI := hg
   obtain ⟨T, t, k, hTn, hTr, hk, htk, hrt⟩ := exists_redFibre R S π
-  obtain ⟨e, l, -, hl, hlf⟩ := _root_.GlobalTheory.Mum.Emb.pullback_iso_of_closed R S π G' hG E T t k hTn hTr htk
+  obtain ⟨e, l, -, hl, hlf⟩ := _root_.GlobalTheory.Mum.Emb.pullback_iso_of_closed R S π G' hG E T t k hTr htk
   have hover : ∀ p, π (G'.hom (E.H.ι (l p))) = closedPoint R := by
     intro p
     have h1 : E.H.ι (l p) = pullback.fst G'.hom t p := by

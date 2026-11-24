@@ -193,7 +193,7 @@ theorem binomSeries_gen (k' B : ℕ) (hk : 2 ≤ k') :
   have := (tendsto_const_nhds (x := g 0)).sub htend
   simpa using this
 
-theorem tail_q_bound (k' be : ℕ) (b' : ℝ) (hk : 1 ≤ k') (_hb : 0 < b') :
+theorem tail_q_bound (k' be : ℕ) (b' : ℝ) (hk : 1 ≤ k') :
     ∀ J : ℕ, (be : ℝ) + J + k' ≤ 2 * b' →
       (dimPol k' be : ℝ) * ((be : ℝ) + J + k') / dimPol k' (be + J)
         ≤ ((be : ℝ) + k') * Real.exp (-((k' : ℝ) - 1) * J / (2 * b')) := by
@@ -253,7 +253,7 @@ theorem binomial_tail_bound : BinomTail := by
     funext j; have := dimPol_pos_real k' (be + J + j); field_simp
   rw [hfun] at hs2
   rw [hs2.tsum_eq]
-  have hq := tail_q_bound k' be b' (by omega) hb J (by linarith)
+  have hq := tail_q_bound k' be b' (by omega) J (by linarith)
   have hJ0 : (0 : ℝ) ≤ J := by positivity
   have hexp : Real.exp (-((k' : ℝ) - 1) * J / (2 * b')) ≤ Real.exp (-La / 3) := by
     apply Real.exp_le_exp.mpr

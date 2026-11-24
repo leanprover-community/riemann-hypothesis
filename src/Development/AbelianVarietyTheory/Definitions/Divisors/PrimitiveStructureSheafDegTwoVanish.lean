@@ -159,10 +159,10 @@ def IsFun (L : Pre I π F) : Prop :=
 def restrict (L : Pre I π F) (G : C' ⥤ C) : Pre I π (G ⋙ F) where
   B T := L.B (G.obj T)
   p T := L.p (G.obj T)
-  semi T := L.semi _
-  surj T := L.surj _
-  ker T := L.ker _
-  smooth T := L.smooth _
+  semi _ := L.semi _
+  surj _ := L.surj _
+  ker _ := L.ker _
+  smooth _ := L.smooth _
   ρ a := L.ρ (G.map a)
   nat a b := L.nat (G.map a) b
 

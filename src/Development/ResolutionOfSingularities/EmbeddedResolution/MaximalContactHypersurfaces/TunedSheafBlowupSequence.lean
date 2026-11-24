@@ -434,7 +434,7 @@ theorem comap_tunedSheaf_le_exceptionalIdeal_pow_mul (k : Type u) [Field k] [Cha
     (hπ : Blowup.IsBlowupAlongIdealSheaf π Z) (A : P.IdealSheafData) (m : ℕ) (hA : A ≤ Z ^ m) (u : ℕ) :
     (tunedSheaf k p A m u).comap π ≤
       Blowup.exceptionalIdeal π Z ^ u *
-        tunedSheaf k p₁ (controlledTransform π Z A m hπ hA) m u := by
+        tunedSheaf k p₁ (controlledTransform π Z A m) m u := by
   subst hp₁
   refine le_trans (Scheme.IdealSheafData.comap_iSup π
     (fun c : {c : ℕ → ℕ // u ≤ ∑ j ∈ Finset.range m, (m - j) * c j} =>
@@ -445,7 +445,7 @@ theorem comap_tunedSheaf_le_exceptionalIdeal_pow_mul (k : Type u) [Field k] [Cha
     (fun j => derivIdealSheafIterate k p j A ^ c j) m)) ?_
   refine le_trans (prod_map_range_le _
     (fun j => (Blowup.exceptionalIdeal π Z ^ (m - j) *
-      derivIdealSheafIterate k (π ≫ p) j (controlledTransform π Z A m hπ hA)) ^ c j) m ?_) ?_
+      derivIdealSheafIterate k (π ≫ p) j (controlledTransform π Z A m)) ^ c j) m ?_) ?_
   · intro j hj
     refine le_trans (le_of_eq (AlgebraicGeometry.Scheme.IdealSheafData.comap_pow
       (derivIdealSheafIterate k p j A) π (c j))) ?_
@@ -453,12 +453,12 @@ theorem comap_tunedSheaf_le_exceptionalIdeal_pow_mul (k : Type u) [Field k] [Cha
       (comap_derivIdealSheafIterate_le_exceptionalIdeal_pow_mul k p π Z E hZ hπ A m hA j
         (Nat.le_of_lt hj)) (c j)
   · refine le_trans (le_of_eq (prod_map_pow_mul_pow_eq (Blowup.exceptionalIdeal π Z)
-      (fun j => derivIdealSheafIterate k (π ≫ p) j (controlledTransform π Z A m hπ hA))
+      (fun j => derivIdealSheafIterate k (π ≫ p) j (controlledTransform π Z A m))
       (fun j => m - j) c m)) ?_
     refine mul_le_mul' (pow_le_pow_right_of_le_one' le_top hc) ?_
     exact le_iSup (fun d : {c : ℕ → ℕ // u ≤ ∑ j ∈ Finset.range m, (m - j) * c j} =>
       ((List.range m).map (fun j => derivIdealSheafIterate k (π ≫ p) j
-        (controlledTransform π Z A m hπ hA) ^ (d.1 j))).prod) ⟨c, hc⟩
+        (controlledTransform π Z A m) ^ (d.1 j))).prod) ⟨c, hc⟩
 
 theorem comap_tunedSheaf_of_smooth (k : Type u) [Field k] [CharZero k] [IsNoetherianRing k]
     {P Y : Scheme.{u}} (p : P ⟶ Spec (CommRingCat.of k)) [AlgebraicGeometry.Smooth p]
@@ -701,12 +701,12 @@ private theorem pow_le_and_le_tunedSheaf_of_isBlowupAlongIdealSheaf (k : Type u)
       _ ≤ B.comap π := hcm
       _ = Blowup.exceptionalIdeal π Z ^ (m * s) * B' := hB'.symm
   · refine hF.le_of_pow_mul_le_pow_mul (m * s) ?_
-    have hct : A' = controlledTransform π Z A m hπ hA :=
+    have hct : A' = controlledTransform π Z A m :=
       eq_controlledTransform_of_mul_eq_comap π Z A m hπ hA A' hA'
     calc Blowup.exceptionalIdeal π Z ^ (m * s) * B' = B.comap π := hB'
       _ ≤ (tunedSheaf k p A m (m * s)).comap π := Scheme.IdealSheafData.comap_mono π h2
       _ ≤ Blowup.exceptionalIdeal π Z ^ (m * s) *
-            tunedSheaf k p₁ (controlledTransform π Z A m hπ hA) m (m * s) :=
+            tunedSheaf k p₁ (controlledTransform π Z A m) m (m * s) :=
           comap_tunedSheaf_le_exceptionalIdeal_pow_mul k p π p₁ hp₁ Z E hZ hπ A m hA (m * s)
       _ = Blowup.exceptionalIdeal π Z ^ (m * s) * tunedSheaf k p₁ A' m (m * s) := by rw [hct]
 

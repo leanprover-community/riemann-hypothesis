@@ -194,7 +194,7 @@ theorem holo_vanish_of_critical_integrable : ∀ {n : ℕ}, 0 < n → ∀ (u : V
           setLIntegral_mono' Metric.isOpen_ball.measurableSet hpt
       _ ≤ _ := lintegral_mono_set hsub
   rw [ReciprocityTheory.ChartRestriction.G.AR.Up.VanishPf.crit_div hn hδpos,
-    ENNReal.mul_top (by simp [ENNReal.ofReal_eq_zero, not_le]; positivity)] at hlow
+    ENNReal.mul_top (by simp [ENNReal.ofReal_eq_zero]; positivity)] at hlow
   exact absurd (lt_of_le_of_lt hlow hint) (lt_irrefl _)
 
 end GlobalTheory

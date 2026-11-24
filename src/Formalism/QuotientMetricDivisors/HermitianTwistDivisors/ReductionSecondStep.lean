@@ -209,7 +209,7 @@ theorem matLat_eq_map {d : ℕ} (φ : Matrix (Fin d) (Fin d) K) (hφ : IsUnit φ
   · rintro ⟨y, hy, rfl⟩
     exact ⟨y, hy, rfl⟩
 
-theorem matLat_lattice {d : ℕ} (φ : Matrix (Fin d) (Fin d) K) (hφ : IsUnit φ.det)
+theorem matLat_lattice {d : ℕ} (φ : Matrix (Fin d) (Fin d) K)
     (L : Submodule (𝓞 K) (Fin d → K)) (hL : Submodule.IsLattice K L) :
     Submodule.IsLattice K (matLat φ L) := by
   exact Submodule.IsLattice.of_fg K ((Submodule.IsLattice.fg (self := hL)).map _)
@@ -367,7 +367,7 @@ theorem idx_change_img (hIC : IdxChange) {d : ℕ} (ι0 ι1 : Matrix (Fin d) (Fi
   have hlb0 := isLocBasis_image ι0 hι0 L0 w e0 he0
   have hlb1 := isLocBasis_image ι1 hι1 L1 w e1 he1
   rw [hγ] at hlb1
-  obtain ⟨h1, h2⟩ := hIC K d (matLat ι1 L1) (matLat_lattice ι1 hι1 L1 hL1) _ li0 w γ hlb1
+  obtain ⟨h1, h2⟩ := hIC K d (matLat ι1 L1) (matLat_lattice ι1 L1 hL1) _ li0 w γ hlb1
   obtain ⟨p1, p2⟩ := localization_eq_and_conj_eq_of_semilocalization_eq w _ _ hlb0.2
   refine ⟨γ, hγ, ?_, ?_⟩
   · rw [← h1]

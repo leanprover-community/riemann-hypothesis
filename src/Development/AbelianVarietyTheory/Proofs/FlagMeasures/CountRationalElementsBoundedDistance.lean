@@ -73,7 +73,7 @@ theorem bound_le (s la R : ℝ) (m f : ℕ) (hs : 1 ≤ s) (hla : 0 < la) (hla1 
 
 theorem countRat : CountRat := by
   intro I x y r hn hr
-  obtain ⟨hfin, hcard⟩ := GlobalTheory.RationalCount.count_le I x y r hn hr
+  obtain ⟨hfin, hcard⟩ := GlobalTheory.RationalCount.count_le I x y r hn
   have hx := GlobalTheory.RationalCount.truncatedLeastLatticeSize_pos I hn x
   have hy := GlobalTheory.RationalCount.truncatedLeastLatticeSize_pos I hn y
 

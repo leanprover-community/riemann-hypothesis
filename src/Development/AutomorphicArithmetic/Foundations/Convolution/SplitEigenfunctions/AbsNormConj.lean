@@ -477,7 +477,7 @@ private theorem Bt_cont (M : Meas ℚ) {Φ : GL (Fin 2) (A E) → ℂ} (hc : Con
 
 private theorem Bt_bdd (M : Meas ℚ) {Φ : GL (Fin 2) (A E) → ℂ} {C : ℝ} (hb : ∀ g, ‖Φ g‖ ≤ C) (t : IdeleGroup ℚ) :
     ‖Bt M Φ t‖ ≤ C * M.μ.real M.D :=
-  norm_setIntegral_le_of_norm_le_const (_root_.UpperTheory.ConvolutionTheory.R2.M.volD ℚ M) fun g _ => hb _
+  norm_setIntegral_le_of_norm_le_const (_root_.UpperTheory.ConvolutionTheory.R2.M.volD ℚ M) fun _ _ => hb _
 
 private theorem Bt_rat (M : Meas ℚ) {Φ : GL (Fin 2) (A E) → ℂ} (hl : ∀ γ g, Φ (ratGL E 2 γ * g) = Φ g) (r : ℚˣ) (t : IdeleGroup ℚ) :
     Bt M Φ (IdeleGroup.diagonal ℚ r * t) = Bt M Φ t := by

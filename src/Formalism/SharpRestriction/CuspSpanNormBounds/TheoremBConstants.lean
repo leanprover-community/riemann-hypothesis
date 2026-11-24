@@ -477,7 +477,7 @@ theorem GsC_pos (D : D7) (ka : ℝ) (hka : 0 < ka) : 0 < GsC D ka := by
   positivity
 
 theorem num_Gs (D : D7) (Ch b ka : ℝ) (hCh : 0 ≤ Ch) (hb : 2 ≤ b) (hka : 0 < ka)
-    (hk1 : ka ≤ b ^ Ch) (hk2 : ka⁻¹ ≤ b ^ Ch) :
+    (hk2 : ka⁻¹ ≤ b ^ Ch) :
     (GsC D ka)⁻¹ ≤ b ^ (2 * Ch * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 2) := by
   have hGs : GsC D ka = ka ^ (2 * D.R.rS * (D.R.rS + 1)) := by
     unfold GsC
@@ -529,7 +529,7 @@ theorem num_G (D : D7) (Ch Cb2 b : ℝ) (hCh : 0 ≤ Ch) (hCb2 : 0 ≤ Cb2) (hb 
     have key := max_inv_mul_le hc hx
     rw [mul_assoc] at key
     have hinv : 1 / (GsC D (kaRe D) * P4) ≤ b ^ ((3 + 3 * Ch) * m ^ 2) := by
-      have g1 := num_Gs D Ch b (kaRe D) hCh hb hka hk1 hk2
+      have g1 := num_Gs D Ch b (kaRe D) hCh hb hka hk2
       have g2 := alfProd_inv_le_b D Ch b hCh hb hka hk2 D.R.rS (by omega)
       rw [one_div, mul_inv]
       calc (GsC D (kaRe D))⁻¹ * P4⁻¹ ≤ b ^ (2 * Ch * m ^ 2) * b ^ ((3 + Ch) * m ^ 2) :=

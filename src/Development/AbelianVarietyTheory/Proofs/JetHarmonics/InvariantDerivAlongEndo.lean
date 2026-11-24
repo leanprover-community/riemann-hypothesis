@@ -92,7 +92,7 @@ theorem iterate_dof_C_mul (F : Fin d → PS k 2 d) (u : Fin d → k) (n : ℕ) (
   | zero => rfl
   | succ n ih => rw [Function.iterate_succ_apply', Function.iterate_succ_apply', ih, GE.dof_C_mul]
 
-theorem dmonOf_endo (F : Fin d → PS k 2 d) (φ : Pt k 1 d) (hφ : GP φ) {ι : Type} [Fintype ι]
+theorem dmonOf_endo (F : Fin d → PS k 2 d) (φ : Pt k 1 d) {ι : Type} [Fintype ι]
     (u : ι → Fin d → k) (α : ι → k)
     (h : ∀ l g, Dof F (u l) (ev (n := 1) ![φ] g) = C (α l) * ev (n := 1) ![φ] (Dof F (u l) g))
     (m : ι →₀ ℕ) (g : PS k 1 d) :
@@ -141,7 +141,7 @@ theorem invariantDeriv_along_endo : ∀ (R : Type) [CommRing R] (d : ℕ) (O : T
       ev (n := 1) ![B.actK k a] (Dof (B.FK k) ((dAct k B a).mulVec u) g) :=
     dof_endo (B.FK k) hF (congrFun hU) (B.actK k a) hw hom
   refine ⟨h1, fun ι _ u α hα m g => ?_⟩
-  rw [dmonOf_endo (B.FK k) (B.actK k a) hw u α (fun l g => by
+  rw [dmonOf_endo (B.FK k) (B.actK k a) u α (fun l g => by
     rw [h1, hα, dof_smul_dir, ChartTrans.ev_C_mul _ (single_point_zero_constant hw)]), map_mul, constantCoeff_C,
     constSt k d (B.actK k a) hw]
 

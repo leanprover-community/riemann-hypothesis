@@ -188,7 +188,7 @@ def ObjCP (Q : Par → PtProp) : Prop :=
   ParEv fun κ => ∃ x0 : ℝ,
     ∀ (s : Scale) (R : Ranks) (H : Host R) (q0 : ℕ) (a b : R.A → ℤ) (M : ℕ)
       (c : Fin M → Fin (R.k - 2) → Bool) (u0 : ℕ), s.eps = κ.eps → x0 ≤ s.x → RankVal s R → H.CT2 = κ.C.CT2 →
-      HostGood s κ.C.P.Cpde κ.C5 κ.c6 κ.Cb H q0 → q0 = DC.q0H H → WinOK s κ.C.GK H a b →
+      HostGood s κ.C.P.Cpde κ.C5 κ.Cb H q0 → q0 = DC.q0H H → WinOK s κ.C.GK H a b →
       M = ⌈3 * Real.exp (κ.C.CGam * (R.m : ℝ) ^ 5 * R.f * s.L) ^ 2 * s.x ^ κ.C.P.CF⌉₊ → Function.Injective c → u0 < R.n →
       ∃ p : Pt κ.C, p.L.sc = s ∧ Val κ.C κ.cD κ.ch p.L ∧ HostArith p.D.host ∧ p.From H a b c u0 ∧ CanonInst p.ta.Gx ∧ p.Has (Q κ)
 

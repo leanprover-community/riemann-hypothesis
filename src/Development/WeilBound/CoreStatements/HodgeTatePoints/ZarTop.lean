@@ -661,8 +661,8 @@ variable {Y : Over S} {P : LB (A ⊗ B).left}
 def ceB (hD : IsDual A B P) (hD' : IsDual B A (swap P)) :
     Additive (Y ⟶ A) →+ Additive (Y ⟶ B) →+ Pic Y.left :=
   AddMonoidHom.mk' (fun x => AddMonoidHom.mk' (fun z => evc hD.isLB (Additive.toMul x) (Additive.toMul z))
-      (fun z z' => evc_mul_right hD hD' _ _ _))
-    (fun x x' => AddMonoidHom.ext fun z => evc_mul_left hD _ _ _)
+      (fun _ _ => evc_mul_right hD hD' _ _ _))
+    (fun _ _ => AddMonoidHom.ext fun _ => evc_mul_left hD _ _ _)
 
 private theorem ceZc_alg_lemma {GA GB Q : Type*} [AddCommGroup GA] [AddCommGroup GB] [AddCommGroup Q]
     (E : GA →+ GB →+ Q) (lm : GA →+ GB) (mu : GB →+ GA) (α : Matrix (Fin 4) (Fin 4) ℤ) (m : ℕ) (hm : 1 ≤ m)
@@ -805,9 +805,8 @@ theorem two_cls_eMap {Ω : Type} [Field Ω] [IsAlgClosed Ω] (hA : IsAbelianSche
     (hD' : IsDual B A (swap P)) (l : A ⟶ B) [IsMonHom l] (mu : B ⟶ A) [IsMonHom mu] (α : Matrix (Fin 4) (Fin 4) ℤ)
     (s : Sp Ω ⟶ S) (L : LB ((Over.pullback s).obj A).left) (hL : L.IsLB)
     (e : LBIso ((ev P (fst A A) (snd A A ≫ l)).pull (sqToBase A s)) (abelian₂ ((Over.pullback s).obj A) L))
-    (m : ℕ) (hm : 1 ≤ m) (h₁ : l ≫ mu = 𝟙 A ^ m) (h₂ : mu ≫ l = 𝟙 B ^ m)
+    (m : ℕ) (hm : 1 ≤ m) (h₂ : mu ≫ l = 𝟙 B ^ m)
     (hα : α.transpose * α = ((4 * m ^ 2 - 1 : ℕ) : ℤ) • (1 : Matrix (Fin 4) (Fin 4) ℤ))
-    (hα' : α * α.transpose = ((4 * m ^ 2 - 1 : ℕ) : ℤ) • (1 : Matrix (Fin 4) (Fin 4) ℤ))
     (h₁' : ((zb mu α s P L).pull ((Over.pullback s).map (eMap mu α m)).left).IsLB)
     (h₂' : (lPart mu s L).IsLB) :
     2 • cls _ h₁' = 2 • cls _ h₂' := by
@@ -987,7 +986,7 @@ theorem relAmple_zb (hA : IsAbelianScheme A) (hB : IsAbelianScheme B) {P : LB (A
     AbelianSchemeGerms.isAbelianScheme_tensor _ _ hAB
       (AbelianSchemeGerms.isAbelianScheme_tensor _ _ hAB (AbelianSchemeGerms.isAbelianScheme_tensor _ _ hAB hAB))
   have hG : IsAbelianScheme ((Over.pullback s).obj (G4 (A ⊗ B))) := _root_.GlobalTheory.isAbelianScheme_pullback_obj s _ h4
-  have hfin := _root_.PositivityTheory.PrwZar.Z2.isFinite_mu_fibre hA hB g hgA hgB l mu m hm h₁ h₂ s L hL ha
+  have hfin := _root_.PositivityTheory.PrwZar.Z2.isFinite_mu_fibre hA hB g l mu m hm h₁ h₂ s L hL ha
   have hlp := relAmple_lPart hA hB mu s L hL ha hfin
   have hlpLB : (lPart mu s L).IsLB := LB.isLB_linComb hL _ _
   have hzb : (zb mu α s P L).IsLB := isLB_zb mu α s hP hL
@@ -999,7 +998,7 @@ theorem relAmple_zb (hA : IsAbelianScheme A) (hB : IsAbelianScheme B) {P : LB (A
     rw [← Functor.map_comp, eMap_comp_eMap'_eq_id_pow, Z2.pb_map_id_pow]
   have hE1 : ((zb mu α s P L).pull (Over.Hom.left ((Over.pullback s).map (eMap mu α m)))).IsLB :=
     LB.isLB_pull hzb _
-  have hE := _root_.PositivityTheory.PrwZar.Z2.two_cls_eMap hA hB hD hD' l mu α s L hL e m hm h₁ h₂ hα hα' hE1 hlpLB
+  have hE := _root_.PositivityTheory.PrwZar.Z2.two_cls_eMap hA hB hD hD' l mu α s L hL e m hm h₂ hα hE1 hlpLB
   have hEa := _root_.PositivityTheory.PrwZar.Z2.relAmple_of_two_smul hG hE1 hlpLB 2 (by norm_num) hE hlp
   obtain ⟨hE'fin, -, -, -⟩ := Z2.fin_surj_core hG hG ((Over.pullback s).map (eMap' mu α m))
     ((Over.pullback s).map (eMap mu α m)) (2 * m) (by omega) c1 c2 hlpLB hlp
@@ -1204,9 +1203,9 @@ theorem zcPair_positionB (hD : IsDual A B P) (l : A ⟶ B) [IsMonHom l] (mu : B 
   rw [Finset.sum_comm]
   simp only [apply_ite (evc hD.isLB _), r1, smul_ite, smul_zero]
   congr 1
-  · rw [Finset.sum_eq_single j (fun k _ hk => by simp [hk, e, e', r1]) (by simp)]
+  · rw [Finset.sum_eq_single j (fun k _ hk => by simp [hk]) (by simp)]
     simp
-  · rw [Finset.sum_eq_single j (fun k _ hk => by simp [hk, e, r1]) (by simp)]
+  · rw [Finset.sum_eq_single j (fun k _ hk => by simp [hk, r1]) (by simp)]
     simp
 
 end Slots
@@ -1418,7 +1417,7 @@ theorem kLam_zb_pt (hA : IsAbelianScheme A) (hB : IsAbelianScheme B) {P : LB (A 
     {Y : Over (Sp Ω)} (a u : Y ⟶ (Over.pullback s).obj (G4 (A ⊗ B))) :
     lam (cls (zb mu α s P L) (isLB_zb mu α s hD.isLB hL)) a u =
       zcPair hD.isLB l mu α (toBase _ s a) (toBase _ s u) := by
-  have k := lam_zb hA hB hD hD' l mu α Ω s L hL e
+  have k := lam_zb hA hD hD' l mu α Ω s L hL e
   have k2 := congrArg (pull (lift a u).left) k
   rw [pull_lam, lift_fst, lift_snd] at k2
   rw [← k2, ← pull_comp, kLift_sqToBase]
@@ -1629,7 +1628,7 @@ theorem principal_of_quasiInverse {S : Scheme.{0}} (A B : Over S) [GrpObj A] [Gr
   exact ⟨zb mu α s P L, isLB_zb mu α s hD.isLB hL,
     relAmple_zb hA hB hD hD' l mu α Ω s L hL e ha g hgA hgB m hm h₁ h₂ hα hα',
     kTriv_zb hA hB hD hD' l mu α Ω s L hL e m hm h₁ h₂ hα hα',
-    lam_zb hA hB hD hD' l mu α Ω s L hL e⟩
+    lam_zb hA hD hD' l mu α Ω s L hL e⟩
 
 
 open GlobalTheory.CompanionTheory.Hypotheses₂.Zarhin in

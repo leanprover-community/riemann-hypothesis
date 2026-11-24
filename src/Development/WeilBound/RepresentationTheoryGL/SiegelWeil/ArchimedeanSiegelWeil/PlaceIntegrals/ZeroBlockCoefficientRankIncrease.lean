@@ -595,7 +595,7 @@ theorem inner_pure : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numbe
   have hLv : ∀ v, IsLocR (Fv F v) := GlobalTheory.CompanionTheory.SW.LocFv.isLocR_Fv F
   haveI hBi : BorelSpace (Ainf F) := ⟨rfl⟩
   haveI hBv : ∀ v, BorelSpace (Fv F v) := fun v => ⟨rfl⟩
-  have hJ' := (hypOne_isHermND_and_e0_mem F E σ hCM M J hJ).1
+  have hJ' := (hypOne_isHermND_and_e0_mem F E σ M J hJ).1
   obtain ⟨pinf, p, hcomp, hlat, -⟩ := GlobalTheory.CompanionTheory.SW.HProj.components F E σ hCM (M + 2) _ hJ'
   have hcons := (GlobalTheory.CompanionTheory.SW.LatRat.latV_rational F E σ hCM d b 0 0).2.2
   obtain ⟨-, -, S₀, hS₀⟩ := hdA
@@ -942,7 +942,7 @@ theorem hyp_step : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberF
   have hLv : ∀ v, IsLocR (Fv F v) := _root_.GlobalTheory.CompanionTheory.SW.LocFv.isLocR_Fv F
   haveI hBi : BorelSpace (Ainf F) := ⟨rfl⟩
   haveI hBv : ∀ v, BorelSpace (Fv F v) := fun v => ⟨rfl⟩
-  obtain ⟨hJ', he0⟩ := _root_.GlobalTheory.CompanionTheory.WeilSiegel.HypStep.hypOne_isHermND_and_e0_mem F E σ hCM M J hJ
+  obtain ⟨hJ', he0⟩ := _root_.GlobalTheory.CompanionTheory.WeilSiegel.HypStep.hypOne_isHermND_and_e0_mem F E σ M J hJ
   have h₂ : ∀ a b : Fin 1, σ ((0 : Matrix (Fin 1) (Fin 1) E) b a) = (0 : Matrix (Fin 1) (Fin 1) E) a b :=
     fun a b => by simp
   obtain ⟨m₁inf, hm₁inf⟩ := fam_inf σ hCM (hypOne J) hJ' b laminf hinf.1 1

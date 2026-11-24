@@ -156,8 +156,8 @@ def fillsRec (D : D7) (u : D.what₂.Word) (h : D.R.MA)
       fun hs i => hc.off _ (fun ht => hs (Finset.mem_filter.2 ⟨Finset.mem_univ _, ht⟩)) i⟩)
     D.R.t D.R.m
     (fun v jj s => wRec D u (posG (zPsi D.R.toFrame h) ⟨v, s⟩) jj)
-    (fun v s => max_le (hc.fill _) (neg_last_le_wRec D u _))
-    (fun v s jj _ => wRec_mono D u _ jj)
+    (fun _ _ => max_le (hc.fill _) (neg_last_le_wRec D u _))
+    (fun _ _ jj _ => wRec_mono D u _ jj)
 
 end Formalism.L2.G
 end -- clump:auto

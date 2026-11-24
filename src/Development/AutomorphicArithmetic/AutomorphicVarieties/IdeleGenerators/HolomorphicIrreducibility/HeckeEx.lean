@@ -166,7 +166,7 @@ private lemma slash_eq_U {N k p : ℕ} [NeZero p] {χ : DirichletCharacter ℂ N
     ext i j
     fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two] <;> ring
 
-private lemma slash_eq_V {N k p : ℕ} [NeZero N] [NeZero p] (hp : p.Prime)
+private lemma slash_eq_V {N k p : ℕ} [NeZero N] [NeZero p]
     {χ : DirichletCharacter ℂ N} {f : ℍ → ℂ}
     (hf : HasChar k χ f) (a b c d : ℤ) (hdet : a * d - b * c = p) (hc : (c : ZMod N) = 0)
     (g : GL (Fin 2) ℝ) (hg : (g : Matrix (Fin 2) (Fin 2) ℝ) = !![(a : ℝ), b; c, d])
@@ -213,7 +213,7 @@ private lemma slash_eq_term {N k p : ℕ} [NeZero N] [NeZero p] (hp : p.Prime)
   cases x with
   | infty =>
     obtain ⟨h1, h2⟩ := hx
-    exact slash_eq_V hp hf a b c d hdet hc g hg
+    exact slash_eq_V hf a b c d hdet hc g hg
       ((ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mp h1)
       ((ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mp h2)
   | coe i =>

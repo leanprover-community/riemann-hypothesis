@@ -239,7 +239,7 @@ private theorem top_le_of_comp {X Y Z : Scheme.{0}} (f : X ⟶ Y) (g : Y ⟶ Z) 
 
 private theorem top_le_preimage_inf {X Y : Scheme.{0}} (f : X ⟶ Y) {A B : Y.Opens} (hA : ⊤ ≤ f ⁻¹ᵁ A)
     (hB : ⊤ ≤ f ⁻¹ᵁ B) : ⊤ ≤ f ⁻¹ᵁ (A ⊓ B) :=
-  fun y _ => ⟨hA trivial, hB trivial⟩
+  fun _ _ => ⟨hA trivial, hB trivial⟩
 
 private theorem evAt_congr {R : Type} [CommRing R] {X : Scheme.{0}} {ξ ξ' : Sp R ⟶ X} (e : ξ = ξ') {U : X.Opens}
     (h : ⊤ ≤ ξ ⁻¹ᵁ U) (h' : ⊤ ≤ ξ' ⁻¹ᵁ U) : evAt ξ h = evAt ξ' h' := by
@@ -1131,7 +1131,7 @@ noncomputable def lsScale (c : F) (hc : c ≠ 0) : LaurentSeries F →+* Laurent
 
 noncomputable def ratInv : RatFunc F →+* RatFunc F :=
   IsFractionRing.lift (g := (Polynomial.aeval (RatFunc.X : RatFunc F)⁻¹).toRingHom)
-    (fun x y h => (transcendental_iff_injective.1 fun h => transcendental_X (IsAlgebraic.inv_iff.1 h)) h)
+    (fun _ _ h => (transcendental_iff_injective.1 fun h => transcendental_X (IsAlgebraic.inv_iff.1 h)) h)
 
 theorem lsScale_comp (c : F) (hc : c ≠ 0) :
     (lsScale c hc).comp (algebraMap (PowerSeries F) (LaurentSeries F)) =

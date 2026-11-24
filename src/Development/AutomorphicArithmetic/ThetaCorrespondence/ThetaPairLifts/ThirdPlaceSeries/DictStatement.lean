@@ -464,7 +464,7 @@ theorem isoTyp_indep (a : NG.AlgWt L n) {ι : Type} (S : ι → Submodule ℂ (G
   obtain ⟨B, hB, -⟩ := _root_.GlobalTheory.ClassPet.classSum_eq_pet L n a β hβ
   have hG : GlobalTheory.TypeOrthogonality.Good a.ρ B := hB
   exact indep_of_orth (fun x => B x) _ (fun i x hx h0 => pos_zero hG (isoTyp_le _ hx) h0)
-    (fun i j hij => isoTyp_orth hG hfin (hS i) (hS j) (fun h => hij (hinj i j h)))
+    (fun i j hij => isoTyp_orth hG hfin (hS j) (fun h => hij (hinj i j h)))
 
 variable {W : Type} [AddCommGroup W] [Module ℂ W]
 

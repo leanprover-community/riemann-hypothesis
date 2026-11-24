@@ -293,7 +293,7 @@ theorem DivisorReductionProperties.toDivisorReductionStepProperties {hres : Func
     isMarked_pushedPre := h.isMarked_pushedPre
     isBlowup_id_preIdeal := fun T hV j hj => isBlowupAlongIdealSheaf_id_containedComponentsIdeal T hV j hj
     valid_lowerTop := fun T hV hOB hbal j hj hZ =>
-      DivisorReduction.isAdmissible_restrictToDivisor T hV hOB hbal j hj hZ
+      DivisorReduction.isAdmissible_restrictToDivisor T hV hbal j hj hZ
     valid_lowerPre := h.valid_lowerPre
     orderAt_ctrlIdeal_le_top := h.orderAt_ctrlIdeal_le_top
     orderAt_ctrlIdeal_le_pre := h.orderAt_ctrlIdeal_le_pre
@@ -367,7 +367,7 @@ theorem smooth_projectionToBase_comp_and_orderAt_controlledTransform_le (k : Typ
         le_pow_of_hasStrictNormalCrossingsWith (d.projectionToBase s ≫ p) (d.center s) (d.controlledTransform I m s) (d.boundaryFrom E s)
           hsnc m (hd.center_order s hs')
       have hEq : d.controlledTransform I m (s + 1)
-          = controlledTransform (d.map s) (d.center s) (d.controlledTransform I m s) m hπ hIle :=
+          = controlledTransform (d.map s) (d.center s) (d.controlledTransform I m s) m :=
         eq_controlledTransform_of_mul_eq_comap (d.map s) (d.center s) (d.controlledTransform I m s) m hπ hIle
           (d.controlledTransform I m (s + 1)) (d.pow_exceptionalIdeal_mul_controlledTransform_succ I m s (hd.divisible s hs'))
       intro x
@@ -510,11 +510,9 @@ theorem isMarked_ambientBlowupSeq_of_containedComponentsIdeal_eq_top
     (hres : FunctorialResolution.Blowup.StrictTransformIsBlowupOfClosedSubscheme.{u})
     (hno : BlowupPreservesNoetherian.{u}) (hlift : StrictNormalCrossingsLiftFromDivisor.{u})
     (T : MarkedIdealWithBoundary.{u}) (hV : T.IsAdmissible) [AlgebraicGeometry.IsNoetherian T.scheme]
-    (_hord : ∀ x : ↥T.scheme, orderAt T.ideal x ≤ (T.mult : ℕ∞))
     (hbal : ∀ [_inst : AlgebraicGeometry.LocallyOfFiniteType T.structMap],
       IsDerivBalanced T.base T.structMap T.ideal T.mult)
     (j : ℕ) (hj : j < T.boundary.length)
-    (_hZ : containedComponentsIdeal T j hj = ⊤)
     (hVlow : (restrictToDivisor T j hj).IsAdmissible)
     (s : (restrictToDivisor T j hj).SequenceOfBlowups)
     (hpr : (MarkedBlowupSequenceData.ofMarkedSequence s).toBlowupSequenceData.CentersContainNoComponent) :
@@ -547,11 +545,9 @@ theorem comap_controlledTransform_of_containedComponentsIdeal_eq_top
     (hres : FunctorialResolution.Blowup.StrictTransformIsBlowupOfClosedSubscheme.{u})
     (hno : BlowupPreservesNoetherian.{u}) (hlift : StrictNormalCrossingsLiftFromDivisor.{u})
     (T : MarkedIdealWithBoundary.{u}) (hV : T.IsAdmissible) [AlgebraicGeometry.IsNoetherian T.scheme]
-    (_hord : ∀ x : ↥T.scheme, orderAt T.ideal x ≤ (T.mult : ℕ∞))
     (hbal : ∀ [_inst : AlgebraicGeometry.LocallyOfFiniteType T.structMap],
       IsDerivBalanced T.base T.structMap T.ideal T.mult)
     (j : ℕ) (hj : j < T.boundary.length)
-    (_hZ : containedComponentsIdeal T j hj = ⊤)
     (hVlow : (restrictToDivisor T j hj).IsAdmissible)
     (s : (restrictToDivisor T j hj).SequenceOfBlowups)
     (hpr : (MarkedBlowupSequenceData.ofMarkedSequence s).toBlowupSequenceData.CentersContainNoComponent)
@@ -1005,7 +1001,7 @@ theorem containedComponentsIdeal_pullbackAlong_of_smooth (T : MarkedIdealWithBou
       (MarkedIdealWithBoundary.pullbackAlong_boundary T Y q h) j hj hj'
   have hcs : orderAtLeastLocus (T.pullbackAlong Y q h).ideal (T.pullbackAlong Y q h).mult =
       ⇑h.base ⁻¹' orderAtLeastLocus T.ideal T.mult :=
-    DivisorReduction.orderAtLeastLocus_comap_of_smooth T hV Y q h hq T.mult
+    DivisorReduction.orderAtLeastLocus_comap_of_smooth T hV Y q h T.mult
   have hcl : IsClosed (orderAtLeastLocus T.ideal T.mult) :=
     isClosed_orderAtLeastLocus T.base T.structMap T.ideal T.mult
   exact containedComponentsIdeal_comap_of_flat T (T.pullbackAlong Y q h) hV hV' h hfl j hj hj' hD hcs hcl
@@ -1377,7 +1373,7 @@ theorem nonzeroOnComponents_comap_lowerIdealAfterBlowup (T : MarkedIdealWithBoun
 
 theorem isAdmissible_restrictTwistedToDivisor (T : MarkedIdealWithBoundary.{u}) (hV : T.IsAdmissible)
     (hOB : T.IsOrderBoundedByMult) (hbal : T.IsBalanced hV.locallyOfFiniteType) (j : ℕ)
-    (hj : j < T.boundary.length) (_hZ : DivisorReduction.containedComponentsIdeal T j hj ≠ ⊤) :
+    (hj : j < T.boundary.length) :
     (DivisorReduction.restrictTwistedToDivisor T j hj).IsAdmissible := by
   have := hV.charZero
   have := hV.locallyOfFiniteType
@@ -1479,7 +1475,7 @@ theorem divisorReductionProperties_of_blowupPreservesNoetherian (hres : Functori
         intro T hV hOB hbal j hj hZ hVlow inst s hpr
         have := inst
         exact DivisorReduction.isMarked_ambientBlowupSeq_of_containedComponentsIdeal_eq_top hres hno hlift T hV
-          (orderAt_le_mult_of_isOrderBoundedByMult T hOB) (isDerivBalanced_of_isBalanced T hV hbal) j hj hZ hVlow s hpr
+          (isDerivBalanced_of_isBalanced T hV hbal) j hj hVlow s hpr
       isMarked_pushedPre := by
         intro T hV hOB hbal j hj hZ hb hVlow inst s hpr
         have := inst
@@ -1494,7 +1490,7 @@ theorem divisorReductionProperties_of_blowupPreservesNoetherian (hres : Functori
             (DivisorReduction.preimageSupportEqComponentsInOrderLocus_of_isAdmissible T hV j hj))
       valid_lowerPre := by
         intro T hV hOB hbal j hj hZ
-        exact DivisorReduction.isAdmissible_restrictTwistedToDivisor T hV hOB hbal j hj hZ
+        exact DivisorReduction.isAdmissible_restrictTwistedToDivisor T hV hOB hbal j hj
       orderAt_ctrlIdeal_le_top := by
         intro T hV hOB hbal j hj hZ hVlow inst s hpr i hi x
         have := inst
@@ -1504,7 +1500,7 @@ theorem divisorReductionProperties_of_blowupPreservesNoetherian (hres : Functori
           (DivisorReduction.ambientBlowupSeq hres hno T j hj (DivisorReduction.lowerIdealWithoutBlowup T)
             (DivisorReduction.lowerBoundaryWithoutBlowup T) s hpr)
           (DivisorReduction.isMarked_ambientBlowupSeq_of_containedComponentsIdeal_eq_top hres hno hlift T hV
-            (orderAt_le_mult_of_isOrderBoundedByMult T hOB) (isDerivBalanced_of_isBalanced T hV hbal) j hj hZ hVlow
+            (isDerivBalanced_of_isBalanced T hV hbal) j hj hVlow
             s hpr)
           (orderAt_le_mult_of_isOrderBoundedByMult T hOB) i
           (by rw [DivisorReduction.ambientBlowupSeq_length]; exact hi) x
@@ -1545,11 +1541,9 @@ theorem divisorReductionProperties_of_blowupPreservesNoetherian (hres : Functori
         have := hV.locallyOfFiniteType
         obtain ⟨U₀, hU, hsupp, hbalPre, hinv⟩ :=
           DivisorReduction.exists_isClosed_opens_goingUpInvariantOnOpen hres hno hlift T hV
-            (orderAt_le_mult_of_isOrderBoundedByMult T hOB) (isDerivBalanced_of_isBalanced T hV hbal) j hj hZ hb hVlow
+            (orderAt_le_mult_of_isOrderBoundedByMult T hOB) (isDerivBalanced_of_isBalanced T hV hbal) j hj hb hVlow
             s hpr
-            (smooth_subschemeι_containedComponentsIdeal_comp T hV j hj)
             (hasStrictNormalCrossingsWith_containedComponentsIdeal T hV j hj)
-            (support_containedComponentsIdeal_subset_orderAtLeastLocus T hV j hj)
             (exists_mul_pow_containedComponentsIdeal_eq_ideal T hV j hj)
             (DivisorReduction.isOpen_preimage_support_containedComponentsIdeal T j hj
               (DivisorReduction.preimageSupportEqComponentsInOrderLocus_of_isAdmissible T hV j hj))
@@ -1566,7 +1560,7 @@ theorem divisorReductionProperties_of_blowupPreservesNoetherian (hres : Functori
         intro T hV hOB hbal j hj hZ hVlow inst s hpr i hi
         have := inst
         exact DivisorReduction.comap_controlledTransform_of_containedComponentsIdeal_eq_top hres hno hlift T hV
-          (orderAt_le_mult_of_isOrderBoundedByMult T hOB) (isDerivBalanced_of_isBalanced T hV hbal) j hj hZ hVlow
+          (isDerivBalanced_of_isBalanced T hV hbal) j hj hVlow
           s hpr i hi
       comap_ctrlIdeal_pre := by
         intro T hV hOB hbal j hj hZ hb hVlow inst s hpr i hi

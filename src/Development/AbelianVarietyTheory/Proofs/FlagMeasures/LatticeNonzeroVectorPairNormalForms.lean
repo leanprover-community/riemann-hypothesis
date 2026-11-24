@@ -157,7 +157,7 @@ theorem exists_equiv_single {k : ℕ} (x : Fin (k + 1) → E) (hx : x ≠ 0) :
         ((LinearEquiv.toSpanNonzeroSingleton E _ x hx).symm ⟨x, _⟩) : Fin (k + 1) → E) = _
       rw [h1, LinearEquiv.toSpanNonzeroSingleton_one]
 
-theorem exists_extend {k : ℕ} (L : Submodule (𝓞 E) (Fin k → E)) (hL : Submodule.IsLattice E L)
+theorem exists_extend {k : ℕ} (L : Submodule (𝓞 E) (Fin k → E))
     (l : L →ₗ[𝓞 E] E) : ∃ f : (Fin k → E) →ₗ[E] E, ∀ z : L, f z = l z := by
   obtain ⟨b, hbL, hbspan, hbli⟩ := exists_linearIndependent E (L : Set (Fin k → E))
   let P := Submodule.span E (Set.range ((↑) : b → Fin k → E))
@@ -214,7 +214,7 @@ theorem exists_section {k : ℕ} (Λ : Submodule (𝓞 E) (Fin (k + 1) → E)) (
   obtain ⟨s, hs⟩ := Module.projective_lifting_property T LinearMap.id hT
   let l : L →ₗ[𝓞 E] E :=
     (LinearMap.proj (R := 𝓞 E) (φ := fun _ : Fin (k + 1) => E) 0).comp (Λ.subtype.comp s)
-  obtain ⟨f, hf⟩ := exists_extend L hL l
+  obtain ⟨f, hf⟩ := exists_extend L l
   refine ⟨f, fun z hz => ?_⟩
   have hsz : T (s ⟨z, hz⟩) = ⟨z, hz⟩ := LinearMap.congr_fun hs ⟨z, hz⟩
   have e1 : f z = ((s ⟨z, hz⟩ : Λ) : Fin (k + 1) → E) 0 := hf ⟨z, hz⟩

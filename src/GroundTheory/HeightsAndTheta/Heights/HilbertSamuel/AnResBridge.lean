@@ -186,7 +186,7 @@ theorem potOf_isPotential (R : AnRes P J e) (L : HermLine ι) (hL : IsSmoothHerm
   isPotential_potOf R hL
 
 theorem brIntegrable (R : AnRes P J e) (L : Fin e → HermLine ι) (A : HermLine ι) (s : MRing ι)
-    (hP : IsArithVar P (e + 1)) (hL : ∀ j, IsSmoothHerm (L j)) (hA : IsSmoothHerm A)
+    (hL : ∀ j, IsSmoothHerm (L j)) (hA : IsSmoothHerm A)
     (hs : IsSectionOn P A s) :
     MIntegrable R.A (fun j => potOf R (L j)) (fun x => logNorm A s (R.lift x x)) :=
   brIntegrable_of logAbsLocInt R L A s hL hA hs
@@ -240,7 +240,7 @@ theorem bridge {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] 
       mInt R.A (fun j => potOf R (L j)) (fun x => logNorm A s (R.lift x x)) := by
   rw [pushForward_null R.A (fun j => potOf R (L j)) (fun j => potOf_isPotential R (L j) (hL j))
     (brQ R Ψ) (brBad R Ψ) (brBad_null R Ψ hP hΨ) (brGood R Ψ) (brFib_finite R Ψ hP hΨ) _
-    (brIntegrable R L A s hP hL hA hs)]
+    (brIntegrable R L A s hL hA hs)]
   exact integral_congr_ae (brFibreSum_ae R Ψ L A s hP hΨ hL hA hs)
 
 end GroundTheory.Heights₂.Heights.HilbertSamuel.AnResBridge

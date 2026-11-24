@@ -110,7 +110,7 @@ theorem ringKrullDim_adjoin_le {R S : Type} [CommRing R] [IsDomain R] [IsNoether
       refine (Polynomial.hom_eval₂ g _ T'.val.toRingHom _).trans ?_
       exact hg
     refine (ringKrullDim_le_iff_height_le _).2 fun q hq => ?_
-    have h := ReciprocityTheory.CA.height_le_height_comap_of_eval₂_surjective f hf _ hgen halg q
+    have h := ReciprocityTheory.CA.height_le_height_comap_of_eval₂_surjective f _ hgen halg q
     exact le_trans (by exact_mod_cast h) (Ideal.height_le_ringKrullDim_of_ne_top (Ideal.comap_isPrime f q).ne_top)
 
 theorem ringKrullDim_le_add {O A : Type} (K : Type) [CommRing O] [IsDomain O] [IsNoetherianRing O] [CommRing A]

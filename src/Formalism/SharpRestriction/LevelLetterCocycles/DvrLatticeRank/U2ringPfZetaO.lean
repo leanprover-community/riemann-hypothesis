@@ -1127,7 +1127,7 @@ theorem u2ring_pf : SecondRingHypothesis := by
   have hs : 1 ≤ sK l K := DescentValuation.u3downPf_sK_pos hl K LL hG
   have hd := DvdPf.dvdCondition l hl K LL hG
   have hes : eK K * sK l K = ((D.loc l).PD K).p - 1 := by rw [hpl]; exact Nat.mul_div_cancel' hd
-  obtain ⟨ζL, hζL⟩ := Formalism.MainNotions.N.zeta_of_good (D.loc l) hG
+  obtain ⟨ζL, hζL⟩ := Formalism.MainNotions.N.zeta_of_good hG
   obtain ⟨ζ, hζ⟩ := u2ringPf_zetaO (D.loc l) LL hζL
   have hζ' : IsPrimitiveRoot ζ ((D.loc l).PD K).p := by rw [hpl]; exact hζ
   have hι : Function.Injective (algebraMap ↥(OL LL) ↥LL.1) := Subtype.val_injective

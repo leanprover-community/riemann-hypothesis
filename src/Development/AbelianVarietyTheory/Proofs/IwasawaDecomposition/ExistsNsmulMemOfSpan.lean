@@ -108,8 +108,8 @@ theorem exists_nsmul_mem {K : Type*} {V : Type*} [Field K] [NumberField K] [AddC
         _ = a • (n • x) := algebraMap_smul K a (n • x)
     rw [this]; exact L.smul_mem a hnx
 
-theorem main : ∀ {K : Type u_1} {V : Type u_2} [inst : Field K] [NumberField K] [inst_2 : AddCommGroup V]
-    [inst_3 : Module K V] [inst_4 : Module (NumberField.RingOfIntegers K) V]
+theorem main : ∀ {K : Type u_1} {V : Type u_2} [Field K] [NumberField K] [AddCommGroup V]
+    [Module K V] [Module (NumberField.RingOfIntegers K) V]
     [IsScalarTower (NumberField.RingOfIntegers K) K V] (L : Submodule (NumberField.RingOfIntegers K) V),
     ∀ x ∈ Submodule.span K (↑L : Set V), ∃ (n : ℕ), n ≠ (0 : ℕ) ∧ n • x ∈ L :=
   fun L => exists_nsmul_mem L

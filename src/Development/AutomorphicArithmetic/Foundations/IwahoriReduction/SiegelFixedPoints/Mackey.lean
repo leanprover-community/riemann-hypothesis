@@ -896,7 +896,7 @@ namespace UpperTheory.Kd.L.Mk
 variable {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ}
 
 private lemma FF_eq (X : Tower Ω ε) {l : ℕ} [Fact l.Prime] {n m N : ℕ} [NeZero N] {x : ZMod N} {c d w : ℕ}
-    {gm : (ZMod l)ˣ → SL(2, ℤ)} (hp : Par l N c d gm) (hm : 1 ≤ m) (σ : Ω ≃ₐ[ℚ] Ω)
+    {gm : (ZMod l)ˣ → SL(2, ℤ)} (σ : Ω ≃ₐ[ℚ] Ω)
     {R : Finset SL(2, ZMod (topMu l n m N))} (hR : IsReps N l (topMu l n m N) R)
     (hw : wkMu X l n m N x c d σ ∈ topL X (topMu l n m N))
     (hrep : ∀ γ ∈ Gs N l (topMu l n m N),
@@ -1231,7 +1231,7 @@ theorem UpperTheory.Kd.L.mackey :
     fun y => UpperTheory.Kd.L.wit ε X l N c d gm hp x w m n c₀ hw hm (σ y) _ (hB _ (hσ y))
   choose f hf1 hf2 using hwx
   have hwc := fun σ' => (UpperTheory.Kd.L.wcoc ε X l N c d gm hp x m n hm).1 σ'
-  have hFF := fun y => FF_eq (w := w) X hp hm (σ y) hR (hwc _).1 hrep
+  have hFF := fun y => FF_eq (w := w) X (σ y) hR (hwc _).1 hrep
   have hψx : ∀ y (r₀ : (ZMod l)ˣ) (γ : SL(2, ZMod (topMu l n m N))), ∃ ψ : HahnSeries ℚ Ω,
       IsDl X (A.comap ((ρ y : Ω ≃ₐ[ℚ] Ω) : Ω →+* Ω)) l n ((topMu l n m N : ℕ) : ℚ)
         (X.sl (ofSL (gm r₀ * liftSL _ γ)) (wkMu X l n m N x c d (σ y))) ψ ∧

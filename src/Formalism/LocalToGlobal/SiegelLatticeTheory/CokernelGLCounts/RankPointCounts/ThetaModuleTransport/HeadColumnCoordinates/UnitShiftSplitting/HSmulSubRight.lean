@@ -64,15 +64,15 @@ theorem zz_mem_R {g : SplitG M.L} (hs : M.split = some g) (H : HermSp M V) {r : 
       Prod.fst_sub, Prod.snd_sub, Prod.fst_neg, Prod.snd_neg] at i1 i3
     rw [← hz] at i1 i3
     apply mem_R_of hs
-    · simp only [map_sub, AlgEquiv.apply_symm_apply, Prod.fst_sub, ← hz, ← hqdef]
+    · simp only [map_sub, AlgEquiv.apply_symm_apply, Prod.fst_sub, ← hqdef]
       convert i1.1 using 1; field_simp
-    · simp only [map_sub, AlgEquiv.apply_symm_apply, Prod.snd_sub, ← hz, ← hqdef]
+    · simp only [map_sub, AlgEquiv.apply_symm_apply, Prod.snd_sub, ← hqdef]
       have : -(z.2 / q) - t.T' / q = -(q⁻¹ * (z.2 - -t.T)) + q * c := by
         field_simp; linear_combination hc
       rw [this]
       exact (𝒪[F]).add_mem ((𝒪[F]).neg_mem i1.2) ((𝒪[F]).mul_mem g.q.2 c.2)
     · refine ⟨-_, (𝒪[F]).neg_mem i3.1, ?_⟩
-      simp only [map_sub, AlgEquiv.apply_symm_apply, Prod.fst_sub, Prod.snd_sub, ← hz, ← hqdef]
+      simp only [map_sub, AlgEquiv.apply_symm_apply, Prod.fst_sub, Prod.snd_sub, ← hqdef]
       field_simp
       try ring
   · rw [ite_eq_right hab, sub_zero]

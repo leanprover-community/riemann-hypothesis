@@ -59,7 +59,6 @@ variable {D : D7} (X : HidaSetting D)
 
 def matCoord : (Fin (D.R.rS + 1 + D.R.rS) → Fin (D.R.rS + 1 + D.R.rS) → Ainf X.B.I.F ⊗[X.B.I.F] X.B.I.E) ≃ₜ EuclideanSpace ℝ (Fin (D.R.rS + 1 + D.R.rS) × Fin (D.R.rS + 1 + D.R.rS) × Module.Free.ChooseBasisIndex (Ainf X.B.I.F) (Ainf X.B.I.F ⊗[X.B.I.F] X.B.I.E) × InfinitePlace X.B.I.F) :=
   haveI : FiniteDimensional X.B.I.F X.B.I.E := fd_of X
-  have hReal : ∀ v : InfinitePlace X.B.I.F, v.IsReal := X.B.I.cm.totReal.isReal
   (Homeomorph.piCongrRight fun _ => Homeomorph.piCongrRight fun _ =>
     (tensCoord (F := X.B.I.F) (E := X.B.I.E) (Ainf X.B.I.F)).trans
       (Homeomorph.piCongrRight fun _ => ainfReal (totReal_of X))).trans (flat4 _ _ _ _)
@@ -224,7 +223,7 @@ def betaH (x y : Wh X) : ℝ := sumReI X (pairHerm (Ainf X.B.I.F) X.B.I.cm.sig (
 end Pair
 
 def DensNu : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf fibInf,
-    PushHyp X u' ψ hT μinf νinf fibInf →
+    PushHyp X u' ψ μinf νinf fibInf →
     νinf.map (hermCoord X) = ENNReal.ofReal (Real.sqrt |(Matrix.of fun i j =>
       betaH X (stdOrthonormalBasis ℝ (Wh X) i) (stdOrthonormalBasis ℝ (Wh X) j)).det|) • volume
 

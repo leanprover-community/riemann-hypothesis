@@ -276,7 +276,7 @@ open scoped TensorProduct
 theorem td_of_inj {α β : Type} [TopologicalSpace α] [TopologicalSpace β]
     [TotallyDisconnectedSpace α] (e : β → α) (he : Continuous e) (hi : Function.Injective e) :
     TotallyDisconnectedSpace β :=
-  ⟨fun t _ ht x hx y hy =>
+  ⟨fun _ _ ht x hx y hy =>
     hi ((isTotallyDisconnected_of_totallyDisconnectedSpace _ _ (Set.subset_univ _)
       (ht.image e he.continuousOn)) ⟨x, hx, rfl⟩ ⟨y, hy, rfl⟩)⟩
 

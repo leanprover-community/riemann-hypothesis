@@ -274,11 +274,11 @@ variable (X) in
 def cartierGroup : AddSubgroup (∀ x : X, Germ x) where
   carrier := {D | ∀ x, ∃ U : X.Opens, x ∈ U ∧ ∃ f, ∀ y ∈ U, D y = germOf y f}
   zero_mem' _ := ⟨⊤, trivial, 1, fun _ _ => rfl⟩
-  add_mem' {D E} hD hE x :=
+  add_mem' {_ _} hD hE x :=
     have ⟨U, hU, f, hf⟩ := hD x
     have ⟨V, hV, g, hg⟩ := hE x
     ⟨U ⊓ V, ⟨hU, hV⟩, f * g, fun y hy => congrArg₂ (· + ·) (hf y hy.1) (hg y hy.2)⟩
-  neg_mem' {D} hD x :=
+  neg_mem' {_} hD x :=
     have ⟨U, hU, f, hf⟩ := hD x
     ⟨U, hU, f⁻¹, fun y hy => congrArg (- ·) (hf y hy)⟩
 

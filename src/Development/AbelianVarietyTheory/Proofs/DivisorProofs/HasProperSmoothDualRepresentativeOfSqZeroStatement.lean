@@ -1385,7 +1385,7 @@ theorem isBasis_smallG (hi : IsThick I s i) (hL : L.IsLB) : IsBasis (smallG i L)
 
 theorem exists_isLift (hi : IsThick I s i) : ∃ u, IsLift s i L u :=
   ⟨fun p q a ↦ (hi.app_surj q.unop.1.1 (res (Small.le_inf a) (L.g p.unop.1.2 q.unop.1.2)).val).choose,
-    fun p q a ↦ (hi.app_surj q.unop.1.1 _).choose_spec⟩
+    fun _ q _ ↦ (hi.app_surj q.unop.1.1 _).choose_spec⟩
 
 end GlobalTheory.LBLift
 

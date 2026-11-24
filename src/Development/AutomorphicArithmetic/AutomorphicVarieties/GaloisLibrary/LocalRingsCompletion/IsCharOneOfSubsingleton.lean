@@ -119,7 +119,7 @@ def lift (I : Ideal R) [IsAdicComplete I R] (x : I) : O⟦X⟧ →ₐ[O] R where
   commutes' r := eq_of_sub_mem_pow I fun n => by
     have h := (I ^ n).add_mem ((exists_lim I x (algebraMap O O⟦X⟧ r)).choose_spec n)
       (aeval_sub_mem (p := trunc n (algebraMap O O⟦X⟧ r)) (q := Polynomial.C r) x.2 fun i hi => by
-        simp [coeff_trunc, hi, PowerSeries.algebraMap_apply, coeff_C, Polynomial.coeff_C])
+        simp [coeff_trunc, hi, coeff_C, Polynomial.coeff_C])
     simpa using h
 
 end Lift

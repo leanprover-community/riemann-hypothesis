@@ -131,7 +131,7 @@ theorem first_operator_preserves_first_family (ε : Fin m → Bool) (c : ℝ) (a
     · simp [inF1]; cases hb : ε b <;> simp_all
   · refine Submodule.smul_mem _ _ (Submodule.sum_mem _ fun i _ => hp _ _ (hp _ _ hf))
 
-theorem adjoin_first_operators_preserves_family (ε : Fin m → Bool) (c : ℝ) (B : Module.End ℂ (PX m n)) (hBF : ∀ f ∈ F1 ε, B f ∈ F1 ε)
+theorem adjoin_first_operators_preserves_family (ε : Fin m → Bool) (c : ℝ) (B : Module.End ℂ (PX m n))
     (hB : ∀ a b, ∀ f ∈ F1 ε, B (D1 ε c a b f) = D1 ε c a b (B f)) (w : Module.End ℂ (PX m n))
     (hw : w ∈ Algebra.adjoin ℂ (Set.range fun ab : Fin m × Fin m => firstFamilyOperatorEnd (n := n) ε c ab.1 ab.2)) :
     (∀ f ∈ F1 ε, w f ∈ F1 ε) ∧ ∀ f ∈ F1 ε, B (w f) = w (B f) := by

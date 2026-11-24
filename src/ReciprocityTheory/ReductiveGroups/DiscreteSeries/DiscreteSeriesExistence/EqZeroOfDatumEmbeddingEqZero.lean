@@ -98,7 +98,7 @@ theorem datumEmbedding_add (hP : IsPsiFor ε lam T Ψ) (v₀ v v' : T.V) :
   have h3 := dt_memLp hP v₀ (v + v')
   simp only [uniformisationL2, toL2, dite_eq_left h1, dite_eq_left h2, dite_eq_left h3]
   rw [← MemLp.toLp_add]
-  exact MemLp.toLp_congr _ _ (Filter.Eventually.of_forall fun g => by simp [jfun, inner_add_right])
+  exact MemLp.toLp_congr _ _ (Filter.Eventually.of_forall fun g => by simp [jfun])
 
 theorem datumEmbedding_smul (hP : IsPsiFor ε lam T Ψ) (v₀ : T.V) (c : ℂ) (v : T.V) :
     uniformisationL2 ε Ψ v₀ (c • v) = c • uniformisationL2 ε Ψ v₀ v := by
@@ -106,7 +106,7 @@ theorem datumEmbedding_smul (hP : IsPsiFor ε lam T Ψ) (v₀ : T.V) (c : ℂ) (
   have h3 := dt_memLp hP v₀ (c • v)
   simp only [uniformisationL2, toL2, dite_eq_left h1, dite_eq_left h3]
   rw [← MemLp.toLp_const_smul]
-  exact MemLp.toLp_congr _ _ (Filter.Eventually.of_forall fun g => by simp [jfun, inner_smul_right])
+  exact MemLp.toLp_congr _ _ (Filter.Eventually.of_forall fun g => by simp [jfun])
 
 def datumEmbeddingToL2 (hP : IsPsiFor ε lam T Ψ) (v₀ : T.V) : T.V →ₗ[ℂ] L2 ε where
   toFun := uniformisationL2 ε Ψ v₀

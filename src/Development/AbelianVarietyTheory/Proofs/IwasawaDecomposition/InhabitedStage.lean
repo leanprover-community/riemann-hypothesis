@@ -126,7 +126,7 @@ theorem mem_funMod (Hv : (noPlaces p O Kf).Tup → Submodule O (noPlaces p O Kf)
     simp [actX_apply]
 
 theorem finClasses : (trivLevel p O Kf).FinClasses :=
-  ⟨{fun v => isEmptyElim v}, fun L _ => isLatTup p O Kf L, fun L _ =>
+  ⟨{fun v => isEmptyElim v}, fun L _ => isLatTup p O Kf L, fun _ _ =>
     ⟨_, Finset.mem_singleton_self _, (1 : (trivLevel p O Kf).Γ), tup_eq p O Kf _ _⟩⟩
 
 def gat (d : ℕ) : GAtP p where

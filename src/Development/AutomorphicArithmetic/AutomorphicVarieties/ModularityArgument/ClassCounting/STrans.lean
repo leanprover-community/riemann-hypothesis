@@ -456,9 +456,9 @@ private theorem theta_add [Finite k] [Finite V] [Finite W] (hk : (Nat.card k : A
     · induction y using Projectivization.ind with
       | h v hv => rw [card_inr, Nat.cast_one]
 
-private theorem main : STrans := fun k _ _ A _ hk m t ht =>
-  ⟨theta k t, ⟨fun V _ _ _ z hz => ht _ ((isCoc _ lam_homog).tr_Bd hz), fun V W _ _ _ _ _ _ φ z hz => theta_iso ht φ hz,
-    fun G V W _ _ _ _ _ _ _ ρ σ z hz => theta_add hk ht ρ σ hz⟩, fun z hz => theta_one ht hz⟩
+private theorem main : STrans := fun k _ _ _ _ hk _ t ht =>
+  ⟨theta k t, ⟨fun _ _ _ _ _ hz => ht _ ((isCoc _ lam_homog).tr_Bd hz), fun _ _ _ _ _ _ _ _ φ _ hz => theta_iso ht φ hz,
+    fun _ _ _ _ _ _ _ _ _ _ ρ σ _ hz => theta_add hk ht ρ σ hz⟩, fun _ hz => theta_one ht hz⟩
 
 end Lines
 

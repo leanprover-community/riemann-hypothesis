@@ -327,7 +327,7 @@ theorem up_conj_int {n : ℕ} {t m : GL (Fin n) k} {d : Fin n → k}
 theorem lo_conj_int {n : ℕ} {t m : GL (Fin n) k} {d : Fin n → k}
     (ht : (t : Matrix (Fin n) (Fin n) k) = Matrix.diagonal d)
     (hinc : ∀ i j : Fin n, i < j → valuation k (d i) < valuation k (d j))
-    (hm : m ∈ iwahori k (Fin n)) (hN : m ∈ Nlo k n) (i j : Fin n) :
+    (hN : m ∈ Nlo k n) (i j : Fin n) :
     valuation k (((t⁻¹ * m * t : GL (Fin n) k) : Matrix (Fin n) (Fin n) k) i j) ≤
       valuation k ((m : Matrix (Fin n) (Fin n) k) i j) := by
   obtain ⟨hup, hdiag⟩ := nlo_entries hN
@@ -371,11 +371,11 @@ theorem iw_lo_mem {n : ℕ} {t : GL (Fin n) k} {d : Fin n → k}
   obtain ⟨e0, e1, -⟩ := lo_entries ht h0 h1 1
   simp only [pow_one] at e0 e1
   have hinv : (t⁻¹ * m * t)⁻¹ = t⁻¹ * m⁻¹ * t := by group
-  refine ⟨iw_of_entries _ (fun i j => (lo_conj_int ht hinc hm.1 hm.2 i j).trans (iw_entry_le hm.1 i j))
+  refine ⟨iw_of_entries _ (fun i j => (lo_conj_int ht hinc hm.2 i j).trans (iw_entry_le hm.1 i j))
     (fun i j => ?_) fun i j hij => ?_, mem_Nlo_of _ e0 e1⟩
   · rw [hinv]
-    exact (lo_conj_int ht hinc (inv_mem hm.1) (inv_mem hm.2) i j).trans (iw_entry_le (inv_mem hm.1) i j)
-  · exact (lo_conj_int ht hinc hm.1 hm.2 i j).trans_lt ((mem_iwahori.1 hm.1).2 i j hij)
+    exact (lo_conj_int ht hinc (inv_mem hm.2) i j).trans (iw_entry_le (inv_mem hm.1) i j)
+  · exact (lo_conj_int ht hinc hm.2 i j).trans_lt ((mem_iwahori.1 hm.1).2 i j hij)
 
 theorem iw_up_contract {n : ℕ} {t : GL (Fin n) k} {d : Fin n → k}
     (ht : (t : Matrix (Fin n) (Fin n) k) = Matrix.diagonal d)

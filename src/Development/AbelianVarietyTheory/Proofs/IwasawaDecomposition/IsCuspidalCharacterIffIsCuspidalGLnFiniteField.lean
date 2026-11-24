@@ -171,7 +171,7 @@ theorem glEquiv_mem_unip {d a s : ℕ} (b : Fin d → Fin s) (z : Fin s) (hz : �
     have h0 := (mem_unipRadical.1 hw) (σ.symm i) (σ.symm j) (by
       rw [htb, htb]
       rcases hij with h | h
-      · by_cases h' : b j = z <;> simp [h, h']
+      · by_cases h' : b j = z <;> simp [h]
       · by_cases h' : b j = z <;> simp [h, h'])
     rw [Matrix.sub_apply, sub_eq_zero, Matrix.one_apply] at h0
     rw [h0]

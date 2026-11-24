@@ -1517,7 +1517,7 @@ theorem prim_local : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Numbe
     apply τ.injective
     rw [h.2.2.2, h.2.2.2, star_star]
   have I := GlobalTheory.CompanionTheory.SW.GoodInt.rational_integral_units F E σ h d b
-  have hH := (_root_.GlobalTheory.CompanionTheory.WeilSiegel.HypStep.hypOne_isHermND_and_e0_mem F E σ h M J hJ).1
+  have hH := (_root_.GlobalTheory.CompanionTheory.WeilSiegel.HypStep.hypOne_isHermND_and_e0_mem F E σ M J hJ).1
   have hdet : IsUnit J.det := isUnit_iff_ne_zero.2 hJ.2
   filter_upwards [GlobalTheory.CompanionTheory.SW.GoodRing.good_ring F E σ h d b, _root_.GlobalTheory.CompanionTheory.SW.QuadMaxIdeal.maximal_ideals F E σ h d b,
     _root_.GlobalTheory.CompanionTheory.WeilSiegel.HypStep.ScaleNonUnit.fibre_zero_image_le F E σ h (M + 2) (hypOne J) hH (by omega) d b,
@@ -1636,7 +1636,7 @@ theorem abs_sub_one_le {P L : ℝ≥0∞} {r A : ℝ} (hr : 0 ≤ r) (hL : L < �
 
 theorem prim_formula : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (M : ℕ) (J : Matrix (Fin M) (Fin M) E), IsHermND σ J → 3 ≤ M → ∀ (d : ℕ) (b : Module.Basis (Fin d) F E) (laminf : Measure (Ainf F)) (lam : ∀ v : HeightOneSpectrum (𝓞 F), Measure (Fv F v)), IsStdInf laminf → (∀ v, IsStdV v (lam v)) → ∀ (h₂ : ∀ a b : Fin 1, σ ((0 : Matrix (Fin 1) (Fin 1) E) b a) = (0 : Matrix (Fin 1) (Fin 1) E) a b) (minf : HermR (Ainf F) σ 1 → Measure (Fin 1 → Fin (M + 2) → Ainf F ⊗[F] E)) (m : ∀ v : HeightOneSpectrum (𝓞 F), HermR (Fv F v) σ 1 → Measure (Fin 1 → Fin (M + 2) → Fv F v ⊗[F] E)), IsGramFibFree (Ainf F) σ (hypOne J) 1 (coordW (Ainf F) b laminf 1 (M + 2)) (coordHerm (Ainf F) σ b laminf 1) minf → (∀ v, IsGramFibFree (Fv F v) σ (hypOne J) 1 (coordW (Fv F v) b (lam v) 1 (M + 2)) (coordHerm (Fv F v) σ b (lam v) 1) (m v)) → ∀ I : Measure (Fin 1 → Fin (M + 2) → AF F ⊗[F] E), IsEulerProd b I 1 (minf (hermOf (Ainf F) σ (0 : Matrix (Fin 1) (Fin 1) E) h₂)) (fun v => m v (hermOf (Fv F v) σ (0 : Matrix (Fin 1) (Fin 1) E) h₂)) → Summable (fun v => |(m v (hermOf (Fv F v) σ (0 : Matrix (Fin 1) (Fin 1) E) h₂) (primV σ J b v)).toReal - 1|) ∧ ∃ S₃ : Finset (HeightOneSpectrum (𝓞 F)), ∀ S, S₃ ⊆ S → ∀ (Ψinf : (Fin 1 → Fin (M + 2) → Ainf F ⊗[F] E) → ℝ≥0∞) (Ψ : ∀ v : HeightOneSpectrum (𝓞 F), (Fin 1 → Fin (M + 2) → Fv F v ⊗[F] E) → ℝ≥0∞), Measurable Ψinf → (∀ v, Measurable (Ψ v)) → ∫⁻ y, purePr σ J b S Ψinf Ψ y ∂I = ((∫⁻ y, Ψinf y ∂(minf (hermOf (Ainf F) σ (0 : Matrix (Fin 1) (Fin 1) E) h₂))) * ∏ v ∈ S, ∫⁻ y, Ψ v y ∂(m v (hermOf (Fv F v) σ (0 : Matrix (Fin 1) (Fin 1) E) h₂))) * ENNReal.ofReal (∏' v : {v // v ∉ S}, (m v.1 (hermOf (Fv F v.1) σ (0 : Matrix (Fin 1) (Fin 1) E) h₂) (primV σ J b v.1)).toReal) := by
   intro F E _ _ _ _ _ σ hCM M J hJ hM d b laminf lam hinf hlam h₂ minf m hfinf hfv I hE
-  have hND := (GlobalTheory.CompanionTheory.WeilSiegel.HypStep.hypOne_isHermND_and_e0_mem F E σ hCM M J hJ).1
+  have hND := (GlobalTheory.CompanionTheory.WeilSiegel.HypStep.hypOne_isHermND_and_e0_mem F E σ M J hJ).1
   have hSF := GlobalTheory.CompanionTheory.WeilSiegel.FreeLocal.free_fibre_zero F E σ hCM (M + 2) (hypOne J) hND (by omega) h₂ d b laminf lam hinf hlam
     minf hfinf m hfv
   have hgood := (GlobalTheory.CompanionTheory.WeilSiegel.HypStep.PrimLoc.prim_local F E σ hCM M J hJ (by omega) d b).and (GlobalTheory.CompanionTheory.WeilSiegel.HypStep.PrimMeas.eventually_measurableSet_primV F E σ hCM M J hJ d b)

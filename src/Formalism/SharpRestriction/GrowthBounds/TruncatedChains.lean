@@ -992,7 +992,7 @@ theorem ybat_base (D : Formalism.BasicNotions.D7) (hK : RestKill) (hP : RestPair
   have hvn : Lv - Rv ∈ nMinus (resOps E ![a, b, c]) := by
     have h := Submodule.sub_mem _ hLx hRx
     rwa [sub_sub_sub_cancel_right] at h
-  exact sub_eq_zero.mp (hwv_mem_nMinus_eq_zero D (resOps E ![a, b, c]) hE' (ν ∘ ![a, b, c]) (Lv - Rv) hv' hraise hvn)
+  exact sub_eq_zero.mp (hwv_mem_nMinus_eq_zero (resOps E ![a, b, c]) hE' (ν ∘ ![a, b, c]) (Lv - Rv) hv' hraise hvn)
 
 end Formalism.MainNotions.G.ExtremalProjector
 end -- clump:auto
@@ -1471,7 +1471,7 @@ theorem restYB (D : Formalism.BasicNotions.D7) : RestYB :=
 theorem raising_operators_kill_image (D : Formalism.BasicNotions.D7) : SimpleRaisingKillsExtremalProjector :=
   raising_kill_of_interface restConn restComm (restYB D) restKill
 
-theorem extremal_projector_statement (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CovariantDegrees.adm5 D := sizes_bound_of_log_estimates D (raising_operators_kill_image D)
+theorem extremal_projector_statement (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CovariantDegrees.adm5 := sizes_bound_of_log_estimates D (raising_operators_kill_image D)
 
 end Formalism.MainNotions.G.ExtremalProjector
 end -- clump:auto

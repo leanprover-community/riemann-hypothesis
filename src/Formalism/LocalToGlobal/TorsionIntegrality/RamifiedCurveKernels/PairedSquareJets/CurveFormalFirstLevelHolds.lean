@@ -122,7 +122,7 @@ theorem curve_formal_first_level_holds : WeierstrassBiadditiveModEquiv := by
     hinv (Formalism.L2.Th1.A.bridgeCurve K W hW) h2).2.2.1
   exact (first_level_from_universal_law K (Formalism.L2.Th1.A.fgl W) (logSer W) (expSer W) _ hlp hlaw hph0 hu).2.2
 
-theorem CurveRamified_of (hR : RamifiedShape) (hA : AdjUnitNorm) (_hI : InvEndInt)
+theorem CurveRamified_of (hR : RamifiedShape) (hA : AdjUnitNorm)
     (hN : CurveNegNorm) (hF : WeierstrassBiadditiveModEquiv) : CurveRamified := by
   intro K _ _ _ W hc h2 s2 al albar d t ι _ neg xP yP hE hx hy hNal hal ht hd hd0 hb hs
   obtain ⟨hlp, hwp, hAx, hFG, -⟩ := curveFrame K (unitBall K) W hc
@@ -159,6 +159,6 @@ theorem CurveRamified_of (hR : RamifiedShape) (hA : AdjUnitNorm) (_hI : InvEndIn
     hd0
 
 theorem CurveRamified_of_shape (hR : RamifiedShape) (hA : AdjUnitNorm) (hI : InvEndInt) :
-    CurveRamified := CurveRamified_of hR hA hI curve_neg_norm_holds curve_formal_first_level_holds
+    CurveRamified := CurveRamified_of hR hA curve_neg_norm_holds curve_formal_first_level_holds
 
 end Formalism.L2.Th1.G

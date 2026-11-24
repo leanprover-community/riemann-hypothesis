@@ -338,7 +338,7 @@ theorem seg_eq_mul {F : Type} [Field F] (v : (Σ k, ι k) → F) {N : ℕ} (E : 
     (c₀ : Fin (N + 1)) (h0 : (∏ k, v ⟨k, E c₀ k⟩) ≠ 0) :
     (fun j => ∏ k, v ⟨k, E j k⟩) =
       fun j => (∏ k, v ⟨k, E c₀ k⟩) * ((∏ k, v ⟨k, E j k⟩) / ∏ k, v ⟨k, E c₀ k⟩) :=
-  funext fun j => (mul_div_cancel₀ _ h0).symm
+  funext fun _ => (mul_div_cancel₀ _ h0).symm
 
 theorem ker_ratio (y : (Σ k, ι k) → Ω) {N : ℕ} (E : Fin (N + 1) ≃ ((k : K) → ι k)) (c₀ : Fin (N + 1))
     (hc : ∀ k, y ⟨k, E c₀ k⟩ ≠ 0) {z : (Σ k, ι k) → ℂ} (hz : z ∈ mcPts (mCoordIdeal y))
@@ -446,7 +446,7 @@ theorem exists_snc_model_iso : ReciprocityTheory.ChartRestriction.G.Geo.ResK.Res
   refine ⟨segForm E Gz, fun _ => d + 1, r + 1, fun p => x' p.2,
     Ideal.span {rename (joinInl ι fun _ : Unit => Fin (r + 1)) (segForm E Gz)}, segForm_multiHomog E hG, ?_,
     fun z hz' hb' => (hev z).trans (hz z hz' hb'), ?_,
-    GlobalTheory.CompanionTheory.Ar.SegreChart.blockFnField_joinPt y x' fun i l hl => adjoin_seg_le y N E c₀ hE (hF i l hl), ?_, ?_,
+    GlobalTheory.CompanionTheory.Ar.SegreChart.blockFnField_joinPt y x' fun i l hl => adjoin_seg_le y N E c₀ (hF i l hl), ?_, ?_,
     GlobalTheory.CompanionTheory.Ar.SegreChart.isSncModel_joinPt y x' e E Gz fun a l ha hl => hch a l ha hl,
     fun z hz' hb' => GlobalTheory.CompanionTheory.Ar.SegreChart.mem_mcPts_span y x' (segForm E Gz) E Gz
       (fun w _ hw => (hev w).symm.trans hw) z hz' hb',

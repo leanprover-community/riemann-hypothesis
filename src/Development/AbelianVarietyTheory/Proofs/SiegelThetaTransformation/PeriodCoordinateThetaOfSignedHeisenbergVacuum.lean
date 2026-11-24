@@ -187,7 +187,7 @@ theorem can_heis {h τ : Matrix (Fin g) (Fin g) ℂ} (hτ : τ ∈ Siegel (Fin g
     rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib, Finset.mul_sum, Finset.mul_sum,
       ← Finset.sum_neg_distrib, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun k _ => ?_
-    rw [heis_exponent τ (imC τ)⁻¹ hτ.1 (imC_isSymm hτ) (imC_inv_mul hτ) (a k) (b k) (h *ᵥ z k)]
+    rw [heis_exponent τ (imC τ) hτ.1 (imC_isSymm hτ) (imC_inv_mul hτ) (a k) (b k) (h *ᵥ z k)]
     simp only [hf, Matrix.mulVec_add, Matrix.mulVec_smul, hp, add_assoc]
   linear_combination (h.det ^ (n / 2) *
     thS φ τ (fun k => h *ᵥ z k + qv (a k) + τ *ᵥ qv (b k))) * hx

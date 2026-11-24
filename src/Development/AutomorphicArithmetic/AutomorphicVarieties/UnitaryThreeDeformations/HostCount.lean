@@ -859,8 +859,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qe18.hc_avg :
-    ∀ {k D M : Type} [inst : Field k] [inst_1 : Group D]
-    [inst_2 : AddCommGroup M] [inst_3 : _root_.Module k M] (ρ : Representation k D M) (N : Subgroup D),
+    ∀ {k D M : Type} [Field k] [Group D]
+    [AddCommGroup M] [_root_.Module k M] (ρ : Representation k D M) (N : Subgroup D),
     (↑N.index : k) ≠ (0 : k) →
       ∀ (z : D → M),
         (∀ (g h : D), z (g * h) = z g + ((ρ : D → M →ₗ[k] M) g : M → M) (z h)) →

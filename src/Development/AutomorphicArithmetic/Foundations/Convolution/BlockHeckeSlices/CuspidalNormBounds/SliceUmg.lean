@@ -247,7 +247,7 @@ theorem IsCt.continuous {F : Sm E (r + s)} (h : IsCt r s F) : Continuous F.1 := 
 
 theorem zt_comm (n : ℕ) (t : ℝ) (g : GA E n) : zt E n t * g = g * zt E n t := centralSection_mul_comm _ g
 
-theorem ct_left {φ : GA E (r + s) → ℂ} (hφ : AutomorphicForm.IsLeftInvariant φ) (hs : φ ∈ Sm E (r + s))
+theorem ct_left {φ : GA E (r + s) → ℂ} (hs : φ ∈ Sm E (r + s))
     (hU : Umg ⟨φ, hs⟩) (t : ℝ) (g : GA E (r + s)) :
     AutomorphicForm.IsLeftInvariant fun x : GA E r =>
       AutomorphicForm.constantTerm r φ (lev (Ad E) r s (zt E r t * x, 1) * g) := by
@@ -292,7 +292,7 @@ theorem integrand_le (b : Blo S r) (s : ℕ) (t : ℝ) (N : ℕ) : ∃ C : ℝ, 
   refine ⟨C * A ^ N * 2 ^ N * D, by positivity, fun φ B hφ hB y g => ?_⟩
   have hB0 : 0 ≤ B := by simpa [AutomorphicForm.height_one] using (norm_nonneg _).trans (hB 1)
   have hg := (AutomorphicForm.height_pos g).le
-  refine (Pair.pair_le (B := C * B * (A * AutomorphicForm.height g) ^ N) (ct_left hφ.left φ.2 hφ t g) (by positivity)
+  refine (Pair.pair_le (B := C * B * (A * AutomorphicForm.height g) ^ N) (ct_left φ.2 hφ t g) (by positivity)
     (fun x => (hC φ.1 B hB _).trans ?_) hD _).trans (le_of_eq (by rw [mul_pow]; ring))
   rw [mul_assoc (C * B), ← mul_pow]
   refine mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (AutomorphicForm.height_pos _).le ?_ N) (by positivity)
@@ -321,7 +321,7 @@ theorem cls (b : Blo S r) (s : ℕ) (t : ℝ) : Cls (nu E r) (pt r s t) (wt b.f.
     obtain ⟨hf, -⟩ := cuspUmg E r b.f b.cusp
     have hl : AutomorphicForm.IsLeftInvariant fun x : GA E r =>
         F.1 (lev (Ad E) r s (zt E r t * x, 1) * g) * starRingEnd ℂ (b.f.1 x) := fun γ x => by
-      have := ct_left hφ.left φ.2 hφ t g γ x
+      have := ct_left φ.2 hφ t g γ x
       beta_reduce at this ⊢
       rw [hF, this, hf.left γ]
     have hcc : Continuous fun x : GA E r => F.1 (lev (Ad E) r s (zt E r t * x, 1) * g) * starRingEnd ℂ (b.f.1 x) :=

@@ -417,7 +417,7 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.ConjugateSelfDual Formalism.HC ReciprocityTheory.Gal IsLocalRing Polynomial UpperTheory.V.Base UpperTheory.V.Alg UpperTheory.V.HV UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.Ws UpperTheory.V.Ws.Lat
 
 private theorem ov_red {O k : Type} [CommRing O] [IsLocalRing O] [Field k] (red : O →+* k)
-    (hred : ∀ a ∈ maximalIdeal O, red a = 0) {a b : O} (h : red a = red b) : residue O a = residue O b := by
+    {a b : O} (h : red a = red b) : residue O a = residue O b := by
   rw [← sub_eq_zero, ← map_sub] at h
   rw [← sub_eq_zero, ← map_sub, residue_eq_zero_iff]
   by_contra hn
@@ -479,7 +479,7 @@ theorem UpperTheory.V.Ws.Lat.oddVan :
     intro g hg x hx
     by_contra hx0
     have h1 : red (γ g : c.O) = 1 := mul_right_cancel₀ hx0 (by rw [one_mul]; exact sub_eq_zero.1 hx)
-    refine hg (ov_red red hred ?_)
+    refine hg (ov_red red ?_)
     rw [← hq g, Units.val_mul, map_mul, h1, one_mul]
   obtain ⟨n, hn⟩ := xvanExt D hD k red hred γ hγ z hlc hco (fun A hA g hg h1 => hN g (.inl ⟨A, hA, hg, h1⟩)) fun v hv => by
     rcases Finset.mem_insert.1 hv with rfl | hv'

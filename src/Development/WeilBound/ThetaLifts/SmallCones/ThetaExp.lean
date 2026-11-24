@@ -633,7 +633,7 @@ theorem ctKernel_of (hE : ThetaExp) (hQ : EvUniq) (hS : Slice) (hA : EvAdm) (hW 
   have hPX := polX (F := F) h (skew_det hp₁.skew)
   obtain ⟨C, hC, hsX⟩ := hPX.exp hE hB hM₁ hM₂ heX
   have he' := isEv_sumA hB.std h' he
-  have hcomp := isEv_comp hB.std hp₀.good hM₁ hM₂ he₀ heX (comp_ne hPX hE hB hp₀.good hM₁ hM₂ he₀ heX) (K := isoA H H') (by
+  have hcomp := isEv_comp hp₀.good he₀ heX (comp_ne hPX hE hB hp₀.good hM₁ hM₂ he₀ heX) (K := isoA H H') (by
     rintro u (hu | ⟨z, rfl⟩)
     exacts [Or.inl hu, Or.inr ⟨_, ⟨z, rfl⟩, mid_vv _ _⟩])
   rw [Matrix.one_mul, Matrix.mul_one] at hcomp

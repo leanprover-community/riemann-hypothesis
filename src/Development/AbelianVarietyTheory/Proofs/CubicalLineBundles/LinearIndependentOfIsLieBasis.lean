@@ -89,7 +89,7 @@ theorem ofGram_single (G : (K →+* ℂ) → Matrix (Fin g) (Fin g) ℂ) (hG : �
   have e : ∀ i : Fin g, s ∘ (Pi.single i 1 : Fin g → K) = Pi.single i 1 := fun i => by
     ext k
     by_cases h : k = i <;> simp [h]
-  simp [ofGram, e, ← Pi.single_star]
+  simp [ofGram, e]
 
 theorem form_sum_right (h : HermFam K (Fin g → K)) (s : K →+* ℂ) (x y : Fin g → K) :
     h.form s x y = ∑ j, s (y j) * h.form s x (Pi.single j 1) := by

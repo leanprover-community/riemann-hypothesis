@@ -170,7 +170,7 @@ def ofVec (v : ∀ τ : E →+* ℂ, Fin (Dw.mult τ) → TanM x Z.t.G)
     (hb : ∀ τ (w : TanM x Z.t.G), (∀ a, actR Z.t.act a w = φ (embK c τ a) • w) →
       ∃! a : Fin (Dw.mult τ) → R, w = ∑ i, a i • v τ i) : EigFrame Z φ x where
   v τ i := (tv (v τ i)).left
-  tan τ i := isTan_tv _
+  tan _ _ := isTan_tv _
   eig τ i a := congrArg (fun v => (tv v).left) (he τ i a)
   basis τ _ hw h := (existsUnique_congr fun a => isComb_iff (v τ) a (tanOf hw)).2 (hb τ _ fun a => tan_ext (h a))
 

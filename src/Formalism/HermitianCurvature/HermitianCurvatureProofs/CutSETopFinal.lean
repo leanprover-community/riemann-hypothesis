@@ -751,7 +751,7 @@ theorem spectral_adjoint_rho_action : RDSRhvR := by
   simp only [CutMP.dMul, CutMP.rhvGrp, Submodule.coe_add, Pi.add_apply, LinearMap.smul_apply,
     Submodule.coe_smul, Pi.smul_apply, QL, grp]
   rw [X.t_apply Y 0 1 _ x hx, X.t_apply Y 1 1 _ x hx,
-    t_slice_congr X Y 0 1 _ _ x hx hA, t_slice_congr X Y 1 1 _ _ x hx hB]
+    t_slice_congr Y 0 1 _ _ x hx hA, t_slice_congr Y 1 1 _ _ x hx hB]
   simp only [smul_add, smul_comm (CutMP.drF P.r x.1) (M.sgn P l0)]
 
 end Formalism.FourierDecayAlt.P.CutSE

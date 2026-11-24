@@ -275,7 +275,7 @@ theorem norm_le_mul_norm_div_of_bounded_on_ball {V W : Type} [NormedAddCommGroup
 
 theorem norm_le_of_vanishing_on_axes {B V W : Type} [NormedAddCommGroup B] [NormedSpace ℂ B]
     [NormedAddCommGroup V] [NormedSpace ℂ V] [NormedAddCommGroup W] [NormedSpace ℂ W]
-    (b₀ : B) (G : B × V × V → W) (R : ℝ) (hR : 0 < R)
+    (b₀ : B) (G : B × V × V → W) (R : ℝ)
     (hG : DifferentiableOn ℂ G (ball b₀ R ×ˢ ball (0 : V) R ×ˢ ball (0 : V) R))
     (hb : ∀ p ∈ ball b₀ R ×ˢ ball (0 : V) R ×ˢ ball (0 : V) R, ‖G p‖ ≤ 1)
     (hz : ∀ b ∈ ball b₀ R, ∀ s ∈ ball (0 : V) R, G (b, s, 0) = 0 ∧ G (b, 0, s) = 0) :
@@ -485,7 +485,7 @@ theorem exists_local_log_of_commutative_law : ∀ (n g : ℕ) (b₀ : Fin n → 
     rw [← ball_prod_same]
     exact ⟨ball_subset_ball (min_le_right _ _) hb, ball_subset_ball (min_le_right _ _) hs⟩
   have hGbound : ∀ b ∈ ball b₀ R, ∀ s ∈ ball (0 : Fin g → ℂ) R, ∀ t ∈ ball (0 : Fin g → ℂ) R, ‖μ (b, s, t) - s - t‖ ≤ ‖s‖ * ‖t‖ / R ^ 2 := by
-    refine _root_.GlobalTheory.CompanionTheory.Metric.norm_le_of_vanishing_on_axes b₀ G R hR ?_ ?_ ?_
+    refine _root_.GlobalTheory.CompanionTheory.Metric.norm_le_of_vanishing_on_axes b₀ G R ?_ ?_ ?_
     · rintro ⟨b, s, t⟩ ⟨hb, hs, ht⟩
       exact (hRG b hb s hs t ht).2.differentiableAt.differentiableWithinAt
     · rintro ⟨b, s, t⟩ ⟨hb, hs, ht⟩

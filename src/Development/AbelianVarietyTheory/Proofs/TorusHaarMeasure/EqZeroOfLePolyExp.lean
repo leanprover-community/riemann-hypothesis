@@ -241,7 +241,7 @@ private lemma one_add_inv_la1_flow_le_mul {r : ℕ} (X : _root_.ReciprocityTheor
     (hx : x ∈ X.dom) {ξ : Fin r → E} (hξ : X.IsIso ξ) (s : X.Ψ → ℂ) {Y B K : ℝ}
     (hs : ∀ τ, 0 ≤ (s τ).im) (hY : ∀ τ, (s τ).im ≤ Y) (hB : ∀ τ, |(s τ).re| ≤ B)
     (hK : ∀ τ, X.c τ * X.maj x τ (_root_.ReciprocityTheory.ChartRestriction.G.FD.Data.emb (↑τ) ξ) ≤ K) (hK0 : 0 ≤ K) (hY0 : 0 ≤ Y)
-    (hB0 : 0 ≤ B) (hx1 : 0 < X.la1 x) (hz1 : 0 < X.la1 (X.flow ξ s x)) :
+    (hB0 : 0 ≤ B) (hx1 : 0 < X.la1 x) :
     1 + 1 / X.la1 (X.flow ξ s x) ≤ (1 + Y * K) * (1 + B * K) ^ 2 * (1 + 1 / X.la1 x) := by
   have hz := flow_mem_dom_of_im_nonneg' X hx hξ s hs
   set P := (1 + Y * K) * (1 + B * K) ^ 2 with hP_def
@@ -473,7 +473,7 @@ theorem _root_.GlobalTheory.ModeDecay.fj_eq_zero_of_decay :
       have := mul_le_mul_of_nonneg_left key (by positivity : (0 : ℝ) ≤ 4 * Real.pi)
       linarith
     have hz1 : 0 < X.la1 (X.flow ξ s x) := hpos _ hz
-    have hla := one_add_inv_la1_flow_le_mul X hx hξ s hs0 hsY hsB hK hK0 hy0 hB0 hx1 hz1
+    have hla := one_add_inv_la1_flow_le_mul X hx hξ s hs0 hsY hsB hK hK0 hy0 hB0 hx1
     have hpow : (1 + 1 / X.la1 (X.flow ξ s x)) ^ A ≤
         ((1 + y * K) * (1 + B * K) ^ 2 * (1 + 1 / X.la1 x)) ^ A :=
       Real.rpow_le_rpow (add_nonneg zero_le_one (one_div_nonneg.mpr hz1.le)) hla hA

@@ -137,7 +137,7 @@ private def sS : RS S →ₙ+* Ad E where
   map_add' x y := Prod.ext rfl ((Finset.sum_congr rfl fun v _ => map_add _ _ _).trans Finset.sum_add_distrib)
 
 private theorem cont_sS : Continuous (sS S) :=
-  Continuous.prodMk (continuous_pi fun w => (continuous_apply _).comp continuous_snd)
+  Continuous.prodMk (continuous_pi fun _ => (continuous_apply _).comp continuous_snd)
     (continuous_finsetSum _ fun v _ => (_root_.GlobalTheory.CuspRep.CuspSub.continuous_sLoc v.1).comp ((continuous_apply v).comp continuous_fst))
 
 private theorem pS_sS (x : RS S) : pS S (sS S x) = x :=

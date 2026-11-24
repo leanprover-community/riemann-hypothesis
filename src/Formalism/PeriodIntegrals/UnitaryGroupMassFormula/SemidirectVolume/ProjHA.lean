@@ -208,7 +208,7 @@ private theorem hform_single_single_semidirect_volume {A : Type} [CommRing A] {n
     Formalism.UG.hform σA N (Pi.single i 1) (Pi.single j 1) = N i j := by
   unfold Formalism.UG.hform
   rw [Finset.sum_eq_single i (fun b _ hb => by simp [Pi.single_apply, hb]) (by simp)]
-  rw [Finset.sum_eq_single j (fun b _ hb => by simp [Pi.single_apply, hb]) (by simp)]
+  rw [Finset.sum_eq_single j (fun b _ hb => by simp [hb]) (by simp)]
   simp
 
 theorem uni_lin (g : HA R σ J) : (datR R σ J P T).Uni (lin R σ J g) := by

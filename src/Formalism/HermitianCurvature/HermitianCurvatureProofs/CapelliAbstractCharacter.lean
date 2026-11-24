@@ -313,7 +313,7 @@ theorem comat (hE : GlRel E) (u : ℂ) (X : Fin (N + 1) → V) (i : Fin (N + 1))
       qminor E j.succAbove i.succAbove u (Tm E (u - (N : ℂ)) j l (X l)) = if i = l then qdet E u (X l) else 0 := by
     intro l
     have := congrArg (fun T : Module.End ℂ V => T (X l))
-      (qComatrix_of quantumMinorRowSkew_holds quantumMinorColSkew_holds (Module.End ℂ V) N E hE u i l)
+      (qComatrix_of quantumMinorColSkew_holds (Module.End ℂ V) N E hE u i l)
     simp only [sgn_mul, LinearMap.sum_apply, Module.End.mul_apply, LinearMap.smul_apply] at this
     rw [apply_ite (fun T : Module.End ℂ V => T (X l)), LinearMap.zero_apply] at this
     rw [← this]

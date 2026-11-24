@@ -361,7 +361,7 @@ theorem cell_bij {α β : Type} [Fintype α] [LinearOrder α] [Fintype β] [Line
     refine (congrArg (τ ⟨x, hP x⟩) (Ψ.apply_symm_apply (φ.1.1 1))).trans ?_
     exact (φ.1.2 ⟨x, hP x⟩ 1).symm.trans (congrArg φ.1.1 (mul_one x))
 
-theorem isIrreducible_piTensor (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) {β : Type} [Fintype β]
+theorem isIrreducible_piTensor {β : Type} [Fintype β]
     (x : β → IrrGL (k := k)) : (piTensor fun j => (x j).rep).IsIrreducible := by
   exact GlobalTheory.ExtTensorIrr.piTensor_isIrreducible GlobalTheory.CompanionTheory.Published.bernsteinZelevinskyFiniteness k β
     (fun j => Fin (x j).1) (fun j => (x j).2.rep)
@@ -377,7 +377,7 @@ theorem jhMult_cell_comp (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) {
   obtain ⟨f, hf⟩ := T4
   obtain ⟨g, hg⟩ := hf
   refine ⟨f, g, ?_⟩
-  have h1 := jhMult_self (isIrreducible_piTensor hA fun j => x (e j))
+  have h1 := jhMult_self (isIrreducible_piTensor fun j => x (e j))
   exact (jhMult_of_nonempty (piTensor fun j => (x (e j)).rep) hg).trans h1
 
 theorem jhMult_cell_bij : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
@@ -505,7 +505,7 @@ section -- clump:auto
 
 open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.JHMult Zc Zc.Seg
 
-theorem _root_.GlobalTheory.T.jacquet_multiplicity_cuspidal_product : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) {l c N : ℕ} (x : Fin l → IrrGL (k := k)) (y : Fin c → IrrGL (k := k)) (hx : ∑ a, (x a).1 = N) (hy : ∑ a, (y a).1 = N) (hxc : ∀ a, (x a).IsCusp) (hyc : ∀ a, (y a).IsCusp), jm y hy (prodIrr x hx) = (Set.ncard {e : Fin c ≃ Fin l | ∀ a, y a = x (e a)} : ℕ∞) := by
+theorem _root_.GlobalTheory.T.jacquet_multiplicity_cuspidal_product : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (_ : GlobalTheory.Published.IrreducibleAdmissibleGL) {l c N : ℕ} (x : Fin l → IrrGL (k := k)) (y : Fin c → IrrGL (k := k)) (hx : ∑ a, (x a).1 = N) (hy : ∑ a, (y a).1 = N) (_ : ∀ a, (x a).IsCusp) (_ : ∀ a, (y a).IsCusp), jm y hy (prodIrr x hx) = (Set.ncard {e : Fin c ≃ Fin l | ∀ a, y a = x (e a)} : ℕ∞) := by
   first | exact @GlobalTheory.CompanionTheory.CuspJm.main
 end -- clump:auto
 end -- clump:auto

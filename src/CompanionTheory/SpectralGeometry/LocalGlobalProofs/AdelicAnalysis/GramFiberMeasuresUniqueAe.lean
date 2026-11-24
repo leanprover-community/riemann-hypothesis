@@ -55,7 +55,7 @@ theorem fibre_unique : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Num
     rw [← hUB]; exact hm'
   by_cases hS : S ∈ B
   · exact (GlobalTheory.CompanionTheory.SW.FibreUniq.fibreFamily_eq _ _ _ μ ν (gramR R σ J) g Subtype.val hι hgc hgf
-      B B hBo hBo subset_rfl m' m h2 h1 S hS)
+      B B hBo subset_rfl m' m h2 h1 S hS)
   · have a := (GlobalTheory.CompanionTheory.SW.FibreFam.fibre_family_basic _ _ _ μ ν (gramR R σ J) g Subtype.val hι hgc hgf
       B hBo m h1).2.1 S hS
     have b := (GlobalTheory.CompanionTheory.SW.FibreFam.fibre_family_basic _ _ _ μ ν (gramR R σ J) g Subtype.val hι hgc hgf

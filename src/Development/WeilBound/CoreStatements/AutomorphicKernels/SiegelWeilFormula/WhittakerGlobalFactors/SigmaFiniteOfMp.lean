@@ -145,7 +145,7 @@ theorem db_split' (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (ψ : AddChar (AF 
       exact map_mul (algebraMap F (AF F)) ξ (formB σ b n p q)
     rw [h2, Matrix.smul_mulVec, dotProduct_smul, smul_eq_mul]
   have hsd : db.map e = adeleMeasurePi F :=
-    selfDual_eq _ hs hdet _ (selfDual_transport e (fun S T => by rw [he, he, he, hermVec_add]) _ _ hpair db hdb)
+    selfDual_eq _ hdet _ (selfDual_transport e (fun S T => by rw [he, he, he, hermVec_add]) _ _ hpair db hdb)
   have hEq := GlobalTheory.CompanionTheory.Hypotheses₂.OneV.DxEuler.adele_eq l hH D hD hD1 lf hlf h1
   haveI : SigmaFinite l := Measure.IsAddHaarMeasure.sigmaFinite l
   haveI : SigmaFinite lf := Measure.IsAddHaarMeasure.sigmaFinite lf

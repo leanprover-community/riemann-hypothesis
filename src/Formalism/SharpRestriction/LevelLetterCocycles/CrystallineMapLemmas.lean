@@ -180,7 +180,7 @@ end Lit
 
 section Theory
 
-def TheoremBLocal (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) (F : FonOf LT A HW) (C : ℝ) : Prop :=
+def TheoremBLocal (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) (C : ℝ) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (hG : Good K 1 LL), K.1 ≤ MaximalUnramifiedExtension l →
     ∀ [NeZero (Module.finrank ℚ_[l] ↥(K0 K))] [Fintype (↥K.1 →ₐ[ℚ_[l]] ↥LL.1)],
       ThmB ((LT l).PD K) ((HW l).W K 1 LL hG) C
@@ -197,7 +197,7 @@ def DdREqDcrisAll (LT : LocTheory) : Prop :=
 
 end Theory
 
-def Conclusion1 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (C : ℝ) : Prop := TheoremBLocal D.loc D.locA HW F C
+def Conclusion1 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (C : ℝ) : Prop := TheoremBLocal D.loc D.locA HW C
 
 def adm8 (D : D7) : Prop := BlochKatoDimensionLocal D.loc
 

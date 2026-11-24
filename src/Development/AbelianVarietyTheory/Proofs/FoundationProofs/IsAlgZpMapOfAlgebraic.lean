@@ -102,7 +102,7 @@ theorem exists_restrict : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClos
     rw [RingHom.algebraMap_toAlgebra, eq_ratCast (algebraMap ℚ Ωl), eq_ratCast (algebraMap ℚ Ω), map_ratCast]
   haveI : Normal ℚ Ω := IsAlgClosure.normal ℚ Ω
   let gq : Ωl ≃ₐ[ℚ] Ωl := AlgEquiv.ofRingEquiv (f := g.toRingEquiv) (fun x => by
-    simp only [eq_ratCast, AlgEquiv.coe_toRingEquiv, RingEquiv.coe_toEquiv, AlgEquiv.coe_ringEquiv]
+    simp only [eq_ratCast, AlgEquiv.coe_toRingEquiv]
     exact map_ratCast g x)
   have hc : ∀ x, g (j x) = j (gq.restrictNormal Ω x) := fun x => by
     have := AlgEquiv.restrictNormal_commutes gq Ω x
@@ -687,7 +687,7 @@ theorem approx (h : IsClo p Ωl) (hv : ∀ x : Ωl, v x ≤ 1 ↔ IsInt (p := p)
     have hpO : (p : O0 p) ≠ 0 := by exact_mod_cast hp.out.ne_zero
     have h3 := ih g ((a - m) / p) (by rwa [hg, natDegree_C_mul hpO] at hf') (by
       have := congrArg (aeval (T.qq n)) hg
-      simp only [map_sub, map_mul, aeval_C, map_intCast, map_natCast, ha] at this
+      simp only [map_sub, map_mul, map_intCast, map_natCast, ha] at this
       rw [map_div₀, map_sub, map_intCast, map_natCast, this, mul_div_cancel_left₀ _ hpl])
     have h4 : s a - a = p * (s ((a - m) / p) - (a - m) / p) := by
       rw [map_div₀, map_sub, map_intCast, map_natCast]; field_simp; ring

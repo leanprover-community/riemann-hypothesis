@@ -99,7 +99,7 @@ theorem cA_inc (a : D.host.E) : cA D (incA D a) = incA D (star a) := by
   simp [cA, sigR, CMData.sig, inclR]; rfl
 
 theorem gram_herm (S : HSp D) : S.gramᴴ = S.gram :=
-  Matrix.ext fun i j => S.herm.eq _ _
+  Matrix.ext fun _ _ => S.herm.eq _ _
 
 theorem GG_GI (S : HSp D) : GG S * GI S = 1 := by
   rw [← Matrix.map_mul, Matrix.mul_nonsing_inv _ (isUnit_iff_ne_zero.2 (gram_det_ne S))]

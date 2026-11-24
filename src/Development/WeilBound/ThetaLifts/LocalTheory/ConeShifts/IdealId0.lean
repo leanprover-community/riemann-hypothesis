@@ -800,7 +800,7 @@ open FractionalIdeal (count)
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 open GlobalTheory.StdDual (codiff codiff_ne_zero)
 
-theorem lines {B : Base F E} (hB : B.IsGood σ) {n d n₁ d₁ : ℕ} {X : Spc F E n} {W : Spc F E d} {X₁ : Spc F E n₁} {W₁ : Spc F E d₁}
+theorem lines {B : Base F E} {n d n₁ d₁ : ℕ} {X : Spc F E n} {W : Spc F E d} {X₁ : Spc F E n₁} {W₁ : Spc F E d₁}
     {H : Plane E n n₁} {H' : Plane E d d₁} {r s r' s' i j i' j' : ℕ} (hX : X.IsHerm σ B r s) (hW : W.IsSkew σ B r' s')
     (h : H.IsAdapted σ B X X₁ i j) (h' : H'.IsAdapted σ B W W₁ i' j') (hσ : ∀ x, σ (σ x) = x) :
     (Line X.L H.x H.𝔟 ∧ Line X.L H.y (1 * (cj hσ H.𝔟)⁻¹)) ∧
@@ -827,7 +827,7 @@ theorem memB (hσ : ∀ x, σ (σ x) = x) {n d n₁ d₁ : ℕ} {X : Spc F E n} 
 theorem idealId0 : IdealId0 := by
   intro F E _ _ _ _ _ σ B n d n₁ d₁ X W X₁ W₁ H H' r s r' s' i j i' j' hB hX hW h h' u hu
   have hσ := PositivityTheory.ThK.Vac.sigma_sigma hB.cm
-  obtain ⟨⟨a, a'⟩, b, b'⟩ := lines hB hX hW h h' hσ
+  obtain ⟨⟨a, a'⟩, b, b'⟩ := lines hX hW h h' hσ
   rcases hu with rfl | rfl
   · exact ⟨_, mul_ne_zero a.ne b'.ne, memA a b'⟩
   · exact ⟨_, cj_ne hσ (mul_ne_zero a'.ne b.ne), memB hσ a' b⟩
@@ -836,7 +836,7 @@ theorem idealId' : IdealId' := by
   refine ⟨1, 1, -1, -1, ?_⟩
   intro F E _ _ _ _ _ σ B n d n₁ d₁ X W X₁ W₁ H H' r s r' s' i j i' j' hB hX hW h h' hi hj hi' hj' u e₁ e₂ hu
   have hσ := PositivityTheory.ThK.Vac.sigma_sigma hB.cm
-  obtain ⟨⟨a, a'⟩, b, b'⟩ := lines hB hX hW h h' hσ
+  obtain ⟨⟨a, a'⟩, b, b'⟩ := lines hX hW h h' hσ
   have pD := pr_codiff hB
   have p1 : Pr B.P (1 : FI E) := fun w _ => FractionalIdeal.count_one _ _
   have pa := plane_pr hσ hB.cm one_ne_zero p1 hX.bas h hi hj ⟨a, a'⟩

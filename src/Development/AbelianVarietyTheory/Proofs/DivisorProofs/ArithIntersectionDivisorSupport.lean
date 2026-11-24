@@ -85,8 +85,8 @@ end GlobalTheory.CxUnfold
 namespace GlobalTheory.CxUnfold
 
 theorem rep_smul {p : ℕ} [Fact p.Prime] (G : HTGroup p) (v : InfinitePlace G.F) (β : G.Cˣ) (η : grp G β)
-    (l : PLv G v β) : ∃ c : ℂ, c ≠ 0 ∧
-      Projectivization.rep ((η • l : PLv G v β) : Projectivization ℂ (Fin G.n → ℂ)) =
+    (l : PLv G) : ∃ c : ℂ, c ≠ 0 ∧
+      Projectivization.rep ((η • l : PLv G) : Projectivization ℂ (Fin G.n → ℂ)) =
         c • ((toV G v β η : Matrix (Fin G.n) (Fin G.n) ℂ) *ᵥ
           Projectivization.rep (l : Projectivization ℂ (Fin G.n → ℂ))) := by
   set w := Projectivization.rep (l : Projectivization ℂ (Fin G.n → ℂ))
@@ -96,7 +96,7 @@ theorem rep_smul {p : ℕ} [Fact p.Prime] (G : HTGroup p) (v : InfinitePlace G.F
     apply hw
     apply toV_injective G v β η
     rw [Matrix.toLin'_apply, Matrix.toLin'_apply, h0, Matrix.mulVec_zero]
-  have hl : ((η • l : PLv G v β) : Projectivization ℂ (Fin G.n → ℂ)) =
+  have hl : ((η • l : PLv G) : Projectivization ℂ (Fin G.n → ℂ)) =
       Projectivization.mk ℂ ((toV G v β η : Matrix (Fin G.n) (Fin G.n) ℂ) *ᵥ w) hMw := by
     show Projectivization.map _ _ (l : Projectivization ℂ (Fin G.n → ℂ)) = _
     conv_lhs => rw [← Projectivization.mk_rep (l : Projectivization ℂ (Fin G.n → ℂ))]

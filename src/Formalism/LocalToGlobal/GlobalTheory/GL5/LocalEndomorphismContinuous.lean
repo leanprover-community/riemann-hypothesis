@@ -309,7 +309,7 @@ end Iw
 open Formalism.UG.P
 
 theorem isProGrp_transfer {G₁ G₂ : Type} [Group G₁] [TopologicalSpace G₁] [Group G₂] [TopologicalSpace G₂]
-    (g : ℕ) (θ : G₁ →* G₂) (hθ : Continuous θ) (ψ : G₂ → G₁) (hψ : Continuous ψ)
+    (g : ℕ) (θ : G₁ →* G₂) (ψ : G₂ → G₁) (hψ : Continuous ψ)
     (Uw : Subgroup G₁) (P : Subgroup G₂) (h1 : ∀ x ∈ Uw, θ x ∈ P) (h2 : ∀ p ∈ P, ψ p ∈ Uw ∧ θ (ψ p) = p)
     (h3 : ∀ x ∈ Uw, ψ (θ x) = x) (hP : IsProGrp g P) : IsProGrp g Uw := by
   unfold IsProGrp at hP ⊢
@@ -477,7 +477,7 @@ theorem proGTransfer_of_cont (F E : Type) [Field F] [NumberField F] [Field E] [N
     have hb : Continuous (bc (n := Fin k) (s.symm : K × K →+* E ⊗[F] K)) :=
       Continuous.units_map _ (continuous_id.matrix_map hsic)
     exact hb.comp ((continuous_splitLift J1 hJ1).comp ((continuous_const.mul continuous_id).mul continuous_const))
-  refine isProGrp_transfer g θ hθc ψ hψc Uw P ?_ ?_ ?_ hP
+  refine isProGrp_transfer g θ ψ hψc Uw P ?_ ?_ ?_ hP
   · intro x hx; rw [hθ]; exact (hiff x (hUw hx)).1 hx
   · intro p hp
     have hm : ψ p ∈ Uw := (hiff (ψ p) (hψU p)).2 (by rw [← hθ, hθψ]; exact hp)

@@ -77,8 +77,8 @@ theorem rho_antitone_of_interlacing {k : ℕ} {u u' ρ : ℕ → ℝ} (h : I.Int
   induction j, hij using Nat.le_induction with
   | base => exact le_rfl
   | succ n hin ih =>
-    have h1 := h n (by simp only [Finset.mem_Icc, Set.mem_Icc]; omega)
-    have h2 := h (n + 1) (by simp only [Finset.mem_Icc, Set.mem_Icc]; omega)
+    have h1 := h n (by simp only [Finset.mem_Icc]; omega)
+    have h2 := h (n + 1) (by simp only [Finset.mem_Icc]; omega)
     have h3 := ih (by omega)
     linarith [h1.2.2.1, h2.1]
 
@@ -89,12 +89,12 @@ theorem rho_side_inequality : C7.RhoSide := by
   obtain ⟨hB1, hB2⟩ := hB
   constructor
   · intro hli
-    have h1 := hI l (by simp only [Finset.mem_Icc, Set.mem_Icc]; omega)
+    have h1 := hI l (by simp only [Finset.mem_Icc]; omega)
     have h2 := rho_antitone_of_interlacing hI l i hl hli hi'.2
     have h3 : ρ l + 1 / 2 ≤ min (u l) (u' l) := le_min h1.1 h1.2.1
     linarith
   · intro hil
-    have h1 := hI (l - 1) (by simp only [Finset.mem_Icc, Set.mem_Icc]; omega)
+    have h1 := hI (l - 1) (by simp only [Finset.mem_Icc]; omega)
     have h2 := rho_antitone_of_interlacing hI i (l - 1) hi'.1 (by omega) (by omega)
     rw [show l - 1 + 1 = l by omega] at h1
     have h3 : max (u l) (u' l) + 1 / 2 ≤ ρ (l - 1) := by

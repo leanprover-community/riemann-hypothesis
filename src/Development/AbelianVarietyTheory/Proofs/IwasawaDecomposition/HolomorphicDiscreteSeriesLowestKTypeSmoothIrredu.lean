@@ -225,7 +225,7 @@ theorem torus_wt {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} (M : DSModel 
     (hw : WtIs M w) (τ : D.what₂.Tau) {l : M.H τ} (hl : IsWtOn (Formalism.REAL.Kset (M.ε τ)) (M.σ τ) (extWt M τ) l)
     (s : Unit → Fin V.rank → ℝ) (hx : (x0Mat M τ).det ≠ 0) :
     M.rep τ (torEl (fun _ : Unit => x0Mat M τ) s ()) l = torCh (fun _ : Unit => w τ) s • l := by
-  set e := Equiv.ofBijective _ (arr_bijective (nNeg_le (M.ε τ))) with he
+  set e := Equiv.ofBijective _ (arr_bijective) with he
   have hfr : IsUnit (M.fr τ).det := (Matrix.isUnit_iff_isUnit_det _).1 (M.fr_unit τ)
   have h1 := torus_x0Mat M τ fun a => Complex.exp ((s () (e.symm a) : ℂ) * Complex.I)
   have h2 : ∀ c, e.symm (arr (nNeg (M.ε τ)) c) = c := fun c => e.symm_apply_apply c

@@ -1352,7 +1352,7 @@ theorem exists_truncLog_gal_mod_fil : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l
   have htr : T B = T A + T (τ - 1) := by
     rw [hB]
     exact LogAdd.trunc_add hR m I hI A (τ - 1) hAI hbI
-  have hl := GlobalTheory.CrisIncl.factorial_mul_ev l e _ he1 hlog m
+  have hl := GlobalTheory.CrisIncl.factorial_mul_ev l e _ hlog m
   have hl2 : (m.factorial : R) * Per.ev l m (aDp l (Per.zA l (c g)) * C.j C.t) = T (τ - 1) := by
     rw [hl]
 

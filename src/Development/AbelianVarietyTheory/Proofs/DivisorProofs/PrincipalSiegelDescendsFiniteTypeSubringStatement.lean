@@ -1482,7 +1482,7 @@ theorem isSymplectic_of_subring : ∀ (h M : ℕ) (B R : Type) [CommRing B] [Com
   have hinj : Function.Injective (Units.map (toUnit X').left.appTop.hom.toMonoidHom) := fun u v huv =>
     Units.ext (inj (by
       have := congrArg Units.val huv
-      simp only [Units.coe_map, MonoidHom.coe_coe, Over.toUnit_left] at this
+      simp only [Units.coe_map, Over.toUnit_left] at this
       exact this))
   have q₂ : Units.map (toUnit X').left.appTop.hom.toMonoidHom
       (Units.map ((𝟙_ (Over (Sp R₁))).hom ≫ s₁).appTop.hom.toMonoidHom (unitOn (ζ ^ (2 * stdForm a b).val))) =

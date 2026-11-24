@@ -284,7 +284,7 @@ theorem isPullback_genFibre :
   .of_hasPullback _ _
 
 instance : Nonempty f.genFibre :=
-  have ⟨x, hx⟩ := f.f.surjective (genericPoint Z.X)
+  have ⟨_, hx⟩ := f.f.surjective (genericPoint Z.X)
   ((f.f.range_fiberι _).ge hx).elim fun w _ => ⟨w⟩
 
 

@@ -236,7 +236,7 @@ end
 end UpperTheory.Reformulated.B.StringRepresentationDecomposition
 
 theorem UpperTheory.Reformulated.B.StringRepresentationDecomposition.smith_gen.{u_1} :
-    ∀ {K : Type u_1} [inst : NormedField K] [IsUltrametricDist K] {n : ℕ} (P : GL (Fin n) K),
+    ∀ {K : Type u_1} [NormedField K] [IsUltrametricDist K] {n : ℕ} (P : GL (Fin n) K),
       ∃ (U : GL (Fin n) K) (V : GL (Fin n) K) (d : Fin n → K),
         (∀ (i j : Fin n), ‖(↑U : Matrix (Fin n) (Fin n) K) i j‖ ≤ (1 : ℝ)) ∧
           (∀ (i j : Fin n), ‖(↑U⁻¹ : Matrix (Fin n) (Fin n) K) i j‖ ≤ (1 : ℝ)) ∧
@@ -323,7 +323,7 @@ private theorem intM_of_symm {l : ℕ} [Fact l.Prime] {n : ℕ} {A : Matrix (Fin
     _ ≤ 1 := mul_le_one₀ (hA i j) (norm_nonneg _) (hA j i)
 
 private theorem intM_mid {l : ℕ} [Fact l.Prime] {n : ℕ} {A : Matrix (Fin n) (Fin n) (Qbar l)}
-    (e : Fin n → Qbar l) (he : ∀ i, e i ≠ 0) (hA : IntM A)
+    (e : Fin n → Qbar l) (hA : IntM A)
     (hB : IntM (diagonal e * diagonal e * A * diagonal (fun i => (e i)⁻¹) * diagonal (fun i => (e i)⁻¹))) :
     IntM (diagonal e * A * diagonal (fun i => (e i)⁻¹)) := by
   intro i j
@@ -415,7 +415,7 @@ theorem UpperTheory.V.Th.Nm.midpoint :
     have e2 : E * E * (V * g * V⁻¹) * E⁻¹ * E⁻¹ = U⁻¹ * (P * g * P⁻¹) * U := by
       rw [hPG]; group
     rw [e1, Units.val_mul, Units.val_mul, hE, hE']
-    refine intM_mid e he ?_ ?_
+    refine intM_mid e ?_ ?_
     · rw [Units.val_mul, Units.val_mul]
       exact intM_mul' (intM_mul' hV h1) hV'
     · rw [← hE, ← hE', ← Units.val_mul, ← Units.val_mul, ← Units.val_mul, ← Units.val_mul, e2,

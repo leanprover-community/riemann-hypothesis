@@ -293,7 +293,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qk41.precomplete_of_pow_le :
-    ∀ {A : Type} [inst : CommRing A]
+    ∀ {A : Type} [CommRing A]
     {I J : Ideal A}, J ≤ I → ∀ {e : ℕ}, I ^ e ≤ J → ∀ [IsPrecomplete J A], IsPrecomplete I A := by
   intro A _ I J hJI e he hJ
   refine ⟨fun f hf => ?_⟩

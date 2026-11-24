@@ -370,7 +370,7 @@ private theorem tr_push_algHom_eq_map_tr {X : Matrix (Fin n) (Fin n) ℂ} {t : �
     rw [trace_smul, trace_one, Fintype.card_fin, Complex.smul_re, smul_eq_mul, Complex.natCast_re]
   linarith
 
-theorem contraction_dichotomy (hn : 0 < n) {x xi y yi d : Matrix (Fin n) (Fin n) ℂ} (hx1 : x * xi = 1) (hx2 : xi * x = 1)
+theorem contraction_dichotomy (hn : 0 < n) {x xi y yi d : Matrix (Fin n) (Fin n) ℂ} (hx1 : x * xi = 1)
     (hy1 : y * yi = 1) (hy2 : yi * y = 1) (hd1 : d * dᴴ = 1) (hd2 : dᴴ * d = 1) {s M : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1)
     (hM : 1 ≤ M) (hc : x * xᴴ = s • (y * yᴴ) + (1 - s) • (1 : Matrix (Fin n) (Fin n) ℂ))
     (hA : fr (xi * d * yiᴴ) ≤ M) (hN : fr (yᴴ * dᴴ * x) ≤ M) :
@@ -552,7 +552,7 @@ theorem suppSt : PositivityTheory.RgBcC.SuppSt := by
       have h0 : ∀ A : Matrix (Fin 0) (Fin 0) ℂ, fr A = 0 := fun A => by simp [fr]
       rw [h0, h0]
       exact ⟨le_max_of_le_left hbnd0, le_max_of_le_left hbnd0⟩
-    · rcases contraction_dichotomy hn hx1 hx2 hy1 hy2 hdd1 hdd2 hs0 hs1 hM hc' hA hN with h | h
+    · rcases contraction_dichotomy hn hx1 hy1 hy2 hdd1 hdd2 hs0 hs1 hM hc' hA hN with h | h
       · exact ⟨le_max_of_le_left h.1, le_max_of_le_left h.2⟩
       · obtain ⟨h1, h2⟩ := hC y y⁻¹ hy1 hy2 h.1 h.2
         exact ⟨le_max_of_le_right h1, le_max_of_le_right h2⟩

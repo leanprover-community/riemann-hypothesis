@@ -132,7 +132,7 @@ theorem om_fvec (C : Ctx S T) (hom : IsWeak C.ψ S T om) (h : GA D S) (g : GA D 
     om (h, g) (C.fvec B f Q) = pureTensorO C.ψ C.θ S T (fun _ => 1) (C.sB (C.mvB g B))
       (fun τ => compAt C.θ τ (mt S h)) (C.mvB g B) (om (h, g) f) Q := by
   unfold Ctx.fvec pureTensorO
-  refine (pureTensorL_intertwine (IsThetaFunO C.ψ S T) theta_zero (fun a b ha hb => theta_add ha hb)
+  refine (pureTensorL_intertwine (IsThetaFunO C.ψ S T) (fun a b ha hb => theta_add ha hb)
     (fun c a ha => theta_smul c ha) _ _ (om (h, g)) ?_ f hf Q).2
   intro k f' hf'
   have hG : compAt C.θ k.1 (mt S h) * compAt C.θ k.1 (mt S h⁻¹) = 1 := compAt_mt_mul_inv k.1 h

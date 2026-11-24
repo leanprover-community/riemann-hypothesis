@@ -59,7 +59,7 @@ namespace ReciprocityTheory.ChartRestriction.DS
 variable {n : ℕ}
 
 theorem vNormSq_lowK_sub_root_lt {ε : Fin n → Bool} {lam : Fin n → ℝ} (hmono : StrictAnti lam) {a b : Fin n}
-    (hab : a < b) (hne : ε a ≠ ε b) :
+    (hab : a < b) :
     Formalism.MainNotions.S.vNormSq ε (Formalism.QuantumDeterminants.lowK ε lam - root a b) < Formalism.MainNotions.S.vNormSq ε (Formalism.QuantumDeterminants.lowK ε lam) := by
   have hab' : a ≠ b := hab.ne
   have hba : ¬ b < a := not_lt.mpr hab.le

@@ -817,7 +817,7 @@ theorem log_mk_le (D : D7) : Real.log (mk D) ≤ 30 * D.R.f * (bigN D : ℝ) ^ 2
   nlinarith
 
 theorem sig_nonneg {T : Type} {L : Formalism.IndefR.Links.LevCh D T} {sc : Consts} (G : GridData L sc) : 0 ≤ sig G :=
-  Finset.sum_nonneg fun v _ => mul_nonneg (Nat.cast_nonneg _) (Real.log_natCast_nonneg _)
+  Finset.sum_nonneg fun _ _ => mul_nonneg (Nat.cast_nonneg _) (Real.log_natCast_nonneg _)
 
 theorem finGamAt_of {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 T : Type} {A : Formalism.L2.DIV.FamIn D.what₂.LL Γ Pl0 T D.R.m}
     {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : Formalism.IndefR.Links.RealDat D A Ks} (ch : Choice R)

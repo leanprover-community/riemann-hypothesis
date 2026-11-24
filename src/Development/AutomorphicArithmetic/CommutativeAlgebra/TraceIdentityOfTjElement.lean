@@ -479,7 +479,7 @@ theorem lat_main (q : ℕ) (r : ℤ) (𝔴 : Ideal (𝓞 D.F)) (i : ℕ) (h₀ u
   have hS : Setup Λ em (A h₀) (A u) (A u⁻¹) J (Ideal.absNorm 𝔴 ^ i) :=
     { ι_mem := inAf_mem'
       dense := _root_.GlobalTheory.LKGeo.exists_inAf_add_nsmul_of_mem_laHat p D _ hM0 hMp
-      dvd := fun x w hw h => _root_.GlobalTheory.LKGeo.LatDvd.exists_eq_nsmul_of_inAf p D _ hM0 hMp (_root_.GlobalTheory.LKGeo.IntDvd.int_dvd_of_eq_mul_isIntAf p _ hM0 hMp) x ⟨w, hw, h⟩
+      dvd := fun x w hw h => _root_.GlobalTheory.LKGeo.LatDvd.exists_eq_nsmul_of_inAf p D _ (_root_.GlobalTheory.LKGeo.IntDvd.int_dvd_of_eq_mul_isIntAf p _ hM0 hMp) x ⟨w, hw, h⟩
       tf := fun v hv => by rw [← ha' v, hv, smul_zero]
       inj := fun v w h => by
         have h' := congrArg (A h₀⁻¹) h
@@ -622,7 +622,7 @@ theorem UpperTheory.trace_identity_of_tjElement :
       obtain ⟨w, hw, hwe⟩ := hu.2 v' hv'
       rw [hwe, one_nsmul]
       exact add_mem hv' hw
-    obtain ⟨y, hy⟩ := _root_.GlobalTheory.LKGeo.LatDvd.exists_eq_nsmul_of_inAf p D d hd0 hd (_root_.GlobalTheory.LKGeo.IntDvd.int_dvd_of_eq_mul_isIntAf p d hd0 hd) (M • x)
+    obtain ⟨y, hy⟩ := _root_.GlobalTheory.LKGeo.LatDvd.exists_eq_nsmul_of_inAf p D d (_root_.GlobalTheory.LKGeo.IntDvd.int_dvd_of_eq_mul_isIntAf p d hd0 hd) (M • x)
       ⟨_, hmem, (inAf_nsmul' M x).trans e3⟩
     have hgM : I'.ev d x ^ M = 1 :=
       (ev_pow d hd0 M x).symm.trans ((congrArg (I'.ev d) hy).trans ((I'.ker d hd0 _).2 ⟨y, rfl⟩))

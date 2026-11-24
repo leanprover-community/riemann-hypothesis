@@ -251,12 +251,12 @@ theorem algEquiv_apply_eq_tau_of_galE_eq_art0 (ι : L →ₐ[ℚ] Cond.Cyc (2 ^ 
         hτ _ (hN _ hz), hτ _ (hN _ hz')]
     · subst hy
       show ι ((σ (aE ζ y b) : hostE ζ y b) : L) = τ (ι y)
-      rw [galE_aE hqd h σ, hσ, map_mul, map_intCast,
+      rw [galE_aE h σ, hσ, map_mul, map_intCast,
         sqrt_act hH.1 hq4 (q_dvd e q d) u τ hτ (ι y) (by rw [← map_pow, h.2.1, map_neg, map_natCast])]
       rfl
     · subst hy
       show ι ((σ (bE ζ a y) : hostE ζ a y) : L) = τ (ι y)
-      rw [galE_bE hqd h σ, hσ, map_mul, map_intCast,
+      rw [galE_bE h σ, hσ, map_mul, map_intCast,
         sqrt_act hH.2.1 hd4 (d_dvd e q d) u τ hτ (ι y) (by rw [← map_pow, h.2.2.1, map_neg, map_natCast])]
       rfl
   exact DFunLike.congr_fun key x
@@ -294,7 +294,7 @@ def hostRaw : HostRaw φ where
   gal_sqd := fun σ => by
     apply Subtype.ext
     push_cast
-    exact galE_bE hH.toHypOdd h σ
+    exact galE_bE h σ
   cycEmb := (layerEmb hH h).comp (hostE ζ a b).val
   cycZeta := haveI := neZeroN φ.e hH; Cond.z _
   cycZeta_prim := haveI := neZeroN φ.e hH; Cond.z_spec _

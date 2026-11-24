@@ -189,7 +189,7 @@ theorem inPair_act_iff {k0 r : ℕ} (L : LocBessel (k0 + 1) r)
   · rintro ⟨h1, h2, h3, h4⟩
     exact ⟨h1, hN.2.1 _ ha.1 _ h2, h3, hN.2.1 _ ha.2 _ h4⟩
 
-theorem besselIntg_act {k0 r : ℕ} (L : LocBessel (k0 + 1) r) (hc : L.c = cStd) (F : GramWordSpace.GFn L)
+theorem besselIntg_act {k0 r : ℕ} (L : LocBessel (k0 + 1) r) (F : GramWordSpace.GFn L)
     {g a : Matrix (Fin (2 * r + (k0 + 1) + 1)) (Fin (2 * r + (k0 + 1) + 1)) ℂ} (hg : g ∈ UH (Hpk (k0 + 1) r))
     (hrel : IsRelStab L g) (ha : a ∈ RStab (k0 + 1) r g) (x : PairSp (k0 + 1) r) (hx : InPair L x) :
     besselIntg L F g (stabAct g a x) = besselIntg L F g x := by
@@ -452,7 +452,7 @@ theorem weil_L_gen {k0 r : ℕ} (L : LocBessel (k0 + 1) r) (hc : L.c = cStd) (h�
         exact ha1 (subset_toMeasurable _ _ hne)
       rw [← hfh', hfdef]
       simp only
-      rw [besselIntg_act L hc F hg hrel ha2 x hx2]
+      rw [besselIntg_act L F hg hrel ha2 x hx2]
     rw [integral_congr_ae heq, integral_smul_const, hθ1 x hx2, one_smul]
   rw [integral_congr_ae hfh, hW]
   exact integral_congr_ae key

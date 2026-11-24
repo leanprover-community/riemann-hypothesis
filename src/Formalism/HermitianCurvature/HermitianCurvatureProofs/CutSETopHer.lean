@@ -596,7 +596,7 @@ private theorem wCell_succ_mulVec_bvec_eI_zero_eq_smul {k r : ℕ} (hr : 0 < r) 
       simp [eI, esI, Fin.ext_iff]; omega
     rw [h, ← Matrix.mulVec_mulVec, Qx3.reflection_fixes_basis_vector _ _ h1 h2, ih (by omega)]
 
-theorem first_minor_at_cell_eq_coefficient {z z' : Fin (2 * r + k + 1) → ℂ} (hz : inWb k r z) (hz' : inWb k r z') (hr : 0 < r)
+theorem first_minor_at_cell_eq_coefficient {z z' : Fin (2 * r + k + 1) → ℂ} (hr : 0 < r)
     (c : Fin r → ℂ) {g : Mx k r} (hg : g ∈ Glev k r (Fin.last r)) :
     Dmin k r z z' (wCell k r (Fin.last r) c * g) ⟨1, by omega⟩ = c ⟨0, hr⟩ := by
   rw [dmin_one_eq_herm_mulVec_fvec]
@@ -635,7 +635,7 @@ theorem site_operators_preserve_orbital : SiteOpsWaveJC := by
         rw [hΨ y hy]
         simp only [resG]
         rw [jf_mul_inv D _ (fun p hp g => BigCellZetaMinors.dmin_sgs D hp g _) G,
-          first_minor_at_cell_eq_coefficient D.z_mem D.z'_mem hr y.1 hy.2.1, hl']
+          first_minor_at_cell_eq_coefficient hr y.1 hy.2.1, hl']
         simp only [smul_smul]
         ring_nf
     · refine ⟨?_, s, ε, fun g => star (Dmin P.k P.r D.z D.z' g ⟨1, by omega⟩) • G g, hε, first_minor_conj_good_function D ε G hG, ?_⟩
@@ -650,7 +650,7 @@ theorem site_operators_preserve_orbital : SiteOpsWaveJC := by
         rw [hΨ y hy]
         simp only [resG]
         rw [jf_mul_inv D _ (fun p hp g => by rw [BigCellZetaMinors.dmin_sgs D hp g _]) G,
-          first_minor_at_cell_eq_coefficient D.z_mem D.z'_mem hr y.1 hy.2.1, hl']
+          first_minor_at_cell_eq_coefficient hr y.1 hy.2.1, hl']
         simp only [smul_smul]
         ring_nf
   refine Submodule.span_induction (p := fun Φ _ => X.op l j Φ ∈ waveJ P D.z D.z' D.π D.π' D l) ?_ ?_ ?_ ?_ hΦ

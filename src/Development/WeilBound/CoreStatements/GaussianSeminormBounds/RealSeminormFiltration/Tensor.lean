@@ -137,7 +137,7 @@ private lemma spectrum_nonempty_of_countable_rank {V : Type} [AddCommGroup V] [_
   exact hne ⟨k, hk⟩
 
 theorem UpperTheory.Reformulated.B.DYhd6.main :
-    ∀ {V : Type} [inst : AddCommGroup V] [inst_1 : _root_.Module ℂ V] [Nontrivial V],
+    ∀ {V : Type} [AddCommGroup V] [_root_.Module ℂ V] [Nontrivial V],
       Module.rank ℂ V ≤ Cardinal.aleph0 →
         ∀ (B : Subalgebra ℂ (Module.End ℂ V)),
           (∀ (N : Submodule ℂ V), (∀ b ∈ B, ∀ x ∈ N, (b : V → V) x ∈ N) → N = ⊥ ∨ N = ⊤) →

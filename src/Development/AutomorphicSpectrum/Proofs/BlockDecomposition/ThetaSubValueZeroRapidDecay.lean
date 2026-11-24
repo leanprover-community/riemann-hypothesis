@@ -208,7 +208,7 @@ private lemma summ {α ι : Type} [Fintype ι] {f : α → ℝ}
 end UpperTheory.Reformulated.B.Yva3.Helpers
 
 theorem UpperTheory.Reformulated.B.Yva3.main :
-    ∀ {k : Type} [inst : Field k] [NumberField k] {ι : Type} [inst : Fintype ι] {f : k → ℝ},
+    ∀ {k : Type} [Field k] [NumberField k] {ι : Type} [Fintype ι] {f : k → ℝ},
       Summable f → (∀ (a : k), (0 : ℝ) ≤ f a) → Summable fun (ξ : ι → k) ↦ ∏ i : ι, f (ξ i) := by
   intro k _ _ ι _ f hf h0
   exact UpperTheory.Reformulated.B.Yva3.Helpers.summ hf h0
@@ -484,8 +484,8 @@ theorem exists_decay_boundC (w : InfinitePlace k) {F : (ι → 𝔸[k]) → ℂ}
     exact mul_le_mul_of_nonneg_left (hGu a ha t ht ξ hξ) (norm_nonneg c)
 
 theorem exists_norm_thetaC_sub_le : ∀ {k : Type} [Field k] [NumberField k], ∀ {ι : Type} [Fintype ι]
-    [DecidableEq ι], ∀ (w : InfinitePlace k) {F : (ι → 𝔸[k]) → ℂ} (hF : F ∈ schwartzBruhatPi (K := k) (ι := ι))
-    {C : Set (GL ι 𝔸[k])} (hC : IsCompact C) (r : ℕ), ∃ M : ℝ, ∀ h ∈ C,
+    [DecidableEq ι], ∀ (w : InfinitePlace k) {F : (ι → 𝔸[k]) → ℂ} (_ : F ∈ schwartzBruhatPi (K := k) (ι := ι))
+    {C : Set (GL ι 𝔸[k])} (_ : IsCompact C) (r : ℕ), ∃ M : ℝ, ∀ h ∈ C,
       ∀ t : {x : ℝ // 0 < x}, 1 ≤ (t : ℝ) →
       ‖thetaC F (scalC (moduleSection w t) * h) - F 0‖ ≤ ((t : ℝ) ^ r)⁻¹ * M := by
   intro k _ _ ι _ _ w F hF C hC r

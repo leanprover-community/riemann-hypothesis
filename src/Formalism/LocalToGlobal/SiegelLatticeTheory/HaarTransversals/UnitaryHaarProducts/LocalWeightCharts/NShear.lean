@@ -42,7 +42,7 @@ theorem split_low {A : Matrix (Fin r) (Fin r) ℂ} (hA : LowId A) (v : Fin r →
 
 theorem lowId_bA {g : Mx k r} (hc : ColB g) : LowId (bA g) := fun a b h => hc.aa a b h
 
-theorem mof_mul {m₀ g : Mx k r} (h0 : m₀ ∈ Nset k r) (hg : g ∈ Nset k r) :
+theorem mof_mul {m₀ g : Mx k r} (h0 : m₀ ∈ Nset k r) :
     mof (m₀ * g) = mof g + (bF g)ᴴ * ((bF m₀)ᴴ * (bB m₀ * bE g + bC m₀ * bF g)) := by
   have hc0 := colB_of_mem h0
   have hF0 := rel_F hc0 h0.1
@@ -60,7 +60,7 @@ theorem lmul_coord {m₀ : Mx k r} (h0 : m₀ ∈ Nset k r) (x : CI k r → ℂ)
   have hc0 := colB_of_mem h0
   have hps := nilpotent_chart_right_inverse x s
   have hM : mof (m₀ * phi0 x s) = mof (phi0 x s) + dlt m₀ x := by
-    rw [mof_mul h0 hg, dlt, phi0, bF_mk, bE_mk]
+    rw [mof_mul h0, dlt, phi0, bF_mk, bE_mk]
   constructor
   · funext i
     rcases i with ⟨⟨a, b⟩, h⟩ | ⟨a, j⟩ | ⟨⟨a, b⟩, h⟩

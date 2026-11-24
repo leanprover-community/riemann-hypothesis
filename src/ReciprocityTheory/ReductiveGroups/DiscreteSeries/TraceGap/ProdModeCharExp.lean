@@ -143,7 +143,7 @@ theorem diagE_wt_of_wK (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D 
     intro t
     rw [wK_congr hD (bwt_exp θ t) _ (diag_mem_Kset' ε (fun b => t * θ b)), hy, map_smul]
     congr 4
-    rw [Finset.sum_eq_single a (fun b _ hb => by simp [hθ, Pi.single_apply, hb]) (by simp)]
+    rw [Finset.sum_eq_single a (fun b _ hb => by simp [hθ, hb]) (by simp)]
     simp [hθ]
     ring
   have hder1 : HasDerivAt (fun t : ℝ => coordH (wK hD (exp_mem_Kset (USum.inK_real_smul hX t)) y))
@@ -162,7 +162,7 @@ theorem diagE_wt_of_wK (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D 
   have h2 : actM (diagE ε (eT E) cpT cmT) (bwtDiag θ) y = (((μ a : ℝ) : ℂ) * Complex.I) • y :=
     coordH_injective (by rw [heq, map_smul])
   rw [bwtDiag, bwt_actM_diag, LinearMap.sum_apply,
-    Finset.sum_eq_single a (fun b _ hb => by simp [hθ, Pi.single_apply, hb]) (by simp)] at h2
+    Finset.sum_eq_single a (fun b _ hb => by simp [hθ, hb]) (by simp)] at h2
   simp only [hθ, Pi.single_eq_same, Complex.ofReal_one, one_mul, LinearMap.smul_apply] at h2
   have h3 := congrArg (fun v => (-Complex.I) • v) h2
   simp only [smul_smul] at h3

@@ -54,7 +54,7 @@ open scoped TensorProduct
 namespace GlobalTheory.IwaPlace.FreeAt
 
 theorem exists_basis_of_dense {A E : Type} [CommRing A] [Field E] [NumberField E] (ι : E →+* A) (ε : A)
-    (O : NonUnitalSubring A) (n : ℕ) (Λ : AddSubgroup (Fin n → A)) (hε : ε * ε = ε) (hOε : ∀ a ∈ O, ε * a = a)
+    (O : NonUnitalSubring A) (n : ℕ) (Λ : AddSubgroup (Fin n → A)) (hε : ε * ε = ε)
     (hint : ∀ u : 𝓞 E, ε * ι u ∈ O)
     (hdense : ∀ T : ℕ, 0 < T → ∀ a ∈ O, ∃ u : 𝓞 E, ∃ z ∈ O, a = ε * ι u + T * z)
     (hframe : ∀ L : Submodule (𝓞 E) (Fin n → E), L.FG → Submodule.span E (L : Set (Fin n → E)) = ⊤ →
@@ -305,7 +305,7 @@ theorem exists_basis : ∀ (D : D7) (n : ℕ) (v : Pl D) (ε : AE D) (Λ : AddSu
     exact (hI _).1 (idem_mem_idAt _)
   subst he
   obtain ⟨β, β', h1, h2, h3, h4, h5⟩ := exists_basis_of_dense (incA D) (idem D (· = v)) (intRing D (· = v)) n Λ hε
-    (fun a ha => (hI a).1 ha.1) (idem_mul_int _) (intAt_dense _)
+    (idem_mul_int _) (intAt_dense _)
     (fun L hL hsp => by
       obtain ⟨B, c, hc, hB1, hB2⟩ := GlobalTheory.SemiLocalFrame.exists_frame_denominator D.host.F D.host.E n L
         (Module.Finite.iff_fg.2 hL) hsp v

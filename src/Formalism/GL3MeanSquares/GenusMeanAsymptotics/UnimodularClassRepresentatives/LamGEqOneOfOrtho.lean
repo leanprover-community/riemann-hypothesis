@@ -160,10 +160,10 @@ theorem lamG_eq_one_of_ortho (hK : Formalism.HermitianLatticesTheory.IsCMUnram K
   have hLi := isIntegralLat_of_ortho hI
   have : ∀ 𝔭 : {𝔭 : Ideal (𝓞 F) // 𝔭.IsMaximal}, lamP h I 𝔭.1 = 1 := by
     intro 𝔭
-    obtain ⟨P, hP, hP𝔭⟩ := exists_maximal_over hK hF 𝔭.2
+    obtain ⟨P, hP, hP𝔭⟩ := exists_maximal_over 𝔭.2
     apply localMassFactor_of_valuation_eq_zero hK hF hs hd hL hLi 𝔭.2
     rw [← hP𝔭]
-    exact (isUnimodularAt_iff_vd hK hF hs hd hL hLi hP).mp (isUnimodularAt_of_ortho hK hs hI P hP)
+    exact (isUnimodularAt_iff_vd hK hF hs hd hL hLi hP).mp (isUnimodularAt_of_ortho hs hI P hP)
   simp only [this, tprod_one]
 
 end Formalism.HermitianLattices.Ext.L3

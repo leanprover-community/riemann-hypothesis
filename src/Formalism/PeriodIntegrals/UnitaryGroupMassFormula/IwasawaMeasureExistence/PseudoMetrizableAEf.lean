@@ -100,7 +100,7 @@ section Gen
 variable {A : Type} [AddCommGroup A] [TopologicalSpace A] [IsTopologicalAddGroup A] [LocallyCompactSpace A]
   [T2Space A] [SecondCountableTopology A] [MeasurableSpace A] [BorelSpace A]
 
-theorem char_eq_of_map' (μ : Measure A) [μ.IsAddHaarMeasure] (φ : A ≃ₜ+ A) {c : ℝ≥0} (hc : c ≠ 0)
+theorem char_eq_of_map' (μ : Measure A) [μ.IsAddHaarMeasure] (φ : A ≃ₜ+ A) {c : ℝ≥0}
     (h : μ.map φ = c • μ) : addEquivAddHaarChar φ = c⁻¹ := by
   have hreg : μ.Regular := inferInstance
   have h1 := MeasureTheory.addEquivAddHaarChar_smul_map μ φ
@@ -153,7 +153,7 @@ theorem char_pi {ι : Type} [Fintype ι] [DecidableEq ι] (φ : ι → A ≃ₜ+
     simp only [hmap]
     exact hbox _
   have h3 := char_eq_of_map' (Measure.pi fun _ : ι => μ) (piE φ)
-    (Finset.prod_ne_zero_iff.2 fun i _ => inv_ne_zero (hc0 i)) hpm
+    hpm
   rw [h3, Finset.prod_inv_distrib, inv_inv]
 
 end Gen

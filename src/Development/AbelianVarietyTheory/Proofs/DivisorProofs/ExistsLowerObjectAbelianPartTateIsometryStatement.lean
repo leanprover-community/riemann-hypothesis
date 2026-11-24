@@ -536,7 +536,7 @@ theorem qkAdd_swap (hB : D.TauBimult) {k : ℕ} (p p' : QkPt D F k) : QkAdd p' p
   rw [this]
   exact TorusExt.qkAdd_qkAdd hB p' p
 
-theorem weilQkIs_iff_weilIs_abelianPart : LL → AllD fun {R} _ _ {I} D F _ _ => ∀ (k : ℕ), 1 ≤ k → ∀ p p' : QkPt D.toPre F k, p.y = 0 → p'.y = 0 → ∀ ζ : Fˣ, WeilQkIs D.toPre F k p p' ζ ↔ WeilIs D.toPre.P.A D.toPre.P.L k p.g.b p'.g.b (Units.map (Scheme.ΓSpecIso (CommRingCat.of F)).inv.hom.toMonoidHom ζ) := by
+theorem weilQkIs_iff_weilIs_abelianPart : LL → AllD fun {_} _ _ {_} D F _ _ => ∀ (k : ℕ), 1 ≤ k → ∀ p p' : QkPt D.toPre F k, p.y = 0 → p'.y = 0 → ∀ ζ : Fˣ, WeilQkIs D.toPre F k p p' ζ ↔ WeilIs D.toPre.P.A D.toPre.P.L k p.g.b p'.g.b (Units.map (Scheme.ΓSpecIso (CommRingCat.of F)).inv.hom.toMonoidHom ζ) := by
   intro hL R _ _ _ I hI D F _ _ _ k hk p p' hy hy' ζ
   have hG := hL.1.globalFns
   have hB := D.tau_bimult
@@ -1822,7 +1822,7 @@ theorem exists_lowObj : ∀ {E : Type} [Field E] [NumberField E] [IsCMField E] {
   have hζ0 : (J0.ζ l.M' : F0) = lowF C F0 (baseKA (lowLevel l)).ζ := by
     rw [hJ0ζ, hX0.1]
     exact congrArg (toF C F0) (Subtype.ext (by
-      simp only [IntermediateField.coe_inclusion, zeta_val]; rfl))
+      simp only [IntermediateField.coe_inclusion]; rfl))
   let o' : Obj D' (lowLevel l) (baseKA (lowLevel l)) (lowS C) :=
     { t := abTriple C.P
       proper := C.P.D.toPre.P.isAb.proper

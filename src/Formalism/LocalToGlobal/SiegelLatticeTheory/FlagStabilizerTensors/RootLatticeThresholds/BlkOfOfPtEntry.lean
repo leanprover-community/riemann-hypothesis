@@ -436,7 +436,7 @@ theorem Phi_inj (F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E))
   rw [Phi_apply] at hβ
   have h1 : tw F0 F'' L (hLu_of hL) hZu hGr ((β⁻¹ : StG w) : GLR D) = 1 :=
     ratLink_inf_one X (rpt_spec X _ (tw_isom_st F0 F'' hL hU hZu hZ1 hGr β⁻¹)) hβ
-  have h2 : ((β⁻¹ : StG w) : GLR D) = 1 := tw_inj hT (hLu_of hL) hZu hGr h1
+  have h2 : ((β⁻¹ : StG w) : GLR D) = 1 := tw_inj (hLu_of hL) hZu hGr h1
   rw [← inv_eq_one]
   exact Subtype.ext h2
 
@@ -845,7 +845,7 @@ private theorem isUpUni_inv_and_isUnit_det_of_isUpUni {n : ℕ} {K : Type*} [Fie
 
 theorem P'm_eq {u u' : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)}
     {F'' : FlagG (VS D) D.R.rS ((Tu D u' : ℕ) : D.host.E)} {w : Point D.host.E (D.R.rS + 1)} {L U : MatR D}
-    (hL : IsLoUni L) (hU : IsUpUni U) (hZu : IsUnit (Zhat F0 F'').det)
+    (hL : IsLoUni L)
     (hZ1 : Zhat F0 F'' * sgnM D.R.rS = L * ptMat w * U) {B b : MatR D} (hBu : IsUnit B.det)
     (hab : B * ptMat w * b = ptMat w) :
     P'm F0 F'' L B = sgnM D.R.rS * (U⁻¹ * b * U) * sgnM D.R.rS := by
@@ -1384,7 +1384,7 @@ theorem dictC_holds : DictC := by
   obtain ⟨hXup, hXrel⟩ := conjW_up hβS
   have hPeq : P = sgnM D.R.rS * (U⁻¹ * Xβ * U) * sgnM D.R.rS := by
     have hBu : IsUnit ((((β⁻¹ : StG w) : GLR D) : MatR D)).det := Matrix.isUnits_det_units _
-    refine P'm_eq hL hU hZu hZ1 hBu ?_
+    refine P'm_eq hL hZ1 hBu ?_
     have e : (((β⁻¹ : StG w) : GLR D) : MatR D) = ((β : GLR D) : MatR D)⁻¹ := by
       rw [Subgroup.coe_inv, Matrix.coe_units_inv]
     rw [e]; exact hXrel

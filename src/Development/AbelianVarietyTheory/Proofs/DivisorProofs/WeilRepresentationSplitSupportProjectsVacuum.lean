@@ -270,7 +270,7 @@ theorem suppAt_iff (e : AE D) (V : HSp D) (g : GA D V) :
   rw [← Matrix.ext_iff]; rfl
 
 theorem alg_parts {R : Type} [CommRing R] {n : ℕ} {a c a' c' : R} (h1 : a * a = a) (h2 : c * c = c) (h3 : a * c = 0)
-    (h4 : a' * a' = a') (h5 : c' * c' = c') (h6 : a' * c' = 0) (h7 : a * a' = 0) (h8 : c * c' = 0) (h9 : a * c' = 0)
+    (h4 : a' * a' = a') (h7 : a * a' = 0)
     (h10 : c * a' = 0) {M M₀ M' : Matrix (Fin n) (Fin n) R} (hM : (a + a' + (c + c')) • (M - 1) = M - 1)
     (h₀ : M₀ = (a + c) • M + (1 - (a + c)) • 1) (h' : M' = (1 - (a + c)) • M + (1 - (1 - (a + c))) • 1) :
     M = M₀ * M' ∧ (a + c) • (M₀ - 1) = M₀ - 1 ∧ (a' + c') • (M' - 1) = M' - 1 ∧
@@ -510,7 +510,7 @@ theorem om_reads_projA : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ) (θ : Inf
       (by rw [RingHom.map_sub, RingHom.map_one, hcε]) h
     have hsupp' := (suppAt_iff _ _ _).1 hsupp
     rw [RingHom.map_add (f := _)] at hsupp'
-    obtain ⟨b1, b2, b3, b4, b5, b6⟩ := alg_parts o1 o2 o3 o4 o5 o6 o7 o8 o9 o10 hsupp' e₀ e'
+    obtain ⟨b1, b2, b3, b4, b5, b6⟩ := alg_parts o1 o2 o3 o4 o7 o10 hsupp' e₀ e'
     obtain ⟨y₀, hy₀⟩ := exists_detAt V o1 h₀
     obtain ⟨y', hy'⟩ := exists_detAt V o4 h'
     obtain rfl : y = y₀ * y' := Units.ext (by

@@ -121,7 +121,7 @@ section Alg
 
 variable {K : Type} [Field K]
 
-theorem constantCoeff_lgF (p : ℕ) (hp : 2 ≤ p) : PowerSeries.constantCoeff (lgF K p) = 0 := by
+theorem constantCoeff_lgF (p : ℕ) : PowerSeries.constantCoeff (lgF K p) = 0 := by
   rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply, lgF, PowerSeries.coeff_mk]
   simp
 
@@ -149,15 +149,15 @@ theorem constantCoeff_inVar {ι : Type} (x : ι) (f : PowerSeries K)
 theorem lgF_subst_inj {ι : Type} (p : ℕ) (hp : 2 ≤ p) (a b : MvPowerSeries ι K)
     (ha : MvPowerSeries.constantCoeff a = 0) (hb : MvPowerSeries.constantCoeff b = 0)
     (h : PowerSeries.subst a (lgF K p) = PowerSeries.subst b (lgF K p)) : a = b :=
-  Formalism.G.substInjective K ι (lgF K p) a b (constantCoeff_lgF p hp) (coeff_one_lgF p hp) ha hb h
+  Formalism.G.substInjective K ι (lgF K p) a b (constantCoeff_lgF p) (coeff_one_lgF p hp) ha hb h
 
 theorem law_exists (p : ℕ) (hp : 2 ≤ p) :
     ∃ F : MvPowerSeries (Fin 2) K, MvPowerSeries.constantCoeff F = 0 ∧ cob F (lgF K p) = 0 := by
   have h0 : MvPowerSeries.constantCoeff (at1 (0 : Fin 2) (lgF K p) + at1 1 (lgF K p)) = 0 := by
-    rw [map_add (f := _), constantCoeff_inVar _ _ (constantCoeff_lgF p hp),
-      constantCoeff_inVar _ _ (constantCoeff_lgF p hp), add_zero]
+    rw [map_add (f := _), constantCoeff_inVar _ _ (constantCoeff_lgF p),
+      constantCoeff_inVar _ _ (constantCoeff_lgF p), add_zero]
   obtain ⟨F, hF0, hF⟩ := Formalism.LT.SolveExists_proof K (Fin 2) (lgF K p) _
-    (constantCoeff_lgF p hp) (coeff_one_lgF p hp) h0
+    (constantCoeff_lgF p) (coeff_one_lgF p hp) h0
   exact ⟨F, hF0, (cob_eq_zero_iff F _).mpr hF⟩
 
 theorem law_unique (p : ℕ) (hp : 2 ≤ p) (F F' : MvPowerSeries (Fin 2) K)
@@ -291,7 +291,7 @@ theorem coeff_subst_lgF_of_degree_one {ι : Type} (p : ℕ) (hp : 2 ≤ p) (F : 
     rw [PowerSeries.X_pow_dvd_iff]
     intro m hm
     interval_cases m
-    · simp [PowerSeries.coeff_zero_eq_constantCoeff_apply, constantCoeff_lgF p hp]
+    · simp [PowerSeries.coeff_zero_eq_constantCoeff_apply, constantCoeff_lgF p]
     · simp [coeff_one_lgF p hp]
   obtain ⟨r, hr⟩ := hdvd
   have hF' : PowerSeries.HasSubst F := PowerSeries.HasSubst.of_constantCoeff_zero hF
@@ -371,7 +371,7 @@ theorem law_integral {K : Type} [NormedField K] [IsUltrametricDist K] [CharZero 
   have hp2 := hp.two_le
   obtain ⟨FQ, hFQ0, hFQ⟩ := law_exists (K := ℚ) p hp2
   obtain ⟨G, hG0, hGint, hGlog⟩ := Formalism.LT.funEqGroup ℚ_[p] p (p ^ 2) (RingHom.id ℚ_[p])
-    (Formalism.FG.frobenius_lift_padic_square p) (lgF ℚ_[p] p) (constantCoeff_lgF p hp2)
+    (Formalism.FG.frobenius_lift_padic_square p) (lgF ℚ_[p] p) (constantCoeff_lgF p)
     (coeff_one_lgF p hp2) (funEqType_lgF p)
   have hGcob : cob G (lgF ℚ_[p] p) = 0 := (cob_eq_zero_iff G _).mpr hGlog
   obtain ⟨h0p, hcp⟩ := map_law (Rat.castHom ℚ_[p]) p FQ hFQ0 hFQ
@@ -410,7 +410,7 @@ theorem formal_law_symmetric : LawSymm := by
     (cob_eq_zero_iff F _).mp hFc
   have hFlA : PowerSeries.subst F (lgF K p) = at1 0 (lgF K p) + at1 1 (lgF K p) :=
     (cob_eq_zero_iff F _).mp hFc
-  have hl0 := constantCoeff_lgF (K := K) p hp2
+  have hl0 := constantCoeff_lgF (K := K) p
   refine ⟨?_, ?_, ?_, ?_⟩
   · intro σ
     obtain ⟨h0, hc⟩ := map_law σ p F hF0 hFc

@@ -524,7 +524,7 @@ theorem dm_eq (T : ParamsT D L P) : WeightFamilies.dimY D D.R.m = T.Dp := by
   unfold WeightFamilies.dimY Ranks.sigW Ranks.r
   simp [Nat.choose_two_right]
 
-theorem order_le_modulus (T : ParamsT D L P) (S : SizesAt L) (hZ : 10 ^ 60 ≤ zBase L) : T.TO ≤ q0N T := by
+theorem order_le_modulus (T : ParamsT D L P) (hZ : 10 ^ 60 ≤ zBase L) : T.TO ≤ q0N T := by
   unfold q0N
   have hT40 := T.TO_40
   have hTpos : (0 : ℝ) < (T.TO : ℝ) := by exact_mod_cast (show 0 < T.TO by omega)
@@ -556,7 +556,7 @@ abbrev runOf (T : ParamsT D L P) (S : SizesAt L) (hZ : 10 ^ 60 ≤ zBase L) : Ru
   nP_le_nW := T.nW_lo.2.2
   hQ0 := by
     rw [dm_eq T]
-    have := T.TO_nW; have := order_le_modulus T S hZ
+    have := T.TO_nW; have := order_le_modulus T hZ
     omega
 
 def Kc0 : KAdm := ⟨1, 1, 1, 1, 1, 1, 1, 1, 2⟩

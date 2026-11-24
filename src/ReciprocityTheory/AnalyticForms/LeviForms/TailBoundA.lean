@@ -313,7 +313,7 @@ theorem mInt_lower {d : ℕ} {Y : Type} [TopologicalSpace Y] [CompactSpace Y] [T
 
 theorem mInt_nonpos {d : ℕ} {Y : Type} [TopologicalSpace Y] [CompactSpace Y] [T2Space Y]
     (B : FinHolAtlas d Y) (Ψ : Fin d → LocPot Y) (hΨ : ∀ i, IsPotential B (Ψ i))
-    (hΨp : ∀ i, IsPsh B (Ψ i)) (g : Y → ℝ) (hg : Continuous g) (hg0 : ∀ y, g y ≤ 0) :
+    (hΨp : ∀ i, IsPsh B (Ψ i)) (g : Y → ℝ) (hg0 : ∀ y, g y ≤ 0) :
     mInt B Ψ g ≤ 0 := by
   unfold mInt
   split_ifs with hne

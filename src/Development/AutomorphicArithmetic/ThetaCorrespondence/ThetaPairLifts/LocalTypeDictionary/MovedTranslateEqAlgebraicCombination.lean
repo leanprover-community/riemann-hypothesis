@@ -315,7 +315,7 @@ theorem substF_one {ι : Type} {N n : ℕ} (P : MvPolynomial (ι × Fin N × Fin
     rw [GlobalTheory.CompactHowe.substF_X]
     obtain ⟨τ, a, b⟩ := p
     rw [Finset.sum_eq_single a (fun x _ hx => Finset.sum_eq_zero fun y _ => by simp [Matrix.one_apply, hx]) (by simp),
-      Finset.sum_eq_single b (fun y _ hy => by simp [Matrix.one_apply, hy]) (by simp)]
+      Finset.sum_eq_single b (fun y _ hy => by simp [hy]) (by simp)]
     simp
   exact congrArg (fun f => f P) key
 

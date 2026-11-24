@@ -60,11 +60,11 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 
 def intF (F : Type) [Field F] [NumberField F] : Subring (FiniteAdeleRing (𝓞 F) F) where
   carrier := {a | ∀ v, a v ∈ v.adicCompletionIntegers F}
-  mul_mem' := fun {a b} ha hb v => mul_mem (ha v) (hb v)
-  one_mem' := fun v => one_mem _
-  add_mem' := fun {a b} ha hb v => add_mem (ha v) (hb v)
-  zero_mem' := fun v => zero_mem _
-  neg_mem' := fun {a} ha v => neg_mem (ha v)
+  mul_mem' := fun {_ _} ha hb v => mul_mem (ha v) (hb v)
+  one_mem' := fun _ => one_mem _
+  add_mem' := fun {_ _} ha hb v => add_mem (ha v) (hb v)
+  zero_mem' := fun _ => zero_mem _
+  neg_mem' := fun {_} ha v => neg_mem (ha v)
 
 theorem finite_intF_quot (M : ℕ) (hM : 0 < M) :
     Finite (intF F ⧸ Ideal.span {(M : intF F)}) := by

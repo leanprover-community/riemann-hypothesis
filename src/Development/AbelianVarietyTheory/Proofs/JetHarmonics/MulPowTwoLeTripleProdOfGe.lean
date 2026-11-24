@@ -401,7 +401,7 @@ theorem norm_x_le_one [DecidableEq K] {W : Affine K} (h₁ : ‖W.a₁‖ ≤ 1)
   linarith
 
 theorem norm_x_sub_eq_one {W : Affine K} (h₁ : ‖W.a₁‖ ≤ 1) (h₂ : ‖W.a₂‖ ≤ 1)
-    (h₃ : ‖W.a₃‖ ≤ 1) (h₄ : ‖W.a₄‖ ≤ 1) (h₆ : ‖W.a₆‖ ≤ 1) (hΔ : ‖W.Δ‖ = 1) {x₁ x₂ y₁ y₂ : K}
+    (hΔ : ‖W.Δ‖ = 1) {x₁ x₂ y₁ y₂ : K}
     (k₁ : W.Equation x₁ y₁) (k₂ : W.Equation x₂ y₂) (hx : x₁ ≠ x₂) (i₁ : ‖x₁‖ ≤ 1) (i₂ : ‖x₂‖ ≤ 1)
     (i₃ : ‖W.addX x₁ x₂ ((y₁ - y₂) / (x₁ - x₂))‖ ≤ 1)
     (i₄ : ‖W.addX x₁ x₂ ((y₁ - W.negY x₂ y₂) / (x₁ - x₂))‖ ≤ 1) : ‖x₁ - x₂‖ = 1 := by
@@ -492,7 +492,7 @@ theorem torsion_integral_and_distinct (q : ℕ) [Fact q.Prime] (M : Mdl q) (N : 
       exact ⟨hx, hy⟩
     · refine ns ((hker _).1 ?_)
       rw [map_add (f := _), e, e', Affine.Point.add_of_Y_eq hx hy]
-  refine norm_x_sub_eq_one (W := M.W.toAffine) h₁ h₂ h₃ h₄ h₆ hΔ h.1 h'.1 hx (int p _ _ h hp e)
+  refine norm_x_sub_eq_one (W := M.W.toAffine) h₁ h₂ hΔ h.1 h'.1 hx (int p _ _ h hp e)
     (int p' _ _ h' hp' e') ?_ ?_
   · rw [← Affine.slope_of_X_ne (W := M.W.toAffine) hx]
     exact int (p + p') _ _ _ (by rw [mul_add]; exact add_mem hp hp')

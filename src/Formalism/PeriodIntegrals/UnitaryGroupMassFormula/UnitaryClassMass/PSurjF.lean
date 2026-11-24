@@ -112,7 +112,7 @@ theorem finF (D : ℤ) (hD : D ≠ 0) :
   show v.asIdeal ∣ Ideal.span {((D : 𝓞 F))}
   rwa [Ideal.dvd_iff_le, Ideal.span_singleton_le_iff_mem]
 
-theorem interLocStd [FiniteDimensional E V] (N : Submodule (𝓞 E) V) (hN : Submodule.IsLattice E N) (x : V)
+theorem interLocStd [FiniteDimensional E V] (N : Submodule (𝓞 E) V) (x : V)
     (hx : ∀ p : Ideal (𝓞 E), p.IsMaximal → ∃ t : 𝓞 E, t ∉ p ∧ t • x ∈ N) : x ∈ N := by
   classical
   by_contra hxN
@@ -126,7 +126,7 @@ theorem interLocStd [FiniteDimensional E V] (N : Submodule (𝓞 E) V) (hN : Sub
 
 theorem interLocF [FiniteDimensional E V] (N : Submodule (𝓞 E) V) (hN : Submodule.IsLattice E N) (x : V)
     (hx : ∀ v : HeightOneSpectrum (𝓞 F), x ∈ Floc v N) : x ∈ N := by
-  apply interLocStd N hN x
+  apply interLocStd N x
   intro p hp
   have hne : p ≠ ⊥ := Ring.ne_bot_of_isMaximal_of_not_isField hp (RingOfIntegers.not_isField E)
   obtain ⟨a, ha, ha0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hne

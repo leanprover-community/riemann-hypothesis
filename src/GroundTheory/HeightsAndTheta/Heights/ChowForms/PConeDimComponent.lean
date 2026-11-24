@@ -88,7 +88,7 @@ theorem ConeDimComponent.proof_closed : ConeDimComponent.Statement := by
   subst this
   rfl
 
-theorem ConeDimComponent.proof (_h₁ : MinimalPrimeHomog.Statement) : ConeDimComponent.Statement :=
+theorem ConeDimComponent.proof : ConeDimComponent.Statement :=
   ConeDimComponent.proof_closed
 
 end

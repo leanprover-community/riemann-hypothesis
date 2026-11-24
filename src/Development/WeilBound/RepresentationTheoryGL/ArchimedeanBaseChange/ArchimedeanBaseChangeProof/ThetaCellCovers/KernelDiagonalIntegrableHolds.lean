@@ -599,7 +599,7 @@ theorem cntPair_of (h : RatProper) (ht : ThetaBasic) : CntPair := by
     have e' := congrArg Subtype.val e
     exact Prod.ext ((h E a).1 (congrArg Prod.fst e')) ((h E b).1 (congrArg Prod.snd e'))
 
-theorem zpow_aux {r x C : ℝ} (M : ℕ) (hr : 0 ≤ r) (hx : 0 ≤ x) (hC : 0 ≤ C) (h : x ≤ C * (1 + r)) :
+theorem zpow_aux {r x C : ℝ} (M : ℕ) (hr : 0 ≤ r) (hx : 0 ≤ x) (h : x ≤ C * (1 + r)) :
     ((1 + r) ^ M)⁻¹ ≤ (1 + C) ^ M * (1 + x) ^ (-(M : ℤ)) := by
   rw [_root_.zpow_neg, zpow_natCast, ← div_eq_mul_inv, le_div_iff₀ (by positivity), inv_mul_le_iff₀ (by positivity), ← mul_pow]
   exact pow_le_pow_left₀ (by positivity) (by nlinarith) M
@@ -630,8 +630,8 @@ theorem wtCount_of (h : RatProper) (h1 : CellSum) (h2 : CellCover) (h3 : RedBasi
       rintro m ⟨o₁, o₂⟩ ⟨q₁, q₂⟩
       have s₁ := ((h3 E a).2.1 (An.tor E (fun i => (m.1 i : ℝ)) * o₁)).1
       have s₂ := ((h3 E b).2.1 (An.tor E (fun i => (m.2 i : ℝ)) * o₂)).1
-      have t₁ := zpow_aux M s₁ (norm_nonneg _) p₁ (r₁ _ o₁ q₁).1
-      have t₂ := zpow_aux M s₂ (norm_nonneg _) p₂ (r₂ _ o₂ q₂).1
+      have t₁ := zpow_aux M s₁ (norm_nonneg _) (r₁ _ o₁ q₁).1
+      have t₂ := zpow_aux M s₂ (norm_nonneg _) (r₂ _ o₂ q₂).1
       rw [← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_mul (by positivity)]
       refine ENNReal.ofReal_le_ofReal (le_trans ?_ (mul_le_mul t₁ t₂ (by positivity) (by positivity)))
       change (1 + red (An.tor E (fun i => (m.1 i : ℝ)) * o₁ : GA E a) + red (An.tor E (fun i => (m.2 i : ℝ)) * o₂ : GA E b)) ^

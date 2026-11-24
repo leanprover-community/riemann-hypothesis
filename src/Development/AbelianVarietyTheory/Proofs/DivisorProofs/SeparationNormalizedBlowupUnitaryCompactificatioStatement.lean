@@ -1036,7 +1036,7 @@ section -- clump:auto
 noncomputable section
 namespace GlobalTheory.USep.Alg
 
-theorem mem_of_zpow_mem {K : Type} [Field K] (k₀ : Subfield K) (hk : IsAlgClosed k₀) {x : K} (hx : x ≠ 0) {m : ℤ}
+theorem mem_of_zpow_mem {K : Type} [Field K] (k₀ : Subfield K) (hk : IsAlgClosed k₀) {x : K} {m : ℤ}
     (hm : m ≠ 0) (h : x ^ m ∈ k₀) : x ∈ k₀ := by
   have hn : ∃ n : ℕ, 0 < n ∧ x ^ n ∈ k₀ := by
     rcases lt_or_gt_of_ne hm with hm | hm
@@ -1269,7 +1269,7 @@ theorem GlobalTheory.USep.sepB_of_normBl : ∀ (E : Type) [Field E] [NumberField
         rw [Units.val_zpow_eq_zpow_val]; rfl
       rw [this, key]
       exact div_mem (mul_mem (pow_mem hr 2) hR₂) hR₁
-    refine GlobalTheory.USep.Alg.mem_of_zpow_mem k₀ hk (hxne i) ?_ hmem'
+    refine GlobalTheory.USep.Alg.mem_of_zpow_mem k₀ hk ?_ hmem'
     have : (l.M' : ℤ) ≠ 0 := by exact_mod_cast (show l.M' ≠ 0 by omega)
     exact mul_ne_zero this (mul_ne_zero (by exact_mod_cast (show MM ≠ 0 by omega)) hn)
 end -- clump:auto

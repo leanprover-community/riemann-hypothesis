@@ -147,7 +147,7 @@ theorem polarised_of_grpObj (R : Type) [CommRing R] (W : _root_.WeierstrassCurve
       (originLB W).IsLB ∧ Out.Rigidified (schemeOver W) (originLB W) ∧
       Out.Sym (schemeOver W) (originLB W) ∧ Out.RelAmple (schemeOver W) (originLB W) ∧
       Out.KTriv (schemeOver W) (originLB W) := by
-  obtain ⟨hrig, hsym, hamp, hk⟩ := _root_.GlobalTheory.WeierstrassCurve.originLB_polarisation R W hc hη
+  obtain ⟨hrig, hsym, hamp, hk⟩ := _root_.GlobalTheory.WeierstrassCurve.originLB_polarisation R W hη
   exact ⟨isAbelianScheme_schemeOver R W hΔ hc, smoothOfRelativeDimension_toSpec_of_isUnit W hΔ,
     originLB_isLB W, hrig, hsym, hamp, hk⟩
 

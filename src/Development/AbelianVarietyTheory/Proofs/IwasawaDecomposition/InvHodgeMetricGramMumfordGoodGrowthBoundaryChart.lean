@@ -625,7 +625,7 @@ open scoped ComplexOrder
 namespace GlobalTheory
 
 theorem psd_real_quad_single (g : ℕ) (Y : Matrix (Fin g) (Fin g) ℝ) (hY : Y.PosSemidef) (i j : Fin g)
-    (hij : i ≠ j) (c : ℝ) : 0 ≤ Y i i + c * Y i j + c * Y j i + c * c * Y j j := by
+    (c : ℝ) : 0 ≤ Y i i + c * Y i j + c * Y j i + c * c * Y j j := by
   have h := hY.dotProduct_mulVec_nonneg (Pi.single i 1 + Pi.single j c)
   simp only [star_trivial, mulVec_add, add_dotProduct, dotProduct_add, mulVec_single,
     single_dotProduct] at h
@@ -647,8 +647,8 @@ theorem abs_entry_le_of_psd_le (g : ℕ) (Y : Matrix (Fin g) (Fin g) ℝ) (M : �
   · subst hij
     rw [abs_of_nonneg (hY.diag_nonneg (i := i))]
     exact hdiag i
-  · have h1 := psd_real_quad_single g Y hY i j hij 1
-    have h2 := psd_real_quad_single g Y hY i j hij (-1)
+  · have h1 := psd_real_quad_single g Y hY i j 1
+    have h2 := psd_real_quad_single g Y hY i j (-1)
     have hi := hdiag i
     have hj := hdiag j
     rw [hsym] at h1 h2

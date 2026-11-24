@@ -166,7 +166,7 @@ lemma antitone_of_append {r K : ℕ} (n1 : Fin r → ℤ) (k1 : Fin K → ℤ) (
     have := h (show Fin.natAdd r a ≤ Fin.natAdd r b from Nat.add_le_add_left (show a.val ≤ b.val from hab) r)
     rwa [Fin.append_right, Fin.append_right] at this
 
-theorem prvB1_of_D7 (D : Formalism.BasicNotions.D7) : RotatedSumBound D := by
+theorem prvB1_of_D7 (D : Formalism.BasicNotions.D7) : RotatedSumBound := by
   intro N r K _ _ LL B _ nu ka
   constructor
   · rintro ⟨P, hP⟩

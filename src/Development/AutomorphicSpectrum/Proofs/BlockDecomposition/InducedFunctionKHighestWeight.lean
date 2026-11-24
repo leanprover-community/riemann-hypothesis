@@ -213,7 +213,7 @@ theorem entry_diff {𝕜 : Type} [NontriviallyNormedField 𝕜] [NormedAlgebra �
   exact (differentiable_pi.1 (differentiable_pi.1 h i) j) x
 
 theorem lm_diff (j : Fin n) (x : Mat n) : DifferentiableAt ℂ (lm j) x :=
-  diffAt_det (fun y : Mat n => y.submatrix (ini j) (ini j)) fun r c => entry_diff _ _ x
+  diffAt_det (fun y : Mat n => y.submatrix (ini j) (ini j)) fun _ _ => entry_diff _ _ x
 
 theorem gm_diff (j : Fin n) (x : Mat n) : DifferentiableAt ℝ (gm j) x := by
   refine diffAt_det (fun y : Mat n => y.submatrix (ini j) id * (y.submatrix (ini j) id)ᴴ) fun r c => ?_

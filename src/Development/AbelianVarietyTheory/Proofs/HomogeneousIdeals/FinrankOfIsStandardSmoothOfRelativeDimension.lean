@@ -385,7 +385,7 @@ def tensorEquiv : AugCot (tensorAug (εA := εA) (εB := εB)) ≃ₗ[R] AugCot 
     (hom_ext (ε := tensorAug (εA := εA) (εB := εB)) fun x => by
       induction x with
       | add x y hx hy => simp only [map_add (f := _), hx, hy]
-      | tmul a b => simp [d_mul, d_tmul a b])
+      | tmul a b => simp [d_tmul a b])
 
 end Map
 

@@ -316,7 +316,7 @@ theorem continuous_splitLift (h : IsCMExt F E σ) (hJ : IsHermND σ J) (τ : E �
 def splitEquiv (h : IsCMExt F E σ) (hJ : IsHermND σ J) (τ : E →ₐ[F] Fv F v) : GLoc σ J v ≃ₜ* GL (Fin n) (Fv F v) where
   toFun := splitHom σ J τ
   invFun := splitLift h hJ τ
-  left_inv g := splitHom_injective h hJ τ (splitHom_splitLift h hJ τ _)
+  left_inv _ := splitHom_injective h hJ τ (splitHom_splitLift h hJ τ _)
   right_inv := splitHom_splitLift h hJ τ
   map_mul' := map_mul _
   continuous_toFun := continuous_splitHom τ

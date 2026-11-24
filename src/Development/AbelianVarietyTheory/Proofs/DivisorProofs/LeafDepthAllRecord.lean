@@ -744,7 +744,7 @@ theorem step {p : ℕ} (T : ℕ) (g κ : Fin p → ℕ) (h : ∀ i, (T : ℤ) * 
 theorem gap_nonneg {p : ℕ} {κ : Fin p → ℕ} (h : Antitone κ) (i : Fin p) : 0 ≤ WeightAlgebra.gapZ κ i := by
   exact GlobalTheory.RunDepth.gapZ_nonneg_of_antitone h i
 
-theorem entry_le {p : ℕ} (T : ℕ) (g κ : Fin p → ℕ) (h : ∀ i, (T : ℤ) * g i ≤ WeightAlgebra.gapZ κ i + 2) (i : ℕ) (hi : i ≤ p) :
+theorem entry_le {p : ℕ} (T : ℕ) (g κ : Fin p → ℕ) (h : ∀ i, (T : ℤ) * g i ≤ WeightAlgebra.gapZ κ i + 2) (i : ℕ) :
     (T : ℝ) * (ext0 (ofGaps g) i : ℝ) ≤ (ext0 κ i : ℝ) + 2 * p := by
   have := telescope T (fun i => (ext0 (ofGaps g) i : ℝ)) (fun i => (ext0 κ i : ℝ)) (step T g κ h) i p
   have e1 : ext0 (ofGaps g) (i + p) = 0 := by unfold ext0; rw [dite_eq_right (by omega)]
@@ -858,8 +858,8 @@ theorem restAt_bounds (hj : InR D j) (τ : D.what₂.Tau) :
   have he := L.etaSz_pos
   have hS := L.Sc_pos
   have t1 := telescope _ _ _ (step Tp.TO _ _ (mul_lGapP_le_gapZ_add_two Tp hK j τ)) 0 (D.R.k - 2)
-  have t2 := entry_le Tp.TO _ _ (mul_lGapP_le_gapZ_add_two Tp hK j τ) (D.R.k - 1) (by omega)
-  have t3 := entry_le Tp.TO _ _ (gapM_le Tp hK j τ) 0 (Nat.zero_le _)
+  have t2 := entry_le Tp.TO _ _ (mul_lGapP_le_gapZ_add_two Tp hK j τ) (D.R.k - 1)
+  have t3 := entry_le Tp.TO _ _ (gapM_le Tp hK j τ) 0
   have s1 := kappa_spread Tp hK j hj τ
   have s2 : (ext0 ((kaR Tp hK j).aP τ) (D.R.k - 1) : ℝ) ≤ L.etaSz := by
     unfold ext0

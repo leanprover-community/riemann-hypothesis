@@ -201,7 +201,7 @@ theorem jnt_splitK (D : D7) (p : ℕ) (hp : p.Prime) (hd : p ∣ D.host.QS * D.h
   D.host.splitK_of_dvd hp hd
 
 attribute [local instance] FractionRing.liftAlgebra FractionRing.isScalarTower_liftAlgebra in
-theorem jnt_ramEK (D : D7) (𝔭 : Ideal (𝓞 D.host.K)) (h𝔭 : 𝔭.IsPrime)
+theorem jnt_ramEK (D : D7) (𝔭 : Ideal (𝓞 D.host.K))
     (hr : 1 < 𝔭.ramificationIdxIn (𝓞 D.host.E)) :
     ((D.host.QS * D.host.q : ℕ) : 𝓞 D.host.K) ∈ 𝔭 := by
   have hex : ∃ P : Ideal (𝓞 D.host.E), P.IsPrime ∧ P.LiesOver 𝔭 := by
@@ -242,7 +242,7 @@ theorem jnt_inertiaD (D : D7) (P : Ideal (𝓞 D.host.E)) (hP : P.IsPrime)
 
 theorem _root_.Formalism.MainNotions.TaylorLogMetric.first_hypothesis_of_lifting (D : D7) (h : Formalism.MainNotions.UnusedSlot33.Conclusion1 D) : Formalism.MainNotions.TaylorLogMetric.adm1 D := by
   obtain ⟨-, -, -, -, hun, hsp, -⟩ := h
-  exact ⟨hun, D.host.der.norm_mu, hsp, jnt_splitK D, fun 𝔭 h𝔭 _ hr => jnt_ramEK D 𝔭 h𝔭 hr,
+  exact ⟨hun, D.host.der.norm_mu, hsp, jnt_splitK D, fun 𝔭 h𝔭 _ hr => jnt_ramEK D 𝔭 hr,
     fun P hP hd σ => jnt_inertiaD D P hP hd σ⟩
 
 theorem jnt_ccK_curve (D : D7) : Formalism.MainNotions.TaylorLogMetric.IsCurveIdeal D D.host.ccK :=

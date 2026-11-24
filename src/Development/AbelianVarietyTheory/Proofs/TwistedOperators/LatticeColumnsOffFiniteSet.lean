@@ -177,8 +177,8 @@ theorem col_mem_imp {A B : HSp D} {c : ℕ} {ε : D.host.E} (d : HermitianOrthog
 
 def lineMap {n : ℕ} (w : Fin n → AE D) : AE D →+ (Fin n → AE D) where
   toFun t := fun k => t * w k
-  map_zero' := funext fun k => zero_mul _
-  map_add' x y := funext fun k => add_mul _ _ _
+  map_zero' := funext fun _ => zero_mul _
+  map_add' _ _ := funext fun _ => add_mul _ _ _
 
 theorem col_mem_of {A B : HSp D} {c : ℕ} {ε : D.host.E} (d : HermitianOrthogonalExtensionData A B c ε) (p : Fin c)
     (Λ : Lat A) (𝔟 : Fin c → FractionalIdeal (𝓞 D.host.E)⁰ D.host.E) (𝔞 : FractionalIdeal (𝓞 D.host.E)⁰ D.host.E)
@@ -326,7 +326,7 @@ theorem wittDecompositionColumns_auxiliaryVectors {A B B₀ : HSp D} {c ρ : ℕ
     show t * incA D ((-D.host.xi0) ^ (i.1 + 1) * a.a k _) = _
     rw [map_mul, mul_assoc]
 
-theorem colsAt_xZero : OnStd fun {D} _ _ {sc} {G} W F => ∀ ρ (h : 2 * ρ + 2 ≤ D.R.m), ∀ v ∉ G.pl.S0, ColsAt (F.dB ρ h) (xZero (F.dJ ρ h)) (G.Λ (.grid (2 * ρ + 2) 0)) (G.Λ (.grid (2 * ρ + 1) 0)) v := by
+theorem colsAt_xZero : OnStd fun {D} _ _ {_} {G} _ F => ∀ ρ (h : 2 * ρ + 2 ≤ D.R.m), ∀ v ∉ G.pl.S0, ColsAt (F.dB ρ h) (xZero (F.dJ ρ h)) (G.Λ (.grid (2 * ρ + 2) 0)) (G.Λ (.grid (2 * ρ + 1) 0)) v := by
   intro D hD T L μ0 hL sc G W M hM F hF ρ h v hv
   intro i a _ha
 

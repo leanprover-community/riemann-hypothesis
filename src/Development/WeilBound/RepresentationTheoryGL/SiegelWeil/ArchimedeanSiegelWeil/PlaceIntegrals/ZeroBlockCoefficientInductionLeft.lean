@@ -346,7 +346,7 @@ theorem local_stages : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Num
   have hR' := hLoc
   obtain ⟨_, _, _, _, -, -, -, -⟩ := hR'
   obtain ⟨_, _, _, _, -, -, -, hbor, -, -⟩ := _root_.GlobalTheory.CompanionTheory.SW.TopK.topTens_props F E σ hCM R
-  obtain ⟨hJH, -⟩ := GlobalTheory.CompanionTheory.WeilSiegel.HypStep.hypOne_isHermND_and_e0_mem F E σ hCM M J hJ
+  obtain ⟨hJH, -⟩ := GlobalTheory.CompanionTheory.WeilSiegel.HypStep.hypOne_isHermND_and_e0_mem F E σ M J hJ
   obtain ⟨_, _, _, _, _, gAct⟩ := _root_.GlobalTheory.CompanionTheory.SW.TopH.topH_props F E σ hCM (M + 2) (hypOne J) hJH R
   obtain ⟨_, _, _, _, _, uAct⟩ := _root_.GlobalTheory.CompanionTheory.SW.TopH.topH_props F E σ hCM M J hJ R
   obtain ⟨-, hW, hH⟩ := _root_.GlobalTheory.CompanionTheory.SW.coord_measures_haar F E σ hCM R d b lam hlam

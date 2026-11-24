@@ -509,7 +509,7 @@ theorem comb_a {G : RefGeo Y} (A : G.An) (ν : RootIx D → ℤ) (κ : G.K) :
 
 open Classical in
 theorem isEff_of_data (G : RefGeo Y) (n : RootIx D → ℤ) (e : G.Ω) (b : G.Ω) (dβ : G.K → ℕ)
-    (i₀ : ∀ k, G.J k) (hi₀ : ∀ k, G.y ⟨k, i₀ k⟩ ≠ 0)
+    (i₀ : ∀ k, G.J k)
     (he : e ∈ chartLat G.y (fun κ => (∑ r, (-n r) • G.xdeg r) κ - 1 - dβ κ) 1)
     (hb : b ∈ chartLat G.y (fun κ => (dβ κ : ℤ)) 1)
     (hbd : ∀ p : Cpt G.𝔐.ξ, (∀ r : ℕ, r.Prime → ¬ InFibre G.𝔐.ξ r p) → p.1 ∉ abLocus G.𝔐.t.G →
@@ -637,7 +637,7 @@ theorem exists_eff : Top.Given → ∀ (E : Type) [Field E] [NumberField E] [IsC
       rw [hdeg]
     rw [this]
     exact he
-  refine ⟨k, 1, _, by omega, one_pos, ?_, isEff_of_data G n e _ dβ i₀ hi₀ he' hβc hbd⟩
+  refine ⟨k, 1, _, by omega, one_pos, ?_, isEff_of_data G n e _ dβ i₀ he' hβc hbd⟩
   refine mul_ne_zero (mul_ne_zero (mul_ne_zero he0 hb0) (Finset.prod_ne_zero_iff.2 fun κ _ => hi₀ κ)) ?_
   have hDeg := _root_.GlobalTheory.CompanionTheory.Ar.Lat.tens_isDegOn _ _ G.𝔐.ξ G.K G.J G.y _ G.Fl.rootLat Set.univ G.xdeg G.e G.lines (fun r => -n r)
   exact hDeg.1
@@ -718,7 +718,7 @@ namespace GlobalTheory.CompanionTheory.Ar.EmbedsOfTie
 
 variable {X : Scheme.{0}} {Ω : Type} [Field Ω]
 
-theorem isLocalRing_regAt {ξ : Spec (CommRingCat.of Ω) ⟶ X} (h : IsCptGen ξ) (p : Cpt ξ) :
+theorem isLocalRing_regAt {ξ : Spec (CommRingCat.of Ω) ⟶ X} (p : Cpt ξ) :
     IsLocalRing (regAt ξ p) := by
   unfold regAt
   exact IsLocalRing.of_surjective' (genMap ξ p).rangeRestrict (genMap ξ p).rangeRestrict_surjective
@@ -757,7 +757,7 @@ theorem embedsGeneric_of_coordTie : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] 
     obtain ⟨s, hs, hu, hsa⟩ := (_root_.GlobalTheory.CompanionTheory.Ar.regAt_iff_exists_chart_fraction X Ω ξ ℤ κ x h i p hi a).mp ha
     exact ⟨s, mem_adjoin_rat_of_int hs, hu, mem_adjoin_rat_of_int hsa⟩
   · intro q _ hq hpq
-    haveI := isLocalRing_regAt h.gen p
+    haveI := isLocalRing_regAt p
     have hmem : ∀ a ∈ Algebra.adjoin ℤ (Set.range fun j => x j / x i), a ∈ regAt ξ p :=
       fun a ha => (h.ring i hi.1 a).mp ha p hi
     let φ : Algebra.adjoin ℤ (Set.range fun j => x j / x i) →+* regAt ξ p :=

@@ -145,7 +145,7 @@ theorem wt_mul_prod {n : ℕ} (x : Fin n → Kˣ) (J I : Finset (Fin n)) (i : Fi
 
 theorem prod_sdiff_ne_zero {n : ℕ} (x : Fin n → Kˣ) (J I : Finset (Fin n)) :
     ∏ j ∈ I \ J, (x j : K) ≠ 0 :=
-  Finset.prod_ne_zero_iff.mpr fun j _ => Units.ne_zero _
+  Finset.prod_ne_zero_iff.mpr fun _ _ => Units.ne_zero _
 
 theorem ιMulti_frame {n : ℕ} (x : Fin n → Kˣ) (J : Finset (Fin n)) :
     ∀ (a : ℕ) (v : Fin a → Ω[K⁄ℤ]), (∀ i, v i ∈ Set.range (frame x J)) →

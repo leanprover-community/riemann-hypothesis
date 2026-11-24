@@ -402,8 +402,8 @@ theorem isAdmissible_derivedTriple (hstar : MaxContactCoverProperties.{u}) (S : 
     intro T hT hsub
     exact hNZ T hT (Set.Subset.trans hsub hsupp)
 
-theorem isLocallyNoetherian_tunedMarkedBlowupSeq_schemeAt (_hMaxContact : MaxContactCoverProperties.{u}) (S : MarkedIdealWithBoundary.{u})
-    (_hV : S.IsAdmissible) (s : MarkedBlowupSequenceData S.structMap S.ideal S.mult S.boundary)
+theorem isLocallyNoetherian_tunedMarkedBlowupSeq_schemeAt (S : MarkedIdealWithBoundary.{u})
+    (s : MarkedBlowupSequenceData S.structMap S.ideal S.mult S.boundary)
     (hft : AlgebraicGeometry.LocallyOfFiniteType (s.proj s.length ≫ S.structMap))
     (extra : List (s.obj s.length).IdealSheafData) (keep : ℕ)
     (hVc : (MaxContactCoverData.derivedTriple S s hft extra keep).IsAdmissible)
@@ -411,7 +411,7 @@ theorem isLocallyNoetherian_tunedMarkedBlowupSeq_schemeAt (_hMaxContact : MaxCon
     AlgebraicGeometry.IsLocallyNoetherian ((BlowupSequenceData.ofSequenceOfBlowups u.toSequenceOfBlowups).obj i) := by
   have hi' : i ≤ u.toSequenceOfBlowups.length := hi
   have hN : AlgebraicGeometry.IsNoetherian (u.toSequenceOfBlowups.schemeAt i) :=
-    MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hVc u i hi'
+    MarkedSequenceOfBlowups.isNoetherian_schemeAt hVc u i hi'
   exact inferInstanceAs (AlgebraicGeometry.IsLocallyNoetherian (u.toSequenceOfBlowups.schemeAt i))
 
 abbrev continuationMarkedData (S : MarkedIdealWithBoundary.{u})
@@ -856,7 +856,7 @@ theorem separateBoundaryInvariant_appendLowerDimReduction (hstar : MaxContactCov
   rw [hceq]
   refine separateBoundaryInvariant_append hstar hinv S H hH s _ j hj hbj hfacts ?_ Dv ?_ ?_ ?_ ?_
   · intro i hi
-    exact isLocallyNoetherian_tunedMarkedBlowupSeq_schemeAt hstar S hV s hft [] 0 hVc
+    exact isLocallyNoetherian_tunedMarkedBlowupSeq_schemeAt S s hft [] 0 hVc
       (A j (MaxContactCoverData.derivedTriple S s hft [] 0)) i hi
   · rw [hC2, hget]
     with_unfolding_all rfl

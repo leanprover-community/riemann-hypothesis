@@ -762,7 +762,7 @@ open GlobalTheory.CatH (face toLast)
 namespace GlobalTheory.CompanionTheory.ConeLocal
 
 theorem coord_near : ∀ {K : Type} [Field K] {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of K)) [Smooth q] {V' : X.Opens}, IsAffineOpen V' → ∀ x : X, x ∈ V' →
-    ∃ (f : Γ(X, V')) (e : ℕ) (c : Coord q (X.basicOpen f) e), x ∈ X.basicOpen f := by
+    ∃ (f : Γ(X, V')) (e : ℕ) (_ : Coord q (X.basicOpen f) e), x ∈ X.basicOpen f := by
   intro K _ X q _ V' hV x hx
   have h : RingHom.Locally RingHom.IsStandardSmooth (q.appLE ⊤ V' le_top).hom :=
     RingHom.smooth_iff_locally_isStandardSmooth.1 (q.smooth_appLE (isAffineOpen_top _) hV le_top)

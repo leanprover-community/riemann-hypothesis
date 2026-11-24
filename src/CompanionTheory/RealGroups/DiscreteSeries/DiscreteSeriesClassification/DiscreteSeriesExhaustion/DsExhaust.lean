@@ -227,7 +227,7 @@ theorem exists_iso_of_highest {ε : Fin n → Bool} {lam : Fin n → ℝ} (hlam 
     rcases smul_eq_zero.1 e₁.symm with rfl | h
     · exact h₂ (by simpa using e₂)
     · exact h₁ h
-  have hsplit : pair v₁ (0 : V') + pair (0 : V) v₂ = v := ext2 (by simp [fstL, sndL, pair, hv]) (by simp [fstL, sndL, pair, hv])
+  have hsplit : pair v₁ (0 : V') + pair (0 : V) v₂ = v := ext2 (by simp [fstL, pair, hv]) (by simp [sndL, pair, hv])
 
   let K₁ : Submodule ℂ V :=
     C.comap ((WithLp.linearEquiv 2 ℂ (V × V')).symm.toLinearMap ∘ₗ LinearMap.inl ℂ V V')
@@ -239,7 +239,7 @@ theorem exists_iso_of_highest {ε : Fin n → Bool} {lam : Fin n → ℝ} (hlam 
     refine (hS K₁ fun a b x hx => ?_).resolve_right fun h => hno₂ ?_
     · rw [mem₁] at hx ⊢
       have := hst a b _ hx
-      have e : sumE E E' a b (pair x (0 : V')) = pair (E a b x) (0 : V') := ext2 (by simp [fstL, sndL, pair, sumE]) (by simp [fstL, sndL, pair, sumE])
+      have e : sumE E E' a b (pair x (0 : V')) = pair (E a b x) (0 : V') := ext2 (by simp [fstL, pair, sumE]) (by simp [sndL, pair, sumE])
       rwa [e] at this
     · have : pair v₁ (0 : V') ∈ C := (mem₁ _).1 (h ▸ Submodule.mem_top)
       have h' := C.sub_mem hvC this
@@ -248,7 +248,7 @@ theorem exists_iso_of_highest {ε : Fin n → Bool} {lam : Fin n → ℝ} (hlam 
     refine (hS' K₂ fun a b x hx => ?_).resolve_right fun h => hno₁ ?_
     · rw [mem₂] at hx ⊢
       have := hst a b _ hx
-      have e : sumE E E' a b (pair (0 : V) x) = pair (0 : V) (E' a b x) := ext2 (by simp [fstL, sndL, pair, sumE]) (by simp [fstL, sndL, pair, sumE])
+      have e : sumE E E' a b (pair (0 : V) x) = pair (0 : V) (E' a b x) := ext2 (by simp [fstL, pair, sumE]) (by simp [sndL, pair, sumE])
       rwa [e] at this
     · have : pair (0 : V) v₂ ∈ C := (mem₂ _).1 (h ▸ Submodule.mem_top)
       have h' := C.sub_mem hvC this
@@ -259,19 +259,19 @@ theorem exists_iso_of_highest {ε : Fin n → Bool} {lam : Fin n → ℝ} (hlam 
   have b₁ : Function.Bijective q₁ := by
     refine ⟨(injective_iff_map_eq_zero q₁).2 fun w hw => ?_, fun x => ?_⟩
     · have hw' : fstL V V' (w : WithLp 2 (V × V')) = 0 := hw
-      have e : (w : WithLp 2 (V × V')) = pair (0 : V) (sndL V V' w) := ext2 (by simpa [fstL, sndL, pair] using hw') (by simp [fstL, sndL, pair, sumE])
+      have e : (w : WithLp 2 (V × V')) = pair (0 : V) (sndL V V' w) := ext2 (by simpa [fstL, sndL, pair] using hw') (by simp [sndL, pair])
       have : sndL V V' w ∈ K₂ := (mem₂ _).2 (e ▸ w.2)
       rw [hK₂, Submodule.mem_bot] at this
-      exact Subtype.ext (by rw [e, this]; exact ext2 (by simp [fstL, sndL, pair, sumE]) (by simp [fstL, sndL, pair, sumE]))
+      exact Subtype.ext (by rw [e, this]; exact ext2 (by simp [fstL, pair]) (by simp [sndL, pair]))
     · obtain ⟨w, hw, rfl⟩ : x ∈ C.map (fstL V V') := hp₁ ▸ Submodule.mem_top
       exact ⟨⟨w, hw⟩, rfl⟩
   have b₂ : Function.Bijective q₂ := by
     refine ⟨(injective_iff_map_eq_zero q₂).2 fun w hw => ?_, fun x => ?_⟩
     · have hw' : sndL V V' (w : WithLp 2 (V × V')) = 0 := hw
-      have e : (w : WithLp 2 (V × V')) = pair (fstL V V' w) (0 : V') := ext2 (by simp [fstL, sndL, pair, sumE]) (by simpa [fstL, sndL, pair] using hw')
+      have e : (w : WithLp 2 (V × V')) = pair (fstL V V' w) (0 : V') := ext2 (by simp [fstL, pair]) (by simpa [fstL, sndL, pair] using hw')
       have : fstL V V' w ∈ K₁ := (mem₁ _).2 (e ▸ w.2)
       rw [hK₁, Submodule.mem_bot] at this
-      exact Subtype.ext (by rw [e, this]; exact ext2 (by simp [fstL, sndL, pair, sumE]) (by simp [fstL, sndL, pair, sumE]))
+      exact Subtype.ext (by rw [e, this]; exact ext2 (by simp [fstL, pair]) (by simp [sndL, pair]))
     · obtain ⟨w, hw, rfl⟩ : x ∈ C.map (sndL V V') := hp₂ ▸ Submodule.mem_top
       exact ⟨⟨w, hw⟩, rfl⟩
   let f₁ : C ≃ₗ[ℂ] V := LinearEquiv.ofBijective q₁ b₁

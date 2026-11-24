@@ -217,23 +217,23 @@ theorem uh_mk (h2 : Aᴴ * F = 1) (h3 : E = -(dD k * (Bᴴ * F)))
   rw [uhE_lemma_4]
   simp only [mkM_pos_lemma]
   rcases p with a' | c' | a' <;> rcases q with b | c'' | b
-  · simp only [blk, hpkE_lemma, (posE k r).apply_eq_iff_eq, reduceCtorEq, ↓reduceIte, star_zero, zero_mul, mul_zero, Finset.sum_const_zero, add_zero, zero_add, hs, ← mul_assoc, boole_mul, mul_boole, ite_zero_mul, Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ]
-  · simp only [blk, hpkE_lemma, (posE k r).apply_eq_iff_eq, Sum.inr.injEq, reduceCtorEq, ↓reduceIte, star_zero, zero_mul, mul_zero, Finset.sum_const_zero, add_zero, zero_add, hs, ← mul_assoc, boole_mul, mul_boole]
+  · simp only [blk, hpkE_lemma, (posE k r).apply_eq_iff_eq, reduceCtorEq, ↓reduceIte, star_zero, zero_mul, mul_zero, Finset.sum_const_zero, add_zero]
+  · simp only [blk, hpkE_lemma, (posE k r).apply_eq_iff_eq, Sum.inr.injEq, reduceCtorEq, ↓reduceIte, star_zero, zero_mul, mul_zero, Finset.sum_const_zero, add_zero, mul_boole]
   · simp only [blk, hpkE_lemma, (posE k r).apply_eq_iff_eq, Sum.inr.injEq, star_zero, zero_mul, Finset.sum_const_zero, add_zero, ← mul_assoc]
     all_goals
       rw [e2 a' b]
       by_cases h : a' = b
       · subst h; simp
       · simp [h, Ne.symm h]
-  · simp only [blk, hpkW_lemma_2, (posE k r).apply_eq_iff_eq, reduceCtorEq, ↓reduceIte, star_zero, zero_mul, mul_zero, Finset.sum_const_zero, add_zero, hs, ← mul_assoc, boole_mul, mul_boole, ite_zero_mul, Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ]
-  · simp only [blk, hpkW_lemma_2, (posE k r).apply_eq_iff_eq, Sum.inl.injEq, Sum.inr.injEq, ↓reduceIte, star_zero, zero_mul, mul_zero, Finset.sum_const_zero, add_zero, zero_add, hs, ← mul_assoc, boole_mul, mul_boole, ite_zero_mul, Finset.sum_ite_eq', Finset.mem_univ]
+  · simp only [blk, hpkW_lemma_2, (posE k r).apply_eq_iff_eq, reduceCtorEq, ↓reduceIte, star_zero, zero_mul, mul_zero, Finset.sum_const_zero, add_zero, hs]
+  · simp only [blk, hpkW_lemma_2, (posE k r).apply_eq_iff_eq, Sum.inl.injEq, Sum.inr.injEq, ↓reduceIte, star_zero, zero_mul, mul_zero, Finset.sum_const_zero, add_zero, zero_add, hs, mul_boole, ite_zero_mul, Finset.sum_ite_eq', Finset.mem_univ]
     all_goals
       by_cases h : c' = c''
       · subst h; simp
       · simp [h, Ne.symm h]
   · simp only [blk, hpkW_lemma_2, (posE k r).apply_eq_iff_eq, Sum.inr.injEq, reduceCtorEq, ↓reduceIte, star_zero, zero_mul, Finset.sum_const_zero, add_zero, hs, ← mul_assoc, ite_zero_mul, Finset.sum_ite_eq', Finset.mem_univ]
     all_goals linear_combination e3 c' b
-  · simp only [blk, hpkS_lemma_3, (posE k r).apply_eq_iff_eq, Sum.inl.injEq, mul_zero, Finset.sum_const_zero, zero_add, hs, ← mul_assoc, boole_mul, mul_boole, ite_zero_mul, Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ]
+  · simp only [blk, hpkS_lemma_3, (posE k r).apply_eq_iff_eq, Sum.inl.injEq, mul_zero, Finset.sum_const_zero, zero_add]
     all_goals
       rw [e2' a' b]
       by_cases h : a' = b

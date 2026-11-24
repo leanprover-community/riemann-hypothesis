@@ -656,8 +656,8 @@ structure NAut {R : Ranks} {H : Host R} {what₂ : Rows.Data R} (N : NData R H w
 
   infWt : N.Loc → (H.E →+* ℂ) → Multiset ℂ
 
-  locW : ∀ i : N.Loc, what₂.FT → ∀ w, LP w
-  satW : ∀ i : N.Loc, what₂.FT → PlE H → Multiset ℂ
+  locW : ∀ _ : N.Loc, what₂.FT → ∀ w, LP w
+  satW : ∀ _ : N.Loc, what₂.FT → PlE H → Multiset ℂ
 
   plGw : ∀ k, N.PlG k → PlE H
   plGw_over : ∀ k v, plGw k v ∈ placesOver H.E (H.g k)
@@ -787,9 +787,9 @@ structure NExp (R : Ranks) (H : Host R) (what₂ : Rows.Data R) [NumberField wha
   actG : ∀ i j b, G0g N →* (Fm i j b ≃ₗ[FractionRing (tw.O i)] Fm i j b)
 
   U : Subgroup (G0g N)
-  psiU : ∀ i (b : Bool), U →* (FractionRing (tw.O i))ˣ
+  psiU : ∀ i (_ : Bool), U →* (FractionRing (tw.O i))ˣ
 
-  eAlg : ∀ i (b : Bool), MonoidAlgebra (FractionRing (tw.O i)) (G0g N)
+  eAlg : ∀ i (_ : Bool), MonoidAlgebra (FractionRing (tw.O i)) (G0g N)
 
   eLL0 : G0g N → LL0
   eAlg_def : ∀ i b (g : G0g N), (eAlg i b).coeff g =
@@ -804,7 +804,7 @@ structure NExp (R : Ranks) (H : Host R) (what₂ : Rows.Data R) [NumberField wha
   th : ∀ i j b, Dat i j b → Fm i j b
   lev : ∀ i j b, Dat i j b → Finset (PlE H)
 
-  thPsi : ∀ i j b k (Q : Finset (PlE H)) (ψ : G H.E N.Om →* (tw.Ok i k)ˣ),
+  thPsi : ∀ i j b k (_ : Finset (PlE H)) (_ : G H.E N.Om →* (tw.Ok i k)ˣ),
     Dat i j b → Set (tw.Ok i k ⊗[tw.O i] Fm i j b)
 
   thPsi_one : ∀ i j b k (d : Dat i j b), thPsi i j b k ∅ 1 d = {(1 : tw.Ok i k) ⊗ₜ[tw.O i] th i j b d}
@@ -812,7 +812,7 @@ structure NExp (R : Ranks) (H : Host R) (what₂ : Rows.Data R) [NumberField wha
   thU : ∀ i j b (Q : Finset (PlE H)) (M : ℕ), Dat i j b →
     Fm i j b ⊗[tw.O i] AddMonoidAlgebra (tw.O i) (DelQM H (tw.l i) Q M)
 
-  twPsi : ∀ i j b k (ψ : G H.E N.Om →* (tw.Ok i k)ˣ),
+  twPsi : ∀ i j b k (_ : G H.E N.Om →* (tw.Ok i k)ˣ),
     Fm i j b →ₗ[tw.O i] (tw.Ok i k ⊗[tw.O i] Fm i j b)
   twPsi_one : ∀ i j b k (f : Fm i j b), twPsi i j b k 1 f = (1 : tw.Ok i k) ⊗ₜ[tw.O i] f
 
@@ -838,7 +838,7 @@ structure NExp (R : Ranks) (H : Host R) (what₂ : Rows.Data R) [NumberField wha
       Multiplicative.toAdd (delU i Q M σ) ⟨P', hP'⟩ =
         ((s : ℤ) : ZMod (tw.l i ^ M)) * Multiplicative.toAdd (delU i Q M σ) ⟨P, hP⟩
 
-  MtV : ∀ i (j : ℕ) (b : Bool) k (Q : Finset (PlE H)) (ψ : G H.E N.Om →* (tw.Ok i k)ˣ), Type
+  MtV : ∀ i (_ : ℕ) (_ : Bool) k (_ : Finset (PlE H)) (_ : G H.E N.Om →* (tw.Ok i k)ˣ), Type
   [acgMt : ∀ i j b k Q ψ, AddCommGroup (MtV i j b k Q ψ)]
   [modMtK : ∀ i j b k Q ψ, Module (FractionRing (tw.Ok i k)) (MtV i j b k Q ψ)]
   [modMtO : ∀ i j b k Q ψ, Module (tw.Ok i k) (MtV i j b k Q ψ)]
@@ -919,7 +919,7 @@ structure NTypes {R : Ranks} {H : Host R} {what₂ : Rows.Data R} {N : NData R H
 
   heckeLoc_gamma_places : ∀ i k v, N.gam0 i (A.plGw k v) = tg k v
 
-  iota : ∀ k (v : N.PlG k) (w : what₂.places.Pl),
+  iota : ∀ k (_ : N.PlG k) (w : what₂.places.Pl),
     Fb (H.g k) (H.g_prime k) →* Fb (what₂.places.resChar w) (what₂.places.resChar_prime w)
   iota_inj : ∀ k v w, ∀ x y : Fb (H.g k) (H.g_prime k), x ≠ 0 → y ≠ 0 →
       (orderOf x).Coprime (what₂.places.resChar w) → (orderOf y).Coprime (what₂.places.resChar w) →

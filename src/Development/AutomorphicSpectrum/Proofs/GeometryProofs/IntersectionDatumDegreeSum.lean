@@ -236,7 +236,7 @@ theorem chartMono_ne {c : ∀ k, J k} (hc : ∀ k, y ⟨k, c k⟩ ≠ 0) (a : K 
   unfold chartMono
   exact Finset.prod_ne_zero_iff.2 (fun k _ => zpow_ne_zero _ (hc k))
 
-theorem dh_eq_zero {c : ∀ k, J k} (hc : ∀ k, y ⟨k, c k⟩ ≠ 0) {g : MRing J} (hg : g ∈ mCoordIdeal y) :
+theorem dh_eq_zero {c : ∀ k, J k} {g : MRing J} (hg : g ∈ mCoordIdeal y) :
     dh y c g = 0 := by
   have hker : mConeMap y g = 0 := RingHom.mem_ker.1 hg
   have key : ((dh y c : MRing J →ₐ[ℤ] Ω) : MRing J →+* Ω) =
@@ -290,7 +290,7 @@ theorem unit_off_fibre {c : ∀ k, J k} {p : Cpt ξ} (h : InChart ξ (seg y) c p
   have hPW : mCoordIdeal y ≤ Ideal.comap (dhP h) (IsLocalRing.maximalIdeal (regAt ξ p)) := by
     intro x hx
     rw [Ideal.mem_comap]
-    have h0 : dhP h x = 0 := Subtype.ext (by rw [coe_dhP]; exact dh_eq_zero hc0 hx)
+    have h0 : dhP h x = 0 := Subtype.ext (by rw [coe_dhP]; exact dh_eq_zero hx)
     rw [h0]
     exact zero_mem _
   have hrel : IsRelevant (Ideal.comap (dhP h) (IsLocalRing.maximalIdeal (regAt ξ p))) := by
@@ -323,7 +323,7 @@ theorem unit_off_fibre {c : ∀ k, J k} {p : Cpt ξ} (h : InChart ξ (seg y) c p
   have hU := hunit u hu
   have hV := hunit v hv'
   have hrel2 : dh y c u * dh y c f = dh y c v * dh y c g := by
-    have h0 := dh_eq_zero hc0 huv
+    have h0 := dh_eq_zero huv
     rw [map_sub, map_mul, map_mul] at h0
     exact sub_eq_zero.1 h0
   have hdg : dh y c g ≠ 0 := by

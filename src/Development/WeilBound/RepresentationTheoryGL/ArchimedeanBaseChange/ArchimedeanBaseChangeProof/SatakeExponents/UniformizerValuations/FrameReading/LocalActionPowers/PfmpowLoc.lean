@@ -78,7 +78,7 @@ theorem quotient_out_right_invariant {H : Type} [Group H] (K : Subgroup H) (u : 
   exact hu x k k.2
 
 theorem PositivityTheory.Rg.BcN.F2.LocOpPf.finsum_quot_le :
-    ∀ {H : Type} [inst : Group H] {S T : Subgroup H}, S ≤ T → ∀ (u : H → ℂ), (∀ (x t : H), t ∈ T → u (x * t) = u x) → S.relIndex T ≠ OfNat.ofNat (nat_lit 0) → (Function.support fun (q : H ⧸ S) ↦ u (Quotient.out q)).Finite → ∑ᶠ (q : H ⧸ S), u (Quotient.out q) = (S.relIndex T).cast * ∑ᶠ (q : H ⧸ T), u (Quotient.out q) := by
+    ∀ {H : Type} [Group H] {S T : Subgroup H}, S ≤ T → ∀ (u : H → ℂ), (∀ (x t : H), t ∈ T → u (x * t) = u x) → S.relIndex T ≠ OfNat.ofNat (nat_lit 0) → (Function.support fun (q : H ⧸ S) ↦ u (Quotient.out q)).Finite → ∑ᶠ (q : H ⧸ S), u (Quotient.out q) = (S.relIndex T).cast * ∑ᶠ (q : H ⧸ T), u (Quotient.out q) := by
   intro H _ S T hST u hu hidx hfin
   have huS : ∀ (x s : H), s ∈ S → u (x * s) = u x := fun x s hs => hu x s (hST hs)
   set e := Subgroup.quotientEquivProdOfLE hST with he
@@ -189,7 +189,7 @@ set_option linter.unusedVariables false
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {a b : ℕ}
 
 theorem relIndex_ne {w : Pl E} {V : Subgroup (GLw a w × GLw b w)} (hV : IsOpen (V : Set (GLw a w × GLw b w)))
-    (hle : V ≤ K2 a b w) : V.relIndex (K2 a b w) ≠ 0 := by
+    : V.relIndex (K2 a b w) ≠ 0 := by
   have hK : IsCompact ((K2 a b w : Subgroup (GLw a w × GLw b w)) : Set (GLw a w × GLw b w)) := by
     have := (GlobalTheory.CompanionTheory.IwLevels.isCompact_KGL w a).prod (GlobalTheory.CompanionTheory.IwLevels.isCompact_KGL w b)
     simpa [K2, Subgroup.coe_prod] using this
@@ -243,7 +243,7 @@ theorem mconv_idem_left {w : Pl E} {V : Subgroup (GLw a w × GLw b w)} (hV : IsO
     (hle : V ≤ K2 a b w) {f : GLw a w × GLw b w → ℂ} (hf : ∀ v ∈ V, ∀ x, f (v * x) = f x) :
     mconv (idem V) f = f := by
   funext m
-  have hr := relIndex_ne hV hle
+  have hr := relIndex_ne hV
   set u : GLw a w × GLw b w → ℂ := fun m' => idem V m' * f (m'⁻¹ * m) with hu
   have hSu : V ≤ rStab u := by
     intro k hk x
@@ -279,7 +279,7 @@ theorem mconv_idem_right {w : Pl E} {V : Subgroup (GLw a w × GLw b w)} (hV : Is
     (hle : V ≤ K2 a b w) {f : GLw a w × GLw b w → ℂ} (hf : ∀ v ∈ V, ∀ x, f (x * v) = f x) :
     mconv f (idem V) = f := by
   funext m
-  have hr := relIndex_ne hV hle
+  have hr := relIndex_ne hV
   set u : GLw a w × GLw b w → ℂ := fun m' => f m' * idem V (m'⁻¹ * m) with hu
   have hSu : V ≤ rStab u := by
     intro k hk x

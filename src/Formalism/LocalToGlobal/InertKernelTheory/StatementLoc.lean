@@ -41,7 +41,7 @@ theorem adm_two_iff_local_representative (D : Formalism.BasicNotions.D7) (X : Sy
     (hfin : ∀ j c, (X.Lv.lev j c).FinClasses) (hst : FinStab X.Lv) {g : Formalism.MainNotions.GL3Theta.G1 p} (hLT : LTIso g) {T : Type}
     (pos : (Σ v : X.Pl, Fin (X.G.P.n' v)) ≃ T)
     (F : ∀ j, X.Lt j → X.Lt (j + 1) → MvPowerSeries (T × Fin ((X.Pj (j + 1)).m + 1) × Fin ((X.Pj j).m + 1)) ℂ_[p]) :
-    adm2 D X (pendT X E hfin hst hLT pos F) ↔ LocalRepresentativeCondition X E hfin (beLT hLT) pos F := by
+    adm2 X (pendT X E hfin hst hLT pos F) ↔ LocalRepresentativeCondition X E hfin (beLT hLT) pos F := by
   let _ := wittFractionAlgebraCp p
   let _ := algKfC E.toCEmb
   have key : ∀ v j (La : X.Lt j) (La' : X.Lt (j + 1)) (φ : Frm X j La La'),
@@ -141,7 +141,7 @@ theorem adm_three_iff_representative (D : Formalism.BasicNotions.D7) (X : Sys p)
     (hfin : ∀ j c, (X.Lv.lev j c).FinClasses) (hst : FinStab X.Lv) {g : Formalism.MainNotions.GL3Theta.G1 p} (hLT : LTIso g) {T : Type}
     (pos : (Σ v : X.Pl, Fin (X.G.P.n' v)) ≃ T)
     (F : ∀ j, X.Lt j → X.Lt (j + 1) → MvPowerSeries (T × Fin ((X.Pj (j + 1)).m + 1) × Fin ((X.Pj j).m + 1)) ℂ_[p]) :
-    adm3 D X (pendT X E hfin hst hLT pos F) ↔ Adm3Rep X E hfin pos F := by
+    adm3 X (pendT X E hfin hst hLT pos F) ↔ Adm3Rep X E hfin pos F := by
   let _ := wittFractionAlgebraCp p
   let _ := algKfC E.toCEmb
   have key : ∀ j (La : X.Lt j) (La' : X.Lt (j + 1)) (φ : Frm X j La La') (I : X.ColCh j) (n : X.FrI j →₀ ℕ),
@@ -225,7 +225,7 @@ theorem adm_two_pendant_iff_representative (D : Formalism.BasicNotions.D7) (X : 
     (hfin : ∀ j c, (X.Lv.lev j c).FinClasses) (hst : FinStab X.Lv) {g : Formalism.MainNotions.GL3Theta.G1 p} (hLT : LTIso g) {T : Type}
     (pos : (Σ v : X.Pl, Fin (X.G.P.n' v)) ≃ T)
     (F : ∀ j, X.Lt j → X.Lt (j + 1) → MvPowerSeries (T × Fin ((X.Pj (j + 1)).m + 1) × Fin ((X.Pj j).m + 1)) ℂ_[p]) :
-    adm2b D X (pendT X E hfin hst hLT pos F) ↔ RepresentativeCondition X E hfin (beLT hLT) pos F := by
+    adm2b X (pendT X E hfin hst hLT pos F) ↔ RepresentativeCondition X E hfin (beLT hLT) pos F := by
   letI := wittFractionAlgebraCp p
   letI := algKfC E.toCEmb
   rw [adm_two_pendant_iff]

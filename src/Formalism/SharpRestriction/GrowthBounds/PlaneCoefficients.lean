@@ -904,7 +904,7 @@ private theorem false_of_mem_gt_last_of_pairwise_lt (L : List ℤ) (hs : L.Pairw
     subst this
     exact lt_irrefl _ h1
 
-theorem le_pred_iff (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (j : ℤ) (u : ℕ) (h1 : 1 ≤ u) (hu : u < (Fr.LLset j).card + r)
+theorem le_pred_iff (hV : Fr.Valid L₁ N₁) (j : ℤ) (u : ℕ) (h1 : 1 ≤ u) (hu : u < (Fr.LLset j).card + r)
     (y : ℤ) (hy : y ∈ Fr.letters j) :
     y ≤ posU Fr (Fr.LLset j).card j (u - 1) ↔ y < posU Fr (Fr.LLset j).card j u := by
   classical
@@ -974,7 +974,7 @@ theorem oldest_pred (hV : Fr.Valid L₁ N₁) (hr : 1 ≤ r) (j : ℤ) (u : ℕ)
       (Fr.letters j).filter (fun z => Even z ∧ z < posU Fr (Fr.LLset j).card j u) := by
     apply Finset.filter_congr
     intro z hz
-    have hiff := le_pred_iff hV hr j u h1 hu z hz
+    have hiff := le_pred_iff hV j u h1 hu z hz
     constructor
     · rintro ⟨he, hlt⟩
       exact ⟨he, hiff.1 hlt.le⟩
@@ -1015,7 +1015,7 @@ theorem restTh : RestTh := by
       have ev : valS LZ {y | y ≤ posU Fr (Fr.LLset (segZ j)).card (segZ j) (u - 1)} A =
           valS LZ {y | y < posU Fr (Fr.LLset (segZ j)).card (segZ j) u} A :=
         valS_congr_supp LZ _ _ {y | y ∈ Fr.letters (segZ j)} A hA
-          (fun y hy => le_pred_iff hV hr (segZ j) u h21 hu y hy)
+          (fun y hy => le_pred_iff hV (segZ j) u h21 hu y hy)
       rw [ev, hk] at d2
       have d3 := WithTop.coe_le_coe.1 d2
       have eo := oldest_pred hV hr (segZ j) u h21 hu h22

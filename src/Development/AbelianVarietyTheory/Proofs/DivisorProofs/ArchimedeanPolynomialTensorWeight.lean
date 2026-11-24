@@ -128,7 +128,7 @@ theorem commute_jm {R S : ℕ} {X : Mat R S} (hX : IsKC X) : Commute X (Formalis
 theorem isKC_smul {R S : ℕ} {X : Mat R S} (hX : IsKC X) (c : ℂ) : IsKC (c • X) := fun a b h => by
   simp [hX a b h]
 
-theorem isKC_zero (R S : ℕ) : IsKC (0 : Mat R S) := fun a b _ => rfl
+theorem isKC_zero (R S : ℕ) : IsKC (0 : Mat R S) := fun _ _ _ => rfl
 
 theorem isKC_add {R S : ℕ} {X X' : Mat R S} (hX : IsKC X) (hX' : IsKC X') : IsKC (X + X') := fun a b h => by
   simp [hX a b h, hX' a b h]

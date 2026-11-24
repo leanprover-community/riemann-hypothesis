@@ -100,7 +100,7 @@ variable {e : ℕ} {X : Type} [TopologicalSpace X] {A : FinHolAtlas e X}
 
 theorem holoOn_congr' {V : Set X} {f g : X → ℂ} (hV : IsOpen V) (h : A.HoloOn V f)
     (hfg : ∀ w ∈ V, g w = f w) : A.HoloOn V g := fun j =>
-  (h j).congr ((A.chart j).isOpen_inter_preimage_symm hV) fun u hu => (hfg _ hu.2).symm
+  (h j).congr ((A.chart j).isOpen_inter_preimage_symm hV) fun _ hu => (hfg _ hu.2).symm
 
 theorem holoOn_mono' {U V : Set X} {g : X → ℂ} (h : A.HoloOn U g) (hVU : V ⊆ U) : A.HoloOn V g :=
   fun j => (h j).mono (Set.inter_subset_inter_right _ (Set.preimage_mono hVU))

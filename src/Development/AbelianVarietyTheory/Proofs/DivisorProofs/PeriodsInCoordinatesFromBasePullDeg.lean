@@ -170,7 +170,7 @@ theorem val_trGen {X Y Z : Scheme.{0}} {L : LB X} {K : Type} [Fintype K] {φ φ'
   subst h; rfl
 
 theorem fromBase_moved (p : IsPullDeg ρ Q D) (τ₀ : GlobalTheory.UChart.Gens Q) (τ₁ : GlobalTheory.UChart.Gens D)
-    (h₁ : ∀ a b, (τ₁ a b).IsGen) (hmv : ∀ (a b : D.X) (Z : Scheme.{0}) (r : Z ⟶ Sp V₁) (z : Z)
+    (hmv : ∀ (a b : D.X) (Z : Scheme.{0}) (r : Z ⟶ Sp V₁) (z : Z)
       (J : (Z ⟶ Q.P.A.left) → Q.P.L.ι) (J' : (Z ⟶ D.P.A.left) → D.P.L.ι), Good Q.P.L z J → Good D.P.L z J' →
       val (τ₀ (p.xe a) (p.xe b)) (r ≫ spMap ρ) z J =
         (ArcPull.om p.w z J J' (r ≫ (D.c (a + b)).left))⁻¹ * ArcPull.om p.w z J J' (r ≫ (D.c a).left) *
@@ -257,6 +257,6 @@ open GlobalTheory.USep.TauPullB in
 theorem tauIn_fromBase_pull : ∀ (V V₁ : Type) [CommRing V] [IsDomain V] [CommRing V₁] [IsDomain V₁] (ρ : V →+* V₁), Function.Injective ρ → ∀ (Q : DegPre V) (D : DegPre V₁) (p : IsPullDeg ρ Q D) (τ₀ : GlobalTheory.UChart.Gens Q) (N : ℕ) (s : Fin N → V) (ε : Fin N → LinearMap.BilinForm ℤ Q.X) (ε₁ : Fin N → LinearMap.BilinForm ℤ D.X), (∀ k a b, ε₁ k a b = ε k (p.xe a) (p.xe b)) → GlobalTheory.UChart.TauIn Q τ₀ s ε → ∀ (W₀ : Type) [CommRing W₀] (ib : W₀ →+* V), GlobalTheory.UChart.FromBase Q τ₀ ib → ∃ τ₁ : GlobalTheory.UChart.Gens D, GlobalTheory.UChart.TauIn D τ₁ (fun k => ρ (s k)) ε₁ ∧ GlobalTheory.UChart.FromBase D τ₁ (ρ.comp ib) := by
   intro V V₁ _ _ _ _ ρ hρ Q D p τ₀ N s ε ε₁ hε hT W₀ _ ib hF
   obtain ⟨τ₁, h₁, hmv⟩ := exists_moved p τ₀ fun a b => (hT a b).1
-  exact ⟨τ₁, tauIn_moved hρ p τ₀ τ₁ h₁ hmv s ε ε₁ hε hT, fromBase_moved p τ₀ τ₁ h₁ hmv W₀ ib hF⟩
+  exact ⟨τ₁, tauIn_moved hρ p τ₀ τ₁ h₁ hmv s ε ε₁ hε hT, fromBase_moved p τ₀ τ₁ hmv W₀ ib hF⟩
 
 end GlobalTheory.USep

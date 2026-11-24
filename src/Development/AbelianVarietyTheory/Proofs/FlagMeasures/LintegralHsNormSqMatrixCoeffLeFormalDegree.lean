@@ -639,7 +639,7 @@ def wt (k r : ℕ) (i : Fin (2 * r + k + 1)) : ℤ :=
 
 theorem dil_eq (τ : ℝ) : dil k r τ = Matrix.diagonal (dd k r τ) := rfl
 
-theorem dd_eq_zpow {τ : ℝ} (hτ : τ ≠ 0) (i : Fin (2 * r + k + 1)) :
+theorem dd_eq_zpow {τ : ℝ} (i : Fin (2 * r + k + 1)) :
     dd k r τ i = (τ : ℂ) ^ wt k r i := by
   unfold dd wt
   split_ifs
@@ -650,20 +650,20 @@ theorem dd_eq_zpow {τ : ℝ} (hτ : τ ≠ 0) (i : Fin (2 * r + k + 1)) :
 theorem dd_inv_mul {τ : ℝ} (hτ : τ ≠ 0) (i j : Fin (2 * r + k + 1)) :
     dd k r τ⁻¹ i * dd k r τ j = (τ : ℂ) ^ (wt k r j - wt k r i) := by
   have h0 : (τ : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hτ
-  rw [dd_eq_zpow (inv_ne_zero hτ), dd_eq_zpow hτ, Complex.ofReal_inv, _root_.inv_zpow', ← _root_.zpow_add₀ h0,
+  rw [dd_eq_zpow, dd_eq_zpow, Complex.ofReal_inv, _root_.inv_zpow', ← _root_.zpow_add₀ h0,
     neg_add_eq_sub]
 
 theorem dd_mul_inv {τ : ℝ} (hτ : τ ≠ 0) (i : Fin (2 * r + k + 1)) :
     dd k r τ i * dd k r τ⁻¹ i = 1 := by
   have h0 : (τ : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hτ
-  rw [dd_eq_zpow hτ, dd_eq_zpow (inv_ne_zero hτ), Complex.ofReal_inv, _root_.inv_zpow', ← _root_.zpow_add₀ h0,
+  rw [dd_eq_zpow, dd_eq_zpow, Complex.ofReal_inv, _root_.inv_zpow', ← _root_.zpow_add₀ h0,
     add_neg_cancel, _root_.zpow_zero]
 
 theorem star_dd (τ : ℝ) (i : Fin (2 * r + k + 1)) : star (dd k r τ i) = dd k r τ i := by
   unfold dd
   split_ifs <;> simp
 
-theorem dd_pair {τ : ℝ} (hτ : τ ≠ 0) {i j : Fin (2 * r + k + 1)} (h : i.val < r ∨ j.val < r)
+theorem dd_pair {τ : ℝ} (hτ : τ ≠ 0) {i j : Fin (2 * r + k + 1)}
     (hs : i.val + j.val = 2 * r + k) : dd k r τ i * dd k r τ j = 1 := by
   have h0 : (τ : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hτ
   have hw : wt k r i + wt k r j = 0 := by
@@ -671,7 +671,7 @@ theorem dd_pair {τ : ℝ} (hτ : τ ≠ 0) {i j : Fin (2 * r + k + 1)} (h : i.v
     have := j.isLt
     unfold wt
     split_ifs <;> omega
-  rw [dd_eq_zpow hτ, dd_eq_zpow hτ, ← _root_.zpow_add₀ h0, hw, _root_.zpow_zero]
+  rw [dd_eq_zpow, dd_eq_zpow, ← _root_.zpow_add₀ h0, hw, _root_.zpow_zero]
 
 theorem dd_middle (τ : ℝ) {i : Fin (2 * r + k + 1)} (h1 : r ≤ i.val) (h2 : i.val ≤ r + k) :
     dd k r τ i = 1 := by
@@ -706,7 +706,7 @@ theorem dil_mem {τ : ℝ} (hτ : τ ≠ 0) : dil k r τ ∈ UH (Hpk k r) := by
   rw [dil_eq, Matrix.diagonal_conjTranspose, Matrix.mul_diagonal, Matrix.diagonal_mul]
   simp only [Pi.star_apply, star_dd]
   by_cases h1 : (i.val < r ∨ j.val < r) ∧ i.val + j.val = 2 * r + k
-  · rw [mul_right_comm, dd_pair hτ h1.1 h1.2, one_mul]
+  · rw [mul_right_comm, dd_pair hτ h1.2, one_mul]
   · by_cases h2 : r ≤ i.val ∧ i.val ≤ r + k ∧ i = j
     · obtain ⟨hr, hk, rfl⟩ := h2
       rw [dd_middle τ hr hk, one_mul, mul_one]
@@ -1350,7 +1350,7 @@ theorem exists_compact_approx {X E : Type} [PseudoMetricSpace X] [ProperSpace X]
   exact Set.compl_subset_compl.2 (Set.prod_mono hCA hCA') hp
 
 theorem le_liminf_of_ratio (b : ENNReal) (hb : b ≠ ⊤) (u m m' n n' : ℕ → ENNReal)
-    (hn : ∀ j, 0 < n j ∧ n j < ⊤) (hn' : ∀ j, 0 < n' j ∧ n' j < ⊤)
+    (hn : ∀ j, 0 < n j ∧ n j < ⊤)
     (h : Tendsto (fun j => m j / n j) atTop (𝓝 1)) (h' : Tendsto (fun j => m' j / n' j) atTop (𝓝 1))
     (hu : ∀ j, b * (m j * m' j) ≤ u j) : b ≤ liminf (fun j => u j / (n j * n' j)) atTop := by
   have ht : Tendsto (fun j => b * (m j / n j * (m' j / n' j))) atTop (𝓝 (b * (1 * 1))) :=
@@ -1410,7 +1410,7 @@ theorem hsNormSq_Iint_le_liminf : ∀ (k r : ℕ) {H : Type} [NormedAddCommGroup
   obtain ⟨Oc, hOc, hlim⟩ := hF.2 C hC hCS
   obtain ⟨Oc', hOc', hlim'⟩ := hF'.2 C' hC' hCS'
   refine le_liminf_of_ratio b ENNReal.coe_ne_top _ _ _ _ _ (fun j => (hF.1 j).2.2.2)
-    (fun j => (hF'.1 j).2.2.2) hlim hlim' fun j => ?_
+    hlim hlim' fun j => ?_
   have e1 : μS (Oc j) = μS (invM ⁻¹' Oc j) := by
     rw [← Measure.map_apply measurable_invM (hOc j).1, hinv]
   have e2 : μS' (Oc' j) = μS' (invM ⁻¹' Oc' j) := by

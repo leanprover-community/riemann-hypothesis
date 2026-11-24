@@ -905,7 +905,7 @@ theorem chart_ext_scale (A T : Subalgebra K R) (w : R) (hwA : w ∈ A)
   refine ⟨N, q, hqm, ?_⟩
   rw [← eval_map, hqQ, hQ, scaleRoots_eval_mul, hP, eval_map, hp, mul_zero]
 
-theorem chart_ext_pf (A T B0 Bu : Subalgebra K R) (hAT : A ≤ T) (hAB0 : A ≤ B0) (hB0 : B0 ≤ Bu) (hTBu : T ≤ Bu)
+theorem chart_ext_pf (A T B0 Bu : Subalgebra K R) (hAB0 : A ≤ B0)
     (hB0FG : B0.FG) (hB0Int : ∀ b ∈ B0, IsIntegral A b) (hBuFG : Bu.FG) (hBuInt : ∀ b ∈ Bu, IsIntegral T b)
     (hFrac : ∀ r : R, ∃ b ∈ Bu, ∃ b' ∈ Bu, b' ≠ 0 ∧ r * b' = b)
     (w : R) (hwA : w ∈ A) (hw0 : w ≠ 0) (hscale : ∀ x ∈ T, ∃ N : ℕ, w ^ N * x ∈ A) :
@@ -1098,7 +1098,7 @@ theorem tpow_add' {d : ℕ} (t : Fin d → Rˣ) (m m' : Fin d → ℤ) : tpow t 
 
 theorem tpow_single {d : ℕ} (t : Fin d → Rˣ) (k : Fin d) (z : ℤ) : tpow t (Pi.single k z) = ((t k ^ z : Rˣ) : R) := by
   unfold tpow
-  rw [Fintype.prod_eq_single k (fun j hj => by simp [Pi.single_apply, hj])]
+  rw [Fintype.prod_eq_single k (fun j hj => by simp [hj])]
   simp
 
 theorem tpow_mem {d : ℕ} (t : Fin d → Rˣ) (S : Finset (Fin (d + 1))) {m : Fin d → ℤ} (hm : m ∈ expS S) :
@@ -1164,7 +1164,7 @@ theorem infinityCoord_monomial_eq (t : Fin (n + 1) → Rˣ) (N : ℕ) (α : Fin 
 theorem infinityCoord_mem_torus (t : Fin (n + 1) → Rˣ) (j : Fin (n + 1)) :
     (u0 t j : R) ∈ torusS K t (Finset.univ.erase 0) := by
   have h := infinityCoord_prod_pow t (Pi.single j 1)
-  rw [Fintype.prod_eq_single j (fun i hi => by simp [Pi.single_apply, hi])] at h
+  rw [Fintype.prod_eq_single j (fun i hi => by simp [hi])] at h
   simp only [Pi.single_eq_same, pow_one] at h
   rw [h]
   exact tpow_mem t _ ((mem_exponentSet_zero_iff _).2 (by rw [sum_u0Exp]; exact neg_nonpos.2 (Nat.cast_nonneg _)))
@@ -1567,7 +1567,7 @@ theorem resid_alg : ∀ (K : Type) [Field K] [CharZero K] (n : ℕ) (R : Type) [
     simp
   have hune : (Finset.univ : Finset (Fin (n + 2))).Nonempty := Finset.univ_nonempty
   have hfin : FiniteDimensional (fldF K t) (FractionRing R) :=
-    _root_.CrystallineSemistableComparison.Pb.fldF_findim_pf t (B Finset.univ) (hTB _ hune) (hFG _ hune) (hInt _ hune) hFrac
+    _root_.CrystallineSemistableComparison.Pb.fldF_findim_pf t (B Finset.univ) (hFG _ hune) (hInt _ hune) hFrac
   obtain ⟨res, hres1, hres0, hresD⟩ := _root_.CrystallineSemistableComparison.Pb.res_R_pf t ht D hD
 
   let Φ : R →+ FractionRing R :=
@@ -1583,7 +1583,7 @@ theorem resid_alg : ∀ (K : Type) [Field K] [CharZero K] (n : ℕ) (R : Type) [
       ∀ r : R, ∃ b ∈ B', ∃ b' ∈ B', b' ≠ 0 ∧ r * b' = b := fun i => by
     obtain ⟨w, hwA, hw0, hscale⟩ := torus_scale (K := K) t i
     obtain ⟨B', hB', hFG', hInt', hFrac'⟩ := _root_.CrystallineSemistableComparison.Pb.chart_ext_pf (torusS K t (Finset.univ.erase i)) (torusS K t Finset.univ)
-      (B (Finset.univ.erase i)) (B Finset.univ) (torusS_le_univ t _) (hTB _ (hne i)) (hMono i) (hTB _ hune)
+      (B (Finset.univ.erase i)) (B Finset.univ) (hTB _ (hne i))
       (hFG _ (hne i)) (hInt _ (hne i)) (hFG _ hune) (hInt _ hune) hFrac w hwA hw0 hscale
     exact ⟨B', hB', (hTB _ (hne i)).trans hB', hFG', hInt', hFrac'⟩
 
@@ -1628,7 +1628,7 @@ theorem resid_alg : ∀ (K : Type) [Field K] [CharZero K] (n : ℕ) (R : Type) [
       split_ifs
       · exact ⟨1, map_one _⟩
       · exact ⟨0, map_zero _⟩
-    exact ⟨D k b, trace_deriv t (D k) hDc (η k) b hbT hb, hresD k b hbT⟩
+    exact ⟨D k b, trace_deriv t (D k) hDc (η k) b hb, hresD k b hbT⟩
   choose a ha using hω'
   choose b hb using hη'
 

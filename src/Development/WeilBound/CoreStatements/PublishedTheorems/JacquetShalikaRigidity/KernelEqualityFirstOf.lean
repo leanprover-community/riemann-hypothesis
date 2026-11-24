@@ -73,9 +73,9 @@ theorem sq_wt_le {B : ℝ} (hB : 1 ≤ B) {x y : ℝ} (hx : 0 < x) (hxy : x ≤ 
   rw [mul_min_of_nonneg _ _ (by linarith)]
   exact min_le_min (by linarith) hxy
 
-theorem sq_fC (hD0 : D0) (hP2 : P2) (hG5t : RowsInCompactSet) (hK1 : K1) (hk : 1 ≤ k) {ψ : AddChar (Ad E) ℂ}
+theorem sq_fC (hD0 : D0) (hG5t : RowsInCompactSet) (hK1 : K1) (hk : 1 ≤ k) {ψ : AddChar (Ad E) ℂ}
     {S : Finset (Pl E)} {U : Set (GA E k)} {φ : XB E k} {η : (Fin k → Ad E) → ℝ} {s : (Fin k → Ad E) → GA E k}
-    (hcut : Cut ψ S U φ η s) (hinv : RatInv (φ : GA E k → ℂ)) (hdec : ∃ C : ℝ, ∀ g, ‖φ g‖ ≤ C * wt (k + 1) g) :
+    (hcut : Cut ψ S U φ η s) (hdec : ∃ C : ℝ, ∀ g, ‖φ g‖ ≤ C * wt (k + 1) g) :
     ∃ a ε C : ℝ, 0 < ε ∧ ∀ g, ∑' ξ : RowT E k k, ‖fC η s φ (ratGL E k (gam ξ) * g)‖ₑ ^ 2 ≤
       ENNReal.ofReal (C * min (Dt g) (Dt g)⁻¹ ^ ε * Dt g ^ (-a)) := by
   obtain ⟨hdc, hdpos, -, hdrat, hdB, -⟩ := hK1 E k hk
@@ -213,7 +213,7 @@ theorem pos_PW (hP2 : P2) (hP3 : P3) {ψ : AddChar (Ad E) ℂ} (hψ : StdPsi ψ)
   simp only [PW, whit_fC hP2 hP3 hψ]
   rfl
 
-theorem pos_fC (hG0 : jumpWindows.G0) (hD0 : D0) (hP2 : P2) (hP3 : P3) (hC0 : C0) (hk : 1 ≤ k) {ψ : AddChar (Ad E) ℂ} (hψ : StdPsi ψ)
+theorem pos_fC (hD0 : D0) (hP2 : P2) (hP3 : P3) (hC0 : C0) (hk : 1 ≤ k) {ψ : AddChar (Ad E) ℂ} (hψ : StdPsi ψ)
     {S : Finset (Pl E)} {u : ℝ} {U U₀ : Set (GA E k)} {φ φ' : XB E k} {η : (Fin k → Ad E) → ℝ}
     {s : (Fin k → Ad E) → GA E k} (hcut : Cut ψ S U φ η s) (hgood : Good ψ (k - 1) φ) (hgood' : Good ψ (k - 1) φ')
     (hUU : ∀ a ∈ U, ∀ b ∈ U, a * b ∈ U₀)
@@ -385,7 +385,7 @@ theorem law_loc (hk : 1 ≤ k) (v : Pl E) (g : GA E k) (i : Fin k) :
     pLoc E v (pFin E (lastRow g i)) = (cLoc v g).val ⟨k - 1, by omega⟩ i :=
   law_lr hk ((pLoc E v).comp (pFin E)) g.val i
 
-theorem law_fC (hG0 : jumpWindows.G0) (hG5 : jumpWindows.G5) (hP2 : P2) (hP3 : P3) (hC0 : C0) (hK7 : K7) (hK8a : LocalHeckeAlgebra)
+theorem law_fC (hG0 : jumpWindows.G0) (hP2 : P2) (hP3 : P3) (hK7 : K7) (hK8a : LocalHeckeAlgebra)
     (hk : 1 ≤ k) {ψ : AddChar (Ad E) ℂ} (hψ : StdPsi ψ) {S : Finset (Pl E)} (hS : ∀ w, w ∉ S → Cond ψ w)
     {α α' : Off E S → Fin k → ℂˣ} {U : Set (GA E k)} {φ φ' : XB E k} {η : (Fin k → Ad E) → ℝ}
     {s : (Fin k → Ad E) → GA E k} (hcut : Cut ψ S U φ η s) (hgood : Good ψ (k - 1) φ)
@@ -595,14 +595,14 @@ theorem kernel_equality_first_of : jumpWindows.G0 → jumpWindows.G5 → D0 → 
   exact
     { pre := PKEq1.pre_fC hP2 hψ hcut hprep.inv
       supp := ⟨tsupport η, hcut.cpt.isCompact, fun g hg => subset_tsupport _ (fun h => hg (by simp [h]))⟩
-      sq := PKEq1.sq_fC hD0 hP2 hG5t hK1 hk hcut hprep.inv hprep.dec
+      sq := PKEq1.sq_fC hD0 hG5t hK1 hk hcut hprep.dec
       good := hsec.good
       inv := hsec.inv
       dec := hsec.dec
-      law := PKEq1.law_fC hG0 hG5 hP2 hP3 hC0 hK7 hK8a hk hψ hS hcut hprep.good hprep.sat hsec.good hsec.sat
+      law := PKEq1.law_fC hG0 hP2 hP3 hK7 hK8a hk hψ hS hcut hprep.good hprep.sat hsec.good hsec.sat
       sph := hsph
       one := PKEq1.one_fC hP2 hP3 hψ hcut hB.2.2.1 hsec.one
-      pos := PKEq1.pos_fC hG0 hD0 hP2 hP3 hC0 hk hψ hcut hprep.good hsec.good (fun a ha b hb => hUU (Set.mul_mem_mul ha hb)) hKU' ⟨C, hCU, hCb, hB⟩ hsph }
+      pos := PKEq1.pos_fC hD0 hP2 hP3 hC0 hk hψ hcut hprep.good hsec.good (fun a ha b hb => hUU (Set.mul_mem_mul ha hb)) hKU' ⟨C, hCU, hCb, hB⟩ hsph }
 
 end PositivityTheory.AdelicQuotientData
 

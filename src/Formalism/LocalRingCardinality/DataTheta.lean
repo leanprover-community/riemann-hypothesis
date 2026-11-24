@@ -610,7 +610,7 @@ structure ThetaX (D : D7) : Type 1 where
   pet_symm : ∀ V (F G : cusp V), pet V (F : AF V) G = star (pet V (G : AF V) F)
   pet_pos : ∀ V (F : cusp V), F ≠ 0 → 0 < (pet V (F : AF V) F).re
 
-  actR : ∀ V (τ : D.what₂.Tau), Matrix (Fin V.rank) (Fin V.rank) ℂ → Module.End ℂ (AF V)
+  actR : ∀ V (_ : D.what₂.Tau), Matrix (Fin V.rank) (Fin V.rank) ℂ → Module.End ℂ (AF V)
   actR_one : ∀ V τ, actR V τ 1 = 1
   actR_mul : ∀ V τ, ∀ g ∈ Formalism.QuantumDeterminants.UH (gramAt D V τ), ∀ h ∈ Formalism.QuantumDeterminants.UH (gramAt D V τ),
     actR V τ (g * h) = actR V τ g * actR V τ h

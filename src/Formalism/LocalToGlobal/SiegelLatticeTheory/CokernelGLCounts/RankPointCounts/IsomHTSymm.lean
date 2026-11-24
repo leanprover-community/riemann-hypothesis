@@ -62,9 +62,9 @@ private theorem mem_Hp_iff_orthogonal {T0 T1 : E} (Λ : Submodule (NumberField.R
   constructor
   · intro hh
     exact ⟨fun x hx => _root_.Formalism.L2.SG.NGCut.CorankRelation.hT_eq_zero_of_mem_Hp Λ F F' hh (X_le_UUE Λ hΛ F F' hF hF' hx),
-      _root_.Formalism.L2.SG.NGCut.CorankRelation.hT_eq_zero_of_mem_Hp Λ F F' hh (z_mem_UUE Λ hΛ.toIsLattice F F' hF hF'),
+      _root_.Formalism.L2.SG.NGCut.CorankRelation.hT_eq_zero_of_mem_Hp Λ F F' hh (z_mem_UUE Λ F F' hF),
       fun x hx => _root_.Formalism.L2.SG.NGCut.CorankRelation.hT_eq_zero_of_mem_Hp Λ F F' hh (X'_le_UUE Λ hΛ F F' hF hF' hx),
-      _root_.Formalism.L2.SG.NGCut.CorankRelation.hT_eq_zero_of_mem_Hp Λ F F' hh (z'_mem_UUE Λ hΛ.toIsLattice F F' hF hF')⟩
+      _root_.Formalism.L2.SG.NGCut.CorankRelation.hT_eq_zero_of_mem_Hp Λ F F' hh (z'_mem_UUE Λ F F' hF')⟩
   · rintro ⟨h1, h2, h3, h4⟩
     have hU : UU Λ F F' ≤ (LinearMap.ker (S.hT.flip h)).restrictScalars
         (NumberField.RingOfIntegers E) := by

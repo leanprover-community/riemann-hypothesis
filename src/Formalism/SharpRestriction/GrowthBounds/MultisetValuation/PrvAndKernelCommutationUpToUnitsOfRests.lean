@@ -873,8 +873,8 @@ theorem PrZ_cast (v : X.Pl) (j : ℕ) :
   ring
 
 theorem lift_bound_of_integrality (D : Formalism.BasicNotions.D7) {Y : Pend X} (hfr : IsFractionRing X.G.O X.G.Kf) (hp : (p : X.G.Kf) ≠ 0)
-    (hL : LinD X) (hF : FormB X Y) (hE : EntCondition X Y) (h4 : Conclusion4 D X)
-    (hy : ∀ v, ∀ F ∈ X.Int 0, X.yv v F ∈ X.Int 0) : LowTermBound D X Y := by
+    (hL : LinD X) (hF : FormB X Y) (hE : EntCondition X Y) (h4 : Conclusion4 X)
+    (hy : ∀ v, ∀ F ∈ X.Int 0, X.yv v F ∈ X.Int 0) : LowTermBound X Y := by
   intro Gn G0n PRn S VV hG hLow hPr hS F hF
   choose u m hu hm hrest using h4
   have hπ : (algebraMap X.G.O X.G.Kf X.vp) ≠ 0 := by
@@ -1369,7 +1369,7 @@ variable {X : Sys p}
 theorem vGe_of_eO_zero (he : X.eO = 0) {j : ℕ} {F : X.Fm j} {g g' : ℝ} (h : X.vGe j F g) : X.vGe j F g' := by
   simpa [Sys.vGe, Sys.vsc, he] using h
 
-theorem low_term_bound_of_eO_eq_zero_of_aux0 (D : Formalism.BasicNotions.D7) (Y : Pend X) (he : X.eO = 0) (h0 : Conclusion0 D X) : LowTermBound D X Y := by
+theorem low_term_bound_of_eO_eq_zero_of_aux0 (D : Formalism.BasicNotions.D7) (Y : Pend X) (he : X.eO = 0) (h0 : Conclusion0 D X) : LowTermBound X Y := by
   intro Gn G0n PRn S VV _ _ _ _ F hFm
   have hPl : ∀ _ : X.Pl, False := fun v => by have := eO_pos X v; omega
   have hFint : F ∈ X.Int 0 := by
@@ -1394,12 +1394,12 @@ theorem low_term_bound_of_eO_eq_zero_of_aux0 (D : Formalism.BasicNotions.D7) (Y 
 
 structure Rests (D : Formalism.BasicNotions.D7) (X : Sys p) (Y : Pend X) : Prop where
 
-  U2 : VolumeRatio₂ D X Y
+  U2 : VolumeRatio₂ X Y
 
   Ent : EntCondition X Y
 
 theorem prv_and_kernel_commutation_up_to_units_of_rests (D : Formalism.BasicNotions.D7) (Y : Pend X) (hA : admitted D X Y) (R : Rests D X Y) :
-    Conclusion₂ D X Y ∧ KernelCommutationUpToUnits D X := by
+    Conclusion₂ D X Y ∧ KernelCommutationUpToUnits X := by
   have hF : FormB X Y := formB D X Y hA
   have hH : RestHecke X := heckeCondition_of_adm D X Y hA countLoc (restTmFQ X)
   obtain ⟨_, _, _, _, h3, h3b, _, _, _, _, _, h8, _⟩ := hA
@@ -1407,7 +1407,7 @@ theorem prv_and_kernel_commutation_up_to_units_of_rests (D : Formalism.BasicNoti
   have p3 := latticeChain_succ_of_partial D hF R.Ent R.U2 (restricted_hecke_integral X)
   have pAlt := alternate_expansion_of_relations X D hH (restTmFQ X) h3b p3 p2b
   have p4 := theorem_of_alternate_form X D pAlt
-  have p5D : LowTermBound D X Y := by
+  have p5D : LowTermBound X Y := by
     rcases Nat.eq_zero_or_pos X.eO with he | he
     · exact low_term_bound_of_eO_eq_zero_of_aux0 D Y he (form_valuation_of_bound D hF h3)
     · exact lift_bound_of_integrality D (isFractionRing_of_pos_eO Y he) (pKf_ne Y) (linD X) hF R.Ent p4

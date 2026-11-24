@@ -630,7 +630,7 @@ def toX : ↥Y →ₛₗ[(D.nbr i w hw).eO.toRingHom] (Xgrep i w hw r x hc Y hst
   map_add' u v := Subtype.ext (toLLv_add i w hw u.1 v.1)
   map_smul' c u := Subtype.ext (toLLv_smul i w hw c u.1)
 
-theorem toX_inj : Function.Injective (toX i w hw r x hc Y hst) := fun u v h =>
+theorem toX_inj : Function.Injective (toX i w hw r x hc Y hst) := fun _ _ h =>
   Subtype.ext (toLLv_inj i w hw (congrArg (fun z : ↥(XV i w hw Y) => (z : Fin a → Fin D.R.nV → Br.LL D.nbr i w hw)) h))
 
 theorem rho_toX (g : Br.G D.nbr i w hw) (y : ↥Y) :

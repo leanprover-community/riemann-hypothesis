@@ -272,7 +272,7 @@ theorem FiniteLenTwists.of_iso (h : FiniteLenTwists R F) (e : F ≅ G) : FiniteL
 
 theorem FiniteLenTwists.twist (h : FiniteLenTwists R F) (hM : M.IsLB) :
     FiniteLenTwists R (twist F M) :=
-  fun N hN => (nonempty_twist_twist_iso_of_cls_eq F hM hN (isLB_tens hM hN) rfl).elim
+  fun _ hN => (nonempty_twist_twist_iso_of_cls_eq F hM hN (isLB_tens hM hN) rfl).elim
     fun e => (h _ (isLB_tens hM hN)).of_iso e.symm
 
 theorem FiniteLenTwists.of_shortExact₃ (hS : S.ShortExact) (h₁ : FiniteLenTwists R S.X₁)

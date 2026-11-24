@@ -234,11 +234,11 @@ theorem up_inf_bt : (upSub : Subgroup (GL (Fin n) L)) ⊓ btSub (OrderDual.toDua
     · exact h1'.1 i j h
 
 theorem diag_inf_up : (diagSub : Subgroup (GL (Fin n) L)) ⊓ upSub = ⊥ :=
-  (Subgroup.eq_bot_iff_forall _).2 fun g hg =>
+  (Subgroup.eq_bot_iff_forall _).2 fun _ hg =>
     eq_one_of_entries (mem_diagSub.1 hg.1) (mem_upSub.1 hg.2).2
 
 theorem diag_inf_low : (diagSub : Subgroup (GL (Fin n) L)) ⊓ lowSub = ⊥ :=
-  (Subgroup.eq_bot_iff_forall _).2 fun g hg =>
+  (Subgroup.eq_bot_iff_forall _).2 fun _ hg =>
     eq_one_of_entries (mem_diagSub.1 hg.1) (mem_lowSub.1 hg.2).2
 
 end Mat

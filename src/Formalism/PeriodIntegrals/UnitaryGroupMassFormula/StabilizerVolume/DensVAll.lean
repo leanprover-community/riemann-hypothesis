@@ -71,7 +71,7 @@ section -- clump:auto
 namespace PI.VolStabS
 
 theorem densV_holds : DensV :=
-  densV_of_gram (gramFilt_of (dxOpen_of secGram_holds))
+  densV_of_gram (gramFilt_of)
 
 end PI.VolStabS
 end -- clump:auto

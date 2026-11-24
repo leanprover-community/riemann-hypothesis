@@ -111,7 +111,7 @@ private theorem finset_prod_max_one_nonneg {ι : Type*} (s : Finset ι) (y : ι 
     0 ≤ ∏ v ∈ s, max 1 (y v) :=
   Finset.prod_nonneg (fun _ _ => zero_le_one.trans (le_max_left _ _))
 
-private theorem max_self_inv_le_max_one_mul_max_one_inv {x : ℝ} (hx : 0 < x) :
+private theorem max_self_inv_le_max_one_mul_max_one_inv {x : ℝ} :
     max x (1 / x) ≤ max 1 x * max 1 (1 / x) := by
   have h0 : 0 ≤ max 1 (1 / x) := zero_le_one.trans (le_max_left _ _)
   apply max_le
@@ -137,7 +137,7 @@ theorem prodMaxInvLeSq : LemmaP := by
   refine ⟨?_, hB.trans hA⟩
   calc ∏ v ∈ Sg, max (x v) (1 / x v) ≤ ∏ v ∈ Sg, (max 1 (x v) * max 1 (1 / x v)) :=
         Finset.prod_le_prod₀ (fun v _ => (hx v).le.trans (le_max_left _ _))
-          (fun v _ => max_self_inv_le_max_one_mul_max_one_inv (hx v))
+          (fun v _ => max_self_inv_le_max_one_mul_max_one_inv)
     _ = (∏ v ∈ Sg, max 1 (x v)) * ∏ v ∈ Sg, max 1 (1 / x v) := Finset.prod_mul_distrib
     _ ≤ (∏ v, max 1 (x v)) * ∏ v, max 1 (x v) :=
         mul_le_mul (finset_prod_le_prod_of_subset_of_one_le _ _ (Finset.subset_univ _) _ (fun v _ => le_max_left _ _))
@@ -340,7 +340,7 @@ lemma volumeFactor_eq (k r : ℕ) (G T g v : ℝ) :
   ring
 
 lemma volumeFactor_mul_sq_div_le (k r : ℕ) (C G T g v Dr loss' JHS Jop dim : ℝ) (hk : 1 ≤ k)
-    (hC : 0 < C) (hG : 0 < G) (hT : 0 < T) (hg : 0 < g) (hv : 0 < v) (hDr : 0 < Dr)
+    (hG : 0 < G) (hT : 0 < T) (hg : 0 < g) (hv : 0 < v)
     (hdim : 0 < dim) (hJop : 0 ≤ Jop)
     (hABS : Jop ≤ loss' * (C / (k * v)) ^ (r * (k - 2 - r)) * Dr⁻¹ ^ (k - 2 - r))
     (hrank : JHS ^ 2 ≤ dim * Jop ^ 2) :
@@ -366,8 +366,8 @@ theorem minBoundFirst' : MinI' := by
   have hk1 : 1 ≤ k := by omega
   have hkR : (0:ℝ) < k := by exact_mod_cast (show 0 < k by omega)
   have hlossp : 0 < loss := lt_of_lt_of_le (pow_pos hDr _) hloss
-  have hmain := volumeFactor_mul_sq_div_le k r C G T g v Dr loss' JHS Jop dim hk1 hC hG hT hg hv
-    hDr hdim hJop hABS hrank
+  have hmain := volumeFactor_mul_sq_div_le k r C G T g v Dr loss' JHS Jop dim hk1 hG hT hg hv
+    hdim hJop hABS hrank
   rcases le_total 1 (Formalism.HermitianLatticeCounting.LatticeSumBounds.xv k r C (G / (T * Dr ^ 2)) t g) with h | h
   · rw [min_eq_left h, one_pow, mul_one]
     calc _ ≤ loss * t⁻¹ ^ k := hVF
@@ -436,8 +436,8 @@ theorem minBoundSecond' : MinII' := by
   · have h6 : (1 + ch) ^ 2 ≤ 6 := hratio.2 h1
     obtain ⟨q, hq⟩ : ∃ q, q = 1 + ch := ⟨_, rfl⟩
     rw [← hq] at h6 ⊢
-    have hmain := volumeFactor_mul_sq_div_le k r C G T g v Dr loss' JHS Jop dim (by omega) hC hG hT
-      hg0 hv hDr hdim hJop hABS hrank
+    have hmain := volumeFactor_mul_sq_div_le k r C G T g v Dr loss' JHS Jop dim (by omega) hG hT
+      hg0 hv hdim hJop hABS hrank
     set s := k - 2 - r with hs
     have hks : 2 * k = 2 * s + (2 * r + 4) := by omega
     have hDD : Dr⁻¹ ^ (2 * s) * Dr ^ (2 * k) = Dr ^ (2 * r + 4) := by

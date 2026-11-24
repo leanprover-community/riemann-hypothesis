@@ -235,7 +235,7 @@ theorem exists_natCast_mul_eq {ℓ : Nat.Primes} (x : locRing E ℓ) :
   obtain ⟨n, a, hn, ha⟩ := x.2
   exact ⟨n, a, hn, Subtype.ext (by simpa [ofInt, RingOfIntegers.coe_eq_algebraMap] using ha)⟩
 
-theorem comap_injective {ℓ : Nat.Primes} {m m' : Ideal (locRing E ℓ)} (hm' : m'.IsPrime) (hm : m.IsPrime)
+theorem comap_injective {ℓ : Nat.Primes} {m m' : Ideal (locRing E ℓ)} (hm' : m'.IsPrime)
     (h : m.comap (ofInt ℓ) = m'.comap (ofInt ℓ)) : m ≤ m' := by
   intro x hx
   obtain ⟨n, a, hn, e⟩ := exists_natCast_mul_eq x
@@ -277,7 +277,7 @@ theorem finite_maxSpec (ℓ : Nat.Primes) : Finite (MaximalSpectrum (locRing E �
     · simp [f, h, h'] at e
     · simpa [f, h, h'] using e
   exact MaximalSpectrum.ext (m.isMaximal.eq_of_le m'.isMaximal.ne_top
-    (comap_injective m'.isMaximal.isPrime m.isMaximal.isPrime hc))
+    (comap_injective m'.isMaximal.isPrime hc))
 
 section Form
 
@@ -339,7 +339,7 @@ theorem eq_zero_of_sesq_eq_zero (D : Datum H) (y : D.La) (h : ∀ z, sesq D y z 
   simpa using this.symm
 
 theorem gram_det_ne_zero (D : Datum H) {I : Type} [Fintype I] [DecidableEq I] (x : I → D.La) (ℓ : ℕ)
-    (hℓ : ℓ.Prime) (hx : IsLocBasis (𝓞 E) ℓ x) : (gramE D x).det ≠ 0 := by
+    (hx : IsLocBasis (𝓞 E) ℓ x) : (gramE D x).det ≠ 0 := by
   intro h
   obtain ⟨v, hv, hv0⟩ := Matrix.exists_vecMul_eq_zero_iff.2 h
   obtain ⟨b, hb⟩ := IsLocalization.exist_integer_multiples_of_finite (nonZeroDivisors (𝓞 E)) v
@@ -510,7 +510,7 @@ theorem exists_diag_basis (H : Host E) (D : Datum H) (n : ℕ) (hn : n = D.p + D
       rfl
     have h2 := RingHom.map_det (locRing E ℓ).subtype G
     rwa [h1, Matrix.det_smul, Fintype.card_fin] at h2
-  have hd0 := gram_det_ne_zero D x ℓ ℓ.2 hx
+  have hd0 := gram_det_ne_zero D x ℓ hx
   have hGu : IsUnit G.det := by
     refine isUnit_of_norm_eq_one _ (by rw [hGdet]; exact mul_ne_zero (pow_ne_zero _ hδE) hd0) fun j => ?_
     have h1 := _root_.GlobalTheory.CompanionTheory.Ar.Fl.GramDet.log_norm_det_gramE E H D (Fin n) x ℓ hx j

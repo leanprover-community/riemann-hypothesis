@@ -141,8 +141,8 @@ omit [μ.IsMulRightInvariant] in
 def formsIn (𝒜 : Submodule ℂ (GA D V → ℂ)) (U : Submodule ℂ (DividedPowerChartLift V μ)) : Submodule ℂ (GA D V → ℂ) where
   carrier := {φ | φ ∈ 𝒜 ∧ ∃ F ∈ U, lift (GQ V) F =ᵐ[μ] φ}
   zero_mem' := ⟨zero_mem _, 0, zero_mem _, ae_quotMeasure_iff.1 (Lp.coeFn_zero ℂ 2 _)⟩
-  add_mem' := fun ⟨h, F, hF, e⟩ ⟨h', F', hF', e'⟩ => ⟨add_mem h h', _, add_mem hF hF', lift_add_ae e e'⟩
-  smul_mem' := fun c _ ⟨h, F, hF, e⟩ => ⟨𝒜.smul_mem c h, _, U.smul_mem c hF, lift_smul_ae c e⟩
+  add_mem' := fun ⟨h, _, hF, e⟩ ⟨h', _, hF', e'⟩ => ⟨add_mem h h', _, add_mem hF hF', lift_add_ae e e'⟩
+  smul_mem' := fun c _ ⟨h, _, hF, e⟩ => ⟨𝒜.smul_mem c h, _, U.smul_mem c hF, lift_smul_ae c e⟩
 
 variable {V}
 

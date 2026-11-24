@@ -92,7 +92,7 @@ theorem wt_coe_of_ne {x : F} (hx : x ≠ 0) : ∃ q : ℚ, v x = (q : WithTop �
   obtain ⟨q, hq⟩ := WithTop.ne_top_iff_exists.mp h
   exact ⟨q, hq.symm⟩
 
-theorem v_inv_coe {x : F} (hx : x ≠ 0) {q : ℚ} (hq : v x = q) : v x⁻¹ = ((-q : ℚ) : WithTop ℚ) := by
+theorem v_inv_coe {x : F} {q : ℚ} (hq : v x = q) : v x⁻¹ = ((-q : ℚ) : WithTop ℚ) := by
   rw [AddValuation.map_inv, hq]
   rfl
 

@@ -95,7 +95,7 @@ lemma lie_algebra_bracket_mem {n : ℕ} {ε : Fin n → Bool} {X Y : Matrix (Fin
     Matrix.mul_sub, ← Matrix.mul_assoc, ← Matrix.mul_assoc]
   abel
 
-theorem rdBracket_of (h : RdExt) (hs : RdSmooth) : RdBracket := by
+theorem rdBracket_of (h : RdExt) : RdBracket := by
   intro n ε f X Y g hf hX hY hg
   obtain ⟨U, F, hU, hgU, hF, hfF⟩ := hf g hg
   have hFa : ContDiffAt ℝ ∞ F g := hF.contDiffAt (hU.mem_nhds hgU)

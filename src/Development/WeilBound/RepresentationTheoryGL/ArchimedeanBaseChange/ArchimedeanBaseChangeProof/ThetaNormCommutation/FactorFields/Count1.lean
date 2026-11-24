@@ -1010,7 +1010,7 @@ end PositivityTheory.Rg.BcB.G3.InertBaseP
 
 namespace PositivityTheory.Rg.BcB.G3
 
-theorem inertBase_pf (h1 : TensorCompl) : InertBase := by
+theorem inertBase_pf : InertBase := by
   intro E _ _ _ hU s d hs hcs hd w hw
   obtain ⟨hcont, -, -, hin, -⟩ := GlobalTheory.ConjAtPlace.main E hU w
   obtain ⟨hconj, -⟩ := hin hw
@@ -1441,7 +1441,7 @@ open scoped Classical TensorProduct
 
 namespace PositivityTheory.Rg.BcB.G3
 
-theorem splitSq_pf (h1 : TensorCompl) : SplitSq := by
+theorem splitSq_pf : SplitSq := by
   intro E _ _ _ s d hs hcs hd w hw
   have hcm : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsCMExt (maximalRealSubfield E) E (IsCMField.complexConj E).toAlgHom :=
     ⟨inferInstance, inferInstance, Algebra.IsQuadraticExtension.finrank_eq_two _ _,
@@ -1863,7 +1863,7 @@ namespace PositivityTheory.Rg.BcB.G3
 
 theorem param : Param :=
   _root_.PositivityTheory.Rg.BcB.G3.ParamP.param_main skewEx_pf (struct_pf factorField_pf) quadField_pf
-    (locDict_pf clsNorm_pf clsOnto_pf clsEq_pf baseFrame_pf (inertBase_pf tensorCompl_pf) (splitSq_pf tensorCompl_pf)
+    (locDict_pf clsNorm_pf clsOnto_pf clsEq_pf baseFrame_pf (inertBase_pf) (splitSq_pf)
       tensorCompl_pf) clsNorm_pf clsOnto_pf clsEq_pf locGood_pf
 
 theorem count1 : Count1 := count1_pf param

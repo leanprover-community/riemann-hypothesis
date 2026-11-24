@@ -917,7 +917,7 @@ theorem big_le_b' (s : Scale) (n : ℕ) (u : ℝ) (h : n * Real.log s.x + u + s.
   rw [this, ← Real.exp_add]
   exact Real.exp_le_exp.2 (by linarith)
 
-theorem parameter_product_le_arith (x k Y2 Yb N La la X' : ℝ) (hx : 2 ≤ x) (hk0 : 0 ≤ k) (hYb0 : 0 ≤ Yb) (hN0 : 0 ≤ N) (hLa0 : 0 ≤ La)
+theorem parameter_product_le_arith (x k Y2 Yb N La la X' : ℝ) (hx : 2 ≤ x) (hYb0 : 0 ≤ Yb) (hN0 : 0 ≤ N) (hLa0 : 0 ≤ La)
     (hla0 : 0 ≤ la) (hk : k ≤ x ^ 6) (hY2 : Y2 = x ^ 26) (hYb : Yb ≤ x) (hN : N ≤ x ^ 3) (hLa : La ≤ x) (hla : la ≤ 2 * x)
     (hX : x ^ 39 ≤ X') : k * Y2 * Yb * N * La * la ≤ X' := by
   have hx0 : 0 ≤ x := by linarith
@@ -928,7 +928,7 @@ theorem parameter_product_le_arith (x k Y2 Yb N La la X' : ℝ) (hx : 2 ≤ x) (
     _ = x ^ 39 := by ring
     _ ≤ X' := hX
 
-theorem DI_arith (x DI Np Y2 N1 k lb : ℝ) (hx : 1 ≤ x) (hDI0 : 0 ≤ DI) (hNp0 : 0 ≤ Np) (hN10 : 0 ≤ N1) (hk0 : 0 ≤ k)
+theorem DI_arith (x DI Np Y2 N1 k lb : ℝ) (hx : 1 ≤ x) (hDI0 : 0 ≤ DI) (hN10 : 0 ≤ N1) (hk0 : 0 ≤ k)
     (hlb0 : 0 ≤ lb) (hDI : 320 * DI + 1 ≤ x) (hNp : Np ≤ 40 * x ^ 3) (hY2 : Y2 = x ^ 26) (hN1 : N1 ≤ x) (hk : k ≤ x ^ 6)
     (hlb : lb ≤ 4 * x) : DI * Np * Y2 * (N1 ^ 5 + k ^ 3) * lb + 1 ≤ x ^ 49 := by
   have hx0 : 0 ≤ x := by linarith
@@ -948,7 +948,7 @@ theorem DI_arith (x DI Np Y2 N1 k lb : ℝ) (hx : 1 ≤ x) (hDI0 : 0 ≤ DI) (hN
     _ ≤ x * x ^ 48 := mul_le_mul_of_nonneg_right hDI (by positivity)
     _ = x ^ 49 := by ring
 
-theorem height_bound_product_arith (x kI k N n' Q4 DI c Y E1 E2 b' : ℝ) (hx : 7 ≤ x) (hkI0 : 0 ≤ kI) (hk0 : 0 ≤ k) (hN0 : 0 ≤ N)
+theorem height_bound_product_arith (x kI k N n' Q4 DI c Y E1 E2 b' : ℝ) (hx : 7 ≤ x) (hk0 : 0 ≤ k) (hN0 : 0 ≤ N)
     (hn0 : 0 ≤ n') (hQ0 : 0 ≤ Q4) (hDI0 : 0 ≤ DI) (hc0 : 0 ≤ c) (hE1 : 1 ≤ E1) (hkI : kI ≤ x) (hk : k ≤ x ^ 6)
     (hN : N ≤ x ^ 3) (hn : n' ≤ x ^ 3) (hQ : Q4 ≤ E2) (hDI : DI ≤ x ^ 49) (hc : c ≤ 16 * x ^ 6 * E1) (hY : Y = x ^ 13)
     (hb : x ^ 86 * (E2 * E1) ≤ b') :
@@ -1161,7 +1161,7 @@ theorem restHypI_ev (eps : ℝ) (K : Consts) (hK : K.Nonneg) (Cm C31 : ℝ) :
     rw [Real.rpow_zero] at f4
     linarith only [f4]
   ·
-    apply parameter_product_le_arith L.sc.x _ _ _ _ _ _ _ (by linarith only [hx7]) hk0.le (by positivity)
+    apply parameter_product_le_arith L.sc.x _ _ _ _ _ _ _ (by linarith only [hx7]) (by positivity)
       hN0 (zero_le_one.trans hLa1) hloga0 hk6 (by ring) (by linarith only [hxex, hx0]) hN3 hLax hloga2
     have := xpow_le_exp L.sc.x 39 _ hx0 f5
     rwa [show (39 : ℝ) = ((39 : ℕ) : ℝ) by norm_num, Real.rpow_natCast] at this
@@ -1228,7 +1228,7 @@ theorem restHypI_ev (eps : ℝ) (K : Consts) (hK : K.Nonneg) (Cm C31 : ℝ) :
           Real.logb p L.sc.a := by positivity
       have h1 := Nat.ceil_lt_add_one hW0
       have h2 := DI_arith L.sc.x K.DI (NplusF L.sc n') ((L.sc.x ^ 13) ^ 2) (N1 L.sc : ℝ) (D.R.k : ℝ)
-        (Real.logb p L.sc.a) hx1.le hDI0 hNp0 (Nat.cast_nonneg _) hk0.le hlb0 hxDI hNp (by ring) hN1x hk6 hlb
+        (Real.logb p L.sc.a) hx1.le hDI0 (Nat.cast_nonneg _) hk0.le hlb0 hxDI hNp (by ring) hN1x hk6 hlb
       exact h1.le.trans h2
     have hcG : cG L ≤ 16 * L.sc.x ^ 6 * Real.exp (L.sc.x ^ (L.sc.eps / 4) / 2) := by
       unfold cG
@@ -1237,7 +1237,7 @@ theorem restHypI_ev (eps : ℝ) (K : Consts) (hK : K.Nonneg) (Cm C31 : ℝ) :
       linarith only [hmul]
     have hcG0 : 0 ≤ cG L := mul_nonneg (by norm_num) L.Sc_pos.le
     apply height_bound_product_arith L.sc.x K.kI _ _ _ _ _ _ _ (Real.exp (L.sc.x ^ (L.sc.eps / 4) / 2))
-      (Real.exp (L.sc.x ^ (11 * L.sc.eps / 24 + L.sc.eps / 48)) ^ 4) _ hx7 hkI0 hk0.le hN0 hn'0 (by positivity)
+      (Real.exp (L.sc.x ^ (11 * L.sc.eps / 24 + L.sc.eps / 48)) ^ 4) _ hx7 hk0.le hN0 hn'0 (by positivity)
       (Nat.cast_nonneg _) hcG0 (Real.one_le_exp (by positivity)) hxkI hk6 hN3 hn'3 (by gcongr) hDIf hcG rfl
     rw [← Real.exp_nat_mul, ← Real.exp_add]
     apply big_le_b' L.sc 85

@@ -346,7 +346,7 @@ theorem kum_sum {Ω : Type} [Field Ω] [Algebra ℚ Ω] {ε : Ω →+* ℂ} (X :
     exact hadd _ _ _ _ (_root_.GlobalTheory.KZ.H3.kum_smul Ω ε X l n (r a) (x a) (χ a) (h a)) ih
 
 theorem exists_betti_cocycle {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε)
-    (_hε : Function.Injective ε) (hj : ∃ φ : ℂ → ℂ, DifferentiableOn ℂ φ Hs ∧ X.an X.jK = (φ : Mero))
+    (hj : ∃ φ : ℂ → ℂ, DifferentiableOn ℂ φ Hs ∧ X.an X.jK = (φ : Mero))
     (N l w : ℕ) [Fact l.Prime] (hl : l ≠ 2) (hN : 5 ≤ N) (hc : Nat.Coprime N l) (hw : Odd w) :
     ∀ b ∈ X.BSet N l w, ∃ c ∈ Z1 N l w, BtZ X N l b c := by
   rintro b ⟨⟨c, hcA, hb⟩, hinv⟩
@@ -446,7 +446,7 @@ theorem B_free_finite : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosur
   have Lzero : BtZ X N l 0 0 := btZ_zero X N l
   have L3 : ∀ b, BtZ X N l b 0 → b = 0 := fun b h => _root_.GlobalTheory.KZ.BettiB.eq_zero_of_btZ_zero ε X hε hj N l (by omega) b h
   have L4 : Module.Finite ℤ_[l] (Z1 N l w) := _root_.GlobalTheory.KZ.BettiB.module_finite_z1_padicInt N l w (by omega)
-  have L5 : ∀ b ∈ X.BSet N l w, ∃ c ∈ Z1 N l w, BtZ X N l b c := _root_.GlobalTheory.KZ.BettiEx.exists_betti_cocycle ε X hε hj N l w hl2 hN hcop hw
+  have L5 : ∀ b ∈ X.BSet N l w, ∃ c ∈ Z1 N l w, BtZ X N l b c := _root_.GlobalTheory.KZ.BettiEx.exists_betti_cocycle ε X hj N l w hl2 hN hcop hw
 
   let S : Submodule ℤ_[l] (X.Fn l × Z1 N l w) :=
     { carrier := {p | BtZ X N l p.1 (p.2 : Gam N l → MvPolynomial (Fin 2) ℤ_[l])}

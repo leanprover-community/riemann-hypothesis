@@ -108,7 +108,7 @@ theorem frameEq_adelic {b : GL (Fin n ⊕ Fin n) E} {ε : ℤˣ} (hb : FrameEq �
       Matrix.fromBlocks 0 1 ((((ε : ℤ) : AE F E)) • 1) 0 := by
   rw [frame_adelic (F := F) hb, inclR_int]
 
-theorem nU_mem {b : GL (Fin n ⊕ Fin n) E} {ε : ℤˣ} (hσ : ∀ a, σ (σ a) = a) (hb : FrameEq σ Y b ε)
+theorem nU_mem {b : GL (Fin n ⊕ Fin n) E} {ε : ℤˣ} (hb : FrameEq σ Y b ε)
     {β : Matrix (Fin n) (Fin n) (AE F E)} (hβ : β ∈ nCond σ n ε) : nU b β ∈ UG (cA σ) (dbl (incM F Y.J)) := by
   have hF := frameEq_adelic (F := F) hb
   have h1 : (incM F (b⁻¹).1)ᵀ * (incM F b.1)ᵀ = 1 := by
@@ -174,12 +174,12 @@ theorem mem_nA_iff {b : GL (Fin n ⊕ Fin n) E} {ε : ℤˣ} (hσ : ∀ a, σ (�
     rintro γ ⟨x, hx⟩
     exact cond_of_inFrame hb x γ hx
   · intro h
-    exact AddSubgroup.subset_closure ⟨⟨nU b β, nU_mem hσ hb h⟩, inFrame_nU β _⟩
+    exact AddSubgroup.subset_closure ⟨⟨nU b β, nU_mem hb h⟩, inFrame_nU β _⟩
 
 theorem nbE_mem {b : GL (Fin n ⊕ Fin n) E} (hσ : ∀ a, σ (σ a) = a) (hb : IsFrame2 σ Y b) (β : nA σ Y b) :
     nU b β.1 ∈ UG (cA σ) (dbl (incM F Y.J)) := by
   obtain ⟨⟨ε, hε⟩, -⟩ := hb
-  exact nU_mem hσ hε ((mem_nA_iff hσ hε β.1).1 β.2)
+  exact nU_mem hε ((mem_nA_iff hσ hε β.1).1 β.2)
 
 theorem nbE_eq {b : GL (Fin n ⊕ Fin n) E} (hσ : ∀ a, σ (σ a) = a) (hb : IsFrame2 σ Y b) :
     nbE σ Y b = fun β => ⟨nU b β.1, nbE_mem hσ hb β⟩ := by

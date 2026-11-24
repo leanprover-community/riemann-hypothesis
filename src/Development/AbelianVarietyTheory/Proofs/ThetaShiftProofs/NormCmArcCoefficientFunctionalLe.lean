@@ -112,7 +112,7 @@ theorem herm_smul {g : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) (a : ℂ) (z : Fin
 
 theorem herm_single {g : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) (j : Fin g) :
     hermForm Hm (Pi.single j 1) (Pi.single j 1) = Hm j j := by
-  simp [hermForm, ← Pi.single_star]
+  simp [hermForm]
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H}
 

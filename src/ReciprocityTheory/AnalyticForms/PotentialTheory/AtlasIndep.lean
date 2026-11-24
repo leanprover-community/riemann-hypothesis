@@ -82,7 +82,7 @@ theorem smoothOn_of_compatible {A B : FinHolAtlas e X} (h : A.Compatible B) {U :
   exact ((h1.comp y h2).congr_of_eventuallyEq (hev f)).contDiffWithinAt
 
 theorem holoOn_of_compatible {A B : FinHolAtlas e X} (h : A.Compatible B) {U : Set X}
-    (hU : IsOpen U) {g : X → ℂ} (hg : A.HoloOn U g) : B.HoloOn U g := by
+    {g : X → ℂ} (hg : A.HoloOn U g) : B.HoloOn U g := by
   intro j y hy
   obtain ⟨k, hT, hTt, hTs, hev⟩ := compat_local h j hy.1
   have hTs' : (A.chart k).symm ((A.chart k) ((B.chart j).symm y)) ∈ U := by
@@ -95,7 +95,7 @@ theorem isPotential_of_compatible {A B : FinHolAtlas e X} (h : A.Compatible B) {
     (hP : IsPotential A P) : IsPotential B P := by
   refine ⟨fun x => smoothOn_of_compatible h (P.isOpen_U x) (hP.1 x), fun x x' y hy => ?_⟩
   obtain ⟨W, hW, hyW, G, hG, hφ⟩ := hP.2 x x' y hy
-  exact ⟨W, hW, hyW, G, holoOn_of_compatible h hW hG, hφ⟩
+  exact ⟨W, hW, hyW, G, holoOn_of_compatible h hG, hφ⟩
 
 theorem compatible_unionAtlas_left (A B : FinHolAtlas e X) (h : A.Compatible B) :
     A.Compatible (unionAtlas A B h) := by

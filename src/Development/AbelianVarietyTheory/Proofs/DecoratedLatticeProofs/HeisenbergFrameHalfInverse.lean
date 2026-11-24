@@ -69,7 +69,7 @@ variable {D : D7} {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [Is
 variable {Y Y' : Type} [Fintype Y] [DecidableEq Y] [Fintype Y'] [DecidableEq Y']
 
 theorem up_half (p : Place D k) {S T : HSp D} (FS : Frame k S.rank Y') (FT : Frame k T.rank Y) (x : Matrix Y Y' k) :
-    IsHalf p.e (p.up FS FT x) := fun i j => e_mul_ι p _
+    IsHalf p.e (p.up FS FT x) := fun _ _ => e_mul_ι p _
 
 theorem down_up (p : Place D k) {S T : HSp D} (FS : Frame k S.rank Y') (FT : Frame k T.rank Y) (x : Matrix Y Y' k) :
     p.down FS FT (p.up FS FT x) = x := by

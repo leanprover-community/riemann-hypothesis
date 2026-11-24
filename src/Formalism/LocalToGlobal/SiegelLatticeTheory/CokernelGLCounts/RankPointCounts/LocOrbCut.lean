@@ -430,12 +430,12 @@ theorem continuous_zAt {m : ℕ} (a : Loc.Pt E (m + 1)) : Continuous (zAt (E := 
 theorem sub_intLow (M : Loc.Model F E) {k n : ℕ} (h : k = n) {A : Matrix (Fin n) (Fin n) E}
     (hA : Formalism.DoubleCosetMeasures.IsLowUni A) (hI : Formalism.DoubleCosetMeasures.IsInt M.R A) :
     Formalism.MainNotions.S.TieN.IntLow M (A.submatrix (finCongr h) (finCongr h)) :=
-  ⟨fun i => hA.2 _, fun i j hij => hA.1 hij, fun i j => hI _ _⟩
+  ⟨fun _ => hA.2 _, fun _ _ hij => hA.1 hij, fun _ _ => hI _ _⟩
 
 theorem sub_intUp (M : Loc.Model F E) {k n : ℕ} (h : k = n) {A : Matrix (Fin n) (Fin n) E}
     (hA : Formalism.DoubleCosetMeasures.IsUpUni A) (hI : Formalism.DoubleCosetMeasures.IsInt M.R A) :
     Formalism.MainNotions.S.TieN.IntUp M (A.submatrix (finCongr h) (finCongr h)) :=
-  ⟨fun i => hA.2 _, fun i j hij => hA.1 hij, fun i j => hI _ _⟩
+  ⟨fun _ => hA.2 _, fun _ _ hij => hA.1 hij, fun _ _ => hI _ _⟩
 
 theorem mem_iff_orb (M : Loc.Model F E) {n : ℕ} (Z0 : Matrix (Fin n) (Fin n) E) {l ρ Z : Matrix (Fin n) (Fin n) E}
     (hl : Formalism.MainNotions.S.TieN.IntLow M l) (hρ : Formalism.MainNotions.S.TieN.IntUp M ρ) : l * Z * ρ ∈ orbR M Z0 ↔ Z ∈ orbR M Z0 := by

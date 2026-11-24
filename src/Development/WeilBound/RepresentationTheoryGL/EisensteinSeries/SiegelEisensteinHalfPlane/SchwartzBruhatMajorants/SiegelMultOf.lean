@@ -443,11 +443,11 @@ section -- clump:auto
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.DYhc7.Iwa :
-    {G : Type} → [inst : Group G] → Subgroup G → Subgroup G → Prop :=
+    {G : Type} → [Group G] → Subgroup G → Subgroup G → Prop :=
     fun {G : Type} [Group G] (P K : Subgroup G) ↦ ∀ (g : G), ∃ p ∈ P, ∃ k ∈ K, g = p * k
 
 theorem UpperTheory.Reformulated.B.DYhc7.main :
-    ∀ {G : Type} [inst : Group G] [inst_1 : TopologicalSpace G] [IsTopologicalGroup G] {K P : Subgroup G},
+    ∀ {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] {K P : Subgroup G},
       IsCompact (↑K : Set G) →
         IsClosed (↑P : Set G) →
           UpperTheory.Reformulated.B.DYhc7.Iwa P K → Topology.IsQuotientMap fun (x : ↥P × ↥K) ↦ (↑x.1 : G) * (↑x.2 : G) := by
@@ -1543,7 +1543,7 @@ theorem glue_injective (hΔ : Δ ≤ Γ) (hP : ∀ γ ∈ Γ, γ ∈ P → γ �
   subst hq
   rfl
 
-theorem glue_surjective (hΔ : Δ ≤ Γ) (hP : ∀ γ ∈ Γ, γ ∈ P → γ ∈ Δ) :
+theorem glue_surjective (hΔ : Δ ≤ Γ) :
     Function.Surjective (glue (P := P) hΔ) := by
   intro t
   obtain ⟨y, rfl⟩ : ∃ y : Γ, cls y = t := ⟨_, cls_rep t⟩
@@ -1583,7 +1583,7 @@ theorem stage : PiLocalization₂ := by
     rw [f_rep hf, mul_assoc]
 
   let e : ((_ : Cos Δ Γ) × Cos P Δ) ≃ Cos P Γ :=
-    Equiv.ofBijective (glue hΔ) ⟨glue_injective hΔ hP, glue_surjective hΔ hP⟩
+    Equiv.ofBijective (glue hΔ) ⟨glue_injective hΔ hP, glue_surjective hΔ⟩
   let φ : ((_ : Cos Δ Γ) × Cos P Δ) → X := fun s => f (rep s.2 * (rep s.1 * g))
   have hφ : ∀ s, f (rep (e s) * g) = φ s := by
     intro s
@@ -1736,12 +1736,12 @@ theorem norm_term_le {M : ℝ} (hb : ∀ g (w : W), ‖sec K P c ρ g w‖ ≤ M
 theorem summable_term [CompleteSpace W] {M : ℝ} (hb : ∀ g (w : W), ‖sec K P c ρ g w‖ ≤ M * ‖w‖) {l : G → ℝ}
     (hl : Conv Γ P l) {Λ : G → ℂ} (hΛ : ∀ x, (Λ x).re = l x) (g : G) (w : W) :
     Summable fun q : Cos P Γ => Complex.exp (Λ (rep q * g)) • sec K P c ρ (rep q * g) w :=
-  Summable.of_norm_bounded ((hl g).mul_left (M * ‖w‖)) fun q => norm_term_le hb hΛ _ w
+  Summable.of_norm_bounded ((hl g).mul_left (M * ‖w‖)) fun _ => norm_term_le hb hΛ _ w
 
 theorem norm_eis_le {M : ℝ} (hb : ∀ g (w : W), ‖sec K P c ρ g w‖ ≤ M * ‖w‖) {l : G → ℝ}
     (hl : Conv Γ P l) {Λ : G → ℂ} (hΛ : ∀ x, (Λ x).re = l x) (g : G) (w : W) :
     ‖eis Γ K P c ρ Λ g w‖ ≤ M * ‖w‖ * pos Γ P l g :=
-  tsum_of_norm_bounded ((hl g).hasSum.mul_left (M * ‖w‖)) fun q => norm_term_le hb hΛ _ w
+  tsum_of_norm_bounded ((hl g).hasSum.mul_left (M * ‖w‖)) fun _ => norm_term_le hb hΛ _ w
 
 theorem pos_nonneg (l : G → ℝ) (g : G) : 0 ≤ pos Γ P l g :=
   tsum_nonneg fun _ => (Real.exp_pos _).le

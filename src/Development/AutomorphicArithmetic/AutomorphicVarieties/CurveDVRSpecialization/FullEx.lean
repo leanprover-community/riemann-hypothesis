@@ -62,28 +62,28 @@ section -- clump:auto
 @[expose] public section
 
 @[reducible] noncomputable def UpperTheory.Reformulated.B.StronglyIrreducibleFreeRatios.gm :
-    {G R : Type} → [inst : Group G] → [inst_1 : CommRing R] → {n : ℕ} → (G →* GL (Fin n) R) → G → Matrix (Fin n) (Fin n) R :=
+    {G R : Type} → [Group G] → [CommRing R] → {n : ℕ} → (G →* GL (Fin n) R) → G → Matrix (Fin n) (Fin n) R :=
     fun {G R : Type} [Group G] [CommRing R] {n : ℕ} (r : G →* GL (Fin n) R) (g : G) ↦
       (↑((r : G → GL (Fin n) R) g) : Matrix (Fin n) (Fin n) R)
 
 noncomputable def UpperTheory.Reformulated.B.StronglyIrreducibleFreeRatios.StrongIrr :
-    {G κ : Type} → [inst : Group G] → [inst_1 : Field κ] → {n : ℕ} → (G →* GL (Fin n) κ) → Prop :=
+    {G κ : Type} → [Group G] → [Field κ] → {n : ℕ} → (G →* GL (Fin n) κ) → Prop :=
     fun {G κ : Type} [Group G] [Field κ] {n : ℕ} (r : G →* GL (Fin n) κ) ↦
       ∀ (W : Submodule κ (Fin n → κ)) (S : Subgroup G),
         S.FiniteIndex → (∀ (g : G), g ∈ S ↔ ∀ v ∈ W, (UpperTheory.Reformulated.B.StronglyIrreducibleFreeRatios.gm r g).mulVec v ∈ W) → W = ⊥ ∨ W = ⊤
 
 noncomputable def UpperTheory.Reformulated.B.StronglyIrreducibleFreeRatios.FreeRatios :
-    {κ ι : Type} → [inst : Field κ] → (ι → κˣ) → Prop :=
+    {κ ι : Type} → [Field κ] → (ι → κˣ) → Prop :=
     fun {κ ι : Type} [Field κ] (α : ι → κˣ) ↦ ∀ (i j : ι), i ≠ j → ∀ (m : ℕ), (0 : ℕ) < m → α i ^ m ≠ α j ^ m
 
 noncomputable def UpperTheory.Reformulated.B.StronglyIrreducibleFreeRatios.Full :
-    {κ : Type} → [inst : Field κ] → {n : ℕ} → GL (Fin n) κ → Prop :=
+    {κ : Type} → [Field κ] → {n : ℕ} → GL (Fin n) κ → Prop :=
     fun {κ : Type} [Field κ] {n : ℕ} (b : GL (Fin n) κ) ↦
       ∀ (i j : Fin n), (↑b : Matrix (Fin n) (Fin n) κ) i j ≠ (0 : κ) ∧ (↑b⁻¹ : Matrix (Fin n) (Fin n) κ) i j ≠ (0 : κ)
 
 noncomputable def UpperTheory.Reformulated.B.StronglyIrreducibleFreeRatios.FullEx :
     Prop :=
-    ∀ (G κ : Type) [inst : Group G] [inst_1 : Field κ] (n : ℕ) (r : G →* GL (Fin n) κ),
+    ∀ (G κ : Type) [Group G] [Field κ] (n : ℕ) (r : G →* GL (Fin n) κ),
       UpperTheory.Reformulated.B.StronglyIrreducibleFreeRatios.StrongIrr r →
         ∀ (u : G) (α : Fin n → κˣ),
           UpperTheory.Reformulated.B.StronglyIrreducibleFreeRatios.FreeRatios α →

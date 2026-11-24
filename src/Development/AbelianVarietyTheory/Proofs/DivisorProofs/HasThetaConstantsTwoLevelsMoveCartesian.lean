@@ -201,22 +201,22 @@ variable {S S' : Scheme.{0}} {G : Over S} [GrpObj G] {A : Over S'} [GrpObj A] [I
   {ρ₀ : LB.Gen (L₀.pull (eSec G))} {ρ₁ : LB.Gen (L₁.pull (eSec A))}
   {K : Type} [Field K] (x : Sp K ⟶ S')
 
-abbrev idT (f : S' ⟶ S) {Z : Scheme.{0}} (x : Z ⟶ S') (x₀ : Z ⟶ S) : (Over.mk x).left ⟶ (Over.mk x₀).left := 𝟙 Z
+abbrev idT {Z : Scheme.{0}} (x : Z ⟶ S') (x₀ : Z ⟶ S) : (Over.mk x).left ⟶ (Over.mk x₀).left := 𝟙 Z
 
-instance {Z : Scheme.{0}} (x : Z ⟶ S') (x₀ : Z ⟶ S) : IsIso (idT f x x₀) := inferInstanceAs (IsIso (𝟙 Z))
+instance {Z : Scheme.{0}} (x : Z ⟶ S') (x₀ : Z ⟶ S) : IsIso (idT x x₀) := inferInstanceAs (IsIso (𝟙 Z))
 
 theorem idT_w {Z : Scheme.{0}} {x : Z ⟶ S'} {x₀ : Z ⟶ S} (h : x₀ = x ≫ f) :
-    idT f x x₀ ≫ (Over.mk x₀).hom = (Over.mk x).hom ≫ f := by
+    idT x x₀ ≫ (Over.mk x₀).hom = (Over.mk x).hom ≫ f := by
   subst h
   simp [idT]
 
 theorem thList_up (hw : w.IsGen) (hL₀ : L₀.IsLB) (hL₁ : L₁.IsLB) (hr : IsRigidificationPullbackCompatibleIso w f ρ₁ ρ₀) {m N : ℕ}
-    {θ : SecAt A L₁ x} {θ₀ : SecAt G L₀ (x ≫ f)} (hθ : SecRel hp (idT f x (x ≫ f)) (idT_w rfl) w θ θ₀)
+    {θ : SecAt A L₁ x} {θ₀ : SecAt G L₀ (x ≫ f)} (hθ : SecRel hp (idT x (x ≫ f)) (idT_w rfl) w θ θ₀)
     {pt : Fin N → (Over.mk x ⟶ A)} {c : Fin N → K} (H : ThList A L₁ ρ₁ m x θ pt c) :
     ∃ pt₀, ThList G L₀ ρ₀ m (x ≫ f) θ₀ pt₀ c := by
   obtain ⟨hinj, hth, hall⟩ := H
-  have hx : ∀ a, ∃ p₀ : Over.mk (x ≫ f) ⟶ G, idT f x (x ≫ f) ≫ p₀.left = (pt a).left ≫ φ ∧ p₀ ^ (m ^ 2) = 1 :=
-    fun a => torsion_up hp (idT f x (x ≫ f)) (idT_w rfl) (pt a) (hth a).1
+  have hx : ∀ a, ∃ p₀ : Over.mk (x ≫ f) ⟶ G, idT x (x ≫ f) ≫ p₀.left = (pt a).left ≫ φ ∧ p₀ ^ (m ^ 2) = 1 :=
+    fun a => torsion_up hp (idT x (x ≫ f)) (idT_w rfl) (pt a) (hth a).1
   choose pt₀ hpt₀ hpow using hx
   have e : ∀ a, (pt₀ a).left = (pt a).left ≫ φ := fun a => by simpa [idT] using hpt₀ a
   refine ⟨pt₀, ?_, ?_, ?_⟩
@@ -227,10 +227,10 @@ theorem thList_up (hw : w.IsGen) (hL₀ : L₀.IsLB) (hL₁ : L₁.IsLB) (hr : I
     · rw [← e a, ← e b, hab]
     · rw [Over.w, Over.w]
   · intro a
-    have := ThG.up hp (idT f x (x ≫ f)) (idT_w rfl) hw hL₀ hL₁ hr (hpt₀ a) (hpow a) hθ (hth a)
+    have := ThG.up hp (idT x (x ≫ f)) (idT_w rfl) hw hL₀ hL₁ hr (hpt₀ a) (hpow a) hθ (hth a)
     simpa [idT] using this
   · intro K' _ _ i p hp2
-    obtain ⟨q, hq, hqn⟩ := torsion_down hp (idT f (spMap i ≫ x) (spMap i ≫ x ≫ f))
+    obtain ⟨q, hq, hqn⟩ := torsion_down hp (idT (spMap i ≫ x) (spMap i ≫ x ≫ f))
       (idT_w (Category.assoc _ _ _).symm) p hp2
     obtain ⟨a, ha⟩ := hall K' i q hqn
     refine ⟨a, ?_⟩
@@ -238,12 +238,12 @@ theorem thList_up (hw : w.IsGen) (hL₀ : L₀.IsLB) (hL₁ : L₁.IsLB) (hr : I
     rw [e1, ha, e a, Category.assoc]
 
 theorem thList_down (hw : w.IsGen) (hL₀ : L₀.IsLB) (hL₁ : L₁.IsLB) (hr : IsRigidificationPullbackCompatibleIso w f ρ₁ ρ₀) {m N : ℕ}
-    {θ : SecAt A L₁ x} {θ₀ : SecAt G L₀ (x ≫ f)} (hθ : SecRel hp (idT f x (x ≫ f)) (idT_w rfl) w θ θ₀)
+    {θ : SecAt A L₁ x} {θ₀ : SecAt G L₀ (x ≫ f)} (hθ : SecRel hp (idT x (x ≫ f)) (idT_w rfl) w θ θ₀)
     {pt₀ : Fin N → (Over.mk (x ≫ f) ⟶ G)} {c : Fin N → K} (H : ThList G L₀ ρ₀ m (x ≫ f) θ₀ pt₀ c) :
     ∃ pt, ThList A L₁ ρ₁ m x θ pt c := by
   obtain ⟨hinj, hth, hall⟩ := H
-  have hx : ∀ a, ∃ p : Over.mk x ⟶ A, idT f x (x ≫ f) ≫ (pt₀ a).left = p.left ≫ φ ∧ p ^ (m ^ 2) = 1 :=
-    fun a => torsion_down hp (idT f x (x ≫ f)) (idT_w rfl) (pt₀ a) (hth a).1
+  have hx : ∀ a, ∃ p : Over.mk x ⟶ A, idT x (x ≫ f) ≫ (pt₀ a).left = p.left ≫ φ ∧ p ^ (m ^ 2) = 1 :=
+    fun a => torsion_down hp (idT x (x ≫ f)) (idT_w rfl) (pt₀ a) (hth a).1
   choose pt hpt hpow using hx
   have e : ∀ a, (pt₀ a).left = (pt a).left ≫ φ := fun a => by simpa [idT] using hpt a
   refine ⟨pt, ?_, ?_, ?_⟩
@@ -252,10 +252,10 @@ theorem thList_down (hw : w.IsGen) (hL₀ : L₀.IsLB) (hL₁ : L₁.IsLB) (hr :
     apply Over.OverMorphism.ext
     rw [e a, e b, hab]
   · intro a
-    have := ThG.move hp (idT f x (x ≫ f)) (idT_w rfl) hw hL₀ hL₁ hr (hpt a) (hpow a) hθ (hth a)
+    have := ThG.move hp (idT x (x ≫ f)) (idT_w rfl) hw hL₀ hL₁ hr (hpt a) (hpow a) hθ (hth a)
     simpa [idT] using this
   · intro K' _ _ i p hp2
-    obtain ⟨q, hq, hqn⟩ := torsion_up hp (idT f (spMap i ≫ x) (spMap i ≫ x ≫ f))
+    obtain ⟨q, hq, hqn⟩ := torsion_up hp (idT (spMap i ≫ x) (spMap i ≫ x ≫ f))
       (idT_w (Category.assoc _ _ _).symm) p hp2
     obtain ⟨a, ha⟩ := hall K' i q hqn
     refine ⟨a, ?_⟩
@@ -273,13 +273,13 @@ theorem hasTh₂_move : ∀ (S : Scheme.{0}) (G : Over S) [GrpObj G] [IsCommMonO
   constructor
   · intro H
     obtain ⟨θ, pt, pt', hg, h1, h2⟩ := hasTh₂_rig hL' hρ' hρ₁ H
-    obtain ⟨θ₀, hθ⟩ := exists_secRel_up hp (idT f x (x ≫ f)) (idT_w rfl) hw hL hL' θ
+    obtain ⟨θ₀, hθ⟩ := exists_secRel_up hp (idT x (x ≫ f)) (idT_w rfl) hw hL hL' θ
     obtain ⟨pt₀, l1⟩ := thList_up hp x hw hL hL' hr hθ h1
     obtain ⟨pt₀', l2⟩ := thList_up hp x hw hL hL' hr hθ h2
-    exact ⟨θ₀, pt₀, pt₀', GlobalTheory.ThetaPtUp.isGenSec_up hp (idT f x (x ≫ f)) (idT_w rfl) hw hL hL' hθ hg, l1, l2⟩
+    exact ⟨θ₀, pt₀, pt₀', GlobalTheory.ThetaPtUp.isGenSec_up hp (idT x (x ≫ f)) (idT_w rfl) hw hL hL' hθ hg, l1, l2⟩
   · intro H
     obtain ⟨θ₀, pt₀, pt₀', hg₀, l1, l2⟩ := H
-    obtain ⟨θ, hθ⟩ := exists_secRel hp (idT f x (x ≫ f)) (idT_w rfl) hw hL hL' θ₀
+    obtain ⟨θ, hθ⟩ := exists_secRel hp (idT x (x ≫ f)) (idT_w rfl) hw hL hL' θ₀
     obtain ⟨pt, k1⟩ := thList_down hp x hw hL hL' hr hθ l1
     obtain ⟨pt', k2⟩ := thList_down hp x hw hL hL' hr hθ l2
     exact hasTh₂_rig hL' hρ₁ hρ' ⟨θ, pt, pt', isGenSec_down hp _ (idT_w rfl) hw hL hL' hθ hg₀, k1, k2⟩

@@ -1075,7 +1075,7 @@ theorem steps6_of (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
       [NeZero (Module.finrank ℚ_[l] ↥(Loc.K0 K))], Formalism.MainNotions.RamifiedCoefficientChains.S9.LemmaDN ((HW l).W K 1 LL hg))
     (hD0 : ∀ (l : ℕ) [Fact l.Prime] (K LL : Loc.FinExt l) (hg : Loc.Good K 1 LL)
       [NeZero (Module.finrank ℚ_[l] ↥(Loc.K0 K))], LemmaDN0 ((HW l).W K 1 LL hg)) :
-    Formalism.MainNotions.RamifiedCoefficientChains.S9.steps6 D HW F := by
+    Formalism.MainNotions.RamifiedCoefficientChains.S9.steps6 D HW := by
   intro l _ K LL hg _
   have h1 := hA.1 l K 1 LL hg
   have h11 := hA.2.2.2.2.2.2.2.2.2.2.1 l K LL
@@ -1246,7 +1246,7 @@ theorem rhoLift_D (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (hT : ∀ (l : ℕ) [Fact l.Prime] (K LL : Loc.FinExt l) (hg : Loc.Good K 1 LL)
       [NeZero (Module.finrank ℚ_[l] ↥(Loc.K0 K))],
       Formalism.MainNotions.CrystallineLiftingInputs.TTool2 ((HW l).W K 1 LL hg) ∧ Formalism.MainNotions.CrystallineLiftingInputs.FTool ((HW l).W K 1 LL hg)) :
-    Formalism.MainNotions.RamifiedCoefficientChains.S9.rhoLift D HW F := by
+    Formalism.MainNotions.RamifiedCoefficientChains.S9.rhoLift D HW := by
   intro l _ K LL hg _
   intro d T₁ T₂ F' b S η m hS
   have h1 := hA.1 l K 1 LL hg
@@ -1341,7 +1341,7 @@ variable {CR CA CB CK : ℝ}
 theorem crystalline_clause_of_admitted (hA : admitted D HW F Cm CR CA CB CK) : Formalism.MainNotions.DeltaInvariantLattices.P3 D HW F Cm :=
   fun l _ K s LL h => (hA.1 l K s LL h).2.2.1
 
-theorem truncation_clause_of_admitted (hA : admitted D HW F Cm CR CA CB CK) : Formalism.MainNotions.CrystallineLiftingInputs.adm15 D HW F Cm := by
+theorem truncation_clause_of_admitted (hA : admitted D HW F Cm CR CA CB CK) : Formalism.MainNotions.CrystallineLiftingInputs.adm15 D HW F := by
   refine ⟨Formalism.MainNotions.CrystallineLiftingInputs.TToolAlg_holds, fun l _ K LL hg _ => ?_⟩
   have hP9 : Formalism.MainNotions.DeltaInvariantLattices.P9W ((HW l).W K 1 LL hg) := (hA.1 l K 1 LL hg).2.2.2.2.2.2.2.2.1
   have hinj : Function.Injective (algebraMap ↥(OL LL) ↥LL.1) := Subtype.val_injective
@@ -1354,7 +1354,7 @@ theorem truncation_clause_of_admitted (hA : admitted D HW F Cm CR CA CB CK) : Fo
   exact ⟨Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData.tTool1_of _ hinj hO2 hP9 (hA.2.2.2.2.2.2.2.1 l K 1 LL hg),
     Formalism.MainNotions.CrystallineLiftingInputs.truncatedSeriesData.tTool2_of _ hinj hO2 hlm hP9 (hA.2.2.2.2.2.2.2.1 l K 1 LL hg) (hA.2.2.2.2.2.2.2.2.1 l K 1 LL hg)⟩
 
-theorem rhoLift_of_Adm (hA : admitted D HW F Cm CR CA CB CK) : rhoLift D HW F :=
+theorem rhoLift_of_Adm (hA : admitted D HW F Cm CR CA CB CK) : rhoLift D HW :=
   Formalism.MainNotions.N.Pv.LocalLengthBound.rhoLift_D D HW F Cm CR CA CB CK hA fun l _ K LL hg _ =>
     ⟨((truncation_clause_of_admitted D HW F Cm hA).2 l K LL hg).2, Formalism.MainNotions.CrystallineLiftingInputs.Tools.local_clause_of_admitted_statements D HW F Cm hA l K LL hg⟩
 
@@ -1441,8 +1441,8 @@ theorem lemGA_rec (hA : admitted D HW F Cm CR CA CB CK) (l : ℕ) [Fact l.Prime]
   have h0 : LemGA_0 ((HW l).W K 1 LL hg) := lemGA0_of_tools ((HW l).W K 1 LL hg) hCT hTH h9
   exact lemGA_of_pieces ((HW l).W K 1 LL hg) hla hx h0 d T₁ T₂ F' b S η m hS
 
-theorem lemGB_rec (hA : admitted D HW F Cm CR CA CB CK) (h23 : Formalism.MainNotions.LiftingTheory.adm23 D HW F)
-    (hC4 : Formalism.MainNotions.N.LetterConditionGlobal D HW F) (l : ℕ) [Fact l.Prime] (K LL : Loc.FinExt l)
+theorem lemGB_rec (hA : admitted D HW F Cm CR CA CB CK) (h23 : Formalism.MainNotions.LiftingTheory.adm23 D HW)
+    (hC4 : Formalism.MainNotions.N.LetterConditionGlobal D HW) (l : ℕ) [Fact l.Prime] (K LL : Loc.FinExt l)
     (hg : Loc.Good K 1 LL) [NeZero (Module.finrank ℚ_[l] ↥(Loc.K0 K))] :
     LemGB ((HW l).W K 1 LL hg) := by
   have hQ := Formalism.MainNotions.CrystallineLiftingInputs.Tools.level_clause_of_admitted_statements D HW F Cm hA h23 l K LL hg
@@ -1454,8 +1454,8 @@ theorem lemGB_rec (hA : admitted D HW F Cm CR CA CB CK) (h23 : Formalism.MainNot
   rw [(D.loc l).PD_p K]
   exact Formalism.MainNotions.UnusedSlot80.Split2.isUnit_pred l LL
 
-theorem lemmaGs_rec (hA : admitted D HW F Cm CR CA CB CK) (h23 : Formalism.MainNotions.LiftingTheory.adm23 D HW F)
-    (hC4 : Formalism.MainNotions.N.LetterConditionGlobal D HW F) (l : ℕ) [Fact l.Prime] (K LL : Loc.FinExt l)
+theorem lemmaGs_rec (hA : admitted D HW F Cm CR CA CB CK) (h23 : Formalism.MainNotions.LiftingTheory.adm23 D HW)
+    (hC4 : Formalism.MainNotions.N.LetterConditionGlobal D HW) (l : ℕ) [Fact l.Prime] (K LL : Loc.FinExt l)
     (hg : Loc.Good K 1 LL) [NeZero (Module.finrank ℚ_[l] ↥(Loc.K0 K))] :
     LemmaGs ((HW l).W K 1 LL hg) :=
   lemmaGs_of_lemGAB _ (lemGA_rec D HW F Cm hA l K LL hg) (lemGB_rec D HW F Cm hA h23 hC4 l K LL hg)
@@ -1483,7 +1483,7 @@ theorem frobenius_lift_lemmas_of_admitted (hA : admitted D HW F Cm CR CA CB CK)
       [NeZero (Module.finrank ℚ_[l] ↥(Loc.K0 K))], Formalism.MainNotions.N.Pv.LocalLengthBound.LemmaDN0 ((HW l).W K 1 LL hg))
     (hGs : ∀ (l : ℕ) [Fact l.Prime] (K LL : Loc.FinExt l) (hg : Loc.Good K 1 LL)
       [NeZero (Module.finrank ℚ_[l] ↥(Loc.K0 K))], LemmaGs ((HW l).W K 1 LL hg)) :
-    wachVectorLiftingBoundAtGoodExtensions D HW F := fun l _ K LL hg _ =>
+    wachVectorLiftingBoundAtGoodExtensions D HW := fun l _ K LL hg _ =>
   frobenius_lift_lemmas_general _ (hA.1 l K 1 LL hg).1 (hA.1 l K 1 LL hg).2.2.1 (hA.1 l K 1 LL hg).2.2.2.2.1
     (hA.1 l K 1 LL hg).2.2.2.2.2.2.2.2.1 (hA.2.2.2.2.2.2.2.2.2.2.1 l K LL).1
     (hA.2.2.2.2.2.2.2.2.2.2.1 l K LL).2.1 (hA.2.2.2.2.2.2.2.2.2.2.1 l K LL).2.2 ((Cm l).C K 1 LL hg).tie
@@ -1497,8 +1497,8 @@ end Rec
 
 theorem theorem_of_local_lemmas (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
     (CR CA CB CK : ℝ)
-    (h12 : admitted D HW F Cm CR CA CB CK → cocyclesToWachVectorsBoundAtGoodExtensions D HW F)
-    (h23 : Formalism.MainNotions.LiftingTheory.adm23 D HW F) (hC4 : Formalism.MainNotions.N.LetterConditionGlobal D HW F) :
+    (h12 : admitted D HW F Cm CR CA CB CK → cocyclesToWachVectorsBoundAtGoodExtensions D HW)
+    (h23 : Formalism.MainNotions.LiftingTheory.adm23 D HW) (hC4 : Formalism.MainNotions.N.LetterConditionGlobal D HW) :
     Stmt D HW F Cm 25 CR CA CB CK :=
   stmt_of_lemmas D HW F Cm CR CA CB CK fun hA =>
     have hG : ∀ (l : ℕ) [Fact l.Prime] (K LL : Loc.FinExt l) (hg : Loc.Good K 1 LL)
@@ -1516,8 +1516,8 @@ theorem theorem_of_local_lemmas (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.lo
       rhoLift_of_Adm D HW F Cm hA⟩
 
 theorem theorem_of_literature_hypotheses (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
-    (CR CA CB CK : ℝ) (h23 : Formalism.MainNotions.LiftingTheory.adm23 D HW F) (hC4 : Formalism.MainNotions.N.LetterConditionGlobal D HW F)
-    (hHerr : Formalism.MainNotions.ElementDenominator.HerrClassNaturalExtension D.loc D.locA HW F) (a22 : Formalism.MainNotions.CrystallineLiftingBounds.adm22 D HW F)
+    (CR CA CB CK : ℝ) (h23 : Formalism.MainNotions.LiftingTheory.adm23 D HW) (hC4 : Formalism.MainNotions.N.LetterConditionGlobal D HW)
+    (hHerr : Formalism.MainNotions.ElementDenominator.HerrClassNaturalExtension D.loc D.locA HW) (a22 : Formalism.MainNotions.CrystallineLiftingBounds.adm22 D HW)
     (hFont : Formalism.MainNotions.InvariantsGenerators.LitFont D HW F) : Stmt D HW F Cm 25 CR CA CB CK :=
   theorem_of_local_lemmas D HW F Cm CR CA CB CK
     (fun hA => Formalism.MainNotions.RamifiedCoefficientChains.S9.LocalLemmasFromLiterature.local_lemmas_of_literature D HW F Cm hA h23 hHerr a22 hFont) h23 hC4

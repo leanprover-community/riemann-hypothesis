@@ -99,7 +99,7 @@ theorem resCmp1_with_representatives {G H : Type} [Group G] [TopologicalSpace G]
     (lam : ∀ v, Lv v →* G) (hlam : ∀ v, Continuous (lam v)) (φ : ∀ v, Hv v →ₜ* H)
     (ev : ∀ v, Hv v ≃* Lv v) (hev1 : ∀ v, Continuous (ev v)) (hev2 : ∀ v, Continuous (ev v).symm)
     (hev : ∀ v σ, θ (lam v (ev v σ)) = φ v σ) {R M : Type} [CommRing R] [AddCommGroup M] [Module R M]
-    [TopologicalSpace M] [DiscreteTopology M] (rho : Representation R G M) (hc : ContAction rho)
+    [TopologicalSpace M] [DiscreteTopology M] (rho : Representation R G M)
     (A : Rep.{0} (ULift.{0} ℤ) H) [IsDiscreteRep A] (eM : M ≃+ A.V)
     (hM : ∀ g m, eM (rho g m) = A.ρ (θ g) (eM m)) :
     ∃ (E : H1 rho ≃+ cohomology A 1)
@@ -171,7 +171,7 @@ theorem resCmp1' {G H : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup
     ∃ (E : H1 rho ≃+ cohomology A 1)
       (Ev : ∀ v, H1 (rho.comp (lam v)) ≃+ cohomology (Rep.res (φ v).toMonoidHom A) 1),
       ∀ v x, Ev v (resH1 rho (lam v) (hlam v) x) = ptRes φ A v 1 (E x) := by
-  obtain ⟨E, Ev, h, -, -⟩ := resCmp1_with_representatives θ lam hlam φ ev hev1 hev2 hev rho hc A eM hM
+  obtain ⟨E, Ev, h, -, -⟩ := resCmp1_with_representatives θ lam hlam φ ev hev1 hev2 hev rho A eM hM
   exact ⟨E, Ev, h⟩
 
 end PositivityTheory.Lit1.PTN

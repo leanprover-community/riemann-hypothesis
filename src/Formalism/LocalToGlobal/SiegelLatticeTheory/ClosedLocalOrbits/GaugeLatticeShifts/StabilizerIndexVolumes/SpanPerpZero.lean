@@ -71,7 +71,7 @@ theorem Pm_mul (hL : IsUnit L.det) (β γ : Matrix (Fin (r + 1)) (Fin (r + 1)) E
   simp only [Matrix.mul_assoc, Matrix.nonsing_inv_mul_cancel_left _ _ hL]
 
 theorem P'm_mul (hL : IsUnit L.det) (hZ : IsUnit (Formalism.MainNotions.S.Zhat F F').det)
-    {β γ : Matrix (Fin (r + 1)) (Fin (r + 1)) E} (hβ : IsUnit β.det) (hγ : IsUnit γ.det) :
+    {β γ : Matrix (Fin (r + 1)) (Fin (r + 1)) E} :
     P'm F F' L γ * P'm F F' L β = P'm F F' L (β * γ) := by
   simp only [P'm, Matrix.mul_inv_rev, Matrix.mul_assoc, Matrix.mul_nonsing_inv_cancel_left _ _ hZ,
     Matrix.nonsing_inv_mul_cancel_left _ _ hL]
@@ -91,10 +91,10 @@ def tw (hL : IsUnit L.det) (hZ : IsUnit (Formalism.MainNotions.S.Zhat F F').det)
     (UU (Pm L ((β⁻¹ : Matrix.GeneralLinearGroup _ E) : Matrix _ _ E))
       (P'm F F' L ((β⁻¹ : Matrix.GeneralLinearGroup _ E) : Matrix _ _ E)))
     (by
-      rw [UU_mul, Pm_mul hL, P'm_mul hL hZ (Matrix.isUnits_det_units _) (Matrix.isUnits_det_units _), ← Units.val_mul,
+      rw [UU_mul, Pm_mul hL, P'm_mul hL hZ, ← Units.val_mul,
         inv_mul_cancel, Units.val_one, Pm_one hL, P'm_one hL hZ, UU_one])
     (by
-      rw [UU_mul, Pm_mul hL, P'm_mul hL hZ (Matrix.isUnits_det_units _) (Matrix.isUnits_det_units _), ← Units.val_mul,
+      rw [UU_mul, Pm_mul hL, P'm_mul hL hZ, ← Units.val_mul,
         mul_inv_cancel, Units.val_one, Pm_one hL, P'm_one hL hZ, UU_one])
 
 variable {F F' L}
@@ -108,7 +108,7 @@ theorem tw_mul (hL : IsUnit L.det) (hZ : IsUnit (Formalism.MainNotions.S.Zhat F 
     tw F F' L hL hZ hG (β * γ) = tw F F' L hL hZ hG γ * tw F F' L hL hZ hG β := by
   ext v
   rw [LinearEquiv.mul_apply, tw_apply, tw_apply, tw_apply, sL_comp _ hG, UU_mul, Pm_mul hL,
-    P'm_mul hL hZ (Matrix.isUnits_det_units _) (Matrix.isUnits_det_units _), Units.val_mul]
+    P'm_mul hL hZ, Units.val_mul]
 
 theorem tw_one (hL : IsUnit L.det) (hZ : IsUnit (Formalism.MainNotions.S.Zhat F F').det) (hG : IsUnit (gramOf (gg F F')).det) :
     tw F F' L hL hZ hG 1 = 1 := by
@@ -152,7 +152,7 @@ theorem tw_frame' (hL : IsUnit L.det) (hZ : IsUnit (Formalism.MainNotions.S.Zhat
     tw F F' L hL hZ hG β (F'.fvec b) = ∑ c, P'm F F' L (β : Matrix (Fin (r + 1)) (Fin (r + 1)) E) c b • F'.fvec c := by
   rw [tw_apply, sL_frame' (hG := hG)]
 
-theorem tw_inj (hT : T ≠ 0) (hL : IsUnit L.det) (hZ : IsUnit (Formalism.MainNotions.S.Zhat F F').det)
+theorem tw_inj (hL : IsUnit L.det) (hZ : IsUnit (Formalism.MainNotions.S.Zhat F F').det)
     (hG : IsUnit (gramOf (gg F F')).det) {β : Matrix.GeneralLinearGroup (Fin (r + 1)) E}
     (h : tw F F' L hL hZ hG β = 1) : β = 1 := by
 
@@ -196,7 +196,7 @@ theorem tw_inj (hT : T ≠ 0) (hL : IsUnit L.det) (hZ : IsUnit (Formalism.MainNo
           Matrix.mul_one]
     _ = 1 := by rw [hLβ, Matrix.mul_one, Matrix.nonsing_inv_mul _ hL]
 
-theorem sL_perp (hG : IsUnit (gramOf (gg F F')).det)
+theorem sL_perp
     (X : Matrix (Fin (r + 1) ⊕ Fin (r + 1)) (Fin (r + 1) ⊕ Fin (r + 1)) E)
     {v : S.V} (hv : ∀ m, S.hT (gg F F' m) v = 0) : sL (gg F F') X v = v := by
   simp [sL, coordL, hv]
@@ -278,7 +278,7 @@ theorem tw_eq_of (hL : IsUnit L.det) (hZ : IsUnit (Formalism.MainNotions.S.Zhat 
     simp only [Matrix.mulVec, dotProduct, gramOf]
     rw [sub_eq_zero]
     exact Finset.sum_congr rfl fun k _ => mul_comm _ _
-  have hτq : τ q = q := sL_perp hG _ hqperp
+  have hτq : τ q = q := sL_perp _ hqperp
   have hsq : s q = q := by
     have hd := hsX q fun i => perp_span hqperp _ (e_mem_span i)
     have hdS : s q - q ∈ Sg := Submodule.span_le.2 (by rintro _ ⟨i, rfl⟩; exact e_mem_span i) hd

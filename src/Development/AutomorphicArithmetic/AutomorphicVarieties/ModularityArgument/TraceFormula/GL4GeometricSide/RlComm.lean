@@ -64,8 +64,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qg3.exists_sum.{u_1} :
-    ∀ {G : Type u_1} [inst : Group G]
-    [inst_1 : TopologicalSpace G] [IsTopologicalGroup G] [inst_3 : MeasurableSpace G] [BorelSpace G]
+    ∀ {G : Type u_1} [Group G]
+    [TopologicalSpace G] [IsTopologicalGroup G] [MeasurableSpace G] [BorelSpace G]
     (μ : MeasureTheory.Measure G) [MeasureTheory.IsFiniteMeasureOnCompacts μ] (K : Subgroup G),
     IsOpen (↑K : Set G) →
       IsCompact (↑K : Set G) →

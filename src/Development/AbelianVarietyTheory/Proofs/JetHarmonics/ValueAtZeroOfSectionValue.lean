@@ -180,7 +180,7 @@ theorem shift_explicit (hG : GlobalFnsSt) (hTW : TwistBCSpanStatement) (hVR : VR
     refine VGe.mono h2 (le_of_eq ?_)
     linarith [shift α]
   · intro hs' α
-    have hvi : v ζ⁻¹ = ((-qz : ℚ) : WithTop ℚ) := v_inv_coe (v := v) hζ hqz
+    have hvi : v ζ⁻¹ = ((-qz : ℚ) : WithTop ℚ) := v_inv_coe (v := v) hqz
     have h1 := VGe.smul (hs' (α + p.y)) (s' := t'.s (α + p.y)) (q := -qz) (ζ := ζ⁻¹) (le_of_eq hvi.symm) (fun j => by
       rw [hts (α + p.y) j, ← _root_.mul_assoc, ← constBF_mul, inv_mul_cancel₀ hζ, DVR.constBF_eq, map_one]
       simp [resTop])
@@ -239,7 +239,7 @@ theorem shift_explicit (hG : GlobalFnsSt) (hTW : TwistBCSpanStatement) (hVR : VR
           (gs (fst (TF (R := V) F) D.toPre.P.A).left y ⊤ ((Scheme.ΓSpecIso (CommRingCat.of F)).inv.hom (t α * lam)⁻¹) *
             ((val (eO α) ((jO hϖ hv).left ≫ (trO hϖ hv m⁻¹).left) y J)⁻¹ : _ˣ).val) * hAi)
       (r := r + (qz + ql - (Q p.y : ℚ) / k) + (Q (α + p.y) : ℚ) / k + -qz) (q := -qc)
-      (le_of_eq (v_inv_coe (v := v) (mul_ne_zero (ht0 α) hlam0) hqc).symm)
+      (le_of_eq (v_inv_coe (v := v) hqc).symm)
       h1
     refine VGe.mono h2 (le_of_eq ?_)
     have hqc' : qc = q α + ql := by
@@ -267,7 +267,7 @@ theorem exists_finite (hUU : UUStatement)
     intro h
     rw [h, AddValuation.map_zero] at hx
     exact WithTop.top_ne_coe hx
-  have hxi := v_inv_coe (v := v) hx0 hx
+  have hxi := v_inv_coe (v := v) hx
   have h2 := NuGe.smul Q (le_of_eq hxi.symm) ((ReciprocityTheory.ChartRestriction.G.DVR.isSmul_iff x⁻¹ (b i₀) _).2 rfl) h1
   rw [add_neg_cancel] at h2
   obtain ⟨c, hc, he⟩ := (hUU' _).1 h2

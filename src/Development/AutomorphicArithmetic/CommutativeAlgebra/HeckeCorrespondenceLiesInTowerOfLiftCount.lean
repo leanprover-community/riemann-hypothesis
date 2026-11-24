@@ -312,7 +312,6 @@ private theorem desc_etale {I : Type} {V W : Scheme.{0}} (s : V ⟶ W) [Etale s]
 private theorem fet_lift {I : Type} [Finite I] {ZM ZN Q Pw : Scheme.{0}} (s₁ : ZM ⟶ ZN) [IsFinite s₁] [Etale s₁]
     (π : ZN ⟶ Q) (f : Pw ⟶ Q) (κ : I → (ZM ⟶ Pw))
     [IsFinite (pullback.fst π f)] [Etale (pullback.fst π f)] (m : ℕ)
-    (hκ : ∀ c, s₁ ≫ π = κ c ≫ f)
     (hm : ∀ (K : Type) [Field K] [IsAlgClosed K] (z : Spec (CommRingCat.of K) ⟶ ZN) (ζ : Spec (CommRingCat.of K) ⟶ Pw),
       z ≫ π = ζ ≫ f →
       Nat.card {x : I × {v : Spec (CommRingCat.of K) ⟶ ZM // v ≫ s₁ = z} // x.2.1 ≫ κ x.1 = ζ} = m)
@@ -607,7 +606,7 @@ theorem UpperTheory.heckeCorrespondence_lies_in_tower_of_lift_count :
     rw [Sigma.ι_desc_assoc, Sigma.ι_desc_assoc]
     exact e2 cc
   exact ⟨Nat.pos_of_ne_zero fun h0 => hidxM (Subgroup.relIndex_eq_zero_of_le_right inf_le_left h0), Sigma.desc κc, e0, e3,
-    fet_lift tr1 (S.pi T C) (Lj.ksP k) κc _ e1 hm e0⟩
+    fet_lift tr1 (S.pi T C) (Lj.ksP k) κc _ hm e0⟩
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

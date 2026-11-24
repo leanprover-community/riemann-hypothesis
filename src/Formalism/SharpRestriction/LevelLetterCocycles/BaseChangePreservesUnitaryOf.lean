@@ -1523,7 +1523,7 @@ theorem lone_HOne0 (W : LocWach PD LL O v n) [FiniteDimensional Qp LL] : liftb_H
 
 end LiftOneW
 
-theorem lone_HOne0_holds (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l)
+theorem lone_HOne0_holds (D : D7) (HW : HWOf D.loc) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l)
     (h : Good K s LL) : liftb_HOne0 ((HW l).W K s LL h) := by
   have : FiniteDimensional ℚ_[l] ↥LL.1 := LL.2
   exact lone_HOne0 _
@@ -1624,7 +1624,7 @@ def linj_HMid (W : LocWach PD LL O v n) : Prop :=
 
 end LiftInj
 
-def linjMidOpen (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def linjMidOpen (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     linj_HMid ((HW l).W K s LL h)
 
@@ -2003,7 +2003,7 @@ theorem lext_HExt [IsTopologicalRing LL] [FiniteDimensional Qp LL] (W : LocWach 
 
 end LiftExt
 
-theorem lext_HExt_D (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l)
+theorem lext_HExt_D (D : D7) (HW : HWOf D.loc) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l)
     (h : Good K s LL) (h1 : IsCrys ((D.loc l).PD K) ((HW l).W K s LL h).one.ρ) :
     liftb_HExt ((HW l).W K s LL h) := by
   have : FiniteDimensional ℚ_[l] ↥LL.1 := LL.2
@@ -2331,7 +2331,7 @@ theorem lker_HKer [IsLocalRing O] (W : LocWach PD LL O v n) (hden : lker_Den LL 
 
 end LiftKer
 
-theorem lker_HKer_D (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (a22 : Formalism.MainNotions.CrystallineLiftingBounds.adm22 D HW F) (l : ℕ) [Fact l.Prime] (K : FinExt l)
+theorem lker_HKer_D (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (a22 : Formalism.MainNotions.CrystallineLiftingBounds.adm22 D HW) (l : ℕ) [Fact l.Prime] (K : FinExt l)
     (s : ℕ) (LL : FinExt l) (h : Good K s LL) : liftb_HKer ((HW l).W K s LL h) := by
   have := lkd_local (D.loc l) LL
   exact lker_HKer _ (lkd_den (D.loc l) LL) (a22 l K LL)
@@ -2499,7 +2499,7 @@ theorem lreg_HStr_of (W : LocWach PD LL O v n)
 
 end LiftReg
 
-theorem lreg_reg_D (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (l : ℕ) [Fact l.Prime] (K LL : FinExt l) :
+theorem lreg_reg_D (D : D7) (HW : HWOf D.loc) (l : ℕ) [Fact l.Prime] (K LL : FinExt l) :
     ∀ c : ↥(OL LL), ((((D.loc l).PD K).p : ℕ) : ↥(OL LL)) * c = 0 → c = 0 := by
   intro c hc
   rw [(D.loc l).PD_p K] at hc
@@ -2514,7 +2514,7 @@ theorem lreg_reg_D (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (l : �
 theorem lreg_HStr_D (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (a1 : adm1 D HW F) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ)
     (LL : FinExt l) (h : Good K s LL) (hC : lreg_HCompl ((HW l).W K s LL h)) :
     liftb_HStr ((HW l).W K s LL h) :=
-  lreg_HStr_of _ (lreg_reg_D D HW F l K LL) (a1 l K s LL h) hC
+  lreg_HStr_of _ (lreg_reg_D D HW l K LL) (a1 l K s LL h) hC
 
 end Formalism.MainNotions.LiftingTheory
 
@@ -2522,22 +2522,22 @@ namespace Formalism.MainNotions.LiftingTheory
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
-def liftBOpen (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def liftBOpen (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     liftb_HStr ((HW l).W K s LL h)
 
-def liftAOpen (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def liftAOpen (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     lifta_HStr ((HW l).W K s LL h)
 
 theorem liftb_HOne_holds (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l)
     (h : Good K s LL) : liftb_HOne ((HW l).W K s LL h) :=
-  ⟨(lone_HOne0_holds D HW F l K s LL h).1, (lone_HOne0_holds D HW F l K s LL h).2,
+  ⟨(lone_HOne0_holds D HW l K s LL h).1, (lone_HOne0_holds D HW l K s LL h).2,
     liftb_oneGen _ ((F l).E K s LL h).tie⟩
 
 theorem liftb_HExt_holds (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l)
     (h : Good K s LL) : liftb_HExt ((HW l).W K s LL h) :=
-  lext_HExt_D D HW F l K s LL h (lone_HOne0_holds D HW F l K s LL h).1
+  lext_HExt_D D HW l K s LL h (lone_HOne0_holds D HW l K s LL h).1
 
 end Formalism.MainNotions.LiftingTheory
 
@@ -2898,7 +2898,7 @@ namespace Formalism.MainNotions.LiftingTheory
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
-theorem hstr_ps_D (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (l : ℕ) [Fact l.Prime] (K LL : FinExt l) :
+theorem hstr_ps_D (D : D7) (HW : HWOf D.loc) (l : ℕ) [Fact l.Prime] (K LL : FinExt l) :
     IsAdicComplete (hstrI₀ ↥(OL LL) ((D.loc l).PD K).p) (PowerSeries ↥(OL LL)) := by
   rw [(D.loc l).PD_p K]
   have := phib_OL_complete LL
@@ -2908,14 +2908,14 @@ theorem hstr_CompleteB_D (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) 
     (LL : FinExt l) (h : Good K s LL) (T : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL))
     (hT : IsCrys ((D.loc l).PD K) T.ρ) : liftb_Complete ((HW l).W K s LL h) T := by
   have := liftb_neZero ((HW l).W K s LL h)
-  have := hstr_ps_D D HW F l K LL
+  have := hstr_ps_D D HW l K LL
   exact hstr_CompleteB _ T ((a1 l K s LL h) T hT)
 
 theorem hstr_HStr_D (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (a1 : adm1 D HW F) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ)
     (LL : FinExt l) (h : Good K s LL) : liftb_HStr ((HW l).W K s LL h) :=
   lreg_HStr_D D HW F a1 l K s LL h (fun T hT => hstr_CompleteB_D D HW F a1 l K s LL h T hT)
 
-theorem hstr_B (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (a1 : adm1 D HW F) : liftBOpen D HW F :=
+theorem hstr_B (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (a1 : adm1 D HW F) : liftBOpen D HW :=
   fun l _ K s LL h => hstr_HStr_D D HW F a1 l K s LL h
 
 end Formalism.MainNotions.LiftingTheory
@@ -3232,7 +3232,7 @@ theorem hstr_CompleteA_D (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) 
   obtain ⟨h9, hm⟩ := uniformizer_ring_and_module_clauses _ (a9 l K s LL h) hA T hT
   exact hstra_complete _ h9 T hm
 
-theorem hstr_A (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (a9 : adm9 D HW F) : liftAOpen D HW F :=
+theorem hstr_A (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (a9 : adm9 D HW F) : liftAOpen D HW :=
   fun l _ K s LL h hA T hT => hstr_CompleteA_D D HW F a9 l K s LL h hA T hT
 
 end Formalism.MainNotions.LiftingTheory
@@ -3688,7 +3688,6 @@ def lqb_HLeft (W : LocWach PD LL O v n) : Prop :=
 theorem coreLiftB_of' (W : LocWach PD LL O v n) (hp : PD.p = ℓ) (u : ℤ_[ℓ]ˣ)
     (hu : algebraMap ℤ_[ℓ] O (u : ℤ_[ℓ]) = ((W.χΓ W.gam : Oˣ) : O))
     (hv : PadicInt.valuation ((u : ℤ_[ℓ]) - 1) = W.s)
-    (Pt : ZMod n → LL → (K →ₐ[Qp] LL) → Prop)
     (h2 : Formalism.MainNotions.DeltaInvariantLattices.P2W W) (h5 : Formalism.MainNotions.DeltaInvariantLattices.P5W W) (h6 : Formalism.MainNotions.DeltaInvariantLattices.WachSaturationExactness W)
     (hcons : Formalism.MainNotions.DeltaInvariantLattices.GammaSemisimpleQuotient W) (h2b : Formalism.MainNotions.DeltaInvariantLattices.HerrComplexSecondProperty W) (h2c : Formalism.MainNotions.DeltaInvariantLattices.HerrComplexThirdProperty W)
     (h2d : Formalism.MainNotions.DeltaInvariantLattices.HerrComplexFourthProperty W) (hExtC : coreExt W) (hNat : W.ClNat)
@@ -3767,12 +3766,12 @@ theorem lqb_HLeft_holds (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (
   ⟨linj_map_inj _ ((F l).E K s LL h).tie ι π hses, linj_map_zero _ ((F l).E K s LL h).tie ι π hses⟩
 
 theorem lifting_case_B_of_hypotheses (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (a1 : adm1 D HW F) (a2 : adm2 D HW F) (a5 : adm5 D HW F) (a6 : adm6 D HW F) (a11 : adm11 D HW F)
-    (a13 : adm13 D HW F) (a14 : adm14 D HW F) (a15 : adm15 D HW F) (a17 : adm17 D HW F) (a21 : Formalism.MainNotions.CrystallineLiftingBounds.adm21 D HW F)
-    (a22 : Formalism.MainNotions.CrystallineLiftingBounds.adm22 D HW F) (a23 : Formalism.MainNotions.CrystallineLiftingBounds.adm23 D HW F) (hWB : WachKillsCaseB D HW F) : LiftTheoremCaseB D HW F := by
+    (a13 : adm13 D HW F) (a14 : adm14 D HW F) (a15 : adm15 D HW F) (a17 : adm17 D HW) (a21 : Formalism.MainNotions.CrystallineLiftingBounds.adm21 D HW)
+    (a22 : Formalism.MainNotions.CrystallineLiftingBounds.adm22 D HW) (a23 : Formalism.MainNotions.CrystallineLiftingBounds.adm23 D HW) (hWB : WachKillsCaseB D HW) : LiftTheoremCaseB D HW := by
   intro l _ K s LL h
   obtain ⟨z, hz, hzv⟩ := gam_zl (P := D.loc l) (H := HW l) h
   exact coreLiftB_of' (ℓ := l) ((HW l).W K s LL h) ((D.loc l).PD_p K) z hz
-    (by rw [(HW l).W_s]; exact hzv) (fun _ _ _ => True) (a2 l K s LL h) (a5 l K s LL h) (a6 l K s LL h)
+    (by rw [(HW l).W_s]; exact hzv) (a2 l K s LL h) (a5 l K s LL h) (a6 l K s LL h)
     (a11 l K s LL h) (a13 l K s LL h) (a14 l K s LL h) (a15 l K s LL h) (a17 l K s LL h)
     (a21 l K s LL h).1 (a23 l K LL) (hWB l K s LL h) (lker_HKer_D D HW F a22 l K s LL h)
     (lqb_HLeft_holds D HW F l K s LL h) (hstr_B D HW F a1 l K s LL h)
@@ -4116,9 +4115,9 @@ theorem coreLiftA_of' (W : LocWach PD LL O v n) (hp : PD.p = ℓ) (u : ℤ_[ℓ]
 end LqaLocal
 
 theorem lifting_case_A_of_admitted (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (a2 : adm2 D HW F) (a5 : adm5 D HW F) (a6 : adm6 D HW F) (a9 : adm9 D HW F)
-    (a13 : adm13 D HW F) (a14 : adm14 D HW F) (a15 : adm15 D HW F) (a18 : adm18 D HW F) (a19 : adm19 D HW F)
-    (a21 : Formalism.MainNotions.CrystallineLiftingBounds.adm21 D HW F) (a22 : Formalism.MainNotions.CrystallineLiftingBounds.adm22 D HW F) (a23 : Formalism.MainNotions.CrystallineLiftingBounds.adm23 D HW F)
-    (hWA : WachKillsCaseA D HW F) : LiftTheoremCaseA D HW F := by
+    (a13 : adm13 D HW F) (a14 : adm14 D HW F) (a15 : adm15 D HW F) (a18 : adm18 D HW) (a19 : adm19 D HW)
+    (a21 : Formalism.MainNotions.CrystallineLiftingBounds.adm21 D HW) (a22 : Formalism.MainNotions.CrystallineLiftingBounds.adm22 D HW) (a23 : Formalism.MainNotions.CrystallineLiftingBounds.adm23 D HW)
+    (hWA : WachKillsCaseA D HW) : LiftTheoremCaseA D HW := by
   intro l _ K s LL h
   obtain ⟨z, hz, hzv⟩ := gam_zl (P := D.loc l) (H := HW l) h
   exact coreLiftA_of' (ℓ := l) ((HW l).W K s LL h) ((D.loc l).PD_p K) z hz
@@ -4138,24 +4137,24 @@ namespace Formalism.MainNotions.LiftingTheory
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
-theorem opnJumpsQuot_holds (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (a22 : adm22 D HW F) (a23 : adm23 D HW F) : opnJumpsQuot D HW F :=
+theorem opnJumpsQuot_holds (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (a22 : adm22 D HW) (a23 : adm23 D HW) : opnJumpsQuot D HW :=
   opnJumpsQuot_of D HW F a23 (fun l _ K s LL h => lker_HKer_D D HW F a22 l K s LL h)
 
 theorem lifting_all_parts_of_admitted (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (h : admitted D HW F Cm) : LiftTheoremAllCases D HW F 23 32 32 := by
   obtain ⟨a1, a2, -, -, a5, a6, -, -, a9, -, a11, -, a13, a14, a15, a16, a17, a18, a19, a20, a21, a22,
     a23⟩ := h
-  have hB : LiftTheoremCaseB D HW F := lifting_case_B_of_hypotheses D HW F a1 a2 a5 a6 a11 a13 a14 a15 a17 a21 a22 a23
+  have hB : LiftTheoremCaseB D HW := lifting_case_B_of_hypotheses D HW F a1 a2 a5 a6 a11 a13 a14 a15 a17 a21 a22 a23
     (wach_statement_case_B D HW F a2 a16)
-  have hA : LiftTheoremCaseA D HW F := lifting_case_A_of_admitted D HW F a2 a5 a6 a9 a13 a14 a15 a18 a19 a21 a22 a23
+  have hA : LiftTheoremCaseA D HW := lifting_case_A_of_admitted D HW F a2 a5 a6 a9 a13 a14 a15 a18 a19 a21 a22 a23
     (wach_statement_case_A D HW F a9 a16)
   exact ⟨hA, hB, lifting_bracket_units_times_powers D HW F, lifting_exponent_shapes D HW F, lifting_descent_to_subfields D HW F hA hB a20⟩
 
 theorem local_parts_of_admitted (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (h : admitted D HW F Cm) :
-    ConclusionL D HW F ∧ ConclusionW D HW F ∧ WachAnnihilatorAll D HW F ∧ WachExponentRecursionAll D HW F ∧ WachResultConstant D HW F 10 ∧ ConclusionH D HW F ∧ ExistsUnitClasses D HW F ∧ LiftBracketR D HW F ∧
-      LiftExponentShapes D HW F 23 32 32 := by
+    ConclusionL D HW ∧ ConclusionW D HW F ∧ WachAnnihilatorAll D HW ∧ WachExponentRecursionAll D HW ∧ WachResultConstant D HW 10 ∧ ConclusionH D HW ∧ ExistsUnitClasses D HW ∧ LiftBracketR D HW ∧
+      LiftExponentShapes D HW 23 32 32 := by
   have a9 : adm9 D HW F := h.2.2.2.2.2.2.2.2.1
-  have a22 : adm22 D HW F := h.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1
-  have a23 : adm23 D HW F := h.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2
+  have a22 : adm22 D HW := h.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1
+  have a23 : adm23 D HW := h.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2
   have hW := wach_second_and_result_of_admitted D HW F Cm h (opnJumpsQuot_holds D HW F a22 a23)
   exact ⟨lattice_clause_every_situation D HW F, wach_statement_of_admitted D HW F Cm h, wach_first_clause_of_admitted D HW F Cm h, hW.1, hW.2, gamma_equation_clause_of_uniformizer D HW F a9,
     truncation_of_uniformizer_clause D HW F a9, lifting_bracket_units_times_powers D HW F, lifting_exponent_shapes D HW F⟩

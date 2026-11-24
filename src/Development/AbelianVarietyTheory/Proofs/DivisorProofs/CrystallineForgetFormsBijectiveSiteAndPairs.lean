@@ -814,7 +814,7 @@ def liftE (S : Thick κ t ⥤ Thick κ t) (u : 𝟭 _ ⟶ S) : EE κ t i ⥤ EE 
 
 def liftT (S : Thick κ t ⥤ Thick κ t) (u v : 𝟭 _ ⟶ S) : 𝟭 (EE κ t i) ⟶ liftE κ t i S u where
   app a := ⟨⟨v.app a.obj.T, le_rfl⟩⟩
-  naturality a b f := ObjectProperty.hom_ext _ (Subtype.ext (v.naturality f.hom.1))
+  naturality _ _ f := ObjectProperty.hom_ext _ (Subtype.ext (v.naturality f.hom.1))
 
 variable {κ t i}
 

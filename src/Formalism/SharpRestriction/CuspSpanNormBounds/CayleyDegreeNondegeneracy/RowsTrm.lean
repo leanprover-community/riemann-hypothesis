@@ -1031,7 +1031,7 @@ section Small2
 
 variable {D : D7} {large₂ : SizeData₂ D} {X : TermTie D} {u u' : D.what₂.Word} {C1 : ℝ} (Y : LoopTie D large₂ X u u' C1)
 
-theorem rowsT_min_le {ν T' t G κ K : ℝ} (hν : 0 < ν) (ht : 0 < t) (hG : 0 < G) (hκ : 0 < κ)
+theorem rowsT_min_le {ν T' t G κ K : ℝ} (hκ : 0 < κ)
     (h1 : K ≤ G * (T' * t)) (h2 : 1 ≤ K * κ) : min 1 (ν * t * G * κ) ≤ min ν T' * t * G * κ := by
   rcases le_total ν T' with h | h
   · rw [min_eq_left h]
@@ -1093,7 +1093,7 @@ theorem rowsT_Mt_small {C δ C₁ C₂ : ℝ} (hrd : 0 < D.host.rdE) (t : D.s.Te
     intro τ
     unfold ampMinF
     rw [ite_eq_right fun h => hD ((rows_Dr_zero_iff Y hrd t τ).1 h)]
-    refine rowsT_min_le (hν τ) (htv τ) hG0 hκ0 ((hlow τ).trans (le_of_eq ?_)) hKκ
+    refine rowsT_min_le hκ0 ((hlow τ).trans (le_of_eq ?_)) hKκ
     unfold tvPr
     rw [mul_div_cancel₀ _ hT'.ne']
   have nn : ∀ τ, 0 ≤ ampMinF D C δ τ u u' (Y.W τ).z (Y.W τ).z' (Y.γ t τ) := by

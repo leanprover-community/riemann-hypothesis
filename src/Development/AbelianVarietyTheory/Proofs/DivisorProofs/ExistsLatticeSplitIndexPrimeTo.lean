@@ -533,7 +533,7 @@ theorem exists_split_prime_to : ∀ (E : Type) [Field E] [NumberField E] [IsCMFi
   have hξ0 : ξ ≠ 0 :=
     div_ne_zero (mul_ne_zero hε0 (GlobalTheory.OneSpace.rt_ne H)) (mul_ne_zero (pow_ne_zero _ hΔE) hdE)
   obtain ⟨G, φ, hM⟩ := GlobalTheory.exists_herm_coord_of_datum E H D ξ hξ hξ0 _ rfl
-  obtain ⟨-, -, hint, hdual⟩ := rank_integral_selfDual E H D _ ξ G φ hξ hM
+  obtain ⟨-, -, hint, hdual⟩ := rank_integral_selfDual E H D _ ξ G φ hM
   have hsig : ∀ τ : E →+* ℂ, ∃ Q : Matrix (Fin (D.p + D.q)) (Fin (D.p + D.q)) ℂ, Q.det ≠ 0 ∧
       FD.gram τ G Q = Matrix.diagonal fun a : Fin (D.p + D.q) => ((FD.sgn D.p (a : ℕ) : ℝ) : ℂ) := by
     have key : ∀ τ : E →+* ℂ, τ (H.rt : E) = H.rt0 → _ := fun τ hτ =>

@@ -1134,7 +1134,7 @@ theorem monomial_mul_apply {n : ℕ} {t : Equiv.Perm (Fin n)} {Y : GL (Fin n) L}
     rw [hY i l (fun h => hl (by rw [h]; simp)), zero_mul]
   · simp
 
-theorem heisM_mul_opp {n : ℕ} {i j k : Fin n} (hij : i ≠ j) (hjk : j ≠ k) (hik : i ≠ k) (b d c y x z : L)
+theorem heisM_mul_opp {n : ℕ} {i j k : Fin n} (hjk : j ≠ k) (b d c y x z : L)
     (h1 : 1 + b * x + c * z = 0) (h2 : b + c * y = 0) (h3 : x + d * z = 0) (s t : Fin n) :
     (heisM i j k b d c * heisM k j i y x z) s t = (if s = t then 1 else 0) - (if i = s ∧ i = t then 1 else 0) +
       (if i = s ∧ k = t then c else 0) + (if j = s ∧ j = t then d * y else 0) + (if j = s ∧ k = t then d else 0) +
@@ -1298,7 +1298,7 @@ theorem value_point : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicati
   have hyK : (y : GL (Fin n) L) ∈ GLint (Fin n) (intL L) := hy.2
   have hyiw := IsWeylRep.inv hyw
   set M : Matrix (Fin n) (Fin n) L := heisM a m a' b d c * heisM a' m a (-b / c) (-d / σ c) (σ c)⁻¹ with hMdef
-  have hM := heisM_mul_opp ham hma' haa' b d c (-b / c) (-d / σ c) (σ c)⁻¹
+  have hM := heisM_mul_opp hma' b d c (-b / c) (-d / σ c) (σ c)⁻¹
     (by field_simp; linear_combination hσc) (by field_simp; ring) (by field_simp; ring)
   rw [← hMdef] at hM
   have hP : ∀ i j, (((Pb : GU σ n) : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) i j =

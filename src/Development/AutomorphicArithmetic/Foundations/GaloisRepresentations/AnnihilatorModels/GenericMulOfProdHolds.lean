@@ -121,7 +121,7 @@ private theorem partIn (hIn : CountIn) {k H P : Type} [Field k] [AddCommGroup H]
     rfl
 
 open Classical in
-private theorem partZero (hIn : CountIn) {k H : Type} [Field k] [AddCommGroup H] [Module k H]
+private theorem partZero {k H : Type} [Field k] [AddCommGroup H] [Module k H]
     [Module.Finite k H] (C : Submodule k H) (hC : Module.finrank k C = 1)
     [Fintype (Submodule k H)] :
     (Finset.univ.filter fun D : Submodule k H => Module.finrank k D = 0).filter
@@ -217,7 +217,7 @@ theorem UpperTheory.Gal.crystallineComparison.ordDecomp_of :
     omega
   · rw [key 0]
     simp only [Fin.val_zero]
-    have h0 := partZero hIn C hC
+    have h0 := partZero C hC
     have h1 := partOut hIn hOut C hC (fun E => ({A' E} : Multiset P)) 0
     simp only [pow_zero, one_smul] at h1
     convert congrArg₂ (· + ·) (congrArg (fun s => ∑ D ∈ s, ({F (A' (D.map C.mkQ))} : Multiset P)) h0) h1

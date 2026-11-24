@@ -76,7 +76,7 @@ theorem qb_le_pf {L : Lev R m} (hL : L.Good) (M : Model l K) (s : ℕ) :
   intro T hT
   obtain ⟨⟨h1, h2⟩, V, hV, hU⟩ := hT
   have hu : IsUnit ((l : ℕ) : T.B) := by
-    have := (unit_B_pf (R := R) hL).map T.i
+    have := (unit_B_pf (R := R)).map T.i
     simpa using this
   obtain ⟨u, hu'⟩ := hu
   refine ⟨⟨h1, fun r (x : T.B) hx => ?_⟩, ⊤, Set.mem_singleton _, ?_⟩
@@ -212,7 +212,7 @@ theorem cg_basis_pdP {L : Lev R m} (hL : L.Good) : pdP L.γB m = ⊥ := by
   rw [(hL.lat m le_rfl).tf.nil, Ideal.map_bot] at h
   exact le_bot_iff.1 h
 
-theorem cg_basis_empty {L : Lev R m} (hL : L.Good) (M : Model l K) (hM : M.Sm) (s : ℕ) (U : Cov M.q)
+theorem cg_basis_empty {L : Lev R m} (M : Model l K) (s : ℕ) (U : Cov M.q)
     (hU0 : IsEmpty U.ι) (j : ℕ) {a : ℕ} (bs : Module.Basis (Fin a) K (HdR M.q j)) (w : HO (QB L M s) j) :
     ∃! g : Fin a → L.B, w = ∑ t, g t • muB L.γB M.q 1 s {⊤} j (bs t) := by
   have hX : IsEmpty M.gen := by
@@ -234,7 +234,7 @@ theorem cg_basis_pf {L : Lev R m} (hL : L.Good) (M : Model l K) (hM : M.Sm) (s :
     (j : ℕ) {a : ℕ} (bs : Module.Basis (Fin a) K (HdR M.q j)) (w : HO (QB L M s) j) :
     ∃! g : Fin a → L.B, w = ∑ t, g t • muB L.γB M.q 1 s {⊤} j (bs t) := by
   rcases isEmpty_or_nonempty U.ι with h0 | h1
-  · exact cg_basis_empty hL M hM s U h0 j bs w
+  · exact cg_basis_empty M s U h0 j bs w
   · obtain ⟨α⟩ := h1
     have hms : m ≤ s := le_trans (Nat.le_add_left _ _) (hU α)
     exact (basisB L.γB s m (cg_basis_pdP hL) hms M.q U hU {⊤} sSup_singleton j bs).1 w
@@ -270,7 +270,7 @@ theorem level_system_good [FiniteDimensional ℚ_[l] K] (hM : M.Sm) (U : Cov M.q
     (hr : ∀ n j x, trM (QA L M s) none (l : L.A) n j (rH (n + 1) j x) = rH n j ((M.HS false j).r n x)) :
     (chainOf hL M s (qb_le_pf hL M s) rH).Good := by
   refine
-    { unit := unit_B_pf (l := l) hL
+    { unit := unit_B_pf (l := l)
       fin := fun j => (m_fin M hM j).1
       basis := fun j _ bs w => cg_basis_pf hL M hM s U hU j bs w
       r_tr := hr
@@ -290,7 +290,7 @@ theorem level_system_good [FiniteDimensional ℚ_[l] K] (hM : M.Sm) (U : Cov M.q
     rw [LinearMap.map_smulₛₗ] at h1
     have hu : IsUnit ((L.ι ((l : L.A) ^ e)) : L.B) := by
       rw [map_pow, map_natCast]
-      exact (unit_B_pf hL).pow e
+      exact (unit_B_pf).pow e
     exact hu.smul_left_cancel.1 (by rw [smul_zero]; exact h1)
 
 end

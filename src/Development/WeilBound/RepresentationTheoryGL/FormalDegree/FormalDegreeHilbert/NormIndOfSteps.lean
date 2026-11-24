@@ -278,12 +278,12 @@ theorem gapNorm_of (hD : DegPsi) : GapNorm := by
     obtain ⟨T'⟩ := HW.kType_exists ε μ' hμ'
     obtain ⟨m', -, hP'⟩ := fdc_model hp hq hμ' hg' hh T'
     exact ⟨T', _, hP'⟩
-  have hdeg := fdCons_cd hp hq hlam hgap hh hΨ hDS hx
+  have hdeg := fdCons_cd hp hq hlam hgap hh hDS hx
   rw [fdegOf_of_isFdeg' hd hx] at hdeg
   subst hdeg
   set C : ℝ := ‖uniformisationL2 ε (PsiM T μ) T.w T.w‖ ^ 2 with hC
   have hC0 : 0 < C := by
-    have := datumEmbedding_highest_ne_zero hgap' hP hw
+    have := datumEmbedding_highest_ne_zero hP hw
     positivity
   have h1 : (1 : Matrix (Fin n) (Fin n) ℂ) ∈ UJset ε := umat_mem_UJset ε 1
   refine hD n ε T.V (PsiM T μ) (Hlam ε (PsiM T μ) T.w) (sigLam ε (PsiM T μ) T.w)

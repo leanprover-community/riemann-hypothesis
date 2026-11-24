@@ -519,7 +519,7 @@ theorem lintegral_chartS_of_unitary (F E : Type) [Field F] [NumberField F] [Fiel
   obtain ⟨i₁, i₂, i₃, i₄, -⟩ := id hR
   obtain ⟨k₁, k₂, k₃, k₄, -, -, -, hBorel, -⟩ := _root_.GlobalTheory.CompanionTheory.SW.TopK.topTens_props F E σ hCM R
   obtain ⟨hK, hW, -⟩ := _root_.GlobalTheory.CompanionTheory.SW.coord_measures_haar F E σ hCM R d b lam hlam
-  have hJ' := (_root_.GlobalTheory.CompanionTheory.WeilSiegel.HypStep.hypOne_isHermND_and_e0_mem F E σ hCM M J hJ).1
+  have hJ' := (_root_.GlobalTheory.CompanionTheory.WeilSiegel.HypStep.hypOne_isHermND_and_e0_mem F E σ M J hJ).1
   have : SigmaFinite (coordK R b lam) := inferInstance
   have hBK : BorelSpace (R ⊗[F] E) := ⟨rfl⟩
   have hBt := hBorel 1 n

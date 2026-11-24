@@ -94,7 +94,7 @@ theorem e0_mem_framesE {F E : Type} [Field F] [Field E] [Algebra F E] (σ : E �
     simp [gramE, hE, hform, e0, Fin.sum_univ_succ, hypOne_zero_zero]
 
 theorem hypOne_isHermND_and_e0_mem (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E]
-    [Algebra F E] (σ : E →ₐ[F] E) (_hσ : IsCMExt F E σ) (M : ℕ) (J : Matrix (Fin M) (Fin M) E)
+    [Algebra F E] (σ : E →ₐ[F] E) (M : ℕ) (J : Matrix (Fin M) (Fin M) E)
     (hJ : IsHermND σ J) :
     IsHermND σ (hypOne J) ∧ e0 E M ∈ framesE σ (hypOne J) (0 : Matrix (Fin 1) (Fin 1) E) :=
   ⟨isHermND_hypOne σ hJ, e0_mem_framesE σ J⟩

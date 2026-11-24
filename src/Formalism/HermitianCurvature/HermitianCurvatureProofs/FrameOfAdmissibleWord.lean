@@ -85,7 +85,7 @@ lemma comm_inv {x xi g : B} (h1 : x * xi = 1) (h2 : xi * x = 1) (h : Commute x g
 
 lemma core (F Fi d τ τi τ' τi' l RR T00 T01 T10 T11 U10 U11 : B) (q : ℂ)
     (hRR : RR = star F * d * F) (hF : F * Fi = 1) (hF' : Fi * F = 1)
-    (hdτ : star (d * τ) = d * τ) (hτ : τi * τ = 1) (hτ1 : τ' * τi' = 1) (hτ2 : τi' * τ' = 1)
+    (hdτ : star (d * τ) = d * τ) (hτ : τi * τ = 1) (hτ1 : τ' * τi' = 1)
     (h11 : F * T11 = τ * F) (h10 : F * T10 = τ * l * F) (hU : F * U11 = τ' * F)
     (herm : star (RR * T10) = RR * T01)
     (quantum_determinant_shifted : T00 * U11 - T01 * U10 = q • (1 : B)) (upper_block_det_one : T10 * U11 = T11 * U10) :
@@ -357,7 +357,7 @@ theorem gaussFormPlus (L : LevelData A r) (f : FrameData S A) (a : S) (Ya : ℂ)
   obtain ⟨e11, e10, e01, e00⟩ := core f.F f.Fi (f.d L) (io L.GG * f.x Ya) (io L.GGi * f.xi Ya)
     (io L.GG * f.x (Ya + 1)) (io L.GGi * f.xi (Ya + 1)) (f.l L Ya) f.RR (f.TT Ya 0 0) (f.TT Ya 0 1) (f.TT Ya 1 0)
     (f.TT Ya 1 1) (f.TT (Ya + 1) 1 0) (f.TT (Ya + 1) 1 1) (f.q Ya) h.form h.F_Fi h.Fi_F hdτ (hinv1 Ya hYa)
-    (hinv2 _ hYa1) (hinv1 _ hYa1) (h.frame_τ Ya rYa) (h.frame_l Ya hYa hYa1) (h.frame_τ _ rYa1) herm quantum_determinant_shifted upper_block_det_one
+    (hinv2 _ hYa1) (h.frame_τ Ya rYa) (h.frame_l Ya hYa hYa1) (h.frame_τ _ rYa1) herm quantum_determinant_shifted upper_block_det_one
 
   have fl := free_l L f hfree Ya
   have fd := free_d L f hfree

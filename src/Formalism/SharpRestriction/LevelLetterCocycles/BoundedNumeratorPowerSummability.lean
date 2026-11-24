@@ -993,7 +993,7 @@ theorem killerModule_of_stable (h : Pi0Stable W) : KillerMod W := by
 end KillerBridge
 
 theorem killer_conditions_of_stable (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
-    (h : AtCaseA fun l _ K LL h => Pi0Stable ((HW l).W K 1 LL h.2.2)) : adm11 D HW F :=
+    (h : AtCaseA fun l _ K LL h => Pi0Stable ((HW l).W K 1 LL h.2.2)) : adm11 D HW :=
   ⟨Formalism.WindowSums.arc_KillerVal, _root_.Formalism.WindowSums.annihilatorPoly_kills,
     fun l _ K LL hc h5 => killerModule_of_stable _ (h l K LL hc h5)⟩
 

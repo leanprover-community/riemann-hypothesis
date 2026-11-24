@@ -353,7 +353,7 @@ theorem isAdd_of_points (hGF : GlobalFnsSt) {T : Over (Spec (CommRingCat.of (R �
   · rw [hb, hb', hb'']
     exact im_mul g x x'
   · refine DVR.corr_trans D.P.isLB (DVR.corr_mulGen (hs'' χ)
-      (DVR.corr_pullGen_of_eq (φ := thφ D.P.A (x3 D.P.A)) (ε := thε) D.cub.t D.cub.isGen _ _ ?_))
+      (DVR.corr_pullGen_of_eq (φ := thφ D.P.A (x3 D.P.A)) (ε := thε) D.cub.t _ _ ?_))
       (DVR.corr_trans D.P.isLB (t_mul_points g hGF x x' χ)
         (DVR.corr_symm (DVR.corr_mulGen (hs χ) (hs' χ))))
     rw [hb, hb']

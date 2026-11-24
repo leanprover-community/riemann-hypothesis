@@ -112,7 +112,7 @@ theorem coordInv_coordF (y : k ⊗[F] Fld P) : coordInv P k (fun i => coordF P k
 
 def coordEquiv : (k ⊗[F] Fld P) ≃ₗ[k ⊗[F] E] (Fin r → k ⊗[F] E) where
   toFun y i := coordF P k i y
-  map_add' y y' := funext fun i => map_add _ _ _
+  map_add' _ _ := funext fun _ => map_add _ _ _
   map_smul' c y := funext fun i => coordF_smul P k i c y
   invFun := coordInv P k
   left_inv y := coordInv_coordF P k y

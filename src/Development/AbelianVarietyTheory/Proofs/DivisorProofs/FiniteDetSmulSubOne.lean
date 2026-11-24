@@ -239,7 +239,7 @@ theorem card_perp (hadd : ∀ x y z, β (x + y) z = β x z * β y z) (hsym : ∀
     rw [hf, Finset.sum_const, nsmul_eq_mul]
   exact_mod_cast h2.symm.trans h1
 
-theorem quad_add {w : R} (hσ : ∀ r, σ (σ r) = r) (hw : w + σ w = 1)
+theorem quad_add {w : R} (hw : w + σ w = 1)
     (hadd : ∀ x y z, β (x + y) z = β x z * β y z) (hsym : ∀ x y, β x y = β y x)
     (hadj : ∀ (r : R) x y, β (r • x) y = β x (σ r • y)) (y z : M) :
     β (w • (y + z)) (y + z) = β (w • y) y * β (w • z) z * β z y := by
@@ -302,7 +302,7 @@ private theorem sum_pts_eq_sum_pts_orth {w : R} (hσ : ∀ r, σ (σ r) = r) (hw
     intro y _
     have e : ∀ n ∈ pts N, β (w • (y + n)) (y + n) = β (w • y) y * β y n := by
       intro n hn
-      rw [quad_add hσ hw hadd hsym hadj, hQ n (mem_pts.mp hn), mul_one, hsym n y]
+      rw [quad_add hw hadd hsym hadj, hQ n (mem_pts.mp hn), mul_one, hsym n y]
     rw [Finset.sum_congr rfl e, ← Finset.mul_sum, sum_char N (β y) (hr y)]
   apply mul_left_cancel₀ hN0
   calc ((pts N).card : ℂ) * ∑ y ∈ pts B, β (w • y) y
@@ -383,7 +383,7 @@ theorem gauss_fin {w : R} (hσ : ∀ r, σ (σ r) = r) (hw : w + σ w = 1) {lam 
     have hQN : ∀ z ∈ N, β (w • z) z = 1 := by
       intro z hz
       obtain ⟨c, hc, a, rfl⟩ := hmemN z hz
-      rw [quad_add hσ hw hadd hsym hadj, hQC c hc, one_mul, hsym (a • x) c,
+      rw [quad_add hw hadd hsym hadj, hQC c hc, one_mul, hsym (a • x) c,
         hC1 c hc _ (B.smul_mem a hxB), mul_one, smul_smul, hadj, smul_smul]
       exact hiso _
     obtain ⟨m, hm⟩ := card_pts_dvd hNN'
@@ -517,7 +517,7 @@ theorem gauss_fin {w : R} (hσ : ∀ r, σ (σ r) = r) (hw : w + σ w = 1) {lam 
       rw [← hsupB, sum_sup hP', Finset.sum_comm, Finset.sum_mul_sum]
       refine Finset.sum_congr rfl fun d hd => Finset.sum_congr rfl fun q' _ => ?_
       have hdN' := mem_pts.mp hd
-      rw [quad_add hσ hw hadd hsym hadj, hsym ((Quotient.out q' : R) • x) d,
+      rw [quad_add hw hadd hsym hadj, hsym ((Quotient.out q' : R) • x) d,
         ((hN' d).mp hdN').2 _ (N.smul_mem _ hxN), mul_one]
       congr 1
       simp only [χ]

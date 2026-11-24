@@ -5252,7 +5252,7 @@ theorem g_simple_kill {A B : Submodule (𝓞 E) W} {P₀ : Ideal (𝓞 E)}
   exact h0
 
 theorem g_simple_len {A B : Submodule (𝓞 E) W} {P₀ : Ideal (𝓞 E)} (hP : P₀.IsMaximal) [P₀.IsPrime]
-    (hBA : B ≤ A) (e : (A ⧸ B.comap A.subtype) ≃ₗ[𝓞 E] (𝓞 E ⧸ P₀)) : locLen P₀ A B = 1 := by
+    (e : (A ⧸ B.comap A.subtype) ≃ₗ[𝓞 E] (𝓞 E ⧸ P₀)) : locLen P₀ A B = 1 := by
   have hA : A ≤ localization₂ P₀ A := locBasic_le_locS _ A
   have hB : B ≤ localization₂ P₀ B := locBasic_le_locS _ B
   let φ : (A ⧸ B.comap A.subtype) →ₗ[𝓞 E] (↥(localization₂ P₀ A) ⧸ (localization₂ P₀ B).comap (localization₂ P₀ A).subtype) :=
@@ -5378,7 +5378,7 @@ theorem g_Psi_eq : ∀ A B : Submodule (𝓞 E) W, A.FG → g_Comm A B → B ≤
     let Q : HeightOneSpectrum (𝓞 E) := ⟨P₀, hP₀.isPrime, hne⟩
     unfold g_Psi
     rw [finprod_eq_single _ Q]
-    · have : locLen Q.asIdeal A B' = 1 := g_simple_len (P₀ := Q.asIdeal) hP₀ hB'A e
+    · have : locLen Q.asIdeal A B' = 1 := g_simple_len (P₀ := Q.asIdeal) hP₀ e
       rw [this, pow_one]
       have hc : g_idx A B' = Nat.card (𝓞 E ⧸ P₀) := Nat.card_congr e.toEquiv
       rw [hc, Ideal.absNorm_apply, Submodule.cardQuot_apply]
@@ -7068,7 +7068,7 @@ theorem j_hadamard2 (e : ℕ) (K : Matrix (Fin e) (Fin e) ℂ) (h : ∀ j, ∑ i
 variable {E : Type} [Field E] [StarRing E]
 
 theorem j_arch (τ : E →+* ℂ) (hτ : ∀ x : E, τ (star x) = starRingEnd ℂ (τ x)) {e : ℕ}
-    (a c : Fin e → E) (ra rc : Fin e → ℝ) (ha : ∀ i, τ (a i) = (ra i : ℂ)) (hc : ∀ i, τ (c i) = (rc i : ℂ))
+    (a c : Fin e → E) (ra rc : Fin e → ℝ) (ha : ∀ i, τ (a i) = (ra i : ℂ))
     (pa : ∀ i, 0 < ra i) (pc : ∀ i, 0 < rc i) (B : Matrix (Fin e) (Fin e) E)
     (hb : ∀ (x : Fin e → E) (j : Fin e), ‖τ (∑ i, star (x i) * B i j)‖ ≤
       2 * Real.sqrt (∑ i, ‖τ (x i)‖ ^ 2 * ra i) * Real.sqrt (rc j)) :
@@ -7308,7 +7308,7 @@ theorem j_factor (hS : StarConj E) {u w : Fin e → S.V}
       ‖τ (Matrix.diagonal (fun i => (S.hT (w i) (w i))⁻¹) * B.conjTranspose).det‖ ≤ 4 ^ e := by
   have h := j_arch τ (hS τ) (fun i => S.hT (u i) (u i)) (fun i => S.hT (w i) (w i))
     (fun i => nrm S τ (u i)) (fun i => nrm S τ (w i)) (fun i => c_nrm_real hS τ (u i))
-    (fun i => c_nrm_real hS τ (w i)) (hpu τ) (hpw τ) B (hbd τ)
+    (hpu τ) (hpw τ) B (hbd τ)
   have P1 : 0 < ∏ i, nrm S τ (u i) := Finset.prod_pos fun i _ => hpu τ i
   have P2 : 0 < ∏ i, nrm S τ (w i) := Finset.prod_pos fun i _ => hpw τ i
   have n1 : ∀ v : Fin e → S.V, (∀ i, 0 < nrm S τ (v i)) →
@@ -8099,7 +8099,7 @@ theorem k_real (Tr A B C Sx n a : ℝ) (hT : 0 ≤ Tr) (hA : 0 ≤ A) (hB : 0 �
     _ = Tr * A ^ 2 + Tr * B ^ 2 + 2 * (Tr * A * B) := by ring
     _ = (C + Sx) ^ 2 * n := by rw [h1, h2, h4]; ring
 
-theorem k_normal (_hc : StarConj E) (hΛ : Submodule.IsFullLattice E Λ) (hz : F.zt = F.fl.z)
+theorem k_normal (hΛ : Submodule.IsFullLattice E Λ) (hz : F.zt = F.fl.z)
     (hz' : F'.zt = F'.fl.z) (hz'' : F''.zt = F''.fl.z) (hG'' : Gval F F'' ≠ 0)
     (hP : IsPair Λ F F' F'' β g) (hPos : PosX F) {x : S.V} (hx : x ∈ radL Λ F F' F'' β) :
     ∃ th ∈ Hp Λ F F'', ∃ y ∈ Ylift Λ F F'', ∃ y'' ∈ Ylift' Λ F F'', x = th + y ∧ β x = th + y'' ∧
@@ -8121,7 +8121,7 @@ theorem k_arch (hc : StarConj E) (hΛ : Submodule.IsFullLattice E Λ) (hT : 0 < 
     (hP : IsPair Λ F F' F'' β g) (hPos : PosX F) (hPos'' : PosX F'') {f : S.V →ₗ[E] E}
     (hf : k_IsZc F F'' f) {x : S.V} (hx : x ∈ radL Λ F F' F'' β) (τ : E →+* ℂ) :
     (T : ℝ) * ‖τ (k_al f β x)‖ ^ 2 ≤ onePlusChSh T T' F F'' τ ^ 2 * nrm S τ x := by
-  obtain ⟨th, hth, y, hy, y'', hy'', e1, e2, hn⟩ := k_normal hc hΛ hz hz' hz'' hG'' hP hPos hx
+  obtain ⟨th, hth, y, hy, y'', hy'', e1, e2, hn⟩ := k_normal hΛ hz hz' hz'' hG'' hP hPos hx
   obtain ⟨hn1, hn2⟩ := hn τ
   obtain ⟨p1, hp1, -⟩ := lemma_two_unique_pair Λ hΛ F F'' hz hz'' hG'' y hy 0 (zero_mem _)
   obtain ⟨p2, hp2, -⟩ := lemma_two_unique_pair Λ hΛ F F'' hz hz'' hG'' 0 (zero_mem _) y'' hy''
@@ -8151,7 +8151,7 @@ theorem k_ker (hc : StarConj E) (hΛ : Submodule.IsFullLattice E Λ) (hT' : 0 < 
   obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
   have hU' := a_HU Λ hΛ F F' hz hz'
   have hU'' := a_HU Λ hΛ F F'' hz hz''
-  obtain ⟨th, hth, y, hy, y'', hy'', e1, e2, hn⟩ := k_normal hc hΛ hz hz' hz'' hG'' hP hPos hx
+  obtain ⟨th, hth, y, hy, y'', hy'', e1, e2, hn⟩ := k_normal hΛ hz hz' hz'' hG'' hP hPos hx
   obtain ⟨p, hp, -⟩ := lemma_two_unique_pair Λ hΛ F F'' hz hz'' hG'' y hy y'' hy''
   have a1 := k_zc_sg hf hz hz'' hp
   have exy : x - β x = y - y'' := by

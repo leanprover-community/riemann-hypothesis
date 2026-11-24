@@ -263,7 +263,7 @@ theorem polynomial_radial_base_holds : PolynomialRadialAtSectionOfPhaseInvarianc
   have hPπ : ∀ ζ ∈ Gauge.GC.Ann P, (Pr π (SSn.nu0 P.k P.r Bs.z Bs.z' Bs.μsec ζ)).comp Eπ = Eπ :=
     fun ζ hζ => by rw [hKL ζ hζ Eπ (hEπFa ζ hζ) π, hEπQ]
 
-  have hRB : NF.RadBase P.k P.r Bs.z Bs.z' Bs.μsec Bs.π Bs.π' := Gauge.GC.radBase_of P Bs hpl
+  have hRB : NF.RadBase P.k P.r Bs.z Bs.z' Bs.μsec Bs.π Bs.π' := Gauge.GC.radBase_of P Bs
   have hsecπ : ((NF.QR P.k P.r Bs.z Bs.z').indicator fun _ : (Fin P.r → ℂ) × ℂ => Eπ) ∈
       NF.RadSec P.k P.r Bs.z Bs.z' Bs.μsec Bs.π Bs.π' := by
     refine ⟨(contDiffOn_const (c := Eπ)).congr fun q hq => by simp [Set.indicator_of_mem hq], fun q hq => ?_,
@@ -1206,7 +1206,7 @@ theorem kappa_line_holds : KapLine := by
   have hνW : inWb P.k P.r ν := by
     show inWb P.k P.r (SSn.unitH P.k P.r (SSn.prWv P.k P.r Bs.z (μ *ᵥ Bs.z')))
     unfold SSn.unitH
-    exact Qx8.inWb_smul (DU.prWv_inWb hz hy) _
+    exact Qx8.inWb_smul (DU.prWv_inWb hz) _
   have hνz : herm (Hpk P.k P.r) ν Bs.z = 0 := by
     rw [← hνfix]; exact DU.prWv_perp hT hνW
   obtain ⟨Fr, hFr⟩ := Topx1.typ_frame_exists P.k P.r (by omega) Bs.z ν hz hT hνW hνz hνν
@@ -1651,7 +1651,7 @@ theorem nu0'_facts (Bs : B.RealPlaceData (n + 1) r Wp Wq) {ζ : ℂ}
   have hW : inWb (n + 1) r (SSn.nu0' (n + 1) r Bs.z Bs.z' Bs.μsec ζ) := by
     show inWb (n + 1) r (SSn.unitH (n + 1) r (SSn.prWv (n + 1) r Bs.z' ((NF.muZ (n + 1) r Bs.μsec ζ)⁻¹ *ᵥ Bs.z)))
     unfold SSn.unitH
-    exact Qx8.inWb_smul (DU.prWv_inWb hz' hy) _
+    exact Qx8.inWb_smul (DU.prWv_inWb hz') _
   refine ⟨hW, ?_, hFr'.1, hFr'.2.1, fun a w hw => ?_⟩
   · rw [← hfix]; exact DU.prWv_perp Bs.T'_pos hW
   · simp only [List.mem_cons, List.not_mem_nil, or_false] at hw
@@ -1785,7 +1785,7 @@ theorem core (hAlg : TW.TWNeAlg) {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerPr
   have hνW : inWb (n + 1) r (SSn.nu0 (n + 1) r Bs.z Bs.z' Bs.μsec ζ) := by
     show inWb (n + 1) r (SSn.unitH (n + 1) r (SSn.prWv (n + 1) r Bs.z (NF.muZ (n + 1) r Bs.μsec ζ *ᵥ Bs.z')))
     unfold SSn.unitH
-    exact Qx8.inWb_smul (DU.prWv_inWb hz hy) _
+    exact Qx8.inWb_smul (DU.prWv_inWb hz) _
   have hνz : herm (Hpk (n + 1) r) (SSn.nu0 (n + 1) r Bs.z Bs.z' Bs.μsec ζ) Bs.z = 0 := by
     rw [← hνfix]; exact DU.prWv_perp hT hνW
   obtain ⟨Fr, hFr⟩ := exists_frame_two n r Bs.z _ hz hT hνW hνz hνν

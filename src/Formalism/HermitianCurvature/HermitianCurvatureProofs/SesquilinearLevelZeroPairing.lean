@@ -198,7 +198,7 @@ def Ucls (K0 : Submodule ℂ (RadSp P.k P.r z z' π π')) (G : Set (Pr (RadSp P.
   smul_mem' c Φ hΦ m hm := by rw [map_smul]; exact K0.smul_mem c (hΦ m hm)
 
 theorem Ucls_le (K0 : Submodule ℂ (RadSp P.k P.r z z' π π')) (G : Set (Pr (RadSp P.k P.r z z' π π'))) :
-    Ucls K0 G ≤ K0 := fun Φ hΦ => hΦ 1 (Submonoid.one_mem _)
+    Ucls K0 G ≤ K0 := fun _ hΦ => hΦ 1 (Submonoid.one_mem _)
 
 theorem SesqCls.mono {V : Type} [AddCommGroup V] [Module ℂ V] {U U' : Submodule ℂ V} {β : V → V → ℂ}
     (h : SesqCls U β) (hle : U' ≤ U) : SesqCls U' β :=

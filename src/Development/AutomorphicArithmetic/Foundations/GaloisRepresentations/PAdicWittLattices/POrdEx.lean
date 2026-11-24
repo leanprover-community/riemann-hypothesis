@@ -50,7 +50,7 @@ open CategoryTheory Limits AlgebraicGeometry
 
 namespace UpperTheory.Gal.G3
 
-private theorem ordExStep (hS : OrdStep) {Z Y W : Scheme.{0}} (s : Y ⟶ Z) [IsFinite s] [Etale s] (d : ℕ)
+private theorem ordExStep {Z Y W : Scheme.{0}} (s : Y ⟶ Z) [IsFinite s] [Etale s] (d : ℕ)
     (c : W ⟶ Z) (σ : Fin d → (W ⟶ Y)) (hcf : IsFinite c) (hce : Etale c) (hσ : ∀ j, σ j ≫ s = c)
     (hinj : ∀ (Ω : Type) [Field Ω] (x : sp Ω ⟶ W), Function.Injective fun j => x ≫ σ j)
     (huniv : ∀ (U : Scheme.{0}) (z : U ⟶ Z) (y : Fin d → (U ⟶ Y)), (∀ j, y j ≫ s = z) →
@@ -190,7 +190,7 @@ theorem pOrdEx : OrdStep → OrdEx := by
       exact ⟨z, ⟨Category.comp_id _, fun j => j.elim0⟩, fun w hw => by simpa using hw.1⟩
   | succ d ih =>
     obtain ⟨W, c, σ, hcf, hce, hσ, hinj, huniv⟩ := ih
-    exact ordExStep hS s d c σ hcf hce hσ hinj huniv
+    exact ordExStep s d c σ hcf hce hσ hinj huniv
 
 end UpperTheory.Gal.G3
 

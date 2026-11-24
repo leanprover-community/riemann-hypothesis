@@ -55,7 +55,7 @@ open GlobalTheory.PlaceRead
 open GlobalTheory.HeightCounting.Up (PrN)
 
 theorem _root_.UpperTheory.KN.levS_iff_levG_and_levChi_eq :
-    ∀ (D : D7) (X : RealSide D) (X0 : BaseLevelRowSide D) (Y : GlobalTheory.Mem.R3.Read (A3 := X.A3) X.R.toRealDat X.F.lv2 X0) (S : NX.RatDat D.ntw) (YS : NX.NExpRealS X.R X.cG S) (Z : ExportTie YS X.geo.v₀) (c : NChoice D) (w : D.what₂.places.Pl) (j : Fin D.R.m) (H : AtPlace Y Z c w j),
+    ∀ (D : D7) (X : RealSide D) (X0 : BaseLevelRowSide D) (Y : GlobalTheory.Mem.R3.Read (A3 := X.A3) X.R.toRealDat X.F.lv2 X0) (S : NX.RatDat D.ntw) (YS : NX.NExpRealS X.R X.cG S) (Z : ExportTie YS X.geo.v₀) (c : NChoice D) (w : D.what₂.places.Pl) (j : Fin D.R.m) (_ : AtPlace Y Z c w j),
       ∀ ι : KE c w →+* ℂ, (∀ x, ι (c.embW w x) = D.what₂.embLL x) →
       ∀ k : GA D (Vc D j), (k ∈ levS (Vc D j) (X.R.βV j) (Formalism.IndefR.RecTie.datVP X.R.toRealDat j (Y.tupT (D.what₂.muTw w)) (X.R.toRealDat.levR X.F.lv2 false)) ↔ k ∈ Lev.levG (Vc D j) (baseOf Z c w j).F.βS ((baseOf Z c w j).levS (twVia Z.ρ ι))) ∧
       (k ∈ Lev.levG (Vc D j) (baseOf Z c w j).F.βS ((baseOf Z c w j).levS (twVia Z.ρ ι)) → Lev.levChi (Vc D j) (X.R.βV j) (Formalism.IndefR.RecTie.datVP X.R.toRealDat j (Y.tupT (D.what₂.muTw w)) (X.R.toRealDat.levR X.F.lv2 false)) k = Lev.levChi (Vc D j) (baseOf Z c w j).F.βS ((baseOf Z c w j).levS (twVia Z.ρ ι)) k) := by

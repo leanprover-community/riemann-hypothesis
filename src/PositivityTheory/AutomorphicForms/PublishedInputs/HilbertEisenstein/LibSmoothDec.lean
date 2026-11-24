@@ -114,7 +114,7 @@ theorem fderiv_mul_comp_integral {P : Type*} [MeasurableSpace P] {μ : Measure P
 
 variable {F : Type} [Field F] [NumberField F] [IsTotallyReal F]
 
-theorem eventually_good (_g : GA F 2) : ∀ᶠ x in 𝓝 (UpperTheory.V.TR.oneL F 2),
+theorem eventually_good : ∀ᶠ x in 𝓝 (UpperTheory.V.TR.oneL F 2),
     x ∈ Metric.ball (UpperTheory.V.TR.oneL F 2) (1 / 4) ∧ invL x ∈ Metric.ball (UpperTheory.V.TR.oneL F 2) (1 / 4) ∧
       x ∈ UpperTheory.V.TR.invSet F 2 ∧ ∀ v, 0 < (Matrix.of x).det v := by
   have hU : IsOpen (Metric.ball (UpperTheory.V.TR.oneL F 2) (1 / 4 : ℝ)) := Metric.isOpen_ball
@@ -149,7 +149,7 @@ def Rc (χ : HChar F) (c : HeightOneSpectrum (𝓞 F) → ℕ) (g : GA F 2) (p :
 theorem chart_eisInt_row (χ : HChar F) (c : HeightOneSpectrum (𝓞 F) → ℕ) (g : GA F 2) (p : Pp F) :
     UpperTheory.V.TR.chart (fun g' => eisInt χ (Phi c) g' p.1 p.2) g =ᶠ[𝓝 (UpperTheory.V.TR.oneL F 2)]
       fun x => Dc g x * Sr χ c g p x := by
-  filter_upwards [eventually_good g] with x ⟨_, _, hxu, hxd⟩
+  filter_upwards [eventually_good] with x ⟨_, _, hxu, hxd⟩
   set y : GL (Fin 2) (UpperTheory.V.TR.Rinf F) := (show IsUnit (Matrix.of x) from hxu).unit
   have hy : UpperTheory.V.TR.toL y.val = x := rfl
   rw [← hy, UpperTheory.V.TR.chart_val, eisInt_row, dl_eq g y hxd, Dc, Sr, integral_count_Xi, mul_comm]
@@ -158,7 +158,7 @@ theorem chart_eisInt_col (χ : HChar F) (c : HeightOneSpectrum (𝓞 F) → ℕ)
     (hC : ∀ h : GA F 2, thetaS (Phi c) h = C * ((absD h)⁻¹ : ℝ) * thetaT (PhiH c) h) (p : Pp F) :
     UpperTheory.V.TR.chart (fun g' => eisInt χ (Phi c) g' p.1 p.2) g =ᶠ[𝓝 (UpperTheory.V.TR.oneL F 2)]
       fun x => (C * Ac g x * Dc g x) * Rc χ c g p (invL x) := by
-  filter_upwards [eventually_good g] with x ⟨_, _, hxu, hxd⟩
+  filter_upwards [eventually_good] with x ⟨_, _, hxu, hxd⟩
   set y : GL (Fin 2) (UpperTheory.V.TR.Rinf F) := (show IsUnit (Matrix.of x) from hxu).unit
   have hy : UpperTheory.V.TR.toL y.val = x := rfl
   have hyi : UpperTheory.V.TR.toL (y⁻¹).val = invL x := by rw [← invL_val, hy]
@@ -283,7 +283,7 @@ theorem lie_derivative_eisenstein_integral {χ : HChar F} {c : HeightOneSpectrum
 
   have hev : UpperTheory.V.TR.chart (Eis χ (Phi c)) g =ᶠ[𝓝 one]
       fun x => Dc g x * I1 x + (C * Ac g x * Dc g x) * I2 (invL x) := by
-    filter_upwards [eventually_good g] with x ⟨hxU, hxi, hxu, hxd⟩
+    filter_upwards [eventually_good] with x ⟨hxU, hxi, hxu, hxd⟩
     set y : GL (Fin 2) (UpperTheory.V.TR.Rinf F) := (show IsUnit (Matrix.of x) from hxu).unit
     have hy : UpperTheory.V.TR.toL y.val = x := rfl
     have hyi : UpperTheory.V.TR.toL (y⁻¹).val = invL x := by rw [← invL_val, hy]
@@ -310,7 +310,7 @@ end UpperTheory.HilbertEisensteinWeightOne.EisensteinSmoothness
 namespace UpperTheory.HilbertEisensteinWeightOne
 
 theorem lieD_Eis_eq_integral {F : Type} [Field F] [NumberField F] [IsTotallyReal F] {χ : HChar F}
-    {c : HeightOneSpectrum (𝓞 F) → ℕ} (hP : SPois) (_hI : SInt) (H : Hyp χ c) (g : GA F 2) (X : UpperTheory.V.TR.Lie F 2) :
+    {c : HeightOneSpectrum (𝓞 F) → ℕ} (hP : SPois) (H : Hyp χ c) (g : GA F 2) (X : UpperTheory.V.TR.Lie F 2) :
     Integrable (fun p : {r : ℝ // 0 < r} × normOneSubgroup F => UpperTheory.V.TR.lieD X (fun g' => eisInt χ (Phi c) g' p.1 p.2) g)
       (posRealMeasure.prod ((normOneMeasure F).restrict (normOneFundamentalDomain F))) ∧
     UpperTheory.V.TR.lieD X (Eis χ (Phi c)) g = ∫ p, UpperTheory.V.TR.lieD X (fun g' => eisInt χ (Phi c) g' p.1 p.2) g

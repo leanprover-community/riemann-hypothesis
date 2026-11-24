@@ -340,7 +340,7 @@ theorem NR_cont : Continuous (fun y : XR k p ρ => NR y) := by
   exact (h1.matrix_mul h2).matrix_mul h3
 
 theorem aestronglyMeasurable_germ_integrand (hGS : GaXiSplit) (Bj : B.RealPlaceData k ρ Wp Wq) (B0 : B.RealPlaceData k (p + ρ) Wp Wq)
-    (hz' : B0.z' = liftVec k p ρ Bj.z') (hπ' : ∀ y, Bj.π' y = B0.π' (U.embG k p ρ y))
+    (hπ' : ∀ y, Bj.π' y = B0.π' (U.embG k p ρ y))
     (σ : Equiv.Perm (Fin p)) (d : Fin p → ℂ) (hd : ∀ i, d i ≠ 0)
     (H : B.Mat k (p + ρ) → (Wq →L[ℂ] Wp)) (hHc : ContinuousOn H {x | x ∈ B.GV k (p + ρ) ∧ U.DjU k p ρ x ≠ 0})
     (g : B.Mat k ρ) (hg : g ∈ B.GV k ρ) :

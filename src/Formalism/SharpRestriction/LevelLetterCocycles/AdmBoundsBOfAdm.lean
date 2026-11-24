@@ -113,9 +113,9 @@ structure AdmBoundsB (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm 
   a2 : ArcLiftingSetup.adm2 D HW F CR CA CB CK
   a5 : ArcLiftingSetup.adm5 D HW F
   sP : ArcLiftingSetup.SaturationFrobeniusPullback D HW F
-  kLev : ArcLiftingSetup.KillerLevL D.loc D.locA HW F
-  kMod : ArcLiftingSetup.KillerModL D.loc D.locA HW F
-  a9 : ArcLiftingSetup.adm9 D
+  kLev : ArcLiftingSetup.KillerLevL D.loc D.locA HW
+  kMod : ArcLiftingSetup.KillerModL D.loc D.locA HW
+  a9 : ArcLiftingSetup.adm9
   a10 : ArcLiftingSetup.adm10 D
   a11 : ArcLiftingSetup.adm11 D HW F
   a12 : ArcLiftingSetup.adm12 D HW F Cm

@@ -56,7 +56,7 @@ public import Mathlib.Algebra.Group.Subgroup.Finite
 namespace GlobalTheory
 
 theorem exists_eq_nsmul_of_forall_dvd_of_bijective {La : Type} [AddCommGroup La]
-    (EF : LinearMap.BilinForm ℤ La) (hEF : Function.Bijective EF) (N : ℕ) (hN : 0 < N) (c : La)
+    (EF : LinearMap.BilinForm ℤ La) (hEF : Function.Bijective EF) (N : ℕ) (c : La)
     (hc : ∀ x, (N : ℤ) ∣ EF c x) : ∃ b, c = N • b := by
   let g : La →ₗ[ℤ] ℤ :=
     { toFun := fun x => EF c x / N
@@ -283,7 +283,7 @@ theorem exists_rel_of_forall_dvd_of_card_mul :
     intro c; ext i; simp [hπapp]
   have hdiv : ∀ a, (∀ y, B (π a) y = 0) → ∃ c, a = N • c := by
     intro a h
-    apply exists_eq_nsmul_of_forall_dvd_of_bijective EF hEF N hN a
+    apply exists_eq_nsmul_of_forall_dvd_of_bijective EF hEF N a
     intro x
     rw [← ZMod.intCast_zmod_eq_zero_iff_dvd, hE]
     exact h _

@@ -178,7 +178,7 @@ theorem vol_apply {M : Type*} [TopologicalSpace M] [SecondCountableTopology M] [
     vol n z A = volFun n z A := by
   rw [vol, dite_eq_left (volAdditive n z hz), Measure.ofMeasurable_apply A hA]
 
-theorem vol_image {M : Type*} [TopologicalSpace M] [SecondCountableTopology M] [MeasurableSpace M] [BorelSpace M] (n : ℕ) (z : M → V n) (hz : IsLocalHomeomorph z) (U : Set M) (hU : IsOpen U) (hinj : InjOn z U) (A : Set M) (hA : MeasurableSet A) (hAU : A ⊆ U) :
+theorem vol_image {M : Type*} [TopologicalSpace M] [SecondCountableTopology M] [MeasurableSpace M] [BorelSpace M] (n : ℕ) (z : M → V n) (hz : IsLocalHomeomorph z) (U : Set M) (hinj : InjOn z U) (A : Set M) (hA : MeasurableSet A) (hAU : A ⊆ U) :
     vol n z A = volume (z '' A) := by
   rw [vol_apply n z hz A hA, volFun]
   have hinjA : InjOn z A := hinj.mono hAU
@@ -192,7 +192,7 @@ theorem vol_restrict_source {M : Type*} [TopologicalSpace M] [SecondCountableTop
     Measure.map_apply_of_aemeasurable
       (e.continuousOn_symm.aemeasurable e.open_target.measurableSet) hB,
     Measure.restrict_apply' e.open_target.measurableSet,
-    vol_image n z hz e.source e.open_source (injOn_source_of_chart n z e he) _
+    vol_image n z hz e.source (injOn_source_of_chart n z e he) _
       (hB.inter e.open_source.measurableSet) Set.inter_subset_right]
   congr 1
   have hImage : z '' (B ∩ e.source) = e '' (B ∩ e.source) :=
@@ -242,7 +242,7 @@ theorem vol_isFiniteMeasureOnCompacts {M : Type*} [TopologicalSpace M] [SecondCo
         refine ENNReal.sum_lt_top.2 (fun i _ => ?_)
         rcases hTc i with h | ⟨e, he, hTe⟩
         · simp [h]
-        · rw [vol_image n z hz e.source e.open_source (injOn_source_of_chart n z e he) _
+        · rw [vol_image n z hz e.source (injOn_source_of_chart n z e he) _
             (hK.isClosed.measurableSet.inter (hTo i).measurableSet)
             (Set.inter_subset_right.trans hTe)]
           exact lt_of_le_of_lt (measure_mono (Set.image_mono Set.inter_subset_left)) hzK

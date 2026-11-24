@@ -58,7 +58,7 @@ theorem twAn_phiQ_int (q : ℕ) (ξ : (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) {k₀ r
   split_ifs at h with hc
   · have h1 := hc.1 (LocE.fPos k₀ c n l.1) (LocE.fPos k₀ c' n' s.1) (framePos_lt hk l.2) (framePos_lt hk' s.2)
     unfold LocE.entB at h1
-    rw [frameIndex_framePos hk l.2, frameIndex_framePos hk' s.2, basisVec_eq_single s.2] at h1
+    rw [frameIndex_framePos l.2, frameIndex_framePos s.2, basisVec_eq_single s.2] at h1
     unfold Loc.atN at h1
     rw [dite_eq_left l.2] at h1
     have e0 : ∀ (N : ℕ) (p : ℕ), LocE.scE N (0 : ℕ → ℕ) p = 0 := fun N p => by
@@ -135,11 +135,11 @@ theorem twAn_phiQ_congr (q : ℕ) (ξ : (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) (hq :
 theorem frameEntry_unscaled_eq_coord (q : ℕ) {k₀ c' n' c n : ℕ} (hk' : k₀ ≤ n') (hk : k₀ ≤ n) (x : HomE E (n' + c') (n + c)) {p p' : ℕ}
     (hp : p < n + c) (hp' : p' < n' + c') :
     LocE.entB q k₀ c' n' c n 0 0 x p p' =
-      x (Pi.single (⟨LocE.fIdx k₀ c' n' p', symFIdx_lt hk' hp'⟩ : Fin (n' + c')) 1) ⟨LocE.fIdx k₀ c n p, symFIdx_lt hk hp⟩ := by
+      x (Pi.single (⟨LocE.fIdx k₀ c' n' p', symFIdx_lt hp'⟩ : Fin (n' + c')) 1) ⟨LocE.fIdx k₀ c n p, symFIdx_lt hp⟩ := by
   unfold LocE.entB
-  rw [basisVec_eq_single (symFIdx_lt hk' hp')]
+  rw [basisVec_eq_single (symFIdx_lt hp')]
   unfold Loc.atN
-  rw [dite_eq_left (symFIdx_lt hk hp)]
+  rw [dite_eq_left (symFIdx_lt hp)]
   have e0 : ∀ (N : ℕ) (p : ℕ), LocE.scE N (0 : ℕ → ℕ) p = 0 := fun N p => by
     unfold LocE.scE
     split_ifs <;> rfl
@@ -353,7 +353,7 @@ theorem twAn_sumA {q A B : ℕ} (hq : (q : E) ≠ 0) (G : (ι → E) → K)
     rw [pow_succ]
     field_simp
 
-theorem twAn_sumB {q A B : ℕ} (hq : (q : E) ≠ 0) (G : (ι → E) → K)
+theorem twAn_sumB {q A B : ℕ} (G : (ι → E) → K)
     (hinv : ∀ a b : ι → ℕ, G (fun f => twAnPhi q A (a f + q ^ (A + B) * b f)) = G (fun f => twAnPhi q A (a f))) :
     ∑ k : ι → Fin (q ^ (A + B + 1)), G (fun f => twAnPhi q A (k f)) =
       (q ^ Fintype.card ι : K) * ∑ k : ι → Fin (q ^ (A + B)), G (fun f => twAnPhi q A (k f)) := by
@@ -395,7 +395,7 @@ theorem twAn_deep_abs {q : ℕ} (hq : (q : E) ≠ 0) (hqK : (q : K) ≠ 0) (G : 
     | base => rfl
     | succ n hn ih =>
       rw [← ih]
-      have h1 := twAn_sumB (A := A') (B := n) hq G (hinv A' n (le_trans hB hn))
+      have h1 := twAn_sumB (A := A') (B := n) G (hinv A' n (le_trans hB hn))
       have h2 : ∑ k : ι → Fin (q ^ (A' + (n + 1))), G (fun f => twAnPhi q A' (k f)) =
           ∑ k : ι → Fin (q ^ (A' + n + 1)), G (fun f => twAnPhi q A' (k f)) := rfl
       rw [h2, h1, ← mul_assoc]
@@ -489,8 +489,8 @@ theorem twAn_omPhi_congr {i : ℕ} (P : rowSG Pr sel mu) (hP : P.1 ∉ Pr.vGs) (
   apply twAn_phiQ_congr (qOf P.1) _ (ciQ_mem P.1) hq0 _ _ (twAn_r_le (by omega)) (twAn_r_le (by omega))
   intro p p' hp hp'
   rw [frameEntry_unscaled_eq_coord _ (twAn_k_le i) (twAn_k_le (i + 1)) _ hp hp', frameEntry_unscaled_eq_coord _ (twAn_k_le i) (twAn_k_le (i + 1)) _ hp hp']
-  set es : Sp X.E (R.N i + cOf R i) := Pi.single (⟨LocE.fIdx R.k (cOf R i) (R.N i) p', symFIdx_lt (twAn_k_le i) hp'⟩ : Fin _) 1 with hes
-  set l : Fin (R.N (i + 1) + cOf R (i + 1)) := ⟨LocE.fIdx R.k (cOf R (i + 1)) (R.N (i + 1)) p, symFIdx_lt (twAn_k_le (i + 1)) hp⟩
+  set es : Sp X.E (R.N i + cOf R i) := Pi.single (⟨LocE.fIdx R.k (cOf R i) (R.N i) p', symFIdx_lt hp'⟩ : Fin _) 1 with hes
+  set l : Fin (R.N (i + 1) + cOf R (i + 1)) := ⟨LocE.fIdx R.k (cOf R (i + 1)) (R.N (i + 1)) p, symFIdx_lt hp⟩
   set q : X.E := (qOf P.1 : X.E) with hqd
 
   let D : HomE X.E (R.N i + cOf R i) (R.N (i + 1) + cOf R (i + 1)) := ((q ^ B)⁻¹) • (y' - y)

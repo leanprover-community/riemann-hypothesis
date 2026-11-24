@@ -252,17 +252,17 @@ theorem haar_of_compact {U : Set (Mat k r)} (hU : IsClosed U) {μ : Measure (Mt 
 
 theorem exists_haar {U : Set (Mat k r)} (hU : IsClosedSubgroup U) :
     ∃ μ, GlobalTheory.IndefiniteRowSideFullHecke.FormalDegreeHaarQuotient.IsHaarOn U μ := by
-  let m : Measure (Gp U hU) := Measure.haar
-  have hm : Measurable (inc : Gp U hU → Mt k r) := inc_memb.measurable
+  let m : Measure (Gp U) := Measure.haar
+  have hm : Measurable (inc : Gp U → Mt k r) := inc_memb.measurable
   refine ⟨m.map inc, ?_, ?_, ?_, ?_⟩
   · rw [inc_memb.map_apply]
-    have : (inc : Gp U hU → Mt k r) ⁻¹' {x | Matrix.of x ∉ U} = ∅ := by
+    have : (inc : Gp U → Mt k r) ⁻¹' {x | Matrix.of x ∉ U} = ∅ := by
       ext x; simpa using inc_mem x
     rw [this, measure_empty]
   · intro a ha
-    let g : Gp U hU := ⟨Matrix.of.symm a, ha⟩
+    let g : Gp U := ⟨Matrix.of.symm a, ha⟩
     rw [Measure.map_map (lmulM_cont a).measurable hm]
-    have : (lmulM a ∘ inc : Gp U hU → Mt k r) = inc ∘ (fun x => g * x) := rfl
+    have : (lmulM a ∘ inc : Gp U → Mt k r) = inc ∘ (fun x => g * x) := rfl
     rw [this, ← Measure.map_map hm (continuous_const_mul g).measurable, map_mul_left_eq_self]
   · intro C hC _
     rw [inc_memb.map_apply]

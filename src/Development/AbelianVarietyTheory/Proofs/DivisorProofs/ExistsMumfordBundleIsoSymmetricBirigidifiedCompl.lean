@@ -460,7 +460,7 @@ theorem exists_theta_of_gen : ∀ (B : Over (Sp ℂ)) [GrpObj B] (N : LB B.left)
       valAt' (u.ex z).left _ (t.s j).val / u.fr j z = valAt' (u.ex z).left _ (t.s j').val / u.fr j' z := by
     intro j j' z hj hj'
     exact TransFrame.gen_div_eq _ _ t ht j j' hj hj' _ _
-      (u.fr_compat j j' z ((GlobalTheory.top_le_preimage_inf _ _ _).2 ⟨hj, hj'⟩)) (u.fr_ne _ z hj')
+      (u.fr_compat j j' z ((GlobalTheory.top_le_preimage_inf _ _ _).2 ⟨hj, hj'⟩))
   refine ⟨fun z => valAt' (u.ex z).left _ (t.s (J z)).val / u.fr (J z) z, fun z => ?_, fun z => ?_,
     fun l hl i z hi => ?_⟩
   · obtain ⟨ho, hd⟩ := u.hol _ (t.s (J z)).val

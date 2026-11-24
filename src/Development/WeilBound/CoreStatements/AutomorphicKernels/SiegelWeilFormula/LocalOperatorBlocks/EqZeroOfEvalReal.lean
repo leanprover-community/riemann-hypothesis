@@ -202,7 +202,7 @@ def evW (d : ℕ) : MvPolynomial.restrictTotalDegree (Fin m × Fin n × Bool) �
   map_add' Q Q' := by funext u; simp [evX]
   map_smul' a Q := by funext u; simp [evX]
 
-theorem evW_injective (d : ℕ) : Function.Injective (evW (m := m) (n := n) d) := fun Q Q' h =>
+theorem evW_injective (d : ℕ) : Function.Injective (evW (m := m) (n := n) d) := fun _ _ h =>
   Subtype.ext (evX_injective (funext fun u => congrFun h u))
 
 theorem continuousOn_of_evX {X : Type} [TopologicalSpace X] {S : Set X} (d : ℕ) (φ : X → PX m n)

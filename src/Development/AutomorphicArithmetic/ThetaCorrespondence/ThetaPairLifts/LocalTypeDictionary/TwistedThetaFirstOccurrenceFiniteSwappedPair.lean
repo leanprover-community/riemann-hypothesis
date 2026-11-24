@@ -281,7 +281,7 @@ theorem isSBHalf_colFn (G : GridData L sc) (B : Frames G) {μ₀ : T} (hL : L.Is
     (Formalism.IndefR.Fin.PDA.selfDual_isFullLattice _ _ (node_isV G hL (X := .grid 0 j) ⟨Nat.zero_le _, hj.le⟩).sd)
     (Formalism.IndefR.Fin.PDA.selfDual_isFullLattice _ _ (node_isV G hL (X := .grid 0 (j + 1)) ⟨Nat.zero_le _, hj⟩).sd)
   obtain ⟨b, hb, h2⟩ := WeilOver.exists_le_hom (S := G.V (.grid 0 j)) (T := G.V (.grid 0 (j + 1)))
-    (GlobalTheory.DiagLiftFix.isLattice_of_isFrame hFS) (GlobalTheory.DiagLiftFix.isLattice_of_isFrame hFT)
+    (GlobalTheory.DiagLiftFix.isLattice_of_isFrame hFS)
   obtain ⟨e0, -, -⟩ := cpt_idemSum he
   set 𝔪 : Ideal (𝓞 D.host.E) := ∏ w ∈ locPl G t, w.asIdeal ^ 1 with h𝔪
   have hN : 0 < Ideal.absNorm 𝔪 :=
@@ -436,7 +436,7 @@ theorem half_of_half {e e' : AE D} (h1 : e * e' = e') {x : Mx D m n} (hx : IsHal
   intro i j
   rw [← hx i j, ← mul_assoc, h1]
 
-theorem map_sub_half {e e' : AE D} (h1 : e * e' = e') (h2 : e' * e' = e') {x : Mx D m n} (hx : IsHalf e' x) :
+theorem map_sub_half {e e' : AE D} (h1 : e * e' = e') {x : Mx D m n} (hx : IsHalf e' x) :
     x.map ((e - e') * ·) = 0 := by
   ext i j
   simp only [Matrix.map_apply, Matrix.zero_apply]
@@ -493,9 +493,9 @@ theorem extDat_trans {e e' : AE D} (h1 : e * e' = e') (h2 : e' * e' = e') (Λ : 
     GlobalTheory.ChainCol.extDat e e' Λ (fun t => Φ (t + x)) = fun t => GlobalTheory.ChainCol.extDat e e' Λ Φ (t + x) := by
   funext t
   have hxe : IsHalf e x := half_of_half h1 hx
-  simp only [GlobalTheory.ChainCol.extDat, half_add_iff hxe, _root_.GlobalTheory.SemiChar.map_mul_add, map_sub_half h1 h2 hx, add_zero, map_half hx]
+  simp only [GlobalTheory.ChainCol.extDat, half_add_iff hxe, _root_.GlobalTheory.SemiChar.map_mul_add, map_sub_half h1 hx, add_zero, map_half hx]
 
-theorem extDat_sb {e e' : AE D} (h1 : e * e' = e') (h2 : e' * e' = e') (Λ : AddSubgroup (Mx D m n))
+theorem extDat_sb {e e' : AE D} (h2 : e' * e' = e') (Λ : AddSubgroup (Mx D m n))
     (hstab : ∀ u ∈ Λ, u.map (e' * ·) ∈ Λ) {Φ : Mx D m n → ℂ} (hΦ : IsSBHalf e' Λ Φ) :
     IsSBHalf e Λ (GlobalTheory.ChainCol.extDat e e' Λ Φ) := by
   unfold IsSBHalf at hΦ ⊢
@@ -610,10 +610,10 @@ theorem isThetaAt_extDat : ∀ {D : D7} {ψ : AddChar (AF D.host.F) ℂ} {θ : I
       refine ⟨fun Φ hΦ x hx => ?_, fun Φ hΦ y hy => ?_, ?_⟩
       · simp only [LinearMap.comp_apply, extL_apply]
         rw [extDat_trans h1 h2 _ Φ hx]
-        exact htr _ (extDat_sb h1 h2 _ hstab hΦ) x (half_of_half h1 hx)
+        exact htr _ (extDat_sb h2 _ hstab hΦ) x (half_of_half h1 hx)
       · simp only [LinearMap.comp_apply, extL_apply]
         rw [extDat_modul ψ h1 h2 _ Φ hy]
-        exact hmo _ (extDat_sb h1 h2 _ hstab hΦ) y (half_of_half hce hy)
+        exact hmo _ (extDat_sb h2 _ hstab hΦ) y (half_of_half hce hy)
       · simp only [LinearMap.comp_apply, extL_apply]
         rwa [extDat_halfInd h2 _ hstab]
     rw [hall _ hT', LinearMap.comp_apply, extL_apply]
@@ -1037,7 +1037,7 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.StdFrames GlobalTheory.RowClaim GlobalTheory.FlipRun
 attribute [local instance] Formalism.BasicNotions.Host.cmStar GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField borelKw borelSpaceKw
 open GlobalTheory.CosetRow in
-theorem GlobalTheory.CosetRow.coset_function_isLocalVector : _root_.GlobalTheory.FunPr.ThetaLocalInputs → GlobalTheory.RowClaim.Big fun {D} _ _ _ _ {T} _ _ _ _ _ {R} ch => ∀ (t : T) (e : AE D), IsIdemSum e (locPl ch.G t) → ∀ (Φ : ch.G.Datum) (i : Fin D.R.m), IsLocVec ch.W (.chi i 0) e (ch.rm.vX i 0) (GlobalTheory.FlipStart.givenFn ch.S.B t Φ e (.right i 0)) (ch.W.cosVec i (Φ i)) := by
+theorem GlobalTheory.CosetRow.coset_function_isLocalVector : _root_.GlobalTheory.FunPr.ThetaLocalInputs → GlobalTheory.RowClaim.Big fun {D} _ _ _ _ {T} _ _ _ _ _ {_} ch => ∀ (t : T) (e : AE D), IsIdemSum e (locPl ch.G t) → ∀ (Φ : ch.G.Datum) (i : Fin D.R.m), IsLocVec ch.W (.chi i 0) e (ch.rm.vX i 0) (GlobalTheory.FlipStart.givenFn ch.S.B t Φ e (.right i 0)) (ch.W.cosVec i (Φ i)) := by
   intro _
   refine ⟨0, fun ε CF _ => ⟨0, fun D large₂ _ _ Γ _ _ Pl0 T A Ks _ _ _ R F s ch hi _ => ?_⟩⟩
   intro t e he Φ i

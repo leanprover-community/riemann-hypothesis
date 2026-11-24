@@ -118,7 +118,7 @@ theorem norm_scalarLift_le (φ ψ : E →+* Om l) (h : ∀ x, ‖φ x‖ = ‖ψ
   rw [← h x] at e1
   linarith
 
-theorem norm_eq_of_same_place (τ φ : E →+* Om l) (w : HeightOneSpectrum (𝓞 E)) (hw : w ∈ placesOver E l)
+theorem norm_eq_of_same_place (τ φ : E →+* Om l) (w : HeightOneSpectrum (𝓞 E))
     (hτ : ∀ x : 𝓞 E, ‖τ (x : E)‖ < 1 ↔ x ∈ w.asIdeal) (hφ : ∀ x : 𝓞 E, ‖φ (x : E)‖ < 1 ↔ x ∈ w.asIdeal)
     (x : E) : ‖τ x‖ = ‖φ x‖ := by
   apply _root_.GlobalTheory.GalFirstClause.Emb.norm_eq_of_samePlace <;> assumption
@@ -130,7 +130,7 @@ theorem main : ∀ (D : D7) (l : ℕ) [Fact l.Prime] (w : PlE D.host) (O : Type)
   have hw := hj.mem_placesOver hA
   have hjE : ∀ x : 𝓞 D.host.E, ‖jE (x : D.host.E)‖ < 1 ↔ x ∈ w.asIdeal := fun x =>
     (hj.valuation_lt_one_iff _).symm.trans (hA x)
-  have iso := norm_eq_of_same_place τ jE w hw hτ hjE
+  have iso := norm_eq_of_same_place τ jE w hτ hjE
   have hker : ∀ t ∈ RingHom.ker (scalarLift jE), scalarLift τ t = 0 := fun t ht =>
     norm_eq_zero.1 (le_antisymm ((norm_scalarLift_le jE τ (fun x => (iso x).symm) t).trans
       (by rw [RingHom.mem_ker.1 ht, norm_zero])) (norm_nonneg _))

@@ -11,7 +11,7 @@ universe u_1
 namespace Bl.SmulListSum
 
 theorem goal1 :
-  ∀ {U : Type u_1} [inst : AddCommGroup.{u_1} U] [inst_1 : Module.{0, u_1} Complex U] {G : Set.{u_1} U},
+  ∀ {U : Type u_1} [AddCommGroup.{u_1} U] [Module.{0, u_1} Complex U] {G : Set.{u_1} U},
   (∀ (w : U),
       Membership.mem.{u_1, u_1} G w → ∀ (c : Complex), Membership.mem.{u_1, u_1} G (HSMul.hSMul.{0, u_1, u_1} c w)) →
     ∀ {y : U},

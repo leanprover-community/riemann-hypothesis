@@ -730,7 +730,7 @@ noncomputable def rowEquiv {ι : Type} (m : ι → ℕ) (τ : ι) (i : Fin (m τ
       obtain ⟨rfl, h2⟩ := h
       exact ⟨⟨l, eq_of_heq h2⟩, rfl⟩)
 
-theorem add_sum_coord_apply {n : ℕ} {B : Type} [Fintype B] (e : B → Fin n) (he : Function.Injective e)
+theorem add_sum_coord_apply {n : ℕ} {B : Type} [Fintype B] (e : B → Fin n)
     (z : V n) (t : B → ℂ) (k : Fin n) :
     (z + ∑ a, t a • coordVec (e a)) k = z k + ∑ a, if k = e a then t a else 0 := by
   simp [coordVec, Finset.sum_apply, Pi.single_apply, mul_ite]
@@ -780,7 +780,7 @@ theorem row_levi_det_of (hR : ∀ (n : ℕ) (B : Type) [Fintype B] [DecidableEq 
     set w' := w + ∑ a, t a • coordVec (e a) with hw'
     have hb : bsL ε w' = bsL ε w := by
       ext c
-      simp only [bsL_apply, hw', add_sum_coord_apply e he]
+      simp only [bsL_apply, hw', add_sum_coord_apply e]
       rw [Finset.sum_eq_zero]
       · simp
       intro a _
@@ -788,7 +788,7 @@ theorem row_levi_det_of (hR : ∀ (n : ℕ) (B : Type) [Fintype B] [DecidableEq 
       simp [e]
     have hf : ∀ s : Low (m τ), fb ε w' ⟨τ, s⟩ = y s + if h : s.1.2 = i then t ⟨s, h⟩ else 0 := by
       intro s
-      simp only [fb, hy, hw', add_sum_coord_apply e he]
+      simp only [fb, hy, hw', add_sum_coord_apply e]
       congr 1
       split_ifs with h
       · rw [Finset.sum_eq_single ⟨s, h⟩]
@@ -987,8 +987,8 @@ theorem leadMinor_self {s : ℕ} (M : Matrix (Fin s) (Fin s) ℂ) : leadMinor M 
 def lowEquiv {s k : ℕ} (hk : k ≤ s) : Fin k ≃ {a : Fin s // (a : ℕ) < k} where
   toFun j := ⟨Fin.castLE hk j, j.2⟩
   invFun a := ⟨a.1.1, a.2⟩
-  left_inv j := rfl
-  right_inv a := rfl
+  left_inv _ := rfl
+  right_inv _ := rfl
 
 theorem lminor_transpose {s : ℕ} (M : Matrix (Fin s) (Fin s) ℂ) (i : Fin (s + 1)) :
     ReciprocityTheory.ChartRestriction.G.FD.lminor Mᵀ i = leadMinor M i := by

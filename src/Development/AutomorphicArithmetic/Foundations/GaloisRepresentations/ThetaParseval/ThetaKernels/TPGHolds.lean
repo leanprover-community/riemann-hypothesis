@@ -242,8 +242,8 @@ section -- clump:auto
 
 noncomputable def UpperTheory.Reformulated.B.MatrixHomeomorphOfGeneralLinearPair.mulH_pk :
     {K : Type} →
-      [inst : Field K] →
-        [inst_1 : TopologicalSpace K] →
+      [Field K] →
+        [TopologicalSpace K] →
           [IsTopologicalRing K] →
             {n d : ℕ} → GL (Fin n) K → GL (Fin d) K → Matrix (Fin n) (Fin d) K ≃ₜ Matrix (Fin n) (Fin d) K :=
   fun {K} _ _ _ {n d} a c =>

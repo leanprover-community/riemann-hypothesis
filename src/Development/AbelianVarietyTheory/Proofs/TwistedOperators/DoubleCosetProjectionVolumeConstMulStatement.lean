@@ -255,7 +255,7 @@ theorem Adapted.blocks (h : Adapted π d F l) (h1 : Γ * F = 1) (h2 : F * Γ = 1
   · rw [Matrix.map_mul, Matrix.map_mul]
     exact col (Matrix.ext fun i j => W (.inr (.inr i)) (.inl j) (by simp only [wlev, Sum.elim_inr, Sum.elim_inl]; omega))
   · rw [← Matrix.map_apply (f := π), Matrix.map_mul, Matrix.map_mul]
-    exact W (.inr (.inr i)) (.inr (.inr j)) (by simp only [wlev, Sum.elim_inr, Sum.elim_inl]; omega)
+    exact W (.inr (.inr i)) (.inr (.inr j)) (by simp only [wlev, Sum.elim_inr]; omega)
 
 end Witt
 

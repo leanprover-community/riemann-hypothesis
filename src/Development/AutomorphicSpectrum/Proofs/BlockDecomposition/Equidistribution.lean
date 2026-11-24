@@ -1042,7 +1042,7 @@ theorem card_reps (j : O →+ A) (hj : Function.Injective j) (q : O → Q) (rep 
   have h2 := congrArg q (hj h1)
   rwa [hrep, hrep] at h2
 
-theorem tile_pi (H : AddSubgroup O) (j : O →+ A) (hj : Function.Injective j) (q : O → Q) (rep : Q → O)
+theorem tile_pi (H : AddSubgroup O) (j : O →+ A) (q : O → Q) (rep : Q → O)
     (hrep : ∀ c, q (rep c) = c) (hq : ∀ a b, q a = q b ↔ a - b ∈ H) (D₀ : Set A)
     (hD : ∀ y : A, ∃! a : O, y - j a ∈ D₀) (y : ι → A) :
     ∃! p : (ι → A) × (ι → A), p.1 ∈ reps (ι := ι) j rep ∧
@@ -1128,7 +1128,7 @@ theorem GlobalTheory.CompanionTheory.Equi.lat_sum : ∀ (F : Type) [Field F] [Nu
     (MeasurableSet.univ_pi fun _ => hDm) (isCompact_univ_pi fun _ => hK)
     (Set.pi_mono fun _ _ => hDK)
     (by rw [Measure.pi_pi]; simp [hD1])
-    (fun y => tile_pi H j hj (Ideal.Quotient.mk I) rep hrep hq D₀ htile y)
+    (fun y => tile_pi H j (Ideal.Quotient.mk I) rep hrep hq D₀ htile y)
     (fun ε _ => continuous_pi fun i => continuous_const.mul (continuous_apply i))
     (fun ε hε y => by
       have h1 : θ ε⁻¹ * θ ε = 1 := by rw [← map_mul, inv_mul_cancel₀ hε.ne', map_one]
@@ -1448,7 +1448,7 @@ theorem exists_centres (v : HeightOneSpectrum (𝓞 F)) (ι : Type) [Fintype ι]
     · exact ⟨c, hc, fun i => by simpa using add_mem_ball v k (hyx i) (hr i)⟩
 
 theorem pointwise (v : HeightOneSpectrum (𝓞 F)) (ι : Type) [Fintype ι] (k : ℕ)
-    (ψ : (ι → Fv F v) → ℝ) {δ : ℝ} (hδ : 0 < δ) (C : Finset (ι → Fv F v))
+    (ψ : (ι → Fv F v) → ℝ) {δ : ℝ} (C : Finset (ι → Fv F v))
     (hunif : ∀ y c : ι → Fv F v, (∀ i, y i - c i ∈ ballV v k) → |ψ y - ψ c| ≤ δ)
     (hdisj : ∀ a ∈ C, ∀ b ∈ C, (∀ i, a i - b i ∈ ballV v k) → a = b)
     (hcov : ∀ y, ψ y ≠ 0 → ∃ c ∈ C, ∀ i, y i - c i ∈ ballV v k) (y : ι → Fv F v) :
@@ -1573,7 +1573,7 @@ theorem loc_approx : ∀ (F : Type) [Field F] [NumberField F] (v : HeightOneSpec
       _ ≤ μ.real W := measureReal_mono (Set.iUnion₂_subset hsub) hWfin
   have hcov' : ∀ y, ψ y ≠ 0 → ∃ c ∈ C, ∀ i, y i - c i ∈ ballV v k :=
     fun y hy => hcov y (subset_tsupport ψ hy)
-  have hpt := pointwise v ι k ψ hδ C hk hdisj hcov'
+  have hpt := pointwise v ι k ψ C hk hdisj hcov'
   refine ⟨k, C, hpt, ?_, ?_⟩
   · rw [← hvol]; exact hcard
   rw [← hvol]
@@ -1642,7 +1642,7 @@ theorem squeeze_of_approx {α : Type} {l : Filter α} {A : α → ℝ} {a K : �
   calc _ ≤ |A t - B t| + |B t - b| + |b - a| := abs_add_three _ _ _
     _ < η := by linarith
 
-theorem summable_of_close {X γ : Type} {g : X → ℝ} (C : Finset γ) (a : γ → ℝ) (u w : γ → X → ℝ) {δ : ℝ} (hδ : 0 ≤ δ)
+theorem summable_of_close {X γ : Type} {g : X → ℝ} (C : Finset γ) (a : γ → ℝ) (u w : γ → X → ℝ) {δ : ℝ}
     (hu : ∀ c ∈ C, Summable (u c)) (hw : ∀ c ∈ C, Summable (w c))
     (h : ∀ x, |g x - ∑ c ∈ C, a c * u c x| ≤ δ * ∑ c ∈ C, w c x) :
     Summable g ∧ |(∑' x, g x) - ∑ c ∈ C, a c * ∑' x, u c x| ≤ δ * ∑ c ∈ C, ∑' x, w c x := by
@@ -1753,7 +1753,7 @@ theorem est {ι : Type} (θ : ℝ →+* Ainf F) {S : Finset (HeightOneSpectrum (
     · simp [Set.indicator_of_notMem hx]
   have hsu : ∀ c ∈ C, Summable (u c) := fun c hc => summable_subtype_iff_indicator.1 (hs c hc)
   have hsw : ∀ c ∈ C, Summable (w c) := fun c hc => summable_subtype_iff_indicator.1 (hs' c hc)
-  obtain ⟨h1, h2⟩ := summable_of_close C (ψ v) u w hδ hsu hsw key
+  obtain ⟨h1, h2⟩ := summable_of_close C (ψ v) u w hsu hsw key
   refine ⟨summable_subtype_iff_indicator.2 h1, ?_⟩
   have t1 : ∑' x : A, term θ (insert v S) φ ψ ε x.1 = ∑' x, A.indicator (fun x => term θ (insert v S) φ ψ ε x) x :=
     tsum_subtype A _

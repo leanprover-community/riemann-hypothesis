@@ -61,6 +61,6 @@ def PolId {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (μinf : Measure (T
       ∫⁻ T in S, c T * ∫⁻ g, φ (g • rmulT X (a T) (Y0 X u')) ∂X.measG.μGinf ∂νinf
 
 def SqChart : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf fibInf,
-    PushHyp X u' ψ hT μinf νinf fibInf → ∃ Ω a, IsChart X u' hT Ω a
+    PushHyp X u' ψ μinf νinf fibInf → ∃ Ω a, IsChart X u' hT Ω a
 
 end PI.AprimeInfW

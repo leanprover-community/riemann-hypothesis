@@ -101,7 +101,7 @@ theorem eq_zero_of_pow {σ : Type} [Fintype σ] (f : MvPolynomial σ ℂ) :
       rw [Polynomial.eval_monomial, smul_pow, smul_mul_assoc, smul_mul_assoc, map_smul, ← nsmul_eq_mul' (X i ^ m * lin u ^ (n + 1 - m)), map_nsmul]
       simp [mul_comm]
     have h1 := congrArg (AddMonoidAlgebra.coeff · 1) hc
-    simp only [c, Polynomial.finsetSum_coeff, Polynomial.coeff_monomial, Finsupp.single_apply, ← ite_mul, ← mul_ite, mul_zero, zero_mul, Finset.sum_ite_eq', Finset.mem_range] at h1
+    simp only [c, Polynomial.finsetSum_coeff, Polynomial.coeff_monomial, Finsupp.single_apply, Finset.sum_ite_eq', Finset.mem_range] at h1
     have h2 : ((n : ℂ) + 1) ≠ 0 := Nat.cast_add_one_ne_zero n
     simpa [h2, mul_comm] using h1
 

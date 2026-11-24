@@ -584,7 +584,7 @@ theorem algebraMap_continuous_isCompact_preimage {F E : Type} [NontriviallyNorme
 theorem residue_algebra {K L : Type} [CommRing K] [CommRing L] [StarRing L] [Algebra K L]
     (hK : IsField K) (hinj : Function.Injective (algebraMap K L)) (N : L → K)
     (hN : ∀ y, algebraMap K L (N y) = y * star y) (O : Subring L) (ϖ : Kˣ)
-    (hOs : ∀ y ∈ O, star y ∈ O) (hϖO : algebraMap K L (ϖ : K) ∈ O)
+    (hOs : ∀ y ∈ O, star y ∈ O)
     (hϖnu : ¬ ∃ z ∈ O, algebraMap K L (ϖ : K) * z = 1)
     (hdich : ∀ y ∈ O, (∃ z ∈ O, y = algebraMap K L (ϖ : K) * z) ∨ ∃ z ∈ O, y * z = 1)
     (hnorm : ∀ s : K, algebraMap K L s ∈ O → (∃ r ∈ O, algebraMap K L s * r = 1) → ∃ w ∈ O, N w = s) :
@@ -647,7 +647,7 @@ theorem residue_gauss_integral : ∀ (F E : Type) [NontriviallyNormedField F] [N
   obtain ⟨-, hinj, hN, -, -⟩ := Et.quadratic_structure F E A
   obtain ⟨hιc, hιK⟩ := algebraMap_continuous_isCompact_preimage A
   obtain ⟨hψlc, hψn, -⟩ := (GlobalTheory.StdChar.psi_conductor F E).2 ψ hψ
-  obtain ⟨alg1, alg2⟩ := residue_algebra hK hinj A.NL hN O ϖ hOs hϖO hϖnu hdich hnorm
+  obtain ⟨alg1, alg2⟩ := residue_algebra hK hinj A.NL hN O ϖ hOs hϖnu hdich hnorm
   set ι := algebraMap A.K A.L with hι
   set p : A.K := (ϖ : A.K) with hp
 

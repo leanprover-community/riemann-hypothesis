@@ -668,7 +668,7 @@ private theorem filterNeTop_boundary_filter {X : Scheme.{u}}
   exact filterNeTop_map_filter_append (d.iteratedStrictTransform i)
     (d.iteratedStrictTransform_top i) p hp (d.boundaryFrom [] i) L
 
-theorem isMarked_of_isMarked_dropTrivialBoundary (T : MarkedIdealWithBoundary.{u}) (_hV : T.IsAdmissible)
+theorem isMarked_of_isMarked_dropTrivialBoundary (T : MarkedIdealWithBoundary.{u})
     (d : BlowupSequenceData T.scheme) (I : T.scheme.IdealSheafData) (m : ℕ)
     (h : d.IsMarked T.structMap I m (MaxContactReduction.dropTrivialBoundary T).boundary) :
     d.IsMarked T.structMap I m T.boundary := by
@@ -684,7 +684,7 @@ theorem isMarked_of_isMarked_dropTrivialBoundary (T : MarkedIdealWithBoundary.{u
 
 theorem forall_isMarked_of_isMarked_dropTrivialBoundary : MaxContactFunctoriality.MarkedOfMarkedDropTrivialBoundary.{u} := by
   intro T hV d h
-  exact isMarked_of_isMarked_dropTrivialBoundary T hV d T.ideal T.mult h
+  exact isMarked_of_isMarked_dropTrivialBoundary T d T.ideal T.mult h
 
 theorem orderCertificateLocalToGlobal : OrderCertificateLocalToGlobal.{u} := by
   intro k _ W p N μ Mem Z h
@@ -864,7 +864,7 @@ theorem markingDescends (hinv : ComapIsoInvariance.{u}) (P : ℕ → Prop)
   have hlev := FunctorialResolution.EmbeddedResolution.MaxContactFunctoriality.isLocallyNoetherian_schemeAt_coverBlowupSequence hinv A hstar T h d hd
   have hmax : FunctorialResolution.EmbeddedResolution.MaxOrderEq T.ideal T.mult :=
     ⟨(FunctorialResolution.EmbeddedResolution.orderLE_iff T.ideal T.mult).2 h.orderLE, h.coSupport_nonempty⟩
-  have key := FunctorialResolution.EmbeddedResolution.isMarked_balancedTunedIdeal_of_isStrictPullbackBlowupSeq hinv P A T h hoi hmult d hd hlev.1 hlev.2
+  have key := FunctorialResolution.EmbeddedResolution.isMarked_balancedTunedIdeal_of_isStrictPullbackBlowupSeq hinv P A T h d hd hlev.1 hlev.2
     (fun D i hi =>
       FunctorialResolution.EmbeddedResolution.MaxContactFunctoriality.isLocalIsomorphism_map_coverBlowupSequence hinv A T h d D i hi)
   have htuned : FunctorialResolution.EmbeddedResolution.MaxContactCoverData.balancedTunedIdeal T hv
@@ -1122,11 +1122,11 @@ theorem descentProperties_of_isBoundaryDivisorReduction (hinv : ComapIsoInvarian
       FunctorialResolution.EmbeddedResolution.MaxContactOpenCover.isLocalIsomorphism_coverMap T hv
     have hmult : 1 ≤ FunctorialResolution.EmbeddedResolution.MaxContactCoverData.tunedMult T := FunctorialResolution.EmbeddedResolution.one_le_tuningExponent T.mult
     have hlev := FunctorialResolution.EmbeddedResolution.MaxContactFunctoriality.isLocallyNoetherian_schemeAt_coverBlowupSequence hinv A hstar T h db hd
-    exact FunctorialResolution.EmbeddedResolution.isMarked_balancedTunedIdeal_of_isStrictPullbackBlowupSeq hinv (fun d => d ≤ n) A T h hoi hmult db hd hlev.1 hlev.2
+    exact FunctorialResolution.EmbeddedResolution.isMarked_balancedTunedIdeal_of_isStrictPullbackBlowupSeq hinv (fun d => d ≤ n) A T h db hd hlev.1 hlev.2
       (fun D i hi =>
         FunctorialResolution.EmbeddedResolution.MaxContactFunctoriality.isLocalIsomorphism_map_coverBlowupSequence hinv A T h db D i hi)
   · intro T hV db I m hm
-    exact isMarked_of_isMarked_dropTrivialBoundary T hV db I m hm
+    exact isMarked_of_isMarked_dropTrivialBoundary T db I m hm
   · intro T hV hO s i hi x
     exact FunctorialResolution.EmbeddedResolution.MaxContactFunctoriality.orderAt_sequenceOfBlowups_ideal_le_mult hstar T hV hO s i hi x
   · intro T hV hP hO Y q g hsmg hq E' hE hV' hP' hO'

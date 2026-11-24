@@ -323,7 +323,7 @@ theorem exists_char_eq_cut (π : A →+* B) (hs : Function.Surjective π) (e : A
     simp
   have e0' : e • (1 : Matrix n n A) = 1 - (1 - e) • 1 := eq_sub_of_add_eq e0
   have hgi : (g⁻¹.val * g.val) = 1 := by simp
-  have v1 : (s (m g)⁻¹).val = cut e g⁻¹.val := hsv _ _ (by simp [m, hmv, ← map_inv])
+  have v1 : (s (m g)⁻¹).val = cut e g⁻¹.val := hsv _ _ (by simp [m, ← map_inv])
   have v2 : (s (m g)).val = cut e g.val := hsv _ _ (hmv g)
   refine ⟨(s (m g))⁻¹ * g, ?_, ?_, ?_⟩
   · rw [Units.val_mul, ← map_inv, v1]

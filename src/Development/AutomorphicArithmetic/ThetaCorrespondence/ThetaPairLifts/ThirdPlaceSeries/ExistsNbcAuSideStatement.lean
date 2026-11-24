@@ -140,7 +140,7 @@ def boundaryConditionOfNoLocal (hE : IsEmpty D.nd.Loc) : NBC D.naut where
   satAU_card := fun _ X w => satOf_card X.rep w
   Wt := fun _ => WtQ D.host.E D.R.nV
   infW := fun _ Y τ => NG.infOf (hwOf Y.rep τ)
-  infW_card := fun _ Y τ => infOf_card _
+  infW_card := fun _ _ _ => infOf_card _
   wtAU := fun _ X => wtOf D X.rep
   infW_alg := fun _ Y τ => infOf_nodup_alg (hwOf_antitone Y.rep τ)
   embAV := fun i => isEmptyElim i
@@ -616,7 +616,7 @@ theorem exists_lift {n : ℕ} (s : SplitPlace L)
         refine (Valuation.map_sub _ _ _).trans (max_le (h2 j i) ?_)
         by_cases hij : i = j <;> simp [Matrix.one_apply, hij]
     have := add_mem hz (show (1 : Matrix (Fin n) (Fin n) (AL L)) i j ∈ ALint L by
-      by_cases hij : i = j <;> simp [Matrix.one_apply, hij, Subring.one_mem, Subring.zero_mem])
+      by_cases hij : i = j <;> simp [Matrix.one_apply, hij])
     simpa using this
   refine ⟨κ, mem_Umax_of_loc s κ hκ ?_ ?_, hκ, ?_⟩
   · intro a b

@@ -206,7 +206,7 @@ theorem densMultIntAt_of (D : Formalism.BasicNotions.D7) (hF : DualityBasisChang
       rwa [hUr, hm] at this
     obtain ⟨-, hup, hlow⟩ := Formalism.L2.SG.Pf.DensLoc.ratio_bounds (K := D.host.E) p.asIdeal (by linarith)
       (j := D.R.k - 1 - cJ (VS D).hT (UPair D F0 F') (MMof D F0 F') p.asIdeal) (n := D.R.r) (s := 2)
-      (by omega) (by omega) (by norm_num)
+      (by omega) (by omega)
     have hlow' := hlow hp
     rw [hval p, Real.norm_eq_abs]
     set x : ℝ := ((Ideal.absNorm p.asIdeal : ℝ))⁻¹ with hx

@@ -471,7 +471,7 @@ theorem log_le_of_count (h f n N g₀ g₁ T : ℕ) (rd L : ℝ) (hf : 1 ≤ f) 
     _ = 55 * (f : ℝ) * (n : ℝ) ^ 2 * Real.log G := by rw [Real.log_pow]; push_cast; ring
     _ ≤ _ := by gcongr
 
-theorem fibre_bound_le {X : Fields} {Pr : Primes X} (hP : Pr.Ok) (u : Pr.Word) (n : ℕ) (hn : 1 ≤ n)
+theorem fibre_bound_le {X : Fields} {Pr : Primes X} (hP : Pr.Ok) (u : Pr.Word) (n : ℕ)
     (SG : Finset (HeightOneSpectrum (𝓞 X.E))) (hSG : SG = Pr.vGs) :
     (∏ P ∈ Pr.vT u, Ideal.absNorm P.asIdeal ^ n) * ∏ w ∈ SG, Ideal.absNorm w.asIdeal ^ (n * n) ≤
       (Pr.g 0 * Pr.g 1 * Pr.T u) ^ (X.f * (n * n)) := by
@@ -534,7 +534,7 @@ theorem card_orbits_le_exp {D : D7} {N : NumDatum} {X : Fields} {s : Seam D X} {
     rw [← hf, mul_comm]
     exact h1.symm
   have hf1 : 1 ≤ N.R.f := hf ▸ hX.ok.f_pos
-  have hfib := GlobalTheory.ColumnClassLog.fibre_bound_le hP u n hn SG hSG
+  have hfib := GlobalTheory.ColumnClassLog.fibre_bound_le hP u n SG hSG
   rw [hf, hg 0, hg 1] at hfib
   have hsub : ∏ P ∈ ST, Ideal.absNorm P.asIdeal ^ n ≤ ∏ P ∈ Pr.vT u, Ideal.absNorm P.asIdeal ^ n := by
     refine Finset.prod_le_prod_of_subset_of_one_le' hST fun P hP' _ => ?_

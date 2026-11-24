@@ -123,7 +123,7 @@ private theorem fZ_eq (V : Lev k) (ω : kˣ →* ℂˣ) (hω : ∀ u ∈ V.H, ω
   generalize hex.choose = c at hc ⊢
   have h1 : z / c ∈ V.H := H_of_mem V hn hd h (g := (GeneralLinearGroup.scalar (Fin n) z)⁻¹ * g) (by
     convert hc using 1
-    simp only [map_div, div_eq_mul_inv, map_mul, map_inv]
+    simp only [div_eq_mul_inv, map_mul, map_inv]
     rw [sc_comm z, ← mul_assoc, mul_assoc _ _ g]
     group)
   have h2 := hω _ h1

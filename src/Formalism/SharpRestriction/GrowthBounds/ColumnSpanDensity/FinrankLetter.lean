@@ -163,7 +163,7 @@ theorem lamAt_flat {n' : ℕ} (m : ℕ) {TT : Finset (Fin n')} (A B : TT → ℕ
       split_ifs <;> funext i <;> simp [flatW, hs]
     rw [this, weylDim_zero]
 
-theorem finrank_weyl (D : Formalism.BasicNotions.D7) (h3 : Formalism.MainNotions.ColumnSystems.adm3 D) (K : Type) [Field K] [CharZero K] (n : ℕ)
+theorem finrank_weyl (D : Formalism.BasicNotions.D7) (h3 : Formalism.MainNotions.ColumnSystems.adm3) (K : Type) [Field K] [CharZero K] (n : ℕ)
     (nu : Fin n → ℕ) (hnu : Antitone nu) :
     (Module.finrank K (Formalism.GradedWeylDivisibility.dualWeyl K n n nu) : ℚ) = weylDim n (fun i => (nu i : ℤ)) := by
   rw [h3 K n nu hnu]
@@ -172,7 +172,7 @@ theorem finrank_weyl (D : Formalism.BasicNotions.D7) (h3 : Formalism.MainNotions
   push_cast
   rfl
 
-theorem finrank_letter (D : Formalism.BasicNotions.D7) (h3 : Formalism.MainNotions.ColumnSystems.adm3 D) (K : Type) [Field K] [CharZero K] (m d : ℕ)
+theorem finrank_letter (D : Formalism.BasicNotions.D7) (h3 : Formalism.MainNotions.ColumnSystems.adm3) (K : Type) [Field K] [CharZero K] (m d : ℕ)
     (vec : Bool) :
     Module.finrank K (Formalism.GradedWeylDivisibility.dualWeyl K (m + 1 + 1) (m + 1 + 1) (nuOf (letterWt (m + 1) d vec))) =
       dimPol (m + 1) d := by
@@ -218,7 +218,7 @@ theorem finrank_letter (D : Formalism.BasicNotions.D7) (h3 : Formalism.MainNotio
       by_cases h : i = Fin.last (m + 1) <;> simp [h]
   exact_mod_cast hq
 
-theorem restDims_of (D : Formalism.BasicNotions.D7) (h3 : Formalism.MainNotions.ColumnSystems.adm3 D) (hW : WeylV) : RestDims := by
+theorem restDims_of (D : Formalism.BasicNotions.D7) (h3 : Formalism.MainNotions.ColumnSystems.adm3) (hW : WeylV) : RestDims := by
   classical
   intro p n' R m hm TT A B
   obtain ⟨m, rfl⟩ : ∃ m', m = m' + 1 := ⟨m - 1, by omega⟩

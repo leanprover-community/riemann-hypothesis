@@ -107,7 +107,7 @@ theorem satHerm_holds : SatHerm := by
   refine ⟨fun V hV hS => ?_, fun π hN hu hn hB => ?_⟩
   · obtain ⟨φ, hφ, h⟩ := hS.1
     exact herm_of_isSatVec hV hφ h
-  · have hD : IsDiscrete π.V := PositivityTheory.RSHS.L1.cuspDiscrete E N hN π hu hn
+  · have hD : IsDiscrete π.V := PositivityTheory.RSHS.L1.cuspDiscrete E N π hu hn
     obtain ⟨x, hx⟩ := GlobalTheory.LFun.HasSatGL.exists_vec hB
     have h1 := hx.map (ρ' := (finRep E N).comp (locGL E N w)) π.V.subtype (fun _ _ => rfl)
       (fun e => hx.1 (Subtype.ext e))

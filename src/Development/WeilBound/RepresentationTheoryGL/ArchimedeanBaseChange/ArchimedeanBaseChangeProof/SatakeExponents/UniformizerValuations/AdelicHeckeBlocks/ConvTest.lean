@@ -80,7 +80,7 @@ theorem kerAdd (D : Dom E a b) {φ ψ : H E a b → ℂ} (hφ : IsTestH φ) (hψ
   unfold kerH
   exact finsum_add_distrib (kerFin D hφ x y) (kerFin D hψ x y)
 
-theorem kerSmul (D : Dom E a b) {φ : H E a b → ℂ} (hφ : IsTestH φ) (c : ℂ) (x y : H E a b) :
+theorem kerSmul {φ : H E a b → ℂ} (c : ℂ) (x y : H E a b) :
     kerH (c • φ) x y = c * kerH φ x y := by
   unfold kerH
   exact (mul_finsum _ _).symm
@@ -128,7 +128,7 @@ theorem ropSmul (D : Dom E a b) {ι : Type} [Fintype ι] {Φ : Matrix ι ι (H E
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [← integral_const_mul]
   refine integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
-  simp only [Matrix.smul_apply, kerSmul D (hΦ i j)]
+  simp only [Matrix.smul_apply, kerSmul]
   ring
 
 end Sum

@@ -175,15 +175,15 @@ theorem cMeas_Sbox (s : ι × LsNc5.CIdx r k → Set ℝ) (hs : ∀ i, Measurabl
   rcases p with ((p | b) | (p | a))
   · show (volume : Measure (ι → ℂ)) (Set.univ.pi _) = _
     rw [volume_pi_pi]
-    exact Finset.prod_congr rfl fun v _ => volume_reim _ _ (hs _) (hs _)
+    exact Finset.prod_congr rfl fun v _ => volume_reim _ _
   · show (volume : Measure (ι → Fin (k + 1) → ℂ)) (Set.univ.pi _) = _
     rw [volume_pi_pi]
     refine Finset.prod_congr rfl fun v _ => ?_
     rw [volume_pi_pi]
-    exact Finset.prod_congr rfl fun j _ => volume_reim _ _ (hs _) (hs _)
+    exact Finset.prod_congr rfl fun j _ => volume_reim _ _
   · show (volume : Measure (ι → ℂ)) (Set.univ.pi _) = _
     rw [volume_pi_pi]
-    exact Finset.prod_congr rfl fun v _ => volume_reim _ _ (hs _) (hs _)
+    exact Finset.prod_congr rfl fun v _ => volume_reim _ _
   · show (volume : Measure (ι → ℝ)) (Set.univ.pi _) = _
     rw [volume_pi_pi]
 

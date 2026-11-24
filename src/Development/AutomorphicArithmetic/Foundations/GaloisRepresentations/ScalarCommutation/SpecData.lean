@@ -1596,7 +1596,7 @@ theorem finiteAdeleRingAway_locallyCompactSpace : LocallyCompactSpace (AfP p) :=
 theorem finiteAdeleRingAway_totallyDisconnectedSpace : TotallyDisconnectedSpace (AfP p) :=
   td_of_inj (X := Πʳ v : AwayP p, [v.1.adicCompletion ℚ, v.1.adicCompletionIntegers ℚ])
     (f := fun x => (x : ∀ v : AwayP p, v.1.adicCompletion ℚ)) RestrictedProduct.continuous_coe
-    (fun x y h => RestrictedProduct.ext _ _ fun i => congrFun h i)
+    (fun _ _ h => RestrictedProduct.ext _ _ fun i => congrFun h i)
 
 theorem countable_awayP : Countable (AwayP p) := by
   have hI : Countable (Ideal ℤ) := by

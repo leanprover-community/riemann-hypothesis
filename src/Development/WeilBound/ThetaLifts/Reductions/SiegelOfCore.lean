@@ -107,8 +107,8 @@ theorem siegelSet_eq (h : IsCMExt F E σ) (hJ : IsHermND σ J) (hW : IsWittFrame
     exact ⟨p, hp, _, hs, a s, ha.tor s, k, hk, rfl⟩
 
 theorem isClosed_siegelSet (h : IsCMExt F E σ) (hJ : IsHermND σ J) (hW : IsWittFrame σ J X Y) {K : Subgroup (GAd σ J)}
-    {Ω : Set (GAd σ J)} {c : ℝ} (hK : IsCompact (K : Set (GAd σ J))) (hΩ : IsCompact Ω) (hΩP : Ω ⊆ minParOne σ J X)
-    (hc : 0 < c) : IsClosed (siegelSet σ J X Y Ω c K) := by
+    {Ω : Set (GAd σ J)} {c : ℝ} (hK : IsCompact (K : Set (GAd σ J))) (hΩ : IsCompact Ω)
+    : IsClosed (siegelSet σ J X Y Ω c K) := by
   obtain ⟨a, ha⟩ := exists_isTorus h hJ hW
   obtain ⟨τ, hτc, -, hτa, -, -⟩ := exists_tau h hJ hW ha
   have hP : IsClosed ((minParSub X h hJ hW : Subgroup (GAd σ J)) : Set (GAd σ J)) := isClosed_minPar h hJ hW
@@ -147,8 +147,8 @@ theorem cone_lower {r : ℕ} {c : ℝ} (h3 : 0 ≤ c) {u : Fin r → ℝ} (hu : 
       _ ≤ c * u ⟨i.val + 1, hj⟩ := mul_le_mul_of_nonneg_left h1 h3
       _ ≤ u i := h2
 
-theorem lintegral_logCone (F : Type) [Field F] [NumberField F] (n r : ℕ) {c : ℝ} (hc : 0 < c)
-    (h : (Fin r → ℝ) → ℝ≥0∞) (hh : Measurable h) :
+theorem lintegral_logCone (F : Type) [Field F] [NumberField F] (n r : ℕ) {c : ℝ}
+    (h : (Fin r → ℝ) → ℝ≥0∞) :
     ∫⁻ s in {s : Fin r → ℝ | (fun i => Real.exp (s i)) ∈ cone r c}, h (fun i => Real.exp (s i)) *
         ENNReal.ofReal (Real.exp (-(2 * (Module.finrank ℚ F : ℝ) * rho2 n s))) =
       ∫⁻ u in cone r c, h u * ENNReal.ofReal ((modulus F n u * ∏ i, u i)⁻¹) := by
@@ -250,7 +250,7 @@ theorem siegel_measure (h : IsCMExt F E σ) (hJ : IsHermND σ J) (hW : IsWittFra
     (ha.sub h hJ hW) (ha.cont.subtype_mk _) hsub hτa ρ hρ hρa (fun s => map_mul_torus h hJ hW ha _ s) hΩ
     (fun p hp => ⟨minParOne_subset (hΩP hp), hτ0 p (hΩP hp)⟩)
     (fun m hm t => Subtype.ext (commute_of_goodPosition h hJ hW ha hK hG m.2 hm t))
-  have hS : MeasurableSet (siegelSet σ J X Y Ω c K) := (isClosed_siegelSet h hJ hW hK hΩ hΩP hc).measurableSet
+  have hS : MeasurableSet (siegelSet σ J X Y Ω c K) := (isClosed_siegelSet h hJ hW hK hΩ).measurableSet
   have hSΩ : ∀ g ∈ siegelSet σ J X Y Ω c K, ∃ p ∈ Ω,
       ∃ t ∈ {s : Fin r → ℝ | (fun i => Real.exp (s i)) ∈ cone r c}, ∃ k ∈ K,
         g = p * (ha.sub h hJ hW t : GAd σ J) * k := by
@@ -267,7 +267,7 @@ theorem siegel_measure (h : IsCMExt F E σ) (hJ : IsHermND σ J) (hW : IsWittFra
       hh.comp (Measurable.of_eval fun i => Real.measurable_exp.comp (measurable_pi_apply i))
     have e := hC _ _ (isClosed_logCone c).measurableSet hS hSΩ f (fun s => h' fun i => Real.exp (s i)) hh'
       (fun p hp s hs k hk => hf p hp _ hs (a s) (ha.tor s) k hk)
-    rwa [lintegral_logCone F n r hc h' hh] at e
+    rwa [lintegral_logCone F n r h'] at e
   refine ⟨?_, C, key⟩
   have e := key (fun _ => 1) (fun _ => 1) measurable_const (fun _ _ _ _ _ _ _ _ => le_rfl)
   simp only [one_mul, setLIntegral_const] at e
@@ -277,7 +277,7 @@ theorem siegel_measure (h : IsCMExt F E σ) (hJ : IsHermND σ J) (hW : IsWittFra
 theorem siegel_of_core (hC : SiegelCore) : GlobalTheory.Published.SiegelSetUnitary := by
   intro F E _ _ _ _ _ σ h n J hJ r X Y hW
   obtain ⟨K, Ω, c, hK, hΩ, hΩP, hc, hPK, hG, hcov, hconj, hht, hrap⟩ := hC F E σ h n J hJ r X Y hW
-  exact ⟨K, Ω, c, hK, hΩ, hΩP, hc, iwasawa_of h hJ hW hPK, isClosed_siegelSet h hJ hW hK hΩ hΩP hc, hcov, hconj,
+  exact ⟨K, Ω, c, hK, hΩ, hΩP, hc, iwasawa_of h hJ hW hPK, isClosed_siegelSet h hJ hW hK hΩ, hcov, hconj,
     siegel_measure h hJ hW hK hΩ hΩP hc hPK hG, hht, hrap⟩
 
 end PositivityTheory.ThKR

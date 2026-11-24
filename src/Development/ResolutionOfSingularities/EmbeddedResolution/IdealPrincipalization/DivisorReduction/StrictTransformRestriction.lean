@@ -59,7 +59,7 @@ private theorem ker_le_ker_of_comp_eq {A B T : Scheme.{u}} (f : A ⟶ T) (g : B 
   exact Scheme.Hom.le_ker_comp e g
 
 theorem comap_strictTransform_of_iso {X X₁ X₁' : Scheme.{u}} (π : X₁ ⟶ X)
-    (f : X₁' ≅ X₁) (Z D : X.IdealSheafData) (_hcart : Blowup.IsLocallyGeneratedByNonZeroDivisor (Z.comap π))
+    (f : X₁' ≅ X₁) (Z D : X.IdealSheafData)
     [QuasiCompact (strictTransformι π Z D)]
     [QuasiCompact (strictTransformι (f.hom ≫ π) Z D)] :
     (Blowup.strictTransform π Z D).comap f.hom = Blowup.strictTransform (f.hom ≫ π) Z D := by
@@ -188,7 +188,7 @@ theorem comap_strictTransform_of_closedImmersion_commSq {X X₁ S S₁ : Scheme.
     rw [← he₁, Scheme.IdealSheafData.comap_comp]
   rw [h1, hmain, comap_strictTransform_of_iso
     (strictTransformSubschemeLift π Z (Scheme.Hom.ker ι)) e₁ (Z.comap (Scheme.Hom.ker ι).subschemeι)
-    (D.comap (Scheme.Hom.ker ι).subschemeι) hq.1]
+    (D.comap (Scheme.Hom.ker ι).subschemeι)]
   refine strictTransform_eq_of_comap_eq _ ρ _ _ _ _ ?_ ?_
   · rw [← Scheme.IdealSheafData.comap_comp, ← Scheme.IdealSheafData.comap_comp, hfinal]
   · rw [← Scheme.IdealSheafData.comap_comp, ← Scheme.IdealSheafData.comap_comp, hfinal]

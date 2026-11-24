@@ -150,7 +150,7 @@ namespace UpperTheory.TP
 open GlobalTheory.ThK.Dbl.Euler (cut cut_mul cut_form cut_sub cut_eq cut_one mm cont_mat prj)
 section Cut
 variable {S R k : Type} [CommRing S] [CommRing R] [Algebra S R] [Fintype k] [DecidableEq k]
-private theorem cut_add_pk {a b : S} (ha : a * a = a) (hb : b * b = b) (hab : a * b = 0) (A : Matrix k k R) :
+private theorem cut_add_pk {a b : S} (hab : a * b = 0) (A : Matrix k k R) :
     cut a A * cut b A = cut (a + b) A := by
   have h0 : b * a = 0 := by rw [mul_comm]; exact hab
   have h1 : (1 - b) * (1 - a) = 1 - (a + b) := by linear_combination hab
@@ -232,7 +232,7 @@ private theorem pr_sum_mem_pk (H : Subgroup (UA σ X.J)) (g : UA σ X.J) (T : Fi
     have : pr_pk (∑ u ∈ insert v T, Euler.idem u) (sum_sq_pk _) g = prj v g * pr_pk (∑ u ∈ T, Euler.idem u) (sum_sq_pk T) g :=
       Subtype.ext (Units.ext (by
         change cut _ (mat g) = cut (Euler.idem v) (mat g) * cut _ (mat g)
-        rw [cut_add_pk (Euler.idem_sq v) (sum_sq_pk T) (idem_mul_sum_off_pk hv), Finset.sum_insert hv]))
+        rw [cut_add_pk (idem_mul_sum_off_pk hv), Finset.sum_insert hv]))
     rw [this]
     exact mul_mem (h v (Finset.mem_insert_self _ _)) (ih fun u hu => h u (Finset.mem_insert_of_mem hu))
 private theorem mem_gInf_pk {g : UA σ X.J} : g ∈ gInf σ X ↔ realAd F 1 • (mat g - 1) = mat g - 1 := by
@@ -333,7 +333,7 @@ private theorem prod_equiv_pk {P Q R : Subgroup (UA σ X.J)} {a b c : AF F} (ha 
         ⟨pr_pk c hc g, (hR _).2 (pr_fix_pk hc g)⟩)
       invFun := fun x => x.1.1 * x.2.1.1 * x.2.2.1
       left_inv := fun g => Subtype.ext (Units.ext (show cut a (mat g) * cut b (mat g) * cut c (mat g) = mat g by
-        rw [cut_add_pk ha hb hab, cut_add_pk hd hc hdc, hs, cut_self_pk]))
+        rw [cut_add_pk hab, cut_add_pk hdc, hs, cut_self_pk]))
       right_inv := fun x => by
         obtain ⟨⟨p, hp⟩, ⟨q, hq⟩, ⟨r, hr⟩⟩ := x
         have p1 := (hP p).1 hp

@@ -320,7 +320,7 @@ theorem rdc_f0K_wt (ε : Fin n → Bool) {m : Fin n → ℤ} (hm : NonnegDom ε 
   unfold f0K
   ring
 
-theorem rdc_f0K_hw (ε : Fin n → Bool) {m : Fin n → ℤ} (hm : NonnegDom ε m) {a b : Fin n} (hab : a < b)
+theorem rdc_f0K_hw (ε : Fin n → Bool) {m : Fin n → ℤ} {a b : Fin n} (hab : a < b)
     (he : ε a = ε b) (x : KG ε) : rdc ε (Matrix.single a b 1) (f0K ε m) x = 0 := by
   rw [hwmf_rdc, hwmf_bd_single ε he]
   have h1 := hwmf_line ε m (toMK x) (single a b 1)

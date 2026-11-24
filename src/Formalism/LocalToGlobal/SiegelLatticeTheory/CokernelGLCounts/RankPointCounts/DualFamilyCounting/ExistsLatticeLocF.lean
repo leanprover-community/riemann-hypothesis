@@ -21,9 +21,9 @@ variable {K F V : Type} [Field K] [NumberField K] [StarRing K] [Field F] [Number
   [Algebra F K] [AddCommGroup V] [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
 
 theorem mem_of_isLatIn {X : Submodule K V} {L : Submodule (𝓞 K) V} (hL : IsLatIn X L) :
-    ∀ x ∈ L, x ∈ X := fun x hx => hL.2 ▸ Submodule.subset_span hx
+    ∀ x ∈ L, x ∈ X := fun _ hx => hL.2 ▸ Submodule.subset_span hx
 
-theorem isLattice_sup {X Y : Submodule K V} (hc : IsCompl X Y) {A B : Submodule (𝓞 K) V}
+theorem isLattice_sup {X Y : Submodule K V} {A B : Submodule (𝓞 K) V}
     (hA : IsLatIn X A) (hB : IsLatIn Y B) : Submodule.IsLattice K (A ⊔ B) :=
   Submodule.IsLattice.of_fg K (hA.1.sup hB.1)
 
@@ -53,7 +53,7 @@ theorem discMod_finite [FiniteDimensional K V] {h : V →ₗ⋆[K] V →ₗ[K] K
   subst hΛ₀
   have hp := h𝔭.isPrime
   have hTM : Submodule.IsFullLattice K (T ⊔ M) := by
-    refine { toIsLattice := isLattice_sup hc.symm hT hM, span_eq_top := ?_ }
+    refine { toIsLattice := isLattice_sup hT hM, span_eq_top := ?_ }
     rw [eq_top_iff, ← hc.symm.sup_eq_top, ← hT.2, ← hM.2]
     exact sup_le
       (Submodule.span_mono (SetLike.coe_subset_coe.mpr le_sup_left))

@@ -71,10 +71,10 @@ def GramMeas : Prop := ∀ {D : D7} (X : HidaSetting D) (S : Set (HmI X)), Measu
 def OrbMeas : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word), Measurable (orbM X u')
 
 def KPos : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf fibInf,
-    PushHyp X u' ψ hT μinf νinf fibInf → 0 < KVal X u'
+    PushHyp X u' ψ μinf νinf fibInf → 0 < KVal X u'
 
 def PolarLoc : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf fibInf,
-    PushHyp X u' ψ hT μinf νinf fibInf →
+    PushHyp X u' ψ μinf νinf fibInf →
     ∃ (Ω : Set (HmI X)) (a : HmI X → MfI X) (KT : HmI X → ℝ),
       Ω ∈ 𝓝 (TI X u' hT) ∧ a (TI X u' hT) = 1 ∧ ContinuousAt a (TI X u' hT) ∧
       KT (TI X u' hT) = KVal X u' ∧ ContinuousAt KT (TI X u' hT) ∧
@@ -84,7 +84,7 @@ def PolarLoc : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (�
             ∫⁻ g, φ (g • rmulT X (a T) (Y0 X u')) ∂X.measG.μGinf ∂νinf
 
 def PushCont : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf fibInf,
-    PushHyp X u' ψ hT μinf νinf fibInf →
+    PushHyp X u' ψ μinf νinf fibInf →
     ∀ a : HmI X → MfI X, a (TI X u' hT) = 1 → ContinuousAt a (TI X u' hT) →
     ∃ φ : TupI X → ℝ, Continuous φ ∧ Measurable φ ∧ HasCompactSupport φ ∧ tsupport φ ⊆ IndI X ∧ (∀ y, 0 ≤ φ y) ∧
       0 < ∫⁻ g, ENNReal.ofReal (φ (g • Y0 X u')) ∂X.measG.μGinf ∧
@@ -93,7 +93,7 @@ def PushCont : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (�
         (TI X u' hT)
 
 def HermLF : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf fibInf,
-    PushHyp X u' ψ hT μinf νinf fibInf → ∃ V ∈ 𝓝 (TI X u' hT), νinf V < ⊤
+    PushHyp X u' ψ μinf νinf fibInf → ∃ V ∈ 𝓝 (TI X u' hT), νinf V < ⊤
 
 theorem eq_of_setLIntegral {Y : Type} [TopologicalSpace Y] [MeasurableSpace Y] [OpensMeasurableSpace Y]
     (ν : Measure Y) [ν.IsOpenPosMeasure] {x : Y} {Ω V : Set Y} (hΩ : Ω ∈ 𝓝 x) (hV : V ∈ 𝓝 x) (hVf : ν V < ⊤)

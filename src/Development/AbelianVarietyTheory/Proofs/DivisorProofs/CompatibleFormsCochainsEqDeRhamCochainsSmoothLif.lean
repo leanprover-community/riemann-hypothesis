@@ -174,7 +174,7 @@ theorem smoothLift_degreeOneRes_of_deRhamCochain (w : Tot1 (OAff D.s)) :
 
 theorem smoothLift_exists_degreeOneRes (k : (KL Λ).T1) : ∃ w, Λ.Res1 k w :=
   ⟨(fun U V a ↦ (Λ.e V).symm (k.1 U V a), fun U ↦ Function.surjInv (liftOneFormsToCompatible_bijective Λ U).2 (k.2 U)),
-    fun U V a ↦ ((Λ.e V).apply_symm_apply _).symm, fun U ↦ (Function.surjInv_eq (liftOneFormsToCompatible_bijective Λ U).2 (k.2 U)).symm⟩
+    fun _ V _ ↦ ((Λ.e V).apply_symm_apply _).symm, fun U ↦ (Function.surjInv_eq (liftOneFormsToCompatible_bijective Λ U).2 (k.2 U)).symm⟩
 
 theorem smoothLift_degreeOneRes_left_unique {k k' : (KL Λ).T1} {w : Tot1 (OAff D.s)} (h : Λ.Res1 k w) (h' : Λ.Res1 k' w) : k = k' :=
   Prod.ext (by funext U V a; exact (h.1 U V a).trans (h'.1 U V a).symm)
@@ -193,7 +193,7 @@ theorem smoothLift_exists_degreeTwoRes (k : (KL Λ).T2) : ∃ w, Λ.Res2 k w :=
   ⟨(fun U V W a b ↦ (Λ.e W).symm (k.1 U V W a b),
       fun U V a ↦ Function.surjInv (liftOneFormsToCompatible_bijective Λ V).2 (k.2.1 U V a),
       fun U ↦ Function.surjInv (fm_bij Λ U 2).2 (k.2.2 U)),
-    fun U V W a b ↦ ((Λ.e W).apply_symm_apply _).symm,
+    fun _ _ W _ _ ↦ ((Λ.e W).apply_symm_apply _).symm,
     fun U V a ↦ (Function.surjInv_eq (liftOneFormsToCompatible_bijective Λ V).2 (k.2.1 U V a)).symm,
     fun U ↦ (Function.surjInv_eq (fm_bij Λ U 2).2 (k.2.2 U)).symm⟩
 

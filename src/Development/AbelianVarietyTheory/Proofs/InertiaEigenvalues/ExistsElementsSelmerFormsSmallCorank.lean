@@ -676,7 +676,7 @@ theorem fm_mapC (f : K →ₐ[X.O0 i] K') {ρ ρ' : GE N →* GL (Fin D.R.r) (X.
 
 theorem mapC_mapC (e : K ≃ₐ[X.O0 i] K') {ρ : GE N →* GL (Fin D.R.r) (X.O0 i)} (x : Z1 (red i K' ρ)) :
     mapC (e : K →ₐ[X.O0 i] K') (mapC (e.symm : K' →ₐ[X.O0 i] K) x) = x :=
-  Subtype.ext (funext fun g => funext fun a => e.apply_symm_apply _)
+  Subtype.ext (funext fun _ => funext fun _ => e.apply_symm_apply _)
 
 theorem not_indep_mapC (f : K →ₐ[X.O0 i] K') {ρ : GE N →* GL (Fin D.R.r) (X.O0 i)} {n : ℕ} (x : Fin n → Z1 (red i K ρ))
     (h : ¬ LinearIndependent K fun a => cl (x a)) : ¬ LinearIndependent K' fun a => cl (mapC f (x a)) := by

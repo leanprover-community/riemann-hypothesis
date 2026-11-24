@@ -96,7 +96,7 @@ theorem psiSmooth_holds : PsiSmoothU := by
   set Mf : P × Q → Matrix (Fin n) (Fin n) ℂ := fun p => NormedSpace.exp (A p) * NormedSpace.exp (Bm p) with hMf
   set Ff : Matrix (Fin n) (Fin n) ℂ → Matrix (Fin n) (Fin n) ℂ :=
     fun M => (2 : ℂ) • ((M - 1) * Ring.inverse (M + 1)) with hFf
-  have hpsi : psiE ε m h L₀ L₁ = fun p => Gm (Ff (Mf p)) := by
+  have hpsi : psiE m h L₀ L₁ = fun p => Gm (Ff (Mf p)) := by
     funext p
     simp only [psiE, hGm, hFf, hMf, hA, hBm, Matrix.nonsing_inv_eq_ringInverse]
     rfl
@@ -135,7 +135,7 @@ theorem psiSmooth_holds : PsiSmoothU := by
     change (2 : ℂ) • (((1 : Matrix (Fin n) (Fin n) ℂ) - 1) * _ + X * Ring.inverse ((1 : Matrix (Fin n) (Fin n) ℂ) + 1)) = X
     rw [sub_self, zero_mul, zero_add, hinv, Matrix.mul_smul, mul_one, smul_smul]
     norm_num
-  have hall : HasFDerivAt (psiE ε m h L₀ L₁) (Gm ∘L (ContinuousLinearMap.id ℝ _) ∘L (A + Bm)) 0 := by
+  have hall : HasFDerivAt (psiE m h L₀ L₁) (Gm ∘L (ContinuousLinearMap.id ℝ _) ∘L (A + Bm)) 0 := by
     rw [hpsi]
     have hF' : HasFDerivAt Ff (ContinuousLinearMap.id ℝ (Matrix (Fin n) (Fin n) ℂ)) (Mf 0) := by rw [hM0]; exact hFd
     exact Gm.hasFDerivAt.comp (0 : P × Q) (hF'.comp (0 : P × Q) hMd)

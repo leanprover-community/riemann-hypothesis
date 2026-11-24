@@ -638,7 +638,7 @@ theorem valAt_eq {X : Scheme.{0}} {Ω R : Type} [Field Ω] [CommRing R] [IsLocal
 
 theorem exists_eq_smul_wedge {X : Scheme.{0}} {Ω V : Type} [Field Ω] [AddCommGroup V] [Module Ω V]
     {ξ : Spec (CommRingCat.of Ω) ⟶ X} {L : Lat ξ V} {x : Cpt ξ} {p : ℕ} {f : Fin p → V}
-    (hf : L.IsFrameAt f x) {α : Ω} {a : ⋀[Ω]^p V} (hα : α ≠ 0)
+    (hf : L.IsFrameAt f x) {α : Ω} {a : ⋀[Ω]^p V}
     (hL : L.wedge p x = Submodule.span (regAt ξ x) {α • a}) :
     ∃ g₀ : Ω, a = g₀ • exteriorPower.ιMulti Ω p f := by
   have hmem : exteriorPower.ιMulti Ω p f ∈ L.wedge p x :=
@@ -679,8 +679,8 @@ theorem exists_const_of_flatOnModel : ∀ (E : Type) [Field E] [NumberField E] [
   have hf₀ : IsFramed U τ βF y v₀ w₀ := ⟨hy, hU, hv₀, hw₀⟩
   obtain ⟨-, hb0, hco⟩ := hgen
   obtain ⟨α, κ, hα, hκ, hWa, hWb, -⟩ := hco _ hmem
-  obtain ⟨ga, hga⟩ := exists_eq_smul_wedge f₁ hα hWa
-  obtain ⟨gb, hgb⟩ := exists_eq_smul_wedge f₂ hκ hWb
+  obtain ⟨ga, hga⟩ := exists_eq_smul_wedge f₁ hWa
+  obtain ⟨gb, hgb⟩ := exists_eq_smul_wedge f₂ hWb
   have hgb0 : gb ≠ 0 := by
     rintro rfl
     exact hb0 (by rw [hgb, zero_smul])

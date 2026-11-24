@@ -1006,7 +1006,7 @@ theorem GlobalTheory.HTSummand.Corep.mat_sum (n : ℕ) (α : Type) [CommRing α]
   rw [Matrix.sum_apply, Matrix.one_apply]
   split_ifs with h
   · subst h
-    rw [Finset.sum_eq_single a (fun b _ hb => by simp [Matrix.single_apply, hb]) (by simp)]
+    rw [Finset.sum_eq_single a (fun b _ hb => by simp [hb]) (by simp)]
     simp
   · exact Finset.sum_eq_zero fun x _ => by
       simp only [Matrix.single_apply]; rw [ite_eq_right]; rintro ⟨rfl, rfl⟩; exact h rfl

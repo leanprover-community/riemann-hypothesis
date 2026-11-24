@@ -246,7 +246,7 @@ theorem range_embHom : ∀ (D : D7) (V : HSp D) (m : ℕ) (X Y : Matrix (Fin V.r
       rw [← Matrix.map_add _ (map_add (incA D)), hF', Matrix.map_one _ (map_zero _) (map_one _)]
     have hPM : (prM V V' ι).map (incA D) * (frameMat V V' ι).map (incA D) = 1 := by
       rw [← Matrix.map_mul, hPM', Matrix.map_one _ (map_zero _) (map_one _)]
-    have hGQ := USplit.Q_fix_of_uPart hCM (hJ V) hW hg
+    have hGQ := USplit.Q_fix_of_uPart hg
     have hJu : IsUnit (JR (F := D.host.F) (AF D.host.F) V.gram).det := by
       rw [show JR (F := D.host.F) (AF D.host.F) V.gram = V.gram.map (incA D) from rfl,
         show (V.gram.map (incA D)).det = incA D V.gram.det from (RingHom.map_det (incA D) V.gram).symm]

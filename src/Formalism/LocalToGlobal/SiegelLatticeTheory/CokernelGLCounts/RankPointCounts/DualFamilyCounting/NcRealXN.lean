@@ -127,7 +127,7 @@ theorem refN_isHaarLoc (hF : IsFrameJ ε e f wf z0) {zB : Fin (2 * r + k + 1) �
     · rw [← hE.map_apply, hmap]
       exact hH.2.2.1
   · intro s hs
-    have hsN := conj_mem_Nset hF hz0 (uMat_mem s) hs
+    have hsN := conj_mem_Nset hF (uMat_mem s) hs
     have hcomp : C ∘ (fun x => s * x) = lmulM (Qi ε e f wf z0 * uMat s * Qm e f wf z0) ∘ C := by
       funext x
       simp only [Function.comp_apply, hC]

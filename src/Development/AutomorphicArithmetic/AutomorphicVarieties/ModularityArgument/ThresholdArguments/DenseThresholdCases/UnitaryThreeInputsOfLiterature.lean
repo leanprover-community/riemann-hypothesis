@@ -758,7 +758,7 @@ private theorem cont_twist {l : ℕ} [Fact l.Prime] {Γ : Type} [Group Γ] [Topo
     rw [e]
     exact (Units.continuous_val.comp hδ).smul (Units.continuous_val.comp h)
   refine Units.continuous_iff.2 ⟨hv, ?_⟩
-  simp only [Function.comp_def, ← Units.val_inv_eq_inv_val, ← map_inv]
+  simp only [← map_inv]
   exact hv.comp continuous_inv
 private theorem cc_mul_self {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {c : G ℚ Ω} (hc : Sd.IsCC c) : c * c = 1 := by
   obtain ⟨j, hj⟩ := hc

@@ -44,7 +44,7 @@ import Mathlib.Topology.Sheaves.Init
 
 namespace Formalism.MainNotions.G.ColumnFamilies
 
-theorem adm_fourteen (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CovariantDegrees.JointComponentsPaths D :=
+theorem adm_fourteen (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CovariantDegrees.JointComponentsPaths :=
   joint_components_paths_of_joint_dimension D (isotypic_projections_commute_holds D) (lower_set_types_span D) restJointDim
 
 end Formalism.MainNotions.G.ColumnFamilies

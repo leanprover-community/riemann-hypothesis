@@ -136,7 +136,7 @@ theorem HNset_iff (hF : IsFrameJ ε e f wf z0) {zB z : Fin (2 * r + k + 1) → �
     · obtain ⟨h1, h2, h3⟩ := rev_UW hF hz hhB
       exact ⟨h1, h2, h3, rev_N hF hz hzB hmB⟩
   · rintro ⟨h, n, rfl, he, hf, hzz, hn⟩
-    refine ⟨_, conj_mem_UWset hF hz (uMat_mem h) he hf hzz, _, conj_mem_Nset hF hz0 (uMat_mem n) hn, ?_⟩
+    refine ⟨_, conj_mem_UWset hF hz (uMat_mem h) he hf hzz, _, conj_mem_Nset hF (uMat_mem n) hn, ?_⟩
     rw [uMat_mul]
     simp only [← Matrix.mul_assoc]
     rw [Matrix.mul_assoc (Qi ε e f wf z0 * uMat h) (Qm e f wf z0) (Qi ε e f wf z0), Qm_mul_Qi hF, Matrix.mul_one]

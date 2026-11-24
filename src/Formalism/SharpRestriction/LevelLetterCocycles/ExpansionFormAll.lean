@@ -74,7 +74,7 @@ def ExpansionFormAll (D : D7) (HW : HWOf D.loc) : Prop :=
 
 def ExpansionFormHypothesis : Prop :=
   ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (CA CB CK : ℝ),
-    Adm1 D HW F Cm CA CB CK → DdRFull D → DiRank D HW F Cm → ExpansionFormAll D HW
+    Adm1 D HW F Cm CA CB CK → DdRFull D → DiRank D HW F → ExpansionFormAll D HW
 
 def ModelFLinkStep : Prop :=
   ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (CA CB CK : ℝ),
@@ -82,7 +82,7 @@ def ModelFLinkStep : Prop :=
 
 theorem modelFStep_of (hL : ModelFLinkStep) (hP : ExpansionFormHypothesis) :
     ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (CA CB CK : ℝ),
-      DdRFull D → DiRank D HW F Cm → Adm1 D HW F Cm CA CB CK → modelFR D HW :=
+      DdRFull D → DiRank D HW F → Adm1 D HW F Cm CA CB CK → modelFR D HW :=
   fun D HW F Cm CA CB CK hd hr hA => hL D HW F Cm CA CB CK hA (hP D HW F Cm CA CB CK hA hd hr)
 
 def ModelQLinkStep : Prop :=

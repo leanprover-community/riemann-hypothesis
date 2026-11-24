@@ -235,7 +235,7 @@ instance discreteTopology_submoduleProd [DiscreteTopology L] [DiscreteTopology L
     (f := fun x : L.prod L' => ((⟨x.1.1, x.2.1⟩, ⟨x.1.2, x.2.2⟩) : L × L'))
     (((continuous_fst.comp continuous_subtype_val).subtype_mk _).prodMk
       ((continuous_snd.comp continuous_subtype_val).subtype_mk _))
-    (fun x y h => Subtype.ext (Prod.ext (congrArg Subtype.val (congrArg Prod.fst h))
+    (fun _ _ h => Subtype.ext (Prod.ext (congrArg Subtype.val (congrArg Prod.fst h))
       (congrArg Subtype.val (congrArg Prod.snd h))))
 
 instance isZLattice_submoduleProd [DiscreteTopology L] [DiscreteTopology L'] [IsZLattice ℝ L]

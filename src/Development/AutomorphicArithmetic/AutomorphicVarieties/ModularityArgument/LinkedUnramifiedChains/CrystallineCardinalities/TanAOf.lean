@@ -772,12 +772,12 @@ section -- clump:auto
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.Rb1.Zc :
-    {D N : Type} → [inst : Group D] → [TopologicalSpace D] → [inst_2 : AddCommGroup N] → Representation ℤ D N → Set (D → N) :=
+    {D N : Type} → [Group D] → [TopologicalSpace D] → [AddCommGroup N] → Representation ℤ D N → Set (D → N) :=
     fun {D N : Type} [Group D] [TopologicalSpace D] [AddCommGroup N] (ρ : Representation ℤ D N) ↦
       {z : D → N | IsLocallyConstant z ∧ ∀ (s t : D), z (s * t) = z s + ((ρ : D → N →ₗ[ℤ] N) s : N → N) (z t)}
 
 theorem UpperTheory.Reformulated.B.Rb1.ul_zero :
-    ∀ {D N : Type} [inst : Group D] [inst_1 : TopologicalSpace D] [inst_2 : IsTopologicalGroup D] [inst_3 : AddCommGroup N]
+    ∀ {D N : Type} [Group D] [TopologicalSpace D] [IsTopologicalGroup D] [AddCommGroup N]
       (ρ : Representation ℤ D N) (I : Subgroup D) (φ : D),
       (I ⊔ Subgroup.zpowers φ).topologicalClosure = ⊤ →
         ∀ z ∈ UpperTheory.Reformulated.B.Rb1.Zc ρ, (∀ s ∈ I, z s = (0 : N)) → z φ = (0 : N) → ∀ (s : D), z s = (0 : N) := by
@@ -1619,7 +1619,7 @@ private theorem idx_prime {X κ : Type} [Group X] (l : ℕ) [hl : Fact l.Prime] 
 end SlopeTestRemainingChoices
 
 theorem UpperTheory.V.Z.J.linkOf :
-    ∀ (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] [IsLocalRing O] [CharP (ResidueField O) l] (η : G ℚ Ω →* ℤˣ) (Ψ : G ℚ Ω →* Oˣ) (σ g₁ : G ℚ Ω) (B : ValuationSubring Ω) (M : ℕ), B.valuation (l : Ω) < 1 → ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] [Algebra L Ω] [IsAlgClosure L Ω] (Φ : Fr.Frame l (ResidueField O)) (k : GalLink η Ψ σ g₁ B M L Φ) (κ : Type) [Field κ] [CharP κ l] (f : ResidueField O →+* κ) (C₀ : ℕ), (Φ.ext f).Ok C₀ → Φ.d = Module.finrank ℚ (W.Lp L) → ∃ (cw : Φ.Inf → Φ.Γ) (_ : ∀ w, cw w * cw w = 1 ∧ Φ.del (cw w) = -1), ∃ S K π ι A pl e c, GC.FLink (F := W.Lp L) (Ω := Ω) l { Φ.ext f with cw := cw } S K π ι A pl e c := by
+    ∀ (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] [IsLocalRing O] [CharP (ResidueField O) l] (η : G ℚ Ω →* ℤˣ) (Ψ : G ℚ Ω →* Oˣ) (σ g₁ : G ℚ Ω) (B : ValuationSubring Ω) (M : ℕ), B.valuation (l : Ω) < 1 → ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] [Algebra L Ω] [IsAlgClosure L Ω] (Φ : Fr.Frame l (ResidueField O)) (_ : GalLink η Ψ σ g₁ B M L Φ) (κ : Type) [Field κ] [CharP κ l] (f : ResidueField O →+* κ) (C₀ : ℕ), (Φ.ext f).Ok C₀ → Φ.d = Module.finrank ℚ (W.Lp L) → ∃ (cw : Φ.Inf → Φ.Γ) (_ : ∀ w, cw w * cw w = 1 ∧ Φ.del (cw w) = -1), ∃ S K π ι A pl e c, GC.FLink (F := W.Lp L) (Ω := Ω) l { Φ.ext f with cw := cw } S K π ι A pl e c := by
   intro Ω _ _ _ l hl O _ _ _ η Ψ σ g₁ B M hB L _ _ _ _ _ Φ k κ _ _ f C₀ ok hd
   classical
   haveI := tf L Ω
@@ -1744,7 +1744,7 @@ open UpperTheory.V.W UpperTheory.V.Pr UpperTheory.V.Z.J
 namespace UpperTheory.V.J
 
 def UnitOfP : Prop :=
-  ∀ (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (c : Coef l)
+  ∀ (Ω : Type) [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] (l : ℕ) [Fact l.Prime] (_ : Qbar l ≃+* ℂ) (c : Coef l)
     [CharP (ResidueField c.O) l] (N : ℕ) [NeZero N] (e : ℕ) (ψ : DirichletCharacter c.O N)
     (η : G ℚ Ω →* ℤˣ) (σ g₁ : G ℚ Ω) (B : ValuationSubring Ω) (M : ℕ), LinkHyp c N e η σ B M →
     ∀ (L : Type) [Field L] [NumberField L] [IsCMField L] [Algebra L Ω] [IsAlgClosure L Ω] (Φ : Fr.Frame l (ResidueField c.O))

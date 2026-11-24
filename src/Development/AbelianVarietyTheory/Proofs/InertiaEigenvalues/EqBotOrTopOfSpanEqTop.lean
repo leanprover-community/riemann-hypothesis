@@ -117,9 +117,9 @@ theorem bot_or_top {Γ k K : Type} [Field k] [Field K] [Algebra k K] {r : ℕ}
       rw [Matrix.mulVec, dotProduct, Pi.smul_apply, smul_eq_mul]
       by_cases hai : a = i
       · subst hai
-        rw [Finset.sum_eq_single j (fun b _ hb => by simp [Matrix.single_apply, hb, Ne.symm hb]) (by simp)]
+        rw [Finset.sum_eq_single j (fun b _ hb => by simp [Ne.symm hb]) (by simp)]
         simp
-      · rw [Finset.sum_eq_zero (fun b _ => by simp [Matrix.single_apply, hai, Ne.symm hai])]
+      · rw [Finset.sum_eq_zero (fun b _ => by simp [Ne.symm hai])]
         simp [hai]
     rw [h2] at h1
     have h3 := W.smul_mem (x j)⁻¹ h1

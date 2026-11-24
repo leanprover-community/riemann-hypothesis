@@ -225,7 +225,7 @@ theorem subsingleton_of_van {W : ObjectProperty C} (hW : ∀ T, W T) {j : ℕ} (
     exact ⟨y, funext fun s => (hy s (hW _)).symm⟩
 
 theorem vanishing_of_cover : ∀ {R : Type} [CommRing R] {C : Type 1} [Category.{0} C] (F : C ⥤ ModuleCat.{0} R) {ι : Type} [Fintype ι]
-    (U : ι → ObjectProperty C) (hU : ∀ α, Cosieve (U α)) (hc : ∀ T, ∃ α, U α T) (s : ℕ),
+    (U : ι → ObjectProperty C) (_ : ∀ α, Cosieve (U α)) (_ : ∀ T, ∃ α, U α T) (s : ℕ),
     ((∀ S : Finset ι, S.Nonempty → ∀ j < s, Subsingleton (HU F (capS U S) j)) → ∀ j < s, Subsingleton (CH.H F j)) ∧
     ((∀ S : Finset ι, S.Nonempty → ∀ j, Subsingleton (HU F (capS U S) j)) → ∀ j, Subsingleton (CH.H F j)) ∧
     ((∀ S : Finset ι, S.Nonempty → ∀ j > s, Subsingleton (HU F (capS U S) j)) →

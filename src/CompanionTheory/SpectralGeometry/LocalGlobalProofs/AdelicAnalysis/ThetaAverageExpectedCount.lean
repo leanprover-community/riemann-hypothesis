@@ -34,7 +34,7 @@ lemma wt_nonneg (c : ℝ) (j : ℕ) : 0 ≤ wt c j := by
   · exact zero_le_one
   · exact (Real.exp_pos _).le
 
-lemma exists_dyadic {c u : ℝ} (hc : 0 < c) (hu : 0 ≤ u) :
+lemma exists_dyadic {c u : ℝ} (hc : 0 < c) :
     ∃ j : ℕ, u ≤ 2 ^ j ∧ Real.exp (-(c * u ^ 2)) ≤ wt c j := by
   classical
   have hex : ∃ j : ℕ, u ≤ 2 ^ j := by
@@ -130,7 +130,6 @@ lemma gaussian_le_tsum {X : Type} (c t : ℝ) (hc : 0 < c) (ht : 0 < t) (s : X �
   by_cases hp : p x
   · have hq : 0 < Real.sqrt t := Real.sqrt_pos.mpr ht
     obtain ⟨j, hj, hexp⟩ := exists_dyadic (c := c) (u := Real.sqrt t * s x) hc
-      (mul_nonneg hq.le (hs x))
     have hmem : x ∈ {x | p x ∧ s x ≤ 2 ^ j / Real.sqrt t} :=
       ⟨hp, by rw [le_div_iff₀ hq, mul_comm]; exact hj⟩
     have heq : c * (Real.sqrt t * s x) ^ 2 = c * t * s x ^ 2 := by
@@ -321,7 +320,7 @@ theorem gauss_bound (B : Matrix ι ι F) (ρ : InfinitePlace F → (F →+* ℝ)
   calc Real.pi * c * t' * ‖x‖ ^ 2 = Real.pi * (t' * c * ‖x‖ ^ 2) := by ring
     _ ≤ _ := mul_le_mul_of_nonneg_left (h2.trans h1) Real.pi_pos.le
 
-theorem wt_bound (M : ℕ) (τ : InfinitePlace F → ℂ) {T : ℝ} (h0 : ∀ w, 0 ≤ (τ w).im)
+theorem wt_bound (M : ℕ) (τ : InfinitePlace F → ℂ) {T : ℝ}
     (hT : ∀ w, (τ w).im ≤ T) :
     wt M τ ≤ Real.sqrt T ^ (Fintype.card (InfinitePlace F) * M) := by
   unfold wt
@@ -401,7 +400,7 @@ theorem term_le (B : Matrix ι ι F) (ρ : InfinitePlace F → (F →+* ℝ))
       exact hp (hs _ h)
     simp [thTerm, h0]
 
-theorem add_le_mul_pow_of_sq_le_of_le_mul {w T κ C₀ C' : ℝ} {n : ℕ} (hT : 0 < T) (hκ : 0 < κ) (hC₀ : 0 ≤ C₀) (hw0 : 0 ≤ w)
+theorem add_le_mul_pow_of_sq_le_of_le_mul {w T κ C₀ C' : ℝ} {n : ℕ} (hT : 0 < T) (hC₀ : 0 ≤ C₀) (hw0 : 0 ≤ w)
     (hw : w ≤ Real.sqrt (T / κ) ^ n) :
     w * (C₀ * (C' * (Real.sqrt T ^ n)⁻¹)) ≤ C₀ * |C'| * Real.sqrt κ⁻¹ ^ n := by
   have hs : Real.sqrt (T / κ) = Real.sqrt T * Real.sqrt κ⁻¹ := by
@@ -483,7 +482,7 @@ theorem theta_integral_bound : ∀ (F : Type) [Field F] [NumberField F], ∀ [Me
     exact Finset.prod_nonneg fun w _ => by positivity
   have hwb : wt M τ ≤ Real.sqrt ((τ v₀).im / κ) ^ (Module.finrank ℚ F * M) := by
     rw [← card_places htr]
-    refine wt_bound M τ (fun w => (ht.trans_le (hτ w)).le) fun w => ?_
+    refine wt_bound M τ fun w => ?_
     rw [le_div_iff₀' hκ]
     exact hκτ v₀ w
   calc ENNReal.ofReal (wt M τ) * ∫⁻ ω, ∑' x : {x : ι → F // x ≠ 0},
@@ -494,7 +493,7 @@ theorem theta_integral_bound : ∀ (F : Type) [Field F] [NumberField F], ∀ [Me
     _ = ENNReal.ofReal (wt M τ * (C₀ *
           (C' * (Real.sqrt (τ v₀).im ^ (Module.finrank ℚ F * M))⁻¹))) := by
         rw [ENNReal.ofReal_mul hw0, ENNReal.ofReal_mul hC₀]
-    _ ≤ _ := ENNReal.ofReal_le_ofReal (add_le_mul_pow_of_sq_le_of_le_mul ht'pos hκ hC₀ hw0 hwb)
+    _ ≤ _ := ENNReal.ofReal_le_ofReal (add_le_mul_pow_of_sq_le_of_le_mul ht'pos hC₀ hw0 hwb)
 
 end GlobalTheory.CompanionTheory.SW.Core.ThetaBound
 end -- clump:auto

@@ -222,7 +222,7 @@ theorem κ_shear (κ : K ≃+* (W → ℂ)) (w v : W) (a : Fin n) (t : Fin n →
   rw [map_mul, Pi.mul_apply, κ_sig]
 
 theorem shear_mem (κ : K ≃+* (W → ℂ)) (w : W) (a : Fin n) (s t : Fin n → ℂ) {R ε L : ℝ}
-    (hε : 0 < ε) (hL : 0 < L) (hR : 0 ≤ R) (hLε : 4 * n * R ≤ L * ε) (hsa : s a = 1)
+    (hL : 0 < L) (hR : 0 ≤ R) (hLε : 4 * n * R ≤ L * ε) (hsa : s a = 1)
     (hst : ∀ b, ‖s b - t b‖ ≤ 2 / L) {X : Fin n → Fin M → K}
     (hX : X ∈ boxK κ (fun _ _ => R)) (hN : X ∈ nearK κ w s ε) :
     shearK a (sig κ w a t) X ∈ boxK κ (rad R ε a w) := by
@@ -343,7 +343,7 @@ theorem bad_le (κ : K ≃+* (W → ℂ)) (μ : Measure (Fin n → Fin M → K))
     refine Set.mem_biUnion (x := (w, a, t)) ?_ ?_
     · simp only [I, Finset.coe_product, Set.mem_prod, Finset.mem_coe, Fintype.mem_piFinset, true_and, Finset.coe_univ, Set.mem_univ]
       exact ht
-    · refine ⟨_, shear_mem κ w a s t hε hL' (by linarith) hLε hsa hst hX hN, ?_⟩
+    · refine ⟨_, shear_mem κ w a s t hL' (by linarith) hLε hsa hst hX hN, ?_⟩
       exact shearK_neg_shearK a _ (sig_self κ w a t) X
   refine denLE_mono hcover ?_ (denLE_biUnion I S (fun _ => P) hS)
   have hcard : I.card ≤ Fintype.card W * n * (2 * L + 1) ^ (2 * n) := by

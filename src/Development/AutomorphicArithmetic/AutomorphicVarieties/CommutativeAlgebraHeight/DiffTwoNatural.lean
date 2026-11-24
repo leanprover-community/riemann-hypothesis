@@ -65,8 +65,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qk4.aeval_mul_homog :
-    ∀ {n : ℕ} {A G S : Type} [inst : CommRing A]
-    [inst_1 : CommRing S] [inst_2 : Algebra A S] {P : MvPolynomial G A},
+    ∀ {n : ℕ} {A G S : Type} [CommRing A]
+    [CommRing S] [Algebra A S] {P : MvPolynomial G A},
     P.IsHomogeneous n →
       ∀ (b : S) (x : G → S),
         (MvPolynomial.aeval fun (g : G) ↦ b * x g : MvPolynomial G A → S) P =

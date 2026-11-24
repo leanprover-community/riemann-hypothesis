@@ -245,7 +245,7 @@ theorem mk_act {β : S.V ≃ₗ[E] S.V} (hβ : β ∈ Saturated.AutF Λ F)
     (hP : ∀ x : Carrier P, P (Saturated.act ⟨β, hβ⟩ x.1)) {x y : Carrier P} (h : mk Λ F P x = mk Λ F P y) :
     mk Λ F P ⟨Saturated.act ⟨β, hβ⟩ x.1, hP x⟩ = mk Λ F P ⟨Saturated.act ⟨β, hβ⟩ y.1, hP y⟩ :=
   const_of_mk (fun z : Carrier P => mk Λ F P ⟨Saturated.act ⟨β, hβ⟩ z.1, hP z⟩)
-    (fun a b hab => Quot.sound (dcrel_act hβ hab)) h
+    (fun _ _ hab => Quot.sound (dcrel_act hβ hab)) h
 
 theorem idT_act {β : S.V ≃ₗ[E] S.V} (hβ : β ∈ Saturated.AutF Λ F)
     (hP : ∀ x : Carrier P, P (Saturated.act ⟨β, hβ⟩ x.1)) {x : Carrier P} (h : IsIdT Λ F P (mk Λ F P x)) :

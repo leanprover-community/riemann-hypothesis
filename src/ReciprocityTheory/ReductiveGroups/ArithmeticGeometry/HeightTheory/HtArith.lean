@@ -13,7 +13,7 @@ theorem heights_arith
     (D δ L lr lw1 hN sF laW nuS c g0 i DF PP0' PN tableLineDegreeFive tableLineDegreeTwo PI4 Prw G Pet
       aL ade aG1 aF aG2 HMM HL Hde HF SI SN Ssum δlogδ : ℝ)
     (hD : 3 ≤ D) (hδ : 0 ≤ δ) (hL : 1 ≤ L) (hc0 : 0 ≤ c) (hc1 : c ≤ 1) (hcg : c * g0 ≤ 1 / 2)
-    (hg0 : 0 ≤ g0) (hi : 1 ≤ i)
+    (hg0 : 0 ≤ g0)
     (hP : 1 ≤ PP0' ∧ 1 ≤ PN ∧ 1 ≤ tableLineDegreeFive ∧ 1 ≤ tableLineDegreeTwo ∧ 1 ≤ PI4 ∧ 1 ≤ Prw ∧ 1 ≤ G ∧ 1 ≤ Pet)
     (hlr0 : 0 ≤ lr) (hlr : lr ≤ Prw * L) (hlw1 : lw1 ≤ Prw * L) (hhN : hN / 2 ≤ Prw * L)
     (hDF : DF ≤ L) (hlaW : laW ≤ G * L) (hnu : nuS ≤ PN * L)
@@ -21,8 +21,8 @@ theorem heights_arith
     (hUP : sF ≤ (D + 2) * δ * (PP0' * L + max 0 laW + lw1))
     (hb1 : HMM = sF + δ * hN / 2)
 
-    (haL : aL ≤ 4 / 3 * δ) (hade0 : 0 ≤ ade) (hade : ade ≤ aL) (haG10 : 0 ≤ aG1) (haG1 : aG1 ≤ aL)
-    (haF0 : 0 ≤ aF) (haF : aF ≤ (D + 4) * aL) (haG20 : 0 ≤ aG2) (haG2 : aG2 ≤ (D + 4) * aL)
+    (haL : aL ≤ 4 / 3 * δ) (hade0 : 0 ≤ ade) (hade : ade ≤ aL) (haG1 : aG1 ≤ aL)
+    (haF : aF ≤ (D + 4) * aL) (haG2 : aG2 ≤ (D + 4) * aL)
 
     (h7a : HL ≤ HMM + δ * (nuS + tableLineDegreeFive * DF + c * tableLineDegreeTwo) + D * c * g0 * ade * lr + c * g0 * Hde)
     (h7b : Hde ≤ HL + (δ * PI4 * D * L + D * aG1 * lr))

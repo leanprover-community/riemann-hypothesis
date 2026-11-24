@@ -433,7 +433,7 @@ private lemma densNonneg_S_consequence (hN : TopDensNonneg (S := S) P z z' π π
 
 theorem level_integral_formula_step (hN : TopDensNonneg (S := S) P z z' π π' L st K l0)
     (hS : SliceIn (S := S) P z z' π π' L st K l0) (hD : StepDens (S := S) P z z' π π' μ L st K l0)
-    (hM : TopDensMeas S P z z' π π' μ L st K) (w : List (Letter ℂ S)) (hw : WordOK P z z' π π' st l0 w)
+    (hM : TopDensMeas S P z z' π π' L st K) (w : List (Letter ℂ S)) (hw : WordOK P z z' π π' st l0 w)
     (lf : Fin P.r) (ih : LevelIntegralFormula P z z' π π' μ L st K w lf.succ) :
     LevelIntegralFormula P z z' π π' μ L st K w lf.castSucc := by
   intro x y hx hy c hc
@@ -515,7 +515,7 @@ theorem level_integral_formula_step (hN : TopDensNonneg (S := S) P z z' π π' L
 
 theorem integral_formula_level_zero (hT : TopIdent (S := S) P z z' π π' μ L st K l0) (hN : TopDensNonneg (S := S) P z z' π π' L st K l0)
     (hS : SliceIn (S := S) P z z' π π' L st K l0) (hD : StepDens (S := S) P z z' π π' μ L st K l0)
-    (hM : TopDensMeas S P z z' π π' μ L st K) : CompositeFormulaLevelZero (S := S) P z z' π π' μ L st K l0 := by
+    (hM : TopDensMeas S P z z' π π' L st K) : CompositeFormulaLevelZero (S := S) P z z' π π' μ L st K l0 := by
   intro w hw x y hx hy c hc
   have H : ∀ n (i : Fin (P.r + 1)), P.r - i.val = n → LevelIntegralFormula P z z' π π' μ L st K w i := by
     intro n
@@ -1172,7 +1172,7 @@ theorem herGenC_lc (X : ActualOps P.k P.r z z' π π') (hAL : IsActualLevel X L)
 theorem herKc_le_lc (X : ActualOps P.k P.r z z' π π') (hAL : IsActualLevel X L)
     (hJ : ∀ (F : Mx P.k P.r → (Wq →L[ℂ] Wp)) (Φ : RadSp P.k P.r z z' π π'), JFOKCpt P z z' F →
       IsRadJF P z z' π π' D F Φ → Φ ∈ lcSub P.k P.r z z' π π') (i : Fin (P.r + 1)) :
-    herKc S P z z' π π' L st l0 D i ≤ lcSub P.k P.r z z' π π' := Submodule.span_le.2 fun Φ h => herGenC_lc X hAL hJ h
+    herKc S P z z' π π' L st l0 D i ≤ lcSub P.k P.r z z' π π' := Submodule.span_le.2 fun _ h => herGenC_lc X hAL hJ h
 
 end Classes
 

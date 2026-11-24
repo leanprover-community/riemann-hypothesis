@@ -1606,10 +1606,10 @@ theorem desc_fil (ε : Eps l) (k : Bool) (n : ℕ) (ρ : ℕ → ℕ) (hρ : Slo
     (s : Acris l) (h : CrystallineSemistableComparison.D.Des (FilF l n (ρ r)) s) :
     Desc s (((flt F κ ε k n ρ hρ).comap (gE F κ k n)).S r).fn (jE (F.pt κ)) :=
   desc_step (fun A : PAlg l => A.IsTest) (F.pt κ) ((base l).cris n) (gE F κ k n) (FilF l n (ρ r)) ρ hρ ε.μ
-    (ε.μ_mem k (base l) n) r (fun T x => fv x)
-    (fun T x y => fv_add x y)
+    (ε.μ_mem k (base l) n) r (fun _ x => fv x)
+    (fun _ x y => fv_add x y)
     (fun T a x => (fv_smul a x).trans (congrArg (· * fv x) (mapAcr_cris T.1.fromBase n a).symm))
-    (fun T x y h => fv_inj h)
+    (fun _ _ _ h => fv_inj h)
     (fun T y => v_mem F κ k n ρ hk r T y)
     (fun f x => fv_map f.1 x) s h
 

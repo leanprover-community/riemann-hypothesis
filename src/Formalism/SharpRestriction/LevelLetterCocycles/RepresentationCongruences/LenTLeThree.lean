@@ -88,7 +88,7 @@ theorem rr_le (l : ℕ) (hl : 11 ≤ l) (h w S η H H₁ : ℕ) (hη : η + 1 �
 theorem sig_le (l : ℕ) (hl : 11 ≤ l) (h w S η : ℕ) (h1 : 1 ≤ h) (hG : w + S ≤ h) :
     (⌈((2 * (w + S) : ℕ) + ((2 * h / (l - 1) + 1 : ℕ) : ℝ)) * l / ((l : ℝ) - 1) ^ 2 + 1⌉₊ : ℝ) ≤
       3 * SgN l h w S η :=
-  Formalism.MainNotions.N.FrobeniusPowerSeries.sig_le l hl h w S η h1 hG
+  Formalism.MainNotions.N.FrobeniusPowerSeries.sig_le l hl h w S η
 
 end Num
 

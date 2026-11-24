@@ -204,7 +204,7 @@ lemma corr_mulGen_one (t : LB.Gen (LB.LinComb L φ ε)) :
   obtain rfl : j ∘ Sum.inr = j' := funext fun k => hk (Sum.inr k) k rfl
   exact shape_one_mul _ _ _ _ _
 
-lemma corr_pullGen_of_eq (t : LB.Gen (LB.LinComb L φ ε)) (ht : t.IsGen) (g g' : Z ⟶ Y) (e : g = g') :
+lemma corr_pullGen_of_eq (t : LB.Gen (LB.LinComb L φ ε)) (g g' : Z ⟶ Y) (e : g = g') :
     LB.Gen.Corr L _ ε _ ε (LB.pullGen L φ ε t g) (LB.pullGen L φ ε t g') := by
   subst e
   exact gen_corr_self _
@@ -273,7 +273,7 @@ theorem exists_normalized_to {X Y Z : Scheme.{0}} {L : LB X} (hL : L.IsLB) {K Kr
   have c1 := corr_pullGen (corr_symm hcW) z
   have c2 := corr_pullGen_mulGen v' rT z
   have c4 := corr_trans hL (corr_pullGen_comp r p z)
-    (corr_trans hL (corr_pullGen_of_eq r hr _ _ hzp) (corr_pullGen_id r))
+    (corr_trans hL (corr_pullGen_of_eq r _ _ hzp) (corr_pullGen_id r))
   have c3 := corr_mulGen (corr_one_of (fun j hj => hv1 j hj)) c4
   exact corr_trans hL c1 (corr_trans hL c2 (corr_trans hL c3 (corr_mulGen_one r)))
 

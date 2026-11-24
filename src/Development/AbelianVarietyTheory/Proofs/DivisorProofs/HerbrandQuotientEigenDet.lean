@@ -1002,7 +1002,7 @@ def compMap (τ : S) : filKer a Fil τ →ₗ[Int0 v] CompProd v a Fil τ where
     funext s; apply Subtype.ext; funext i; simp
   map_smul' c x := by
     funext s; apply Subtype.ext; funext i
-    simp [Algebra.smul_def, ← AdjoinRoot.algebraMap_eq, AlgHom.commutes]
+    simp [Algebra.smul_def, AlgHom.commutes]
     exact Or.inl rfl
 
 def diagMul (τ : S) : CompProd v a Fil τ →ₗ[C] CompProd v a Fil τ :=

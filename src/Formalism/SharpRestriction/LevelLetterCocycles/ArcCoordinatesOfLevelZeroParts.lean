@@ -313,7 +313,7 @@ theorem step_mpr (C : Ctx W) (A : ArcP n) (hA : A.OK) (c' : ZMod n) (hc' : c' �
     simp only [lE, pow_add]
     ring
   have hZN : InFNc W T a' 1 (∑ i, lA W ^ (Tt - t i) • z i) :=
-    inFNc_sum T a' _ _ fun i _ => inFNc_smul C.hR.1 T a' (lA_mem W _) (hzN i)
+    inFNc_sum T a' _ _ fun i _ => inFNc_smul T a' (lA_mem W _) (hzN i)
   have hZP : InFP W T c' (e + 1) 1 (Λ' • ∑ i, lA W ^ (Tt - t i) • z i) := by
     rw [Finset.smul_sum]
     exact Formalism.MainNotions.UnusedSlot80.Relay2.inMultiple_sum W T c' (e + 1) _ _ _ fun i _ => by

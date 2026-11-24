@@ -1064,7 +1064,7 @@ theorem norm_embedding_le_trace (a : K) (ha : ∀ σ : K →ₐ[ℚ] ℂ, ∃ r 
   rw [hφ, Complex.norm_of_nonneg (hr0 _)]
   exact Finset.single_le_sum (fun σ _ => hr0 σ) (Finset.mem_univ _)
 
-theorem abs_det_trace_form_eq_discr (hK : IsCMUnram K) :
+theorem abs_det_trace_form_eq_discr :
     |(Matrix.of fun j j' : Free.ChooseBasisIndex ℤ (𝓞 K) =>
       ((Algebra.trace ℚ K (star (integralBasis K j) * integralBasis K j') : ℚ) : ℝ)).det| = |(discr K : ℝ)| := by
   classical
@@ -1120,7 +1120,7 @@ theorem inner_sum_orthonormal_pair (h : V →ₗ⋆[K] V →ₗ[K] K) (e : Fin 2
   simp [Fin.sum_univ_two]
   ring
 
-theorem exists_coords_basis_fin_two (e : Fin 2 → V) (hli : LinearIndependent K e) (hsp : Submodule.span K (Set.range e) = ⊤) (x : V) :
+theorem exists_coords_basis_fin_two (e : Fin 2 → V) (hsp : Submodule.span K (Set.range e) = ⊤) (x : V) :
     ∃ a : Fin 2 → K, x = ∑ i, a i • e i := by
   have hx : x ∈ Submodule.span K (Set.range e) := hsp ▸ Submodule.mem_top
   obtain ⟨a, ha⟩ := (Submodule.mem_span_range_iff_exists_fun K).1 hx
@@ -1129,7 +1129,7 @@ theorem exists_coords_basis_fin_two (e : Fin 2 → V) (hli : LinearIndependent K
 theorem conj_inner_self_nonneg (hK : IsCMUnram K) (h : V →ₗ⋆[K] V →ₗ[K] K) (e : Fin 2 → V) (hli : LinearIndependent K e)
     (hsp : Submodule.span K (Set.range e) = ⊤) (he : ∀ i j, h (e i) (e j) = if i = j then 1 else 0) (x : V)
     (σ : K →ₐ[ℚ] ℂ) : ∃ r : ℝ, 0 ≤ r ∧ σ (h x x) = (r : ℂ) := by
-  obtain ⟨a, rfl⟩ := exists_coords_basis_fin_two e hli hsp x
+  obtain ⟨a, rfl⟩ := exists_coords_basis_fin_two e hsp x
   rw [inner_sum_orthonormal_pair h e he a a]
   refine ⟨∑ i, ‖σ (a i)‖ ^ 2, by positivity, ?_⟩
 
@@ -1144,7 +1144,7 @@ theorem conj_inner_self_nonneg (hK : IsCMUnram K) (h : V →ₗ⋆[K] V →ₗ[K
 theorem trace_inner_pos_of_orthonormal_pair (hK : IsCMUnram K) (h : V →ₗ⋆[K] V →ₗ[K] K) (e : Fin 2 → V) (hli : LinearIndependent K e)
     (hsp : Submodule.span K (Set.range e) = ⊤) (he : ∀ i j, h (e i) (e j) = if i = j then 1 else 0) (x : V)
     (hx : x ≠ 0) : 0 < Algebra.trace ℚ K (h x x) := by
-  obtain ⟨a, rfl⟩ := exists_coords_basis_fin_two e hli hsp x
+  obtain ⟨a, rfl⟩ := exists_coords_basis_fin_two e hsp x
   rw [inner_sum_orthonormal_pair h e he a a]
   have hi : ∃ i, a i ≠ 0 := by
     by_contra hne
@@ -1196,7 +1196,7 @@ theorem covolume_trace_lattice (hK : IsCMUnram K) (h : V →ₗ⋆[K] V →ₗ[K
     fun p => ι (integralBasis K p.1 • e p.2)
   let A : Matrix (Free.ChooseBasisIndex ℤ (𝓞 K)) (Free.ChooseBasisIndex ℤ (𝓞 K)) ℝ :=
     Matrix.of fun j j' => ((Algebra.trace ℚ K (star (integralBasis K j) * integralBasis K j') : ℚ) : ℝ)
-  have hAdet : |A.det| = |(discr K : ℝ)| := abs_det_trace_form_eq_discr hK
+  have hAdet : |A.det| = |(discr K : ℝ)| := abs_det_trace_form_eq_discr
   have hspan : zmap ι (Submodule.span (𝓞 K) (Set.range e)) = Submodule.span ℤ (Set.range v) := by
     apply le_antisymm
     · rintro w ⟨x, hx, rfl⟩

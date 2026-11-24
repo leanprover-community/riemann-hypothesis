@@ -212,7 +212,7 @@ theorem ub_unitary {c : Mx k r} (hc : c ∈ UH (Hpk k r)) (hb : c = blockW k r (
   · rw [ite_eq_right (fun h' => h (hin.mp h')), ite_eq_right h]
 
 theorem piAll_loc (z : Fin (2 * r + k + 1) → ℂ) (u : Fin k → ℝ) (Wp : Type) [NormedAddCommGroup Wp]
-    [InnerProductSpace ℂ Wp] (π : Mx k r → (Wp →L[ℂ] Wp)) (hz : inWb k r z) (hT : 0 < Tz k r z)
+    [InnerProductSpace ℂ Wp] (π : Mx k r → (Wp →L[ℂ] Wp)) (hT : 0 < Tz k r z)
     (hπ : IsHCTypeW k r z u π) :
     π 1 = 1 ∧ (∀ a ∈ UWset k r z, ∀ b ∈ UWset k r z, π (a * b) = (π a).comp (π b)) ∧
       ∀ a ∈ UWset k r z, ∀ x : Wp, ‖π a x‖ = ‖x‖ := by
@@ -290,5 +290,5 @@ end WlocSk.UnitaryRepLocal
 open WlocSk.UnitaryRepLocal in
 theorem representation_unitary : WlocSk.PiUnit := by
   intro k r z u Vp _ _ π hz hT hπ
-  obtain ⟨h1, h2, h3⟩ := piAll_loc z u Vp π hz hT hπ
+  obtain ⟨h1, h2, h3⟩ := piAll_loc z u Vp π hT hπ
   exact ⟨⟨h1, h2⟩, h3⟩

@@ -214,7 +214,7 @@ theorem exists_presents {D : Datum H} {g : ℕ} {ty : Fin g → (E →+* ℂ)} {
     funext i; simp [tyAct, mul_left_comm]
   · rw [hB, hB, hJ, hJ]
     change (hermForm _ _ _).im = (hermForm _ _ _).im
-    simp [hermForm, star_smul, Matrix.mulVec_smul, Matrix.mulVec_neg, ← mul_assoc]
+    simp [hermForm, star_smul, Matrix.mulVec_smul, Matrix.mulVec_neg]
   · rw [hB, hJ]
     have := hpos (φ x) (by simpa using hx)
     change 0 < (hermForm _ _ _).im

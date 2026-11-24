@@ -510,7 +510,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.ExistsFactor.exists_factor :
-    ∀ {K : Type} [inst : Field K] {n : ℕ} (e : Matrix (Fin n) (Fin n) K),
+    ∀ {K : Type} [Field K] {n : ℕ} (e : Matrix (Fin n) (Fin n) K),
     e * e = e →
       ∃ (r : ℕ) (M : Matrix (Fin n) (Fin r) K) (N : Matrix (Fin r) (Fin n) K),
         N * M = (1 : Matrix (Fin r) (Fin r) K) ∧ M * N = e := by

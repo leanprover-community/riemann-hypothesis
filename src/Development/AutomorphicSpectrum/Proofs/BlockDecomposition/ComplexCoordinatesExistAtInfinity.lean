@@ -93,7 +93,7 @@ theorem im_ne_zero (h : IsCMExt F E σ) {θ : E} (hθ : σ θ ≠ θ) (τ : E �
   rw [h.2.2.2]
   exact Complex.conj_eq_iff_im.2 h0
 
-theorem linInd_one (h : IsCMExt F E σ) {θ : E} (hθ : σ θ ≠ θ) :
+theorem linInd_one {θ : E} (hθ : σ θ ≠ θ) :
     LinearIndependent F ![(1 : E), θ] := by
   rw [LinearIndependent.pair_iff]
   intro s t hst
@@ -114,7 +114,7 @@ theorem linInd_one (h : IsCMExt F E σ) {θ : E} (hθ : σ θ ≠ θ) :
 
 def basisOne (h : IsCMExt F E σ) {θ : E} (hθ : σ θ ≠ θ) : Module.Basis (Fin 2) F E :=
   haveI : Module.Finite F E := Module.finite_of_finrank_pos (by rw [h.2.2.1]; norm_num)
-  basisOfLinearIndependentOfCardEqFinrank (linInd_one h hθ) (by rw [h.2.2.1]; simp)
+  basisOfLinearIndependentOfCardEqFinrank (linInd_one hθ) (by rw [h.2.2.1]; simp)
 
 theorem basisOne_zero (h : IsCMExt F E σ) {θ : E} (hθ : σ θ ≠ θ) : basisOne h hθ 0 = 1 := by
   simp [basisOne]

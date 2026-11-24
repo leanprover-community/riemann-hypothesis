@@ -149,7 +149,7 @@ theorem gB_le (h : Std p n' k1 t m c r TT a b lam0 w) (j : ℕ) (hj : 1 ≤ j) (
     · positivity
   · exact_mod_cast cap_nonneg h _ j hj hm
 
-theorem relative_presentation_of_d7 (D : Formalism.BasicNotions.D7) : RelativePresentationLiterature D := by
+theorem relative_presentation_of_d7 (D : Formalism.BasicNotions.D7) : RelativePresentationLiterature := by
   intro p n' k1 t m c r TT a b lam0 w h
   unfold Sv
   have hA : 0 ≤ gam p * ∑ s ∈ TT, (al TT lam0 s : ℝ) :=

@@ -642,7 +642,7 @@ lemma nb_iff (h : BridgeItems R ϖ η kind b lam U) {s : ℕ} (hs : s < ell)
     rw [← hΛ, ← R.pr_smul]
     exact h.locLIs s hs y
   rw [R.mem_Nb s hs, h.kind_eq s hs, h.b_eq s hs, h.η_eq,
-    ← shift_iff (nbK_mono (kind s) (b s) (Int.natCast_nonneg _) _) εΛ (H s), hF]
+    ← shift_iff (nbK_mono (kind s) (b s) _) εΛ (H s), hF]
   constructor
   · intro h1 i
     by_cases hi : 0 ≤ i
@@ -712,7 +712,7 @@ theorem bridge (hϖ : Irreducible ϖ) (h : BridgeItems R ϖ η kind b lam U) :
   have := h.frac
   refine ⟨fun y => forall₂_congr fun s hs => level_iff hϖ h hs y,
     fun y => forall₂_congr fun s hs => ?_⟩
-  have hmono := nbK_mono (kind s) (b s) (Int.natCast_nonneg _) (UOf (kind s) (b s) η (R.Fil s))
+  have hmono := nbK_mono (kind s) (b s) (UOf (kind s) (b s) η (R.Fil s))
   constructor
   · rintro ⟨e, he, hy⟩
     obtain ⟨d, hd⟩ := (R.mem_Dc s hs e).1 he

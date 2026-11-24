@@ -643,7 +643,7 @@ theorem yEnd_pow_apply (G : GAtP p) (v : Fin G.P.nV) (m : ℕ) (F : G.Fn) :
   rw [Module.End.pow_apply]
   rfl
 
-theorem exponent_condition_holds (D : Formalism.BasicNotions.D7) (G : GAtP p) : Formalism.MainNotions.SelectionLemmas.adm3 D G :=
+theorem exponent_condition_holds (D : Formalism.BasicNotions.D7) (G : GAtP p) : Formalism.MainNotions.SelectionLemmas.adm3 G :=
   fun u v F => funext fun i => ef_yv_comm G.P u v (F i)
 
 theorem yEnd_commute (G : GAtP p) (u v : Fin G.P.nV) : Commute (yEnd G u) (yEnd G v) := by
@@ -2440,7 +2440,7 @@ theorem floor_scaled_esymmOn_le_sum_pow {ι : Type} (VV : Finset ι) (κ : ι �
     _ ≤ (d : ℝ) * ((m : ℝ) * ∑ v ∈ VV, κ v) ^ k := div_le_self hpw hf
 
 theorem counting_statement_of_block_form (D : Formalism.BasicNotions.D7) (G : GAtP p) (hA : admitted D G) (hR : RemainingCountingStatement G)
-    (hfin : Module.Finite G.O G.Mna) (hfree : Fin G.P.nV → Module.Free G.O G.Mna) : Conclusion1 D G := by
+    (hfin : Module.Finite G.O G.Mna) (hfree : Fin G.P.nV → Module.Free G.O G.Mna) : Conclusion1 G := by
   intro VV t Sv Dd cStar S m κ hm hS hLP M d N τ
   have hthm : ∀ β : ℕ, AllButLE (p : G.O) M N
       ⌊(d : ℝ) * (m : ℝ) ^ (β + 1) * esymmOn VV κ (β + 1)⌋₊ (τ + β * S) := by
@@ -2501,7 +2501,7 @@ theorem open_part_of_local_and_lemma_J (G : GAtP p) (hD : ∀ v, RestLocD G v) (
   fun h1 h2 VV t Dd cStar κ hne hLP =>
     restWalk_of_local_J G VV t Dd κ (fun v _ => hD v) (hJ h1 h2 VV t Dd cStar κ hne hLP)
 
-theorem instance_of_open_part (D : Formalism.BasicNotions.D7) (G : GAtP p) (hA : admitted D G) (hR : RemainingCountingStatement G) : Conclusion1 D G :=
+theorem instance_of_open_part (D : Formalism.BasicNotions.D7) (G : GAtP p) (hA : admitted D G) (hR : RemainingCountingStatement G) : Conclusion1 G :=
   have hfin : Module.Finite G.O G.Mna := mna_finite G hA.2.1
   counting_statement_of_block_form D G hA hR hfin (fun v => mna_free G v)
 
@@ -2510,7 +2510,7 @@ theorem restLocD (G : GAtP p) (v : Fin G.P.nV) : RestLocD G v :=
 
 theorem open_part_of_lemma_J (G : GAtP p) (hJ : RestJAll G) : RemainingCountingStatement G := open_part_of_local_and_lemma_J G (restLocD G) hJ
 
-theorem instance_of_lemma_J (D : Formalism.BasicNotions.D7) (G : GAtP p) (hA : admitted D G) (hJ : RestJAll G) : Conclusion1 D G :=
+theorem instance_of_lemma_J (D : Formalism.BasicNotions.D7) (G : GAtP p) (hA : admitted D G) (hJ : RestJAll G) : Conclusion1 G :=
   instance_of_open_part D G hA (open_part_of_lemma_J G hJ)
 
 end Formalism.MainNotions.G.LatticeSystems
@@ -3972,7 +3972,7 @@ def jl_Q (G : GAtP p) (hD : JDelta G) (i : G.comp) (L : G.P.Tup) (c₀ : G.O) (T
     · rw [hD.2.1]; exact T.smul_mem a hg
 
 theorem jLocal (G : GAtP p) (t : Fin G.P.nV → ℕ) (B : Finset (Fin G.P.nV)) (Dd cStar : ℕ)
-    (κ : Fin G.P.nV → ℝ) (_hB : B.Nonempty) (hc : 4 * (Dd + 1) ≤ cStar) (hD : JDelta G)
+    (κ : Fin G.P.nV → ℝ) (hc : 4 * (Dd + 1) ≤ cStar) (hD : JDelta G)
     (hS1 : JStep1 G t B (Dd + 1)) (hSm : ∀ v ∈ B, JSmith G v (t v) Dd cStar (κ v))
     (hBase : ∀ v, JBase G v) : JLocal G t B Dd κ := by
   classical
@@ -4409,11 +4409,11 @@ variable {p : ℕ}
 theorem restJAll (G : GAtP p) : RestJAll G :=
   restJAll_of G (jEquiv G) (jDelta G) (fun v0 h2 hD => jRank G v0 h2 (jEquiv G) hD)
     (fun t B Dd cStar κ hB hD h1 hLP =>
-      jLocal G t B Dd cStar κ hB (hLP hB.choose hB.choose_spec).1 hD
+      jLocal G t B Dd cStar κ (hLP hB.choose hB.choose_spec).1 hD
         (jStep1 G h1 (jEquiv G) hD t B (Dd + 1))
         (fun v hv => jSmith G v (t v) Dd cStar (κ v) (hLP v hv)) (jBase G))
 
-theorem theta_kernel_expansion (D : Formalism.BasicNotions.D7) (G : GAtP p) (hA : admitted D G) : Conclusion1 D G :=
+theorem theta_kernel_expansion (D : Formalism.BasicNotions.D7) (G : GAtP p) (hA : admitted D G) : Conclusion1 G :=
   instance_of_lemma_J D G hA (restJAll G)
 
 end Formalism.MainNotions.G.LatticeSystems

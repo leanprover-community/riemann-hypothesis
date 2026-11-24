@@ -599,7 +599,7 @@ theorem index_imI_ext {E F : Type} [Field E] [NumberField E] [Field F] [NumberFi
     mul_comm (Module.finrank ℚ E) (Module.finrank E F), pow_mul, pow_mul, ← mul_pow, ← mul_pow, haux]
 
 theorem index_imI {E : Type} [Field E] [NumberField E] (M : IntermediateField ℚ ℂ) [NumberField M]
-    (σ : E →+* ℂ) (hσ : ∀ y, σ y ∈ M) (J : FractionalIdeal (nonZeroDivisors (𝓞 E)) E) (hJ : J ≠ 0) (s : M) (hs0 : s ≠ 0)
+    (σ : E →+* ℂ) (hσ : ∀ y, σ y ∈ M) (J : FractionalIdeal (nonZeroDivisors (𝓞 E)) E) (s : M)
     (hs : s ∈ imI M σ J) :
     ((((Submodule.span (𝓞 M) {s}).toAddSubgroup.addSubgroupOf
         (imI M σ J).toAddSubgroup).index : ℕ) : ℝ) ^ Module.finrank ℚ E *
@@ -704,7 +704,7 @@ theorem index_lineR (K E : Type) [Field K] [Field E] [NumberField K] [NumberFiel
     mul_ne_zero hI (coeIdeal_different_ne_zero K E)
   have heq := lineR_eq K E φ₀ M ι emb hinj hres hcard hM I i
   rw [heq] at hs ⊢
-  exact index_imI M (emb i) (hM i) _ hJ s hs0 hs
+  exact index_imI M (emb i) (hM i) _ s hs
 
 end Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.B5
 end -- clump:auto

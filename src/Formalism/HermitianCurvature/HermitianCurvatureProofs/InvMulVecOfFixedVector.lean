@@ -358,7 +358,7 @@ lemma om_prod_erase (r : ℕ) (c : Fin r → ℂ) (ζ : ℂ) :
   rw [← Finset.compl_singleton, ← Fin.image_castSucc, Finset.prod_image (fun a _ b _ h => Fin.castSucc_injective _ h)]
   simp
 
-lemma inv_mulVec_of_fixed_vector {n : ℕ} (W M : Matrix (Fin n) (Fin n) ℂ) (z : Fin n → ℂ) (hM : IsUnit M.det)
+lemma inv_mulVec_of_fixed_vector {n : ℕ} (W M : Matrix (Fin n) (Fin n) ℂ) (z : Fin n → ℂ)
     (hG : IsUnit (W * M).det) (hW : W *ᵥ z = z) : (W * M)⁻¹ *ᵥ z = M⁻¹ *ᵥ z := by
   have hWd : IsUnit W.det := by
     rw [Matrix.det_mul] at hG
@@ -404,7 +404,7 @@ theorem om_cell {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp
   show herm (Hpk k r) ((Hpk k r * (bigCell k r x.1 1 * x.2)ᴴ * Hpk k r) *ᵥ
     D.cofL Bs (bigCell k r x.1 1 * x.2)) (B0 j) = _
   rw [om_inv_eq hgU, hcof, Matrix.mulVec_smul, om_herm_smul,
-    inv_mulVec_of_fixed_vector _ _ _ (Formalism.QuantumDeterminants.WeylGroupFacts.isUnit_of_uh hM.1) (Formalism.QuantumDeterminants.WeylGroupFacts.isUnit_of_uh hgU) hWz]
+    inv_mulVec_of_fixed_vector _ _ _ (Formalism.QuantumDeterminants.WeylGroupFacts.isUnit_of_uh hgU) hWz]
 
 end
 

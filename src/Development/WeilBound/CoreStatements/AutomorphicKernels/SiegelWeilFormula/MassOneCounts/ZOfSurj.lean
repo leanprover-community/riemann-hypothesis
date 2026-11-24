@@ -75,7 +75,7 @@ private theorem norm_lt_one_iff_valuation_lt_one (v : HeightOneSpectrum (𝓞 F)
   Valued.toNormedField.norm_lt_one_iff
 
 theorem zOf_ker {d : ℕ} (b : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) (ϖ : v.adicCompletionIntegers F)
-    (hϖ0 : (ϖ : Fv F v) ≠ 0) (hϖ1 : ‖(ϖ : Fv F v)‖ < 1)
+    (hϖ1 : ‖(ϖ : Fv F v)‖ < 1)
     (hϖd : ∀ x : v.adicCompletionIntegers F, ‖(x : Fv F v)‖ < 1 → ϖ ∣ x)
     (w w' : Fin 1 × Fin d → v.adicCompletionIntegers F) :
     (∀ p, Valued.v ((w p : Fv F v) - w' p) < 1) ↔

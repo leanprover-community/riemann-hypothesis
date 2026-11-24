@@ -79,7 +79,7 @@ theorem add_mem_iff_of_zero {X : Type} [AddCommGroup X] {P : Set X} (h0 : (0 : X
     a + b ∈ P ↔ a ∈ P ∧ b ∈ P := by
   rcases hab with h | h <;> subst h <;> simp [h0]
 
-theorem box_split {S S' : Finset (HeightOneSpectrum (𝓞 F))} (hSS : S ⊆ S') {ε : AF F} (hε : IsIdF S ε)
+theorem box_split {S S' : Finset (HeightOneSpectrum (𝓞 F))} {ε : AF F} (hε : IsIdF S ε)
     (U : ∀ v : HeightOneSpectrum (𝓞 F), Set (Fv F v)) (hU : ∀ v, (0 : Fv F v) ∈ U v) {h y : AF F} (hh : ε * h = h)
     (hy : ε * y = 0) : sndA F (h + y) ∈ boxA S' U ↔ sndA F h ∈ boxA S' U ∧ sndA F y ∈ boxA S' U := by
   have hz : ∀ v, h.2 v = 0 ∨ y.2 v = 0 := fun v => by
@@ -119,7 +119,7 @@ theorem tR_split {S S' : Finset (HeightOneSpectrum (𝓞 F))} (hSS : S ⊆ S') {
     (hy : ε * y = 0) : tR ρ S' U (h + y) = tR ρ S' U h * bR S' U y := by
   have hf : fstA F (h + y) = fstA F h := by
     rw [map_add (f := _), fst_eq y, ker_fst hε hy, add_zero]
-  have hb := box_split hSS hε U hU hh hy
+  have hb := box_split hε U hU hh hy
   unfold tR bR
   rw [hf]
   by_cases h1 : sndA F h ∈ boxA S' U <;> by_cases h2 : sndA F y ∈ boxA S' U

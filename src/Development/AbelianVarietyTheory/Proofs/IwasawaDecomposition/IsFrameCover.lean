@@ -198,7 +198,7 @@ abbrev Tn (R : Type) [CommRing R] : Type := Sp (DualNumber R) ⟶ t.G.left
 open GlobalTheory.FactorDepth in
 theorem exists_comb {R : Type} [CommRing R] {x : Sp R ⟶ X} {n : ℕ} {u : Fin n → Tn t R} (hu : ∀ j, IsTanAtG t x (u j))
     (a : Fin n → R) : ∃ w, IsTanAtG t x w ∧ IsCombAtG t x u a w :=
-  ⟨_, isTanAtG_of _ (combT_tan _ (fun j => ovT (hu j)) (fun j => smT_zero_ovT _) a),
+  ⟨_, isTanAtG_of _ (combT_tan _ (fun j => ovT (hu j)) (fun _ => smT_zero_ovT _) a),
     (isCombAtG_iff t x (fun j => ovT (hu j)) a _).2 rfl⟩
 
 

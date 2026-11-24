@@ -171,7 +171,7 @@ theorem mem_closure_su {K R : Type} [Field K] [CharZero K] [CommRing R] [Topolog
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · exact subset_closure ⟨1, by rw [cT_one, Matrix.one_mul, Matrix.mul_one], det_one, Subsingleton.elim _ _⟩
   obtain ⟨P, hPP, hPJ, hPd⟩ := exists_proj c hc hne hn J hJ hdet
-  have h := GlobalTheory.RealApprox.mem_closure_unitary ι c σ hσι hc hne hσ hσc hd h1 h2 Jᵀ
+  have h := GlobalTheory.RealApprox.mem_closure_unitary ι c σ hσι hc hne hσc hd h1 h2 Jᵀ
     (by rw [Matrix.transpose_map]; exact congrArg Matrix.transpose hJ) (by rwa [Matrix.det_transpose]) g
     (by rw [Matrix.transpose_map]; exact (GlobalTheory.Mass.OnePlace.unitary_transpose _ _ _).1 hg)
   let Ψ : Matrix (Fin n) (Fin n) R → Matrix (Fin n) (Fin n) R := fun m => m * (1 + (σ m.det - 1) • P.map ι)

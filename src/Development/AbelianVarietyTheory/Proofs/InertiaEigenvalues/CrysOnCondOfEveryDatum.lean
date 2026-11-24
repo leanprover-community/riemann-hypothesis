@@ -320,7 +320,7 @@ open Formalism Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotion
 
 namespace GlobalTheory
 
-theorem crysOnCond_all : ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW), CrysOnCond D HW F :=
+theorem crysOnCond_all : ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW), CrysOnCond D HW :=
   fun D HW _ l _ K s LL h Y hY => GlobalTheory.CrysOnLevel.isCrysOn_of_isCrys D HW l K s LL h Y hY
 
 end GlobalTheory

@@ -171,7 +171,7 @@ theorem symm_congr_local_continuous : ∀ (F E : Type) [NontriviallyNormedField 
   let L : Matrix (Fin r) (Fin r) F ≃L[F] Matrix (Fin r) (Fin r) F :=
     ContinuousLinearEquiv.equivOfInverse ((2 : F) • ContinuousLinearMap.id F _)
       ((2 : F)⁻¹ • ContinuousLinearMap.id F _)
-      (by intro x; simp [smul_smul, inv_mul_cancel₀ h2]) (by intro x; simp [smul_smul, mul_inv_cancel₀ h2])
+      (by intro x; simp [smul_smul]) (by intro x; simp [smul_smul])
   have hf : HasStrictFDerivAt (fun Y : Matrix (Fin r) (Fin r) F => Y * Y)
       (L : Matrix (Fin r) (Fin r) F →L[F] Matrix (Fin r) (Fin r) F) 1 := by
     have h := (hasStrictFDerivAt_id (𝕜 := F) (1 : Matrix (Fin r) (Fin r) F)).mul' (hasStrictFDerivAt_id 1)

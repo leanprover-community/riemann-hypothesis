@@ -110,7 +110,7 @@ def FM (K : Cst) (X : Dat) : Prop := FixedWeightNumericalFacts K X ∧ DensityNu
 theorem midMean_of (D : Formalism.BasicNotions.D7) (h61a : RhoSumLowerBoundEdge) (h60ab : RhoUpperBoundSmallDepth) (hE : RestEdge) (hD : RestDims) (K : Cst)
     (hK : K.Pos) : MidMean D K (FM K) := fun hA X hF R =>
   have hk := keyIneq_of D K hA h61a h60ab hE hD X hF.1 R
-  mean_of K hK X hF.2.2.2 R (avg_of hD K X hF.2.1 R hk 0 (Nat.zero_le _)) (avg_of hD K X hF.2.1 R hk X.ccl le_rfl)
+  mean_of K X hF.2.2.2 R (avg_of hD K X hF.2.1 R hk 0 (Nat.zero_le _)) (avg_of hD K X hF.2.1 R hk X.ccl le_rfl)
     (meanX_of D K hK hA X hF.2.2.1 R)
 
 theorem TransportedAlt.and {K : Cst} {F G : ℝ → Dat → Prop} (hF : TransportedAlt K F) (hG : TransportedAlt K G) : TransportedAlt K fun C X => F C X ∧ G C X := by
@@ -1420,7 +1420,7 @@ theorem multiplicity_bound_nonneg (K : Cst) (hK : K.Pos) (X : Dat) : 0 ≤ m0I K
   have : 0 < K.Cm := hK.2.2.2.2.2.1
   positivity
 
-theorem multiplicity_bound_abstract (Cm CH k N1 Q Y N c S b' : ℝ) (hCm : 0 < Cm) (hCH : 2 * Cm + 24 ≤ CH) (hk : 1 ≤ k) (hN1 : 1 ≤ N1)
+theorem multiplicity_bound_abstract (Cm CH k N1 Q Y c b' : ℝ) (hCH : 2 * Cm + 24 ≤ CH) (hk : 1 ≤ k) (hN1 : 1 ≤ N1)
     (hQ : 1 ≤ Q) (hY : 1 ≤ Y) (hc0 : 0 ≤ c)
     (hsz : CH * (k ^ 2 * N1 * Q ^ 2 * Y) * (c / 2) ≤ b') :
     (Cm * k * N1 * Q * c + 12 * c) * (k * Q * Y) ≤ b' := by
@@ -1472,7 +1472,7 @@ theorem multiplicity_bound_le_ratio {K : Cst} (hK : K.Pos) {CH : ℝ} (hCH : K.T
     have : (0 : ℝ) ≤ X.cStar := by positivity
     linarith
   have hsz := B.hsz _ _ (by positivity) hw (by positivity) hu
-  exact multiplicity_bound_abstract K.Cm CH X.k X.N₁ ((X.p : ℝ) ^ X.G') X.Y X.N X.c4 0 X.b' hK.2.2.2.2.2.1 hCm hk1 B.hN1 hQ hY
+  exact multiplicity_bound_abstract K.Cm CH X.k X.N₁ ((X.p : ℝ) ^ X.G') X.Y X.c4 X.b' hCm hk1 B.hN1 hQ hY
     (by positivity) hsz
 
 theorem fixed_weight_facts_of_hyp {K : Cst} (hK : K.Pos) {CH : ℝ} (hCH : K.TM ≤ CH) {X : Dat} (h : X.Hyp K.C₀ CH) : FixedWeightNumericalFacts K X := by
@@ -1543,13 +1543,13 @@ theorem theorem_I_of_finer_open_statements (D : Formalism.BasicNotions.D7) (hR :
   intro hA
   have hT := tools_of_admitted_statements D hA
   have h16 : PairedPathIndependence D := hT.2.2.2.2.2.2.2.2.2.2.2
-  have h13 : TypeDecompositionsCommute D := hT.2.2.2.2.2.2.2.2.1
+  have h13 : TypeDecompositionsCommute := hT.2.2.2.2.2.2.2.2.1
   exact second_estimate_of_restrictions D hR (rho_sum_bound_of_maps_splitting (lattice_maps_of_functor_comparison h61) blockSplit') (cloud_bound_of_maps hC h13.2.2.1 h13.1 h16.2)
     (tensor_bound_of_order_bound restTensor restOrdBound h13.1 h13.2.1) hA
 
 theorem theorem_I_of_lattice_functor_comparison (D : Formalism.BasicNotions.D7) (h61 : LatticeFunctorComparison) (hC : RestCloudMaps) : SecondPartClosed D := by
   intro hA
-  have h12 : NestedTypeBound D := (tools_of_admitted_statements D hA).2.2.2.2.2.2.2.1
+  have h12 : NestedTypeBound := (tools_of_admitted_statements D hA).2.2.2.2.2.2.2.1
   exact theorem_I_of_finer_open_statements D (lpRingIndep_of'' h12.1 restOIso) h61 hC hA
 
 theorem theorem_I_of_model_identification (D : Formalism.BasicNotions.D7) (hTie : TwoLetterModelIdentification) (hC : RestCloudMaps) : SecondPartClosed D :=

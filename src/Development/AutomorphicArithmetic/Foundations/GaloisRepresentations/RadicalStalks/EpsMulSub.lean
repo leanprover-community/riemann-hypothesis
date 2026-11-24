@@ -133,7 +133,7 @@ private theorem eps_mul_sub {p : ℕ} (hp : p.Prime) {C : Type} [CommRing C] {w 
 
 theorem UpperTheory.Gal.Ord.lie :
     ∀ (p : ℕ) [Fact p.Prime] (D : Datum p) (R : Type) [CommRing R] (b : Base D R) (N : ℕ), 3 ≤ N → N.Coprime p → D.m = 1 →
-      ∀ (k : Type) [Field k] [IsAlgClosed k] (hk : (p : k) = 0) (β : R →+* k) (o : Obj b N (spMap β)) (i : Fin D.a) (w : Ideal (𝓞 D.F)) (f : ℕ),
+      ∀ (k : Type) [Field k] [IsAlgClosed k] (_ : (p : k) = 0) (β : R →+* k) (o : Obj b N (spMap β)) (i : Fin D.a) (w : Ideal (𝓞 D.F)) (f : ℕ),
       RingHom.ker (β.comp (b.t i)) = w → Ideal.absNorm w = p ^ f → 0 < f → ∀ π : Par p w f,
       (∀ (c : 𝓞 D.F) (h : HdR o.A), hom o c (hom o π.ε h) - β (b.t i c) • hom o π.ε h ∈ Fil o.A) ∧
       (∃ h₀ : HdR o.A, hom o π.ε h₀ ∉ Fil o.A ∧ ∀ h : HdR o.A, ∃ l : k, hom o π.ε h - l • hom o π.ε h₀ ∈ Fil o.A) ∧

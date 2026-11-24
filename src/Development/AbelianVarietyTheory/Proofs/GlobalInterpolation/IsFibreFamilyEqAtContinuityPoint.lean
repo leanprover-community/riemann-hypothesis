@@ -167,7 +167,7 @@ open scoped ENNReal in
 theorem _root_.GlobalTheory.IsFibreFamily_lintegral_preimage {V : Type} [TopologicalSpace V]
     [MeasurableSpace V] [BorelSpace V] {μ : Measure V} {f : V → ℝ} {O U : Set V} {B : Set ℝ}
     {fib : ℝ → Measure V}
-    (hf : Measurable f) (hO : IsOpen O) (hU : O ⊆ U)
+    (hf : Measurable f) (hU : O ⊆ U)
     (h : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsFibreFamily μ f id U (volume : Measure ℝ) B fib)
     (φ : V → ℝ≥0∞) (hφ : Measurable φ) (hs : ∀ v, v ∉ O → φ v = 0)
     (S : Set ℝ) (hS : MeasurableSet S) :
@@ -237,8 +237,8 @@ theorem _root_.GlobalTheory.IsFibreFamily_eq_at {V : Type} [NormedAddCommGroup V
     (h' : _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsFibreFamily μ f id U' (volume : Measure ℝ) B' fib') : fib β = fib' β := by
   have hdens := fun (S : Set ℝ) (hS : MeasurableSet S) (φ : V → ℝ≥0∞) (hφ : Measurable φ)
       (hs : ∀ v, v ∉ O → φ v = 0) =>
-    (_root_.GlobalTheory.IsFibreFamily_lintegral_preimage hf hO hU h φ hφ hs S hS).symm.trans
-      (_root_.GlobalTheory.IsFibreFamily_lintegral_preimage hf hO hU' h' φ hφ hs S hS)
+    (_root_.GlobalTheory.IsFibreFamily_lintegral_preimage hf hU h φ hφ hs S hS).symm.trans
+      (_root_.GlobalTheory.IsFibreFamily_lintegral_preimage hf hU' h' φ hφ hs S hS)
   unfold _root_.Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.IsFibreFamily at h h'
   obtain ⟨hfib, -, hcts⟩ := h
   obtain ⟨hfib', -, hcts'⟩ := h'

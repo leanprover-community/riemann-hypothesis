@@ -1225,7 +1225,7 @@ theorem intUp_of_scaled (ha : a ≠ 0) {ρ : MP p}
   · rw [hu i i, h.1 i, mul_one, mul_comm, pow_inv_pow ha]
   · rw [hu i j, h.2.1 i j hij, mul_zero, zero_mul]
 
-theorem KP_le_KD (ha : a ≠ 0) (haO : a ∈ 𝒪[(D.s.atP p).Fp]) : KP M p ≤ KD M a ha := fun x hx =>
+theorem KP_le_KD (ha : a ≠ 0) (haO : a ∈ 𝒪[(D.s.atP p).Fp]) : KP M p ≤ KD M a ha := fun _ hx =>
   (mem_KD M ha).2 ⟨intLow_scale M ha haO hx.1, intUp_scale M ha haO hx.2⟩
 
 end Scale

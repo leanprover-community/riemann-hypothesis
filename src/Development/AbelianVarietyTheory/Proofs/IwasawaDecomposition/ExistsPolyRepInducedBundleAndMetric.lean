@@ -178,8 +178,8 @@ theorem CS.congr (h : CS u y) (e : v =ᶠ[𝓝 y] u) : CS v y :=
 theorem cs_const (c : ℂ) : CS (fun _ => c) y := ⟨cInfAt_const c.re y, cInfAt_const c.im y⟩
 
 theorem CS.add (h : CS u y) (h' : CS v y) : CS (fun z => u z + v z) y :=
-  ⟨(h.1.add h'.1).congr (Eventually.of_forall fun z => Complex.add_re _ _),
-    (h.2.add h'.2).congr (Eventually.of_forall fun z => Complex.add_im _ _)⟩
+  ⟨(h.1.add h'.1).congr (Eventually.of_forall fun _ => Complex.add_re _ _),
+    (h.2.add h'.2).congr (Eventually.of_forall fun _ => Complex.add_im _ _)⟩
 
 theorem CS.mul (h : CS u y) (h' : CS v y) : CS (fun z => u z * v z) y := by
   have hm : ContDiff ℝ ∞ fun x : ℝ × ℝ => x.1 * x.2 := contDiff_fst.mul contDiff_snd
@@ -189,8 +189,8 @@ theorem CS.mul (h : CS u y) (h' : CS v y) : CS (fun z => u z * v z) y := by
       (contDiff_fst.add contDiff_snd)).congr (Eventually.of_forall fun z => Complex.mul_im _ _)⟩
 
 theorem CS.star (h : CS u y) : CS (fun z => star (u z)) y :=
-  ⟨h.1.congr (Eventually.of_forall fun z => Complex.conj_re _),
-    h.2.neg.congr (Eventually.of_forall fun z => Complex.conj_im _)⟩
+  ⟨h.1.congr (Eventually.of_forall fun _ => Complex.conj_re _),
+    h.2.neg.congr (Eventually.of_forall fun _ => Complex.conj_im _)⟩
 
 theorem cs_sum {α : Type} (s : Finset α) {w : α → CxPts X.str σ → ℂ} (h : ∀ a ∈ s, CS (w a) y) :
     CS (fun z => ∑ a ∈ s, w a z) y := by

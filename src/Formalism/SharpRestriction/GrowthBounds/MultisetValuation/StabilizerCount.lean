@@ -331,7 +331,7 @@ theorem dna_le_d (G : GAtP p) (v : Fin G.P.nV) (e : ℕ) [Module.Finite G.O G.M]
 
 theorem core (D : Formalism.BasicNotions.D7) (G : GAtP p) (v0 : Fin G.P.nV) (e : ℕ)
     (hs1 : G.Mna.map (((p : G.O) ^ e) • LinearMap.id) ≤ G.M) (hs2 : G.M ≤ G.Mna)
-    (h9 : Formalism.MainNotions.SelectionLemmas.Conclusion1 D G) (h12a : ∀ v, ∀ F ∈ G.Mna, G.yv v F ∈ G.Mna)
+    (h9 : Formalism.MainNotions.SelectionLemmas.Conclusion1 G) (h12a : ∀ v, ∀ F ∈ G.Mna, G.yv v F ∈ G.Mna)
     (h12b : ∀ v, ∀ F ∈ G.M, G.yv v F ∈ G.M) (h13 : G.FinClasses)
     (VV : Finset (Fin G.P.nV)) (t Sv : Fin G.P.nV → ℕ) (Dd cStar S m : ℕ) (κ : Fin G.P.nV → ℝ)
     (V' : Submodule G.O G.Fn) (hm : 1 ≤ m) (hS : ∀ v ∈ VV, Sv v ≤ S)
@@ -432,7 +432,7 @@ theorem vUnit_eq (G : GAtP p) (hp0 : (p : G.O) ≠ 0) :
 theorem coreT (D : Formalism.BasicNotions.D7) (G : GAtP p) {T : Type} [DecidableEq T] [Nonempty T] (vOf : T → Fin G.P.nV)
     (VVp : Finset T) (e m Dd cStar : ℕ) (tN SN : T → ℕ) (kap : T → ℝ) (Vr : Submodule G.O G.Fn)
     (hs1 : G.Mna.map (((p : G.O) ^ e) • LinearMap.id) ≤ G.M) (hs2 : G.M ≤ G.Mna)
-    (h9 : Formalism.MainNotions.SelectionLemmas.Conclusion1 D G) (h12a : ∀ v, ∀ F ∈ G.Mna, G.yv v F ∈ G.Mna)
+    (h9 : Formalism.MainNotions.SelectionLemmas.Conclusion1 G) (h12a : ∀ v, ∀ F ∈ G.Mna, G.yv v F ∈ G.Mna)
     (h12b : ∀ v, ∀ F ∈ G.M, G.yv v F ∈ G.M) (h13 : G.FinClasses)
     (hm : 1 ≤ m) (hinj : Set.InjOn vOf (VVp : Set T))
     (hLP : ∀ t0 ∈ VVp, LPprime (W := G.P.W (vOf t0)) (Qq := G.P.Qq (vOf t0)) (O := G.O) (Kf := G.Kf) p

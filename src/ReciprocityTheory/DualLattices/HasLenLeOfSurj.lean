@@ -139,7 +139,7 @@ lemma monX_mem_sq (D : Lifts H U X) {α : Nb p g} (h0 : α ≠ 0) (h1 : ∀ k, �
   exact Submodule.subset_span ⟨xL D j, D.x_mem j, monX D (Function.update α j (α j - 1)),
     monX_mem_aug D hβ, monX_split D hj'⟩
 
-lemma sub_lin_mem_sq (hv : v.Integers R) (D : Lifts H U X) (hdet : (valM D).det ≠ 0)
+lemma sub_lin_mem_sq (D : Lifts H U X) (hdet : (valM D).det ≠ 0)
     (hbasis : H.AA.carrier = Submodule.span R (Set.range fun (α : Nb p g) (y : Nb p g) =>
       ∏ j, (algebraMap R C (D.ε j) * D.u j y) ^ (α j).val))
     {f : Nb p g → C} (hf : f ∈ augIdeal H.AA.carrier) :

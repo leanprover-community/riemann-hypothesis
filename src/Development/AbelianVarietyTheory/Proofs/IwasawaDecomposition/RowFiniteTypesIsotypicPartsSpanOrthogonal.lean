@@ -117,7 +117,7 @@ open Formalism.L2.NG (FinTyp)
 
 def isoSetoid (L : Type) [Field L] [NumberField L] [IsCMField L] (n : ℕ) : Setoid (FinTyp L n) where
   r π π' := π.Iso π'
-  iseqv := ⟨fun π => Formalism.L2.NG.IsoRep.refl _, fun {π _} h => Formalism.L2.NG.IsoRep.symm π.stable h,
+  iseqv := ⟨fun _ => Formalism.L2.NG.IsoRep.refl _, fun {π _} h => Formalism.L2.NG.IsoRep.symm π.stable h,
     fun h h' => Formalism.L2.NG.IsoRep.trans h h'⟩
 
 theorem isotIn_le_of_iso {D : D7} {n : ℕ} {A : Type} [AddCommGroup A] [Module ℂ A]

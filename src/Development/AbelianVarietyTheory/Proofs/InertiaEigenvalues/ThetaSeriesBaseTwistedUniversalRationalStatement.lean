@@ -735,7 +735,7 @@ theorem exists_order : ∀ (D : D7) (ρ : Setup D.ntw), ρ.Good → ρ.LevelOf D
 
 
 open Classical in
-theorem mu_mem_small : ∀ (D : D7) (Γ : Type) [Group Γ] [Fintype Γ] (Pl0 I0 T0 : Type) (A3 : FamIn3 D.what₂.LL Γ Pl0 I0 (List ℕ) T0 D.R.m) (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (Rl : RealDat3 D A3 T.Q.c.F) (cG : G0 Rl.Pg D.R.r ≃* G0g D.nd) (S : NX.RatDat D.ntw) (YS : NX.NExpRealS Rl cG S) (F : Face D A3.A) (ρ : Setup D.ntw), ρ.Good → RealPin Rl cG ρ → LawsJ T → GlobalTheory.Hk3.Core Rl.toRealDat F → IsGalois ℚ D.LL0 → Formalism.L2.Host.ValLL0 D Rl.C → (∀ (k : Fin 2) (z : ℂ), z ^ (D.host.g k * (D.host.g k - 1)) = 1 → z ∈ (embLL0 D).fieldRange) → ∀ (i : D.ntw.Tw) (j : Fin D.R.m) (b : Bool), ∀ PP ∈ (ρ.B i j b).G.Pg, ∀ u, (((ρ.B i j b).G.mu PP u : Circle) : ℂ) ∈ (embLL0 D).fieldRange := by
+theorem mu_mem_small : ∀ (D : D7) (Γ : Type) [Group Γ] [Fintype Γ] (Pl0 I0 T0 : Type) (A3 : FamIn3 D.what₂.LL Γ Pl0 I0 (List ℕ) T0 D.R.m) (T : CoreJ D) [Algebra T.Q.c.F D.what₂.LL] (Rl : RealDat3 D A3 T.Q.c.F) (cG : G0 Rl.Pg D.R.r ≃* G0g D.nd) (S : NX.RatDat D.ntw) (_ : NX.NExpRealS Rl cG S) (F : Face D A3.A) (ρ : Setup D.ntw), ρ.Good → RealPin Rl cG ρ → LawsJ T → GlobalTheory.Hk3.Core Rl.toRealDat F → IsGalois ℚ D.LL0 → Formalism.L2.Host.ValLL0 D Rl.C → (∀ (k : Fin 2) (z : ℂ), z ^ (D.host.g k * (D.host.g k - 1)) = 1 → z ∈ (embLL0 D).fieldRange) → ∀ (i : D.ntw.Tw) (j : Fin D.R.m) (b : Bool), ∀ PP ∈ (ρ.B i j b).G.Pg, ∀ u, (((ρ.B i j b).G.mu PP u : Circle) : ℂ) ∈ (embLL0 D).fieldRange := by
   intro D Γ _ _ Pl0 I0 T0 A3 T _ Rl cG S YS F ρ hρ hpin hT hcore hgal hval hroots i j b PP hPP u
   obtain ⟨a, ha⟩ := hρ.Pg i j b PP hPP
   exact UnivRat.char_mem_of_over hroots ha ((ρ.B i j b).G.muC PP) u
@@ -1217,7 +1217,7 @@ theorem realRd_eq_zero (fw : FWTie T Rl.toRealDat κ v₀) {ρ : Setup D.ntw} (h
     (h : T.toCore.cuspA ((j : ℕ) + 1) (wtA (κ j)) (κ j).n = ⊥) (ν : ℂ) (f : D.nexp.Fm i ((j : ℕ) + 1) b) :
     realRd YS v₀ hρ i j b ν f = 0 := by
   change ν⁻¹ • evK YS v₀ hρ i j b (YS.eF i _ b (Nat.le_add_left _ _) j.2 f) = 0
-  have key : ∀ x : NX.KB S i b ⊗[S.Ks] NX.FmK S ((j : ℕ) + 1), evK YS v₀ hρ i j b x = 0 := fun x => by
+  have key : ∀ x : NX.KB i ⊗[S.Ks] NX.FmK S ((j : ℕ) + 1), evK YS v₀ hρ i j b x = 0 := fun x => by
     induction x using TensorProduct.induction_on with
     | zero => exact map_zero _
     | add x y hx hy => rw [map_add (f := _), hx, hy, add_zero]

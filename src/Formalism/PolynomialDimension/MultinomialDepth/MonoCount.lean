@@ -689,7 +689,7 @@ variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 
 def fsj (N r j0 : ℕ) : Fin N × Fin r → Prop := fun v => (v.1 : ℕ) < j0
 
-instance (N r j0 : ℕ) : DecidablePred (fsj N r j0) := fun v => Nat.decLt _ _
+instance (N r j0 : ℕ) : DecidablePred (fsj N r j0) := fun _ => Nat.decLt _ _
 
 def wlat (N r j0 : ℕ) : Fin N × Fin r → ℤ := fun v => if (v.1 : ℕ) < j0 then 0 else 1
 
@@ -813,7 +813,7 @@ variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 
 theorem slc_ycond [NeZero r] (L : Letters N) {j0 J : ℕ} (hJ : J ≤ j0) (M : WithTop ℤ) (m : Fin N × Fin r →₀ ℕ)
     {F : MvPolynomial (Fin N × Fin r) ℚ_[p]} (hF : F ∈ YCond p L J M) : slc (fsj N r j0) m F ∈ YCond p L J M :=
-  ycond_of_comm L J M (slc (fsj N r j0) m) (fun c d F => slc_glAct L hJ c d m F) (fun ν F hF => slc_wh L hJ m hF) F hF
+  ycond_of_comm L J M (slc (fsj N r j0) m) (fun c d F => slc_glAct L hJ c d m F) (fun _ _ hF => slc_wh L hJ m hF) F hF
 
 theorem slc_pol (L : Letters N) (j0 : ℕ) (m : Fin N × Fin r →₀ ℕ) {x : MvPolynomial (Fin N × Fin r) ℚ_[p]}
     (hx : x ∈ Pol p r L) : slc (fsj N r j0) m x ∈ Pol p r (Lz L j0) := by
@@ -1045,11 +1045,11 @@ theorem whc_keep {σ M M' : Type} [AddCommMonoid M] [AddCommMonoid M'] (w : σ �
 
 theorem psi_glAct (L L' : Letters N) (j0 j : ℕ) (c d : Fin r) (x : MvPolynomial (Fin N × Fin r) ℚ_[p]) :
     psi p L j0 (glAct p L' j c d x) = glAct p L' j c d (psi p L j0 x) :=
-  whc_comm _ _ (fun D x hx => glAct_wL L' j c d hx) _ x
+  whc_comm _ _ (fun _ _ hx => glAct_wL L' j c d hx) _ x
 
 theorem psi_comp (L L' : Letters N) (j0 j : ℕ) (ν : Fin r → ℤ) (x : MvPolynomial (Fin N × Fin r) ℚ_[p]) :
     psi p L j0 ((GA p L' j).comp ν x) = (GA p L' j).comp ν (psi p L j0 x) :=
-  whc_comm _ ((GA p L' j).comp ν) (fun D x hx => whc_keep _ _ _ _ hx) _ x
+  whc_comm _ ((GA p L' j).comp ν) (fun _ _ hx => whc_keep _ _ _ _ hx) _ x
 
 theorem phi_props (L : Letters N) (j0 : ℕ)
     (π : MvPolynomial (Fin N × Fin r) ℚ_[p] →ₗ[ℚ_[p]] MvPolynomial (Fin N × Fin r) ℚ_[p])

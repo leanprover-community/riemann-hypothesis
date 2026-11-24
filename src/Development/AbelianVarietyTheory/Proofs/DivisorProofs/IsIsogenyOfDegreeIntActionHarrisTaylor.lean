@@ -201,7 +201,7 @@ end GlobalTheory.TateTorsion
 
 open GlobalTheory.TateTorsion in
 theorem GlobalTheory.UPel.HT.TateIsoO.card_pow_eq_one : ∀ (p : ℕ) [Fact p.Prime] (D : GlobalTheory.UPel.HT.Datum p) (k : Type) [Field k] (Q : Type) [Group Q]
-    (act : D.O → Q → Q) (e : ℕ → Q → Q → kˣ → Prop) (I : GlobalTheory.UPel.HT.TateIsoO D k Q act e) (l : ℕ),
+    (act : D.O → Q → Q) (e : ℕ → Q → Q → kˣ → Prop) (_ : GlobalTheory.UPel.HT.TateIsoO D k Q act e) (l : ℕ),
     l.Prime → l ≠ p → Nat.card {q : Q // q ^ l = 1} = l ^ (D.m * D.n * Module.finrank ℚ D.F) := by
   intro p hp D k _ Q _ act e I l hl hne
   haveI := D.freeLa

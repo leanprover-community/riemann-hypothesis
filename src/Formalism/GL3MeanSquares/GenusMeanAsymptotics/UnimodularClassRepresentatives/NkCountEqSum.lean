@@ -315,7 +315,7 @@ theorem nkCount_eq_sum (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF 
     rintro rfl
     rw [map_zero] at hn'
     exact S.hx₀ (hx.trans hn'.symm)
-  obtain ⟨g, hg, hgy⟩ := exists_isom_map_of_eq hK hs hd hy0 (hn'.trans hx.symm)
+  obtain ⟨g, hg, hgy⟩ := exists_isom_map_of_eq hs hd (hn'.trans hx.symm)
   have hMS : Formalism.HermitianLatticesTheory.gmap g (locF 𝔭 L) ∈ MSet S L 𝔭 := ⟨⟨g, hg, rfl⟩, ⟨y', hy', hgy⟩⟩
   obtain ⟨M₀, ⟨hM₀, g', hg', e⟩, -⟩ := hR.2 _ hMS
   obtain ⟨hγ₀, e₀⟩ := hγ M₀ hM₀

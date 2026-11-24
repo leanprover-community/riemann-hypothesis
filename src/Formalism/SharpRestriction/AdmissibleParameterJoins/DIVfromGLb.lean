@@ -105,7 +105,7 @@ theorem scale_pos (s : Scale) : 0 < s.x ∧ 0 < s.L ∧ 0 < s.b ∧ 0 < s.a ∧ 
 
 theorem orderBound_of_fifth_sixth (D : D7) (L : SizeData₂ D) (Cn C5 C6 cL : ℝ)
     (h5 : flipTwoThree.Conclusion5 D Cn C5 L.sc.x) (h6 : flipTwoThree.Conclusion6 D Cn C6 L.sc.x)
-    (hcL : 1 ≤ cL) (hrd : 1 ≤ D.host.rdE)
+    (hcL : 1 ≤ cL)
     (hN : NumsL D L Cn cL) (hW : WtsL D L Cn) (CV : ∀ u, flipTwoThree.ColVal D u) :
     LocalQuadraticParts.FrobeniusExpansionCongruence L (max (max C5 C6) 0 * cL) := by
   intro u
@@ -183,6 +183,6 @@ theorem family_orderBound_of_fifth_sixth {eps : ℝ} (Fm : Formalism.MainNotions
   have hxx := Fm.L_x x i hx1
   have p5 : flipTwoThree.Conclusion5 (Fm.D x i) Cn C5 (Fm.L x i).sc.x := by rw [hxx]; exact hC5 x hxa hx1 i
   have p6 : flipTwoThree.Conclusion6 (Fm.D x i) Cn C6 (Fm.L x i).sc.x := by rw [hxx]; exact hC6 x hxb hx1 i
-  exact orderBound_of_fifth_sixth (Fm.D x i) (Fm.L x i) Cn C5 C6 cL p5 p6 hcL hrd hN hW (fun u => (hCV u).some)
+  exact orderBound_of_fifth_sixth (Fm.D x i) (Fm.L x i) Cn C5 C6 cL p5 p6 hcL hN hW (fun u => (hCV u).some)
 
 end Formalism.MainNotions.J

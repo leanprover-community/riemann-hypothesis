@@ -498,7 +498,7 @@ namespace GlobalTheory.StdUnn.SkewNorm
 
 theorem exists_norm_eq {R : Type} [CommRing R] (c : R →+* R) (a : R) (ha : c a = -a) (B B' : Ideal R)
     (hsup : B ⊔ B' = ⊤) (h1 : ∀ x ∈ B, c x ∈ B') (h2 : ∀ y ∈ B', c y ∈ B)
-    (hP : ∀ P : Ideal R, P.IsPrime → a ∈ P → B ≤ P ∨ B' ≤ P) (hcc : ∀ x, c (c x) = x) :
+    (hP : ∀ P : Ideal R, P.IsPrime → a ∈ P → B ≤ P ∨ B' ≤ P) :
     ∃ α η : R, α * c α = a * η ∧ IsCoprime η a := by
   obtain ⟨x, hx, y, hy, hxy⟩ := Submodule.mem_sup.1 ((Ideal.eq_top_iff_one _).1 hsup)
   have hrad : x * c x ∈ (Ideal.span {a}).radical := by
@@ -699,7 +699,7 @@ theorem exists_skew_norm_mul_unit : ∀ D : D7, ∃ μ : D.host.E, IsSkew μ ∧
   have hint : IsIntegral ℤ a₀ := IsIntegral.of_pow two_pos (by rw [hsq]; exact (isIntegral_natCast _).neg)
   set a : 𝓞 D.host.E := ⟨a₀, hint⟩
   have ha : a ^ 2 = -(D.host.q : 𝓞 D.host.E) := RingOfIntegers.ext (by
-    simp only [RingOfIntegers.coe_eq_algebraMap, map_pow, map_neg, map_natCast]; exact hsq)
+    simp only [map_pow, map_neg, map_natCast]; exact hsq)
   let c : 𝓞 D.host.E →+* 𝓞 D.host.E := MulSemiringAction.toRingHom _ _ D.host.conj
   have hcv : ∀ x, ((c x : 𝓞 D.host.E) : D.host.E) = star (x : D.host.E) := fun x => (hs x).symm
   have hcc : ∀ x, c (c x) = x := fun x => RingOfIntegers.ext (by rw [hcv, hcv, star_star])
@@ -708,7 +708,7 @@ theorem exists_skew_norm_mul_unit : ∀ D : D7, ∃ μ : D.host.E, IsSkew μ ∧
     (fun y hy => by
       obtain ⟨x, hx, rfl⟩ := (Ideal.mem_map_iff_of_surjective c (fun z => ⟨c z, hcc z⟩)).1 hy
       rwa [hcc])
-    (fun P hp haP => hp.mul_le.1 (D.host.𝔟_spec.1 ▸ different_le D a ha P hp haP)) hcc
+    (fun P hp haP => hp.mul_le.1 (D.host.𝔟_spec.1 ▸ different_le D a ha P hp haP))
   have hu : ¬ IsUnit a := fun h => by
     have h2 : IsUnit (D.host.q : 𝓞 D.host.E) := by
       have := (h.pow 2).neg

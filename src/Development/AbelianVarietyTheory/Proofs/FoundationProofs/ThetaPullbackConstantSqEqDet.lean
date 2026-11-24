@@ -377,7 +377,7 @@ theorem normSq_ne_zero (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (hC : Cr
     (hG : G ∈ ThSp D (tor0 D cc δ) A) (hne : G ≠ 0) : normSq D (tor0 D cc δ) A G ≠ 0 := by
   obtain ⟨hfg, hsp, hd, hs⟩ := GlobalTheory.ThetaInter.klat_facts hC hA
   have hH := GlobalTheory.ThetaInter.isHerm_sesqOf D (tor0 D cc δ) N N'
-  have hdisc := GlobalTheory.ThetaInter.discrete_of_selfDual hH hd hfg
+  have hdisc := GlobalTheory.ThetaInter.discrete_of_selfDual hd hfg
   have : Countable A := countable_of_Lindelof_of_discrete
   obtain ⟨n, b, hb⟩ := GlobalTheory.ThetaInter.exists_basis hdisc hsp
   have hFd := exists_bounded_domain volume b hb
@@ -474,7 +474,7 @@ theorem const_sq_of_det_ne_zero (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ)
   have haA : ∀ z, z ∈ LaB D (tor0 D cc δ) b' ↔ a z ∈ LaB D (tor0 D cc δ) b := by
     intro z; rw [hmem, hmem']; simp only [ha]
   have hnz := fun h => normSq_ne_zero D cc δ hC hK hθ h
-  have hdisc := GlobalTheory.ThetaInter.discrete_of_selfDual (GlobalTheory.ThetaInter.isHerm_sesqOf D (tor0 D cc δ) N N')
+  have hdisc := GlobalTheory.ThetaInter.discrete_of_selfDual
     (GlobalTheory.ThetaInter.klat_facts hC hK).2.2.1 hfg
   rw [← hθn] at hθn'
   generalize LaB D (tor0 D cc δ) b = A at *

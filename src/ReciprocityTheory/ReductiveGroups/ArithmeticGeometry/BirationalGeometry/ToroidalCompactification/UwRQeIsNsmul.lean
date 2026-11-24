@@ -17,7 +17,7 @@ open ReciprocityTheory.ChartRestriction.G.Semi
 
 attribute [local instance] Over.cartesianMonoidalCategory
 
-theorem uwRQe_gen {X : Scheme.{0}} {L : LB X} (hL : L.IsLB) {Y Y' : Scheme.{0}} {K : Type} [Fintype K]
+theorem uwRQe_gen {X : Scheme.{0}} {L : LB X} {Y Y' : Scheme.{0}} {K : Type} [Fintype K]
     {φ : K → (Y ⟶ X)} {φ' : K → (Y' ⟶ X)} {ε : K → ℤ} (g : Y' ⟶ Y) (hφ : ∀ k, φ' k = g ≫ φ k)
     (t : LB.Gen (LB.LinComb L φ ε)) (ht : t.IsGen) :
     ∃ t' : LB.Gen (LB.LinComb L φ' ε), t'.IsGen ∧
@@ -86,7 +86,7 @@ theorem uwRQe_sgen (g : Out.GtPtF D F) (χ : D.X) :
     ∃ t' : LB.Gen (LB.LinComb D.P.L (Out.DegPre.gtφ D F' (uwRQe_rho f hf ≫ g.b) χ) Out.DegPre.gtε), t'.IsGen ∧
       ∀ (Z : Scheme.{0}) (r : Z ⟶ (Out.TF (R := R) F').left) (z : Z) (J : (Z ⟶ D.P.A.left) → D.P.L.ι),
         Good D.P.L z J → val t' r z J = val (g.s χ) (r ≫ spMap f) z J :=
-  uwRQe_gen D.P.isLB (spMap f) (fun k => uwRQe_gtφ D f hf g.b χ k) (g.s χ) (g.isGen χ)
+  uwRQe_gen (spMap f) (fun k => uwRQe_gtφ D f hf g.b χ k) (g.s χ) (g.isGen χ)
 
 theorem uwRQe_cub {Z : Scheme.{0}} {z : Z} {J : (Z ⟶ D.P.A.left) → D.P.L.ι} (hJ : Good D.P.L z J)
     (x x' y : Out.TF (R := R) F' ⟶ D.P.A) (u u' v : Out.TF (R := R) F ⟶ D.P.A) (hx : x = uwRQe_rho f hf ≫ u)

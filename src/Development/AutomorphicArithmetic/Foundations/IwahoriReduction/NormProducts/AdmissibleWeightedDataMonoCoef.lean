@@ -1152,7 +1152,7 @@ theorem UpperTheory.Kd.K4.mlOf2 :
     SymEx → SApi → SInvApi → SBStab → SSlD → SCohApi → SCycZ → STop0 → KatoClassNormCompatibleCyclotomic → KatoClassCompatibleModPowers → ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε) (N : ℕ) [NeZero N] (e : ℕ),
       Nat.Coprime l N → l ≠ 2 → 1 ≤ e → ∃ c₁ : ℕ, ∀ c₀ : ℕ, c₁ ≤ c₀ → ∀ (ι : Qbar l ≃+* ℂ) (gN : Newform (2 * e + 1)) (A : ValuationSubring Ω) (W : R2 Ω l)
       (pr : X.Fn l → Fin 2 → Qbar l) (x : ZMod N) (c d : ℕ) (gm : (ZMod l)ˣ → SL(2, ℤ)) (ψ : ZMod l → Qbar l) (cf : Coef l),
-      AdmissibleNewformZetaData ι e gN A W X pr N x c d gm ψ cf → ∃ Y : ∀ r : ℕ, (Ω ≃ₐ[ℚ] Ω) → (ZMod (l ^ r))ˣ → Fin 2 → Qbar l,
+      AdmissibleNewformZetaData ι e gN A W X pr N c d gm ψ cf → ∃ Y : ∀ r : ℕ, (Ω ≃ₐ[ℚ] Ω) → (ZMod (l ^ r))ˣ → Fin 2 → Qbar l,
         IsZetaSystemFixedExponent X l pr W e ψ N x c d (2 * e + 1) gm cf c₀ Y ∧ (∀ r, ShCoc (rhoK W e ψ) (cycMod (F := ℚ) (Ω := Ω) l r)⁻¹ (Y r)) ∧
         (∀ r, Y r = GlobalTheory.KA.push (redL l r) (Y (r + 1))) ∧ (∀ r y i, Continuous fun s => Y r s y i) ∧ (∀ r s u i, Y r s u i ∈ cf.O) := by
   intro hSym hA hI hBS hS hC hZc hT hNr hNn l _ Ω _ _ _ ε X N _ e hlN hl2 he
@@ -1291,7 +1291,7 @@ theorem UpperTheory.Kd.K4.ml :
       (gN : Newform (2 * e + 1)) (A : ValuationSubring Ω) (W : R2 Ω l) (ε : Ω →+* ℂ) (X : Tower Ω ε)
       (pr : X.Fn l → Fin 2 → Qbar l) (N : ℕ) [NeZero N] (x : ZMod N) (c d : ℕ) (gm : (ZMod l)ˣ → SL(2, ℤ))
       (ψ : ZMod l → Qbar l) (cf : Coef l),
-      (∀ r₀, gm r₀ ∈ CongruenceSubgroup.Gamma1 N) → Nat.Coprime l N → l ≠ 2 → 1 ≤ e → (∃ φ : ℂ → ℂ, DifferentiableOn ℂ φ Hs ∧ X.an X.jK = (φ : Mero)) → AdmissibleNewformZetaData ι e gN A W X pr N x c d gm ψ cf →
+      (∀ r₀, gm r₀ ∈ CongruenceSubgroup.Gamma1 N) → Nat.Coprime l N → l ≠ 2 → 1 ≤ e → (∃ φ : ℂ → ℂ, DifferentiableOn ℂ φ Hs ∧ X.an X.jK = (φ : Mero)) → AdmissibleNewformZetaData ι e gN A W X pr N c d gm ψ cf →
       ∃ c₁ : ℕ, ∀ c₀ : ℕ, c₁ ≤ c₀ →
       ∃ Y : ∀ r : ℕ, (Ω ≃ₐ[ℚ] Ω) → (ZMod (l ^ r))ˣ → Fin 2 → Qbar l,
         IsZetaSystemFixedExponent X l pr W e ψ N x c d (2 * e + 1) gm cf c₀ Y ∧
@@ -1329,7 +1329,7 @@ theorem g3 : ∀ (l : ℕ) [Fact l.Prime] (Ω : Type) [Field Ω] [Algebra ℚ Ω
     (∀ r, Y r = push (redL l r) (Y (r + 1))) ∧ (∀ r y i, Continuous fun s => Y r s y i) ∧ (∀ r s u i, Y r s u i ∈ cf.O) := by
   intro l _ Ω _ _ _ ι e gN A W ε X pr N _ cw c d gm ψ cf hφ hgm hcop hl2 he hcw hadm _hWc _hWO
   obtain ⟨x₀, hx₀⟩ := hcw
-  have h3 : ∀ x : ZMod N, AdmissibleNewformZetaData ι e gN A W X pr N x c d gm ψ cf := fun x => hadm.1 x₀ hx₀
+  have h3 : ∀ x : ZMod N, AdmissibleNewformZetaData ι e gN A W X pr N c d gm ψ cf := fun x => hadm.1 x₀ hx₀
   have hml := fun x : ZMod N => UpperTheory.Kd.K4.ml l Ω ι e gN A W ε X pr N x c d gm ψ cf hgm hcop hl2 he hφ (h3 x)
   choose c₁ hc₁ using hml
   let C : ℕ := Finset.univ.sup c₁

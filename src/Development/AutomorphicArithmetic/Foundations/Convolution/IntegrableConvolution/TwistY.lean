@@ -88,7 +88,7 @@ private lemma prj_mem {M : Submodule ℂ H} (hM : IsClosed (M : Set H)) (x : H) 
   have h2 : prj M x ∈ M.topologicalClosure := Submodule.starProjection_apply_mem M.topologicalClosure x
   rwa [h] at h2
 
-private lemma prj_orth {M : Submodule ℂ H} (hM : IsClosed (M : Set H)) (x : H) {w : H} (hw : w ∈ M) :
+private lemma prj_orth {M : Submodule ℂ H} (x : H) {w : H} (hw : w ∈ M) :
     ⟪x - prj M x, w⟫_ℂ = 0 := by
   exact (Submodule.mem_orthogonal' _ _).1
     (Submodule.sub_starProjection_mem_orthogonal (K := M.topologicalClosure) x) w
@@ -106,7 +106,7 @@ private lemma prj_of_mem {M : Submodule ℂ H} (hM : IsClosed (M : Set H)) {v : 
 
 private lemma inner_prj_left {M : Submodule ℂ H} (hM : IsClosed (M : Set H)) (x : H) {w : H}
     (hw : w ∈ M) : ⟪prj M x, w⟫_ℂ = ⟪x, w⟫_ℂ := by
-  have := prj_orth hM x hw
+  have := prj_orth x hw
   rw [inner_sub_left, sub_eq_zero] at this
   exact this.symm
 
@@ -114,7 +114,7 @@ private lemma prj_congr {M : Submodule ℂ H} (hM : IsClosed (M : Set H)) {a b :
     (h : ∀ w ∈ M, ⟪a, w⟫_ℂ = ⟪b, w⟫_ℂ) : prj M a = prj M b := by
   refine prj_eq hM (prj_mem hM b) fun w hw => ?_
   rw [inner_sub_left, h w hw, ← inner_sub_left]
-  exact prj_orth hM b hw
+  exact prj_orth b hw
 
 private lemma inner_prj_symm {M : Submodule ℂ H} (hM : IsClosed (M : Set H)) (x y : H) :
     ⟪prj M x, y⟫_ℂ = ⟪x, prj M y⟫_ℂ := by
@@ -127,11 +127,11 @@ private lemma comm_prj {M : Submodule ℂ H} (hM : IsClosed (M : Set H)) (B B' :
     (x : H) : prj M (B x) = B (prj M x) := by
   refine prj_eq hM (h1 _ (prj_mem hM x)) fun w hw => ?_
   rw [← map_sub, hadj]
-  exact prj_orth hM x (h2 w hw)
+  exact prj_orth x (h2 w hw)
 
 private def cmp (W : Submodule ℂ H) [FiniteDimensional ℂ W] (B : H →L[ℂ] H) : Module.End ℂ W :=
   LinearMap.codRestrict W (((prj W ∘L B : H →L[ℂ] H) : H →ₗ[ℂ] H) ∘ₗ W.subtype)
-    fun w => prj_mem (Submodule.closed_of_finiteDimensional W) _
+    fun _ => prj_mem (Submodule.closed_of_finiteDimensional W) _
 
 private lemma coe_cmp (W : Submodule ℂ H) [FiniteDimensional ℂ W] (B : H →L[ℂ] H) (w : W) :
     ((cmp W B w : W) : H) = prj W (B w) := rfl
@@ -258,7 +258,7 @@ private lemma inner_P (h : Slots π V m ι E A U) {y : ℝ}
     (hx : Near V E A y j x) (hf : f ∈ eF (A j) y) :
     ⟪prj (jointEig V E A y) x, f⟫_ℂ = ⟪x, f⟫_ℂ := by
   have hP : prj (jointEig V E A y) x = prj (eF (A j) y) x :=
-    prj_eq hW (Q_mem h hx) fun w hw => prj_orth (eF_closed _ _) x ((mem_W.1 hw).2 j)
+    prj_eq hW (Q_mem h hx) fun w hw => prj_orth x ((mem_W.1 hw).2 j)
   rw [hP]
   exact inner_prj_left (eF_closed _ _) x hf
 

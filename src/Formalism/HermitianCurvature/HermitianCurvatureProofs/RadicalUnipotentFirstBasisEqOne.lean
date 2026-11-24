@@ -681,7 +681,7 @@ theorem leviElement_inv' {n : ℕ} (q : Matrix (Fin n) (Fin n) ℂ) (hq : IsUnit
   apply Matrix.inv_eq_right_inv
   rw [leviElement_mul, Matrix.mul_nonsing_inv _ hq, muP_one']
 
-theorem M3 {n : ℕ} (q q' Z : Matrix (Fin n) (Fin n) ℂ) (hq : IsUnit q.det) (hq' : IsUnit q'.det) (γ : B.Mat k ρ) :
+theorem M3 {n : ℕ} (q q' Z : Matrix (Fin n) (Fin n) ℂ) (hq : IsUnit q.det) (γ : B.Mat k ρ) :
     (U.muP k n ρ q)⁻¹ * U.mMap k n ρ Z γ * U.muP k n ρ q' = U.mMap k n ρ (qᴴ * Z * q') γ := by
   have hqh : IsUnit qᴴ.det := by rw [Matrix.det_conjTranspose]; exact hq.star
   rw [leviElement_inv' q hq, U.muP, U.muP, U.mMap, U.mMap, Ux3.block3_mul, Ux3.block3_mul]
@@ -761,7 +761,7 @@ theorem GX (σ : Equiv.Perm (Fin j)) (d : Fin j → ℂ) (hd : ∀ i, d i ≠ 0)
         U.mMap k (j + 1) ρ (U.blk2 (U.headH σ d η.2.1 η.2.2) 0 0 (Matrix.of (Z1 c))) γ *
         U.muP k (j + 1) ρ (qL x')) * U.Rn k (j + 1) ρ (XC x' y') := by
     simp only [Matrix.mul_assoc]
-  rw [e2, M3 _ _ _ (qL_unit x) (qL_unit x'), qL_ct]
+  rw [e2, M3 _ _ _ (qL_unit x), qL_ct]
   rfl
 
 end GXs

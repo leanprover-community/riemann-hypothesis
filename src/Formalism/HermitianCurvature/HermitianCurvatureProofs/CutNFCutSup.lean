@@ -51,7 +51,7 @@ open Formalism.FourierDecayAlt Filter Topology
 
 noncomputable section
 
-theorem xD_dil (φ : ℝ → ℝ) {ε : ℝ} (hε : 0 < ε) :
+theorem xD_dil (φ : ℝ → ℝ) {ε : ℝ} :
     xD (fun y => φ (y / ε)) = fun x => xD φ (x / ε) := by
   funext x
   simp only [xD]
@@ -66,7 +66,7 @@ theorem xD_iter_dil (φ : ℝ → ℝ) {ε : ℝ} (hε : 0 < ε) (q : ℕ) :
   induction q with
   | zero => rfl
   | succ q ih =>
-    rw [Function.iterate_succ_apply', ih, xD_dil _ hε]
+    rw [Function.iterate_succ_apply', ih, xD_dil _]
     funext x
     rw [Function.iterate_succ_apply']
 

@@ -132,7 +132,7 @@ theorem minor_swapCol (A : Matrix (Fin N) (Fin N) R) (I S : Finset (Fin N)) {ca 
 
 theorem minor_one_of_ne {I J : Finset (Fin N)} {a : Fin N} (ha : a ∈ I) (hb : a ∉ J) :
     minorIJ (1 : Matrix (Fin N) (Fin N) R) I J = 0 :=
-  minorIJ_eq_zero_of_row _ ha fun c hc => Matrix.one_apply_ne fun e => hb (e ▸ hc)
+  minorIJ_eq_zero_of_row _ ha fun _ hc => Matrix.one_apply_ne fun e => hb (e ▸ hc)
 
 end Ring
 

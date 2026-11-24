@@ -95,7 +95,7 @@ theorem mulVec_mem_span {I : Set (Fin r)} {a : Fin r → A} (ha : ∀ i, i ∉ I
   · rw [ha i hi, zero_smul]
     exact zero_mem _
 
-theorem coef_mul (hKX : K * X = 1) (M N : Matrix (Fin n) (Fin n) A) (hN : (N - 1) * X = X * (K * ((N - 1) * X))) :
+theorem coef_mul (M N : Matrix (Fin n) (Fin n) A) (hN : (N - 1) * X = X * (K * ((N - 1) * X))) :
     K * ((M * N - 1) * X) = K * ((M - 1) * X) + K * ((N - 1) * X) + K * ((M - 1) * X) * (K * ((N - 1) * X)) := by
   have e : M * N - 1 = (M - 1) + (N - 1) + (M - 1) * (N - 1) := by noncomm_ring
   rw [e, Matrix.add_mul, Matrix.add_mul, Matrix.mul_add, Matrix.mul_add, Matrix.mul_assoc K, Matrix.mul_assoc (M - 1) X, ← hN,
@@ -171,7 +171,7 @@ theorem exists_blockProj : ∀ (F E : Type) [Field F] [NumberField F] [Field E] 
     have h1 : c (a * b : unip σ J X (insert k S)) = c a + c b + c a * c b := by
       simp only [c]
       rw [Subgroup.coe_mul, map_mul, Units.val_mul]
-      exact coef_mul hKX _ _ (eq_mul_coef hKX b.2)
+      exact coef_mul _ _ (eq_mul_coef hKX b.2)
     have h2 : (c a * c b) (e p.1.1) (e p.1.2) = 0 := by
       rw [Matrix.mul_apply]
       refine Finset.sum_eq_zero fun m _ => ?_

@@ -422,7 +422,7 @@ theorem ad_foldr {ι X Y : Type*} (K : Set X) (P : X → Y) (l : List ι) (T : �
     simp only [List.map_cons, List.foldr_cons]
     rw [hP j _ h1, h2]
 
-theorem left_ad (hz : inWb k r z) (hz' : inWb k r z') (hD : IsDom k r z z' (Fin.last r) D) (hπ'1 : π' 1 = 1)
+theorem left_ad (hD : IsDom k r z z' (Fin.last r) D) (hπ'1 : π' 1 = 1)
     {J : Mx k r → (Wq →L[ℂ] Wp)} (hJ : J ∈ FFl k r z z' π π' (Fin.last r) D)
     {g : Mx k r} (hg : g ∈ Glev k r (Fin.last r) ∩ D) {m : ℕ} (Bs : Fin m → Fin (2 * r + k + 1) → ℂ)
     (hBs : IsFrameOf k r [g⁻¹ *ᵥ z] Bs) (w : ℂ) (v : Wq) :
@@ -527,7 +527,7 @@ variable {Wp Wq : Type} [NormedAddCommGroup Wp] [NormedSpace ℂ Wp] [NormedAddC
   {k r : ℕ} {z z' : Fin (2 * r + k + 1) → ℂ} {π : Mx k r → (Wp →L[ℂ] Wp)} {π' : Mx k r → (Wq →L[ℂ] Wq)}
   {D : Set (Mx k r)}
 
-theorem J_smoothVec (hz : inWb k r z) (hz' : inWb k r z') (hD : IsDom k r z z' (Fin.last r) D) (hπ'1 : π' 1 = 1)
+theorem J_smoothVec (hD : IsDom k r z z' (Fin.last r) D) (hπ'1 : π' 1 = 1)
     {J : Mx k r → (Wq →L[ℂ] Wp)} (hJ : J ∈ FFl k r z z' π π' (Fin.last r) D)
     {g : Mx k r} (hg : g ∈ Glev k r (Fin.last r) ∩ D) (v : Wq) : J g v ∈ SmVec k r z π := by
   intro h hh X hX
@@ -1112,7 +1112,7 @@ theorem radial_decomposition_of_parts' : RadialDecompositionOfParts := by
     (Glev P.k P.r (Fin.last P.r) ∩ D) ff_zero (fun F₁ h₁ F₂ h₂ => ff_add h₁ h₂) (fun F h c => ff_smul h c)
     (fun Y F => tL P.k P.r z z' (Fin.last P.r) Y 1 1 F) (fun x => (GGl P.k P.r z z' x : ℂ))
     (fun g hg => by exact_mod_cast hGGD g hg.2) Y₀
-    (fun F hF => ff_GGinv hz hz' hD hGGD (hTP Wp Wq P.k P.r z z' π π' (Fin.last P.r) D Y₀ 1 1 hz hz' hD F hF))
+    (fun F hF => ff_GGinv hz hz' hGGD (hTP Wp Wq P.k P.r z z' π π' (Fin.last P.r) D Y₀ 1 1 hz hz' hD F hF))
     (fun σ Y => M.xC (Pp P) σ Y) hY₀ S (fun g hg => (hBS g hg).2.2.2.2.2.1)
     (by
       intro F hF g hg σ v hv Y
@@ -1127,13 +1127,13 @@ theorem radial_decomposition_of_parts' : RadialDecompositionOfParts := by
     rw [hdw, _root_.zero_apply]
     by_contra hne
     obtain ⟨hB1, he, hez, hee, hB3, -, hSe⟩ := hBS g hg
-    have hsm := J_smoothVec hz hz' hD hπ'.2.1.1 hJ hg w
+    have hsm := J_smoothVec hD hπ'.2.1.1 hJ hg w
     have hlin : ∀ W : ℂ, IsLinearMap ℂ (capRep P.k P.r π (fun a => g *ᵥ Bs g a) W) := fun W =>
       capRep_linear hπ hne hsm (fun a => g *ᵥ Bs g a) (frame_sub hB3 (by simp)) W
     have hμ : ∀ W : ℂ, capRep P.k P.r π (fun a => g *ᵥ Bs g a) W (J g w) =
         M.xC (Pp P) σ (W - ((P.k : ℂ) - 2) / 2) • J g w := by
       intro W
-      rw [← left_ad hz hz' hD hπ'.2.1.1 hJ hg (Bs g) (frame_sub hB1 (by simp)) W w,
+      rw [← left_ad hD hπ'.2.1.1 hJ hg (Bs g) (frame_sub hB1 (by simp)) W w,
         hRTA Wp Wq P.k P.r (P.k - 1) z z' π π' D hz hz' hD hπ'.2.1 hπ'.2.2.1 J hJ g hg (Bs g)
           (frame_sub hB1 (by simp)) W w,
         hSe σ w hw W, ContinuousLinearMap.map_smul]

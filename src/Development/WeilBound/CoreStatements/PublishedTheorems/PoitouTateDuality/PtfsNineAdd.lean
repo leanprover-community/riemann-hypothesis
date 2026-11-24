@@ -57,7 +57,7 @@ namespace PositivityTheory.Lit1.PTN
 
 theorem exact_of_addTransfer {A B C A' B' C' : Type} [AddCommGroup A] [AddCommGroup B]
     [AddCommGroup C] [AddCommGroup A'] [AddCommGroup B'] [AddCommGroup C'] {f : A → B} {g : B → C}
-    (hf0 : ∀ a a', f (a + a') = f a + f a') (hg0 : ∀ b b', g (b + b') = g b + g b')
+    (hf0 : ∀ a a', f (a + a') = f a + f a')
     (f' : A' →+ B') (g' : B' →+ C') (eA : A ≃+ A') (eB : B ≃+ B') (eC : C ≃+ C') (u v : ℤˣ)
     (hf : ∀ a, f' (eA a) = (u : ℤ) • eB (f a)) (hg : ∀ b, g' (eB b) = (v : ℤ) • eC (g b))
     (h : Function.Exact f' g') : Function.Exact f g := by
@@ -121,19 +121,19 @@ theorem nine_of_addTransfer {N : ℕ} {A0 A1 A2 A3 A4 A5 A6 A7 A8 : Type} [AddCo
     apply e0.injective
     apply hi
     rw [h0, h0, hab]
-  · exact PositivityTheory.Lit1.PTN.exact_of_addTransfer (map_add f0) (map_add f1) g0 g1 e0 e1 e2
+  · exact PositivityTheory.Lit1.PTN.exact_of_addTransfer (map_add f0) g0 g1 e0 e1 e2
       (ε 0) (ε 1) h0 h1 x01
-  · exact PositivityTheory.Lit1.PTN.exact_of_addTransfer (map_add f1) (map_add δ₁) g1 g2 e1 e2 e3
+  · exact PositivityTheory.Lit1.PTN.exact_of_addTransfer (map_add f1) g1 g2 e1 e2 e3
       (ε 1) 1 h1 hδ₁ x12
-  · exact PositivityTheory.Lit1.PTN.exact_of_addTransfer (map_add δ₁) (map_add f3) g2 g3 e2 e3 e4
+  · exact PositivityTheory.Lit1.PTN.exact_of_addTransfer (map_add δ₁) g2 g3 e2 e3 e4
       1 (ε 2) hδ₁ h3 x23
-  · exact PositivityTheory.Lit1.PTN.exact_of_addTransfer (map_add f3) (map_add f4) g3 g4 e3 e4 e5
+  · exact PositivityTheory.Lit1.PTN.exact_of_addTransfer (map_add f3) g3 g4 e3 e4 e5
       (ε 2) (ε 3) h3 h4 x34
-  · exact PositivityTheory.Lit1.PTN.exact_of_addTransfer (map_add f4) (map_add δ₂) g4 g5 e4 e5 e6
+  · exact PositivityTheory.Lit1.PTN.exact_of_addTransfer (map_add f4) g4 g5 e4 e5 e6
       (ε 3) 1 h4 hδ₂ x45
-  · exact PositivityTheory.Lit1.PTN.exact_of_addTransfer (map_add δ₂) (map_add f6) g5 g6 e5 e6 e7
+  · exact PositivityTheory.Lit1.PTN.exact_of_addTransfer (map_add δ₂) g5 g6 e5 e6 e7
       1 (ε 4) hδ₂ h6 x56
-  · exact PositivityTheory.Lit1.PTN.exact_of_addTransfer (map_add f6) (map_add f7) g6 g7 e6 e7 e8
+  · exact PositivityTheory.Lit1.PTN.exact_of_addTransfer (map_add f6) g6 g7 e6 e7 e8
       (ε 4) (ε 5) h6 h7 x67
   · intro y
     obtain ⟨z, hz⟩ := hs (e8 y)

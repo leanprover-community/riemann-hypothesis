@@ -92,7 +92,7 @@ def Adm3bInst : Prop :=
     (h : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) [Fact (D.what₂.places.resChar w).Prime]
     (Fl : Fills (D.gat u w h)) (Lv : Levels Fl) (Ch : Chain Lv), TwTie.KerAtMu D ex.cmp ex.tw u μ w h Ch →
     ∀ (std : _) (vp : _) (unif : _) (eO : _) (eO_spec : _) (dG : _) (dG_spec : _) (om : _),
-      adm3b D (sysAt Ch std vp unif eO eO_spec dG dG_spec om)
+      adm3b (sysAt Ch std vp unif eO eO_spec dG dG_spec om)
 
 def SecondKernelSingleLevel : Prop :=
   ∀ (D : D7) (L : SizeData₂ D) (hT : GatTies D) (Gi : G.Inst D L) (Gl : G.LatInst D) (Kc0 : G.Consts) (Dx : DivX D)

@@ -453,12 +453,12 @@ theorem existsUnique_pow_mul_eq_comap_of_isBlowupAlongIdealSheaf [IsLocallyNoeth
   exact existsUnique_pow_mul_eq_comap π Z I n hZ hI
 
 def controlledTransform [IsLocallyNoetherian X₁] (π : X₁ ⟶ X) (Z I : X.IdealSheafData)
-    (n : ℕ) (_hπ : Blowup.IsBlowupAlongIdealSheaf π Z) (_hI : I ≤ Z ^ n) : X₁.IdealSheafData :=
+    (n : ℕ) : X₁.IdealSheafData :=
   idealSheafColon (I.comap π) (Blowup.exceptionalIdeal π Z ^ n)
 
 theorem exceptionalIdeal_pow_mul_controlledTransform [IsLocallyNoetherian X₁] (π : X₁ ⟶ X)
     (Z I : X.IdealSheafData) (n : ℕ) (hπ : Blowup.IsBlowupAlongIdealSheaf π Z) (hI : I ≤ Z ^ n) :
-    Blowup.exceptionalIdeal π Z ^ n * controlledTransform π Z I n hπ hI = I.comap π := by
+    Blowup.exceptionalIdeal π Z ^ n * controlledTransform π Z I n = I.comap π := by
   have hZ : Blowup.IsLocallyGeneratedByNonZeroDivisor (Blowup.exceptionalIdeal π Z) := by
     rw [Blowup.exceptionalIdeal_eq_comap]
     exact hπ.1
@@ -468,7 +468,7 @@ theorem exceptionalIdeal_pow_mul_controlledTransform [IsLocallyNoetherian X₁] 
 theorem eq_controlledTransform_of_mul_eq_comap [IsLocallyNoetherian X₁] (π : X₁ ⟶ X)
     (Z I : X.IdealSheafData) (n : ℕ) (hπ : Blowup.IsBlowupAlongIdealSheaf π Z) (hI : I ≤ Z ^ n)
     (J : X₁.IdealSheafData) (hJ : Blowup.exceptionalIdeal π Z ^ n * J = I.comap π) :
-    J = controlledTransform π Z I n hπ hI :=
+    J = controlledTransform π Z I n :=
   (existsUnique_pow_mul_eq_comap_of_isBlowupAlongIdealSheaf π Z I n hπ hI).unique hJ
     (exceptionalIdeal_pow_mul_controlledTransform π Z I n hπ hI)
 

@@ -7,7 +7,7 @@ public import Mathlib.NumberTheory.NumberField.Basic
 namespace Bl.FirstBlockLemmaE
 
 theorem goal1 :
-  ∀ {L : Type} [inst : Field.{0} L] [NumberField.{0} L] (x : L) (c : Int),
+  ∀ {L : Type} [Field.{0} L] [NumberField.{0} L] (x : L) (c : Int),
   Eq.{1} (HPow.hPow.{0, 0, 0} x 2) (HAdd.hAdd.{0, 0, 0} x (Int.cast.{0} c)) →
     Exists.{1} fun (X : NumberField.RingOfIntegers.{0} L) ↦
       And (Eq.{1} (NumberField.RingOfIntegers.val.{0} X) x)

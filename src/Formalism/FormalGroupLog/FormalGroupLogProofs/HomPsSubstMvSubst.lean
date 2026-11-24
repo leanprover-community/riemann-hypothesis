@@ -77,7 +77,7 @@ private theorem hom_cc_at {R : Type*} [CommRing R] {τ : Type*} (f : PowerSeries
   PowerSeries.constantCoeff_subst_eq_zero (MvPowerSeries.constantCoeff_X t) f hf
 
 private theorem hom_substInj {R : Type*} [CommRing R] {ι : Type*} (f : PowerSeries R)
-    (a b : MvPowerSeries ι R) (h0 : constantCoeff f = 0) (h1 : coeff 1 f = 1)
+    (a b : MvPowerSeries ι R) (h1 : coeff 1 f = 1)
     (ha : MvPowerSeries.constantCoeff a = 0) (hb : MvPowerSeries.constantCoeff b = 0)
     (h : f.subst a = f.subst b) : a = b := by
   classical
@@ -205,6 +205,6 @@ theorem log_iff_hom_additive : LogIffHomGa := by
 theorem substInjective_statement : SubstInjective := by
   unfold SubstInjective
   intro R _ ι f a b h0 h1 ha hb h
-  exact hom_substInj f a b h0 h1 ha hb h
+  exact hom_substInj f a b h1 ha hb h
 
 end Formalism.G

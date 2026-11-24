@@ -108,7 +108,7 @@ lemma exists_smooth_convolution_fixing_lowest (hgap : StdGap ε lam) (hP : IsPsi
   have hsum : lowKSubLam ε Ψ v₀ ≤
       sSup {S : Submodule ℂ (Hlam ε Ψ v₀) | ∃ μ', Formalism.MainNotions.S.IsKTypeOf ε (sigLam ε Ψ v₀) μ' S} :=
     le_sSup ⟨_, hW⟩
-  obtain ⟨α, h1, h2, -, -, h5⟩ := sigLam_le_of_kTypes hgap hP hv₀ (lowKSubLam ε Ψ v₀) hW.1 hfull hsum Set.univ
+  obtain ⟨α, h1, h2, -, -, h5⟩ := sigLam_le_of_kTypes hgap hP hv₀ (lowKSubLam ε Ψ v₀) hW.1 hsum Set.univ
     isOpen_univ (Set.mem_univ _)
   exact ⟨α, h1, h2, h5⟩
 
@@ -120,7 +120,7 @@ theorem repro_real (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) :
   obtain ⟨α, hα1, hα2, hα⟩ := exists_smooth_convolution_fixing_lowest hgap hP hv₀
   refine ⟨α, hα1, hα2, fun g hg v₁ v₂ => ?_⟩
   have hc : ((‖uniformisationL2 ε Ψ T.w T.w‖ ^ 2 : ℝ) : ℂ) ≠ 0 := by
-    have := datumEmbedding_highest_ne_zero hgap hP hv₀
+    have := datumEmbedding_highest_ne_zero hP hv₀
     exact_mod_cast pow_ne_zero 2 (norm_ne_zero_iff.2 this)
   have hF : ∀ x ∈ UJset ε, ((‖uniformisationL2 ε Ψ T.w T.w‖ ^ 2 : ℝ) : ℂ) * ⟪v₂, Ψ x v₁⟫_ℂ =
       ⟪(⟨uniformisationL2 ε Ψ T.w v₂, datumEmbedding_mem_Hlam hP v₂⟩ : Hlam ε Ψ T.w),
@@ -395,7 +395,7 @@ theorem frob_mul_le {n : ℕ} (a b : Matrix (Fin n) (Fin n) ℂ) : frob (a * b) 
   exact Matrix.frobenius_norm_mul a b
 
 theorem frob_kexp_le {n : ℕ} (ε : Fin n → Bool) (k : S7.KG ε) (X : Matrix (Fin n) (Fin n) ℂ)
-    (hX : inP ε X) :
+    :
     frob (S7.toMK k * NormedSpace.exp X) ≤ Real.sqrt n * Real.exp (Real.sqrt (S7.hs X)) := by
   show Real.sqrt (S7.hs _) ≤ _
   rw [S7.hs_kmulVG, S7.sqrt_hs_frobVG, S7.sqrt_hs_frobVG]
@@ -475,7 +475,7 @@ theorem psiM_frob_dec {n : ℕ} (ε : Fin n → Bool) (lam : Fin n → ℝ) (h :
       have hs1 : s < 1 := by nlinarith
       have hm0 : 0 ≤ m := le_min hs0 (div_nonneg hs0' (by linarith))
       nlinarith [mul_nonneg (by linarith : (0 : ℝ) ≤ h / 8) hm0]
-  have hF := frob_kexp_le ε k X hX
+  have hF := frob_kexp_le ε k X
   have hF1 := one_le_frob hn ε _ hg
   have h1 : (Real.sqrt n * Real.exp s) ^ (-a) ≤ frob (S7.toMK k * NormedSpace.exp X) ^ (-a) :=
     Real.rpow_le_rpow_of_nonpos (by linarith) hF (by linarith)

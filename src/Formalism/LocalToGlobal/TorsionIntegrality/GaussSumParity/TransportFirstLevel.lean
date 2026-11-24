@@ -239,7 +239,7 @@ theorem law_right_zero {l : ℕ} (hl : 2 ≤ l) {F : MvPowerSeries (Fin 2) K}
     (hF0 : constantCoeff F = 0) (hF : cob F (lgF K l) = 0) {τ : Type} {a : MvPowerSeries τ K}
     (ha : constantCoeff a = 0) : subst ![a, 0] F = a := by
   have h := Pair.log_law hF0 hF ha (map_zero (constantCoeff (σ := τ) (R := K)))
-  rw [TorusDerivation.subst_zero_of_constantCoeff _ (Pair.cc_lgF hl), add_zero] at h
+  rw [TorusDerivation.subst_zero_of_constantCoeff _ (Pair.cc_lgF), add_zero] at h
   have hc : constantCoeff (subst ![a, 0] F) = 0 :=
     constantCoeff_subst_eq_zero (Pair.hs2 ha (map_zero _))
       (by intro i; fin_cases i <;> simp [ha]) hF0
@@ -251,7 +251,7 @@ theorem law_left_zero {l : ℕ} (hl : 2 ≤ l) {F : MvPowerSeries (Fin 2) K}
     (hF0 : constantCoeff F = 0) (hF : cob F (lgF K l) = 0) {τ : Type} {a : MvPowerSeries τ K}
     (ha : constantCoeff a = 0) : subst ![0, a] F = a := by
   have h := Pair.log_law hF0 hF (map_zero (constantCoeff (σ := τ) (R := K))) ha
-  rw [TorusDerivation.subst_zero_of_constantCoeff _ (Pair.cc_lgF hl), zero_add] at h
+  rw [TorusDerivation.subst_zero_of_constantCoeff _ (Pair.cc_lgF), zero_add] at h
   have hc : constantCoeff (subst ![0, a] F) = 0 :=
     constantCoeff_subst_eq_zero (Pair.hs2 (map_zero _) ha)
       (by intro i; fin_cases i <;> simp [ha]) hF0

@@ -61,8 +61,8 @@ open GlobalTheory.MemLoc
 open GlobalTheory.MemLoc.TateTwist (Fz Vz bound decomp Vz_stable le_natDegree pow_mem_Fz σC_algebraMap)
 variable {l : ℕ} [Fact l.Prime]
 
-theorem zeta_pow (ζ : ℕ → Om l) (χ : GQ l →* ℤ_[l]ˣ) (cZ0 : ζ 0 = 1) (cZs : ∀ m, ζ (m + 1) ^ l = ζ m) (cZ1 : ζ 1 ≠ 1)
-    (cχ : ∀ (g : GQ l) (m : ℕ) (x : Om l), x ^ (l ^ m) = 1 → g x = x ^ (PadicInt.toZModPow m (χ g : ℤ_[l])).val) (n m : ℕ) : ζ (n + m) ^ l ^ m = ζ n := by
+theorem zeta_pow (ζ : ℕ → Om l) (χ : GQ l →* ℤ_[l]ˣ) (cZs : ∀ m, ζ (m + 1) ^ l = ζ m)
+    (n m : ℕ) : ζ (n + m) ^ l ^ m = ζ n := by
   induction m with
   | zero => simp
   | succ m ih => rw [pow_succ', pow_mul, ← add_assoc, cZs, ih]
@@ -73,8 +73,8 @@ theorem zeta_prim (ζ : ℕ → Om l) (χ : GQ l →* ℤ_[l]ˣ) (cZ0 : ζ 0 = 1
   | zero => simp [cZ0]
   | succ n =>
     have h := orderOf_eq_prime_pow (x := ζ (n + 1)) (p := l) (n := n)
-      (by rw [add_comm n 1, zeta_pow ζ χ cZ0 cZs cZ1 cχ]; exact cZ1)
-      (by have := zeta_pow ζ χ cZ0 cZs cZ1 cχ 0 (n + 1); rwa [zero_add, cZ0] at this)
+      (by rw [add_comm n 1, zeta_pow ζ χ cZs]; exact cZ1)
+      (by have := zeta_pow ζ χ cZs 0 (n + 1); rwa [zero_add, cZ0] at this)
     rw [← h]
     exact IsPrimitiveRoot.orderOf _
 
@@ -82,7 +82,7 @@ theorem Fz_mono (ζ : ℕ → Om l) (χ : GQ l →* ℤ_[l]ˣ) (cZ0 : ζ 0 = 1) 
     (cχ : ∀ (g : GQ l) (m : ℕ) (x : Om l), x ^ (l ^ m) = 1 → g x = x ^ (PadicInt.toZModPow m (χ g : ℤ_[l])).val) : Monotone fun n => Fz (ζ n) := by
   intro a b hab
   obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le hab
-  rw [IntermediateField.adjoin_simple_le_iff, ← zeta_pow ζ χ cZ0 cZs cZ1 cχ a m]
+  rw [IntermediateField.adjoin_simple_le_iff, ← zeta_pow ζ χ cZs a m]
   exact pow_mem_Fz _ _
 
 theorem chi_eq_one (ζ : ℕ → Om l) (χ : GQ l →* ℤ_[l]ˣ) (cZ0 : ζ 0 = 1) (cZs : ∀ m, ζ (m + 1) ^ l = ζ m) (cZ1 : ζ 1 ≠ 1)
@@ -109,7 +109,7 @@ theorem exists_gamma (ζ : ℕ → Om l) (χ : GQ l →* ℤ_[l]ˣ) (cZ0 : ζ 0 
   by_contra hcon
   push Not at hcon
   have h1 := le_natDegree n j _ hn (zeta_prim ζ χ cZ0 cZs cZ1 cχ (n + j))
-  rw [zeta_pow ζ χ cZ0 cZs cZ1 cχ] at h1
+  rw [zeta_pow ζ χ cZs] at h1
   set z := ζ (n + j) with hz
   set F := Fz (ζ n)
   have hint : IsIntegral F z := Algebra.IsIntegral.isIntegral z
@@ -141,7 +141,7 @@ theorem estimate (ζ : ℕ → Om l) (χ : GQ l →* ℤ_[l]ˣ) (cZ0 : ζ 0 = 1)
   rw [IntermediateField.coe_iSup_of_directed (Fz_mono ζ χ cZ0 cZs cZ1 cχ).directed_le, Set.mem_iUnion] at hy'
   obtain ⟨m, hm⟩ := hy'
   have hm' : y ∈ Fz (ζ (n + m)) := Fz_mono ζ χ cZ0 cZs cZ1 cχ (Nat.le_add_left m n) hm
-  rw [← zeta_pow ζ χ cZ0 cZs cZ1 cχ n m] at hg h₀
+  rw [← zeta_pow ζ χ cZs n m] at hg h₀
   obtain ⟨b, hb, w, hw, rfl⟩ := decomp _ (l ^ m) y hm'
   have hz := zeta_prim ζ χ cZ0 cZs cZ1 cχ (n + m)
   refine ⟨b, ?_, ?_⟩
@@ -230,7 +230,7 @@ theorem full (ζ : ℕ → Om l) (χ : GQ l →* ℤ_[l]ˣ) (cZ0 : ζ 0 = 1) (cZ
 def chiZ (P : LocPrime l) : GQ l →* ℤ_[l]ˣ where
   toFun g := PadicInt.mkUnits (Formalism.MainNotions.InvariantsGenerators.InvariantsFromGenerators.chiQ_norm P g)
   map_one' := Units.ext (Subtype.ext (by simp [PadicInt.mkUnits]))
-  map_mul' g h := Units.ext (Subtype.ext (by simp [PadicInt.mkUnits, PadicInt.coe_mul]; rfl))
+  map_mul' g h := Units.ext (Subtype.ext (by simp [PadicInt.mkUnits]; rfl))
 
 theorem chiZ_coe (P : LocPrime l) (g : GQ l) :
     (((chiZ P g : ℤ_[l]ˣ) : ℤ_[l]) : ℚ_[l]) = ((P.χQ g : ℚ_[l]ˣ) : ℚ_[l]) := by

@@ -183,7 +183,7 @@ theorem not_cone_neg_root {a b : Fin n} (hab : a < b) (c : Fin n → Fin n → �
     refine Finset.sum_congr rfl fun a' _ => ?_
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun b' _ => ?_
-    simp [Pi.single_apply, mul_sub, Finset.sum_sub_distrib, ← Finset.mul_sum]
+    simp [Pi.single_apply, mul_sub, Finset.sum_sub_distrib]
     ring
   rw [hl, hr] at key
   have hneg : ∑ a', ∑ b', (c a' b' : ℝ) * (((a' : ℕ) : ℝ) - (b' : ℕ)) ≤ 0 := by

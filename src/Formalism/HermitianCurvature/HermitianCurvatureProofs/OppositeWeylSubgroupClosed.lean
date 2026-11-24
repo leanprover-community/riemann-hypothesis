@@ -228,17 +228,17 @@ theorem haarG : HaarGExists := by
             simp only [Matrix.mul_assoc]
         _ = Matrix.of g := by rw [h1, Matrix.one_mul, Matrix.mul_one]
 
-def Grp {k r : ℕ} (U : Set (Mat k r)) (_h : IsClosedSubgroup U) : Type := U
+def Grp {k r : ℕ} (U : Set (Mat k r)) : Type := U
 
 namespace Grp
 variable {k r : ℕ} {U : Set (Mat k r)} {h : IsClosedSubgroup U}
 
-def val (a : Grp U h) : Mat k r := Subtype.val a
-lemma mem (a : Grp U h) : a.val ∈ U := Subtype.property a
-def mk (x : Mat k r) (hx : x ∈ U) : Grp U h := (⟨x, hx⟩ : U)
-lemma ext' {a b : Grp U h} (e : a.val = b.val) : a = b := Subtype.ext e
+def val (a : Grp U) : Mat k r := Subtype.val a
+lemma mem (a : Grp U) : a.val ∈ U := Subtype.property a
+def mk (x : Mat k r) (hx : x ∈ U) : Grp U := (⟨x, hx⟩ : U)
+lemma ext' {a b : Grp U} (e : a.val = b.val) : a = b := Subtype.ext e
 
-instance : Group (Grp U h) where
+instance : Group (Grp U) where
   mul a b := mk (a.val * b.val) (h.mul_mem _ a.mem _ b.mem)
   one := mk 1 h.one_mem
   inv a := mk (a.val⁻¹) (h.inv_mem _ a.mem)
@@ -247,29 +247,29 @@ instance : Group (Grp U h) where
   mul_one a := ext' (Matrix.mul_one _)
   inv_mul_cancel a := ext' (Matrix.nonsing_inv_mul _ (h.unit _ a.mem))
 
-instance : TopologicalSpace (Grp U h) := inferInstanceAs (TopologicalSpace U)
-instance : MeasurableSpace (Grp U h) := borel _
-instance : BorelSpace (Grp U h) := ⟨rfl⟩
+instance : TopologicalSpace (Grp U) := inferInstanceAs (TopologicalSpace U)
+instance : MeasurableSpace (Grp U) := borel _
+instance : BorelSpace (Grp U) := ⟨rfl⟩
 
-lemma emb : IsClosedEmbedding (val : Grp U h → Mat k r) := h.closed.isClosedEmbedding_subtypeVal
+lemma emb : IsClosedEmbedding (val : Grp U → Mat k r) := h.closed.isClosedEmbedding_subtypeVal
 
-lemma range_val : Set.range (val : Grp U h → Mat k r) = U := Subtype.range_val
+lemma range_val : Set.range (val : Grp U → Mat k r) = U := Subtype.range_val
 
-instance : IsTopologicalGroup (Grp U h) where
+instance : IsTopologicalGroup (Grp U) where
   continuous_mul := by
     rw [emb.isInducing.continuous_iff]
     exact Continuous.matrix_mul (emb.continuous.comp continuous_fst) (emb.continuous.comp continuous_snd)
   continuous_inv := by
     rw [emb.isInducing.continuous_iff]
-    have : (val ∘ fun a : Grp U h => a⁻¹) = fun a : Grp U h => (a.val.det)⁻¹ • a.val.adjugate := by
+    have : (val ∘ fun a : Grp U => a⁻¹) = fun a : Grp U => (a.val.det)⁻¹ • a.val.adjugate := by
       funext a
       show a.val⁻¹ = _
       rw [Matrix.inv_def, Ring.inverse_eq_inv']
     rw [this]
-    have hv : Continuous (val : Grp U h → Mat k r) := emb.continuous
+    have hv : Continuous (val : Grp U → Mat k r) := emb.continuous
     refine Continuous.smul (Continuous.inv₀ hv.matrix_det fun a => (h.unit _ a.mem).ne_zero) hv.matrix_adjugate
 
-instance : LocallyCompactSpace (Grp U h) :=
+instance : LocallyCompactSpace (Grp U) :=
   have : LocallyCompactSpace (Mat k r) := inferInstanceAs (LocallyCompactSpace (Mt k r))
   emb.locallyCompactSpace
 
@@ -294,9 +294,9 @@ lemma compact_right_inv {Γ : Type*} [Group Γ] [TopologicalSpace Γ] [IsTopolog
 
 theorem compactHaar : CompactHaarExists := by
   intro k r U h hc
-  have : CompactSpace (Grp U h) := isCompact_iff_compactSpace.mp hc
-  have : (Measure.haar : Measure (Grp U h)).IsMulRightInvariant := compact_right_inv _
-  refine ⟨(Measure.haar : Measure (Grp U h)).map (Grp.val : Grp U h → Mt k r), ?_⟩
+  have : CompactSpace (Grp U) := isCompact_iff_compactSpace.mp hc
+  have : (Measure.haar : Measure (Grp U)).IsMulRightInvariant := compact_right_inv _
+  refine ⟨(Measure.haar : Measure (Grp U)).map (Grp.val : Grp U → Mt k r), ?_⟩
   exact haar_push _ (haar_ne_zero _) _ Grp.emb (fun a b => rfl) U Grp.range_val
 
 variable {k r : ℕ}

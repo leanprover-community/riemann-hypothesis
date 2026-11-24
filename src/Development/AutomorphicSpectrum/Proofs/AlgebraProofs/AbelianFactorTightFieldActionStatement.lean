@@ -204,7 +204,7 @@ lemma num_ne_zero_iff {p f : ℕ} (hp : 0 < p) (d : Fin f → Fin p) :
     · exact h''
     · exact absurd h'' (pow_ne_zero _ hp.ne')
 
-lemma prod_Icc_num {M : Type} [CommMonoid M] {p f : ℕ} (hp : 0 < p) (g : ℕ → M)
+lemma prod_Icc_num {M : Type} [CommMonoid M] {p f : ℕ} (g : ℕ → M)
     (G : (Fin f → Fin p) → M) (h0 : ∀ d, num d = 0 → G d = 1)
     (h1 : ∀ d, num d ≠ 0 → g (num d) = G d) :
     ∏ m ∈ Finset.Icc 1 (p ^ f - 1), g m = ∏ d, G d := by
@@ -315,7 +315,7 @@ theorem _root_.GlobalTheory.CompanionTheory.Relay.fundamental_ideal_frobenius_va
       obtain ⟨P, hPu, hP⟩ := AA.lat
       rw [← hBd, ← hB'd, valuation_det_eq_of_span_eq_alt hv hPu (hP.symm.trans hB),
         valuation_det_eq_of_span_eq_alt hv hPu (hP.symm.trans hB')]
-    rw [huniq, prod_Icc_num hp (fun m => v (algebraMap R C (c' m)))
+    rw [huniq, prod_Icc_num (fun m => v (algebraMap R C (c' m)))
       (fun d => ∏ n : Fin f, v (algebraMap R C (c n)) ^ (d n : ℕ)) ?_ ?_]
     · exact prod_digit_sq p f (fun n => v (algebraMap R C (c n)))
     · exact fun d hd => Finset.prod_eq_one (fun n _ => by rw [digits_zero hp hd n, pow_zero])
@@ -705,7 +705,7 @@ theorem Phi_mem_linFun [Fact p.Prime] [CharP F p] (hinj : Function.Injective (al
   rw [← mul_sub, ← mul_sub, map_add (f := _), Finsupp.add_apply]
   exact Ideal.mul_mem_left _ _ (FundGen.frob_pow_additive p F σ hσ _ _ _)
 
-theorem pFun_le_addFun : pFun (C := C) R p N ≤ addFun R p N := fun g hg x y =>
+theorem pFun_le_addFun : pFun (C := C) R p N ≤ addFun R p N := fun _ hg _ _ =>
   Submodule.sub_mem _ (Submodule.sub_mem _ (mem_pFun.1 hg _) (mem_pFun.1 hg _)) (mem_pFun.1 hg _)
 
 theorem addFun_sum {g : N → C} (hg : g ∈ addFun R p N) {ι : Type} (s : Finset ι) (y : ι → N) :
@@ -1052,7 +1052,7 @@ lemma pow_mod {p f : ℕ} (hf : Fintype.card F = p ^ f) (σ : MulChar F R) (s : 
   conv_rhs => rw [← Nat.mod_add_div s f]
   rw [pow_period_mul hf]
 
-lemma prod_chars {p f : ℕ} (hp : p.Prime) (hf : 0 < f) (σ : MulChar F R)
+lemma prod_chars {p f : ℕ} (hp : p.Prime) (σ : MulChar F R)
     (ho : orderOf σ = p ^ f - 1)
     (hfund : ∀ m, IsFund p (σ ^ m) → ∃ n < f, σ ^ m = σ ^ p ^ n)
     (L : MulChar F R → NNReal) (h1 : ∀ χ, ¬ IsFund p χ → L χ = 1) :
@@ -1223,7 +1223,7 @@ theorem flagStatement_holds : FlagStatement := by
   have hrO : ∏ s : Fin f, L (σ ^ p ^ ((s : ℕ) + 1)) = cO := by
     have h1 := prod_fin_shift f (fun s => L (σ ^ p ^ s))
       (by simpa using congrArg L (pow_period hf σ 0)) (hL0 _)
-    have h2 := prod_chars hpp hf0 σ hord (fun m hm => hfund _ hm) L hnf
+    have h2 := prod_chars hpp σ hord (fun m hm => hfund _ hm) L hnf
     have h3 := hasLen_unique hv (hLprod (fun m => L (σ ^ m)) (fun m _ => hL _)) hcO
     exact h1.trans (h2.symm.trans h3)
   obtain ⟨hDx, hlen⟩ := _root_.GlobalTheory.CompanionTheory.Ar.GR.grcount (Fin n) (Fin f) (Fintype.card N) (p - 1) Fintype.card_pos

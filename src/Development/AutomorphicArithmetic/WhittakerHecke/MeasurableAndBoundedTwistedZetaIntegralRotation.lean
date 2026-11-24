@@ -226,7 +226,7 @@ private theorem gY_meas (D : Dat ℚ E) (χ : HChar ℚ) {φ : GL (Fin 2) (A E) 
   exact hc.measurable_piecewise continuous_zero.continuousOn hS
 
 private theorem series_core {N : ℕ} {σ : ℝ} (hσ : 4 < σ) {Y : ℝ → ℂ} {c : ℂ} {g : ℕ → ℝ → ℝ → ℂ} {G : ℝ → ℝ}
-    (hGi : Integrable G) (hG0 : ∀ r, 0 ≤ G r) (hm : ∀ n, Measurable (Function.uncurry (g n)))
+    (hGi : Integrable G) (hm : ∀ n, Measurable (Function.uncurry (g n)))
     (hbd : ∀ n : ℕ, 0 < n → ∀ t r, ‖g n t r‖ ≤ G r * (n : ℝ) ^ (1 - σ))
     (hsum : (∀ n : ℕ, 0 < n → ∀ t, Integrable (g n t)) → (∀ t, Summable fun n : {n : ℕ // 0 < n ∧ n.Coprime N} => ∫ r : ℝ, ‖g n t r‖) →
       ∀ t, HasSum (fun n : {n : ℕ // 0 < n ∧ n.Coprime N} => c * ∫ r : ℝ, g n t r) (Y t)) :
@@ -276,7 +276,7 @@ theorem UpperTheory.measurable_and_bounded_twisted_zeta_integral_rotation :
     have h2 : 0 < ((1 + |re ((1 : (A ℚ)ˣ) : A ℚ)|) ^ (m + 2))⁻¹ := by positivity
     exact nonneg_of_mul_nonneg_left h1 h2
   refine series_core (N := N) (c := (cT L : ℂ)) (g := gY D χ φ s) (G := fun r => B * (1 + ‖r‖) ^ (-(2 : ℝ))) hs
-    ((integrable_one_add_norm (by simp)).const_mul B) (fun r => mul_nonneg hB0 (Real.rpow_nonneg (by positivity) _))
+    ((integrable_one_add_norm (by simp)).const_mul B)
     (gY_meas D χ hWc s) (gY_bd D hU hχω φ hs hm hB0 hBt) ?_
   intro hgi hJ t
   obtain ⟨X, hX⟩ := exists_Xr (E := E) t

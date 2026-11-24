@@ -623,8 +623,8 @@ theorem liftBound_at (hXi : B.XiExists) (hA : P5.ThmPActualCpt) (hSS : KB.SizeSt
     have hcs := form_cauchySchwarz hXi hA hFP p j hj w hw.1 x x' hx hx'
     have hf := form_re_nonneg_cpt hA hFP p j hj w hw.1 x hx
     have hf' := form_re_nonneg_cpt hA hFP p j hj w hw.1 x' hx'
-    have key := scal_cs (u * u' / n) (u * u / n) (u' * u' / n) ‖p.form j hj w x x'‖ 1 1 1
-      (p.form j hj w x x).re (p.form j hj w x' x').re hα (by field_simp) (by positivity) (by positivity)
+    have key := scal_cs (u * u' / n) (u * u / n) (u' * u' / n) ‖p.form j hj w x x'‖ 1 1
+      .re (p.form j hj w x' x').re hα (by field_simp) (by positivity) (by positivity)
       one_pos one_pos one_pos (norm_nonneg _) hf hf' (by rw [mul_one]; exact hcs)
     rw [hNP, li_ew p nn F j hj w _ ha, li_ew p nn F j hj w _ ha']
     refine key.trans ?_
@@ -668,8 +668,8 @@ theorem liftBound_at (hXi : B.XiExists) (hA : P5.ThmPActualCpt) (hSS : KB.SizeSt
       exact hqpos y hy
     have hQ₁ := prod_map_pos nn hnn ys
     have hQ₂ := prod_map_pos (fun y => nn (y + 1)) (fun y => hnn _) ys
-    have key := scal_cs (u * u' / n) (u * u / n) (u' * u' / n) _ _ _ _ fp fm hα (by field_simp) (by positivity)
-      (by positivity) hq hQ₁ hQ₂ (norm_nonneg _) hf hf' hcs
+    have key := scal_cs (u * u' / n) (u * u / n) (u' * u' / n) _ _ _ _ fp fm hα (by field_simp)
+      hq hQ₁ hQ₂ (norm_nonneg _) hf hf' hcs
     refine key.trans ?_
     refine mul_le_mul_of_nonneg_left ?_ (Real.sqrt_nonneg _)
     rw [li_ew p nn F j hj _ _ ha, li_ew p nn F j hj _ _ ha', normC_plusW, normC_minusW, ← hfp, ← hfm]
@@ -1233,7 +1233,7 @@ private lemma shiftedPairing_bound_lemma_4 (hQ : _root_.Formalism.FourierDecayAl
     obtain ⟨y, hy, rfl⟩ := List.mem_map.mp ha
     exact hθ y hy
   have hα : 0 ≤ _root_.Formalism.FourierDecayAlt.C.nAux P.k P.r 0 (fun _ _ => 1) 1 h / _root_.Formalism.FourierDecayAlt.TBB.normC nn w := div_nonneg hJL hN.le
-  have hcs := _root_.Formalism.FourierDecayAlt.P.TBBx5.scal_cs _ _ _ _ _ _ _ _ _ hα (by ring) hα hα hq hQ₁ hQ₂ (norm_nonneg _) f₁ f₂ key
+  have hcs := _root_.Formalism.FourierDecayAlt.P.TBBx5.scal_cs _ _ _ _ _ _ _ _ _ hα (by ring) hq hQ₁ hQ₂ (norm_nonneg _) f₁ f₂ key
   refine hcs.trans (mul_le_mul_of_nonneg_left ?_ (Real.sqrt_nonneg _))
   rw [_root_.Formalism.FourierDecayAlt.P.TBBx5.wv_ew p nn F j hj _ h hh, _root_.Formalism.FourierDecayAlt.P.TBBx5.wv_ew p nn F j hj _ h hh, _root_.Formalism.FourierDecayAlt.P.TBBx5.normC_plusW, _root_.Formalism.FourierDecayAlt.P.TBBx5.normC_minusW]
   refine le_trans (le_of_eq ?_) (_root_.Formalism.FourierDecayAlt.P.TBBx5.sqrt_mul_le_max _ _ ?_ ?_)
@@ -1312,7 +1312,7 @@ open scoped ComplexOrder in
 open Filter Topology in
 open scoped ComplexConjugate ENNReal in
 open Classical in
-theorem _root_.GlobalTheory.planeWave_bound_of_xiExists (hXi : _root_.Formalism.FourierDecayAlt.B.XiExists) :
+theorem _root_.GlobalTheory.planeWave_bound_of_xiExists :
     _root_.Formalism.FourierDecayAlt.P5.ThmPActualCpt → _root_.Formalism.FourierDecayAlt.KB.VIsoCpt → _root_.Formalism.FourierDecayAlt.KB.SizeStdCpt → _root_.Formalism.FourierDecayAlt.P.PBL.FormPosCpt → ∀ (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] (P : _root_.Formalism.FourierDecayAlt.M.Par) (p : _root_.Formalism.FourierDecayAlt.KB.Pl P Wp Wq) (nn : ℝ → ℝ) (F : _root_.Formalism.FourierDecayAlt.B.Mat P.k P.r → (Wq →L[ℂ] Wp)) (Y : Finset ℝ) (Λ : ℝ) (K N : ℕ) (Cb : ℝ), _root_.Formalism.FourierDecayAlt.KB.InDDplus2 P p.l0 p.T.base Cb p.Θ → _root_.Formalism.FourierDecayAlt.KB.CptCoef p.T.base F → (∀ y, 0 < nn y) → _root_.Formalism.FourierDecayAlt.P.TBBx5.WaveGrid p nn Y Λ K N → _root_.Formalism.FourierDecayAlt.TBB.KernelFourierIntegralBound p nn F Y Λ K N := by
   intro hQ hV hS hPos Wp Wq _ _ _ _ _ _ P p nn F Y Λ K N Cb hI hF hnn hgrid
   unfold _root_.Formalism.FourierDecayAlt.TBB.KernelFourierIntegralBound
@@ -1686,7 +1686,7 @@ theorem ptBound_of_xiExists (hXi : B.XiExists) (hA : P5.ThmPActualCpt) : ∃ C�
   have hPos := GlobalTheory.WeightedFormPos.posAt_of_cptCoef_of_xiExists hXi hA Wp Wq P p nn _ Y N (fun y => (hnn y).le) hG
   exact Formalism.FourierDecayAlt.P.corSOfLemmaS_statement Wp Wq P p nn _ Y Λ K N C₂ hKN hC₂.le hPos
     (hLS Wp Wq P p nn _ Y Λ K N hK hΛ hPos (extension_at_zero hXi hA p nn _ Y N Cb hCb hG)
-      (GlobalTheory.planeWave_bound_of_xiExists hXi hA hVI hSS hFP Wp Wq P p nn _ Y Λ K N Cb hCb hG hnn hWG)
+      (GlobalTheory.planeWave_bound_of_xiExists hA hVI hSS hFP Wp Wq P p nn _ Y Λ K N Cb hCb hG hnn hWG)
       (hI4 Wp Wq P p nn _ Y Λ K N hG hnn hLG) (hI5 ε hε n))
 
 theorem main : P5.ThmPActualCpt → ∀ Cb : ℝ, ∃ C₂ Cc : ℝ, 0 < C₂ ∧ ∀ (Wp Wq : Type) [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq] [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] (P : M.Par) (p : KB.Pl P Wp Wq) (F : B.Mat P.k P.r → (Wq →L[ℂ] Wp)) (Λ A : ℝ) (χ nn : ℝ → ℝ) (Y : Finset ℝ) (K N : ℕ), 1 ≤ Λ → 3 ≤ K → (P.r + 1) * K ≤ N → C6.IsCut0 χ → (∀ y, 0 < nn y) → KB.InDDplus2 P p.l0 p.T.base Cb p.Θ → B.CkOn ⊤ (B.GV P.k P.r) F → (∀ m : ℕ, B.InCC A m F) → Cc * ((P.r : ℝ) + 1) ^ 4 * ((N : ℝ) * (2 * (P.r : ℝ) + P.k + 1) ^ 2 + (2 * (P.r : ℝ) + P.k + 1) ^ 3) ≤ A → TBBx5.WaveGrid p nn Y Λ K N → TBBx5.LiftGrid p nn Y Λ K N → (∀ ε : ℝ, 0 < ε → ∀ n : ℕ, TBB.BlockGrowthBound p nn (apx (D.cutF p.T.base χ F ε) n) Y K N) → LimEvT p χ F Y N → LimBd p nn F Y N → TBB.PtBound p F (1 * (C₂ * Λ ^ 2) ^ (P.r + 1)) := by

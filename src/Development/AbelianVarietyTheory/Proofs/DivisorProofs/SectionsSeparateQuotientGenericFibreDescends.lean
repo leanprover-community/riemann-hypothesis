@@ -1019,7 +1019,7 @@ theorem sections_separate_fibre : GlobalTheory.Published.NadelVanishingAndNonKlt
   have hrange : ∀ Z : Closeds W, x₀ ∈ Z → Set.range x ⊆ Z := by
     rintro Z h _ ⟨q, rfl⟩
     rwa [Subsingleton.elim q pt]
-  have hx₀c : IsClosed ({x₀} : Set W) := _root_.GlobalTheory.secClosed_closedPoint ℂ W p x hp hxp
+  have hx₀c : IsClosed ({x₀} : Set W) := _root_.GlobalTheory.secClosed_closedPoint ℂ W p x hxp
   have hx₀U : x₀ ∈ U := hxU (Set.mem_univ pt)
 
   obtain ⟨N₀, h₀, hc₀, hn₀, hb₀⟩ := GlobalTheory.nef_big_of_cls_eq_smul_add_smul hNN ℂ W p hp N N hN hN (2 * c₀ + 1) 0
@@ -1107,7 +1107,7 @@ theorem sections_separate_fibre : GlobalTheory.Published.NadelVanishingAndNonKlt
   show a j = 0
   obtain ⟨V, hzV, hV⟩ := _root_.GlobalTheory.isolated_in_fibre_of_etale_restrict M W f U hEt (z j pt) (by rw [hfz j]; exact hx₀U)
   obtain ⟨s, hs, hs'⟩ := _root_.GlobalTheory.exists_sec_mem_nonzeroLocus_of_isolated_zero_else ℂ M (f ≫ p) hpM (tens K.bundle B) (isLB_tens K.isLB hB) Jd (z j pt) (V ⊓ UM)
-    (_root_.GlobalTheory.secClosed_closedPoint ℂ M (f ≫ p) (z j) hpM (hzp j)) ⟨hzV, hzM j⟩ (fun y hy => by
+    (_root_.GlobalTheory.secClosed_closedPoint ℂ M (f ≫ p) (z j) (hzp j)) ⟨hzV, hzM j⟩ (fun y hy => by
       rw [hsupp y hy.2, ← hfz j]
       exact ⟨hV y hy.1, fun e => e ▸ rfl⟩) (hvan 1 one_pos)
   have h1 := hrel (H0.ofSec (f ≫ p) ⊤ s)

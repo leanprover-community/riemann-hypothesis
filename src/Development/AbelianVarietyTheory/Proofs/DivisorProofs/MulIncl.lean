@@ -95,9 +95,9 @@ def twoRep : (twoFun A ⋙ forget _).RepresentableBy (Two A) where
   homEquiv {T} :=
     { toFun := fun u => (⟨u ≫ incl A, incl_sq u⟩ : MonoidHom.ker (powMonoidHom 2 : (T ⟶ A) →* (T ⟶ A)))
       invFun := fun x => kpt x.1 x.2
-      left_inv := fun u => two_ext (kpt_incl _ _)
-      right_inv := fun x => Subtype.ext (kpt_incl _ _) }
-  homEquiv_comp {T T'} f u := Subtype.ext (Category.assoc _ _ _)
+      left_inv := fun _ => two_ext (kpt_incl _ _)
+      right_inv := fun _ => Subtype.ext (kpt_incl _ _) }
+  homEquiv_comp {_ _} _ _ := Subtype.ext (Category.assoc _ _ _)
 
 instance : CommGrpObj (Two A) := CommGrpObj.ofRepresentableBy _ (twoFun A) (twoRep A)
 

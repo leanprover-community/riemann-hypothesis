@@ -105,7 +105,7 @@ lemma padZero_restrFirst {m N : ℕ} (h : m ≤ N) (x : Fin N → R) (hx : ∀ i
   · exact (hx i (not_lt.mp hi)).symm
 
 lemma mem_uniSeq_iff {n : ℕ} (l : List (Fin n → R)) :
-    l ∈ uniSeq R n ↔ ∃ f : ℕ → Fin n → R, ∀ i j (hi : i < l.length) (hj : j < l.length),
+    l ∈ uniSeq R n ↔ ∃ f : ℕ → Fin n → R, ∀ i j (_ : i < l.length) (hj : j < l.length),
       f i ⬝ᵥ l[j] = if i = j then 1 else 0 := by
   constructor
   · rintro ⟨f, hf⟩

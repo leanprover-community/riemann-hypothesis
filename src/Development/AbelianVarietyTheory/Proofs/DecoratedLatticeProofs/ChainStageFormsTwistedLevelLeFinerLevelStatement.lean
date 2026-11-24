@@ -115,7 +115,7 @@ variable {D : D7}
 
 theorem multT_le {V : HSp D} {S : D.what₂.Tau → SPar} (θ : InfFam D) (M : DSModel V S) {J J' : Set (GA D V)}
     {χ χ' : GA D V → ℂ} (h : ∀ k ∈ J', k ∈ J ∧ χ k = χ' k) : MultT θ M J χ ≤ MultT θ M J' χ' :=
-  Submodule.map_mono (Submodule.span_mono fun X hX =>
+  Submodule.map_mono (Submodule.span_mono fun _ hX =>
     ⟨hX.aut, hX.cusp, fun v k hk g => (h k hk).2 ▸ hX.lev v k (h k hk).1 g, hX.equiv, hX.cont⟩)
 
 

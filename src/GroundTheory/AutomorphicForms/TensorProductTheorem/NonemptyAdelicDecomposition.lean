@@ -72,7 +72,7 @@ theorem isSmooth_mGenQuotRep (hτ : IsSmooth τ) (e : End ℂ V) (N : Submodule 
 def mGenQuotMap (e : End ℂ V) (N : Submodule ℂ V) :
     Representation.IntertwiningMap (mGenSubrep τ N).toRepresentation (mGenQuotRep τ e N) where
   toLinearMap := (mGenKernel τ e N).mkQ
-  isIntertwining' g := LinearMap.ext fun _ => rfl
+  isIntertwining' _ := LinearMap.ext fun _ => rfl
 
 end Smooth
 
@@ -389,7 +389,7 @@ theorem finrank_fixedVectors_integralGL_le_one {F : Type*} [Field F] [ValuativeR
 instance factIsOpenIntegralGL :
     Fact (∀ v : HeightOneSpectrum (𝓞 K),
       IsOpen (GLnLocal.integralGL (v.adicCompletion K) n : Set (GL (Fin n) (v.adicCompletion K)))) :=
-  ⟨fun v => GLnLocal.isOpen_integralGL _ n⟩
+  ⟨fun _ => GLnLocal.isOpen_integralGL _ n⟩
 
 instance compactSpaceIntegralGL (v : HeightOneSpectrum (𝓞 K)) :
     CompactSpace (GLnLocal.integralGL (v.adicCompletion K) n) :=

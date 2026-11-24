@@ -124,7 +124,7 @@ theorem sum_fac_LL (F : SumFacts X p K) (h5 : 0 ≤ 1 - 5 / X.Y) (h1 : 0 ≤ 1 -
   have : (1 - 5 / X.Y) * (1 - 1 / X.Y) ≤ 1 - 5 / X.Y := by nlinarith
   nlinarith [mul_nonneg h5 h1]
 
-theorem sum_fac_fr (F : SumFacts X p K) (hr : 0 < r) (h5 : 0 ≤ 1 - 5 / X.Y) (h1 : 0 ≤ 1 - 1 / X.Y)
+theorem sum_fac_fr (F : SumFacts X p K) (hr : 0 < r) (h1 : 0 ≤ 1 - 1 / X.Y)
     (hr0 : 0 ≤ 1 - (r : ℝ) / (2 * X.Y)) (j : ℤ) (i : Fin r) :
     sumEta r X.Y * sumBin r K (X.deg (posOf n' (X.F.fr j i.val))) ≤
       sumBin r K ((X.Bw p K (j + 1) (X.F.fr j i.val) - (X.m0 K : ℤ)).toNat) *
@@ -302,7 +302,7 @@ theorem restSum_of (hF : ∀ (p n' r K : ℕ) [NeZero n'] [NeZero r] [NeZero K] 
       simp only [add_sub_cancel_right, mul_pow]
     rw [e]
     exact Finset.prod_le_prod₀ (fun i _ => mul_nonneg heta0 (zero_le_one.trans (sum_one_le_bin _ _ _))) fun i _ =>
-      sum_fac_fr F hr h5 h1 hr0 (j : ℤ) i
+      sum_fac_fr F hr h1 hr0 (j : ℤ) i
 
 end Main
 
@@ -625,7 +625,7 @@ theorem sum_facts (hX : X.Hyp p K) (hLa : (1088 : ℝ) ≤ X.CLa) (hk : (1088 : 
 end Num
 
 theorem restSum : RestSum 1088 1 :=
-  restSum_of fun p n' r K _ _ _ X hX hLa hk => ⟨sum_facts hX hLa hk, Ns_one_le hX⟩
+  restSum_of fun _ _ _ _ _ _ _ _ hX hLa hk => ⟨sum_facts hX hLa hk, Ns_one_le hX⟩
 
 end Formalism.MainNotions.SelectionLemmas.Pf
 end -- clump:auto

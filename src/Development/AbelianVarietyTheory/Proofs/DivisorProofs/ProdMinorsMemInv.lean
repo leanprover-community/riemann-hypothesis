@@ -110,7 +110,7 @@ theorem colSub_prodMinors {a d : ℕ} {n : ι → ℕ} (g : ι → Matrix (Fin a
     Fintype.card_fin, map_prod, map_pow]
 
 theorem prodMinors_mem_inv {a d : ℕ} {n : ι → ℕ} (T : Tup ι a d n) : prodMinors T ∈ inv a d n :=
-  fun g => colSub_prodMinors _ T
+  fun _ => colSub_prodMinors _ T
 
 theorem colSub_rowSub {d a : ℕ} (g : ι → Matrix (Fin a) (Fin a) ℂ) (κ : ι → Matrix (Fin d) (Fin d) ℂ) (P : Pol ι d a) :
     colSub g (rowSub κ P) = rowSub κ (colSub g P) := by

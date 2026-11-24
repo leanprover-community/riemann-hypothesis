@@ -56,7 +56,7 @@ noncomputable section
 namespace GlobalTheory.ThK.LocalOps
 end GlobalTheory.ThK.LocalOps
 namespace GlobalTheory.ThK.LocalOps
-theorem theta_kernel_local_operators_act (_hP : _root_.GlobalTheory.FunPr.ThetaLocalInputs) : GlobalTheory.ThK.ActsEx := by
+theorem theta_kernel_local_operators_act : GlobalTheory.ThK.ActsEx := by
   intro F E _ _ _ _ _ σ B n d X W M χX χW om r s r' s' hP v
   have hex : ∀ x : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.UA σ X.J × GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.UA σ W.J, x.1 ∈ GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.UAt σ X (evFin F v) →
       x.2 ∈ GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.UAt σ W (evFin F v) → ∀ φ ∈ GlobalTheory.WeilM.SB (Fin n × Fin d → Fv F v),

@@ -512,7 +512,7 @@ theorem ew_Gpow_le (p : KB.Pl P Wp Wq) (Z : B.Mat P.k P.r → (Wq →L[ℂ] Wp))
         (P.r + 1) [] (TBB.bigPt P.r c)
         = ‖TBB.Gp p (TBB.bigPt P.r c)‖ ^ (2 * p₀) * TBB.Ew p (fun _ => 1) Z (P.r + 1) [] (TBB.bigPt P.r c) := by
       rw [Formalism.FourierDecayAlt.P.TBBx2.Tri.Ew_top p _ hγ.1, Formalism.FourierDecayAlt.P.TBBx2.Tri.Ew_top p _ hγ.1,
-        Formalism.FourierDecayAlt.P.TBBx4.vec_Gpow p Z p₀ hγ.1 hγ.2, Formalism.FourierDecayAlt.P.TBBx4.hsVec_real_smul_sq, Real.norm_eq_abs,
+        Formalism.FourierDecayAlt.P.TBBx4.vec_Gpow p Z p₀ hγ.2, Formalism.FourierDecayAlt.P.TBBx4.hsVec_real_smul_sq, Real.norm_eq_abs,
         abs_of_pos hγ.2]
       ring
     rw [heq]

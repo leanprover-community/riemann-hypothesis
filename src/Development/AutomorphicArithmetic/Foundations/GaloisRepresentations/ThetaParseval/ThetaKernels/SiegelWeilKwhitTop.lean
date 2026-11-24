@@ -62,7 +62,7 @@ open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.Inde
 namespace PositivityTheory.SiegelWeilFormula.KWhit
 open PositivityTheory.SiegelWeilFormula
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
-theorem T_zero_k (d : _root_.PositivityTheory.SiegelWeilFormula.SD_k σ) {Φ : d.Fn} (_hΦ : Φ ∈ d.sch) : d.T Φ 0 = d.l Φ := by
+theorem T_zero_k (d : _root_.PositivityTheory.SiegelWeilFormula.SD_k σ) {Φ : d.Fn} : d.T Φ 0 = d.l Φ := by
   have h0 : d.dd.rho d.B.ψ 0 Φ = Φ := by
     funext y
     simp [GlobalTheory.WeilM.Darboux.rho, GlobalTheory.WeilM.schr]
@@ -75,7 +75,7 @@ theorem cellFormula_k : _root_.PositivityTheory.SiegelWeilFormula.KWhit.CellForm
     simp [_root_.PositivityTheory.SiegelWeilFormula.SD_k.sec0, map_mul]
   have hx := _root_.PositivityTheory.SiegelWeilFormula.KWhit.om_mem_sch_k d x hΦ
   have hgx := _root_.PositivityTheory.SiegelWeilFormula.KWhit.om_mem_sch_k d g hx
-  rw [h1, ← _root_.PositivityTheory.SiegelWeilFormula.KWhit.T_zero_k d (_root_.PositivityTheory.SiegelWeilFormula.KWhit.om_mem_sch_k d w hgx), hT.2.2.1 F E σ d ν hν ε w hw _ hgx 0]
+  rw [h1, ← _root_.PositivityTheory.SiegelWeilFormula.KWhit.T_zero_k d, hT.2.2.1 F E σ d ν hν ε w hw _ hgx 0]
   refine integral_congr_ae (Filter.Eventually.of_forall fun Z => ?_)
   simp only [_root_.PositivityTheory.SiegelWeilFormula.KWhit.gram_zero_left_k, _root_.PositivityTheory.SiegelWeilFormula.SD_k.tt, Matrix.trace_zero, map_zero, mul_zero, AddChar.map_zero_eq_one, one_mul]
   exact (hT.2.1 F E σ d _ hx).1 g β hg Z
@@ -646,7 +646,7 @@ theorem fin_at_k (d : _root_.PositivityTheory.SiegelWeilFormula.SD_k σ) (R : _r
   simp only [hsm, hmap, map_intCast] at h1' h2'
   have key := PositivityTheory.SiegelWeilFormula.HeightDict.fin_index hcm v d.n (t.1.map cf) (u.1.map cf) (D.1.map cf) (β.1.map cf) ((hOf β).1.map cf)
     (inclR (F := F) (v.adicCompletion F) η) (((ε : ℤ) : v.adicCompletion F ⊗[F] E))
-    ((inFrame d.b k).map cf) ((inFrame d.b k⁻¹).map cf) ht hD htu hη he he1 hβ hh hkk
+    ((inFrame d.b k).map cf) ((inFrame d.b k⁻¹).map cf) ht hD he he1 hβ hh hkk
     (fun i j => (_root_.PositivityTheory.SiegelWeilFormula.KWhit.Ht.k_int_k d hk v i j).1) (fun i j => (_root_.PositivityTheory.SiegelWeilFormula.KWhit.Ht.k_int_k d hk v i j).2) h1' h2' lam
   rw [det_map, det_map] at key
   exact key
@@ -733,7 +733,7 @@ open NumberField IsDedekindDomain MeasureTheory Filter Topology Formalism.MainNo
 open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.LFun GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.ThK.Dbl GlobalTheory.Cont PositivityTheory.Rg.Sw
 namespace PositivityTheory.SiegelWeilFormula.KWhit
 open PositivityTheory.SiegelWeilFormula
-theorem kFinK_k : _root_.PositivityTheory.SiegelWeilFormula.KWhit.KFinK_k := fun _ _ _ _ _ _ _ _ d Φ hΦ k hk => _root_.PositivityTheory.SiegelWeilFormula.KWhit.kfin_om_k d hΦ hk
+theorem kFinK_k : _root_.PositivityTheory.SiegelWeilFormula.KWhit.KFinK_k := fun _ _ _ _ _ _ _ _ d _ hΦ _ hk => _root_.PositivityTheory.SiegelWeilFormula.KWhit.kfin_om_k d hΦ hk
 theorem iwaRedC_k : _root_.PositivityTheory.SiegelWeilFormula.KWhit.IwaRedC_k := by
   intro hT c F E _ _ _ _ _ σ d Q hQs hQK hL Φ hΦ x nb lam 𝓖 hcd ε w hw T hTnd
   obtain ⟨p, t, hp, k, hk, rfl⟩ := d.ok.hgt.iwa x

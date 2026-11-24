@@ -46,7 +46,7 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 noncomputable section
 namespace GlobalTheory.HeightCounting.JumpsAt
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
-theorem jumpsCard_of_built_alt (hH : HtCard) {hL : _root_.UpperTheory.Zero.LLC.RecTExists} {D' : D7} (b : _root_.GlobalTheory.HeightCounting.NormChoiceConstructed hL D')
+theorem jumpsCard_of_built_alt {hL : _root_.UpperTheory.Zero.LLC.RecTExists} {D' : D7} (b : _root_.GlobalTheory.HeightCounting.NormChoiceConstructed hL D')
     (fr : OmFrame b.D) (hp : PhtOn b.A.wd fr fun _ _ _ _ => True) : JumpsCard D'.nd D'.naut := by
   obtain ⟨D, cf, jE, A, cg, au, rep, row, low, Pq, S, hL', eig, θ, Bs, M, C, tp, ch, mt, big, L, Sp, Au, ss, rfl⟩ := b
   intro i a r w τ hw hτ hdR
@@ -62,7 +62,7 @@ theorem jumpsCard_at_members_of_htCard : HtCard → ∀ hL : _root_.UpperTheory.
   refine evLgG_of_forall fun K B f T _ w Z Wt p0 t nch n xd c hE _ _ => ?_
   obtain ⟨e⟩ := hE
   obtain ⟨fr, -, hp⟩ := (e : _root_.GlobalTheory.HeightCounting.RealExpansionExtraData (D := (w.st Z).toD7) c.row t.r.z.geo xd).pht
-  exact _root_.GlobalTheory.HeightCounting.JumpsAt.jumpsCard_of_built_alt hH c.a.nt.toNBuilt fr hp
+  exact _root_.GlobalTheory.HeightCounting.JumpsAt.jumpsCard_of_built_alt c.a.nt.toNBuilt fr hp
 end GlobalTheory.HeightCounting.JumpsAt
 end
 end

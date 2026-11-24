@@ -72,7 +72,7 @@ def iterDeriv (k : ℕ) (g : AdelicGLn.AdelicGL K n) (ϕ : AdelicGLn.AdelicGL K 
 theorem IsUSmooth.iterDeriv {ϕ : AdelicGLn.AdelicGL K n → ℂ} (hϕ : IsUSmooth ϕ) (k : ℕ)
     (g : AdelicGLn.AdelicGL K n) : ∀ l, IsUSmooth (FourierWhittaker.iterDeriv k g ϕ l)
   | [] => hϕ
-  | p :: l => (IsUSmooth.iterDeriv hϕ k g l).rDeriv_smooth _
+  | _ :: l => (IsUSmooth.iterDeriv hϕ k g l).rDeriv_smooth _
 
 theorem hasSum_vecCoeff_partialCoeff {ϕ : AdelicGLn.AdelicGL K n → ℂ} (hϕ : IsUSmooth ϕ) {k : ℕ}
     (hk : k < n) (g : AdelicGLn.AdelicGL K n)

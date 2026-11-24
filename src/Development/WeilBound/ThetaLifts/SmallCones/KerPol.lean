@@ -69,13 +69,13 @@ theorem vv0 {S : Type} [CommRing S] (a : Fin n → S) : vecMulVec a (0 : Fin d �
 
 def vL (n : ℕ) (b : Fin d → E) : (Fin n → E) →ₗ[E] Matrix (Fin n) (Fin d) E where
   toFun x := vecMulVec x b
-  map_add' x y := Matrix.add_vecMulVec _ _ _
-  map_smul' a x := Matrix.smul_vecMulVec _ _ _
+  map_add' _ _ := Matrix.add_vecMulVec _ _ _
+  map_smul' _ _ := Matrix.smul_vecMulVec _ _ _
 
 def vR (d : ℕ) (a : Fin n → E) : (Fin d → E) →ₗ[E] Matrix (Fin n) (Fin d) E where
   toFun y := vecMulVec a y
-  map_add' x y := Matrix.vecMulVec_add _ _ _
-  map_smul' c x := Matrix.vecMulVec_smul _ _ _
+  map_add' _ _ := Matrix.vecMulVec_add _ _ _
+  map_smul' _ _ := Matrix.vecMulVec_smul _ _ _
 
 @[simp] theorem vL_apply (b : Fin d → E) (x : Fin n → E) : vL n b x = vecMulVec x b := rfl
 @[simp] theorem vR_apply (a : Fin n → E) (y : Fin d → E) : vR d a y = vecMulVec a y := rfl
@@ -243,8 +243,8 @@ theorem comp_ne {n₀ d₀ : ℕ} {X₀ : Spc F E n₀} {W₀ : Spc F E d₀} {M
 
 end T
 
-theorem isEv_comp {n₂ d₂ : ℕ} {X₂ : Spc F E n₂} {W₂ : Spc F E d₂} {M₂ : Model σ X₂ W₂} (hψ : IsStd B.ψ) (hM : M.IsGood B.ψ)
-    (hM₁ : M₁.IsGood B.ψ) (hM₂ : M₂.IsGood B.ψ) {ι ι' I κ κ' J} {e₂ : Fn F n₁ d₁ →ₗ[ℂ] Fn F n₂ d₂} (he : IsEv B M M₁ ι ι' I e)
+theorem isEv_comp {n₂ d₂ : ℕ} {X₂ : Spc F E n₂} {W₂ : Spc F E d₂} {M₂ : Model σ X₂ W₂} (hM : M.IsGood B.ψ)
+    {ι ι' I κ κ' J} {e₂ : Fn F n₁ d₁ →ₗ[ℂ] Fn F n₂ d₂} (he : IsEv B M M₁ ι ι' I e)
     (he₂ : IsEv B M₁ M₂ κ κ' J e₂) (hne : ∃ Φ ∈ schA F (Fin n × Fin d), e₂ (e Φ) ≠ 0) {K : Set (Ten F E n d)}
     (hK : ∀ u ∈ K, u ∈ I ∨ ∃ w ∈ J, u = incM F ι * w * (incM F ι')ᵀ) : IsEv B M M₂ (ι * κ) (ι' * κ') K (e₂ ∘ₗ e) := by
   refine ⟨fun Φ hΦ => he₂.maps _ (he.maps Φ hΦ), fun z Φ hΦ => ?_, fun u hu Φ hΦ => ?_, ?_⟩

@@ -329,7 +329,7 @@ theorem toZMod_ne_zero_of_mem_mu {d : ℤ_[l]} (hd : d ∈ mu l) : PadicInt.toZM
   rw [← norm_pow, (mem_mu_iff_pow_eq_one l).mp hd, norm_one] at hlt
   exact lt_irrefl _ hlt
 
-theorem toZMod_mem_units_of_mem_mu : ∀ d ∈ mu l, PadicInt.toZMod d ∈ (univ.erase (0 : ZMod l)) := fun d hd => Finset.mem_erase.mpr ⟨toZMod_ne_zero_of_mem_mu l hd, Finset.mem_univ _⟩
+theorem toZMod_mem_units_of_mem_mu : ∀ d ∈ mu l, PadicInt.toZMod d ∈ (univ.erase (0 : ZMod l)) := fun _ hd => Finset.mem_erase.mpr ⟨toZMod_ne_zero_of_mem_mu l hd, Finset.mem_univ _⟩
 
 theorem toZMod_injOn_mu : Set.InjOn (PadicInt.toZMod (p := l)) (mu l : Set ℤ_[l]) := by
   intro x hx y hy hxy

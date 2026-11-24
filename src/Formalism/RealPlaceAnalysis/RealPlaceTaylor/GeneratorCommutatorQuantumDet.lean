@@ -304,7 +304,7 @@ theorem quantumMinor_expand_last {A : Type*} [Ring A] [Algebra ℂ A] {n m : ℕ
     Equiv.Perm.mul_apply, extendLast_castSucc, cycleToLast_castSucc, extendLast_last, cycleToLast_last,
     Fin.val_castSucc, Fin.val_last, Function.comp_apply, mul_assoc]
 
-theorem qComatrix_of (hr : QSkewRow) (hc : QSkewCol) : QComatrix := by
+theorem qComatrix_of (hc : QSkewCol) : QComatrix := by
   unfold QComatrix
   intro A _ _ m E hE u i l
   obtain ⟨b', hbc, hbl⟩ : ∃ b' : Fin (m + 1) → Fin (m + 1),

@@ -108,11 +108,11 @@ private theorem lt_length_of_length_eq_one {X Y : Scheme.{u}} (t : BlowupSequenc
   exact hj
 
 private theorem index_strictMono_of_length_eq_one {Y : Scheme.{u}} (t' : BlowupSequenceData Y)
-    (_ht' : t'.length = 1) : ∀ j : ℕ, j < t'.toSequenceOfBlowups.length → j < j + 1 :=
+    : ∀ j : ℕ, j < t'.toSequenceOfBlowups.length → j < j + 1 :=
   fun j _ => Nat.lt_succ_self j
 
 private theorem isPullback_of_length_eq_one {X Y : Scheme.{u}} (g : Y ⟶ X) (t : BlowupSequenceData X)
-    (t' : BlowupSequenceData Y) (_ht : t.length = 1) (ht' : t'.length = 1) (q : t'.obj 1 ⟶ t.obj 1)
+    (t' : BlowupSequenceData Y) (ht' : t'.length = 1) (q : t'.obj 1 ⟶ t.obj 1)
     (hq : IsPullback q (t'.map 0) (t.map 0) (t'.isoZero.hom ≫ g ≫ t.isoZero.inv)) :
     ∀ (j : ℕ) (hj : j ≤ t'.toSequenceOfBlowups.length),
       IsPullback (mapOfLengthEqOne g t t' ht' q j hj) (t'.toSequenceOfBlowups.projectionToBase j) (t.toSequenceOfBlowups.projectionToBase j) g := by
@@ -150,18 +150,18 @@ private theorem isPullback_of_length_eq_one {X Y : Scheme.{u}} (g : Y ⟶ X) (t 
     exact hq.paste_vert hzero
 
 private theorem blowupMorphism_comp_of_length_eq_one {X Y : Scheme.{u}} (g : Y ⟶ X) (t : BlowupSequenceData X)
-    (t' : BlowupSequenceData Y) (_ht : t.length = 1) (ht' : t'.length = 1) (q : t'.obj 1 ⟶ t.obj 1)
+    (t' : BlowupSequenceData Y) (ht' : t'.length = 1) (q : t'.obj 1 ⟶ t.obj 1)
     (hq : IsPullback q (t'.map 0) (t.map 0) (t'.isoZero.hom ≫ g ≫ t.isoZero.inv)) :
     ∀ (j : ℕ) (hj : j < t'.toSequenceOfBlowups.length),
       t'.toSequenceOfBlowups.transitionMapSucc j ≫ mapOfLengthEqOne g t t' ht' q j (le_of_lt hj) =
         mapOfLengthEqOne g t t' ht' q (j + 1) hj ≫
-          t.toSequenceOfBlowups.transitionMap (le_of_lt (index_strictMono_of_length_eq_one t' ht' j hj)) := by
+          t.toSequenceOfBlowups.transitionMap (le_of_lt (index_strictMono_of_length_eq_one t' j hj)) := by
   intro j hj
   have hlen : t'.toSequenceOfBlowups.length = t'.length := t'.toSequenceOfBlowups_length
   have hj0 : j = 0 := by omega
   subst hj0
   have h1 : t'.toSequenceOfBlowups.transitionMapSucc 0 = t'.map 0 := t'.toSequenceOfBlowups_blowupMorphism 0
-  have h2 : t.toSequenceOfBlowups.transitionMap (le_of_lt (index_strictMono_of_length_eq_one t' ht' 0 hj)) = t.map 0 :=
+  have h2 : t.toSequenceOfBlowups.transitionMap (le_of_lt (index_strictMono_of_length_eq_one t' 0 hj)) = t.map 0 :=
     (t.toSequenceOfBlowups.blowupMorphism_eq_transitionMap 0).symm.trans (t.toSequenceOfBlowups_blowupMorphism 0)
   rw [h1, h2]
   show t'.map 0 ≫ (𝟙 (t'.obj 0) ≫ (t'.isoZero.hom ≫ g ≫ t.isoZero.inv) ≫ 𝟙 (t.obj 0)) =
@@ -170,7 +170,7 @@ private theorem blowupMorphism_comp_of_length_eq_one {X Y : Scheme.{u}} (g : Y �
   exact hq.w.symm
 
 private theorem center_eq_comap_of_length_eq_one {X Y : Scheme.{u}} (g : Y ⟶ X) (t : BlowupSequenceData X)
-    (t' : BlowupSequenceData Y) (_ht : t.length = 1) (ht' : t'.length = 1) (q : t'.obj 1 ⟶ t.obj 1)
+    (t' : BlowupSequenceData Y) (ht' : t'.length = 1) (q : t'.obj 1 ⟶ t.obj 1)
     (hcen : t'.center 0 = (t.center 0).comap (t'.isoZero.hom ≫ g ≫ t.isoZero.inv)) :
     ∀ (j : ℕ) (hj : j < t'.toSequenceOfBlowups.length),
       t'.toSequenceOfBlowups.center j = (t.toSequenceOfBlowups.center j).comap (mapOfLengthEqOne g t t' ht' q j (le_of_lt hj)) := by
@@ -220,10 +220,10 @@ def ofLengthOne {X Y : Scheme.{u}} (g : Y ⟶ X) (t : BlowupSequenceData X) (t' 
   map := mapOfLengthEqOne g t t' ht' q
   idx_length := length_eq_of_length_eq_one t t' ht ht'
   idx_lt := lt_length_of_length_eq_one t t' ht ht'
-  idx_strictMono := index_strictMono_of_length_eq_one t' ht'
-  isPullback := isPullback_of_length_eq_one g t t' ht ht' q hq
-  step := blowupMorphism_comp_of_length_eq_one g t t' ht ht' q hq
-  center_comap := center_eq_comap_of_length_eq_one g t t' ht ht' q hcen
+  idx_strictMono := index_strictMono_of_length_eq_one t'
+  isPullback := isPullback_of_length_eq_one g t t' ht' q hq
+  step := blowupMorphism_comp_of_length_eq_one g t t' ht' q hq
+  center_comap := center_eq_comap_of_length_eq_one g t t' ht' q hcen
   center_ne_top := center_ne_top_of_length_eq_one t' ht' hne
   omitted := disjoint_omitted_centers_of_length_eq_one g t t' ht ht'
 
@@ -404,7 +404,7 @@ private theorem center_ne_top_of_length_eq_zero {Y : Scheme.{u}} (e : BlowupSequ
   exact absurd hj (Nat.not_lt_zero j)
 
 private theorem disjoint_omitted_centers_of_disjoint_centers {X Y : Scheme.{u}} (g : Y ⟶ X) (t : BlowupSequenceData X)
-    (hmiss : IsDisjointFromCenters g t) (e : BlowupSequenceData Y) (_he : e.length = 0) :
+    (hmiss : IsDisjointFromCenters g t) (e : BlowupSequenceData Y) :
     ∀ i : ℕ, i < t.toSequenceOfBlowups.length → (∀ j : ℕ, j < e.toSequenceOfBlowups.length → t.length ≠ i) →
       ∀ z : ↥(t.toSequenceOfBlowups.schemeAt i), z ∈ (t.toSequenceOfBlowups.center i).support →
         ∀ x' : ↥Y, g.base x' ≠ (t.toSequenceOfBlowups.projectionToBase i).base z := by
@@ -432,7 +432,7 @@ noncomputable def ofCentersMissImage {X Y : Scheme.{u}} (g : Y ⟶ X) [Algebraic
   step := blowupMorphism_comp_of_disjoint_centers g t hmiss e he
   center_comap := center_eq_comap_lastCenter_of_disjoint_of_flat g t hmiss e he
   center_ne_top := center_ne_top_of_length_eq_zero e he
-  omitted := disjoint_omitted_centers_of_disjoint_centers g t hmiss e he
+  omitted := disjoint_omitted_centers_of_disjoint_centers g t hmiss e
 
 end
 
@@ -772,7 +772,7 @@ private noncomputable def ofIsDisjointFromCenters {X Y : Scheme.{u}} (g : Y ⟶ 
   step := blowupMorphism_comp_of_disjoint_centers g t hmiss e he
   center_comap := center_eq_comap_lastCenter_of_disjoint_of_flat g t hmiss e he
   center_ne_top := center_ne_top_of_length_eq_zero e he
-  omitted := disjoint_omitted_centers_of_disjoint_centers g t hmiss e he
+  omitted := disjoint_omitted_centers_of_disjoint_centers g t hmiss e
 
 theorem nonempty_append_of_disjoint_centers {X X' : Scheme.{u}} (φ : X' ⟶ X) (s' : BlowupSequenceData X')
     (s : BlowupSequenceData X) (n : BlowupSequenceData (s.obj s.length))

@@ -182,7 +182,7 @@ private theorem pm_apply {W : Set (A E)ˣ} {B : Set (G1 E)} (hB : MeasurableSet 
   rw [pm, Measure.map_apply continuous_prN.measurable hB]
   exact Measure.restrict_apply (continuous_prN.measurable hB)
 
-private theorem pm_left {W : Set (A E)ˣ} (hW : IsOpen W) : (pm W).IsMulLeftInvariant := by
+private theorem pm_left {W : Set (A E)ˣ} : (pm W).IsMulLeftInvariant := by
   refine ⟨fun h => Measure.ext fun B hB => ?_⟩
   rw [Measure.map_apply (measurable_const_mul h) hB, pm_apply hB, pm_apply (measurable_const_mul h hB)]
   have e : (glN h * ·) ⁻¹' (prN ⁻¹' B ∩ dN ⁻¹' W) = prN ⁻¹' ((h * ·) ⁻¹' B) ∩ dN ⁻¹' W := by
@@ -268,7 +268,7 @@ theorem UpperTheory.ConvolutionTheory.RankTwoDescent.volE :
   intro E _ _ N
   obtain ⟨W, K₀, hW, h1, hK, hWK, hsep⟩ := exists_sep (E := E)
   haveI := N.haar
-  haveI := pm_left hW
+  haveI := pm_left
   haveI := pm_fin hK hWK
   obtain ⟨c, hc⟩ : ∃ c : NNReal, pm W = c • N.μ := ⟨_, Measure.isMulLeftInvariant_eq_smul _ _⟩
   have hc0 : c ≠ 0 := by

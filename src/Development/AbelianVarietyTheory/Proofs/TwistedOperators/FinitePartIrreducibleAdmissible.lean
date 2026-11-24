@@ -924,7 +924,7 @@ variable {D : D7} {V : HSp D} {S : D.what₂.Tau → SPar} {M : DSModel V S} {H 
 noncomputable abbrev valMap (hU : IsSubrep π ⊤) : smoothPart (finPartDS M hU) →ₗ[ℂ] ContinuousMultilinearMap ℂ M.H H :=
   (homDS M π ⊤).subtype ∘ₗ (smoothPart (finPartDS M hU)).subtype
 
-theorem valMap_injective (hU : IsSubrep π ⊤) : Function.Injective (valMap (M := M) hU) := fun a b e =>
+theorem valMap_injective (hU : IsSubrep π ⊤) : Function.Injective (valMap (M := M) hU) := fun _ _ e =>
   Subtype.ext (Subtype.ext e)
 
 

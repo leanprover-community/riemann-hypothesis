@@ -734,7 +734,7 @@ theorem dExt_std₀ (α : (std 0).Fld) : (std 0).dExt α = 0 :=
   funext fun x => by simp [dExt_apply, opAt]
 
 theorem mem_closedForms_std₀ (α : (std 0).Fld) : α ∈ (std 0).closedForms 0 :=
-  ⟨isForm_std₀ α, fun x => hasDeg_zero_dim _, dExt_std₀ α⟩
+  ⟨isForm_std₀ α, fun _ => hasDeg_zero_dim _, dExt_std₀ α⟩
 
 def evStd₀ : (std 0).closedForms 0 →ₗ[ℂ] ℂ :=
   (bas 0).coord ∅ ∘ₗ LinearMap.proj pt₀ ∘ₗ ((std 0).closedForms 0).subtype

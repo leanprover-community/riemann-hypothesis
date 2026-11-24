@@ -928,13 +928,13 @@ private theorem jets_move_with_frames {D : D7} {ψ : AddChar (AF D.host.F) ℂ} 
       obtain ⟨ε, hε1, hε⟩ := (GlobalTheory.T.self_dual_lattice_pairing_dual D ψ S T ΛS ΛT hψ hSd hTd).2.2 f hf.2.lat _ hγ
       refine mem_self_dual_of_eigen hH hsd hα hTh.2 hne (ε := ε) (by rcases hε1 with rfl | rfl <;> norm_num) ?_
       rw [← hrd f hf.2.theta, hε f hf.2.lat, map_smul]
-    · obtain ⟨v, hv, hvx⟩ := GlobalTheory.ThetaLawMoved.mem_La_frame_sd S T frS frT hS hT Ls Lt hLs δ _ hγ
+    · obtain ⟨v, hv, hvx⟩ := GlobalTheory.ThetaLawMoved.mem_La_frame_sd S T frS frT hS Ls Lt hLs δ _ hγ
       rw [← hP] at hvx
       rw [hPinj hvx]
       have : GlobalTheory.VacUnique.finRat S T (-v) ∈ latO S T (inV frS Ls) (inV frT Lt) fun _ => True := by
         rw [AddMonoidHom.map_neg]; exact neg_mem hv
       exact this
-    · obtain ⟨v, -, hvx⟩ := GlobalTheory.ThetaLawMoved.mem_La_frame_sd S T frS frT hS hT Ls Lt hLs δ _ hz
+    · obtain ⟨v, -, hvx⟩ := GlobalTheory.ThetaLawMoved.mem_La_frame_sd S T frS frT hS Ls Lt hLs δ _ hz
       exact ⟨-v, hvx.trans (hP v).symm⟩
   obtain ⟨t1, -, j1, d1, -⟩ := key Ls Lt hLs hLt f hf
   obtain ⟨t2, n2, j2, d2, r2⟩ := key Ls' Lt' hLs' hLt' _ hom
@@ -1260,7 +1260,7 @@ theorem vol_fd {D : D7} {δ : ℂ} (hC : Crv D D.host.ccK δ) {N N' : ℕ} {A : 
   have hH := GlobalTheory.ThetaInter.isHerm_sesqOf D (tor0 D D.host.ccK δ) N N'
   have : (volume : Measure (Fin N' → Fin N → ℂ)).IsAddHaarMeasure := Measure.pi.isAddHaarMeasure _
   have : (volume : Measure (VC D N N')).IsAddHaarMeasure := Measure.pi.isAddHaarMeasure _
-  obtain ⟨n, b, hb⟩ := GlobalTheory.ThetaInter.exists_basis (GlobalTheory.ThetaInter.discrete_of_selfDual hH d₁ f₁) s₁
+  obtain ⟨n, b, hb⟩ := GlobalTheory.ThetaInter.exists_basis (GlobalTheory.ThetaInter.discrete_of_selfDual d₁ f₁) s₁
   subst hb
   have h1 := ZSpan.isAddFundamentalDomain' b (volume : Measure (VC D N N'))
   have h2 := Classical.epsilon_spec

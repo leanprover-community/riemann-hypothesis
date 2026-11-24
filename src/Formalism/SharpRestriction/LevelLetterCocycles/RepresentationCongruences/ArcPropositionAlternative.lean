@@ -261,7 +261,7 @@ theorem arc_length_one_or_two_case_c [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsD
   have hlr0 : (0 : ℝ) < PD.p := by linarith
   push_cast
   by_cases h1c : PD.p * (size (c - 1) + S) ≤ size c
-  · have hc1 := case1c PD.p hl11 b w (size (c - 1)) S η (size c) hb1 h20η h20S h20w hwle hthc.1 hthc.2 h1c
+  · have hc1 := case1c PD.p hl11 b w (size (c - 1)) S η (size c) hb1 hthc.1 hthc.2 h1c
       (Nat.le_of_not_lt hnb) (ArcLengthOneTwo.deA PD.p (size c) (size (c - 1) + S) : ℝ) (by push_cast at hde; exact hde)
     have hBand : Formalism.MainNotions.TruncatedSeriesCountingBounds.Band PD.p b S η size (Real.logb PD.p (2 * (Formalism.MainNotions.TruncatedSeriesCountingBounds.hB b w S η size : ℝ))) Cb :=
       ⟨c - 1, hnt1, Or.inl (by rw [sub_add_cancel]; exact hthc), by rw [hhB]; exact hc1.2 Cb hCb⟩
@@ -724,7 +724,7 @@ theorem arc_length_two_case_down [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsDomai
     simp only [arcOf]
     split <;> rfl
   obtain ⟨κ, x, hx⟩ := hf.2 0 (by rw [hlen]; norm_num) (size c) (by simpa using hty0)
-  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T₁ hW₁.1 hO hinj
+  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T₁ hW₁.1 hO
   have hy1 : 1 ≤ size (c - 1) := by have := hηs (c - 1); omega
   obtain ⟨de, x', hde, hde0, hg1, hg2⟩ := ArcLengthTwo.den_step W Br c (size (c - 1)) (size c + S) κ hy1
     (by have := hηs c; omega) f x (by rw [← hnn]; exact hf.1) (by rw [← hnn]; exact hx)
@@ -784,7 +784,7 @@ theorem arc_length_two_case_down [NeZero n] [Fintype (K →ₐ[Qp] LL)] [IsDomai
   have hw' : size (c - 1) ≤ w := hnt (c - 1) hcm
   have hAI := ArcLengthTwo.aI_le W F hB' CR hWR c hct hc1
   have hwA : (size (c - 1) : ℝ) ≤ (Formalism.MainNotions.LiftingTheory.AI W F (c - 1) : ℝ) + η := by exact_mod_cast h2b
-  obtain ⟨k1, k2⟩ := case2b PD.p hp11 b w (size (c - 1)) S η (size c) hb1 hηb hSb hwb hw' hy1 hct.1 hct.2
+  obtain ⟨k1, k2⟩ := case2b PD.p hp11 b w (size (c - 1)) S η (size c) hb1 hwb hw' hy1 hct.1 hct.2
     _ hAI hwA
   have hDle : (de : ℝ) ≤ η + 5 * Sg' := by
     have hm0 : 0 ≤ max 0 (((size (c - 1) : ℕ) : ℝ) - ((size c + S : ℕ) : ℝ) / PD.p + 2 +
@@ -1152,7 +1152,7 @@ theorem exists_exponent_le_liftsAt_arcOf [NeZero n] [Fintype (K →ₐ[Qp] LL)] 
   have hσ' : ((A.σ PD.p : ℕ) : ℝ) ≤ 3 * Formalism.MainNotions.N.FrobeniusPowerSeries.Sg PD.p (b + η + S) w S η := by rw [← eSg]; exact hσ
   have hth' : (size (c - 2) : ℝ) < (Formalism.MainNotions.LiftingTheory.AI W F (c - 2) : ℝ) + η + 2 * ((A.σ PD.p : ℕ) : ℝ) + 2 := by
     exact_mod_cast hth
-  have halt4 := le_band_add_errorScale PD.p hp11 b w (size (c - 2)) S η (size (c - 1)) hb1 hηb hSb hwb hw2 hT1.1 hT1.2
+  have halt4 := le_band_add_errorScale PD.p hp11 b w (size (c - 2)) S η (size (c - 1)) hb1 hT1.1 hT1.2
     (Formalism.MainNotions.LiftingTheory.AI W F (c - 2) : ℝ) ((A.σ PD.p : ℕ) : ℝ) ((s : ℝ) - 1) Cb hCb hAa hσ' hth' hsb'
   have hband : (if |(PD.p : ℝ) * (size (c - 2) : ℕ) - b| ≤
         Cb * ((PD.p : ℝ) * η + (PD.p : ℝ) * S + (b : ℝ) / PD.p + (size (c - 2) : ℕ) +

@@ -477,7 +477,7 @@ theorem bd_cmap {G H : Type} [Group G] [Group H] (f : G →* H) (m : ℕ) (z : C
     simp only [Finsupp.mapDomain_single, hc]
   exact LinearMap.congr_fun key z
 
-theorem pHeckeKer (hT : PTransfer) (hE : PEvDC) : PHeckeKer := by
+theorem pHeckeKer (hT : PTransfer) : PHeckeKer := by
   intro hSEv G K _ _ ρ hρ q hfin m F hF hdF hcyc z hz
   haveI := Fintype.ofFinite (Quotient (QuotientGroup.rightRel (Gq ρ q)))
   have heq : ∀ (c : Quotient (QuotientGroup.rightRel (Gq ρ q))) (g : G) (y : Fin (m + 2) → G),
@@ -1555,7 +1555,7 @@ open AffineStabilizerVanishing
 theorem sHecke_of (_hCh : SChain) (_hEv : SEv) (_hSt : SStab) (_hFin : SFin) (_hAff : SAff) :
     SHecke :=
   assemble _hCh _hEv _hSt _hFin _hAff (pKey (pTransfer pCobSub pEvDC)) pHeckeFormal
-    (pHeckeKer (pTransfer pCobSub pEvDC) pEvDC) pIndex pStabK
+    (pHeckeKer (pTransfer pCobSub pEvDC)) pIndex pStabK
 
 end PositivityTheory.KB
 end -- clump:auto

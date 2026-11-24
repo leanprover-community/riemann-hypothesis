@@ -134,7 +134,7 @@ theorem h90_range_eq_normOne_of_isQuad (hσ : ∀ x, σ (σ x) = x) (htr : ∀ x
     obtain ⟨e, he, hun⟩ := GlobalTheory.AdIdem.finite_part (𝓞 F) F t
     let κ : E →+* AfE F E := Algebra.TensorProduct.includeLeftRingHom
     let j : FiniteAdeleRing (𝓞 F) F →ₐ[F] AfE F E := Algebra.TensorProduct.includeRight
-    obtain ⟨x, hx⟩ := GlobalTheory.AdLat.hilbert90_involution_of_idempotent_unit (sigR σ (FiniteAdeleRing (𝓞 F) F)) (sigR_sigR hσ) u
+    obtain ⟨x, hx⟩ := GlobalTheory.AdLat.hilbert90_involution_of_idempotent_unit (sigR σ (FiniteAdeleRing (𝓞 F) F)) u
       (κ (y - σ y)) (j e) (j t) hu' (by
         rw [← map_neg]
         change sigR σ _ ((y - σ y) ⊗ₜ 1) = (-(y - σ y)) ⊗ₜ 1

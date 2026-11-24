@@ -220,7 +220,7 @@ open TensorProduct
 
 namespace GlobalTheory
 
-theorem exists_pow_eq_of_kaehler_D_eq_zero : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] [IsAlgClosed k] (hk : (p : k) = 0) (K : Type) [Field K] [Algebra k K] (f : K), KaehlerDifferential.D k K f = 0 → ∃ h : K, h ^ p = f := by
+theorem exists_pow_eq_of_kaehler_D_eq_zero : ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] [IsAlgClosed k] (_ : (p : k) = 0) (K : Type) [Field K] [Algebra k K] (f : K), KaehlerDifferential.D k K f = 0 → ∃ h : K, h ^ p = f := by
   intro p hp k _ _ hk K _ _ f hf
   by_contra hne
   have hK : (p : K) = 0 := by
@@ -268,7 +268,7 @@ open TensorProduct
 namespace GlobalTheory
 
 theorem exists_pow_eq_of_kaehlerDifferential_eq_zero_of_smooth_domain :
-    ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] [IsAlgClosed k] (hk : (p : k) = 0) (S : Type)
+    ∀ (p : ℕ) [Fact p.Prime] (k : Type) [Field k] [IsAlgClosed k] (_ : (p : k) = 0) (S : Type)
       [CommRing S] [IsDomain S] [Algebra k S] [Algebra.Smooth k S] (f : S),
       KaehlerDifferential.D k S f = 0 → ∃ h : S, h ^ p = f := by
   intro p hp k _ _ hk S _ _ _ _ f hf

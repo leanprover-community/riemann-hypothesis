@@ -264,7 +264,7 @@ theorem nc_loc (X : Formalism.MainNotions.G.Inst D L) (Y : Formalism.MainNotions
     (hL : Formalism.MainNotions.G.LatTied hT X Y) (u : D.what₂.Word) (w : D.what₂.places.Pl)
     (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) (t0 : Formalism.MainNotions.G.HH D)
     (ht0 : t0 ∈ Formalism.MainNotions.G.reps X (D.what₂.places.resChar w)) (j : ℕ) (hj : j ∈ SizeData₂.lifts D) :
-    nc_Loc D L X Y K hT u w hg t0 j := by
+    nc_Loc D L X Y K u w hg t0 j := by
   obtain ⟨hal, hal0, hcap, hcap0⟩ := nc_ties X Y hT hL u w hg t0 ht0 j hj
   exact ⟨nc_gU_eq X Y hT hL u w hg t0 ht0 K j, growth_exclusion_sum_eq X Y hT hL u w hg t0 ht0 K j,
     hal, hal0, hcap, hcap0, fun s _ e he => nc_excl X Y hT hL u w hg t0 ht0 s e he⟩

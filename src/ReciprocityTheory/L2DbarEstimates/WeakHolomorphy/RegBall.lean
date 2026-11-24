@@ -310,12 +310,12 @@ theorem mollify_indep {n : ℕ} {Ω : Set (V n)} {u : V n → ℂ} {s t : ℝ} {
   have hA : DifferentiableOn ℂ (mollify n t u) (ball x s) := by
     intro w hwb
     rw [Metric.mem_ball] at hwb
-    refine (mollify_differentiableAt hΩ hu hw ht ((Metric.closedBall_subset_closedBall' ?_).trans hx)).differentiableWithinAt
+    refine (mollify_differentiableAt hu hw ht ((Metric.closedBall_subset_closedBall' ?_).trans hx)).differentiableWithinAt
     linarith
   have hB : DifferentiableOn ℂ (mollify n s u) (ball x t) := by
     intro w hwb
     rw [Metric.mem_ball] at hwb
-    refine (mollify_differentiableAt hΩ hu hw hs ((Metric.closedBall_subset_closedBall' ?_).trans hx)).differentiableWithinAt
+    refine (mollify_differentiableAt hu hw hs ((Metric.closedBall_subset_closedBall' ?_).trans hx)).differentiableWithinAt
     linarith
   calc mollify n s u x = ∫ w, (moll n t (x - w) : ℂ) * mollify n s u w := (moll_mean ht hB).symm
     _ = ∫ y, ((∫ w, moll n t (x - w) * moll n s (w - y) : ℝ) : ℂ) * u y :=
@@ -348,7 +348,7 @@ theorem reg_ball {n : ℕ} {Ω : Set (V n)} {u : V n → ℂ} (hΩ : IsOpen Ω) 
     · have hx' : closedBall x r ⊆ Ω := by
         refine (Metric.closedBall_subset_closedBall' ?_).trans hr
         rw [Metric.mem_ball] at hx; linarith
-      exact (mollify_differentiableAt hΩ hu hw hr0 hx').differentiableWithinAt
+      exact (mollify_differentiableAt hu hw hr0 hx').differentiableWithinAt
     · rw [Filter.EventuallyEq, ae_restrict_iff' measurableSet_ball]
       filter_upwards [mollify_tendsto_ae hu] with x hx hxb
       rw [Metric.mem_ball] at hxb
@@ -368,7 +368,7 @@ theorem reg_ball {n : ℕ} {Ω : Set (V n)} {u : V n → ℂ} (hΩ : IsOpen Ω) 
 
 theorem reg : RegStatement := by
   intro n Ω u hΩ hw
-  apply reg_glue hΩ
+  apply reg_glue
   intro x hx
   obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.mp hΩ x hx
   have hr0 : 0 < ε / 8 := by positivity

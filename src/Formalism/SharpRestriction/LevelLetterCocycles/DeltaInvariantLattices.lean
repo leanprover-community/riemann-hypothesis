@@ -492,7 +492,7 @@ def p3L (LT : LocTheory) (HW : HWOf LT) (AI : ∀ (l : ℕ) [Fact l.Prime], LocA
     P3W ((HW l).W K s LL h)
 
 def p4L (LT : LocTheory) (HW : HWOf LT) (AI : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l))
-    (F : FonOf LT AI HW) (_C : CmpOf LT AI HW F) : Prop :=
+    (F : FonOf LT AI HW) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     P4W ((HW l).W K s LL h) (ptK LT HW h)
 
@@ -579,7 +579,7 @@ def P2 (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA
 
 def P3 (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (C : CmpOf D.loc D.locA HW F) : Prop := p3L D.loc HW D.locA F C
 
-def P4 (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (C : CmpOf D.loc D.locA HW F) : Prop := p4L D.loc HW D.locA F C
+def P4 (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (C : CmpOf D.loc D.locA HW F) : Prop := p4L D.loc HW D.locA F
 
 def P5 (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := p5L D.loc HW D.locA F
 

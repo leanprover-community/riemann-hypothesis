@@ -194,7 +194,7 @@ theorem supN_mul_le [Module.Finite O M] [Coalgebra O M]
   exact mul_le_mul (le_supN hO f _) (le_supN hO g _) (norm_nonneg _) (supN_nonneg _)
 
 theorem supN_le_of_tmul {f : WithConv (M ⊗[O] M →ₗ[O] C)} {r : ℝ}
-    (hr : 0 ≤ r) (h : ∀ a b, ‖f.ofConv (a ⊗ₜ b)‖ ≤ r) : supN f ≤ r := by
+    (h : ∀ a b, ‖f.ofConv (a ⊗ₜ b)‖ ≤ r) : supN f ≤ r := by
   refine supN_le fun t => ?_
   induction t with
   | tmul a b => exact h a b
@@ -208,7 +208,7 @@ theorem supN_eq_mul [Module.Finite O M] (f g : WithConv (M →ₗ[O] C))
     (hh : ∀ a b, h.ofConv (a ⊗ₜ b) = f.ofConv a * g.ofConv b) :
     supN h = supN f * supN g := by
   apply le_antisymm
-  · refine supN_le_of_tmul (mul_nonneg (supN_nonneg _) (supN_nonneg _)) fun a b => ?_
+  · refine supN_le_of_tmul fun a b => ?_
     rw [hh, norm_mul]
     exact mul_le_mul (le_supN hO f _) (le_supN hO g _) (norm_nonneg _) (supN_nonneg _)
   · rw [supN.eq_1 f, Real.iSup_mul_of_nonneg (supN_nonneg g)]
@@ -277,7 +277,7 @@ theorem dvd_mul_of_norm (C : Type) [NontriviallyNormedField C] [IsUltrametricDis
     (fun f => supN_le fun t => le_supN hO' f _)
     (fun f g => supN_eq_mul hO' f g _ fun a b => by rw [inlHom_mul_inrHom, extProd_tmul])
     y (exists_supN_pow_le hO' hint)
-    (supN_le_of_tmul zero_le_one fun a b => by
+    (supN_le_of_tmul fun a b => by
       have h := (hdvd _).1 (hD a b)
       convert h using 2
       change y.ofConv (a * b) - (extProd y 1).ofConv (a ⊗ₜ b) - (extProd 1 y).ofConv (a ⊗ₜ b) = _

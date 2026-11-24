@@ -46,7 +46,7 @@ import Mathlib.Topology.Sheaves.Init
 
 namespace GlobalTheory.CommuteInvLeft
 
-theorem commute_inv_left : ∀ {B : Type} [inst : Ring B] {x xi y : B},
+theorem commute_inv_left : ∀ {B : Type} [Ring B] {x xi y : B},
     x * xi = (1 : B) → xi * x = (1 : B) → Commute x y → Commute xi y := by
   intro B _ x xi y h1 h2 h
   have h' : x * y = y * x := h

@@ -1472,7 +1472,7 @@ section -- clump:auto
 
 noncomputable def UpperTheory.Reformulated.B.Qe19.LiftEquiv :
     Prop :=
-    ∀ (Γ X : Type) [inst : Group Γ] [inst_1 : MulAction Γ X],
+    ∀ (Γ X : Type) [Group Γ] [MulAction Γ X],
       (∀ (x : X), Finite ↥(MulAction.stabilizer Γ x)) →
         ∀ (A B : Rep.{0, 0, 0} ℂ Γ) (f : A ⟶ B),
           Function.Surjective (⇑(Rep.Hom.hom f) : (↑A : Type) → (↑B : Type)) →
@@ -1831,7 +1831,7 @@ theorem UpperTheory.rep_hom_alternating_sum_eq_zero :
       refine Finset.sum_congr rfl ?_
       intro π _
       have hre : K.re (⇑((Equiv.mulLeft (Equiv.swap a b)) π)) t = K.re π t :=
-        Subtype.ext (funext fun k => by simp [Cx.re, Equiv.Perm.mul_apply, ht])
+        Subtype.ext (funext fun k => by simp [Cx.re, ht])
       rw [hre, Equiv.coe_mulLeft, Equiv.Perm.sign_mul, Equiv.Perm.sign_swap hab]
       push_cast
       rw [neg_one_mul, neg_smul]

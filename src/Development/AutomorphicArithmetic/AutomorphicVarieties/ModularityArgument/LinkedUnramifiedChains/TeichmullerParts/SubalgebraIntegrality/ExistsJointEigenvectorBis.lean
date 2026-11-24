@@ -45,7 +45,7 @@ import Mathlib.Tactic.ReduceModChar
 open UpperTheory.V.Z.J.D UpperTheory.V UpperTheory.V.Hi IsLocalRing
 
 private theorem exists_joint_eigenvector_bis {E J : Type} [AddCommGroup E] [Module ℂ E] (W : Submodule ℂ E) [FiniteDimensional ℂ W]
-    (T : J → Module.End ℂ E) (hst : ∀ i, ∀ w ∈ W, T i w ∈ W) (hc : ∀ i j, ∀ w ∈ W, T i (T j w) = T j (T i w))
+    (T : J → Module.End ℂ E) (hc : ∀ i j, ∀ w ∈ W, T i (T j w) = T j (T i w))
     (μ : J → ℂ) (d : ℕ) : ∀ S : Submodule ℂ E, S ≤ W → Module.finrank ℂ S ≤ d → S ≠ ⊥ → (∀ i, ∀ s ∈ S, T i s ∈ S) →
       (∀ i, ∀ s ∈ S, s ∈ (T i).maxGenEigenspace (μ i)) → ∃ G ∈ W, G ≠ 0 ∧ ∀ i, T i G = μ i • G := by
   induction d with
@@ -125,7 +125,7 @@ private theorem joint_vec {E J : Type} [AddCommGroup E] [Module ℂ E] (W : Subm
       rw [pow_succ', Module.End.mul_apply, Module.End.mul_apply, ih w hw]
       simp only [LinearMap.sub_apply, LinearMap.smul_apply, Module.End.one_apply, map_sub, map_smul]
       rw [hc i j _ (hpw i k w hw)]
-  refine exists_joint_eigenvector_bis W T hst hc μ _ (W ⊓ ⨅ i, (T i).maxGenEigenspace (μ i)) inf_le_left le_rfl
+  refine exists_joint_eigenvector_bis W T hc μ _ (W ⊓ ⨅ i, (T i).maxGenEigenspace (μ i)) inf_le_left le_rfl
     ((Submodule.ne_bot_iff _).2 ⟨F, ⟨hF, (Submodule.mem_iInf _).2 hg⟩, h0⟩) (fun j s hs => ?_)
     (fun i s hs => (Submodule.mem_iInf _).1 hs.2 i)
   refine ⟨hst j s hs.1, (Submodule.mem_iInf _).2 fun i => ?_⟩

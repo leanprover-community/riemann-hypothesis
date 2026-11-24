@@ -290,7 +290,7 @@ theorem expo_iff (α : Fin d ⊕ Fin d →₀ ℕ) (a b e : Fin d →₀ ℕ) (p
     rcases s with i | i | i
     · simp [Finsupp.single_apply]
     · simp only [Finsupp.coe_add, Pi.add_apply, Finsupp.finsetSum_apply, Finsupp.single_apply]
-      rw [Finset.sum_eq_single i (fun j _ hj => by simp [hj, Ne.symm hj]) (by simp)]
+      rw [Finset.sum_eq_single i (fun j _ hj => by simp [hj]) (by simp)]
       simp
     · simp [Finsupp.single_apply]
   constructor

@@ -383,7 +383,7 @@ theorem letter_dictionary_bounds (h41 : TopCountLowerBounds 1088) : LetterDictio
           2 * Dat.k (r := r) K * (X.Ns : ℝ) ≤ (X.Bdeg p K j (X.restr j b) (segE X.F j i) : ℝ) ∧
         (X.Bdeg p K j (X.restr j b) (segE X.F j i) : ℝ) ≤
           (X.a' p K (posOf n' (segE X.F j i)) : ℝ) / (p : ℝ) ^ (X.F.dist j (segE X.F j i) + X.Rj p K j) :=
-    fun i hi => Bdeg_bounds hX hk h41a j b hA _ (segE_mem X.F j i) ((dict_early hV i).2 hi)
+    fun i hi => Bdeg_bounds hX j b hA _ (segE_mem X.F j i) ((dict_early hV i).2 hi)
   have cb := fun i : Fin (segN X.F j) => c_bounds hX h41a j _ (segE_mem X.F j i)
 
   have Bup : ∀ i : Fin (segN X.F j), i.val < segN X.F j - r →

@@ -136,13 +136,13 @@ private theorem intL_le {j k : ℕ} (hjk : j ≤ k) {a : Loc G} (h : IntL (p ^ j
   exact intL_nsmul _ h
 
 private theorem mv_add (A : ∀ w : Fin G.m, Matrix (Fin G.n) (Fin G.n) (G.Fw w)) (a b : Loc G) :
-    mv A (a + b) = mv A a + mv A b := funext fun w => Matrix.mulVec_add _ _ _
+    mv A (a + b) = mv A a + mv A b := funext fun _ => Matrix.mulVec_add _ _ _
 
 private theorem mv_neg (A : ∀ w : Fin G.m, Matrix (Fin G.n) (Fin G.n) (G.Fw w)) (a : Loc G) :
-    mv A (-a) = -mv A a := funext fun w => Matrix.mulVec_neg _ _
+    mv A (-a) = -mv A a := funext fun _ => Matrix.mulVec_neg _ _
 
 private theorem mv_zero (A : ∀ w : Fin G.m, Matrix (Fin G.n) (Fin G.n) (G.Fw w)) :
-    mv A (0 : Loc G) = 0 := funext fun w => Matrix.mulVec_zero _
+    mv A (0 : Loc G) = 0 := funext fun _ => Matrix.mulVec_zero _
 
 private theorem mv_nsmul (A : ∀ w : Fin G.m, Matrix (Fin G.n) (Fin G.n) (G.Fw w)) (N : ℕ) (a : Loc G) :
     mv A (N • a) = N • mv A a := _root_.funext fun w => by
@@ -150,7 +150,7 @@ private theorem mv_nsmul (A : ∀ w : Fin G.m, Matrix (Fin G.n) (Fin G.n) (G.Fw 
   exact Matrix.mulVec_smul _ _ _
 
 private theorem mv_scal (A : ∀ w : Fin G.m, Matrix (Fin G.n) (Fin G.n) (G.Fw w)) (t : ∀ w, G.Fw w) (a : Loc G) :
-    mv A (fun w => t w • a w) = fun w => t w • mv A a w := funext fun w => Matrix.mulVec_smul _ _ _
+    mv A (fun w => t w • a w) = fun w => t w • mv A a w := funext fun _ => Matrix.mulVec_smul _ _ _
 
 private theorem mv_mv {A B : ∀ w : Fin G.m, Matrix (Fin G.n) (Fin G.n) (G.Fw w)} (h : ∀ w, B w * A w = 1) (a : Loc G) :
     mv B (mv A a) = a := funext fun w => by

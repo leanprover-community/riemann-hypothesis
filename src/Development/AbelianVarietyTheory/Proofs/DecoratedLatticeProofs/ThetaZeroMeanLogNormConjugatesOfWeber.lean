@@ -629,7 +629,7 @@ theorem sum_log_nonneg (M : IntermediateField ℚ ℂ) [FiniteDimensional ℚ M]
   exact h
 
 theorem core (hN : JacobiThetaHalfCharacteristic.NormTheta0) (hC : ClassMeanPeriods.ClassMean) (hG : EquidistributedConjugates.ConjugatesEquidistributed)
-    (hP : PeriodLatticeAgreement.LatticePeriodEta) (hW : ThetaConstantWeber.ThetaWeberStatement) {C₀ : ℝ} (hC₀ : 0 < C₀)
+    (hP : PeriodLatticeAgreement.LatticePeriodEta) (hW : ThetaConstantWeber.ThetaWeberStatement) {C₀ : ℝ}
     (hth : ∀ (a b : Fin 2) (τ : ℂ), 1 / 2 ≤ τ.im → ‖JacobiThetaHalfCharacteristic.thetaChar a b 0 τ‖ ≤ C₀)
     (D : D7) (hJ : Formalism.MainNotions.GL3Theta.admJ D) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (M : IntermediateField ℚ ℂ)
     [FiniteDimensional ℚ M] (t : (M →ₐ[ℚ] ℂ) → ℂ) (hS : SignedLogMeans.HidaSetting D cc δ M t) :
@@ -774,16 +774,16 @@ theorem theta0Mean (hN : JacobiThetaHalfCharacteristic.NormTheta0) (hC : ClassMe
   obtain ⟨C₀, hC₀, hth⟩ := lemD
   set C := max 0 (2 * Real.log C₀) with hCdef
   have hC0 : 0 ≤ C := le_max_left _ _
-  refine ⟨⟨fun D cc δ M _ t hS => (core hN hC hG hP hW hC₀ hth D (hJ D) cc δ M t hS).1,
+  refine ⟨⟨fun D cc δ M _ t hS => (core hN hC hG hP hW hth D (hJ D) cc δ M t hS).1,
     fun D cc δ M _ t hS L hL => ?_, ⟨1 / 2, by norm_num, fun D cc δ M _ t hS L hL => ?_⟩⟩,
     ⟨C, hC0, fun D cc δ M _ t hS => ?_⟩, ⟨1 + 2 * C, by linarith, fun D cc δ M _ t hS L hL => ?_⟩⟩
-  · have := (core hN hC hG hP hW hC₀ hth D (hJ D) cc δ M t hS).1
+  · have := (core hN hC hG hP hW hth D (hJ D) cc δ M t hS).1
     rw [GlobalTheory.Theta0MeanCompare.bound_eq] at this
     exact this.trans (GlobalTheory.Theta0MeanCompare.kronBound_le D hL)
-  · exact (core hN hC hG hP hW hC₀ hth D (hJ D) cc δ M t hS).1.trans (bound_le_half D hL)
-  · obtain ⟨h1, h2⟩ := core hN hC hG hP hW hC₀ hth D (hJ D) cc δ M t hS
+  · exact (core hN hC hG hP hW hth D (hJ D) cc δ M t hS).1.trans (bound_le_half D hL)
+  · obtain ⟨h1, h2⟩ := core hN hC hG hP hW hth D (hJ D) cc δ M t hS
     linarith
-  · obtain ⟨h1, h2⟩ := core hN hC hG hP hW hC₀ hth D (hJ D) cc δ M t hS
+  · obtain ⟨h1, h2⟩ := core hN hC hG hP hW hth D (hJ D) cc δ M t hS
     have a1 := bound_le_half D hL
     have a2 := log_d_le D hL
     have a3 : 1 / 2 ≤ L := by have := half_le_log_v D; have := abs_nonneg (logDerivativeAtOne D); linarith
@@ -1084,7 +1084,7 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions.TaylorLogMetric Gl
 open scoped nonZeroDivisors
 open GlobalTheory.Theta0MeanProof (lemA lemD log_normSq log_area sum_log_nonneg bound_le_half log_d_le half_le_log_v)
 
-theorem core (hP : PeriodLatticeAgreement.LatticePeriodEta) (hW : ThetaConstantWeber.ThetaWeberStatement) {C₀ : ℝ} (hC₀ : 0 < C₀)
+theorem core (hP : PeriodLatticeAgreement.LatticePeriodEta) (hW : ThetaConstantWeber.ThetaWeberStatement) {C₀ : ℝ}
     (hth : ∀ (a b : Fin 2) (τ : ℂ), 1 / 2 ≤ τ.im → ‖JacobiThetaHalfCharacteristic.thetaChar a b 0 τ‖ ≤ C₀)
     (D : D7) (hJ : Formalism.MainNotions.GL3Theta.admJ D) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (M : IntermediateField ℚ ℂ)
     [FiniteDimensional ℚ M] (t : (M →ₐ[ℚ] ℂ) → ℂ) (hS : SignedLogMeans.HidaSetting D cc δ M t) :
@@ -1197,16 +1197,16 @@ theorem theta0Mean (hP : PeriodLatticeAgreement.LatticePeriodEta) (hW : ThetaCon
   obtain ⟨C₀, hC₀, hth⟩ := lemD
   set C := max 0 (2 * Real.log C₀) with hCdef
   have hC0 : 0 ≤ C := le_max_left _ _
-  refine ⟨⟨fun D cc δ M _ t hS => (core hP hW hC₀ hth D (hJ D) cc δ M t hS).1,
+  refine ⟨⟨fun D cc δ M _ t hS => (core hP hW hth D (hJ D) cc δ M t hS).1,
     fun D cc δ M _ t hS L hL => ?_, ⟨1 / 2, by norm_num, fun D cc δ M _ t hS L hL => ?_⟩⟩,
     ⟨C, hC0, fun D cc δ M _ t hS => ?_⟩, ⟨1 + 2 * C, by linarith, fun D cc δ M _ t hS L hL => ?_⟩⟩
-  · have := (core hP hW hC₀ hth D (hJ D) cc δ M t hS).1
+  · have := (core hP hW hth D (hJ D) cc δ M t hS).1
     rw [GlobalTheory.Theta0MeanCompare.bound_eq] at this
     exact this.trans (GlobalTheory.Theta0MeanCompare.kronBound_le D hL)
-  · exact (core hP hW hC₀ hth D (hJ D) cc δ M t hS).1.trans (bound_le_half D hL)
-  · obtain ⟨h1, h2⟩ := core hP hW hC₀ hth D (hJ D) cc δ M t hS
+  · exact (core hP hW hth D (hJ D) cc δ M t hS).1.trans (bound_le_half D hL)
+  · obtain ⟨h1, h2⟩ := core hP hW hth D (hJ D) cc δ M t hS
     linarith
-  · obtain ⟨h1, h2⟩ := core hP hW hC₀ hth D (hJ D) cc δ M t hS
+  · obtain ⟨h1, h2⟩ := core hP hW hth D (hJ D) cc δ M t hS
     have a1 := bound_le_half D hL
     have a2 := log_d_le D hL
     have a3 : 1 / 2 ≤ L := by have := half_le_log_v D; have := abs_nonneg (logDerivativeAtOne D); linarith

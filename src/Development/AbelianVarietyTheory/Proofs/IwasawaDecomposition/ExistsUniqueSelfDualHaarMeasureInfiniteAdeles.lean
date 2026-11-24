@@ -78,7 +78,7 @@ section -- clump:auto
 
 noncomputable def UpperTheory.Reformulated.B.Yzb9.SelfDual :
     {V : Type} →
-      [AddCommGroup V] → [TopologicalSpace V] → [inst : MeasurableSpace V] → MeasureTheory.Measure V → (V → V → ℂ) → Prop :=
+      [AddCommGroup V] → [TopologicalSpace V] → [MeasurableSpace V] → MeasureTheory.Measure V → (V → V → ℂ) → Prop :=
     fun {V : Type} [AddCommGroup V] [TopologicalSpace V] [MeasurableSpace V] (μ : MeasureTheory.Measure V) (χ : V → V → ℂ) ↦
       μ.IsAddHaarMeasure ∧
         ∀ (Φ : V → ℂ),
@@ -316,8 +316,8 @@ private lemma UpperTheory.Reformulated.B.Yzb9.selfDual_map {V E : Type} [AddComm
 end
 
 theorem UpperTheory.Reformulated.B.Yzb9.existsUnique_of_equiv :
-    ∀ {V W : Type} [inst : AddCommGroup V] [inst_1 : TopologicalSpace V] [IsTopologicalAddGroup V]
-      [inst_3 : MeasurableSpace V] [BorelSpace V] [inst_5 : NormedAddCommGroup W] [inst_6 : NormedSpace ℝ W]
+    ∀ {V W : Type} [AddCommGroup V] [TopologicalSpace V] [IsTopologicalAddGroup V]
+      [MeasurableSpace V] [BorelSpace V] [NormedAddCommGroup W] [NormedSpace ℝ W]
       [FiniteDimensional ℝ W] (e : V ≃+ W),
       Continuous (⇑e : V → W) →
         Continuous (⇑e.symm : W → V) →

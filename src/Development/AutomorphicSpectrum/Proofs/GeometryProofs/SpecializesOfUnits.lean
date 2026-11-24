@@ -245,7 +245,7 @@ theorem unitAt_prod {p : Cpt ξ} {I : Type} (s : Finset I) (f : I → Ω) (h : �
     exact unitAt_mul (h a (Finset.mem_insert_self a s))
       (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
 
-theorem unitAt_mul_iff {p : Cpt ξ} {a u : Ω} (ha : a ∈ regAt ξ p) (hu : unitAt ξ p u) :
+theorem unitAt_mul_iff {p : Cpt ξ} {a u : Ω} (hu : unitAt ξ p u) :
     unitAt ξ p (a * u) ↔ unitAt ξ p a := by
   refine ⟨fun h => ?_, fun h => unitAt_mul h hu⟩
   have e : a = (a * u) * u⁻¹ := by field_simp [hu.1]
@@ -364,7 +364,7 @@ theorem unit_dh_iff {c c' : ∀ k, J k} {p : Cpt ξ} (h : InChart ξ (seg y) c p
     simp only [div_pow, Finset.prod_div_distrib]
     rw [← mul_div_assoc, ← e1, e2, mul_div_cancel_right₀ _ h0]
   rw [e]
-  exact unitAt_mul_iff (dh_mem h g) (unitAt_prod _ _ fun k _ => unitAt_pow (unit_ratio h h' k) _)
+  exact unitAt_mul_iff (unitAt_prod _ _ fun k _ => unitAt_pow (unit_ratio h h' k) _)
 
 variable (tie : CoordTie ℤ ξ (seg y))
 

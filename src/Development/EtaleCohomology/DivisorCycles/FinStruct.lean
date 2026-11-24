@@ -657,7 +657,7 @@ section -- clump:auto
     fun (C : Type) (N : ℕ) ↦ Matrix (Fin N) (Fin N) C
 
 theorem UpperTheory.Reformulated.B.Qp10.aeval_eig :
-    ∀ {C : Type} [inst : Field C] {N : ℕ} (y : UpperTheory.Reformulated.B.Qp10.Mat C N) (μ : C) (v : Fin N → C),
+    ∀ {C : Type} [Field C] {N : ℕ} (y : UpperTheory.Reformulated.B.Qp10.Mat C N) (μ : C) (v : Fin N → C),
       Matrix.mulVec y v = μ • v →
         ∀ (Q : Polynomial C),
           Matrix.mulVec ((Polynomial.aeval y : Polynomial C → UpperTheory.Reformulated.B.Qp10.Mat C N) Q) v = Polynomial.eval μ Q • v := by
@@ -1104,7 +1104,7 @@ theorem DX_comm {C : Type} [Field C] {N : ℕ} (Y Z : Mat C N) :
 
   simp only [map_sum, MvPolynomial.C_mul']
   simp only [Matrix.sub_apply, Matrix.mul_apply, ← Finset.sum_sub_distrib]
-  simp only [sub_smul, Finset.sum_smul, ← Finset.sum_sub_distrib]
+  simp only [sub_smul, Finset.sum_smul]
   rw [Finset.sum_comm]
   apply Finset.sum_congr rfl; intro a _
   rw [Derivation.map_smul, Derivation.map_smul, DX_X, DX_X]

@@ -263,7 +263,7 @@ theorem val_fil (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : Cmp
     (h1 : adm1 D HW F Cm) {l : ℕ} [Fact l.Prime] (K LL : FinExt l) (hG : Good K 1 LL)
     (T : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)) (hT : IsCrys ((D.loc l).PD K) T.ρ) (h' : ℕ)
     (hJ : ∀ τ, JumpsInV ((D.loc l).PD K) T.ρ τ (Set.Icc (-(h' : ℤ)) h'))
-    (π' : LetA ↥(OL LL) (finrank ℚ_[l] ↥(K0 K))) (c : ZMod (finrank ℚ_[l] ↥(K0 K))) (ζ : ↥LL.1)
+    (c : ZMod (finrank ℚ_[l] ↥(K0 K))) (ζ : ↥LL.1)
     (τ : ↥K.1 →ₐ[ℚ_[l]] ↥LL.1) (hpt : Formalism.MainNotions.DeltaInvariantLattices.ptK D.loc HW hG c ζ τ)
     (y : ((HW l).W K 1 LL hG).DD T) (hy : y ∈ NcS ((HW l).W K 1 LL hG) T (c - 1)) :
     valAt ((HW l).W K 1 LL hG) T c ζ y ∈ Formalism.MainNotions.DeltaInvariantLattices.FilC (PD := (D.loc l).PD K) T τ (-(h' : ℤ)) := by
@@ -313,10 +313,10 @@ theorem lev_eat_zero (D : D7) (HW : HWOf D.loc) {l : ℕ} [Fact l.Prime] (K LL :
 set_option synthInstance.maxHeartbeats 400000 in
 set_option maxHeartbeats 1000000 in
 theorem model_lattice_filtration (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
-    (CA CB CK : ℝ) (hA : Adm1 D HW F Cm CA CB CK) (l : ℕ) [Fact l.Prime] (hl : l ≠ 2) (K LL : FinExt l)
+    (CA CB CK : ℝ) (hA : Adm1 D HW F Cm CA CB CK) (l : ℕ) [Fact l.Prime] (K LL : FinExt l)
     (hG : Good K 1 LL) (π' : LetA ↥(OL LL) (finrank ℚ_[l] ↥(K0 K)))
     (E : ZMod (finrank ℚ_[l] ↥(K0 K)) → Polynomial ↥(OL LL))
-    (hr : Formalism.MainNotions.DeltaInvariantLattices.wachRingRelations ((HW l).W K 1 LL hG) (eK K) (sK l K) π' E) (h' : ℕ) (hh' : 1 ≤ h')
+    (hr : Formalism.MainNotions.DeltaInvariantLattices.wachRingRelations ((HW l).W K 1 LL hG) (eK K) (sK l K) π' E) (h' : ℕ)
     (T : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)) (hT : IsCrys ((D.loc l).PD K) T.ρ)
     (hJ : ∀ τ, JumpsInV ((D.loc l).PD K) T.ρ τ (Set.Icc (-(h' : ℤ)) h'))
     (c : ZMod (finrank ℚ_[l] ↥(K0 K))) :
@@ -326,8 +326,8 @@ theorem model_lattice_filtration (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.l
   filtration_value_local ((HW l).W K 1 LL hG) T π' c (Formalism.MainNotions.DeltaInvariantLattices.ptK D.loc HW hG) (Formalism.MainNotions.DeltaInvariantLattices.Eat E π') h'
     (eat_mem ((HW l).W K 1 LL hG) π' E hr.1)
     (fun τ ζ hpt => lev_eat_zero D HW K LL hG π' E hr c ζ τ hpt)
-    (fun τ ζ hpt y hy => val_fil D HW F Cm hA.1 K LL hG T hT h' hJ π' c ζ τ hpt y hy)
-    (fun τ a' a h => u3upPf_FilC_anti (PD := (D.loc l).PD K) T τ h)
+    (fun τ ζ hpt y hy => val_fil D HW F Cm hA.1 K LL hG T hT h' hJ c ζ τ hpt y hy)
+    (fun τ _ _ h => u3upPf_FilC_anti (PD := (D.loc l).PD K) T τ h)
 
 theorem model_lattice_power (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
     (CA CB CK : ℝ) (hA : Adm1 D HW F Cm CA CB CK) (l : ℕ) [Fact l.Prime] (hl : l ≠ 2) (K LL : FinExt l)
@@ -341,7 +341,7 @@ theorem model_lattice_power (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA H
       piNL ((HW l).W K 1 LL hG) T (Formalism.MainNotions.DeltaInvariantLattices.ptK D.loc HW hG) π' (Formalism.MainNotions.DeltaInvariantLattices.Eat E π') h' c (MK l K h') :=
   lattice_contains_power_local ((HW l).W K 1 LL hG) T π' c (Formalism.MainNotions.DeltaInvariantLattices.ptK D.loc HW hG) (Formalism.MainNotions.DeltaInvariantLattices.Eat E π') h' (MK l K h')
     (eat_mem ((HW l).W K 1 LL hG) π' E hr.1)
-    (model_lattice_filtration D HW F Cm CA CB CK hA l hl K LL hG π' E hr h' hh' T hT hJ c)
+    (model_lattice_filtration D HW F Cm CA CB CK hA l K LL hG π' E hr h' T hT hJ c)
 
 end Formalism.MainNotions.N.Ln34.MLD
 
@@ -527,7 +527,7 @@ namespace Formalism.MainNotions.N.Ln34.MLK
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Module
 
-theorem lev_Eat_simple (D : D7) (HW : HWOf D.loc) (l : ℕ) [Fact l.Prime] (hl : l ≠ 2) (K LL : FinExt l)
+theorem lev_Eat_simple (D : D7) (HW : HWOf D.loc) (l : ℕ) [Fact l.Prime] (K LL : FinExt l)
     (hG : Good K 1 LL) (π' : LetA ↥(OL LL) (finrank ℚ_[l] ↥(K0 K)))
     (E : ZMod (finrank ℚ_[l] ↥(K0 K)) → Polynomial ↥(OL LL))
     (hr : Formalism.MainNotions.DeltaInvariantLattices.wachRingRelations ((HW l).W K 1 LL hG) (eK K) (sK l K) π' E) (c : ZMod (finrank ℚ_[l] ↥(K0 K)))
@@ -760,7 +760,7 @@ theorem rec_WD (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpO
   exact MLA.expS_wd ((Cm l).C K 1 LL hG).tie T hinj hP π' hπ a y hy b z hz h
 
 theorem exists_mul_gamma_Eat_pow_eq_Eat_pow (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
-    (CA CB CK : ℝ) (hA : Adm1 D HW F Cm CA CB CK) (l : ℕ) [Fact l.Prime] (hl : l ≠ 2) (K LL : FinExt l)
+    (CA CB CK : ℝ) (l : ℕ) [Fact l.Prime] (hl : l ≠ 2) (K LL : FinExt l)
     (hG : Good K 1 LL) (π' : LetA ↥(OL LL) (finrank ℚ_[l] ↥(K0 K)))
     (E : ZMod (finrank ℚ_[l] ↥(K0 K)) → Polynomial ↥(OL LL))
     (hr : Formalism.MainNotions.DeltaInvariantLattices.wachRingRelations ((HW l).W K 1 LL hG) (eK K) (sK l K) π' E) (h' : ℕ) :
@@ -870,7 +870,7 @@ open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.Basi
 theorem modell_pf : ModelLStep := by
   unfold ModelLStep modelLR recU
   intro D HW F Cm CA CB CK hA l _ hl K LL hG π' E hr h' hh' T hT hJ c
-  obtain ⟨u₀, hu₀, hΛ⟩ := MLL.exists_mul_gamma_Eat_pow_eq_Eat_pow D HW F Cm CA CB CK hA l hl K LL hG π' E hr h'
+  obtain ⟨u₀, hu₀, hΛ⟩ := MLL.exists_mul_gamma_Eat_pow_eq_Eat_pow D HW F Cm CA CB CK l hl K LL hG π' E hr h'
   obtain ⟨hu, hu1⟩ := MLL.rec_u D HW l hl K LL hG
   have hwd := MLL.rec_WD D HW F Cm CA CB CK hA l hl K LL hG π' E hr T hT c
   have hlet := Formalism.MainNotions.ArcLiftingSetup.γA_letE ((HW l).W K 1 LL hG) ((HW l).W K 1 LL hG).gamK c
@@ -879,14 +879,14 @@ theorem modell_pf : ModelLStep := by
   unfold ModelL
   refine ⟨MLF.nl_le _ _ _ _ _ _ _, fun x hx => MLH.nl_γ _ _ _ _ _ _ _ hu₀ hΛ hlet _ hlev hx,
     fun a ha x hx => MLF.nl_smulA _ _ _ _ _ _ _ ha hx,
-    MLD.model_lattice_filtration D HW F Cm CA CB CK hA l hl K LL hG π' E hr h' hh' T hT hJ c,
+    MLD.model_lattice_filtration D HW F Cm CA CB CK hA l K LL hG π' E hr h' T hT hJ c,
     fun x hx k hk => MLF.nl_sat _ _ _ _ _ _ _ hwd ?_ hx k hk,
     MLD.model_lattice_power D HW F Cm CA CB CK hA l hl K LL hG π' E hr h' hh' T hT hJ c,
     fun x hx hγ => MLJ.local_form _ _ _ _ _ _ _ hwd hu₀ hΛ hlet _ hu hu1 hlev ?_ hx hγ⟩
   · rw [map_natCast]
     exact Formalism.MainNotions.LiftingTheory.tr_pLL_ne ((HW l).W K 1 LL hG)
   · intro τ ζ hpt
-    obtain ⟨U, hU, hU0⟩ := MLK.lev_Eat_simple D HW l hl K LL hG π' E hr c ζ τ hpt
+    obtain ⟨U, hU, hU0⟩ := MLK.lev_Eat_simple D HW l K LL hG π' E hr c ζ τ hpt
     refine ⟨U ^ h', ?_, ?_⟩
     · rw [map_pow, hU, mul_pow]
     · rw [map_pow]

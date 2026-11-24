@@ -96,7 +96,7 @@ theorem nk_iv (c Ah ρ u : ℝ) (hρ0 : 0 ≤ ρ) (hρc : ρ ≤ c) (hρA : ρ �
   have h2 : 0 ≤ ρ * u := mul_nonneg hρ0 hu0
   linarith
 
-theorem nk_tele (s : ℕ) (c : ℕ → ℝ) (x y : Fin s → ℝ) (hc : ∀ l, 0 ≤ c l) (hx : ∀ i, 0 ≤ x i) (hy : ∀ i, 0 ≤ y i)
+theorem nk_tele (s : ℕ) (c : ℕ → ℝ) (x y : Fin s → ℝ) (hx : ∀ i, 0 ≤ x i) (hy : ∀ i, 0 ≤ y i)
     (h : ∀ i : Fin s, x i * c (i + 1) ≤ y i * c i) : c s * ∏ i, x i ≤ c 0 * ∏ i, y i := by
   induction s with
   | zero => simp
@@ -115,13 +115,13 @@ theorem nk_tele (s : ℕ) (c : ℕ → ℝ) (x y : Fin s → ℝ) (hc : ∀ l, 0
       _ = _ := by ring
 
 theorem nk_bracket (s : ℕ) (c : ℕ → ℝ) (x nn Ai Ci κ μ : Fin s → ℝ) (l A E1 E2 : ℝ)
-    (hc : ∀ l, 0 ≤ c l) (hx : ∀ i, 0 ≤ x i) (hn0 : ∀ i, 0 ≤ nn i) (hAi : ∀ i, 0 ≤ Ai i) (hCi : ∀ i, 0 ≤ Ci i)
-    (hκ : ∀ i, 0 ≤ κ i) (hμ : ∀ i, 0 ≤ μ i) (hl0 : 0 ≤ l) (hE2 : 0 ≤ E2)
+    (hc : ∀ l, 0 ≤ c l) (hx : ∀ i, 0 ≤ x i) (hn0 : ∀ i, 0 ≤ nn i) (hAi : ∀ i, 0 ≤ Ai i)
+    (hκ : ∀ i, 0 ≤ κ i) (hE2 : 0 ≤ E2)
     (hstep : ∀ i : Fin s, x i * c (i + 1) ≤ (κ i * (E2 * Ai i)) * c i)
     (hl : l ≤ c s) (hn : ∀ i, nn i ≤ μ i * (E2 * Ci i)) (hA : c 0 ≤ E1 * A) :
     l * (∏ i, x i) * (∏ i, nn i) ≤
       (E1 * E2 ^ s * E2 ^ s * ((∏ i, κ i) * ∏ i, μ i)) * (A * (∏ i, Ai i) * ∏ i, Ci i) := by
-  have h1 := nk_tele s c x (fun i => κ i * (E2 * Ai i)) hc hx (fun i => by have := hκ i; have := hAi i; positivity) hstep
+  have h1 := nk_tele s c x (fun i => κ i * (E2 * Ai i)) hx (fun i => by have := hκ i; have := hAi i; positivity) hstep
   have hpx : 0 ≤ ∏ i, x i := Finset.prod_nonneg fun i _ => hx i
   have hpn : 0 ≤ ∏ i, nn i := Finset.prod_nonneg fun i _ => hn0 i
   have hpy : 0 ≤ ∏ i, (κ i * (E2 * Ai i)) :=
@@ -318,8 +318,8 @@ theorem brk_core (s m : ℕ) (La p A lam0 : ℝ) (Ai Ci ρ u nn : Fin s → ℝ)
       rw [hEq1, hEq2]
       exact nk_exponent s m La _ hr9 hroom (by linarith) hγ0 (by rw [← hτeq]; exact hγ)
     · exact nk_bracket s c (fun i => ρ i + m) (fun i => nn i + m) Ai Ci κ μ (lam0 + m) A (Real.exp η)
-        (Real.exp (2 * η)) hc0 (fun i => (hfacts i).1) (fun i => by have := (hn i).1; linarith) hAi0 hCi0 hκ hμ
-        (by linarith) (by positivity) hst hl hnn hcA
+        (Real.exp (2 * η)) hc0 (fun i => (hfacts i).1) (fun i => by have := (hn i).1; linarith) hAi0 hκ
+        (by positivity) hst hl hnn hcA
   obtain ⟨i0, hi0⟩ := hk
   by_cases hP : u i0 + 4 * (Ai i0 + m) / p ^ 2 ≤ La * max (cc i0) (Ai i0) / ((m : ℝ) + 1)
   · have hQ : ¬ (Ci i0 * (1 - La / ((m : ℝ) + 1)) ≤ nn i0) := fun h => hi0 ⟨hP, h⟩

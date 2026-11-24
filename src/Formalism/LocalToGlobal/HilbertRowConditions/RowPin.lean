@@ -29,7 +29,7 @@ structure TiedDataSK (ex : Extra D L hT Gi Gl K Y cX) extends toTiedDataS : Link
 
   ker : Ker.KerEntTied ex
 
-  crd : ∀ (u : D.what₂.Word) i, i ≤ D.R.m → GL (Fin (D.R.N i)) D.host.E
+  crd : ∀ (_ : D.what₂.Word) i, i ≤ D.R.m → GL (Fin (D.R.N i)) D.host.E
   crd_gram : ∀ u i (hi : i ≤ D.R.m),
     cT (Forms.sigD D : D.host.E →+* D.host.E) (crd u i hi).1 * (crd u i hi).1 = Forms.gramN D i hi
 

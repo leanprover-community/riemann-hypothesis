@@ -280,7 +280,7 @@ private theorem chartPartialDeriv_coord (hV : IsAffineOpen V) (c : EtaleChart p 
     c.algebra_formallyEtale hV
   change (EtaleCoordinates.basisKaehler k (ULift.{u} (Fin n)) Γ(X, V)).repr
     (KaehlerDifferential.D k Γ(X, V) (c.coord i)) (ULift.up j) = _
-  rw [← basisKaehler_apply_eq_D_coord c (algebraMap_sectionsAlgebra k p V)
+  rw [← basisKaehler_apply_eq_D_coord c
     c.algebraMap_eq_coordRingHom i, Module.Basis.repr_self_apply]
   by_cases hij : i = j
   · subst j
@@ -356,7 +356,7 @@ theorem exists_etaleChart_coord_add_smul (hV : IsAffineOpen V) (c : EtaleChart p
       by_cases hi : i = ULift.up j₂
       · rw [ite_eq_left hi, ite_eq_left hi]
       · rw [ite_eq_right hi, ite_eq_right hi]
-        exact (basisKaehler_apply_eq_D_coord c hk hcr i.down).symm
+        exact (basisKaehler_apply_eq_D_coord c hcr i.down).symm
   have hdet : IsUnit ((EtaleCoordinates.basisKaehler k (ULift.{u} (Fin n)) Γ(X, V)).det
       fun i : ULift.{u} (Fin n) => KaehlerDifferential.D k Γ(X, V) (w i)) := by
     rw [hwupd, det_update_eq_repr]
@@ -403,7 +403,7 @@ theorem exists_etaleChart_update_coord_of_partialDeriv_notMem
       by_cases hi : i = ULift.up j₁
       · rw [ite_eq_left hi, ite_eq_left hi]
       · rw [ite_eq_right hi, ite_eq_right hi]
-        exact (basisKaehler_apply_eq_D_coord c hk hcr i.down).symm
+        exact (basisKaehler_apply_eq_D_coord c hcr i.down).symm
   have hdet : ((EtaleCoordinates.basisKaehler k (ULift.{u} (Fin n)) Γ(X, V)).det
       fun i : ULift.{u} (Fin n) => KaehlerDifferential.D k Γ(X, V) (w i)) ∉
         (hV.primeIdealOf ⟨x, hx⟩).asIdeal := by
@@ -439,7 +439,7 @@ private theorem chartPartialDeriv_chainRule {W : X.Opens} (hW : IsAffineOpen W) 
       refine Fintype.sum_bijective Equiv.ulift Equiv.ulift.bijective _ _ ?_
       rintro ⟨i⟩
       have hb : b (ULift.up i) = KaehlerDifferential.D k Γ(X, W) (c₁.coord i) :=
-        basisKaehler_apply_eq_D_coord c₁ (algebraMap_sectionsAlgebra k p W)
+        basisKaehler_apply_eq_D_coord c₁
           c₁.algebraMap_eq_coordRingHom i
       rw [hb, Derivation.liftKaehlerDifferential_comp_D, smul_eq_mul, mul_comm]
       rfl
@@ -598,7 +598,7 @@ omit [AlgebraicGeometry.Smooth p] in
 theorem exists_unlabeled_index_partialDeriv_notMem_primeIdealOf
     (hV : IsAffineOpen V) (c : EtaleChart p V n) {x : X} (hx : x ∈ V)
     (N : List X.IdealSheafData) (γ : ℕ → Option (Fin n)) (H : X.IdealSheafData)
-    (g : Γ(X, V)) (hγ : IsCoordLabeling c γ N) (_hinj : LabelingInjective γ N.length)
+    (g : Γ(X, V)) (hγ : IsCoordLabeling c γ N)
     (hsnc : InStrictNormalCrossingPositionAt p (H :: N) x) (hg : H.ideal ⟨V, hV⟩ = Ideal.span {g})
     (hxH : x ∈ H.support)
     (hxN : ∀ i : ℕ, ∀ hi : i < N.length, ∀ j : Fin n,

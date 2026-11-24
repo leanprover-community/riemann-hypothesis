@@ -1086,7 +1086,7 @@ theorem liesOver_of_mem {E : Type} [Field E] [NumberField E] (l : ℕ) [hl : Fac
   change (algebraMap ℤ (𝓞 E) (l : ℤ)) ∈ v.asIdeal
   simpa using h
 
-theorem card_quot_under {E : Type} [Field E] [NumberField E] (l : ℕ) [hl : Fact l.Prime]
+theorem card_quot_under {E : Type} [Field E] [NumberField E] (l : ℕ) [Fact l.Prime]
     (Q : Ideal (𝓞 E)) [h : Q.LiesOver (Ideal.span {(l : ℤ)})] :
     Nat.card (ℤ ⧸ Q.under ℤ) = l := by
   rw [← h.over, Nat.card_congr (Int.quotientSpanNatEquivZMod l).toEquiv, Nat.card_zmod]

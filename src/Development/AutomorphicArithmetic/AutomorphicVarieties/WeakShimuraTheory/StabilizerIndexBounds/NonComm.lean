@@ -105,7 +105,7 @@ private theorem monomial_eigenbasis {K : Type} [Field K] [IsAlgClosed K] {n : �
 
 private theorem monomial_eigvec {K : Type} [Field K] {n : ℕ}
     (A : Matrix (Fin n) (Fin n) K) (b : Module.Basis (Fin n) K (Fin n → K)) (l : Fin n → K)
-    (hl : Function.Injective l) (hb : ∀ i, A *ᵥ b i = l i • b i) (v : Fin n → K) (c : K)
+    (hb : ∀ i, A *ᵥ b i = l i • b i) (v : Fin n → K) (c : K)
     (hv : A *ᵥ v = c • v) (j : Fin n) (hj : l j ≠ c) : b.repr v j = 0 := by
   classical
   have h1 : (b.coord j) ∘ₗ (Matrix.toLin' A) = l j • b.coord j := by
@@ -129,7 +129,7 @@ private theorem monomial_eigvec' {K : Type} [Field K] {n : ℕ}
   refine ⟨b.repr v i, b.ext_elem fun j => ?_⟩
   by_cases h : i = j
   · subst h; simp
-  · rw [monomial_eigvec A b l hl hb v _ hv j (fun h' => h (hl h').symm)]
+  · rw [monomial_eigvec A b l hb v _ hv j (fun h' => h (hl h').symm)]
     simp [h]
 
 theorem UpperTheory.V.AlgebraTools.monomialOfComm :
@@ -164,7 +164,7 @@ theorem UpperTheory.V.AlgebraTools.monomialOfComm :
     · exfalso
       apply hne g i
       refine b.ext_elem fun j => ?_
-      rw [monomial_eigvec (r u) b l hl hb _ _ hv j (fun h => hc' ⟨j, h⟩)]
+      rw [monomial_eigvec (r u) b l hb _ _ hv j (fun h => hc' ⟨j, h⟩)]
       simp
   choose f hf using hex
   have huniq : ∀ g i j (a : K), r g *ᵥ b i = a • b j → f g i = j := by

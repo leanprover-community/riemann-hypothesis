@@ -158,7 +158,7 @@ theorem secB_dvd_of_vge {V : Type} [CommRing V] [IsDomain V] [IsDiscreteValuatio
     {vK : AddValuation (FractionRing V) (WithTop ℚ)} (hv : ValOver ϖ (FractionRing V) vK) {k : ℕ}
     {α : D.toPre.X}
     {E : LB.Sec (LB.LinComb D.toPre.P.L (Out.DegPre.famφ D.toPre (FractionRing V) α) (Out.DegPre.famε k))}
-    (hE : VGe D (FractionRing V) vK k α E 0) {r : V} (hr : r ≠ 0) (f : D.toPre.SecB k α)
+    (hE : VGe D (FractionRing V) vK k α E 0) {r : V} (f : D.toPre.SecB k α)
     (hf : Out.GeneratorPullback.SecScal D.toPre.P.L (Out.DegPre.famφ D.toPre (FractionRing V) α) (Out.DegPre.famε k) E
       (D.toPre.famφB α) (Out.DegPre.famε k) f (Out.DegPre.prB D.toPre (FractionRing V)).left
       (Out.scal (Out.DegPre.BF D.toPre (FractionRing V)).hom r)) :
@@ -407,7 +407,7 @@ noncomputable section
 namespace ReciprocityTheory.ChartRestriction.G.DVR
 
 theorem nuExt : NuExtSt :=
-  nuExt_of fun _ _ _ _ _ hϖ _ _ hv _ _ _ hE _ hr f hf => secB_dvd_of_vge hϖ hv hE hr f hf
+  nuExt_of fun _ _ _ _ _ hϖ _ _ hv _ _ _ hE _ hr f hf => secB_dvd_of_vge hϖ hv hE f hf
 
 end ReciprocityTheory.ChartRestriction.G.DVR
 end -- clump:auto

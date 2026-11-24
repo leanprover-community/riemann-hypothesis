@@ -110,7 +110,7 @@ lemma mem_intA (f : K) : f ∈ intA V e ↔ ∀ r, (e f).coeff r ∈ V := by
 
 def eqvH : HahnSeries ℚ V ≃+* (incH V).range :=
   RingEquiv.ofBijective (incH V).rangeRestrict
-    ⟨fun x y h => incH_injective V (congrArg Subtype.val h), (incH V).rangeRestrict_surjective⟩
+    ⟨fun _ _ h => incH_injective V (congrArg Subtype.val h), (incH V).rangeRestrict_surjective⟩
 
 def redA : intA V e →+* HahnSeries ℚ (IsLocalRing.ResidueField V) :=
   (redH V).comp ((eqvH V).symm.toRingHom.comp

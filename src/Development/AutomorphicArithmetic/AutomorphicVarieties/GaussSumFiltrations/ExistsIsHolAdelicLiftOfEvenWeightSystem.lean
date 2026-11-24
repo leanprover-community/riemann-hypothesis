@@ -647,8 +647,8 @@ theorem key (k : ℕ) (Ψ : GL (Fin 2) (Af F) → Hn F → ℂ) (φ : GA F 2 →
   rw [map_one, mul_one] at h1
   rw [h1, (GlobalTheory.HilbertThetaSeries.SlashCocycle.slash_cocycle F k 1 1 f pos_one pos_one).2.2.2.2.2]
 
-theorem chart_eq (k : ℕ) (Ψ : GL (Fin 2) (Af F) → Hn F → ℂ) (φ : GA F 2 → ℂ) (hΨ : ∀ g, Hol (Ψ g))
-    (hL : IsLift k Ψ φ) (g : GA F 2) (f : Hn F → ℂ)
+theorem chart_eq (k : ℕ) (Ψ : GL (Fin 2) (Af F) → Hn F → ℂ) (φ : GA F 2 → ℂ)
+    (g : GA F 2) (f : Hn F → ℂ)
     (hfe : ∀ u : GL (Fin 2) (InfinitePlace F → ℝ), Pos u →
         φ (g * TR.infGL F 2 u) = sl k u f fun _ => UpperHalfPlane.I)
     (A : (Fin 2 → Fin 2 → InfinitePlace F → ℝ) → ℂ)
@@ -709,7 +709,7 @@ theorem GlobalTheory.HilbertThetaSeries.lift_smooth_lowering : ∀ (F : Type) [F
     obtain ⟨h1, h2⟩ := hA3 v _ fun _ _ => rfl
     refine ⟨A, ?_, ?_, h2⟩
     · have hmem : TR.oneL F 2 ∈ PSet F := fun w => by simp
-      exact Filter.eventually_of_mem (isOpen_PSet.mem_nhds hmem) fun y hy => chart_eq k Ψ φ hΨ hL g f hfe A hA1 hy
+      exact Filter.eventually_of_mem (isOpen_PSet.mem_nhds hmem) fun y hy => chart_eq k Ψ φ g f hfe A hA1 hy
     · rw [h1, hfg]
   constructor
   · refine Subtype.ext (funext fun g => ?_)

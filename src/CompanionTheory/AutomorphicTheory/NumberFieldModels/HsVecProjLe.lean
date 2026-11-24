@@ -291,7 +291,7 @@ def trL (hpl : Q.IsPlace P Bs.z Bs.z' Bs.π Bs.π') (hk : 2 ≤ P.k) (he : IsFra
     Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π' →ₗ[ℂ] (M.Ty P → MA.SmQ P.r P.TT) where
   toFun := tr P Bs e
   map_add' := tr_add hpl hk he
-  map_smul' a Φ := trR_smul _ _ a _
+  map_smul' a _ := trR_smul _ _ a _
 
 theorem baseTie (hpl : Q.IsPlace P Bs.z Bs.z' Bs.π Bs.π') (hk : 2 ≤ P.k) (he : IsFrameB P Bs e)
     (hG : GaugeQQ P Bs e) (X : Q.ActualOps P.k P.r Bs.z Bs.z' Bs.π Bs.π') :

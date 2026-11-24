@@ -75,7 +75,7 @@ def WStep : Prop :=
 
 def KerLamStep : Prop :=
   ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
-    (CA CB CK : ℝ), Adm1 D HW F Cm CA CB CK → FontExAll D HW F → kerLamR D HW
+    (CA CB CK : ℝ), Adm1 D HW F Cm CA CB CK → FontExAll D HW → kerLamR D HW
 
 def NinLamStep : Prop :=
   ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)

@@ -831,7 +831,7 @@ theorem multidegree_part_spans {ι : Type} [Fintype ι] {n : ℕ}
   rw [hx2]
   exact Submodule.sum_mem _ (fun m _ => Submodule.smul_mem _ _ (Submodule.subset_span (h m.1)))
 
-theorem fock_lattice_finite_spanning_holds {p : ℕ} (hp : p.Prime) (S0 : UniformizedDVR p O) (hV : ValuationProperties p O) : FockLatticeFiniteSpanning p O := by
+theorem fock_lattice_finite_spanning_holds {p : ℕ} (hp : p.Prime) (hV : ValuationProperties p O) : FockLatticeFiniteSpanning p O := by
   intro n ι _
   have hp0 : (p : KK O) ≠ 0 := by
     intro h0
@@ -920,7 +920,7 @@ theorem operator_list_lattice_scaling {O : Type} [CommRing O] [IsDomain O] {σ :
     rwa [map_smul, smul_smul, ← pow_add] at h3
 
 theorem polynomial_isotypic_lattice_of_parts (D : Formalism.BasicNotions.D7) (hCR : CompleteReducibilityIsotypic) (hOrth : ContravariantIsotypicOrthogonal) (hDom : HighestWeightDominant)
-    (hRes : SubrepRestrictionRep) (hPol : PolynomialGLRepresentation) (hLat : AdmissibleDVRIntegralFormLatticesStable) (h13 : IsotypicProjectorTheoremField D) : FilteredProjectorCorollaryField D := by
+    (hRes : SubrepRestrictionRep) (hPol : PolynomialGLRepresentation) (hLat : AdmissibleDVRIntegralFormLatticesStable) (h13 : IsotypicProjectorTheoremField) : FilteredProjectorCorollaryField := by
   intro p n' O _ _ _ S0 hG n ι _ LL N Ss hmono
   obtain ⟨hchar, hLat'⟩ := hLat p n' O S0 hG
   obtain ⟨hL1, hL2, BBs, hBB, hL3⟩ := hLat' n ι LL
@@ -1006,9 +1006,9 @@ theorem integral_formula_lattice_holds : AdmissibleDVRIntegralFormLatticesStable
   have hV : ValuationProperties p O := valuation_properties_hold hG.prime S0
   have hchar := dvr_fraction_field_char_zero hG.prime S0
   exact ⟨hchar, fun n ι _ LL => ⟨fun S => integral_formula_stability_holds hG.prime hV n ι LL S,
-    fun S => char_zero_stability_of_closure hG.prime hchar (fock_lattice_closure_holds hV) n ι LL S, fock_lattice_finite_spanning_holds hG.prime S0 hV n ι⟩⟩
+    fun S => char_zero_stability_of_closure hG.prime hchar (fock_lattice_closure_holds hV) n ι LL S, fock_lattice_finite_spanning_holds hG.prime hV n ι⟩⟩
 
-theorem polynomial_isotypic_lattice_corollary (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (h13 : IsotypicProjectorTheoremField D) : FilteredProjectorCorollaryField D :=
+theorem polynomial_isotypic_lattice_corollary (D : Formalism.BasicNotions.D7) (h2 : adm2) (h13 : IsotypicProjectorTheoremField) : FilteredProjectorCorollaryField :=
   polynomial_isotypic_lattice_of_parts D (complete_reducibility_of_semisimple D h2) contravariant_orthogonality_holds highest_weight_dominant_holds (subrep_restriction_of_reducibility (complete_reducibility_of_semisimple D h2)) polynomial_representation_holds integral_formula_lattice_holds h13
 
 end Formalism.MainNotions.G.GLWeightTheory

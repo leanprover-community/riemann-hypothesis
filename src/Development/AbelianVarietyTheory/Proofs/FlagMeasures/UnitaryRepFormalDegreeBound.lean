@@ -620,7 +620,7 @@ section -- clump:auto
 
 namespace GlobalTheory.SpanDecay
 
-theorem span_decay : (let d1 : {G H : Type} → [inst : NormedAddCommGroup H] → [inst_1 : InnerProductSpace ℂ H] → (G → H →L[ℂ] H) → (G → ℝ) → ℝ → H → H → Prop := @(fun {G H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] (ρ : G → H →L[ℂ] H) (D : G → ℝ) (c : ℝ) (v u : H) ↦ ∃ (C : ℝ), ∀ (g : G), ‖Inner.inner ℂ v ((ρ g : H → H) u)‖ ≤ C * Real.exp (-(c * D g))); ∀ {G H : Type} [inst : NormedAddCommGroup H] [inst_1 : InnerProductSpace ℂ H] {ρ : G → H →L[ℂ] H} {D : G → ℝ} {c : ℝ} {S : Set H} {v : H}, (∀ u ∈ S, d1 ρ D c v u) → ∀ u ∈ Submodule.span ℂ S, d1 ρ D c v u) := by
+theorem span_decay : (let d1 : {G H : Type} → [NormedAddCommGroup H] → [InnerProductSpace ℂ H] → (G → H →L[ℂ] H) → (G → ℝ) → ℝ → H → H → Prop := @(fun {G H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] (ρ : G → H →L[ℂ] H) (D : G → ℝ) (c : ℝ) (v u : H) ↦ ∃ (C : ℝ), ∀ (g : G), ‖Inner.inner ℂ v ((ρ g : H → H) u)‖ ≤ C * Real.exp (-(c * D g))); ∀ {G H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] {ρ : G → H →L[ℂ] H} {D : G → ℝ} {c : ℝ} {S : Set H} {v : H}, (∀ u ∈ S, d1 ρ D c v u) → ∀ u ∈ Submodule.span ℂ S, d1 ρ D c v u) := by
   dsimp only
   intro G H _ _ ρ D c S v hS u hu
   induction hu using Submodule.span_induction with
@@ -1298,7 +1298,7 @@ theorem constant_term_zero : ∀ (n : ℕ) (ε : Fin n → Bool) (W : Submodule 
   have hq : (0 : ℝ) ≤ n * rkR ε := by positivity
   have hc0 : 0 ≤ c := by linarith
   have hc8 : 8 * (n : ℝ) * rkR ε < c := by linarith
-  obtain ⟨β, hβ, hβt, hβ1⟩ := _root_.GlobalTheory.Dec.exists_measurable_cutoff_fibre_integral_one (UJ ε) (nwSub ε W) ν (isClosed_NW ε W) hν
+  obtain ⟨β, hβ, hβt, hβ1⟩ := _root_.GlobalTheory.Dec.exists_measurable_cutoff_fibre_integral_one (UJ ε) (nwSub ε W) ν hν
   obtain ⟨a, Hm, hHm, haH, ha, ha', -, hiw⟩ := _root_.GlobalTheory.IsoTorus.split_torus n ε W hW
   obtain ⟨κ, hκ, hmod⟩ := _root_.GlobalTheory.Dec.TorusModulus.torus_modulus n ε W ν hW hν a Hm hHm haH ha fun s m hm => (ha' s m hm).1
   obtain ⟨L, hL⟩ := _root_.GlobalTheory.GardingVec.fixed_vector_differentiable n ε H σ α w hσ hα hαc hfix

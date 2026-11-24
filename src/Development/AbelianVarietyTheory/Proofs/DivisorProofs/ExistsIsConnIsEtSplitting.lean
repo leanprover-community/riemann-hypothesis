@@ -352,7 +352,7 @@ theorem idempotent_split (p : ℕ) [Fact p.Prime] (k : Type) [Field k] (G : PDiv
   obtain ⟨hfac, hcan⟩ := factor_closedImmersion p k K G i (fun n => (hi n).1)
   have hvu : v + u = 𝟙 G := by rw [add_comm]; exact huv
   have hker : ∀ n, RingHom.ker (i.app n) = RingHom.ker (v.app n) := fun n => by
-    rw [(hi n).2, ker_app_eq_kerIdeal_of_idempotents p k G v u hvu h2 h1 n]
+    rw [(hi n).2, ker_app_eq_kerIdeal_of_idempotents p k G v u hvu h2 n]
   obtain ⟨q, hq⟩ := hfac G v (fun n => (hker n).le)
   have hiu : i ≫ u = 0 := by
     refine Hom.ext (funext fun n => BialgHom.ext fun b => ?_)

@@ -685,7 +685,7 @@ theorem exists_hom_of_isIntegral {z : Fin (m + 1) → L} (hz : z ≠ 0)
       ∀ i, toProj o t ht ⁻¹ᵁ chart o r i.1 ≤ φ ⁻¹ᵁ chart o m (c i) := by
   have hη (i : {i // t i ≠ 0}) := le_preimage_chart (nmPoint_toProj o t ht) i.2
   choose u hu using fun i k => (mem_range_valMap_iff rfl (hη i) _).2 (h i k)
-  exact exists_hom_of_coords _ _ (nmPoint_str o t ht) _ (iSup_preimage_chart o t ht) hη hz c hc u
+  exact exists_hom_of_coords _ _ (nmPoint_str o t ht) _ (iSup_preimage_chart o t ht) hz c hc u
     fun i k => (valR_eq _ _ (hη i) _).trans (hu i k)
 
 def ratioField : Subfield L :=

@@ -52,7 +52,7 @@ theorem herm_mulVec (H g : Matrix ι ι ℂ) (x y : ι → ℂ) :
 variable [DecidableEq ι]
 
 theorem herm_single (H : Matrix ι ι ℂ) (i j : ι) : herm H (Pi.single j 1) (Pi.single i 1) = H i j := by
-  simp [herm, ← Pi.single_star]
+  simp [herm]
 
 theorem mem_UH_of_herm {H g : Matrix ι ι ℂ} (h : ∀ x y, herm H (g *ᵥ x) (g *ᵥ y) = herm H x y) :
     gᴴ * H * g = H := by
@@ -218,7 +218,7 @@ theorem Q_zp (hi : i.val ≠ r + k) (hi' : i.val ≠ r) (hj : j.val = r) : Hq k 
 theorem Q_zq (hi : i.val ≠ r) (hi' : i.val ≠ r + k) (hj : j.val = r + k) : Hq k r i j = 0 := by
   rw [Hq_val]; split_ifs <;> first | (exfalso; omega) | rfl
 
-theorem Q_eq_A (hi : i.val ≠ r) (hi' : i.val ≠ r + k) (hj : j.val ≠ r) (hj' : j.val ≠ r + k) :
+theorem Q_eq_A (hi' : i.val ≠ r + k) (hj : j.val ≠ r) (hj' : j.val ≠ r + k) :
     Hq k r i j = Hpk k r i j := by
   have := i.isLt
   have := j.isLt
@@ -292,7 +292,7 @@ theorem unitary_adapted_basis_transforms_form (k r : ℕ) (hk : 1 ≤ k) : (G0 k
           have q : Hq k r i j = 0 := Q_qz hiq hjp
           simp only [herm_smul_right, herm_sub_right, herm_bvec, star_inv_sqrt_two_bis, A_pz hk hP hjp, A_qz hk hQ hjq, q]
           ring
-        · rw [col_o hip hiq, herm_bvec, Q_eq_A hip hiq hjp hjq]
+        · rw [col_o hip hiq, herm_bvec, Q_eq_A hiq hjp hjq]
 
 theorem Hpk_herm (k r : ℕ) : (Hpk k r)ᴴ = Hpk k r := by
   ext i j

@@ -169,7 +169,7 @@ theorem isSBHalf_cosLoc : ∀ {D : D7} (S T : HSp D) (ΛS : Submodule (𝓞 D.ho
   intro D S T ΛS ΛT βS βT P e n r hS hT hFS hFT he _
   classical
   obtain ⟨a, ha, h1⟩ := WeilOver.exists_hom_le hS hT
-  obtain ⟨b, hb, h2⟩ := WeilOver.exists_le_hom hS.toIsLattice hT.toIsLattice
+  obtain ⟨b, hb, h2⟩ := WeilOver.exists_le_hom hS.toIsLattice
   obtain ⟨e0, e1, e2⟩ := Comparison₂.cpt_idemSum he
   have hM : 0 < Ideal.absNorm (∏ w ∈ P, w.asIdeal ^ n) :=
     Nat.pos_of_ne_zero fun h => prod_pow_ne_bot P n (Ideal.absNorm_eq_zero_iff.1 h)

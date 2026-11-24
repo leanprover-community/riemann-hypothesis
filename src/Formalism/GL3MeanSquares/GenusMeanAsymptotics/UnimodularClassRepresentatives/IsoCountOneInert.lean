@@ -687,7 +687,7 @@ theorem isoCount_one (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) {𝔭 
     (hunit : ∀ i, Ideal.span {u i} ⊔ extP K 𝔭 = ⊤) :
     (isoCount 𝔭 1 (diagonal u) : ℝ) = (Ideal.absNorm 𝔭 : ℝ) ^ (m ^ 2) * alphaStd K 𝔭 m := by
   have hF := hFF.out
-  obtain ⟨P, hP, rfl⟩ := exists_maximal_over hK hF h𝔭
+  obtain ⟨P, hP, rfl⟩ := exists_maximal_over h𝔭
   unfold alphaStd
   rw [etaF_comap hK hF hP]
   by_cases hc : Formalism.HermitianLatticesTheory.conjIdeal (K := K) P = P

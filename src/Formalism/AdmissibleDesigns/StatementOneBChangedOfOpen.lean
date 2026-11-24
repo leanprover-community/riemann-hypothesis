@@ -227,7 +227,7 @@ def SelmerInequalityTwo : Prop :=
       (∀ l, LiftO (D.nd.l i) (KHf.Hfe₁ i dc Dd.r Dd.χ (Pe := LeftId (D.nd.O i) Dd.e₁) l)
       (KHf.Ff i dc Dd.r Dd.χ (iLM (D.nd.O i) _ (Dd.ρk 0).toRingHom) l)
       (mapH1 _ _ (eveS i Dd hT hrk) (ev_equiv Dd.r Dd.χ (decs D.host.E (Aw i dc) (colIdx i dc l))
-        (incl (D.nd.O i) Dd.e₁) (v1S i Dd hT hrk) (eveS i Dd hT hrk) (fun a => rfl))) (e'N i dc e' (colIdx i dc l))) ∧
+        (incl (D.nd.O i) Dd.e₁) (v1S i Dd hT hrk) (eveS i Dd hT hrk) (fun _ => rfl))) (e'N i dc e' (colIdx i dc l))) ∧
       (∀ l, LiftO (D.nd.l i) (KHf.Hfe₁ i dc Dd.r Dd.χ (Pe := LeftId (D.nd.O i) Dd.E) l) (KHf.HfE₂ i dc Dd.δO l)
       (mapH1 _ _ (evES i Dd hT) (ev_equiv_triv Dd.r Dd.χ (decs D.host.E (Aw i dc) (colIdx i dc l)) (evES i Dd hT)
         (hevES i Dd hT))) (e'N i dc e' (colIdx i dc l))) ∧
@@ -826,7 +826,7 @@ theorem blockPoly_conj (P Q e a : Matrix n n K) (h1 : P * Q = 1) :
   rw [hm, hm, hm, hm, e1, Matrix.det_mul, Matrix.det_mul, mul_comm (Matrix.det P'), mul_assoc,
     ← Matrix.det_mul, h1', Matrix.det_one, mul_one]
 
-theorem rank_conj {F : Type} [Field F] (P Q M : Matrix n n F) (h1 : P * Q = 1) (_h2 : Q * P = 1) :
+theorem rank_conj {F : Type} [Field F] (P Q M : Matrix n n F) (h1 : P * Q = 1) :
     (P * M * Q).rank = M.rank := by
   rw [Matrix.rank_mul_eq_left_of_isUnit_det _ _ (Matrix.isUnit_det_of_left_inverse h1),
     Matrix.rank_mul_eq_right_of_isUnit_det _ _ (Matrix.isUnit_det_of_right_inverse h1)]
@@ -973,7 +973,7 @@ theorem design_normalized (S : IdempotentChoiceData D.nd i) (hG : GoodCongruence
     intro a ha x
     by_cases hx : x = π
     · subst hx
-      rw [ha, rank_conj P Q _ hPQ hQP]
+      rw [ha, rank_conj P Q _ hPQ]
     · rw [phiC_ne i π P Q a hx]
   have hrkB' : ∀ x, ((phiC i π P Q S.eB x).map (toK D.nd i)).rank = D.R.t := fun x => (hrk _ hmB x).trans (hrkB x)
   have hrk1' : ∀ x, ((phiC i π P Q S.e1 x).map (toK D.nd i)).rank = 1 := fun x => (hrk _ hm1 x).trans (hrk1 x)

@@ -33,7 +33,6 @@ variable {D : D7} {a b c n r t : ℕ}
 
 theorem weil_law {V : HSp D} {ψ : AddChar (AF D.host.F) ℂ} {χ : (AE D)ˣ →* Circle} {θ : InfFam D}
     {μ : Measure (Mx D V.rank n)} {ω : G D n →* Module.End ℂ (schwartzA θ V.rank n)} (hω : IsWeilSch ψ χ θ V μ ω)
-    (hψ : IsCharAF D.host.F ψ)
     (s : ℂ) (hs : s + (n : ℂ) / 2 = (V.rank : ℂ) / 2) (Φ : schwartzA θ V.rank n) :
     IsLaw χ s (fun g => (ω g Φ).1 0) := by
   intro q hq a ha g
@@ -439,7 +438,7 @@ theorem target : PositivityTheory.Rg.Rsw.Polar → PositivityTheory.Rg.Rsw.ResMu
   have hcont : ∀ Φ' : schwartzA θ B.rank n, Continuous (fun g => (ωB g Φ').1 0) := fun Φ' =>
     ((hWMaj D n B ψ hψ χ hχ hηB θ hθ μB hS.hμB ωB hS.hB Φ').1).comp (Continuous.prodMk continuous_id continuous_const)
   have hlaw : ∀ Φ' : schwartzA θ B.rank n, IsLaw χ ((t : ℂ) / 2) (fun g => (ωB g Φ').1 0) := fun Φ' =>
-    weil_law hS.hB hψ _ (by
+    weil_law hS.hB _ (by
       have hB' : (B.rank : ℂ) = W.rank + 2 * t := by exact_mod_cast d.rank_add.symm
       have hnC : (n : ℂ) = W.rank + t := by exact_mod_cast hn.symm
       rw [hB', hnC]

@@ -193,8 +193,6 @@ theorem formLev_limit {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace 
       B.CCle (P5.Auser P0 N + 1) (P5.mmUser P0 N) (x e) Bd)
     (hy : ∀ e, JC.CCCoefM (T.bs j) (P5.Auser P0 N + 1) (P5.mmUser P0 N) ε₀ (y e) ∧
       B.CCle (P5.Auser P0 N + 1) (P5.mmUser P0 N) (y e) Bd)
-    (hxn : ∀ n e, JC.CCCoefM (T.bs j) (P5.Auser P0 N + 1) (P5.mmUser P0 N) ε₀ (xn n e) ∧
-      B.CCle (P5.Auser P0 N + 1) (P5.mmUser P0 N) (xn n e) Bd)
     (hyn : ∀ n e, JC.CCCoefM (T.bs j) (P5.Auser P0 N + 1) (P5.mmUser P0 N) ε₀ (yn n e) ∧
       B.CCle (P5.Auser P0 N + 1) (P5.mmUser P0 N) (yn n e) Bd)
     (hdx : ∀ n e, JC.CCCoefM (T.bs j) (P5.Auser P0 N + 1) (P5.mmUser P0 N) ε₀ (xn n e - x e) ∧

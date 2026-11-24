@@ -819,7 +819,7 @@ theorem iD_card_wM (Y : Matrix (Fin n) (Fin n) k) :
   rw [lowerRightBlock_mul_unipotent, hc, hd]
 
 theorem sum_subgroup {G : Type} [AddCommGroup G] [Fintype G] (φ : G → ℂ) (hφ : ∀ x y, φ (x + y) = φ x * φ y)
-    (h0 : φ 0 = 1) (Z : AddSubgroup G) [DecidablePred (· ∈ Z)] :
+    (Z : AddSubgroup G) [DecidablePred (· ∈ Z)] :
     ∃ t : ℝ, 0 ≤ t ∧ (∑ Y, if Y ∈ Z then φ Y else 0) = t ∧ ((∀ Y ∈ Z, φ Y = 1) → 0 < t) := by
   by_cases h : ∀ Y ∈ Z, φ Y = 1
   · refine ⟨((Finset.univ.filter (· ∈ Z)).card : ℝ), by positivity, ?_, fun _ => ?_⟩
@@ -876,7 +876,7 @@ theorem fourier_nonneg (ψ₀ : AddChar k ℂ) (β : Matrix (Fin n) (Fin n) k) (
           add_mem' := fun {x y} hx hy i => by rw [vecMul_add]; exact W.add_mem (hx i) (hy i)
           zero_mem' := fun i => by simp
           neg_mem' := fun {x} hx i => by rw [vecMul_neg]; exact W.neg_mem (hx i) }
-      obtain ⟨t, ht, e, hp⟩ := sum_subgroup φ hφ h0 Z
+      obtain ⟨t, ht, e, hp⟩ := sum_subgroup φ hφ Z
       refine ⟨t, ht, ?_, fun _ hz => hp fun Y hY => ?_⟩
       · rw [← e]
         refine Finset.sum_congr rfl fun Y _ => ?_

@@ -645,7 +645,7 @@ end Unitary
 theorem conj_translate : ∀ (D : D7) (V : HSp D) (r : ℕ) (C : Matrix (Fin V.rank) (Fin r) D.host.E) (hC : IsIsoFrame V C)
     (δ : GF V), IsRegSS δ.1.1 → δ ∈ (frameFlag hC).parRat D.sp.cm → ∀ ν ∈ (frameFlag hC).unipRat D.sp.cm,
       ∃ g : GF V, g * δ * g⁻¹ = δ * ν :=
-  fun _ _ _ _ hC δ hreg hδ ν hν => conj_of_isotropic _ δ hreg hδ ν hν
+  fun _ _ _ _ _ δ hreg hδ ν hν => conj_of_isotropic _ δ hreg hδ ν hν
 
 end GlobalTheory.CompanionTheory.ParabConj
 end -- clump:auto

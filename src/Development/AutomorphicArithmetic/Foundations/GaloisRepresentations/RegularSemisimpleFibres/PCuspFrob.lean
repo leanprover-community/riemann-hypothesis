@@ -53,7 +53,7 @@ open GroundTheory.Global GroundTheory.Global.SemiLocal UpperTheory.V.Published U
 open GlobalTheory.CuspGL GlobalTheory.BI
 open scoped Classical
 
-private theorem pow_mod_modEq (q m : ℕ) (hq : 0 < q) (hm : 0 < m) (e : ℕ) :
+private theorem pow_mod_modEq (q m : ℕ) (hq : 0 < q) (e : ℕ) :
     q ^ e ≡ q ^ (e % m) [MOD q ^ m - 1] := by
   have h1 : q ^ m ≡ 1 [MOD q ^ m - 1] := Nat.modEq_sub (Nat.one_le_pow _ _ hq)
   conv_lhs => rw [← Nat.div_add_mod e m, pow_add, pow_mul]
@@ -70,7 +70,7 @@ private theorem count_le (q m c c' i k : ℕ) (hq : 0 < q) (hm : 0 < m)
     simp only [Finset.coe_filter, Finset.mem_range, Set.mem_setOf_eq] at hj ⊢
     refine ⟨Nat.mod_lt _ hm, ?_⟩
     calc c * q ^ ((j + i) % m) ≡ c * q ^ (j + i) [MOD q ^ m - 1] :=
-          ((pow_mod_modEq q m hq hm (j + i)).symm).mul_left _
+          ((pow_mod_modEq q m hq (j + i)).symm).mul_left _
       _ = c * q ^ i * q ^ j := by ring
       _ ≡ c' * q ^ j [MOD q ^ m - 1] := h.symm.mul_right _
       _ ≡ k [MOD q ^ m - 1] := hj.2
@@ -93,7 +93,7 @@ private theorem count_eq (q m c c' i k : ℕ) (hq : 0 < q) (hm : 0 < m)
     omega
   calc c = c * q ^ ((i + (m - i % m)) % m) := by rw [hs, Nat.mul_mod_right, pow_zero, mul_one]
     _ ≡ c * q ^ (i + (m - i % m)) [MOD q ^ m - 1] :=
-        ((pow_mod_modEq q m hq hm _).symm).mul_left _
+        ((pow_mod_modEq q m hq _).symm).mul_left _
     _ = c * q ^ i * q ^ (m - i % m) := by ring
     _ ≡ c' * q ^ (m - i % m) [MOD q ^ m - 1] := h.symm.mul_right _
 

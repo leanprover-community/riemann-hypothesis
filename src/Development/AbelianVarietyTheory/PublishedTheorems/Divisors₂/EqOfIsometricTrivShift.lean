@@ -69,7 +69,7 @@ private theorem isGen_iso_self_of_isLB (B : LB X) (hB : B.IsLB) :
   refine (eq_mul_inv_of_mul_eq e2).trans ?_
   rw [← e1]
   exact mul_right_comm _ _ _
-private theorem iso_phi_eq_add_log_normSq_transition {B : LB X} (hB : B.IsLB) (φ ψ : ∀ σ : k →+* ℂ, Weight p σ B)
+private theorem iso_phi_eq_add_log_normSq_transition {B : LB X} (φ ψ : ∀ σ : k →+* ℂ, Weight p σ B)
     (h : ∀ σ a, ∀ y ∈ ptsIn p σ (B.U a), (ψ σ).φ a y = (φ σ).φ a y) (σ : k →+* ℂ) (a b : B.ι)
     (y : CxPts p σ) (ha : y ∈ ptsIn p σ (B.U a)) (hb : y ∈ ptsIn p σ (B.U b)) :
     (ψ σ).φ a y = (φ σ).φ b y + Real.log (‖ev p σ (B.U a ⊓ B.U b) (B.g a b).val y‖ ^ 2) := by
@@ -79,7 +79,7 @@ private theorem iso_phi_eq_add_log_normSq_transition {B : LB X} (hB : B.IsLB) (�
 theorem isometric_of_eqOn {B : LB X} {hB : B.IsLB} {φ ψ : ∀ σ : k →+* ℂ, Weight p σ B} {h₁ h₂ h₃ h₄}
     (h : ∀ σ a, ∀ y ∈ ptsIn p σ (B.U a), (ψ σ).φ a y = (φ σ).φ a y) :
     Isometric (p := p) ⟨B, hB, φ, h₁, h₂⟩ ⟨B, hB, ψ, h₃, h₄⟩ :=
-  ⟨⟨fun c => B.g c.1 c.2⟩, isGen_iso_self_of_isLB B hB, fun σ a b y ha hb => iso_phi_eq_add_log_normSq_transition hB φ ψ h σ a b y ha hb⟩
+  ⟨⟨fun c => B.g c.1 c.2⟩, isGen_iso_self_of_isLB B hB, fun σ a b y ha hb => iso_phi_eq_add_log_normSq_transition φ ψ h σ a b y ha hb⟩
 
 theorem Isometric.refl (L : HermLB p) : L.Isometric L := by
   obtain ⟨B, hB, φ, h₁, h₂⟩ := L

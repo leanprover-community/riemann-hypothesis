@@ -155,7 +155,7 @@ theorem trdeg_eq_dim : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H
       Subsingleton.elim (α := PrimeSpectrum _) _ _
     rw [h4, hx, h6, h5]
     rfl
-  have hF := HodgeBasic.exists_integral_multiple_of_injective β hβ
+  have hF := HodgeBasic.exists_integral_multiple_of_injective β
   have hw : ∀ w' : Xo.XF c, w' ⤳ w → w' = w := fun w' h =>
     Y.jQ.isOpenEmbedding.injective
       (HodgeBasic.eq_of_specializes_of_fst Y.s β g₀ ξ₀ h₀ hs hg hF hy (h.map Y.jQ.continuous))

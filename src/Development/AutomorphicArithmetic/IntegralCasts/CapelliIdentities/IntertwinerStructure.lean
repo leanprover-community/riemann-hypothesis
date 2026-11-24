@@ -46,10 +46,10 @@ import Mathlib.Topology.Sheaves.Init
 
 noncomputable def UpperTheory.Reformulated.B.IntertwinerStructure.Intw :
     {Wp Wq : Type} →
-      [inst : NormedAddCommGroup Wp] →
-        [inst_1 : InnerProductSpace ℂ Wp] →
-          [inst_2 : NormedAddCommGroup Wq] →
-            [inst_3 : InnerProductSpace ℂ Wq] →
+      [NormedAddCommGroup Wp] →
+        [InnerProductSpace ℂ Wp] →
+          [NormedAddCommGroup Wq] →
+            [InnerProductSpace ℂ Wq] →
               [FiniteDimensional ℂ Wq] →
                 (P : Formalism.FourierDecayAlt.M.Par) →
                   (Bs : Formalism.FourierDecayAlt.B.RealPlaceData P.k P.r Wp Wq) →
@@ -67,8 +67,8 @@ noncomputable def UpperTheory.Reformulated.B.IntertwinerStructure.Intw :
           Formalism.FourierDecayAlt.MA.actA P A' (Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.trR P Bs e Φ)
 
 theorem UpperTheory.Reformulated.B.IntertwinerStructure.intw_sum :
-    ∀ {Wp Wq : Type} [inst : NormedAddCommGroup Wp] [inst_1 : InnerProductSpace ℂ Wp] [inst_2 : NormedAddCommGroup Wq]
-      [inst_3 : InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [inst_5 : FiniteDimensional ℂ Wq] {P : Formalism.FourierDecayAlt.M.Par}
+    ∀ {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
+      [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] {P : Formalism.FourierDecayAlt.M.Par}
       {Bs : Formalism.FourierDecayAlt.B.RealPlaceData P.k P.r Wp Wq} {e : Formalism.FourierDecayAlt.M.Ty P → ℂ → Wq →L[ℂ] Wp},
       (∀ (Φ : ↥(Formalism.FourierDecayAlt.Q.RadSp P.k P.r Bs.z Bs.z' Bs.π Bs.π')) (ρ : Formalism.FourierDecayAlt.M.Ty P),
           Formalism.FourierDecayAlt.P.CutMP.Gauge.rawR P Bs.μsec e (↑Φ : Formalism.FourierDecayAlt.Q.Fn P.k P.r (Wq →L[ℂ] Wp)) ρ ∈
@@ -82,7 +82,7 @@ theorem UpperTheory.Reformulated.B.IntertwinerStructure.intw_sum :
     simp only [Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.trR, Formalism.FourierDecayAlt.MA.toSm, dite_eq_left (hs Φ ρ)]
   have hh : ∀ X Y : Wq →L[ℂ] Wp, Formalism.FourierDecayAlt.B.hsVec (X + Y) = Formalism.FourierDecayAlt.B.hsVec X + Formalism.FourierDecayAlt.B.hsVec Y := fun _ _ => rfl
   let T : _ →+ _ := AddMonoidHom.mk' (Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.trR P Bs e) fun Φ Ψ => funext fun ρ => Subtype.ext <|
-    funext fun q => (hv _ ρ q).trans <| Eq.trans (by simp [Formalism.FourierDecayAlt.P.CutMP.Gauge.rawR, hh, inner_add_right, mul_add])
+    funext fun q => (hv _ ρ q).trans <| Eq.trans (by simp [Formalism.FourierDecayAlt.P.CutMP.Gauge.rawR, hh, mul_add])
       (congrArg₂ (· + ·) (hv Φ ρ q) (hv Ψ ρ q)).symm
   refine Finset.sum_induction (p := fun x : _ × _ => UpperTheory.Reformulated.B.IntertwinerStructure.Intw P Bs e x.1 x.2) (fun i => (A i, A' i))
     (fun a b ha hb Φ => (T.map_add _ _).trans ((congrArg₂ (· + ·) (ha Φ) (hb Φ)).trans

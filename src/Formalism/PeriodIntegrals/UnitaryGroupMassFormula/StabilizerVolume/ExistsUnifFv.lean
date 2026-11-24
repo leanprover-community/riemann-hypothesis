@@ -98,7 +98,7 @@ theorem exists_unif_Fv {F : Type} [Field F] [NumberField F] (v : HeightOneSpectr
     ∃ π : Fv F v, π ≠ 0 ∧ Tendsto (fun k : ℕ => π ^ k) atTop (𝓝 0) ∧
       π ∈ v.adicCompletionIntegers F := PI.VolStabSW.exists_unif_Fv v
 
-theorem gramFilt_of (hDx : DxOpen) : GramFilt := by
+theorem gramFilt_of : GramFilt := by
   intro F E _ _ _ _ σ hσ M J hJ hdet a ha1 _ v d b x hx
   letI : FiniteDimensional F E := Module.Finite.of_basis b
   letI : CharZero E := charZero_of_injective_algebraMap (algebraMap F E).injective

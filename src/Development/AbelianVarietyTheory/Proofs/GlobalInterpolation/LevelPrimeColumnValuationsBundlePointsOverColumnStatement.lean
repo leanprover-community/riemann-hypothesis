@@ -1355,8 +1355,8 @@ theorem inBox_dn {K : Type} [Field K] {SA SB : Finset (HeightOneSpectrum (𝓞 E
 
 theorem kerOf_sum {K : Type} [Field K] {SB : Finset (HeightOneSpectrum (𝓞 E))} {V V' : Type} [AddCommGroup V] [Module K V]
     [AddCommGroup V'] [Module K V'] (th : ThDist E K a b SB V V') (SA : Finset (HeightOneSpectrum (𝓞 E))) {cA cB : ℕ}
-    (hA : 0 < cA) (hB : 0 < cB) {N : Submodule (𝓞 E) (Sp E a)} {N' : Submodule (𝓞 E) (Sp E b)} (hN : Submodule.IsLattice E N)
-    (hN' : Submodule.IsLattice E N') (fr : Frs E a SB) (fr' : Frs E b SB) {ι : Type} (s : Finset ι) (Ξ : ι → HomE E a b → K) :
+    (hA : 0 < cA) (hB : 0 < cB) {N : Submodule (𝓞 E) (Sp E a)} {N' : Submodule (𝓞 E) (Sp E b)}
+    (fr : Frs E a SB) (fr' : Frs E b SB) {ι : Type} (s : Finset ι) (Ξ : ι → HomE E a b → K) :
     ∑ k ∈ s, kerOf th SA cA cB N fr N' fr' (Ξ k) = kerOf th SA cA cB N fr N' fr' fun x => ∑ k ∈ s, Ξ k x := by
   have card_finset_le {V A Q : Type} [AddCommGroup V] [Module ℚ V] [Module.Finite ℚ V] [AddCommGroup A] [AddCommGroup Q]
       (f : A →+ V) (hf : Function.Injective f) (π : A →+ Q) (hπ : Function.Surjective π) (n : ℕ) (hn : 0 < n)
@@ -1480,7 +1480,7 @@ theorem ukTerm_of_moveStep : ∀ (X : Fields) (Pr : Primes X) (R : Ranks) (W : W
   rw [finsum_mem_eq_finite_toFinset_sum _ hU, finsum_mem_eq_finite_toFinset_sum _ hD, ← LinearMap.sum_apply, ← LinearMap.sum_apply,
     Finset.sum_congr rfl hl, Finset.sum_congr rfl hr, ← Finset.smul_sum, LinearMap.smul_apply]
   unfold ker
-  rw [kerOf_sum _ _ hA hB l0 d'.2.lat, kerOf_sum _ _ hA hB l0 d'.2.lat]
+  rw [kerOf_sum _ _ hA hB, kerOf_sum _ _ hA hB]
   simp_rw [← Finset.sum_mul, sum_phiT X.K hP hP' hq hq2 d d' hU.toFinset hD.toFinset (fun _ => hU.mem_toFinset)
     (fun _ => hD.mem_toFinset)]
 

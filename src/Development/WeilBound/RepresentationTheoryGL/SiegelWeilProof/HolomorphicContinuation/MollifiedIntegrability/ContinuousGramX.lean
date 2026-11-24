@@ -114,7 +114,7 @@ lemma gramX_smul {m n : ℕ} (ε : Fin m → Bool) (ζ : ℂ) (hζ : ‖ζ‖ = 
     exact key _ _
 
 lemma continuous_gramX {m n : ℕ} (ε : Fin m → Bool) : Continuous fun x : Fin m → Fin n → ℂ => gramX ε x :=
-  continuous_pi fun i => continuous_pi fun j => GI.continuous_evX _
+  continuous_pi fun _ => continuous_pi fun _ => GI.continuous_evX _
 
 theorem rot : Rot := by
   intro m n ε c t hc b hb d hd hd0

@@ -577,7 +577,6 @@ theorem pow_dvd_of_dvd_pow_mul (s : S →+* A) (p q : S)
     rwa [pow_succ, mul_assoc] at h
 
 theorem step_one (s : S →+* A) (p q : S) {ι : Type} (b : ι → A)
-    (h1 : ∀ x : A, s p * x = 0 → x = 0)
     (h2 : ∀ x : A, s p ∣ s q * x → s p ∣ x)
     (h3 : ∀ a : ι →₀ S, a.sum (fun i y => s y * b i) ∈ (Ideal.span {p} ⊔ Ideal.span {q}).map s →
       ∀ i, a i ∈ Ideal.span {p} ⊔ Ideal.span {q}) :
@@ -653,7 +652,7 @@ theorem step_three (s : S →+* A) (p q : S) {ι : Type} (b : ι → A)
     have hU : U ∈ Ideal.span ({s p, s q ^ n} : Set A) :=
       Ideal.mem_span_pair.2 ⟨x, w, by linear_combination -hw⟩
     intro i hi
-    obtain ⟨α, β, hαβ⟩ := Ideal.mem_span_pair.1 (step_one s p q b h1 h2 h3 n T u hU i hi)
+    obtain ⟨α, β, hαβ⟩ := Ideal.mem_span_pair.1 (step_one s p q b h2 h3 n T u hU i hi)
     refine Ideal.mem_span_pair.2 ⟨α, β * p ^ m + v i, ?_⟩
     rw [← huv i hi, ← hαβ]
     ring

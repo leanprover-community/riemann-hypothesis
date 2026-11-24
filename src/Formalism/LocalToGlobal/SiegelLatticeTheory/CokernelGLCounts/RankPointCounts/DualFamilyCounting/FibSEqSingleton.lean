@@ -32,7 +32,7 @@ private lemma locF_inf_restrictScalars (X : Submodule K V) (Λ : Submodule (𝓞
   · intro x hx
     obtain ⟨s, hs, hsx⟩ := (mem_locF_lemma 𝔭 _ x).mp hx
     refine Submodule.mem_inf.mpr ⟨(mem_locF_lemma 𝔭 _ x).mpr ⟨s, hs, hsx.1⟩, ?_⟩
-    rw [← Formalism.L2.SG.Pf.G7.locF_subspace X hp]
+    rw [← Formalism.L2.SG.Pf.G7.locF_subspace X]
     exact (mem_locF_lemma 𝔭 _ x).mpr ⟨s, hs, hsx.2⟩
   · intro x hx
     obtain ⟨hx1, hx2⟩ := Submodule.mem_inf.mp hx
@@ -62,9 +62,9 @@ theorem fibS_eq_singleton (hF : IsFixF K F) {h : V →ₗ⋆[K] V →ₗ[K] K} {
   have hMU : ∀ x ∈ M, x ∈ U := fun x hx => hM.2 ▸ Submodule.subset_span hx
   have hTW : ∀ x ∈ T, x ∈ orthK h U := fun x hx => hT.2 ▸ Submodule.subset_span hx
   have hcapU : locF 𝔭 (M ⊔ T) ⊓ U.restrictScalars (𝓞 K) = locF 𝔭 M :=
-    locF_sup_inf hUc hMU hTW h𝔭.isPrime
+    locF_sup_inf hUc hMU hTW
   have hcapW : locF 𝔭 (M ⊔ T) ⊓ (orthK h U).restrictScalars (𝓞 K) = locF 𝔭 T := by
-    rw [sup_comm]; exact locF_sup_inf hUc.symm hTW hMU h𝔭.isPrime
+    rw [sup_comm]; exact locF_sup_inf hUc.symm hTW hMU
   ext Λ
   simp only [fibS, Set.mem_setOf_eq, Set.mem_singleton_iff]
   constructor
@@ -130,14 +130,14 @@ theorem card_glue (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsF
       rw [hsing _ hps, Set.mem_singleton_iff] at a1 a2
       exact a1.trans a2.symm
   · intro τ
-    obtain ⟨Λ, ⟨hΛ, hin, hout⟩, -⟩ := exists_unique_patch hK hF hN s
+    obtain ⟨Λ, ⟨hΛ, hin, hout⟩, -⟩ := exists_unique_patch hN s
       (fun 𝔭 => if hp : 𝔭 ∈ s then (τ ⟨𝔭, hp⟩).1 else ⊥) (by
         intro 𝔭 hp
         simp only [dite_eq_left hp]
         obtain ⟨⟨A, hA, e⟩, -, hU, hW⟩ := (τ ⟨𝔭, hp⟩).2
         refine ⟨by rw [← e, LocF.locF_idem], A, { toIsLattice := hA, span_eq_top := ?_ }, e⟩
         have hle : locF 𝔭.1 A ≤ (Submodule.span K (A : Set V)).restrictScalars (𝓞 K) := by
-          rw [← G7.locF_subspace (Submodule.span K (A : Set V)) 𝔭.2.isPrime]
+          rw [← G7.locF_subspace (Submodule.span K (A : Set V))]
           exact LocF.locF_mono 𝔭.1 (fun _ hx => Submodule.subset_span hx)
         have hNle : M ⊔ T ≤ locF 𝔭.1 A := by
           rw [e]
@@ -159,10 +159,10 @@ theorem card_glue (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsF
         rw [G7.locF_dual hF h hΛ.fg h𝔭.isPrime]
         exact (hfib ⟨𝔭, h𝔭⟩).2.1
       · refine G7.eq_of_locF (F := F) _ _ fun 𝔭 h𝔭 => ?_
-        rw [LIOrb.locF_inf_locF h𝔭, G7.locF_subspace U h𝔭.isPrime]
+        rw [LIOrb.locF_inf_locF h𝔭, G7.locF_subspace U]
         exact (hfib ⟨𝔭, h𝔭⟩).2.2.1
       · refine G7.eq_of_locF (F := F) _ _ fun 𝔭 h𝔭 => ?_
-        rw [LIOrb.locF_inf_locF h𝔭, G7.locF_subspace (orthK h U) h𝔭.isPrime]
+        rw [LIOrb.locF_inf_locF h𝔭, G7.locF_subspace (orthK h U)]
         exact (hfib ⟨𝔭, h𝔭⟩).2.2.2
     refine ⟨⟨Λ, hmem⟩, ?_⟩
     funext 𝔭

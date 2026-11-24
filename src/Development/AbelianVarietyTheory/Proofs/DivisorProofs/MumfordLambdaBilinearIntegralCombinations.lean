@@ -176,7 +176,7 @@ theorem exists_powZ (hB : D.TauBimult) {T : Over (Spec (CommRingCat.of R))} (x u
       (φ' := Sum.elim (GlobalTheory.PolDeg.lamPts (x ^ (-(k : ℤ))) u) (GlobalTheory.PolDeg.lamPts x u))
       (ε' := Sum.elim Oε (fun i => -(-(k : ℤ) * Oε i))) (fun U _ h => by
         have e : x ^ (-(k : ℤ)) * x ^ k = 1 := by rw [zpow_neg, zpow_natCast, inv_mul_cancel]
-        simp only [Fintype.prod_sum_type, Sum.elim_inl, Sum.elim_inr, prodNeg, prod_lam₁, prod_lam, prod_lam_neg, e, lamH_one]
+        simp only [Fintype.prod_sum_type, Sum.elim_inl, Sum.elim_inr, prodNeg, prod_lam₁, prod_lam, e, lamH_one]
         apply Additive.ofMul.injective
         simp only [lamH, ofMul_mul, ofMul_inv, ofMul_zpow, zpow_one, ofMul_one]
         module)

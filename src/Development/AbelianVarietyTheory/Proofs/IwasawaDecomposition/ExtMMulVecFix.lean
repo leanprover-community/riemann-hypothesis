@@ -64,11 +64,11 @@ section ExtL
 variable {A : Type} [CommRing A] {N n : ℕ} (hN : N = n + 1)
 
 theorem extM_mul_incl (g : Matrix (Fin n) (Fin n) A) (M : Matrix (Fin N) (Fin n) A)
-    (hM : ∀ b j, M b j = if b = Br.iC hN j then 1 else 0) : extM hN g * M = M * g := by
+    (hM : ∀ b j, M b j = if b = Br.iC hN j then 1 else 0) : extM g * M = M * g := by
   subst hN
   ext b j
   rw [Matrix.mul_apply, Matrix.mul_apply]
-  have e1 : ∑ l, extM rfl g b l * M l j = extM rfl g b (Br.iC rfl j) := by
+  have e1 : ∑ l, extM g b l * M l j = extM g b (Br.iC rfl j) := by
     rw [Finset.sum_eq_single (Br.iC rfl j)]
     · simp [hM]
     · intro l _ hl
@@ -85,7 +85,7 @@ theorem extM_mul_incl (g : Matrix (Fin n) (Fin n) A) (M : Matrix (Fin N) (Fin n)
     exact extM_castSucc g i j
 
 theorem extM_mulVec_fix (g : Matrix (Fin n) (Fin n) A) (z : Fin N → A) (hz : ∀ b, b ≠ Br.iL hN → z b = 0) :
-    extM hN g *ᵥ z = z := by
+    extM g *ᵥ z = z := by
   funext b
   by_cases e : b = Br.iL hN
   · subst e
@@ -105,7 +105,7 @@ theorem extM_mulVec_fix (g : Matrix (Fin n) (Fin n) A) (z : Fin N → A) (hz : �
     exact (hz _ (by rw [← e2]; exact e)).symm
 
 theorem eq_extM_of_laws (g : Matrix (Fin n) (Fin n) A) (G : Matrix (Fin N) (Fin N) A)
-    (h1 : ∀ x, iniH hN (G *ᵥ x) = g *ᵥ iniH hN x) (h2 : ∀ x, (G *ᵥ x) (Br.iL hN) = x (Br.iL hN)) : G = extM hN g := by
+    (h1 : ∀ x, iniH hN (G *ᵥ x) = g *ᵥ iniH hN x) (h2 : ∀ x, (G *ᵥ x) (Br.iL hN) = x (Br.iL hN)) : G = extM g := by
   refine Matrix.ext_of_mulVec_single fun j => ?_
   funext b
   by_cases e : b = Br.iL hN
@@ -331,7 +331,7 @@ theorem til_tw (hI : I.Ok) (hP : TC.Pins B X) (l : I.Laws) (Z : TC.Later B (I.co
     rw [h3, zero_mul] at h2
     exact (hPr.T_prime u).ne_zero (by exact_mod_cast h2.symm)
   have hext : ∀ (R' : Type) [CommRing R'] (φ : (I.rec7 l Z).host.E →+* R') (g' : Matrix (Fin (B.R.N B.R.m - 1)) (Fin (B.R.N B.R.m - 1)) R'),
-      IsExt (I.rec7 l Z) (z0 X u) φ g' (extM hN g') := by
+      IsExt (I.rec7 l Z) (z0 X u) φ g' (extM g') := by
     intro R' _ φ g'
     refine ⟨extM_mul_incl hN g' _ fun b j => ?_, extM_mulVec_fix hN g' _ fun b hb => ?_⟩
     · refine (congrArg φ (TilX.iXm_apply hiX hN b j)).trans ?_
@@ -352,7 +352,7 @@ theorem til_tw (hI : I.Ok) (hP : TC.Pins B X) (l : I.Laws) (Z : TC.Later B (I.co
     exact hcls c
   have hres : (W.atT u a).res (F u).atT = I.resT l u a := funext fun v => RingHom.ext (hW.eFv u a v)
   have hgamX : ∀ c (s : (I.stX a).Stab c), (((I.stp u a B.R.m).gam (I.perIn u a).b0 ((I.perIn u a).ext c.1 s.1) : GL _ _) : Matrix _ _ _) =
-      extM hN (((I.stX a).gam c.1 s.1 : GL _ _) : Matrix _ _ _) := fun c s =>
+      extM (((I.stX a).gam c.1 s.1 : GL _ _) : Matrix _ _ _) := fun c s =>
     eq_extM_of_laws hN _ _ (fun x => (l.per u a).gam_ini c.1 s.1 x) (fun x => (l.per u a).gam_last c.1 s.1 x)
   let Tl : SymmetricTwistedTiltedData Lv u a ha h1 K :=
     { z0 := z0v B X u
@@ -387,7 +387,7 @@ theorem til_tw (hI : I.Ok) (hP : TC.Pins B X) (l : I.Laws) (Z : TC.Later B (I.co
         exact Eq.mpr (congrArg₂ (fun p q => IsExt (I.rec7 l Z) (z0v B X u) (RingHom.id _) p q) e7 (e8.trans ((e4 _ _).trans e6))) e5
       ka := ka
       til_ad := fun c g hg' => by
-        have e : g.1 = extM hN (K.y c).1.1 := by
+        have e : g.1 = extM (K.y c).1.1 := by
           refine TilX.eq_extM_of_ext hN (inclE (F := B.host.F) (FiniteAdeleRing (𝓞 B.host.F) B.host.F)) hpi0
             (TilX.iXm_apply hiX hN) hg'.1 ?_
           have h2 := hg'.2

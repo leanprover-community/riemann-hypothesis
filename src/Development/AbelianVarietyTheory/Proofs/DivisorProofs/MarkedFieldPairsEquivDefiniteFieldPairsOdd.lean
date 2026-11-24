@@ -932,7 +932,7 @@ theorem neg_of_diag {n : ℕ} (H : Matrix (Fin n) (Fin n) ℂ) (Z : GL (Fin n) �
     (hZ : (Z : Matrix (Fin n) (Fin n) ℂ)ᴴ * H * (Z : Matrix (Fin n) (Fin n) ℂ) = Matrix.diagonal (fun i => (r i : ℂ)))
     (hr : ∀ i, r i < 0) (x : Fin n → ℂ) (hx : x ≠ 0) : (star x ⬝ᵥ (H *ᵥ x)).re < 0 := by
   have h := pos_of_diag (-H) Z (fun i => -r i) (by
-    rw [Matrix.mul_neg, Matrix.neg_mul, hZ]; ext i k; by_cases h : i = k <;> simp [Matrix.diagonal_apply, h])
+    rw [Matrix.mul_neg, Matrix.neg_mul, hZ]; ext i k; by_cases h : i = k <;> simp [h])
     (fun i => neg_pos.2 (hr i)) x hx
   rw [Matrix.neg_mulVec, dotProduct_neg, Complex.neg_re] at h
   linarith

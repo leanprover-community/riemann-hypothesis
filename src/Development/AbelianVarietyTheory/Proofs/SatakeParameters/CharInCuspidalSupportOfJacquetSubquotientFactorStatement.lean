@@ -448,7 +448,7 @@ theorem inSupport_of_flag_jac (π : Representation ℂ (GL n k) V) (f : (Σ j, c
         simp
       · rw [Pi.mulSingle_eq_of_ne hj]
         ext x y
-        rw [leviProj_apply, hu _ _ (by simp [hE, hlt, ht j hj])]
+        rw [leviProj_apply, hu _ _ (by simp [hE, ht j hj])]
         simp [Matrix.one_apply, f.injective.eq_iff]
     refine ⟨_, ⟨_, h0, rfl⟩, fun x => ?_⟩
     have h2 : Submodule.mkQ (twKer π (unipRad k f) 1) (π v x) = Submodule.mkQ _ x :=

@@ -183,7 +183,7 @@ def Φ {R' : Type} [CommRing R'] [Algebra R R'] {X' : Scheme.{0}} {s : X ⟶ Sp 
     GlobalTheory.AbLaw.secTermBaseChange (LB.triv X) D w (p + 1)
 
 def one (s : X ⟶ Sp R) (D : κ → X.Opens) : (GlobalTheory.AbLaw.cechLB s (LB.triv X) D).X 0 :=
-  fun t => GlobalTheory.AbLaw.SecOnR.of s _ _ ((GlobalTheory.AbLaw.secOnTrivEquiv _).symm 1)
+  fun _ => GlobalTheory.AbLaw.SecOnR.of s _ _ ((GlobalTheory.AbLaw.secOnTrivEquiv _).symm 1)
 
 def pr {X' X'' : Scheme.{0}} {ψ : X'' ⟶ X'} (D' : κ → X'.Opens)
     (hD' : ∀ I : Finset κ, I.Nonempty → IsAffineOpen (⨅ i ∈ I, D' i)) (D'' : κ → X''.Opens)

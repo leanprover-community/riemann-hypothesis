@@ -180,7 +180,7 @@ theorem compactDecomposition_of_finrank (he : KHiExist) (V : Type) [NormedAddCom
           · conv_lhs => rw [← h3]
             exact iSup_le fun j => le_iSup_of_le j.succ (by simp)
 
-theorem kDecomp_of (he : KHiExist) (ho : KOrth) : KDecomp := by
+theorem kDecomp_of (he : KHiExist) : KDecomp := by
   intro V _ _ n ε F S hfin hr hu hS
   exact compactDecomposition_of_finrank he V n ε F hr hu _ S rfl hfin hS
 
@@ -246,7 +246,7 @@ theorem compactCasimirValue_le {n : ℕ} (ε : Fin n → Bool) (μ : Fin n → �
   rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul] at h1
   linarith
 
-theorem kCasBound_of (hd : KDecomp) (hc : KCasSpan) (ho : KOrth) : KCasBound := by
+theorem kCasBound_of (hd : KDecomp) (hc : KCasSpan) : KCasBound := by
   intro V _ _ n ε F S R hfin hr hu hS hR hw y hy
   obtain ⟨m, x, μ, h1, h2, h3⟩ := hd V n ε F S hfin hr hu hS
   have hy' : y ∈ ⨆ i ∈ (univ : Finset (Fin m)), kSpan ε F (x i) := by simpa [h3] using hy

@@ -95,7 +95,7 @@ theorem a_zero (k : ℕ) (g : Newform k) : g.a 0 = 0 := by
   haveI : NeZero g.M := ⟨g.pos.ne'⟩
   simpa [Newform.a, UpperTheory.V.Af.coef] using CuspFormClass.qExpansion_coeff_zero g.f one_pos (one_mem_strictPeriods_map_gamma1 g.M)
 
-theorem im_shift (z : ℍ) (b p : ℕ) (hp : 0 < p) : (((z : ℂ) + b) / p).im = z.im / p := by
+theorem im_shift (z : ℍ) (b p : ℕ) : (((z : ℂ) + b) / p).im = z.im / p := by
   simp [Complex.div_natCast_im]
 
 theorem im_scale (z : ℍ) (p : ℕ) : ((p : ℂ) * z).im = p * z.im := by
@@ -105,7 +105,7 @@ end GlobalTheory.HeckeBd
 
 namespace GlobalTheory.HeckeBd
 
-theorem qParam_shift (z : ℍ) (b p : ℕ) (hp : 0 < p) (m : ℕ) :
+theorem qParam_shift (z : ℍ) (b p : ℕ) (m : ℕ) :
     Function.Periodic.qParam 1 (((z : ℂ) + b) / p) ^ m =
       Complex.exp (2 * Real.pi * Complex.I * z / p) ^ m *
         (Complex.exp (2 * Real.pi * Complex.I / p) ^ m) ^ b := by
@@ -136,7 +136,7 @@ theorem sum_shift (k : ℕ) (g : Newform k) (p : ℕ) (hp : p.Prime) (z : ℍ) :
       (g.f (ofComplex (((z : ℂ) + b) / p))) := by
     intro b _
     have him : 0 < (((z : ℂ) + b) / p).im := by
-      rw [im_shift z b p hp.pos]
+      rw [im_shift z b p]
       exact div_pos z.im_pos hpos
     have e : ((ofComplex (((z : ℂ) + b) / p) : ℍ) : ℂ) = ((z : ℂ) + b) / p := by
       rw [UpperHalfPlane.ofComplex_apply_of_im_pos him]
@@ -150,7 +150,7 @@ theorem sum_shift (k : ℕ) (g : Newform k) (p : ℕ) (hp : p.Prime) (z : ℍ) :
     calc (∑ b ∈ Finset.range p, g.a m * Function.Periodic.qParam 1 (((z : ℂ) + b) / p) ^ m)
         = ∑ b ∈ Finset.range p, g.a m * Complex.exp (2 * Real.pi * Complex.I * z / p) ^ m *
             (Complex.exp (2 * Real.pi * Complex.I / p) ^ m) ^ b :=
-          Finset.sum_congr rfl (fun b _ => by rw [qParam_shift z b p hp.pos m]; ring)
+          Finset.sum_congr rfl (fun b _ => by rw [qParam_shift z b p m]; ring)
       _ = g.a m * Complex.exp (2 * Real.pi * Complex.I * z / p) ^ m *
             ∑ b ∈ Finset.range p, (Complex.exp (2 * Real.pi * Complex.I / p) ^ m) ^ b := by
           rw [Finset.mul_sum]
@@ -278,10 +278,10 @@ theorem norm_a_le : ∀ (k : ℕ) (g : Newform k) (p : ℕ), p.Prime → ¬ p �
     have hb : ∀ b ∈ Finset.range p, ‖g.f (ofComplex (((z : ℂ) + b) / p))‖ ≤ S / (z.im / p) ^ r := by
       intro b _
       have him : 0 < (((z : ℂ) + b) / p).im := by
-        rw [im_shift z b p hp.pos]
+        rw [im_shift z b p]
         exact div_pos hy hp0
       have e : (ofComplex (((z : ℂ) + b) / p)).im = z.im / p := by
-        (rw [UpperHalfPlane.ofComplex_apply_of_im_pos him, ← im_shift z b p hp.pos]) <;> rfl
+        (rw [UpperHalfPlane.ofComplex_apply_of_im_pos him, ← im_shift z b p]) <;> rfl
       have := hfS (ofComplex (((z : ℂ) + b) / p))
       rwa [e] at this
     have hs : ‖g.f (ofComplex ((p : ℂ) * z))‖ ≤ S / (p * z.im) ^ r := by

@@ -155,8 +155,8 @@ theorem eis_decomp (χ : HChar F) (c : HeightOneSpectrum (𝓞 F) → ℕ) (g : 
   have hS2 : S2 = S1ᶜ := by
     ext t
     simp [S1, S2]
-  obtain ⟨hi1, he1⟩ := integral_iter_eq S1 measurableSet_ge_one h1
-  obtain ⟨hi2, he2⟩ := integral_iter_eq S2 measurableSet_lt_one h2
+  obtain ⟨hi1, he1⟩ := integral_iter_eq S1 h1
+  obtain ⟨hi2, he2⟩ := integral_iter_eq S2 h2
   set G : {r : ℝ // 0 < r} → ℂ := fun t => ∫ u in normOneFundamentalDomain F, eisInt χ (Phi c) g' t u ∂normOneMeasure F
   have eG1 : G = fun t => (∫ u in normOneFundamentalDomain F, ∑' ξ : Xi F,
       kap1 χ c g ((t, u), ξ) * archS F (B1 (w1 g ((t, u), ξ)) (UpperTheory.V.TR.toL y.val)) ∂normOneMeasure F) * Dc := by

@@ -375,7 +375,7 @@ lemma key (h31 : LogBinomialProperties) (h34 : LogBinomialDeficit) (k' K : ℕ) 
   rw [hsh1 u] at hbd
   exact ⟨by omega, hbd⟩
 
-lemma a_fin {La b p k k' g : ℝ} (hLa : 0 < La) (hp : 0 < p) (hk : 0 < k) (hk' : 0 ≤ k')
+lemma a_fin {La b p k k' g : ℝ} (hLa : 0 < La) (hk : 0 < k) (hk' : 0 ≤ k')
     (hg0 : 0 < g) (hg : g ≤ 4 * b / p) : La * k' / (16 * k) ≤ (La * b / (p * k)) * k' / (4 * g) := by
   have hpos : 0 ≤ La * k' / (4 * k) := div_nonneg (mul_nonneg hLa.le hk') (by linarith)
   refine _root_.Formalism.InvariantFactorPaths.BranchingDimensions.le_div_of_mul_le_of_pos' (by linarith) ?_
@@ -608,7 +608,7 @@ theorem pathWeightBound_of :
       have := (hBi l hl1 (by omega)).1
       have : 0 < D.B l := by omega
       exact_mod_cast this
-    have hthr := Formalism.InvariantFactorPaths.BranchingDimensions.TTyp.a_fin hLa hpR hkR hk'R hg0 hgle
+    have hthr := Formalism.InvariantFactorPaths.BranchingDimensions.TTyp.a_fin hLa hkR hk'R hg0 hgle
     have td2 := td.2
     rw [hgx, hX] at td2
     linarith [hBv.1, hBc.1]
@@ -656,7 +656,7 @@ theorem pathWeightBound_of :
       have := (hBi l hl1 (by omega)).1
       have : 0 < D.B l := by omega
       exact_mod_cast this
-    have hthr := Formalism.InvariantFactorPaths.BranchingDimensions.TTyp.a_fin hLa hpR hkR hk'R hg0 hgle
+    have hthr := Formalism.InvariantFactorPaths.BranchingDimensions.TTyp.a_fin hLa hkR hk'R hg0 hgle
     have td2 := td.2
     rw [hgx, hX] at td2
     linarith [hBv.1, hBc.1]

@@ -464,16 +464,16 @@ private theorem nl_nrm {R : Type} [CommRing R] (p : ℕ) [hp : Fact p.Prime] (m 
     (hc : ∀ j : Fin p, h * PowerSeries.X ^ (j : ℕ) = ∑ i, phi p hp.out.pos (c i j) * PowerSeries.X ^ (i : ℕ)) :
     nrm p m hm (ev R p (m + 1) h) = ev R p m c.det := by
   classical
-  have hb : ∀ j : Fin p, (Model.basis p hu j : Model.Up R p) = (PowerSeries.X ^ (j : ℕ) : PowerSeries R) := by
+  have hb : ∀ j : Fin p, (Model.basis p hu j : Model.Up R) = (PowerSeries.X ^ (j : ℕ) : PowerSeries R) := by
     intro j
     rw [Model.basis, Module.Basis.mk_apply]
   have hn : normOp p h = c.det := by
-    have key := Algebra.norm_eq_matrix_det (Model.basis p hu) (show Model.Up R p from h)
+    have key := Algebra.norm_eq_matrix_det (Model.basis p hu) (show Model.Up R from h)
     refine key.trans ?_
     congr 1
     ext i j
     rw [Algebra.leftMulMatrix_eq_repr_mul]
-    have e : (show Model.Up R p from h) * Model.basis p hu j = ∑ i', c i' j • Model.basis p hu i' := by
+    have e : (show Model.Up R from h) * Model.basis p hu j = ∑ i', c i' j • Model.basis p hu i' := by
       rw [hb j]
       refine (hc j).trans ?_
       refine Finset.sum_congr rfl fun i' _ => ?_
@@ -602,7 +602,7 @@ theorem map_phi (p : ℕ) (hp : 0 < p) (f : R →+* R) (h : PowerSeries R) :
     PowerSeries.map f (phi (R := R) p hp h) = phi (R := R) p hp (PowerSeries.map f h) := by
   unfold phi
   rw [PowerSeries.coe_substAlgHom]
-  have key := PowerSeries.map_subst (hasSubst_om (R := R) p hp) (h := f) h
+  have key := PowerSeries.map_subst (hasSubst_om (R := R) p) (h := f) h
   have e : (MvPowerSeries.map f) (((1 + PowerSeries.X : PowerSeries R) ^ p) - 1)
       = ((1 + PowerSeries.X : PowerSeries R) ^ p) - 1 := by
     change PowerSeries.map f _ = _
@@ -729,7 +729,7 @@ open GlobalTheory.Col PowerSeries
 
 namespace GlobalTheory.Col
 
-theorem normOp_congr : ∀ (R : Type) [CommRing R] (p : ℕ) [hp : Fact p.Prime] (σ : R ≃+* R), FrobLift R p σ →
+theorem normOp_congr : ∀ (R : Type) [CommRing R] (p : ℕ) [Fact p.Prime] (σ : R ≃+* R), FrobLift R p σ →
     ∀ (h₁ h₂ r : PowerSeries R) (k : ℕ), 1 ≤ k → IsUnit h₂ → h₁ = h₂ + (p : PowerSeries R) ^ k * r →
     ∃ r' : PowerSeries R, normOp p h₁ = normOp p h₂ + (p : PowerSeries R) ^ (k + 1) * r' := by
   intro R _ p hp σ hF h₁ h₂ r k hk hu he
@@ -761,7 +761,7 @@ theorem normOp_iterate_isUnit {R : Type} [CommRing R] (p : ℕ) [Fact p.Prime] {
   | zero => simpa using hu
   | succ j ih => rw [Function.iterate_succ_apply']; exact normOp_isUnit p ih
 
-theorem normOp_iterate_congr : ∀ (R : Type) [CommRing R] (p : ℕ) [hp : Fact p.Prime] (σ : R ≃+* R), FrobLift R p σ →
+theorem normOp_iterate_congr : ∀ (R : Type) [CommRing R] (p : ℕ) [Fact p.Prime] (σ : R ≃+* R), FrobLift R p σ →
     ∀ (h : PowerSeries R), IsUnit h → ∀ j : ℕ, ∃ r : PowerSeries R,
       (normOp p)^[j + 1] h = smap σ ((normOp p)^[j] h) + (p : PowerSeries R) ^ (j + 1) * r := by
   intro R _ p hp σ hσ h hu j
@@ -854,7 +854,7 @@ theorem levEquiv_root (p m : ℕ) [hp : Fact p.Prime] [IsAdicComplete (Ideal.spa
   simp only [Ideal.quotient_map_mkₐ, Ideal.Quotient.mkₐ_eq_mk, Ideal.quotientEquivAlgOfEq_mk]
   simp [add_comm]
 
-theorem lev_basis : ∀ (R : Type) [CommRing R] (p m : ℕ) [hp : Fact p.Prime], IsAdicComplete (Ideal.span {(p : R)}) R →
+theorem lev_basis : ∀ (R : Type) [CommRing R] (p m : ℕ) [Fact p.Prime], IsAdicComplete (Ideal.span {(p : R)}) R →
     ∃ b : Module.Basis (Fin (Nat.totient (p ^ m))) R (lev R p m), ∀ i, b i = ev R p m ((1 + X) ^ (i : ℕ)) := by
   intro R _ p m hp hc
   rcases subsingleton_or_nontrivial R with hs | hs
@@ -950,7 +950,7 @@ namespace GlobalTheory.Col
 
 open Interp in
 theorem X_mul_mem_span_of_levels (R : Type) [CommRing R] (p : ℕ) [hp : Fact p.Prime] (hR : IsDomain R)
-    (hpR : Prime (p : R)) (_hc : IsAdicComplete (Ideal.span {(p : R)}) R)
+    (hpR : Prime (p : R))
     (h : PowerSeries R) (k c : ℕ)
     (hyp : ∀ r, 1 ≤ r → r ≤ k → ∃ y : PowerSeries R, ev R p r h = ev R p r ((p : PowerSeries R) ^ c * y)) :
     ∀ j, j ≤ k → j ≤ c → X * h ∈ Ideal.span {(p : PowerSeries R) ^ (c - j), (1 + X) ^ (p ^ j) - 1} := by
@@ -1243,7 +1243,7 @@ theorem exists_coleman_series : ∀ (R : Type) [CommRing R] (p : ℕ) [hp : Fact
       have := GlobalTheory.ColEx.ev_map_congr R p (m + 1) (((σ : R ≃+* R) : R →+* R) ^ (m + 1)) _ _ hD
       rw [hinv, map_mul, map_pow, map_natCast] at this
       exact ⟨_, this⟩
-    have hI := _root_.GlobalTheory.Col.X_mul_mem_span_of_levels R p hF.dom hF.prime hR (F (k + 1) - F k) (k + 1) (k + 2) hsmall ((k + 1) / 2)
+    have hI := _root_.GlobalTheory.Col.X_mul_mem_span_of_levels R p hF.dom hF.prime (F (k + 1) - F k) (k + 1) (k + 2) hsmall ((k + 1) / 2)
       (by omega) (by omega)
     apply hdivX
     refine (Ideal.span_le.2 ?_) hI
@@ -1308,7 +1308,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qf4.pow_sub_one_mem :
-    ∀ {S : Type} [inst : CommRing S] (J : Ideal S) (p : ℕ),
+    ∀ {S : Type} [CommRing S] (J : Ideal S) (p : ℕ),
     Nat.Prime p → (↑p : S) ∈ J → ∀ (x : S), x - (1 : S) ∈ J → ∀ (j : ℕ), x ^ p ^ j - (1 : S) ∈ J ^ (j + (1 : ℕ)) := by
   intro S _ J p _ hp x hx j
   induction j with

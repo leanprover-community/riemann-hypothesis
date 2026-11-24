@@ -374,7 +374,7 @@ def reps (M q : ℕ) (σ : SL(2, ℤ)) (i : Fin (q + 1)) : Matrix (Fin 2) (Fin 2
 lemma reps_det (M q : ℕ) (σ : SL(2, ℤ)) (i : Fin (q + 1)) : (reps M q σ i).det = q := by
   unfold reps; split_ifs <;> simp [Matrix.det_fin_two]
 
-theorem exists_coset (M q : ℕ) (hM : 0 < M) (hq : q.Prime) (hqM : Nat.Coprime q M) (σ : SL(2, ℤ))
+theorem exists_coset (M q : ℕ) (hq : q.Prime) (hqM : Nat.Coprime q M) (σ : SL(2, ℤ))
     (hσ : (en σ 0 1 : ZMod M) = 0 ∧ (en σ 1 0 : ZMod M) = 0 ∧ (en σ 1 1 : ZMod M) = q)
     (m : Matrix (Fin 2) (Fin 2) ℤ) (hdet : m.det = q) (h00 : (m 0 0 : ZMod M) = 1) (h01 : (m 0 1 : ZMod M) = 0)
     (h10 : (m 1 0 : ZMod M) = 0) (h11 : (m 1 1 : ZMod M) = q) :
@@ -517,7 +517,7 @@ theorem GlobalTheory.hecke_product_invariant : ∀ {Ω : Type} [Field Ω] [Algeb
     obtain ⟨a00, a01, a10, a11⟩ := hrM i
     have hdet : (reps M q σ i * (γ : Matrix (Fin 2) (Fin 2) ℤ)).det = q := by
       rw [Matrix.det_mul, reps_det]; simp
-    rcases exists_coset M q hM hq hqM σ hσ _ hdet
+    rcases exists_coset M q hq hqM σ hσ _ hdet
       (by simp [Matrix.mul_apply, Fin.sum_univ_two, a00, a01, g00, g10])
       (by simp [Matrix.mul_apply, Fin.sum_univ_two, a00, a01, g01, g11])
       (by simp [Matrix.mul_apply, Fin.sum_univ_two, a10, a11, g00, g10])

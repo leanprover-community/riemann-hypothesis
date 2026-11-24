@@ -854,7 +854,7 @@ open PositivityTheory.Rg.BcB.F PositivityTheory.Rg.BcB.F.Rd
 
 
 
-theorem packK (hBO : BlockOperatorsProductAdjoint) {E : Type} [Field E] [NumberField E] [IsCMField E] (B : Block E)
+theorem packK {E : Type} [Field E] [NumberField E] [IsCMField E] (B : Block E)
     (W₁ : Submodule ℂ (Kinf E B.a → ℂ)) (W₂ : Submodule ℂ (Kinf E B.b → ℂ))
     (K₁ : Subgroup (GL (Fin B.a) (Af E))) (K₂ : Subgroup (GL (Fin B.b) (Af E)))
     (o₁ : IsOpen (K₁ : Set (GL (Fin B.a) (Af E)))) (o₂ : IsOpen (K₂ : Set (GL (Fin B.b) (Af E))))
@@ -1072,7 +1072,7 @@ theorem perK (hAV : ActVal) (hBO : BlockOperatorsProductAdjoint) (hCM : ConvMulS
         sk k (genE g X a₀) • (sk k (XE g X) • f k) := by
       rw [← e, smul_smul, mul_comm]
     exact smul_right_injective _ (hc k) e2
-  have hPk := fun k => packK hBO B W₁ W₂ K₁ K₂ o₁ o₂ hP g t₀ bump cK der ht₀ hbump hka0 hkb0 hψ₀ hderA hderB M (f k)
+  have hPk := fun k => packK B W₁ W₂ K₁ K₂ o₁ o₂ hP g t₀ bump cK der ht₀ hbump hka0 hkb0 hψ₀ hderA hderB M (f k)
     (sk k (genE g X a₀)) (fun y => sk k (genE g X y)) (hcont k) (hne k) (hk k).2.2.2.1 (hk k).2.2.2.2.1 (hc k) (heq0 k)
     (hAt k)
   choose χak χbk hgA hgB hEig hTy hS₁ hS₂ hAu₁ hAu₂ hI₁ hI₂ using hPk

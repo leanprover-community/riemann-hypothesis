@@ -346,8 +346,8 @@ variable {V : Type} [AddCommGroup V] [Module K V] [FiniteDimensional K V] [Modul
 
 theorem spanS_le_of {S : Subring K} {n : ℕ} {x : Fin n → V} {X : Submodule K V} (hx : ∀ i, x i ∈ X) :
     ∀ v ∈ spanS S x, v ∈ X := fun v hv =>
-  spanS_induction (p := fun v => v ∈ X) X.zero_mem (fun a b ha hb => X.add_mem ha hb)
-    (fun c _ a ha => X.smul_mem c ha) hx v hv
+  spanS_induction (p := fun v => v ∈ X) X.zero_mem (fun _ _ ha hb => X.add_mem ha hb)
+    (fun c _ _ ha => X.smul_mem c ha) hx v hv
 
 theorem jordan_exists (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F) {h : V →ₗ⋆[K] V →ₗ[K] K}
     (hs : h.IsSymm) (X : Submodule K V) (L : Submodule (𝓞 K) V) (hnd : Cnt.NondegOn h X)

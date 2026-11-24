@@ -64,7 +64,7 @@ private lemma exists_simultaneous_eigenvector {n : ℕ} {X : Type u_1} [NormedAd
       exact hμ c ((Finset.mem_insert.mp hc).resolve_left hca)
 
 theorem goal1 :
-  ∀ {n : Nat} {X : Type u_1} [inst : NormedAddCommGroup.{u_1} X] [inst_1 : InnerProductSpace.{0, u_1} Complex X]
+  ∀ {n : Nat} {X : Type u_1} [NormedAddCommGroup.{u_1} X] [InnerProductSpace.{0, u_1} Complex X]
   {A : Fin n → Fin n → Module.End.{0, u_1} Complex X},
   ReciprocityTheory.ChartRestriction.DS.IsGlRep.{u_1} A →
     ∀ (s : Finset.{0} (Fin n)) (T : Submodule.{0, u_1} Complex X),

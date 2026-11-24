@@ -102,7 +102,7 @@ def cmpHom (T : El (F.pt κ)) :
 
 def cmpNat : gT F κ k n ⋙ (pullMorC κ u k n).G ⟶ (pullMor (u.pt κ) n).G ⋙ (βMor F' κ k n).G where
   app T := cmpHom κ u k n T
-  naturality T T' f := Thick.Hom.ext rfl (funext fun j => j.elim)
+  naturality _ _ _ := Thick.Hom.ext rfl (funext fun j => j.elim)
 
 theorem beta_pull {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] {F F' : Fn O} (κ : O →+* OC l)
     (u : Fn.Map F F') (k : Bool) (n j : ℕ) (x : Hc F' κ k n j) :

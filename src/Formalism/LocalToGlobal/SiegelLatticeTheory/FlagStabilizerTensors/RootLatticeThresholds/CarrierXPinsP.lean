@@ -370,7 +370,7 @@ theorem prod_castLE_succ (x : Fin (r + 1) → ℂ) (m : ℕ) (hm : m + 1 ≤ r +
 
 theorem prod_castLE_ne (x : Fin (r + 1) → ℂ) (hx : ∀ a, x a ≠ 0) (m : ℕ) (hm : m ≤ r + 1) :
     ∏ i : Fin m, x (Fin.castLE hm i) ≠ 0 :=
-  Finset.prod_ne_zero_iff.2 fun i _ => hx _
+  Finset.prod_ne_zero_iff.2 fun _ _ => hx _
 
 theorem cosetOf_holds : CosetOf := by
   intro k r Wp Wq _ _ _ _ D γ hγ q hq hZ
@@ -844,8 +844,8 @@ def XLeavesP : Prop :=
     ∃ (θ : ℝ) (Ch : Choice T.X θ) (a b : ∀ j : Fin (nfE D), T.X.B.H (tauE T.X e j))
       (ξ : ∀ j : Fin (nfE D), T.X.Vloc u (tauE T.X e j)) (ξ' : ∀ j : Fin (nfE D), T.X.Vloc u' (tauE T.X e j))
       (cc : Fin (nfE D) → ℂ),
-      XLeafAt T.X Ch u u' e hPl (host_v D) CA (deOf D τ u) (deOf D τ u') (lOf D (deOf D τ u) (deOf D τ u')) i0 i0' 1
-        (T.Y.FN u) (T.Y.FN u') νq (massDataY T.X T.hb T.Y u u' X0 T.ψ sd C Th vR Q i0 i0' νq).IntN a b ξ ξ' cc
+      XLeafAt T.X Ch u u' e hPl (host_v D) CA (deOf D τ u) (deOf D τ u') (lOf D (deOf D τ u) (deOf D τ u')) i0'
+        a b ξ ξ' cc
 
 
 variable [Fact Formalism.L2.SG.Pf.CarrierT.CoefCapAll] in
@@ -1033,7 +1033,7 @@ theorem kFinNZ_of (hD : KFinDense) : KFinNZ := by
   obtain ⟨hz, hTz⟩ := Formalism.L2.SG.Pf.zTr C u τ
   have hT : 0 < Formalism.QuantumDeterminants.Tz D.R.k D.R.rS (zB X (C.Qi τ) u τ) := by
     rw [hTz]; exact Nat.cast_pos.2 (D.mem u).A.T_prime.pos
-  have hconc := Formalism.L2.SG.Pf.GoodS.nu_conc hz hT (Formalism.L2.SG.Pf.haarTr C τ) hSH (C.nuS_q u τ)
+  have hconc := Formalism.L2.SG.Pf.GoodS.nu_conc (Formalism.L2.SG.Pf.haarTr C τ) hSH (C.nuS_q u τ)
   have hae : ∀ᵐ x ∂(C.nuS u τ), Matrix.of x ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk D.R.k D.R.rS) := by
     rw [ae_iff]; exact hconc
   have hex : ∃ m ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk D.R.k D.R.rS), phiOf hB u τ m ≠ 0 := by

@@ -353,7 +353,7 @@ private theorem log_four_div_mul_pow_sub_log_le (P Vv Vu Fa Fb F2 Bd Q R : ℝ) 
   linarith
 
 private theorem linear_log_bound_le_K_mul_M (K M L lC l4 lB lQ lK E1 E : ℝ) (hKM : 4 ≤ K * M) (hL : 0 ≤ L)
-    (hl4 : l4 ≤ 3) (hl40 : 0 ≤ l4)
+    (hl4 : l4 ≤ 3)
     (hE1 : E1 ≤ 2 * (K * M)) (hE : E ≤ K * M)
     (hlB0 : 0 ≤ lB) (hlB : lB ≤ l4 + L + lK)
     (hlQ0 : 0 ≤ lQ) (hlQ : lQ ≤ lC + 3 * lK + l4 + L) :
@@ -554,7 +554,7 @@ theorem UpperPlace_holds : UpperPlace := by
   rw [e1, e2]
   refine log_four_div_mul_pow_sub_log_le _ _ _ _ _ _ _ _ _ _ _ hPpos hPle hVv hVvu (up_fact_pos (n + 2))
     (up_fact_mono (n + 2) (n + 1 + t) (by omega)) (up_fact_one t) hBd hQ ?_
-  exact linear_log_bound_le_K_mul_M _ _ _ _ _ _ _ _ _ _ hKM hLnn hl4 (Real.log_nonneg (by norm_num)) hE1n hEn
+  exact linear_log_bound_le_K_mul_M _ _ _ _ _ _ _ _ _ _ hKM hLnn hl4 hE1n hEn
     (Real.log_nonneg hBd) hlB (Real.log_nonneg hQ) hlQ
 
 end Formalism.LogVandermondeBounds.StandardLattice
@@ -649,7 +649,7 @@ theorem log_factorial_product_difference (k r : ℕ) (hk : 1 ≤ k) (hkr : k ≤
         rw [Finset.sum_const, Nat.card_Ico, nsmul_eq_mul]
 
 theorem log_X_upper_arithmetic (f k m L CY lv l2v SL lg S5 S6 X : ℝ) (hf : 0 < f) (hk : 5 ≤ k) (hm : 44 ≤ m) (hmk : m ≤ k)
-    (hL : 9 ≤ L) (hlv0 : 0 ≤ lv) (hlv : lv ≤ L) (h2v : 0 ≤ l2v) (hSL : SL ≤ f * m) (hlg0 : 0 ≤ lg)
+    (hL : 9 ≤ L) (hlv : lv ≤ L) (h2v : 0 ≤ l2v) (hSL : SL ≤ f * m) (hlg0 : 0 ≤ lg)
     (hlg : lg ≤ 2 * CY * L) (hS5 : S5 ≤ 0)
     (hS6 : S6 ≤ f * (k * m * (2 + 5 * L + 5 * L + 10) + m * (2 * k * L)))
     (id : f * k * X = f * ((m - 1) * k + m * (m - 1) / 2) * lv - f * ((m - 1) / 2) * l2v + SL +

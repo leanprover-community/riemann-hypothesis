@@ -1123,7 +1123,7 @@ theorem ch_add_mat {k : Type} [Field k] {n n' : Type} {c : ℕ} (a b : Matrix (n
 
 theorem continuous_ch {k : Type} [Field k] [TopologicalSpace k] [IsTopologicalRing k] {n n' : Type} {c : ℕ} :
     Continuous (ch : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k → k) :=
-  continuous_finsetSum _ fun i _ => continuous_id.matrix_elem _ _
+  continuous_finsetSum _ fun _ _ => continuous_id.matrix_elem _ _
 
 section
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]

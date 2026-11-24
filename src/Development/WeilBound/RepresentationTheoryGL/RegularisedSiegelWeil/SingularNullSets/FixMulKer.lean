@@ -108,7 +108,7 @@ theorem fix_snd {S : Finset (HeightOneSpectrum (𝓞 F))} {ε : AF F} (hε : IsI
   rw [idF_snd hε v, ite_eq_right hv, zero_mul] at h'
   exact h'.symm
 
-theorem fix_mul_ker {ε h y : AF F} (hε : ε * ε = ε) (hh : ε * h = h) (hy : ε * y = 0) : h * y = 0 := by
+theorem fix_mul_ker {ε h y : AF F} (hh : ε * h = h) (hy : ε * y = 0) : h * y = 0 := by
   calc h * y = (ε * h) * y := by rw [hh]
     _ = h * (ε * y) := by ring
     _ = 0 := by rw [hy, mul_zero]

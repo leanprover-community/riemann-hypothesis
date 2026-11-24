@@ -69,7 +69,7 @@ open scoped ComplexOrder
 
 namespace GlobalTheory.ThetaTranslSpan
 
-theorem mem_of_eigen {V : Type} [AddCommGroup V] (Λ Λ₁ : AddSubgroup V) (hle : Λ₁ ≤ Λ)
+theorem mem_of_eigen {V : Type} [AddCommGroup V] (Λ Λ₁ : AddSubgroup V)
     [Finite (Λ ⧸ Λ₁.addSubgroupOf Λ)] (j : V → V → ℂ) (hj0 : ∀ a ∈ Λ, ∀ z, j a z ≠ 0)
     (hj : ∀ a ∈ Λ, ∀ b ∈ Λ, ∀ z, j (a + b) z = j a (z + b) * j b z)
     (D S : Submodule ℂ (V → ℂ)) (F : V → ℂ)
@@ -327,7 +327,7 @@ theorem mem_span_translates : ∀ (g : ℕ) (Hm : Matrix (Fin g) (Fin g) ℂ), H
       simp only [dotProduct, mulVec]
       fun_prop
   obtain ⟨z₀, hz₀⟩ := Function.ne_iff.1 h0
-  refine mem_of_eigen Λ Λ₁ hle j hj0 (fun a ha b hb z => ?_)
+  refine mem_of_eigen Λ Λ₁ j hj0 (fun a ha b hb z => ?_)
     { carrier := {G | Differentiable ℂ G}
       add_mem' := fun h1 h2 => h1.add h2
       zero_mem' := differentiable_const 0

@@ -481,7 +481,7 @@ private theorem op_inSpan {w : Plc L} (hw : IsSplitAt w) (d : Fin n → (Kw w)ˣ
 private theorem fix_of_AF {R : Representation ℂ (InfinitePlace L → GL (Fin n) ℂ) V} {U : Subgroup (UA L n)}
     {S : Finset (Plc L)} (hP : Places (S : Set (Plc L))) (hS : ∀ w ∈ S, locU n w ⊓ Kall L n ≤ U)
     {w : Plc L} (hw : w ∈ S) {φ : UA L n → V} (hφ : IsAF R (lev U S iw) φ) :
-    φ ∈ UpperTheory.V.Hi.fixd ((rightReg ℂ (UA L n) V).comp (secW n w)) ((iw w).J n) := fun j hj =>
+    φ ∈ UpperTheory.V.Hi.fixd ((rightReg ℂ (UA L n) V).comp (secW n w)) ((iw w).J n) := fun _ hj =>
   funext fun g => hφ.level _ (sec_mem_lev hP hS hw hj) g
 
 private theorem hk_val {w : Plc L} (x : GL (Fin n) (Kw w))
@@ -603,8 +603,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.ComplexCommonEigenvectorOfFinrankEq.common_eig :
-    ∀ {ι M : Type} [inst : AddCommGroup M]
-    [inst_1 : _root_.Module ℂ M] [FiniteDimensional ℂ M] (f : ι → Module.End ℂ M),
+    ∀ {ι M : Type} [AddCommGroup M]
+    [_root_.Module ℂ M] [FiniteDimensional ℂ M] (f : ι → Module.End ℂ M),
     (∀ (i j : ι), Commute (f i) (f j)) →
       ∀ (n : ℕ) (W : Submodule ℂ M),
         Module.finrank ℂ ↥W = n →

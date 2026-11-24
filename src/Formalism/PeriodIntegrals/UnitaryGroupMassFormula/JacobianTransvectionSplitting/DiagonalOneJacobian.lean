@@ -83,7 +83,7 @@ def scaleAt (i : ι) (a : F) (ha : a ≠ 0) : (ι → F) ≃ₜ+ (ι → F) wher
   continuous_toFun := continuous_id.update i (continuous_const.mul (continuous_apply i))
   continuous_invFun := continuous_id.update i (continuous_const.mul (continuous_apply i))
 
-theorem image_update_pi (i : ι) (a : F) (_ha : a ≠ 0) (s : ι → Set F) :
+theorem image_update_pi (i : ι) (a : F) (s : ι → Set F) :
     (fun x => update x i (a * x i)) '' (univ.pi s) =
       univ.pi (update s i ((fun y => a * y) '' s i)) := by
   ext y
@@ -149,7 +149,7 @@ theorem diagonal_one_jacobian : DiagOne := by
     refine Measure.pi_eq fun s hs => ?_
     rw [Measure.map_apply hφm (MeasurableSet.univ_pi hs), ← himg]
     rw [show ((φ : (ι → F) → (ι → F)) '' univ.pi s) =
-        (fun x => update x i (a * x i)) '' univ.pi s from rfl, image_update_pi i a ha s, hP,
+        (fun x => update x i (a * x i)) '' univ.pi s from rfl, image_update_pi i a s, hP,
       Measure.pi_pi]
     refine Finset.prod_congr rfl fun j _ => ?_
     by_cases hj : j = i

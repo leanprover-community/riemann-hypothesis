@@ -174,35 +174,35 @@ def DerivativeCongruenceAtRing (p : ℕ) (O : Type) [CommRing O] [IsDomain O] [I
 def AdmAt (p : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] : Prop :=
   IsotypicValuationAtRing O ∧ ValuationStabilityAtRing O ∧ PolynomialSpanAtRing O ∧ FockProjectorAtRing p O ∧ FactorialDigitSplitAtRing p O ∧ DerivativeCongruenceAtRing p O
 
-def adm1 (_D : Formalism.BasicNotions.D7) : Prop :=
+def adm1 : Prop :=
   ∀ (p : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CharZero O], HidaSetting p O → IsotypicValuationAtRing O
 
-def WittOrbitTheorem (_D : Formalism.BasicNotions.D7) : Prop :=
+def WittOrbitTheorem : Prop :=
   ∀ (p : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CharZero O], HidaSetting p O → CoordinateMultiplicationAtRing O
 
-def adm2b (_D : Formalism.BasicNotions.D7) : Prop :=
+def adm2b : Prop :=
   ∀ (p : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CharZero O], HidaSetting p O → EnlargingLettersAtRing O
 
-def adm2 (D : Formalism.BasicNotions.D7) : Prop := WittOrbitTheorem D ∧ adm2b D
+def adm2 (D : Formalism.BasicNotions.D7) : Prop := WittOrbitTheorem ∧ adm2b
 
-def adm3a (_D : Formalism.BasicNotions.D7) : Prop :=
+def adm3a : Prop :=
   ∀ (p : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CharZero O], HidaSetting p O → PathColumnBasisAtRing O
 
-def adm3b (_D : Formalism.BasicNotions.D7) : Prop :=
+def adm3b : Prop :=
   ∀ (p : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CharZero O], HidaSetting p O → PathSpanAtRing O
 
-def IntegralityRemainder (_D : Formalism.BasicNotions.D7) : Prop :=
+def IntegralityRemainder : Prop :=
   ∀ (p : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CharZero O], HidaSetting p O → ColumnDegreeBoundAtRing O
 
-def adm3 (D : Formalism.BasicNotions.D7) : Prop := adm3a D ∧ adm3b D ∧ IntegralityRemainder D
+def adm3 (D : Formalism.BasicNotions.D7) : Prop := adm3a ∧ adm3b ∧ IntegralityRemainder
 
-def ArchimedeanSignatureMatching (_D : Formalism.BasicNotions.D7) : Prop :=
+def ArchimedeanSignatureMatching : Prop :=
   ∀ (p : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CharZero O], HidaSetting p O → FockProjectorAtRing p O
 
-def adm5 (_D : Formalism.BasicNotions.D7) : Prop :=
+def adm5 : Prop :=
   ∀ (p : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CharZero O], HidaSetting p O → FactorialDigitSplitAtRing p O
 
-def adm6 (_D : Formalism.BasicNotions.D7) : Prop :=
+def adm6 : Prop :=
   ∀ (p : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CharZero O], HidaSetting p O → DerivativeCongruenceAtRing p O
 
 abbrev TL (J : ℕ) (nL : ZMod J → ℕ) (r : ℕ) := Σ j : ZMod J, Fin (nL j) ⊕ Fin r
@@ -348,13 +348,13 @@ def ProjectionDerivativeEstimate (p : ℕ) (O : Type) [CommRing O] [IsDomain O] 
 def aux₃ (_D : Formalism.BasicNotions.D7) (CH CE C6 C18 : ℝ) : Prop :=
   ∀ (p : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CharZero O], HidaSetting p O → ProjectionDerivativeEstimate p O CH CE C6 C18
 
-def admitted (D : Formalism.BasicNotions.D7) : Prop := adm1 D ∧ adm2 D ∧ adm3 D ∧ ArchimedeanSignatureMatching D ∧ adm5 D ∧ adm6 D
+def admitted (D : Formalism.BasicNotions.D7) : Prop := adm1 ∧ adm2 D ∧ adm3 D ∧ ArchimedeanSignatureMatching ∧ adm5 ∧ adm6
 
-def Stmt (_D : Formalism.BasicNotions.D7) (CH CE C6 C18 : ℝ) : Prop :=
+def Stmt (CH CE C6 C18 : ℝ) : Prop :=
   ∀ (p : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CharZero O], HidaSetting p O →
     AdmAt p O → ProjectionDerivativeEstimate p O CH CE C6 C18
 
 def ClosedFormOfAdmitted (D : Formalism.BasicNotions.D7) : Prop :=
-  ∃ FormalChartAtZero CE C6 C18 : ℝ, 0 < FormalChartAtZero ∧ 0 < CE ∧ 0 < C6 ∧ 0 < C18 ∧ ∀ CH : ℝ, FormalChartAtZero ≤ CH → Stmt D CH CE C6 C18
+  ∃ FormalChartAtZero CE C6 C18 : ℝ, 0 < FormalChartAtZero ∧ 0 < CE ∧ 0 < C6 ∧ 0 < C18 ∧ ∀ CH : ℝ, FormalChartAtZero ≤ CH → Stmt CH CE C6 C18
 
 end Formalism.MainNotions.PlaneGramData

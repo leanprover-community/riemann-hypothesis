@@ -267,7 +267,7 @@ theorem conjIdeal_eq (w : HeightOneSpectrum (𝓞 K)) :
     exact ⟨s, hs, rfl⟩
 
 theorem matLat_lattice' {n D : ℕ} (P : Matrix (Fin D) (Fin n) K)
-    (hP : Function.Surjective P.mulVec) (M : Submodule (𝓞 K) (Fin n → K))
+    (M : Submodule (𝓞 K) (Fin n → K))
     (hM : Submodule.IsLattice K M) : Submodule.IsLattice K (matLat P M) := by
   refine ⟨(Submodule.IsLattice.fg (self := hM)).map _, ?_⟩
   have : ((matLat P M : Submodule (𝓞 K) (Fin D → K)) : Set (Fin D → K)) =

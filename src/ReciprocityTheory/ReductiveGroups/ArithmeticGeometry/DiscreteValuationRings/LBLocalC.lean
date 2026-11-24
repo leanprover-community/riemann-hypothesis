@@ -58,7 +58,7 @@ theorem exists_gen_of_local {V : Type} [CommRing V] [IsLocalRing V] {X : Scheme.
     ∃ e : LB.Gen (LB.LinComb L φ ε), e.IsGen := exists_gen_of_isLB_local _ (linComb_isLB (L := L) (φ := φ) (ε := ε) hL)
 
 lemma exists_chart_top {V : Type} [CommRing V] [IsLocalRing V] {X : Scheme.{0}} (L : LB X) (hL : L.IsLB)
-    {K : Type} [Fintype K] (φ : K → (Spec (CommRingCat.of V) ⟶ X)) (ε : K → ℤ) :
+    {K : Type} [Fintype K] (φ : K → (Spec (CommRingCat.of V) ⟶ X)) :
     ∃ j₀ : K → L.ι, LB.wchart L φ j₀ = ⊤ := by
   have hc : ∀ k, ∃ i, (φ k).base (IsLocalRing.closedPoint V) ∈ L.U i := by
     intro k
@@ -176,7 +176,7 @@ lemma genHasVal_top {X : Scheme.{0}} (L : LB X) {Ix : Type} [Fintype Ix]
   rw [h1]
   erw [map_mul]
   congr 1
-  · simp only [resTop, scal, Scheme.Hom.id_appTop, ← CommRingCat.comp_apply, ← Functor.map_comp]
+  · simp only [resTop, scal, Scheme.Hom.id_appTop, ← CommRingCat.comp_apply]
     have : (homOfLE (le_top : LB.wchart L (fun k => jK V ≫ φ k) j₀ ≤ ⊤)).op ≫ (homOfLE hK).op =
         𝟙 (Opposite.op (⊤ : (Spec (CommRingCat.of (FractionRing V))).Opens)) := Subsingleton.elim _ _
     rw [Category.id_comp, ← Functor.map_comp]

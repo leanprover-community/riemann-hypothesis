@@ -332,7 +332,7 @@ theorem cut_rat (hc : IsCMExt F E σ) (hJ : IsHermND σ Jᵀ) {L : Subgroup (UA 
       smul_mul_assoc, div_eq_mul_inv, mul_assoc, map_mul i (p.2 - 1), map_sub, map_one]
 
 theorem cut_place (hc : IsCMExt F E σ) (hJ : IsHermND σ Jᵀ) {L : Subgroup (UA σ J)} (hL : HasLines L)
-    (hcl : IsClosed (L : Set (UA σ J))) {k : Type} [Field k] [TopologicalSpace k] [IsTopologicalDivisionRing k] [T1Space k]
+    {k : Type} [Field k] [TopologicalSpace k] [IsTopologicalDivisionRing k] [T1Space k]
     (π : AF F →+* k) (j : k → AF F) (cj : Continuous j) (πj : ∀ y, π (j y) = y) (mj : ∀ a y, a * j y = j (π a * y))
     (hd : DenseRange fun q : F => π (algebraMap F (AF F) q)) (g : UA σ J) :
     cutM (j 1) (mat g) ∈ closure (mat '' (L : Set (UA σ J))) := by
@@ -451,8 +451,8 @@ theorem eq_top_of_lines (hc : IsCMExt F E σ) (hJ : IsHermND σ Jᵀ) {L : Subgr
       rw [Finset.sum_mul_sum]
       refine Finset.sum_eq_zero fun w _ => Finset.sum_eq_zero fun v _ => ?_
       rw [mul_jF, show piF v (jI w 1) = 0 from rfl, zero_mul, j0F])]
-    refine C.mul_mem (hsum _ (fun w => cut_place hc hJ hL hcl (piI w) (jI w) (continuous_jI w) (jI_self w) (mul_jI w)
-      (dense_I w) g) (fun w w' h => ?_) _) (hsum _ (fun v => cut_place hc hJ hL hcl (piF v) (jF v) (continuous_jF v)
+    refine C.mul_mem (hsum _ (fun w => cut_place hc hJ hL (piI w) (jI w) (continuous_jI w) (jI_self w) (mul_jI w)
+      (dense_I w) g) (fun w w' h => ?_) _) (hsum _ (fun v => cut_place hc hJ hL (piF v) (jF v) (continuous_jF v)
       (jF_self v) (mul_jF v) (dense_F v) g) (fun v v' h => ?_) _)
     · rw [mul_jI, show piI w' (jI w 1) = 0 from jI_ne 1 h.symm, zero_mul, j0I]
     · rw [mul_jF, show piF v' (jF v 1) = 0 from jF_ne 1 h.symm, zero_mul, j0F]

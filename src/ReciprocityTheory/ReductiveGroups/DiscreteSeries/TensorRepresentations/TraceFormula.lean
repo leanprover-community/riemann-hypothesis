@@ -219,7 +219,7 @@ theorem tf_eq_case (dual : Bool) {lam lam' : Fin n → ℝ} (hσ : IsURepOn (UJs
     refine ⟨⟨w', hWle hw'⟩, hw', ?_⟩
     rw [hS0v, hS0v, tfRdiag_tfPh dual hσ (closure_inUJ_of_mem_Kset hk), tf_tensGrp_kDiag dual hk,
       hP.2.2 k hk w.1 w.2 w' (hWle hw') hww']
-  have hkf := data_kfin_le hgap' (tfRdiag_isURepOn ε) (isDerivedOn_smE (tfRdiag_isURepOn ε)) hV₂ hc₂ hVK₂
+  have hkf := data_kfin_le hgap' (tfRdiag_isURepOn ε) (isDerivedOn_smE (tfRdiag_isURepOn ε)) hV₂ hc₂
     S0 hS0 hS0f hS0K
   have hfS0 : tfPh dual ε σ (y : H) (fun c => ((P f c : D) : H)) ∈ S0 :=
     ⟨⟨f, hf⟩, hfW, hS0v ⟨f, hf⟩⟩
@@ -426,12 +426,12 @@ theorem trace_ge (dual : Bool) {lam lam' : Fin n → ℝ} {H : Type*} [NormedAdd
     exact (Submodule.mem_bot ℂ).1 hub
   have hR := tfRdiag_isURepOn ε
   have hDR := isDerivedOn_smE hR
-  obtain ⟨U, hU⟩ := data_unitary_equiv hgap' hσ hD hV' hc' hVK' hV'0 hR hDR hV₂ hc₂ hVK₂ hV₂0
+  obtain ⟨U, hU⟩ := data_unitary_equiv hgap' hσ hD hV' hc' hVK' hV'0 hR hDR hV₂ hc₂ hVK₂
   have hschur := tf_schur_transfer (closGen E V') (closGen (smE ε (tfRdiag ε)) V₂) U hU
-    (closGen_stable hgap' hσ hD hV' hc' hVK') hd'
+    (closGen_stable hσ hD hV' hc') hd'
   have hH'c : IsClosed ((closGen (smE ε (tfRdiag ε)) V₂ : Submodule ℂ (tfL2n ε)) : Set (tfL2n ε)) :=
     Submodule.isClosed_topologicalClosure _
-  have hst2 := closGen_stable hgap' hR hDR hV₂ hc₂ hVK₂
+  have hst2 := closGen_stable hR hDR hV₂ hc₂
   have hH'P : closGen (smE ε (tfRdiag ε)) V₂ ≤ HP := by
     refine Submodule.topologicalClosure_minimal _ ?_ hHPc
     rintro _ ⟨v, hv, rfl⟩

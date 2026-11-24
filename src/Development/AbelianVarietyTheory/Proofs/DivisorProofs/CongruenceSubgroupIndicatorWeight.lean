@@ -406,7 +406,7 @@ theorem identity_of_principal_congruence : UnitLemmaLie → ∀ (K : UQ) (a : K.
   have hsepC : ((withG B₁ Y₁).P * (withG B₂ Y₂).P).Separable := by
     rw [← Orbit.prod_P]
     have := separable_of_adjoin (E := K.E) (A := B₁.A × B₂.A) (B₁.g, B₂.g) (Y₁, Y₂)
-      (mem_adjoin_of_mem (O := K.O) adjP.1) (mem_adjoin_of_mem (O := K.O) adjP.2) hsepP
+      (mem_adjoin_of_mem (O := K.O) adjP.2) hsepP
     exact this
   have hId := hL K (withG B₁ Y₁) (withG B₂ Y₂) sa₁ sa₂ hsepC
 

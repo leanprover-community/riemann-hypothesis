@@ -168,7 +168,7 @@ theorem eN_lr_lt (i : Fin a) (j : Fin s) : eN hN (Sum.inl i) < eN hN (Sum.inr j)
 
 private lemma lowTri_lemma {n : ℕ} (M : Matrix (Fin n) (Fin n) K) :
     M.IsLowerTriangular ↔ ∀ i j, i < j → M i j = 0 :=
-  ⟨fun h i j hij => h hij, fun h i j hij => h i j hij⟩
+  ⟨fun h _ _ hij => h hij, fun h i j hij => h i j hij⟩
 
 theorem blkM_isLowUni : IsLowUni (blkM hN A B C D) ↔ IsLowUni A ∧ B = 0 ∧ IsLowUni D := by
   simp only [IsLowUni, lowTri_lemma]
@@ -201,7 +201,7 @@ theorem blkM_isLowUni : IsLowUni (blkM hN A B C D) ↔ IsLowUni A ∧ B = 0 ∧ 
 
 private lemma upTri_lemma {n : ℕ} (M : Matrix (Fin n) (Fin n) K) :
     M.IsUpperTriangular ↔ ∀ i j, j < i → M i j = 0 :=
-  ⟨fun h i j hij => h hij, fun h i j hij => h i j hij⟩
+  ⟨fun h _ _ hij => h hij, fun h i j hij => h i j hij⟩
 
 theorem blkM_isUpUni : IsUpUni (blkM hN A B C D) ↔ IsUpUni A ∧ C = 0 ∧ IsUpUni D := by
   simp only [IsUpUni, upTri_lemma]

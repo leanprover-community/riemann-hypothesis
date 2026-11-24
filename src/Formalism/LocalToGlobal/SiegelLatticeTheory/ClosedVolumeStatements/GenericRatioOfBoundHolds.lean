@@ -869,7 +869,7 @@ namespace PI.GGConvScalarW
 
 open Formalism.L2.SG.GGMirabolic
 
-theorem convScalar_of (h1 : RepGamConj) (h2 : RepGamComm) (h3 : QIdem) (h4 : GenericIff) (h5 : RankLeOne)
+theorem convScalar_of (h2 : RepGamComm) (h3 : QIdem) (h4 : GenericIff) (h5 : RankLeOne)
     (h6 : SchurC) (h7 : TraceRepGam) (h8 : IdemTrace) (h9 : DimPos) (hm : GelfandGraevMultOne) :
     ConvScalar := by
   intro F _ _ k ψ₀ hψ V _ _ _ π hπ
@@ -929,7 +929,7 @@ theorem convScalar_of (h1 : RepGamConj) (h2 : RepGamComm) (h3 : QIdem) (h4 : Gen
 theorem convScalarOfLit_of (h1 : RepGamConj) (h2 : RepGamComm) (h3 : QIdem) (h4 : GenericIff)
     (h5 : RankLeOne) (h6 : SchurC) (h7 : TraceRepGam) (h8 : IdemTrace) (h9 : DimPos) :
     ConvScalarOfLit := by
-  exact fun hm => convScalar_of h1 h2 h3 h4 h5 h6 h7 h8 h9 hm
+  exact fun hm => convScalar_of h2 h3 h4 h5 h6 h7 h8 h9 hm
 
 end PI.GGConvScalarW
 end -- clump:auto

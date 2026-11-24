@@ -71,7 +71,7 @@ theorem gi_self (A : AddSubgroup V) : gi A A = 1 := by
   simp [gi]
 
 theorem gi_of_le {A B D : AddSubgroup V} (hA : D ≤ A) (hB : D ≤ B) (hDA : D.relIndex A ≠ 0)
-    (hDB : D.relIndex B ≠ 0) : gi A B = (D.relIndex A : ℝ) / (D.relIndex B : ℝ) := by
+    : gi A B = (D.relIndex A : ℝ) / (D.relIndex B : ℝ) := by
   have e1 : D.relIndex (A ⊓ B) * B.relIndex A = D.relIndex A := by
     have h := AddSubgroup.relIndex_inf_mul_relIndex (H := D) (K := B) (L := A)
     rwa [inf_eq_left.mpr hB, inf_comm] at h
@@ -135,11 +135,11 @@ theorem gi_trans {A B C : AddSubgroup V} (hA : Lat A) (hB : Lat B) (hC : Lat C) 
   have hD : IsOpen ((A ⊓ B ⊓ C : AddSubgroup V) : Set V) := by
     simpa only [AddSubgroup.coe_inf] using (hA.op.inter hB.op).inter hC.op
   rw [gi_of_le (D := A ⊓ B ⊓ C) (inf_le_left.trans inf_le_left) (inf_le_left.trans inf_le_right)
-      (relIndex_ne_zero hD hA.cp) (relIndex_ne_zero hD hB.cp),
+      (relIndex_ne_zero hD hA.cp),
     gi_of_le (D := A ⊓ B ⊓ C) (inf_le_left.trans inf_le_right) inf_le_right
-      (relIndex_ne_zero hD hB.cp) (relIndex_ne_zero hD hC.cp),
+      (relIndex_ne_zero hD hB.cp),
     gi_of_le (D := A ⊓ B ⊓ C) (inf_le_left.trans inf_le_left) inf_le_right
-      (relIndex_ne_zero hD hA.cp) (relIndex_ne_zero hD hC.cp)]
+      (relIndex_ne_zero hD hA.cp)]
   have hb : ((A ⊓ B ⊓ C).relIndex B : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (relIndex_ne_zero hD hB.cp)
   rw [div_mul_div_comm, mul_comm ((A ⊓ B ⊓ C).relIndex B : ℝ), mul_div_mul_right _ _ hb]
 

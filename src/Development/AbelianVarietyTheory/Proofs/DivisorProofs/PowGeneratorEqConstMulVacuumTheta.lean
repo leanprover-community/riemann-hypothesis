@@ -151,7 +151,7 @@ theorem theta_add_int_div {g : ℕ} {τ : Matrix (Fin g) (Fin g) ℂ} (hτ : τ.
   simp [autFactor, ofIntVec_zero, eC_zero]
 
 theorem theta_add_tau_div {g : ℕ} {τ : Matrix (Fin g) (Fin g) ℂ} (hτ : τ.IsSymm) {N : ℕ}
-    (hN : (N : ℂ) ≠ 0) (a : Fin g → ℝ) (z : Fin g → ℂ) (n : Fin g → ℤ) :
+    (a : Fin g → ℝ) (z : Fin g → ℂ) (n : Fin g → ℤ) :
     ∃ u : ℂ, u ≠ 0 ∧ theta a 0 ((N : ℂ) • (z + (N : ℂ)⁻¹ • τ *ᵥ ofIntVec n)) ((N : ℂ) • τ) =
       u * theta (a + fun i => (n i : ℝ) / N) 0 ((N : ℂ) • z) ((N : ℂ) • τ) := by
   have h := thetaRealTransl_holds (Fin g) a 0 (fun i => (n i : ℝ) / N) 0 ((N : ℂ) • z)
@@ -279,7 +279,7 @@ theorem exists_division_point_ne_zero :
         rfl) c₀
     exact (mul_eq_zero.1 this).resolve_left hc₀
   obtain ⟨c, hc⟩ := exists_theta_ne_zero hτ hN (-w)
-  obtain ⟨u, hu, h⟩ := theta_add_tau_div hs hNC (fun i => ((c₀ i : ℕ) : ℝ) / N) (-w)
+  obtain ⟨u, hu, h⟩ := theta_add_tau_div hs (fun i => ((c₀ i : ℕ) : ℝ) / N) (-w)
     (fun i => ((c i : ℕ) : ℤ) - ((c₀ i : ℕ) : ℤ))
   rw [hvan] at h
   have e : ((fun i => ((c₀ i : ℕ) : ℝ) / N) +

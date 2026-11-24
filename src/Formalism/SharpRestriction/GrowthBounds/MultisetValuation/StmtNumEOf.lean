@@ -65,7 +65,7 @@ def nc_zc (X : Formalism.MainNotions.G.Inst D L) (Y : Formalism.MainNotions.G.La
 
 open Classical in
 def nc_Loc (D : Formalism.BasicNotions.D7) (L : SizeData₂ D) (X : Formalism.MainNotions.G.Inst D L) (Y : Formalism.MainNotions.G.LatInst D) (K : Formalism.MainNotions.G.Consts)
-    (_hT : GatTies D) (u : D.what₂.Word) (w : D.what₂.places.Pl)
+    (u : D.what₂.Word) (w : D.what₂.places.Pl)
     (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)) (t0 : Formalism.MainNotions.G.HH D) (j : ℕ) : Prop :=
   let p := D.what₂.places.resChar w
   let v := Y.vOf u w hg t0
@@ -99,7 +99,7 @@ def nc_Need (C₀ : ℝ) : Prop :=
       (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)),
       1 ≤ Real.logb (D.what₂.places.resChar w) (2 * L.sc.a) →
       ∀ t0 ∈ Formalism.MainNotions.G.reps X (D.what₂.places.resChar w), ∀ j ∈ SizeData₂.lifts D,
-        nc_Loc D L X Y K hT u w hg t0 j ∧ nc_De D L X Y K u w hg t0 j ∧
+        nc_Loc D L X Y K u w hg t0 j ∧ nc_De D L X Y K u w hg t0 j ∧
         Formalism.MainNotions.FormalGroupSystem.Pr (Y.Fl u w hg).t (D.gat u w hg).P.r ((D.gat u w hg).P.lam0 (Y.vOf u w hg t0))
           ((Y.Fl u w hg).w (Y.vOf u w hg t0)) j ≤
           Formalism.MainNotions.G.Pr X K (Formalism.MainNotions.G.bL L) (D.what₂.places.resChar w) j t0

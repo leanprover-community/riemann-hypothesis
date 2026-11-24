@@ -480,7 +480,7 @@ theorem eq_zero_of_forall_inM (x : FiniteAdeleRing (𝓞 k) k) (hx : ∀ M : ℕ
     exact mul_le_of_le_one_right' hyv
   exact absurd (lt_of_le_of_lt hle hn) (lt_irrefl _)
 
-theorem inMTop : InMTop := fun k _ _ =>
+theorem inMTop : InMTop := fun _ _ _ =>
   ⟨fun M hM => isOpen_isClosed M hM, fun x hx => eq_zero_of_forall_inM x hx⟩
 
 end GlobalTheory.CompanionTheory.RgEis.InMTopPf

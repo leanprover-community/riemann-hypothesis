@@ -211,8 +211,8 @@ theorem sum_genus (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsF
     intro 𝔭 h𝔭
     rw [← e4 𝔭]
     apply localMassFactor_of_valuation_eq_zero hK hF hs2 hd2 hMfull hMi 𝔭.2
-    rw [← vd_locF hK hF hs2 hd2 hM.1 hMi 𝔭.2, hMA 𝔭 h𝔭,
-      vd_locF hK hF hs2 hd2 hA hAi 𝔭.2, hZ2 𝔭 h𝔭]
+    rw [← vd_locF hF 𝔭.2, hMA 𝔭 h𝔭,
+      vd_locF hF 𝔭.2, hZ2 𝔭 h𝔭]
   rw [e3]
   ring
 

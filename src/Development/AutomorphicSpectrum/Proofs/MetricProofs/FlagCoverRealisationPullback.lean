@@ -334,7 +334,7 @@ theorem norm_pt (CR : CovReal FA Cv) (S' : Sw M' τ a b k₀' ca cb) (hy' : IsAr
       by_cases e' : τ' = τ
       · subst e'
         have hi : i ≠ a := fun e => hk (by rw [e, S'.hk] at hp; exact (Option.some.inj hp).symm)
-        simp only [Function.update_self, minor_transv M'.j_le S'.hb S'.hab S'.hca S'.hcb hi]
+        simp only [Function.update_self, minor_transv M'.j_le S'.hb S'.hca S'.hcb hi]
       · simp only [Function.update_of_ne e']
   have e₀ : fstPt k₀' (joinPt k₀' u₀ u₁) = u₀ := rfl
   have oj : SameOrbit (joinPt k₀' u₀ u₁) z := orbit_trans (join_orbit ou₀ ou₁) oz'

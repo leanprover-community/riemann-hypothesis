@@ -602,7 +602,7 @@ open Classical
 namespace GlobalTheory.CovTop.VolUp.FrameBox
 
 theorem boxCoord_boxVec (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (Ψ : Finset (E →+* ℂ))
-    (d : Ψ → Fin r → ℝ) (z : Fin r) (_hd : ∀ τ a, d τ a = 1 ∨ d τ a = -1) :
+    (d : Ψ → Fin r → ℝ) (z : Fin r) :
     ∀ j k, boxCoord z j (boxVec d z k) = if j = k then 1 else 0 := by
   rintro ⟨τ', ⟨⟨a', b'⟩, hj⟩⟩ ⟨τ, ⟨⟨a, b⟩, hk⟩⟩
   have hjk : ((τ', (⟨(a', b'), hj⟩ : {ab : Fin r × Fin r // ab ≠ (z, z)})) =
@@ -734,7 +734,7 @@ theorem riemLie_frameBox_le : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
     (_root_.GlobalTheory.CovTop.VolUp.FrameBox.mem_comap_realLie_iff_skewCond E r κ p q Ψ G x σ A e hI _).2 (_root_.GlobalTheory.CovTop.VolUp.FrameBox.skewCond_boxVec E r Ψ d z hd k)
   let K := Ψ × {ab : Fin r × Fin r // ab ≠ (z, z)}
   let w : K → W := fun k => ⟨boxVec d z k, hvW k⟩
-  have hdual := _root_.GlobalTheory.CovTop.VolUp.FrameBox.boxCoord_boxVec E r Ψ d z hd
+  have hdual := _root_.GlobalTheory.CovTop.VolUp.FrameBox.boxCoord_boxVec E r Ψ d z
   have hcoord : ∀ (g : K → ℝ) j, boxCoord z j ((∑ k, g k • w k : W) : EuclideanSpace ℂ (Ψ × Fin r × Fin r)) = g j := by
     intro g j
 

@@ -66,7 +66,7 @@ theorem mixAB_of (hW : MixW) (hX : MixX) (hZ : EvZero) (hP : PairEx) (hE : Theta
     have hz := hZ F E σ B n d X W M χX χW om _ _ _ _ hp d₁ X W₁ H' i₀ i₁ M₁ rfl hH' g₁
     obtain ⟨⟨e₀, he₀⟩, -⟩ := hz
     obtain ⟨⟨e₁, he₁⟩, h2⟩ := hX F E σ B n d₁ X W₁ M₁ χX χW om₁ _ _ _ _ hp₁ n₁ X₁ H j₀ j₁ M₀ om₀ _ _ hH hp₀
-    have hc := isEv_comp hψ hp.good g₁ hp₀.good he₀ he₁
+    have hc := isEv_comp hp.good he₀ he₁
       (comp_ne (polX p (skew_det hp₀.skew)) hE hB hp.good g₁ hp₀.good he₀ he₁) (K := isoA H H') (by
         rintro u (h | ⟨z, rfl⟩)
         · exact Or.inl h
@@ -84,7 +84,7 @@ theorem mixAB_of (hW : MixW) (hX : MixX) (hZ : EvZero) (hP : PairEx) (hE : Theta
     obtain ⟨⟨e₀, he₀⟩, h2⟩ := hX F E σ B n d X W M χX χW om _ _ _ _ hp n₁ X₁ H j₀ j₁ M₁ om₁ _ _ hH hp₁
     have hz := hZ F E σ B n₁ d X₁ W M₁ χX χW om₁ _ _ _ _ hp₁ d₁ X₁ W₁ H' i₀ i₁ M₀ rfl hH' hp₀.good
     obtain ⟨⟨e₁, he₁⟩, -⟩ := hz
-    have hc := isEv_comp hψ hp.good g₁ hp₀.good he₀ he₁
+    have hc := isEv_comp hp.good he₀ he₁
       (comp_ne (pol0 (herm_det hp₀.herm) p') hE hB hp.good g₁ hp₀.good he₀ he₁) (K := isoB H H') (by
         rintro u (h | ⟨z, rfl⟩)
         · exact Or.inl h

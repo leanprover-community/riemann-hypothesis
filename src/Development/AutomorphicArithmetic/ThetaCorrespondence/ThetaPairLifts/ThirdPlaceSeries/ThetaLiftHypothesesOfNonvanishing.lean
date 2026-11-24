@@ -748,7 +748,7 @@ noncomputable def hermFormImPullback {g : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ)
     (fun a b w => by simp [hermForm, add_dotProduct])
     (fun c a w => by
       rw [show h (c • a) = (c : ℂ) • h a by rw [← map_smul]; rfl]
-      simp [hermForm, smul_dotProduct, Complex.smul_im])
+      simp [hermForm, smul_dotProduct])
     (fun y a b => by simp [hermForm, Matrix.mulVec_add, dotProduct_add])
     (fun c y a => by
       rw [show h (c • a) = (c : ℂ) • h a by rw [← map_smul]; rfl]

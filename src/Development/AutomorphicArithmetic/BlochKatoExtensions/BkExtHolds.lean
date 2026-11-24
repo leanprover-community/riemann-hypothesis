@@ -164,8 +164,8 @@ end Generic
 
 theorem UpperTheory.Prune.bkExt_holds :
     ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
-    (h9 : Formalism.MainNotions.LocalSituation.adm9 D HW F) (hFont : Formalism.MainNotions.InvariantsGenerators.LitFont D HW F)
-    (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (h : CaseA K LL) (h5 : 5 ≤ l) (e) (he : UnitGen ((HW l).W K 1 LL h.2.2) e),
+    (_ : Formalism.MainNotions.LocalSituation.adm9 D HW F) (_ : Formalism.MainNotions.InvariantsGenerators.LitFont D HW F)
+    (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (h : CaseA K LL) (_ : 5 ≤ l) (e) (_ : UnitGen ((HW l).W K 1 LL h.2.2) e),
     BKExt ((HW l).W K 1 LL h.2.2) e := by
   intro D HW F h9 hFont l _ K LL h h5 e he
   have : FiniteDimensional ℚ_[l] ↥LL.1 := LL.2
@@ -181,7 +181,7 @@ theorem UpperTheory.Prune.bkExt_holds :
   have hH := (GlobalTheory.HerrClass.herr_a D HW F h9 l K 1 LL h.2.2).1
     (fun h2 => absurd (((D.loc l).PD_p K).symm.trans h2) h.2.1)
   exact UpperTheory.Prune.bk_core ((F l).E K 1 LL h.2.2).tie
-    (Formalism.MainNotions.LiftingTheory.lone_HOne0_holds D HW F l K 1 LL h.2.2).1
+    (Formalism.MainNotions.LiftingTheory.lone_HOne0_holds D HW l K 1 LL h.2.2).1
     ((h9 l K 1 LL h.2.2).1 _).2.1 (hFont l K LL h)
     (GlobalTheory.ExtDict.extension_rule D HW F l K LL h)
     (fun T pr h0 => ((hH T).2.1 pr).1 h0) d hd e he.1 he.2.1 he.2.2.1 he.2.2.2

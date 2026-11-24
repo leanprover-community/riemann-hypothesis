@@ -225,7 +225,7 @@ lemma bigx3 (hW : IntegralModel W) {x1 x2 x3 y3 l v : K} (hX1 : 1 < ‖x1‖) (h
 lemma realB {t1 t2 X1 X2 X3 V L : ℝ} (ht1 : 0 < t1) (ht2 : 0 < t2)
     (h1 : t1 ^ 2 * X1 = 1) (h2 : t2 ^ 2 * X2 = 1)
     (hX1 : 1 < X1) (hX2 : 1 < X2) (hX3 : 1 < X3) (hV0 : 0 ≤ V) (hV : V ^ 2 = X1 * X2 * X3)
-    (hL0 : 0 ≤ L) (hL : L ^ 2 ≤ max (max X1 X2) X3) :
+    (hL : L ^ 2 ≤ max (max X1 X2) X3) :
     1 < max t1 t2 * V ∧ L < max t1 t2 * V := by
   set S := max t1 t2
   have hS1 : t1 ≤ S := le_max_left _ _
@@ -292,7 +292,7 @@ lemma sumz (hW : IntegralModel W) {x1 x2 x3 y1 y2 y3 l v : K}
     refine add_le (add_le ?_ ?_) (le_max_right _ _)
     · exact (le_max_left _ _).trans (le_max_left _ _)
     · exact (le_max_right _ _).trans (le_max_left _ _)
-  obtain ⟨hSV, hLSV⟩ := realB ht1 ht2 hq1 hq2 hX1 hX2 hX3 (norm_nonneg _) hV (norm_nonneg _) hL
+  obtain ⟨hSV, hLSV⟩ := realB ht1 ht2 hq1 hq2 hX1 hX2 hX3 (norm_nonneg _) hV hL
   set S := max ‖x1 / y1‖ ‖x2 / y2‖ with hSdef
   have hS0 : 0 < S := lt_max_of_lt_left ht1
   have hS1 : S < 1 := max_lt ht1' ht2'

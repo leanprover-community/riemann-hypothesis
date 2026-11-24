@@ -357,7 +357,7 @@ theorem polChi_stable_second_action (c : ℂ) (W : Mat r s) {g : Pol p q r s} (h
   simp only [LinearMap.sub_apply, LinearMap.smul_apply, Module.End.one_apply] at h1 ⊢
   rw [← Module.End.mul_apply, hc, Module.End.mul_apply, ← map_smul, ← map_sub, h1, map_zero]
 
-theorem harmonic_stable_lowering {c d : Ix r s} (hcd : ¬ sameBlock c d) {g : Pol p q r s} (hg : g ∈ harm1 p q r s) :
+theorem harmonic_stable_lowering {c d : Ix r s} {g : Pol p q r s} (hg : g ∈ harm1 p q r s) :
     PI.FockOneDegW.lowOp (p := p) (q := q) c d g ∈ harm1 p q r s := by
   rw [mem_harm1_iff] at hg ⊢
   intro Z hZ

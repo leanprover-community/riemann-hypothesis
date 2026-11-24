@@ -66,14 +66,14 @@ abbrev ev (p m : ℕ) : PowerSeries R →+* lev R p m := Ideal.Quotient.mk _
 
 variable {R}
 
-theorem hasSubst_om (p : ℕ) (hp : 0 < p) : PowerSeries.HasSubst (((1 + PowerSeries.X : PowerSeries R) ^ p) - 1) := by
+theorem hasSubst_om (p : ℕ) : PowerSeries.HasSubst (((1 + PowerSeries.X : PowerSeries R) ^ p) - 1) := by
   apply PowerSeries.HasSubst.of_constantCoeff_zero
   simp only [map_sub, map_pow, map_add (f := _), map_one]
   erw [PowerSeries.constantCoeff_X]
   simp
 
 def phi (p : ℕ) (hp : 0 < p) : PowerSeries R →ₐ[R] PowerSeries R :=
-  PowerSeries.substAlgHom (hasSubst_om (R := R) p hp)
+  PowerSeries.substAlgHom (hasSubst_om (R := R) p)
 
 def dd (h : PowerSeries R) : PowerSeries R := (1 + PowerSeries.X) * PowerSeries.derivative (R := R) h
 

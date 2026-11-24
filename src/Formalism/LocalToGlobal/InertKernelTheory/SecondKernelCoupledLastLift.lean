@@ -69,7 +69,7 @@ def SecondKernelCoupledLastLift : Prop :=
     (Y : Pend (sysAt Ch std vp unif eO eO_spec dG dG_spec om)) (ι : ℂ →+* Y.Kc) (Rd : _) (Sr : _)
     (lp : (D.chTw u μ).cls (D.R.m - 1) → (sysAt Ch std vp unif eO eO_spec dG dG_spec om).Lt (D.R.m - 1)),
     0 < D.R.m → TiesC Y t u μ KA.cmp ι Rd Sr (D.R.m - 1) lp → HeckeC Y u μ (D.R.m - 1) lp →
-      ExpansionDecomposition D _ Y (D.R.m - 1)
+      ExpansionDecomposition _ Y (D.R.m - 1)
 
 def Adm4NewInst : Prop :=
   ∀ (D : D7) (L : SizeData₂ D) (hT : GatTies D) (Gi : G.Inst D L) (Gl : G.LatInst D) (Kc0 : G.Consts) (Dx : DivX D)
@@ -91,7 +91,7 @@ def HeckeCEntry : Prop :=
     (std : _) (vp : _) (unif : _) (eO : _) (eO_spec : _) (dG : _) (dG_spec : _) (om : _)
     (Y : Pend (sysAt Ch std vp unif eO eO_spec dG dG_spec om))
     (lp : (D.chTw u μ).cls (D.R.m - 1) → (sysAt Ch std vp unif eO eO_spec dG dG_spec om).Lt (D.R.m - 1)),
-    0 < D.R.m → MinkowskiCounting D _ Y → SecC Y u μ KA.cls (D.R.m - 1) lp → TieStabAt (Y := Y) u μ KA.cls (D.R.m - 1) →
+    0 < D.R.m → MinkowskiCounting _ Y → SecC Y u μ KA.cls (D.R.m - 1) lp → TieStabAt (Y := Y) u μ KA.cls (D.R.m - 1) →
       HeckeC Y u μ (D.R.m - 1) lp
 
 def TiesCOfAt : Prop :=

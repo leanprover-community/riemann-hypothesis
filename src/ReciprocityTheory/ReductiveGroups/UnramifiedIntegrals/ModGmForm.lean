@@ -288,7 +288,7 @@ open ModularForm EisensteinSeries ModularFormClass UpperHalfPlane Formalism.L2.T
 
 namespace ReciprocityTheory.ChartRestriction.L1
 
-theorem perm_Tmat_det {m : ℕ} (hm : 0 < m) {t : ℕ × ℕ × ℕ} (ht : t ∈ Tm m) : (Tmat t).det = m := by
+theorem perm_Tmat_det {m : ℕ} {t : ℕ × ℕ × ℕ} (ht : t ∈ Tm m) : (Tmat t).det = m := by
   simp only [Tm, Finset.mem_image, Finset.mem_sigma, Nat.mem_divisors, Finset.mem_range] at ht
   obtain ⟨⟨a, b⟩, ⟨⟨hdvd, _⟩, _⟩, rfl⟩ := ht
   simp only [Tmat, Matrix.det_fin_two_of, mul_zero, sub_zero]
@@ -318,7 +318,7 @@ theorem Gm_smul {m : ℕ} (hm : 0 < m) (γ : SL(2, ℤ)) (τ : ℍ) :
       Tmat t * (γ : Matrix (Fin 2) (Fin 2) ℤ) = (γ' : Matrix (Fin 2) (Fin 2) ℤ) * Tmat t' := by
     intro t ht
     apply hnf_exists hm
-    rw [Matrix.det_mul, perm_Tmat_det hm ht, Matrix.SpecialLinearGroup.det_coe, mul_one]
+    rw [Matrix.det_mul, perm_Tmat_det ht, Matrix.SpecialLinearGroup.det_coe, mul_one]
   choose! g σ hσ hg using hex
   have hinvR : ∀ A : SL(2, ℤ),
       (A : Matrix (Fin 2) (Fin 2) ℤ) * ((A⁻¹ : SL(2, ℤ)) : Matrix (Fin 2) (Fin 2) ℤ) = 1 := by

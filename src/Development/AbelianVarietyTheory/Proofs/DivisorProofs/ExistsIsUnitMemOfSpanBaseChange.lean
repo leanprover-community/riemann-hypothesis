@@ -206,7 +206,7 @@ theorem exists_unit_conj_of_baseChange {k A K : Type} [Field k] [Infinite k] [Ri
 
 theorem charpoly_eq_map_minpoly {F B : Type} [Field F] [Ring B] [Algebra F B] [FiniteDimensional F B]
     {n : ℕ} (e : AlgebraicClosure F ⊗[F] B ≃ₐ[AlgebraicClosure F] Matrix (Fin n) (Fin n) (AlgebraicClosure F))
-    (y : B) (hsep : (minpoly F y).Separable) (hdeg : (minpoly F y).natDegree = n) :
+    (y : B) (hdeg : (minpoly F y).natDegree = n) :
     (e ((1 : AlgebraicClosure F) ⊗ₜ[F] y)).charpoly = (minpoly F y).map (algebraMap F (AlgebraicClosure F)) := by
   set K := AlgebraicClosure F
   set z : K ⊗[F] B := (1 : K) ⊗ₜ[F] y with hz
@@ -248,8 +248,8 @@ theorem exists_unit_conj_of_minpoly_eq (F B : Type) [Field F] [Infinite F] [Ring
   set K := AlgebraicClosure F
   set N₀ := e ((1 : K) ⊗ₜ[F] x₀) with hN₀
   set N := e ((1 : K) ⊗ₜ[F] x) with hN
-  have hc₀ := charpoly_eq_map_minpoly e x₀ hsep hdeg
-  have hc := charpoly_eq_map_minpoly e x (hmin ▸ hsep) (hmin ▸ hdeg)
+  have hc₀ := charpoly_eq_map_minpoly e x₀ hdeg
+  have hc := charpoly_eq_map_minpoly e x (hmin ▸ hdeg)
   rw [hmin] at hc
   have hsepK : (Matrix.toLin' N₀).charpoly.Separable := by
     rw [Matrix.charpoly_toLin', hc₀]; exact hsep.map

@@ -80,8 +80,8 @@ private theorem hEmb_mulVec_wI_apply {A : Type} [CommRing A] {r k : ℕ} (M : Ma
   first
     | simp [Formalism.FourierDecayAlt.S3.hEmb, Formalism.FourierDecayAlt.S3.midEmb, Matrix.mulVec, dotProduct]
 
-theorem key_coord (X : HidaSetting D) (p : TypX X) (θ : TpX X p ≃ₐ[FpX X p] FpX X p × FpX X p)
-    (Q : GL (Idx D.R.rS D.R.k) (FpX X p)) (Bk : Matrix (Fin D.R.k) (Fin D.R.k) (FpX X p))
+theorem key_coord (X : HidaSetting D) (p : TypX X)
+    (Bk : Matrix (Fin D.R.k) (Fin D.R.k) (FpX X p))
     (i j : Fin D.R.k) (c : Idx D.R.rS D.R.k → p.1.adicCompletionIntegers X.B.I.F) :
     ((hEmb D.R.rS Bk *ᵥ (Pi.single (wI i) 1 - ((gOf p : ℕ) : FpX X p) • (fun s => ((c s : p.1.adicCompletionIntegers X.B.I.F) : FpX X p))) -
       (Pi.single (wI i) 1 - ((gOf p : ℕ) : FpX X p) • (fun s => ((c s : p.1.adicCompletionIntegers X.B.I.F) : FpX X p))) :
@@ -151,7 +151,7 @@ theorem coord_wj (hW : WClause X hb u p θ Q) (x : KvH X u p.1) (Bk : Matrix (Fi
   obtain ⟨c, hc⟩ := coords_weight_vector X hb u p θ Q hW i
   refine ⟨c, ?_⟩
   rw [hAv_eq, crd_sub, hYc, hc]
-  exact key_coord X p θ Q Bk i j c
+  exact key_coord X p Bk i j c
 
 theorem fwd_col (hLB : LatBasis X p θ (reindex₂ X p Q))
     (hy1 : ∀ s, ¬ IsW s → ((Q⁻¹ : GL (Idx D.R.rS D.R.k) (FpX X p)) : Matrix (Idx D.R.rS D.R.k) (Idx D.R.rS D.R.k) (FpX X p)) *ᵥ
@@ -232,7 +232,7 @@ theorem bwd_coords (hW : WClause X hb u p θ Q) (x : KvH X u p.1) (Bo : Matrix (
     ⟨∑ j ∈ F, Bo j i * c j s', by push_cast; rfl⟩
   by_cases hs : IsW s
   · obtain ⟨j0, rfl⟩ := hs
-    have h1 := key_coord X p θ Q (Bo.map (algebraMap (Op X p) (FpX X p))) i j0 (c i)
+    have h1 := key_coord X p (Bo.map (algebraMap (Op X p) (FpX X p))) i j0 (c i)
     rw [h1]
     have hG1 : InG X p (((gOf p : ℕ) : FpX X p) *
         (∑ j' : Fin D.R.k, (Bo.map (algebraMap (Op X p) (FpX X p))) j0 j' *

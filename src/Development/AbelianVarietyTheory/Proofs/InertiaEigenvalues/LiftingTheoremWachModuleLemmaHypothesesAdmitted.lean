@@ -113,7 +113,7 @@ theorem mem_of_qp_pow_zero (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) (x :
 end LetterAux
 
 theorem dss_semisimple_of_used : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
-    (Cm : CmpOf D.loc D.locA HW F), Formalism.MainNotions.DeltaInvariantLattices.DeltaInvariantNormBound D HW F Cm → Formalism.MainNotions.LiftingTheory.adm19 D HW F := by
+    (Cm : CmpOf D.loc D.locA HW F), Formalism.MainNotions.DeltaInvariantLattices.DeltaInvariantNormBound D HW F Cm → Formalism.MainNotions.LiftingTheory.adm19 D HW := by
   intro D HW F Cm hN l _ K s LL h
   have h9 : Formalism.MainNotions.DeltaInvariantLattices.P9W ((HW l).W K s LL h) := hN.2.2.2.2.2.2.2.2.1 l K s LL h
   rw [Formalism.MainNotions.UnusedSlot35.DssRec.coreDss_iff_mem _ h9]
@@ -196,13 +196,13 @@ theorem all_admitted : ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW
   intro D HW F Cm
   have hN : Formalism.MainNotions.DeltaInvariantLattices.DeltaInvariantNormBound D HW F Cm := _root_.GlobalTheory.NL.wach_used_clauses D HW F Cm
   obtain ⟨p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, c2, a, b, c, d, l3, -⟩ := hN
-  have hU : HerrComplexNaturality.HerrExtensionUpToUnit D HW F := GlobalTheory.HerrExtUnit.main D HW F
-  have h17 : LiftingTheory.adm17 D HW F := Formalism.MainNotions.UnusedSlot35.extension_clause D HW F ⟨p1, p8, hU⟩
-  have h18 : LiftingTheory.adm18 D HW F := Formalism.MainNotions.UnusedSlot35.extension_invariant_clause D HW F ⟨p1, p8, p9, a, hU⟩
-  have h19 : LiftingTheory.adm19 D HW F := _root_.GlobalTheory.dss_semisimple_of_used D HW F Cm (_root_.GlobalTheory.NL.wach_used_clauses D HW F Cm)
-  have h20 : LiftingTheory.adm20 D HW F := GlobalTheory.T.restriction_corestriction_H1f D HW F
-  have h21 : LiftingTheory.adm21 D HW F := class_map_naturality_of_herr D HW F (GlobalTheory.HerrFull.herr_part_a_every_record D HW F)
-  have h22 : LiftingTheory.adm22 D HW F := fun l _ K LL =>
+  have hU : HerrComplexNaturality.HerrExtensionUpToUnit D HW := GlobalTheory.HerrExtUnit.main D HW F
+  have h17 : LiftingTheory.adm17 D HW := Formalism.MainNotions.UnusedSlot35.extension_clause D HW F ⟨p1, p8, hU⟩
+  have h18 : LiftingTheory.adm18 D HW := Formalism.MainNotions.UnusedSlot35.extension_invariant_clause D HW F ⟨p1, p8, p9, a, hU⟩
+  have h19 : LiftingTheory.adm19 D HW := _root_.GlobalTheory.dss_semisimple_of_used D HW F Cm (_root_.GlobalTheory.NL.wach_used_clauses D HW F Cm)
+  have h20 : LiftingTheory.adm20 D HW := GlobalTheory.T.restriction_corestriction_H1f D HW F
+  have h21 : LiftingTheory.adm21 D HW := class_map_naturality_of_herr D HW F (GlobalTheory.HerrFull.herr_part_a_every_record D HW F)
+  have h22 : LiftingTheory.adm22 D HW := fun l _ K LL =>
     (GlobalTheory.Per.FontaineBound.fontaineLe_of_tied l (D.loc l) (D.locA l) (D.locT l) K LL).1
   have h23 := GlobalTheory.jumps_exact_adm D HW F
   have hA : LiftingTheory.admitted D HW F Cm :=

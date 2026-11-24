@@ -108,8 +108,8 @@ private theorem UpperTheory.Reformulated.B.AdicDensityOfPresentationSubalgebra.e
   exact ⟨coeff 0 f, g, by rw [hg]; ring⟩
 
 theorem UpperTheory.Reformulated.B.AdicDensityOfPresentationSubalgebra.pi_dense :
-    ∀ {O : Type} [inst : CommRing O] [inst_1 : IsLocalRing O] {X : Type} [inst_2 : AddCommGroup X] {R : Type}
-      [inst_3 : CommRing R] [inst_4 : Algebra O R] [inst_5 : UpperTheory.V.Alg.IsCO O R] (W : UpperTheory.V.Alg.WPres O X R),
+    ∀ {O : Type} [CommRing O] [IsLocalRing O] {X : Type} [AddCommGroup X] {R : Type}
+      [CommRing R] [Algebra O R] [UpperTheory.V.Alg.IsCO O R] (W : UpperTheory.V.Alg.WPres O X R),
       (∀ (s : W.σ), W.z s ∈ IsLocalRing.maximalIdeal R) →
         ∀ (N : ℕ) (x : R), ∃ a ∈ W.A, x - a ∈ IsLocalRing.maximalIdeal R ^ N := by
   intro O _ _ X _ R _ _ _ W hz N

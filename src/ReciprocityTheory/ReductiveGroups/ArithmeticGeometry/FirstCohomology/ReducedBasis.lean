@@ -253,7 +253,7 @@ theorem reducedBasis_holds : ReducedBasisStatement := by
   obtain ⟨u, hu⟩ := RB.greedy X v hv hvX
   have huX : ∀ k, u k ∈ X := fun k => (hu k).1
   have huV : ∀ k : Fin (finrank ℝ E), u k ∉ RB.V u k.val := fun k => (hu k).2.1
-  have hli : LinearIndependent ℝ u := RB.indep_of_flag rfl u huV
+  have hli : LinearIndependent ℝ u := RB.indep_of_flag u huV
   have hmono : ∀ k j : Fin (finrank ℝ E), j < k → ‖u j‖ ≤ ‖u k‖ := by
     intro k j hjk
     apply (hu j).2.2.2 (u k) (huX k)
@@ -277,7 +277,7 @@ theorem reducedBasis_holds : ReducedBasisStatement := by
       rintro _ ⟨l, hl, rfl⟩
       exact RB.V_mono u (show l.val + 1 ≤ k.val from hl) (hbV l)
     exact (hb0 k).ne' (RB.phi_V u k (hsub hmem))
-  have hliR : LinearIndependent ℝ b := RB.indep_of_flag rfl b hbnot
+  have hliR : LinearIndependent ℝ b := RB.indep_of_flag b hbnot
   have hliZ : LinearIndependent ℤ b := by
     first
     | exact hliR.restrict_scalars' ℤ

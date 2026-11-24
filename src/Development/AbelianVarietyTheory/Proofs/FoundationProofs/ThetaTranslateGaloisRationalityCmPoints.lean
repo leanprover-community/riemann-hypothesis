@@ -863,7 +863,7 @@ open scoped BigOperators
 
 namespace GlobalTheory.GalTheta
 
-theorem weilElement_smul_mem_thetaLattice (D : D7) (hG : admG1 D) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) {N N' : ℕ}
+theorem weilElement_smul_mem_thetaLattice (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) {N N' : ℕ}
     (L : Submodule (𝓞 D.host.E) (Fin N → D.host.E)) (L' : Submodule (𝓞 D.host.E) (Fin N' → D.host.E)) :
     ∀ x ∈ La D (tor0 D cc δ) L L', w0 D • x ∈ La D (tor0 D cc δ) L L' := by
   obtain ⟨a, ha⟩ := GlobalTheory.NormSum.exists_integer_map_eq_w0 D
@@ -909,7 +909,7 @@ theorem exists_restriction (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (hc 
     rw [pad_zero] at this
     exact ht0 this
   obtain ⟨P, hPt, hP, hP0⟩ := _root_.GlobalTheory.GalTheta.exists_theta_of_level D (tor0 D cc δ) N N' _ hfg hint hdual hq
-    (_root_.GlobalTheory.GalTheta.al_add D _ N N' _ hint hq (weilElement_smul_mem_thetaLattice D hG cc δ L L'))
+    (_root_.GlobalTheory.GalTheta.al_add D _ N N' _ hint hq (weilElement_smul_mem_thetaLattice D cc δ L L'))
     (fun z : VC D N N' => U D (tor0 D cc δ) t S (pad D m z))
     ((differentiable_U D _ t hS).comp (differentiable_pad D m)) hF0 (4 * R) (by omega) (by
       intro x hx

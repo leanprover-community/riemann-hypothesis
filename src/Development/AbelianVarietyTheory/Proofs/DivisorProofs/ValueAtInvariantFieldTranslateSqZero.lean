@@ -135,7 +135,7 @@ theorem evalPt_tvE_mul : ∀ {R : Type} [CommRing R] {G : Over (Sp R)} [GrpObj G
         rw [Category.comp_id, ← Spec.map_comp, ← CommRingCat.ofHom_comp]
         congr 2
         refine RingHom.ext fun a => ?_
-        simp [GlobalTheory.SqZero.epsTo, GlobalTheory.SqZero.dualTo_apply, TrivSqZeroExt.algebraMap_eq_inl, hφ])
+        simp [GlobalTheory.SqZero.epsTo, hφ])
     have e1 : Chart.spMap (GlobalTheory.SqZero.epsTo R (0 : B) (mul_zero 0)) ≫ tvE u =
         K ≫ smT (𝟙 (Sp R)) 0 (tv u) := by
       apply Over.OverMorphism.ext

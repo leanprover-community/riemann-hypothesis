@@ -1759,7 +1759,7 @@ open scoped Classical
 
 attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
-theorem norm_representative_move (D : Formalism.BasicNotions.D7) (u u' : D.what₂.Word) (hS : Formalism.L2.SG.TermDef.TermStable D u u') (hE : Formalism.L2.SG.TermDef.TermEqIff D u u') (hF : Formalism.L2.SG.TermDef.TermFun D u u') (hP : Formalism.MainNotions.S.Lat.PrimeHyp D u (Formalism.MainNotions.S.Lat.Tu D u')) (hsig : (Formalism.MainNotions.S.VS D).SigOK) : PI.NormRepChange.NormRepMove D u u' :=
+theorem norm_representative_move (D : Formalism.BasicNotions.D7) (u u' : D.what₂.Word) (hE : Formalism.L2.SG.TermDef.TermEqIff D u u') : PI.NormRepChange.NormRepMove D u u' :=
   PI.NRCW.normRepMove_of_steps D u u' hE (PI.NRCW.stepExp D) (PI.NRCW.stepGram D) (PI.NRCW.stepGlob D)
     (PI.NRCW.stepLoc D) (PI.NRCW.stepTr D)
 end -- clump:auto
@@ -1798,8 +1798,7 @@ theorem cutAt_of_deep {D : Formalism.BasicNotions.D7} {M : ∀ p : PlF D, Loc.Mo
     fun Λ hΛ Z => ZsVolFin.finR D u u' F0 what₂ hrows Z Λ hΛ
   have hN : PairVal.NormRepExists D u u' F0 what₂ := PCount.normRepExists_ctx ⟨hc, hrows, hP⟩
   have hM : Formalism.L2.SG.Pf.NormRepMove D u u' :=
-    norm_representative_move D u u' (_root_.PI.TCS.termStable_holds D u u') (_root_.term_eq_iff_relation D u u')
-      (_root_.term_function_const D u u') hP hsig
+    norm_representative_move D u u' (_root_.term_eq_iff_relation D u u')
   exact cutAt_of_leaves hA hc hP hrows hN hM (local_phase_typed_places hA) (ZsVolAsm.volIdxProd_of_prodE M δ u u' F0 what₂ hP
       (ProdE.prodE_CZ_of_approxC M δ u u' F0 what₂ (ProdEApprox.approxC M δ u u' F0 what₂) hst))
     (fun _ => PCountEx.exist_holds hA u u')

@@ -176,7 +176,7 @@ variable {P : ArithVariety n} {a : ι → ℤ}
 end IntegralSection
 
 theorem aeval_div_chart_mem {Ω : Type*} [Field Ω] (y : Coord n → Ω) (c : (k : ι) → Fin (n k + 1))
-    (hc : ∀ k, y ⟨k, c k⟩ ≠ 0) (e : MvPolynomial (Coord n) ℤ) (δ : ι → ℕ)
+    (e : MvPolynomial (Coord n) ℤ) (δ : ι → ℕ)
     (he : IsWeightedHomogeneous (coordDeg n) e δ) :
     aeval y e * ∏ k, (y ⟨k, c k⟩ ^ δ k)⁻¹ ∈ Geo.chartRingZ (ι := blockIdx n) y c := by
   classical
@@ -226,7 +226,7 @@ theorem IntegralSection.value_mem_chartLat {P : ArithVariety n} {a : ι → ℤ}
     rw [hpow, ← mul_assoc, div_mul_eq_mul_div, ← hrel, mul_comm (aeval y s.den), mul_div_assoc,
       div_self hG, mul_one]
   rw [hval]
-  exact aeval_div_chart_mem y c hc e δ he
+  exact aeval_div_chart_mem y c e δ he
 
 def orbitIdeal (x : Cone n (AlgebraicClosure ℚ)) : Ideal (MvPolynomial (Coord n) ℤ) :=
   Geo.mCoordIdeal (ι := blockIdx n) (flatCone x)

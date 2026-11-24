@@ -63,7 +63,7 @@ namespace GlobalTheory.MumLevel
 
 theorem exists_galois_root (K K' : Type) [Field K] [CharZero K] [Field K'] [Algebra K K'] [FiniteDimensional K K']
     (m : ℕ) (hm : 1 ≤ m) :
-    ∃ (E : Type) (_ : Field E) (_ : Algebra K E) (_ : FiniteDimensional K E) (_ : IsGalois K E) (j : K' →ₐ[K] E) (ζ : E),
+    ∃ (E : Type) (_ : Field E) (_ : Algebra K E) (_ : FiniteDimensional K E) (_ : IsGalois K E) (_ : K' →ₐ[K] E) (ζ : E),
       IsPrimitiveRoot ζ m := by
   let Ω := AlgebraicClosure K'
   haveI : CharZero K' := (algebraMap K K').charZero_iff (algebraMap K K').injective |>.1 inferInstance

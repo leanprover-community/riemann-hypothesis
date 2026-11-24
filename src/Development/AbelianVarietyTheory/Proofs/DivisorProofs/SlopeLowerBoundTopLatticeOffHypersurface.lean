@@ -1192,7 +1192,7 @@ theorem norm_eval_le {B N : ℕ} {a : Fin B → ℕ} {A : Matrix (Fin N) (Fin N)
   set e : Fin N → ℂ := A.mulVec (Pi.single ⟨0, hN⟩ 1) with he'
   have he : frameNorm A e = 1 := by
     rw [he', GlobalTheory.MaxPoint.frameNorm_mulVec hA]
-    rw [Finset.sum_eq_single (⟨0, hN⟩ : Fin N) (fun j _ hj => by simp [Pi.single_apply, hj]) (by simp)]
+    rw [Finset.sum_eq_single (⟨0, hN⟩ : Fin N) (fun j _ hj => by simp [hj]) (by simp)]
     simp
   let p : Fin B × Fin N → ℂ := fun q => if r q.1 = 0 then e q.2 else ((r q.1)⁻¹ : ℂ) * u q
   have hp : ∀ i, frameNorm A (fun j => p (i, j)) = 1 := fun i => by

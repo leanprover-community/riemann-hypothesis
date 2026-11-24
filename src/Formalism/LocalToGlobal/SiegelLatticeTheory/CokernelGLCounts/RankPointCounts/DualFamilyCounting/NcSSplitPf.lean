@@ -897,7 +897,7 @@ private theorem exists_common_complement_of_finrank_eq {V : Type*} [AddCommGroup
     omega
 
 theorem fix_tuple {V : Type*} [AddCommGroup V] [Module K V] [FiniteDimensional K V] {a : ℕ}
-    (x : Fin a → V) (hx : LinearIndependent K x) (φ ψ : Fin a → Module.Dual K V)
+    (x : Fin a → V) (φ ψ : Fin a → Module.Dual K V)
     (hφ : LinearIndependent K φ) (hψ : LinearIndependent K ψ) (h : ∀ i j, φ i (x j) = ψ i (x j)) :
     ∃ B : V ≃ₗ[K] V, (∀ j, B (x j) = x j) ∧ ∀ i v, ψ i (B v) = φ i v := by
   let Φ : V →ₗ[K] (Fin a → K) := LinearMap.pi φ
@@ -971,7 +971,7 @@ theorem glPair {V : Type*} [AddCommGroup V] [Module K V] [FiniteDimensional K V]
     have hgv := LinearMap.congr_fun hg (A0.symm v)
     first
     | simpa using hgv
-  obtain ⟨B, hB1, hB2⟩ := fix_tuple x hx ξ
+  obtain ⟨B, hB1, hB2⟩ := fix_tuple x ξ
     (fun i => (η i).comp A0.toLinearMap) hξ hψ' (fun i j => by
       show ξ i (x j) = η i (A0 (x j))
       rw [hA0 j, h i j])

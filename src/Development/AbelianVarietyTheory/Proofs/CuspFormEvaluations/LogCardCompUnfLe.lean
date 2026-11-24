@@ -228,7 +228,7 @@ theorem card_nonisometric_data_le : GlobalTheory.Published.HasseNormSt → ∀ (
   choose φ hφ using hex
   obtain ⟨S, -, hS, hcard, -⟩ := GlobalTheory.exists_finset_selfDual_classes_herm G hM0.2.2.1
   have hcl := fun i => by
-    have h := GlobalTheory.HermModel.rank_integral_selfDual E H (Di i) r ξ G (φ i) hξ (hφ i)
+    have h := GlobalTheory.HermModel.rank_integral_selfDual E H (Di i) r ξ G (φ i) (hφ i)
     have hsd := selfDual_divLat hfg h0 ξ hA G (M := LinearMap.range (φ i)) fun v => by
       rw [← h.2.2.2 v]
       exact ⟨fun h y => h _ ⟨y, rfl⟩, by rintro h _ ⟨y, rfl⟩; exact h y⟩

@@ -109,7 +109,7 @@ theorem mem_of_sec_eq (C : Ctx W) (A : ArcP n) (hA : A.OK) (c' : ZMod n) (hc' : 
   have hw := piLam_of_sec W C.hR C.hsatP C.hCA T hT.1 A c' e _ b sol hb.1 _ hwP _ r3 (fun m => inFr_zero W)
   have hwN := inN_of_piLam W C.hR.1 T A c' e
     (Formalism.MainNotions.UnusedSlot80.ArcC.arc_up W C.hs C.hR C.h5 A hA c' hc' e T hT) _ hw
-  have hzN' := inFNc_smul C.hR.1 T _ (lA_mem W (k' + (k' + k))) hzN
+  have hzN' := inFNc_smul T _ (lA_mem W (k' + (k' + k))) hzN
   have hxN := inFNc_add T _ hwN hzN'
   rw [sub_add_cancel] at hxN
   exact Formalism.MainNotions.UnusedSlot80.ArcC.arc_sat W C.hCA C.hsat C.hR T hT.1 A c' e

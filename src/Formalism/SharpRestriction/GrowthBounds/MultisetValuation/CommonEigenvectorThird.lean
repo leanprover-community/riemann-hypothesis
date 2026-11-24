@@ -929,7 +929,7 @@ private theorem cg_trans' {ι F : Type} [Field F] (R : Subring F) (pp : F)
   obtain ⟨Y', hY', rfl⟩ := h'
   exact ⟨Y' + Y, intR_add' R hY' hY, by ring⟩
 
-private theorem cg_mul' {ι F : Type} [Field F] (R : Subring F) (pp : F) (hpp : pp ∈ R)
+private theorem cg_mul' {ι F : Type} [Field F] (R : Subring F) (pp : F)
     {f g f' g' : MvPowerSeries ι F} (h : Cg R pp f g) (h' : Cg R pp f' g')
     (hg : IntR R g) (hf' : IntR R f') : Cg R pp (f * f') (g * g') := by
   obtain ⟨Y, hY, rfl⟩ := h
@@ -944,7 +944,7 @@ private theorem cg_pow' {ι F : Type} [Field F] (R : Subring F) (pp : F) (hpp : 
   | zero => exact cg_of_eq' R pp (by rw [pow_zero, pow_zero])
   | succ k ih =>
     rw [pow_succ, pow_succ]
-    exact cg_mul' R pp hpp ih h (intR_pow R hg k) hf
+    exact cg_mul' R pp ih h (intR_pow R hg k) hf
 
 private theorem cg_sum' {ι F α : Type} [Field F] (R : Subring F) (pp : F) (s : Finset α)
     {f g : α → MvPowerSeries ι F} (h : ∀ i, Cg R pp (f i) (g i)) :
@@ -1020,7 +1020,7 @@ theorem restTwoSums_of (hT1 : MuAltH p) (hT2 : DualH p)
     have hF1 := th_frob_lin vp hFS hW (B.om r) (Pod n) (fun t => t.val) (fun t => sSer p L t a b)
       (fun t => hsI t a b)
     have hZB := cg_trans' _ _ hZp hF1
-    have hXZ := cg_mul' _ _ hpR (hX r a b) hZB
+    have hXZ := cg_mul' _ _ (hX r a b) hZB
       (hLin0 (B.omS r) (Pev n) (fun t => t.val) a b) (intR_pow _ hZi p)
     exact cg_C_mul' _ _ hc0 hXZ
   have hT2' : ∀ (r : Fin (n / 2)) (a : Fin r0) (b : Fin r1),
@@ -1037,7 +1037,7 @@ theorem restTwoSums_of (hT1 : MuAltH p) (hT2 : DualH p)
     have hF2 := th_frob_lin vp hFS hW (B.omS r) (Pev n) (fun t => t.val) (fun t => sSer p L t a b)
       (fun t => hsI t a b)
     have hXA := cg_trans' _ _ hXp hF2
-    have hZX := cg_mul' _ _ hpR (hZ r a b) hXA
+    have hZX := cg_mul' _ _ (hZ r a b) hXA
       (hLin0 (B.om r) (Pod n) (fun t => t.val) a b) (intR_pow _ hXi p)
     exact cg_C_mul' _ _ hc1 hZX
   have hAll := cg_sum' _ _ (Finset.univ : Finset (Eidx n r0 r1))
@@ -1139,8 +1139,8 @@ variable (p : ℕ) [hp : Fact p.Prime]
 theorem restTwoSums : TwoSumsCondition p :=
   restTwoSums_of (p := p)
     (fun K' _ _ vp hvp μ h0 h1 n => sx_mu_alt (p := p) (K' := K') vp hvp μ h0 h1 n)
-    (fun n' B hev a b hab => sx_dual (p := p) B hev a b hab)
-    (fun n' r0 r1 K' _ R s x hx => sx_frob_sum (p := p) R s x hx)
+    (fun _ B hev a b hab => sx_dual (p := p) B hev a b hab)
+    (fun _ _ _ _ _ R s x hx => sx_frob_sum (p := p) R s x hx)
     (fun a => frobenius_congruence_witt (p := p) a)
 
 theorem restGc : RestGc p :=

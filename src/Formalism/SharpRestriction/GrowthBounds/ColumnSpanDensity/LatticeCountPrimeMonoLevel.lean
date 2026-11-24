@@ -112,7 +112,7 @@ theorem RhoL_mono {t t' c : ℕ} {D D' X X' : ℝ} (ht : t ≤ t') (hD : D ≤ D
 theorem RhoL_zero (t c : ℕ) (D : ℝ) {X : ℝ} (hX : X ≤ 0) : RhoL R lam0 t c D X := by
   exact fun e _ => ⟨0, by simpa using hX, Or.inl rfl⟩
 
-theorem normalized_group_order_nonneg (R : RS p n') (k : ℕ) : 0 ≤ gaussianNumber (p ^ n') k := by
+theorem normalized_group_order_nonneg (k : ℕ) : 0 ≤ gaussianNumber (p ^ n') k := by
   unfold gaussianNumber
   generalize p ^ n' = q
   rcases Nat.eq_zero_or_pos q with rfl | hq
@@ -122,7 +122,7 @@ theorem normalized_group_order_nonneg (R : RS p n') (k : ℕ) : 0 ≤ gaussianNu
 
 theorem dL_nonneg : 0 ≤ dL R lam0 := by
   unfold dL
-  exact div_nonneg (Nat.cast_nonneg _) (normalized_group_order_nonneg R _)
+  exact div_nonneg (Nat.cast_nonneg _) (normalized_group_order_nonneg _)
 
 theorem rho_inf_mem (t c : ℕ) (D : ℝ) :
     RhoL R lam0 t c D ((1 - sInf {κ : ℝ | 0 ≤ κ ∧ RhoL R lam0 t c D ((1 - κ) * dL R lam0)}) * dL R lam0) := by

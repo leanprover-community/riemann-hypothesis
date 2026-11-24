@@ -104,7 +104,7 @@ def colHom : (Fin n → K) →+ Matrix (Fin n) (Fin 1) K where
   map_add' _ _ := rfl
 
 theorem colHom_injective : Function.Injective (colHom (K := K) (n := n)) :=
-  fun x y h => funext fun i => congrFun (congrFun h i) 0
+  fun _ _ h => funext fun i => congrFun (congrFun h i) 0
 
 @[simp] theorem colHom_apply (y : Fin n → K) (i : Fin n) (j : Fin 1) : colHom y i j = y i := rfl
 

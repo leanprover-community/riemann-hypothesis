@@ -717,7 +717,7 @@ namespace GlobalTheory.HcIrr
 open Formalism.IrreducibleCountingLemmas.TYPES Formalism.L2.DIV Polynomial CategoryTheory
 
 theorem isIrrRep_of_equiv {G V V' : Type} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup V'] [Module ℂ V']
-    (ρ : Representation ℂ G V) (ρ' : Representation ℂ G V') (A : G → G) (hA : Function.Surjective A)
+    (ρ : Representation ℂ G V) (ρ' : Representation ℂ G V') (A : G → G)
     (Ψ : V ≃ₗ[ℂ] V') (h : ∀ g v, Ψ (ρ (A g) v) = ρ' g (Ψ v)) (hirr : IsIrrRep ρ') : IsIrrRep ρ := by
   obtain ⟨hn, hW⟩ := hirr
   refine ⟨Ψ.toEquiv.nontrivial, fun W hinv => ?_⟩
@@ -759,7 +759,7 @@ theorem isIrrRep_hcRep_of_parInd (b : Fin r → Fin s) (lam : ∀ c : Fin s, FDR
       map_smul' := fun _ _ => rfl
       left_inv := fun _ => rfl
       right_inv := fun _ => rfl }
-  exact isIrrRep_of_equiv (hcRep K b lam) _ id Function.surjective_id L (fun _ _ => rfl)
+  exact isIrrRep_of_equiv (hcRep K b lam) _ id L (fun _ _ => rfl)
     (isIrrRep_of_isIrreducible _ h)
 
 theorem exists_sorted {C : LabelConv K} (O : LabelMap K C) (b : Fin r → Fin s)
@@ -824,7 +824,7 @@ theorem exists_sorted {C : LabelConv K} (O : LabelMap K C) (b : Fin r → Fin s)
   refine ⟨b', lam', hb.comp e.symm.surjective, ?_, fun c => ⟨Formalism.L2.PT.simple_transp _ (hl c).1,
     Formalism.L2.PT.isCuspidal_transp _ (hl c).2⟩, fun c => GlobalTheory.SerOSys.TranspLabel.labO_transp O (ec c) (lam c), ?_⟩
   · exact Tuple.monotone_sort b
-  · refine isIrrRep_of_equiv _ _ A A.surjective Ψ fun g F => ?_
+  · refine isIrrRep_of_equiv _ _ A Ψ fun g F => ?_
     apply Subtype.ext
     funext x
     show F.1 (A x * A g) = F.1 (A (x * g))

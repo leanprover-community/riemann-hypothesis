@@ -50,7 +50,7 @@ open scoped TensorProduct
 attribute [local instance 100] LieRing.ofAssociativeRing
 
 private theorem cont_setIntegral {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y] [MeasurableSpace Y]
-    (μ : Measure Y) (f : X → Y → ℂ) (hf : Continuous f.uncurry) {s C : Set Y} (hs : MeasurableSet s)
+    (μ : Measure Y) (f : X → Y → ℂ) (hf : Continuous f.uncurry) {s C : Set Y}
     (hC : IsCompact C) (hsC : s ⊆ C) (hμ : μ s < ⊤) (hi : ∀ x, IntegrableOn (f x) s μ) :
     Continuous fun x => ∫ y in s, f x y ∂μ := by
   refine continuous_iff_continuousAt.2 fun x₀ => Metric.tendsto_nhds.2 fun ε hε => ?_
@@ -77,5 +77,5 @@ theorem UpperTheory.continuous_constantTerm :
   obtain ⟨C, hC, hDC⟩ := exists_isCompact_superset_unipFundamentalDomain (K := K) (n := n) (r := r)
   exact cont_setIntegral (unipMeasure K n r) (fun g X => φ (unipGL X * g))
     (hφ.comp ((continuous_unipGL.comp continuous_snd).mul continuous_fst))
-    measurableSet_unipFundamentalDomain hC hDC ((measure_mono hDC).trans_lt hC.measure_lt_top)
+    hC hDC ((measure_mono hDC).trans_lt hC.measure_lt_top)
     (fun g => integrableOn_constantTerm hφ g)

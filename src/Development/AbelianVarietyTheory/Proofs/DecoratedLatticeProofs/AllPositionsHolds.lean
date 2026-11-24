@@ -248,8 +248,8 @@ theorem shape_inr {M : Matrix (n ⊕ Fin c) (n ⊕ Fin c) k}
     · rw [hij]
     exfalso
     rcases lt_or_gt_of_ne (Fin.val_ne_of_ne hij) with h | h
-    · exact hs (h1 (by simp only [Sum.elim_inl, Sum.elim_inr]; omega))
-    · exact hs (h2 (by simp only [lev, Sum.elim_inl, Sum.elim_inr, OrderDual.toDual_lt_toDual]; omega))
+    · exact hs (h1 (by simp only [Sum.elim_inr]; omega))
+    · exact hs (h2 (by simp only [lev, Sum.elim_inr, OrderDual.toDual_lt_toDual]; omega))
 
 theorem shape_inl {M : Matrix (n ⊕ Fin c) (n ⊕ Fin c) k} (hp : 1 ≤ p)
     (h1 : M.BlockTriangular (Sum.elim (fun _ : n => 2 * p - 1) (fun i : Fin c => 2 * (i.val + 1))))
@@ -937,7 +937,7 @@ open MeasureTheory Classical
 
 namespace GlobalTheory.BlockFubini
 
-theorem integral_block_indicator (k : Type) [MeasurableSpace k] [Zero k] (ν : Measure k) [SigmaFinite ν] (I : Type) [Fintype I] (P Q R : I → Prop) [DecidablePred P] [DecidablePred Q] [DecidablePred R] (hR : ∀ i, R i ↔ P i ∧ ¬ Q i) (hQ : ∀ i, Q i → P i) (s : Set k) (hs : MeasurableSet s) (_hν : ν s ≠ ⊤) (G : (I → k) → ℂ) (hG : ∀ m : I → k, G m = (if ∀ i, Q i → m i ∈ s then (1 : ℂ) else 0) * G (fun i => if Q i then 0 else m i)) : ∫ e : {i // P i} → k, G (fun i => if h : P i then e ⟨i, h⟩ else 0) ∂(Measure.pi fun _ => ν) = (((ν s).toReal ^ Fintype.card {i // Q i} : ℝ) : ℂ) * ∫ e : {i // R i} → k, G (fun i => if h : R i then e ⟨i, h⟩ else 0) ∂(Measure.pi fun _ => ν) := by
+theorem integral_block_indicator (k : Type) [MeasurableSpace k] [Zero k] (ν : Measure k) [SigmaFinite ν] (I : Type) [Fintype I] (P Q R : I → Prop) [DecidablePred P] [DecidablePred Q] [DecidablePred R] (hR : ∀ i, R i ↔ P i ∧ ¬ Q i) (hQ : ∀ i, Q i → P i) (s : Set k) (hs : MeasurableSet s) (G : (I → k) → ℂ) (hG : ∀ m : I → k, G m = (if ∀ i, Q i → m i ∈ s then (1 : ℂ) else 0) * G (fun i => if Q i then 0 else m i)) : ∫ e : {i // P i} → k, G (fun i => if h : P i then e ⟨i, h⟩ else 0) ∂(Measure.pi fun _ => ν) = (((ν s).toReal ^ Fintype.card {i // Q i} : ℝ) : ℂ) * ∫ e : {i // R i} → k, G (fun i => if h : R i then e ⟨i, h⟩ else 0) ∂(Measure.pi fun _ => ν) := by
   let σ : {i // Q i} ⊕ {i // R i} ≃ {i // P i} :=
     { toFun := Sum.elim (fun a => ⟨a.1, hQ _ a.2⟩) (fun a => ⟨a.1, ((hR _).1 a.2).1⟩)
       invFun := fun a => if h : Q a.1 then Sum.inl ⟨a.1, h⟩ else Sum.inr ⟨a.1, (hR _).2 ⟨a.2, h⟩⟩
@@ -1435,10 +1435,10 @@ theorem opE_step (ν : Measure k) (hν : IsUnitVol ν) {s κ : ℕ} (S : SymData
     · rw [ite_eq_right (fun h => hc (hiff.1 h)), ite_eq_right hc, zero_mul, zero_mul]
   have e2 : ∀ x₀, opE S.ψ ν (q.val + 2) Φ x₀ = (((ν sA).toReal ^ Fintype.card {i // A i} : ℝ) : ℂ) *
       ∫ e : {i // R i} → k, G x₀ (fun i => if h : R i then e ⟨i, h⟩ else 0) ∂(Measure.pi fun _ => ν) :=
-    fun x₀ => _root_.GlobalTheory.BlockFubini.integral_block_indicator k ν I (Free (q.val + 2)) A R hR2 hA sA mA fA (G x₀) (gA x₀)
+    fun x₀ => _root_.GlobalTheory.BlockFubini.integral_block_indicator k ν I (Free (q.val + 2)) A R hR2 hA sA mA (G x₀) (gA x₀)
   have e1 : ∀ x₀, opE S.ψ ν (q.val + 1) Φ x₀ = (((ν sB).toReal ^ Fintype.card {i // B i} : ℝ) : ℂ) *
       ∫ e : {i // R i} → k, G x₀ (fun i => if h : R i then e ⟨i, h⟩ else 0) ∂(Measure.pi fun _ => ν) :=
-    fun x₀ => _root_.GlobalTheory.BlockFubini.integral_block_indicator k ν I (Free (q.val + 1)) B R hR1 hB sB mB fB (G x₀) (gB x₀)
+    fun x₀ => _root_.GlobalTheory.BlockFubini.integral_block_indicator k ν I (Free (q.val + 1)) B R hR1 hB sB mB (G x₀) (gB x₀)
   have tA : 0 < (ν sA).toReal := ENNReal.toReal_pos pA.ne' fA
   have tB : 0 < (ν sB).toReal := ENNReal.toReal_pos pB.ne' fB
   refine ⟨(ν sA).toReal ^ Fintype.card {i // A i} / (ν sB).toReal ^ Fintype.card {i // B i},

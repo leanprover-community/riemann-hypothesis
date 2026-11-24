@@ -1107,7 +1107,7 @@ namespace UpperTheory.Gal.Int.Cong
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {a : ℕ}
 
-theorem exists_locLev {U : Submodule ℂ (UA E a → ℂ)} (hU : IsAutRepU U) (w₀ : HeightOneSpectrum (𝓞 E)) :
+theorem exists_locLev {U : Submodule ℂ (UA E a → ℂ)} (hU : IsAutRepU U) :
     ∃ H : HeightOneSpectrum (𝓞 E) → Subgroup (UA E a), (∀ w, H w ≤ intU a w) ∧
       (∀ w, IsOpen (((H w).subgroupOf (locU a w)) : Set (locU a w))) ∧ (∀ w u, ¬ Apart w u → H w = H u) ∧
       (∀ w, ∃ φ ∈ U, φ ≠ 0 ∧ ∀ x ∈ H w, RU E a x φ = φ) ∧
@@ -1179,7 +1179,7 @@ theorem exists_level {T : Finset (HeightOneSpectrum (𝓞 E))} {U : Submodule �
       (∀ w, ¬ IsSplitAt w → w ∉ T → ∀ x ∈ locU a w, cLoc w x ∈ GlobalTheory.LFun.KGL w (n := a) → x ∈ K) ∧
       ∀ w, IsSplitAt w → Apart w w₀ → ∀ x ∈ locU a w, x ∈ K ↔ cLoc w x ∈ Kw w := by
   classical
-  obtain ⟨H, hleI, hopen, hfib, hfix, hint, hae⟩ := exists_locLev hU.1 w₀
+  obtain ⟨H, hleI, hopen, hfib, hfix, hint, hae⟩ := exists_locLev hU.1
   have hle : ∀ w, H w ≤ locU a w := fun w => (hleI w).trans (intU_le_locU w)
   have hcpt : ∀ w, IsCompact (H w : Set (UA E a)) := fun w => isCompact_of_le (hleI w) (hopen w) (_root_.GlobalTheory.Cong.AdaptLev.intU_isCompact_isOpen E a w).1
   obtain ⟨φ, hφU, hφ0, hφH⟩ := _root_.GlobalTheory.Cong.FixProd.fix_prod E a U hU.1 w₀ H hle hfib hcpt

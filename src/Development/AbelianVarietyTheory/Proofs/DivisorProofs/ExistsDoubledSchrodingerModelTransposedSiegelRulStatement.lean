@@ -423,7 +423,7 @@ theorem siegel_of_diag (T : HSp D) (h : GA D (dblSp T))
 
 theorem ruleFac_absE {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E)
     (χ : (AF F ⊗[F] E)ˣ →* Circle) (n : ℕ) {ρ : ℕ} (t : GL (Fin ρ) (AF F ⊗[F] E)) :
-    GlobalTheory.DiagSiegel.ruleFac (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA σ) (GlobalTheory.WeilM.adeleClass F) χ n t =
+    GlobalTheory.DiagSiegel.ruleFac (GlobalTheory.WeilM.adeleClass F) χ n t =
       ((χ (Matrix.GeneralLinearGroup.det t) : Circle) : ℂ) *
         ((((absE F E (Matrix.GeneralLinearGroup.det t) : NNReal) : ℝ) ^ ((n : ℝ) / 2) : ℝ) : ℂ) := by
   rw [← GlobalTheory.ModuAdele.modu_norm_eq_absE]
@@ -432,7 +432,7 @@ theorem ruleFac_absE {F E : Type} [Field F] [NumberField F] [Field E] [NumberFie
 theorem ruleFac_eq (χ : (AE D)ˣ →* Circle) (n : ℕ) {ρ : ℕ} (a : GL (Fin ρ) (AE D)) (t : GL (Fin ρ) (AF D.host.F ⊗[D.host.F] D.host.E))
     (h : Matrix.GeneralLinearGroup.det a = Matrix.GeneralLinearGroup.det t) :
     ((χ (Matrix.GeneralLinearGroup.det a) : Circle) : ℂ) * (GlobalTheory.IndefiniteRowSideFullHecke.SkewGramHalfModule.halfMod n a : ℂ) =
-      GlobalTheory.DiagSiegel.ruleFac (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA D.sp.cm.sig) (GlobalTheory.WeilM.adeleClass D.host.F) χ
+      GlobalTheory.DiagSiegel.ruleFac (GlobalTheory.WeilM.adeleClass D.host.F) χ
         (Fintype.card (Fin n)) t := by
   rw [GlobalTheory.IndefiniteRowSideFullHecke.SkewGramHalfModule.halfMod, h, Fintype.card_fin]
   exact (ruleFac_absE D.sp.cm.sig χ n t).symm
@@ -444,7 +444,7 @@ theorem mixT_law (hP : GlobalTheory.Published.WeilRepresentationUnitaryPair) (ψ
     (h : GA D (dblSp T)) (hs : h ∈ siegel T) (t : GL (Fin T.rank) (AF D.host.F ⊗[D.host.F] D.host.E))
     (ht : aP T ⟨h, hs⟩ = Matrix.GeneralLinearGroup.det t) :
     (dblDec T).mixT S ψ μ 𝓕 (ωd (1, h) f) 0 0 =
-      GlobalTheory.DiagSiegel.ruleFac (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA D.sp.cm.sig) (GlobalTheory.WeilM.adeleClass D.host.F) χS
+      GlobalTheory.DiagSiegel.ruleFac (GlobalTheory.WeilM.adeleClass D.host.F) χS
         (Fintype.card (Fin S.rank)) t * (dblDec T).mixT S ψ μ 𝓕 f 0 0 := by
   obtain ⟨om₀, h₀⟩ : ∃ om₀ : GA D S × GA D (zeroSp D) →* Module.End ℂ (WO S (zeroSp D) → ℂ),
       IsWeilDatumO ψ S (zeroSp D) χS 1 om₀ := by
@@ -498,7 +498,7 @@ theorem GlobalTheory.DblTargetTheta.thetaDiag_rule : ∀ (D : D7) (ψ : AddChar 
             omp (p, 1) Φ ∈ GlobalTheory.WeilM.schA D.host.F κ ∧
             GlobalTheory.DiagSiegel.thetaDiagInt ν 𝓕 (GlobalTheory.WeilSchrodinger.thetaTr D.host.F
                          (GlobalTheory.WeilSchrodinger.transD (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA D.sp.cm.sig) co) ψ (omp (p, 1) Φ)) =
-              GlobalTheory.DiagSiegel.ruleFac (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA D.sp.cm.sig) (GlobalTheory.WeilM.adeleClass D.host.F) χS
+              GlobalTheory.DiagSiegel.ruleFac (GlobalTheory.WeilM.adeleClass D.host.F) χS
                 (Fintype.card (Fin S.rank)) t *
               GlobalTheory.DiagSiegel.thetaDiagInt ν 𝓕 (GlobalTheory.WeilSchrodinger.thetaTr D.host.F
                 (GlobalTheory.WeilSchrodinger.transD (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA D.sp.cm.sig) co) ψ Φ) := by
@@ -561,7 +561,7 @@ theorem _root_.GlobalTheory.T.thetaDiagonal_siegelParabolic_rule : ∀ (D : D7) 
             omp (p, 1) Φ ∈ GlobalTheory.WeilM.schA D.host.F κ ∧
             GlobalTheory.DiagSiegel.thetaDiagInt ν 𝓕 (GlobalTheory.WeilSchrodinger.thetaTr D.host.F
                          (GlobalTheory.WeilSchrodinger.transD (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA D.sp.cm.sig) co) ψ (omp (p, 1) Φ)) =
-              GlobalTheory.DiagSiegel.ruleFac (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA D.sp.cm.sig) (GlobalTheory.WeilM.adeleClass D.host.F) χS
+              GlobalTheory.DiagSiegel.ruleFac (GlobalTheory.WeilM.adeleClass D.host.F) χS
                 (Fintype.card (Fin S.rank)) t *
               GlobalTheory.DiagSiegel.thetaDiagInt ν 𝓕 (GlobalTheory.WeilSchrodinger.thetaTr D.host.F
                 (GlobalTheory.WeilSchrodinger.transD (GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.cA D.sp.cm.sig) co) ψ Φ) := by

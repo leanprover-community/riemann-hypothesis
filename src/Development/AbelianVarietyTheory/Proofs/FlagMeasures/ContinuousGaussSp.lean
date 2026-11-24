@@ -126,7 +126,7 @@ theorem _root_.GlobalTheory.GaugeQuot.continuous_gaussSp :
 open MeasureTheory Matrix Filter Topology in
 open scoped ENNReal in
 variable {P Q P' Q' : ℕ} in
-theorem _root_.GlobalTheory.GaugeQuot.ballVol_mul (d : ℕ) (t r : ℝ) (ht : 0 < t) (hr : 0 < r) :
+theorem _root_.GlobalTheory.GaugeQuot.ballVol_mul (d : ℕ) (t r : ℝ) (ht : 0 < t) :
     _root_.GlobalTheory.GaugeQuot.ballVol d (t * r) = ENNReal.ofReal (t ^ d) * _root_.GlobalTheory.GaugeQuot.ballVol d r := by
   unfold _root_.GlobalTheory.GaugeQuot.ballVol
   rw [Measure.addHaar_ball_mul_of_pos _ _ ht, finrank_euclideanSpace_fin]

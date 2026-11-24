@@ -213,7 +213,7 @@ theorem mem_Umax_of_loc (s : SplitPlace L) (x : GAf L n) (hx : TrivOutside {s.v}
       refine (Valuation.map_sub _ _ _).trans (max_le (h2 j i) ?_)
       by_cases hij : i = j <;> simp [Matrix.one_apply, hij]
   have := add_mem hz (show (1 : Matrix (Fin n) (Fin n) (AL L)) i j ∈ ALint L by
-    by_cases hij : i = j <;> simp [Matrix.one_apply, hij, Subring.one_mem, Subring.zero_mem])
+    by_cases hij : i = j <;> simp [Matrix.one_apply, hij])
   simpa using this
 
 theorem tr_mem_trivSub (T : Set (HeightOneSpectrum (𝓞 L⁺))) (x : GAf L n) (hx : x ∈ trivSub n T) :

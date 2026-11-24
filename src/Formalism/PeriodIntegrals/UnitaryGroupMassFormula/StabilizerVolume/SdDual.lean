@@ -368,7 +368,7 @@ open scoped TensorProduct
 open NumberField IsDedekindDomain MeasureTheory Topology Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes PI.AdicCompletionValuation
   PI.VolFromSW SdUniqW
 
-def DualHV : Prop := InCtx fun F E _ _ _ _ _ σ _M _J a _X0 _hT =>
+def DualHV : Prop := InCtx fun F _ _ _ _ _ _ σ _M _J a _X0 _hT =>
   ∀ v : HeightOneSpectrum (𝓞 F), DualAt v (pairHerm (Fv F v) σ a)
 
 theorem dualLatV_of (hH : DualHV) : DualLatV := by

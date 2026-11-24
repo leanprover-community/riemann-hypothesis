@@ -103,8 +103,8 @@ theorem latS_mul_K {u : D.what₂.Word} (h : X.B.I.Gf) (s : Hfin X u) (hs : cj X
 def Uprod (hU : UniSub) (TR : TypedRed X) : Subgroup (Iof TR) where
   carrier := {x | ∀ v, Formalism.L2.SG.GGMirabolic.IsUni D.R.k (x v)}
   one_mem' := fun _ => Formalism.L2.SG.GGMirabolic.isUni_one
-  mul_mem' := fun {a b} ha hb v => (hU _ _ _ _ (ha v) (hb v)).1
-  inv_mem' := fun {a} ha v => (hU _ _ _ _ (ha v) (ha v)).2
+  mul_mem' := fun {_ _} ha hb v => (hU _ _ _ _ (ha v) (hb v)).1
+  inv_mem' := fun {_} ha v => (hU _ _ _ _ (ha v) (ha v)).2
 
 theorem card_Uprod (hU : UniSub) (TR : TypedRed X) :
     Nat.card (Uprod hU TR) = ∏ v, Formalism.L2.SG.GGMirabolic.cardU (TR.Fq v) D.R.k := by

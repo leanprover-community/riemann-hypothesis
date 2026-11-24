@@ -178,7 +178,7 @@ theorem mem_Mu_supported (O : Type) [CommRing O] (j : ℤ) (u : Fin r × Fin r �
   unfold Dat.memMu
   exact Subalgebra.prod_mem _ fun v _ => Subalgebra.pow_mem _ (hXm _ (h v.1 v.2)) _
 
-theorem mem_vg_A (D : Formalism.BasicNotions.D7) (hB2 : admB2 D) (hX : X.Hyp p K) (O : Type) [CommRing O] [IsDomain O]
+theorem mem_vg_A (D : Formalism.BasicNotions.D7) (hB2 : admB2) (hX : X.Hyp p K) (O : Type) [CommRing O] [IsDomain O]
     [IsDiscreteValuationRing O] (j : ℤ) (b : ℤ → ℕ)
     (q : (Fin (segN X.F j + 1) → Fin (r + K) → ℤ) × (ℤ → Finset (Fin K)) × (Fin r × Fin r → ℕ))
     (S : Set ℤ) (hS : ∀ a : Fin r, X.F.fr (j - 1) a.val ∈ S) (a : ℤ)
@@ -209,8 +209,8 @@ theorem restMemA_of (D : Formalism.BasicNotions.D7) (hAdm : AdmB D) (C₀ : ℝ)
   classical
   have : Fact p.Prime := ⟨hX.prime⟩
   have hV := hX.valid
-  have hB2 : admB2 D := hAdm.2.1
-  have hA3 : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D := hAdm.2.2.2.2.2.2.2.2.1
+  have hB2 : admB2 := hAdm.2.1
+  have hA3 : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne := hAdm.2.2.2.2.2.2.2.2.1
   obtain ⟨dd, b', b'', P, P1, P2, hPμ, h1, h2, hsum, hC, hPATH, hGood, hSt, hu, hd⟩ := exists_path_decomposition D hAdm hX j b q
   have H := plHyp_of X p K hX j _ _ dd hPATH
   have hI' : IsSt P1.mu (Ican P1.mu) := by rw [h1]; exact mem_isSt_Ican H

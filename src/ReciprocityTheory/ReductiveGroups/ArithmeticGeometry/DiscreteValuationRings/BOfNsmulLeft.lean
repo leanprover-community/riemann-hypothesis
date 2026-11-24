@@ -99,7 +99,7 @@ theorem n1a : ValuationMinRepresentatives := by
 
 theorem exists_val_eq {V : Type} [CommRing V] [IsDomain V] [IsDiscreteValuationRing V] {ϖ : V}
     {F : Type} [Field F] [IsAlgClosed F] [Algebra (FractionRing V) F] {v : AddValuation F (WithTop ℚ)}
-    (hv : ValOver ϖ F v) {r : ℚ} (hr : 0 < r) : ∃ ζ : F, ζ ≠ 0 ∧ v ζ = ((r : ℚ) : WithTop ℚ) := by
+    (hv : ValOver ϖ F v) {r : ℚ} : ∃ ζ : F, ζ ≠ 0 ∧ v ζ = ((r : ℚ) : WithTop ℚ) := by
   obtain ⟨ζ, hζ⟩ := IsAlgClosed.exists_pow_nat_eq
     (algebraMap (FractionRing V) F (algebraMap V (FractionRing V) ϖ ^ r.num)) r.den_pos
   have hv1 : v (algebraMap (FractionRing V) F (algebraMap V (FractionRing V) ϖ ^ r.num)) =
@@ -123,7 +123,7 @@ theorem n1c : PositiveValuationMaximalIdeal := by
   intro V _ _ _ ϖ hϖ D Q hQ F _ _ _ v hv k hk s hs0
   constructor
   · rintro ⟨r, hr, hs⟩
-    obtain ⟨ζ, hζ0, hvζ⟩ := exists_val_eq hv hr
+    obtain ⟨ζ, hζ0, hvζ⟩ := exists_val_eq hv
     refine ⟨ζ, ζ⁻¹ • s, by rw [hvζ]; exact_mod_cast hr, ?_,
       (isSmul_iff ζ (ζ⁻¹ • s) s).2 (by rw [smul_smul, mul_inv_cancel₀ hζ0, one_smul])⟩
     have h := NuGe.smul Q (q := -r) (by rw [AddValuation.map_inv, hvζ]; rfl) ((isSmul_iff _ _ _).2 rfl) hs

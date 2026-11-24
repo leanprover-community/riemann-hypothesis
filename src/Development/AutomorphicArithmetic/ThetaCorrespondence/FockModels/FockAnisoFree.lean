@@ -665,7 +665,7 @@ theorem exists_radical_basis {K : Type*} [Field K] {r : ℕ} (B : Matrix (Fin r)
     funext j
     exact Fintype.linearIndependent_iff.mp bC.linearIndependent w (Submodule.coe_eq_zero.mp h0) j
 
-theorem exists_blockNF {K : Type*} [Field K] (s : K →+* K) (hs : ∀ x, s (s x) = x) {r : ℕ}
+theorem exists_blockNF {K : Type*} [Field K] (s : K →+* K) {r : ℕ}
     (B : Matrix (Fin r) (Fin r) K) (hB : (B.map s)ᵀ = B) (hd : B.det = 0) :
     ∃ (P : Matrix (Fin r) (Fin r) K) (t : ℕ) (h : t < r), P.det ≠ 0 ∧
       (∀ i j : Fin r, (t ≤ i.1 ∨ t ≤ j.1) → ((P.map s)ᵀ * B * P) i j = 0) ∧
@@ -779,7 +779,7 @@ theorem exists_congrH_isBlockNF (D : D7) (r : ℕ) (β : HermE D r) (hd : β.1.d
     ∃ (a : Matrix (Fin r) (Fin r) D.host.E) (t : ℕ) (γ : HermE D r),
       a.det ≠ 0 ∧ IsBlockNF t γ ∧ β = congrH a γ := by
   obtain ⟨P, t, ht, hP, hzero, hblock⟩ := NF.exists_blockNF (D.sp.cm.sig : D.host.E →+* D.host.E)
-    (fun x => star_star x) β.1 β.2 hd
+    β.1 β.2 hd
   have hu : IsUnit P.det := isUnit_iff_ne_zero.mpr hP
   refine ⟨P⁻¹, t, congrH P β, ?_, ⟨ht, hzero, hblock⟩, ?_⟩
   · intro h0
@@ -988,7 +988,7 @@ theorem trace_cong_left {r : ℕ} (P A b Q : Mx D r r) :
     _ = Matrix.trace (Q ⬝ (P ⬝ A ⬝ b)) := Matrix.trace_mul_comm _ _
     _ = Matrix.trace (Q ⬝ P ⬝ A ⬝ b) := by simp only [Matrix.mul_assoc]
 
-theorem trace_cong_inner {r : ℕ} (A B b I : Mx D r r) (h1 : A * B = 1) (h2 : B * A = 1) :
+theorem trace_cong_inner {r : ℕ} (A B b I : Mx D r r) (h1 : A * B = 1) :
     Matrix.trace ((B ⬝ b ⬝ adj B) ⬝ (adj A ⬝ I ⬝ A)) = Matrix.trace (b ⬝ I) := by
   have h3 : adj B ⬝ adj A = 1 := by rw [← adj_mul, h1, adj_one]
   calc Matrix.trace ((B ⬝ b ⬝ adj B) ⬝ (adj A ⬝ I ⬝ A))
@@ -1021,7 +1021,7 @@ theorem W_congr : ∀ (D : D7) (r : ℕ) (V : HSp D) (ψ : AddChar (AF D.host.F)
     show φ (y ⬝ rat a) * _ = φ (y ⬝ rat a) * _
     congr 3
     have : (S.symm b).1 = rat a⁻¹ ⬝ b.1 ⬝ adj (rat a⁻¹) := rfl
-    rw [this, inner_mul_right, trace_cong_inner _ _ _ _ (rat_mul_inv a ha) (rat_inv_mul a ha)]
+    rw [this, inner_mul_right, trace_cong_inner _ _ _ _ (rat_mul_inv a ha)]
   unfold W
   simp only [hJ]
   refine (integral_congA hl a ha _).symm.trans ?_

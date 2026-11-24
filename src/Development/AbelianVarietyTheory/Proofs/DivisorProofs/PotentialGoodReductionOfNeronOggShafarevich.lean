@@ -426,7 +426,7 @@ theorem mem_iff_pow_mem {F : Type} [Field F] (A : ValuationSubring F) {m : ℕ} 
   rw [← A.valuation_le_one_iff, ← A.valuation_le_one_iff, map_pow]
   exact (pow_le_one_iff_of_nonneg zero_le' hm.ne').symm
 
-theorem nonunit_of_pow {F : Type} [Field F] (A : ValuationSubring F) {m : ℕ} (hm : 0 < m) (z : F)
+theorem nonunit_of_pow {F : Type} [Field F] (A : ValuationSubring F) {m : ℕ} (z : F)
     (h : A.valuation (z ^ m) < 1) : A.valuation z < 1 := by
   rw [map_pow] at h
   by_contra h'
@@ -475,7 +475,7 @@ theorem GlobalTheory.inertia_lift_of_purelyInseparable : ∀ (K L Ω Ω' : Type)
   · intro y hy
     obtain ⟨m, x, hm, hyx, hfrob⟩ := hpi y
     have hx : x ∈ V := by rw [← hmemV, ← hyx]; exact (mem_iff_pow_mem V' hm y).1 hy
-    apply nonunit_of_pow V' hm
+    apply nonunit_of_pow V'
     rw [hfrob, ← map_pow, hyx, hcomm, ← map_sub]
     exact hlt _ (hσv x hx)
 end -- clump:auto

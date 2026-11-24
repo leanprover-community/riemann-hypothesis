@@ -67,7 +67,7 @@ theorem uwset_inv {b : Mat k r} (hb : b ∈ UWset k r z') : b⁻¹ ∈ UWset k r
   have hu := HU.isUnit_of_uh hU
   exact ⟨HU.uh_inv hU, fun a => ⟨inv_fix hu (hfix a).1, inv_fix hu (hfix a).2⟩, inv_fix hu hz⟩
 
-theorem inner_r (hW : IsHaarOn (UWset k r z') μW') (M : Mat k r) (φ : Mt k r → ℝ≥0∞) (hφ : Measurable φ)
+theorem inner_r (hW : IsHaarOn (UWset k r z') μW') (M : Mat k r) (φ : Mt k r → ℝ≥0∞)
     (b : Mat k r) (hb : b ∈ UWset k r z') :
     ∫⁻ h', φ (fun i j => (M * (Matrix.of h')⁻¹ * b) i j) ∂μW' =
       ∫⁻ h', φ (fun i j => (M * (Matrix.of h')⁻¹) i j) ∂μW' := by
@@ -95,7 +95,7 @@ theorem rhsW_rmul (hd : WbData k r z z' μW μW' a a' μsec) (b : Mat k r) (hb :
   refine lintegral_congr fun ζ => ?_
   congr 1
   refine lintegral_congr fun h => ?_
-  exact inner_r hd.haarW' _ φ hφ b hb
+  exact inner_r hd.haarW' _ φ b hb
 
 theorem rInvNu : RInvNu := by
   intro k r z z' μW μW' a a' μsec hd b hb

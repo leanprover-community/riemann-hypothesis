@@ -523,7 +523,7 @@ theorem GlobalTheory.HomFixUniv.hom_of_proport : ∀ (Rg : Type) [CommRing Rg] (
     have hprop' := hprop.pull e'
     rw [← Category.assoc, hEA, hηA, Category.assoc] at hgen' hprop'
     refine _root_.GlobalTheory.HomFixUniv.eq_of_proport Rg _ _ T T (fA B) (LPow A L k (topS Rg)) (LPow B M k (topS Rg)) mA mB bA bB _ (𝟙 T) c _ _
-      (_root_.GlobalTheory.HomFixUniv.embedsBy_fA_of_isBCBasis Rg B M k mB bB hB hM hk hva hbB) (LB.isLB_linComb hM _ _) (LB.isLB_linComb hL _ _) hgen' hprop'
+      (_root_.GlobalTheory.HomFixUniv.embedsBy_fA_of_isBCBasis Rg B M k mB bB hB hM hva hbB) (LB.isLB_linComb hM _ _) (LB.isLB_linComb hL _ _) hgen' hprop'
       (proport_zero t c hvA hvB hnorm) ?_
     rw [Category.assoc, hΨ, ← Category.assoc, hηA, Category.id_comp, Category.assoc, Category.assoc, θ_comp_structure,
       heB]
@@ -1706,7 +1706,7 @@ theorem exists_universal_matrix : ∀ (Rg : Type) [CommRing Rg] [IsNoetherianRin
   obtain ⟨hAb, hBb, hL, hM, heA, heB, hamp, hk, hva, hbA, hbB⟩ := hH
   obtain ⟨hfl, hpj, huc⟩ := _root_.GlobalTheory.HomFixUniv.fA_flat_isProjBy_universallyClosed Rg A L hAb hL hamp
   haveI := huc
-  have hEmb := _root_.GlobalTheory.HomFixUniv.embedsBy_fA_of_isBCBasis Rg B M k mB bB hBb hM hk hva hbB
+  have hEmb := _root_.GlobalTheory.HomFixUniv.embedsBy_fA_of_isBCBasis Rg B M k mB bB hBb hM hva hbB
   have hcov : (⨆ j, nonzeroLocus (bB j)) = ⊤ := hEmb.1
   have hNA : (LPow A L (k : ℤ) (topS Rg)).IsLB := LB.isLB_linComb hL _ _
   have hNB : (LPow B M (k : ℤ) (topS Rg)).IsLB := LB.isLB_linComb hM _ _

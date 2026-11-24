@@ -16,7 +16,7 @@ noncomputable section
 
 variable {n : ℕ} {U : Set (V n)}
 
-theorem ext_glue (hU : IsOpen U) (g G : V n → ℂ) (hg : DifferentiableOn ℂ g U)
+theorem ext_glue (g G : V n → ℂ) (hg : DifferentiableOn ℂ g U)
     (hgn : ∀ W : Set (V n), IsOpen W → W ⊆ U → W.Nonempty → ∃ y ∈ W, g y ≠ 0)
     (hG : DifferentiableOn ℂ G {y | y ∈ U ∧ g y ≠ 0})
     (hL : ∀ p ∈ U, ∃ ρ > 0, ball p ρ ⊆ U ∧

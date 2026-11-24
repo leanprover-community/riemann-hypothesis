@@ -235,7 +235,7 @@ theorem tw_of (hG : GlobalFnsSt) (hTW : TwistBCSpanStatement) (hVR : VRatioGtSta
             rw [hgsF, hfst', ← hgsm, _root_.one_mul]
           rw [hu'v y J hJ, val_inv, val_pull, ← hh', ← Over.comp_left]
           all_goals first | exact hJ | exact alg _ _ _ _ _ hX hgg he1)
-        (le_of_eq (v_inv_coe (v := v) hc0 hvc).symm) ht0
+        (le_of_eq (v_inv_coe (v := v) hvc).symm) ht0
   constructor
   · intro hN χ
     obtain ⟨α, rfl⟩ : ∃ α, χ = α + p.y := ⟨χ - p.y, (sub_add_cancel χ p.y).symm⟩
@@ -253,7 +253,7 @@ theorem tw_of (hG : GlobalFnsSt) (hTW : TwistBCSpanStatement) (hVR : VRatioGtSta
   · intro hN α
     obtain ⟨qα, hkα, hmove⟩ := step α
     have h0 := hN (α + p.y)
-    have h1 := VGe.smul (s' := t.s (α + p.y)) h0 (le_of_eq (v_inv_coe (v := v) hζ hqζ).symm) (fun j => by
+    have h1 := VGe.smul (s' := t.s (α + p.y)) h0 (le_of_eq (v_inv_coe (v := v) hqζ).symm) (fun j => by
       rw [hsm (α + p.y) j, ← _root_.mul_assoc, ← constBF_mul, inv_mul_cancel₀ hζ, constBF_eq]
       first
         | simp only [resTop, map_one, _root_.one_mul])

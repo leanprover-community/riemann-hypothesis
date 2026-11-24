@@ -89,7 +89,7 @@ theorem locPos_holds : LocPos := by
   have hX1U : LinearIndependent (Fv F v ⊗[F] E) X1 :=
     linIndep_of_isUnit_det (Fv F v) σ J X1
       (by rw [gramR_ratTup]; exact isUnit_det_hermOf (Fv F v) σ _ hT hdet)
-  obtain ⟨N, hN, hd⟩ := gramFilt_of (dxOpen_of secGram_holds) F E σ hσ M J hJ.1 hJ.2 a ha1 (by omega) v
+  obtain ⟨N, hN, hd⟩ := gramFilt_of F E σ hσ M J hJ.1 hJ.2 a ha1 (by omega) v
     _ b X1 hX1U
   obtain ⟨Λ0, hB, hΛ0o, hΛ0c, hsub⟩ := isCOBasis_latSub b v a M N hN
   obtain ⟨Λ, H, D, h0, hΛo, hΛc, hΛa, hHo, hHc, hHb, hD, hyp⟩ :=

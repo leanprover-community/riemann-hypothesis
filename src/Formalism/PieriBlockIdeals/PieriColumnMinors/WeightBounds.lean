@@ -446,7 +446,7 @@ theorem widths_real_holds : WidthsReal := by
 
 theorem upper_translation_le_floor_height (P : Par) (hP : P.Hyp) {ι : Type} (W : Wts ι) (hW : W.Ok P) (τ : ι)
     (hτ : τ ∈ W.T2) : W.xp τ ≤ (h0 P : ℤ) :=
-  le_floor_h hP (hW.thick τ hτ).2
+  le_floor_h (hW.thick τ hτ).2
 
 theorem weight_le_upper_translation_of_thick (P : Par) (hP : P.Hyp) (hL : P.Large) {ι : Type} (W : Wts ι) (hW : W.Ok P)
     (τ : ι) (hτ : τ ∈ W.T2) (a : ℕ) (h2 : a < P.Nr) : W.U P τ a ≤ W.xp τ := by

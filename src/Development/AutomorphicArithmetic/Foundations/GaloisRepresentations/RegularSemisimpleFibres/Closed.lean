@@ -677,7 +677,7 @@ private theorem wt_map {G H : Type} [Group G] [TopologicalSpace G] [Group H] [To
   rw [h2, cpt_map j hj]
   exact Subgroup.relIndex_map_map_of_injective _ _ hj.injective
 
-private theorem sum_transfer {G H : Type} [Group G] [Group H] (j : H →* G) (hj : Function.Injective j)
+private theorem sum_transfer {G H : Type} [Group G] [Group H] (j : H →* G)
     (T : Subgroup G) (T₀ : Subgroup H) (hT : T = T₀.map j) (K : Subgroup G) (K₀ : Subgroup H)
     (hK : ∀ h, j h ∈ K ↔ h ∈ K₀) (F : G → ℂ) (F₀ : H → ℂ)
     (hinv : ∀ t ∈ T, ∀ κ ∈ K, ∀ x, F (t * x * κ) = F x) (hjF : ∀ h, F (j h) = F₀ h)
@@ -781,7 +781,7 @@ theorem orbTransfer : OrbTransfer := by
     simp only [h0, mul_zero]
   unfold twOrb
   simp only [hconst, hconst₀]
-  exact sum_transfer j hj.injective (twCent θ δ) (twCent (MonoidHom.id H) γ) hT K K₀ hK _ _
+  exact sum_transfer j (twCent θ δ) (twCent (MonoidHom.id H) γ) hT K K₀ hK _ _
     hinv hjF hsupp'
 
 end UpperTheory.Gal.InertialTypesAlt.L

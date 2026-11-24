@@ -60,7 +60,7 @@ theorem neg_log_le {t ε : ℝ} (ht : 0 < t) (hε : 0 < ε) : -Real.log t ≤ t 
   have := Real.log_le_rpow_div (inv_pos.2 ht).le hε
   rwa [Real.log_inv, Real.inv_rpow ht.le, ← Real.rpow_neg ht.le] at this
 
-theorem large_power_bound {t σ c C : ℝ} {M : ℕ} (ht : 1 ≤ t) (hM : σ + 1 ≤ M) (hc : 0 ≤ c)
+theorem large_power_bound {t σ c C : ℝ} {M : ℕ} (ht : 1 ≤ t) (hM : σ + 1 ≤ M)
     (h : c ≤ C * (t ^ M)⁻¹) : c * t ^ σ ≤ |C| * min t t⁻¹ ^ (1 : ℝ) := by
   have t0 : 0 < t := by linarith
   rw [min_eq_right ((inv_le_one_of_one_le₀ ht).trans ht), Real.rpow_one]
@@ -83,10 +83,10 @@ theorem big_log {t σ c C : ℝ} {M : ℕ} (ht : 1 ≤ t) (hM : σ + 2 ≤ M) (h
     rw [abs_of_nonneg (Real.log_nonneg ht)]; linarith [Real.log_le_sub_one_of_pos t0]
   calc c * t ^ σ * |Real.log t| ≤ c * t ^ σ * t := by gcongr
     _ = c * t ^ (σ + 1) := by rw [Real.rpow_add_one t0.ne']; ring
-    _ ≤ _ := large_power_bound ht (by linarith) hc h
+    _ ≤ _ := large_power_bound ht (by linarith) h
 
-theorem small_power_bound {t b ε c C : ℝ} (t0 : 0 < t) (t1 : t < 1) (hε : 0 < ε) (hb : 2 * ε ≤ b + 1)
-    (hc : 0 ≤ c) (h : c ≤ C * t) : c * t ^ b ≤ |C| * t ^ (2 * ε) := by
+theorem small_power_bound {t b ε c C : ℝ} (t0 : 0 < t) (t1 : t < 1) (hb : 2 * ε ≤ b + 1)
+    (h : c ≤ C * t) : c * t ^ b ≤ |C| * t ^ (2 * ε) := by
   have h2 : c ≤ |C| * t := h.trans (mul_le_mul_of_nonneg_right (le_abs_self C) t0.le)
   calc c * t ^ b ≤ |C| * t * t ^ b := mul_le_mul_of_nonneg_right h2 (by positivity)
     _ = |C| * t ^ (b + 1) := by rw [Real.rpow_add_one t0.ne']; ring
@@ -96,7 +96,7 @@ theorem small_power_bound {t b ε c C : ℝ} (t0 : 0 < t) (t1 : t < 1) (hε : 0 
 theorem small0 {t b ε c C : ℝ} (t0 : 0 < t) (t1 : t < 1) (hε : 0 < ε) (hb : 2 * ε ≤ b + 1)
     (hc : 0 ≤ c) (h : c ≤ C * t) : c * t ^ b ≤ |C| * (1 + ε⁻¹) * min t t⁻¹ ^ ε := by
   rw [min_eq_left (t1.le.trans (one_le_inv₀ t0 |>.2 t1.le))]
-  have h1 := small_power_bound t0 t1 hε hb hc h
+  have h1 := small_power_bound t0 t1 hb h
   have h2 : t ^ (2 * ε) ≤ t ^ ε := Real.rpow_le_rpow_of_exponent_ge t0 t1.le (by linarith)
   have h3 : 0 ≤ |C| * t ^ ε * ε⁻¹ := by positivity
   calc c * t ^ b ≤ |C| * t ^ ε := h1.trans (by gcongr)
@@ -106,7 +106,7 @@ theorem small0 {t b ε c C : ℝ} (t0 : 0 < t) (t1 : t < 1) (hε : 0 < ε) (hb :
 theorem small_log {t b ε c C : ℝ} (t0 : 0 < t) (t1 : t < 1) (hε : 0 < ε) (hb : 2 * ε ≤ b + 1)
     (hc : 0 ≤ c) (h : c ≤ C * t) : c * t ^ b * |Real.log t| ≤ |C| * (1 + ε⁻¹) * min t t⁻¹ ^ ε := by
   rw [min_eq_left (t1.le.trans (one_le_inv₀ t0 |>.2 t1.le))]
-  have h1 := small_power_bound t0 t1 hε hb hc h
+  have h1 := small_power_bound t0 t1 hb h
   have hl : |Real.log t| ≤ t ^ (-ε) / ε := by
     rw [abs_of_neg (Real.log_neg t0 t1)]; exact neg_log_le t0 hε
   have e : t ^ (2 * ε) * (t ^ (-ε) / ε) = t ^ ε * ε⁻¹ := by
@@ -118,7 +118,7 @@ theorem small_log {t b ε c C : ℝ} (t0 : 0 < t) (t1 : t < 1) (hε : 0 < ε) (h
     _ ≤ |C| * t ^ ε + |C| * t ^ ε * ε⁻¹ := by linarith
     _ = |C| * (1 + ε⁻¹) * t ^ ε := by ring
 
-theorem bddBelow_support_primePowerComponent_coeff {t ε c C : ℝ} (t0 : 0 < t) (t1 : t < 1) (hc : 0 ≤ c) (h : c ≤ C) :
+theorem bddBelow_support_primePowerComponent_coeff {t ε c C : ℝ} (t0 : 0 < t) (t1 : t < 1) (h : c ≤ C) :
     c * t ^ ε ≤ |C| * min t t⁻¹ ^ ε := by
   rw [min_eq_left (t1.le.trans (one_le_inv₀ t0 |>.2 t1.le))]
   exact mul_le_mul_of_nonneg_right (h.trans (le_abs_self C)) (by positivity)
@@ -181,7 +181,7 @@ theorem duality_diagonalClass_of_affineProperBaseChange : D0 → V1 → E1 → E
       fun x hx τ hτ => ?_⟩
     have h1 : 1 ≤ Dt x := not_lt.1 hx
     have hM : τ + 2 ≤ ((⌈σ⌉₊ + 2 : ℕ) : ℝ) := by push_cast; linarith [Nat.le_ceil σ]
-    exact ⟨large_power_bound h1 (by linarith) (norm_nonneg _) (hC x h1), big_log h1 hM (norm_nonneg _) (hC x h1)⟩
+    exact ⟨large_power_bound h1 (by linarith) (hC x h1), big_log h1 hM (norm_nonneg _) (hC x h1)⟩
   have hBb : ∀ ε : ℝ, 0 < ε → ∃ g : GA E k → ℝ, IntegrableOn g {g | Dt g < 1} (μ.withDensity β) ∧
       ∀ x, x ∈ {g : GA E k | Dt g < 1} → ∀ b, 2 * ε ≤ b + 1 →
         ‖(Dt x : ℂ) * H x - H₀ x‖ * Dt x ^ b ≤ g x ∧
@@ -234,7 +234,7 @@ theorem duality_diagonalClass_of_affineProperBaseChange : D0 → V1 → E1 → E
       intg _ Dt hpos hDm _ hG.meas₀.aestronglyMeasurable (s - 1) _
         ((hmin _ hs1).const_mul |C₀|).integrableOn
         ((ae_restrict_iff' hS).2 (Eventually.of_forall fun x hx =>
-          bddBelow_support_primePowerComponent_coeff (hpos x) hx (norm_nonneg _) (hC₀ x)))
+          bddBelow_support_primePowerComponent_coeff (hpos x) hx (hC₀ x)))
     have hid : ∀ g, H g * (Dt g : ℂ) ^ s =
         ((Dt g : ℂ) * H g - H₀ g) * (Dt g : ℂ) ^ (s - 1) + H₀ g * (Dt g : ℂ) ^ (s - 1) := by
       intro g

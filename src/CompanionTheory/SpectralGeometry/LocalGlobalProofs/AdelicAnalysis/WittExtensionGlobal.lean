@@ -27,7 +27,7 @@ theorem IsIsom.comp {B : V →ₛₗ[σ] V →ₗ[E] E} {γ δ : V →ₗ[E] V} 
     (hδ : IsIsom B δ) : IsIsom B (γ ∘ₗ δ) := fun z w => by
   simp only [LinearMap.comp_apply, hγ _ _, hδ _ _]
 
-theorem exists_quasiRefl (B : V →ₛₗ[σ] V →ₗ[E] E) (hσ : ∀ x, σ (σ x) = x)
+theorem exists_quasiRefl (B : V →ₛₗ[σ] V →ₗ[E] E)
     (hB : ∀ x y, σ (B x y) = B y x) (x y : V) (hxy : B x x = B y y) (h0 : B (x - y) x ≠ 0) :
     ∃ γ : V →ₗ[E] V, IsIsom B γ ∧ γ x = y ∧ ∀ z, B (x - y) z = 0 → γ z = z := by
   set v := x - y with hv
@@ -72,15 +72,15 @@ theorem exists_isom_of_eq (B : V →ₛₗ[σ] V →ₗ[E] E) (hσ : ∀ x, σ (
         ring
       rw [h5, ← hxy]
       exact mul_ne_zero h2 hq
-    obtain ⟨γ₁, i1, e1, f1⟩ := exists_quasiRefl B hσ hB x (-y) (by simpa using hxy) h1
-    obtain ⟨γ₂, i2, e2, f2⟩ := exists_quasiRefl B hσ hB (-y) y (by simp) h4
+    obtain ⟨γ₁, i1, e1, f1⟩ := exists_quasiRefl B hB x (-y) (by simpa using hxy) h1
+    obtain ⟨γ₂, i2, e2, f2⟩ := exists_quasiRefl B hB (-y) y (by simp) h4
     refine ⟨γ₂ ∘ₗ γ₁, i2.comp i1, ?_, ?_⟩
     · simp [e1, e2]
     · intro z hx hy
       have g1 : γ₁ z = z := f1 z (by simp [hx, hy])
       have g2 : γ₂ z = z := f2 z (by simp [hy])
       simp [g1, g2]
-  · obtain ⟨γ, i, e, f⟩ := exists_quasiRefl B hσ hB x y hxy h0
+  · obtain ⟨γ, i, e, f⟩ := exists_quasiRefl B hB x y hxy h0
     exact ⟨γ, i, e, fun z hx hy => f z (by simp [hx, hy])⟩
 
 def lin {n : ℕ} (X : Fin n → V) (c : Fin n → E) : V := ∑ a, c a • X a

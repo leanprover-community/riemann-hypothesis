@@ -351,7 +351,7 @@ theorem exists_kfin_near {ε : Fin n → Bool} {lam : Fin n → ℝ} {T : S7.KTy
     (fun i => continuous_dSW_orbit hσ (hWg i) hu) (δ := e / (Ws.length + 1)) (by positivity)
   obtain ⟨x, hxdef⟩ : ∃ x : Hlam ε Ψ v₀, x = ∫ k, α k • sigLam ε Ψ v₀ (S7.toMK k) u ∂(S7.muK ε) := ⟨_, rfl⟩
   have hK : Formalism.MainNotions.S.IsKFin ε (sigLam ε Ψ v₀) x := by rw [hxdef]; exact kfin_integral hσ u hα
-  obtain ⟨y, -, hyx⟩ := kfin_mem_genSub hlam hgap hP hv₀ x hK
+  obtain ⟨y, -, hyx⟩ := kfin_mem_genSub hgap hP hv₀ x hK
   have hxs : IsSmoothVecU ε (sigLam ε Ψ v₀) x := by
     have hyH : ((y : smD ε (rreg ε)) : L2 ε) ∈ Hlam ε Ψ v₀ := by rw [hyx]; exact x.2
     have h := sigLam_smooth_of_genSub (Ψ := Ψ) (v₀ := v₀) hyH
@@ -406,7 +406,7 @@ theorem exists_near_smooth {ε : Fin n → Bool} {lam : Fin n → ℝ} {T : S7.K
       ∃ hx : ((x : smD ε (rreg ε)) : L2 ε) ∈ Hlam ε Ψ v₀,
         nuJ (sigLam ε Ψ v₀) Ws (u - ⟨((x : smD ε (rreg ε)) : L2 ε), hx⟩) < e := by
   obtain ⟨x, hxK, hxe⟩ := exists_kfin_near hlam hgap hP hv₀ Ws hWs u hu he
-  obtain ⟨y, hy, hyx⟩ := kfin_mem_genSub hlam hgap hP hv₀ x hxK
+  obtain ⟨y, hy, hyx⟩ := kfin_mem_genSub hgap hP hv₀ x hxK
   have hyH : ((y : smD ε (rreg ε)) : L2 ε) ∈ Hlam ε Ψ v₀ := hyx.symm ▸ x.2
   have hxy : (⟨((y : smD ε (rreg ε)) : L2 ε), hyH⟩ : Hlam ε Ψ v₀) = x := Subtype.ext hyx
   exact ⟨y, hy, hyH, hxy.symm ▸ hxe⟩

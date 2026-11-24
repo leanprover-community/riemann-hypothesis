@@ -1126,8 +1126,8 @@ theorem fibInt_right (Bs : B.RealPlaceData k r Wp Wq) {μ0 μ0' : Measure (Mt k 
         exact MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun p => (key p).symm)
     _ = _ := he.integral_comp' (fun p => B.rho Bs p F g)
 
-theorem unipotent_character_one_of_product {z : Fin (2 * r + k + 1) → ℂ} (hz : C2.StdZ k r z) {hA nA : B.Mat k r}
-    (hhA : hA ∈ UWset k r z) (hnA : nA ∈ Nset k r) (hs : C2.uMap k r z (hA * nA) = 1) : C2.uMap k r z nA = 1 := by
+theorem unipotent_character_one_of_product {z : Fin (2 * r + k + 1) → ℂ} {hA nA : B.Mat k r}
+    (hhA : hA ∈ UWset k r z) (hs : C2.uMap k r z (hA * nA) = 1) : C2.uMap k r z nA = 1 := by
   have key : C2.uMap k r z (hA * nA) = C2.uMap k r z nA := by
     funext a b
     simp only [C2.uMap]
@@ -1227,8 +1227,8 @@ theorem fib_indep (ν' : Fin (2 * r + k + 1) → ℂ) (m₀ : B.Mat k r) (hbase 
     hpos1 hZ2.symm
   obtain ⟨hA, hhA, nA, hnA, hfA, rfl⟩ := Dx2.VV.stabilizer_decomp_unitary_mul_unipotent hz hs
   obtain ⟨hB, hhB, nB, hnB, hfB, rfl⟩ := Dx2.VV.stabilizer_decomp_unitary_mul_unipotent hz' hs'
-  have huA : C2.uMap k r S.z nA = 1 := unipotent_character_one_of_product hz hhA hnA hs.2
-  have huB : C2.uMap k r S.z' nB = 1 := unipotent_character_one_of_product hz' hhB hnB hs'.2
+  have huA : C2.uMap k r S.z nA = 1 := unipotent_character_one_of_product hhA hs.2
+  have huB : C2.uMap k r S.z' nB = 1 := unipotent_character_one_of_product hhB hs'.2
   obtain ⟨hnA'', hfA''⟩ := conj_fix hz hv hnA huA
   obtain ⟨hnB'', hfB''⟩ := conj_fix hz' hu' hnB huB
   have uhA : IsUnit hA.det := Dx2.OrbJ.isUnit_of_G hhA.1
@@ -1241,7 +1241,7 @@ theorem fib_indep (ν' : Fin (2 * r + k + 1) → ℂ) (m₀ : B.Mat k r) (hbase 
     exact congrArg _ this.symm
   have cB : τ' * hB = hB * τ' := (A.tau_comm hhB u').symm
 
-  have hX := A.dframe_tau_inv S ν' m₀ hg2 hD2 hv hu'
+  have hX := A.dframe_tau_inv S ν' m₀ hD2 hv hu'
   have hXeq : τ * g2 * τ'⁻¹ = (hA * (τ * nA * τ⁻¹))⁻¹ * γ0 * (hB * (τ' * nB * τ'⁻¹)) := by
     rw [hgs]
     have e1 : (hA * (τ * nA * τ⁻¹))⁻¹ = τ * nA⁻¹ * τ⁻¹ * hA⁻¹ := by
@@ -1369,7 +1369,7 @@ theorem fibre_integral_cells : PBI.FibIntCells := by
     have hpos : 0 < Gf P.k P.r S.z S.z' γ0 := by
       rw [← ptG_spec P.k P.r S.z S.z' a _ ha hZe]; exact hG
     have hrel := relevant_points_holds P.k P.r Wp Wq S a γ0 ha hγe hZe
-    obtain ⟨θ1, hθ1, hint1⟩ := CV.orbJConv_cpt S γ0 w d0 F hγe hrel hd0 hZw hpos hF
+    obtain ⟨θ1, hθ1, hint1⟩ := CV.orbJConv_cpt S γ0 w d0 F hγe hd0 hZw hpos hF
     have hex : ∃ θ, D.IsNormCut S γ0 (D.muR S γ0 w) θ ∧
         Integrable (fun q => θ q • D.orbIntegrand S γ0 F q) S.μSS := ⟨θ1, hθ1, hint1⟩
     unfold D.orbJ

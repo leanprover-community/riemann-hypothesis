@@ -123,7 +123,7 @@ theorem cube_le_two_exp (y : ℝ) (hy : 0 ≤ y) : y ^ 3 ≤ 2 * Real.exp y := b
       ((y ^ 2 - 4 * y - 2) ^ 2 + 8 * y + 20) / 12 := by ring
   linarith [sq_nonneg (y ^ 2 - 4 * y - 2)]
 
-theorem le_of_sq_le_sq' (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) (h : a ^ 2 ≤ b ^ 2) : a ≤ b :=
+theorem le_of_sq_le_sq' (a b : ℝ) (hb : 0 ≤ b) (h : a ^ 2 ≤ b ^ 2) : a ≤ b :=
   le_of_pow_le_pow_left₀ two_ne_zero hb h
 
 theorem bad_b (w fSe T fkb lq f m b C1 : ℝ) (hw : w ≤ 2 * f * b) (hfS : fSe ≤ f * b) (hT : T ≤ b)
@@ -174,7 +174,7 @@ theorem bad_c (C m v w fSe T f b s L C2 : ℝ) (hC : 0 ≤ C) (hv0 : 0 ≤ v) (h
   linarith
 
 theorem bad_d (T f r L b lg : ℝ) (hT0 : 0 ≤ T) (hT2 : T ^ 2 ≤ b) (hf : 8 ≤ f) (hr : 9 ≤ r) (hL : 10 ≤ L)
-    (hZ : (f * r * L) ^ 12 ≤ b) (hlg0 : 0 ≤ lg) (hlg1 : lg ≤ 18 * L) : (4 * T + 4 * f * r ^ 2) * lg ≤ 4 * b := by
+    (hZ : (f * r * L) ^ 12 ≤ b) (hlg1 : lg ≤ 18 * L) : (4 * T + 4 * f * r ^ 2) * lg ≤ 4 * b := by
   have hb0 : 0 ≤ b := le_trans (sq_nonneg T) hT2
   have hfr : 1 ≤ f * r := one_le_mul_of_one_le_of_one_le (by linarith) (by linarith)
   have hL0 : 0 ≤ L := by linarith
@@ -186,7 +186,7 @@ theorem bad_d (T f r L b lg : ℝ) (hT0 : 0 ≤ T) (hT2 : T ^ 2 ≤ b) (hf : 8 �
   have hTL : 36 * (T * L) ≤ b := by
     have hsq : (36 * (T * L)) ^ 2 ≤ b ^ 2 := by
       linarith [mul_le_mul hT2 hL2 (by positivity) hb0]
-    exact le_of_sq_le_sq' _ _ (by positivity) hb0 hsq
+    exact le_of_sq_le_sq' _ _ hb0 hsq
   have hZ0 : 720 ≤ f * r * L := by
     have h72 : 72 ≤ f * r := by
       have := mul_le_mul hf hr (by norm_num) (by linarith)
@@ -214,7 +214,7 @@ theorem bad_d (T f r L b lg : ℝ) (hT0 : 0 ≤ T) (hT2 : T ^ 2 ≤ b) (hf : 8 �
 
 theorem leafBad_of_page (O : OnObj S P c)
     (hC : 0 ≤ c.C) (hCb1 : 14 ≤ c.Cb1) (hCb2 : 66 * c.C + 4 ≤ c.Cb2) (hx : 3 ≤ O.x)
-    (hEps : ExponentSmallBound O) (hN4 : HalfDegreeAtLeastFour O) (h1246 : DegreeAtLeastFortyFour O) (h21 : RankAndLengthLowerBounds O) (h1 : LeafSZ1 O) (hW : LeafW O)
+    (hN4 : HalfDegreeAtLeastFour O) (h1246 : DegreeAtLeastFortyFour O) (h21 : RankAndLengthLowerBounds O) (h1 : LeafSZ1 O) (hW : LeafW O)
     (h14 : SupportGapBounds O) (h121 : LogPrimeProductBound O) (h1232 : ProductWithRatioBound O) (h75 : ConductorCongruentPrimePair O) (h19 : SquaredTimeBound O) (h18 : PowerTwelveBound O)
     (tVd : TieVd O) : LeafBad O := by
   have hx0 : 0 ≤ O.x := by linarith
@@ -261,7 +261,7 @@ theorem leafBad_of_page (O : OnObj S P c)
       have h3 : 1 ≤ PP ^ 3 := one_le_pow₀ hPP
       have : 1 * O.T ^ 2 ≤ PP ^ 3 * O.T ^ 2 := mul_le_mul_of_nonneg_right h3 (sq_nonneg _)
       linarith
-    exact bad_d O.T O.f O.rr O.L O.b _ h1.1 hT2 hf h21.1 h21.2 h18 (by rw [hlg]; linarith)
+    exact bad_d O.T O.f O.rr O.L O.b _ h1.1 hT2 hf h21.1 h21.2 h18
       (by rw [hlg]; linarith)
 
 theorem dfx_bound (DF x k f m b T de2 PP D C2 : ℝ) (hDF0 : 0 ≤ DF) (hPP : 1 ≤ PP) (hD : 1 ≤ D)

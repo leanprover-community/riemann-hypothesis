@@ -245,8 +245,8 @@ theorem kdata (ψ : AddChar (AF F) ℂ) (hψ : IsCharAF F ψ) {S S' : Finset (He
   have hpm : ∀ (h h0 : fixE ε) (y y0 : (AddMonoidHom.mulLeft ε).ker),
       (h.1 + y.1) * (h0.1 + y0.1) = h.1 * h0.1 + y.1 * y0.1 := by
     intro h h0 y y0
-    have h1 : h.1 * y0.1 = 0 := fix_mul_ker hεε (memH h) (memY y0)
-    have h2 : y.1 * h0.1 = 0 := by rw [mul_comm]; exact fix_mul_ker hεε (memH h0) (memY y)
+    have h1 : h.1 * y0.1 = 0 := fix_mul_ker (memH h) (memY y0)
+    have h2 : y.1 * h0.1 = 0 := by rw [mul_comm]; exact fix_mul_ker (memH h0) (memY y)
     rw [add_mul, mul_add, mul_add, h1, h2, add_zero, zero_add]
   have hfou : ∀ (h0 : fixE ε) (y0 : (AddMonoidHom.mulLeft ε).ker),
       fouA ψ db (testT ρ S' U) (h0.1 + y0.1) = (c : ℂ) * (A h0.1 * Bf y0.1) := by
@@ -301,7 +301,7 @@ theorem kdata (ψ : AddChar (AF F) ℂ) (hψ : IsCharAF F ψ) {S S' : Finset (He
         fouA ψ db (testT ρ S' U) (z.1.1 + z.2.1) * ψ ((z.1.1 + z.2.1) * s) =
           ((c : ℂ) * (A z.1.1 * ψ (z.1.1 * s))) * Bf z.2.1 := by
       intro z
-      have hz : z.2.1 * s = 0 := by rw [mul_comm]; exact fix_mul_ker hεε hs (memY z.2)
+      have hz : z.2.1 * s = 0 := by rw [mul_comm]; exact fix_mul_ker hs (memY z.2)
       rw [hfou, add_mul, hz, add_zero]
       ring
     rw [integral_congr_ae (Filter.Eventually.of_forall h2),

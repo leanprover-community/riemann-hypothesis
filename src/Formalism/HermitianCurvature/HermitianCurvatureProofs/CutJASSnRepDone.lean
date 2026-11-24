@@ -271,11 +271,11 @@ theorem pt_facts (hz : inWb k r z) (hz' : inWb k r z') (hT : 0 < Tz k r z) (hT' 
   have hνW : inWb k r (SSn.nu0 k r z z' μsec ζ) := by
     show inWb k r (SSn.unitH k r (SSn.prWv k r z (NF.muZ k r μsec ζ *ᵥ z')))
     unfold SSn.unitH
-    exact Qx8.inWb_smul (DU.prWv_inWb hz hy) _
+    exact Qx8.inWb_smul (DU.prWv_inWb hz) _
   have hνW' : inWb k r (SSn.nu0' k r z z' μsec ζ) := by
     show inWb k r (SSn.unitH k r (SSn.prWv k r z' ((NF.muZ k r μsec ζ)⁻¹ *ᵥ z)))
     unfold SSn.unitH
-    exact Qx8.inWb_smul (DU.prWv_inWb hz' hyi) _
+    exact Qx8.inWb_smul (DU.prWv_inWb hz') _
   refine ⟨hνW, ?_, h2, h1, hνW', ?_, h4, h3⟩
   · rw [← h1]; exact DU.prWv_perp hT hνW
   · rw [← h3]; exact DU.prWv_perp hT' hνW'
@@ -876,7 +876,7 @@ theorem line_nonvanishing_holds : LineNonzero := by
   have hνW : inWb P.k P.r ν := by
     show inWb P.k P.r (SSn.unitH P.k P.r (SSn.prWv P.k P.r Bs.z (μ *ᵥ Bs.z')))
     unfold SSn.unitH
-    exact Qx8.inWb_smul (DU.prWv_inWb hz hy) _
+    exact Qx8.inWb_smul (DU.prWv_inWb hz) _
   have hνz : herm (Hpk P.k P.r) ν Bs.z = 0 := by
     rw [← hνfix]; exact DU.prWv_perp hT hνW
   obtain ⟨Fr, hFr⟩ := Topx1.typ_frame_exists P.k P.r (by omega) Bs.z ν hz hT hνW hνz hνν
@@ -942,7 +942,7 @@ theorem line_at_most_one_holds : LineAtMost := by
   have hνW : inWb P.k P.r ν := by
     show inWb P.k P.r (SSn.unitH P.k P.r (SSn.prWv P.k P.r Bs.z (μ *ᵥ Bs.z')))
     unfold SSn.unitH
-    exact Qx8.inWb_smul (DU.prWv_inWb hz hy) _
+    exact Qx8.inWb_smul (DU.prWv_inWb hz) _
   have hνz : herm (Hpk P.k P.r) ν Bs.z = 0 := by
     rw [← hνfix]; exact DU.prWv_perp hT hνW
   obtain ⟨Fr, hFr⟩ := Topx1.typ_frame_exists P.k P.r (by omega) Bs.z ν hz hT hνW hνz hνν
@@ -1124,7 +1124,7 @@ theorem lineQ (P : M.Par) (Bs : B.RealPlaceData P.k P.r Wp Wq) (X : Q.ActualOps 
   have hνW : inWb P.k P.r ν := by
     show inWb P.k P.r (SSn.unitH P.k P.r (SSn.prWv P.k P.r Bs.z (μ *ᵥ Bs.z')))
     unfold SSn.unitH
-    exact Qx8.inWb_smul (DU.prWv_inWb hz hy) _
+    exact Qx8.inWb_smul (DU.prWv_inWb hz) _
   have hνz : herm (Hpk P.k P.r) ν Bs.z = 0 := by
     rw [← hνfix]; exact DU.prWv_perp hT hνW
   have hpos : 0 < PRho.nrmW P.k P.r Bs.z ν := by
@@ -1206,7 +1206,7 @@ theorem cross_section_at_point : AtCSec := by
   obtain ⟨s, t, hst, hSL⟩ := gTSSLocal_of_radT radial_torus_local_holds Wp Wq P Bs X d hH e he hkF
   have hadj := second_shift_adjoint_pointwise Wp Wq P Bs X d hH e he hkF s t hst hSL l hl
   have hTz := tz_TT P Bs hpl
-  have hRB := radBase_of P Bs hpl
+  have hRB := radBase_of P Bs
   have hζT : P.TT < Complex.normSq ζ := hζ
 
   have hsec : ∀ ρ, ((NF.QR P.k P.r Bs.z Bs.z').indicator fun q : (Fin P.r → ℂ) × ℂ => e ρ q.2) ∈

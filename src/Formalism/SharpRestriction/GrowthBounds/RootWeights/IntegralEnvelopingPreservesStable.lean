@@ -183,7 +183,7 @@ theorem isotypic_sum_generated_subreps (E : GLOps n K V) (lam : Fin n → ℤ) {
 end
 
 theorem isotypic_lattice_of_five_parts (D : Formalism.BasicNotions.D7) (hA : IsotypicProjectorFixedMem) (hB : GeneratedMultipleOfHWV) (hC1 : DualLatticeDivisibility) (hC2 : LatticeSubspaceBasis) (hD : GeneratedLatticeCorollary) :
-    TranslateCorollaryField D := by
+    TranslateCorollaryField := by
   intro p n' O _ _ _ S hG n _ V _ _ _ _ _ E hE M hM hMQ lam hlam e he π hπ c Y _ heY hyp
   have := dvr_fraction_field_charZero S hG.prime
   have hp0 : (p : KK O) ≠ 0 := by exact_mod_cast hG.prime.ne_zero

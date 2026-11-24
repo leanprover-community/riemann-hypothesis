@@ -64,7 +64,7 @@ theorem inU_of_adC {lev : Fin n → ℕ} {p q : Fin n} (hpq : lev p = lev q) {i 
       exact absurd rfl h
 
 theorem lF_suppIn_deg (n : ℕ) (lev : Fin n → ℕ) (V : Type) [AddCommGroup V] [Module ℂ V]
-    (E : Fin n → Fin n → Module.End ℂ V) (_hlev : Monotone lev) (x : Cn n V)
+    (E : Fin n → Fin n → Module.End ℂ V) (x : Cn n V)
     (hx : SuppIn (inU lev) x) (p q : Fin n) (hpq : lev p = lev q) :
     SuppIn (inU lev) (lF E p q x) ∧ ∀ j, Deg j x → Deg j (lF E p q x) := by
   unfold SuppIn at hx ⊢

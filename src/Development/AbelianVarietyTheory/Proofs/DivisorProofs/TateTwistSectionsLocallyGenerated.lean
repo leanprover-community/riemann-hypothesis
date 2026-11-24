@@ -153,7 +153,7 @@ theorem fsec_add {q : ℕ} (i : ℤ) {U : Scheme.{0}} (f₁ f₂ : Prim q Γ(U, 
 
 theorem fsec_loc_mult {q : ℕ} [NeZero q] (i : ℤ) {V : Scheme.{0}} (ζ : Prim q Γ(V, ⊤))
     (f : Prim q Γ(V, ⊤) →₀ ULift.{1} (ZMod q)) :
-    Loc V fun W k => ∃ c : ℕ, Sec.res k (fsec q i f) = c • twGen i (ζ.map k.appTop.hom) := by
+    Loc V fun _ k => ∃ c : ℕ, Sec.res k (fsec q i f) = c • twGen i (ζ.map k.appTop.hom) := by
   induction f using Finsupp.induction_linear with
   | zero => exact loc_all fun W k => ⟨0, by rw [fsec_zero, res_zero, zero_smul]⟩
   | add f₁ f₂ h₁ h₂ =>
@@ -167,7 +167,7 @@ theorem fsec_loc_mult {q : ℕ} [NeZero q] (i : ℤ) {V : Scheme.{0}} (ζ : Prim
     rw [fsec_single, res_nsmul, res_twGen, twGen_rel i (ζ.map k.appTop.hom) (ξ.map k.appTop.hom) a ha, smul_smul]
 
 theorem loc_mult {q : ℕ} [NeZero q] (i : ℤ) (U : Scheme.{0}) (ζ : Prim q Γ(U, ⊤)) (y : Sec (tw q i) U) :
-    Loc U fun V g => ∃ c : ℕ, Sec.res g y = c • twGen i (ζ.map g.appTop.hom) := by
+    Loc U fun _ g => ∃ c : ℕ, Sec.res g y = c • twGen i (ζ.map g.appTop.hom) := by
   refine loc_trans (loc_mono ((GlobalTheory.EtC.toSheafify_loc_bij_lift (ZMod q) (twP q i)).1 U y) ?_)
   rintro V g ⟨x, hx⟩
   obtain ⟨f, rfl⟩ := Submodule.Quotient.mk_surjective _ x
@@ -287,7 +287,7 @@ end GlobalTheory.TwSec
 
 namespace GlobalTheory.EtC
 
-theorem twist_sections : ∀ (q : ℕ) [NeZero q] (i : ℤ), (∀ (U : Scheme.{0}) (y : Sec (tw q i) U), Loc U fun V g => Sec.res g y = 0 ∨ ∃ (ζ : Prim q Γ(V, ⊤)) (c : ℕ), Sec.res g y = c • twGen i ζ) ∧ (∀ (U : Scheme.{0}) (ζ : Prim q Γ(U, ⊤)) (y : Sec (tw q i) U), Loc U fun V g => ∃ c : ℕ, Sec.res g y = c • twGen i (ζ.map g.appTop.hom)) ∧ (∀ (U : Scheme.{0}) [Nonempty U] (ζ : Prim q Γ(U, ⊤)) (c : ℕ), c • twGen i ζ = 0 → q ∣ c) ∧ (∀ (V U : Scheme.{0}) (g : V ⟶ U) (ζ : Prim q Γ(U, ⊤)), Sec.res g (twGen i ζ) = twGen i (ζ.map g.appTop.hom)) ∧ (∀ (U : Scheme.{0}) (ζ ξ : Prim q Γ(U, ⊤)) (a : (ZMod q)ˣ), ξ.1 = ζ.1 ^ (a : ZMod q).val → twGen i ξ = ((a ^ i : (ZMod q)ˣ) : ZMod q).val • twGen i ζ) ∧ ∀ (M : Shv (ZMod q)) (e : ∀ U : Scheme.{0}, Prim q Γ(U, ⊤) → Sec M U), (∀ (V U : Scheme.{0}) (g : V ⟶ U) ζ, Sec.res g (e U ζ) = e V (ζ.map g.appTop.hom)) → (∀ (U : Scheme.{0}) (ζ ξ : Prim q Γ(U, ⊤)) (a : (ZMod q)ˣ), ξ.1 = ζ.1 ^ (a : ZMod q).val → e U ξ = ((a ^ i : (ZMod q)ˣ) : ZMod q).val • e U ζ) → ∃! φ : tw q i ⟶ M, ∀ U ζ, Sec.map φ (twGen i ζ) = e U ζ := by
+theorem twist_sections : ∀ (q : ℕ) [NeZero q] (i : ℤ), (∀ (U : Scheme.{0}) (y : Sec (tw q i) U), Loc U fun V g => Sec.res g y = 0 ∨ ∃ (ζ : Prim q Γ(V, ⊤)) (c : ℕ), Sec.res g y = c • twGen i ζ) ∧ (∀ (U : Scheme.{0}) (ζ : Prim q Γ(U, ⊤)) (y : Sec (tw q i) U), Loc U fun _ g => ∃ c : ℕ, Sec.res g y = c • twGen i (ζ.map g.appTop.hom)) ∧ (∀ (U : Scheme.{0}) [Nonempty U] (ζ : Prim q Γ(U, ⊤)) (c : ℕ), c • twGen i ζ = 0 → q ∣ c) ∧ (∀ (V U : Scheme.{0}) (g : V ⟶ U) (ζ : Prim q Γ(U, ⊤)), Sec.res g (twGen i ζ) = twGen i (ζ.map g.appTop.hom)) ∧ (∀ (U : Scheme.{0}) (ζ ξ : Prim q Γ(U, ⊤)) (a : (ZMod q)ˣ), ξ.1 = ζ.1 ^ (a : ZMod q).val → twGen i ξ = ((a ^ i : (ZMod q)ˣ) : ZMod q).val • twGen i ζ) ∧ ∀ (M : Shv (ZMod q)) (e : ∀ U : Scheme.{0}, Prim q Γ(U, ⊤) → Sec M U), (∀ (V U : Scheme.{0}) (g : V ⟶ U) ζ, Sec.res g (e U ζ) = e V (ζ.map g.appTop.hom)) → (∀ (U : Scheme.{0}) (ζ ξ : Prim q Γ(U, ⊤)) (a : (ZMod q)ˣ), ξ.1 = ζ.1 ^ (a : ZMod q).val → e U ξ = ((a ^ i : (ZMod q)ˣ) : ZMod q).val • e U ζ) → ∃! φ : tw q i ⟶ M, ∀ U ζ, Sec.map φ (twGen i ζ) = e U ζ := by
   intro q _ i
   exact ⟨GlobalTheory.TwSec.loc_gen i, fun U ζ y => GlobalTheory.TwSec.loc_mult i U ζ y,
     fun U _ ζ c h => GlobalTheory.TwSec.dvd_of_smul_eq_zero i U ζ c h, fun V U g ζ => GlobalTheory.TwSec.res_twGen i g ζ,

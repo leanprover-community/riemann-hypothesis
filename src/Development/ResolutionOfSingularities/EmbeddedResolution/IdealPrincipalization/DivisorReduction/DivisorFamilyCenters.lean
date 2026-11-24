@@ -263,7 +263,7 @@ theorem DivisorReduction.divisorReductionSeq_center_nonempty (hres : FunctorialR
 theorem DivisorReduction.divisorReductionSeq_orderAt_le_mult (hres : FunctorialResolution.Blowup.StrictTransformIsBlowupOfClosedSubscheme.{u})
     (hfacts : DivisorReductionTerminationProperties hres blowupPreservesNoetherian)
     (n : ℕ) (L : PrincipalizationAssignment.{u}) (j : ℕ) (T : MarkedIdealWithBoundary.{u})
-    (hV : T.IsAdmissible) (_hdim : T.krullDimSucc ≤ n) (hO : T.IsOrderBoundedByMult)
+    (hV : T.IsAdmissible) (hO : T.IsOrderBoundedByMult)
     (hD : T.IsBalanced hV.locallyOfFiniteType) (hj : j < T.boundary.length) :
     ∀ i ≤ (DivisorReduction.divisorReductionSeq hres blowupPreservesNoetherian T (fun S _ => L S) j).length,
       ∀ x : ↥((DivisorReduction.divisorReductionSeq hres blowupPreservesNoetherian T
@@ -322,8 +322,8 @@ theorem DivisorReduction.divisorReductionSeq_orderAt_le_mult (hres : FunctorialR
 
 theorem divisorFamily_canonicalAlgorithmRules_length_eq_zero (hres : FunctorialResolution.Blowup.StrictTransformIsBlowupOfClosedSubscheme.{u})
     (n : ℕ) (L : PrincipalizationAssignment.{u}) (j : ℕ) (T : MarkedIdealWithBoundary.{u})
-    (hV : T.IsAdmissible) (_hdim : T.krullDimSucc ≤ n) (_hO : T.IsOrderBoundedByMult)
-    (_hD : T.IsBalanced hV.locallyOfFiniteType) (hj : j < T.boundary.length)
+    (hV : T.IsAdmissible)
+    (hj : j < T.boundary.length)
     (hcs : orderAtLeastLocus T.ideal T.mult = (∅ : Set ↥T.scheme)) :
     ((canonicalAlgorithmRules hres).divisorFamily L j T).length = 0 := by
   rw [divisorFamily_canonicalAlgorithmRules_eq_divisorReductionSeq,
@@ -352,7 +352,7 @@ theorem divisorFamily_canonicalAlgorithmRules_orderAt_le_mult (hres : Functorial
       ∀ x : ↥(((canonicalAlgorithmRules hres).divisorFamily L j T).schemeAt i),
         orderAt (((canonicalAlgorithmRules hres).divisorFamily L j T).ideal i) x ≤ (T.mult : ℕ∞) := by
   rw [divisorFamily_canonicalAlgorithmRules_eq_divisorReductionSeq]
-  exact DivisorReduction.divisorReductionSeq_orderAt_le_mult hres hfacts n L j T hV hdim hO hD hj
+  exact DivisorReduction.divisorReductionSeq_orderAt_le_mult hres hfacts n L j T hV hO hD hj
 
 end FunctorialResolution.EmbeddedResolution
 

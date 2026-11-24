@@ -95,7 +95,7 @@ theorem classSetFiniteL_of (hSigmaInvol : Formalism.UG.CS.SigmaInvol) (hTracePos
     (hFormSymm : Formalism.UG.CS.FormSymm) (hIsomUJ : Formalism.UG.CS.IsomUJ)
     (hGlobLatLattice : Formalism.UG.CS.GlobLatLattice) (hClassInj : Formalism.UG.CS.ClassInj)
     (hScaleBound : Formalism.UG.CS.ScaleBound) (hDualBound : Formalism.UG.CS.DualBound)
-    (hClassSetFiniteBdd : Formalism.UG.CS.ClassSetFiniteBdd) (hStdLatFull : Formalism.UG.CS.StdLatFull) :
+    (hClassSetFiniteBdd : Formalism.UG.CS.ClassSetFiniteBdd) :
     Formalism.UG.ClassSetFiniteL := by
   intro F E _ _ _ _ _ n _ _ σ J hσ hJ hdet hdef Λ hfin hspan
   have hinv : ∀ e, (σ : E →+* E) ((σ : E →+* E) e) = e := fun e => hSigmaInvol F E σ hσ e
@@ -186,7 +186,7 @@ theorem classSetFinite_of (hSigmaInvol : Formalism.UG.CS.SigmaInvol) (hTracePos 
     Formalism.UG.ClassSetFinite := by
   intro F E _ _ _ _ _ n _ _ σ J hσ hJ hdet hdef
   have h := classSetFiniteL_of hSigmaInvol hTracePos hFormSymm hIsomUJ hGlobLatLattice hClassInj hScaleBound
-    hDualBound hClassSetFiniteBdd hStdLatFull F E n σ J hσ hJ hdet hdef (stdLat (n := n) (A := E) (𝓞 E))
+    hDualBound hClassSetFiniteBdd F E n σ J hσ hJ hdet hdef (stdLat (n := n) (A := E) (𝓞 E))
     (hStdLatFull E n).1 (hStdLatFull E n).2
   have heq : levelAfL σ J (stdLat (n := n) (A := E) (𝓞 E)) = levelAf σ J := by
     unfold Formalism.UG.levelAfL Formalism.UG.levelAf

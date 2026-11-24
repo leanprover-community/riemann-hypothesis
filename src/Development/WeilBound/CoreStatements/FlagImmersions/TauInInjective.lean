@@ -994,7 +994,7 @@ theorem exists_forms_deg {y : (Σ k, ι k) → Ω} {φ : F →+* Ω} (hO : OverI
 
 theorem sum_log_of_val (r : HeightOneSpectrum (𝓞 F) →₀ ℚ) (M : ℕ) (α : F) (hα : α ≠ 0)
     (hval : ∀ v : HeightOneSpectrum (𝓞 F), ∃ n : ℤ, (n : ℚ) = M * r v ∧ v.valuation F α = WithZero.exp (-n))
-    (hM : 0 < M) :
+    :
     ∑ σ : F →+* ℂ, Real.log ‖σ α‖ =
       M * r.sum fun v q => (q : ℝ) * Real.log (Ideal.absNorm v.asIdeal) := by
   classical
@@ -1127,7 +1127,7 @@ theorem exists_flatHerm_of_adelic : ∀ (K : Type) [Fintype K] (ι : K → Type)
     push_cast
     ring
   have hunit : IsUnitSec (mCoordIdeal y) (g ^ M * Q) (h ^ M * P) := by
-    refine (isUnitSec_iff_chart K ι Ω y _ _ _ _ hO.1 hfH hgH (notMem_of_aeval_ne hf0)
+    refine (isUnitSec_iff_chart K ι Ω y _ _ _ _ hfH hgH (notMem_of_aeval_ne hf0)
       (notMem_of_aeval_ne hgg0)).2 fun c hc => ?_
     have hBc : (∏ k, y ⟨k, c k⟩ ^ A.a k) ≠ 0 := Finset.prod_ne_zero_iff.2 fun k _ => zpow_ne_zero _ (hc k)
     have hw : aeval y (g ^ M * Q) / aeval y (h ^ M * P) *
@@ -1167,7 +1167,7 @@ theorem exists_flatHerm_of_adelic : ∀ (K : Type) [Fintype K] (ι : K → Type)
   have hlog : ∀ σ, Real.log (κ σ) = Real.log (cinf σ) - (M : ℝ)⁻¹ * Real.log ‖σ α‖ := fun σ => by
     simp only [κ]
     rw [Real.log_div (hcinf σ).ne' (Real.rpow_pos_of_pos (hnα σ) _).ne', Real.log_rpow (hnα σ)]
-  have hsum := sum_log_of_val r M α hα hval hM
+  have hsum := sum_log_of_val r M α hα hval
   change -((∑ σ, Real.log (κ σ)) / (Module.finrank ℚ F : ℝ)) = _
   simp only [hlog]
   rw [Finset.sum_sub_distrib, ← Finset.mul_sum, hsum, inv_mul_cancel_left₀ hMne]

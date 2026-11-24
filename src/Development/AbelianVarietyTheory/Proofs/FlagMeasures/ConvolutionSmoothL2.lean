@@ -608,7 +608,7 @@ theorem integrableOn_of_sq {X : Type} [MeasurableSpace X] (μ : Measure X) (U : 
   · exact hm.restrict
 
 theorem integrable_mul_of_support {X : Type} [MeasurableSpace X] (μ : Measure X) (U : Set X)
-    (hU : MeasurableSet U) (h φ : X → ℂ) (hφ : AEStronglyMeasurable φ μ) (M : ℝ) (hM : ∀ x, ‖φ x‖ ≤ M)
+    (h φ : X → ℂ) (hφ : AEStronglyMeasurable φ μ) (M : ℝ) (hM : ∀ x, ‖φ x‖ ≤ M)
     (hs : ∀ x, x ∉ U → φ x = 0) (hi : IntegrableOn h U μ) :
     Integrable (fun g => φ g * h g) μ ∧ ‖∫ g, φ g * h g ∂μ‖ ≤ M * ∫ g in U, ‖h g‖ ∂μ := by
   have h1 : IntegrableOn (fun g => φ g * h g) U μ :=
@@ -637,7 +637,7 @@ theorem continuous_of_open_invariant {X G : Type} [TopologicalSpace X] [Group G]
 
 theorem locallyIntegrable_partial {X Z : Type} [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X]
     [MeasurableSpace X] [BorelSpace X] [MeasurableSpace Z] (μ : Measure X) (ν : Measure Z) [SFinite μ] [SFinite ν]
-    (K : Set Z) (hK : MeasurableSet K) (e : Z → ℂ) (he : AEStronglyMeasurable e ν) (M : ℝ) (hM : ∀ k, ‖e k‖ ≤ M)
+    (K : Set Z) (e : Z → ℂ) (he : AEStronglyMeasurable e ν) (M : ℝ) (hM : ∀ k, ‖e k‖ ≤ M)
     (hs : ∀ k, k ∉ K → e k = 0) (h : X × Z → ℂ)
     (hi : ∀ V, IsCompact V → IntegrableOn h (V ×ˢ K) (μ.prod ν)) :
     LocallyIntegrable (fun z => ∫ k, e k * h (z, k) ∂ν) μ := by
@@ -770,7 +770,7 @@ theorem convolutionSmoothL2 : ConvolutionSmoothL2 := by
       ‖f x‖ ≤ M * ‖c‖ * C * (tau1 B.I x)⁻¹ ^ m * ‖y‖ := by
     intro x
     obtain ⟨h1, h2⟩ := integrable_mul_of_support (B.I.muA B.μf) (tsupport a ×ˢ B.I.Kg g)
-      ((isClosed_tsupport a).measurableSet.prod hKm) _ (fun p : B.I.GA => a p.1 * e p.2) hφi.1 (M * ‖c‖)
+      _ (fun p : B.I.GA => a p.1 * e p.2) hφi.1 (M * ‖c‖)
       (fun p => by rw [norm_mul]; exact mul_le_mul (hM _) (heM _) (norm_nonneg _) hM0)
       (fun p hp => by
         by_cases h : p.2 ∈ B.I.Kg g
@@ -788,7 +788,7 @@ theorem convolutionSmoothL2 : ConvolutionSmoothL2 := by
       exact conv_eq_partial (muInf B.I) B.μf a e (B.I.ext y) z b (hmain (z, b)).1
     rw [e1]
     refine _root_.GlobalTheory.SmoothConv.smooth_convolution B.I a _ ha hac ?_
-    refine locallyIntegrable_partial (muInf B.I) B.μf (B.I.Kg g) hKm e hei.1 ‖c‖ heM he0
+    refine locallyIntegrable_partial (muInf B.I) B.μf (B.I.Kg g) e hei.1 ‖c‖ heM he0
       (fun p => B.I.ext y ((1, b) * p)) fun V hV => ?_
     obtain ⟨C', -, hb'⟩ := hloc V hV
     exact (hb' y (1, b)).1

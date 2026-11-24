@@ -271,7 +271,7 @@ theorem absA_le {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Reciproc
   have : Dw.mult b ≤ Dw.p + Dw.q := by unfold Datum.mult; split_ifs <;> omega
   exact_mod_cast this
 
-theorem collect {f r q L b X x Om w lam sc rd : ℝ} (hf : 8 ≤ f) (hr : 1 ≤ r) (_hq0 : 0 ≤ q) (hq : q ≤ r) (hL : 10 ≤ L)
+theorem collect {f r q L b X x Om w lam sc rd : ℝ} (hf : 8 ≤ f) (hr : 1 ≤ r) (hq : q ≤ r) (hL : 10 ≤ L)
     (hLx : L ≤ x) (hb : 1 ≤ b) (hZ : f * r * L ≤ X) (hOm : |Om| ≤ 3 * L) (hw0 : 0 ≤ w) (hw : w ≤ 10 * (f * r) * b)
     (h1 : lam ≤ ((1 + |Om|) / 2 + 2 * L + (2 * q + 1) * (6 * f + 48) * (2 * L)) * w)
     (h2 : sc ≤ 250 * f ^ 2 * r ^ 2 * (2 * L)) (h3 : rd ≤ 217 * (f * r * L) ^ 2) :
@@ -414,7 +414,7 @@ theorem slopeMax_le_of_const {PP A : ℝ} (hR : RecTied D L) (hG : GramAt p i)
     rw [Real.rpow_add hx0, mul_comm 2 A, Real.rpow_mul hx0.le, mul_comm]
     norm_cast
   rw [e]
-  exact collect hf hr (Nat.cast_nonneg _) hq hL hLx hb hZ hW.om (add_nonneg hs0 ht0) (by linarith) n2 n1 n3
+  exact collect hf hr hq hL hLx hb hZ hW.om (add_nonneg hs0 ht0) (by linarith) n2 n1 n3
 
 theorem slopeMax_le (h6 : GlobalTheory.Published.TamagawaSpecialUnitary) {PP A : ℝ} (hR : RecTied D L) (hG : GramAt p i)
     (hN : HostNum D L PP A 1) (hW : WtNum p i PP) :
@@ -610,7 +610,7 @@ theorem UpperTheory.Lit.Tam.tamagawaPeterssonLambdaSq_nonneg :
         AllWt.bergOn (U σ) (D.sp.W j) (dict σ) Z G y ≤
           ENNReal.ofReal (MainStatements.Tam.Plug.supConst2 D.host.E D.R.r D.host.d l.M w) :=
   fun hT D j H Dw l Xo c U dict hL σ hσ G hG w hw hsp Z y hy =>
-    GlobalTheory.BergComp.bergOn_le_of_sup D j H Dw l Xo c U dict hL σ hσ G hG _
+    GlobalTheory.BergComp.bergOn_le_of_sup D j H Dw l Xo c U dict hL σ hσ G _
       (UpperTheory.Lit.Tam.holSub_supE_sq_le_supConst2_mul_petE_sq hT D j H Dw l Xo c U dict hL σ hσ
         (AllWt.modelWt (U σ) G) w hw hsp (GlobalTheory.AllWt.Model.chi_modelWt (U σ) (hL.chiTriv σ hσ) G hG))
       Z y hy

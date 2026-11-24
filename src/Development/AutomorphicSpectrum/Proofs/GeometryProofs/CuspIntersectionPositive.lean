@@ -475,7 +475,7 @@ theorem extend_comp (s : 𝓞 E →+* ℂ) : (extend s).comp (algebraMap (𝓞 E
 
 def chr (t : E →+* ℂ) : 𝓞 E →* ℂ := ((t.comp (algebraMap (𝓞 E) E) : 𝓞 E →+* ℂ) : 𝓞 E →* ℂ)
 
-theorem chr_injective : Function.Injective (chr (E := E)) := fun t t' h =>
+theorem chr_injective : Function.Injective (chr (E := E)) := fun _ _ h =>
   IsLocalization.ringHom_ext (nonZeroDivisors (𝓞 E)) (RingHom.ext fun x => DFunLike.congr_fun h x)
 
 theorem span_eq_top :

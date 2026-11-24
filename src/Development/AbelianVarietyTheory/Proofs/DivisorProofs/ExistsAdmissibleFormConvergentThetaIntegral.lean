@@ -75,7 +75,7 @@ theorem exists_clm_integral {S Ω : Type} [AddCommGroup S] [Module ℂ S] [Topol
       exact integral_mono hfg (hf.add hg) fun x => by simp only [map_add (f := _)]; exact norm_add_le _ _)
     (fun c f => by
       rw [← integral_const_mul]
-      exact integral_congr_ae (Eventually.of_forall fun x => by simp [map_smul, norm_mul]))
+      exact integral_congr_ae (Eventually.of_forall fun x => by simp [map_smul]))
   have hq : ∀ f, q f = ∫ x, ‖T x f‖ ∂μ := fun f => rfl
   have hlsc : LowerSemicontinuous q := by
     rw [lowerSemicontinuous_iff_isClosed_preimage]

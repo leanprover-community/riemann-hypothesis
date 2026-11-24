@@ -51,7 +51,7 @@ namespace GlobalTheory
 namespace PDivGroup
 
 theorem ker_app_eq_kerIdeal_of_idempotents (p : ℕ) [Fact p.Prime] (k : Type) [CommRing k]
-    (G : PDivGroup p k) (u v : G ⟶ G) (huv : u + v = 𝟙 G) (h1 : u ≫ v = 0) (_h2 : v ≫ u = 0)
+    (G : PDivGroup p k) (u v : G ⟶ G) (huv : u + v = 𝟙 G) (h1 : u ≫ v = 0)
     (n : ℕ) : RingHom.ker (u.app n) = kerIdeal (v.app n) := by
   apply le_antisymm
   · intro a ha

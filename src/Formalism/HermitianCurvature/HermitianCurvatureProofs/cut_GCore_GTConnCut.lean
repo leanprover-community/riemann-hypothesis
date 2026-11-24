@@ -144,7 +144,7 @@ def GTCPhase : Prop :=
     GTHyp P Bs X d → ∀ e : M.Ty P → ℂ → (Wq →L[ℂ] Wp), IsFrameB P Bs e → KapF P Bs d e →
       ∀ A B : M.Ty P → ℂ → ℂ, SmAB P A B → ConnF P Bs d e A B → ∃ u, PhaseEq P A B u
 
-theorem modA_smooth (P : M.Par) (ρ : M.Ty P) (hTT : 0 ≤ P.TT) :
+theorem modA_smooth (P : M.Par) (ρ : M.Ty P) :
     ContDiffOn ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (modA P ρ) (Ann P) := by
   have hs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun ζ : ℂ => star ζ) := by
     first
@@ -179,7 +179,7 @@ theorem gTCPhase_of_cut : GTCPhaseOfCut := by
         ‖u ζ‖ = 1 ∧ star (u ζ) * NF.dZ u ζ = modA P ρ ζ - A ρ ζ ∧
           star (u ζ) * NF.dZb u ζ = -star (modA P ρ ζ - A ρ ζ) := by
     intro ρ
-    refine hA P.TT (fun w => modA P ρ w - A ρ w) hTT ((modA_smooth P ρ hTT).sub (hAB ρ).1) ?_ ?_
+    refine hA P.TT (fun w => modA P ρ w - A ρ w) hTT ((modA_smooth P ρ).sub (hAB ρ).1) ?_ ?_
     · intro ζ hζ
       exact hC Wp Wq P Bs X d hyp e he hk A B hAB hConn ρ ζ hζ
     · intro R hR0 hR2

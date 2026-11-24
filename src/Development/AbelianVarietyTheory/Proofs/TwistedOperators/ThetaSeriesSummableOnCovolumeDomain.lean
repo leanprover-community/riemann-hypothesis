@@ -348,7 +348,7 @@ def realLine (σ : (D.what₂.Tau → ℂ) →+ AE D) (S T : HSp D) (z : RW T S)
   map_add' a b := by rw [add_smul, map_add (f := _)]
 
 theorem isRealDir_realLine (h : Chart θ σ) (z : RW T S) : Formalism.L2.Theta.IsRealDir T S (realLine σ S T z) :=
-  ⟨(h.continuous_iota T S).comp (continuous_id.smul continuous_const), fun t => h.real_iota T S _⟩
+  ⟨(h.continuous_iota T S).comp (continuous_id.smul continuous_const), fun _ => h.real_iota T S _⟩
 
 theorem psi_realLine (h : Chart θ σ) (hψ : IsStdChar D ψ (-1)) (w : WO S T) (z : RW T S) (t : ℝ) :
     ψ (symplO S T (realLine σ S T z t) w) =

@@ -85,7 +85,7 @@ private theorem UpperTheory.Reformulated.B.Qi22.homW_mul {K : Type*} [NormedFiel
     hg p.2 (right_ne_zero_of_mul hne)]
 
 theorem UpperTheory.Reformulated.B.Qi22.homW_prod.{u, v, w} :
-    ∀ {K : Type u} [inst : NormedField K] {ι : Type v} {w : ι → ℤ} {α : Type w} (s : Finset α) (c : α → ℤ)
+    ∀ {K : Type u} [NormedField K] {ι : Type v} {w : ι → ℤ} {α : Type w} (s : Finset α) (c : α → ℤ)
       (F : α → MvPowerSeries ι K),
       (∀ i ∈ s, UpperTheory.Reformulated.B.Qi22.HomW w (c i) (F i)) → UpperTheory.Reformulated.B.Qi22.HomW w (∑ i ∈ s, c i) (∏ i ∈ s, F i) := by
   intro K inst ι w α s c F

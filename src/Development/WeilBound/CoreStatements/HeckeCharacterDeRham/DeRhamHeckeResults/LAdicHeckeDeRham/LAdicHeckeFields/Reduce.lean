@@ -774,8 +774,8 @@ theorem exists_unit_model : ∀ {E Ω : Type} [Field E] [NumberField E] [Field �
     { toFun := fun g =>
         ⟨⟨((μ (g : G E Ω) : (Qbar l)ˣ) : Qbar l), hmem _⟩,
           ⟨((μ ((g : G E Ω)⁻¹) : (Qbar l)ˣ) : Qbar l), hmem _⟩,
-          Subtype.ext (by simp [← Units.val_mul, ← map_mul]),
-          Subtype.ext (by simp [← Units.val_mul, ← map_mul])⟩
+          Subtype.ext (by simp [← Units.val_mul]),
+          Subtype.ext (by simp [← Units.val_mul])⟩
       map_one' := Units.ext (Subtype.ext (by simp))
       map_mul' := fun g h => Units.ext (Subtype.ext (by simp)) }
   have hψ : ∀ g, ((ψ g : ↥L.1) : Qbar l) = ((μ (g : G E Ω) : (Qbar l)ˣ) : Qbar l) := fun g => rfl

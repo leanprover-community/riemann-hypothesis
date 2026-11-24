@@ -279,7 +279,7 @@ theorem fin_slice_mem {Φ : (κ → AF F) → ℂ} (hΦ : Φ ∈ schA F κ) (y :
   | smul a x _ hx => exact Submodule.smul_mem _ a hx
 
 theorem at_infE (y : κ → mixedEmbedding.mixedSpace F) : At (evI F) (infE F y) := fun u hu =>
-  funext fun i => at_mk _ u hu
+  funext fun _ => at_mk _ u hu
 
 theorem rest_pure {f : SInf F κ} {r : (κ → AF F) → ℂ} (h : Rest (evI F) f r) :
     (∀ f' : (κ → mixedEmbedding.mixedSpace F) → ℂ, tens (evI F) f' r = pureA F f' fun z => r (finE F z)) ∧
@@ -320,7 +320,7 @@ theorem rest_of (f : SInf F κ) {g : (κ → Af F) → ℂ} (hg : g ∈ SB (κ �
     rw [h2, add_zero]
   simp only [this]
 
-theorem pureA_zero (g : (κ → Af F) → ℂ) : pureA F (0 : SInf F κ) g = 0 := funext fun x => zero_mul _
+theorem pureA_zero (g : (κ → Af F) → ℂ) : pureA F (0 : SInf F κ) g = 0 := funext fun _ => zero_mul _
 
 theorem acts_of {S : Module.End ℂ ((κ → AF F) → ℂ)} {T : SInf F κ →ₗ[ℂ] SInf F κ}
     (h : ∀ f : SInf F κ, ∀ g ∈ SB (κ → Af F), S (pureA F f g) = pureA F (T f) g) (f : SInf F κ) :

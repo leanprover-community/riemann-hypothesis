@@ -828,7 +828,7 @@ open Formalism.L2.Host
 namespace GlobalTheory.LocCompTy
 open GlobalTheory.HeightCounting GlobalTheory.RowTie GlobalTheory.SplitRead GlobalTheory.NPin GlobalTheory.PendOf
 
-theorem blockEig_alt (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (D : D7) (P : _root_.GlobalTheory.NPin.CharacterChoiceData hL D) (i : D.nd.Loc) (PI : D.naut.AV i)
+theorem blockEig_alt (hL : _root_.UpperTheory.Zero.LLC.RecTExists) (D : D7) (P : _root_.GlobalTheory.NPin.CharacterChoiceData hL D) (i : D.nd.Loc)
     (k : Fin 2) (v : D.nd.PlG k) (j : Fin D.R.m) (hj : j.1 + 1 = D.nd.j i) (s : SplitPlace D.host.E)
     (hsw : s.w = D.naut.plGw k v) (c : s.v.adicCompletion (maximalRealSubfield D.host.E) ≃+* s.w.adicCompletion D.host.E)
     (hcont : Continuous c) (hci : ∀ x : D.host.E, c (s.i x) = algebraMap D.host.E (s.w.adicCompletion D.host.E) x)
@@ -1054,7 +1054,7 @@ theorem localGlobal_compatible_at_place_alt (hPr : _root_.GlobalTheory.NRows.The
     have hh2 : Matrix.GeneralLinearGroup.map c.toRingHom (s.loc D.R.nV x) ∈
         GlobalTheory.BlockType.blockGrp (s.w.adicCompletion D.host.E) D.R.r D.R.t := by rw [hmap]; exact hh
     have h3 := φ.2 x hx _ hF
-    rw [_root_.GlobalTheory.LocCompTy.blockEig_alt hL D P i Q k v j0 hj0 s hw c hc hci F x hx hh2, map_smul] at h3
+    rw [_root_.GlobalTheory.LocCompTy.blockEig_alt hL D P i k v j0 hj0 s hw c hc hci F x hx hh2, map_smul] at h3
     rw [← hmap]; exact h3.symm
   have hinj : Function.Injective ι := by
     rw [← LinearMap.ker_eq_bot, Submodule.eq_bot_iff]

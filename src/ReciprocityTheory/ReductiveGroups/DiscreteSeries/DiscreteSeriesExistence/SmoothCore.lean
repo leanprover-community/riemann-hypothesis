@@ -150,7 +150,7 @@ theorem dS_eq_rdV (X : Matrix (Fin n) (Fin n) ℂ) (v : H) : dS σ X v = S7.RdV 
 theorem orbit_dS (hσ : IsURepOn (UJset ε) σ) {X : Matrix (Fin n) (Fin n) ℂ} (hX : inG ε X) {v : H}
     (hv : IsSmoothVecU ε σ v) {g : Matrix (Fin n) (Fin n) ℂ} (hg : inUJ ε g) :
     σ g (dS σ X v) = S7.RdV X (fun h => σ h v) g := by
-  have h := hasDerivAt_dS hσ hX hv
+  have h := hasDerivAt_dS hX hv
   have h2 : HasDerivAt (fun t : ℝ => σ g (σ (NormedSpace.exp ((t : ℂ) • X)) v)) (σ g (dS σ X v)) 0 :=
     ((σ g).restrictScalars ℝ).hasFDerivAt.comp_hasDerivAt (0 : ℝ) h
   have e : (fun t : ℝ => σ (g * NormedSpace.exp ((t : ℂ) • X)) v) =

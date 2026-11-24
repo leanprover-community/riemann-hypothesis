@@ -909,7 +909,7 @@ private theorem disjoint_support_center_iteratedComap_containedComponentsIdeal
     (disjoint_support_lowerIdealAfterBlowup_containedComponentsIdeal T hV hord j hj)) hw2 hz'
 
 theorem isSmoothDivisor_ker_embeddingIntoAmbient (hres : FunctorialResolution.Blowup.StrictTransformIsBlowupOfClosedSubscheme.{u})
-    (hno : BlowupPreservesNoetherian.{u}) (_hgeom : OrderAtComapOffExceptionalLocus.{u})
+    (hno : BlowupPreservesNoetherian.{u})
     (T : MarkedIdealWithBoundary.{u}) [AlgebraicGeometry.IsNoetherian T.scheme] (hV : T.IsAdmissible)
     (hord : ∀ x : ↥T.scheme, orderAt T.ideal x ≤ (T.mult : ℕ∞))
     (j : ℕ) (hj : j < T.boundary.length)

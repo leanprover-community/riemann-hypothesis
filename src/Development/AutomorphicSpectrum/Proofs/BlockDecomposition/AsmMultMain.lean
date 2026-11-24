@@ -978,7 +978,7 @@ theorem conv_eq_of_isKer : LgFacts → Unimod → RCalc → WaveSpeed → WaveEx
       have hlin := act_eq_sum_of_kernel hLg n μ E (ι := Bool) (fun b => if b then 1 else -1)
         (fun b => if b then conv μ E k k' else K) (fun y => conv μ E k k' y - K y) f
         (fun b => by cases b <;> simp [rc, rK])
-        (fun y _ => by simp [Fintype.sum_bool, sub_eq_add_neg]) hfc 1 h1
+        (fun y _ => by simp [sub_eq_add_neg]) hfc 1 h1
       have hc1 : act μ E (conv μ E k k') f 1 = act μ E k (act μ E k' f) 1 :=
         act_conv hLg n μ E k k' f rk rk' hfc 1 h1
       have hact' : ∀ x ∈ GLs n, act μ E k' f x = v 0 x := by

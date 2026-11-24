@@ -438,7 +438,6 @@ private theorem infinite_places (E : Type) [Field E] [NumberField E] :
 
 theorem exists_pow_smul_le_of_localization_eq {E : Type} [Field E] [NumberField E] {n : ℕ}
     (P : HeightOneSpectrum (𝓞 E)) (A B : Submodule (𝓞 E) (Sp E n)) (hA : A.FG)
-    (hB : Submodule.IsLattice E B)
     (h : ∀ Q : HeightOneSpectrum (𝓞 E), Q ≠ P → localization₂ Q.asIdeal A = localization₂ Q.asIdeal B) :
     ∃ k : ℕ, P.asIdeal ^ k • A ≤ B := by
   set I : Ideal (𝓞 E) := B.colon (A : Set (Sp E n)) with hIdef
@@ -480,8 +479,8 @@ theorem exists_pow_smul_le_of_locP_eq :
       (∀ Q : HeightOneSpectrum (𝓞 E), Q ≠ P → localization₂ Q.asIdeal A = localization₂ Q.asIdeal B) →
       ∃ k : ℕ, P.asIdeal ^ k • A ≤ B ∧ P.asIdeal ^ k • B ≤ A := by
   intro E _ _ _ n P A B hA hB h
-  obtain ⟨k₁, h₁⟩ := exists_pow_smul_le_of_localization_eq P A B hA.fg hB h
-  obtain ⟨k₂, h₂⟩ := exists_pow_smul_le_of_localization_eq P B A hB.fg hA (fun Q hQ => (h Q hQ).symm)
+  obtain ⟨k₁, h₁⟩ := exists_pow_smul_le_of_localization_eq P A B hA.fg h
+  obtain ⟨k₂, h₂⟩ := exists_pow_smul_le_of_localization_eq P B A hB.fg (fun Q hQ => (h Q hQ).symm)
   refine ⟨max k₁ k₂, ?_, ?_⟩
   · exact (Submodule.smul_mono_left (Ideal.pow_le_pow_right (le_max_left k₁ k₂))).trans h₁
   · exact (Submodule.smul_mono_left (Ideal.pow_le_pow_right (le_max_right k₁ k₂))).trans h₂

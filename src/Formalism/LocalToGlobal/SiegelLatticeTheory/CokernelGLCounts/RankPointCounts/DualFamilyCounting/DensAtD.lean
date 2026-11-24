@@ -151,7 +151,7 @@ theorem densMultIntAt_of (h1 : LocSelfDual) (h2 : GaPlusDiag) {D : Formalism.Bas
       exact this
     obtain ⟨-, hup, hlow⟩ := Formalism.L2.SG.Pf.DensLoc.ratio_bounds (K := D.host.E) p.asIdeal (by linarith)
       (j := D.R.k - 1 - cJ (VS D).hT (UPair D F0 F') (MMof D F0 F') p.asIdeal) (n := D.R.r) (s := 2)
-      (by omega) (by omega) (by norm_num)
+      (by omega) (by omega)
     have hlow' := hlow hp
     rw [hval p, Real.norm_eq_abs]
     set x : ℝ := ((Ideal.absNorm p.asIdeal : ℝ))⁻¹ with hx
@@ -193,7 +193,7 @@ theorem densLocBound_of_tied {D : Formalism.BasicNotions.D7} (hL : Formalism.L2.
 
 def DensInputT : Prop := ∀ D : Formalism.BasicNotions.D7, Formalism.L2.SG.Pf.LocCP.LocTied D → Formalism.L2.SG.DataInst.DensInputAt D
 
-theorem densInputT_holds : DensInputT := fun D hL => Formalism.L2.SG.DataCut.densInputAt_of_loc (densLocBound_of_tied hL)
+theorem densInputT_holds : DensInputT := fun _ hL => Formalism.L2.SG.DataCut.densInputAt_of_loc (densLocBound_of_tied hL)
 
 end Formalism.L2.SG.Pf.Cnt
 end -- clump:auto

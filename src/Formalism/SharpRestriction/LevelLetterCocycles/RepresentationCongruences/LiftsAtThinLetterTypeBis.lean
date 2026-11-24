@@ -131,7 +131,7 @@ theorem exists_fraction_in_frame [IsDomain O] [IsDiscreteValuationRing O] [IsAdi
         (lE W s * fa - lE W (s - si) * (algebraMap (LetA O n) W.EE (letE c) * algebraMap O W.EE x₀)) ∧
       (wa : ℝ) - (Bn : ℝ) / PD.p - (η : ℝ) / (PD.p : ℝ) ^ 2 - 1 ≤ si := by
   haveI : Fact PD.p.Prime := ⟨PD.hp⟩
-  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T hT hO hinj
+  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T hT hO
   obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible O
   have hR := GS.ringData_of_caseA_of_p9 W hcase hP9
   set y : ℝ := (wa : ℝ) - (Bn : ℝ) / PD.p - (η : ℝ) / (PD.p : ℝ) ^ 2 with hy
@@ -377,7 +377,7 @@ theorem exists_horizontal_lift_of_len_three_of_up [NeZero n] [Fintype (K →ₐ[
     (c : ZMod n) (hc : c ∈ (arcOf b w S η up size).cuts) {d : ℕ} (bb : Fin d → W.DD T₂)
     (sol : Fin d → ℕ → Fin d → LL)
     (hbb : IsHor W T₂ (c - (((arcOf b w S η up size).len c : ℕ) : ZMod n)) bb sol) (k₀ : Fin d)
-    (hk₀ : InLpp W (arcOf b w S η up size) T₂ c bb k₀) (halt : Alt b η up size)
+    (hk₀ : InLpp W (arcOf b w S η up size) T₂ c bb k₀)
     (hlen : (arcOf b w S η up size).len c = 3) (hU : up (c - 2) = true)
     (hOK : (arcOf b w S η up size).OK)
     (hth : Formalism.MainNotions.LiftingTheory.AI W F (c - 2) + η + 2 * (arcOf b w S η up size).σ PD.p + 2 ≤ size (c - 2)) :
@@ -395,7 +395,7 @@ theorem exists_horizontal_lift_of_len_three_of_up [NeZero n] [Fintype (K →ₐ[
   have hsur : Formalism.MainNotions.LiftingTheory.Sur W F := hSet.2.1
   have hJL : Formalism.MainNotions.LiftingTheory.JumpsLet W T₁ Mi hi := hSet.2.2.2.2.2.2
   have hnt : ∀ i, ¬ Formalism.MainNotions.TruncatedSeriesCountingBounds.Thick b η size i → size i ≤ w := hSet.2.2.2.2.2.1
-  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T₁ hW₁.1 hO hinj
+  obtain ⟨Br⟩ := exists_phiBridge W hcase hP9 T₁ hW₁.1 hO
   have hR := GS.ringData_of_caseA_of_p9 W hcase hP9
   have hqu : IsUnit (algebraMap (LetA O n) W.EE (qA W)) := GS.isUnit_qA hR
   have hqmem : qA W ∈ W.AΔ := GS.qA_mem W
@@ -890,7 +890,7 @@ theorem exists_liftsAt_le_of_len_three_of_up [NeZero n] [Fintype (K →ₐ[Qp] L
   obtain ⟨fa, si, hfa1, hfa2, hsi⟩ := exists_fraction_in_frame W hcase hP9 hO hinj T₁ hW₁.1 c (size (c - 2)) (size (c - 1) + S) η s hBn x₀
 
   obtain ⟨d₁, b₁, sol₁, c₁, hb₁, hlt, hpr⟩ := exists_horizontal_lift_of_len_three_of_up W hcase F hB CR hWR hW₁ hW₂ hArc hR2 hO hOv hinj hP9 hSec hHF hFL
-    c hc bb sol hbb k₀ hk₀ halt hlen hU hOK hth
+    c hc bb sol hbb k₀ hk₀ hlen hU hOK hth
   set σ := (arcOf b w S η up size).σ PD.p with hσdef
   set e₄ := s - si with he₄
 

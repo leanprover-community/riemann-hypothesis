@@ -339,11 +339,11 @@ theorem exists_fam (hD : ∀ n U (a : Sec ((res _ (tw q i)).X n) U), (∃ b, Sec
     ∃ a : ∀ U : Scheme.{0}, Sec (D.X s) U → Sec ((res _ (tw q k)).X s) U,
       (∀ (V U : Scheme.{0}) (g : V ⟶ U) (x : Sec (D.X s) U), Sec.res g (a U x) = a V (Sec.res g x)) ∧
       ∀ (U : Scheme.{0}) (x : Sec (D.X s) U) (c : Sec ((res _ (tw q k)).X s) U), Good μ ι s x c → a U x = c :=
-  glue_sec _ _ (fun U x c => Good μ ι s x c)
-    (fun U x => ClsSpec.loc_mono (localization₂ hD x) fun V g h => h.elim (fun ⟨ζ⟩ => ⟨_, good_prim μ ι s ζ _⟩)
+  glue_sec _ _ (fun _ x c => Good μ ι s x c)
+    (fun _ x => ClsSpec.loc_mono (localization₂ hD x) fun _ _ h => h.elim (fun ⟨ζ⟩ => ⟨_, good_prim μ ι s ζ _⟩)
       (fun h0 => ⟨0, good_zero μ ι s _ h0⟩))
-    (fun V U g x c h => good_res μ ι g h)
-    (fun U x c c' h h' => good_uniq μ hD x c c' h h')
+    (fun _ _ g _ _ h => good_res μ ι g h)
+    (fun _ x c c' h h' => good_uniq μ hD x c c' h h')
 
 end GlobalTheory.EtC.UnitMul
 

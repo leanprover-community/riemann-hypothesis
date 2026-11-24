@@ -135,7 +135,7 @@ theorem twRel_le_gKer (A : Type) [CommRing A] : twRel q 1 A ≤ gKer A := by
   rw [coefHom_one, coefHom_apply, hu, ofMul_pow, sub_self]
 
 def kapA (A : Type) [CommRing A] : ((Prim q A →₀ ULift.{1} (ZMod q)) ⧸ twRel q 1 A) →+ Additive Aˣ :=
-  QuotientAddGroup.lift (twRel q 1 A).toAddSubgroup (gHom A) (fun x hx => twRel_le_gKer A hx)
+  QuotientAddGroup.lift (twRel q 1 A).toAddSubgroup (gHom A) (fun _ hx => twRel_le_gKer A hx)
 
 theorem kapA_mk (A : Type) [CommRing A] (x : Prim q A →₀ ULift.{1} (ZMod q)) :
     kapA A (Submodule.Quotient.mk x) = gHom A x := rfl

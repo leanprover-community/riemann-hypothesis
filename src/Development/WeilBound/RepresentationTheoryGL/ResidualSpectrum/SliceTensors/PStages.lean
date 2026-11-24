@@ -156,8 +156,8 @@ theorem stages_of (hI : IndMap) : Stages := by
   set z₁ : ℂ := ((s : ℂ) - d₂) / 2 with hz₁
   set z₂ : ℂ := ((d₁ : ℂ) - r) / 2 with hz₂
   obtain ⟨T', hT'eq, hT'u, hT'sl⟩ := hI E r s V (tw V₁ z₁) (tw V₂ z₂) T (twMap r z₁ f₁) (twMap s z₂ f₂) hV.stable hV.aut
-    (isStable_tw hV₁.stable z₁) (isStable_tw hV₂.stable z₂) hTeq hTmem (twMap_equiv hV₁.stable hf₁eq)
-    (twMap_equiv hV₂.stable hf₂eq)
+    (isStable_tw hV₁.stable z₁) (isStable_tw hV₂.stable z₂) hTeq hTmem (twMap_equiv hf₁eq)
+    (twMap_equiv hf₂eq)
   have hr : r = d₁ * a := sum_const_eq hs₁
   have hs : s = d₂ * a := sum_const_eq hs₂
   have H : ∑ _ : Fin (d₁ + d₂), a = r + s := by

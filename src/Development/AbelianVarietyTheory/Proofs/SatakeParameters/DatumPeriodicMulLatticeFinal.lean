@@ -142,7 +142,7 @@ theorem unitV_det_add (hq : (q : 𝓞 E) ∈ P.asIdeal) (hq0 : (q : E) ≠ 0) (�
     LocE.unitV χ (Matrix.det (Matrix.of fun s s' : Fin t => M (f s) (f s') + Z (f s) (f s'))) =
       LocE.unitV χ (Matrix.det (Matrix.of fun s s' : Fin t => M (f s) (f s'))) :=
   unitV_congr χ (redP_det_congr _ _ (fun s s' => (hM s s').add (intAt_of_div hq0 (hZ _ _))) hM
-    fun s s' => redP_add_q hq hq0 _ (hZ _ _))
+    fun _ _ => redP_add_q hq hq0 _ (hZ _ _))
 
 theorem prod_det_add (hq : (q : 𝓞 E) ∈ P.asIdeal) (hq0 : (q : E) ≠ 0) (χ : ℕ → (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) (r t j : ℕ)
     (M Z : ℕ → ℕ → E) (hZ : ∀ p p', IntAt P (Z p p' / q)) (hM : ∀ p p', p' < r + j * t → IntAt P (M p p')) :

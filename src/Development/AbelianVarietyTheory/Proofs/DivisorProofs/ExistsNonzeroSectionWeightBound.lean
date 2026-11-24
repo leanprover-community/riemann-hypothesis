@@ -445,7 +445,7 @@ theorem mem_range_iff (T : CDVR) (x : T.Fr) : x ∈ (algebraMap T.V T.Fr).range 
 
 theorem local_injective_of_centred {Y : Scheme.{0}} {y : Y}
     {ν : Valuation (Y.presheaf.stalk y) (WithZero (Multiplicative ℤ))}
-    (hν : Centred y ν) (T : CDVR) (g : Y.presheaf.stalk y →+* T.V) (ρ : ℝ) (hρ : 0 < ρ)
+    (hν : Centred y ν) (T : CDVR) (g : Y.presheaf.stalk y →+* T.V) (ρ : ℝ)
     (hval : ∀ a, ν a ≠ 0 → -((WithZero.log (ν a) : ℤ) : ℝ) = ρ * (vV T.V (algebraMap T.V T.Fr (g a)) : ℝ)) :
     IsLocalHom g ∧ Function.Injective g := by
   have key : ∀ a, a ≠ 0 → vV T.V (algebraMap T.V T.Fr (g a)) = 0 → IsUnit a := fun a ha0 ha => by

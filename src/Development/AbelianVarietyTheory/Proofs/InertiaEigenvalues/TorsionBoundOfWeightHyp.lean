@@ -223,7 +223,7 @@ theorem finite_quot (K E : FinExt l) : Finite (↥(GK K) ⧸ (GK E).subgroupOf (
   rw [AlgEquiv.mul_apply, ← hx']
   exact AlgEquiv.symm_apply_apply _ _
 
-theorem jump_descends (l : ℕ) [Fact l.Prime] (P : LocPrime l) (K E : FinExt l) (_hKE : K.1 ≤ E.1)
+theorem jump_descends (l : ℕ) [Fact l.Prime] (P : LocPrime l) (K E : FinExt l)
     (d : ℕ) (M : GQ l → Matrix (Fin d) (Fin d) ℚ_[l])
     (hM : ∀ g ∈ GK K, ∀ h ∈ GK K, M (g * h) = M g * M h) (a : ℤ) (y : Fin d → P.R.BdR)
     (hy : ∀ g ∈ GK E, ((M g).map (algebraMap ℚ_[l] P.R.BdR)).mulVec
@@ -620,7 +620,7 @@ theorem htBasis_of_isCrys (P : LocPrime l) (AI : LocAinf l P) (Θ : ThetaL P AI)
   refine ⟨e, u, hli, fun k => ?_, fun σ hσ k => ?_⟩
   · obtain ⟨y, hy, hy1, hy2⟩ := hu k
     simp only [hFil] at hy1 hy2
-    obtain ⟨z, hz, hz1, hz2⟩ := _root_.GlobalTheory.InvDescent.jump_descends l P K E hle d M0 hmul (u k) y (hinv y hy) hy1 hy2
+    obtain ⟨z, hz, hz1, hz2⟩ := _root_.GlobalTheory.InvDescent.jump_descends l P K E d M0 hmul (u k) y (hinv y hy) hy1 hy2
     obtain ⟨Φ, h1, h2⟩ := _root_.GlobalTheory.exists_coord_tensor_dR (P.PD K) T'.ρ bV
     intro heq
     have hmem : Φ.symm z ∈ DdR (P.PD K) T'.ρ ⊓ FilV (P.PD K) (u k) := by
@@ -656,7 +656,7 @@ theorem htBasis_of_isCrys (P : LocPrime l) (AI : LocAinf l P) (Θ : ThetaL P AI)
     rw [hMσ]
     exact this
 
-theorem exists_htBasis : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW), adm7 D → ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let S := sit D.loc HW l (D.locA l) K s LL h; let E : S.Comparison₂ := ((F l).E K s LL h).tie; ∀ (T : LocLat S.G S.Qp S.LL S.O), IsCrysOn S S.W.GKs T → ∀ (d : ℕ) (M : GQ l → Matrix (Fin d) (Fin d) (PadicComplex l)) (A : ↥(OL LL) → Matrix (Fin d) (Fin d) (PadicComplex l)), IsMat K LL T M A → ∀ m : ℕ, s ≤ m → (Jset S T).Finite ∧ HTBasis (D.locA l).actC (D.loc l).χQ (Gj K m) M (Jset S T) := by
+theorem exists_htBasis : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW), adm7 D → ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let S := sit D.loc HW l (D.locA l) K s LL h; let _ : S.Comparison₂ := ((F l).E K s LL h).tie; ∀ (T : LocLat S.G S.Qp S.LL S.O), IsCrysOn S S.W.GKs T → ∀ (d : ℕ) (M : GQ l → Matrix (Fin d) (Fin d) (PadicComplex l)) (A : ↥(OL LL) → Matrix (Fin d) (Fin d) (PadicComplex l)), IsMat K LL T M A → ∀ m : ℕ, s ≤ m → (Jset S T).Finite ∧ HTBasis (D.locA l).actC (D.loc l).χQ (Gj K m) M (Jset S T) := by
   intro D HW F h7 l _ K s LL h S E' T hcr d M A hM m hm
   obtain ⟨Θ⟩ := _root_.GlobalTheory.ThetaTie.nonempty_thetaL D l
   obtain ⟨E, hEs⟩ : ∃ E : FinExt l, E.1 = Ks K s :=

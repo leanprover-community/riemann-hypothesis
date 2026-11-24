@@ -167,7 +167,7 @@ namespace GlobalTheory.CompanionTheory.SegGenNu
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
 theorem card_after {n : ℕ} (a : Fin n) :
-    ∑ b ∈ Finset.univ.filter (fun b => a < b), 1 = (Fin.rev a : ℕ) := by
+    ∑ _ ∈ Finset.univ.filter (fun b => a < b), 1 = (Fin.rev a : ℕ) := by
   have h : Finset.univ.filter (fun b : Fin n => a < b) = Finset.Ioi a := by
     ext b; simp
   rw [h]
@@ -242,7 +242,7 @@ theorem first_eq (hJ : LSegJacquet k) {G G' : Segment k} {x : IrrGL (k := k)} (h
   exact eq_of_isLSeg (hL l) h6
 
 theorem lSegGeneric_of_nuPair (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
-    [IsNonarchimedeanLocalField k] (_hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (hJ : Zc.LSegJacquet k)
+    [IsNonarchimedeanLocalField k] (hJ : Zc.LSegJacquet k)
     (hP : GlobalTheory.BZSeg.NuPair k) : GlobalTheory.BZSeg.LSegGeneric k := by
   intro Δ N V _ _ π hπ
   by_contra hg
@@ -435,7 +435,7 @@ theorem unlinkedRealize_of (hA : GlobalTheory.Published.IrreducibleAdmissibleGL)
 theorem unlinkedRealize (hJ : Zc.LSegJacquet k) (hN : GlobalTheory.BZSeg.NuPair k) : UnlinkedRealize k :=
   unlinkedRealize_of PositivityTheory.Tls2.BZGL.irreducibleAdmissibleGL_top
     (GlobalTheory.RgGu.Unl.lUnlinkedIrr_nu k hJ PositivityTheory.Geo.geometricLemmaFiltration hN)
-    (_root_.GlobalTheory.CompanionTheory.SegGenNu.lSegGeneric_of_nuPair k PositivityTheory.Tls2.BZGL.irreducibleAdmissibleGL_top hJ hN)
+    (_root_.GlobalTheory.CompanionTheory.SegGenNu.lSegGeneric_of_nuPair k hJ hN)
     (_root_.GlobalTheory.CompanionTheory.Leib.genericProdIff_of_whitHeredity k (PositivityTheory.rg.gu.hered2.whitHeredity_all k))
 
 end GlobalTheory.RgGu
@@ -584,7 +584,7 @@ def off (j : ℕ) : Fin 3 → ℕ := ![0, j, j + 2]
 theorem off_add_grp_le {h j : ℕ} (hj : j + 1 < h) (a : Fin 3) : off j a + grp h j a ≤ h := by
   fin_cases a <;> simp [off, grp] <;> omega
 
-theorem off_add_grp_le_off {h j : ℕ} (hj : j + 1 < h) {a a' : Fin 3} (haa : a < a') :
+theorem off_add_grp_le_off {h j : ℕ} {a a' : Fin 3} (haa : a < a') :
     off j a + grp h j a ≤ off j a' := by
   fin_cases a <;> fin_cases a' <;> simp [off, grp] at haa ⊢
 
@@ -599,7 +599,7 @@ theorem place_strictMono {h j : ℕ} (hj : j + 1 < h) : StrictMono (place hj) :=
   obtain ⟨a, b⟩ := c
   obtain ⟨a', b'⟩ := c'
   rcases Sigma.Lex.lt_def.1 hc with hlt | ⟨e, hlt⟩
-  · have h1 : off j a + grp h j a ≤ off j a' := off_add_grp_le_off hj hlt
+  · have h1 : off j a + grp h j a ≤ off j a' := off_add_grp_le_off hlt
     have h2 : (b : ℕ) < grp h j a := b.2
     show off j a + b < off j a' + b'
     omega

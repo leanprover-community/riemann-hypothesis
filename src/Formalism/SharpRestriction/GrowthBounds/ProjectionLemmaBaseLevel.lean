@@ -107,7 +107,7 @@ def tI (C₀ C : ℝ) (p n' m : ℕ) (TT : Finset (Fin n')) (G' N₁ : ℕ) (a b
     C * N * N₁ * (a / (p : ℝ) ^ 2 + b' / p + La * a / (p * k) + La * b' / k) +
     C * N * (Q * c + k * Q + k * Real.logb p a + ccl) + 2 * n' * ccl
 
-def Conclusion2 (_D : Formalism.BasicNotions.D7) (C₀ CH C : ℝ) : Prop :=
+def Conclusion2 (C₀ CH C : ℝ) : Prop :=
   ∀ (p n' m : ℕ) (TT : Finset (Fin n')) (G' N₁ : ℕ) (Y Yb a b' bl bu : ℝ) (ccl Dp cStar : ℕ),
     HypI C₀ CH p n' m TT G' N₁ Y Yb a b' bl bu ccl Dp cStar →
     ∃ κ : (TT → ℤ) → (TT → ℤ) → ℝ,
@@ -165,9 +165,9 @@ def CBoundI (Cc : ℝ) {n' : ℕ} (p m : ℕ) (TT : Finset (Fin n')) (a : ℕ) (
   (c : ℝ) ≤ Cc * (cStar + TT.card * ((m : ℝ) + 1) * Real.logb p a + TT.card * ccl + n' * ccl)
 
 def PathPairCorrespondence (D : Formalism.BasicNotions.D7) (C₀ CH CA CE1 CE2 Cc : ℝ) : Prop :=
-  ∀ X : Inst, Conclusion1 D C₀ CH CH CH CH CH CE1 CE2 Cc CA X
+  ∀ X : Inst, Conclusion1 C₀ CH CH CH CH CH CE1 CE2 Cc CA X
 
-def admB2 (_D : Formalism.BasicNotions.D7) (C₀ CH CA CE1 CE2 Cm Ckap Ct Cc : ℝ) : Prop :=
+def admB2 (C₀ CH CA CE1 CE2 Cm Ckap Ct Cc : ℝ) : Prop :=
   ∀ (p : ℕ) (W Qq O Kf : Type) [CommRing W] [IsDomain W] [IsDiscreteValuationRing W] [Field Qq] [Algebra W Qq]
     [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field Kf] [Algebra O Kf]
     (ι : Qq →+* Kf) (σ : Qq ≃+* Qq) (j : W →+* O) (w : O)
@@ -187,7 +187,7 @@ def admB2 (_D : Formalism.BasicNotions.D7) (C₀ CH CA CE1 CE2 Cm Ckap Ct Cc : �
             ∑ jj, kapTI O C₀ CA CE1 CE2 Cm p n' m TT G' N₁ Y a b' c aT bT jj) *
           (dimHH (m := m) Kf TT aT bT : ℝ) / gaussianNumber (p ^ n') (m + 1))
 
-def admB3 (_D : Formalism.BasicNotions.D7) (C₀ CH CE1 CE2 Ckap Cc Cs : ℝ) : Prop :=
+def admB3 (C₀ CH CE1 CE2 Ckap Cc Cs : ℝ) : Prop :=
   ∀ (p : ℕ) (W Qq O Kf : Type) [CommRing W] [IsDomain W] [IsDiscreteValuationRing W] [Field Qq] [Algebra W Qq]
     [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field Kf] [Algebra O Kf]
     (ι : Qq →+* Kf) (σ : Qq ≃+* Qq) (j : W →+* O) (w : O)
@@ -206,7 +206,7 @@ def admB3 (_D : Formalism.BasicNotions.D7) (C₀ CH CE1 CE2 Ckap Cc Cs : ℝ) : 
               (segAPlus TT aT jj) mm : ℝ) ∧
         kp ≤ Cs * TT.card * N₁ / Y
 
-def ColumnFamilyLowerSet (_D : Formalism.BasicNotions.D7) (C₀ CH CE1 CE2 Ct Cc : ℝ) : Prop :=
+def ColumnFamilyLowerSet (C₀ CH CE1 CE2 Ct Cc : ℝ) : Prop :=
   ∀ (p n' m : ℕ) [NeZero m] (TT : Finset (Fin n')) (G' N₁ : ℕ) (Y Yb : ℝ) (a : ℕ) (b' bl bu : ℝ)
     (ccl Dp cStar : ℕ) (aT bT : Fin n' → ℕ) (c : ℕ),
     p.Prime → 5 ≤ p → 2 ≤ n' → Even n' →
@@ -218,18 +218,18 @@ def ColumnFamilyLowerSet (_D : Formalism.BasicNotions.D7) (C₀ CH CE1 CE2 Ct Cc
       ((∑ jj, blockOrd p (segI C₀ CE1 CE2 p n' m TT G' N₁ Y a b' c bT jj) (bs jj) : ℕ) : ℝ) ≤
         t0I C₀ Ct p m TT G' N₁ a b' c aT bT
 
-def GenericProjectionCriterion (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.NablaDeltaComparisonField D
+def GenericProjectionCriterion (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.NablaDeltaComparisonField
 
-def ColumnFamilyClosure (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.IsotypicProjectorTheoremField D ∧ Formalism.MainNotions.CovariantDegrees.FilteredProjectorCorollaryField D
+def ColumnFamilyClosure (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.IsotypicProjectorTheoremField ∧ Formalism.MainNotions.CovariantDegrees.FilteredProjectorCorollaryField
 
-def TensorColumnFamily (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.adm5 D
+def TensorColumnFamily (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.adm5
 
-def BranchingColumnFamily (D : Formalism.BasicNotions.D7) : Prop := ArchimedeanSignatureMatching D ∧ adm5 D ∧ adm6 D ∧ adm7 D
+def BranchingColumnFamily (D : Formalism.BasicNotions.D7) : Prop := ArchimedeanSignatureMatching ∧ adm5 ∧ adm6 ∧ adm7
 
-def GlobalSectionsSchur (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.AutomorphicSideConclusion D ∧ Formalism.MainNotions.CovariantDegrees.HyperplaneRank D ∧ Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D
+def GlobalSectionsSchur (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.AutomorphicSideConclusion ∧ Formalism.MainNotions.CovariantDegrees.HyperplaneRank D ∧ Formalism.MainNotions.CovariantDegrees.DefiniteRankOne
 
 def BracketPolynomialSpan (D : Formalism.BasicNotions.D7) : Prop :=
-  Formalism.MainNotions.CovariantDegrees.GlobalSectionsSchur D ∧ Formalism.MainNotions.CovariantDegrees.BracketPolynomialSpan D ∧ Formalism.MainNotions.CovariantDegrees.GradedLatticeStable D ∧ Formalism.MainNotions.CovariantDegrees.WeylDualityLattice D
+  Formalism.MainNotions.CovariantDegrees.GlobalSectionsSchur ∧ Formalism.MainNotions.CovariantDegrees.BracketPolynomialSpan ∧ Formalism.MainNotions.CovariantDegrees.GradedLatticeStable ∧ Formalism.MainNotions.CovariantDegrees.WeylDualityLattice D
 
 def CartanDomain : Prop :=
   ∀ (O Kf : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field Kf] [Algebra O Kf]
@@ -246,15 +246,15 @@ def CartanOnto : Prop :=
     Antitone lam → Antitone mu →
     H0 O m (lam + mu) Λ = Submodule.span O {X | ∃ F ∈ H0 O m lam Λ, ∃ G ∈ H0 O m mu Λ, X = F * G}
 
-def GradedLatticeStable (_D : Formalism.BasicNotions.D7) : Prop := CartanDomain ∧ CartanOnto
+def GradedLatticeStable : Prop := CartanDomain ∧ CartanOnto
 
-def NestedTypeBound (_D : Formalism.BasicNotions.D7) : Prop := WittIdent ∧ FlatTop ∧ Formalism.MainNotions.ColumnSystems.FlatHH
+def NestedTypeBound : Prop := WittIdent ∧ FlatTop ∧ Formalism.MainNotions.ColumnSystems.FlatHH
 
-def TypeDecompositionsCommute (_D : Formalism.BasicNotions.D7) : Prop := DualHeightBasis ∧ DualHeightInclusion ∧ BePerfect ∧ HLSpans
+def TypeDecompositionsCommute : Prop := DualHeightBasis ∧ DualHeightInclusion ∧ BePerfect ∧ HLSpans
 
-def JointComponentsPaths (_D : Formalism.BasicNotions.D7) : Prop := TestSide
+def JointComponentsPaths : Prop := TestSide
 
-def SaturatedLowerSetSpan (_D : Formalism.BasicNotions.D7) : Prop := LPOneEvery
+def SaturatedLowerSetSpan : Prop := LPOneEvery
 
 def WeylV : Prop :=
   ∀ (Kf : Type) [Field Kf] (n' m : ℕ) (lam0 : Fin n' → Fin (m + 1) → ℤ), IsDominant lam0 →
@@ -262,15 +262,15 @@ def WeylV : Prop :=
       if i < j then (((lamAt lam0 s i : ℤ) : ℚ) - ((lamAt lam0 s j : ℤ) : ℚ) + ((j : ℕ) : ℚ) - ((i : ℕ) : ℚ)) /
         (((j : ℕ) : ℚ) - ((i : ℕ) : ℚ)) else 1
 
-def PairedPathIndependence (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.ColumnSystems.adm3 D ∧ WeylV
+def PairedPathIndependence (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.ColumnSystems.adm3 ∧ WeylV
 
 def AdmT (D : Formalism.BasicNotions.D7) : Prop :=
-  GenericProjectionCriterion D ∧ ColumnFamilyClosure D ∧ TensorColumnFamily D ∧ BranchingColumnFamily D ∧ GlobalSectionsSchur D ∧ BracketPolynomialSpan D ∧ GradedLatticeStable D ∧ NestedTypeBound D ∧ TypeDecompositionsCommute D ∧ JointComponentsPaths D ∧
-    SaturatedLowerSetSpan D ∧ PairedPathIndependence D
+  GenericProjectionCriterion D ∧ ColumnFamilyClosure D ∧ TensorColumnFamily D ∧ BranchingColumnFamily D ∧ GlobalSectionsSchur D ∧ BracketPolynomialSpan D ∧ GradedLatticeStable ∧ NestedTypeBound ∧ TypeDecompositionsCommute ∧ JointComponentsPaths ∧
+    SaturatedLowerSetSpan ∧ PairedPathIndependence D
 
 def AdmB (D : Formalism.BasicNotions.D7) (C₀ CH CA CE1 CE2 Cm Ckap Ct Cc Cs : ℝ) : Prop :=
-  PathPairCorrespondence D C₀ CH CA CE1 CE2 Cc ∧ admB2 D C₀ CH CA CE1 CE2 Cm Ckap Ct Cc ∧ admB3 D C₀ CH CE1 CE2 Ckap Cc Cs ∧
-    ColumnFamilyLowerSet D C₀ CH CE1 CE2 Ct Cc ∧ AdmT D
+  PathPairCorrespondence D C₀ CH CA CE1 CE2 Cc ∧ admB2 C₀ CH CA CE1 CE2 Cm Ckap Ct Cc ∧ admB3 C₀ CH CE1 CE2 Ckap Cc Cs ∧
+    ColumnFamilyLowerSet C₀ CH CE1 CE2 Ct Cc ∧ AdmT D
 
 def ClosedA (P : ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → ℝ → Prop) : Prop :=
   ∀ Cc : ℝ, 0 ≤ Cc → ∃ T0 : ℝ, 0 < T0 ∧ ∀ C₀ : ℝ, T0 ≤ C₀ →
@@ -283,12 +283,12 @@ def ClosedP (P : ℝ → ℝ → ℝ → Prop) : Prop :=
 
 def AdmBE (D : Formalism.BasicNotions.D7) : Prop := ClosedA (AdmB D)
 
-def projection_lemma_base_level (D : Formalism.BasicNotions.D7) : Prop := ClosedP (Conclusion2 D)
+def projection_lemma_base_level (D : Formalism.BasicNotions.D7) : Prop := ClosedP (Conclusion2)
 
 def SecondPartClosed (D : Formalism.BasicNotions.D7) : Prop := AdmBE D → projection_lemma_base_level D
 
 def Conclusion2Family {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (C₀ CH C : ℝ) : Prop :=
-  ∀ x (i : Fm.Ix x), Conclusion2 (Fm.D x i) C₀ CH C
+  ∀ x (i : Fm.Ix x), Conclusion2 C₀ CH C
 
 end Formalism.MainNotions.flipOneThree
 

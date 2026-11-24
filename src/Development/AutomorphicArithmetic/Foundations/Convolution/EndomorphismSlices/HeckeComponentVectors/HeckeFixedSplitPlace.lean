@@ -98,7 +98,7 @@ theorem atH_thP_loc_ne {w v : Pl E} (h : GlobalTheory.EulerTw.cPl E v ≠ w) (m 
     (g := ((locGL E a w m.1, locGL E b w m.2) : Hf E a b)) (h := 1) (by rw [atH_loc_ne h, map_one])
   rw [this, map_one, map_one]
 
-theorem cpH_eH_self (hS : IsSection S) (i : Slot S) (m : GLw a i.pl × GLw b i.pl) : cpH a b i (eH a b i m) = m := by
+theorem cpH_eH_self (i : Slot S) (m : GLw a i.pl × GLw b i.pl) : cpH a b i (eH a b i m) = m := by
   rcases i with w | w
   · exact atH_loc_self w.1 m
   · exact (congrArg (GlobalTheory.CompanionTheory.SuppFinTw.atH a b w.1) (GlobalTheory.CompanionTheory.SuppFinTw.thP_thP _)).trans (atH_loc_self w.1 m)
@@ -164,7 +164,7 @@ private theorem eH_mem {S : Set (Pl E)} {Z : Finset (Pl E)} (hS : IsSection S) (
     intro j
     by_cases hj : j = i
     · subst hj
-      rw [Sl.cpH_eH_self hS]
+      rw [Sl.cpH_eH_self]
       exact hm
     · rw [Sl.cpH_eH_ne hS i j m hj]
       exact one_mem _

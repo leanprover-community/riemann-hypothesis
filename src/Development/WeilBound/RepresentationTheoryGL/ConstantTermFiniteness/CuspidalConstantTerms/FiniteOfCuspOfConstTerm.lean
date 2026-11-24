@@ -987,7 +987,7 @@ theorem parFlag_le_of_subset {r s t : ℕ} (X : Matrix (Fin n) (Fin r) E) {S T :
     (hs : s ≤ r) (ht : t ≤ r) (hst : s ≤ t) (hS : ∀ i : Fin r, i.val < s ↔ ∃ k ∈ S, i ≤ k) :
     parFlag σ J (X.submatrix id (Fin.castLE ht)) (fun i : Fin t => (T.filter (· < Fin.castLE ht i)).card) ≤
       parFlag σ J (X.submatrix id (Fin.castLE hs)) (fun i : Fin s => (S.filter (· < Fin.castLE hs i)).card) :=
-  fun _ ⟨⟨B, hB, e⟩, B', hB', e'⟩ =>
+  fun _ ⟨⟨_, hB, e⟩, _, hB', e'⟩ =>
     ⟨exists_block_of_subset X hST hs ht hst hS hB e, exists_block_of_subset X hST hs ht hst hS hB' e'⟩
 
 def top {r : ℕ} (S : Finset (Fin r)) : ℕ := S.sup fun k => k.val + 1

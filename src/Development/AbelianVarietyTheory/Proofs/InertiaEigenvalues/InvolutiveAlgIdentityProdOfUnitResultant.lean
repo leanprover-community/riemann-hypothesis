@@ -438,8 +438,8 @@ def fixProd (B C : InvAlg K) : {x : (B.prod C).Aˣ // (B.prod C).σ (x : (B.prod
   toFun x := (⟨(MulEquiv.prodUnits (M := B.A) (N := C.A) x.1).1, congrArg Prod.fst x.2⟩,
     ⟨(MulEquiv.prodUnits (M := B.A) (N := C.A) x.1).2, congrArg Prod.snd x.2⟩)
   invFun y := ⟨(MulEquiv.prodUnits (M := B.A) (N := C.A)).symm (y.1.1, y.2.1), Prod.ext y.1.2 y.2.2⟩
-  left_inv x := Subtype.ext (Units.ext rfl)
-  right_inv y := Prod.ext (Subtype.ext (Units.ext rfl)) (Subtype.ext (Units.ext rfl))
+  left_inv _ := Subtype.ext (Units.ext rfl)
+  right_inv _ := Prod.ext (Subtype.ext (Units.ext rfl)) (Subtype.ext (Units.ext rfl))
 
 def clProd (B C : InvAlg K) : (B.prod C).Cl ≃ B.Cl × C.Cl where
   toFun := Quot.lift (fun x => (Quot.mk _ (fixProd B C x).1, Quot.mk _ (fixProd B C x).2)) (by

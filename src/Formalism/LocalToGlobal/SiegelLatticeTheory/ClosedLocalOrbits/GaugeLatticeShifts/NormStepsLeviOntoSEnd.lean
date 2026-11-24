@@ -313,8 +313,7 @@ theorem lf_frame_core (I : AutInst) (g : ℕ) {ε : I.E ⊗[I.F] Af I.F} (hεO :
     (hQ0O : ∀ k l, Q0 k l ∈ IntAf I.F I.E) (hQ0 : Q0 * Q0 = 1) (hu0 : ∀ k, u0 k ∈ I.Lf)
     (hc : ∀ k, ε • (uR k - u0 k) ∈ mL I g) (hgr : ∀ k l, ZMod' I g (hA I (u0 k) (u0 l) - Q0 k l))
     {m : ℕ} (ew : I.E ⊗[I.F] Af I.F) (bw bwd : Fin m → VA I) (hewi : ew * ew = ew)
-    (hewO : ew ∈ IntAf I.F I.E) (hbL : ∀ i, bw i ∈ I.Lf ∧ bwd i ∈ I.Lf) (hbw : ∀ i, bw i = ew • bw i)
-    (hbwd : ∀ i, bwd i = sigA I ew • bwd i)
+    (hewO : ew ∈ IntAf I.F I.E) (hbL : ∀ i, bw i ∈ I.Lf ∧ bwd i ∈ I.Lf)
     (hdual : ∀ i j, ZMod' I g (hA I (bwd i) (bw j) - if i = j then ew else 0))
     (hW : ∀ k j, ZMod' I g (hA I (u0 k) (bw j)) ∧ ZMod' I g (hA I (u0 k) (bwd j))) :
     ∃ (η : I.E ⊗[I.F] Af I.F) (b d : Fin m → VA I), η ∈ IntAf I.F I.E ∧ η * η = η ∧ η * ew = η ∧
@@ -553,7 +552,7 @@ theorem exact_dual_frame_exists {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSe
   obtain ⟨ε, hεO, hεε, hσε, h1ε, hU⟩ := hS
   obtain ⟨η, b, d, h1, h2, h3, h4, h5, h6, h7, h8, h9⟩ := lf_frame_core X.B.I X.B.g hεO hεε hσε h1ε hU
     (lfUR X u) (referenceFrameFamily X) (hyperbolicMinusOneMatrix _ D.R.rS) (hyperbolic_matrix_integral X.B.I D.R.rS) (hyperbolic_matrix_sq_eq_one _ D.R.rS) (reference_frame_mem_lattice X)
-    (lf_uR_cong X u hεO hU) (reference_frame_gram_congruence X) X.ew X.bw X.bwd X.ew_idem X.ew_int X.vectorsInLattice.2.2 X.bw_w X.bwd_w
+    (lf_uR_cong X u hεO hU) (reference_frame_gram_congruence X) X.ew X.bw X.bwd X.ew_idem X.ew_int X.vectorsInLattice.2.2
     X.bw_dual (reference_frame_beta_orthogonal X)
   refine ⟨η, b, d, h1, h2, h3, h4, h5, h6, ?_, h8, h9⟩
   intro y hy i

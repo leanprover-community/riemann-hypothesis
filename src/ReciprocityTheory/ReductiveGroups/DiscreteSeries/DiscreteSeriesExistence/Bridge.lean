@@ -35,7 +35,7 @@ theorem brIdxSum_root (a b : Fin n) : brIdxSum (Formalism.REAL.root a b) = (a : 
   simp [brIdxSum, Formalism.REAL.root, Pi.single_apply, mul_sub, Finset.sum_sub_distrib]
 
 theorem brIdxSum_cdom_sum (ε : Fin n → Bool) (c : Fin n → Fin n → ℕ)
-    (_hc : ∀ a b, c a b ≠ 0 → a < b ∧ ε a = ε b) :
+    :
     brIdxSum (∑ a, ∑ b, (c a b : ℝ) • Formalism.REAL.root a b) = ∑ a, ∑ b, (c a b : ℝ) * ((a : ℕ) - (b : ℕ) : ℝ) := by
   have hsmul : ∀ (r : ℝ) (v : Fin n → ℝ), brIdxSum (r • v) = r * brIdxSum v := by
     intro r v
@@ -70,7 +70,7 @@ theorem brIdxSum_nonpos_of_cdom {ε : Fin n → Bool} {μ Λ : Fin n → ℝ} (h
     brIdxSum (Λ - μ) ≤ 0 := by
   unfold Formalism.MainNotions.S.CDom at h
   obtain ⟨c, hc, hΛ⟩ := h
-  rw [hΛ, brIdxSum_cdom_sum ε c hc]
+  rw [hΛ, brIdxSum_cdom_sum ε c]
   exact Finset.sum_nonpos fun a _ => Finset.sum_nonpos fun b _ => br_cdom_term_nonpos ε c hc a b
 
 theorem not_cdom_add_root (ε : Fin n → Bool) (Λ : Fin n → ℝ) {a b : Fin n} (hab : a < b) :
@@ -89,7 +89,7 @@ theorem cdom_antisymm (ε : Fin n → Bool) {μ Λ : Fin n → ℝ} (h₁ : Form
   unfold Formalism.MainNotions.S.CDom at h₁
   obtain ⟨c, hc, hΛ⟩ := h₁
   have hB : brIdxSum (Λ - μ) = ∑ a, ∑ b, (c a b : ℝ) * ((a : ℕ) - (b : ℕ) : ℝ) := by
-    rw [hΛ, brIdxSum_cdom_sum ε c hc]
+    rw [hΛ, brIdxSum_cdom_sum ε c]
   have hneg : brIdxSum (μ - Λ) = - brIdxSum (Λ - μ) := by
     rw [brIdxSum_sub, brIdxSum_sub]
     ring
@@ -123,7 +123,7 @@ section Rep
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] {ε : Fin n → Bool}
   {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} {D : Submodule ℂ H} {E : Fin n → Fin n → Module.End ℂ D}
 
-theorem br_actM_mem_of_kStable (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D E) (S : Submodule ℂ D)
+theorem br_actM_mem_of_kStable (hD : IsDerivedOn ε σ D E) (S : Submodule ℂ D)
     (hS : FiniteDimensional ℂ S) (hK : ∀ k ∈ Kset ε, ∀ v ∈ S, ∃ w ∈ S, (w : H) = σ k v)
     {X : Matrix (Fin n) (Fin n) ℂ} (hX : inK ε X) {v : D} (hv : v ∈ S) : actM E X v ∈ S := by
   classical
@@ -250,8 +250,8 @@ theorem isKStableSub_of_kStable (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn
     have e2 : (j = b ∧ i = a) ↔ (i = a ∧ j = b) := and_comm
     simp only [e1, e2]
     split_ifs <;> simp [Complex.conj_I]
-  have m₁ := br_actM_mem_of_kStable hσ hD S hS hK (hinK X₁ hH₁ hJ₁) hv
-  have m₂ := br_actM_mem_of_kStable hσ hD S hS hK (hinK X₂ hH₂ hJ₂) hv
+  have m₁ := br_actM_mem_of_kStable hD S hS hK (hinK X₁ hH₁ hJ₁) hv
+  have m₂ := br_actM_mem_of_kStable hD S hS hK (hinK X₂ hH₂ hJ₂) hv
   have e₁ : actM E X₁ v = E a b v + (-1 : ℂ) • E b a v := by
     rw [hact, hX₁]
     simp only [Matrix.of_apply, add_smul, Finset.sum_add_distrib]

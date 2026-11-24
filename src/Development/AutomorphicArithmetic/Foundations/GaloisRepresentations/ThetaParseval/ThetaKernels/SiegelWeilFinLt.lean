@@ -742,9 +742,9 @@ theorem T_vline_k (hH : _root_.PositivityTheory.SiegelWeilFormula.THeis_k) (R : 
     {W : Mx F E d.m d.n} (hW : finOne F • W = 0) (z : ℂ) (X : Mx F E d.m d.n) :
     d.T (d.dd.rho d.B.ψ (_root_.PositivityTheory.SiegelWeilFormula.KFP.vline_k R W z) Ω) X = _root_.PositivityTheory.SiegelWeilFormula.KFP.bv_k (_root_.PositivityTheory.SiegelWeilFormula.KFP.arc_k R W) z (_root_.PositivityTheory.SiegelWeilFormula.KFP.arc_k R X) * g (_root_.PositivityTheory.SiegelWeilFormula.KFP.fin_k d X) := by
   unfold _root_.PositivityTheory.SiegelWeilFormula.KFP.vline_k
-  rw [_root_.PositivityTheory.SiegelWeilFormula.KFP.T_rho_sum'_k hH hΩ, _root_.PositivityTheory.SiegelWeilFormula.KFP.psi_sp'_k R hW, _root_.PositivityTheory.SiegelWeilFormula.KFP.psi_tw'_k R hW, hTΩ]
+  rw [_root_.PositivityTheory.SiegelWeilFormula.KFP.T_rho_sum'_k hH hΩ, _root_.PositivityTheory.SiegelWeilFormula.KFP.psi_sp'_k R hW, _root_.PositivityTheory.SiegelWeilFormula.KFP.psi_tw'_k R, hTΩ]
   simp only [_root_.PositivityTheory.SiegelWeilFormula.KFP.vac_k]
-  rw [_root_.PositivityTheory.SiegelWeilFormula.KFP.gau_eq'_k, _root_.PositivityTheory.SiegelWeilFormula.KFP.arc_add'_k, _root_.PositivityTheory.SiegelWeilFormula.KFP.arc_realAd'_k, _root_.PositivityTheory.SiegelWeilFormula.KFP.fin_add_of'_k R (_root_.PositivityTheory.SiegelWeilFormula.KFP.fin_realAd_smul'_k hW z.re)]
+  rw [_root_.PositivityTheory.SiegelWeilFormula.KFP.gau_eq'_k, _root_.PositivityTheory.SiegelWeilFormula.KFP.arc_add'_k, _root_.PositivityTheory.SiegelWeilFormula.KFP.arc_realAd'_k, _root_.PositivityTheory.SiegelWeilFormula.KFP.fin_add_of'_k (_root_.PositivityTheory.SiegelWeilFormula.KFP.fin_realAd_smul'_k hW z.re)]
   simp only [_root_.PositivityTheory.SiegelWeilFormula.KFP.bv_k, _root_.PositivityTheory.SiegelWeilFormula.KFP.ev_k]
   rw [show star (Complex.exp _) = Complex.exp (conj _) from (Complex.exp_conj _).symm, Complex.ofReal_exp,
     ← mul_assoc, ← mul_assoc, ← Complex.exp_add, ← Complex.exp_add]
@@ -789,7 +789,7 @@ open GlobalTheory.WeilM GlobalTheory.AdelicU GlobalTheory.IndefiniteRowSideFullH
 namespace PositivityTheory.SiegelWeilFormula.KFP
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 variable {d : _root_.PositivityTheory.SiegelWeilFormula.SD_k σ}
-theorem B_vline_k (hT : _root_.PositivityTheory.SiegelWeilFormula.TAll_k) (hU : _root_.PositivityTheory.SiegelWeilFormula.TUnit_k) (hH : _root_.PositivityTheory.SiegelWeilFormula.THeis_k) (hA : _root_.PositivityTheory.SiegelWeilFormula.SiegelWeilDatumProperties) (hF : _root_.PositivityTheory.SiegelWeilFormula.FockMem_k) (R : _root_.PositivityTheory.SiegelWeilFormula.RD_k d) :
+theorem B_vline_k (hT : _root_.PositivityTheory.SiegelWeilFormula.TAll_k) (hH : _root_.PositivityTheory.SiegelWeilFormula.THeis_k) (R : _root_.PositivityTheory.SiegelWeilFormula.RD_k d) :
     ∃ (C : ℂ) (c s : ℝ) (ν : Measure (Mx F E d.m d.n)) (νf : Measure (_root_.PositivityTheory.SiegelWeilFormula.KFP.Yf_k d)), C ≠ 0 ∧ s ≠ 0 ∧
       ν.IsAddHaarMeasure ∧ νf.IsAddHaarMeasure ∧
       ∀ g ∈ SB (_root_.PositivityTheory.SiegelWeilFormula.KFP.Yf_k d), ∀ Ω ∈ d.sch, d.T Ω = _root_.PositivityTheory.SiegelWeilFormula.KFP.vac_k R g → ∀ Φ ∈ d.sch, ∀ W : Mx F E d.m d.n, finOne F • W = 0 → ∀ z : ℂ,
@@ -1055,7 +1055,7 @@ theorem line_data_k (hT : _root_.PositivityTheory.SiegelWeilFormula.TAll_k) (hU 
         _root_.PositivityTheory.SiegelWeilFormula.KFP.B_k ν Φ (d.dd.rho d.B.ψ (vv ξ z) Ω) = C * Real.exp (-(c * ‖z‖ ^ 2 * ‖ξ‖ ^ 2)) *
           (Complex.exp (-(z ^ 2 * ‖ξ‖ ^ 2 / (16 * Real.pi))) *
             ∫ u, _root_.PositivityTheory.SiegelWeilFormula.KFP.hg_k R νf (d.T Φ) g u * Real.exp (-(2 * Real.pi * ‖u‖ ^ 2)) * Complex.exp (z * ⟪ξ, u⟫_ℝ)) := by
-  obtain ⟨C, c, s, ν, νf, hC, hs, hν, hνf, hB⟩ := _root_.PositivityTheory.SiegelWeilFormula.KFP.B_vline_k hT hU hH hA hF R
+  obtain ⟨C, c, s, ν, νf, hC, hs, hν, hνf, hB⟩ := _root_.PositivityTheory.SiegelWeilFormula.KFP.B_vline_k hT hH R
   obtain ⟨χ, hχ, heig⟩ := _root_.PositivityTheory.SiegelWeilFormula.KFP.om_rot_vac'_k hT hLO hLI R 1
   let W : _root_.PositivityTheory.SiegelWeilFormula.KFP.Vw_k d → Mx F E d.m d.n := fun ξ => _root_.PositivityTheory.SiegelWeilFormula.KFP.jn_k R (s⁻¹ • ξ) 0
   have hW : ∀ ξ, finOne F • W ξ = 0 := fun ξ => (_root_.PositivityTheory.SiegelWeilFormula.KFP.fin_eq_zero_iff_k _).1 (_root_.PositivityTheory.SiegelWeilFormula.KFP.fin_jn_k R _ _)

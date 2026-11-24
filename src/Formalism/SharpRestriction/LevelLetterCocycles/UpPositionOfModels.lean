@@ -57,7 +57,7 @@ def UpSlotOfModels : Prop :=
 
 def MixedSlotOfModels : Prop :=
   ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (CA CB CK : ℝ),
-    Adm1 D HW F Cm CA CB CK → DdRFull D → DiRank D HW F Cm → modelFR D HW → MixedSlotProposition D HW
+    Adm1 D HW F Cm CA CB CK → DdRFull D → DiRank D HW F → modelFR D HW → MixedSlotProposition D HW
 
 end Formalism.MainNotions.N.Ln34
 

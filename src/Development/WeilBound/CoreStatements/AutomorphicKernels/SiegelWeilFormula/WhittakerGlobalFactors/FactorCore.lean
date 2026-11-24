@@ -365,7 +365,7 @@ theorem herm_split (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (ψ : AddChar (AF
     fun p => gi p.1 * (HS.intHR σ bs n S).indicator fS p.2 with hΦ
   have e1 : ∫ b in UH σ bs n S, gi (HS.hInfR σ b) * ∏ v ∈ S, g v (HS.hV σ v (HS.hFinR σ b)) ∂ν =
       ∫ b, Φ (HS.hInfR σ b, HS.hFinR σ b) ∂ν := by
-    rw [← integral_indicator (measurableSet_UH σ hCM bs n S)]
+    rw [← integral_indicator (measurableSet_UH σ bs n S)]
     refine integral_congr_ae (Filter.Eventually.of_forall fun b => ?_)
     by_cases hb : b ∈ UH σ bs n S
     · have hb' : HS.hFinR σ b ∈ HS.intHR σ bs n S := hb
@@ -495,14 +495,14 @@ def OkE {d : ℕ} (bs : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F
   ∀ m, algebraMap F (Fv F v) (bs.repr x m) ∈ v.adicCompletionIntegers F
 
 theorem ev_okE {d : ℕ} (bs : Module.Basis (Fin d) F E) (x : E) : ∀ᶠ v in cofinite, OkE bs v x :=
-  Filter.eventually_all.2 fun m => _root_.GlobalTheory.AdelicU.eventually_algebraMap_mem_integers _
+  Filter.eventually_all.2 fun _ => _root_.GlobalTheory.AdelicU.eventually_algebraMap_mem_integers _
 
 theorem tmul_mem_intE {d : ℕ} (bs : Module.Basis (Fin d) F E) (v : HeightOneSpectrum (𝓞 F)) {c : Fv F v} {x : E}
     (hc : c ∈ v.adicCompletionIntegers F) (hx : OkE bs v x) : c ⊗ₜ[F] x ∈ intE bs v := fun m => by
   rw [repr_tmul_apply]
   exact mul_mem hc (hx m)
 
-theorem eventually_good (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) {d M n : ℕ} (bs : Module.Basis (Fin d) F E)
+theorem eventually_good (σ : E →ₐ[F] E) {d M n : ℕ} (bs : Module.Basis (Fin d) F E)
     (J : Matrix (Fin M) (Fin M) E) (T : Matrix (Fin n) (Fin n) E) :
     ∀ᶠ v in cofinite, Good σ bs J T v := by
   haveI : FiniteDimensional F E := Module.Finite.of_basis bs
@@ -1098,7 +1098,7 @@ theorem psiT_split (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) {d M n : ℕ} (bs
           (hermV σ v (hermFin σ b) : Matrix (Fin n) (Fin n) (Fv F v ⊗[F] E))) := by
   classical
   obtain ⟨Sψ, hSψ⟩ := psi_split ψ hψ
-  have hfin := Filter.eventually_cofinite.1 (eventually_good σ hCM bs J T)
+  have hfin := Filter.eventually_cofinite.1 (eventually_good σ bs J T)
   refine ⟨Sψ ∪ hfin.toFinset, fun S hS b hb => ?_⟩
   have hgood : ∀ v, v ∉ S → Good σ bs J T v := fun v hv => by
     by_contra h
@@ -1155,7 +1155,7 @@ theorem jt_split (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (M n d : ℕ) (J : 
   classical
   obtain ⟨Sψ, hSψ⟩ := psi_split ψ hψ
   obtain ⟨St, hSt⟩ := tup_split σ hCM ψ hψ M n d J hJ bs μ sdW μi hμi μv hμv
-  have hfing := Filter.eventually_cofinite.1 (eventually_good σ hCM bs J T)
+  have hfing := Filter.eventually_cofinite.1 (eventually_good σ bs J T)
   have hfinp := Filter.eventually_cofinite.1 pure.2.1
   refine ⟨Sψ ∪ St ∪ hfing.toFinset ∪ hfinp.toFinset, fun S hS b hb => ?_⟩
   have hSψS : Sψ ⊆ S := fun v hv => hS (by simp [hv])
@@ -1253,7 +1253,7 @@ theorem whI_split (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (M n d : ℕ) (J :
   classical
   obtain ⟨S1, h1⟩ := jt_split σ hCM M n d J hJ T bs ψ hψ θ l fr g P Φ Φf Φv μ pure prod sdW μi hμi μv hμv
   obtain ⟨S2, h2⟩ := psiT_split σ hCM bs J T ψ hψ
-  have hfing := Filter.eventually_cofinite.1 (eventually_good σ hCM bs J T)
+  have hfing := Filter.eventually_cofinite.1 (eventually_good σ bs J T)
   have hstd := Filter.eventually_cofinite.1 std
   refine ⟨S1 ∪ S2 ∪ hfing.toFinset ∪ hstd.toFinset, fun S hS b hb => ?_⟩
   have hS1 : S1 ⊆ S := fun v hv => hS (Finset.mem_union_left _ (Finset.mem_union_left _ (Finset.mem_union_left _ hv)))
@@ -1315,10 +1315,10 @@ theorem tendsto_UH (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) {d : ℕ} (bs : M
     Tendsto (fun S : Finset (HeightOneSpectrum (𝓞 F)) => ∫ b in UH σ bs n S, f b ∂ν) atTop (nhds (∫ b, f b ∂ν)) := by
   haveI := _root_.GlobalTheory.AdelicUnitaryTop.countable_heightOneSpectrum F
   have he : ∀ S, ∫ b in UH σ bs n S, f b ∂ν = ∫ b, (UH σ bs n S).indicator f b ∂ν := fun S =>
-    (integral_indicator (measurableSet_UH σ hCM bs n S)).symm
+    (integral_indicator (measurableSet_UH σ bs n S)).symm
   simp_rw [he]
   refine tendsto_integral_filter_of_dominated_convergence (fun y => ‖f y‖) ?_ ?_ hf.norm ?_
-  · exact Filter.Eventually.of_forall fun S => hf.aestronglyMeasurable.indicator (measurableSet_UH σ hCM bs n S)
+  · exact Filter.Eventually.of_forall fun S => hf.aestronglyMeasurable.indicator (measurableSet_UH σ bs n S)
   · refine Filter.Eventually.of_forall fun S => Filter.Eventually.of_forall fun y => ?_
     by_cases h : y ∈ UH σ bs n S
     · simp [Set.indicator_of_mem h]
@@ -1390,7 +1390,7 @@ theorem factor_core (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (M n d : ℕ) (J
   filter_upwards [eventually_ge_atTop (S₀ ∪ S₁)] with S hS
   have h0 : S₀ ⊆ S := fun v hv => hS (Finset.mem_union_left _ hv)
   have h1 : S₁ ⊆ S := fun v hv => hS (Finset.mem_union_right _ hv)
-  rw [setIntegral_congr_fun (measurableSet_UH σ hCM bs n S) (fun b hb => hS₁ S h1 b hb)]
+  rw [setIntegral_congr_fun (measurableSet_UH σ bs n S) (fun b hb => hS₁ S h1 b hb)]
   exact hS₀ S h0 _ _ (fun v _ => (hIv v).aestronglyMeasurable)
 
 theorem factorX : FactorX := by

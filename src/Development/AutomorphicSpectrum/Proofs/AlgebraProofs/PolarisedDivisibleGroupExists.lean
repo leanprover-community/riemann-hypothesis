@@ -82,7 +82,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.DYlb6.main :
-    ∀ {R W T : Type} [inst : CommRing R] [inst_1 : AddCommGroup W] [inst_2 : AddCommGroup T] [inst_3 : _root_.Module R T]
+    ∀ {R W T : Type} [CommRing R] [AddCommGroup W] [AddCommGroup T] [_root_.Module R T]
       (j : TensorProduct ℤ R W ≃ₗ[R] T),
       Submodule.span R (Set.range fun (a : W) ↦ (j : TensorProduct ℤ R W → T) ((1 : R) ⊗ₜ[ℤ] a)) = ⊤ := by
   intro R W T _ _ _ _ j
@@ -112,7 +112,7 @@ open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory
 
 namespace GlobalTheory.CompanionTheory.Ar.HT
 
-theorem tower_pdiv_exists : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [IsDomain O] [Algebra O C] (hv : v.Integers O) (hp : v (p : C) < 1) (hO : IsAdicComplete (Ideal.span {(p : O)}) O) (La : Type) [AddCommGroup La] [Module.Free ℤ La] [Module.Finite ℤ La] (L : Type) [AddCommGroup L] [Module O L] (X : OrdTower p O La L), ∃ (G : PDivGroup p O) (e : ∀ n, G.A n ≃ₐ[O] X.A n) (τ : La →+ G.Tate), X.Realises G e τ ∧ G.height = Module.finrank ℤ La ∧ ∃ j : ℤ_[p] ⊗[ℤ] La ≃ₗ[ℤ_[p]] G.Tate, ∀ a, j (1 ⊗ₜ a) = τ a :=
+theorem tower_pdiv_exists : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [IsDomain O] [Algebra O C] (_ : v.Integers O) (_ : v (p : C) < 1) (_ : IsAdicComplete (Ideal.span {(p : O)}) O) (La : Type) [AddCommGroup La] [Module.Free ℤ La] [Module.Finite ℤ La] (L : Type) [AddCommGroup L] [Module O L] (X : OrdTower p O La L), ∃ (G : PDivGroup p O) (e : ∀ n, G.A n ≃ₐ[O] X.A n) (τ : La →+ G.Tate), X.Realises G e τ ∧ G.height = Module.finrank ℤ La ∧ ∃ j : ℤ_[p] ⊗[ℤ] La ≃ₗ[ℤ_[p]] G.Tate, ∀ a, j (1 ⊗ₜ a) = τ a :=
   @PositivityTheory.HtPt.Twpdiv.tower_pdiv
 
 end GlobalTheory.CompanionTheory.Ar.HT
@@ -131,11 +131,11 @@ open Coalgebra Bialgebra PositivityTheory.HtPt.Twpdiv in
 theorem _root_.GlobalTheory.T.divisible_group_tower_compatibility :
     ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C]
       (v : Valuation C NNReal) (O : Type) [CommRing O] [IsDomain O] [Algebra O C]
-      (hv : v.Integers O) (hp : v (p : C) < 1) (hO : IsAdicComplete (Ideal.span {(p : O)}) O)
+      (_ : v.Integers O) (_ : v (p : C) < 1) (_ : IsAdicComplete (Ideal.span {(p : O)}) O)
       (La : Type) [AddCommGroup La] [Module.Free ℤ La] [Module.Finite ℤ La]
       (L : Type) [AddCommGroup L] [Module O L] (X : OrdTower p O La L)
       (G : PDivGroup p O) (e : ∀ n, G.A n ≃ₐ[O] X.A n) (τ : La →+ G.Tate)
-      (hre : X.Realises G e τ),
+      (_ : X.Realises G e τ),
       (∀ (φ : La →+ La) (dφ : L →ₗ[O] L), X.Acts φ dφ → ∃ f : G ⟶ G,
         (∀ a, tateMap G G O f (τ a) = τ (φ a)) ∧ ∀ n (g : G.A n) (a : La),
           (e n (f.app n g)).1 (lev p n a) = (e n g).1 (lev p n (φ a))) ∧
@@ -246,7 +246,7 @@ open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory
 
 namespace PositivityTheory.HtPt.Gi
 
-theorem free_on_lift : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [IsDomain O] [Algebra O C] (hv : v.Integers O) (hp : v (p : C) < 1) (hO : IsAdicComplete (Ideal.span {(p : O)}) O) (E : Type) [Field E] [NumberField E] (c : E ≃+* E) (La : Type) [AddCommGroup La] [Module (𝓞 E) La] (EF : La →ₗ[ℤ] La →ₗ[ℤ] ℤ) (N : ℕ) (u : Fin N → La), IsPolLattice c p EF u → ∃ (ρ : 𝓞 E →+* Module.End C (C ⊗[ℤ] La)) (T : Submodule O (C ⊗[ℤ] La)) (e : C ⊗[ℤ] La →ₗ[C] C ⊗[ℤ] La →ₗ[C] C), (∀ (a : 𝓞 E) (x : La), ρ a (1 ⊗ₜ x) = 1 ⊗ₜ (a • x)) ∧ T = Submodule.span O (Set.range fun x : La => (1 : C) ⊗ₜ[ℤ] x) ∧ IsFreeOn ρ T (fun i => 1 ⊗ₜ u i) ∧ (∀ x y : La, e (1 ⊗ₜ x) (1 ⊗ₜ y) = (EF x y : C)) ∧ (∀ x, e x x = 0) ∧ (∀ y, (∀ x, e x y = 0) → y = 0) ∧ dualLat e T = T ∧ ∀ (a : 𝓞 E) x y, e (ρ a x) y = e x (ρ (RingOfIntegers.mapRingEquiv c a) y) := by
+theorem free_on_lift : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [IsDomain O] [Algebra O C] (_ : v.Integers O) (_ : v (p : C) < 1) (_ : IsAdicComplete (Ideal.span {(p : O)}) O) (E : Type) [Field E] [NumberField E] (c : E ≃+* E) (La : Type) [AddCommGroup La] [Module (𝓞 E) La] (EF : La →ₗ[ℤ] La →ₗ[ℤ] ℤ) (N : ℕ) (u : Fin N → La), IsPolLattice c p EF u → ∃ (ρ : 𝓞 E →+* Module.End C (C ⊗[ℤ] La)) (T : Submodule O (C ⊗[ℤ] La)) (e : C ⊗[ℤ] La →ₗ[C] C ⊗[ℤ] La →ₗ[C] C), (∀ (a : 𝓞 E) (x : La), ρ a (1 ⊗ₜ x) = 1 ⊗ₜ (a • x)) ∧ T = Submodule.span O (Set.range fun x : La => (1 : C) ⊗ₜ[ℤ] x) ∧ IsFreeOn ρ T (fun i => 1 ⊗ₜ u i) ∧ (∀ x y : La, e (1 ⊗ₜ x) (1 ⊗ₜ y) = (EF x y : C)) ∧ (∀ x, e x x = 0) ∧ (∀ y, (∀ x, e x y = 0) → y = 0) ∧ dualLat e T = T ∧ ∀ (a : 𝓞 E) x y, e (ρ a x) y = e x (ρ (RingOfIntegers.mapRingEquiv c a) y) := by
   intro p _ C _ _ _ v O _ _ _ hv hp hO E _ _ c La _ _ EF N u h
   classical
   have := h.free
@@ -370,7 +370,7 @@ open CategoryTheory AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory
 
 namespace GlobalTheory.CompanionTheory.Ar.HT
 
-theorem free_on_lift : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [IsDomain O] [Algebra O C] (hv : v.Integers O) (hp : v (p : C) < 1) (hO : IsAdicComplete (Ideal.span {(p : O)}) O) (E : Type) [Field E] [NumberField E] (c : E ≃+* E) (La : Type) [AddCommGroup La] [Module (𝓞 E) La] (EF : La →ₗ[ℤ] La →ₗ[ℤ] ℤ) (N : ℕ) (u : Fin N → La), IsPolLattice c p EF u → ∃ (ρ : 𝓞 E →+* Module.End C (C ⊗[ℤ] La)) (T : Submodule O (C ⊗[ℤ] La)) (e : C ⊗[ℤ] La →ₗ[C] C ⊗[ℤ] La →ₗ[C] C), (∀ (a : 𝓞 E) (x : La), ρ a (1 ⊗ₜ x) = 1 ⊗ₜ (a • x)) ∧ T = Submodule.span O (Set.range fun x : La => (1 : C) ⊗ₜ[ℤ] x) ∧ IsFreeOn ρ T (fun i => 1 ⊗ₜ u i) ∧ (∀ x y : La, e (1 ⊗ₜ x) (1 ⊗ₜ y) = (EF x y : C)) ∧ (∀ x, e x x = 0) ∧ (∀ y, (∀ x, e x y = 0) → y = 0) ∧ dualLat e T = T ∧ ∀ (a : 𝓞 E) x y, e (ρ a x) y = e x (ρ (RingOfIntegers.mapRingEquiv c a) y) :=
+theorem free_on_lift : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [IsDomain O] [Algebra O C] (_ : v.Integers O) (_ : v (p : C) < 1) (_ : IsAdicComplete (Ideal.span {(p : O)}) O) (E : Type) [Field E] [NumberField E] (c : E ≃+* E) (La : Type) [AddCommGroup La] [Module (𝓞 E) La] (EF : La →ₗ[ℤ] La →ₗ[ℤ] ℤ) (N : ℕ) (u : Fin N → La), IsPolLattice c p EF u → ∃ (ρ : 𝓞 E →+* Module.End C (C ⊗[ℤ] La)) (T : Submodule O (C ⊗[ℤ] La)) (e : C ⊗[ℤ] La →ₗ[C] C ⊗[ℤ] La →ₗ[C] C), (∀ (a : 𝓞 E) (x : La), ρ a (1 ⊗ₜ x) = 1 ⊗ₜ (a • x)) ∧ T = Submodule.span O (Set.range fun x : La => (1 : C) ⊗ₜ[ℤ] x) ∧ IsFreeOn ρ T (fun i => 1 ⊗ₜ u i) ∧ (∀ x y : La, e (1 ⊗ₜ x) (1 ⊗ₜ y) = (EF x y : C)) ∧ (∀ x, e x x = 0) ∧ (∀ y, (∀ x, e x y = 0) → y = 0) ∧ dualLat e T = T ∧ ∀ (a : 𝓞 E) x y, e (ρ a x) y = e x (ρ (RingOfIntegers.mapRingEquiv c a) y) :=
   @PositivityTheory.HtPt.Gi.free_on_lift
 
 end GlobalTheory.CompanionTheory.Ar.HT
@@ -454,7 +454,7 @@ theorem supN_mul_le (h1 : ∀ o : O, ‖algebraMap O C o‖ ≤ 1) [Module.Finit
   exact mul_le_mul (le_supN h1 f _) (le_supN h1 g _) (norm_nonneg _) (supN_nonneg _)
 
 theorem supN_le_of_tmul {f : WithConv (M ⊗[O] M →ₗ[O] C)} {r : ℝ}
-    (hr : 0 ≤ r) (h : ∀ a b, ‖f.ofConv (a ⊗ₜ b)‖ ≤ r) : supN f ≤ r := by
+    (h : ∀ a b, ‖f.ofConv (a ⊗ₜ b)‖ ≤ r) : supN f ≤ r := by
   refine supN_le fun t => ?_
   induction t with
   | tmul a b => exact h a b
@@ -467,7 +467,7 @@ theorem supN_eq_mul (h1 : ∀ o : O, ‖algebraMap O C o‖ ≤ 1) [Module.Finit
     (hh : ∀ a b, h.ofConv (a ⊗ₜ b) = f.ofConv a * g.ofConv b) :
     supN h = supN f * supN g := by
   apply le_antisymm
-  · refine supN_le_of_tmul (mul_nonneg (supN_nonneg _) (supN_nonneg _)) fun a b => ?_
+  · refine supN_le_of_tmul fun a b => ?_
     rw [hh, norm_mul]
     exact mul_le_mul (le_supN h1 f _) (le_supN h1 g _) (norm_nonneg _) (supN_nonneg _)
   · rw [supN.eq_1 f, Real.iSup_mul_of_nonneg (supN_nonneg g)]
@@ -542,7 +542,7 @@ theorem dvd_mul_of_groupLike (C : Type) [NontriviallyNormedField C] [IsUltrametr
     (fun f => supN_le fun t => le_supN h1 f _)
     (fun f g => supN_eq_mul h1 f g _ fun a b => by rw [inlHom_mul_inrHom, extProd_tmul])
     y (exists_supN_pow_le h1 hint)
-    (supN_le_of_tmul zero_le_one fun a b => by
+    (supN_le_of_tmul fun a b => by
       have h := (dvd_iff_norm hinj h1 h2 hq _).1 (hD a b)
       convert h using 2
       change y.ofConv (a * b) - (extProd y 1).ofConv (a ⊗ₜ b) - (extProd 1 y).ofConv (a ⊗ₜ b) = _
@@ -794,7 +794,7 @@ open CokerSharp
 
 theorem coker_dlog_killed : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C]
     (v : Valuation C NNReal) (O : Type) [CommRing O] [IsDomain O] [Algebra O C]
-    (hv : v.Integers O) (hp : v (p : C) < 1) (hO : IsAdicComplete (Ideal.span {(p : O)}) O)
+    (_ : v.Integers O) (_ : v (p : C) < 1) (_ : IsAdicComplete (Ideal.span {(p : O)}) O)
     [Algebra ℤ_[p] O] (G : PDivGroup p O) [Module.Free O G.omega] [Module.Finite O G.omega] (κ : O),
     v (algebraMap O C κ) ^ (p - 1) ≤ v (p : C) → ∀ w : G.omega,
       κ • w ∈ LinearMap.range (dlogLinear G) := by
@@ -1014,7 +1014,7 @@ namespace GlobalTheory.CompanionTheory.Ar.HT
 open AlgebraicGeometry MonoidalCategory CartesianMonoidalCategory MonObj NumberField GlobalTheory.CompanionTheory.Ar
   GlobalTheory.CompanionTheory.Ar.BT ReciprocityTheory.ChartRestriction.G.Semi Lagr
 
-theorem dlog_lagrangian : FarguesHodgeTate → ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [IsDomain O] [Algebra O C] (hv : v.Integers O) (hp : v (p : C) < 1) (hO : IsAdicComplete (Ideal.span {(p : O)}) O) [Algebra ℤ_[p] O] (G : PDivGroup p O) [Module.Free O G.omega] [Module.Finite O G.omega] (lam : G ⟶ G.dual) (ζ : ℕ → O) (h0 : ζ 0 = 1) (h : ∀ n, ζ (n + 1) ^ p = ζ n) (B : O ⊗[ℤ_[p]] G.Tate →ₗ[O] O ⊗[ℤ_[p]] G.Tate →ₗ[O] O) (κ : O), ζ 1 ≠ 1 → IsHTConst v p κ → Function.Bijective (tateMap G G.dual O lam) → 2 * Module.finrank O G.omega = G.height → (∀ x y : G.Tate, ∃ a : ℤ_[p], pairing G O y (tateMap G G.dual O lam x) = a • muTate O ζ h0 h ∧ B (1 ⊗ₜ x) (1 ⊗ₜ y) = algebraMap ℤ_[p] O a) → (∀ x, B x x = 0) → (∀ w : G.omega, κ • w ∈ LinearMap.range (dlogLinear G ∘ₗ (tateMap G G.dual O lam).baseChange O)) ∧ ∀ x, (dlogLinear G ∘ₗ (tateMap G G.dual O lam).baseChange O) x = 0 ↔ ∀ y, (dlogLinear G ∘ₗ (tateMap G G.dual O lam).baseChange O) y = 0 → B x y = 0 := by
+theorem dlog_lagrangian : FarguesHodgeTate → ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [IsDomain O] [Algebra O C] (_ : v.Integers O) (_ : v (p : C) < 1) (_ : IsAdicComplete (Ideal.span {(p : O)}) O) [Algebra ℤ_[p] O] (G : PDivGroup p O) [Module.Free O G.omega] [Module.Finite O G.omega] (lam : G ⟶ G.dual) (ζ : ℕ → O) (h0 : ζ 0 = 1) (h : ∀ n, ζ (n + 1) ^ p = ζ n) (B : O ⊗[ℤ_[p]] G.Tate →ₗ[O] O ⊗[ℤ_[p]] G.Tate →ₗ[O] O) (κ : O), ζ 1 ≠ 1 → IsHTConst v p κ → Function.Bijective (tateMap G G.dual O lam) → 2 * Module.finrank O G.omega = G.height → (∀ x y : G.Tate, ∃ a : ℤ_[p], pairing G O y (tateMap G G.dual O lam x) = a • muTate O ζ h0 h ∧ B (1 ⊗ₜ x) (1 ⊗ₜ y) = algebraMap ℤ_[p] O a) → (∀ x, B x x = 0) → (∀ w : G.omega, κ • w ∈ LinearMap.range (dlogLinear G ∘ₗ (tateMap G G.dual O lam).baseChange O)) ∧ ∀ x, (dlogLinear G ∘ₗ (tateMap G G.dual O lam).baseChange O) x = 0 ↔ ∀ y, (dlogLinear G ∘ₗ (tateMap G G.dual O lam).baseChange O) y = 0 → B x y = 0 := by
   intro hF p _ C _ _ _ v O _ _ _ hv hp hO _ G _ _ lam ζ h0 h B κ hζ hκ hbij hdim hB halt
   have hpp : p.Prime := Fact.out
   have : IsIntegrallyClosedIn O C := isIntegrallyClosedIn_iff.2
@@ -1506,7 +1506,7 @@ theorem tateMap_bijective {G : PDivGroup p O} (lam : G ⟶ G.dual) (ε : (mu p O
 
 end Bij
 
-theorem exists_HTPoint : FarguesHodgeTate → ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [IsDomain O] [Algebra O C] (hv : v.Integers O) (hp : v (p : C) < 1) (hO : IsAdicComplete (Ideal.span {(p : O)}) O) (E : Type) [Field E] [NumberField E] (c : E ≃+* E) (hc : ∀ x, c (c x) = x) (La : Type) [AddCommGroup La] [Module (𝓞 E) La] (EF : La →ₗ[ℤ] La →ₗ[ℤ] ℤ) (N : ℕ) (u : Fin N → La) (hu : IsPolLattice c p EF u) (L : Type) [AddCommGroup L] [Module O L] [Module.Free O L] [Module.Finite O L] (X : OrdTower p O La L) (ρL : 𝓞 E →+* Module.End O L) (ζ : ℕ → Oˣ) (κ : O), (∀ a : 𝓞 E, X.Acts (DistribSMul.toAddMonoidHom La a) (ρL a)) → 2 * Module.finrank O L = Module.finrank ℤ La → (∀ n, IsPrimitiveRoot (ζ n) (p ^ n)) → (∀ n, ζ (n + 1) ^ p = ζ n) → X.PairingExtends EF ζ → IsHTConst v p κ → ∃ P : HTPoint C O c κ N (C ⊗[ℤ] La) (C ⊗[O] Module.Dual O L), IsPointOf p X.der EF ζ ρL u P := by
+theorem exists_HTPoint : FarguesHodgeTate → ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [CharZero C] (v : Valuation C NNReal) (O : Type) [CommRing O] [IsDomain O] [Algebra O C] (_ : v.Integers O) (_ : v (p : C) < 1) (_ : IsAdicComplete (Ideal.span {(p : O)}) O) (E : Type) [Field E] [NumberField E] (c : E ≃+* E) (_ : ∀ x, c (c x) = x) (La : Type) [AddCommGroup La] [Module (𝓞 E) La] (EF : La →ₗ[ℤ] La →ₗ[ℤ] ℤ) (N : ℕ) (u : Fin N → La) (_ : IsPolLattice c p EF u) (L : Type) [AddCommGroup L] [Module O L] [Module.Free O L] [Module.Finite O L] (X : OrdTower p O La L) (ρL : 𝓞 E →+* Module.End O L) (ζ : ℕ → Oˣ) (κ : O), (∀ a : 𝓞 E, X.Acts (DistribSMul.toAddMonoidHom La a) (ρL a)) → 2 * Module.finrank O L = Module.finrank ℤ La → (∀ n, IsPrimitiveRoot (ζ n) (p ^ n)) → (∀ n, ζ (n + 1) ^ p = ζ n) → X.PairingExtends EF ζ → IsHTConst v p κ → ∃ P : HTPoint C O c κ N (C ⊗[ℤ] La) (C ⊗[O] Module.Dual O L), IsPointOf p X.der EF ζ ρL u P := by
   intro hF p _ C _ _ _ v O _ _ _ hv hp hO E _ _ c hc La _ _ EF N u hu L _ _ _ _ X ρL ζ κ hact hrank hprim hcomp
     hpair hκ
   classical

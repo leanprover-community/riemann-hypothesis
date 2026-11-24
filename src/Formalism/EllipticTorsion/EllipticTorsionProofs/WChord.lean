@@ -546,7 +546,7 @@ lemma mem_T {φ : MvPowerSeries (Fin 2) K} : φ ∈ T W ↔ ∀ e, MvPowerSeries
     first
       | rfl
 
-lemma inv_mem_integralSeries {φ : MvPowerSeries (Fin 2) K} (h : φ ∈ T W) (h0 : cc φ ≠ 0)
+lemma inv_mem_integralSeries {φ : MvPowerSeries (Fin 2) K} (h : φ ∈ T W)
     (hi : (cc φ)⁻¹ ∈ Sadj W) : φ⁻¹ ∈ T W := by
   classical
   rw [mem_T] at h ⊢
@@ -609,7 +609,7 @@ lemma formalSum_mem_integralSeries (hw : WFixed W w) : F2 W w ∈ T W := by
   have hC3 : C3 W w ∈ T W := lineCoeffCubic_mem _ h2 h4 h6 hl
   have hC2 : C2 W w ∈ T W := lineCoeffQuadratic_mem _ h1 h2 h3 h4 h6 hl hn
   have hC3i : (C3 W w)⁻¹ ∈ T W :=
-    inv_mem_integralSeries hC3 (by rw [constantCoeff_chordCoeffCubic hw]; exact one_ne_zero) (by rw [constantCoeff_chordCoeffCubic hw, inv_one]; exact Subalgebra.one_mem _)
+    inv_mem_integralSeries hC3 (by rw [constantCoeff_chordCoeffCubic hw, inv_one]; exact Subalgebra.one_mem _)
   have hz3 : z3 W w ∈ T W :=
     (T W).sub_mem ((T W).sub_mem ((T W).neg_mem (X_mem_T 0)) (X_mem_T 1)) ((T W).mul_mem hC2 hC3i)
   have hw3 : w3 W w ∈ T W := (T W).add_mem ((T W).mul_mem hl hz3) hn
@@ -617,7 +617,7 @@ lemma formalSum_mem_integralSeries (hw : WFixed W w) : F2 W w ∈ T W := by
     (T W).add_mem ((T W).add_mem ((T W).neg_mem (T W).one_mem) ((T W).mul_mem h1 hz3))
       ((T W).mul_mem h3 hw3)
   have hddi : (dd W w)⁻¹ ∈ T W :=
-    inv_mem_integralSeries hdd (by rw [dd_cc hw]; exact neg_ne_zero.mpr one_ne_zero)
+    inv_mem_integralSeries hdd
       (by rw [dd_cc hw, inv_neg, inv_one]; exact Subalgebra.neg_mem _ (Subalgebra.one_mem _))
   exact (T W).mul_mem hz3 hddi
 

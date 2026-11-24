@@ -75,14 +75,14 @@ theorem massConst_all (hH : HermRepUnram) (hLI : LIStat) {K F : Type} [Field K] 
     · have hc := ih hpos
       have hP : 0 < ∏ j ∈ Finset.Icc 2 m, Formalism.HermitianLatticesTheory.massRatioRightSide K j :=
         Finset.prod_pos fun j hj => massRatio_pos hK j (Finset.mem_Icc.mp hj).1
-      have hstep := massConst_succ hH hLI hK hF (m := m + 1) (by omega) (mul_pos hc₁ hP)
+      have hstep := massConst_succ hH hLI hK hF (m := m + 1) (by omega)
         (by simpa using hc)
       rw [Finset.prod_Icc_succ_top (by omega), ← mul_assoc]
       exact hstep
 
 theorem siegelMassRatio_of_LI (hH : HermRepUnram) (hLI : LIStat) : Formalism.HermitianLatticesTheory.SiegelMassRatio := by
   intro K _ _ _ hK M hM V V' _ _ _ _ _ _ _ _ h h' L L' hs hs' hL hL'
-  obtain ⟨F, _, _, _, hF⟩ := exists_fixF K hK
+  obtain ⟨F, _, _, _, hF⟩ := exists_fixF K
   obtain ⟨c₁, hc₁, hall⟩ := massConst_all hH hLI hK hF
   have := finiteDimensional_of_ortho hL
   have := finiteDimensional_of_ortho hL'

@@ -285,8 +285,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Gka4.diag_hermitian :
-    ∀ (F E : Type) [inst : Field F] [inst_1 : NumberField F] [inst_2 : Field E] [inst_3 : NumberField E]
-      [inst_4 : Algebra F E] (σ : E →ₐ[F] E),
+    ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E]
+      [Algebra F E] (σ : E →ₐ[F] E),
       HeckeCharacterZeroLocus.SiegelWeilU.IsCMExt F E σ →
         ∀ (n : ℕ) (T : Matrix (Fin n) (Fin n) E),
           HeckeCharacterZeroLocus.SiegelWeilU.IsHermND σ T →

@@ -572,11 +572,11 @@ def adm1 (D : Formalism.BasicNotions.D7) : Prop :=
     ∃ (x : (D.loc l).R.B) (y : (D.loc l).R.BdR), y ∈ ((D.loc l).PD K).Fil 0 ∧
       x - ((D.loc l).PD K).φ x = u ∧ ((D.loc l).PD K).ι x - y = w
 
-def adm2 (_D : Formalism.BasicNotions.D7) : Prop := Formalism.GaloisCohomology.LocalTateDualityK
+def adm2 : Prop := Formalism.GaloisCohomology.LocalTateDualityK
 
 def adm3 (D : Formalism.BasicNotions.D7) : Prop := ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l), LocalTateTopDegree ((D.loc l).PD K)
 
-def ArchimedeanSignatureMatching (_D : Formalism.BasicNotions.D7) : Prop := Formalism.GaloisCohomology.LocalEulerCharK
+def ArchimedeanSignatureMatching : Prop := Formalism.GaloisCohomology.LocalEulerCharK
 
 def adm5 (D : Formalism.BasicNotions.D7) : Prop := ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l), TateFilteredInvariants ((D.loc l).PD K)
 
@@ -593,6 +593,6 @@ def adm9 (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.lo
       DecW (sit D.loc HW l (D.locA l) K s LL h) ((F l).E K s LL h).tie
 
 def admitted (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
-  adm1 D ∧ adm2 D ∧ adm3 D ∧ ArchimedeanSignatureMatching D ∧ adm5 D ∧ adm6 D ∧ adm7 D ∧ adm8 D ∧ adm9 D HW F
+  adm1 D ∧ adm2 ∧ adm3 D ∧ ArchimedeanSignatureMatching ∧ adm5 D ∧ adm6 D ∧ adm7 D ∧ adm8 D ∧ adm9 D HW F
 
 end Formalism.MainNotions.LocalSituation

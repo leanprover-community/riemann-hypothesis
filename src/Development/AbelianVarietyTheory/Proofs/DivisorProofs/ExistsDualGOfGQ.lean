@@ -112,7 +112,7 @@ def formLat (G : Matrix (Fin n) (Fin n) E) (Λ : Submodule (𝓞 E) (Fin n → E
     change (c : E) • (star x ᵥ* G) = star (star (c : E) • x) ᵥ* G
     rw [star_smul, star_star, Matrix.smul_vecMul]
 
-theorem formLat_isLattice {G : Matrix (Fin n) (Fin n) E} (hG : IsUnit G.det) {Λ : Submodule (𝓞 E) (Fin n → E)}
+theorem formLat_isLattice {G : Matrix (Fin n) (Fin n) E} {Λ : Submodule (𝓞 E) (Fin n → E)}
     (h : Submodule.IsLattice E Λ) : Submodule.IsLattice E (formLat G Λ) :=
   Submodule.IsLattice.of_fg E (by
     obtain ⟨s, hs⟩ := h.fg
@@ -211,7 +211,7 @@ theorem gramInvT_star (S : HSp D) (i j : Fin S.rank) : star (S.gram⁻¹ᵀ i j)
   frame := Pi.basisFun _ _
   sig := S.sig
   L0 := formLat S.gram Λ
-  standardTuple_isLattice := formLat_isLattice (GlobalTheory.LatVac.gram_det_isUnit S) hΛ.1
+  standardTuple_isLattice := formLat_isLattice hΛ.1
   baseLattice_isUnimodular := by
     ext y
     rw [formLat_selfDual (GlobalTheory.LatVac.gram_det_isUnit S) (gram_herm S) hΛ.2]
@@ -228,7 +228,7 @@ theorem dualSp_gram : (dualSp S Λ hΛ).gram = S.gram⁻¹ᵀ := by
   simp [Pi.single_apply, apply_ite]
 
 theorem dualSp_selfDual : IsSelfDualC (dualSp S Λ hΛ) (formLat S.gram Λ) := by
-  refine ⟨formLat_isLattice (GlobalTheory.LatVac.gram_det_isUnit S) hΛ.1, fun y => ?_⟩
+  refine ⟨formLat_isLattice hΛ.1, fun y => ?_⟩
   rw [dualSp_gram]
   exact formLat_selfDual (GlobalTheory.LatVac.gram_det_isUnit S) (gram_herm S) hΛ.2 y
 

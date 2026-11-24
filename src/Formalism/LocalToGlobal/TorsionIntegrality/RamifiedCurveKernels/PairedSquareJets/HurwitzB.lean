@@ -284,7 +284,7 @@ theorem integral_dist_jets_holds : IntDJets := by
   rw [PowerSeries.coeff_zero_eq_constantCoeff_apply] at h
   exact h
 
-theorem IntMvZ_of (h1 : JetsSubst) (h2 : IntJets) (h3 : JetsSubstOne) (h4 : JetsRing) : IntMvZ := by
+theorem IntMvZ_of (h1 : JetsSubst) (h2 : IntJets) (h3 : JetsSubstOne) : IntMvZ := by
   intro K _ _ R l linv hl hu n _ G hG
   classical
   have hX : Formalism.L2.Th1.C.IntPS R (PowerSeries.X : PowerSeries K) := by

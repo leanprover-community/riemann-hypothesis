@@ -53,7 +53,7 @@ namespace PI.FoldDCUnfold.W
 
 universe u
 
-theorem dc_core {G : Type u} [Group G] (Γ S S' : Subgroup G) (hS : S ≤ Γ) (hS' : S' ≤ Γ)
+theorem dc_core {G : Type u} [Group G] (Γ S S' : Subgroup G)
     (R : Set G) (hR : IsDoubleTransversal Γ S S' R)
     (E : G → Set G) (hE : ∀ r ∈ R, IsRightTransversal S (stab S S' r) (E r))
     (p q : Σ r : R, E (r : G)) (s1 s2 : G) (hs1 : s1 ∈ S') (hs2 : s2 ∈ S')
@@ -93,7 +93,7 @@ theorem double_coset_translation : DCTrans.{u} := by
   intro G _ Γ S S' hS hS' R hR E hE
   have hEsub : ∀ r ∈ R, E r ⊆ (S : Set G) := fun r hr => (hE r hr).1
   refine ⟨fun p q hpq => ?_, ?_, fun γ hγ => ?_⟩
-  · refine (dc_core Γ S S' hS hS' R hR E hE p q 1 1 S'.one_mem S'.one_mem ?_).1
+  · refine (dc_core Γ S S' R hR E hE p q 1 1 S'.one_mem S'.one_mem ?_).1
     rw [one_mul, one_mul]
     exact hpq
   · rintro _ ⟨⟨⟨r, hr⟩, ⟨e, he⟩⟩, rfl⟩
@@ -116,7 +116,7 @@ theorem double_coset_translation : DCTrans.{u} := by
     refine ⟨(⟨s'⁻¹ * (r⁻¹ * t * r), hmem⟩,
       ⟨r⁻¹ * e, ⟨⟨⟨r, hr⟩, ⟨e, he⟩⟩, rfl⟩⟩), hγeq, ?_⟩
     rintro ⟨⟨a, ha⟩, ⟨d, ⟨p, rfl⟩⟩⟩ hy
-    obtain ⟨hp, ha'⟩ := dc_core Γ S S' hS hS' R hR E hE p ⟨⟨r, hr⟩, ⟨e, he⟩⟩ a
+    obtain ⟨hp, ha'⟩ := dc_core Γ S S' R hR E hE p ⟨⟨r, hr⟩, ⟨e, he⟩⟩ a
       (s'⁻¹ * (r⁻¹ * t * r)) ha hmem (hy.trans hγeq.symm)
     subst hp
     exact Prod.ext (Subtype.ext ha') (Subtype.ext rfl)

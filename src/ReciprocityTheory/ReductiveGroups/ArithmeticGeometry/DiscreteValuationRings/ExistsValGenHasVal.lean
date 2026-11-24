@@ -114,15 +114,15 @@ theorem famMult_data (hϖ : Irreducible ϖ) (hQ : IsQ D.toPre ϖ Q) (k : ℕ) (m
             gs (r ≫ jFK (R := V) F) z ⊤ (scal (𝟙 _) c₀) * (val e' (r ≫ DegPre.jFR (R := V) F) z J).val := by
   have hL := D.toPre.P.isLB
   have hp := genHasVal_powGen D.toPre.P.L _ _ _ _ _ (hQ mu) k
-  have h1 := genHasVal_mulGen hϖ D.toPre.P.L hL _ _ _ _ _ _ _ _ _ _ (hQ (mu + α))
-    (genHasVal_invGen D.toPre.P.L hL _ _ _ _ _ (hQ mu))
-  have h2 := genHasVal_mulGen hϖ D.toPre.P.L hL _ _ _ _ _ _ _ _ _ _ h1
-    (genHasVal_invGen D.toPre.P.L hL _ _ _ _ _ (hQ α))
-  have h3 := genHasVal_mulGen hϖ D.toPre.P.L hL _ _ _ _ _ _ _ _ _ _ h2
-    (genHasVal_invGen D.toPre.P.L hL _ _ _ _ _ (rigK_val D))
+  have h1 := genHasVal_mulGen hϖ D.toPre.P.L _ _ _ _ _ _ _ _ _ _ (hQ (mu + α))
+    (genHasVal_invGen D.toPre.P.L _ _ _ _ _ (hQ mu))
+  have h2 := genHasVal_mulGen hϖ D.toPre.P.L _ _ _ _ _ _ _ _ _ _ h1
+    (genHasVal_invGen D.toPre.P.L _ _ _ _ _ (hQ α))
+  have h3 := genHasVal_mulGen hϖ D.toPre.P.L _ _ _ _ _ _ _ _ _ _ h2
+    (genHasVal_invGen D.toPre.P.L _ _ _ _ _ (rigK_val D))
   have hr := genHasVal_powGen D.toPre.P.L _ _ _ _ _ (rigK_val (ϖ := ϖ) D) k
-  have h4 := genHasVal_mulGen hϖ D.toPre.P.L hL _ _ _ _ _ _ _ _ _ _
-    (genHasVal_mulGen hϖ D.toPre.P.L hL _ _ _ _ _ _ _ _ _ _ hp h3) hr
+  have h4 := genHasVal_mulGen hϖ D.toPre.P.L _ _ _ _ _ _ _ _ _ _
+    (genHasVal_mulGen hϖ D.toPre.P.L _ _ _ _ _ _ _ _ _ _ hp h3) hr
   obtain ⟨e', c₀, he', hc₀, hv⟩ := exists_val_genHasVal h4
   refine ⟨_, _, _, _, e', he', fun U _ h => ?_, c₀, ?_, fun F _ _ Z r z J hJ => ?_⟩
   · simp only [Fintype.prod_sum_type, Sum.elim_inl, Sum.elim_inr, Fintype.prod_unique, ahom_c, ahom_e, cQ_add]

@@ -1226,7 +1226,7 @@ theorem UpperTheory.V.Odd.resKill :
     AlgEquiv.ofRingEquiv (f := ((σ b).trans (u.1 : Ω ≃ₐ[E] Ω).toRingEquiv).trans (σ b).symm) (by
       intro y
       have h1 := hlift b y
-      simp only [RingEquiv.trans_apply, AlgEquiv.coe_toRingEquiv, AlgEquiv.coe_ringEquiv]
+      simp only [RingEquiv.trans_apply, AlgEquiv.coe_toRingEquiv]
       rw [h1, AlgEquiv.commutes, ← h1, RingEquiv.symm_apply_apply])
   have hw : ∀ b y, w b y = (σ b).symm (u.1 (σ b y)) := fun _ _ => rfl
   have wInf : ∀ b, w b ∈ Uinf E Ω l := by

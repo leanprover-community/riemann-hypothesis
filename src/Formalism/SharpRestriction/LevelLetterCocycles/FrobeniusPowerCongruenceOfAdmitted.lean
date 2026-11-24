@@ -762,14 +762,14 @@ section Rows
 open Formalism.MainNotions.UnusedSlot80
 
 theorem frobenius_power_congruence_local (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
-    (h1 : Formalism.MainNotions.RamifiedCoefficientChains.adm1 D HW F Cm) : FrobeniusExpansionCongruence D HW F Cm := by
+    (h1 : Formalism.MainNotions.RamifiedCoefficientChains.adm1 D HW F Cm) : FrobeniusExpansionCongruence D HW F := by
   intro l _ K LL hg _
   exact tHor_of ((Cm l).C K 1 LL hg).tie Subtype.val_injective (h1 l K 1 LL hg).2.2.2.1
     (h1 l K 1 LL hg).2.2.2.2.2.2.2.2.1
     (fun hCA => χ_pow_ne_one (RToolNum_holds (D.loc l) (HW l) K LL hg hCA))
 
 theorem frobenius_power_congruence_of_admitted (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
-    {CR CA CB CK : ℝ} (hA : Formalism.MainNotions.RamifiedCoefficientChains.admitted D HW F Cm CR CA CB CK) : FrobeniusExpansionCongruence D HW F Cm :=
+    {CR CA CB CK : ℝ} (hA : Formalism.MainNotions.RamifiedCoefficientChains.admitted D HW F Cm CR CA CB CK) : FrobeniusExpansionCongruence D HW F :=
   frobenius_power_congruence_local D HW F Cm hA.1
 
 end Rows

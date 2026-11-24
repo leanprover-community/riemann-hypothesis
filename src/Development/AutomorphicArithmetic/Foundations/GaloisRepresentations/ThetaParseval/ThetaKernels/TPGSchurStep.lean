@@ -156,7 +156,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qh52.exists_orthonormal_basis_sesquilinear :
-    ∀ {V : Type} [inst : AddCommGroup V] [inst_1 : _root_.Module ℂ V]
+    ∀ {V : Type} [AddCommGroup V] [_root_.Module ℂ V]
     [FiniteDimensional ℂ V] (B : V →ₗ[ℂ] V →ₗ⋆[ℂ] ℂ),
     (∀ (a b : V), ((B : V → V →ₗ⋆[ℂ] ℂ) b : V → ℂ) a = Star.star (((B : V → V →ₗ⋆[ℂ] ℂ) a : V → ℂ) b)) →
       (∀ (a : V), a ≠ (0 : V) → (0 : ℝ) < (((B : V → V →ₗ⋆[ℂ] ℂ) a : V → ℂ) a).re) →
@@ -299,7 +299,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qk65.measurable_of_separating_functionals :
-    ∀ {G V ι : Type} [inst : MeasurableSpace G] [inst_1 : AddCommGroup V] [inst_2 : _root_.Module ℂ V]
+    ∀ {G V ι : Type} [MeasurableSpace G] [AddCommGroup V] [_root_.Module ℂ V]
     [FiniteDimensional ℂ V] (l : ι → V →ₗ[ℂ] ℂ),
     (∀ (a : V), (∀ (y : ι), (l y : V → ℂ) a = (0 : ℂ)) → a = (0 : V)) →
       ∀ (T : G → V),
@@ -329,7 +329,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qh51.riesz_representation_sesquilinear :
-    ∀ {V : Type} [inst : AddCommGroup V] [inst_1 : _root_.Module ℂ V] [FiniteDimensional ℂ V]
+    ∀ {V : Type} [AddCommGroup V] [_root_.Module ℂ V] [FiniteDimensional ℂ V]
     (B : V →ₗ[ℂ] V →ₗ⋆[ℂ] ℂ),
     (∀ (a b : V), ((B : V → V →ₗ⋆[ℂ] ℂ) b : V → ℂ) a = Star.star (((B : V → V →ₗ⋆[ℂ] ℂ) a : V → ℂ) b)) →
       (∀ (a : V), a ≠ (0 : V) → (0 : ℝ) < (((B : V → V →ₗ⋆[ℂ] ℂ) a : V → ℂ) a).re) →

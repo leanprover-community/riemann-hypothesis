@@ -878,7 +878,7 @@ theorem norm_le_one_of_mem {x : K} (hx : x ∈ Subring.closure (mu K p)) : ‖x�
   | mul z w _ _ hz hw => rw [norm_mul]; exact mul_le_one₀ hz (norm_nonneg w) hw
 
 theorem norm_le_one_of_mem_W {x : K} (hx : x ∈ W K p) : ‖x‖ ≤ 1 :=
-  closure_minimal (fun y hy => norm_le_one_of_mem hy) (isClosed_le continuous_norm continuous_const)
+  closure_minimal (fun _ hy => norm_le_one_of_mem hy) (isClosed_le continuous_norm continuous_const)
     (mem_closure_roots_of_unity hx)
 
 omit [IsUltrametricDist K] in

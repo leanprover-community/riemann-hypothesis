@@ -225,7 +225,7 @@ lemma len_ne_zero_iff (hv : v.Integers R) {M : Type} [AddCommGroup M] [Module R 
       mul_one] at h2
     exact hr h2
 
-lemma colen_ne_zero (_hv : v.Integers R) {X : Type} [Fintype X] [DecidableEq X]
+lemma colen_ne_zero {X : Type} [Fintype X] [DecidableEq X]
     {M : Submodule R (X → C)} (h : IsLat R M) : ∃ c, c ≠ 0 ∧ HasColen R v M c := by
   obtain ⟨B, hB, hM⟩ := h
   refine ⟨v B.det, ?_, B, hM, rfl⟩
@@ -398,7 +398,7 @@ theorem lens : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C]
     simp only [Submodule.subtype_apply, Submodule.coe_smul, Pi.smul_apply, Algebra.smul_def, ← hr,
       map_natCast]
     ring
-  obtain ⟨cN, hcN0, hcN⟩ := colen_ne_zero hv AA.lat
+  obtain ⟨cN, hcN0, hcN⟩ := colen_ne_zero AA.lat
   have haug := aug_fg hv AA.carrier hMfg
   have hsq := sq_aug_fg hv AA.carrier hMfg
   obtain ⟨cO, hO⟩ := exists_hasLen hv (augIdeal AA.carrier) (sqIdeal (augIdeal AA.carrier)) haug hsq

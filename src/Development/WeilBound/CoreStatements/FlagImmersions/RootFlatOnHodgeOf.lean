@@ -592,8 +592,8 @@ theorem key_dual (𝓗 : HodgeLat L ρ bar (p + q)) {σ σ' : E →+* Ω} {v : F
   obtain ⟨huli, husp, hinv⟩ := GlobalTheory.CompanionTheory.Ar.Flat.AdaptedSpan.adapted_span X Ω ξ E V L ρ bar p q (p + q) 𝓗 σ σ' v w u h1 h2 hv hvs hw hws had
   obtain ⟨hq, -, hmap⟩ := quot_eig_dual X Ω ξ E V L ρ bar (p + q) 𝓗 σ x (fun a => (hreg a).1)
   obtain ⟨-, hL', -⟩ := quot_eig_dual X Ω ξ E V L ρ bar (p + q) 𝓗 σ' x (fun a => (hreg a).2)
-  have hP0 := det_ne_zero_of_li hv hP.1
-  have hQ0 := det_ne_zero_of_li hw hQ.1
+  have hP0 := det_ne_zero_of_li hP.1
+  have hQ0 := det_ne_zero_of_li hQ.1
   have hdual : ∀ φ : Module.Dual Ω V, ((0 : V), φ) ∈ 𝓗.HL x ↔ φ ∈ L.dual x := fun φ => by
     rw [← congrFun 𝓗.comap_inr x]
     rfl
@@ -819,8 +819,8 @@ theorem numTriv_of_degZero [CharZero Ω] {E : Type} [Field E] [NumberField E] {L
     obtain ⟨N, hN, hNd⟩ := key_dual 𝓗 h1 h2 (x := x)
       (fun k => ⟨dualInt_mem _ σ (hσ x) hdu k, dualInt_mem _ σ' (fun a => h1 a ▸ hσ x _) hdu k⟩)
       hv hvs hw hws had (P := P) (Q := Q) ⟨hP.1, (eA x hx).symm.trans hP.2⟩ ⟨hQ.1, (eB x hx).symm.trans hQ.2⟩
-    have hP0 := det_ne_zero_of_li hv hP.1
-    have hQ0 := det_ne_zero_of_li hw hQ.1
+    have hP0 := det_ne_zero_of_li hP.1
+    have hQ0 := det_ne_zero_of_li hQ.1
     refine HodgeDeterminantLattice.isGenAt_mul (HodgeDeterminantLattice.detLat_of_frame hu hN) ?_ hs
     have hco : IsCoeffAt A B p q a b x (c / d * N.det)⁻¹ := by
       refine ⟨P.det * c, Q.det * d, mul_ne_zero hP0 hc0, mul_ne_zero hQ0 hd0, ?_, ?_, ?_⟩

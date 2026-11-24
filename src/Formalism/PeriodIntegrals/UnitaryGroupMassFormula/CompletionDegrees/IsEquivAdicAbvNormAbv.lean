@@ -139,7 +139,7 @@ private lemma le_one_lemma_2 {E : Type} [Field E] [NumberField E] (w : AbsoluteV
     exact absurd h (not_lt.mpr ((inv_le_one₀ hnpos).mp h2))
 
 theorem isEquiv_adicAbv_normAbv {l : ℕ} [Fact l.Prime] {E : Type} [Field E] [NumberField E]
-    (φ : E →+* Om l) (v : HeightOneSpectrum (𝓞 E)) (hv : v ∈ placesOver E l)
+    (φ : E →+* Om l) (v : HeightOneSpectrum (𝓞 E))
     (hφ : ∀ x : 𝓞 E, ‖φ (x : E)‖ ≤ 1 ∧ (‖φ (x : E)‖ < 1 ↔ x ∈ v.asIdeal)) :
     (v.adicAbv (K := E) (b := 2) one_lt_two).IsEquiv (normAbv φ) := by
   rw [AbsoluteValue.isEquiv_iff_lt_one_iff]

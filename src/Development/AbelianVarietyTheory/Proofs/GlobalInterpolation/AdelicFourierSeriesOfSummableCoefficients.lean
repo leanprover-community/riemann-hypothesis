@@ -485,7 +485,7 @@ theorem fourier_series : ∀ (F : Type) [Field F] [NumberField F] (N : ℕ) (ψ 
     fun ξ => hψc.comp (continuous_bd a ξ)
   set S : (Fin N → AF F) → ℂ := fun u => ∑' ξ, c ξ * ψ (Bd (AF F) a u (rat ξ)) with hSdef
   have hS : Continuous S := continuous_tsum (fun ξ => continuous_const.mul (he ξ)) hsum
-    (fun ξ u => by simp [norm_mul, hψn])
+    (fun ξ u => by simp [hψn])
   have hSper : ∀ η u, S (rat η + u) = S u := by
     intro η u
     simp only [hSdef, bd_rat_add, AddChar.map_add_eq_mul, hψF, one_mul]
@@ -516,7 +516,7 @@ theorem fourier_series : ∀ (F : Type) [Field F] [NumberField F] (N : ℕ) (ψ 
     simp_rw [hsw]
     have hInt : ∀ ξ', Integrable (fun u => c ξ' * ψ (Bd (AF F) a u (rat (ξ' - ξ))))
         ((muV N ν).restrict D) :=
-      fun ξ' => hint _ (continuous_const.mul (he _)) ‖c ξ'‖ (fun u => by simp [norm_mul, hψn])
+      fun ξ' => hint _ (continuous_const.mul (he _)) ‖c ξ'‖ (fun u => by simp [hψn])
     have hnorm : ∀ ξ', ∫ u in D, ‖c ξ' * ψ (Bd (AF F) a u (rat (ξ' - ξ)))‖ ∂(muV N ν) = ‖c ξ'‖ := by
       intro ξ'
       simp only [norm_mul, hψn, mul_one]
@@ -539,8 +539,8 @@ theorem fourier_series : ∀ (F : Type) [Field F] [NumberField F] (N : ℕ) (ψ 
       hint _ (hP.mul (hψc.comp (continuous_bd a ξ).neg)) M (fun u => by simpa [norm_mul, hψn] using hM u)
     have hSb : ∀ u, ‖S u‖ ≤ ∑' ξ, ‖c ξ‖ := fun u =>
       (norm_tsum_le_tsum_norm (hsum.of_nonneg_of_le (fun _ => norm_nonneg _)
-        (fun ξ' => by simp [norm_mul, hψn]))).trans
-        (le_of_eq (tsum_congr fun ξ' => by simp [norm_mul, hψn]))
+        (fun ξ' => by simp [hψn]))).trans
+        (le_of_eq (tsum_congr fun ξ' => by simp [hψn]))
     have h2 : Integrable (fun u => S u * ψ (-(Bd (AF F) a u (rat ξ)))) ((muV N ν).restrict D) :=
       hint _ (hS.mul (hψc.comp (continuous_bd a ξ).neg)) _ (fun u => by simpa [norm_mul, hψn] using hSb u)
     simp only [hQdef, sub_mul]

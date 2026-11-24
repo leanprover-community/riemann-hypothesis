@@ -447,7 +447,7 @@ theorem numKG : NumKG := by
   obtain ⟨hXa, -, hgap⟩ := hG
   obtain ⟨w, hw, hs⟩ := exists_sort ε κ
   have hκw := sorted_weight_eq_of_norm_eq ε κ μ ν C hC w hw hs (hdom w hw)
-    (fun a => by simp only [hκ, hμ, Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul]; ring) hn
+    (fun a => by simp only [hκ, hμ, Pi.sub_apply]; ring) hn
   let t : Fin n → Fin n → ℝ := fun a b =>
     (sig a b - sc ε a b) - 2 * (ind B a b - ind B b a) + sc ε (w.symm a) (w.symm b)
   have hws : ∀ c, ε (w.symm c) = ε c := fun c => by rw [← hw, Equiv.apply_symm_apply]
@@ -1076,7 +1076,7 @@ theorem L_lF : ∀ (n : ℕ) (lev : Fin n → ℕ) (V : Type) [AddCommGroup V] [
           (if q = r then lF E p v x else 0) - (if v = p then lF E r q x else 0) := by
   intro n lev V _ _ E hm hE x hx
   refine ⟨fun p q hpq => ?_, fun p q r v h1 h2 => _root_.GlobalTheory.CompanionTheory.RgCOBlock.lF_glRel n lev V E hm hE x hx p q r v h1 h2⟩
-  obtain ⟨a, b⟩ := _root_.GlobalTheory.CompanionTheory.RgCOBlock.LeviSupp.lF_suppIn_deg n lev V E hm x hx p q hpq
+  obtain ⟨a, b⟩ := _root_.GlobalTheory.CompanionTheory.RgCOBlock.LeviSupp.lF_suppIn_deg n lev V E x hx p q hpq
   exact ⟨a, b, _root_.GlobalTheory.CompanionTheory.RgCOBlock.LeviBd.lF_bd n lev V E hm hE x hx p q hpq⟩
 
 theorem coBlock : InjU → GenCOU → COBlock := by
@@ -1183,14 +1183,14 @@ theorem coBlock : InjU → GenCOU → COBlock := by
     intro A hA i hi
     have : A = omU ε lev := by
       by_contra hne
-      exact hA (by simp [ht, Pi.single_apply, hne])
+      exact hA (by simp [ht, hne])
     subst this
     exact (mem_filter.1 hi).2.2
   have tdeg : Deg dg t := by
     intro A hA
     have : A = omU ε lev := by
       by_contra hne
-      exact hA (by simp [ht, Pi.single_apply, hne])
+      exact hA (by simp [ht, hne])
     rw [this]
   let tZ : Z := ⟨t, tsup, tdeg, tc⟩
   let tb : Z ⧸ B.comap Z.subtype := Submodule.Quotient.mk tZ

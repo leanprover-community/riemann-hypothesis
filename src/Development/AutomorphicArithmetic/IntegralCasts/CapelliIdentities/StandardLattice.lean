@@ -52,32 +52,32 @@ namespace UpperTheory.Reformulated.B.StandardLattice
 noncomputable def pZ : ℕ → Ideal ℤ :=
   fun l => Ideal.span {↑l}
 
-theorem aux2 : ∀ (l : ℕ) [hl : Fact (Nat.Prime l)],
+theorem aux2 : ∀ (l : ℕ) [Fact (Nat.Prime l)],
   (pZ l).IsPrime := by
   intro l hl
   have hp : Prime (l : ℤ) := Nat.prime_iff_prime_int.mp hl.out
   exact (Ideal.span_singleton_prime hp.ne_zero).mpr hp
 
 @[reducible] noncomputable def Ml : (l : ℕ) →
-  [hl : Fact (Nat.Prime l)] → (K : Type) → [inst : Field K] → Submonoid (NumberField.RingOfIntegers K) :=
+  [Fact (Nat.Prime l)] → (K : Type) → [Field K] → Submonoid (NumberField.RingOfIntegers K) :=
   fun l [Fact (Nat.Prime l)] K [Field K] => by
     letI := aux2 l
     exact Algebra.algebraMapSubmonoid (NumberField.RingOfIntegers K)
       (pZ l).primeCompl
 
 @[reducible] noncomputable def Rl : (l : ℕ) →
-  [hl : Fact (Nat.Prime l)] → (K : Type) → [Field K] → Type :=
+  [Fact (Nat.Prime l)] → (K : Type) → [Field K] → Type :=
   fun l [Fact (Nat.Prime l)] K [Field K] => Localization (Ml l K)
 
-theorem aux5 : ∀ (l : ℕ) [hl : Fact (Nat.Prime l)] (K : Type)
-  [inst : Field K],
+theorem aux5 : ∀ (l : ℕ) [Fact (Nat.Prime l)] (K : Type)
+  [Field K],
   IsLocalization (Ml l K)
     (Localization (Ml l K)) := by
   intro l hl K inst
   exact Localization.isLocalization
 
-theorem aux6 : ∀ (l : ℕ) [hl : Fact (Nat.Prime l)] (K : Type)
-  [inst : Field K] [NumberField K] (y : ↥(Ml l K)),
+theorem aux6 : ∀ (l : ℕ) [Fact (Nat.Prime l)] (K : Type)
+  [Field K] [NumberField K] (y : ↥(Ml l K)),
   IsUnit ((Algebra.algebraMap (NumberField.RingOfIntegers K) K) ↑y) := by
   intro l hl K inst _ y
   obtain ⟨y, n, hn, rfl⟩ := y
@@ -88,49 +88,49 @@ theorem aux6 : ∀ (l : ℕ) [hl : Fact (Nat.Prime l)] (K : Type)
   simpa using hn0
 
 noncomputable def rlToK : (l : ℕ) →
-  [hl : Fact (Nat.Prime l)] →
-    (K : Type) → [inst : Field K] → [NumberField K] → Rl l K →+* K :=
+  [Fact (Nat.Prime l)] →
+    (K : Type) → [Field K] → [NumberField K] → Rl l K →+* K :=
   fun l [Fact (Nat.Prime l)] K [Field K] [NumberField K] =>
     IsLocalization.lift (aux6 l K)
 
 @[reducible] noncomputable def rlAlgebra : (l : ℕ) →
-  [hl : Fact (Nat.Prime l)] →
-    (K : Type) → [inst : Field K] → [NumberField K] → Algebra (Rl l K) K :=
+  [Fact (Nat.Prime l)] →
+    (K : Type) → [Field K] → [NumberField K] → Algebra (Rl l K) K :=
   fun l [Fact (Nat.Prime l)] K [Field K] [NumberField K] =>
     (rlToK l K).toAlgebra
 
 attribute [local instance] rlAlgebra
 
 @[reducible] noncomputable def rlModule : (l : ℕ) →
-  [hl : Fact (Nat.Prime l)] →
+  [Fact (Nat.Prime l)] →
     (K : Type) →
-      [inst : Field K] →
+      [Field K] →
         [NumberField K] →
           (V : Type) →
-            [inst_2 : AddCommGroup V] → [Module K V] → Module (Rl l K) V :=
+            [AddCommGroup V] → [Module K V] → Module (Rl l K) V :=
   fun l [Fact (Nat.Prime l)] K [Field K] [NumberField K] V [AddCommGroup V] [Module K V] =>
     Module.compHom V (Algebra.algebraMap (Rl l K) K)
 
 attribute [local instance] rlModule
 
 noncomputable def atL : (l : ℕ) →
-  [hl : Fact (Nat.Prime l)] →
+  [Fact (Nat.Prime l)] →
     (K : Type) →
-      [inst : Field K] →
-        [inst_1 : NumberField K] →
+      [Field K] →
+        [NumberField K] →
           {V : Type} →
-            [inst_2 : AddCommGroup V] →
-              [inst_3 : Module K V] →
-                [inst_4 : Module (NumberField.RingOfIntegers K) V] →
+            [AddCommGroup V] →
+              [Module K V] →
+                [Module (NumberField.RingOfIntegers K) V] →
                   Submodule (NumberField.RingOfIntegers K) V →
                     Submodule (Rl l K) V :=
   fun l [Fact (Nat.Prime l)] K [Field K] [NumberField K] {V} [AddCommGroup V] [Module K V]
       [Module (NumberField.RingOfIntegers K) V] L =>
     Submodule.span (Rl l K) (↑L : Set V)
 
-theorem mem_atL_iff : ∀ (l : ℕ) [hl : Fact (Nat.Prime l)] (K : Type)
-  [inst : Field K] [inst_1 : NumberField K] {V : Type} [inst_2 : AddCommGroup V] [inst_3 : Module K V]
-  [inst_4 : Module (NumberField.RingOfIntegers K) V] [IsScalarTower (NumberField.RingOfIntegers K) K V]
+theorem mem_atL_iff : ∀ (l : ℕ) [Fact (Nat.Prime l)] (K : Type)
+  [Field K] [NumberField K] {V : Type} [AddCommGroup V] [Module K V]
+  [Module (NumberField.RingOfIntegers K) V] [IsScalarTower (NumberField.RingOfIntegers K) K V]
   {L : Submodule (NumberField.RingOfIntegers K) V} {x : V},
   x ∈ atL l K L ↔
     ∃ s ∈ Ml l K, s • x ∈ L := by

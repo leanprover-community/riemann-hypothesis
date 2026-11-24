@@ -87,7 +87,7 @@ theorem tensorLat_eq_span (hfg : Λ'.FG)
     (hint : ∀ x ∈ Λ', ∀ y ∈ Λ', IsIntegral ℤ (herm 1 x y))
     (hdual : ∀ x, (∀ y ∈ Λ', IsIntegral ℤ (herm 1 x y)) → x ∈ Λ') :
     tensorLat X Λ' = Submodule.span ℤ {γ | ∃ x ∈ X.L, ∃ v ∈ Λ', γ = tens x v} := by
-  obtain ⟨-, m, v, w, hv, hw, hexp⟩ := GlobalTheory.exists_dual_family Λ' hfg hint hdual
+  obtain ⟨-, m, v, w, hv, hw, hexp⟩ := GlobalTheory.exists_dual_family Λ' hfg hdual
   apply le_antisymm
   · intro γ hγ
     rw [eq_sum_tens_contr hexp γ]
@@ -102,7 +102,7 @@ theorem im_HC_int (hfg : Λ'.FG)
     (hdual : ∀ x, (∀ y ∈ Λ', IsIntegral ℤ (herm 1 x y)) → x ∈ Λ')
     {γ γ' : Fin n → Vsp X.dim} (hγ : γ ∈ tensorLat X Λ') (hγ' : γ' ∈ tensorLat X Λ') :
     ∃ k : ℤ, (HC γ γ').im = k := by
-  obtain ⟨-, m, v, w, hv, hw, hexp⟩ := GlobalTheory.exists_dual_family Λ' hfg hint hdual
+  obtain ⟨-, m, v, w, hv, hw, hexp⟩ := GlobalTheory.exists_dual_family Λ' hfg hdual
   have hc := mem_tensorLat.1 hγ'
   choose k hk using fun i => im_HC_tens_int hγ (hc (w i) (hw i)) (hv i)
   refine ⟨∑ i, k i, ?_⟩
@@ -116,7 +116,7 @@ theorem exists_im_HC_eq (hfg : Λ'.FG)
     (φ : tensorLat X Λ' →+ ℤ) :
     ∃ γ ∈ tensorLat X Λ', ∀ γ' : tensorLat X Λ',
       (φ γ' : ℝ) = (HC γ (γ' : Fin n → Vsp X.dim)).im := by
-  obtain ⟨-, m, v, w, hv, hw, hexp⟩ := GlobalTheory.exists_dual_family Λ' hfg hint hdual
+  obtain ⟨-, m, v, w, hv, hw, hexp⟩ := GlobalTheory.exists_dual_family Λ' hfg hdual
   let ψ : Fin m → (X.L →+ ℤ) := fun i => φ.comp
     { toFun := fun x => ⟨tens (x : Vsp X.dim) (v i), tens_mem_of_integral hint x.2 (hv i)⟩
       map_zero' := Subtype.ext (tens_zero_left _)
@@ -179,7 +179,7 @@ theorem exists_nsmul_stdLat_le (hfg : Λ'.FG)
     ∃ N : ℕ, 1 ≤ N ∧ ∀ u ∈ stdLat E n, N • u ∈ Λ' := by
   classical
   have : Algebra.IsAlgebraic ℤ E := (IsFractionRing.comap_isAlgebraic_iff (K := ℚ)).2 inferInstance
-  obtain ⟨-, m, v, w, hv, hw, hexp⟩ := GlobalTheory.exists_dual_family Λ' hfg hint hdual
+  obtain ⟨-, m, v, w, hv, hw, hexp⟩ := GlobalTheory.exists_dual_family Λ' hfg hdual
   obtain ⟨y, hy0, hy⟩ := Algebra.IsAlgebraic.exists_integral_multiples ℤ
     (Finset.univ.image fun p : Fin m × Fin n => cc (w p.1 p.2))
   have hN : ((y.natAbs : ℕ) : E) = (y : E) ∨ ((y.natAbs : ℕ) : E) = -(y : E) := by
@@ -252,7 +252,7 @@ theorem tensorLat_span_integral_perfect (X : PT E) (Λ' : Submodule (𝓞 E) (Fi
     fun N hN => ⟨fun γ hγ => nsmul_mem_tensorLat hint hN hγ,
       fun γ hγ k => nsmul_apply_mem_of_mem_tensorLat hN hγ k⟩,
     exists_nsmul_commensurable hfg hint hdual⟩
-  obtain ⟨-, m, v, w, hv, hw, hexp⟩ := GlobalTheory.exists_dual_family Λ' hfg hint hdual
+  obtain ⟨-, m, v, w, hv, hw, hexp⟩ := GlobalTheory.exists_dual_family Λ' hfg hdual
   exact ⟨m, v, w, hv, hw, hexp, fun γ => eq_sum_tens_contr hexp γ⟩
 
 end GlobalTheory.TensorLat

@@ -413,7 +413,7 @@ theorem integrable_exp_neg_abs_log {δ : ℝ} (hδ : 0 < δ) :
   have hlog : Real.log ((expPos x : {x : ℝ // 0 < x}) : ℝ) = x := Real.log_exp x
   simp only [Function.comp_apply, hlog]
 
-theorem pow_bound {σ δ : ℝ} {r n : ℕ} (hδ1 : δ ≤ 1) (hδ2 : δ ≤ σ - n) (hδ : 0 < δ)
+theorem pow_bound {σ δ : ℝ} {r n : ℕ} (hδ1 : δ ≤ 1) (hδ2 : δ ≤ σ - n)
     (hr : σ + 1 ≤ r) {t : ℝ} (ht : 0 < t) :
     (1 ≤ t → (t ^ r)⁻¹ * t ^ σ ≤ Real.exp (-(δ * |Real.log t|))) ∧
     (t ≤ 1 → (t ^ n)⁻¹ * t ^ σ ≤ Real.exp (-(δ * |Real.log t|))) := by
@@ -480,7 +480,7 @@ theorem sum_integral_norm_le (w : InfinitePlace k) {F : (ι → 𝔸[k]) → ℂ
       have hp : 0 ≤ (t : ℝ) ^ z.re := Real.rpow_nonneg ht0.le _
       have h3 := tsum_finset_le hF (scalC x) S
       obtain ⟨hb1, hb2⟩ := hM t u hu
-      obtain ⟨hc1, hc2⟩ := pow_bound hδ1 hδ2 hδ hr ht0
+      obtain ⟨hc1, hc2⟩ := pow_bound hδ1 hδ2 hr ht0
       rcases le_total 1 (t : ℝ) with h | h
       · calc _ ≤ (((t : ℝ) ^ r)⁻¹ * M) * (t : ℝ) ^ z.re :=
               mul_le_mul_of_nonneg_right (h3.trans (hb1 h)) hp

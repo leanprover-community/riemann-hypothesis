@@ -288,7 +288,7 @@ variable {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω]
 def conjBack (σ : Ω ≃+* Ω) (τ : F ≃+* F) (hστ : ∀ x, σ (algebraMap F Ω x) = algebraMap F Ω (τ x)) :
     G F Ω →* G F Ω where
   toFun g := AlgEquiv.ofRingEquiv (f := (σ.trans g.toRingEquiv).trans σ.symm) (fun x => by
-    simp only [RingEquiv.trans_apply, hστ, AlgEquiv.coe_toRingEquiv, AlgEquiv.coe_ringEquiv, AlgEquiv.commutes]
+    simp only [RingEquiv.trans_apply, hστ, AlgEquiv.coe_toRingEquiv, AlgEquiv.commutes]
     rw [← hστ, RingEquiv.symm_apply_apply])
   map_one' := by ext x; simp
   map_mul' g h := by ext x; simp

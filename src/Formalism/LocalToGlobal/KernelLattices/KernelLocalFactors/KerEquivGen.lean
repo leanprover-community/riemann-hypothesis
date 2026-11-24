@@ -162,7 +162,7 @@ theorem kerOf_move {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K]
     {SB : Finset (HeightOneSpectrum (𝓞 E))} {V V' : Type} [AddCommGroup V] [Module K V] [AddCommGroup V'] [Module K V']
     {th : ThDist E K a b SB V V'} {Sall : Finset (HeightOneSpectrum (𝓞 E))} {cA cB : ℕ}
     {rho : UF E a →* Module.End K V} {rho' : UF E b →* Module.End K V'} {sS sT : SB → E → K}
-    (hth : ThDist.Ok th Sall (cA * cB) rho rho' sS sT) (hB : 0 < cB)
+    (hth : ThDist.Ok th Sall (cA * cB) rho rho' sS sT)
     {N : Submodule (𝓞 E) (Sp E a)} {N' : Submodule (𝓞 E) (Sp E b)} (hN : IsSdLat N) (hN' : IsSdLat N')
     (fr : Frs E a SB) (fr' : Frs E b SB) (γ : UF E a) (γ' : UF E b)
     (κ : ∀ P : SB, ↥(GLint E a P.1)) (κ' : ∀ P : SB, ↥(GLint E b P.1))

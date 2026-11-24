@@ -223,7 +223,7 @@ def provisionalDivX (D : D7) (G : DV.Geo D.what₂.LL) (Y : G.Var)
     CurveM := fun _ _ _ _ _ _ => Empty
     degM := fun _ _ _ _ _ _ _ _ => 0
     htMdl := fun _ _ _ _ _ => ()
-    htCurve := fun _ _ p _ =>
+    htCurve := fun _ _ _ _ =>
       { toFun := fun c => Empty.elim c
         invFun := fun c => c.2
         left_inv := fun c => Empty.elim c

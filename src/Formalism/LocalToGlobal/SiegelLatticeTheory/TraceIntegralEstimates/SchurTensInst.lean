@@ -545,7 +545,7 @@ private theorem integral_norm_sq_coeff_eq_of_SP {a b : Hs} (h : SP m σs D a b a
     rfl
   exact Complex.ofReal_injective h3
 
-theorem lintegral_of_diag (hstr : ∀ a : Hs, Continuous (fun x => σs x a)) {a b : Hs} (h : SP m σs D a b a b) :
+theorem lintegral_of_diag {a b : Hs} (h : SP m σs D a b a b) :
     ∫⁻ x, ‖coeff σs a b x‖ₑ ^ 2 ∂m = ENNReal.ofReal (‖a‖ ^ 2 * ‖b‖ ^ 2 / D) := by
   rw [lintegral_enorm_sq_coeff_eq_ofReal_of_SP h, integral_norm_sq_coeff_eq_of_SP h]
 
@@ -603,7 +603,7 @@ theorem SP_of_dense_a (hstr : ∀ a : Hs, Continuous (fun x => σs x a)) (hD : 0
     calc ∫⁻ x, ‖coeff σs (u k) b x - coeff σs (u n) b x‖ₑ ^ 2 ∂m
         = ∫⁻ x, ‖coeff σs (u k - u n) b x‖ₑ ^ 2 ∂m := by simp only [hsub]
       _ = ENNReal.ofReal (‖u k - u n‖ ^ 2 * ‖b‖ ^ 2 / D) :=
-          lintegral_of_diag hstr (hdiag _ (Sp.sub_mem (hu_mem k) (hu_mem n)))
+          lintegral_of_diag (hdiag _ (Sp.sub_mem (hu_mem k) (hu_mem n)))
       _ ≤ ε := hsmall _ (norm_nonneg _) (by rw [← dist_eq_norm]; exact hN k hk n hn)
   have hL : Tendsto (fun n => ∫ x, coeff σs (u n) b x * conj (coeff σs a' b' x) ∂m) atTop
       (𝓝 (⟪a', a⟫_ℂ * ⟪b, b'⟫_ℂ / (D : ℂ))) := by
@@ -641,7 +641,7 @@ theorem SP_of_dense_b (hstr : ∀ a : Hs, Continuous (fun x => σs x a)) (hD : 0
     calc ∫⁻ x, ‖coeff σs a (u k) x - coeff σs a (u n) x‖ₑ ^ 2 ∂m
         = ∫⁻ x, ‖coeff σs a (u k - u n) x‖ₑ ^ 2 ∂m := by simp only [hsub]
       _ = ENNReal.ofReal (‖u k - u n‖ ^ 2 * ‖a‖ ^ 2 / D) := by
-          rw [lintegral_of_diag hstr (hdiag _ (Sp.sub_mem (hu_mem k) (hu_mem n))),
+          rw [lintegral_of_diag (hdiag _ (Sp.sub_mem (hu_mem k) (hu_mem n))),
             mul_comm (‖a‖ ^ 2)]
       _ ≤ ε := hsmall _ (norm_nonneg _) (by rw [← dist_eq_norm]; exact hN k hk n hn)
   have hL : Tendsto (fun n => ∫ x, coeff σs a (u n) x * conj (coeff σs a' b' x) ∂m) atTop

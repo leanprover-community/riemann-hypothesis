@@ -244,7 +244,7 @@ theorem comap_derivIdealSheafIterate_le_exceptionalIdeal_pow_mul (k : Type u) [F
     haveI : AlgebraicGeometry.Smooth (π ≫ p) := smooth_comp_of_isBlowupAlongIdealSheaf hZ hπ
     (derivIdealSheafIterate k p j I).comap π ≤
       Blowup.exceptionalIdeal π Z ^ (m - j) *
-        derivIdealSheafIterate k (π ≫ p) j (controlledTransform π Z I m hπ hI) := by
+        derivIdealSheafIterate k (π ≫ p) j (controlledTransform π Z I m) := by
   have : AlgebraicGeometry.Smooth (π ≫ p) := smooth_comp_of_isBlowupAlongIdealSheaf hZ hπ
   refine le_of_forall_exists_affineOpen ?_
   intro x
@@ -346,21 +346,21 @@ theorem comap_derivIdealSheafIterate_le_exceptionalIdeal_pow_mul (k : Type u) [F
       exact coord_mem_nonZeroDivisors V.2 cV s
     have hJ : Ideal.map φA (I.ideal U₀) ≤
         Ideal.span {(@EtaleCoordinates.coord k _ (ULift.{u} (Fin n)) Γ(X₁, (V : X₁.Opens)) _ algV
-          (ULift.up s)) ^ m} * (controlledTransform π Z I m hπ hI).ideal V := by
+          (ULift.up s)) ^ m} * (controlledTransform π Z I m).ideal V := by
       have h1 : Ideal.map (π.appLE (U₀ : X.Opens) (V : X₁.Opens) hVU).hom (I.ideal U₀)
           ≤ (I.comap π).ideal V :=
         I.map_appLE_le_comap_ideal π U₀ V hVU
       rw [← exceptionalIdeal_pow_mul_controlledTransform π Z I m hπ hI,
-        hEpow m (controlledTransform π Z I m hπ hI)] at h1
+        hEpow m (controlledTransform π Z I m)] at h1
       rw [hcoordVs, hmap]
       exact h1
     have hring := EtaleCoordinates.map_derivIdealIterate_le_span_pow_mul k (ULift.{u} (Fin n))
       Γ(X, (U₀ : X.Opens)) Γ(X₁, (V : X₁.Opens)) φA (uliftFinset n S) (ULift.up s)
-      hin hsc hout hsT hnzd (I.ideal U₀) ((controlledTransform π Z I m hπ hI).ideal V) m hJ j hj
+      hin hsc hout hsT hnzd (I.ideal U₀) ((controlledTransform π Z I m).ideal V) m hJ j hj
     rw [hcoordVs] at hring
     rw [(derivIdealSheafIterate k p j I).comap_ideal_eq_map_appLE π U₀ V hVU,
       derivIdealSheafIterate_ideal,
-      hEpow (m - j) (derivIdealSheafIterate k (π ≫ p) j (controlledTransform π Z I m hπ hI)),
+      hEpow (m - j) (derivIdealSheafIterate k (π ≫ p) j (controlledTransform π Z I m)),
       derivIdealSheafIterate_ideal, ← hmap]
     exact hring
   · have : IsIso (AlgebraicGeometry.morphismRestrict π Z.support.compl) :=
@@ -371,7 +371,7 @@ theorem comap_derivIdealSheafIterate_le_exceptionalIdeal_pow_mul (k : Type u) [F
     refine ⟨V, hxV, ?_⟩
     rw [heq]
     have h2 := derivIdealSheafIterate_pow_mul_le k (π ≫ p) (Blowup.exceptionalIdeal π Z)
-      (controlledTransform π Z I m hπ hI) m j hj
+      (controlledTransform π Z I m) m j hj
     rw [exceptionalIdeal_pow_mul_controlledTransform π Z I m hπ hI] at h2
     exact Scheme.IdealSheafData.le_def.mp h2 V
 

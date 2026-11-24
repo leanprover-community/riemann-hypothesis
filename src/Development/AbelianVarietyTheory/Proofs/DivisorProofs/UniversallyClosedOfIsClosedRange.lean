@@ -294,7 +294,6 @@ theorem exists_finset_isProper (k V : Type) [CommRing k] [IsNoetherianRing k] [C
   obtain ⟨j, f, hj⟩ := exists_isClosed_preimage_diff (bcDiagram q V) (bcCone q V) (isLimitBcCone q V)
     (π ⁻¹ᵁ O) (π ⁻¹ᵁ O')
     (QuasiCompact.isCompact_preimage (f := π) _ O.2 (TopologicalSpace.NoetherianSpace.isCompact _))
-    (QuasiCompact.isCompact_preimage (f := π) _ O'.2 (TopologicalSpace.NoetherianSpace.isCompact _))
     (by
       have e : (bcCone q V).π.app s ≫ π = pullback.fst q _ := bcMap_fst _ _
       rw [key, ← Set.preimage_comp, ← TopCat.coe_comp, ← Scheme.Hom.comp_base, e]

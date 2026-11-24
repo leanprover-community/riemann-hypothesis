@@ -154,7 +154,7 @@ theorem fSatake_tMat_exists {ϖ : L} {q m : ℕ} (hU : IsUnramInv ϖ σ q) (hm :
   · simp
 
 theorem fSatake_diag_mem_K {d : GU σ n} {e : Fin n → L} (hd : ⟪d⟫ = Matrix.diagonal e)
-    (hd' : ⟪d⁻¹⟫ = Matrix.diagonal (fun i => (e i)⁻¹)) (hv : ∀ i, Valued.v (e i) = 1) :
+    (hv : ∀ i, Valued.v (e i) = 1) :
     d ∈ KU σ n := by
   have hne : ∀ i, e i ≠ 0 := fun i h => by
     have h1 := hv i
@@ -339,7 +339,7 @@ theorem fSatake_cell_exists {ϖ : L} {q m : ℕ} (hU : IsUnramInv ϖ σ q) (hm :
   let D0 : GU σ n := ⟨⟨Matrix.diagonal e, Matrix.diagonal (fun i => (e i)⁻¹), hd1, hd2⟩, hmemD⟩
   have hD0 : ⟪D0⟫ = Matrix.diagonal e := rfl
   have hD0i : ⟪D0⁻¹⟫ = Matrix.diagonal (fun i => (e i)⁻¹) := rfl
-  have hD0K : D0 ∈ KU σ n := fSatake_diag_mem_K hD0 hD0i hve
+  have hD0K : D0 ∈ KU σ n := fSatake_diag_mem_K hD0 hve
   have hD0B : IsBorelU D0 := fSatake_borel_of_diag hD0
   have htinv : ∀ i, ⟪t⁻¹⟫ i i = (tMat ϖ n m a i i)⁻¹ := fun i => by
     have h1 := _root_.Formalism.UG.P.fSatake_borel_diag_mul (_root_.Formalism.UG.P.fSatake_borel_inv htB) htB i

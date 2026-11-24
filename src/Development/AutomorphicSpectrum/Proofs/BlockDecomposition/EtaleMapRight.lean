@@ -371,7 +371,7 @@ section Main
 
 
 
-theorem kunAff (hU : FormUniq) (hS : SiteLaws) (hA : AffOm) (hN : OmNat) (hL : FormLaws) (hC : FormCup) (hK : OmKun) : KunAff := by
+theorem kunAff (hU : FormUniq) (hA : AffOm) (hN : OmNat) (hL : FormLaws) (hC : FormCup) (hK : OmKun) : KunAff := by
   intro K _ _ X X' P q q' p₁ p₂ hP V V' d d' ⟨cV⟩ ⟨cV'⟩
   have haff := prod_affine q q' p₁ p₂ hP V V' cV.affine cV'.affine
   let ψ := AlgEquiv.ofBijective _ (prod_bij q q' p₁ p₂ hP V V' cV.affine cV'.affine)
@@ -413,6 +413,6 @@ theorem kunAff (hU : FormUniq) (hS : SiteLaws) (hA : AffOm) (hN : OmNat) (hL : F
 
 end Main
 
-theorem kunAffOf : FormUniq → KunAffOf := fun hU hS hA hN hL hC hK => kunAff hU hS hA hN hL hC hK
+theorem kunAffOf : FormUniq → KunAffOf := fun hU hS hA hN hL hC hK => kunAff hU hA hN hL hC hK
 
 end GlobalTheory.CompanionTheory.KunAffP

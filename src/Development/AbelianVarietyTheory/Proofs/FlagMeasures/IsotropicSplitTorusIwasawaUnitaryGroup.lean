@@ -224,7 +224,7 @@ theorem exp_tor (hP : P * P = P) (hQ : Q * Q = Q) (hPQ : P * Q = 0) (hQP : Q * P
   simp only [tor, add_mul, mul_add, one_mul, mul_one, smul_mul_assoc, mul_smul_comm, hPQ,
     smul_zero, add_zero]
 
-theorem tor_conj (hP : P * P = P) (hQ : Q * Q = Q) (hPQ : P * Q = 0) (hQP : Q * P = 0)
+theorem tor_conj
     {X : Matrix (Fin n) (Fin n) ℂ} (h1 : X * P = 0) (h2 : Q * X = 0) (h3 : (1 - P) * X * (1 - Q) = 0)
     (c d : ℂ) : tor P Q c d * X * tor P Q d c =
       c • (P * X + X * Q - (2 : ℂ) • (P * X * Q)) + (c ^ 2) • (P * X * Q) := by
@@ -771,7 +771,7 @@ theorem split_torus : ∀ (n : ℕ) (ε : Fin n → Bool) (W : Submodule ℂ (Fi
     intro s m hm
     obtain ⟨h1, h2, h3⟩ := (mem_NW hPh hPP hPW m).1 hm
     rw [← hQ] at h2 h3
-    rw [hmul, hmul, ha, hai, ← tor_conj hPP hQQ hPQ hQP h1 h2 h3 _ (Complex.exp (-(s : ℂ))),
+    rw [hmul, hmul, ha, hai, ← tor_conj h1 h2 h3 _ (Complex.exp (-(s : ℂ))),
       mul_sub, sub_mul, mul_one, hunit1]
   refine ⟨a, P - Q, ⟨?_, ?_⟩, fun s => ?_, fun s => ?_, fun s m hm => ⟨?_, ?_⟩, fun m hm => ?_, fun g => ?_⟩
   · show (P - Q)ᴴ * Jm ε + Jm ε * (P - Q) = 0

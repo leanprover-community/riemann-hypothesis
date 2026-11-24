@@ -60,7 +60,7 @@ variable {R : Type} [CommRing R] {n : ℕ}
 theorem single_neg' (x y : Fin n) (a : R) : single x y (-a) = -single x y a := by
   ext p q; simp only [Matrix.single_apply, Matrix.neg_apply]; split_ifs <;> simp
 
-theorem diag_transv_diag (a b : Fin n → R) (hab : ∀ k, a k * b k = 1) {i j : Fin n} (hij : i ≠ j) (c : R) :
+theorem diag_transv_diag (a b : Fin n → R) (hab : ∀ k, a k * b k = 1) {i j : Fin n} (c : R) :
     diagonal a * transvection i j c * diagonal b = transvection i j (a i * c * b j) := by
   have h1 : diagonal a * diagonal b = (1 : Matrix (Fin n) (Fin n) R) := by
     rw [diagonal_mul_diagonal]; simp [hab]
@@ -142,7 +142,7 @@ theorem conj_mem (u : Fin n → Rˣ) {e : GL (Fin n) R} (he : e ∈ elem R n) :
     simp only [Subgroup.coe_comap, Set.mem_preimage, MulEquiv.coe_toMonoidHom, MulAut.conj_apply]
     refine Subgroup.subset_closure ⟨i, j, (u i : R) * c * ((u j)⁻¹ : Rˣ), hij, ?_⟩
     rw [Units.val_mul, Units.val_mul, hg, diagU_val, diagU_inv_val]
-    exact diag_transv_diag _ _ (fun k => Units.mul_inv (u k)) hij c
+    exact diag_transv_diag _ _ (fun k => Units.mul_inv (u k)) c
   simpa using hle he
 
 theorem whitehead_mem {i j : Fin n} (hij : i ≠ j) (u : Rˣ) :

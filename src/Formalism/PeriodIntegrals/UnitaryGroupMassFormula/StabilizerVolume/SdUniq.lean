@@ -165,7 +165,7 @@ theorem testEx_of_lattice (hLc : IsCompact (L : Set V)) (hLo : IsOpen (L : Set V
   refine ⟨(L : Set V).indicator (fun _ => (1 : ℂ)), ?_, ?_, ?_, ⟨0, ?_⟩⟩
   · first
     | exact IsClopen.continuous_indicator ⟨hLcl, hLo⟩ continuous_const
-  · exact HasCompactSupport.intro hLc (fun x hx => by simp [Set.indicator_apply, hx])
+  · exact HasCompactSupport.intro hLc (fun x hx => by simp [hx])
   · have hT : (fun y => ∫ x, (L : Set V).indicator (fun _ => (1 : ℂ)) x * χ x y ∂μ) =
         (ann χ (L : Set V)).indicator (fun _ => ((μ.real (L : Set V) : ℝ) : ℂ)) := by
       funext y
@@ -375,7 +375,7 @@ def SdTestV : Prop := InCtx fun F E _ _ _ _ _ σ M J a _X0 _hT =>
     (∀ ν, SdHerm F E σ (Fv F v) (psiV F ψ v) a ν →
       TestEx ν (fun S T => psiV F ψ v (pairHerm (Fv F v) σ a S T)))
 
-def DualLatV : Prop := InCtx fun F E _ _ _ _ _ σ M J a _X0 _hT =>
+def DualLatV : Prop := InCtx fun F _ _ _ _ _ _ σ _ J a _X0 _hT =>
   ∀ v : HeightOneSpectrum (𝓞 F),
     DualAt v (BR (Fv F v) σ J (n := a)) ∧ DualAt v (pairHerm (Fv F v) σ a)
 

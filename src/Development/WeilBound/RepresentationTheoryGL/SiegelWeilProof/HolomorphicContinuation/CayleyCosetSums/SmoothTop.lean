@@ -774,7 +774,7 @@ variable {n : ℕ}
 
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
-theorem integral_restrict_of_zero (ν : Measure (GR n)) {C : Set (GR n)} (_hCm : MeasurableSet C) {F : GR n → ℂ}
+theorem integral_restrict_of_zero (ν : Measure (GR n)) {C : Set (GR n)} {F : GR n → ℂ}
     (hF : ∀ u ∉ C, F u = 0) : ∫ u, F u ∂ν = ∫ u, F u ∂(ν.restrict C) :=
   (setIntegral_eq_integral_of_forall_compl_eq_zero hF).symm
 
@@ -821,10 +821,10 @@ theorem holInt (ν : Measure (GR n)) [ν.IsHaarMeasure] {C : Set (GR n)} (hC : I
     have e1 : ∀ θ, a θ • ∫ u, F u (circleMap z R θ) ∂ν
         = ∫ u, a θ • F u (circleMap z R θ) ∂(ν.restrict C) := by
       intro θ
-      rw [integral_restrict_of_zero ν hCm (fun u hu => hF0 u hu (circleMap z R θ)), integral_smul]
+      rw [integral_restrict_of_zero ν (fun u hu => hF0 u hu (circleMap z R θ)), integral_smul]
     simp_rw [e1]
     rw [intervalIntegral_integral_swap (hint z R hzR a ha)]
-    exact (integral_restrict_of_zero ν hCm (fun u hu => by simp [hF0 u hu])).symm
+    exact (integral_restrict_of_zero ν (fun u hu => by simp [hF0 u hu])).symm
   have hcirc : ∀ (z : ℂ) (R : ℝ≥0), Metric.closedBall z (R : ℝ) ⊆ U → ∀ k : ℂ → ℂ,
       Continuous (fun θ => k (circleMap z R θ)) →
       (∮ ζ in C(z, R), k ζ • ∫ u, F u ζ ∂ν) = ∫ u, (∮ ζ in C(z, R), k ζ • F u ζ) ∂ν := by
@@ -842,7 +842,7 @@ theorem holInt (ν : Measure (GR n)) [ν.IsHaarMeasure] {C : Set (GR n)} (hC : I
       rw [CircleIntegrable, intervalIntegrable_iff]
       refine h.congr (Eventually.of_forall fun θ => ?_)
       simp only [one_smul]
-      exact (integral_restrict_of_zero ν hCm (fun u hu => hF0 u hu _)).symm
+      exact (integral_restrict_of_zero ν (fun u hu => hF0 u hu _)).symm
     refine (hasFPowerSeriesOn_cauchy_integral hci hR).congr ?_
     intro w hw
     rw [Metric.eball_coe] at hw

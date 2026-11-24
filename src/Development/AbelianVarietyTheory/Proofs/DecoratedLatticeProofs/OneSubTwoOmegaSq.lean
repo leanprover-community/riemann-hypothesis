@@ -342,7 +342,7 @@ theorem HtSmallTo.mul {a b : ℕ} {f g : K⟦X⟧} (hf : HtSmallTo a f) (hg : Ht
       exact mul_lt_one_of_nonneg_of_lt_one_right (hf.1 i) (norm_nonneg _) (hg.2 j hj)
 
 theorem htSmallTo_zero_iff (f : K⟦X⟧) : HtSmallTo 0 f ↔ CoefLe 1 f :=
-  ⟨fun h => h.1, fun h => ⟨h, fun n hn => absurd hn (Nat.not_lt_zero _)⟩⟩
+  ⟨fun h => h.1, fun h => ⟨h, fun _ hn => absurd hn (Nat.not_lt_zero _)⟩⟩
 
 theorem htSmallTo_one : HtSmallTo 0 (1 : K⟦X⟧) := by
   rw [htSmallTo_zero_iff]

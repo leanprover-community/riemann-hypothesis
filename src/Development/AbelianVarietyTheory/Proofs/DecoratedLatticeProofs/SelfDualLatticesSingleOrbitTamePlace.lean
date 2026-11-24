@@ -852,9 +852,9 @@ variable {A : Type*} [CommRing A] {ε : A} (hid : IsIdempotentElem ε) (O : Set 
 def sub : Subring hid.Corner where
   carrier := {x | x.1 ∈ O}
   zero_mem' := h0
-  add_mem' {x y} hx hy := hadd _ hx _ hy
-  neg_mem' {x} hx := hneg _ hx
-  mul_mem' {x y} hx hy := hmul _ hx _ hy
+  add_mem' {_ _} hx hy := hadd _ hx _ hy
+  neg_mem' {_} hx := hneg _ hx
+  mul_mem' {_ _} hx hy := hmul _ hx _ hy
   one_mem' := hεO
 
 

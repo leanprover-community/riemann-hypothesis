@@ -63,7 +63,7 @@ section Hahn
 
 variable {Ω : Type} [Field Ω]
 
-theorem hahn_pow_order_leadingCoeff (s : HahnSeries ℚ Ω) (hs : s ≠ 0) (n : ℕ) :
+theorem hahn_pow_order_leadingCoeff (s : HahnSeries ℚ Ω) (n : ℕ) :
     (s ^ n).order = n • s.order ∧ (s ^ n).leadingCoeff = s.leadingCoeff ^ n := by
   refine ⟨HahnSeries.order_pow s n, ?_⟩
   induction n with
@@ -84,12 +84,12 @@ theorem hahn_transcendental {s : HahnSeries ℚ Ω} (hs : s ≠ 0) (ho : s.order
     rw [Polynomial.aeval_eq_sum_range, HahnSeries.coeff_sum, Finset.sum_range_succ, Finset.sum_eq_zero]
     · rw [zero_add]
       rw [Algebra.smul_def, hahnSeries_algebraMap_mul_coeff]
-      rw [← (hahn_pow_order_leadingCoeff s hs P.natDegree).1,
-        ← HahnSeries.leadingCoeff_eq, (hahn_pow_order_leadingCoeff s hs P.natDegree).2]
+      rw [← (hahn_pow_order_leadingCoeff s P.natDegree).1,
+        ← HahnSeries.leadingCoeff_eq, (hahn_pow_order_leadingCoeff s P.natDegree).2]
     · intro k hk
       rw [Algebra.smul_def, hahnSeries_algebraMap_mul_coeff]
       rw [HahnSeries.coeff_eq_zero_of_lt_order, mul_zero]
-      rw [(hahn_pow_order_leadingCoeff s hs k).1, nsmul_eq_mul, nsmul_eq_mul]
+      rw [(hahn_pow_order_leadingCoeff s k).1, nsmul_eq_mul, nsmul_eq_mul]
       exact mul_lt_mul_of_neg_right (by exact_mod_cast Finset.mem_range.1 hk) ho
   rw [hPs] at key
   exact mul_ne_zero hlead (pow_ne_zero _ hls) (by simpa using key.symm)

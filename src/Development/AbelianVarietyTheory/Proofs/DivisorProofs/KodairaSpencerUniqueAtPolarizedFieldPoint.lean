@@ -80,8 +80,8 @@ theorem isKS_unique_at_point : ∀ (E : Type) [Field E] [NumberField E] [IsCMFie
   obtain ⟨⟨φc, hφc⟩, -⟩ := GlobalTheory.KS.DlogPol.dlog_independent K P₀ n u dd hu hdd _ m t.PP.L t.PP.isLB hiso
   obtain ⟨J, W, j, d, hcov, hWj, hf, hl, hdiff⟩ := hK
   obtain ⟨J', W', j', d', hcov', hWj', hf', hl', hdiff'⟩ := hK'
-  have hP := GlobalTheory.KSUniq.pull_diff t V U v hv Θ W j d hWj hdiff x0 hUx P₀.A m hpb u hu' dd hdd φc hφc
-  have hP' := GlobalTheory.KSUniq.pull_diff t V U v hv Θ' W' j' d' hWj' hdiff' x0 hUx P₀.A m hpb u hu' dd hdd φc hφc
+  have hP := GlobalTheory.KSUniq.pull_diff t U v hv Θ W j d hWj hdiff x0 hUx P₀.A m hpb u hu' dd hdd φc hφc
+  have hP' := GlobalTheory.KSUniq.pull_diff t U v hv Θ' W' j' d' hWj' hdiff' x0 hUx P₀.A m hpb u hu' dd hdd φc hφc
   have hWU : ∀ i, W i ≤ t.G.hom ⁻¹ᵁ U.1 := fun i p hp => by
     have : p ∈ t.G.hom ⁻¹ᵁ (U.1 ⊓ V) := hcov ▸ (le_iSup W i) hp
     exact this.1

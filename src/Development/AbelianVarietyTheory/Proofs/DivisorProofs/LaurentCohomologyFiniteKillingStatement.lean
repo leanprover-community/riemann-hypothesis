@@ -218,7 +218,7 @@ def bcComp {f : U ⟶ Z} {g : Z ⟶ Y} {k : U ⟶ Y} (h : f ≫ g = k) : Rel.bc 
 set_option backward.isDefEq.respectTransparency.types false in
 def bcFst (f : U ⟶ Y) : Rel.bc f ⋙ (Scheme.Etale.forget U ⋙ Over.forget U) ⟶ Scheme.Etale.forget Y ⋙ Over.forget Y where
   app V := pullback.fst V.hom f
-  naturality V W g := pullback.lift_fst _ _ _
+  naturality _ _ _ := pullback.lift_fst _ _ _
 
 end Sites
 
@@ -518,14 +518,14 @@ variable {O : Type} [CommRing O] [HenselianLocalRing O] (K : Type) [Field K] [Al
 
 def redPsi (n : ℤ) (k : ℕ) : HPsi ℤ_[l] K Ω p (lam l (k + 1)) n →ₗ[ℤ_[l]] HPsi ℤ_[l] K Ω p (lam l k) n where
   toFun x := x ≫ (DerivedCategory.Q.map (nbCMap ℤ_[l] (iSp Ω p) (jGen K Ω p) (lamRed l k)))⟦n⟧'
-  map_add' x y := Preadditive.add_comp _ _ _ _ _ _
+  map_add' _ _ := Preadditive.add_comp _ _ _ _ _ _
   map_smul' r x := Linear.smul_comp (R := ULift.{1} ℤ_[l]) _ _ _ (ULift.up r) x _
 
 def HPsiLSub (n : ℤ) : Submodule ℤ_[l] (∀ k, HPsi ℤ_[l] K Ω p (lam l k) n) where
   carrier := {x | ∀ k, redPsi l K Ω p n k (x (k + 1)) = x k}
-  zero_mem' k := map_zero _
-  add_mem' {a b} ha hb k := (map_add (redPsi l K Ω p n k) _ _).trans (congrArg₂ (· + ·) (ha k) (hb k))
-  smul_mem' r x hx k := (map_smul (redPsi l K Ω p n k) r _).trans (congrArg _ (hx k))
+  zero_mem' _ := map_zero _
+  add_mem' {_ _} ha hb k := (map_add (redPsi l K Ω p n k) _ _).trans (congrArg₂ (· + ·) (ha k) (hb k))
+  smul_mem' r _ hx k := (map_smul (redPsi l K Ω p n k) r _).trans (congrArg _ (hx k))
 
 abbrev HPsiL (n : ℤ) : Type _ := HPsiLSub l K Ω p n
 

@@ -132,7 +132,7 @@ theorem isField_dsec : IsField ⊤ (dsec σ hσ) :=
 theorem dsec_top (a : A) :
     dsec σ hσ ⊤ ((Scheme.ΓSpecIso (CommRingCat.of A)).inv.hom a) =
       (Scheme.ΓSpecIso (CommRingCat.of A)).inv.hom (σ a).snd :=
-  Subtype.ext (funext fun x => dloc_algebraMap σ hσ _ a)
+  Subtype.ext (funext fun _ => dloc_algebraMap σ hσ _ a)
 
 end GlobalTheory.SpecField
 

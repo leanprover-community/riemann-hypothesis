@@ -472,7 +472,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qh8.isCM_of_conj :
-    ∀ (K : Type) [inst : Field K] [inst_1 : NumberField K]
+    ∀ (K : Type) [Field K] [NumberField K]
     [NumberField.IsTotallyComplex K],
     (∀ (x : K), ∃ (y : K), ∀ (φ : K →+* ℂ), (φ : K → ℂ) y = (starRingEnd ℂ : ℂ → ℂ) ((φ : K → ℂ) x)) →
       NumberField.IsCMField K := by
@@ -966,8 +966,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qh44.ex_comp :
-    ∀ {F M Ω : Type} [inst : Field F] [NumberField F] [inst_2 : Field M]
-    [NumberField M] [inst_4 : Field Ω] [inst_5 : Algebra F Ω] [Algebra.IsAlgebraic F Ω] (g : M →+* Ω),
+    ∀ {F M Ω : Type} [Field F] [NumberField F] [Field M]
+    [NumberField M] [Field Ω] [Algebra F Ω] [Algebra.IsAlgebraic F Ω] (g : M →+* Ω),
     FiniteDimensional F ↥(IntermediateField.adjoin F (Set.range (⇑g : M → Ω))) := by
   intro F M Ω _ _ _ _ _ _ _ g
   let b := Module.finBasis ℚ M
@@ -999,8 +999,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qj6.ex_lift :
-    ∀ {M Ω C : Type} [inst : Field M] [NumberField M] [inst_2 : Field Ω]
-    [CharZero Ω] [IsAlgClosed Ω] [inst_5 : Field C] [CharZero C] (j : Ω →+* C) (f : M →+* C),
+    ∀ {M Ω C : Type} [Field M] [NumberField M] [Field Ω]
+    [CharZero Ω] [IsAlgClosed Ω] [Field C] [CharZero C] (j : Ω →+* C) (f : M →+* C),
     ∃ (g : M →+* Ω), ∀ (x : M), (j : Ω → C) ((g : M → Ω) x) = (f : M → C) x := by
   intro M Ω C _ _ _ _ _ _ _ j f
   have key : ∀ x : M, f x ∈ j.fieldRange := by

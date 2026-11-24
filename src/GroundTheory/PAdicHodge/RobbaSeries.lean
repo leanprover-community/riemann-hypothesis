@@ -92,7 +92,7 @@ theorem gaussNorm_pos : 0 < gaussNorm a ρ := by
   exact lt_of_lt_of_le (by positivity) (h.le_gaussNorm n0)
 
 theorem domSet_finite : (domSet a ρ).Finite :=
-  (h.finite_le (gaussNorm_pos hρ h ha)).subset fun n hn => le_of_eq (Eq.symm hn)
+  (h.finite_le (gaussNorm_pos hρ h ha)).subset fun _ hn => le_of_eq (Eq.symm hn)
 
 theorem domSet_nonempty : (domSet a ρ).Nonempty :=
   h.exists_eq_gaussNorm hρ ha

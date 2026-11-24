@@ -55,7 +55,7 @@ variable (O : Type) [CommRing O] [Module.Finite ℤ O]
 
 def restr (φ : InvFun ℤ) : InvFun O where
   toFun n B := φ.eval (Fin n → O) B
-  inv n m r hr B := φ.eval_comp (r := r.restrictScalars ℤ) hr B
+  inv _ _ r hr B := φ.eval_comp (r := r.restrictScalars ℤ) hr B
   zero B := φ.eval_of_subsingleton B
 
 variable {O} {X : Type} [AddCommGroup X] [Module O X] [Module.Finite O X]

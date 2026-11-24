@@ -242,7 +242,7 @@ theorem rr_le (l : ℕ) (hl : 11 ≤ l) (h w S η H H₁ : ℕ) (hη : η + 1 �
   · linarith
   · linarith
 
-theorem sig_le (l : ℕ) (hl : 11 ≤ l) (h w S η : ℕ) (h1 : 1 ≤ h) (hG : w + S ≤ h) :
+theorem sig_le (l : ℕ) (hl : 11 ≤ l) (h w S η : ℕ) :
     (⌈((2 * (w + S) : ℕ) + ((2 * h / (l - 1) + 1 : ℕ) : ℝ)) * l / ((l : ℝ) - 1) ^ 2 + 1⌉₊ : ℝ) ≤
       3 * Sg l h w S η := by
   have hL : (11:ℝ) ≤ l := by exact_mod_cast hl

@@ -67,7 +67,7 @@ variable {k r : ℕ}
 
 def TF (a : B.Mat k r → ℂ) : Prop := ContDiff ℝ ∞ a ∧ HasCompactSupport a
 
-theorem tsupport_rdV {ψ : B.Mat k r → ℂ} (hψ : ContDiff ℝ ∞ ψ) (X : B.Mat k r) :
+theorem tsupport_rdV {ψ : B.Mat k r → ℂ} (X : B.Mat k r) :
     tsupport (RdV X ψ) ⊆ tsupport ψ := by
   apply closure_minimal _ (isClosed_tsupport ψ)
   intro g hg
@@ -88,7 +88,7 @@ theorem tsupport_rdV {ψ : B.Mat k r → ℂ} (hψ : ContDiff ℝ ∞ ψ) (X : B
   simp
 
 theorem tf_rdV {a : B.Mat k r → ℂ} (ha : TF a) (X : B.Mat k r) : TF (RdV X a) := by
-  exact ⟨rdV_contDiff ha.1 X, ha.2.mono' ((subset_tsupport _).trans (tsupport_rdV ha.1 X))⟩
+  exact ⟨rdV_contDiff ha.1 X, ha.2.mono' ((subset_tsupport _).trans (tsupport_rdV X))⟩
 
 theorem tf_rw {a : B.Mat k r → ℂ} (ha : TF a) : ∀ w : List (B.Mat k r), TF (B.Rw w a)
   | [] => ha

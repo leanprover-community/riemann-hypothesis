@@ -246,8 +246,7 @@ private theorem dvd_twelve_of_totient_le_two (k : ℕ) (hk : 0 < k) (h : k.totie
     exact Nat.zero_le _
 
 private theorem units_pm {K : Type} [Field K] [NumberField K] [_root_.NumberField.IsTotallyComplex K] (h : Module.finrank ℚ K = 2)
-    (t : K ≃ₐ[ℚ] K) (hu : ∀ s : K ≃ₐ[ℚ] K, s ≠ 1 → s = t)
-    (hτ : ∀ x : 𝓞 K, x * RingOfIntegers.mapRingEquiv t.toRingEquiv x = ((Algebra.norm ℤ x : ℤ) : 𝓞 K))
+    (t : K ≃ₐ[ℚ] K)
     (φ : 𝓞 K →+* ZMod 4) (u : (𝓞 K)ˣ) : u = 1 ∨ u = -1 := by
   have hr : NumberField.Units.rank K = 0 := by
     have h1 := IsTotallyComplex.finrank K
@@ -456,4 +455,4 @@ theorem UpperTheory.V.Ws.Tw.quadFacts :
       rwa [e2] at this
     obtain ⟨w, -, -, -, hφ⟩ := h4 2 A Nat.prime_two (by exact_mod_cast hA2) (hall A hA2)
     obtain ⟨φ, -⟩ := hφ 2
-    exact units_pm h t hu hτ φ u
+    exact units_pm h t φ u

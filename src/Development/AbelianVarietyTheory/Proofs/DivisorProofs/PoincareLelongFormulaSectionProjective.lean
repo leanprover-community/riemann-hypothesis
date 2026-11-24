@@ -1172,7 +1172,7 @@ theorem germ_eq_unit_mul_monomial : ∀ (X : Scheme.{0}) [IsIntegral X] [IsLocal
       exact Ideal.map_le_iff_le_comap.mpr hsup
     exact Q.mem_of_dvd (Finset.dvd_prod_of_mem _ (Finset.mem_map_of_mem e (Finset.mem_univ _)))
       (h3 (Ideal.mem_span_singleton_self _))
-  obtain ⟨u, m, -, hγu⟩ := eq_unit_mul_monomial g hg.1 hg.2 J hγ0 hrad
+  obtain ⟨u, m, -, hγu⟩ := eq_unit_mul_monomial g hg.1 hg.2 J hrad
   refine ⟨n, g, e, u, inferInstance, hg, hI, ?_⟩
   have hord : ∀ a, ((divOfSec hB s hs).mult (z a.1)).toNat = m (e a) := by
     intro a

@@ -74,7 +74,7 @@ theorem psiDatum_std {n : ℕ} (ε : Fin n → Bool) (lam : Fin n → ℝ) (h : 
     have h1 := T.w_norm
     rw [h0, norm_zero] at h1
     exact zero_ne_one h1
-  have hN0 : ‖uniformisationL2 ε Ψ T.w T.w‖ ≠ 0 := norm_ne_zero_iff.mpr (datumEmbedding_highest_ne_zero hstd hP hv₀)
+  have hN0 : ‖uniformisationL2 ε Ψ T.w T.w‖ ≠ 0 := norm_ne_zero_iff.mpr (datumEmbedding_highest_ne_zero hP hv₀)
   set c : ℂ := ((‖uniformisationL2 ε Ψ T.w T.w‖⁻¹ : ℝ) : ℂ) with hc
   have hc0 : c ≠ 0 := by rw [hc]; exact_mod_cast inv_ne_zero hN0
   let j : T.V →ₗ[ℂ] datumV ε Ψ T.w :=
@@ -144,7 +144,7 @@ theorem datum_link_std {n : ℕ} {ε : Fin n → Bool} {lam : Fin n → ℝ} {h 
     le_antisymm (LinearMap.finrank_le_finrank_of_injective hφi)
       (LinearMap.finrank_le_finrank_of_injective hψi)
   let e : V ≃ₗ[ℂ] V₂ := φ.linearEquivOfInjective hφi hrk
-  have hU := rigid_universal hσ hD hV hc hVK hσ₂ hD₂ hV₂ hc₂ hVK₂ hstd φ hφK hφI
+  have hU := rigid_universal hσ hD hV hc hVK hσ₂ hD₂ hc₂ hstd φ hφK hφI
   have h1J : (1 : Matrix (Fin n) (Fin n) ℂ) ∈ UJset ε := by
     show (1 : Matrix (Fin n) (Fin n) ℂ)ᴴ * Jm ε * 1 = Jm ε
     simp
@@ -607,8 +607,8 @@ theorem ker_D_eq_kLowSpan {H : Type} [NormedAddCommGroup H] [InnerProductSpace �
   have hlowK : ∀ w ∈ genSub E V, IsKHWVec ε E (lowK ε lam) w → w ∈ V :=
     fun w hw hk => khw_lowK_mem hE hU hV hc hstd hw hk
   obtain ⟨z, hzL, hz0⟩ := line_exists hanti hE hV
-  have hzD := line_ker hE hU hV hc hzL
-  have hzdeg := line_deg hE hU hV hzL
+  have hzD := line_ker hE hU hc hzL
+  have hzdeg := line_deg hE hV hzL
   obtain ⟨⟨hzK', hzT⟩, hzP⟩ := hzL
   have hzK := (mem_highestWeightSub_iff _ _ _ z).1 hzK'
   have hVk : IsKStableSub ε E V := hV.2.1

@@ -308,7 +308,7 @@ theorem cell_of_at {u u' : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS ((Tu D u : 
 def sgnL (l : ℕ) : D.host.E := ∏ b : Fin l, ((-1 : D.host.E) ^ (D.R.rS - b.val))
 
 theorem sgnL_ne (l : ℕ) : sgnL (D := D) l ≠ 0 :=
-  Finset.prod_ne_zero_iff.2 fun b _ => pow_ne_zero _ (neg_ne_zero.2 one_ne_zero)
+  Finset.prod_ne_zero_iff.2 fun _ _ => pow_ne_zero _ (neg_ne_zero.2 one_ne_zero)
 
 theorem sgnL_succ : sgnL (D := D) (D.R.rS + 1) = sgnL (D := D) D.R.rS := by
   unfold sgnL

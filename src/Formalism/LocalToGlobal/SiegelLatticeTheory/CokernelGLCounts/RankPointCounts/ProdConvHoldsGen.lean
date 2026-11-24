@@ -548,7 +548,7 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7} (X : HidaSetting D) (u u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ)
 
-theorem pos_of_div {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) (h : 0 < a / b) : 0 < a ∧ 0 < b := by
+theorem pos_of_div {a b : ℝ} (ha : 0 ≤ a) (h : 0 < a / b) : 0 < a ∧ 0 < b := by
   rcases div_pos_iff.1 h with h' | h'
   · exact h'
   · exact absurd ha (not_le.2 h'.1)
@@ -560,9 +560,9 @@ theorem localVolumeUnit_pos_and_ZZX_pos (hψ : IsCharAF X.B.I.F ψ) (hs : IsStdC
   have hZ : 0 ≤ ZZX X u u' ψ v := ENNReal.toReal_nonneg
   by_cases hv : TypAt X v
   · have e := volTypV_holds X u u' ψ hψ hs hTT v hv
-    exact pos_of_div hU hZ (by rw [e]; exact pow_pos (by exact_mod_cast hg v hv) _)
+    exact pos_of_div hU (by rw [e]; exact pow_pos (by exact_mod_cast hg v hv) _)
   · have e := volOrdV_holds X u u' ψ hψ hs v hv
-    exact pos_of_div hU hZ (by rw [e]; exact Real.rpow_pos_of_pos (absV_pos v (dV_ne_zero v)) _)
+    exact pos_of_div hU (by rw [e]; exact Real.rpow_pos_of_pos (absV_pos v (dV_ne_zero v)) _)
 
 theorem pp_pos_ord (hψ : IsCharAF X.B.I.F ψ) (hs : IsStdChar ψ) {v : PlX X} (hv : ¬ TypAt X v)
     (l : Fin (D.R.rS + 1)) : 0 < PPX X u u' ψ l v := by

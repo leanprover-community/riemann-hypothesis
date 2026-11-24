@@ -481,65 +481,65 @@ def coreCor (PD : PeriodData G Qp K₀ K B BdR) (PD' : PeriodData G' Qp K₀' K'
 
 end Desc
 
-def ConclusionL (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def ConclusionL (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     coreL ((HW l).W K s LL h)
 
-def WachKillsQuotients (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def WachKillsQuotients (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     coreWX ((HW l).W K s LL h)
 
-def WachKillsCaseB (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def WachKillsCaseB (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     coreWB ((HW l).W K s LL h)
 
-def WachKillsCaseA (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def WachKillsCaseA (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     coreWA ((HW l).W K s LL h)
 
-def WachKillsIntermediateField (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def WachKillsIntermediateField (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     coreWK1 ((HW l).W K s LL h)
 
-def ConclusionW (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := WachKillsQuotients D HW F ∧ WachKillsCaseB D HW F ∧ WachKillsCaseA D HW F ∧ WachKillsIntermediateField D HW F
+def ConclusionW (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := WachKillsQuotients D HW ∧ WachKillsCaseB D HW ∧ WachKillsCaseA D HW ∧ WachKillsIntermediateField D HW
 
-def WachAnnihilatorAll (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def WachAnnihilatorAll (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     WachQuotientAnnihilator ((HW l).W K s LL h)
 
-def WachExponentRecursionAll (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def WachExponentRecursionAll (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     WachExponentRecursion ((HW l).W K s LL h)
 
-def WachResultConstant (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (C : ℝ) : Prop :=
+def WachResultConstant (D : D7) (HW : HWOf D.loc) (C : ℝ) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     coreWR ((HW l).W K s LL h) C
 
-def ConclusionH (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def ConclusionH (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     coreH ((HW l).W K s LL h)
 
-def ExistsUnitClasses (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def ExistsUnitClasses (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     coreTr ((HW l).W K s LL h)
 
-def LiftTheoremCaseA (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def LiftTheoremCaseA (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     coreLiftA ((HW l).W K s LL h)
 
-def LiftTheoremCaseB (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def LiftTheoremCaseB (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     coreLiftB ((HW l).W K s LL h)
 
-def LiftBracketR (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def LiftBracketR (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     coreLiftR ((HW l).W K s LL h)
 
-def LiftExponentShapes (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (CA CB CK : ℝ) : Prop :=
+def LiftExponentShapes (D : D7) (HW : HWOf D.loc) (CA CB CK : ℝ) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     coreLiftO ((HW l).W K s LL h) CA CB CK
 
-def LiftGaloisDescent (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def LiftGaloisDescent (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K K' : FinExt l) (hKK : K'.1 ≤ K.1) (hle : GK K ≤ GK K')
     (_hN : (GKin hKK).Normal) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     coreDesc ((HW l).W K s LL h) ((D.loc l).PD K') (Subgroup.inclusion hle)
@@ -549,10 +549,10 @@ def LiftGaloisDescent (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : P
       padicValNat l (Module.finrank ℚ_[l] ↥K.1 / Module.finrank ℚ_[l] ↥K'.1) = 0)
 
 def LiftTheoremAllCases (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (CA CB CK : ℝ) : Prop :=
-  LiftTheoremCaseA D HW F ∧ LiftTheoremCaseB D HW F ∧ LiftBracketR D HW F ∧ LiftExponentShapes D HW F CA CB CK ∧ LiftGaloisDescent D HW F
+  LiftTheoremCaseA D HW ∧ LiftTheoremCaseB D HW ∧ LiftBracketR D HW ∧ LiftExponentShapes D HW CA CB CK ∧ LiftGaloisDescent D HW
 
 def aux₃ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (C CA CB CK : ℝ) : Prop :=
-  ConclusionL D HW F ∧ ConclusionW D HW F ∧ WachAnnihilatorAll D HW F ∧ WachExponentRecursionAll D HW F ∧ WachResultConstant D HW F C ∧ ConclusionH D HW F ∧ ExistsUnitClasses D HW F ∧ LiftTheoremAllCases D HW F CA CB CK
+  ConclusionL D HW ∧ ConclusionW D HW F ∧ WachAnnihilatorAll D HW ∧ WachExponentRecursionAll D HW ∧ WachResultConstant D HW C ∧ ConclusionH D HW ∧ ExistsUnitClasses D HW ∧ LiftTheoremAllCases D HW F CA CB CK
 
 def adm1 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.DeltaInvariantLattices.WachLatticeFreeGlobal D HW F
 
@@ -586,39 +586,39 @@ def adm15 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Forma
 
 def adm16 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.DeltaInvariantLattices.lem3 D HW F
 
-def adm17 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def adm17 (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     coreExt ((HW l).W K s LL h)
 
-def adm18 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def adm18 (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     coreExtΔ ((HW l).W K s LL h)
 
-def adm19 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def adm19 (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     coreDss ((HW l).W K s LL h)
 
-def adm20 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def adm20 (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K K' : FinExt l) (_hKK : K'.1 ≤ K.1) (hle : GK K ≤ GK K')
     (LL : FinExt l),
     coreCor ((D.loc l).PD K) ((D.loc l).PD K') ↥LL.1 ↥(OL LL) (Subgroup.inclusion hle)
       (continuous_subtype_val.subtype_mk _)
       (Module.finrank ℚ_[l] ↥K.1 / Module.finrank ℚ_[l] ↥K'.1)
 
-def adm21 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def adm21 (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     ((HW l).W K s LL h).ClNat ∧ (s = 1 → l ≠ 2 → ((HW l).W K s LL h).ClKNat)
 
-def adm22 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def adm22 (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K LL : FinExt l), FontaineLe ((D.loc l).PD K) ↥LL.1
 
-def adm23 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def adm23 (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K LL : FinExt l), coreJumps ((D.loc l).PD K) ↥LL.1 ↥(OL LL)
 
 def admitted (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) : Prop :=
   adm1 D HW F ∧ adm2 D HW F ∧ adm3 D HW F Cm ∧ ArchimedeanSignatureMatching D HW F Cm ∧ adm5 D HW F ∧ adm6 D HW F ∧ adm7 D HW F ∧ adm8 D HW F ∧
     adm9 D HW F ∧ adm10 D HW F ∧ adm11 D HW F ∧ adm12 D HW F ∧ adm13 D HW F ∧ adm14 D HW F ∧ adm15 D HW F ∧ adm16 D HW F ∧
-    adm17 D HW F ∧ adm18 D HW F ∧ adm19 D HW F ∧ adm20 D HW F ∧ adm21 D HW F ∧ adm22 D HW F ∧ adm23 D HW F
+    adm17 D HW ∧ adm18 D HW ∧ adm19 D HW ∧ adm20 D HW ∧ adm21 D HW ∧ adm22 D HW ∧ adm23 D HW
 
 def Stmt (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (C CA CB CK : ℝ) : Prop := admitted D HW F Cm → aux₃ D HW F C CA CB CK
 

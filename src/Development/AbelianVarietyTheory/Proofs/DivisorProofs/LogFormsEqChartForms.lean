@@ -160,7 +160,7 @@ theorem isComb_frame {Z : Set X} {U : X.Opens} {n : ℕ} {x : Fin n → X.functi
   by_cases hi : i ∈ J
   · refine isComb_single (one_mem _) ⟨x i, (hc.logUnit y hy _).2 ⟨1, Pi.single i 1, ?_, ?_⟩, rfl⟩ ?_
     · rw [Units.val_one]; exact unitAt_one y
-    · rw [one_mul, Finset.prod_eq_single_of_mem i hi (fun j _ hj => by simp [Pi.single_apply, hj])]
+    · rw [one_mul, Finset.prod_eq_single_of_mem i hi (fun j _ hj => by simp [hj])]
       simp
     · rw [frame, ite_eq_left hi, one_smul]
   · have hm : RegAt y (x i : X.functionField) := (hc.chart y hy).mem i

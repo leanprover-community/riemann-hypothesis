@@ -182,7 +182,7 @@ theorem inS_mul {g h : Matrix (Fin n) (Fin n) ℂ} (hg : InS e z g) (hh : InS e 
 theorem inS_one : InS e z (1 : Matrix (Fin n) (Fin n) ℂ) :=
   ⟨fun a => by simp, by simp⟩
 
-theorem inS_inv_maps {g B : Matrix (Fin n) (Fin n) ℂ} (hg : InS e z g) (hBg : B * g = 1) (hgB : g * B = 1) (a : ℕ) :
+theorem inS_inv_maps {g B : Matrix (Fin n) (Fin n) ℂ} (hg : InS e z g) (hBg : B * g = 1) (a : ℕ) :
     ∀ y ∈ spanLt e a, B *ᵥ y ∈ spanLt e a := by
   intro y hy
   let f : spanLt e a →ₗ[ℂ] spanLt e a := (Matrix.mulVecLin g).restrict (fun x hx => inS_maps hg a x hx)
@@ -204,8 +204,8 @@ theorem inS_inv {g B : Matrix (Fin n) (Fin n) ℂ} (hg : InS e z g) (hBg : B * g
     simp only [Matrix.sub_mulVec, Matrix.mulVec_sub, Matrix.mulVec_mulVec, hBg, Matrix.one_mulVec]
     abel
   refine ⟨fun a => ?_, ?_⟩
-  · rw [key]; exact Submodule.neg_mem _ (inS_inv_maps hg hBg hgB a.1 _ (hg.1 a))
-  · rw [key]; exact Submodule.neg_mem _ (inS_inv_maps hg hBg hgB r _ hg.2)
+  · rw [key]; exact Submodule.neg_mem _ (inS_inv_maps hg hBg a.1 _ (hg.1 a))
+  · rw [key]; exact Submodule.neg_mem _ (inS_inv_maps hg hBg r _ hg.2)
 
 end InSGroup
 

@@ -151,7 +151,7 @@ theorem stdL_c (L : LocBessel k r) (ka : ℝ) (hka : 0 < ka) : (stdL L ka hka).c
 
 theorem jNorm2_std (L : LocBessel k r) (ka : ℝ) (hka : 0 < ka) (hc : L.c = ((2 * ka : ℝ) : ℂ)) (hk2 : 2 ≤ k)
     (f : Mx k r → (L.Wq →L[ℂ] L.Wp)) (μsec : ℂ → Matrix (Fin (k + 1)) (Fin (k + 1)) ℂ)
-    (hsec : IsSection k r L.z L.z' μsec) :
+    :
     jNorm2 (stdL L ka hka) (stdF L ka f) (secTr 1 μsec) =
       ENNReal.ofReal (jacBig r ka⁻¹ 1 * wBig k r ka⁻¹ 1 * ‖(1 : ℂ)‖ ^ 2) * jNorm2 L f μsec := by
   have hκ : 0 < ka⁻¹ := inv_pos.2 hka
@@ -510,7 +510,7 @@ theorem jNorm2_coef_ne {k0 r : ℕ} (hk2 : 2 ≤ k0 + 1) (L : LocBessel (k0 + 1)
     jNorm2 L (Formalism.MainNotions.S.Pv.AmpDD.coefF L v v' ξ ξ') μsec ≠ 0 := by
   intro h0
   have hκ : 0 < ka⁻¹ := inv_pos.2 hka
-  have hstd := jNorm2_std L ka hka hc hk2 (Formalism.MainNotions.S.Pv.AmpDD.coefF L v v' ξ ξ') μsec hsec
+  have hstd := jNorm2_std L ka hka hc hk2 (Formalism.MainNotions.S.Pv.AmpDD.coefF L v v' ξ ξ') μsec
   rw [h0, mul_zero] at hstd
   have hsec₁ : IsSection (k0 + 1) r (stdL L ka hka).z (stdL L ka hka).z' (secTr 1 μsec) := isSection_tr one_pos hsec
   have hκ0₁ : (stdL L ka hka).κN ≠ 0 :=

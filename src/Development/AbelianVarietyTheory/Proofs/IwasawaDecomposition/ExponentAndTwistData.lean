@@ -516,7 +516,7 @@ def mkEx (In : RatIn D S) (hE : IsEmpty D.nd.Loc) (hfg : ∀ i j b, (BsupT D T S
   psiU := psiUT D T In.θ
   eAlg := eAlgT D T
   eLL0 := D.nexp.eLL0
-  eAlg_def := fun i b g => rfl
+  eAlg_def := fun _ _ _ => rfl
   eAlg_idem := eAlgT_idem D T he
   eAlg_central := eAlgT_central D T he
   Bsup := BsupT D T S
@@ -549,7 +549,7 @@ def mkEx (In : RatIn D S) (hE : IsEmpty D.nd.Loc) (hfg : ∀ i j b, (BsupT D T S
   thP := fun _ _ _ _ _ _ => 0
   hkF := fun (i : T.Tw) j b k P => hkT D T S In i j b k P
   embB := fun (i : T.Tw) j b => (BI D T S In i j b).subtype
-  embB_inj := fun (i : T.Tw) j b => Subtype.val_injective
+  embB_inj := fun (_ : T.Tw) _ _ => Subtype.val_injective
   eH := fun (i : T.Tw) j b => eHT D T S i j b
   eH_idem := fun (i : T.Tw) j b => eHT_idem D T S i j b
 

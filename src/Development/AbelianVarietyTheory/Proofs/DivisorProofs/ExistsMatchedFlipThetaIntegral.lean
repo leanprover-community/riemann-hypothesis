@@ -142,7 +142,7 @@ theorem exists_integral_ne_zero (hSA : GlobalTheory.Published.StrongApproxSU) (h
 open Formalism.IndefR GlobalTheory.RowTest GlobalTheory.RowClaim
 
 theorem splitBound_ge : Big fun {D} _ _ _ _ _ _ _ _ _ _ _ _ => 11 ≤ D.host.splitBound :=
-  ⟨0, fun _ _ _ => ⟨0, fun D large₂ _ _ Γ _ _ Pl0 T A Ks _ _ _ R F hS _ _ _ => hS.size.2.1.eleven_le⟩⟩
+  ⟨0, fun _ _ _ => ⟨0, fun _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ hS _ _ _ => hS.size.2.1.eleven_le⟩⟩
 
 theorem standing : Big fun ch => ∀ t, SquareStanding ch.G t := by
   obtain ⟨CF0, hH⟩ := splitBound_ge.and GlobalTheory.PlacesPrime.places_prime_to_level

@@ -79,7 +79,7 @@ theorem tay_comp_anLin {θ : (Fin g → ℂ) → ℂ} (hθ : ContDiffAt ℂ ω �
       rw [Derivation.leibniz, MvPowerSeries.pderiv_C, smul_zero, add_zero, MvPowerSeries.pderiv_X, smul_eq_mul]
       simp [Prod.ext_iff, hk]
     · simp
-  exact (TCPf.isTayF_tay hA).eq (TCPf.isTayF_comp hθ A hv (TCPf.isTayF_subst θ hθ _ _ (anLin_cc A) hLd))
+  exact (TCPf.isTayF_tay).eq (TCPf.isTayF_comp hθ A hv (TCPf.isTayF_subst θ hθ _ _ (anLin_cc A) hLd))
 
 theorem jetOf_comp_anLin (m : ℕ) {θ : (Fin g → ℂ) → ℂ} (hθ : ContDiffAt ℂ ω θ 0)
     (A : (Fin g' → ℂ) →L[ℂ] (Fin g → ℂ)) :

@@ -196,7 +196,7 @@ theorem simple_raising_kill_all_raising {E : GLOps n K V} (hE : IsGLRep E) (y : 
 
 end
 
-theorem hwv_mem_nMinus_eq_zero (D : Formalism.BasicNotions.D7) {K V : Type} [Field K] [CharZero K] [AddCommGroup V] [Module K V]
+theorem hwv_mem_nMinus_eq_zero {K V : Type} [Field K] [CharZero K] [AddCommGroup V] [Module K V]
     [FiniteDimensional K V] {n : ℕ} (E : GLOps n K V) (hE : IsGLRep E) (mu : Fin n → ℤ) (y : V)
     (hy : y ∈ weightSp E mu) (hr : ∀ a b : Fin n, a < b → E a b y = 0) (hn : y ∈ nMinus E) : y = 0 := by
   by_contra hne
@@ -254,7 +254,7 @@ private theorem operatorsShiftWeightsByRoots_of_isGLRep {n : ℕ} {K V : Type*} 
   rw [hc, Pi.add_apply, Int.cast_add, add_smul]
   exact add_comm _ _
 
-theorem sizes_bound_of_log_estimates (D : Formalism.BasicNotions.D7) (h : SimpleRaisingKillsExtremalProjector) : adm5 D := by
+theorem sizes_bound_of_log_estimates (D : Formalism.BasicNotions.D7) (h : SimpleRaisingKillsExtremalProjector) : adm5 := by
   intro K V _ _ _ _ _ n E hE mu hmu ord hord T hT
   have hs : OperatorsShiftWeightsByRoots E := operatorsShiftWeightsByRoots_of_isGLRep E hE
   have hlt : ∀ ab ∈ ord, ab.1 < ab.2 := by
@@ -273,7 +273,7 @@ theorem sizes_bound_of_log_estimates (D : Formalism.BasicNotions.D7) (h : Simple
     have hyn : pp E mu ord T x ∈ nMinus E := by
       have h2 := Submodule.add_mem _ (extremal_projector_sub_mem_nMinus E mu ord T x hlt) hn
       rwa [sub_add_cancel] at h2
-    exact hwv_mem_nMinus_eq_zero D E hE mu _ (hwt x hx) hall hyn
+    exact hwv_mem_nMinus_eq_zero E hE mu _ (hwt x hx) hall hyn
   · intro x hx hr
     exact extremal_projector_fixes_hwv E mu ord T x (fun ab hab => hr ab.1 ab.2 (hlt ab hab))
 

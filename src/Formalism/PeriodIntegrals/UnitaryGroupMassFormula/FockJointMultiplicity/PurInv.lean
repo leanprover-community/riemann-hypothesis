@@ -67,7 +67,7 @@ theorem bCol_apply {m n : ℕ} (ι : Fin m × Fin n → σ) (c d : Fin n) (P : M
   rw [PI.FJM.bCol, LinearMap.sum_apply]; simp
 
 theorem translate_pairs {R : Type*} [CommRing R] {κ : Type*} [Fintype κ] [DecidableEq σ] (u w : κ → σ)
-    (_hw : Function.Injective w) (huw : ∀ k k', u k ≠ w k') (f : MvPolynomial σ R)
+    (huw : ∀ k k', u k ≠ w k') (f : MvPolynomial σ R)
     (h : ∑ k, X (u k) * pderiv (w k) f = 0) {K : Type*} [Field K] [CharZero K] [Algebra R K] (y : σ → K) (t : K) :
     aeval (fun v => y v + t * ∑ k, if w k = v then y (u k) else 0) f = aeval y f := by
   classical
@@ -115,7 +115,6 @@ theorem row_inv {m n : ℕ} (ι : Fin m × Fin n → σ) (hι : Function.Injecti
     aeval (fill ι (rowAddM M a b t) p) f = aeval (fill ι M p) f := by
   classical
   have key := translate_pairs (R := ℂ) (fun k : Fin n => ι (a, k)) (fun k => ι (b, k))
-    (fun k k' e => by have := hι e; simp at this; exact this)
     (fun k k' e => hab (by have := hι e; simp at this; exact this.1)) f (by rw [← bRow_apply]; exact hf)
     (fill ι M p) t
   refine Eq.trans ?_ key
@@ -144,7 +143,6 @@ theorem col_inv {m n : ℕ} (ι : Fin m × Fin n → σ) (hι : Function.Injecti
     aeval (fill ι (colAddM M c d t) p) f = aeval (fill ι M p) f := by
   classical
   have key := translate_pairs (R := ℂ) (fun i : Fin m => ι (i, c)) (fun i => ι (i, d))
-    (fun i i' e => by have := hι e; simp at this; exact this)
     (fun i i' e => hcd (by have := hι e; simp at this; exact this.2)) f (by rw [← bCol_apply]; exact hf)
     (fill ι M p) t
   refine Eq.trans ?_ key

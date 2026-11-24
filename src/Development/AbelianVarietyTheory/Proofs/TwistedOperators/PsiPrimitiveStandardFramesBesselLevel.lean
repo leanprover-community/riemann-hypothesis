@@ -113,7 +113,7 @@ end GlobalTheory.AscFin.PrimStd
 
 open GlobalTheory.SeeSaw (idV FI dI) in
 open GlobalTheory.AscFin.PrimStd in
-theorem GlobalTheory.AscFin.primAt_std_bessel : OnStd fun {D} _ _ {sc} {G} W F => ∀ ρ (h : 2 * ρ + 2 ≤ D.R.m), ∀ v ∉ G.pl.S0,
+theorem GlobalTheory.AscFin.primAt_std_bessel : OnStd fun {D} _ _ {_} {G} W F => ∀ ρ (h : 2 * ρ + 2 ≤ D.R.m), ∀ v ∉ G.pl.S0,
     PrimAt W.ψ (F.dB ρ h) (G.Λ (.grid (2 * ρ + 2) 0)) v := by
   intro D _ T L μ0 _ sc G W M _ F hF ρ h v hv
   have hψ := W.ψ_std
@@ -163,7 +163,7 @@ theorem GlobalTheory.AscFin.primAt_std_bessel : OnStd fun {D} _ _ {sc} {G} W F =
       exact (key i (s * a) (Ideal.mul_mem_left _ _ haA)).2 (h1 a ((key j a haA).1 hc))
   rw [key2, f2 _ _ (hb0 j) (hb0 i) s hs]
   have hsucc := stairId_succ (𝔞 := G.pl.stA sc) hAb (Fin.castLE (by omega) i : Fin (2 * ρ + 2 - 1)) (Fin.castLE (by omega) j)
-    (by simp [Fin.coe_castLE, hij])
+    (by simp [hij])
   have hrat : 𝔟 i * (𝔟 j)⁻¹ = FractionalIdeal.spanSingleton _ (-D.host.xi0) * (G.pl.stA sc * G.pl.stAbar sc) := by
     rw [mul_inv_eq_iff_eq_mul₀ (hb0 j)]
     have e2 : ((-D.host.xi0) ^ (i.1 + 1))⁻¹ = -D.host.xi0 * ((-D.host.xi0) ^ (j.1 + 1))⁻¹ := by

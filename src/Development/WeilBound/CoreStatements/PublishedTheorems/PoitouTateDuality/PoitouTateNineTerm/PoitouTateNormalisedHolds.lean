@@ -611,11 +611,11 @@ def ShaDictFS : Prop :=
   ∀ (S : Finset (HeightOneSpectrum (𝓞 K))), ContainsAbove S l →
   ∀ (Av : S → ValuationSubring (AlgebraicClosure ℚ)), (∀ v, IsPlaceOver (Av v) v.1) →
   ∀ (μ : GS (AlgebraicClosure ℚ) (S : Set (HeightOneSpectrum (𝓞 K))) →* (ZMod (l ^ r))ˣ)
-    (hμ : μ.comp (toGS (AlgebraicClosure ℚ) _) = cycMod K (AlgebraicClosure ℚ) l r),
+    (_ : μ.comp (toGS (AlgebraicClosure ℚ) _) = cycMod K (AlgebraicClosure ℚ) l r),
   ∀ (M : Type) [AddCommGroup M] [Module (ZMod (l ^ r)) M] [Finite M] [TopologicalSpace M]
     [DiscreteTopology M]
     (ρ : Representation (ZMod (l ^ r)) (GS (AlgebraicClosure ℚ) (S : Set (HeightOneSpectrum (𝓞 K)))) M)
-    (hρ : ContAction ρ),
+    (_ : ContAction ρ),
     (∃ (K' : FiniteSubfield) (S' : Set (HeightOneSpectrum (𝓞 K'.1))) (_ : Fintype S')
       (ιs : ∀ v : S', AlgebraicClosure ℚ →ₐ[K'.1]
         AlgebraicClosure ((v : HeightOneSpectrum (𝓞 K'.1)).adicCompletion K'.1))
@@ -778,8 +778,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.LocallyTrivialClassesAddEquiv.main :
-    ∀ {R ι H C : Type} [inst : CommRing R] [inst_1 : AddCommGroup H] [inst_2 : _root_.Module R H] [inst_3 : AddCommGroup C]
-      {Hv Cv : ι → Type} [inst_4 : (v : ι) → AddCommGroup (Hv v)] [inst_5 : (v : ι) → AddCommGroup (Cv v)]
+    ∀ {R ι H C : Type} [CommRing R] [AddCommGroup H] [_root_.Module R H] [AddCommGroup C]
+      {Hv Cv : ι → Type} [(v : ι) → AddCommGroup (Hv v)] [(v : ι) → AddCommGroup (Cv v)]
       (res : (v : ι) → H →+ Hv v) (pres : (v : ι) → C →+ Cv v) (E : H ≃+ C) (Ev : (v : ι) → Hv v ≃+ Cv v),
       (∀ (v : ι) (x : H), (Ev v : Hv v → Cv v) ((res v : H → Hv v) x) = (pres v : C → Cv v) ((E : H → C) x)) →
         ∀ (U : Submodule R H) (T : AddSubgroup C),

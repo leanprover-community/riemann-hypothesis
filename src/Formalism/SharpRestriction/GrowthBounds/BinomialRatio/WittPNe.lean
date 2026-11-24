@@ -78,7 +78,7 @@ theorem planeAt : PlaneAt := by
   refine ⟨by rw [hs, hs'], ?_⟩
   rw [ht, ht']
   apply le_antisymm
-  · exact tgt_le_of_plane φ 1 hpQ g' g hg' hg h hpl.le
-  · exact tgt_le_of_plane φ 1 hpQ g g' hg hg' h hpl.ge
+  · exact tgt_le_of_plane φ 1 hpQ g' g hg h hpl.le
+  · exact tgt_le_of_plane φ 1 hpQ g g' hg' h hpl.ge
 
 end Formalism.MainNotions.ColumnSystems.Pf

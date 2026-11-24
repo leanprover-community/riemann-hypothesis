@@ -141,7 +141,7 @@ theorem eq_zero_of_forall_mem {A₀ : Submodule (𝓞 K) V} (hA₀ : Submodule.I
     · exact absurd h7 (notMem_ne_zero ht)
   · exact h6
 
-theorem unif_pow_mem_pK_zero {𝔭 : Ideal (𝓞 F)} {π : 𝓞 F} (hπ : π ∈ 𝔭) (k : ℕ) :
+theorem unif_pow_mem_pK_zero {𝔭 : Ideal (𝓞 F)} {π : 𝓞 F} (k : ℕ) :
     algebraMap F K (π : F) ^ k ∈ pK K 𝔭 0 := by
   refine ⟨1, Submonoid.one_mem _, ?_⟩
   rw [one_smul]
@@ -168,7 +168,7 @@ theorem mem_of_add_mem {A₀ : Submodule (𝓞 K) V} (hA₀ : Submodule.IsFullLa
         rw [pow_one]; exact hD _ hn
       have h2 : p ^ (n + 1) • (w + D w) ∈ extP K 𝔭 ^ 1 • locF 𝔭 A₀ :=
         (mem_smul_iff_unif h𝔭 hπ hπ' A₀).2 ⟨p ^ n • (w + D w),
-          smul_mem_locF h𝔭 A₀ (unif_pow_mem_pK_zero hπ n) hw, by rw [smul_smul, pow_one, pow_succ']⟩
+          smul_mem_locF h𝔭 A₀ (unif_pow_mem_pK_zero n) hw, by rw [smul_smul, pow_one, pow_succ']⟩
       have h3 : p ^ (n + 1) • w ∈ extP K 𝔭 ^ 1 • locF 𝔭 A₀ := by
         have := sub_mem h2 h1
         rwa [map_smul, smul_add, add_sub_cancel_right] at this

@@ -262,7 +262,7 @@ theorem exists_coprime_nsmul_mem {b : ℕ} (L : Submodule (𝓞 E) (Fin n → E)
 
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor in
 theorem perfect_range {H : Host E} (D : Datum H) {ξ : E} {G : Matrix (Fin n) (Fin n) E}
-    (φ : D.La →ₗ[𝓞 E] (Fin n → E)) (hinj : Function.Injective φ)
+    (φ : D.La →ₗ[𝓞 E] (Fin n → E))
     (hEF : ∀ x y, ((D.EF x y : ℤ) : ℚ) = Algebra.trace ℚ E (ξ * herm G (φ x) (φ y))) :
     (∀ x ∈ LinearMap.range φ, ∀ y ∈ LinearMap.range φ, ∃ k : ℤ, EFf (-ξ) G x y = k) ∧
       ∀ ψ : LinearMap.range φ →+ ℤ, ∃ x ∈ LinearMap.range φ, ∀ y : LinearMap.range φ, (ψ y : ℚ) = EFf (-ξ) G x y := by
@@ -297,7 +297,7 @@ theorem exists_coprime_scaled_isometry : ∀ (E : Type) [Field E] [NumberField E
   obtain ⟨γ, hγ, hγL⟩ := exists_unitary_mapsTo hG hd hL₂ hb
     (GlobalTheory.selfDual_lattices_one_genus hG hG hd hd hL₂ hL₁ (Or.inr ⟨_, neg_ne_zero.2 (GlobalTheory.OneSpace.rt_ne H),
       (map_neg (IsCMField.complexConj E) _).trans (congrArg Neg.neg hξ),
-      perfect_range D₂ φ₂ hinj₂ hEF₂, perfect_range D₁ φ₁ hinj₁ hEF₁⟩)).1
+      perfect_range D₂ φ₂ hEF₂, perfect_range D₁ φ₁ hEF₁⟩)).1
   let φ : D₁.La →ₗ[𝓞 E] (Fin (D₂.p + D₂.q) → E) := (Matrix.toLin' γ).restrictScalars (𝓞 E) ∘ₗ φ₁
   have hφ : ∀ x, φ x = γ *ᵥ φ₁ x := fun x => rfl
   choose m hm hmem using fun x => exists_coprime_nsmul_mem _ _ (hγL (φ₁ x) ⟨x, rfl⟩)

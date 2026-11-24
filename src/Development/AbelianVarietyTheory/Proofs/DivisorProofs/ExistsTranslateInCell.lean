@@ -224,7 +224,7 @@ end GlobalTheory.KSp
 namespace GlobalTheory.KSp
 
 theorem exists_herm_transverse : ∀ (F : Type) [Field F] [CharZero F] (E : Type) [Field E] [Algebra F E] (c : E →ₐ[F] E)
-    (δ : E) (hE : IsQuad c δ) (ν : Type) [Fintype ν] [DecidableEq ν] (g : UG c (stdJ ν E)),
+    (δ : E) (_ : IsQuad c δ) (ν : Type) [Fintype ν] [DecidableEq ν] (g : UG c (stdJ ν E)),
     ∃ t : Matrix ν ν E, (t.map c)ᵀ = t ∧ ((mat c g).toBlocks₂₁ + (mat c g).toBlocks₂₂ * t).det ≠ 0 := by
   intro F _ _ E _ _ c δ hE ν _ _ g
   have hδ : δ ≠ 0 := hE.unit.ne_zero
@@ -362,7 +362,7 @@ theorem exists_herm_transversal (F : Type) [Field F] [CharZero F] (E : Type) [Fi
       exact h0
 
 theorem exists_translate_inCell : ∀ (F : Type) [Field F] [CharZero F] (E : Type) [Field E] [Algebra F E]
-    (c : E →ₐ[F] E) (δ : E) (hE : IsQuad c δ) (ν : Type) [Fintype ν] [DecidableEq ν] (s : Finset (UG c (stdJ ν E))),
+    (c : E →ₐ[F] E) (δ : E) (_ : IsQuad c δ) (ν : Type) [Fintype ν] [DecidableEq ν] (s : Finset (UG c (stdJ ν E))),
     ∃ u : UG c (stdJ ν E), ∀ g ∈ s, InCell c (g * u) := by
   intro F _ _ E _ _ c δ hE ν _ _ s
   obtain ⟨t, ht, h⟩ := exists_herm_transversal F E c δ hE ν s

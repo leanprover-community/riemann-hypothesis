@@ -273,7 +273,7 @@ theorem splitIdem_int {e : AE D} (he : IsSplitIdem D e) : finPart D e ∈ intAE 
     (HeightOneSpectrum.ext (w.isMaximal.eq_of_le (belowPl (plOf ι)).isPrime.ne_top hle)).symm
   rw [← hbel] at hsε
   obtain ⟨e₀, ι₀, he₀, -, hs₀, hz, hκ⟩ := idem_data (plOf ι) hsp (belowPl (plOf ι)) rfl
-  rcases idem_class (plOf ι) hsp e₀ ι₀ hs₀ hz hκ he₀.1.1 he₀.1.2.1 e h1 h2 hsε with h | h
+  rcases idem_class (plOf ι) e₀ ι₀ hs₀ hz he₀.1.1 he₀.1.2.1 e h1 h2 hsε with h | h
   · rw [h]; exact idemAt_int he₀
   · rw [h, finPart_cA]; exact cF_int (idemAt_int he₀)
 

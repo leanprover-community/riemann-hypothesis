@@ -293,7 +293,7 @@ section Gel
 
 variable {E : Type*} [CStarAlgebra E]
 
-theorem restr (S : StarSubalgebra ℂ E) (hS : ∀ x ∈ S, ∀ y ∈ S, x * y = y * x)
+theorem restr (S : StarSubalgebra ℂ E)
     (ψ : S.topologicalClosure →ₐ[ℂ] ℂ) :
     ∃ χ : S →⋆ₐ[ℂ] ℂ, (∀ y, ‖χ y‖ ≤ ‖(y : E)‖) ∧
       ∀ y, χ y = ψ (StarSubalgebra.inclusion S.le_topologicalClosure y) := by
@@ -327,7 +327,7 @@ theorem norm_le_of_chars (S : StarSubalgebra ℂ E) (hS : ∀ x ∈ S, ∀ y ∈
   have := h (WeakDual.CharacterSpace.equivAlgHom φ)
   rwa [WeakDual.CharacterSpace.equivAlgHom_coe] at this
 
-theorem finite_cover (S : StarSubalgebra ℂ E) (hS : ∀ x ∈ S, ∀ y ∈ S, x * y = y * x)
+theorem finite_cover (S : StarSubalgebra ℂ E)
     {κ : Type*} (f : κ → E) (hf : ∀ i, f i ∈ S) (b : E) (hb : b ∈ S) (ε : ℝ)
     (h : ∀ ψ : S.topologicalClosure →ₐ[ℂ] ℂ,
       ε ≤ ‖ψ (StarSubalgebra.inclusion S.le_topologicalClosure ⟨b, hb⟩)‖ →
@@ -524,11 +524,11 @@ theorem peak {A : Type} [CommRing A] [StarRing A] [Algebra ℂ A] [StarModule �
       ε0 ≤ ‖ψ (StarSubalgebra.inclusion (S s).le_topologicalClosure ⟨_, hB s⟩)‖ →
         ∃ g ∈ t, 1 < ‖ψ (StarSubalgebra.inclusion (S s).le_topologicalClosure ⟨_, hR s (d g)⟩)‖ := by
     intro s
-    apply finite_cover (S s) (hSc s) (fun g => R s (d g)) (fun g => hR s (d g)) _ (hB s) ε0
+    apply finite_cover (S s) (fun g => R s (d g)) (fun g => hR s (d g)) _ (hB s) ε0
     intro ψ hψ
     by_contra hno
     push Not at hno
-    obtain ⟨χ, hχb, hχ⟩ := restr (S s) (hSc s) ψ
+    obtain ⟨χ, hχb, hχ⟩ := restr (S s) ψ
     have hz : ∀ g, θ s χ (d g) = 0 := by
       intro g
       by_contra hz
@@ -579,7 +579,7 @@ theorem peak {A : Type} [CommRing A] [StarRing A] [Algebra ℂ A] [StarModule �
   have hkey : ‖R s (star g) * B * R s g‖ ≤ ε0 := by
     apply norm_le_of_chars (S s) (hSc s) _ hx ε0 hε0p.le
     intro ψ
-    obtain ⟨χ, hχb, hχ⟩ := restr (S s) (hSc s) ψ
+    obtain ⟨χ, hχb, hχ⟩ := restr (S s) ψ
     rw [← hχ]
     have hsplit : (⟨R s (star g) * B * R s g, hx⟩ : S s) =
         ⟨R s (star g), hR s _⟩ * ⟨B, hB s⟩ * ⟨R s g, hR s g⟩ := rfl

@@ -392,8 +392,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.LocallyConstantOfOpenSet.lc_of_open :
-    ∀ {G H : Type} [inst : Group G] [inst_1 : TopologicalSpace G]
-    [IsTopologicalGroup G] [inst_3 : Group H] (f : G →* H), IsOpen (↑f.ker : Set G) → IsLocallyConstant (⇑f : G → H) := by
+    ∀ {G H : Type} [Group G] [TopologicalSpace G]
+    [IsTopologicalGroup G] [Group H] (f : G →* H), IsOpen (↑f.ker : Set G) → IsLocallyConstant (⇑f : G → H) := by
   intro G H _ _ _ _ f hk
   rw [IsLocallyConstant.iff_eventually_eq]
   intro x
@@ -449,7 +449,7 @@ theorem UpperTheory.V.W.psib_mu (l : ℕ) [Fact l.Prime] (F : GFrame l) (O : Typ
   exact Units.ext (sub_eq_zero.1 (pow_eq_zero_iff (pow_ne_zero k (Fact.out : l.Prime).ne_zero) |>.1 h6))
 
 theorem UpperTheory.V.W.exists_character_lifting_psi_free :
-    ∀ (l : ℕ) [Fact l.Prime] (F : GFrame l) (O : Type) [CommRing O] [IsLocalRing O] [IsNoetherianRing O] [IsAdicComplete (maximalIdeal O) O] [Algebra ℤ_[l] O] [Finite (ResidueField O)] [CharP (ResidueField O) l] (n : ℕ) (r : Resid F O n) (d : F.Vl → ℕ) (A : ∀ v, LocAb l (F.Gv v) (F.Iv v) (d v)), ∀ v i, ∃ ψ : F.Gv v →* Oˣ, r.IsPsi v i ψ := by
+    ∀ (l : ℕ) [Fact l.Prime] (F : GFrame l) (O : Type) [CommRing O] [IsLocalRing O] [IsNoetherianRing O] [IsAdicComplete (maximalIdeal O) O] [Algebra ℤ_[l] O] [Finite (ResidueField O)] [CharP (ResidueField O) l] (n : ℕ) (r : Resid F O n) (d : F.Vl → ℕ) (_ : ∀ v, LocAb l (F.Gv v) (F.Iv v) (d v)), ∀ v i, ∃ ψ : F.Gv v →* Oˣ, r.IsPsi v i ψ := by
   intro l _ F O _ _ _ _ _ _ _ n r d A v i
   obtain ⟨τ, hτ⟩ := teich_ex l O
   let P := CommGroup.primaryComponent (TopologicalAbelianization (F.Gv v)) l

@@ -67,7 +67,7 @@ theorem _root_.GlobalTheory.NormOneSplit.ker_isMaximal {R : Type} [CommRing R] {
 open NumberField Module Matrix in
 open scoped ENNReal in
 private theorem exists_ringHom_zmod_ker_eq {E : Type} [Field E] [NumberField E] {T : ℕ}
-    (hT : T.Prime) (P : Ideal (𝓞 E)) (hP : P.IsMaximal) (hN : Ideal.absNorm P = T) :
+    (hT : T.Prime) (P : Ideal (𝓞 E)) (hN : Ideal.absNorm P = T) :
     ∃ φ : 𝓞 E →+* ZMod T, RingHom.ker φ = P := by
   letI := Ideal.Quotient.field P
   have hcard : Nat.card (𝓞 E ⧸ P) = T := by
@@ -110,7 +110,7 @@ theorem _root_.GlobalTheory.NormOneSplit.mem_span_iff {E : Type} [Field E] [Numb
     rintro P ⟨hIP, hP⟩
     have hPbot : P ≠ ⊥ := fun hb => hT0 (by simpa [hb] using hIP hTI)
     have hPmax := hP.isMaximal hPbot
-    obtain ⟨φ, hφ⟩ := exists_ringHom_zmod_ker_eq hT P hPmax (hs P hPmax (hIP hTI)).1
+    obtain ⟨φ, hφ⟩ := exists_ringHom_zmod_ker_eq hT P (hs P hPmax (hIP hTI)).1
     rw [← hφ, RingHom.mem_ker]
     exact h φ
 

@@ -437,7 +437,7 @@ private lemma Hpk_mul_Em_eq_Em_mul_Hb : Hpk k r * Em k r = Em k r * Hb k := by
   ext i m
   rw [Matrix.mul_apply, Matrix.mul_apply,
     Finset.sum_eq_single (wI k r m) (fun j _ hj => by simp [Em, hj]) (fun h => absurd (Finset.mem_univ _) h),
-    Finset.sum_eq_single m (fun j _ hj => by simp [Formalism.QuantumDeterminants.Hb, Matrix.diagonal_apply, hj])
+    Finset.sum_eq_single m (fun j _ hj => by simp [Formalism.QuantumDeterminants.Hb, hj])
       (fun h => absurd (Finset.mem_univ _) h)]
   simp only [Em, Hpk_apply_wI_right_eq_ite]
   split_ifs <;> simp_all
@@ -450,7 +450,7 @@ private lemma Em_transpose_mul_Hpk_eq_Hb_mul_transpose : (Em k r)ᵀ * Hpk k r =
   ext m i
   rw [Matrix.mul_apply, Matrix.mul_apply,
     Finset.sum_eq_single (wI k r m) (fun j _ hj => by simp [Em, hj]) (fun h => absurd (Finset.mem_univ _) h),
-    Finset.sum_eq_single m (fun j _ hj => by simp [Formalism.QuantumDeterminants.Hb, Matrix.diagonal_apply, Ne.symm hj])
+    Finset.sum_eq_single m (fun j _ hj => by simp [Formalism.QuantumDeterminants.Hb, Ne.symm hj])
       (fun h => absurd (Finset.mem_univ _) h)]
   simp only [Matrix.transpose_apply, Em, Hpk_wI_apply_left_eq_ite]
   split_ifs <;> simp_all
@@ -1099,7 +1099,7 @@ variable {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [Norm
   [InnerProductSpace ℂ Wq]
 
 theorem word_left (hS : RcSmooth) {D : Set (Q.Mx k r)} (hD : IsOpen D) {U : Set (Q.Mx k r)}
-    {π : Q.Mx k r → (Wp →L[ℂ] Wp)} (_hDl : ∀ h ∈ U, ∀ g ∈ D, h * g ∈ D) {J : Q.Mx k r → (Wq →L[ℂ] Wp)}
+    {π : Q.Mx k r → (Wp →L[ℂ] Wp)} {J : Q.Mx k r → (Wq →L[ℂ] Wp)}
     (hJs : Q.SmoothLev k r (Fin.last r) D J)
     (hJl : ∀ h ∈ U, ∀ g ∈ Q.Glev k r (Fin.last r) ∩ D, J (h * g) = (π h).comp (J g)) :
     ∀ w : List (Q.Mx k r), (∀ Z ∈ w, GLc k r Z) →
@@ -1251,7 +1251,7 @@ theorem word_polynomial_vector_holds : WordPSVOfCut := by
     rw [e]; exact hg
   set J := (Φ : Q.Fn P.k P.r (Wq →L[ℂ] Wp)) c with hJ
   have hWs := word_smooth hS hDo hJs
-  have hWl := word_left hS hDo hDl hJs hJl
+  have hWl := word_left hS hDo hJs hJl
   have main : ∀ n : ℕ, ∀ w : List (Q.Mx P.k P.r), w.length = n → (∀ Z ∈ w, GLc P.k P.r Z) →
       PSV P.TT (fun ζ => wordR w J (mu0 P.k P.r Bs.z Bs.z' ζ)) := by
     intro n

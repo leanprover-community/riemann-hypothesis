@@ -138,8 +138,8 @@ variable {D : D7}
 def realAd (D : D7) : ℝ →* AF D.host.F where
   toFun x := ((fun w => (InfinitePlace.Completion.ringEquivRealOfIsReal (IsTotallyReal.isReal w)).symm x :
       Ainf D.host.F), (1 : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Af D.host.F))
-  map_one' := Prod.ext (funext fun w => map_one _) rfl
-  map_mul' x y := Prod.ext (funext fun w => map_mul _ _ _) (mul_one _).symm
+  map_one' := Prod.ext (funext fun _ => map_one _) rfl
+  map_mul' _ _ := Prod.ext (funext fun _ => map_mul _ _ _) (mul_one _).symm
 
 def realE (D : D7) : ℝ →* AE D :=
   ((Algebra.TensorProduct.includeLeftRingHom : AF D.host.F →+* AF D.host.F ⊗[D.host.F] D.host.E) :
@@ -262,7 +262,7 @@ theorem witt_levi : ∀ {D : D7} (θ : InfFam D), IsInfFam θ → ∀ (ε : Bool
       Matrix.smul_mul, hyy, smul_zero, smul_zero, smul_zero])
     (by
       have hss' : s * star s = 1 := by rw [mul_comm]; exact hss
-      simp only [hgram, conjTranspose_smul, Matrix.smul_mul, Matrix.mul_smul, smul_smul, hyx, hss, hss', one_smul])
+      simp only [hgram, conjTranspose_smul, Matrix.smul_mul, Matrix.mul_smul, smul_smul, hyx, hss', one_smul])
   refine ⟨S₀, d, fun t ht a ha => ?_⟩
   have ht0 : ∀ i, t i ≠ 0 := fun i => (ht i).ne'
 

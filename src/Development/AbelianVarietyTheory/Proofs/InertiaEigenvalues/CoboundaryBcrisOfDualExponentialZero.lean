@@ -572,7 +572,7 @@ theorem expStar_sum {ι : Type} (S : Finset ι) (z : ι → GQ l → ℚ_[l]) (�
   | insert a S ha ih =>
     simpa only [Finset.sum_insert ha] using expStar_add (expStar_smul _ (h a)) ih
 
-theorem kernel_line (D : Formalism.BasicNotions.D7) (h2 : adm2 D) (h4 : ArchimedeanSignatureMatching D) (K : FinExt l) (s : ℕ)
+theorem kernel_line (D : Formalism.BasicNotions.D7) (h2 : adm2) (h4 : ArchimedeanSignatureMatching) (K : FinExt l) (s : ℕ)
     (hs : Lev l s) (e : ℕ) (z z₀ : GQ l → ℚ_[l]) (hz : ExpStar D.loc (Gj K s) e z 0)
     (hz₀ : ExpStar D.loc (Gj K s) e z₀ 0) (hne : ∃ σ ∈ Gj K s, z₀ σ ≠ 0) :
     ∃ a : ℚ_[l], ∀ σ ∈ Gj K s, z σ = a * z₀ σ := by
@@ -677,7 +677,7 @@ theorem expStar_unramified (D : Formalism.BasicNotions.D7) (F : FinExt l) (z : G
     Units.val_one, map_one, one_mul]
   rw [h4, sub_self]
 
-theorem ker_expStar : ∀ (D : Formalism.BasicNotions.D7), adm2 D → ArchimedeanSignatureMatching D → ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ), Lev l s → ∀ (e : ℕ) (z : GQ l → ℚ_[l]), ExpStar D.loc (Gj K s) e z 0 → (0 < e → CobOn (Gj K s) (fun σ y => (((D.loc l).χQ σ ^ (-(e : ℤ)) : ℚ_[l]ˣ) : ℚ_[l]) * y) Set.univ z) ∧ (e = 0 → ∀ σ ∈ Gj K s, (∀ x : Om l, ‖x‖ ≤ 1 → ‖σ x - x‖ < 1) → z σ = 0) := by
+theorem ker_expStar : ∀ (D : Formalism.BasicNotions.D7), adm2 → ArchimedeanSignatureMatching → ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ), Lev l s → ∀ (e : ℕ) (z : GQ l → ℚ_[l]), ExpStar D.loc (Gj K s) e z 0 → (0 < e → CobOn (Gj K s) (fun σ y => (((D.loc l).χQ σ ^ (-(e : ℤ)) : ℚ_[l]ˣ) : ℚ_[l]) * y) Set.univ z) ∧ (e = 0 → ∀ σ ∈ Gj K s, (∀ x : Om l, ‖x‖ ≤ 1 → ‖σ x - x‖ < 1) → z σ = 0) := by
   intro D h2 h4 l _ K s hs e z hz
   have hχ : IsCyc (D.loc l).χQ := (D.loc l).χQ_cyc
   refine ⟨fun he => ?_, ?_⟩
@@ -718,7 +718,7 @@ open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.Basi
 
 namespace GlobalTheory.KerExpCrys
 
-theorem cob_cris_of_expStar_zero : ∀ (D : Formalism.BasicNotions.D7), adm2 D → ArchimedeanSignatureMatching D → ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ), Lev l s → ∀ (e : ℕ) (z : GQ l → ℚ_[l]), ExpStar D.loc (Gj K s) e z 0 → ∃ x : (D.loc l).R.B, ∀ σ ∈ Gj K s, algebraMap ℚ_[l] (D.loc l).R.B (z σ) = (((D.loc l).χQ σ ^ (-(e : ℤ)) : ℚ_[l]ˣ) : ℚ_[l]) • (D.loc l).actQ σ x - x := by
+theorem cob_cris_of_expStar_zero : ∀ (D : Formalism.BasicNotions.D7), adm2 → ArchimedeanSignatureMatching → ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ), Lev l s → ∀ (e : ℕ) (z : GQ l → ℚ_[l]), ExpStar D.loc (Gj K s) e z 0 → ∃ x : (D.loc l).R.B, ∀ σ ∈ Gj K s, algebraMap ℚ_[l] (D.loc l).R.B (z σ) = (((D.loc l).χQ σ ^ (-(e : ℤ)) : ℚ_[l]ˣ) : ℚ_[l]) • (D.loc l).actQ σ x - x := by
   intro D h2 h4 l _ K s hs e z hz
   obtain ⟨hpos, hzero⟩ := _root_.GlobalTheory.Cyc.ExpKernel.ker_expStar D h2 h4 l K s hs e z hz
   rcases Nat.eq_zero_or_pos e with he | he

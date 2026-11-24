@@ -370,8 +370,8 @@ private theorem cmp_rT {W : Type} [AddCommGroup W] [Module ℂ W] {d : ℕ} (T :
 private noncomputable def coords {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a : ℕ} (Ξ : AlgRep E a) (q : ℕ)
     {n : ℕ} (e : Fin n → Herm E a) : Co Ξ q →ₗ[ℂ] ((Fin q → Fin n) × Fin Ξ.d → Sm E a) where
   toFun ω p := cmp p.2 (ω fun j => e (p.1 j))
-  map_add' α β := funext fun p => map_add (Bor.cmp p.2) _ _
-  map_smul' c α := funext fun p => map_smul (Bor.cmp p.2) c _
+  map_add' _ _ := funext fun p => map_add (Bor.cmp p.2) _ _
+  map_smul' c _ := funext fun p => map_smul (Bor.cmp p.2) c _
 
 private theorem coords_inj {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a : ℕ} (Ξ : AlgRep E a) (q : ℕ)
     {n : ℕ} {e : Fin n → Herm E a} (he : IsFrame e) : Function.Injective (coords Ξ q e) := by

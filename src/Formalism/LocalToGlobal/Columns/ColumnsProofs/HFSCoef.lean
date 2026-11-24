@@ -83,7 +83,7 @@ theorem hfs_map_mem_VV {F : Pol K σ n} (hF : F ∈ VV K lam) : MvPolynomial.map
 def hfsJ : VV K lam →+ VV L lam where
   toFun v := ⟨MvPolynomial.map ι (v : Pol K σ n), hfs_map_mem_VV ι lam v.2⟩
   map_zero' := Subtype.ext (map_zero _)
-  map_add' v w := Subtype.ext (map_add _ _ _)
+  map_add' _ _ := Subtype.ext (map_add _ _ _)
 
 theorem hfsJ_coe (v : VV K lam) : ((hfsJ ι lam v : VV L lam) : Pol L σ n) = MvPolynomial.map ι (v : Pol K σ n) := rfl
 

@@ -78,7 +78,7 @@ open GlobalTheory.Discrepancy GlobalTheory.QCoh
 namespace GlobalTheory
 
 theorem secClosed_closedPoint (K : Type) [Field K] (X : Scheme.{0}) (q : X ⟶ Sp K) (z : Sp K ⟶ X)
-    (_hq : IsProjOver q) (hz : z ≫ q = 𝟙 _) :
+    (hz : z ≫ q = 𝟙 _) :
     IsClosed ({z (IsLocalRing.closedPoint K)} : Set X) := by
   have : IsClosedImmersion z := isClosedImmersion_of_comp_eq_id q z hz
   have hc : IsClosed (Set.range z.base) := z.isClosedEmbedding.isClosed_range

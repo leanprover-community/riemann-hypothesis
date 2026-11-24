@@ -679,7 +679,7 @@ theorem toAfF_injective (G : HTGroup p) (β : G.Cˣ) (x : (AfP p ⊗[ℚ] G.C)ˣ
     exact (algebraMap ℚ (AfP p)).injective this
   exact Subtype.ext (Prod.ext e1 e2)
 
-theorem emb_injective (G : HTGroup p) (B : GlobalTheory.LKDef.DForm G) : Function.Injective B.emb := fun a b h =>
+theorem emb_injective (G : HTGroup p) (B : GlobalTheory.LKDef.DForm G) : Function.Injective B.emb := fun _ _ h =>
   toAfF_injective G B.β _ _ _ (congrArg Prod.fst h)
 
 end GlobalTheory.DefVanish

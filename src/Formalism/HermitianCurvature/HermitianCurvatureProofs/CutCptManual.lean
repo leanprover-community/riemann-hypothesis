@@ -282,7 +282,6 @@ theorem integral_four_at_place_of_partsCpt (hA : P5.ThmPActualCpt) (hSS : KB.Siz
       _ _ _ _ _ _
       (div_nonneg (mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)) hc.le)
       (by ring)
-      (div_nonneg (mul_self_nonneg _) hc.le) (div_nonneg (mul_self_nonneg _) hc.le)
       hq0 hP1 hP2 (norm_nonneg _) (hf0 _ _ ha0 hcp) (hf0 _ _ ha0' hcm) hcs2
     convert hsc using 3
     all_goals field_simp
@@ -448,7 +447,7 @@ theorem integral_three_at_place_of_partsCpt (hA : P5.ThmPActualCpt) (hPS : KB.PS
       (C.nAux P.k P.r 0 (fun _ _ => 1) 1 h / TBB.normC nn w)
       (C.nAux P.k P.r 0 (fun _ _ => 1) 1 h / TBB.normC nn w)
       (C.nAux P.k P.r 0 (fun _ _ => 1) 1 h / TBB.normC nn w)
-      _ _ _ _ _ _ hα0 (by ring) hα0 hα0 hq0 hP1 hP2 (norm_nonneg _) (hf0 _ hcp) (hf0 _ hcm) hcs2
+      _ _ _ _ _ _ hα0 (by ring) hq0 hP1 hP2 (norm_nonneg _) (hf0 _ hcp) (hf0 _ hcm) hcs2
     convert hsc using 3
     all_goals field_simp
   obtain ⟨n₀, hn₀⟩ := sum_le_max

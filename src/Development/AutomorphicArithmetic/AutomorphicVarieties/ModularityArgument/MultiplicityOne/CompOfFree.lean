@@ -1663,7 +1663,7 @@ private theorem forms_mono (S : Set (Pl E)) (lam : InfinitePlace E → DomWeight
 private theorem hop_mem_forms (S : Set (Pl E)) (hS : IsSection S) (lam : InfinitePlace E → DomWeight n)
     (K₂ K₁ : ∀ w : Pl E, Subgroup (UL n w))
     (hK₂ : IsLevelFam (fun w : Pl E => MonoidHom.id (UL n w)) (KL n) K₂)
-    (hUle : globLev S K₂ ≤ globLev S K₁) (f : ∀ w : Pl E, UL n w → ℂ) (hf₂ : GlobalTheory.BCT.IsTest (KL n) K₂ f)
+    (f : ∀ w : Pl E, UL n w → ℂ) (hf₂ : GlobalTheory.BCT.IsTest (KL n) K₂ f)
     (hl : ∀ k ∈ globLev S K₁, ∀ x, globFn S f (k * x) = globFn S f x)
     (hr : ∀ k ∈ globLev S K₂, ∀ x, globFn S f (x * k) = globFn S f x) :
     ∀ v ∈ forms S lam K₂, hop S K₂ f v ∈ forms S lam K₁ := by
@@ -1703,7 +1703,7 @@ theorem UpperTheory.V.Z.Mult.levTr :
   exact trOn_levOp_eq (RF E n) (globLev S (KL n)) (globLev S K'') (globLev S K') (globFn S f) hUle hK0 hN
     (fun k hk x => (hF k hk x).2) (forms S lam K'') (forms S lam K') (forms_mono S lam hle)
     (forms_le_fixed S lam K')
-    (hop_mem_forms S hS lam K'' K' hK'' hUle f hf'' (fun k hk x => (hF k hk x).1)
+    (hop_mem_forms S hS lam K'' K' hK'' f hf'' (fun k hk x => (hF k hk x).1)
       (fun k hk x => (hF k (hUle hk) x).2))
 end -- clump:auto
 end -- clump:auto

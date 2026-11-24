@@ -250,7 +250,7 @@ def derEnd (hθ : IsInfFam θ) (τ : D.what₂.Tau) :
   toFun Z :=
     { toFun := fun φ => ⟨RderC θ V τ Z φ.1, (linOnSm_RderC τ Z).mem _ φ.2⟩
       map_add' := fun φ ψ => Subtype.ext ((linOnSm_RderC τ Z).add _ φ.2 _ ψ.2)
-      map_smul' := fun c φ => Subtype.ext ((linOnSm_RderC τ Z).smul c _) }
+      map_smul' := fun c _ => Subtype.ext ((linOnSm_RderC τ Z).smul c _) }
   map_add' Z Z' := LinearMap.ext fun φ => Subtype.ext (RderC_add hθ φ.2 τ Z Z')
   map_smul' c Z := LinearMap.ext fun φ => Subtype.ext (RderC_smul hθ φ.2 τ c Z)
 

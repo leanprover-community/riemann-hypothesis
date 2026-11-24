@@ -222,8 +222,8 @@ theorem exists_matching [IsLocalRing R] [IsAdicComplete I R] (hI : I ≠ ⊤) {K
         val ν (r ≫ thick R I e) z J = val ν' (r ≫ thick R I e) z N * ∏ k, wVal U e z J N (r ≫ p e k) ^ ε k := by
   obtain ⟨t, ht⟩ := DVR.exists_gen_of_local D.toPre.P.L D.toPre.P.isLB φ ε
   obtain ⟨t', ht'⟩ := DVR.exists_gen_of_local U.LG.L U.LG.isLB φ' ε
-  obtain ⟨j₀, h₀⟩ := DVR.exists_chart_top D.toPre.P.L D.toPre.P.isLB φ ε
-  obtain ⟨j₀', h₀'⟩ := DVR.exists_chart_top U.LG.L U.LG.isLB φ' ε
+  obtain ⟨j₀, h₀⟩ := DVR.exists_chart_top D.toPre.P.L D.toPre.P.isLB φ
+  obtain ⟨j₀', h₀'⟩ := DVR.exists_chart_top U.LG.L U.LG.isLB φ'
   choose ρ hρ using fun e => exists_ratio_gen (U.w e) (U.w_gen e) φ φ' (thick R I e) (p e) (hp e) (hp' e)
     t ht t' ht' j₀ h₀ j₀' h₀'
   have a₀ : ∀ s, s ∈ LB.wchart D.toPre.P.L φ j₀ := fun s => by rw [h₀]; trivial

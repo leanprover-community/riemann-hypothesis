@@ -146,7 +146,7 @@ theorem exists_setIntegral_norm_le (hS : IsCompact S) :
 
 
 omit [SecondCountableTopology G] [LocallyCompactSpace G] in
-theorem setIntegral_norm_mul_left_le (hi : LocallyIntegrable φ μ) (hS : IsCompact S) {C : Set G} (hC : IsCompact C)
+theorem setIntegral_norm_mul_left_le (hi : LocallyIntegrable φ μ) {C : Set G} (hC : IsCompact C)
     {k : G} (hk : ∀ y ∈ S, k * y ∈ C) :
     IntegrableOn (fun y => φ (k * y)) S μ ∧ ∫ y in S, ‖φ (k * y)‖ ∂μ ≤ ∫ y in C, ‖φ y‖ ∂μ := by
   have hp := measurePreserving_mul_left μ k
@@ -167,7 +167,7 @@ theorem exists_compact_bound (hc : Cocompact Γ N) (hS : IsCompact S) : ∃ C : 
   refine ⟨_, hC, fun φ hφ hi n => ?_⟩
   obtain ⟨γ, hγ, hk⟩ := hs n
   simp only [← fun y => leftInv_integrand hφ y γ hγ n]
-  exact setIntegral_norm_mul_left_le hi hS hC fun y hy => mul_mem_mul ⟨_, hk, rfl⟩ hy
+  exact setIntegral_norm_mul_left_le hi hC fun y hy => mul_mem_mul ⟨_, hk, rfl⟩ hy
 
 variable [LocallyCompactSpace N]
 

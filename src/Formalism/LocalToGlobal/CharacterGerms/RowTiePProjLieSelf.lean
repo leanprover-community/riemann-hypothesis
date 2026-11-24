@@ -88,7 +88,7 @@ private lemma le_v_pow_sub_pow_of_le_v_sub {s t : C} (hs : (0 : WithTop ℝ) ≤
   calc c = 0 + c := (zero_add c).symm
     _ ≤ _ := add_le_add h0 h
 
-theorem pow_l_close {s t : C} (hs : V.Ge 0 s) (ht : V.Ge 0 t) {r : ℝ} (hr : 0 ≤ r) (h : V.Ge r (s - t)) :
+theorem pow_l_close {s t : C} (hs : V.Ge 0 s) (ht : V.Ge 0 t) {r : ℝ} (h : V.Ge r (s - t)) :
     V.Ge (r + min 1 r) (s ^ V.l - t ^ V.l) := by
   unfold VF.Ge at hs ht h ⊢
   have hs0 : (0 : WithTop ℝ) ≤ V.v s := by simpa using hs
@@ -145,10 +145,10 @@ theorem pow_lk_close {s t : C} (hs : V.Ge 0 s) (ht : V.Ge 0 t) {r : ℝ} (hr : 0
   | succ k ih =>
     rcases Nat.eq_zero_or_pos k with rfl | hk'
     · rw [zero_add, pow_one]
-      exact pow_l_close hs ht hr h
+      exact pow_l_close hs ht h
     · have h1 := ih hk'
       have hR : 0 ≤ r + min 1 r := add_nonneg hr (le_min zero_le_one hr)
-      have h2 := pow_l_close (ge_zero_pow_of_ge_zero hs _) (ge_zero_pow_of_ge_zero ht _) hR h1
+      have h2 := pow_l_close (ge_zero_pow_of_ge_zero hs _) (ge_zero_pow_of_ge_zero ht _) h1
       rw [pow_succ, pow_mul, pow_mul]
       unfold VF.Ge at h2 ⊢
       refine le_trans ?_ h2

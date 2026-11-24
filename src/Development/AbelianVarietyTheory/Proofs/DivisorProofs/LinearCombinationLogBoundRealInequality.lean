@@ -223,7 +223,7 @@ theorem toricBetaDenominatorBound_div_twelve_eq (d s : ℕ) (κ : I → ℕ) (�
     betaBound_vp d s κ 𝔣 z l / 12 = ((cE_vp l z + Formalism.PairingDivisionLocalBalance.wtM (2 * s) κ * a0 𝔣 l : ℕ) : ℝ) + n_vp d s κ 𝔣 l := by
   unfold betaBound_vp; push_cast; ring
 
-theorem linear_combination_log_bound_real_inequality (K k2 c t lg Λ : ℝ) (hK : 0 ≤ K) (hk : 0 ≤ k2) (ht0 : 0 ≤ t) (ht : t ≤ 3 / 2) (hlg : 0 ≤ lg)
+theorem linear_combination_log_bound_real_inequality (K k2 c t lg Λ : ℝ) (hK : 0 ≤ K) (hk : 0 ≤ k2) (ht : t ≤ 3 / 2) (hlg : 0 ≤ lg)
     (hc : c * lg ≤ Λ) (hlΛ : lg ≤ Λ) : (K * c + k2 * (2 * c + 1 + t)) * lg ≤ (K + 5 * k2) * Λ := by
   have hΛ : 0 ≤ Λ := hlg.trans hlΛ
   have h3 : t * lg ≤ 3 / 2 * Λ := mul_le_mul ht hlΛ hlg (by norm_num)
@@ -244,7 +244,7 @@ theorem n_vp_log_le (d s : ℕ) (κ : I → ℕ) (𝔣 : Ideal (GlobalTheory.CMV
   · rw [ite_eq_left h, zero_mul]; positivity
   · rw [ite_eq_right h]
     unfold Formalism.PairingDivisionLocalBalance.nl
-    exact linear_combination_log_bound_real_inequality _ _ _ _ _ _ (by positivity) (by positivity) (by split_ifs <;> norm_num) (by split_ifs <;> norm_num) hl hcΛ hlΛ
+    exact linear_combination_log_bound_real_inequality _ _ _ _ _ _ (by positivity) (by positivity) (by split_ifs <;> norm_num) hl hcΛ hlΛ
 
 theorem ceil_log_le (d s : ℕ) (κ : I → ℕ) (𝔣 : Ideal (GlobalTheory.CMVal.OF E)) (z : ClassGroup (GlobalTheory.CMVal.OF E) → ℚ) (l : ℕ)
     {Λ : ℝ} (hl : 0 ≤ Real.log l) (hcΛ : c_vp 𝔣 l * Real.log l ≤ Λ) (hlΛ : Real.log l ≤ Λ) (ha : a0 𝔣 l ≤ 2) :
@@ -462,7 +462,7 @@ open Formalism.BasicNotions Formalism.IndefR.Links GlobalTheory.ChiGrid GlobalTh
 
 
 
-theorem denSum (hZ : GlobalTheory.IndefiniteRowSideFullHecke.ZetaValueIdeals.ZetaDenominators) (_hF : FieldDat) : DenSum := by
+theorem denSum (hZ : GlobalTheory.IndefiniteRowSideFullHecke.ZetaValueIdeals.ZetaDenominators) : DenSum := by
   refine ⟨0, fun ε CF _ => ⟨8000, 1, fun C hC D large₂ _ _ hR T Lc μ₀ _ G => ?_⟩⟩
   intro i j s hs1 hs2 n hn S hS
   obtain ⟨z, hzv, hz⟩ := hn

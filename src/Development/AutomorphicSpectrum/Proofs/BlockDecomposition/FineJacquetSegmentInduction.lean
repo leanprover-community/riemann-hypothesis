@@ -123,7 +123,7 @@ theorem exists_cusp_word (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (
   exact ⟨c, x, hd, hc, GlobalTheory.CompanionTheory.FrobJm.one_le_jm hA x hd _ y.2.rep.smooth φ
     ⟨v, fun h => hv (hφ (h.trans (map_zero φ).symm))⟩⟩
 
-theorem equiv_piTensor_dec : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (Γ : Segment k) (hF : FineJac Γ) (u : IrrGL (k := k)) (hu : IsLSeg Γ u.rep) (hs : ∑ i, (dec Γ i).1 = u.1) (X : Type) [AddCommGroup X] [Module ℂ X] (ρ : Representation ℂ (Levi k fun i => Fin ((dec Γ i).1)) X), ρ.IsIrreducible → IsSubquotient ρ (jac (stdBlocks (fun i => (dec Γ i).1) hs) u.rep) → Nonempty (ρ.Equiv (piTensor fun i => (dec Γ i).rep)) := by
+theorem equiv_piTensor_dec : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (_ : GlobalTheory.Published.IrreducibleAdmissibleGL) (Γ : Segment k) (_ : FineJac Γ) (u : IrrGL (k := k)) (_ : IsLSeg Γ u.rep) (hs : ∑ i, (dec Γ i).1 = u.1) (X : Type) [AddCommGroup X] [Module ℂ X] (ρ : Representation ℂ (Levi k fun i => Fin ((dec Γ i).1)) X), ρ.IsIrreducible → IsSubquotient ρ (jac (stdBlocks (fun i => (dec Γ i).1) hs) u.rep) → Nonempty (ρ.Equiv (piTensor fun i => (dec Γ i).rep)) := by
   intro k _ _ _ _ hA Γ hF u hu hs X _ _ ρ hi hsub
   have hsm : IsSmooth ρ := hsub.isSmooth (isSmooth_jac _ u.2.rep.smooth)
   obtain ⟨σ, ⟨E⟩⟩ := _root_.GlobalTheory.CompanionTheory.LeviTensor.nonempty_equiv_piTensor hA (fun i => (dec Γ i).1) (⟨X, ρ, hsm, hi⟩ : IrrRep _)
@@ -413,7 +413,7 @@ theorem fineJac_step (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (Δ :
       rfl
     have hinj : ∀ a b, a < Δ.len → b < Δ.len →
         Δ.first.nu ((a : ℕ) : ℂ) = Δ.first.nu ((b : ℕ) : ℂ) → a = b := fun a b ha hb hab =>
-      congrArg Fin.val (_root_.GlobalTheory.CompanionTheory.SegTerm.term_injective hA Δ (a₁ := ⟨a, ha⟩) (a₂ := ⟨b, hb⟩) hab)
+      congrArg Fin.val (_root_.GlobalTheory.CompanionTheory.SegTerm.term_injective Δ (a₁ := ⟨a, ha⟩) (a₂ := ⟨b, hb⟩) hab)
     have z₁ : 0 < (segLow Δ 1 one_pos).len := one_pos
     have z₂ : 0 < (segHigh Δ (Δ.len - 1) hl2).len := by
       show 0 < Δ.len - (Δ.len - 1)
@@ -447,7 +447,7 @@ theorem fineJac_step (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (Δ :
       show _ = Δ.first.nu (((Fin.rev (Fin.cast rfl a) : Fin Δ.len) : ℕ) : ℂ)
       rw [e₂]
   refine ⟨fun hd => ?_, shape⟩
-  have hinj := _root_.GlobalTheory.CompanionTheory.SegTerm.term_injective hA Δ
+  have hinj := _root_.GlobalTheory.CompanionTheory.SegTerm.term_injective Δ
   have hset : {e : Fin Δ.len ≃ Fin Δ.len | ∀ a, dec Δ a = Δ.term (e a)} = {Fin.revPerm} := by
     ext e
     simp only [Set.mem_setOf_eq, Set.mem_singleton_iff]

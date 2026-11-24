@@ -66,7 +66,7 @@ open NumberField Pointwise in
 private theorem span_eq_span_inter_subalgebra {R : Type*} [CommRing R] (A : Subalgebra ℤ R)
     (S : Set R) (hS : S ⊆ A) :
     Ideal.span S = Ideal.span {a | a ∈ Ideal.span S ∧ a ∈ A} :=
-  le_antisymm (Ideal.span_mono fun a ha => ⟨Ideal.subset_span ha, hS ha⟩)
+  le_antisymm (Ideal.span_mono fun _ ha => ⟨Ideal.subset_span ha, hS ha⟩)
     (Ideal.span_le.2 fun _ ha => ha.1)
 
 open NumberField Pointwise in

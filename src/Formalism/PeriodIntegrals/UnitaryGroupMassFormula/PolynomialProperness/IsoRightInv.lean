@@ -56,7 +56,7 @@ namespace CoreW
 
 variable {n : ℕ} {ι : Type} [Fintype ι] [DecidableEq ι]
 
-theorem herm_expand (H : Matrix (Fin n) (Fin n) ℂ) (hH : Hᴴ = H) (c : ℝ) (a b : Fin n → ℂ) :
+theorem herm_expand (H : Matrix (Fin n) (Fin n) ℂ) (c : ℝ) (a b : Fin n → ℂ) :
     herm H ((c : ℂ) • a - b) ((c : ℂ) • a - b) =
       (c : ℂ) * ((c : ℂ) * herm H a a) - (c : ℂ) * herm H a b - ((c : ℂ) * herm H b a - herm H b b) := by
   simp only [herm, Matrix.mulVec_sub, Matrix.mulVec_smul, star_sub, star_smul, dotProduct_sub,
@@ -68,7 +68,7 @@ theorem key_ineq (H : Matrix (Fin n) (Fin n) ℂ) (hH : Hᴴ = H) (c : ℝ) (hc 
     (v y : Fin n → ℂ) (hvy : herm H v y = ((nsq v : ℝ) : ℂ)) (hyv : herm H y v = ((nsq v : ℝ) : ℂ))
     (hyy : (herm H y y).re ≤ c * nsq v) (hpos : 0 ≤ (herm H ((c : ℂ) • v - y) ((c : ℂ) • v - y)).re) :
     nsq v ≤ c * (herm H v v).re := by
-  rw [herm_expand H hH c v y, hvy, hyv] at hpos
+  rw [herm_expand H c v y, hvy, hyv] at hpos
   simp only [Complex.sub_re, Complex.re_ofReal_mul, Complex.ofReal_re] at hpos
   nlinarith
 

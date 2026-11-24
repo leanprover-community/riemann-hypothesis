@@ -206,8 +206,8 @@ theorem extended_statement_of_parts {D : Formalism.BasicNotions.D7} {C0 CYb Cde 
     (hstd : ∀ X : Loc, D1num X → HIext C0 CYb Cde Ck CD Cb X → CBound Cc X → Std C0 Cde CE1 CE2 H X)
     (hRk : RkAt C0 CYb Cde Ck CD Cb CE1 CE2 Cm Cc) (hL1 : PartnersToFactorsAt C0 CYb Cde Ck CD Cb CE1 CE2 Cm Cc)
     (hLift : LiftAt C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ct Cc)
-    (hA2 : ExtendedModelRank D C0 CYb Cde Ck CD Cb CE1 CE2 Ckap Cc) :
-    HerrExtensionClass D C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ckap Ct Cc := by
+    (hA2 : ExtendedModelRank C0 CYb Cde Ck CD Cb CE1 CE2 Ckap Cc) :
+    HerrExtensionClass C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ckap Ct Cc := by
   intro X _ W Qq O Kf _ _ _ _ _ _ _ _ _ _ ι σ jO w hS hH hc Dj kT hDj hcD e he
   have hD1 : D1num X := ⟨hS.1.prime, hS.1.five_le, hS.1.two_le, hS.1.even⟩
   have hs := hstd X hD1 hH hc

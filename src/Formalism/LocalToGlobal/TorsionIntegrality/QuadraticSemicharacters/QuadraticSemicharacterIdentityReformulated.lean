@@ -544,7 +544,7 @@ open PI.ULS
 
 variable {a : ℕ} {b c : ℤ} {d : ℕ} {ha : 0 < a} {hd : 0 < d} {lam : ℂ} {hlam : lam ≠ 0}
 
-lemma isKv_of_sat {m : Type*} [Fintype m] [DecidableEq m] {l : ℕ} (hl : l.Prime) {Λ : AddSubgroup (m → ℂ)}
+lemma isKv_of_sat {m : Type*} [Fintype m] [DecidableEq m] {l : ℕ} {Λ : AddSubgroup (m → ℂ)}
     (h1 : relIdx (stdLat (cmL a b d ha hd lam hlam) m) Λ ≠ 0) {v : m → ℂ} (hv : SatMem l Λ v) :
     IsKv b d lam v := by
   obtain ⟨n, hln, hn⟩ := hv
@@ -604,7 +604,7 @@ lemma exists_isometry_memLocalizedAt_single (hkey : KeyRep) (hok : CmOK a b c d)
     have hsd' := selfDual_img _ g hgI hsd
     have hθ' := himg g Λa hθ
     obtain ⟨v, hvS, hvT, hvv⟩ := hkey a b c d ha hd lam hlam hok m _ hsd' hθ' hc.1 hc.2 l hl x y hQ T i₀ hi₀ hgT
-    have hvK : IsKv b d lam v := isKv_of_sat hl hc.1 hvS
+    have hvK : IsKv b d lam v := isKv_of_sat hc.1 hvS
     have hK : ∀ s : ℂ, s = 1 ∨ s = -1 →
         IsK b d (s * (lam * ((x * a : ℂ) + y * cmTheta b d)) / lam) := by
       intro s hs
@@ -732,7 +732,7 @@ lemma pigeon {p : ℕ} (hp : p.Prime) (hodd : p % 2 = 1) (A B E : ℤ) (hA : ¬ 
 
 variable {a : ℕ} {b c : ℤ} {d : ℕ}
 
-lemma descent_step (hok : CmOK a b c d) {P Q r p q : ℤ} (hr : (d : ℤ) ∣ r) (hp : ¬ (d : ℤ) ∣ p)
+lemma descent_step (hok : CmOK a b c d) {P Q r p q : ℤ} (hr : (d : ℤ) ∣ r)
     (hq : ¬ (d : ℤ) ∣ q) (hM : r ^ 2 * p = (P ^ 2 + P * Q * b + Q ^ 2 * (a * c)) * q) :
     (d : ℤ) ∣ P ∧ (d : ℤ) ∣ Q := by
   obtain ⟨h4, -, h8, hdp⟩ := hok
@@ -819,7 +819,7 @@ lemma norm_square (hok : CmOK a b c d) {γ : ℂ} (hγ : IsK b d γ) {p q : ℤ}
     | _ n ih =>
       intro P Q r hn hr0 hM
       by_cases hdr : (d : ℤ) ∣ r
-      · obtain ⟨hP, hQ⟩ := descent_step ⟨h4, ha, h8, hdp⟩ hdr hp hq hM
+      · obtain ⟨hP, hQ⟩ := descent_step ⟨h4, ha, h8, hdp⟩ hdr hq hM
         obtain ⟨P', rfl⟩ := hP
         obtain ⟨Q', rfl⟩ := hQ
         obtain ⟨r', rfl⟩ := hdr

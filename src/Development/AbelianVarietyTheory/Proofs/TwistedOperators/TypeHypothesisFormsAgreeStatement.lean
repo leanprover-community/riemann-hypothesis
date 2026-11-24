@@ -83,12 +83,12 @@ theorem unipBlock_subset_radicalTwo {k : Type} [Field k] {a b r : ℕ} (h : a + 
     · have hj := j.isLt
       have hi := i.isLt
       show (g : Matrix (Fin r) (Fin r) k) (stdSum h (.inl i)) (stdSum h (.inl j)) = (1 : Matrix (Fin a) (Fin a) k) i j
-      rw [hg _ _ (by simp only [stdSum_inl, stdSum_inr]; omega)]
+      rw [hg _ _ (by simp only [stdSum_inl]; omega)]
       simp only [Matrix.one_apply, (stdSum h).injective.eq_iff, Sum.inl.injEq]
     · have hj := j.isLt
       have hi := i.isLt
       show (g : Matrix (Fin r) (Fin r) k) (stdSum h (.inr i)) (stdSum h (.inr j)) = (1 : Matrix (Fin b) (Fin b) k) i j
-      rw [hg _ _ (by simp only [stdSum_inl, stdSum_inr]; omega)]
+      rw [hg _ _ (by simp only [stdSum_inr]; omega)]
       simp only [Matrix.one_apply, (stdSum h).injective.eq_iff, Sum.inr.injEq]
 
 theorem noRadicalFixed_of_noFixed {D : D7} {V : HSp D} (T : TypeDataG V) (hT : NoFixed T) :

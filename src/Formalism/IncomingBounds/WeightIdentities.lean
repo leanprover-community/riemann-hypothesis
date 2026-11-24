@@ -753,7 +753,7 @@ private lemma altNum_nonneg (hl : 1 ≤ l) (hev : Even d) {D : ZMod d → ℝ}
 
 end Helpers
 
-theorem lemmaFc_of (hF : FlowAttained) (hA : LemmaFa) : LemmaFc := by
+theorem lemmaFc_of (hA : LemmaFa) : LemmaFc := by
   intro l d _ hl hd hev D E sig hD hE hopt
   have hDE : 0 ≤ D + E := add_nonneg hD hE
   obtain ⟨hsig, hdef⟩ := hopt
@@ -792,8 +792,8 @@ section -- clump:auto
 namespace Formalism.IncomingBounds
 
 alias lemmaFa := _root_.Formalism.IncomingBounds.strongDuality
-theorem lemmaFc : LemmaFc := lemmaFc_of maxFlowValueAttained strongDuality
-theorem incomingBound : IncomingBound := incomingBound_of maxFlowValueAttained strongDuality
+theorem lemmaFc : LemmaFc := lemmaFc_of strongDuality
+theorem incomingBound : IncomingBound := incomingBound_of maxFlowValueAttained
 theorem cayleyId : CayleyId := cayleyIdentity
 
 end Formalism.IncomingBounds

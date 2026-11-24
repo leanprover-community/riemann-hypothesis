@@ -85,7 +85,7 @@ theorem exists_model_of_eq {R : Type} [CommRing R] {z z' : Sp R ⟶ X} (h : z = 
   exact ⟨M, fun _ => rfl⟩
 
 theorem stalk_model [IsCommMonObj G] [Smooth G.hom] {Li : Type} [AddCommGroup Li] [Module Ω Li] (M : LieModel G ξ Li)
-    (hξ : IsCptGen ξ) {L : Type} [Field L] (z : Sp L ⟶ X) (h : genPt ξ ⤳ centre z) {V : Type} [AddCommGroup V]
+    {L : Type} [Field L] (z : Sp L ⟶ X) (h : genPt ξ ⤳ centre z) {V : Type} [AddCommGroup V]
     [Module L V] (Mz : LieModel G z V) :
     ∃ (T : Type) (_ : AddCommGroup T) (_ : Module (X.presheaf.stalk (centre z)) T)
       (M0 : LieModel (R := X.presheaf.stalk (centre z)) G (X.fromSpecStalk (centre z)) T) (i : T →+ Li) (β : T →+ V),
@@ -155,7 +155,7 @@ theorem exists_functional [IsCommMonObj G] [Smooth G.hom] {Li : Type} [AddCommGr
     [Module L V] (Mz : LieModel G z V) (f : Module.Dual Ω Li)
     (hf : ∀ e ∈ M.lat ⟨centre z, h⟩, f e ∈ regAt ξ ⟨centre z, h⟩) :
     ∃ g : V →ₗ[L] L, ∀ (e : Li) (x : V) (u : L), M.ValAt z e (Mz.pt x) → ValAt ξ z (f e) u → g x = u := by
-  obtain ⟨T, _, _, M0, i, β, hext, hβ, hsi, -, -, hlift, -⟩ := stalk_model M hξ z h Mz
+  obtain ⟨T, _, _, M0, i, β, hext, hβ, hsi, -, -, hlift, -⟩ := stalk_model M z h Mz
   have hgi : Function.Injective (genMap ξ ⟨centre z, h⟩) := hξ.inj ⟨centre z, h⟩
   have hs : ∀ t, ∃ s, genMap ξ ⟨centre z, h⟩ s = f (i t) := fun t => hf _ ((M.mem_lat_iff _ _).2 ⟨_, hext t⟩)
   choose σ hσ using hs

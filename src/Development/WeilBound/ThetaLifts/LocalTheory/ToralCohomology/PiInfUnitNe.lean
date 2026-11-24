@@ -234,7 +234,7 @@ theorem exists_mod (hD : Dic) {B : Base F E} {a a' : ℕ} {G : Geo σ a a'} {X :
     convert this using 1
     funext c
     rcases c with c | c <;> simp only [lamW, laPos] <;> split_ifs <;> linarith
-  obtain ⟨f₀, hf₀⟩ := tens_hw _ _ side aP (fun w => lie_tw _ _ _ _ _) (fun w => thMkC _ _ _ _ _)
+  obtain ⟨f₀, hf₀⟩ := tens_hw _ _ side aP (fun w => thMkC _ _ _ _ _)
     (fun w => Submodule.mkQ_surjective _) (fun w Y y => (thAct_mk _ _ _ _ _ _ Y y).symm) q hq
     (fun w y x hx => by
       have hx' := (Submodule.Quotient.mk_eq_zero _).1 hx

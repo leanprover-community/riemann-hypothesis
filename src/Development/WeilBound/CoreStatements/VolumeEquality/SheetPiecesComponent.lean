@@ -177,7 +177,7 @@ theorem sheetProj_fibre_finite {P : Ideal (MRing J)} (hP : IsArithVar P (n + 1))
 
 theorem sheet_not_flat {P : Ideal (MRing J)} (hP : IsArithVar P (n + 1))
     {Ψ : (((k : K) → J k) → ℂ) →ₗ[ℂ] (Fin (n + 1) → ℂ)} (hΨ : IsGoodProj P Ψ)
-    {V : Set (Fin n → ℂ)} {γ : (Fin n → ℂ) → (Σ k, J k) → ℂ} (hV : IsOpen V)
+    {V : Set (Fin n → ℂ)} {γ : (Fin n → ℂ) → (Σ k, J k) → ℂ}
     (hγ : AnalyticOnNhd ℂ γ V) (hmem : ∀ t ∈ V, γ t ∈ mcPts P)
     (hinj : ∀ t ∈ V, ∀ t' ∈ V, γ t ∈ torusSat {γ t'} → t = t') {O : Set (Fin n → ℂ)} (hO : IsOpen O)
     (hOV : O ⊆ V) (hne : O.Nonempty) (h0 : ∀ t ∈ O, Ψ (segre (γ t)) 0 ≠ 0)
@@ -275,7 +275,7 @@ theorem ram_sheet_null : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fin
         (analyticAt_sheetProj Ψ (hγ u (hball u hu).1) (hball u hu).2), ?_, ?_⟩
   · by_contra hall
     push Not at hall
-    exact sheet_not_flat hP hΨ hV hγ hmem hinj Metric.isOpen_ball (fun u hu => (hball u hu).1)
+    exact sheet_not_flat hP hΨ hγ hmem hinj Metric.isOpen_ball (fun u hu => (hball u hu).1)
       ⟨u0, Metric.mem_ball_self hr⟩ (fun u hu => (hball u hu).2) hall
   · rintro w ⟨⟨-, -, hd⟩, -⟩
     exact hd
@@ -340,7 +340,7 @@ theorem vanishing_sheet_measure_zero : ∀ (K : Type) [Fintype K] (J : K → Typ
       refine det_eq_zero_of_coord m fun v => ?_
       have := congrArg (fun T : (Fin n → ℂ) →L[ℂ] ℂ => T v) hrow
       simpa using this
-    exact sheet_not_flat hP hΨ' hV hγ hmem hinj hO (fun u hu => hball hu.1) ⟨u0, hu0O⟩ h0O hdetO
+    exact sheet_not_flat hP hΨ' hγ hmem hinj hO (fun u hu => hball hu.1) ⟨u0, hu0O⟩ h0O hdetO
   · rintro w ⟨⟨-, hw0⟩, -⟩
     exact hw0
 

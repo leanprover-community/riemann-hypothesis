@@ -60,7 +60,7 @@ theorem posV_ne_zero (z : PosV G v β) : z.1 ≠ 0 := by
   rw [h] at this
   simp at this
 
-def lineOf (z : Fin G.n → ℂ) (hz : z ≠ 0) : PLv G v β := Projectivization.mk ℂ z hz
+def lineOf (z : Fin G.n → ℂ) (hz : z ≠ 0) : PLv G := Projectivization.mk ℂ z hz
 
 def pairOfDat (d : Dat G v β) : Ys G v β x t hx Kf K' :=
   (LeftCosets.mk _ _ d.1, lineOf G v β d.2.1 (posV_ne_zero G v β d.2))

@@ -1302,7 +1302,7 @@ def ptOf {S : Scheme.{0}} (t : Sp ℂ ⟶ S) {A : Over S}
     (y : Over.mk (𝟙 (Sp ℂ)) ⟶ (Over.pullback t).obj A) : Over.mk t ⟶ A :=
   Over.homMk (y.left ≫ pullback.fst A.hom t) (by
     have hy : y.left ≫ pullback.snd A.hom t = 𝟙 _ := by simpa using Over.w y
-    simp only [Over.mk_hom, Category.assoc, pullback.condition, reassoc_of% hy, Category.id_comp])
+    simp only [Over.mk_hom, Category.assoc, pullback.condition, reassoc_of% hy])
 
 theorem ptOf_comp {S : Scheme.{0}} (t : Sp ℂ ⟶ S) {A B : Over S}
     (y : Over.mk (𝟙 (Sp ℂ)) ⟶ (Over.pullback t).obj A) (f : A ⟶ B) :

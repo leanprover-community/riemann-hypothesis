@@ -369,7 +369,7 @@ variable {O R K : Type} [CommRing O] [IsLocalRing O] [CommRing R] [Algebra O R] 
   [NormedField K] [Algebra O K]
 
 private theorem close_zero (B : Subalgebra O R) [hB : IsCO O B]
-    (hm : maximalIdeal B = (maximalIdeal R).comap (B.val : B →+* R)) (E : B →ₗ[O] K)
+    (E : B →ₗ[O] K)
     (hc : ∀ ε : ℝ, 0 < ε → ∃ k : ℕ, ∀ a ∈ maximalIdeal B ^ k, ‖E a‖ ≤ ε) (T : Set B) (hT : ∀ t ∈ T, E t = 0)
     (hd : ∀ x : B, ∀ N : ℕ, ∃ t ∈ T, ((x - t : B) : R) ∈ maximalIdeal R ^ N) : E = 0 := by
   let I : ℕ → Ideal B := fun N => (maximalIdeal R ^ N).comap (B.val : B →+* R)
@@ -416,7 +416,7 @@ theorem UpperTheory.V.J.derExt :
     · exact Algebra.subset_adjoin (Or.inr hx)
 
   have hB : D ∘ₗ S.inc.toLinearMap = 0 := by
-    refine close_zero S.B (hm.trans rfl) _ (fun ε hε => ?_)
+    refine close_zero S.B _ (fun ε hε => ?_)
       {t | (t : S.R) ∈ Algebra.adjoin c.O (S.ρ.mon 0 ∪ {x | ∃ v i g, x = (S.ρ.ψ v i g : S.R)})} (fun t ht => ?_)
       (fun x N => ?_)
     · have hDB : D ∘ₗ S.inc.toLinearMap ∈ PtDer (ξ.comp S.inc) (Qbar l) := fun f g => by

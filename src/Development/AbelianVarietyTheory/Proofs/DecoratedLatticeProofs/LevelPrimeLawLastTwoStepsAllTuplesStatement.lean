@@ -141,7 +141,7 @@ alias isThetaFunO_smul' := _root_.GlobalTheory.OrientedHeis.theta_smul
 variable {S T : HSp D} {LS : Lat S} {LT : Lat T} {P : Pl D → Prop}
 
 theorem vac_zero : Vac ψ S T LS LT P 0 :=
-  ⟨isThetaFunO_zero' S T, fun u _ => heisO_zero' _, fun e _ u _ _ => heisO_zero' _⟩
+  ⟨isThetaFunO_zero' S T, fun _ _ => heisO_zero' _, fun _ _ _ _ _ => heisO_zero' _⟩
 
 theorem vac_add {f g : WO S T → ℂ} (hf : Vac ψ S T LS LT P f) (hg : Vac ψ S T LS LT P g) :
     Vac ψ S T LS LT P (f + g) :=

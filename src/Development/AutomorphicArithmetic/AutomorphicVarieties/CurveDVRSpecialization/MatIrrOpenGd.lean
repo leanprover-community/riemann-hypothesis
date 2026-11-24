@@ -277,7 +277,7 @@ private theorem diagonalise (T : Matrix (Fin 3) (Fin 3) K) (hT : T.BlockTriangul
 
 private theorem core' (H U : Subgroup G) (hUH : U ≤ H) [U.Normal] (a : G → Matrix (Fin 3) (Fin 3) K)
     (hm : ∀ g ∈ H, ∀ h ∈ H, a (g * h) = a g * a h) (h1 : a 1 = 1) {M M' : Matrix (Fin 3) (Fin 3) K}
-    (h : M * M' = 1) (h' : M' * M = 1) {u : G} (hu : u ∈ U) (hut : (M' * a u * M).BlockTriangular id)
+    (h : M * M' = 1) {u : G} (hu : u ∈ U) (hut : (M' * a u * M).BlockTriangular id)
     (hd : Function.Injective (M' * a u * M).diag) (hH : MatIrr H a) (hU : ¬MatIrr U a)
     {x : G} (hx : x ∈ H) (hxu : (M' * a x * M).BlockTriangular id) : ∃ g ∈ H, ∀ n : ℕ, (a (g * x ^ n)).trace = 0 := by
   obtain ⟨n, n', e, e', t, t', hn⟩ := diagonalise _ hut hd
@@ -355,7 +355,7 @@ private theorem frame {O A K G : Type} [CommRing O] [IsLocalRing O] [CommRing A]
   obtain ⟨g, hg, hz⟩ := core' η.ker U hU (mats (UpperTheory.V.UnitaryThreeInertia.push j r')) (fun a ha b _ => by
       have : (UpperTheory.V.UnitaryThreeInertia.push j r' a).right = 1 := (hpt.mult a).trans ha
       simp only [mats, GG.mat, map_mul, SemidirectProduct.mul_left, this, sgnAct_one, Units.val_mul])
-    (by simp only [mats, GG.mat, map_one, SemidirectProduct.one_left, Units.val_one]) P.inv_mul P.mul_inv huU (tri u hu1) hinj
+    (by simp only [mats, GG.mat, map_one, SemidirectProduct.one_left, Units.val_one]) P.inv_mul huU (tri u hu1) hinj
     hI hc (x := x.1) hx (tri x hx)
   let φ : O →+* ResidueField A := (residue A).comp (algebraMap O A)
   refine (hx'.map φ).ne_zero ?_

@@ -65,20 +65,20 @@ def adm1 (_D : Formalism.BasicNotions.D7) : Prop :=
           (fun mu => Interlace lam mu ∧ ∑ j, mu j = ∑ j, lam j + b),
         alt n (mu + rhoN n)
 
-def adm2 (_D : Formalism.BasicNotions.D7) : Prop :=
+def adm2 : Prop :=
   ∀ (K V : Type) [Field K] [CharZero K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] (n : ℕ)
     (E : GLOps n K V), IsGLRep E → ∀ W : Submodule K V, (∀ a b, ∀ x ∈ W, E a b x ∈ W) →
       ∃ W' : Submodule K V, IsCompl W W' ∧ ∀ a b, ∀ x ∈ W', E a b x ∈ W'
 
-def adm3 (_D : Formalism.BasicNotions.D7) : Prop :=
+def adm3 : Prop :=
   ∀ p : ℕ, p.Prime → ∀ m k b : ℕ, k ≤ m → Nat.log p m < b →
     padicValNat p (m.choose k) = #{i ∈ Finset.Ico 1 b | p ^ i ≤ k % p ^ i + (m - k) % p ^ i}
 
-def ArchimedeanSignatureMatching (_D : Formalism.BasicNotions.D7) : Prop :=
+def ArchimedeanSignatureMatching : Prop :=
   ∀ (A : Type) [CommRing A] [IsDomain A] [UniqueFactorizationMonoid A] (σ : Type) (w : A), Irreducible w →
     ∀ F G : MvPolynomial σ A, C w ∣ F * G → C w ∣ F ∨ C w ∣ G
 
-def adm5 (_D : Formalism.BasicNotions.D7) : Prop :=
+def adm5 : Prop :=
   ∀ (K V : Type) [Field K] [CharZero K] [AddCommGroup V] [Module K V] [FiniteDimensional K V] (n : ℕ)
     (E : GLOps n K V), IsGLRep E → ∀ mu : Fin n → ℤ,
       (∀ a b : Fin n, a < b → 1 ≤ mu a - mu b + ((b : ℤ) - (a : ℤ))) →
@@ -87,9 +87,9 @@ def adm5 (_D : Formalism.BasicNotions.D7) : Prop :=
         (∀ x ∈ weightSp E mu, x ∈ nMinus E → pp E mu ord T x = 0) ∧
         (∀ x ∈ weightSp E mu, (∀ a b : Fin n, a < b → E a b x = 0) → pp E mu ord T x = x)
 
-def admitted (D : Formalism.BasicNotions.D7) : Prop := adm1 D ∧ adm2 D ∧ adm3 D ∧ ArchimedeanSignatureMatching D ∧ adm5 D
+def admitted (D : Formalism.BasicNotions.D7) : Prop := adm1 D ∧ adm2 ∧ adm3 ∧ ArchimedeanSignatureMatching ∧ adm5
 
-def InvariantProjectionField (_D : Formalism.BasicNotions.D7) : Prop :=
+def InvariantProjectionField : Prop :=
   ∀ (p n' : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (_S : UniformizedDVR p O),
     AdmissibleDVR p n' O →
     ∀ (n : ℕ) (V : Type) [AddCommGroup V] [Module (KK O) V] [Module O V] [IsScalarTower O (KK O) V]
@@ -100,7 +100,7 @@ def InvariantProjectionField (_D : Formalism.BasicNotions.D7) : Prop :=
           ∀ T : ℕ, Module.finrank (KK O) V ≤ T → Inv = pp E 0 ord T * π) ∧
         ∀ x ∈ M, ((p : O) ^ (N0 n * deF p n (ellOf E (MQ M)))) • Inv x ∈ M
 
-def NablaDeltaComparisonField (_D : Formalism.BasicNotions.D7) : Prop :=
+def NablaDeltaComparisonField : Prop :=
   ∀ (p n' : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (_S : UniformizedDVR p O),
     AdmissibleDVR p n' O →
     ∀ (n : ℕ) [NeZero n] (lam : Fin n → ℤ) (V : Type) [AddCommGroup V] [Module (KK O) V] [Module O V]
@@ -110,7 +110,7 @@ def NablaDeltaComparisonField (_D : Formalism.BasicNotions.D7) : Prop :=
         (∀ x, (x ∈ M ∧ x ∈ weightSp E lam) ↔ ∃ c : O, x = c • v) →
         Delta (O := O) E v ≤ M ∧ (M : Set V) ⊆ Nabla (O := O) E lam v
 
-def IsotypicProjectorTheoremField (_D : Formalism.BasicNotions.D7) : Prop :=
+def IsotypicProjectorTheoremField : Prop :=
   ∀ (p n' : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (_S : UniformizedDVR p O),
     AdmissibleDVR p n' O →
     ∀ (n : ℕ) [NeZero n] (V : Type) [AddCommGroup V] [Module (KK O) V] [Module O V]
@@ -121,7 +121,7 @@ def IsotypicProjectorTheoremField (_D : Formalism.BasicNotions.D7) : Prop :=
         ∀ x ∈ M, ((p : O) ^ (Sw.sup fun lam => N0 n * deF p n (ellOf E (MQ M) + ellWt lam))) •
           (∑ lam ∈ Sw, e lam x) ∈ M
 
-def TranslateCorollaryField (_D : Formalism.BasicNotions.D7) : Prop :=
+def TranslateCorollaryField : Prop :=
   ∀ (p n' : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (_S : UniformizedDVR p O),
     AdmissibleDVR p n' O →
     ∀ (n : ℕ) [NeZero n] (V : Type) [AddCommGroup V] [Module (KK O) V] [Module O V]
@@ -134,7 +134,7 @@ def TranslateCorollaryField (_D : Formalism.BasicNotions.D7) : Prop :=
           ∃ o : O, f (π (u Y)) = (p : KK O) ^ c * algebraMap O (KK O) o) →
         ∃ m ∈ M, Y = ((p : KK O) ^ (c - ((N0 n * deF p n (ellWt lam) : ℕ) : ℤ))) • m
 
-def FilteredProjectorCorollaryField (_D : Formalism.BasicNotions.D7) : Prop :=
+def FilteredProjectorCorollaryField : Prop :=
   ∀ (p n' : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (_S : UniformizedDVR p O),
     AdmissibleDVR p n' O →
     ∀ (n : ℕ) (ι : Type) [Fintype ι] (LL : Letters ι) (N : ℕ) (Ss : Fin N → Set ι), Monotone Ss →
@@ -158,9 +158,9 @@ def FilteredProjectorCorollaryField (_D : Formalism.BasicNotions.D7) : Prop :=
               InBB (O := O) p (((p : KK O) ^ (∑ i, N0 n * Nat.log p (2 * degIn d (Ss i) + n - 1))) •
                 (∑ t ∈ T, (List.ofFn fun i => ee i (t i)).prod) F)))
 
-def ProjectionTheorems (D : Formalism.BasicNotions.D7) : Prop := InvariantProjectionField D ∧ NablaDeltaComparisonField D ∧ IsotypicProjectorTheoremField D ∧ TranslateCorollaryField D ∧ FilteredProjectorCorollaryField D
+def ProjectionTheorems (D : Formalism.BasicNotions.D7) : Prop := InvariantProjectionField ∧ NablaDeltaComparisonField ∧ IsotypicProjectorTheoremField ∧ TranslateCorollaryField ∧ FilteredProjectorCorollaryField
 
-def ValuationsAdditive (_D : Formalism.BasicNotions.D7) : Prop :=
+def ValuationsAdditive : Prop :=
   ∀ (R : Type) [Field R] (ι : Type) [Fintype ι] (LL : Letters ι) (n : ℕ) [NeZero n] (S : Set ι),
     (∀ F G : MvPolynomial (ι × Fin n) R, valS LL S (F * G) = valS LL S F + valS LL S G) ∧
     (∀ F G : MvPolynomial (ι × Fin n) R, min (valS LL S F) (valS LL S G) ≤ valS LL S (F + G)) ∧
@@ -180,7 +180,7 @@ def ShaLengthVersionTwo (_D : Formalism.BasicNotions.D7) : Prop :=
     (∀ (G : MvPolynomial (ι × Fin n) R) (M : ℤ),
       lam1S LL S G ≤ (M : WithBot ℤ) ↔ ∀ mu, e mu G ≠ 0 → mu 0 ≤ M)
 
-def ValuationLemmaField (D : Formalism.BasicNotions.D7) : Prop := ValuationsAdditive D ∧ ShaLengthVersionTwo D
+def ValuationLemmaField (D : Formalism.BasicNotions.D7) : Prop := ValuationsAdditive ∧ ShaLengthVersionTwo D
 
 def detA {R : Type} [CommRing R] {ι : Type} {r : ℕ} (A : Fin r → ι) : MvPolynomial (ι × Fin r) R :=
   (Matrix.of fun i j : Fin r => (X (A i, j) : MvPolynomial (ι × Fin r) R)).det
@@ -190,7 +190,7 @@ open Classical in
 def degOther {ι : Type} [Fintype ι] {r : ℕ} (LL : Letters ι) (S : Set ι) (A : Fin r → ι) (d : ι → ℕ) : ℕ :=
   ∑ l, if l ∈ S ∧ LL.vec l = true ∧ l ∉ Set.range A then d l else 0
 
-def ConclusionE (_D : Formalism.BasicNotions.D7) : Prop :=
+def ConclusionE : Prop :=
   ∀ (R : Type) [Field R] (ι : Type) [Fintype ι] (LL : Letters ι) (r : ℕ) [NeZero r] (S : Set ι)
     (A : Fin r → ι), Function.Injective A → (∀ l, A l ∈ S ∧ LL.vec (A l) = true) →
     (∀ (d : ι → ℕ) (G : MvPolynomial (ι × Fin r) R), G ∈ Pol R r d →
@@ -211,7 +211,7 @@ def unitFn (p : ℕ) (u : UnitFn) (m : ℕ) : ℚ :=
 
 def PadicGe (p : ℕ) (x : ℚ) (r : ℝ) : Prop := x = 0 ∨ r ≤ (padicValRat p x : ℝ)
 
-def UnitFunctionExpansion (_D : Formalism.BasicNotions.D7) : Prop :=
+def UnitFunctionExpansion : Prop :=
   ∀ p : ℕ, p.Prime → 5 ≤ p →
     (∀ u : UnitFn, u.rho < p ^ (u.t + 1) →
       (∃ a : ℕ → ℚ, (∀ m : ℕ, unitFn p u m = ∑ j ∈ Finset.range (m + 1), a j * (m.choose j : ℚ)) ∧
@@ -224,7 +224,7 @@ def UnitFunctionExpansion (_D : Formalism.BasicNotions.D7) : Prop :=
         ∀ x : Fin N → ℕ, PadicGe p ((∏ i, unitFn p (us i) (x (var i))) -
           ∑ j ∈ T, q j * ∏ k, ((x k).choose (j k) : ℚ)) c
 
-def FactorialUnitDecomposition (_D : Formalism.BasicNotions.D7) : Prop :=
+def FactorialUnitDecomposition : Prop :=
   ∀ p : ℕ, p.Prime → 5 ≤ p →
     (∀ t rho e' : ℕ, rho < p ^ (t + 1) →
       (((rho + p ^ (t + 1) * e').factorial : ℕ) : ℚ) =
@@ -258,9 +258,9 @@ def DegreeTruncationLemma (_D : Formalism.BasicNotions.D7) : Prop :=
       valS LL S F ≤ valS LL S (∑ m ∈ T, q m • (monomial m 1 * divDer m F)) + (((4 * c : ℕ) : ℤ) : WithTop ℤ) ∧
       lam1S LL S (∑ m ∈ T, q m • (monomial m 1 * divDer m F)) ≤ lam1S LL S F + (((4 * c : ℕ) : ℤ) : WithBot ℤ)
 
-def UnitProductSecondLemma (D : Formalism.BasicNotions.D7) : Prop := FactorialUnitDecomposition D ∧ DegreeTruncationLemma D
+def UnitProductSecondLemma (D : Formalism.BasicNotions.D7) : Prop := FactorialUnitDecomposition ∧ DegreeTruncationLemma D
 
-def UnitProductLemmas (D : Formalism.BasicNotions.D7) : Prop := UnitFunctionExpansion D ∧ UnitProductSecondLemma D
+def UnitProductLemmas (D : Formalism.BasicNotions.D7) : Prop := UnitFunctionExpansion ∧ UnitProductSecondLemma D
 
 
 open Classical in
@@ -280,7 +280,7 @@ def DerivativeValuationBound (_D : Formalism.BasicNotions.D7) : Prop :=
     valS LL S F ≤ valS LL S (monomial al 1 * divDer be F) + ((covDeg LL S al + vecDeg LL S be : ℕ) : ℤ) ∧
     lam1S LL S (monomial al 1 * divDer be F) ≤ lam1S LL S F + ((vecDeg LL S al + covDeg LL S be : ℕ) : ℤ)
 
-def DerivativeDigitExpansion (_D : Formalism.BasicNotions.D7) : Prop :=
+def DerivativeDigitExpansion : Prop :=
   ∀ p : ℕ, p.Prime → 5 ≤ p → ∀ (t : ℕ) (σ : Type) [Fintype σ] (rho M : σ → ℕ), (∀ k, rho k < p ^ t) →
     ∀ c : ℕ, ∃ (T : Finset (σ → ℕ)) (γ : (σ → ℕ) → ℤ),
       (∀ l ∈ T, ((∑ k, l k : ℕ) : ℝ) ≤ ((∑ k, M k : ℕ) : ℝ) / ((p ^ t : ℕ) : ℝ) + c) ∧
@@ -290,16 +290,16 @@ def DerivativeDigitExpansion (_D : Formalism.BasicNotions.D7) : Prop :=
 
 
 open Classical in
-def TrueDerivativeDigitClass (_D : Formalism.BasicNotions.D7) : Prop :=
+def TrueDerivativeDigitClass : Prop :=
   ∀ (R : Type) [CommRing R] (σ : Type) (P : σ → ℕ), (∀ k, 1 ≤ P k) → ∀ (rho : σ → ℕ) (k : σ)
     (F : MvPolynomial σ R), F ∈ DigitClassL R P rho →
       pderiv k F ∈ DigitClassL R P (Function.update rho k (if 1 ≤ rho k then rho k - 1 else P k - 1))
 
-def DerivativeLemma (D : Formalism.BasicNotions.D7) : Prop := DerivativeValuationBound D ∧ DerivativeDigitExpansion D ∧ TrueDerivativeDigitClass D
+def DerivativeLemma (D : Formalism.BasicNotions.D7) : Prop := DerivativeValuationBound D ∧ DerivativeDigitExpansion ∧ TrueDerivativeDigitClass
 
 def DerivativeLemmaField (D : Formalism.BasicNotions.D7) : Prop := DerivativeLemma D
 
-def Conclusion1 (D : Formalism.BasicNotions.D7) : Prop := ProjectionTheorems D ∧ ValuationLemmaField D ∧ ConclusionE D ∧ UnitProductLemmas D ∧ DerivativeLemmaField D
+def Conclusion1 (D : Formalism.BasicNotions.D7) : Prop := ProjectionTheorems D ∧ ValuationLemmaField D ∧ ConclusionE ∧ UnitProductLemmas D ∧ DerivativeLemmaField D
 
 def IntegralityFromMetric (D : Formalism.BasicNotions.D7) : Prop := admitted D → Conclusion1 D
 

@@ -711,7 +711,7 @@ theorem noShortVectorLowerBound_holds : NoShortVectorLowerBound (E := E) := by
     simp only [map_mul, map_neg, map_ofNat, MajorantOperators.conj_purely_imaginary_generator]
     push_cast
     ring
-  rw [hkey, FinrankRieszBounds.maj_csmul hz1]
+  rw [hkey, FinrankRieszBounds.maj_csmul]
   have hc : X.k0 * X.maj z τ (Data.emb τ.1 ξ) = 1 := by
     have h2 := hz'.2 τ
     simp only [Data.c] at h2

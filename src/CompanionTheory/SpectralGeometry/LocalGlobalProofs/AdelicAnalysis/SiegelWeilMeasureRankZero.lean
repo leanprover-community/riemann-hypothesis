@@ -27,7 +27,7 @@ variable {F E : Type} [Field F] [Field E] [Algebra F E]
 variable (R : Type) [CommRing R] [Algebra F R]
 
 instance uniqueHerm (σ : E →ₐ[F] E) : Unique (HermR R σ 0) :=
-  ⟨⟨0⟩, fun S => Subtype.ext (Matrix.ext fun a => a.elim0)⟩
+  ⟨⟨0⟩, fun _ => Subtype.ext (Matrix.ext fun a => a.elim0)⟩
 
 variable [TopologicalSpace R] [MeasurableSpace R]
 

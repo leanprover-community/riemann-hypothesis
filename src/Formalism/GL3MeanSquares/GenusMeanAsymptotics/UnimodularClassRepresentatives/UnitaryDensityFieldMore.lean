@@ -204,7 +204,7 @@ theorem cnt_one_of_mem (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF 
       ((Ideal.absNorm 𝔭 : ℝ) - 1) * ((Ideal.absNorm 𝔭 : ℝ) ^ (2 * finrank K V - 1) *
         (1 - etaF K F 𝔭 ^ finrank K V * (Ideal.absNorm 𝔭 : ℝ) ^ (-(finrank K V : ℤ)))) := by
   classical
-  have h0 := sum_nkCount hK hF hs hd hL hLi h𝔭 1
+  have h0 := sum_nkCount hK hF hs hL hLi h𝔭 1
   have := MeanC.finite_quot_pow h𝔭 1
   have := Fintype.ofFinite (𝓞 F ⧸ 𝔭 ^ 1)
   rw [finsum_eq_sum_of_fintype,

@@ -517,7 +517,7 @@ theorem isTest_indicator_comm (G : HTGroup p) (K' : Subgroup (Gr G 1))
     haveI : Fintype (K' ⧸ K₀.subgroupOf K') := Fintype.ofFinite _
     refine ⟨Finset.univ.image fun q : K' ⧸ K₀.subgroupOf K' => ((Quotient.out q : K') : Gr G 1), fun g hg => ?_⟩
     have hgK : g ∈ K' := by
-      by_contra hn; exact hg (by simp [Set.indicator_apply, hn])
+      by_contra hn; exact hg (by simp [hn])
     set q : K' ⧸ K₀.subgroupOf K' := QuotientGroup.mk ⟨g, hgK⟩
     have hq : (Quotient.out q)⁻¹ * (⟨g, hgK⟩ : K') ∈ K₀.subgroupOf K' := by
       rw [← QuotientGroup.eq, QuotientGroup.out_eq']

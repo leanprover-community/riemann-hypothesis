@@ -213,7 +213,7 @@ end BaseA
 
 
 open Classical in
-def offC (D : D7) (sc : Scale) (_j : ℕ) (z : Bool × G.HH D) : ℝ :=
+def offC (D : D7) (sc : Scale) (z : Bool × G.HH D) : ℝ :=
   if G.IsTopPl D z then sc.b' / sc.x else if G.IsThickPl D z then sc.b else sc.w'' D.R.n
 
 section InstW

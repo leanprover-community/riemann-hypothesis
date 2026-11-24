@@ -494,7 +494,7 @@ theorem omegaStd_add_nsmul_modEq {h : ℕ} (N : ℕ) (x y b c : Fin h ⊕ Fin h 
   exact ⟨-(b (.inl i) * y (.inr i) + x (.inl i) * c (.inr i) + N * b (.inl i) * c (.inr i)) +
     (b (.inr i) * y (.inl i) + x (.inr i) * c (.inl i) + N * b (.inr i) * c (.inl i)), by ring⟩
 
-theorem exists_eq_nsmul_iff {ι : Type*} (N : ℕ) (hN : N ≠ 0) (a : ι → ℤ) :
+theorem exists_eq_nsmul_iff {ι : Type*} (N : ℕ) (a : ι → ℤ) :
     (∃ b, a = N • b) ↔ ∀ j, (N : ℤ) ∣ a j := by
   constructor
   · rintro ⟨b, rfl⟩ j
@@ -520,7 +520,7 @@ theorem symplecticSimilitude_modN : ∀ (h N m : ℕ) (T : (Fin h ⊕ Fin h → 
         have h2 : (N : ℤ) ∣ (N : ℤ) * omegaStd b (T y) := dvd_mul_right _ _
         simpa using dvd_add h3 h2
       exact (Nat.isCoprime_iff_coprime.2 hm.symm).dvd_of_dvd_mul_left hdm
-    refine (exists_eq_nsmul_iff N hN a).2 fun j => ?_
+    refine (exists_eq_nsmul_iff N a).2 fun j => ?_
     rcases j with i | i
     · simpa [omegaStd_single_inr] using hd (Pi.single (.inr i) 1)
     · simpa [omegaStd_single_inl] using hd (Pi.single (.inl i) 1)
@@ -529,7 +529,7 @@ theorem symplecticSimilitude_modN : ∀ (h N m : ℕ) (T : (Fin h ⊕ Fin h → 
   let lift : (Fin h ⊕ Fin h → ZMod N) → (Fin h ⊕ Fin h → ℤ) := fun v j => ((v j).val : ℤ)
   have hred0 : ∀ a, red a = 0 ↔ ∃ b, a = N • b := by
     intro a
-    rw [exists_eq_nsmul_iff N hN a, funext_iff]
+    rw [exists_eq_nsmul_iff N a, funext_iff]
     exact forall_congr' fun j => ZMod.intCast_zmod_eq_zero_iff_dvd _ _
   have hredlift : ∀ v, red (lift v) = v := by
     intro v; funext j; simp [red, lift]
@@ -792,7 +792,7 @@ namespace GlobalTheory.SiegAct
 
 variable {h n N : ℕ} {F : SFam h N (zetaAway N)} {j : cycAway n →+* cycAway N}
 
-theorem exists_twist_of_points (hn : 3 ≤ n) (hN : Odd N) (hnN : n ∣ N) (hj : j (zetaAway n) = zetaAway N ^ (N / n))
+theorem exists_twist_of_points (hn : 3 ≤ n) (hN : Odd N) (hj : j (zetaAway n) = zetaAway N ^ (N / n))
     (R : Type) [CommRing R] [IsLocalRing R] (y y' : Sp R ⟶ F.X) (s' : Sp R ⟶ Sp (cycAway n))
     (c : SiegPre h n (zetaAway n) s') (hs : y ≫ F.s ≫ spMap j = y' ≫ F.s ≫ spMap j)
     (hy : SRel c F.univ 1 (N / n) y) (hy' : SRel c F.univ 1 (N / n) y') :
@@ -977,7 +977,7 @@ theorem siegel_group_action : ∀ (h n N : ℕ) (F : SFam h N (zetaAway N)) (j :
     rw [← Category.assoc, t.comm, Category.assoc, spMap_comp', t.fix]
   · obtain ⟨T, m, σ, t⟩ := a.2
     exact Subtype.ext (t.eq_id_of_fixed hn hN hnN hj y hy)
-  · obtain ⟨T, m, σ, f, t, e⟩ := exists_twist_of_points hn hN hnN hj R y y' s' c hs h1 h2
+  · obtain ⟨T, m, σ, f, t, e⟩ := exists_twist_of_points hn hN hj R y y' s' c hs h1 h2
     exact ⟨⟨f, T, m, σ, t⟩, e⟩
 
 end GlobalTheory.SiegAct

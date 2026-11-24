@@ -147,7 +147,7 @@ def PlaceCharts : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word)
       (∀ v, Measurable (Dv v)) ∧ (∀ v z, 0 ≤ Dv v z) ∧
       (∀ v, ∀ A ⊆ U v, MeasurableSet A →
         Formalism.REAL.muG (X.B.I.ε v) (Φ v '' A) = ∫⁻ z in A, ENNReal.ofReal (Dv v z)) ∧
-      MeasurePreserving T volume (Measure.pi fun v => volume) ∧ Continuous T ∧ 0 < r ∧
+      MeasurePreserving T volume (Measure.pi fun _ => volume) ∧ Continuous T ∧ 0 < r ∧
       (∀ p ∈ ball (0 : EuclideanSpace ℝ ι × EuclideanSpace ℝ η) r, T p ∈ Set.univ.pi U) ∧
       (∀ p ∈ ball (0 : EuclideanSpace ℝ ι × EuclideanSpace ℝ η) r, phi0 X L L₁ p = fun v => Φ v (T p v)) ∧
       ContinuousAt (fun z : ∀ v, EuclideanSpace ℝ (α v) × EuclideanSpace ℝ (β v) => ∏ v, Dv v (z v)) (T 0) ∧

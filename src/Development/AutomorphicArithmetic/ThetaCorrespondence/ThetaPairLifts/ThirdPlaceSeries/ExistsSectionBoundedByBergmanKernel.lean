@@ -880,7 +880,7 @@ theorem cc_le {b n m d R M : ℝ} (hb : 1000 ≤ b) (hn0 : 0 ≤ n) (hm0 : 0 ≤
   have h3 : 0 ≤ b ^ 10 := by positivity
   nlinarith
 
-theorem loss_le {b φ d N lM z : ℝ} (hb : 1000 ≤ b) (hφ : b ^ 14 ≤ φ) (hd0 : 0 ≤ d) (hd : d ≤ b ^ 2) (hN0 : 0 ≤ N) (hN : N ≤ b)
+theorem loss_le {b φ d N lM z : ℝ} (hb : 1000 ≤ b) (hφ : b ^ 14 ≤ φ) (hd : d ≤ b ^ 2) (hN : N ≤ b)
     (hM0 : 0 ≤ lM) (hM : lM ≤ 70 * b) (hz0 : 0 ≤ z) (hz : z ≤ b * (3 * b)) :
     d * b + 9000 * z ^ 2 * b ^ 2 + (3 * b ^ 3 * d + 1 / 2500 * φ + (d + N) * lM) ≤ φ / 1250 := by
   have hb1 : 1 ≤ b := by linarith
@@ -974,7 +974,7 @@ theorem core_ratio (hLw : Laws D j Xo c U dict) (α : 𝓞 D.host.E) (hα : α *
       _ ≤ l.M * ((U σ).X k).la1 x ^ 2 := by gcongr
       _ ≤ _ := by linarith
   have hloss := loss_le (N := (D.R.f * D.R.r * n : ℕ)) (lM := Real.log l.M) (z := (D.R.f : ℝ) * D.R.r * (3 * Real.log b))
-    hb hφ (Nat.cast_nonneg _) hDF (Nat.cast_nonneg _) (by push_cast; exact hfrn) (Real.log_nonneg hM0) (by linarith)
+    hb hφ hDF (by push_cast; exact hfrn) (Real.log_nonneg hM0) (by linarith)
     (by positivity) (by gcongr)
   rw [modelWt_wtZ]
   refine ⟨g q, hcusp q, fun h0 => ?_, fun z => ?_⟩

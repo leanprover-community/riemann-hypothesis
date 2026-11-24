@@ -214,9 +214,9 @@ namespace GlobalTheory.RoadE.ConjLat
 def intA (K : Type) [Field K] [NumberField K] : Subring (Af K) where
   carrier := {z | ∀ v, z v ∈ v.adicCompletionIntegers K}
   mul_mem' ha hb v := mul_mem (ha v) (hb v)
-  one_mem' v := one_mem _
+  one_mem' _ := one_mem _
   add_mem' ha hb v := add_mem (ha v) (hb v)
-  zero_mem' v := zero_mem _
+  zero_mem' _ := zero_mem _
   neg_mem' ha v := neg_mem (ha v)
 
 section Quad
@@ -481,9 +481,9 @@ theorem twist_lattice : ∀ (K : Type) [Field K] [NumberField K] (ι : K →+* �
     obtain ⟨k, k', hk, hk', hT⟩ := htor v
     have hNC : (N : ℂ) ≠ 0 := Nat.cast_ne_zero.2 hN
     have ek : (((v 0).val : ℤ) : K) * θ₀ + (((v 1).val : ℤ) : K) = N * k := ι.injective (by
-      simp only [map_add (f := _), map_mul, map_intCast, map_natCast, hk, hθ, tors, Int.cast_natCast]; field_simp)
+      simp only [map_add (f := _), map_mul, map_natCast, hk, hθ, tors, Int.cast_natCast]; field_simp)
     have ek' : (((vmul v A 0).val : ℤ) : K) * κ₁ + (((vmul v A 1).val : ℤ) : K) * κ₂ = N * k' := ι.injective (by
-      simp only [map_add (f := _), map_mul, map_intCast, map_natCast, hk', hκ₁, hκ₂, tors, Int.cast_natCast]; field_simp)
+      simp only [map_add (f := _), map_mul, map_natCast, hk', hκ₁, hκ₂, tors, Int.cast_natCast]; field_simp)
     obtain ⟨r0, r1⟩ := (hW.of_dvd (D' := N) ⟨_, rfl⟩).row hO hI hN (mem_intA.2 hT)
       (p := (vmul v A 0).val) (q := (vmul v A 1).val) (r := (v 0).val) (s := (v 1).val) (by
         rw [ek, ek', map_mul, map_mul, map_natCast]; ring)

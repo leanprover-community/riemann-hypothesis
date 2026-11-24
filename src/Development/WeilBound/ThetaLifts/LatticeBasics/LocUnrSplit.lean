@@ -681,8 +681,8 @@ end UpperTheory.Reformulated.B.SphericalZetaCosets
 
 open UpperTheory.Reformulated.B.SphericalZetaCosets in
 theorem UpperTheory.Reformulated.B.SphericalZetaCosets.zeta_spherical :
-    ∀ {F : Type} [inst : Field F] [inst_1 : ValuativeRel F] [inst_2 : TopologicalSpace F]
-      [inst_3 : IsNonarchimedeanLocalField F] {O : Subring F} {ϖ : F} {nrm : AbsoluteValue F ℝ} {q : ℕ},
+    ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F]
+      [IsNonarchimedeanLocalField F] {O : Subring F} {ϖ : F} {nrm : AbsoluteValue F ℝ} {q : ℕ},
       GlobalTheory.CompanionTheory.QL.LF O ϖ nrm q →
         ∀ {c : ℕ} (χ : Fin c → F → ℂ) (α : Fin c → ℂ),
           GlobalTheory.CompanionTheory.QL.UnrChar nrm q χ α →
@@ -1385,7 +1385,7 @@ theorem locUnrSplit : LocUnrSplit := by
       exact (inv_le_one₀ (norm_pos_iff.2 (Units.ne_zero _))).1 this
     have dp : GeneralLinearGroup.det t' = GeneralLinearGroup.det t * (GeneralLinearGroup.det y⁻¹ * GeneralLinearGroup.det κ) := by
       have : GeneralLinearGroup.det (bd y 1) = GeneralLinearGroup.det y := Units.ext (by
-        simp [bd_val, Matrix.det_fromBlocks_zero₂₁])
+        simp [bd_val])
       rw [dt]
       simp only [p, map_mul, map_inv, this, mul_inv_cancel_comm, mul_inv, inv_inv]
     have hk : Λ₂ (bd b b * κ * (bd b b)⁻¹) ∈ K := Inert.mem_K hK (by

@@ -778,7 +778,7 @@ def kP : CoefMap (RingHom.id R) (OP κ t i) (OS κ t i) where
 
 def θP : fgt κ t i ⋙ sec κ t i ⟶ 𝟭 (PC κ t i) where
   app a := ObjectProperty.homMk ⟨𝟙 a.obj.T, le_top⟩
-  naturality a b f :=
+  naturality _ _ f :=
     ObjectProperty.hom_ext _ (Subtype.ext ((Category.comp_id f.hom.1).trans (Category.id_comp f.hom.1).symm))
 
 def θS : sec κ t i ⋙ fgt κ t i ⟶ 𝟭 (SC κ t i) where
@@ -1460,7 +1460,7 @@ theorem single_fst_mem_Z1 (x : (Cx.single (Coef.ofAlg F)).Z1) : x.1.1 ∈ Global
 theorem single2_mem (z : GlobalTheory.CatCoh.Z2 F) :
     ((z.1 : (Coef.ofAlg F).c2), (fun _ _ _ ↦ PUnit.unit : (Coef.zero C).c1), (fun _ ↦ PUnit.unit : (Coef.zero C).c0))
       ∈ (Cx.single (Coef.ofAlg F)).Z2 :=
-  ⟨fun T T' T'' T''' φ ψ χ ↦ z.2 φ ψ χ, fun _ _ _ _ _ ↦ Subsingleton.elim _ _, fun _ _ _ ↦ Subsingleton.elim _ _,
+  ⟨fun _ _ _ _ φ ψ χ ↦ z.2 φ ψ χ, fun _ _ _ _ _ ↦ Subsingleton.elim _ _, fun _ _ _ ↦ Subsingleton.elim _ _,
     fun _ ↦ Subsingleton.elim _ _⟩
 
 theorem single_fst_mem_Z2 (x : (Cx.single (Coef.ofAlg F)).Z2) : x.1.1 ∈ GlobalTheory.CatCoh.Z2 F :=

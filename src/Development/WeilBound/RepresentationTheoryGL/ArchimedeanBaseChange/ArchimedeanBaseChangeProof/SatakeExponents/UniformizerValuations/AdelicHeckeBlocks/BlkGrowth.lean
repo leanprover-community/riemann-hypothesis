@@ -56,9 +56,9 @@ open PositivityTheory.RgBcC PositivityTheory.Rg.BcB.CG PositivityTheory.Rg.BcB.D
 
 theorem finConv' : FinConv := finConv intHint hintProd slots
 
-theorem fmAlg' : FmAlg := fmAlg finConv' slots
+theorem fmAlg' : FmAlg := fmAlg finConv'
 
-theorem fmTr' : FmTr := fmTr slots
+theorem fmTr' : FmTr := fmTr
 
 theorem rtAlg' : RtAlg := rtAlg sizeBasic
 

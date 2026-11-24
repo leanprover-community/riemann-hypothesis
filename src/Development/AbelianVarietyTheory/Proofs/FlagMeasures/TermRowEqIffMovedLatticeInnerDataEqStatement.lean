@@ -543,7 +543,6 @@ theorem fam_pt (iso : H.X f ≤ H.perp (H.X f)) (iso' : H.X f' ≤ H.perp (H.X f
 
 theorem famL_iff {f₀ f₁ : Fin (r + 1) → V} (gβ gn : V ≃ₗ[E] V)
     (hΛ : ∀ v, gβ v ∈ Λ ↔ v ∈ Λ)
-    (_hX : ∀ v, gβ v ∈ H.X f₁ ↔ v ∈ H.X f₀)
     (hP : ∀ v, gβ v ∈ H.perp (H.X f₁) ↔ v ∈ H.perp (H.X f₀))
     (hnX : ∀ z, gn z ∈ H.X f₀ ↔ z ∈ H.X f₁)
     (hm : ∀ x ∈ H.perp (H.X f₀), gn (gβ x) - x ∈ H.X f₀)
@@ -602,7 +601,7 @@ theorem main_abs {f₀ f₁ : Fin (r + 1) → V} (gβ gn : V ≃ₗ[E] V)
   have Lpt : ∀ x' ∈ Λ, ∀ x ∈ Λ, x' ∈ H.perp (H.X f₀) → x ∈ H.perp (H.X f) →
       (Fam H Λ f f₁ (gn.symm x') (gn.symm x) ↔ Fam H Λ f f₁ (gβ x') x) := by
     intro x' hx' x hx hx'P hxP
-    rw [famL_iff gβ gn hΛ hX hP hnX hm hnA hnP]
+    rw [famL_iff gβ gn hΛ hP hnX hm hnA hnP]
     constructor
     · rintro ⟨x₁, -, x₂, -, -, -, h1, h2, h⟩
       refine fam_congr h ?_ ?_
@@ -616,7 +615,7 @@ theorem main_abs {f₀ f₁ : Fin (r + 1) → V} (gβ gn : V ≃ₗ[E] V)
     rw [← fam_pt isoA iso0 hx' hx hx'P hxP, ← fam_pt isoA iso1 ((hΛ _).2 hx') hx ((hP _).2 hx'P) hxP,
       ← Lpt x' hx' x hx hx'P hxP, h]
   · intro h a b
-    rw [famL_iff gβ gn hΛ hX hP hnX hm hnA hnP, fam_iff]
+    rw [famL_iff gβ gn hΛ hP hnX hm hnA hnP, fam_iff]
     constructor
     · rintro ⟨x', hx', x, hx, hx'P, hxP, ha, hb, k⟩
       refine ⟨x', hx', x, hx, hx'P, hxP, ha, hb, ?_⟩

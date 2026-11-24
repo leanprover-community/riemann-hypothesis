@@ -66,7 +66,7 @@ def SB (X : Type) [TopologicalSpace X] : Submodule ℂ (X → ℂ) where
   carrier := {f | IsLocallyConstant f ∧ HasCompactSupport f}
   zero_mem' := ⟨IsLocallyConstant.const 0, HasCompactSupport.zero⟩
   add_mem' := fun hf hg => ⟨hf.1.add hg.1, hf.2.add hg.2⟩
-  smul_mem' := fun c f hf => ⟨hf.1.comp (fun z => c • z), hf.2.comp_left (g := fun z => c • z) (smul_zero c)⟩
+  smul_mem' := fun c _ hf => ⟨hf.1.comp (fun z => c • z), hf.2.comp_left (g := fun z => c • z) (smul_zero c)⟩
 
 theorem SB_eq (X : Type) [TopologicalSpace X] : SB X = GlobalTheory.SplitWeil.SB X := rfl
 

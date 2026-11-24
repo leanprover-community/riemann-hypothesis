@@ -1080,7 +1080,7 @@ theorem eq_smul_id_of_apply (L : Type) [NormedAddCommGroup L] [InnerProductSpace
   have h0 := _root_.GlobalTheory.CompanionTheory.RealCountG.intertwiner_eq_zero_of_highest L L K K hK hKs (R - r • LinearMap.id)
     (fun a b w => by simp [hR, map_smul]) (fun μ w hw => by
       obtain ⟨c, rfl⟩ := huniq w (fun a b hab => hw.2 a b hab rfl)
-      simp [hr, smul_comm c r])
+      simp [hr])
   exact sub_eq_zero.1 h0
 
 theorem map_highest_eq_zero {H L : Type} [AddCommGroup H] [Module ℂ H] [AddCommGroup L] [Module ℂ L]

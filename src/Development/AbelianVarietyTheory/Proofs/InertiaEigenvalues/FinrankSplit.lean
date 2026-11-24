@@ -82,7 +82,7 @@ theorem finrank_split [inst : Fintype (K →ₐ[Qp] LL)]
       map_add' := fun c d => by ext v b; simp [hm, add_mul, tmul_add]
       commutes' := fun r => by
         ext v b
-        simp [hm, ← IsScalarTower.algebraMap_apply, ← Algebra.smul_def, Algebra.algebraMap_eq_smul_one] }
+        simp [hm, Algebra.algebraMap_eq_smul_one] }
   have hD : ∀ x, x ∈ DdR PD ρ ↔ ∀ g, actVdR PD ρ g x = x := fun x => by
     simp only [DdR, Submodule.mem_iInf, LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.id_apply,
       sub_eq_zero]

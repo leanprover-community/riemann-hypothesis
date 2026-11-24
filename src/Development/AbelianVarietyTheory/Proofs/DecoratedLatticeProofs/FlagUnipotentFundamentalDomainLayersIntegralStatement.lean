@@ -97,8 +97,8 @@ def coordFlip (D : D7) (ρ m : ℕ) : skewA D ρ × (Mx D ρ m × UX D ρ) ≃�
   haveI : IsTopologicalAddGroup (Mx D ρ ρ) := (lattice_Mx D ρ ρ).1
   { toFun := fun p => (p.2.2⁻¹, (-p.2.1, -p.1))
     invFun := fun q => (-q.2.2, (-q.2.1, q.1⁻¹))
-    left_inv := fun p => Prod.ext (neg_neg _) (Prod.ext (neg_neg _) (inv_inv _))
-    right_inv := fun q => Prod.ext (inv_inv _) (Prod.ext (neg_neg _) (neg_neg _))
+    left_inv := fun _ => Prod.ext (neg_neg _) (Prod.ext (neg_neg _) (inv_inv _))
+    right_inv := fun _ => Prod.ext (inv_inv _) (Prod.ext (neg_neg _) (neg_neg _))
     continuous_toFun := continuous_snd.snd.inv.prodMk (continuous_snd.fst.neg.prodMk continuous_fst.neg)
     continuous_invFun := continuous_snd.snd.neg.prodMk (continuous_snd.fst.neg.prodMk continuous_fst.inv) }
 

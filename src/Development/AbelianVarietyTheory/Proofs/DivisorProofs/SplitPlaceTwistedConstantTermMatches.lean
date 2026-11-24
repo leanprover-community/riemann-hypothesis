@@ -288,7 +288,7 @@ def topEquivC {G : Type} [Group G] [TopologicalSpace G] (H : Subgroup G) (hH : H
 theorem topEquivC_apply {G : Type} [Group G] [TopologicalSpace G] (H : Subgroup G) (hH : H = ⊤) (x : H) :
     topEquivC H hH x = (x : G) := rfl
 
-theorem toSub_top {G : Type} [Group G] (H : Subgroup G) (hH : H = ⊤) (x : H) : toSub H (x : G) = x := by
+theorem toSub_top {G : Type} [Group G] (H : Subgroup G) (x : H) : toSub H (x : G) = x := by
   apply Subtype.ext
   rw [toSub, dite_eq_left x.2]
 
@@ -300,7 +300,7 @@ theorem twOrb_top : ∀ {G : Type} [Group G] [TopologicalSpace G] [IsTopological
   · rw [topEquivC_apply]
     exact (Subgroup.mem_map_iff_mem H.subtype_injective).symm
   · show f (toSub H (g : G)) = f g
-    rw [toSub_top H hH]
+    rw [toSub_top H]
 
 theorem isHecke_top : ∀ {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (H : Subgroup G), H = ⊤ →
     ∀ (K' : Subgroup H) (f : H → ℂ), IsOpen (K' : Set H) → IsHecke K' f →

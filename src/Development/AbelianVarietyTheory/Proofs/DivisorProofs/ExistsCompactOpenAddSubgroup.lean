@@ -237,7 +237,7 @@ theorem _root_.GlobalTheory.WeilM.HaarUniq.exists_eq_mul_integral : ∀ (V : Typ
     (HasCompactSupport.intro hK₀ fun x hx => Set.indicator_of_notMem hx _)
     (fun k hk x => by
       by_cases hx : x ∈ K₀ <;>
-        simp [Set.indicator_apply, hx, add_mem_cancel_right (hHK₀ k hk)])
+        simp [hx, add_mem_cancel_right (hHK₀ k hk)])
   rw [integral_indicator_const _ K₀.isOpen.measurableSet, Complex.real_smul, mul_one] at hB₂
   have hH0 : (μ.real (H : Set V) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 (hpos H hH)
   have hK0 : (μ.real (K₀ : Set V) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 (hpos K₀ hK₀)

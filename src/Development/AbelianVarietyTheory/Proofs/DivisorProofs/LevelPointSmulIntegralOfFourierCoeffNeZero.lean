@@ -196,7 +196,7 @@ theorem smul_eq_of_hatC_ne_zero : ∀ (D : D7) (G : Type) [Group G] [Fintype G] 
     · simpa [Dw.adj, LevelPairing.bar_bar] using h1
     · intro j _ hj; simp [Pi.single_eq_of_ne hj]
     · simp
-  obtain ⟨z, hz⟩ := LevelPairing.exists_eq_smul_of_dvd (s • (cSep l₂ • levRep (q b))) l₂.M hM (fun y => by
+  obtain ⟨z, hz⟩ := LevelPairing.exists_eq_smul_of_dvd (s • (cSep l₂ • levRep (q b))) l₂.M (fun y => by
     have h2 := Dw.alt (y + s • (cSep l₂ • levRep (q b)))
     simp only [map_add (f := _), LinearMap.add_apply, Dw.alt, zero_add, add_zero] at h2
     have h3 := hdvd y

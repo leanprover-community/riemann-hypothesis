@@ -94,7 +94,7 @@ theorem length_self_eq_top (R : Type u_1) [CommRing R] [IsDomain R] [IsDiscreteV
   haveI : IsArtinianRing R := hA
   exact IsDiscreteValuationRing.not_isField R (IsArtinianRing.isField_of_isDomain R)
 
-theorem main : ∀ {R : Type u_1} [inst : CommRing R] [inst_1 : IsDomain R] [IsDiscreteValuationRing R] {M : Type u_2} [inst_3 : AddCommGroup M] [inst_4 : Module R M] [Module.Free R M] [Module.Finite R M] {f : M →ₗ[R] M}, (LinearMap.det : (M →ₗ[R] M) → R) f = (0 : R) → Module.length R (M ⧸ LinearMap.range f) = ⊤ := by
+theorem main : ∀ {R : Type u_1} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] {M : Type u_2} [AddCommGroup M] [Module R M] [Module.Free R M] [Module.Finite R M] {f : M →ₗ[R] M}, (LinearMap.det : (M →ₗ[R] M) → R) f = (0 : R) → Module.length R (M ⧸ LinearMap.range f) = ⊤ := by
   intro R _ _ _ M _ _ _ _ f h
   obtain ⟨φ, hφ0, hφ⟩ := exists_dual_ne_zero_comp_eq_zero h
   obtain ⟨m, hm⟩ : ∃ m, φ m ≠ 0 := by
@@ -128,7 +128,7 @@ universe u_1 u_2
 
 namespace GlobalTheory.AdditiveValuationProduct
 
-theorem addVal_prod : ∀ {R : Type u_1} [inst : CommRing R] [inst_1 : IsDomain R] [inst_2 : IsDiscreteValuationRing R] {ι : Type u_2} (s : Finset ι) (a : ι → R), (IsDiscreteValuationRing.addVal R : R → ℕ∞) (∏ i ∈ s, a i) = ∑ i ∈ s, (IsDiscreteValuationRing.addVal R : R → ℕ∞) (a i) := by
+theorem addVal_prod : ∀ {R : Type u_1} [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] {ι : Type u_2} (s : Finset ι) (a : ι → R), (IsDiscreteValuationRing.addVal R : R → ℕ∞) (∏ i ∈ s, a i) = ∑ i ∈ s, (IsDiscreteValuationRing.addVal R : R → ℕ∞) (a i) := by
   intro R _ _ _ ι s a
   classical
   induction s using Finset.induction_on with

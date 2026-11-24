@@ -251,7 +251,7 @@ theorem conj_hpart2 (hQP : Q * P = 1) (hPQ : P * Q = 1) (Z : Matrix (Fin n) (Fin
   unfold Formalism.QuantumDeterminants.hpart2 S7.cpart2
   rw [Matrix.mul_smul, Matrix.smul_mul, Matrix.mul_add, Matrix.add_mul, conj_star hQP hPQ]
 
-theorem conj_UJ (hQP : Q * P = 1) (hPQ : P * Q = 1) {g : Matrix (Fin n) (Fin n) ℂ}
+theorem conj_UJ (hPQ : P * Q = 1) {g : Matrix (Fin n) (Fin n) ℂ}
     (hg : gᴴ * (Pᴴ * Jm ε * P) * g = Pᴴ * Jm ε * P) : inUJ ε (P * g * Q) := by
   show (P * g * Q)ᴴ * Jm ε * (P * g * Q) = Jm ε
   have h1 : Qᴴ * Pᴴ = 1 := by rw [← Matrix.conjTranspose_mul, hPQ, Matrix.conjTranspose_one]
@@ -260,7 +260,7 @@ theorem conj_UJ (hQP : Q * P = 1) (hPQ : P * Q = 1) {g : Matrix (Fin n) (Fin n) 
     _ = (Qᴴ * Pᴴ) * Jm ε * (P * Q) := by rw [hg]; simp only [Matrix.mul_assoc]
     _ = Jm ε := by rw [h1, hPQ, Matrix.one_mul, Matrix.mul_one]
 
-theorem unconj_UH (hQP : Q * P = 1) (hPQ : P * Q = 1) {M : Matrix (Fin n) (Fin n) ℂ} (hM : inUJ ε M) :
+theorem unconj_UH (hPQ : P * Q = 1) {M : Matrix (Fin n) (Fin n) ℂ} (hM : inUJ ε M) :
     (Q * M * P)ᴴ * (Pᴴ * Jm ε * P) * (Q * M * P) = Pᴴ * Jm ε * P := by
   have hM' : Mᴴ * Jm ε * M = Jm ε := hM
   have h1 : Qᴴ * Pᴴ = 1 := by rw [← Matrix.conjTranspose_mul, hPQ, Matrix.conjTranspose_one]
@@ -270,7 +270,7 @@ theorem unconj_UH (hQP : Q * P = 1) (hPQ : P * Q = 1) {M : Matrix (Fin n) (Fin n
     _ = Pᴴ * ((Mᴴ * Jm ε * M) * P) := by rw [h1, hPQ]; simp only [Matrix.one_mul, Matrix.mul_assoc]
     _ = Pᴴ * Jm ε * P := by rw [hM', Matrix.mul_assoc]
 
-theorem exp_conj' (hQP : Q * P = 1) (hPQ : P * Q = 1) (X : Matrix (Fin n) (Fin n) ℂ) (t : ℝ) :
+theorem exp_conj' (hPQ : P * Q = 1) (X : Matrix (Fin n) (Fin n) ℂ) (t : ℝ) :
     P * NormedSpace.exp ((t : ℂ) • X) * Q = NormedSpace.exp ((t : ℂ) • (P * X * Q)) := by
   have hinvP : P⁻¹ = Q := Matrix.inv_eq_right_inv hPQ
   have hu : IsUnit P := (Matrix.isUnit_iff_isUnit_det P).mpr (Matrix.isUnit_det_of_right_inverse hPQ)
@@ -287,7 +287,7 @@ variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] {σ : Matri
 
 theorem exp_eq_unconj (hQP : Q * P = 1) (hPQ : P * Q = 1) (X : Matrix (Fin n) (Fin n) ℂ) (t : ℝ) :
     NormedSpace.exp ((t : ℂ) • X) = Q * NormedSpace.exp ((t : ℂ) • (P * X * Q)) * P := by
-  rw [← exp_conj' hQP hPQ X t]
+  rw [← exp_conj' hPQ X t]
   simp only [← Matrix.mul_assoc, hQP, Matrix.one_mul]
   rw [Matrix.mul_assoc, hQP, Matrix.mul_one]
 
@@ -295,7 +295,7 @@ theorem exp_mem_Hm (hQP : Q * P = 1) (hPQ : P * Q = 1) {X : Matrix (Fin n) (Fin 
     (t : ℝ) : (NormedSpace.exp ((t : ℂ) • X))ᴴ * (Pᴴ * Jm ε * P) * NormedSpace.exp ((t : ℂ) • X) =
       Pᴴ * Jm ε * P := by
   rw [exp_eq_unconj hQP hPQ X t]
-  exact unconj_UH hQP hPQ (PI.UnitaryGroupMassFormula.DSIC.exp_mem_UJ hX t)
+  exact unconj_UH hPQ (PI.UnitaryGroupMassFormula.DSIC.exp_mem_UJ hX t)
 
 theorem mul_mem_Hm {g h : Matrix (Fin n) (Fin n) ℂ} {Hm : Matrix (Fin n) (Fin n) ℂ} (hg : gᴴ * Hm * g = Hm)
     (hh : hᴴ * Hm * h = Hm) : (g * h)ᴴ * Hm * (g * h) = Hm := by
@@ -318,7 +318,7 @@ theorem rdv_cf (hσ : IsURepOn (UJset ε) σ) (hQP : Q * P = 1) (hPQ : P * Q = 1
     have e : P * (g * NormedSpace.exp ((t : ℂ) • X)) * Q = (P * g * Q) * (P * NormedSpace.exp ((t : ℂ) • X) * Q) := by
       simp only [Matrix.mul_assoc]
       rw [← Matrix.mul_assoc Q P, hQP, Matrix.one_mul]
-    rw [e, exp_conj' hQP hPQ X t, hσ.1.2 _ (conj_UJ hQP hPQ hg) _ (PI.UnitaryGroupMassFormula.DSIC.exp_mem_UJ hX t)]
+    rw [e, exp_conj' hPQ X t, hσ.1.2 _ (conj_UJ hPQ hg) _ (PI.UnitaryGroupMassFormula.DSIC.exp_mem_UJ hX t)]
     rfl
   rw [hpath]
   have hd := (isDerivedOn_smE hσ).deriv _ hX x

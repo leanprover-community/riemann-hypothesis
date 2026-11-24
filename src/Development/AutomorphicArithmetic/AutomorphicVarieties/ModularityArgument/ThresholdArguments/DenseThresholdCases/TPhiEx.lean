@@ -633,8 +633,8 @@ end UpperTheory.Reformulated.B.DeterminantIdentities
 
 open Polynomial UpperTheory.V.W UpperTheory.Reformulated.B.DeterminantIdentities in
 theorem UpperTheory.Reformulated.B.DeterminantIdentities.phiDet :
-    ∀ {n : ℕ} {B A H G : Type} [inst : CommRing B] [inst_1 : CommRing A] [inst_2 : Group H] [inst_3 : Group G]
-      [inst_4 : TopologicalSpace H] [IsTopologicalGroup H] [inst_6 : TopologicalSpace G] (I : Ideal B) [IsHausdorff I B]
+    ∀ {n : ℕ} {B A H G : Type} [CommRing B] [CommRing A] [Group H] [Group G]
+      [TopologicalSpace H] [IsTopologicalGroup H] [TopologicalSpace G] (I : Ideal B) [IsHausdorff I B]
       (f : B →+* A),
       Function.Injective (⇑f : B → A) →
         ∀ (π : H →* G),
@@ -1278,7 +1278,7 @@ private theorem chi_map {n : ℕ} {A A' G : Type} [CommRing A] [CommRing A'] [Gr
     (E.map f).chi (MonoidAlgebra.single g 1) = (E.chi (MonoidAlgebra.single g 1)).map f := by
   rw [← (AlgebraTools.Det.mapApi E f).1, MonoidAlgebra.mapRingHom_single, map_one]
 theorem UpperTheory.V.Ws.exists_phi_universal_ordinary_det_ring_of_link :
-    _root_.UpperTheory.V.Ws.UnramifiedInputs → ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c) (T : Tower D), T.Fit → T.Deep → ∀ (c' : Coef l) (h : c.O ≤ c'.O) (K : Link T c' h) (X : Space (T.fr ∅) (inc h)) (n : ℕ), (∃ B : W.UniversalOrdinaryDeterminantRing K.r, True) ∧ ∀ B : W.UniversalOrdinaryDeterminantRing K.r, ∃ φ : B.B →ₐ[c'.O] X.B, K.IsPhi X n B φ := by
+    _root_.UpperTheory.V.Ws.UnramifiedInputs → ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c) (T : Tower D), T.Fit → T.Deep → ∀ (c' : Coef l) (h : c.O ≤ c'.O) (K : Link T c' h) (X : Space (T.fr ∅) (inc h)) (n : ℕ), (∃ _ : W.UniversalOrdinaryDeterminantRing K.r, True) ∧ ∀ B : W.UniversalOrdinaryDeterminantRing K.r, ∃ φ : B.B →ₐ[c'.O] X.B, K.IsPhi X n B φ := by
   intro U Ω _ _ _ l _ c D T _ _ c' h K X n
   obtain ⟨hs, hq, hk⟩ := phiKer K.V
   obtain ⟨E, hE, hcp, hc⟩ := _root_.UpperTheory.Reformulated.B.DeterminantIdentities.phiDet (maximalIdeal X.B) (algebraMap X.B X.A) X.inj K.V.pr hs hq (K.rho X n) (K.cpT X n)

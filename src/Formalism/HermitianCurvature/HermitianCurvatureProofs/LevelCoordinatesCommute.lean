@@ -210,13 +210,13 @@ theorem comm_ops (l m : Fin r) (i j : Fin 6) (h : l ≠ m ∨ (holoIdx i ↔ ¬ 
 
 theorem inv_ops (l : Fin r) : X.op l 1 * X.op l 2 = 1 ∧ X.op l 2 * X.op l 1 = 1 ∧
     X.op l 4 * X.op l 5 = 1 ∧ X.op l 5 * X.op l 4 = 1 := ⟨end_of_slices (A := X.op l 1 * X.op l 2) (B := 1) (fun f => opL l 1 (opL l 2 f)) (fun f => f)
-      (fun Φ => opop_coe X l l 1 2 Φ) (fun Φ => rfl) (fun f hf => (weylFun r _ l f hf).1),
+      (fun Φ => opop_coe X l l 1 2 Φ) (fun _ => rfl) (fun f hf => (weylFun r _ l f hf).1),
     end_of_slices (A := X.op l 2 * X.op l 1) (B := 1) (fun f => opL l 2 (opL l 1 f)) (fun f => f)
-      (fun Φ => opop_coe X l l 2 1 Φ) (fun Φ => rfl) (fun f hf => (weylFun r _ l f hf).2.1),
+      (fun Φ => opop_coe X l l 2 1 Φ) (fun _ => rfl) (fun f hf => (weylFun r _ l f hf).2.1),
     end_of_slices (A := X.op l 4 * X.op l 5) (B := 1) (fun f => opL l 4 (opL l 5 f)) (fun f => f)
-      (fun Φ => opop_coe X l l 4 5 Φ) (fun Φ => rfl) (fun f hf => (weylFun r _ l f hf).2.2.2.1),
+      (fun Φ => opop_coe X l l 4 5 Φ) (fun _ => rfl) (fun f hf => (weylFun r _ l f hf).2.2.2.1),
     end_of_slices (A := X.op l 5 * X.op l 4) (B := 1) (fun f => opL l 5 (opL l 4 f)) (fun f => f)
-      (fun Φ => opop_coe X l l 5 4 Φ) (fun Φ => rfl) (fun f hf => (weylFun r _ l f hf).2.2.2.2.1)⟩
+      (fun Φ => opop_coe X l l 5 4 Φ) (fun _ => rfl) (fun f hf => (weylFun r _ l f hf).2.2.2.2.1)⟩
 
 theorem op_fn (l : Fin r) (i j : Fin 6) : X.op l i * X.fn j = X.fn j * X.op l i := by
   refine end_ext fun Φ => ?_

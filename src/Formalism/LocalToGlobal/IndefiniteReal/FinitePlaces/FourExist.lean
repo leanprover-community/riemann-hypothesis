@@ -22,7 +22,7 @@ section SB
 variable {L X : AddSubgroup W}
 
 theorem isSB_zero : IsSB L X (0 : W → ℂ) :=
-  ⟨fun t h => absurd rfl h, 1, one_pos, fun _ _ _ => rfl, fun t h => absurd rfl h⟩
+  ⟨fun _ h => absurd rfl h, 1, one_pos, fun _ _ _ => rfl, fun _ h => absurd rfl h⟩
 
 theorem IsSB.add {Φ Φ' : W → ℂ} (h : IsSB L X Φ) (h' : IsSB L X Φ') : IsSB L X (Φ + Φ') := by
   obtain ⟨hs, k, hk, hi, hl⟩ := h

@@ -1196,7 +1196,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qk64.diag_mul :
-    ∀ {n : ℕ} {Q : Type} [inst : CommRing Q]
+    ∀ {n : ℕ} {Q : Type} [CommRing Q]
     (a b : Matrix (Fin n) (Fin n) Q),
     (∀ (i j : Fin n), i < j → a i j = (0 : Q)) →
       (∀ (i j : Fin n), i < j → b i j = (0 : Q)) → ∀ (i : Fin n), (a * b) i i = a i i * b i i := by

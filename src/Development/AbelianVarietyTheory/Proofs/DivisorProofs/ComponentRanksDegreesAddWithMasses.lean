@@ -401,7 +401,7 @@ local instance (priority := high) instSMulSub_Basic :
 def toOn : sub U Z G →ₗ[c.F] cuspOn U Z G :=
   LinearMap.codRestrict (cuspOn U Z G) ((cuspW Xo c U G).subtype ∘ₗ (sub U Z G).subtype) fun x => x.2
 
-theorem toOn_injective : Function.Injective (toOn U Z G) := fun a b h =>
+theorem toOn_injective : Function.Injective (toOn U Z G) := fun _ _ h =>
   Subtype.ext (Subtype.ext (congrArg (fun y : cuspOn U Z G => (y : Rul Xo c)) h))
 
 theorem hasGram_sub (h : HasGram (normRes U V dict Z G)) :

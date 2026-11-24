@@ -269,12 +269,12 @@ def MaxContactHypersurfaceSmoothPullback : Prop :=
       ∀ H : P.IdealSheafData, IsMaxContactHypersurface k p A μ H →
         IsMaxContactHypersurface k (g ≫ p) (A.comap g) μ (H.comap g)
 
-theorem isLocallyNoetherian_schemeAt (_hMaxContact : MaxContactCoverProperties.{u}) (S : MarkedIdealWithBoundary.{u}) (hV : S.IsAdmissible)
+theorem isLocallyNoetherian_schemeAt (S : MarkedIdealWithBoundary.{u}) (hV : S.IsAdmissible)
     (s : MarkedBlowupSequenceData S.structMap S.ideal S.mult S.boundary) :
     ∀ i ≤ s.length, AlgebraicGeometry.IsLocallyNoetherian (s.obj i) := by
   intro i hi
   have hnoeth : AlgebraicGeometry.IsNoetherian (s.toMarkedSequenceOfBlowups.schemeAt i) :=
-    MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hV s.toMarkedSequenceOfBlowups i
+    MarkedSequenceOfBlowups.isNoetherian_schemeAt hV s.toMarkedSequenceOfBlowups i
       (s.le_toSequenceOfBlowups_length hi)
   show AlgebraicGeometry.IsLocallyNoetherian (s.toMarkedSequenceOfBlowups.schemeAt i)
   infer_instance
@@ -752,8 +752,8 @@ theorem isStrictPullbackBlowupSeq_reduceAlongHypersurface (hstar : MaxContactCov
         have hres := LowerDimReductionPullback.nonempty_strictPullback_appendLowerDimReduction S q (separateBoundaryOfFamily hinv T A S m)
           (separateBoundaryOfFamily hinv T A (LowerDimReductionPullback.pullbackTriple S q) m) D hstar hinv T P A B m (hspec m)
           (fun S' _ i => A i S') (fun _ _ _ => rfl) [] 0 hftS hftT hV hV.one_le_mult hO
-          (isLocallyNoetherian_schemeAt hstar S hV (separateBoundaryOfFamily hinv T A S m)) hV' hO'
-          (isLocallyNoetherian_schemeAt hstar (LowerDimReductionPullback.pullbackTriple S q) hV'
+          (isLocallyNoetherian_schemeAt S hV (separateBoundaryOfFamily hinv T A S m)) hV' hO'
+          (isLocallyNoetherian_schemeAt (LowerDimReductionPullback.pullbackTriple S q) hV'
             (separateBoundaryOfFamily hinv T A (LowerDimReductionPullback.pullbackTriple S q) m))
           hdim (hmono _ _ hdim hPdimT)
           (isAdmissible_derivedTriple_nil hstar S hV (separateBoundaryOfFamily hinv T A S m) hftS)
@@ -816,8 +816,8 @@ theorem isStrictPullbackBlowupSeq_reduceAlongHypersurface (hstar : MaxContactCov
   have hVcF2 := isAdmissible_derivedTriple_pullbackTriple hin S q hV'
     (separateBoundaryOfFamily hinv T A S S.boundary.length)
     (separateBoundaryOfFamily hinv T A (LowerDimReductionPullback.pullbackTriple S q) S.boundary.length) D
-    (isLocallyNoetherian_schemeAt hstar S hV (separateBoundaryOfFamily hinv T A S S.boundary.length))
-    (isLocallyNoetherian_schemeAt hstar (LowerDimReductionPullback.pullbackTriple S q) hV'
+    (isLocallyNoetherian_schemeAt S hV (separateBoundaryOfFamily hinv T A S S.boundary.length))
+    (isLocallyNoetherian_schemeAt (LowerDimReductionPullback.pullbackTriple S q) hV'
       (separateBoundaryOfFamily hinv T A (LowerDimReductionPullback.pullbackTriple S q) S.boundary.length))
     hftS2 hftT2
     [MaxContactReduction.strictTransformAtLength (separateBoundaryOfFamily hinv T A S S.boundary.length) H]
@@ -838,8 +838,8 @@ theorem isStrictPullbackBlowupSeq_reduceAlongHypersurface (hstar : MaxContactCov
       [MaxContactReduction.strictTransformAtLength (separateBoundaryOfFamily hinv T A S S.boundary.length) H]
       S.boundary.length
       hftS2 hftT2 hV hV.one_le_mult hO
-      (isLocallyNoetherian_schemeAt hstar S hV (separateBoundaryOfFamily hinv T A S S.boundary.length)) hV' hO'
-      (isLocallyNoetherian_schemeAt hstar (LowerDimReductionPullback.pullbackTriple S q) hV'
+      (isLocallyNoetherian_schemeAt S hV (separateBoundaryOfFamily hinv T A S S.boundary.length)) hV' hO'
+      (isLocallyNoetherian_schemeAt (LowerDimReductionPullback.pullbackTriple S q) hV'
         (separateBoundaryOfFamily hinv T A (LowerDimReductionPullback.pullbackTriple S q) S.boundary.length))
       hdimF (hmono _ _ hdimF hPdimT) hVcF (by simp)
       (orderAtLeastLocus_inter_support_eq_empty_of_boundarySeparated S (separateBoundaryOfFamily hinv T A S S.boundary.length) S.boundary.length hTS.1)

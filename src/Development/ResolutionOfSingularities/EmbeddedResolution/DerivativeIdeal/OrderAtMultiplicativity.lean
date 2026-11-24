@@ -1547,7 +1547,7 @@ theorem exists_regularParameters_stalk_of_smooth (k : Type u) [Field k] [CharZer
     IsScalarTower.of_algebraMap_eq fun a => by
       rw [IsLocalRing.ResidueField.algebraMap_eq]
       rfl
-  have := formallySmooth_residueField k p x rfl
+  have := formallySmooth_residueField k p x
   exact exists_regularParameters_of_formallyEtale k (ULift.{u} (Fin m)) Γ(X, U)
     ((hU.primeIdealOf ⟨x, hxU⟩).asIdeal) (X.presheaf.stalk x)
 

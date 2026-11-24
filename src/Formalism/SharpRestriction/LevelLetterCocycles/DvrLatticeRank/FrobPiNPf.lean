@@ -316,7 +316,7 @@ theorem frobPiNCondition : FrobPiNStep := by
   have hT1 := hA.1 l K 1 LL hG
   have hfree : Formalism.MainNotions.DeltaInvariantLattices.wachFree ((HW l).W K 1 LL hG) T := hT1.1 T hc
   have := Formalism.MainNotions.LiftingTheory.liftb_neZero ((HW l).W K 1 LL hG)
-  have := Formalism.MainNotions.LiftingTheory.hstr_ps_D D HW F l K LL
+  have := Formalism.MainNotions.LiftingTheory.hstr_ps_D D HW l K LL
   obtain ⟨I, hQI, hφI, hI⟩ := Formalism.MainNotions.LiftingTheory.hstr_CompleteB ((HW l).W K 1 LL hG) T hfree
   exact frobenius_uniformiser_wach _ T I hI hQI hφI ((HW l).W_s K 1 LL hG) hfree.1 h'
     (hT1.2.2.2.2.1 T (fun _ => h') (fun _ => h') hc (fun τ _ _ => hj τ)).1 _ _ _ π' E hp9

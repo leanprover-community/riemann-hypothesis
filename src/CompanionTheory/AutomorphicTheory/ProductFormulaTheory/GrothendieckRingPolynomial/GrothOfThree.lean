@@ -707,7 +707,7 @@ variable (S T : Subrepresentation π)
 
 def formOf (l : (ann T).toSubmodule) : Module.Dual ℂ (S.toSubmodule ⧸ T.toSubmodule.comap S.toSubmodule.subtype) :=
   (T.toSubmodule.comap S.toSubmodule.subtype).liftQ ((l.1 : Module.Dual ℂ V) ∘ₗ S.toSubmodule.subtype)
-    fun w hw => LinearMap.mem_ker.2 (l.2 _ hw)
+    fun _ hw => LinearMap.mem_ker.2 (l.2 _ hw)
 
 theorem formOf_mem (l : (ann T).toSubmodule) : formOf S T l ∈ smoothPart (subQuot S T).dual :=
   mem_smoothPart_of_nhds (Filter.mem_of_superset (IsOpen.mem_nhds l.1.2 (by
@@ -1507,7 +1507,7 @@ theorem vWord_ne (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (Δ : Seg
     (hS : S ∈ vSets Δ) (hne : S ≠ ∅) : vWord Δ S ≠ List.ofFn Δ.term := by
   intro H
   rw [vWord, List.ofFn_eq_map] at H
-  have H2 := (List.map_injective_iff.2 (_root_.GlobalTheory.CompanionTheory.SegTerm.term_injective hA Δ)) H
+  have H2 := (List.map_injective_iff.2 (_root_.GlobalTheory.CompanionTheory.SegTerm.term_injective Δ)) H
   obtain ⟨s, hs⟩ := Finset.nonempty_iff_ne_empty.2 hne
   have hL1 : ((List.finRange Δ.len).filter fun a => a ∈ S) ≠ [] :=
     List.ne_nil_of_mem (List.mem_filter.2 ⟨List.mem_finRange s, by simpa using hs⟩)
@@ -1671,7 +1671,7 @@ theorem jhMult_le_one_of_equiv (y : IrrGL (k := k)) {V : Type} [AddCommGroup V] 
   rw [jhMult_congr_right _ e]
   exact (le_mul_of_one_le_right' hpos).trans (hle.trans hjm)
 
-theorem jhMult_rev_le_one (c : Cls k) (_𝔪 : Multiset (Segment k)) {h : ℕ} (x : Fin h → IrrGL (k := k)) (y : IrrGL (k := k))
+theorem jhMult_rev_le_one (c : Cls k) {h : ℕ} (x : Fin h → IrrGL (k := k)) (y : IrrGL (k := k))
     (Δ : Fin h → Segment k) (hΔo : ∀ i j, i < j → ¬ (Δ i).Precedes (Δ j)) (hΔL : ∀ i, IsLSeg (Δ i) (x i).rep)
     (hdr : ∑ a, (x (Fin.rev a)).1 = y.1) (hsoc : IsSocle (IrrGL.rep y) (prodIrr (x ∘ Fin.rev) hdr)) :
     jhMult (IrrGL.rep y) (prodIrr (x ∘ Fin.rev) hdr) ≤ 1 := by
@@ -1704,7 +1704,7 @@ theorem multOne (c : Cls k) (_hm : MulCls k) (ha : Assoc k) (hc : Comm k) (_h1 :
     rw [hl h y.1 x hd, hl h y.1 (x ∘ Fin.rev) hdr]
     exact foldr_perm ha hc (ofFn_perm x Fin.revPerm).symm _
   rw [jordan_holder_mult_eq_of_class y _ _ (_root_.GlobalTheory.CompanionTheory.ProdFL.main hA x hd) (_root_.GlobalTheory.CompanionTheory.ProdFL.main hA (x ∘ Fin.rev) hdr) hcl]
-  exact le_antisymm (jhMult_rev_le_one c 𝔪 x y Δ hΔo hΔL hdr hsoc)
+  exact le_antisymm (jhMult_rev_le_one c x y Δ hΔo hΔL hdr hsoc)
     (Order.one_le_iff_ne_zero.2 (jhMult_ne_zero_iff.2 hsoc.isSubquotient))
 
 end CompanionTheory.Groth

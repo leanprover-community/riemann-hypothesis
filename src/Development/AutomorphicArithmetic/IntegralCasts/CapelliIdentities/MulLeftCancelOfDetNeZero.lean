@@ -45,7 +45,7 @@ public import Mathlib.LinearAlgebra.Matrix.Adjugate
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Yoa2.mul_left_cancel_of_det_ne_zero.{u_1} :
-    ∀ {R : Type u_1} [inst : CommRing R] [IsDomain R] {n : ℕ} {A X Y : Matrix (Fin n) (Fin n) R},
+    ∀ {R : Type u_1} [CommRing R] [IsDomain R] {n : ℕ} {A X Y : Matrix (Fin n) (Fin n) R},
       A.det ≠ (0 : R) → A * X = A * Y → X = Y := by
   intro R _ _ n A X Y hA h
   have h2 : A.det • X = A.det • Y := by

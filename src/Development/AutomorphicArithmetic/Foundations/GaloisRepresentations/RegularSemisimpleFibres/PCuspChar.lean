@@ -54,7 +54,7 @@ open GlobalTheory.SmGL GlobalTheory.Shin GlobalTheory.SplitWeil
 
 namespace UpperTheory.Gal.InertialTypesAlt
 
-private theorem blk_two {m a : ℕ} (ha : a < m) (hd : ∑ b, (![a, m - a] : Fin 2 → ℕ) b = m) (i : Fin m) :
+private theorem blk_two {m a : ℕ} (hd : ∑ b, (![a, m - a] : Fin 2 → ℕ) b = m) (i : Fin m) :
     (blk (stdBlocks (![a, m - a] : Fin 2 → ℕ) hd) i = 0 ↔ (i : ℕ) < a) := by
   obtain ⟨⟨b, j⟩, hbj⟩ : ∃ p, (stdBlocks (![a, m - a] : Fin 2 → ℕ) hd).symm i = p := ⟨_, rfl⟩
   have hi := stdBlocks_val (![a, m - a] : Fin 2 → ℕ) hd b j
@@ -71,8 +71,8 @@ private theorem blk_two {m a : ℕ} (ha : a < m) (hd : ∑ b, (![a, m - a] : Fin
 private theorem blk_lt_iff {m a : ℕ} (ha : a < m) (hd : ∑ b, (![a, m - a] : Fin 2 → ℕ) b = m) (i j : Fin m) :
     blk (stdBlocks (![a, m - a] : Fin 2 → ℕ) hd) i < blk (stdBlocks (![a, m - a] : Fin 2 → ℕ) hd) j ↔
       (i : ℕ) < a ∧ a ≤ (j : ℕ) := by
-  have hi := blk_two ha hd i
-  have hj := blk_two ha hd j
+  have hi := blk_two hd i
+  have hj := blk_two hd j
   have h1 := (blk (stdBlocks (![a, m - a] : Fin 2 → ℕ) hd) i).isLt
   have h2 := (blk (stdBlocks (![a, m - a] : Fin 2 → ℕ) hd) j).isLt
   rw [Fin.lt_iff_val_lt_val]

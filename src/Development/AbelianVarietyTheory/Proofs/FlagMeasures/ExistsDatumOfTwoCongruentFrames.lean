@@ -109,7 +109,7 @@ theorem eq_top_of_dual
         have h1 : ∑ i, (Pi.single 0 d : Fin (n + 1) → E) i * (x i : E) = d * (x 0 : E) := by
           rw [Finset.sum_eq_single 0]
           · simp
-          · intro b _ hb; simp [Pi.single_apply, hb]
+          · intro b _ hb; simp [hb]
           · simp
         rw [h1]
         exact hd (x 0) ⟨x, hx, rfl⟩)

@@ -274,7 +274,7 @@ def wtF {n : ℕ} (lam : Fin n → ℝ) (X km : Matrix (Fin n) (Fin n) ℂ) : �
 def rank1 {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] (x : H) : H →L[ℂ] H :=
   (innerSL ℂ x).smulRight x
 
-def SmallPrimeLengthBound (_D : D7) : Prop :=
+def SmallPrimeLengthBound : Prop :=
   ∀ (n : ℕ) (ε : Fin n → Bool) (lam : Fin n → ℝ), Formalism.QuantumDeterminants.IsHCParam lam →
     ∀ (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
       (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)), IsDS ε lam σ →
@@ -289,13 +289,13 @@ def SmallPrimeLengthBound (_D : D7) : Prop :=
               ∂(Formalism.REAL.muK ε)) ∧
         (E ∘L σ (NormedSpace.exp X) ∘L E).IsPositive
 
-def NonvanishingBesselPeriod (_D : D7) : Prop :=
+def NonvanishingBesselPeriod : Prop :=
   ∀ (n : ℕ) (ε : Fin n → Bool) (lam : Fin n → ℝ), Formalism.QuantumDeterminants.IsHCParam lam →
     ∀ (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
       (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)), IsDS ε lam σ →
       ∃ d : ℝ, IsFdeg (Formalism.REAL.muG ε) σ d
 
-def FamilyMassLastLine (_D : D7) : Prop :=
+def FamilyMassLastLine : Prop :=
   ∀ (n : ℕ) (ε : Fin n → Bool) (lam : Fin n → ℝ), Formalism.QuantumDeterminants.IsHCParam lam →
     ∀ (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
       (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)), IsDS ε lam σ →
@@ -350,10 +350,10 @@ def Conclusion4p (D : D7) (Lv : LevelData D) : Prop :=
   letI := D.host.cmStar
   ∀ u : D.what₂.Word, (Lv u).ProG
 
-def SmallOrderPrimeLogSumBound (D : D7) (_Lv : LevelData D) : Prop :=
+def SmallOrderPrimeLogSumBound (D : D7) : Prop :=
   GBig D → ∀ u : D.what₂.Word, (D.mem u).C.StabZero
 
-def ClassNumberFormula₂ (D : D7) (_Lv : LevelData D) : Prop :=
+def ClassNumberFormula₂ (D : D7) : Prop :=
   GBig D → (∀ i, SplitsF D (D.host.g i)) → ∀ u : D.what₂.Word, SplitsF D (D.mem u).A.T →
     (Nat.card ((D.mem u).C.cls 0) : ℝ) =
       massI D D.R.k * idxPi D (D.host.g 0) (D.host.g 1) * (((D.mem u).A.T : ℝ) ^ D.R.k - 1) ^ D.R.f
@@ -363,12 +363,12 @@ def Mu0Tie (D : D7) (u : D.what₂.Word) : Prop :=
     ((haveI := (D.mem u).A.Mu0_fd; Module.finrank ℂ (D.mem u).A.Mu0 : ℕ) : ℝ) =
       (Nat.card ((D.mem u).C.cls 0) : ℝ) * ∏ ρ, dimV (uColR D u ρ)
 
-def Conclusion4f (D : D7) (_Lv : LevelData D) : Prop :=
+def Conclusion4f (D : D7) : Prop :=
   GBig D → (∀ i, SplitsF D (D.host.g i)) → ∀ u : D.what₂.Word, SplitsF D (D.mem u).A.T → Mu0Tie D u →
     ((haveI := (D.mem u).A.Mu0_fd; Module.finrank ℂ (D.mem u).A.Mu0 : ℕ) : ℝ) =
       duStarU D u * (((D.mem u).A.T : ℝ) ^ D.R.k - 1) ^ D.R.f
 
-theorem level_rank_of_trivial_stabilisers (D : D7) (Lv : LevelData D) (hd : SmallOrderPrimeLogSumBound D Lv) (hn : ClassNumberFormula₂ D Lv) : Conclusion4f D Lv := by
+theorem level_rank_of_trivial_stabilisers (D : D7) (Lv : LevelData D) (hd : SmallOrderPrimeLogSumBound D) (hn : ClassNumberFormula₂ D) : Conclusion4f D := by
   intro hg hs u hT hM
   rw [hM (hd hg u), hn hg hs u hT]
   unfold duStarU duStarP
@@ -432,7 +432,7 @@ def VandermondeVariationBound (D : D7) (sc : Scale) (C0 C : ℝ) : Prop :=
         C * D.R.k * Real.log D.R.k) ∧
     ∀ u u' : D.what₂.Word, |logXuD D u - logXuD D u'| ≤ C * Real.log D.R.k
 
-def Adm3 (D : D7) : Prop := SmallPrimeLengthBound D ∧ NonvanishingBesselPeriod D ∧ FamilyMassLastLine D
+def Adm3 (D : D7) : Prop := SmallPrimeLengthBound ∧ NonvanishingBesselPeriod ∧ FamilyMassLastLine
 
 def Conclusion5₂ (D : D7) (sc : Scale) (C0 C : ℝ) : Prop := Conclusion5 D sc C0 C ∧ TorusPairsWithVariant D sc C0 C ∧ VandermondeVariationBound D sc C0 C
 

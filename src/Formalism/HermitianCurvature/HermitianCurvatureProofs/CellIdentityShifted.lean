@@ -73,7 +73,7 @@ theorem isDFrame_swap (Ds : B.RealPlaceData k r Wp Wq) (Ds' : B.RealPlaceData k 
   simp only [D.IsDFrame, D.cofR, D.cofL, hz, hz']
 
 theorem muR_swap (Ds : B.RealPlaceData k r Wp Wq) (Ds' : B.RealPlaceData k r Wp Wq') (hz : Ds'.z = Ds.z)
-    (_hz' : Ds'.z' = Ds.z') (γ : B.Mat k r) (w : Equiv.Perm (Fin (r + 1))) :
+    (γ : B.Mat k r) (w : Equiv.Perm (Fin (r + 1))) :
     D.muR Ds' γ w = D.muR Ds γ w := by
   unfold D.muR D.rhoOfU
   rw [hz]
@@ -220,7 +220,7 @@ theorem cell_identity_shifted : CellIdSh := by
       Formalism.FourierDecayAlt.P.isotropic_vectors_linear_indep _ _ _ _ p.T.base p.ν' p.m₀ f γ hγ g p.hF hG' hgGV hZ hF]
     convert orbJ_swap p.T.base q.T.base hz hz' hπ hW hN hW' A hA f g hgGV hGf _ hrel hH θ hθ hi using 2
     congr 1
-    exact muR_swap p.T.base q.T.base hz hz' g _
+    exact muR_swap p.T.base q.T.base hz g _
   · have h1 : ¬ ∃ g ∈ B.GV Pa.k Pa.r, Zhat Pa.k Pa.r q.T.base.z q.T.base.z' g = D.ptMatN γ (Pa.r + 1) ∧
         D.IsDFrame q.T.base q.ν' q.m₀ g := by
       rintro ⟨g, hg1, hg2, hg3⟩

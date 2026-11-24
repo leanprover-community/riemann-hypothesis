@@ -565,7 +565,7 @@ theorem fd_unip_move_of (hm : SMajXZ E) : ShortVectorBound (E := E) → UnitaryC
     ReducedFrameDomainCovering (E := E) → IsotropicCoefficientSplitting (E := E) → NoShortVectorLowerBound (E := E) →
     UnitaryUnipotentMove (E := E) := fun h4 h2i h2ii h5 h6 =>
   top_of sEmb radius_pos_le_tenth kato_norm_relation_tame_prime final_numerical_inequalities epsilonZero_pos (sCmp_of hm) sMajFlag sFlagMap sGraph sSplit
-    (sDelta_of sEmb sExt sDual h5 h6) h4 h2i h2ii
+    (sDelta_of sExt sDual h5 h6) h4 h2i h2ii
 
 end UnipMove
 end -- clump:auto

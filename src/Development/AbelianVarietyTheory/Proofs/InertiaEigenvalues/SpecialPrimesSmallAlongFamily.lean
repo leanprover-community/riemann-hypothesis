@@ -64,7 +64,7 @@ theorem ev_pow_le_exp {eps : ℝ} (he : 0 < eps) (K s : ℝ) :
   rwa [le_div_iff₀ hpos] at hx
 
 theorem midG_alg (C f r m b l S t η large₂ P : ℝ) (hC : 0 ≤ C) (hf : 1 ≤ f) (hm : 1 ≤ m) (hb : 0 ≤ b)
-    (hr : 0 ≤ r) (hl : 2 * r ≤ l) (hl0 : 0 < l) (hX : r * (S + t + η + large₂) ≤ m * b / 4)
+    (hl : 2 * r ≤ l) (hl0 : 0 < l) (hX : r * (S + t + η + large₂) ≤ m * b / 4)
     (hP : P * large₂ ≤ b / 4) :
     C * f * (r * (b / l + S + t + η + large₂) + m * b) + C * P * large₂ ≤ 2 * C * f * m * b := by
   have h1 : r * (b / l) ≤ b / 2 := by
@@ -266,7 +266,7 @@ theorem at_one {D : D7} (L : SizeData₂ D) (P : ParameterChoice' D L) (hS : Siz
     obtain ⟨h2r, hl0⟩ := hl2r l hl
     unfold midG
     exact midG_alg C D.R.f D.R.r D.R.m L.sc.b l L.Sc D.R.t L.etaSz (large₂ L)
-      (((D.R.f : ℝ) * D.R.r * D.R.t) ^ C) (by linarith) hf1 hm1 hb0 hr0 h2r hl0 hX hP
+      (((D.R.f : ℝ) * D.R.r * D.R.t) ^ C) (by linarith) hf1 hm1 hb0 h2r hl0 hX hP
   refine ⟨hsmall, ?_, hsb, ?_⟩
   · show 8 ≤ L.sc.x ^ L.sc.eps; linarith
   · rw [hbe]; linarith [Real.add_one_le_exp (L.sc.x ^ L.sc.eps)]

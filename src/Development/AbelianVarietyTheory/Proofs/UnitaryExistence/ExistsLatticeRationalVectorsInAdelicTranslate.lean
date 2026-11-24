@@ -82,7 +82,7 @@ lemma gen_eq (a : FiniteAdeleRing (𝓞 F) F) (x : Fin n → E) :
   ext i; simp [fv]
 
 lemma fv_mem_hat {S : Set (Fin n → E)} {x : Fin n → E} (hx : x ∈ S) : fv F x ∈ hat F S :=
-  AddSubgroup.subset_closure ⟨1, fun v => one_mem _, x, hx, rfl⟩
+  AddSubgroup.subset_closure ⟨1, fun _ => one_mem _, x, hx, rfl⟩
 
 lemma hat_smul_int {S : Set (Fin n → E)} {a : FiniteAdeleRing (𝓞 F) F}
     (ha : ∀ v, a v ∈ v.adicCompletionIntegers F) {z : Fin n → RA F E} (hz : z ∈ hat F S) :

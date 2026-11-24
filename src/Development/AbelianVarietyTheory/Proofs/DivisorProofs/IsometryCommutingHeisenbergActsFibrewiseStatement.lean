@@ -541,7 +541,7 @@ theorem exists_lev_subset (y : κ → Af F) (V : Set (κ → Af F)) (hV : IsOpen
 
 def Freq (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)) : Set (κ → AF F) := {b | ∀ i, (b i).1 = 0 ∧ ev1 v * (b i).2 = 0}
 
-theorem zero_mem_freq (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)) : (0 : κ → AF F) ∈ Freq v := fun i =>
+theorem zero_mem_freq (v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)) : (0 : κ → AF F) ∈ Freq v := fun _ =>
   ⟨rfl, show ev1 v * (0 : Af F) = 0 from mul_zero _⟩
 
 theorem add_mem_freq {v : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Pl (F := F)} {b b' : κ → AF F} (h : b ∈ Freq v) (h' : b' ∈ Freq v) :

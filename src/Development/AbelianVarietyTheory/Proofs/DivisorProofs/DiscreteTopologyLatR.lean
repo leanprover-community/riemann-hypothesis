@@ -375,7 +375,7 @@ instance discreteTopology_latR (k : ℕ) : DiscreteTopology (latR F E k) :=
   DiscreteTopology.of_continuous_injective
     (f := fun x : latR F E k => (⟨glTens F E k x.1, latR_le k x.2⟩ : GlobalTheory.UnitaryBC.latticeGL E k))
     (((glTens F E k).continuous.comp continuous_subtype_val).subtype_mk _)
-    (fun x y h => Subtype.ext ((glTens F E k).injective (congrArg Subtype.val h)))
+    (fun _ _ h => Subtype.ext ((glTens F E k).injective (congrArg Subtype.val h)))
 
 end GlobalTheory.GLOneVol
 end -- clump:auto

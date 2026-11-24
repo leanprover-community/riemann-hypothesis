@@ -862,7 +862,7 @@ theorem final_bound (C₀ C : ℝ) (hC₀ : 0 ≤ C₀) (hC : 0 < C) : ∃ C' : 
   rw [this]
   linarith
 
-theorem log_one_add_le (t : ℝ) (ht : 0 < t) : Real.log (1 + t) ≤ Real.log 2 + Real.posLog t := by
+theorem log_one_add_le (t : ℝ) : Real.log (1 + t) ≤ Real.log 2 + Real.posLog t := by
   have h1 : Real.log (1 + t) ≤ Real.posLog (1 + t) := by
     rw [Real.posLog]; exact le_max_right _ _
   have h2 := Real.posLog_add (x := 1) (y := t)
@@ -985,7 +985,7 @@ theorem mean_log_sup : ∃ C : ℝ, 0 ≤ C ∧ ∀ (E : Type) [Field E] [Number
     have hA : mean L (fun σ => Real.log (1 + 1 / r σ)) ≤
         Real.log 2 + 1 / 2 * Real.log (1 + C * (Φ + (D.g : ℝ) ^ 2 * Real.log (2 * D.g))) := by
       have h1 : mean L (fun σ => Real.log (1 + 1 / r σ)) ≤ mean L (fun σ => Real.log 2 + Real.posLog (1 / r σ)) :=
-        mean_mono fun σ => log_one_add_le _ (by have := hr0 σ; positivity)
+        mean_mono fun σ => log_one_add_le _
       rw [mean_add, mean_const, mean_eq (fun σ => Real.posLog (1 / r σ))] at h1
       have h2 : Real.log (1 + finMean (fun σ => (r σ ^ 2)⁻¹)) ≤
           Real.log (1 + C * (Φ + (D.g : ℝ) ^ 2 * Real.log (2 * D.g))) :=
@@ -1504,7 +1504,7 @@ theorem sum_bound (a : ArchFrame P z g) (n r : ℕ) (f : Fin r → (Fin g → �
       intro j
       have h2 := hs j w
       simp only [ArchFrame.nrm] at h2
-      simp only [coe_normSeminorm, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hk]
+      simp only [coe_normSeminorm, norm_mul, Complex.norm_real, Real.norm_eq_abs]
       have h3 : Mv⁻¹ * e * ‖f j w‖ = Mv⁻¹ * (‖f j w‖ * e) := by ring
       first
         | rw [abs_of_pos (inv_pos.2 hM), abs_of_pos hepos, h3, inv_mul_le_iff₀ hM, _root_.mul_one]

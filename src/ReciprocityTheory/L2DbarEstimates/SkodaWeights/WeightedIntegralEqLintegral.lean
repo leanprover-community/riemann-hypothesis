@@ -78,7 +78,7 @@ theorem volOpenPos (n : ℕ) (M : Type*) [TopologicalSpace M] [T2Space M]
     rw [himg]
     exact (e.isOpen_image_of_subset_source hW Set.inter_subset_right).measure_pos _
       ⟨e x, x, ⟨hx, hxe⟩, rfl⟩
-  rw [← vol_image n z hz e.source e.open_source hinj _ hW.measurableSet
+  rw [← vol_image n z hz e.source hinj _ hW.measurableSet
     Set.inter_subset_right] at hpos
   exact hpos.trans_le (measure_mono Set.inter_subset_left)
 

@@ -447,9 +447,9 @@ theorem lintegral_resQ (ha : 0 < a) (μ : Measure (GA E a)) [μ.IsHaarMeasure] (
 def cuspidalL2Functions (μ : Measure (GA E a)) [μ.IsHaarMeasure] : Submodule ℂ (GA E a → ℂ) where
   carrier := {φ | φ ∈ cuspCont E a ∧ MemL2Quotient (latticeGL E a) μ φ}
   zero_mem' := ⟨zero_mem _, fun _ _ _ => rfl, MemLp.zero⟩
-  add_mem' := fun {φ ψ} h h' => ⟨add_mem h.1 h'.1, fun γ hγ g => congrArg₂ (· + ·) (h.2.1 γ hγ g) (h'.2.1 γ hγ g),
+  add_mem' := fun {_ _} h h' => ⟨add_mem h.1 h'.1, fun γ hγ g => congrArg₂ (· + ·) (h.2.1 γ hγ g) (h'.2.1 γ hγ g),
     h.2.2.add h'.2.2⟩
-  smul_mem' := fun z φ h => ⟨Submodule.smul_mem _ z h.1, fun γ hγ g => congrArg (z • ·) (h.2.1 γ hγ g),
+  smul_mem' := fun z _ h => ⟨Submodule.smul_mem _ z h.1, fun γ hγ g => congrArg (z • ·) (h.2.1 γ hγ g),
     h.2.2.const_smul z⟩
 
 section Maps
@@ -555,7 +555,7 @@ theorem exists_transfer_op (ha : 0 < a) (c : ENNReal) (hct : c ≠ ⊤)
   have hm := memLp_resQ (μ := μ) (ν := ν) ha c hct hmap
   exists_extend_equivariant (toL2cusp μ) (toCusp hm) (denseRange_toL2cusp μ) (Real.sqrt c.toReal)
     (norm_toCusp ha c hmap hm) (fun x : normOneGL (K := E) (n := a) => Rcusp μ (x : GA E a)) (fun x => cuspRep ν x)
-    (fun x => trFn (x : GA E a)) (fun x s => Rcusp_toL2cusp _ s) (fun x s => cuspRep_toCusp hm x s)
+    (fun x => trFn (x : GA E a)) (fun _ s => Rcusp_toL2cusp _ s) (fun x s => cuspRep_toCusp hm x s)
 
 end GlobalTheory.CompanionTheory.CuspTransfer
 end

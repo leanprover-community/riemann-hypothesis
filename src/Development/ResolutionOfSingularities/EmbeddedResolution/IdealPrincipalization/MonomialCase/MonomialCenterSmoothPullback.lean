@@ -121,10 +121,9 @@ theorem centerInvariant_le_iff {Y Y' : Scheme.{u}} (I : Y.IdealSheafData) (m : �
           sortedIndices (lexMaxIndices I m L) = sortedIndices (lexMaxIndices I' m' L'))) :=
   Iff.rfl
 
-theorem minIndexCard_ne_zero_and_le_pullbackOverField (_hGeom : MonomialGeometryHypotheses.{u}) (T : MarkedIdealWithBoundary.{u})
+theorem minIndexCard_ne_zero_and_le_pullbackOverField (T : MarkedIdealWithBoundary.{u})
     (Y : Scheme.{u}) (k' : Type u) [Field k'] (q : Y ⟶ Spec (CommRingCat.of k'))
-    (g : Y ⟶ T.scheme) (_hT : IsLocallyMonomialTriple T)
-    (_hT' : IsLocallyMonomialTriple (T.pullbackOverField Y k' q g))
+    (g : Y ⟶ T.scheme)
     (hP : IsComponentCompatiblePullback T Y k' q g)
     (h0 : minIndexCard (T.pullbackOverField Y k' q g).ideal (T.pullbackOverField Y k' q g).mult
         (T.pullbackOverField Y k' q g).boundary ≠ 0) :
@@ -331,7 +330,7 @@ theorem minIndexCard_pullbackOverField_eq_zero_or_centerInvariant_le (hGeom : Mo
       (T.pullbackOverField Y k' q g).boundary = 0
   · exact Or.inl h0'
   refine Or.inr ?_
-  obtain ⟨h0, hle⟩ := minIndexCard_ne_zero_and_le_pullbackOverField hGeom T Y k' q g hT hT' hP h0'
+  obtain ⟨h0, hle⟩ := minIndexCard_ne_zero_and_le_pullbackOverField T Y k' q g hP h0'
   rw [centerInvariant_le_iff, centerInvariant_lt_iff_lex]
   rcases lt_or_eq_of_le hle with hlt | heq
   · exact Or.inl (Or.inl hlt)

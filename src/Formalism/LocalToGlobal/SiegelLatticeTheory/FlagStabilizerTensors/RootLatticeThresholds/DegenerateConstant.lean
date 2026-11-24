@@ -28,7 +28,7 @@ structure UC where
   secondOrderBound : ℝ → ℝ
   ChF : ℝ → ℝ
 
-def c0ND (CT A C0 : ℝ) (U : UC) : ℝ :=
+def c0ND (U : UC) : ℝ :=
   let c := max (max U.c3 1) (max (|U.cH| + 2) (|U.cV| + 2))
   max c (4 + (c ^ 2 + 2 * max (U.ChF (9 * c + 3) - c) 0) * (6 * c + 2))
 
@@ -37,7 +37,7 @@ def degenerateConstant (CT : ℝ) (U : UC) : ℝ :=
   max (max c (4 + (c ^ 2 + 2 * max (U.ChF (9 * c + 3) - c) 0) * (6 * c + 2)))
     (max (2 * U.secondOrderBound (9 * c + 3)) |U.CaF (9 * c + 3)|)
 
-def corankOneConstant (CT A C0 CGam : ℝ) (U : UC) : ℝ :=
+def corankOneConstant (A C0 CGam : ℝ) (U : UC) : ℝ :=
   let c := max (max U.c3 1) (max (max (|U.cH| + 2) (|U.cV| + 2)) (max (|U.cS| + 2) (|U.c4| + 2)))
   max (max (4 * Real.sqrt A) (2 * Real.sqrt (2 * C0) * c))
     (max (CGam + U.secondOrderBound (9 * c + 3)) (4 + 2 * (c ^ 2 + 2 * max (U.ChF (9 * c + 3) - c) 0) * (c + 1)))
@@ -73,7 +73,7 @@ theorem rowsKBU (U : UC) (hU : UAdm Fm C1 X Y Cg cb Cu cT CT C0 A U) :
   exact rows_KBound_of (Y x hx i u u') hH (rows_stHH_mono (by linarith [le_abs_self U.cH])
     (by linarith [neg_abs_le U.cH]) (h u u')) hc1 hCT
 
-def c0U (CT A C0 CGam : ℝ) (U : UC) : ℝ := max (c0ND CT A C0 U) (max (degenerateConstant CT U) (corankOneConstant CT A C0 CGam U))
+def c0U (CT A C0 CGam : ℝ) (U : UC) : ℝ := max (c0ND U) (max (degenerateConstant CT U) (corankOneConstant A C0 CGam U))
 
 end Fam
 

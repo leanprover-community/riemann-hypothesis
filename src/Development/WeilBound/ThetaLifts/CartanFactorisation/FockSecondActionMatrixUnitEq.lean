@@ -174,7 +174,7 @@ theorem line_at {m P Q R S r s : ℕ} {κ : Type} [Fintype κ] (hcm : IsCMExt F 
 theorem radMax_pair {n d P Q R S : ℕ} {X : Spc F E n} {W : Spc F E d} {B : Base F E} {M : Model σ X W} {om : Rep σ X W}
     (hcm : IsCMExt F E σ) {A : InfinitePlace F → Matrix (Fin n) (Ix P Q) ℂ} {C : InfinitePlace F → Matrix (Fin d) (Ix R S) ℂ}
     (fr : Framed B.emb (incM F X.J) (incM F W.J) 1 Complex.I A C) {Φ : Tens F P Q R S →ₗ[ℂ] SInf F (Fin n × Fin d)}
-    (inj : Function.Injective Φ) (hr : LinearMap.range Φ = M.Pol B.ψ B.emb) {c₁ c₂ : InfinitePlace F → ℂ}
+    (hr : LinearMap.range Φ = M.Pol B.ψ B.emb) {c₁ c₂ : InfinitePlace F → ℂ}
     (h1 : ActsBy B.emb A (om.comp (MonoidHom.inl _ _)) Φ (fockAct1 P Q R S) c₁)
     (h2 : ActsBy B.emb C (om.comp (MonoidHom.inr _ _)) Φ (fockAct2 P Q R S) c₂) (hc₂ : ∀ w, starRingEnd ℂ (c₂ w) = c₂ w)
     (ho : ∀ w, One P Q R S (-c₁ w)) : RadMaxAt B M om := by
@@ -293,12 +293,12 @@ theorem radMax_of (hF : FockEx) (hP : PolRange) (h1 : LieFirst) (h2 : LieSecond)
   have hwp' : IsUWeilPair (cA σ) (adeleClass F) B.ψ (-1) (incM F G.V'.J) (incM F G.W.J) G.M'.co X.α (X.α / X.β) om' := t.weil'
   obtain ⟨d, hd, hB1⟩ := hwp.2.1
   obtain ⟨d', hd', hB1'⟩ := hwp'.2.1
-  exact ⟨radMax_pair hb.cm fr hΦ.1 (hP F E σ _ _ _ _ _ _ G.V G.W G.M B.ψ B.emb A C Φ hb.cm hb.std fr a1 a2 hΦ)
+  exact ⟨radMax_pair hb.cm fr (hP F E σ _ _ _ _ _ _ G.V G.W G.M B.ψ B.emb A C Φ hb.cm hb.std fr a1 a2 hΦ)
       (h1 F E σ _ _ _ _ _ _ _ B.ψ B.emb _ _ G.M.co d 1 Complex.I A C Φ _ _ _ hb.cm hb.std fr hΦ hd hB1
         (hasExp_div B.emb hc.expβ hc.expα))
       (h2 F E σ _ _ _ _ _ _ _ B.ψ B.emb _ _ G.M.co 1 Complex.I A C Φ _ X.β B.mβ hb.cm hb.std fr hΦ hwp.1 hc.expβ)
       (fun w => by simp [map_ofNat]) fun w => (od w).1,
-    radMax_pair hb.cm fr' hΦ'.1 (hP F E σ _ _ _ _ _ _ G.V' G.W G.M' B.ψ B.emb A' C' Φ' hb.cm hb.std fr' a1' a2' hΦ')
+    radMax_pair hb.cm fr' (hP F E σ _ _ _ _ _ _ G.V' G.W G.M' B.ψ B.emb A' C' Φ' hb.cm hb.std fr' a1' a2' hΦ')
       (h1 F E σ _ _ _ _ _ _ _ B.ψ B.emb _ _ G.M'.co d' 1 Complex.I A' C' Φ' _ _ _ hb.cm hb.std fr' hΦ' hd' hB1'
         (hasExp_div B.emb hc.expα hc.expβ))
       (h2 F E σ _ _ _ _ _ _ _ B.ψ B.emb _ _ G.M'.co 1 Complex.I A' C' Φ' _ X.α B.mα hb.cm hb.std fr' hΦ' hwp'.1 hc.expα)

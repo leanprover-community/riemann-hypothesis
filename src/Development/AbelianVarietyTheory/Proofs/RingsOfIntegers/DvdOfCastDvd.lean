@@ -92,7 +92,7 @@ theorem kill {Dw : Datum H} {l : Level H} (Xo : Moduli Dw l) {T : Over Xo.X} (t 
   exact h a ha
 
 omit [IsCMField E] in
-theorem dvd_of_cast_dvd {p m : ℕ} (hp : p.Prime) (h : (p : 𝓞 E) ∣ (m : 𝓞 E)) : p ∣ m := by
+theorem dvd_of_cast_dvd {p m : ℕ} (h : (p : 𝓞 E) ∣ (m : 𝓞 E)) : p ∣ m := by
   have h2 := map_dvd (Algebra.norm ℤ) h
   have e1 : (p : 𝓞 E) = algebraMap ℤ (𝓞 E) (p : ℤ) := by simp
   have e2 : (m : 𝓞 E) = algebraMap ℤ (𝓞 E) (m : ℤ) := by simp
@@ -164,7 +164,7 @@ theorem factorisation : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (
           obtain ⟨q, rfl⟩ := hMN
           rw [hl]
           exact (mul_dvd_mul haM hbM).trans ⟨(q : 𝓞 E) ^ 2, by push_cast; ring⟩
-        exact hp.dvd_of_dvd_pow (dvd_of_cast_dvd hp h4)
+        exact hp.dvd_of_dvd_pow (dvd_of_cast_dvd h4)
       · exact hℓM.trans hMN
     obtain ⟨N', hN'⟩ := hℓN
     have hN'0 : N' ≠ 0 := right_ne_zero_of_mul (hN' ▸ hN0)

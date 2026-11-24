@@ -1386,7 +1386,7 @@ theorem rigid (W : Subring K) (hW : IsClosed (W : Set K)) (hW1 : ∀ w ∈ W, �
   obtain ⟨r1, r2, r3, r4⟩ := rigid_dual m (φ A₀) (φ B₀) (φ a₀) (n₀.map φ) (h₀.map φ) k2 k3 ha₀ (hu a₀ ha) hsq₀
     (by
       have : -16 * (4 * A₀ ^ 3 + 27 * B₀ ^ 2) = 1 := S.subtype_injective (by
-      simp only [map_pow, map_neg, map_add (f := _), map_mul, map_ofNat, map_one, map_natCast]; exact hΔ)
+      simp only [map_pow, map_neg, map_add (f := _), map_mul, map_ofNat, map_one]; exact hΔ)
       simpa [map_ofNat] using congrArg φ this)
     (mn₀.map _) (mh₀.map _) (by rw [mn₀.natDegree_map, dn₀, dn]) (by rw [mh₀.natDegree_map, dh₀]) hco
     (by simpa only [Polynomial.map_add (f := _), Polynomial.map_mul, Polynomial.map_pow, Polynomial.map_sub, map_C, map_X,

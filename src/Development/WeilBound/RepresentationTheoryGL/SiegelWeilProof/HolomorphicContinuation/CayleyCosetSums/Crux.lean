@@ -969,7 +969,7 @@ theorem vacuum_nonvanishing_of_facts (hFd : FdProps) (hDj : DjFd) (hKS : KSplit)
     intro x P' S' hxM hx hP hS
     simp only [hΦdef]
     congr 1; funext k
-    rw [← mul_assoc, Fd_kpart m j (ι k * x) (hDZ _ (hx k)) P' S' hP hS]
+    rw [← mul_assoc, Fd_kpart m j (ι k * x) P' S' hP hS]
 
   set a1 : ℂ := deriv (fun z : ℂ => (∏ i ∈ Finset.range j, ((i : ℂ) - z)) * (∏ i ∈ Finset.range (n - j), ((i : ℂ) - m - z))) 0
   have ha1 : a1 ≠ 0 := deriv_prod_range_sub_mul_prod_ne_zero n m hmn
@@ -990,14 +990,14 @@ theorem vacuum_nonvanishing_of_facts (hFd : FdProps) (hDj : DjFd) (hKS : KSplit)
     have hF1 : ContDiffOn ℂ ∞ F1 (Dom n) := rit_contDiffOn _ _ isOpen_dom (contDiffOn_hF j (m : ℤ) 0) N _
     have hF1law : ∀ P x, InP P → x ∈ Dom n → F1 (P * x) = c1 (m : ℤ) 0 P * F1 x :=
       rit_law _ (Dom n) isOpen_dom (contDiffOn_hF j (m : ℤ) 0) (c1 (m : ℤ) 0) (fun P x hP hx => mul_mem_dom hP hx)
-        (fun P x hP hx => hF_law j (m : ℤ) 0 hP hx) N _
+        (fun P x hP hx => hF_law j (m : ℤ) 0 hP) N _
     have e1 : ∀ k, iteratedFDeriv ℂ (N + 1) (hF j (m : ℤ) 0) (ι k) (fun i => ι k * v i) =
         rit F1 1 (fun _ => v 0) (ι k) := by
       intro k
       rw [← rit_eq (hF j (m : ℤ) 0) (Dom n) isOpen_dom (contDiffOn_hF j (m : ℤ) 0) (N + 1) v hv (ι k) (hdom k)]
       rfl
     have hT := rit_transpose infInv F1 (c1 (m : ℤ) 0) (c2 (m : ℤ) 0) hF1 hF1law (fun P hP => modulus_characters_product (m : ℤ) 0 hP)
-      Kg μ ι hι hK 1 (fV (m : ℤ) 0) (contDiffOn_fV (m : ℤ) 0) (fun P x hP hx => fV_law (m : ℤ) 0 hP hx)
+      Kg μ ι hι hK 1 (fV (m : ℤ) 0) (contDiffOn_fV (m : ℤ) 0) (fun P x hP hx => fV_law (m : ℤ) 0 hP)
       (fun _ => v 0) (fun a b => hv 0 0)
     simp_rw [e1]
     rw [hT]
@@ -1134,7 +1134,7 @@ theorem vacuum_nonvanishing_of_facts (hFd : FdProps) (hDj : DjFd) (hKS : KSplit)
     rw [e, e]; exact WD_mul_WD_B_A j T S T' S'
   have weight_sum_eq := transpose_detD infInv (hF j (m : ℤ) 0) (fV (m : ℤ) 0) (c1 (m : ℤ) 0) (c2 (m : ℤ) 0)
     (contDiffOn_hF j (m : ℤ) 0) (contDiffOn_fV (m : ℤ) 0)
-    (fun P' x hP hx => hF_law j (m : ℤ) 0 hP hx) (fun P' x hP hx => fV_law (m : ℤ) 0 hP hx)
+    (fun P' x hP hx => hF_law j (m : ℤ) 0 hP) (fun P' x hP hx => fV_law (m : ℤ) 0 hP)
     (fun P' hP => modulus_characters_product (m : ℤ) 0 hP) Kg μ ι hι hK (LR (blkA j) 1) (LQ (blkB j) 1) hWz
   rw [stepF] at weight_sum_eq
   have stepE3 : ∫ k, hF j (m : ℤ) 0 (ι k) * detD (fun T : Matrix (blkA (n := n) j) (blkA j) ℂ =>

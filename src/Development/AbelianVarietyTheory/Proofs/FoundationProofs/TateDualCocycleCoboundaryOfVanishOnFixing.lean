@@ -387,7 +387,7 @@ def Good (S : Γ →* Matrix (Fin m) (Fin m) K) (P : Submodule K (Fin m → K)) 
   ∃ T ∈ augSpan S, ∀ v ∈ P, T *ᵥ v = v
 
 theorem good_sup (S : Γ →* Matrix (Fin m) (Fin m) K) {L P : Submodule K (Fin m → K)}
-    (hL : Stable S L) (hP : Stable S P) (gL : Good S L) (gP : Good S P) : Good S (L ⊔ P) := by
+    (hL : Stable S L) (gL : Good S L) (gP : Good S P) : Good S (L ⊔ P) := by
   obtain ⟨T₁, h₁, e₁⟩ := gL
   obtain ⟨T₂, h₂, e₂⟩ := gP
   refine ⟨T₁ + T₂ - T₁ * T₂, Submodule.sub_mem _ (Submodule.add_mem _ h₁ h₂)
@@ -514,7 +514,7 @@ theorem good_of_stable (S : Γ →* Matrix (Fin 3) (Fin 3) K) [IsAlgClosed K]
       exact ⟨hx, this.2⟩
     have hRlt : Module.finrank K R < n := by
       rw [← hn]; exact Submodule.finrank_lt_finrank_of_lt (lt_of_le_of_ne inf_le_left hRne)
-    have g := good_sup S hQs hRs (ih _ hQlt Q hQs rfl) (ih _ hRlt R hRs rfl)
+    have g := good_sup S hQs (ih _ hQlt Q hQs rfl) (ih _ hRlt R hRs rfl)
     rwa [hQR] at g
 
 end GlobalTheory.AugCore

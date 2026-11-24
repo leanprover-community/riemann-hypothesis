@@ -247,7 +247,7 @@ theorem aaFun_data {k r : ℕ} {u : Fin k → ℝ}
   obtain ⟨hz, hT, hc, hπ, hW, hN⟩ := hB
   obtain ⟨hz', hT', hc', hπ', hW', hN'⟩ := hB'
   obtain ⟨a, ha, had, hUW, hNN, hψ, hfr⟩ := _root_.ReciprocityTheory.ChartRestriction.DS.Lap.TransportGeo.conj_data hz hT hc hz' hT' hc'
-  obtain ⟨U, hU⟩ := _root_.ReciprocityTheory.ChartRestriction.DS.Lap.TransportGeo.pi_conj had hz hT hz' hT' hUW hfr hπ hπ'
+  obtain ⟨U, hU⟩ := _root_.ReciprocityTheory.ChartRestriction.DS.Lap.TransportGeo.pi_conj hT hT' hfr hπ hπ'
   obtain ⟨κW, hκW, hWeq⟩ := haar_unique (uw_closedSubgroup k r z')
     (Formalism.FourierDecayAlt.P.weyl_haar_exists k r z' hz' hT') (haar_conj had hUW hW) hW'
   obtain ⟨κN, hκN, hNeq⟩ := haar_unique (n_closedSubgroup k r)

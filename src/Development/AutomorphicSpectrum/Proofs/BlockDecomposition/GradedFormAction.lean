@@ -54,8 +54,8 @@ variable {R : Type} [CommRing R] {C : Type 1} [Category.{0} C] {A : C ⥤ CommAl
 
 def mulSq (a b : IdF A) (T : C) (y : A.obj T) : sqM a b T →ₗ[R] sqM a b T where
   toFun x := ⟨Ideal.Quotient.mk _ y * x.1, Ideal.mul_mem_left ((a.S T).map (Ideal.Quotient.mk (b.S T))) _ x.2⟩
-  map_add' x x' := Subtype.ext (mul_add _ _ _)
-  map_smul' c x := Subtype.ext (mul_smul_comm _ _ _)
+  map_add' _ _ := Subtype.ext (mul_add _ _ _)
+  map_smul' _ _ := Subtype.ext (mul_smul_comm _ _ _)
 
 def mulMor (a b c : IdF A) (y : ∀ T : C, A.obj T)
     (hy : ∀ {T T' : C} (φ : T ⟶ T'), y T' - (A.map φ).hom (y T) ∈ c.S T')

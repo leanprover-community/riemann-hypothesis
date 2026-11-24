@@ -259,8 +259,8 @@ theorem separate_two (hS : SeparatesOnSmooth) (hNN : GlobalTheory.Published.NefN
   have hne : zC 0 s₀ ≠ zC 1 s₀ := fun e => hz (by
     rw [← hz₁, ← hz₁ 1, GlobalTheory.section_eq_of_point_eq ℂ _ q _ _ (hz₂ 0) (hz₂ 1) e])
   obtain ⟨s, hs⟩ := separate_complex hS hNN _ q D hq hD (CanonLB.baseChange H K) (N.pull π) (N'.pull π) (B.pull π)
-    hNC _ _ m (zC 0 s₀) (zC 1 s₀) (GlobalTheory.secClosed_closedPoint ℂ _ q _ hq (hz₂ 0))
-    (GlobalTheory.secClosed_closedPoint ℂ _ q _ hq (hz₂ 1)) hne hNnC hbig (nef_pull hNN p q π hp hq N' hN'n) hm
+    hNC _ _ m (zC 0 s₀) (zC 1 s₀) (GlobalTheory.secClosed_closedPoint ℂ _ q _ (hz₂ 0))
+    (GlobalTheory.secClosed_closedPoint ℂ _ q _ (hz₂ 1)) hne hNnC hbig (nef_pull hNN p q π hp hq N' hN'n) hm
     (fun Z e hZ hx he hd => hx.elim (fun hx => hpos 0 Z e hZ hx he hd) fun hx => hpos 1 Z e hZ hx he hd) hcB
   obtain ⟨g', hg'⟩ := exists_val_eq_tens_pull q π K.isLB hB (H0.ofSec q ⊤ s)
   have key := sum_val_pull_eq_zero p D hp hc hD (isLB_tens K.isLB hB) zC hz₂ k hkM hk₂ c (fun g => by

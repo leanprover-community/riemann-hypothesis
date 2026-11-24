@@ -110,7 +110,7 @@ def ConclusionB3 (D : D7) (Aw Ch Cg Cb : ℝ) : Prop :=
       ENNReal.ofReal (Real.exp (Cb * ((2 * D.R.rS + 2 : ℕ) : ℝ) ^ 5 * (Fintype.card D.what₂.Tau : ℝ) * Real.log b)) *
         jSqG D X
 
-def FormalDegreeRatioAlt (_D : D7) : Prop :=
+def FormalDegreeRatioAlt : Prop :=
   ∀ (n : ℕ) (ε : Fin n → Bool) (μ : Fin n → ℝ) (H : Type) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     [CompleteSpace H] (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) (X : TensorDS n ε μ H σ),
     IsHCParam μ → IsDS ε μ σ →

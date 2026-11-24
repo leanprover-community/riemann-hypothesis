@@ -121,7 +121,7 @@ namespace GlobalTheory
 open BoxSymLoc ReciprocityTheory.ChartRestriction.G.Out.LBxP
 
 theorem rigidified_sym_boxLB (S : Scheme.{0}) (G' G : Over S) [GrpObj G'] [IsCommMonObj G']
-    [GrpObj G] [IsCommMonObj G] (j : ℕ) (p : IsPowGrp G' G j) (L : LB G.left) (_hL : L.IsLB) :
+    [GrpObj G] [IsCommMonObj G] (j : ℕ) (p : IsPowGrp G' G j) (L : LB G.left) :
     (Rigidified G L → Rigidified G' (boxLB L p.pr)) ∧
       (Out.Sym G L → Out.Sym G' (boxLB L p.pr)) := by
   constructor
@@ -186,8 +186,8 @@ def powPolOf (P : PolAV S) {j : ℕ} (A' : Over S) [GrpObj A'] (p : IsPowGrp A' 
     smoothDim := (PowGrp.powers S A' P.A j p).2.2.1 P.g P.smoothDim
     L := boxLB P.L p.pr
     isLB := LB.isLB_linComb P.isLB _ _
-    rigid := (rigidified_sym_boxLB S A' P.A j p P.L P.isLB).1 P.rigid
-    sym := (rigidified_sym_boxLB S A' P.A j p P.L P.isLB).2 P.sym
+    rigid := (rigidified_sym_boxLB S A' P.A j p P.L).1 P.rigid
+    sym := (rigidified_sym_boxLB S A' P.A j p P.L).2 P.sym
     ample := T.relAmple_externalTensorPower_groupPower S A' P.A j p P.L P.isLB P.ample
     ktriv := T.kTriv_external_tensor_power_lineBundle S A' P.A j p P.L P.isLB P.ktriv }
 

@@ -554,7 +554,7 @@ theorem mem_den_iff (x : K) (a : 𝓞 K) :
     exact fun i => ⟨o, by simpa [Algebra.smul_def] using ho⟩
 
 theorem absNorm_den_le (x : K) (d e : 𝓞 K) (hd : d ≠ 0) (hex : (e : K) = (d : K) * x)
-    (B : Ideal (𝓞 K)) (hdB : Ideal.span {d} ≤ B) (heB : e ∈ B)
+    (B : Ideal (𝓞 K)) (heB : e ∈ B)
     (hfin : (Submodule.toAddSubgroup (Ideal.span {d})).relIndex (Submodule.toAddSubgroup B) ≠ 0) :
     Ideal.absNorm (den K x) ≤
       (Submodule.toAddSubgroup (Ideal.span {d})).relIndex (Submodule.toAddSubgroup B) := by
@@ -595,7 +595,7 @@ theorem absNorm_den_le (x : K) (d e : 𝓞 K) (hd : d ≠ 0) (hex : (e : K) = (d
         Nat.card_le_card_of_injective _ Subtype.val_injective
     _ = _ := rfl
 
-theorem span_le_mul (𝔱 a : Ideal (𝓞 K)) (h𝔱 : 𝔱 ≠ ⊥) (d : 𝓞 K) (hd : d ≠ 0)
+theorem span_le_mul (𝔱 a : Ideal (𝓞 K)) (h𝔱 : 𝔱 ≠ ⊥) (d : 𝓞 K)
     (H : ∀ b : K, (∀ u ∈ 𝔱, (u : K) * b ∈ (1 : Submodule (𝓞 K) K)) →
       ∃ y ∈ a, (y : K) = (d : K) * b) :
     Ideal.span {d} ≤ 𝔱 * a := by
@@ -663,7 +663,7 @@ theorem absNorm_mul_den_le_idx : ∀ (K : Type) [Field K] [NumberField K] (𝔱 
     exact h1 (Submodule.one_le.1 le_rfl)
   have ha0 : a ≠ ⊥ := fun h => hd (by simpa [h] using hda)
   have hdle : Ideal.span {d} ≤ 𝔱 * a :=
-    span_le_mul 𝔱 a h𝔱 d hd fun b hb => hga b (hinv b hb)
+    span_le_mul 𝔱 a h𝔱 d fun b hb => hga b (hinv b hb)
   have hBa : 𝔱 * a ≤ a := Ideal.mul_le_right
 
   have hinj : Function.Injective g.toAddMonoidHom := by
@@ -724,7 +724,7 @@ theorem absNorm_mul_den_le_idx : ∀ (K : Type) [Field K] [NumberField K] (𝔱 
   have heB : t * yw - d * o ∈ 𝔱 * a :=
     Ideal.sub_mem _ (Ideal.mul_mem_mul ht hywa)
       (hdle (Ideal.mem_span_singleton'.2 ⟨o, mul_comm _ _⟩))
-  have hden := absNorm_den_le x d _ hd heK (𝔱 * a) hdle heB hfin
+  have hden := absNorm_den_le x d _ hd heK (𝔱 * a) heB hfin
   rw [hidx, ← AddSubgroup.relIndex_mul_relIndex _ _ _ hdB hBa', relIndex_mul_ideal 𝔱 a ha0,
     mul_comm]
   exact Nat.mul_le_mul_right _ hden

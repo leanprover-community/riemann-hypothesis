@@ -467,7 +467,7 @@ theorem herm_swap (X : Data E r) (v w : Fin r → E) : herm X.Gm w v = cc (herm 
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
 
-theorem exists_cusp_mem {n : ℕ} (X : Data E r) (cu : CuspFD X (n + 1)) {ξ : Fin r → E} (h0 : ξ ≠ 0)
+theorem exists_cusp_mem {n : ℕ} (X : Data E r) (cu : CuspFD X (n + 1)) {ξ : Fin r → E}
     (hξ : herm X.Gm ξ ξ = 0) : ∃ cu' : CuspFD X (n + 1), ξ ∈ Submodule.span E (Set.range cu'.e) := by
   by_cases hm : ξ ∈ Submodule.span E (Set.range cu.e)
   · exact ⟨cu, hm⟩
@@ -707,7 +707,7 @@ theorem mem_iff_low_coeff_vanish : ∀ (D : D7) (T : Core D) (h : LawsCore T) (j
       omega⟩
     revert cu
     rw [hn]
-    exact fun cu => exists_cusp_mem _ cu hξ.2.2 hξ.2.1
+    exact fun cu => exists_cusp_mem _ cu hξ.2.1
   have hmain := fun k => GlobalTheory.maxCusps_iff_killed_coeff_vanish D.host.E D.R.r (WeightFamilies.rho D j) (T.X₀ j k) (hspan k)
     (hbas k) (laU (T.U j T.σ₀) (wtA ka) ka.n k) (fun _ _ _ γ hγ _ => hchi k γ hγ) (WeightFamilies.c1 D CR Tt c j) _ (hSS k)
   have hherm : ∀ χ : Matrix (Fin (WeightFamilies.rho D j)) (Fin (WeightFamilies.rho D j)) D.host.E,

@@ -1516,7 +1516,7 @@ theorem cochain_eq (R : Type) [CommRing R] (F : Shv R) (X : Scheme.{0})
 
 end LateralTheory.KummerTheory.DegreeZeroClassRestriction
 
-theorem LateralTheory.KummerTheory.Cls0_of (_hT : LateralTheory.KummerTheory.TwSec) : LateralTheory.KummerTheory.Cls0 := by
+theorem LateralTheory.KummerTheory.Cls0_of : LateralTheory.KummerTheory.Cls0 := by
   intro R _ F X α β h
   have e : α.1 = β.1 := LateralTheory.KummerTheory.DegreeZeroClassRestriction.cochain_eq R F X α.1 β.1 h
   exact congrArg CohomologyClass.mk (Cocycle.ext e)
@@ -1686,7 +1686,7 @@ theorem LateralTheory.Fix.Stalk.intersectionNumber_baseChange : LateralTheory.Ku
     LateralTheory.KummerTheory.TwSec_of LateralTheory.KummerTheory.PrimTors_of
       (LateralTheory.KummerTheory.SecSH_of LateralTheory.KummerTheory.ShSectPf.ShSect_of)
   exact LateralTheory.KummerTheory.Stalk_of
-    (LateralTheory.KummerTheory.etale_kummer_degree_zero_cohomology_of_twist_section_class_and_root_ex hT (LateralTheory.KummerTheory.Cls0_of hT)
+    (LateralTheory.KummerTheory.etale_kummer_degree_zero_cohomology_of_twist_section_class_and_root_ex hT (LateralTheory.KummerTheory.Cls0_of)
       (LateralTheory.KummerTheory.OneEx_of hT LateralTheory.KummerTheory.TwRes0_of LateralTheory.KummerTheory.Sec0Ex_of))
 end -- clump:auto
 end -- clump:auto

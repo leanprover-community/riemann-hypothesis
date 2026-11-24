@@ -57,8 +57,8 @@ theorem eq_smul_of_eigen {n : ℕ} (M : Matrix (Fin n) (Fin n) ℂ) (Z : GL (Fin
     ∃ l : ℂ, w = l • u := by
   set Zm : Matrix (Fin n) (Fin n) ℂ := (Z : Matrix (Fin n) (Fin n) ℂ)
   set Zi : Matrix (Fin n) (Fin n) ℂ := ((Z⁻¹ : GL (Fin n) ℂ) : Matrix (Fin n) (Fin n) ℂ)
-  have h1 : Zi * Zm = 1 := by simp [Zi, Zm, ← Units.val_mul]
-  have h2 : Zm * Zi = 1 := by simp [Zi, Zm, ← Units.val_mul]
+  have h1 : Zi * Zm = 1 := by simp [Zi, Zm]
+  have h2 : Zm * Zi = 1 := by simp [Zi, Zm]
   have hD : Zi * M = diagonal lam * Zi := by
     calc Zi * M = Zi * (M * Zm) * Zi := by rw [Matrix.mul_assoc, Matrix.mul_assoc, h2, Matrix.mul_one]
       _ = Zi * (Zm * diagonal lam) * Zi := by rw [hZ]

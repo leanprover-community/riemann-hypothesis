@@ -125,7 +125,7 @@ theorem card_entries_parPi (hm : G.NearMid) (hs : 1 ≤ G.s) (hg : G.s < G.ga) {
     card_tops hg0, card_cloudHalf, card_Cs' hm hs hg hi, GridData.rankP, G.n_eq]
   omega
 
-theorem card_parPi_le {i : ℕ} (hg : 0 < G.ga) : (G.parPi i).card ≤ (G.m + 1) + (G.k - 1) +
+theorem card_parPi_le {i : ℕ} : (G.parPi i).card ≤ (G.m + 1) + (G.k - 1) +
     ((Icc (G.m - i + 1) G.m).biUnion G.blockC').card := by
   rw [GridData.parPi]
   refine (card_union_le _ _).trans (add_le_add ((card_union_le _ _).trans (add_le_add ?_ ?_)) ?_)
@@ -137,7 +137,7 @@ theorem card_parPi (hm : G.NearMid) (hs : 1 ≤ G.s) (hg : G.s < G.ga) {i : ℕ}
     (G.parPi i).card = G.rankP i := by
   refine le_antisymm ?_ ((card_entries_parPi hm hs hg hi).symm.le.trans card_image_le)
   have := G.two_le_k
-  refine (card_parPi_le (by omega)).trans ?_
+  refine (card_parPi_le).trans ?_
   rw [card_Cs' hm hs hg hi, GridData.rankP, G.n_eq]
   omega
 

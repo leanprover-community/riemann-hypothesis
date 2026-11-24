@@ -329,8 +329,8 @@ def RestHecke : Prop :=
         (MvPolynomial.eval (fun x : Fin (X.t + 1) => m (j + 1) * X.qh v x.val)
           (MvPolynomial.esymm (Fin (X.t + 1)) X.G.Kf l)) • X.ecal v (i - l) j F)
 
-theorem alternate_expansion_of_relations (D : Formalism.BasicNotions.D7) (hH : RestHecke X) (hT : RestTmFQ X) (h3b : adm3b D X) (h3 : PointsLemma D X)
-    (h2b : MassRatio₂ D X) : KernelCommutationUpToUnits D X := by
+theorem alternate_expansion_of_relations (D : Formalism.BasicNotions.D7) (hH : RestHecke X) (hT : RestTmFQ X) (h3b : adm3b X) (h3 : PointsLemma X)
+    (h2b : MassRatio₂ D X) : KernelCommutationUpToUnits X := by
   intro v
   obtain ⟨u, m, hu, hm, H⟩ := hH v
   have hmh := vEqK_mHat X v u m hu hm

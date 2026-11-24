@@ -73,7 +73,7 @@ section point
 variable {k r : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {D : Set (Mx k r)} (hD : IsOpen D)
 
 theorem posL_cI_comp {t : ℕ} (a : Fin t → Fin (2 * r + k + 1)) : posL k r 0 ∘ (cI ∘ a) = a :=
-  funext fun l => posL_cI _
+  funext fun _ => posL_cI _
 
 theorem la_qminor {f : Mx k r → E} (hf : SmoothLev k r 0 D f) {t : ℕ} (a b : Fin t → Fin (2 * r + k + 1)) (u : ℂ)
     {x : Mx k r} (hx : x ∈ Glev k r 0 ∩ D) :
@@ -123,7 +123,7 @@ theorem diff_qminor {f : Mx k r → E} (hf : SmoothLev k r 0 D f) {t : ℕ} (a b
     (hcD : wCell k r (Fin.last r) c * g ∈ D) :
     DifferentiableAt ℝ (fun c' => qminorOp (EH k r) a b u f (wCell k r (Fin.last r) c' * g)) c :=
   Formalism.FourierDecayAlt.P.WeylCellAction.diff_comp (sm_qminor hD hf a b u) (φ := fun c' => wCell k r (Fin.last r) c' * g) cell_cd
-    (fun c' hc' => cell_mem hc' hg) hc hcD
+    (fun _ hc' => cell_mem hc' hg) hc hcD
 
 theorem la_E (v₀ : VS k r 0 D E) {x : Mx k r} (hx : x ∈ Glev k r 0 ∩ D) (p q : Fin (2 * r + k + 1)) (X : SA E hD) :
     La hD v₀ x (EA hD p q * X) = EH k r p q (((X : Module.End ℂ (VS k r 0 D E)) v₀ : VS k r 0 D E) : Mx k r → E) x := by

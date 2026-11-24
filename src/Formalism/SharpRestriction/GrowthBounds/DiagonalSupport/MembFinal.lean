@@ -514,7 +514,7 @@ theorem XG_supported (j : G) (x : MvPolynomial (ι × Fin n) O) (hx : x ∈ XG �
   rw [Finsupp.mem_support_iff] at hvd
   show π v.1 = j
   by_contra hne
-  exact hvd (by simp [partOf, Finsupp.filter_apply, hne])
+  exact hvd (by simp [partOf, hne])
 
 theorem XG_part (j : G) (x : MvPolynomial (ι × Fin n) O) (hx : x ∈ XG π LL Cv Cl F j) (mo : ι × Fin n →₀ ℕ)
     (hmo : mo ∈ x.support) : ∃ mo' ∈ F.support, partOf π j mo' = mo :=

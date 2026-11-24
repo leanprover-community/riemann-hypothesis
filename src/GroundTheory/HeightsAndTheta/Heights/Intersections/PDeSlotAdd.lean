@@ -97,7 +97,7 @@ theorem ptsIntegral_update_tensor (hE : ResExistsStatement) {P : Ideal (MRing ι
         (fun x => logNorm A s (R.lift x x)) := by
     intro X hX
     rw [← potOf_cons R X T]
-    exact brIntegrable R _ A s hP (hC X hX) hA hs
+    exact brIntegrable R _ A s (hC X hX) hA hs
   rw [e1]
   exact mIntAdd R.A _ _ _ hPM hPN hΦ _ (hI M hM) (hI N hN)
 

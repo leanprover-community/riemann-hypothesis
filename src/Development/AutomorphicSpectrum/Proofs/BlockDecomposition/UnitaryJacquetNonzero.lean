@@ -256,7 +256,7 @@ section -- clump:auto
 open scoped IntermediateField TensorProduct Matrix Pointwise NumberField Topology ContDiff NNReal ENNReal Polynomial DirectSum BigOperators InnerProductSpace Manifold
 
 noncomputable def UpperTheory.Reformulated.B.IwahoriEntryBound.latK :
-    (L : Type) → [inst : Field L] → [Valued L (WithZero (Multiplicative ℤ))] → (n : ℕ) → ℕ → Set (Fin n → L) :=
+    (L : Type) → [Field L] → [Valued L (WithZero (Multiplicative ℤ))] → (n : ℕ) → ℕ → Set (Fin n → L) :=
     fun (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (n k : ℕ) ↦
       {x : Fin n → L |
         ∀ (i : Fin n),
@@ -264,7 +264,7 @@ noncomputable def UpperTheory.Reformulated.B.IwahoriEntryBound.latK :
           else (Valued.v : L → WithZero (Multiplicative ℤ)) (x i) < (1 : WithZero (Multiplicative ℤ))}
 
 noncomputable def UpperTheory.Reformulated.B.IwahoriEntryBound.IwGL :
-    (L : Type) → [inst : Field L] → [Valued L (WithZero (Multiplicative ℤ))] → (n : ℕ) → Subgroup (GL (Fin n) L) :=
+    (L : Type) → [Field L] → [Valued L (WithZero (Multiplicative ℤ))] → (n : ℕ) → Subgroup (GL (Fin n) L) :=
     fun (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (n : ℕ) ↦
       ⨅ (k : Fin (n + (1 : ℕ))),
         Subgroup.comap Matrix.GeneralLinearGroup.toLin.toMonoidHom
@@ -309,7 +309,7 @@ end UpperTheory.Reformulated.B.IwahoriEntryBound.Helpers
 
 open UpperTheory.Reformulated.B.IwahoriEntryBound.Helpers in
 theorem UpperTheory.Reformulated.B.IwahoriEntryBound.main :
-    ∀ {L : Type} [inst : Field L] [inst_1 : Valued L (WithZero (Multiplicative ℤ))] {n : ℕ} {g : GL (Fin n) L},
+    ∀ {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))] {n : ℕ} {g : GL (Fin n) L},
       g ∈ UpperTheory.Reformulated.B.IwahoriEntryBound.IwGL L n →
         ∀ (i : Fin n),
           (Valued.v : L → WithZero (Multiplicative ℤ)) ((↑g : Matrix (Fin n) (Fin n) L) i i) =
@@ -978,7 +978,7 @@ noncomputable def UpperTheory.Reformulated.B.Qf37.aOp :
     fun {G : Type} [Group G] (R : Finset G) (t : G) (φ : G → ℂ) (g : G) ↦ ∑ r ∈ R, φ (g * r * t)
 
 theorem UpperTheory.Reformulated.B.Qf37.aOp_rightInvariant :
-    ∀ {G : Type} [inst : Group G] {I : Subgroup G} {t : G} {R : Finset G},
+    ∀ {G : Type} [Group G] {I : Subgroup G} {t : G} {R : Finset G},
       (∀ r ∈ R, r ∈ I) →
         (∀ i ∈ I, ∃! r : G, r ∈ R ∧ t⁻¹ * (r⁻¹ * i) * t ∈ I) →
           ∀ {φ : G → ℂ},
@@ -1074,7 +1074,7 @@ theorem exists_words (K : Subgroup G) (t : G) (R : Finset G) (h1 : (1 : G) ∈ R
       simp only [Function.comp, mul_assoc]
       rfl
 
-theorem finsum_left_mul {K I : Subgroup G} (hIK : I ≤ K) {φ : G → ℂ} (hφ : ∀ g, ∀ i ∈ I, φ (g * i) = φ g)
+theorem finsum_left_mul {K I : Subgroup G} {φ : G → ℂ} (hφ : ∀ g, ∀ i ∈ I, φ (g * i) = φ g)
     {k : G} (hk : k ∈ K) :
     ∑ᶠ c : K ⧸ I.subgroupOf K, φ (k * ((c.out : K) : G)) = ∑ᶠ c : K ⧸ I.subgroupOf K, φ ((c.out : K) : G) := by
   let kk : K := ⟨k, hk⟩
@@ -1215,7 +1215,7 @@ theorem heckeTrace : ∀ (G : Type) [Group G] (K I : Subgroup G), I ≤ K → Fi
   have hinv : ∀ ψ : G → ℂ, (∀ g, ∀ k ∈ K, ψ (g * k) = ψ g) → ∀ k ∈ K,
       (M.map fun x => ψ (k * x)).sum = (M.map ψ).sum := by
     intro ψ hψ k hk
-    rw [← hL ψ, ← finsum_left_mul hIK (aOp_iterate_rightInvariant hR hu (hIinv ψ hψ) j) hk,
+    rw [← hL ψ, ← finsum_left_mul (aOp_iterate_rightInvariant hR hu (hIinv ψ hψ) j) hk,
       finsum_eq_sum_of_fintype, hM]
     refine Finset.sum_congr rfl fun c _ => ?_
     rw [hWf ψ]

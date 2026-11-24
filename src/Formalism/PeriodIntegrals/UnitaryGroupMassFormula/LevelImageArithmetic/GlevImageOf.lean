@@ -100,7 +100,7 @@ lemma hpk_partner (k i r' : ℕ) (X p : Fin (2 * (i + r') + k + 1)) (hXv : X.val
   simp only [Fin.ext_iff]
   split_ifs <;> first | rfl | omega
 
-theorem glevImage_of (_hH : LevHom) (hU : LevUH) : GlevImage := by
+theorem glevImage_of (hU : LevUH) : GlevImage := by
   intro k i r'
   ext g
   constructor

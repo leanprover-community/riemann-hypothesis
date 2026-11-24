@@ -88,7 +88,7 @@ theorem triple_integrand_measurable {α : Type*} [TopologicalSpace α] [Measurab
     ((he2.comp (((mt_cont.comp hQ.fst).matrix_mul (mt_cont.comp hQ.snd)).matrix_mul
     (continuous_const.matrix_mul (mt_cont.comp hX)))).enorm.measurable)
 
-theorem triple_lintegral_product {e1 e2 : Mx k r → ℂ} (he1 : Continuous e1) (he2 : Continuous e2) (γi : Mx k r)
+theorem triple_lintegral_product {e1 e2 : Mx k r → ℂ} (he1 : Continuous e1) (γi : Mx k r)
     (μp μq : Measure (Formalism.QuantumDeterminants.Mt k r × Formalism.QuantumDeterminants.Mt k r)) (x : Formalism.QuantumDeterminants.Mt k r) :
     (∫⁻ p, ‖e1 (Matrix.of p.1 * Matrix.of p.2 * Matrix.of x)‖ₑ ∂μp) *
       (∫⁻ q, ‖e2 (Matrix.of q.1 * Matrix.of q.2 * (γi * Matrix.of x))‖ₑ ∂μq) =

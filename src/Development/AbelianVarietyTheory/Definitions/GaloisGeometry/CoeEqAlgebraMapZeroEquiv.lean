@@ -70,7 +70,7 @@ def formsAb (s : X ⟶ Sp k) (j : ℕ) : X.Opensᵒᵖ ⥤ Ab where
   obj U := AddCommGrpCat.of (OmU s U.unop j)
   map i := AddCommGrpCat.ofHom (formRes s (leOfHom i.unop) j).toAddMonoidHom
   map_id U := AddCommGrpCat.ext fun x ↦ formRes_refl s U.unop x
-  map_comp i i' := AddCommGrpCat.ext fun x ↦ (formRes_formRes s _ _ x).symm
+  map_comp _ _ := AddCommGrpCat.ext fun x ↦ (formRes_formRes s _ _ x).symm
 
 instance formsAb_module (s : X ⟶ Sp k) (j : ℕ) (U : X.Opensᵒᵖ) :
     Module (X.ringCatSheaf.obj.obj U) ((formsAb s j).obj U) :=

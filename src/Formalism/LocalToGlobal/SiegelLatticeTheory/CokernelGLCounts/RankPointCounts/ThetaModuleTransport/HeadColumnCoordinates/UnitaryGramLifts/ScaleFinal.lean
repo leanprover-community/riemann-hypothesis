@@ -144,7 +144,7 @@ namespace Formalism.L2.SG.LocalCountModules.AlgGSplit
 def ScaleChoiceP : Prop :=
   ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F]
     (E : Type) [CommRing E] [Algebra F E] [TopologicalSpace E] [MeasurableSpace E]
-    (M : Model F E) (g : SplitG M.L) (hs : M.split = some g) (r : ℕ) (T T' : F),
+    (M : Model F E) (g : SplitG M.L) (_ : M.split = some g) (r : ℕ) (T T' : F),
     (∃ u v : 𝒪[F], (u : F) * T = 1 ∧ (v : F) * T' = 1) → (∃ c : 𝒪[F], T - T' = (g.q : F) ^ 2 * c) →
     T ∈ 𝒪[F] →
   ∀ (Zh₁ Zh₂ : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (Z₁ Z₂ : Matrix (Fin (r + 1)) (Fin (r + 1)) M.R),

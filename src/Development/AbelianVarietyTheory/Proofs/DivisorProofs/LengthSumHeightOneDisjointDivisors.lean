@@ -128,7 +128,7 @@ variable {M₁ M₂ M₃ : Type} [AddCommGroup M₁] [AddCommGroup M₂] [AddCom
   [Module A M₁] [Module A M₂] [Module A M₃]
 
 lemma kerMap_injective (f : M₁ →ₗ[A] M₂) (hf : Function.Injective f) (b : A) :
-    Function.Injective (kerMap f b) := fun x y hxy =>
+    Function.Injective (kerMap f b) := fun _ _ hxy =>
   Subtype.ext (hf (congrArg Subtype.val hxy))
 
 lemma exact_kerMap (f : M₁ →ₗ[A] M₂) (g : M₂ →ₗ[A] M₃) (hf : Function.Injective f)

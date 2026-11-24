@@ -433,15 +433,15 @@ section -- clump:auto
 
 noncomputable def UpperTheory.Reformulated.B.Gwa5.IsSmooth :
     {k G V : Type} →
-      [inst : Field k] →
-        [inst_1 : Group G] →
-          [inst_2 : AddCommGroup V] → [inst_3 : _root_.Module k V] → [TopologicalSpace G] → Representation k G V → Prop :=
+      [Field k] →
+        [Group G] →
+          [AddCommGroup V] → [_root_.Module k V] → [TopologicalSpace G] → Representation k G V → Prop :=
     fun {k G V : Type} [Field k] [Group G] [AddCommGroup V] [_root_.Module k V] [TopologicalSpace G]
         (ρ : Representation k G V) ↦
       ∀ (v : V), IsOpen {g : G | ((ρ : G → V →ₗ[k] V) g : V → V) v = v}
 
 theorem UpperTheory.Reformulated.B.Gwa5.aux2 :
-    ∀ {k G V : Type} [inst : Field k] [inst_1 : Group G] [inst_2 : AddCommGroup V] [inst_3 : _root_.Module k V]
+    ∀ {k G V : Type} [Field k] [Group G] [AddCommGroup V] [_root_.Module k V]
       (ρ : Representation k G V) (H : Subgroup G) (χ : ↥H →* kˣ) {a b : V},
       a ∈ {v : V | ∀ (h : ↥H), ((ρ : G → V →ₗ[k] V) (↑h : G) : V → V) v = (↑((χ : ↥H → kˣ) h) : k) • v} →
         b ∈ {v : V | ∀ (h : ↥H), ((ρ : G → V →ₗ[k] V) (↑h : G) : V → V) v = (↑((χ : ↥H → kˣ) h) : k) • v} →
@@ -450,14 +450,14 @@ theorem UpperTheory.Reformulated.B.Gwa5.aux2 :
   rw [map_add (f := _), smul_add, ha h, hb h]
 
 theorem UpperTheory.Reformulated.B.Gwa5.aux3 :
-    ∀ {k G V : Type} [inst : Field k] [inst_1 : Group G] [inst_2 : AddCommGroup V] [inst_3 : _root_.Module k V]
+    ∀ {k G V : Type} [Field k] [Group G] [AddCommGroup V] [_root_.Module k V]
       (ρ : Representation k G V) (H : Subgroup G) (χ : ↥H →* kˣ) (h : ↥H),
       ((ρ : G → V →ₗ[k] V) (↑h : G) : V → V) (0 : V) = (↑((χ : ↥H → kˣ) h) : k) • (0 : V) := by
   intro k G V _ _ _ _ ρ H χ h
   rw [map_zero, smul_zero]
 
 theorem UpperTheory.Reformulated.B.Gwa5.aux4 :
-    ∀ {k G V : Type} [inst : Field k] [inst_1 : Group G] [inst_2 : AddCommGroup V] [inst_3 : _root_.Module k V]
+    ∀ {k G V : Type} [Field k] [Group G] [AddCommGroup V] [_root_.Module k V]
       (ρ : Representation k G V) (H : Subgroup G) (χ : ↥H →* kˣ) (c : k) {v : V},
       v ∈ {v : V | ∀ (h : ↥H), ((ρ : G → V →ₗ[k] V) (↑h : G) : V → V) v = (↑((χ : ↥H → kˣ) h) : k) • v} →
         ∀ (h : ↥H), ((ρ : G → V →ₗ[k] V) (↑h : G) : V → V) (c • v) = (↑((χ : ↥H → kˣ) h) : k) • c • v := by
@@ -466,10 +466,10 @@ theorem UpperTheory.Reformulated.B.Gwa5.aux4 :
 
 noncomputable def UpperTheory.Reformulated.B.Gwa5.eig :
     {k G V : Type} →
-      [inst : Field k] →
-        [inst_1 : Group G] →
-          [inst_2 : AddCommGroup V] →
-            [inst_3 : _root_.Module k V] → Representation k G V → (H : Subgroup G) → (↥H →* kˣ) → Submodule k V :=
+      [Field k] →
+        [Group G] →
+          [AddCommGroup V] →
+            [_root_.Module k V] → Representation k G V → (H : Subgroup G) → (↥H →* kˣ) → Submodule k V :=
     fun {k G V : Type} [inst : Field k] [inst_1 : Group G] [inst_2 : AddCommGroup V] [inst_3 : _root_.Module k V]
         (ρ : Representation k G V) (H : Subgroup G) (χ : ↥H →* kˣ) ↦
       { carrier := {v : V | ∀ (h : ↥H), ((ρ : G → V →ₗ[k] V) (↑h : G) : V → V) v = (↑((χ : ↥H → kˣ) h) : k) • v},
@@ -478,16 +478,16 @@ noncomputable def UpperTheory.Reformulated.B.Gwa5.eig :
 
 noncomputable def UpperTheory.Reformulated.B.Gwa5.fixed :
     {k G V : Type} →
-      [inst : Field k] →
-        [inst_1 : Group G] →
-          [inst_2 : AddCommGroup V] → [inst_3 : _root_.Module k V] → Representation k G V → Subgroup G → Submodule k V :=
+      [Field k] →
+        [Group G] →
+          [AddCommGroup V] → [_root_.Module k V] → Representation k G V → Subgroup G → Submodule k V :=
     fun {k G V : Type} [Field k] [Group G] [AddCommGroup V] [_root_.Module k V] (ρ : Representation k G V)
         (H : Subgroup G) ↦
       UpperTheory.Reformulated.B.Gwa5.eig ρ H (1 : ↥H →* kˣ)
 
 theorem UpperTheory.Reformulated.B.Gwa5.exists_fixed_lift :
-    ∀ {G V : Type} [inst : Group G] [inst_1 : TopologicalSpace G] [IsTopologicalGroup G] [inst_3 : AddCommGroup V]
-      [inst_4 : _root_.Module ℂ V] (J L A : Subgroup G),
+    ∀ {G V : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [AddCommGroup V]
+      [_root_.Module ℂ V] (J L A : Subgroup G),
       IsOpen (↑J : Set G) →
         IsCompact (↑J : Set G) →
           ∀ (π : Representation ℂ G V),

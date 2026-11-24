@@ -364,20 +364,20 @@ open Coalgebra Bialgebra
 
 namespace GlobalTheory.PDiv
 
-def IterFrobBase (K : Type) (p r : ℕ) : Type := K
+def IterFrobBase (K : Type) : Type := K
 
 namespace IterFrobBase
 
 variable (K : Type) (p r : ℕ) [Field K]
 
-instance : Field (IterFrobBase K p r) := inferInstanceAs (Field K)
+instance : Field (IterFrobBase K) := inferInstanceAs (Field K)
 
 variable [hp : Fact p.Prime] [CharP K p]
 
-instance : Algebra (IterFrobBase K p r) K :=
+instance : Algebra (IterFrobBase K) K :=
   (SS.FrobField.powHom K p r hp.out (CharP.cast_eq_zero K p)).toAlgebra
 
-instance (H : Type) [CommRing H] [HopfAlgebra K H] : HopfAlgebra (IterFrobBase K p r) H :=
+instance (H : Type) [CommRing H] [HopfAlgebra K H] : HopfAlgebra (IterFrobBase K) H :=
   inferInstanceAs (HopfAlgebra K H)
 
 end IterFrobBase
@@ -393,7 +393,7 @@ omit hp in
 theorem natCast_eq_zero_of_charP_algebra (A : Type) [CommRing A] [Algebra K A] : (p : A) = 0 := by
   rw [← map_natCast (algebraMap K A), CharP.cast_eq_zero, map_zero]
 
-def iterFrobSemi : SemiBialgHom (algebraMap (IterFrobBase K p r) K) H H where
+def iterFrobSemi : SemiBialgHom (algebraMap (IterFrobBase K) K) H H where
   toRingHom := SS.FrobField.powHom H p r hp.out (natCast_eq_zero_of_charP_algebra p K H)
   smul_map c a := by
     change (c • a) ^ p ^ r = ((c : K) ^ p ^ r) • a ^ p ^ r
@@ -402,10 +402,10 @@ def iterFrobSemi : SemiBialgHom (algebraMap (IterFrobBase K p r) K) H H where
     change counit (R := K) (a ^ p ^ r) = (counit (R := K) a) ^ p ^ r
     rw [counit_pow]
   comul_map a := by
-    have key : ∀ c : H ⊗[IterFrobBase K p r] H,
+    have key : ∀ c : H ⊗[IterFrobBase K] H,
         SS.FrobField.powHom (H ⊗[K] H) p r hp.out (natCast_eq_zero_of_charP_algebra p K _)
           (@id (H ⊗[K] H) c) =
-        TensorProduct.map (σ₁₂ := algebraMap (IterFrobBase K p r) K)
+        TensorProduct.map (σ₁₂ := algebraMap (IterFrobBase K) K)
           ⟨⟨SS.FrobField.powHom H p r hp.out (natCast_eq_zero_of_charP_algebra p K H),
             map_add _⟩, fun c a => by
               change (c • a) ^ p ^ r = ((c : K) ^ p ^ r) • a ^ p ^ r
@@ -426,7 +426,7 @@ def iterFrobSemi : SemiBialgHom (algebraMap (IterFrobBase K p r) K) H H where
     rw [comul_pow]
     exact key (comul a)
 
-def iterRelFrob : K ⊗[IterFrobBase K p r] H →ₐc[K] H := (iterFrobSemi p K H r).liftBC
+def iterRelFrob : K ⊗[IterFrobBase K] H →ₐc[K] H := (iterFrobSemi p K H r).liftBC
 
 theorem iterRelFrob_tmul (c : K) (a : H) : iterRelFrob p K H r (c ⊗ₜ a) = c • a ^ p ^ r :=
   SemiBialgHom.liftBC_tmul (iterFrobSemi p K H r) c a
@@ -445,10 +445,10 @@ theorem finrank_le_frobKer_mul_span_pow (p : ℕ) [Fact p.Prime] (K H : Type) [F
   · have hle : frobKerIdeal (p ^ r) K H ≤ kerIdeal f := by
       refine Ideal.span_le.2 ?_
       rintro _ ⟨a, ha, rfl⟩
-      have ha' : counit (R := IterFrobBase K p r) a = 0 := ha
-      have hb : (1 : K) ⊗ₜ[IterFrobBase K p r] a ∈
-          augIdeal K (K ⊗[IterFrobBase K p r] H) := by
-        change counit (R := K) ((1 : K) ⊗ₜ[IterFrobBase K p r] a) = 0
+      have ha' : counit (R := IterFrobBase K) a = 0 := ha
+      have hb : (1 : K) ⊗ₜ[IterFrobBase K] a ∈
+          augIdeal K (K ⊗[IterFrobBase K] H) := by
+        change counit (R := K) ((1 : K) ⊗ₜ[IterFrobBase K] a) = 0
         rw [TensorProduct.counit_tmul, ha', zero_smul]
       have e : f ((1 : K) ⊗ₜ a) = a ^ p ^ r := by
         rw [iterRelFrob_tmul, one_smul]
@@ -660,7 +660,7 @@ theorem frobKerIdeal_le_annPowIdeal (h : (p : K) = 0) (G : PDivGroup p K) (r : �
 end GlobalTheory.SpanPow
 
 open GlobalTheory.SpanPow in
-theorem GlobalTheory.finrank_span_pow_le : ∀ (p : ℕ) [Fact p.Prime] (K : Type) [Field K] (h : (p : K) = 0) (G : PDivGroup p K), ∀ r : ℕ, Module.finrank K (Submodule.span K (Set.range fun a : G.A r => a ^ p ^ r)) ≤ (p ^ r) ^ Module.finrank K G.dual.omega := by
+theorem GlobalTheory.finrank_span_pow_le : ∀ (p : ℕ) [Fact p.Prime] (K : Type) [Field K] (_ : (p : K) = 0) (G : PDivGroup p K), ∀ r : ℕ, Module.finrank K (Submodule.span K (Set.range fun a : G.A r => a ^ p ^ r)) ≤ (p ^ r) ^ Module.finrank K G.dual.omega := by
   intro p _ K _ h G r
   set S := Submodule.span K (Set.range fun a : G.A r => a ^ p ^ r) with hS
   let D := G.dual.A r
@@ -713,7 +713,7 @@ open CategoryTheory TensorProduct MvPowerSeries GlobalTheory GlobalTheory.PDiv G
 
 namespace GlobalTheory.PDivGroup
 
-theorem pow_finrank_omega_le_finrank_frobKer : ∀ (p : ℕ) [Fact p.Prime] (K : Type) [Field K] (h : (p : K) = 0)
+theorem pow_finrank_omega_le_finrank_frobKer : ∀ (p : ℕ) [Fact p.Prime] (K : Type) [Field K] (_ : (p : K) = 0)
     (G : PDivGroup p K), ∀ r : ℕ,
     (p ^ r) ^ Module.finrank K G.omega ≤ Module.finrank K (G.A r ⧸ frobKerIdeal (p ^ r) K (G.A r)) := by
   intro p _ K _ h G r

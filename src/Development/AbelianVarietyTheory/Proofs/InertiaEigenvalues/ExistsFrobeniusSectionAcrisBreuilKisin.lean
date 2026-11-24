@@ -193,7 +193,7 @@ theorem lim {l : ℕ} (hc : IsAdicComplete (Ideal.span {(l : R)}) R) (Y : ℕ �
   choose Z hZ using fun i k => hL i k j
   exact ⟨Matrix.of Z, by ext i k; simp [hZ]⟩
 
-theorem shift {l : ℕ} (hl : ∀ x : R, (l : R) * x = 0 → x = 0) (hc : IsAdicComplete (Ideal.span {(l : R)}) R)
+theorem shift {l : ℕ} (hc : IsAdicComplete (Ideal.span {(l : R)}) R)
     (N n₀ : ℕ) (u : R) (T : ℕ → Matrix (Fin d) (Fin d) R)
     (h : ∀ n, n₀ ≤ n → ∃ H, T (n + 1) - (l : R) ^ (2 * N) • T n = ((l : R) ^ ((2 * N + 1) * (n + 1)) * u) • H) :
     ∃ (S : Matrix (Fin d) (Fin d) R) (Sf : ℕ → Matrix (Fin d) (Fin d) R),
@@ -259,8 +259,8 @@ theorem core (l q N : ℕ) (hl : ∀ x : R, (l : R) * x = 0 → x = 0) (hc : IsA
     have e : u ^ (q ^ (n + 1)) = u * u ^ (q ^ (n + 1) - 1) := by
       rw [← pow_succ', Nat.sub_add_cancel (Nat.one_le_pow _ _ hq)]
     rw [e, hw]; ring
-  obtain ⟨S, Sf, hS, hSl, hS0⟩ := shift hl hc N n₀ u (T φ α β') (step α β' _ hΓ1)
-  obtain ⟨S', Sf', hS', hSl', hS0'⟩ := shift hl hc N n₀ u (T φ β α') (step β α' _ hΓ2)
+  obtain ⟨S, Sf, hS, hSl, hS0⟩ := shift hc N n₀ u (T φ α β') (step α β' _ hΓ1)
+  obtain ⟨S', Sf', hS', hSl', hS0'⟩ := shift hc N n₀ u (T φ β α') (step β α' _ hΓ2)
   have hTT : ∀ n, T φ α β' n * T φ β α' n = (D ^ (2 * n)) • (1 : Matrix (Fin d) (Fin d) R) := by
     intro n
     induction n with

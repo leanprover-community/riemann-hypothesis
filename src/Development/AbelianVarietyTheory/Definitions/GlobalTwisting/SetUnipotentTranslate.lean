@@ -363,7 +363,7 @@ structure ChOK (s : Scale) (C : FC) (cD ch : ℝ) (P : PreCh) (q1 : ℕ) (a b : 
 structure ChGood (s : Scale) (C : FC) (C5 c6 Cb cD ch : ℝ) (P : PreCh) (a b : P.R.A → ℤ)
     (c : P.Word → Fin (P.R.k - 2) → Bool) : Prop where
   ok : ChOK s C cD ch P (DC.q0H P.H) a b c
-  host : HostGood s C.P.Cpde C5 c6 Cb P.H (DC.q0H P.H)
+  host : HostGood s C.P.Cpde C5 Cb P.H (DC.q0H P.H)
 
 def Over (D : D7) (P : PreCh) (Lv : LevCh P) : Prop :=
   ∃ (sp : @Spaces P.R Lv.host.F Lv.host.E _ _ _ _ Lv.host.cmStar _) (hT : _) (hY : _) (hA : _) (hV : _) (hz : _) (X : Stages),
@@ -705,7 +705,7 @@ theorem leastOff_eq_rPrH {R : Ranks} (H : Host R) (hc : H.ccK = ⊤) :
 theorem chGood_of_host (eps C5 c6 Cb cD ch : ℝ) (C : FC) (he : 0 < eps) (he1 : eps < 1 / 52) (hC : Std C) (hcD : 0 ≤ cD)
     (hch : 402 ≤ ch) : ∃ x0 : ℝ, ∀ (s : Scale) (R : Ranks) (H : Host R) (a b : R.A → ℤ) (M : ℕ)
       (c : Fin M → Fin (R.k - 2) → Bool) (u0 : ℕ), s.eps = eps → x0 ≤ s.x → RankVal s R → H.CT2 = C.CT2 →
-      HostGood s C.P.Cpde C5 c6 Cb H (DC.q0H H) → WinOK s C.GK H a b → M = ⌈3 * GamS C s R ^ 2 * s.x ^ C.P.CF⌉₊ →
+      HostGood s C.P.Cpde C5 Cb H (DC.q0H H) → WinOK s C.GK H a b → M = ⌈3 * GamS C s R ^ 2 * s.x ^ C.P.CF⌉₊ →
       Function.Injective c → ∃ (hcW : Fin M → Tau R → HCParam R) (w0 : Fin M) (h1 : _) (h2 : _) (h3 : _) (h4 : _) (h5 : _)
         (h6 : _) (h7 : _) (h8 : _),
         ChGood s C C5 c6 Cb cD ch (@PreCh.mk R (setUnipotentTranslate H u0) h1 h2 h3 (Fin M) _ w0 hcW h4 h5 h6 h7 h8) a b c := by
@@ -714,7 +714,7 @@ theorem chGood_of_host (eps C5 c6 Cb cD ch : ℝ) (C : FC) (he : 0 < eps) (he1 :
   obtain ⟨x3, hx3⟩ := exists_hc_family eps cD ch C.P.Cpde he he1 hcD hch
   refine ⟨max x1 x3, fun s R H a b M c u0 hs hx hR hT hH hW hM hc => ?_⟩
   simp only [max_le_iff] at hx
-  have hH' : HostGood s C.P.Cpde C5 c6 Cb (setUnipotentTranslate H u0) (DC.q0H (setUnipotentTranslate H u0)) := hH
+  have hH' : HostGood s C.P.Cpde C5 Cb (setUnipotentTranslate H u0) (DC.q0H (setUnipotentTranslate H u0)) := hH
   obtain ⟨hv, har, hT2, hT3, -, -, hdl, -, hBB, hgn, hpde, ⟨hp0, hmod0, hq0le, hq1, hq2⟩, hlev⟩ := hH
   have hN2 : 2 ≤ H.QS * H.q * H.d := by
     have h1 : 0 < H.QS * H.q := Nat.mul_pos H.QS_pos H.hyp.1.pos

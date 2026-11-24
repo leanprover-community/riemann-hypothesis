@@ -238,7 +238,7 @@ theorem bijective_fderiv {x : Sp ℂ ⟶ X} {g g' : ℕ} {e : (Fin g → ℂ) �
     rw [hd.fderiv] at h2
     exact h1.symm.trans h2
 
-theorem exists_graph [IsCommMonObj G] (hsm : Smooth G.hom) (hcon : GeometricallyConnected G.hom) {m g : ℕ}
+theorem exists_graph [IsCommMonObj G] (hsm : Smooth G.hom) {m g : ℕ}
     {B : Set (Fin m → ℂ)} {y : (Fin m → ℂ) → (Sp ℂ ⟶ X)} (ex : ∀ b, (Fin g → ℂ) → (Over.mk (y b) ⟶ G))
     (hB : IsOpen B) (hy : IsHolTo B y)
     (hex : IsHolTo (B ×ˢ (Set.univ : Set (Fin g → ℂ))) fun q : (Fin m → ℂ) × (Fin g → ℂ) => (ex q.1 q.2).left)
@@ -353,7 +353,7 @@ theorem isLatFam_ker : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H
         exact this) holAtEx
     refine (congrArg IsOpen (Set.ext fun q => ?_)).mpr h
     exact ⟨fun hq => ⟨⟨hq.1, trivial⟩, hq.2⟩, fun hq => ⟨hq.1.1, hq.2⟩⟩
-  · obtain ⟨ζ, h1, h2, h3⟩ := exists_graph t.semi.smooth t.semi.geomConnected ex hB hy hex hb₀ hw₀ (hE b₀ hb₀).1
+  · obtain ⟨ζ, h1, h2, h3⟩ := exists_graph t.semi.smooth ex hB hy hex hb₀ hw₀ (hE b₀ hb₀).1
       fun v hv hv' => (hE b₀ hb₀).2.2 v ⟨hv, hv'⟩
     exact ⟨ζ, h1, h2, h3⟩
 

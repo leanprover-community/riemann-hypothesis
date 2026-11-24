@@ -361,7 +361,7 @@ lemma glue_loc_rep [T2Space X] (B : FinHolAtlas e X) [Nonempty (Fin B.n)]
   · simp [hj, glueArg, hk5]
 
 theorem reg_glue_explicit [CompactSpace X] [T2Space X] (A B : FinHolAtlas e X) [Nonempty (Fin B.n)]
-    (Θ th : LocPot X) (hAB : A.Compatible B) (hcov : ∀ x, ∃ j, x ∈ chartBall B j 1)
+    (Θ th : LocPot X) (hcov : ∀ x, ∃ j, x ∈ chartBall B j 1)
     (h2 : ∀ j, closedBall (0 : Fin e → ℂ) 2 ⊆ (B.chart j).target)
     (hΘ : IsPotential A Θ) (hΘpos : IsPosPot A Θ) (hth : IsPotential A th)
     (η : Fin B.n → X → ℝ)
@@ -767,7 +767,7 @@ theorem regularization_glue_C2 : ∀ {e : ℕ} {X : Type} [TopologicalSpace X] [
     · exact fun x => (hX.false x).elim
     · exact fun j y _ => (hX.false y).elim
     · exact fun j => (hX.false ((A.chart j).symm 0)).elim
-  obtain ⟨K₀, hK₀, hG⟩ := reg_glue_explicit A B Θ th hAB hcov h2 hΘ hΘpos hth η hη
+  obtain ⟨K₀, hK₀, hG⟩ := reg_glue_explicit A B Θ th hcov h2 hΘ hΘpos hth η hη
   refine ⟨2 * K₀, by positivity, ?_⟩
   intro t₀ δ f ht₀ hδ H hc
   have hMbE : ∀ t, ∃ Mb : ℝ, 0 < t → t ≤ t₀ →

@@ -145,7 +145,7 @@ lemma abs_le_op (ℓ : Z →L[ℝ] ℝ) (z : Z) : |ℓ z| ≤ ‖ℓ‖ * ‖z�
   simpa using ℓ.le_opNorm z
 
 lemma int_mom {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] (lam : Measure Z) [lam.IsAddHaarMeasure]
-    (f : Z → E) (hf : Continuous f) (K a : ℝ) (ha : 0 < a) (hK : 0 ≤ K)
+    (f : Z → E) (hf : Continuous f) (K a : ℝ) (ha : 0 < a)
     (hb : ∀ z, ‖f z‖ ≤ K * Real.exp (-a * ‖z‖ ^ 2)) (ℓ : Z →L[ℝ] ℝ) (n : ℕ) :
     Integrable (fun z => (ℓ z) ^ n • f z) lam := by
   have hi := (integrable_gauss lam a ‖ℓ‖ ha).const_mul (K * (n.factorial : ℝ))
@@ -265,7 +265,7 @@ lemma char_zero (lam : Measure Z) [lam.IsAddHaarMeasure] (h : Z → ℝ) (hc : C
       rw [integral_const_mul, integral_complex_ofReal, hm ℓ n]
       simp
     · intro n _
-      have := int_mom lam h hc K a ha hK hb ℓ n
+      have := int_mom lam h hc K a ha hb ℓ n
       simp only [smul_eq_mul] at this
       exact this.ofReal.const_mul _
   have hlim := tendsto_integral_of_dominated_convergence (μ := lam) (F := F)
@@ -281,7 +281,7 @@ lemma real_zero (lam : Measure Z) [lam.IsAddHaarMeasure] (h : Z → ℝ) (hc : C
     (hm : ∀ (ℓ : Z →L[ℝ] ℝ) (n : ℕ), ∫ z, (ℓ z) ^ n * h z ∂lam = 0) (z : Z) : h z = 0 := by
   haveI : ProperSpace Z := FiniteDimensional.proper ℝ Z
   have hi : Integrable h lam := by
-    have := int_mom lam h hc K a ha hK hb 0 0
+    have := int_mom lam h hc K a ha hb 0 0
     simpa using this
   let fp : Z → ℝ≥0 := fun z => Real.toNNReal (h z)
   let fm : Z → ℝ≥0 := fun z => Real.toNNReal (-h z)
@@ -358,7 +358,7 @@ theorem eucTotal : EucTotal := by
       (fun z => (show ‖(w z * (g z : ℂ)).re‖ ≤ ‖w z * (g z : ℂ)‖ by
         rw [Real.norm_eq_abs]; exact Complex.abs_re_le_norm _).trans (hFb z)) ?_
     intro ℓ n
-    have := Complex.reCLM.integral_comp_comm (int_mom lam _ hF (B * C) a ha hK hFb ℓ n)
+    have := Complex.reCLM.integral_comp_comm (int_mom lam _ hF (B * C) a ha hFb ℓ n)
     rw [hmom ℓ n] at this
     simpa only [Complex.reCLM_apply, Complex.smul_re, smul_eq_mul, Complex.zero_re] using this
   have him : ∀ z, (w z * (g z : ℂ)).im = 0 := by
@@ -366,7 +366,7 @@ theorem eucTotal : EucTotal := by
       (fun z => (show ‖(w z * (g z : ℂ)).im‖ ≤ ‖w z * (g z : ℂ)‖ by
         rw [Real.norm_eq_abs]; exact Complex.abs_im_le_norm _).trans (hFb z)) ?_
     intro ℓ n
-    have := Complex.imCLM.integral_comp_comm (int_mom lam _ hF (B * C) a ha hK hFb ℓ n)
+    have := Complex.imCLM.integral_comp_comm (int_mom lam _ hF (B * C) a ha hFb ℓ n)
     rw [hmom ℓ n] at this
     simpa only [Complex.imCLM_apply, Complex.smul_im, smul_eq_mul, Complex.zero_im] using this
   funext z

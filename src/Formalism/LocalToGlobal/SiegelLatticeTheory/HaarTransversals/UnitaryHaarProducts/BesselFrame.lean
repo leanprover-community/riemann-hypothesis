@@ -306,7 +306,7 @@ theorem Qi_e_apply (hF : IsFrameJ ε e f wf z0) (b : Fin r) (i : Fin (2 * r + k 
   rw [Qi_e hF, bvec_apply, ite_eq_right hi]
 
 theorem conj_mem_Nset (hF : IsFrameJ ε e f wf z0) {z : Fin (2 * r + k + 1) → ℂ}
-    (hz0 : ∃ t : ℂ, z0 = t • z) {n : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
+    {n : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hU : nᴴ * Formalism.REAL.Jm ε * n = Formalism.REAL.Jm ε) (hN : InN ε e z n) :
     Qi ε e f wf z0 * n * Qm e f wf z0 ∈ Nset k r := by
   refine ⟨conj_mem_UH hF hU, ?_, ?_⟩
@@ -390,7 +390,7 @@ section Frame2
 variable {ε : Fin (2 * r + k + 1) → Bool} {e f : Fin r → Fin (2 * r + k + 1) → ℂ}
   {wf : Fin k → Fin (2 * r + k + 1) → ℂ} {z0 : Fin (2 * r + k + 1) → ℂ}
 
-theorem ellA_conj (hF : IsFrameJ ε e f wf z0) {zB z : Fin (2 * r + k + 1) → ℂ} (hz : Qm e f wf z0 *ᵥ zB = z)
+theorem ellA_conj {zB z : Fin (2 * r + k + 1) → ℂ} (hz : Qm e f wf z0 *ᵥ zB = z)
     (g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) (a : Fin r) :
     ellA k r zB (Qi ε e f wf z0 * g * Qm e f wf z0) a = rootCoord ε e f z g a := by
   unfold ellA rootCoord nxt
@@ -403,7 +403,7 @@ theorem psi_conj (hF : IsFrameJ ε e f wf z0) {zB z : Fin (2 * r + k + 1) → �
     psiGen k r zB (fun _ => ((4 * Real.pi / gg : ℝ) : ℂ)) (Qi ε e f wf z0 * g * Qm e f wf z0) =
       psiR ε gg e f z g := by
   unfold psiGen psiR
-  simp only [ellA_conj hF hz]
+  simp only [ellA_conj hz]
   congr 1
   set x : Fin r → ℂ := fun a => rootCoord ε e f z g a with hx
   have hre : (∑ a, ((4 * Real.pi / gg : ℝ) : ℂ) * x a).re = (4 * Real.pi / gg) * ∑ a, (x a).re := by

@@ -1355,7 +1355,7 @@ theorem spread {C : Type} [CommRing C] [IsNoetherianRing C] (I p : Ideal C) [p.I
   rw [← map_mul]
   exact Ideal.mem_map_of_mem _ (hI a ha)
 
-theorem triv_pull_iff {P Q X : Scheme.{0}} {L : LB X} (hL : L.IsLB) (e : P ≅ Q) (a : Q ⟶ X) (b : P ⟶ X)
+theorem triv_pull_iff {P Q X : Scheme.{0}} {L : LB X} (e : P ≅ Q) (a : Q ⟶ X) (b : P ⟶ X)
     (h : e.hom ≫ a = b) : Triv (L.pull b) ↔ Triv (L.pull a) := by
   have h' : e.inv ≫ b = a := by rw [← h, Iso.inv_hom_id_assoc]
   exact ⟨CubeOpen.triv_comp e.inv h', CubeOpen.triv_comp e.hom h⟩
@@ -1469,7 +1469,7 @@ theorem flat_of_gens (hCI : CIFlat) {S Y Z : Scheme.{0}} [IsLocallyNoetherian S]
   exact ⟨⟨U, hU⟩, ⟨i ⁻¹ᵁ Y.basicOpen h, hV'.preimage i⟩, hmem, e₂,
     flat_piece hCI s i hU hV' e₁ e₂ g hs' f' (hf'.trans hker)⟩
 
-theorem triv_pull_pull {P Q X : Scheme.{0}} {L : LB X} (hL : L.IsLB) (a : Q ⟶ X) (b : P ⟶ Q) :
+theorem triv_pull_pull {P Q X : Scheme.{0}} {L : LB X} (a : Q ⟶ X) (b : P ⟶ Q) :
     Triv ((L.pull a).pull b) ↔ Triv (L.pull (b ≫ a)) := by
   exact CubeGen.triv_pull_iff L (fun _ : PUnit => a) (fun _ => 1) b
 
@@ -1521,7 +1521,7 @@ theorem few_gens (hF : FewEquations) {S : Scheme.{0}} (A Y Z : Over S) [GrpObj A
       refine Eq.trans ?_ h₁.symm
       rw [c, Category.assoc]
       exact hpb.isoPullback_hom_snd_assoc _
-  refine (triv_pull_pull hN _ _).trans ((triv_pull_iff hN hpb.isoPullback l _ hl).symm.symm.trans ?_)
+  refine (triv_pull_pull _ _).trans ((triv_pull_iff hpb.isoPullback l _ hl).symm.symm.trans ?_)
   refine (hi.2 T yJ).trans ?_
   have hq := factor_iff i.left hV (O ⧸ J) ((Ideal.Quotient.mk J).comp φ)
   have e : Spec.map (CommRingCat.ofHom ((Ideal.Quotient.mk J).comp φ)) ≫ hV.fromSpec =

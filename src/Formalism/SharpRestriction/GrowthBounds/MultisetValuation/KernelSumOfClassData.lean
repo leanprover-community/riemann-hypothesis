@@ -235,7 +235,7 @@ theorem Eqv_of_FQ {j : ℕ} {F : X.Fm j} (h : F ∈ X.FQ j) : Eqv X j F := by
 
 variable {X}
 
-theorem vGe_of (Y : Pend X) {j : ℕ} {F : X.Fm j} {g : ℝ} (hE : Eqv X j F)
+theorem vGe_of {j : ℕ} {F : X.Fm j} {g : ℝ} (hE : Eqv X j F)
     (hv : ∀ c (L : (X.Pj j).Tup), (X.Pj j).IsLatTup L → F c L ∈ scale (X.vsc g) ((X.Pj j).HtupW L)) :
     X.vGe j F g := by
   unfold Sys.vGe scale
@@ -436,8 +436,8 @@ theorem Eqv_TtL (hR : RestTmEquiv X) (J : ℕ) (i0 : X.Pl → ℕ) (F : X.Fm J) 
 
 theorem formB_of (D : Formalism.BasicNotions.D7) (Y : Pend X) (hA : admitted D X Y) (hR : RestTmEquiv X) : FormB X Y := by
   intro j hj i0 vs g hnd hi0 hoff hE G hG
-  have hFQ := (hA.2.2.2.2.2.1 : adm3b D X) j hj G (Submodule.subset_span hG)
-  apply vGe_of Y (Eqv_TtL hR (j + 1) i0 _ (Eqv_of_FQ X hFQ) vs)
+  have hFQ := (hA.2.2.2.2.2.1 : adm3b X) j hj G (Submodule.subset_span hG)
+  apply vGe_of (Eqv_TtL hR (j + 1) i0 _ (Eqv_of_FQ X hFQ) vs)
   intro c' L' hL'
   have hfun : (fun v => if v ∈ vs then i0 v else 0) = i0 := by
     funext v

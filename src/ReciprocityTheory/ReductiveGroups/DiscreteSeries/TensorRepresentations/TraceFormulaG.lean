@@ -168,8 +168,8 @@ theorem tf_closure_stable (dual : Bool) {lam : Fin n → ℝ} {H : Type*} [Norme
     have h2 : casimir (tensF dual E) (P f.1) = (((casVal lam : ℝ) : ℂ) + n + 2 * z) • P f.1 := by
       rw [add_smul, add_smul, mul_smul, ← hEP f.1 f.2, ← h3]
       cases dual
-      · exact LinearMap.congr_fun (casimir_tensV hD.glRep) _
-      · exact LinearMap.congr_fun (casimir_tensVd hD.glRep) _
+      · exact LinearMap.congr_fun (casimir_tensV) _
+      · exact LinearMap.congr_fun (casimir_tensVd) _
     show casimir _ (Φ (P' f)) = _ • Φ (P' f)
     rw [← map_smul]
 

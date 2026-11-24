@@ -312,7 +312,7 @@ theorem tri_of_uni {S S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ) {Y : Type}
   · rw [k2']; rfl
   · rw [k3']; rfl
   · exact key (.inr (.inl i)) (.inr (.inl j)) (by simp only [wlev, Sum.elim_inl, Sum.elim_inr]; omega)
-  · exact key (.inr (.inr i)) (.inr (.inr j)) (by simp only [wlev, Sum.elim_inl, Sum.elim_inr]; omega)
+  · exact key (.inr (.inr i)) (.inr (.inr j)) (by simp only [wlev, Sum.elim_inr]; omega)
 
 theorem uni_of_flag {S S₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ) {Y : Type} [Fintype Y] [DecidableEq Y]
     {F : Matrix (Fin S.rank) Y K} {Γ : Matrix Y (Fin S.rank) K} {l : Y → ℕ} (hF : Adapted π d F l) (h1 : Γ * F = 1)
@@ -568,9 +568,9 @@ theorem real_mul_idxRatio {G : Type} [Group G] [TopologicalSpace G] [IsTopologic
   have e1 : (A ⊓ B).relIndex A = B.relIndex A := by rw [inf_comm]; exact Subgroup.inf_relIndex_right B A
   have e2 : (A ⊓ B).relIndex B = A.relIndex B := Subgroup.inf_relIndex_right A B
   have ho : IsOpen ((A ⊓ B : Subgroup G) : Set G) := hAo.inter hBo
-  have a := PI.IwaMeasEx.MF.measure_eq_relIndex_mul μ (inf_le_left : A ⊓ B ≤ A) hAo.measurableSet ho.measurableSet
+  have a := PI.IwaMeasEx.MF.measure_eq_relIndex_mul μ (inf_le_left : A ⊓ B ≤ A) ho.measurableSet
     (e1 ▸ h1)
-  have b := PI.IwaMeasEx.MF.measure_eq_relIndex_mul μ (inf_le_right : A ⊓ B ≤ B) hBo.measurableSet ho.measurableSet
+  have b := PI.IwaMeasEx.MF.measure_eq_relIndex_mul μ (inf_le_right : A ⊓ B ≤ B) ho.measurableSet
     (e2 ▸ h2)
   have h2' : (A.relIndex B : ℝ) ≠ 0 := by exact_mod_cast h2
   rw [Measure.real, Measure.real, a, b, e1, e2, idxRatio]

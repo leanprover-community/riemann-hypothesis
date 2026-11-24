@@ -135,8 +135,7 @@ section Core
 
 variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))]
 
-theorem exists_diag_unit (σ : L →+* L) (hσσ : ∀ x, σ (σ x) = x)
-    (hσv : ∀ x, Valued.v (σ x) = Valued.v x)
+theorem exists_diag_unit (σ : L →+* L)
     (hyp : ∀ c : L, σ c = c → Valued.v c = 1 → ∃ s : L, Valued.v s = 1 ∧ σ s * s = c)
     {n : ℕ} (H H' : Matrix (Fin n) (Fin n) L) (hHH : H * H' = 1)
     (hI : ∀ i j, Valued.v (H i j) ≤ 1) (hI' : ∀ i j, Valued.v (H' i j) ≤ 1)
@@ -295,7 +294,7 @@ theorem main : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ)
     val_mul_entry_le (val_mul_entry_le (hcI M hm) hJI) hm
   have hI' : ∀ i j, Valued.v ((M' * J * cT σ M') i j) ≤ 1 :=
     val_mul_entry_le (val_mul_entry_le hm' hJI) (hcI M' hm')
-  obtain ⟨s, hs1, hs2⟩ := exists_diag_unit σ hσσ hσv hyp H _ hHH hI hI' hsupp hherm
+  obtain ⟨s, hs1, hs2⟩ := exists_diag_unit σ hyp H _ hHH hI hI' hsupp hherm
   have hs0 : ∀ i, s i ≠ 0 := by
     intro i h
     have := hs1 i

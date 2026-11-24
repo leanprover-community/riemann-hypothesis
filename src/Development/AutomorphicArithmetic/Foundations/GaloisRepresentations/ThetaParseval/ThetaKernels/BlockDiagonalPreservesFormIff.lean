@@ -174,7 +174,7 @@ theorem continuous_sB_k : Continuous (_root_.PositivityTheory.SiegelWeilFormula.
     exact ((continuous_const.mul ((GlobalTheory.EisBL.DoubledGroupTopology.continuous_cA σ).comp (continuous_apply j))).neg).smul continuous_const
 theorem inFrame_sM'_k (b : Fin L.n → AE F E) : inFrame d.b (_root_.PositivityTheory.SiegelWeilFormula.Act.C5.sM_k R L b) = _root_.PositivityTheory.SiegelWeilFormula.Act.C5.bMat_k (_root_.PositivityTheory.SiegelWeilFormula.Act.C5.sB_k R L b) := by
   have hex : ∃ x : d.G, inFrame d.b x = _root_.PositivityTheory.SiegelWeilFormula.Act.C5.bMat_k (_root_.PositivityTheory.SiegelWeilFormula.Act.C5.sB_k R L b) :=
-    ⟨⟨kfour.nU d.b (_root_.PositivityTheory.SiegelWeilFormula.Act.C5.sB_k R L b), kfour.nU_mem (_root_.PositivityTheory.SiegelWeilFormula.Act.C5.nilpotentMap_add d) R.hε (_root_.PositivityTheory.SiegelWeilFormula.Act.C5.sB_cond_k b)⟩, kfour.inFrame_nU _ _⟩
+    ⟨⟨kfour.nU d.b (_root_.PositivityTheory.SiegelWeilFormula.Act.C5.sB_k R L b), kfour.nU_mem R.hε (_root_.PositivityTheory.SiegelWeilFormula.Act.C5.sB_cond_k b)⟩, kfour.inFrame_nU _ _⟩
   unfold _root_.PositivityTheory.SiegelWeilFormula.Act.C5.sM_k _root_.PositivityTheory.SiegelWeilFormula.Act.C5.elt_k
   rw [dite_eq_left hex]
   exact hex.choose_spec

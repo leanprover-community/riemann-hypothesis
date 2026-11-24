@@ -242,7 +242,7 @@ def SmallInertPrimeSmallOrderLengthBound (D : D7) {Y : LatInst D} (W : TwLoc D Y
     (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w)),
     haveI : Fact (D.what₂.places.resChar w).Prime := ⟨D.what₂.places.resChar_prime w⟩
     ∀ (Xs : Formalism.MainNotions.FormalGroupSystem.Sys (D.what₂.places.resChar w)) (Ys : Formalism.MainNotions.FormalGroupSystem.Pend Xs), SysAt D (W.Yt μ) u w hg Xs →
-      Formalism.MainNotions.FormalGroupSystem.admitted D Xs Ys → Formalism.MainNotions.FormalGroupSystem.LowTermBound D Xs Ys
+      Formalism.MainNotions.FormalGroupSystem.admitted D Xs Ys → Formalism.MainNotions.FormalGroupSystem.LowTermBound Xs Ys
 
 def IsotypicPartsInternalDirectSum (D : D7) (Dx : DivX D) (T : TwForms D) (sp : ℝ) : Prop := IntegralKernelValuation D Dx T sp
 
@@ -357,7 +357,7 @@ private theorem gainP_nonneg' (X : Inst D L) (K : Consts) (a b : HH D → ℤ) (
 theorem kernel_valuation_served (W : TwLoc D Y) (hV : CmpV c Dx T W) (hG : TupleLatticeValuation D L X Y K Dx W lev Xe ce sp) (ht : Ties9 D L X Y c)
     (hE : ErrDefs D L Xe lev K ce)
     (u : D.what₂.Word) (w : D.what₂.places.Pl) (hg : GIdx D.host (D.mem u).A.T (D.what₂.places.resChar w))
-    (hExc : ¬ Exc D (D.what₂.places.resChar w)) (μ : D.what₂.Tup) (hUs : DV.Used D μ)
+    (μ : D.what₂.Tup) (hUs : DV.Used D μ)
     (hμ : D.what₂.places.resChar w ∉ Dx.Qp μ)
     (x : ((D.fm u).lat 0).V) (hx : c.cmp u w hg x ∈ NP X Y K u w hg) : ColGe T u μ w x (totS X K Xe ce sp u w) := by
   obtain ⟨hT, hL⟩ := ht.tied

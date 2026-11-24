@@ -347,7 +347,7 @@ theorem psi_carries_rev : ∀ (R : Type) [CommRing R] [IsDomain R] (D D' : DegPr
     ∀ χ : D.X, CarriesAt D'.P.L D.P.L (GlobalTheory.PullDegSymm.Finv p) (GlobalTheory.PullDegSymm.wInv p) (D.xK χ)
       (g ≫ (toUnit (TW W) ≫ D'.c (p.xe.symm χ)).left)
       (GlobalTheory.IndefiniteRowSideFullHecke.RigidPullbackIdentification.ptK_comp (RingHom.id R) (GlobalTheory.PullDegSymm.Finv p) (D'.c (p.xe.symm χ)) (D.c χ)
-        (GlobalTheory.PullDegSymm.c_eq' p χ) W g hg) (-1) (D.psi χ) (LB.pullGen D'.P.L _ _ (ψW'.psi (p.xe.symm χ)) g) := fun R _ _ D D' p W ψW g hg ψW' hψ χ =>
+        (GlobalTheory.PullDegSymm.c_eq' p χ) W g hg) (-1) (D.psi χ) (LB.pullGen D'.P.L _ _ (ψW'.psi (p.xe.symm χ)) g) := fun _ _ _ _ _ p _ ψW _ hg ψW' hψ χ =>
   psiOn_carries_pullbackIdent_reverse_of_pmaps p ψW hg ψW' hψ χ (p.xe.symm χ) (p.xe.apply_symm_apply χ) _
 
 theorem isPullDeg_symm : ∀ (R : Type) [CommRing R] [IsDomain R] (D D' : DegPre R),

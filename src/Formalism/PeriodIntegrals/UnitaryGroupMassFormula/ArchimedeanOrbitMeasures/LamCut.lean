@@ -58,12 +58,12 @@ def BetaIso : Prop := ∀ {D : D7} (X : HidaSetting D),
       ∀ Y : TupI X, Bc (tupCoord X Y) = reimV (fun v => betaV X v Y)
 
 def MuBridge : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf
-    fibInf, PushHyp X u' ψ hT μinf νinf fibInf →
+    fibInf, PushHyp X u' ψ μinf νinf fibInf →
     μinf.map (fun Y => reimV (fun v => betaV X v Y)) =
       ENNReal.ofReal (2 ^ (X.B.I.n * (D.R.rS + 1 + D.R.rS) * Fintype.card (InfinitePlace X.B.I.F))) • volume
 
 def NuBridge : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf
-    fibInf, PushHyp X u' ψ hT μinf νinf fibInf →
+    fibInf, PushHyp X u' ψ μinf νinf fibInf →
     ∃ (κ : Type) (_ : Fintype κ) (Hh : EuclideanSpace ℝ κ →ₗ[ℝ]
         (InfinitePlace X.B.I.F → Matrix (Fin (D.R.rS + 1 + D.R.rS)) (Fin (D.R.rS + 1 + D.R.rS)) ℂ))
       (Tc : HmI X ≃ₜ EuclideanSpace ℝ κ),
@@ -75,7 +75,7 @@ def NuBridge : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (�
       νinf.map Tc = volume
 
 def DKForm : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf
-    fibInf, PushHyp X u' ψ hT μinf νinf fibInf →
+    fibInf, PushHyp X u' ψ μinf νinf fibInf →
     ∀ (hb : Formalism.L2.SG.AdBridge.AdBridgeIso X.B.I) (c : X.B.I.Ginf)
     (S : NumberField.InfinitePlace X.B.I.F → Finset (Fin X.B.I.n)) {ι : Type} [Fintype ι]
     (L : EuclideanSpace ℝ ι →ₗ[ℝ] (NumberField.InfinitePlace X.B.I.F → Matrix (Fin X.B.I.n) (Fin X.B.I.n) ℂ)),
@@ -84,13 +84,13 @@ def DKForm : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ 
       uMat (c v) * L x v * uMat (c v)⁻¹ * betaV X v (Y0 X u')
 
 def RowsZ : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf
-    fibInf, PushHyp X u' ψ hT μinf νinf fibInf →
+    fibInf, PushHyp X u' ψ μinf νinf fibInf →
     ∀ (hb : Formalism.L2.SG.AdBridge.AdBridgeIso X.B.I) (c : X.B.I.Ginf)
     (S : NumberField.InfinitePlace X.B.I.F → Finset (Fin X.B.I.n)), StdConj X hb u' c S →
     ∀ v, ∀ i ∈ S v, ∀ b, (uMat (c v)⁻¹ * betaV X v (Y0 X u')) i b = 0
 
 def DetT : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf
-    fibInf, PushHyp X u' ψ hT μinf νinf fibInf →
+    fibInf, PushHyp X u' ψ μinf νinf fibInf →
     ∀ v : InfinitePlace X.B.I.F, ‖X.B.I.φ v (gramE X.B.I.cm.sig X.B.I.J (tupH (frameOf X u'))).det‖ = Tw u'
 
 def PlaceJacAll : Prop := ∀ (V : Type) [Fintype V] (n m : ℕ) (ε : V → Fin n → Bool) (S : V → Finset (Fin n))

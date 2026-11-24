@@ -287,7 +287,7 @@ theorem det_interp_datum {E : Type} [Field E] [NumberField E] [IsCMField E] {H :
       rw [h, FD.cc, map_zero]
   obtain ⟨Gm, φ, hinj, hspan, hherm, hdet, hEF⟩ :=
     exists_herm_coord_of_datum E H D H.rt hrt.1 hrt.2 _ rfl
-  have hfg := (HermModel.rank_integral_selfDual E H D _ _ Gm φ hrt.1
+  have hfg := (HermModel.rank_integral_selfDual E H D _ _ Gm φ
     ⟨hinj, hspan, hherm, hdet, hEF⟩).2.1
   obtain ⟨γ, hγ⟩ := exists_gl φ hinj hspan gam
   have hsm : ∀ (a : 𝓞 E) (x : D.La), φ (a • x) = (a : E) • φ x := fun a x => by

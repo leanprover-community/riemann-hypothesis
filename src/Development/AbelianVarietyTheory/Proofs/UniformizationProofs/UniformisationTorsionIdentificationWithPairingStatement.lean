@@ -48,5 +48,5 @@ open scoped CategoryTheory.Obj
 attribute [local instance] Over.cartesianMonoidalCategory
 open GlobalTheory.UT
 
-theorem _root_.GlobalTheory.T.uniformisation_torsion_identification_with_pairing : LL → AllUF fun {R} _ _ {I} {D} {A} {G} _ _ U F _ _ => ∀ (k : ℕ), 1 ≤ k → ∃ f, Tors U.toUnifPre F k f := by
+theorem _root_.GlobalTheory.T.uniformisation_torsion_identification_with_pairing : LL → AllUF fun {_} _ _ {_} {_} {_} {_} _ _ U F _ _ => ∀ (k : ℕ), 1 ≤ k → ∃ f, Tors U.toUnifPre F k f := by
   first | exact @GlobalTheory.TorsionIso.torsion_eq

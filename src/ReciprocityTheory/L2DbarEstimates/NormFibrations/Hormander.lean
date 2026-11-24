@@ -1698,7 +1698,7 @@ theorem moll_enorm_sq_le (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E] 
         rw [← ENNReal.rpow_natCast, ← ENNReal.rpow_mul]; norm_num
 
 theorem moll_young_sq (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-    [MeasurableSpace E] [BorelSpace E] (μ : Measure E) [μ.IsAddHaarMeasure] (K : Kernel E μ) (u : E → ℂ) (s : Set E) (hs : MeasurableSet s)
+    [MeasurableSpace E] [BorelSpace E] (μ : Measure E) [μ.IsAddHaarMeasure] (K : Kernel E μ) (u : E → ℂ) (s : Set E)
     (hu : AEStronglyMeasurable u μ) :
     ∫⁻ x in s, ‖moll K u x‖ₑ ^ 2 ∂μ ≤ ∫⁻ y in thickening K.r s, ‖u y‖ₑ ^ 2 ∂μ := by
   set T := thickening K.r s with hTdef
@@ -1744,7 +1744,7 @@ theorem moll_young_sq (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E] [Fi
 theorem moll_young (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     [MeasurableSpace E] [BorelSpace E] (μ : Measure E) [μ.IsAddHaarMeasure] : YoungSt E μ := by
   intro K u s hs hu
-  have h := moll_young_sq E μ K u s hs hu
+  have h := moll_young_sq E μ K u s hu
   have e : ∀ z : ℝ≥0∞, z ^ (ENNReal.toReal 2) = z ^ 2 := fun z => by
     rw [ENNReal.toReal_ofNat, ← ENNReal.rpow_natCast]; norm_num
   have huT : AEStronglyMeasurable u (μ.restrict (thickening K.r s)) := hu.restrict

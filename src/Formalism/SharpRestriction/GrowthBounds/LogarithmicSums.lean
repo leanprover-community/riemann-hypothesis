@@ -220,7 +220,7 @@ theorem shift_le (p y κ A : ℝ) (hp : 2 ≤ p) (hκ : 0 ≤ κ) (hy0 : 0 ≤ y
           intro e he
           have he' : e ≤ n ∧ Odd e := by simpa using he
           obtain ⟨h1, k, rfl⟩ := he'
-          simp only [Finset.coe_range, Set.mem_Iio, Finset.mem_coe, Finset.mem_range]
+          simp only [Finset.coe_range, Set.mem_Iio]
           omega)
         (by
           intro e1 he1 e2 he2 heq
@@ -374,7 +374,7 @@ theorem asksAll_of (X : Inst D L) (hSz : Nm D + 1 ≤ L.sc.w'' D.R.n) : Requires
     rw [e1, e2]
     exact ⟨le_rfl, by rw [zero_add]; exact mul_nonneg hNm0 hlog⟩
 
-theorem lo_succ (K : Consts) (hLa : 0 ≤ K.La) (L : SizeData₂ D) (C bo : ℝ) (p : ℕ) (hp : p.Prime) :
+theorem lo_succ (K : Consts) (hLa : 0 ≤ K.La) (L : SizeData₂ D) (C bo : ℝ) (p : ℕ) :
     lo K L C bo p + (cG L + L.etaSz) * Real.logb p (2 * L.sc.a) ≤ lo K L (C + 1) bo p := by
   have hx1 : 1 < L.sc.x := L.sc.one_lt_alt
   have hL0 : 0 ≤ L.sc.L := by
@@ -479,7 +479,7 @@ theorem gainBoundAll_add_one_of_gainBoundAllRequired (X : Inst D L) (K : Consts)
   intro a b hwin p hp hcls hX
   obtain ⟨hgain, hsum⟩ := h a b hwin p hp hcls hX
   refine ⟨hgain, ?_⟩
-  have hlo := lo_succ K hLa L C bo p hp
+  have hlo := lo_succ K hLa L C bo p
   have hfl := fl_succ D L.sc C p hp
   have hp1 : (1 : ℝ) < p := by exact_mod_cast hp.one_lt
   have hlog : 0 ≤ Real.logb p (2 * L.sc.a) := Real.logb_nonneg hp1 (by linarith)

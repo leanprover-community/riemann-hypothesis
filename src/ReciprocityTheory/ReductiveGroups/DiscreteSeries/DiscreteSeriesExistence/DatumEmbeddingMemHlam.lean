@@ -132,8 +132,8 @@ theorem datumEmbedding_mem_Hlam (hP : IsPsiFor ε lam T Ψ) (v : T.V) : uniformi
 
 theorem rreg_mem_Hlam (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) :
     ∀ g ∈ UJset ε, ∀ x ∈ Hlam ε Ψ v₀, rreg ε g x ∈ Hlam ε Ψ v₀ :=
-  closGen_stable hgap (rreg_isURepOn ε) (isDerivedOn_smE (rreg_isURepOn ε))
-    (datumV_isKIrrHW hP hv₀) (datumV_casimir hP v₀) (datumV_kStable hP v₀)
+  closGen_stable (rreg_isURepOn ε) (isDerivedOn_smE (rreg_isURepOn ε))
+    (datumV_isKIrrHW hP hv₀) (datumV_casimir hP v₀)
 
 theorem sigLam_coe (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) {g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UJset ε) (x : Hlam ε Ψ v₀) :
     ((sigLam ε Ψ v₀ g x : Hlam ε Ψ v₀) : L2 ε) = rreg ε g x := by
@@ -185,7 +185,7 @@ theorem sigLam_irred (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ :
     rw [h, Submodule.map_top, Submodule.range_subtype]
     rfl
 
-theorem Hlam_nontrivial (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) : Nontrivial (Hlam ε Ψ v₀) := by
+theorem Hlam_nontrivial (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) : Nontrivial (Hlam ε Ψ v₀) := by
   obtain ⟨-, -, -, w, hw, hw0, -⟩ := datumV_isKIrrHW hP hv₀
   have hm : ((w : smD ε (rreg ε)) : L2 ε) ∈ Hlam ε Ψ v₀ := by
     unfold Hlam closGen
@@ -226,8 +226,8 @@ theorem sigLam_lowK (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : 
         S = lowKSubLam ε Ψ v₀ := by
   have hinj : Function.Injective (Hlam ε Ψ v₀).subtype := Subtype.val_injective
   have hint := subtype_sigLam hgap hP hv₀
-  have hK := data_isKTypeOf hgap (rreg_isURepOn ε) (isDerivedOn_smE (rreg_isURepOn ε))
-    (datumV_isKIrrHW hP hv₀) (datumV_casimir hP v₀) (datumV_kStable hP v₀)
+  have hK := data_isKTypeOf (rreg_isURepOn ε) (isDerivedOn_smE (rreg_isURepOn ε))
+    (datumV_isKIrrHW hP hv₀) (datumV_kStable hP v₀)
   refine ⟨?_, fun S hS => ?_⟩
   · rwa [isKTypeOf_map_iff _ hinj hint, map_lowKSubLam, mir_lowK_eq]
   · apply Submodule.map_injective_of_injective hinj
@@ -243,9 +243,9 @@ theorem sigLam_kType_bounds (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (
         casValK ε (lowK ε lam) + 2 * (h - n + 1) ≤ casValK ε μ := by
   rw [isKTypeOf_map_iff (Hlam ε Ψ v₀).subtype Subtype.val_injective (subtype_sigLam hgap hP hv₀)] at hS
   exact ⟨data_vogan hgap (rreg_isURepOn ε) (isDerivedOn_smE (rreg_isURepOn ε))
-      (datumV_isKIrrHW hP hv₀) (datumV_casimir hP v₀) (datumV_kStable hP v₀) _ (map_subtype_le_closGen S) hS,
+      (datumV_isKIrrHW hP hv₀) (datumV_casimir hP v₀) _ (map_subtype_le_closGen S) hS,
     fun h hh hbig hμ => data_casValK_gap hgap (rreg_isURepOn ε) (isDerivedOn_smE (rreg_isURepOn ε))
-      (datumV_isKIrrHW hP hv₀) (datumV_casimir hP v₀) (datumV_kStable hP v₀) hh hbig _ (map_subtype_le_closGen S) hS hμ⟩
+      (datumV_isKIrrHW hP hv₀) (datumV_casimir hP v₀) hh hbig _ (map_subtype_le_closGen S) hS hμ⟩
 
 theorem sigLam_admissible (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) (μ : Fin n → ℝ) :
     FiniteDimensional ℂ
@@ -277,7 +277,7 @@ theorem sigLam_kfin (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : 
     rw [← mir_Kset_eq] at hk
     exact (kStableOn_map_iff _ hinj hint S).1 hSK k hk x hx
   have h := data_kfin_le hgap (rreg_isURepOn ε) (isDerivedOn_smE (rreg_isURepOn ε))
-    (datumV_isKIrrHW hP hv₀) (datumV_casimir hP v₀) (datumV_kStable hP v₀) _ (map_subtype_le_closGen S) hf hK
+    (datumV_isKIrrHW hP hv₀) (datumV_casimir hP v₀) _ (map_subtype_le_closGen S) hf hK
   exact fun x hx => h ⟨x, hx, rfl⟩
 
 end ReciprocityTheory.ChartRestriction.DS

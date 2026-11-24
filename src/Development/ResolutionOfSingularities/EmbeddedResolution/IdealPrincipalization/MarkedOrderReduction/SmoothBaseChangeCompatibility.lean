@@ -89,7 +89,7 @@ theorem baseChangeCompatible_of_smooth (hG : PrincipalizationGeometryHypotheses.
     (g : Y ⟶ T.scheme) [AlgebraicGeometry.Smooth g]
     (q : Y ⟶ Spec (CommRingCat.of T.base)) (hq : g ≫ T.structMap = q) :
     BaseChangeCompatible τ F n T g T.base q := by
-  have hgord : OrderAtPullbackInvariant T g := orderAtPullbackInvariant_of_smooth T hT g
+  have hgord : OrderAtPullbackInvariant T g := orderAtPullbackInvariant_of_smooth T g
   refine ⟨?_, ?_, ?_, ?_, hgord⟩
   · intro S hord E hE hV hdimS
     have : AlgebraicGeometry.Smooth S.left := MarkedPullbackSquare.smooth_verticalMap S
@@ -100,7 +100,7 @@ theorem baseChangeCompatible_of_smooth (hG : PrincipalizationGeometryHypotheses.
   · intro S hmon E hE hmon'
     have : AlgebraicGeometry.Smooth S.left := MarkedPullbackSquare.smooth_verticalMap S
     exact monomialPrincipalization_isPullbackBlowupSequence_of_smooth hG.monomialInputs τ S.lowerTriple hmon
-      S.topScheme (S.top ≫ q) S.left (MarkedPullbackSquare.verticalMap_comp_lowerStructMap S q hq) E hE hmon'
+      S.topScheme (S.top ≫ q) S.left E hE hmon'
   · intro S E hE hV
     have : AlgebraicGeometry.Smooth S.left := MarkedPullbackSquare.smooth_verticalMap S
     exact hG.nonMonomialPart_comap_of_sameNontrivialBoundary S.lowerTriple S.valid S.topScheme

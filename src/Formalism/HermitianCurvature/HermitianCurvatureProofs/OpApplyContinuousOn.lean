@@ -577,7 +577,7 @@ theorem vecV_congrGPos (Bs : B.RealPlaceData k r Wp Wq) (ν' : Fin (2 * r + k + 
 end cut
 
 theorem thr_arith (r X N Cb' c₃ o κ A : ℝ) (hr : 0 ≤ r) (hX : r + 1 ≤ X) (hN : 0 ≤ N) (hCb : 0 ≤ Cb')
-    (ho0 : 0 ≤ o) (ho : o ≤ Cb' * N * X) (hκ0 : 0 ≤ κ) (hκ : κ ≤ Cb' * (r + 1) * o)
+    (ho : o ≤ Cb' * N * X) (hκ : κ ≤ Cb' * (r + 1) * o)
     (hA : (5 * Cb' + Cb' ^ 2 + 1 + |c₃|) * (r + 1) ^ 4 * (N * X ^ 2 + X ^ 3) ≤ A) :
     c₃ * (r + 1) ^ 2 * (r * X + 1) ≤ A - 2 * (r + 1) * o - 1 - (κ + 3 * (r + 1) * o) := by
   have hR1 : 1 ≤ r + 1 := by linarith
@@ -885,7 +885,7 @@ theorem formLimit_top (Cb : ℝ) : ∃ Cc : ℝ, ∀ (Wp Wq : Type) [NormedAddCo
   · subst hw0
     simp only [ite_true]
     have hthr := thr_arith (P0.r) (2 * (P0.r : ℝ) + P0.k + 1) N (max Cb 0) (max c₁ c₂) 0 0 A hr0 hrX hN0 hCb0
-      le_rfl (by positivity) le_rfl (by simp) hA
+      (by positivity) (by simp) hA
     obtain ⟨b₀, hb₀⟩ := cutF_inCC p.T.base hχ hfA hε A 0 (by simp)
     have hva : ∀ q, Tendsto (fun n => D.vecV p.T.base p.ν' p.m₀ (fun g => cut n g • D.cutF p.T.base χ f ε g) q)
         atTop (𝓝 (D.vecV p.T.base p.ν' p.m₀ (D.cutF p.T.base χ f ε) q)) := fun q =>
@@ -915,7 +915,7 @@ theorem formLimit_top (Cb : ℝ) : ∃ Cc : ℝ, ∀ (Wp Wq : Type) [NormedAddCo
         hκ.trans (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (le_max_left _ _) (by linarith))
           (Nat.cast_nonneg _))
       have hthr := thr_arith (P0.r) (2 * (P0.r : ℝ) + P0.k + 1) N (max Cb 0) (max c₁ c₂) o κ A hr0 hrX hN0 hCb0
-        (Nat.cast_nonneg _) ho' (Nat.cast_nonneg _) hκ' hA
+        ho' hκ' hA
       obtain ⟨bF, hbF⟩ := cutF_inCC p.T.base hχ hfA hε (A - 2 * ((P0.r : ℝ) + 1) * o) o (by linarith)
       exact hc₂ P0.k P0.r Wp Wq p.T.base p.ν' p.m₀ q _ cut nf fib o κ Dop (ε * δ)
         (A - 2 * ((P0.r : ℝ) + 1) * o) bF hfib hIn (mul_pos hε hδ) hFv hFck hbF hcut'

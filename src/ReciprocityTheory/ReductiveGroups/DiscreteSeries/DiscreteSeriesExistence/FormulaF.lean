@@ -38,13 +38,13 @@ theorem formulaF (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : v�
   have hxj : ∀ w, inner ℂ (rreg ε g (uniformisationL2 ε Ψ v₀ v) - uniformisationL2 ε Ψ v₀ q) (uniformisationL2 ε Ψ v₀ w) = 0 := fun w =>
     Submodule.inner_left_of_mem_orthogonal (LinearMap.mem_range_self (ffaJ hP v₀) w) hxo
   have hfH : rreg ε g (uniformisationL2 ε Ψ v₀ v) ∈ Hlam ε Ψ v₀ :=
-    closGen_stable hgap hσ (isDerivedOn_smE hσ) (datumV_isKIrrHW hP hv₀) (datumV_casimir hP v₀)
-      (datumV_kStable hP v₀) g hg _ (datumEmbedding_mem_Hlam hP v)
+    closGen_stable hσ (isDerivedOn_smE hσ) (datumV_isKIrrHW hP hv₀) (datumV_casimir hP v₀)
+      g hg _ (datumEmbedding_mem_Hlam hP v)
   have hxH : rreg ε g (uniformisationL2 ε Ψ v₀ v) - uniformisationL2 ε Ψ v₀ q ∈ Hlam ε Ψ v₀ :=
     Submodule.sub_mem _ hfH (datumEmbedding_mem_Hlam hP q)
   have hRH : ∀ k : S7.KG ε, rreg ε (S7.toMK k) (rreg ε g (uniformisationL2 ε Ψ v₀ v) - uniformisationL2 ε Ψ v₀ q) ∈ Hlam ε Ψ v₀ :=
-    fun k => closGen_stable hgap hσ (isDerivedOn_smE hσ) (datumV_isKIrrHW hP hv₀) (datumV_casimir hP v₀)
-      (datumV_kStable hP v₀) _ (ffa_toMK_mem k) _ hxH
+    fun k => closGen_stable hσ (isDerivedOn_smE hσ) (datumV_isKIrrHW hP hv₀) (datumV_casimir hP v₀)
+      _ (ffa_toMK_mem k) _ hxH
   have horth : ∀ u v'' : T.V, inner ℂ (ffaB T (Ψ g v - q) (rreg ε g (uniformisationL2 ε Ψ v₀ v) - uniformisationL2 ε Ψ v₀ q) v'')
       (uniformisationL2 ε Ψ v₀ u) = 0 := by
     intro u v''
@@ -111,7 +111,7 @@ theorem formulaF (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : v�
       (rreg ε g (uniformisationL2 ε Ψ v₀ v) - uniformisationL2 ε Ψ v₀ q) + uniformisationL2 ε Ψ v₀ q := (sub_add_cancel _ _).symm
   rw [hdec, inner_add_right, inner_eq_zero_symm.1 (hxj v'), zero_add, hqv, ffa_form hP]
 
-theorem datumEmbedding_highest_ne_zero (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) : uniformisationL2 ε Ψ v₀ T.w ≠ 0 := by
+theorem datumEmbedding_highest_ne_zero (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) : uniformisationL2 ε Ψ v₀ T.w ≠ 0 := by
   intro h
   have hz : uniformisationL2 ε Ψ v₀ (0 : T.V) = 0 := by
     simpa using datumEmbedding_smul hP v₀ (0 : ℂ) (0 : T.V)

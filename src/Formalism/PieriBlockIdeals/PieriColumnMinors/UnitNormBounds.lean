@@ -71,7 +71,7 @@ namespace Formalism.CohomologicalDescent
 
 open Classical
 
-lemma label_vl_le_one {l : ℕ} (_hl : l.Prime) {n : ℤ} (h0 : 0 < n) (h1 : n < (l : ℤ) ^ 2) :
+lemma label_vl_le_one {l : ℕ} {n : ℤ} (h0 : 0 < n) (h1 : n < (l : ℤ) ^ 2) :
     vl l n ≤ 1 := by
   by_contra hlt
   push Not at hlt
@@ -84,7 +84,7 @@ lemma label_vl_le_one {l : ℕ} (_hl : l.Prime) {n : ℤ} (h0 : 0 < n) (h1 : n <
 lemma label_vl_le_ind {l : ℕ} (hl : l.Prime) {n : ℤ} (h0 : 0 < n) (h1 : n < (l : ℤ) ^ 2) :
     (vl l n : ℝ) ≤ if (l : ℤ) ∣ n then 1 else 0 := by
   split_ifs with hd
-  · exact_mod_cast label_vl_le_one hl h0 h1
+  · exact_mod_cast label_vl_le_one h0 h1
   · have h : vl l n = 0 := padicValInt.eq_zero_of_not_dvd hd
     simp [h]
 
@@ -555,7 +555,7 @@ theorem padicValInt_prod_eq_sum (l : ℕ) [Fact l.Prime] (s : Finset ℕ) (g : �
         (Finset.prod_ne_zero_iff.mpr fun x hx => hg x (Finset.mem_insert_of_mem hx)),
       ih (fun x hx => hg x (Finset.mem_insert_of_mem hx))]
 
-theorem padicValInt_pow_eq_mul (l : ℕ) [Fact l.Prime] (x : ℤ) (_hx : x ≠ 0) (m : ℕ) :
+theorem padicValInt_pow_eq_mul (l : ℕ) [Fact l.Prime] (x : ℤ) (m : ℕ) :
     padicValInt l (x ^ m) = m * padicValInt l x := by
   unfold padicValInt
   rw [Int.natAbs_pow, padicValNat.pow]
@@ -593,7 +593,7 @@ theorem depth_valuation_sum_holds : DnValSum := by
       rw [hc, ld_mu_w]
       simp
     · unfold vl
-      exact padicValInt_pow_eq_mul l _ h _
+      exact padicValInt_pow_eq_mul l _ _
   rw [padicValInt_prod_eq_sum l _ _ hne, Finset.sum_congr rfl hterm]
   refine Finset.sum_bij_ne_zero
     (fun x _ _ => maxB t w + (((M - w : ℕ) : ℤ) - ((x : ℤ) - ((k + j : ℕ) : ℤ)))) ?_ ?_ ?_ ?_

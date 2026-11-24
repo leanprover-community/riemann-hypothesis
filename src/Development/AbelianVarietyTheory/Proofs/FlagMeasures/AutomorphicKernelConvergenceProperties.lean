@@ -192,7 +192,7 @@ theorem continuous_kern_phe : ∀ (B : RowsAut) (d : InfinitePlace B.I.F → ℝ
           exact ⟨⟨γ, hγ.1⟩, rfl⟩
       _ ≤ _ := hcard
   obtain ⟨hsum, -⟩ := GlobalTheory.summable_and_tsum_le_of_box_count (InfinitePlace B.I.F) B.I.GFset D t
-    (2 * (n : ℝ) ^ 2) _ C' hA hC'0 ha hDnn ht0 hcount
+    (2 * (n : ℝ) ^ 2) _ C' hA hC'0 ha ht0 hcount
 
   have hcγ : ∀ γ : B.I.GFset, Continuous fun p : B.I.GA × B.I.GA => phe B d (p.1⁻¹ * γ.1 * p.2) := by
     intro γ
@@ -326,7 +326,6 @@ theorem kernel_abs_bound : ∀ (B : RowsAut) (d : InfinitePlace B.I.F → ℝ) (
     (fun γ v => dOp (uMat ((x⁻¹ * γ.1 * y).1 v))) (fun γ => ‖phe B d (x⁻¹ * γ.1 * y)‖)
     (2 * (B.I.n : ℝ) ^ 2) _ _ hA hc
     (by rw [Real.exp_neg, one_div]; exact inv_anti₀ two_pos hexp)
-    (fun γ v => ((GlobalTheory.Count.Cartan.cartan_distances B.I.n _).2.1 _ 1 hn).1)
     (fun γ => ⟨norm_nonneg _, norm_phe_le_floor B d h hd hn hl hb _⟩)
     (by
       intro r hr

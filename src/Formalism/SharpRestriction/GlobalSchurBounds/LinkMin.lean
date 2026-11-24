@@ -1102,7 +1102,7 @@ theorem part_five_family_of_mass_volume (eps C0 CY : ℝ) (heps : 0 < eps) :
     have h2 := Finset.sum_le_card_nsmul _ _ _ h1
     rw [Finset.card_univ, D.what₂.card_Tau, nsmul_eq_mul] at h2
     exact h2
-  exact log_X_upper_arithmetic (D.R.f : ℝ) D.R.k D.R.m sc.L CY _ _ _ _ _ _ _ hf hk5 hm44 hmk hL9 hlv0 hlv h2v0 hSL hlg0 hlg hS5
+  exact log_X_upper_arithmetic (D.R.f : ℝ) D.R.k D.R.m sc.L CY _ _ _ _ _ _ _ hf hk5 hm44 hmk hL9 hlv h2v0 hSL hlg0 hlg hS5
     hS6 id
 
 theorem division_level_prime_family {eps : ℝ} (Fm : Formalism.MainNotions.FamP eps) (h2b : flipTwoThree.fam0 Fm MassRatio₂) (h2v : flipTwoThree.fam0 Fm BaseVolumeEqualsMass)

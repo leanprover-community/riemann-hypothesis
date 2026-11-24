@@ -75,7 +75,7 @@ theorem stCount_eq_dGT (n : ℕ) (μ : Fin n → ℤ) (hμ : Antitone μ) :
   rw [← (_root_.Formalism.InvariantFactorPaths.GelfandTsetlinBases.standard_count_gt n μ hμ).2]
   exact Nat.card_congr (Equiv.subtypeEquivRight fun I => Formalism.MainNotions.G.ColumnFamilies.restStd n 0 (fun _ => μ) I)
 
-theorem weyl_dimension_formula_index_sets (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.SelectionLemmas.admB3 D := by
+theorem weyl_dimension_formula_index_sets (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.SelectionLemmas.admB3 := by
   intro n N mu hdom
   have e : Nat.card {I : ℤ → Finset (Fin n) // IsSt mu I} =
       Nat.card {I : ℤ → Finset (Fin n) // Formalism.InvariantFactorPaths.GelfandTsetlinBases.IsStd (pEnd mu) I} :=
@@ -83,7 +83,7 @@ theorem weyl_dimension_formula_index_sets (D : Formalism.BasicNotions.D7) : Form
   rw [e, (_root_.Formalism.InvariantFactorPaths.GelfandTsetlinBases.standard_count_gt n (pEnd mu) hdom).2]
   exact Formalism.L2.G.Model.weylQ n (pEnd mu) hdom
 
-theorem branching_rule_count_form (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.SelectionLemmas.ColumnFamilyLowerSet D := by
+theorem branching_rule_count_form (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.SelectionLemmas.ColumnFamilyLowerSet := by
   intro m ν hν
   rw [stCount_eq_dGT (m + 1) ν hν]
   simp only [Formalism.InvariantFactorPaths.GelfandTsetlinBases.dGT, Formalism.InvariantFactorPaths.GelfandTsetlinBases.gtBox]
@@ -96,19 +96,19 @@ theorem branching_rule_count_form (D : Formalism.BasicNotions.D7) : Formalism.Ma
   rw [e] at h1
   exact h1.trans h2
 
-theorem strip_up_antitone {n : ℕ} {ν μ : Fin n → ℤ} {b : ℕ} (hν : Antitone ν) (h : HStrip ν μ b) : Antitone μ :=
+theorem strip_up_antitone {n : ℕ} {ν μ : Fin n → ℤ} {b : ℕ} (h : HStrip ν μ b) : Antitone μ :=
   by
     obtain ⟨h1, h2, -⟩ := h
     exact antitone_of_succ μ fun a ha => (h2 a ha).trans (h1 a)
 
-theorem strip_down_antitone {n : ℕ} {ν μ : Fin n → ℤ} {b : ℕ} (hν : Antitone ν) (h : HStrip μ ν b) : Antitone μ :=
+theorem strip_down_antitone {n : ℕ} {ν μ : Fin n → ℤ} {b : ℕ} (h : HStrip μ ν b) : Antitone μ :=
   by
     obtain ⟨h1, h2, -⟩ := h
     exact antitone_of_succ μ fun a ha => (h1 ⟨a.1 + 1, ha⟩).trans (h2 a ha)
 
 
 open Classical in
-theorem pieri_rule_count_form (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.SelectionLemmas.GenericProjectionCriterion D := by
+theorem pieri_rule_count_form (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.SelectionLemmas.GenericProjectionCriterion := by
   intro m ν b hν
   obtain ⟨hup, hdown⟩ := _root_.Formalism.InvariantFactorPaths.GelfandTsetlinBases.gelfand_tsetlin_pieri (m + 1) ν b hν
   have hc : (m + 1 + b - 1).choose b = (b + m).choose m := by
@@ -124,7 +124,7 @@ theorem pieri_rule_count_form (D : Formalism.BasicNotions.D7) : Formalism.MainNo
       exact and_congr Iff.rfl (Formalism.MainNotions.G.ColumnFamilies.hstrip_iff ν μ b).symm
     · simp only [Finset.mem_filter] at hμ
       have hs := hμ.2
-      exact stCount_eq_dGT (m + 1) μ (strip_up_antitone hν ((Formalism.MainNotions.G.ColumnFamilies.hstrip_iff ν μ b).1 hs))
+      exact stCount_eq_dGT (m + 1) μ (strip_up_antitone ((Formalism.MainNotions.G.ColumnFamilies.hstrip_iff ν μ b).1 hs))
   · rw [← hc, ← hdown]
     unfold Formalism.InvariantFactorPaths.GelfandTsetlinBases.stripsDown
     symm
@@ -134,7 +134,7 @@ theorem pieri_rule_count_form (D : Formalism.BasicNotions.D7) : Formalism.MainNo
       exact and_congr Iff.rfl (Formalism.MainNotions.G.ColumnFamilies.hstrip_iff μ ν b).symm
     · simp only [Finset.mem_filter] at hμ
       have hs := hμ.2
-      exact stCount_eq_dGT (m + 1) μ (strip_down_antitone hν ((Formalism.MainNotions.G.ColumnFamilies.hstrip_iff μ ν b).1 hs))
+      exact stCount_eq_dGT (m + 1) μ (strip_down_antitone ((Formalism.MainNotions.G.ColumnFamilies.hstrip_iff μ ν b).1 hs))
 
 end Formalism.MainNotions.G.Joints.Lit
 
@@ -399,7 +399,7 @@ end Formalism.MainNotions.G.Joints.Lit
 
 namespace Formalism.MainNotions.G.Joints.Lit
 
-theorem mertens_bound (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CornerGLContinuity.MertensBound D := by
+theorem mertens_bound (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CornerGLContinuity.MertensBound := by
   intro y hy
   have hly : 0 ≤ Real.log y := Real.log_nonneg hy
   have hterm : ∀ p ∈ (Finset.range ⌈y⌉₊).filter Nat.Prime, Real.log p / p ≤ Real.log y / p := by

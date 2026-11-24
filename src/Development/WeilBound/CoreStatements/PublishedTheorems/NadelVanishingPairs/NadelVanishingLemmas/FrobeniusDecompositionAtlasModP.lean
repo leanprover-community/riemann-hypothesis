@@ -1607,7 +1607,7 @@ open CategoryTheory AlgebraicGeometry TopologicalSpace GlobalTheory GlobalTheory
 namespace GlobalTheory.DI
 
 theorem unit_mul_logarithmic_lift (p : ℕ) {Kt : Type} [CommRing Kt] (At : Subring Kt)
-    (F : Kt →+* Kt) (v v' t : Kt) (_hp : (p : Kt) * p = 0) (hv' : v' ∈ At) (hvv : v * v' = 1)
+    (F : Kt →+* Kt) (v v' t : Kt) (hv' : v' ∈ At) (hvv : v * v' = 1)
     (hF : ∃ w ∈ At, F v = v ^ p + p * w) (ht : F t = t ^ p) :
     ∃ w ∈ At, F (v * t) = (v * t) ^ p * (1 + p * w) := by
   obtain ⟨w, hw, hFv⟩ := hF
@@ -1785,7 +1785,7 @@ theorem isLifted_of_sncCharts : ∀ (p : ℕ) [Fact p.Prime] (Y X : Scheme.{0}) 
       · show F i ((Y.presheaf.germ (C i).U (π (genericPoint X)) (hη i)).hom 1) = _
         simp
       · exact hF2 i l
-    obtain ⟨w, hwA, hw⟩ := _root_.GlobalTheory.DI.unit_mul_logarithmic_lift p At (F i) sv sv' _ hpp hsv'A hvv (hstab i hi sv hsvA) (hkey ((C i).e c))
+    obtain ⟨w, hwA, hw⟩ := _root_.GlobalTheory.DI.unit_mul_logarithmic_lift p At (F i) sv sv' _ hsv'A hvv (hstab i hi sv hsvA) (hkey ((C i).e c))
     refine ⟨w, Subring.mem_map.2 ⟨w, hwA, rfl⟩, ?_⟩
     rwa [hv2]
   rw [Units.val_mul, Units.coe_prod]

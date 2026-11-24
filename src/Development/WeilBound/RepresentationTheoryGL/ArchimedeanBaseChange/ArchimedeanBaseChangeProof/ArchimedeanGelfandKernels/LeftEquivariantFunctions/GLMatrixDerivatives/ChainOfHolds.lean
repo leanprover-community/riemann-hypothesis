@@ -261,9 +261,9 @@ theorem kapEquiv : KapEquiv := by
         (fun H H' => -(fderiv ℝ k y (y * H')) * ε H + k y * ε H * fderiv ℝ Fr 1 H')
         (fun H₁ H₂ H' => by simp only [map_add (f := _), mul_add, add_mul]; abel)
         (fun c H H' => by simp only [map_smul, mul_smul_comm, smul_mul_assoc, smul_add])
-        (fun H H₁ H₂ => by simp only [Matrix.mul_add, map_add (f := _), neg_add, add_mul, mul_add]; abel)
+        (fun H H₁ H₂ => by simp only [map_add (f := _), neg_add, add_mul, mul_add]; abel)
         (fun c H H' => by
-          simp only [Matrix.mul_smul, map_smul, neg_smul, smul_mul_assoc, mul_smul_comm, smul_add, ← smul_neg])
+          simp only [map_smul, smul_mul_assoc, mul_smul_comm, smul_add, ← smul_neg])
       have hkapR : kapR ε Fr k y = ∑ p, B (hb p) (hb p) := rfl
       have hterm : ∀ p, -(Rd (hb p) k (y * k₂.1)) * ε (hb p) + k (y * k₂.1) * ε (hb p) * fderiv ℝ Fr 1 (hb p) =
           B (Y p) (Y p) * E.ρ k₂ := by
@@ -318,7 +318,7 @@ theorem Good.deriv (hO : IsOpen O) {Φ : ℝ × H → W} {T : ℝ} (h : Good O �
 
 theorem Good.cont_line {Φ : ℝ × H → W} {T : ℝ} (h : Good O Φ T) {x : H} (hx : x ∈ O) :
     Continuous fun t => Φ (t, x) :=
-  h.1.continuousOn.comp_continuous (continuous_id.prodMk continuous_const) fun t => ⟨mem_univ _, hx⟩
+  h.1.continuousOn.comp_continuous (continuous_id.prodMk continuous_const) fun _ => ⟨mem_univ _, hx⟩
 
 theorem Good.integrable {Φ : ℝ × H → W} {T : ℝ} (h : Good O Φ T) {x : H} (hx : x ∈ O) :
     Integrable (fun t => Φ (t, x)) := by
@@ -574,7 +574,7 @@ theorem diffAt_of {U : ℝ × Mat n → W} {O : Set (ℝ × Mat n)} (hO : IsOpen
 
 end Partial
 
-theorem dc_add_smul (hG : GelComm) {E : KMod n} {Fr : Mat n → (E.V →L[ℂ] E.V)} {ε : Mat n →ₗ[ℝ] (E.V →L[ℂ] E.V)}
+theorem dc_add_smul {E : KMod n} {Fr : Mat n → (E.V →L[ℂ] E.V)} {ε : Mat n →ₗ[ℝ] (E.V →L[ℂ] E.V)}
     (F₁ F₂ : Mat n → E.V) (h₁ : ContDiffOn ℝ ∞ F₁ (GLs n)) (h₂ : ContDiffOn ℝ ∞ F₂ (GLs n)) (c : ℂ) :
     ∀ x ∈ GLs n, DC ε Fr (c • (F₁ + F₂)) x = c • (DC ε Fr F₁ x + DC ε Fr F₂ x) := by
   intro x hx
@@ -594,7 +594,7 @@ theorem om_DC (hG : GelComm) {lam : Fin n → ℤ} {E : KMod n} {Fr : Mat n → 
   have ht := (hG n E.V E.V true 2 f hf).1
   have hfa := (hG n E.V E.V false 2 f hf).1
   have e : Om f = (2 : ℂ) • (gel true 2 f + gel false 2 f) := rfl
-  rw [e, dc_add_smul hG _ _ ht hfa 2 x hx]
+  rw [e, dc_add_smul _ _ ht hfa 2 x hx]
   simp only [Om, Pi.smul_apply, Pi.add_apply]
   rw [gel_DC hG h f hf true 2 x hx, gel_DC hG h f hf false 2 x hx]
 

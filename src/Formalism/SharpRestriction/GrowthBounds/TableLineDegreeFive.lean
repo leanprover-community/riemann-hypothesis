@@ -98,7 +98,7 @@ def NextMarked (n' r : ℕ) (de : ℝ) (T : Finset ℕ) (s s' : ℕ) : Prop :=
 def Enum (r : ℕ) (de : ℝ) (T : Finset ℕ) (s : ℕ) (f : Fin (3 * r) → ℕ) : Prop :=
   StrictMono f ∧ T ∩ tile r de s = Finset.univ.image f
 
-def adm1 (_D : Formalism.BasicNotions.D7) : Prop :=
+def adm1 : Prop :=
   ∀ (n' : ℕ) (TT : Finset (Fin n')) (r L₁ L₂ : ℕ) (de h x : ℝ) (hr : 1 ≤ r), OrbitHyp n' TT r L₁ L₂ de h x →
     let T := topSet TT
     let u := goodU de
@@ -120,7 +120,7 @@ def adm1 (_D : Formalism.BasicNotions.D7) : Prop :=
       (∀ d', 1 ≤ d' → d' < d → (y + d') % n' ∈ T → ¬ Even ((y + d') % n')) ∧
       (T ∩ (Finset.Ioo 0 d).image (fun j => (y + j) % n')).card ≤ N₁)
 
-def adm2 (_D : Formalism.BasicNotions.D7) : Prop :=
+def adm2 : Prop :=
   ∀ eps : ℝ, 0 < eps → eps < 1 / 52 → ∃ C x₀ : ℝ, ∀ x : ℝ, x₀ ≤ x →
     let h := 2 + 8 * eps
     let r := ⌈8 * (h + 2) / eps⌉₊ + 1
@@ -130,23 +130,23 @@ def adm2 (_D : Formalism.BasicNotions.D7) : Prop :=
       ∀ (TT : Finset (Fin n')) (L₂ : ℕ), IsGoodOrbit n' TT L₂ (r - 1) r de h x →
         (n' : ℝ) * de / (C * Real.log x) ≤ TT.card ∧ (TT.card : ℝ) ≤ 40 * n' * de
 
-def adm3 (_D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.G.DualHeightInclusion
+def adm3 : Prop := Formalism.MainNotions.G.DualHeightInclusion
 
-def ArchimedeanSignatureMatching (_D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.G.BePerfect
+def ArchimedeanSignatureMatching : Prop := Formalism.MainNotions.G.BePerfect
 
-def adm5 (_D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.G.LPOneEvery
+def adm5 : Prop := Formalism.MainNotions.G.LPOneEvery
 
-def HerrCocycleExtensionClass (_D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.G.WittIdent
+def HerrCocycleExtensionClass : Prop := Formalism.MainNotions.G.WittIdent
 
-def FontaineFormalProperties (_D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.G.FlatTop
+def FontaineFormalProperties : Prop := Formalism.MainNotions.G.FlatTop
 
-def AmbientMetricLowerBound (_D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.G.DualHeightBasis
+def AmbientMetricLowerBound : Prop := Formalism.MainNotions.G.DualHeightBasis
 
-def HostOrbitConditions (_D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.G.HLSpans
+def HostOrbitConditions : Prop := Formalism.MainNotions.G.HLSpans
 
-def OrderConsequences (_D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.G.TestSide
+def OrderConsequences : Prop := Formalism.MainNotions.G.TestSide
 
-def FewBadOrbits (_D : Formalism.BasicNotions.D7) : Prop :=
+def FewBadOrbits : Prop :=
   ∀ (Kf : Type) [Field Kf] (n' m : ℕ) (lam0 : Fin n' → Fin (m + 1) → ℤ), IsDominant lam0 →
     ((dimV Kf lam0 : ℕ) : ℚ) = ∏ s : Fin n', ∏ i : Fin (m + 1), ∏ j : Fin (m + 1),
       if i < j then (((lamAt lam0 s i : ℤ) : ℚ) - ((lamAt lam0 s j : ℤ) : ℚ) + ((j : ℕ) : ℚ) - ((i : ℕ) : ℚ)) /
@@ -171,7 +171,7 @@ def plog (p : ℕ) [Fact p.Prime] (x : ℚ_[p]) : ℚ_[p] :=
 
 def BinomDecay (p : ℕ) (f : ℕ → ℚ) : Prop := ∀ j : ℕ, VGe p (mahlerCoef f j) ((j : ℝ) / 4)
 
-def adm22 (_D : Formalism.BasicNotions.D7) : Prop :=
+def adm22 : Prop :=
   ∀ (p : ℕ) [Fact p.Prime], 5 ≤ p → ∀ t : ℕ,
     let P := p ^ (t + 1)
     (∀ n : ℕ, cUnit P n = ∏ i ∈ Finset.range n, ∏ y ∈ Finset.Ico 1 P, (1 + (P : ℚ) * i / y)) ∧
@@ -194,9 +194,9 @@ def jointComp {O : Type} [CommRing O] [IsDomain O] {ι : Type} [Fintype ι] (n :
     (Ss : Fin N → Set ι) (t : Fin N → Fin n → ℤ) : Submodule (KK O) (MvPolynomial (ι × Fin n) (KK O)) :=
   ⨅ i, isoSub (glOps (KK O) n LL (Ss i)) (t i)
 
-def adm11 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.FilteredProjectorCorollaryField D
+def adm11 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.FilteredProjectorCorollaryField
 
-def FilteredProjectionCriterion (_D : Formalism.BasicNotions.D7) : Prop :=
+def FilteredProjectionCriterion : Prop :=
   ∀ (p n' : ℕ) (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (_S : UniformizedDVR p O),
     AdmissibleDVR p n' O →
     ∀ (n : ℕ) [NeZero n] (ι : Type) [Fintype ι] (LL : Letters ι) (N : ℕ) (Ss : Fin N → Set ι), Monotone Ss →
@@ -220,55 +220,55 @@ def FilteredProjectionCriterion (_D : Formalism.BasicNotions.D7) : Prop :=
               N0 n * deF p n (ellOf (glOps (KK O) n LL (Ss i)) (Pol (KK O) n d) + ellWt (t i)) : ℕ) : ℝ) ≤
             (N0 n : ℝ) * Real.logb p (2 * (degIn d (Ss i) : ℝ) + n))
 
-def adm6 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.adm5 D
+def adm6 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.adm5
 
-def adm7 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.InvariantProjectionField D
+def adm7 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.InvariantProjectionField
 
-def adm8 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.NablaDeltaComparisonField D
+def adm8 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.NablaDeltaComparisonField
 
-def adm9 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.IsotypicProjectorTheoremField D
+def adm9 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.IsotypicProjectorTheoremField
 
-def adm10 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.TranslateCorollaryField D
+def adm10 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.TranslateCorollaryField
 
 def adm12 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.ValuationLemmaField D
 
-def adm21 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.ConclusionE D
+def adm21 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.ConclusionE
 
 def adm23 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.UnitProductSecondLemma D
 
 def FrobeniusExpansionCongruence (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.DerivativeLemma D
 
-def HerrExtensionClause (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.SelectionLemmas.admB2 D
+def HerrExtensionClause (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.SelectionLemmas.admB2
 
-def adm26 (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) : Prop := Formalism.MainNotions.SelectionLemmas.Conclusion2 D CLa Ck Crk Cdeg
+def adm26 (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) : Prop := Formalism.MainNotions.SelectionLemmas.Conclusion2 CLa Ck Crk Cdeg
 
-def TopsChoiceLemma (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.SelectionLemmas.NestedTypeBound D
+def TopsChoiceLemma (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.SelectionLemmas.NestedTypeBound
 
-def ZeroGainAbove (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.SelectionLemmas.PathPairCorrespondence D
+def ZeroGainAbove (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.SelectionLemmas.PathPairCorrespondence
 
-def ChosenTopsCount (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.SelectionLemmas.TypeDecompositionsCommute D
+def ChosenTopsCount (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.SelectionLemmas.TypeDecompositionsCommute
 
-def adm13 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.AutomorphicSideConclusion D
+def adm13 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.AutomorphicSideConclusion
 
 def adm14 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.HyperplaneRank D
 
-def adm15 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D
+def adm15 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.DefiniteRankOne
 
-def adm16 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.RotatedSumBound D
+def adm16 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.RotatedSumBound
 
-def adm17 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.PathWeightComponents D
+def adm17 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.PathWeightComponents
 
-def adm18 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.ConclusionB3 D
+def adm18 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.ConclusionB3
 
 def adm19 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.CoefficientDependence D
 
-def adm20 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.CanonicalTranslateJetIdentity D
+def adm20 (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.CanonicalTranslateJetIdentity
 
 def admitted (D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) : Prop :=
-  adm1 D ∧ adm2 D ∧ adm3 D ∧ ArchimedeanSignatureMatching D ∧ adm5 D ∧ adm6 D ∧ adm7 D ∧ adm8 D ∧ adm9 D ∧ adm10 D ∧ adm11 D ∧ FilteredProjectionCriterion D ∧
+  adm1 ∧ adm2 ∧ adm3 ∧ ArchimedeanSignatureMatching ∧ adm5 ∧ adm6 D ∧ adm7 D ∧ adm8 D ∧ adm9 D ∧ adm10 D ∧ adm11 D ∧ FilteredProjectionCriterion ∧
     adm12 D ∧ adm13 D ∧ adm14 D ∧ adm15 D ∧ adm16 D ∧ adm17 D ∧ adm18 D ∧ adm19 D ∧ adm20 D ∧ adm21 D ∧
-    adm22 D ∧ adm23 D ∧ FrobeniusExpansionCongruence D ∧ HerrExtensionClause D ∧ adm26 D CLa Ck Crk Cdeg ∧ HerrCocycleExtensionClass D ∧ FontaineFormalProperties D ∧ AmbientMetricLowerBound D ∧ HostOrbitConditions D ∧
-    OrderConsequences D ∧ TopsChoiceLemma D ∧ ZeroGainAbove D ∧ ChosenTopsCount D ∧ FewBadOrbits D ∧ LevelPrimesProviso D
+    adm22 ∧ adm23 D ∧ FrobeniusExpansionCongruence D ∧ HerrExtensionClause D ∧ adm26 D CLa Ck Crk Cdeg ∧ HerrCocycleExtensionClass ∧ FontaineFormalProperties ∧ AmbientMetricLowerBound ∧ HostOrbitConditions ∧
+    OrderConsequences ∧ TopsChoiceLemma D ∧ ZeroGainAbove D ∧ ChosenTopsCount D ∧ FewBadOrbits ∧ LevelPrimesProviso D
 
 def ConclusionE (D : Formalism.BasicNotions.D7) : Prop := ∃ C₀ : ℝ, 0 < C₀ ∧ ∀ C : ℝ, C₀ ≤ C → aux₃ D C
 

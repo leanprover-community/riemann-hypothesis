@@ -115,7 +115,7 @@ private lemma cexp_pi_mul_conj_sub_div_area_eq_one_of_mem (hΛ : IsLat Λ) {a b 
       (Real.pi : ℂ) * (a * (starRingEnd ℂ) b - b * (starRingEnd ℂ) a) / (2 * (area Λ : ℂ)) by ring,
     Complex.exp_add, ← sq, h2]
 
-theorem ratio_pow_add (hΛ : IsLat Λ) {t : ℂ} {N : ℕ} (hN : 0 < N) (ht : (N : ℂ) * t ∈ Λ)
+theorem ratio_pow_add (hΛ : IsLat Λ) {t : ℂ} {N : ℕ} (ht : (N : ℂ) * t ∈ Λ)
     (z : ℂ) {l : ℂ} (hl : l ∈ Λ) :
     (U1 Λ t (sgStar Λ) (z + l) / sgStar Λ (z + l)) ^ N = (U1 Λ t (sgStar Λ) z / sgStar Λ z) ^ N := by
   by_cases hz : z ∈ Λ
@@ -198,7 +198,7 @@ theorem exists_decomp : ∀ (Λ : AddSubgroup ℂ), IsLat Λ → ∀ (t : ℂ) (
     fun a ha => ⟨_, (hcont a (fun h' => ha ((hL a).1 h'))).tendsto.mono_left nhdsWithin_le_nhds⟩
   have hp : ∀ z, ∀ l ∈ L.lattice, (fun z => (U1 Λ t (sgStar Λ) z / sgStar Λ z) ^ N) (z + l) =
       (fun z => (U1 Λ t (sgStar Λ) z / sgStar Λ z) ^ N) z :=
-    fun z l hl => ratio_pow_add hΛ hN ht z ((hL l).2 hl)
+    fun z l hl => ratio_pow_add hΛ ht z ((hL l).2 hl)
   obtain ⟨A, B, hAB⟩ := GlobalTheory.EllipticPoles.no_pole_case L hmer hd hp
   have hpt : ∀ z, z ∉ Λ → (U1 Λ t (sgStar Λ) z / sgStar Λ z) ^ N =
       A.eval (L.weierstrassP z) + B.eval (L.weierstrassP z) * L.derivWeierstrassP z := by

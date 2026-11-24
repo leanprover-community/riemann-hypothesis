@@ -506,7 +506,7 @@ theorem admissible_level_two {X : Inst D L} {Y : LatInst D} {K : Consts} {c : La
       exact atG_coreU hCL hSg u w i hi hw φ hφ F hF1
     · exact admissible_away_from_twist h0 hT hp0 hpT hE ht.fdef hS.2.2 u w hw hg φ hφ F hF1 hF0
 
-theorem famU {eps : ℝ} (he : 0 < eps) (Fm : FamP eps)
+theorem famU {eps : ℝ} (Fm : FamP eps)
     (g1 : ∃ x0 : ℝ, ∀ x, x0 ≤ x → ∀ (_ : Fm.x1 < x) (i : Fm.Ix x), ∀ u, product_first_zeroth_parts.Conclusion6 (Fm.D x i) u)
     (g2 : ∃ x0 : ℝ, ∀ x, x0 ≤ x → ∀ (hx : Fm.x1 < x) (i : Fm.Ix x), TwistedPointIntegral (Fm.D x i) (Fm.ex x hx i).tw)
     (g3 : ∃ x0 : ℝ, ∀ x, x0 ≤ x → ∀ (_ : Fm.x1 < x) (i : Fm.Ix x), PeriodClassSumWeyl (Fm.D x i))
@@ -581,7 +581,7 @@ theorem admissible_family_of_inclusion {𝒞 : FamClass} (h : Adm2InU 𝒞) :
   obtain ⟨ε1, hε1, hK⟩ := cand h1 (cand h2 (cand h3 (cand h4 (cand h5 (cand h6 (cand h7 h8))))))
   refine ⟨ε1, hε1, fun eps he hle => (hK eps he hle).imp fun K hK' Fm CH hc hL => ?_⟩
   obtain ⟨g1, g2, g3, g4, hS, ha, hb, C1, hCL, hSg⟩ := hK' Fm CH hc hL
-  exact famU he Fm g1 g2 g3 g4 hS ha hb hCL hSg
+  exact famU Fm g1 g2 g3 g4 hS ha hb hCL hSg
 
 end Formalism.L2.G.Adm2InU
 

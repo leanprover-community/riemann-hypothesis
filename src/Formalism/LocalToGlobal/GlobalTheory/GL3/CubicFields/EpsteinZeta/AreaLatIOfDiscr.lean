@@ -95,7 +95,7 @@ theorem ib_im_det {K : Type} [Field K] [NumberField K] (ψ : 𝓞 K →+* ℂ) (
     Complex.intCast_im]
   ring
 
-theorem latI_basis (K : Type) [Field K] [NumberField K] (hK : Module.finrank ℚ K = 2)
+theorem latI_basis (K : Type) [Field K] [NumberField K]
     (φ : K →+* ℂ) (a₀ b₀ : ℂ) (hab₀ : 0 < ((starRingEnd ℂ) a₀ * b₀).im)
     (h₀ : latI φ ⊤ 1 = AddSubgroup.closure {a₀, b₀}) (𝔞 : Ideal (𝓞 K)) (h𝔞 : 𝔞 ≠ ⊥) :
     ∃ a b : ℂ, 0 < ((starRingEnd ℂ) a * b).im ∧ latI φ 𝔞 1 = AddSubgroup.closure {a, b} ∧
@@ -212,7 +212,7 @@ theorem exists_latI_basis (K : Type) [Field K] [NumberField K] (d : ℕ) [Fact d
     ∃ a b : ℂ, 0 < ((starRingEnd ℂ) a * b).im ∧ latI φ 𝔞 1 = AddSubgroup.closure {a, b} ∧
       ((starRingEnd ℂ) a * b).im = (Ideal.absNorm 𝔞 : ℝ) * Real.sqrt d / 2 := by
   obtain ⟨a₀, b₀, h₀, hl₀, hc₀⟩ := latI_top_basis K d hd4 x hx hK φ
-  obtain ⟨a, b, h, hl, hc⟩ := latI_basis K hK φ a₀ b₀ h₀ hl₀ 𝔞 h𝔞
+  obtain ⟨a, b, h, hl, hc⟩ := latI_basis K φ a₀ b₀ h₀ hl₀ 𝔞 h𝔞
   exact ⟨a, b, h, hl, by rw [hc, hc₀]; ring⟩
 
 theorem discr_latI_ne_zero (K : Type) [Field K] [NumberField K] (d : ℕ) [Fact d.Prime] (hd4 : d % 4 = 3)

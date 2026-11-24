@@ -1719,8 +1719,8 @@ namespace ReciprocityTheory.ChartRestriction.DS.Mult1
 
 theorem thmM_of_xi (h : UnitaryGroupStructuralFacts) (hXi : Formalism.FourierDecayAlt.B.XiExists) : ThmM :=
   theoremM_of h hXi (stBeHerm h) (stBePos h) (stSchurW h) (stSInt h) stSchurG (stPairs h) (stBeConv h) (stBeEquiv h)
-    (stRepro h) (stSmooth h) stFrame (stInvGroup h) stInvChar stInvCC (stReps h) (stTransM h) (stSym h) (stSymBeta h)
-    (stBetaInf h) (stDichoG h) (stDichoW h) (stMixed h) rankOneMinors
+    (stRepro h) (stSmooth h) stFrame (stInvGroup h) stInvCC (stSymBeta h)
+    (stBetaInf h) (stDichoG h) (stDichoW h) (stMixed h)
 
 theorem thmM : ThmM := thmM_of_xi multiplicity_one_hypotheses_hold ReciprocityTheory.ChartRestriction.DS.Xi.xiExists
 

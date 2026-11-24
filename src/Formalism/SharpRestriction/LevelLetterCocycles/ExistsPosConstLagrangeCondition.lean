@@ -286,16 +286,16 @@ theorem thmCKR_of_open [NeZero n] (W : LocWach PD LL O v n) (R : ℕ → Prop) (
 
 end Core
 
-def openKR (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (R : ℕ → Prop) (C : ℝ) : Prop :=
+def openKR (D : D7) (HW : HWOf D.loc) (R : ℕ → Prop) (C : ℝ) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K LL : Loc.FinExt l) (hg : Loc.Good K 1 LL)
     [NeZero (Module.finrank ℚ_[l] ↥(Loc.K0 K))], OpenC ((HW l).W K 1 LL hg) R C
 
 theorem Theorem_C_range_of_open (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (R : ℕ → Prop) (C CA CB CK : ℝ) (h10 : adm10 D HW F CA CB CK)
-    (h : openKR D HW F R C) : TheoremCConstantsRange D HW F R 32 4 10 4 (3 / 2) C := by
+    (h : openKR D HW R C) : TheoremCConstantsRange D HW F R 32 4 10 4 (3 / 2) C := by
   exact fun l _ K LL hg _ => thmCKR_of_open _ R C (h10.1 l K 1 LL hg) (h l K LL hg)
 
 theorem Theorem_C_of_open (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (C CA CB CK : ℝ) (h10 : adm10 D HW F CA CB CK)
-    (h : openKR D HW F (fun _ => True) C) : aux₃ D HW F C :=
+    (h : openKR D HW (fun _ => True) C) : aux₃ D HW F C :=
   Theorem_C_range_of_open D HW F _ C CA CB CK h10 h
 
 end Formalism.MainNotions.RamifiedCoefficientChains

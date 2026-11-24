@@ -61,10 +61,10 @@ def WittLin : Prop := ∀ {n m k : ℕ}, n = m + k → ∀ (ε : Fin n → Bool)
 def DimNK : Prop := ∀ {D : D7} (X : HidaSetting D), X.B.I.n = (D.R.rS + 1 + D.R.rS) + D.R.k
 
 def LinIndW : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf
-    fibInf, PushHyp X u' ψ hT μinf νinf fibInf → ∀ v : InfinitePlace X.B.I.F, LinearIndependent ℂ (wV X u' v)
+    fibInf, PushHyp X u' ψ μinf νinf fibInf → ∀ v : InfinitePlace X.B.I.F, LinearIndependent ℂ (wV X u' v)
 
 def PerpPosV : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf
-    fibInf, PushHyp X u' ψ hT μinf νinf fibInf → ∀ v : InfinitePlace X.B.I.F, ∀ z : Fin X.B.I.n → ℂ, z ≠ 0 →
+    fibInf, PushHyp X u' ψ μinf νinf fibInf → ∀ v : InfinitePlace X.B.I.F, ∀ z : Fin X.B.I.n → ℂ, z ≠ 0 →
       (∀ b, star (wV X u' v b) ⬝ᵥ (Formalism.REAL.Jm (X.B.I.ε v) *ᵥ z) = 0) →
       0 < (star z ⬝ᵥ (Formalism.REAL.Jm (X.B.I.ε v) *ᵥ z)).re
 

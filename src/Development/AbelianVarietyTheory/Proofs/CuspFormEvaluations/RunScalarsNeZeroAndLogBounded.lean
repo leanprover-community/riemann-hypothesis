@@ -89,7 +89,7 @@ theorem size_comb (T : ℕ) (wL wF : WeightFamilies.Wt D j) :
   simp only [Finset.sum_add_distrib, ← Finset.mul_sum, mul_add]
   ring
 
-theorem log_zOwn_le (p : ℕ) (hp : 0 < p) (w : WeightFamilies.Wt D j) :
+theorem log_zOwn_le (p : ℕ) (w : WeightFamilies.Wt D j) :
     Real.log (zOwnP D p w : ℝ) ≤ 2 * Real.log p * w.size := by
   have hl : 0 ≤ Real.log p := Real.log_natCast_nonneg p
   have h := size_ge w
@@ -144,7 +144,7 @@ theorem log_comb_le (B : WeightFamilies.Prov D) (hinj : Function.Injective D.wha
       Complex.norm_natCast]
   rw [e, Real.log_mul (mul_ne_zero hz (pow_ne_zero _ (nz _ hL0))) (nz _ hF0),
     Real.log_mul hz (pow_ne_zero _ (nz _ hL0)), Real.log_pow]
-  have h1 := log_zOwn_le p hp G
+  have h1 := log_zOwn_le p G
   have hT : (0 : ℝ) ≤ T := by positivity
   nlinarith [mul_le_mul_of_nonneg_left hL1 hT]
 

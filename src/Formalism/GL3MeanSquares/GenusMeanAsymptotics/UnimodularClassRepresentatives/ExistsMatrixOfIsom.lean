@@ -95,7 +95,7 @@ theorem Cayley.exists_inv_one_add (hS : IsLocUnif S ϖ) {M : Matrix n n K} (hM :
   refine ⟨(1 + ϖ * s)⁻¹ • (1 + ϖ • M).adjugate, Ent.smul hinv hA.adjugate, ?_⟩
   rw [Matrix.mul_smul, Matrix.mul_adjugate, hdet, smul_smul, inv_mul_cancel₀ hne, one_smul]
 
-theorem exists_cayley (hS : IsLocUnif S ϖ) {H E : Matrix n n K} (hH : Hᴴ = H) (hHS : Ent S H)
+theorem exists_cayley (hS : IsLocUnif S ϖ) {H E : Matrix n n K} (hH : Hᴴ = H)
     (hES : Ent S E) {e l N : ℕ} (hHE : H * E = ϖ ^ e • (1 : Matrix n n K)) (hN : 2 * l + e + 1 ≤ N)
     {X Z W' : Matrix n n K} (hX : Ent S X) (hZ : Ent S Z) (hXZ : Xᴴ * H * X = H + ϖ ^ N • Z)
     {c : K} (hc : c ∈ S) (hcc : c + star c = 1) (hW' : Ent S W')
@@ -444,8 +444,8 @@ theorem step_identity (P H X Y Y' Z V V' : Matrix n n K) (a b : K)
   have hV2 : V = Z - V' := eq_sub_of_add_eq hV
   rw [e1, e2, e3, hG]
   simp only [add_mul, mul_add, sub_mul, mul_sub, one_mul, mul_one, smul_mul_assoc, mul_smul_comm]
-  simp only [← Matrix.mul_assoc, hYHY]
-  simp only [← Matrix.mul_assoc, hHY, hYH, hV2]
+  simp only [hYHY]
+  simp only [hHY, hYH, hV2]
   simp only [Matrix.mul_assoc, smul_smul]
   module
 
@@ -493,7 +493,7 @@ theorem step (hS : IsLocUnif S ϖ) {H E : Matrix n n K} (hH : Hᴴ = H) (hES : E
 
 end Newton
 
-theorem det_unit (hS : IsLocUnif S ϖ) {H E : Matrix n n K} (hH : Hᴴ = H) (hHS : Ent S H)
+theorem det_unit (hS : IsLocUnif S ϖ) {H E : Matrix n n K}
     (hES : Ent S E) {e k : ℕ} (hHE : H * E = ϖ ^ e • (1 : Matrix n n K)) (hk : e + 1 ≤ k)
     {X Z : Matrix n n K} (hX : Ent S X) (hZ : Ent S Z) (hXZ : Xᴴ * H * X = H + ϖ ^ k • Z) :
     X.det ≠ 0 ∧ X.det⁻¹ ∈ S := by
@@ -522,7 +522,7 @@ theorem det_unit (hS : IsLocUnif S ϖ) {H E : Matrix n n K} (hH : Hᴴ = H) (hHS
   rw [e4]
   exact S.mul_mem (hS.star_mem _ hX.det) hinv
 
-theorem exists_newton (hS : IsLocUnif S ϖ) {H E : Matrix n n K} (hH : Hᴴ = H) (hHS : Ent S H)
+theorem exists_newton (hS : IsLocUnif S ϖ) {H E : Matrix n n K} (hH : Hᴴ = H)
     (hES : Ent S E) {e k : ℕ} (hHE : H * E = ϖ ^ e • (1 : Matrix n n K)) (hk : e + 1 ≤ k)
     {X Z : Matrix n n K} (hX : Ent S X) (hZ : Ent S Z) (hXZ : Xᴴ * H * X = H + ϖ ^ k • Z) (N : ℕ) :
     ∃ D Z' : Matrix n n K, Ent S D ∧ Ent S Z' ∧
@@ -569,15 +569,15 @@ theorem exists_unitary_near [CharZero K] (hS : IsLocUnif S ϖ) {H E : Matrix n n
     ∃ G G' D : Matrix n n K, Ent S G ∧ Ent S G' ∧ Ent S D ∧ G * G' = 1 ∧ Gᴴ * H * G = H ∧
       G = X + ϖ ^ (k - e) • D := by
   obtain ⟨l, hl⟩ := exists_node (K := K) hS n
-  obtain ⟨D1, Z1, hD1, hZ1, hX1⟩ := exists_newton hS hH hHS hES hHE hk hX hZ hXZ (k + 2 * l)
+  obtain ⟨D1, Z1, hD1, hZ1, hX1⟩ := exists_newton hS hH hES hHE hk hX hZ hXZ (k + 2 * l)
   have hpk : ϖ ^ (k - e) ∈ S := pow_mem hS _
   have hX1S : Ent S (X + ϖ ^ (k - e) • D1) := hX.add (hD1.smul hpk)
   have hk1 : e + 1 ≤ k + 2 * l := by omega
-  obtain ⟨hd1, hd1S⟩ := det_unit hS hH hHS hES hHE hk1 hX1S hZ1 hX1
+  obtain ⟨hd1, hd1S⟩ := det_unit hS hES hHE hk1 hX1S hZ1 hX1
   obtain ⟨c, hc, hcc, W', hW', hWW⟩ := hl _ hX1S hd1 hd1S
   have hN : 2 * l + e + 1 ≤ k + 2 * l := by omega
   obtain ⟨G, D2, hD2, hG, hGe⟩ :=
-    exists_cayley hS hH hHS hES hHE hN hX1S hZ1 hX1 hc hcc hW' hWW
+    exists_cayley hS hH hES hHE hN hX1S hZ1 hX1 hc hcc hW' hWW
   have hexp : k + 2 * l - 2 * l - e = k - e := by omega
   rw [hexp] at hGe
   have hGS : Ent S G := by
@@ -585,7 +585,7 @@ theorem exists_unitary_near [CharZero K] (hS : IsLocUnif S ϖ) {H E : Matrix n n
     exact hX1S.add (hD2.smul hpk)
   have hG0 : Gᴴ * H * G = H + ϖ ^ k • (0 : Matrix n n K) := by
     rwa [smul_zero, add_zero]
-  obtain ⟨hd, hdS⟩ := det_unit hS hH hHS hES hHE hk hGS Ent.zero hG0
+  obtain ⟨hd, hdS⟩ := det_unit hS hES hHE hk hGS Ent.zero hG0
   refine ⟨G, G.det⁻¹ • G.adjugate, D1 + D2, hGS, hGS.adjugate.smul hdS, hD1.add hD2, ?_, hG, ?_⟩
   · rw [Matrix.mul_smul, Matrix.mul_adjugate, smul_smul, inv_mul_cancel₀ hd, one_smul]
   · rw [hGe, smul_add, add_assoc]

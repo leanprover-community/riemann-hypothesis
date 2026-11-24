@@ -144,7 +144,7 @@ theorem mkCpt : MkCpt := by
     exact (isOpen_ne_fun c1 continuous_const).inter (isOpen_lt continuous_const c2)
   have hCpt : KB.CptCoef (castBS e p.T.base) (PBI.chartCoefficient b b' Φ) := by
     refine PBI.chartCoefficient_hasCompactSupport (castBS e p.T.base) b b' hb hbc hb' hb'c Φ (UT P.k P.r (p.T.bs P.r).z (p.T.bs P.r).z')
-      hUTo ?_ K hK hKU ?_ ?_
+      ?_ K hK hKU ?_ ?_
     · intro q₀ hq₀ hG
       obtain ⟨U', F, hU', hq, hF, hEq⟩ := hΦ q₀ hq₀ ((glev_last_iff hρ _).2 hG)
       exact ⟨U', F, hU', hq, hF, fun q hqU hqG => hEq q hqU ((glev_last_iff hρ _).2 hqG)⟩

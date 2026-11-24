@@ -247,7 +247,7 @@ theorem shiftAtR_full (hW : WigExists) : ∃ Cb c₃ : ℝ, 0 ≤ Cb ∧ ∀ (P 
         Formalism.FourierDecayAlt.P.isotropic_vectors_linear_indep _ _ _ _ p.T.base p.ν' p.m₀ f γ hγ g p.hF hG' hgGV hZ hF]
       convert orbJ_swap p.T.base q.T.base hz hz' hπ hW hN hW' A hA f g hgGV hGf _ hrel hH θ hθ hi using 2
       congr 1
-      exact muR_swap p.T.base q.T.base hz hz' g _
+      exact muR_swap p.T.base q.T.base hz g _
     · have h1 : ¬ ∃ g ∈ B.GV Pa.k Pa.r, Zhat Pa.k Pa.r q.T.base.z q.T.base.z' g = D.ptMatN γ (Pa.r + 1) ∧
           D.IsDFrame q.T.base q.ν' q.m₀ g := by
         rintro ⟨g, hg1, hg2, hg3⟩

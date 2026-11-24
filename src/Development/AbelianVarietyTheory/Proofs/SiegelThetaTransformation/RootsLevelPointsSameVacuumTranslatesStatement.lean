@@ -163,7 +163,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r n g : ℕ} {H : H
   {l : Geo.Tor.Level H} {X : Data E r} {L : Lt E r}
 
 theorem heisG_comp {bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ} (hs : IsSympl X bas)
-    (y y' : Matrix (Fin n) (Fin r) E) {φ : TF n g} (hφ : IsSB φ) : heisG X bas y (heisG X bas y' φ) =
+    (y y' : Matrix (Fin n) (Fin r) E) {φ : TF n g} : heisG X bas y (heisG X bas y' φ) =
       cexp (-(Real.pi * I * ((∑ k, EF X (y k) (y' k) : ℚ) : ℂ))) • heisG X bas (y + y') φ := by
   have hA : (Matrix.of fun k i => crd X bas ((y + y') k) (Sum.inl i) : Matrix (Fin n) (Fin g) ℚ) =
       Matrix.of (fun k i => crd X bas (y k) (Sum.inl i)) +
@@ -254,7 +254,7 @@ theorem heisG_add_two {bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ} (hs : I
       ring
     rw [e]
     exact Complex.exp_int_mul_two_pi_mul_I _
-  have hcomp := heisG_comp hs y (((2 : ℕ) : E) • d) hsb
+  have hcomp := heisG_comp hs y (((2 : ℕ) : E) • d)
   rw [h2fix, hexp, one_smul] at hcomp
   exact hcomp.symm
 

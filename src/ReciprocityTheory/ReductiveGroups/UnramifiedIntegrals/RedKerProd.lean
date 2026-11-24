@@ -171,7 +171,7 @@ end CardG
 
 open CardG
 
-theorem card_G (L : PeriodPair) (β : ℂ) (hβ : MulStable L β) (p M : ℕ) (hp : p.Prime) (hp2 : p ≠ 2)
+theorem card_G (L : PeriodPair) (β : ℂ) (hβ : MulStable L β) (p M : ℕ) (hp : p.Prime)
     (hN : Complex.normSq β = ((p * M : ℕ) : ℝ)) (hM : ¬ p ∣ M) (T : Finset ℂ)
     (hT : IsHalfReps L (p : ℂ) T) :
     2 * (T.filter (fun P => β * P ∈ L.lattice)).card + 1 = p := by
@@ -538,7 +538,7 @@ open Formalism.L2.Th1.CM Formalism.L2.Th1.F
 
 namespace ReciprocityTheory.ChartRestriction.L1
 
-theorem xsOf_filter (L : PeriodPair) (α β : ℂ) (hα : MulStable L α) (hβ : MulStable L β) (T T' : Finset ℂ)
+theorem xsOf_filter (L : PeriodPair) (α β : ℂ) (hβ : MulStable L β) (T T' : Finset ℂ)
     (hT : IsHalfReps L α T) (hT' : IsHalfReps L β T') :
     xsOf L (T.filter (fun P => β * P ∈ L.lattice)) = xsOf L T ∩ xsOf L T' := by
   ext x
@@ -584,7 +584,7 @@ theorem kerProd_ideal (d : ℕ) (L : PeriodPair) (hsq : Squarefree d) (hd4 : d %
     omega
   obtain ⟨T, hT⟩ := halfReps_exist L (p : ℂ) hp0 hps (p * p) hpN (hpodd.mul hpodd)
   obtain ⟨T', hT'⟩ := halfReps_exist L β hβ0 hβs (r ^ 2 + d) hβN' hNodd
-  have hcard := card_G L β hβs p M hp hp2 hβN hpM T hT
+  have hcard := card_G L β hβs p M hp hβN hpM T hT
   refine ⟨p, T.filter (fun P => β * P ∈ L.lattice), ?_, ?_, ?_, ?_, ?_⟩
   · intro h
     rcases (Nat.dvd_prime hp).1 h with h1 | h1
@@ -604,7 +604,7 @@ theorem kerProd_ideal (d : ℕ) (L : PeriodPair) (hsq : Squarefree d) (hd4 : d %
     have h1 := kerPoly_mem L (p : ℂ) T hp0 hps hT k h2 h3' hpk
     have h1' := kerPoly_mem L β T' hβ0 hβs hT' k h2 h3' hβk
     have h4 := prod_mem_of_rootPoly k _ (rootPoly_inter_mem k _ _ h1 h1')
-    rw [← xsOf_filter L (p : ℂ) β hps hβs T T' hT hT', xsOf, Finset.prod_image] at h4
+    rw [← xsOf_filter L (p : ℂ) β hβs T T' hT hT', xsOf, Finset.prod_image] at h4
     · exact h4
     · intro a ha b hb hab
       exact hT.injOn (Finset.mem_coe.2 (Finset.mem_filter.1 ha).1)

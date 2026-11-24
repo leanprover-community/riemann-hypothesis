@@ -91,7 +91,7 @@ theorem weilIs_powPull : ∀ (S : Scheme.{0}) (A : Over S) [GrpObj A] [IsCommMon
   haveI := _root_.GlobalTheory.SS.DivSemi.isMonHom_id_pow A b
   let ψ : G2 A ⟶ G2 A := lift (fst A A ≫ (𝟙 A) ^ a) (snd A A ≫ (𝟙 A) ^ b)
   have e : ∀ {T : Over S} (u v : T ⟶ A), lift u v ≫ ψ = lift (u ^ a) (v ^ b) := fun u v => by
-    simp only [ψ, comp_lift, ← Category.assoc, MonObj.comp_pow, Category.comp_id, lift_fst, lift_snd]
+    simp only [ψ, comp_lift, MonObj.comp_pow, Category.comp_id, lift_fst, lift_snd]
   have hM : (GlobalTheory.UPel.HT.Hecke.lbPow P m).IsLB := LB.isLB_linComb hP _ _
   have hψ : pull ψ.left (cls P hP) = (a * b) • cls P hP := by
     have e₀ : ψ = lift (fst A A ^ a) (snd A A ^ b) := by

@@ -445,7 +445,7 @@ open Finset
 
 theorem ineq_core (A : ℕ) (δ Kc p0 : ℝ) (hδ : 0 < δ) (hKc : 0 ≤ Kc) (hp0 : 0 ≤ p0)
     (p nfv κ X X' Xc U U' Uc : ℕ → ℝ)
-    (hX : ∀ l, 0 ≤ X l) (hX' : ∀ l, 0 ≤ X' l) (hU : ∀ l, 0 ≤ U l) (hU' : ∀ l, 0 ≤ U' l)
+    (hU : ∀ l, 0 ≤ U l) (hU' : ∀ l, 0 ≤ U' l)
     (hXc : ∀ l, 2 * |Xc l| ≤ X l + X' l) (hUc : ∀ l, 2 * |Uc l| ≤ U l + U' l)
     (h0 : Uc 0 = Xc 0) (hnfv0 : nfv 0 = 1) (hpz : p 0 = p0) (hκ0 : κ 0 = 0)
     (hp : ∀ l, 1 ≤ l → l ≤ A → 0 ≤ p l ∧ p l * δ ≤ Kc * nfv l)
@@ -669,7 +669,7 @@ theorem core (hr : 1 ≤ r) (o n z t : ℕ) (ht : t ≤ o) (hon : o < n)
     (fun l => ((κ l : ℕ) : ℝ))
     (fun l => fk (x l) (x l)) (fun l => fk (x' l) (x' l)) (fun l => fk (x l) (x' l))
     (fun l => fk (u l) (u l)) (fun l => fk (u' l) (u' l)) (fun l => fk (u l) (u' l))
-    (fun l => fk_self_nonneg _) (fun l => fk_self_nonneg _) (fun l => fk_self_nonneg _) (fun l => fk_self_nonneg _)
+    (fun l => fk_self_nonneg _) (fun l => fk_self_nonneg _)
     (fun l => fk_abs_le _ _) (fun l => fk_abs_le _ _)
     (by simp [u, u']) (by simp) ?_ (by simp [κ]) ?_ ?_
   · convert key using 2

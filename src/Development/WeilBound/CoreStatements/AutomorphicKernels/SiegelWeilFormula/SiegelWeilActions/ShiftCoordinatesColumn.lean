@@ -99,7 +99,7 @@ theorem sum_split' {A : Type} [AddCommMonoid A] {m : ℕ} (em : Fin m → Fin n)
   simp only [Finset.mem_erase, Finset.mem_univ, and_true, Finset.mem_image, true_and]
   exact hrng k
 
-theorem columnBlock (hs : ∀ a, s (s a) = a) (he : e * e = 1) (hse : s e = e) {M : Matrix (Fin n ⊕ Fin n) (Fin n ⊕ Fin n) R}
+theorem columnBlock (hs : ∀ a, s (s a) = a) (he : e * e = 1) {M : Matrix (Fin n ⊕ Fin n) (Fin n ⊕ Fin n) R}
     (hU : U s e M) (hN : NQ (Sum.inl i₀) (Sum.inr i₀) M) :
     M (Sum.inr i₀) (Sum.inr i₀) = 1 ∧ (∀ k, k ≠ i₀ → s (M (Sum.inr k) (Sum.inr i₀)) = -M (Sum.inl i₀) (Sum.inl k)) ∧
       ∀ k, k ≠ i₀ → s (M (Sum.inl k) (Sum.inr i₀)) = -(e * M (Sum.inl i₀) (Sum.inr k)) := by
@@ -129,8 +129,8 @@ theorem nq_unique (hs : ∀ a, s (s a) = a) (he : e * e = 1) (hse : s e = e)
     {M N : Matrix (Fin n ⊕ Fin n) (Fin n ⊕ Fin n) R} (hM : U s e M) (hN : U s e N)
     (hMq : NQ (Sum.inl i₀) (Sum.inr i₀) M) (hNq : NQ (Sum.inl i₀) (Sum.inr i₀) N)
     (hrow : ∀ c, M (Sum.inl i₀) c = N (Sum.inl i₀) c) : M = N := by
-  obtain ⟨hM1, hM2, hM3⟩ := columnBlock hs he hse hM hMq
-  obtain ⟨hN1, hN2, hN3⟩ := columnBlock hs he hse hN hNq
+  obtain ⟨hM1, hM2, hM3⟩ := columnBlock hs he hM hMq
+  obtain ⟨hN1, hN2, hN3⟩ := columnBlock hs he hN hNq
   have hinj : Function.Injective s := fun a b h => by rw [← hs a, h, hs b]
   ext r c
   by_cases hrx : r = Sum.inl i₀
@@ -150,7 +150,7 @@ theorem even_im_hermitian_sub (hs : ∀ a, s (s a) = a) (he : e * e = 1) (hse : 
     (hU : U s e M) (hN : NQ (Sum.inl i₀) (Sum.inr i₀) M) :
     s (M (Sum.inl i₀) (Sum.inr i₀) + ∑ j, M (Sum.inl i₀) (Sum.inr (em j)) * s (M (Sum.inl i₀) (Sum.inl (em j)))) =
       -(e * (M (Sum.inl i₀) (Sum.inr i₀) + ∑ j, M (Sum.inl i₀) (Sum.inr (em j)) * s (M (Sum.inl i₀) (Sum.inl (em j))))) := by
-  obtain ⟨h1, h2, h3⟩ := columnBlock hs he hse hU hN
+  obtain ⟨h1, h2, h3⟩ := columnBlock hs he hU hN
   have hem0 : ∀ j, em j ≠ i₀ := fun j => (hrng (em j)).2 ⟨j, rfl⟩
   have hl : ∀ j, M (Sum.inl (em j)) (Sum.inr i₀) = -(e * s (M (Sum.inl i₀) (Sum.inr (em j)))) := fun j => by
     rw [← hs (M (Sum.inl (em j)) (Sum.inr i₀)), h3 _ (hem0 j), map_neg, map_mul, hse]

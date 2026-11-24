@@ -250,7 +250,7 @@ theorem char_trivial_artinian : ∀ (F : Type) [Field F] [CharZero F] (E : Type)
     rw [← map_ofNat (algebraMap F E) 3, ← map_mul, mul_inv_cancel₀ (by norm_num), map_one]
   ext g
   rw [triv_of_cell hξ (IsUnit.of_mul_eq_one _ h2) hanti hsm hmul h1 hu hsurj hM1 hee hff hef0 hfe0 lam
-    (cell_triv hmul h1 hu hM1 hee hff hef0 hfe0 hse hsf lam
+    (cell_triv hmul hu hM1 hee hff hef0 hfe0 hse hsf lam
       (lower_triv hsm h1 h2 h3 (map_ofNat c 2) (c.commutes _) (c.commutes _) hinj hsurj hM1 hee hff hef0 hfe0 hse hsf lam)
       hP) g]
   rfl

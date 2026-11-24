@@ -412,7 +412,7 @@ end Core
 theorem level_clause_of_open_tool' (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (h6 : adm6 D HW F)
     (h : ∀ (l : ℕ) [Fact l.Prime] (K LL : Loc.FinExt l) (hg : Loc.Good K 1 LL)
       [NeZero (Module.finrank ℚ_[l] ↥(Loc.K0 K))], QToolOpen ((HW l).W K 1 LL hg)) :
-    adm13 D HW F Cm := by
+    adm13 D HW F := by
   intro l _ K LL hg _
   exact QTool_of_open _ (h6.2.2.1 l K 1 LL hg) (h l K LL hg)
 

@@ -248,7 +248,7 @@ theorem val_inc (Z : CptOver Y U) (hβ : Function.Injective β)
     (h : genPt (Z.ξ₀ ≫ Y.j) ⤳ centre (y ≫ Y.j)) (t : c.F) :
     ValAt (Z.ξ₀ ≫ Y.j) (y ≫ Y.j) (Z.inc t) (βF t) := by
   let p : Cpt (Z.ξ₀ ≫ Y.j) := ⟨_, h⟩
-  obtain ⟨s, hs⟩ := inc_mem_regAt Z hβ hfr p (mem_genFib Z y h) t
+  obtain ⟨s, hs⟩ := inc_mem_regAt Z hfr p (mem_genFib Z y h) t
   refine ⟨h, s, hs, ?_⟩
   let tt : Spec (Y.X.presheaf.stalk p.1) ⟶ Spec (CommRingCat.of O) := Y.X.fromSpecStalk p.1 ≫ Y.s
   let θ : O →+* Y.X.presheaf.stalk p.1 := (Spec.preimage tt).hom
@@ -300,10 +300,10 @@ theorem lat_eq_iSup (Z : CptOver Y U) (hβ : Function.Injective β)
     haveI := Y.t.act.hom a
     exact lat_stable Z.M _ (Z.ρ a) (Z.act a) p he
   have hreg : ∀ p ∈ Z.genFib, ∀ s a, σ s a ∈ regAt (Z.ξ₀ ≫ Y.j) p :=
-    fun p hp s a => inc_mem_regAt Z hβ hfr p hp (tauIn c s a)
+    fun p hp s a => inc_mem_regAt Z hfr p hp (tauIn c s a)
   have hdisc : ∀ p ∈ Z.genFib, unitAt (Z.ξ₀ ≫ Y.j) p ((discr E : ℤ) : Z.Ω) := by
     intro p hp
-    have hmem := inc_mem_regAt Z hβ hfr p hp
+    have hmem := inc_mem_regAt Z hfr p hp
     have e : ((discr E : ℤ) : Z.Ω) = Z.inc ((discr E : ℤ) : c.F) := by simp
     have h0 : ((discr E : ℤ) : c.F) ≠ 0 := Int.cast_ne_zero.2 (discr_ne_zero E)
     refine ⟨by rw [e]; exact (map_ne_zero _).2 h0, by rw [e]; exact hmem _, ?_⟩
@@ -353,7 +353,7 @@ theorem valFam_eigFrame : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E]
     have v2 := valAt_act Z.M (Y.t.act.act a) (Z.ρ a) (Z.act a) (hval e)
     rw [← hρF a (ev e)] at v2
     obtain ⟨he', h2⟩ := (hev1 _ _).1 v2
-    have hreg : Z.inc (tauIn c s a) ∈ regAt ξ x := inc_mem_regAt Z hinj hfr x hx _
+    have hreg : Z.inc (tauIn c s a) ∈ regAt ξ x := inc_mem_regAt Z hfr x hx _
     have h4 : (⟨Z.ρ a e, he'⟩ : Z.M.lat x) = (⟨_, hreg⟩ : regAt ξ x) • e := Subtype.ext hρ
     rw [← h2, h4]
     exact hev2 ⟨_, hreg⟩ _ e (val_inc Z hinj hfr βF y hy h _)

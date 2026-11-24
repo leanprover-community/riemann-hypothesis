@@ -119,7 +119,7 @@ theorem exists_conductor_mul_mem_adjoin : ∀ (K : UQ) (B : InvAlg K), B.P.Separ
       (∑ j, v j • e j) (fun y => by
 
         rw [← e.sum_repr y, Finset.mul_sum, map_sum]
-        simp [mul_smul_comm, hti])
+        simp [hti])
     exact funext (Fintype.linearIndependent_iff.1 e.linearIndependent v hw)
   refine ⟨c, fun h0 => hdet (by rw [← hc, h0, map_zero]), fun u hu => ?_⟩
   obtain ⟨w, hw⟩ := GlobalTheory.DiscConductor.det_smul_eq_sum K.O K.E B.A _ e u

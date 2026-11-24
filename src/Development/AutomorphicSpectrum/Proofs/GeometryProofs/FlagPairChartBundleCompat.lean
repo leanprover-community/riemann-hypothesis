@@ -336,7 +336,7 @@ theorem exists_unif {O Ω : Type} [CommRing O] [Field Ω] [Algebra O Ω] {R : Su
   exact pow_mul_mem hf (Finset.le_sup (Finset.mem_univ q)) (hn q)
 
 theorem exists_dual {Ω : Type} [Field Ω] {r : ℕ} (b : Fin r → Fin r → Ω)
-    (hli : LinearIndependent Ω b) (hsp : Submodule.span Ω (Set.range b) = ⊤) :
+    (hli : LinearIndependent Ω b) :
     ∃ d : Fin r → Fin r → Ω, (∀ (a : Fin r → Ω) (q : Fin r), (∑ p, a p • b p) ⬝ᵥ d q = a q) ∧
       ∀ e : Fin r → Ω, e = ∑ q, (b q ⬝ᵥ e) • d q := by
   classical
@@ -376,7 +376,7 @@ theorem main {O Ω : Type} [CommRing O] [Field Ω] [Algebra O Ω] (R : Subalgebr
         ((∃ n : ℕ, f ^ n • e ∈ dotDual R L) ↔
           ∃ a : Fin r → Ω, (∀ q, ∃ n : ℕ, f ^ n * a q ∈ R) ∧ e = ∑ q, a q • d q) := by
   classical
-  obtain ⟨d, hd1, hd2⟩ := exists_dual b hli hsp
+  obtain ⟨d, hd1, hd2⟩ := exists_dual b hli
   have hδ : ∀ p q, b p ⬝ᵥ d q = if p = q then 1 else 0 := by
     intro p q
     have h := hd1 (Pi.single p 1) q

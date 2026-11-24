@@ -198,7 +198,7 @@ lemma dA_vM_major (g : ℕ → ℝ) (hg0 : ∀ n, 0 ≤ g n) (hg : ∀ n, 1 ≤ 
 lemma dA_sum_inv_le (N : ℕ) (hN : 1 ≤ N) : ∑ n ∈ Icc 1 N, (1 : ℝ) / n ≤ 1 + Real.log N := by
   apply Formalism.MainNotions.UnusedSlot33.PrimeReciprocalSums.sum_inv_le <;> assumption
 
-lemma dA_sum_split (u : ℕ → ℝ) (hu : ∀ n, 0 ≤ u n) (hu1 : ∀ n, u n ≤ 1) (T : ℕ) (B : ℝ)
+lemma dA_sum_split (u : ℕ → ℝ) (hu1 : ∀ n, u n ≤ 1) (T : ℕ) (B : ℝ)
     (hB : ∀ M, T ≤ M → ∑ n ∈ Ioc T M, u n ≤ B) (M : ℕ) : ∑ n ∈ Icc 1 M, u n ≤ T + B := by
   have hcard : ∀ K : ℕ, ∑ n ∈ Icc 1 K, u n ≤ K := fun K => by
     calc ∑ n ∈ Icc 1 K, u n ≤ ∑ n ∈ Icc 1 K, (1:ℝ) := Finset.sum_le_sum (fun n _ => hu1 n)
@@ -324,7 +324,6 @@ lemma dA_sum_min_pow (x : ℝ) (hx : 1 ≤ x) (p : ℕ) (hp : 2 ≤ p) (L : ℕ)
       _ = x / (p:ℝ) ^ T := by rw [one_div_pow, mul_one_div]
       _ ≤ 1 := by rw [div_le_one (by positivity)]; exact hxT
   have hsplit := dA_sum_split (fun i => min 1 (x / (p:ℝ) ^ i))
-    (fun i => le_min zero_le_one (div_nonneg hx0.le (by positivity)))
     (fun i => min_le_left _ _) T 1 htail L
   have hmul := mul_le_mul_of_nonneg_left hsplit hlp.le
   linarith
@@ -354,7 +353,6 @@ lemma dA_sum_min_sq (x : ℝ) (hx : 1 ≤ x) (M : ℕ) :
           rw [mul_one_div, div_le_iff₀ hTpos]
           nlinarith [mul_le_mul_of_nonneg_left h2T (Real.sqrt_nonneg x)]
   have hs := dA_sum_split (fun m => min 1 (x / (m:ℝ) ^ 2))
-    (fun m => le_min zero_le_one (div_nonneg (by linarith) (by positivity)))
     (fun m => min_le_left _ _) ⌊Real.sqrt x⌋₊ (2 * Real.sqrt x) htail M
   have hTle : (⌊Real.sqrt x⌋₊ : ℝ) ≤ Real.sqrt x := Nat.floor_le (Real.sqrt_nonneg x)
   linarith

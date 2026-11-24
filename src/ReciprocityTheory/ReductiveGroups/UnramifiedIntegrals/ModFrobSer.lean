@@ -60,7 +60,7 @@ theorem sub_pow_congr {p : ℕ} (hp : p.Prime) (f g : PowerSeries ℤ) :
   obtain ⟨w, hw⟩ := exists_C_mul_of_map_eq_zero (p := p) _ h0
   exact ⟨w, by rw [← hw]; ring⟩
 
-theorem rescale_congr {p : ℕ} (hp : 0 < p) (b : ℕ) (f : PowerSeries ℤ) :
+theorem rescale_congr {p : ℕ} (b : ℕ) (f : PowerSeries ℤ) :
     ∃ w : PowerSeries ℂ, CoeffIn (Rm p) w ∧
       PowerSeries.rescale (zetaC p ^ b) (f.map (Int.castRingHom ℂ)) =
         f.map (Int.castRingHom ℂ) + PowerSeries.C (1 - zetaC p) * w := by

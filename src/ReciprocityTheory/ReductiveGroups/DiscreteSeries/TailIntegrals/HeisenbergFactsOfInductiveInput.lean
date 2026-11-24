@@ -109,7 +109,7 @@ theorem inner_eq (hB2 : InductiveHeisenbergInputs) (hIW : IW) (hT : TLeft) (hk :
       ENNReal.ofReal (Psi k r' s x) * Qf k r' A (fun l => s (sc r' l)) μ₁ (c * (Dx k r' x : ℂ)) := by
   obtain ⟨-, -, hHCL, -, -, hHH, -, -, -, -, -⟩ := heisenbergFacts_of_inductiveInput hB2
   obtain ⟨κ, hκ, m, hm, z, hdec, hga⟩ := heisenberg_rankOne_decomposition hB2 hIW k r' hk x c hc
-  have hG0 := (yx_ga hB2 hIW k r' hk x).1
+  have hG0 := (yx_ga hB2 k r' x).1
   have hdec' : (heis0 k r' x)⁻¹ * w0 k r' c =
       κ * w0 k r' (c * (Dx k r' x : ℂ)) * ιLev k 1 r' m * heis0 k r' z := hdec
   have hpt : ∀ g : Mt k r', Matrix.of g ∈ GV k r' →

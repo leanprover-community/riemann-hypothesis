@@ -52,11 +52,11 @@ theorem exists_degree_one_avoiding (N : Type) [Field N] [NumberField N] (m : ℤ
     ∃ P : Ideal (𝓞 N), P.IsMaximal ∧ (m : 𝓞 N) ∉ P ∧ Function.Surjective (Int.castRingHom (𝓞 N ⧸ P)) := by
   obtain ⟨θ, d, hd, -, hden⟩ := GlobalTheory.SW.SplitPrime.exists_prim_den N
   by_cases hθ : θ = 0
-  · refine GlobalTheory.SW.SplitPrime.exists_degree_one (1 : 𝓞 N) one_ne_zero d hd (fun a => ?_) m hm
+  · refine GlobalTheory.SW.SplitPrime.exists_degree_one (1 : 𝓞 N) d hd (fun a => ?_) m hm
     obtain ⟨g, hg⟩ := hden a
     refine ⟨C (g.coeff 0), ?_⟩
     rw [hg, hθ, aeval_C, aeval_def, eval₂_at_zero]
-  · exact GlobalTheory.SW.SplitPrime.exists_degree_one θ hθ d hd hden m hm
+  · exact GlobalTheory.SW.SplitPrime.exists_degree_one θ d hd hden m hm
 
 theorem surjective_of_conj {N : Type} [Field N] [NumberField N] [IsGalois ℚ N] {p : ℕ} (hp : p.Prime)
     (P Q : Ideal (𝓞 N)) [hP : P.IsMaximal] [hQ : Q.IsMaximal] (h1 : (p : 𝓞 N) ∈ P) (h2 : (p : 𝓞 N) ∈ Q)

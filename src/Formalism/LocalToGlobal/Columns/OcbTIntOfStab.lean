@@ -47,7 +47,7 @@ private theorem mem_sclLat_iff_scaled_mem_stdAt {N : ℕ} (e : ℕ → ℤ) (x :
   rfl
 
 theorem ocbT_int_of_stab (hq0 : (q : E) ≠ 0) {n c : ℕ} {g : Sp E (n + c) ≃ₗ[E] Sp E (n + c)}
-    (hg : g ∈ stabL E (n + c) (LocE.lamY P q n c (fun i => i + 1))) {l m : ℕ} (hl : l < n + c) (hm : m < n + c) :
+    (hg : g ∈ stabL E (n + c) (LocE.lamY P q n c (fun i => i + 1))) {l m : ℕ} (hl : l < n + c) :
     IntAt P (ocbBEnt n n q g.toLinearMap l m) := by
   set e := LocE.scE n (fun i => i + 1) with he
   let v : Sp E (n + c) := fun i => if (i : ℕ) = m then (q : E) ^ (e m) else 0
@@ -95,9 +95,9 @@ theorem ocbT_red_symm (hq0 : (q : E) ≠ 0) {n c : ℕ} {h₀ : Sp E (n + c) ≃
   have hsymm : h₀.symm ∈ stabL E (n + c) (LocE.lamY P q n c (fun i => i + 1)) :=
     (stabL E (n + c) _).inv_mem hh₀
   have hI1 : ∀ i m : ℕ, i < n + c → m < n + c → IntAt P (ocbBEnt n n q h₀.toLinearMap i m) :=
-    fun i m hi hm => ocbT_int_of_stab hq0 hh₀ hi hm
+    fun i m hi hm => ocbT_int_of_stab hq0 hh₀ hi
   have hI2 : ∀ i m : ℕ, i < n + c → m < n + c → IntAt P (ocbBEnt n n q h₀.symm.toLinearMap i m) :=
-    fun i m hi hm => ocbT_int_of_stab hq0 hsymm hi hm
+    fun i m hi hm => ocbT_int_of_stab hq0 hsymm hi
   have hDA : LinearMap.toMatrix' hbar.symm.toLinearMap * LinearMap.toMatrix' hbar.toLinearMap = 1 := by
     rw [← LinearMap.toMatrix'_comp, LinearEquiv.symm_comp, LinearMap.toMatrix'_id]
   have hAC : LinearMap.toMatrix' hbar.toLinearMap *
@@ -150,18 +150,18 @@ theorem ocbT_trans (hq0 : (q : E) ≠ 0) {K L : Type} [Field K] [Field L] (σ : 
     exact ciIntAt_sum _ _ (fun m _ => IntAt.mul (hg _ _ hl m.2) (hy _ _ m.2 hs))
   refine ⟨fun y hy => ?_, fun y ybar hy hyb => ?_⟩
   · have h1 := hsupp _ hy
-    have h2 := hcomp_int h₀.toLinearMap _ (fun l m hl hm => ocbT_int_of_stab hq0 hh₀ hl hm) h1
+    have h2 := hcomp_int h₀.toLinearMap _ (fun l m hl hm => ocbT_int_of_stab hq0 hh₀ hl) h1
     have he : h₀.toLinearMap ∘ₗ (h₀.symm.toLinearMap ∘ₗ y) = y := by
       rw [← LinearMap.comp_assoc, LinearEquiv.comp_symm, LinearMap.id_comp]
     rwa [he] at h2
-  · have hI := hcomp_int h₀.symm.toLinearMap y (fun l m hl hm => ocbT_int_of_stab hq0 hsymm hl hm) hy
+  · have hI := hcomp_int h₀.symm.toLinearMap y (fun l m hl hm => ocbT_int_of_stab hq0 hsymm hl) hy
     apply hred _ _ hI
     intro l s hl hs
     have hs' : s < n' + c'' := by omega
     rw [ocbS_atN_comp _ _ hl hs', ocbT_bEnt_comp hq0 _ _ hl hs,
-      redP_sum _ _ (fun m _ => IntAt.mul (ocbT_int_of_stab hq0 hsymm hl m.2) (hy _ _ m.2 hs))]
+      redP_sum _ _ (fun m _ => IntAt.mul (ocbT_int_of_stab hq0 hsymm hl) (hy _ _ m.2 hs))]
     refine Finset.sum_congr rfl (fun m _ => ?_)
-    rw [reduction_mul (ocbT_int_of_stab hq0 hsymm hl m.2) (hy _ _ m.2 hs), hyb _ _ m.2 hs]
+    rw [reduction_mul (ocbT_int_of_stab hq0 hsymm hl) (hy _ _ m.2 hs), hyb _ _ m.2 hs]
     congr 1
     exact ocbT_red_symm hq0 hh₀ hred₀ hl m.2
 

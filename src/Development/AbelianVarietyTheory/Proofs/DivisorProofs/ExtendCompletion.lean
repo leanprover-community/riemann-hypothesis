@@ -126,7 +126,7 @@ theorem exists_bound {R K : Type} [CommRing R] [NormedField K] [IsUltrametricDis
     exact fun x hx => this hx
 
 theorem norm_le_of_mem_smul_top {R A K : Type} [CommRing R] [CommRing A] [Algebra R A] [NormedField K]
-    [IsUltrametricDist K] (F : A →+* K) (hF : ∀ x, ‖F x‖ ≤ 1) (J : Ideal R) (c : ℝ) (hc : 0 ≤ c)
+    [IsUltrametricDist K] (F : A →+* K) (hF : ∀ x, ‖F x‖ ≤ 1) (J : Ideal R) (c : ℝ)
     (h : ∀ x ∈ J, ‖F (algebraMap R A x)‖ ≤ c) (y : A) (hy : y ∈ J • (⊤ : Submodule R A)) :
     ‖F y‖ ≤ c := by
   refine Submodule.smul_induction_on (p := fun y => ‖F y‖ ≤ c) hy (fun a ha w _ => ?_) (fun a b ha hb => ?_)
@@ -147,8 +147,8 @@ theorem ringHom_ext_of_norm {R K : Type} [CommRing R] [NormedField K] [IsUltrame
     have hm : r - algebraMap R _ a ∈ I ^ n • (⊤ : Submodule R (AdicCompletion I R)) := by
       rw [AdicCompletion.pow_smul_top_eq_ker_eval hI, LinearMap.mem_ker, map_sub, ← ha, sub_eq_zero]
       rfl
-    have h1 := norm_le_of_mem_smul_top F hF _ _ (pow_nonneg hc0 n) (hc n) _ hm
-    have h2 := norm_le_of_mem_smul_top G hG _ _ (pow_nonneg hc0 n)
+    have h1 := norm_le_of_mem_smul_top F hF _ _ (hc n) _ hm
+    have h2 := norm_le_of_mem_smul_top G hG _ _
       (fun x hx => by rw [← e]; exact hc n x hx) _ hm
     have : F r - G r = F (r - algebraMap R _ a) + - G (r - algebraMap R _ a) := by
       rw [map_sub, map_sub, e]; ring

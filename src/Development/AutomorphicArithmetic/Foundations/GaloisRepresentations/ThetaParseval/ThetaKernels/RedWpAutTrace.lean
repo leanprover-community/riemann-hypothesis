@@ -154,7 +154,7 @@ theorem main_k (C : _root_.PositivityTheory.ThKW.Ctx_k σ B JS JT ξ₀ θ ι) (
     (fun R => by
       refine ((_root_.PositivityTheory.ThKW.AutLatA.finLat_k C.good hG R).image (fun y => ratWF (F := F) y)).subset ?_
       rintro _ ⟨⟨y, rfl⟩, h1, h2⟩
-      refine ⟨y, ⟨(_root_.PositivityTheory.ThKW.finRatF_mem_iff_k C hG hR hA y).1 h1, ?_⟩, rfl⟩
+      refine ⟨y, ⟨(_root_.PositivityTheory.ThKW.finRatF_mem_iff_k C hR hA y).1 h1, ?_⟩, rfl⟩
       have e : piWF θ (ratWF (F := F) y) = infRatF (tauB B) y := _root_.PositivityTheory.ThKW.TauSpanIdentities.piWF_ratWF_k C y
       rw [← e]
       exact h2)
@@ -381,7 +381,7 @@ theorem chiLat_mul_exp_k (C : _root_.PositivityTheory.ThKW.Ctx_k σ B JS JT ξ�
       Complex.exp (-(Real.pi * Complex.I) *
         (omV (HMF JS JT ξ₀ (tauB B)) (infRatF (tauB B) (b * y * a)) (infRatF (tauB B) y) : ℝ)) := by
   have hm : ∀ z, finIdem F E • ratWF (F := F) z ∈ latOF F E nS nT Λ ↔ z ∈ Λ := fun z =>
-    _root_.PositivityTheory.ThKW.finRatF_mem_iff_k C hG hR hA z
+    _root_.PositivityTheory.ThKW.finRatF_mem_iff_k C hR hA z
   unfold chiLatF gaussQF
   by_cases hy : b * y * a - y ∈ Λ
   · rw [ite_eq_left ((hm _).2 hy), ite_eq_left hy]
@@ -469,7 +469,7 @@ theorem summable_coefQF_k (C : _root_.PositivityTheory.ThKW.Ctx_k σ B JS JT ξ�
     (fun R => by
       refine ((_root_.PositivityTheory.ThKW.AutLatA.finLat_k C.good hG R).image (fun y => ratWF (F := F) y)).subset ?_
       rintro _ ⟨⟨y, rfl⟩, h1, h2⟩
-      exact ⟨y, ⟨(_root_.PositivityTheory.ThKW.finRatF_mem_iff_k C hG hR hA y).1 h1, by rw [← _root_.PositivityTheory.ThKW.TauSpanIdentities.piWF_ratWF_k C]; exact h2⟩, rfl⟩)
+      exact ⟨y, ⟨(_root_.PositivityTheory.ThKW.finRatF_mem_iff_k C hR hA y).1 h1, by rw [← _root_.PositivityTheory.ThKW.TauSpanIdentities.piWF_ratWF_k C]; exact h2⟩, rfl⟩)
     (fun x hx => ite_eq_right hx)
     (fun x => by
       unfold chiLatF
@@ -503,7 +503,7 @@ theorem gauss_mul_integral_A_k (C : _root_.PositivityTheory.ThKW.Ctx_k σ B JS J
   have H := isHeis_opFF hσ C.hS C.hT C.hξ hc hw
   have hA := hO.sd
   have hB := hO.sd' (g, h)
-  have hmem : ∀ y, finRatF F y ∈ latF F E nS nT Λ ↔ y ∈ Λ := _root_.PositivityTheory.ThKW.finRatF_mem_iff_k C hG hR hA
+  have hmem : ∀ y, finRatF F y ∈ latF F E nS nT Λ ↔ y ∈ Λ := _root_.PositivityTheory.ThKW.finRatF_mem_iff_k C hR hA
   obtain ⟨m, u, huB, huT⟩ := exists_transversal_of_idx_ne_zero _ _ (hO.fin (g, h))
   let Cg : AddSubgroup (Matrix (Fin nT) (Fin nS) E) :=
     Λ.toAddSubgroup ⊓ Λ.toAddSubgroup.comap (sandF b a)

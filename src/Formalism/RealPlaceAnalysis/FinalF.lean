@@ -105,7 +105,7 @@ alias rdLeft := _root_.Formalism.REAL.right_derivative_left_invariant
 alias rdLin := _root_.Formalism.REAL.right_derivative_linear
 theorem rdSmooth : RdSmooth := rdSmooth_of right_derivative_extends
 theorem eabGl : EabGl := eabGl_of complex_parts_mem_lie_algebra_holds (rdLin_of right_derivative_extends)
-  (rdBracket_of right_derivative_extends (rdSmooth_of right_derivative_extends)) (rdSmooth_of right_derivative_extends)
+  (rdBracket_of right_derivative_extends) (rdSmooth_of right_derivative_extends)
 end Formalism.REAL
 
 namespace Formalism.REAL

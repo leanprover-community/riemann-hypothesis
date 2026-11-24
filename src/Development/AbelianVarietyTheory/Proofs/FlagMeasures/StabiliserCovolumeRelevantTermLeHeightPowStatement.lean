@@ -1060,7 +1060,7 @@ theorem act_isLoUni_map {K : Type} [Field K] {N : ℕ} (ψ : K →+* ℂ) {M : M
     (h : IsLoUni M) : IsLoUni (M.map ψ) := fun i j =>
   ⟨fun hij => by simp [(h i j).1 hij], fun hij => by subst hij; simp [(h i i).2 rfl]⟩
 
-theorem act_sgn_mem {r : ℕ} {Z P m : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ} (hZ : IsUnit Z.det)
+theorem act_sgn_mem {r : ℕ} {Z P m : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ}
     (hP : Z * actSgn r = P) (hm : m ∈ GlobalTheory.LoopV.stabU Z) : actSgn r * m * actSgn r ∈ GlobalTheory.LoopV.stabU P := by
   refine ⟨act_isUpUni_sgn hm.1, ?_⟩
   have hss := actSgn_mul_self r
@@ -1076,7 +1076,7 @@ theorem act_sgn_mem {r : ℕ} {Z P m : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ} (
 theorem act_eq_ofRoots {K : Type} [Field K] {r : ℕ} (ψ : K →+* ℂ) (p : Point K (r + 1))
     {Z m : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ} (hZ : IsUnit Z.det) (hP : Z * actSgn r = (ptMat p).map ψ)
     (hm : m ∈ GlobalTheory.LoopV.stabU Z) : m = GlobalTheory.LoopV.ofRoots (GlobalTheory.LoopV.roots (ptMat p)) (fun q => m q.1.1 q.1.2) := by
-  have h1 := GlobalTheory.LoopAct.stabU_map_eq_ofRoots ψ p _ (act_sgn_mem hZ hP hm)
+  have h1 := GlobalTheory.LoopAct.stabU_map_eq_ofRoots ψ p _ (act_sgn_mem hP hm)
   have hss := actSgn_mul_self r
   have h2 : actSgn r * (actSgn r * m * actSgn r) * actSgn r = actSgn r * GlobalTheory.LoopV.ofRoots (GlobalTheory.LoopV.roots (ptMat p))
       (fun q => (actSgn r * m * actSgn r) q.1.1 q.1.2) * actSgn r := congrArg (fun M => actSgn r * M * actSgn r) h1
@@ -1300,7 +1300,7 @@ theorem cover_action : ∀ Cg cb Cu cT CT C0 A : ℝ, ∀ (D : D7) (X : HidaSett
       rw [hg0i, hXinv]
       simp only [hXm, hg0, Matrix.mul_assoc, hss', hss, Matrix.mul_one]
     have hXrs : GlobalTheory.LoopV.ofRoots R (T (GlobalTheory.LoopVol.ratCoord X u' w γw sf r) τ) = Xm τ * Mr τ * (Xm τ)⁻¹ := by
-      have hm := act_sgn_mem hZu hZs (stabU_mul hZu (stabU_mul hZu (stabU_inv hZu hg0s) hMrs) hg0s)
+      have hm := act_sgn_mem hZs (stabU_mul hZu (stabU_mul hZu (stabU_inv hZu hg0s) hMrs) hg0s)
       have h1 := GlobalTheory.LoopAct.stabU_map_eq_ofRoots (embS D τ) w _ hm
       rw [← hXr] at h1
       rw [h1]

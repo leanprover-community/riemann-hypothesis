@@ -132,7 +132,7 @@ theorem map_externalProduct_vector {O Kf : Type} [CommRing O] [CommRing Kf] (φ 
   unfold pvec PsiPl PsiTan
   rw [map_mul, MvPolynomial.map_rename, MvPolynomial.map_rename, map_Psi', map_Psi']
 
-theorem admissible_externalProduct_of_hyps (D : Formalism.BasicNotions.D7) (H : ExternalProductHyps) : PairedPathIndependence D := by
+theorem admissible_externalProduct_of_hyps (D : Formalism.BasicNotions.D7) (H : ExternalProductHyps) : PairedPathIndependence := by
   intro O _ _ _ _ N r K _ _ LL B
   have hP := H.p16 O N r K LL B
   refine ⟨⟨hP.1, ?_⟩, ?_⟩
@@ -1132,7 +1132,7 @@ theorem externalProductHyps (D : Formalism.BasicNotions.D7) : ExternalProductHyp
   lowTan := restLowTan_of D (polynomialTypeSums_by_evaluation D) externalProduct_basis
   sum := restJointSum }
 
-theorem admissible_externalProduct (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CovariantDegrees.PairedPathIndependence D := admissible_externalProduct_of_hyps D (externalProductHyps D)
+theorem admissible_externalProduct (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CovariantDegrees.PairedPathIndependence := admissible_externalProduct_of_hyps D (externalProductHyps D)
 
 end Formalism.MainNotions.G.ColumnFamilies
 end -- clump:auto

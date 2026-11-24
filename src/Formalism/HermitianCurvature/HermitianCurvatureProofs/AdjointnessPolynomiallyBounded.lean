@@ -154,7 +154,7 @@ theorem dilation_big_cell_formula : Formalism.FourierDecayAlt.B.DilBigCell := by
     | (have e1 : r - (i : ℕ) = (j : ℕ) - (r + k) := by
           (try simp only [Fin.ext_iff, Fin.val_mk] at *); omega
        have e2 : r - (2 * r + k - (j : ℕ)) = (j : ℕ) - (r + k) := by omega
-       simp only [Fin.val_mk, e1, e2, star_mul', star_ofReal_eq]
+       simp only [e1, e2, star_mul', star_ofReal_eq]
        push_cast
        ring)
 

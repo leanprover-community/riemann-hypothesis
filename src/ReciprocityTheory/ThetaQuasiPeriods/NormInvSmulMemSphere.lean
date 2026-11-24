@@ -128,7 +128,7 @@ theorem im_arg (a b : ι → ℝ) (z : ι → ℂ) (τ : Matrix ι ι ℂ) (l : 
   funext i
   simp [ofRealVec]
 
-theorem coord_bound (β γ k a : ℝ) (hβ : 0 < β) (hγ : 0 ≤ γ) :
+theorem coord_bound (β γ k a : ℝ) (hβ : 0 < β) :
     -β * (k + a) ^ 2 + γ * |k + a| ≤ -(β / 4) * k ^ 2 + (γ ^ 2 / (2 * β) + β / 2 * a ^ 2) := by
   have hβ' : β ≠ 0 := hβ.ne'
   have h1 : γ * |k + a| ≤ β / 2 * |k + a| ^ 2 + γ ^ 2 / (2 * β) := by
@@ -233,7 +233,7 @@ theorem term_bound (a b : ι → ℝ) (z : ι → ℂ) (A : Matrix ι ι ℂ) (l
         ((2 * Real.pi * R) ^ 2 / (2 * (Real.pi * c / 2)) + (Real.pi * c / 2) / 2 * a i ^ 2) := by
     intro i
     rw [hv]
-    exact coord_bound _ _ _ _ hβ (by positivity)
+    exact coord_bound _ _ _ _ hβ
   calc -2 * Real.pi * (v ⬝ᵥ (A.map Complex.im *ᵥ v) / 2 + v ⬝ᵥ (fun i => (z i).im))
       ≤ ∑ i, (-(Real.pi * c / 2) * v i ^ 2 + 2 * Real.pi * R * |v i|) := by
         rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum]

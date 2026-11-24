@@ -75,7 +75,7 @@ theorem antitone_of_interlace {r : ℕ} {lamN : Fin (r + 1) → ℕ} (hl : Antit
       simpa using this
     exact ((h j).2.trans (hl h1)).trans (h i).1
 
-theorem numBranch_of {D : Formalism.BasicNotions.D7} (h2 : adm2 D) (h3 : adm3 D) : NumBranchAt := by
+theorem numBranch_of {D : Formalism.BasicNotions.D7} (h2 : adm2) (h3 : adm3) : NumBranchAt := by
   intro r mu hmu
   classical
   set c : ℤ := mu (Fin.last r) with hc

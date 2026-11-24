@@ -522,7 +522,7 @@ theorem sum_comp_idO {S : BOp} (k c d : ℕ) (h : c + d = k) (f : ∀ p q : ℕ,
   · intro hn
     exact absurd (mem_antidiagonal.2 h) hn
 
-theorem exists_fill : ∃ H : ∀ a b k : ℕ, (∀ a' b' : ℕ, bo a b ⟶ bo a' b') → (∀ a' b' : ℕ, bo a b ⟶ bo a' b'),
+theorem exists_fill : ∃ H : ∀ a b _ : ℕ, (∀ a' b' : ℕ, bo a b ⟶ bo a' b') → (∀ a' b' : ℕ, bo a b ⟶ bo a' b'),
     ∀ a b k (z : ∀ a' b' : ℕ, bo a b ⟶ bo a' b'), 1 ≤ k →
       (∀ c d : ℕ, c + d + 1 = k → ∑ x ∈ antidiagonal k, z x.1 x.2 ≫ dT x.1 x.2 c d = 0) →
       ∀ c d : ℕ, c + d = k → ∑ x ∈ antidiagonal (k + 1), H a b k z x.1 x.2 ≫ dT x.1 x.2 c d = z c d := by
@@ -602,7 +602,7 @@ theorem kRec_spec (G : ∀ a b n : ℕ, bo a b ⟶ bo n n) (hG0 : G 0 0 0 = 𝟙
           have hz' := mem_antidiagonal.1 hz
           simp only [← Category.assoc]
           rw [← Preadditive.sum_comp]
-          have h0 := _root_.GlobalTheory.EZ.TotSq.dT_sq a b z.1 z.2 (by omega)
+          have h0 := _root_.GlobalTheory.EZ.TotSq.dT_sq a b z.1 z.2
           rw [show z.1 + z.2 + 1 = m + 1 by omega] at h0
           rw [h0, Limits.zero_comp]
       have h3 : ∑ y ∈ antidiagonal (n + 1),
@@ -1362,7 +1362,7 @@ variable (R : Type) [CommRing R]
 def diagSIso (X : SimplicialObject Spc) :
     ((SimplicialObject.whiskering _ _).obj (free R)).obj (bidiag.obj X) ≅ GlobalTheory.EZ.diag.obj ((freeBi R).obj X) :=
   NatIso.ofComponents (fun _ => Iso.refl _) (fun f => by
-    simp only [Iso.refl_hom, Category.comp_id, Category.id_comp]
+    simp only [Iso.refl_hom]
     exact ((free R).map_comp _ _))
 
 def diagIso (X : SimplicialObject Spc) :

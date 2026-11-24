@@ -69,7 +69,7 @@ def toK (K : Type) {F : Type} [Field K] [Field F] [Algebra F K] (t : 𝓞 F) : K
 private theorem algebraMap_int_F_to_K_eq_algebraMap_coe (t : 𝓞 F) :
     algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) t) = algebraMap F K (t : F) := rfl
 
-theorem mem_hcompl_of_notMem (hF : IsFixF K F) {P : Ideal (𝓞 K)} (hP : P.IsPrime) {t : 𝓞 F}
+theorem mem_hcompl_of_notMem (hF : IsFixF K F) {P : Ideal (𝓞 K)} {t : 𝓞 F}
     (ht : t ∉ P.comap (algebraMap (𝓞 F) (𝓞 K))) :
     algebraMap (𝓞 F) (𝓞 K) t ∈ Formalism.HermitianLatticesTheory.hcompl (K := K) P := by
   refine Submonoid.subset_closure ⟨ht, fun u hu => ?_⟩
@@ -199,7 +199,7 @@ theorem exists_isUnif (hF : IsFixF K F) {P : Ideal (𝓞 K)}
       algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) π₀) := by
     rw [algebraMap_int_F_to_K_eq_algebraMap_coe]
     exact (hF _).2 ⟨_, rfl⟩
-  have hcH : algebraMap (𝓞 F) (𝓞 K) c ∈ Formalism.HermitianLatticesTheory.hcompl (K := K) P := mem_hcompl_of_notMem hF hPp hc𝔭
+  have hcH : algebraMap (𝓞 F) (𝓞 K) c ∈ Formalism.HermitianLatticesTheory.hcompl (K := K) P := mem_hcompl_of_notMem hF hc𝔭
   have hcK : algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) c) ≠ 0 :=
     WA.algebraMap_ne_zero_of_mem_hcompl hPp hcH
   refine ⟨algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) π₀), ⟨?_, hπfix, hπne, ?_, ?_⟩, ?_, ?_⟩
@@ -207,7 +207,7 @@ theorem exists_isUnif (hF : IsFixF K F) {P : Ideal (𝓞 K)}
     rwa [map_one, div_one] at h1
   · intro s hs hsfix
     obtain ⟨t, n, hn, hst⟩ := exists_frac_of_fixed hF hPp hs hsfix
-    have hnH := mem_hcompl_of_notMem hF hPp hn
+    have hnH := mem_hcompl_of_notMem hF hn
     have hnK : algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) n) ≠ 0 :=
       WA.algebraMap_ne_zero_of_mem_hcompl hPp hnH
     by_cases ht : t ∈ P.comap (algebraMap (𝓞 F) (𝓞 K))
@@ -225,7 +225,7 @@ theorem exists_isUnif (hF : IsFixF K F) {P : Ideal (𝓞 K)}
       rw [e2]
       exact div_mem_locRing hPp w (Submonoid.mul_mem _ hcH hnH)
     · left
-      have htH := mem_hcompl_of_notMem hF hPp ht
+      have htH := mem_hcompl_of_notMem hF ht
       have htK : algebraMap (𝓞 K) K (algebraMap (𝓞 F) (𝓞 K) t) ≠ 0 :=
         WA.algebraMap_ne_zero_of_mem_hcompl hPp htH
       refine ⟨?_, hs, ?_⟩

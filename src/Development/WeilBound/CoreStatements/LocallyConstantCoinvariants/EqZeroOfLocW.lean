@@ -53,10 +53,10 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
   [Fintype κ] {JA : Matrix α α (AE F E)} {JB : Matrix β β (AE F E)} {ψ : AddChar (AF F) ℂ}
 
 theorem locW_smul (a : AF F) (w : (κ → AF F) × (κ → AF F)) : locW v (a • w) = evFin F v a • locW v w :=
-  Prod.ext (funext fun i => map_mul (evFin F v) _ _) (funext fun i => map_mul (evFin F v) _ _)
+  Prod.ext (funext fun _ => map_mul (evFin F v) _ _) (funext fun _ => map_mul (evFin F v) _ _)
 
 theorem locW_add (w w' : (κ → AF F) × (κ → AF F)) : locW v (w + w') = locW v w + locW v w' :=
-  Prod.ext (funext fun i => map_add (evFin F v) _ _) (funext fun i => map_add (evFin F v) _ _)
+  Prod.ext (funext fun _ => map_add (evFin F v) _ _) (funext fun _ => map_add (evFin F v) _ _)
 
 theorem eq_zero_of_locW {w : (κ → AF F) × (κ → AF F)} (ha : At (evFin F v) w) (h : locW v w = 0) : w = 0 := by
   rw [← kd_at_iff.1 ha]

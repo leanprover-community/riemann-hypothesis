@@ -60,7 +60,7 @@ theorem not_two_primes {R : Type*} [CommRing R] (P : Ideal R) [hP : P.IsPrime] {
   exact P.add_mem (P.mul_mem_left _ h1) (P.mul_mem_left _ h2)
 
 theorem natCast_mem_of_card {E : Type} [Field E] [NumberField E] (PP : IsDedekindDomain.HeightOneSpectrum (𝓞 E))
-    {q : ℕ} (hc : Nat.card (𝓞 E ⧸ PP.asIdeal) = q) (hq0 : q ≠ 0) : (q : 𝓞 E) ∈ PP.asIdeal := by
+    {q : ℕ} (hc : Nat.card (𝓞 E ⧸ PP.asIdeal) = q) : (q : 𝓞 E) ∈ PP.asIdeal := by
   rw [← Ideal.Quotient.eq_zero_iff_mem, map_natCast, ← hc, ← nsmul_one]
   exact card_nsmul_eq_zero'
 
@@ -83,7 +83,7 @@ theorem offPlace : ∀ (D : D7) (T : Type) (L : LevCh D T) (μ0 : T), L.Is μ0 �
     intro PP hP hg
     obtain ⟨q, hq, hcard, -, hqg⟩ := (hL.Q_pl t PP hP).1
     exact not_two_primes PP.asIdeal (D.host.g_prime k) hq (hqg k).symm hg
-      (natCast_mem_of_card PP hcard hq.ne_zero)
+      (natCast_mem_of_card PP hcard)
   have h3 : s.w ∉ L.Q t := fun h => hQ s.w h hgk
   refine ⟨?_, fun PP hP hov => hQ PP hP (hA PP hov _ hgk), h3, ?_⟩
   · intro PP hP hne hov
@@ -102,7 +102,7 @@ theorem offPlace : ∀ (D : D7) (T : Type) (L : LevCh D T) (μ0 : T), L.Is μ0 �
     rcases (hL.Q_ram t s.w).1 hn with h | ⟨PP', hP', hc⟩
     · exact h3 h
     obtain ⟨q, hq, hcard, -, hqg⟩ := (hL.Q_pl t PP' hP').1
-    obtain ⟨c', hc', hcq⟩ := hc _ (natCast_mem_of_card PP' hcard hq.ne_zero)
+    obtain ⟨c', hc', hcq⟩ := hc _ (natCast_mem_of_card PP' hcard)
     have hq' : (q : 𝓞 D.host.E) = c' := by
       apply RingOfIntegers.ext
       rw [hcq]; simp

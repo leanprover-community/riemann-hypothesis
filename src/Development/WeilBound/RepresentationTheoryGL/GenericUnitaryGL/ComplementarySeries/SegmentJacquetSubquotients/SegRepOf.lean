@@ -137,8 +137,7 @@ variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchim
 
 
 set_option synthInstance.maxHeartbeats 400000 in
-theorem exists_unique_irred_sub {d l : ℕ} (hd : 0 < d) (hl : 0 < l) (σ : IrrRep (GL (Fin d) k))
-    (hσ : IsCuspidal σ.ρ)
+theorem exists_unique_irred_sub {d l : ℕ} (σ : IrrRep (GL (Fin d) k))
     (h1 : jhMult (piTensor (segTerm σ.ρ l))
       (jac (consecBlocks l d) (multiProd (consecBlocks l d) (segTerm σ.ρ l))) = 1) :
     ∃ S : Subrepresentation (multiProd (consecBlocks l d) (segTerm σ.ρ l)),
@@ -252,7 +251,7 @@ variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchim
 
 set_option synthInstance.maxHeartbeats 400000 in
 set_option maxHeartbeats 1000000 in
-theorem jhMult_rev_jac_sub (hG : GeometricLemma) (hR : RhoNuRhoReducible) {d : ℕ} (hd : 0 < d)
+theorem jhMult_rev_jac_sub (hR : RhoNuRhoReducible) {d : ℕ} (hd : 0 < d)
     (σ : IrrRep (GL (Fin d) k)) (hσ : IsCuspidal σ.ρ)
     (S : Subrepresentation (multiProd (consecBlocks 2 d) (segTerm σ.ρ 2)))
     (hS : S.toRepresentation.IsIrreducible)
@@ -436,8 +435,8 @@ private theorem exists_irreducible_subrep_le_of_ne_bot {G V : Type} [Group G] [A
 
 
 
-theorem exists_irred_le {d l : ℕ} (hd : 0 < d) (hl : 0 < l) (σ : IrrRep (GL (Fin d) k))
-    (hσ : IsCuspidal σ.ρ) (T : Subrepresentation (multiProd (consecBlocks l d) (segTerm σ.ρ l)))
+theorem exists_irred_le {d l : ℕ} (σ : IrrRep (GL (Fin d) k))
+    (T : Subrepresentation (multiProd (consecBlocks l d) (segTerm σ.ρ l)))
     (hT : T.toSubmodule ≠ ⊥) :
     ∃ S' : Subrepresentation (multiProd (consecBlocks l d) (segTerm σ.ρ l)),
       S'.toRepresentation.IsIrreducible ∧ S'.toSubmodule ≤ T.toSubmodule := by
@@ -447,7 +446,7 @@ theorem exists_irred_le {d l : ℕ} (hd : 0 < d) (hl : 0 < l) (σ : IrrRep (GL (
 
 
 
-theorem isIrreducible_segTensor {d : ℕ} (hd : 0 < d) (σ : IrrRep (GL (Fin d) k)) :
+theorem isIrreducible_segTensor {d : ℕ} (σ : IrrRep (GL (Fin d) k)) :
     (piTensor (segTerm σ.ρ 2)).IsIrreducible :=
   PositivityTheory.Lit1.SegRep.PIrr.isIrreducible_piTensor_segTerm σ 2
 
@@ -457,12 +456,12 @@ private theorem hasFiniteLength_subrepresentation {G V : Type} [Group G] [AddCom
   GlobalTheory.ProdLength.hasFiniteLength_of_injective
     (LinearMap.intertwiningMap_of_isIntertwiningMap S.toRepresentation π S.toSubmodule.subtype
       (fun _ _ => rfl))
-    (fun a b h => Subtype.ext h) hπ
+    (fun _ _ h => Subtype.ext h) hπ
 
 
 set_option synthInstance.maxHeartbeats 400000 in
-theorem hasFiniteLength_jac_sub {d : ℕ} (hd : 0 < d)
-    (σ : IrrRep (GL (Fin d) k)) (hσ : IsCuspidal σ.ρ)
+theorem hasFiniteLength_jac_sub {d : ℕ}
+    (σ : IrrRep (GL (Fin d) k))
     (S : Subrepresentation (multiProd (consecBlocks 2 d) (segTerm σ.ρ 2))) :
     HasFiniteLength (jac (consecBlocks 2 d) S.toRepresentation) := by
   exact GlobalTheory.CompanionTheory.JacquetBridge.jacquetFiniteLength k _ _ _ (consecBlocks 2 d) _ S.toRepresentation
@@ -521,7 +520,7 @@ namespace PositivityTheory.Pf1.SegRepC.Perm
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-theorem entries_zero_or_d {d l : ℕ} (hd : 0 < d) (σ : IrrRep (GL (Fin d) k)) (hσ : IsCuspidal σ.ρ)
+theorem entries_zero_or_d {d l : ℕ} (σ : IrrRep (GL (Fin d) k)) (hσ : IsCuspidal σ.ρ)
     (b : SizeMatrix (fun _ : Fin l => Fin d) (fun _ : Fin l => Fin d))
     (f : ∀ i, (Σ j, Fin (b.1 i j)) ≃ Fin d)
     (s : ∀ i j, IrrRep (GL (Fin (b.1 i j)) k))
@@ -707,7 +706,7 @@ end SrPerm
 
 
 
-theorem exists_perm_of_isSubquotient_jac (hG : GeometricLemma) {d l : ℕ} (hd : 0 < d) (hl : 0 < l)
+theorem exists_perm_of_isSubquotient_jac (hG : GeometricLemma) {d l : ℕ} (hd : 0 < d)
     (σ : IrrRep (GL (Fin d) k)) (hσ : IsCuspidal σ.ρ)
     {X : Type} [AddCommGroup X] [Module ℂ X] (π : Representation ℂ (Levi k fun _ : Fin l => Fin d) X)
     (hπ : π.IsIrreducible)
@@ -716,7 +715,7 @@ theorem exists_perm_of_isSubquotient_jac (hG : GeometricLemma) {d l : ℕ} (hd :
   obtain ⟨b, f, g, s, hs, hπs⟩ := exists_cell_of_isSubquotient (hG k).1 (hG k).2
     (consecBlocks l d) (consecBlocks l d) (PositivityTheory.Pf1.SegRepC.MultOne.isSmooth_segTerm σ)
     (PositivityTheory.Pf1.SegRepC.MultOne.hasFiniteLength_segTerm σ) hπ h
-  exact SrPerm.exists_perm_of_cell hd σ b (PositivityTheory.Pf1.SegRepC.Perm.entries_zero_or_d hd σ hσ b f s hs) f g s hs
+  exact SrPerm.exists_perm_of_cell hd σ b (PositivityTheory.Pf1.SegRepC.Perm.entries_zero_or_d σ hσ b f s hs) f g s hs
     π hπ hπs
 
 
@@ -728,7 +727,7 @@ theorem constituents_jac_sub (hG : GeometricLemma) {d : ℕ} (hd : 0 < d)
     (hρ : ρ.IsIrreducible) (hs : IsSubquotient ρ (jac (consecBlocks 2 d) S.toRepresentation)) :
     Nonempty (ρ.Equiv (piTensor (segTerm σ.ρ 2))) ∨
       Nonempty (ρ.Equiv (PositivityTheory.Pf1.SegRepC.SegTwo.revTensor σ)) := by
-  obtain ⟨w, ⟨φ⟩⟩ := exists_perm_of_isSubquotient_jac hG hd (by decide) σ hσ ρ hρ
+  obtain ⟨w, ⟨φ⟩⟩ := exists_perm_of_isSubquotient_jac hG hd σ hσ ρ hρ
     (PositivityTheory.Pf1.SegRepC.Lift.isSubquotient_jac_multiProd_of_sub σ S hs)
   have hne : w 1 ≠ w 0 := fun e => absurd (w.injective e) (by decide)
   rcases Fin.exists_fin_two.1 ⟨w 0, rfl⟩ with h0 | h0
@@ -793,31 +792,31 @@ set_option maxHeartbeats 1000000 in
 theorem segTwo_of (hG : GeometricLemma) (hR : RhoNuRhoReducible) : PositivityTheory.Pf1.SegRepC.SegTwo := by
   intro k _ _ _ _ d hd σ hσ
   have h2 : (0 : ℕ) < 2 := by decide
-  obtain ⟨S, hS, hU, h1⟩ := Uniq.exists_unique_irred_sub hd h2 σ hσ (SRC.jhMult_jac_multiProd hG hd h2 σ hσ)
+  obtain ⟨S, hS, hU, h1⟩ := Uniq.exists_unique_irred_sub σ (SRC.jhMult_jac_multiProd hd σ hσ)
   refine ⟨S, hS, hU, ?_⟩
-  refine GlobalTheory.CompanionTheory.FineStep.nonempty_equiv_of_jhMult_eq_one _ _ (SRC.isIrreducible_segTensor hd σ) (SRC.hasFiniteLength_jac_sub hd σ hσ S) h1 fun X _ _ ρ hρ hs => ?_
+  refine GlobalTheory.CompanionTheory.FineStep.nonempty_equiv_of_jhMult_eq_one _ _ (SRC.isIrreducible_segTensor σ) (SRC.hasFiniteLength_jac_sub σ S) h1 fun X _ _ ρ hρ hs => ?_
   rcases SRC.constituents_jac_sub hG hd σ hσ S ρ hρ hs with h | h'
   · exact h
   · obtain ⟨φ⟩ := h'
     exfalso
-    refine jhMult_ne_zero_iff.2 ?_ (SRC.jhMult_rev_jac_sub hG hR hd σ hσ S hS h1)
+    refine jhMult_ne_zero_iff.2 ?_ (SRC.jhMult_rev_jac_sub hR hd σ hσ S hS h1)
     exact (IsSubquotient.of_surjective φ.toIntertwiningMap fun w => ⟨φ.symm w, φ.apply_symm_apply w⟩).trans hs
 
 set_option synthInstance.maxHeartbeats 400000 in
 set_option maxHeartbeats 1000000 in
 theorem segRep_of (hT : StageP) (hG : GeometricLemma) (h2 : PositivityTheory.Pf1.SegRepC.SegTwo) : SegmentRepresentation := by
   intro k _ _ _ _ d l hd hl σ hσ
-  obtain ⟨S, hS, huniq, h1⟩ := Uniq.exists_unique_irred_sub hd hl σ hσ (SRC.jhMult_jac_multiProd hG hd hl σ hσ)
+  obtain ⟨S, hS, huniq, h1⟩ := Uniq.exists_unique_irred_sub σ (SRC.jhMult_jac_multiProd hd σ hσ)
   refine ⟨S, hS, huniq, ?_⟩
   have hfl : HasFiniteLength (jac (consecBlocks l d) S.toRepresentation) :=
     GlobalTheory.CompanionTheory.JacquetBridge.jacquetFiniteLength k _ _ _ (consecBlocks l d) _ S.toRepresentation
       (GlobalTheory.CompanionTheory.JacExp.isSmooth_sub (Lift.isSmooth_multiProd_segTerm σ l) S) (hasFiniteLength_of_isIrreducible hS)
   refine GlobalTheory.CompanionTheory.FineStep.nonempty_equiv_of_jhMult_eq_one _ _
     (PositivityTheory.Lit1.SegRep.PIrr.isIrreducible_piTensor_segTerm σ l) hfl h1 fun X _ _ π hπ h => ?_
-  obtain ⟨w, ⟨φ⟩⟩ := SRC.exists_perm_of_isSubquotient_jac hG hd hl σ hσ π hπ (Lift.isSubquotient_jac_multiProd_of_sub σ S h)
+  obtain ⟨w, ⟨φ⟩⟩ := SRC.exists_perm_of_isSubquotient_jac hG hd σ hσ π hπ (Lift.isSubquotient_jac_multiProd_of_sub σ S h)
   obtain rfl : w = 1 := Lift.perm_eq_one_of_lt_succ w fun i hi => by
     obtain ⟨T, hT0, hTw⟩ := hT k hG h2 hd hl σ hσ i hi
-    obtain ⟨S', hS', hle⟩ := SRC.exists_irred_le hd hl σ hσ T hT0
+    obtain ⟨S', hS', hle⟩ := SRC.exists_irred_le σ T hT0
     obtain rfl := huniq S' hS'
     exact hTw π hπ (PiLocalization₂.isSubquotient_jac_of_le σ hle h) w φ
   exact ⟨φ⟩

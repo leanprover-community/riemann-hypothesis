@@ -218,7 +218,7 @@ theorem holoOn_mono (A : FinHolAtlas e X) {U V : Set X} {g : X → ℂ} (h : A.H
   fun j w hw => h j w ⟨hw.1, hs hw.2⟩
 
 theorem continuousOn_of_holoOn (A : FinHolAtlas e X) {U : Set X} {s : X → I → ℂ}
-    (hU : IsOpen U) (hs : ∀ p, A.HoloOn U fun y => s y p) : ContinuousOn s U := by
+    (hs : ∀ p, A.HoloOn U fun y => s y p) : ContinuousOn s U := by
   intro y hy
   obtain ⟨j, hj⟩ := A.cover y
   refine ContinuousAt.continuousWithinAt (continuousAt_pi.2 fun p => ?_)
@@ -248,7 +248,7 @@ theorem log_norm_section_local (A : FinHolAtlas e X) {U : Set X} (hU : IsOpen U)
   have hev : ∀ᶠ z in 𝓝 (s y₀), AnalyticAt ℂ L z ∧ T z ≠ 0 ∧ Q z :=
     hLa.eventually_analyticAt.and ((hT.continuousAt.eventually_ne hT0).and hQ)
   obtain ⟨N, hNsub, hNo, hzN⟩ := mem_nhds_iff.1 hev
-  have hc := continuousOn_of_holoOn A hU hs
+  have hc := continuousOn_of_holoOn A hs
   refine ⟨U ∩ s ⁻¹' N, hc.isOpen_inter_preimage hU hNo, ⟨hy₀, hzN⟩, Set.inter_subset_left,
     fun y hy => (hNsub hy.2).2.2, fun y => L (s y) + (Real.log ‖T (s y₀)‖ : ℂ), ?_, ?_⟩
   · intro j w hw

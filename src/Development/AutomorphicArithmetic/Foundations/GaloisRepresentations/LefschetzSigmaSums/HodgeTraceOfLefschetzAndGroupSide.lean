@@ -276,7 +276,7 @@ private theorem alt_family {M : ℕ → ℕ → Type*} [∀ a b, AddCommGroup (M
   exact sum_rearrange (Finset.range (d + 1)) w.support c (fun α => w α) (fun a => (-y) ^ a) (fun b => (-1 : ℂ) ^ b)
     fun i α a b => LinearMap.trace ℂ (M a b) (u i a b ∘ₗ e α a b)
 
-theorem altLin_of : AltLin := fun Z s d m A u c w e y =>
+theorem altLin_of : AltLin := fun _ s d m _ u c w e y =>
   alt_family (M := fun a b => hodgeH s a b) d m u c w e y
 
 end UpperTheory.Gal.LocalSmoothExtension

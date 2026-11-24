@@ -1071,7 +1071,7 @@ theorem core (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K
   have hvsm := PinA.vd_smul hK hF hs hd hLf hLi h𝔭 hn
   have hvT : vd (algebraMap F K (n : F) • h') (locF 𝔭 (S₁.cut L₀)) 𝔭 =
       vd h' (S₁.cut L₀) 𝔭 + finrank K V' * vF 𝔭 n := by
-    rw [vd_locF hK hF hsc' hdc' hCf.toIsLattice hCic h𝔭]
+    rw [vd_locF hF h𝔭]
     exact PinA.vd_smul hK hF hs₁' hd₁' hCf hCi h𝔭 hn
   have hαT : alphaL (algebraMap F K (n : F) • h') (locF 𝔭 (S₁.cut L₀)) 𝔭 =
       (Ideal.absNorm 𝔭 : ℝ) ^ (vF 𝔭 n * finrank K V' ^ 2) * alphaL h' (S₁.cut L₀) 𝔭 := by
@@ -1141,7 +1141,7 @@ theorem nu_gmap_locF (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : 
     nu h (Formalism.HermitianLatticesTheory.gmap g (locF 𝔭 L)) 𝔭 = nu h L 𝔭 ∧
       vd h (Formalism.HermitianLatticesTheory.gmap g (locF 𝔭 L)) 𝔭 = vd h L 𝔭 := by
   have hv : vd h (Formalism.HermitianLatticesTheory.gmap g (locF 𝔭 L)) 𝔭 = vd h L 𝔭 := by
-    rw [UnimodularLocalization.vd_gmap hg, vd_locF hK hF hs hd hL hLi h𝔭]
+    rw [UnimodularLocalization.vd_gmap hg, vd_locF hF h𝔭]
   have ha : alphaL h (Formalism.HermitianLatticesTheory.gmap g (locF 𝔭 L)) 𝔭 = alphaL h L 𝔭 := by
     rw [BrB.alphaL_gmap hg]
     unfold alphaL

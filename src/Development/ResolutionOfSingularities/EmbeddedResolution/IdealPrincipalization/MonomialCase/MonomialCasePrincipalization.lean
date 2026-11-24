@@ -392,7 +392,7 @@ private theorem monomialCenter_comap_eqToHom {X Y : Scheme.{u}} (h : X = Y)
   subst h
   simp
 
-theorem monomialPrincipalization_center_eq_monomialCenter (_hGeom : MonomialGeometryHypotheses.{u})
+theorem monomialPrincipalization_center_eq_monomialCenter
     (hinv : ComapIsoInvariance.{u}) :
     ∀ T : MarkedIdealWithBoundary.{u}, MonomialCenter.IsLocallyMonomialTriple T →
       ∀ i < (monomialPrincipalization hinv T).length,
@@ -419,7 +419,7 @@ private theorem minIndexCard_comap_eqToHom {A B : Scheme.{u}} (h : A = B)
   subst h
   simp
 
-theorem monomialPrincipalization_minIndexCard_ne_zero (_hGeom : MonomialGeometryHypotheses.{u})
+theorem monomialPrincipalization_minIndexCard_ne_zero
     (hinv : ComapIsoInvariance.{u}) :
     ∀ T : MarkedIdealWithBoundary.{u}, MonomialCenter.IsLocallyMonomialTriple T →
       ∀ i < (monomialPrincipalization hinv T).length,
@@ -622,8 +622,8 @@ theorem isMonomialCasePrincipalization_monomialPrincipalization (hGeom : Monomia
   { center_subset_boundaryLocus :=
       monomialPrincipalization_center_subset_boundaryLocus hGeom hinv
     cert := monomialPrincipalization_principalizationCertificate hGeom hinv
-    center_eq := monomialPrincipalization_center_eq_monomialCenter hGeom hinv
-    minLevel_ne_zero := monomialPrincipalization_minIndexCard_ne_zero hGeom hinv
+    center_eq := monomialPrincipalization_center_eq_monomialCenter hinv
+    minLevel_ne_zero := monomialPrincipalization_minIndexCard_ne_zero hinv
     key_le := monomialPrincipalization_centerInvariant_le_succ hGeom hinv
     monomial_near := monomialPrincipalization_isMonomialNear hGeom hinv
     center_nonempty := monomialPrincipalization_center_support_nonempty hGeom hinv

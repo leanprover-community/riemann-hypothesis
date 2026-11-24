@@ -1065,19 +1065,19 @@ theorem zA_chi (σ : K.fixingSubgroup) (r : ℕ) :
   rw [Units.val_pow_eq_pow_val, map_pow]
   rfl
 
-theorem h1_lift_add (ht : TFil l) {e : E.EtFam l K} (he : EtP e) : ∀ {M : Model l K} {r j : ℕ} {v v' : M.T j} {x x' : Fam M r j},
+theorem h1_lift_add (ht : TFil l) {e : E.EtFam l K} : ∀ {M : Model l K} {r j : ℕ} {v v' : M.T j} {x x' : Fam M r j},
     IsLift ht e r v x → IsLift ht e r v' x' → IsLift ht e r (v + v') (x + x') :=
   fun {M r j v v' x x'} h h' => ⟨comp_add h.1 h'.1, fun n =>
     lin_add ((βMorF (B.schFn M.p) (okToOC l K) r n).pull j) ((tMor ht ((B.schFn M.p).pt (okToOC l K)) r n).pull j) (h.2 n) (h'.2 n)
       (map_add (e M n j) (v.lev n) (v'.lev n))⟩
 
-theorem h1_lift_smul (ht : TFil l) {e : E.EtFam l K} (he : EtP e) : ∀ {M : Model l K} {r j : ℕ} {v : M.T j} {x : Fam M r j} (z : ℤ_[l]),
+theorem h1_lift_smul (ht : TFil l) {e : E.EtFam l K} : ∀ {M : Model l K} {r j : ℕ} {v : M.T j} {x : Fam M r j} (z : ℤ_[l]),
     IsLift ht e r v x → IsLift ht e r (z • v) (zA l z • x) :=
   fun {M r j v x} z h => ⟨comp_smul _ h.1, fun n =>
     lin_smul ((βMorF (B.schFn M.p) (okToOC l K) r n).pull j) ((tMor ht ((B.schFn M.p).pt (okToOC l K)) r n).pull j) (zA l z) (h.2 n)
       (e_smul e M j n z v)⟩
 
-theorem h1_lift_shift (ht : TFil l) {e : E.EtFam l K} (he : EtP e) : ∀ {M : Model l K} {r r' j : ℕ} {v : M.T j} {x : Fam M r j} (k : ℕ) (h : r + k = r'),
+theorem h1_lift_shift (ht : TFil l) {e : E.EtFam l K} : ∀ {M : Model l K} {r r' j : ℕ} {v : M.T j} {x : Fam M r j} (k : ℕ) (h : r + k = r'),
     IsLift ht e r v x → IsLift ht e r' v (shS ht k h x) :=
   fun {M r r' j v x} k h hx => ⟨comp_sh ht k h hx.1, fun n =>
     (β_sh (B.schFn M.p) (okToOC l K) ht k h n j (x n)).trans
@@ -1140,9 +1140,9 @@ theorem half1 (ht : TFil l) {e : E.EtFam l K} (he : EtP e) :
     comp := fun h => h.1
     ex := exists_isLift_of_etP ht he
     uniq := shS_eq_of_isLift ht
-    add := h1_lift_add ht he
-    smul := h1_lift_smul ht he
-    sh := h1_lift_shift ht he
+    add := h1_lift_add ht
+    smul := h1_lift_smul ht
+    sh := h1_lift_shift ht
     gal := h1_lift_galois ht he
     nat := h1_lift_naturality ht he
     cup := isLift_cupS_of_cupT ht he

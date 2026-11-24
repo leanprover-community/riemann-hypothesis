@@ -330,7 +330,7 @@ def cechCubeMapOver :
     Cube.SemiHom σ (cechCube R F V U) (cechCube S G (g ⁻¹ᵁ V) fun i => g ⁻¹ᵁ U i) where
   app s := (sectionsOn.res S G (preimage_cechOpen g V U s).ge).comp
     (sectionsOn.mapOver hσ φ (cechOpen V U s))
-  app_res {s t} h x :=
+  app_res {_ t} h x :=
     (congrArg (sectionsOn.res S G (preimage_cechOpen g V U t).ge)
       (sectionsOn.mapOver_res hσ φ (cechOpen_anti V U h) x)).trans
       ((sectionsOn.res_res S G _ _ _).trans

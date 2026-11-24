@@ -317,7 +317,7 @@ def Um (n : Mat k r) : Matrix (Fin r) (Fin r) ℂ := Matrix.of fun b c => n (eI 
 
 def cE (y : Mat k r) : Matrix (Fin (2 * r + k + 1)) (Fin r) ℂ := Matrix.of fun i b => y i (eI k r b)
 
-lemma cE_mul {n n' : Mat k r} (_hn : n ∈ Nset k r) (hn' : n' ∈ Nset k r) (g : Mat k r) :
+lemma cE_mul {n n' : Mat k r} (hn' : n' ∈ Nset k r) (g : Mat k r) :
     cE (n⁻¹ * g * n') = n⁻¹ * cE g * Um n' := by
   ext i b
   simp only [cE, Um, Matrix.of_apply, Matrix.mul_apply]
@@ -326,7 +326,7 @@ lemma cE_mul {n n' : Mat k r} (_hn : n ∈ Nset k r) (hn' : n' ∈ Nset k r) (g 
 
 lemma Zm_mul {n n' : Mat k r} (hn : n ∈ Nset k r) (hn' : n' ∈ Nset k r) (g : Mat k r) :
     Zm (n⁻¹ * g * n') = Lm n * Zm g * Um n' := by
-  have h := cE_mul hn hn' g
+  have h := cE_mul hn' g
   ext a b
   have h2 : (n⁻¹ * g * n') (esI k r a) (eI k r b) = (n⁻¹ * cE g * Um n') (esI k r a) b := by
     rw [← h]; rfl
@@ -891,7 +891,7 @@ lemma key {δ : ℝ} {g n n' : Mat k r} (_hδ : 0 < δ) (_hdet : δ ≤ ‖(Zm g
     n⁻¹ * Pm g = Pm (n⁻¹ * g * n') * Lm n := by
   have hU1 : Um n' * (Um n')⁻¹ = 1 := Matrix.mul_nonsing_inv _ (by rw [det_Um hn']; exact isUnit_one)
   have hL1 : (Lm n)⁻¹ * Lm n = 1 := Matrix.nonsing_inv_mul _ (by rw [det_Lm hn]; exact isUnit_one)
-  rw [Pm, Pm, cE_mul hn hn' g, Zm_mul hn hn' g, Matrix.mul_inv_rev, Matrix.mul_inv_rev]
+  rw [Pm, Pm, cE_mul hn' g, Zm_mul hn hn' g, Matrix.mul_inv_rev, Matrix.mul_inv_rev]
   simp only [Matrix.mul_assoc]
   rw [hL1, Matrix.mul_one, ← Matrix.mul_assoc (Um n') _ _, hU1, Matrix.one_mul]
 
@@ -1115,7 +1115,7 @@ lemma ld_conjT (Y : Matrix (Fin r) (Fin r) ℂ) (b : Fin r) : ‖ld Yᴴ b‖ = 
 lemma det_conjT (Y : Matrix (Fin r) (Fin r) ℂ) : ‖Yᴴ.det‖ = ‖Y.det‖ := by
   rw [Matrix.det_conjTranspose, norm_star]
 
-lemma xinv_eq {g n n' : Mat k r} (_hn : n ∈ Nset k r) (_hn' : n' ∈ Nset k r) :
+lemma xinv_eq {g n n' : Mat k r} :
     (n⁻¹ * g * n')⁻¹ = n'⁻¹ * g⁻¹ * (n⁻¹)⁻¹ := by
   rw [Matrix.mul_inv_rev, Matrix.mul_inv_rev, Matrix.mul_assoc]
 
@@ -1128,7 +1128,7 @@ lemma both_bd {Γ δ : ℝ} {g n n' : Mat k r} (hΓ : 1 ≤ Γ) (hδ : 0 < δ) (
   have h := gN_n_bd (g := g⁻¹) (n := n') (n' := n) hΓ hδ hgi (by rw [gN_inv hg]; exact hgΓ)
     (fun b => by rw [Zm_inv hg, ld_conjT]; exact hld b) (by rw [Zm_inv hg, det_conjT]; exact hdet) hn' hn
   have hnn : (n⁻¹)⁻¹ = n := Matrix.nonsing_inv_nonsing_inv n (closedN.unit n hn)
-  have e : n'⁻¹ * g⁻¹ * n = (n⁻¹ * g * n')⁻¹ := by rw [xinv_eq hn hn', hnn]
+  have e : n'⁻¹ * g⁻¹ * n = (n⁻¹ * g * n')⁻¹ := by rw [xinv_eq, hnn]
   simpa [e, gN_inv (x_mem hg hn hn')] using h
 
 lemma dot_bvec (e : Fin (2 * r + k + 1)) (v : Fin (2 * r + k + 1) → ℂ) : star (bvec e) ⬝ᵥ v = v e := by

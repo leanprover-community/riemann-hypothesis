@@ -196,7 +196,7 @@ theorem unit_origin (G : Over (Sp V)) [GrpObj G] (M : RigLB G) (N : ℕ)
   obtain ⟨u, hu⟩ := unit_ratio (V := V) M.isLB (t := LB.pullGen M.L _ _ β (eSec G))
     (t' := rigPow G M.L M.rig ((N : ℤ) ^ 2 - 1)) (fun U _ h => by
       rw [Fin.prod_univ_two, Fintype.prod_unique]
-      simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Category.comp_id, e₀]
+      simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Category.comp_id, e₀]
       rw [← zpow_add]; congr 1)
     (pullGen_isGen _ _ _ _ hβ _) (GlobalTheory.NormMulUniv.rigPow_isGen M.rigGen _)
   refine ⟨u, fun z J hJ => ?_⟩

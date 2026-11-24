@@ -219,7 +219,7 @@ theorem Sm.ext' {x y : Sm n V} (h : ∀ g ∈ GLs n, x.1 g = y.1 g) : x = y := b
   · rw [x.2.2 g hg, y.2.2 g hg]
 
 def cut (F : Mat n → V) (hF : ContDiffOn ℝ ∞ F (GLs n)) : Sm n V :=
-  ⟨(GLs n).indicator F, hF.congr (fun g hg => Set.indicator_of_mem hg F), fun g hg => Set.indicator_of_notMem hg F⟩
+  ⟨(GLs n).indicator F, hF.congr (fun _ hg => Set.indicator_of_mem hg F), fun _ hg => Set.indicator_of_notMem hg F⟩
 
 theorem cut_apply {F : Mat n → V} (hF : ContDiffOn ℝ ∞ F (GLs n)) {g : Mat n} (hg : g ∈ GLs n) : (cut F hF).1 g = F g :=
   Set.indicator_of_mem hg F

@@ -53,7 +53,7 @@ section Meas
 variable {V X : Type} [TopologicalSpace V] [MeasurableSpace V] [BorelSpace V]
 
 theorem le_lintegral_bump [T2Space V] (m : Measure V) {K : Set V} (hK : IsCompact K) {φ : V → ℝ}
-    (h0 : ∀ v, 0 ≤ φ v) (h1 : ∀ v ∈ K, φ v = 1) : m K ≤ ∫⁻ v, ENNReal.ofReal (φ v) ∂m := by
+    (h1 : ∀ v ∈ K, φ v = 1) : m K ≤ ∫⁻ v, ENNReal.ofReal (φ v) ∂m := by
   have hKm : MeasurableSet K := hK.isClosed.measurableSet
   rw [← lintegral_indicator_one hKm]
   refine lintegral_mono fun v => ?_
@@ -112,7 +112,7 @@ theorem BumpFamily.measurable_open [LocallyCompactSpace V] [SecondCountableTopol
     have h2 := tendsto_measure_iUnion_atTop (μ := fib b) hKmono
     rwa [hKU] at h2
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le hlow tendsto_const_nhds
-    (fun n => le_lintegral_bump (fib b) (hKc n) (hφ0 n) (hφK n))
+    (fun n => le_lintegral_bump (fib b) (hKc n) (hφK n))
     (fun n => lintegral_bump_le (fib b) hO (hφ1 n) (hφs n))
 
 theorem BumpFamily.lt_top [LocallyCompactSpace V] [T2Space V]
@@ -122,7 +122,7 @@ theorem BumpFamily.lt_top [LocallyCompactSpace V] [T2Space V]
   by_cases hb : b ∈ B
   · obtain ⟨φ, hc, hcs, hs, h0, -, hK1⟩ := exists_bump hK hU hKU
     have hint := (h.2 φ hc hcs hs).1 b hb
-    exact lt_of_le_of_lt (le_lintegral_bump (fib b) hK h0 hK1) hint.lintegral_lt_top
+    exact lt_of_le_of_lt (le_lintegral_bump (fib b) hK hK1) hint.lintegral_lt_top
   · rw [h.1 b hb]
     simp
 
@@ -221,7 +221,7 @@ theorem fibre_family_basic : ∀ (V X Y : Type) [TopologicalSpace V] [LocallyCom
             fun w hw => ⟨hw.1, ?_⟩)
           show g w ∈ D
           rwa [hmemι b w hw.2.1]
-      _ ≤ ∫⁻ v, ENNReal.ofReal (φ v) ∂(fib b) := le_lintegral_bump (fib b) hC' h0 h1
+      _ ≤ ∫⁻ v, ENNReal.ofReal (φ v) ∂(fib b) := le_lintegral_bump (fib b) hC' h1
       _ = ENNReal.ofReal (∫ v, φ v ∂(fib b)) :=
           (ofReal_integral_eq_lintegral_ofReal (hint b (hDB hb)) (ae_of_all _ h0)).symm
       _ ≤ ENNReal.ofReal M := ENNReal.ofReal_le_ofReal ((Real.le_norm_self _).trans (hM b hb))

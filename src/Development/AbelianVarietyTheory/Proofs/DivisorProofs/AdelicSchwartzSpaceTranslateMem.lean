@@ -90,7 +90,7 @@ theorem schA_translate (a : κ → AdeleRing (𝓞 F) F) {φ : (κ → AdeleRing
 
 theorem main : ∀ (F : Type) [Field F] [NumberField F] (κ : Type) [Fintype κ] (a : κ → AF F), ∀ φ ∈ schA F κ,
     (fun x => φ (x + a)) ∈ schA F κ :=
-  fun F _ _ _ _ a φ hφ => schA_translate F a hφ
+  fun F _ _ _ _ a _ hφ => schA_translate F a hφ
 
 end GlobalTheory.SchwartzTranslate
 

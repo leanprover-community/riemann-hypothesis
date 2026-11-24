@@ -265,7 +265,7 @@ theorem vBB_le_coeff (F : MvPolynomial σ (KK O)) (m : σ →₀ ℕ) :
     rw [h0, vK_zero']
     simp
 
-theorem vBB_add (S : UniformizedDVR p O) (F G : MvPolynomial σ (KK O)) :
+theorem vBB_add (F G : MvPolynomial σ (KK O)) :
     min (vBB (O := O) p F) (vBB (O := O) p G) ≤ vBB (O := O) p (F + G) := by
   have key : ∀ m ∈ (F + G).support, min (vBB (O := O) p F) (vBB (O := O) p G) ≤
       vK (O := O) p ((F + G).coeff m) + (((padicValNat p (expFact m) : ℚ) / 2 : ℚ) : WithTop ℚ) := by
@@ -293,7 +293,7 @@ theorem vBB_sum (S : UniformizedDVR p O) {κ : Type} (T : Finset κ) (f : κ →
     rw [Finset.inf_insert, Finset.sum_insert ha]
     calc vBB (O := O) p (f a) ⊓ s.inf (fun i => vBB (O := O) p (f i))
         ≤ vBB (O := O) p (f a) ⊓ vBB (O := O) p (∑ i ∈ s, f i) := inf_le_inf_left _ ih
-      _ ≤ vBB (O := O) p (f a + ∑ i ∈ s, f i) := vBB_add S _ _
+      _ ≤ vBB (O := O) p (f a + ∑ i ∈ s, f i) := vBB_add _ _
 
 end VBB
 

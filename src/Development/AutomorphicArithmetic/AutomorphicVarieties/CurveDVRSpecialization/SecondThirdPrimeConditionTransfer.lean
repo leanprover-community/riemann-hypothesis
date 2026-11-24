@@ -471,7 +471,7 @@ theorem not_irr [IsAlgClosed κ] (j : κ →+* K) (σ : G →* Matrix (Fin 3) (F
   have h1 := L (1 - (e 0 0 + e 1 1 + e 2 2)) (by
     rw [map_sub, map_add (f := _), map_add (f := _), he, he, he, map_one]
     ext i k
-    fin_cases i <;> fin_cases k <;> simp [Matrix.single_apply, Matrix.one_apply])
+    fin_cases i <;> fin_cases k <;> simp [Matrix.single_apply])
   rw [map_sub, map_one, map_add (f := _), map_add (f := _), hd 0 1, hd 1 2, hd 2 0, hsq 0 1 (by decide),
     hsq 1 2 (by decide), hsq 2 0 (by decide)] at h1
   simp at h1

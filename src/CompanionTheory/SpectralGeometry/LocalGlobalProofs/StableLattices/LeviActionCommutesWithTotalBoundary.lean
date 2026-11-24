@@ -234,7 +234,7 @@ theorem levi_bracket_sum_first (a b m : Pos n) : ∑ k : Pos n, tc a b k * adC p
     · intro k _
       simp [tc, h]
 
-theorem levi_bracket_sum_second (hm : Monotone lev) (hpq : lev p = lev q) {a b : Pos n} (ha : inU lev a) (hb : inU lev b) (m : Pos n) :
+theorem levi_bracket_sum_second (hm : Monotone lev) (hpq : lev p = lev q) {a b : Pos n} (hb : inU lev b) (m : Pos n) :
     ∑ j : Pos n, tc a j m * adC p q b j = cZ p q a b m - cY p q a b m := by
   have hz : (∀ j : Pos n, tc a j m = 0) → ∑ j : Pos n, tc a j m * adC p q b j = 0 := fun h =>
     Finset.sum_eq_zero fun j _ => by rw [h, zero_mul]
@@ -280,7 +280,7 @@ theorem levi_bracket_sum_second (hm : Monotone lev) (hpq : lev p = lev q) {a b :
       rw [tc, ite_eq_right]
       exact fun c => h1 c.2.1
 
-theorem levi_bracket_sum_third (hm : Monotone lev) (hpq : lev p = lev q) {a b : Pos n} (ha : inU lev a) (hb : inU lev b) (m : Pos n) :
+theorem levi_bracket_sum_third (hm : Monotone lev) (hpq : lev p = lev q) {a b : Pos n} (ha : inU lev a) (m : Pos n) :
     ∑ i : Pos n, tc i b m * adC p q a i = cX p q a b m - cZ p q a b m := by
   have hz : (∀ i : Pos n, tc i b m = 0) → ∑ i : Pos n, tc i b m * adC p q a i = 0 := fun h =>
     Finset.sum_eq_zero fun i _ => by rw [h, zero_mul]
@@ -328,7 +328,7 @@ theorem levi_bracket_sum_third (hm : Monotone lev) (hpq : lev p = lev q) {a b : 
 
 theorem Dc_eq_zero (hm : Monotone lev) (hpq : lev p = lev q) {a b : Pos n} (ha : inU lev a) (hb : inU lev b) (m : Pos n) :
     Dc p q a b m = 0 := by
-  rw [Dc, levi_bracket_sum_first, levi_bracket_sum_second hm hpq ha hb, levi_bracket_sum_third hm hpq ha hb]
+  rw [Dc, levi_bracket_sum_first, levi_bracket_sum_second hm hpq hb, levi_bracket_sum_third hm hpq ha]
   ring
 
 theorem sum_ind {M : Type*} [AddCommGroup M] [Module ℂ M] {u v : Fin n} (h : u < v) (f : Pos n → M) :

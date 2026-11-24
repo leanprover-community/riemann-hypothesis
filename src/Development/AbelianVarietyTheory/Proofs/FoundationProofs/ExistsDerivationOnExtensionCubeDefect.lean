@@ -93,7 +93,7 @@ theorem defect_add (h : IsTrData B C tr a b e) (hD : IsDerOn B D) {x u v : S} (h
   rw [mul_add, trTwist_add h hD (C.mul_mem hx hu) (C.mul_mem hx hv), trTwist_add h hD hu hv, smul_add]
   abel
 
-theorem defect_zero (h : IsTrData B C tr a b e) (hD : IsDerOn B D) {x : S} (hx : x ∈ C) :
+theorem defect_zero (h : IsTrData B C tr a b e) (hD : IsDerOn B D) {x : S} :
     trTwistDefect tr a b D x 0 = 0 := by
   unfold trTwistDefect
   rw [mul_zero, trTwist_zero h hD, smul_zero, sub_zero]
@@ -116,7 +116,7 @@ theorem defect_sum (h : IsTrData B C tr a b e) (hD : IsDerOn B D) {x : S} (hx : 
       ∑ i ∈ s, c i • trTwistDefect tr a b D x (a i) := by
     intro s
     induction s using Finset.induction_on with
-    | empty => simpa using defect_zero h hD hx
+    | empty => simpa using defect_zero h hD
     | insert j s hj ih =>
       rw [Finset.sum_insert hj, Finset.sum_insert hj,
         defect_add h hD hx (C.mul_mem (h.le (hc j)) (h.a_mem j))

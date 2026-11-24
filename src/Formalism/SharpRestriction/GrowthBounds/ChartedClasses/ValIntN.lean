@@ -76,7 +76,7 @@ structure AtHyp (Z : AtIn X0 Tw u μ w h Lv) (Gt : GatTies D) (c : LatCmp D) : P
   twUnit : ∀ j hj β, (Z.st Gt j hj).TwUnit w β
   valIntN : ∀ j hj, (Z.st Gt j hj).ValIntN (c.embW u w h) w
   fin : ∀ j, j + 1 ≤ D.R.m → (gatJ Lv (j + 1)).FinClasses
-  card : ∀ j (hj : j + 1 ≤ D.R.m), Fintype.card ((Tw.fm u μ).lat (j + 1)).ι = Module.finrank (D.gat u w h).O (gatJ Lv (j + 1)).M
+  card : ∀ j (_ : j + 1 ≤ D.R.m), Fintype.card ((Tw.fm u μ).lat (j + 1)).ι = Module.finrank (D.gat u w h).O (gatJ Lv (j + 1)).M
 
 variable {Gt : GatTies D} {c : LatCmp D} {T : ∀ u : D.what₂.Word, Forms0 D u}
 

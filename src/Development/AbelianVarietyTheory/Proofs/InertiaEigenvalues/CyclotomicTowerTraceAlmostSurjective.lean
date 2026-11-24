@@ -581,7 +581,7 @@ namespace GlobalTheory.Cyc
 
 theorem trace_almost_onto (l : ℕ) [Fact l.Prime] (K : FinExt l)
     (L : IntermediateField ℚ_[l] (Om l)) (S : Finset (GQ l)) (hKL : Kinf K ≤ L)
-    (_hL : ∀ h ∈ Hinf K, ∀ x ∈ L, h x ∈ L) (hS : ∀ s ∈ S, s ∈ Hinf K)
+    (hS : ∀ s ∈ S, s ∈ Hinf K)
     (hrep : ∀ h ∈ Hinf K, ∃! s, s ∈ S ∧ s⁻¹ * h ∈ L.fixingSubgroup)
     (a : Om l) (ha : a ∈ Kinf K) (ha1 : ‖a‖ < 1) :
     ∃ b : Om l, b ∈ L ∧ ‖b‖ ≤ 1 ∧ ∑ s ∈ S, s b = a :=

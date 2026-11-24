@@ -18,7 +18,7 @@ open ReciprocityTheory.ChartRestriction.DS.S7
 variable {N : ℕ}
 
 theorem volU_real {V η ε a b e i : ℝ} (hV : 0 < V) (he : 0 < e) (ha : 0 ≤ a) (hb : 0 ≤ b)
-    (hε0 : 0 < ε) (hε1 : ε < 1) (hη : 0 < η) (hkey : (1 - ε) * (1 + η) = 1 + ε)
+    (hε0 : 0 < ε) (hε1 : ε < 1) (hkey : (1 - ε) * (1 + η) = 1 + ε)
     (h1 : V * (i * a) ≤ (1 + ε) * (b * e)) (h2 : (1 - ε) * (b * e) ≤ V * (i * a))
     (h3 : (1 - ε) * e ≤ i) (h4 : i ≤ (1 + ε) * e) :
     a ≤ (1 + η) / V * b ∧ (1 - η) / V * b ≤ a := by

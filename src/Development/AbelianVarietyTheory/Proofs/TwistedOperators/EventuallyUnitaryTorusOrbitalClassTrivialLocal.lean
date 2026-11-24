@@ -320,7 +320,7 @@ theorem eventually_mem_intLoc_iff_coordEquiv_mem :
 
       simp only [map_sum, map_zsmul, Finsupp.coe_finsetSum, Finset.sum_apply]
       refine Finset.sum_congr rfl fun j _ => ?_
-      simp [← zsmul_eq_mul, map_zsmul]
+      simp [← zsmul_eq_mul]
     rw [e, TensorProduct.tmul_sum]
     refine sum_mem fun j _ => ?_
     rw [TensorProduct.tmul_smul]
@@ -338,7 +338,7 @@ theorem eventually_mem_intLoc_iff_coordEquiv_mem :
 end GlobalTheory.TrUnitLat
 
 theorem GlobalTheory.TrUnitLat.eventually_mem_intLoc_iff_coordEquiv_mem_all : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (r : ℕ) (P : PPol σ r), ∀ᶠ v : HeightOneSpectrum (𝓞 F) in cofinite, ∀ y : Fv F v ⊗[F] Fld P, y ∈ intLoc F (Fld P) v ↔ GlobalTheory.TrUnitLat.coordEquiv P (Fv F v) y ∈ latLoc F (stdLattice E r) v :=
-  fun F E _ _ _ _ _ σ r P => GlobalTheory.TrUnitLat.eventually_mem_intLoc_iff_coordEquiv_mem P
+  fun _ _ _ _ _ _ _ _ _ P => GlobalTheory.TrUnitLat.eventually_mem_intLoc_iff_coordEquiv_mem P
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

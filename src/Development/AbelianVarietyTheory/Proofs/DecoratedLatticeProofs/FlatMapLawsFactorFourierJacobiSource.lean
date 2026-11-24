@@ -1084,7 +1084,7 @@ theorem simpleSum_elem (l m : Fin c) (h : l ≠ m) (a : k) :
     · by_cases h2 : i = l <;> by_cases h3 : j = m <;> simp_all
   simp [this]
 
-theorem elem_mem_N (ρ : ℕ) (l m : Fin c) (h : l ≠ m) (hlm : l.val < m.val) (hm : m.val ≤ ρ) (a : k) :
+theorem elem_mem_N (ρ : ℕ) (l m : Fin c) (h : l ≠ m) (hlm : l.val < m.val) (a : k) :
     embA n (elem l m h a) ∈ N k n c (ρ + 1) := by
   apply Subgroup.subset_closure
   intro r s hrs
@@ -1202,7 +1202,7 @@ theorem intLaw_up : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace 
     ⟨fun x => Φ.1 ((embA n (elem l m h a)).val * x + 0), _root_.GlobalTheory.AffineSB.mem_SB_comp_affine k _ _ _ 0 Φ.1 Φ.2⟩
   have hΦ₁ : ∀ x, Φ₁.1 x = Φ.1 ((embA n (elem l m h a)).val * x) := fun x => by simp only [Φ₁, add_zero]
   have hL₁ : L Φ₁ = (ψ d : ℂ) • L Φ := by
-    have := hL (elem l m h (-a)) (elem_mem_N ρ l m h (by omega) (by omega) _) Φ Φ₁ (fun t => by
+    have := hL (elem l m h (-a)) (elem_mem_N ρ l m h (by omega) _) Φ Φ₁ (fun t => by
       rw [hΦ₁, ← map_inv, elem_inv])
     rw [this, simpleSum_elem]
     congr 3

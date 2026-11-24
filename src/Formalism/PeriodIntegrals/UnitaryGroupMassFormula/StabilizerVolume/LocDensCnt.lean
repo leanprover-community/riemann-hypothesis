@@ -709,9 +709,9 @@ private theorem exists_algEquiv_prod_swap (k : Type) [Field k] :
      invFun := Prod.swap
      left_inv := fun x => Prod.swap_swap x
      right_inv := fun x => Prod.swap_swap x
-     map_mul' := fun x y => rfl
-     map_add' := fun x y => rfl
-     commutes' := fun c => rfl }, fun x => rfl⟩
+     map_mul' := fun _ _ => rfl
+     map_add' := fun _ _ => rfl
+     commutes' := fun _ => rfl }, fun _ => rfl⟩
 
 private theorem isQuadInv_and_bijective_of_not_isSquare (k K : Type) [Field k] [Field K] [Algebra k K] [Module.Finite k K]
     (h2 : (2 : k) ≠ 0) (D : k) (hD : D ≠ 0) (hsq : ¬ IsSquare D)

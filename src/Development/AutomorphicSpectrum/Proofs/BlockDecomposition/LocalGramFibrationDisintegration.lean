@@ -144,6 +144,6 @@ theorem map_actW_fibre_free : ∀ (F E : Type) [Field F] [NumberField F] [Field 
       (fun b => (m b).map e) := by
     rwa [Set.preimage_univ, Set.univ_inter]
   exact _root_.GlobalTheory.CompanionTheory.SW.FibreUniq.fibreFamily_eq_inter _ _ _ μ ν (gramR R σ J) g Subtype.val Subtype.val_injective hgc hgf W hWo Set.univ Set.univ
-    isOpen_univ isOpen_univ subset_rfl m (fun b => (m b).map e) hm0 ht0 S (Set.mem_univ S)
+    isOpen_univ subset_rfl m (fun b => (m b).map e) hm0 ht0 S (Set.mem_univ S)
 
 end GlobalTheory.CompanionTheory.WeilSiegel.Free.FibreInv

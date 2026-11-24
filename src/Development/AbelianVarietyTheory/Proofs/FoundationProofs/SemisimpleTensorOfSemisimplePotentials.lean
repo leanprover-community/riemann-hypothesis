@@ -86,7 +86,7 @@ open scoped MatrixGroups TensorProduct
 
 namespace GlobalTheory.KZ
 
-theorem pot_triv_lin : ∀ (R : Type) [CommRing R] (w : ℕ) (Γ : Subgroup SL(2, ℤ)), (∀ F G, F ∈ Pot R w Γ → G ∈ Pot R w Γ → F + G ∈ Pot R w Γ) ∧ (0 ∈ Pot R w Γ) ∧ (∀ (c : R) F, F ∈ Pot R w Γ → c • F ∈ Pot R w Γ) ∧ (∀ F G, F ∈ Triv R w Γ → G ∈ Triv R w Γ → F + G ∈ Triv R w Γ) ∧ (∀ (c : R) F, F ∈ Triv R w Γ → c • F ∈ Triv R w Γ) ∧ (∀ (S : Type) [CommRing S] (f : R →+* S) F, F ∈ Pot R w Γ → (fun z => MvPolynomial.map f (F z)) ∈ Pot S w Γ) ∧ (∀ (S : Type) [CommRing S] (f : R →+* S) F, F ∈ Triv R w Γ → (fun z => MvPolynomial.map f (F z)) ∈ Triv S w Γ) := by
+theorem pot_triv_lin : ∀ (R : Type) [CommRing R] (w : ℕ) (Γ : Subgroup SL(2, ℤ)), (∀ F G, F ∈ Pot R w Γ → G ∈ Pot R w Γ → F + G ∈ Pot R w Γ) ∧ (0 ∈ Pot R w Γ) ∧ (∀ (c : R) F, F ∈ Pot R w Γ → c • F ∈ Pot R w Γ) ∧ (∀ F G, F ∈ Triv R Γ → G ∈ Triv R Γ → F + G ∈ Triv R Γ) ∧ (∀ (c : R) F, F ∈ Triv R Γ → c • F ∈ Triv R Γ) ∧ (∀ (S : Type) [CommRing S] (f : R →+* S) F, F ∈ Pot R w Γ → (fun z => MvPolynomial.map f (F z)) ∈ Pot S w Γ) ∧ (∀ (S : Type) [CommRing S] (f : R →+* S) F, F ∈ Triv R Γ → (fun z => MvPolynomial.map f (F z)) ∈ Triv S Γ) := by
   intro R _ w Γ
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · rintro F G ⟨hF, hF'⟩ ⟨hG, hG'⟩
@@ -743,7 +743,7 @@ theorem toZModPow_eval_mulVec {l : ℕ} [Fact l.Prime] (n : ℕ) {δ : SL(2, ℤ
 
 theorem rel_triv_eq_zero : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε) (l : ℕ) [Fact l.Prime],
     ∀ (w : ℕ) (Γ : Subgroup SL(2, ℤ)) (M₀ : ℕ), 0 < M₀ → CongruenceSubgroup.Gamma M₀ ≤ Γ →
-      ∀ b F, Rel X l b F → F ∈ Triv ℤ_[l] w Γ → b = 0 := by
+      ∀ b F, Rel X l b F → F ∈ Triv ℤ_ w Γ → b = 0 := by
   intro Ω _ _ ε X l _ w Γ M₀ hM₀ hΓ b F hR hF
   obtain ⟨ψ, p, hψ, hFψ⟩ := hF
   funext u
@@ -914,7 +914,7 @@ namespace GlobalTheory.KZ.H3
 
 
 open LamZero in
-theorem lam_fst_eq_zero_of_triv : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε) (l : ℕ) [Fact l.Prime], ∀ (E : Type) [Field E] [Algebra ℤ_[l] E], Function.Injective (algebraMap ℤ_[l] E) → ∀ (w : ℕ) (Γ : Subgroup SL(2, ℤ)) (M₀ : ℕ), 0 < M₀ → CongruenceSubgroup.Gamma M₀ ≤ Γ → ∀ p ∈ abelian₂ X l E, p.2 ∈ Triv E w Γ → p.1 = 0 := by
+theorem lam_fst_eq_zero_of_triv : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε) (l : ℕ) [Fact l.Prime], ∀ (E : Type) [Field E] [Algebra ℤ_[l] E], Function.Injective (algebraMap ℤ_[l] E) → ∀ (w : ℕ) (Γ : Subgroup SL(2, ℤ)) (M₀ : ℕ), 0 < M₀ → CongruenceSubgroup.Gamma M₀ ≤ Γ → ∀ p ∈ abelian₂ X l E, p.2 ∈ Triv E Γ → p.1 = 0 := by
   intro Ω _ _ ε X l _ E _ _ hinj w Γ M₀ hM₀ hΓ p hp hT
   classical
   obtain ⟨n, f, g, hfg⟩ := Submodule.mem_span_set'.1 hp
@@ -939,7 +939,7 @@ theorem lam_fst_eq_zero_of_triv : ∀ (Ω : Type) [Field Ω] [Algebra ℚ Ω] (�
   have e1 : ∀ y, ∑ a, v a • MvPolynomial.map (algebraMap ℤ_[l] E) (G a y - Q a) = p.2 y - P := by
     intro y
     simp only [RingHom.map_sub, smul_sub, Finset.sum_sub_distrib, hkey, ← hQ]
-  have hGT : ∀ a, (fun z => G a z) ∈ Triv ℤ_[l] w Γ := by
+  have hGT : ∀ a, (fun z => G a z) ∈ Triv ℤ_ w Γ := by
     intro a
     refine ⟨fun z => G a z - Q a, Q a, fun γ hγ z hz => ?_, fun z _ => by ring⟩
     have hγz : mob (ofSL γ) z ∈ Hs := GlobalTheory.KZ.MobLaws.mob_mem _ hz
@@ -1007,7 +1007,7 @@ theorem gamma_le_gam (N l : ℕ) : CongruenceSubgroup.Gamma (N * l) ≤ Gam N l 
 theorem fst_eq_zero_of_triv : ∀ {Ω : Type} [Field Ω] [Algebra ℚ Ω] [IsAlgClosure ℚ Ω] (ε : Ω →+* ℂ) (X : Tower Ω ε),
     Function.Injective ε → (∃ φ : ℂ → ℂ, DifferentiableOn ℂ φ Hs ∧ X.an X.jK = (φ : Mero)) →
     ∀ (N l w : ℕ) [Fact l.Prime], 1 ≤ N → ∀ {E : Type} [Field E] [Algebra ℤ_[l] E], CharZero E →
-    ∀ (y : E ⊗[ℤ_[l]] X.Fn l) (G : ℂ → MvPolynomial (Fin 2) E), (y, G) ∈ H3.abelian₂ X l E → G ∈ Triv E w (Gam N l) →
+    ∀ (y : E ⊗[ℤ_[l]] X.Fn l) (G : ℂ → MvPolynomial (Fin 2) E), (y, G) ∈ H3.abelian₂ X l E → G ∈ Triv E (Gam N l) →
     y = 0 := by
   intro Ω _ _ _ ε X _ _ N l w _ hN E _ _ hE y G hp hG
   exact _root_.GlobalTheory.KZ.H3.lam_fst_eq_zero_of_triv Ω ε X l E (algebraMap_injective l E) w (Gam N l) (N * l)
@@ -1077,7 +1077,7 @@ theorem mapF_mem_pot (φ : R →+* S) {w : ℕ} {Γ : Subgroup SL(2, ℤ)} {F : 
   rw [← hp z hz, map_sub, map_slP]; rfl
 
 theorem mapF_mem_triv (φ : R →+* S) {w : ℕ} {Γ : Subgroup SL(2, ℤ)} {F : ℂ → MvPolynomial (Fin 2) R}
-    (hF : F ∈ Triv R w Γ) : mapF φ F ∈ Triv S w Γ := by
+    (hF : F ∈ Triv R Γ) : mapF φ F ∈ Triv S Γ := by
   obtain ⟨ψ, p, h1, h2⟩ := hF
   refine ⟨mapF φ ψ, MvPolynomial.map φ p, fun γ hγ z hz => ?_, fun z hz => ?_⟩
   · simp only [mapF]; rw [← map_slP, h1 γ hγ z hz]
@@ -1118,7 +1118,7 @@ theorem GlobalTheory.KZ.ssPot_transport : ∀ (N l w : ℕ) {E : Type} [Field E]
     SSPotB N l w (fun T => ι (lam T)) → ∃ P ∈ admissibleLettersSubalgebra E N l, FreeAlgebra.lift E lam P = 1 ∧
       ∀ F ∈ Pot E w (Gam N l), ∀ T : Letter, admitted N l T →
         (opL E N l T - lam T • (1 : Module.End E (ℂ → MvPolynomial (Fin 2) E)))
-          (FreeAlgebra.lift E (opL E N l) P F) ∈ Triv E w (Gam N l) := by
+          (FreeAlgebra.lift E (opL E N l) P F) ∈ Triv E (Gam N l) := by
   intro N l w E _ ι lam ⟨P, hP, h1, h2⟩
   obtain ⟨Q, hQ, e1, e2⟩ := exists_preimage ι N l lam hP
   refine ⟨Q, hQ, ι.injective (by rw [e1, h1, map_one]), fun F hF T hT => ?_⟩

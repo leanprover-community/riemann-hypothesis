@@ -159,7 +159,7 @@ variable {D : D7} {V : HSp D}
 
 open GlobalTheory.AdelicU GlobalTheory.PRep in
 theorem exists_eig {J : Set (GA D V)} {χ : GA D V → ℂ} {Sb : Finset (HeightOneSpectrum (𝓞 D.host.F))}
-    (hJ : SphOff J χ Sb) (B : GlobalTheory.LFun.Fam D.host.E) (P : HeightOneSpectrum (𝓞 D.host.E)) (d : List ℤ) :
+    (B : GlobalTheory.LFun.Fam D.host.E) (P : HeightOneSpectrum (𝓞 D.host.E)) (d : List ℤ) :
     ∃ z : ℂ, ∀ f : GA D V → ℂ, GlobalTheory.LFun.IsParamFunV V Sb f B → ∀ R, Hecke₂ V J χ Sb P d R →
       heckeLin V R f = z • f := by
   classical
@@ -211,7 +211,7 @@ theorem eig_of_param : ∀ (D : D7) (V : HSp D) (J : Set (GA D V)) (χ : GA D V 
     ∃ a : HeightOneSpectrum (𝓞 D.host.E) → List ℤ → ℂ, ∀ f : GA D V → ℂ, GlobalTheory.LFun.IsParamFunV V Sb f B →
       ∀ P d R, Hecke₂ V J χ Sb P d R → heckeLin V R f = a P d • f := by
   intro D V J χ Sb hJ B
-  choose a ha using exists_eig (V := V) hJ B
+  choose a ha using exists_eig (V := V) B
   exact ⟨a, fun f hf P d R hR => ha P d f hf R hR⟩
 
 end GlobalTheory.ParamEigen

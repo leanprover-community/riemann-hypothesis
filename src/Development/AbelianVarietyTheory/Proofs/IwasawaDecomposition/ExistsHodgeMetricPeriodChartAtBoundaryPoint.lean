@@ -1396,7 +1396,7 @@ theorem hodgeMet_eq_riem_chart : ∀ (E : Type) [Field E] [NumberField E] [IsCMF
   obtain ⟨d, hdpos, hd⟩ := GlobalTheory.T.exists_diagonal_riemannForm_orthonormalFrame E H Dw l Xo c σ _ U' hσ hU' W
   have hreach : ∀ z ∈ Ω, ∃ (k : U'.Comp) (x : (U'.X k).dom), IsOrth (U'.X k) x.1 ∧
       cxPt T.Z (U'.un k x) = ch₀.symm z :=
-    fun z hz => exists_orth (Z := T.Z) hσ hU' (hΩin z hz)
+    fun z hz => exists_orth (Z := T.Z) hU' (hΩin z hz)
   by_cases hne : Ω.Nonempty
   swap
   · exact ⟨fun _ => 1, fun _ => one_pos, fun x hx hI => absurd ⟨ch₀ x, hinΩ x hx hI⟩ hne⟩

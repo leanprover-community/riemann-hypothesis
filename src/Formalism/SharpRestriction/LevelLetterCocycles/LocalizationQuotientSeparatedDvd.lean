@@ -667,7 +667,7 @@ def PtEx (D : D7) (HW : HWOf D.loc) : Prop :=
 
 theorem levCoeff_of_pt (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (Cm : CmpOf D.loc D.locA HW F) (h4 : Formalism.MainNotions.DeltaInvariantLattices.P4 D HW F Cm) (hpt : PtEx D HW) :
-    LevCoeff D HW F := by
+    LevCoeff D HW := by
   intro l _ K LL hA h5
   have tie := ((Cm l).C K 1 LL hA.2.2).tie
   have hs := (HW l).W_s K 1 LL hA.2.2
@@ -944,7 +944,7 @@ theorem points_exist_of_ring_condition (D : D7) (HW : HWOf D.loc) (F : FonOf D.l
     exact Subtype.ext hxy.symm
 
 theorem levCoeff_of (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
-    (Cm : CmpOf D.loc D.locA HW F) (h : AdmTools D HW F Cm) : LevCoeff D HW F :=
+    (Cm : CmpOf D.loc D.locA HW F) (h : AdmTools D HW F Cm) : LevCoeff D HW :=
   levCoeff_of_pt D HW F Cm h.2.1 (points_exist_of_ring_condition D HW F h.2.2)
 
 theorem tools_unramified_statement (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)

@@ -122,7 +122,7 @@ def bb : Module.Basis ι (k ⊗[F] E) (k ⊗[F] Fld P) := Module.Basis.ofEquivFu
 theorem bb_apply (i : ι) : bb P k b i = (1 : k) ⊗ₜ[F] b i := by
   rw [bb, Module.Basis.coe_ofEquivFun]
   change ∑ j, (Pi.single i (1 : k ⊗[F] E) : ι → k ⊗[F] E) j • ((1 : k) ⊗ₜ[F] b j) = _
-  rw [Finset.sum_eq_single i (fun j _ h => by simp [Pi.single_apply, h]) (by simp)]
+  rw [Finset.sum_eq_single i (fun j _ h => by simp [h]) (by simp)]
   simp
 
 theorem bb_repr (z : k ⊗[F] Fld P) (i : ι) : (bb P k b).repr z i = crd P k b i z := by

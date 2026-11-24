@@ -138,7 +138,7 @@ theorem dc_lagrange_eig (hP : ∀ f ∈ S, aeval T (Lagrange.nodal (dc_cplxPts B
 def dc_lagProj (T : Module.End ℂ Y) (B : Finset ℝ) (z : ℂ) : Module.End ℂ Y :=
   if z ∈ dc_cplxPts B then aeval T (Lagrange.basis (dc_cplxPts B) id z) else 0
 
-theorem dc_lagProj_props (hT : ∀ f ∈ S, T f ∈ S)
+theorem dc_lagProj_props
     (hP : ∀ f ∈ S, aeval T (Lagrange.nodal (dc_cplxPts B) id) f = 0) (z : ℂ) :
     (∀ f ∈ S, dc_lagProj T B z (dc_lagProj T B z f) = dc_lagProj T B z f) ∧
       (∀ f ∈ S, T (dc_lagProj T B z f) = z • dc_lagProj T B z f) ∧

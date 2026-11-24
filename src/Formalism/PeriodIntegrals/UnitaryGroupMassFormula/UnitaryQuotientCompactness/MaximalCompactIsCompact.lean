@@ -218,7 +218,7 @@ theorem maximal_compact_isCompact : KCompact := by
   exact Set.mem_pi.2 fun i _ => Set.mem_pi.2 fun j _ =>
     mem_closedBall_zero_iff.2 (entry_norm_bound_of_unitary hu' i j)
 
-lemma pow_bdd_le_one {x M : ℝ} (hx : 0 < x) (h : ∀ n : ℕ, x ^ n ≤ M) : x ≤ 1 := by
+lemma pow_bdd_le_one {x M : ℝ} (h : ∀ n : ℕ, x ^ n ≤ M) : x ≤ 1 := by
   by_contra hlt
   push Not at hlt
   obtain ⟨n, hn⟩ := pow_unbounded_of_one_lt M hlt
@@ -256,7 +256,7 @@ theorem trivG_of (hPol : PolarUH) (hK : KCompact) : TrivG := by
                 simp only [Matrix.mul_assoc]
             _ = 1 := by rw [h2, Matrix.mul_one, hvu]
         · rw [pow_succ v n, hmul _ h1 _ hv, h3, pow_succ (D v) n]
-    refine pow_bdd_le_one (M := M) (hpos v hv) (fun n => ?_)
+    refine pow_bdd_le_one (M := M) (fun n => ?_)
     rw [← (hvn n).2.2]
     exact hM _ ⟨(hvn n).1, (hvn n).2.1⟩
   obtain ⟨u, p, hu, huu, hp, hph, rfl⟩ := hPol k r g hg

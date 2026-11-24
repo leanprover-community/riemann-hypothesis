@@ -93,7 +93,7 @@ theorem trF_div {Z : Scheme.{0}} (r : Z ⟶ Y) (z : Z) {j j' : K → N.ι × N'.
 def chartPullDiv (N N' : LB X) (φ : K → (Y ⟶ X)) (ε : K → ℤ) :
     ChartPull (LB.LinComb (LB.div N N') φ ε) (LB.div (LB.LinComb N φ ε) (LB.LinComb N' φ ε)) (𝟙 Y) :=
   have le : ∀ j : K → N.ι × N'.ι, LB.wchart (LB.div N N') φ j ≤
-      LB.wchart N φ (fun k => (j k).1) ⊓ LB.wchart N' φ (fun k => (j k).2) := fun j y hy =>
+      LB.wchart N φ (fun k => (j k).1) ⊓ LB.wchart N' φ (fun k => (j k).2) := fun _ _ hy =>
     ⟨Set.mem_iInter.2 fun k => (Set.mem_iInter.1 hy k).1, Set.mem_iInter.2 fun k => (Set.mem_iInter.1 hy k).2⟩
   { idx := fun j => (fun k => (j k).1, fun k => (j k).2)
     le := le

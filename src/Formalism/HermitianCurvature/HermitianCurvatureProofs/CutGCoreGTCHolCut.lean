@@ -164,7 +164,7 @@ theorem gTCHol_of_cut : GTCHolOfCut := by
   obtain ⟨n2, hn2⟩ := hPh P.TT (u ρ) (hu ρ).1 (hu ρ).2 R hR0 hR
   have hsph := sphere_sub_ann P hR0 hR
   have hf : CircleIntegrable (fun w => modA P ρ w - A0 ρ w) 0 R :=
-    ContinuousOn.circleIntegrable hR0.le (((modA_smooth P ρ hTT).sub (hA0s ρ)).continuousOn.mono hsph)
+    ContinuousOn.circleIntegrable hR0.le (((modA_smooth P ρ).sub (hA0s ρ)).continuousOn.mono hsph)
   have hg : CircleIntegrable (fun w => star (u ρ w) * NF.dZ (u ρ) w) 0 R :=
     ContinuousOn.circleIntegrable hR0.le ((hws ρ).continuousOn.mono hsph)
   have heq : (∮ w in C(0, R), modA P ρ w - A ρ w) =
@@ -193,7 +193,7 @@ theorem gTCCurv_of_cut : GTCCurvOfCut := by
     rw [hA ρ w hw]
     ring
   have hfd : DifferentiableAt ℝ (fun w => modA P ρ w - A0 ρ w) ζ :=
-    (((modA_smooth P ρ hTT).sub (hA0s ρ)).differentiableOn (by simp)).differentiableAt hnhds
+    (((modA_smooth P ρ).sub (hA0s ρ)).differentiableOn (by simp)).differentiableAt hnhds
   have hgd : DifferentiableAt ℝ (fun w => star (u ρ w) * NF.dZ (u ρ) w) ζ :=
     ((hws ρ).differentiableOn (by simp)).differentiableAt hnhds
   have hder : fderiv ℝ (fun w => modA P ρ w - A ρ w) ζ =

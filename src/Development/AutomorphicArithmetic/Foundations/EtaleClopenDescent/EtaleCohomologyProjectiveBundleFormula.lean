@@ -485,18 +485,18 @@ private theorem lh_pullback_map_fst_snd_of_lh (q : ℕ) {U V E X : Spc} (f : U �
     (by
       apply pullback.hom_ext
       · apply pullback.hom_ext
-        · simp only [Category.assoc, Category.id_comp, pullback.lift_fst, pullback.lift_fst_assoc, pullback.lift_snd, pullback.lift_snd_assoc, pullback.map]
-        · simp only [Category.assoc, Category.id_comp, pullback.lift_fst, pullback.lift_fst_assoc, pullback.lift_snd, pullback.lift_snd_assoc, pullback.map]
+        · simp only [Category.assoc, Category.id_comp, pullback.lift_fst, pullback.map]
+        · simp only [Category.assoc, Category.id_comp, pullback.lift_fst, pullback.lift_snd, pullback.lift_snd_assoc, pullback.map]
       · apply pullback.hom_ext
         · simp only [Category.assoc, Category.id_comp, pullback.lift_fst, pullback.lift_snd, pullback.map]
           exact pullback.condition
         · simp only [Category.assoc, Category.id_comp, pullback.lift_snd, pullback.lift_snd_assoc, pullback.map])
     (by
       apply pullback.hom_ext
-      · simp only [Category.assoc, Category.id_comp, pullback.lift_fst, pullback.lift_fst_assoc, pullback.lift_snd, pullback.lift_snd_assoc, pullback.map]
+      · simp only [Category.assoc, Category.id_comp, pullback.lift_fst, pullback.lift_fst_assoc, pullback.map]
       · apply pullback.hom_ext
-        · simp only [Category.assoc, Category.id_comp, pullback.lift_fst, pullback.lift_fst_assoc, pullback.lift_snd, pullback.lift_snd_assoc, pullback.map]
-        · simp only [Category.assoc, Category.id_comp, pullback.lift_fst, pullback.lift_fst_assoc, pullback.lift_snd, pullback.lift_snd_assoc, pullback.map])
+        · simp only [Category.assoc, Category.id_comp, pullback.lift_fst, pullback.lift_fst_assoc, pullback.lift_snd, pullback.map]
+        · simp only [Category.assoc, Category.id_comp, pullback.lift_snd, pullback.lift_snd_assoc, pullback.map])
     d e _ hUV
   have e1 : pullback.lift _ _ hφ ≫ pullback.snd π (pullback.fst f g ≫ f) =
       pullback.map (pullback.fst π f) (pullback.fst π g) f g (pullback.snd π f) (pullback.snd π g) π
@@ -730,7 +730,7 @@ end UpperTheory.Glue
 theorem UpperTheory.leraHirsch_of_local_cover_of_inf :
     ∀ (q : ℕ) [NeZero q] (E : Spc), Inv q E → ∀ {c a : Act} (π : Act.Hom c a) {m : ℕ} (d e : Fin m → ℤ) (cl : ∀ j, Ht q (Sp E c) (d j) (e j))
         (Q Q₁ Q₂ : Pred a) (_ : Q₁.Le Q) (_ : Q₂.Le Q),
-        (∀ (T : Scheme.{0}) (x : a.D.obj Γ(T, ⊤)), Q.P _ x → Loc T fun V g => Q₁.P _ (a.D.map g.appTop x) ∨ Q₂.P _ (a.D.map g.appTop x)) →
+        (∀ (T : Scheme.{0}) (x : a.D.obj Γ(T, ⊤)), Q.P _ x → Loc T fun _ g => Q₁.P _ (a.D.map g.appTop x) ∨ Q₂.P _ (a.D.map g.appTop x)) →
         LHQ q E π d e cl Q₁ → LHQ q E π d e cl Q₂ → LHQ q E π d e cl (Q₁.inf Q₂) → LHQ q E π d e cl Q := by
   intro q _ E _ c a π m d e cl Q Q₁ Q₂ h₁ h₂ hloc L₁ L₂ L₁₂
   have hinf : (Q₁.inf Q₂).Le Q := fun A x hx => h₁ A x hx.1
@@ -798,7 +798,7 @@ private theorem le_unit {N : ℕ} (i : Fin N) {Q : Pred (XC N)} (h : Q.Le (spanO
 private theorem loc_step {N : ℕ} (i : Fin N) (F' : Finset (Fin N)) (hi : i ∉ F') (Q : Pred (XC N))
     (hQ : Q.Le (spanOn ((Finset.cons i F' hi : Finset (Fin N)) : Set (Fin N))))
     (T : Scheme.{0}) (x : (XC N).D.obj Γ(T, ⊤)) (hx : Q.P _ x) :
-    Loc T fun V g => (Q.inf (spanOn (F' : Set (Fin N)))).P _ ((XC N).D.map g.appTop x) ∨
+    Loc T fun _ g => (Q.inf (spanOn (F' : Set (Fin N)))).P _ ((XC N).D.map g.appTop x) ∨
       (Q.inf (unitAt i)).P _ ((XC N).D.map g.appTop x) := by
   have hs := hQ _ x hx
   simp only [UpperTheory.Blow.spanOn, Finset.coe_cons, Set.image_insert_eq] at hs
@@ -1233,13 +1233,13 @@ private def prC (b : Act) : Act where
   nat f g x := Prod.ext (b.nat f g x.1) rfl
 
 private def prFst (b : Act) : Act.Hom (prC b) b where
-  d := { app := fun A => TypeCat.ofHom fun x => x.1, naturality := fun _ _ _ => rfl }
+  d := { app := fun _ => TypeCat.ofHom fun x => x.1, naturality := fun _ _ _ => rfl }
   g := 𝟙 _
   eq _ _ _ := rfl
 
 private def prSnd (b : Act) : Act.Hom (prC b) affC where
-  d := { app := fun A => TypeCat.ofHom fun x => x.2, naturality := fun _ _ _ => rfl }
-  g := { app := fun A => GrpCat.ofHom 1, naturality := fun _ _ _ => rfl }
+  d := { app := fun _ => TypeCat.ofHom fun x => x.2, naturality := fun _ _ _ => rfl }
+  g := { app := fun _ => GrpCat.ofHom 1, naturality := fun _ _ _ => rfl }
   eq _ _ _ := rfl
 
 private def prLift {a b : Act} (φ : Act.Hom a b) (r : ∀ A : CommRingCat.{0}, a.D.obj A → A)
@@ -1331,7 +1331,7 @@ private def tHom (N : ℕ) (Q : Pred (XC N)) : Act.Hom (aC N Q) (XC 1) where
   eq A u x := Subtype.ext (funext fun _ => rfl)
 
 private def rHom {N : ℕ} (Q : Pred (XC N)) (i : Fin N) : Act.Hom (aC N Q) (prC ((XC N).sub Q)) :=
-  prLift ((piC N).sub Q) (fun A x => rOf i x) (fun f x => r_nat i f x) (fun A u x => r_smul i u x)
+  prLift ((piC N).sub Q) (fun _ x => rOf i x) (fun f x => r_nat i f x) (fun _ u x => r_smul i u x)
 
 private def mkA {N : ℕ} {Q : Pred (XC N)} (i : Fin N) {A : CommRingCat.{0}} (v : Um N A) (hv : Q.P A v) (r : A) (w : Um 1 A) :
     (aC N Q).D.obj A :=
@@ -1714,7 +1714,7 @@ section -- clump:auto
 
 open CategoryTheory Limits AlgebraicGeometry Opposite CochainComplex CochainComplex.HomComplex GlobalTheory.EtC UpperTheory.Pbf UpperTheory.Blow
 
-private theorem q_of_unit {N : ℕ} {A : Type} [CommRing A] (v : Fin (N + 1) → A) (hv : Ideal.span (Set.range v) = ⊤)
+private theorem q_of_unit {N : ℕ} {A : Type} [CommRing A] (v : Fin (N + 1) → A)
     (h : ∃ i, IsUnit (v i)) :
     IsUnit (v (Fin.last N)) ∨ Ideal.span (v '' Set.range Fin.castSucc) = ⊤ := by
   obtain ⟨i, hi⟩ := h
@@ -1735,7 +1735,7 @@ theorem UpperTheory.two_open_cover_of_map_incl :
   refine ⟨S, hS, fun V g hg => ?_⟩
   let w : (XC (N + 1)).D.obj Γ(V, ⊤) := (XC (N + 1)).D.map g.appTop x
   rcases q_of_unit (fun i => g.appTop.hom ((show Um (N + 1) Γ(T, ⊤) from x).1 i))
-      (show Um (N + 1) Γ(V, ⊤) from (XC (N + 1)).D.map g.appTop x).2 (hP V g hg) with h | h
+      .2 (hP V g hg) with h | h
   · have h' : (Q1 N).P Γ(V, ⊤) w := h
     exact Or.inl ⟨⟨w, h'⟩, rfl⟩
   · have h' : (Q2 N).P Γ(V, ⊤) w := h

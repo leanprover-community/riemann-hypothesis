@@ -90,8 +90,8 @@ theorem ocbA_det_unit (hq0 : (q : E) ≠ 0) {n c : ℕ} {h₀ : Sp E (n + c) ≃
     · subst hab
       rw [ite_eq_left rfl, ite_eq_left rfl]
     · rw [ite_eq_right (fun h => hab (Fin.ext h)), ite_eq_right hab]
-  have hI1 : IntAt P (B h₀.toLinearMap).det := ciIntAt_det _ fun a b => ocbT_int_of_stab hq0 hh₀ a.2 b.2
-  have hI2 : IntAt P (B h₀.symm.toLinearMap).det := ciIntAt_det _ fun a b => ocbT_int_of_stab hq0 hinv a.2 b.2
+  have hI1 : IntAt P (B h₀.toLinearMap).det := ciIntAt_det _ fun a b => ocbT_int_of_stab hq0 hh₀ a.2
+  have hI2 : IntAt P (B h₀.symm.toLinearMap).det := ciIntAt_det _ fun a b => ocbT_int_of_stab hq0 hinv a.2
   have hd : (LinearEquiv.det h₀ : E) = (B h₀.toLinearMap).det := by
     rw [LinearEquiv.coe_det, hdet]
   rw [hd]
@@ -161,8 +161,8 @@ theorem ocbA_red_exists (hq0 : (q : E) ≠ 0) {n c : ℕ} {h₀ : Sp E (n + c) �
     ext a b
     simp only [M, Matrix.mul_apply, Matrix.of_apply]
     rw [ocbT_bEnt_comp (n' := n) (c' := c) hq0 _ _ a.2 b.2,
-      redP_sum _ _ (fun m _ => (ocbT_int_of_stab hq0 h1 a.2 m.2).mul (ocbT_int_of_stab hq0 h2 m.2 b.2))]
-    exact Finset.sum_congr rfl fun m _ => (reduction_mul (ocbT_int_of_stab hq0 h1 a.2 m.2) (ocbT_int_of_stab hq0 h2 m.2 b.2)).symm
+      redP_sum _ _ (fun m _ => (ocbT_int_of_stab hq0 h1 a.2).mul (ocbT_int_of_stab hq0 h2 m.2))]
+    exact Finset.sum_congr rfl fun m _ => (reduction_mul (ocbT_int_of_stab hq0 h1 a.2) (ocbT_int_of_stab hq0 h2 m.2)).symm
   have hM1 : M LinearMap.id = 1 := by
     ext a b
     simp only [M, Matrix.of_apply, Matrix.one_apply]
@@ -182,7 +182,7 @@ theorem ocbA_red_exists (hq0 : (q : E) ≠ 0) {n c : ℕ} {h₀ : Sp E (n + c) �
   let hbar : (Fin (n + c) → 𝓞 E ⧸ P.asIdeal) ≃ₗ[𝓞 E ⧸ P.asIdeal] (Fin (n + c) → 𝓞 E ⧸ P.asIdeal) :=
     LinearEquiv.ofLinear (Matrix.toLin' (M h₀.toLinearMap)) (Matrix.toLin' (M h₀.symm.toLinearMap))
       (by rw [← Matrix.toLin'_mul, h1, Matrix.toLin'_one]) (by rw [← Matrix.toLin'_mul, h2, Matrix.toLin'_one])
-  refine ⟨hbar, fun l s hl hs => ⟨ocbT_int_of_stab hq0 hh₀ hl hs, ?_⟩⟩
+  refine ⟨hbar, fun l s hl hs => ⟨ocbT_int_of_stab hq0 hh₀ hl, ?_⟩⟩
   show Loc.atN (Matrix.toLin' (M h₀.toLinearMap) (Loc.eN _ (n + c) s)) l = _
   rw [ocbS_atN_toLin' _ hl hs]
   rfl

@@ -1271,7 +1271,7 @@ theorem weight_mapDomain {σ τ M : Type} [AddCommMonoid M] (w : τ → M) (f : 
     rw [add_smul]
 
 theorem isWH_rename {σ τ M : Type} [AddCommMonoid M] {K : Type} [CommSemiring K] (w : τ → M) (f : σ → τ)
-    (hf : Function.Injective f) {F : MvPolynomial σ K} {ν : M} (hF : IsWeightedHomogeneous (w ∘ f) F ν) :
+    {F : MvPolynomial σ K} {ν : M} (hF : IsWeightedHomogeneous (w ∘ f) F ν) :
     IsWeightedHomogeneous w (rename f F) ν := by
   intro d hd
   by_contra hne
@@ -2043,7 +2043,7 @@ lemma setTies_deg_eta (LL : Letters N) (T : TieData) (hadm : T.Admissible LL) (i
   simp only [Letters.setTies, dite_eq_left hex]
   rw [choose_tie LL T hadm i hex]
 
-lemma takeD_update (LL : Letters N) (T : TieData) (hadm : T.Admissible LL) (i : Fin T.t) (n : Fin T.t → ℕ) (n' : ℕ) :
+lemma takeD_update (LL : Letters N) (T : TieData) (i : Fin T.t) (n : Fin T.t → ℕ) (n' : ℕ) :
     (LL.setTies T (Function.update n i n')).takeD (T.pos i + 1) = (LL.setTies T n).takeD (T.pos i + 1) := by
   simp only [Letters.takeD]
   congr 1
@@ -2130,7 +2130,7 @@ theorem Ffull_hw [NeZero r] (ρ : Fin r) (hρ : (ρ : ℕ) = r - 1) (n : Fin T.t
   refine ⟨?_, fun a b hab => ?_⟩
   · have hwh := freeze_wh LLK ρ (n i) hS w f hP hW
     rw [← wv_compat LL T hadm i n (n i) (T.pos i + 1 + 1)] at hwh
-    have := isWH_rename (K := ℚ_[p]) (wv LL (T.pos i + 1 + 1)) _ (inclusion_prodMap_injective (r := r) hK) hwh
+    have := isWH_rename (K := ℚ_[p]) (wv LL (T.pos i + 1 + 1)) _ hwh
     show weightedHomogeneousComponent _ _ _ = _
     rw [Ffull_eq, weightedHomogeneousComponent_of_mem this, ite_eq_left rfl]
   · show glAct p LL (T.pos i + 1 + 1) a b (T.Ffull p (LL.setTies T n) i ρ (n i) f) = 0
@@ -2215,7 +2215,7 @@ theorem Ffull_pol (ρ : Fin r) (n : Fin T.t → ℕ) (f : MvPolynomial (Fin (T.p
         intro h'; apply h; apply Fin.ext; rw [ιF_val hK, ← h']
       · rfl
   rw [hw] at h2
-  have h3 := isWH_rename (K := ℚ_[p]) (wL N r) _ (inclusion_prodMap_injective (r := r) hK) h2
+  have h3 := isWH_rename (K := ℚ_[p]) (wL N r) _ h2
   rw [Ffull_eq]
   convert h3 using 1
   funext b
@@ -2274,7 +2274,7 @@ theorem Ffull_step (ρ : Fin r) (n : Fin T.t → ℕ) (n' : ℕ) (hn : n i ≤ n
       X (⟨T.pos i + 1, by have := hK_of_adm LL T hadm i; omega⟩, ρ) ^ (n' - n i) *
         T.Ffull p (LL.setTies T n) i ρ (n i) f := by
   have hK := hK_of_adm LL T hadm i
-  rw [Ffull_eq, Ffull_eq, takeD_update LL T hadm i n n']
+  rw [Ffull_eq, Ffull_eq, takeD_update LL T i n n']
   set LLK := (LL.setTies T n).takeD (T.pos i + 1)
   have step : ∀ d : ℕ, freeze p LLK ρ (n i + d) f = X (Fin.last (T.pos i + 1), ρ) ^ d * freeze p LLK ρ (n i) f := by
     intro d
@@ -2385,7 +2385,7 @@ theorem cprod_mul_B (LL : Letters N) (j0 : ℕ) (cs : List ℤ) (y q : MvPolynom
   | cons c cs ih =>
     rw [GlW.cprod_cons, GlW.cprod_cons, ih, Cas_mul_B LL j0 _ q hq, sub_mul, smul_mul_assoc]
 
-theorem pol_stable (LL L2 : Letters N) (j : ℕ) : (GA p LL j).Stable (Pol p r L2) := fun a b x hx => glAct_pol LL L2 j a b hx
+theorem pol_stable (LL L2 : Letters N) (j : ℕ) : (GA p LL j).Stable (Pol p r L2) := fun a b _ hx => glAct_pol LL L2 j a b hx
 
 theorem gSpan_eq (LL : Letters N) (T : TieData) (n : Fin T.t → ℕ) (j : ℕ) (F : MvPolynomial (Fin N × Fin r) ℚ_[p]) :
     gSpan p (LL.setTies T n) j F = (GA p LL j).gS {F} := by
@@ -2585,7 +2585,7 @@ open MvPolynomial Finset Formalism.GM.M
 
 variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 
-theorem setTies_deg_ne (LL : Letters N) (T : TieData) (hadm : T.Admissible LL) (i : Fin T.t) (n : Fin T.t → ℕ)
+theorem setTies_deg_ne (LL : Letters N) (T : TieData) (i : Fin T.t) (n : Fin T.t → ℕ)
     (n' : ℕ) (b : Fin N) (hb : (b : ℕ) ≠ T.pos i + 1) :
     (LL.setTies T (Function.update n i n')).deg b = (LL.setTies T n).deg b := by
   simp only [Letters.setTies]
@@ -2668,9 +2668,9 @@ theorem highest_weight_dim_monotone : WeightSpaceDimMonotone := by
     have := b.isLt; omega
 
   have hfU : f ∈ MMw p ((LL.setTies T nU).takeD (T.pos i + 1)) T.J (T.thrUpTo i) ρ w := by
-    rw [hnU, takeD_update LL T hadm i n n']; exact hf
+    rw [hnU, takeD_update LL T i n n']; exact hf
   have hSU : ((LL.setTies T nU).takeD (T.pos i + 1)).total ≤ nU i := by
-    rw [hnU, takeD_update LL T hadm i n n', Function.update_self]; omega
+    rw [hnU, takeD_update LL T i n n', Function.update_self]; omega
   have hnUi : nU i = n' := by rw [hnU, Function.update_self]
   have hFhw : G.IsHW la F := Ffull_hw LL T hadm i ρ hρ n w f hf hS
   have hF'hw : G.IsHW la' F' := by
@@ -2694,7 +2694,7 @@ theorem highest_weight_dim_monotone : WeightSpaceDimMonotone := by
     intro b hb
     simp only [hL0, hL1, Lz]
     split_ifs
-    · exact setTies_deg_ne LL T hadm i n n' b hb
+    · exact setTies_deg_ne LL T i n n' b hb
     · rfl
   have hL01b : ∀ b : Fin N, (b : ℕ) = T.pos i + 1 → L0.deg b = n i ∧ L1.deg b = n' := by
     intro b hb
@@ -2836,7 +2836,7 @@ theorem highest_weight_dim_monotone : WeightSpaceDimMonotone := by
     · rw [hΦapp]
       refine G.cprod_mem (pol_stable LL _ _) cs ?_
       exact pol_eta LL T hadm i n n' hn ρ (LL.setTies T n) (LL.setTies T nU)
-        (fun b hb => setTies_deg_ne LL T hadm i n n' b hb)
+        (fun b hb => setTies_deg_ne LL T i n n' b hb)
         (fun b hb => by
           have hb' : b = iK := Fin.ext hb
           subst hb'

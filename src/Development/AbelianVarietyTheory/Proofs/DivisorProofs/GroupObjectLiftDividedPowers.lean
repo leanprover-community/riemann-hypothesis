@@ -53,7 +53,7 @@ attribute [local instance] Over.cartesianMonoidalCategory
 
 namespace GlobalTheory.RMDeform
 
-theorem exists_lift_abelian (GD : GlobalTheory.Published.GrothendieckDeformation) (ADR : GlobalTheory.Published.AbelianDeRham)
+theorem exists_lift_abelian (GD : GlobalTheory.Published.GrothendieckDeformation)
     {R R₀ : Type} [CommRing R] [CommRing R₀] {I : Ideal R} (κ : DividedPowers I) (hκ : IsNilDP κ) (π : R →+* R₀)
     (hπ : Function.Surjective π) (hI : RingHom.ker π = I) {g : ℕ}
     {A₀ : Over (Sp R₀)} [GrpObj A₀] {A : Over (Sp R)} [GrpObj A] {i : A₀.left ⟶ A.left}

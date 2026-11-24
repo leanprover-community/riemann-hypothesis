@@ -516,7 +516,7 @@ theorem eq_of_clopen_irred {X : Type*} [TopologicalSpace X] {U U' : Set X} (hU :
     (hUi'.isConnected.isPreconnected.subset_isClopen hU ⟨u, hu', hu⟩)
 
 theorem finite_primes_dvd {n : ℕ} (hn : n ≠ 0) : {p : Nat.Primes | (p : ℕ) ∣ n}.Finite :=
-  ((Set.finite_Iic n).preimage Subtype.val_injective.injOn).subset fun p hp =>
+  ((Set.finite_Iic n).preimage Subtype.val_injective.injOn).subset fun _ hp =>
     Nat.le_of_dvd (Nat.pos_of_ne_zero hn) hp
 
 theorem model_hyp {K : Type} [Field K] (V : ValuationSubring K) [IsDiscreteValuationRing V] :

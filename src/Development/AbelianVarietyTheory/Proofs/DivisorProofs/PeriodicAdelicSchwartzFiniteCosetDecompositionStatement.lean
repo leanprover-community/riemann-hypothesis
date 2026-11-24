@@ -114,7 +114,7 @@ theorem GlobalTheory.WeilCont.schA_periodic_finite_cosets : ∀ (F : Type) [Fiel
     obtain ⟨x, w, rfl⟩ : ∃ x w, z = GlobalTheory.WeilCont.adeleJoin F x w :=
       ⟨fun i => InfiniteAdeleRing.ringEquiv_mixedSpace F (z i).1, fun i => (z i).2,
         funext fun i => Prod.ext (by simp only [GlobalTheory.WeilCont.adeleJoin, RingEquiv.symm_apply_apply]) rfl⟩
-    simp only [Finset.sum_apply, GlobalTheory.WeilCont.pureA_adeleJoin, ← hf]
+    simp only [Finset.sum_apply, GlobalTheory.WeilCont.pureA_adeleJoin]
     by_cases hw : (QuotientAddGroup.mk w : (κ → FiniteAdeleRing (𝓞 F) F) ⧸ L) ∈ QuotientAddGroup.mk '' K
     · obtain ⟨i0, hi0⟩ := (hS _).1 hw
       rw [Finset.sum_eq_single i0]

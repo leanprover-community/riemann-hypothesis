@@ -87,7 +87,7 @@ theorem _root_.GlobalTheory.Col.exists_basis_one_add_X_pow (R : Type) [CommRing 
       unfold _root_.GlobalTheory.Col.Model.basis
       rw [Module.Basis.mk_apply]
       rfl
-    let v : Fin p → _root_.GlobalTheory.Col.Model.Up R p :=
+    let v : Fin p → _root_.GlobalTheory.Col.Model.Up R :=
       fun j => _root_.GlobalTheory.Col.Model.toUp p ((1 + X) ^ (j : ℕ))
     have hv : ∀ j : Fin p, v j = ∑ i : Fin p, (((j : ℕ).choose i : ℕ) : R⟦X⟧) • e i := by
       intro j
@@ -102,15 +102,15 @@ theorem _root_.GlobalTheory.Col.exists_basis_one_add_X_pow (R : Type) [CommRing 
       · intro i j hij
         simp [Module.Basis.toMatrix_apply, hrepr, Nat.choose_eq_zero_of_lt (show (j : ℕ) < i from hij)]
     obtain ⟨hli, hspan⟩ := (Module.Basis.is_basis_iff_det e).2 (by rw [hdet]; exact isUnit_one)
-    let b : Module.Basis (Fin p) R⟦X⟧ (_root_.GlobalTheory.Col.Model.Up R p) := Module.Basis.mk hli hspan.ge
+    let b : Module.Basis (Fin p) R⟦X⟧ (_root_.GlobalTheory.Col.Model.Up R) := Module.Basis.mk hli hspan.ge
     have hb : ∀ i, b i = v i := fun i => Module.Basis.mk_apply hli hspan.ge i
     exact ⟨b, hb⟩
   · have hu : IsUnit (p : R) := by simpa [mem_nonunits_iff] using hn
     haveI := subsingleton_of_isUnit_natCast_of_isAdicComplete p hR hu
     haveI : Subsingleton R⟦X⟧ := ⟨fun a b => PowerSeries.ext fun n => Subsingleton.elim _ _⟩
-    haveI : Subsingleton (_root_.GlobalTheory.Col.Model.Up R p) := ‹Subsingleton R⟦X⟧›
+    haveI : Subsingleton (_root_.GlobalTheory.Col.Model.Up R) := ‹Subsingleton R⟦X⟧›
     haveI : Subsingleton (Fin p →₀ R⟦X⟧) := ⟨fun a b => Finsupp.ext fun i => Subsingleton.elim _ _⟩
-    let b : Module.Basis (Fin p) R⟦X⟧ (_root_.GlobalTheory.Col.Model.Up R p) :=
+    let b : Module.Basis (Fin p) R⟦X⟧ (_root_.GlobalTheory.Col.Model.Up R) :=
       Module.Basis.ofRepr (LinearEquiv.ofSubsingleton _ _)
     have hb : ∀ i, b i = _root_.GlobalTheory.Col.Model.toUp p ((1 + X) ^ (i : ℕ)) := fun i => Subsingleton.elim _ _
     exact ⟨b, hb⟩

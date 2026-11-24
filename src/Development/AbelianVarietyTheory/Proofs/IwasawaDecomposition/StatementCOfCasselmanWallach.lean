@@ -699,7 +699,7 @@ def coordCx (e : K →+* ℂ) (b : Module.Basis ι K W) (b' : Module.Basis ι �
   map_add' x y := b'.equivFun.injective (by
     simp only [map_add (f := _), LinearEquiv.apply_symm_apply]; funext i; simp only [Pi.add_apply, map_add (f := _)])
   map_smul' a x := b'.equivFun.injective (by
-    simp only [map_smul, LinearEquiv.apply_symm_apply]; funext i; simp only [Pi.smul_apply, smul_eq_mul, map_mul, RingHom.id_apply])
+    simp only [map_smul, LinearEquiv.apply_symm_apply]; funext i; simp only [Pi.smul_apply, smul_eq_mul, map_mul])
 
 theorem coordCx_coord (e : K →+* ℂ) (b : Module.Basis ι K W) (b' : Module.Basis ι ℂ W') (w : W) (i : ι) :
     b'.equivFun (coordCx e b b' w) i = e (b.equivFun w i) := by

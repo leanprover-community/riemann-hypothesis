@@ -93,7 +93,7 @@ theorem intCone_face : ∀ (O : Type) [CommRing O] (bar : O → O) (φ : InvFun 
   intro O _ bar φ X _ _ _ _ r r' γ γ' hγ hγ' c c' hc he j
   obtain ⟨k, d, hk, hd⟩ := intCone_absorb hγ.mem hγ.nonneg hγ.linear hγ' c c' he j (hc j)
   have hd' : ∑ i, d i • γ' i = ∑ l, (Pi.single j k : Fin r → ℕ) l • γ l := by
-    rw [← hd, Finset.sum_eq_single j (fun l _ hl => by simp [Pi.single_apply, hl]) (by simp)]
+    rw [← hd, Finset.sum_eq_single j (fun l _ hl => by simp [hl]) (by simp)]
     simp
   have habs : ∀ i, 0 < d i → ∃ (k' : ℕ) (e : Fin r → ℕ), 0 < k' ∧ k' • γ' i = ∑ l, e l • γ l :=
     fun i hi => intCone_absorb hγ'.mem hγ'.nonneg hγ'.linear hγ d _ hd' i hi

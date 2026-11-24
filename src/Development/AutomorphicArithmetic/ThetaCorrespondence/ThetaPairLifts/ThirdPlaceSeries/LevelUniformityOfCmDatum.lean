@@ -424,7 +424,7 @@ end Loc
 
 end GlobalTheory.XUniRead
 
-theorem _root_.GlobalTheory.T.complex_typePlaceCharacter_eq_superdiag_addChar_mul_lowerDet : ∀ (D : D7) (X : NExpTied D) (i : D.ntw.Tw) (k : ℕ) (b : Bool) (kv0 : Σ kk : Fin 2, D.nd.PlG kk)
+theorem _root_.GlobalTheory.T.complex_typePlaceCharacter_eq_superdiag_addChar_mul_lowerDet : ∀ (D : D7) (_ : NExpTied D) (i : D.ntw.Tw) (k : ℕ) (b : Bool) (kv0 : Σ kk : Fin 2, D.nd.PlG kk)
     (s : SplitPlace D.host.E) (red : s.v.adicCompletionIntegers (maximalRealSubfield D.host.E) →+* ZMod (D.host.g kv0.1))
     (θ : ∀ kk : Fin 2, Multiplicative (ZMod (D.host.g kk)) →* (↥D.LL0)ˣ),
     (∀ (u : G0g D.nd) (hu : u ∈ D.nexp.U) (hu' : u ∈ Formalism.IndefR.NX.U D.nd),

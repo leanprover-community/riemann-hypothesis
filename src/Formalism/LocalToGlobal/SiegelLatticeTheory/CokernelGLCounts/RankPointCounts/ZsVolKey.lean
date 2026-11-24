@@ -152,7 +152,7 @@ theorem eq_sL (F : Formalism.MainNotions.S.FlagG S r T) (F' : Formalism.MainNoti
   have hx : x = (x - ∑ m, cOf (gg F F') x m • gg F F' m) + ∑ m, cOf (gg F F') x m • gg F F' m := by
     rw [sub_add_cancel]
 
-  rw [hx, map_add (f := _), map_add (f := _), map_sum, map_sum, hsy, sL_perp (F := F) (F' := F') hG _ hy]
+  rw [hx, map_add (f := _), map_add (f := _), map_sum, map_sum, hsy, sL_perp (F := F) (F' := F') _ hy]
   congr 1
   exact Finset.sum_congr rfl fun m _ => by rw [map_smul, map_smul, hframe m]
 

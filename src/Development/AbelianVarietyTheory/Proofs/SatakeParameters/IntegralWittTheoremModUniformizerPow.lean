@@ -1253,7 +1253,7 @@ theorem cayley_cong : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicati
   have hgU : g ∈ Formalism.UG.UJ σ Jt := by
     show Formalism.UG.cT σ (Pi * (1 + Z)) * Jt * (Pi * (1 + Z)) = Jt
     rw [Formalism.UG.cT_mul, cT_add, Formalism.UG.cT_one]
-    exact cayley_unitary_ring hZ hP1 hP2 hQ1 hQ2 hPs
+    exact cayley_unitary_ring hZ hP2 hQ1 hQ2 hPs
   have hone : IsIntM (1 : Matrix (Fin n') (Fin n') L) := fun i j => by
     rw [Matrix.one_apply]; split_ifs
     · exact one_mem _

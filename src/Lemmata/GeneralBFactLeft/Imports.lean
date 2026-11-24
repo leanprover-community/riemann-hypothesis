@@ -17,7 +17,7 @@ public import Mathlib.FieldTheory.Finite.Basic
 namespace Bl.general_b_fact_left
 
 theorem goal1 :
-  ∀ {k : Type} [inst : Field.{0} k] [Fintype.{0} k] (t m e : k),
+  ∀ {k : Type} [Field.{0} k] [Fintype.{0} k] (t m e : k),
   Ne.{1} (HSub.hSub.{0, 0, 0} (HPow.hPow.{0, 0, 0} t 2) (HMul.hMul.{0, 0, 0} 4 m)) 0 →
     Exists.{1} fun (x : k) ↦
       Exists.{1} fun (y : k) ↦

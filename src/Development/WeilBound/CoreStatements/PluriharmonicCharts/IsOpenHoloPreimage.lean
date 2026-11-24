@@ -143,7 +143,7 @@ theorem holo_comp_an {σ : Type} [Fintype σ] {W : Set X} {Z : X → σ → ℂ}
 
 theorem isOpen_holo_preimage {σ : Type} {W : Set X} (hW : IsOpen W) {Z : X → σ → ℂ}
     (hZ : ∀ q, A.HoloOn W fun y => Z y q) {V : Set (σ → ℂ)} (hV : IsOpen V) : IsOpen (W ∩ Z ⁻¹' V) :=
-  ContinuousOn.isOpen_inter_preimage (continuousOn_pi.2 fun q y hy =>
+  ContinuousOn.isOpen_inter_preimage (continuousOn_pi.2 fun q _ hy =>
     (FA.BlockPot.continuousAt_of_holoOn (hZ q) hy).continuousWithinAt) hW hV
 
 end Re

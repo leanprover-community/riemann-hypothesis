@@ -957,7 +957,7 @@ theorem main : ∀ (g n : ℕ), 1 ≤ g → 3 ≤ n → Odd n → ∀ (F : SFam 
           _ = ((Over.pullback ξ').obj FinalForm.G).hom ≫ spMap g' := by rw [hβ.1.w, ← Category.assoc, Over.w f']
           _ = β ≫ G.hom := hβ.1.w.symm
           _ = (β ≫ fR.left) ≫ G.hom := by rw [Category.assoc, Over.w fR]
-    obtain ⟨m', hm'⟩ := endChar_exists_of_isMonHom V' hBV _ hG'semi D' A' U' f' hf'
+    obtain ⟨m', hm'⟩ := endChar_exists_of_isMonHom V' _ D' A' U' f' hf'
     have hq := hequiv fR f' hfR hf' hf'β (m a b) m' hEC hm' y
     obtain ⟨f₁, hf₁, hf₁c⟩ := hmat a b f f' hMO hf'fst
     simpa [hq] using hrel a b f' f₁ m' hf' hf₁ hf₁c hm' (ρ0 y)
@@ -1085,7 +1085,7 @@ namespace GlobalTheory.Poinc.Clocx
 theorem ordEq_of_assoc {g n : ℕ} {o : Type} [CommRing o] {ζ : o} {F : SFam g n ζ} {o' Ω : Type} [CommRing o']
     [Field Ω] [Algebra o' Ω] (M : RatModel o' Ω) (x : M.Z) (T : Trait F) (ξ : Sp T.V ⟶ M.Z)
     (hs : ξ (IsLocalRing.closedPoint T.V) ⤳ x) {V' : Type} [CommRing V'] [IsDomain V'] (h : T.V →+* V')
-    (g' : M.Z.presheaf.stalk x →+* V') (hinj : Function.Injective h) (hirr : Irreducible (h T.ϖ))
+    (g' : M.Z.presheaf.stalk x →+* V') (hirr : Irreducible (h T.ϖ))
     (hsq : spMap g' ≫ M.Z.fromSpecStalk x = spMap h ≫ ξ) (a : M.Z.presheaf.stalk x) (q : ℕ)
     (ha : Associated (g' a) (h T.ϖ ^ q)) : OrdEq M T ξ (M.stalkHom x a) q := by
   set v := RatModel.valLoc ξ x hs (M.stalkEquiv x a) with hv
@@ -1148,7 +1148,7 @@ theorem GlobalTheory.Poinc.Clocx.exists_at_closedPoint : ∀ (g n : ℕ), 1 ≤ 
     obtain ⟨f, hf⟩ := matOn_exists o' Ω S ρ M U₀ EE FinalForm hU c.A pr hSB.2.1 hSB.2.2.1 a b
     haveI : IsMonHom f := hf.1
     obtain ⟨fR, hfR, hfR'⟩ := exists_pull_endo hpb f
-    obtain ⟨mab, hmab⟩ := endChar_exists_of_isMonHom R hB G hGsemi D A U fR hfR
+    obtain ⟨mab, hmab⟩ := endChar_exists_of_isMonHom R G D A U fR hfR
     exact ⟨mab, f, fR, hf, hfR, hfR', hmab⟩
   choose m hm using hm
   have key := fun (T : Trait F) (ξ : Sp T.V ⟶ M.Z) (hT : ThroughU M U₀ FinalForm.u₀ u T ξ)
@@ -1251,7 +1251,7 @@ theorem GlobalTheory.Poinc.Clocx.exists_at_closedPoint : ∀ (g n : ℕ), 1 ≤ 
         congr 1
         rw [← Spec.map_comp]
         rfl
-      exact ordEq_of_assoc M x T ξ hs h (g'.comp j) hinj hirr hsq' (aa cl) _ (((hassoc cl r₁ hr₁).map g').trans a1)
+      exact ordEq_of_assoc M x T ξ hs h (g'.comp j) hirr hsq' (aa cl) _ (((hassoc cl r₁ hr₁).map g').trans a1)
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto

@@ -231,7 +231,7 @@ section Field
 variable {F E : Type} [Field F] [Field E] [Algebra F E] {R : Type} [Field R] [Algebra F R]
   {b2 : Module.Basis (Fin 2) F E} {δ : E}
 
-theorem isField_iff (σ : E →ₐ[F] E) (h0 : b2 0 = 1) (h1 : b2 1 = δ) {D : F}
+theorem isField_iff (h0 : b2 0 = 1) (h1 : b2 1 = δ) {D : F}
     (hD : δ * δ = algebraMap F E D) :
     IsField (R ⊗[F] E) ↔ ¬ IsSquare (algebraMap F R D) := by
   have hne : ∀ a c : R, cd F δ a c = 0 → a = 0 ∧ c = 0 := by
@@ -875,7 +875,7 @@ theorem locR : Scal → MassOne → LocR := by
       omega
     rw [rv_of_val _ s k hk]
     by_cases hF : IsField (Fv F v ⊗[F] E)
-    · have hns := (isField_iff σ h0 h1 hD).1 hF
+    · have hns := (isField_iff h0 h1 hD).1 hF
       have he : eR E v = -1 := by simp [eR, eSp, hF]
       rw [he, neg_one_geom_sum]
       by_cases hev : Even k
@@ -888,7 +888,7 @@ theorem locR : Scal → MassOne → LocR := by
         simp
     · have hsq : IsSquare (algebraMap F (Fv F v) D) := by
         by_contra h
-        exact hF ((isField_iff σ h0 h1 hD).2 h)
+        exact hF ((isField_iff h0 h1 hD).2 h)
       obtain ⟨t, ht⟩ := hsq
       have he : eR E v = 1 := by simp [eR, eSp, hF]
       obtain ⟨u, hu, e⟩ := mass_split h0 h1 hσ hD hj hfib hsc hmul v2 vD vj ht hLm hL hk

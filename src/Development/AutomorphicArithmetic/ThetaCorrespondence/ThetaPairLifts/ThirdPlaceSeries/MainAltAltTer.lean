@@ -238,8 +238,7 @@ end GlobalTheory.GTwoTheta
 namespace GlobalTheory.GTwoTheta
 open Formalism.MainNotions.AdmissibleParameterJ
 
-theorem chi_jump (D : D7) (i : D.nd.Loc) (r : D.nd.X i → (GE D.nd →* GL (Fin D.R.nV) (D.nd.O i)))
-    (ρ : D.nd.X i → (GE D.nd →* GL (Fin D.R.r) (D.nd.O i))) (π : D.nd.X i)
+theorem chi_jump (D : D7) (i : D.nd.Loc)
     (w : HeightOneSpectrum (𝓞 D.host.E)) (hw : w ∈ placesOver D.host.E (D.nd.l i)) (C : TruncatedSeriesCountingIdentities.CoefExt D i w hw)
     (hamb : ∀ τ : Br.Kw D.nbr i w hw →ₐ[ℚ_[D.nd.l i]] ↥C.LL.1, ∀ c ∈ Finset.Icc 1 D.R.t, ∀ a,
       multV (Br.PD D.loc D.nbr i w hw) (matRep (TruncatedSeriesCountingIdentities.locC C (chiRatO D.nd i c))) τ a =
@@ -318,7 +317,7 @@ theorem main_alt_alt : GlobalTheory.Published.FontaineBcris → ∀ (D : D7) (L 
   have hH := twistedRep_no_invariants_purity D L ep hJ hJc i r ρ π hr hπ w hw C hD (hcrys.2 π).2
   refine ⟨⟨fun x => (hcrys.2 x).1, fun τ => (tw_jumps D L ep hJ hJc i r hr w hw C τ).1,
     fun τ => (tw_jumps D L ep hJ hJc i r hr w hw C τ).2.1,
-    fun c hc1 hct τ a => chi_jump D i r ρ π w hw C (fun τ => (hamb τ).2) c hc1 hct τ a,
+    fun c hc1 hct τ a => chi_jump D i w hw C (fun τ => (hamb τ).2) c hc1 hct τ a,
     fun τ => (tw_jumps D L ep hJ hJc i r hr w hw C τ).2.2, hH.1, hH.2⟩, fun x => ?_⟩
   rw [← locC_rTwO]
   exact (hcrys.2 x).2

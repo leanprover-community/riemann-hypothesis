@@ -72,7 +72,7 @@ theorem coord_image (hP : IsMultiHomogIdeal P) (p : (k : K) → ι k) :
       intro h hh
       rw [← eval_renC w h, hren]
       exact ht _ (Ideal.mem_map_of_mem _ hh)
-    obtain ⟨hc, h1, ha⟩ := conePts_of_chartIdeal hP p w hw
+    obtain ⟨hc, h1, ha⟩ := conePts_of_chartIdeal p w hw
     let x : Pts P := ⟨proj w, w, hc, rfl⟩
     have ho : SameOrbit (rep x) w := sameOrbit_of_proj_eq (rep_mem x).1 hc.1 (proj_rep x)
     refine ⟨x, fun k => ?_, ?_⟩

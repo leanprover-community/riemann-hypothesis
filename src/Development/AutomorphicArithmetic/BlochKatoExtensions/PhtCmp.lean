@@ -66,9 +66,9 @@ private theorem cj_norm_eq {l : ℕ} [Fact l.Prime] {E : Type} [Field E] [Number
     (τ φ : E →+* Om l) (w : HeightOneSpectrum (𝓞 E)) (hw : w ∈ placesOver E l)
     (hτ : ∀ x : 𝓞 E, ‖τ (x : E)‖ < 1 ↔ x ∈ w.asIdeal) (hφ : ∀ x : 𝓞 E, ‖φ (x : E)‖ < 1 ↔ x ∈ w.asIdeal)
     (x : E) : ‖τ x‖ ≤ 1 ↔ ‖φ x‖ ≤ 1 := by
-  have e1 := PI.CompDegEF.isEquiv_adicAbv_normAbv τ w hw
+  have e1 := PI.CompDegEF.isEquiv_adicAbv_normAbv τ w
     (fun x => ⟨PI.CompDegEF.norm_le_one_of_integer τ x, hτ x⟩)
-  have e2 := PI.CompDegEF.isEquiv_adicAbv_normAbv φ w hw
+  have e2 := PI.CompDegEF.isEquiv_adicAbv_normAbv φ w
     (fun x => ⟨PI.CompDegEF.norm_le_one_of_integer φ x, hφ x⟩)
   have := (e1.symm.trans e2).le_one_iff (x := x)
   simpa only [PI.CompDegEF.normAbv_apply] using this
@@ -185,8 +185,8 @@ private theorem cj_count {l : ℕ} [Fact l.Prime] (P : LocPrime l) (K L : FinExt
 theorem UpperTheory.Prune.card_jumps :
     ∀ (D : D7) (T : GlobalTheory.RowTie.WDTie D.nd D.naut) (Wd : WDSide D T) (l : ℕ) [Fact l.Prime] (ι : Qbar l ≃+* ℂ) (a : ℕ)
         (r : G D.host.E D.nd.Om →* GL (Fin a) (Qbar l)) (τ : D.host.E →+* Qbar l) (w : PlE D.host)
-        (hr : Continuous fun g => ((r g : GL (Fin a) (Qbar l)) : Matrix (Fin a) (Fin a) (Qbar l)))
-        (hτ : ∀ x : 𝓞 D.host.E, x ∈ w.asIdeal ↔ ‖τ (x : D.host.E)‖ < 1) (hd : Wd.IsdRW l ι r w),
+        (_ : Continuous fun g => ((r g : GL (Fin a) (Qbar l)) : Matrix (Fin a) (Fin a) (Qbar l)))
+        (_ : ∀ x : 𝓞 D.host.E, x ∈ w.asIdeal ↔ ‖τ (x : D.host.E)‖ < 1) (_ : Wd.IsdRW l ι r w),
         Multiset.card (Wd.jumpsW l ι r τ) = a := by
   intro D T Wd l _ ι a r τ w hr hτ hd
   have hw : w ∈ placesOver D.host.E l := by

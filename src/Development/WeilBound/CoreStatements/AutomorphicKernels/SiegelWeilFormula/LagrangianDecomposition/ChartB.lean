@@ -87,10 +87,10 @@ theorem crdB_zero_col {m k : ℕ} (bs : Module.Basis (Fin 2) F E) (X : Mx F E m 
     (hX : X a c = 0) : crdB bs X (a, c, t) = 0 := by
   simp [crdB, hX]
 
-theorem extend_zero_embedded_column {m n N : ℕ} (h : n + 1 = N) (X : Mx F E m n) (p : Fin m) (j : Fin n) : ext0 h X p (em0 h j) = X p j := by
+theorem extend_zero_embedded_column {m n N : ℕ} (h : n + 1 = N) (X : Mx F E m n) (p : Fin m) (j : Fin n) : ext0 X p (em0 h j) = X p j := by
   simp [ext0, em0]
 
-theorem extend_zero_last_column {m n N : ℕ} (h : n + 1 = N) (X : Mx F E m n) (p : Fin m) : ext0 h X p (i0 h) = 0 := by
+theorem extend_zero_last_column {m n N : ℕ} (h : n + 1 = N) (X : Mx F E m n) (p : Fin m) : ext0 X p (i0 h) = 0 := by
   simp [ext0, i0]
 
 end PositivityTheory.SiegelWeilFormula.Ald

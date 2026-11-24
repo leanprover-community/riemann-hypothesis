@@ -694,7 +694,7 @@ variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 
 def fsj (N r j0 : ℕ) : Fin N × Fin r → Prop := fun v => (v.1 : ℕ) < j0
 
-instance (N r j0 : ℕ) : DecidablePred (fsj N r j0) := fun v => Nat.decLt _ _
+instance (N r j0 : ℕ) : DecidablePred (fsj N r j0) := fun _ => Nat.decLt _ _
 
 def wlat (N r j0 : ℕ) : Fin N × Fin r → ℤ := fun v => if (v.1 : ℕ) < j0 then 0 else 1
 
@@ -824,7 +824,7 @@ variable {p : ℕ} [Fact p.Prime] {N r : ℕ}
 
 theorem slc_ycond [NeZero r] (L : Letters N) {j0 J : ℕ} (hJ : J ≤ j0) (M : WithTop ℤ) (m : Fin N × Fin r →₀ ℕ)
     {F : MvPolynomial (Fin N × Fin r) ℚ_[p]} (hF : F ∈ YCond p L J M) : slc (fsj N r j0) m F ∈ YCond p L J M :=
-  ycond_of_comm L J M (slc (fsj N r j0) m) (fun c d F => slc_glAct L hJ c d m F) (fun ν F hF => slc_wh L hJ m hF) F hF
+  ycond_of_comm L J M (slc (fsj N r j0) m) (fun c d F => slc_glAct L hJ c d m F) (fun _ _ hF => slc_wh L hJ m hF) F hF
 
 theorem slc_pol (L : Letters N) (j0 : ℕ) (m : Fin N × Fin r →₀ ℕ) {x : MvPolynomial (Fin N × Fin r) ℚ_[p]}
     (hx : x ∈ Pol p r L) : slc (fsj N r j0) m x ∈ Pol p r (Lz L j0) := by
@@ -1077,7 +1077,7 @@ theorem whc_keep {σ M M' : Type} [AddCommMonoid M] [AddCommMonoid M'] (w : σ �
 
 theorem psi_glAct (L L' : Letters N) (j0 j : ℕ) (c d : Fin r) (x : MvPolynomial (Fin N × Fin r) ℚ_[p]) :
     psi p L j0 (glAct p L' j c d x) = glAct p L' j c d (psi p L j0 x) :=
-  whc_comm _ _ (fun D x hx => glAct_wL L' j c d hx) _ x
+  whc_comm _ _ (fun _ _ hx => glAct_wL L' j c d hx) _ x
 
 end Formalism.CountingSumsFrames.TO
 
@@ -2892,7 +2892,7 @@ theorem smith_bases {σ : Type} (nb : ℕ) (f : Fin nb → MvPolynomial σ ℚ_[
         Matrix.mul_nonsing_inv V hVu, Matrix.mul_one]
     rw [this, Matrix.diagonal_apply]
 
-theorem good_norm (E : ℝ) (hE : 0 ≤ E) (d : ℚ_[p]) (hd : ¬ ‖d‖ < (p : ℝ) ^ (-E)) :
+theorem good_norm (E : ℝ) (d : ℚ_[p]) (hd : ¬ ‖d‖ < (p : ℝ) ^ (-E)) :
     ‖(p : ℚ_[p]) ^ ⌊E⌋₊ / d‖ ≤ 1 ∧ d ≠ 0 := by
   have hp1 : (1 : ℝ) < p := by exact_mod_cast (Fact.out : p.Prime).one_lt
   have hp0 : (0 : ℝ) < p := by linarith
@@ -3039,7 +3039,7 @@ theorem tie_core [NeZero r] (L : Letters N) (T : TieData) (hadm : T.Admissible L
     intro z y
     by_cases hz : la z = la y ∧ ¬ ‖d z‖ < (p : ℝ) ^ (-E)
     · simp only [tc, ite_eq_left hz, norm_mul]
-      exact mul_le_one₀ (good_norm E hE (d z) hz.2).1 (by positivity) (by rw [← norm_mul]; exact hG0 z y)
+      exact mul_le_one₀ (good_norm E (d z) hz.2).1 (by positivity) (by rw [← norm_mul]; exact hG0 z y)
     · simp only [tc, ite_eq_right hz, norm_zero]; exact zero_le_one
   have hgτi : ∀ y, gτ y ∈ IntPol p (Fin N × Fin r) :=
     fun y => Submodule.sum_mem _ fun z _ => smul_int (htc z y) (hh2i z)
@@ -3104,7 +3104,7 @@ theorem tie_core [NeZero r] (L : Letters N) (T : TieData) (hadm : T.Admissible L
             by_cases hzx : z = x
             · subst hzx
               rw [ite_eq_left rfl, ite_eq_left rfl, ite_eq_right hz.2]
-              have hd0 := (good_norm E hE (d z) hz.2).2
+              have hd0 := (good_norm E (d z) hz.2).2
               field_simp
             · rw [ite_eq_right (Ne.symm hzx), ite_eq_right hzx, mul_zero]
           · simp only [tc, ite_eq_right hz, zero_mul]

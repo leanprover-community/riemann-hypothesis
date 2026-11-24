@@ -391,7 +391,7 @@ section -- clump:auto
     fun (C : Type) (N : ℕ) ↦ Matrix (Fin N) (Fin N) C
 
 theorem UpperTheory.Reformulated.B.Qp8.pow_eig :
-    ∀ {C : Type} [inst : Field C] {N : ℕ} (y : UpperTheory.Reformulated.B.Qp8.Mat C N) (l : C) (w : Fin N → C),
+    ∀ {C : Type} [Field C] {N : ℕ} (y : UpperTheory.Reformulated.B.Qp8.Mat C N) (l : C) (w : Fin N → C),
       Matrix.mulVec y w = l • w → ∀ (m : ℕ), Matrix.mulVec (y ^ m) w = l ^ m • w := by
   intro C _ N y l w h m
   induction m with
@@ -900,7 +900,7 @@ theorem inv_in (A : Subalgebra C (Mat C N)) {v : Mat C N} (hvA : v ∈ A) (hv : 
 theorem zcl_sub (S : Set (Mat C N)) : S ⊆ Zcl S := fun x hx _ hf => hf x hx
 
 theorem zcl_mono {S T : Set (Mat C N)} (h : S ⊆ T) : Zcl S ⊆ Zcl T :=
-  fun y hy f hf => hy f fun x hx => hf x (h hx)
+  fun _ hy f hf => hy f fun x hx => hf x (h hx)
 
 end LateralTheory.DivDb.KeyPf
 

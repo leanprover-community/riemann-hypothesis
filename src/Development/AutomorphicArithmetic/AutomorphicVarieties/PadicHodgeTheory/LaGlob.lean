@@ -333,7 +333,7 @@ section -- clump:auto
 open NumberField
 
 theorem UpperTheory.Reformulated.B.Qh9.isCM_of_conj :
-    ∀ (K : Type) [inst : Field K] [inst_1 : NumberField K]
+    ∀ (K : Type) [Field K] [NumberField K]
     [NumberField.IsTotallyComplex K],
     (∀ (x : K), ∃ (y : K), ∀ (φ : K →+* ℂ), (φ : K → ℂ) y = (starRingEnd ℂ : ℂ → ℂ) ((φ : K → ℂ) x)) →
       NumberField.IsCMField K := by
@@ -566,7 +566,7 @@ private theorem locAlg_step {l : ℕ} [Fact l.Prime] (c : Weil h →* Weil h')
     rw [hwt]
     rfl
 
-private theorem artin_step (hG : GlobalArtinReciprocity) (c : Weil h' →* Weil h) (hcs : Function.Surjective c)
+private theorem artin_step (hG : GlobalArtinReciprocity) (c : Weil h' →* Weil h)
     (c' : Weil h →* Weil h') (hcc : ∀ σ, c' (c σ) = σ)
     (hsm : ∀ ξ : Weil h' →* ℂˣ, GlobalTheory.WeilDeligne.IsSmooth ξ → GlobalTheory.WeilDeligne.IsSmooth (ξ.comp c'))
     (i : v.adicCompletion F ≃+* w.adicCompletion M) (hi' : Continuous i.symm)
@@ -604,7 +604,7 @@ theorem UpperTheory.isLocallyAlgebraic_transfer_of_placeIso :
   have inj := GlobalTheory.T.globalArtin_localIdele_injective GlobalTheory.Published.chevalleyUnits'
   constructor
   · refine locAlg_step c.symm.toMonoidHom (fun σ z => (hr' σ z).symm)
-      (fun σ => by rw [← hdeg]; simp) i.symm hi' hP.cont (fun a' ha' => ⟨_, artin_step hG c.toMonoidHom c.surjective
+      (fun σ => by rw [← hdeg]; simp) i.symm hi' hP.cont (fun a' ha' => ⟨_, artin_step hG c.toMonoidHom
         c.symm.toMonoidHom c.symm_apply_apply (fun ξ hξ => (hsm _ _).2 ?_) i.symm hP.cont a' ha' fun art hart σ => ?_,
           fun σ => by simp⟩) κ' κ (fun g g' hg => (hκ g' g fun z => (hg z).symm).symm) wt' wt fun τ => ?_
     · convert hξ using 1
@@ -618,7 +618,7 @@ theorem UpperTheory.isLocallyAlgebraic_transfer_of_placeIso :
       congr 1
       exact Subtype.ext (RingHom.ext fun x => by simp)
   · refine locAlg_step c.toMonoidHom (fun σ z => hr σ z) hdeg i hP.cont hi'
-      (fun a ha => ⟨_, artin_step hG c.symm.toMonoidHom c.symm.surjective
+      (fun a ha => ⟨_, artin_step hG c.symm.toMonoidHom
         c.toMonoidHom c.apply_symm_apply (fun ξ hξ => (hsm _ _).1 hξ) i hi' a ha fun art' hart' σ => ?_,
           fun σ => by simp⟩) κ κ' hκ wt wt' hwt
     obtain ⟨art, hart⟩ := hG F Ω

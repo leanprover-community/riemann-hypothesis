@@ -135,8 +135,8 @@ theorem entB_one_add_q {k₀ n c : ℕ} (hk : k₀ ≤ n) (ex : ℕ → ℕ) (y 
       redP P (LocE.entB (qOf P) k₀ c n c n ex ex (LinearMap.id + ((qOf P : ℕ) : E) • y) p p') =
         if p = p' then 1 else 0 := by
   have hQ0 : ((qOf P : ℕ) : E) ≠ 0 := qOf_ne_zero
-  have hfl : LocE.fIdx k₀ c n p < n + c := _root_.Formalism.L2.Col.symFIdx_lt hk hp
-  have hfl' : LocE.fIdx k₀ c n p' < n + c := _root_.Formalism.L2.Col.symFIdx_lt hk hp'
+  have hfl : LocE.fIdx k₀ c n p < n + c := _root_.Formalism.L2.Col.symFIdx_lt hp
+  have hfl' : LocE.fIdx k₀ c n p' < n + c := _root_.Formalism.L2.Col.symFIdx_lt hp'
   have hb : IntAt P ((((qOf P : ℕ) : E) ^ LocE.scE n ex (LocE.fIdx k₀ c n p))⁻¹ *
       (((qOf P : ℕ) : E) ^ LocE.scE n ex (LocE.fIdx k₀ c n p') *
         y (Loc.eN E (n + c) (LocE.fIdx k₀ c n p')) ⟨_, hfl⟩)) := by

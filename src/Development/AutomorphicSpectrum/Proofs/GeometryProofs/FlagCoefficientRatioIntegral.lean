@@ -53,7 +53,7 @@ namespace GlobalTheory.CompanionTheory.Ar
 
 theorem leadCoef_ratio_mem (Ω : Type) [Field Ω] (Li : Type) [AddCommGroup Li] [Module Ω Li] (W : Subring Ω) (r : ℕ)
     (b₀ b b' : Fin r → Li) (N : Ω) (k : Fin r) (t t' : Ω) (hb : LinearIndependent Ω b)
-    (hbf : ∀ j, flagStep Ω b j = flagStep Ω b₀ j) (_hbf' : ∀ j, flagStep Ω b' j = flagStep Ω b₀ j)
+    (hbf : ∀ j, flagStep Ω b j = flagStep Ω b₀ j)
     (hN : ∀ j, N • b' j ∈ Submodule.span W (Set.range b))
     (ht : b k - t • b₀ k ∈ flagStep Ω b₀ k) (ht' : b' k - t' • b₀ k ∈ flagStep Ω b₀ k) :
     N * (t' / t) ∈ W := by

@@ -59,8 +59,8 @@ variable (F : Type) [Field F] [NumberField F] (κ : Type)
 def splitE : ((κ → mixedEmbedding.mixedSpace F) × (κ → FiniteAdeleRing (𝓞 F) F)) ≃+ (κ → AdeleRing (𝓞 F) F) where
   toFun p := fun i => ((InfiniteAdeleRing.ringEquiv_mixedSpace F).symm (p.1 i), p.2 i)
   invFun x := (fun i => InfiniteAdeleRing.ringEquiv_mixedSpace F (x i).1, fun i => (x i).2)
-  left_inv p := Prod.ext (funext fun i => RingEquiv.apply_symm_apply _ _) (funext fun i => rfl)
-  right_inv x := funext fun i => Prod.ext (RingEquiv.symm_apply_apply _ _) rfl
+  left_inv _ := Prod.ext (funext fun _ => RingEquiv.apply_symm_apply _ _) (funext fun _ => rfl)
+  right_inv _ := funext fun _ => Prod.ext (RingEquiv.symm_apply_apply _ _) rfl
   map_add' p q := funext fun i => Prod.ext (map_add (InfiniteAdeleRing.ringEquiv_mixedSpace F).symm (p.1 i) (q.1 i)) rfl
 
 theorem splitE_apply (p : (κ → mixedEmbedding.mixedSpace F) × (κ → FiniteAdeleRing (𝓞 F) F)) :
@@ -117,7 +117,7 @@ theorem continuous_comp_splitE [Fintype κ] (Φ : (κ → AdeleRing (𝓞 F) F) 
 
 theorem splitE_add_finE (z : κ → mixedEmbedding.mixedSpace F) (y u : κ → FiniteAdeleRing (𝓞 F) F) :
     splitE F κ (z, y + u) = splitE F κ (z, y) + GlobalTheory.WeilAdm.finE F u :=
-  funext fun i => Prod.ext (add_zero _).symm rfl
+  funext fun _ => Prod.ext (add_zero _).symm rfl
 
 theorem volume_isAddHaar [Fintype κ] : (volume : Measure (κ → mixedEmbedding.mixedSpace F)).IsAddHaarMeasure := by
   haveI : MeasurableAdd (mixedEmbedding.mixedSpace F) := ContinuousAdd.measurableAdd

@@ -174,7 +174,7 @@ lemma progr_sub (t₀ d : ℤ) (a b : ℕ) : progr t₀ d a - progr t₀ d b = d
   unfold progr
   ring
 
-private lemma card_le_div_add_one_of_subset_range_of_mod_eq (Y₀ q : ℕ) (hq : 0 < q) (S : Finset ℕ) (hS : S ⊆ range Y₀)
+private lemma card_le_div_add_one_of_subset_range_of_mod_eq (Y₀ q : ℕ) (S : Finset ℕ) (hS : S ⊆ range Y₀)
     (hmod : ∀ j ∈ S, ∀ j' ∈ S, j % q = j' % q) : S.card ≤ Y₀ / q + 1 := by
   have hinj : Set.InjOn (fun j => j / q) S := by
     intro j hj j' hj' he
@@ -196,7 +196,7 @@ lemma card_le [IsUltrametricDist K] (ζ : K) (t₀ d : ℤ) (hd : IsCoprime d (p
       ≤ (Y₀ : ℝ) / (p : ℝ) ^ i + 1 := by
   have hq0 : 0 < p ^ i := pow_pos hp.out.pos i
   have hcard : ((range Y₀).filter (fun j : ℕ => ‖((progr t₀ d j : ℤ) : K) - ζ‖ < (p : ℝ) ^ (1 - (i : ℤ)))).card
-      ≤ Y₀ / p ^ i + 1 := card_le_div_add_one_of_subset_range_of_mod_eq Y₀ (p ^ i) hq0 _ (Finset.filter_subset _ _) (by
+      ≤ Y₀ / p ^ i + 1 := card_le_div_add_one_of_subset_range_of_mod_eq Y₀ (p ^ i) _ (Finset.filter_subset _ _) (by
     intro j hj j' hj'
     rw [Finset.mem_filter] at hj hj'
     have h1 : ‖((progr t₀ d j : ℤ) : K) - ((progr t₀ d j' : ℤ) : K)‖ < (p : ℝ) ^ (1 - (i : ℤ)) := by

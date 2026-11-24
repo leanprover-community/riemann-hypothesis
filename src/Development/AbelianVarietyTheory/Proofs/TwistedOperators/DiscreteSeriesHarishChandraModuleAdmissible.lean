@@ -1729,7 +1729,7 @@ theorem ioLaw (h1 : IoEx D) (h2 : IoUniq D) (h3 : IoHarm D) : IoLaw D := by
     h3 i M M' ψ θ χS χT ω hθ hω hχ c hc hpr BV f hf io hio⟩
 
 theorem archOnRecord_of_cover (hDS : GlobalTheory.Published.DiscreteSeriesCover) (hHC : GlobalTheory.Published.HarishChandraModules) (D : D7)
-    (X : ProvA) (hX : GlobalTheory.Chain.RealIt.ChosenSeries X) (h1 : Formalism.MainNotions.SchurIrreducible.ArchimedeanRallisFirst X) (h3 : Formalism.MainNotions.SchurIrreducible.ArchimedeanRallisUpDownLine X) :
+    (X : ProvA) :
     ArchOnRecord D := by
   obtain ⟨Y, hpar, hds, hq5, hy1, -, hy3, -⟩ := _root_.GlobalTheory.RealPlaceTheta.exists_record_theta hDS hHC
   have hG : Good D Y := ⟨hpar, hds, hq5, GlobalTheory.T.thetaModels_are_coverDiscreteSeries_of_harishChandra hDS hHC D⟩
@@ -1740,7 +1740,7 @@ theorem archOnRecord_of_cover (hDS : GlobalTheory.Published.DiscreteSeriesCover)
 theorem archOnRecord (hDS : GlobalTheory.Published.DiscreteSeriesCover) (hHC : GlobalTheory.Published.HarishChandraModules) (D : D7) :
     ArchOnRecord D := by
   obtain ⟨X, hpar, -, -, h1, -, h3, -⟩ := _root_.GlobalTheory.RealPlaceTheta.exists_record_theta hDS hHC
-  exact archOnRecord_of_cover hDS hHC D X hpar h1 h3
+  exact archOnRecord_of_cover hDS hHC D X
 
 end GlobalTheory.ArchRec
 

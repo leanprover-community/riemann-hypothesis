@@ -180,7 +180,7 @@ theorem mem_iff_split {h : V →ₗ⋆[K] V →ₗ[K] K} {M : AddSubgroup V} (hM
     rw [decomp h X hXu.1 x]
     exact M.add_mem (hM.smul_mem _ hc X hXM) hp
 
-theorem selfDual_restr {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : ∀ u v, star (h u v) = h v u) {M : AddSubgroup V}
+theorem selfDual_restr {h : V →ₗ⋆[K] V →ₗ[K] K} {M : AddSubgroup V}
     (hM : IsSelfDualMod S h M) {X : V} (hXM : X ∈ M) (hXu : IsUnitIn S (h X X)) :
     IsSelfDualMod S (restr h (LinearMap.ker (h X)))
       (M.comap ((LinearMap.ker (h X)).subtype : LinearMap.ker (h X) →ₗ[K] V).toAddMonoidHom) := by

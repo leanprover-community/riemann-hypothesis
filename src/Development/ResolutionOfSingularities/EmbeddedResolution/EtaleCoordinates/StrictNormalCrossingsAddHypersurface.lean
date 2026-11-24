@@ -418,7 +418,6 @@ theorem basisKaehler_apply_eq_D_coord {X : Scheme.{u}} {k : Type u} [Field k]
     [Algebra k Γ(X, U)] [Algebra (MvPolynomial (ULift.{u} (Fin m)) k) Γ(X, U)]
     [IsScalarTower k (MvPolynomial (ULift.{u} (Fin m)) k) Γ(X, U)]
     [Algebra.FormallyEtale (MvPolynomial (ULift.{u} (Fin m)) k) Γ(X, U)]
-    (_hk : algebraMap k Γ(X, U) = sectionsAlgebraMap k p U)
     (hc : algebraMap (MvPolynomial (ULift.{u} (Fin m)) k) Γ(X, U) = c.coordRingHom)
     (j : Fin m) :
     EtaleCoordinates.basisKaehler k (ULift.{u} (Fin m)) Γ(X, U) (ULift.up j) =
@@ -490,7 +489,7 @@ theorem exists_etaleChart_update_coord {X : Scheme.{u}} {k : Type u} [Field k]
   have hBcoord : ∀ i : ULift.{u} (Fin m),
       EtaleCoordinates.basisKaehler k (ULift.{u} (Fin m)) Γ(X, U) i =
         KaehlerDifferential.D k Γ(X, U) (c.coord i.down) := fun i =>
-    basisKaehler_apply_eq_D_coord c (algebraMap_sectionsAlgebra k p U)
+    basisKaehler_apply_eq_D_coord c
       (EtaleChart.algebraMap_eq_coordRingHom c) i.down
   have hfam : (fun i : ULift.{u} (Fin m) => KaehlerDifferential.D k Γ(X, U) (v i)) =
       Function.update (⇑(EtaleCoordinates.basisKaehler k (ULift.{u} (Fin m)) Γ(X, U)))

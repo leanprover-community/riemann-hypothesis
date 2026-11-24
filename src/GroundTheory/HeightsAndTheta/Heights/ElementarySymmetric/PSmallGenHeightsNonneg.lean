@@ -151,7 +151,7 @@ theorem chainIdeal_isPrime {V : Ideal (MRing ι)} (hV : V.IsPrime) (j : ℕ) : (
   · exact Ideal.comap_isPrime _ _
   · exact Ideal.comap_isPrime _ _
 
-theorem comap_card_le_even {V : Ideal (MRing ι)} (hVm : IsMultiHomogIdeal V) (hh : IsHorizontal V) :
+theorem comap_card_le_even {V : Ideal (MRing ι)} (hh : IsHorizontal V) :
     V.comap (killBlocksBelow (Fintype.card K)) ≤ (Ideal.span {(2 : ℤ)}).comap (constantCoeff : MRing ι →+* ℤ) :=
   fun f hf ↦ by
     rw [Ideal.mem_comap, killBlocksBelow_card] at hf
@@ -165,7 +165,7 @@ theorem le_chainIdeal {V : Ideal (MRing ι)} (hVm : IsMultiHomogIdeal V) (hh : I
   unfold chainIdeal
   split_ifs
   · exact le_comap_killBlocksBelow j hVm
-  · exact (le_comap_killBlocksBelow _ hVm).trans (comap_card_le_even hVm hh)
+  · exact (le_comap_killBlocksBelow _ hVm).trans (comap_card_le_even hh)
 
 theorem comap_killBlocksBelow_le_succ {V : Ideal (MRing ι)} (hVm : IsMultiHomogIdeal V) (j : ℕ) :
     V.comap (killBlocksBelow j) ≤ V.comap (killBlocksBelow (j + 1)) := by
@@ -201,7 +201,7 @@ theorem chainIdeal_card_lt {V : Ideal (MRing ι)} (hV : IsMultiProjPrime V) (hh 
     chainIdeal V (Fintype.card K) < chainIdeal V (Fintype.card K + 1) := by
   obtain ⟨-, hVm, -⟩ := hV
   rw [chainIdeal, chainIdeal, ite_eq_left le_rfl, ite_eq_right (Nat.not_succ_le_self _)]
-  refine lt_of_le_of_ne (comap_card_le_even hVm hh) fun h ↦ ?_
+  refine lt_of_le_of_ne (comap_card_le_even hh) fun h ↦ ?_
   have h2 : (C (2 : ℤ) : MRing ι) ∈ (Ideal.span {(2 : ℤ)}).comap (constantCoeff : MRing ι →+* ℤ) := by
     rw [Ideal.mem_comap, constantCoeff_C]
     exact Ideal.mem_span_singleton_self 2

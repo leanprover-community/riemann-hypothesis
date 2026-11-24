@@ -60,7 +60,7 @@ namespace GlobalTheory.FiniteTypeColimit
 
 noncomputable def diagram (A : CommRingCat.{0}) : Finset A ⥤ CommRingCat.{0} where
   obj t := CommRingCat.of (Algebra.adjoin ℤ (t : Set A))
-  map {s t} h := CommRingCat.ofHom
+  map {_ _} h := CommRingCat.ofHom
     (Subalgebra.inclusion (Algebra.adjoin_mono (Finset.coe_subset.2 (leOfHom h)))).toRingHom
   map_id _ := rfl
   map_comp _ _ := rfl

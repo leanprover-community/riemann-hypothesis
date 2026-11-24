@@ -98,8 +98,8 @@ theorem restrict_eq {V : Type} [NormedAddCommGroup V] [NormedSpace ℝ V]
     refine ae_eq_of_forall_setLIntegral_eq_of_sigmaFinite₀ (c.aemeasurable MeasurableSet.univ)
       (c'.aemeasurable MeasurableSet.univ) fun S hS _ => ?_
     rw [Measure.restrict_univ,
-      ← IsFibreFamily_lintegral_preimage hf hO hU h _ hφm hφ0 _ hS,
-      ← IsFibreFamily_lintegral_preimage hf hO hU' h' _ hφm hφ0 _ hS]
+      ← IsFibreFamily_lintegral_preimage hf hU h _ hφm hφ0 _ hS,
+      ← IsFibreFamily_lintegral_preimage hf hU' h' _ hφm hφ0 _ hS]
   exact Measure.eqOn_open_of_ae_eq hae isOpen_univ c c' trivial
 
 variable {P Q P' Q' : ℕ}

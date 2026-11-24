@@ -25,14 +25,14 @@ theorem X'_le_UUE (Λ : Submodule (NumberField.RingOfIntegers E) S.V) (hΛ : Sub
     (F : LFlag S r T) (F' : LFlag S r T') (hL : IsLift Λ F) (hL' : IsLift Λ F') : F'.fl.X ≤ UUE Λ F F' := by
   exact (Formalism.MainNotions.LatticeGluingRadicals.a_X_le (Formalism.MainNotions.LatticeGluingRadicals.a_HU Λ hΛ F F' hL.2 hL'.2)).2
 
-theorem z_mem_UUE (Λ : Submodule (NumberField.RingOfIntegers E) S.V) (hΛ : Submodule.IsLattice E Λ)
-    (F : LFlag S r T) (F' : LFlag S r T') (hL : IsLift Λ F) (hL' : IsLift Λ F') : F.fl.z ∈ UUE Λ F F' := by
+theorem z_mem_UUE (Λ : Submodule (NumberField.RingOfIntegers E) S.V)
+    (F : LFlag S r T) (F' : LFlag S r T') (hL : IsLift Λ F) : F.fl.z ∈ UUE Λ F F' := by
   rw [← hL.2]
   exact Submodule.subset_span (Submodule.mem_sup_left (Submodule.mem_sup_left
     (Submodule.mem_sup_right (Submodule.mem_span_singleton_self _))))
 
-theorem z'_mem_UUE (Λ : Submodule (NumberField.RingOfIntegers E) S.V) (hΛ : Submodule.IsLattice E Λ)
-    (F : LFlag S r T) (F' : LFlag S r T') (hL : IsLift Λ F) (hL' : IsLift Λ F') : F'.fl.z ∈ UUE Λ F F' := by
+theorem z'_mem_UUE (Λ : Submodule (NumberField.RingOfIntegers E) S.V)
+    (F : LFlag S r T) (F' : LFlag S r T') (hL' : IsLift Λ F') : F'.fl.z ∈ UUE Λ F F' := by
   rw [← hL'.2]
   exact Submodule.subset_span (Submodule.mem_sup_right (Submodule.mem_span_singleton_self _))
 
@@ -43,12 +43,12 @@ theorem yv_mem_UUE (Λ : Submodule (NumberField.RingOfIntegers E) S.V) (hΛ : Su
     intro b
     refine Fin.lastCases ?_ (fun i => ?_) b
     · rw [Formalism.MainNotions.S.FlagG.fvec, Fin.snoc_last]
-      exact z'_mem_UUE Λ hΛ.toIsLattice F F' hL hL'
+      exact z'_mem_UUE Λ F F' hL'
     · rw [Formalism.MainNotions.S.FlagG.fvec, Fin.snoc_castSucc]
       exact X'_le_UUE Λ hΛ F F' hL hL' (Submodule.subset_span ⟨i, rfl⟩)
   unfold yv omp
   exact Submodule.add_mem _ (Submodule.smul_mem _ _ (Submodule.sum_mem _ fun b _ =>
-    Submodule.smul_mem _ _ (hf b))) (Submodule.smul_mem _ _ (z_mem_UUE Λ hΛ.toIsLattice F F' hL hL'))
+    Submodule.smul_mem _ _ (hf b))) (Submodule.smul_mem _ _ (z_mem_UUE Λ F F' hL))
 
 theorem hT_Hp_UUE (Λ : Submodule (NumberField.RingOfIntegers E) S.V) (F : LFlag S r T) (F' : LFlag S r T')
     {h v : S.V} (hh : h ∈ Hp Λ F F') (hv : v ∈ UUE Λ F F') : S.hT h v = 0 := by
@@ -116,7 +116,7 @@ theorem line_pair (k : ℕ) (hdim : finrank E S.V = k + 2 * r + 1) (Λ : Submodu
     · intro x hx h hh
       exact _root_.Formalism.L2.SG.NGCut.CorankRelation.hT_eq_zero_of_mem_Hp Λ Fl F1 hh (X_le_UUE Λ hΛ Fl F1 hL hL1 hx)
     · intro h hh
-      exact _root_.Formalism.L2.SG.NGCut.CorankRelation.hT_eq_zero_of_mem_Hp Λ Fl F1 hh (z_mem_UUE Λ hΛ.toIsLattice Fl F1 hL hL1)
+      exact _root_.Formalism.L2.SG.NGCut.CorankRelation.hT_eq_zero_of_mem_Hp Λ Fl F1 hh (z_mem_UUE Λ Fl F1 hL)
     · intro x hx hxH
       exact Formalism.L2.SG.NGCut.CorankRelation.Xsp_Hp_eq_zero Λ hΛ Fl F1 hL hL1 hG1 hx hxH
     · omega

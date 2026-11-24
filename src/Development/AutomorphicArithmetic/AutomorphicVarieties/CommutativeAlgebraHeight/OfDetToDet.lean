@@ -155,7 +155,7 @@ def ofRep {ι : Type} [Fintype ι] [DecidableEq ι] (h : Fintype.card ι = n) (r
 def cancel (A E B S : Type) [CommRing A] [Ring E] [Algebra A E] [CommRing B] [Algebra A B] [CommRing S]
     [Algebra B S] [Algebra A S] [IsScalarTower A B S] : S ⊗[B] (B ⊗[A] E) →ₐ[S] S ⊗[A] E :=
   Algebra.TensorProduct.lift Algebra.TensorProduct.includeLeft
-    (Algebra.TensorProduct.map (Algebra.ofId B S) (AlgHom.id A E)) fun s y =>
+    (Algebra.TensorProduct.map (Algebra.ofId B S) (AlgHom.id A E)) fun s _ =>
       Algebra.commute_algebraMap_left s _
 
 theorem cancel_tmul (B S : Type) [CommRing B] [Algebra A B] [CommRing S]

@@ -873,7 +873,7 @@ variable {O K : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Fie
   [Algebra O K] [IsFractionRing O K] {r : ℕ}
 
 theorem good_map (cK : K ≃+* K) {J : Matrix (Fin r) (Fin r) K} {ϖ : O} {N : ℕ}
-    {L : Submodule O (Fin r → K)} (hL : Good cK J ϖ N L) (hϖ : Irreducible ϖ)
+    {L : Submodule O (Fin r → K)} (hL : Good cK J ϖ N L)
     (g : GL (Fin r) K) (hU : ((g : Matrix (Fin r) (Fin r) K).map cK).transpose * J *
       (g : Matrix (Fin r) (Fin r) K) = J) :
     Good cK J ϖ N (L.map (((g : Matrix (Fin r) (Fin r) K).mulVecLin).restrictScalars O)) := by
@@ -952,7 +952,7 @@ theorem GlobalTheory.HermNbr.selfDual_sum_le : ∀ (O K : Type) [CommRing O] [Is
   set φ : GL (Fin r) K → Submodule O (Fin r → K) := fun g =>
     L0.map (((g : Matrix (Fin r) (Fin r) K).mulVecLin).restrictScalars O) with hφ
   have hgood : ∀ g ∈ C, GlobalTheory.HermNbr.Good cK J' ϖ (Q ^ r) (φ g) := fun g hg =>
-    GlobalTheory.HermNbr.good_map cK hL0 hϖ g (hU g hg)
+    GlobalTheory.HermNbr.good_map cK hL0 g (hU g hg)
 
   have hQr : (2 : ℝ) ≤ Q := by exact_mod_cast hQ2
   have hQ0 : (0 : ℝ) < Q := by linarith
@@ -1056,7 +1056,7 @@ theorem mulVec_maps_iff (M : Matrix (Fin r) (Fin r) K) :
     have := h (Pi.single j 1) (fun k => by
       by_cases hk : k = j
       · subst hk; simp
-      · simp [Pi.single_apply, hk]) i
+      · simp [hk]) i
     simpa [Matrix.mulVec_single_one] using this
   · intro h y hy i
     simpa only [Matrix.mulVec, dotProduct] using sum_mem (fun j _ => mul_mem (h i j) (hy j))

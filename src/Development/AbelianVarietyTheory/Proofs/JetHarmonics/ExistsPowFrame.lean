@@ -210,7 +210,7 @@ theorem jets : Laws → Laws2 → Laws4 → TwistBaseChangeStatement → AJetSt 
   obtain ⟨lam, hlam0, hlam⟩ : ∃ lam : F, lam ≠ 0 ∧ v lam = (gm : WithTop ℚ) := by
     rcases h0.eq_or_lt with h | h
     · exact ⟨1, one_ne_zero, by rw [← h]; simp⟩
-    · exact exists_val_eq hv h
+    · exact exists_val_eq hv
   obtain ⟨σ', hσ'⟩ := BoxExpansion.exists_secLin (φ := fun _ : Fin 1 => 𝟙 G.left) (ε := fun _ => (q : ℤ)) hLB
     (fst (TFK (R := V) F) ((Over.pullback (jK V)).obj G)).left (UnifPre.gFK (R := V) (G := G) F)
     (fun _ => UnifPre.gFK (R := V) (G := G) F) (fun _ => (Category.comp_id _).symm) σ

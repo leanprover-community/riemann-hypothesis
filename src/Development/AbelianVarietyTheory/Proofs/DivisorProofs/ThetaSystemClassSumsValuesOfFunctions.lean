@@ -120,7 +120,7 @@ theorem sumI_fourier {V : Type} [CommRing V] [IsDomain V] (I : Ideal V) {n : ℕ
 
 theorem labels {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] (S : ThetaSys o Ω) (H : AddSubgroup S.Gam)
     {X : Type} [AddCommGroup X] (YY : S.Gam → (Fin 8 → X) → Prop)
-    (h1 : ∀ a, ∃ mu, YY a mu) (h2 : ∀ mu, ∃ a, YY a mu)
+    (h2 : ∀ mu, ∃ a, YY a mu)
     (h3 : ∀ a mu mu', YY a mu → (YY a mu' ↔ ∀ v, CongMod (S.r * S.N) (mu' v) (mu v)))
     (h4 : ∀ a a' mu mu', YY a mu → YY a' mu' → YY (a + a') (mu + mu'))
     (hH : ∀ a, a ∈ H ↔ YY a 0) :
@@ -210,7 +210,7 @@ theorem exact_of_isGeo : ∀ (g n : ℕ) (F : SFam g n (zetaAway n)) (W : Matrix
   haveI : IsDomain X₁.o₁ := X₁.ar.ded.toIsDomain
   obtain ⟨yy1, yy2, yy3, yy4⟩ := GlobalTheory.T.surjective_labelHom_lattice_mod_level_thetaMember g n F W Z i X₁ z₁ act (Φ.V y) (Φ.ev y) (Φ.X y) (Φ.m y) (Φ.t y) (Φ.δ y) 𝔪
   have hH := GlobalTheory.T.dividingThetaConstants_generate_integral_torsion_labels g n F W Z i X₁ z₁ act x₀ hdiv (Φ.V y) (Φ.ev y) (Φ.X y) (Φ.m y) (Φ.t y) (Φ.δ y) 𝔪
-  obtain ⟨l, -, hlY, hlC⟩ := labels X₁.S (X₁.S.HH X₁.M z₁) 𝔪.YY yy1 yy2 yy3 yy4 hH
+  obtain ⟨l, -, hlY, hlC⟩ := labels X₁.S (X₁.S.HH X₁.M z₁) 𝔪.YY yy2 yy3 yy4 hH
   obtain ⟨sg, eps, hlink⟩ := _root_.GlobalTheory.Poinc.Sep.twistSum_translate g n F W Z i X₁ z₁ act x₀ hdiv
 
   let φ : X₁.o₁ →+* X₁.M.Z.presheaf.stalk z₁ :=

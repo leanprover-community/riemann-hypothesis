@@ -186,7 +186,7 @@ section Unitary
 variable {M : Type*} [NormedAddCommGroup M] [InnerProductSpace ℂ M] {ε : Fin n → Bool}
   {E : Fin n → Fin n → Module.End ℂ M} {V : Submodule ℂ M}
 
-theorem exists_weight_bound (hU : IsInfUnitary ε E) (hVf : FiniteDimensional ℂ V)
+theorem exists_weight_bound (hVf : FiniteDimensional ℂ V)
     (hVK : IsKStableSub ε E V) :
     ∃ R : ℝ, 0 ≤ R ∧ ∀ v ∈ V, v ≠ 0 → ∀ ν : Fin n → ℝ, (∀ a, E a a v = (ν a : ℂ) • v) →
       √(nsq (ν + rhoC ε)) ≤ R := by
@@ -312,7 +312,7 @@ theorem exists_re_inner_casimirK_layer_le (hE : IsGlRep E) (hU : IsInfUnitary ε
     (hVf : FiniteDimensional ℂ V) (hVK : IsKStableSub ε E V) :
     ∃ R : ℝ, 0 ≤ R ∧ ∀ k : ℕ, ∀ x ∈ layer ε E V k,
       RCLike.re (inner ℂ (casimirK ε E x) x) ≤ ((R + √2 * k) ^ 2 - nsq (rhoC ε)) * ‖x‖ ^ 2 := by
-  obtain ⟨R, hR0, hR⟩ := exists_weight_bound hU hVf hVK
+  obtain ⟨R, hR0, hR⟩ := exists_weight_bound hVf hVK
   refine ⟨R, hR0, fun k x hx => ?_⟩
   refine re_inner_casimirK_le hE (isKUnitary_of_isInfUnitary hU) (finiteDimensional_layer hVf k)
     (layer_kStable hE hVK k) _ (fun w hw hw0 μ hμ => ?_) x hx

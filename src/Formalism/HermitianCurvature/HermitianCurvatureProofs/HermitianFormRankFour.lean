@@ -208,7 +208,7 @@ theorem dual_fix {H h : Matrix N N ℂ} (hh : hᴴ * H * h = H) {C' : Matrix N J
     _ = C'ᴴ * (hᴴ * H * h) := by rw [conjTranspose_mul]; simp only [Matrix.mul_assoc]
     _ = C'ᴴ * H := by rw [hh]
 
-theorem unitary_of {H h : Matrix N N ℂ} (hH : Hᴴ = H) (hh : hᴴ * H * h = H) (h1 : Vᴴ * H * V = 1)
+theorem unitary_of {H h : Matrix N N ℂ} (hh : hᴴ * H * h = H) (h1 : Vᴴ * H * V = 1)
     (e1 : h * V = V * (Vᴴ * H * h * V)) : (Vᴴ * H * h * V)ᴴ * (Vᴴ * H * h * V) = 1 := by
   have k1 : (h * V)ᴴ * H * (h * V) = 1 := by
     rw [conjTranspose_mul, show Vᴴ * hᴴ * H * (h * V) = Vᴴ * (hᴴ * H * h) * V by simp only [Matrix.mul_assoc],
@@ -414,7 +414,7 @@ theorem exp_generates : Formalism.FourierDecayAlt.Qr.ExpGen := by
     exact fix_c' hh j
   have hCd := dual_fix hh.1 hC'
   obtain ⟨e1, e2⟩ := decomp hc g3 h hC hCd
-  obtain ⟨B, hBs, hBe⟩ := unitary_log _ (unitary_of Qx8.hpk_herm hh.1 g1 e1)
+  obtain ⟨B, hBs, hBe⟩ := unitary_log _ (unitary_of hh.1 g1 e1)
   have hXC : colM Bs * B * ((colM Bs)ᴴ * Hpk k r) * colM (cvec k r z) = 0 := by
     rw [Matrix.mul_assoc, g2, Matrix.mul_zero]
   have col : ∀ j, (colM Bs * B * ((colM Bs)ᴴ * Hpk k r)) *ᵥ cvec k r z j = 0 := by

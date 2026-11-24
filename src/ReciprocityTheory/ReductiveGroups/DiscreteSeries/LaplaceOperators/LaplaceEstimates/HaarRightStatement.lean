@@ -221,7 +221,7 @@ theorem shift_measurePreserving (hSF : HaarUniqueSF) (hCW : ClosedW) (hHW : Haar
   rfl
 
 open Formalism.QuantumDeterminants.WeylGroupFacts in
-theorem integrand_shift (hCW : ClosedW) (hCN : ClosedN) (hUN : UWNormal) {z : Fin (2 * r + k + 1) → ℂ}
+theorem integrand_shift (hUN : UWNormal) {z : Fin (2 * r + k + 1) → ℂ}
     (hz : inWb k r z) (c : Fin r → ℂ)
     {π : Lap.Mat k r → (Vp →L[ℂ] Vp)} (hπ : Formalism.MainNotions.S.IsURepOn (UWset k r z) π) (f : Lap.Mat k r → ℂ) (ξ : Vp)
     {h₀ m₀ g h m : Mat k r} (hh₀ : h₀ ∈ UWset k r z) (hm₀ : m₀ ∈ Nset k r) (hh : h ∈ UWset k r z)
@@ -341,7 +341,7 @@ theorem sInt_equiv {u : Fin k → ℝ} {z : Fin (2 * r + k + 1) → ℂ} {c : Fi
     refine integral_congr_ae ?_
     filter_upwards [hae] with p hp
     rw [← he]
-    exact Mult1.S0.A.integrand_shift Formalism.FourierDecayAlt.P.weyl_subgroup_closed Formalism.FourierDecayAlt.P.unipotent_radical_closed
+    exact Mult1.S0.A.integrand_shift
       Formalism.QuantumDeterminants.unitary_weyl_normal_holds hz c hπ f ξ hh₀ hm₀ hp.1 hp.2
   rw [he] at hMP
   rw [h1, integral_smul, L.integral_comp_comm (fun p => F (e p)), hMP.integral_comp' F]

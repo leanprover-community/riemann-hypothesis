@@ -95,7 +95,7 @@ theorem square (hN : LcNat) (H : RIn l) (r : Roots l) {M N : Model l K} (u : M.X
     (lcM hN H r M n).pull j ((lcPull H r u hu n).pull j h) =
       Model.pullMH u hu n j ((lcM hN H r N n).pull j h) :=
   pull_square (lcPull H r u hu n) (lcM hN H r M n) (lcM hN H r N n) (pullMor (pxMap (okToOC l K) u hu) n) j
-    (fun z => funext fun s => rfl) h
+    (fun _ => funext fun _ => rfl) h
 
 theorem lcRes_id (q : ℕ) {U : Scheme.{0}} (f : LocallyConstant U (ZMod q)) : lcRes q (𝟙 U) f = f := by
   ext v

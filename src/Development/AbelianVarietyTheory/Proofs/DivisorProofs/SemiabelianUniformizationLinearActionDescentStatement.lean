@@ -349,7 +349,7 @@ theorem exists_symL (P : CP G) (a : 𝟙_ (Over S) ⟶ G) (ha : a ^ 2 = 1) :
       rw [Fintype.prod_sum_type]
       simp only [Fin.prod_univ_two, Sum.elim_inl, Sum.elim_inr, Matrix.cons_val_zero, Matrix.cons_val_one,
         hi, Category.comp_id, Category.id_comp, transl_comp_inv a ha]
-      simp only [zpow_one, zpow_neg, inv_inv, mul_inv_cancel, inv_mul_cancel, _root_.mul_one]) _ hm
+      simp only [zpow_one, zpow_neg, inv_inv, inv_mul_cancel, _root_.mul_one]) _ hm
   refine ⟨t, ht, fun T x z J hJ => ?_⟩
   rw [hv _ _ z J hJ, val_mul hJ, val_inv, val_pull hJ, val_pull hJ, comp_transl, ← Category.assoc, Over.w x,
     toUnit_left']

@@ -38,7 +38,7 @@ private theorem mem_pow_vF_of_ne_zero {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMa
   change vF 𝔭 a + 1 ≤ vF 𝔭 a at hc
   omega
 
-theorem unit_part (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F) {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal)
+theorem unit_part {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal)
     {π s₀ : 𝓞 F} (hu : IsUnif0 𝔭 π s₀) {a : 𝓞 F} (ha : a ≠ 0) :
     (algebraMap F K (a : F))⁻¹ * algebraMap F K (π : F) ^ vF 𝔭 a ∈ SP K 𝔭 := by
   haveI := h𝔭.isPrime
@@ -87,7 +87,7 @@ private theorem exists_unit_mul_pow_eq_pow_mul_of_isUnif0 {𝔭 : Ideal (𝓞 F)
   rw [zero_add, pow_one]
   exact fun h => hu.s_notMem (h𝔭.isPrime.mem_of_pow_mem _ h)
 
-theorem unit_part_c (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F) {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal)
+theorem unit_part_c {𝔭 : Ideal (𝓞 F)} (h𝔭 : 𝔭.IsMaximal)
     {π s₀ : 𝓞 F} (hu : IsUnif0 𝔭 π s₀) {a : 𝓞 F} (ha : a ≠ 0) (he : vF 𝔭 a ≠ 0) {c : F}
     (hac : InP 𝔭 (2 * vF 𝔭 a) (algebraMap F K ((a : F) + c))) :
     algebraMap F K c ≠ 0 ∧ (algebraMap F K c)⁻¹ * algebraMap F K (π : F) ^ vF 𝔭 a ∈ SP K 𝔭 := by

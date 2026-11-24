@@ -75,7 +75,7 @@ theorem mem_ch {L : LB A} {q : Y ⟶ A} {i : L.ι} {y : Y} : y ∈ ch L q i ↔ 
   ⟨fun h => Set.mem_iInter.1 h 0, fun h => Set.mem_iInter.2 fun _ => h⟩
 
 theorem exists_const {I : Type} (j : Fin 1 → I) : ∃ i, j = fun _ => i :=
-  ⟨j 0, funext fun k => congrArg j (Subsingleton.elim _ _)⟩
+  ⟨j 0, funext fun _ => congrArg j (Subsingleton.elim _ _)⟩
 
 def sv {L : LB A} {q : Y ⟶ A} (s : LB.Sec (LOne L q)) {Z : Scheme.{0}} (r : Z ⟶ Y) (z : Z) (i : L.ι) :
     Z.presheaf.stalk z := gs r z (ch L q i) (s.f fun _ => i)

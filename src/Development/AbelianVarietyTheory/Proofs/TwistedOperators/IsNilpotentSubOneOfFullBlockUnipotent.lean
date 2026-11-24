@@ -838,7 +838,7 @@ namespace GlobalTheory.BaseFrameUnimod
 
 theorem isLattice_of_squeeze {E M : Type} [Field E] [NumberField E] [AddCommGroup M] [Module E M] [Module (𝓞 E) M]
     [IsScalarTower (𝓞 E) E M] {L Λ : Submodule (𝓞 E) M} (hL : Submodule.IsLattice E L) {c : E} (hc : c ≠ 0)
-    (h1 : ∀ x ∈ L, c • x ∈ Λ) (h2 : ∀ x ∈ Λ, c • x ∈ L) : Submodule.IsLattice E Λ := by
+    (h2 : ∀ x ∈ Λ, c • x ∈ L) : Submodule.IsLattice E Λ := by
   let f : M →ₗ[𝓞 E] M := ((c⁻¹ • LinearMap.id : M →ₗ[E] M)).restrictScalars (𝓞 E)
   have hfg : (L.map f).FG := hL.fg.map f
   have hle : Λ ≤ L.map f := fun x hx => ⟨c • x, h2 x hx, by simp [f, smul_smul, hc]⟩
@@ -882,7 +882,7 @@ theorem isDefUnimod_of_isBaseFrame : ∀ (D : D7) (V : HSp D) (β : GL (Fin V.ra
       rwa [Module.Basis.equivFun_symm_apply]
   refine ⟨Matrix.ext fun i j => (hJ V).1 i j, (hJ V).2.isUnit,
     GlobalTheory.Proof.TotallyDefiniteMass.isTotDef_gram D.sp.cm V hs hp,
-    isLattice_of_squeeze hL (Nat.cast_ne_zero.2 hN.ne') (fun x hx => h1 x ((hmem x).1 hx))
+    isLattice_of_squeeze hL (Nat.cast_ne_zero.2 hN.ne')
       (fun x hx => (hmem _).2 (h2 x hx)), ?_⟩
   rw [← coe_span_dualSet]
   exact congrArg SetLike.coe hdual

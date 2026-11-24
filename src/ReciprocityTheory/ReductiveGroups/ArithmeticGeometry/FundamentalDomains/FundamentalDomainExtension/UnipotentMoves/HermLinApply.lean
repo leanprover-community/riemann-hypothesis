@@ -60,7 +60,7 @@ lemma O_smul {r : ℕ} (β : 𝓞 E) (v : Fin r → E) : β • v = (β : E) •
 end DeltaValuation
 
 open DeltaValuation in
-theorem sDelta_of (hemb : SEmb E) (hext : SExt E) (hdual : SDual E)
+theorem sDelta_of (hext : SExt E) (hdual : SDual E)
     (hP5 : IsotropicCoefficientSplitting (E := E)) (hP6 : NoShortVectorLowerBound (E := E)) : SDelta E := by
   intro r X ξ z1 ep n' hiso hep hn' hz1 hsep
   have hΛp : ∀ μ, μ ∈ X.Λp ξ ↔ μ ∈ X.Λ ∧ herm X.Gm μ ξ = 0 := fun μ => by

@@ -355,7 +355,7 @@ theorem int_conj (hCL : HeisConjLev) (hCM : HeisConjLevMeas) (k r' : ℕ) (A : �
           lintegral_map hH hheis
     _ = _ := rfl
 
-theorem int_prod (k r' : ℕ) {A p q K₁ K₂ e₁ e₂ : ℝ} (hK₁0 : 0 ≤ K₁) (hK₂0 : 0 ≤ K₂)
+theorem int_prod (k r' : ℕ) {A p q K₁ K₂ e₁ e₂ : ℝ} (hK₁0 : 0 ≤ K₁)
     (hK₁ : ∀ a b : ℝ, 0 < a → 0 < b → ∫⁻ y : Fin (2 * r' + k + 1) → ℂ, ENNReal.ofReal ((a + b * ‖y‖) ^ (-p)) ≤
       ENNReal.ofReal (K₁ * a ^ (-p) * (a / b) ^ e₁))
     (hK₂ : ∀ a b : ℝ, 0 < a → 0 < b → ∫⁻ s : ℝ, ENNReal.ofReal ((a + b * ‖s‖) ^ (-q)) ≤
@@ -420,7 +420,7 @@ theorem eInt_bound' (hGL : GNLower) (hHA : HeisAct) (hCL : HeisConjLev) (hCM : H
   refine ⟨2 ^ A * K₁ * K₂, fun c hc g hg => ?_⟩
   have ha : 0 < gN g := lt_of_lt_of_le zero_lt_one (hGL k r' g hg)
   have hc0 : 0 < ‖c‖ := norm_pos_iff.2 hc
-  have B1 := int_prod k r' hK₁0 hK₂0 hK₁ hK₂
+  have B1 := int_prod k r' hK₁0 hK₁ hK₂
     (fun x => ENNReal.ofReal (gN (w0 k r' c * ιLev k 1 r' g * heis0 k r' x) ^ (-A))) ha hc0 hc0
     (fun x => by
       obtain ⟨h1, h2, h3⟩ := pt_un k r' c g x hHA
@@ -429,7 +429,7 @@ theorem eInt_bound' (hGL : GNLower) (hHA : HeisAct) (hCL : HeisConjLev) (hCM : H
         hp0 hq0 h1 h2 h3
       rw [hpq] at this
       exact ENNReal.ofReal_le_ofReal this)
-  have B2 := int_prod k r' hK₁0 hK₂0 hK₁ hK₂
+  have B2 := int_prod k r' hK₁0 hK₁ hK₂
     (fun x => ENNReal.ofReal (gN (w0 k r' c * heis0 k r' x * ιLev k 1 r' g) ^ (-A))) ha one_pos hc0
     (fun x => by
       obtain ⟨h1, h2, h3⟩ := pt_conj k r' c g x hHA
@@ -481,8 +481,8 @@ open Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.Fourier
 def EInt (k r' : ℕ) (A : ℝ) (c : ℂ) (g : Mat k r') : ℝ≥0∞ :=
   ∫⁻ x : HPar k r', ENNReal.ofReal (gN (w0 k r' c * ιLev k 1 r' g * heis0 k r' x) ^ (-A))
 
-theorem eInt_bound (hGL : GNLower) (hHA : HeisAct) (hHC : HeisClosed) (hCL : HeisConjLev) (hCM : HeisConjLevMeas)
-    (k r' : ℕ) (hk : 1 ≤ k) (A : ℝ) (hA : ((4 * r' + 2 * k + 3 : ℕ) : ℝ) < A) :
+theorem eInt_bound (hGL : GNLower) (hHA : HeisAct) (hCL : HeisConjLev) (hCM : HeisConjLevMeas)
+    (k r' : ℕ) (A : ℝ) (hA : ((4 * r' + 2 * k + 3 : ℕ) : ℝ) < A) :
     ∃ C : ℝ, ∀ c : ℂ, c ≠ 0 → ∀ g ∈ GV k r',
       EInt k r' A c g ≤ ENNReal.ofReal (C * min (‖c‖ ^ (-((4 * r' + 2 * k + 3 : ℕ) : ℝ))) ‖c‖⁻¹ *
         gN g ^ (((4 * r' + 2 * k + 3 : ℕ) : ℝ) - A)) := by

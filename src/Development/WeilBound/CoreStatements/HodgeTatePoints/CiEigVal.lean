@@ -64,7 +64,7 @@ namespace PositivityTheory.HtPt.Ci
 variable {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRingCat.of Ω) ⟶ X} {G : Over X} [GrpObj G]
   {V : Type} [AddCommGroup V] [Module Ω V]
 
-theorem span_values [IsCommMonObj G] (hξ : IsCptGen ξ) (hs : Smooth G.hom) (M : LieModel G ξ V) {R : Type}
+theorem span_values [IsCommMonObj G] (hs : Smooth G.hom) (M : LieModel G ξ V) {R : Type}
     [CommRing R] [IsLocalRing R] (z : Spec (CommRingCat.of R) ⟶ X) (h : genPt ξ ⤳ centre z) {ER : Type}
     [AddCommGroup ER] [Module R ER] (MR : LieModel G z ER) :
     Submodule.span R {v | ∃ e, M.ValAt z e (MR.pt v)} = ⊤ := by
@@ -145,7 +145,7 @@ theorem eig_val : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (CommRi
     rw [h3] at h1
     exact (hrz b v).trans (h1.unique hξ h2)
   have htop : ⨆ t, U t = ⊤ := by
-    refine top_le_iff.1 ((span_values hξ hs M z h₀ Mz).symm.le.trans (Submodule.span_le.2 ?_))
+    refine top_le_iff.1 ((span_values hs M z h₀ Mz).symm.le.trans (Submodule.span_le.2 ?_))
     rintro v ⟨x, hx⟩
     obtain ⟨_, hxl⟩ := (M.exists_valAt_iff z x).1 ⟨_, hx⟩
     have key : ∀ x ∈ ⨆ s, M.eigLat r (σ s) ⟨centre z, h₀⟩, ∃ v ∈ ⨆ t, U t, M.ValAt z x (Mz.pt v) := by

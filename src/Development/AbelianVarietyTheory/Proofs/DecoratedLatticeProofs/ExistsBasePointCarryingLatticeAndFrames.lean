@@ -69,7 +69,7 @@ variable {D : D7}
 theorem algebraMap_placeIdem_mem {v : Pl D} {ε : AF D.host.F} (hε : IsPlaceIdem D v ε) :
     algebraMap (AF D.host.F) (AE D) ε ∈ idAt D (· = v) := by
   obtain ⟨α, rfl, -, h0⟩ := hε
-  obtain ⟨hinf, hcomp⟩ := placeIdempotent_infinite_and_finite_components D v _ α rfl
+  obtain ⟨hinf, hcomp⟩ := placeIdempotent_infinite_and_finite_components D _ α rfl
   rw [mem_supportedOnPlacesIdeal_iff_components_zero_elsewhere]
   refine ⟨hinf, fun w hw => ?_⟩
   rw [hcomp, h0 w hw, TensorProduct.zero_tmul]

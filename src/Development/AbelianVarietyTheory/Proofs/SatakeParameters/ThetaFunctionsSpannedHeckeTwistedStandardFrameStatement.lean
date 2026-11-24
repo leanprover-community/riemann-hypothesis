@@ -119,16 +119,16 @@ variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchim
 def flat (n r : ℕ) : Matrix (Fin n) (Fin r) k ≃ₜ (Fin n × Fin r → k) where
   toFun z p := z p.1 p.2
   invFun y := Matrix.of (Function.curry y)
-  left_inv z := rfl
-  right_inv y := rfl
+  left_inv _ := rfl
+  right_inv _ := rfl
   continuous_toFun := continuous_pi fun p => (continuous_apply p.2).comp (continuous_apply p.1)
   continuous_invFun := continuous_pi fun i => continuous_pi fun j => continuous_apply (i, j)
 
 def flatT (n r : ℕ) : Matrix (Fin r) (Fin n) k ≃ₜ (Fin n × Fin r → k) where
   toFun x p := x p.2 p.1
   invFun y := Matrix.of fun j i => y (i, j)
-  left_inv x := rfl
-  right_inv y := rfl
+  left_inv _ := rfl
+  right_inv _ := rfl
   continuous_toFun := continuous_pi fun p => (continuous_apply p.1).comp (continuous_apply p.2)
   continuous_invFun := continuous_pi fun j => continuous_pi fun i => continuous_apply (i, j)
 
@@ -1093,7 +1093,7 @@ theorem main : ∀ (D : D7) (ψ : AddChar (Formalism.MainNotions.GlobalTheoryThe
     (((ηw (Matrix.GeneralLinearGroup.det (Matrix.GeneralLinearGroup.map c.toRingHom (s.loc n h))) : ℂˣ) : ℂ) • τ Φ') (by
       rw [Submodule.coe_smul, hτom μw _ _ Φ Φ' hΦ'']
       congr 2
-      simp [mul_inv_rev, mul_comm])
+      simp [mul_inv_rev])
   simp only [LinearMap.comp_apply, MonoidHom.comp_apply]
   show om (PV.ψ h, PW.ψ g) (Tm (τ Φ)) = _
   rw [key, map_smul]

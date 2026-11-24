@@ -801,7 +801,6 @@ theorem fderiv_rescale_norm_le {e : ℕ} (f : (Fin e → ℂ) → ℝ) (ρ : ℝ
 theorem refine_local_chart {e : ℕ} {X : Type} [TopologicalSpace X] (A B : FinHolAtlas e X)
     (L th : LocPot X) (s : X → X → ℂ) (ph : X → ℝ) (C₅ M : ℝ)
     (hle : ∀ y, logNormSec L s y ≤ 0) (hAB : A.Compatible B)
-    (h2 : ∀ j, closedBall (0 : Fin e → ℂ) 2 ⊆ (B.chart j).target)
     (hM : ∀ j, ∃ (S : Finset (Fin e)) (m : Fin e → ℕ), (∀ i ∈ S, 1 ≤ m i) ∧
       (∀ y ∈ (B.chart j).target, ((B.chart j).symm y ∈ bdry s ↔ ∃ i ∈ S, y i = 0)) ∧
       ∀ y ∈ closedBall (0 : Fin e → ℂ) 2, (B.chart j).symm y ∉ bdry s →
@@ -985,7 +984,7 @@ theorem refine_adapted_atlas : ∀ {e : ℕ} {X : Type} [TopologicalSpace X] [Co
   obtain ⟨hAB, h2, hcov, M, hM⟩ := hAd
   have hcov₀ := hcov
   choose jf hj hj1 using hcov₀
-  have hgood := fun x : X => refine_local_chart A B L th s ph C₅ M hle hAB h2 hM hG (jf x) x (hj x) (hj1 x)
+  have hgood := fun x : X => refine_local_chart A B L th s ph C₅ M hle hAB hM hG (jf x) x (hj x) (hj1 x)
   choose φ hφg hφx hφ1 hφU using hgood
   have hU : ∀ x, φ x ⁻¹' ball 0 1 ∩ (φ x).source ∈ 𝓝 x := by
     intro x

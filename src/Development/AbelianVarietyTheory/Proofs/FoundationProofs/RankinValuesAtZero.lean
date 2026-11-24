@@ -1143,7 +1143,7 @@ open scoped MatrixGroups Real ComplexConjugate Manifold ModularForm
 namespace GlobalTheory.EisM.RankinZero
 
 lemma ch_bdd {M : ℕ} (ξ : DirichletCharacter ℂ M) : ∃ C : ℝ, ∀ x, ‖ch ξ x‖ ≤ C :=
-  ⟨1, fun x => DirichletCharacter.norm_le_one ξ _⟩
+  ⟨1, fun _ => DirichletCharacter.norm_le_one ξ _⟩
 
 lemma lseries_Vo (l : ℕ) (hl : 0 < l) (t : ℂ) (h b : ℕ → ℂ) (hb : ∀ n, n ≠ 0 → b (l * n) = t * b n)
     (W : ℂ) :

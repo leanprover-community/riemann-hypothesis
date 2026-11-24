@@ -206,8 +206,8 @@ theorem nd_pos (a : K → ℕ) {z : (Σ k, J k) → ℂ} (hz : ∀ k, ∃ i, z �
   exact Finset.sum_pos' (fun j _ => by positivity) ⟨i, Finset.mem_univ _, by positivity⟩
 
 theorem continuous_nd (a : K → ℕ) : Continuous (nd (J := J) a) :=
-  continuous_finsetProd _ fun k _ =>
-    (continuous_finsetSum _ fun i _ => (continuous_norm.comp (continuous_apply _)).pow 2).pow _
+  continuous_finsetProd _ fun _ _ =>
+    (continuous_finsetSum _ fun _ _ => (continuous_norm.comp (continuous_apply _)).pow 2).pow _
 
 theorem term_smul {G : MvPolynomial (Σ k, J k) ℂ} {a : K → ℕ} (hG : IsMultiHomog G a) {c : K → ℂ}
     (hc : ∀ k, c k ≠ 0) (z : (Σ k, J k) → ℂ) :

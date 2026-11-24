@@ -383,7 +383,7 @@ private lemma kappaIntBound {K : Type} [Field K] [NumberField K] (p : Nat.Primes
   exact_mod_cast h2
 
 theorem goal1 :
-  ∀ {K : Type} [inst : Field.{0} K] [inst_1 : NumberField.{0} K] (p : Nat.Primes)
+  ∀ {K : Type} [Field.{0} K] [NumberField.{0} K] (p : Nat.Primes)
   (κ : RingHom.{0, 0} K (PadicComplex (Subtype.val.{1} p))),
   Exists.{1} fun (la : IsDedekindDomain.HeightOneSpectrum.{0} (NumberField.RingOfIntegers.{0} K)) ↦
     ∀ (a : K),

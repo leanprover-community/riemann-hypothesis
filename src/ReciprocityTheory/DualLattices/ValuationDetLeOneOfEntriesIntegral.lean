@@ -140,9 +140,8 @@ theorem cosetCoordinateMatrix_add (K : AddSubgroup N) [DecidablePred (· ∈ K)]
   rw [cosetCoordinates_add K β hβ (f j) x k]
   simp [Matrix.vecMul, dotProduct]
 
-theorem valuation_det_cosetCoordinateMatrix_add (hv : v.Integers R) (AA : HopfOrder (C := C) R N) (K : AddSubgroup N) [DecidablePred (· ∈ K)]
+theorem valuation_det_cosetCoordinateMatrix_add (AA : HopfOrder (C := C) R N) (K : AddSubgroup N) [DecidablePred (· ∈ K)]
     (β : Matrix K K C) (hβ : IsUnit β.det)
-    (hAK : AA.carrier.map (resK (R := R) K) = Submodule.span R (Set.range fun j k => β k j))
     (f : K → N → C) (x : N) (k : K) :
     v (h3mm K β f (x + k)).det = v (h3mm K β f x).det := by
   rw [cosetCoordinateMatrix_add K β hβ f x k, Matrix.det_mul, map_mul]

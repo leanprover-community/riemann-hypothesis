@@ -128,7 +128,7 @@ private lemma UpperTheory.Reformulated.B.TotalDegreeLinear.totalDegree_linear_le
   exact (MvPolynomial.totalDegree_X _).le
 
 theorem UpperTheory.Reformulated.B.TotalDegreeLinear.main :
-    ∀ {ι A B : Type} [inst : Fintype ι] (g h : Matrix ι ι ℂ) (p : UpperTheory.Reformulated.B.TotalDegreeLinear.PV ι A B),
+    ∀ {ι A B : Type} [Fintype ι] (g h : Matrix ι ι ℂ) (p : UpperTheory.Reformulated.B.TotalDegreeLinear.PV ι A B),
       MvPolynomial.totalDegree ((UpperTheory.Reformulated.B.TotalDegreeLinear.sub g h : UpperTheory.Reformulated.B.TotalDegreeLinear.PV ι A B → UpperTheory.Reformulated.B.TotalDegreeLinear.PV ι A B) p) ≤
         MvPolynomial.totalDegree p := by
   intro ι A B _ g h p

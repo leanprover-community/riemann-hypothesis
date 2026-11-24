@@ -64,7 +64,7 @@ def matI {D : D7} (X : HidaSetting D) : Matrix (KapI X) (KapI X) ℝ :=
 
 open Classical in
 def DensMu : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf fibInf,
-    PushHyp X u' ψ hT μinf νinf fibInf →
+    PushHyp X u' ψ μinf νinf fibInf →
     μinf.map (tupCoord X) = ENNReal.ofReal (Real.sqrt |(matI X).det|) • volume
 
 end PI.AprimeInfW

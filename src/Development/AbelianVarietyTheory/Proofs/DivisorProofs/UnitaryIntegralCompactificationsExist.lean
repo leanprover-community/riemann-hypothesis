@@ -1729,7 +1729,7 @@ theorem umin_theta_compactification_exists : UMinSt := by
     exact ⟨ξ, h₃, by rw [reassoc_of% h₄, h₂]⟩
   · intro o' Ω _ _ _ _ S ρ u hu' _ M π hM hπ
     exact h_thint_P E H Dw l Xo c o _ n f hodd h3m hu hn hT o' Ω S ρ u hu' M (π ≫ p) (@GlobalTheory.IsNormalScheme.pred _ hM)
-      (by rw [reassoc_of% hπ]; simp only [Category.assoc, hif])
+      (by rw [reassoc_of% hπ]; simp only [hif])
 
 end GlobalTheory
 end -- clump:auto

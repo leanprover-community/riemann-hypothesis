@@ -1009,7 +1009,7 @@ theorem sub_one_dvd_card_GL {r a : ℕ} (ha : 1 ≤ a) (har : a ≤ r) :
   have e : g ^ r = g ^ a * g ^ (r - a) := by rw [← pow_add]; congr 1; omega
   rw [e, Nat.sub_mul, one_mul, mul_comm]
 
-theorem pow_card_GL_eq_one {r : ℕ} (hr : 1 ≤ r) {y : Formalism.CyclotomicNorms.Fbar g} (hy : y ≠ 0) {p : (ZMod g)[X]}
+theorem pow_card_GL_eq_one {r : ℕ} {y : Formalism.CyclotomicNorms.Fbar g} (hy : y ≠ 0) {p : (ZMod g)[X]}
     (hp : p ≠ 0) (hd : p.natDegree ≤ r) (hroot : aeval y p = 0) :
     y ^ Nat.card (GL (Fin r) (ZMod g)) = 1 := by
   set K := IntermediateField.adjoin (ZMod g) ({y} : Set (Formalism.CyclotomicNorms.Fbar g))
@@ -1051,7 +1051,7 @@ theorem alg_spec {r N : ℕ} (hr : 1 ≤ r) (hN : Nat.card (GL (Fin r) (ZMod g))
     rw [Ne, map_eq_zero_iff _ (algebraMap (ZMod g) _).injective]; exact hx
   refine ⟨h0, ?_⟩
   obtain ⟨m, rfl⟩ := hN
-  rw [pow_mul, pow_card_GL_eq_one hr h0 (X_sub_C_ne_zero x) (by rw [natDegree_X_sub_C]; exact hr)
+  rw [pow_mul, pow_card_GL_eq_one h0 (X_sub_C_ne_zero x) (by rw [natDegree_X_sub_C]; exact hr)
     (by rw [map_sub, aeval_X, aeval_C, sub_self]), one_pow]
 
 theorem ySet_spec {r N : ℕ} (hr : 1 ≤ r) (hN : Nat.card (GL (Fin r) (ZMod g)) ∣ N) {S : (ZMod g)[X]}
@@ -1067,7 +1067,7 @@ theorem ySet_spec {r N : ℕ} (hr : 1 ≤ r) (hN : Nat.card (GL (Fin r) (ZMod g)
       exact hS0 hy
     refine ⟨hy0, ?_⟩
     obtain ⟨m, rfl⟩ := hN
-    rw [pow_mul, pow_card_GL_eq_one hr hy0 hS hSd hy, one_pow]
+    rw [pow_mul, pow_card_GL_eq_one hy0 hS hSd hy, one_pow]
   · exact alg_spec hr hN _ c.ne_zero
   · exact alg_spec hr hN _ (c⁻¹).ne_zero
 

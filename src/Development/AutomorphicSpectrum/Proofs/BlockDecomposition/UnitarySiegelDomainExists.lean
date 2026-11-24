@@ -784,7 +784,7 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
   {σ : E →ₐ[F] E} {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {r : ℕ}
 
 theorem ratV_sub (u v : Fin n → E) : ratV F (u - v) = ratV F u - ratV F v :=
-  funext fun i => map_sub (inclR (F := F) (AF F)) _ _
+  funext fun _ => map_sub (inclR (F := F) (AF F)) _ _
 
 theorem mulVec_col {m : ℕ} {M : Matrix (Fin n) (Fin n) (AF F ⊗[F] E)} {X : Matrix (Fin n) (Fin m) E}
     {B : Matrix (Fin m) (Fin m) (AF F ⊗[F] E)} (hB : M * adMat F X = adMat F X * B) (j : Fin m) :
@@ -946,7 +946,7 @@ theorem continuous_coordVec : Continuous fun ξ : Fin n → AF F ⊗[F] E =>
   exact (IsModuleTopology.continuous_of_linearMap
     ((Algebra.TensorProduct.basis (AF F) (Module.finBasis F E)).coord _)).comp (continuous_apply _)
 
-theorem upper_bound (h : IsCMExt F E σ) (x₁ x₂ : Fin n → E) {A₁ A₂ : Set (AF F ⊗[F] E)} (hA₁ : IsCompact A₁)
+theorem upper_bound (x₁ x₂ : Fin n → E) {A₁ A₂ : Set (AF F ⊗[F] E)} (hA₁ : IsCompact A₁)
     (hA₂ : IsCompact A₂) {C : Set (GAd σ J)} (hC : IsCompact C) :
     ∃ P : ℝ, 0 < P ∧ ∀ κ ∈ C, ∀ α₁ ∈ A₁, ∀ α₂ ∈ A₂, ∀ ζ ∈ boxE F E 1, ∀ z ∈ boxF F 1,
       hv ((matHom _ σ J κ⁻¹).1 *ᵥ ((α₁ * ζ) • ratV F x₁ + (α₂ * algebraMap (AF F) (AF F ⊗[F] E) z) • ratV F x₂)) ≤ P := by
@@ -981,7 +981,7 @@ theorem simple_bound : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [Num
   have hA₁ : IsCompact ((fun p : GAd σ J => Bm σ J X Y p⁻¹ 0 0) '' Ω) := hΩ.image (hBc.matrix_elem 0 0)
   have hA₂ : IsCompact ((fun p : GAd σ J => Bm σ J X Y p⁻¹ j j) '' Ω) := hΩ.image (hBc.matrix_elem j j)
   obtain ⟨P, hP, hlow⟩ := _root_.GlobalTheory.CompanionTheory.RedCov.Simple.exists_one_le_mul_hgt F E σ h n J (Ω * C) (hΩ.mul hC)
-  obtain ⟨P₄, hP₄, hup⟩ := upper_bound h (Xᵀ 0) (Xᵀ j) hA₁ hA₂ hC
+  obtain ⟨P₄, hP₄, hup⟩ := upper_bound (Xᵀ 0) (Xᵀ j) hA₁ hA₂ hC
   obtain ⟨K, hKdef⟩ : ∃ K, K = 2 * P * P₄ := ⟨_, rfl⟩
   have hK : 0 < K := by rw [hKdef]; positivity
   obtain ⟨ε, hεdef⟩ : ∃ ε, ε = 1 / (K + 1) := ⟨_, rfl⟩
@@ -1275,7 +1275,7 @@ theorem step {r : ℕ} (h : IsCMExt F E σ) (hJ : IsHermND σ J) {X Y : Matrix (
       rw [hSs]
       exact hc1.trans (h3 i' (by simpa using hi'))
 
-theorem hasRed_zero (h : IsCMExt F E σ) (hJ : IsHermND σ J) {X Y : Matrix (Fin n) (Fin 0) E} : HasRed σ J X Y := by
+theorem hasRed_zero {X Y : Matrix (Fin n) (Fin 0) E} : HasRed σ J X Y := by
   intro a ha
   refine ⟨{1}, 1, isCompact_singleton, one_pos, fun g => ?_⟩
   refine ⟨1, one_mem _, g, ⟨0, fun i => i.elim0, ?_, fun i => i.elim0⟩, 0, ?_, 1, rfl, ?_⟩
@@ -1288,7 +1288,7 @@ theorem hasRed_zero (h : IsCMExt F E σ) (hJ : IsHermND σ J) {X Y : Matrix (Fin
 theorem hasRed_all (h : IsCMExt F E σ) (r : ℕ) : ∀ (n : ℕ) (J : Matrix (Fin n) (Fin n) E) (X Y : Matrix (Fin n) (Fin r) E),
     IsHermND σ J → IsWittFrame σ J X Y → HasRed σ J X Y := by
   induction r with
-  | zero => exact fun n J X Y hJ _ => hasRed_zero h hJ
+  | zero => exact fun n J X Y hJ _ => hasRed_zero
   | succ r ih => exact fun n J X Y hJ hW => step h hJ hW ih
 
 end GlobalTheory.CompanionTheory.RedCov

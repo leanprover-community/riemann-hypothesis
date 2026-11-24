@@ -269,7 +269,7 @@ theorem Z_fix {z : HA R σ J} (hz : z ∈ PI.LevelKSplit.W.NC.Zsub R σ J P) {v 
 theorem Z_f {z : HA R σ J} (hz : z ∈ PI.LevelKSplit.W.NC.Zsub R σ J P) (a : Fin r) :
     lin R σ J z ((datR R σ J P T).f a) - (datR R σ J P T).f a ∈
       Submodule.span (R ⊗[F] E) (Set.range (datR R σ J P T).e) :=
-  fix_f_mem H (nd_datR hJ) (uni_lin z) (fun v hv => Z_fix hJ H hh hz hv) a
+  fix_f_mem H (nd_datR hJ) (uni_lin z) (fun _ hv => Z_fix hJ H hh hz hv) a
 
 theorem yH_mul_Z {g : HA R σ J} (hg : g ∈ PI.LevelKSplit.W.NC.LevelUnipotentSubgroup R σ J P) {z : HA R σ J}
     (hz : z ∈ PI.LevelKSplit.W.NC.Zsub R σ J P) (a : Fin r) :

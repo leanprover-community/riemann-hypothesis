@@ -1009,7 +1009,7 @@ end
 open MvPolynomial NumberField GlobalTheory.ChowHt GlobalTheory.CompHt
 
 theorem PositivityTheory.UnitarySelfGeneration.UnitProductCombination.formHeight_gen {K : Type} [Field K] [NumberField K] {B N m δ : ℕ} (hN : 0 < N)
-    (g : Matrix (Fin N) (Fin m) K) (hg : Submodule.span K (Set.range g.col) = ⊤)
+    (g : Matrix (Fin N) (Fin m) K)
     (A : (K →+* ℂ) → Matrix (Fin N) (Fin N) ℂ) (hA : ∀ σ, (A σ).det ≠ 0)
     (Mt : (K →+* ℂ) → Matrix (Fin m) (Fin m) ℂ)
     (hMt : ∀ (σ : K →+* ℂ) (x : Fin N → ℂ), ∑ a, ‖∑ k, Mt σ k a * ∑ j, σ (g j k) * x j‖ ^ 2 =
@@ -1366,7 +1366,7 @@ theorem ChowFormHeightComparison₂.CF.stForm : ChowFormHeightComparison₂.CF.S
       · intro i
         refine (sum_sum_algebraMap_mul_comm g (fun k => u (i, k)) _).trans ?_
         simpa only [← hxz] using hxu i
-  · rw [← PositivityTheory.UnitarySelfGeneration.UnitProductCombination.formHeight_gen hN g hspan A hA (fun σ => (H.normAt σ).mat⁻¹) ?_ hne hΦ.homog,
+  · rw [← PositivityTheory.UnitarySelfGeneration.UnitProductCombination.formHeight_gen hN g A hA (fun σ => (H.normAt σ).mat⁻¹) ?_ hne hΦ.homog,
       formHeight_one_eq hm H δ (GlobalTheory.HeightUnique.linSubst_ne_zero hgP hne)]
     intro σ x
     have h1 := hH σ x

@@ -63,7 +63,7 @@ namespace GlobalTheory.IdemModTwo
 
 open GlobalTheory.SplitIdem
 
-theorem split_alg {R : Type} [CommRing R] (c : R →+* R) (hcc : ∀ x, c (c x) = x) (e z A : R)
+theorem split_alg {R : Type} [CommRing R] (c : R →+* R) (e z A : R)
     (he : e * e = e) (hec : e * c e = 0) (hA : c A = A) (hz : e * z = A * e)
     (hp : (e + c e) * (z + c z) = e + c e) :
     (e + c e) * z = A * e + (1 - A) * c e ∧ e * (z * c z) = (A - A * A) * e := by
@@ -76,7 +76,7 @@ theorem split_alg {R : Type} [CommRing R] (c : R →+* R) (hcc : ∀ x, c (c x) 
   exact ⟨by linear_combination hz + h1 - hz', by linear_combination (c z - A) * hz + A * h2⟩
 
 theorem val_dichotomy {K Γ : Type*} [Field K] [LinearOrderedCommGroupWithZero Γ] (val : Valuation K Γ)
-    (h2 : val 2 < 1) (h0 : (2 : K) ≠ 0) (a b : K) (hb : val b ≤ 1) (h : a - a * a = 2 * b) :
+    (h2 : val 2 < 1) (a b : K) (hb : val b ≤ 1) (h : a - a * a = 2 * b) :
     ∃ g : K, val g ≤ 1 ∧ (a = 2 * g ∨ 1 - a = 2 * g) := by
   have key : ∀ x y : K, x + y = 1 → x * y = 2 * b → val y < 1 → ∃ g : K, val g ≤ 1 ∧ y = 2 * g := by
     intro x y hxy hm hy
@@ -230,7 +230,7 @@ theorem SplitAt.decomp {v} {e : Formalism.L2.Theta.AE D} (he : SplitAt D v e) (z
     ∃ a : Fv D.host.F v, a - a * a = evalV D.host.F v β ∧
       pl D v * z = fj D (singleV D.host.F v a) * e + fj D (singleV D.host.F v (1 - a)) * cA D e := by
   obtain ⟨a, ha⟩ := he.exists_scalar z
-  obtain ⟨h1, h2⟩ := split_alg (cA D) (cA_invol D) e z _ he.1 he.2.1 (cA_fj D _) ha (by rw [he.2.2, hz])
+  obtain ⟨h1, h2⟩ := split_alg (cA D) e z _ he.1 he.2.1 (cA_fj D _) ha (by rw [he.2.2, hz])
   refine ⟨a, ?_, ?_⟩
   · rw [hβ, ← map_mul, ← map_sub] at h2
     rw [he.scalar_inj h2, map_sub, map_mul, evalV_singleV_same]
@@ -329,7 +329,7 @@ theorem val_two_lt (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (
   have h20 : (2 : Fv F v) ≠ 0 := by
     rw [← map_ofNat (algebraMap F (Fv F v)) 2]
     exact (_root_.map_ne_zero _).2 two_ne_zero
-  obtain ⟨g, hg, hga⟩ := val_dichotomy Valued.v hv2 h20 a _ hvt ha
+  obtain ⟨g, hg, hga⟩ := val_dichotomy Valued.v hv2 a _ hvt ha
   exact ⟨⟨g, hg⟩, hga⟩
 
 theorem exists_local (W : Formalism.L2.Theta.AE D) (h1 : W + cA D W = fj D 1) (t : D.host.F) (ht : IsIntegral ℤ t)

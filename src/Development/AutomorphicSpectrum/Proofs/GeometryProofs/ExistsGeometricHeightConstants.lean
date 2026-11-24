@@ -836,7 +836,7 @@ theorem htU_of_given : Top.Given → Fl.FlatDegree → ∃ Ch : ℝ, ∀ (E : Ty
       have hm := mem_mcPts_of_ptsOver (σ.comp e) hwy
       simp only [RingHom.comp_apply] at hm
       rw [hlog _ hm]
-      simp only [twW, RingHom.comp_apply, zero_add]
+      simp only [twW, zero_add]
       ring)
   rw [hext, hext] at hdec
   have hsum : ∑ σ : L →+* ℂ, x σ ≤ ∑ σ : L →+* ℂ, (Real.log (S'.ref.h fun p => σ (e (w p))) +

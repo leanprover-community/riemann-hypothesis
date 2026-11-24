@@ -102,7 +102,7 @@ theorem continuousAt_matrix_inv {X : Type*} [TopologicalSpace X] {g : ℕ}
   exact (hd.inv₀ h).smul ha
 
 theorem chartRadius_le_log_sum {n a : ℕ} (h : a ≤ n) (z : Fin n → ℂ) (h1 : ∀ k, ‖z k‖ < 1)
-    (h0 : ∀ i : Fin n, i.val < a → z i ≠ 0) :
+    :
     1 ≤ chartRadius h z ∧ chartRadius h z ≤ (Real.exp 1 + 2) *
       (1 + ∑ i ∈ Finset.univ.filter (fun i : Fin n => i.val < a), |Real.log ‖z i‖|) := by
   have hsum : ∑ j : Fin a, |Real.log ‖z (Fin.castLE h j)‖| =
@@ -186,7 +186,7 @@ theorem logPeriods_subframe_det_bounds : ∀ (n a g : ℕ) (Λ : Type) [AddCommG
   rw [hexp] at hAHz
   obtain ⟨hb1, hb2⟩ := hb _ hw (by rw [hexp]; exact hzρ₁)
   rw [hexp] at hb2
-  obtain ⟨hr1, hr2⟩ := chartRadius_le_log_sum L.a_le z hz1 hz0
+  obtain ⟨hr1, hr2⟩ := chartRadius_le_log_sum L.a_le z hz1
   have hx := hd _ hGS ((Q.τ (logLift a z)).map Complex.im) (chartRadius L.a_le z) hr1 hb1 hb2
   set Y := (Q.τ (logLift a z)).map Complex.im with hY
   set S' := ∑ i ∈ Finset.univ.filter (fun i : Fin n => i.val < a), |Real.log ‖z i‖| with hS'

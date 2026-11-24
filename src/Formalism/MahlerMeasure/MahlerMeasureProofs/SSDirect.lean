@@ -501,7 +501,7 @@ lemma good_tie (i : Fin (t + 1)) (e : MvPolynomial (BVar N r t) ℚ_[p]) (he : S
 
 lemma sfree_pair (u w : Fin r → Fin (N + 1) × Fin r) :
     SFree (scalS N r t) (∑ c, X (Sum.inl (u c)) * X (Sum.inl (w c)) : MvPolynomial (BVar N r t) ℚ_[p]) :=
-  SFree.sum _ _ _ (fun c _ => (SFree.X _ (inl_ne_scalS _)).mul _ (SFree.X _ (inl_ne_scalS _)))
+  SFree.sum _ _ _ (fun _ _ => (SFree.X _ (inl_ne_scalS _)).mul _ (SFree.X _ (inl_ne_scalS _)))
 
 def lv (j : Fin t → ℕ) (jp : ℕ) : Fin (t + 1) → ℕ :=
   ∑ i, j i • Pi.single (Fin.castSucc i) 1 + jp • Pi.single (Fin.last t) 1

@@ -312,7 +312,7 @@ theorem exists_affineOpen_comap_logDerivIdealSheafIterate_le (k : Type u) [Field
       ((logDerivIdealSheafIterate k p H a K).comap π).ideal V ≤
         (Blowup.exceptionalIdeal π Z ^ (c - a) *
             logDerivIdealSheafIterate k (π ≫ p) (Blowup.strictTransform π Z H) a
-              (controlledTransform π Z K c hπ hK)).ideal V := by
+              (controlledTransform π Z K c)).ideal V := by
   have hsm : AlgebraicGeometry.Smooth (π ≫ p) := smooth_comp_of_isBlowupAlongIdealSheaf hsnc hπ
   obtain ⟨U0, hxU0, m, c0, S, aH, aE, hZ0, hHnone, hHsome, -, -, -, -⟩ :=
     hsnc.exists_etaleChart_of_cons hx₁
@@ -343,7 +343,7 @@ theorem exists_affineOpen_comap_logDerivIdealSheafIterate_le (k : Type u) [Field
       ((logDerivIdealSheafIterate k p H a K).comap π).ideal ⟨B.domain, hBaff⟩ ≤
         (Blowup.exceptionalIdeal π Z ^ (c - a) *
             logDerivIdealSheafIterate k (π ≫ p) (Blowup.strictTransform π Z H) a
-              (controlledTransform π Z K c hπ hK)).ideal ⟨B.domain, hBaff⟩ := by
+              (controlledTransform π Z K c)).ideal ⟨B.domain, hBaff⟩ := by
     intro hST
     have hST2 : restrictIdeal (Blowup.strictTransform π Z H) B.domain
         = restrictIdeal (⊤ : X₁.IdealSheafData) B.domain := by
@@ -445,7 +445,7 @@ theorem exists_affineOpen_comap_logDerivIdealSheafIterate_le (k : Type u) [Field
         have hJ : Ideal.map φ (K.ideal ⟨U, hUaff⟩) ≤
             Ideal.span {(@EtaleCoordinates.coord k _ (ULift.{u} (Fin m)) Γ(X₁, B.domain) _
                 B.chart.algebra (ULift.up s)) ^ c} *
-              (controlledTransform π Z K c hπ hK).ideal ⟨B.domain, hBaff⟩ := by
+              (controlledTransform π Z K c).ideal ⟨B.domain, hBaff⟩ := by
           rw [hcoordWs, hmapRestrict]
           refine le_of_eq ?_
           rw [← Ideal.span_singleton_pow, ← hEideal, ← ideal_pow_apply, ← ideal_mul_apply,
@@ -461,7 +461,7 @@ theorem exists_affineOpen_comap_logDerivIdealSheafIterate_le (k : Type u) [Field
           φ (uliftFinset m S) (ULift.up s) _
           hin hself hout (up_mem_uliftFinset hsS) hnzd (ULift.up t) (up_mem_uliftFinset htS)
           (fun h => hts (congrArg ULift.down h))
-          (K.ideal ⟨U, hUaff⟩) ((controlledTransform π Z K c hπ hK).ideal ⟨B.domain, hBaff⟩)
+          (K.ideal ⟨U, hUaff⟩) ((controlledTransform π Z K c).ideal ⟨B.domain, hBaff⟩)
           c hJ a ha
         rw [hcoordUt, hcoordWs, hcoordWt, hmapRestrict] at key
         rw [Scheme.IdealSheafData.comap_ideal_eq_map_appLE (logDerivIdealSheafIterate k p H a K) π
@@ -480,7 +480,7 @@ theorem comap_logDerivIdealSheafIterate_le_exceptionalIdeal_pow_mul (k : Type u)
     (logDerivIdealSheafIterate k p H a K).comap π ≤
       Blowup.exceptionalIdeal π Z ^ (c - a) *
         logDerivIdealSheafIterate k (π ≫ p) (Blowup.strictTransform π Z H) a
-          (controlledTransform π Z K c hπ hK) := by
+          (controlledTransform π Z K c) := by
   have hsm : AlgebraicGeometry.Smooth (π ≫ p) := smooth_comp_of_isBlowupAlongIdealSheaf hsnc hπ
   refine le_of_forall_exists_affineOpen ?_
   intro y
@@ -500,7 +500,7 @@ theorem comap_logDerivIdealSheafIterate_le_exceptionalIdeal_pow_mul (k : Type u)
     have hSTV : (Blowup.strictTransform π Z H).ideal V = (H.comap π).ideal V :=
       ideal_eq_of_restrictIdeal_eq _ _ V
         (restrictIdeal_strictTransform_eq_comap_of_le_compl π Z H V.1 hVW)
-    have hCTV : (controlledTransform π Z K c hπ hK).ideal V = (K.comap π).ideal V := by
+    have hCTV : (controlledTransform π Z K c).ideal V = (K.comap π).ideal V := by
       have h := congrArg (fun A : X₁.IdealSheafData => A.ideal V)
         (exceptionalIdeal_pow_mul_controlledTransform π Z K c hπ hK)
       simp only [ideal_mul_apply, ideal_pow_apply, hEV] at h
@@ -508,7 +508,7 @@ theorem comap_logDerivIdealSheafIterate_le_exceptionalIdeal_pow_mul (k : Type u)
       exact h
     have hexcPow : (Blowup.exceptionalIdeal π Z ^ (c - a) *
           logDerivIdealSheafIterate k (π ≫ p) (Blowup.strictTransform π Z H) a
-            (controlledTransform π Z K c hπ hK)).ideal V
+            (controlledTransform π Z K c)).ideal V
         = (logDerivIdealSheafIterate k (π ≫ p) (H.comap π) a (K.comap π)).ideal V := by
       rw [ideal_mul_apply, ideal_pow_apply, hEV, ← Ideal.one_eq_top, one_pow, one_mul,
         logDerivIdealSheafIterate_ideal, logDerivIdealSheafIterate_ideal, hSTV, hCTV]
@@ -1291,7 +1291,7 @@ theorem derivIdealSheafIterate_le_biSup_logDerivIdealSheafIterate_of_blowup
     derivIdealSheafIterate_le_pow_of_hasStrictNormalCrossingsWith k p Z (K 0) (H :: E) hsnc m hK0 l
   obtain ⟨L, hLspec⟩ : ∃ L : ℕ → X₁.IdealSheafData, ∀ l : ℕ,
       Blowup.exceptionalIdeal π Z ^ (m - l) * L l = (derivIdealSheafIterate k p l (K 0)).comap π :=
-    ⟨fun l => controlledTransform π Z (derivIdealSheafIterate k p l (K 0)) (m - l) hπ (hA l),
+    ⟨fun l => controlledTransform π Z (derivIdealSheafIterate k p l (K 0)) (m - l),
       fun l => exceptionalIdeal_pow_mul_controlledTransform π Z (derivIdealSheafIterate k p l (K 0)) (m - l) hπ (hA l)⟩
   have hL0 : L 0 = K' 0 := by
     refine Blowup.IsLocallyGeneratedByNonZeroDivisor.eq_of_mul_eq_mul (hcart.pow (m - 0)) ?_
@@ -1309,7 +1309,7 @@ theorem derivIdealSheafIterate_le_biSup_logDerivIdealSheafIterate_of_blowup
       have ha : l - j ≤ m - j := by omega
       have h3 := comap_logDerivIdealSheafIterate_le_exceptionalIdeal_pow_mul k p π Z H E hsnc hHZ hπ
         (K j) (m - j) (hK j hjm) (l - j) ha
-      have h4 : K' j = controlledTransform π Z (K j) (m - j) hπ (hK j hjm) :=
+      have h4 : K' j = controlledTransform π Z (K j) (m - j) :=
         eq_controlledTransform_of_mul_eq_comap π Z (K j) (m - j) hπ (hK j hjm) (K' j) (hK' j hjm)
       have harith : m - j - (l - j) = m - l := by omega
       rw [h4, ← harith]

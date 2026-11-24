@@ -191,7 +191,7 @@ theorem cosetT_tMat_unit {σ : K →+* K} {u : K} (hσ : σ u = u) (hv : Valued.
     intro i
     simp only [f]
     split_ifs <;> simp [map_zpow₀, hv]
-  exact ⟨t, ht, fSatake_diag_mem_K ht ht' hfval⟩
+  exact ⟨t, ht, fSatake_diag_mem_K ht hfval⟩
 
 theorem cosetT_guMap_mem_KU (g : K ≃+* K) {σ σ' : K →+* K} (hg : ∀ x, g (σ x) = σ' (g x))
     (hint : ∀ x, x ∈ intL K ↔ g x ∈ intL K) {n : ℕ} {k : GU σ n} (hk : k ∈ KU σ n) :

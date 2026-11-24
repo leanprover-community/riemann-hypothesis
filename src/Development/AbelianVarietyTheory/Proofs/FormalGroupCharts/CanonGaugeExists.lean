@@ -962,7 +962,7 @@ theorem mapAt_mapAt {φ ψ : Pt k 1 d} (hψ : ∀ i, constantCoeff (ψ i) = 0)
   rw [h2, subst_pt (cen1 hu)] at h1
   exact h1.symm
 
-theorem mapAt_addAt {ℓ : Pt k 1 d} (hℓ : ∀ i, constantCoeff (ℓ i) = 0)
+theorem mapAt_addAt {ℓ : Pt k 1 d}
     {F : Fin d → PS k 2 d} (hF : ∀ i, constantCoeff (F i) = 0)
     (h : comp1 ℓ (addOf F (pt k (n := 2) d 0) (pt k (n := 2) d 1)) =
       comp1 ℓ (pt k (n := 2) d 0) + comp1 ℓ (pt k (n := 2) d 1))
@@ -1057,7 +1057,7 @@ theorem exists_coboundary_of_symm_cocycle :
   have hexp : ∀ {μ : Type} {u v : Fin d → MvPowerSeries μ k}, Cen u → Cen v →
       addAt G.F (mapAt e u) (mapAt e v) = mapAt e (u + v) := by
     intro μ u v hu hv
-    have h1 := mapAt_addAt hℓ hF hadd (cen_mapAt he hu) (cen_mapAt he hv)
+    have h1 := mapAt_addAt hF hadd (cen_mapAt he hu) (cen_mapAt he hv)
     rw [mapAt_mapAt he hle hu, mapAt_mapAt he hle hv] at h1
     rw [← h1, mapAt_mapAt hℓ hel (cen_addAt hF (cen_mapAt he hu) (cen_mapAt he hv))]
   obtain ⟨B, hB⟩ : ∃ B : MvPowerSeries (Fin d ⊕ Fin d ⊕ Fin d) k,
@@ -1149,7 +1149,7 @@ theorem exists_coboundary_of_symm_cocycle :
     simp only [subst_add hb, subst_X hb, elim_inl, elim_inr] at h1
     have h4 : mapAt ℓ (addOf G.F (pt k (n := 3) d 0) (pt k d 1)) =
         fun i => mapAt ℓ (pt k (n := 3) d 0) i + mapAt ℓ (pt k (n := 3) d 1) i :=
-      mapAt_addAt hℓ hF hadd (hp 0) (hp 1)
+      mapAt_addAt hF hadd (hp 0) (hp 1)
     rw [h4, ← h1]
     ring
 

@@ -342,8 +342,8 @@ private theorem chain_ext {A : Type} [CommRing A] {m : ℕ} (F G : Fin m ⥤ Um 
 private def chainOf {A : Type} [CommRing A] {m : ℕ} (v : Fin m → Aˣ) : Fin m ⥤ Um 1 A where
   obj k := ofU (v k)
   map {a b} _ := arr (v a) (v b)
-  map_id a := rankOne_hom_ext _ _ rfl
-  map_comp f g := rankOne_hom_ext _ _ (mul_one _).symm
+  map_id _ := rankOne_hom_ext _ _ rfl
+  map_comp _ _ := rankOne_hom_ext _ _ (mul_one _).symm
 
 private def phi : Cn ⟶ PGL 1 where
   app k :=

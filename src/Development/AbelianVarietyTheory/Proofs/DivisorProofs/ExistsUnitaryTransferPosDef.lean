@@ -778,7 +778,7 @@ theorem stab_iff_entries {R : Type} [CommRing R] {n : ℕ} (O : Subring R) {X Y 
     rwa [Matrix.mulVec_mulVec, hYX, Matrix.one_mulVec] at this
 
 theorem stab_conj {R : Type} [CommRing R] {n : ℕ} (I Λ : (Fin n → R) → Prop) {A B H G X : Matrix (Fin n) (Fin n) R}
-    (hAB : A * B = 1) (hBA : B * A = 1) (hHG : H * G = 1)
+    (hBA : B * A = 1) (hHG : H * G = 1)
     (hΛ : ∀ y, Λ y ↔ I (B.mulVec (H.mulVec y))) :
     (∀ y, Λ y ↔ Λ ((G * (A * X * B) * H).mulVec y)) ↔ ∀ z, I z ↔ I (X.mulVec z) := by
   have key : ∀ y, B.mulVec (H.mulVec ((G * (A * X * B) * H).mulVec y)) = X.mulVec (B.mulVec (H.mulVec y)) := fun y => by
@@ -879,7 +879,7 @@ theorem cj_mem_hyp_iff : ∀ (D : D7) [IsCMField D.host.E] (V : HSp D) (j : UA D
         ∀ a b u, (cLoc u x⁻¹).1 a b ∈ u.adicCompletionIntegers D.host.E := by
     rw [cj_apply, finMat_mul, finMat_mul, hj]
     exact (stab_conj (fun z => ∀ i, z i ∈ intRing D.host.F D.host.E)
-      (fun y => y ∈ latHat D.host.F D.host.E (L0c D V)) hAB hBA hHG
+      (fun y => y ∈ latHat D.host.F D.host.E (L0c D V)) hBA hHG
       fun y => (hlat y).trans (forall_congr' fun i => hO _)).trans (stab_finComp_iff D.host.F x)
   constructor
   · rintro ⟨⟨h1, h2, -⟩, e, f, hef, h3⟩

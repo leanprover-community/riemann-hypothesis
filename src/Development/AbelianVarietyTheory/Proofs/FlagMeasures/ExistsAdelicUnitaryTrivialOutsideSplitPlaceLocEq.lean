@@ -195,13 +195,13 @@ theorem Ep_mul_P (s : SplitPlace L) (δ : L) (d : L⁺) (hd : δ * δ = algebraM
 theorem Em_mul_P (s : SplitPlace L) (δ : L) (d : L⁺) (hd : δ * δ = algebraMap L⁺ L d) (hr : s.i δ ≠ 0) : Em s δ * ιs s 1 = Em s δ := by
   linear_combination (-(Em s δ)) * Ep_add_Em s δ d hd hr + Em_mul_Em s δ d hd hr + Ep_mul_Em s δ d hd hr
 
-theorem proj_Ep (s : SplitPlace L) (δ : L) (d : L⁺) (hd : δ * δ = algebraMap L⁺ L d) (hr : s.i δ ≠ 0) : s.proj (Ep s δ) = 1 := by
+theorem proj_Ep (s : SplitPlace L) (δ : L) (d : L⁺) (hr : s.i δ ≠ 0) : s.proj (Ep s δ) = 1 := by
   have h2 := two_ne s
   rw [Ep, map_add (f := _), map_mul, proj_ιs, proj_ιs, proj_tt]
   field_simp
   ring
 
-theorem proj_Em (s : SplitPlace L) (δ : L) (d : L⁺) (hd : δ * δ = algebraMap L⁺ L d) (hr : s.i δ ≠ 0) : s.proj (Em s δ) = 0 := by
+theorem proj_Em (s : SplitPlace L) (δ : L) (d : L⁺) (hr : s.i δ ≠ 0) : s.proj (Em s δ) = 0 := by
   have h2 := two_ne s
   rw [Em, map_sub, map_mul, proj_ιs, proj_ιs, proj_tt]
   field_simp
@@ -268,8 +268,8 @@ theorem θ_apply (s : SplitPlace L) (δ : L) (d : L⁺) (hd : δ * δ = algebraM
 
 theorem proj_θ (s : SplitPlace L) (δ : L) (d : L⁺) (hd : δ * δ = algebraMap L⁺ L d) (hr : s.i δ ≠ 0)
     (q : s.v.adicCompletion L⁺ × s.v.adicCompletion L⁺ × AL L) : s.proj (θ s δ d hd hr q) = q.1 := by
-  rw [θ_apply, map_add (f := _), map_add (f := _), map_mul, map_mul, map_mul, map_sub, map_one, proj_Ep s δ d hd hr,
-    proj_Em s δ d hd hr, proj_ιs, proj_ιs, proj_ιs]
+  rw [θ_apply, map_add (f := _), map_add (f := _), map_mul, map_mul, map_mul, map_sub, map_one, proj_Ep s δ d hr,
+    proj_Em s δ d hr, proj_ιs, proj_ιs, proj_ιs]
   ring
 
 theorem compAt_θ (s : SplitPlace L) (δ : L) (d : L⁺) (hd : δ * δ = algebraMap L⁺ L d) (hr : s.i δ ≠ 0)

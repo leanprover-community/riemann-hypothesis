@@ -113,7 +113,7 @@ theorem paPoly_exists {c : ℕ} {F : EuclideanSpace ℂ ι → ℂ} (hF : F ∈ 
     simpa using hp
 
 theorem paJet_mem (c : ℕ) (H : EuclideanSpace ℂ ι → ℂ) : paJet c H ∈ paPoly c :=
-  Submodule.sum_mem _ fun α hα => Submodule.smul_mem _ _ (paMono_mem hα)
+  Submodule.sum_mem _ fun _ hα => Submodule.smul_mem _ _ (paMono_mem hα)
 
 theorem paPoly_fd (c : ℕ) : FiniteDimensional ℂ (paPoly (ι := ι) c) :=
   FiniteDimensional.span_of_finite ℂ ((paS c).finite_toSet.image _)
@@ -203,7 +203,7 @@ theorem pa_integrable_of_le {E' : Type*} [NormedAddCommGroup E'] {f : EuclideanS
   rw [mul_assoc]
   exact mul_le_mul_of_nonneg_left (pa_pow_gauss_le n hb (norm_nonneg v)) hC
 
-theorem pa_bound2 {q c : ℕ} (hq : 1 ≤ q) {F G : EuclideanSpace ℂ ι → ℂ} (hF : F ∈ paPoly c)
+theorem pa_bound2 {q c : ℕ} {F G : EuclideanSpace ℂ ι → ℂ} (hF : F ∈ paPoly c)
     (hG : G ∈ paPoly c) : ∃ C : ℝ, 0 ≤ C ∧ ∀ v, ‖F v‖ * ‖G v‖ * paW q v ≤
       C * ((1 + ‖v‖) ^ (2 * c) * Real.exp (-(q * Real.pi) * ‖v‖ ^ 2)) := by
   obtain ⟨C1, h1, hC1⟩ := paPoly_growth hF
@@ -219,7 +219,7 @@ theorem pa_bound2 {q c : ℕ} (hq : 1 ≤ q) {F G : EuclideanSpace ℂ ι → �
 theorem gaussianInner_integrable {q c : ℕ} (hq : 1 ≤ q) {F G : EuclideanSpace ℂ ι → ℂ} (hF : F ∈ paPoly c)
     (hG : G ∈ paPoly c) :
     Integrable (fun v => F v * (starRingEnd ℂ) (G v) * (paW q v : ℂ)) := by
-  obtain ⟨C, hC, h⟩ := pa_bound2 hq hF hG
+  obtain ⟨C, hC, h⟩ := pa_bound2 hF hG
   have hb : 0 < (q : ℝ) * Real.pi := by
     have : (1 : ℝ) ≤ q := by exact_mod_cast hq
     positivity

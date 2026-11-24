@@ -433,7 +433,7 @@ def valEquiv {Ω : Type} [Field Ω] [CharZero Ω] {Z : Scheme.{0}} (ζ : Sp Ω �
       obtain ⟨x, hx⟩ := this
       exact ⟨x, Subtype.ext hx⟩⟩
 
-theorem smoothOfRelativeDimension_basicOpen_of_away : ∀ (Ω : Type) [Field Ω] [CharZero Ω] (Z : Scheme.{0}) (ζ : Sp Ω ⟶ Z) [IsDominant ζ] [IsReduced Z] (g : Z ⟶ Sp ℚ) (e : ℕ) (W : Z.Opens) (hW : IsAffineOpen W) (h : ⊤ ≤ ζ ⁻¹ᵁ W) (A : Subalgebra ℚ Ω) (hA : Set.range (valMap ζ W h).hom = A) (σ : Γ(Z, W)) (g₀ : A) (hg : (g₀ : Ω) = valR ζ W σ) [Algebra.IsStandardSmoothOfRelativeDimension e ℚ (Localization.Away g₀)], SmoothOfRelativeDimension e ((Z.basicOpen σ).ι ≫ g) := by
+theorem smoothOfRelativeDimension_basicOpen_of_away : ∀ (Ω : Type) [Field Ω] [CharZero Ω] (Z : Scheme.{0}) (ζ : Sp Ω ⟶ Z) [IsDominant ζ] [IsReduced Z] (g : Z ⟶ Sp ℚ) (e : ℕ) (W : Z.Opens) (_ : IsAffineOpen W) (h : ⊤ ≤ ζ ⁻¹ᵁ W) (A : Subalgebra ℚ Ω) (_ : Set.range (valMap ζ W h).hom = A) (σ : Γ(Z, W)) (g₀ : A) (_ : (g₀ : Ω) = valR ζ W σ) [Algebra.IsStandardSmoothOfRelativeDimension e ℚ (Localization.Away g₀)], SmoothOfRelativeDimension e ((Z.basicOpen σ).ι ≫ g) := by
   intro Ω _ _ Z ζ _ _ g e W hW h A hA σ g₀ hg _
   haveI := hW.isLocalization_basicOpen σ
   have hE : valEquiv ζ W h A hA σ = g₀ := by
@@ -755,7 +755,7 @@ theorem final_data (y : (Σ k, ι k) → Ω) (e : ℕ) (β : MRing ι) (N : ℕ)
   _root_.GlobalTheory.CompanionTheory.Ar.SegreChart.final_data_main Ω K ι y e β N E d Gz r x' hG h0 hβ hx' hF hch
 
 theorem adjoin_seg_le (y : (Σ k, ι k) → Ω) (N : ℕ) (E : Fin (N + 1) ≃ ((k : K) → ι k)) (c₀ : Fin (N + 1))
-    (hc : ∀ k, y ⟨k, E c₀ k⟩ ≠ 0) :
+    :
     IntermediateField.adjoin ℚ ((Algebra.adjoin ℚ (Set.range fun j => (∏ k, y ⟨k, E j k⟩) / ∏ k, y ⟨k, E c₀ k⟩) :
       Subalgebra ℚ Ω) : Set Ω) ≤ blockFnField y := by
   rw [IntermediateField.adjoin_le_iff]
@@ -796,7 +796,7 @@ theorem exists_snc_model : ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResKSta
         rw [GlobalTheory.CompanionTheory.Ar.ProjCoord.aeval_mul_of_isHomogeneous x _ hG]
         exact mul_eq_zero_of_right _ h
       exact hg0 (Subtype.ext (hg₀.trans h1))) hz hx'
-    (fun i l hl => adjoin_seg_le y N E c₀ hE (hF i l hl)) (fun a l ha hl => hch a l ha hl)
+    (fun i l hl => adjoin_seg_le y N E c₀ (hF i l hl)) (fun a l ha hl => hch a l ha hl)
   exact ⟨r + 1, y', J, h⟩
 end Top
 

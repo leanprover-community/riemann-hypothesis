@@ -116,8 +116,8 @@ private theorem data_genSub_irred_of_highest_weight_mem (hσ : IsURepOn (UJset �
 
 theorem data_genSub_irred (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D E)
     (hV : IsKIrrHW ε E (lowK ε lam) V) (hc : ∀ v ∈ V, casimir E v = (casVal lam : ℂ) • v)
-    (hVK : ∀ k ∈ Kset ε, ∀ v ∈ V, ∃ w ∈ V, (w : H) = σ k v) (N : Submodule ℂ D) (hN : N ≤ genSub E V)
-    (hNE : ∀ a b, ∀ x ∈ N, E a b x ∈ N) (hNK : ∀ k ∈ Kset ε, ∀ x ∈ N, ∃ y ∈ N, (y : H) = σ k x) :
+    (N : Submodule ℂ D) (hN : N ≤ genSub E V)
+    (hNE : ∀ a b, ∀ x ∈ N, E a b x ∈ N) :
     N = ⊥ ∨ N = genSub E V := by
   exact data_genSub_irred_of_highest_weight_mem hσ hD hV
     (khw_lowK_mem hD.glRep (isInfUnitary_of_isDerivedOn hσ hD) hV hc hgap) N hN hNE
@@ -150,9 +150,9 @@ private theorem data_end_scalar_of_highest_weight_mem (hσ : IsURepOn (UJset ε)
 
 theorem data_end_scalar (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D E)
     (hV : IsKIrrHW ε E (lowK ε lam) V) (hc : ∀ v ∈ V, casimir E v = (casVal lam : ℂ) • v)
-    (hVK : ∀ k ∈ Kset ε, ∀ v ∈ V, ∃ w ∈ V, (w : H) = σ k v) (A : D →ₗ[ℂ] D) (hA : ∀ x ∈ genSub E V, A x ∈ genSub E V)
+    (A : D →ₗ[ℂ] D) (hA : ∀ x ∈ genSub E V, A x ∈ genSub E V)
     (hAE : ∀ a b, ∀ x ∈ genSub E V, A (E a b x) = E a b (A x))
-    (hAK : ∀ k ∈ Kset ε, ∀ x ∈ genSub E V, ∀ y ∈ genSub E V, (y : H) = σ k x → (A y : H) = σ k (A x)) :
+    :
     ∃ c : ℂ, ∀ x ∈ genSub E V, A x = c • x := by
   exact data_end_scalar_of_highest_weight_mem hσ hD hV
     (khw_lowK_mem hD.glRep (isInfUnitary_of_isDerivedOn hσ hD) hV hc hgap) A hA hAE

@@ -725,13 +725,13 @@ theorem isUnit_pred (l : ℕ) [hl : Fact l.Prime] (LL : FinExt l) : IsUnit ((l -
   simpa using h3.map (algebraMap ℤ_[l] ↥(OL LL))
 
 theorem cutDataL_of (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
-    (hAdm : AdmSplitA D HW F Cm) (h6 : Formalism.MainNotions.DeltaInvariantLattices.P6 D HW F) (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW F)
-    (hTr : Formalism.MainNotions.LiftingTheory.ExistsUnitClasses D HW F) (hWX : Formalism.MainNotions.LiftingTheory.WachKillsQuotients D HW F) (hX : Split.DDExactL D HW) :
+    (hAdm : AdmSplitA D HW F Cm) (h6 : Formalism.MainNotions.DeltaInvariantLattices.P6 D HW F) (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW)
+    (hTr : Formalism.MainNotions.LiftingTheory.ExistsUnitClasses D HW) (hWX : Formalism.MainNotions.LiftingTheory.WachKillsQuotients D HW) (hX : Split.DDExactL D HW) :
     Split.CutDataL D HW := by
   obtain ⟨-, h9, -, hJ, -, hF1, hRel, hArc⟩ := hAdm
   intro l _ K LL hG hA h5
   have := neZero_finrank_max_unramified K
-  have hone := Formalism.MainNotions.LiftingTheory.lone_HOne0_holds D HW F l K 1 LL hG
+  have hone := Formalism.MainNotions.LiftingTheory.lone_HOne0_holds D HW l K 1 LL hG
   refine cutData_of _ Subtype.val_injective (fun x hx => ⟨⟨x, ((D.loc l).v_O LL x).1 hx⟩, rfl⟩)
     hone (fun hCA => ?_) (h9 l K 1 LL hG) (h6 l K 1 LL hG)
     (hH l K 1 LL hG) (hTr l K 1 LL hG) (hJ l K LL) (hF1 l K LL hG hA h5) (hRel l K LL hG hA h5)
@@ -747,8 +747,8 @@ namespace Formalism.MainNotions.UnusedSlot80
 open Formalism.BasicNotions Formalism.BasicNotions.Loc
 
 theorem splitting_of_lifting_chain (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
-    (Cm : CmpOf D.loc D.locA HW F) (h6 : Formalism.MainNotions.DeltaInvariantLattices.P6 D HW F) (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW F)
-    (hTr : Formalism.MainNotions.LiftingTheory.ExistsUnitClasses D HW F) (hWX : Formalism.MainNotions.LiftingTheory.WachKillsQuotients D HW F) (hX : Split.DDExactL D HW)
+    (Cm : CmpOf D.loc D.locA HW F) (h6 : Formalism.MainNotions.DeltaInvariantLattices.P6 D HW F) (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW)
+    (hTr : Formalism.MainNotions.LiftingTheory.ExistsUnitClasses D HW) (hWX : Formalism.MainNotions.LiftingTheory.WachKillsQuotients D HW) (hX : Split.DDExactL D HW)
     (hS : Split.SplitShapeL D HW) : SplittingTheoremArcLifting D HW F Cm := by
   unfold SplittingTheoremArcLifting
   intro hAdm
@@ -756,7 +756,7 @@ theorem splitting_of_lifting_chain (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D
 
 theorem splitting_general_of_exactness (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW)
     (Cm : CmpOf D.loc D.locA HW F) (hAdm : AdmSplitA D HW F Cm) (h6 : Formalism.MainNotions.DeltaInvariantLattices.P6 D HW F)
-    (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW F) (hTr : Formalism.MainNotions.LiftingTheory.ExistsUnitClasses D HW F) (hWX : Formalism.MainNotions.LiftingTheory.WachKillsQuotients D HW F)
+    (hH : Formalism.MainNotions.LiftingTheory.ConclusionH D HW) (hTr : Formalism.MainNotions.LiftingTheory.ExistsUnitClasses D HW) (hWX : Formalism.MainNotions.LiftingTheory.WachKillsQuotients D HW)
     (hX : Split.DDExactL D HW) (hS : Split.SplitShapeL D HW) : SplittingArcLifting D HW F Cm := by
   exact splitting_of_lifting_chain D HW F Cm h6 hH hTr hWX hX hS hAdm
 

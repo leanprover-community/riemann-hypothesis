@@ -87,7 +87,7 @@ theorem br_monomial_eq (s : Fin r →₀ ℕ) (c : K) :
 def brRen (K : Type) [Field K] (r : ℕ) : MvPolynomial (Fin r) K →ₐ[K] MvPolynomial (Unit × Fin r) K :=
   rename fun a => ((), a)
 
-theorem brRen_inj : Function.Injective (fun a : Fin r => ((), a)) := fun a b h => congrArg Prod.snd h
+theorem brRen_inj : Function.Injective (fun a : Fin r => ((), a)) := fun _ _ h => congrArg Prod.snd h
 
 theorem brRen_monomial (s : Fin r →₀ ℕ) (c : K) : brRen K r (monomial s c) = C c * monoL (K := K) (fun a => s a) := by
   rw [br_monomial_eq, map_mul, map_prod]
@@ -1013,7 +1013,7 @@ namespace Formalism.MainNotions.PlaneGram
 
 open Formalism.MainNotions.G
 
-theorem stmt (D : Formalism.BasicNotions.D7) {CH : ℝ} (hCH : 26 ≤ CH) : Formalism.MainNotions.PlaneGramData.Stmt D CH 2 24 60 := by
+theorem stmt (D : Formalism.BasicNotions.D7) {CH : ℝ} (hCH : 26 ≤ CH) : Formalism.MainNotions.PlaneGramData.Stmt CH 2 24 60 := by
   intro p O _ _ _ _ hSet hAdm
   obtain ⟨⟨S⟩, n', hG⟩ := hSet
   obtain ⟨-, h2, h3, h4, h5, h6⟩ := hAdm

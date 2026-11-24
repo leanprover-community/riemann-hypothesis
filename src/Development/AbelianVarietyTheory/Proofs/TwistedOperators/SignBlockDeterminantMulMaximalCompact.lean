@@ -60,7 +60,7 @@ theorem kset_apply_eq_zero {n : ℕ} {ε : Fin n → Bool} {g : Matrix (Fin n) (
     simp at h <;> first | linear_combination (1 / 2 : ℂ) * h | linear_combination (-1 / 2 : ℂ) * h
 
 theorem signBlockDeterminant_mul_maximalCompact {n : ℕ} {ε : Fin n → Bool} (e : Bool) {g h : Matrix (Fin n) (Fin n) ℂ}
-    (hg : g ∈ Formalism.REAL.Kset ε) (hh : h ∈ Formalism.REAL.Kset ε) : signBlockDeterminant ε e (g * h) = signBlockDeterminant ε e g * signBlockDeterminant ε e h := by
+    (hg : g ∈ Formalism.REAL.Kset ε) : signBlockDeterminant ε e (g * h) = signBlockDeterminant ε e g * signBlockDeterminant ε e h := by
   classical
   unfold signBlockDeterminant
   rw [← Matrix.det_mul]

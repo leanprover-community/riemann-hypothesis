@@ -159,7 +159,7 @@ section -- clump:auto
 @[expose] public section
 
 noncomputable def UpperTheory.Reformulated.B.RestrictAutomorphism.zlW :
-    (l : ℕ) → [inst : Fact (Nat.Prime l)] → (R : Type) → [inst_1 : CommRing R] → [CharP R l] → ℤ_[l] →+* WittVector l R :=
+    (l : ℕ) → [Fact (Nat.Prime l)] → (R : Type) → [CommRing R] → [CharP R l] → ℤ_[l] →+* WittVector l R :=
     fun (l : ℕ) [Fact (Nat.Prime l)] (R : Type) [CommRing R] [CharP R l] ↦
       (WittVector.map (ZMod.castHom (dvd_refl l) R)).comp (WittVector.equiv l).symm.toRingHom
 
@@ -212,8 +212,8 @@ private def restrictAut (p : ℕ) [Fact p.Prime] {R : Type} [CommRing R] [CharP 
     (σ : R ≃+* R) : algPart p R ≃+* algPart p R where
   toFun y := ⟨σ y, map_mem_algPart σ y.2⟩
   invFun y := ⟨σ.symm y, map_mem_algPart σ.symm y.2⟩
-  left_inv y := Subtype.ext (σ.symm_apply_apply _)
-  right_inv y := Subtype.ext (σ.apply_symm_apply _)
+  left_inv _ := Subtype.ext (σ.symm_apply_apply _)
+  right_inv _ := Subtype.ext (σ.apply_symm_apply _)
   map_mul' a b := Subtype.ext (map_mul σ (a : R) b)
   map_add' a b := Subtype.ext (map_add σ (a : R) b)
 
@@ -232,8 +232,8 @@ private def restrictHom (p : ℕ) [Fact p.Prime] {G : Type} [Group G] {R : Type}
 end UpperTheory.Reformulated.B.RestrictAutomorphism
 
 theorem UpperTheory.Reformulated.B.RestrictAutomorphism.exists_alg :
-    ∀ {p : ℕ} [hp : Fact (Nat.Prime p)] {G : Type} [inst : Group G] {R : Type} [inst_1 : CommRing R] (ρ : G →* R ≃+* R)
-      [inst_2 : TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G] [IsDomain R] [inst_6 : CharP R p],
+    ∀ {p : ℕ} [Fact (Nat.Prime p)] {G : Type} [Group G] {R : Type} [CommRing R] (ρ : G →* R ≃+* R)
+      [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G] [IsDomain R] [CharP R p],
       (∀ (y : R) (m : ℕ), (0 : ℕ) < m → y ^ p ^ m = y → ∀ᶠ (g : G) in nhds (1 : G), ((ρ : G → R ≃+* R) g : R → R) y = y) →
         ∀ {r : ℕ} (M : G →* Matrix (Fin r) (Fin r) ℤ_[p]),
           Continuous (⇑M : G → Matrix (Fin r) (Fin r) ℤ_[p]) →

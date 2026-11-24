@@ -107,7 +107,7 @@ private theorem casimirK_eq_casValK_smul_of_isKHWVec {X : Type*} [AddCommGroup X
   simp only [hρ, mul_sub, Finset.mul_sum, mul_ite, mul_one, mul_zero, Finset.sum_add_distrib,
     Finset.sum_sub_distrib, hC]
 
-theorem crossOp_khw (hE : IsGlRep E) (hU : IsInfUnitary ε E) (hV : IsKIrrHW ε E (lowK ε lam) V) {x : Big n 1 M} (hx : x ∈ ncV ε V 1) (hx0 : x ≠ 0)
+theorem crossOp_khw (hE : IsGlRep E) (hV : IsKIrrHW ε E (lowK ε lam) V) {x : Big n 1 M} (hx : x ∈ ncV ε V 1) (hx0 : x ≠ 0)
     {ν : Fin n → ℝ} (hν : IsKHWVec ε (bAct E 1) ν x) :
     ∃ r s : Fin n, ε r ≠ ε s ∧ ν = lowK ε lam + root r s ∧
       (2 : ℂ) • crossOp ε E 1 0 x =
@@ -130,7 +130,7 @@ theorem crossOp_khw (hE : IsGlRep E) (hU : IsInfUnitary ε E) (hV : IsKIrrHW ε 
     rw [sub_smul, sub_smul, hcas]
     abel
 
-theorem Wm_kStable (hE : IsGlRep E) (hU : IsInfUnitary ε E) (hV : IsKIrrHW ε E (lowK ε lam) V) : IsKStableSub ε (bAct E 1) (Wm ε E V) := by
+theorem Wm_kStable (hE : IsGlRep E) (hV : IsKIrrHW ε E (lowK ε lam) V) : IsKStableSub ε (bAct E 1) (Wm ε E V) := by
   intro a b hab v hv
   have hVs : IsKStableSub ε E V := hV.2.1
   have hle : Wm ε E V ≤ (Wm ε E V).comap (bAct E 1 a b) := by

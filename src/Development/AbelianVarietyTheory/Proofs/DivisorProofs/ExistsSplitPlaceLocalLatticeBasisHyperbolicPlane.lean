@@ -106,7 +106,7 @@ theorem exists_isSplitBasis_plane_of_indep : ∀ (F E : Type) [Field F] [NumberF
     simp [hM, colMat, h01.ne']
   have hcj : ∀ j : Fin n₁, (fun r => M r ⟨skip i₀ i₁ j, skip_lt j.2⟩) = fun r => (ι.map τ * β₁.1) r j :=
     fun j => funext fun r => by
-      simp [hM, colMat, skip_ne_left h01, skip_ne_right h01, unskip_skip h01, j.2]
+      simp [hM, colMat, skip_ne_left, skip_ne_right h01, unskip_skip, j.2]
   have hPx : (fun r => τ (x r)) ∈ P := hc0 ▸ Submodule.subset_span ⟨_, rfl⟩
   have hPy : (fun r => τ (y r)) ∈ P := hc1 ▸ Submodule.subset_span ⟨_, rfl⟩
   have hPcol : ∀ j : Fin n₁, (fun r => (ι.map τ * β₁.1) r j) ∈ P := fun j =>

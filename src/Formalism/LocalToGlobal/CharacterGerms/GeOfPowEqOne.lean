@@ -60,7 +60,7 @@ theorem InL.smul {l : ℕ} {f : PowerSeries C} (hf : InL l f) (c : C) : InL l (c
   fun m hm => by rw [PowerSeries.coeff_smul, hf m hm, smul_zero]
 
 theorem InL.zero {l : ℕ} : InL l (0 : PowerSeries C) :=
-  fun m _ => map_zero _
+  fun _ _ => map_zero _
 
 theorem InL.sum {l : ℕ} {ι : Type} (s : Finset ι) (f : ι → PowerSeries C) (hf : ∀ i ∈ s, InL l (f i)) :
     InL l (∑ i ∈ s, f i) :=

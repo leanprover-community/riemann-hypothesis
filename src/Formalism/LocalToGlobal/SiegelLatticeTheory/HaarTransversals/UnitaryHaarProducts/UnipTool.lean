@@ -353,7 +353,7 @@ theorem sharp_cay_sub_one (hJ : Graded lv T J) (hJ' : Graded lv T J') (h : J' * 
 
 theorem step_mat (hJ : Graded lv T J) (hJ' : Graded lv T J') (hJh : Jᴴ = J) (hJ'h : J'ᴴ = J')
     (h : J' * J = 1) (h' : J * J' = 1) (N : ℕ) {x Y : Matrix ι ι K} (hx : xᴴ * J * x = J)
-    (hx1 : InPat lv k (x - 1)) (hY : InPat lv k Y) (hYs : Yᴴ * J = -(J * Y)) :
+    (hx1 : InPat lv k (x - 1)) (hY : InPat lv k Y) :
     InPat lv (k + k) (sharp J J' (cay (N + 1) Y) * x *
       sharp J J' (cay (N + 1) (proj J J' (x - 1) - Y)) - 1) := by
   have hSf : InPat lv k (proj J J' (x - 1)) := inPat_proj hJ hJ' hx1

@@ -66,7 +66,7 @@ theorem coef_memLp_all (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀
     MemLp (fun g : Formalism.REAL.UJ ε =>
       inner ℂ (uniformisationL2 ε Ψ v₀ T.w) (rreg ε (Formalism.MainNotions.S.umat g) (x : L2 ε))) 2 (Formalism.REAL.muG ε) := by
   set w₀ : Hlam ε Ψ v₀ := ⟨uniformisationL2 ε Ψ v₀ T.w, datumEmbedding_mem_Hlam hP T.w⟩ with hw₀
-  have hne : w₀ ≠ 0 := fun h => datumEmbedding_highest_ne_zero hgap hP hv₀ (congrArg Subtype.val h)
+  have hne : w₀ ≠ 0 := fun h => datumEmbedding_highest_ne_zero hP hv₀ (congrArg Subtype.val h)
   have e : ∀ z : Hlam ε Ψ v₀, (fun g : Formalism.REAL.UJ ε => ⟪w₀, sigLam ε Ψ v₀ (Formalism.MainNotions.S.umat g) z⟫_ℂ) =
       fun g => inner ℂ (uniformisationL2 ε Ψ v₀ T.w) (rreg ε (Formalism.MainNotions.S.umat g) (z : L2 ε)) :=
     fun z => funext fun g => inner_sigLam_umat hgap hP hv₀ w₀ z g
@@ -92,7 +92,7 @@ theorem coef_memLp_all (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀
 theorem sqInt_sigLam (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) : Formalism.MainNotions.S.IsSqIntOn ε (sigLam ε Ψ v₀) := by
   intro v w
   set w₀ : Hlam ε Ψ v₀ := ⟨uniformisationL2 ε Ψ v₀ T.w, datumEmbedding_mem_Hlam hP T.w⟩ with hw₀
-  have hne : w₀ ≠ 0 := fun h => datumEmbedding_highest_ne_zero hgap hP hv₀ (congrArg Subtype.val h)
+  have hne : w₀ ≠ 0 := fun h => datumEmbedding_highest_ne_zero hP hv₀ (congrArg Subtype.val h)
   have hA : ∀ z : Hlam ε Ψ v₀,
       MemLp (fun g : Formalism.REAL.UJ ε => ⟪w₀, sigLam ε Ψ v₀ (Formalism.MainNotions.S.umat g) z⟫_ℂ) 2 (Formalism.REAL.muG ε) := by
     intro z
@@ -135,7 +135,7 @@ variable {n : ℕ} {ε : Fin n → Bool} {lam : Fin n → ℝ} {T : S7.KType ε 
 
 theorem isDS_sigLam (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ : v₀ ≠ 0) : Formalism.MainNotions.S.IsDS ε lam (sigLam ε Ψ v₀) := by
   unfold Formalism.MainNotions.S.IsDS
-  refine ⟨?_, Hlam_nontrivial hgap hP hv₀, sigLam_isURepOn hgap hP hv₀, sigLam_irred hgap hP hv₀,
+  refine ⟨?_, Hlam_nontrivial hP hv₀, sigLam_isURepOn hgap hP hv₀, sigLam_irred hgap hP hv₀,
     sqInt_sigLam hgap hP hv₀, ⟨_, (sigLam_lowK hgap hP hv₀).1⟩,
     fun μ S hS => (sigLam_kType_bounds hgap hP hv₀ S hS).1⟩
   first

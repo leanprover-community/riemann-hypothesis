@@ -82,7 +82,7 @@ theorem eq_smul_of_eigenvector {G V : Type} [Group G] [AddCommGroup V] [Module �
   have hE : E ≠ ⊥ := fun h => hw (by
     have h1 : w ∈ E.toSubmodule := by
       show w ∈ LinearMap.ker (π z - c • (1 : Module.End ℂ V))
-      simp [sub_eq_zero, hc]
+      simp [hc]
     rw [h] at h1
     exact (Submodule.mem_bot ℂ).1 h1)
   have hT : E = ⊤ := (eq_bot_or_eq_top E).resolve_left hE
@@ -176,8 +176,8 @@ theorem eq_zero_of_nu_eq (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (
   exact (mul_eq_zero.1 h11).resolve_right (Real.log_ne_zero_of_pos_of_ne_one hpos hne)
 
 theorem nu_natCast_inj : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-    (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (x : IrrGL (k := k)) (hx : x.IsCusp) (a b : ℕ)
-    (h : x.nu (a : ℂ) = x.nu (b : ℂ)), a = b := by
+    (_ : GlobalTheory.Published.IrreducibleAdmissibleGL) (x : IrrGL (k := k)) (_ : x.IsCusp) (a b : ℕ)
+    (_ : x.nu (a : ℂ) = x.nu (b : ℂ)), a = b := by
   intro k _ _ _ _ hA x hx a b h
   have h1 : x.nu (((a : ℝ) - (b : ℝ) : ℝ) : ℂ) = x := by
     have h2 := congrArg (fun y => IrrGL.nu y (-(b : ℂ))) h

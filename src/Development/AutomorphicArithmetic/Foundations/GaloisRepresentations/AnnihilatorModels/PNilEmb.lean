@@ -51,8 +51,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qk66.aeval_comm :
-    ∀ {L M N : Type} [inst : Field L]
-    [inst_1 : AddCommGroup M] [inst_2 : _root_.Module L M] [inst_3 : AddCommGroup N] [inst_4 : _root_.Module L N]
+    ∀ {L M N : Type} [Field L]
+    [AddCommGroup M] [_root_.Module L M] [AddCommGroup N] [_root_.Module L N]
     (φ : M →ₗ[L] N) (A : Module.End L M) (A' : Module.End L N),
     (∀ (y : M), (φ : M → N) ((A : M → M) y) = (A' : N → N) ((φ : M → N) y)) →
       ∀ (Q : Polynomial L) (y : M),

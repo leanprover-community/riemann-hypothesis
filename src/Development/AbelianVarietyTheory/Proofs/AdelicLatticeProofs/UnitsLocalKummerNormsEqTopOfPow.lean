@@ -66,7 +66,7 @@ open scoped WithZero TensorProduct
 
 namespace GlobalTheory.CNorm
 
-theorem exists_unit_norm_eq_of_algHom : ∀ (K A : Type) [Field K] [CommRing A] [Algebra K A] [Module.Finite K A] [IsReduced A] (ψ : A →ₐ[K] K) (c : K), c ≠ 0 → ∃ y : Aˣ, Algebra.norm K (y : A) = c := by
+theorem exists_unit_norm_eq_of_algHom : ∀ (K A : Type) [Field K] [CommRing A] [Algebra K A] [Module.Finite K A] [IsReduced A] (_ : A →ₐ[K] K) (c : K), c ≠ 0 → ∃ y : Aˣ, Algebra.norm K (y : A) = c := by
   intro K A _ _ _ _ _ ψ c hc
   have : IsArtinianRing A := IsArtinianRing.of_finite K A
   have : IsSemisimpleRing A := IsArtinianRing.isSemisimpleRing_of_isReduced A

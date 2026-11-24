@@ -182,7 +182,7 @@ theorem crdI_span (𝔄 : FractionalIdeal (nonZeroDivisors (𝓞 E)) E) (h𝔄 :
   · subst h; simp; field_simp
   · simp [h, Ne.symm h]
 
-theorem crdI_lat (𝔄 : FractionalIdeal (nonZeroDivisors (𝓞 E)) E) (h𝔄 : 𝔄 ≠ 0) {X : Data E r}
+theorem crdI_lat (𝔄 : FractionalIdeal (nonZeroDivisors (𝓞 E)) E) {X : Data E r}
     (cu : CuspFD X ρ) : Submodule.IsLattice ℚ ((crdI 𝔄 cu).restrictScalars ℤ) :=
   Submodule.IsLattice.of_fg ℚ ((crdI_fg 𝔄 cu).restrictScalars)
 
@@ -192,7 +192,7 @@ theorem exists_basis (𝔄 : FractionalIdeal (nonZeroDivisors (𝓞 E)) E) (h�
   classical
   set X0 := (crdI 𝔄 cu).restrictScalars ℤ
   letI : Submodule.IsFullLattice ℚ X0 := {
-    toIsLattice := crdI_lat 𝔄 h𝔄 cu
+    toIsLattice := crdI_lat 𝔄 cu
     span_eq_top := by rw [Submodule.coe_restrictScalars]; exact crdI_span 𝔄 h𝔄 cu }
   letI : Module.Finite ℤ X0 := Submodule.IsLattice.finite ℚ X0
   letI : Module.Free ℤ X0 := Submodule.IsLattice.free ℚ X0

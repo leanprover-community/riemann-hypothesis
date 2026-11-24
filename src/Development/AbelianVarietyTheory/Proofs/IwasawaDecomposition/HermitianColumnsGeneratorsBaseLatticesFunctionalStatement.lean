@@ -300,7 +300,7 @@ theorem sup_dual_eq (σ : E →+* E) {n : ℕ} (t pb : 𝓞 E) (ht : (t : E) ≠
             intro c hc
             have := hy _ hc
             rw [hform_one] at this
-            rw [Finset.sum_eq_single j (fun b _ hb => by simp [Pi.single_apply, hb]) (by simp)] at this
+            rw [Finset.sum_eq_single j (fun b _ hb => by simp [hb]) (by simp)] at this
             simpa using this
           show ((pb • y) j) ∈ _
           rw [Pi.smul_apply, Algebra.smul_def]

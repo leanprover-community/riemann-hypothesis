@@ -253,7 +253,7 @@ theorem exists_coords (H : Host E) (z : E) : ∃ α β : maximalRealSubfield E,
     field_simp
     ring
 
-theorem exists_mul_norm_eq (x : maximalRealSubfield E) (hx : x ≠ 0) {I J : Ideal (𝓞 E)}
+theorem exists_mul_norm_eq (x : maximalRealSubfield E) {I J : Ideal (𝓞 E)}
     (hI : I ≠ ⊥) (hJ : J ≠ ⊥) (σ : 𝓞 E →+* 𝓞 E)
     (hσ : ∀ a, ((σ a : 𝓞 E) : E) = IsCMField.complexConj E (a : E))
     (h : FractionalIdeal.spanSingleton (𝓞 E)⁰ (x : E)
@@ -398,7 +398,7 @@ namespace GlobalTheory
 open LocalNorm in
 theorem local_norm_of_ideal_norm : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (x : maximalRealSubfield E), x ≠ 0 → (∃ I J : Ideal (𝓞 E), I ≠ ⊥ ∧ J ≠ ⊥ ∧ FractionalIdeal.spanSingleton (𝓞 E)⁰ ((x : E)) * ((I * I.map (H.bar : 𝓞 E →+* 𝓞 E) : Ideal (𝓞 E)) : FractionalIdeal (𝓞 E)⁰ E) = ((J * J.map (H.bar : 𝓞 E →+* 𝓞 E) : Ideal (𝓞 E)) : FractionalIdeal (𝓞 E)⁰ E)) → (∀ v : IsDedekindDomain.HeightOneSpectrum (𝓞 (maximalRealSubfield E)), ∃ a b : v.adicCompletion (maximalRealSubfield E), algebraMap (maximalRealSubfield E) (v.adicCompletion (maximalRealSubfield E)) x = a ^ 2 - algebraMap (maximalRealSubfield E) (v.adicCompletion (maximalRealSubfield E)) (-(H.d : maximalRealSubfield E)) * b ^ 2) := by
   rintro E _ _ _ H x hx ⟨I, J, hI, hJ, h⟩ v
-  obtain ⟨z₁, z₂, u, hz, hu, hxu⟩ := LocalNorm.exists_mul_norm_eq x hx hI hJ _ H.bar_eq h v
+  obtain ⟨z₁, z₂, u, hz, hu, hxu⟩ := LocalNorm.exists_mul_norm_eq x hI hJ _ H.bar_eq h v
   obtain ⟨a₀, b₀, h₀⟩ := LocalNorm.exists_eq_sq_add_of_notMem H v hu
   obtain ⟨a₁, b₁, -, h₁⟩ := LocalNorm.exists_coords H z₁
   obtain ⟨a₂, b₂, -, h₂⟩ := LocalNorm.exists_coords H z₂

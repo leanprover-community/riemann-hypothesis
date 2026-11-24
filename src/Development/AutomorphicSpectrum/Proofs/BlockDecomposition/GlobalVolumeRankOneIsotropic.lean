@@ -813,7 +813,7 @@ theorem fib_compact_lt_top {V X Y : Type} [TopologicalSpace V] [LocallyCompactSp
     {K : Set V} (hK : IsCompact K) (hKU : K ⊆ U) : fib b K < ⊤ := by
   obtain ⟨φ, hc, hcs, hs, h0, -, h1⟩ := GlobalTheory.CompanionTheory.SW.FibreFam.exists_bump hK hU hKU
   have hi := (h.2.2 φ hc hcs hs).1 b (Set.mem_univ b)
-  refine lt_of_le_of_lt (GlobalTheory.CompanionTheory.SW.FibreFam.le_lintegral_bump _ hK h0 h1) ?_
+  refine lt_of_le_of_lt (GlobalTheory.CompanionTheory.SW.FibreFam.le_lintegral_bump _ hK h1) ?_
   exact hi.lintegral_lt_top
 
 theorem local_pack_free {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]

@@ -468,7 +468,7 @@ end ShNu
 
 
 open ShNu in
-theorem lattice_norm_conj_invariant (v : HeightOneSpectrum (𝓞 F)) (σ : E →ₐ[F] E) (hcm : IsCMExt F E σ) {n : ℕ}
+theorem lattice_norm_conj_invariant (v : HeightOneSpectrum (𝓞 F)) (σ : E →ₐ[F] E) {n : ℕ}
     (lam : Measure (Fin n → Fv F v ⊗[F] E)) [lam.IsAddHaarMeasure] (L₁ L₂ : AddSubgroup (Fin n → Fv F v ⊗[F] E))
     (h₁ : IsCO L₁) (h₂ : IsCO L₂) :
     ∃ r > 0, ∀ x : Matrix (Fin n) (Fin n) (Fv F v ⊗[F] E), nM v x ≤ r → ∀ B : Matrix (Fin n) (Fin n) (Fv F v ⊗[F] E),
@@ -781,7 +781,7 @@ theorem exists_nM_pert (σ : E →ₐ[F] E) (n : ℕ) : ∃ C, 0 ≤ C ∧ ∀ x
     (max_le_max ((nM_add_le (v := v) (cs σ x * b) (b * x))) le_rfl)
   exact hmax.trans (max_le_product_bound hCm hCs ha hx hb h1 h2 h3)
 
-theorem mul_le_half_of_small {C r : ℝ} (hC : 0 ≤ C) (hr : r ≤ 1 / (2 * (C + 1))) (_hr0 : 0 ≤ r) : C * r ≤ 1 / 2 := by
+theorem mul_le_half_of_small {C r : ℝ} (hC : 0 ≤ C) (hr : r ≤ 1 / (2 * (C + 1))) : C * r ≤ 1 / 2 := by
   have h : C * r ≤ C * (1 / (2 * (C + 1))) := mul_le_mul_of_nonneg_left hr hC
   refine h.trans ?_
   rw [mul_one_div, div_le_div_iff₀ (by positivity) (by norm_num)]
@@ -794,7 +794,7 @@ theorem exists_normPres (σ : E →ₐ[F] E) (n : ℕ) : ∃ r > 0, ∀ x : Matr
   obtain ⟨C, hC, h⟩ := exists_nM_pert v σ n
   refine ⟨min 1 (1 / (2 * (C + 1))), by positivity, fun x hx b => ?_⟩
   have hx1 : nM v x ≤ 1 := hx.trans (min_le_left _ _)
-  have hsm : C * nM v x ≤ 1 / 2 := mul_le_half_of_small hC (hx.trans (min_le_right _ _)) (nM_nonneg x)
+  have hsm : C * nM v x ≤ 1 / 2 := mul_le_half_of_small hC (hx.trans (min_le_right _ _))
   refine (congrArg (nM v) ((expand b x).trans (add_assoc _ _ _))).trans ?_
   rcases (nM_nonneg (v := v) b).lt_or_eq with hb | hb
   · apply nM_add_eq_of_lt
@@ -813,7 +813,7 @@ theorem exists_inv (n : ℕ) : ∃ r > 0, ∀ x : Matrix (Fin n) (Fin n) (Fv F v
   obtain ⟨Cm, hCm, hm⟩ := exists_nM_mul (E := E) v n n n
   refine ⟨min r₀ (1 / (2 * (Cm + 1))), by positivity, fun x hx => ?_⟩
   have hu := hdet x (hx.trans (min_le_left _ _))
-  have hsm : Cm * nM v x ≤ 1 / 2 := mul_le_half_of_small hCm (hx.trans (min_le_right _ _)) (nM_nonneg x)
+  have hsm : Cm * nM v x ≤ 1 / 2 := mul_le_half_of_small hCm (hx.trans (min_le_right _ _))
   obtain ⟨x', hx'⟩ : ∃ x' : Matrix (Fin n) (Fin n) (Fv F v ⊗[F] E), x' = (1 + x)⁻¹ - 1 := ⟨_, rfl⟩
   have h1 : (1 + x) * (1 + x') = 1 := by rw [hx', add_sub_cancel, Matrix.mul_nonsing_inv _ hu]
   have h1' : (1 + x') * (1 + x) = 1 := by rw [hx', add_sub_cancel, Matrix.nonsing_inv_mul _ hu]
@@ -1085,7 +1085,7 @@ theorem shellP_core {F E : Type} [Field F] [NumberField F] [Field E] [NumberFiel
   obtain ⟨r1, hr1, hpres⟩ := exists_normPres v σ n
   obtain ⟨r2, hr2, hinv⟩ := exists_inv (E := E) v n
   obtain ⟨r3, hr3, hJ⟩ := _root_.PositivityTheory.SiegelWeilFormula.SwLocFin.SwSplit.jtR_conj_inv' v σ h.cm J (psiV F ψ v) μv Φv h.sb
-  obtain ⟨r4, hr4, hnu⟩ := lattice_norm_conj_invariant v σ h.cm lam L₁ L₂ h.co₁ h.co₂
+  obtain ⟨r4, hr4, hnu⟩ := lattice_norm_conj_invariant v σ lam L₁ L₂ h.co₁ h.co₂
   obtain ⟨Cq, hCq, hquad⟩ := exists_quad v σ T.1
   obtain ⟨Cν, hCν, hnt⟩ := exists_nontriv v σ h.cm h.chr T.1 h.unit
   obtain ⟨ε, hε, hsmall⟩ := exists_psiV_small (v := v) h.chr
@@ -1178,7 +1178,7 @@ theorem shellP_core {F E : Type} [Field F] [NumberField F] [Field E] [NumberFiel
 
 end Shell
 
-theorem shellP : ShellP := fun F E _ _ _ _ _ σ M J n ψ v μv νv lam L₁ L₂ Φv g T h q hq =>
+theorem shellP : ShellP := fun _ _ _ _ _ _ _ σ M J n ψ v μv νv lam L₁ L₂ Φv g T h q hq =>
   Shell.shellP_core σ M J n ψ v μv νv lam L₁ L₂ Φv g T h q hq
 
 end PositivityTheory.SiegelWeilFormula.SwLocFin

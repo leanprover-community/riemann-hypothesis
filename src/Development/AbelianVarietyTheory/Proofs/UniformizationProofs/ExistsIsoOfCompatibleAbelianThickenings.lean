@@ -84,7 +84,7 @@ theorem mem_wc {g : Y ⟶ X} {j : Fin 1 → L.ι} {y : Y} :
     exact h⟩
 
 theorem fin_one_const {α : Type} (p : Fin 1 → α) : p = fun _ => p 0 :=
-  funext fun κ => congrArg p (Subsingleton.elim _ _)
+  funext fun _ => congrArg p (Subsingleton.elim _ _)
 
 theorem exists_conv (g : Y ⟶ X) {n : ℕ} (s : H0 (L.pull g) n) :
     ∃ s' : LB.Sec (LB.LinComb L (K := Fin 1) (fun _ => g) (fun _ => (n : ℤ))),

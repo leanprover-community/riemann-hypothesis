@@ -980,7 +980,7 @@ theorem expConj_alt : GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Pub
   ∀ s h P, ρ.IsDatum ((Fm.ex x hx i).nch.twI w) j ((Fm.ex x hx i).nch.sd w) s h P →
     P ∈ ρ.lat ((Fm.ex x hx i).nch.twI w) j ((Fm.ex x hx i).nch.sd w) (smallInt (Fm.D x i)) h →
     ∀ f, rdAt p w j hρ ν f = ρ.theta ((Fm.ex x hx i).nch.twI w) j ((Fm.ex x hx i).nch.sd w) h P →
-      ∀ (n : ℕ) (a : Fin n → NX.KB p.Sx ((Fm.ex x hx i).nch.twI w) ((Fm.ex x hx i).nch.sd w))
+      ∀ (n : ℕ) (a : Fin n → NX.KB ((Fm.ex x hx i).nch.twI w))
         (g : Fin n → NX.FmK p.Sx ((j : ℕ) + 1)),
         p.nexp.eF ((Fm.ex x hx i).nch.twI w) _ ((Fm.ex x hx i).nch.sd w) (Nat.le_add_left _ _) j.2 f =
           ∑ k, a k ⊗ₜ[p.Sx.Ks] g k →

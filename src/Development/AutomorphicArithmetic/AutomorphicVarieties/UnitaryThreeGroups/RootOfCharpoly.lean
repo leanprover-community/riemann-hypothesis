@@ -169,7 +169,7 @@ theorem UpperTheory.V.U3.pt_fixed :
       (D : Dat Ω K c e ψ)
       {U : (_root_.UpperTheory.V.U3.Univ (_root_.UpperTheory.V.U3.GCond.noCondition _ (D.η.comp D.ι) (D.Ψ.comp D.ι)))}
       {g₁ : G ℚ Ω}, D.Marked g₁ →
-      ∀ {r : G ℚ Ω →* GG (m := 3) (R := PadicAlgCl l)} (h : D.IsPt U g₁ r),
+      ∀ {r : G ℚ Ω →* GG (m := 3) (R := PadicAlgCl l)} (_ : D.IsPt U g₁ r),
       Upper D.η r → Lower D.η r → r = r0 D.η D.ΨQ := by
   intro hC Ω _ _ _ K _ _ _ l _ c N _ e ψ D U g₁ hM r h hU hL
   obtain ⟨a, ha⟩ := exists_diag D.η r h.mult hU hL

@@ -225,7 +225,7 @@ section -- clump:auto
 
 open Complex MeasureTheory
 
-private lemma UpperTheory.fourier_vanishing_homogeneous (F : ℝ → ℂ) (hc : Continuous F) (hp : ∀ t, F (t + Real.pi) = F t)
+private lemma UpperTheory.fourier_vanishing_homogeneous (F : ℝ → ℂ)
     (h : ∀ (e : ℕ) (p : MvPolynomial (Fin 2) ℂ), p.IsHomogeneous (2 * e) →
       ∫ t in (0 : ℝ)..2 * Real.pi,
         MvPolynomial.eval ![(Real.sin t : ℂ), (Real.cos t : ℂ)] p * F t = 0)
@@ -286,14 +286,14 @@ theorem UpperTheory.eq_zero_of_orthogonal_even_homogeneous_trig :
       rw [this]; ring
     have hz : ∫ t in (0 : ℝ)..2 * Real.pi, cexp ((-(2 * n : ℂ)) * (t * I)) * F t = 0 := by
       rcases le_total 0 n with hn | hn
-      · have := UpperTheory.fourier_vanishing_homogeneous F hc hp h (-1) (Or.inr rfl) n.toNat
+      · have := UpperTheory.fourier_vanishing_homogeneous F h (-1) (Or.inr rfl) n.toNat
         have e : ((n.toNat : ℕ) : ℂ) = (n : ℂ) := by
           exact_mod_cast congrArg (fun z : ℤ => (z : ℂ)) (Int.toNat_of_nonneg hn)
         rw [e] at this
         rw [← this]
         refine intervalIntegral.integral_congr fun t _ => ?_
         simp only [neg_mul, one_mul]
-      · have := UpperTheory.fourier_vanishing_homogeneous F hc hp h 1 (Or.inl rfl) (-n).toNat
+      · have := UpperTheory.fourier_vanishing_homogeneous F h 1 (Or.inl rfl) (-n).toNat
         have e : (((-n).toNat : ℕ) : ℂ) = -(n : ℂ) := by
           have h2 : (((-n).toNat : ℕ) : ℤ) = -n := Int.toNat_of_nonneg (neg_nonneg.2 hn)
           rw [← Int.cast_natCast, h2, Int.cast_neg]
@@ -493,7 +493,7 @@ private theorem pack {D : Dat ℚ E} {ω χ : HChar ℚ} {φ : GL (Fin 2) (A E) 
     (∀ t, Integrable fun y : ℝ => Wo D φ (em E (aE (iy y) * rot t)) * ((χ.1 (iy y) : ℂˣ) : ℂ) * (y : ℂ) ^ k * ((|y| : ℝ) : ℂ) ^ (s - 2)) ∧
     Continuous fun t => ∫ y : ℝ, Wo D φ (em E (aE (iy y) * rot t)) * ((χ.1 (iy y) : ℂˣ) : ℂ) * (y : ℂ) ^ k * ((|y| : ℝ) : ℂ) ^ (s - 2) :=
   UpperTheory.integrable_and_continuous_mellinIntegral_of_rapidDecay (fun y t => Wo D φ (em E (aE (iy y) * rot t))) (fun y => ((χ.1 (iy y) : ℂˣ) : ℂ)) k s
-    (contOn_Wo D h.cont h.bdd) ((Units.continuous_val.comp χ.2.1).comp_continuousOn contOn_iy) (fun y => hχ _)
+    (contOn_Wo D h.cont h.bdd) ((Units.continuous_val.comp χ.2.1).comp_continuousOn contOn_iy) (fun _ => hχ _)
     (dec_of h) hs
 
 private theorem zero_of {D : Dat ℚ E} {ω χ : HChar ℚ} {φ : GL (Fin 2) (A E) → ℂ} (h : admitted D ω φ)

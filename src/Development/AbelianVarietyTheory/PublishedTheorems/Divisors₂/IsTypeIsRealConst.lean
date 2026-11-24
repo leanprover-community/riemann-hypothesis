@@ -163,7 +163,7 @@ theorem dens_vol (n : ℕ) : dens (vol n : Alt n) = 1 := by
 
 theorem coefwise_smul {T : (V n → ℂ) → ℂ} (hT : T (fun _ => 0) = 0) (u : V n → ℂ) (S : Finset (Fin (n + n))) :
     coefwise T (fun x => u x • bas n S) = T u • bas n S := by
-  rw [coefwise, Finset.sum_eq_single S (fun S' _ h => by simp [Finsupp.single_apply, h.symm, hT]) (by simp)]
+  rw [coefwise, Finset.sum_eq_single S (fun S' _ h => by simp [h.symm, hT]) (by simp)]
   simp
 
 end Point

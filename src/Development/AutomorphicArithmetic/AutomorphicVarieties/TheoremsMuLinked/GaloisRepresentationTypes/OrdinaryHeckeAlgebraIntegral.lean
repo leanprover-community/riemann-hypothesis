@@ -148,7 +148,7 @@ private theorem dO_pol {O : Type} [CommRing O] {n : ℕ} (P P' A A' B B' Y Z W :
   simpa only [← Matrix.mul_assoc, hP', Matrix.one_mul] using this
 
 private theorem dO_sym {O : Type} [CommRing O] {n : ℕ} (P P' Y : Matrix (Fin n) (Fin n) O)
-    (hP : P * P' = 1) (hP' : P' * P = 1) (hs : Pᵀ = P ∨ Pᵀ = -P) :
+    (hP : P * P' = 1) (hs : Pᵀ = P ∨ Pᵀ = -P) :
     P * (Y + P' * Yᵀ * P) = (Y + P' * Yᵀ * P)ᵀ * P := by
   have f2 : P * (P' * Yᵀ * P) = Yᵀ * P := by
     rw [← Matrix.mul_assoc, ← Matrix.mul_assoc, hP, Matrix.one_mul]
@@ -192,7 +192,7 @@ theorem UpperTheory.V.Th.detO :
     fun g => hY0 _ _ _ _ (hY g)
   have hP1 : (y.P : Matrix (Fin n) (Fin n) c.O) * (y.P⁻¹ : GL (Fin n) c.O) = 1 := Units.mul_inv _
   have hP2 : ((y.P⁻¹ : GL (Fin n) c.O) : Matrix (Fin n) (Fin n) c.O) * y.P = 1 := Units.inv_mul _
-  refine ⟨a + a, Y0 + (y.P⁻¹ : GL (Fin n) c.O) * Y0ᵀ * y.P, ?_, dO_sym _ _ _ hP1 hP2 y.sgn, fun g => ?_⟩
+  refine ⟨a + a, Y0 + (y.P⁻¹ : GL (Fin n) c.O) * Y0ᵀ * y.P, ?_, dO_sym _ _ _ hP1 y.sgn, fun g => ?_⟩
   · rw [← two_mul]
     exact mul_ne_zero two_ne_zero ha
   have hcc : G0.frame.conj (G0.frame.conj g) = g := by

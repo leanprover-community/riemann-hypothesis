@@ -237,7 +237,7 @@ theorem psi_neg_trPair (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (ψ : AddChar
   push_cast
   ring
 
-theorem nuInf_eq (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (ψ : AddChar (AF F) ℂ) {ι : Type} [Fintype ι]
+theorem nuInf_eq (σ : E →ₐ[F] E) (ψ : AddChar (AF F) ℂ) {ι : Type} [Fintype ι]
     (θ : ι → (Ainf F ⊗[F] E →+* ℂ)) (l : ι → ℝ) (hP : IsPlaces σ ψ θ l) {n : ℕ} (g : ι → GL (Fin n) ℂ)
     (b : HermR (Ainf F) σ n) :
     nuInf θ g (b : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)) = ∏ i, WR.dP (ybAll σ θ g b i) := by
@@ -245,9 +245,9 @@ theorem nuInf_eq (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (ψ : AddChar (AF F
   refine Finset.prod_congr rfl fun i _ => ?_
   rw [WR.dP, herm_ybAll σ ψ θ l hP g b i]
 
-theorem gram_preimage_box (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (ψ : AddChar (AF F) ℂ) {ι : Type} [Fintype ι]
+theorem gram_preimage_box (σ : E →ₐ[F] E) (ψ : AddChar (AF F) ℂ) {ι : Type} [Fintype ι]
     (θ : ι → (Ainf F ⊗[F] E →+* ℂ)) (l : ι → ℝ) (hP : IsPlaces σ ψ θ l) {M n : ℕ} (J : Matrix (Fin M) (Fin M) E)
-    (hJ : IsHermND σ J) (ε : ι → Fin M → Bool) (fr : ι → GL (Fin M) ℂ) (hfr : IsFrames J θ ε fr)
+    (ε : ι → Fin M → Bool) (fr : ι → GL (Fin M) ℂ) (hfr : IsFrames J θ ε fr)
     (g : ι → GL (Fin n) ℂ) (K : ι → Set (WR.E n)) :
     gramR (Ainf F) σ J ⁻¹' (Subtype.val '' (ygAll σ θ g ⁻¹' Set.univ.pi K)) =
       crdAll θ fr g ⁻¹' Set.univ.pi (fun i => gramX (ε i) ⁻¹' (herm '' K i)) := by
@@ -306,7 +306,7 @@ theorem pairHerm_comm (σ : E →ₐ[F] E) {n : ℕ} (S T : HermR (Ainf F) σ n)
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => mul_comm _ _
 
-theorem det_herm_ygAll (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (ψ : AddChar (AF F) ℂ) {ι : Type} [Fintype ι]
+theorem det_herm_ygAll (σ : E →ₐ[F] E) (ψ : AddChar (AF F) ℂ) {ι : Type} [Fintype ι]
     (θ : ι → (Ainf F ⊗[F] E →+* ℂ)) (l : ι → ℝ) (hP : IsPlaces σ ψ θ l) {n : ℕ} (g : ι → GL (Fin n) ℂ)
     (S : HermR (Ainf F) σ n) (hS : IsUnit (S : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)).det) (i : ι) :
     (herm (ygAll σ θ g S i)).det ≠ 0 := by

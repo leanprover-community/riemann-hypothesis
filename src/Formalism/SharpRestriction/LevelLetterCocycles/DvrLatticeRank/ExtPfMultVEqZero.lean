@@ -101,7 +101,7 @@ theorem ext_pf : Formalism.MainNotions.N.Ln34.ExtStep := by
   obtain ⟨-, -, -, -, -, -, -, -, -, -, h8, h11, -⟩ := hA
   have : FiniteDimensional ℚ_[l] ↥LL.1 := LL.2
   obtain ⟨h1, hz⟩ := Formalism.MainNotions.LiftingTheory.lone_HOne0 ((HW l).W K 1 LL hG)
-  obtain ⟨Tp, ι, π, hcp, hext⟩ := Formalism.MainNotions.LiftingTheory.lext_HExt_D D HW F l K 1 LL hG h1 T κ hc hκ
+  obtain ⟨Tp, ι, π, hcp, hext⟩ := Formalism.MainNotions.LiftingTheory.lext_HExt_D D HW l K 1 LL hG h1 T κ hc hκ
   refine ⟨Tp, ι, π, hext, hcp, h1, fun τ a ha => ?_⟩
   by_contra hout
   obtain ⟨-, -, hadd⟩ := h11 l K LL T Tp ((HW l).W K 1 LL hG).one ι π hext.1 hcp

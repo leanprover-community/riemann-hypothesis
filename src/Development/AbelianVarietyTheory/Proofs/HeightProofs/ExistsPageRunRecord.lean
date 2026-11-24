@@ -1233,7 +1233,7 @@ theorem pageRun_record (T : ParamsT D L P) (hK : DV.KapDef D) (S : SizesAt L) (h
     calc (D.R.f : ℝ) * (D.R.m : ℝ) ^ 3 ≤ (D.R.k : ℝ) * (D.R.k : ℝ) ^ 3 := by gcongr
       _ = (D.R.k : ℝ) ^ 4 := by ring
   obtain ⟨n1, n2, n3⟩ := nums hR.toBs (r := D.R.r) (Nat.cast_nonneg _) (by have := hR.rA; have := hR.r6; linarith) hd0
-    hd hq (fm := (D.R.f : ℝ) * (D.R.m : ℝ) ^ 3) (by positivity) hfm
+    hd hq (fm := (D.R.f : ℝ) * (D.R.m : ℝ) ^ 3) hfm
   obtain ⟨-, -, c3, -, -, -⟩ := third_hypothesis_of_params T S hZ
   obtain ⟨-, -, -, d4, -, -⟩ := fourth_hypothesis_of_params T S hZ
   have d1 := b_le_size T hK h1 h2

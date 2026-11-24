@@ -7,7 +7,7 @@ public import Mathlib.RingTheory.Jacobson.Ideal
 namespace Bl.FirstBlockLemmaI
 
 theorem goal1 :
-  ∀ {R : Type} [inst : CommRing.{0} R] {u z : R},
+  ∀ {R : Type} [CommRing.{0} R] {u z : R},
   IsUnit.{0} u → Membership.mem.{0, 0} (Ideal.jacobson.{0} Bot.bot.{0}) z → IsUnit.{0} (HAdd.hAdd.{0, 0, 0} u z) := by
   intro R _ u z hu hz
   obtain ⟨v, rfl⟩ := hu

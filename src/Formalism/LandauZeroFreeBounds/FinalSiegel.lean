@@ -1128,7 +1128,7 @@ private theorem card_primeFactors_add_one_sq_le_rpow {ε : ℝ} (hε : 0 < ε) (
         rw [mul_pow, ← Real.rpow_natCast ((n : ℝ) ^ (ε / 2)) 2, ← Real.rpow_mul (by positivity)]
         norm_num
 
-private theorem div_le_mul_of_main_bound_caseA {σ ε C L₁ X Lψ Nk M Q Pc A : ℝ} (hε : 0 < ε) (h1σ : 0 < 1 - σ)
+private theorem div_le_mul_of_main_bound_caseA {σ ε C L₁ X Lψ Nk M Q Pc A : ℝ} (hε : 0 < ε)
     (hL₁ : 0 < L₁) (hX : 0 ≤ X) (hA : 0 < A) (hNk0 : 0 ≤ Nk) (hLψ0 : 0 ≤ Lψ) (hM0 : 0 ≤ M)
     (hmain : (1 - σ) / 2 ≤ C * (L₁ * X * Lψ) * Nk) (hLψ : Lψ ≤ A * (M / (ε / 2))) (hNk : Nk ≤ M)
     (hMM : M * M = Pc * Q) (hPc : 0 < Pc) :
@@ -1151,7 +1151,7 @@ private theorem div_le_mul_of_main_bound_caseA {σ ε C L₁ X Lψ Nk M Q Pc A :
   rw [div_le_iff₀ hden]
   linarith
 
-private theorem div_le_mul_of_chain_caseB {L₁ X W D Nε Pc Q : ℝ} (hL₁ : 0 < L₁) (hX : 0 ≤ X) (hD : 0 < D)
+private theorem div_le_mul_of_chain_caseB {L₁ X W D Nε Pc Q : ℝ} (hX : 0 ≤ X) (hD : 0 < D)
     (hPc : 0 < Pc) (hS : L₁ ≤ W * X) (hW : W ≤ D * Nε) (hN : Nε ≤ Pc * Q) :
     L₁ / (D * Pc) ≤ X * Q := by
   rw [div_le_iff₀ (mul_pos hD hPc)]
@@ -1205,7 +1205,7 @@ theorem siegel_product_character_inequality (hP : ProdCharExists) (hS : SameChar
   by_cases hψ1 : ψ = 1
   ·
     refine le_trans (min_le_right _ _) ?_
-    exact div_le_mul_of_chain_caseB hL₁ (norm_nonneg _) hD hPc
+    exact div_le_mul_of_chain_caseB (norm_nonneg _) hD hPc
       (hS q₁ q χ₁ χ h1ne hne (agree_coprime_of_product_principal χ₁ χ ψ hsq hψ hψ1))
       (card_primeFactors_add_one_sq_le_rpow hε (q₁ * q) (Nat.mul_ne_zero (NeZero.ne q₁) (NeZero.ne q))) hNε
   ·
@@ -1236,7 +1236,7 @@ theorem siegel_product_character_inequality (hP : ProdCharExists) (hS : SameChar
     have hMM : (3 * ((q₁ * q : ℕ) : ℝ)) ^ (ε / 2) * (3 * ((q₁ * q : ℕ) : ℝ)) ^ (ε / 2) =
         ((3 : ℝ) * q₁) ^ ε * (q : ℝ) ^ ε := by
       rw [← Real.rpow_add (by linarith), add_halves, hN, ← mul_assoc, Real.mul_rpow (by positivity) hq0]
-    exact div_le_mul_of_main_bound_caseA hε h1σ hL₁ (norm_nonneg _) hA (by positivity) (norm_nonneg _) hM0
+    exact div_le_mul_of_main_bound_caseA hε hL₁ (norm_nonneg _) hA (by positivity) (norm_nonneg _) hM0
       hmain hLψ hNk hMM hPc
 
 end Formalism.ZeroFreeDirichlet

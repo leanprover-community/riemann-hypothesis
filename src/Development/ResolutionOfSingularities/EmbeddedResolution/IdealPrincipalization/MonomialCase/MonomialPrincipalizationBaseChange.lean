@@ -390,7 +390,7 @@ private theorem minIndexCard_ne_zero_and_monomialCenter_comap_of_flat (hGeom : M
         (Tn.pullbackOverField Yj k' qj φ).boundary ≠ 0 := by
       rw [hmin]
       exact hne
-    exact (MonomialCenter.minIndexCard_ne_zero_and_le_pullbackOverField hGeom Tn Yj k' qj φ hTn hTpb hP hne').1
+    exact (MonomialCenter.minIndexCard_ne_zero_and_le_pullbackOverField Tn Yj k' qj φ hP hne').1
   · intro h0
     by_cases hz : minIndexCard (Tn.pullbackOverField Yj k' qj φ).ideal (Tn.pullbackOverField Yj k' qj φ).mult
         (Tn.pullbackOverField Yj k' qj φ).boundary = 0
@@ -582,7 +582,7 @@ theorem monomialPrincipalization_isPullbackBlowupSequence_of_smooth
     (hGeom : MonomialGeometryHypotheses.{u}) (hinv : ComapIsoInvariance.{u}) (T : MarkedIdealWithBoundary.{u})
     (hT : MonomialCenter.IsLocallyMonomialTriple T)
     (Y : Scheme.{u}) (q : Y ⟶ Spec (CommRingCat.of T.base)) (h : Y ⟶ T.scheme)
-    [AlgebraicGeometry.Smooth h] (_hq : h ≫ T.structMap = q) (E' : List Y.IdealSheafData)
+    [AlgebraicGeometry.Smooth h] (E' : List Y.IdealSheafData)
     (hE : MarkedIdealWithBoundary.SameNontrivialBoundary (T.pullbackAlong Y q h).boundary E')
     (hT' : MonomialCenter.IsLocallyMonomialTriple ((T.pullbackAlong Y q h).withBoundary E')) :
     IsPullbackBlowupSequence h

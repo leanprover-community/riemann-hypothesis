@@ -78,7 +78,7 @@ def flagStab {K : Type} [Field K] {n : ℕ} (W₁ W₂ : Submodule K (Fin n → 
 def IwaFlag : Prop := ∀ (n : ℕ) (W₁ W₂ : Submodule ℂ (Fin n → ℂ)), W₁ ≤ W₂ → ∀ g : GL (Fin n) ℂ,
   ∃ q ∈ flagStab W₁ W₂, ∃ k : GL (Fin n) ℂ, thetaR (starRingEnd ℂ) n k = k ∧ g = q * k
 
-def uOf {K : Type} [Field K] {n : ℕ} {W₁ W₂ : Submodule K (Fin n → K)} (hW : W₁ ≤ W₂) (X : nilrad W₁ W₂) :
+def uOf {K : Type} [Field K] {n : ℕ} {W₁ W₂ : Submodule K (Fin n → K)} (X : nilrad W₁ W₂) :
     GL (Fin n) K where
   val := 1 + X.1
   inv := 1 - X.1 + X.1 * X.1
@@ -106,7 +106,7 @@ def QuotVanish : Prop := ∀ (n : ℕ) [MeasurableSpace (GL (Fin n) ℂ)] [Borel
   (d * thetaR (starRingEnd ℂ) n d).val.charpoly.Separable → perpD (starRingEnd ℂ) d W₁ = W₂ →
   perpD (starRingEnd ℂ) d W₂ = W₁ → Measurable F → (∀ t ∈ twCent (thetaR (starRingEnd ℂ) n) d, ∀ x, F (t * x) = F x) →
   (∀ x k, thetaR (starRingEnd ℂ) n k = k → F (x * k) = F x) →
-  (∀ q ∈ flagStab W₁ W₂, ∫ X, F (uOf hW X * q) ∂ν = 0) → quotIntegral μ (twCent (thetaR (starRingEnd ℂ) n) d) μT F = 0
+  (∀ q ∈ flagStab W₁ W₂, ∫ X, F (uOf X * q) ∂ν = 0) → quotIntegral μ (twCent (thetaR (starRingEnd ℂ) n) d) μT F = 0
 
 def KerFin : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (n : ℕ) (φ : GA E n → ℂ), IsTest φ →
   ∀ C : Set (GA E n), IsCompact C → Set.Finite {d : GL (Fin n) E | ∃ x ∈ C, φ (twConj (thetaA E n) x (ratGL E n d)) ≠ 0}

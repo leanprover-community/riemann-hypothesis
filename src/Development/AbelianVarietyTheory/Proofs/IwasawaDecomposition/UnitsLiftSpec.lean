@@ -288,7 +288,7 @@ def mkT
     LocTw (mkX B0 C hs hd hL hMF hMFin hTL hAct hEig tw ps hChi hSQs hSQd hQl hRam hI hBF) where
   twOf a := C.twI (wOf B0 a)
   twSide a := C.sd (wOf B0 a)
-  twOf_l a := C.twI_l _
+  twOf_l _ := C.twI_l _
   twist₂ := tw
   twO_emb := hTwE
   psiL := ps

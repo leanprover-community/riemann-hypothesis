@@ -77,7 +77,7 @@ theorem exists_maximal_above_of_dvd_norm {K : Type*} [Field K] [NumberField K]
   rwa [map_natCast] at h2
 
 theorem exists_maximal_above_of_dvd_norm_host (D : Formalism.BasicNotions.D7)
-    (𝔪 : Ideal (𝓞 (Formalism.BasicNotions.D7.host D).E)) (_h𝔪 : 𝔪 ≠ ⊥)
+    (𝔪 : Ideal (𝓞 (Formalism.BasicNotions.D7.host D).E))
     {p : ℕ} (hp : p.Prime) (hd : p ∣ Ideal.absNorm 𝔪) :
     ∃ P : Ideal (𝓞 (Formalism.BasicNotions.D7.host D).E),
       P.IsMaximal ∧ 𝔪 ≤ P ∧ (p : 𝓞 (Formalism.BasicNotions.D7.host D).E) ∈ P :=
@@ -157,7 +157,7 @@ theorem coprime_of_inert (D : D7) (𝔪 : Ideal (𝓞 D.host.E)) (h0 : 𝔪 ≠ 
     {q : ℕ} (hq : q.Prime) (hi : InertQ D q) : Nat.Coprime q (Ideal.absNorm 𝔪) := by
   rw [Nat.Prime.coprime_iff_not_dvd hq]
   intro hd
-  obtain ⟨P, hP, hle, hqP⟩ := _root_.GlobalTheory.MaximalIdealDividingNorm.exists_maximal_above_of_dvd_norm_host D 𝔪 h0 hq hd
+  obtain ⟨P, hP, hle, hqP⟩ := _root_.GlobalTheory.MaximalIdealDividingNorm.exists_maximal_above_of_dvd_norm_host D 𝔪 hq hd
   have hP0 : P ≠ ⊥ := by
     intro h
     rw [h, Ideal.mem_bot] at hqP
@@ -170,7 +170,7 @@ theorem coprime_of_inert (D : D7) (𝔪 : Ideal (𝓞 D.host.E)) (h0 : 𝔪 ≠ 
 theorem dvd_of_mem (D : D7) (𝔪 : Ideal (𝓞 D.host.E)) (h0 : 𝔪 ≠ ⊥) {p : ℕ} (hp : p.Prime)
     (hd : p ∣ Ideal.absNorm 𝔪) {m : ℕ} (hm : (m : 𝓞 D.host.E) ∈ 𝔪) : p ∣ m := by
   by_contra h
-  obtain ⟨P, hP, hle, hpP⟩ := _root_.GlobalTheory.MaximalIdealDividingNorm.exists_maximal_above_of_dvd_norm_host D 𝔪 h0 hp hd
+  obtain ⟨P, hP, hle, hpP⟩ := _root_.GlobalTheory.MaximalIdealDividingNorm.exists_maximal_above_of_dvd_norm_host D 𝔪 hp hd
   have hcop : IsCoprime (p : ℤ) (m : ℤ) := Nat.isCoprime_iff_coprime.2 ((Nat.Prime.coprime_iff_not_dvd hp).2 h)
   obtain ⟨u, v, e⟩ := hcop
   have e' := congrArg (Int.cast : ℤ → 𝓞 D.host.E) e

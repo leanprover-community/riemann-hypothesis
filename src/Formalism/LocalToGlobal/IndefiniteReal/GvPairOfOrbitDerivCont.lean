@@ -559,8 +559,8 @@ theorem gp_dRep_addX {M : DSModel V S} {τ : D.what₂.Tau} {v : M.H τ}
   exact gp_deriv_add (urep M τ) (conj_lie M τ hX) (conj_lie M τ hY) (hd X hX) (hd Y hY) h3
 
 theorem gp_dRep_smulR {M : DSModel V S} {τ : D.what₂.Tau} {v : M.H τ}
-    (hv : SmoothVec (lieAt V τ) (M.rep τ) v) (c : ℝ) {X : Matrix (Fin V.rank) (Fin V.rank) ℂ}
-    (hX : X ∈ lieAt V τ) : dRep (M.rep τ) (c • X) v = c • dRep (M.rep τ) X v := by
+    (c : ℝ) {X : Matrix (Fin V.rank) (Fin V.rank) ℂ}
+    : dRep (M.rep τ) (c • X) v = c • dRep (M.rep τ) X v := by
   show deriv (fun t : ℝ => M.rep τ (NormedSpace.exp (t • (c • X))) v) 0 =
     c • deriv (fun t : ℝ => M.rep τ (NormedSpace.exp (t • X)) v) 0
   have e : (fun t : ℝ => M.rep τ (NormedSpace.exp (t • (c • X))) v) =
@@ -574,7 +574,7 @@ def gpA (M : DSModel V S) (τ : D.what₂.Tau) (u : M.H τ) (hu : SmoothVec (lie
     gpTan V τ →ₗ[ℝ] M.H τ where
   toFun Y := dRep (M.rep τ) (Y : Matrix (Fin V.rank) (Fin V.rank) ℂ) u
   map_add' X Y := gp_dRep_addX hu X.2 Y.2
-  map_smul' c X := gp_dRep_smulR hu c X.2
+  map_smul' c X := gp_dRep_smulR c
 
 theorem gp_dRep_expand {M : DSModel V S} {τ : D.what₂.Tau} {u : M.H τ}
     (hu : SmoothVec (lieAt V τ) (M.rep τ) u) {Y : Matrix (Fin V.rank) (Fin V.rank) ℂ} (hY : Y ∈ lieAt V τ) :

@@ -77,7 +77,7 @@ theorem analyticAt_comp_of_holo_in_charts (e n : ℕ) (X : Type) [TopologicalSpa
     (A : FinHolAtlas n X) (Un : Set (Fin e → ℂ)) (bp : (Fin e → ℂ) → X) (w₀ : Fin e → ℂ)
     (W : Set X) (f : X → ℂ) (hUn : IsOpen Un) (hw₀ : w₀ ∈ Un) (hc : ContinuousOn bp Un)
     (hb : ∀ k, AnalyticOnNhd ℂ (A.chart k ∘ bp) (Un ∩ bp ⁻¹' (A.chart k).source))
-    (_hW : IsOpen W) (hwW : bp w₀ ∈ W) (hf : A.HoloOn W f) : AnalyticAt ℂ (f ∘ bp) w₀ := by
+    (hwW : bp w₀ ∈ W) (hf : A.HoloOn W f) : AnalyticAt ℂ (f ∘ bp) w₀ := by
   obtain ⟨k, hk⟩ := A.cover (bp w₀)
   have hca : ContinuousAt bp w₀ := hc.continuousAt (hUn.mem_nhds hw₀)
   have h1 : AnalyticAt ℂ (A.chart k ∘ bp) w₀ := hb k w₀ ⟨hw₀, hk⟩
@@ -247,7 +247,7 @@ theorem exact_points_holomorphic : ∀ (K : Type) [Fintype K] (ι : K → Type) 
     have hlift : ∀ q : Σ k, baseIdx ι M.blk k,
         AnalyticAt ℂ (fun u : Fin (d + 1) → ℂ => BM.Rb.lift b₀ (bp (Fin.tail u)) q) u₀ :=
       fun q => (analyticAt_comp_of_holo_in_charts d n BM.Rb.X BM.Rb.A Un bp (Fin.tail u₀) (BM.Rb.U b₀)
-        (fun x => BM.Rb.lift b₀ x q) hUn hu₀' hbc hba (BM.Rb.isOpen_U _) (BM.Rb.mem_U _)
+        (fun x => BM.Rb.lift b₀ x q) hUn hu₀' hbc hba (BM.Rb.mem_U _)
         (BM.Rb.holo b₀ q)).comp (analyticAt_finTail u₀)
     have hden : BM.Rb.lift b₀ (bp (Fin.tail u₀)) ⟨kb, (BM.F l).c kb⟩ ≠ 0 :=
       coord_ne_zero_of_X_notMem (hgood₀.1 kb)

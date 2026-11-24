@@ -94,7 +94,7 @@ theorem IntersectionWithSection.proof (hE : ResExistsStatement) (hPush : pullbac
     pushForward_null R.A _ (fun j => potOf_isPotential R (L' j) (hL' j)) (pullQ R v Ψ) (pullBad R v Ψ) hnull
       (fun x hx j hj => by
         by_contra h
-        exact hx (Or.inr ⟨j, hj, h⟩)) hfin _ (brIntegrable R L' A' (rename v s) hP' hL' hA' hs'),
+        exact hx (Or.inr ⟨j, hj, h⟩)) hfin _ (brIntegrable R L' A' (rename v s) hL' hA' hs'),
     ptsIntegralAt, ← integral_const_mul]
   refine integral_congr_ae ?_
   filter_upwards [hCount K ι K' ι' κ v P' J' n G J R Ψ hv hP' hP hJ hΨ,

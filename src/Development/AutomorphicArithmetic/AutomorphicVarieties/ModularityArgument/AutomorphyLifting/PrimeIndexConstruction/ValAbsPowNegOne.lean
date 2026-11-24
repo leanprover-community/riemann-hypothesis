@@ -174,7 +174,7 @@ open NumberField IsDedekindDomain Polynomial UpperTheory.V UpperTheory.V.Z.Gam U
 
 attribute [local instance] GlobalTheory.LocalData.complRel GlobalTheory.LocalData.isLocalField
 
-private theorem rootBounds {q x a b : ℝ} {f : ℕ} (hf : 0 < f) (hq : 0 < q) (hx : 0 ≤ x)
+private theorem rootBounds {q x a b : ℝ} {f : ℕ} (hq : 0 < q) (hx : 0 ≤ x)
     (h1 : ((q ^ f : ℝ)) ^ a < x ^ f) (h2 : x ^ f < ((q ^ f : ℝ)) ^ b) :
     q ^ a < x ∧ x < q ^ b := by
   have e : ∀ c : ℝ, ((q ^ f : ℝ)) ^ c = (q ^ c) ^ f := by
@@ -198,7 +198,7 @@ theorem UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter.winInd :
     Nat.cast_pos.2 (Nat.pos_of_ne_zero (by simpa [Ideal.absNorm_eq_zero_iff] using v.ne_bot))
   simp only [MonoidHom.comp_apply] at b1 b2
   rw [hnorm hsm, hN, Nat.cast_pow] at b1 b2
-  exact rootBounds hf hq (norm_nonneg _) b1 b2
+  exact rootBounds hq (norm_nonneg _) b1 b2
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LeviSmoothLocalization.PrincipalSeriesMatching.WinInd =====

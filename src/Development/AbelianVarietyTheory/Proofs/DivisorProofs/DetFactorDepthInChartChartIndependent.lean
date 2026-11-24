@@ -156,7 +156,7 @@ theorem logOf_comp_hom (G G' : FGLaw C d) (φ : Pt C 1 d) (hφ : GP φ)
   have p1 : GP (pt C (n := 2) d 1) := gp_pt 1
   have e : addOf G'.F (pt C (n := 2) d 0) (pt C (n := 2) d 1) = G'.F := add_pt G'
   have e1 := additive_eq_lin _ G'.const _ ε (comp1 (GlobalTheory.FormalLog.logOf G) φ) b1 b2 hi
-    (gp_comp1 _ _ a0 hφ) (by
+    (by
     rw [e, gt_comp1_comp1 _ _ hφ _ G'.const, hhom,
       additive_at _ G.const _ a2 _ _ (gp_comp1 _ _ hφ p0) (gp_comp1 _ _ hφ p1),
       gt_comp1_comp1 _ _ hφ _ p0, gt_comp1_comp1 _ _ hφ _ p1])

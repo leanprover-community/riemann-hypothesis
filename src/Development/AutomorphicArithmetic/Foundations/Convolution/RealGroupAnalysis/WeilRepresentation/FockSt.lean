@@ -377,7 +377,7 @@ theorem UpperTheory.ConvolutionTheory.R2.Fo.annVac :
       rw [h1, Fintype.sum_prod_type, Finset.sum_apply, Finset.sum_eq_single j]
       · rw [Finset.sum_apply]
         refine Finset.sum_congr rfl fun w _ => ?_
-        simp [c, ← h1]
+        simp [c]
       · intro b _ hb
         rw [Finset.sum_apply]
         exact Finset.sum_eq_zero fun w _ => Pi.single_eq_of_ne hb.symm _

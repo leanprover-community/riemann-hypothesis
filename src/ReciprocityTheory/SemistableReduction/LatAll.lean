@@ -900,7 +900,7 @@ namespace ReciprocityTheory.MultiplicativeHeights
 
 open Polynomial
 
-theorem bwPoly_holds (hH : LemmaHStatement) (hE : ∀ n, ReciprocityTheory.L2DbarEstimates.EXTStatement n)
+theorem bwPoly_holds (hH : LemmaHStatement)
     (hO : OnePolyGrowthStatement) : BWPolyStatement := by
   intro p a P hP hT
   obtain ⟨F, hF⟩ := bwp_ext_poly (σ := Fin p × Fin p) (∑ i, a i) (fun z => P (bwpMat z))
@@ -1049,7 +1049,7 @@ theorem approx : ApproxStatement := by
   exact ReciprocityTheory.MultiplicativeHeights.approxBasis_holds ReciprocityTheory.MultiplicativeHeights.approxGraph_holds
 
 theorem bwPoly : BWPolyStatement := by
-  exact ReciprocityTheory.MultiplicativeHeights.bwPoly_holds ReciprocityTheory.MultiplicativeHeights.lemmaH_holds ReciprocityTheory.L2DbarEstimates.ext
+  exact ReciprocityTheory.MultiplicativeHeights.bwPoly_holds ReciprocityTheory.MultiplicativeHeights.lemmaH_holds
     ReciprocityTheory.MultiplicativeHeights.onePolyGrowth_holds
 
 end ReciprocityTheory.MultiplicativeHeights.Closed

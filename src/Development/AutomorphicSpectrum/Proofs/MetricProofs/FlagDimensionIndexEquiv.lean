@@ -60,7 +60,7 @@ namespace GlobalTheory.CompanionTheory.Ar.PB.WMan.ChartCount
 theorem sum_range_eq_choose (m : ℕ) : ∑ i ∈ Finset.range m, i = m.choose 2 := by
   rw [Finset.sum_range_id, Nat.choose_two_right]
 
-theorem card_row (N j : ℕ) (hj : j ≤ N) (a : Fin N) :
+theorem card_row (N j : ℕ) (a : Fin N) :
     Fintype.card {b : Fin N // b < a ∧ ((a : ℕ) < N - j ↔ (b : ℕ) < N - j)} =
       if (a : ℕ) < N - j then (a : ℕ) else (a : ℕ) - (N - j) := by
   rw [Fintype.card_subtype]
@@ -90,7 +90,7 @@ theorem card_pairs (N j : ℕ) (hj : j ≤ N) :
   rw [Fintype.card_congr (Equiv.subtypeProdEquivSigmaSubtype
       (fun (a b : Fin N) => b < a ∧ ((a : ℕ) < N - j ↔ (b : ℕ) < N - j))), Fintype.card_sigma]
   have h1 : ∀ a : Fin N, Fintype.card {b : Fin N // b < a ∧ ((a : ℕ) < N - j ↔ (b : ℕ) < N - j)} =
-      if (a : ℕ) < N - j then (a : ℕ) else (a : ℕ) - (N - j) := card_row N j hj
+      if (a : ℕ) < N - j then (a : ℕ) else (a : ℕ) - (N - j) := card_row N j
   simp only [h1]
   have hs : ∑ a : Fin N, (if (a : ℕ) < N - j then (a : ℕ) else (a : ℕ) - (N - j)) =
       ∑ i ∈ Finset.range N, (if i < N - j then i else i - (N - j)) :=

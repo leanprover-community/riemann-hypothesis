@@ -75,7 +75,7 @@ def hermFam (X Y : Matrix (Fin n) (Fin r) E) : Option (Fin r ⊕ Fin r) → Matr
 variable {σ J} {X Y : Matrix (Fin n) (Fin r) E}
 
 theorem leviMin_subset (X Y : Matrix (Fin n) (Fin r) E) : leviMin σ J X Y ⊆ minPar σ J X :=
-  fun _ ⟨d, _, e, _⟩ => ⟨_, Matrix.blockTriangular_diagonal _, e⟩
+  fun _ ⟨_, _, e, _⟩ => ⟨_, Matrix.blockTriangular_diagonal _, e⟩
 
 theorem unipMin_subset_minParOne (X : Matrix (Fin n) (Fin r) E) : unipMin σ J X ⊆ minParOne σ J X := by
   rintro u ⟨B, hB, h1, e, -⟩

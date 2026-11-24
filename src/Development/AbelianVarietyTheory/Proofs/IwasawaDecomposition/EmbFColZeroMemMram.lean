@@ -84,7 +84,7 @@ def awayFrom {R : Type} [CommRing R] [IsDomain R] (SB : Finset (HeightOneSpectru
     Submonoid R where
   carrier := {s | s ≠ 0 ∧ ∀ P ∈ SB, s ∉ P.asIdeal}
   one_mem' := ⟨one_ne_zero, fun P _ h => P.isPrime.ne_top ((Ideal.eq_top_iff_one _).2 h)⟩
-  mul_mem' := fun {a b} ha hb => ⟨mul_ne_zero ha.1 hb.1, fun P hP h =>
+  mul_mem' := fun {_ _} ha hb => ⟨mul_ne_zero ha.1 hb.1, fun P hP h =>
     (P.isPrime.mem_or_mem h).elim (ha.2 P hP) (hb.2 P hP)⟩
 
 theorem awayFrom_le {R : Type} [CommRing R] [IsDomain R] (SB : Finset (HeightOneSpectrum R)) :

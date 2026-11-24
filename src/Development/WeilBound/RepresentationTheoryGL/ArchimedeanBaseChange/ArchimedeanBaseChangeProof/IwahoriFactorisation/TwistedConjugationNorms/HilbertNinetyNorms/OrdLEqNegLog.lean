@@ -310,7 +310,7 @@ theorem ext_pf (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (ϖ : (w.adicComple
 
 theorem exu_pf (hU : Unr E) (w : Pl E) (hw : ¬ IsSplitAt w) (n : ℕ) (b : GLw n w) (hb : IsWitt n w b)
     (ϖ : (w.adicCompletion E)ˣ) (hϖ : IsUnifAt ϖ) (l : Fin (n / 2) → ℤ) (hl : Cone l) (Q : (w.adicCompletion E)[X])
-    (hm : Q.Monic) (hQ : IsCsr w Q) (hv : HasVals Q (wexp n l)) :
+    (hQ : IsCsr w Q) (hv : HasVals Q (wexp n l)) :
     ∃ γ : UL n w, fU n w b ϖ l γ ≠ 0 ∧ γ.1.val.charpoly = Q := by
   obtain ⟨u, hQu, hu⟩ := hv
   have hu0 : ∀ i, u i ≠ 0 := fun i => (hu i).1

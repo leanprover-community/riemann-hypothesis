@@ -1571,7 +1571,7 @@ theorem split_bot (X : PT E) {DF : ℕ} (P : Par X DF) (h : ¬ X.la1 < P.th) : I
     rw [hph]
     exact Finset.sum_nonneg fun j _ => by positivity
 
-theorem le_of_forall_pos_div_sq {a c S : ℝ} (ha : 0 < a) (hc : 0 < c) (h : ∀ ε > 0, c / (a + ε) ^ 2 ≤ S) :
+theorem le_of_forall_pos_div_sq {a c S : ℝ} (ha : 0 < a) (h : ∀ ε > 0, c / (a + ε) ^ 2 ≤ S) :
     c / a ^ 2 ≤ S := by
   have hcont : ContinuousAt (fun ε : ℝ => c / (a + ε) ^ 2) 0 := by
     apply ContinuousAt.div continuousAt_const
@@ -1698,7 +1698,7 @@ theorem split_pos (X : PT E) {DF : ℕ} (P : Par X DF) (h : X.la1 < P.th) : ∃ 
         exact pow_le_pow_left₀ (norm_nonneg _) (le_of_lt (lt_of_lt_of_le hξs (min_le_right _ _))) 2
       refine h2.trans (le_of_eq_of_le ?_ h1)
       rw [hc]; field_simp
-    have hl := le_of_forall_pos_div_sq hla hcpos hbound
+    have hl := le_of_forall_pos_div_sq hla hbound
     calc 2 * PT.f E / (PT.rd E ^ 2 * X.la1 ^ 2) = c / X.la1 ^ 2 := by rw [hc]; field_simp
       _ ≤ S := hl
 
@@ -1718,7 +1718,7 @@ namespace ReciprocityTheory.ChartRestriction.G.I2
 
 open MeasureTheory Complex
 
-theorem split (hx : Ext.All) : SplitStatement := by
+theorem split : SplitStatement := by
   intro E _ _ _ X DF P
   by_cases h : X.la1 < P.th
   · exact split_pos X P h

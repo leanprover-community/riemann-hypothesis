@@ -496,7 +496,7 @@ open GlobalTheory.RealLift in
 theorem tens_hw {ι P M : Type} [Fintype ι] [DecidableEq ι] [AddCommGroup P] [Module ℂ P] [AddCommGroup M] [Module ℂ M]
     {T : ι → Type} [∀ w, AddCommGroup (T w)] [∀ w, Module ℂ (T w)] (La : ι → Ix r s → ℚ)
     (aT : ∀ w, Mat r s →ₗ[ℂ] Module.End ℂ (T w)) (hS : ∀ w, Side (La w) (T w) (aT w))
-    (aP : ι → Mat r s →ₗ[ℂ] Module.End ℂ P) (hP : ∀ w, IsLie (aP w)) (mk : ∀ w, P →ₗ[ℂ] T w)
+    (aP : ι → Mat r s →ₗ[ℂ] Module.End ℂ P) (mk : ∀ w, P →ₗ[ℂ] T w)
     (hmk : ∀ w, Function.Surjective (mk w)) (hmka : ∀ w Y y, mk w (aP w Y y) = aT w Y (mk w y))
     (q : (⨂[ℂ] _ : ι, P) →ₗ[ℂ] M) (hq : Function.Surjective q)
     (hk : ∀ w y x, mk w x = 0 → q (PiTensorProduct.tprod ℂ (Function.update y w x)) = 0)

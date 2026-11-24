@@ -459,7 +459,7 @@ theorem killed_of_holFn {Hm : ι → Mt n} {q : ι → ℕ} {x₀ : ι → Mt n}
     split_ifs with hh
     · subst hh
       rw [Finset.prod_eq_single a (fun a' _ ha' => by
-        simp [hE, Matrix.single_apply, Ne.symm ha']) (by simp)]
+        simp [hE, Ne.symm ha']) (by simp)]
       simp [hE]
     · refine Finset.prod_eq_one fun a' _ => ?_
       have hn : ¬ (a = a' ∧ c = a') := fun hh2 => hh (hh2.1.trans hh2.2.symm)

@@ -93,7 +93,7 @@ theorem minorIJ_mul_one_add_single (H : Matrix (Fin N) (Fin N) ℂ) (I C : Finse
     rw [e2] at hc
     exact hk (hiff.mp hc)
 
-theorem mem_stepCols_iff {j : ℕ} {a b ca cb i : Fin N} (hb : (b : ℕ) = a + 1) (h2 : (b : ℕ) < j ∨ j ≤ (a : ℕ))
+theorem mem_stepCols_iff {j : ℕ} {a b ca cb i : Fin N} (hb : (b : ℕ) = a + 1)
     (hca : (ca : ℕ) = lastCol N j a) (hcb : (cb : ℕ) = ca + 1) (hi : i ≠ a) :
     ca ∈ stepCols N j i ↔ cb ∈ stepCols N j i := by
   have h3 := i.2
@@ -238,6 +238,6 @@ theorem chart_exact : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Finty
   · exact basePart_fst
   · exact exact_fst (H := fun τ' => wH h ε τ' w) ((hB.2.2.2.2 _ hw).2.1) (τ', i)
   · exact exact_snd (H := fun τ' => wH h ε τ' w) hk₀ hlt
-      (fun i hi => mem_stepCols_iff hb h2 hca hcb hi) ((hB.2.2.2.2 _ hw).2.1) τ' i
+      (fun i hi => mem_stepCols_iff hb hca hcb hi) ((hB.2.2.2.2 _ hw).2.1) τ' i
 
 end GlobalTheory.CompanionTheory.Ar.PB.WMan.Exact

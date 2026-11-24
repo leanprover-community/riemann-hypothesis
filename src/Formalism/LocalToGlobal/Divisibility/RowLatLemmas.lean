@@ -95,7 +95,7 @@ theorem XQ_quot : IsQuotMetric (B.Pq ℓ Z) (B.HV ℓ) (B.XQ ℓ Z) :=
   quotFrameIsQuot K _ _ (B.HV ℓ) (HV_pos hv0 h hX) (B.Pq ℓ Z) (Pq_surj hv0 h hX)
 
 theorem Lam_lat : Submodule.IsLattice K (B.abelian₂ ℓ Z) :=
-  GluingInclusion.matLat_lattice' (B.Pq ℓ Z) (Pq_surj hv0 h hX) (B.Mt ℓ) (Mt_lat hv0 h hX)
+  GluingInclusion.matLat_lattice' (B.Pq ℓ Z) (B.Mt ℓ) (Mt_lat hv0 h hX)
 
 theorem Lam_full : Submodule.IsFullLattice K (B.abelian₂ ℓ Z) :=
   matLat_full (B.Pq ℓ Z) (Pq_surj hv0 h hX) (B.Mt ℓ) (Mt_full h)
@@ -128,7 +128,7 @@ theorem lvlNab_lat : Submodule.IsLattice K (B.S.lvlNab B.r ℓ.P ℓ.ψ) :=
     (nab_lat (ℓ := ℓ) hv0 h hX)
 
 theorem Tl_lat : Submodule.IsLattice K (B.Tl ℓ Z) :=
-  GluingInclusion.matLat_lattice' (B.lPr ℓ Z) (lPr_surj hv0 h hX) _ (lvlNab_lat hv0 h hX)
+  GluingInclusion.matLat_lattice' (B.lPr ℓ Z) _ (lvlNab_lat hv0 h hX)
 
 theorem Tl_full : Submodule.IsFullLattice K (B.Tl ℓ Z) :=
   matLat_full (B.lPr ℓ Z) (lPr_surj hv0 h hX) _

@@ -390,7 +390,7 @@ theorem higherCohomology_bound_twist_neg_of_regular_section : ∀ (k : Type) [Fi
   obtain ⟨e⟩ := nonempty_twist_twist_iso_of_cls_eq F hB' hM hM' e'
   have key := (_root_.GlobalTheory.hdim_twist_cut_inequalities k X hX F B (lbPow L m) M' hB hM hM' s hs (by
     rw [e', cls_lbZPow hB (-1) hB']
-    simp [add_comm, add_left_comm, add_assoc])).2.1 j
+    simp [add_comm])).2.1 j
   have e2 : hdim k (twist (twistZ F B (-1)) (lbPow L m)) (j + 1) = hdim k (twist F M') (j + 1) :=
     hdim_congr k _ e
   rw [e2, add_mul]

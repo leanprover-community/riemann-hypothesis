@@ -79,8 +79,8 @@ theorem proj_of (hP : Pr) (hT : SliceTens) (hI : IndMap) : Proj := by
   obtain ⟨b₂, hb₂⟩ := step_right (twMap s z₂ p₂) hf₂
 
   obtain ⟨T', hT'e, hT'u, hT's⟩ := hI E r s V (tw (A2 E r) z₁) (tw (A2 E s) z₂) T (twMap r z₁ p₁) (twMap s z₂ p₂)
-    hV.stable hV.aut (isStable_tw hst₁ z₁) (isStable_tw hst₂ z₂) hTs.equiv hmem (twMap_equiv hst₁ hp₁e)
-    (twMap_equiv hst₂ hp₂e)
+    hV.stable hV.aut (isStable_tw hst₁ z₁) (isStable_tw hst₂ z₂) hTs.equiv hmem (twMap_equiv hp₁e)
+    (twMap_equiv hp₂e)
   refine ⟨V₁, V₂, hV₁, hV₂, T', fun φ hφ => ⟨hT'u φ hφ, fun k g => ?_⟩, inj_of_irred hV hT'e ⟨φ₀, hφ₀V, fun h => ?_⟩, hT'e⟩
   · obtain ⟨n', ψ₁', ψ₂', h₁', h₂', hs'⟩ := tensor_pair_finite_sum ((hmem φ hφ).2 k g)
     have e := hT's φ hφ k g n' ψ₁' ψ₂' h₁' h₂' hs'

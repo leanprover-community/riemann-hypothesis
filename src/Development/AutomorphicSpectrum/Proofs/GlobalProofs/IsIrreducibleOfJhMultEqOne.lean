@@ -184,7 +184,7 @@ theorem occurs_of_embedding (hG : GeometricLemma) (hBZ : BernsteinZelevinskyFini
     (hAB : ∀ x ∈ A 0, x ∉ A 1) {N : ℕ} (e : (Σ i, Fin (d i)) ≃ Fin N) (Q : Irr k N)
     (hQ : IsSubquotient Q.π (multiProd e fun i => (p i).π))
     {X : Fin 2 → Type} [∀ i, AddCommGroup (X i)] [∀ i, Module ℂ (X i)]
-    (F : ∀ i, Representation ℂ (GL (Fin (d i)) k) (X i)) (hFs : ∀ i, IsSmooth (F i))
+    (F : ∀ i, Representation ℂ (GL (Fin (d i)) k) (X i))
     (hF : ∀ i (y : IrrRep (GL (Fin (d i)) k)), IsSubquotient y.ρ (F i) → HasSupport y.ρ (A i))
     (φ : Q.π.IntertwiningMap (multiProd e F)) (hφ : Function.Injective φ) :
     IsSubquotient (piTensor fun i => (p i).π) (jac e Q.π) := by
@@ -254,7 +254,7 @@ theorem occurs_of_prod₂ (hG : GeometricLemma) (hBZ : BernsteinZelevinskyFinite
   obtain ⟨E₁⟩ := GlobalTheory.LocGL.nonempty_prod₂_equiv_multiProd hd fun i => (R i).ρ
   obtain ⟨E₂⟩ := (GlobalTheory.SmGL.Placing.parInd_jac_placing k _ _ _ (stdBlocks d hd) e _).1 (piTensor fun i => (R i).ρ)
   let E := E₁.trans E₂
-  refine occurs_of_embedding hG hBZ p hA hAB e Q hQ (fun i => (R i).ρ) (fun i => (R i).smooth) ?_
+  refine occurs_of_embedding hG hBZ p hA hAB e Q hQ (fun i => (R i).ρ) ?_
     (E.toIntertwiningMap.comp φ) (E.toLinearEquiv.injective.comp hφ)
   intro i
   refine Fin.cases ?_ (fun j => ?_) i

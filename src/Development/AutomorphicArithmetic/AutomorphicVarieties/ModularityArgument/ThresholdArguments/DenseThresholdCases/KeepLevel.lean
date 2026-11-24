@@ -520,7 +520,7 @@ theorem levelCore_alt (P : _root_.UpperTheory.V.Af.Hypotheses') (K : Type) [Fiel
     obtain ⟨τ', hτ'⟩ := hτ A hA O Bw hj
     obtain ⟨⟨σ, hσ⟩, -⟩ := _root_.UpperTheory.V.Af.local_comp_complex_of_printed_results P K n π w
     obtain ⟨rc, hrc⟩ := P.exists_reciprocity_dense hA
-    have g := guard_of plainRec hreg ha hW (hw' w) (_root_.UpperTheory.V.Z.Desc.W.isRecT_of_isRecT P hrc) hσ
+    have g := guard_of plainRec hreg ha hW (hw' w) (_root_.UpperTheory.V.Z.Desc.W.isRecT_of_isRecT hrc) hσ
     have hJ := _root_.UpperTheory.V.Af.jumps_above_of_printed_results P K Ω l hl n M hM m r hL.cont w A hA O Bw hj κ hκ τ _
       (((hC w σ hσ).2 g.1 A hA O Bw hj).2 τ _ τ' hτ')
     have hw := hwt τ
@@ -539,8 +539,8 @@ theorem levelCore_alt (P : _root_.UpperTheory.V.Af.Hypotheses') (K : Type) [Fiel
     · obtain ⟨A, hA, κ, hκ⟩ := hL.above w hw
       obtain ⟨O, _, _, _, Bw, hj⟩ := exists_bridge (l := l) hA hw
       obtain ⟨rc, hrc⟩ := P.exists_reciprocity_dense hA
-      have g := guard_of plainRec hreg ha hW (hw' w) (_root_.UpperTheory.V.Z.Desc.W.isRecT_of_isRecT P hrc) hσ
-      obtain ⟨hp, he⟩ := ((hC w σ hσ).1 A hA rc (_root_.UpperTheory.V.Z.Desc.W.isRecT_of_isRecT P hrc)).2 O Bw hj g.2
+      have g := guard_of plainRec hreg ha hW (hw' w) (_root_.UpperTheory.V.Z.Desc.W.isRecT_of_isRecT hrc) hσ
+      obtain ⟨hp, he⟩ := ((hC w σ hσ).1 A hA rc (_root_.UpperTheory.V.Z.Desc.W.isRecT_of_isRecT hrc)).2 O Bw hj g.2
       refine _root_.UpperTheory.V.Lev.fixedSs_of_prints P K Ω l ι n M hM m r hL.cont w A hA O Bw hj κ hκ hp rc hrc σ (fun _ s => by rw [he]) ?_
       by_cases hlM : l ∣ M
       · exact Or.inl hlM
@@ -558,10 +558,10 @@ theorem levelCore_alt (P : _root_.UpperTheory.V.Af.Hypotheses') (K : Type) [Fiel
         Finset.prod_const, Finset.card_univ, Fintype.card_fin]
     · obtain ⟨A, hA, χ, h1, h2⟩ := hL.away w hw
       obtain ⟨rc, hrc⟩ := P.exists_reciprocity_dense hA
-      have g := guard_of plainRec hreg ha hW (hw' w) (_root_.UpperTheory.V.Z.Desc.W.isRecT_of_isRecT P hrc) hσ
+      have g := guard_of plainRec hreg ha hW (hw' w) (_root_.UpperTheory.V.Z.Desc.W.isRecT_of_isRecT hrc) hσ
       exact _root_.UpperTheory.V.Z.Win.T2.local_fixed_vectors_statement P K Ω n M hM w A hA rc hrc σ
         (_root_.UpperTheory.V.Af.weil_deligne_away_of_printed_results P K Ω l ι n M hM r hL.cont w hw A hA χ h1 h2 _
-          ((((hC w σ hσ).1 A hA rc (_root_.UpperTheory.V.Z.Desc.W.isRecT_of_isRecT P hrc)).1 hw).isWDOf g.2))
+          ((((hC w σ hσ).1 A hA rc (_root_.UpperTheory.V.Z.Desc.W.isRecT_of_isRecT hrc)).1 hw).isWDOf g.2))
   · obtain ⟨⟨σ, hσ⟩, hi⟩ := _root_.UpperTheory.V.Af.local_comp_complex_of_printed_results P K n π w
     exact _root_.UpperTheory.V.Z.Desc.W.satFrobT_alt P K Ω l ι n r hL.cont w hw σ B (((_root_.UpperTheory.V.Af.satake_local_of_printed_results P K n w σ).2 _ π.finPart (hi σ hσ) B).1 hB)
       fun A h rc hrc => ((hC w σ hσ).1 A h rc hrc).1 hw

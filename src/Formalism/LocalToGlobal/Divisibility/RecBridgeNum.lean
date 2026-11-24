@@ -190,7 +190,7 @@ theorem hookProd_eq_E (n : ℕ) (a : ℕ → ℕ) (w : List ℕ) (hw : w.SortedG
 end HookLengthProduct
 
 open HookLengthProduct in
-theorem hookProd_mul_prod (n : ℕ) (a : ℕ → ℕ) (h1 : ∀ i < n, 1 ≤ a i)
+theorem hookProd_mul_prod (n : ℕ) (a : ℕ → ℕ)
     (hmono : ∀ i l, i < l → l < n → a l ≤ a i) :
     Formalism.LatticeIndexTer.hookProd (YoungDiagram.ofRowLens (((List.range n).map a).insertionSort (· ≥ ·))
               List.sortedGE_insertionSort) *
@@ -358,7 +358,7 @@ theorem logHook_eq {j : ℕ} (h1 : 1 ≤ j) (hj : j ≤ D.R.m) (z : Bool × HH D
     (ofRecord D L Del h0).logHook j z = DV.logHook (D.R.sigW j).1 (DV.aPlus D j (tauPl D z)) := by
   set p := (D.R.sigW j).1 with hp
   set A := (ofRecord D L Del h0).apN j z with hA
-  have hH := Formalism.MainNotions.DIV.HookProducts.hookProd_mul_prod p A (fun i hi => apN_ge D L Del h0 h1 hj z hi) (fun i l hil hl => apN_anti D L Del h0 h1 hj z hil hl)
+  have hH := Formalism.MainNotions.DIV.HookProducts.hookProd_mul_prod p A (fun i l hil hl => apN_anti D L Del h0 h1 hj z hil hl)
   have hdiag : (ofRecord D L Del h0).apDiag j z =
       YoungDiagram.ofRowLens (((List.range p).map A).insertionSort (· ≥ ·)) List.sortedGE_insertionSort := rfl
   set μ := YoungDiagram.ofRowLens (((List.range p).map A).insertionSort (· ≥ ·)) List.sortedGE_insertionSort with hμ

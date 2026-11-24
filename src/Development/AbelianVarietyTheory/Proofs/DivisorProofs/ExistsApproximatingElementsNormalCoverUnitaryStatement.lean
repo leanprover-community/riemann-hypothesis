@@ -748,8 +748,8 @@ theorem exists_extension {V R K : Type} [CommRing V] [CommRing R] [IsDomain R] [
   rw [Ideal.Quotient.algebraMap_mk_of_liesOver] at h
   exact h.trans (RingHom.kerLift_mk ev v)
 
-theorem main : ∀ (V R K : Type) [inst : CommRing V] [IsDomain V] [IsLocalRing V]
-    [inst_3 : CommRing R] [IsDomain R] [IsLocalRing R] [inst_6 : Field K] [IsAlgClosed K]
+theorem main : ∀ (V R K : Type) [CommRing V] [IsDomain V] [IsLocalRing V]
+    [CommRing R] [IsDomain R] [IsLocalRing R] [Field K] [IsAlgClosed K]
     (ρ : V →+* R), Function.Injective (⇑ρ : V → R) → RingHom.Finite ρ →
       IsLocalHom ρ ∧ ∀ (ev : V →+* K), ∃ (ev₁ : R →+* K), RingHom.comp ev₁ ρ = ev := by
   intro V R K _ _ _ _ _ _ _ _ ρ hinj hfin

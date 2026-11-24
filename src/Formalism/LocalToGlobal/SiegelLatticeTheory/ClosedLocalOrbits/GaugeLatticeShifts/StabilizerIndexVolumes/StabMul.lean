@@ -125,7 +125,7 @@ theorem sgn_mul (b' b : Matrix (Fin (r + 1)) (Fin (r + 1)) E) :
     simp only [Matrix.mul_assoc], sgnE_sq, Matrix.mul_one]
   simp only [Matrix.mul_assoc]
 
-theorem lG_mul (e : K ≃ₐ[F] F × F) (ι : E →+* K) (Dd : Fin (r + 1) → K) (hx : ∀ i, (e (Dd i)).1 ≠ 0)
+theorem lG_mul (e : K ≃ₐ[F] F × F) (ι : E →+* K) (Dd : Fin (r + 1) → K)
     (hy : ∀ i, (e (Dd i)).2 ≠ 0) (a b a' b' : Matrix (Fin (r + 1)) (Fin (r + 1)) E) :
     lG e ι Dd (a * a') (b' * b) = lG e ι Dd a b * lG e ι Dd a' b' := by
   apply eq_of_cxy e
@@ -134,7 +134,7 @@ theorem lG_mul (e : K ≃ₐ[F] F × F) (ι : E →+* K) (Dd : Fin (r + 1) → K
       sandwich _ _ _ _ (diag_inv_mul _ hy)]
 
 theorem ρG_mul (e : K ≃ₐ[F] F × F) (ι : E →+* K) (Dd : Fin (r + 1) → K) (hx : ∀ i, (e (Dd i)).1 ≠ 0)
-    (hy : ∀ i, (e (Dd i)).2 ≠ 0) (a b a' b' : Matrix (Fin (r + 1)) (Fin (r + 1)) E) :
+    (a b a' b' : Matrix (Fin (r + 1)) (Fin (r + 1)) E) :
     ρG e ι Dd (a * a') (b' * b) = ρG e ι Dd a' b' * ρG e ι Dd a b := by
   apply eq_of_cxy e
   · rw [cx_mul, cx_ρG, cx_ρG, cx_ρG, sgn_mul, Matrix.map_mul, sandwich _ _ _ _ (diag_mul_inv _ hx)]
@@ -158,7 +158,7 @@ theorem lOf_mul {p : PlF D} (hA : Agree δ M p) (a b a' b' : MatR D) :
   | none => simp only [lOf, h]; exact lL_mul _ _ _ (frFac_unit δ M hA) a a'
   | some g =>
     simp only [lOf, h]
-    exact lG_mul g.e _ _ (fun i => (split_units δ M hA g i).1) (fun i => (split_units δ M hA g i).2) a b a' b'
+    exact lG_mul g.e _ _ (fun i => (split_units δ M hA g i).2) a b a' b'
 
 theorem ρOf_mul {p : PlF D} (hA : Agree δ M p) (a b a' b' : MatR D) :
     ρOf δ M p (a * a') (b' * b) = ρOf δ M p a' b' * ρOf δ M p a b := by
@@ -166,7 +166,7 @@ theorem ρOf_mul {p : PlF D} (hA : Agree δ M p) (a b a' b' : MatR D) :
   | none => simp only [ρOf, h]; exact ρL_mul _ _ (frFac_unit δ M hA) b b'
   | some g =>
     simp only [ρOf, h]
-    exact ρG_mul g.e _ _ (fun i => (split_units δ M hA g i).1) (fun i => (split_units δ M hA g i).2) a b a' b'
+    exact ρG_mul g.e _ _ (fun i => (split_units δ M hA g i).1) a b a' b'
 
 theorem cx_one {F K : Type*} [Field F] [CommRing K] [Algebra F K] {r : ℕ} (e : K ≃ₐ[F] F × F) :
     cx e (1 : Matrix (Fin (r + 1)) (Fin (r + 1)) K) = 1 := Matrix.map_one _ (map_zero _) (map_one _)

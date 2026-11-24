@@ -369,7 +369,7 @@ theorem frame {B : Base F E} {r s : ℕ} (hσ : IsCMExt F E σ) (hY : Y.IsHerm �
     (PositivityTheory.ThKG.Loc.Iwa.selfDual_of hd hY.lat.toIsLattice (fun y hy x hx => SelfDual.inclR_mem_intLoc v (by
       rw [PositivityTheory.ThKG.Loc.Iwa.hE_smul, one_mul]; exact ⟨⟨_, (hY.dual y).1 hy x hx⟩, rfl⟩)) (s := 1)
       ((Ideal.ne_top_iff_one _).1 v.isPrime.ne_top) fun y hy => by
-        simp only [OneMemClass.coe_one, map_one, one_smul]
+        simp only [map_one, one_smul]
         refine (hY.dual y).2 fun x hx => ?_
         obtain ⟨o, ho⟩ := hy x hx
         rw [PositivityTheory.ThKG.Loc.Iwa.hE_smul, one_mul] at ho

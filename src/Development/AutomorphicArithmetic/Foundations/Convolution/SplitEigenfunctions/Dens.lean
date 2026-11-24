@@ -331,7 +331,7 @@ theorem ext : Ext := by
       simp only [mul_assoc])
     obtain ⟨g, hg⟩ := rat_sl ((dq (Dt γ * a))⁻¹ * γ * dq a) (by
       simp only [map_mul, map_inv, det_dq]
-      simp [mul_comm, mul_assoc, mul_left_comm])
+      simp [mul_comm, mul_left_comm])
     have h : sl (ratGL ℚ 2 γ * x) = ratS ℚ g * sl x := toS_eq _ (by
       rw [e1, e2, ← hg]
       simp only [map_mul, map_inv, mul_assoc, mul_inv_cancel_left]
@@ -702,7 +702,7 @@ open UpperTheory.ConvolutionTheory.R2 UpperTheory.ConvolutionTheory.R2.Ff UpperT
 open scoped Pointwise Classical ENNReal NNReal
 
 theorem UpperTheory.isFundamentalDomain_image_sl2Domain_prod_ideles :
-    ∀ (M : Meas ℚ) (U : UMeas) (μ : Measure GG) [μ.IsHaarMeasure], IsFundamentalDomain Ga (pm '' (M.D ×ˢ Set.univ)) μ := by
+    ∀ (M : Meas ℚ) (_ : UMeas) (μ : Measure GG) [μ.IsHaarMeasure], IsFundamentalDomain Ga (pm '' (M.D ×ˢ Set.univ)) μ := by
   intro M U μ _
   haveI := M.haar
   have emb : MeasurableEmbedding pm := UpperTheory.isOpenEmbedding_projection.measurableEmbedding

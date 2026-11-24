@@ -862,7 +862,7 @@ theorem mass : ∀ (F : Type) [Field F] [Finite F], ∀ (a b n : ℕ), n = a + b
     intro y
     rw [Fintype.sum_equiv (MulAut.conj y⁻¹).toEquiv _
       (fun p => (if InPar a p then α (tlG a p) * β (brG a b p) else 0) * star (chG S n p))
-      (fun x => by simp [MulAut.conj_apply, show ∀ x y, chG S n (y⁻¹ * x * y) = chG S n x from hcl])]
+      (fun x => by simp [show ∀ x y, chG S n (y⁻¹ * x * y) = chG S n x from hcl])]
     have h1 : ∀ p : GL (Fin n) F, (if InPar a p then α (tlG a p) * β (brG a b p) else 0) * star (chG S n p)
         = if p ∈ H then α (tlG a p) * β (brG a b p) * star (chG S n p) else 0 := by
       intro p; rw [hH p]; split_ifs <;> simp
@@ -1312,7 +1312,7 @@ end GlobalTheory.Shin.PairPM
 namespace GlobalTheory.Shin.PairPM
 
 theorem pairing_pm_one : ∀ (F F' : Type) [Field F] [Field F'] [Algebra F F'] [Finite F'] (s : F' ≃ₐ[F] F'),
-    (Module.finrank F F').Prime → s ≠ 1 → ∀ (ι : AlgebraicClosure F →ₐ[F] AlgebraicClosure F')
+    (Module.finrank F F').Prime → s ≠ 1 → ∀ (_ : AlgebraicClosure F →ₐ[F] AlgebraicClosure F')
     (θ : AlgebraicClosure F' →* ℂ), (∀ x y : AlgebraicClosure F', x ≠ 0 → y ≠ 0 → θ x = θ y → x = y) →
     ∀ m k n : ℕ, 0 < m → n = Module.finrank F F' * m → Reg (Nat.card F) n k → ∃ z : ℤ, (z = 1 ∨ z = -1) ∧
     ∑ᶠ x, psiG (fun P => ∏ t : F' ≃ₐ[F] F', rootSum θ k (P.map (t : F' →+* F'))) n x *

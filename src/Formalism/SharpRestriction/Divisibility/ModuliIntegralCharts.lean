@@ -197,8 +197,8 @@ structure Loc (D : Formalism.BasicNotions.D7) (r j p : ℕ) where
   symmG : ∀ {La}, LBG La → Prop
   rigG : ∀ {La}, LBG La → Prop
 
-  LBGt : ∀ (y : Pt Xm), Unim → Type
-  LBB : ∀ (y : Pt Xm), Unim → Type
+  LBGt : ∀ (_ : Pt Xm), Unim → Type
+  LBB : ∀ (_ : Pt Xm), Unim → Type
   resGt : ∀ {La}, LBG La → ∀ y, LBGt y La
   prPull : ∀ {y La}, LBB y La → LBGt y La
 

@@ -130,7 +130,7 @@ theorem mem_htDual (q : Cpt ξ) (e : eigSp ρ σ) :
     exact h _ (Submodule.mem_map.2 ⟨w, hw, rfl⟩)
 
 theorem eigLat_le_htDual (q : Cpt ξ) : M.eigLat ρ σ q ≤ M.htDual L n ρ σ q :=
-  fun e he => Submodule.subset_span ⟨he.2, fun w hw => (M.htOm_le L n q hw) e he.1⟩
+  fun e he => Submodule.subset_span ⟨he.2, fun _ hw => (M.htOm_le L n q hw) e he.1⟩
 
 end LieModel
 

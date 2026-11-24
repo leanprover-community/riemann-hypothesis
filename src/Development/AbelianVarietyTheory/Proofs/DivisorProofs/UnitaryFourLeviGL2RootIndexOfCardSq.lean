@@ -79,7 +79,7 @@ theorem exists_hom (hσ : ∀ x, σ (σ x) = x) :
   refine ⟨MonoidHom.mk' (fun x => f x.toAdd) fun a b => mat_injective ?_, fun x => hf _⟩
   rw [mat_mul, hf, hf, hf, toAdd_mul, rootMat_add]
 
-theorem mat_of_mem (hσ : ∀ x, σ (σ x) = x) {g : GU σ 4} (hg : g ∈ rootU σ ![0, 0, 1, 1]) :
+theorem mat_of_mem {g : GU σ 4} (hg : g ∈ rootU σ ![0, 0, 1, 1]) :
     mat g = rootMat σ (mat g 0 1) := by
   have h1 : ∀ i j : Fin 4, j.val ≤ i.val → mat g i j = (1 : Matrix (Fin 4) (Fin 4) L) i j := hg.1
   have h2 : ∀ i j : Fin 4, (![0, 0, 1, 1] : Fin 4 → ℕ) i ≠ (![0, 0, 1, 1] : Fin 4 → ℕ) j → mat g i j = 0 := hg.2
@@ -143,7 +143,7 @@ theorem indexFour (hI : IntIndex) : IndexFour := by
     ext g
     constructor
     · rintro ⟨h1, h2⟩
-      have e := mat_of_mem hU.1 h2
+      have e := mat_of_mem h2
       exact ⟨Multiplicative.ofAdd (mat g 0 1), (mem_K_iff hU.2.1 e).1 h1, mat_injective ((hφ _).trans e.symm)⟩
     · rintro ⟨x, hx, rfl⟩
       exact ⟨(mem_K_iff hU.2.1 (hφ x)).2 hx, mem_root (hφ x)⟩

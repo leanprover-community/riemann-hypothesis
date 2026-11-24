@@ -101,7 +101,7 @@ private theorem det_kth_eq_one (θ : Fin n → ℝ) : (kth θ).det = 1 := by
     hprod, one_mul, mul_one] at h
   exact h
 
-theorem det_kth (θ : Fin n → ℝ) (hθ : ∀ j, -(Real.pi / 2) < θ j ∧ θ j ≤ Real.pi / 2) : (kth θ).det = 1 := by
+theorem det_kth (θ : Fin n → ℝ) : (kth θ).det = 1 := by
   exact det_kth_eq_one θ
 
 theorem jF_kak (e : ℤ) (p q : ℕ) (k : GR n) (u u' : Matrix (Fin n) (Fin n) ℂ) (θ : Fin n → ℝ) (hu : uᴴ * u = 1)
@@ -110,7 +110,7 @@ theorem jF_kak (e : ℤ) (p q : ℕ) (k : GR n) (u u' : Matrix (Fin n) (Fin n) �
       (u.det * u.det * (u'.det * u'.det)) ^ e * (u.det * (∏ j, cexp (-(I * (θ j : ℂ)))) * u'.det) ^ (-(p : ℤ)) *
         (u.det * (∏ j, cexp (I * (θ j : ℂ))) * u'.det) ^ (-(q : ℤ)) := by
   have hdet : (mR k).det = u.det * u.det * (u'.det * u'.det) := by
-    rw [hkm, det_mul, det_mul, det_mM_unitary u hu, det_mM_unitary u' hu', det_kth θ hθ, mul_one]
+    rw [hkm, det_mul, det_mul, det_mM_unitary u hu, det_mM_unitary u' hu', det_kth θ, mul_one]
   have hk2 := hkm.trans (blocks_kak u u' hu hu' θ)
   have hdm : diagonal (fun j => cexp (-(I * (θ j : ℂ)))) =
       (dR fun j => Real.cos (θ j)) - I • (dR fun j => Real.sin (θ j)) := by

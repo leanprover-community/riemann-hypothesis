@@ -111,7 +111,7 @@ theorem BoxW.boxesW {s : Scale} {D : D7} (h : BoxW s D.host) : BoxesW D s :=
 
 theorem BoxW.qdRowsW {s : Scale} {D : D7} (h : BoxW s D.host) : QDRowsW D s := h.what₂
 
-def HostGood (s : Scale) (C8 C5 c6 Cb : ℝ) (H : Host R) (q0 : ℕ) : Prop :=
+def HostGood (s : Scale) (C8 C5 Cb : ℝ) (H : Host R) (q0 : ℕ) : Prop :=
   HostVal s C8 H ∧ HostArith H ∧ H.secondSet_card_lower_bound ∧ 4 * H.Lw * H.T2.card ≤ R.n0 ∧
   QDq s.x s.eps C5 H.q H.d ∧ BoxW s H ∧ |dlogH H| ≤ s.x ^ s.eps ∧ BadOK s Cb H ∧
   Disjoint (Formalism.CyclotomicNorms.BB R.r (H.g 0)) (Formalism.CyclotomicNorms.BB R.r (H.g 1)) ∧
@@ -126,7 +126,7 @@ abbrev HostReq : Type 1 := ℝ → Scale → ∀ R : Ranks, Host R → ℕ → P
 def HostExW (la : ℝ) (P : HostReq) : Prop :=
   ∀ eps : ℝ, 0 < eps → eps < 1 / 52 → ∃ CT2 C8 C5 c6 Cb x0 : ℝ, 1 ≤ C8 ∧ 0 < C5 ∧ 0 < c6 ∧ 0 < Cb ∧
     ∃ S : Scales la, ∀ s : Scale, s.eps = eps → x0 ≤ s.x → S.Mem s →
-      ∃ (R : Ranks) (H : Host R) (q0 : ℕ), RankVal s R ∧ H.CT2 = CT2 ∧ HostGood s C8 C5 c6 Cb H q0 ∧ P C5 s R H q0
+      ∃ (R : Ranks) (H : Host R) (q0 : ℕ), RankVal s R ∧ H.CT2 = CT2 ∧ HostGood s C8 C5 Cb H q0 ∧ P C5 s R H q0
 
 def HostExP (P : HostReq) : Prop := ∃ la : ℝ, 1 < la ∧ HostExW la P
 

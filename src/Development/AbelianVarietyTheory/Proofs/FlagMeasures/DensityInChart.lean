@@ -361,7 +361,7 @@ theorem chart_squeeze {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [Com
     (Λ : A → V) (hΛ : HasStrictFDerivAt Λ P 1) (hl : ∀ᶠ x in 𝓝 (0 : V), Λ (NormedSpace.exp (J x)) = x)
     (hr : ∀ᶠ g in 𝓝 (1 : A), g ∈ S → NormedSpace.exp (J (Λ g)) = g)
     (Φ : E → A) (L : E ≃L[ℝ] V) (hΦ0 : Φ 0 = 1) (hΦS : ∀ᶠ x in 𝓝 (0 : E), Φ x ∈ S)
-    (hΦ : HasStrictFDerivAt Φ (J.comp (L : E →L[ℝ] V)) 0) (ε : ℝ) (h0 : 0 < ε) (h1 : ε < 1) :
+    (hΦ : HasStrictFDerivAt Φ (J.comp (L : E →L[ℝ] V)) 0) (ε : ℝ) (h0 : 0 < ε) :
     ∀ᶠ r in 𝓝[>] (0:ℝ),
       (fun x => NormedSpace.exp (J x)) '' (L '' Metric.ball 0 ((1 - ε) * r)) ⊆ Φ '' Metric.ball 0 r ∧
       Φ '' Metric.ball 0 r ⊆ (fun x => NormedSpace.exp (J x)) '' (L '' Metric.ball 0 ((1 + ε) * r)) := by
@@ -486,7 +486,7 @@ theorem density_in_chart : ∀ (m : ℕ) (S : Set (Matrix (Fin m) (Fin m) ℂ)) 
       obtain ⟨y, hy, e⟩ := hr.2 z hz
       exact ⟨y, hy, e⟩
   · intro ε h0 h1
-    filter_upwards [chart_squeeze S J P hP Λ hΛ hl hr Φ L hΦ0 hΦS hΦ ε h0 h1] with r hr
+    filter_upwards [chart_squeeze S J P hP Λ hΛ hl hr Φ L hΦ0 hΦS hΦ ε h0] with r hr
     exact ⟨measure_mono hr.1, measure_mono hr.2⟩
 
 end GlobalTheory.ChartDensity

@@ -190,7 +190,7 @@ theorem ev_second_pow {n : ℕ} (p : ℕ) {a b : Pt R n d} (ha : ∀ i, constant
 
 theorem pt_pow_eq {n : ℕ} (p : ℕ) (j : Fin n) : (fun i => pt R (n := n) d j i ^ p) = ptPow R d p j := rfl
 
-theorem ev_comp1_pair {V : Pt R 1 d} (hV : ∀ i, constantCoeff (V i) = 0) {m n : ℕ}
+theorem ev_comp1_pair {V : Pt R 1 d} {m n : ℕ}
     {a : Fin m → Pt R n d} (ha : CZ a) {b : Pt R m d} (hb : ∀ i, constantCoeff (b i) = 0) :
     (fun i => ev a (comp1 V b i)) = comp1 V (fun i => ev a (b i)) := by
   funext i
@@ -359,7 +359,7 @@ theorem am_mul_hw {p : ℕ} [Fact p.Prime] [CharP R p] (B : FB R d O) :
     have e1 := _root_.GlobalTheory.CompanionTheory.Ar.Conj.pow_sy_exchange R d O B p
     have f1 : ev (n := 2) ![P₀, comp1 (B.A.act (p : O)) P₁] B.sy =
         ev (n := 2) ![P₀, ptPow R d p 1] s2 := by
-      rw [hA1, hs2, ev_pair_ev c0 u1 c0 v1, ev_first c0 u1, ev_comp1_pair hV cQ c1, ev_second c0 u1]
+      rw [hA1, hs2, ev_pair_ev c0 u1 c0 v1, ev_first c0 u1, ev_comp1_pair cQ c1, ev_second c0 u1]
     have f2 : ev (n := 2) ![P₁, P₀] (pow1 B p) = ev (n := 2) ![P₀, ptPow R d p 1] g1 := by
       rw [ha, hg1, ev_pair_ev c1 c0 u0 c1, ev_first_pow p c1 c0, ev_second c1 c0, pt_pow_eq,
         ev_pair_ev c0 u1 c1 c0, ev_first c0 u1, ev_second c0 u1]
@@ -383,11 +383,11 @@ theorem am_mul_hw {p : ℕ} [Fact p.Prime] [CharP R p] (B : FB R d O) :
   have h1 : ev (n := 2) ![P₀, comp1 (B.A.act (p : O)) P₁] (pow1 B p) =
       ev (n := 2) ![ptPow R d p 0, ptPow R d p 1] g2 := by
     rw [hA1, ha, hg2, ev_pair_ev c0 w1 u0 c1, ev_first_pow p c0 w1, ev_second c0 w1, pt_pow_eq,
-      ev_pair_ev u0 u1 c0 v1, ev_first u0 u1, ev_comp1_pair hV cP c1, ev_second u0 u1]
+      ev_pair_ev u0 u1 c0 v1, ev_first u0 u1, ev_comp1_pair cP c1, ev_second u0 u1]
   have h2 : ev (n := 2) ![comp1 (B.A.act (p : O)) P₀, P₁] (pow2 B p) =
       ev (n := 2) ![ptPow R d p 0, ptPow R d p 1] g3 := by
     rw [hA0, hb, hg3, ev_pair_ev w0 c1 c0 u1, ev_first w0 c1, ev_second_pow p w0 c1, pt_pow_eq,
-      ev_pair_ev u0 u1 v0 c1, ev_comp1_pair hV cP c0, ev_first u0 u1, ev_second u0 u1]
+      ev_pair_ev u0 u1 v0 c1, ev_comp1_pair cP c0, ev_first u0 u1, ev_second u0 u1]
   have hmain : ev (n := 2) ![ptPow R d p 0, ptPow R d p 1]
         (MvPowerSeries.map (frobenius R p) (pow2 B p) * g2) =
       ev (n := 2) ![ptPow R d p 0, ptPow R d p 1]

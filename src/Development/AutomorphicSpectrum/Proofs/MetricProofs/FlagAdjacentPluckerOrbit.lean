@@ -96,7 +96,7 @@ theorem minorIJ_mul_transvection {N : ℕ} (h : Matrix (Fin N) (Fin N) ℂ) (I J
       simp [mul_one_add_single_apply, hbc]
   · rfl
 
-theorem mem_stepCols_iff {N j : ℕ} {a b i ca cb : Fin N} (hb : (b : ℕ) = a + 1) (hab : (b : ℕ) < j ∨ j ≤ (a : ℕ))
+theorem mem_stepCols_iff {N j : ℕ} {a b i ca cb : Fin N} (hb : (b : ℕ) = a + 1)
     (hca : (ca : ℕ) = lastCol N j a) (hcb : (cb : ℕ) = ca + 1) (hi : i ≠ a) :
     ca ∈ stepCols N j i ↔ cb ∈ stepCols N j i := by
   have hi' : (i : ℕ) ≠ a := fun h => hi (Fin.ext h)
@@ -143,7 +143,7 @@ theorem fstPt_sndPt_wVec : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, 
           have hia : i ≠ a := by
             rintro rfl
             exact hk (Option.some_injective _ (hp.symm.trans hblk))
-          rw [Function.update_self, minorIJ_mul_transvection _ _ _ hne t (mem_stepCols_iff hb hab hca hcb hia)]
+          rw [Function.update_self, minorIJ_mul_transvection _ _ _ hne t (mem_stepCols_iff hb hca hcb hia)]
         · rw [Function.update_of_ne hτ]
 
 end GlobalTheory.CompanionTheory.Ar.PB.WSq.FC

@@ -101,7 +101,7 @@ theorem cmi_mX_neg (Q R : Matrix (Fin n) (Fin n) ℂ) :
     Cmi n * mX 1 (-Q) (-R) 1 = fromBlocks 1 (-Q) (-R) 1 * Cmi n := by
   rw [mX, cm_inv, ← Matrix.mul_assoc, ← Matrix.mul_assoc, cmi_mul_cm, Matrix.one_mul]
 
-theorem inverse_first_block_mul_unipotent (x : M2 n) (hx : IsUnit x.det) (Q R : Matrix (Fin n) (Fin n) ℂ) (hQR : Q * R = 0) (hRQ : R * Q = 0) :
+theorem inverse_first_block_mul_unipotent (x : M2 n) (Q R : Matrix (Fin n) (Fin n) ℂ) (hQR : Q * R = 0) (hRQ : R * Q = 0) :
     ub1 (x * mX 1 Q R 1) = ub1 x - Q * ub2 x := by
   have hM : IsUnit (mX 1 Q R 1).det := by
     have h := mX_mul_mX_neg Q R hQR hRQ
@@ -118,7 +118,7 @@ theorem u_ub_rel (x : M2 n) (hx : IsUnit x.det) : u1 x * ub1 x + u2 x * ub2 x = 
 
 theorem inverse_first_block_mul_unipotent_domain (x : M2 n) (hx : x ∈ Dom n) (Q R : Matrix (Fin n) (Fin n) ℂ) (hQR : Q * R = 0)
     (hRQ : R * Q = 0) : ub1 (x * mX 1 Q R 1) = (1 + Q * wM x) * ub1 x := by
-  rw [inverse_first_block_mul_unipotent x hx.1 Q R hQR hRQ]
+  rw [inverse_first_block_mul_unipotent x Q R hQR hRQ]
   have h2 : IsUnit (u2 x).det := isUnit_iff_ne_zero.2 hx.2.2.1
   have hrel := u_ub_rel x hx.1
   have e : ub2 x = -(wM x * ub1 x) := by

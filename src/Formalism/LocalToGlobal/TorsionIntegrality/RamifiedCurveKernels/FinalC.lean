@@ -111,7 +111,7 @@ theorem jetsIn_toZ [CharZero K] {R : Subring K} {l linv : PowerSeries K}
     (h : IsLogPair l linv) (hl : IsOneUnit R (PowerSeries.derivative (R := K) l)) {n : Type} [Fintype n]
     {G : MvPowerSeries n K} (hG : IntMv R G) : JetsIn R (toZ linv G) :=
   IntMvZ_of (JetsSubst_of jets_ring_holds jets_div_pow_holds) integral_jets_holds jets_subst_one_holds
-    jets_ring_holds K R l linv h hl n G hG
+    K R l linv h hl n G hG
 
 theorem toZ_mvExp [CharZero K] {n : Type} [Finite n] {linv : PowerSeries K}
     (h0 : PowerSeries.constantCoeff linv = 0) {f : MvPowerSeries n K}

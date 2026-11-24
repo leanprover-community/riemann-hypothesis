@@ -214,7 +214,7 @@ theorem cell_convergence : Formalism.MainNotions.S.Pv.AmpDD.CellConv := by
   have hFinv : ∀ x, Good L x → ∀ a ∈ RStab k r γ, F (stabAct γ a x) = F x := by
     intro x hx a ha
     simp only [hFdef]
-    rw [gProxy_eq L γ b ((good_stabAct L ha x).2 hx), gProxy_eq L γ b hx, pairMaj_inv L hUH b hx ha]
+    rw [gProxy_eq L γ b ((good_stabAct L ha x).2 hx), gProxy_eq L γ b hx, pairMaj_inv L hUH b ha]
   have hETm : MeasurableSet (ET L.z L.z' γ T') := (et_closed L.z L.z' hStd.2.1 hUH T').measurableSet
   have hid := orbit_identity L hHaarC hconc hne hOrb F hFm hFinv _ hETm _ (at_mset hUH T') ρh hρh
   set f1 : Mt k r × Mt k r → ℝ≥0∞ := fun p => ENNReal.ofReal (FourierDecayAlt.B.gN (of p.2 * of p.1) ^ (-β)) with hf1

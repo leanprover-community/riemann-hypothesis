@@ -389,7 +389,7 @@ private theorem sq_mul_norm_mul_norm_le_norm_mul (N : A → ℝ) (c : ℝ) (hc :
     _ ≤ ‖toDisc l u ρ (a * b)‖ * ((l : ℝ) ^ k * (l : ℝ) ^ m) := mul_le_mul_of_nonneg_right key hpow
 
 theorem isDomain_disc (l : ℕ) [hl : Fact l.Prime] (A : Type) [CommRing A] (u : A) (ρ : ℝ≥0) (N : A → ℝ) (c : ℝ)
-    (hc : 0 < c) (hmul : ∀ x y, N (x * y) = N x * N y) (_hadd : ∀ x y, N (x + y) ≤ max (N x) (N y))
+    (hc : 0 < c) (hmul : ∀ x y, N (x * y) = N x * N y)
     (hNl : N (l : A) = (l : ℝ)⁻¹) (hle : ∀ x, N x ≤ ‖toDisc l u ρ x‖) (hge : ∀ x, c * ‖toDisc l u ρ x‖ ≤ N x) :
     IsDomain (Disc l u ρ) ∧ ∀ x y : Disc l u ρ, c ^ 2 * (‖x‖ * ‖y‖) ≤ ‖x * y‖ := by
   have hmain : ∀ x y : Disc l u ρ, c ^ 2 * (‖x‖ * ‖y‖) ≤ ‖x * y‖ := by
@@ -438,7 +438,7 @@ theorem discAinf_isDomain : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : BK
   intro l _ K bk ρ h0 h1
   obtain ⟨N, hmul, hadd, hl, hle, hge⟩ := _root_.GlobalTheory.DiscGauss.exists_gauss_disc l K bk ρ h0 h1
   have hρ : (0 : ℝ) < (ρ : ℝ) := h0
-  obtain ⟨hdom, hnorm⟩ := _root_.GlobalTheory.BSP.DiscDomain.isDomain_disc l (Ainf l) (bk.ev X) ρ N (ρ : ℝ) hρ hmul hadd hl hle hge
+  obtain ⟨hdom, hnorm⟩ := _root_.GlobalTheory.BSP.DiscDomain.isDomain_disc l (Ainf l) (bk.ev X) ρ N (ρ : ℝ) hρ hmul hl hle hge
   refine ⟨hdom, hnorm, fun a ha => ⟨((ρ : ℝ) ^ 2 * ‖a‖)⁻¹, fun y => ?_⟩⟩
   have hpos : 0 < (ρ : ℝ) ^ 2 * ‖a‖ := mul_pos (pow_pos hρ 2) (norm_pos_iff.2 ha)
   have h := hnorm a y

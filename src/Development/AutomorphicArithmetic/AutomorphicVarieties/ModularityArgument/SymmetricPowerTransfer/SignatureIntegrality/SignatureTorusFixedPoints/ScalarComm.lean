@@ -110,7 +110,7 @@ private theorem sdom2 {x : Fin 2 → kˣ} (h : valuation k (x 0 : k) < valuation
   intro i j hij
   fin_cases i <;> fin_cases j <;> first | exact h | exact absurd hij (by decide)
 
-private theorem dg_mem_ZJ (V : Lev k) (ω : kˣ →* ℂˣ) (hω : ∀ u ∈ V.H, ω u = 1) {w : Fin 2 → kˣ} :
+private theorem dg_mem_ZJ (V : Lev k) (ω : kˣ →* ℂˣ) {w : Fin 2 → kˣ} :
     dg w ∈ V.ZJ 2 ↔ w 0 / w 1 ∈ V.H := by
   have hz : ∀ u : GL (Fin 2) k, u ∈ V.ZJ 2 ↔ ∃ z : kˣ, ∃ j ∈ V.J 2, u = GeneralLinearGroup.scalar (Fin 2) z * j := by
     haveI : (GeneralLinearGroup.scalar (Fin 2) : kˣ →* GL (Fin 2) k).range.Normal := ⟨by
@@ -281,7 +281,7 @@ theorem orbZ : OrbZ := by
     have e : (g₀ * dg ![p s, q s] * g₀⁻¹ * g₀)⁻¹ * (g₀ * dg u) = dg (![p s, q s]⁻¹ * u) := by
       rw [dg_mul, dg_inv]
       group
-    rw [e, dg_mem_ZJ V ω hω]
+    rw [e, dg_mem_ZJ V ω]
     have hs' : p s / q s = u 0 / u 1 := hs
     have : (![p s, q s]⁻¹ * u) 0 / (![p s, q s]⁻¹ * u) 1 = 1 := by
       simp only [Pi.mul_apply, Pi.inv_apply, Matrix.cons_val_zero, Matrix.cons_val_one]
@@ -325,7 +325,7 @@ theorem orbZ : OrbZ := by
           group
         rw [this]
         group
-      rw [e, dg_mem_ZJ V ω hω]
+      rw [e, dg_mem_ZJ V ω]
       have : (![p s, q s]⁻¹ : Fin 2 → kˣ) 0 / (![p s, q s]⁻¹ : Fin 2 → kˣ) 1 = (p s / q s)⁻¹ := by
         simp
         rw [div_eq_mul_inv, mul_comm]

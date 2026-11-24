@@ -34,7 +34,7 @@ theorem integral_count_Xi (f : Xi F → ℂ) : ∫ ξ, f ξ ∂(Measure.count : 
     rw [integrable_count_iff] at hi
     exact hf (summable_norm_iff.mp hi)
 
-theorem integral_iter_eq (S : Set {r : ℝ // 0 < r}) (hS : MeasurableSet S) {h : Pp F × Xi F → ℂ}
+theorem integral_iter_eq (S : Set {r : ℝ // 0 < r}) {h : Pp F × Xi F → ℂ}
     (hh : Integrable h (μS F S)) :
     IntegrableOn (fun t => ∫ u in normOneFundamentalDomain F, ∑' ξ : Xi F, h ((t, u), ξ) ∂normOneMeasure F)
         S posRealMeasure ∧

@@ -344,13 +344,13 @@ theorem partR_coreHleg (p : ℕ) (hp : p.Prime) : coreHleg p := by
 
 end PartR
 
-theorem lifting_bracket_units_times_powers (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : LiftBracketR D HW F := fun l _ _ _ _ h => partR_coreLiftR (P := D.loc l) (H := HW l) h
+theorem lifting_bracket_units_times_powers (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : LiftBracketR D HW := fun l _ _ _ _ h => partR_coreLiftR (P := D.loc l) (H := HW l) h
 
-theorem coreH_val_holds (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l)
+theorem coreH_val_holds (D : D7) (HW : HWOf D.loc) (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l)
     (h : Good K s LL) (hA : CaseA ((HW l).W K s LL h)) : coreHval ((HW l).W K s LL h) :=
   partR_coreHval h hA
 
-theorem coreH_leg_holds (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (l : ℕ) [Fact l.Prime] (K : FinExt l) :
+theorem coreH_leg_holds (D : D7) (HW : HWOf D.loc) (l : ℕ) [Fact l.Prime] (K : FinExt l) :
     coreHleg ((D.loc l).PD K).p :=
   partR_coreHleg _ ((D.loc l).PD K).hp
 
@@ -1746,12 +1746,12 @@ theorem coreH_of_ex (W : LocWach PD LL O v n) (h9 : Formalism.MainNotions.DeltaI
 
 end FrameA
 
-def GammaSubSolutionsExist (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def GammaSubSolutionsExist (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     coreHex ((HW l).W K s LL h)
 
-theorem gamma_equation_clause_of_solutions (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h9 : adm9 D HW F) (hex : GammaSubSolutionsExist D HW F) : ConclusionH D HW F := fun l _ K s LL h =>
-  coreH_of_ex _ (h9 l K s LL h) (fun hA => coreH_val_holds D HW F l K s LL h hA) (coreH_leg_holds D HW F l K)
+theorem gamma_equation_clause_of_solutions (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h9 : adm9 D HW F) (hex : GammaSubSolutionsExist D HW) : ConclusionH D HW := fun l _ K s LL h =>
+  coreH_of_ex _ (h9 l K s LL h) (fun hA => coreH_val_holds D HW l K s LL h hA) (coreH_leg_holds D HW l K)
     (fun y => ((D.loc l).v_O LL _).2 y.2)
     (fun x hx => ⟨⟨x, ((D.loc l).v_O LL x).1 hx⟩, rfl⟩) (hex l K s LL h)
 
@@ -1761,13 +1761,13 @@ namespace Formalism.MainNotions.LiftingTheory
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
 
-theorem gamma_sub_solutions_exist (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h9 : adm9 D HW F) : GammaSubSolutionsExist D HW F := fun l _ K s LL h hA T hT i _ b hb z hz c₀ =>
+theorem gamma_sub_solutions_exist (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h9 : adm9 D HW F) : GammaSubSolutionsExist D HW := fun l _ K s LL h hA T hT i _ b hb z hz c₀ =>
   coreH_sol_exists _ (fun y => ((D.loc l).v_O LL _).2 y.2)
     (fun x hx => ⟨⟨x, ((D.loc l).v_O LL x).1 hx⟩, rfl⟩) (zl_O_inj LL)
     (uniformizer_ring_and_module_clauses _ (h9 l K s LL h) hA T hT).1 T (uniformizer_ring_and_module_clauses _ (h9 l K s LL h) hA T hT).2
-    (coreH_val_holds D HW F l K s LL h hA) i b hb z hz c₀
+    (coreH_val_holds D HW l K s LL h hA) i b hb z hz c₀
 
-theorem gamma_equation_clause_of_uniformizer (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h9 : adm9 D HW F) : ConclusionH D HW F := gamma_equation_clause_of_solutions D HW F h9 (gamma_sub_solutions_exist D HW F h9)
+theorem gamma_equation_clause_of_uniformizer (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h9 : adm9 D HW F) : ConclusionH D HW := gamma_equation_clause_of_solutions D HW F h9 (gamma_sub_solutions_exist D HW F h9)
 
 end Formalism.MainNotions.LiftingTheory
 
@@ -1914,7 +1914,7 @@ theorem coreLiftO_holds (W : LocWach PD LL O v n) : coreLiftO W 23 32 32 := by
 
 end Local
 
-theorem lifting_exponent_shapes (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : LiftExponentShapes D HW F 23 32 32 :=
+theorem lifting_exponent_shapes (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : LiftExponentShapes D HW 23 32 32 :=
   fun l _ K s LL h => coreLiftO_holds ((HW l).W K s LL h)
 
 end Formalism.MainNotions.LiftingTheory
@@ -1985,7 +1985,7 @@ theorem lag_coreL (W : LocWach PD LL O v n) [IsDomain O]
 
 end LagLocal
 
-theorem lattice_clause_every_situation (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : ConclusionL D HW F := by
+theorem lattice_clause_every_situation (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : ConclusionL D HW := by
   intro l _ K s LL h
   refine lag_coreL _ ?_
   intro x k hx
@@ -2207,8 +2207,8 @@ theorem desc_val_g (K K' : FinExt l) (hKK : K'.1 ≤ K.1) (h0 : K0 K ≤ K'.1)
 
 end DescD
 
-theorem lifting_descent_to_subfields (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (hA : LiftTheoremCaseA D HW F) (hB : LiftTheoremCaseB D HW F) (h20 : adm20 D HW F) :
-    LiftGaloisDescent D HW F := by
+theorem lifting_descent_to_subfields (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (hA : LiftTheoremCaseA D HW) (hB : LiftTheoremCaseB D HW) (h20 : adm20 D HW) :
+    LiftGaloisDescent D HW := by
   intro l _ K K' hKK hle _ s LL h
   refine ⟨?_, fun hc hs h0 => ?_⟩
   · exact coreDesc_of ((HW l).W K s LL h) ((D.loc l).PD K') (Subgroup.inclusion hle) _ _ l
@@ -2629,7 +2629,7 @@ theorem uniformizer_clause_case_A (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.
       Module.finrank_self]
   exact ((h9 l K s LL h T hT hA.2.1 hA.2.2).2.2 h1).1
 
-theorem truncation_of_uniformizer_clause (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h9 : adm9 D HW F) : ExistsUnitClasses D HW F := by
+theorem truncation_of_uniformizer_clause (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h9 : adm9 D HW F) : ExistsUnitClasses D HW := by
   intro l _ K s LL h
   exact coreTr_of _ (uniformizer_clause_case_A D HW F h9 l K s LL h)
     fun x hx => ⟨⟨x, ((D.loc l).v_O LL x).1 hx⟩, rfl⟩
@@ -3288,16 +3288,16 @@ theorem wmap_Nimg_γ (W : LocWach PD LL O v n) {T₁ T₂ : LocLat G Qp LL O} (F
 
 variable {ℓ : ℕ} [Fact ℓ.Prime] [Algebra ℤ_[ℓ] O]
 
-def DZ (_ℓ : ℕ) (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) : Type := W.DD T
+def DZ (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) : Type := W.DD T
 
-instance DZ.acg (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) : AddCommGroup (DZ ℓ W T) :=
+instance DZ.acg (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) : AddCommGroup (DZ W T) :=
   inferInstanceAs (AddCommGroup (W.DD T))
 
 instance DZ.modA (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) :
-    Module (LetA O n) (DZ ℓ W T) :=
+    Module (LetA O n) (DZ W T) :=
   inferInstanceAs (Module (LetA O n) (W.DD T))
 
-instance DZ.modZ (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) : Module ℤ_[ℓ] (DZ ℓ W T) :=
+instance DZ.modZ (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) : Module ℤ_[ℓ] (DZ W T) :=
   Module.compHom (W.DD T) (algebraMap ℤ_[ℓ] O)
 
 theorem wmap_tow (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) (z : ℤ_[ℓ]) (a : LetA O n)
@@ -3305,7 +3305,7 @@ theorem wmap_tow (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) (z : ℤ_[ℓ]
   rw [← smul_assoc, algebraMap_smul]
 
 instance DZ.tow (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) :
-    IsScalarTower ℤ_[ℓ] (LetA O n) (DZ ℓ W T) :=
+    IsScalarTower ℤ_[ℓ] (LetA O n) (DZ W T) :=
   ⟨fun z a x => wmap_tow W T z a x⟩
 
 theorem wmap_X_inj (W : LocWach PD LL O v n) (k : ℕ) (T : LocLat G Qp LL O) (x : W.DD T)
@@ -3329,7 +3329,7 @@ def gPair (W : LocWach PD LL O v n) (g : W.Gam) (z : ℤ_[ℓ]ˣ)
     (N N' : Submodule (LetA O n) (W.DD T)) (le : N' ≤ N)
     (hN : ∀ x ∈ N, ∃ x' ∈ N, W.γD T g x - x = (W.φA ^ k) letπ • x')
     (hN' : ∀ x ∈ N', ∃ x' ∈ N', W.γD T g x - x = (W.φA ^ k) letπ • x') :
-    GPair (gBase W g z hz k) (DZ ℓ W T) where
+    GPair (gBase W g z hz k) (DZ W T) where
   N := N
   N' := N'
   le := le
@@ -3386,7 +3386,7 @@ def gPairL (W : LocWach PD LL O v n) (g : W.Gam) (z : ℤ_[ℓ]ˣ)
     (F : LatHom T₁.L T₂.L) (c₁ : IsCrys PD T₁.ρ) (c₂ : IsCrys PD T₂.ρ)
     (h₁ : ∀ x ∈ W.N T₁, ∃ x' ∈ W.N T₁, W.γD T₁ g x - x = (W.φA ^ k) letπ • x')
     (h₂ : ∀ x ∈ W.N T₂, ∃ x' ∈ W.N T₂, W.γD T₂ g x - x = (W.φA ^ k) letπ • x') (i : ZMod n) :
-    GPair (gBase W g z hz k) (DZ ℓ W T₂) :=
+    GPair (gBase W g z hz k) (DZ W T₂) :=
   gPair W g z hz k T₂ (W.Nl T₂ i) (Nimg W F i) (wmap_Nimg_le W F c₁ c₂ i) (wmap_Nl_γ W T₂ g _ h₂ i)
     (wmap_Nimg_γ W F g _ i (wmap_Nl_γ W T₁ g _ h₁ i))
 
@@ -3396,7 +3396,7 @@ theorem coreWB_of (W : LocWach PD LL O v n) (hp : PD.p = ℓ) (z : ℤ_[ℓ]ˣ)
     coreWB W := by
   subst hp
   intro _ T₁ T₂ F Mi hi hS hJ i
-  exact lagrange_and_w_all.2.2.1 PD.p (LetA O n) _ (DZ PD.p W T₂)
+  exact lagrange_and_w_all.2.2.1 PD.p (LetA O n) _ (DZ W T₂)
     (gPairL W W.gam z hz (W.s - 1) F hS.1 hS.2.1 (wmap_P2X W h2 T₁ hS.1) (wmap_P2X W h2 T₂ hS.2.1) i)
     W.s (Hmax n Mi hi) W.s_pos W.s_two hv (hX T₁ T₂ F Mi hi hS hJ i)
 
@@ -3412,7 +3412,7 @@ theorem wmap_Q_one (W : LocWach PD LL O v n) (hs : W.s = 1) : W.Q = W.q := by
 
 def gPairπ (W : LocWach PD LL O v n) (g : W.Gam) (z : ℤ_[ℓ]ˣ)
     (hz : algebraMap ℤ_[ℓ] O (z : ℤ_[ℓ]) = (W.χΓ g : O)) {T₁ T₂ : LocLat G Qp LL O}
-    (F : LatHom T₁.L T₂.L) (c₁ : IsCrys PD T₁.ρ) (c₂ : IsCrys PD T₂.ρ) (i : ZMod n) : GPair (gBase W g z hz 0) (DZ ℓ W T₂) :=
+    (F : LatHom T₁.L T₂.L) (c₁ : IsCrys PD T₁.ρ) (c₂ : IsCrys PD T₂.ρ) (i : ZMod n) : GPair (gBase W g z hz 0) (DZ W T₂) :=
   gPairL W g z hz 0 F c₁ c₂ (wmap_P2π W T₁ g) (wmap_P2π W T₂ g) i
 
 theorem wmap_KillsH (W : LocWach PD LL O v n) (hs : W.s = 1) (hX : coreWX W)
@@ -3432,7 +3432,7 @@ theorem coreWA_of (W : LocWach PD LL O v n) (hp : PD.p = ℓ) (g : W.Gam) (z : �
     coreWA W := by
   subst hp
   intro hA T₁ T₂ F Mi hi hS hJ i
-  exact lagrange_and_w_all.2.2.2.1 PD.p hA.2.2 (LetA O n) _ (DZ PD.p W T₂) (gPairπ W g z hz F hS.1 hS.2.1 i)
+  exact lagrange_and_w_all.2.2.2.1 PD.p hA.2.2 (LetA O n) _ (DZ W T₂) (gPairπ W g z hz F hS.1 hS.2.1 i)
     (Hmax n Mi hi) hgen (wmap_KillsH W hA.2.1 hX F Mi hi hS hJ i)
 
 theorem wach_first_of_generator (W : LocWach PD LL O v n) (hp : PD.p = ℓ) (g : W.Gam) (z : ℤ_[ℓ]ˣ)
@@ -3441,7 +3441,7 @@ theorem wach_first_of_generator (W : LocWach PD LL O v n) (hp : PD.p = ℓ) (g :
   subst hp
   intro hA T₁ T₂ F Mi hi hS hJ i a j haj
   obtain ⟨h1, h2, _⟩ := wmap_sI_mem W F i _ (wmap_KillsH W hA.2.1 hX F Mi hi hS hJ i)
-  exact descent_cost_all.2.2.2.2.2.2.1 PD.p hA.2.2 (LetA O n) _ (DZ PD.p W T₂) (gPairπ W g z hz F hS.1 hS.2.1 i)
+  exact descent_cost_all.2.2.2.2.2.2.1 PD.p hA.2.2 (LetA O n) _ (DZ W T₂) (gPairπ W g z hz F hS.1 hS.2.1 i)
     (sI W F i) (Hmax n Mi hi) a j hgen h2 h1 haj
 
 theorem wmap_three {p : ℕ} (hp : p.Prime) (h2 : p ≠ 2) : 3 ≤ p := by
@@ -3507,7 +3507,7 @@ variable [Fact PD.p.Prime] [Algebra ℤ_[PD.p] O]
 
 def gLetters (W : LocWach PD LL O v n) (g : W.Gam) (z : ℤ_[PD.p]ˣ)
     (hz : algebraMap ℤ_[PD.p] O (z : ℤ_[PD.p]) = (W.χΓ g : O)) {T₁ T₂ : LocLat G Qp LL O}
-    (F : LatHom T₁.L T₂.L) (c₁ : IsCrys PD T₁.ρ) (c₂ : IsCrys PD T₂.ρ) : Letters (gBase W g z hz 0) n (DZ PD.p W T₂) where
+    (F : LatHom T₁.L T₂.L) (c₁ : IsCrys PD T₁.ρ) (c₂ : IsCrys PD T₂.ρ) : Letters (gBase W g z hz 0) n (DZ W T₂) where
   pair := gPairπ W g z hz F c₁ c₂
   φA := (W.φA : LetA O n →+* LetA O n)
   q := W.q
@@ -3531,7 +3531,7 @@ theorem wach_second_of_generator (W : LocWach PD LL O v n) (hp : PD.p = ℓ) (g 
   have hs := hA.2.1
   have hK := fun i => wmap_KillsH W hs hX F Mi hi hS hJ i
   have hsI := fun i => wmap_sI_mem W F i _ (hK i)
-  have C := dual_w_by_letters PD.p hA.2.2 (LetA O n) _ n (DZ PD.p W T₂) (gLetters W g z hz F hS.1 hS.2.1) Mi hi
+  have C := dual_w_by_letters PD.p hA.2.2 (LetA O n) _ n (DZ W T₂) (gLetters W g z hz F hS.1 hS.2.1) Mi hi
     (fun i => sI W F i) (Hmax n Mi hi) hgen
     (fun i => frobenius_q_pow_mem_letter W hs T₂ Mi hi
       (h5 T₂ Mi hi hS.2.1 (wmap_Jumps W T₂ Mi hi (hJQ T₁ T₂ F Mi hi hS hJ))) i)
@@ -3551,7 +3551,7 @@ theorem coreWR_of (W : LocWach PD LL O v n) (hp : PD.p = ℓ) (g : W.Gam) (z : �
   have hK := fun i => wmap_KillsH W hs hX F Mi hi hS hJ i
   have hsI := fun i => wmap_sI_mem W F i _ (hK i)
   obtain ⟨w, hw⟩ := ((h9 T₁ hS.1 hs hA.2.2).2.2 (gen_finrank_one hA.1)).1.2.2.1
-  obtain ⟨_, E2, _, _, _, E6⟩ := dual_w_by_letters_extended PD.p hA.2.2 (LetA O n) _ n (DZ PD.p W T₂)
+  obtain ⟨_, E2, _, _, _, E6⟩ := dual_w_by_letters_extended PD.p hA.2.2 (LetA O n) _ n (DZ W T₂)
     (gLetters W g z hz F hS.1 hS.2.1) (fun i => sI W F i) (Hmax n Mi hi) W.π₀ (w : LetA O n) hgen hw hK
     (fun i => ⟨(hsI i).1, (hsI i).2.2⟩)
   obtain ⟨UnramifiedEulerProductIntegral, E6b⟩ := E6 Mi hi
@@ -3560,7 +3560,7 @@ theorem coreWR_of (W : LocWach PD LL O v n) (hp : PD.p = ℓ) (g : W.Gam) (z : �
     (fun i => q_pow_smul_mem_frobenius_span W hs F Mi hi (h5 T₁ Mi hi hS.1 (wmap_Jumps W T₁ Mi hi hJ)) i)
     hB (hI T₂ hS.2.1)
   have hc : Kills W F i (lp W (cost PD.p 0 (sI W F i))) := by
-    have h := descent_cost_all.2.2.2.2.2.1 PD.p hA.2.2 (LetA O n) _ (DZ PD.p W T₂) (gPairπ W g z hz F hS.1 hS.2.1 i)
+    have h := descent_cost_all.2.2.2.2.2.1 PD.p hA.2.2 (LetA O n) _ (DZ W T₂) (gPairπ W g z hz F hS.1 hS.2.1 i)
       (sI W F i) 0 hgen (Nat.zero_le _) (hsI i).1
     rw [pow_zero, mul_one] at h
     exact h
@@ -3618,47 +3618,47 @@ theorem coreWK1a_of (W : LocWach PD LL O v n) (h9 : Formalism.MainNotions.DeltaI
 
 end WMap
 
-theorem wach_first_claim_of_lemma (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h16 : adm16 D HW F) : WachKillsQuotients D HW F :=
+theorem wach_first_claim_of_lemma (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h16 : adm16 D HW F) : WachKillsQuotients D HW :=
   fun l _ K s LL hg => coreWX_of _ (h16 l K s LL hg)
 
-theorem wach_statement_case_B (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h2 : adm2 D HW F) (h16 : adm16 D HW F) : WachKillsCaseB D HW F := by
+theorem wach_statement_case_B (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h2 : adm2 D HW F) (h16 : adm16 D HW F) : WachKillsCaseB D HW := by
   intro l _ K s LL hg
   obtain ⟨z, hz, hv⟩ := gam_zl (P := D.loc l) (H := HW l) hg
   exact coreWB_of _ ((D.loc l).PD_p K) z hz (by rw [(HW l).W_s]; exact hv) (h2 l K s LL hg)
     (coreWX_of _ (h16 l K s LL hg))
 
-theorem wach_statement_case_A (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h9 : adm9 D HW F) (h16 : adm16 D HW F) : WachKillsCaseA D HW F := by
+theorem wach_statement_case_A (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h9 : adm9 D HW F) (h16 : adm16 D HW F) : WachKillsCaseA D HW := by
   intro l _ K s LL hg hA
   obtain ⟨g, z, hz, hgen⟩ := exists_gen D HW F h9 l K s LL hg hA
   exact coreWA_of _ ((D.loc l).PD_p K) g z hz hgen (coreWX_of _ (h16 l K s LL hg)) hA
 
-theorem wach_first_clause_of_literature (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h9 : adm9 D HW F) (h16 : adm16 D HW F) : WachAnnihilatorAll D HW F := by
+theorem wach_first_clause_of_literature (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h9 : adm9 D HW F) (h16 : adm16 D HW F) : WachAnnihilatorAll D HW := by
   intro l _ K s LL hg hA
   obtain ⟨g, z, hz, hgen⟩ := exists_gen D HW F h9 l K s LL hg hA
   exact wach_first_of_generator _ ((D.loc l).PD_p K) g z hz hgen (coreWX_of _ (h16 l K s LL hg)) hA
 
-def opnJumpsQuot (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def opnJumpsQuot (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     CaseA ((HW l).W K s LL h) → JumpsQuot ((HW l).W K s LL h)
 
-def opnPhiBasis (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def opnPhiBasis (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     CaseA ((HW l).W K s LL h) → PhiBasis ((HW l).W K s LL h)
 
-def opnPhiLinInj (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def opnPhiLinInj (D : D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     CaseA ((HW l).W K s LL h) → ∀ T : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL),
       IsCrys ((D.loc l).PD K) T.ρ → PhiLinInj ((HW l).W K s LL h) T
 
-theorem wach_second_clause_of_hypotheses (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h5 : adm5 D HW F) (h9 : adm9 D HW F) (h16 : adm16 D HW F) (hJ : opnJumpsQuot D HW F)
-    (hB : opnPhiBasis D HW F) (hI : opnPhiLinInj D HW F) : WachExponentRecursionAll D HW F := by
+theorem wach_second_clause_of_hypotheses (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h5 : adm5 D HW F) (h9 : adm9 D HW F) (h16 : adm16 D HW F) (hJ : opnJumpsQuot D HW)
+    (hB : opnPhiBasis D HW) (hI : opnPhiLinInj D HW) : WachExponentRecursionAll D HW := by
   intro l _ K s LL hg hA
   obtain ⟨g, z, hz, hgen⟩ := exists_gen D HW F h9 l K s LL hg hA
   exact wach_second_of_generator _ ((D.loc l).PD_p K) g z hz hgen (coreWX_of _ (h16 l K s LL hg))
     (h5 l K s LL hg) (hJ l K s LL hg hA) (hB l K s LL hg hA) (hI l K s LL hg hA) hA
 
-theorem wach_result_of_hypotheses (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h5 : adm5 D HW F) (h9 : adm9 D HW F) (h16 : adm16 D HW F) (hJ : opnJumpsQuot D HW F)
-    (hB : opnPhiBasis D HW F) (hI : opnPhiLinInj D HW F) : WachResultConstant D HW F 10 := by
+theorem wach_result_of_hypotheses (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h5 : adm5 D HW F) (h9 : adm9 D HW F) (h16 : adm16 D HW F) (hJ : opnJumpsQuot D HW)
+    (hB : opnPhiBasis D HW) (hI : opnPhiLinInj D HW) : WachResultConstant D HW 10 := by
   intro l _ K s LL hg hA
   obtain ⟨g, z, hz, hgen⟩ := exists_gen D HW F h9 l K s LL hg hA
   exact coreWR_of _ ((D.loc l).PD_p K) g z hz hgen (coreWX_of _ (h16 l K s LL hg))
@@ -3921,7 +3921,7 @@ def wk1γ (W : LocWach PD LL O v n) : ↥W.AΔ →ₐ[O] ↥W.AΔ :=
     rw [_root_.Formalism.MainNotions.LiftingTheory.gammaA_comm, a.2 δ hδ])
 
 instance DZ.towΔ (W : LocWach PD LL O v n) (T : LocLat G Qp LL O) :
-    IsScalarTower ℤ_[ℓ] ↥W.AΔ (DZ ℓ W T) :=
+    IsScalarTower ℤ_[ℓ] ↥W.AΔ (DZ W T) :=
   ⟨fun z a x => wmap_tow W T z (a : LetA O n) x⟩
 
 def wk1Base (W : LocWach PD LL O v n) (π' t : LetA O n) (hπ : π' ∈ W.AΔ) (ht : t ∈ W.AΔ)
@@ -3944,7 +3944,7 @@ def wk1Pair (W : LocWach PD LL O v n) (π' t : LetA O n) (hπ : π' ∈ W.AΔ) (
     (hc : c * (W.DelF.card : O) = 1) {T₁ T₂ : LocLat G Qp LL O} (F : LatHom T₁.L T₂.L) (c₁ : IsCrys PD T₁.ρ) (c₂ : IsCrys PD T₂.ρ) (i : ZMod n)
     (hm₁ : ∀ x ∈ W.NΔ T₁, ∃ x' ∈ W.NΔ T₁, W.γ T₁ x - x = π' • x')
     (hm₂ : ∀ x ∈ W.NΔ T₂, ∃ x' ∈ W.NΔ T₂, W.γ T₂ x - x = π' • x') :
-    GPair (wk1Base W π' t hπ ht u h) (DZ ℓ W T₂) where
+    GPair (wk1Base W π' t hπ ht u h) (DZ W T₂) where
   N := wk1Sub W T₂ (W.Nl T₂ i)
   N' := wk1Sub W T₂ (Nimg W F i)
   le := fun x hx => ⟨wmap_Nimg_le W F c₁ c₂ i hx.1, hx.2⟩
@@ -4002,7 +4002,7 @@ theorem coreWK1b_of (W : LocWach PD LL O v n) (hp : PD.p = ℓ) (z : ℤ_[ℓ]ˣ
     rw [h, padicValInt.of_nat, padicValNat.eq_zero_of_not_dvd (Nat.not_dvd_of_pos_of_lt hpos hlt)]
   have hKa := coreWK1a_of W h9 h3 e hK' F Mi hi hS hJ i π₁ w₁ e₁
   set a := ⌈((e * Hmax n Mi hi : ℕ) : ℝ) / ((PD.p : ℝ) - 1)⌉₊ with ha
-  have R := lagrange_and_w_all.2.2.1 PD.p ↥W.AΔ _ (DZ PD.p W T₂)
+  have R := lagrange_and_w_all.2.2.1 PD.p ↥W.AΔ _ (DZ W T₂)
     (wk1Pair W π₁ t hr₁.1 ht (z ^ s') hγ w₁ s' e₁ _ hc F hS.1 hS.2.1 i hm₁.2 hm₂') 1 a le_rfl
     (fun h => absurd h h2) hval
     (fun x hx => ⟨hKa x hx.1 hx.2, ((wk1Sub W T₂ (W.Nl T₂ i)).smul_mem _ hx).2⟩)
@@ -4032,7 +4032,7 @@ theorem JumpsQuot_of (W : LocWach PD LL O v n)
 
 end WK1
 
-theorem wach_statement_intermediate_fields (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h9 : adm9 D HW F) (h16 : adm16 D HW F) : WachKillsIntermediateField D HW F := by
+theorem wach_statement_intermediate_fields (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h9 : adm9 D HW F) (h16 : adm16 D HW F) : WachKillsIntermediateField D HW := by
   intro l _ K s LL hg
   obtain ⟨z, hz, hv⟩ := gam_zl (P := D.loc l) (H := HW l) hg
   exact coreWK1_of _ ((D.loc l).PD_p K) z hz (by rw [(HW l).W_s]; exact hv) (h9 l K s LL hg)
@@ -4045,16 +4045,16 @@ theorem wach_statement_of_admitted (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D
   obtain ⟨-, h2, -, -, -, -, -, -, h9, -, -, -, -, -, -, h16, -⟩ := h
   exact wach_statement_of_literature D HW F h2 h9 h16
 
-theorem wach_first_clause_of_admitted (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (h : admitted D HW F Cm) : WachAnnihilatorAll D HW F := by
+theorem wach_first_clause_of_admitted (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (h : admitted D HW F Cm) : WachAnnihilatorAll D HW := by
   obtain ⟨-, -, -, -, -, -, -, -, h9, -, -, -, -, -, -, h16, -⟩ := h
   exact wach_first_clause_of_literature D HW F h9 h16
 
-theorem opnJumpsQuot_of (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h23 : Formalism.MainNotions.CrystallineLiftingBounds.adm23 D HW F)
+theorem opnJumpsQuot_of (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h23 : Formalism.MainNotions.CrystallineLiftingBounds.adm23 D HW)
     (hKer : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL)
       (T₁ T₂ : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)) (F : LatHom T₁.L T₂.L),
       Sur ((HW l).W K s LL h) F → ∃ (T₀ : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL))
         (ι : LatHom T₀.L T₁.L), IsSESLat (Qp := ℚ_[l]) ι F ∧ IsCrys ((D.loc l).PD K) T₀.ρ) :
-    opnJumpsQuot D HW F :=
+    opnJumpsQuot D HW :=
   fun l _ K s LL h _ => JumpsQuot_of _ (hKer l K s LL h) (h23 l K LL)
 
 end Formalism.MainNotions.LiftingTheory
@@ -4306,23 +4306,23 @@ theorem phib_OL_complete {l : ℕ} [Fact l.Prime] (LL : FinExt l) :
 
 end PhiBC
 
-theorem opnPhiBasis_holds (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : opnPhiBasis D HW F := by
+theorem opnPhiBasis_holds (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : opnPhiBasis D HW := by
   intro l _ K s LL h _
   have hc : IsAdicComplete (Ideal.span {((((D.loc l).PD K).p : ℕ) : ↥(OL LL))}) ↥(OL LL) := by
     rw [(D.loc l).PD_p K]
     exact phib_OL_complete LL
   exact PhiBasis_of _
 
-theorem wach_second_clause_of_inj (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h5 : adm5 D HW F) (h9 : adm9 D HW F) (h16 : adm16 D HW F) (hJ : opnJumpsQuot D HW F)
-    (hI : opnPhiLinInj D HW F) : WachExponentRecursionAll D HW F :=
+theorem wach_second_clause_of_inj (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h5 : adm5 D HW F) (h9 : adm9 D HW F) (h16 : adm16 D HW F) (hJ : opnJumpsQuot D HW)
+    (hI : opnPhiLinInj D HW) : WachExponentRecursionAll D HW :=
   wach_second_clause_of_hypotheses D HW F h5 h9 h16 hJ (opnPhiBasis_holds D HW F) hI
 
-theorem wach_result_of_inj (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h5 : adm5 D HW F) (h9 : adm9 D HW F) (h16 : adm16 D HW F) (hJ : opnJumpsQuot D HW F)
-    (hI : opnPhiLinInj D HW F) : WachResultConstant D HW F 10 :=
+theorem wach_result_of_inj (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (h5 : adm5 D HW F) (h9 : adm9 D HW F) (h16 : adm16 D HW F) (hJ : opnJumpsQuot D HW)
+    (hI : opnPhiLinInj D HW) : WachResultConstant D HW 10 :=
   wach_result_of_hypotheses D HW F h5 h9 h16 hJ (opnPhiBasis_holds D HW F) hI
 
-theorem wach_clauses_of_admitted_inj (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (h : admitted D HW F Cm) (hJ : opnJumpsQuot D HW F) (hI : opnPhiLinInj D HW F) :
-    WachExponentRecursionAll D HW F ∧ WachResultConstant D HW F 10 := by
+theorem wach_clauses_of_admitted_inj (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (h : admitted D HW F Cm) (hJ : opnJumpsQuot D HW) (hI : opnPhiLinInj D HW) :
+    WachExponentRecursionAll D HW ∧ WachResultConstant D HW 10 := by
   obtain ⟨-, -, -, -, h5, -, -, -, h9, -, -, -, -, -, -, h16, -⟩ := h
   exact ⟨wach_second_clause_of_inj D HW F h5 h9 h16 hJ hI, wach_result_of_inj D HW F h5 h9 h16 hJ hI⟩
 
@@ -4603,14 +4603,14 @@ theorem PhiLinInj_of (W : LocWach PD LL O v n) [IsAdicComplete (Ideal.span {((PD
 
 end PhiI3
 
-theorem opnPhiLinInj_holds (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : opnPhiLinInj D HW F := by
+theorem opnPhiLinInj_holds (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : opnPhiLinInj D HW := by
   intro l _ K s LL h _ T hT
   have hc : IsAdicComplete (Ideal.span {((((D.loc l).PD K).p : ℕ) : ↥(OL LL))}) ↥(OL LL) := by
     rw [(D.loc l).PD_p K]
     exact phib_OL_complete LL
   exact PhiLinInj_of _ T hT
 
-theorem wach_second_and_result_of_admitted (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (h : admitted D HW F Cm) (hJ : opnJumpsQuot D HW F) : WachExponentRecursionAll D HW F ∧ WachResultConstant D HW F 10 :=
+theorem wach_second_and_result_of_admitted (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (h : admitted D HW F Cm) (hJ : opnJumpsQuot D HW) : WachExponentRecursionAll D HW ∧ WachResultConstant D HW 10 :=
   wach_clauses_of_admitted_inj D HW F Cm h hJ (opnPhiLinInj_holds D HW F)
 
 end Formalism.MainNotions.LiftingTheory

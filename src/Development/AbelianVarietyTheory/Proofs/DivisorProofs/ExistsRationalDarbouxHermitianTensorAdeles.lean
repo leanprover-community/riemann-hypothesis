@@ -72,9 +72,9 @@ def sympBil {R S : Type} [CommRing R] [CommRing S] [Algebra R S] (c : S →ₐ[R
     (fun a x y => by
       simp only [symp, hTens, Matrix.smul_apply, smul_mul_assoc, ← Finset.smul_sum, mul_smul_comm, map_smul])
     (fun x y y' => by
-      simp only [symp, hTens, Matrix.add_apply, add_mul, Finset.sum_add_distrib, mul_add, map_add (f := _)])
+      simp only [symp, hTens, Matrix.add_apply, Finset.sum_add_distrib, mul_add, map_add (f := _)])
     (fun a x y => by
-      simp only [symp, hTens, Matrix.smul_apply, smul_mul_assoc, ← Finset.smul_sum, mul_smul_comm, map_smul])
+      simp only [symp, hTens, Matrix.smul_apply, ← Finset.smul_sum, mul_smul_comm, map_smul])
 
 theorem exists_darboux_of_basis {R W κ : Type} [CommRing R] [Invertible (2 : R)] [AddCommGroup W] [Module R W]
     [Fintype κ] (B : LinearMap.BilinForm R W) (b : Basis (κ ⊕ κ) R W)

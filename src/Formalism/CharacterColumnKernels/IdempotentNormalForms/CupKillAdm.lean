@@ -61,7 +61,6 @@ private theorem place_kernel {A T' K V G : Type*} [Ring A] [CommRing T'] [Algebr
     [AddCommGroup V] [Module A V] [Module K V] [SMulCommClass A K V] [FiniteDimensional K V]
     (r : G →* A) (χ : G →* T'ˣ) (D : Subgroup G) (j : ℕ) (Kc : Fin j → G → A) (k0 : G → A)
     (s1 η : V) (L : Submodule K (D → V))
-    (hB : LinearMap.range (colD (K := K) (V := V) r χ D) ≤ L)
     (hK : ∀ a, (fun g : D => Kc a g • s1) ∈ L) (hk : (fun g : D => k0 g • η) ∈ L)
     (hQ : Module.rank K (L ⧸ (LinearMap.range (colD (K := K) (V := V) r χ D)).comap L.subtype) ≤
         (j + Module.finrank K (LinearMap.ker (colD (K := K) (V := V) r χ D)) : ℕ)) :
@@ -201,7 +200,7 @@ theorem columnJ : StatColumnJ := by
       ((E • p.1 = 0 ∧ p ≠ 0) ∨ E • p.1 = η) := by
     intro l
     obtain ⟨L, hB, hK, hk, hQ⟩ := hL l
-    obtain ⟨p, hp0, hp⟩ := place_kernel r χ (D l) (j l) (Kc l) (k0 l) s1 η L hB
+    obtain ⟨p, hp0, hp⟩ := place_kernel r χ (D l) (j l) (Kc l) (k0 l) s1 η L
       (fun a => hK a s1 x1.2)
       (hk η xη.2) hQ
     by_cases hE0 : E • p.1 = 0

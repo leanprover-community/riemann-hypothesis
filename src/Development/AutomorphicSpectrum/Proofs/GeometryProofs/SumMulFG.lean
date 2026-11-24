@@ -108,7 +108,7 @@ variable (U : Type) [CommGroup U]
   Fintype.prod_sum_type _
 
 @[simp] theorem sum_inv (a : FG M Y) (h : (Y ⟶ X) → U) : a.inv.sum U h = (a.sum U h)⁻¹ :=
-  (Finset.prod_congr rfl fun k _ => zpow_neg _ _).trans (Finset.prod_inv_distrib _)
+  (Finset.prod_congr rfl fun _ _ => zpow_neg _ _).trans (Finset.prod_inv_distrib _)
 
 @[simp] theorem sum_pull (a : FG M Y) (g : Y' ⟶ Y) (h : (Y' ⟶ X) → U) :
     (a.pull g).sum U h = a.sum U (fun q => h (g ≫ q)) := rfl

@@ -239,7 +239,6 @@ theorem unit_of_double_integral_sub {p : ℕ} [Fact p.Prime] (a b : ℂ_[p]) :
 theorem unit_of_double_integral {p : ℕ} [Fact p.Prime] (W : WeierstrassCurve ℂ_[p]) (x y m : ℂ_[p])
     (h1 : ‖W.a₁‖ ≤ 1) (h2 : ‖W.a₂‖ ≤ 1) (h3 : ‖W.a₃‖ ≤ 1) (h4 : ‖W.a₄‖ ≤ 1) (h6 : ‖W.a₆‖ ≤ 1)
     (hΔ : ‖W.Δ‖ = 1) (he : W.toAffine.Equation x y) (hx : ‖x‖ ≤ 1)
-    (_hη : 2 * y + W.a₁ * x + W.a₃ ≠ 0)
     (hm : m * (2 * y + W.a₁ * x + W.a₃) = 3 * x ^ 2 + 2 * W.a₂ * x + W.a₄ - W.a₁ * y)
     (hm2 : ‖m ^ 2 + W.a₁ * m - W.a₂ - 2 * x‖ ≤ 1) :
     ‖2 * y + W.a₁ * x + W.a₃‖ = 1 := by
@@ -705,7 +704,7 @@ theorem doubling (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ) (g : GL3Theta.
   obtain ⟨wP, dP⟩ := hwp P (tors_laq hP.2) hP.1
   obtain ⟨eP, hη⟩ := _root_.GlobalTheory.ThetaPar.ModelPoint.model_point g P hlat hg2 hg3 hP.1 wP dP
   obtain ⟨hne, hdbl⟩ := _root_.GlobalTheory.ModelDouble.tangent_law g P hlat hg2 hg3 hP.1 h2 wP dP
-  have hone := _root_.GlobalTheory.ThetaPar.unit_of_double_integral g.W (xAt g P) (yAt g P) _ ha1 ha2 ha3 ha4 ha6 hΔ eP (hx P hP) hne
+  have hone := _root_.GlobalTheory.ThetaPar.unit_of_double_integral g.W (xAt g P) (yAt g P) _ ha1 ha2 ha3 ha4 ha6 hΔ eP (hx P hP)
     (div_mul_cancel₀ _ hne) (by rw [← hdbl]; exact hx _ hS)
   rw [hη, norm_mul, norm_pow, hu, one_pow, one_mul] at hone
   have key := _root_.GlobalTheory.SigmaDuplication.U1_two_mul_at_zero_eq_neg_wpD_mul_pow_four g.abelian₂ hlat P hP.1

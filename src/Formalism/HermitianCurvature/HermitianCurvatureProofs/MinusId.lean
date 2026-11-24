@@ -215,7 +215,7 @@ theorem eU_sum (a : S) : (eU a 0 0 : SlopeTestRemainingChoices S A) + eU a 1 1 =
   simpa [ins, Fin.sum_univ_two] using this
 
 theorem plus_id {R : Type*} [Ring R] (e00 e01 e11 K T l0m E x xi lz m01 : R) (h01 : e00 + e11 = 1)
-    (k0 : K * e00 = e00 * K) (k1 : K * e01 = e01 * K) (k3 : K * e11 = e11 * K) (t0 : T * e00 = e00 * T)
+    (k0 : K * e00 = e00 * K) (k3 : K * e11 = e11 * K) (t0 : T * e00 = e00 * T)
     (hxi : xi * x = 1) (hl : xi * l0m = l0m * xi) (hk : xi * K = K * xi) :
     l0m + K * (e00 * (E - (xi * E * x - E) + T) + e01 * m01 + e11 * (xi * E * x)) - lz =
       (l0m + K * E - lz) + (K * T * e00 + K * (e01 * m01) +
@@ -320,7 +320,7 @@ theorem main (L : LevelData A r) (st : Start A) (hL : IsStarLevel L) (hst : IsLe
               0, (ofWord L st w).xi l.pt * (ofWord L st w).ee Y * (ofWord L st w).x l.pt] := rfl
         have hxk := hx _ hr
         have hxik := hxi _ p0 hr
-        rw [hl', ins_up, hDD, plus_id _ _ _ _ _ _ _ _ _ _ _ h01 (kE 0 0) (kE 0 1) (kE 1 1) (tE 0 0)
+        rw [hl', ins_up, hDD, plus_id _ _ _ _ _ _ _ _ _ _ _ h01 (kE 0 0) (kE 1 1) (tE 0 0)
           (hfr.x_xi _ m0).2 (commute_level_zero_element hst Y hxik).eq (comm_kap hst hxik).eq]
         have hδ := ihl Y hYf hY1f
         refine add_mem hδ (add_mem (add_mem (dSpan_phitau (kMat_eU _ _ _))

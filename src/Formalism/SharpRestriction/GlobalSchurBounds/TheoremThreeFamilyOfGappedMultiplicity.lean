@@ -244,7 +244,7 @@ theorem fdegHC_le_dTau {N : ℕ} (s : Fin N → Bool) (lam : Fin N → ℝ) (hla
         div_le_div_of_nonneg_left (mul_nonneg hSame (pow_nonneg hL0 _)) hFF hFle
     _ = _ := by ring
 
-theorem fdegHC_nonneg {N : ℕ} (lam : Fin N → ℝ) (hlam : Formalism.QuantumDeterminants.IsHCParam lam) :
+theorem fdegHC_nonneg {N : ℕ} (lam : Fin N → ℝ) :
     0 ≤ Formalism.QuantumDeterminants.fdegHC lam := by
   unfold Formalism.QuantumDeterminants.fdegHC
   refine div_nonneg (Finset.prod_nonneg fun a _ => Finset.prod_nonneg fun b _ => abs_nonneg _)
@@ -408,7 +408,7 @@ theorem muCD_eq_smul (cd : CDHaar) (s : (n : ℕ) → (Fin n → Bool) → NNRea
     (hc : Formalism.MainNotions.RT.cdScaleTieR cd s) {N : ℕ} (ε : Fin N → Bool) :
     ReciprocityTheory.ChartRestriction.DS.muCD ε = (s N ε : ENNReal) • Formalism.REAL.muG ε := by
   ext A hA
-  rw [ReciprocityTheory.ChartRestriction.DS.muCD_eq_cd_vol cd (signEquiv ε) (signEquiv_inl ε) (signEquiv_inr ε) A hA,
+  rw [ReciprocityTheory.ChartRestriction.DS.muCD_eq_cd_vol cd (signEquiv ε) (signEquiv_inl ε) (signEquiv_inr ε) A,
     hc N ε _ _ (signEquiv ε) (signEquiv_inl ε) (signEquiv_inr ε) A hA]
 
 theorem card_add_card {N : ℕ} (ε : Fin N → Bool) :
@@ -481,7 +481,7 @@ theorem fdeg_cd_gap {n : ℕ} {ε : Fin n → Bool} (hp : 1 ≤ ReciprocityTheor
     obtain ⟨T⟩ := ReciprocityTheory.ChartRestriction.DS.HW.kType_exists ε μ hμ
     obtain ⟨m, hm⟩ := ReciprocityTheory.ChartRestriction.DS.Lap.LemK.exists_isMu hμ
     exact ⟨T, _, (ReciprocityTheory.ChartRestriction.DS.Lap.Base.psiFor _ _ μ h T m hμ hm hgμ hq0 h8).1⟩
-  exact ReciprocityTheory.ChartRestriction.DS.fdCons_cd hp hq hlam hgap hh hΨ hσ hv
+  exact ReciprocityTheory.ChartRestriction.DS.fdCons_cd hp hq hlam hgap hh hσ hv
 
 theorem hCFdegRGap_holds : HCFdegRGap := by
   intro cd s hc N ε lam h hp hq hlam hgap hh H _ _ σ w hσ hw
@@ -608,7 +608,7 @@ theorem theorem_three_of_gap_bound (s : (n : ℕ) → (Fin n → Bool) → NNRea
   have hfw := hf N ε lam h0 hp' hq' hlam hgap hbig H σ w hDS hw
   have hτ := finrank_lowK_eqG hW hL ε lam hlam σ hDS h0 hgap (thrDS_lt ε hbig)
   have hep : 0 < ep0 := lt_of_lt_of_le (Real.exp_pos _) he1
-  have hnn := Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.fdegHC_nonneg lam hlam
+  have hnn := Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.fdegHC_nonneg lam
   rw [hfw, hτ]
   refine ⟨by linarith [mul_nonneg hep.le hnn], ?_⟩
   have hle := Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.fdegHC_le_dTau ε lam hlam

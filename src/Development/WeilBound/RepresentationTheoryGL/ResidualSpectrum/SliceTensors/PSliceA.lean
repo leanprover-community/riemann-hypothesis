@@ -202,7 +202,7 @@ theorem lev_aT_left (r s r₁ : ℕ) (h : r₁ ≤ r) (t : ℝ) :
   funext i
   split_ifs <;> simp_all; omega
 
-theorem lev_aT_right (r s r₂ : ℕ) (h : r₂ ≤ s) (t : ℝ) :
+theorem lev_aT_right (r s r₂ : ℕ) (t : ℝ) :
     lev (Ad E) r s (1, aT E s r₂ t) = aT E (r + s) (r + r₂) t * aT E (r + s) r (-t) := by
   rw [A_aT_tor, A_aT_tor, A_aT_tor, ← A_tor_zero (E := E) (n := r), A_lev_tor, A_tor_mul]
   congr 1

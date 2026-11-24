@@ -81,7 +81,7 @@ theorem exists_of_normRepCount_ne_zero {Q : Ideal (𝓞 K)} {n : 𝓞 K} (h : no
 
 theorem exists_norm_congr (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F) (h𝔭 : 𝔭.IsMaximal) {c : 𝓞 F}
     (hc : c ∉ 𝔭) : ∃ α : 𝓞 K, ∃ ν : 𝓞 F, conjO K α * α = ι ν ∧ ν - c ∈ 𝔭 := by
-  obtain ⟨P, hP, hPp⟩ := exists_maximal_over hK hF h𝔭
+  obtain ⟨P, hP, hPp⟩ := exists_maximal_over h𝔭
   have hcP : ι c ∉ P := fun h => hc (hPp ▸ Ideal.mem_comap.2 h)
   have hN := IdealNormInequalities.one_lt_absNorm hP
   have hfixed : conjO K (ι c) = ι c := by

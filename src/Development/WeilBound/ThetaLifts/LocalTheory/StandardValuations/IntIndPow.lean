@@ -431,7 +431,7 @@ theorem gI_neg (hm : IsVol m) (y : k) : ∫ r, dl ν (-r) * ψ (-(y * r)) ∂m =
   rw [gI, ← int_scale hm (-1) (by simp) (fun r => dl ν r * ψ (y * r))]
   simp
 
-theorem gI_small (hm : IsVol m) (hψ : IsPsi ψ) (hϖ : IsUnif ϖ) (hν' : ¬ CondLE ϖ c ν) {y : k}
+theorem gI_small (hm : IsVol m) (hψ : IsPsi ψ) (hν' : ¬ CondLE ϖ c ν) {y : k}
     (hy : valuation k (y * (ϖ : k) ^ c) ≤ 1) : gI m ψ ν y = 0 := by
   simp only [CondLE, not_forall] at hν'
   obtain ⟨u, ⟨hu, hu'⟩, hne⟩ := hν'
@@ -468,7 +468,7 @@ theorem gI_big (hm : IsVol m) (hψ : IsPsi ψ) (hϖ : IsUnif ϖ) (hc : 1 ≤ c) 
 theorem gI_zero (hm : IsVol m) (hψ : IsPsi ψ) (hϖ : IsUnif ϖ) (hν : CondLE ϖ (c + 1) ν) (hν' : ¬ CondLE ϖ c ν) {y : k}
     (hy : valuation k (y * (ϖ : k) ^ (c + 1)) ≠ 1) : gI m ψ ν y = 0 := by
   by_cases h : valuation k (y * (ϖ : k) ^ (c + 1)) ≤ 1
-  · refine gI_small hm hψ hϖ hν' ?_
+  · refine gI_small hm hψ hν' ?_
     have h1 := le_uniformizer_iff.2 (lt_of_le_of_ne h hy)
     rw [← hϖ, pow_succ, ← mul_assoc, map_mul] at h1
     have h0 : 0 < valuation k (ϖ : k) := zero_lt_iff.2 (by simp)

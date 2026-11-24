@@ -95,8 +95,8 @@ end WittTransvections
 variable {K V : Type} [Field K] [NumberField K] [StarRing K] [AddCommGroup V] [Module K V]
   [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V]
 
-theorem exists_isom_map_of_eq (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) {h : V →ₗ⋆[K] V →ₗ[K] K}
-    (hs : h.IsSymm) (hd : IsTotPosDef h) {x y : V} (hx : x ≠ 0) (hxy : h x x = h y y) :
+theorem exists_isom_map_of_eq {h : V →ₗ⋆[K] V →ₗ[K] K}
+    (hs : h.IsSymm) (hd : IsTotPosDef h) {x y : V} (hxy : h x x = h y y) :
     ∃ g ∈ Formalism.HermitianLatticesTheory.isom h, g x = y := by
   by_cases hxy' : x = y
   · exact ⟨1, Subgroup.one_mem _, by rw [hxy']; rfl⟩

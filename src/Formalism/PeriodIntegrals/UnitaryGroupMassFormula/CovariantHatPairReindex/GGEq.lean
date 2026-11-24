@@ -98,7 +98,7 @@ theorem sum_sgnL {r : ℕ} {α : Type*} [Fintype α] [DecidableEq α] {M : Type*
   simp_rw [sgnL_eq_sum, Finset.sum_smul, mul_ite, mul_one, mul_zero, ite_smul, zero_smul]
   rw [Finset.sum_comm]
   simp only [Finset.sum_ite_eq', Finset.mem_univ, ite_true]
-  exact Fintype.sum_equiv (Equiv.inv _) _ _ (fun σ => by simp [Equiv.Perm.sign_inv, Equiv.Perm.inv_def])
+  exact Fintype.sum_equiv (Equiv.inv _) _ _ (fun σ => by simp [Equiv.Perm.inv_def])
 
 theorem sum_sgnL_alt {r : ℕ} {α : Type*} [Fintype α] [DecidableEq α] {M : Type*} [AddCommGroup M]
     [Module ℂ M] (e : Fin r → α) (F : (Fin r → α) → M)

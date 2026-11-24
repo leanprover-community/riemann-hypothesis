@@ -149,7 +149,7 @@ private theorem UpperTheory.Reformulated.B.G8.kry_map {R S : Type} [CommRing R] 
   rw [RingHom.map_mulVec, Matrix.map_pow]
 
 theorem UpperTheory.Reformulated.B.G8.exists_kry :
-    ∀ {R : Type} [inst : CommRing R] [Finite (MaximalSpectrum R)] {n : ℕ} (g : Matrix (Fin n) (Fin n) R),
+    ∀ {R : Type} [CommRing R] [Finite (MaximalSpectrum R)] {n : ℕ} (g : Matrix (Fin n) (Fin n) R),
       g.charpoly.Separable → ∃ (v : Fin n → R), IsUnit (UpperTheory.Reformulated.B.G8.kry g v).det := by
   intro R _ _ n g hg
   have h1 : ∀ m : MaximalSpectrum R, ∃ w : Fin n → R ⧸ m.asIdeal,

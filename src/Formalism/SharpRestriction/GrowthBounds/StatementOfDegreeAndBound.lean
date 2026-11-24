@@ -188,16 +188,16 @@ def brkPol {n : ℕ} [NeZero n] (mu : Fin n → ℤ) (I : TIdx mu) : MvPolynomia
     ∏ c : ↥(TCols mu), Matrix.det (Matrix.of fun a b : Fin (colH mu c) =>
       genMat ℤ n ((canT mu c).1.orderEmbOfFin (canT mu c).2 a) ((I c).1.orderEmbOfFin (I c).2 b))
 
-def PathPairCorrespondence (_D : Formalism.BasicNotions.D7) : Prop :=
+def PathPairCorrespondence : Prop :=
   ∀ (n : ℕ) [NeZero n] (mu : Fin n → ℤ), Dominant mu → ∀ (F : Type) [Field F],
     LinearIndependent F (fun I : {I : TIdx mu // StdT I} => mapCoord (n := n) F (brk mu I.1))
 
-def admB2 (_D : Formalism.BasicNotions.D7) : Prop :=
+def admB2 : Prop :=
   ∀ (n : ℕ) [NeZero n] (mu : Fin n → ℤ), Dominant mu →
     LinearIndependent ℤ (fun I : {I : TIdx mu // StdT I} => brk mu I.1) ∧
     Submodule.span ℤ (Set.range fun I : {I : TIdx mu // StdT I} => brk mu I.1) = SMu mu
 
-def admB3 (_D : Formalism.BasicNotions.D7) : Prop :=
+def admB3 : Prop :=
   ∀ (n : ℕ) [NeZero n] (M : GLMod n) (CF : ColFam M),
     (LinearIndependent ℤ (fun x : (Σ j, {I : TIdx (CF.mu j) // StdT I}) => CF.vec x.1 x.2.1) ∧
       Submodule.span ℤ (Set.range fun x : (Σ j, {I : TIdx (CF.mu j) // StdT I}) => CF.vec x.1 x.2.1) = ⊤) ∧
@@ -206,7 +206,7 @@ def admB3 (_D : Formalism.BasicNotions.D7) : Prop :=
       Submodule.span R (Set.range fun x : (Σ j, {I : TIdx (CF.mu j) // StdT I}) =>
         fun i => (CF.vec x.1 x.2.1 i : R)) = ⊤
 
-def ColumnFamilyLowerSet (_D : Formalism.BasicNotions.D7) : Prop :=
+def ColumnFamilyLowerSet : Prop :=
   ∀ (n : ℕ) [NeZero n] (M : GLMod n) (CF : ColFam M) (pi : Set (Fin n → ℤ)), DomLowerSet pi →
     CF.Mpi pi = Submodule.span ℤ {x | ∃ j, CF.mu j ∈ pi ∧ ∃ I : TIdx (CF.mu j), StdT I ∧ x = CF.vec j I} ∧
     (∀ x : M.ι → ℤ, x ∈ CF.Mpi pi ↔ (fun i => (x i : ℚ)) ∈ typeSum M pi) ∧
@@ -221,13 +221,13 @@ def ColumnFamilyLowerSet (_D : Formalism.BasicNotions.D7) : Prop :=
           Φ (Submodule.Quotient.mk x) = y ⊗ₜ z) ∧
       (CF.MM mu : Set (M.ι → ℤ)) = {x | IsHighest M ℤ mu x}
 
-def GlobalSectionsSchur (_D : Formalism.BasicNotions.D7) : Prop :=
+def GlobalSectionsSchur : Prop :=
   ∀ (n : ℕ) [NeZero n] (mu : Fin n → ℤ) (R : Type) [CommRing R] [IsDomain R],
     (IsField R ∨ IsDiscreteValuationRing R ∨ Nonempty (R ≃+* ℤ)) →
     (Dominant mu → inducedSections R mu = (Submodule.span R (Set.range fun I : TIdx mu => mapCoord (n := n) R (brk mu I)) : Set _)) ∧
     (¬ Dominant mu → inducedSections R mu = {0})
 
-def BracketPolynomialSpan (_D : Formalism.BasicNotions.D7) : Prop :=
+def BracketPolynomialSpan : Prop :=
   ∀ (n : ℕ) [NeZero n] (mu : Fin n → ℤ), Dominant mu →
     (Submodule.span ℤ (Set.range fun I : TIdx mu => MvPolynomial.map (Int.castRingHom ℚ) (brkPol mu I)) :
         Set (MvPolynomial (Fin n × Fin n) ℚ)) =
@@ -235,7 +235,7 @@ def BracketPolynomialSpan (_D : Formalism.BasicNotions.D7) : Prop :=
         x ∈ Nabla (O := ℤ) (glOps ℚ n (rowLetters n) Set.univ) (fun a => mu a + ((-(mu (lastIdx n))).toNat : ℤ))
           (MvPolynomial.map (Int.castRingHom ℚ) (brkPol mu (canT mu)))}
 
-def GradedLatticeStable (_D : Formalism.BasicNotions.D7) : Prop :=
+def GradedLatticeStable : Prop :=
   ∀ (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CharZero O]
     (_S : UniformizedDVR p O) (n : ℕ) (V : Type) [AddCommGroup V] [Module (KK O) V] [Module O V]
     [IsScalarTower O (KK O) V] (E : GLOps n (KK O) V) (mu : Fin n → ℤ) (La : Submodule O V),
@@ -244,13 +244,13 @@ def GradedLatticeStable (_D : Formalism.BasicNotions.D7) : Prop :=
     Submodule.span O {x | ∃ u ∈ UZmon E, ∃ y ∈ La, y ∈ weightSp E mu ∧ x = u y} ≤ La ∧
     ∀ y ∈ La, ∀ u ∈ UZmon E, ∀ e, IsWtProj E mu e → e (u y) ∈ La ∧ e (u y) ∈ weightSp E mu
 
-def TypeDecompositionsCommute (_D : Formalism.BasicNotions.D7) : Prop :=
+def TypeDecompositionsCommute : Prop :=
   ∀ (F : Type) [Field F] [CharZero F] (N n : ℕ) (LL : Letters (Fin N)) (i j : Fin (N + 1)) (lam lam' : Fin n → ℤ)
     (e e' : Module.End F (MvPolynomial (Fin N × Fin n) F)),
     IsIsoProj (glOps F n LL {l | l.val < i.val}) lam e → IsIsoProj (glOps F n LL {l | l.val < j.val}) lam' e' →
     e * e' = e' * e
 
-def JointComponentsPaths (_D : Formalism.BasicNotions.D7) : Prop :=
+def JointComponentsPaths : Prop :=
   ∀ (F : Type) [Field F] [CharZero F] (N n : ℕ) (LL : Letters (Fin N)) (B : Fin N → ℕ)
     (lam : Fin (N + 1) → Fin n → ℤ),
     ((∃ P : PPath n N LL B, P.mu = lam) →
@@ -268,7 +268,7 @@ def nestSpan (O : Type) [CommRing O] (N n : ℕ) (LL : Letters (Fin N)) (B : Fin
     (pi : Fin (N + 1) → Set (Fin n → ℤ)) (Ix : Set (Fin (N + 1))) : Submodule O (MvPolynomial (Fin N × Fin n) O) :=
   Submodule.span O {G | ∃ P : PPath n N LL B, ∃ I, IsSt P.mu I ∧ (∀ i ∈ Ix, P.mu i ∈ pi i) ∧ G = Psi O P.mu I}
 
-def SaturatedLowerSetSpan (_D : Formalism.BasicNotions.D7) : Prop :=
+def SaturatedLowerSetSpan : Prop :=
   ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CharZero O] (N n : ℕ) (LL : Letters (Fin N))
     (B : Fin N → ℕ) (pi : Fin (N + 1) → Set (Fin n → ℤ)), (∀ i, DomLowerSet (pi i)) →
     (∀ Ix : Set (Fin (N + 1)), nestLat O N n LL B pi Ix = (nestSpan O N n LL B pi Ix : Set _)) ∧
@@ -276,7 +276,7 @@ def SaturatedLowerSetSpan (_D : Formalism.BasicNotions.D7) : Prop :=
       (⨅ i : Fin (N + 1), (nestSpan O N n LL B pi {i} ⊔ (Ideal.span {((p : O) ^ E)}) • Pol O n B)) =
         (⨅ i : Fin (N + 1), nestSpan O N n LL B pi {i}) ⊔ (Ideal.span {((p : O) ^ E)}) • Pol O n B
 
-def AutomorphicSideConclusion (_D : Formalism.BasicNotions.D7) : Prop :=
+def AutomorphicSideConclusion : Prop :=
   ∀ (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (_S : UniformizedDVR p O)
     (N n : ℕ) (LL : Letters (Fin N))
     (B : Fin N → ℕ) (mu : Fin n → ℤ),
@@ -290,7 +290,7 @@ def A3at (R : Type) [CommRing R] (N n : ℕ) [NeZero n] (LL : Letters (Fin N)) (
     (Submodule.span R {G | ∃ P : PPath n N LL B, ∃ I : ℤ → Finset (Fin n), IsSt P.mu I ∧
       (∀ i : Fin N, th i ≤ P.mu i.succ (lastIdx n) ∧ P.mu i.succ 0 ≤ M i) ∧ G = Psi R P.mu I} : Set _)
 
-def DefiniteRankOne (_D : Formalism.BasicNotions.D7) : Prop :=
+def DefiniteRankOne : Prop :=
   ∀ (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (_S : UniformizedDVR p O)
     (N n : ℕ) [NeZero n] (LL : Letters (Fin N))
     (B : Fin N → ℕ) (th M : Fin N → ℤ), A3at O N n LL B th M ∧ A3at (FF O) N n LL B th M
@@ -299,14 +299,14 @@ def CondC {N r K : ℕ} [NeZero r] [NeZero K] (LL : Letters (Fin N)) (nu : Fin (
     (ka : Fin (N + 1) → Fin K → ℤ) (i : Fin N) : Prop :=
   if LL.vec i then ka i.succ 0 ≤ nu i.castSucc (lastIdx r) else ka i.castSucc 0 ≤ nu i.succ (lastIdx r)
 
-def RotatedSumBound (_D : Formalism.BasicNotions.D7) : Prop :=
+def RotatedSumBound : Prop :=
   ∀ (N r K : ℕ) [NeZero r] [NeZero K] (LL : Letters (Fin N)) (B : Fin N → ℕ), N + r ≤ K →
     ∀ (nu : Fin (N + 1) → Fin r → ℤ) (ka : Fin (N + 1) → Fin K → ℤ),
       (∃ P : PPath (r + K) N LL B, P.mu = joinPT nu ka) ↔
       ∃ b' b'' : Fin N → ℕ, (∀ i, b' i + b'' i = B i) ∧ (∃ P1 : PPath r N LL b', P1.mu = nu) ∧
         (∃ P2 : PPath K N LL b'', P2.mu = ka) ∧ ∀ i, CondC LL nu ka i
 
-def PathWeightComponents (_D : Formalism.BasicNotions.D7) : Prop :=
+def PathWeightComponents : Prop :=
   ∀ (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (_S : UniformizedDVR p O)
     (N r K : ℕ) [NeZero r] [NeZero K]
     (LL : Letters (Fin N)) (B : Fin N → ℕ) (om : Fin N → ℕ), N + r ≤ K → StrictAnti om → (∀ i, 0 < om i) →
@@ -349,7 +349,7 @@ def PathInequality.Sat {N r K : ℕ} [NeZero r] [NeZero K] (nu : Fin (N + 1) →
   | .kaLe i M => ka i 0 ≤ M
   | .mix j i m => ka j 0 + m ≤ nu i (lastIdx r)
 
-def ConclusionB3 (_D : Formalism.BasicNotions.D7) : Prop :=
+def ConclusionB3 : Prop :=
   ∀ (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (_S : UniformizedDVR p O)
     (N r K : ℕ) [NeZero r] [NeZero K]
     (LL : Letters (Fin N)) (B : Fin N → ℕ) (om : Fin N → ℕ), N + r ≤ K → StrictAnti om → (∀ i, 0 < om i) →
@@ -378,7 +378,7 @@ def CoefficientDependence (_D : Formalism.BasicNotions.D7) : Prop :=
       ∀ F : MvPolynomial (ι × Fin (r + K)) (KK O), InA F →
         ∀ m, ∃ a : O, (liftSubst p f O S.w r LL g F).coeff m = algebraMap O (KK O) (S.w ^ degUS LL r m * a)
 
-def CanonicalTranslateJetIdentity (_D : Formalism.BasicNotions.D7) : Prop :=
+def CanonicalTranslateJetIdentity : Prop :=
   ∀ (p f : ℕ) [Fact p.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     [Algebra (WF p f) O] (S : UniformizedDVR p O), 5 ≤ p → 1 ≤ f → S.SqP →
     ∀ (N r K : ℕ) [NeZero N] [NeZero r] [NeZero K] (LL : LiftLetters (Fin N)) (B : Fin N → ℕ) (z : ℤ),
@@ -399,14 +399,14 @@ def CanonicalTranslateJetIdentity (_D : Formalism.BasicNotions.D7) : Prop :=
         oc (fun i => p ^ (z - LL.pos i).toNat) P.mu c ≤ 2 * p ^ (z - LL.pos 0).toNat
 
 def Conclusion2 (D : Formalism.BasicNotions.D7) : Prop :=
-  AutomorphicSideConclusion D ∧ DefiniteRankOne D ∧ RotatedSumBound D ∧ PathWeightComponents D ∧ ConclusionB3 D ∧ CoefficientDependence D ∧ CanonicalTranslateJetIdentity D
+  AutomorphicSideConclusion ∧ DefiniteRankOne ∧ RotatedSumBound ∧ PathWeightComponents ∧ ConclusionB3 ∧ CoefficientDependence D ∧ CanonicalTranslateJetIdentity
 
 def PairPath {N r K : ℕ} (LL : Letters (Fin N)) (B : Fin N → ℕ) (nu : Fin (N + 1) → Fin r → ℤ)
     (ka : Fin (N + 1) → Fin K → ℤ) : Prop :=
   ∃ b' b'' : Fin N → ℕ, (∀ i, b' i + b'' i = B i) ∧ (∃ P1 : PPath r N LL b', P1.mu = nu) ∧
     ∃ P2 : PPath K N LL b'', P2.mu = ka
 
-def PairedPathIndependence (_D : Formalism.BasicNotions.D7) : Prop :=
+def PairedPathIndependence : Prop :=
   ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [CharZero O] (N r K : ℕ) [NeZero r] [NeZero K]
     (LL : Letters (Fin N)) (B : Fin N → ℕ),
     (LinearIndependent O (fun x : {x : ((Fin (N + 1) → Fin r → ℤ) × (ℤ → Finset (Fin r))) ×
@@ -426,14 +426,14 @@ def PairedPathIndependence (_D : Formalism.BasicNotions.D7) : Prop :=
           (∀ i, nu i ∈ pi' i ∧ ka i ∈ pi'' i) ∧ IsSt nu I' ∧ IsSt ka I'' ∧
           G = PsiPl O nu I' * PsiTan O ka I''} : Set _)
 
-def PathBasisOverRing (_D : Formalism.BasicNotions.D7) : Prop :=
+def PathBasisOverRing : Prop :=
   ∀ (R : Type) [CommRing R] (N n : ℕ) [NeZero n] (LL : Letters (Fin N)) (B : Fin N → ℕ),
     LinearIndependent R (fun x : {x : PPath n N LL B × (ℤ → Finset (Fin n)) // IsSt x.1.mu x.2} =>
       Psi R x.1.1.mu x.1.2) ∧
     Submodule.span R {G | ∃ P : PPath n N LL B, ∃ I : ℤ → Finset (Fin n), IsSt P.mu I ∧ G = Psi R P.mu I} =
       Pol R n B
 
-def FirstLettersLowerSet (_D : Formalism.BasicNotions.D7) : Prop :=
+def FirstLettersLowerSet : Prop :=
   ∀ (F : Type) [Field F] (N n : ℕ) (LL : Letters (Fin N)) (B : Fin N → ℕ) (i : Fin (N + 1))
     (pi : Set (Fin n → ℤ)), DomLowerSet pi → ∀ G ∈ Pol F n B,
     (G ∈ Submodule.span F {H | ∃ P : PPath n N LL B, ∃ I : ℤ → Finset (Fin n), IsSt P.mu I ∧ P.mu i ∈ pi ∧
@@ -455,7 +455,7 @@ def WeylDualityLattice (_D : Formalism.BasicNotions.D7) : Prop :=
 
 def PathColumnBasis (D : Formalism.BasicNotions.D7) : Prop := HyperplaneRank D
 
-theorem path_basis_of_field_basis (D : Formalism.BasicNotions.D7) (h : PathBasisOverRing D) : PathColumnBasis D := by
+theorem path_basis_of_field_basis (D : Formalism.BasicNotions.D7) (h : PathBasisOverRing) : PathColumnBasis D := by
   unfold PathColumnBasis HyperplaneRank
   intro O _ _ _ N n _ LL B
   exact h O N n LL B

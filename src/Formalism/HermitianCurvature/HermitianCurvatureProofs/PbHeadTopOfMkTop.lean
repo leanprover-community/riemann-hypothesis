@@ -1517,7 +1517,7 @@ theorem top_unipotent_integral_zero (Wp Wq : Type) [NormedAddCommGroup Wp] [Inne
     [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] (P : M.Par) (p : KB.Pl P Wp Wq)
     (F : B.Mat P.k P.r → (Wq →L[ℂ] Wp)) (h : C.LPt) (ζ : ℂ) (hh : D.IsLocPt h P.r)
     (ν'r : Fin (2 * (P.r - P.r) + P.k + 1) → ℂ) (m₀r : B.Mat P.k (P.r - P.r)) (hR : P.r = 0)
-    (hF : KB.CptCoef p.T.base F) (hζ : ζ ≠ 0)
+    (hF : KB.CptCoef p.T.base F)
     (hν : D.castV (by omega) (liftVec P.k P.r (P.r - P.r) ν'r) = p.ν')
     (hm : D.castM (by omega) (ιLev P.k P.r (P.r - P.r) m₀r) = p.m₀) :
     p.V F (h ++ [(1, ζ)]) =
@@ -1869,7 +1869,7 @@ theorem top_unipotent_integral_positive (Wp Wq : Type) [NormedAddCommGroup Wp] [
 theorem highestUnipotentIntegral : PBI.HighestUnipotentIntegral := by
   intro Wp Wq _ _ _ _ _ _ P p F h ζ hh ν'r m₀r hF hζ hν hm
   by_cases hR : P.r = 0
-  · exact CompactCoefficientAppend.top_unipotent_integral_zero Wp Wq P p F h ζ hh ν'r m₀r hR hF hζ hν hm
+  · exact CompactCoefficientAppend.top_unipotent_integral_zero Wp Wq P p F h ζ hh ν'r m₀r hR hF hν hm
   · exact top_unipotent_integral_positive Wp Wq P p F h ζ hh ν'r m₀r hF hζ hν hm (by omega)
 
 end Formalism.FourierDecayAlt.P.PBM

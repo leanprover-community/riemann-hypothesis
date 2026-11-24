@@ -92,9 +92,9 @@ theorem distribHaarChar_eq_addEquivAddHaarChar {R : Type} [CommRing R] [Topologi
 def evalUnitCE (R : Type) [AddCommGroup R] [TopologicalSpace R] : (Unit → R) ≃ₜ+ R where
   toFun f := f ()
   invFun x := fun _ => x
-  left_inv f := rfl
-  right_inv x := rfl
-  map_add' f g := rfl
+  left_inv _ := rfl
+  right_inv _ := rfl
+  map_add' _ _ := rfl
   continuous_toFun := continuous_apply ()
   continuous_invFun := continuous_pi fun _ => continuous_id
 

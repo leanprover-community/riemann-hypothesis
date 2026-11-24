@@ -867,7 +867,7 @@ theorem serMul_sum {V : Type} [AddCommGroup V] [Module LL V] (gp : PowerSeries L
   simpa only [Finset.smul_sum] using Finset.sum_comm
 
 theorem pt_fil {T : LocLat G Qp LL O} (Pt : ZMod n → LL → (K →ₐ[Qp] LL) → Prop)
-    (π' Eπ : LetA O n) (h' M : ℕ) (c : ZMod n)
+    (π' Eπ : LetA O n) (h' : ℕ) (c : ZMod n)
     (hM5 : ∀ x ∈ LamLA W T π' Eπ h' c ⊤, γLA W T π' c x - x ∈ NL W T Pt π' Eπ h' c →
       ∀ τ ζ, Pt c ζ τ → ∀ f, ExpL W T π' Eπ h' c ζ x f → ∀ i : ℤ, i ≠ 0 →
         f i ∈ Formalism.MainNotions.DeltaInvariantLattices.FilC (PD := PD) T τ (-i))
@@ -905,8 +905,8 @@ theorem universal_lift_frame [IsDomain O] (hdvr : IsDiscreteValuationRing O) (hf
     (hcr : IsCrys PD T₂.ρ) (hjump : ∀ τ, JumpsInV PD T₂.ρ τ (Set.Icc (-(h' : ℤ)) h'))
     (hMF : ModelF W T₂ Pt π' Eπ h' M c α β) (hML : ModelL W T₂ Pt π' Eπ h' M c) (hM1 : 1 ≤ M)
 
-    (hEΔ : Eπ ∈ W.AΔ) (hπΔ : π' ∈ W.AΔ)
-    (hEu : IsUnit (algebraMap (LetA O n) W.EE Eπ)) (hπu : IsUnit (algebraMap (LetA O n) W.EE π'))
+    (hπΔ : π' ∈ W.AΔ)
+    (hEu : IsUnit (algebraMap (LetA O n) W.EE Eπ))
     (hgam : W.gamK = W.gam)
     (hγE : ∃ uE ∈ W.AΔ, ∃ uE' ∈ W.AΔ, uE' * uE = 1 ∧ W.γA W.gam Eπ = uE * Eπ)
     (hγπ : ∃ uπ ∈ W.AΔ, W.γA W.gam π' = π' * uπ)
@@ -1147,7 +1147,7 @@ theorem universal_lift_frame [IsDomain O] (hdvr : IsDiscreteValuationRing O) (hf
 
     have hpf : ∀ τ ζ, Pt c ζ τ → ∀ t : ℤ, t ≠ 0 →
         Phi W T₂ c ζ rep (fun i => ev W c ζ Eπ h' (g i) t) ∈ Formalism.MainNotions.DeltaInvariantLattices.FilC (PD := PD) T₂ τ (-t) :=
-      fun τ ζ hpt => pt_fil Pt π' Eπ h' M c hM5 bL rep hrep hbrep b₀ hb₀ hγbN g hg hgeq τ ζ hpt
+      fun τ ζ hpt => pt_fil Pt π' Eπ h' c hM5 bL rep hrep hbrep b₀ hb₀ hγbN g hg hgeq τ ζ hpt
         (hlevE τ ζ hpt).1 (hlevE τ ζ hpt).2
     have hevG : ∀ j (ζ : LL) (t : ℤ), ev W c ζ Eπ h' (G j) t =
         ∑ i, algebraMap O LL (P j i) * ev W c ζ Eπ h' (g i) t := by

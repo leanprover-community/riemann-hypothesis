@@ -165,7 +165,7 @@ private theorem norm_smooth_char {χ : kˣ →* ℂˣ} (hχ : IsSmoothChar χ) (
     GroundTheory.LocalField.modulus_of_ne_zero z.ne_zero, nabs_eq_residue]
   simp
 
-private theorem exponent_mul_absPow {χ χ' : kˣ →* ℂˣ} (hχ : IsSmoothChar χ) (hχ' : IsSmoothChar χ') (d : ℕ) (s : ℝ)
+private theorem exponent_mul_absPow {χ χ' : kˣ →* ℂˣ} (hχ' : IsSmoothChar χ') (d : ℕ) (s : ℝ)
     (e : χ' = χ * absPow k (s : ℂ) ^ d) :
     GroundTheory.LocalField.quasiCharExponent χ' = GroundTheory.LocalField.quasiCharExponent χ + d * s := by
   subst e
@@ -216,7 +216,7 @@ theorem expo : Expo := by
       exact (hω₀ _).1
     show GroundTheory.LocalField.quasiCharExponent (ω₀ (x.nu (s : ℂ))) / ((x.nu (s : ℂ)).fst : ℝ) =
       GroundTheory.LocalField.quasiCharExponent (ω₀ x) / x.fst + s
-    rw [← heq, hfst, exponent_mul_absPow (hω₀ x).1 hsm x.fst s rfl]
+    rw [← heq, hfst, exponent_mul_absPow.1 hsm x.fst s rfl]
     field_simp
   · intro ω hω J hJ hunit σ
     have hωeq := (hω₀ x).2.2 ω hω
@@ -971,7 +971,7 @@ private theorem exp_neg_one_le {γ : WithZero (Multiplicative ℤ)} (h : ¬ γ �
   omega
 
 private theorem le_val_of_not_mem_sq {L : Type} [Field L] [NumberField L] (u : HeightOneSpectrum (𝓞 L)) (c : 𝓞 L)
-    (hc1 : c ∈ u.asIdeal) (hc2 : c ∉ u.asIdeal ^ 2) (x : u.adicCompletion L) (hx : Valued.v x < 1) :
+    (hc2 : c ∉ u.asIdeal ^ 2) (x : u.adicCompletion L) (hx : Valued.v x < 1) :
     Valued.v x ≤ Valued.v (algebraMap L (u.adicCompletion L) (c : L)) := by
   have e : (Valued.v (algebraMap L (u.adicCompletion L) (c : L)) : WithZero (Multiplicative ℤ)) = u.intValuation c :=
     (HeightOneSpectrum.valuedAdicCompletion_eq_valuation' (R := 𝓞 L) u (c : L)).trans
@@ -1015,7 +1015,7 @@ private theorem junkData (E Ω : Type) [Field E] [NumberField E] [Field Ω] [Alg
     exact_mod_cast hcL0
   have hϖ1 : Valued.v ϖ < 1 := DiscreteGroups.sglob.DzType.val_alg_lt_one_of_mem cL hcL1
   have hϖ : ∀ x : u.adicCompletion L, Valued.v x < 1 → Valued.v x ≤ Valued.v ϖ :=
-    le_val_of_not_mem_sq u cL hcL1 hcu
+    le_val_of_not_mem_sq u cL hcu
   let O : ValuationSubring (u.adicCompletion L) := (Valued.v : Valuation (u.adicCompletion L) _).valuationSubring
   let K : Type := IsLocalRing.ResidueField O
   let ρ : O →+* K := IsLocalRing.residue O

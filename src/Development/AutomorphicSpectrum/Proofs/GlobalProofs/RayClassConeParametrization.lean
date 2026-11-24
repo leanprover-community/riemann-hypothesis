@@ -127,7 +127,7 @@ theorem RayPoint.exists_ideal [IsTotallyReal F] {𝔣 𝔞 𝔟 : Ideal (𝓞 F)
   · rw [← hab, hI]
     ring
 
-theorem RayPoint.of_ideal {𝔣 𝔞 𝔟 I : Ideal (𝓞 F)} {x₀ : 𝓞 F} (hx0 : x₀ ≠ 0) (hx1 : x₀ - 1 ∈ 𝔣)
+theorem RayPoint.of_ideal {𝔣 𝔞 𝔟 I : Ideal (𝓞 F)} {x₀ : 𝓞 F} (hx1 : x₀ - 1 ∈ 𝔣)
     (hxp : TotPos F (x₀ : F)) (hab : 𝔞 * 𝔟 = Ideal.span {x₀}) (hI : RayRel F 𝔣 I 𝔞) :
     ∃ ξ : 𝓞 F, RayPoint 𝔣 𝔟 ξ ∧ I * 𝔟 = Ideal.span {ξ} := by
   obtain ⟨a, b, ha, hb, ha1, hb1, hp, e⟩ := hI
@@ -355,7 +355,7 @@ theorem classParam_of_scaled [IsTotallyReal F] {𝔣 𝔞 𝔟 : Ideal (𝓞 F)}
     rfl
   have hsurj : Function.Surjective f' := by
     rintro ⟨I, hI1, hI2⟩
-    obtain ⟨ξ₀, hξ₀, hIe⟩ := RayPoint.of_ideal hx0 hx1 hxp hab hI2
+    obtain ⟨ξ₀, hξ₀, hIe⟩ := RayPoint.of_ideal hx1 hxp hab hI2
     obtain ⟨⟨⟨u, hu⟩, c⟩, hmem, -⟩ := hun _ hξ₀.2.2
     obtain ⟨t, ht, e⟩ := hmem
     have h₁ := hξ₀.unit_mul hu

@@ -62,12 +62,12 @@ open MvPolynomial Finset Formalism.MainNotions.G Formalism.MainNotions.Covariant
 
 namespace Formalism.MainNotions.LemmaBAlt
 
-def HJb (_D : Formalism.BasicNotions.D7) : Prop :=
+def HJb : Prop :=
   ∀ (F : Type) [Field F] [CharZero F] (N r K : ℕ) [NeZero r] [NeZero K] (LL : Letters (Fin N)) (B : Fin N → ℕ)
     (nu : Fin (N + 1) → Fin r → ℤ) (ka : Fin (N + 1) → Fin K → ℤ),
     PairPath LL B nu ka → jointType F LL nu ka ≤ Pol F (r + K) B
 
-def HJc (_D : Formalism.BasicNotions.D7) : Prop :=
+def HJc : Prop :=
   ∀ (F : Type) [Field F] [CharZero F] (N r K : ℕ) [NeZero r] [NeZero K] (LL : Letters (Fin N))
     (nu : Fin (N + 1) → Fin r → ℤ) (ka : Fin (N + 1) → Fin K → ℤ),
     jointType F LL nu ka ≠ ⊥ →
@@ -211,7 +211,7 @@ lemma pol_of_map {O : Type*} [CommRing O] [IsDomain O] {ι : Type*} {n : ℕ} (d
 
 end Frac
 
-theorem integral_joint_type_sum_of_parts (D : Formalism.BasicNotions.D7) (h16 : PairedPathIndependence D) (hb : HJb D) (hc : HJc D) : IntegralJointTypeSum D := by
+theorem integral_joint_type_sum_of_parts (D : Formalism.BasicNotions.D7) (h16 : PairedPathIndependence) (hb : HJb) (hc : HJc) : IntegralJointTypeSum := by
   intro p hp O _ _ _ S N r K _ _ LL B hK PP L hPPdef
   have hcz : CharZero O := Formalism.MainNotions.G.GLWeightTheory.dvr_charZero_of_prime S hp.out
   have hczK : CharZero (KK O) := Formalism.MainNotions.G.GLWeightTheory.dvr_fraction_field_charZero_prime S hp.out
@@ -570,7 +570,7 @@ lemma deg_of_iso_path [CharZero F] (he : Function.Injective e) (b : Fin N → �
 
 end Deg
 
-theorem hjb_pf (D : Formalism.BasicNotions.D7) : HJb D := by
+theorem hjb_pf (D : Formalism.BasicNotions.D7) : HJb := by
   intro F _ _ N r K _ _ LL B nu ka hP x hx
   obtain ⟨b', b'', hb, ⟨P1, rfl⟩, ⟨P2, rfl⟩⟩ := hP
   simp only [jointType, Submodule.mem_iInf, Submodule.mem_inf] at hx
@@ -655,7 +655,7 @@ end Ev
 def dOf {N m : ℕ} (LL : Letters (Fin N)) (lam : Fin (N + 1) → Fin m → ℤ) : Fin N → ℕ := fun l =>
   (if LL.vec l then ∑ a, lam l.succ a - ∑ a, lam l.castSucc a else ∑ a, lam l.castSucc a - ∑ a, lam l.succ a).toNat
 
-theorem path_of_iso (D : Formalism.BasicNotions.D7) (h14 : JointComponentsPaths D) {F : Type} [Field F] [CharZero F] {N m k : ℕ}
+theorem path_of_iso (D : Formalism.BasicNotions.D7) (h14 : JointComponentsPaths) {F : Type} [Field F] [CharZero F] {N m k : ℕ}
     (LL : Letters (Fin N)) (e : Fin m → Fin k) (dcd : Fin k → Option (Fin m))
     (hd1 : ∀ a, dcd (e a) = some a) (hd2 : ∀ c a, dcd c = some a → c = e a)
     (lam : Fin (N + 1) → Fin m → ℤ) (x : MvPolynomial (Fin N × Fin k) F) (hx0 : x ≠ 0)
@@ -725,7 +725,7 @@ lemma dcdTan_2 (r K : ℕ) (c : Fin (r + K)) (a : Fin K) (h : dcdTan r K c = som
   · rw [dite_eq_right hc] at h
     exact absurd h (by simp)
 
-theorem hjc_pf (D : Formalism.BasicNotions.D7) (h14 : JointComponentsPaths D) : HJc D := by
+theorem hjc_pf (D : Formalism.BasicNotions.D7) (h14 : JointComponentsPaths) : HJc := by
   intro F _ _ N r K _ _ LL nu ka hne
   obtain ⟨x, hx, hx0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hne
   simp only [jointType, Submodule.mem_iInf, Submodule.mem_inf] at hx
@@ -735,7 +735,7 @@ theorem hjc_pf (D : Formalism.BasicNotions.D7) (h14 : JointComponentsPaths D) : 
     (fun i => (hx i).2)
   exact ⟨b', b'', hb', hb''⟩
 
-theorem integral_joint_type_sum (D : Formalism.BasicNotions.D7) (h14 : JointComponentsPaths D) (h16 : PairedPathIndependence D) : IntegralJointTypeSum D :=
+theorem integral_joint_type_sum (D : Formalism.BasicNotions.D7) (h14 : JointComponentsPaths) (h16 : PairedPathIndependence) : IntegralJointTypeSum :=
   integral_joint_type_sum_of_parts D h16 (hjb_pf D) (hjc_pf D h14)
 
 end Formalism.MainNotions.LemmaBAlt

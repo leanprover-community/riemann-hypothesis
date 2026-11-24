@@ -319,7 +319,6 @@ theorem inverseSeries_subst_X1_mem (hw : WFixed W w) :
     (invSer W w).subst (MvPowerSeries.X 1 : MvPowerSeries (Fin 2) K) ∈ T W := by
   rw [invSer_subst hw]
   exact (T W).mul_mem (X_mem_T 1) (inv_mem_integralSeries (dI_mem_T_of_wFixed hw 1)
-    (by rw [dI_cc hw]; exact neg_ne_zero.mpr one_ne_zero)
     (by rw [dI_cc hw, inv_neg, inv_one]; exact Subalgebra.neg_mem _ (Subalgebra.one_mem _)))
 
 theorem chord_series_eq_F2 (hw : WFixed W w) {F : MvPowerSeries (Fin 2) K} (hF0 : cc F = 0)
@@ -400,7 +399,7 @@ theorem dd_mem_T_of_wFixed (hw : WFixed W w) : dd W w ∈ T W := by
   have hC3 : C3 W w ∈ T W := lineCoeffCubic_mem _ h2 h4 h6 hl
   have hC2 : C2 W w ∈ T W := lineCoeffQuadratic_mem _ h1 h2 h3 h4 h6 hl hn
   have hC3i : (C3 W w)⁻¹ ∈ T W :=
-    inv_mem_integralSeries hC3 (by rw [constantCoeff_chordCoeffCubic hw]; exact one_ne_zero)
+    inv_mem_integralSeries hC3
       (by rw [constantCoeff_chordCoeffCubic hw, inv_one]; exact Subalgebra.one_mem _)
   have hz3 : z3 W w ∈ T W :=
     (T W).sub_mem ((T W).sub_mem ((T W).neg_mem (X_mem_T 0)) (X_mem_T 1)) ((T W).mul_mem hC2 hC3i)
@@ -486,18 +485,18 @@ theorem main (hw : WFixed W w) :
     rw [WeierstrassChordSeries.F2, mul_assoc, mul_comm _ (dd W w), MvPowerSeries.mul_inv_cancel _ hdc, mul_one]
   rw [← hF] at key1
   refine ⟨-(C3 W w * dd W w * Ua⁻¹ * Ub⁻¹ * E⁻¹ * Q⁻¹), ?_, ?_, ?_⟩
-  · have hUaT : Ua⁻¹ ∈ T W := inv_mem_integralSeries (hUa ▸ subst_wU_X_mem_T_of_wFixed hw 0) (by rw [hUac]; exact one_ne_zero)
+  · have hUaT : Ua⁻¹ ∈ T W := inv_mem_integralSeries (hUa ▸ subst_wU_X_mem_T_of_wFixed hw 0)
       (by rw [hUac, inv_one]; exact Subalgebra.one_mem _)
-    have hUbT : Ub⁻¹ ∈ T W := inv_mem_integralSeries (hUb ▸ subst_wU_X_mem_T_of_wFixed hw 1) (by rw [hUbc]; exact one_ne_zero)
+    have hUbT : Ub⁻¹ ∈ T W := inv_mem_integralSeries (hUb ▸ subst_wU_X_mem_T_of_wFixed hw 1)
       (by rw [hUbc, inv_one]; exact Subalgebra.one_mem _)
     have hET : E ∈ T W := by
       rw [hE]
       exact (T W).sub_mem ((T W).sub_mem (T W).one_mem
         ((T W).mul_mem (constSeries_mem_integralSeries (by simp)) (intercept_mem_integralSeries hw)))
         ((T W).mul_mem (constSeries_mem_integralSeries (by simp)) ((T W).pow_mem (intercept_mem_integralSeries hw) 2))
-    have hEiT : E⁻¹ ∈ T W := inv_mem_integralSeries hET (by rw [hEc]; exact one_ne_zero)
+    have hEiT : E⁻¹ ∈ T W := inv_mem_integralSeries hET
       (by rw [hEc, inv_one]; exact Subalgebra.one_mem _)
-    have hQiT : Q⁻¹ ∈ T W := inv_mem_integralSeries hQT (by rw [hQc]; exact neg_ne_zero.mpr one_ne_zero)
+    have hQiT : Q⁻¹ ∈ T W := inv_mem_integralSeries hQT
       (by rw [hQc, inv_neg, inv_one]; exact Subalgebra.neg_mem _ (Subalgebra.one_mem _))
     exact (T W).neg_mem ((T W).mul_mem ((T W).mul_mem ((T W).mul_mem ((T W).mul_mem
       ((T W).mul_mem (C3_mem_T_of_wFixed hw) (dd_mem_T_of_wFixed hw)) hUaT) hUbT) hEiT) hQiT)

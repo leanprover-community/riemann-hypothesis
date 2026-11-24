@@ -523,7 +523,7 @@ def semiHomEquiv (G' : PDivGroup p O') :
   toFun := SemiHom.lift
   invFun f := (SemiHom.ofHom f).comp (G.toBase O')
   left_inv s := SemiHom.ext_apply fun n a => (s.lift_app n 1 a).trans (one_smul _ _)
-  right_inv f := baseChange_hom_ext fun n a => (SemiHom.lift_app _ n 1 a).trans (one_smul _ _)
+  right_inv _ := baseChange_hom_ext fun n a => (SemiHom.lift_app _ n 1 a).trans (one_smul _ _)
 
 end BaseChange
 

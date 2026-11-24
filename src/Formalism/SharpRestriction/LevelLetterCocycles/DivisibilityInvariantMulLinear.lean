@@ -374,7 +374,7 @@ theorem killerKap_holds : KillerKap 8 := by
 
 end Kap
 
-theorem content_divisibility_clause (D : Formalism.BasicNotions.D7) : adm9 D := content_divisibility
+theorem content_divisibility_clause (D : Formalism.BasicNotions.D7) : adm9 := content_divisibility
 
 theorem killerKap_of_le {C : ℝ} (hC : 8 ≤ C) : KillerKap C := by
   intro l hl hl5 G S h ell ro a hGh hh ha
@@ -386,8 +386,8 @@ theorem killerKap_of_le {C : ℝ} (hC : 8 ≤ C) : KillerKap C := by
     add_nonneg (by positivity) (mul_nonneg (by positivity) hlog)
   exact h8.trans (mul_le_mul_of_nonneg_right hC hX)
 
-theorem lemma_M_prime_hypothesis (D : Formalism.BasicNotions.D7) (HW : Formalism.BasicNotions.HWOf D.loc) (F : Formalism.BasicNotions.FonOf D.loc D.locA HW) {C : ℝ} (hC : 8 ≤ C) (hLev : KillerLevL D.loc D.locA HW F)
-    (hMod : KillerModL D.loc D.locA HW F) : adm8 D HW F C :=
+theorem lemma_M_prime_hypothesis (D : Formalism.BasicNotions.D7) (HW : Formalism.BasicNotions.HWOf D.loc) (F : Formalism.BasicNotions.FonOf D.loc D.locA HW) {C : ℝ} (hC : 8 ≤ C) (hLev : KillerLevL D.loc D.locA HW)
+    (hMod : KillerModL D.loc D.locA HW) : adm8 D HW F C :=
   ⟨_root_.Formalism.WindowSums.arc_KillerVal, _root_.Formalism.WindowSums.annihilatorPoly_kills, hLev, hMod, killerKap_of_le hC⟩
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc
@@ -443,10 +443,10 @@ end KillerBridge
 
 theorem killerModL_of (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT)
     (F : FonOf LT A HW)
-    (h : AtCaseA fun l _ K LL hG => Pi0Stable ((HW l).W K 1 LL hG)) : KillerModL LT A HW F := by
+    (h : AtCaseA fun l _ K LL hG => Pi0Stable ((HW l).W K 1 LL hG)) : KillerModL LT A HW := by
   exact fun l _ K LL hG hA h5 => killer_module_of_pi_stable _ (h l K LL hG hA h5)
 
-theorem pi_stability_content_clause (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) {C : ℝ} (hC : 8 ≤ C) (hLev : KillerLevL D.loc D.locA HW F)
+theorem pi_stability_content_clause (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) {C : ℝ} (hC : 8 ≤ C) (hLev : KillerLevL D.loc D.locA HW)
     (h : AtCaseA fun l _ K LL hG => Pi0Stable ((HW l).W K 1 LL hG)) : adm8 D HW F C :=
   lemma_M_prime_hypothesis D HW F hC hLev (killerModL_of D.loc D.locA HW F h)
 

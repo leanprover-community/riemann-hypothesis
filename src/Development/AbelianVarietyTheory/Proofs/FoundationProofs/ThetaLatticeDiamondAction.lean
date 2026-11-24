@@ -129,7 +129,7 @@ private theorem act_act_eq_act_mul (X : Tower Ω ε) (l : ℕ) [Fact l.Prime] (�
     ext f; exact X.sl_mul _ _ f
   rw [kmap_kmap_eq_kmap_trans, _root_.GlobalTheory.KZ.Betti.toGQ_sl, _root_.GlobalTheory.KZ.Betti.toGQ_sl, _root_.GlobalTheory.KZ.Betti.toGQ_sl, map_mul, Matrix.mulVec_mulVec, hm, hs]
 
-theorem diam_BSet (X : Tower Ω ε) (N l w d : ℕ) [Fact l.Prime] (hN : 0 < N) (hNl : Nat.Coprime N l)
+theorem diam_BSet (X : Tower Ω ε) (N l w d : ℕ) [Fact l.Prime] (hNl : Nat.Coprime N l)
     (hd : Nat.Coprime d N) (b : X.Fn l) (hb : b ∈ X.BSet N l w) :
     X.act l (sgD N l d : Matrix (Fin 2) (Fin 2) ℤ) b ∈ X.BSet N l w := by
   have hσ : IsDiam N l d (sgD N l d) := Classical.epsilon_spec (exists_isDiam_of_coprime hNl hd)
@@ -150,7 +150,7 @@ theorem diam_B (X : Tower Ω ε) (N l w d : ℕ) [Fact l.Prime] (hN : 0 < N) (hN
     (hd : Nat.Coprime d N) (b : X.Fn l) (hb : b ∈ X.B N l w) :
     X.act l (sgD N l d : Matrix (Fin 2) (Fin 2) ℤ) b ∈ X.B N l w := by
   have hle : X.B N l w ≤ (X.B N l w).comap (X.act l (sgD N l d : Matrix (Fin 2) (Fin 2) ℤ)) :=
-    Submodule.span_le.mpr (fun x hx => Submodule.subset_span (diam_BSet X N l w d hN hNl hd x hx))
+    Submodule.span_le.mpr (fun x hx => Submodule.subset_span (diam_BSet X N l w d hNl hd x hx))
   exact hle hb
 
 end GlobalTheory.CyclotomicQExpansion.ThnEx

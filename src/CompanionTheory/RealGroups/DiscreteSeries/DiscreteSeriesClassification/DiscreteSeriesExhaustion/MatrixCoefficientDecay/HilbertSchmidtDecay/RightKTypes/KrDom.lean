@@ -49,21 +49,21 @@ theorem ba_der (hK : CompanionTheory.D.LK.IsKMod ε σ D E) : IsDerivedOn ε σ 
 theorem ba_actM_single {M : Type} [AddCommGroup M] [Module ℂ M] (F : Fin n → Fin n → Module.End ℂ M)
     (a b : Fin n) : ReciprocityTheory.ChartRestriction.DS.actM F (Matrix.single a b 1) = F a b := by
   unfold ReciprocityTheory.ChartRestriction.DS.actM
-  rw [Fintype.sum_eq_single a (fun c hc => Finset.sum_eq_zero fun d _ => by simp [Matrix.single_apply, Ne.symm hc]),
-    Fintype.sum_eq_single b (fun d hd => by simp [Matrix.single_apply, Ne.symm hd])]
+  rw [Fintype.sum_eq_single a (fun c hc => Finset.sum_eq_zero fun d _ => by simp [Ne.symm hc]),
+    Fintype.sum_eq_single b (fun d hd => by simp [Ne.symm hd])]
   simp
 
 theorem ba_conj_single (k l : Matrix (Fin n) (Fin n) ℂ) (a b c d : Fin n) :
     (k * Matrix.single a b (1 : ℂ) * l) c d = k c a * l b d := by
   simp [Matrix.mul_apply, Matrix.single_apply, ite_and, Finset.sum_ite_eq, mul_ite, ite_mul]
 
-theorem base_mem (hK : CompanionTheory.D.LK.IsKMod ε σ D E) (hU : Formalism.MainNotions.S.IsURepOn (Formalism.MainNotions.S.UJset ε) σ)
+theorem base_mem (hK : CompanionTheory.D.LK.IsKMod ε σ D E)
     (k : S7.KG ε) (v : H) (hv : v ∈ D) : σ (S7.toMK k) v ∈ D := by
   exact ba_kst hK (S7.toMK k) k.2 v hv
 
 def baseRho (hK : CompanionTheory.D.LK.IsKMod ε σ D E) (hU : Formalism.MainNotions.S.IsURepOn (Formalism.MainNotions.S.UJset ε) σ) (k : S7.KG ε) :
     Module.End ℂ D where
-  toFun v := ⟨σ (S7.toMK k) v, base_mem hK hU k v v.2⟩
+  toFun v := ⟨σ (S7.toMK k) v, base_mem hK k v v.2⟩
   map_add' u v := by apply Subtype.ext; simp
   map_smul' c v := by apply Subtype.ext; simp
 

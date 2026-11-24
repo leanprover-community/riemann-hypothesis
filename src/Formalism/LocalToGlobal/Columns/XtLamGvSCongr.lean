@@ -19,7 +19,7 @@ section PhiS
 variable {E K : Type} [Field E] [NumberField E] [StarRing E] [Field K] {P : HeightOneSpectrum (𝓞 E)} {q : ℕ}
 
 theorem xtLamGvS_congr (ψ₀ : AddChar (𝓞 E ⧸ P.asIdeal) K) (χ : ℕ → (𝓞 E ⧸ P.asIdeal)ˣ →* Kˣ) {k₀ r t j a : ℕ} (M M' : ℕ → ℕ → E)
-    (hk : k₀ ≤ a) (_hr : r ≤ a) (hja : r + j * t ≤ a)
+    (hk : k₀ ≤ a) (hja : r + j * t ≤ a)
     (h : ∀ p p', p < a → p' < a → IntAt P (M p p') ∧ IntAt P (M' p p') ∧ redP P (M' p p') = redP P (M p p')) :
     LocE.lamGvS ψ₀ χ k₀ r t j M' = LocE.lamGvS ψ₀ χ k₀ r t j M := by
   unfold LocE.lamGvS
@@ -145,7 +145,7 @@ theorem xtPhiGS_congr (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hq0 : (q : E) �
       refine ⟨hM p p' hpn hp', h1.1 p p' hpn hp', ?_⟩
       obtain ⟨d, hd, he⟩ := hD p p' hpn hp'
       rw [he, reduction_add (hM p p' hpn hp') (hqI.mul hd), reduction_mul hqI hd, redP_natCast_eq_zero hq, zero_mul, add_zero]
-    rw [xtLamGvS_congr ψ₀ χ _ _ (by omega) hra le_rfl hall]
+    rw [xtLamGvS_congr ψ₀ χ _ _ (by omega) le_rfl hall]
     congr 2
     apply ciUnitV_congr
     rw [redP_det (Matrix.of fun s s' : Fin (r + (j - 1) * t) =>

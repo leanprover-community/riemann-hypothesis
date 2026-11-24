@@ -34,7 +34,7 @@ theorem gaM_hasDerivAt_antider {b : ℝ} (hb : 0 < b) (j : ℕ) (r : ℝ) :
   push_cast
   ring
 
-theorem gaM_tendsto_antider {b : ℝ} (_hb : 0 < b) (j : ℕ) :
+theorem gaM_tendsto_antider {b : ℝ} (j : ℕ) :
     Tendsto (fun r : ℝ => -(1 / (2 * ((j : ℝ) + 1))) * ((b + r ^ 2) ^ (j + 1))⁻¹) atTop (𝓝 0) := by
   have h1 : Tendsto (fun r : ℝ => b + r ^ 2) atTop atTop :=
     tendsto_atTop_add_const_left _ _ (tendsto_pow_atTop two_ne_zero)
@@ -47,14 +47,14 @@ theorem gaM_integrableOn_Ioi {b : ℝ} (hb : 0 < b) (j : ℕ) :
   integrableOn_Ioi_deriv_of_nonneg' (fun x _ => gaM_hasDerivAt_antider hb j x)
     (fun x hx => by have : 0 < b + x ^ 2 := by positivity
                     exact mul_nonneg (le_of_lt hx) (by positivity))
-    (gaM_tendsto_antider hb j)
+    (gaM_tendsto_antider j)
 
 theorem gaM_integral_Ioi {b : ℝ} (hb : 0 < b) (j : ℕ) :
     ∫ r in Ioi (0 : ℝ), r * ((b + r ^ 2) ^ (j + 2))⁻¹ = 1 / (2 * ((j : ℝ) + 1) * b ^ (j + 1)) := by
   rw [integral_Ioi_of_hasDerivAt_of_nonneg' (fun x _ => gaM_hasDerivAt_antider hb j x)
     (fun x hx => by have : 0 < b + x ^ 2 := by positivity
                     exact mul_nonneg (le_of_lt hx) (by positivity))
-    (gaM_tendsto_antider hb j)]
+    (gaM_tendsto_antider j)]
   have : (0 : ℝ) < b ^ (j + 1) := by positivity
   field_simp
   ring

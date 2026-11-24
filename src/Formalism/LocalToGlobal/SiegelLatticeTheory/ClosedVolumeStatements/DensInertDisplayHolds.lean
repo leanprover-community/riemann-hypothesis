@@ -304,7 +304,7 @@ theorem gamma_form (r : ℕ) (T T' : ℝ) (s : ℂ) (c : Fin r ⊕ Fin 2 → ℂ
     Complex.normSq_apply]
   ring
 
-theorem gamma_neg (r : ℕ) (T T' : ℝ) (hT : 0 < T) (hT' : 0 < T') (s : ℂ)
+theorem gamma_neg (r : ℕ) (T T' : ℝ) (hT : 0 < T) (s : ℂ)
     (hs : Complex.normSq s < T * T') (c : Fin r ⊕ Fin 2 → ℂ) (hc : c ≠ 0) :
     (star c ⬝ᵥ (gamma r T T' s *ᵥ c)).re < 0 := by
   rw [gamma_form]
@@ -599,7 +599,7 @@ theorem main : PI.FlagGramNonneg := by
       obtain ⟨c, hc0, hcnn⟩ := hasSignature_exists_nonneg _ hsig hcard
         (Matrix.of fun n k => τ (b.repr (y k) n))
       rw [form_mulVec, hG] at hcnn
-      have hneg := gamma_neg r T T' (by exact_mod_cast hT0) (by exact_mod_cast hT'0) _ hlt c hc0
+      have hneg := gamma_neg r T T' (by exact_mod_cast hT0) _ hlt c hc0
       linarith
     refine ⟨Complex.normSq (τ (amat hT e e').det) *
       (Complex.normSq (τ (sval hT e e' z z')) - T * T'),

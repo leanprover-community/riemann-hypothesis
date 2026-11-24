@@ -101,10 +101,10 @@ open GlobalTheory.PRep GlobalTheory.SplitWeil GlobalTheory.SmGL GlobalTheory.Loc
 namespace GlobalTheory.CompanionTheory.SegNcjm
 
 theorem exists_perm_one_le_jm : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
-    [IsNonarchimedeanLocalField k] (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) {l N : ℕ} (x : Fin l → IrrGL (k := k))
-    (hx : ∑ a, (x a).1 = N) (hxc : ∀ a, (x a).IsCusp) {V : Type} [AddCommGroup V] [Module ℂ V]
-    (π : Representation ℂ (GL (Fin N) k) V) (hs : IsSmooth π) (hi : π.IsIrreducible)
-    (h : IsSubquotient π (prodIrr x hx)),
+    [IsNonarchimedeanLocalField k] (_ : GlobalTheory.Published.IrreducibleAdmissibleGL) {l N : ℕ} (x : Fin l → IrrGL (k := k))
+    (hx : ∑ a, (x a).1 = N) (_ : ∀ a, (x a).IsCusp) {V : Type} [AddCommGroup V] [Module ℂ V]
+    (π : Representation ℂ (GL (Fin N) k) V) (_ : IsSmooth π) (_ : π.IsIrreducible)
+    (_ : IsSubquotient π (prodIrr x hx)),
     ∃ (e : Equiv.Perm (Fin l)) (he : ∑ a, (x (e a)).1 = N), 1 ≤ jm (fun a => x (e a)) he π := by
   intro k _ _ _ _ hA l N x hx hxc V _ _ π hs hi h
   obtain ⟨c, y, hy, hyc, φ, hφ⟩ := _root_.GlobalTheory.CompanionTheory.SubEmb.subEmbedding k N V π hs hi

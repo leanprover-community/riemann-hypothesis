@@ -918,7 +918,7 @@ private theorem core [IsGalois F E] (hA : A1) (σ : E ≃ₐ[F] E) (hσ : ∀ τ
     (q : HeightOneSpectrum (𝓞 F)) (w₀ : PlacesOver E q) (hs : ∀ w : PlacesOver E q, Function.Surjective (completionMap q w.1))
     (ν : Fin n → ℤ) (hν : Function.Injective ν) (hsum : ∑ i, ν i = 0)
     (hJ : ∀ J : Finset (Fin n), J.Nonempty → J ≠ Finset.univ → ∑ i ∈ J, ν i ≠ 0)
-    (j : ℕ) (hj0 : 0 < j) (Y : ℝ) (hY : 1 ≤ Y)
+    (j : ℕ) (hj0 : 0 < j) (Y : ℝ)
     (hj : (AutomorphicForm.heightConst E n * AutomorphicForm.heightConst E n ^ Module.finrank F E) ^ n *
       Y ^ (Module.finrank F E * n) < 2 ^ j)
     (δ : GL (Fin n) E) (x y : AdelicGLn.AdelicGL E n)
@@ -993,7 +993,7 @@ theorem UpperTheory.ConvolutionTheory.G.firstGeometricCondition_of_properties :
       rw [pow_zero] at hj
       linarith
     · exact h
-  exact core hA σ hσ n hn q w₀ hs ν hν hsum hJ j hj0 Y hY hj δ _ _ hy hht a b ha hb hab hoth
+  exact core hA σ hσ n hn q w₀ hs ν hν hsum hJ j hj0 Y hj δ _ _ hy hht a b ha hb hab hoth
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicArithmetic.Foundations.Convolution.LocalGroupAnalysis.FirstGeometricConditionOfProperties =====

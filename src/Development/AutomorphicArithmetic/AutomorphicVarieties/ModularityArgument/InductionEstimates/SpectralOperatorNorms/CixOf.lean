@@ -454,7 +454,7 @@ noncomputable def datB {n : ℕ} (d : Dat S n) (h2 : 2 ≤ d.len) : Datum E n wh
   V := fun j => bloV (d.blo j).2
   summand := fun j => bloV_summand (d.blo j).2
 
-theorem datB_at {n : ℕ} (d : Dat S n) (h2 : 2 ≤ d.len) (j : Fin d.len) :
+theorem datB_at {n : ℕ} (d : Dat S n) (j : Fin d.len) :
     At (mu1 E (d.blo j).1) S (bloV (d.blo j).2) (fun τ => Finset.univ.val.map ((d.blo j).2.Λ τ))
       fun w => ((d.blo j).2.sat w).map fun x : ℂˣ => (x : ℂ) :=
   bloAt E S _ _ _ (bloV_summand _) (bloV_mem _)
@@ -486,7 +486,7 @@ theorem datB_pt {n : ℕ} (d : Dat S n) (h2 : 2 ≤ d.len) (Λ : (E →+* ℂ) �
   · rintro ⟨lam, m, B, hA, hΛ, ht⟩
     exact on_of d lam m B hA hΛ ht
   · rintro ⟨z, rfl, ht⟩
-    refine ⟨z, _, _, fun j => datB_at d h2 j, fun τ => blo_ms τ d z, fun w hw => ?_⟩
+    refine ⟨z, _, _, fun j => datB_at d j, fun τ => blo_ms τ d z, fun w hw => ?_⟩
     rw [ht w hw]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [blo_sat, Multiset.map_map]
@@ -813,7 +813,7 @@ private noncomputable def datOf {n : ℕ} (d : Dat S n) (h : 2 ≤ d.len) : Datu
   sum := sum_blo d
   μ := fun i => mu1 E (d.blo i).1
   V := fun i => bV (d.blo i).2
-  summand := fun i => bV_summand _
+  summand := fun _ => bV_summand _
 
 private theorem map_split {r s : ℕ} (f : Fin (r + s) → ℂ) :
     (Finset.univ.val.map f) = (Finset.univ.val.map fun i : Fin r => f (Fin.castAdd s i)) +
@@ -1656,7 +1656,7 @@ private theorem convolution_estimate (μ ν : Measure G) [μ.IsHaarMeasure] [IsP
     {U : Set G} (hU : IsCompact U) (hν : ∀ᵐ k ∂ν, k ∈ U) (e a₀ φ : G → ℂ) (he : Continuous e) (ha₀ : Continuous a₀)
     (hc : HasCompactSupport a₀) (hφ : Continuous φ) (hfix : ∀ g, ∫ k, e k * φ (g * k) ∂ν = φ g)
     (hpos : ∀ g, 0 ≤ (a₀ g).re ∧ (a₀ g).im = 0) (hone : ∫ g, a₀ g ∂μ = 1) (x : G) (ε : ℝ)
-    (hε : ∀ k ∈ U, ∀ h ∈ tsupport a₀, ‖e k‖ * ‖φ (x * k * h) - φ (x * k)‖ ≤ ε) (hε0 : 0 ≤ ε) :
+    (hε : ∀ k ∈ U, ∀ h ∈ tsupport a₀, ‖e k‖ * ‖φ (x * k * h) - φ (x * k)‖ ≤ ε) :
     ‖(∫ k, e k * ∫ h, a₀ h * φ (x * k * h) ∂μ ∂ν) - φ x‖ ≤ ε := by
   have hI : Continuous fun k => ∫ h, a₀ h * φ (x * k * h) ∂μ := by
     have h := continuous_parametric_integral_of_continuous (μ := μ) (f := fun k h => a₀ h * φ (x * k * h))
@@ -1778,7 +1778,7 @@ private theorem exists_positive_period_line {K : Type} [Field K] [NumberField K]
       ring
     have e1 := convolution_hecke_identity μ D.ν hU D.supp D.e a₀ a _ D.cont a₀.continuous a₀.hasCompactSupport hφ hfix ha x
     have e2 := convolution_estimate μ D.ν hU D.supp D.e a₀ _ D.cont a₀.continuous a₀.hasCompactSupport hφ hfix hpos hone x ε
-      (fun k hk g hg => h3 k hk g (hs hg)) h1
+      (fun k hk g hg => h3 k hk g (hs hg))
     rw [← e1, hT, h0, map_zero] at e2
     have e3 : flat 0 (0 : G1 K (2 + 2) → ℂ) x = 0 := by simp [flat]
     rw [e3, zero_sub, norm_neg] at e2

@@ -91,7 +91,7 @@ theorem mem_supportedOnPlacesIdeal_iff_components_zero_elsewhere (D : D7) (P : P
     a ∈ idAt D P ↔ infPart D a = 0 ∧ ∀ w : Pl D, ¬ P w → compAt D w a = 0 := by
   simp only [idAt, Submodule.mem_inf, Submodule.mem_iInf, RingHom.mem_ker, Subtype.forall]
 
-theorem placeIdempotent_infinite_and_finite_components (D : D7) (v : Pl D) (ε : AF D.host.F) (α : Af D.host.F)
+theorem placeIdempotent_infinite_and_finite_components (D : D7) (ε : AF D.host.F) (α : Af D.host.F)
     (hε : ε = pairA D.host.F 0 α) :
     infPart D (algebraMap (AF D.host.F) (AE D) ε) = 0 ∧
       ∀ w : Pl D, compAt D w (algebraMap (AF D.host.F) (AE D) ε) = evalV D.host.F w α ⊗ₜ[D.host.F] (1 : D.host.E) := by
@@ -144,7 +144,7 @@ theorem placeIdem_acts : ∀ (D : D7) (v : Pl D) (ε : AF D.host.F), IsPlaceIdem
     (∀ a : AE D, a ∈ idAt D (· = v) ↔ algebraMap (AF D.host.F) (AE D) ε * a = a) ∧
     (∀ a : AE D, a ∈ idAt D (· ≠ v) → algebraMap (AF D.host.F) (AE D) ε * a = 0) := by
   intro D v ε ⟨α, hε, hv, hw⟩
-  obtain ⟨h0, hc⟩ := placeIdempotent_infinite_and_finite_components D v ε α hε
+  obtain ⟨h0, hc⟩ := placeIdempotent_infinite_and_finite_components D ε α hε
   have c1 : compAt D v (algebraMap (AF D.host.F) (AE D) ε) = 1 := by
     rw [hc, hv]; rfl
   have c0 : ∀ w : Pl D, w ≠ v → compAt D w (algebraMap (AF D.host.F) (AE D) ε) = 0 := by

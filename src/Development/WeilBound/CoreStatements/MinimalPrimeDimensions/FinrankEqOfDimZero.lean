@@ -141,7 +141,7 @@ theorem evaluation_algX {R : Type} [CommRing R] (p : Z ⟶ Sp R) {U : Z.Opens} (
 
 variable {κ : Type} [Field κ] {p : Z ⟶ Sp κ} {s : Fin m → B.Sec}
 
-theorem ptIdeal_eq_coneIdeal (hB : B.IsLB) {k : Fin m} (t : Fin m → Γ(Z, nonzeroLocus (s k)))
+theorem ptIdeal_eq_coneIdeal {k : Fin m} (t : Fin m → Γ(Z, nonzeroLocus (s k)))
     (ht : ∀ j i, resG Z (inf_le_right : nonzeroLocus (s k) ⊓ B.U i ≤ B.U i) ((s j).f i) =
       resG Z (inf_le_left : nonzeroLocus (s k) ⊓ B.U i ≤ nonzeroLocus (s k)) (t j) *
         resG Z (inf_le_right : nonzeroLocus (s k) ⊓ B.U i ≤ B.U i) ((s k).f i))
@@ -325,7 +325,7 @@ theorem finrank_eq_of_dim_zero [Algebra κ Γ(Z, ⊤)] {s : Fin m → B.Sec} (hE
     exact h2.eq (genericPoint_spec Z)
   have hW : nonzeroLocus (s k) = ⊤ := eq_top_iff.mpr fun z _ => (hall z) ▸ hk
   obtain ⟨-, t, hsurj, ht⟩ := hE.chart k
-  obtain ⟨hJ, htk⟩ := ptIdeal_eq_coneIdeal (p := strHom κ Z) hE.isLB t ht η hk
+  obtain ⟨hJ, htk⟩ := ptIdeal_eq_coneIdeal (p := strHom κ Z) t ht η hk
   letI alg : Algebra κ (Z.residueField η) :=
     ((Z.evaluation ⊤ η trivial).hom.comp (algX (strHom κ Z) ⊤)).toAlgebra
   have hinj : Function.Injective (Z.evaluation (nonzeroLocus (s k)) η hk).hom :=

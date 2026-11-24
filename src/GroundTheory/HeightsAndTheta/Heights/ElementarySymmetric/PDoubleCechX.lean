@@ -606,7 +606,7 @@ theorem DoubleCech.aug_chain (hMJ : ∀ (J J' : Kleiman.Chart x) I, J.1 ⊆ J'.1
     rfl
   · simp [h]
 
-theorem DoubleCech.col_chain (hMJ : ∀ (J J' : Kleiman.Chart x) I, J.1 ⊆ J'.1 → M J I ≤ M J' I)
+theorem DoubleCech.col_chain
     (hMI : ∀ J (I I' : ∀ k, Finset (ι k)), (∀ k, I k ⊆ I' k) → CellMeets y I' → M J I ≤ M J I')
     {B : (∀ k, Finset (ι k)) → Submodule F Ω} (hB : ∀ I, ¬ CellMeets y I → B I = ⊥)
     (hcol0 : ∀ I : ∀ k, Finset (ι k), (∀ k, (I k).Nonempty) → CellMeets y I → ∀ J, B I ≤ M J I)
@@ -818,7 +818,7 @@ theorem DoubleCech.proof (hS : Staircase.Statement) (hSq : CellDSq.Statement) : 
     (fun p q => DoubleCech.hD y M hMI q p) (fun p => Kleiman.Cech.Cochain (fun J => ↥(T.sub J)) p)
     (fun p => Kleiman.Cech.d (fun J => ↥(T.sub J)) T.res p) (fun p => DoubleCech.aug y T M hrow p)
     (fun q => ↥(cellCOf F B q)) (fun q => DoubleCech.dC y B hBm q) (fun q => DoubleCech.colAug y B M hB hcol0 q)
-    (DoubleCech.comm hMJ hMI) (DoubleCech.aug_chain hMJ T hrow) (DoubleCech.col_chain hMJ hMI hB hcol0 hBm)
+    (DoubleCech.comm hMJ hMI) (DoubleCech.aug_chain hMJ T hrow) (DoubleCech.col_chain hMI hB hcol0 hBm)
     (DoubleCech.aug_inj T hrow c₀ hc₀) (DoubleCech.row_zero hMI hM T hrow) (DoubleCech.row_succ hSq hMI T hrow)
     (DoubleCech.col_inj hB hcol0 J₀) (DoubleCech.col_zero hMJ hM hB hcol) (DoubleCech.col_succ hMJ hM hcol) n
   obtain ⟨eT⟩ := DoubleCech.T_equiv T n

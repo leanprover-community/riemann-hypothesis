@@ -96,7 +96,7 @@ def twPt {ta : c.F ≃+* c.F} (h : Fixes c ta) {S : Type} [CommRing S] [Algebra 
   gen := y.gen
 
 def galRul {ta : c.F ≃+* c.F} (h : Fixes c ta) (f : Rul Xo c) : Rul Xo c :=
-  fun p y => (evR Xo c f (twPt h y)).val
+  fun _ y => (evR Xo c f (twPt h y)).val
 
 def covAut {n : ℕ} (d : DeltaDat Xo c n) (ta : c.F ≃+* c.F) : d.c₂.F ≃+* d.c₂.F :=
   (d.eF.symm.toRingEquiv.trans ta).trans d.eF.toRingEquiv

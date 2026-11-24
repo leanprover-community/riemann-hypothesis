@@ -505,7 +505,7 @@ theorem lGSubst : LGSubst := lGSubst_of mvExpSubst
 theorem isogenyIffBar : IsogenyIffBar := isogenyIffBar_of mvExpLaws
 
 theorem isogenyU : IsogenyU := isogenyU_of mvExpLaws mvExpSubst
-theorem phNormUnit : PhNormUnit := phNormUnit_of mvExpLaws mvExpSubst lGHalf isogenyU
+theorem phNormUnit : PhNormUnit := phNormUnit_of mvExpLaws lGHalf isogenyU
 
 end Formalism.L2.Th1.C
 end -- clump:auto

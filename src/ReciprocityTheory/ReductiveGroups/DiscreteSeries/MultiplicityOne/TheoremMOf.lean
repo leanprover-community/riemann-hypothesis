@@ -318,7 +318,7 @@ end GroupMatrixMembership
 
 open Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2 GroupMatrixMembership
 
-theorem stCut1 (h : UnitaryGroupStructuralFacts) : StCut1 := by
+theorem stCut1 : StCut1 := by
   unfold StCut1
   intro k r Wp _ _ _ D X hD d hd f x y a₂ b₂ X₀ hf p hp
   obtain ⟨hh, hn, hh', hn'⟩ := hp
@@ -375,7 +375,7 @@ theorem coefficient_integral_pointwise (h : UnitaryGroupStructuralFacts) {k r : 
     (X₀ : Wp →L[ℂ] Wp) (hf : ∀ g ∈ GV k r, f g = mc X x y g) (p : SS k r) (hp : D.inSS p) :
     xiTau D (1, 1) p * Ph D (scalF Wp f) (fun g => mc X a₂ b₂ g • X₀) p =
       hilbertSchmidtContinuousFunctional X₀ ((ContinuousLinearMap.adjoint (beInt D X y b₂ p.1)).comp (beInt D X x a₂ p.2)) / (d : ℂ) := by
-  rw [stCut1 h k r Wp D X hD d hd f x y a₂ b₂ X₀ hf p hp, character_at_one_eq_product D hD.z_eq, hilbertSchmidt_functional_apply]
+  rw [stCut1 k r Wp D X hD d hd f x y a₂ b₂ X₀ hf p hp, character_at_one_eq_product D hD.z_eq, hilbertSchmidt_functional_apply]
   simp only [beInt, map_smulₛₗ, adjoint_representation_inv D hCW hp.1, ContinuousLinearMap.smul_comp,
     ContinuousLinearMap.comp_smul, smul_smul, hilbertSchmidt_inner_smul_left, starRingEnd_apply, star_mul', star_star]
   ring
@@ -496,7 +496,7 @@ theorem ccle_smul_const {A : ℝ} {m : ℕ} {f : Mat k r → ℂ} {c : ℝ} (T :
 
 end SmulConstantLinearity
 
-theorem stCut1p (h : UnitaryGroupStructuralFacts) : StCut1p := by
+theorem stCut1p : StCut1p := by
   intro k r Wp _ _ _ A m f X₀ hf
   obtain ⟨c, hc⟩ := hf
   exact ⟨c * ‖X₀‖, SmulConstantLinearity.ccle_smul_const X₀ hc⟩
@@ -538,7 +538,7 @@ end Cut3H
 
 open Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2 Cut3H
 
-theorem stCut3 (h : UnitaryGroupStructuralFacts) : StCut3 := by
+theorem stCut3 : StCut3 := by
   intro hInv k r Wp _ _ _ D X hD hSq γ hγ hZ a₁ b₁ a₂ b₂ X₀ p hp
   have hI := hInv k r Wp D X hD hSq γ hγ
   have hG : ∀ g ∈ GV k r, gbar k r γ g ∈ GV k r := hI.1
@@ -677,7 +677,7 @@ theorem sigInt_translate {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpa
 
 end Cut0Aux
 
-theorem stCut0 (h : UnitaryGroupStructuralFacts) : StCut0 := by
+theorem stCut0 : StCut0 := by
   intro k r Wp _ _ _ D X g hg v hv
   obtain ⟨φ, hφ, rfl⟩ := hv
   exact ⟨fun y => φ (g⁻¹ * y), Cut0Aux.isTestG_translate hg hφ, (Cut0Aux.sigInt_translate D X hg φ).symm⟩
@@ -1092,7 +1092,7 @@ namespace ReciprocityTheory.ChartRestriction.DS.Mult1
 
 open Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.FourierDecayAlt.B2
 
-theorem stCut4 (h : UnitaryGroupStructuralFacts) : StCut4 := by
+theorem stCut4 : StCut4 := by
   intro hS k r Wp _ _ _ D hD γ P₁ Q P₂ Q₂ hPQ
   have hW : ∀ᵐ x ∂D.μW, Matrix.of x ∈ UWset k r D.z :=
     ae_iff.2 (measure_mono_null (fun x hx => hx) D.haarW.conc)
@@ -1153,9 +1153,9 @@ open Formalism.QuantumDeterminants Formalism.FourierDecayAlt.B Formalism.Fourier
 theorem theoremM_of (hIn : UnitaryGroupStructuralFacts) (hXi : XiExists)
     (hH : StBeHerm) (hP : StBePos) (hW : StSchurW) (hS : StSInt)
     (h0 : StSchurG) (h1 : StPairs) (h1' : StBeConv) (hD1 : StBeEquiv) (h2 : StRepro) (h3 : StSmooth)
-    (hF : StFrame) (h4a : StInvGroup) (h4b : StInvChar) (h4c : StInvCC) (h5 : StReps) (h6 : StTransM)
-    (h7 : StSym) (h7' : StSymBeta) (h8 : StBetaInf) (h9g : StDichoG) (h9w : StDichoW) (h10 : StMixed)
-    (hR : RankOneMinors) : ThmM := by
+    (hF : StFrame) (h4a : StInvGroup) (h4c : StInvCC)
+    (h7' : StSymBeta) (h8 : StBetaInf) (h9g : StDichoG) (h9w : StDichoW) (h10 : StMixed)
+    : ThmM := by
   intro k r Wp _ _ _ D X hD hX ha
   have hGN : GNIntSharp := hIn.1.2.2.2.2.2.2.2.2.2.2.2.2.2.2.1
   have ha0 : 0 ≤ X.a := le_trans (by unfold aM nR; positivity) ha
@@ -1176,7 +1176,7 @@ theorem theoremM_of (hIn : UnitaryGroupStructuralFacts) (hXi : XiExists)
       ⟪X.σ (Matrix.of y) X.w, u⟫_ℂ • beOp D X (X.σ (Matrix.of y) X.w) v ∂D.μG :=
     fun u hu v hv => (h2 k r Wp D X hD hX ha d hd u hu v hv).1
   have hM : MinorsOn D X := minorsOn_of_DD D X hGN ha0 hd.1 hb0 hab hbe hRep hHV
-    (minors_DD hIn hXi h3 (stCut0 hIn) (stCut1p hIn) (stCut2 hIn) (stCut3 hIn) (stCut4 hIn) h8 h7' h4c h4a
+    (minors_DD hIn hXi h3 (stCut0) (stCut1p) (stCut2 hIn) (stCut3) (stCut4) h8 h7' h4c h4a
       hD1 h0 h1 h1' hW hF h9g h9w h10 D X hD hX ha)
   exact multOne_of_minors D X hHV (fun u hu ξ => hP k r Wp D X hD hX ha u hu ξ) hInt
     (fun u hu u' hu' h hh m hm => (hD1 k r Wp D X hD hX u u' (hInt u hu u' hu') h hh m hm).1) hM

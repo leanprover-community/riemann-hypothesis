@@ -436,7 +436,7 @@ theorem add_mem_adelicVectorsZeroArchimedean {q q' : κ → AF F} (h : q ∈ Q0)
     map_add (InfiniteAdeleRing.ringEquiv_mixedSpace F) (q i).1 (q' i).1
   rw [e, h i, h' i, add_zero]
 
-theorem zero_mem_adelicVectorsZeroArchimedean : (0 : κ → AF F) ∈ Q0 := fun i => map_zero (InfiniteAdeleRing.ringEquiv_mixedSpace F)
+theorem zero_mem_adelicVectorsZeroArchimedean : (0 : κ → AF F) ∈ Q0 := fun _ => map_zero (InfiniteAdeleRing.ringEquiv_mixedSpace F)
 
 theorem chi_zero (ψ : AddChar (AF F) ℂ) : chi ψ (0 : κ → AF F) = 1 := by
   funext x; simp [chi]

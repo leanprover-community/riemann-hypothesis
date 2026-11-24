@@ -112,7 +112,7 @@ theorem exists_lift_oAct : ∀ (p : ℕ) [Fact p.Prime] (D : GlobalTheory.UPel.H
   haveI : ConnectedSpace A₁.left := GeometricallyConnected.connectedSpace A₁.hom A₁.hom.isOpenMap
   obtain ⟨g, hg⟩ := exists_dim_of_preconnected A₁.hom (Classical.arbitrary _)
   obtain ⟨A, _, i, h, hA, hgA, hE'⟩ :=
-    GlobalTheory.RMDeform.exists_lift_abelian GD _root_.GlobalTheory.abelianDeRham (divided₂ hsq) hκ π hπ rfl h₁ hA₁ hg E hE hFil
+    GlobalTheory.RMDeform.exists_lift_abelian GD (divided₂ hsq) hκ π hπ rfl h₁ hA₁ hg E hE hFil
   haveI : IsCommMonObj A := hA.comm
   have HL := (GD C _ (divided₂ hsq) hκ C₀ π hπ rfl).2.2
   have key : ∀ c : D.O, ∃! f : A ⟶ A, IsMonHom f ∧ i ≫ f.left = (o₀.act.act c).left ≫ i := fun c ↦ by

@@ -957,7 +957,7 @@ end Final
 
 end B2
 
-theorem lemma_B2 (D : Formalism.BasicNotions.D7) : PathWeightComponents D :=
+theorem lemma_B2 (D : Formalism.BasicNotions.D7) : PathWeightComponents :=
   fun _ _ O _ _ _ _ _ _ _ _ _ LL B om hNK hom hpos P c J => B2.kcol_low O LL B om hNK hom hpos P c J
 
 end Formalism.MainNotions.LemmaBAlt

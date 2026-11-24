@@ -88,7 +88,7 @@ theorem good_of_span (hW1 : GeneratorSpanInclusion) (hW2 : GeneratorImageIsSymbo
 end Asm
 
 theorem lemma4_of_remaining_statements (D : Formalism.BasicNotions.D7) (CLa CD Csz : ℝ) (hModel : RestModel) (hDiv : RestDivM CLa CD Csz)
-    (hW1 : GeneratorSpanInclusion) (hW2 : GeneratorImageIsSymbol) (hMon : RestMon) (hPh : RestPh) : Conclusion6 D CLa CD Csz := by
+    (hW1 : GeneratorSpanInclusion) (hW2 : GeneratorImageIsSymbol) (hMon : RestMon) (hPh : RestPh) : Conclusion6 CLa CD Csz := by
   intro p n' r K _ _ _ _ O _ _ _ _ S hO hH Fr L₁ N₁ G' hV hT deg a Y c0 c'' cStar Dd hII c' g hg n obd xi dd hxi hdd
     mon hmon hmonT o ho
   have hII' := hII

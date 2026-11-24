@@ -410,7 +410,7 @@ theorem bc_f_eq (hA : ∀ p, Agree δ M p) (L : LocSp D M) (p : PlF D) {T T' : D
 
 
 
-theorem span_le_none (hA : ∀ p, Agree δ M p) (L : LocSp D M) (p : PlF D) {T T' : D.host.E}
+theorem span_le_none (L : LocSp D M) (p : PlF D) {T T' : D.host.E}
     (F0 : FlagG (VS D) D.R.rS T) (F' : LFlag (D.sp.Y 0) D.R.rS T') (hs : (M p).split = none) :
     Submodule.span (M p).L.O (Set.range (locFam L δ p F0 F')) ≤ NG L p F0 F' ⊔ NX δ L p F0 ⊔ NX δ L p F'.fl := by
   have hlast : frFac δ p (Fin.last D.R.rS) = 1 := by simp [frFac]
@@ -560,7 +560,7 @@ theorem span_locFam (hA : ∀ p, Agree δ M p) (L : LocSp D M) (p : PlF D) {T T'
     Submodule.span (M p).L.O (Set.range (locFam L δ p F0 F')) = lattice₂ L p (MMof D F0 F') := by
   rw [latP_MMof hA]
   rcases h : (M p).split with _ | g
-  · exact le_antisymm (span_le_none hA L p F0 F' h) (le_span_none hA L p F0 F' h)
+  · exact le_antisymm (span_le_none L p F0 F' h) (le_span_none hA L p F0 F' h)
   · exact le_antisymm (span_le_some hA L p F0 F' h) (le_span_some hA L p F0 F' h)
 
 end SpanG

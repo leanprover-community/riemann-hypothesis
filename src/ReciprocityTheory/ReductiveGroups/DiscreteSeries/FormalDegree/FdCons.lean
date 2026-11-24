@@ -653,8 +653,8 @@ open ReciprocityTheory.ChartRestriction.DS.S7
 
 variable {n : ℕ}
 
-theorem thmFD (hB3 : Lap.Base.TangentPairingStatement) {ε : Fin n → Bool} {lam : Fin n → ℝ} {h : ℝ} (hp : 1 ≤ pOf ε)
-    (hq : 1 ≤ qOf ε) (hlam : IsHCParam lam) (hgap : GapAtLeast ε lam h) (hh : thrStar ε + 1 < h)
+theorem thmFD (hB3 : Lap.Base.TangentPairingStatement) {ε : Fin n → Bool} {lam : Fin n → ℝ} {h : ℝ}
+    (hlam : IsHCParam lam) (hgap : GapAtLeast ε lam h)
     (dfun : (Fin n → ℝ) → ℝ)
     (hstep : ∀ (μ : Fin n → ℝ) (s : Fin n), IsHCParam μ → GapAtLeast ε μ h →
       GapAtLeast ε (μ + Pi.single s 1) h → StrictAnti (μ + Pi.single s 1) → dfun (μ + Pi.single s 1) = dfun μ * ratioV μ s)
@@ -792,13 +792,11 @@ theorem fdc_cd {ε : Fin n → Bool} (hp : 1 ≤ pOf ε) (hq : 1 ≤ qOf ε) {la
     · rw [hlink _ (exp_pmat_inUJ z), hΨ]
     · rwa [fdcD_eq hμ hg hh' ⟨H, i1, i2, σ, hDS, hd⟩]
   choose H i1 i2 i3 σ T j hF hsm hd using key
-  exact thmFD Lap.Base.b3 hp hq hlam hgap hh (fdcD ε) (fdc_step hp hq hh) H σ T j
+  exact thmFD Lap.Base.b3 hlam hgap (fdcD ε) (fdc_step hp hq hh) H σ T j
     (Filter.Eventually.of_forall hF) (Filter.Eventually.of_forall hsm) (Filter.Eventually.of_forall hd)
 
 theorem fdCons_cd {ε : Fin n → Bool} (hp : 1 ≤ pOf ε) (hq : 1 ≤ qOf ε) {lam : Fin n → ℝ} (hlam : IsHCParam lam)
     {h : ℝ} (hgap : GapAtLeast ε lam h) (hh : thrStar ε + 1 < h)
-    (hΨ : ∀ μ : Fin n → ℝ, IsHCParam μ → GapAtLeast ε μ h →
-      ∃ (T : KType ε (lowK ε μ)) (Ψ : Matrix (Fin n) (Fin n) ℂ → (T.V →L[ℂ] T.V)), IsPsiFor ε μ T Ψ)
     {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
     {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (hσ : Formalism.MainNotions.S.IsDS ε lam σ) {v : H} (hv : v ≠ 0) :
     Formalism.MainNotions.S.fdegOf (muCD ε) σ v = dimVlam lam := by
@@ -823,7 +821,7 @@ theorem fdCons_muG (n : ℕ) (ε : Fin n → Bool) : ∃ c : ℝ, 0 < c ∧
     Measure.isMulLeftInvariant_eq_smul (muCD ε) (Formalism.REAL.muG ε)
   refine ⟨κ, hκpos, ?_⟩
   intro lam H _ _ _ σ v hlam hσ h hgap hh hp hq hΨ hv
-  have hcd := fdCons_cd hp hq hlam hgap hh hΨ hσ hv
+  have hcd := fdCons_cd hp hq hlam hgap hh hσ hv
   have hfd : Formalism.QuantumDeterminants.fdegHC lam = dimVlam lam := rfl
   rw [hκ] at hcd
   delta Formalism.MainNotions.S.fdegOf at hcd ⊢

@@ -753,8 +753,6 @@ theorem four_one {n : ℕ} (Z : SubM k n) (𝓕 : DistS k n →ₗ[ℂ] DistS k 
   congr 1; rw [smul_eq_mul, ← mul_assoc, hone, one_mul]
 
 theorem four_prod {n : ℕ} (Z : SubM k n) (hZ : CR Z) (𝓕 : DistS k n →ₗ[ℂ] DistS k n)
-    (_hF0 : ∀ ξ, Supp ξ (Bz Z ×ˢ Set.univ) → Supp (𝓕 ξ) (Bz Z ×ˢ Set.univ))
-    (_hF6 : ∀ ξ, (∀ f ∈ SuppUniv k n, ξ f = 0) → ∀ f ∈ SuppUniv k n, 𝓕 ξ f = 0)
     (hF5 : ∀ (t : kˣ) ξ, Supp ξ (Bz Z ×ˢ Set.univ) → ∀ f ∈ SuppUniv k n,
         𝓕 (pull Z t ξ) f = ((((nabs k t)⁻¹ ^ dB0 Z : ℝ)) : ℂ) * pull Z t⁻¹ (𝓕 ξ) f)
     (t : kˣ) (a : List ℝ) (ξ : DistS k n) (hξ : Supp ξ (Bz Z ×ˢ Set.univ)) :

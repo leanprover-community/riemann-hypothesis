@@ -69,7 +69,7 @@ theorem rat_mul_of_tmul {m n : ℕ} (M : Matrix (Fin m) (Fin m) D.host.E) (α : 
 def mulLeftHom {m n : ℕ} (A : Mx D m m) : Mx D m n →+ Mx D m n where
   toFun u := HMul.hMul (α := Mx D m m) (β := Mx D m n) A u
   map_zero' := Matrix.mul_zero _
-  map_add' u v := Matrix.mul_add _ _ _
+  map_add' _ _ := Matrix.mul_add _ _ _
 
 theorem rat_mul_mem_latO {S T : HSp D} {LS : Set (Fin S.rank → D.host.E)} {LT : Set (Fin T.rank → D.host.E)}
     {P : HeightOneSpectrum (𝓞 D.host.F) → Prop} (M : Matrix (Fin T.rank) (Fin T.rank) D.host.E)
@@ -282,7 +282,7 @@ end Keep
 
 end GlobalTheory.AscFin.ProjTgt
 
-theorem GlobalTheory.AscFin.latRow_proj_tgt : OnStd fun {D} _ _ {sc} {G} _ F => ∀ σ (_ : 2 * (σ + 1) + 2 ≤ D.R.m)
+theorem GlobalTheory.AscFin.latRow_proj_tgt : OnStd fun {D} _ _ {_} {G} _ F => ∀ σ (_ : 2 * (σ + 1) + 2 ≤ D.R.m)
     (h' : 2 * σ + 2 ≤ D.R.m), ∀ u ∈ latRow G (2 * σ + 2),
       ((F.dB σ h').jX * (F.dB σ h').pX) * u ∈ latRow G (2 * σ + 2) ∧
       ((F.dB σ h').jY * (F.dB σ h').pY) * u ∈ latRow G (2 * σ + 2) := by

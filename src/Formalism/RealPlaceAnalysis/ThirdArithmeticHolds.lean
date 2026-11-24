@@ -444,7 +444,7 @@ theorem qSkewRow : QSkewRow := quantumMinorRowSkew_holds
 theorem qSkewCol : QSkewCol := quantumMinorColSkew_holds
 theorem qDetHW : QDetHW := quantumDetHighestWeight_holds
 theorem qDetCentral : QDetCentral := qDetCentral_of quantumMinorRowSkew_holds quantumMinorColSkew_holds
-theorem qComatrix : QComatrix := qComatrix_of quantumMinorRowSkew_holds quantumMinorColSkew_holds
+theorem qComatrix : QComatrix := qComatrix_of quantumMinorColSkew_holds
 end Formalism.REAL
 end -- clump:auto
 end -- clump:auto

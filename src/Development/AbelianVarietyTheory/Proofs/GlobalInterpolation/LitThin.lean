@@ -61,7 +61,7 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.GlobalTh
 namespace GlobalTheory.ZeroBounds
 
 theorem explicit_formula_and_window_count :
-    (∃ C : ℝ, 0 < C ∧ ∀ D : D7, adm7 D C) ∧ ∃ C : ℝ, 0 < C ∧ ∀ D : D7, adm11 D C := by
+    (∃ C : ℝ, 0 < C ∧ ∀ D : D7, adm7 C) ∧ ∃ C : ℝ, 0 < C ∧ ∀ D : D7, adm11 C := by
   obtain ⟨C, hC, h⟩ := GlobalTheory.ExplicitFormula.truncated_explicit_formula
   obtain ⟨C', hC', h'⟩ := GlobalTheory.ZeroWindow.count_zeros_window
   exact ⟨⟨C, hC, fun _ => h⟩, ⟨C', hC', fun _ => h'⟩⟩
@@ -188,7 +188,7 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.GlobalTh
 
 namespace GlobalTheory.ZerosNearOne
 
-theorem main : ∃ C1 c : ℝ, 0 < C1 ∧ 0 < c ∧ ∀ D : D7, adm6 D C1 c := by
+theorem main : ∃ C1 c : ℝ, 0 < C1 ∧ 0 < c ∧ ∀ D : D7, adm6 C1 c := by
   obtain ⟨C, c, hC, hc, H⟩ := density_and_regions
   exact ⟨C, c, hC, hc, fun _ => H⟩
 

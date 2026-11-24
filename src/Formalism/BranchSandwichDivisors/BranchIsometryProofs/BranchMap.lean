@@ -1794,7 +1794,7 @@ theorem bmLift_minor0 (R : Type*) [CommRing R] (n : ℕ) {s : ℕ} (I : Fin s �
 theorem bmF_zmon_single (R : Type*) [CommRing R] (n : ℕ) (t : Fin n) :
     zmon R n (Pi.single t 1) = X (Fin.last n, t) := by
   unfold zmon
-  rw [Finset.prod_eq_single t (fun b _ hb => by simp [Pi.single_apply, hb])
+  rw [Finset.prod_eq_single t (fun b _ hb => by simp [hb])
     (fun h => absurd (Finset.mem_univ t) h)]
   simp
 

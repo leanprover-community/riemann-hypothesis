@@ -355,7 +355,7 @@ theorem lists_perm {S : Scheme.{0}} {G : Over S} [GrpObj G] {N n : ℕ} {σ : Fi
   rw [h₂]
   exact (g.surjective.iUnion_comp (fun j => Set.range (σ j).left)).symm
 
-theorem exists_perm {α : Type} {n : ℕ} {u v : Fin n → α} (hu : Function.Injective u) (hv : Function.Injective v)
+theorem exists_perm {α : Type} {n : ℕ} {u v : Fin n → α} (hv : Function.Injective v)
     (h : Set.range u = Set.range v) : ∃ g : Equiv.Perm (Fin n), ∀ j, u (g j) = v j := by
   have : ∀ j, ∃ i, u i = v j := fun j => by
     have : v j ∈ Set.range u := h ▸ Set.mem_range_self j
@@ -420,7 +420,7 @@ theorem exists_lists_mod_perm : ∀ (E : Type) [Field E] [NumberField E] [IsCMFi
     refine ⟨?_, by rw [← Category.assoc, e, Category.assoc]⟩
     simp only [Category.assoc, r₂]
     exact (g.surjective.range_comp (fun j => y ≫ (σ j).left ≫ m.toSABMap.φ)).symm
-  · obtain ⟨g, hg⟩ := exists_perm (inj k y) (inj k y') e.1
+  · obtain ⟨g, hg⟩ := exists_perm (inj k y') e.1
     have : y ≫ ρ g = y' := uq _ _ _ (by rw [Category.assoc, r₁]; exact e.2) fun j => by
       rw [Category.assoc, r₂]; exact hg j
     rw [← this, Category.assoc, hG.inv]
@@ -1645,7 +1645,7 @@ end GlobalTheory.QuotGlue
 
 open GlobalTheory.QuotGlue in
 theorem GlobalTheory.hasQuot_of_openCover :
-    ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (𝔓 : Ideal (𝓞 E)) (p i : ℕ) (S : Scheme.{0}) [IsReduced S] (s : S ⟶ Sp (KA l)) (o : Ob D l s) (K : Set o.t.G.left), admitted l 𝔓 p → HeckeSet D o.t 𝔓 p i K → (∀ q : S, ∃ (U : S.Opens) (o' : Ob D l (U.ι ≫ s)) (m : ObjMap o' o U.ι), q ∈ U ∧ HasQuot o' p (m.toSABMap.φ ⁻¹' K)) → HasQuot o p K := by
+    ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (_ : Moduli D l) (𝔓 : Ideal (𝓞 E)) (p i : ℕ) (S : Scheme.{0}) [IsReduced S] (s : S ⟶ Sp (KA l)) (o : Ob D l s) (K : Set o.t.G.left), admitted l 𝔓 p → HeckeSet D o.t 𝔓 p i K → (∀ q : S, ∃ (U : S.Opens) (o' : Ob D l (U.ι ≫ s)) (m : ObjMap o' o U.ι), q ∈ U ∧ HasQuot o' p (m.toSABMap.φ ⁻¹' K)) → HasQuot o p K := by
   intro E _ _ _ H D l Xo 𝔓 p i S _ s o K hA hH h
   choose U o' m hU a ψ hI hK using h
   have hrep : ∀ q, ∃ c : (U q).toScheme ⟶ Xo.X, c ≫ Xo.s = (U q).ι ≫ s ∧ Nonempty (ObjMap (a q) Xo.univ c) :=
@@ -1732,7 +1732,7 @@ theorem hasQuot_image (Xo : Moduli D l) (𝔓 : Ideal (𝓞 E)) (p i : ℕ) {S S
 
 end GlobalTheory.HkSplit
 
-theorem GlobalTheory.hasQuot_of_lists_of_smooth : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (𝔓 : Ideal (𝓞 E)) (p i n : ℕ) (S : Scheme.{0}) (s : S ⟶ Sp (KA l)) (o : Ob D l s) (σ : Fin n → (𝟙_ (Over S) ⟶ o.t.G)) (K : Set o.t.G.left), 1 ≤ D.p + D.q → admitted l 𝔓 p → Smooth s → Lists (p ^ 2) σ K → HeckeSet D o.t 𝔓 p i K → HasQuot o p K := by
+theorem GlobalTheory.hasQuot_of_lists_of_smooth : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (_ : Moduli D l) (𝔓 : Ideal (𝓞 E)) (p i n : ℕ) (S : Scheme.{0}) (s : S ⟶ Sp (KA l)) (o : Ob D l s) (σ : Fin n → (𝟙_ (Over S) ⟶ o.t.G)) (K : Set o.t.G.left), 1 ≤ D.p + D.q → admitted l 𝔓 p → Smooth s → Lists (p ^ 2) σ K → HeckeSet D o.t 𝔓 p i K → HasQuot o p K := by
   intro E _ _ _ H D l Xo 𝔓 p i n S s o σ K hD hA hs hL hK
   obtain ⟨hr, hN, hn⟩ := GlobalTheory.isReduced_isNormalScheme_isLocallyNoetherian_of_smooth_over_field _ S s hs
   refine _root_.GlobalTheory.hasQuot_of_openCover E H D l Xo 𝔓 p i S s o K hA hK fun q => ?_

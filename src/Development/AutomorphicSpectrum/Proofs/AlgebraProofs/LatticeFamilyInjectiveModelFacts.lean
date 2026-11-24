@@ -137,8 +137,8 @@ private theorem linMap_injective {Ω : Type} [Field Ω] {F : Type} [Zero F] [One
     exact absurd (Finset.mem_univ i) hi
 
 theorem UpperTheory.Reformulated.B.AffineGenerators.af_gens :
-    ∀ {o Ω : Type} [inst : CommRing o] [inst_1 : Field Ω] [inst_2 : Algebra o Ω] {F : Type} [inst_3 : Zero F]
-      [inst_4 : One F] {n : ℕ} {Sg : Type} {r s : Sg → ℕ} (D : GlobalTheory.CompanionTheory.Ar.Num.LieLatticeData Ω F n Sg r s) (R : Subalgebra o Ω)
+    ∀ {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] {F : Type} [Zero F]
+      [One F] {n : ℕ} {Sg : Type} {r s : Sg → ℕ} (D : GlobalTheory.CompanionTheory.Ar.Num.LieLatticeData Ω F n Sg r s) (R : Subalgebra o Ω)
       (p N : ℕ) (χ : F → Ω),
       χ (0 : F) = (0 : Ω) →
         χ (1 : F) = (1 : Ω) →

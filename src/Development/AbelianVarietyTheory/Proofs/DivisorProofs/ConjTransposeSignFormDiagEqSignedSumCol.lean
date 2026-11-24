@@ -115,7 +115,7 @@ theorem diag_mem_K (s : UJ ε) (d : Fin n → ℂ) (hs : toM s = Matrix.diagonal
 
 lemma mat_core (Y Yi : Matrix (Fin n) (Fin n) ℂ) (d : Fin n → ℂ) (hd : Function.Injective d)
     (hYYi : Y * Yi = 1) (hy : Yᴴ * Formalism.REAL.Jm ε * Y = Formalism.REAL.Jm ε)
-    (hSK : diagonal d ∈ Formalism.REAL.Kset ε) (hK : Yi * diagonal d * Y ∈ Formalism.REAL.Kset ε) :
+    (hK : Yi * diagonal d * Y ∈ Formalism.REAL.Kset ε) :
     Y ∈ Formalism.REAL.Kset ε := by
   have J2 : Formalism.REAL.Jm ε * Formalism.REAL.Jm ε = 1 := Formalism.REAL.Jm_mul_self ε
   have J2' : ∀ X : Matrix (Fin n) (Fin n) ℂ, Formalism.REAL.Jm ε * (Formalism.REAL.Jm ε * X) = X := by
@@ -214,7 +214,7 @@ theorem mem_K_of_conj (s y : UJ ε) (d : Fin n → ℂ) (hs : toM s = Matrix.dia
   have e : toM (y⁻¹ * s * y) = toM y⁻¹ * Matrix.diagonal d * toM y := by rw [← hs]; rfl
   rw [e] at h
   exact mat_core (toM y) (toM y⁻¹) d hd (toM_mul_inv y) (inUJ_toM y)
-    (diag_mem_Kset d (by rw [← hs]; exact inUJ_toM s)) h
+    h
 
 end GlobalTheory.PsCo.PcdConjLow
 

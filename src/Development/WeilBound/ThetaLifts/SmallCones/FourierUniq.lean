@@ -90,7 +90,7 @@ theorem std_ne_one {ψ : AddChar (AF F) ℂ} (h : IsStd ψ) : ψ ≠ 1 := by
 theorem std_norm {ψ : AddChar (AF F) ℂ} (h : IsStd ψ) (x : AF F) : ‖ψ x‖ = 1 :=
   (_root_.GlobalTheory.CompanionTheory.AdeleAnn.unitary_and_annihilator_eq F ψ h.1 (std_ne_one h) h.2.1).1 x
 
-theorem std_ne_zero {ψ : AddChar (AF F) ℂ} (h : IsStd ψ) (x : AF F) : ψ x ≠ 0 := by
+theorem std_ne_zero {ψ : AddChar (AF F) ℂ} (x : AF F) : ψ x ≠ 0 := by
   intro h0
   have h1 : ψ (x + -x) = ψ x * ψ (-x) := AddChar.map_add_eq_mul ψ x (-x)
   rw [add_neg_cancel, AddChar.map_zero_eq_one, h0, zero_mul] at h1

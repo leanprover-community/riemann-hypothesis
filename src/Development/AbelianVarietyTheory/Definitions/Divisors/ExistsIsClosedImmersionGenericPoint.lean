@@ -729,7 +729,7 @@ def tens : HermLB p where
   isLB := isLB_tens L.isLB M.isLB
   φ σ := (L.φ σ).tens (M.φ σ)
   cInf σ := (L.cInf σ).tens (M.cInf σ)
-  conj σ σ' c y y' h hy := congrArg₂ (· + ·) (L.conj σ σ' _ y y' h (mem_ptsIn_inf.1 hy).1)
+  conj σ σ' _ y y' h hy := congrArg₂ (· + ·) (L.conj σ σ' _ y y' h (mem_ptsIn_inf.1 hy).1)
     (M.conj σ σ' _ y y' h (mem_ptsIn_inf.1 hy).2)
 
 def dual : HermLB p where
@@ -737,7 +737,7 @@ def dual : HermLB p where
   isLB := isLB_dual L.isLB
   φ σ := (L.φ σ).dual
   cInf σ := (L.cInf σ).dual
-  conj σ σ' c y y' h hy := congrArg (- ·) (L.conj σ σ' _ y y' h hy)
+  conj σ σ' _ y y' h hy := congrArg (- ·) (L.conj σ σ' _ y y' h hy)
 
 def pow (m : ℕ) : HermLB p where
   B := lbPow L.B m
@@ -764,7 +764,7 @@ def shift (t : (k →+* ℂ) → ℝ) (ht : ∀ σ, t ((starRingEnd ℂ).comp σ
   isLB := L.isLB
   φ σ := (L.φ σ).addFn fun _ => 2 * t σ
   cInf σ := (L.cInf σ).addFn (cInfAt_const _)
-  conj σ σ' c y y' h hy := congrArg₂ (· + ·) (L.conj σ σ' _ y y' h hy)
+  conj σ σ' _ y y' h hy := congrArg₂ (· + ·) (L.conj σ σ' _ y y' h hy)
     (congrArg (2 * ·) ((congrArg t (eq_conj_of_conj h)).trans (ht σ)))
 
 theorem nsq_shift (t : (k →+* ℂ) → ℝ) (ht : ∀ σ, t ((starRingEnd ℂ).comp σ) = t σ)

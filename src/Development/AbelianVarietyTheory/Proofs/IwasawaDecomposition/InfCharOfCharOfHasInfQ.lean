@@ -555,7 +555,7 @@ open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.N Formal
 theorem exists_cgTrue_charSide : ∀ hL : GlobalTheory.Published.LocalLanglandsGL, GlobalTheory.Published.AutomorphicFormsFiniteGL → ∀ (D : D7)
     (hE : IsEmpty D.nd.Loc) (T : GlobalTheory.RowTie.WDTie D.nd D.naut) (cf : CharFrame D), (∀ k v, cf.P.Div k (D.naut.plGw k v)) →
     ∃ K : CGK D.naut, Nonempty (CGTrue hL (setCG D hE K) (wdCG hE K T)) ∧ Nonempty (CharSide (setCG D hE K) (cfCG hE K cf)) :=
-  fun hL hF D hE T cf hP =>
+  fun hL hF _ hE T cf hP =>
     ⟨TrueSide.trueK hL hF T cf.isEta, ⟨TrueSide.trueCG hL hF T hE cf.isEta⟩, ⟨TrueSide.trueSide hL hF T hE cf hP⟩⟩
 
 end GlobalTheory.HeightCounting

@@ -35,7 +35,7 @@ theorem ocbPhi_fPos_lt {k₀ c n l : ℕ} (_hk : k₀ ≤ n) (hl : l < n + c) : 
   unfold LocE.fPos
   split_ifs <;> omega
 
-theorem ocbPhi_fIdx_lt {k₀ c n p : ℕ} (_hk : k₀ ≤ n) (hp : p < n + c) : LocE.fIdx k₀ c n p < n + c := by
+theorem ocbPhi_fIdx_lt {k₀ c n p : ℕ} (hp : p < n + c) : LocE.fIdx k₀ c n p < n + c := by
   unfold LocE.fIdx
   split_ifs <;> omega
 
@@ -108,12 +108,12 @@ theorem ocbPhiGS_red (hq : ((q : ℕ) : 𝓞 E) ∈ P.asIdeal) (hu : ((q : ℕ) 
         redP P (LocE.entB q k₀ (c + 1) n' c n (fun i => i + 1) (fun i => i + 1) y p p') := by
     intro p p' hp hp'
     rw [ocbBEnt_entB]
-    exact hred _ _ (_root_.Formalism.L2.Col.symFIdx_lt hk hp) (_root_.Formalism.L2.Col.symFIdx_lt hk' hp')
+    exact hred _ _ (_root_.Formalism.L2.Col.symFIdx_lt hp) (_root_.Formalism.L2.Col.symFIdx_lt hp')
   have hI : ∀ p p', p < n + c → p' < n' + (c + 1) →
       IntAt P (LocE.entB q k₀ (c + 1) n' c n (fun i => i + 1) (fun i => i + 1) y p p') := by
     intro p p' hp hp'
     rw [ocbBEnt_entB]
-    exact hint _ _ (_root_.Formalism.L2.Col.symFIdx_lt hk hp) (_root_.Formalism.L2.Col.symFIdx_lt hk' hp')
+    exact hint _ _ (_root_.Formalism.L2.Col.symFIdx_lt hp) (_root_.Formalism.L2.Col.symFIdx_lt hp')
   have hz : ∀ x : E, IntAt P x → (redP P x = 0 ↔ IntAt P (x / (q : E))) := by
     intro x hx
     constructor

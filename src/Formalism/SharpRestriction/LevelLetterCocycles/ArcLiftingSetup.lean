@@ -488,29 +488,29 @@ section Theory
 def AtCaseA (P : ∀ (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (_ : Good K 1 LL), Prop) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (hG : Good K 1 LL), CaseA K LL → 5 ≤ l → P l K LL hG
 
-def SATL (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) (F : FonOf LT A HW) : Prop := AtCaseA fun l _ K LL hG => SATcore ((HW l).W K 1 LL hG)
+def SATL (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) : Prop := AtCaseA fun l _ K LL hG => SATcore ((HW l).W K 1 LL hG)
 
-def SATPL (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) (F : FonOf LT A HW) : Prop :=
+def SATPL (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) : Prop :=
   AtCaseA fun l _ K LL hG => SATPcore ((HW l).W K 1 LL hG)
 
-def FirstFiltrationAtLevelOne (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) (F : FonOf LT A HW) : Prop := AtCaseA fun l _ K LL hG => FirstWachFiltration ((HW l).W K 1 LL hG)
+def FirstFiltrationAtLevelOne (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) : Prop := AtCaseA fun l _ K LL hG => FirstWachFiltration ((HW l).W K 1 LL hG)
 
-def SecondFiltrationAtLevelOne (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) (F : FonOf LT A HW) : Prop := AtCaseA fun l _ K LL hG => SecondWachFiltration ((HW l).W K 1 LL hG)
+def SecondFiltrationAtLevelOne (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) : Prop := AtCaseA fun l _ K LL hG => SecondWachFiltration ((HW l).W K 1 LL hG)
 
-def KillerModL (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) (F : FonOf LT A HW) : Prop :=
+def KillerModL (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) : Prop :=
   AtCaseA fun l _ K LL hG => KillerModCore ((HW l).W K 1 LL hG)
 
-def KillerLevL (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) (F : FonOf LT A HW) : Prop :=
+def KillerLevL (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) : Prop :=
   AtCaseA fun l _ K LL hG => KillerLevCore ((HW l).W K 1 LL hG)
 
-def RelayL (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) (F : FonOf LT A HW) : Prop := AtCaseA fun l _ K LL hG => RelayCore ((HW l).W K 1 LL hG)
+def RelayL (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) : Prop := AtCaseA fun l _ K LL hG => RelayCore ((HW l).W K 1 LL hG)
 
-def ArcL (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) (F : FonOf LT A HW) (Cm : CmpOf LT A HW F) : Prop :=
+def ArcL (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) (F : FonOf LT A HW) : Prop :=
   AtCaseA fun l _ K LL hG => ArcCore ((HW l).W K 1 LL hG) ∧ ArcLCore ((HW l).W K 1 LL hG)
 
-def SplitL (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) (F : FonOf LT A HW) (Cm : CmpOf LT A HW F) : Prop := AtCaseA fun l _ K LL hG => SplitCore ((HW l).W K 1 LL hG)
+def SplitL (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) (F : FonOf LT A HW) : Prop := AtCaseA fun l _ K LL hG => SplitCore ((HW l).W K 1 LL hG)
 
-def UnivL (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) (F : FonOf LT A HW) (Cm : CmpOf LT A HW F) : Prop :=
+def UnivL (LT : LocTheory) (A : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (LT l)) (HW : HWOf LT) (F : FonOf LT A HW) : Prop :=
   AtCaseA fun l _ K LL hG => UnivNNCore ((HW l).W K 1 LL hG) ∧
     ∀ [Fintype (↥K.1 →ₐ[ℚ_[l]] ↥LL.1)], UnivCore ((LT l).PD K) ((HW l).W K 1 LL hG)
 
@@ -522,32 +522,32 @@ def adm1 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.lo
 
 def adm2 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (CR CA CB CK : ℝ) : Prop := Formalism.MainNotions.LiftingTheory.aux₃ D HW F CR CA CB CK
 
-def adm5 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := SATL D.loc D.locA HW F
+def adm5 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := SATL D.loc D.locA HW
 
-def adm6 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := FirstFiltrationAtLevelOne D.loc D.locA HW F
+def adm6 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := FirstFiltrationAtLevelOne D.loc D.locA HW
 
-def adm7 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := SecondFiltrationAtLevelOne D.loc D.locA HW F
+def adm7 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := SecondFiltrationAtLevelOne D.loc D.locA HW
 
 def adm8 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (C : ℝ) : Prop :=
-  Formalism.WindowSums.KillerVal ∧ Formalism.WindowSums.KillerKills ∧ KillerLevL D.loc D.locA HW F ∧ KillerModL D.loc D.locA HW F ∧ KillerKap C
+  Formalism.WindowSums.KillerVal ∧ Formalism.WindowSums.KillerKills ∧ KillerLevL D.loc D.locA HW ∧ KillerModL D.loc D.locA HW ∧ KillerKap C
 
-def adm9 (_D : D7) : Prop := R2
+def adm9 : Prop := R2
 
 def adm10 (D : D7) : Prop := Formalism.MainNotions.LocalTheoryWindows.H1fGeneratorBoundAll D.loc
 
-def adm11 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := RelayL D.loc D.locA HW F
+def adm11 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := RelayL D.loc D.locA HW
 
-def adm12 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) : Prop := ArcL D.loc D.locA HW F Cm
+def adm12 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) : Prop := ArcL D.loc D.locA HW F
 
-def adm13 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) : Prop := SplitL D.loc D.locA HW F Cm
+def adm13 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) : Prop := SplitL D.loc D.locA HW F
 
-def adm14 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) : Prop := UnivL D.loc D.locA HW F Cm
+def adm14 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) : Prop := UnivL D.loc D.locA HW F
 
 def adm15 (D : D7) : Prop := Formalism.MainNotions.TruncatedSeriesCountingBounds.adm9 D
 
 def adm16 (D : D7) : Prop := Formalism.MainNotions.RamifiedCoefficientChains.adm15 D
 
-def SaturationFrobeniusPullback (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := SATPL D.loc D.locA HW F
+def SaturationFrobeniusPullback (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := SATPL D.loc D.locA HW
 
 def AdmSatP (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.DeltaInvariantLattices.P9 D HW F
 
@@ -555,7 +555,7 @@ def SaturationPullback (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : 
 
 def admitted (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
     (CR CA CB CK Ckap : ℝ) : Prop :=
-  adm1 D HW F Cm ∧ adm2 D HW F CR CA CB CK ∧ adm5 D HW F ∧ SaturationFrobeniusPullback D HW F ∧ adm8 D HW F Ckap ∧ adm9 D ∧
+  adm1 D HW F Cm ∧ adm2 D HW F CR CA CB CK ∧ adm5 D HW F ∧ SaturationFrobeniusPullback D HW F ∧ adm8 D HW F Ckap ∧ adm9 ∧
     adm10 D ∧ adm11 D HW F ∧ adm12 D HW F Cm ∧ adm13 D HW F Cm ∧ adm14 D HW F Cm ∧ adm15 D ∧ adm16 D
 
 def Stmt (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)

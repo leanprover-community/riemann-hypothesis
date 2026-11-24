@@ -667,7 +667,7 @@ theorem lattice_lower {n a g : ℕ} {Λ : Type} [AddCommGroup Λ] (L : Flat.LogP
     simpa [dist_zero_right] using hzρ.le
   obtain ⟨hb1, hb2⟩ := hb w hw hzc
   rw [← hzdef] at hb2
-  obtain ⟨hr1, hr2⟩ := Flat.chartRadius_le_log_sum L.a_le z hz1 h0
+  obtain ⟨hr1, hr2⟩ := Flat.chartRadius_le_log_sum L.a_le z hz1
   obtain ⟨r, hr⟩ : ∃ r, r = GroundTheory.Heights₂.Heights.chartRadius L.a_le z := ⟨_, rfl⟩
   rw [← hr] at hr1 hr2 hb2
   obtain ⟨Y, hYdef⟩ : ∃ Y, Y = (Q.τ w).map Complex.im := ⟨_, rfl⟩

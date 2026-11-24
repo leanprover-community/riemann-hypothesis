@@ -44,8 +44,8 @@ theorem exists_matrix_leftInverse_of_span_eq {R V ι κ : Type*} [CommSemiring R
         Finset.sum_ite_eq', Finset.mem_univ, ite_true]) k
 
 theorem goal1 :
-  ∀ {E : Type} [inst : CommRing.{0} E] {O : Subring.{0} E} {V : Type} [inst_1 : AddCommGroup.{0} V]
-  [inst_2 : Module.{0, 0} E V] {ι : Type} [inst_3 : Fintype.{0} ι] [inst_4 : DecidableEq.{1} ι] (g b : ι → V),
+  ∀ {E : Type} [CommRing.{0} E] {O : Subring.{0} E} {V : Type} [AddCommGroup.{0} V]
+  [Module.{0, 0} E V] {ι : Type} [Fintype.{0} ι] [DecidableEq.{1} ι] (g b : ι → V),
   LinearIndependent.{0, 0, 0} (Subtype.{1} fun (x : E) ↦ Membership.mem.{0, 0} O x) g →
     Eq.{1} (Submodule.span.{0, 0} (Subtype.{1} fun (x : E) ↦ Membership.mem.{0, 0} O x) (Set.range.{0, 1} g))
         (Submodule.span.{0, 0} (Subtype.{1} fun (x : E) ↦ Membership.mem.{0, 0} O x) (Set.range.{0, 1} b)) →

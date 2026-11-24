@@ -1723,7 +1723,7 @@ theorem PositivityTheory.Sph.Tr.closeSph
   have h_GlobalTheory_RealLift_FockEx : GlobalTheory.RealLift.FockEx := (_root_.PositivityTheory.RL.fockEx h_GlobalTheory_RealLift_DerEx)
   have h_GlobalTheory_RealLift_ActsLaws : GlobalTheory.RealLift.ActsLaws := (PositivityTheory.KRealA.i_actslaws)
   have h_GlobalTheory_RealLift_VacLine : GlobalTheory.RealLift.VacLine := (_root_.PositivityTheory.RL.vacLine h_GlobalTheory_RealLift_DerEx)
-  have h_GlobalTheory_RealLift_PolRange : GlobalTheory.RealLift.PolRange := (PositivityTheory.ThKEnd.Comp.PR.polRange_of h_GlobalTheory_RealLift_ActsLaws h_GlobalTheory_RealLift_DerEx h_GlobalTheory_RealLift_VacLine)
+  have h_GlobalTheory_RealLift_PolRange : GlobalTheory.RealLift.PolRange := (PositivityTheory.ThKEnd.Comp.PR.polRange_of h_GlobalTheory_RealLift_ActsLaws h_GlobalTheory_RealLift_VacLine)
   have h_GlobalTheory_RealLift_LieFirst : GlobalTheory.RealLift.LieFirst := (PositivityTheory.RL.lieFirst h_GlobalTheory_RealLift_LieSecond)
   have h_Weil6_ThKR_JoinTri : PositivityTheory.ThKR.JoinTri := PositivityTheory.ThKR.Join.joinTri_of h_GlobalTheory_RealLift_FockEx h_GlobalTheory_RealLift_PolRange h_GlobalTheory_RealLift_LieFirst h_GlobalTheory_RealLift_LieSecond
   have h_Weil6_ThKF_PolCount : PositivityTheory.ThKF.PolCount := (PositivityTheory.ThKF.polCount_of_derEx h_GlobalTheory_RealLift_DerEx)

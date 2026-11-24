@@ -101,7 +101,7 @@ lemma gN_nn (g : B.Mat k r) : 0 ≤ gN g := by
   | (unfold gN; positivity)
 
 theorem faa (n : ℕ) (cost : B.Mat k r → ℕ) (ψ : B.Mat k r → ℂ) (hψ : ContDiff ℝ ∞ ψ) (K : Set ℂ)
-    (C₀ : ℝ) (hC₀ : 0 ≤ C₀)
+    (C₀ : ℝ)
     (H : ∀ w, Good k r n w → w ≠ [] → ∀ g ∈ GV k r, ψ g ∈ K → ‖Dw w ψ g‖ ≤ C₀ * gN g ^ cw cost w) :
     ∀ m : ℕ, ∀ χ : ℂ → ℂ, ContDiff ℝ ∞ χ → HasCompactSupport χ → ∃ C : ℝ, 0 ≤ C ∧
       ∀ w, Good k r n w → w.length ≤ m → ∀ g ∈ GV k r, ψ g ∈ K →
@@ -213,7 +213,7 @@ private theorem Dw_comp_eq_zero_of_not_mem_tsupport {k r : ℕ} (ψ : B.Mat k r 
 
 theorem compact_curve_estimate : CompC := by
   intro k r ψ χ cost n C₀ hψ hχ hχc H
-  obtain ⟨C, hC0, hC⟩ := LatticeLocalGlobalTheory.faa n cost ψ hψ (tsupport χ) (max C₀ 0) (le_max_right _ _) (by
+  obtain ⟨C, hC0, hC⟩ := LatticeLocalGlobalTheory.faa n cost ψ hψ (tsupport χ) (max C₀ 0) (by
       rintro w ⟨u, v, hu, hv, hl, rfl⟩ hne g hg hgK
       have hne' : u ++ v ≠ [] := by
         rintro h0

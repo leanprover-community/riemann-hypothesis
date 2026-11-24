@@ -359,7 +359,7 @@ theorem star_mem_good {F : GA D V → ℂ} (hF : F ∈ goodFun θ V) : star F �
 variable (θ V) in
 def conjG : goodFun θ V →ₗ⋆[ℂ] goodFun θ V where
   toFun F := ⟨star F.1, star_mem_good F.2⟩
-  map_add' F F' := Subtype.ext (star_add _ _)
+  map_add' _ _ := Subtype.ext (star_add _ _)
   map_smul' c F := Subtype.ext (star_smul c F.1)
 
 theorem conjG_conjG (F : goodFun θ V) : conjG θ V (conjG θ V F) = F := Subtype.ext (star_star _)

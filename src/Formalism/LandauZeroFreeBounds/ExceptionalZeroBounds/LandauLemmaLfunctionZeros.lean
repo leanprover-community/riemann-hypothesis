@@ -121,7 +121,7 @@ lemma landau_lemma_lfunction_zeros (hLL : LandauLocal3) {C : ℝ}
   obtain ⟨Z, m, hZ, -, -, hm1, hsum, hder⟩ := hLL (DirichletCharacter.LFunction χ) z₀ (11 / 20) M
     (by norm_num) hM1 (DirichletCharacter.differentiable_LFunction hχ).differentiableOn hf0 hbound
   have hlogM : Real.log M ≤ (Real.log (2 * A) / Real.log 2 + 1) * Real.log ((q : ℝ) * (|s.im| + 2)) :=
-    log_le_of_le_exp_log_conductor hA1 hM1 (log_two_le_log_analytic_conductor q s.im) (Real.exp_pos _)
+    log_le_of_le_exp_log_conductor hA1 hM1 (log_two_le_log_analytic_conductor q s.im)
       (by rw [Real.exp_log hX, hMdef])
   have hl2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
   refine ⟨Z, m, hZ, hm1, ?_, ?_⟩

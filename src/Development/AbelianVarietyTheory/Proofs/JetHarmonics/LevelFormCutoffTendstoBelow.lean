@@ -107,13 +107,13 @@ theorem formLev_sesquilinear (hΞ : B.XiExists) {Wp Wq : Type} [NormedAddCommGro
       refine Finset.sum_congr rfl fun b _ => ?_
       exact (hS a b).2.1 _ _ (x b) (x' b) c (hin (hx b)) (hin (hx' b)) g hg
     rw [sq_beta_congr (T.bs j) hGV]
-    exact (GlobalTheory.BetaSum.beta_sesq hΞ (T.bs j) hAB (hvec x hx a) (hvec x' hx' a) (hlow (hy a)) c).1
+    exact (GlobalTheory.BetaSum.beta_sesq (T.bs j) hAB (hvec x hx a) (hvec x' hx' a) (hlow (hy a)) c).1
   · show ∑ a, beta (T.bs j) (D.actOp (D.RRlev T s j w) y a) ((x + c • x') a) =
       ∑ a, beta (T.bs j) (D.actOp (D.RRlev T s j w) y a) (x a) +
         conj c * ∑ a, beta (T.bs j) (D.actOp (D.RRlev T s j w) y a) (x' a)
     rw [Finset.mul_sum, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun a _ => ?_
-    exact (GlobalTheory.BetaSum.beta_sesq hΞ (T.bs j) hAB (hlow (hx a)) (hlow (hx' a)) (hvec y hy a) c).2
+    exact (GlobalTheory.BetaSum.beta_sesq (T.bs j) hAB (hlow (hx a)) (hlow (hx' a)) (hvec y hy a) c).2
 
 theorem formLev_norm_le (hΞ : B.XiExists) {Wp Wq : Type} [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp] [NormedAddCommGroup Wq]
     [InnerProductSpace ℂ Wq] [FiniteDimensional ℂ Wp] [FiniteDimensional ℂ Wq] (P0 : M.Par)
@@ -190,8 +190,6 @@ theorem formLev_tendsto (hΞ : B.XiExists) {Wp Wq : Type} [NormedAddCommGroup Wp
       B.CCle (P5.Auser P0 N + 1) (P5.mmUser P0 N) (x e) Bd)
     (hy : ∀ e, JC.CCCoefM (T.bs j) (P5.Auser P0 N + 1) (P5.mmUser P0 N) ε₀ (y e) ∧
       B.CCle (P5.Auser P0 N + 1) (P5.mmUser P0 N) (y e) Bd)
-    (hxn : ∀ n e, JC.CCCoefM (T.bs j) (P5.Auser P0 N + 1) (P5.mmUser P0 N) ε₀ (xn n e) ∧
-      B.CCle (P5.Auser P0 N + 1) (P5.mmUser P0 N) (xn n e) Bd)
     (hyn : ∀ n e, JC.CCCoefM (T.bs j) (P5.Auser P0 N + 1) (P5.mmUser P0 N) ε₀ (yn n e) ∧
       B.CCle (P5.Auser P0 N + 1) (P5.mmUser P0 N) (yn n e) Bd)
     (hdx : ∀ n e, JC.CCCoefM (T.bs j) (P5.Auser P0 N + 1) (P5.mmUser P0 N) ε₀ (xn n e - x e) ∧
@@ -402,7 +400,7 @@ theorem levelForm_cutoff_tendsto_below (hΞ : B.XiExists) : ∃ Cl : ℝ, 0 ≤ 
   exact formLev_tendsto hΞ P p.T _ ⟨i, by omega⟩ w N hw S⁻¹ (inv_pos.2 hS0)
     (xs p.T χ ε i hi w a hca f) (xs p.T χ ε i hi w b hcb f)
     (fun n => xs p.T χ ε i hi w a hca (hn n)) (fun n => xs p.T χ ε i hi w b hcb (hn n))
-    (KK * (bf + Kp * bf)) (fun n => KK * (Kp * bf / ((n : ℝ) + 1))) hdn ma1 mb1 ma2 mb2 ma3 mb3
+    (KK * (bf + Kp * bf)) (fun n => KK * (Kp * bf / ((n : ℝ) + 1))) hdn ma1 mb1 mb2 ma3 mb3
 
 theorem levelForm_cutoff_tendsto (hΞ : B.XiExists) : Formalism.FourierDecayAlt.KB.FormLimit := by
   intro Cb

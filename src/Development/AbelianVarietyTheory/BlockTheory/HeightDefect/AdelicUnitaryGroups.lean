@@ -267,10 +267,10 @@ def projInf : GA hc V →* GInf hc V := mapH hc.sig V.gram (fstA F)
 def projLoc (v : HeightOneSpectrum (𝓞 F)) : GFin hc V →* GLoc hc V v := mapH hc.sig V.gram (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F v)
 
 def ofFin : GFin hc V →* GA hc V :=
-  extH (R' := AF F) hc.sig V.gram (LinearMap.inr F (Ainf F) (Af F)) (fun a b => Prod.ext (mul_zero _).symm rfl)
+  extH (R' := AF F) hc.sig V.gram (LinearMap.inr F (Ainf F) (Af F)) (fun _ _ => Prod.ext (mul_zero _).symm rfl)
 
 def ofInf : GInf hc V →* GA hc V :=
-  extH (R' := AF F) hc.sig V.gram (LinearMap.inl F (Ainf F) (Af F)) (fun a b => Prod.ext rfl (mul_zero _).symm)
+  extH (R' := AF F) hc.sig V.gram (LinearMap.inl F (Ainf F) (Af F)) (fun _ _ => Prod.ext rfl (mul_zero _).symm)
 
 def ratA : GRat hc V →* GA hc V := diagH hc.sig V.gram (AF F)
 

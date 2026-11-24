@@ -166,7 +166,7 @@ theorem ker_left (hX : X.Is ψ θ α β νH S) (t : T) (P h) : ∀ γ ∈ GQ A, 
     (γ := (ofSgn true A).symm γ) ((GlobalTheory.SgnIdent.mem_GQ_sgn true A _).2 hγ) ((ofSgn true A).symm g) h
 
 theorem ker'_left (hX : X.Is ψ θ α β νH S) (t : T) (P h) : ∀ γ ∈ GQ A', ∀ g, X.ker' ψ θ t P h (γ * g) = X.ker' ψ θ t P h g :=
-  fun γ hγ g => thetaKO_left (hX.weil' t) (GlobalTheory.GalLift.Vec.theta_pureTensorO hX.isVac.1 hX.isVac.2.inf _ _ _ _
+  fun _ hγ g => thetaKO_left (hX.weil' t) (GlobalTheory.GalLift.Vec.theta_pureTensorO hX.isVac.1 hX.isVac.2.inf _ _ _ _
     (GlobalTheory.GalLift.Vec.theta_of_thetaAt hX.isVac.1 hX.isVac.2.inf (hX.snd t) hX.isVac'.2.theta) P) hγ g h
 
 

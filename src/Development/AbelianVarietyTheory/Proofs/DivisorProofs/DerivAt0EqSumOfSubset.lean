@@ -58,7 +58,7 @@ theorem derivAt0_eq_sum_of_subset {C : Type} [Field C] {σ : Type} (P : MvPolyno
   rw [MvPolynomial.notMem_support_iff.mp hα]
   simp
 
-theorem derivAt0_linear (C : Type) [Field C] [CharZero C] (v : AddValuation C (WithTop ℝ))
+theorem derivAt0_linear (C : Type) [Field C] [CharZero C]
     (σ : Type) (P Q : MvPolynomial σ C) (g g' : MvPowerSeries σ C) (a : C) :
     derivAt0 P (g + g') = derivAt0 P g + derivAt0 P g' ∧
       derivAt0 P (a • g) = a * derivAt0 P g ∧

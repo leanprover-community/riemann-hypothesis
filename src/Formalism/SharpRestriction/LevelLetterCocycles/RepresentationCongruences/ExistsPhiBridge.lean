@@ -475,7 +475,7 @@ end PhiBridge
 
 theorem exists_phiBridge [IsAdicComplete (IsLocalRing.maximalIdeal O) O] (W : LocWach PD LL O v n)
     (hcase : Formalism.MainNotions.LiftingTheory.CaseA W) (hP9 : Formalism.MainNotions.DeltaInvariantLattices.P9W W) (T : LocLat G Qp LL O) (hT : IsCrys PD T.ρ)
-    (hO : ∀ x : O, 0 ≤ v (algebraMap O LL x)) (hinj : Function.Injective (algebraMap O LL)) :
+    (hO : ∀ x : O, 0 ≤ v (algebraMap O LL x)) :
     Nonempty (PhiBridge W) := by
   classical
   have hp1 : PD.p - 1 + 1 = PD.p := Nat.sub_add_cancel PD.hp.one_lt.le

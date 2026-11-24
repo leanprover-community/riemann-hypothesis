@@ -94,8 +94,8 @@ variable {A : C ⥤ CommAlgCat.{0} R}
 
 def mulSq (a b : IdF A) (T : C) (c : A.obj T) : sqM a b T →ₗ[R] sqM a b T where
   toFun x := ⟨Ideal.Quotient.mk _ c * x.1, Ideal.mul_mem_left _ _ x.2⟩
-  map_add' x y := Subtype.ext (mul_add _ _ _)
-  map_smul' r x := Subtype.ext (mul_smul_comm r _ _)
+  map_add' _ _ := Subtype.ext (mul_add _ _ _)
+  map_smul' r _ := Subtype.ext (mul_smul_comm r _ _)
 
 def sqAct (a b : IdF A) : RAct A (sq a b) where
   ρ T :=
@@ -335,7 +335,7 @@ variable {Q : ObjectProperty (Thick (nlFun γ p X q κ))} {hl : ∀ (T : Thick (
 
 theorem locI_fil (r : ℤ) : LocI hl (sFil Q r) := fun T d => pdPow_locN T.obj d r.toNat
 
-theorem locI_bot : LocI hl (IdF.bot (sP Q).A) := fun T d => (Ideal.map_bot).symm
+theorem locI_bot : LocI hl (IdF.bot (sP Q).A) := fun _ _ => (Ideal.map_bot).symm
 
 theorem locI_span (c : R) : LocI hl (IdF.span (sP Q).A c) := fun T d => by
   change Ideal.span {algebraMap T.obj.B (Localization.Away d) (T.obj.i c)} = Ideal.map _ (Ideal.span {T.obj.i c})
@@ -448,8 +448,8 @@ theorem std_res {Q Q' : ObjectProperty (Thick (nlFun γ p X q κ))} (h : Q' ≤ 
 end Main
 
 theorem zariski_descent : ∀ {O R : Type} [CommRing O] [CommRing R] {I : Ideal R} {γ : DividedPowers I} {p : ℕ} {X : Scheme.{0}}
-    {q : X ⟶ Spec (CommRingCat.of O)} {κ : O →+* R ⧸ I} (Q₀ : ObjectProperty (Thick (nlFun γ p X q κ))) (hQ : Used Q₀)
-    (𝒱 𝒲 : Set X.Opens) (h : St Q₀ 𝒱 ≤ St Q₀ 𝒲) (hc : ∀ W ∈ 𝒲, W ≤ sSup 𝒱) (j : ℕ),
+    {q : X ⟶ Spec (CommRingCat.of O)} {κ : O →+* R ⧸ I} (Q₀ : ObjectProperty (Thick (nlFun γ p X q κ))) (_ : Used Q₀)
+    (𝒱 𝒲 : Set X.Opens) (h : St Q₀ 𝒱 ≤ St Q₀ 𝒲) (_ : ∀ W ∈ 𝒲, W ≤ sSup 𝒱) (j : ℕ),
     (∀ r r' : ℤ, Function.Bijective (((incl h).sq (incl_fil h r) (incl_fil h r')).pull j)) ∧
     (∀ (r r' : Option ℤ) (c c' : R), Function.Bijective (((incl h).sq (incl_std h r c) (incl_std h r' c')).pull j)) ∧
     Function.Bijective ((incl h).o.pull j) := by

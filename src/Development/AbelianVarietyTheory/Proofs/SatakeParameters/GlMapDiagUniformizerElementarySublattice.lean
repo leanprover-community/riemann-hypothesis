@@ -86,7 +86,7 @@ theorem mem_std {n : ℕ} (x : Fin n → w.adicCompletion E) :
   · intro hx
     have e : x = ∑ i, (⟨x i, hx i⟩ : w.adicCompletionIntegers E) • Pi.basisFun (w.adicCompletion E) (Fin n) i := by
       ext j
-      rw [Finset.sum_apply, Finset.sum_eq_single j (fun b _ hb => by simp [Pi.single_apply, Ne.symm hb]) (by simp)]
+      rw [Finset.sum_apply, Finset.sum_eq_single j (fun b _ hb => by simp [Ne.symm hb]) (by simp)]
       simp only [Pi.basisFun_apply, Pi.smul_apply, Pi.single_eq_same]
       rw [Algebra.smul_def]
       simp

@@ -163,7 +163,7 @@ theorem lower_triv (hsm : ∀ (a : E) (x : R), σ (a • x) = c a • σ x) (h1 
   rw [← hn3, map_pow]
   exact key _ hes' hsf' hs' n' hn'
 
-theorem cell_triv (hmul : ∀ x y, σ (x * y) = σ y * σ x) (h1 : σ 1 = 1) (hu : ∀ g, σ (φ g) * φ g = 1)
+theorem cell_triv (hmul : ∀ x y, σ (x * y) = σ y * σ x) (hu : ∀ g, σ (φ g) * φ g = 1)
     (hef : e + f = 1) (hee : e * e = e) (hff : f * f = f) (hef0 : e * f = 0) (hfe0 : f * e = 0)
     (hse : σ e = f) (hsf : σ f = e) (lam : G →* ℂˣ)
     (hlow : ∀ s, e * s = 0 → s * f = 0 → σ s = -s → ∃ n, φ n = 1 + s ∧ lam n = 1)
@@ -635,7 +635,7 @@ theorem char_trivial : ∀ (F : Type) [Field F] [CharZero F] [Invertible (2 : F)
     fun s hes hsf0 hs => lower_triv (c := ⇑c) (σ := σ) (φ := φ) hsm h1 hi2 hi3 c2 ci2 ci3 hinj hsurj
       hef hee hff hef0 hfe0 hσe hσf lam s hes hsf0 hs
   have hcell : ∀ g, IsUnit (φ g * e + f) → lam g = 1 :=
-    fun g hg => cell_triv (σ := σ) (φ := φ) hmul h1 hu hef hee hff hef0 hfe0 hσe hσf lam hlow hP g hg
+    fun g hg => cell_triv (σ := σ) (φ := φ) hmul hu hef hee hff hef0 hfe0 hσe hσf lam hlow hP g hg
   have h2E : IsUnit (2 : E) := by
     rw [← map_ofNat (algebraMap F E) 2]
     exact (isUnit_of_invertible (2 : F)).map _

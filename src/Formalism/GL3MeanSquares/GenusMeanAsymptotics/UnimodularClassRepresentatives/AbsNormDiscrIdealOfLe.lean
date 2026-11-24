@@ -234,7 +234,7 @@ theorem det_update_sum {ι : Type*} [Fintype ι] [DecidableEq ι] (b : Basis ι 
     · simp [Basis.toMatrix_apply, hr]
   rw [e, Matrix.det_updateRow_sum, smul_eq_mul]
 
-theorem exists_adjust (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) {P : Ideal (𝓞 K)} (hP : P.IsMaximal) {c : 𝓞 K}
+theorem exists_adjust {P : Ideal (𝓞 K)} (hP : P.IsMaximal) {c : 𝓞 K}
     (hc : c ∉ P) : ∃ π ∈ P, c + π ∉ P ∧ c + π ∉ Formalism.HermitianLatticesTheory.conjIdeal (K := K) P := by
   have hadd : ∀ π ∈ P, c + π ∉ P := fun π hπ h => hc (by simpa using P.sub_mem h hπ)
   have hle2 : Formalism.HermitianLatticesTheory.conjIdeal (K := K) P ≤ P.comap (conjO K) := by
@@ -295,7 +295,7 @@ theorem step_le (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) {h : V →�
   have hrel : algebraMap (𝓞 K) K (c (some i)) * b.det x =
       algebraMap (𝓞 K) K (c none) * b.det (Function.update x i y) := by
     rw [hc, hc, hδi, hf0, hfs]; ring
-  obtain ⟨π, hπ, hcP, hcQ⟩ := exists_adjust hK hP hj
+  obtain ⟨π, hπ, hcP, hcQ⟩ := exists_adjust hP hj
   set c₁ := c (some i) + π with hc₁
   set c₀ := c none with hc₀
   have hcδ : algebraMap (𝓞 K) K c₁ * b.det x =
@@ -341,7 +341,7 @@ theorem step_le (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) {h : V →�
     rcases hM.isPrime.mem_or_mem (hle hmem) with h2 | h2
     · exact hcQ (hcc _ (hMP ▸ h2))
     · exact hcP (hMP ▸ h2)
-  · have hMP := (conjIdeal_isMaximal hK hP).eq_of_le hM.ne_top h1
+  · have hMP := (conjIdeal_isMaximal hP).eq_of_le hM.ne_top h1
     rcases hM.isPrime.mem_or_mem (hle hmem) with h2 | h2
     · exact hcP (hcc' _ (hMP ▸ h2))
     · exact hcQ (hMP ▸ h2)

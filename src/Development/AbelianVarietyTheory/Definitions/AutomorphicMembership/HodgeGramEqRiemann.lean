@@ -291,7 +291,7 @@ theorem IsHodgeFrame.unitary (hf : IsHodgeFrame U y f) (hg : IsHodgeFrame U y g)
   rw [h6.co τ hg' hx] at key
   have k2 : ((f.co g τ).map ψ)ᴴ * (f.co g τ).map ψ = 1 := smul_right_injective _ h7 (key.symm.trans (by
     ext b b'
-    simp [hermForm, smul_mulVec, Pi.single_apply, one_apply, eq_comm]
+    simp [hermForm, eq_comm]
     simp [Matrix.one_apply, eq_comm]))
   rcases h1 with rfl | rfl
   · exact k2

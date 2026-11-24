@@ -295,7 +295,7 @@ namespace GlobalTheory.TorusRM.TransFrame
 
 theorem gen_div_eq {X : Scheme.{0}} (x : Sp ℂ ⟶ X) (B : LB X) (t : B.Gen) (ht : t.IsGen) (j j' : B.ι)
     (hj : ⊤ ≤ x ⁻¹ᵁ B.U j) (hj' : ⊤ ≤ x ⁻¹ᵁ B.U j') (a b : ℂ)
-    (hab : a = valAt' x (B.U j ⊓ B.U j') (B.g j j').val * b) (hb : b ≠ 0) :
+    (hab : a = valAt' x (B.U j ⊓ B.U j') (B.g j j').val * b) :
     valAt' x (B.U j) (t.s j).val / a = valAt' x (B.U j') (t.s j').val / b := by
   have hm := (top_le_preimage_inf _ _ _).2 ⟨hj, hj'⟩
   have e := congrArg (fun c : Γ(X, B.U j ⊓ B.U j')ˣ => valAt' x _ c.val) (ht j j')
@@ -359,7 +359,6 @@ theorem GlobalTheory.TorusRM.exists_theta_of_hasGen_lam_pull : ∀ (g : ℕ) (A 
     intro j j' z hj hj'
     exact gen_div_eq _ _ t' ht' j j' hj hj' _ _
       ((transUnif u w).fr_compat j j' z ((top_le_preimage_inf _ _ _).2 ⟨hj, hj'⟩))
-      ((transUnif u w).fr_ne _ z hj')
   refine ⟨fun z => valAt' ((transUnif u w).ex z).left _ (t'.s (J z)).val / (transUnif u w).fr (J z) z,
     fun z => ?_, fun z => ?_, fun l hl z => ?_⟩
   · obtain ⟨ho, hd⟩ := (transUnif u w).hol _ (t'.s (J z)).val

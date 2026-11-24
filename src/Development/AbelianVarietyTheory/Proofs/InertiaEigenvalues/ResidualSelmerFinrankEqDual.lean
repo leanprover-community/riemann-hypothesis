@@ -597,8 +597,8 @@ variable {O K K' : Type} [CommRing O] [CommRing K] [CommRing K'] [Algebra O K] [
 
 def vecAdd : (Fin r → K) →+ (Fin r → K') where
   toFun m a := f (m a)
-  map_add' m m' := funext fun a => map_add f _ _
-  map_zero' := funext fun a => map_zero f
+  map_add' _ _ := funext fun _ => map_add f _ _
+  map_zero' := funext fun _ => map_zero f
 
 theorem vecAdd_repOn {Γ : Type} [Group Γ] {r : ℕ} (ρ : Γ →* GL (Fin r) O) (g : Γ) (m : Fin r → K) :
     vecAdd f r (repOn ρ (1 : Γ →* Kˣ) K g m) = repOn ρ (1 : Γ →* K'ˣ) K' g (vecAdd f r m) := by
@@ -658,7 +658,7 @@ end Sel
 theorem selOn_baseChange (D : Formalism.BasicNotions.D7) (N : NData D.R D.host D.what₂) (X : NTw D.R D.host D.what₂ D.LL0 N) (bkP : BKPh X)
     (i : X.Tw) (ρ : GE N →* GL (Fin D.R.r) (X.O0 i)) (k : Type) [Field k] [Algebra (X.O0 i) k] [TopologicalSpace k]
     [DiscreteTopology k] (K : Type) [Field K] [Algebra (X.O0 i) K] [TopologicalSpace K] [DiscreteTopology K]
-    (hk : IsRes i k) (hs : Function.Surjective (algebraMap (X.O0 i) k)) (hK : IsRes i K) (Q : Finset (PlE D.host))
+    (hs : Function.Surjective (algebraMap (X.O0 i) k)) (hK : IsRes i K) (Q : Finset (PlE D.host))
     (hfin : Module.Finite k (selOn bkP i ρ (1 : GE N →* kˣ) k Q)) :
     Module.Finite K (selOn bkP i ρ (1 : GE N →* Kˣ) K Q) ∧
       Module.finrank K (selOn bkP i ρ (1 : GE N →* Kˣ) K Q) = Module.finrank k (selOn bkP i ρ (1 : GE N →* kˣ) k Q) := by
@@ -971,8 +971,8 @@ theorem eqDim : Cheb → PoitouTateTotallyComplex → CohDimTwo → TameLocal �
   have hres : IsRes i (IsLocalRing.ResidueField (X.O0 i)) := fun x hx => (IsLocalRing.residue_eq_zero_iff _).2 hx
   have hsurj : Function.Surjective (algebraMap (X.O0 i) (IsLocalRing.ResidueField (X.O0 i))) :=
     IsLocalRing.residue_surjective
-  obtain ⟨a1, a2⟩ := _root_.GlobalTheory.ResSel.BaseChange.selOn_baseChange D N X bkP i (Tgl i s) _ K hres hsurj hK ∅ Module.Finite.of_finite
-  obtain ⟨b1, b2⟩ := _root_.GlobalTheory.ResSel.BaseChange.selOn_baseChange D N X bkP i ρ _ K hres hsurj hK ∅ Module.Finite.of_finite
+  obtain ⟨a1, a2⟩ := _root_.GlobalTheory.ResSel.BaseChange.selOn_baseChange D N X bkP i (Tgl i s) _ K hsurj hK ∅ Module.Finite.of_finite
+  obtain ⟨b1, b2⟩ := _root_.GlobalTheory.ResSel.BaseChange.selOn_baseChange D N X bkP i ρ _ K hsurj hK ∅ Module.Finite.of_finite
   refine ⟨a1, b1, ?_⟩
   rw [a2, b2]
   exact finrank_eq_of_card_eq f1 f2 e

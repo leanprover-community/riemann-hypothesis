@@ -1658,7 +1658,7 @@ def ratGA (H : GL (Fin X.B.I.n) X.B.I.E) (hH : H ∈ Formalism.UG.UJ (starRingEn
 
 theorem ratGA_mem (H : GL (Fin X.B.I.n) X.B.I.E) (hH : H ∈ Formalism.UG.UJ (starRingEnd X.B.I.E) X.B.I.J) :
     ratGA X H hH ∈ Formalism.MainNotions.LeviCoordinates.rr_GF X.B.I :=
-  ⟨H, hH, fun v => rfl, rfl⟩
+  ⟨H, hH, fun _ => rfl, rfl⟩
 
 theorem uMat_ratGA_inv (H : GL (Fin X.B.I.n) X.B.I.E) (hH : H ∈ Formalism.UG.UJ (starRingEnd X.B.I.E) X.B.I.J)
     (v : InfinitePlace X.B.I.F) : uMat ((ratGA X H hH)⁻¹.1 v) =

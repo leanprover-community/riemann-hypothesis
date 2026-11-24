@@ -80,7 +80,7 @@ theorem twRes_exists (hq : (qOf P).Prime) (hu : ((qOf P : ℕ) : 𝓞 X.E) ∉ P
 variable {σ₀ : X.K →+* ℂ} {xi0 : X.E} {D : ℕ}
 
 theorem twZeta_pow (hz : σ₀ (twZeta σ₀ (qOf P ^ D)) = Complex.exp (2 * Real.pi * Complex.I / ((qOf P ^ D : ℕ) : ℂ)))
-    (hq : (qOf P).Prime) (b : ℤ) : σ₀ (twZeta σ₀ (qOf P ^ D) ^ b) = Complex.exp (2 * Real.pi * Complex.I * b / ((qOf P ^ D : ℕ) : ℂ)) := by
+    (b : ℤ) : σ₀ (twZeta σ₀ (qOf P ^ D) ^ b) = Complex.exp (2 * Real.pi * Complex.I * b / ((qOf P ^ D : ℕ) : ℂ)) := by
   rw [map_zpow₀, hz, ← Complex.exp_int_mul]
   congr 1
   ring
@@ -95,7 +95,7 @@ theorem twZeta_zpow_congr (hz : σ₀ (twZeta σ₀ (qOf P ^ D)) = Complex.exp (
     (hq : (qOf P).Prime) {b b' : ℤ} (h : ((qOf P : ℤ) ^ D) ∣ b - b') :
     twZeta σ₀ (qOf P ^ D) ^ b = twZeta σ₀ (qOf P ^ D) ^ b' := by
   apply σ₀.injective
-  rw [twZeta_pow hz hq, twZeta_pow hz hq]
+  rw [twZeta_pow hz, twZeta_pow hz]
   obtain ⟨k, hk⟩ := h
   have hN : ((qOf P ^ D : ℕ) : ℂ) ≠ 0 := by exact_mod_cast pow_ne_zero _ hq.ne_zero
   have e : 2 * Real.pi * Complex.I * (b : ℂ) / ((qOf P ^ D : ℕ) : ℂ) =
@@ -189,7 +189,7 @@ theorem twCstQ_of (hd : ∀ P : rowSG Pr sel mu, P.1 ∉ Pr.vGs → TwDegOne X P
     rw [twPsiQ_eq (hzz P hP) hq ha hb]
     intro h1
     have h2 := congrArg G.σ₀ h1
-    rw [twZeta_pow (hzz P hP) hq, map_one, Complex.exp_eq_one_iff] at h2
+    rw [twZeta_pow (hzz P hP), map_one, Complex.exp_eq_one_iff] at h2
     obtain ⟨n, hn⟩ := h2
     have hN : ((qOf P.1 ^ (2 * R.m) : ℕ) : ℂ) ≠ 0 := by exact_mod_cast pow_ne_zero _ hq.ne_zero
     have hbn : (b : ℂ) = (n : ℂ) * ((qOf P.1 ^ (2 * R.m) : ℕ) : ℂ) := by
@@ -209,7 +209,7 @@ theorem twCstQ_of (hd : ∀ P : rowSG Pr sel mu, P.1 ∉ Pr.vGs → TwDegOne X P
     have e : G.xi0 = (qOf P.1 : X.E) * (G.xi0 / (qOf P.1 : X.E)) := by field_simp
     rw [e, reduction_mul (ciIntAt_q (P := P.1) (q := qOf P.1)) hdiv, redP_natCast_eq_zero (ciQ_mem P.1), zero_mul]
   · obtain ⟨hq, -⟩ := hd P hP
-    rw [twPsiQ_eq (hzz P hP) hq ha hab, twZeta_pow (hzz P hP) hq]
+    rw [twPsiQ_eq (hzz P hP) hq ha hab, twZeta_pow (hzz P hP)]
     push_cast
     rfl
 

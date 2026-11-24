@@ -180,7 +180,7 @@ theorem abs_range_constants_first : ∀ Cg cb Cu cT CT C1 CMo : ℝ, ∃ C₀ : 
   have a2 := abs_nonneg Cg
   have a3 : 0 ≤ 8 * Real.pi * Real.exp 1 := by positivity
   refine absBd_le D.R.rS D.R.k large₂.sc.b D.host.v _ (8 * |C1| + 2 * |Cg| + 2) De _ C (max CMo 0) D.R.m hr hmr hb.le hv0
-    hM0 hDe1 (norm_nonneg _) ?_ (by linarith) (by linarith) (by linarith)
+    hDe1 (norm_nonneg _) ?_ (by linarith) (by linarith) (by linarith)
   refine le_trans (ratio_le D.R.rS D.R.k _ (D.R.rS * (D.R.k - 2 - D.R.rS)) large₂.sc.b D.host.v (gg D) θ θ' D.host.ka _ Cg
     hb2 hv hvb hg hgb hka hθ0 hθ.2 hθ'.1 hN (Nat.mul_le_mul_left _ (by omega))) ?_
   refine mul_le_mul_of_nonneg_right (Real.rpow_le_rpow_of_exponent_le (by linarith) ?_) (by positivity)

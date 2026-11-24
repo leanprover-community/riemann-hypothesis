@@ -70,7 +70,7 @@ def starFixed (K : Type) [Field K] [CharZero K] [StarRing K] : IntermediateField
     simp only [Set.mem_ofPred_eq] at ha ⊢
     rw [star_inv₀, ha]
 
-theorem exists_fixF (K : Type) [Field K] [NumberField K] [StarRing K] (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) :
+theorem exists_fixF (K : Type) [Field K] [NumberField K] [StarRing K] :
     ∃ (F : Type) (_ : Field F) (_ : NumberField F) (_ : Algebra F K), IsFixF K F := by
   have : FiniteDimensional ℚ (starFixed K) := IntermediateField.finiteDimensional_left (starFixed K)
   have : NumberField (starFixed K) := ⟨⟩

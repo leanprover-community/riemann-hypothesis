@@ -80,11 +80,11 @@ private theorem UpperTheory.Reformulated.B.Qe3b.mp_right.{u_1, u_2, u_3}
   exact Finset.prod_congr rfl fun i _ ↦ Measure.pi_pi _ _
 
 theorem UpperTheory.Reformulated.B.Qe3b.measurePreserving_swapPi.{u_1, u_2, u_3} :
-    ∀ {ι : Type u_1} {κ : Type u_2} {X : Type u_3} [inst : Fintype ι] [inst_1 : Fintype κ]
-    [inst_2 : MeasurableSpace X] (ν : MeasureTheory.Measure X) [MeasureTheory.SigmaFinite ν],
+    ∀ {ι : Type u_1} {κ : Type u_2} {X : Type u_3} [Fintype ι] [Fintype κ]
+    [MeasurableSpace X] (ν : MeasureTheory.Measure X) [MeasureTheory.SigmaFinite ν],
     MeasureTheory.MeasurePreserving (fun (f : ι → κ → X) (k : κ) (i : ι) ↦ f i k)
-      (MeasureTheory.Measure.pi fun (x : ι) ↦ MeasureTheory.Measure.pi fun (x : κ) ↦ ν)
-      (MeasureTheory.Measure.pi fun (x : κ) ↦ MeasureTheory.Measure.pi fun (x : ι) ↦ ν) := by
+      (MeasureTheory.Measure.pi fun (_ : ι) ↦ MeasureTheory.Measure.pi fun (_ : κ) ↦ ν)
+      (MeasureTheory.Measure.pi fun (_ : κ) ↦ MeasureTheory.Measure.pi fun (_ : ι) ↦ ν) := by
   intro ι κ X _ _ _ ν _
   let e : (κ → ι → X) ≃ᵐ (ι × κ → X) :=
     { toFun := fun f p ↦ f p.2 p.1

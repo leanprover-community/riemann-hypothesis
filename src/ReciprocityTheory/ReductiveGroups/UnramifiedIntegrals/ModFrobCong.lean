@@ -205,7 +205,7 @@ theorem facSer_Cg_a {p : ℕ} (hp : p.Prime) :
   exact (((Cg.refl (ks_coeffIn_aC _)).mul hd).sub (ha.mul (Cg.refl (ks_coeffIn_dC _)))).xp p
 
 theorem Cg.rescale_map_int {p : ℕ} (hp : 0 < p) (b : ℕ) (F : PowerSeries ℤ) :
-    Cg p (PowerSeries.rescale (zetaC p ^ b) (F.map (Int.castRingHom ℂ))) (F.map (Int.castRingHom ℂ)) := ⟨CoeffIn.map_int _ F, rescale_congr hp b F⟩
+    Cg p (PowerSeries.rescale (zetaC p ^ b) (F.map (Int.castRingHom ℂ))) (F.map (Int.castRingHom ℂ)) := ⟨CoeffIn.map_int _ F, rescale_congr b F⟩
 
 theorem facSer_Cg_b {p : ℕ} (hp : p.Prime) (b : ℕ) :
     Cg p (facSer p (1, b, p)) (xp p aC * dC - aC * xp p dC) := by
@@ -636,7 +636,7 @@ theorem norm_KQ {d : ℕ} (hd : 0 < d) (z : KQ d) (p q : ℚ) (h : (z : ℂ) = p
   simp
   ring
 
-theorem absNorm_span {d : ℕ} (hsf : Squarefree d) (hd : d % 4 = 3) (x : 𝓞 (KQ d)) (a b : ℤ)
+theorem absNorm_span {d : ℕ} (hd : d % 4 = 3) (x : 𝓞 (KQ d)) (a b : ℤ)
     (h : (((x : KQ d) : ℂ)) = a + b * omegaK d) :
     4 * (Ideal.absNorm (Ideal.span {x}) : ℤ) = 4 * a ^ 2 + 4 * a * b + b ^ 2 * (1 + d) := by
   have hd0 : 0 < d := by omega
@@ -662,7 +662,7 @@ theorem princ_form {d : ℕ} (hsf : Squarefree d) (hd : d % 4 = 3) (v : HeightOn
   obtain ⟨x, hx⟩ := hv.principal
   obtain ⟨a, b, hab⟩ := quadInt hsf hd x
   refine ⟨a, b, ?_⟩
-  rw [← absNorm_span hsf hd x a b hab, Ideal.absNorm_apply, Submodule.cardQuot_apply, hx]
+  rw [← absNorm_span hd x a b hab, Ideal.absNorm_apply, Submodule.cardQuot_apply, hx]
 
 end ReciprocityTheory.ChartRestriction.L1
 end -- clump:auto

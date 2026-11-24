@@ -244,7 +244,7 @@ theorem stepB {R K B A : Type} [CommRing R] [CommRing K] [CommRing B] [CommRing 
 set_option maxHeartbeats 1600000 in
 set_option synthInstance.maxHeartbeats 200000 in
 theorem algDescend (k : Type) [Field k] (Ω : Type) [Field Ω] [Algebra k Ω] (R : Subalgebra k Ω)
-    (A : Type) [CommRing A] [Algebra R A] (hfp : Algebra.FinitePresentation R A) (hs : Algebra.Smooth Ω (Ω ⊗[R] A))
+    (A : Type) [CommRing A] [Algebra R A] (hs : Algebra.Smooth Ω (Ω ⊗[R] A))
     (P : PrimeSpectrum (Ω ⊗[R] A)) :
     PrimeSpectrum.comap (Algebra.TensorProduct.includeRight : A →ₐ[R] Ω ⊗[R] A).toRingHom P ∈ Algebra.smoothLocus R A := by
   letI : Algebra (FractionRing R) Ω := FractionRing.liftAlgebra R Ω
@@ -278,7 +278,7 @@ def LeafAlgDescend : Prop := ∀ (k : Type) [Field k] (Ω : Type) [Field Ω] [Al
 
 def LeafStalkOfAlg : Prop := LeafAlgDescend → LateralTheory.E.LeafSpreadSmoothAffSmPf.LeafStalkDescend
 
-theorem leafAlgDescend : LeafAlgDescend := fun k _ Ω _ _ R A _ _ hfp hs P => algDescend k Ω R A hfp hs P
+theorem leafAlgDescend : LeafAlgDescend := fun k _ Ω _ _ R A _ _ hfp hs P => algDescend k Ω R A hs P
 
 theorem LeafSpreadSmooth1_of (hB : LateralTheory.E.LeafSpreadSmoothPf.LeafSpreadRelDim) (hT : LeafStalkOfAlg) :
     LateralTheory.E.SpreadingOutQuasiFiniteness.LeafSpreadSmooth1 :=

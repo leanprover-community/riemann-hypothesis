@@ -105,7 +105,7 @@ def toDeg (m : Fin k →₀ ℕ) : Deg k := fun i => (m i : ℤ)
 theorem toDeg_add (m m' : Fin k →₀ ℕ) : toDeg (m + m') = toDeg m + toDeg m' := by
   funext i; simp [toDeg]
 
-theorem toDeg_injective : Function.Injective (toDeg (k := k)) := fun m m' h =>
+theorem toDeg_injective : Function.Injective (toDeg (k := k)) := fun _ _ h =>
   Finsupp.ext fun i => Int.ofNat_inj.1 (congrFun h i)
 
 def reesGr (d : Deg k) : Submodule B (rees N) where

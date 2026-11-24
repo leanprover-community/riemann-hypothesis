@@ -810,7 +810,7 @@ theorem mirSet_last_iff {n : ℕ} (h : Gn g (n + 1)) :
   simp only [Bool.false_eq_true, ite_false]
   constructor
   · intro H i j hj
-    have := congrFun (H (Pi.single j 1) (by simp [single_dotProduct, Pi.single_apply, Ne.symm hj])) i
+    have := congrFun (H (Pi.single j 1) (by simp [Ne.symm hj])) i
     rw [Matrix.mulVec_single_one] at this
     simpa [Pi.single_apply] using this
   · intro H x hx

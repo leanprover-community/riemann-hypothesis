@@ -191,7 +191,7 @@ theorem trace_neg_side (ε : Fin n → Bool) (B : Mode ε → ℂ) :
   rw [exp_neg_pB, h1, trace_mul_comm, ← mul_assoc, hS, one_mul, sgM_pB_sgM]
   simp [trace_neg]
 
-theorem trace_conj_diag (U : Mat n) (hU : star U * U = 1) (A : Mat n) (v : Fin n → ℂ) :
+theorem trace_conj_diag (U : Mat n) (A : Mat n) (v : Fin n → ℂ) :
     trace (A * (U * diagonal v * star U)) = ∑ i, (star U * A * U) i i * v i := by
   have : A * (U * diagonal v * star U) = (A * U * diagonal v) * star U := by simp only [mul_assoc]
   rw [this, trace_mul_comm, ← mul_assoc, ← mul_assoc]
@@ -258,13 +258,13 @@ theorem two_re_le (ε : Fin n → Bool) (B : Mode ε → ℂ) :
   have hE' : NormedSpace.exp (-pB ε B) = U * diagonal (fun i => Complex.exp (-d i)) * star U := by
     rw [hneg]; exact hexp _
   have t0 : trace (prP ε * pB ε B * pB ε B) = ∑ i, (star U * prP ε * U) i i * (d i * d i) := by
-    rw [mul_assoc, hdec, hmul, trace_conj_diag _ hU]
+    rw [mul_assoc, hdec, hmul, trace_conj_diag _]
   have t1 : trace (prP ε * pB ε B * NormedSpace.exp (pB ε B)) =
       ∑ i, (star U * prP ε * U) i i * (d i * Complex.exp (d i)) := by
-    rw [mul_assoc, hE, hdec, hmul, trace_conj_diag _ hU]
+    rw [mul_assoc, hE, hdec, hmul, trace_conj_diag _]
   have t2 : trace (prP ε * pB ε B * NormedSpace.exp (-pB ε B)) =
       ∑ i, (star U * prP ε * U) i i * (d i * Complex.exp (-d i)) := by
-    rw [mul_assoc, hE', hdec, hmul, trace_conj_diag _ hU]
+    rw [mul_assoc, hE', hdec, hmul, trace_conj_diag _]
   rw [t0, t1, t2, Complex.re_sum, Finset.mul_sum, Complex.sub_re, Complex.re_sum, Complex.re_sum,
     ← Finset.sum_sub_distrib]
   refine Finset.sum_le_sum fun i _ => ?_

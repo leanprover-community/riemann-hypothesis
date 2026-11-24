@@ -364,8 +364,8 @@ private theorem inv_mem {F : Type} [Field F] [NumberField F]
   rw [map_inv₀, h1, inv_one]
 
 theorem UpperTheory.Reformulated.B.Gs6.exists_locUnit :
-    ∀ {F E : Type} [inst : Field F] [inst_1 : NumberField F] [inst_2 : Field E] [inst_3 : NumberField E]
-      [inst_4 : Algebra F E] {σ : E →ₐ[F] E} {B : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Base F E},
+    ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E]
+      [Algebra F E] {σ : E →ₐ[F] E} {B : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Base F E},
       UpperTheory.TP.W.GoodK σ B →
         ∀ {ξ : E},
           ξ ≠ (0 : E) →
@@ -559,7 +559,7 @@ theorem jpar_k {d : _root_.PositivityTheory.SiegelWeilFormula.SD_k σ} {n : ℕ}
       show X (Sum.inl (Ald.i0 h)) (Sum.inl c) = _
       rw [hl]; by_cases hc : c = Ald.i0 h
       · subst hc; simp
-      · simp [Matrix.one_apply, hc, Ne.symm hc])]
+      · simp [hc, Ne.symm hc])]
     congr 1
     ext a c
     have e := hsub (Sum.inl a) (Sum.inl c)
@@ -613,12 +613,12 @@ theorem hgtPull_k : _root_.PositivityTheory.SiegelWeilFormula.Ald.HgtPull_k := b
     have hε : ε = -1 := eps_neg_unit (eps_neg hn hσ hY he)
     subst hε
     obtain ⟨r, hr, hrf, hri⟩ := _root_.PositivityTheory.SiegelWeilFormula.Ldexb.exists_skewUnit_k hB
-    refine iwa_transport (B := d.B) hσ hb hb₀ he he₀ r ?_ hrf hri hK₀ ha₀.iwa hK x
+    refine iwa_transport (B := d.B) hb hb₀ he he₀ r ?_ hrf hri hK₀ ha₀.iwa hK x
     rw [hr]; push_cast; ring
   ·
     have hε : ε = 1 := eps_unit (eps_one hn hσ hY he)
     subst hε
-    refine iwa_transport (B := d.B) hσ hb hb₀ he he₀ 1 ?_ (fun v => ?_) (fun w => ?_) hK₀ ha₀.iwa hK x
+    refine iwa_transport (B := d.B) hb hb₀ he he₀ 1 ?_ (fun v => ?_) (fun w => ?_) hK₀ ha₀.iwa hK x
     · simp
     · simp only [Units.val_one, inv_one, map_one]; exact ⟨one_mem _, one_mem _⟩
     · simp
@@ -908,7 +908,7 @@ theorem modelEx_of_k (hS : _root_.PositivityTheory.SiegelWeilFormula.Ald.SDarb_k
   have hsl : Φ' = C • slice0 _ _ (S1 Φ) := by
     funext x
     obtain ⟨X', rfl⟩ := crdB_surj d.bs x
-    have e := hres (ext0 h X') (extend_zero_column h X')
+    have e := hres (ext0 X') (extend_zero_column h X')
     rw [extension_zero_sub, tof_adapted d.bs d.B.ψ had', hT1 Φ hΦ, crdB_eK h d.bs _ (extend_zero_column h X'), extension_zero_sub] at e
     rw [e]
     rfl

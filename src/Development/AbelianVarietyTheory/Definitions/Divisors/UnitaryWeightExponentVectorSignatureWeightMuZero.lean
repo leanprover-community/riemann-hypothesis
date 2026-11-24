@@ -71,7 +71,7 @@ section PullLB
 variable {Z Z' : Scheme.{0}} {S : Type} [CommRing S] (L : LB Z) (f : Z' ⟶ Z)
 
 theorem le_pull_chart {w : Sp S ⟶ Z'} {j : PUnit → L.ι} (hz : ⊤ ≤ (w ≫ f) ⁻¹ᵁ L.U (j PUnit.unit)) :
-    ⊤ ≤ w ⁻¹ᵁ (L.pull f).U j := fun p hp => mem_pull.2 (hz hp)
+    ⊤ ≤ w ⁻¹ᵁ (L.pull f).U j := fun _ hp => mem_pull.2 (hz hp)
 
 theorem ev_pull_g (j j' : PUnit → L.ι) (w : Sp S ⟶ Z') (hw : ⊤ ≤ w ⁻¹ᵁ ((L.pull f).U j ⊓ (L.pull f).U j'))
     (hh : ⊤ ≤ (w ≫ f) ⁻¹ᵁ (L.U (j PUnit.unit) ⊓ L.U (j' PUnit.unit))) :
@@ -503,7 +503,7 @@ variable {X} {e : Ix Dw → ℤ}
 
 omit [Algebra c.F S] in
 theorem le_pull {w : Sp S ⟶ X.Yo} {k : X.F.J} (hz : ⊤ ≤ (w ≫ X.inc) ⁻¹ᵁ X.F.U k) :
-    ⊤ ≤ w ⁻¹ᵁ ((X.F.LL e).pull X.inc).U (fun _ => k) := fun p hp => mem_pull.2 (hz hp)
+    ⊤ ≤ w ⁻¹ᵁ ((X.F.LL e).pull X.inc).U (fun _ => k) := fun _ hp => mem_pull.2 (hz hp)
 
 def coef (s : X.SecO e) (k : X.F.J) (w : Sp S ⟶ X.Yo) (hz : ⊤ ≤ (w ≫ X.inc) ⁻¹ᵁ X.F.U k) : S :=
   ev w _ (le_pull hz) (s.f fun _ => k)

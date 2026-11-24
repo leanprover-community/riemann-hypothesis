@@ -63,7 +63,7 @@ theorem nil_fix {W₁ W₂ : Submodule ℂ (Fin n → ℂ)} {u : G n} (hu : u �
   have h := hu.2.2 v hv
   rwa [Matrix.sub_mulVec, Matrix.one_mulVec, sub_eq_zero] at h
 
-theorem nil_mem₂ {W₁ W₂ : Submodule ℂ (Fin n → ℂ)} (hW : W₁ ≤ W₂) {u : G n} (hu : u ∈ nilSet W₁ W₂) :
+theorem nil_mem₂ {W₁ W₂ : Submodule ℂ (Fin n → ℂ)} {u : G n} (hu : u ∈ nilSet W₁ W₂) :
     ∀ v ∈ W₂, u.val *ᵥ v ∈ W₂ := by
   intro v hv
   have h := W₂.add_mem (hu.1 v) hv
@@ -83,9 +83,9 @@ theorem nil_maps {W₁ W₂ : Submodule ℂ (Fin n → ℂ)} (hW : W₁ ≤ W₂
     · intro x hx
       obtain ⟨v, hv, rfl⟩ := Submodule.mem_map.mp hx
       rw [Matrix.mulVecLin_apply]
-      exact nil_mem₂ hW hu v hv
+      exact nil_mem₂ hu v hv
     · intro v hv
-      refine Submodule.mem_map.mpr ⟨u⁻¹.val *ᵥ v, nil_mem₂ hW hu' v hv, ?_⟩
+      refine Submodule.mem_map.mpr ⟨u⁻¹.val *ᵥ v, nil_mem₂ hu' v hv, ?_⟩
       rw [Matrix.mulVecLin_apply, Matrix.mulVec_mulVec, Units.mul_inv, Matrix.one_mulVec]
 
 theorem mem_nil_of {W₁ W₂ : Submodule ℂ (Fin n → ℂ)} {N : Subgroup (G n)} (hN : (N : Set (G n)) = nilSet W₁ W₂)

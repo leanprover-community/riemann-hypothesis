@@ -55,7 +55,7 @@ theorem data_admissible (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ) (h
     refine sSup_le fun S hSmem => ?_
     obtain ⟨hS, hST⟩ := hSmem
     obtain ⟨hSf, hSK, hirr, -, -⟩ := id hST
-    have hSM := data_kfin_le hgap hσ hD hV hc hVK S hS hSf (fun g hg x hx => hSK g hg x hx)
+    have hSM := data_kfin_le hgap hσ hD hV hc S hS hSf (fun g hg x hx => hSK g hg x hx)
     have hSD : S ≤ D := hSM.trans (Submodule.map_subtype_le _ _)
     obtain ⟨w, hwS, hw0, hwμ⟩ := exists_isKHWVec_of_isKTypeOf hσ hD hST hSD
     have hwg : w ∈ genSub E V := by
@@ -104,7 +104,7 @@ variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteS
   {E : Fin n → Fin n → Module.End ℂ D} {V : Submodule ℂ D}
 
 theorem cfa_no_of_vogan (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ) (hD : IsDerivedOn ε σ D E)
-    (hV : IsKIrrHW ε E (lowK ε lam) V) (hVK : ∀ k ∈ Kset ε, ∀ v ∈ V, ∃ w ∈ V, (w : H) = σ k v)
+    (hV : IsKIrrHW ε E (lowK ε lam) V)
     (hvog : ∀ (μ : Fin n → ℝ) (S : Submodule ℂ H), Formalism.MainNotions.S.IsKTypeOf ε σ μ S →
       Formalism.MainNotions.S.vNormSq ε (Formalism.QuantumDeterminants.lowK ε lam) ≤ Formalism.MainNotions.S.vNormSq ε μ) :
     ∀ a b : Fin n, a < b → ε a ≠ ε b → ∀ w ∈ layer ε E V 1,
@@ -120,7 +120,7 @@ theorem cfa_no_of_vogan (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ) (h
   have hKT := isKTypeOf_of_isKIrrHW hσ hD hS' hK'
     (fun μ x hx hx0 hμ => weights_le_of_irr_hw hE hU hS' hx hx0 hμ)
   have h1 := hvog _ _ hKT
-  have h2 := vNormSq_lowK_sub_root_lt hgap.1 hab hne
+  have h2 := vNormSq_lowK_sub_root_lt hgap.1 hab
   rw [mir_lowK_eq] at h1 h2
   linarith
 
@@ -162,7 +162,7 @@ theorem casOnSmooth_of_datum (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) �
     obtain ⟨x, hx, rfl⟩ := Submodule.mem_map.1 hu
     have hcx : ((casimir (smE ε σ) x : smD ε σ) : H) = ((casVal lam : ℝ) : ℂ) • (x : H) := by
       rw [← casU_eq_casimir hD x]
-      exact data_casU hgap hσ hD hV hc hVK x hx
+      exact data_casU hD hc x hx
     have hsym := cf_inner_casimir hU x v'
     rw [Submodule.coe_inner, Submodule.coe_inner, hcx] at hsym
     rw [Submodule.subtype_apply, inner_sub_right, ← hsym, inner_smul_left, inner_smul_right,
@@ -209,7 +209,7 @@ theorem isDS_props_of_copies {ε : Fin n → Bool} {lam : Fin n → ℝ} (hlam :
       simp
     rwa [hset] at hadm
   · have hle : S ≤ closGen (smE ε σ) V := by rw [htop]; exact le_top
-    have hmem := data_kfin_le hgap hσ hD hV hc hVK S hle hSf hSK hv
+    have hmem := data_kfin_le hgap hσ hD hV hc S hle hSf hSK hv
     obtain ⟨x, -, rfl⟩ := Submodule.mem_map.1 hmem
     exact (mem_smD_iff ε σ _).1 x.2
   · exact dsUnique_of_cas hgap hDS hcas hDS' (casOnSmooth_of_copies hDS' hgap (hall H' σ' hDS'))
@@ -243,7 +243,7 @@ theorem casOnDatum_of_isDS (hDS : Formalism.MainNotions.S.IsDS ε lam σ) (hgap 
     ∀ v ∈ V, casimir E v = (casVal lam : ℂ) • v := by
   have hσ : IsURepOn (UJset ε) σ := hDS.2.2.1
   exact casimir_eq_casVal_of_no hgap.1 hD.glRep (isInfUnitary_of_isDerivedOn hσ hD) hV
-    (_root_.ReciprocityTheory.ChartRestriction.DS.G2.cfa_no_of_vogan hgap hσ hD hV hVK hDS.2.2.2.2.2.2)
+    (_root_.ReciprocityTheory.ChartRestriction.DS.G2.cfa_no_of_vogan hgap hσ hD hV hDS.2.2.2.2.2.2)
 
 end Datum
 

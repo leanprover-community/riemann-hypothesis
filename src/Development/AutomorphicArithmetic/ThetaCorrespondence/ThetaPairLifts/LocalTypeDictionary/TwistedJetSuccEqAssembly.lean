@@ -1374,7 +1374,7 @@ theorem psiC_right (ch : Choice R) (a : Fin ch.n) (x k : FinPt ch.G (.top 0)) (h
   exact Subtype.ext (congrArg (fun z => (GlobalTheory.CoefModel.mapVV D.what₂.embLL (LaP ch.G) z).1) e)
 
 theorem col_left (ch : Choice R) (a : Fin ch.n) : ∀ γ ∈ GQ (ch.G.V (.top 0)), ∀ g, colFn ch a (γ * g) = colFn ch a g :=
-  fun γ hγ g => GlobalTheory.RowBplus.pairVec_left ch.G ch.W.θ ch.ξ (col_mem ch a) hγ g
+  fun _ hγ g => GlobalTheory.RowBplus.pairVec_left ch.G ch.W.θ ch.ξ (col_mem ch a) hγ g
 
 theorem real_right {V : HSp D} {M : Type} [AddCommGroup M] [Module ℂ M] {ρ : GA D V →* Module.End ℂ M}
     (hρ : ∀ g ∈ GfC V, ρ g = 1) {F : GA D V → ℂ} {Λ : Module.Dual ℂ M} {v : GfC V → M} (h : IsFinReal ρ F Λ v)

@@ -650,7 +650,7 @@ lemma fil_const (Fil : ℤ → Submodule LL D) (k : ℕ) (a : ℤ)
     rw [h (a + k) (by omega) (by omega)]
     all_goals (congr 1; omega)
 
-lemma nbK_mono (kind : Kind) (b : ℤ) (hb : 0 ≤ b) (U : Submodule LL D) : Monotone (NbK kind b U) := by
+lemma nbK_mono (kind : Kind) (b : ℤ) (U : Submodule LL D) : Monotone (NbK kind b U) := by
   intro x y hxy
   cases kind <;> simp only [NbK, NbThin, NbUp, NbDown] <;> (try split_ifs) <;>
     first | exact le_rfl | exact bot_le | exact le_top | omega
@@ -896,7 +896,7 @@ lemma exists_Dc (R : LevelModel S LL Ks Δ D) (s : ℕ) (hs : s < ell) (d : D) :
   obtain ⟨e, he⟩ := R.const d
   exact ⟨e, (R.mem_Dc s hs e).mpr ⟨d, he⟩, he s hs⟩
 
-lemma fil_mono {Fil : ℤ → Submodule LL D} (h : Antitone Fil) : Monotone fun i => Fil (-i) := fun a b hab => h (neg_le_neg hab)
+lemma fil_mono {Fil : ℤ → Submodule LL D} (h : Antitone Fil) : Monotone fun i => Fil (-i) := fun _ _ hab => h (neg_le_neg hab)
 
 end
 end SlopeTestRemainingChoices
@@ -919,7 +919,7 @@ theorem reduction_degree_holds : RDOf := by
       | show B.p s ^ g • e ∈ S.Nb s
     rw [R.mem_Nb s hs, pr_dv R hb s hs g
       (NbK (R.kind s) (R.b s) (UOf (R.kind s) (R.b s) R.η (R.Fil s)))
-      (nbK_mono (R.kind s) (R.b s) (by positivity) _)]
+      (nbK_mono (R.kind s) (R.b s) _)]
     exact hrd.2 _ ((R.mem_Nl s hs e).mp he)
 
 theorem graded_third_clause_holds : KillingPolynomialDegreeBound := by
@@ -950,7 +950,7 @@ theorem constant_term_second_form : KillingPolynomialValuationBound := by
       | exact hd
   rw [R.mem_Nb s hs, pr_dv R hb s hs g
     (NbK (R.kind s) (R.b s) (UOf (R.kind s) (R.b s) R.η (R.Fil s)))
-    (nbK_mono (R.kind s) (R.b s) (by positivity) _), map_sub, hd0 s hs] at h1
+    (nbK_mono (R.kind s) (R.b s) _), map_sub, hd0 s hs] at h1
   have key := graded_fourth_second_estimate LL (Ks s) Δ D (R.lev s) ℓ s E (hK s hs) hsE (R.kind s) (g : ℤ)
     (R.b s) (UOf (R.kind s) (R.b s) R.η (R.Fil s)) JS (by positivity)
     (fun h => by exact_mod_cast (hW s hs).1 h) (hW s hs).2 (R.pr s e) d0 h1

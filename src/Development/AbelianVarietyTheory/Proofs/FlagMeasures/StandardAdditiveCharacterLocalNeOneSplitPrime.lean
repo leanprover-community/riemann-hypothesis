@@ -190,7 +190,7 @@ theorem exists_inv (v : HeightOneSpectrum (𝓞 F)) {p q : ℕ} (hpq : p.Coprime
       mul_inv_cancel₀ hq0, Algebra.TensorProduct.one_def]
 
 theorem idem_eq_zero (v : HeightOneSpectrum (𝓞 F)) {p : ℕ} (hp : p.Prime) (hv : (p : 𝓞 F) ∈ v.asIdeal)
-    {e : E ⊗[F] v.adicCompletion F} (he : e ∈ intV E v) (hee : e * e = e)
+    {e : E ⊗[F] v.adicCompletion F} (hee : e * e = e)
     (hd : ∃ t ∈ OAd F E, Formalism.UG.P.afsplitIE v e = (p : E ⊗[F] Ad F) * t) : e = 0 := by
   obtain ⟨t, ht, hte⟩ := hd
   have hprops := GlobalTheory.St.G.IntAd.integral_adeles_properties F E
@@ -229,7 +229,7 @@ end GlobalTheory.St.G.PsiLoc
 
 
 open GlobalTheory.St.G.PsiLoc in
-theorem GlobalTheory.St.G.psi_local_ne_one : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E] (cm : CMData F E) (psi : E ⊗[F] Ad F → ℂ), (∀ x y, psi (x + y) = psi x * psi y) → (∀ x ∈ OAd F E, psi x = 1) → (∀ x : E, psi (inclE (F := F) (Ad F) x) * Complex.exp (2 * Real.pi * Complex.I * ((Algebra.trace ℚ E x : ℚ) : ℂ)) = 1) → ∀ (p : ℕ), p.Prime → SplitsIn E p → ∀ (v : HeightOneSpectrum (𝓞 F)), (p : 𝓞 F) ∈ v.asIdeal → ∀ e ∈ intV E v, e * e = e → e ≠ 0 → ∃ a ∈ intV E v, psi (Formalism.UG.P.afsplitIE v (algebraMap F (E ⊗[F] v.adicCompletion F) ((p : F)⁻¹) * (e * a))) ≠ 1 := by
+theorem GlobalTheory.St.G.psi_local_ne_one : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E] (_ : CMData F E) (psi : E ⊗[F] Ad F → ℂ), (∀ x y, psi (x + y) = psi x * psi y) → (∀ x ∈ OAd F E, psi x = 1) → (∀ x : E, psi (inclE (F := F) (Ad F) x) * Complex.exp (2 * Real.pi * Complex.I * ((Algebra.trace ℚ E x : ℚ) : ℂ)) = 1) → ∀ (p : ℕ), p.Prime → SplitsIn E p → ∀ (v : HeightOneSpectrum (𝓞 F)), (p : 𝓞 F) ∈ v.asIdeal → ∀ e ∈ intV E v, e * e = e → e ≠ 0 → ∃ a ∈ intV E v, psi (Formalism.UG.P.afsplitIE v (algebraMap F (E ⊗[F] v.adicCompletion F) ((p : F)⁻¹) * (e * a))) ≠ 1 := by
   intro F E _ _ _ _ _ _ cm psi hadd hint hrat p hp hsp v hv e he hee hne
   by_contra hcon
   push Not at hcon
@@ -244,7 +244,7 @@ theorem GlobalTheory.St.G.psi_local_ne_one : ∀ (F E : Type) [Field F] [NumberF
       inclE (F := F) (v.adicCompletion F) ((p : E)⁻¹) := by
     rw [Algebra.TensorProduct.algebraMap_apply, map_inv₀, map_natCast]
     rfl
-  apply idem_eq_zero (E := E) v hp hv he hee
+  apply idem_eq_zero (E := E) v hp hv hee
   obtain ⟨x, t, ht, hxt⟩ := hprops.2.1 _ (ie_mem v he) p hp.pos
   have htr : ∀ y : 𝓞 E, ∃ n : ℤ, (n : ℚ) = Algebra.trace ℚ E ((p : E)⁻¹ * x * y) := by
     intro y

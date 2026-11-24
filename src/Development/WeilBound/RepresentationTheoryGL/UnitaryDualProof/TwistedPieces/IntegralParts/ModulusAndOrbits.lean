@@ -210,7 +210,7 @@ private theorem det_sqT (Z : SubMat k n) (τ : Mat k n →ₗ[k] k) (hτ : IsTau
           (t⁻¹ ^ finrank k (LinearMap.range δ) * t ^ finrank k (LinearMap.range δ)) := by ring
     _ = LinearMap.det ψ * LinearMap.det ρ ^ 2 := by rw [← mul_pow, inv_mul_cancel₀ ht, one_pow, mul_one]
 
-private theorem modul_eqT (hratio : RatioP k n) (Z : SubMat k n) (_hZ : CR Z) (τ : Mat k n →ₗ[k] k) (hτ : IsTau Z τ)
+private theorem modul_eqT (hratio : RatioP k n) (Z : SubMat k n) (τ : Mat k n →ₗ[k] k) (hτ : IsTau Z τ)
     (c : Mat k n) (hc : c ∈ Z) (p : Sp k n) (g : GL (Fin n) k) (hg : g ∈ Gz Z) (t : k) (ht : t ≠ 0)
     (hgx : g.val * (p.1 - c) * g⁻¹.val = t • (p.1 - c)) (hgv : g.val *ᵥ p.2 = p.2) :
     ∃ (K L : Subgroup (GL (Fin n) k)) (u : kˣ),
@@ -289,14 +289,14 @@ private theorem modul_eqT (hratio : RatioP k n) (Z : SubMat k n) (_hZ : CR Z) (�
     have e : g * (g⁻¹ * u * g) * g⁻¹ = u := by group
     exact ⟨e ▸ (GzS Z).mul_mem ((GzS Z).mul_mem hg hu'.2) hginv,
       e ▸ (hlev _ hu'.1).2, congruenceSubgroup_le k n m hu'.1⟩
-  have e1 := relIndex_eq I (I ⊓ I') K (K ⊓ K') inf_le_left mK mL sI
+  have e1 := relIndex_eq I (I ⊓ I') K (K ⊓ K') mK mL sI
     fun u hu => hmulJ u (hKint u hu).1 (hKint u hu).2.1 (hKint u hu).2.2
-  have e2 := relIndex_eq I' (I ⊓ I') K' (K ⊓ K') inf_le_right mK' mL sI'
+  have e2 := relIndex_eq I' (I ⊓ I') K' (K ⊓ K') mK' mL sI'
     fun u hu => hmulJ u (hK'int u hu).1 (hK'int u hu).2.1 (hK'int u hu).2.2
-  have e3 := relIndex_eq Is (Is ⊓ I's) (K ⊓ S) (K ⊓ K' ⊓ S) inf_le_left mKS mLS (fun y hy => sI y ((mIs y).1 hy).1)
+  have e3 := relIndex_eq Is (Is ⊓ I's) (K ⊓ S) (K ⊓ K' ⊓ S) mKS mLS (fun y hy => sI y ((mIs y).1 hy).1)
     fun u hu => hmulJs u (hKint u hu.1).1 (comm_of_mem_cS Z x v u ((mIs _).1 ((mKS u).1 hu)).2)
       (hKint u hu.1).2.1 (hKint u hu.1).2.2
-  have e4 := relIndex_eq I's (Is ⊓ I's) (K' ⊓ S) (K ⊓ K' ⊓ S) inf_le_right mK'S mLS
+  have e4 := relIndex_eq I's (Is ⊓ I's) (K' ⊓ S) (K ⊓ K' ⊓ S) mK'S mLS
     (fun y hy => sI' y ((mI's y).1 hy).1)
     fun u hu => hmulJs u (hK'int u hu.1).1 (comm_of_mem_cS Z x v u ((mI's _).1 ((mK'S u).1 hu)).2)
       (hK'int u hu.1).2.1 (hK'int u hu.1).2.2
@@ -451,7 +451,7 @@ theorem modBound0 (hT : PositivityTheory.RgUd.TP.TraceForm k) :
       linarith [Nat.cast_nonneg (α := ℝ) m],
     fun t _ => ?_⟩
   obtain ⟨K, L, u, hu, hK1, hK2, hK3, hL1, hL2, hL3, hL4, hmod⟩ :=
-    modul_eqT (fun V γ hγ φ X Y hX hY => ratio V γ hγ φ X Y hX hY) Z hZ τ ⟨h1, h2⟩ 0 Z.zero_mem p
+    modul_eqT (fun V γ hγ φ X Y hX hY => ratio V γ hγ φ X Y hX hY) Z τ ⟨h1, h2⟩ 0 Z.zero_mem p
       (gt t) (hgZ t) (t : k) t.ne_zero (hgx t) (hg t).2.2
   refine ⟨K, L, gt t, hK1, hK2, hK3, hL1, hL2, hL3, hL4, rfl, ?_⟩
   rw [hmod]

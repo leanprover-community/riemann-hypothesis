@@ -135,7 +135,7 @@ theorem sp_gDet_deg_ge (he : Function.Injective e) (α s : Fin n) : 1 ≤ degree
 
 theorem sp_gDet_deg (he : Function.Injective e) (α s : Fin n) : degreeOf (e (α, s)) (gDet (K := K) e) = 1 := le_antisymm (sp_gDet_deg_le he α s) (sp_gDet_deg_ge he α s)
 
-theorem sp_gDet_ne_zero (he : Function.Injective e) (hn : 0 < n) : gDet (K := K) e ≠ 0 := by
+theorem sp_gDet_ne_zero (he : Function.Injective e) : gDet (K := K) e ≠ 0 := by
   classical
   intro h0
   obtain ⟨x, hx⟩ : ∃ x : σ → K, ∀ i j : Fin n, x (e (i, j)) = (1 : Matrix (Fin n) (Fin n) K) i j := by
@@ -231,7 +231,7 @@ theorem sp_isUnit_of_deg_zero {h : MvPolynomial σ K} (h0 : h ≠ 0) (hd : ∀ u
 
 theorem sp_gDet_irreducible (he : Function.Injective e) (hn : 0 < n) : Irreducible (gDet (K := K) e) := by
   classical
-  have hD0 := sp_gDet_ne_zero (K := K) he hn
+  have hD0 := sp_gDet_ne_zero (K := K) he
   have hsum : ∀ {g h : MvPolynomial σ K}, gDet e = g * h → ∀ u, degreeOf u g + degreeOf u h = degreeOf u (gDet (K := K) e) := by
     intro g h hgh u
     have hg : g ≠ 0 := by rintro rfl; rw [zero_mul] at hgh; exact hD0 hgh

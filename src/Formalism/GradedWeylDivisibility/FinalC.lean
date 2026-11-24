@@ -974,7 +974,7 @@ theorem sliceHomogeneous : PeelHomog := by
   · intro d hd
     obtain ⟨m, hm, -, rfl⟩ := lcpeel_support l j a0 k g d hd
     exact weight_pairW_eq_erase_of_split l j hlj a0 m _ ω
-      (by simp [Finsupp.erase_apply, hlj]) (by simp [Finsupp.erase_apply])
+      (by simp [hlj]) (by simp [Finsupp.erase_apply])
       (eq_erase_erase_add_single_add_single l j hlj a0 m) (hg (mem_support_iff.mp hm))
   · intro d hd
     obtain ⟨m, -, -, rfl⟩ :=

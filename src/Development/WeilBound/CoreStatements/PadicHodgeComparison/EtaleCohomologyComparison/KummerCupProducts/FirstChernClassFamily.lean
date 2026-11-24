@@ -125,7 +125,7 @@ theorem firstChern_family_of_lifts (h1 : LineBC) (h2 : LineMap) (h3 : FirstChern
   fun E hN l _ H r K M D => (h1 (gb M) M.X (pullback.fst _ _ ≫ pullback.fst _ _) D).elim fun D' a => a.elim fun π hD =>
     (h2 _ D').elim fun L hL =>
       have b := @h3 E.a2 E.a11 l _ D'.Y (gb M) D'.f D'.sm D'.surj (isUnit_gb M) L
-      b.2.elim fun x hx => (h7 E hN l H r K M x).elim fun v hv => Exists.intro v (isFirstChern_of_cocycle fun C _ G Λ n =>
+      b.2.elim fun x hx => (h7 E hN l H r K M x).elim fun v hv => Exists.intro v (isFirstChern_of_cocycle fun _ _ G Λ n =>
         (step h4 h5 h6 E hN H r M D D' π hD L hL n (b.1 n) (x.1 n) (hx n) G Λ).elim fun z c => c.2.elim fun hz e2 =>
           Exists.intro (tCo G n 2 z) (And.intro c.1 (tCo_cls M G n (eFam hN H r K) v z hz
             (res_cls h6 E hN H r M G n (x.1 n) (v.1 n) (hv n) _ e2))))

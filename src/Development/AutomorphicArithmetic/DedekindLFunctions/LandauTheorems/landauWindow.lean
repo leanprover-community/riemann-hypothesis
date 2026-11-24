@@ -264,7 +264,7 @@ theorem eq_ofReal_sub_of_dist_le_of_le_sub_re {w : ℂ} {σ D : ℝ} (h1 : dist 
   · rw [Complex.ofReal_im]; exact him
 
 theorem landau_dichotomy {Z : Set ℂ} (hiso : ∀ z : ℂ, 0 < z.re → ∀ᶠ w in 𝓝[≠] z, w ∉ Z) {σ θ : ℝ}
-    (hle : ∀ ρ ∈ Z, ρ.re < σ) (hθ : 0 < θ) (hθσ : θ < σ) {ρ₀ : ℂ} (h₀ : ρ₀ ∈ Z) (hρ₀ : θ < ρ₀.re) :
+    (hθ : 0 < θ) {ρ₀ : ℂ} (h₀ : ρ₀ ∈ Z) (hρ₀ : θ < ρ₀.re) :
     (∃ D : ℝ, D ≤ σ - θ ∧ (∀ w ∈ Z, w ∉ Metric.ball (σ : ℂ) D) ∧ ∃ ρ₁ ∈ Z, σ - ρ₁.re < D) ∨
     (∃ β : ℝ, (β : ℂ) ∈ Z ∧ θ < β ∧ ∃ r : ℝ, σ - β < r ∧ r ≤ σ - θ ∧
       ∀ w ∈ Z, w ∈ Metric.ball (σ : ℂ) r → w = β) := by
@@ -526,7 +526,7 @@ theorem landau_pole_asym_deriv (c ρ z : ℂ) (k : ℕ) :
   rw [e, iteratedDeriv_eq_iterate, show (fun t : ℂ => t⁻¹) = Inv.inv from rfl, iter_deriv_inv,
     show (-1 - k : ℤ) = -((k + 1 : ℕ) : ℤ) by push_cast; ring, zpow_neg, zpow_natCast]
 
-theorem landau_pole_asym {Φ : ℂ → ℂ} {z ρ c : ℂ} {r r' : ℝ} (hρ : ρ ∈ Metric.ball z r) (hne : ρ ≠ z)
+theorem landau_pole_asym {Φ : ℂ → ℂ} {z ρ c : ℂ} {r r' : ℝ} (hne : ρ ≠ z)
     (hd : DifferentiableOn ℂ Φ (Metric.ball z r \ {ρ}))
     (hp : ∃ h : ℂ → ℂ, AnalyticAt ℂ h ρ ∧ ∀ᶠ s in 𝓝[≠] ρ, Φ s = c / (s - ρ) + h s)
     (h0 : 0 < r') (h1 : r' < r) :
@@ -1070,7 +1070,7 @@ private theorem landau_window_of_pos_lt_two {g : ℝ → ℝ} {Φ : ℂ → ℂ}
   rw [not_le] at hρ₀
   obtain ⟨σ, hσ, C, hkey⟩ := landau_window_key hP hθ hθ2 hδ hW
   have hle : ∀ ρ ∈ Z, ρ.re < σ := fun ρ hρ => (landau_pole_re_le hP ρ hρ).trans_lt hσ
-  rcases landau_dichotomy hP.iso hle hθ (by linarith) h₀ hρ₀ with
+  rcases landau_dichotomy hP.iso hθ h₀ hρ₀ with
     ⟨D, hD, hfree, ρ₁, h₁, hρ₁⟩ | ⟨β, hβZ, hβ, r, hr1, hr2, huniq⟩
   · obtain ⟨γ, ρ, hρ, r, hr1, hr2, huniq⟩ := landau_nearest hP.iso hle (by linarith : D < σ) h₁ hρ₁
     obtain ⟨c, hc, -, hp⟩ := hP.pole ρ hρ
@@ -1093,7 +1093,7 @@ private theorem landau_window_of_pos_lt_two {g : ℝ → ℝ} {Φ : ℂ → ℂ}
       refine hP.diff.mono ?_
       intro w hw
       exact ⟨landau_window_re_pos (by rw [Complex.ofReal_re]; linarith) hw, fun hZ => hfree w hZ hw⟩
-    obtain ⟨M, hM⟩ := landau_pole_asym (r' := (d + r) / 2) hball hne hdiff hp (by linarith) (by linarith)
+    obtain ⟨M, hM⟩ := landau_pole_asym (r' := (d + r) / 2) hne hdiff hp (by linarith) (by linarith)
     obtain ⟨M', hM'⟩ := landau_cauchy (r' := (d + r) / 2) hdiff' (by linarith) (by linarith)
     refine landau_window_contra (c := ‖c‖ / d) (d := d) (e := (d + r) / 2) (E := σ - θ) (M := M + M') (C := C)
       (div_pos (norm_pos_iff.2 hc) hd) hd (by linarith) (by linarith) fun η hη U₀ => ?_
@@ -1133,7 +1133,7 @@ private theorem landau_window_of_pos_lt_two {g : ℝ → ℝ} {Φ : ℂ → ℂ}
       rintro w ⟨hw, hw'⟩
       exact ⟨landau_window_re_pos (by rw [Complex.ofReal_re]; linarith) hw,
         fun hZ => hw' (huniq w hZ hw)⟩
-    obtain ⟨M, hM⟩ := landau_pole_asym (r' := (σ - β + r) / 2) hball hne hdiff hp (by linarith) (by linarith)
+    obtain ⟨M, hM⟩ := landau_pole_asym (r' := (σ - β + r) / 2) hne hdiff hp (by linarith) (by linarith)
     refine landau_window_contra (c := c.re / (σ - β)) (d := σ - β) (e := (σ - β + r) / 2) (E := σ - θ)
       (M := M) (C := C) (div_pos hc1 hd) hd (by linarith) (by linarith) fun η hη U₀ => ?_
     obtain ⟨U, hU, k, hk, hb⟩ := hkey η hη U₀

@@ -379,7 +379,7 @@ theorem sum_log_div_sq_mod_pm_one_le (T : Finset ℕ) (M : ℕ) (Y : ℝ) (hY : 
   simp only [hf] at hsplit
   linarith
 
-theorem sum_padicVal_log_le (T : Finset ℕ) (hT : ∀ p ∈ T, p.Prime) (n : ℕ) (hn : n ≠ 0) :
+theorem sum_padicVal_log_le (T : Finset ℕ) (hT : ∀ p ∈ T, p.Prime) (n : ℕ) :
     ∑ p ∈ T, (padicValNat p n : ℝ) * Real.log p ≤ Real.log n := by
   classical
   have hlog : Real.log n = ∑ p ∈ n.primeFactors, (n.factorization p : ℝ) * Real.log p := by

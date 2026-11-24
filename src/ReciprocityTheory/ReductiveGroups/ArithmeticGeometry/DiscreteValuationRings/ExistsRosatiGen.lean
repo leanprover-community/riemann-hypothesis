@@ -71,12 +71,12 @@ theorem tau_val (hQ : IsQ D.toPre ϖ Q) (a b : D.toPre.X) :
     ∃ (φ : _) (hφ : _), (∀ k, φ k ≫ D.toPre.P.A.hom = 𝟙 _) ∧
       GenHasVal ϖ D.toPre.P.L φ _ hφ _ (D.toPre.tau a b) (bOf D.toPre Q a b) := by
   have hL := D.toPre.P.isLB
-  have h1 := genHasVal_mulGen hϖ D.toPre.P.L hL _ _ _ _ _ _ _ _ _ _ (hQ (a + b))
-    (genHasVal_invGen D.toPre.P.L hL _ _ _ _ _ (hQ a))
-  have h2 := genHasVal_mulGen hϖ D.toPre.P.L hL _ _ _ _ _ _ _ _ _ _ h1
-    (genHasVal_invGen D.toPre.P.L hL _ _ _ _ _ (hQ b))
-  have h3 := genHasVal_mulGen hϖ D.toPre.P.L hL _ _ _ _ _ _ _ _ _ _ h2
-    (genHasVal_invGen D.toPre.P.L hL _ _ _ _ _ (rigK_val D))
+  have h1 := genHasVal_mulGen hϖ D.toPre.P.L _ _ _ _ _ _ _ _ _ _ (hQ (a + b))
+    (genHasVal_invGen D.toPre.P.L _ _ _ _ _ (hQ a))
+  have h2 := genHasVal_mulGen hϖ D.toPre.P.L _ _ _ _ _ _ _ _ _ _ h1
+    (genHasVal_invGen D.toPre.P.L _ _ _ _ _ (hQ b))
+  have h3 := genHasVal_mulGen hϖ D.toPre.P.L _ _ _ _ _ _ _ _ _ _ h2
+    (genHasVal_invGen D.toPre.P.L _ _ _ _ _ (rigK_val D))
   have h4 : Q (a + b) + -Q a + -Q b + -0 = bOf D.toPre Q a b := by simp only [bOf]; ring
   rw [h4] at h3
   exact ⟨_, _, sumElim_sec (sumElim_sec (sumElim_sec
@@ -94,8 +94,8 @@ theorem bOf_add_left (hQ : IsQ D.toPre ϖ Q) (a a' b : D.toPre.X) :
   have hcub := genHasVal_pullGen_of (ϖ := ϖ) D.toPre.P.L _ _ D.toPre.cub.t D.toPre.cub.isGen
     (lift (D.toPre.c a) (lift (D.toPre.c a') (D.toPre.c b))).left (D.toPre.pt3 a a' b)
     (by simp [DegPre.pt3, ← CartesianMonoidalCategory.comp_lift])
-  have h1 := genHasVal_mulGen hϖ D.toPre.P.L hL _ _ _ _ _ _ _ _ _ _ hA hcub
-  have h2 := genHasVal_mulGen hϖ D.toPre.P.L hL _ _ _ _ _ _ _ _ _ _ hB hC
+  have h1 := genHasVal_mulGen hϖ D.toPre.P.L _ _ _ _ _ _ _ _ _ _ hA hcub
+  have h2 := genHasVal_mulGen hϖ D.toPre.P.L _ _ _ _ _ _ _ _ _ _ hB hC
   have := genHasVal_unique hϖ D.toPre.P.L hL _ _ _ _ _
     (genHasVal_corr hϖ D.toPre.P.L hL D.toPre.P.A.hom _ _ _ _ _ _ _ _
       (sumElim_sec hsA (fun _ => over_sec _ _)) (sumElim_sec hsB hsC) _ _
@@ -108,7 +108,7 @@ theorem Q_neg (hQ : IsQ D.toPre ϖ Q) (χ : D.toPre.X) : Q (-χ) = Q χ := by
   have hL := D.toPre.P.isLB
   have hsym := genHasVal_pullGen_of (ϖ := ϖ) D.toPre.P.L _ _ D.toPre.sym D.toPre.sym_gen (D.toPre.c χ).left (D.toPre.xK χ)
     (ptK_eq D.toPre χ)
-  have h1 := genHasVal_mulGen hϖ D.toPre.P.L hL _ _ _ _ _ _ _ _ _ _ (hQ (-χ)) hsym
+  have h1 := genHasVal_mulGen hϖ D.toPre.P.L _ _ _ _ _ _ _ _ _ _ (hQ (-χ)) hsym
   have := QVal_unique hϖ D
     (genHasVal_corr hϖ D.toPre.P.L hL D.toPre.P.A.hom _ _ _ _ _ _ _ _ (sumElim_sec (fun _ => Over.w (D.toPre.c (-χ))) (fun k => by
         fin_cases k <;> simp)) (fun _ => Over.w (D.toPre.c χ)) _ _ (D.toPre.psi_gen χ) (D.psi_even χ) h1) (hQ χ)
@@ -323,7 +323,7 @@ theorem bOf_balance (hLaws : Laws) {O : Type} [Ring O] [StarRing O] [Module O D.
   obtain ⟨_, _, hsB, hB⟩ := tau_val hϖ D hQ χ (star a • χ')
   have hu0 := genHasVal_pullGen_of (ϖ := ϖ) D.toPre.P.L _ _ u hu (lift (D.toPre.c χ) (D.toPre.c χ')).left
     (D.toPre.pt2 χ χ') (by simp [DegPre.pt2, ← CartesianMonoidalCategory.comp_lift])
-  have h1 := genHasVal_mulGen hϖ D.toPre.P.L hL _ _ _ _ _ _ _ _ _ _ hA hu0
+  have h1 := genHasVal_mulGen hϖ D.toPre.P.L _ _ _ _ _ _ _ _ _ _ hA hu0
   have := genHasVal_unique hϖ D.toPre.P.L hL _ _ _ _ _
     (genHasVal_corr hϖ D.toPre.P.L hL D.toPre.P.A.hom _ _ _ _ _ _ _ _
       (sumElim_sec hsA (fun k => by

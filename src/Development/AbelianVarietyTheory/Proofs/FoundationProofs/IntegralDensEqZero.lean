@@ -370,7 +370,7 @@ def altL (H : Sesq W) (y : W) : W →ₗ[ℝ] ℝ where
   map_add' x x' := by simp [altE]
   map_smul' t x := altE_real_smul_left t x y
 
-theorem discrete_of_selfDual (hH : IsHerm H) {A : AddSubgroup W} (hd : IsSelfDual H A) (hfg : A.FG) :
+theorem discrete_of_selfDual {A : AddSubgroup W} (hd : IsSelfDual H A) (hfg : A.FG) :
     DiscreteTopology A := by
   obtain ⟨s, hs⟩ := hfg
   have hfg' : AddGroup.FG A := (AddGroup.fg_iff_addSubgroup_fg A).2 ⟨s, hs⟩
@@ -433,7 +433,7 @@ theorem span_inf_eq_top {A₁ A₂ : AddSubgroup W} [Finite (A₂ ⧸ A₁.addSu
   have h3 := Submodule.smul_mem _ (((A₁.addSubgroupOf A₂).index : ℝ)⁻¹) (Submodule.subset_span (R := ℝ) h2)
   rwa [← Nat.cast_smul_eq_nsmul ℝ, smul_smul, inv_mul_cancel₀ (by exact_mod_cast h0), one_smul] at h3
 
-theorem continuous_H (H : Sesq W) (hH : IsHerm H) : Continuous fun p : W × W => H p.1 p.2 := by
+theorem continuous_H (H : Sesq W) : Continuous fun p : W × W => H p.1 p.2 := by
   let B : W →ₗ[ℝ] W →ₗ[ℝ] ℂ := LinearMap.mk₂ ℝ (fun x y => H x y) (by simp)
     (fun t x y => by rw [real_smul_eq t, map_smul]; simp) (by simp)
     (fun t x y => by rw [real_smul_eq t, map_smulₛₗ]; simp)
@@ -455,11 +455,11 @@ theorem differentiable_inter (A₁ A₂ : AddSubgroup W) [Finite (A₂ ⧸ A₁.
 
 theorem continuous_dens (hH : IsHerm H) {F G : W → ℂ} (hF : Continuous F) (hG : Continuous G) :
     Continuous (dens H F G) := by
-  have : Continuous fun z : W => H z z := (continuous_H H hH).comp (continuous_id.prodMk continuous_id)
+  have : Continuous fun z : W => H z z := (continuous_H H).comp (continuous_id.prodMk continuous_id)
   exact (hF.mul (Complex.continuous_conj.comp hG)).mul (Complex.continuous_exp.comp (continuous_const.mul this))
 
 theorem continuous_rho (hH : IsHerm H) {F : W → ℂ} (hF : Continuous F) : Continuous (rho H F) := by
-  have : Continuous fun z : W => H z z := (continuous_H H hH).comp (continuous_id.prodMk continuous_id)
+  have : Continuous fun z : W => H z z := (continuous_H H).comp (continuous_id.prodMk continuous_id)
   exact (hF.norm.pow 2).mul (Real.continuous_exp.comp (continuous_const.mul (Complex.continuous_re.comp this)))
 
 variable [MeasurableSpace W] [BorelSpace W] (μ : Measure W) [μ.IsAddHaarMeasure]

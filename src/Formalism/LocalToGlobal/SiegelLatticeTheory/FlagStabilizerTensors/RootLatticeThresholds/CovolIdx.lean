@@ -18,7 +18,7 @@ namespace Formalism.L2.SG.Pf.CovolIdx
 variable {G : Type*} [Group G] [MeasurableSpace G] [MeasurableMul G]
 
 theorem fd_sub (μ : Measure G) (R : Set G) (hR : μ Rᶜ = 0) (A B : Subgroup G) [Countable A]
-    (hinv : ∀ s ∈ A, μ.map (fun x => s * x) = μ) (hAR : ∀ s ∈ A, ∀ r ∈ R, s * r ∈ R)
+    (hinv : ∀ s ∈ A, μ.map (fun x => s * x) = μ)
     (KA : Set G) (hKA : MeasurableSet KA) (hKAu : ∀ r ∈ R, ∃! s, s ∈ A ∧ s * r ∈ KA)
     (hfin : B.relIndex A ≠ 0) :
     ∃ KC : Set G, MeasurableSet KC ∧ (∀ r ∈ R, ∃! s, s ∈ A ⊓ B ∧ s * r ∈ KC) ∧
@@ -85,8 +85,8 @@ theorem covol_commens (μ : Measure G) (R : Set G) (hR : μ Rᶜ = 0) (A B : Sub
     (hfinA : B.relIndex A ≠ 0) (hfinB : A.relIndex B ≠ 0) :
     μ KA * (B.relIndex A : ℝ≥0∞) = μ KB * (A.relIndex B : ℝ≥0∞) := by
   classical
-  obtain ⟨K1, hK1m, hK1u, hK1μ⟩ := fd_sub μ R hR A B hinvA hAR KA hKA hKAu hfinA
-  obtain ⟨K2, hK2m, hK2u, hK2μ⟩ := fd_sub μ R hR B A hinvB hBR KB hKB hKBu hfinB
+  obtain ⟨K1, hK1m, hK1u, hK1μ⟩ := fd_sub μ R hR A B hinvA KA hKA hKAu hfinA
+  obtain ⟨K2, hK2m, hK2u, hK2μ⟩ := fd_sub μ R hR B A hinvB KB hKB hKBu hfinB
   rw [inf_comm] at hK2u
   haveI : Countable ↥(A ⊓ B) :=
     Function.Injective.countable (Subgroup.inclusion_injective (inf_le_left : A ⊓ B ≤ A))

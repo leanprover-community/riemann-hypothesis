@@ -84,7 +84,7 @@ theorem length_loc_quot {R : Type*} [CommRing R] (J W : Ideal R) [W.IsPrime] :
 
 variable {R R' : Type*} [CommRing R] [CommRing R'] {φ : R →+* R'} {P' : Ideal R'} {s : R}
 
-def sat (h : ∀ r : R', ∃ (n : ℕ) (g : R), φ s ^ n * r - φ g ∈ P') (J : Ideal R) (hJ : P'.comap φ ≤ J) :
+def sat (h : ∀ r : R', ∃ (n : ℕ) (g : R), φ s ^ n * r - φ g ∈ P') (J : Ideal R) :
     Ideal R' where
   carrier := {x | ∃ n : ℕ, ∃ g ∈ J, φ s ^ n * x - φ g ∈ P'}
   zero_mem' := ⟨0, 0, J.zero_mem, by simp⟩
@@ -106,7 +106,7 @@ def sat (h : ∀ r : R', ∃ (n : ℕ) (g : R), φ s ^ n * r - φ g ∈ P') (J :
 
 theorem key (h : ∀ r : R', ∃ (n : ℕ) (g : R), φ s ^ n * r - φ g ∈ P') (J : Ideal R) (hJ : P'.comap φ ≤ J)
     {x : R'} (hx : x ∈ P' ⊔ J.map φ) : ∃ n : ℕ, ∃ g ∈ J, φ s ^ n * x - φ g ∈ P' := by
-  have hle : P' ⊔ J.map φ ≤ sat h J hJ := by
+  have hle : P' ⊔ J.map φ ≤ sat h J := by
     refine sup_le (fun y hy => ⟨0, 0, J.zero_mem, by simpa using hy⟩) (Ideal.map_le_iff_le_comap.2 ?_)
     exact fun g hg => ⟨0, g, hg, by simp⟩
   exact hle hx
@@ -324,7 +324,7 @@ theorem exists_pow_chartMonomial_mul_sub_map_mem {y : (Σ k, ι k) → Ω} (hA :
     have h := (pointIdeal A y).add_mem ((pointIdeal A y).mul_mem_left (s ^ m) hg)
       ((pointIdeal A y).mul_mem_left (s ^ n) hk)
     convert h using 1
-    simp only [map_add (f := _), map_mul, map_pow, hs, ← hsdef]
+    simp only [map_add (f := _), map_mul, map_pow, hs]
     ring
   | mul_X p i hp =>
     obtain ⟨n, g, hg⟩ := hp

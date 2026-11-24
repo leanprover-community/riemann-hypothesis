@@ -152,9 +152,9 @@ section Record
 variable (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
 
 structure UsedJ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop where
-  a22 : Formalism.MainNotions.CrystallineLiftingBounds.adm22 D HW F
-  a23 : Formalism.MainNotions.CrystallineLiftingBounds.adm23 D HW F
-  c4 : Formalism.MainNotions.N.LetterConditionGlobal D HW F
+  a22 : Formalism.MainNotions.CrystallineLiftingBounds.adm22 D HW
+  a23 : Formalism.MainNotions.CrystallineLiftingBounds.adm23 D HW
+  c4 : Formalism.MainNotions.N.LetterConditionGlobal D HW
 
 theorem ptEx_at (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (hG : Good K 1 LL) (hK : CaseA K LL)
     [NeZero (Module.finrank ℚ_[l] ↥(K0 K))] :

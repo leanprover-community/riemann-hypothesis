@@ -76,7 +76,7 @@ def resLt {K K' LL : FinExt l} (hle : K.1 ≤ K'.1) (T : Lt K LL) : Lt K' LL whe
   ρ := T.ρ.comp (Subgroup.inclusion (GK_le hle))
   cont := fun x => (T.cont x).comp (continuous_subtype_val.subtype_mk _)
   L := { T := T.L.T
-         stable := fun g x hx => T.L.stable _ x hx
+         stable := fun _ x hx => T.L.stable _ x hx
          fg := T.L.fg
          free := T.L.free
          span := T.L.span }
@@ -89,7 +89,7 @@ theorem gks_eq (P : LocPrime l) (H : LocHW l P) (K : FinExt l) (s : ℕ) (LL : F
   rfl
 
 theorem base_setup (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (K : FinExt l) (s : ℕ) (LL : FinExt l)
-    (h : Good K s LL) : ∃ (K' : FinExt l) (h' : Good K' s LL) (hle : K.1 ≤ K'.1), K0 K' = K0 K ∧
+    (h : Good K s LL) : ∃ (K' : FinExt l) (h' : Good K' s LL) (_ : K.1 ≤ K'.1), K0 K' = K0 K ∧
       ((HW l).W K' s LL h').GKs = ⊤ ∧
       ∀ g : ↥(GK K), g ∈ ((HW l).W K s LL h).GKs ↔ (g : GQ l) ∈ GK K' := by
   haveI hfin : FiniteDimensional ℚ_[l] ↥(Ks K s) := GlobalTheory.InvariantLift.finKs K s
@@ -122,7 +122,7 @@ theorem restrict_crys (D : Formalism.BasicNotions.D7) {K K' LL : FinExt l} (hle 
 
 theorem restrict_jumps (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (K : FinExt l) (s : ℕ) (LL : FinExt l)
     (h : Good K s LL) (K' : FinExt l) (h' : Good K' s LL) (hle : K.1 ≤ K'.1) (T : Lt K LL)
-    (hT : IsCrys ((D.loc l).PD K) T.ρ) (M hh : Let K → ℕ) (hJ : JumpsLet ((HW l).W K s LL h) T M hh)
+    (M hh : Let K → ℕ) (hJ : JumpsLet ((HW l).W K s LL h) T M hh)
     (Ljumps : ∀ (τ' : ↥K'.1 →ₐ[ℚ_[l]] ↥LL.1) (a : ℤ),
       IsJumpV ((D.loc l).PD K') (T.ρ.comp (Subgroup.inclusion (GK_le hle))) τ' a →
         IsJumpV ((D.loc l).PD K) T.ρ (τ'.comp (IntermediateField.inclusion hle)) a) :
@@ -152,7 +152,7 @@ theorem pull_cocycle {K K' LL : FinExt l} (hle : K.1 ≤ K'.1) (T : Lt K LL) (H 
     (c : ↥(latticeCocycles (resLat T H))) : ∃ c' : ↥(latticeCocycles (resLat (resLt (K := K) (K' := K') (LL := LL) hle T) H')),
       ∀ g, (c' : ↥H' → (resLt (K := K) (K' := K') (LL := LL) hle T).V) g = (c : ↥H → T.V) (eMap hle H H' hm g) :=
   ⟨⟨fun g => (c : ↥H → T.V) (eMap hle H H' hm g),
-    ⟨⟨c.2.1.1.comp (eMap_cont hle H H' hm), fun g g' => c.2.1.2 (eMap hle H H' hm g) (eMap hle H H' hm g')⟩, fun g _ => c.2.2 _ trivial⟩⟩,
+    ⟨⟨c.2.1.1.comp (eMap_cont hle H H' hm), fun g g' => c.2.1.2 (eMap hle H H' hm g) (eMap hle H H' hm g')⟩, fun _ _ => c.2.2 _ trivial⟩⟩,
     fun _ => rfl⟩
 
 theorem pull_f (P : LocPrime l) {K K' LL : FinExt l} (hle : K.1 ≤ K'.1) (T : Lt K LL)
@@ -252,7 +252,7 @@ theorem push_cocycle {P : LocPrime l} (AI : LocAinf l P) {K K' LL : FinExt l} (h
       ∀ (b : TW (RW LL) (resLt (K := K) (K' := K') (LL := LL) hle T)) g, Zf AI T H c (toTW hle T b) g = toTW hle T (Zf AI (resLt (K := K) (K' := K') (LL := LL) hle T) H' c' b (fMap H H' hm htop g)) :=
   ⟨⟨fun g => (c' : ↥H' → (resLt (K := K) (K' := K') (LL := LL) hle T).V) (fMap H H' hm htop g),
     ⟨⟨c'.2.1.1.comp (fMap_cont H H' hm htop), fun g g' => c'.2.1.2 (fMap H H' hm htop g) (fMap H H' hm htop g')⟩,
-      fun g _ => c'.2.2 _ trivial⟩⟩, fun _ => rfl, fun _ _ => rfl⟩
+      fun _ _ => c'.2.2 _ trivial⟩⟩, fun _ => rfl, fun _ _ => rfl⟩
 
 theorem toTW_φ {K K' LL : FinExt l} (hle : K.1 ≤ K'.1) (T : Lt K LL) (b : TW (RW LL) (resLt (K := K) (K' := K') (LL := LL) hle T)) :
     TWmap (φRW LL) T (toTW hle T b) - toTW hle T b = toTW hle T (TWmap (φRW LL) (resLt (K := K) (K' := K') (LL := LL) hle T) b - b) := rfl

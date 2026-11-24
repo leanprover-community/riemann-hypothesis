@@ -154,7 +154,7 @@ theorem expBij_of_unitInChart (hv : ∀ i, IsTangent (v i)) (hS : UnitInChart G 
       rw [IsTanOver, ← Category.assoc, spMap_comp, ← hu]
       congr 2
       ext b
-      simp [addDers_apply, TrivSqZeroExt.fst_sum, t])
+      simp [addDers_apply, t])
     rw [Finr] at ha
     refine ⟨a, fun b => ?_⟩
     have := congrArg TrivSqZeroExt.snd (AlgHom.congr_fun (chart_inj j ha) b)

@@ -1390,7 +1390,7 @@ theorem errorTerm_nonneg (O : OnObj S P c) (hPg : LeafPage O) (hSz : LeafSizes O
 
 
 
-theorem bad_sum (O : OnObj S P c) (hPg : LeafPage O) (hSz : LeafSizes O) (hX : LeafX O) (hBad : LeafBad O) (j : Bs.J) :
+theorem bad_sum (O : OnObj S P c) (hPg : LeafPage O) (hSz : LeafSizes O) (hBad : LeafBad O) (j : Bs.J) :
     ∑ p ∈ O.Bad, Real.log (p : ℝ) * O.errP j p ≤ O.Cb * (O.f * O.m * O.b * O.L) := by
   obtain ⟨hC, hk, hm, hf, hT, hSc, heta, hbp, hvd, hNc, pg1, pg2, pq1, pdd, h12, hqd, hqg1, hqg2, hdg1, hdg2,
     hg1s, hg2s, hq1s, hdds, hx⟩ := hPg
@@ -1685,7 +1685,7 @@ theorem on_core (N : IndefNum Bs) (O : OnObj S P c) (CE : ℝ) (hRk : RankRows S
       (mul_nonneg (mul_nonneg (by linarith) (by linarith)) hb0.le) (hsh j)
     have hCb0' : 0 ≤ O.Cb := by unfold OnObj.Cb; linarith [hBad.1, hBad.2.1]
 
-    have hbad := bad_sum O hPg hSz' hX hBad j
+    have hbad := bad_sum O hPg hSz' hBad j
     have b2 := absorb_local_conditions_exact O.C O.Cb O.L O.xe O.f O.m O.b O.k (O.wt j) O.Se O.Y O.X2
       (∑ p ∈ O.Bad, Real.log (p : ℝ) * O.errP j p) hC1 hCb0'
       hL1 (le_of_eq hLxe) (by linarith) hm1 hb0 hk1 hlk (hw j).1 (hw j).2 hSe hkS hY1 hlY hYb hkX hbad

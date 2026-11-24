@@ -892,7 +892,7 @@ namespace GlobalTheory.NormTower
 open IntermediateField
 
 theorem abs_norm_coeff_zero_pow (K : Type) [Field K] [NumberField K] (σ : K →+* ℂ) (β : ℂ) (p : K[X])
-    (h : GlobalTheory.FunObj.SqNum.IsMinPol σ β p) (hβ : IsAlgebraic ℚ β) :
+    (h : GlobalTheory.FunObj.SqNum.IsMinPol σ β p) :
     |(Algebra.norm ℚ (p.coeff 0) : ℚ)| ^ (minpoly ℚ β).natDegree =
       |(minpoly ℚ β).coeff 0| ^ (p.natDegree * Module.finrank ℚ K) := by
   obtain ⟨hm, hirr, hev⟩ := h
@@ -1114,7 +1114,7 @@ theorem height_meanVal [StarRing K] [_root_.NumberField.IsTotallyComplex K] (σ 
 
   set e := (minpoly ℚ β).natDegree with he
   have he0 : 0 < e := minpoly.natDegree_pos halg.isIntegral
-  have hnorm := _root_.GlobalTheory.NormTower.abs_norm_coeff_zero_pow K σ β p hp halg
+  have hnorm := _root_.GlobalTheory.NormTower.abs_norm_coeff_zero_pow K σ β p hp
   have hK : (0 : ℝ) < Module.finrank ℚ K := by exact_mod_cast Module.finrank_pos
   have hlogN : (e : ℝ) * Real.log |((Algebra.norm ℚ a : ℚ) : ℝ)| =
       ((d * Module.finrank ℚ K : ℕ) : ℝ) * Real.log |(((minpoly ℚ β).coeff 0 : ℚ) : ℝ)| := by
@@ -1179,7 +1179,7 @@ theorem htLe_of_real [StarRing K] (g : Formalism.PairingDivisionLocalBalance.Pl 
             intro h; apply hw
             have := hb w
             have h0 : 0 ≤ lw w * |((vw w z + g w : ℤ) : ℝ)| := mul_nonneg (lw_nonneg w) (abs_nonneg _)
-            simp only [Function.mem_support, ne_eq, not_not] at h ⊢
+            simp only [Function.mem_support] at h ⊢
             linarith) hfin (fun w => hb w)
       _ = ∑ᶠ w, lw w * |y' w| + ∑ᶠ w, lw w * |y w| := finsum_add_distrib h2 h1
       _ ≤ 2 * H := by linarith
@@ -1304,7 +1304,7 @@ variable {F : Type} [Field F] [NumberField F]
 theorem isOpen_int (F : Type) [Field F] [NumberField F] : IsOpen (intAf F) :=
   RestrictedProduct.isOpen_forall_mem
     (A := fun v : HeightOneSpectrum (𝓞 F) => (v.adicCompletionIntegers F : Set (v.adicCompletion F)))
-    fun v => Valued.isOpen_valuationSubring _
+    fun _ => Valued.isOpen_valuationSubring _
 
 theorem trace_int {a : F} (h : algebraMap F (Af F) a ∈ intAf F) : ∃ n : ℤ, Algebra.trace ℚ F a = n := by
   have h1 : a ∈ (algebraMap (𝓞 F) F).range := by
@@ -1795,7 +1795,7 @@ theorem square_top_term_joined_estimates : GlobalTheory.Published.HoweDualityRea
   have hTor : TorEx := GlobalTheory.ToricExist.torEx hTr hF hL
   have hBA : BetaArch := _root_.GlobalTheory.SqTop.betaArch_of_transport hTr hF hLB hTor
   have hDE : DenEx := GlobalTheory.DenExist.denEx hZD hF
-  have hDS : DenSum := GlobalTheory.DenSumPf.denSum hZD hF
+  have hDS : DenSum := GlobalTheory.DenSumPf.denSum hZD
   have hThb : ThbSt := _root_.GlobalTheory.SqTop.thbSt_of_inputs hTD hF hTor hDE hDS hBA
   have hBS : BotSmall := GlobalTheory.SqTop.BotSmallProof.botSmall_holds
   have hBC : BotConst := _root_.GlobalTheory.SqTop.botConst_of_inputs_alt hPr hTI hLM hInp hBS hL

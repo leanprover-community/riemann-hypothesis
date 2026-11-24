@@ -113,7 +113,7 @@ theorem dv_eq_sum (T : LocLat G Qp LL O) (e : ℕ) {d : ℕ} (b : Fin d → W.DD
     dv W T e b c₀ = ∑ m, c₀ m • dv W T e b (Pi.single m 1) := by
   unfold dv
   refine Finset.sum_congr rfl fun m _ => ?_
-  rw [Finset.sum_eq_single m (fun m' _ hm' => by simp [Pi.single_apply, hm']) (by simp)]
+  rw [Finset.sum_eq_single m (fun m' _ hm' => by simp [hm']) (by simp)]
   simp
 
 theorem dvO_lin (T : LocLat G Qp LL O) (e : ℕ) {d : ℕ} (b : Fin d → W.DD T) {I : Type} (s : Finset I)

@@ -625,7 +625,7 @@ theorem vm_bd {N : ℕ} (s : Fin N → ℂ) (H : Matrix (Fin N) (Fin N) ℂ) (hH
           _ = A := mul_one A
     _ = N * A := by simp
 
-theorem dot_bd {N : ℕ} (u w : Fin N → ℂ) {A B' : ℝ} (hA : 0 ≤ A) (hB : 0 ≤ B') (hu : ∀ i, ‖u i‖ ≤ A)
+theorem dot_bd {N : ℕ} (u w : Fin N → ℂ) {A B' : ℝ} (hA : 0 ≤ A) (hu : ∀ i, ‖u i‖ ≤ A)
     (hw : ∀ i, ‖w i‖ ≤ B') : ‖u ⬝ᵥ w‖ ≤ N * (A * B') := by
   unfold dotProduct
   calc ‖∑ i, u i * w i‖ ≤ ∑ i, ‖u i * w i‖ := norm_sum_le _ _
@@ -711,7 +711,7 @@ theorem rad_main (t : ℂ) (γ : B.Mat k ρ) (x x' : U.RC k 1 ρ) {R δ : ℝ} (
   have hux : ∀ v, ‖Matrix.vecMul (star (cy x)) (Hpk k ρ) v‖ ≤ ((2 * ρ + k + 1 : ℕ) : ℝ) * (R / δ) :=
     vm_bd _ _ hpk_le hRd (fun i => by rw [Pi.star_apply, norm_star]; exact hcx i)
   have hnn : ‖nn x‖ ≤ ((2 * ρ + k + 1 : ℕ) : ℝ) * ((((2 * ρ + k + 1 : ℕ) : ℝ) * (R / δ)) * (R / δ)) :=
-    dot_bd _ _ hnR hRd hux hcx
+    dot_bd _ _ hnR hux hcx
   rw [PLO] at eO
   simp only [PVO] at eO
   have hsum : ∑ v, -Matrix.vecMul (star (cy x)) (Hpk k ρ) v * -(cy x v * t) = nn x * t := by
@@ -744,7 +744,7 @@ theorem rad_main (t : ℂ) (γ : B.Mat k ρ) (x x' : U.RC k 1 ρ) {R δ : ℝ} (
     rw [← norm_star, ← Pi.star_apply, ← hs]
     exact vm_bd _ _ hpk_le hRd hu' v
   have hnn' : ‖nn x'‖ ≤ ((2 * ρ + k + 1 : ℕ) : ℝ) * ((R / δ) * (((2 * ρ + k + 1 : ℕ) : ℝ) * (R / δ))) :=
-    dot_bd _ _ hRd hnR hu' hcx'
+    dot_bd _ _ hRd hu' hcx'
   have ha' : ‖-(1 / 2 : ℂ) * nn x' + Complex.I * (dy x' : ℂ)‖ ≤ R / δ := by
     refine div_bd hδ ht ?_
     rw [mul_comm, ← hOL, ← eL]

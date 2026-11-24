@@ -47,12 +47,12 @@ theorem data_equiv_derived (hgap : StdGap ε lam)
       ∀ (a b : Fin n) (x'' : closGen E₁ V₁), (x'' : H₁) = ((E₁ a b x : D₁) : H₁) →
         ((U x'' : closGen E₂ V₂) : H₂) = ((E₂ a b y : D₂) : H₂) := by
   classical
-  have hst₁ := closGen_stable hgap hσ₁ hD₁ hV₁ hc₁ hVK₁
+  have hst₁ := closGen_stable hσ₁ hD₁ hV₁ hc₁
   have hint : ∀ g ∈ UJset ε, ∀ z ∈ closGen E₁ V₁, ICD.ext U (σ₁ g z) = σ₂ g (ICD.ext U z) :=
     fun g hg z hz => ICD.ext_intertw U hU hst₁ hg hz
 
   have hV12 : ∀ v ∈ V₁, ∃ w ∈ V₂, (w : H₂) = ICD.ext U (v : H₁) := by
-    have hK := data_isKTypeOf hgap hσ₁ hD₁ hV₁ hc₁ hVK₁
+    have hK := data_isKTypeOf hσ₁ hD₁ hV₁ hVK₁
     have hle : V₁.map D₁.subtype ≤ closGen E₁ V₁ := by
       rintro _ ⟨v, hv, rfl⟩
       exact ICD.mem_closGen (ICD.le_gen E₁ V₁ hv)
@@ -162,7 +162,7 @@ theorem ICD.transfer (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ) (hD :
     rw [U.apply_symm_apply] at h1
     have : x = U (sigLam ε Ψ T.w g (U.symm y)) := Subtype.ext (hxy.trans h1.symm)
     rw [this, U.symm_apply_apply, sigLam_coe hgap hP hv₀ hg]
-  have hst := closGen_stable hgap hσ hD hV hc hVK
+  have hst := closGen_stable hσ hD hV hc
   have hint : ∀ g ∈ UJset ε, ∀ z ∈ closGen E V, ICD.ext U.symm (σ g z) = rreg ε g (ICD.ext U.symm z) :=
     fun g hg z hz => ICD.ext_intertw U.symm hU' hst hg hz
   let R : D → smD ε (rreg ε) → Prop := fun x y =>
@@ -210,7 +210,7 @@ theorem capelli_data (hgap : StdGap ε lam) (hσ : IsURepOn (UJset ε) σ) (hD :
       Algebra.adjoin ℂ (Set.range fun ab : Fin n × Fin n => (E ab.1 ab.2, smE ε (rreg ε) ab.1 ab.2)) := by
     rwa [← h1, ← h2]
   exact ICD.transfer hgap hσ hD hV hc hVK hV0 hP hp _
-    (fun v₀ hv₀ y hy => capelli_sigLam hgap hP hv₀ hcap Y y hy) x hx
+    (fun v₀ hv₀ y hy => capelli_sigLam hP hcap Y y hy) x hx
 
 end One
 

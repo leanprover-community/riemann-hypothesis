@@ -1416,7 +1416,7 @@ private theorem isOpen_intA (F : Type) [Field F] [NumberField F] :
     IsOpen {a : FiniteAdeleRing (𝓞 F) F | ∀ v, Valued.v (a v) ≤ 1} :=
   RestrictedProduct.isOpen_forall_mem
     (A := fun v : HeightOneSpectrum (𝓞 F) => ((v.adicCompletionIntegers F : ValuationSubring _) : Set (v.adicCompletion F)))
-    (fun v => Valued.isOpen_valuationSubring _)
+    (fun _ => Valued.isOpen_valuationSubring _)
 
 private theorem continuous_sim {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} :
     Continuous (sim : GUf E n → AfQˣ) := continuous_snd.comp continuous_subtype_val

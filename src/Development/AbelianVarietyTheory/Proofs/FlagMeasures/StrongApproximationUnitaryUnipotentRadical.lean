@@ -115,7 +115,7 @@ theorem exists_idem {st : S →+ S} {p h : S} (hm : ∀ x y, st (x * y) = st y *
     ∃ e, e * e = e ∧ e * st e = 0 ∧ st e * e = 0 ∧ e * p = p ∧ p * e = e := by
   have hq : st p * st p = st p := by rw [← hm, hp]
   have hs : st (p * (1 - h * st p)) = (1 - h * p) * st p := by
-    rw [hm, map_sub, hm, hi, st_one hm hi, st_half hm hi hh hc, hc]
+    rw [hm, map_sub, hm, hi, st_one hm hi, st_half hm hi hh, hc]
   have e1 : p * (1 - h * st p) * p = p := by
     rw [mul_assoc, sub_mul, mul_assoc, h0, mul_zero, sub_zero, one_mul, hp]
   refine ⟨p * (1 - h * st p), by rw [← mul_assoc, e1], ?_, ?_, e1, by rw [← mul_assoc, hp]⟩
@@ -139,7 +139,7 @@ theorem exists_param [TopologicalSpace S] [IsTopologicalRing S]
   have hs' : st e₃ = e₁ := by rw [← hs, hi]
   have h33 : e₃ * e₃ = e₃ := by rw [← hs, ← hm, h11]
   have he3 : e₃ ∈ S₀ := hs ▸ h0 _ he
-  have hsh : st h = h := st_half hm hi hh hc
+  have hsh : st h = h := st_half hm hi hh
   obtain ⟨B, hB⟩ : ∃ B : S → S, ∀ x, B x = (1 - e₁ - e₃) * x * e₃ := ⟨_, fun _ => rfl⟩
   obtain ⟨Wd, hW⟩ : ∃ Wd : S → S, ∀ y, Wd y = h * (e₁ * (y - st y) * e₃) := ⟨_, fun _ => rfl⟩
   have Bc : Continuous B := by

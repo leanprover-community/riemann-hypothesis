@@ -35,7 +35,7 @@ theorem psi_weighted_memLp {v₀ : T.V} (hgap : StdGap ε lam) (hP : IsPsiFor ε
     MemLp (fun g : Formalism.REAL.UJ ε => ((Real.sqrt (S7.hs (Formalism.MainNotions.S.umat g)) : ℝ) : ℂ) *
       inner ℂ w (Ψ (Formalism.MainNotions.S.umat g) v)) 2 (Formalism.REAL.muG ε) := by
   have hC : ((‖uniformisationL2 ε Ψ v₀ T.w‖ ^ 2 : ℝ) : ℂ) ≠ 0 := by
-    have h := datumEmbedding_highest_ne_zero hgap hP hv₀
+    have h := datumEmbedding_highest_ne_zero hP hv₀
     exact_mod_cast pow_ne_zero 2 (norm_ne_zero_iff.2 h)
   have hmem : ∀ u, (⟨uniformisationL2 ε Ψ v₀ u, datumEmbedding_mem_smooth hP v₀ u⟩ : smD ε (rreg ε)) ∈
       genSub (smE ε (rreg ε)) (datumV ε Ψ v₀) := fun u =>

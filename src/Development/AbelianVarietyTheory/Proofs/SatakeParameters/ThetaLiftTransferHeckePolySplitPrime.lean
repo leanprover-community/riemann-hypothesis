@@ -97,7 +97,7 @@ theorem poly_id (q r t : ℕ) (u v : ℂ) (a : ℕ → ℂ) :
   funext k
   simp only [ite_mul, zero_mul, mul_ite, mul_zero]
   rw [← Finset.sum_filter, ← Finset.sum_filter]
-  refine Finset.sum_congr (by ext j; simp [Nat.lt_succ_iff, and_comm]) fun j hj => ?_
+  refine Finset.sum_congr (by ext j; simp [and_comm]) fun j hj => ?_
   have hjk : j ≤ k := by simpa [Nat.lt_succ_iff] using (Finset.mem_filter.1 hj).1
   obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hjk
   rw [Nat.add_sub_cancel_left, pow_add, mul_pow]

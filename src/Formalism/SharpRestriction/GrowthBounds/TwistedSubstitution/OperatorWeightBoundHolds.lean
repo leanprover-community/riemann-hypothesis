@@ -1343,7 +1343,7 @@ private theorem initMinor_eq_zero_of_not_injective {R : Type} [CommRing R] {r n 
     simp [hij])
 
 private theorem initMinor_eq_sign_sort_mul {R : Type} [CommRing R] {r n s : ℕ} (I : Fin s → Fin r) (hs : s ≤ n)
-    (hI : Function.Injective I) :
+    :
     PI.RW.initMinor R I hs =
       ((((Equiv.Perm.sign (Tuple.sort I) : ℤˣ) : ℤ) : MvPolynomial (Fin r × Fin n) R)) *
         PI.RW.initMinor R (I ∘ Tuple.sort I) hs := by
@@ -1363,7 +1363,7 @@ theorem bideterminant_span_holds : PI.RW.BideterminantSpan := by
       show (∏ i, PI.RW.initMinor R (I i) (hsz i)) = _
       unfold PI.RW.bideterminant
       rw [← Finset.prod_mul_distrib]
-      exact Finset.prod_congr rfl (fun i _ => initMinor_eq_sign_sort_mul (I i) (hsz i) (hinj i))
+      exact Finset.prod_congr rfl (fun i _ => initMinor_eq_sign_sort_mul (I i) (hsz i))
     rw [hb, ← Int.cast_prod, ← zsmul_eq_mul]
     have hJ : ∀ i, StrictMono (I i ∘ Tuple.sort (I i)) := fun i =>
       (Tuple.monotone_sort (I i)).strictMono_of_injective ((hinj i).comp (Equiv.injective _))

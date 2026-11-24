@@ -82,7 +82,7 @@ theorem ptPartner_ones (l : List ℂ) (a : ℕ) : D.ptPartner (l.map fun c => (1
     simp only [List.map_cons, D.ptPartner, ih]
     split_ifs with h <;> omega
 
-theorem ptPerm_bigPt {n : ℕ} (d : Fin n → ℂ) (hd : ∀ i, d i ≠ 0) : D.ptPerm (bigPt d) = 1 := by
+theorem ptPerm_bigPt {n : ℕ} (d : Fin n → ℂ) : D.ptPerm (bigPt d) = 1 := by
   unfold D.ptPerm
   split_ifs with h
   · ext i
@@ -281,7 +281,7 @@ theorem bigCellVan : PBJ.BigCellVan := by
     rw [← hγs] at hlaw
     rw [← hlaw]
     have hw : (h.1.2 ▸ D.ptPerm (bigPt d) : Equiv.Perm (Fin (P.r + 1))) = 1 :=
-      cast_perm_eq_one _ _ (ptPerm_bigPt d hd)
+      cast_perm_eq_one _ _ (ptPerm_bigPt d)
     obtain ⟨hmono, hnz⟩ := Formalism.FourierDecayAlt.P.Dx2.VV.ptMatN_monoP' (bigPt d) (P.r + 1) h.1.2 h.1.1
     rw [hw] at hmono
     rw [hw, orbJ_one_zero p.T.base hγ' hpos' hnz (hZγ'.trans hmono) F

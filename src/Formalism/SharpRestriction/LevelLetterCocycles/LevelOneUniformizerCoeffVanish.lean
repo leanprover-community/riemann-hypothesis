@@ -549,7 +549,7 @@ namespace Formalism.MainNotions.UnusedSlot80
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.WachCoordinates.Br
 
 theorem levETie_of (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
-    (h4 : Formalism.MainNotions.DeltaInvariantLattices.p4L D.loc HW D.locA F Cm) (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (hG : Good K 1 LL) :
+    (h4 : Formalism.MainNotions.DeltaInvariantLattices.p4L D.loc HW D.locA F) (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (hG : Good K 1 LL) :
     LevE.Comparison₂ ((HW l).W K 1 LL hG) ((Cm l).C K 1 LL hG).tie.levB :=
   ⟨((Cm l).C K 1 LL hG).tie.levN_eq, ((Cm l).C K 1 LL hG).tie.levB_supp, ((Cm l).C K 1 LL hG).tie.cmp_eq,
     LevE.hΓ_of ((Cm l).C K 1 LL hG).tie.levB_Γ, ((Cm l).C K 1 LL hG).tie.levB_φ,

@@ -528,7 +528,7 @@ theorem UpperTheory.V.Z.Ord.core_hecke_of_automorphic_hecke_dense_weight :
     fun h0 => hF0 ((Submodule.mem_bot ℂ).1 (h0 ▸ hF))
   have hO := hch v (ω v) (hsm v) (hinv v) fun j =>
     smul_left_injective ℂ hF0 ((hop (.inr (v, j))).symm.trans ((hU' v j).2 F hF))
-  obtain ⟨rc, hrc⟩ := _root_.UpperTheory.V.Z.Win.exRec'_alt hL (H.ovr v)
+  obtain ⟨rc, hrc⟩ := _root_.UpperTheory.V.Z.Win.exRec'_alt (H.ovr v)
   obtain ⟨φ⟩ := hPS v
   have hpol := (_root_.UpperTheory.V.Z.Win.T2.psRec_alt hL L Ω n (H.Sl v) (H.pl v) (H.ovr v) (H.art v) (hA.art_spec v) rc hrc (Y.σl v) (ω v)
     (hsm v)).1 (.of_injective φ.toIntertwiningMap φ.toLinearEquiv.injective)

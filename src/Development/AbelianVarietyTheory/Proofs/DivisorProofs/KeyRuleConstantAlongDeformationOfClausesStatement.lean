@@ -420,8 +420,8 @@ noncomputable def intRing : ValuationSubring (FractionRing R) :=
 
 noncomputable def intEquiv : R ≃+* intRing R :=
   RingEquiv.ofBijective ((algebraMap R (FractionRing R)).codRestrict (intRing R) fun y => ⟨y, rfl⟩)
-    ⟨fun a b h => IsFractionRing.injective R (FractionRing R) (congrArg Subtype.val h),
-     fun ⟨x, ⟨y, hy⟩⟩ => ⟨y, Subtype.ext hy⟩⟩
+    ⟨fun _ _ h => IsFractionRing.injective R (FractionRing R) (congrArg Subtype.val h),
+     fun ⟨_, ⟨y, hy⟩⟩ => ⟨y, Subtype.ext hy⟩⟩
 
 variable {K : Type} [Field K] (φ : K →+* FractionRing R)
 

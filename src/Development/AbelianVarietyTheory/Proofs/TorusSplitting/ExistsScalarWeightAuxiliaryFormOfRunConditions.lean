@@ -794,7 +794,7 @@ theorem exists_etaOK : ∀ (D : D7) (T : Top D) (h : LawsP T) (j : ℕ) (hj : In
   obtain ⟨Q, PT, hS, -, -⟩ := id hP.page
   have what₂ := GlobalTheory.EtaAn.page_rows D large₂ H.CA hP.hyp.1 hS
   obtain ⟨t1, t2, t3, t4, t5, t6⟩ := hP.tie
-  have htie : TieC ⟨1, 2, 1, 2, 1, 2, 1, 4, 7⟩ H 1 4 0 11 C2 A2 7 :=
+  have htie : TieC ⟨1, 2, 1, 2, 1, 2, 1, 4, 7⟩ H 1 4 11 C2 A2 7 :=
     ⟨t1, t2, t3, t4, t5, rfl, rfl, t6, le_rfl, le_rfl, le_rfl, le_rfl, le_rfl, le_rfl, le_rfl⟩
   have hsupp : EtaleWeightGaps.PageSupp D large₂ (recB h.toLawsCore) C2 A2 nW
       ⟨(((D.host.g 0 * D.host.g 1) ^ DF wL : ℕ) : 𝓞 (recB h.toLawsCore).KO), 1, 1, 1⟩ wL := by

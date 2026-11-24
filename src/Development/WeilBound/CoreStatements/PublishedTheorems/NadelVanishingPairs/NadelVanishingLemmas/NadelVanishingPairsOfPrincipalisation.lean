@@ -637,7 +637,7 @@ theorem regAt_finv {V : X.Opens} (σ : Γ(twist (GlobalTheory.structureModule Y)
 open Classical in
 def funOf (V : X.Opens) (σ : Γ(twist (GlobalTheory.structureModule Y) (toLB D), s ⁻¹ᵁ V)) : Γ(X, V) :=
   if hV : genericPoint X ∈ V then
-    (exists_fnOf_eq hV fun x hx => regAt_finv hbij hReg σ hx).choose else 0
+    (exists_fnOf_eq hV fun _ hx => regAt_finv hbij hReg σ hx).choose else 0
 
 theorem fnOf_funOf {V : X.Opens} (hV : genericPoint X ∈ V)
     (σ : Γ(twist (GlobalTheory.structureModule Y) (toLB D), s ⁻¹ᵁ V)) :

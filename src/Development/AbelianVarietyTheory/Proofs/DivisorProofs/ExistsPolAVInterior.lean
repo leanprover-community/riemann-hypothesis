@@ -435,7 +435,7 @@ theorem eq_of_evalPt_eq {Z : Scheme.{0}} {O : Z.Opens} (s s' : Γ(Z, O))
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {X : Scheme.{0}}
 
-theorem pull_diff (t : SAB H X) (V : X.Opens) (U : X.affineOpens) {n : ℕ}
+theorem pull_diff (t : SAB H X) (U : X.affineOpens) {n : ℕ}
     (v : Fin n → (Sp (DualNumber Γ(X, U.1)) ⟶ t.G.left)) (hv : ∀ a, IsTanAtG t (GlobalTheory.LogKS.chart U) (v a))
     (Θ : Matrix (Fin n) (Fin n) Γ(X, U.1)) {J : Type} (W : J → t.G.left.Opens) (j : J → t.PP.L.ι)
     (d : J → ∀ O : t.G.left.Opens, Γ(t.G.left, O) → Γ(t.G.left, O)) (hWj : ∀ i, W i ≤ t.PP.L.U (j i))

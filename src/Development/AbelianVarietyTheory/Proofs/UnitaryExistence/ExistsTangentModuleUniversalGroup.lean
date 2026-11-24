@@ -282,10 +282,10 @@ instance : SMul S (TanSp x0 G) where
   smul a m := TanSp.mk (smT x0 a m.pt) (by rw [smT_smT, zero_mul, m.tan])
 
 instance : Module S (TanSp x0 G) where
-  one_smul m := TanSp.ext (smT_unit x0 _)
-  mul_smul a b m := TanSp.ext (smT_smT x0 a b _).symm
+  one_smul _ := TanSp.ext (smT_unit x0 _)
+  mul_smul a b _ := TanSp.ext (smT_smT x0 a b _).symm
   smul_zero a := TanSp.ext (smT_one' x0 a)
-  smul_add a m n := TanSp.ext (smT_mul x0 a _ _)
+  smul_add a _ _ := TanSp.ext (smT_mul x0 a _ _)
   add_smul a b m := TanSp.ext (smT_add x0 _ m.tan a b)
   zero_smul m := TanSp.ext m.tan
 

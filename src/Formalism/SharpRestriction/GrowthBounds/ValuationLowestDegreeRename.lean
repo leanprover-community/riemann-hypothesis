@@ -52,7 +52,7 @@ namespace Formalism.MainNotions.SelectionLemmas
 
 open Formalism.MainNotions.G
 
-def Conclusion2 (_D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) : Prop :=
+def Conclusion2 (CLa Ck Crk Cdeg : ℝ) : Prop :=
   ∀ (p n' : ℕ) [NeZero n'] (W Qq O Kf : Type) [CommRing W] [IsDomain W] [IsDiscreteValuationRing W] [Field Qq]
     [Algebra W Qq] [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field Kf] [Algebra O Kf]
     (ι : Qq →+* Kf) (σ : Qq ≃+* Qq) (jW : W →+* O) (w : O),
@@ -90,7 +90,7 @@ def Conclusion2 (_D : Formalism.BasicNotions.D7) (CLa Ck Crk Cdeg : ℝ) : Prop 
   ∀ P ∈ NN, ∀ mm ∈ P.support,
     (vsDeg mm : ℝ) ≤ Cdeg * (F.TT.card : ℝ) * (La * a / ((p : ℝ) * k) + a * (p : ℝ) ^ (-(L₁ : ℤ)) + k * Q)
 
-def PathPairCorrespondence (_D : Formalism.BasicNotions.D7) : Prop :=
+def PathPairCorrespondence : Prop :=
   ∀ (n' : ℕ) [NeZero n'] (TT : Finset (Fin n')) (r L₁ L₂ u M₀ G' N₁ : ℕ),
     Even n' → 2 ≤ r → L₁ ≤ L₂ → L₂ < u → G' = (M₀ + 5) * ((6 * r + 1) * u) → 3 * G' ≤ n' →
     Formalism.G0.GoodOrbitIntervalTileCondition n' (TT.map Fin.valEmbedding) L₂ (r - 1) r u M₀ G' N₁ →
@@ -100,7 +100,7 @@ def PathPairCorrespondence (_D : Formalism.BasicNotions.D7) : Prop :=
       (∀ s < n' / ((6 * r + 1) * u), Formalism.G0.Marked (TT.map Fin.valEmbedding) r u s →
         ∃ j : ℤ, (F.fr j 0 % (n' : ℤ)).toNat ∈ Formalism.G0.cell r u s (2 * r + 2))
 
-def admB2 (_D : Formalism.BasicNotions.D7) : Prop :=
+def admB2 : Prop :=
   ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (ι : Type) (n : ℕ) [NeZero n]
     (LL : Letters ι) (S : Set ι),
     (∀ F G : MvPolynomial (ι × Fin n) O,
@@ -118,20 +118,20 @@ def admB2 (_D : Formalism.BasicNotions.D7) : Prop :=
 def stCount (n : ℕ) (mu : Fin n → ℤ) : ℕ :=
   Nat.card {I : ℤ → Finset (Fin n) // IsSt (N := 0) (fun _ => mu) I}
 
-def admB3 (_D : Formalism.BasicNotions.D7) : Prop :=
+def admB3 : Prop :=
   ∀ (n N : ℕ) (mu : Fin (N + 1) → Fin n → ℤ), Dominant (pEnd mu) →
     ((Nat.card {I : ℤ → Finset (Fin n) // IsSt mu I} : ℕ) : ℚ) = ∏ i : Fin n, ∏ j : Fin n,
       if i < j then (((pEnd mu i : ℤ) : ℚ) - ((pEnd mu j : ℤ) : ℚ) + ((j : ℕ) : ℚ) - ((i : ℕ) : ℚ)) /
         (((j : ℕ) : ℚ) - ((i : ℕ) : ℚ)) else 1
 
-def ColumnFamilyLowerSet (_D : Formalism.BasicNotions.D7) : Prop :=
+def ColumnFamilyLowerSet : Prop :=
   ∀ (m : ℕ) (ν : Fin (m + 1) → ℤ), Dominant ν →
     stCount (m + 1) ν =
       ∑ μ ∈ Fintype.piFinset (fun i : Fin m => Finset.Icc (ν i.succ) (ν i.castSucc)), stCount m μ
 
 
 open Classical in
-def GenericProjectionCriterion (_D : Formalism.BasicNotions.D7) : Prop :=
+def GenericProjectionCriterion : Prop :=
   ∀ (m : ℕ) (ν : Fin (m + 1) → ℤ) (b : ℕ), Dominant ν →
     (stCount (m + 1) ν * Nat.choose (b + m) m =
       ∑ μ ∈ (Fintype.piFinset fun i : Fin (m + 1) => Finset.Icc (ν i) (ν i + b)).filter (fun μ => HStrip ν μ b),
@@ -140,18 +140,18 @@ def GenericProjectionCriterion (_D : Formalism.BasicNotions.D7) : Prop :=
       ∑ μ ∈ (Fintype.piFinset fun i : Fin (m + 1) => Finset.Icc (ν i - b) (ν i)).filter (fun μ => HStrip μ ν b),
         stCount (m + 1) μ)
 
-def ColumnFamilyClosure (_D : Formalism.BasicNotions.D7) : Prop :=
+def ColumnFamilyClosure : Prop :=
   ∀ (FF : Type) [Field FF] [Fintype FF] (k r : ℕ), r ≤ k → Fintype.card FF ^ (r * (k - r)) ≤ nPl FF k r
 
 def TensorColumnFamily (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.HyperplaneRank D
 
 def BranchingColumnFamily (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.ValuationLemmaField D
 
-def GlobalSectionsSchur (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D
+def GlobalSectionsSchur (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.DefiniteRankOne
 
-def BracketPolynomialSpan (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.RotatedSumBound D
+def BracketPolynomialSpan (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.RotatedSumBound
 
-def GradedLatticeStable (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.ConclusionB3 D
+def GradedLatticeStable (D : Formalism.BasicNotions.D7) : Prop := Formalism.MainNotions.CovariantDegrees.ConclusionB3
 
 section Seg
 
@@ -186,7 +186,7 @@ def segPairs [NeZero r] (K : ℕ) [NeZero K] (m : ℤ → ℤ) (th o : ℤ → �
 
 end Seg
 
-def NestedTypeBound (_D : Formalism.BasicNotions.D7) : Prop :=
+def NestedTypeBound : Prop :=
   ∀ (p : ℕ) [Fact p.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] (_S : UniformizedDVR p O)
     (n' r K : ℕ) [NeZero n'] [NeZero r] [NeZero K]
     (F : Frames n' r) (L₁ N₁ : ℕ) (j : ℤ) (m : ℤ → ℤ) (th o : ℤ → ℝ),
@@ -226,7 +226,7 @@ def NestedTypeBound (_D : Formalism.BasicNotions.D7) : Prop :=
     ∃ P ∈ XX' O r K F j m th o,
       MvPolynomial.map (IsLocalRing.residue O) P = plEmb (FF O) r K A * nmEmb (FF O) r K G)
 
-def TypeDecompositionsCommute (_D : Formalism.BasicNotions.D7) : Prop :=
+def TypeDecompositionsCommute : Prop :=
   (∀ (R : Type) [CommRing R] (ι κ : Type) (f : ι → κ) (n : ℕ) [NeZero n] (LL : Letters κ) (S : Set κ)
       (A : MvPolynomial (ι × Fin n) R), Function.Injective f →
     valS LL S (rename (fun v : ι × Fin n => (f v.1, v.2)) A) =
@@ -292,11 +292,11 @@ theorem space_criterion_clause (O : Type) [CommRing O] (n' r K : ℕ) [NeZero n'
   exact ⟨Submodule.subset_span ⟨A, G, M, hA, hG, hc, rfl⟩, ho⟩
 
 def AdmB (D : Formalism.BasicNotions.D7) : Prop :=
-  PathPairCorrespondence D ∧ admB2 D ∧ admB3 D ∧ ColumnFamilyLowerSet D ∧ GenericProjectionCriterion D ∧ ColumnFamilyClosure D ∧ TensorColumnFamily D ∧ BranchingColumnFamily D ∧ GlobalSectionsSchur D ∧ BracketPolynomialSpan D ∧ GradedLatticeStable D ∧
-    NestedTypeBound D ∧ TypeDecompositionsCommute D
+  PathPairCorrespondence ∧ admB2 ∧ admB3 ∧ ColumnFamilyLowerSet ∧ GenericProjectionCriterion ∧ ColumnFamilyClosure ∧ TensorColumnFamily D ∧ BranchingColumnFamily D ∧ GlobalSectionsSchur D ∧ BracketPolynomialSpan D ∧ GradedLatticeStable D ∧
+    NestedTypeBound ∧ TypeDecompositionsCommute
 
 def SecondPartClosed (D : Formalism.BasicNotions.D7) : Prop :=
   AdmB D → ∃ C₀ : ℝ, 0 < C₀ ∧ ∀ CLa Ck : ℝ, C₀ ≤ CLa → C₀ ≤ Ck →
-    ∃ Crk Cdeg : ℝ, 0 < Crk ∧ 0 < Cdeg ∧ Conclusion2 D CLa Ck Crk Cdeg
+    ∃ Crk Cdeg : ℝ, 0 < Crk ∧ 0 < Cdeg ∧ Conclusion2 CLa Ck Crk Cdeg
 
 end Formalism.MainNotions.SelectionLemmas

@@ -428,7 +428,7 @@ lemma comb_le {l : List ι} {k : ℕ} (hl : l.length = k) (a : Fin m → ℂ) :
 
 end Bnd
 
-lemma quad_step {x y A B : ℝ} (hx : 0 ≤ x) (hy : 0 ≤ y) (hA : 0 ≤ A) (hB : 0 ≤ B)
+lemma quad_step {x y A B : ℝ} (hy : 0 ≤ y) (hA : 0 ≤ A) (hB : 0 ≤ B)
     (h : x ^ 2 ≤ y * (A * y + B * x)) : x ≤ (√A + B) * y := by
   by_contra! hlt
   have hs0 := Real.sqrt_nonneg A
@@ -641,7 +641,7 @@ lemma bnd_succ_le
       ((GlobalTheory.CompanionTheory.AnalyticWord.tot o + 2 * GlobalTheory.CompanionTheory.AnalyticWord.tot d) * GlobalTheory.CompanionTheory.AnalyticWord.bnd j Z y n +
         2 * n * GlobalTheory.CompanionTheory.AnalyticWord.c0 K c * GlobalTheory.CompanionTheory.AnalyticWord.bnd j Z y (n + 1)) :=
     (pow_le_pow_left₀ hBn1 hbound 2).trans_eq (Real.sq_sqrt hR0)
-  exact GlobalTheory.CompanionTheory.AnalyticWord.quad_step hBn1 hBn hA hC hsq
+  exact GlobalTheory.CompanionTheory.AnalyticWord.quad_step hBn hA hC hsq
 
 lemma bnd_fact
     (hskew : ∀ i v w, inner ℂ (j (Z i v)) (j w) = - inner ℂ (j v) (j (Z i w)))

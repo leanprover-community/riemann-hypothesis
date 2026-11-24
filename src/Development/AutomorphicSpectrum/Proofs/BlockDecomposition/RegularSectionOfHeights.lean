@@ -1115,7 +1115,7 @@ theorem rr_temperate {ι : Type} [Fintype ι] {a b : ℕ} (L : ℕ) :
   exact (Complex.ofRealCLM.hasTemperateGrowth.comp hr).pow L
 
 theorem pow_bound {Γ : Type} [Group Γ] (h : Γ → ℝ) (e : ℝ → Γ) (he : ∀ u v, e (u + v) = e u * e v)
-    (κ : ℝ) (hκ : 1 ≤ κ) (hb : ∀ u ∈ Set.Icc (-1 : ℝ) 1, ∀ x, h (x * e u) ≤ κ * h x) (hpos : ∀ x, 0 ≤ h x) :
+    (κ : ℝ) (hκ : 1 ≤ κ) (hb : ∀ u ∈ Set.Icc (-1 : ℝ) 1, ∀ x, h (x * e u) ≤ κ * h x) :
     ∀ (k : ℕ) (u : ℝ), |u| ≤ k → ∀ x, h (x * e u) ≤ κ ^ k * h x := by
   have he0 : e 0 = 1 := by
     have := he 0 0
@@ -1322,7 +1322,7 @@ theorem exists_shear_bound (D : D7) (n ρ p : ℕ) (hn : ρ + p = n) (M : Maps D
   obtain ⟨κ₀, hκ₀, hb₀⟩ := GlobalTheory.CompanionTheory.HtRightTranslate.height_mul_le D n H hH hC _ ((hB.union hCf).image M.sh_cont)
   obtain ⟨κ₁, hκ₁, hb₁⟩ := GlobalTheory.CompanionTheory.HtRightTranslate.height_mul_le D n H hH hC _
     (isCompact_Icc.image hec : IsCompact (e '' Set.Icc (-1 : ℝ) 1))
-  have hpw := pow_bound (fun x => (H x : ℝ)) e hea κ₁ hκ₁ (fun u hu x => hb₁ _ ⟨u, hu, rfl⟩ x) (fun x => NNReal.coe_nonneg _)
+  have hpw := pow_bound (fun x => (H x : ℝ)) e hea κ₁ hκ₁ (fun u hu x => hb₁ _ ⟨u, hu, rfl⟩ x)
   obtain ⟨N, hN⟩ := exists_nat_ge (Real.log κ₁)
   have hκE : κ₁ ≤ Real.exp N := by
     calc κ₁ = Real.exp (Real.log κ₁) := (Real.exp_log (lt_of_lt_of_le one_pos hκ₁)).symm

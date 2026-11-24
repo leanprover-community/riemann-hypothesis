@@ -321,10 +321,10 @@ theorem ideal_and_boundary_comap_lastMap [AlgebraicGeometry.Smooth q] (_hMaxCont
   have hflatq : AlgebraicGeometry.Flat q := inferInstance
   have hN : ∀ i : ℕ, i ≤ s.length → AlgebraicGeometry.IsNoetherian (s.obj i) := by
     intro i hi
-    exact MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hV s.toMarkedSequenceOfBlowups i hi
+    exact MarkedSequenceOfBlowups.isNoetherian_schemeAt hV s.toMarkedSequenceOfBlowups i hi
   have hN' : ∀ j : ℕ, j ≤ s'.length → AlgebraicGeometry.IsNoetherian (s'.obj j) := by
     intro j hj
-    exact MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hV' s'.toMarkedSequenceOfBlowups j hj
+    exact MarkedSequenceOfBlowups.isNoetherian_schemeAt hV' s'.toMarkedSequenceOfBlowups j hj
   exact SequenceOfBlowupsPullback.ideal_boundary_last_eq_comap_lastMap s s' D rfl
     (sameNontrivialBoundary_nontrivialPart (S.boundary.map fun A => A.comap q)) hN hN'
 
@@ -364,9 +364,9 @@ theorem iteratedStrictTransform_comap_lastMap [AlgebraicGeometry.Flat q] (_hMaxC
   refine (SequenceOfBlowupsPullback.iteratedStrictTransform_eq_comap_lastMap D (fun i => s.iteratedStrictTransform i M)
     (fun j => s'.iteratedStrictTransform j (M.comap q)) ?_ ?_ hzero ?_ ?_).symm
   · intro i hi
-    exact MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hV s.toMarkedSequenceOfBlowups i hi
+    exact MarkedSequenceOfBlowups.isNoetherian_schemeAt hV s.toMarkedSequenceOfBlowups i hi
   · intro j hj
-    exact MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hV' s'.toMarkedSequenceOfBlowups j hj
+    exact MarkedSequenceOfBlowups.isNoetherian_schemeAt hV' s'.toMarkedSequenceOfBlowups j hj
   · intro i _
     exact BlowupSequenceData.iteratedStrictTransform_succ _ i M
   · intro j _
@@ -468,10 +468,10 @@ theorem sameNontrivialBoundary_lastBoundary_drop [AlgebraicGeometry.Flat q] (hst
       (((s.boundary s.length).drop S.boundary.length).map fun A => A.comap D.lastMap) := by
   have hN : ∀ i : ℕ, i ≤ s.length → AlgebraicGeometry.IsNoetherian (s.obj i) := by
     intro i hi
-    exact MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hV s.toMarkedSequenceOfBlowups i hi
+    exact MarkedSequenceOfBlowups.isNoetherian_schemeAt hV s.toMarkedSequenceOfBlowups i hi
   have hN' : ∀ j : ℕ, j ≤ s'.length → AlgebraicGeometry.IsNoetherian (s'.obj j) := by
     intro j hj
-    exact MarkedSequenceOfBlowups.isNoetherian_schemeAt effectiveCartierSupportContainsNoComponent hV' s'.toMarkedSequenceOfBlowups j hj
+    exact MarkedSequenceOfBlowups.isNoetherian_schemeAt hV' s'.toMarkedSequenceOfBlowups j hj
   have hfull : MarkedIdealWithBoundary.SameNontrivialBoundary (s'.boundary s'.length)
       ((s.boundary s.length).map fun A => A.comap D.lastMap) :=
     (SequenceOfBlowupsPullback.ideal_boundary_last_eq_comap_lastMap s s' D rfl

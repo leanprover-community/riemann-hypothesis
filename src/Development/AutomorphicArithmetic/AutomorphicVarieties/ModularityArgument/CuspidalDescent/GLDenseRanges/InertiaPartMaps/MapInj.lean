@@ -836,7 +836,7 @@ private theorem pA_surj : Function.Surjective (pA k n) := fun x => by
   obtain ⟨y, hy, e⟩ := UpperTheory.unipotent_upper_map_surjective (IsLocalRing.residue 𝒪[k]) IsLocalRing.residue_surjective n x.1 x.2
   exact ⟨⟨y, hy⟩, Subtype.ext e⟩
 
-private theorem map_inj : Function.Injective (GeneralLinearGroup.map (n := Fin n) (algebraMap 𝒪[k] k)) := fun A B h =>
+private theorem map_inj : Function.Injective (GeneralLinearGroup.map (n := Fin n) (algebraMap 𝒪[k] k)) := fun _ _ h =>
   Units.ext (Matrix.ext fun i j => Subtype.ext (congrArg (fun g : GL (Fin n) k => g.val i j) h))
 
 private theorem red_iff (y : GL (Fin n) 𝒪[k]) :

@@ -1543,8 +1543,8 @@ namespace PI.WGB
 
 open Formalism.BasicNotions MvPolynomial
 
-theorem realize_of (h : PI.HwIrred) (he : ExtremalFacts) (ha : FixedLine) (hb : StableCompl)
-    (hc : HighestVec) : Realize := by
+theorem realize_of (h : PI.HwIrred) (he : ExtremalFacts) (ha : FixedLine)
+    : Realize := by
   intro n N hN lam mu f hf hfix hne
   subst hN
   exact realize_C h he ha n lam mu f hf hfix hne
@@ -1711,10 +1711,10 @@ section -- clump:auto
 @[expose] public section
 
 theorem gelfand_tsetlin_branching : PI.GTBranch :=
-  PI.WGB.gTBranch_of_steps highest_weight_irreducible (PI.WGB.extremalFacts_of_A highest_weight_irreducible) _root_.PI.WGB.fixedLine_proof_A
+  PI.WGB.gTBranch_of_steps highest_weight_irreducible (PI.WGB.extremalFacts_of_A) _root_.PI.WGB.fixedLine_proof_A
     _root_.PI.WGB.stableCompl_B _root_.PI.WGB.highestVec_B
-    (PI.WGB.realize_of highest_weight_irreducible (PI.WGB.extremalFacts_of_A highest_weight_irreducible) _root_.PI.WGB.fixedLine_proof_A
-      _root_.PI.WGB.stableCompl_B _root_.PI.WGB.highestVec_B)
+    (PI.WGB.realize_of highest_weight_irreducible (PI.WGB.extremalFacts_of_A) _root_.PI.WGB.fixedLine_proof_A
+      )
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Formalism.PeriodIntegrals.OrbitalBoundsConclusion.GTBranch =====

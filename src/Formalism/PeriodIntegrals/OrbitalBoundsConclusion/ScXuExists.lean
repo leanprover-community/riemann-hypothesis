@@ -984,8 +984,8 @@ open PI.UnitaryGroupMassFormula.AdIndexEq.SplitIso
 variable {F E K : Type} [Field F] [Field E] [Algebra F E] [Field K] [Algebra F K]
 
 theorem exists_adapted_first_projection (σ : E →ₐ[F] E) (hσσ : ∀ a, σ (σ a) = a)
-    (hfix : ∀ a, σ a = a → a ∈ (algebraMap F E).range) (h2 : Module.finrank F E = 2)
-    (h2K : (2 : K) ≠ 0) (ε : K ⊗[F] E) (hsum : ε + sigT σ ε = 1) (horth : ε * sigT σ ε = 0) :
+    (h2 : Module.finrank F E = 2)
+    (ε : K ⊗[F] E) (hsum : ε + sigT σ ε = 1) (horth : ε * sigT σ ε = 0) :
     ∃ p1 : K ⊗[F] E →+* K, (∀ c : K, p1 (algebraMap K (K ⊗[F] E) c) = c) ∧ p1 ε = 1 ∧
       p1 (sigT σ ε) = 0 ∧
       ∀ r : K ⊗[F] E, r = algebraMap K (K ⊗[F] E) (p1 r) * ε +
@@ -1094,7 +1094,7 @@ theorem locSplitP_dec (I : AutInst) (g r k : ℕ) (e f : Fin r → Fin I.n → I
     charZero_of_injective_algebraMap (algebraMap I.F (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv I.F v)).injective
   have h2K : (2 : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv I.F v) ≠ 0 := two_ne_zero
   obtain ⟨p1, h1, h2, h3, h4⟩ := exists_adapted_first_projection (K := Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.Fv I.F v) I.cm.sig
-    (PI.UnitaryGroupMassFormula.AdIndexEq.spl_sig_sig I) (PI.UnitaryGroupMassFormula.AdIndexEq.spl_sig_fix I) I.cm.deg2 h2K
+    (PI.UnitaryGroupMassFormula.AdIndexEq.spl_sig_sig I) I.cm.deg2
     (PI.FinKW.psiV I v Rf.ew) hsum (eps_orth Rf v)
   refine ⟨p1, ⟨h1, h2, h3, ?_⟩, h4⟩
   rintro x ⟨z, rfl⟩

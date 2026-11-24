@@ -232,7 +232,7 @@ theorem vdel_le (i : D.nd.Loc) {Λ : ℝ} (h : (D.nd.s0 i : ℝ) + 1 ≤ Λ) : (
   exact h3.trans (mul_le_mul_of_nonneg_left h (Nat.cast_nonneg _))
 
 theorem split_arith {f m r t V Λ c y A A' k k' v e b h S : ℝ} (hm1 : 1 ≤ m) (hmf : m ≤ f) (hr0 : 0 ≤ r) (hrt : r ≤ t)
-    (ht : 1 ≤ t) (hV : 1 ≤ V) (hΛ : 1 ≤ Λ) (hc : 1 ≤ c) (hA0 : 0 ≤ A) (hA : A ≤ 2 * f) (hA' : A' ≤ 2 * f)
+    (ht : 1 ≤ t) (hV : 1 ≤ V) (hΛ : 1 ≤ Λ) (hc : 1 ≤ c) (hA : A ≤ 2 * f) (hA' : A' ≤ 2 * f)
     (hk0 : 0 ≤ k) (hk : k ≤ 2 * f) (hk' : k' ≤ 2 * f) (hv0 : 0 ≤ v) (hv : v ≤ t * Λ) (he0 : 0 ≤ e) (he : e ≤ c * y)
     (hb0 : 0 ≤ b) (hb : b ≤ c * t * f * V * Λ) (hh : h ≤ c * Λ)
     (hS : S ≤ A * (m * (2 * e + v)) + k * (e + 2 * v + 2 * (c * r * f * V * Λ))) :
@@ -312,7 +312,7 @@ theorem boundSplit_le (i : D.nd.Loc) (ρ : D.nd.X i → (GE D.nd →* GL (Fin D.
     have h5 := hW u hu
     nlinarith
   have key := split_arith r1 r2 (Nat.cast_nonneg _) r5 (by linarith) (by linarith) hΛ hc
-    (Finset.sum_nonneg fun _ _ => Nat.cast_nonneg _) hcol hrow (Nat.cast_nonneg dc.col.card) (hk.trans hcol)
+    hcol hrow (Nat.cast_nonneg dc.col.card) (hk.trans hcol)
     (hr.trans hrow) (vdel_nonneg i) (vdel_le i hs) (Nat.cast_nonneg e') he (Nat.cast_nonneg cB) hB hh hsum
   have hrw : ∑ w ∈ dc.row, ((locDeg D.host.E w : ℝ) + 2) * (cB : ℝ) =
       ((∑ w ∈ dc.row, (locDeg D.host.E w : ℝ)) + 2 * (dc.row.card : ℝ)) * (cB : ℝ) := by

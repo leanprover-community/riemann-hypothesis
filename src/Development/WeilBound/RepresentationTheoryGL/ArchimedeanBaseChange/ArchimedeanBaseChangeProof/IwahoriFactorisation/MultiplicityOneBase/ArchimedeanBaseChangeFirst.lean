@@ -789,7 +789,7 @@ theorem stable_of_unimodular (B : InvAlg K) (hg : B.g * B.σ B.g = 1) (ε : B.A)
     rw [← TwistUnit.trace_σ_mem B (β * x * a * B.σ b),
       show B.σ (β * x * a * B.σ b) = ε * (β * x * (B.g * b) * B.σ a) by
         rw [map_mul, map_mul, map_mul, hβ, hx, B.σ_σ]; ring, hεT]
-  simp only [InvAlg.herm, ← hT, ← hR] at hU
+  simp only [InvAlg.herm, ← hT] at hU
   have h1 : ∀ y ∈ L, B.σ B.g * y ∈ L := by
     intro y hy
     rw [hU]

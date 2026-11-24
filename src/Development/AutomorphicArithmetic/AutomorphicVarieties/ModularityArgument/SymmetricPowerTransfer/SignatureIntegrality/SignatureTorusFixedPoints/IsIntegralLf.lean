@@ -88,7 +88,7 @@ private theorem lf_self (h2 : (2 : K) ≠ 0) (z : K) : lf s Δ z z = algebraMap 
   · show (z - z) / (2 * s) = _
     simp
 
-private theorem star_lf (hs : s * s = Δ) (h2 : (2 : K) ≠ 0) (h0 : s ≠ 0) (p q : K) : star (lf s Δ p q) = lf s Δ q p := by
+private theorem star_lf (p q : K) : star (lf s Δ p q) = lf s Δ q p := by
   refine QuadraticAlgebra.ext_iff.2 ⟨?_, ?_⟩
   · rw [QuadraticAlgebra.re_star]
     show (p + q) / 2 + 0 * ((p - q) / (2 * s)) = (q + p) / 2
@@ -97,7 +97,7 @@ private theorem star_lf (hs : s * s = Δ) (h2 : (2 : K) ≠ 0) (h0 : s ≠ 0) (p
     show -((p - q) / (2 * s)) = (q - p) / (2 * s)
     ring
 
-private theorem lf_neg (hs : s * s = Δ) (h2 : (2 : K) ≠ 0) (h0 : s ≠ 0) (p q : K) : lf s Δ (-p) (-q) = -lf s Δ p q := by
+private theorem lf_neg (p q : K) : lf s Δ (-p) (-q) = -lf s Δ p q := by
   refine QuadraticAlgebra.ext_iff.2 ⟨?_, ?_⟩
   · show (-p + -q) / 2 = -((p + q) / 2)
     ring
@@ -117,7 +117,7 @@ private theorem lf_mul (hs : s * s = Δ) (h2 : (2 : K) ≠ 0) (h0 : s ≠ 0) (a 
     field_simp
     ring
 
-private theorem lf_add (hs : s * s = Δ) (h2 : (2 : K) ≠ 0) (h0 : s ≠ 0) (a b c d : K) :
+private theorem lf_add (a b c d : K) :
     lf s Δ a b + lf s Δ c d = lf s Δ (a + c) (b + d) := by
   refine QuadraticAlgebra.ext_iff.2 ⟨?_, ?_⟩
   · show (a + b) / 2 + (c + d) / 2 = (a + c + (b + d)) / 2
@@ -125,7 +125,7 @@ private theorem lf_add (hs : s * s = Δ) (h2 : (2 : K) ≠ 0) (h0 : s ≠ 0) (a 
   · show (a - b) / (2 * s) + (c - d) / (2 * s) = (a + c - (b + d)) / (2 * s)
     ring
 
-private theorem lf_sub (hs : s * s = Δ) (h2 : (2 : K) ≠ 0) (h0 : s ≠ 0) (a b c d : K) :
+private theorem lf_sub (a b c d : K) :
     lf s Δ a b - lf s Δ c d = lf s Δ (a - c) (b - d) := by
   refine QuadraticAlgebra.ext_iff.2 ⟨?_, ?_⟩
   · show (a + b) / 2 - (c + d) / 2 = (a - c + (b - d)) / 2
@@ -138,12 +138,12 @@ private def gm (s Δ : K) (h : Matrix (Fin 2) (Fin 2) K) : Matrix (Fin 2) (Fin 2
 
 private theorem det_gm (hs : s * s = Δ) (h2 : (2 : K) ≠ 0) (h0 : s ≠ 0) (h : Matrix (Fin 2) (Fin 2) K) :
     (gm s Δ h).det = algebraMap K _ h.det := by
-  rw [gm, det_fin_two_of, lf_mul hs h2 h0, lf_mul hs h2 h0, lf_sub hs h2 h0, det_fin_two, ← lf_self h2]
+  rw [gm, det_fin_two_of, lf_mul hs h2 h0, lf_mul hs h2 h0, lf_sub, det_fin_two, ← lf_self h2]
   congr 1 <;> ring
 
 private theorem trace_gm (hs : s * s = Δ) (h2 : (2 : K) ≠ 0) (h0 : s ≠ 0) (h : Matrix (Fin 2) (Fin 2) K) :
     (gm s Δ h).trace = algebraMap K _ h.trace := by
-  rw [gm, trace_fin_two_of, lf_add hs h2 h0, trace_fin_two, ← lf_self h2]
+  rw [gm, trace_fin_two_of, lf_add, trace_fin_two, ← lf_self h2]
   congr 1
   ring
 
@@ -188,11 +188,11 @@ private def gG (hs : s * s = Δ) (h2 : (2 : K) ≠ 0) (h0 : s ≠ 0) (h : GL (Fi
   ⟨GeneralLinearGroup.mk'' (gm s Δ h.val) (by
       rw [det_gm hs h2 h0]
       exact ((Matrix.isUnit_iff_isUnit_det _).1 h.isUnit).map _), (mem_DX _).2
-    ⟨star_lf hs h2 h0 _ _, by
+    ⟨star_lf _ _, by
       show star (lf s Δ _ _) = -lf s Δ _ _
-      rw [star_lf hs h2 h0, ← lf_neg hs h2 h0, neg_neg], by
+      rw [star_lf, ← lf_neg, neg_neg], by
       show star (lf s Δ _ _) = -lf s Δ _ _
-      rw [star_lf hs h2 h0, ← lf_neg hs h2 h0, neg_neg], star_lf hs h2 h0 _ _⟩⟩
+      rw [star_lf, ← lf_neg, neg_neg], star_lf _ _⟩⟩
 
 private theorem eD_gG (hs : s * s = Δ) (h2 : (2 : K) ≠ 0) (h0 : s ≠ 0) (h : GL (Fin 2) K) : eD hs (gG hs h2 h0 h) = h := by
   refine Units.ext (Matrix.ext fun i j => ?_)
@@ -203,7 +203,7 @@ private theorem eD_bij (hs : s * s = Δ) (h2 : (2 : K) ≠ 0) (h0 : s ≠ 0) : F
   ⟨fun a b e => Subtype.ext (Units.ext (by rw [val_eq_gm hs h2 h0 a, val_eq_gm hs h2 h0 b, e])),
     fun h => ⟨gG hs h2 h0 h, eD_gG hs h2 h0 h⟩⟩
 
-private theorem proj_alg (hs : s * s = Δ) (h2 : (2 : K) ≠ 0) (h0 : s ≠ 0) (z : K) : proj hs (algebraMap K (Lsq K Δ) z) = z := by
+private theorem proj_alg (hs : s * s = Δ) (z : K) : proj hs (algebraMap K (Lsq K Δ) z) = z := by
   rw [proj_apply]
   simp
 
@@ -255,7 +255,7 @@ private theorem isIntegral_lf (hO : IsInts k O) (hs : s * s = Δ) (h2 : (2 : k) 
   obtain ⟨b, hb⟩ := (hO.range (p * q)).2 (by rw [map_mul]; exact mul_le_one' hp hq)
   have e : lf s Δ p q ^ 2 - algebraMap k (Lsq k Δ) (p + q) * lf s Δ p q + algebraMap k (Lsq k Δ) (p * q) = 0 := by
     rw [← lf_self (s := s) h2, ← lf_self (s := s) h2, sq, lf_mul hs h2 h0, lf_mul hs h2 h0,
-      lf_sub hs h2 h0, lf_add hs h2 h0]
+      lf_sub, lf_add]
     rw [show p * p - (p + q) * p + p * q = 0 by ring, show q * q - (p + q) * q + p * q = 0 by ring, lf_self h2, map_zero]
   refine ⟨Polynomial.X ^ 2 - Polynomial.C a * Polynomial.X + Polynomial.C b, by monicity!, ?_⟩
   rw [← Polynomial.aeval_def]
@@ -283,7 +283,7 @@ private theorem comap_KO (hO : IsInts k O) (hs : s * s = Δ) (h2 : (2 : k) ≠ 0
     (ints hO).mem_of_integral (IsIntegral.map_of_comp_eq (RingHom.id O) (proj hs)
       (RingHom.ext fun y => by
         show algebraMap O k y = proj hs (algebraMap O (Lsq k Δ) y)
-        rw [alg_tower y, proj_alg hs h2 h0]) hx)
+        rw [alg_tower y, proj_alg hs]) hx)
   ext g
   rw [Subgroup.mem_comap, KD, Subgroup.mem_subgroupOf, MonoidHom.mem_range]
   constructor

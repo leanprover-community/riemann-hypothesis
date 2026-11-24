@@ -76,14 +76,14 @@ theorem hasProd_fibre (hK : Formalism.HermitianLatticesTheory.IsCMUnram K)
           {𝔭 : Ideal (𝓞 F) // 𝔭.IsMaximal}) = 𝔭} => Formalism.HermitianLatticesTheory.eulerFac K M c.1.1)
       (1 - etaF K F 𝔭.1 ^ M * (Ideal.absNorm 𝔭.1 : ℝ) ^ (-(M : ℤ)))⁻¹ := by
   classical
-  obtain ⟨P, hP, hP𝔭⟩ := exists_maximal_over hK hF 𝔭.2
+  obtain ⟨P, hP, hP𝔭⟩ := exists_maximal_over 𝔭.2
   have hmem : ∀ c : {x : {P : Ideal (𝓞 K) // P.IsMaximal} //
         (⟨x.1.comap (algebraMap (𝓞 F) (𝓞 K)), comap_isMaximal x.2⟩ :
           {𝔭 : Ideal (𝓞 F) // 𝔭.IsMaximal}) = 𝔭},
       c.1.1 = P ∨ c.1.1 = Formalism.HermitianLatticesTheory.conjIdeal (K := K) P := by
     intro c
     have h1 : c.1.1.comap (algebraMap (𝓞 F) (𝓞 K)) = 𝔭.1 := congrArg Subtype.val c.2
-    exact (comap_eq_comap_iff hK hF hP c.1.2).1 (hP𝔭.trans h1.symm)
+    exact (comap_eq_comap_iff hF hP c.1.2).1 (hP𝔭.trans h1.symm)
   have heta := etaF_comap hK hF hP
   rw [hP𝔭] at heta
   let c0 : {x : {P : Ideal (𝓞 K) // P.IsMaximal} //
@@ -114,10 +114,10 @@ theorem hasProd_fibre (hK : Formalism.HermitianLatticesTheory.IsCMUnram K)
     rwa [← hval]
   · have hN := absNorm_comap_split hK hF hP hc
     rw [hP𝔭] at hN
-    have hPb := conjIdeal_isMaximal hK hP
+    have hPb := conjIdeal_isMaximal hP
     have hPb𝔭 : (Formalism.HermitianLatticesTheory.conjIdeal (K := K) P).comap (algebraMap (𝓞 F) (𝓞 K)) = 𝔭.1 := by
       rw [← hP𝔭]
-      exact ((comap_eq_comap_iff hK hF hP hPb).2 (Or.inr rfl)).symm
+      exact ((comap_eq_comap_iff hF hP hPb).2 (Or.inr rfl)).symm
     let c1 : {x : {P : Ideal (𝓞 K) // P.IsMaximal} //
         (⟨x.1.comap (algebraMap (𝓞 F) (𝓞 K)), comap_isMaximal x.2⟩ :
           {𝔭 : Ideal (𝓞 F) // 𝔭.IsMaximal}) = 𝔭} :=

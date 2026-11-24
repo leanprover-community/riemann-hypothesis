@@ -92,7 +92,7 @@ private theorem lift_idem {T : Type} [CommRing T] (I : Ideal T) [HenselianRing T
   obtain ⟨e, he, hea⟩ := HenselianRing.is_henselian (I := I) (X ^ 2 - X : T[X]) hm a
     (by
       rw [← Ideal.Quotient.eq_zero_iff_mem]
-      simp only [eval_sub, eval_pow, eval_X, map_sub, pow_two, map_mul, eval_mul]
+      simp only [eval_sub, eval_X, map_sub, pow_two, map_mul, eval_mul]
       rw [hf', sub_self])
     (by
       have h : eval a (derivative (X ^ 2 - X : T[X])) = 2 * a - 1 := by
@@ -172,8 +172,8 @@ private theorem maximal_of_scalar {Λ T : Type} [CommRing Λ] [IsLocalRing Λ] [
     exact hxJ (by simpa using this)
 
 theorem UpperTheory.Reformulated.B.Qe2.locAbs :
-    ∀ (Λ T : Type) [inst : CommRing Λ] [inst_1 : IsLocalRing Λ] [IsNoetherianRing Λ]
-    [IsAdicComplete (IsLocalRing.maximalIdeal Λ) Λ] [inst_4 : CommRing T] [inst_5 : Algebra Λ T] [Module.Finite Λ T]
+    ∀ (Λ T : Type) [CommRing Λ] [IsLocalRing Λ] [IsNoetherianRing Λ]
+    [IsAdicComplete (IsLocalRing.maximalIdeal Λ) Λ] [CommRing T] [Algebra Λ T] [Module.Finite Λ T]
     (ι : Type) (t : ι → T) (a : ι → Λ),
     Algebra.adjoin Λ (Set.range t) = ⊤ →
       ∃ (e : T),

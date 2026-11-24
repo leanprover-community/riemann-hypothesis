@@ -265,7 +265,7 @@ theorem continuous_ιLev : Continuous (ιLev k i r') := by
 theorem uw_onto (z : Fin (2 * r' + k + 1) → ℂ) (g : Mx k (i + r')) (hg : g ∈ UWset k (i + r') (liftVec k i r' z)) :
     ∃ y ∈ UWset k r' z, ιLev k i r' y = g := by
   have hG : g ∈ Glev k (i + r') ⟨i, by omega⟩ := ⟨hg.1, fun a _ => hg.2.1 a⟩
-  rw [QnGlevImageW.glevImage_of PI.QnLevBasicsW.level_group_homomorphism PI.QnLevBasicsW.level_group_unitary_hermitian k i r'] at hG
+  rw [QnGlevImageW.glevImage_of PI.QnLevBasicsW.level_group_unitary_hermitian k i r'] at hG
   obtain ⟨y, hy, rfl⟩ := hG
   refine ⟨y, ⟨hy, fun a => ?_, ?_⟩, rfl⟩
   · have ha := a.isLt
@@ -404,7 +404,7 @@ theorem glev_measurable (k r : ℕ) (i : Fin (r + 1)) : @MeasurableSet (Mt k r) 
 theorem haar_glev (μ0 : Measure (Mt k 0)) (h0 : Formalism.FourierDecayAlt.B.IsHaarOn (Formalism.FourierDecayAlt.B.GV k 0) μ0) :
     Formalism.FourierDecayAlt.B.IsHaarOn (Glev k r' (Fin.last r')) (μ0.map (embL k r')) := by
   have hU : Glev k r' (Fin.last r') = ιLev k r' 0 '' UH (Hpk k 0) :=
-    QnGlevImageW.glevImage_of PI.QnLevBasicsW.level_group_homomorphism PI.QnLevBasicsW.level_group_unitary_hermitian k r' 0
+    QnGlevImageW.glevImage_of PI.QnLevBasicsW.level_group_unitary_hermitian k r' 0
   have hm : Measurable (embL k r') := continuous_embL.measurable
   have hhom := PI.QnLevBasicsW.level_group_homomorphism k r' 0
   refine ⟨?_, ?_, ?_, ?_, ?_⟩

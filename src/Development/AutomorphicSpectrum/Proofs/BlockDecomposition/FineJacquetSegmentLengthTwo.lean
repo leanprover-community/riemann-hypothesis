@@ -219,7 +219,7 @@ theorem jm_perm_prod (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (Δ :
     (hy : ∑ a, (Δ.term (σ a)).1 = N) (hd : ∑ a, (Δ.term a).1 = N) :
     jm (fun a => Δ.term (σ a)) hy (prodIrr Δ.term hd) = 1 := by
   rw [_root_.GlobalTheory.CompanionTheory.CuspJm.main hA Δ.term _ hd hy Δ.isCusp_term fun a => Δ.isCusp_term _]
-  have hinj := GlobalTheory.CompanionTheory.SegTerm.term_injective hA Δ
+  have hinj := GlobalTheory.CompanionTheory.SegTerm.term_injective Δ
   have : {e : Fin Δ.len ≃ Fin Δ.len | ∀ a, Δ.term (σ a) = Δ.term (e a)} = {σ} := by
     ext e
     simp only [Set.mem_setOf_eq, Set.mem_singleton_iff]
@@ -333,8 +333,8 @@ theorem fine_jacquet_length_two_segment (hA : GlobalTheory.Published.Irreducible
     · exact ⟨rfl, he⟩
 
 theorem fineJac_of_len_eq_two : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k]
-    [IsNonarchimedeanLocalField k] (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (hZ : GlobalTheory.Published.SegmentRepresentation)
-    (Δ : Segment k) (h : Δ.len = 2), FineJac Δ := by
+    [IsNonarchimedeanLocalField k] (_ : GlobalTheory.Published.IrreducibleAdmissibleGL) (_ : GlobalTheory.Published.SegmentRepresentation)
+    (Δ : Segment k) (_ : Δ.len = 2), FineJac Δ := by
   intro k _ _ _ _ hA hZ Δ h
   have e : seg2 Δ.first Δ.isCusp_first = Δ := Segment.ext_first rfl h.symm
   rw [← e]

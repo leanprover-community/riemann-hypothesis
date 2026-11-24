@@ -98,7 +98,7 @@ theorem le_preimage_comp {T : Scheme.{0}} (g : T ⟶ Z') {z : Z' ⟶ Z} {U : Z.O
     ⊤ ≤ (g ≫ z) ⁻¹ᵁ U := fun x _ => h (Set.mem_univ (g x))
 
 theorem le_preimage_map {T : Scheme.{0}} {z : T ⟶ Z'} (π : Z' ⟶ Z) {U : Z.Opens} {V : Z'.Opens} (e : V ≤ π ⁻¹ᵁ U)
-    (h : ⊤ ≤ z ⁻¹ᵁ V) : ⊤ ≤ (z ≫ π) ⁻¹ᵁ U := fun x hx => e (h hx)
+    (h : ⊤ ≤ z ⁻¹ᵁ V) : ⊤ ≤ (z ≫ π) ⁻¹ᵁ U := fun _ hx => e (h hx)
 
 theorem le_preimage_mono {T : Scheme.{0}} {z : T ⟶ Z} {U V : Z.Opens} (e : V ≤ U)
     (h : ⊤ ≤ z ⁻¹ᵁ V) : ⊤ ≤ z ⁻¹ᵁ U := fun _ hx => e (h hx)

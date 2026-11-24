@@ -263,7 +263,7 @@ theorem isAffine_of_dim_zero {X : Scheme.{0}} [IsIntegral X] (h : topologicalKru
   haveI : IsAffine (⊤ : X.Opens) := hU
   exact IsAffine.of_isIso X.topIso.inv
 
-theorem prod_le {d : ℕ} (q : ℤ) (hq : 1 ≤ q) (n : Fin (d + 1) → Fin 2 → ℤ)
+theorem prod_le {d : ℕ} (q : ℤ) (n : Fin (d + 1) → Fin 2 → ℤ)
     (h0 : ∀ j, 0 ≤ n 0 j ∧ n 0 j ≤ 2) (hs : ∀ (i : Fin d) j, 0 ≤ n i.succ j ∧ n i.succ j ≤ q)
     (a : Fin (d + 1) → Fin 2) : ∏ i, n i (a i) ≤ 2 * q ^ d := by
   rw [Fin.prod_univ_succ]
@@ -352,7 +352,7 @@ theorem GlobalTheory.exists_ample_add_eff_of_isNef_isBig : GlobalTheory.Publishe
         ≤ 2 * (q : ℤ) ^ d * S := by
       rw [e₂, hSdef, Finset.mul_sum]
       refine Finset.sum_le_sum fun a _ => mul_le_mul_of_nonneg_right ?_ (hI a)
-      refine prod_le (q : ℤ) hq1 n (fun j => ?_) (fun i j => ?_) a
+      refine prod_le (q : ℤ) n (fun j => ?_) (fun i j => ?_) a
       · rcases Fin.exists_fin_two.1 ⟨j, rfl⟩ with h | h <;> subst h <;> simp [n]
       · rcases Fin.exists_fin_two.1 ⟨j, rfl⟩ with h | h <;> subst h <;> simp [n] <;> omega
     have hineq : ((d : ℤ) + 1) * interNum ℂ (GlobalTheory.structureModule X)

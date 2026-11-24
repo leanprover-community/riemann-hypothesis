@@ -837,16 +837,16 @@ theorem b_add_le_of_gaps {H : ℝ} (hH : 0 ≤ H) (hb : ∀ l, 1 ≤ l → l < G
     linarith
 
 theorem b_sep_of_gaps {H : ℝ} (hH : 0 ≤ H) (hb : ∀ l, 1 ≤ l → l < G.m → (G.b l : ℝ) + H ≤ G.b (l + 1)) {l l' : ℕ}
-    (hl : 1 ≤ l) (hlm : l ≤ G.m) (hl' : 1 ≤ l') (hlm' : l' ≤ G.m) (h : l < l') : (G.b l : ℝ) + H ≤ G.b l' := by
+    (hl : 1 ≤ l) (hl' : 1 ≤ l') (hlm' : l' ≤ G.m) (h : l < l') : (G.b l : ℝ) + H ≤ G.b l' := by
   obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_lt h
   exact b_add_le_of_gaps hH hb d l hl hlm'
 
 theorem b_abs_of_gaps {H : ℝ} (hH : 0 ≤ H) (hb : ∀ l, 1 ≤ l → l < G.m → (G.b l : ℝ) + H ≤ G.b (l + 1)) {l l' : ℕ}
     (hl : 1 ≤ l) (hlm : l ≤ G.m) (hl' : 1 ≤ l') (hlm' : l' ≤ G.m) (h : l ≠ l') : H ≤ |(G.b l : ℝ) - G.b l'| := by
   rcases lt_or_gt_of_ne h with h | h
-  · have := b_sep_of_gaps hH hb hl hlm hl' hlm' h
+  · have := b_sep_of_gaps hH hb hl hl' hlm' h
     rw [abs_sub_comm]; exact le_abs.2 (Or.inl (by linarith))
-  · have := b_sep_of_gaps hH hb hl' hlm' hl hlm h
+  · have := b_sep_of_gaps hH hb hl' hl hlm h
     exact le_abs.2 (Or.inl (by linarith))
 
 theorem b_one_le {l : ℕ} (hl : 1 ≤ l) (hlm : l ≤ G.m) : G.b 1 ≤ G.b l := by
@@ -912,7 +912,7 @@ theorem lam_wide {H : ℝ} (hH : 2 ≤ H) (hga : H ≤ G.ga) (hv : ∀ i, 2 ≤ 
     have : (G.v j : ℝ) + 2 ≤ G.v i := by exact_mod_cast this
     linarith
 
-theorem lam_gap {H : ℝ} (hH : 2 ≤ H) (hga : H ≤ G.ga) :
+theorem lam_gap {H : ℝ} (hga : H ≤ G.ga) :
     ∀ x ∈ G.lam, ∀ y ∈ G.lam, x.2 ≠ y.2 → H ≤ |((x.1 : ℚ) : ℝ) - y.1| := by
   intro x hx y hy hs
   rcases mem_lam.1 hx with ⟨i, hi, rfl⟩ | ⟨hx1, hx2⟩ <;> rcases mem_lam.1 hy with ⟨j, hj, rfl⟩ | ⟨hy1, hy2⟩
@@ -969,7 +969,7 @@ theorem two_le_sub_of_mem_parD0_of_lt {H : ℝ} (hH : 2 ≤ H) (hv : ∀ i, 2 �
       · have := G.b_mono l' l hl' h hlm
         have : (G.b l' : ℝ) < G.b l := by exact_mod_cast this
         linarith
-    have := b_sep_of_gaps (by linarith) hb hl hlm hl' hlm' hll
+    have := b_sep_of_gaps (by linarith) hb hl hl' hlm' hll
     linarith
 
 theorem le_abs_sub_of_mem_parD0_of_ne_sign {H : ℝ} (hH : 2 ≤ H) (hvb : 2 ≤ G.v G.k + G.b 1)
@@ -985,7 +985,7 @@ theorem le_abs_sub_of_mem_parD0_of_ne_sign {H : ℝ} (hH : 2 ≤ H) (hvb : 2 ≤
       · simp at hsl
       · exact h
     have h1 := (v_le_v_two (G := G) hi hik).1
-    have h2 := b_sep_of_gaps (by linarith) hb le_rfl (by omega) (by omega) hlm (by omega : 1 < l)
+    have h2 := b_sep_of_gaps (by linarith) hb le_rfl (by omega) hlm (by omega : 1 < l)
     have h3 : (G.v G.k : ℝ) ≤ G.v i := by exact_mod_cast h1
     have h4 : (2 : ℝ) ≤ G.v G.k + G.b 1 := by exact_mod_cast hvb
     linarith
@@ -1035,7 +1035,7 @@ theorem pi_zero_and_D0_spacing : ∀ {G : GlobalTheory.SignedHC.GridData} {n : �
   · obtain ⟨x, hx, hxa, hxe⟩ := isEnum_mem hl a
     obtain ⟨y, hy, hyc, hye⟩ := isEnum_mem hl c
     rw [hxa, hyc]
-    exact lam_gap hH hga x hx y hy (by rw [← hxe, ← hye]; exact hs)
+    exact lam_gap hga x hx y hy (by rw [← hxe, ← hye]; exact hs)
   · obtain ⟨x, hx, hxa, hxe⟩ := isEnum_mem hm a
     obtain ⟨y, hy, hyc, hye⟩ := isEnum_mem hm c
     rw [hxa, hyc]

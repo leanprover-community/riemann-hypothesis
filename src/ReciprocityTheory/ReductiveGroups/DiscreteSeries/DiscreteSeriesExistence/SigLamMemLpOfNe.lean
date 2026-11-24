@@ -57,7 +57,7 @@ theorem coef_memLp_all (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀
   obtain ⟨w₀, hw₀⟩ : ∃ w₀ : Hlam ε Ψ v₀, (w₀ : L2 ε) = uniformisationL2 ε Ψ v₀ T.w := ⟨⟨_, datumEmbedding_mem_Hlam hP T.w⟩, rfl⟩
   have hne : w₀ ≠ 0 := by
     intro h
-    apply datumEmbedding_highest_ne_zero hgap hP hv₀
+    apply datumEmbedding_highest_ne_zero hP hv₀
     rw [← hw₀, h]
     rfl
   have e0 : (fun g : Formalism.REAL.UJ ε => ⟪w₀, sigLam ε Ψ v₀ (Formalism.MainNotions.S.umat g) w₀⟫_ℂ) =
@@ -89,7 +89,7 @@ theorem sqInt_sigLam (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (hv₀ :
   obtain ⟨w₀, hw₀⟩ : ∃ w₀ : Hlam ε Ψ v₀, (w₀ : L2 ε) = uniformisationL2 ε Ψ v₀ T.w := ⟨⟨_, datumEmbedding_mem_Hlam hP T.w⟩, rfl⟩
   have hne : w₀ ≠ 0 := by
     intro h
-    apply datumEmbedding_highest_ne_zero hgap hP hv₀
+    apply datumEmbedding_highest_ne_zero hP hv₀
     rw [← hw₀, h]
     rfl
   have hF : MemLp (fun g : Formalism.REAL.UJ ε => ⟪w₀, sigLam ε Ψ v₀ (Formalism.MainNotions.S.umat g) w⟫_ℂ) 2 (Formalism.REAL.muG ε) := by

@@ -62,7 +62,7 @@ lemma transport {D : D7} {j : ℕ} {τ : D.what₂.Tau} {n n' : ℕ} (h : n = n'
   subst h; exact hx
 
 lemma lamPrime_add_rho (W : Formalism.IndefR.IndefiniteWeightData.WeightData) (hk : 1 ≤ W.k) (hj : 1 ≤ W.j) (hjm : W.j ≤ W.m)
-    (i : ℕ) (hi1 : 1 ≤ i) (hin : i ≤ W.nV) :
+    (i : ℕ) (hin : i ≤ W.nV) :
     W.lamPrime i + W.rhoNV i = W.uSideTarget i - 1 / 2 := by
   have hN : W.nV = W.p + W.q + W.t := by
     simp only [Formalism.IndefR.IndefiniteWeightData.WeightData.nV, Formalism.IndefR.IndefiniteWeightData.WeightData.r,
@@ -108,7 +108,7 @@ theorem infOf_lamLdef_eq_paramV : ∀ (D : D7) (j : Fin D.R.m) (τ : D.what₂.T
     unfold NG.infOf
     rw [← univ_map_eq_range]
     refine Multiset.map_congr rfl fun i _ => ?_
-    have h1 := lamPrime_add_rho W (by omega) (by omega) (by omega) ((i : ℕ) + 1) (by omega)
+    have h1 := lamPrime_add_rho W (by omega) (by omega) (by omega) ((i : ℕ) + 1)
       (by have := i.2; omega)
     have h2 := hw i
     have key : ((lam.w i : ℤ) : ℚ) + ((D.R.nV : ℚ) - 1) / 2 - ((i : ℕ) : ℚ) = g i := by

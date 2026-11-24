@@ -353,30 +353,30 @@ def Conclusion2 (D : D7) (C : ℝ) : Prop := LocalCorollaryLifting D.loc C
 
 def adm1 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) : Prop := Formalism.MainNotions.DeltaInvariantLattices.UsedLocalConclusion D HW F Cm
 
-def adm2 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.LiftingTheory.ConclusionL D HW F
+def adm2 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.LiftingTheory.ConclusionL D HW
 
 def adm3 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.LiftingTheory.ConclusionW D HW F
 
-def ArchimedeanSignatureMatching (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (C : ℝ) : Prop := Formalism.MainNotions.LiftingTheory.WachResultConstant D HW F C
+def ArchimedeanSignatureMatching (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (C : ℝ) : Prop := Formalism.MainNotions.LiftingTheory.WachResultConstant D HW C
 
-def adm5 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.LiftingTheory.ConclusionH D HW F
+def adm5 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.LiftingTheory.ConclusionH D HW
 
-def adm6 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.LiftingTheory.ExistsUnitClasses D HW F
+def adm6 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.LiftingTheory.ExistsUnitClasses D HW
 
 def AtCaseA (P : ∀ (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (_ : CaseA K LL), Prop) :
     Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (h : CaseA K LL), 5 ≤ l → P l K LL h
 
-def adm7 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) : Prop :=
+def adm7 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
   AtCaseA fun l _ K LL h => ToolsAlg ((HW l).W K 1 LL h.2.2) ∧ LevelMapHodgeFiltration ((HW l).W K 1 LL h.2.2)
 
-def adm8 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := AtCaseA fun l _ K LL h => Sat ((HW l).W K 1 LL h.2.2)
+def adm8 (D : D7) (HW : HWOf D.loc) : Prop := AtCaseA fun l _ K LL h => Sat ((HW l).W K 1 LL h.2.2)
 
-def adm9 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := AtCaseA fun l _ K LL h => F1 ((HW l).W K 1 LL h.2.2)
+def adm9 (D : D7) (HW : HWOf D.loc) : Prop := AtCaseA fun l _ K LL h => F1 ((HW l).W K 1 LL h.2.2)
 
-def adm10 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := AtCaseA fun l _ K LL h => F2 ((HW l).W K 1 LL h.2.2)
+def adm10 (D : D7) (HW : HWOf D.loc) : Prop := AtCaseA fun l _ K LL h => F2 ((HW l).W K 1 LL h.2.2)
 
-def adm11 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop :=
+def adm11 (D : D7) (HW : HWOf D.loc) : Prop :=
   Formalism.WindowSums.KillerVal ∧ Formalism.WindowSums.KillerKills ∧
     AtCaseA fun l _ K LL h => KillerMod ((HW l).W K 1 LL h.2.2)
 
@@ -388,11 +388,11 @@ def adm14 (D : D7) : Prop := HodgeExactAllExtensions D.loc
 
 def adm15 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.DeltaInvariantLattices.ConclusionE D HW F
 
-def adm16 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.LiftingTheory.adm17 D HW F ∧ Formalism.MainNotions.LiftingTheory.adm18 D HW F
+def adm16 (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) : Prop := Formalism.MainNotions.LiftingTheory.adm17 D HW ∧ Formalism.MainNotions.LiftingTheory.adm18 D HW
 
 def admitted (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (C : ℝ) : Prop :=
-  adm1 D HW F Cm ∧ adm2 D HW F ∧ adm3 D HW F ∧ ArchimedeanSignatureMatching D HW F C ∧ adm5 D HW F ∧ adm6 D HW F ∧ adm7 D HW F Cm ∧ adm8 D HW F ∧ adm9 D HW F ∧
-    adm10 D HW F ∧ adm11 D HW F ∧ adm12 D ∧ adm13 D ∧ adm14 D ∧ adm15 D HW F ∧ adm16 D HW F
+  adm1 D HW F Cm ∧ adm2 D HW F ∧ adm3 D HW F ∧ ArchimedeanSignatureMatching D HW F C ∧ adm5 D HW F ∧ adm6 D HW F ∧ adm7 D HW F ∧ adm8 D HW ∧ adm9 D HW ∧
+    adm10 D HW ∧ adm11 D HW ∧ adm12 D ∧ adm13 D ∧ adm14 D ∧ adm15 D HW F ∧ adm16 D HW F
 
 def Stmt (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F) (C C₁ C₂ : ℝ) : Prop :=
   admitted D HW F Cm C → Conclusion1 D C₁ ∧ Conclusion2 D C₂

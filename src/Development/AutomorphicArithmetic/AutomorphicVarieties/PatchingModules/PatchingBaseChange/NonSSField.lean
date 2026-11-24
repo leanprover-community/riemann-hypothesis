@@ -92,10 +92,10 @@ private theorem UpperTheory.Reformulated.B.Qe15.compositum (K κ₁ κ₂ : Type
   rw [AlgHom.commutes, AlgHom.commutes]
 
 theorem UpperTheory.Reformulated.B.Qe15.common_field :
-    ∀ (B κ₁ κ₂ : Type) [inst : CommRing B] [inst_1 : Field κ₁] [inst_2 : Field κ₂]
+    ∀ (B κ₁ κ₂ : Type) [CommRing B] [Field κ₁] [Field κ₂]
     (f₁ : B →+* κ₁) (f₂ : B →+* κ₂),
     RingHom.ker f₁ = RingHom.ker f₂ →
-      ∃ (κ : Type) (x : Field κ) (j₁ : κ₁ →+* κ) (j₂ : κ₂ →+* κ), j₁.comp f₁ = j₂.comp f₂ := by
+      ∃ (κ : Type) (_ : Field κ) (j₁ : κ₁ →+* κ) (j₂ : κ₂ →+* κ), j₁.comp f₁ = j₂.comp f₂ := by
   intro B κ₁ κ₂ _ _ _ f₁ f₂ h
   let D := B ⧸ RingHom.ker f₁
   haveI : (RingHom.ker f₁).IsPrime := RingHom.ker_isPrime f₁

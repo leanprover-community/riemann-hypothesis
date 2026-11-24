@@ -105,7 +105,7 @@ private theorem UpperTheory.V.KH.stabLe_sub {G X : Type} [Group G] [MulAction G 
   exact h u
 
 theorem UpperTheory.V.KH.orbStep :
-    ∀ (G X : Type) [Group G] [MulAction G X] (A s : ℕ) (x : X), OrbLe G X (A + 1) → StabLe G X s →
+    ∀ (G X : Type) [Group G] [MulAction G X] (A s : ℕ) (_ : X), OrbLe G X (A + 1) → StabLe G X s →
       ∃ U V : SubMulAction G X, (∀ y, y ∈ V ↔ y ∉ U) ∧ Nonempty U ∧ MulAction.IsPretransitive G U ∧
         StabLe G U s ∧ StabLe G V s ∧ OrbLe G V A := by
   intro G X _ _ A s x hO hS

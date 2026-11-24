@@ -71,7 +71,7 @@ theorem dRho_smul (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D)
 theorem pureTensorO_smul (ψ : AddChar (AF D.host.F) ℂ) (θ : InfFam D) (S T : HSp D) (sS sT BS BT) (c : ℂ)
     (f : WO S T → ℂ) (P) :
     pureTensorO ψ θ S T sS sT BS BT (c • f) P = c • pureTensorO ψ θ S T sS sT BS BT f P := by
-  refine (GlobalTheory.OrientedHeis.pureTensorL_intertwine (fun _ => True) trivial (fun _ _ _ _ => trivial)
+  refine (GlobalTheory.OrientedHeis.pureTensorL_intertwine (fun _ => True) (fun _ _ _ _ => trivial)
     (fun _ _ _ => trivial) _ _ (c • (1 : Module.End ℂ (WO S T → ℂ))) (fun k g _ => ⟨trivial, ?_⟩) f trivial P).2.symm
   simp only [aPlusAll, aPlus, crea, LinearMap.smul_apply, Module.End.one_apply]
   rw [dRho_smul, dRho_smul, smul_comm Complex.I c, ← smul_sub, smul_comm]

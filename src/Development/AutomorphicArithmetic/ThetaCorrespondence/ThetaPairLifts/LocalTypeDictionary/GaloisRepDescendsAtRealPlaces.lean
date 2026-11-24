@@ -450,10 +450,10 @@ theorem fix_zero {H X W : Type} [AddCommGroup H] [Module ℂ H] [AddCommGroup W]
 def goodEig (R : RealDat D A Ks) (i : Fin D.R.m) (t : T) (h : Pl D.host.E → (List ℤ →₀ ℂ) → Module.End ℂ (R.HV i t).H)
     (s : Sys D) : Submodule ℂ (R.HV i t).H where
   carrier := {y | IsEigV R i t h s y ∧ GoodVt R i t y}
-  add_mem' := fun {a b} ha hb => ⟨fun P d hP hd => eig_add _ _ (ha.1 P d hP hd) (hb.1 P d hP hd),
+  add_mem' := fun {_ _} ha hb => ⟨fun P d hP hd => eig_add _ _ (ha.1 P d hP hd) (hb.1 P d hP hd),
     fun l => fix_add _ (R.extV i t) l (ha.2 l) (hb.2 l)⟩
-  zero_mem' := ⟨fun P d _ _ => eig_zero _ _, fun l => fix_zero _ (R.extV i t) l⟩
-  smul_mem' := fun z {a} ha => ⟨fun P d hP hd => eig_smul _ _ z (ha.1 P d hP hd), fun l => fix_smul _ (R.extV i t) l z (ha.2 l)⟩
+  zero_mem' := ⟨fun _ _ _ _ => eig_zero _ _, fun l => fix_zero _ (R.extV i t) l⟩
+  smul_mem' := fun z {_} ha => ⟨fun P d hP hd => eig_smul _ _ z (ha.1 P d hP hd), fun l => fix_smul _ (R.extV i t) l z (ha.2 l)⟩
 
 theorem saturated : GlobalTheory.Published.CuspRapidDecay → GlobalTheory.Hk3.HoweUnram → ∀ (D : D7) (G : Type) [Group G] [Fintype G] (Pl0 T : Type) (A : FamIn D.what₂.LL G Pl0 T D.R.m) (Ks : Type) [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] (R : RealDat D A Ks) (F : Face D A), GlobalTheory.LiftRows.Given R F → R.FullP → ∀ i t, TypeNZ R i t → DownEig R i t → GoodMem R i t → GlobalTheory.RawLift.UpInj R i t → UnrCorr R i t (fun _ => True) → ParamsEx R i t → Saturated R i t := by
   intro hD hH D G _ _ Pl0 T A Ks _ _ _ R F hG hF i t hNZ hDE hGM _ _ _ h hh s hs

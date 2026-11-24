@@ -590,7 +590,7 @@ private theorem hermC_ppos_eq_zero_of_hermC_eq_zero_of_Jt {r : ℕ} (X : Data E 
   simpa using hJ
 
 theorem gramSchmidt_eigenframe (r : ℕ) (X : DataX E r) (ξ : Fin r → E) (z0 : Frame X.Ψ r)
-    (f Y : X.Ψ → Fin (r - 2) → Fin r → ℂ) (hξ : X.IsIso ξ) (hz : z0 ∈ X.dom) (hf : X.UBasis z0 ξ f)
+    (f Y : X.Ψ → Fin (r - 2) → Fin r → ℂ) (hf : X.UBasis z0 ξ f)
     (hYind : ∀ τ, LinearIndependent ℂ (Y τ))
     (hYU : ∀ τ j, Y τ j ∈ Submodule.span ℂ (Set.range (f τ)))
     (hYorth : ∀ τ (j k : Fin (r - 2)), (j : ℕ) < X.p0 - 1 → X.p0 - 1 ≤ (k : ℕ) →
@@ -733,7 +733,6 @@ theorem reducedLattice_short_bound (hD5 : CoveringRadiusStatement) (r : ℕ) (X 
     (hξ : X.IsIso ξ) (hz : z0 ∈ X.dom) (hf : X.UBasis z0 ξ f)
     (hβ : ∀ k, herm X.Gm (β k) ξ = 0)
     (hβind : LinearIndependent E (Fin.cons ξ β : Fin (r - 2 + 1) → Fin r → E))
-    (hβspan : ∀ x : Fin r → E, herm X.Gm x ξ = 0 → ∃ (c : Fin (r - 2) → E) (e : E), x = ∑ k, c k • β k + e • ξ)
     (hS : ∀ c c' : Fin (r - 2) → E, S.h c c' = herm X.Gm (∑ k, c' k • β k) (∑ k, c k • β k))
     (hLB : ∀ c : Fin (r - 2) → E, c ∈ LB ↔ ∃ e : E, ∑ k, c k • β k + e • ξ ∈ X.L')
     (hLat : ReciprocityTheory.MultiplicativeHeights.IsLattice LB) (hSD : ReciprocityTheory.MultiplicativeHeights.IsSelfDual S LB)
@@ -1407,7 +1406,7 @@ variable {E : Type} [Field E] [NumberField E] [NumberField.IsCMField E]
 
 theorem unitary_fixing_isotropic_plane (r : ℕ) (X : DataX E r) (ξ : Fin r → E) (z0 x0 : Frame X.Ψ r)
     (f : X.Ψ → Fin (r - 2) → Fin r → ℂ) (h1 : X.Ψ → Matrix (Fin r) (Fin r) ℂ) (δ : ℝ)
-    (hξ : X.IsIso ξ) (hz : z0 ∈ X.dom) (hx0 : x0 ∈ X.dom) (hortho : X.IsOrtho x0)
+    (hz : z0 ∈ X.dom) (hx0 : x0 ∈ X.dom) (hortho : X.IsOrtho x0)
     (hflag : X.SameFlag z0 x0) (hf : X.UBasis z0 ξ f) (hδ : 0 ≤ δ) (hU : X.IsUnitaryC h1)
     (hI : ∀ s t : X.Ψ → ℂ, X.applyV h1 (X.lineV ξ s + X.Jz z0 (X.lineV ξ t)) =
       X.lineV ξ s + X.Jz z0 (X.lineV ξ t))
@@ -1597,7 +1596,7 @@ theorem eigenspan_perp_isotropic {z0 : Frame X.Ψ r} {ξ : Fin r → E} {f : X.�
 end Data
 
 private lemma d4ep0_pos_and_le_one (g d f NA NC c1 w : ℝ) (hg : 0 < g) (hd : 0 < d) (hf : 1 ≤ f) (hNC : 0 < NC)
-    (hNA : 0 ≤ NA) (hc1 : 0 < c1) (hw : 1 ≤ w) :
+    (hc1 : 0 < c1) (hw : 1 ≤ w) :
     0 < flowEpsilonBound g d f NA NC c1 w ∧ flowEpsilonBound g d f NA NC c1 w ≤ 1 := by
   unfold flowEpsilonBound
   dsimp only
@@ -1630,7 +1629,7 @@ theorem epsilonZero_pos_le_one {r : ℕ} (X : DataX E r) (c1 w : ℝ) (hc1 : 0 <
       unfold fdeg
       omega
     exact_mod_cast h3
-  exact d4ep0_pos_and_le_one _ _ _ _ _ _ _ (Nat.cast_pos.mpr X.g_pos) hd hf (Nat.cast_pos.mpr X.NC_pos) (Nat.cast_nonneg _) hc1 hw1
+  exact d4ep0_pos_and_le_one _ _ _ _ _ _ _ (Nat.cast_pos.mpr X.g_pos) hd hf (Nat.cast_pos.mpr X.NC_pos) hc1 hw1
 
 theorem orthonormalShortVectorBound_of (hD4 : ShortVectorBound (E := E)) (hD5 : CoveringRadiusStatement) : OrthonormalShortVectorBound (E := E) := by
   intro r X la P ξ ν c1 w z0 hH x0 hx0 hortho hflag
@@ -1648,11 +1647,11 @@ theorem orthonormalShortVectorBound_of (hD4 : ShortVectorBound (E := E)) (hD5 : 
   obtain ⟨f, hf⟩ := exists_unitary_basis_same_flag r X ξ z0 x0 hξ hz hx0 hortho hflag
   obtain ⟨β, S, LB, Q, hβ, hβind, hβspan, hS, hLB, hLat, hSD, hQ, hSQ, hQf⟩ := exists_perp_hermitian_reduction r X ξ z0 f hξ hz hf
   obtain ⟨lam, hl1, hl2, hl3, hl4, hl5, hl6, hYind, hYU, hYorth, hYpos, hYneg, hYgraph⟩ :=
-    reducedLattice_short_bound hD5 r X ξ z0 f β S LB Q _ _ hξ hz hf hβ hβind hβspan hS hLB hLat hSD hQ hSQ hQf hep hep1 hrh
+    reducedLattice_short_bound hD5 r X ξ z0 f β S LB Q _ _ hξ hz hf hβ hβind hS hLB hLat hSD hQ hSQ hQf hep hep1 hrh
       hrh1 hD4'
-  obtain ⟨h1, hU, hI, hUz, hmap, hpre⟩ := gramSchmidt_eigenframe r X ξ z0 f (fun τ j => X.ucomp z0 ξ (X.embV (lam j)) τ) hξ hz hf
+  obtain ⟨h1, hU, hI, hUz, hmap, hpre⟩ := gramSchmidt_eigenframe r X ξ z0 f (fun τ j => X.ucomp z0 ξ (X.embV (lam j)) τ) hf
     hYind hYU hYorth hYpos hYneg
-  obtain ⟨Z1, hfl, hZ⟩ := unitary_fixing_isotropic_plane r X ξ z0 x0 f h1 (d6rh c1 w / 120) hξ hz hx0 hortho hflag hf (by positivity) hU hI
+  obtain ⟨Z1, hfl, hZ⟩ := unitary_fixing_isotropic_plane r X ξ z0 x0 f h1 (d6rh c1 w / 120) hz hx0 hortho hflag hf (by positivity) hU hI
     hUz (fun τ v hv c hc => hYgraph τ c (hc ▸ hmap τ v hv))
   obtain ⟨hdom1, haproj, -, hJ⟩ := _root_.ReciprocityTheory.ChartRestriction.G.FD.Data.unitaryComplementMove_of_isotropic r X.toData ξ hξ z0 hz h1 hU hI hUz
 

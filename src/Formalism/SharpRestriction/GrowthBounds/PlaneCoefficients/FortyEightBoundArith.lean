@@ -325,7 +325,7 @@ open Formalism.MainNotions.G.WittFrameLocaliserOrders Formalism.MainNotions.G.sy
 namespace Ar
 
 theorem arith1 (dw a Bo Yk Pg PL PD sl : ℝ) (hPg : 0 < Pg) (hPL : 0 < PL) (hYk : 0 < Yk) (hBo : 0 ≤ Bo)
-    (ha : 0 ≤ a) (h1 : dw ≤ 3 * a / Pg) (h2 : a ≤ Bo * PD) (h3 : PD * PL ≤ Pg) (h4 : 48 * Yk ≤ PL)
+    (h1 : dw ≤ 3 * a / Pg) (h2 : a ≤ Bo * PD) (h3 : PD * PL ≤ Pg) (h4 : 48 * Yk ≤ PL)
     (h5 : Bo / Yk ≤ 2 * sl) : dw ≤ 1 / 8 * sl := by
   have e1 : a / Pg ≤ Bo / PL := by
     rw [div_le_div_iff₀ hPg hPL]
@@ -524,7 +524,7 @@ theorem arithCondition_of_one_le (C CLa : ℝ) (hC : 1 ≤ C) : RestArithStep C 
     rw [zpow_natCast] at z1
     exact Ar.forty_eight_bound_arith Y _ _ _ hY2 hk1 hNN (le_trans h9 z1)
   exact Ar.arith1 _ a Bv _ ((p : ℝ) ^ g) ((p : ℝ) ^ (L₁ + 1)) ((p : ℝ) ^ Dd) _ (by positivity) (by positivity) hden hBo0
-    ha0 hsum hBoa hpow h48 (by linarith)
+    hsum hBoa hpow h48 (by linarith)
 
 end Formalism.MainNotions.PairMembershipBlocks
 end -- clump:auto

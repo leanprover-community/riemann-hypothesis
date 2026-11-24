@@ -115,7 +115,7 @@ theorem integral_mul_eq_zero_of_cutoff {G : Type} [Group G] [MeasurableSpace G] 
 theorem weilVanish : WeilVanish := by
   unfold WeilVanish
   intro G _ _ _ _ _ _ _ _ μ _ N ν hN hν F φ hF hφ hinv hint h0
-  obtain ⟨β, hβ, hβt, hβ1⟩ := exists_measurable_cutoff_fibre_integral_one G N ν hN hν
+  obtain ⟨β, hβ, hβt, hβ1⟩ := exists_measurable_cutoff_fibre_integral_one G N ν hν
   haveI : IsFiniteMeasureOnCompacts ν := hν.2.1
   have hN' : ∀ᵐ m ∂ν, m ∈ (N : Set G) := mem_ae_iff.2 hν.2.2.1
   have hae : ∀ᵐ m ∂ν, ∀ y, F (m * y) = F y := hN'.mono fun m hm y => hinv m hm y

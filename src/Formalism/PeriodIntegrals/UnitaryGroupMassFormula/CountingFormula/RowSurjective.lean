@@ -476,7 +476,7 @@ theorem rs_xlam (hf : PartnerOK D F0 f) : XLam (lamC D F0 f M) (lf D F0) = XS D 
     rintro _ ⟨a, x, hx, rfl⟩
     exact ⟨rs_smul_e_mem hf hx, Submodule.smul_mem _ x (rs_e_mem_X D F0 a)⟩
 
-theorem rs_prim (hf : PartnerOK D F0 f) (hM : IsGlueLat (hWb D F0) (zbar D F0) M) (c : D.host.E)
+theorem rs_prim (hM : IsGlueLat (hWb D F0) (zbar D F0) M) (c : D.host.E)
     (hc : c • F0.z ∈ Lsub (lamC D F0 f M) (lf D F0)) : ∃ o : 𝓞 D.host.E, (o : D.host.E) = c := by
   obtain ⟨y, hy, x, hx, hyx⟩ := Submodule.mem_sup.1 hc.1
   have hyΛ : y ∈ lamC D F0 f M := hy.1
@@ -556,7 +556,7 @@ end Flag
 
 theorem lattice_flag_exists : LamFlag := by
   intro D u F0 f M hf hM
-  exact ⟨rs_z_mem hf hM, rs_xlam hf, rs_prim hf hM, rs_mof hf⟩
+  exact ⟨rs_z_mem hf hM, rs_xlam hf, rs_prim hM, rs_mof hf⟩
 
 end PI.UnitaryGroupMassFormula.CntFormula.RowsMassW
 end -- clump:auto

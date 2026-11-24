@@ -182,10 +182,10 @@ private theorem loc_hom {l : ℕ} [Fact (Nat.Prime l)] (κ : PadicAlgCl l) (hκ 
 
 set_option linter.unusedVariables false in set_option linter.overlappingInstances false in
 theorem UpperTheory.Reformulated.B.MajorantSquareBound.spl_near :
-    ∀ {l : ℕ} [inst : Fact (Nat.Prime l)] {O B : Type}
-    [inst_1 : CommRing O] [inst_2 : Algebra ℤ_[l] O] [inst_3 : Algebra O (PadicAlgCl l)]
-    [IsScalarTower ℤ_[l] O (PadicAlgCl l)] [inst_5 : CommRing B] [IsDomain B] [HenselianLocalRing B]
-    [inst_8 : Algebra O B] (x y : B →ₐ[O] PadicAlgCl l) (d : O),
+    ∀ {l : ℕ} [Fact (Nat.Prime l)] {O B : Type}
+    [CommRing O] [Algebra ℤ_[l] O] [Algebra O (PadicAlgCl l)]
+    [IsScalarTower ℤ_[l] O (PadicAlgCl l)] [CommRing B] [IsDomain B] [HenselianLocalRing B]
+    [Algebra O B] (x y : B →ₐ[O] PadicAlgCl l) (d : O),
     (Algebra.algebraMap O (PadicAlgCl l) : O → PadicAlgCl l) d ≠ (0 : PadicAlgCl l) →
       ∀ (t : B),
         (x : B → PadicAlgCl l) t = (0 : PadicAlgCl l) →
@@ -431,7 +431,7 @@ private theorem spl_red {l : ℕ} [Fact l.Prime] {O B H : Type} [CommRing O] [Is
   · rw [mul_sub, hyt, map_sub, AlgHom.commutes, map_mul]
 
 private theorem spl_cont {X R K : Type} [TopologicalSpace X] [CommRing R] [NormedRing K] (I : Ideal R) (y : R →+* K)
-    {a : ℝ} (h1 : a < 1) (h0 : 0 ≤ a) (h : ∀ n, ∀ x ∈ I ^ n, ‖y x‖ ≤ a ^ n) {f : X → R} (hf : AdicCont I f) :
+    {a : ℝ} (h1 : a < 1) (h : ∀ n, ∀ x ∈ I ^ n, ‖y x‖ ≤ a ^ n) {f : X → R} (hf : AdicCont I f) :
     Continuous fun g => y (f g) := by
   refine continuous_iff_continuousAt.2 fun g => Metric.tendsto_nhds.2 fun ε hε => ?_
   obtain ⟨k, hk⟩ := exists_pow_lt_of_lt_one hε h1
@@ -457,7 +457,7 @@ private theorem spl_bar {l : ℕ} [Fact l.Prime] (c : Coef l) {a b : c.O} {z : P
 end UpperTheory.V.Loc
 
 theorem UpperTheory.V.Loc.spPtL :
-    ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c) (hD : D.Good) (r : D.Gp l →* M4 (PadicAlgCl l)), PtOn D D.condL r → ∃ (h : (M4 (PadicAlgCl l))ˣ) (κ : Fin 4 → D.Gp l →* (PadicAlgCl l)ˣ), FlagIn r h κ ∧ (∀ i (s : D.Gp l), (s : G ℚ Ω) ∈ D.Ip l → (κ i s : PadicAlgCl l) = ((D.ps i s : c.Oˣ) : c.O)) ∧ (∀ i g, ‖(κ i g : PadicAlgCl l) - ((D.ps i g : c.Oˣ) : c.O)‖ < 1) ∧ (∀ g : D.Gp l, ((κ 0 g * κ 3 g : (PadicAlgCl l)ˣ) : PadicAlgCl l) = ((D.th g : c.Oˣ) : c.O) ∧ ((κ 1 g * κ 2 g : (PadicAlgCl l)ˣ) : PadicAlgCl l) = ((D.th g : c.Oˣ) : c.O)) ∧ (∀ i, Continuous fun g => (κ i g : PadicAlgCl l)) ∧ ∀ i j, i ≠ j → ∀ U : Subgroup (D.Gp l), IsOpen (U : Set (D.Gp l)) → (∃ g ∈ U, (g : G ℚ Ω) = D.sg l) → ∃ g ∈ U, (κ i g : PadicAlgCl l) ≠ (κ j g : PadicAlgCl l) * ((chiO ℚ Ω l c.O g : c.Oˣ) : c.O) := by
+    ∀ {Ω : Type} [Field Ω] [CharZero Ω] [IsAlgClosure ℚ Ω] {l : ℕ} [Fact l.Prime] {c : Coef l} (D : Raw Ω c) (_ : D.Good) (r : D.Gp l →* M4 (PadicAlgCl l)), PtOn D D.condL r → ∃ (h : (M4 (PadicAlgCl l))ˣ) (κ : Fin 4 → D.Gp l →* (PadicAlgCl l)ˣ), FlagIn r h κ ∧ (∀ i (s : D.Gp l), (s : G ℚ Ω) ∈ D.Ip l → (κ i s : PadicAlgCl l) = ((D.ps i s : c.Oˣ) : c.O)) ∧ (∀ i g, ‖(κ i g : PadicAlgCl l) - ((D.ps i g : c.Oˣ) : c.O)‖ < 1) ∧ (∀ g : D.Gp l, ((κ 0 g * κ 3 g : (PadicAlgCl l)ˣ) : PadicAlgCl l) = ((D.th g : c.Oˣ) : c.O) ∧ ((κ 1 g * κ 2 g : (PadicAlgCl l)ˣ) : PadicAlgCl l) = ((D.th g : c.Oˣ) : c.O)) ∧ (∀ i, Continuous fun g => (κ i g : PadicAlgCl l)) ∧ ∀ i j, i ≠ j → ∀ U : Subgroup (D.Gp l), IsOpen (U : Set (D.Gp l)) → (∃ g ∈ U, (g : G ℚ Ω) = D.sg l) → ∃ g ∈ U, (κ i g : PadicAlgCl l) ≠ (κ j g : PadicAlgCl l) * ((chiO ℚ Ω l c.O g : c.Oˣ) : c.O) := by
   intro Ω _ _ _ l _ c D hD r hr
   obtain ⟨R, _, _, _, ρ', y', ⟨B, _, _, _, _, ρ, hρ, ⟨x, hx⟩, y₀, rfl⟩, rfl⟩ := hr
   obtain ⟨-, hT, -, hwt, -, hrev, hinj, -⟩ := facts D hD
@@ -487,7 +487,7 @@ theorem UpperTheory.V.Loc.spPtL :
     fun i j hij U hU ⟨g, hg, hgs⟩ => ?_⟩
   · obtain ⟨-, a, a1, a0, ha⟩ := (coPt c B).1 y
     have hc : Continuous fun g => mapRep (y : B →+* PadicAlgCl l) ρ.hom g :=
-      continuous_matrix fun a b => spl_cont _ (y : B →+* PadicAlgCl l) a1 a0 ha (ρ.cont a b)
+      continuous_matrix fun a b => spl_cont _ (y : B →+* PadicAlgCl l) a1 ha (ρ.cont a b)
     simp only [← h2]
     exact ((continuous_const.matrix_mul hc).matrix_mul continuous_const).matrix_elem i i
   · by_contra hn

@@ -116,7 +116,7 @@ theorem eq_one_of_mem_princ_one {o : ℕ} (ho : ¬ l ∣ o) {ζ : ℤ_[l]ˣ}
     sub_eq_zero] at h1
   exact h1
 
-theorem map_red_rootsOfUnity {o : ℕ} (ho : o ∣ l - 1) :
+theorem map_red_rootsOfUnity {o : ℕ} :
     (rootsOfUnity o ℤ_[l]).map (red l) = rootsOfUnity o (ZMod l) := by
   have hl : 2 ≤ l := (Fact.out : l.Prime).two_le
   ext x

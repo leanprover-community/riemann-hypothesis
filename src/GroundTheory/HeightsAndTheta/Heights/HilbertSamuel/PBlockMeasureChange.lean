@@ -67,7 +67,7 @@ theorem quad_le (d d' : HSMBlockDatum D K ι Ω) (hy : d'.y = d.y) (hk : d'.k₀
   set Q := a ⬝ᵥ (blockGram d n (fun j => map (Int.castRingHom ℚ) (f j)) *ᵥ a)
   have hpt : ∀ z ∈ mcPts (mCoordIdeal d.y), ‖comb f a z‖ ^ 2 / d.A.h z ^ (2 * n) ≤ c ^ 2 * Q := by
     intro z hz
-    have h1 := sup_real d n f hf hc hsup a hz
+    have h1 := sup_real d n f hf hsup a hz
     have h0 : 0 ≤ ‖comb f a z‖ / d.A.h z ^ n :=
       div_nonneg (norm_nonneg _) (pow_pos (d.A.pos z hz.1) n).le
     have h2 := pow_le_pow_left₀ h0 h1 2

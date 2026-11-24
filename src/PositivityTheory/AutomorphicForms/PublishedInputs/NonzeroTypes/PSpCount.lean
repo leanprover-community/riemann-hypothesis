@@ -48,7 +48,7 @@ theorem rank_eS_eq_zero (H : Subgroup M) (η : M → ℂ) (ρ : Representation �
   rw [h, rank_bot]
 
 theorem rank_step {ρ : Representation ℂ M W} (H : Subgroup M) (η : M → ℂ) (S T : Subrepresentation ρ)
-    (_hTS : T ≤ S) :
+    :
     Module.rank ℂ ↥(eS H η ρ ⊓ S.toSubmodule) ≤
       Module.rank ℂ ↥(eS H η ρ ⊓ T.toSubmodule) + Module.rank ℂ ↥(eS H η (subQuot S T)) := by
   let f : ↥(eS H η ρ ⊓ S.toSubmodule) →ₗ[ℂ]
@@ -109,7 +109,7 @@ theorem rank_le_of_filtration {ρ : Representation ℂ M W} (H : Subgroup M) (η
       intro hj
       have hjN : j < N := by omega
       have hle : S ⟨j, by omega⟩ ≤ S ⟨j + 1, hj⟩ := hmono (Fin.mk_le_mk.2 (Nat.le_succ j))
-      have hst := rank_step H η (S ⟨j + 1, hj⟩) (S ⟨j, by omega⟩) hle
+      have hst := rank_step H η (S ⟨j + 1, hj⟩) (S ⟨j, by omega⟩)
       have hq : Module.rank ℂ ↥(eS H η (subQuot (S ⟨j + 1, hj⟩) (S ⟨j, by omega⟩))) ≤ r' j := by
         have := hr ⟨j, hjN⟩
         simp only [r', dite_eq_left hjN]

@@ -245,7 +245,7 @@ theorem inner_dRepC {S : Submodule ℂ H} (hS : IsKStableOn ε σ S) {w v : H} (
     (hc.sub_left hc'.neg_left).smul_left _
   rw [inner_add_right, inner_smul_right, inner_dRep hS hw hv k1 c1, inner_dRep hS hw hv k2 c2, mul_zero, add_zero]
 
-theorem dRepC_diag (hσ : IsURepOn (UJset ε) σ) {μ : Fin n → ℝ} {v : H} (hv : IsWtOn (Formalism.REAL.Kset ε) σ μ v) (a : Fin n) :
+theorem dRepC_diag {μ : Fin n → ℝ} {v : H} (hv : IsWtOn (Formalism.REAL.Kset ε) σ μ v) (a : Fin n) :
     dRepC (Formalism.REAL.Jm ε) σ (Matrix.single a a 1) v = ((μ a : ℝ) : ℂ) • v := by
   unfold dRepC
   rw [conjH_single rfl]
@@ -363,7 +363,7 @@ theorem extremal_killed : ∀ (n : ℕ) (ε : Fin n → Bool) (lam : Fin n → �
   intro n ε lam H _ _ σ hDS v hvL hs hv
   obtain ⟨hC, -, hσ, -⟩ := hDS
   haveI := hC
-  refine ⟨fun a => dRepC_diag hσ hv a, ?_⟩
+  refine ⟨fun a => dRepC_diag hv a, ?_⟩
   intro a c hac hlt
   set s := revNeg ε with hs_def
   let P : Mt n := Matrix.of fun i j => if s j = i then (1 : ℂ) else 0

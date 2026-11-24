@@ -504,7 +504,7 @@ theorem whI_eq (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (ψ : AddChar (AF F) 
     whI (Ainf F) σ J (psiInf F ψ) μ (phiInf θ l fr g P) (nuInf θ g) T.1 z b =
       (cμ : ℂ) * ∏ i, fw (ε i) (l i) (P i) (ygAll σ θ g T i) (z - ((M : ℂ) - n) / 2) (ybAll σ θ g b i) := by
   unfold whI
-  rw [nuInf_eq σ hCM ψ θ l hP g b, jt_eq σ hCM ψ θ l hP J ε fr hfr g P μ eC heC cμ hcμ b,
+  rw [nuInf_eq σ ψ θ l hP g b, jt_eq σ hCM ψ θ l hP J ε fr hfr g P μ eC heC cμ hcμ b,
     psi_neg_trPair σ hCM ψ θ l hP g T b,
     cpow_prod_ofReal _ _ (fun i => (WR.I.dP_pos _).le)]
   simp only [fw, Finset.prod_mul_distrib]
@@ -586,7 +586,7 @@ theorem dens_box (σ : E →ₐ[F] E) (hCM : IsCMExt F E σ) (ψ : AddChar (AF F
     rw [this]; infer_instance
   set A : ι → Set (Fin M → Fin n → ℂ) := fun i => gramX (ε i) ⁻¹' (herm '' K i) with hA
   have hset : gramR (Ainf F) σ J ⁻¹' (Subtype.val '' (eg ⁻¹' Set.univ.pi K)) = eC ⁻¹' Set.univ.pi A := by
-    rw [heg, heC]; exact gram_preimage_box σ hCM ψ θ l hP J hJ ε fr hfr g K
+    rw [heg, heC]; exact gram_preimage_box σ ψ θ l hP J ε fr hfr g K
   set F0 : (ι → Fin M → Fin n → ℂ) → ℂ := fun x => ∏ i, (evX (P i) (x i) * gs (2 * Real.pi * |l i|) (x i)) with hF0
   have hphi : phiInf θ l fr g P = F0 ∘ eC := by
     funext Y; rw [Function.comp_apply, hF0, heC]; rfl
@@ -655,7 +655,7 @@ theorem realWhitAll_of (hWR : WR.WRSt) : RealWhitAll := by
     · left; rw [abs_of_nonneg h]
     · right; rw [abs_of_neg h]; ring
   choose gg hggc hggd hggW using hw
-  have hβ : ∀ i, (herm (ygAll σ θ g T i)).det ≠ 0 := det_herm_ygAll σ hCM ψ θ l hP g T hT
+  have hβ : ∀ i, (herm (ygAll σ θ g T i)).det ≠ 0 := det_herm_ygAll σ ψ θ l hP g T hT
   choose Wi hWid hWrest using fun i => hggW i (ygAll σ θ g T i) (hβ i)
   choose σ₀ hσ₀ using fun i => (hWrest i).1
   have hWi0 := fun i => (hWrest i).2
@@ -678,7 +678,7 @@ theorem realWhitAll_of (hWR : WR.WRSt) : RealWhitAll := by
     refine continuousOn_const.mul (continuousOn_finsetProd _ fun i _ => ?_)
     refine (hggc i).comp ((continuous_apply i).comp eg.continuous).continuousOn fun S hS => ?_
     show (herm (eg S i)).det ≠ 0
-    rw [heg]; exact det_herm_ygAll σ hCM ψ θ l hP g S hS i
+    rw [heg]; exact det_herm_ygAll σ ψ θ l hP g S hS i
   have hval : gi T = c * ∏ i, gg i (eg T i) := by
     refine eq_of_box ν _ hB gi _ hgi.1 hGd T hT fun U hU => ?_
     have hU' : eg '' (U ∩ {S | IsUnit (S : Matrix (Fin n) (Fin n) (Ainf F ⊗[F] E)).det}) ∈ nhds (eg T) :=
@@ -700,7 +700,7 @@ theorem realWhitAll_of (hWR : WR.WRSt) : RealWhitAll := by
         rcases eq_or_ne j i with rfl | hj
         · simpa using hy
         · simp only [Function.update_of_ne hj, hK]; exact Metric.mem_closedBall_self hr2.le
-      have h2 := det_herm_ygAll σ hCM ψ θ l hP g _ (hsub _ hz).2 i
+      have h2 := det_herm_ygAll σ ψ θ l hP g _ (hsub _ hz).2 i
       rw [← heg, ContinuousAddEquiv.apply_symm_apply] at h2
       simpa using h2
     have hKc : ∀ i, IsCompact (K i) := fun i => isCompact_closedBall _ _

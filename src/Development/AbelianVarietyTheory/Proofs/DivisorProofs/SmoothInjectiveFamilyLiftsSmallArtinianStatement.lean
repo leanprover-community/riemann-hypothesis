@@ -139,7 +139,7 @@ theorem liftsVia_comp {B C D : Type} [CommRing B] [CommRing C] [CommRing D] (φ 
     have h' := same_comp A e h
     convert h' using 1
     ext
-    simp [e, k])
+    simp [e])
   let e' : Over.mk (Spec.map (CommRingCat.ofHom φ) ≫ y ≫ T.hom) ⟶
       Over.mk ((Spec.map (CommRingCat.ofHom φ) ≫ y) ≫ T.hom) := Over.homMk (𝟙 _) (by simp)
   exact hφ T N hN y (e' ≫ u₁) (by

@@ -49,9 +49,9 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 
 def latDbl {n d : ℕ} (X : Spc F E n) (W : Spc F E d) (v : Pl (F := F)) : AddSubgroup (Matrix (Fin n) (Fin d ⊕ Fin d) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E))) where
   carrier := {z | z.toCols₁ ∈ latAtV X W v ∧ z.toCols₂ ∈ latAtV X W v}
-  add_mem' := fun {a b} ha hb => ⟨add_mem ha.1 hb.1, add_mem ha.2 hb.2⟩
+  add_mem' := fun {_ _} ha hb => ⟨add_mem ha.1 hb.1, add_mem ha.2 hb.2⟩
   zero_mem' := ⟨zero_mem (latAtV X W v), zero_mem (latAtV X W v)⟩
-  neg_mem' := fun {a} ha => ⟨neg_mem ha.1, neg_mem ha.2⟩
+  neg_mem' := fun {_} ha => ⟨neg_mem ha.1, neg_mem ha.2⟩
 
 theorem mem_latDbl {n d : ℕ} (X : Spc F E n) (W : Spc F E d) (v : Pl (F := F)) (z : Matrix (Fin n) (Fin d ⊕ Fin d) (_root_.GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.AE (F := F) (E := E))) :
     z ∈ latDbl X W v ↔ z.toCols₁ ∈ latAtV X W v ∧ z.toCols₂ ∈ latAtV X W v := Iff.rfl

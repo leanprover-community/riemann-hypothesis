@@ -343,20 +343,20 @@ theorem Pi_f (H : D.Hyp) (S : (n → A) →ₗ[A] (n → A)) (a : Fin r) : D.Pi 
 theorem unipotent_proj_fixes_normal (H : D.Hyp) (S : (n → A) →ₗ[A] (n → A)) : D.Pi S D.z = D.z := by
   simp only [Pi, LinearMap.add_apply, LinearMap.comp_apply, pU_z_eq H, orthogonal_proj_normal_zero H, map_zero, add_zero]
 
-theorem hermitian_isotropic_proj_complement (H : D.Hyp) {w : n → A} (hw : IsW D w) (x : n → A) : D.h (D.pU x) w = 0 := by
+theorem hermitian_isotropic_proj_complement {w : n → A} (hw : IsW D w) (x : n → A) : D.h (D.pU x) w = 0 := by
   simp only [pU, LinearMap.add_apply, pX, pXv, pz, LinearMap.sum_apply, LinearMap.smulRight_apply,
     LinearMap.smul_apply, h_add_left, D_h_sum_left, h_smul_left, hw.1, hw.2.1, hw.2.2, mul_zero,
     Finset.sum_const_zero, add_zero]
 
 theorem h_W_pU (H : D.Hyp) {w : n → A} (hw : IsW D w) (x : n → A) : D.h w (D.pU x) = 0 := by
-  rw [h_symm H (D.pU x) w, hermitian_isotropic_proj_complement H hw, map_zero]
+  rw [h_symm H (D.pU x) w, hermitian_isotropic_proj_complement hw, map_zero]
 
 theorem h_dec (H : D.Hyp) (x y : n → A) :
     D.h x y = D.h (D.pU x) (D.pU y) + D.h (D.pW x) (D.pW y) := by
   have ex : x = D.pU x + D.pW x := by simp only [pW, LinearMap.sub_apply, LinearMap.id_apply]; abel
   have ey : y = D.pU y + D.pW y := by simp only [pW, LinearMap.sub_apply, LinearMap.id_apply]; abel
   conv_lhs => rw [ex, ey]
-  rw [h_add_left, h_add_right, h_add_right, hermitian_isotropic_proj_complement H (isW_pW H y), h_W_pU H (isW_pW H x)]
+  rw [h_add_left, h_add_right, h_add_right, hermitian_isotropic_proj_complement (isW_pW H y), h_W_pU H (isW_pW H x)]
   simp
 
 private theorem D_h_sub_left (a b c : n → A) : D.h (a - b) c = D.h a c - D.h b c := by

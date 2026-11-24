@@ -63,8 +63,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Qf45.isInt_conj :
-    ∀ {O : Type} [inst : CommRing O]
-    {B : Type} [inst_1 : Ring B] [inst_2 : Algebra O B] (a b k : B),
+    ∀ {O : Type} [CommRing O]
+    {B : Type} [Ring B] [Algebra O B] (a b k : B),
     a * b = (1 : B) → b * a = (1 : B) → IsIntegral O k → IsIntegral O (a * k * b) := by
   intro O _ B _ _ a b k hab hba hk
   let f : B →ₐ[O] B :=

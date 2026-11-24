@@ -334,7 +334,7 @@ theorem isotypicProj_commute_prefix (D : Formalism.BasicNotions.D7) (i j : Fin (
 
 end comm
 
-theorem isotypic_projections_commute_holds (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CovariantDegrees.TypeDecompositionsCommute D := by
+theorem isotypic_projections_commute_holds (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.CovariantDegrees.TypeDecompositionsCommute := by
   intro F _ _ N n LL i j lam lam' e e' he he'
   exact isotypicProj_commute_prefix LL D i j lam lam' e e' he he'
 

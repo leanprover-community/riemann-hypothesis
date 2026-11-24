@@ -78,7 +78,7 @@ def PartDiag : Prop := ∀ (q : ℕ) (B : Type) [CommRing B] [IsDomain B] (I : I
       ∃ (j' : J) (f : j ⟶ j') (a : D.obj j'), (p.map (D.map f).hom).IsRoot a ∧
         a - (D.map f).hom a₀ ∈ I.map (β.app j').hom)
 
-theorem goal_of (_hL : LocAIC) (_hM : MonicSplits) (_hI : IdemPart) (hC : ColimHens) (hD : PartDiag) :
+theorem goal_of (hC : ColimHens) (hD : PartDiag) :
     LateralTheory.E.QuotAcycCut.Hens := by
   intro q B _ _ I hB hq
   obtain ⟨J, _, _, D, β, hst, ha, hb, hc⟩ := hD q B I hB hq

@@ -343,7 +343,7 @@ theorem vV_unit (u : Vˣ) : vV V (algebraMap V K' u) = 0 := by
     exact fun h => (IsLocalRing.mem_maximalIdeal _).1 h u.isUnit
   simp [vV, this]
 
-theorem vV_pow {x : K'} (hx : x ≠ 0) (n : ℕ) : vV V (x ^ n) = n * vV V x := by
+theorem vV_pow {x : K'} (n : ℕ) : vV V (x ^ n) = n * vV V x := by
   simp [vV]
 
 theorem vV_pos {a : V} (ha : a ≠ 0) (hu : ¬ IsUnit a) : 0 < vV V (algebraMap V K' a) := by
@@ -377,7 +377,7 @@ theorem exists_index {V' K'' : Type} [CommRing V'] [IsDomain V'] [IsDiscreteValu
     have h2 : algebraMap V K' u ≠ 0 := by simp
     rw [hi, map_mul, map_mul, map_mul, map_pow, map_pow, map_pow,
       vV_mul (inj _ u.ne_zero) (pow_ne_zero _ (inj p hp.ne_zero)), vV_mul h2 (pow_ne_zero _ h1),
-      vV_pow (inj p hp.ne_zero), vV_pow h1, vV_unit, vV_irr hp, hr]
+      vV_pow, vV_pow, vV_unit, vV_irr hp, hr]
     have := vV_unit (K' := K'') (Units.map j.toMonoidHom u)
     simp only [Units.coe_map, RingHom.toMonoidHom_eq_coe, MonoidHom.coe_coe] at this
     rw [this]; ring
@@ -398,7 +398,7 @@ theorem exists_index {V' K'' : Type} [CommRing V'] [IsDomain V'] [IsDiscreteValu
 
 end Val
 
-theorem isUnit_of_norm {V K : Type} [CommRing V] [IsLocalRing V] [NormedField K] (f : V →+* K) (h : ∀ v, ‖f v‖ ≤ 1)
+theorem isUnit_of_norm {V K : Type} [CommRing V] [IsLocalRing V] [NormedField K] (f : V →+* K)
     (h' : ∀ x : K, ‖x‖ ≤ 1 → (∃ v, f v * x = 1) → ∃ v, f v = x) (hf : Function.Injective f) {v : V} (hv : ‖f v‖ = 1) :
     IsUnit v := by
   have h0 : f v ≠ 0 := fun h0 => by simp [h0] at hv
@@ -483,7 +483,7 @@ theorem recordAt_of_isArcFr : Out.Laws → Out.Laws2 → ∀ (E : Type) [Field E
   have finj : Function.Injective f := i'.injective.comp (IsFractionRing.injective _ _)
   let g : ∀ τ : E →+* ℂ, Matrix (Fin (Dw.mult τ)) (Fin (Dw.mult τ)) T'.V := fun τ => Matrix.of fun p q => Y' ⟨τ, p, q⟩
   have hg : IsUnit (∏ τ, (g τ).det) := by
-    refine RecFr.isUnit_of_norm f hf ?_ finj ?_
+    refine RecFr.isUnit_of_norm f ?_ finj ?_
     · rintro x hx ⟨v, hv⟩
       have hx' : x = i' (algebraMap T'.V T'.Fr v)⁻¹ := by
         rw [map_inv₀]; exact eq_inv_of_mul_eq_one_right hv

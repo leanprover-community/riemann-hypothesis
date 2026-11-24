@@ -181,7 +181,7 @@ end GlobalTheory.ThetaParity
 namespace GlobalTheory.ThetaParity
 
 theorem theta_neg : ∀ (o Ω : Type) [CommRing o] [Field Ω] [Algebra o Ω] [ArithBase o Ω] (S : ThetaSys o Ω)
-    (ρ : S.Real) (a : S.Gam), ∃ c ε : Ω, c ^ 2 = 1 ∧ ε ^ ((S.r * S.N) ^ 2) = 1 ∧ S.th (-a) = c * ε * S.th a := by
+    (_ : S.Real) (a : S.Gam), ∃ c ε : Ω, c ^ 2 = 1 ∧ ε ^ ((S.r * S.N) ^ 2) = 1 ∧ S.th (-a) = c * ε * S.th a := by
   intro o Ω _ _ _ _ S ρ a
   obtain ⟨C, hC⟩ := key S ρ
   have hodd := odd_rN S ρ

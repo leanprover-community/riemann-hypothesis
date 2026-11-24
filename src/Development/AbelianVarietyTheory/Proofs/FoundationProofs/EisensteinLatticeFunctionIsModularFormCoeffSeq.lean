@@ -421,7 +421,7 @@ lemma sum_Icc_sub (G : ℤ → ℂ) (R : ℕ) :
     congr 2; push_cast; ring
   · congr 2 <;> push_cast <;> ring
 
-theorem tendsto_sum_Icc_div (L : ℕ) (φ : ZMod L → ℂ) (z : ℂ) (hL : 0 < L) (hz : 0 < z.im)
+theorem tendsto_sum_Icc_div (L : ℕ) (φ : ZMod L → ℂ) (z : ℂ) (hL : 0 < L)
     (h0 : hat φ 0 = 0) :
     Tendsto (fun R : ℕ => ∑ d ∈ Finset.Icc (-(R:ℤ)) R, φ d * (z + (L * (d / L) : ℤ))⁻¹) atTop (𝓝 0) := by
   have hsum : ∑ y ∈ Finset.range L, φ y = 0 := by simpa [hat] using h0
@@ -662,7 +662,7 @@ theorem lipschitz_one : ∀ (L : ℕ) (φ : ZMod L → ℂ) (z : ℂ), 0 < L →
     refine hG.congr fun N => ?_
     simp only [Function.comp_apply]
     rw [← hb N, hsplit, hzero N, add_zero]
-  have hlim := hF.add (_root_.GlobalTheory.FloorTelescope.tendsto_sum_Icc_div L φ z hL hz h0)
+  have hlim := hF.add (_root_.GlobalTheory.FloorTelescope.tendsto_sum_Icc_div L φ z hL h0)
   rw [add_zero, hT] at hlim
   refine hlim.congr fun R => ?_
   simp only [Function.comp_apply]

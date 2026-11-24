@@ -1041,7 +1041,7 @@ open Formalism.MainNotions.UnusedSlot80
 
 theorem local_clause_of_frobenius_hyps (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
     (h1 : Formalism.MainNotions.RamifiedCoefficientChains.adm1 D HW F Cm) (h3 : Formalism.MainNotions.RamifiedCoefficientChains.adm3 D HW F) (h11 : Formalism.MainNotions.RamifiedCoefficientChains.adm11 D) :
-    adm16 D HW F Cm := by
+    adm16 D HW F := by
   intro l _ K LL hg _
   have hT1 := h1 l K 1 LL hg
   have hP2 := h3 l K 1 LL hg
@@ -1050,12 +1050,12 @@ theorem local_clause_of_frobenius_hyps (D : D7) (HW : HWOf D.loc) (F : FonOf D.l
     (fun hCA => χ_pow_ne_one (RToolNum_holds (D.loc l) (HW l) K LL hg hCA))
 
 theorem local_clause_of_admitted_statements (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
-    {CR CA CB CK : ℝ} (hA : Formalism.MainNotions.RamifiedCoefficientChains.admitted D HW F Cm CR CA CB CK) : adm16 D HW F Cm :=
+    {CR CA CB CK : ℝ} (hA : Formalism.MainNotions.RamifiedCoefficientChains.admitted D HW F Cm CR CA CB CK) : adm16 D HW F :=
   local_clause_of_frobenius_hyps D HW F Cm hA.1 hA.2.2.1 hA.2.2.2.2.2.2.2.2.2.2.1
 
 theorem QToolOpen_of_adm (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
     (h1 : Formalism.MainNotions.RamifiedCoefficientChains.adm1 D HW F Cm) (h6 : Formalism.MainNotions.RamifiedCoefficientChains.adm6 D HW F) (h11 : Formalism.MainNotions.RamifiedCoefficientChains.adm11 D)
-    (hJ : Formalism.MainNotions.LiftingTheory.adm23 D HW F)
+    (hJ : Formalism.MainNotions.LiftingTheory.adm23 D HW)
     (l : ℕ) [Fact l.Prime] (K LL : Loc.FinExt l) (hg : Loc.Good K 1 LL)
     [NeZero (Module.finrank ℚ_[l] ↥(Loc.K0 K))] : QToolOpen ((HW l).W K 1 LL hg) :=
   QToolOpen_of _ (h6.1 l K 1 LL hg) (h6.2.2.1 l K 1 LL hg) (h1 l K 1 LL hg).2.2.2.2.2.2.2.2.1
@@ -1063,12 +1063,12 @@ theorem QToolOpen_of_adm (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) 
 
 theorem level_clause_of_local_hypotheses (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
     (h1 : Formalism.MainNotions.RamifiedCoefficientChains.adm1 D HW F Cm) (h6 : Formalism.MainNotions.RamifiedCoefficientChains.adm6 D HW F) (h11 : Formalism.MainNotions.RamifiedCoefficientChains.adm11 D)
-    (hJ : Formalism.MainNotions.LiftingTheory.adm23 D HW F) : adm13 D HW F Cm :=
+    (hJ : Formalism.MainNotions.LiftingTheory.adm23 D HW) : adm13 D HW F :=
   level_clause_of_open_tool' D HW F Cm h6 fun l _ K LL hg _ => QToolOpen_of_adm D HW F Cm h1 h6 h11 hJ l K LL hg
 
 theorem level_clause_of_admitted_statements (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (Cm : CmpOf D.loc D.locA HW F)
-    {CR CA CB CK : ℝ} (hA : Formalism.MainNotions.RamifiedCoefficientChains.admitted D HW F Cm CR CA CB CK) (hJ : Formalism.MainNotions.LiftingTheory.adm23 D HW F) :
-    adm13 D HW F Cm :=
+    {CR CA CB CK : ℝ} (hA : Formalism.MainNotions.RamifiedCoefficientChains.admitted D HW F Cm CR CA CB CK) (hJ : Formalism.MainNotions.LiftingTheory.adm23 D HW) :
+    adm13 D HW F :=
   level_clause_of_local_hypotheses D HW F Cm hA.1 hA.2.2.2.2.2.1 hA.2.2.2.2.2.2.2.2.2.2.1 hJ
 
 end Rows

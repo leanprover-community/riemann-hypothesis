@@ -358,8 +358,8 @@ theorem emb_add (X : RawChart C d I κ) {l : ℕ} (hl : 2 ≤ l) (g : Fin 2) (b 
     emb X l g (fun s c => b s c + b' s c) (fun s q => e s q + e' s q) = emb X l g b e + emb X l g b' e' := by
   refine Prod.ext (funext fun i => ?_) (funext fun q => ?_)
   · simp only [emb, Prod.fst_add, Pi.add_apply, mul_add, Finset.sum_add_distrib]
-    exact tyS_add hl _ _
-  · exact tyS_add hl _ _
+    exact tyS_add _ _
+  · exact tyS_add _ _
 
 theorem emb_smul (X : RawChart C d I κ) {l : ℕ} (hl : 2 ≤ l) (g : Fin 2) (r : C) (b : ℕ → I g → C)
     (e : ℕ → JJ I g → C) :
@@ -561,7 +561,7 @@ theorem exists_pure_typical : ∀ (C : Type) [Field C] (V : VF C) (d : ℕ) [NeZ
     simpa only [emb, Sum.elim_inl, ← tyS_smul hl] using tyS_sum hl _ _
   · rw [← h2 q]
     simp only [emb, Sum.elim_inl, Sum.elim_inr]
-    rw [tyS_add hl, tyS_sum hl]
+    rw [tyS_add, tyS_sum hl]
     congr 1
     refine Finset.sum_congr rfl fun c _ => ?_
     split_ifs

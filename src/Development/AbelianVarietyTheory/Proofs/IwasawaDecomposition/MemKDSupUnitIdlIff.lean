@@ -80,7 +80,7 @@ def balanced : Subgroup (Ideles L) where
   mul_mem' := fun {a b} ha hb w w' h => by rw [map_mul, map_mul, ha w w' h, hb w w' h]
   inv_mem' := fun {a} ha w w' h => by rw [map_inv, map_inv, ha w w' h]
 
-theorem unitIdl_le_balanced : unitIdl L ≤ balanced (L := L) F := fun a ha w w' _ =>
+theorem unitIdl_le_balanced : unitIdl L ≤ balanced (L := L) F := fun _ ha w w' _ =>
   (ha w).trans (ha w').symm
 
 variable {F}

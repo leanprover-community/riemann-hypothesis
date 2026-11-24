@@ -739,7 +739,7 @@ namespace ReciprocityTheory.ChartRestriction.G.I2
 
 open Real
 
-theorem ct_expo_num (q c : ℕ) (hq : 1 ≤ q) {U y M1 r : ℝ} (hU : 0 ≤ U) (hy : 0 ≤ y)
+theorem ct_expo_num (q c : ℕ) (hq : 1 ≤ q) {U y M1 r : ℝ} (hU : 0 ≤ U)
     (hM : M1 ≤ q / 2) (hr0 : 0 ≤ r) (hr : r * (2 * π * U + 5 * Real.sqrt (q * (c + 1))) ≤ c)
     (ht : 28 * (c : ℝ) ≤ q * y ^ 2) :
     q * π * r ^ 2 / 2 + 2 * π * r * (U + q * y) - π * (q - M1) * y ^ 2 ≤
@@ -809,7 +809,7 @@ theorem ct_base_num (q c : ℕ) (hq : 1 ≤ q) {t0 : ℝ}
   have := mul_le_mul_of_nonneg_left key hc0
   linarith
 
-theorem ct_B_num (gA gB dK dst : ℕ) {t0 Bsq : ℝ} (hBsq0 : 0 ≤ Bsq) (hBsq : Bsq ≤ 12 * (5.12 : ℝ) ^ gB)
+theorem ct_B_num (gA gB dK dst : ℕ) {t0 Bsq : ℝ} (hBsq : Bsq ≤ 12 * (5.12 : ℝ) ^ gB)
     (hgB : gB ≤ gA) (hdK : dK ≤ dst) (hC6 : (gA : ℝ) * Real.log 2 ≤ t0) :
     Real.sqrt Bsq * (2 * 3 ^ dK) * Real.exp (-(0.19 * t0)) ≤ 7 * 2 ^ gA * (4.3 : ℝ) ^ dst := by
   have hsq : Real.sqrt Bsq ≤ 3.4642 * 2.263 ^ gA := by
@@ -979,7 +979,7 @@ theorem ct_tail (hI : IsSplit P I) (hP : Ext.PackingCount) (hGT : Ext.GaussianTa
     have ht : 28 * (c : ℝ) ≤ q * ‖y‖ ^ 2 := by
       have : t0 (E := E) P.q P.R0 = q * b0 (E := E) P.q P.R0 := rfl
       nlinarith
-    have hv2 := ct_expo_num q c P.hq (U := ‖u‖) (y := ‖y‖) (norm_nonneg _) (norm_nonneg _) P.C3 hr0 hr ht
+    have hv2 := ct_expo_num q c P.hq (U := ‖u‖) (y := ‖y‖) (norm_nonneg _) P.C3 hr0 hr ht
     have hvv : q * Real.pi * ‖v‖ ^ 2 / 2 ≤ q * Real.pi * r ^ 2 / 2 := by
       have : ‖v‖ ^ 2 ≤ r ^ 2 := pow_le_pow_left₀ (norm_nonneg _) hv 2
       have := mul_le_mul_of_nonneg_left this (by positivity : (0 : ℝ) ≤ q * Real.pi)
@@ -1130,7 +1130,7 @@ theorem ct_deriv (hP : Ext.PackingCount) (hGT : Ext.GaussianTailBound) (hI : IsS
     have := threshold_ge_log_bound P hc
     have : (0 : ℝ) ≤ dstar (E := E) P.m := Nat.cast_nonneg _
     linarith
-  have hBn := ct_B_num X.gA (Col.gB (IR I)) (Col.dK (IR I)) (dstar (E := E) P.m) hBsq0 le_rfl
+  have hBn := ct_B_num X.gA (Col.gB (IR I)) (Col.dK (IR I)) (dstar (E := E) P.m) le_rfl
     (cab_gB_le (IR I)) (ct_dK_le hI) (threshold_ge_rank_log_two P)
   have hfin := jet_product_le q c (Col.dK (IR I)) X.gA (dstar (E := E) P.m) P.hq hn (norm_nonneg u) hun
     hC5 hBn

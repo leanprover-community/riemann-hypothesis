@@ -436,7 +436,7 @@ theorem disintegration (K V : Type) [NontriviallyNormedField K] [IsUltrametricDi
     [TopologicalSpace V] [IsTopologicalAddGroup V] [ContinuousSMul K V] [LocallyCompactSpace V]
     [SecondCountableTopology V] [T2Space V] [MeasurableSpace V] [BorelSpace V]
     (μ : Measure V) [μ.IsAddHaarMeasure] (ν : Measure K) [ν.IsAddHaarMeasure] (q : V → K)
-    (hq : Continuous q) (hq2 : ∀ (c : K) (x : V), q (c • x) = c ^ 2 * q x)
+    (hq : Continuous q)
     (U : Set K) (s : K → K) (hU : IsSqrtOn U s)
     (hμ : ∀ c : K, ‖c‖ = 1 → Measure.map (fun x : V => c • x) μ = μ)
     (h0 : μ {x | q x = 0} = 0) (φ : V → ENNReal) (hφ : Measurable φ) :
@@ -685,7 +685,7 @@ theorem integrable_and_continuousOn_fibOf (K V : Type) [NontriviallyNormedField 
     [Module K V] [TopologicalSpace V] [IsTopologicalAddGroup V] [ContinuousSMul K V]
     [LocallyCompactSpace V] [SecondCountableTopology V] [T2Space V] [MeasurableSpace V]
     [BorelSpace V] (μ : Measure V) [μ.IsAddHaarMeasure] (ν : Measure K) [ν.IsAddHaarMeasure]
-    (q : V → K) (hq : Continuous q) (_hh : ∀ (c : K) (x : V), q (c • x) = c ^ 2 * q x)
+    (q : V → K) (hq : Continuous q)
     (U : Set K) (s : K → K) (h : IsSqrtOn U s) (φ : V → ℝ) (hφ : Continuous φ)
     (hc : HasCompactSupport φ) :
     (∀ t : K, t ≠ 0 → Integrable φ (fibOf μ ν q U s t)) ∧
@@ -980,8 +980,8 @@ theorem null_and_exists (hσ : IsCMExt F E σ) (hM : 1 ≤ M) (hJ : IsHermND σ 
   · rw [Set.inter_univ]
     exact _root_.GlobalTheory.QuadFibre.fibOf_compl_fibre (Fv F v) _ μ ν _ hq (q_smul v σ J) U s hs b
   · rw [Measure.restrict_univ]
-    exact _root_.GlobalTheory.QuadFibre.disintegration (Fv F v) _ μ ν _ hq (q_smul v σ J) U s hs (_root_.GlobalTheory.addHaar_map_smul_of_norm_eq_one (Fv F v) _ μ) hnull φ hφ
-  · exact _root_.GlobalTheory.QuadFibre.integrable_and_continuousOn_fibOf (Fv F v) _ μ ν _ hq (q_smul v σ J) U s hs φ h1 h2
+    exact _root_.GlobalTheory.QuadFibre.disintegration (Fv F v) _ μ ν _ hq U s hs (_root_.GlobalTheory.addHaar_map_smul_of_norm_eq_one (Fv F v) _ μ) hnull φ hφ
+  · exact _root_.GlobalTheory.QuadFibre.integrable_and_continuousOn_fibOf (Fv F v) _ μ ν _ hq U s hs φ h1 h2
 
 end Top
 

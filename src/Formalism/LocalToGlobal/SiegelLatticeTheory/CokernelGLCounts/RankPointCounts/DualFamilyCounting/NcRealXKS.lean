@@ -109,7 +109,7 @@ theorem surjLoc {n r k : ℕ} (hn : n = 2 * r + k + 1) (ε : Fin n → Bool) (e 
       have : (Qi ε e f w (z0v T z) * uMat (σL y) * Qm e f w (z0v T z) :
           Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ) = WlocSk.NB.phi0 (ψ0 y).1 (ψ0 y).2 := hσΨ y
       rw [this]; exact hΦN _
-    rw [kapL_eq hFJ hT (σL y) hN]
+    rw [kapL_eq hT (σL y) hN]
     show Kc T (Ψ (σL y)) = y
     rw [hσΨ y]
     funext i

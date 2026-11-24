@@ -202,7 +202,7 @@ theorem mem_locF_span_iff (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (
     (hP : P.IsMaximal) {n : ℕ} (x : Fin n → V) (v : V) :
     v ∈ locF (P.comap (algebraMap (𝓞 F) (𝓞 K))) (Submodule.span (𝓞 K) (Set.range x)) ↔
       v ∈ spanS (locRing P) x := by
-  rw [locF_eq_loc hK hF hP]
+  rw [locF_eq_loc hF hP]
   have hPp := hP.isPrime
   constructor
   · intro hv

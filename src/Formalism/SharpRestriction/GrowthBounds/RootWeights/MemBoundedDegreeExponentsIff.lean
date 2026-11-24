@@ -210,7 +210,7 @@ theorem asm_clause2 (p : ℕ) [Fact p.Prime] (f : ℕ → ℚ) (a : ℕ → ℚ)
   push_cast at this
   linarith
 
-theorem mahler_decay_products_of (D : Formalism.BasicNotions.D7) (h1 : ∀ p, p.Prime → HDec p) (h2 : ∀ p, p.Prime → HMul p) : UnitFunctionExpansion D := by
+theorem mahler_decay_products_of (D : Formalism.BasicNotions.D7) (h1 : ∀ p, p.Prime → HDec p) (h2 : ∀ p, p.Prime → HMul p) : UnitFunctionExpansion := by
   intro p hp _
   haveI := Fact.mk hp
   refine ⟨fun u hu => ?_, fun N m us var hus c => ?_⟩
@@ -333,8 +333,8 @@ private theorem fact_lemma_2 (P e rho : ℕ) :
   rw [add_comm rho, ← hd]
   field_simp
 
-theorem asm_ratio (p : ℕ) (hp : p.Prime) {σ : Type*} [Fintype σ] (t rho : σ → ℕ)
-    (hr : ∀ k, rho k < p ^ (t k + 1)) (e' : σ → ℕ) :
+theorem asm_ratio (p : ℕ) {σ : Type*} [Fintype σ] (t rho : σ → ℕ)
+    (e' : σ → ℕ) :
     ((∏ k, (((rho k + p ^ (t k + 1) * e' k).factorial : ℕ) : ℚ)) /
       (∏ k, ((rho k).factorial : ℚ) * ((e' k).factorial : ℚ) * ((p ^ (t k + 1)).factorial : ℚ) ^ (e' k))) =
     ∏ k, cUnit (p ^ (t k + 1)) (e' k) * dUnit (p ^ (t k + 1)) (e' k) (rho k) := by
@@ -344,7 +344,7 @@ theorem asm_ratio (p : ℕ) (hp : p.Prime) {σ : Type*} [Fintype σ] (t rho : σ
   ring
 
 theorem unit_function_mahler_decay_of (D : Formalism.BasicNotions.D7) (h1 : ∀ p, p.Prime → HDec p) (h2 : ∀ p, p.Prime → HMul p)
-    (h3 : ∀ p, p.Prime → HUnit p) : FactorialUnitDecomposition D := by
+    (h3 : ∀ p, p.Prime → HUnit p) : FactorialUnitDecomposition := by
   intro p hp _
   haveI := Fact.mk hp
   refine ⟨fun t rho e' _ => fact_lemma_2 _ _ _, fun σ _ t rho hr =>
@@ -380,7 +380,7 @@ theorem unit_function_mahler_decay_of (D : Formalism.BasicNotions.D7) (h1 : ∀ 
   · have hf := fun k => asm_f_dec (h1 p hp) (h2 p hp) t rho hr inv k
     refine ⟨boundedDegreeExponents σ c, fun j => ∏ k, mah (asm_f p t rho inv k) (j k), fun j hj =>
       ⟨mem_bounded_degree_exponents_iff.mp hj, padicGe_mono (asm_q_ge _ hf j) (by positivity)⟩, fun e' => ?_⟩
-    rw [asm_ratio p hp t rho hr e', asm_prod_eq]
+    rw [asm_ratio p t rho e', asm_prod_eq]
     exact asm_multi _ hf c e'
 
 end Formalism.MainNotions.G.GLWeightTheory

@@ -499,7 +499,7 @@ theorem norm_pow_sub_pow_lt_one_of_ultra {K : Type*} [NormedCommRing K] [IsUltra
         (mul_le_of_le_one_right (norm_nonneg _) hp)) h
 
 theorem norm_pow_sub_pow_lt_one :
-    ∀ {l : ℕ} [inst : Fact (Nat.Prime l)] {x y : Formalism.ConjugateSelfDual.Qbar l}, ‖x‖ ≤ (1 : ℝ) → ‖y‖ ≤ (1 : ℝ) →
+    ∀ {l : ℕ} [Fact (Nat.Prime l)] {x y : Formalism.ConjugateSelfDual.Qbar l}, ‖x‖ ≤ (1 : ℝ) → ‖y‖ ≤ (1 : ℝ) →
       ‖x - y‖ < (1 : ℝ) → ∀ (n : ℕ), ‖x ^ n - y ^ n‖ < (1 : ℝ) := by
   intro l _ x y hx hy h n
   exact norm_pow_sub_pow_lt_one_of_ultra hx hy h n

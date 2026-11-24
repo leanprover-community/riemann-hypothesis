@@ -963,7 +963,7 @@ instance subsingleton_Mir0 : Subsingleton (Mir k 0) := by
   exact (ha.trans hb.symm)
 
 instance subsingleton_GL0 : Subsingleton (GL (Fin 0) k) :=
-  ⟨fun a b => Units.ext (Subsingleton.elim _ _)⟩
+  ⟨fun _ _ => Units.ext (Subsingleton.elim _ _)⟩
 
 theorem twKer_zero (τ : MRep k 0) : twKer τ.ρ (MirUin k 0) 1 = ⊥ := by
   refine le_bot_iff.1 (Submodule.span_le.2 ?_)
@@ -1111,7 +1111,7 @@ theorem comb_lem (ψ : AddChar k Circle) (hψ : Continuous ψ) (hσ : IsSmooth �
       (cInd (MirabolicParabolic k 0 t) (rhoR τ σ))) :=
   ⟨((twist_equiv _ _ (dpowM (0 + t) (-1 / 2)) (phi_of_induced_rank_zero_equiv τ σ ψ hψ hσ)).some.trans
       (equiv_of_lin _ _ _ (final_match τ σ)).some).trans
-    (cInd_top (MirabolicParabolic k 0 t) (mirabolicParabolic_zero_left_eq_top t) (rhoR τ σ) (sm_rhoR τ σ hσ) ((rhoR τ σ).comp (iotaG t)) (fun x w => rfl)).some.symm⟩
+    (cInd_top (MirabolicParabolic k 0 t) (mirabolicParabolic_zero_left_eq_top t) (rhoR τ σ) (sm_rhoR τ σ hσ) ((rhoR τ σ).comp (iotaG t)) (fun _ _ => rfl)).some.symm⟩
 
 theorem miso_of (ψ : AddChar k Circle) {n : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (Mir k (n + 1)) V) (B : MRep k n)
     (h : Nonempty ((twist (phiMinus k ψ π) (dpowM n (-1 / 2))).Equiv B.ρ)) : MIso (phiN ψ (⟨V, π⟩ : MRep k (n + 1))) B := h

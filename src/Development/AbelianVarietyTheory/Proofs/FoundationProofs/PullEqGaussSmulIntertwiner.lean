@@ -293,7 +293,7 @@ theorem theta_transport : ∀ (D : D7) (cc : Ideal (𝓞 D.host.K)) (δ : ℂ), 
     Measure.pi.isAddHaarMeasure _
   have : (volume : Measure (VC D N N')).IsAddHaarMeasure :=
     Measure.pi.isAddHaarMeasure _
-  have t₁ := discrete_of_selfDual hH d₁ f₁
+  have t₁ := discrete_of_selfDual d₁ f₁
   have hF : th ∈ Formalism.L2.Th1.H.fixedBy (sesqOf D (tor0 D cc δ) N N') (al D (tor0 D cc δ)) A := hth.2
   have hper := fun x hx z => rho_add_of_fixed hH c₁ hF (x := x) hx z
   refine ⟨⟨hth.1.comp u.symm.toContinuousLinearEquiv.differentiable, fun x hx z => ?_⟩, ?_, fun hne => ?_⟩
@@ -488,7 +488,7 @@ theorem pull_eq_gauss_smul_intertwiner : ∀ (D : D7) (cc : Ideal (𝓞 D.host.K
   have := klat_finite hG.1 hc.1.1 h₁ h₂ f₂
   have : (volume : Measure (Fin N' → Fin N → ℂ)).IsAddHaarMeasure := Measure.pi.isAddHaarMeasure _
   have : (volume : Measure (VC D N N')).IsAddHaarMeasure := Measure.pi.isAddHaarMeasure _
-  have t₁ := discrete_of_selfDual (isHerm_sesqOf D (tor0 D cc δ) N N') d₁ f₁
+  have t₁ := discrete_of_selfDual d₁ f₁
   obtain ⟨L, hL⟩ := _root_.GlobalTheory.CurveLattice.exists_periodPair_lamOf D cc δ hc
   have hH := isPosHerm_formV D (tor0 D cc δ) N N' (_root_.GlobalTheory.PlaneLattice.area_pos_and_selfDual L _ hL).1
   have hα : IsSemichar (formV D (tor0 D cc δ) N N') A (al D (tor0 D cc δ)) := by

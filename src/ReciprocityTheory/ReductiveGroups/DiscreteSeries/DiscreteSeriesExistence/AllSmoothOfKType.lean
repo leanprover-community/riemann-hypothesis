@@ -54,7 +54,7 @@ variable {n : ℕ}
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem isSmoothVecU_restrict {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
-    {ε : Fin n → Bool} {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (hσ : IsURepOn (UJset ε) σ)
+    {ε : Fin n → Bool} {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)}
     (S : Submodule ℂ H) [S.HasOrthogonalProjection] (hSG : ∀ g ∈ UJset ε, ∀ x ∈ S, σ g x ∈ S) (x : S) :
     IsSmoothVecU ε (fun g => (S.orthogonalProjectionOnto ∘L σ g ∘L S.subtypeL : S →L[ℂ] S)) x ↔
       IsSmoothVecU ε σ (x : H) := by
@@ -113,7 +113,7 @@ theorem sigLam_kfin_smooth (hgap : StdGap ε lam) (hP : IsPsiFor ε lam T Ψ) (h
     rw [← hw']
     exact (mem_smD_iff ε (rreg ε) _).mp w.2
 
-  exact (isSmoothVecU_restrict (rreg_isURepOn ε) (Hlam ε Ψ v₀)
+  exact (isSmoothVecU_restrict (Hlam ε Ψ v₀)
     (rreg_mem_Hlam hgap hP hv₀) x).mpr hsm
 
 end ReciprocityTheory.ChartRestriction.DS
@@ -200,7 +200,7 @@ theorem dsExistsG (hS7 : ∀ m : ℕ, S7.PsiExistsStatement m) :
   rcases Nat.eq_zero_or_pos (S7.q0 ε) with hq | hq
   · have hm : min (pOf ε) (qOf ε) = 0 := hq
     have hpq : pOf ε = 0 ∨ qOf ε = 0 := by omega
-    obtain ⟨σ, hDS, hcas, hK⟩ := isDS_compact hpq hlam T
+    obtain ⟨σ, hDS, hcas, hK⟩ := isDS_compact hpq T
     refine ⟨T.V, inferInstance, inferInstance, σ, hDS, hcas, ?_, ?_, ?_⟩
     · exact fun S S' hS hS' => lowKMultOne_of_cas hDS hgap hcas S S' hS hS'
     · intro μ

@@ -1133,7 +1133,7 @@ theorem sum_hc_cusp {F : Type} [Field F] [Finite F] (θ : AlgebraicClosure F →
       (fun p => (if InPar a p then psiG S a (tlG a p) else 0) * star (cusp θ n k p)) (fun p => by
         have h2 : cusp θ n k (y⁻¹ * p * y) = cusp θ n k p := by
           unfold cusp; rw [hcl.1 p y]
-        simp [MulAut.conj_apply, ← h2])
+        simp [← h2])
     rw [e]
     have L := sum_inPar_psiG (rootSum θ k) hR a n ha0 (by omega) (psiG S a)
     rw [finsum_eq_sum_of_fintype] at L

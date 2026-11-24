@@ -1411,9 +1411,9 @@ theorem dsW_cutI (hσ : URep Hm σ) {μ : Measure (PI.MtM n)} (hμ : PI.IsHaarOn
     rw [hμ', hι.comap_apply]
     exact CompanionTheory.D.Upq.Quot.IsHaarOnM.lt_top_of_isCompact hG hμ
       (hK.image (CompanionTheory.D.Upq.ModEx.MG.continuous_mat (hG := hG)))⟩
-  let φ : CompanionTheory.D.Upq.ModEx.MG (UH Hm) hG → ℂ := fun g =>
+  let φ : CompanionTheory.D.Upq.ModEx.MG (UH Hm) → ℂ := fun g =>
     (ρ (R⁻¹ • g.mat) : ℂ) * conj ⟪v, σ g.mat w⟫_ℂ
-  have ho : Continuous fun g : CompanionTheory.D.Upq.ModEx.MG (UH Hm) hG => σ g.mat w :=
+  have ho : Continuous fun g : CompanionTheory.D.Upq.ModEx.MG (UH Hm) => σ g.mat w :=
     continuous_orbit hσ.rep hw (W := []) fun _ h => by simp at h
   have hφ : Continuous φ :=
     (Complex.continuous_ofReal.comp (hρ.comp

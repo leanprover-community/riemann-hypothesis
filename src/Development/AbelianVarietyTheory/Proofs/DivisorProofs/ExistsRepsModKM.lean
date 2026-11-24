@@ -63,7 +63,7 @@ namespace GlobalTheory.UCls.IdxK
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E]
 
 theorem fv_mem {n : ℕ} {L : Set (Fin n → E)} {t : Fin n → E} (ht : t ∈ L) : fv F t ∈ hat F L :=
-  AddSubgroup.subset_closure ⟨1, fun v => one_mem _, t, ht, rfl⟩
+  AddSubgroup.subset_closure ⟨1, fun _ => one_mem _, t, ht, rfl⟩
 
 theorem fv_add {n : ℕ} (x y : Fin n → E) : fv F (x + y) = fv F x + fv F y := by
   funext i; simp [fv, TensorProduct.tmul_add]

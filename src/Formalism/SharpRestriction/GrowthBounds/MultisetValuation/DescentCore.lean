@@ -111,7 +111,7 @@ theorem pivot {K κ : Type*} [Field K] (R : Subring K) (hR : ∀ x : K, x ∈ R 
 
 private theorem coeff_mem_range_algebraMap_of_linearIndependent {K Kc V Vc M : Type*} [Field K] [Field Kc] [Algebra K Kc]
     [AddCommGroup V] [Module K V] [AddCommGroup Vc] [Module Kc Vc]
-    (ι : V →+ Vc) (hιs : ∀ (c : K) (v : V), ι (c • v) = algebraMap K Kc c • ι v)
+    (ι : V →+ Vc)
     (π : M → V →ₗ[K] K) (πc : M → Vc →ₗ[Kc] Kc) (hπ : ∀ m v, πc m (ι v) = algebraMap K Kc (π m v))
     (hsep : ∀ v : V, (∀ m, π m v = 0) → v = 0) {κ : Type*} (s : Finset κ) (z : κ → V)
     (hind : ∀ w : s → K, ∑ k : s, w k • z k = 0 → w = 0)
@@ -229,7 +229,7 @@ theorem descent_core {K Kc V Vc M : Type*} [Field K] [Field Kc] [Algebra K Kc]
         funext k
         simpa using h5 k k.2
       have hr : ∀ k (hk : k ∈ s), a k ∈ Set.range (algebraMap K Kc) := fun k hk =>
-        coeff_mem_range_algebraMap_of_linearIndependent ι hιs π πc hπ hsep s z hind a y hy ⟨k, hk⟩
+        coeff_mem_range_algebraMap_of_linearIndependent ι π πc hπ hsep s z hind a y hy ⟨k, hk⟩
       let c : κ → K := fun k => if hk : k ∈ s then (hr k hk).choose else 0
       have hc : ∀ k ∈ s, algebraMap K Kc (c k) = a k := fun k hk => by
         simp only [c, dite_eq_left hk]; exact (hr k hk).choose_spec

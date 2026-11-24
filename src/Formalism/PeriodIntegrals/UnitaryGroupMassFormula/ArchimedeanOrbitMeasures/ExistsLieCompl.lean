@@ -136,7 +136,7 @@ theorem exists_lieCompl (ε : V → Fin n → Bool) (S : V → Finset (Fin n)) :
 end Lie
 
 def StdConjEx : Prop := ∀ {D : D7} (X : HidaSetting D) (u' : D.what₂.Word) (ψ : AddChar (AF X.B.I.F) ℂ) hT μinf νinf
-    fibInf, PushHyp X u' ψ hT μinf νinf fibInf → ∀ hb : Formalism.L2.SG.AdBridge.AdBridgeIso X.B.I,
+    fibInf, PushHyp X u' ψ μinf νinf fibInf → ∀ hb : Formalism.L2.SG.AdBridge.AdBridgeIso X.B.I,
     ∃ (c : X.B.I.Ginf) (S : NumberField.InfinitePlace X.B.I.F → Finset (Fin X.B.I.n)), StdConj X hb u' c S
 
 theorem stdDataEx_of (h : StdConjEx) : StdDataEx := by

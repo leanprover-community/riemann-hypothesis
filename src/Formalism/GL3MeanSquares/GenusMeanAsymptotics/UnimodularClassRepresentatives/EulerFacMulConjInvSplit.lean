@@ -142,7 +142,7 @@ end IdealNormInequalities
 
 open IdealNormInequalities
 
-theorem eulerFac_pos (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) {P : Ideal (𝓞 K)} (hP : P.IsMaximal) (M : ℕ)
+theorem eulerFac_pos {P : Ideal (𝓞 K)} (hP : P.IsMaximal) (M : ℕ)
     (hM : 1 ≤ M) : 0 < Formalism.HermitianLatticesTheory.eulerFac K M P := by
   rw [eulerFac_eq]
   split_ifs with hc
@@ -162,7 +162,7 @@ theorem eulerFac_mul_conj_inv_split (hK : Formalism.HermitianLatticesTheory.IsCM
       1 - (Ideal.absNorm P : ℝ) ^ (-(M : ℤ)) := by
   have hc' : Formalism.HermitianLatticesTheory.conjIdeal (K := K) (Formalism.HermitianLatticesTheory.conjIdeal (K := K) P) ≠
       Formalism.HermitianLatticesTheory.conjIdeal (K := K) P := by
-    rw [conjIdeal_conjIdeal hK]; exact hc.symm
+    rw [conjIdeal_conjIdeal]; exact hc.symm
   have hx : 0 < 1 - (Ideal.absNorm P : ℝ) ^ (-(M : ℤ)) :=
     sub_pos.mpr (zpow_neg_lt_one (one_lt_absNorm hP) hM)
   unfold Formalism.HermitianLatticesTheory.eulerFac
@@ -171,13 +171,13 @@ theorem eulerFac_mul_conj_inv_split (hK : Formalism.HermitianLatticesTheory.IsCM
 
 theorem multipliable_eulerFac (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (M : ℕ) (hM : 2 ≤ M) :
     Multipliable (fun P : {P : Ideal (𝓞 K) // P.IsMaximal} => Formalism.HermitianLatticesTheory.eulerFac K M P.1) :=
-  Real.multipliable_of_summable_log (fun P => eulerFac_pos hK P.2 M (by omega))
+  Real.multipliable_of_summable_log (fun P => eulerFac_pos P.2 M (by omega))
     (summable_log_eulerFac hK hM)
 
 theorem lValEta_pos (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (M : ℕ) (hM : 2 ≤ M) :
     0 < Formalism.HermitianLatticesTheory.lValEta K M := by
   unfold Formalism.HermitianLatticesTheory.lValEta
-  rw [← Real.rexp_tsum_eq_tprod (fun P => eulerFac_pos hK P.2 M (by omega))
+  rw [← Real.rexp_tsum_eq_tprod (fun P => eulerFac_pos P.2 M (by omega))
     (summable_log_eulerFac hK hM)]
   exact Real.exp_pos _
 

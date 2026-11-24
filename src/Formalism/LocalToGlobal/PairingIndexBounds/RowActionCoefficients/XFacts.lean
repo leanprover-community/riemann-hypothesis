@@ -160,7 +160,7 @@ def XInj : Prop :=
 
 def XA : Prop :=
   ∀ (p : ℕ) [Fact p.Prime] (X : Sys p) (Kc : Type) [Field Kc] [Algebra X.G.Kf Kc] (j : ℕ)
-    (x : ∀ b : BX X, Fin (NJ X j) → ℕ → X.G.Kf),
+    (x : ∀ _ : BX X, Fin (NJ X j) → ℕ → X.G.Kf),
     polDel X Kc j (∏ b, rename (emX X j b) (srcN X j b (x b))) = ∏ b, tgtD X Kc j b (x b)
 
 def XB : Prop :=

@@ -66,7 +66,7 @@ def LetterConditionLocal (W : LocWach PD LL O v n) : Prop :=
       Formalism.MainNotions.LiftingTheory.InNΔi W T i
         (Polynomial.aeval dop (∏ x ∈ X, (Polynomial.X - Polynomial.C (cc x))) z)
 
-def LetterConditionGlobal (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (_F : FonOf D.loc D.locA HW) : Prop :=
+def LetterConditionGlobal (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) : Prop :=
   ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL),
     LetterConditionLocal ((HW l).W K s LL h)
 

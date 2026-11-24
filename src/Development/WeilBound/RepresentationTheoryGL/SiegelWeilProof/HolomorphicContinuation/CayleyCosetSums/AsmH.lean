@@ -573,7 +573,7 @@ theorem continuous_fzG (hS : SecFz) (w : ℂ) : Continuous fun Y : GR n => fz m 
   exact Complex.ofReal_mem_slitPlane.mpr (Vac.hLoc_pos detU1 Y)
 
 theorem integral_tsum_supp {X : Type} [MeasurableSpace X] {ν : Measure X} {ι' : Type} (F : ι' → X → ℂ) (u : ι' → ℝ)
-    (hu : Summable u) (hu0 : ∀ q, 0 ≤ u q) (bd : X → ℝ) (hbd : Integrable bd ν)
+    (hu : Summable u) (bd : X → ℝ) (hbd : Integrable bd ν)
     (hF : ∀ q x, ‖F q x‖ ≤ u q * bd x) (hFm : ∀ q, AEStronglyMeasurable (F q) ν) :
     Summable (fun q => ∫ x, F q x ∂ν) ∧ ∫ x, ∑' q, F q x ∂ν = ∑' q, ∫ x, F q x ∂ν := by
   have hFi : ∀ q, Integrable (F q) ν := fun q =>
@@ -754,7 +754,7 @@ theorem topSeries (hS : SecFz) (h : HD m n e G Pp Γ ι s₀ Ht f U d Ê t) [Mea
       ∫ s, ∑' q, C q * (fz m e (z - s₀) (mR (y₀ q * y) * ιK n k * a * nU (herm s) * b) * ψ s) =
         ∑' q, ∫ s, C q * (fz m e (z - s₀) (mR (y₀ q * y) * ιK n k * a * nU (herm s) * b) * ψ s) := by
     intro k
-    refine integral_tsum_supp _ (fun q => |u q|) hv hv0 (fun s => ‖ψ s‖) hψi (fun q s => hFb q k s) ?_
+    refine integral_tsum_supp _ (fun q => |u q|) hv (fun s => ‖ψ s‖) hψi (fun q s => hFb q k s) ?_
     intro q
     simp_rw [hfun]
     exact (continuous_const.mul
@@ -776,7 +776,7 @@ theorem topSeries (hS : SecFz) (h : HD m n e G Pp Γ ι s₀ Ht f U d Ê t) [Mea
     (hρ.norm.mul continuous_const).integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
   have hout := integral_tsum_supp (ν := μ)
     (fun q k => C q * (ρ k * ∫ s, fz m e (z - s₀) (mR (y₀ q * y) * ιK n k * a * nU (herm s) * b) * ψ s))
-    (fun q => |u q|) hv hv0 _ hbdρ hIb
+    (fun q => |u q|) hv _ hbdρ hIb
     (fun q => (continuous_const.mul (hρ.mul (hIc q))).aestronglyMeasurable)
   have hpt : ∀ (k : KR n) s, resG ι (Ê z) g (mR y * ιK n k * a * nU (herm s) * b) * ψ s =
       d.eval z * ∑' q, C q * (fz m e (z - s₀) (mR (y₀ q * y) * ιK n k * a * nU (herm s) * b) * ψ s) := by

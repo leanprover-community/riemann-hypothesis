@@ -60,7 +60,7 @@ namespace GlobalTheory.IsolatedTheoremFour
 
 open IsDedekindDomain
 
-theorem main : ∀ {K : Type} [inst : Field K] [NumberField K] {l : ℕ}, Nat.Prime l → ∃ (v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers K)), (↑l : NumberField.RingOfIntegers K) ∈ IsDedekindDomain.HeightOneSpectrum.asIdeal v := by
+theorem main : ∀ {K : Type} [Field K] [NumberField K] {l : ℕ}, Nat.Prime l → ∃ (v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers K)), (↑l : NumberField.RingOfIntegers K) ∈ IsDedekindDomain.HeightOneSpectrum.asIdeal v := by
   apply UpperTheory.Ram.exists_place_over
 
 end GlobalTheory.IsolatedTheoremFour

@@ -124,7 +124,7 @@ theorem gramAt_standard {L : Type} [Field L] {i : ℕ} (h : Matrix (Fin i) (Fin 
 
 theorem degree_eq_degreeWith (L : Type) [Field L] [NumberField L] (B : HermitianBundle.{0} L)
     (F : Submodule (𝓞 L) B.carrier) (i : ℕ) (f : Fin i → F) (c : F →ₗ[𝓞 L] (Fin i → L))
-    (Fl : HermLattice L i) (hf : LinearIndependent (𝓞 L) f) (hi : i = B.rank F)
+    (Fl : HermLattice L i)
     (hc : Function.Injective c) (hcf : ∀ j, c (f j) = Pi.single j 1)
     (hlat : Fl.lattice = LinearMap.range c)
     (hmet : ∀ σ, Fl.metric σ = gramMat B σ (fun j => (f j : B.carrier))) :
@@ -195,7 +195,7 @@ theorem integer_smul_eq_algebraMap_smul {K : Type} [Field K] [NumberField K] {n 
   (algebraMap_smul K r x).symm
 
 theorem GlobalTheory.CompanionTheory.Adelic.SatLine.exists_smul_mem :
-    ∀ {K : Type} [inst : Field K] [NumberField K] {n : ℕ} (M : Submodule (NumberField.RingOfIntegers K) (Fin n → K)) {x : Fin n → K}, x ∈ Submodule.span K (SetLike.coe M) → ∃ (c : NumberField.RingOfIntegers K), c ≠ OfNat.ofNat (nat_lit 0) ∧ c • x ∈ M := by
+    ∀ {K : Type} [Field K] [NumberField K] {n : ℕ} (M : Submodule (NumberField.RingOfIntegers K) (Fin n → K)) {x : Fin n → K}, x ∈ Submodule.span K (SetLike.coe M) → ∃ (c : NumberField.RingOfIntegers K), c ≠ OfNat.ofNat (nat_lit 0) ∧ c • x ∈ M := by
   intro K _ _ n M x hx
   induction hx using Submodule.span_induction with
   | mem y hy => exact ⟨1, one_ne_zero, by rw [one_smul]; exact hy⟩
@@ -877,7 +877,7 @@ theorem short_vector_of_submodule : LineOfLargeDegree.Statement → ∀ (L : Typ
       metric := fun σ => gramMat B σ (fun j => (f j : B.carrier))
       posDef := hpos
       conj := hconj }
-  have hdeg : Fl.degree = B.degreeWith F f := _root_.GlobalTheory.CompanionTheory.Ar.Lines.degree_eq_degreeWith L B F i f c Fl hf rfl hcinj hcf rfl (fun _ => rfl)
+  have hdeg : Fl.degree = B.degreeWith F f := _root_.GlobalTheory.CompanionTheory.Ar.Lines.degree_eq_degreeWith L B F i f c Fl hcinj hcf rfl (fun _ => rfl)
   have hslope : Fl.slope = B.slope F := by
     rw [HermLattice.slope, normalise, hdeg]
     rfl

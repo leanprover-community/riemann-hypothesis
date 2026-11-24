@@ -117,7 +117,6 @@ open scoped ENNReal NNReal
 section Abs
 
 theorem detect_of_idem {K : Type} [CommRing K] (O : Subring K) (I : Finset K)
-    (hid : ∀ e ∈ I, e * e = e)
     (hdom : ∀ e ∈ I, ∀ x y : K, (e * x) * (e * y) = 0 → e * x = 0 ∨ e * y = 0)
     (htot : ∀ e ∈ I, ∀ x y : K, ∃ z ∈ O, e * x = z * (e * y) ∨ e * y = z * (e * x))
     (hsep : ∀ x : K, (∀ e ∈ I, e * x = 0) → x = 0)
@@ -565,7 +564,7 @@ theorem GlobalTheory.CompanionTheory.AvgFree.exists_ordData : ∀ (F E : Type) [
     obtain ⟨θ, hθ, hY⟩ := GlobalTheory.CompanionTheory.AvgFree.Ord.contract (GlobalTheory.CompanionTheory.SW.coordK (Fv F v) b lv) O hOc' hOo' (t e) g1 g2
     exact ⟨g1, (h1 e he).2, g3, g4, θ, hθ, hY⟩
   · intro n M X hX
-    obtain ⟨e, he, l, a, ha, hl, hk⟩ := GlobalTheory.CompanionTheory.AvgFree.Ord.detect_of_idem O I (fun e he => (h1 e he).1) h2 h3 h4 n M X hX
+    obtain ⟨e, he, l, a, ha, hl, hk⟩ := GlobalTheory.CompanionTheory.AvgFree.Ord.detect_of_idem O I h2 h3 h4 n M X hX
     exact ⟨(t e, e), Finset.mem_image_of_mem _ he, l, a, ha, hl, hk⟩
 end -- clump:auto
 end -- clump:auto

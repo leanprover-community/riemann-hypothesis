@@ -114,7 +114,7 @@ theorem vcHt_root {c d : Fin n} (h : c < d) : 1 ≤ vcHt (root c d) := by
   have h1 : ∀ e : Fin n, ∑ a : Fin n, -((a : ℕ) : ℝ) * (Pi.single e (1 : ℝ) : Fin n → ℝ) a
       = -((e : ℕ) : ℝ) := by
     intro e
-    rw [Fintype.sum_eq_single e (fun a ha => by simp [Pi.single_apply, ha])]
+    rw [Fintype.sum_eq_single e (fun a ha => by simp [ha])]
     simp
   have key : vcHt (root c d) = ((d : ℕ) : ℝ) - ((c : ℕ) : ℝ) := by
     simp only [vcHt, root, Pi.sub_apply, mul_sub, Finset.sum_sub_distrib, h1]

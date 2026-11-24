@@ -147,7 +147,7 @@ theorem segDual_precedes_iff (Δ Δ' : Segment k) : (segDual Δ).Precedes (segDu
 end
 
 theorem segDual_precedes : ∀ {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
-    (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (Δ Δ' : Segment k),
+    (_ : GlobalTheory.Published.IrreducibleAdmissibleGL) (Δ Δ' : Segment k),
     (segDual Δ).Precedes (segDual Δ') ↔ Δ'.Precedes Δ := by
   intro k _ _ _ _ hA Δ Δ'
   have hadm (x : IrrGL (k := k)) : IsAdmissible x.rep :=
@@ -170,7 +170,7 @@ theorem segDual_precedes : ∀ {k : Type} [Field k] [ValuativeRel k] [Topologica
     have hmul : absPow k s * absPow k (-s) = 1 := by
       rw [absPow_neg, mul_inv_cancel]
     obtain ⟨e⟩ := GlobalTheory.CompanionTheory.ZcDual.nonempty_equiv_contra_twist
-      hA x.rep x.2.rep.smooth x.2.rep.irr hs hs_neg hmul
+      x.rep hs hmul
     rw [hdual (x.nu s), hdual x]
     change IrrGL.of (contra (x.nu s).rep) _ _ =
       (IrrGL.of (contra x.rep) _ _).tw (absPow k (-s)) hs_neg

@@ -245,7 +245,7 @@ private theorem intCast_mul_mul_mul_eq_of_mul_eq {A : Type} [Ring A] (c₁ c₂ 
     (c₁ : A) * (((c₂ : A) * X) * S) = (c₀ : A) * ((a : A) * (X * S)) := by
   rw [mul_assoc (c₂ : A), ← mul_assoc, ← mul_assoc (c₀ : A), ← Int.cast_mul, ← Int.cast_mul, h]
 
-theorem bfCross_of (hRow : PI.QmRowExp) (_hSkip : PI.QmSkip) : BFCross := by
+theorem bfCross_of (hRow : PI.QmRowExp) : BFCross := by
   intro A _ _ n k E e es v hG hB u w
   obtain ⟨hF, hR⟩ := hRow
   obtain ⟨_, _, hve, hves⟩ := hB

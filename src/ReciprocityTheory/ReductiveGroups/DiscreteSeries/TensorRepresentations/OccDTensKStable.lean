@@ -63,8 +63,8 @@ theorem occD_eeF (dual : Bool) (hP : IsPsiFor ε lam T Ψ) (hP' : IsPsiFor ε la
       rw [diagOp_coord, casimir_genSub hE (datumV_casimir hP v₀) _ (tset_mem.mp (hι.1 x hx) c)]; rfl
     rw [← h3]
     cases dual
-    · exact LinearMap.congr_fun (casimir_tensV hE) _
-    · exact LinearMap.congr_fun (casimir_tensVd hE) _
+    · exact LinearMap.congr_fun (casimir_tensV) _
+    · exact LinearMap.congr_fun (casimir_tensVd) _
   rw [h1, hlam', ← casVal_shiftF] at h2
   refine smul_right_injective _ (two_ne_zero (α := ℂ)) ?_
   show (2 : ℂ) • _ = (2 : ℂ) • _

@@ -141,7 +141,7 @@ theorem diagble_block {a : R} (ha : σ a = a) {D : Matrix ι ι R} (hd : Diagble
     rw [hct, Matrix.fromBlocks_multiply, Matrix.fromBlocks_multiply, ← Matrix.fromBlocks_diagonal]
     simp [hdiag]
 
-theorem diagble_schur (hinv : ∀ a, σ (σ a) = a) (ih : ∀ h : Matrix ι ι R, Hm σ h → Diagble σ h)
+theorem diagble_schur (ih : ∀ h : Matrix ι ι R, Hm σ h → Diagble σ h)
     {h : Matrix (Unit ⊕ ι) (Unit ⊕ ι) R} (hh : Hm σ h)
     (hu : IsUnit (h (Sum.inl ()) (Sum.inl ()))) : Diagble σ h := by
   obtain ⟨v, hv⟩ := hu.exists_right_inv
@@ -339,7 +339,7 @@ theorem diagble_prim (hR : IsUnrQuad R σ ϖ q ε) {n : ℕ}
   let e := e0.trans (Equiv.swap (e0 (Sum.inl ())) k)
   have he : e (Sum.inl ()) = k := by simp [e]
   apply diagble_reindex e
-  refine diagble_schur hR.inv ih (fun a b => hh2 _ _) ?_
+  refine diagble_schur ih (fun a b => hh2 _ _) ?_
   simp only [Matrix.submatrix_apply, he]
   exact hR.fixLocal _ (hh2 _ _) hp
 

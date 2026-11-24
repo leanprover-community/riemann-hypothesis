@@ -195,7 +195,7 @@ theorem absNorm_eq_prod (cc : Ideal (𝓞 D.host.E)) (c0 : cc ≠ ⊥) (δ : Hei
     have := h0 Q hn.1 fun h => hn.2 (Finset.mem_image.2 ⟨_, h, GlobalTheory.ClassScalarValue.cP_cP Q⟩)
     simp only [hI, this, max_self, zpow_zero]
 
-theorem pow_factor {a s : ℂ} (hs : s ≠ 0) (ha : a ≠ 0) (d : ℤ) (m : ℕ) (h : 2 * (m : ℤ) = d.natAbs - d) :
+theorem pow_factor {a s : ℂ} (hs : s ≠ 0) (d : ℤ) (m : ℕ) (h : 2 * (m : ℤ) = d.natAbs - d) :
     (a * s⁻¹) ^ (-d) * (s * s) ^ m = a ^ (-d) * s ^ d.natAbs := by
   rw [mul_zpow, _root_.inv_zpow', neg_neg, ← pow_two, ← pow_mul, mul_assoc, ← zpow_natCast s (2 * m), ← zpow_add₀ hs,
     ← zpow_natCast s d.natAbs]
@@ -235,7 +235,7 @@ theorem coefficientField_reading_at_embedding_prod {LL : Type} [Field LL] (f : L
   have hm : 2 * (((((δ Q).natAbs : ℤ) - δ Q) / 2).toNat : ℤ) = (δ Q).natAbs - δ Q := by
     omega
   rw [map_mul, map_zpow₀, map_pow, map_natCast, hy Q hQ, hn, Complex.ofReal_inv,
-    pow_factor hs (Circle.coe_ne_zero _) _ _ hm, Complex.ofReal_pow]
+    pow_factor hs _ _ hm, Complex.ofReal_pow]
 
 
 

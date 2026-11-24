@@ -68,9 +68,9 @@ theorem carY_ok (T : ThetaTied D X) (μ : D.what₂.Tup) (s : ℕ) (h1 : 1 ≤ s
     exact resEta_parity (resEta_mul (T.chrOf_res μ s h1 h2) (resEta_inv T.etaT_res)) (by rw [hn'])
   · exact col_ok T μ s h1 h2 n (hn.2 (Nat.not_even_iff_odd.1 hi))
 
-theorem rank_X (X : ThetaX D) (j : ℕ) (hj : j ≤ D.R.m) : (D.sp.X j).rank = D.R.k + j * (D.R.t + 1) := D.sp.X_rank j hj
+theorem rank_X (j : ℕ) (hj : j ≤ D.R.m) : (D.sp.X j).rank = D.R.k + j * (D.R.t + 1) := D.sp.X_rank j hj
 
-theorem rank_Y (X : ThetaX D) (i : ℕ) (hi : i ≤ D.R.m) : (D.sp.Y i).rank = D.R.r + i * D.R.t := D.sp.Y_rank i hi
+theorem rank_Y (i : ℕ) (hi : i ≤ D.R.m) : (D.sp.Y i).rank = D.R.r + i * D.R.t := D.sp.Y_rank i hi
 
 theorem r_odd (D : D7) : Odd D.R.r := by
   obtain ⟨a, ha⟩ := D.R.k_even
@@ -83,7 +83,7 @@ theorem r_odd (D : D7) : Odd D.R.r := by
 theorem row_lift_ok (T : ThetaTied D X) (μ : D.what₂.Tup) (s : ℕ) (h1 : 1 ≤ s) (h2 : s ≤ D.R.m) (i : ℕ) (hi : i ≤ D.R.m) :
     ResEta D (T.eChr (X.carY μ s i)) (D.sp.Y i).rank := by
   apply carY_ok T μ s h1 h2
-  rw [rank_Y X i hi]
+  rw [rank_Y i hi]
   have hr := r_odd D
   have ht := D.R.t_odd
   constructor
@@ -94,7 +94,7 @@ theorem row_lift_ok (T : ThetaTied D X) (μ : D.what₂.Tup) (s : ℕ) (h1 : 1 �
   · exact fun ho => hr.add_odd (ho.mul ht)
 
 theorem rank_Y_ne (X : ThetaX D) (j : ℕ) (hj : j < D.R.m) : (D.sp.Y (j + 1)).rank ≠ (D.sp.Y j).rank := by
-  rw [rank_Y X (j + 1) hj, rank_Y X j hj.le, Nat.succ_mul]
+  rw [rank_Y (j + 1) hj, rank_Y j hj.le, Nat.succ_mul]
   have ht := D.R.t_odd.pos
   generalize j * D.R.t = q
   omega

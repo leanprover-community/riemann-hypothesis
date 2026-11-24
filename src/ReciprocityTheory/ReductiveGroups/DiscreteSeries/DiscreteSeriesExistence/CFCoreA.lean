@@ -199,7 +199,7 @@ private lemma inner_eq_zero_of_distinct_weights (hU : IsInfUnitary ε E) {μ ν 
   exact (mul_eq_zero.mp h3).resolve_left h5
 
 theorem kLowSpan_line (hE : IsGlRep E) (hU : IsInfUnitary ε E) {μ : Fin n → ℝ} {y : M}
-    (hy : IsKHWVec ε E μ y) (hy0 : y ≠ 0) {z : M} (hz : z ∈ kLowSpan ε E y)
+    (hy : IsKHWVec ε E μ y) {z : M} (hz : z ∈ kLowSpan ε E y)
     (hzw : ∀ a, E a a z = (μ a : ℂ) • z) : ∃ c : ℂ, z = c • y := by
   have hy' : (∀ a, E a a y = (μ a : ℂ) • y) ∧ ∀ a b, a < b → ε a = ε b → E a b y = 0 := hy
   obtain ⟨W, hW⟩ : ∃ W : Submodule ℂ M, W = Submodule.span ℂ
@@ -248,7 +248,7 @@ theorem khw_line_of_kIrrHW (hE : IsGlRep E) (hU : IsInfUnitary ε E) {μ : Fin n
       rw [h] at hmem
       exact (Submodule.mem_bot ℂ).mp hmem
     · exact h
-  exact kLowSpan_line hE hU hyw hy0 (by rw [heq]; exact hx) hx1.1
+  exact kLowSpan_line hE hU hyw (by rw [heq]; exact hx) hx1.1
 
 theorem kLowSpan_kIrrHW (hE : IsGlRep E) (hU : IsInfUnitary ε E) {μ : Fin n → ℝ} {y : M}
     (hy : IsKHWVec ε E μ y) (hy0 : y ≠ 0) (hfin : FiniteDimensional ℂ (kLowSpan ε E y)) :
@@ -278,7 +278,7 @@ theorem kLowSpan_kIrrHW (hE : IsGlRep E) (hU : IsInfUnitary ε E) {μ : Fin n �
     have h0 := hzero _ (sub_mem (hS'st a a rfl y1 hy1) (Submodule.smul_mem _ _ hy1))
       (by rw [hm]; exact sub_mem (Submodule.smul_mem _ _ hy2) (hperp a a rfl y2 hy2))
     exact sub_eq_zero.mp h0
-  obtain ⟨c, hc⟩ := kLowSpan_line hE hU hy hy0 (hS'le hy1) hy1w
+  obtain ⟨c, hc⟩ := kLowSpan_line hE hU hy (hS'le hy1) hy1w
   by_cases hc0 : c = 0
   · left
     rw [hc0, zero_smul] at hc

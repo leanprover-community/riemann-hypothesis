@@ -38,7 +38,7 @@ theorem exists_smoothDerived (ε : Fin n → Bool) (σ : Matrix (Fin n) (Fin n) 
         SmDerA.Tm_apply hσ (SmDerA.inG_cpart2 ε _)]
     · refine ⟨SmDerA.EcL_glRep hσ, fun k hk v hv => IsSmoothVecU.kStable hσ hk hv, fun X hX v => ?_⟩
       rw [SmDerA.actM_EcL hσ X, SmDerA.EcL_inG hσ hX, SmDerA.Tm_apply hσ hX]
-      exact hasDerivAt_dS hσ hX v.2
+      exact hasDerivAt_dS hX v.2
   · exact ⟨D, fun _ _ => 0, fun v => Iff.rfl, fun h => absurd h hσ⟩
 
 def smD (ε : Fin n → Bool) (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)) : Submodule ℂ H :=

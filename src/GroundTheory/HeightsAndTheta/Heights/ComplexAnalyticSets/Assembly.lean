@@ -1586,7 +1586,7 @@ theorem ChartResidueDegree.full : GroundTheory.Heights₂.Heights.ChartResidueDe
   GroundTheory.Heights₂.Heights.ChartResidueDegree.proof GroundTheory.Heights₂.Heights.ChowFormBirational.full GroundTheory.Heights₂.Heights.ChartFinite.full GroundTheory.Heights₂.Heights.ChartKernel.full GroundTheory.Heights₂.Heights.ConeDimOfChowForm.full GroundTheory.Heights₂.Heights.ConeDimComponent.full GroundTheory.Heights₂.Heights.ChowFormExists.full GroundTheory.Heights₂.Heights.IncidenceGeneric.full GroundTheory.Heights₂.Heights.ChartLocalOrder.full
 
 theorem ChartLength.full : GroundTheory.Heights₂.Heights.ChartLength.Statement :=
-  GroundTheory.Heights₂.Heights.ChartLength.proof GroundTheory.Heights₂.Heights.IncIdealBelow.full GroundTheory.Heights₂.Heights.SpecFirstMemIncIdeal.full GroundTheory.Heights₂.Heights.ChartFinite.full GroundTheory.Heights₂.Heights.LengthFiniteAlgebra.full GroundTheory.Heights₂.Heights.ChartMaxIdeals.full GroundTheory.Heights₂.Heights.ChartLocalOrder.full GroundTheory.Heights₂.Heights.ChartResidueDegree.full
+  GroundTheory.Heights₂.Heights.ChartLength.proof GroundTheory.Heights₂.Heights.SpecFirstMemIncIdeal.full GroundTheory.Heights₂.Heights.ChartFinite.full GroundTheory.Heights₂.Heights.LengthFiniteAlgebra.full GroundTheory.Heights₂.Heights.ChartMaxIdeals.full GroundTheory.Heights₂.Heights.ChartLocalOrder.full GroundTheory.Heights₂.Heights.ChartResidueDegree.full
 
 theorem ChartLocDomain.full : GroundTheory.Heights₂.Heights.ChartLocDomain.Statement :=
   GroundTheory.Heights₂.Heights.ChartLocDomain.proof GroundTheory.Heights₂.Heights.IncIdealBelow.full GroundTheory.Heights₂.Heights.ChartIncDomain.full GroundTheory.Heights₂.Heights.ChartKernel.full

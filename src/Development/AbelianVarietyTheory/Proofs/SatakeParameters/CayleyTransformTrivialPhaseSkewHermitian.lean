@@ -161,7 +161,7 @@ theorem cayley_ring {α : Type*} [Ring α] {Z Pi : α} (h1 : Pi * (1 - Z) = 1) (
       _ = Pi * Z := by noncomm_ring
 
 theorem cayley_unitary_ring {α : Type*} [Ring α] {J Z Zs Pi Qi Pis : α} (hZ : Zs * J = -(J * Z))
-    (hP1 : Pi * (1 - Z) = 1) (hP2 : (1 - Z) * Pi = 1) (hQ1 : Qi * (1 + Z) = 1) (hQ2 : (1 + Z) * Qi = 1)
+    (hP2 : (1 - Z) * Pi = 1) (hQ1 : Qi * (1 + Z) = 1) (hQ2 : (1 + Z) * Qi = 1)
     (hPs : Pis * (1 - Zs) = 1) : (1 + Zs) * Pis * J * (Pi * (1 + Z)) = J := by
   have ha : (1 - Zs) * J = J * (1 + Z) := by rw [sub_mul, hZ]; noncomm_ring
   have hb : (1 + Zs) * J = J * (1 - Z) := by rw [add_mul, hZ]; noncomm_ring
@@ -262,7 +262,7 @@ theorem cayley_phase : ∀ (L : Type) [Field L] [CharZero L] [Valued L (WithZero
   have hkU : k ∈ Formalism.UG.UJ σ Jt := by
     show Formalism.UG.cT σ (Pi * (1 + Z)) * Jt * (Pi * (1 + Z)) = Jt
     rw [Formalism.UG.cT_mul, cT_add, Formalism.UG.cT_one]
-    exact cayley_unitary_ring hZ hP1 hP2 hQ1 hQ2 hPs
+    exact cayley_unitary_ring hZ hP2 hQ1 hQ2 hPs
   have hIZ : IsIntM (1 + Z) := isIntM_add (fun i j => by
     rw [Matrix.one_apply]; split_ifs
     · exact one_mem _

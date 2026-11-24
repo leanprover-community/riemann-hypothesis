@@ -575,9 +575,9 @@ theorem unit_off (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E)
       have h := mem_flagStep_map hsl (o₀.Fl.b s) k ht₀
       rw [map_sub, hsl] at h
       rwa [hbF]
-    have c1 := _root_.GlobalTheory.CompanionTheory.Ar.leadCoef_ratio_mem M.Ω _ W.toSubring _ (o.Fl.b s) b (fun a => ι (b₀ a)) _ k t (i t₀) hfr.1 hf hf' C1 ht ht'
+    have c1 := _root_.GlobalTheory.CompanionTheory.Ar.leadCoef_ratio_mem M.Ω _ W.toSubring _ (o.Fl.b s) b (fun a => ι (b₀ a)) _ k t (i t₀) hfr.1 hf C1 ht ht'
     have c2 := _root_.GlobalTheory.CompanionTheory.Ar.leadCoef_ratio_mem M.Ω _ W.toSubring _ (o.Fl.b s) (fun a => ι (b₀ a)) b _ k (i t₀) t
-      (hext.2 _ b₀ hfr₀.1) hf' hf C2 ht' ht
+      (hext.2 _ b₀ hfr₀.1) hf' C2 ht' ht
     simp only [map_one, one_mul] at c1 c2
     exact ⟨b, b₀, t, t₀, hf, hfr, hf₀, hfr₀, ht, ht₀, c1, c2⟩
   obtain ⟨b, b₀, t, t₀, hf, hfr, hf₀, hfr₀, ht, ht₀, x1, x2⟩ := key (rootIdx D r).1 (rootIdx D r).2
@@ -971,7 +971,7 @@ theorem exists_flat (y : (Σ k, ι k) → Ω) (hP : IsMultiHomogIdeal (mCoordIde
     ring
 
 theorem val_ne_of_integral {A : Type} [CommRing A] [Algebra A Ω] (W : Subring Ω) (φ : W →+* ℂ)
-    (hφ : ∀ a : W, φ a ≠ 0 → IsUnit a) (hA : ∀ a : A, algebraMap A Ω a ∈ W) {r t : Ω} (hr : r ∈ W)
+    (hA : ∀ a : A, algebraMap A Ω a ∈ W) {r t : Ω} (hr : r ∈ W)
     (ht : IsIntegral A t) (hrt : r * t ∈ W) (h : φ ⟨_, hrt⟩ ≠ 0) : φ ⟨r, hr⟩ ≠ 0 := by
   intro h0
   let ρ : A →+* W := (algebraMap A Ω).codRestrict W hA
@@ -998,7 +998,7 @@ theorem exists_line {K₀ K : Type} [Fintype K₀] [Fintype K] [DecidableEq K] {
     (hs : ∀ j, s j ∈ chartLatNm y₀ (fun k => m * A.a k - 1) 1)
     (hs' : ∀ z ∈ Small.ptsOver ℂ (mCoordIdeal y₀),
       ∃ (j : Fin l) (val : ℂ), val ≠ 0 ∧ Small.HasVal y₀ (fun k => m * A.a k - 1) (s j) z val)
-    (ks : K) (hks : ks ∉ Set.range κ) (e : Fin l ≃ ι ks) (he : ∀ j, y ⟨ks, e j⟩ = i (s j)) (n : ℕ) :
+    (ks : K) (e : Fin l ≃ ι ks) (he : ∀ j, y ⟨ks, e j⟩ = i (s j)) (n : ℕ) :
     ∃ H : HermLine ι, IsSmoothHerm H ∧ H.a = (n : ℤ) • (pullDeg κ 1 + Pi.single ks 1) ∧
       ∀ (J : Ideal (MRing ι)) (R : AnLogRes (mCoordIdeal y) J D),
         PB.SamePot R.A Set.univ (potOf R H) ((potOf R (pullHerm hv A)).rsmul ((n : ℝ) * m)) := by
@@ -1099,7 +1099,7 @@ theorem exists_line {K₀ K : Type} [Fintype K₀] [Fintype K] [DecidableEq K] {
       show _ * i _ = _
       rw [map_mul, map_prod, q1, q2, ← mul_assoc, div_mul_cancel₀ _ (hyC _ (hC ks))]
       simp only [map_zpow₀, Nat.cast_one, one_mul]
-    have key := Flat.val_ne_of_integral W φ hφ hAW r1 hint' (heq ▸ w1) (by
+    have key := Flat.val_ne_of_integral W φ hAW r1 hint' (heq ▸ w1) (by
       intro h0
       apply hval
       rw [← w2]
@@ -1250,7 +1250,7 @@ theorem level (hRes : ResExistsStatement) (II : IntersectionSystem) (hII : IsFul
   let Re := pullRealis o.Re hA hv R' h hh ho _ hπ rfl _ o.Re.deg_pos br hd
   let Re' := pullRealis o₀.Re hA hv₀ R' h₀ hh₀ ho₀ _ hπ eπ _ o.Re.deg_pos br hd
   obtain ⟨Hl, hHs, hHa, hHp⟩ := exists_line R.y y i hv₀ hy₀ hA R.A R.A_smooth s hs hs' (Sum.inr ())
-    (by rintro ⟨k, hk⟩; cases hk) (Equiv.refl _) (fun _ => rfl) n
+    (Equiv.refl _) (fun _ => rfl) n
   have hH0 : ∀ k, (n : ℤ) * pullDeg κ₀ 1 k ≤ Hl.a k := fun k => by
     rw [hHa]
     simp only [Pi.smul_apply, Pi.add_apply, smul_eq_mul, mul_add, le_add_iff_nonneg_right]

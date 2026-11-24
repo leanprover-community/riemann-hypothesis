@@ -1056,7 +1056,7 @@ theorem pow_le {A : Type} [CommRing A] (a d : A) (n : ℕ) :
           · rw [← pow_succ']
             exact le_sup_right
 
-theorem main : ∀ {A : Type} [inst : CommRing A] (a d : A) (n : ℕ) {x : A},
+theorem main : ∀ {A : Type} [CommRing A] (a d : A) (n : ℕ) {x : A},
     x ∈ (Ideal.span {a} ⊔ Ideal.span {d}) ^ (n + (1 : ℕ)) →
       ∃ (u : A), ∃ w ∈ (Ideal.span {a} ⊔ Ideal.span {d}) ^ n, x = a ^ (n + (1 : ℕ)) * u + d * w := by
   intro A _ a d n x hx
@@ -1299,8 +1299,8 @@ abbrev obj : Obj l ↥(OL K) where
 def inl : Hom B (obj hI En) where
   f := En.i
   f_δ := En.i_δ
-  f_I a ha := le_comap_span En.i B.I d hI ha
-  f_str r a h := Ideal.quotientMap_mk.symm.trans
+  f_I _ ha := le_comap_span En.i B.I d hI ha
+  f_str _ _ h := Ideal.quotientMap_mk.symm.trans
     (congrArg (Ideal.quotientMap (Ideal.span {En.i d}) En.i (le_comap_span En.i B.I d hI)) h)
 
 end

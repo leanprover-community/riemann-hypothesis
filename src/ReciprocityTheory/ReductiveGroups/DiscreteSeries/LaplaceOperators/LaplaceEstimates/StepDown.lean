@@ -508,7 +508,7 @@ theorem k3Vd (n : ℕ) : QuotientHighestWeightTensorDual n := by
     by_contra hne
     have := finiteDimensional_ncV (ε := ε) hWirr.1 1
     have hfdW : FiniteDimensional ℂ (Wm ε EN W) := Submodule.finiteDimensional_of_le Wm_le_ncV
-    have hWst : IsKStableSub ε (bAct EN 1) (Wm ε EN W) := Wm_kStable hEN hUN hW''
+    have hWst : IsKStableSub ε (bAct EN 1) (Wm ε EN W) := Wm_kStable hEN hW''
     set T' : Submodule ℂ N := (Wm ε EN W).map (phi EN 1) with hT'
     have hT'st : IsKStableSub ε EN T' := by
       intro a b hab v hv
@@ -1038,7 +1038,7 @@ theorem evalM : EvalMStatement := by
         (Capelli.wIdx k r i) (Capelli.wIdx k r j) = Dk i j ∘ₗ lin :=
       fun i j => LinearMap.ext fun m => hlW i j (m : D) m.2
     have hGl : IsGlRep (resE (fun a b => frameE Q E (capIdx k r a) (capIdx k r b)) (genSub E V) hS₃) :=
-      isGlRep_resE _ _ _ (isGlRep_reindex (frameE Q E) (capIdx k r) hinj (frameGl Q E hQ1 hQ2 hE))
+      isGlRep_resE _ _ _ (isGlRep_reindex (frameE Q E) (capIdx k r) hinj (frameGl Q E hQ1 hE))
     have hB := Capelli.capelliB (genSub E V) Vp k r
       (resE (fun a b => frameE Q E (capIdx k r a) (capIdx k r b)) (genSub E V) hS₃) Dk ψ' lin om hGl hrp
       hl hψ0 hD

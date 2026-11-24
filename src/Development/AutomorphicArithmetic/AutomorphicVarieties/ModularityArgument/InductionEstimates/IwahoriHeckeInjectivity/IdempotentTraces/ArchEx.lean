@@ -212,8 +212,8 @@ section co
 private def cF (F : Type) [Field F] [NumberField F] [_root_.NumberField.IsTotallyComplex F] : mixedSpace F ≃+* (InfinitePlace F → ℂ) where
   toFun a w := a.2 ⟨w, IsTotallyComplex.isComplex w⟩
   invFun z := (fun v => absurd v.2 (InfinitePlace.not_isReal_iff_isComplex.2 (IsTotallyComplex.isComplex v.1)), fun v => z v.1)
-  left_inv a := Prod.ext (funext fun v => absurd v.2 (InfinitePlace.not_isReal_iff_isComplex.2 (IsTotallyComplex.isComplex v.1))) rfl
-  right_inv z := rfl
+  left_inv _ := Prod.ext (funext fun v => absurd v.2 (InfinitePlace.not_isReal_iff_isComplex.2 (IsTotallyComplex.isComplex v.1))) rfl
+  right_inv _ := rfl
   map_mul' _ _ := rfl
   map_add' _ _ := rfl
 

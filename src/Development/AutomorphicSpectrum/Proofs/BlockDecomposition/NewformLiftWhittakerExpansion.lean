@@ -369,7 +369,7 @@ theorem real_neg (hl : Lift k N f ω φ) (M : GL (Fin 2) ℝ) :
   simp [epsilon]
   rfl
 
-theorem real_pos (hl : Lift k N f ω φ) (x t : ℝ) (ht : 0 < t) (z : UpperHalfPlane) (hz1 : z.re = x) (hz2 : z.im = t)
+theorem real_pos (hl : Lift k N f ω φ) (x t : ℝ) (z : UpperHalfPlane) (hz1 : z.re = x) (hz2 : z.im = t)
     (M : GL (Fin 2) ℝ) (hM : (M : Matrix (Fin 2) (Fin 2) ℝ) = !![t, x; 0, 1]) :
     φ (realEmb M) = (Real.sqrt t : ℂ) ^ (k : ℤ) * f z := by
   have e : M = borelGL z := Units.ext (by rw [hM, coe_borelGL, hz1, hz2])
@@ -396,7 +396,7 @@ theorem whittaker_value {k N : ℕ} [NeZero N] {f : UpperHalfPlane → ℂ} {a :
     let z : ℝ → UpperHalfPlane := fun x => ⟨⟨-x, -(t : ℝ)⟩, hy⟩
     have hv : ∀ x : ℝ, φ (realEmb (unipReal x * dg2 t 1)) = (Real.sqrt (-(t : ℝ)) : ℂ) ^ (k : ℤ) * f (z x) := fun x => by
       rw [real_neg hl]
-      refine real_pos hl (-x) (-(t : ℝ)) hy (z x) rfl rfl _ ?_
+      refine real_pos hl (-x) (-(t : ℝ)) (z x) rfl rfl _ ?_
       rw [Units.val_mul, Units.val_mul, coe_unipReal]
       have he : ((toReal epsilon : GL (Fin 2) ℝ) : Matrix (Fin 2) (Fin 2) ℝ) = !![-1, 0; 0, 1] := by
         refine Matrix.ext fun a b => ?_
@@ -422,7 +422,7 @@ theorem whittaker_value {k N : ℕ} [NeZero N] {f : UpperHalfPlane → ℂ} {a :
   · have hy : 0 < (t : ℝ) := ht
     let z : ℝ → UpperHalfPlane := fun x => ⟨⟨x, (t : ℝ)⟩, hy⟩
     have hv : ∀ x : ℝ, φ (realEmb (unipReal x * dg2 t 1)) = (Real.sqrt (t : ℝ) : ℂ) ^ (k : ℤ) * f (z x) := fun x => by
-      refine real_pos hl x (t : ℝ) hy (z x) rfl rfl _ ?_
+      refine real_pos hl x (t : ℝ) (z x) rfl rfl _ ?_
       rw [Units.val_mul, coe_unipReal]
       simp [dg2]
     have e : ∫ x in (0 : ℝ)..1, φ (realEmb (unipReal x * dg2 t 1)) * Complex.exp (2 * Real.pi * Complex.I * (x : ℝ)) =

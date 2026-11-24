@@ -85,7 +85,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Yla6.main :
-    ∀ {a b c d : Type} [inst : Fintype b] [inst_1 : Fintype c] (A : Matrix a b ℂ) (M : Matrix b c ℂ) (B : Matrix c d ℂ)
+    ∀ {a b c d : Type} [Fintype b] [Fintype c] (A : Matrix a b ℂ) (M : Matrix b c ℂ) (B : Matrix c d ℂ)
       {α μ β : ℝ},
       (∀ (i : a) (j : b), ‖A i j‖ ≤ α) →
         (∀ (i : b) (j : c), ‖M i j‖ ≤ μ) →
@@ -306,7 +306,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.DYha3.main :
-    ∀ {E : Type} [inst : Field E] [NumberField E] (x : E), ∃ (n : ℕ), (0 : ℕ) < n ∧ IsIntegral ℤ ((↑n : E) * x) := by
+    ∀ {E : Type} [Field E] [NumberField E] (x : E), ∃ (n : ℕ), (0 : ℕ) < n ∧ IsIntegral ℤ ((↑n : E) * x) := by
   intro E _ _ x
   obtain ⟨y, hy, h⟩ := ((IsFractionRing.isAlgebraic_iff ℤ ℚ E).mpr
     (Algebra.IsIntegral.isIntegral (R := ℚ) x).isAlgebraic).exists_integral_multiple
@@ -530,7 +530,7 @@ theorem ext_chain (hc : 0 < c) (ht1 : 1 ≤ t₁) (ht : t ∈ cone r c) (i : ℕ
           mul_le_mul_of_nonneg_left h2 (inv_nonneg.mpr hc'.le)
         _ = _ := by ring
 
-theorem one_le_bnd (hc : 0 < c) (ht1 : 1 ≤ t₁) : 1 ≤ bnd r c t₁ := by
+theorem one_le_bnd (hc : 0 < c) : 1 ≤ bnd r c t₁ := by
   have hc' : 0 < min c 1 := lt_min hc one_pos
   have hi : 1 ≤ (min c 1)⁻¹ := one_le_inv₀ hc' |>.mpr (min_le_right _ _)
   exact le_max_of_le_right (one_le_pow₀ hi)
@@ -604,7 +604,7 @@ theorem t_zero (hc : 0 < c) (ht1 : 1 ≤ t₁) (ht : t ∈ cone r c) {i : Fin r}
 theorem wt_zero (hc : 0 < c) (ht1 : 1 ≤ t₁) (ht : t ∈ cone r c) (m : ℕ) (u : Idx r m)
     (hu : lev m (deep t₁ t) u = 0) :
     (bnd r c t₁)⁻¹ ≤ wt m t u ∧ wt m t u ≤ bnd r c t₁ := by
-  have hB := one_le_bnd (r := r) hc ht1
+  have hB := one_le_bnd (r := r) hc
   have hB0 : 0 < bnd r c t₁ := lt_of_lt_of_le one_pos hB
   rcases u with i | k | i
   · simp only [lev] at hu
@@ -628,7 +628,7 @@ namespace GlobalTheory.CompanionTheory.CFin.Ratio
 theorem ratio_bounded : ∀ (r m : ℕ) (c t₁ : ℝ), 0 < c → 1 ≤ t₁ → ∃ R : ℝ, 0 ≤ R ∧ ∀ t ∈ cone r c,
     ∀ u v : Idx r m, lev m (deep t₁ t) u = lev m (deep t₁ t) v → wt m t u ≤ R * wt m t v := by
   intro r m c t₁ hc ht1
-  have hB := one_le_bnd (r := r) hc ht1
+  have hB := one_le_bnd (r := r) hc
   have hB0 : 0 < bnd r c t₁ := lt_of_lt_of_le one_pos hB
   have hBB : bnd r c t₁ ≤ bnd r c t₁ ^ 2 := by nlinarith
   refine ⟨bnd r c t₁ ^ 2, by positivity, ?_⟩

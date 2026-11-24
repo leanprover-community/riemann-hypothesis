@@ -182,7 +182,7 @@ theorem continuous_gramB (σ : E →ₐ[F] E) {M n : ℕ} (J : Matrix (Fin M) (F
 
 end BTop
 
-def TensR : Prop := InCtx fun F E _ _ _ _ _ σ M J a _X0 _hT =>
+def TensR : Prop := InCtx fun F E _ _ _ _ _ σ M _ a _X0 _hT =>
   ∃ (n m : ℕ) (eV : (Fin a → Fin M → Ainf F ⊗[F] E) ≃ₜ (Fin n → ℝ))
     (eH : HermR (Ainf F) σ a ≃ₜ (Fin m → ℝ)),
     (∀ x y, eV (x + y) = eV x + eV y) ∧ ∀ x y, eH (x + y) = eH x + eH y

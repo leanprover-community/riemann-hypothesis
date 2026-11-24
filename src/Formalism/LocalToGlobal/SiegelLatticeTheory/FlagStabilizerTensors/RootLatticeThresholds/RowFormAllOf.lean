@@ -591,7 +591,7 @@ theorem ff_mem_dual {Λ : Submodule (𝓞 E) S.V} {x : S.V} :
 
 theorem ff_lat_le {Λ' Me L Mf : Submodule (𝓞 E) S.V} {Yf : Submodule E S.V}
     (hΛ : Λ' = Me ⊔ L ⊔ Mf) (hU : Formalism.HermitianLatticesTheory.dual S.hT Λ' = Λ')
-    (hMf : ∀ v ∈ Mf, v ∈ Yf) (hY : ∀ a ∈ Yf, ∀ b ∈ Yf, S.hT a b = 0) (hLY : ∀ l ∈ L, ∀ v ∈ Yf, S.hT l v = 0)
+    (hMf : ∀ v ∈ Mf, v ∈ Yf) (hY : ∀ a ∈ Yf, ∀ b ∈ Yf, S.hT a b = 0)
     {ν : S.V ≃ₗ[E] S.V} (hν : ν ∈ Formalism.HermitianLatticesTheory.isom S.hT) (h1 : ∀ x ∈ Me, ν x ∈ Me)
     (h2 : ∀ x ∈ Me, ν.symm x ∈ Me) (h3 : ∀ x ∈ L, ν x = x) (h4 : ∀ x ∈ Yf, ν.symm x ∈ Yf) :
     Formalism.HermitianLatticesTheory.gmap ν Λ' ≤ Λ' := by
@@ -771,12 +771,12 @@ theorem frameCorrection_holds : FrameFixNeed X Y u u' := by
       Submodule.span_le.2 (by rintro _ ⟨a, rfl⟩; exact LinearMap.mem_ker.2 (ff_swap (hL l hl a).2))
     exact LinearMap.mem_ker.1 (hle hv)
   have hle1 : Formalism.HermitianLatticesTheory.gmap μ s.lam' ≤ s.lam' :=
-    ff_lat_le hΛ' hU hMf hYiso hLY hμi h1 h2 hμL hμYs
+    ff_lat_le hΛ' hU hMf hYiso hμi h1 h2 hμL hμYs
   have hμsi : μ.symm ∈ Formalism.HermitianLatticesTheory.isom (VS D).hT := fun a b => by
     rw [← isom_app hμi (μ.symm a) (μ.symm b)]
     simp
   have hle2 : Formalism.HermitianLatticesTheory.gmap μ.symm s.lam' ≤ s.lam' :=
-    ff_lat_le hΛ' hU hMf hYiso hLY hμsi h2 (by simpa using h1)
+    ff_lat_le hΛ' hU hMf hYiso hμsi h2 (by simpa using h1)
       (fun v hv => (μ.symm_apply_eq).2 (hμL v hv).symm) (by simpa using hμY)
   have hμΛ : Formalism.HermitianLatticesTheory.gmap μ s.lam' = s.lam' :=
     le_antisymm hle1 fun v hv => ⟨μ.symm v, hle2 ⟨v, hv, rfl⟩, μ.apply_symm_apply v⟩

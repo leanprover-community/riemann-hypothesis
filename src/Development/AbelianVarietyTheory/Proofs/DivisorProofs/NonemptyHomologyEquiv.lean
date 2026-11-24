@@ -69,7 +69,7 @@ def cechIso {R : Type} [CommRing R] (f : X ⟶ Spec (CommRingCat.of R)) (M : LB 
     (M := SecOnR f M (⨅ i ∈ s, D i)) (M₂ := sectionsOn (LB.toMod M) (⊤ ⊓ ⨅ i ∈ s, D i))
     (SecOnR.restrict f M (inf_le_right : ⊤ ⊓ (⨅ i ∈ s, D i) ≤ ⨅ i ∈ s, D i))
     (SecOnR.restrict_bijective f _ (le_inf le_top le_rfl)))
-    fun {s t} h x => (SecOnR.restrict_restrict f _ inf_le_right x).trans
+    fun {_ _} h x => (SecOnR.restrict_restrict f _ inf_le_right x).trans
       (SecOnR.restrict_restrict f inf_le_right (cechOpen_anti ⊤ D h) x).symm)
 
 theorem nonempty_homology_equiv {R : Type} (O : Type) [CommRing R] [CommRing O]

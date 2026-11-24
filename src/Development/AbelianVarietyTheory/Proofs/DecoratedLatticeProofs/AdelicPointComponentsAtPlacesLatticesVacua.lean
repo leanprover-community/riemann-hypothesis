@@ -578,5 +578,5 @@ theorem GlobalTheory.FinPl.localComponents : ∀ (D : D7) (P : Pl D → Prop), (
     (∀ h : GA D S, ∃ x ∈ grpAt S P, ∃ y ∈ grpOff S P, h = x * y) ∧ (∀ x ∈ grpAt S P, ∀ y ∈ grpOff S P, x * y = y * x) ∧
     grpAt S P ⊓ grpOff S P = ⊥ ∧ (∀ (L : Lat S) (y : Fin S.rank → AE D), (Submodule.IsLattice D.host.E L) →
       (y ∈ latV S L P ↔ (∀ i, y i ∈ idAt D P) ∧ ∀ v, P v → ∀ e ∈ intAt D (· = v), e • y ∈ latV S L (· = v))) :=
-  fun D P => ⟨part_idem P, fun S => ⟨(part_grp P S).1, (part_grp P S).2.1, (part_grp P S).2.2,
+  fun _ P => ⟨part_idem P, fun S => ⟨(part_grp P S).1, (part_grp P S).2.1, (part_grp P S).2.2,
     fun L y hL => part_lat P S L y hL⟩⟩

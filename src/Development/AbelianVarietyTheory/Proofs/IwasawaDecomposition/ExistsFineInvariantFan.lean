@@ -1529,8 +1529,8 @@ theorem isCone_of_agree {X : Type} [AddCommGroup X] [Module (𝓞 E) X] [Module.
 theorem isCone_extFun_iff {X : Type} [AddCommGroup X] [Module (𝓞 E) X] [Module.Finite (𝓞 E) X]
     (hX : Module.finrank (𝓞 E) X ≤ q) {m : ℕ} (γ : Fin m → LinearMap.BilinForm ℤ X) :
     IsCone H.bar (extFun H q φ) γ ↔ IsCone H.bar φ γ :=
-  ⟨isCone_of_agree fun B hB => evalR_extFun H q φ hX hB,
-    isCone_of_agree fun B hB => (evalR_extFun H q φ hX hB).symm⟩
+  ⟨isCone_of_agree fun _ hB => evalR_extFun H q φ hX hB,
+    isCone_of_agree fun _ hB => (evalR_extFun H q φ hX hB).symm⟩
 
 theorem isPolFanOn_extFun {X : Type} [AddCommGroup X] [Module (𝓞 E) X] [Module.Finite (𝓞 E) X]
     (hX : Module.finrank (𝓞 E) X ≤ q) (h : IsPolFanOn H.bar φ X) : IsPolFanOn H.bar (extFun H q φ) X := by

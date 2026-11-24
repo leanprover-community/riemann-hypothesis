@@ -365,7 +365,7 @@ theorem integral_inner_left {f : α → E} (hf : Integrable f μ) (η : E) :
     funext x; rw [inner_conj_symm]
   rw [h1, integral_conj, integral_inner hf, inner_conj_symm]
 
-theorem integral_rankOne_prod [SFinite μ] [SFinite ν] {a : α → F} {b : β → E} (ha : Integrable a μ)
+theorem integral_rankOne_prod [SFinite μ] [SFinite ν] {a : α → F} {b : β → E}
     (hb : Integrable b ν) (hI : Integrable (fun q : α × β => (innerSL ℂ (b q.2)).smulRight (a q.1)) (μ.prod ν)) :
     ∫ q, (innerSL ℂ (b q.2)).smulRight (a q.1) ∂(μ.prod ν) = (innerSL ℂ (∫ y, b y ∂ν)).smulRight (∫ x, a x ∂μ) := by
   ext η
@@ -494,7 +494,7 @@ theorem pair_split (L : LocBessel k r) [SFinite L.μW] [SFinite L.μW'] [SFinite
     · exact absurd h hB0
   have haI : Integrable a (L.μW.prod L.μN) := ⟨haS, hlt.1⟩
   have hbI : Integrable b (L.μW'.prod L.μN) := ⟨hbS, hlt.2⟩
-  rw [integral_rankOne_prod haI hbI hI, ha_eq (Or.inl haI), hb_eq (Or.inl hbI)]
+  rw [integral_rankOne_prod hbI hI, ha_eq (Or.inl haI), hb_eq (Or.inl hbI)]
 
 end Formalism.MainNotions.S.Pv.AmpDDPf
 end -- clump:auto
@@ -556,7 +556,7 @@ theorem lint_cell (hγ : γ ∈ UH (Hpk k r)) (hrel : IsRelStab L γ) (hμG : Is
   have hmeasQ : Measurable (fun q : Mt k r × Mt k r => ‖PsiM L w0 v v' ξ ξ' γ (p, qG γ q)‖ₑ) :=
     hmeasP.comp (continuous_qG γ).measurable
   have hR : ∀ᵐ a ∂μR, Matrix.of a ∈ RStab k r γ := ae_iff.mpr hμR.2.2.1
-  have hU := ae_uh_nuR hγ hμG hμR hQ
+  have hU := ae_uh_nuR hμG hμR hQ
   calc ∫⁻ a, ∫⁻ x, ‖PsiM L w0 v v' ξ ξ' γ (mStab γ (p, a), x)‖ₑ ∂νR ∂μR
       = ∫⁻ a, ∫⁻ x, ‖PsiM L w0 v v' ξ ξ' γ (p, qG γ (x, Formalism.FourierDecayAlt.P.B7.invM a))‖ₑ ∂νR ∂μR := by
         refine lintegral_congr_ae (hR.mono (fun a ha => ?_))
@@ -589,7 +589,7 @@ theorem int_cell (hγ : γ ∈ UH (Hpk k r)) (hrel : IsRelStab L γ) (hμG : IsH
   have hsmQ : StronglyMeasurable (fun q : Mt k r × Mt k r => PsiM L w0 v v' ξ ξ' γ (p, qG γ q)) :=
     hsmP.comp_measurable (continuous_qG γ).measurable
   have hR : ∀ᵐ a ∂μR, Matrix.of a ∈ RStab k r γ := ae_iff.mpr hμR.2.2.1
-  have hU := ae_uh_nuR hγ hμG hμR hQ
+  have hU := ae_uh_nuR hμG hμR hQ
   have hG : ∀ᵐ y ∂μG, Matrix.of y ∈ UH (Hpk k r) := ae_iff.mpr hμG.2.2.1
   have hGeq : (fun y => PsiM L w0 v v' ξ ξ' γ (p, y)) =ᵐ[μG] fun y => Psi L w0 v v' ξ ξ' γ p y :=
     hG.mono (fun y hy => PsiM_eq L w0 v v' ξ ξ' hγ hp hy)
@@ -716,7 +716,7 @@ theorem amp_core' (L : LocBessel k r) {μG : Measure (Mt k r)} (hμG : IsHaarOn 
   have hL : ∀ᵐ x ∂νR, (⟪l v, ξ⟫_ℂ * ⟪ξ', l' v'⟫_ℂ) •
       (innerSL ℂ (l' (L.σ (Matrix.of x) w0))).smulRight (l (L.σ (γ * Matrix.of x) w0)) =
       ∫ pa, PsiM L w0 v v' ξ ξ' γ (mStab γ pa, x) ∂(ν.prod μR) := by
-    filter_upwards [ae_uh_nuR hγ hμG hμR hQ, hF.prod_left_ae] with x hx hix
+    filter_upwards [ae_uh_nuR hμG hμR hQ, hF.prod_left_ae] with x hx hix
     have hgx : γ * Matrix.of x ∈ UH (Hpk k r) := WeylGroupFacts.uh_mul hγ hx
     have hsmx : StronglyMeasurable (fun q : PairSp k r => PsiM L w0 v v' ξ ξ' γ (q, x)) :=
       (sm_PsiM L w0 v v' ξ ξ' γ).comp_measurable (measurable_id.prodMk measurable_const)

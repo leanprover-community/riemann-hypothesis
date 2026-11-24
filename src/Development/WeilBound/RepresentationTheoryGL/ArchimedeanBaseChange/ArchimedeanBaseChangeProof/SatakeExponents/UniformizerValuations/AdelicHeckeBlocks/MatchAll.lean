@@ -346,7 +346,7 @@ theorem unitary_function_powers_S0 (hU : Unr E) (hd : d.Ok) (hm : MOk d) (hT : w
       (lpow ((d.K' w).subgroupOf (UL n w)) (fun y => d.e w y.1) (k + 1))
     funext y
     have e2 := congrFun e y.1
-    rw [GlobalTheory.CompanionTheory.CtMulSplit.toSub_val hUT] at e2
+    rw [GlobalTheory.CompanionTheory.CtMulSplit.toSub_val] at e2
     show lconv _ _ y = _
     rw [e2, ih]
     show _ = gconv _ _ _
@@ -593,10 +593,10 @@ theorem matchBadIOf2 : MatchBadIOf2 := by
     · have h' : γ ∉ ({γ : UL n w | γ.1 ∈ congK n w k} : Set (UL n w)) := fun h' => h ((hmem γ).2 h')
       simp [h, h']
   rw [hf]
-  have hM' : Match n a b w 1 ({γ : UL n w | γ.1 ∈ congK n w k}.indicator 1) (pairIndicatorMatch n a b w k) := by
+  have hM' : Match n a b w 1 ({γ : UL n w | γ.1 ∈ congK n w k}.indicator 1) (pairIndicatorMatch a b w k) := by
     convert hM using 2
     · rfl
-    · unfold pairIndicatorMatch congK
+    · unfold pairIndicatorMatch
       congr 1
       split_ifs <;> rfl
   exact mb_match_smul _ hM'

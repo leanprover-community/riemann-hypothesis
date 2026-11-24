@@ -59,7 +59,7 @@ theorem pn_pos : (0 : ℤ) < (p : ℤ) ^ n := pow_pos (by exact_mod_cast hp.out.
 
 def mulN : ℤ →+ ℤ := AddMonoidHom.mulLeft ((p : ℤ) ^ n)
 
-theorem mulN_inj : Function.Injective (mulN p n) := fun a b h =>
+theorem mulN_inj : Function.Injective (mulN p n) := fun _ _ h =>
   mul_left_cancel₀ (pn_pos p n).ne' h
 
 theorem mulN_le (a b : ℤ) : mulN p n a ≤ mulN p n b ↔ a ≤ b :=

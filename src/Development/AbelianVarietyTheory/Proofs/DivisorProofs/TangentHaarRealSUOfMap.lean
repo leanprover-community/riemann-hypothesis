@@ -159,7 +159,7 @@ theorem continuous_chartExp (hG : G.det ≠ 0) : Continuous (chartExp Ψ G hG) :
   · exact GlobalTheory.UpqExpChart.continuous_matExp.comp ((continuous_apply i).comp continuous_subtype_val).neg
 
 theorem chartExp_zero (hG : G.det ≠ 0) : chartExp Ψ G hG 0 = 1 :=
-  matR_injective Ψ G (funext fun i => NormedSpace.exp_zero (𝔸 := Matrix (Fin r) (Fin r) ℂ))
+  matR_injective Ψ G (funext fun _ => NormedSpace.exp_zero (𝔸 := Matrix (Fin r) (Fin r) ℂ))
 
 theorem eventually_mem_image (hG : G.det ≠ 0) {U : Set (realLie Ψ G)} (hU : U ∈ 𝓝 0) :
     ∀ᶠ g in Filter.comap (matR Ψ G) (𝓝 1), g ∈ chartExp Ψ G hG '' U := by

@@ -209,7 +209,7 @@ theorem cross {y : (Σ k, J k) → Ω} {a : K → ℤ} {c₀ : Ω} {g h g' h' : 
   simp only [evC, map_sub, map_mul] at h1 ⊢
   exact sub_eq_zero.1 h1
 
-private theorem sq_zpow_lemma_4 (x : ℝ) (hx : x ≠ 0) (n : ℤ) :
+private theorem sq_zpow_lemma_4 (x : ℝ) (n : ℤ) :
     (x ^ 2) ^ n.toNat / (x ^ 2) ^ (-n).toNat = (x ^ n) ^ 2 := by
   rcases le_total 0 n with h0 | h0
   · obtain ⟨m, rfl⟩ := Int.eq_ofNat_of_zero_le h0
@@ -273,7 +273,7 @@ theorem exists_unit_metric (y : (Σ k, J k) → Ω) (a : K → ℤ) (c₀ : Ω)
     have hu : (∏ k, (‖c k‖ ^ 2) ^ (a k).toNat) / ∏ k, (‖c k‖ ^ 2) ^ (-a k).toNat =
         (∏ k, ‖c k‖ ^ a k) ^ 2 := by
       rw [← Finset.prod_div_distrib, ← Finset.prod_pow]
-      exact Finset.prod_congr rfl fun k _ => sq_zpow_lemma_4 _ (norm_ne_zero_iff.2 (hc k)) _
+      exact Finset.prod_congr rfl fun k _ => sq_zpow_lemma_4 _ _
     rw [hN', hD', hZp', hZm']
     have e1 : N z * ((∏ k, (‖c k‖ ^ 2) ^ (a k).toNat) * Zp z) /
         (D z * ((∏ k, (‖c k‖ ^ 2) ^ (-a k).toNat) * Zm z)) =

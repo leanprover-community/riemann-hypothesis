@@ -45,32 +45,32 @@ namespace Formalism.MainNotions.ColumnSystems.Pf
 
 open Formalism.MainNotions.G
 
-def FamilyFifthBound (D : Formalism.BasicNotions.D7) : Prop := ∀ C0 CE1 CE2, PointsLemma D C0 CE1 CE2
+def FamilyFifthBound (D : Formalism.BasicNotions.D7) : Prop := ∀ C0 CE1 CE2, PointsLemma C0 CE1 CE2
 
 def RestFree (D : Formalism.BasicNotions.D7) : Prop :=
-  TransportedAlt fun C0 CYb Cde Ck CD Cb CE1 CE2 _ Cc => FreeTopRankBound D C0 CYb Cde Ck CD Cb CE1 CE2 Cc
+  TransportedAlt fun C0 CYb Cde Ck CD Cb CE1 CE2 _ Cc => FreeTopRankBound C0 CYb Cde Ck CD Cb CE1 CE2 Cc
 
 def RemainderSegmentBoundFirst (D : Formalism.BasicNotions.D7) : Prop :=
-  TransportedAlt fun C0 CYb Cde Ck CD Cb CE1 CE2 _ Cc => ExtendedDichotomy D C0 CYb Cde Ck CD Cb CE1 CE2 Cc
+  TransportedAlt fun C0 CYb Cde Ck CD Cb CE1 CE2 _ Cc => ExtendedDichotomy C0 CYb Cde Ck CD Cb CE1 CE2 Cc
 
 def FamilyFourthBound (D : Formalism.BasicNotions.D7) : Prop :=
   TransportedAlt fun C0 CYb Cde Ck CD Cb CE1 CE2 Cm Cc => ∀ Ckap : ℝ, 0 < Ckap → ∃ Cs : ℝ, 0 < Cs ∧
-    ExtendedKappaBound D C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ckap Cc Cs
+    ExtendedKappaBound C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ckap Cc Cs
 
 def RemainderSegmentBoundThird (D : Formalism.BasicNotions.D7) : Prop :=
   TransportedAlt fun C0 CYb Cde Ck CD Cb CE1 CE2 _ Cc => ∃ Ct0 : ℝ, 0 < Ct0 ∧ ∀ Ct : ℝ, Ct0 ≤ Ct →
-    ExtendedOrderBound D C0 CYb Cde Ck CD Cb CE1 CE2 Ct Cc
+    ExtendedOrderBound C0 CYb Cde Ck CD Cb CE1 CE2 Ct Cc
 
 def RootMultiplicityTwoBeyond (D : Formalism.BasicNotions.D7) : Prop :=
-  TransportedAlt fun C0 CYb Cde Ck CD Cb CE1 CE2 _ Cc => RootMultiplicityTwo D C0 CYb Cde Ck CD Cb CE1 CE2 Cc
+  TransportedAlt fun C0 CYb Cde Ck CD Cb CE1 CE2 _ Cc => RootMultiplicityTwo C0 CYb Cde Ck CD Cb CE1 CE2 Cc
 
 def RemainderSegmentBoundSecond (D : Formalism.BasicNotions.D7) : Prop :=
   TransportedAlt fun C0 CYb Cde Ck CD Cb CE1 CE2 _ Cc => ∃ Ck0 : ℝ, 0 < Ck0 ∧ ∀ Ckap : ℝ, Ck0 ≤ Ckap →
-    ExtendedModelRank D C0 CYb Cde Ck CD Cb CE1 CE2 Ckap Cc
+    ExtendedModelRank C0 CYb Cde Ck CD Cb CE1 CE2 Ckap Cc
 
 def RestExt (D : Formalism.BasicNotions.D7) : Prop :=
   TransportedAlt fun C0 CYb Cde Ck CD Cb CE1 CE2 Cm Cc => ∃ Ck0 Ct0 : ℝ, 0 < Ck0 ∧ 0 < Ct0 ∧ ∀ Ckap Ct : ℝ, Ck0 ≤ Ckap → Ct0 ≤ Ct →
-    HerrExtensionClass D C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ckap Ct Cc
+    HerrExtensionClass C0 CYb Cde Ck CD Cb CE1 CE2 Cm Ckap Ct Cc
 
 theorem closed_of_rests {D : Formalism.BasicNotions.D7} (h3 : FamilyFifthBound D) (hF : RestFree D) (hA1 : RemainderSegmentBoundFirst D) (h2 : FamilyFourthBound D)
     (hA3 : RemainderSegmentBoundThird D) (hR : RootMultiplicityTwoBeyond D) (hA2 : RemainderSegmentBoundSecond D) (hE : RestExt D) : Closed (ExtendedAllConclusions D) := by

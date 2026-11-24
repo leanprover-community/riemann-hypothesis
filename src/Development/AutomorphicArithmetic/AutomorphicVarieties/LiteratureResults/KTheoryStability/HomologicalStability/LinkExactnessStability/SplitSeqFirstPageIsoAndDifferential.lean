@@ -1035,8 +1035,8 @@ theorem GlobalTheory.HomStab.exists_perm_face_stdSeq : ∀ (R : Type) [CommRing 
       have hjp : j < p := by simpa [stdList] using h2
       simp only [List.getElem_map, List.getElem_eraseIdx, stdList, List.getElem_ofFn]
       split_ifs with hj
-      · exact pairAct_pmU R _ _ _ _ _ (by omega) _ (by simp only [cyc_val, Fin.val_mk]; split_ifs <;> omega)
-      · exact pairAct_pmU R _ _ _ _ _ (by omega) _ (by simp only [cyc_val, Fin.val_mk]; split_ifs <;> omega)
+      · exact pairAct_pmU R _ _ _ _ _ (by omega) _ (by simp only [cyc_val]; split_ifs <;> omega)
+      · exact pairAct_pmU R _ _ _ _ _ (by omega) _ (by simp only [cyc_val]; split_ifs <;> omega)
   · intro x
     have lo1 : ∀ k : Fin n, ((cyc (n - (p + 1)) i hmi k : ℕ) < n - (p + 1) ↔ (k : ℕ) < n - (p + 1)) := by
       intro k

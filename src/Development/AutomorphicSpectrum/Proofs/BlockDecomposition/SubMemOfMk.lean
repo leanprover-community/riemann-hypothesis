@@ -63,7 +63,7 @@ theorem J_mul_mem (hF : IsFil Φ Fil) (r : ℕ) {T : C} {x y : Φ.A.obj T} (hx :
   rwa [e] at this
 
 def mulT (Fil : ℤ → IdF Φ.A) (r : ℤ) {T : C} (u : Φ.A.obj T) : (gr Fil r).obj T →ₗ[R] (gr Fil r).obj T :=
-  (LinearMap.mulLeft R (Ideal.Quotient.mk ((Fil (r + 1)).S T) u)).restrict fun x hx =>
+  (LinearMap.mulLeft R (Ideal.Quotient.mk ((Fil (r + 1)).S T) u)).restrict fun _ hx =>
     Ideal.mul_mem_left _ _ hx
 
 theorem mulT_congr (hF : IsFil Φ Fil) (r : ℕ) {T : C} {u v : Φ.A.obj T} (h : u - v ∈ Φ.J.S T)

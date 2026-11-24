@@ -1323,7 +1323,7 @@ namespace ReciprocityTheory.ChartRestriction.G.I2
 
 open MeasureTheory Complex NumberField
 
-theorem tOf (hx : Ext.All) (hs : SplitStatement) (hS : GSupStatement) (hd : DimStatement) :
+theorem tOf (hx : Ext.All) (hs : SplitStatement) (hS : GSupStatement) :
     TStatement := by
   intro E _ _ _ X DF P r1 hr1 a ha hgen s hsmem hs0
   refine ⟨fun hph => ?_, fun h0 => ?_⟩

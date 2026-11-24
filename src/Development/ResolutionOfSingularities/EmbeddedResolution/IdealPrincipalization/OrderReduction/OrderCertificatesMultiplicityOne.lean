@@ -224,7 +224,7 @@ private theorem hasOrderCertificateMultOne_appendLowerDimReduction (hstar : MaxC
     exact List.getElem_mem hjS
   refine hasOrderCertificateMultOne_dataAt_of_center_subset _ ?_ Dv ?_ ?_ ?_
   · intro n hn
-    exact isLocallyNoetherian_tunedMarkedBlowupSeq_schemeAt hstar S hV s hft [] 0 hVc
+    exact isLocallyNoetherian_tunedMarkedBlowupSeq_schemeAt S s hft [] 0 hVc
       (A j (MaxContactCoverData.derivedTriple S s hft [] 0)) n hn
   · exact mem_boundary_zero_of_eq_comap
       ((BlowupSequenceData.ofSequenceOfBlowups (A j (MaxContactCoverData.derivedTriple S s hft [] 0)).toSequenceOfBlowups).toMarkedBlowupSequenceData
@@ -248,7 +248,7 @@ theorem orderCertificate_coverMarkedBlowupData (hstar : MaxContactCoverPropertie
     (hmono : ∀ a b : ℕ, a ≤ b → P b → P a) (A : ℕ → PrincipalizationAssignment.{u})
     (B : PrincipalizationAssignment.{u}) (hspec : ∀ j : ℕ, IsBoundaryDivisorReduction P j (A j) B)
     (T : MarkedIdealWithBoundary.{u}) (h : MaxContactFunctoriality.OrderReductionHypotheses P T)
-    (hcert : ContinuationOrderCertificate hinv A P T h) (_hmult : T.mult = 1) (t : ℕ)
+    (hcert : ContinuationOrderCertificate hinv A P T h) (t : ℕ)
     (ht : t <
       (MaxContactCoverData.coverMarkedBlowupData T h.valid hinv (MaxContactFunctoriality.lowerDimensionalFamily A T)).length) :
     OrderCertificate
@@ -689,7 +689,7 @@ theorem continuationOrderCertificate_of_mult_eq_one (hstar : MaxContactCoverProp
   have hNoe : ∀ t, t ≤ (A 0 (reduceAlongHypersurfaceTriple T h.valid hinv A hft)).length →
       IsLocallyNoetherian ((BlowupSequenceData.ofSequenceOfBlowups
         (A 0 (reduceAlongHypersurfaceTriple T h.valid hinv A hft)).toSequenceOfBlowups).obj t) := fun t ht =>
-    isLocallyNoetherian_tunedMarkedBlowupSeq_schemeAt hstar (MaxContactCoverData.coverTriple T h.valid) hSV
+    isLocallyNoetherian_tunedMarkedBlowupSeq_schemeAt (MaxContactCoverData.coverTriple T h.valid)
       (separateAllBoundary T h.valid hinv A) hft
       [MaxContactReduction.strictTransformAtLength (separateAllBoundary T h.valid hinv A)
         (MaxContactCoverData.coverMaxContactIdeal T h.valid)]
@@ -990,7 +990,7 @@ theorem orderCertificate_coverMarkedBlowupData_of_mult_eq_one (hstar : MaxContac
       ((MaxContactCoverData.coverMarkedBlowupData T h.valid hinv
         (MaxContactFunctoriality.lowerDimensionalFamily A T)).toMarkedSequenceOfBlowups.center t) :=
   orderCertificate_coverMarkedBlowupData hstar hinv P hmono A B hspec T h
-    (continuationOrderCertificate_of_mult_eq_one hstar hopen hinv P hmono A B hspec T h hmult) hmult t ht
+    (continuationOrderCertificate_of_mult_eq_one hstar hopen hinv P hmono A B hspec T h hmult) t ht
 
 end BoundarySeparationByMaxContact
 

@@ -41,8 +41,8 @@ theorem IsBump.cpt {φ : Mat n → ℝ} (h : IsBump G φ) : HasCompactSupport φ
   obtain ⟨S, hS, -, hφ⟩ := h.supp
   exact HasCompactSupport.intro hS fun y hy => by by_contra h0; exact hy (hφ y h0)
 
-theorem exists_isBump (hG : IsMatGroup G) (θ : Mat n →L[ℝ] Mat n) (hθ : ∀ x ∈ G, θ x = x⁻¹) {V : Set (MG G hG)}
-    (hV : V ∈ 𝓝 (1 : MG G hG)) : ∃ φ, IsBump G φ ∧ ∀ x : MG G hG, φ x.mat ≠ 0 → x ∈ V := by
+theorem exists_isBump (hG : IsMatGroup G) (θ : Mat n →L[ℝ] Mat n) (hθ : ∀ x ∈ G, θ x = x⁻¹) {V : Set (MG G)}
+    (hV : V ∈ 𝓝 (1 : MG G)) : ∃ φ, IsBump G φ ∧ ∀ x : MG G, φ x.mat ≠ 0 → x ∈ V := by
   rw [MG.isClosedEmbedding_mat.isInducing.nhds_eq_comap, mem_comap] at hV
   obtain ⟨W, hW, hWV⟩ := hV
   have hD : {y : Mat n | y.det ≠ 0} ∈ 𝓝 (1 : Mat n) :=
@@ -63,16 +63,16 @@ section One
 variable {H : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H] {σ : Mat n → (H →L[ℂ] H)}
 
 def avg (hG : IsMatGroup G) (φ : Mat n → ℝ) (σ : Mat n → (H →L[ℂ] H)) (v : H) : H :=
-  ∫ g : MG G hG, φ g.mat • σ g.mat v ∂haar
+  ∫ g : MG G, φ g.mat • σ g.mat v ∂haar
 
 theorem isSm_avg (h : RepOn G σ) (hc : ∀ v, ContinuousOn (fun g => σ g v) G) {φ : Mat n → ℝ} (hφ : IsBump G φ)
     (u : H) : IsSm G σ (avg hG φ σ u) := by
   obtain ⟨S, hS, hd, hfS⟩ := hφ.supp
-  have hρ : ∀ u, Continuous fun x : MG G hG => σ x.mat u := fun u =>
+  have hρ : ∀ u, Continuous fun x : MG G => σ x.mat u := fun u =>
     (hc u).comp_continuous MG.continuous_mat fun g => g.mem
-  have hq : Continuous fun x : MG G hG => ((x⁻¹).mat, σ x.mat u) :=
+  have hq : Continuous fun x : MG G => ((x⁻¹).mat, σ x.mat u) :=
     (MG.continuous_mat.comp continuous_inv).prodMk (hρ u)
-  have key := contDiff_integral_comp (haar : Measure (MG G hG)) _ (contDiff_Phi (H := H) hφ.smooth) _ hq fun g₀ => by
+  have key := contDiff_integral_comp (haar : Measure (MG G)) _ (contDiff_Phi (H := H) hφ.smooth) _ hq fun g₀ => by
     refine ⟨Metric.closedBall g₀ 1, Metric.closedBall_mem_nhds _ one_pos, _,
       MG.isClosedEmbedding_mat.isCompact_preimage (isCompact_mul_inv (isCompact_closedBall g₀ 1) hS hd),
       fun g hg x hx => ?_⟩
@@ -89,10 +89,10 @@ theorem isSm_avg (h : RepOn G σ) (hc : ∀ v, ContinuousOn (fun g => σ g v) G)
         _ = x.mat := by rw [Matrix.mul_assoc, Matrix.mul_nonsing_inv _ hu, Matrix.mul_one]
     simp only [this, zero_smul]
   refine (SmOn.of_contDiff key).congr fun g hg => ?_
-  have hw : Continuous fun x : MG G hG => φ x.mat := hφ.smooth.continuous.comp MG.continuous_mat
-  have hcs : HasCompactSupport fun x : MG G hG => φ x.mat :=
+  have hw : Continuous fun x : MG G => φ x.mat := hφ.smooth.continuous.comp MG.continuous_mat
+  have hcs : HasCompactSupport fun x : MG G => φ x.mat :=
     HasCompactSupport.intro (isCompact_supp hφ.cpt) fun x hx => image_eq_zero_of_notMem_tsupport hx
-  have := apply_alt (haar : Measure (MG G hG)) (fun x : MG G hG => σ x.mat) hρ
+  have := apply_alt (haar : Measure (MG G)) (fun x : MG G => σ x.mat) hρ
     (fun x y u => h.apply_mul x.mem y.mem u) hw hcs (MG.mk hG g hg) u
   refine this.trans (integral_congr_ae (Eventually.of_forall fun x => ?_))
   show φ ((MG.mk hG g hg)⁻¹ * x).mat • _ = φ ((x⁻¹).mat * (MG.mk hG g hg).mat) • _
@@ -100,20 +100,20 @@ theorem isSm_avg (h : RepOn G σ) (hc : ∀ v, ContinuousOn (fun g => σ g v) G)
 
 theorem exists_avg_ne (hG : IsMatGroup G) (θ : Mat n →L[ℝ] Mat n) (hθ : ∀ x ∈ G, θ x = x⁻¹) (h : RepOn G σ)
     (hc : ∀ v, ContinuousOn (fun g => σ g v) G) {u : H} (hu : u ≠ 0) : ∃ φ, IsBump G φ ∧ avg hG φ σ u ≠ 0 := by
-  have hρ : ∀ u, Continuous fun x : MG G hG => σ x.mat u := fun u =>
+  have hρ : ∀ u, Continuous fun x : MG G => σ x.mat u := fun u =>
     (hc u).comp_continuous MG.continuous_mat fun g => g.mem
-  obtain ⟨V, hV, hclose⟩ := exists_nhds_close (fun x : MG G hG => σ x.mat) hρ
+  obtain ⟨V, hV, hclose⟩ := exists_nhds_close (fun x : MG G => σ x.mat) hρ
     (fun u => by show σ 1 u = u; rw [h.map_one]; rfl) (Submodule.span ℂ {u})
   obtain ⟨φ, hφ, hφV⟩ := exists_isBump hG θ hθ hV
   refine ⟨φ, hφ, fun h0 => hu ?_⟩
-  exact eq_zero_of_alt_alt (haar : Measure (MG G hG)) (fun x : MG G hG => σ x.mat) hρ
+  exact eq_zero_of_alt_alt (haar : Measure (MG G)) (fun x : MG G => σ x.mat) hρ
     (hφ.smooth.continuous.comp MG.continuous_mat)
     (HasCompactSupport.intro (isCompact_supp hφ.cpt) fun x hx => image_eq_zero_of_notMem_tsupport (f := φ) hx)
     (fun x => hφ.nonneg _) hφ.one u (fun x hx => hclose x (hφV x hx) u (Submodule.mem_span_singleton_self u)) h0
 
 theorem dsW_avg (h : RepOn G σ) {v : H} (hv : IsSm G σ v) {φ : Mat n → ℝ} (hφ : Continuous φ)
     (hc : HasCompactSupport φ) {W : List (Mat n)} (hW : LieW G W) :
-    dsW σ W (avg hG φ σ v) = ∫ g : MG G hG, φ g.mat • dsW σ W (σ g.mat v) ∂haar := by
+    dsW σ W (avg hG φ σ v) = ∫ g : MG G, φ g.mat • dsW σ W (σ g.mat v) ∂haar := by
   induction W with
   | nil => rfl
   | cons X W ih =>
@@ -137,11 +137,11 @@ theorem IsSmForm.sub (hl : IsSmForm G σ W C l) {x y : H} (hx : IsSm G σ x) (hy
 
 omit [CompleteSpace H] in
 theorem IsSmForm.continuous (hl : IsSmForm G σ W C l) (h : RepOn G σ) (hW : ∀ i, LieW G (W i)) {v : H}
-    (hv : IsSm G σ v) : Continuous fun g : MG G hG => l (σ g.mat v) := by
+    (hv : IsSm G σ v) : Continuous fun g : MG G => l (σ g.mat v) := by
   rw [continuous_iff_continuousAt]
   intro g₀
   rw [ContinuousAt, tendsto_iff_norm_sub_tendsto_zero]
-  have hc : Continuous fun g : MG G hG => C * ∑ i, ‖dsW σ (W i) (σ g.mat v) - dsW σ (W i) (σ g₀.mat v)‖ :=
+  have hc : Continuous fun g : MG G => C * ∑ i, ‖dsW σ (W i) (σ g.mat v) - dsW σ (W i) (σ g₀.mat v)‖ :=
     continuous_const.mul (continuous_finsetSum _ fun i _ => ((continuous_orbit h hv (hW i)).sub continuous_const).norm)
   have ht := hc.tendsto g₀
   simp only [sub_self, norm_zero, Finset.sum_const_zero, mul_zero] at ht
@@ -152,8 +152,8 @@ theorem IsSmForm.continuous (hl : IsSmForm G σ W C l) (h : RepOn G σ) (hW : �
 
 theorem IsSmForm.avg_bd (hl : IsSmForm G σ W C l) (h : RepOn G σ) (hW : ∀ i, LieW G (W i)) {v : H}
     (hv : IsSm G σ v) {φ : Mat n → ℝ} (hφ : Continuous φ) (hc : HasCompactSupport φ) {x : H} (hx : IsSm G σ x) :
-    ‖(∫ g : MG G hG, φ g.mat • l (σ g.mat v) ∂haar) - l x‖ ≤
-      C * ∑ i, ‖(∫ g : MG G hG, φ g.mat • dsW σ (W i) (σ g.mat v) ∂haar) - dsW σ (W i) x‖ := by
+    ‖(∫ g : MG G, φ g.mat • l (σ g.mat v) ∂haar) - l x‖ ≤
+      C * ∑ i, ‖(∫ g : MG G, φ g.mat • dsW σ (W i) (σ g.mat v) ∂haar) - dsW σ (W i) x‖ := by
   have hzero (i : ι) : dsW σ (W i) 0 = 0 := by
     simpa only [sub_self] using dsW_sub h IsSm.zero IsSm.zero (hW i)
   have hadd {a b : H} (ha : IsSm G σ a) (hb : IsSm G σ b) (i : ι) :
@@ -186,10 +186,10 @@ theorem IsSmForm.avg_bd (hl : IsSmForm G σ W C l) (h : RepOn G σ) (hW : ∀ i,
       ((continuous_apply i).comp continuous_fst).norm))
   have hsub : (S₀.topologicalClosure : Set ((ι → H) × ℂ)) ⊆ {p | ‖p.2‖ ≤ C * ∑ i, ‖p.1 i‖} :=
     closure_minimal (by rintro _ ⟨y, hy, rfl⟩; exact hl.bd y hy) hcl
-  let F : MG G hG → (ι → H) × ℂ := fun g => (fun i => dsW σ (W i) (σ g.mat v), l (σ g.mat v))
+  let F : MG G → (ι → H) × ℂ := fun g => (fun i => dsW σ (W i) (σ g.mat v), l (σ g.mat v))
   have hF : Continuous F := (continuous_pi fun i => continuous_orbit h hv (hW i)).prodMk (hl.continuous h hW hv)
   have hI := integrable_smul hφ hc hF
-  have h1 : ∫ g : MG G hG, φ g.mat • F g ∂haar ∈ S₀.topologicalClosure :=
+  have h1 : ∫ g : MG G, φ g.mat • F g ∂haar ∈ S₀.topologicalClosure :=
     integral_mem_of_isClosed _ S₀.isClosed_topologicalClosure fun g =>
       Submodule.smul_of_tower_mem _ _ (S₀.le_topologicalClosure ⟨_, hv.apply h g.mem, rfl⟩)
   have h2 := hsub (Submodule.sub_mem _ h1 (S₀.le_topologicalClosure ⟨x, hx, rfl⟩))
@@ -203,7 +203,7 @@ theorem IsSmForm.avg_bd (hl : IsSmForm G σ W C l) (h : RepOn G σ) (hW : ∀ i,
 
 theorem IsSmForm.map_avg (hl : IsSmForm G σ W C l) (h : RepOn G σ) (hW : ∀ i, LieW G (W i)) {v : H}
     (hv : IsSm G σ v) {φ : Mat n → ℝ} (hφ : Continuous φ) (hc : HasCompactSupport φ)
-    (hs : IsSm G σ (avg hG φ σ v)) : l (avg hG φ σ v) = ∫ g : MG G hG, φ g.mat • l (σ g.mat v) ∂haar := by
+    (hs : IsSm G σ (avg hG φ σ v)) : l (avg hG φ σ v) = ∫ g : MG G, φ g.mat • l (σ g.mat v) ∂haar := by
   have := hl.avg_bd (hG := hG) h hW hv hφ hc hs
   simp only [dsW_avg h hv hφ hc (hW _), sub_self, norm_zero, Finset.sum_const_zero, mul_zero, norm_le_zero_iff,
     sub_eq_zero] at this
@@ -211,8 +211,8 @@ theorem IsSmForm.map_avg (hl : IsSmForm G σ W C l) (h : RepOn G σ) (hW : ∀ i
 
 theorem IsSmForm.exists_bd (hl : IsSmForm G σ W C l) (h : RepOn G σ) (hiso : ∀ g ∈ G, ∀ v, ‖σ g v‖ = ‖v‖)
     (hW : ∀ i, LieW G (W i)) {φ : Mat n → ℝ} (hφ : ContDiff ℝ ∞ φ) (hc : HasCompactSupport φ) :
-    ∃ D : ℝ, ∀ v, IsSm G σ v → ‖∫ g : MG G hG, φ g.mat • l (σ g.mat v) ∂haar‖ ≤ D * ‖v‖ := by
-  refine ⟨|C| * ∑ i, ∫ g : MG G hG, ‖LW (W i) φ g.mat‖ ∂haar, fun v hv => ?_⟩
+    ∃ D : ℝ, ∀ v, IsSm G σ v → ‖∫ g : MG G, φ g.mat • l (σ g.mat v) ∂haar‖ ≤ D * ‖v‖ := by
+  refine ⟨|C| * ∑ i, ∫ g : MG G, ‖LW (W i) φ g.mat‖ ∂haar, fun v hv => ?_⟩
   have h1 := hl.avg_bd (hG := hG) h hW hv hφ.continuous hc IsSm.zero
   have h0 : l 0 = 0 := by simpa using hl.smul 0 0 IsSm.zero
   have h0' : ∀ i, dsW σ (W i) 0 = 0 := fun i => by
@@ -282,7 +282,7 @@ theorem IsInv.left (hB : IsInv G σ σ' W W' C B) {y : H'} (hy : IsSm G σ' y) :
         rw [mul_right_comm]
         exact hB.bd x y hx hy }
 
-theorem IsInv.exists_rep [(haar : Measure (MG G hG)).IsInvInvariant] (θ : Mat n →L[ℝ] Mat n)
+theorem IsInv.exists_rep [(haar : Measure (MG G)).IsInvInvariant] (θ : Mat n →L[ℝ] Mat n)
     (hθ : ∀ x ∈ G, θ x = x⁻¹) (hB : IsInv G σ σ' W W' C B) (h : RepOn G σ) (h' : RepOn G σ')
     (hiso : ∀ g ∈ G, ∀ v, ‖σ g v‖ = ‖v‖) (hc' : ∀ v, ContinuousOn (fun g => σ' g v) G)
     (hW : ∀ i, LieW G (W i)) (hW' : ∀ j, LieW G (W' j)) [Nontrivial H'] :
@@ -294,12 +294,12 @@ theorem IsInv.exists_rep [(haar : Measure (MG G hG)).IsInvInvariant] (θ : Mat n
   obtain ⟨φ, hφ, hy₀⟩ := exists_avg_ne hG θ hθ h' hc' hy₁
   have hs₀ := isSm_avg (hG := hG) h' hc' hφ y₁
   obtain ⟨D, hD⟩ := (hB.left hs₁).exists_bd (hG := hG) h hiso hW hφ.smooth hφ.cpt
-  have key : ∀ x, IsSm G σ x → B x (avg hG φ σ' y₁) = ∫ g : MG G hG, φ g.mat • B (σ g.mat x) y₁ ∂haar := by
+  have key : ∀ x, IsSm G σ x → B x (avg hG φ σ' y₁) = ∫ g : MG G, φ g.mat • B (σ g.mat x) y₁ ∂haar := by
     intro x hx
     have h1 := (hB.swap.left hx).map_avg h' hW' hs₁ hφ.smooth.continuous hφ.cpt hs₀
     have h2 := congrArg star h1
     rw [star_star] at h2
-    rw [h2, ← integral_inv_eq_self (fun g : MG G hG => φ g.mat • B (σ g.mat x) y₁), Complex.star_def,
+    rw [h2, ← integral_inv_eq_self (fun g : MG G => φ g.mat • B (σ g.mat x) y₁), Complex.star_def,
       ← integral_conj]
     refine integral_congr_ae (Eventually.of_forall fun g => ?_)
     have e : B x (σ' g.mat y₁) = B (σ (g⁻¹).mat x) y₁ := by
@@ -313,12 +313,12 @@ theorem IsInv.exists_rep [(haar : Measure (MG G hG)).IsInvInvariant] (θ : Mat n
     (hB.left hs₀).smul (D := D) fun x hx => by rw [key x hx]; exact hD x hx
   exact ⟨_, z₀, hs₀, hy₀, hz₀⟩
 
-def homMG (hG : IsMatGroup G) (h : RepOn G σ) : MG G hG →* (H →L[ℂ] H) where
+def homMG (hG : IsMatGroup G) (h : RepOn G σ) : MG G →* (H →L[ℂ] H) where
   toFun g := σ g.mat
   map_one' := h.map_one
   map_mul' a b := h.map_mul _ a.mem _ b.mem
 
-theorem IsInv.exists_op [(haar : Measure (MG G hG)).IsInvInvariant] (θ : Mat n →L[ℝ] Mat n)
+theorem IsInv.exists_op [(haar : Measure (MG G)).IsInvInvariant] (θ : Mat n →L[ℝ] Mat n)
     (hθ : ∀ x ∈ G, θ x = x⁻¹) (hB : IsInv G σ σ' W W' C B) (h : RepOn G σ) (h' : RepOn G σ')
     (hiso : ∀ g ∈ G, ∀ v, ‖σ g v‖ = ‖v‖) (hiso' : ∀ g ∈ G, ∀ v, ‖σ' g v‖ = ‖v‖)
     (hc : ∀ v, ContinuousOn (fun g => σ g v) G) (hc' : ∀ v, ContinuousOn (fun g => σ' g v) G)

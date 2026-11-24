@@ -22,7 +22,7 @@ theorem resBridge : ResBridgeStatement := by
       apply hx
       simp only [brBad, Set.mem_union, Set.mem_setOf_eq]
       exact Or.inr ⟨j, hj, h⟩)
-    (brFib_finite (R := R) (Ψ := Ψ) hP hΨ) _ (brIntegrable R L A s hP hL hA hs)
+    (brFib_finite (R := R) (Ψ := Ψ) hP hΨ) _ (brIntegrable R L A s hL hA hs)
   rw [key]
   unfold ptsIntegralAt
 

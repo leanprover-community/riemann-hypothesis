@@ -91,7 +91,7 @@ theorem ro_le_arc_len : ∀ {n : ℕ} (A : Formalism.MainNotions.ArcLiftingSetup
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.ArcLiftingSetup Formalism.MainNotions.N.Ln17 in
 theorem arc_len_le_one_of_no_thick : ∀ {n : ℕ} [NeZero n] (b w S η : ℕ) (up : ZMod n → Bool) (size : ZMod n → ℕ)
-    (h : ¬ ∃ i, Formalism.MainNotions.TruncatedSeriesCountingBounds.Thick b η size i) (c : ZMod n),
+    (_ : ¬ ∃ i, Formalism.MainNotions.TruncatedSeriesCountingBounds.Thick b η size i) (c : ZMod n),
     (arcOf b w S η up size).len c ≤ 1 := by
   intro n _ b w S η up size h c
   unfold arcOf
@@ -721,13 +721,13 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     {PD : PeriodData G Qp K₀ K B BdR}
 
 theorem arc_length_bound_theorem [Fintype (K →ₐ[Qp] LL)] (W : LocWach PD LL O v n)
-    (hcase : Formalism.MainNotions.LiftingTheory.CaseA W) (hl : 5 ≤ PD.p) (hO : ∀ x : O, 0 ≤ v (algebraMap O LL x))
+    (hcase : Formalism.MainNotions.LiftingTheory.CaseA W) (hl : 5 ≤ PD.p)
     (hOv : ∀ x : LL, 0 ≤ v x → ∃ y : O, algebraMap O LL y = x) (hinj : Function.Injective (algebraMap O LL))
-    (hRelay : RelayCore W) (hArc : ArcCore W) (hNN : UnivNNCore W) (hUniv : UnivCore PD W)
+    (hRelay : RelayCore W) (hArc : ArcCore W) (hUniv : UnivCore PD W)
     (hKLev : KillerLevCore W) (hKMod : KillerModCore W)
     (hP2 : Formalism.MainNotions.DeltaInvariantLattices.P2W W) (hP9 : Formalism.MainNotions.DeltaInvariantLattices.P9W W) (hpi0 : ∃ u ∈ W.AΔ, W.γA W.gam W.π₀ = W.π₀ * u)
     (A : ArcP n) (hA : A.OK) {T₁ T₂ : LocLat G Qp LL O} (F : LatHom T₁.L T₂.L)
-    (hsur : Formalism.MainNotions.LiftingTheory.Sur W F) (hW₁ : Win W A T₁) (hW₂ : Win W A T₂) (m : ℕ)
+    (hW₁ : Win W A T₁) (hW₂ : Win W A T₂) (m : ℕ)
     (hm : ∀ i, (A.ty i).thick → Formalism.MainNotions.TruncatedSeriesCountingBounds.lowCount W T₂ i A.η ≤ m)
     (c : ZMod n) (hc : c ∈ A.cuts) (e₁ : ℕ) (he₁ : A.σ PD.p ≤ e₁)
     (hARC : ∀ (d : ℕ) (bb : Fin d → W.DD T₂) (sol : Fin d → ℕ → Fin d → LL),
@@ -988,7 +988,7 @@ variable [FiniteDimensional Qp LL]
 theorem arc_setup_theorem [NeZero n] [Fintype (K →ₐ[Qp] LL)] (W : LocWach PD LL O v n) (hcase : Formalism.MainNotions.LiftingTheory.CaseA W)
     {T₁ T₂ : LocLat G Qp LL O} (F : LatHom T₁.L T₂.L) {b w S η m : ℕ} {up : ZMod n → Bool}
     {size Mi hi : ZMod n → ℕ} (hB : HypB PD W T₁ T₂ F b w S η m up size Mi hi)
-    (CR : ℝ) (hWR : Formalism.MainNotions.LiftingTheory.coreWR W CR) (hDc : Formalism.MainNotions.TruncatedSeriesCountingBounds.DcrisExactStrict PD LL)
+    (CR : ℝ) (hWR : Formalism.MainNotions.LiftingTheory.coreWR W CR)
     (hJ21 : ∀ (τ : K →ₐ[Qp] LL) (a : ℤ), IsJumpV PD T₂.ρ τ a → IsJumpV PD T₁.ρ τ a)
     (hJmp : Formalism.MainNotions.CrystallineLiftingBounds.coreJumps PD LL O) :
     let A := arcOf b w S η up size
@@ -1107,7 +1107,7 @@ namespace Formalism.MainNotions.N.Ln17
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.ArcLiftingSetup Module
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.ArcLiftingSetup Formalism.MainNotions.N.Ln17 in
-theorem jumps_of_surjective_lattice_map : ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (hJ : UsedJ D HW F) (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (hG : Good K 1 LL),
+theorem jumps_of_surjective_lattice_map : ∀ (D : D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW) (_ : UsedJ D HW F) (l : ℕ) [Fact l.Prime] (K LL : FinExt l) (hG : Good K 1 LL),
     (∀ (T₁ T₂ : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)) (f : LatHom T₁.L T₂.L),
       Formalism.MainNotions.LiftingTheory.Sur ((HW l).W K 1 LL hG) f →
       ∀ (τ : ↥K.1 →ₐ[ℚ_[l]] ↥LL.1) (a : ℤ), IsJumpV ((D.loc l).PD K) T₂.ρ τ a →
@@ -1125,7 +1125,7 @@ theorem jumps_of_surjective_lattice_map : ∀ (D : D7) (HW : HWOf D.loc) (F : Fo
     obtain ⟨T₀, ι, hses, c0⟩ := Formalism.MainNotions.LiftingTheory.lker_HKer_D D HW F hJ.a22 l K 1 LL hG T₁ T₂ f ⟨c1, c2, hO⟩
     exact (hJ.a23 l K LL T₀ T₁ T₂ ι f hses c0 c1 c2 τ a).2 (Or.inr ha)
   · intro T₂ Y ι π cc _ c2 cY hext τ a ha
-    obtain ⟨cone, hone0⟩ := Formalism.MainNotions.LiftingTheory.lone_HOne0_holds D HW F l K 1 LL hG
+    obtain ⟨cone, hone0⟩ := Formalism.MainNotions.LiftingTheory.lone_HOne0_holds D HW l K 1 LL hG
     rcases (hJ.a23 l K LL T₂ Y _ ι π hext.1 c2 cY cone τ a).1 ha with h | h
     · exact Or.inr h
     · exact Or.inl (hone0 τ a h)
@@ -1420,22 +1420,22 @@ theorem kappa_bound_of_length {n : ℕ} [NeZero n] (l : ℕ) (hl : 11 ≤ l) (b 
     ((arcOf b w S η up size).JS c) hJS
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.ArcLiftingSetup Formalism.MainNotions.N.Ln17 in
-theorem kappa_le_of_alternating : ∀ {n : ℕ} [NeZero n] (l : ℕ) (hl : 11 ≤ l) (b w S η : ℕ) (up : ZMod n → Bool)
-    (size : ZMod n → ℕ) (h20 : 20 * S ≤ b) (h20w : 20 * w ≤ b)
-    (hnt : ∀ i, ¬ Formalism.MainNotions.TruncatedSeriesCountingBounds.Thick b η size i → size i ≤ w) (hAlt : Alt b η up size)
-    (hsz : ∀ i, η < size i) (c : ZMod n) (hc : c ∈ (arcOf b w S η up size).cuts)
-    (hlen : (arcOf b w S η up size).len c ≤ 3),
+theorem kappa_le_of_alternating : ∀ {n : ℕ} [NeZero n] (l : ℕ) (_ : 11 ≤ l) (b w S η : ℕ) (up : ZMod n → Bool)
+    (size : ZMod n → ℕ) (_ : 20 * S ≤ b) (_ : 20 * w ≤ b)
+    (_ : ∀ i, ¬ Formalism.MainNotions.TruncatedSeriesCountingBounds.Thick b η size i → size i ≤ w) (_ : Alt b η up size)
+    (_ : ∀ i, η < size i) (c : ZMod n) (_ : c ∈ (arcOf b w S η up size).cuts)
+    (_ : (arcOf b w S η up size).len c ≤ 3),
     (kapC l (arcOf b w S η up size) c : ℝ) ≤
       13 * S + 3 * Real.logb l (2 * (Formalism.MainNotions.TruncatedSeriesCountingBounds.hB b w S η size : ℝ)) + 3 := by
   intro n _ l hl b w S η up size h20 h20w hnt hAlt hsz c hc hlen
   exact (kappa_bound_of_length l hl b w S η up size h20w hnt hsz c).1 hlen
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.MainNotions.ArcLiftingSetup Formalism.MainNotions.N.Ln17 in
-theorem kappa_le_of_single_thick : ∀ {n : ℕ} [NeZero n] (l : ℕ) (hl : 11 ≤ l) (b w S η : ℕ) (up : ZMod n → Bool)
-    (size : ZMod n → ℕ) (h20 : 20 * S ≤ b) (h20w : 20 * w ≤ b)
-    (hnt : ∀ i, ¬ Formalism.MainNotions.TruncatedSeriesCountingBounds.Thick b η size i → size i ≤ w) (R : ℕ) (hR : 1 ≤ R) (hOne : One b η R up size)
-    (hsz : ∀ i, η < size i) (c : ZMod n) (hc : c ∈ (arcOf b w S η up size).cuts)
-    (hlen : (arcOf b w S η up size).len c ≤ R),
+theorem kappa_le_of_single_thick : ∀ {n : ℕ} [NeZero n] (l : ℕ) (_ : 11 ≤ l) (b w S η : ℕ) (up : ZMod n → Bool)
+    (size : ZMod n → ℕ) (_ : 20 * S ≤ b) (_ : 20 * w ≤ b)
+    (_ : ∀ i, ¬ Formalism.MainNotions.TruncatedSeriesCountingBounds.Thick b η size i → size i ≤ w) (R : ℕ) (_ : 1 ≤ R) (_ : One b η R up size)
+    (_ : ∀ i, η < size i) (c : ZMod n) (_ : c ∈ (arcOf b w S η up size).cuts)
+    (_ : (arcOf b w S η up size).len c ≤ R),
     (kapC l (arcOf b w S η up size) c : ℝ) ≤
       3 * (R : ℝ) ^ 2 * ((S : ℝ) + 1 + Real.logb l (2 * (Formalism.MainNotions.TruncatedSeriesCountingBounds.hB b w S η size : ℝ))) := by
   intro n _ l hl b w S η up size h20 h20w hnt R hR hOne hsz c hc hlen
@@ -1548,7 +1548,7 @@ theorem sumAltW [Fintype (K →ₐ[Qp] LL)] [NeZero n] [FiniteDimensional Qp LL]
   have hS := hB.2.1
   have hcase := hS.1
   obtain ⟨hOK, hW₁, hW₂, hsumlen, hlen3, -, hσ, rr, hrr, hkF, hY⟩ :=
-    Formalism.MainNotions.N.FrobeniusPowerSeries.arc_setup_theorem W hcase f hB CR co.wr co.dc (co.jq T₁ T₂ f hS.2.1) co.cj
+    Formalism.MainNotions.N.FrobeniusPowerSeries.arc_setup_theorem W hcase f hB CR co.wr (co.jq T₁ T₂ f hS.2.1) co.cj
   have hsg1 := one_le_Sg PD.p b w S η size (by omega)
   have hbd0 := bandI_nonneg PD.p b w S η size Cb
   obtain ⟨E₁, hE₁def⟩ : ∃ E₁ : ℕ,
@@ -1576,9 +1576,9 @@ theorem sumAltW [Fintype (K →ₐ[Qp] LL)] [NeZero n] [FiniteDimensional Qp LL]
     exact Formalism.MainNotions.N.FrobeniusPowerSeries.LiftsAt.liftsAt_mono _ _ _ _ _ _ _ (hE₁def ▸ Nat.le_floor he₁) hL
   have hm : ∀ i, ((arcOf b w S η up size).ty i).thick →
       Formalism.MainNotions.TruncatedSeriesCountingBounds.lowCount W T₂ i (arcOf b w S η up size).η ≤ m := fun i _ => hS.2.2.2.2.1 i
-  have hcut := fun c (hc : c ∈ (arcOf b w S η up size).cuts) => arc_length_bound_theorem W hcase co.l5 co.hO co.hOv
-    co.inj co.relay co.arc co.nn co.univ co.kLev co.kMod co.P2 co.P9 co.pi0 (arcOf b w S η up size) hOK
-    f hS.2.1 hW₁ hW₂ m hm c hc E₁ hσE (hARC c hc)
+  have hcut := fun c (hc : c ∈ (arcOf b w S η up size).cuts) => arc_length_bound_theorem W hcase co.l5 co.hOv
+    co.inj co.relay co.arc co.univ co.kLev co.kMod co.P2 co.P9 co.pi0 (arcOf b w S η up size) hOK
+    f hW₁ hW₂ m hm c hc E₁ hσE (hARC c hc)
   choose! Zc hZcard hZH1 hZmain using hcut
   obtain ⟨κ, hκdef⟩ : ∃ κ : ℕ, κ = (arcOf b w S η up size).cuts.sup
       (kapC PD.p (arcOf b w S η up size)) := ⟨_, rfl⟩
@@ -1664,7 +1664,7 @@ theorem sumOneW [Fintype (K →ₐ[Qp] LL)] [NeZero n] [FiniteDimensional Qp LL]
   have hS := hB.2.1
   have hcase := hS.1
   obtain ⟨hOK, hW₁, hW₂, hsumlen, -, hlenR, hσ, rr, hrr, hkF, hY⟩ :=
-    Formalism.MainNotions.N.FrobeniusPowerSeries.arc_setup_theorem W hcase f hB CR co.wr co.dc (co.jq T₁ T₂ f hS.2.1) co.cj
+    Formalism.MainNotions.N.FrobeniusPowerSeries.arc_setup_theorem W hcase f hB CR co.wr (co.jq T₁ T₂ f hS.2.1) co.cj
   have hsg1 := one_le_Sg PD.p b w S η size (by omega)
   obtain ⟨E₁, hE₁def⟩ : ∃ E₁ : ℕ, E₁ = ⌊6 * Sg PD.p b w S η size + 1⌋₊ := ⟨_, rfl⟩
   have hE₁le : (E₁ : ℝ) ≤ 6 * Sg PD.p b w S η size + 1 := by
@@ -1683,9 +1683,9 @@ theorem sumOneW [Fintype (K →ₐ[Qp] LL)] [NeZero n] [FiniteDimensional Qp LL]
     exact Formalism.MainNotions.N.FrobeniusPowerSeries.LiftsAt.liftsAt_mono _ _ _ _ _ _ _ (hE₁def ▸ Nat.le_floor he₁) hL
   have hm : ∀ i, ((arcOf b w S η up size).ty i).thick →
       Formalism.MainNotions.TruncatedSeriesCountingBounds.lowCount W T₂ i (arcOf b w S η up size).η ≤ m := fun i _ => hS.2.2.2.2.1 i
-  have hcut := fun c (hc : c ∈ (arcOf b w S η up size).cuts) => arc_length_bound_theorem W hcase co.l5 co.hO co.hOv
-    co.inj co.relay co.arc co.nn co.univ co.kLev co.kMod co.P2 co.P9 co.pi0 (arcOf b w S η up size) hOK
-    f hS.2.1 hW₁ hW₂ m hm c hc E₁ hσE (hARC c hc)
+  have hcut := fun c (hc : c ∈ (arcOf b w S η up size).cuts) => arc_length_bound_theorem W hcase co.l5 co.hOv
+    co.inj co.relay co.arc co.univ co.kLev co.kMod co.P2 co.P9 co.pi0 (arcOf b w S η up size) hOK
+    f hW₁ hW₂ m hm c hc E₁ hσE (hARC c hc)
   choose! Zc hZcard hZH1 hZmain using hcut
   obtain ⟨κ, hκdef⟩ : ∃ κ : ℕ, κ = (arcOf b w S η up size).cuts.sup
       (kapC PD.p (arcOf b w S η up size)) := ⟨_, rfl⟩
@@ -1803,7 +1803,7 @@ theorem coresAt {CR CA CB CK : ℝ} (hU : AdmBoundsB D HW F Cm CR CA CB CK) (hJ 
       pi0 := (Formalism.MainNotions.UnusedSlot80.gamma_uniformizer_divisible_statement D HW F h9 l K LL hK h5) ((HW l).W K 1 LL hG).gam
       ptEx := ptEx_at D HW l K LL hG hK
       P5 := hU.p5 l K 1 LL hG
-      ext := fun T hT cc hcc => Formalism.MainNotions.LiftingTheory.lext_HExt_D D HW F l K 1 LL hG
+      ext := fun T hT cc hcc => Formalism.MainNotions.LiftingTheory.lext_HExt_D D HW l K 1 LL hG
         (Formalism.MainNotions.LiftingTheory.gen_one_crys _) T cc hT hcc
       cj := hJ.a23 l K LL
       c4 := hJ.c4 l K 1 LL hG

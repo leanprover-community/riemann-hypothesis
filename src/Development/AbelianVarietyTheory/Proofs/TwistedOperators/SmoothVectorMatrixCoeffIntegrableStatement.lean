@@ -277,7 +277,7 @@ private theorem embOpt_mem_UJset {m N : ℕ} (e : Option (Fin m) ≃ Fin N) {ε 
   rw [Jm_eq_embOpt_Jm e h0 h1, embOpt_conjTranspose, ← embOpt_mul', ← embOpt_mul', hg']
 
 private theorem embOptL_mem_lieOf_Jm {m N : ℕ} (e : Option (Fin m) ≃ Fin N) {ε : Fin N → Bool} {ε' : Fin m → Bool}
-    (h0 : ε (e none) = true) (h1 : ∀ i, ε (e (some i)) = ε' i) {X : Matrix (Fin m) (Fin m) ℂ}
+    (h1 : ∀ i, ε (e (some i)) = ε' i) {X : Matrix (Fin m) (Fin m) ℂ}
     (hX : X ∈ GlobalTheory.Ell.lieOf (Formalism.REAL.Jm ε')) : GlobalTheory.PackLoc.embOptL e X ∈ GlobalTheory.Ell.lieOf (Formalism.REAL.Jm ε) := by
   have hX' : Xᴴ * Formalism.REAL.Jm ε' + Formalism.REAL.Jm ε' * X = 0 := hX
   show (GlobalTheory.PackLoc.embOptL e X)ᴴ * Formalism.REAL.Jm ε + Formalism.REAL.Jm ε * GlobalTheory.PackLoc.embOptL e X = 0
@@ -353,7 +353,7 @@ theorem lip_core : ∀ (m N : ℕ) (e : Option (Fin m) ≃ Fin N) (ε : Fin N �
   have hX'n : GlobalTheory.SepReal.hsn (c⁻¹ • X) = 1 := by
     rw [hsn_smul, abs_inv, abs_of_pos hpos, inv_mul_cancel₀ hpos.ne']
   obtain ⟨hDi, hDb⟩ := hK _ hX'lie hX'n.le
-  have hZ : GlobalTheory.PackLoc.embOptL e (c⁻¹ • X) ∈ GlobalTheory.Ell.lieOf (Formalism.REAL.Jm ε) := embOptL_mem_lieOf_Jm e h0 h1 hX'lie
+  have hZ : GlobalTheory.PackLoc.embOptL e (c⁻¹ • X) ∈ GlobalTheory.Ell.lieOf (Formalism.REAL.Jm ε) := embOptL_mem_lieOf_Jm e h1 hX'lie
   let u : ℝ → (Matrix (Fin m) (Fin m) ℂ)ˣ := fun t =>
     ⟨NormedSpace.exp (t • c⁻¹ • X), NormedSpace.exp ((-t) • c⁻¹ • X),
       by rw [← exp_add', add_neg_cancel, zero_smul, NormedSpace.exp_zero],

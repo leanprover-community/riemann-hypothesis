@@ -127,12 +127,12 @@ section Mat
 
 variable {n : ℕ} {K : Set (Mat n)} {hK : IsMatGroup K}
 
-def co (hK : IsMatGroup K) : (Mat n →L[ℝ] ℝ) →ₗ[ℝ] C(MG K hK, ℝ) where
+def co (hK : IsMatGroup K) : (Mat n →L[ℝ] ℝ) →ₗ[ℝ] C(MG K, ℝ) where
   toFun f := ⟨fun x => f x.mat, f.continuous.comp MG.continuous_mat⟩
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
 
-theorem finAlg_sep : (finAlg (MG K hK)).SeparatesPoints := by
+theorem finAlg_sep : (finAlg (MG K)).SeparatesPoints := by
   intro x y hxy
   obtain ⟨i, j, hij⟩ : ∃ i j, x.mat i j ≠ y.mat i j := by
     by_contra h
@@ -149,19 +149,19 @@ theorem finAlg_sep : (finAlg (MG K hK)).SeparatesPoints := by
   · exact ⟨_, ⟨co hK (Complex.reCLM.comp e), ⟨_, hV, ⟨_, rfl⟩⟩, rfl⟩, hre⟩
 
 variable {H : Type} [NormedAddCommGroup H] [NormedSpace ℂ H] [CompleteSpace H] {G : Set (Mat n)}
-  {σ : Mat n → (H →L[ℂ] H)} [CompactSpace (MG K hK)]
+  {σ : Mat n → (H →L[ℂ] H)} [CompactSpace (MG K)]
 
-theorem dsW_int (hG : IsMatGroup G) (hKG : K ⊆ G) (h : RepOn G σ) {v : H} (hv : IsSm G σ v) (μ : Measure (MG K hK))
-    [IsFiniteMeasure μ] (p : C(MG K hK, ℝ)) : ∀ {W : List (Mat n)}, LieW G W →
+theorem dsW_int (hG : IsMatGroup G) (hKG : K ⊆ G) (h : RepOn G σ) {v : H} (hv : IsSm G σ v) (μ : Measure (MG K))
+    [IsFiniteMeasure μ] (p : C(MG K, ℝ)) : ∀ {W : List (Mat n)}, LieW G W →
     dsW σ W (∫ g, p g • σ g.mat v ∂μ) = ∫ g, p g • dsW σ W (σ g.mat v) ∂μ
   | [], _ => rfl
   | X :: W, hXW => by
     have hW : LieW G W := fun Y hY => hXW Y (List.mem_cons_of_mem _ hY)
     have hX := hXW X List.mem_cons_self
-    have hj : Continuous fun g : MG K hK => MG.mk hG g.mat (hKG g.mem) := MG.continuous_iff.2 MG.continuous_mat
-    have c1 : Continuous fun g : MG K hK => dsW σ W (σ g.mat v) := (continuous_orbit (hG := hG) h hv hW).comp hj
+    have hj : Continuous fun g : MG K => MG.mk hG g.mat (hKG g.mem) := MG.continuous_iff.2 MG.continuous_mat
+    have c1 : Continuous fun g : MG K => dsW σ W (σ g.mat v) := (continuous_orbit (hG := hG) h hv hW).comp hj
     have c2 : ∀ {W' : List (Mat n)}, LieW G W' →
-        Continuous fun q : ℝ × MG K hK => σ (ex X q.1) (dsW σ W' (σ q.2.mat v)) := fun hW' =>
+        Continuous fun q : ℝ × MG K => σ (ex X q.1) (dsW σ W' (σ q.2.mat v)) := fun hW' =>
       (continuous_orbit₂ (hG := hG) h hv hW' hX).comp (continuous_fst.prodMk (hj.comp continuous_snd))
     rw [dsW_cons, dsW_int hG hKG h hv μ p hW]
     have e : ∀ t, σ (ex X t) (∫ g, p g • dsW σ W (σ g.mat v) ∂μ) =
@@ -181,13 +181,13 @@ theorem dsW_int (hG : IsMatGroup G) (hKG : K ⊆ G) (h : RepOn G σ) {v : H} (hv
     simp [ex_zero, h.map_one]
 
 theorem fin_of_finAlg (hG : IsMatGroup G) (hKG : K ⊆ G) (h : RepOn G σ) {v : H} (hv : IsSm G σ v)
-    {p : C(MG K hK, ℝ)} (hp : p ∈ finAlg (MG K hK)) :
+    {p : C(MG K, ℝ)} (hp : p ∈ finAlg (MG K)) :
     ∃ S : Submodule ℂ H, FiniteDimensional ℂ S ∧ (∫ g, p g • σ g.mat v ∂haar) ∈ S ∧ ∀ a ∈ K, ∀ x ∈ S, σ a x ∈ S := by
   obtain ⟨V, ⟨⟨s, hs⟩, hinv⟩, hpV⟩ := hp
-  have hj : Continuous fun g : MG K hK => MG.mk hG g.mat (hKG g.mem) := MG.continuous_iff.2 MG.continuous_mat
-  have c1 : Continuous fun g : MG K hK => σ g.mat v :=
+  have hj : Continuous fun g : MG K => MG.mk hG g.mat (hKG g.mem) := MG.continuous_iff.2 MG.continuous_mat
+  have c1 : Continuous fun g : MG K => σ g.mat v :=
     (continuous_orbit (hG := hG) (W := []) h hv fun _ hX => absurd hX List.not_mem_nil).comp hj
-  let T : C(MG K hK, ℝ) →ₗ[ℝ] H :=
+  let T : C(MG K, ℝ) →ₗ[ℝ] H :=
     { toFun := fun q => ∫ g, q g • σ g.mat v ∂haar
       map_add' := fun q q' => by
         simp only [ContinuousMap.add_apply, add_smul]
@@ -205,11 +205,11 @@ theorem fin_of_finAlg (hG : IsMatGroup G) (hKG : K ⊆ G) (h : RepOn G σ) {v : 
         exact add_mem hy hz)
       (fun c y _ hy => by rw [map_smul]; exact Submodule.smul_mem _ c hy) hx
     obtain ⟨q, hq, rfl⟩ := hy
-    set a' : MG K hK := MG.mk hK a ha with ha'
+    set a' : MG K := MG.mk hK a ha with ha'
     refine Submodule.subset_span ⟨tr a'⁻¹ q, hinv _ q hq, ?_⟩
     show ∫ g, q (a'⁻¹ * g) • σ g.mat v ∂haar = σ a (∫ g, q g • σ g.mat v ∂haar)
     rw [← (σ a).integral_comp_comm (int_smul _ q c1),
-      ← integral_mul_left_eq_self (fun g : MG K hK => q (a'⁻¹ * g) • σ g.mat v) a']
+      ← integral_mul_left_eq_self (fun g : MG K => q (a'⁻¹ * g) • σ g.mat v) a']
     refine integral_congr_ae (Eventually.of_forall fun g => ?_)
     simp only [inv_mul_cancel_left, ContinuousLinearMap.map_smul_of_tower]
     congr 1
@@ -245,26 +245,26 @@ theorem kDense (k r : ℕ) (ε : Fin (2 * r + k + 1) → Bool) (lam : Fin (2 * r
     rw [Matrix.inv_eq_right_inv (Matrix.mem_unitaryGroup_iff.1 ha.2)]
     exact Unitary.star_mem ha.2
   have hKc : IsCompact K := hUc.inter_left hG.1
-  have : CompactSpace (MG K hK) := isCompact_iff_compactSpace.1 hKc
-  have : T2Space (MG K hK) := MG.isClosedEmbedding_mat.isEmbedding.t2Space
+  have : CompactSpace (MG K) := isCompact_iff_compactSpace.1 hKc
+  have : T2Space (MG K) := MG.isClosedEmbedding_mat.isEmbedding.t2Space
   have hL : (0 : ℝ) < Ws.length + 1 := by positivity
   have hW : ∀ i : Fin Ws.length, LieW (UH (Hpk k r)) (Ws.get i) :=
     fun i X hX t => ex_mem_of_lie (hWs _ (List.get_mem _ _) X hX) t
-  have hj : Continuous fun g : MG K hK => MG.mk hG g.mat g.mem.1 := MG.continuous_iff.2 MG.continuous_mat
-  obtain ⟨p, hp, hb⟩ := approx_id (haar : Measure (MG K hK)) _ finAlg_sep
-    (F := fun (i : Fin Ws.length) (g : MG K hK) => dsW σ (Ws.get i) (σ g.mat v))
+  have hj : Continuous fun g : MG K => MG.mk hG g.mat g.mem.1 := MG.continuous_iff.2 MG.continuous_mat
+  obtain ⟨p, hp, hb⟩ := approx_id (haar : Measure (MG K)) _ finAlg_sep
+    (F := fun (i : Fin Ws.length) (g : MG K) => dsW σ (Ws.get i) (σ g.mat v))
     (fun i => (continuous_orbit (hG := hG) h hv (hW i)).comp hj) (div_pos he hL)
-  have hfin : IsKFinHpk (k := k) (r := r) σ (∫ g : MG K hK, p g • σ g.mat v ∂haar) :=
+  have hfin : IsKFinHpk (k := k) (r := r) σ (∫ g : MG K, p g • σ g.mat v ∂haar) :=
     fin_of_finAlg hG inter_subset_left h hv hp
   refine ⟨_, hfin, ?_⟩
   have hle := List.sum_le_card_nsmul
-    (Ws.map fun w' => ‖dsigW (k := k) (r := r) σ w' (v - ∫ g : MG K hK, p g • σ g.mat v ∂haar)‖) (e / (Ws.length + 1)) (by
+    (Ws.map fun w' => ‖dsigW (k := k) (r := r) σ w' (v - ∫ g : MG K, p g • σ g.mat v ∂haar)‖) (e / (Ws.length + 1)) (by
       intro t ht
       obtain ⟨W, hW', rfl⟩ := List.mem_map.1 ht
       obtain ⟨i, rfl⟩ := List.get_of_mem hW'
       rw [dsigW_eq', dsW_sub h hv (hKS _ hfin) (hW i), dsW_int hG inter_subset_left h hv _ p (hW i)]
       have := (hb i).le
-      have e1 : σ (1 : MG K hK).mat v = v := by
+      have e1 : σ (1 : MG K).mat v = v := by
         show σ 1 v = v
         rw [h.map_one]; rfl
       simp only [e1] at this

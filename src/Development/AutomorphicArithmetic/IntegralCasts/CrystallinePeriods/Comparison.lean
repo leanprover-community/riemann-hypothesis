@@ -397,7 +397,7 @@ variable (p R) in
 def toBdRPlus : Acris p R →+* BdRPlus p R :=
   AdicCompletion.liftRingHom (AinfInv.kerTheta p R)
     (fun n => (Subring.subtype _).comp (toRange (p := p) (R := R) n))
-    (fun {m n} hle => RingHom.ext fun x =>
+    (fun {_ _} hle => RingHom.ext fun x =>
       map_toRange (Ideal.Quotient.factorPow _ hle) (RingHom.id _) (fun _ => rfl) (RingHom.id _)
         (fun _ => rfl) x)
 

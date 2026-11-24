@@ -1210,7 +1210,7 @@ def core (R : RiemLat E g Λ) : InnerProductSpace.Core ℂ (Tan R) where
   re_inner_nonneg x := ip_self_nonneg' R x
   add_left x y z := ip_add_left' R x y z
   smul_left x y r := ip_smul_left' R r x y
-  definite x h := ip_self_zero' R h
+  definite _ h := ip_self_zero' R h
 
 theorem exists_orthoBasis (R : RiemLat E g Λ) (S : Submodule ℂ (Fin g → ℂ)) (m : ℕ)
     (h : Module.finrank ℂ S = m) :
@@ -1260,7 +1260,7 @@ theorem cm_cover {σ : Ψ → (𝓞 E →+* ℂ)} (hσ : IsCMFam σ) (s : 𝓞 E
 
 theorem exists_ortho_frame {Ψ : Type} [Fintype Ψ] [DecidableEq Ψ] {j j' g : ℕ} {Λ : Type} [AddCommGroup Λ]
     [Module (𝓞 E) Λ] (R₀ : RiemLat E g Λ) (σ : Ψ → (𝓞 E →+* ℂ)) (hσ : IsCMFam σ) (hs : R₀.HasSig σ j j') :
-    ∃ (e : Ix Ψ j j' ≃ Fin g) (c : Ix Ψ j j' → Fin g → ℂ), (∀ i, c i ∈ eigSp R₀.B (emb σ i)) ∧
+    ∃ (_ : Ix Ψ j j' ≃ Fin g) (c : Ix Ψ j j' → Fin g → ℂ), (∀ i, c i ∈ eigSp R₀.B (emb σ i)) ∧
       ∀ i i', R₀.ip (c i) (c i') = if i = i' then 1 else 0 := by
   obtain ⟨-, -, h3, h4, h5⟩ := _root_.LevelTowerAlt.riemann_lattice_eigen_projections E g Λ Ψ R₀
   choose f hf1 hf2 hf3 using fun τ => exists_orthoBasis R₀ _ j' (hs τ).1

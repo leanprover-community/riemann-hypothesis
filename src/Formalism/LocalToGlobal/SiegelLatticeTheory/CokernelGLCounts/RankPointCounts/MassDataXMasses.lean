@@ -54,7 +54,7 @@ def swV : (Fin I.n → I.E ⊗[I.F] Af I.F) →ₛₗ[sw I] (Fin I.n → Af I.F 
 
 theorem swV_apply (v : Fin I.n → I.E ⊗[I.F] Af I.F) (i : Fin I.n) : swV I v i = swapE I (v i) := rfl
 
-theorem swV_injective : Function.Injective (swV I) := fun v w h =>
+theorem swV_injective : Function.Injective (swV I) := fun _ _ h =>
   funext fun i => (swapE I).injective (congrFun h i)
 
 theorem swV_mem_span (T : Set (Fin I.n → I.E ⊗[I.F] Af I.F)) (v : Fin I.n → I.E ⊗[I.F] Af I.F) :

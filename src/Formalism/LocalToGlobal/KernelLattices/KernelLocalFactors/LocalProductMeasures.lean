@@ -1256,7 +1256,7 @@ open Classical
 
 variable {X : Fields} {Pr : Primes X}
 
-theorem conjP_vGs (hX : X.Ok) (hPr : Pr.Ok) {P : HeightOneSpectrum (𝓞 X.E)} (hP : P ∈ Pr.vGs) :
+theorem conjP_vGs (hPr : Pr.Ok) {P : HeightOneSpectrum (𝓞 X.E)} (hP : P ∈ Pr.vGs) :
     HeckeExHost.conjPrime₂ P ≠ P ∧ HeckeExHost.conjPrime₂ P ∉ Pr.vGs := by
   have hmem : ∀ j, P ∈ Pr.vG j → X.conjO (Pr.piG j) ∈ P.asIdeal := fun j h => ChainCounts.mem_of_mem_divs h
   have hcomap : ∀ y : 𝓞 X.E, y ∈ (HeckeExHost.conjPrime₂ P).asIdeal ↔ X.conjO y ∈ P.asIdeal := fun y => Iff.rfl
@@ -1498,7 +1498,7 @@ theorem md_sys (hX : X.Ok) (hPr : Pr.Ok) (hsel : IsSel X sel) {σ₀ : X.K →+*
 theorem md_split (hX : X.Ok) (hPr : Pr.Ok) (hsel : IsSel X sel) {P : HeightOneSpectrum (𝓞 X.E)} (hP : P ∈ rowSG Pr sel mu) : conjPrime₂ P ≠ P := by
   rcases Finset.mem_union.1 hP with h | h
   · rw [← md_conj_eq]
-    exact (DetChrL.conjP_vGs hX hPr h).1
+    exact (DetChrL.conjP_vGs hPr h).1
   · obtain ⟨v, hv, rfl⟩ := (mem_QE sel mu P).1 h
     obtain ⟨⟨P1, P2, hne, hsp⟩, -, -⟩ := mu.good hv
     intro hc
@@ -1524,7 +1524,7 @@ theorem md_inj (hX : X.Ok) (hPr : Pr.Ok) (hsel : IsSel X sel) (hg : XiOffG Pr (m
     · exact h3
     · exfalso
       rw [h3, ← md_conj_eq] at h2
-      exact (DetChrL.conjP_vGs hX hPr h1).2 h2
+      exact (DetChrL.conjP_vGs hPr h1).2 h2
   · exact (key P P' h1 h2 h).elim
   · exact (key P' P h2 h1 h.symm).elim
   · obtain ⟨v, _, rfl⟩ := (mem_QE sel mu P).1 h1

@@ -510,7 +510,7 @@ section -- clump:auto
 open scoped IntermediateField TensorProduct Matrix Pointwise NumberField Topology ContDiff NNReal ENNReal Polynomial DirectSum BigOperators InnerProductSpace Manifold
 
 theorem UpperTheory.Reformulated.B.AdjoinForm.adjoin_form :
-    ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E]
+    ∀ {E : Type} [Field E] [NumberField E]
     {d : ℕ},
     (0 : ℕ) < d → ∀ {x : E}, x ^ (2 : ℕ) = -(↑d : E) → ∀ y ∈ ℚ⟮x⟯, ∃ (s : ℚ) (t : ℚ), y = (↑s : E) + (↑t : E) * x := by
   intro E _ _ d _ x hx y hy
@@ -541,8 +541,8 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.CMConjNegOfSqEqNegPos.conj_alt_bis :
-    ∀ {E : Type} [inst : Field E] [inst_1 : NumberField E]
-    [inst_2 : NumberField.IsCMField E] {d : ℕ},
+    ∀ {E : Type} [Field E] [NumberField E]
+    [NumberField.IsCMField E] {d : ℕ},
     (0 : ℕ) < d → ∀ {x : E}, x ^ (2 : ℕ) = -(↑d : E) → (NumberField.IsCMField.complexConj E : E → E) x = -x := by
   intro E _ _ _ d hd x hx
   let φ : E →+* ℂ := Classical.choice (inferInstance : Nonempty _)

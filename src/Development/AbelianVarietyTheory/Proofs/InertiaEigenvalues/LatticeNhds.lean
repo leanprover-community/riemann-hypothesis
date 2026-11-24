@@ -382,7 +382,7 @@ theorem ker_eq {P : LocPrime l} (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Go
     have hgK : g ∈ GK K := fun x => hg ⟨x.1, hle x.2⟩
     exact ⟨⟨⟨g, hgK⟩, (key ⟨g, hgK⟩).2 ((hc K g (hK0 ⟨g, hgK⟩)).2.1 hg)⟩, rfl⟩
 
-theorem main : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW), ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let S := sit D.loc HW l (D.locA l) K s LL h; let E : S.Comparison₂ := ((F l).E K s LL h).tie; FNatW S := by
+theorem main : ∀ (D : Formalism.BasicNotions.D7) (HW : HWOf D.loc) (F : FonOf D.loc D.locA HW), ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (s : ℕ) (LL : FinExt l) (h : Good K s LL), let S := sit D.loc HW l (D.locA l) K s LL h; let _ : S.Comparison₂ := ((F l).E K s LL h).tie; FNatW S := by
   intro D HW F l _ K s LL h S E T
   obtain ⟨h1, h2⟩ := as_TW LL T
   refine ⟨fun x _ => ?_, h2, fun c => ?_⟩

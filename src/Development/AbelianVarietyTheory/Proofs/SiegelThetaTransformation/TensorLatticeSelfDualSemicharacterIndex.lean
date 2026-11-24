@@ -242,7 +242,7 @@ theorem eq_sum_ctr {m : ℕ} {v w : Fin m → Fin n → E}
 
 theorem mem_tens_iff {M : ℕ} {Λ : Lt E n} (hΛ : Λ ∈ Vset E n M) (L : Lt E r)
     (y : Matrix (Fin n) (Fin r) E) : y ∈ tens Λ L ↔ ∀ w ∈ Λ, ctr y w ∈ L := by
-  obtain ⟨-, m, v, w, hv, hw, h⟩ := exists_dual_family Λ hΛ.1 (fun x => (hΛ.2.1 x).1)
+  obtain ⟨-, m, v, w, hv, hw, h⟩ := exists_dual_family Λ hΛ.1
     fun x => (hΛ.2.1 x).2
   constructor
   · intro hy u hu
@@ -260,7 +260,7 @@ theorem mem_tens_iff {M : ℕ} {Λ : Lt E n} (hΛ : Λ ∈ Vset E n M) (L : Lt E
 
 theorem tens_fg {M : ℕ} {Λ : Lt E n} (hΛ : Λ ∈ Vset E n M) {L : Lt E r} (hL : L.FG) :
     (tens Λ L).FG := by
-  obtain ⟨-, m, v, w, hv, hw, h⟩ := exists_dual_family Λ hΛ.1 (fun x => (hΛ.2.1 x).1)
+  obtain ⟨-, m, v, w, hv, hw, h⟩ := exists_dual_family Λ hΛ.1
     fun x => (hΛ.2.1 x).2
   let f : (Fin m → Fin r → E) →+ Matrix (Fin n) (Fin r) E :=
     AddMonoidHom.mk' (fun u => ∑ i, vecMulVec (v i) (u i))
@@ -402,7 +402,7 @@ theorem mem_tens_stdL (L : Lt E r) (y : Matrix (Fin n) (Fin r) E) :
 
 end
 
-theorem tens_selfDual_semichar_index : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (g : ℕ) (bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ) (idx : Fin g ≃ X.Ψ × Fin r) (n : ℕ), IsSympl X bas → Even n → ∀ w : E, IsIntegral ℤ w → w + cc w = 1 → ∀ L, SelfD X L → ∀ (M : ℕ), ∀ Λ ∈ Vset E n M, (tens Λ L).FG ∧ (∀ y, y ∈ tens Λ L ↔ ∀ y' ∈ tens Λ L, ∃ k : ℤ, ∑ i, EF X (y i) (y' i) = k) ∧ (∀ y ∈ tens Λ L, epsW X w y ^ 2 = 1 ∧ ∀ y' ∈ tens Λ L, epsW X w (y + y') = epsW X w y * epsW X w y' * cexp (-(π * I * ((∑ k, EF X (y k) (y' k) : ℚ) : ℂ)))) ∧ (∀ y : Matrix (Fin n) (Fin r) E, y ∈ tens (stdL E n) L ↔ ∀ k, y k ∈ L) ∧ (∀ L', SelfD X L' → (tens Λ L').relIndex (tens Λ L) = L'.toAddSubgroup.relIndex L.toAddSubgroup ^ n ∧ tens Λ L ⊓ tens Λ L' = tens Λ (L ⊓ L')) ∧ ∀ Λ' ∈ Vset E n M, (tens Λ' L).relIndex (tens Λ L) = Λ'.toAddSubgroup.relIndex Λ.toAddSubgroup ^ r := by
+theorem tens_selfDual_semichar_index : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r : ℕ) (X : Data E r) (g : ℕ) (bas : (Fin g ⊕ Fin g → ℤ) ≃ₗ[ℤ] X.Λ) (_ : Fin g ≃ X.Ψ × Fin r) (n : ℕ), IsSympl X bas → Even n → ∀ w : E, IsIntegral ℤ w → w + cc w = 1 → ∀ L, SelfD X L → ∀ (M : ℕ), ∀ Λ ∈ Vset E n M, (tens Λ L).FG ∧ (∀ y, y ∈ tens Λ L ↔ ∀ y' ∈ tens Λ L, ∃ k : ℤ, ∑ i, EF X (y i) (y' i) = k) ∧ (∀ y ∈ tens Λ L, epsW X w y ^ 2 = 1 ∧ ∀ y' ∈ tens Λ L, epsW X w (y + y') = epsW X w y * epsW X w y' * cexp (-(π * I * ((∑ k, EF X (y k) (y' k) : ℚ) : ℂ)))) ∧ (∀ y : Matrix (Fin n) (Fin r) E, y ∈ tens (stdL E n) L ↔ ∀ k, y k ∈ L) ∧ (∀ L', SelfD X L' → (tens Λ L').relIndex (tens Λ L) = L'.toAddSubgroup.relIndex L.toAddSubgroup ^ n ∧ tens Λ L ⊓ tens Λ L' = tens Λ (L ⊓ L')) ∧ ∀ Λ' ∈ Vset E n M, (tens Λ' L).relIndex (tens Λ L) = Λ'.toAddSubgroup.relIndex Λ.toAddSubgroup ^ r := by
   intro E _ _ _ r X g _ _ n _ _ w hw hw1 L hL M Λ hΛ
   have hsp : ∀ Λ ∈ Vset E n M, Submodule.span E (Λ : Set (Fin n → E)) = ⊤ := fun Λ hΛ =>
     DualFamily.span_eq_top Λ hΛ.1 fun x => (hΛ.2.1 x).2

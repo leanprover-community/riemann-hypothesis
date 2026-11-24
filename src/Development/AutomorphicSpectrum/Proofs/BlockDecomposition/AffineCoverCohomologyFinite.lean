@@ -494,12 +494,12 @@ theorem capO_le_inter {X : Scheme.{0}} {ι : Type} (U : ι → X.Opens) {n : ℕ
 theorem secRes_secRes {X : Scheme.{0}} {ι : Type} {U : ι → X.Opens} {κ : ι → Type} [∀ α, Fintype (κ α)]
     (g : ∀ α β, κ α → κ β → Γ(X, U α ⊓ U β)) {A B C : X.Opens} (h : B ≤ A) (h' : C ≤ B) (h'' : C ≤ A)
     (s : secGroup g A) : secRes g h' (secRes g h s) = secRes g h'' s :=
-  Subtype.ext <| funext fun α => funext fun k => rs_rs _ _ _ _
+  Subtype.ext <| funext fun _ => funext fun _ => rs_rs _ _ _ _
 
 theorem secRes_self {X : Scheme.{0}} {ι : Type} {U : ι → X.Opens} {κ : ι → Type} [∀ α, Fintype (κ α)]
     (g : ∀ α β, κ α → κ β → Γ(X, U α ⊓ U β)) {A : X.Opens} (h : A ≤ A) (s : secGroup g A) :
     secRes g h s = s :=
-  Subtype.ext <| funext fun α => funext fun k => rs_self _ _
+  Subtype.ext <| funext fun _ => funext fun _ => rs_self _ _
 
 section Bridge
 
@@ -563,8 +563,8 @@ theorem str_eq {O : Type} [CommRing O] {X : Scheme.{0}} (q : X ⟶ Spec (CommRin
 
 attribute [local instance] VB.fin algebraOfOver in
 theorem finite_H_cx : ∀ {O : Type} [CommRing O] [IsNoetherianRing O] {X : Scheme.{0}} (q : X ⟶ Spec (CommRingCat.of O)) [IsProper q]
-    {ι : Type} [Fintype ι] (U : ι → X.Opens) (hU : (⨆ α, U α) = ⊤) (ha : ∀ n (i : Fin (n + 1) → ι), IsAffineOpen (capO U i))
-    (K : Cos.{1} O) (V : VB (fun W => ((Scheme.ΓSpecIso (CommRingCat.of O)).inv ≫ q.appLE ⊤ W le_top).hom) U K) (p : ℕ),
+    {ι : Type} [Fintype ι] (U : ι → X.Opens) (_ : (⨆ α, U α) = ⊤) (_ : ∀ n (i : Fin (n + 1) → ι), IsAffineOpen (capO U i))
+    (K : Cos.{1} O) (_ : VB (fun W => ((Scheme.ΓSpecIso (CommRingCat.of O)).inv ≫ q.appLE ⊤ W le_top).hom) U K) (p : ℕ),
     Module.Finite O (K.cx.H p) := by
   intro O _ _ X q _ ι _ U hU ha K V p
   letI : X.Over (Spec (.of O)) := ⟨q⟩

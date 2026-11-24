@@ -480,7 +480,7 @@ theorem UpperTheory.Kd.C7.pLangR :
     · rw [Matrix.map_add _ (map_add σ), hσsmul, hσp, Matrix.map_mul, h1]
       simp only [Matrix.add_mul, Matrix.mul_add, Matrix.smul_mul, Matrix.mul_smul, ← Matrix.mul_assoc]
       rw [h2']
-      simp only [smul_add, smul_sub, smul_smul, ← pow_add, ← pow_succ']
+      simp only [smul_add, smul_sub, smul_smul, ← pow_add]
       have e1 : (p : R) ^ (n + 1 + (n + 1)) = (p : R) ^ (n + 1 + 1 + n) := by ring
       have e2 : (p : R) ^ (n + 1) * (p : R) = (p : R) ^ (n + 1 + 1) := by ring
       rw [e1, e2]

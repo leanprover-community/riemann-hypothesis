@@ -588,7 +588,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.MultiDimensional.multi_dim :
-    ∀ {P : Type} [inst : Fintype P] (g : P → ℤ → ENNReal), ∑' (x : P → ℤ), ∏ p : P, g p (x p) ≤ ∏ p : P, ∑' (n : ℤ), g p n := by
+    ∀ {P : Type} [Fintype P] (g : P → ℤ → ENNReal), ∑' (x : P → ℤ), ∏ p : P, g p (x p) ≤ ∏ p : P, ∑' (n : ℤ), g p n := by
   intro P _ g
   classical
   rw [ENNReal.tsum_eq_iSup_sum]
@@ -1321,7 +1321,7 @@ theorem absThetaInt_le_of_meets_orbits (D : D7) (V : HSp D) (ν : Measure (GA D 
     rw [GlobalTheory.AutomorphicL2Unitary.lintegral_quotMeasure hfd]
     exact lintegral_congr fun g => congrFun hinv.lift_descend g
   rw [e]
-  exact GlobalTheory.lintegral_fundamentalDomain_le_of_meets_orbits (GQ V) ν hfd hS hcov (GlobalTheory.AbsThetaSemi.measurable_absTheta V hφ) hinv
+  exact GlobalTheory.lintegral_fundamentalDomain_le_of_meets_orbits (GQ V) ν hfd hcov hinv
 
 end GlobalTheory.CompanionTheory.WeilConv
 

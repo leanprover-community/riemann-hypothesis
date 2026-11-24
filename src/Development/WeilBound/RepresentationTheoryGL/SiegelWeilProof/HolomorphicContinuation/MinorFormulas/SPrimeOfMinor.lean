@@ -1111,7 +1111,7 @@ theorem factor (hE : Ext) (hCh : Chain) (hBr : Bridge) {s : ℂ} (hs : s = 1 ∨
     have hcls : cls s z m 0 1 = fun y : E n => clsC s z m 0 1 (herm y) := funext fun y => ((han z m 0 1).2 y).symm
     rw [hcls, hCh n (OmS s) (clsC s z m 0 1) hO hherm (han z m 0 1).1 N y, hBr n s hs m N z (herm y) (hherm y)]
     rw [MvPolynomial.eval_map, MvPolynomial.eval₂_eq]
-    simp only [← hv, ← hP, Polynomial.coe_evalRingHom]
+    simp only [← hP, Polynomial.coe_evalRingHom]
     rw [Finset.mul_sum, Finset.mul_sum, Finset.mul_sum]
     refine Finset.sum_congr rfl fun e _ => ?_
     rw [hd e, Polynomial.eval_mul, Polynomial.eval_pow, Polynomial.eval_X]

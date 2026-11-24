@@ -199,7 +199,7 @@ theorem indefinite (D : Datum H) (hp : 1 ≤ D.p) (hq : 1 ≤ D.q) (G : Matrix (
       ∀ x y, ((D.EF x y : ℤ) : ℚ) = Algebra.trace ℚ E ((H.rt : E) * FD.herm G (φ x) (φ y))) (τ : E →+* ℂ) :
     (∃ x, 0 < (τ (FD.herm G x x)).re) ∧ ∃ y, (τ (FD.herm G y y)).re < 0 := by
   have hξ := GlobalTheory.OneSpace.cc_rt H
-  have hr := (rank_integral_selfDual E H D r _ G φ hξ hM).1
+  have hr := (rank_integral_selfDual E H D r _ G φ hM).1
   have key : ∀ τ : E →+* ℂ, τ (H.rt : E) = H.rt0 →
       (∃ x, 0 < (τ (FD.herm G x x)).re) ∧ ∃ y, (τ (FD.herm G y y)).re < 0 := by
     intro τ hτ
@@ -331,7 +331,7 @@ theorem splitLat_of_indefinite : ∀ (E : Type) [Field E] [NumberField E] [IsCMF
   obtain ⟨φ, hM⟩ := GlobalTheory.model_in_same_space (GlobalTheory.LocalQuad.landherrSt_of_hasseNormSt GlobalTheory.QNorm.hasseNormSt)
     GlobalTheory.QNorm.hasseNormSt E H D₀ D _ (H.rt : E) G φ₀ ep.symm eq.symm hξ hM₀
   have hind := indefinite D hp hq G φ hM
-  obtain ⟨-, hfg, -, hdual⟩ := rank_integral_selfDual E H D _ _ G φ hξ hM
+  obtain ⟨-, hfg, -, hdual⟩ := rank_integral_selfDual E H D _ _ G φ hM
   obtain ⟨inj₀, span₀, hG, hdet, hEF₀⟩ := hM₀
   obtain ⟨inj, span, -, -, hEF⟩ := hM
   have hc : IsCompl Lp Lm := by

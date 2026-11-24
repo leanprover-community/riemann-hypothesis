@@ -991,7 +991,7 @@ theorem siegelGaussIntegral_congr (Z : Matrix κ κ ℂ) {g : Matrix κ κ ℝ} 
   rw [← abs_inv]
   exact key
 
-theorem fourier_lattice_term {Z : Matrix κ κ ℂ} (hZ : GlobalTheory.IsSiegel Z) {g : Matrix κ κ ℝ}
+theorem fourier_lattice_term {Z : Matrix κ κ ℂ} {g : Matrix κ κ ℝ}
     (hg : g.det ≠ 0) (n : κ → ℤ) :
     Complex.exp (-((Real.pi : ℂ) * Complex.I) *
         ((fun i => ((((g⁻¹)ᵀ *ᵥ fun i => (n i : ℝ)) i : ℝ) : ℂ)) ⬝ᵥ
@@ -1037,7 +1037,7 @@ theorem poisson_shifted_lattice : ∀ (κ : Type) [Fintype κ] [DecidableEq κ] 
   have hfh : ∀ n : κ → ℤ, fh ((g⁻¹)ᵀ *ᵥ fun i => (n i : ℝ)) = GlobalTheory.siegelGaussIntegral Z *
       GlobalTheory.riemannThetaTerm 0 0 (-((g.map Complex.ofReal)ᵀ * Z * g.map Complex.ofReal)⁻¹) 0 n := by
     intro n
-    rw [← fourier_lattice_term hZ hg n]
+    rw [← fourier_lattice_term hg n]
     exact gaussian_fourier hZ _
   refine ⟨?_, ?_, ?_⟩
   · simp only [hf]

@@ -140,7 +140,7 @@ variable {X : Spc F E n} {W : Spc F E d}
 def soFin (B : Base F E) (M : Model σ X W) : Set ((Fin n × Fin d → Af F) → ℂ) :=
   {φ | φ ∈ SB _ ∧ ∀ f : SInf F (Fin n × Fin d), pureA F f φ ∈ M.So B.ψ B.τ₁}
 
-def SqBound (B : Base F E) (M : Model σ X W) (om : Rep σ X W) (𝓕 : Set ((Fin n × Fin d → Af F) → ℂ))
+def SqBound (B : Base F E) (om : Rep σ X W) (𝓕 : Set ((Fin n × Fin d → Af F) → ℂ))
     (S : Set (Matrix (Fin n) (Fin d) E)) : Prop :=
   ∀ φ ∈ 𝓕, ∀ N : ℕ, ∃ (p : Seminorm ℂ (SInf F (Fin n × Fin d))) (C : Set (Ten F E n d)), Continuous p ∧ IsCompact C ∧
     ∀ (f : SInf F (Fin n × Fin d)) g h, ‖theta om (pureA F f φ) g h‖ₑ ^ 2 ≤ ENNReal.ofReal (p f) ^ 2 * latSum B.emb C N S g h
@@ -198,7 +198,7 @@ def CoefBd : Prop :=
   ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E) (n d : ℕ) (X : Spc F E n) (W : Spc F E d) (M : Model σ X W) χX χW om r s r' s', IsPair B M χX χW om r s r' s' → ∀ μ : Measure (Fin n × Fin d → AF F), μ.IsAddHaarMeasure → ∀ φ₁ ∈ SB (Fin n × Fin d → Af F), ∀ φ₂ ∈ SB (Fin n × Fin d → Af F), ∀ N : ℕ, ∃ (p : Seminorm ℂ (SInf F (Fin n × Fin d))) (C : Set (Ten F E n d)), Continuous p ∧ IsCompact C ∧ ∀ (f₁ f₂ : SInf F (Fin n × Fin d)) (z : Ten F E n d), ‖coef F B.ψ μ (pureA F f₁ φ₁) (pureA F f₂ φ₂) (M.co.e z)‖ ≤ p f₁ * p f₂ * maj B.emb C N z
 
 def SqAll : Prop :=
-  ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E) (n d : ℕ) (X : Spc F E n) (W : Spc F E d) (M : Model σ X W) χX χW om r s r' s', IsPair B M χX χW om r s r' s' → SqBound B M om {φ | φ ∈ SB _} Set.univ
+  ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E) (n d : ℕ) (X : Spc F E n) (W : Spc F E d) (M : Model σ X W) χX χW om r s r' s', IsPair B M χX χW om r s r' s' → SqBound B om {φ | φ ∈ SB _} Set.univ
 
 def SoFin : Prop :=
   ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E) (n d : ℕ) (X : Spc F E n) (W : Spc F E d) (M : Model σ X W) χX χW om r s r' s', IsPair B M χX χW om r s r' s' → (∀ Φ ∈ M.So B.ψ B.τ₁, ∃ (m : ℕ) (f : Fin m → SInf F (Fin n × Fin d)) (φ : Fin m → (Fin n × Fin d → Af F) → ℂ), (∀ i, φ i ∈ soFin B M) ∧ Φ = ∑ i, pureA F (f i) (φ i)) ∧ (∀ Φ ∈ schA F (Fin n × Fin d), ∃ (m : ℕ) (f : Fin m → SInf F (Fin n × Fin d)) (φ : Fin m → (Fin n × Fin d → Af F) → ℂ), (∀ i, φ i ∈ SB _) ∧ Φ = ∑ i, pureA F (f i) (φ i)) ∧ (∀ Φ ∈ M.So B.ψ B.τ₁, Φ ∈ schA F _) ∧ ∀ φ ∈ soFin B M, ∃ (m : ℕ) (c : Fin m → ℂ) (χ : Fin m → ∀ v : Pl F, (Fin n × Fin d → Fv F v) → ℂ), (∀ i, (∀ v, χ i v ∈ SB _) ∧ (∀ᶠ v in cofinite, χ i v = M.vac v) ∧ χ i B.v₁ ∈ M.SoLoc B.ψ B.τ₁) ∧ ∀ f : SInf F (Fin n × Fin d), pureA F f φ = ∑ i, c i • pure f (χ i)
@@ -207,7 +207,7 @@ def SoCut : Prop :=
   ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E) (n d : ℕ) (X : Spc F E n) (W : Spc F E d) (M : Model σ X W) χX χW om r s r' s', IsPair B M χX χW om r s r' s' → ∀ φ ∈ M.SoLoc B.ψ B.τ₁, ∃ (m : ℕ) (χ : Fin m → (Fin n × Fin d → Fv F B.v₁) → ℂ), φ = ∑ i, χ i ∧ ∀ i, χ i ∈ M.SoLoc B.ψ B.τ₁ ∧ ∀ r, Rest (evFin F B.v₁) (χ i) r → ∀ μ : Measure (Fin n × Fin d → AF F), μ.IsAddHaarMeasure → ∀ z : Ten F E n d, (z.map (piW (B.τ₁.comp σ))).rank ≠ n → coef F B.ψ μ (tens (evFin F B.v₁) (χ i) r) (fun x => tens (evFin F B.v₁) (χ i) r (-x)) (M.co.e z) = 0
 
 def SqSo : Prop :=
-  ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E) (n d : ℕ) (X : Spc F E n) (W : Spc F E d) (M : Model σ X W) χX χW om r s r' s', IsPair B M χX χW om r s r' s' → SqBound B M om (soFin B M) (fullRank E n d)
+  ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) (B : Base F E) (n d : ℕ) (X : Spc F E n) (W : Spc F E d) (M : Model σ X W) χX χW om r s r' s', IsPair B M χX χW om r s r' s' → SqBound B om (soFin B M) (fullRank E n d)
 
 def LatInv : Prop :=
   ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (τ : ∀ w : InfinitePlace F, EmbOver E w) (n d : ℕ) (J : Matrix (Fin n) (Fin n) E) (J' : Matrix (Fin d) (Fin d) E), EpsHerm σ J → EpsHerm σ J' → ∀ C N, ∀ S ∈ ({Set.univ, fullRank E n d} : Set (Set (Matrix (Fin n) (Fin d) E))), ∀ γ ∈ ratU σ J, ∀ δ ∈ ratU σ J', ∀ (g : UA σ J) (h : UA σ J'), latSum τ C N S (γ * g) (δ * h) = latSum τ C N S g h

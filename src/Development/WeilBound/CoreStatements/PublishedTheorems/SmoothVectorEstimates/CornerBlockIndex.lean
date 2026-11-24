@@ -87,7 +87,7 @@ def bet (l : (ι → ℂ) →L[ℝ] ℝ) : V ι a m →L[ℝ] V ι a m →L[ℝ]
 theorem bet_apply (l : (ι → ℂ) →L[ℝ] ℝ) (x y : V ι a m) : bet l x y = l (∑ t, x t * y t) := by
   rfl
 
-theorem bet_nondeg (hm : m + 1 < a) {χ : AddChar (ι → ℂ) ℂ} (hχ : ∀ z, (∀ w, χ (z * w) = 1) → z = 0)
+theorem bet_nondeg {χ : AddChar (ι → ℂ) ℂ} (hχ : ∀ z, (∀ w, χ (z * w) = 1) → z = 0)
     {l : (ι → ℂ) →L[ℝ] ℝ} (hl : ∀ z, χ z = Complex.exp ((l z : ℝ) * Complex.I)) :
     ∀ y : V ι a m, (∀ x, bet l x y = 0) → y = 0 := by
   intro y hy
@@ -107,7 +107,7 @@ theorem bet_nondeg (hm : m + 1 < a) {χ : AddChar (ι → ℂ) ℂ} (hχ : ∀ z
   rw [hl, h1]
   simp
 
-def Lb (_hm : m + 1 < a) : V ι a m →L[ℝ] LieI ι a :=
+def Lb : V ι a m →L[ℝ] LieI ι a :=
   LinearMap.toContinuousLinearMap
     { toFun := fun y => Matrix.of.symm (posM Subtype.val y)
       map_add' := fun y y' => by rw [posM_add]; rfl
@@ -118,11 +118,11 @@ def Lb (_hm : m + 1 < a) : V ι a m →L[ℝ] LieI ι a :=
         refine Finset.sum_congr rfl fun t _ => ?_
         split_ifs <;> simp }
 
-theorem blkU_val (hm : m + 1 < a) (y : V ι a m) : (blkU y : GL (Fin a) (ι → ℂ)).val = 1 + Matrix.of (Lb hm y) := by
+theorem blkU_val (hm : m + 1 < a) (y : V ι a m) : (blkU y : GL (Fin a) (ι → ℂ)).val = 1 + Matrix.of (Lb y) := by
   rfl
 
 theorem blkU_inv_val (hm : m + 1 < a) (y : V ι a m) :
-    (blkU y : GL (Fin a) (ι → ℂ))⁻¹.val = 1 - Matrix.of (Lb hm y) := by
+    (blkU y : GL (Fin a) (ι → ℂ))⁻¹.val = 1 - Matrix.of (Lb y) := by
   rfl
 
 theorem lastE_eq {R : Type} [CommRing R] (hm : m + 1 < a) (y : UnipotentBlockColumnIndex a (m + 1) (m + 1) → R) :
@@ -277,7 +277,7 @@ theorem mirabolic_induction_step_exists : S2 → S3 → S5 → S6 → S8 → Mir
   intro h2 h3 h5 h6 h8 h10 ι _ a X _ _ _ ρ hρ m hm χ hχc hχn hχnd U hU
   obtain ⟨l, hl⟩ := h8 ι χ hχc hχn
   have hβ : ∀ y : CornerBlockIndex.V ι a m, (∀ x, CornerBlockIndex.bet (a := a) (m := m) l x y = 0) → y = 0 :=
-    CornerBlockIndex.bet_nondeg hm hχnd hl
+    CornerBlockIndex.bet_nondeg hχnd hl
   let μ : Measure (CornerBlockIndex.V ι a m) := Measure.addHaar
   obtain ⟨c, hc0, hc⟩ := h5 (CornerBlockIndex.V ι a m) μ (CornerBlockIndex.bet l) hβ
   obtain ⟨f, hfW, hfc, hfd, hfr, hfe⟩ :=
@@ -314,7 +314,7 @@ theorem mirabolic_induction_step_exists : S2 → S3 → S5 → S6 → S8 → Mir
       (CornerBlockIndex.sM hm) (CornerBlockIndex.isOpen_O hm) (CornerBlockIndex.cd_sI hm) (CornerBlockIndex.cd_sM hm).contDiffOn
       (fun x hx => CornerBlockIndex.sI_mul_sM hm hx)
     have hGmem : FT μ (CornerBlockIndex.bet l) F ∈ 𝒢 := hG η v hηd hηc hηO hv
-    obtain ⟨hint, hsm⟩ := h3 ι a X ρ hρ (CornerBlockIndex.V ι a m) μ (fun y => blkU y) (CornerBlockIndex.Lb hm)
+    obtain ⟨hint, hsm⟩ := h3 ι a X ρ hρ (CornerBlockIndex.V ι a m) μ (fun y => blkU y) (CornerBlockIndex.Lb)
       (CornerBlockIndex.blkU_val hm) (CornerBlockIndex.blkU_inv_val hm) 𝒢 h𝒢 _ hGmem
     have hFint : ∀ y, Integrable (fun x => Complex.exp (-↑((CornerBlockIndex.bet l x) y) * Complex.I) • F x) μ := by
       intro y

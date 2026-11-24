@@ -1109,7 +1109,7 @@ namespace GlobalTheory.Nef
 
 variable {k F : Type} [Field k] [Field F] [Algebra k F]
 
-theorem val_le_exp_of_ord (v : Place k F) (x : F) (d : ℤ) (hd : 0 ≤ d) (h : -d ≤ ord v x) :
+theorem val_le_exp_of_ord (v : Place k F) (x : F) (d : ℤ) (h : -d ≤ ord v x) :
     v.1 x ≤ WithZero.exp d := by
   by_cases hx : v.1 x = 0
   · rw [hx]; exact zero_le'
@@ -1196,7 +1196,7 @@ theorem exists_section_of_large_deg : ∀ (k F : Type) [Field k] [IsAlgClosed k]
   obtain ⟨c, hp0, hpψ⟩ := _root_.GlobalTheory.exists_ne_zero_comb_mem_ker k F (Place k F) n m f hf S N φ (by exact_mod_cast hNsum)
   refine ⟨_, hp0, fun v i => ?_⟩
   have hpb : ∀ i, v.1 (∑ j, c i j • f j) ≤ WithZero.exp (((D' v).toNat : ℕ) : ℤ) := fun i =>
-    val_comb_le v f (c i) _ (fun j => val_le_exp_of_ord v _ _ (by omega)
+    val_comb_le v f (c i) _ (fun j => val_le_exp_of_ord v _ _
       (by rw [Int.toNat_of_nonneg (hD0 v)]; exact hford j v))
   by_cases hv : v ∈ S
   · exact hφ v _ hpb (hpψ v hv) i

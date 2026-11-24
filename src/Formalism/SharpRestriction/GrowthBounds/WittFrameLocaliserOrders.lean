@@ -627,7 +627,7 @@ def LocaliserNonzeroOffPlane : Prop :=
     ratPlane p n' r g' ≠ ratPlane p n' r g →
     ∃ i c : Fin k, i.val < r ∧ r ≤ c.val ∧ WittVector.constantCoeff ((g'⁻¹ * g) i c) ≠ 0
 
-theorem localiser_vanishing_of_distinct_planes (D : Formalism.BasicNotions.D7) (hPl : LocaliserNonzeroOffPlane) : Conclusion1 D := by
+theorem localiser_vanishing_of_distinct_planes (D : Formalism.BasicNotions.D7) (hPl : LocaliserNonzeroOffPlane) : Conclusion1 := by
   intro p n' r k _ _ O _ _ _ _ S hO hH Fr L₁ N₁ hV g g' hg hg' hne
   obtain ⟨hp13, hr2, hrk, hn2, hnE⟩ := hH
   have hφ : ((IsLocalRing.residue O).comp (algebraMap (WF p n') O)) (p : WF p n') = 0 := by
@@ -802,7 +802,7 @@ theorem localiser_nonzero_off_plane : LocaliserNonzeroOffPlane := by
 
 end Planes
 
-theorem localiser_vanishing_off_plane (D : Formalism.BasicNotions.D7) : Conclusion1 D := localiser_vanishing_of_distinct_planes D localiser_nonzero_off_plane
+theorem localiser_vanishing_off_plane (D : Formalism.BasicNotions.D7) : Conclusion1 := localiser_vanishing_of_distinct_planes D localiser_nonzero_off_plane
 
 end Formalism.MainNotions.G.WittFrameLocaliserOrders
 
@@ -1111,7 +1111,7 @@ theorem determinant_powers_lift_into_terms (Dl : ℕ → MvPolynomial (TV n' k) 
 
 end Main
 
-theorem localiser_expansion_lemma (D : Formalism.BasicNotions.D7) : Conclusion2 D := by
+theorem localiser_expansion_lemma (D : Formalism.BasicNotions.D7) : Conclusion2 := by
   intro p n' r k _ _ O _ _ _ _ S hO hH Fr L₁ N₁ hV g hg
   obtain ⟨hp13, hr2, hrk, hn2, hnE⟩ := hH
   have hJ : 1 ≤ Fr.J := hV.1
@@ -1273,7 +1273,7 @@ def highOrderTopsSubgroup (w : O) {r k : ℕ} (Fr : Frames n' r) (g : Matrix (Fi
 
 end SumSquaresSecondDerivative
 
-def SymbolOrderGeLevel (_D : Formalism.BasicNotions.D7) : Prop :=
+def SymbolOrderGeLevel : Prop :=
   ∀ (p n' r k : ℕ) [Fact p.Prime] [NeZero n'] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     [Algebra (WF p n') O] (S : UniformizedDVR p O), OHyp p n' O S → ∀ hH : CommonHypotheses p n' r k,
   ∀ (Fr : Frames n' r) (L₁ N₁ : ℕ), Fr.Valid L₁ N₁ → ∀ Q : ℕ, TwistBound p Fr Q →
@@ -1281,7 +1281,7 @@ def SymbolOrderGeLevel (_D : Formalism.BasicNotions.D7) : Prop :=
   ∀ (c' mu la : ℕ) (τ : Term n' k O), τ.Valid p n' S.w n' r Q g → τ.InTops Fr →
     InWj S.w (τ.sym p n' S.w Fr hH.2.2.1 g c' mu la) τ.level
 
-def RawSymbolOrderRemaining (_D : Formalism.BasicNotions.D7) : Prop :=
+def RawSymbolOrderRemaining : Prop :=
   ∀ (p n' r k : ℕ) [Fact p.Prime] [NeZero n'] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     [Algebra (WF p n') O] (S : UniformizedDVR p O), OHyp p n' O S → ∀ hH : CommonHypotheses p n' r k,
   ∀ (Fr : Frames n' r) (L₁ N₁ : ℕ), Fr.Valid L₁ N₁ → ∀ Q : ℕ, TwistBound p Fr Q →
@@ -1291,7 +1291,7 @@ def RawSymbolOrderRemaining (_D : Formalism.BasicNotions.D7) : Prop :=
     ∀ g' : Matrix (Fin k) (Fin k) (WF p n'), IsGLW g' → ratPlane p n' r g' ≠ ratPlane p n' r g →
       ordGe p n' O S.w n' r g' (τ.raw p n' S.w Fr hH.2.2.1 g c' mu la) (τ.level + c')
 
-def OrderClaimRemaining (_D : Formalism.BasicNotions.D7) : Prop :=
+def OrderClaimRemaining : Prop :=
   ∀ (p n' r k : ℕ) [Fact p.Prime] [NeZero n'] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     [Algebra (WF p n') O] (S : UniformizedDVR p O), OHyp p n' O S → ∀ hH : CommonHypotheses p n' r k,
   ∀ (Fr : Frames n' r) (L₁ N₁ : ℕ), Fr.Valid L₁ N₁ → ∀ Q : ℕ, TwistBound p Fr Q →
@@ -1306,7 +1306,7 @@ def OrderClaimRemaining (_D : Formalism.BasicNotions.D7) : Prop :=
         (mu' i : ℤ) = (mu : ℤ) - (2 * (Q : ℤ) + 1) * (((τ' i).level : ℤ) - τ.level) ∧
         (la' i : ℤ) = (la : ℤ) - (((τ' i).level : ℤ) - τ.level)
 
-theorem clean_symbol_order (D : Formalism.BasicNotions.D7) (h1 : SymbolOrderGeLevel D) (h2 : RawSymbolOrderRemaining D) (h3 : OrderClaimRemaining D)
+theorem clean_symbol_order (D : Formalism.BasicNotions.D7) (h1 : SymbolOrderGeLevel) (h2 : RawSymbolOrderRemaining) (h3 : OrderClaimRemaining)
     (p n' r k : ℕ) [Fact p.Prime] [NeZero n'] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     [Algebra (WF p n') O] (S : UniformizedDVR p O) (hO : OHyp p n' O S) (hH : CommonHypotheses p n' r k)
     (Fr : Frames n' r) (L₁ N₁ : ℕ) (hV : Fr.Valid L₁ N₁) (Q : ℕ) (hQ : TwistBound p Fr Q)
@@ -1465,8 +1465,8 @@ theorem weighted_component_substitute_comm (w : O) (r : ℕ) (g : Matrix (Fin k)
 
 end B4c
 
-theorem divisibility_lemma_of_three_orders (D : Formalism.BasicNotions.D7) (h1 : SymbolOrderGeLevel D) (h2 : RawSymbolOrderRemaining D) (h3 : OrderClaimRemaining D) :
-    Conclusion4 D := by
+theorem divisibility_lemma_of_three_orders (D : Formalism.BasicNotions.D7) (h1 : SymbolOrderGeLevel) (h2 : RawSymbolOrderRemaining) (h3 : OrderClaimRemaining) :
+    Conclusion4 := by
   intro p n' r k _ _ O _ _ _ _ S hO hH Fr L₁ N₁ hV Q hQ g hg c' o d n τ hτ
   obtain ⟨F0, hA, hT, hW, hG⟩ := clean_symbol_order D h1 h2 h3 p n' r k O S hO hH Fr L₁ N₁ hV Q hQ g hg c' o n τ
     (fun i => ⟨(hτ i).1, (hτ i).2.1, (hτ i).2.2.1⟩)
@@ -1597,7 +1597,7 @@ theorem top_product_determinant_integral (w : O) (hrk : r ≤ k) (g : Matrix (Fi
 
 end B4d
 
-theorem symbol_order_ge_level (D : Formalism.BasicNotions.D7) : SymbolOrderGeLevel D := by
+theorem symbol_order_ge_level (D : Formalism.BasicNotions.D7) : SymbolOrderGeLevel := by
   intro p n' r k _ _ O _ _ _ _ S hO hH Fr L₁ N₁ hV Q hQ g hg c' mu la τ hτ _
   unfold Term.sym
   have e1 : InWj S.w (C (algebraMap O (KK O) (S.w ^ τ.i)) * ∏ l, τ.ka0 l) (τ.i + ∑ l, τ.o l) :=
@@ -1650,7 +1650,7 @@ theorem raw_symbol_order_other_planes {p n' r k : ℕ} [Fact p.Prime] [NeZero n'
   rw [map_mul, map_mul, map_mul, map_mul]
   exact inWj_mul (inWj_mul (inWj_mul (inWj_mul e1 e2) e3) e4) e5
 
-def RawTermOnTops (_D : Formalism.BasicNotions.D7) : Prop :=
+def RawTermOnTops : Prop :=
   ∀ (p n' r k : ℕ) [Fact p.Prime] [NeZero n'] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     [Algebra (WF p n') O] (S : UniformizedDVR p O), OHyp p n' O S → ∀ hH : CommonHypotheses p n' r k,
   ∀ (Fr : Frames n' r) (L₁ N₁ : ℕ), Fr.Valid L₁ N₁ → ∀ Q : ℕ, TwistBound p Fr Q →
@@ -1658,7 +1658,7 @@ def RawTermOnTops (_D : Formalism.BasicNotions.D7) : Prop :=
   ∀ (c' mu la : ℕ) (τ : Term n' k O), τ.Valid p n' S.w n' r Q g → τ.InTops Fr →
     OnTops Fr (τ.raw p n' S.w Fr hH.2.2.1 g c' mu la)
 
-theorem raw_term_order_ge_off_plane (D : Formalism.BasicNotions.D7) (hL1 : Conclusion1 D) (hT : RawTermOnTops D) : RawSymbolOrderRemaining D := by
+theorem raw_term_order_ge_off_plane (D : Formalism.BasicNotions.D7) (hL1 : Conclusion1) (hT : RawTermOnTops) : RawSymbolOrderRemaining := by
   intro p n' r k _ _ O _ _ _ _ S hO hH Fr L₁ N₁ hV Q hQ g hg c' mu la τ hτ hτ'
   refine ⟨raw_symbol_integral S.w Fr hH.2.2.1 Q hg c' mu la τ hτ,
     hT p n' r k O S hO hH Fr L₁ N₁ hV Q hQ g hg c' mu la τ hτ hτ', fun g' hg' hne => ?_⟩
@@ -1701,7 +1701,7 @@ theorem subst_true_coordinates (w : O) (r : ℕ) {g : Matrix (Fin k) (Fin k) (WF
 
 end B4e
 
-def DifferenceClaimInCoordinates (_D : Formalism.BasicNotions.D7) : Prop :=
+def DifferenceClaimInCoordinates : Prop :=
   ∀ (p n' r k : ℕ) [Fact p.Prime] [NeZero n'] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     [Algebra (WF p n') O] (S : UniformizedDVR p O), OHyp p n' O S → ∀ hH : CommonHypotheses p n' r k,
   ∀ (Fr : Frames n' r) (L₁ N₁ : ℕ), Fr.Valid L₁ N₁ → ∀ Q : ℕ, TwistBound p Fr Q →
@@ -1720,7 +1720,7 @@ def DifferenceClaimInCoordinates (_D : Formalism.BasicNotions.D7) : Prop :=
         (mu' i : ℤ) = (mu : ℤ) - (2 * (Q : ℤ) + 1) * (((τ' i).level : ℤ) - τ.level) ∧
         (la' i : ℤ) = (la : ℤ) - (((τ' i).level : ℤ) - τ.level)
 
-theorem order_claim_of_residue_form (D : Formalism.BasicNotions.D7) (h : DifferenceClaimInCoordinates D) : OrderClaimRemaining D := by
+theorem order_claim_of_residue_form (D : Formalism.BasicNotions.D7) (h : DifferenceClaimInCoordinates) : OrderClaimRemaining := by
   intro p n' r k _ _ O _ _ _ _ S hO hH Fr L₁ N₁ hV Q hQ g hg c' o mu la τ hτ hτ' hl hmu hla
   obtain ⟨m, τ', mu', la', ρ, h1, h2, h3⟩ :=
     h p n' r k O S hO hH Fr L₁ N₁ hV Q hQ g hg c' o mu la τ hτ hτ' hl hmu hla
@@ -1732,7 +1732,7 @@ theorem order_claim_of_residue_form (D : Formalism.BasicNotions.D7) (h : Differe
   simp only [map_pow]
   ring
 
-theorem order_lemma_of_plane_coordinates (D : Formalism.BasicNotions.D7) (hL1 : Conclusion1 D) (hT : RawTermOnTops D) (hC : DifferenceClaimInCoordinates D) : Conclusion4 D :=
+theorem order_lemma_of_plane_coordinates (D : Formalism.BasicNotions.D7) (hL1 : Conclusion1) (hT : RawTermOnTops) (hC : DifferenceClaimInCoordinates) : Conclusion4 :=
   divisibility_lemma_of_three_orders D (symbol_order_ge_level D) (raw_term_order_ge_off_plane D hL1 hT) (order_claim_of_residue_form D hC)
 
 end Formalism.MainNotions.G.WittFrameLocaliserOrders
@@ -1778,11 +1778,11 @@ variable {r : ℕ} (Fr : Frames n' r)
 
 theorem bs_top_xg (g : Matrix (Fin k) (Fin k) (WF p n')) (a : ℤ) (ha : posOf n' a ∈ Fr.TT) (b : Fin k) :
     xg p n' O n' g a b ∈ supported (KK O) {v : TV n' k | v.1 ∈ Fr.TT} :=
-  sum_mem fun c _ => mul_mem (X_mem_supported.2 ha) (Subalgebra.algebraMap_mem _ _)
+  sum_mem fun _ _ => mul_mem (X_mem_supported.2 ha) (Subalgebra.algebraMap_mem _ _)
 
 theorem bs_top_yg (g : Matrix (Fin k) (Fin k) (WF p n')) (a : ℤ) (ha : posOf n' a ∈ Fr.TT) (b : Fin k) :
     yg p n' O n' g a b ∈ supported (KK O) {v : TV n' k | v.1 ∈ Fr.TT} :=
-  sum_mem fun c _ => mul_mem (X_mem_supported.2 ha) (Subalgebra.algebraMap_mem _ _)
+  sum_mem fun _ _ => mul_mem (X_mem_supported.2 ha) (Subalgebra.algebraMap_mem _ _)
 
 theorem bs_top_newCoord (g : Matrix (Fin k) (Fin k) (WF p n')) (v : TV n' k) (hv : v.1 ∈ Fr.TT) :
     newCoord p n' O n' g v ∈ supported (KK O) {v : TV n' k | v.1 ∈ Fr.TT} := by
@@ -1819,17 +1819,17 @@ theorem bs_top_Arow (s : Fin n') (hs : s ∈ Fr.TT) (l : ℕ) : posOf n' (Arow F
 
 theorem bs_top_DtopProd (hrk : r ≤ k) (g : Matrix (Fin k) (Fin k) (WF p n')) (mu : ℕ) :
     DtopProd p n' O Fr hrk g mu ∈ supported (KK O) {v : TV n' k | v.1 ∈ Fr.TT} :=
-  prod_mem fun s hs => pow_mem (bs_det_mem _ _ fun l b => pow_mem (bs_top_xg Fr g _ (bs_top_Arow Fr s hs _) _) _) _
+  prod_mem fun s hs => pow_mem (bs_det_mem _ _ fun _ _ => pow_mem (bs_top_xg Fr g _ (bs_top_Arow Fr s hs _) _) _) _
 
 theorem bs_top_Rloc {L₁ N₁ : ℕ} (hV : Fr.Valid L₁ N₁) (g : Matrix (Fin k) (Fin k) (WF p n')) :
     Rloc p n' O Fr g ∈ supported (KK O) {v : TV n' k | v.1 ∈ Fr.TT} :=
-  mul_mem (bs_top_minorI Fr hV g _ _) (prod_mem fun I _ =>
-    sub_mem (prod_mem fun j _ => pow_mem (bs_top_minorI Fr hV g _ _) _)
-      (prod_mem fun j _ => pow_mem (bs_top_minorI Fr hV g _ _) _))
+  mul_mem (bs_top_minorI Fr hV g _ _) (prod_mem fun _ _ =>
+    sub_mem (prod_mem fun _ _ => pow_mem (bs_top_minorI Fr hV g _ _) _)
+      (prod_mem fun _ _ => pow_mem (bs_top_minorI Fr hV g _ _) _))
 
 end S1
 
-theorem bs_restRawTops (D : Formalism.BasicNotions.D7) : RawTermOnTops D := by
+theorem bs_restRawTops (D : Formalism.BasicNotions.D7) : RawTermOnTops := by
   intro p n' r k _ _ O _ _ _ _ S hO hH Fr L₁ N₁ hV Q hQ g hg c' mu la τ hτ hτT
   rw [bs_onTops_iff]
   exact mul_mem (mul_mem (mul_mem (mul_mem (mul_mem (Subalgebra.algebraMap_mem _ _)
@@ -1944,7 +1944,7 @@ theorem bd_orbit_interval {n' : ℕ} [NeZero n'] (TT : Finset (Fin n')) (L₂ K 
 
 theorem bd_orbit_next {n' : ℕ} [NeZero n'] (TT : Finset (Fin n')) (L₂ K r : ℕ) (de h x : ℝ) (hn : Even n')
     (hr : 1 ≤ r) (hde : 0 < de) (h3 : 3 * goodG' r de h x ≤ n') (hg : IsGoodOrbit n' TT L₂ K r de h x)
-    (y z : ℤ) (_hyz : y < z) (_hy : posOf n' y ∈ TT) (_hye : Even y) (_hz : posOf n' z ∈ TT) (_hze : Even z)
+    (y z : ℤ)
     (hno : ∀ t : ℤ, y < t → t < z → ¬ (posOf n' t ∈ TT ∧ Even t)) :
     z - y ≤ goodG' r de h x ∧ ((Finset.Ioo y z).filter fun t => posOf n' t ∈ TT).card ≤ orbitWindowCount r de h x := by
   obtain ⟨c1, c2, c3⟩ := bd_core_hyps TT r de h x h3
@@ -2091,7 +2091,7 @@ theorem bd_orbit_count {n' : ℕ} [NeZero n'] (TT : Finset (Fin n')) (L₂ K r :
     (6 * (r : ℝ) + 1) _ hR hh hde hlx hP0 hP1 hud1 hud2 hM1 hM2.le hG hB hN1 (by positivity) (by positivity)
     (by exact_mod_cast h3) (by exact_mod_cast t1) (by exact_mod_cast t2)
 
-def bd_RestOrbit (_D : Formalism.BasicNotions.D7) : Prop :=
+def bd_RestOrbit : Prop :=
   ∀ (r : ℕ) (h : ℝ), 2 ≤ r → 0 ≤ h →
   ∀ (n' : ℕ) [NeZero n'] (TT : Finset (Fin n')) (L₁ L₂ : ℕ) (de x : ℝ),
     Even n' → 1 ≤ L₁ → 2 * L₁ ≤ L₂ → 0 < de → de ≤ 1 → 3 ≤ x → L₂ < goodU de →
@@ -2110,7 +2110,7 @@ def bd_RestOrbit (_D : Formalism.BasicNotions.D7) : Prop :=
           (F.LLset j).card < ((F.LLset j).filter (· ≤ x)).card + r) → F.GapGt L₂ j x) ∧
       (∀ j : ℤ, F.GapGt L₂ j (F.fr j 0)))
 
-theorem good_orbits_of_frames (D : Formalism.BasicNotions.D7) (hR : bd_RestOrbit D) : GoodOrbitPositions D := by
+theorem good_orbits_of_frames (D : Formalism.BasicNotions.D7) (hR : bd_RestOrbit) : GoodOrbitPositions := by
   intro r h hr hh
   refine ⟨bd_Ce r h, bd_Ce_pos r h hh, ?_⟩
   intro n' _ TT L₁ L₂ de x hn hL1 hL12 hde hde1 hx hLu h3 hg
@@ -2119,7 +2119,7 @@ theorem good_orbits_of_frames (D : Formalism.BasicNotions.D7) (hR : bd_RestOrbit
   intro u G' N₁ T ell
   exact ⟨fun s _ hm => _root_.Formalism.G0.marked_run _ r _ s (bd_goodU_pos hde) hm,
     hR r h hr hh n' TT L₁ L₂ de x hn hL1 hL12 hde hde1 hx hLu h3 hg,
-    fun y z hyz a b c d e => bd_orbit_next TT L₂ (r - 1) r de h x hn (by omega) hde h3 hg y z hyz a b c d e,
+    fun y z hyz a b c d e => bd_orbit_next TT L₂ (r - 1) r de h x hn (by omega) hde h3 hg y z e,
     hcnt.1, hcnt.2, fun y => bd_orbit_interval TT L₂ (r - 1) r de h x hL2n hg y⟩
 
 theorem bd_letters_card {n' r : ℕ} [NeZero n'] (F : Frames n' r) (L₂ K r' : ℕ) (de h x : ℝ)
@@ -3387,7 +3387,7 @@ def RowsPairOnPlanes : Prop :=
     (Even s.val → ∀ c : Fin k, r ≤ c.val → ordGe p n' O S.w n' r g' (firstKeyMinor p O Fr hH.2.2.1 g (s.val : ℤ) c) 1) ∧
     (¬ Even s.val → ∀ l : Fin r, ordGe p n' O S.w n' r g' (pairingKey p O Fr g (s.val : ℤ) l) 1)
 
-theorem pairing_order_of_planes_and_rows (D : Formalism.BasicNotions.D7) (h1 : RowsPairOnPlanes) (h2 : RowsEvenTopsInWindow) : PointsLemma D := by
+theorem pairing_order_of_planes_and_rows (D : Formalism.BasicNotions.D7) (h1 : RowsPairOnPlanes) (h2 : RowsEvenTopsInWindow) : PointsLemma := by
   intro p n' r k _ _ O _ _ _ _ S hO hH Fr L₁ N₁ hV Q hQ g hg s hs b hb
   have hn : Even n' := hH.2.2.2.2
   have hrk : r ≤ k := hH.2.2.1
@@ -3494,7 +3494,7 @@ theorem window_holds_even_tops : RowsEvenTopsInWindow := by
   obtain ⟨⟨_, h6⟩, h7, h8⟩ := hall _ hmem
   exact ⟨h8, h7, h6⟩
 
-theorem keys_of_rational_planes (D : Formalism.BasicNotions.D7) (h1 : RowsPairOnPlanes) : PointsLemma D := pairing_order_of_planes_and_rows D h1 window_holds_even_tops
+theorem keys_of_rational_planes (D : Formalism.BasicNotions.D7) (h1 : RowsPairOnPlanes) : PointsLemma := pairing_order_of_planes_and_rows D h1 window_holds_even_tops
 
 section B3modw
 
@@ -3691,7 +3691,7 @@ theorem plane_pairings_of_first_key (h : ExplicitMinorsOrderRemaining) : RowsPai
   rw [← e2] at e
   exact e
 
-theorem keys_of_explicit_minors (D : Formalism.BasicNotions.D7) (h : ExplicitMinorsOrderRemaining) : PointsLemma D :=
+theorem keys_of_explicit_minors (D : Formalism.BasicNotions.D7) (h : ExplicitMinorsOrderRemaining) : PointsLemma :=
   keys_of_rational_planes D (plane_pairings_of_first_key h)
 
 end Formalism.MainNotions.G.WittFrameLocaliserOrders
@@ -3847,7 +3847,7 @@ theorem first_key_plane_order : ExplicitMinorsOrderRemaining := by
   exact explicit_minor_order_positive S hH.2.2.1 hH.2.2.2.2 Fr g hg hg' s hse
     (window_holds_even_tops n' r Fr L₁ N₁ hV hH.2.2.2.2 (by have := hH.2.1; omega) (s.val : ℤ)) c
 
-theorem keys_vanish_modulo_uniformiser (D : Formalism.BasicNotions.D7) : PointsLemma D := keys_of_explicit_minors D first_key_plane_order
+theorem keys_vanish_modulo_uniformiser (D : Formalism.BasicNotions.D7) : PointsLemma := keys_of_explicit_minors D first_key_plane_order
 
 end Formalism.MainNotions.G.WittFrameLocaliserOrders
 
@@ -4445,7 +4445,7 @@ theorem bc_IT_Dtop {L₁ N₁ : ℕ} (hV : Fr.Valid L₁ N₁) (hn : Even n') (h
 
 end Facts
 
-def bc_RestTail (_D : Formalism.BasicNotions.D7) : Prop :=
+def bc_RestTail : Prop :=
   ∀ (p n' r k : ℕ) [Fact p.Prime] [NeZero n'] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     [Algebra (WF p n') O] (S : UniformizedDVR p O), OHyp p n' O S → CommonHypotheses p n' r k →
   ∀ (Fr : Frames n' r) (L₁ N₁ : ℕ), Fr.Valid L₁ N₁ → ∀ Q : ℕ, TwistBound p Fr Q →
@@ -4455,7 +4455,7 @@ def bc_RestTail (_D : Formalism.BasicNotions.D7) : Prop :=
     subst p n' O S.w n' r g ka - ka0 ∈ AddSubmonoid.closure
       (bc_gen S.w Fr Q g (fun j : ℕ => subst p n' O S.w n' r g (Del p n' O Fr g (j : ℤ))) (o, 0) 1)
 
-theorem bc_claim_of_tail (D : Formalism.BasicNotions.D7) (hL : Conclusion2 D) (hK : PointsLemma D) (hT : bc_RestTail D) : DifferenceClaimInCoordinates D := by
+theorem bc_claim_of_tail (D : Formalism.BasicNotions.D7) (hL : Conclusion2) (hK : PointsLemma) (hT : bc_RestTail) : DifferenceClaimInCoordinates := by
   intro p n' r k _ _ O _ _ _ _ S hO hH Fr L₁ N₁ hV Q hQ g hg c' o mu la τ hτ hτT hlev hmu hla
   have hn : Even n' := hH.2.2.2.2
   have hrk : r ≤ k := hH.2.2.1
@@ -4616,7 +4616,7 @@ theorem bc_filter_sum {n' k : ℕ} (r : ℕ) (m : TV n' k →₀ ℕ) :
   rw [Finsupp.sum_filter_index, Finsupp.support_filter, Finset.sum_filter]
   rfl
 
-theorem bc_restTail (D : Formalism.BasicNotions.D7) : bc_RestTail D := by
+theorem bc_restTail (D : Formalism.BasicNotions.D7) : bc_RestTail := by
   intro p n' r k _ _ O _ _ _ _ S hO hH Fr L₁ N₁ hV Q hQ g hg ka ka0 o hk h1 h2
   obtain ⟨hA, hoQ, hnd, h0, htail, _⟩ := hk
   obtain ⟨T, hTdef⟩ : ∃ T, T = subst p n' O S.w n' r g ka - ka0 := ⟨_, rfl⟩
@@ -4675,10 +4675,10 @@ theorem bc_restTail (D : Formalism.BasicNotions.D7) : bc_RestTail D := by
     simp only [pow_zero, Finset.prod_const_one, mul_one]
     rw [C_mul_monomial, monomial_mul, Finsupp.filter_pos_add_filter_neg, mul_one, map_mul]
 
-theorem bc_claim (D : Formalism.BasicNotions.D7) (hL : Conclusion2 D) (hK : PointsLemma D) : DifferenceClaimInCoordinates D :=
+theorem bc_claim (D : Formalism.BasicNotions.D7) (hL : Conclusion2) (hK : PointsLemma) : DifferenceClaimInCoordinates :=
   bc_claim_of_tail D hL hK (bc_restTail D)
 
-theorem bc_claim' (D : Formalism.BasicNotions.D7) : DifferenceClaimInCoordinates D := bc_claim D (localiser_expansion_lemma D) (keys_vanish_modulo_uniformiser D)
+theorem bc_claim' (D : Formalism.BasicNotions.D7) : DifferenceClaimInCoordinates := bc_claim D (localiser_expansion_lemma D) (keys_vanish_modulo_uniformiser D)
 
 end Formalism.MainNotions.G.WittFrameLocaliserOrders
 
@@ -4789,7 +4789,7 @@ theorem dvd_of_dvd_components {R : Type} [CommRing R] {ι : Type} {n : ℕ} (G P
   exact h m hm
 
 theorem divisibility_of_field_lemma_and_facts (D : Formalism.BasicNotions.D7) (hE : FieldMultidegreeDivisibility) (hB : IntegralToFieldBaseChange) (hC : ComponentsPreserveValuation)
-    (hG : GaussQuotientIntegral) : Conclusion5 D := by
+    (hG : GaussQuotientIntegral) : Conclusion5 := by
   intro O _ _ _ σN M r _ LL s A G th hinj hA _hlast hval hBp
   have hφ : Function.Injective (algebraMap (MvPolynomial σN O) (FractionRing (MvPolynomial σN O))) :=
     IsFractionRing.injective _ _
@@ -5047,7 +5047,7 @@ theorem determinant_coefficients_units : DeterminantCoefficientsUnits := by
 
 theorem gauss_quotient_integral : GaussQuotientIntegral := gauss_of_det_coefficients determinant_coefficients_units
 
-theorem divisibility_of_homogeneous_field_lemma (D : Formalism.BasicNotions.D7) (hE : FieldMultidegreeDivisibility) (hB : IntegralToFieldBaseChange) : Conclusion5 D :=
+theorem divisibility_of_homogeneous_field_lemma (D : Formalism.BasicNotions.D7) (hE : FieldMultidegreeDivisibility) (hB : IntegralToFieldBaseChange) : Conclusion5 :=
   divisibility_of_field_lemma_and_facts D hE hB components_preserve_valuation gauss_quotient_integral
 
 theorem divisions_le_total_budget {n' r : ℕ} [NeZero n'] (p : ℕ) (Fr : Frames n' r) (k N₁ Q c' ntops : ℕ)
@@ -5657,9 +5657,9 @@ alias splitting_package_holds := _root_.Formalism.MainNotions.G.WittFrameLocalis
 
 alias segment_statement_holds := _root_.Formalism.MainNotions.G.WittFrameLocaliserOrders.keys_vanish_modulo_uniformiser
 
-theorem order_lemma_holds (D : Formalism.BasicNotions.D7) : Conclusion4 D :=
+theorem order_lemma_holds (D : Formalism.BasicNotions.D7) : Conclusion4 :=
   order_lemma_of_plane_coordinates D (localiser_vanishing_off_plane D) (bs_restRawTops D) (bc_claim' D)
 
-theorem divisibility_of_field_lemma (D : Formalism.BasicNotions.D7) (h : LargePrimeLengthVanishing D) : Conclusion5 D := divisibility_of_homogeneous_field_lemma D h valuation_fraction_field_extension
+theorem divisibility_of_field_lemma (D : Formalism.BasicNotions.D7) (h : LargePrimeLengthVanishing D) : Conclusion5 := divisibility_of_homogeneous_field_lemma D h valuation_fraction_field_extension
 
 end Formalism.MainNotions.G.WittFrameLocaliserOrders

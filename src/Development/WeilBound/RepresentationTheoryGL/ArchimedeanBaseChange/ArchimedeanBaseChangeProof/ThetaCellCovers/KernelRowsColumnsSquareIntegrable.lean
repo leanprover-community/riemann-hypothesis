@@ -279,7 +279,7 @@ section -- clump:auto
 @[expose] public section
 
 theorem UpperTheory.Reformulated.B.Yxa1.main :
-    ∀ {α : Type} [inst : MeasurableSpace α] {ν : MeasureTheory.Measure α} {ι : Type} (s : Finset ι)
+    ∀ {α : Type} [MeasurableSpace α] {ν : MeasureTheory.Measure α} {ι : Type} (s : Finset ι)
       (g : ι → ↥(MeasureTheory.Lp ℂ (2 : ENNReal) ν)),
       (↑(↑(∑ j ∈ s, g j) : α →ₘ[ν] ℂ) : α → ℂ) =ᵐ[ν] fun (x : α) ↦ ∑ j ∈ s, (↑(↑(g j) : α →ₘ[ν] ℂ) : α → ℂ) x := by
   intro α _ ν ι s g

@@ -798,7 +798,7 @@ theorem exists_bounded_basis {n : ℕ} (hn : 1 ≤ n) (Λ : Submodule (𝓞 E) (
     traceHerm_nonneg (traceHerm_nondegenerate n) _ (Real.sqrt_pos.mpr hl) (by
       intro u hu hk
       rw [Real.sq_sqrt hl.le, traceHerm_self]
-      refine trace_dual_min Λ hint hdual u hu fun y hy => ?_
+      refine trace_dual_min Λ hdual u hu fun y hy => ?_
       obtain ⟨c, rfl⟩ := (mem_span_range_iff_exists_fun ℤ).1 ((hb y).2 hy)
       choose k hk using hk
       refine ⟨∑ j, c j * k j, ?_⟩

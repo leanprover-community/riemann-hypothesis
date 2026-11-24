@@ -29,8 +29,8 @@ attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 variable {k r : ℕ}
 
 theorem isInvInvariant_haar {ε : Fin (2 * r + k + 1) → Bool} {P : Mat (2 * r + k + 1)} (hP : IsCayley k r ε P)
-    (hG : IsMatGroup (UH (Hpk k r))) : (haar : Measure (MG (UH (Hpk k r)) hG)).IsInvInvariant := by
-  let f : UJ ε →* MG (UH (Hpk k r)) hG :=
+    (hG : IsMatGroup (UH (Hpk k r))) : (haar : Measure (MG (UH (Hpk k r)))).IsInvInvariant := by
+  let f : UJ ε →* MG (UH (Hpk k r)) :=
     { toFun := fun g => MG.mk hG _ (SchurHpk.iota_mem hP g)
       map_one' := MG.ext (SchurHpk.iota_one hP)
       map_mul' := fun a b => MG.ext (SchurHpk.iota_mul hP a b) }

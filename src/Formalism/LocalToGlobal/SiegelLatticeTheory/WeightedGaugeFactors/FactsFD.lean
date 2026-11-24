@@ -103,7 +103,7 @@ theorem cdScale_eq_muCD (hT : Ties D) :
   rw [hT.cdScale_tie _ (epsSH D.R) _ _ (Formalism.BasicNotions.Examples₂.CD.e0 (epsSH D.R)) (Formalism.BasicNotions.Examples₂.CD.sign_split_equiv_inl (epsSH D.R))
     (Formalism.BasicNotions.Examples₂.CD.sign_split_equiv_inr (epsSH D.R)) A hA]
   rw [ReciprocityTheory.ChartRestriction.DS.muCD_eq_cd_vol D.cd (Formalism.BasicNotions.Examples₂.CD.e0 (epsSH D.R)) (Formalism.BasicNotions.Examples₂.CD.sign_split_equiv_inl (epsSH D.R))
-    (Formalism.BasicNotions.Examples₂.CD.sign_split_equiv_inr (epsSH D.R)) A hA]
+    (Formalism.BasicNotions.Examples₂.CD.sign_split_equiv_inr (epsSH D.R)) A]
 
 theorem thr_lt {large₂ : SizeData₂ D} {C' Cl Cg cb Cu cT CT : ℝ} (hH : StandingHypotheses D large₂ C' Cl Cg cb Cu cT CT)
     (hCL : 1 ≤ Cl * large₂.sc.L) :
@@ -180,7 +180,7 @@ theorem dsig_eq {large₂ : SizeData₂ D} {C' Cl Cg cb Cu cT CT : ℝ} (hT : Ti
     obtain ⟨T⟩ := ReciprocityTheory.ChartRestriction.DS.HW.kType_exists (epsSH D.R) μ hμ
     obtain ⟨m, hm⟩ := ReciprocityTheory.ChartRestriction.DS.Lap.LemK.exists_isMu hμ
     exact ⟨T, _, (ReciprocityTheory.ChartRestriction.DS.Lap.Base.psiFor _ _ μ h T m hμ hm hgμ hq0 h8).1⟩
-  have key := ReciprocityTheory.ChartRestriction.DS.fdCons_cd hp hq hlam hg hth hΨ hσ hv
+  have key := ReciprocityTheory.ChartRestriction.DS.fdCons_cd hp hq hlam hg hth hσ hv
   rw [ReciprocityTheory.ChartRestriction.DS.fdegOf_of_isFdeg' hd hv] at key
   rw [← hdd, key]
 

@@ -711,7 +711,7 @@ instance : Ring (Tw K V) := inferInstanceAs (Ring (ExteriorAlgebra K V))
 
 abbrev twAlg (p : ℕ) [Fact p.Prime] [CharP K p] : Algebra K (Tw K V) :=
   RingHom.toAlgebra' ((algebraMap K (ExteriorAlgebra K V)).comp (frobenius K p))
-    (fun c x => Algebra.commutes (R := K) (A := ExteriorAlgebra K V) _ x)
+    (fun _ x => Algebra.commutes (R := K) (A := ExteriorAlgebra K V) _ x)
 
 end FrobTwist
 

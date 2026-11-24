@@ -102,7 +102,7 @@ theorem fibPin_holds : FibPin := by
     rw [FibUniq.fib_eq_tens σ hσ J hJ.1 a (Fv F v) (isOpen_units_Fv F v) (TensAllW.lip_field _)
       μv νv fib1 fib2 hf1 hf2]
 
-theorem fibPin_of (_h1 : DensFibInf) (_h2 : DensFibV) (_hL : LatSB) : FibPin := fibPin_holds
+theorem fibPin_of : FibPin := fibPin_holds
 
 theorem locEx_of (hI : FibInfEx) (hV : FibVEx) (hL : LatSB) : LocEx := by
   intro F E _ _ _ _ _ σ hE M J hJ ha hc a ha1 ha2 X0 hT hdet ψ hψ
@@ -131,7 +131,7 @@ theorem locEx_of (hI : FibInfEx) (hV : FibVEx) (hL : LatSB) : LocEx := by
 
 theorem exOmT_of_steps (hI : FibInfEx) (hV : FibVEx) (hL : LatSB) (hU : SdUniq)
     (hDI : DensFibInf) (hDV : DensFibV) (hR : RestrProd) : ExOmT :=
-  exOmT_of (locEx_of hI hV hL) hU (fibPin_of hDI hDV hL) (multFib_of hDV) hR
+  exOmT_of (locEx_of hI hV hL) hU (fibPin_of) (multFib_of hDV) hR
 
 end PI.VolStabS
 end -- clump:auto

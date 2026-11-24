@@ -146,7 +146,7 @@ theorem ipT_pos_fd [∀ i, FiniteDimensional ℂ (E i)] (x : ⨂[ℂ] i, E i) (h
     split_ifs with h
     · subst h; simp
     · obtain ⟨i, hi⟩ := Function.ne_iff.mp h
-      exact Finset.prod_eq_zero (Finset.mem_univ i) (by simp [OrthonormalBasis.inner_eq_ite, Ne.symm hi])
+      exact Finset.prod_eq_zero (Finset.mem_univ i) (by simp [Ne.symm hi])
   set c := B.repr x
   have hsum : ipT x x = ∑ p, c p * conj (c p) := by
     conv_lhs => rw [← B.sum_repr x]
