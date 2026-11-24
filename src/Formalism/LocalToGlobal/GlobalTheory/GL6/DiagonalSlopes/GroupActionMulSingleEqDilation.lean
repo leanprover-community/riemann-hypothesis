@@ -395,9 +395,6 @@ end Loc
 
 variable {D : D7} {u : D.what₂.Word}
 
-theorem level_prime_ne_type_prime' (A : AtTTied u) (j : Fin 2) : (D.mem u).A.T ≠ D.host.g j := by
-  apply Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.level_prime_ne_type_prime <;> assumption
-
 theorem level_places_prime_to_type (A : AtTTied u) (v : (D.mem u).A.vT) : (A.eV v).1 ∉ badG D := by
   exact Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.S0.level_places_not_bad A v
 

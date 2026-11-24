@@ -101,11 +101,6 @@ private theorem mem_FilV_iff' (a : ℤ) (z : V ⊗[Qp] BdR) :
       ∃ w, AlgebraTensorModule.map (LinearMap.id : V →ₗ[LL] V)
         ((PD.Fil a).restrictScalars Qp).subtype w = z := Iff.rfl
 
-theorem tmul_mem_filV (a : ℤ) (x : V) {y : BdR} (hy : y ∈ PD.Fil a) :
-    x ⊗ₜ[Qp] y ∈ FilV PD (LL := LL) (V := V) a :=
-  (mem_FilV_iff' PD a _).mpr
-    ⟨x ⊗ₜ[Qp] (⟨y, hy⟩ : (PD.Fil a).restrictScalars Qp), by simp⟩
-
 theorem filV_exh (z : V ⊗[Qp] BdR) : ∃ a : ℤ, z ∈ FilV PD (LL := LL) (V := V) a := by
   exact Formalism.MainNotions.N.Ln34.CrystallineExponents.filV_exh PD z
 

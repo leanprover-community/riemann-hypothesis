@@ -391,62 +391,6 @@ def reImMap (P Q : ℕ) :
     simp [entries]
     ring
 
-theorem reImMap_injective (P Q : ℕ) : Function.Injective (reImMap P Q) := by
-  set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in rw [injective_iff_map_eq_zero]
-  rintro ⟨⟨a, ha⟩, ⟨b, hb⟩⟩ h
-  have h1 : a + Complex.I • b = 0 := by
-    ext i j
-    exact congrFun h (i, j)
-  have h2 : a = -(Complex.I • b) := eq_neg_of_add_eq_zero_left h1
-  have ha' := (mem_lieU a).1 ha
-  have hb' := (mem_lieU b).1 hb
-  have h3 : bᴴ * Formalism.UG.Jpq P Q = -(Formalism.UG.Jpq P Q * b) := eq_neg_of_add_eq_zero_left hb'
-  have h4 : (-(2 * Complex.I)) • (Formalism.UG.Jpq P Q * b) = 0 := by
-    rw [← ha', h2]
-    simp only [conjTranspose_neg, conjTranspose_smul, Matrix.neg_mul, Matrix.mul_neg,
-      Matrix.smul_mul, Matrix.mul_smul, h3, Complex.star_def, Complex.conj_I]
-    module
-  have h5 : Formalism.UG.Jpq P Q * b = 0 :=
-    (smul_eq_zero.1 h4).resolve_left (by simp)
-  have h6 : b = 0 := by
-    have := congrArg (Formalism.UG.Jpq P Q * ·) h5
-    simpa [← Matrix.mul_assoc, Jpq_mul_self] using this
-  have h7 : a = 0 := by rw [h2, h6]; simp
-  subst h6
-  subst h7
-  rfl
-
-theorem reImMap_surjective (P Q : ℕ) : Function.Surjective (reImMap P Q) := by
-  intro f
-  let Z : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ := Matrix.of fun i j => f (i, j)
-  have hJ := Jpq_mul_self P Q
-  have hH := Jpq_conjTranspose P Q
-  have hl : ∀ X : Matrix (Fin P ⊕ Fin Q) (Fin P ⊕ Fin Q) ℂ,
-      Formalism.UG.Jpq P Q * (Formalism.UG.Jpq P Q * X) = X := fun X => by
-    rw [← Matrix.mul_assoc, hJ, Matrix.one_mul]
-  refine ⟨(⟨(1 / 2 : ℂ) • (Z - Formalism.UG.Jpq P Q * Zᴴ * Formalism.UG.Jpq P Q), ?_⟩,
-    ⟨(-(Complex.I / 2)) • (Z + Formalism.UG.Jpq P Q * Zᴴ * Formalism.UG.Jpq P Q), ?_⟩), ?_⟩
-  · rw [mem_lieU]
-    have : star (1 / 2 : ℂ) = 1 / 2 := by simp
-    simp only [conjTranspose_smul, conjTranspose_sub, conjTranspose_mul, hH,
-      conjTranspose_conjTranspose, this, Matrix.smul_mul, Matrix.mul_smul, Matrix.sub_mul,
-      Matrix.mul_sub, Matrix.mul_assoc, hJ, hl, Matrix.mul_one]
-    module
-  · rw [mem_lieU]
-    have : star (-(Complex.I / 2)) = Complex.I / 2 := by simp [neg_div]
-    simp only [conjTranspose_smul, conjTranspose_add, conjTranspose_mul, hH,
-      conjTranspose_conjTranspose, this, Matrix.smul_mul, Matrix.mul_smul, Matrix.add_mul,
-      Matrix.mul_add, Matrix.mul_assoc, hJ, hl, Matrix.mul_one]
-    module
-  · have h1 : Complex.I * (-(Complex.I / 2)) = 1 / 2 := by
-      have := Complex.I_mul_I
-      linear_combination (-1 / 2 : ℂ) * this
-    have h2 : (1 / 2 : ℂ) • (Z - Formalism.UG.Jpq P Q * Zᴴ * Formalism.UG.Jpq P Q) +
-        Complex.I • (-(Complex.I / 2)) • (Z + Formalism.UG.Jpq P Q * Zᴴ * Formalism.UG.Jpq P Q) = Z := by
-      rw [smul_smul, h1]
-      module
-    exact (congrArg entries h2).trans rfl
-
 theorem exists_isOmegaLeb : ∀ P Q : ℕ, ∃ lam : Measure (lieU P Q), IsOmegaLeb lam := by
   exact Formalism.BasicNotions.Examples₂.CD.exists_omegaLeb
 

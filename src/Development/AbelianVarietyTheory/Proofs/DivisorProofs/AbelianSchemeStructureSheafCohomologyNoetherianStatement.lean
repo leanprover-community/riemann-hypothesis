@@ -418,10 +418,6 @@ theorem pO1_comp {R : Type} [CommRing R] {Z Y A : Over (Sp R)} (i : Z ⟶ Y) (f 
 theorem pO1_id {R : Type} [CommRing R] {A : Over (Sp R)} (x : HO1 A.hom) : pO1 (𝟙 A) x = x :=
   ((GlobalTheory.T.structureSheafCohomology_pullback_comp_cup_id).2.2 R A).1 x
 
-theorem pO1_toUnit_comp {R : Type} [CommRing R] {Y A : Over (Sp R)} (f : 𝟙_ (Over (Sp R)) ⟶ A) (x : HO1 A.hom) :
-    pO1 (toUnit Y ≫ f) x = 0 := by
-  rw [← pO1_comp, _root_.GlobalTheory.AbCoh.PrimLift.pO1_unit_eq_zero (pO1 f x), map_zero]
-
 theorem primO1_of_axesO1 {R : Type} [CommRing R] (A : Over (Sp R)) [GrpObj A] (h : AxesVanishingStructureSheafDegOne A) : StructureSheafH1Primitive A := by
   exact GlobalTheory.T.primitive_of_axes_vanishing R A h
 

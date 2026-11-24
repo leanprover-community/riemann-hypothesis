@@ -466,13 +466,6 @@ theorem subIner_mem_Dpcris (ρ : Representation LL G V) (x : V ⊗[Qp] B) :
     x ∈ PC.Dpcris ρ ↔ ∀ h ∈ PC.H, actVB PC.PD ρ h x = x := by
   exact GlobalTheory.PassPoly.mem_Dpcris_iff PC ρ x
 
-theorem subIner_actVB_mul (ρ : Representation LL G V) (g h : G) (z : V ⊗[Qp] B) :
-    actVB PC.PD ρ g (actVB PC.PD ρ h z) = actVB PC.PD ρ (g * h) z := by
-  induction z using TensorProduct.induction_on with
-  | zero => simp
-  | tmul v b => simp [actVB]
-  | add z w hz hw => simp only [map_add (f := _), hz, hw]
-
 theorem subIner_Dpcris_stable (ρ : Representation LL G V) (g : G) (x : V ⊗[Qp] B)
     (hx : x ∈ PC.Dpcris ρ) : actVB PC.PD ρ g x ∈ PC.Dpcris ρ := by
   exact GlobalTheory.PassPoly.Dpcris_stable PC ρ g x hx

@@ -756,10 +756,6 @@ open GlobalTheory.SingleDatum
 
 namespace GlobalTheory.ConstBound
 
-theorem isTorsionFree_int_of {E : Type} [Field E] [NumberField E] (X : Type) [AddCommGroup X] [Module (𝓞 E) X]
-    [Module.IsTorsionFree (𝓞 E) X] : Module.IsTorsionFree ℤ X :=
-  Module.IsTorsionFree.trans_faithfulSMul ℤ (𝓞 E) X
-
 theorem datum_free {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Geo.Tor.Host E} (Dw : Datum H) :
     Module.Free ℤ Dw.La ∧ Module.Finite ℤ Dw.La := GlobalTheory.LevCover.datum_free Dw
 

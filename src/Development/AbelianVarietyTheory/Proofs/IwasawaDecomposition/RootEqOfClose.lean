@@ -67,17 +67,6 @@ theorem val_eq_one_of_pow_eq_one {Ω Γ : Type*} [Field Ω] [LinearOrderedCommGr
   have h : v x ^ m = 1 := by rw [← map_pow, hx, map_one]
   exact (pow_eq_one_iff_left hm).1 h
 
-theorem val_one_sub_pow_lt {Ω Γ : Type*} [Field Ω] [LinearOrderedCommGroupWithZero Γ]
-    (v : Valuation Ω Γ) {u : Ω} (hu : v u = 1) (h : v (1 - u) < 1) (i : ℕ) :
-    v (1 - u ^ i) < 1 := by
-  induction i with
-  | zero => simp
-  | succ i ih =>
-    have e : 1 - u ^ (i + 1) = (1 - u) + u * (1 - u ^ i) := by ring
-    rw [e]
-    refine v.map_add_lt h ?_
-    rwa [map_mul, hu, one_mul]
-
 theorem eq_of_pow_eq_one_of_valuation_sub_lt_one {Ω : Type u_1} [inst : Field Ω]
     (A : ValuationSubring Ω) (m : ℕ) {ζ ζ' : Ω} (h1 : ζ ^ m = 1) (h2 : ζ' ^ m = 1)
     (hm : ¬ A.valuation (m : Ω) < 1) (h : A.valuation (ζ - ζ') < 1) : ζ = ζ' := by

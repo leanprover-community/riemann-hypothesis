@@ -1234,13 +1234,6 @@ theorem mem_prime_dual_iff {K : Type} [Field K] (p : Ideal (DualNumber K)) [hp :
     have h2 : x * x = 0 := by rw [hx, TrivSqZeroExt.inr_mul_inr]
     exact (hp.mem_or_mem (h2 ▸ p.zero_mem)).elim id id
 
-theorem dual_pt_eq {K : Type} [Field K] (p q : Sp (DualNumber K)) : p = q := by
-  apply PrimeSpectrum.ext
-  ext x
-  have hp : p.asIdeal.IsPrime := p.isPrime
-  have hq : q.asIdeal.IsPrime := q.isPrime
-  exact (mem_prime_dual_iff (K := K) p.asIdeal x).trans (mem_prime_dual_iff (K := K) q.asIdeal x).symm
-
 theorem top_le_of_red {K : Type} [Field K] {T : Scheme.{0}} (φ : DualNumber K →+* K) (w : Sp (DualNumber K) ⟶ T)
     {V : T.Opens} (h : ⊤ ≤ (spMap φ ≫ w) ⁻¹ᵁ V) : ⊤ ≤ w ⁻¹ᵁ V := by
   exact GlobalTheory.CompHS.le_preimage_of_dualNumber φ w V h

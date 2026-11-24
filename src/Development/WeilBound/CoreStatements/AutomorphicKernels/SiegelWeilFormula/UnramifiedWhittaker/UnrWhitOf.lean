@@ -153,15 +153,7 @@ open scoped TensorProduct
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-theorem norm_le_one_iff_mem' (v : HeightOneSpectrum (𝓞 F)) (y : Fv F v) :
-    ‖y‖ ≤ 1 ↔ y ∈ v.adicCompletionIntegers F := by
-  rw [Valued.toNormedField.norm_le_one_iff, HeightOneSpectrum.mem_adicCompletionIntegers]
-
 omit [NumberField F] [NumberField E] in
-theorem mem_basisSet_two (σ : E →ₐ[F] E) {d : ℕ} (bs : Module.Basis (Fin d) F E) : (2 : F)⁻¹ ∈ basisSet σ bs := by
-  classical
-  simp [basisSet]
-
 omit [NumberField F] [NumberField E] in
 theorem mem_basisSet_one (σ : E →ₐ[F] E) {d : ℕ} (bs : Module.Basis (Fin d) F E) (k : Fin d) :
     bs.repr 1 k ∈ basisSet σ bs := by

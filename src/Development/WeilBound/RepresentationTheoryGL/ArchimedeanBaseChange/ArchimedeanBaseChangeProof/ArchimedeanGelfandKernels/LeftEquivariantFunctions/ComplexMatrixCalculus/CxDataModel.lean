@@ -1105,13 +1105,6 @@ theorem updateRow_smooth (j : Fin n) (v : Fin n → ℂ) : ContDiff ℝ ∞ (fun
       funext x; simp [hk]
     rw [e]; exact contDiff_apply ℝ (fun _ => (Fin n → ℂ)) k
 
-theorem adjugate_smooth : ContDiff ℝ ∞ (fun x : Mat n => x.adjugate) := by
-  refine contDiff_pi.2 fun i => contDiff_pi.2 fun j => ?_
-  have e : (fun x : Mat n => x.adjugate i j) = fun x : Mat n => (x.updateRow j (Pi.single i 1)).det := by
-    funext x; rw [Matrix.adjugate_apply]
-  rw [e]
-  exact Cxc.det_smooth.comp (updateRow_smooth j _)
-
 theorem inv_smooth : ContDiffOn ℝ ∞ (fun x : Mat n => x⁻¹) (GLs n) := by
   exact GlobalTheory.CompanionTheory.WaveCp.Rep.Mol.HfSmooth.contDiffOn_inv
 

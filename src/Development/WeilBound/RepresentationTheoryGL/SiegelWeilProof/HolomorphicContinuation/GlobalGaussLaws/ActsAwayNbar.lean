@@ -113,24 +113,6 @@ theorem wMat_key {R : Type} [CommRing R] {n : ℕ} (L : Matrix (Fin n) (Fin n) R
   · rw [h1, h]; abel
   · rw [h2, h3]; simp
 
-theorem exists_wPart (j : ℕ) : ∃ g : StdUnn.G D n, StdUnn.mat g = wMat (AE D) n j := by
-  have e1 := lastDiag_mul_self (AE D) n j
-  have e2 := lastDiag_mul_one_sub (AE D) n j
-  have e3 := one_sub_mul_lastDiag (AE D) n j
-  have e4 : (1 - lastDiag (AE D) n j) * (1 - lastDiag (AE D) n j) = 1 - lastDiag (AE D) n j := by
-    rw [Matrix.sub_mul, Matrix.one_mul, e2, sub_zero]
-  refine StdUnn.Model.exists_mat _ (StdUnn.blk4 (1 - lastDiag (AE D) n j) (-lastDiag (AE D) n j) (lastDiag (AE D) n j)
-    (1 - lastDiag (AE D) n j)) ?_ ?_ ?_
-  · simp only [wMat, StdUnn.Model.submatrix_fromBlocks_mul, e1, e2, e3, e4, Matrix.mul_neg, Matrix.neg_mul, neg_neg]
-    rw [← StdUnn.Model.block_matrix_one]; congr 1 <;> abel
-  · simp only [wMat, StdUnn.Model.submatrix_fromBlocks_mul, e1, e2, e3, e4, Matrix.mul_neg, Matrix.neg_mul, neg_neg]
-    rw [← StdUnn.Model.block_matrix_one]; congr 1 <;> abel
-  · have ha : adj (wMat (AE D) n j) = StdUnn.blk4 (1 - lastDiag (AE D) n j) (-lastDiag (AE D) n j) (lastDiag (AE D) n j)
-        (1 - lastDiag (AE D) n j) := by
-      rw [wMat, StdUnn.Model.adelicConjTranspose_blockMatrixTwoByTwoFin, adj_sub, adj_one, adj_neg, adj_lastDiag]
-    rw [ha]
-    exact wMat_key _ e1
-
 
 
 

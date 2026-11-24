@@ -1088,15 +1088,6 @@ theorem res_resGen {q : ℕ} [NeZero q] (i : ℤ) {V U : Scheme.{0}} (g : V ⟶ 
   unfold resGen
   rw [_root_.GlobalTheory.EtC.CupSpec.map_res, (_root_.GlobalTheory.EtC.twist_sections q i).2.2.2.1 V U g ζ]
 
-theorem val_one_smul {q : ℕ} [NeZero q] {M : Type*} [AddCommGroup M] [Module (ULift.{1} (ZMod q)) M] (y : M) :
-    (1 : ZMod q).val • y = y := by
-  by_cases hq : q = 1
-  · subst hq
-    have : Subsingleton M := Module.subsingleton (ULift.{1} (ZMod 1)) M
-    exact Subsingleton.elim _ _
-  · haveI : Fact (1 < q) := ⟨by have := NeZero.ne q; omega⟩
-    rw [ZMod.val_one, one_smul]
-
 theorem resGen_zero_eq {q : ℕ} [NeZero q] {U : Scheme.{0}} (ζ ξ : Prim q Γ(U, ⊤)) : resGen 0 ζ = resGen 0 ξ := by
   exact (GlobalTheory.EtC.ClsSpec.resGen_zero_eq ζ ξ).symm
 

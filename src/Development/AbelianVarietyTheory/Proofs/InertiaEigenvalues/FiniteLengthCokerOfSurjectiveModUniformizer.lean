@@ -697,15 +697,6 @@ section Bounds
 
 variable {K : Type} [NormedField K] [IsUltrametricDist K]
 
-theorem norm_coeff_sum_le {s : Type} (t : Finset s) (f : s → K⟦X⟧) {C : ℝ} (hC : 0 ≤ C)
-    (hf : ∀ k n, ‖coeff n (f k)‖ ≤ C) (n : ℕ) : ‖coeff n (∑ k ∈ t, f k)‖ ≤ C := by
-  classical
-  induction t using Finset.induction_on with
-  | empty => simpa using hC
-  | insert k t hk ih =>
-    rw [Finset.sum_insert hk, map_add (f := _)]
-    exact (IsUltrametricDist.norm_add_le_max _ _).trans (max_le (hf k n) ih)
-
 theorem bdd_matMul {μ ν ρ : Type} [Fintype ν] {Y : Matrix μ ν K⟦X⟧} {Z : Matrix ν ρ K⟦X⟧}
     (hY : ∃ c : ℝ, ∀ i j n, ‖coeff n (Y i j)‖ ≤ c) (hZ : ∃ c : ℝ, ∀ i j n, ‖coeff n (Z i j)‖ ≤ c) :
     ∃ c : ℝ, ∀ i j n, ‖coeff n ((Y * Z) i j)‖ ≤ c := GlobalTheory.BK.RdivSlice.bdd_matrix_mul hY hZ

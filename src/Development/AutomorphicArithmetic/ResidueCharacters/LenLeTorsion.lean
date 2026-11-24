@@ -59,14 +59,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     [Module O V] [IsScalarTower O LL V] {ρ : Representation LL G V}
     [TopologicalSpace V] [ContinuousAdd V] [ContinuousConstSMul LL V]
 
-theorem bd_le_hf (L : Lattice (O := O) ρ) : BD L ≤ HfD PD L := le_sup_right
-
-theorem len_le_torsion (L : Lattice (O := O) ρ) (c : O) :
-    Module.length O (↥(divisibleCocycles L ⊓ (HfD PD L).comap (c • LinearMap.id)) ⧸
-        (divisibleCocycles L ⊓ HfD PD L).comap (divisibleCocycles L ⊓ (HfD PD L).comap (c • LinearMap.id)).subtype) ≤
-      Module.length O ↥(Submodule.torsionBy O (DivisibleCohomology L ⧸ divisibleFiniteCohomology PD L) c) := by
-  exact GlobalTheory.TBLocal.len_le_torsion PD L c
-
 end Len
 
 end UpperTheory.N.TBLoc

@@ -94,11 +94,6 @@ theorem pull_mul_iff {φ : S →+* T} {x : Sp S ⟶ Xo.X} {x' : Sp T ⟶ Xo.X} (
     SecBC φ a x x' s t' ↔ ∀ i, t'.f i = scal x' (φ a) i * s'.f i :=
   (_root_.GlobalTheory.Frames.SecCalc.sec_calc E H Dw l Xo S T T φ _ x x' x' hx (eq_id_comp x')).2.2.1 a s s' t' h
 
-theorem pull_iff_of_mul {φ : S →+* T} {x : Sp S ⟶ Xo.X} {x' : Sp T ⟶ Xo.X} (hx : x' = spMap φ ≫ x) {a : S}
-    {s t : LB.Sec (PPx x)} {s' t' : LB.Sec (PPx x')} (hst : ∀ i, t.f i = scal x a i * s.f i)
-    (h : SecBC φ 1 x x' s s') : SecBC φ 1 x x' t t' ↔ ∀ i, t'.f i = scal x' (φ a) i * s'.f i := by
-  rw [pull_trans_iff (eq_id_comp x) hx ((secBC_id_iff x a s t).2 hst), RingHom.comp_id, pull_mul_iff hx h]
-
 theorem not_mem_of_mem_basicOpen_scal (x : Sp S ⟶ Xo.X) (a : S) (i : (PPx x).ι) (q : Gx x)
     (hq : q ∈ (Gx x).basicOpen (scal x a i)) : a ∉ (Formalism.L2.PjFree.gxSnd x q).asIdeal := by
   have e : scal x a i = ((Formalism.L2.PjFree.gxSnd x).appLE ⊤ ((PPx x).U i) le_top).hom (toΓ S a) := rfl
@@ -109,25 +104,6 @@ theorem not_mem_of_mem_basicOpen_scal (x : Sp S ⟶ Xo.X) (a : S) (i : (PPx x).�
     basicOpen_eq_of_affine (R := CommRingCat.of S) a
   erw [e2] at h2
   exact h2
-
-theorem secGen_of_secGen {x : Sp S ⟶ Xo.X} {θ s : LB.Sec (PPx x)} (hθ : SecGen x θ) (hs : SecNZ x s) :
-    SecGen x s := by
-  obtain ⟨a, ha, -⟩ := hθ s
-  have hu : IsUnit a := by
-    by_contra hn
-    obtain ⟨m, hm, ham⟩ := exists_max_ideal_of_mem_nonunits hn
-    obtain ⟨q, i, hq, hqi⟩ := hs ⟨m, hm.isPrime⟩
-    rw [ha i, Scheme.basicOpen_mul] at hqi
-    have := not_mem_of_mem_basicOpen_scal x a i q hqi.1
-    rw [hq] at this
-    exact this ham
-  obtain ⟨u, rfl⟩ := hu
-  intro t
-  obtain ⟨b, hb, hbu⟩ := hθ t
-  refine ⟨b * ↑u⁻¹, fun i => ?_, fun c hc => ?_⟩
-  · rw [hb i, ha i, ← _root_.mul_assoc, ← scal_mul, Units.inv_mul_cancel_right]
-  · have : c * u = b := hbu _ fun i => by rw [hc i, ha i, ← _root_.mul_assoc, ← scal_mul]
-    rw [← this, Units.mul_inv_cancel_right]
 
 theorem secNZ_pull {φ : S →+* T} {x : Sp S ⟶ Xo.X} {x' : Sp T ⟶ Xo.X} (hx : x' = spMap φ ≫ x)
     {s : LB.Sec (PPx x)} {s' : LB.Sec (PPx x')} (h : SecBC φ 1 x x' s s') (hs : SecNZ x s) : SecNZ x' s' :=

@@ -1531,12 +1531,6 @@ noncomputable section
 
 namespace GlobalTheory.SecDiv
 
-theorem resTop_map {Y : Scheme.{0}} {V W : Y.Opens} (h : W ≤ V) (c : Γ(Y, ⊤)) :
-    (Y.presheaf.map (homOfLE h).op).hom (ReciprocityTheory.ChartRestriction.G.Out.resTop V c) = ReciprocityTheory.ChartRestriction.G.Out.resTop W c := by
-  unfold ReciprocityTheory.ChartRestriction.G.Out.resTop
-  rw [← CommRingCat.comp_apply, ← Functor.map_comp]
-  rfl
-
 theorem exists_secIsMul {R : Type} [CommRing R] {Y : Scheme.{0}} (p : Y ⟶ Spec (CommRingCat.of R)) {L : LB Y}
     (a : R) (τ : LB.Sec L) : ∃ σ : LB.Sec L, ReciprocityTheory.ChartRestriction.G.DVR.SecIsMul p a σ τ := by
   exact GlobalTheory.IntegralExpansion.exists_secIsMul p a τ

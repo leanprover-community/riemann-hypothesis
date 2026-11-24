@@ -251,10 +251,6 @@ variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp]
     (hu : IsUnit (algebraMap (LetA O n) W.EE π'))
 
 include hπ0 hΔπ γ0 in
-theorem framepf_hhx_ι_Δ (i : ZMod n) (g : PowerSeries O) (δ : W.Gam) (hδ : δ ∈ W.DelF) :
-    W.γA δ (framepf_ι π' i g) = framepf_ι π' i g := by
-  exact Formalism.MainNotions.N.Ln34.framepf_ι_Δ π' hπ0 hΔπ γ0 i g δ hδ
-
 include hπ0 hΔπ γ0 in
 theorem framepf_hhx_vec_mem (H : Matrix (Fin Bs.r) (Fin Bs.r) (PowerSeries O)) (k : Fin Bs.r) :
     framepf_vec Bs π' (c - 1) H k ∈ NcS W T (c - 1) := by

@@ -89,16 +89,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels GlobalTheory.Compa
 noncomputable section
 namespace GlobalTheory.CompanionTheory.Ar.RT.Inj.Rank
 
-theorem countable_compactOpen (X : Type) [TopologicalSpace X] [SecondCountableTopology X] :
-    {U : Set X | IsOpen U ∧ IsCompact U}.Countable := by
-  apply GlobalTheory.ThK.Dbl.Prs.countable_compactOpen
-
-theorem mem_span_indicator {X : Type} [TopologicalSpace X] {f : X → ℂ}
-    (hf : f ∈ GlobalTheory.WeilM.SB X) :
-    f ∈ Submodule.span ℂ
-      ((fun U : Set X => U.indicator (1 : X → ℂ)) '' {U : Set X | IsOpen U ∧ IsCompact U}) := by
-  apply GlobalTheory.ThK.Dbl.Prs.mem_span_indicator <;> assumption
-
 theorem rank_SB_le (X : Type) [TopologicalSpace X] [SecondCountableTopology X] :
     Module.rank ℂ (GlobalTheory.WeilM.SB X) ≤ Cardinal.aleph0 := by
   exact GlobalTheory.ThK.Dbl.Prs.rank_SB_le X

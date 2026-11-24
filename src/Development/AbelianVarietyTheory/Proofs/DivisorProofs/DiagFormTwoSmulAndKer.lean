@@ -182,9 +182,6 @@ open ReciprocityTheory.ChartRestriction.G.TB.ValAt
 
 variable {X : Scheme.{0}}
 
-theorem pspec_eq (p q : PrimeSpectrum ℂ) : p = q :=
-  PrimeSpectrum.ext ((Ideal.eq_bot_of_prime p.asIdeal).trans (Ideal.eq_bot_of_prime q.asIdeal).symm)
-
 theorem chart_pt (L : LB X) (hL : L.IsLB) (y : Sp ℂ ⟶ X) : ∃ j, ⊤ ≤ y ⁻¹ᵁ L.U j := by
   exact GlobalTheory.TorusRM.ahFactor_im_int_chart L hL y
 

@@ -105,18 +105,6 @@ variable {L : Type} [Field L] {n : ℕ}
 def tau (σ : L →+* L) (M : Matrix (Fin n) (Fin n) L) : Matrix (Fin n) (Fin n) L :=
   fun i j => σ (M (Fin.rev j) (Fin.rev i))
 
-theorem antiJ_self_rev (i : Fin n) : antiJ L n i (Fin.rev i) = 1 :=
-  ite_eq_left (by have := i.2; rw [Fin.val_rev]; omega)
-
-theorem antiJ_rev_self (i : Fin n) : antiJ L n (Fin.rev i) i = 1 :=
-  ite_eq_left (by have := i.2; rw [Fin.val_rev]; omega)
-
-theorem antiJ_ne {i k : Fin n} (h : k ≠ Fin.rev i) : antiJ L n i k = 0 :=
-  ite_eq_right fun e => h (Fin.ext (by have := i.2; rw [Fin.val_rev]; omega))
-
-theorem antiJ_ne' {j k : Fin n} (h : k ≠ Fin.rev j) : antiJ L n k j = 0 :=
-  ite_eq_right fun e => h (Fin.ext (by have := j.2; rw [Fin.val_rev]; omega))
-
 theorem antiJ_mul (M : Matrix (Fin n) (Fin n) L) (i j : Fin n) :
     (antiJ L n * M) i j = M (Fin.rev i) j := GlobalTheory.LGrp.antiJ_mul_apply n M i j
 

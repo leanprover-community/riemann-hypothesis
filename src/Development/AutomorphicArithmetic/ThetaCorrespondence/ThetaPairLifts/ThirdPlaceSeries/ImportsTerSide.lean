@@ -974,10 +974,6 @@ open Formalism Formalism.MainNotions Formalism.BasicNotions Formalism.BasicNotio
 
 namespace GlobalTheory.TwistLabel
 
-theorem teich_zero' {g : ℕ} [Fact g.Prime] (t : Formalism.CyclotomicNorms.Fbar g →* ℂ)
-    (ht : ∀ x y, x ≠ 0 → y ≠ 0 → t x = t y → x = y) : t 0 = 0 := by
-  exact GlobalTheory.TameLabels.teich_zero t ht
-
 theorem teich_injective' {g : ℕ} [Fact g.Prime] (t : Formalism.CyclotomicNorms.Fbar g →* ℂ)
     (ht : ∀ x y, x ≠ 0 → y ≠ 0 → t x = t y → x = y) : Function.Injective t := by
   exact GlobalTheory.TameLabels.teich_injective t ht

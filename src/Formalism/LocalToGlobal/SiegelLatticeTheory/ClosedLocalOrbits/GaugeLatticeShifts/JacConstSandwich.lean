@@ -1313,21 +1313,6 @@ theorem normRL : NormRL := by
 def sgI (k r : ℕ) (i : Fin (2 * r + k + 1)) : Fin (2 * r + k + 1) :=
   if r ≤ i.val ∧ i.val ≤ r + k then i else ⟨2 * r + k - i.val, by omega⟩
 
-theorem Log_Hpk_eq (i j : Fin (2 * r + k + 1)) :
-    Hpk k r i j = if j = sgI k r i then (if i.val = r + k then -1 else 1) else 0 := by
-  rcases i with ⟨i, hi⟩
-  rcases j with ⟨j, hj⟩
-  unfold Hpk sgI
-  split_ifs <;> (try simp only [Fin.ext_iff] at *) <;> first | rfl | (exfalso; omega)
-
-theorem Log_sgI_sgI (i : Fin (2 * r + k + 1)) : sgI k r (sgI k r i) = i := by
-  unfold sgI
-  split_ifs <;> simp_all [Fin.ext_iff] <;> omega
-
-theorem Log_sgI_val (i : Fin (2 * r + k + 1)) : ((sgI k r i).val = r + k ↔ i.val = r + k) := by
-  unfold sgI
-  split_ifs <;> simp_all <;> omega
-
 theorem hpk_sq : Hpk k r * Hpk k r = 1 := PI.SwBig.GU.Hpk_sq
 
 theorem logG : LogG := by

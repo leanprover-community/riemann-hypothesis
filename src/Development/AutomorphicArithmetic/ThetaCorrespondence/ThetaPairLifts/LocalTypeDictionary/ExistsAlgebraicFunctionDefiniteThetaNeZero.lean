@@ -1275,19 +1275,6 @@ open FourierTransform MeasureTheory Filter Topology
 
 namespace GlobalTheory.GaussTransport
 
-theorem iteratedDeriv_cexp_mul (a : ℂ) (n : ℕ) :
-    iteratedDeriv n (fun y : ℝ => Complex.exp (a * y)) = fun y : ℝ => a ^ n * Complex.exp (a * y) := by
-  induction n with
-  | zero => funext y; simp
-  | succ n ih =>
-    rw [iteratedDeriv_succ, ih]
-    funext y
-    have h1 : HasDerivAt (fun y : ℝ => (y : ℂ)) 1 y := by
-      simpa using (hasDerivAt_id y).ofReal_comp
-    have h : HasDerivAt (fun y : ℝ => a ^ n * Complex.exp (a * y)) (a ^ n * (Complex.exp (a * y) * (a * 1))) y :=
-      ((h1.const_mul a).cexp).const_mul (a ^ n)
-    rw [h.deriv]; ring
-
 theorem hasTemperateGrowth_expI : Function.HasTemperateGrowth (fun t : ℝ => Complex.exp (Complex.I * t)) := by
   exact GlobalTheory.CompanionTheory.AdelicHeis.temperate_exp_I
 

@@ -193,10 +193,6 @@ end GlobalTheory.JR.OrbLC
 
 namespace GlobalTheory.JR.OrbLC
 
-theorem continuous_star_of_unram (F E : Type) [NontriviallyNormedField F] [NontriviallyNormedField E]
-    [NormedAlgebra F E] [StarRing E] [Unram F E] : Continuous (star : E → E) :=
-  (AddMonoidHomClass.isometry_of_norm (starAddEquiv (R := E)) (fun x => Unram.norm_star (F := F) x)).continuous
-
 theorem continuous_actU (F E : Type) [NontriviallyNormedField F] [NontriviallyNormedField E] [NormedAlgebra F E]
     [StarRing E] [Unram F E] (r : ℕ) :
     Continuous (fun p : Matrix.unitaryGroup (Fin r) E × Hn r F E => actU p.1 p.2) := by

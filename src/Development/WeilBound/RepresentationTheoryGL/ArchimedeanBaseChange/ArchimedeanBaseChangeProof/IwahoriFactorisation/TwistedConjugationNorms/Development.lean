@@ -167,13 +167,6 @@ theorem Phi_conj_apply {n : ℕ} (A : Matrix (Fin n) (Fin n) R) (i j : Fin n) :
     Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   ring
 
-theorem neg_one_pow_mul_rev {n : ℕ} (i : Fin n) :
-    ((-1 : R) ^ (i : ℕ)) * (-1) ^ (i.rev : ℕ) = (-1) ^ (n - 1) := by
-  rw [← pow_add, Fin.val_rev]
-  congr 1
-  have := i.2
-  omega
-
 theorem diagT_val_apply {n : ℕ} (t : Fin n → Rˣ) (i j : Fin n) :
     (GlobalTheory.SmGL.diagT R (Fin n) t).val i j = if i = j then (t i : R) else 0 := by
   rw [GlobalTheory.SmGL.val_diagT, Matrix.diagonal_apply]

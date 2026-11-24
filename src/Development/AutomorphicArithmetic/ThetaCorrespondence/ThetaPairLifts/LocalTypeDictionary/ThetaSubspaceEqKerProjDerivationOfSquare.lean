@@ -157,16 +157,6 @@ theorem isHecke_quot {F E : Type} [Field F] [NumberField F] [Field E] [NumberFie
     {χ χ' : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Chr F E} (h : GlobalTheory.LFun.IsHecke F E χ) (h' : GlobalTheory.LFun.IsHecke F E χ') :
     GlobalTheory.LFun.IsHecke F E (χ / χ') := GlobalTheory.ThK.RealUniq.isHecke_div' h h'
 
-theorem resEtaPow_quot {R A : Type} [CommRing R] [CommRing A] [Algebra R A] {K : Subgroup Rˣ}
-    {χ χ' : Aˣ →* Circle} {n m k : ℕ} (h : GlobalTheory.WeilM.ResEtaPow K χ n) (h' : GlobalTheory.WeilM.ResEtaPow K χ' m) (hk : k = n + m) :
-    GlobalTheory.WeilM.ResEtaPow K (χ / χ') k := by
-  unfold GlobalTheory.WeilM.ResEtaPow at h h' ⊢
-  intro u
-  rw [MonoidHom.div_apply, Circle.coe_div, h u, h' u, hk]
-  split_ifs
-  · norm_num
-  · rw [div_eq_mul_inv, ← inv_pow, inv_neg_one, ← pow_add]
-
 theorem isPair_small {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
     {B : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Base F E} {a a' : ℕ} {G : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Geo σ a a'} {X : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Chars F E}
     {om : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep σ G.V G.W} {om' : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.Rep σ G.V' G.W} (h : GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.IsTriple B G X om om') :

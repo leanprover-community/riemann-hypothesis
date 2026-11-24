@@ -102,14 +102,6 @@ theorem sigBasis_apply {n : ℕ} (b : Module.Basis (Fin n) K.E B.A) (i : Fin n) 
     sigBasis B b i = B.σ (b i) := by
   simp [sigBasis]
 
-theorem sigBasis_repr {n : ℕ} (b : Module.Basis (Fin n) K.E B.A) (z : B.A) (k : Fin n) :
-    (sigBasis B b).repr (B.σ z) k = K.c (b.repr z k) := by
-  have hz : B.σ z = ∑ i, K.c (b.repr z i) • sigBasis B b i := by
-    conv_lhs => rw [← b.sum_repr z]
-    rw [sig_sum]
-    simp only [sigBasis_apply]
-  rw [hz, Module.Basis.repr_sum_self]
-
 theorem trace_sig (y : B.A) : Algebra.trace K.E B.A (B.σ y) = K.c (Algebra.trace K.E B.A y) := by
   exact GlobalTheory.UnitLemma.PairClass.trace_σ K B y
 

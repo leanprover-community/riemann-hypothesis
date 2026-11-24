@@ -1275,11 +1275,6 @@ theorem rank_eq {O k M : Type} [CommRing O] [Nontrivial O] [Field k] [Algebra O 
     rw [← ha, h2, map_mul, hl, zero_mul]
   simpa using hli.fintype_card_le_finrank
 
-theorem map_units_zpow {O L : Type} [CommRing O] [Field L] (f : O →+* L) (u : Oˣ) (a : ℤ) :
-    f ((u ^ a : Oˣ) : O) = f u ^ a := by
-  have : f ((u ^ a : Oˣ) : O) = ((Units.map (f : O →* L) (u ^ a) : Lˣ) : L) := rfl
-  rw [this, map_zpow, Units.val_zpow_eq_zpow_val]; rfl
-
 section Gen
 variable {G : Type} [Group G] [TopologicalSpace G] {Qp K₀ K : Type} [Field Qp] [Field K₀] [Field K]
     [Algebra Qp K₀] [Algebra Qp K] [Algebra K₀ K] [IsScalarTower Qp K₀ K]

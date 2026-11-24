@@ -394,22 +394,6 @@ theorem isLocalHom_intMap (i : k ≃+* k') (hv : ∀ x : k, valuation k' (i x) �
     rw [intMap_coe, intMap_coe, RingEquiv.symm_apply_apply])
   rwa [e] at h
 
-theorem map_mem_kOne (i : k ≃+* k') (hv : ∀ x : k, valuation k' (i x) ≤ 1 ↔ valuation k x ≤ 1) {n : ℕ}
-    {g : GL (Fin n) k} (hg : g ∈ GlobalTheory.SplitWeil.KOne k (Fin n)) :
-    GeneralLinearGroup.map i.toRingHom g ∈ GlobalTheory.SplitWeil.KOne k' (Fin n) := by
-  haveI := isLocalHom_intMap i hv
-  obtain ⟨g0, hg0, rfl⟩ := Subgroup.mem_map.1 hg
-  refine Subgroup.mem_map.2 ⟨GeneralLinearGroup.map (intMap i hv) g0, ?_, ?_⟩
-  · rw [MonoidHom.mem_ker] at hg0 ⊢
-    ext a b
-    have h := congrArg (fun m : GL (Fin n) (IsLocalRing.ResidueField 𝒪[k]) => (m.val : Matrix (Fin n) (Fin n) _) a b) hg0
-    simp only [GeneralLinearGroup.map_apply, Units.val_one] at h ⊢
-    rw [← IsLocalRing.ResidueField.map_residue, h]
-    by_cases hab : a = b <;> simp [Matrix.one_apply, hab]
-  · ext a b
-    simp [GeneralLinearGroup.map_apply]
-    rfl
-
 end GlobalTheory.KOneTransport
 
 

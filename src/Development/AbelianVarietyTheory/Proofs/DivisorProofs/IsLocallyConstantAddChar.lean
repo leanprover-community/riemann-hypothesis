@@ -66,10 +66,6 @@ section -- clump:auto
 
 namespace GlobalTheory.PowerTwoNormLowerBound
 
-theorem norm_pow_two_pow_sub_one_ge {z : ℂ} (h : ∀ n : ℕ, ‖z ^ n - 1‖ < (1 / 2 : ℝ)) :
-    ∀ k : ℕ, (3 / 2 : ℝ) ^ k * ‖z - 1‖ ≤ ‖z ^ (2 ^ k) - 1‖ := by
-  apply GlobalTheory.IterationConvergence.iter <;> assumption
-
 theorem main : ∀ {z : ℂ}, (∀ (n : ℕ), ‖z ^ n - (1 : ℂ)‖ < (1 / 2 : ℝ)) → z = (1 : ℂ) := by
   exact GlobalTheory.IterationConvergence.main
 

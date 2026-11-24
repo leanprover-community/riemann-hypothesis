@@ -114,9 +114,6 @@ theorem sb_box {X : Type} [TopologicalSpace X] {κ κ' : Type} {g₁ : (κ → X
     · simp [image_eq_zero_of_notMem_tsupport h]
     · simp [image_eq_zero_of_notMem_tsupport h]
 
-theorem boxFun_zero_left {R κ κ' : Type} (φ : (κ' → R) → ℂ) : boxFun (0 : (κ → R) → ℂ) φ = 0 := by
-  funext x; simp [boxFun]
-
 theorem boxFun_add_left {R κ κ' : Type} (a b : (κ → R) → ℂ) (φ : (κ' → R) → ℂ) :
     boxFun (a + b) φ = boxFun a φ + boxFun b φ := by
   funext x; simp [boxFun, add_mul]

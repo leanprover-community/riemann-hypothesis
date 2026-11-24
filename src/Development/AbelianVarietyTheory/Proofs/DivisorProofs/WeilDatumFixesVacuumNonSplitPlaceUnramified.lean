@@ -126,10 +126,6 @@ theorem exists_lift (y : Af D.host.F ⊗[D.host.F] D.host.E) : ∃ x : AE D, inf
   obtain ⟨e, he, -⟩ := GlobalTheory.AdSplit.exists_adele_equiv D.host.F D.host.E
   refine ⟨e.symm (0, y), (he _).1.symm.trans ?_, (he _).2.symm.trans ?_⟩ <;> simp
 
-theorem tmul_trace {F E R : Type} [Field F] [Field E] [Algebra F E] [CommRing R] [Algebra F R] (a : R) (x y : E)
-    (t : F) (ht : algebraMap F E t = x + y) : a ⊗ₜ[F] x + a ⊗ₜ[F] y = (t • a) ⊗ₜ[F] (1 : E) := by
-  rw [← TensorProduct.tmul_add, ← ht, TensorProduct.smul_tmul, Algebra.algebraMap_eq_smul_one]
-
 theorem trace_mem (z : AE D) : ∃ a, z + cA D z = algebraMap (AF D.host.F) (AE D) a := by
   exact GlobalTheory.IdemModTwo.exists_add_cA D z
 

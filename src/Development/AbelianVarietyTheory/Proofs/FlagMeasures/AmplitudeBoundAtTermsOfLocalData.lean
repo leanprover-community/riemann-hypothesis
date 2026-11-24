@@ -759,10 +759,6 @@ theorem reix_apply (p : ∀ τ : D.what₂.Tau, Formalism.REAL.UJ (X.B.I.ε (vOf
     reix X p (vOf X τ) = p τ := by
   exact MeasurableEquiv.piCongrLeft_apply_apply (β := fun v => Formalism.REAL.UJ (X.B.I.ε v)) X.pl.symm p τ
 
-theorem reix_symm (x : X.B.I.Ginf) (τ : D.what₂.Tau) : (reix X).symm x τ = x (vOf X τ) := by
-  conv_rhs => rw [← (reix X).apply_symm_apply x]
-  exact (reix_apply _ τ).symm
-
 theorem trI_apply (x : X.B.I.Ginf) (τ : D.what₂.Tau) : trI C x τ = GlobalTheory.PullbackComparison.eM C τ (x (vOf X τ)) := rfl
 
 theorem trI_emb : MeasurableEmbedding (trI C) := GlobalTheory.TypeAsm.CovTrans.measEmb_trI C

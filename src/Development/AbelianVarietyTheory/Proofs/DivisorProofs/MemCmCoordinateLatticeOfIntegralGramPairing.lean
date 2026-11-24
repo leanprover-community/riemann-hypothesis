@@ -1332,57 +1332,6 @@ end GlobalTheory.TorsionKill
 noncomputable section
 namespace GlobalTheory.TorsionKill
 
-theorem kill_torsion : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E)
-    (K : Type) [Field K] [NumberField K] (σ : K →+* ℂ) (A B : GlobalTheory.CM.PAT H (Sp (𝓞 K))) (G : A.t.G ⟶ B.t.G),
-    IsMonHom G → ∀ m : ℕ, 0 < m →
-    (∀ x : Over.mk (spMap (σ.comp (algebraMap (𝓞 K) K))) ⟶ A.t.G, x ^ m = 1 → x ≫ G = 1) →
-    ∀ (T : Over (Sp (𝓞 K))) (x : T ⟶ A.t.G), x ^ m = 1 → x ≫ G = 1 := by
-  intro E _ _ _ H K _ _ σ A B G _ m hm hpt T x hx
-  let inc : pullback (𝟙 A.t.G ^ m) η[A.t.G] ⟶ A.t.G := pullback.fst _ _
-  suffices hY : inc ≫ G = 1 by
-    have hx' : x ≫ (𝟙 A.t.G ^ m) = toUnit T ≫ η[A.t.G] := by
-      rw [MonObj.comp_pow, Category.comp_id]; exact hx
-    rw [← pullback.lift_fst x (toUnit T) hx', Category.assoc]
-    change _ ≫ inc ≫ G = 1
-    rw [hY, MonObj.comp_one]
-  have := flat_ker _ A.pol m hm
-  have := isSchemeTheoreticallyDominant_complexPoint K σ
-  have := B.ab.proper
-  have := A.ab.proper
-  have : IsSeparated B.t.G.hom := inferInstance
-  refine eq_of_pullback_eq (spMap (σ.comp (algebraMap (𝓞 K) K))) ?_
-  set t := spMap (σ.comp (algebraMap (𝓞 K) K)) with ht
-  let F := Over.pullback t
-  have hA' : IsAbelianScheme (F.obj A.t.G) := ReciprocityTheory.ChartRestriction.G.Out.TLinPf.isAb_pullback t A.t.G A.ab
-  have : IsSeparated (F.obj B.t.G).hom := by change IsSeparated (pullback.snd _ _); infer_instance
-  have : LocallyOfFiniteType (F.obj B.t.G).hom := by change LocallyOfFiniteType (pullback.snd _ _); infer_instance
-  have hpow : F.map (𝟙 A.t.G ^ m) = 𝟙 (F.obj A.t.G) ^ m := by
-    simpa using map_pow (F.homMonoidHom (X := A.t.G) (M := A.t.G)) (𝟙 A.t.G) m
-  have hinc : inc ≫ (𝟙 A.t.G ^ m) = 1 := by
-    rw [show inc ≫ (𝟙 A.t.G ^ m) = pullback.snd (𝟙 A.t.G ^ m) η[A.t.G] ≫ η[A.t.G] from pullback.condition,
-      toUnit_unique (pullback.snd (𝟙 A.t.G ^ m) η[A.t.G]) (toUnit _)]
-    rfl
-  have hFinc : F.map inc ≫ (𝟙 (F.obj A.t.G) ^ m) = toUnit _ ≫ η[F.obj A.t.G] := by
-    rw [← hpow, ← F.map_comp, hinc, Functor.map_one]; rfl
-  have key := kill_complex (F.obj A.t.G) (F.obj B.t.G) hA' m hm (F.map G) (fun p => by
-    let y := p ≫ pullback.fst (𝟙 (F.obj A.t.G) ^ m) η[F.obj A.t.G]
-    have hy1 : y ≫ 𝟙 (F.obj A.t.G) ^ m = 1 := by
-      have c : pullback.fst (𝟙 (F.obj A.t.G) ^ m) η[F.obj A.t.G] ≫ 𝟙 (F.obj A.t.G) ^ m =
-          pullback.snd (𝟙 (F.obj A.t.G) ^ m) η[F.obj A.t.G] ≫ η[F.obj A.t.G] := pullback.condition
-      simp only [y, Category.assoc, c]
-      rw [← Category.assoc, toUnit_unique (p ≫ pullback.snd _ _) (toUnit _)]
-      rfl
-    have hyp : ptOf t y ^ m = 1 := by
-      rw [← Category.comp_id (ptOf t y), ← MonObj.comp_pow, ← ptOf_comp, hpow, hy1, ptOf_one]
-    have h2 : ptOf t (y ≫ F.map G) = ptOf t 1 := by
-      rw [ptOf_comp, ptOf_one]; exact hpt _ hyp
-    have h3 := ptOf_injective t h2
-    simp only [y, Category.assoc] at h3
-    rw [h3, MonObj.comp_one])
-  have hl : F.map inc = pullback.lift (F.map inc) (toUnit _) hFinc ≫ pullback.fst _ _ :=
-    (pullback.lift_fst _ _ _).symm
-  rw [F.map_comp, Functor.map_one, hl, Category.assoc, key, MonObj.comp_one]
-
 end GlobalTheory.TorsionKill
 end -- clump:auto
 end -- clump:auto

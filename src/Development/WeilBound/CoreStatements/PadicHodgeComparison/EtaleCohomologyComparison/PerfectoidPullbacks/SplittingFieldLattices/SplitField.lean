@@ -402,20 +402,6 @@ theorem quoM_bij {b : Base} {L : b.Fun} (Q : ObjectProperty (Thick L)) (s : ℕ)
   change T.obj.pdPow ((s : ℤ).toNat) = ⊥
   simpa using h _ T.property
 
-theorem dividedPowerFiltration_dividedPowersBot_of_one_le' {K : Type} [Field K] {r : ℕ} (hr : 1 ≤ r) : pdP (dividedPowersBot K) r = ⊥ := by
-  refine Ideal.span_eq_bot.2 ?_
-  rintro _ ⟨l, hl, hs, rfl⟩
-  have h : ∃ p ∈ l, p.1 ≠ 0 := by
-    by_contra h
-    push Not at h
-    have : (l.map Prod.fst).sum = 0 := List.sum_eq_zero (by simpa using h)
-    omega
-  obtain ⟨p, hp, h0⟩ := h
-  refine List.prod_eq_zero (List.mem_map.2 ⟨p, hp, ?_⟩)
-  have e : p.2 = 0 := hl p hp
-  rw [e]
-  exact (dividedPowersBot K).dpow_eval_zero h0
-
 theorem tfbase_K {K : Type} [Field K] [CharZero K] {s : ℕ} (hs : 1 ≤ s) : TFBase (dividedPowersBot K) 1 s := by
   exact GlobalTheory.CompanionTheory.ConeLocal.tfBase_dpBot hs
 

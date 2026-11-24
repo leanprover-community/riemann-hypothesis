@@ -64,12 +64,6 @@ theorem exists_basis {σ : E →ₐ[F] E} (h : IsCMExt F E σ) {β : E} (hβ : �
     ∃ B : Module.Basis (Fin 2) F E, B 0 = 1 ∧ B 1 = β := by
   apply PositivityTheory.RL.exists_basis <;> assumption
 
-theorem eq_add_tmul (B : Module.Basis (Fin 2) F E) (x : AF F ⊗[F] E) :
-    x = (Algebra.TensorProduct.basis (AF F) B).repr x 0 ⊗ₜ[F] B 0 +
-      (Algebra.TensorProduct.basis (AF F) B).repr x 1 ⊗ₜ[F] B 1 := by
-  conv_lhs => rw [← (Algebra.TensorProduct.basis (AF F) B).sum_repr x]
-  simp [Fin.sum_univ_two, Algebra.TensorProduct.basis_apply, TensorProduct.smul_tmul']
-
 theorem piInf_tmul {w : InfinitePlace F} (τ : GlobalTheory.AdelicU.EmbOver E w) (a : AF F) (y : E) :
     GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels.piInf τ (a ⊗ₜ[F] y) =
       InfinitePlace.Completion.extensionEmbedding w (a.1 w) * τ.1 y := rfl

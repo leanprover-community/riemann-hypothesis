@@ -394,9 +394,6 @@ theorem fm_card_residue (v : HeightOneSpectrum (𝓞 F)) :
 theorem fm_incl_mem (v : HeightOneSpectrum (𝓞 F)) (c : 𝓞 E) :
     inclE (F := F) (v.adicCompletion F) (c : E) ∈ intV E v := sc_left_mem v c
 
-theorem fm_one_tmul_mem (v : HeightOneSpectrum (𝓞 F)) (c : v.adicCompletionIntegers F) :
-    (1 : E) ⊗ₜ[F] (c : v.adicCompletion F) ∈ intV E v := sc_right_mem v (c : v.adicCompletion F) c.2
-
 theorem fm_mem_latS {n : Type} [Fintype n] [DecidableEq n] (v : HeightOneSpectrum (𝓞 F)) (a : n → E)
     (y : n → E ⊗[F] v.adicCompletion F) :
     y ∈ latS (F := F) (v.adicCompletion F) (intV E v) (LevGap.diagLat a) ↔

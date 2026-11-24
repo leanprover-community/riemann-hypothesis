@@ -865,10 +865,6 @@ theorem stdSum_inr_ne_inl {r t N : ℕ} (h : r + t = N) (j : Fin t) (l : Fin r) 
     stdSum h (Sum.inr j) ≠ stdSum h (Sum.inl l) := fun e => by
   simpa using (stdSum h).injective e
 
-theorem wPerm_first {i t : ℕ} (h : (i + 1) + t = i + t + 1) :
-    wPerm h (stdSum h (Sum.inl (Fin.last i))) = Fin.last (i + t) := by
-  exact GlobalTheory.CompanionTheory.BZRes.wPerm_last h
-
 theorem lastRow_wInv {i t : ℕ} (h : (i + 1) + t = i + t + 1) :
     vecMul (eLast k (i + t)) (((wGL k h)⁻¹ : GL (Fin (i + t + 1)) k) : Matrix _ _ k) =
       Pi.single (stdSum h (Sum.inl (Fin.last i))) 1 := by

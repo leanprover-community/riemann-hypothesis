@@ -542,14 +542,6 @@ namespace PI.WSF
 
 open Formalism.BasicNotions MvPolynomial
 
-theorem cf_eq_sum_of_subset {σ : Type} (f g : MvPolynomial σ ℂ) (S : Finset (σ →₀ ℕ))
-    (hS : f.support ⊆ S) :
-    Formalism.REAL.fockF f g =
-      ∑ m ∈ S, f.coeff m * star (g.coeff m) * ((∏ k ∈ m.support, (m k).factorial : ℕ) : ℂ) := by
-  unfold Formalism.REAL.fockF
-  refine Finset.sum_subset hS fun m _ hm => ?_
-  rw [MvPolynomial.notMem_support_iff.mp hm, zero_mul, zero_mul]
-
 theorem cf_add_left {σ : Type} [DecidableEq σ] (f f' g : MvPolynomial σ ℂ) :
     Formalism.REAL.fockF (f + f') g = Formalism.REAL.fockF f g + Formalism.REAL.fockF f' g := by
   exact PI.WGB.fockF_add_left_B f f' g

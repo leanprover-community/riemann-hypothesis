@@ -148,21 +148,6 @@ theorem eq_zero_of_forall_v_le {c : L}
     simpa using this
   omega
 
-theorem int_eq_zero_of_forall_dvd {ϖ : L} {σ : L →+* L} {q : ℕ} (h : IsUnramInv ϖ σ q) {c : intL L}
-    (hc : ∀ m : ℕ, piO h ^ m ∣ c) : c = 0 := by
-  refine Subtype.ext (eq_zero_of_forall_v_le fun m => ?_)
-  obtain ⟨d, hd⟩ := hc m
-  have hd' : (c : L) = ϖ ^ m * (d : L) := by
-    rw [hd]; simp
-  have hdv : Valued.v (d : L) ≤ 1 := d.2
-  rw [hd', map_mul, map_pow, h.2.2.2.1]
-  calc ((Multiplicative.ofAdd (-1 : ℤ) : Multiplicative ℤ) : WithZero (Multiplicative ℤ)) ^ m * Valued.v (d : L)
-      ≤ ((Multiplicative.ofAdd (-1 : ℤ) : Multiplicative ℤ) : WithZero (Multiplicative ℤ)) ^ m * 1 := by gcongr
-    _ = _ := by
-      rw [mul_one, ← WithZero.coe_pow, ← ofAdd_nsmul]
-      congr 2
-      simp
-
 theorem eq_zero_of_forall_mem_piPow {ϖ : L} {σ : L →+* L} {q : ℕ} (h : IsUnramInv ϖ σ q)
     (P : GlobalTheory.UTr.Csr (sigO σ h.2.1)) (a : GlobalTheory.UTr.Alg P) (ha : ∀ m, a ∈ piPow h P m) : a = 0 := by
   exact GlobalTheory.NormEq.Cmpl.eq_zero_of_forall_mem_piPow h P ha

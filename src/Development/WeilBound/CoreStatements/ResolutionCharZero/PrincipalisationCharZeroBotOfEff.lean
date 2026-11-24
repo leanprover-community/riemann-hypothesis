@@ -76,9 +76,6 @@ def GTransform : Prop :=
     ((strictTransform π Z D).support : Set X₁) ∪ π.base ⁻¹' (Z.support : Set X) =
       π.base ⁻¹' (D.support : Set X) ∪ π.base ⁻¹' (Z.support : Set X)
 
-theorem strictTransform_eq_blowup {X X₁ : Scheme.{0}} (π : X₁ ⟶ X) (Z D : X.IdealSheafData) :
-    strictTransform π Z D = Blowup.strictTransform π Z D := rfl
-
 theorem support_strictTransform_union {X X₁ : Scheme.{0}} [IsLocallyNoetherian X₁] (π : X₁ ⟶ X)
     (Z D : X.IdealSheafData) :
     ((strictTransform π Z D).support : Set X₁) ∪ π.base ⁻¹' (Z.support : Set X) =
