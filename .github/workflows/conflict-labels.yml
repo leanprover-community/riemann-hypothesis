@@ -1,0 +1,97 @@
+name: conflict labels
+
+# Keeps two labels on the open pull requests into main that are not drafts and not batches:
+# `main-conflict` on those that GitHub says conflict with main, and `batch-conflict` on those that
+# conflict with a batch being built, that is a `batch/...` branch of this repository whose pull
+# request is labelled `building`. A pull request labelled `batch-building` is in a batch, and does
+# not get `batch-conflict`. One whose description says that it depends on an open batch, with a
+# line such as `- [ ] depends on: #123`, does not get `main-conflict`: it is expected to carry
+# the batch's changes and so to conflict with main until the batch lands.
+#
+# The first time a pull request gets `batch-conflict` for a batch, it is also labelled
+# `awaiting-author` and told in a comment which files conflict and what to do: merge the batch's
+# branch into its own, add the `depends on` line and comment `ready`, or wait until the batch has
+# landed and then merge main. `main-conflict` comes with no comment, because GitHub already shows
+# the conflict. Both labels come off as soon as their reason has gone, whoever put them on;
+# `awaiting-author` never does here. `verification/BATCHES.md` says this for authors, and
+# `scripts/conflict-labels.py` has the exact rules.
+#
+# A run looks at one pull request when it is opened, reopened, pushed to, marked ready, or has
+# its description or base changed. It looks at every open pull request when a batch's pull
+# request is opened, pushed to, closed or reopened or gains or loses `building`, when main moves
+# on, every half hour, and when started by hand without a pull request number. GitHub starts no
+# run for changes made with a workflow token, such as the batch queue labelling a batch
+# `building`, so the half-hourly sweep catches those. The sweep is offset from the inbox's.
+#
+# pull_request_target gives the token write access for pull requests from forks. Nothing from a
+# pull request is checked out or run: the script comes from the same trusted commit as this
+# workflow, pull requests are read through GitHub's API, and their commits are fetched as git
+# objects without file contents and compared with `git merge-tree`. Only the files that both
+# sides of a comparison change, and the Lean files whose import lines are read, are fetched.
+
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize, ready_for_review, edited, closed, labeled, unlabeled]
+  push:
+    branches: [main]
+  schedule:
+    - cron: '14,44 * * * *'
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: Pull request to look at (optional; without one, every open pull request is)
+        type: number
+        required: false
+
+permissions: {}
+
+jobs:
+  labels:
+    # Forks with Actions turned on would otherwise run against themselves. Events on a batch's
+    # pull request start a sweep; label changes count only for `building`. Events on any other
+    # pull request start a run for it alone; an edit counts only if it changed the description,
+    # where the `depends on` lines are, or the base.
+    if: >-
+      ${{ github.repository == 'leanprover-community/riemann-hypothesis' && (
+          contains(fromJSON('["schedule", "push", "workflow_dispatch"]'), github.event_name) ||
+          (github.event_name == 'pull_request_target' &&
+           startsWith(github.event.pull_request.head.ref, 'batch/') &&
+           github.event.pull_request.head.repo.full_name == github.repository &&
+           (contains(fromJSON('["opened", "synchronize", "closed", "reopened"]'), github.event.action) ||
+            (contains(fromJSON('["labeled", "unlabeled"]'), github.event.action) &&
+             github.event.label.name == 'building'))) ||
+          (github.event_name == 'pull_request_target' &&
+           !(startsWith(github.event.pull_request.head.ref, 'batch/') &&
+             github.event.pull_request.head.repo.full_name == github.repository) &&
+           (contains(fromJSON('["opened", "reopened", "synchronize", "ready_for_review"]'), github.event.action) ||
+            (github.event.action == 'edited' && (github.event.changes.body || github.event.changes.base)))) ) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # One sweep at a time, and one run at a time for each pull request. A run that is dropped
+    # while it waits loses nothing, because each run reads everything from GitHub again.
+    concurrency:
+      group: conflict-labels-${{ (github.event_name == 'pull_request_target' && !(startsWith(github.event.pull_request.head.ref, 'batch/') && github.event.pull_request.head.repo.full_name == github.repository) && github.event.pull_request.number) || inputs.pr || 'sweep' }}
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Check out this workflow's own copy of the scripts
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        # No `ref`: the default is the commit GitHub runs this workflow from. When a batch's pull
+        # request is merged, that commit is also its merge commit, and checkout refuses it when it
+        # is passed as `ref`.
+        with:
+          persist-credentials: false
+          sparse-checkout: scripts
+      - name: Label pull requests that conflict with main or with the batch being built
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          # Empty for a sweep.
+          PR: ${{ (github.event_name == 'pull_request_target' && !(startsWith(github.event.pull_request.head.ref, 'batch/') && github.event.pull_request.head.repo.full_name == github.repository) && github.event.pull_request.number) || inputs.pr }}
+        run: |
+          one=()
+          if [ -n "$PR" ]; then one=(--pr "$PR"); fi
+          python3 scripts/conflict-labels.py --repo "$REPO" "${one[@]}" --summary "$GITHUB_STEP_SUMMARY"

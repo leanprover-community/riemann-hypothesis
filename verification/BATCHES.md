@@ -77,7 +77,53 @@ queue stays `frozen`.
 
 `batch-building`, `frozen` and `awaiting-author` keep a pull request out of the inbox (see
 `.github/workflows/inbox.yml`). The label names are in `scripts/batch-labels.py`, and the `if:`
-of the sync job in `.github/workflows/batch-queue.yml` names some of them as well.
+of the sync job in `.github/workflows/batch-queue.yml` and of `.github/workflows/conflict-labels.yml`
+name some of them as well.
+
+## Conflicts with main and with the batch
+
+Another workflow (`.github/workflows/conflict-labels.yml`, which runs
+`scripts/conflict-labels.py`) labels the open pull requests into `main` that are not drafts and
+not batches:
+
+- `main-conflict`: GitHub says the pull request conflicts with `main`. There is no comment,
+  because GitHub shows the conflict too. A pull request that depends on an open batch does not
+  get it (see below).
+- `batch-conflict`: the pull request conflicts with the head of a batch being built, one labelled
+  `building`. git cannot merge a file that both change since they left `main`, or one of the two
+  deletes a Lean file that the other starts to import. The pull requests in the batch, labelled
+  `batch-building`, never get it. The first time a pull request gets it for a batch, it is also
+  labelled `awaiting-author` and told in a comment which files conflict and what to do.
+
+Both labels come off by themselves once the reason has gone: the conflict was resolved, the pull
+request was closed or joined the batch, or the batch was merged or closed. `awaiting-author` stays
+until the author comments `ready`. `batch-conflict` keeps a pull request out of the inbox;
+`main-conflict` does not, since a pull request that conflicts with `main` still needs a first look.
+
+The workflow finds these conflicts from the branches alone, whatever the batch's description says.
+A pull request that the description leaves out because it conflicts is told twice: once by the
+batch queue, quoting its entry, and once by this workflow.
+
+### If your pull request is labelled `batch-conflict`
+
+1. Merge the batch's branch (`batch/...`, named in the comment) into your branch, or rebase onto
+   it, and resolve the conflicts.
+2. Add this line at the top of the description, where #123 is the batch's pull request:
+
+   ```
+   - [ ] depends on: #123
+   ```
+
+   Your pull request now carries the batch's changes, and may conflict with `main`, until the
+   batch lands. The line says that this is expected, and keeps `main-conflict` off it.
+3. Comment `ready`.
+
+Or wait until the batch has landed, then merge `main` into your branch and resolve the conflicts
+there.
+
+A line counts as a dependency when it starts with `depends on`, `depend on` or `depends upon`,
+optionally after `- [ ]` or `- [x]`, and names the batch's pull request as `#123` or by its
+address.
 
 ## Several batches at once
 

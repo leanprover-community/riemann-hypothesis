@@ -88,7 +88,8 @@ lake comparator --config comparator.json \
 ## CI
 
 To lend a Linux machine with plenty of memory and disk, see
-[CI-RUNNERS.md](verification/CI-RUNNERS.md). To assemble a batch of pull requests by hand, see
+[CI-RUNNERS.md](verification/CI-RUNNERS.md). To assemble a batch of pull requests by hand, or
+to resolve a pull request's conflict with the batch being built (`batch-conflict`), see
 [BATCHES.md](verification/BATCHES.md). The CI scripts are in [`scripts/`](scripts/) and
 [`tools/ci_native/`](tools/ci_native/README.md).
 
