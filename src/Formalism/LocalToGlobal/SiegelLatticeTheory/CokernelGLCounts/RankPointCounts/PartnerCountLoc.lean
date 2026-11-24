@@ -101,8 +101,7 @@ theorem zz2' (u u' : D.what₂.Word) (Z : PairVal.MatR D) :
   simp only [Matrix.map_apply, CntLocal.ZZP, Loc.HermSp.ZZplusOf, hM, CntLocal.ZhatLoc, LsDatumB.sgnP,
     Matrix.mul_diagonal, Matrix.diagonal_mul, Matrix.of_apply, hge, hgq, map_mul, map_sub, snd_proj_symm,
     apply_ite (p2 sg.e), map_zero, Prod.snd_mul, ← adeleInfiniteComponent_apply, ← adele_ext_components, hcj2, hf1, hf2, hm2, Zd.hcj p,
-    Matrix.sub_apply, Matrix.smul_apply, smul_eq_mul, Ecorner, Sg, RingHom.comp_apply, map_pow, map_neg, map_one,
-    Matrix.transpose_apply]
+    Matrix.sub_apply, Matrix.smul_apply, smul_eq_mul, Ecorner, Sg, RingHom.comp_apply, Matrix.transpose_apply]
   split_ifs with h
   · obtain ⟨rfl, rfl⟩ := h
     simp only [Fin.val_last, Nat.sub_self, pow_zero]
@@ -135,7 +134,7 @@ theorem mm1' (Tn T'n : ℕ) (w : Point D.host.E (D.R.rS + 1)) :
     simp only [if_true, modMat_blk, map_sub, map_mul, fst_proj_algebraMap, htw1, hqi, apply_ite (p1 sg.e), hta1, map_zero,
       hφ1, RingHom.comp_apply]
     by_cases ha : a = Fin.last D.R.rS
-    · subst ha; split_ifs <;> first | ring1 | (exfalso; rename_i h1 h2; exact h2 h1.2) | (exfalso; rename_i h1 h2; exact h1 h2.2)
+    · subst ha; split_ifs <;> first | ring1 | (exfalso; rename_i h1 h2; exact h2 h1.2)
     · simp only [ha, false_and, if_false]; ring
   · rw [if_neg hb, if_neg hb, map_zero, map_zero, mul_zero, zero_mul, mul_zero]
     by_cases ha : a = Fin.last D.R.rS ∧ b = Fin.last D.R.rS
@@ -171,7 +170,7 @@ theorem mm2' (Tn T'n : ℕ) (w : Point D.host.E (D.R.rS + 1)) :
     simp only [if_true, modMat_blk, map_sub, map_mul, snd_proj_algebraMap, htw2, hqi, apply_ite (p2 sg.e), hta2, map_zero,
       hφ2, RingHom.comp_apply, hsr]
     by_cases ha : a = Fin.last D.R.rS
-    · subst ha; split_ifs <;> first | ring1 | (exfalso; rename_i h1 h2; exact h2 h1.2) | (exfalso; rename_i h1 h2; exact h1 h2.2)
+    · subst ha; split_ifs <;> first | ring1 | (exfalso; rename_i h1 h2; exact h2 h1.2)
     · simp only [ha, false_and, if_false]; ring
   · rw [if_neg hb, if_neg hb, map_zero, map_zero, mul_zero, zero_mul, mul_zero, zero_mul]
     by_cases ha : a = Fin.last D.R.rS ∧ b = Fin.last D.R.rS

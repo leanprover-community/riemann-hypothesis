@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.VanishingIdealConePrimeHomogeneous
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 import Mathlib.Algebra.Order.Floor.Extended
@@ -64,23 +65,7 @@ namespace GlobalTheory.CxPointsSep
 
 theorem eq_zero_of_forall_algHom {k A : Type} [Field k] [IsAlgClosed k] [CommRing A] [Algebra k A]
     [IsReduced A] [Algebra.FiniteType k A] (a : A) (h : ∀ e : A →ₐ[k] k, e a = 0) : a = 0 := by
-  haveI : IsJacobsonRing A := isJacobsonRing_of_finiteType (A := k)
-  have hrad : (⊥ : Ideal A).IsRadical := by
-    rw [Ideal.isRadical_bot_iff]; infer_instance
-  have hj : (⊥ : Ideal A).jacobson = ⊥ := IsJacobsonRing.out inferInstance hrad
-  rw [← Ideal.mem_bot, ← hj, Ideal.jacobson, Ideal.mem_sInf]
-  rintro m ⟨-, hm⟩
-  letI : Field (A ⧸ m) := Ideal.Quotient.field m
-  haveI : Module.Finite k (A ⧸ m) := finite_of_finite_type_of_isJacobsonRing k (A ⧸ m)
-  have hb : Function.Bijective (algebraMap k (A ⧸ m)) :=
-    IsAlgClosed.algebraMap_bijective_of_isIntegral
-  let i : k ≃ₐ[k] (A ⧸ m) := AlgEquiv.ofBijective (Algebra.ofId k (A ⧸ m)) hb
-  have := h ((i.symm : (A ⧸ m) →ₐ[k] k).comp (Ideal.Quotient.mkₐ k m))
-  rw [AlgHom.comp_apply] at this
-  have h2 : Ideal.Quotient.mkₐ k m a = 0 := by
-    apply i.symm.injective
-    rw [map_zero]; exact this
-  exact Ideal.Quotient.eq_zero_iff_mem.mp h2
+  apply (config := { allowSynthFailures := true }) GlobalTheory.ZH.ConePrime.eq_zero_of_forall_algHom <;> assumption
 
 theorem isReduced_complex_tensor (D : Type) [CommRing D] [IsDomain D] [Algebra ℚ D]
     [Algebra.FiniteType ℚ D] : IsReduced (ℂ ⊗[ℚ] D) := by

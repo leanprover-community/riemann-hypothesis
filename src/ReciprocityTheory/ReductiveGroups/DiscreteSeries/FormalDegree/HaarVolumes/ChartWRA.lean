@@ -59,10 +59,6 @@ namespace ReciprocityTheory.ChartRestriction.DS
 
 namespace ChartWRAux
 
-theorem mp_curry (ι κ : Type*) [Fintype ι] [Fintype κ] :
-    MeasurePreserving (Function.curry : (ι × κ → ℂ) → ι → κ → ℂ) volume volume := by
-  first | exact Bl.CurryModusPonens.goal1 .. | (apply Bl.CurryModusPonens.goal1 <;> assumption) | (intros; apply Bl.CurryModusPonens.goal1 <;> assumption)
-
 theorem mp_perm4 {α β γ δ : Type*} [MeasurableSpace α] [MeasurableSpace β] [MeasurableSpace γ]
     [MeasurableSpace δ] (μa : Measure α) (μb : Measure β) (μc : Measure γ) (μd : Measure δ)
     [SigmaFinite μa] [SigmaFinite μb] [SigmaFinite μc] [SigmaFinite μd] :
@@ -131,7 +127,7 @@ theorem measurePreserving_rho_reorder : MeasurePreserving (rho0 (N := N)) volume
   have h2 := (measurePreserving_second_reorder (N := N)).prod (volume_measurePreserving_sumPiEquivProdPi_symm (fun _ : Lo N ⊕ Up N => ℂ))
   have h3 := volume_measurePreserving_sumPiEquivProdPi_symm (fun _ : Fin N ⊕ (Lo N ⊕ Up N) => ℂ)
   have h4 := volume_measurePreserving_piCongrLeft (fun _ : Fin N × Fin N => ℂ) (idx N)
-  have h5 := mp_curry (Fin N) (Fin N)
+  have h5 := _root_.Bl.CurryModusPonens.goal1 (Fin N) (Fin N)
   exact h5.comp (h4.comp (h3.comp (h2.comp h1)))
 
 theorem rho_reorder_eq_rho : rho0 (N := N) = rho := by

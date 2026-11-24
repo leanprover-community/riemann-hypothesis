@@ -45,6 +45,7 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.CntLocal
+import Formalism.SharpRestriction.CuspSpanNormBounds.LatticeGluingRadicals
 
 @[expose] public section
 
@@ -73,7 +74,6 @@ theorem gram_comb' {ι : Type} [Fintype ι] (p : ι → S.V) (A : Matrix ι ι E
   Finset.mul_sum]
   first
     | (refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun k _ => ?_; ring)
-    | (rw [Finset.sum_comm]; refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun k _ => ?_; ring)
 
 variable {r : ℕ}
 
@@ -119,7 +119,7 @@ theorem hgv_e (a : Fin (r + 1)) (d : Fin r) :
   induction a using Fin.lastCases with
   | last =>
     rw [if_neg (Fin.castSucc_lt_last d).ne']
-    simp only [gv, Fin.snoc_last, LinearMap.map_smulₛₗ, LinearMap.smul_apply, hsw0 S (h.ez d), smul_zero]
+    simp only [gv, Fin.snoc_last, LinearMap.map_smulₛₗ, LinearMap.smul_apply, _root_.Formalism.MainNotions.LatticeGluingRadicals.p_symm_zero S (h.ez d), smul_zero]
   | cast a =>
     simp only [gv, Fin.snoc_castSucc, Fin.castSucc_inj, h.ye]
     by_cases had : a = d
@@ -139,7 +139,7 @@ theorem hz_gv (a : Fin (r + 1)) : S.hT z (gv y z N a) = if a = Fin.last r then 1
   | cast a =>
     rw [if_neg (Fin.castSucc_lt_last a).ne]
     simp only [gv, Fin.snoc_castSucc]
-    exact hsw0 S (h.yz a)
+    exact _root_.Formalism.MainNotions.LatticeGluingRadicals.p_symm_zero S (h.yz a)
 
 theorem hgv_gv (a a' : Fin (r + 1)) : S.hT (gv y z N a) (gv y z N a') =
     if a = Fin.last r ∧ a' = Fin.last r then -((N : E)⁻¹) else 0 := by
@@ -153,7 +153,7 @@ theorem hgv_gv (a a' : Fin (r + 1)) : S.hT (gv y z N a) (gv y z N a') =
       field_simp
     | cast a' =>
       simp only [gv, Fin.snoc_last, Fin.snoc_castSucc, LinearMap.map_smulₛₗ, LinearMap.smul_apply,
-        hsw0 S (h.yz a'), smul_zero]
+        _root_.Formalism.MainNotions.LatticeGluingRadicals.p_symm_zero S (h.yz a'), smul_zero]
       simp [(Fin.castSucc_lt_last a').ne]
   | cast a =>
     induction a' using Fin.lastCases with
@@ -173,7 +173,7 @@ theorem hf_pv (a a' : Fin (r + 1)) :
   induction a using Fin.lastCases with
   | last =>
 
-    simp only [pv, Fin.snoc_last, map_add (f := _), map_sum, map_smul, smul_eq_mul, hsw0 S (h.ez _), mul_zero,
+    simp only [pv, Fin.snoc_last, map_add (f := _), map_sum, map_smul, smul_eq_mul, _root_.Formalism.MainNotions.LatticeGluingRadicals.p_symm_zero S (h.ez _), mul_zero,
     Finset.sum_const_zero, add_zero, hwz, hz_gv h hN]
     simp [eq_comm]
   | cast a =>
@@ -190,8 +190,8 @@ theorem hpv_pv (ht : S.hT w0 w0 = tv N N' Z) (a a' : Fin (r + 1)) :
     induction b using Fin.lastCases with
     | last => simp [gv, hwz]
     | cast b => simp [gv, hwy]
-  have hwg : ∀ b, S.hT w0 (gv y z N b) = 0 := fun b => hsw0 S (hgw b)
-  have hwe' : ∀ d, S.hT w0 (e d) = 0 := fun d => hsw0 S (hwe d)
+  have hwg : ∀ b, S.hT w0 (gv y z N b) = 0 := fun b => _root_.Formalism.MainNotions.LatticeGluingRadicals.p_symm_zero S (hgw b)
+  have hwe' : ∀ d, S.hT w0 (e d) = 0 := fun d => _root_.Formalism.MainNotions.LatticeGluingRadicals.p_symm_zero S (hwe d)
   have key : S.hT (pv e y z N N' Z w0 a) (pv e y z N N' Z w0 a') =
       S.hT (gv y z N a) (gv y z N a') +
       ∑ d, Psi N' Z d a' * S.hT (gv y z N a) (e d) +

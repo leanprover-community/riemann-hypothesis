@@ -48,6 +48,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import Formalism.ThetaLogCoordinates.UniformThetaSubstitution.FrobeniusLiftNorms.ScalingSwapLemmas
 
 @[expose] public section
 
@@ -165,7 +166,7 @@ theorem biextension_of_exp_spec (hE : ExpSpec) (hP : BiextensionPointsIntegral) 
     rw [map_subst (hasSubst_of_constantCoeff_zero fun s => hE0 ab.1 ab.2 s), hbm]
     simp only [Formalism.DworkPowerSeriesWeights.Transfer.map_entLog]
   have hS' : Simeq Bt (subst Xp (sumE (map j be0))) := by
-    have := (Formalism.InvariantFactorPaths.G7.Top.mapSimeq K0 K _ j hj).1 _ _ hS
+    have := (_root_.Formalism.InvariantFactorPaths.G7.mapSimeq_statement K0 K _ j hj).1 _ _ hS
     rwa [hmapB, map_subst hs0, map_sumE, hXp'] at this
   have hΦ' := (Formalism.InvariantFactorPaths.G7.Top.simeqRules K (Bool × ι × Fin N0 × Fin N1)).2.2.2.2 _ Φ _ Xp h0 hi hΦ
   have hBΦ : Simeq Bt (subst Xp Φ) := hR.2.2.1 _ _ _ hS' (hR.2.1 _ _ hΦ')

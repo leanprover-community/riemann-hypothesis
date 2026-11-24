@@ -74,11 +74,11 @@ theorem duU_map_gramG (φ ψ : E →+* F) (hφ : ∀ x, φ (M.L.cj x) = ψ x) (h
       (duU_P r q⁻¹).transpose * duU_Gh r (Zh.map ψ) (Zh.map φ) T T' * duU_P r q⁻¹ := by
   ext (a | a) (b | b) <;>
     simp [gramG, duU_Gh, duU_P, cor, Matrix.fromBlocks_transpose, Matrix.fromBlocks_multiply, hφ, hφa,
-      Matrix.mul_apply, Matrix.one_apply, Matrix.smul_apply, Finset.sum_ite_eq, Finset.sum_ite_eq', apply_ite φ] <;>
+      Matrix.mul_apply, Matrix.one_apply, Matrix.smul_apply, Finset.sum_ite_eq', apply_ite φ] <;>
     split_ifs <;> ring
 
 theorem duU_det_P (x : F) : (duU_P r x).det = x ^ (r + 1) := by
-  simp [duU_P, Matrix.det_fromBlocks_zero₂₁, Matrix.det_smul]
+  simp [duU_P, Matrix.det_fromBlocks_zero₂₁]
 
 theorem duU_inv_last (A : Matrix (Fin (r + 1)) (Fin (r + 1)) F) :
     A⁻¹ (Fin.last r) (Fin.last r) = Ring.inverse A.det * (A.submatrix Fin.castSucc Fin.castSucc).det := by
@@ -91,7 +91,7 @@ theorem duU_cor_mul_cor (N : Matrix (Fin (r + 1)) (Fin (r + 1)) F) (s t : F) :
   ext a b
   simp only [Matrix.mul_apply, Matrix.of_apply, cor]
   by_cases ha : a = Fin.last r <;> by_cases hb : b = Fin.last r <;>
-    simp [ha, hb, Finset.sum_ite_eq', Finset.sum_ite_eq]
+    simp [ha, hb, Finset.sum_ite_eq']
 
 theorem duU_det_Gh (A B : Matrix (Fin (r + 1)) (Fin (r + 1)) F) (T T' : F) (hA : A.det ≠ 0)
     (h : A.det * B.det - T * T' * ((A.submatrix Fin.castSucc Fin.castSucc).det *

@@ -349,7 +349,7 @@ theorem wf_add_single (m : σ →₀ ℕ) (i : σ) :
     intro x
     by_cases hx : x = i
     · subst hx; simp [Nat.factorial_succ]; ring
-    · simp [hx, Finsupp.single_apply]
+    · simp [hx]
   rw [Finset.prod_congr rfl (fun x _ => h x), Finset.prod_mul_distrib, Finset.prod_ite_eq']
   simp [mul_comm]
 
@@ -450,8 +450,8 @@ theorem pderiv_comm' (i j : σ) (q : MvPolynomial σ ℚ_[p]) :
   rw [coeff_pderiv, coeff_pderiv, coeff_pderiv, coeff_pderiv]
   by_cases h : i = j
   · subst h; rfl
-  · have h1 : ((m + Finsupp.single i 1 : σ →₀ ℕ) : σ → ℕ) j = m j := by simp [Finsupp.single_apply, h]
-    have h2 : ((m + Finsupp.single j 1 : σ →₀ ℕ) : σ → ℕ) i = m i := by simp [Finsupp.single_apply, Ne.symm h]
+  · have h1 : ((m + Finsupp.single i 1 : σ →₀ ℕ) : σ → ℕ) j = m j := by simp [h]
+    have h2 : ((m + Finsupp.single j 1 : σ →₀ ℕ) : σ → ℕ) i = m i := by simp [Ne.symm h]
     rw [h1, h2, show m + Finsupp.single i 1 + Finsupp.single j 1 = m + Finsupp.single j 1 + Finsupp.single i 1 by
       rw [add_assoc, add_comm (Finsupp.single i 1), ← add_assoc]]
     ring
@@ -479,11 +479,11 @@ theorem coeff_Dop_pow (u v : σ) (huv : u ≠ v) (a : ℕ) (G : MvPolynomial σ 
     rw [pow_succ', Module.End.mul_apply, Dop_apply, coeff_pderiv, coeff_pderiv]
     rw [ih]
     have hv : ((β + Finsupp.single u 1 : σ →₀ ℕ) : σ → ℕ) v = β v := by
-      simp [Finsupp.single_apply, huv]
+      simp [huv]
     have hu' : ((β + Finsupp.single u 1 + Finsupp.single v 1 : σ →₀ ℕ) : σ → ℕ) u = β u + 1 := by
-      simp [Finsupp.single_apply, huv]
+      simp [huv]
     have hv' : ((β + Finsupp.single u 1 + Finsupp.single v 1 : σ →₀ ℕ) : σ → ℕ) v = β v + 1 := by
-      simp [Finsupp.single_apply, huv]
+      simp [huv]
     rw [hv, hu', hv']
     have hm : β + Finsupp.single u 1 + Finsupp.single v 1 + a • (Finsupp.single u 1 + Finsupp.single v 1) =
         β + (a + 1) • (Finsupp.single u 1 + Finsupp.single v 1) := by
@@ -521,7 +521,7 @@ theorem Dop_pow_monomial_add (u v : σ) (huv : u ≠ v) (a : ℕ) (δ : σ →�
   · subst hb; simp
   · have : δ + a • (Finsupp.single u 1 + Finsupp.single v 1) ≠ β + a • (Finsupp.single u 1 + Finsupp.single v 1) :=
       fun h' => hb (add_right_cancel h')
-    simp [this, hb]
+    simp [hb]
 
 theorem Dop_pow_monomial_lt (u v : σ) (huv : u ≠ v) (a : ℕ) (γ : σ →₀ ℕ) (h : ℚ_[p]) (hlt : γ u < a) :
     (Dop u v ^ a) (monomial γ h) = 0 := by
@@ -531,7 +531,7 @@ theorem Dop_pow_monomial_lt (u v : σ) (huv : u ≠ v) (a : ℕ) (γ : σ →₀
   have : γ ≠ β + a • (Finsupp.single u 1 + Finsupp.single v 1) := by
     intro h'
     have := congrArg (fun f : σ →₀ ℕ => f u) h'
-    simp [Finsupp.single_apply, huv] at this
+    simp [huv] at this
     omega
   rw [if_neg this]
   simp [AddMonoidAlgebra.coeff_zero]
@@ -539,7 +539,7 @@ theorem Dop_pow_monomial_lt (u v : σ) (huv : u ≠ v) (a : ℕ) (γ : σ →₀
 theorem pderiv_X_pow_mul (i y : σ) (hiy : i ≠ y) (m : ℕ) (G : MvPolynomial σ ℚ_[p]) :
     pderiv i (X y ^ m * G) = X y ^ m * pderiv i G := by
   rw [Derivation.leibniz, X_pow_eq_monomial, pderiv_monomial]
-  have : (Finsupp.single y m : σ →₀ ℕ) i = 0 := by simp [Finsupp.single_apply, Ne.symm hiy]
+  have : (Finsupp.single y m : σ →₀ ℕ) i = 0 := by simp [Ne.symm hiy]
   rw [this]
   simp
 
@@ -858,7 +858,7 @@ theorem freezeSub_good (LL : Letters (N + 1)) (ρ : Fin r) (hW : LL.vec (Fin.las
   · apply AllMono.X_mul_X
     refine ⟨by rw [δv_add, δv_single, δv_single, dv]; exact add_comm _ _, ?_⟩
     simp only [Finsupp.add_apply, Finsupp.single_apply, Prod.mk.injEq]
-    simp [hne, Ne.symm hc]
+    simp [hne]
     try (split_ifs <;> omega)
   · subst hc
     apply AllMono.X_mul_X
@@ -870,12 +870,12 @@ theorem freezeSub_good (LL : Letters (N + 1)) (ρ : Fin r) (hW : LL.vec (Fin.las
     · apply AllMono.X_mul_X
       refine ⟨by rw [δv_add, δv_single, δv_single, dv]; exact add_comm _ _, ?_⟩
       simp only [Finsupp.add_apply, Finsupp.single_apply, Prod.mk.injEq]
-      simp [hne, Ne.symm hc]
+      simp [hne]
       split_ifs <;> omega
     · apply AllMono.X_mul_X
       refine ⟨by rw [δv_add, δv_single, δv_single]; rfl, ?_⟩
       simp only [Finsupp.add_apply, Finsupp.single_apply, Prod.mk.injEq]
-      simp [hne, hi, Ne.symm hc, Fin.castSucc_ne_last]
+      simp [hne, hi, Fin.castSucc_ne_last]
 
 theorem freezeSub_int (LL : Letters (N + 1)) (ρ : Fin r) (v : Fin (N + 1) × Fin r) :
     IsIntP (freezeSub p LL ρ v) := by
@@ -1005,7 +1005,7 @@ theorem fock_Dop_term (x y : σ) (hxy : x ≠ y) (a a' m : ℕ) (β₀ β₀' : 
       (β₀' + Finsupp.single y m) + a' • (Finsupp.single x 1 + Finsupp.single y 1) := by abel
   rw [e1, e2, Dop_pow_monomial_add x y hxy, Dop_pow_monomial_add x y hxy, fock_monomial]
   have hx : ∀ δ : σ →₀ ℕ, (δ + Finsupp.single y m) x = δ x := by
-    intro δ; simp [Finsupp.single_apply, Ne.symm hxy]
+    intro δ; simp [Ne.symm hxy]
   have hy : ∀ δ : σ →₀ ℕ, (δ + Finsupp.single y m) y = δ y + m := by
     intro δ; simp
   rw [hx, hx, hy, hy]

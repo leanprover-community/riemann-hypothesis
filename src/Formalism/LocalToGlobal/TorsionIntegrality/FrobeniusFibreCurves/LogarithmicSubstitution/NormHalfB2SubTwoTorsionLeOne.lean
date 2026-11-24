@@ -109,7 +109,7 @@ end Norm
 
 theorem curve_sigma_function_holds : CurveSigma := by
   intro K _ _ W s2
-  obtain ⟨h0, h1⟩ := phODef K s2 (wpReg W) (logSer W) (Formalism.L2.Th1.A.ZSer.log_cc W)
+  obtain ⟨h0, h1⟩ := _root_.Formalism.L2.Th1.B.Ph.logSigmaPullbackSpec K s2 (wpReg W) (logSer W) (Formalism.L2.Th1.A.ZSer.log_cc W)
     (Formalism.L2.Th1.A.ZSer.log_one W)
   exact ⟨h0, h1, addSgStar K (g₂ W) (g₃ W) s2 (wpReg W) (bridgeWp K W)⟩
 

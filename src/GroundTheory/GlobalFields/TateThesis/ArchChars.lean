@@ -63,12 +63,9 @@ namespace GroundTheory.Global
 
 open Complex
 
-theorem isCoveringMap_circleExp : IsCoveringMap (Circle.exp : ℝ → Circle) :=
-  Circle.isCoveringMap_exp
-
 theorem existsUnique_circleExp_of_continuous (χ : ℝ → Circle) (hχ : Continuous χ)
     (hmul : ∀ s t, χ (s + t) = χ s * χ t) : ∃! τ : ℝ, ∀ t, χ t = Circle.exp (τ * t) := by
-  have cov := isCoveringMap_circleExp
+  have cov := _root_.Circle.isCoveringMap_exp
   have h0 : χ 0 = 1 := by
     have h := hmul 0 0
     rw [add_zero] at h

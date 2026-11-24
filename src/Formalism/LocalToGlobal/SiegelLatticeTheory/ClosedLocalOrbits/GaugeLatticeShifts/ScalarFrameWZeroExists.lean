@@ -64,12 +64,7 @@ section Lin
 
 variable {n : ℕ} (ε : Fin n → Bool)
 
-theorem Jm_mul_self : Formalism.REAL.Jm ε * Formalism.REAL.Jm ε = 1 := by
-  simp only [Formalism.REAL.Jm, Matrix.diagonal_mul_diagonal]
-  rw [← Matrix.diagonal_one]
-  congr 1
-  funext a
-  split_ifs <;> norm_num
+alias Jm_mul_self := _root_.Formalism.REAL.Jm_mul_self
 
 theorem hJ_fsum_r {ι : Type*} [Fintype ι] (x : Fin n → ℂ) (g : ι → ℂ)
     (y : ι → Fin n → ℂ) : hJ ε x (∑ i, g i • y i) = ∑ i, g i * hJ ε x (y i) := by
@@ -154,7 +149,7 @@ theorem partner_exists (e : Fin r → Fin n → ℂ) (z : Fin n → ℂ) (he : L
     rw [h, if_neg (Fin.castSucc_lt_last b).ne']
   have hqE : ∀ a d, hJ ε (q (Fin.castSucc a)) (e d) = if d = a then 1 else 0 := by
     intro a d
-    rw [hJ_cj ε (q (Fin.castSucc a)) (e d), hEq]
+    rw [_root_.Formalism.L2.SG.PoincareInHH.Cut.hJ_conj ε (q (Fin.castSucc a)) (e d), hEq]
     split_ifs <;> simp
   have hEz : ∀ c, hJ ε z (e c) = 0 := fun c => hJ_zero_of_cj ε (hez c)
   have hA : ∀ a b, hJ ε (q (Fin.castSucc a))
@@ -168,7 +163,7 @@ theorem partner_exists (e : Fin r → Fin n → ℂ) (z : Fin n → ℂ) (he : L
     intro a b
     rw [hJ_fsum_l]
     simp only [hEq, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
-    rw [map_mul, hJ_cj ε (q (Fin.castSucc a)) (q (Fin.castSucc b))]
+    rw [map_mul, _root_.Formalism.L2.SG.PoincareInHH.Cut.hJ_conj ε (q (Fin.castSucc a)) (q (Fin.castSucc b))]
     have hc2 : conj (-(1 / 2 : ℂ)) = -(1 / 2) := by
       rw [map_neg, map_div₀, map_one, map_ofNat]
     rw [hc2]
@@ -211,7 +206,7 @@ theorem scalar_frame_w_zero_exists (k : ℕ) (e p : Fin r → Fin n → ℂ) (z 
     ring
   have hpe : ∀ a b, hJ ε (p a) (e b) = if a = b then 1 else 0 := by
     intro a b
-    rw [hJ_cj ε (p a) (e b), hep]
+    rw [_root_.Formalism.L2.SG.PoincareInHH.Cut.hJ_conj ε (p a) (e b), hep]
     by_cases h : a = b
     · subst h; simp
     · rw [if_neg (Ne.symm h), if_neg h, map_zero]
@@ -306,16 +301,13 @@ theorem tvm_apply (u : ι → Fin n → ℂ) (ξ : ι → ℂ) (v : Fin n → �
 
 theorem tvm_fix (u : ι → Fin n → ℂ) (ξ : ι → ℂ) {v : Fin n → ℂ} (hv : ∀ b, hJ ε (u b) v = 0) :
     tvm ε u ξ *ᵥ v = v := by
-  rw [tvm_apply]
-  simp [hv]
+  simp [tvm_apply, hv]
 
 theorem tvm_one (u : ι → Fin n → ℂ) (ξ : ι → ℂ) (j : ι) {v : Fin n → ℂ} (hj : ξ j * hJ ε (u j) v = 1)
     (hv : ∀ b, b ≠ j → hJ ε (u b) v = 0) : tvm ε u ξ *ᵥ v = v - u j := by
-  rw [tvm_apply, Finset.sum_eq_single j, hj, one_smul]
-  · intro b _ hb
-    rw [hv b hb, mul_zero, zero_smul]
-  · intro h
-    exact absurd (Finset.mem_univ j) h
+  rw [tvm_apply, Finset.sum_eq_single_of_mem j (Finset.mem_univ j), hj, one_smul]
+  intro b _ hb
+  rw [hv b hb, mul_zero, zero_smul]
 
 theorem tvm_isIsom (u : ι → Fin n → ℂ) (ξ : ι → ℂ) (horth : ∀ a b, a ≠ b → hJ ε (u a) (u b) = 0)
     (hξ : ∀ b, ξ b + conj (ξ b) = ξ b * conj (ξ b) * hJ ε (u b) (u b)) : IsIsom ε (tvm ε u ξ) := by
@@ -332,7 +324,7 @@ theorem tvm_isIsom (u : ι → Fin n → ℂ) (ξ : ι → ℂ) (horth : ∀ a b
       ∑ b, (ξ b * hJ ε (u b) y) * conj (hJ ε (u b) x) := by
     rw [hJ_fsum_r]
     refine Finset.sum_congr rfl fun b _ => ?_
-    rw [hJ_cj ε x (u b)]
+    rw [_root_.Formalism.L2.SG.PoincareInHH.Cut.hJ_conj ε x (u b)]
   have h2 : hJ ε (∑ a, (ξ a * hJ ε (u a) x) • u a) y =
       ∑ a, conj (ξ a * hJ ε (u a) x) * hJ ε (u a) y := hJ_fsum_l ε _ _ _
   have h12 : hJ ε (∑ a, (ξ a * hJ ε (u a) x) • u a) (∑ b, (ξ b * hJ ε (u b) y) • u b) =

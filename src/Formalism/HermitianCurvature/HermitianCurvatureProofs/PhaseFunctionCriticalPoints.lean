@@ -62,8 +62,7 @@ open Formalism.FourierDecayAlt.G
 
 theorem prod_split {n : ℕ} (x : Fin n → ℂ) (k : Fin n) :
     ∏ j, x j = x k * ∏ j ∈ univ \ {k}, x j := by
-  have := Finset.prod_update_of_mem (Finset.mem_univ k) x (x k)
-  rwa [Function.update_eq_self] at this
+  simpa [Function.update_eq_self] using Finset.prod_update_of_mem (Finset.mem_univ k) x (x k)
 
 theorem phase_function_update {n : ℕ} (D' : ℂ) (x : Fin n → ℂ) (k : Fin n) (ξ : ℂ) :
     g0 D' (Function.update x k ξ) =
@@ -79,15 +78,13 @@ theorem phase_deriv_update {n : ℕ} (D' : ℂ) (x : Fin n → ℂ) (j i : Fin n
 
 theorem hasDerivAt_inv_lin (c Q a : ℂ) (ha : a ≠ 0) (hQ : Q ≠ 0) :
     HasDerivAt (fun ξ : ℂ => c / (ξ * Q)) (-(c / (a * Q) / a)) a := by
-  have h := (hasDerivAt_const a c).div ((hasDerivAt_id' a).mul_const Q) (mul_ne_zero ha hQ)
-  refine h.congr_deriv ?_
+  refine ((hasDerivAt_const a c).div ((hasDerivAt_id' a).mul_const Q) (mul_ne_zero ha hQ)).congr_deriv ?_
   field_simp
   ring
 
 theorem hasDerivAt_inv_sq (c Q a : ℂ) (ha : a ≠ 0) (hQ : Q ≠ 0) :
     HasDerivAt (fun ξ : ℂ => c / (ξ * Q) / ξ) (-(2 * c / (a * Q * a * a))) a := by
-  have h := (hasDerivAt_inv_lin c Q a ha hQ).div (hasDerivAt_id' a) ha
-  refine h.congr_deriv ?_
+  refine ((hasDerivAt_inv_lin c Q a ha hQ).div (hasDerivAt_id' a) ha).congr_deriv ?_
   field_simp
   ring
 
@@ -99,7 +96,6 @@ theorem gradSmall6 (m : ℕ) (D' : ℂ) (hD : D' ≠ 0) (x : Fin (m + 1) → ℂ
   rw [← hP] at hP0
   obtain ⟨ρ, hρ⟩ : ∃ ρ, ρ = D' / P := ⟨_, rfl⟩
   obtain ⟨e, he⟩ : ∃ e : Fin (m + 1) → ℂ, e = fun k => dg0 D' x k := ⟨_, rfl⟩
-  have hm0 : (0 : ℝ) ≤ m := Nat.cast_nonneg m
   have he1 : ∀ k, (1 - e k) * x k = ρ := by
     intro k
     have := hx k
@@ -179,7 +175,6 @@ theorem gradSmall6 (m : ℕ) (D' : ℂ) (hD : D' ≠ 0) (x : Fin (m + 1) → ℂ
           ≤ ‖x k - ρ * Complex.exp (-L)‖ * ‖1 - e k‖ := mul_le_mul_of_nonneg_left (h1e k) hx0
         _ = ‖ρ * Complex.exp (-L)‖ * ‖Complex.exp L - 1 + e k‖ := hk
         _ ≤ ‖ρ * Complex.exp (-L)‖ * (4 * η) := mul_le_mul_of_nonneg_left hnum hz0
-    have h4 : 0 ≤ ‖ρ * Complex.exp (-L)‖ * η := mul_nonneg hz0 hη.le
     nlinarith
 
 theorem card_UT (n : ℕ) : Fintype.card (UT n) = ∑ i ∈ range n, i := by
@@ -285,7 +280,6 @@ theorem hessian_determinant : Formalism.FourierDecayAlt.G.HessDet := by
 theorem gradient_lower_bound : Formalism.FourierDecayAlt.G.GradLower := by
   intro m Kc hK h0 δ hδ
   obtain ⟨R, hR⟩ := hK.isBounded.exists_norm_le
-  have hm0 : (0 : ℝ) ≤ m := Nat.cast_nonneg m
   have hR1 : (1 : ℝ) ≤ max 1 R := le_max_left _ _
   have hc1 : (0 : ℝ) < 1 / (4 * ((m : ℝ) + 2)) := by positivity
   have hc2 : (0 : ℝ) < δ / (12 * max 1 R) := by positivity
@@ -310,7 +304,6 @@ theorem gradient_lower_bound : Formalism.FourierDecayAlt.G.GradLower := by
     simp only [Pi.sub_apply]
     refine (hzx k).trans ?_
     have h5 : min (1 / (4 * ((m : ℝ) + 2))) (δ / (12 * max 1 R)) ≤ δ / (12 * max 1 R) := min_le_right _ _
-    have h6 : 0 < min (1 / (4 * ((m : ℝ) + 2))) (δ / (12 * max 1 R)) := lt_min hc1 hc2
     calc 6 * min (1 / (4 * ((m : ℝ) + 2))) (δ / (12 * max 1 R)) * ‖z‖
         ≤ 6 * (δ / (12 * max 1 R)) * max 1 R := by
           apply mul_le_mul _ hzn (norm_nonneg _) (by positivity)
@@ -322,8 +315,7 @@ theorem gradient_lower_bound : Formalism.FourierDecayAlt.G.GradLower := by
 theorem root_set_characterization : Formalism.FourierDecayAlt.G.RootSetSpec := by
   intro s a hs
   constructor
-  · intro z
-    simp [rootSet, Polynomial.mem_nthRoots hs]
+  · simp [rootSet, Polynomial.mem_nthRoots hs]
   · intro ha
     have hprim := Complex.isPrimitiveRoot_exp s hs.ne'
     unfold rootSet

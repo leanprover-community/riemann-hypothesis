@@ -1,8 +1,9 @@
 module
 
+public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.CuspFlowEqTorusAction
 public import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.MaximalCuspKernels.MaxCuspsSt
 public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.CountableOfIsAddFundamentalDomain
-public import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.CuspFlowEqTorusActionStatement
+public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.PeriodLatticeCountable
 import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.MaximalCuspKernels.MaxCuspsPfA
 import Formalism.LocalToGlobal.ProjectiveLattices.RdOrbIntOfLatZ
 import Mathlib.Algebra.Order.Floor.Extended
@@ -50,7 +51,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.PeriodLatticeCountable
 
 @[expose] public section
 
@@ -88,28 +88,7 @@ theorem coefFn_eq_cubeCoeff {Ω : Type} {N : ℕ} (act : (Fin N → ℝ) → Ω 
 theorem herm_comb {E : Type} [Field E] [NumberField E] [IsCMField E] {r ρ : ℕ} {X : Data E r}
     (cu : CuspFD X ρ) (η : Fin ρ → E) :
     herm X.Gm (∑ a, η a • cu.e a) (∑ a, η a • cu.e a) = 0 := by
-  have key : herm X.Gm (∑ a, η a • cu.e a) (∑ a, η a • cu.e a) =
-      ∑ a, ∑ b, η a * cc (η b) * herm X.Gm (cu.e a) (cu.e b) := by
-
-    simp only [herm, cc, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, map_sum, map_mul,
-    Finset.mul_sum, Finset.sum_mul]
-    calc _ = ∑ k, ∑ b, ∑ l, ∑ a, η a * cu.e a k * X.Gm k l *
-            (IsCMField.complexConj E (η b) * IsCMField.complexConj E (cu.e b l)) :=
-          Finset.sum_congr rfl fun k _ => Finset.sum_comm
-      _ = ∑ b, ∑ k, ∑ a, ∑ l, η a * cu.e a k * X.Gm k l *
-            (IsCMField.complexConj E (η b) * IsCMField.complexConj E (cu.e b l)) := by
-          rw [Finset.sum_comm]
-          exact Finset.sum_congr rfl fun b _ => Finset.sum_congr rfl fun k _ => Finset.sum_comm
-      _ = ∑ b, ∑ a, ∑ k, ∑ l, η a * cu.e a k * X.Gm k l *
-            (IsCMField.complexConj E (η b) * IsCMField.complexConj E (cu.e b l)) :=
-          Finset.sum_congr rfl fun b _ => Finset.sum_comm
-      _ = _ := by
-          rw [Finset.sum_comm]
-          refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ =>
-            Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => ?_
-          ring
-  rw [key]
-  simp [cu.iso]
+  apply GlobalTheory.CuspFlow.herm_comb_eq_zero <;> assumption
 
 theorem coefFn_eq_zero_of_killed : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (r ρ : ℕ) (X : Data E r), (∀ cu : CuspFD X ρ, ∃ bs, IsZBasis X cu bs) → ∀ (la : Wt X.Ψ r), (∀ (cu : CuspFD X ρ) (β : Matrix (Fin ρ) (Fin ρ) E), β ∈ zGam X cu → ∀ γ ∈ X.Γ, (γ : Matrix (Fin r) (Fin r) E) = zMatE X cu.e β → X.χ la γ = 1) → ∀ (c : ℝ) (P : Frame X.Ψ r → ℂ), P ∈ X.SSgt la c → ∀ (cu : CuspFD X ρ) (χ : Matrix (Fin ρ) (Fin ρ) E), IsExpoFD X cu χ → KilledFD X cu χ c → ∀ x ∈ X.dom, coefFn (zAct X cu) (phZ X cu χ) P x = 0 := by
   intro E _ _ _ r ρ X hbas la hchi c P hP cu χ hχ hK x hx
@@ -118,7 +97,7 @@ theorem coefFn_eq_zero_of_killed : ∀ (E : Type) [Field E] [NumberField E] [IsC
   have hsec : X.IsSec la P := hP.1.1.1
   have hdom : ∀ u, zAct X cu u x ∈ X.dom := fun u =>
     zAct_mem_dom X cu (zBas_skew X cu (hbas cu)) u x hx
-  obtain ⟨L, hL1, hL2, hL3⟩ := GlobalTheory.T.cuspFlow_eq_torusAction E r ρ X cu hb η hηΛ
+  obtain ⟨L, hL1, hL2, hL3⟩ := _root_.GlobalTheory.CuspFlow.flow_eq_zAct E r ρ X cu hb η hηΛ
   have hiso : X.IsIso (∑ a, η a • cu.e a) :=
     ⟨hηΛ, herm_comb cu η, fun h => hη0 (funext (Fintype.linearIndependent_iff.1 cu.ind η h))⟩
   set ν : X.Ψ → ℝ := fun τ => (τ.1 (hq χ η)).re with hν

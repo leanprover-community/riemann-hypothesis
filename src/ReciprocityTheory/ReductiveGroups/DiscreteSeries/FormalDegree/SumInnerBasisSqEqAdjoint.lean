@@ -68,8 +68,6 @@ theorem toMK_mem_UJset' {ε : Fin n → Bool} (k : KG ε) : toMK k ∈ UJset ε 
   show inUJ ε (toMK k)
   first
   | exact k.1.2
-  | exact k.val.property
-  | exact (k : UJ ε).2
 
 theorem toMK_inv_mul {ε : Fin n → Bool} (k : KG ε) : toMK k⁻¹ * toMK k = 1 := by
   have h : toMK k⁻¹ * toMK k = toMK (k⁻¹ * k) := rfl
@@ -82,9 +80,6 @@ theorem op_op_inv {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T : KType ε Λ) (
   have h2 := congrArg (fun u : unitary (T.V →L[ℂ] T.V) => (u : T.V →L[ℂ] T.V) v) h
   first
   | (rw [Submonoid.coe_mul, ContinuousLinearMap.mul_apply, OneMemClass.coe_one,
-      ContinuousLinearMap.one_apply] at h2; exact h2)
-  | exact h2
-  | (simp only [Submonoid.coe_mul, ContinuousLinearMap.mul_apply, OneMemClass.coe_one,
       ContinuousLinearMap.one_apply] at h2; exact h2)
 
 theorem sum_inner_basis_sq_eq_adjoint {ε : Fin n → Bool} {lam : Fin n → ℝ} {H : Type*} [NormedAddCommGroup H]

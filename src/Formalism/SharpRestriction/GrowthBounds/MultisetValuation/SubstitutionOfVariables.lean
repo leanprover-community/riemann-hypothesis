@@ -66,8 +66,6 @@ def tOf {K' σ τ : Type} [Field K'] (vp : K') (μ : PowerSeries K') (L : σ →
 private theorem constantCoeff_logF_eq_zero : PowerSeries.constantCoeff (logF p) = 0 := by
   first
   | (rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply]; unfold logF; simp)
-  | (unfold logF; simp)
-  | (simp [logF, ← PowerSeries.coeff_zero_eq_constantCoeff_apply])
 
 private theorem cc_subst_lemma_2 {τ S : Type} [CommRing S] {a : MvPowerSeries τ S}
     (ha : MvPowerSeries.constantCoeff a = 0) {f : PowerSeries S} (hf : PowerSeries.constantCoeff f = 0) :
@@ -75,12 +73,9 @@ private theorem cc_subst_lemma_2 {τ S : Type} [CommRing S] {a : MvPowerSeries �
   have hs : PowerSeries.HasSubst a := by
     first
     | exact PowerSeries.HasSubst.of_constantCoeff_zero ha
-    | exact PowerSeries.HasSubst.of_constantCoeff_nilpotent (by rw [ha]; exact IsNilpotent.zero)
   obtain ⟨g, rfl⟩ := PowerSeries.X_dvd_iff.mpr hf
   first
   | rw [PowerSeries.subst_mul hs, PowerSeries.subst_X hs, map_mul, ha, zero_mul]
-  | rw [← PowerSeries.coe_substAlgHom hs, map_mul, PowerSeries.coe_substAlgHom hs, PowerSeries.subst_X hs,
-      map_mul, ha, zero_mul]
 
 theorem th_lX_const (K1 : Type) [Field K1] [Algebra (K0 p) K1] {σ : Type} (i : σ) :
     MvPowerSeries.constantCoeff (PowerSeries.subst (MvPowerSeries.X i : MvPowerSeries σ K1)
@@ -144,11 +139,7 @@ theorem th_subst_log (K' : Type) [Field K'] [Algebra (K0 p) K'] {σ τ : Type} [
 private theorem hasSubst_of_constantCoeff_eq_zero' {κ τ S : Type} [CommRing S] [Finite κ] {a : κ → MvPowerSeries τ S}
     (h : ∀ s, MvPowerSeries.constantCoeff (a s) = 0) : MvPowerSeries.HasSubst a := by
   first
-  | exact MvPowerSeries.HasSubst.of_constantCoeff_zero' h
   | exact MvPowerSeries.hasSubst_of_constantCoeff_zero h
-  | exact MvPowerSeries.HasSubst.of_constantCoeff_nilpotent (fun s => by rw [h s]; exact IsNilpotent.zero)
-  | exact MvPowerSeries.hasSubst_of_constantCoeff_nilpotent (fun s => by rw [h s]; exact IsNilpotent.zero)
-  | exact ⟨fun s => by rw [h s]; exact IsNilpotent.zero, fun d => Set.toFinite _⟩
 
 theorem th_hasSubst_lX {σ : Type} [Finite σ] : MvPowerSeries.HasSubst
     (fun i : σ => PowerSeries.subst (MvPowerSeries.X i : MvPowerSeries σ (K0 p)) (logF p)) := by

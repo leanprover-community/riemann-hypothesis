@@ -85,7 +85,7 @@ theorem sop_comp (A A' : H₁ →L[ℂ] H₁) (B B' : H₂ →L[ℂ] H₂) :
 
 theorem sop_neg_comm (A : H₁ →L[ℂ] H₁) (B : H₂ →L[ℂ] H₂) (x : WithLp 2 (H₁ × H₂)) :
     sop 1 (-1) (sop A B x) = sop A B (sop 1 (-1) x) := by
-  simp only [sop_apply, WithLp.ofLp_toLp]
+  simp only [sop_apply]
   simp
 
 theorem inner_sum (x y : WithLp 2 (H₁ × H₂)) :

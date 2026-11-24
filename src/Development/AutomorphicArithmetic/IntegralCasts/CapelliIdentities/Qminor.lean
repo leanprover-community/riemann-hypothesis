@@ -48,267 +48,30 @@ import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
-noncomputable def UpperTheory.Reformulated.B.Qf10.GlRel.{u_1} : {A : Type u_1} → [Ring A] → {n : ℕ} → (Fin n → Fin n → A) → Prop := fun {A} [Ring A] {n} E =>
+namespace UpperTheory.Reformulated.B.Qf10
+
+noncomputable def GlRel.{u_1} : {A : Type u_1} → [Ring A] → {n : ℕ} → (Fin n → Fin n → A) → Prop := fun {A} [Ring A] {n} E =>
   ∀ (a b c d : Fin n), E a b * E c d - E c d * E a b = (if b = c then E a d else 0) - if d = a then E c b else 0
 
-noncomputable def UpperTheory.Reformulated.B.Qf10.Tm.{u_1} : {A : Type u_1} → [inst : Ring A] → [Algebra ℂ A] → {n : ℕ} → (Fin n → Fin n → A) → ℂ → Fin n → Fin n → A := fun {A} [Ring A] [Algebra ℂ A] {n} E u a b => (if a = b then (algebraMap ℂ A) u else 0) + E a b
+noncomputable def Tm.{u_1} : {A : Type u_1} → [inst : Ring A] → [Algebra ℂ A] → {n : ℕ} → (Fin n → Fin n → A) → ℂ → Fin n → Fin n → A := fun {A} [Ring A] [Algebra ℂ A] {n} E u a b => (if a = b then (algebraMap ℂ A) u else 0) + E a b
 
-noncomputable def UpperTheory.Reformulated.B.Qf10.qminor.{u_1} : {A : Type u_1} →
+noncomputable def qminor.{u_1} : {A : Type u_1} →
   [inst : Ring A] → [Algebra ℂ A] → {n t : ℕ} → (Fin n → Fin n → A) → (Fin t → Fin n) → (Fin t → Fin n) → ℂ → A := fun {A} [Ring A] [Algebra ℂ A] {n t} E a b u =>
-  ∑ σ, ↑↑(Equiv.Perm.sign σ) * (List.ofFn fun k => UpperTheory.Reformulated.B.Qf10.Tm E (u - ↑↑k) (a (σ k)) (b k)).prod
+  ∑ σ, ↑↑(Equiv.Perm.sign σ) * (List.ofFn fun k => Tm E (u - ↑↑k) (a (σ k)) (b k)).prod
 
-noncomputable def UpperTheory.Reformulated.B.Qf10.qdet.{u_1} :
-    {A : Type u_1} →
-      [inst : Ring A] →
-        [@Algebra Complex A Complex.instCommSemiring (@Ring.toSemiring A inst)] →
-          {n : Nat} → (Fin n → Fin n → A) → Complex → A :=
-    fun {A : Type u_1} [inst : Ring A] [inst_1 : @Algebra Complex A Complex.instCommSemiring (@Ring.toSemiring A inst)]
-        {n : Nat} (E : Fin n → Fin n → A) (u : Complex) ↦
-      @UpperTheory.Reformulated.B.Qf10.qminor A inst inst_1 n n E (@id (Fin n)) (@id (Fin n)) u
+noncomputable def qdet {A : Type*} [Ring A] [Algebra ℂ A] {n : ℕ}
+    (E : Fin n → Fin n → A) (u : ℂ) : A :=
+  qminor E (id : Fin n → Fin n) id u
 
-theorem UpperTheory.Reformulated.B.Qf10.casimir :
-    ∀ {V : Type} [inst : AddCommGroup V]
-      [inst_1 : @_root_.Module Complex V Complex.instSemiring (@AddCommGroup.toAddCommMonoid V inst)]
-      (E :
-        Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))) →
-          Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))) →
-            @Module.End Complex V Complex.instSemiring (@AddCommGroup.toAddCommMonoid V inst) inst_1),
-      @UpperTheory.Reformulated.B.Qf10.GlRel (@Module.End Complex V Complex.instSemiring (@AddCommGroup.toAddCommMonoid V inst) inst_1)
-          (@Module.End.instRing Complex V Complex.instSemiring inst inst_1)
-          (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))) E →
-        ∀ (k : Complex) (φ : V),
-          @Eq V
-              (@HAdd.hAdd V V V
-                (@instHAdd V
-                  (@AddCommMagma.toAdd V
-                    (@AddCommSemigroup.toAddCommMagma V
-                      (@AddCommMonoid.toAddCommSemigroup V (@AddCommGroup.toAddCommMonoid V inst)))))
-                (@DFunLike.coe (@Module.End Complex V Complex.instSemiring (@AddCommGroup.toAddCommMonoid V inst) inst_1) V
-                  (fun (x : V) ↦ V)
-                  (@LinearMap.instFunLike Complex Complex V V Complex.instSemiring Complex.instSemiring
-                    (@AddCommGroup.toAddCommMonoid V inst) (@AddCommGroup.toAddCommMonoid V inst) inst_1 inst_1
-                    (@RingHom.id Complex (@Semiring.toNonAssocSemiring Complex Complex.instSemiring)))
-                  (E
-                    (@OfNat.ofNat (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) (nat_lit 0)
-                      (@Fin.instOfNat (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))
-                        (@Nat.instNeZeroSucc (@OfNat.ofNat Nat (nat_lit 1) (instOfNatNat (nat_lit 1)))) (nat_lit 0)))
-                    (@OfNat.ofNat (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) (nat_lit 0)
-                      (@Fin.instOfNat (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))
-                        (@Nat.instNeZeroSucc (@OfNat.ofNat Nat (nat_lit 1) (instOfNatNat (nat_lit 1)))) (nat_lit 0))))
-                  φ)
-                (@DFunLike.coe (@Module.End Complex V Complex.instSemiring (@AddCommGroup.toAddCommMonoid V inst) inst_1) V
-                  (fun (x : V) ↦ V)
-                  (@LinearMap.instFunLike Complex Complex V V Complex.instSemiring Complex.instSemiring
-                    (@AddCommGroup.toAddCommMonoid V inst) (@AddCommGroup.toAddCommMonoid V inst) inst_1 inst_1
-                    (@RingHom.id Complex (@Semiring.toNonAssocSemiring Complex Complex.instSemiring)))
-                  (E
-                    (@OfNat.ofNat (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) (nat_lit 1)
-                      (@Fin.instOfNat (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))
-                        (@Nat.instNeZeroSucc (@OfNat.ofNat Nat (nat_lit 1) (instOfNatNat (nat_lit 1)))) (nat_lit 1)))
-                    (@OfNat.ofNat (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) (nat_lit 1)
-                      (@Fin.instOfNat (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))
-                        (@Nat.instNeZeroSucc (@OfNat.ofNat Nat (nat_lit 1) (instOfNatNat (nat_lit 1)))) (nat_lit 1))))
-                  φ))
-              (@OfNat.ofNat V (nat_lit 0)
-                (@Zero.toOfNat0 V
-                  (@NegZeroClass.toZero V
-                    (@SubNegZeroMonoid.toNegZeroClass V
-                      (@SubtractionMonoid.toSubNegZeroMonoid V
-                        (@SubtractionCommMonoid.toSubtractionMonoid V (@AddCommGroup.toDivisionAddCommMonoid V inst))))))) →
-            @Eq V
-                (@HSub.hSub V V V
-                  (@instHSub V (@SubNegMonoid.toSub V (@AddGroup.toSubNegMonoid V (@AddCommGroup.toAddGroup V inst))))
-                  (@DFunLike.coe (@Module.End Complex V Complex.instSemiring (@AddCommGroup.toAddCommMonoid V inst) inst_1)
-                    V (fun (x : V) ↦ V)
-                    (@LinearMap.instFunLike Complex Complex V V Complex.instSemiring Complex.instSemiring
-                      (@AddCommGroup.toAddCommMonoid V inst) (@AddCommGroup.toAddCommMonoid V inst) inst_1 inst_1
-                      (@RingHom.id Complex (@Semiring.toNonAssocSemiring Complex Complex.instSemiring)))
-                    (E
-                      (@OfNat.ofNat (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) (nat_lit 0)
-                        (@Fin.instOfNat (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))
-                          (@Nat.instNeZeroSucc (@OfNat.ofNat Nat (nat_lit 1) (instOfNatNat (nat_lit 1)))) (nat_lit 0)))
-                      (@OfNat.ofNat (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) (nat_lit 1)
-                        (@Fin.instOfNat (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))
-                          (@Nat.instNeZeroSucc (@OfNat.ofNat Nat (nat_lit 1) (instOfNatNat (nat_lit 1)))) (nat_lit 1))))
-                    φ)
-                  (@DFunLike.coe (@Module.End Complex V Complex.instSemiring (@AddCommGroup.toAddCommMonoid V inst) inst_1)
-                    V (fun (x : V) ↦ V)
-                    (@LinearMap.instFunLike Complex Complex V V Complex.instSemiring Complex.instSemiring
-                      (@AddCommGroup.toAddCommMonoid V inst) (@AddCommGroup.toAddCommMonoid V inst) inst_1 inst_1
-                      (@RingHom.id Complex (@Semiring.toNonAssocSemiring Complex Complex.instSemiring)))
-                    (E
-                      (@OfNat.ofNat (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) (nat_lit 1)
-                        (@Fin.instOfNat (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))
-                          (@Nat.instNeZeroSucc (@OfNat.ofNat Nat (nat_lit 1) (instOfNatNat (nat_lit 1)))) (nat_lit 1)))
-                      (@OfNat.ofNat (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) (nat_lit 0)
-                        (@Fin.instOfNat (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))
-                          (@Nat.instNeZeroSucc (@OfNat.ofNat Nat (nat_lit 1) (instOfNatNat (nat_lit 1)))) (nat_lit 0))))
-                    φ))
-                (@HSMul.hSMul Complex V V
-                  (@instHSMul Complex V
-                    (@SMulZeroClass.toSMul Complex V
-                      (@AddZero.toZero V
-                        (@AddZeroClass.toAddZero V
-                          (@AddMonoid.toAddZeroClass V
-                            (@SubNegMonoid.toAddMonoid V (@AddGroup.toSubNegMonoid V (@AddCommGroup.toAddGroup V inst))))))
-                      (@DistribSMul.toSMulZeroClass Complex V
-                        (@AddMonoid.toAddZeroClass V
-                          (@SubNegMonoid.toAddMonoid V (@AddGroup.toSubNegMonoid V (@AddCommGroup.toAddGroup V inst))))
-                        (@DistribMulAction.toDistribSMul Complex V (@Semiring.toMonoid Complex Complex.instSemiring)
-                          (@SubNegMonoid.toAddMonoid V (@AddGroup.toSubNegMonoid V (@AddCommGroup.toAddGroup V inst)))
-                          (@Module.toDistribMulAction Complex V Complex.instSemiring (@AddCommGroup.toAddCommMonoid V inst)
-                            inst_1)))))
-                  (@HMul.hMul Complex Complex Complex (@instHMul Complex Complex.instMul) Complex.I k) φ) →
-              @Eq V
-                  (@HSub.hSub V V V
-                    (@instHSub V (@SubNegMonoid.toSub V (@AddGroup.toSubNegMonoid V (@AddCommGroup.toAddGroup V inst))))
-                    (@DFunLike.coe
-                      (@Module.End Complex V Complex.instSemiring (@AddCommGroup.toAddCommMonoid V inst) inst_1) V
-                      (fun (x : V) ↦ V)
-                      (@LinearMap.instFunLike Complex Complex V V Complex.instSemiring Complex.instSemiring
-                        (@AddCommGroup.toAddCommMonoid V inst) (@AddCommGroup.toAddCommMonoid V inst) inst_1 inst_1
-                        (@RingHom.id Complex (@Semiring.toNonAssocSemiring Complex Complex.instSemiring)))
-                      (E
-                        (@OfNat.ofNat (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) (nat_lit 0)
-                          (@Fin.instOfNat (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))
-                            (@Nat.instNeZeroSucc (@OfNat.ofNat Nat (nat_lit 1) (instOfNatNat (nat_lit 1)))) (nat_lit 0)))
-                        (@OfNat.ofNat (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) (nat_lit 0)
-                          (@Fin.instOfNat (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))
-                            (@Nat.instNeZeroSucc (@OfNat.ofNat Nat (nat_lit 1) (instOfNatNat (nat_lit 1)))) (nat_lit 0))))
-                      φ)
-                    (@DFunLike.coe
-                      (@Module.End Complex V Complex.instSemiring (@AddCommGroup.toAddCommMonoid V inst) inst_1) V
-                      (fun (x : V) ↦ V)
-                      (@LinearMap.instFunLike Complex Complex V V Complex.instSemiring Complex.instSemiring
-                        (@AddCommGroup.toAddCommMonoid V inst) (@AddCommGroup.toAddCommMonoid V inst) inst_1 inst_1
-                        (@RingHom.id Complex (@Semiring.toNonAssocSemiring Complex Complex.instSemiring)))
-                      (E
-                        (@OfNat.ofNat (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) (nat_lit 1)
-                          (@Fin.instOfNat (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))
-                            (@Nat.instNeZeroSucc (@OfNat.ofNat Nat (nat_lit 1) (instOfNatNat (nat_lit 1)))) (nat_lit 1)))
-                        (@OfNat.ofNat (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) (nat_lit 1)
-                          (@Fin.instOfNat (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))
-                            (@Nat.instNeZeroSucc (@OfNat.ofNat Nat (nat_lit 1) (instOfNatNat (nat_lit 1)))) (nat_lit 1))))
-                      φ))
-                  (@HSMul.hSMul Complex V V
-                    (@instHSMul Complex V
-                      (@SMulZeroClass.toSMul Complex V
-                        (@AddZero.toZero V
-                          (@AddZeroClass.toAddZero V
-                            (@AddMonoid.toAddZeroClass V
-                              (@SubNegMonoid.toAddMonoid V
-                                (@AddGroup.toSubNegMonoid V (@AddCommGroup.toAddGroup V inst))))))
-                        (@DistribSMul.toSMulZeroClass Complex V
-                          (@AddMonoid.toAddZeroClass V
-                            (@SubNegMonoid.toAddMonoid V (@AddGroup.toSubNegMonoid V (@AddCommGroup.toAddGroup V inst))))
-                          (@DistribMulAction.toDistribSMul Complex V (@Semiring.toMonoid Complex Complex.instSemiring)
-                            (@SubNegMonoid.toAddMonoid V (@AddGroup.toSubNegMonoid V (@AddCommGroup.toAddGroup V inst)))
-                            (@Module.toDistribMulAction Complex V Complex.instSemiring
-                              (@AddCommGroup.toAddCommMonoid V inst) inst_1)))))
-                    Complex.I
-                    (@HAdd.hAdd V V V
-                      (@instHAdd V
-                        (@AddCommMagma.toAdd V
-                          (@AddCommSemigroup.toAddCommMagma V
-                            (@AddCommMonoid.toAddCommSemigroup V (@AddCommGroup.toAddCommMonoid V inst)))))
-                      (@DFunLike.coe
-                        (@Module.End Complex V Complex.instSemiring (@AddCommGroup.toAddCommMonoid V inst) inst_1) V
-                        (fun (x : V) ↦ V)
-                        (@LinearMap.instFunLike Complex Complex V V Complex.instSemiring Complex.instSemiring
-                          (@AddCommGroup.toAddCommMonoid V inst) (@AddCommGroup.toAddCommMonoid V inst) inst_1 inst_1
-                          (@RingHom.id Complex (@Semiring.toNonAssocSemiring Complex Complex.instSemiring)))
-                        (E
-                          (@OfNat.ofNat (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) (nat_lit 0)
-                            (@Fin.instOfNat (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))
-                              (@Nat.instNeZeroSucc (@OfNat.ofNat Nat (nat_lit 1) (instOfNatNat (nat_lit 1)))) (nat_lit 0)))
-                          (@OfNat.ofNat (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) (nat_lit 1)
-                            (@Fin.instOfNat (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))
-                              (@Nat.instNeZeroSucc (@OfNat.ofNat Nat (nat_lit 1) (instOfNatNat (nat_lit 1)))) (nat_lit 1))))
-                        φ)
-                      (@DFunLike.coe
-                        (@Module.End Complex V Complex.instSemiring (@AddCommGroup.toAddCommMonoid V inst) inst_1) V
-                        (fun (x : V) ↦ V)
-                        (@LinearMap.instFunLike Complex Complex V V Complex.instSemiring Complex.instSemiring
-                          (@AddCommGroup.toAddCommMonoid V inst) (@AddCommGroup.toAddCommMonoid V inst) inst_1 inst_1
-                          (@RingHom.id Complex (@Semiring.toNonAssocSemiring Complex Complex.instSemiring)))
-                        (E
-                          (@OfNat.ofNat (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) (nat_lit 1)
-                            (@Fin.instOfNat (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))
-                              (@Nat.instNeZeroSucc (@OfNat.ofNat Nat (nat_lit 1) (instOfNatNat (nat_lit 1)))) (nat_lit 1)))
-                          (@OfNat.ofNat (Fin (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))) (nat_lit 0)
-                            (@Fin.instOfNat (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2)))
-                              (@Nat.instNeZeroSucc (@OfNat.ofNat Nat (nat_lit 1) (instOfNatNat (nat_lit 1)))) (nat_lit 0))))
-                        φ))) →
-                ∀ (u : Complex),
-                  @Eq V
-                    (@DFunLike.coe
-                      (@Module.End Complex V Complex.instSemiring (@AddCommGroup.toAddCommMonoid V inst) inst_1) V
-                      (fun (x : V) ↦ V)
-                      (@LinearMap.instFunLike Complex Complex V V Complex.instSemiring Complex.instSemiring
-                        (@AddCommGroup.toAddCommMonoid V inst) (@AddCommGroup.toAddCommMonoid V inst) inst_1 inst_1
-                        (@RingHom.id Complex (@Semiring.toNonAssocSemiring Complex Complex.instSemiring)))
-                      (@UpperTheory.Reformulated.B.Qf10.qdet
-                        (@Module.End Complex V Complex.instSemiring (@AddCommGroup.toAddCommMonoid V inst) inst_1)
-                        (@Module.End.instRing Complex V Complex.instSemiring inst inst_1)
-                        (@Module.End.instAlgebra Complex Complex V Complex.instCommSemiring Complex.instSemiring
-                          (@AddCommGroup.toAddCommMonoid V inst) inst_1 inst_1
-                          (@smulCommClass_self Complex V (@CommRing.toCommMonoid Complex Complex.commRing)
-                            (@DistribMulAction.toMulAction Complex V
-                              (@CommMonoid.toMonoid Complex (@CommRing.toCommMonoid Complex Complex.commRing))
-                              (@AddCommMonoid.toAddMonoid V (@AddCommGroup.toAddCommMonoid V inst))
-                              (@Module.toDistribMulAction Complex V Complex.instSemiring
-                                (@AddCommGroup.toAddCommMonoid V inst) inst_1)))
-                          (@instSMulOfMul Complex Complex.instMul)
-                          (@IsScalarTower.left Complex V (@Semiring.toMonoid Complex Complex.instSemiring)
-                            (@DistribMulAction.toMulAction Complex V (@Semiring.toMonoid Complex Complex.instSemiring)
-                              (@AddCommMonoid.toAddMonoid V (@AddCommGroup.toAddCommMonoid V inst))
-                              (@Module.toDistribMulAction Complex V Complex.instSemiring
-                                (@AddCommGroup.toAddCommMonoid V inst) inst_1))))
-                        (@OfNat.ofNat Nat (nat_lit 2) (instOfNatNat (nat_lit 2))) E
-                        (@HAdd.hAdd Complex Complex Complex (@instHAdd Complex Complex.instAdd) u
-                          (@HDiv.hDiv Complex Complex Complex
-                            (@instHDiv Complex (@DivInvMonoid.toDiv Complex Complex.instDivInvMonoid))
-                            (@OfNat.ofNat Complex (nat_lit 1) (@One.toOfNat1 Complex Complex.instOne))
-                            (@OfNat.ofNat Complex (nat_lit 2)
-                              (@instOfNatAtLeastTwo Complex (nat_lit 2) Complex.instNatCast
-                                (@Nat.instAtLeastTwoHAddOfNat (@OfNat.ofNat Nat (nat_lit 1) (instOfNatNat (nat_lit 1)))
-                                  (@Nat.instNeZeroSucc (@OfNat.ofNat Nat (nat_lit 0) (instOfNatNat (nat_lit 0))))))))))
-                      φ)
-                    (@HSMul.hSMul Complex V V
-                      (@instHSMul Complex V
-                        (@SMulZeroClass.toSMul Complex V
-                          (@AddZero.toZero V
-                            (@AddZeroClass.toAddZero V
-                              (@AddMonoid.toAddZeroClass V
-                                (@SubNegMonoid.toAddMonoid V
-                                  (@AddGroup.toSubNegMonoid V (@AddCommGroup.toAddGroup V inst))))))
-                          (@DistribSMul.toSMulZeroClass Complex V
-                            (@AddMonoid.toAddZeroClass V
-                              (@SubNegMonoid.toAddMonoid V (@AddGroup.toSubNegMonoid V (@AddCommGroup.toAddGroup V inst))))
-                            (@DistribMulAction.toDistribSMul Complex V (@Semiring.toMonoid Complex Complex.instSemiring)
-                              (@SubNegMonoid.toAddMonoid V (@AddGroup.toSubNegMonoid V (@AddCommGroup.toAddGroup V inst)))
-                              (@Module.toDistribMulAction Complex V Complex.instSemiring
-                                (@AddCommGroup.toAddCommMonoid V inst) inst_1)))))
-                      (@HMul.hMul Complex Complex Complex (@instHMul Complex Complex.instMul)
-                        (@HAdd.hAdd Complex Complex Complex (@instHAdd Complex Complex.instAdd) u
-                          (@HDiv.hDiv Complex Complex Complex
-                            (@instHDiv Complex (@DivInvMonoid.toDiv Complex Complex.instDivInvMonoid))
-                            (@HSub.hSub Complex Complex Complex (@instHSub Complex Complex.instSub) k
-                              (@OfNat.ofNat Complex (nat_lit 1) (@One.toOfNat1 Complex Complex.instOne)))
-                            (@OfNat.ofNat Complex (nat_lit 2)
-                              (@instOfNatAtLeastTwo Complex (nat_lit 2) Complex.instNatCast
-                                (@Nat.instAtLeastTwoHAddOfNat (@OfNat.ofNat Nat (nat_lit 1) (instOfNatNat (nat_lit 1)))
-                                  (@Nat.instNeZeroSucc (@OfNat.ofNat Nat (nat_lit 0) (instOfNatNat (nat_lit 0)))))))))
-                        (@HSub.hSub Complex Complex Complex (@instHSub Complex Complex.instSub) u
-                          (@HDiv.hDiv Complex Complex Complex
-                            (@instHDiv Complex (@DivInvMonoid.toDiv Complex Complex.instDivInvMonoid))
-                            (@HSub.hSub Complex Complex Complex (@instHSub Complex Complex.instSub) k
-                              (@OfNat.ofNat Complex (nat_lit 1) (@One.toOfNat1 Complex Complex.instOne)))
-                            (@OfNat.ofNat Complex (nat_lit 2)
-                              (@instOfNatAtLeastTwo Complex (nat_lit 2) Complex.instNatCast
-                                (@Nat.instAtLeastTwoHAddOfNat (@OfNat.ofNat Nat (nat_lit 1) (instOfNatNat (nat_lit 1)))
-                                  (@Nat.instNeZeroSucc (@OfNat.ofNat Nat (nat_lit 0) (instOfNatNat (nat_lit 0))))))))))
-                      φ) := by
+theorem casimir : ∀ {V : Type} [inst : AddCommGroup V] [inst_1 : Module ℂ V]
+  (E : Fin 2 → Fin 2 → Module.End ℂ V),
+  GlRel E →
+    ∀ (k : ℂ) (φ : V),
+      (E 0 0) φ + (E 1 1) φ = 0 →
+        (E 0 1) φ - (E 1 0) φ = (Complex.I * k) • φ →
+          (E 0 0) φ - (E 1 1) φ = Complex.I • ((E 0 1) φ + (E 1 0) φ) →
+            ∀ (u : ℂ),
+              (qdet E (u + 1 / 2)) φ = ((u + (k - 1) / 2) * (u - (k - 1) / 2)) • φ := by
   intro V _ _ E hE k φ h1 h2 h3 u
   have rel : ∀ a b c d : Fin 2, E a b (E c d φ) - E c d (E a b φ) =
       (if b = c then E a d φ else 0) - (if d = a then E c b φ else 0) := by
@@ -345,10 +108,10 @@ theorem UpperTheory.Reformulated.B.Qf10.casimir :
       (t2 (E 0 1) - t2 (E 1 0)) + (Complex.I * k) • h2 + Complex.I_sq • (k ^ 2 • φ)
   have hu : (Finset.univ : Finset (Equiv.Perm (Fin 2))) = {1, Equiv.swap 0 1} := by decide
   have hne : (1 : Equiv.Perm (Fin 2)) ≠ Equiv.swap 0 1 := by decide
-  have hq : ∀ v : ℂ, UpperTheory.Reformulated.B.Qf10.qdet E v φ =
+  have hq : ∀ v : ℂ, qdet E v φ =
       v • ((v - 1) • φ + E 1 1 φ) + ((v - 1) • E 0 0 φ + E 0 0 (E 1 1 φ)) - E 1 0 (E 0 1 φ) := by
     intro v
-    unfold UpperTheory.Reformulated.B.Qf10.qdet UpperTheory.Reformulated.B.Qf10.qminor UpperTheory.Reformulated.B.Qf10.Tm
+    unfold qdet qminor Tm
     rw [hu, Finset.sum_pair hne]
     simp [List.ofFn_succ, Module.algebraMap_end_apply]
     module
@@ -356,3 +119,5 @@ theorem UpperTheory.Reformulated.B.Qf10.casimir :
   linear_combination (norm := module)
     u • h1 + (1 / 4 : ℂ) • (t1 (E 0 0) + t1 (E 1 1)) + (1 / 2 : ℂ) • rad - (1 / 4 : ℂ) • hc +
       (1 / 4 : ℂ) • hw + (1 / 2 : ℂ) • rbc
+
+end UpperTheory.Reformulated.B.Qf10

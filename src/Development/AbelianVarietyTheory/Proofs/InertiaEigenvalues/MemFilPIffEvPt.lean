@@ -6,13 +6,15 @@ public import Development.AbelianVarietyTheory.CrystallinePeriods.CrisIncl
 public import Development.AbelianVarietyTheory.CrystallinePeriods.RingBasics
 public import Development.AbelianVarietyTheory.CrystallinePeriods.RingIface
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFinExt
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemDeRhamFiltrationIffXiPow
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.AcrisTorsionFreeComplete
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.NonemptyThetaOnBdRPlusPeriodData
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BdRPlusFiltrationEqFontaineXiPow
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.BdRPlusIsDomainBdRIsField
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsCompatibleRootsOfUnityAndTiltPadic
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.FontaineThetaEqZeroIffFontaineXiElementDvd
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.IsPrimitiveTiltedRootOfUnityLocalPeriodRingsData
-import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.KerThetaLocalizedEqSpanFontaineXiElementStatement
-public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.MemDeRhamFiltrationIffXiPow
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.KerThetaLocalizedEqSpanFontaineXiElement
 import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ThetaBdRPlusSurjectiveKerUnitsEquivariant
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -55,7 +57,6 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
-public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.AcrisTorsionFreeComplete
 import Formalism.SharpRestriction.LevelLetterCocycles.LocCoh
 
 @[expose] public section
@@ -98,37 +99,17 @@ theorem theta_xi {e : Per.Fl l} (he : IsEps e) : Per.θD l (aDp l (xi e)) = 0 :=
   rw [(thetaD_props l).2.2.2.1, (theta_eq_zero_iff_xi_dvd l e he _).2 dvd_rfl]
   rfl
 
-theorem ev_aDp (n : ℕ) (a : Per.Ainf l) :
-    Per.ev l n (aDp l a) = Ideal.Quotient.mk _ (algebraMap (Per.Ainf l) (Per.AinfP l) a) := by
-  rw [aDp, RingHom.comp_apply, GlobalTheory.RingIface.ev_alg]
+alias ev_aDp := _root_.GlobalTheory.MemLoc.CrisUnique.ev_aDp
 
 theorem mem_filtration_iff_eval_eq_zero' {e : Per.Fl l} (he : IsEps e) (n : ℕ) (y : Per.BdRp l) :
     y ∈ Per.FilP l n ↔ Per.ev l n y = 0 := by
   obtain ⟨E, hE, hev⟩ := GlobalTheory.RingIface.exists_bdRp_equiv l
-  rw [(filtration_eq_xi_pow l e he).1, ← hev, FilPrincipal.evalₐ_eq_zero_iff (GlobalTheory.T.kerThetaLocalized_eq_span_fontaineXiElement l e he), ← hE,
+  rw [(filtration_eq_xi_pow l e he).1, ← hev, FilPrincipal.evalₐ_eq_zero_iff (_root_.GlobalTheory.MemLoc.ker_localizedTheta_eq_span_xi l e he), ← hE,
     ← map_pow E, map_dvd_iff E, aDp, RingHom.comp_apply]
 
 theorem mu_sub_log {e : Per.Fl l} (he : IsEps e) {y : Per.BdRp l} (hy : Per.IsLog l e y) :
     aDp l (mu e) - y ∈ Per.FilP l 2 := by
-  have h2 := GlobalTheory.CrisIncl.factorial_mul_ev l e y he.1 hy 2
-  have hsq : Per.ev l 2 (aDp l (mu e ^ 2)) = 0 := by
-    refine (mem_filtration_iff_eval_eq_zero' he 2 _).1 (((filtration_eq_xi_pow l e he).1 2 _).2 ?_)
-    rw [mu_eq, map_pow, map_mul, mul_pow]
-    exact dvd_mul_right _ _
-  rw [ev_aDp, map_pow, map_pow] at hsq
-  have hu : IsUnit (((2 : ℕ) : Per.AinfP l ⧸ Per.kerP l ^ 2)) := by
-    have := (GlobalTheory.RingBasics.isUnit_nat l 2 two_ne_zero).map (Ideal.Quotient.mk (Per.kerP l ^ 2))
-    rwa [map_natCast] at this
-  rw [mem_filtration_iff_eval_eq_zero' he, map_sub, ev_aDp, sub_eq_zero]
-  apply hu.mul_left_cancel
-  have hf : Nat.factorial 2 = 2 := rfl
-  rw [hf] at h2
-  rw [h2]
-  change _ = Ideal.Quotient.mk _ (∑ k ∈ Finset.range 2, (-1) ^ k * ((2 / (k + 1) : ℕ) : Per.AinfP l) *
-      (algebraMap (Per.Ainf l) (Per.AinfP l) (mu e)) ^ (k + 1))
-  rw [Finset.sum_range_succ, Finset.sum_range_one, map_add (f := _), map_mul _ _ (_ ^ (1 + 1)), map_pow _ _ (1 + 1),
-    show (1 + 1 : ℕ) = 2 from rfl, hsq]
-  simp [map_ofNat]
+  apply GlobalTheory.ThetaTie.log_mu <;> assumption
 
 theorem log_eq_xi_mul {e : Per.Fl l} (he : IsEps e) {y : Per.BdRp l} (hy : Per.IsLog l e y) :
     ∃ v : Per.BdRp l, IsUnit v ∧ y = aDp l (xi e) * v := by
@@ -178,19 +159,9 @@ theorem alg_mem_FilD (n : ℕ) {z : Per.BdRp l} (hz : z ∈ Per.FilP l n) :
     algebraMap (Per.BdRp l) (Per.BdR l) z ∈ Per.FilD l n :=
   GlobalTheory.RingIface.alg_mem_FilD_nat l hz
 
-theorem exists_isEps_pt (l : ℕ) [Fact l.Prime] : ∃ e : Per.Fl l, IsEps e := by
-  obtain ⟨ζ, ε, h0, -, h1, h⟩ := GlobalTheory.MemLoc.exists_zeta_eps l
-  refine ⟨ε, ?_, fun hh => h1 ?_⟩
-  · have := h 0
-    rw [h0, map_one] at this
-    exact Subtype.ext this
-  · apply (algebraMap (Om l) ℂ_[l]).injective
-    rw [← h 1, map_one]
-    exact congrArg Subtype.val hh
-
 theorem alg_mem_FilD_zero (z : Per.BdRp l) :
     algebraMap (Per.BdRp l) (Per.BdR l) z ∈ Per.FilD l 0 := by
-  obtain ⟨e, he⟩ := exists_isEps_pt l
+  obtain ⟨e, he⟩ := _root_.GlobalTheory.MemLoc.CrisUnique.exists_isEps l
   exact alg_mem_FilD 0 (((filtration_eq_xi_pow l e he).1 0 z).2 (by rw [pow_zero]; exact one_dvd z))
 
 theorem eD_ιA {P : LocPrime l} {AI : LocAinf l P} (T : LocTied l P AI) (a : Ainf l) :

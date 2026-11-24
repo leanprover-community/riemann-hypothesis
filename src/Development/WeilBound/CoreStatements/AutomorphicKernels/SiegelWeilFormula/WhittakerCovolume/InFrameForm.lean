@@ -224,7 +224,7 @@ theorem bottom_rows (d : SD σ) (x : d.G) (t u : GL (Fin d.n) (AE F E)) (hx : in
     (inFrame d.b (w * nb β * x)).toBlocks₂₂ = (((ε : ℤ) : AE F E) • (β.1 * u.1)) := by
   rw [inFrame_mul, inFrame_mul, hw, hnb β, hx]
   simp only [Matrix.fromBlocks_multiply, Matrix.toBlocks₂₁, Matrix.toBlocks₂₂, Matrix.zero_mul, Matrix.mul_zero,
-    Matrix.one_mul, Matrix.mul_one, add_zero, zero_add, Matrix.of_apply, Matrix.fromBlocks_apply₂₁,
+    Matrix.one_mul, Matrix.mul_one, add_zero, zero_add, Matrix.fromBlocks_apply₂₁,
     Matrix.fromBlocks_apply₂₂]
   constructor <;> ext i j <;> simp [Matrix.smul_apply, Matrix.mul_apply, Matrix.one_apply, ite_mul, Finset.sum_ite_eq,
     Finset.mul_sum, mul_assoc]

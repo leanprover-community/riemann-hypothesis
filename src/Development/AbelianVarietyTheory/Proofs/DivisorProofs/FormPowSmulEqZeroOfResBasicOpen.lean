@@ -40,6 +40,7 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.OneFormEqZeroOfVanishingOnPairs
 
 @[expose] public section
 
@@ -56,20 +57,7 @@ theorem form_pow_smul_eq_zero_of_res_basicOpen {R' : Type} [CommRing R'] {X' : S
     (hle : (⟨X'.basicOpen f, hU⟩ : X'.affineOpens) ≤ W) (ω : Ω[(OAff s').obj (op W)⁄R'])
     (h : p1 (OAff s') (homOfLE hle).op ω = 0) :
     ∃ n : ℕ, ((show (OAff s').obj (op W) from f) ^ n) • ω = 0 := by
-  let A := (OAff s').obj (op W)
-  let B := (OAff s').obj (op (⟨X'.basicOpen f, hU⟩ : X'.affineOpens))
-  let ψ : A →ₐ[R'] B := mp (OAff s') (homOfLE hle).op
-  letI : Algebra A B := (ψ : A →+* B).toAlgebra
-  haveI : IsScalarTower R' A B :=
-    IsScalarTower.of_algebraMap_eq fun r ↦ (ψ.commutes r).symm
-  haveI : IsLocalization.Away (show A from f) B := W.2.isLocalization_basicOpen f
-  have e := (semiHom_mp (OAff s') (homOfLE hle).op).oneFormMap_eq_kaehlerDifferential_map (R := R') (B := A) (B' := B)
-    (fun b ↦ rfl) ω
-  have h' : KaehlerDifferential.map R' R' A B ω = 0 := e.symm.trans h
-  obtain ⟨⟨c, hc⟩, hc0⟩ := (IsLocalizedModule.eq_zero_iff (Submonoid.powers (show A from f))
-    (f := KaehlerDifferential.map R' R' A B)).1 h'
-  obtain ⟨n, rfl⟩ := hc
-  exact ⟨n, hc0⟩
+  apply _root_.GlobalTheory.CechDR.form_pow_smul_eq_zero_of_basicOpen <;> assumption
 
 theorem form_eq_zero_of_basis_cover : ∀ {R' : Type} [CommRing R'] {X' : Scheme.{0}} (s' : X' ⟶ Sp R') {C' : Type} [Category.{0} C'], ∀ (G : C' ⥤ AffOp X'), (∀ T : AffOp X', ∃ (n : ℕ) (b : Fin n → (OAff s').obj T), Ideal.span (Set.range b) = ⊤ ∧ ∀ (i : Fin n) (S : AffOp X') (u : T ⟶ S), IsUnit (mp (OAff s') u (b i)) → ∃ (t : C') (v : T ⟶ G.obj t) (w : G.obj t ⟶ S), v ≫ w = u) → (∀ (T : AffOp X') (ω : Ω[(OAff s').obj T⁄R']), (∀ t (u : T ⟶ G.obj t), p1 (OAff s') u ω = 0) → ω = 0) := by
   intro R' _ X' s' C' _ G hcov T ω hω

@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBergmanDensChartSum
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBergmanDensIntegrable
 public import ReciprocityTheory.AnalyticForms.PlurisubharmonicFunctions.LintegralImageEqLintegralNormSqDetMul
 public import Mathlib.Topology.OpenPartialHomeomorph.Composition
@@ -89,32 +90,7 @@ theorem hessC_weight_trans {L : HolLineBundle A} (W : Weight L) (j k : Fin A.n) 
       (jacC ((A.chart j).symm.trans (A.chart k)) y)ᵀ *
         hessC (W.φ k ∘ (A.chart k).symm) (((A.chart j).symm.trans (A.chart k)) y) *
         (jacC ((A.chart j).symm.trans (A.chart k)) y).map (starRingEnd ℂ) := by
-  set T := (A.chart j).symm.trans (A.chart k) with hT
-  have hy' : y ∈ (A.chart j).target ∩ (A.chart j).symm ⁻¹' (A.chart k).source := by
-    rwa [← trans_source_eq]
-  have hyS : (A.chart j).symm y ∈ (A.chart j).source ∩ (A.chart k).source :=
-    ⟨(A.chart j).map_target hy'.1, hy'.2⟩
-  have hTan : AnalyticAt ℂ T y := trans_analytic j k y hy
-  have hTy : T y ∈ (A.chart k).target := T.map_source hy |> fun h => by
-    rw [trans_target_eq] at h; exact h.1
-  have hψ : ContDiffAt ℝ 2 (W.φ k ∘ (A.chart k).symm) (T y) :=
-    ((weight_contDiffOn W k).contDiffAt ((A.chart k).open_target.mem_nhds hTy)).of_le
-      (by first | exact_mod_cast (le_top : (2 : ℕ∞) ≤ ⊤) | simp | exact WithTop.coe_le_coe.2 le_top)
-  have hTc : ContDiffAt ℝ 2 T y := (hTan.contDiffAt (n := 2)).restrict_scalars ℝ
-  have hφ : ContDiffAt ℝ 2 ((W.φ k ∘ (A.chart k).symm) ∘ T) y := hψ.comp y hTc
-  set g : (Fin D → ℂ) → ℂ := fun w => L.g j k ((A.chart j).symm w) ^ 2 with hg
-  have hgan : AnalyticAt ℂ g y := (L.holo j k j y ⟨hy'.1, hyS⟩).pow 2
-  have hg0 : g y ≠ 0 := pow_ne_zero 2 (L.ne_zero j k _ hyS)
-  have hev : (W.φ j ∘ (A.chart j).symm) =ᶠ[𝓝 y]
-      fun w => ((W.φ k ∘ (A.chart k).symm) ∘ T) w + Real.log ‖g w‖ := by
-    filter_upwards [T.open_source.mem_nhds hy] with w hw
-    rw [trans_source_eq] at hw
-    have hwS : (A.chart j).symm w ∈ (A.chart j).source ∩ (A.chart k).source :=
-      ⟨(A.chart j).map_target hw.1, hw.2⟩
-    simp only [Function.comp_apply, hT, OpenPartialHomeomorph.coe_trans, hg, norm_pow,
-      (A.chart k).left_inv hw.2]
-    exact W.compat j k _ hwS
-  rw [hessCGerm _ _ y hev, hessC_add_log_norm _ g y hφ hgan hg0, hessC_comp _ _ y hTan hψ]
+  apply GroundTheory.Heights₂.Heights.HilbertSamuel.BergmanDensChartSum.hessC_weight_trans <;> assumption
 
 theorem chernTopDens_trans {L : HolLineBundle A} (W : Weight L) (j k : Fin A.n) {y : Fin D → ℂ}
     (hy : y ∈ ((A.chart j).symm.trans (A.chart k)).source) :
@@ -143,63 +119,7 @@ theorem lintegral_dens_trans (dV : SmoothVolume A) (j k : Fin A.n)
       ∫⁻ y in ((A.chart j).symm.trans (A.chart k)).source,
         ENNReal.ofReal (Complex.normSq (jacC ((A.chart j).symm.trans (A.chart k)) y).det) *
           (f y * ENNReal.ofReal (dV.dens k (((A.chart j).symm.trans (A.chart k)) y))) := by
-  classical
-  set T := (A.chart j).symm.trans (A.chart k) with hT
-  set S := (A.chart j).source ∩ (A.chart k).source with hS
-  have hSo : IsOpen S := (A.chart j).open_source.inter (A.chart k).open_source
-  have hSm : MeasurableSet S := hSo.measurableSet
-  set p : X → Fin D → ℂ := S.piecewise (A.chart j) (fun _ => 0) with hp
-  have hpm : Measurable p :=
-    ContinuousOn.measurable_piecewise ((A.chart j).continuousOn.mono inter_subset_left)
-      continuousOn_const hSm
-  set g : X → ℝ≥0∞ := S.indicator (fun x => f (p x)) with hg
-  have hgm : Measurable g := (hf.comp hpm).indicator hSm
-  have hsame : ∀ i, (A.chart i).source ∩ S = S → ∫⁻ x in (A.chart i).source, g x ∂dV.μ =
-      ∫⁻ x in S, f (p x) ∂dV.μ := by
-    intro i hi
-    rw [hg, lintegral_indicator hSm, Measure.restrict_restrict hSm, inter_comm, hi]
-  have hL := dV.chart_lintegral j g hgm
-  have hR := dV.chart_lintegral k g hgm
-  rw [hsame j (inter_eq_right.2 inter_subset_left)] at hL
-  rw [hsame k (inter_eq_right.2 inter_subset_right)] at hR
-  have hTsrc := trans_source_eq (A := A) j k
-  have hTtgt := trans_target_eq (A := A) j k
-  have hLe : ∫⁻ y in (A.chart j).target, g ((A.chart j).symm y) * ENNReal.ofReal (dV.dens j y) =
-      ∫⁻ y in T.source, f y * ENNReal.ofReal (dV.dens j y) := by
-    have hsub : T.source ⊆ (A.chart j).target := hTsrc ▸ inter_subset_left
-    conv_rhs => rw [← inter_eq_left.2 hsub, ← Measure.restrict_restrict T.open_source.measurableSet,
-      ← lintegral_indicator T.open_source.measurableSet]
-    refine setLIntegral_congr_fun (A.chart j).open_target.measurableSet fun y hy => ?_
-    have hyj : (A.chart j).symm y ∈ (A.chart j).source := (A.chart j).map_target hy
-    by_cases hk : (A.chart j).symm y ∈ (A.chart k).source
-    · have hyT : y ∈ T.source := by rw [hTsrc]; exact ⟨hy, hk⟩
-      simp [hg, hp, Set.indicator_of_mem hyT, Set.indicator_of_mem (show (A.chart j).symm y ∈ S
-        from ⟨hyj, hk⟩), Set.piecewise_eq_of_mem _ _ _ (show (A.chart j).symm y ∈ S from ⟨hyj, hk⟩),
-        (A.chart j).right_inv hy]
-    · have hyT : y ∉ T.source := by rw [hTsrc]; exact fun h => hk h.2
-      simp [hg, Set.indicator_of_notMem hyT, Set.indicator_of_notMem
-        (show (A.chart j).symm y ∉ S from fun h => hk h.2)]
-  have hRe : ∫⁻ z in (A.chart k).target, g ((A.chart k).symm z) * ENNReal.ofReal (dV.dens k z) =
-      ∫⁻ z in T.target, f (T.symm z) * ENNReal.ofReal (dV.dens k z) := by
-    have hsub : T.target ⊆ (A.chart k).target := hTtgt ▸ inter_subset_left
-    conv_rhs => rw [← inter_eq_left.2 hsub, ← Measure.restrict_restrict T.open_target.measurableSet,
-      ← lintegral_indicator T.open_target.measurableSet]
-    refine setLIntegral_congr_fun (A.chart k).open_target.measurableSet fun z hz => ?_
-    have hzk : (A.chart k).symm z ∈ (A.chart k).source := (A.chart k).map_target hz
-    by_cases hj : (A.chart k).symm z ∈ (A.chart j).source
-    · have hzT : z ∈ T.target := by rw [hTtgt]; exact ⟨hz, hj⟩
-      rw [Set.indicator_of_mem hzT]
-      simp [hg, hp, hT, Set.indicator_of_mem (show (A.chart k).symm z ∈ S
-        from ⟨hj, hzk⟩), Set.piecewise_eq_of_mem _ _ _ (show (A.chart k).symm z ∈ S from ⟨hj, hzk⟩),
-        OpenPartialHomeomorph.coe_trans_symm]
-    · have hzT : z ∉ T.target := by rw [hTtgt]; exact fun h => hj h.2
-      simp [hg, Set.indicator_of_notMem hzT, Set.indicator_of_notMem
-        (show (A.chart k).symm z ∉ S from fun h => hj h.1)]
-  rw [← hLe, ← hL, hR, hRe, ← T.image_source_eq_target,
-    lintegral_image_eq_lintegral_normSq_det_mul T T.source T.open_source (trans_analytic j k)
-      T.injOn]
-  refine setLIntegral_congr_fun T.open_source.measurableSet fun y hy => ?_
-  simp only [T.left_inv hy]
+  apply GroundTheory.Heights₂.Heights.HilbertSamuel.BergmanDensChartSum.lintegral_dens_trans <;> assumption
 
 
 omit [MeasurableSpace X] [BorelSpace X] in
@@ -215,49 +135,7 @@ theorem dens_trans (dV : SmoothVolume A) (j k : Fin A.n) {y : Fin D → ℂ}
     (hy : y ∈ ((A.chart j).symm.trans (A.chart k)).source) :
     dV.dens j y = Complex.normSq (jacC ((A.chart j).symm.trans (A.chart k)) y).det *
       dV.dens k (((A.chart j).symm.trans (A.chart k)) y) := by
-  set T := (A.chart j).symm.trans (A.chart k) with hT
-  have hU := T.open_source
-  have hsub : T.source ⊆ (A.chart j).target := trans_source_eq (A := A) j k ▸ inter_subset_left
-  have hc1 : ContinuousOn (dV.dens j) T.source := (dV.smooth j).continuousOn.mono hsub
-  have hc2 : ContinuousOn (fun y => Complex.normSq (jacC T y).det * dV.dens k (T y)) T.source := by
-    refine ContinuousOn.mul ?_ ?_
-    · exact Complex.continuous_normSq.comp_continuousOn
-        ((continuous_id.matrix_det).comp_continuousOn (jacC_trans_continuousOn j k))
-    · refine (dV.smooth k).continuousOn.comp T.continuousOn fun z hz => ?_
-      have := T.map_source hz
-      rw [trans_target_eq] at this
-      exact this.1
-  have hae : (fun y => ENNReal.ofReal (dV.dens j y)) =ᵐ[volume.restrict T.source]
-      fun y => ENNReal.ofReal (Complex.normSq (jacC T y).det * dV.dens k (T y)) := by
-    refine ae_eq_of_forall_setLIntegral_eq_of_sigmaFinite₀
-      (ENNReal.measurable_ofReal.comp_aemeasurable (hc1.aemeasurable hU.measurableSet))
-      (ENNReal.measurable_ofReal.comp_aemeasurable (hc2.aemeasurable hU.measurableSet))
-      fun s hs _ => ?_
-    rw [← lintegral_indicator hs, ← lintegral_indicator hs]
-    have h := lintegral_dens_trans dV j k (s.indicator 1) (measurable_one.indicator hs)
-    have e1 : (fun z => s.indicator (fun y => ENNReal.ofReal (dV.dens j y)) z) =
-        fun z => s.indicator 1 z * ENNReal.ofReal (dV.dens j z) := by
-      funext z; by_cases hz : z ∈ s <;> simp [hz]
-    have e2 : (fun z => s.indicator
-        (fun y => ENNReal.ofReal (Complex.normSq (jacC T y).det * dV.dens k (T y))) z) =
-        fun z => ENNReal.ofReal (Complex.normSq (jacC T z).det) *
-          (s.indicator 1 z * ENNReal.ofReal (dV.dens k (T z))) := by
-      funext z
-      by_cases hz : z ∈ s <;> simp [hz, ENNReal.ofReal_mul (Complex.normSq_nonneg _)]
-    rw [e1, e2]
-    exact h
-  have hcont1 : ContinuousOn (fun y => ENNReal.ofReal (dV.dens j y)) T.source :=
-    ENNReal.continuous_ofReal.comp_continuousOn hc1
-  have hcont2 : ContinuousOn
-      (fun y => ENNReal.ofReal (Complex.normSq (jacC T y).det * dV.dens k (T y))) T.source :=
-    ENNReal.continuous_ofReal.comp_continuousOn hc2
-  have heq := Measure.eqOn_open_of_ae_eq hae hU hcont1 hcont2 hy
-  have hp1 : 0 ≤ dV.dens j y := (dV.pos j y (hsub hy)).le
-  have hp2 : 0 ≤ Complex.normSq (jacC T y).det * dV.dens k (T y) := by
-    have := T.map_source hy
-    rw [trans_target_eq] at this
-    exact mul_nonneg (Complex.normSq_nonneg _) (dV.pos k _ this.1).le
-  exact (ENNReal.ofReal_eq_ofReal_iff hp1 hp2).1 heq
+  apply GroundTheory.Heights₂.Heights.HilbertSamuel.BergmanDensChartSum.dens_trans <;> assumption
 
 variable {L : HolLineBundle A}
 
@@ -292,7 +170,7 @@ theorem densIn_continuousAt (W : Weight L) (dV : SmoothVolume A) (j : Fin A.n) {
   have hnhds : (A.chart j).target ∈ 𝓝 (A.chart j x) := (A.chart j).open_target.mem_nhds hy
   have hH : ContinuousAt (hessC (W.φ j ∘ (A.chart j).symm)) (A.chart j x) :=
     (hessC_continuousOn _ _ (A.chart j).open_target
-      ((weight_contDiffOn W j).of_le (by first | exact_mod_cast (le_top : (2 : ℕ∞) ≤ ⊤) | simp |
+      ((weight_contDiffOn W j).of_le (by first | simp |
         exact WithTop.coe_le_coe.2 le_top))).continuousAt hnhds
   have hdet : Continuous fun M : Matrix (Fin D) (Fin D) ℂ =>
       (D.factorial : ℝ) * ((((1 / Real.pi : ℝ) : ℂ) • M).det).re := by fun_prop

@@ -75,8 +75,6 @@ theorem be_at (hex : PowerSeries.constantCoeff g.ex = 0)
       have hz : ∀ _ : Unit, constantCoeff (X i : MvPowerSeries σ' ℂ_[p]) = 0 := fun _ => constantCoeff_X i
       first
         | exact hasSubst_of_constantCoeff_zero hz
-        | exact HasSubst.of_constantCoeff_zero' hz
-        | exact hasSubst_of_constantCoeff_nilpotent (fun j => by rw [hz j]; exact IsNilpotent.zero)
     rw [← smul_eq_C_mul, subst_smul hc, ← smul_eq_C_mul]
     congr 1
     unfold G1.lg PowerSeries.subst
@@ -87,8 +85,6 @@ theorem be_at (hex : PowerSeries.constantCoeff g.ex = 0)
   have hc : HasSubst ![a, b] := by
     first
       | exact hasSubst_of_constantCoeff_zero h0
-      | exact HasSubst.of_constantCoeff_zero' h0
-      | exact hasSubst_of_constantCoeff_nilpotent (fun i => by rw [h0 i]; exact IsNilpotent.zero)
   have hl0 : ∀ i : Fin 2, constantCoeff (g.lg (X i : MvPowerSeries (Fin 2) ℂ_[p])) = 0 := fun i =>
     PowerSeries.constantCoeff_subst_eq_zero (constantCoeff_X i) _ (cc_l g)
   have h1 : ∀ i : Fin 2, constantCoeff
@@ -97,8 +93,6 @@ theorem be_at (hex : PowerSeries.constantCoeff g.ex = 0)
   have hd : HasSubst ![C ep * g.lg (X (0 : Fin 2)), C ep * g.lg (X (1 : Fin 2))] := by
     first
       | exact hasSubst_of_constantCoeff_zero h1
-      | exact HasSubst.of_constantCoeff_zero' h1
-      | exact hasSubst_of_constantCoeff_nilpotent (fun i => by rw [h1 i]; exact IsNilpotent.zero)
   have h := congrArg (subst ![a, b]) be_tie
   rw [be_subst g hex hc (constantCoeff_X _) (constantCoeff_X _), subst_X hc, subst_X hc,
     subst_comp_subst_apply hd hc] at h
@@ -164,15 +158,11 @@ theorem subtraction_formal_group_log (hex : PowerSeries.constantCoeff g.ex = 0)
   have hs : HasSubst ![x, y] := by
     first
       | exact hasSubst_of_constantCoeff_zero h0
-      | exact HasSubst.of_constantCoeff_zero' h0
-      | exact hasSubst_of_constantCoeff_nilpotent (fun i => by rw [h0 i]; exact IsNilpotent.zero)
   have h0' : ∀ i : Fin 2, constantCoeff (map i0 (![x, y] i)) = 0 := by
     intro i; rw [constantCoeff_map, h0 i, map_zero]
   have hs' : HasSubst (fun i : Fin 2 => map i0 (![x, y] i)) := by
     first
       | exact hasSubst_of_constantCoeff_zero h0'
-      | exact HasSubst.of_constantCoeff_zero' h0'
-      | exact hasSubst_of_constantCoeff_nilpotent (fun i => by rw [h0' i]; exact IsNilpotent.zero)
   unfold sub2
   rw [map_subst hs, subst_comp_subst_apply hs' (hs_dg hc)]
   have hfun : (fun i : Fin 2 => subst (diagS (PowerSeries.C ep * g.l)) (map i0 (![x, y] i))) =
@@ -191,14 +181,9 @@ theorem constantCoeff_sub2_eq_zero (hbe : constantCoeff be = 0) {x y : MvPowerSe
   have hs : HasSubst ![x, y] := by
     first
       | exact hasSubst_of_constantCoeff_zero h0
-      | exact HasSubst.of_constantCoeff_zero' h0
-      | exact Formalism.G.LogP.hs2 hx hy
-      | exact hasSubst_of_constantCoeff_nilpotent (fun i => by rw [h0 i]; exact IsNilpotent.zero)
   unfold sub2
   first
     | exact constantCoeff_subst_eq_zero hs h0 hbe
-    | exact constantCoeff_subst_eq_zero h0 hbe
-    | exact MvPowerSeries.constantCoeff_subst_eq_zero hs h0 hbe
 
 end Be
 

@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LocalWeightCharts.MulVecApplyOfRow
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.JacExGoodOfN
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ConjugationInvarianceEverySetting
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.HaarUniquenessConjugation
@@ -109,21 +110,7 @@ theorem det_unit_of_UH {g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) �
 
 theorem inv_mem_UW {z : Fin (2 * r + k + 1) → ℂ} {g : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hg : g ∈ Formalism.QuantumDeterminants.UWset k r z) : g⁻¹ ∈ Formalism.QuantumDeterminants.UWset k r z := by
-  obtain ⟨hU, hfix, hz⟩ := hg
-  have hdet := det_unit_of_UH hU
-  have hinv : g⁻¹ * g = 1 := Matrix.nonsing_inv_mul g hdet
-  have hinv' : g * g⁻¹ = 1 := Matrix.mul_nonsing_inv g hdet
-  have hfixinv : ∀ v, g *ᵥ v = v → g⁻¹ *ᵥ v = v := fun v hv => by
-    calc g⁻¹ *ᵥ v = g⁻¹ *ᵥ (g *ᵥ v) := by rw [hv]
-      _ = v := by rw [Matrix.mulVec_mulVec, hinv, Matrix.one_mulVec]
-  refine ⟨?_, fun a => ⟨hfixinv _ (hfix a).1, hfixinv _ (hfix a).2⟩, hfixinv _ hz⟩
-  have hU' : gᴴ * Formalism.QuantumDeterminants.Hpk k r * g = Formalism.QuantumDeterminants.Hpk k r := hU
-  show (g⁻¹)ᴴ * Formalism.QuantumDeterminants.Hpk k r * g⁻¹ = Formalism.QuantumDeterminants.Hpk k r
-  calc (g⁻¹)ᴴ * Formalism.QuantumDeterminants.Hpk k r * g⁻¹ = (g⁻¹)ᴴ * (gᴴ * Formalism.QuantumDeterminants.Hpk k r * g) * g⁻¹ := by rw [hU']
-    _ = (g * g⁻¹)ᴴ * Formalism.QuantumDeterminants.Hpk k r * (g * g⁻¹) := by
-      rw [Matrix.conjTranspose_mul]
-      simp only [Matrix.mul_assoc]
-    _ = Formalism.QuantumDeterminants.Hpk k r := by rw [hinv']; simp
+  apply WlocSk.UnitaryGroupBasics.uw_inv <;> assumption
 
 theorem muS_right {z : Fin (2 * r + k + 1) → ℂ} (hz : Formalism.QuantumDeterminants.inWb k r z) (hT : 0 < Formalism.QuantumDeterminants.Tz k r z)
     {μW μN : Measure (Formalism.QuantumDeterminants.Mt k r)} (hW : Formalism.FourierDecayAlt.B.IsHaarOn (Formalism.QuantumDeterminants.UWset k r z) μW)
@@ -180,7 +167,7 @@ theorem psiP_mul {r k : ℕ} {ε : Fin (2 * r + k + 1) → Bool} {P : Matrix (Fi
   funext i j
   exact congrFun (congrFun key i) j
 
-theorem rightInvS_of (hSC : SetCorr) (hHC : HaarCorr) : RightInvS := by
+theorem rightInvS_of (hSC : SetCorr) (hHC : HaarCorr) : _root_.Formalism.L2.SG.RealObj.InfCut.JacobianCoordinates.UnimodLoc := by
   intro n r k ε e z z' T T' hF μ hμ s hs
   have hn : n = 2 * r + k + 1 := by have := hF.dim; omega
   subst hn
@@ -210,6 +197,6 @@ end Formalism.L2.SG.RealObj.InfCut.JacobianCoordinates.JL.RI
 
 namespace Formalism.L2.SG.RealObj.InfCut.JacobianCoordinates.JL
 
-theorem rightInvS_of (hSC : SetCorr) (hHC : HaarCorr) : RightInvS := RI.rightInvS_of hSC hHC
+alias rightInvS_of := _root_.Formalism.L2.SG.RealObj.InfCut.JacobianCoordinates.JL.RI.rightInvS_of
 
 end Formalism.L2.SG.RealObj.InfCut.JacobianCoordinates.JL

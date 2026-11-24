@@ -48,6 +48,7 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
+import Formalism.LocalToGlobal.IndefiniteReal.SelfDualFullLattice
 
 @[expose] public section
 
@@ -123,62 +124,7 @@ lemma uniform_nat {ι : Type*} [Fintype ι] (P : ι → ℕ → Prop) (hP : ∀ 
 
 lemma selfDual_isFullLattice (V : HSp D) (Λ : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E))
     (hΛ : IsSelfDualC V Λ) : Submodule.IsFullLattice D.host.E Λ := by
-  haveI : Submodule.IsLattice D.host.E Λ := hΛ.1
-  refine ⟨?_⟩
-  obtain ⟨s, hs⟩ := hΛ.1.fg
-  apply eq_top_iff.mpr
-  intro y _
-  let f : (Fin V.rank → D.host.E) → D.host.E := fun x =>
-    ∑ i, ∑ j, star (x i) * V.gram i j * y j
-  obtain ⟨a, ha⟩ := IsLocalization.exist_integer_multiples (nonZeroDivisors (𝓞 D.host.E)) s f
-  have ha0 : (algebraMap (𝓞 D.host.E) D.host.E a) ≠ 0 := by
-    exact (FaithfulSMul.algebraMap_injective _ _).ne (mem_nonZeroDivisors_iff_ne_zero.mp a.2)
-  let P : Submodule (𝓞 D.host.E) (Fin V.rank → D.host.E) := {
-    carrier := {x | ∃ b : 𝓞 D.host.E, (b : D.host.E) = (algebraMap (𝓞 D.host.E) D.host.E a) * f x}
-    zero_mem' := by refine ⟨0, ?_⟩; simp [f]
-    add_mem' := by
-      rintro x z ⟨b, hb⟩ ⟨c, hc⟩
-      refine ⟨b + c, ?_⟩
-      change (b : D.host.E) + c = _
-      rw [hb, hc]
-      simp [f, map_add, add_mul, Finset.sum_add_distrib, mul_add]
-    smul_mem' := by
-      rintro c x ⟨b, hb⟩
-      refine ⟨RingOfIntegers.mapRingHom (starRingEnd D.host.E) c * b, ?_⟩
-      simp only [map_mul, hb, f, Pi.smul_apply, Algebra.smul_def, map_mul, RingOfIntegers.mapRingHom_apply, star_mul]
-      simp only [Finset.mul_sum]
-      apply Finset.sum_congr rfl
-      intro i _
-      apply Finset.sum_congr rfl
-      intro j _
-      change star (c : D.host.E) * _ = _
-      ring }
-  have hsP : (s : Set (Fin V.rank → D.host.E)) ⊆ P := by
-    intro x hx
-    obtain ⟨b, hb⟩ := ha x hx
-    exact ⟨b, by simpa [Algebra.smul_def] using hb⟩
-  have hy : (algebraMap (𝓞 D.host.E) D.host.E a) • y ∈ Λ := by
-    apply (hΛ.2 _).2
-    intro x hx
-    have hxP : x ∈ P := (hs ▸ Submodule.span_le.mpr hsP) hx
-    obtain ⟨b, hb⟩ := hxP
-    refine ⟨b, ?_⟩
-    rw [hb]
-    dsimp only [f, Pi.smul_apply]
-    simp only [smul_eq_mul, Finset.mul_sum]
-    apply Finset.sum_congr rfl
-    intro i _
-    apply Finset.sum_congr rfl
-    intro j _
-    ring
-  have hy' : (algebraMap (𝓞 D.host.E) D.host.E a) • y ∈ Submodule.span D.host.E (Λ : Set (Fin V.rank → D.host.E)) :=
-    Submodule.subset_span hy
-  have := (Submodule.span D.host.E (Λ : Set (Fin V.rank → D.host.E))).smul_mem
-    (algebraMap (𝓞 D.host.E) D.host.E a)⁻¹ hy' 
-  change (algebraMap (𝓞 D.host.E) D.host.E a)⁻¹ •
-    ((algebraMap (𝓞 D.host.E) D.host.E a) • y) ∈ _ at this
-  rw [← smul_assoc, smul_eq_mul, inv_mul_cancel₀ ha0, one_smul] at this
-  exact this
+  exact Formalism.IndefR.Datum.IsSelfDualC.isFullLattice V Λ hΛ
 
 lemma exists_nat_smul_mem {n : ℕ} {Λ : Submodule (𝓞 D.host.E) (Fin n → D.host.E)}
     (hΛ : Submodule.IsFullLattice D.host.E Λ) (x : Fin n → D.host.E) :
@@ -238,11 +184,9 @@ theorem lattice_projective {n : ℕ} {Λ : Submodule (𝓞 D.host.E) (Fin n → 
   have : Module.FinitePresentation (𝓞 D.host.E) Λ := Module.finitePresentation_of_finite _ _
   exact Module.Flat.projective_of_finitePresentation
 
-theorem gram_conj (V : HSp D) : V.gramᴴ = V.gram := Matrix.ext fun i j => V.herm.eq _ _
-
 theorem form_swap (S : HSp D) (x y : Fin S.rank → D.host.E) :
     ∑ i, ∑ j, star (x i) * S.gram i j * y j = star ((fun a => star (y a)) ⬝ᵥ (S.gram *ᵥ x)) := by
-  have hg : ∀ k b, star (S.gram k b) = S.gram b k := fun k b => congrFun (congrFun (gram_conj S) b) k
+  have hg : ∀ k b, star (S.gram k b) = S.gram b k := fun k b => congrFun (congrFun (_root_.Formalism.IndefR.Fin.LevelGroupLemmas.Lat.gram_herm_E S) b) k
   simp only [dotProduct, mulVec, star_sum, star_mul', star_star, hg, Finset.mul_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
@@ -400,16 +344,13 @@ theorem natCast_mul_idem_div {P : Finset (Formalism.L2.DIV.Pl D.host.E)} {e : AE
 theorem gram_map_conj (V : HSp D) : ((V.gram.map (eToEAf D)).map (sR D))ᵀ = V.gram.map (eToEAf D) := by
   ext i j
   simp only [transpose_apply, map_apply, sR_eTo]
-  exact congrArg _ (congrFun (congrFun (gram_conj V) i) j)
+  exact congrArg _ (congrFun (congrFun (_root_.Formalism.IndefR.Fin.LevelGroupLemmas.Lat.gram_herm_E V) i) j)
 
 theorem gramInv_map_conj (V : HSp D) : ((V.gram⁻¹.map (eToEAf D)).map (sR D))ᵀ = V.gram⁻¹.map (eToEAf D) := by
-  have h : (V.gram⁻¹)ᴴ = V.gram⁻¹ := by rw [Matrix.conjTranspose_nonsing_inv, gram_conj]
+  have h : (V.gram⁻¹)ᴴ = V.gram⁻¹ := by rw [Matrix.conjTranspose_nonsing_inv, _root_.Formalism.IndefR.Fin.LevelGroupLemmas.Lat.gram_herm_E]
   ext i j
   simp only [transpose_apply, map_apply, sR_eTo]
   exact congrArg _ (congrFun (congrFun h i) j)
-
-theorem sR_sR (x : EAf D) : sR D (sR D x) = x := by
-  rw [← toEAf_liftE x, ← toEAf_cA, ← toEAf_cA, cA_cA]
 
 theorem mulVec_mem_hatL {m n : ℕ} {Λ : Submodule (𝓞 D.host.E) (Fin m → D.host.E)}
     {Λ' : Submodule (𝓞 D.host.E) (Fin n → D.host.E)} {β : GL (Fin m) (EAf D)} {β' : GL (Fin n) (EAf D)}
@@ -475,7 +416,7 @@ theorem mem_latO_of_adj_int : ∀ (D : D7) (S T : HSp D) (ΛS : Submodule (𝓞 
     have h := congrArg (fun X => Matrix.map X (toEAf D)) (gramInv_mul S)
     simp only [Matrix.map_mul, Matrix.map_one _ (map_zero _) (map_one _)] at h
     exact h
-  have key := sum_rank_one (sR D) sR_sR _ _ _ (gramInv_map_conj S) (gram_map_conj T) hGi M
+  have key := sum_rank_one (sR D) _root_.Formalism.IndefR.Fin.LevelGroupLemmas.Lat.sR_sR _ _ _ (gramInv_map_conj S) (gram_map_conj T) hGi M
     (fun k i => eToEAf D (g k i)) (fun k a => eToEAf D (s k a)) hb' _ _ hM
   have hdec : t = ∑ k, genE (S := S) (T := T)
       (eToEAf D (n : D.host.E) * ((1 : D.host.E) ⊗ₜ[D.host.F] (1 : Af D.host.F))) (fun i => eToEAf D (g k i))

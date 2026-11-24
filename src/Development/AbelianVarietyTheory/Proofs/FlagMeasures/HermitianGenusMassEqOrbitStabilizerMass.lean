@@ -110,7 +110,6 @@ theorem _root_.GlobalTheory.Mass.GenusOrb.main : ∀ (K V : Type) [Field K] [Num
   have hmass := by
     first
     | exact _root_.Formalism.HermitianLatticesTheory.final_massBasic K V h hsymm htr L hL
-    | exact _root_.Formalism.HermitianLatticesTheory.final_massBasic K V h hsymm htr L hL.toIsLattice
   obtain ⟨hmass_ex, hmass_eq, hmass_pos⟩ := hmass
   have hgen : ∀ g ∈ _root_.Formalism.HermitianLatticesTheory.isom h, ∀ M ∈ _root_.Formalism.HermitianLatticesTheory.genus h L, _root_.Formalism.HermitianLatticesTheory.gmap g M ∈ _root_.Formalism.HermitianLatticesTheory.genus h L := by
     intro g hg M hM

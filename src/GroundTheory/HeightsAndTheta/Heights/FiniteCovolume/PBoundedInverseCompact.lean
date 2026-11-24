@@ -131,7 +131,7 @@ theorem exists_rightInv (v : Basis ι E W) {n : ℕ} {e : Fin n → W}
     refine Finset.sum_congr rfl fun a _ => ?_
     rw [map_smul, Finsupp.smul_apply, smul_eq_mul, mul_comm]
 
-  simp only [Matrix.mul_apply, of_apply, vecAt, ← map_mul, ← map_sum, h1, Basis.repr_self, one_apply]
+  simp only [Matrix.mul_apply, of_apply, vecAt, ← map_mul, ← map_sum, h1, Basis.repr_self]
   by_cases hki : k = i
   · subst hki
     simp

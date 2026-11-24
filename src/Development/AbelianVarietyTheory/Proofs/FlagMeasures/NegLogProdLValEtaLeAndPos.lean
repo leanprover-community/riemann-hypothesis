@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.CorollaryAOfPropositionA
 public import Formalism.HermitianLattices.StatementMass
 public import Formalism.GL3MeanSquares.HookFormulaTorsion.GlobalBoundRefinements
 import Mathlib.Algebra.Order.Floor.Extended
@@ -76,31 +77,7 @@ private lemma eventually_abs_le_half_add_of_doubling_bounds (m : ℕ) (x : ℝ) 
 
 theorem tsum_le (M : ℕ) (hM : 3 ≤ M) :
     (∑' n : ℕ, 1 / ((n : ℝ) + 1) ^ M) ≤ 1 + 2 / 2 ^ M := by
-  obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le hM
-
-  have hpart : ∀ N : ℕ, ∑ i ∈ Finset.range (N + 1), 1 / ((i : ℝ) + 1) ^ (3 + m) +
-      4 / 2 ^ (3 + m) / (((N : ℝ) + 1) * ((N : ℝ) + 1 + 1)) ≤ 1 + 2 / 2 ^ (3 + m) := by
-    intro N
-    induction N with
-    | zero =>
-      apply le_of_eq
-      norm_num
-      ring
-    | succ N ih =>
-      rw [Finset.sum_range_succ]
-      have h := eventually_abs_le_half_add_of_doubling_bounds m ((N : ℝ) + 1) (by linarith [(N.cast_nonneg : (0 : ℝ) ≤ N)])
-      push_cast
-      linarith
-  apply Real.tsum_le_of_sum_range_le (fun n => by positivity)
-  intro N
-  cases N with
-  | zero =>
-    simp only [Finset.range_zero, Finset.sum_empty]
-    positivity
-  | succ N =>
-    have h := hpart N
-    have : (0 : ℝ) ≤ 4 / 2 ^ (3 + m) / (((N : ℝ) + 1) * ((N : ℝ) + 1 + 1)) := by positivity
-    linarith
+  apply Formalism.FourierDecayAlt.P.Sz2.zeta_sub_one_le <;> assumption
 
 theorem log_tsum_le (M : ℕ) (hM : 3 ≤ M) :
     Real.log (∑' n : ℕ, 1 / ((n : ℝ) + 1) ^ M) ≤ 2 / 2 ^ M := by

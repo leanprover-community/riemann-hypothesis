@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.DenseKFiniteVectorsUnitaryGroupRep
 public import CompanionTheory.HarishChandraModules.BesselParameterIntegrals.SmoothCyclicVectors.SmoothVec
 public import Formalism.LocalToGlobal.IndefiniteReal.SobolevIteration.ArvOSobPfSt
 public import Formalism.PeriodIntegrals.QuotInv
@@ -168,31 +169,7 @@ theorem smoothVec_of_isSmC {w : H} (hw : CompanionTheory.D.Upq.Sm.IsSm (Formalis
   exact ((hF.contDiffAt (hU.mem_nhds h0)).comp t0 hc.contDiffAt).congr_of_eventuallyEq hev
 
 theorem kfinDense_UJC (hσ : Formalism.MainNotions.S.IsURepOn (Formalism.MainNotions.S.UJset ε) σ) : Dense {v : H | Formalism.MainNotions.S.IsKFin ε σ v} := by
-  have hsm := CompanionTheory.D.gk.FinalFormK.dense_sm' (isMatGroupC ε) (thetaC ε) (fun x hx => thetaC_eq ε hx) (repOnC hσ) hσ.2.2
-  have hG : Formalism.IndefR.Tow.SobPf.IsGRep (Formalism.REAL.Jm ε) σ := ⟨hσ.1.1, hσ.1.2, hσ.2.1, hσ.2.2⟩
-  have hC : Formalism.IndefR.Datum.IsCartanInv (Formalism.REAL.Jm ε) (Formalism.REAL.Jm ε) := by
-    have hJ : (Formalism.REAL.Jm ε)ᴴ = Formalism.REAL.Jm ε := by
-      ext i j; simp only [Formalism.REAL.Jm, diagonal_conjTranspose, diagonal_apply]; split_ifs <;> simp_all
-    refine ⟨Formalism.REAL.Jm_mul_self ε, ?_, ?_⟩
-    · rw [hJ, Matrix.mul_assoc, Formalism.REAL.Jm_mul_self, Matrix.mul_one]
-    · rw [Formalism.REAL.Jm_mul_self]; exact Matrix.PosDef.one
-  rw [Metric.dense_iff]
-  intro h δ hδ
-  obtain ⟨w, hw, hwh⟩ := Metric.dense_iff.1 hsm h (δ / 2) (half_pos hδ)
-  obtain ⟨v, -, hvK, hvw⟩ := CompanionTheory.D.gk.HC.sobApprox_holds (Formalism.REAL.Jm ε) (Formalism.REAL.Jm ε) σ hC hG w
-    (smoothVec_of_isSmC hwh) [[]] (by simp) (δ / 2) (half_pos hδ)
-  refine ⟨v, ?_, ?_⟩
-  · have h1 := hvw [] (by simp)
-    simp only [Formalism.IndefR.Tow.SobPf.dL, List.foldr_nil] at h1
-    rw [Metric.mem_ball] at hw ⊢
-    calc dist v h ≤ dist v w + dist w h := dist_triangle _ _ _
-      _ < δ / 2 + δ / 2 := add_lt_add (by rw [dist_eq_norm]; exact h1) hw
-      _ = δ := add_halves δ
-  · obtain ⟨W, hW, hvW, hst⟩ := hvK
-    refine ⟨W, hW, hvW, fun g hg x hx => hst g ⟨?_, hg.2⟩ x hx⟩
-    show gᴴ * Formalism.REAL.Jm ε * g = Formalism.REAL.Jm ε
-    rw [Matrix.mul_assoc, ← hg.2, ← Matrix.mul_assoc, ← Matrix.star_eq_conjTranspose,
-      (Matrix.mem_unitaryGroup_iff').1 hg.1, Matrix.one_mul]
+  apply GlobalTheory.CompactRep.dense_isKFin <;> assumption
 
 end UJ
 

@@ -91,7 +91,6 @@ theorem isUnivRing_bc (m : ℕ) (π : B →ₐ[R] JetR R (Fin n) m) (hπ : IsUni
     intro p
     first
       | exact Iff.rfl
-      | simp [A', f1, f2, AlgHom.mem_equalizer]
   let aug' : A' →ₐ[R] R := (AlgHom.fst R R A).comp A'.val
   let snd' : A' →ₐ[R] A := (AlgHom.snd R R A).comp A'.val
   have hJ' : (RingHom.ker aug') ^ (m + 1) = ⊥ := by

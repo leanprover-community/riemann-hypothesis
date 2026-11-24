@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.CoreStatements.AutomorphicKernels.SiegelWeilFormula.ZetaEulerProducts.SummablePrimesRpow
 public import Mathlib.NumberTheory.LSeries.Basic
 public import Mathlib.NumberTheory.NumberField.Basic
 public import Mathlib.RingTheory.Ideal.Norm.AbsNorm
@@ -131,43 +132,7 @@ lemma lseries_summable {σ : ℝ} (hσ : 1 < σ) :
 
 theorem summable_absNorm_rpow {σ : ℝ} (hσ : 1 < σ) :
     Summable (fun w : HeightOneSpectrum (𝓞 K) => ((Ideal.absNorm w.asIdeal : ℕ) : ℝ) ^ (-σ)) := by
-  classical
-  set c : ℕ → ℝ := fun n => (Nat.card {I : Ideal (𝓞 K) // Ideal.absNorm I = n} : ℝ) with hc
-  have hL := lseries_summable K hσ
-  set a : ℕ → ℝ := fun k => ‖LSeries.term (fun n => ((c n : ℝ) : ℂ)) (σ : ℂ) k‖ with ha_def
-  have ha : Summable a := hL.norm
-  have ha_eq : ∀ k, k ≠ 0 → a k = c k * (k : ℝ) ^ (-σ) := by
-    intro k hk
-    simp only [ha_def, LSeries.term, hk, if_false]
-    rw [norm_div, Complex.norm_natCast_cpow_of_pos (Nat.pos_of_ne_zero hk)]
-    rw [Complex.norm_real, Real.norm_of_nonneg (by positivity), Real.rpow_neg (by positivity)]
-    simp [div_eq_mul_inv]
-  refine summable_of_sum_le (fun w => by positivity) (c := ∑' k, a k) ?_
-  intro u
-  let N' : HeightOneSpectrum (𝓞 K) → ℕ := fun w => Ideal.absNorm w.asIdeal
-  rw [← Finset.sum_fiberwise_of_maps_to (g := N') (t := u.image N')
-    (fun w hw => Finset.mem_image_of_mem _ hw)]
-  calc _ ≤ ∑ k ∈ u.image N', a k := by
-        apply Finset.sum_le_sum
-        intro k hk
-        obtain ⟨w0, -, rfl⟩ := Finset.mem_image.1 hk
-        have hk0 : N' w0 ≠ 0 := by
-          simp only [N']; rw [Ne, Ideal.absNorm_eq_zero_iff]; exact w0.ne_bot
-        rw [ha_eq _ hk0]
-        rw [Finset.sum_congr rfl (g := fun _ => ((N' w0 : ℕ) : ℝ) ^ (-σ))
-          (fun w hw => by show ((N' w : ℕ) : ℝ) ^ (-σ) = _; rw [(Finset.mem_filter.1 hw).2])]
-        rw [Finset.sum_const, nsmul_eq_mul]
-        apply mul_le_mul_of_nonneg_right _ (by positivity)
-        simp only [hc]
-        rw [card_fib]
-        exact_mod_cast Finset.card_le_card_of_injOn (fun w : HeightOneSpectrum (𝓞 K) => w.asIdeal)
-          (fun w hw => by
-            have hw' : w ∈ u.filter (fun i => N' i = N' w0) := hw
-            have hmem : w.asIdeal ∈ (Ideal.finite_setOfPred_absNorm_eq (S := 𝓞 K) (N' w0)).toFinset := by
-              rw [Set.Finite.mem_toFinset]; exact (Finset.mem_filter.1 hw').2
-            exact hmem)
-          (fun w1 _ w2 _ h => HeightOneSpectrum.ext h)
-    _ ≤ ∑' k, a k := ha.sum_le_tsum _ (fun k _ => norm_nonneg _)
+  apply PositivityTheory.Lord.summable_primes_rpow <;> assumption
 
 end Sum
 

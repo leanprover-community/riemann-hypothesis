@@ -175,7 +175,7 @@ lemma cubeProj_comp_map (f : G'' ⟶ G₀) (k : Fin 3) :
     x3 G'' k ≫ f = (f ⊗ₘ f ⊗ₘ f) ≫ x3 G₀ k := by
   fin_cases k <;>
     simp [x3, CartesianMonoidalCategory.tensorHom_fst, CartesianMonoidalCategory.tensorHom_snd,
-      CartesianMonoidalCategory.tensorHom_fst_assoc, CartesianMonoidalCategory.tensorHom_snd_assoc]
+      CartesianMonoidalCategory.tensorHom_snd_assoc]
 
 def CubeMap.ofHom (f : G'' ⟶ G₀) [IsMonHom f] : CubeMap G'' G₀ where
   F := f.left

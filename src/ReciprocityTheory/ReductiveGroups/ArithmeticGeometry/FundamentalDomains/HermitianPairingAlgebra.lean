@@ -120,7 +120,7 @@ theorem hermitian_lattice_pairing_duality : PerpQuotientSelfDual (E := E) := by
     have h := hintcc _ (hc y hy)
     have e : cc (herm X.Gm y x - c * herm X.Gm y ξ) = herm X.Gm (x + (-cc c) • ξ) y := by
       rw [herm_add_left, herm_smul_left, ← hsym y x, ← hsym y ξ]
-      simp only [cc, map_sub, map_mul, map_neg]
+      simp only [cc, map_sub, map_mul]
       ring
     rwa [e] at h
   by_cases hI : X.L'.map (pairL X.Gm ξ) = ⊥

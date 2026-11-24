@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.GenBCFrameR
 public import Formalism.LocalToGlobal.ProjectiveLattices.IsThRule
 public import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.GlobalBasisAlgebra
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsIsLieBasisBaseChange
@@ -264,56 +265,6 @@ namespace GlobalTheory
 open FrameBaseChange
 
 theorem frame_baseChange_eigen_basis : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H) (l : Level H) (Xo : Moduli Dw l) (c : Coeff l) (S T : Type) [CommRing S] [Algebra c.F S] [CommRing T] [Algebra c.F T] (ψ : S →ₐ[c.F] T) (y : FrPt Xo c S) (τ : E →+* ℂ) (w : Sp (DualNumber T) ⟶ Xo.univ.t.G.left), IsTanAt (spMap ψ.toRingHom ≫ y.x) w → IsEigAt c τ w → ∃! a : Fin (Dw.mult τ) → T, IsCombAt (spMap ψ.toRingHom ≫ y.x) (fun i => spMap (dualMap ψ.toRingHom) ≫ y.u τ i) a w := by
-  intro E _ _ _ H Dw l Xo c S T _ _ _ _ ψ y τ w hw hwE
-  classical
-  set e := (Fintype.equivFin (Lt1 Dw)).symm with he
-  have hS : ∀ w, IsTanAt y.x w → ∃! a : Fin (Fintype.card (Lt1 Dw)) → S,
-      IsCombAt y.x (fun i => y.u (e i).1 (e i).2) a w := by
-    intro w hw
-    obtain ⟨a, ha, hu⟩ := GlobalTheory.FrameTangent.frame_tangent_basis E H Dw l Xo c S y w hw
-    refine ⟨fun i => a (e i), ha, fun a' ha' => ?_⟩
-    have h2 := hu (fun k => a' (e.symm k)) (by simpa [he] using ha')
-    funext i
-    rw [← h2]
-    simp
-  obtain ⟨htanT, hbT⟩ := basis_baseChange ψ.toRingHom y.x (fun i => y.u (e i).1 (e i).2)
-    (fun i => y.tan _ _) hS
-  have hU : ∀ k : Lt1 Dw, IsTanAt (spMap ψ.toRingHom ≫ y.x) (spMap (dualMap ψ.toRingHom) ≫ y.u k.1 k.2) := by
-    intro k
-    have h2 := htanT (e.symm k)
-    rwa [Equiv.apply_symm_apply] at h2
-  have hcomm : ∀ s : c.F, (dualMap ψ.toRingHom).comp (epsMul (algebraMap c.F S s)) =
-      (epsMul (algebraMap c.F T s)).comp (dualMap ψ.toRingHom) := by
-    intro s
-    ext r <;> simp [dualMap, epsMul, TrivSqZeroExt.algebraMap_eq_inl]
-  have hE : ∀ k : Lt1 Dw, IsEigAt c k.1 (spMap (dualMap ψ.toRingHom) ≫ y.u k.1 k.2) := by
-    intro k b
-    have h1 := y.eig k.1 k.2 b
-    calc (spMap (dualMap ψ.toRingHom) ≫ y.u k.1 k.2) ≫ (Xo.univ.t.act.act b).left
-        = spMap (dualMap ψ.toRingHom) ≫ (y.u k.1 k.2 ≫ (Xo.univ.t.act.act b).left) := Category.assoc _ _ _
-      _ = (spMap (dualMap ψ.toRingHom) ≫ spMap (epsMul (algebraMap c.F S (embK c k.1 b)))) ≫ y.u k.1 k.2 := by
-        rw [h1, Category.assoc]
-      _ = (spMap (epsMul (algebraMap c.F T (embK c k.1 b))) ≫ spMap (dualMap ψ.toRingHom)) ≫ y.u k.1 k.2 := by
-        rw [spMap_spMap, spMap_spMap, hcomm]
-      _ = _ := Category.assoc _ _ _
-  let U : Lt1 Dw → (tEps (spMap ψ.toRingHom ≫ y.x) ⟶ Xo.univ.t.G) := fun k =>
-    Over.homMk (spMap (dualMap ψ.toRingHom) ≫ y.u k.1 k.2) (hU k).1
-  have hbU : ∀ W : tEps (spMap ψ.toRingHom ≫ y.x) ⟶ Xo.univ.t.G, IsTanAt (spMap ψ.toRingHom ≫ y.x) W.left →
-      ∃! a : Lt1 Dw → T, ∏ k, epsEnd (spMap ψ.toRingHom ≫ y.x) (a k) ≫ U k = W := by
-    intro W hW
-    obtain ⟨a, ha, hu⟩ := hbT W.left hW
-    have ha' := (isCombAt_iff (fun i => U (e i)) a W).1 ha
-    refine ⟨fun k => a (e.symm k), ?_, fun a' ha'' => ?_⟩
-    · show ∏ k, epsEnd (spMap ψ.toRingHom ≫ y.x) (a (e.symm k)) ≫ U k = W
-      rw [← Equiv.prod_comp e (fun k => epsEnd (spMap ψ.toRingHom ≫ y.x) (a (e.symm k)) ≫ U k)]
-      simpa using ha'
-    · have h2 := hu (fun i => a' (e i))
-        ((isCombAt_iff (fun i => U (e i)) _ W).2 ((Equiv.prod_comp e _).trans ha''))
-      funext k
-      rw [← h2]
-      simp
-  obtain ⟨a, ha, hu⟩ := eigen_basis c U hU hE hbU τ (Over.homMk w hw.1) hw hwE
-  exact ⟨a, (isCombAt_iff (fun i => U ⟨τ, i⟩) a (Over.homMk w hw.1)).2 ha,
-    fun a' ha' => hu a' ((isCombAt_iff (fun i => U ⟨τ, i⟩) a' (Over.homMk w hw.1)).1 ha')⟩
+  apply ReciprocityTheory.ChartRestriction.G.PullbackSections.bcLieAll <;> assumption
 
 end GlobalTheory

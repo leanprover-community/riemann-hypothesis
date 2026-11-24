@@ -221,7 +221,6 @@ theorem kirrPs_le (hA : IsGlRep A) (hV : IsKIrrHW ε A Λ V) {u : X} (hu : u ∈
       (⨆ z ∈ {z : ℂ | ∃ r : ℝ, r ≤ kirrPs k ν ∧ z = r}, Module.End.eigenspace (kirrH A k) z) := by
     first
       | exact (Module.End.eigenspaces_iSupIndep (kirrH A k)).disjoint_biSup hx
-      | exact (Module.End.eigenspaces_independent (kirrH A k)).disjoint_biSup hx
   exact hw0 (Submodule.disjoint_def.1 hd w hwE hwS)
 
 private theorem kirrPs_succ (μ : Fin n → ℝ) (a : Fin n) : kirrPs (a.val + 1) μ = kirrPs a.val μ + μ a := by

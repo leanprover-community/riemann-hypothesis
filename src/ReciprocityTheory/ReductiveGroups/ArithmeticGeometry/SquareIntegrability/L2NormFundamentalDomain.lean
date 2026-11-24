@@ -71,7 +71,6 @@ theorem contDiff_of_diff {W : Type*} [NormedAddCommGroup W] [NormedSpace ℂ W] 
   have h1 : Differentiable ℂ (f ∘ e.symm) := by
     first
     | exact hf.comp e.symm.differentiable
-    | exact hf.comp (e.symm.contDiff.differentiable (by simp))
   have h3 := (contDiff_of_differentiable h1 (n := ((⊤ : ℕ∞) : WithTop ℕ∞))).comp e.contDiff
   convert h3 using 1
   funext v; simp
@@ -82,8 +81,6 @@ theorem jof_Hf_self_re {ι : Type} [Fintype ι] (x : EuclideanSpace ℂ ι) : (H
   refine Finset.sum_congr rfl fun i _ => ?_
   first
   | rw [← Complex.ofReal_pow, Complex.ofReal_re]
-  | norm_cast
-  | simp [sq]
 
 variable {E : Type} [Field E] [NumberField E] (X : PT E)
 
@@ -101,7 +98,6 @@ theorem tens_mem {n q : ℕ} {s : Fin n → (Fin 1 → Vsp X.dim) → ℂ} (hs :
   refine ⟨?_, fun γ hγ v => ?_⟩
   · show Differentiable ℂ (fun v : Fin n → Vsp X.dim => ∏ k, s k (fun _ => v k))
     first
-    | exact Differentiable.finset_prod (fun k _ => (hd k).comp (differentiable_pi.mpr fun _ => differentiable_apply k))
     | fun_prop
   · have he : ∀ k, s k (fun _ => (v + γ) k) = ((X.eps (γ k) : ℂ)) ^ q *
         cexp (q * Real.pi * Hf (v k) (γ k) + q * Real.pi * Hf (γ k) (γ k) / 2) * s k (fun _ => v k) := by
@@ -137,7 +133,6 @@ theorem avg_fd_prod {n : ℕ} (f : Fin n → Vsp X.dim → ℝ) :
   rw [MeasureTheory.Measure.pi_pi, ENNReal.toReal_prod, ← Finset.prod_inv_distrib]
   first
   | rw [MeasureTheory.integral_fintype_prod_eq_prod, ← Finset.prod_mul_distrib]
-  | rw [MeasureTheory.integral_fintype_prod_eq_prod (μ := fun _ => _), ← Finset.prod_mul_distrib]
 
 theorem l2_norm_fundamental_domain (q : ℕ) (s : (Fin 1 → Vsp X.dim) → ℂ) :
     X.l2 q s = ⨍ x in ZSpan.fundamentalDomain X.b, X.ptN2 q s (fun _ => x) := by
@@ -163,8 +158,6 @@ theorem l2_smul {n : ℕ} (q : ℕ) (c : ℂ) (F : (Fin n → Vsp X.dim) → ℂ
   simp only [PT.l2, h]
   first
   | exact MeasureTheory.integral_const_mul _ _
-  | exact MeasureTheory.integral_mul_left _ _
-  | simp [MeasureTheory.average, MeasureTheory.integral_const_mul]
 
 def gtOf (q : ℕ) : GT (Idx X.dim) where
   b := X.b
@@ -212,8 +205,6 @@ theorem eq_zero_of_l2_eq_zero (hP : Ext.PackingCount) {q : ℕ} (hq : 1 ≤ q) {
   have hcont : Continuous fun x : Vsp X.dim => ‖g x‖ ^ 2 * Real.exp (-(q * Real.pi) * ‖x‖ ^ 2) := by
     first
     | fun_prop
-    | exact ((continuous_norm.comp hgc).pow 2).mul
-        (Real.continuous_exp.comp (continuous_const.mul (continuous_norm.pow 2)))
   have hint : MeasureTheory.IntegrableOn
       (fun x : Vsp X.dim => ‖g x‖ ^ 2 * Real.exp (-(q * Real.pi) * ‖x‖ ^ 2)) D :=
     (hcont.continuousOn.integrableOn_compact hDb.isCompact_closure).mono_set subset_closure
@@ -244,8 +235,6 @@ theorem eq_zero_of_l2_eq_zero (hP : Ext.PackingCount) {q : ℕ} (hq : 1 ≤ q) {
     have e : (-γ) +ᵥ y = y + -(γ : Vsp X.dim) := by
       first
       | (rw [Submodule.vadd_def, add_comm]; rfl)
-      | simp [Submodule.vadd_def, add_comm]
-      | (show ((-γ : Submodule.span ℤ (Set.range X.b)) : Vsp X.dim) + y = _; simp [add_comm])
     rw [e]
     exact not_congr (hne _ (neg_mem γ.2) y)
   have ht0 := hfd.measure_zero_of_invariant {x | g x ≠ 0} hinv h2
@@ -274,7 +263,6 @@ theorem polyDeriv_smul_fun {σ W : Type*} [NormedAddCommGroup W] [NormedSpace �
   refine Finset.sum_congr rfl fun m _ => ?_
   first
   | rw [iteratedFDeriv_const_smul_apply ((hF.of_le (by exact_mod_cast le_top)).contDiffAt)]
-  | rw [iteratedFDeriv_const_smul_apply (hF.of_le (by exact_mod_cast le_top))]
   simp only [ContinuousMultilinearMap.smul_apply, smul_eq_mul]
   ring
 

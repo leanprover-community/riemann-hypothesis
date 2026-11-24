@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.RootWeights.IsotypicProjectorSelfAdjoint
 public import Formalism.SharpRestriction.GrowthBounds.TwistedSubstitution.PlaneCoeff
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -53,47 +54,6 @@ open Formalism.MainNotions.G
 section Commutant
 
 variable {n : ℕ} {K V : Type*} [Field K] [AddCommGroup V] [Module K V] (E : GLOps n K V)
-
-theorem comm_Umon (A : Module.End K V) (hA : ∀ a b, A * E a b = E a b * A) : ∀ u ∈ Umon E, A * u = u * A := by
-  intro u hu
-  unfold Umon at hu
-  induction hu using Submonoid.closure_induction with
-  | mem x hx =>
-    obtain ⟨ab, rfl⟩ := hx
-    exact hA ab.1 ab.2
-  | one => simp
-  | mul x y _ _ hx hy => rw [← mul_assoc, hx, mul_assoc, hy, mul_assoc]
-
-theorem comm_pres_isoSub (A : Module.End K V) (hA : ∀ a b, A * E a b = E a b * A) (mu : Fin n → ℤ) :
-    ∀ x ∈ isoSub E mu, A x ∈ isoSub E mu := by
-  intro x hx
-  unfold isoSub at hx ⊢
-  induction hx using Submodule.span_induction with
-  | mem y hy =>
-    obtain ⟨u, hu, v, hv, rfl⟩ := hy
-    have h1 : A (u v) = u (A v) := by
-      have := comm_Umon E A hA u hu
-      simpa only [Module.End.mul_apply] using congrArg (fun f => f v) this
-    rw [h1]
-    by_cases h0 : A v = 0
-    · rw [h0, map_zero]; exact Submodule.zero_mem _
-    · apply Submodule.subset_span
-      refine ⟨u, hu, A v, ⟨h0, ?_, ?_⟩, rfl⟩
-      · have hw := hv.2.1
-        simp only [weightSp, Submodule.mem_iInf, LinearMap.mem_ker] at hw ⊢
-        intro a
-        have hc : E a a (A v) = A (E a a v) := by
-          simpa only [Module.End.mul_apply] using (congrArg (fun f => f v) (hA a a)).symm
-        have hwa := hw a
-        simp only [LinearMap.sub_apply, LinearMap.smul_apply, Module.End.one_apply] at hwa ⊢
-        rw [hc, ← map_smul, ← map_sub, hwa, map_zero]
-      · intro a b hab
-        have hc : E a b (A v) = A (E a b v) := by
-          simpa only [Module.End.mul_apply] using (congrArg (fun f => f v) (hA a b)).symm
-        rw [hc, hv.2.2 a b hab, map_zero]
-  | zero => rw [map_zero]; exact Submodule.zero_mem _
-  | add y z _ _ hy hz => rw [map_add (f := _)]; exact Submodule.add_mem _ hy hz
-  | smul c y _ hy => rw [map_smul]; exact Submodule.smul_mem _ c hy
 
 theorem comm_isoProj (A : Module.End K V) (hA : ∀ mu, ∀ x ∈ isoSub E mu, A x ∈ isoSub E mu)
     (ee : (Fin n → ℤ) → Module.End K V) (hee : ∀ mu, IsIsoProj E mu (ee mu))

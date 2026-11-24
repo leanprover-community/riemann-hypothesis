@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.AlgebraMapMemInvariants
 public import Formalism.SharpRestriction.LevelLetterCocycles.ArcLiftingSetup
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocalizationQuotientSeparatedDvd
 public import Formalism.SharpRestriction.LevelLetterCocycles.RepresentationCongruences.Pi0MemADelta
@@ -106,7 +107,7 @@ theorem dvO_single (T : LocLat G Qp LL O) (e : ℕ) {d : ℕ} (b : Fin d → W.D
   funext m
   by_cases h : m = k
   · subst h; simp
-  · simp [Pi.single_apply, h]
+  · simp [h]
 
 theorem dv_eq_sum (T : LocLat G Qp LL O) (e : ℕ) {d : ℕ} (b : Fin d → W.DD T) (c₀ : Fin d → LL) :
     dv W T e b c₀ = ∑ m, c₀ m • dv W T e b (Pi.single m 1) := by
@@ -151,21 +152,7 @@ theorem RepVV_smulA {T : LocLat G Qp LL O} {c' : ZMod n} {e M : ℕ} {Λ : LetA 
     {b : Fin d → W.DD T} {sol : Fin d → ℕ → Fin d → LL} {a : LetA O n} (ha : a ∈ W.AΔ) {x : W.DD T}
     {f : Fin d → W.EE} (h : RepVV W T c' e M Λ b sol x f) :
     RepVV W T c' e M Λ b sol (a • x) (fun k => algebraMap (LetA O n) W.EE a * f k) := by
-  obtain ⟨κ, κ', H, a', hH, ha', hP⟩ := h
-  refine ⟨κ, κ', H, fun k => a * a' k, hH,
-    fun k => ⟨mul_mem ha (ha' k).1, ?_⟩, ?_⟩
-  · rw [map_mul, ← (ha' k).2]
-    ring
-  · have hs : ∑ k, (a * a' k) • ((W.φD T) ^ e) (H k) = a • ∑ k, a' k • ((W.φD T) ^ e) (H k) := by
-      rw [Finset.smul_sum]
-      exact Finset.sum_congr rfl fun k _ => mul_smul _ _ _
-    rw [hs]
-    have key : lA W ^ κ' • (lA W ^ κ • Λ • (a • x) - a • ∑ k, a' k • ((W.φD T) ^ e) (H k)) =
-        a • (lA W ^ κ' • (lA W ^ κ • Λ • x - ∑ k, a' k • ((W.φD T) ^ e) (H k))) := by
-      rw [smul_sub, smul_sub, smul_sub, smul_comm a (lA W ^ κ') (lA W ^ κ • Λ • x), smul_comm a (lA W ^ κ) (Λ • x),
-        smul_comm a Λ x, smul_comm a (lA W ^ κ')]
-    rw [key]
-    exact TypesA.inMultiple_smul W ha hP
+  apply Formalism.MainNotions.N.FrobeniusPowerSeries.repVV_smul_invariant <;> assumption
 
 theorem γD_smulA (T : LocLat G Qp LL O) (g : W.Gam) (a : LetA O n) (x : W.DD T) :
     W.γD T g (a • x) = W.γA g a • W.γD T g x := by
@@ -177,13 +164,7 @@ theorem γA_letE (g : W.Gam) (i : ZMod n) : W.γA g (letE i : LetA O n) = letE i
   funext k
   by_cases h : k = i
   · subst h; simp [LocWach.γA, letγ, letE]
-  · simp [LocWach.γA, letγ, letE, Pi.single_apply, h]
-
-theorem letE_mul_self (i : ZMod n) : (letE i : LetA O n) * letE i = letE i := by
-  funext k
-  by_cases h : k = i
-  · subst h; simp [letE]
-  · simp [letE, Pi.single_apply, h]
+  · simp [LocWach.γA, letγ, letE, h]
 
 theorem avg_props {T : LocLat G Qp LL O} (a : ZMod n) {z : W.DD T} (hz : z ∈ W.N T)
     (hza : (letE a : LetA O n) • z = z) :

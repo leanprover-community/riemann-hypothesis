@@ -1,8 +1,8 @@
 module
 
 public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.ExistsCellOfIsSubquotient
-public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.InducedCellSemisimplificationStatement
-public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.JacquetOfInducedFiltration
+public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.InducedCellSemisimplification
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.JacquetOfInducedFiltrationStatement
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -49,8 +49,8 @@ namespace GlobalTheory.CompanionTheory.GeoLink
 
 theorem geometricLemma : GlobalTheory.Published.GeometricLemma := by
   intro k _ _ _ _
-  have h := GlobalTheory.T.induced_cell_semisimplification k
-  have hloc := GlobalTheory.T.jacquetOfInducedFiltration' k
+  have h := _root_.GlobalTheory.CompanionTheory.Glob.cellSemisimplification k
+  have hloc := _root_.GlobalTheory.T.jacquet_of_induced_filtration k
   first
     | exact h hloc
     | exact h.mpr hloc

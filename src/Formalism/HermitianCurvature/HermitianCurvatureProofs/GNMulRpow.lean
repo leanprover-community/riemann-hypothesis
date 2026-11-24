@@ -104,7 +104,6 @@ theorem gN_mul_rpow (hNI : NormInv) {x Y : Mx k r} (hx : x ∈ Formalism.Quantum
   have hYx : Y * x ∈ Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r) := DDSmoothness.uh_mul hY hx
   have h1 : 1 ≤ B.gN x := (hinv x hx).2
   have h2 : 1 ≤ B.gN Y := (hinv Y hY).2
-  have h3 : 1 ≤ B.gN (Y * x) := (hinv _ hYx).2
   have hle : B.gN Y ≤ B.gN (Y * x) * B.gN x := by
     have e : Y = Y * x * x⁻¹ := by rw [Matrix.mul_assoc, hxi.2.1, Matrix.mul_one]
     calc B.gN Y = B.gN (Y * x * x⁻¹) := by rw [← e]

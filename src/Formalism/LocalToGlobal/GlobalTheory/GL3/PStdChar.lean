@@ -138,7 +138,7 @@ private theorem exists_sign_EE_lattice_eq_det : ∃ s : ℤ, (s = 1 ∨ s = -1) 
     unfold Formalism.L2.Th1.F.area
     rw [ht, show (conj L.ω₁ * L.ω₂).im = -(L.ω₁ * conj L.ω₂).im by
       simp only [Complex.mul_im, Complex.conj_re, Complex.conj_im]; ring, abs_neg]
-  have hpos : 0 < |t| := hA ▸ Formalism.L2.Th1.F.areaPos L
+  have hpos : 0 < |t| := hA ▸ _root_.Formalism.L2.Th1.F.areaPos_thm L
   have hIm : ∀ a b c e : ℤ, (((a : ℂ) * L.ω₁ + (b : ℂ) * L.ω₂) *
       conj ((c : ℂ) * L.ω₁ + (e : ℂ) * L.ω₂)).im = ((a : ℝ) * e - b * c) * t := by
     intro a b c e
@@ -168,13 +168,6 @@ private theorem exists_int_EE_eq_of_mem_lattice (x : ℂ) (hx : x ∈ L.lattice)
   obtain ⟨a, b, rfl⟩ := coord_lemma L x hx
   obtain ⟨c, e, rfl⟩ := coord_lemma L y hy
   exact ⟨_, hs a b c e⟩
-
-private theorem exp_pi_I_intCast_eq_neg_one_pow (m : ℤ) :
-    Complex.exp ((Real.pi : ℂ) * Complex.I * (((m : ℝ)) : ℂ)) = (-1 : ℂ) ^ m := by
-  have h : (Real.pi : ℂ) * Complex.I * (((m : ℝ)) : ℂ) = (m : ℂ) * ((Real.pi : ℂ) * Complex.I) := by
-    push_cast
-    ring
-  rw [h, Complex.exp_int_mul, Complex.exp_pi_mul_I]
 
 private theorem cmTheta_one_eq :
     cmTheta 1 d = ((1 / 2 : ℝ) : ℂ) + ((Real.sqrt d / 2 : ℝ) : ℂ) * Complex.I := by
@@ -236,7 +229,7 @@ theorem semi :
   refine ⟨hint, fun x hx => ?_, fun x hx y hy => ?_⟩
   · obtain ⟨m, hm⟩ := hint x hx
     unfold aa
-    rw [hm, exp_pi_I_intCast_eq_neg_one_pow]
+    rw [hm, _root_.Formalism.L2.Th1.H.exp_pi_int]
     rcases Int.even_or_odd m with he | ho
     · exact Or.inl he.neg_one_zpow
     · exact Or.inr ho.neg_one_zpow

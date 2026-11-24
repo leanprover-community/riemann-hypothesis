@@ -247,8 +247,7 @@ theorem prod_le_of_gen {C : Type} [Field C] {v : Valuation C NNReal} {R : Type} 
     have h := congrArg e (ha k)
 
     simp only [map_smul, map_sum, ite_smul, zero_smul] at h
-    simp only [hT, hqdef, sub_smul, Finset.sum_sub_distrib, ite_smul, zero_smul, Finset.sum_ite_eq,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [hT, hqdef, sub_smul, Finset.sum_sub_distrib, ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
     rw [h, sub_eq_zero]
     refine Finset.sum_congr rfl fun j _ => ?_
     split_ifs <;> simp

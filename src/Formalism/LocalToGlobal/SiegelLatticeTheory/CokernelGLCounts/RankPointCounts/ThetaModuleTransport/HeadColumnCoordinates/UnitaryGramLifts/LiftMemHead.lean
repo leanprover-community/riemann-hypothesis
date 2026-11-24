@@ -43,6 +43,7 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.ThetaModuleTransport.HeadColumnCoordinates.SharpSpanCounting.ModularBoundZeroHolds
 
 @[expose] public section
 
@@ -190,21 +191,21 @@ theorem lift_partner (σ : R →+* R) (Z₁ Z₂ Zσ₁ Zσ₂ : Matrix (Fin (r 
   have hmapA : ∀ a : Fin r, (lstar σ Q₂).mulVec (fun i => Zσ₁ i a.castSucc) ∈ headCols Zσ₂ := by
     intro a
     rw [← lift_col_mul, hA, lift_col_mul]
-    apply lift_mem_head
+    apply _root_.Formalism.L2.SG.LocalCountModules.LocCntCommon.mulVec_mem_headCols
     rw [lstar_apply, hP₂l]; simp [Fin.castSucc_ne_last]
   have hmapB : ∀ a : Fin r, (lstar σ Q).mulVec (fun i => Zσ₂ i a.castSucc) ∈ headCols Zσ₁ := by
     intro a
     rw [← lift_col_mul, hB, lift_col_mul]
-    apply lift_mem_head
+    apply _root_.Formalism.L2.SG.LocalCountModules.LocCntCommon.mulVec_mem_headCols
     rw [lstar_apply, hPl]; simp [Fin.castSucc_ne_last]
   have hcompBA : ∀ w, (lstar σ Q).mulVec ((lstar σ Q₂).mulVec w) - w ∈ headCols Zσ₁ := by
     intro w
     rw [Matrix.mulVec_mulVec, hBA, Matrix.sub_mulVec, Matrix.one_mulVec, sub_sub_cancel_left, ← Matrix.mulVec_mulVec]
-    exact Submodule.neg_mem _ (lift_mem_head _ _ (hlastK K hKc w))
+    exact Submodule.neg_mem _ (_root_.Formalism.L2.SG.LocalCountModules.LocCntCommon.mulVec_mem_headCols _ _ (hlastK K hKc w))
   have hcompAB : ∀ w, (lstar σ Q₂).mulVec ((lstar σ Q).mulVec w) - w ∈ headCols Zσ₂ := by
     intro w
     rw [Matrix.mulVec_mulVec, hAB, Matrix.sub_mulVec, Matrix.one_mulVec, sub_sub_cancel_left, ← Matrix.mulVec_mulVec]
-    exact Submodule.neg_mem _ (lift_mem_head _ _ (hlastK K' hK'c w))
+    exact Submodule.neg_mem _ (_root_.Formalism.L2.SG.LocalCountModules.LocCntCommon.mulVec_mem_headCols _ _ (hlastK K' hK'c w))
   let φ := liftEquiv Zσ₁ Zσ₂ (lstar σ Q₂) (lstar σ Q) hmapA hmapB hcompBA hcompAB
   have hb : φ (bCls Zσ₁) = bCls Zσ₂ := by
     show Submodule.Quotient.mk ((lstar σ Q₂).mulVec fun i => Zσ₁ i (Fin.last r)) = Submodule.Quotient.mk _
@@ -212,7 +213,7 @@ theorem lift_partner (σ : R →+* R) (Z₁ Z₂ Zσ₁ Zσ₂ : Matrix (Fin (r 
     have : (fun i => Zσ₂ i (Fin.last r)) = Zσ₂.mulVec (Pi.single (Fin.last r) 1) := by
       funext i; simp [Matrix.mulVec, dotProduct, Pi.single_apply]
     rw [this, ← Matrix.mulVec_sub]
-    apply lift_mem_head
+    apply _root_.Formalism.L2.SG.LocalCountModules.LocCntCommon.mulVec_mem_headCols
     simp [lstar_apply, hP₂l]
   have he : φ (eCl Zσ₁) = eCl Zσ₂ := by
     show Submodule.Quotient.mk ((lstar σ Q₂).mulVec (Pi.single (Fin.last r) 1)) = Submodule.Quotient.mk _

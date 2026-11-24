@@ -54,15 +54,11 @@ namespace PositivityTheory.SiegelWeilFormula.Ldexb.UnitA
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
 
-theorem sig_sig (h : IsCMExt F E σ) (x : E) : σ (σ x) = x := by
-  obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
-  exact τ.injective (by rw [h.2.2.2, h.2.2.2, star_star])
-
 theorem exists_xi (h : IsCMExt F E σ) : ∃ ξ : E, ξ ≠ 0 ∧ σ ξ = -ξ := by
   by_cases hx : ∃ x : E, σ x ≠ x
   · obtain ⟨x, hx⟩ := hx
     refine ⟨x - σ x, sub_ne_zero.2 (Ne.symm hx), ?_⟩
-    rw [map_sub, sig_sig h]; ring
+    rw [map_sub, _root_.GlobalTheory.AdelicU.cm_conj_conj h]; ring
   · push Not at hx
     exfalso
     obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance

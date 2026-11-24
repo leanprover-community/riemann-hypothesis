@@ -233,19 +233,12 @@ section Fr
 
 variable {n' r : ℕ} [NeZero n']
 
-theorem fr_mono {F : Frames n' r} {L₁ N₁ : ℕ} (hV : F.Valid L₁ N₁) (j : ℤ) : ∀ i, i < r → F.fr j 0 ≤ F.fr j i := by
-  obtain ⟨_, _, hmono, _⟩ := hV
-  intro i hi
-  induction i with
-  | zero => exact le_rfl
-  | succ k ih => exact le_trans (ih (by omega)) (le_of_lt (hmono j k (by omega)))
-
 theorem Qj_le {TT : Finset (Fin n')} {L₁ L₂ N₁ G' : ℕ} {F : Frames n' r} (hF : FramesOK TT L₁ L₂ N₁ G' F)
     (hr : 1 ≤ r) (p : ℕ) (hp : 1 ≤ p) (j : ℤ) : Qj F p j ≤ p ^ G' := by
   obtain ⟨_, hV, hGap, _⟩ := hF
   have h1 := hGap (j + 1)
   rw [add_sub_cancel_right] at h1
-  have h2 := fr_mono hV j (r - 1) (by omega)
+  have h2 := _root_.Formalism.MainNotions.G.WittFrameLocaliserOrders.frame_first_entry_le hV j (r - 1) (by omega)
   show p ^ (zF F (j + 1) - zF F j).toNat ≤ p ^ G'
   apply Nat.pow_le_pow_right hp
   show (F.fr (j + 1) (r - 1) - F.fr j (r - 1)).toNat ≤ G'
@@ -520,7 +513,6 @@ theorem hypII_at (CLa' CD Csz : ℝ) :
     unfold Real.logb
     rw [mul_div_assoc']
     gcongr
-    all_goals first | exact hlp.le | exact hlogc
   have hlogb0 : 0 ≤ Real.logb p (⌈a⌉₊ : ℝ) := Real.logb_nonneg hp1 (by linarith)
   have hlogba : 0 ≤ Real.logb p a := Real.logb_nonneg hp1 (by linarith)
   refine ⟨?_, ?_⟩

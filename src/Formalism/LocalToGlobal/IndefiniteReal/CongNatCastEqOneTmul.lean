@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RankLeAleph0SmoothIrreducibleUnitaryAdelic
 public import Formalism.LocalToGlobal.IndefiniteReal.PrincipalLevelFrame
 public import Formalism.SatakeDualWeyl.AdelicIwasawaHecke.Levelaf
 import Mathlib.Algebra.Order.Floor.Extended
@@ -77,37 +78,7 @@ theorem cong_adele_nat_denom (a : ReciprocityTheory.Aut.AFplus L) :
   exact hm
 
 theorem cong_nat_denom (x : ReciprocityTheory.Aut.AL L) : ∃ d : ℕ, 0 < d ∧ (d : ReciprocityTheory.Aut.AL L) * x ∈ ReciprocityTheory.Aut.ALint L := by
-  induction x using TensorProduct.induction_on with
-  | zero => exact ⟨1, one_pos, by rw [mul_zero]; exact Subring.zero_mem _⟩
-  | tmul l a =>
-    have halg : Algebra.IsAlgebraic ℤ L :=
-      (IsFractionRing.comap_isAlgebraic_iff (A := ℤ) (K := ℚ)).2 inferInstance
-    obtain ⟨m, hm0, hm⟩ := (halg.1 l).exists_integral_multiple
-    obtain ⟨k, hk0, hk⟩ := cong_adele_nat_denom a
-    refine ⟨m.natAbs * k, Nat.mul_pos (Int.natAbs_pos.2 hm0) hk0, ?_⟩
-    have hint : IsIntegral ℤ ((m.natAbs : L) * l) := by
-      have e : (m.natAbs : L) * l = ((m.sign : ℤ) : L) * (m • l) := by
-        rw [zsmul_eq_mul, ← mul_assoc, ← Int.cast_mul, ← Int.cast_natCast, Int.sign_mul_self_eq_natAbs]
-      rw [e]
-      exact IsIntegral.mul isIntegral_algebraMap hm
-    have e2 : ((m.natAbs * k : ℕ) : ReciprocityTheory.Aut.AL L) * (l ⊗ₜ[L⁺] a) =
-        (((m.natAbs : L) * l) ⊗ₜ[L⁺] (1 : ReciprocityTheory.Aut.AFplus L)) *
-          ((1 : L) ⊗ₜ[L⁺] ((k : ReciprocityTheory.Aut.AFplus L) * a)) := by
-      rw [Algebra.TensorProduct.tmul_mul_tmul, mul_one, one_mul, Nat.cast_mul, cong_natCast_eq_tmul_one m.natAbs,
-        cong_natCast_eq_one_tmul k, Algebra.TensorProduct.tmul_mul_tmul, mul_one,
-        Algebra.TensorProduct.tmul_mul_tmul, one_mul]
-    rw [e2]
-    refine Subring.mul_mem _ (Subring.subset_closure (Or.inl ⟨⟨_, hint⟩, rfl⟩))
-      (Subring.subset_closure (Or.inr ⟨_, hk, rfl⟩))
-  | add x y hx hy =>
-    obtain ⟨dx, hx0, hx⟩ := hx
-    obtain ⟨dy, hy0, hy⟩ := hy
-    refine ⟨dx * dy, Nat.mul_pos hx0 hy0, ?_⟩
-    have e : ((dx * dy : ℕ) : ReciprocityTheory.Aut.AL L) * (x + y) =
-        (dy : ReciprocityTheory.Aut.AL L) * ((dx : ReciprocityTheory.Aut.AL L) * x) + (dx : ReciprocityTheory.Aut.AL L) * ((dy : ReciprocityTheory.Aut.AL L) * y) := by
-      push_cast; ring
-    rw [e]
-    exact Subring.add_mem _ (Subring.mul_mem _ (natCast_mem _ _) hx) (Subring.mul_mem _ (natCast_mem _ _) hy)
+  apply GlobalTheory.FinTypCount.exists_denom <;> assumption
 
 theorem cong_dvd_mem {x : ReciprocityTheory.Aut.AL L} {d e : ℕ} (hx : (d : ReciprocityTheory.Aut.AL L) * x ∈ ReciprocityTheory.Aut.ALint L) (hde : d ∣ e) :
     (e : ReciprocityTheory.Aut.AL L) * x ∈ ReciprocityTheory.Aut.ALint L := by

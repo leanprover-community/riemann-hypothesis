@@ -254,9 +254,9 @@ theorem chart_dim {Q : Ideal (MRingOver ℂ ι)} (hQp : Q.IsPrime) (hQ : Recipro
     rw [hVQ₀, Ideal.minimalPrimes_eq_subsingleton_self]
     rfl
 
-  have d₁ := ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.dimPIT ℂ (Fin m) V J (linForm t - 1) hV.isPrime
+  have d₁ := _root_.ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.KrullDimensionPrincipalIdeal.dimPIT' ℂ (Fin m) V J (linForm t - 1) hV.isPrime
     (linForm_sub_one_not_mem hV.isHomog hV.isPrime.ne_top t) hJmin
-  have d₂ := ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.dimPIT ℂ (Fin m) V Q₀ (linForm u - 1) hV.isPrime
+  have d₂ := _root_.ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.KH.KrullDimensionPrincipalIdeal.dimPIT' ℂ (Fin m) V Q₀ (linForm u - 1) hV.isPrime
     (linForm_sub_one_not_mem hV.isHomog hV.isPrime.ne_top u) hQ₀min
   rw [← d₂, hdimQ₀] at d₁
   exact eq_of_add_one_eq d₁

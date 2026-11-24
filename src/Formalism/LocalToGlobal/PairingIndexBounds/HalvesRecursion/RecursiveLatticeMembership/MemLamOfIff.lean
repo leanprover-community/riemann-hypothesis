@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsPeriodPairIdealCurveLattice
 public import Formalism.LocalToGlobal.PairingIndexBounds.HalvesRecursion.Statement
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.SplitK
 public import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
@@ -124,77 +125,7 @@ theorem exists_basis (cc : Ideal (𝓞 D.host.K)) (hcc : cc ≠ ⊥) : Nonempty 
 
 theorem exists_pp (cc : Ideal (𝓞 D.host.K)) (hcc : cc ≠ ⊥) :
     ∃ L : PeriodPair, ∀ w : ℂ, w ∈ lamOf D cc 1 ↔ w ∈ L.lattice := by
-  obtain ⟨e⟩ := exists_basis D cc hcc
-  set ω₁ := psi D (e 0 : 𝓞 D.host.K)
-  set ω₂ := psi D (e 1 : 𝓞 D.host.K)
-
-  have hcomb : ∀ c ∈ cc, ∃ m n : ℤ, (m : ℂ) * ω₁ + (n : ℂ) * ω₂ = psi D c := by
-    intro c hc
-    have hx := e.sum_repr ⟨c, hc⟩
-    refine ⟨e.repr ⟨c, hc⟩ 0, e.repr ⟨c, hc⟩ 1, ?_⟩
-    rw [Fin.sum_univ_two] at hx
-    have hx' := congrArg (fun y : cc => psi D (y : 𝓞 D.host.K)) hx
-    simp only [Submodule.coe_add, map_add (f := _)] at hx'
-    rw [← hx']
-    rw [Submodule.coe_smul_of_tower, Submodule.coe_smul_of_tower, map_zsmul, map_zsmul, zsmul_eq_mul,
-      zsmul_eq_mul]
-  have hback : ∀ m n : ℤ, ∃ c ∈ cc, psi D c = (m : ℂ) * ω₁ + (n : ℂ) * ω₂ := by
-    intro m n
-    refine ⟨m • (e 0 : 𝓞 D.host.K) + n • (e 1 : 𝓞 D.host.K),
-      cc.add_mem (Submodule.smul_of_tower_mem _ m (e 0).2) (Submodule.smul_of_tower_mem _ n (e 1).2), ?_⟩
-    rw [map_add (f := _), map_zsmul, map_zsmul, zsmul_eq_mul, zsmul_eq_mul]
-
-  obtain ⟨c, hc, hc0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hcc
-  obtain ⟨β, hβ⟩ := exists_sqrt D
-  have hψc : psi D c ≠ 0 := by
-    intro h
-    apply hc0
-    have h' : D.host.φ₀ (((c : D.host.K) : D.host.E)) = 0 := h
-    rw [map_eq_zero_iff _ D.host.φ₀.injective] at h'
-    have : ((c : D.host.K) : D.host.E) = 0 := h'
-    apply RingOfIntegers.ext
-    apply Subtype.ext
-    exact this
-  have hψcβ : psi D (c * β) = psi D c * (Complex.I * (Real.sqrt D.host.d : ℂ)) := by
-    show D.host.φ₀ _ = D.host.φ₀ _ * _
-    rw [← hβ, ← map_mul]
-    congr 1
-  have hd : (0 : ℝ) < Real.sqrt D.host.d :=
-    Real.sqrt_pos.mpr (by exact_mod_cast D.host.hyp.2.1.pos)
-  have hmemR : ∀ x ∈ cc, psi D x ∈ Submodule.span ℝ (Set.range ![ω₁, ω₂]) := by
-    intro x hx
-    obtain ⟨m, n, hmn⟩ := hcomb x hx
-    rw [← hmn]
-    refine Submodule.add_mem _ ?_ ?_
-    · have := Submodule.smul_mem (Submodule.span ℝ (Set.range ![ω₁, ω₂])) (m : ℝ)
-        (Submodule.subset_span (⟨0, rfl⟩ : ω₁ ∈ Set.range ![ω₁, ω₂]))
-      simpa [Complex.real_smul] using this
-    · have := Submodule.smul_mem (Submodule.span ℝ (Set.range ![ω₁, ω₂])) (n : ℝ)
-        (Submodule.subset_span (⟨1, rfl⟩ : ω₂ ∈ Set.range ![ω₁, ω₂]))
-      simpa [Complex.real_smul] using this
-  have hspan : ⊤ ≤ Submodule.span ℝ (Set.range ![ω₁, ω₂]) := by
-    intro z _
-    have h1 := hmemR c hc
-    have h2 := hmemR (c * β) (cc.mul_mem_right β hc)
-    have hz : z = (z / psi D c).re • psi D c + ((z / psi D c).im / Real.sqrt D.host.d) • psi D (c * β) := by
-      rw [hψcβ, Complex.real_smul, Complex.real_smul]
-      have hsd : (Real.sqrt D.host.d : ℂ) ≠ 0 := by exact_mod_cast hd.ne'
-      have key : z = psi D c * (((z / psi D c).re : ℂ) + ((z / psi D c).im : ℂ) * Complex.I) := by
-        rw [Complex.re_add_im, mul_div_cancel₀ _ hψc]
-      conv_lhs => rw [key]
-      push_cast
-      field_simp
-    rw [hz]
-    exact Submodule.add_mem _ (Submodule.smul_mem _ _ h1) (Submodule.smul_mem _ _ h2)
-  have hind : LinearIndependent ℝ ![ω₁, ω₂] :=
-    linearIndependent_of_top_le_span_of_card_eq_finrank hspan (by simp [Complex.finrank_real_complex])
-  refine ⟨⟨ω₁, ω₂, hind⟩, fun w => ?_⟩
-  rw [mem_lamOf_iff, PeriodPair.mem_lattice]
-  constructor
-  · rintro ⟨c, hc, rfl⟩
-    exact hcomb c hc
-  · rintro ⟨m, n, rfl⟩
-    exact hback m n
+  apply GlobalTheory.CurveLattice.exists_periodPair_one <;> assumption
 
 theorem discrNZ : DiscrNZ D := by
   intro cc hcc

@@ -115,7 +115,7 @@ theorem jetAug_jetMap {ι' : Type} (φ : ι → MvPolynomial ι' K) (hφ : ∀ i
       ∀ q : MvPolynomial ι K, MvPolynomial.constantCoeff (MvPolynomial.aeval φ q) = MvPolynomial.constantCoeff q := by
     intro ι' φ hφ q
     induction q using MvPolynomial.induction_on with
-    | C c => simp [MvPolynomial.aeval_C]
+    | C c => simp
     | add p q hp hq => simp only [map_add (f := _), hp, hq]
     | mul_X p i hp =>
       simp only [map_mul, MvPolynomial.aeval_X, hp, MvPolynomial.constantCoeff_X, mul_zero,

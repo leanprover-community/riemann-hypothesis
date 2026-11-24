@@ -92,9 +92,9 @@ theorem sw_deriv (a b : Fin r) (f : MvPolynomial (Fin r × Fin n) R) :
     rw [map_mul, Polynomial.derivative_mul, Derivation.leibniz, smul_eq_mul, smul_eq_mul, map_add (f := _),
       map_mul, map_mul, ← hp, Dop_X, sw_rowGen_X]
     by_cases h1 : v.1 = b <;> by_cases h2 : a = b <;>
-      simp only [h1, h2, if_true, if_false, sw_rowGen_X, map_zero, mul_zero, zero_mul, add_zero,
+      simp only [h1, h2, if_true, if_false, sw_rowGen_X, map_zero, mul_zero, add_zero,
         Polynomial.derivative_add, Polynomial.derivative_C, Polynomial.derivative_mul,
-        Polynomial.derivative_X, zero_add, one_mul, mul_one, Polynomial.derivative_zero] <;> ring
+        Polynomial.derivative_X, zero_add, one_mul] <;> ring
 
 theorem sw_rowDiv_zero (a b : Fin r) (g : MvPolynomial (Fin r × Fin n) R) : rowDiv R a b 0 g = g := by
   unfold rowDiv
@@ -124,7 +124,7 @@ theorem sw_step_eq (a : Fin r) (k : ℕ) (f : MvPolynomial (Fin r × Fin n) R) :
   cases k with
   | zero =>
     rw [Polynomial.coeff_X_mul_zero, add_zero, Polynomial.coeff_derivative]
-    simp [MvPolynomial.smul_eq_C_mul, mul_comm]
+    simp [mul_comm]
   | succ k =>
     rw [Polynomial.coeff_X_mul, Polynomial.coeff_derivative, Polynomial.coeff_derivative]
     simp only [MvPolynomial.smul_eq_C_mul]

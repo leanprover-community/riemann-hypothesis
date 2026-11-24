@@ -57,10 +57,6 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 
 open GlobalTheory.Doubling (absE)
 
-omit [NumberField E] in
-theorem incM_mul'' {a b c : Type} [Fintype b] (X : Matrix a b E) (Y : Matrix b c E) :
-    incM F (X * Y) = incM F X * incM F Y := Matrix.map_mul
-
 theorem isPar_of_frame (d : SD σ) (p : d.G) (h21 : (inFrame d.b p).toBlocks₂₁ = 0) :
     ∃ t : GL (Fin d.n) (AE F E), IsPar p t ∧ (Matrix.GeneralLinearGroup.det t : AE F E) = (inFrame d.b p).toBlocks₁₁.det := by
   obtain ⟨-, tb, htb⟩ := d.ok.frame
@@ -77,16 +73,16 @@ theorem isPar_of_frame (d : SD σ) (p : d.G) (h21 : (inFrame d.b p).toBlocks₂�
     ext i j
     rfl
   have h2 : incM F ((diagCols (Fin d.n) : Matrix (Fin d.n ⊕ Fin d.n) (Fin d.n) E) * tb.1) = DC * incM F tb.1 := by
-    rw [incM_mul'']
+    rw [_root_.PositivityTheory.SiegelWeilFormula.KWhit.incM_mul']
     congr 1
     ext i j
     cases i <;> simp [DC, diagCols, incM, Matrix.one_apply, apply_ite] <;> split_ifs <;> simp_all
   have hb : incM F d.b.1 * E1 = DC * incM F tb.1 := h1.trans ((congrArg (incM F) htb').trans h2)
   have hTb : incM F tb.1 * incM F (tb⁻¹).1 = 1 := by
-    rw [← incM_mul'', Units.mul_inv]
+    rw [← _root_.PositivityTheory.SiegelWeilFormula.KWhit.incM_mul', Units.mul_inv]
     exact Matrix.map_one _ (map_zero _) (map_one _)
   have hTb' : incM F (tb⁻¹).1 * incM F tb.1 = 1 := by
-    rw [← incM_mul'', Units.inv_mul]
+    rw [← _root_.PositivityTheory.SiegelWeilFormula.KWhit.incM_mul', Units.inv_mul]
     exact Matrix.map_one _ (map_zero _) (map_one _)
   have hdc : DC = incM F d.b.1 * E1 * incM F (tb⁻¹).1 := by
     rw [hb, Matrix.mul_assoc, hTb, Matrix.mul_one]

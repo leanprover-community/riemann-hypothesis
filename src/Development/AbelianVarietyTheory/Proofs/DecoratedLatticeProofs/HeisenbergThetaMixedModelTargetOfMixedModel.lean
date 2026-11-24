@@ -82,12 +82,7 @@ namespace GlobalTheory.HeisTarget
 
 variable {D : D7}
 
-theorem symplOH_skew' (S T : HSp D) (x y : WO S T) : symplOH S T y x = -symplOH S T x y := by
-  unfold symplOH; rw [GlobalTheory.OrientedHeis.symplO_skew, mul_neg]
-
-theorem symplO_eq_two (S T : HSp D) (x y : WO S T) : symplO S T x y = symplOH S T x y + symplOH S T x y := by
-  unfold symplOH
-  rw [← add_mul, ← map_add (f := _), add_halves, map_one, one_mul]
+alias symplO_eq_two := _root_.GlobalTheory.RatSelfDual.symplO_eq_add
 
 variable {ψ : AddChar (AF D.host.F) ℂ} {S T T₀ : HSp D} {ρ : ℕ} (d : HypDec T T₀ ρ)
 
@@ -110,9 +105,9 @@ theorem mixT_heis_incX {μ : Measure (Mx D ρ S.rank)} {𝓕 : Set (Mx D ρ S.ra
     · congr 1
       have h1 := d.symplOH_incX_incX S ξ' ξ
       have h2 : symplOH S T (d.inc0 S w₀) (d.incX S ξ) = 0 := by
-        rw [symplOH_skew', d.wittDecomp_sympl_inclIsotropic_inclAnisotropic S ξ w₀, neg_zero]
-      have h3 := symplOH_skew' S T (d.incAdj S y) (d.incX S ξ)
-      simp only [GlobalTheory.OrientedHeis.symplOH_add_left, GlobalTheory.OrientedHeis.symplOH_add_right, h1, h2, h3,
+        rw [_root_.GlobalTheory.MixModel.symplOH_skew, d.wittDecomp_sympl_inclIsotropic_inclAnisotropic S ξ w₀, neg_zero]
+      have h3 := _root_.GlobalTheory.MixModel.symplOH_skew S T (d.incAdj S y) (d.incX S ξ)
+      simp only [GlobalTheory.OrientedHeis.symplOH_add_left, h1, h2, h3,
         symplO_eq_two]
       ring
     · congr 1
@@ -195,7 +190,7 @@ theorem heisenbergTarget (D : D7) : GlobalTheory.IndefiniteRowSideFullHecke.Skew
   intro ψ hψ S T T₀ ρ d μ 𝓕 hμ f hf
   exact ⟨fun ξ y => mixT_heis_incX d hμ hf ξ y, fun w₀ y => mixedModelTarget_heisenberg_anisotropic_part d f w₀ y, hasSum_mixT hψ d hμ hf⟩
 
-theorem main : ∀ D : D7, GlobalTheory.IndefiniteRowSideFullHecke.SkewGramHalfModule.HeisenbergTarget D := heisenbergTarget
+alias main := _root_.GlobalTheory.HeisTarget.heisenbergTarget
 
 end GlobalTheory.HeisTarget
 

@@ -71,10 +71,6 @@ def tmUpd (i : ι) : (ι → ℝ) × ℝ → (ι → ℝ) := fun p => update p.1
 lemma measurable_tmUpd (i : ι) : Measurable (tmUpd i) := by
   first
   | exact measurable_update' (a := i)
-  | exact measurable_pi_iff.mpr fun j => by
-      by_cases h : j = i
-      · subst h; simpa [tmUpd] using measurable_snd
-      · simpa [tmUpd, Function.update_of_ne h] using (measurable_pi_apply j).comp measurable_fst
 
 lemma tmUpd_preimage_pi (i : ι) (s : ι → Set ℝ) :
     tmUpd i ⁻¹' (Set.univ.pi s) = (Set.univ.pi (update s i Set.univ)) ×ˢ s i := by

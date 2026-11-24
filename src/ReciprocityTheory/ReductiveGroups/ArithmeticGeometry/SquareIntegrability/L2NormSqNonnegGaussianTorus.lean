@@ -66,7 +66,7 @@ theorem jof_Hf_smul_right {ι : Type} [Fintype ι] (x u : EuclideanSpace ℂ ι)
 theorem jof_Hf_conj {ι : Type} [Fintype ι] (v w : EuclideanSpace ℂ ι) : star (Hf v w) = Hf w v := by
   simp only [Hf, star_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
-  simp [Complex.star_def, mul_comm]
+  simp [mul_comm]
 
 theorem Hf_single {ι : Type} [Fintype ι] [DecidableEq ι] (j j' : ι) :
     Hf (EuclideanSpace.single j (1 : ℂ)) (EuclideanSpace.single j' 1) = if j = j' then 1 else 0 := by

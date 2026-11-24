@@ -145,7 +145,7 @@ theorem verma_cone (n : ℕ) : VermaConeStatement n := by
       by_cases has : a = s
       · subst has
         simp [add_smul]
-      · simp [has, Pi.single_apply]
+      · simp [has]
     have hrinj : Function.Injective (vcRV n) := fun a b h => Fin.ext h
     obtain ⟨h1, h2⟩ := vc_cone_core (tensV E) hTV (eeV E) (vc_commV E hE) (vcFlag (tensV E) (vcSgl φ) (vcRV n))
       (vcThV lam) (vcFlag_stable _ _ _) (vcFlag_step _ _ _ (eeV E) (vc_commV E hE) (vcThV lam) hgenV) n
@@ -197,7 +197,7 @@ theorem verma_cone (n : ℕ) : VermaConeStatement n := by
       by_cases has : a = s
       · subst has
         simp [add_smul, sub_smul]
-      · simp [has, Pi.single_apply]
+      · simp [has]
     have hrinj : Function.Injective (vcRVd n) := fun a b h => Fin.rev_injective (Fin.ext h)
     obtain ⟨h1, h2⟩ := vc_cone_core (tensVd E) hTVd (eeVd E) (vc_commVd E hE)
       (vcFlag (tensVd E) (vcSgl φ) (vcRVd n)) (vcThVd lam) (vcFlag_stable _ _ _)

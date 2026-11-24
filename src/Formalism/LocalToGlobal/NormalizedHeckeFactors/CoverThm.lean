@@ -59,10 +59,9 @@ theorem finrank_eq_of_semilinear {K₁ K₂ M₁ M₂ : Type} [Field K₁] [Fiel
     refine ⟨fun a b hab => hinj (congrArg Subtype.val hab), fun y => ?_⟩
     obtain ⟨z, hz⟩ := (hrange y).1 y.2
     exact ⟨z, Subtype.ext hz⟩
-  have h := rank_eq_of_equiv_equiv σ (AddEquiv.ofBijective g hg) σ.bijective fun r m =>
-    Subtype.ext (f.map_smulₛₗ r m)
-  unfold finrank
-  rw [h]
+  exact congrArg Cardinal.toNat
+    (rank_eq_of_equiv_equiv σ (AddEquiv.ofBijective g hg) σ.bijective fun r m =>
+      Subtype.ext (f.map_smulₛₗ r m))
 
 variable {D : D7} {M : MtFam D}
 
@@ -78,7 +77,6 @@ theorem finrank_V (B : NLocBase D M) (j : ℕ) (w : D.what₂.places.Pl) :
   let b := Module.Free.chooseBasis D.what₂.LL (D.what₂.MtL (D.what₂.muTw w) j)
   have hb := B.iV_basis j w b
   let bV := Module.Basis.mk hb.1 hb.2.ge
-  haveI : Module.Finite D.what₂.LL (D.what₂.MtL (D.what₂.muTw w) j) := Module.Finite.of_basis b
   refine ⟨Module.Finite.of_basis bV, ?_⟩
   rw [Module.finrank_eq_card_basis bV, Module.finrank_eq_card_basis b]
 

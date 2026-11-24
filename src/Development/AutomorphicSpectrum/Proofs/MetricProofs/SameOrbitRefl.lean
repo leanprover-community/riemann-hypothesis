@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.CoreStatements.MultihomogeneousSquares.EmbImmersion
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRes
 import Mathlib.Algebra.Order.Floor.Extended
@@ -164,21 +165,7 @@ theorem conjAvg_smooth {A : HermLine ι} (hA : IsSmoothHerm A) : IsSmoothHerm (c
 theorem holoOn_comp {e : ℕ} {X Y : Type} [TopologicalSpace X] [TopologicalSpace Y]
     {A : FinHolAtlas e X} {B : FinHolAtlas e Y} {g : X → Y} (hg : HoloMap A B g) {V : Set Y}
     {G : Y → ℂ} (hG : B.HoloOn V G) : A.HoloOn (g ⁻¹' V) (G ∘ g) := by
-  intro j w hw
-  obtain ⟨k, hk⟩ := B.cover (g ((A.chart j).symm w))
-  have hw' : w ∈ (A.chart j).target ∩ (A.chart j).symm ⁻¹' (g ⁻¹' (B.chart k).source) := ⟨hw.1, hk⟩
-  have h1 := hg.2 j k w hw'
-  have h2 : AnalyticAt ℂ (G ∘ (B.chart k).symm) ((B.chart k ∘ g ∘ (A.chart j).symm) w) := by
-    refine hG k _ ⟨(B.chart k).map_source hk, ?_⟩
-    simp only [Function.comp, Set.mem_preimage, (B.chart k).left_inv hk]
-    exact hw.2
-  have h3 := h2.comp h1
-  refine h3.congr ?_
-  have hc : ContinuousAt (g ∘ (A.chart j).symm) w :=
-    hg.1.continuousAt.comp ((A.chart j).continuousAt_symm hw.1)
-  filter_upwards [hc ((B.chart k).open_source.mem_nhds hk)] with w' hw''
-  have hw3 : g ((A.chart j).symm w') ∈ (B.chart k).source := hw''
-  simp only [Function.comp, (B.chart k).left_inv hw3]
+  apply SquareStatements.emb_holoOn <;> assumption
 
 def IsLiftSys {e : ℕ} {X : Type} [TopologicalSpace X] (A : FinHolAtlas e X) (P : Ideal (MRing ι))
     (U : X → Set X) (lift : X → X → (Σ k, ι k) → ℂ) : Prop :=

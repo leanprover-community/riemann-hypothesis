@@ -49,6 +49,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import Development.WeilBound.ThetaLifts.FrameEstimates.ContinuousMixedSymm
 
 @[expose] public section
 
@@ -107,23 +108,7 @@ theorem norm_psi {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ) (x : AF F) : ‖ψ x
   rw [pairA_split x, AddChar.map_add_eq_mul, norm_mul, norm_psi_inf hψ, norm_psi_fin hψ, one_mul]
 
 theorem exists_ne_one {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ) : ∃ x, ψ x ≠ 1 := by
-  set n : ℕ := Module.finrank ℝ (mixedEmbedding.mixedSpace F)
-  have hn : 0 < n := Module.finrank_pos
-  set t : ℝ := 1 / (2 * n)
-  refine ⟨pairA F ((InfiniteAdeleRing.ringEquiv_mixedSpace F).symm (algebraMap ℝ _ t)) 0, ?_⟩
-  rw [psi_pairA hψ, RingEquiv.apply_symm_apply, Algebra.trace_algebraMap]
-  have hn' : (n : ℝ) ≠ 0 := by exact_mod_cast hn.ne'
-  have eR : (n • t : ℝ) = 1 / 2 := by
-    rw [nsmul_eq_mul]
-    simp only [t]
-    rw [mul_one_div, div_eq_div_iff (by positivity) two_ne_zero]
-    ring
-  have e : ((n • t : ℝ) : ℂ) = 1 / 2 := by
-    rw [eR]; push_cast; ring
-  rw [e]
-  have : -(2 * (Real.pi : ℂ) * Complex.I) * (1 / 2) = -(Real.pi * Complex.I) := by ring
-  rw [this, Complex.exp_neg, Complex.exp_pi_mul_I]
-  norm_num
+  apply _root_.PositivityTheory.ThKEst.W.exists_ne_one <;> assumption
 
 theorem isCharAF {ψ : AddChar (AF F) ℂ} (hψ : IsStd ψ) : IsCharAF F ψ :=
   ⟨hψ.1, norm_psi hψ, hψ.2.1, exists_ne_one hψ⟩

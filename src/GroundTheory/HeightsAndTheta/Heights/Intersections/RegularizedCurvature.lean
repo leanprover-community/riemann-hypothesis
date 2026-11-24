@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.Intersections.PSemiPosTwist
 public import Mathlib.Analysis.InnerProductSpace.Laplacian
 public import ReciprocityTheory.AnalyticForms.MaIntEmpty
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.IsSemipositiveOn
@@ -324,40 +325,11 @@ theorem levi_add_sum {K : Type} {z : J → ℂ} (g : (J → ℂ) → ℝ) (f : K
     ContDiffAt ℝ 2 (fun y => g y + ∑ k ∈ s, c k * f k y) z ∧
       ReciprocityTheory.AnForm.levi (fun y => g y + ∑ k ∈ s, c k * f k y) z w =
         ReciprocityTheory.AnForm.levi g z w + ∑ k ∈ s, c k * ReciprocityTheory.AnForm.levi (f k) z w := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simpa using hg
-  | insert a s ha ih =>
-    have heq : (fun y => g y + ∑ k ∈ insert a s, c k * f k y) =
-        fun y => (fun y' => g y' + ∑ k ∈ s, c k * f k y') y + c a * f a y := by
-      funext y
-      rw [Finset.sum_insert ha]
-      ring
-    rw [heq, ReciprocityTheory.AnForm.levi_add_smul (c a) ih.1 (hf a) w, ih.2, Finset.sum_insert ha]
-    exact ⟨ih.1.add (contDiffAt_const.mul (hf a)), by ring⟩
+  apply GroundTheory.Heights₂.Heights.Inter.SemipositiveTwist.levi_add_sum <;> assumption
 
 theorem laplacian_line_eq_levi {φ : (J → ℂ) → ℝ} {z : J → ℂ} (hφ : ContDiffAt ℝ 2 φ z) (v : J → ℂ) :
     Δ (fun t : ℂ => φ (z + t • v)) 0 = 4 * ReciprocityTheory.AnForm.levi φ z v := by
-  have h1 : ReciprocityTheory.AnForm.levi (fun w : Fin 1 → ℂ => φ (z + w 0 • v)) (fun _ => 0) (Pi.single 0 1) =
-      Δ (fun t : ℂ => φ (z + t • v)) 0 / 4 :=
-    ReciprocityTheory.AnForm.A.leviOne (fun t : ℂ => φ (z + t • v)) 0
-  set L : (Fin 1 → ℂ) →L[ℂ] (J → ℂ) :=
-    (ContinuousLinearMap.proj (R := ℂ) (φ := fun _ : Fin 1 => ℂ) 0).smulRight v with hL
-  have hτ : AnalyticAt ℂ (fun w => z + L w) (fun _ => 0) :=
-    analyticAt_const.add (L.analyticAt _)
-  have hτ0 : z + L (fun _ => (0 : ℂ)) = z := by
-    simp [hL]
-  have hcomp : (fun w : Fin 1 → ℂ => φ (z + w 0 • v)) = φ ∘ fun w => z + L w := by
-    funext w
-    simp [hL]
-  have hD : fderiv ℂ (fun w => z + L w) (fun _ => 0) (Pi.single 0 1) = v := by
-    rw [((L.hasFDerivAt).const_add z).fderiv]
-    simp [hL]
-  have hφ' : ContDiffAt ℝ 2 φ (z + L (fun _ => 0)) := by
-    rw [hτ0]
-    exact hφ
-  rw [hcomp, ReciprocityTheory.AnForm.levi_comp _ hτ hφ', hτ0, hD] at h1
-  linarith
+  apply GroundTheory.Heights₂.Heights.Inter.SemipositiveTwist.laplacian_line_eq_levi <;> assumption
 
 end Levi
 

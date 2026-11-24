@@ -1,5 +1,6 @@
 module
 
+import CompanionTheory.AutomorphicTheory.PieriRules.ThetaBesselIsometries.BesselGapVanishing
 public import Formalism.HermitianCurvature.BesselNonvanishingReduction
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousMulMt
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.UhMeasurableSet
@@ -63,21 +64,7 @@ theorem prod_ae {z : Fin (2 * r + k + 1) → ℂ} {μW μN : Measure (Formalism.
     (hW : PI.BesselPeriodGGP.IsHaarOn (Formalism.QuantumDeterminants.UWset k r z) μW)
     (hN : PI.BesselPeriodGGP.IsHaarOn (Formalism.QuantumDeterminants.Nset k r) μN) :
     ∀ᵐ p ∂(μW.prod μN), Matrix.of p.1 ∈ Formalism.QuantumDeterminants.UWset k r z ∧ Matrix.of p.2 ∈ Formalism.QuantumDeterminants.Nset k r := by
-  obtain ⟨hWs, -, hWc, -⟩ := hW
-  obtain ⟨hNs, -, hNc, -⟩ := hN
-  have := hWs; have := hNs
-  rw [ae_iff]
-  have hsub : {p : Formalism.QuantumDeterminants.Mt k r × Formalism.QuantumDeterminants.Mt k r |
-      ¬ (Matrix.of p.1 ∈ Formalism.QuantumDeterminants.UWset k r z ∧ Matrix.of p.2 ∈ Formalism.QuantumDeterminants.Nset k r)} ⊆
-      ({x | Matrix.of x ∉ Formalism.QuantumDeterminants.UWset k r z} ×ˢ Set.univ) ∪
-        (Set.univ ×ˢ {x | Matrix.of x ∉ Formalism.QuantumDeterminants.Nset k r}) := by
-    intro p hp
-    by_cases h1 : Matrix.of p.1 ∈ Formalism.QuantumDeterminants.UWset k r z
-    · exact Or.inr ⟨Set.mem_univ _, fun h2 => hp ⟨h1, h2⟩⟩
-    · exact Or.inl ⟨h1, Set.mem_univ _⟩
-  refine measure_mono_null hsub (measure_union_null ?_ ?_)
-  · rw [Measure.prod_prod, hWc, zero_mul]
-  · rw [Measure.prod_prod, hNc, mul_zero]
+  apply Gp91.GlobalTheory.BesselConv.ae_mem_prod <;> assumption
 
 theorem beInt_norm_le {ε : Fin (2 * r + k + 1) → Bool} {lam : Fin (2 * r + k + 1) → ℝ}
     {H Wp : Type} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [NormedAddCommGroup Wp] [InnerProductSpace ℂ Wp]

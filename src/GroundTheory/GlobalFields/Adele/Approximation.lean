@@ -53,11 +53,6 @@ open scoped RestrictedProduct
 variable {R : Type*} [CommRing R] [IsDedekindDomain R] {K : Type*} [Field K] [Algebra R K]
   [IsFractionRing R K]
 
-theorem exists_valuation_sub_le_one (S : Finset (HeightOneSpectrum R))
-    (x : HeightOneSpectrum R → K) :
-    ∃ k : K, (∀ v ∈ S, v.valuation K (k - x v) ≤ 1) ∧ (∀ v ∉ S, v.valuation K k ≤ 1) :=
-  _root_.UpperTheory.Reformulated.B.ExistsValuationSubLeOne.exists_valuation_sub_le_one S x
-
 def integralFiniteAdeles (R K : Type*) [CommRing R] [IsDedekindDomain R] [Field K] [Algebra R K]
     [IsFractionRing R K] : Subring (FiniteAdeleRing R K) where
   carrier := {a | ∀ v : HeightOneSpectrum R, a v ∈ v.adicCompletionIntegers K}
@@ -96,7 +91,7 @@ theorem exists_sub_mem_integralFiniteAdeles (a : FiniteAdeleRing R K) :
       ⟨a v, by simp⟩
     exact ⟨z, hz⟩
   choose x hx using hx
-  obtain ⟨k, hkS, hkn⟩ := exists_valuation_sub_le_one hS.toFinset x
+  obtain ⟨k, hkS, hkn⟩ := _root_.UpperTheory.Reformulated.B.ExistsValuationSubLeOne.exists_valuation_sub_le_one hS.toFinset x
   refine ⟨k, fun v => ?_⟩
   change a v - (k : v.adicCompletion K) ∈ v.adicCompletionIntegers K
   by_cases hv : v ∈ hS.toFinset

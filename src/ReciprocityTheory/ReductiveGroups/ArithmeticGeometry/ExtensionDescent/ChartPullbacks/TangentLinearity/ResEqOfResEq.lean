@@ -140,8 +140,6 @@ private lemma appLE_appLE_lemma_2 {B T : W.Opens} {C : Y.Opens} {D : Z.Opens} (g
   rw [Scheme.Hom.appLE_map, Scheme.Hom.map_appLE]
   first
   | rfl
-  | simp only [Scheme.Hom.appLE, Scheme.comp_app, Category.assoc]
-  | simp only [Scheme.Hom.appLE, Scheme.Hom.comp_app, Category.assoc]
 
 lemma corr_pull_comp {φ : K → (Y ⟶ X)} {ε : K → ℤ} (c : LB.Gen (LB.LinComb L φ ε)) (g1 : Z ⟶ Y)
     (g2 : W ⟶ Z) (g : W ⟶ Y) (hg : g2 ≫ g1 = g) :
@@ -238,8 +236,7 @@ lemma zz_sameSum : LB.SameSum (Y := B.left) (K := PEmpty) PEmpty.elim PEmpty.eli
   by_cases hf : Over.Hom.left f = ψ <;> by_cases hu : (toUnit B ≫ η[B]).left = ψ <;>
     by_cases hi : Over.Hom.left (𝟙 B) = ψ <;>
     first
-    | (simp only [hf, hu, hi, eq_self_iff_true, ↓reduceIte]; simp [rosatiε]; done)
-    | simp [hf, hu, hi, rosatiε]
+    | (simp only [hf, hu, hi, ↓reduceIte]; simp [rosatiε]; done)
 
 end Z
 
@@ -268,7 +265,7 @@ lemma eSec_pG : (Over.map (thick R I e)).map η[thickObj R I e G] ≫ (U.gt e).p
   have h3 := Over.w (toUnit ((Over.map (thick R I e)).obj (𝟙_ _)))
   have h4 := Over.w (Functor.LaxMonoidal.ε (Over.pullback (thick R I e)))
   have h5 := pullback.condition (f := (𝟙_ (Over (Spec (CommRingCat.of R)))).hom) (g := thick R I e)
-  simp only [Over.map_obj_hom, Functor.id_obj, Over.pullback_obj_hom] at h3 h4 h5
+  simp only [Over.map_obj_hom, Over.pullback_obj_hom] at h3 h4 h5
   have h5' : pullback.fst (𝟙_ (Over (Spec (CommRingCat.of R)))).hom (thick R I e) =
       pullback.snd (𝟙_ (Over (Spec (CommRingCat.of R)))).hom (thick R I e) ≫ thick R I e :=
     (Category.comp_id _).symm.trans h5

@@ -71,14 +71,14 @@ theorem hpk_out {i : Fin (2 * r + k + 1)} (h : i.val < r ∨ r + k < i.val) (j :
   have hi := i.isLt
   have hj := j.isLt
   simp only [Hpk, Fin.ext_iff]
-  split_ifs <;> first | rfl | (exfalso; omega) | simp_all | omega
+  split_ifs <;> first | rfl | (exfalso; omega)
 
 theorem hpk_mid {i : Fin (2 * r + k + 1)} (h : ¬(i.val < r ∨ r + k < i.val)) (j : Fin (2 * r + k + 1)) :
     Hpk k r i j = if j.val = i.val then (if i.val = r + k then -1 else 1) else 0 := by
   have hi := i.isLt
   have hj := j.isLt
   simp only [Hpk, Fin.ext_iff]
-  split_ifs <;> first | rfl | (exfalso; omega) | simp_all | omega
+  split_ifs <;> first | rfl | (exfalso; omega)
 
 theorem hpk_mulVec (v : Fin (2 * r + k + 1) → ℂ) (i : Fin (2 * r + k + 1)) :
     (Hpk k r *ᵥ v) i = if i.val < r ∨ r + k < i.val then v ⟨2 * r + k - i.val, by omega⟩
@@ -123,7 +123,6 @@ theorem hpk_mulVec_mulVec (v : Fin (2 * r + k + 1) → ℂ) : Hpk k r *ᵥ (Hpk 
 theorem mat_eq_of_mulVec {A B : Mat k r} (h : ∀ v, A *ᵥ v = B *ᵥ v) : A = B := by
   first
   | exact Matrix.toLin'.injective (LinearMap.ext fun v => by simpa [Matrix.toLin'_apply] using h v)
-  | (ext i j; simpa using congrFun (h (Pi.single j 1)) i)
 
 theorem hpk_sq : Hpk k r * Hpk k r = 1 := mat_eq_of_mulVec fun v => by
   rw [← Matrix.mulVec_mulVec, hpk_mulVec_mulVec, Matrix.one_mulVec]
@@ -133,7 +132,7 @@ theorem hpk_conjT : (Hpk k r)ᴴ = Hpk k r := by
   have hi := i.isLt
   have hj := j.isLt
   simp only [Matrix.conjTranspose_apply, Hpk, Fin.ext_iff]
-  split_ifs <;> first | rfl | (exfalso; omega) | simp | (simp_all; omega) | simp_all
+  split_ifs <;> first | rfl | (exfalso; omega) | simp
 
 theorem gv_left_inv {g : Mat k r} (hg : g ∈ GV k r) : Hpk k r * gᴴ * Hpk k r * g = 1 := by
   have hg' : gᴴ * Hpk k r * g = Hpk k r := hg
@@ -150,8 +149,6 @@ theorem gv_inv_mul {g : Mat k r} (hg : g ∈ GV k r) : g⁻¹ * g = 1 := by
 theorem gv_mul_inv {g : Mat k r} (hg : g ∈ GV k r) : g * g⁻¹ = 1 := by
   first
   | exact Matrix.mul_nonsing_inv g (Matrix.isUnit_det_of_left_inverse (gv_left_inv hg))
-  | exact mul_eq_one_comm.mpr (gv_inv_mul hg)
-  | exact (Matrix.mul_eq_one_comm).mpr (gv_inv_mul hg)
 
 theorem gv_one : (1 : Mat k r) ∈ GV k r := by
   show (1 : Mat k r)ᴴ * Hpk k r * 1 = Hpk k r
@@ -185,8 +182,6 @@ theorem gv_closed : IsClosed (GV k r) := by
   first
   | exact isClosed_eq ((continuous_id.matrix_conjTranspose.matrix_mul continuous_const).matrix_mul
       continuous_id) continuous_const
-  | (apply isClosed_eq _ continuous_const; fun_prop)
-  | (apply isClosed_eq _ continuous_const; continuity)
 
 theorem exp_mem {X : Mat k r} (hX : inLie k r X) (t : ℝ) : NormedSpace.exp (t • X) ∈ GV k r := by
   have hX' : Xᴴ * Hpk k r + Hpk k r * X = 0 := hX
@@ -228,8 +223,6 @@ theorem exp_negY_mem {Y : Mat k r} (hY : inLie k r Y) (t : ℝ) : NormedSpace.ex
 theorem cast_smul (t : ℝ) (X : Mat k r) : ((t : ℂ) • X) = t • X := by
   first
   | exact Complex.coe_smul t X
-  | (ext i j; simp [Complex.real_smul])
-  | (ext i j; simp [Matrix.smul_apply, Complex.real_smul])
 
 end hpk
 
@@ -244,8 +237,6 @@ theorem gN_eq_frob (g : Mat k r) :
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   first
   | rw [Complex.normSq_eq_norm_sq, Real.rpow_two]
-  | (rw [Real.rpow_two]; simp [Complex.normSq_eq_norm_sq])
-  | (rw [Real.rpow_two, Complex.norm_eq_abs, Complex.sq_abs])
 
 theorem gN_mul_le (a b : Mat k r) : gN (a * b) ≤ gN a * gN b := by
   rw [gN_eq_frob, gN_eq_frob, gN_eq_frob]
@@ -258,13 +249,10 @@ theorem gN_continuous : Continuous (fun g : Mat k r => gN g) := by
   first
   | exact Real.continuous_sqrt.comp (continuous_finsetSum _ fun i _ => continuous_finsetSum _
       fun j _ => Complex.continuous_normSq.comp (continuous_id.matrix_elem i j))
-  | fun_prop
-  | continuity
 
 theorem gN_conjT (g : Mat k r) : gN gᴴ = gN g := by
   first
   | (rw [gN_eq_frob, gN_eq_frob]; exact Matrix.frobenius_norm_conjTranspose g)
-  | (unfold gN; congr 1; rw [Finset.sum_comm]; simp [Matrix.conjTranspose_apply])
 
 theorem gN_inv_le {g : Mat k r} (hg : g ∈ GV k r) : gN g⁻¹ ≤ gN (Hpk k r) ^ 2 * gN g := by
   rw [gv_inv_eq hg]
@@ -315,7 +303,6 @@ theorem aesm_of_contOn {E : Type*} [NormedAddCommGroup E] (hμ : μ (GV k r)ᶜ 
   have h := hf'.aestronglyMeasurable (μ := μ) gv_meas
   first
   | (erw [Measure.restrict_eq_self_of_ae_mem hae] at h; exact h)
-  | exact (Measure.restrict_eq_self_of_ae_mem (s := (GV k r : Set (Mat k r))) hae) ▸ h
 
 theorem ae_mem_gv (hμ : μ (GV k r)ᶜ = 0) : ∀ᵐ x ∂μ, (Matrix.of x : Mat k r) ∈ GV k r := by
   exact ae_iff.mpr hμ
@@ -409,7 +396,6 @@ theorem ext_test {φ : Mat k r → ℂ} (hφ : IsTestG φ) :
   | obtain ⟨Φ, hΦ⟩ := exists_smooth_forall_mem_convex_of_local (I := 𝓘(ℝ, Mt k r)) hc key
   | obtain ⟨Φ, hΦ⟩ := exists_smooth_forall_mem_convex_of_local 𝓘(ℝ, Mt k r) hc key
   | obtain ⟨Φ, hΦ⟩ := exists_contMDiffMap_forall_mem_convex_of_local (I := 𝓘(ℝ, Mt k r)) hc key
-  | obtain ⟨Φ, hΦ⟩ := exists_contMDiffOn_forall_mem_convex_of_local (I := 𝓘(ℝ, Mt k r)) hc key
   have hΦ0 : ∀ y : Mt k r, y ∉ Metric.closedBall (0 : Mt k r) (R + 1) → Φ y = 0 := by
     intro y hy
     rw [Metric.mem_closedBall, dist_zero_right, not_le] at hy

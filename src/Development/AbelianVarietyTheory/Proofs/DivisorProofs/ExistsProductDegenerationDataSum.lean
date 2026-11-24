@@ -314,8 +314,7 @@ variable {S : Scheme.{0}} {A B : Over S} [GrpObj A] [GrpObj B] (a : A ⟶ B) [Is
 theorem padd_comp {T : Over S} (x y : T ⟶ A) : padd A x y ≫ a = padd B (x ≫ a) (y ≫ a) := by
   rw [padd, padd, Category.assoc, IsMonHom.mul_hom, lift_map_assoc]
 
-theorem eSec_comp : eSec A ≫ a.left = eSec B := by
-  rw [eSec, eSec, ← Over.comp_left, IsMonHom.one_hom]
+alias eSec_comp := _root_.GlobalTheory.PolProd.eSec_comp
 
 theorem inv_comp (k : Fin 2) :
     (![(ι[A]).left, 𝟙 A.left] : Fin 2 → (A.left ⟶ A.left)) k ≫ a.left =

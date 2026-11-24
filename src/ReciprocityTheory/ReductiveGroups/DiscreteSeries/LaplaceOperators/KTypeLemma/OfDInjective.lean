@@ -153,7 +153,7 @@ theorem inG_entry {ε : Fin n → Bool} {X : Matrix (Fin n) (Fin n) ℂ} (hX : i
   have h := congrFun (congrFun hX b) a
   rw [Matrix.add_apply, Jm, Matrix.mul_diagonal, Matrix.diagonal_mul, Matrix.conjTranspose_apply,
     Matrix.zero_apply] at h
-  cases hεa : ε a <;> cases hεb : ε b <;> simp [hεa, hεb, Complex.star_def] at h ⊢ <;>
+  cases hεa : ε a <;> cases hεb : ε b <;> simp [hεa, hεb] at h ⊢ <;>
     first | linear_combination h | linear_combination -h
 
 section Conj
@@ -258,15 +258,15 @@ theorem glRep_Edd (ε : Fin n → Bool) {E : Fin n → Fin n → Module.End ℂ 
   by_cases hbc : b = c <;> by_cases hda : d = a
   · subst c
     subst d
-    simp only [eq_self_iff_true, if_true, Edd_ofD]
+    simp only [if_true, Edd_ofD]
     rw [← ofD_sub]
     congr 1
     unfold sg
     split_ifs <;> module
   · subst c
     have hda' : ¬ Fin.rev a = Fin.rev d := fun h => hda (Fin.rev_injective h).symm
-    simp only [eq_self_iff_true, if_true, if_neg hda, if_neg (Ne.symm hda), if_neg hda', LinearMap.zero_apply, Edd_ofD,
-      sub_zero, zero_sub]
+    simp only [if_true, if_neg hda, if_neg (Ne.symm hda), LinearMap.zero_apply, Edd_ofD,
+      zero_sub]
     first
     | (congr 1; unfold sg; split_ifs <;> module)
     | (rw [← ofD_neg]; congr 1; unfold sg; split_ifs <;> module)
@@ -274,16 +274,15 @@ theorem glRep_Edd (ε : Fin n → Bool) {E : Fin n → Fin n → Module.End ℂ 
     | (simp only [← ofD_neg, ← ofD_sub, ← ofD_zero]; congr 1; unfold sg; split_ifs <;> module)
   · subst d
     have hbc' : ¬ Fin.rev c = Fin.rev b := fun h => hbc (Fin.rev_injective h).symm
-    simp only [eq_self_iff_true, if_true, if_neg hbc, if_neg (Ne.symm hbc), if_neg hbc', LinearMap.zero_apply, Edd_ofD,
-      sub_zero, zero_sub]
-    simp only [sub_zero, zero_sub, LinearMap.zero_apply, ← ofD_neg, ← ofD_sub]
+    simp only [if_true, if_neg hbc, if_neg (Ne.symm hbc), LinearMap.zero_apply, Edd_ofD,
+      zero_sub]
+    simp only [← ofD_neg, ← ofD_sub]
     congr 1
     unfold sg
     split_ifs <;> module
   · have hda' : ¬ Fin.rev a = Fin.rev d := fun h => hda (Fin.rev_injective h).symm
     have hbc' : ¬ Fin.rev c = Fin.rev b := fun h => hbc (Fin.rev_injective h).symm
-    simp only [if_neg hbc, if_neg (Ne.symm hbc), if_neg hda, if_neg (Ne.symm hda), if_neg hda', if_neg hbc', LinearMap.zero_apply,
-      sub_zero, smul_zero]
+    simp only [if_neg hbc, if_neg (Ne.symm hbc), if_neg hda, if_neg (Ne.symm hda), LinearMap.zero_apply]
     simp [ofD_zero]
 
 end Conj

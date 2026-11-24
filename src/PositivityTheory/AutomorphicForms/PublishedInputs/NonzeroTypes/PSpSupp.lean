@@ -109,7 +109,7 @@ theorem isIrreducible_piTensor_twD (hBZ : GlobalTheory.Published.BernsteinZelevi
     (hs : ∀ a, IsSmooth (G.twD τ a)) (hi : ∀ a, (G.twD τ a).IsIrreducible) :
     (piTensor (G.twD τ)).IsIrreducible := by
   refine GlobalTheory.ProdFiniteLength.piTensor_isIrreducible_of_schur _ hi fun a => ?_
-  exact GlobalTheory.SchurAdm.schur_admissible _ (KO k (Fin (G.d a))) GlobalTheory.SplitFlip.isOpen_KO
+  exact _root_.GlobalTheory.SchurAdmissibility.schur_admissible _ (KO k (Fin (G.d a))) GlobalTheory.SplitFlip.isOpen_KO
     GlobalTheory.SplitFlip.isCompact_KO _ _ (hi a) ((hBZ k).1 (Fin (G.d a)) _ _ (hs a) (hi a))
 
 theorem hasSupport_twD {Y : Fin G.s → Type} [∀ a, AddCommGroup (Y a)] [∀ a, Module ℂ (Y a)]
@@ -136,11 +136,31 @@ open P_spSupp
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
   {n : ℕ}
 
+/-- Reordering the characters of a principal series preserves irreducible subquotients. -/
+def SpecialOrderProp : Prop :=
+  GlobalTheory.Published.GeometricLemma → GlobalTheory.Published.ZelevinskyPolynomialRing →
+  GlobalTheory.Published.BernsteinZelevinskyFiniteness →
+  ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin n) k) V),
+    IsSmooth π → π.IsIrreducible → ∀ c : Fin n → kˣ →* ℂˣ, (∀ i, IsSmoothChar (c i)) →
+    ∀ σ : Equiv.Perm (Fin n), IsSubquotient π (prinSeries (fun i => c (σ i))) →
+      IsSubquotient π (prinSeries c)
+
+/-- Supercuspidal-support step for the special form. -/
+def SpecialSupportProp (G : Grp k n) : Prop :=
+  SpecialOrderProp (k := k) (n := n) →
+  GlobalTheory.Published.GeometricLemma → GlobalTheory.Published.ZelevinskyPolynomialRing →
+  GlobalTheory.Published.BernsteinZelevinskyFiniteness →
+  ∀ (V : Type) [AddCommGroup V] [Module ℂ V] (π : Representation ℂ (GL (Fin n) k) V),
+    IsSmooth π → π.IsIrreducible →
+    ∀ (Y : Fin G.s → Type) [∀ a, AddCommGroup (Y a)] [∀ a, Module ℂ (Y a)]
+      (τ : ∀ a, Representation ℂ (GL (Fin (G.d a)) k) (Y a)),
+      (∀ a, IsSmooth (τ a)) → (∀ a, (τ a).IsIrreducible) →
+      ∀ ν : ∀ a, Fin (G.d a) → kˣ →* ℂˣ, (∀ a j, IsSmoothChar (ν a j)) →
+      (∀ a, IsCuspSupport (τ a) (fun _ : Fin (G.d a) => 1) (fun j => detRep (Fin 1) (ν a j))) →
+      IsSubquotient (piTensor τ) (jacU G.e π) → IsSubquotient π (prinSeries (G.cOf ν))
+
 theorem step_spSupp (G : Grp k n) : G.SpecialSupportProp := by
-  intro hOrd hLit V _ _ π hπs hπi Y _ _ τ hτs hτi ν hν hcs hjac
-  have hG := hLit.loc.geo
-  have hZ := hLit.loc.zel
-  have hBZ := hLit.loc.bz
+  intro hOrd hG hZ hBZ V _ _ π hπs hπi Y _ _ τ hτs hτi ν hν hcs hjac
   have hs' : ∀ a, IsSmooth (G.twD τ a) := fun a =>
     isSmooth_twist (hτs a) (isSmoothChar_absPow _).detChar
   have hi' : ∀ a, (G.twD τ a).IsIrreducible := fun a => GlobalTheory.LocGL.isIrreducible_twist (hτi a) _
@@ -193,6 +213,6 @@ theorem step_spSupp (G : Grp k n) : G.SpecialSupportProp := by
   have h1 : IsSubquotient π (multiProd e fun a => detRep (Fin 1) (G.cOf ν (σ a))) :=
     he.trans (.of_injective φ.toIntertwiningMap φ.toLinearEquiv.injective)
   have h2 := h1.trans (GlobalTheory.PermPrin.isSubquotient_multiProd_prinSeries e fun a => G.cOf ν (σ a))
-  exact hOrd hLit V π hπs hπi (G.cOf ν) hc σ h2
+  exact hOrd hG hZ hBZ V π hπs hπi (G.cOf ν) hc σ h2
 
 end UpperTheory.TNZ.Grp

@@ -152,7 +152,7 @@ theorem det_mulEnd (L : PeriodPair) (α : ℂ) (h : MulStable L α) :
     simp [mulEnd, L.latticeBasis_zero, L.latticeBasis_one, hbd]
   have key : LinearMap.det (mulEnd L α h) = a * d - b * c := by
     rw [← LinearMap.det_toMatrix L.latticeBasis, Matrix.det_fin_two]
-    simp [LinearMap.toMatrix_apply, h0, h1] <;> ring
+    simp [LinearMap.toMatrix_apply, h0, h1]
   rw [hn, key]
 
 theorem card_quot (L : PeriodPair) (α : ℂ) (hα : α ≠ 0) (h : MulStable L α) :

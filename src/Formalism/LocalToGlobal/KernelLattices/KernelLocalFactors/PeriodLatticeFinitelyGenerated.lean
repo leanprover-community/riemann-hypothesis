@@ -212,17 +212,13 @@ theorem isKerG_of_finset {κ : Type} (H : Sesq V) (Λ : AddSubgroup V) (e : V �
   rw [← Finset.sum_coe_sort s]
   exact (Equiv.sum_comp s.equivFin.symm fun k : s => r k * opU H (t k) e z).symm
 
-theorem opU_sum {κ : Type} (H : Sesq V) (x : V) (s : Finset κ) (f : κ → V → ℂ) (z : V) :
-    opU H x (fun v => ∑ k ∈ s, f k v) z = ∑ k ∈ s, opU H x (f k) z := by
-  simp only [opU, Finset.sum_mul]
-
 theorem opU_xiS (H : Sesq V) (hH : IsHerm H) (α : V → ℂ) (vol : ℝ) (SA SB : Finset V) (Φ e : V → ℂ) (x z : V) :
     opU H x (xiS H α vol SA SB Φ e) z = ∑ y ∈ SB, (hatS H vol SA Φ y * α y *
       Complex.exp (((-1 : ℤ) : ℂ) * ((Real.pi : ℂ) * Complex.I * (altE H x y : ℂ)))) * opU H (x + y) e z := by
   have h : xiS H α vol SA SB Φ e = fun v => ∑ y ∈ SB, (hatS H vol SA Φ y * α y) * opU H y e v := rfl
-  rw [h, opU_sum]
+  rw [h, _root_.Formalism.L2.Th1.H.Inv.opU_finset_sum]
   refine Finset.sum_congr rfl fun y _ => ?_
-  rw [opU_smul, heisenbergMul V H hH x y e z]
+  rw [_root_.Formalism.L2.Th1.H.Inv.opU_const_mul, heisenbergMul V H hH x y e z]
   have : -(Real.pi : ℂ) * Complex.I * (altE H x y : ℂ) = ((-1 : ℤ) : ℂ) * ((Real.pi : ℂ) * Complex.I * (altE H x y : ℂ)) := by
     push_cast; ring
   rw [this]; ring
@@ -1047,7 +1043,7 @@ theorem colSub1_trans (l j : Fin n) (hlj : l ≠ j) (c : K) :
       · have h2' : s ≠ l := fun h => h2 (h1.trans h)
         simp [h1, h2']
     · by_cases h2 : w = l
-      · by_cases h3 : s = j <;> simp [h1, h2, h3, hlj]
+      · by_cases h3 : s = j <;> simp [h2, h3, hlj]
       · simp [h1, h2]
   simp only [e, Finset.sum_add_distrib, Finset.sum_ite_eq', Finset.mem_univ, if_true]
   split_ifs <;> simp
@@ -1560,12 +1556,6 @@ theorem compatible_lift_exists : TiedLift := by
 
 end Ent
 
-section Tests
-
-variable {D : D7} {u : D.what₂.Word} {C : ColumnChain D.R D.what₂.Tau (D.hcW u)}
-
-end Tests
-
 section Cons
 
 theorem first_kernel_law_reading : FirstKernelLawReading := by
@@ -1589,12 +1579,6 @@ theorem ambient_of_hypotheses : AmbOfHyp := by
   rw [Equiv.apply_symm_apply]
 
 end Cons
-
-section Tests2
-
-variable {D : D7} {u : D.what₂.Word} {C : ColumnChain D.R D.what₂.Tau (D.hcW u)}
-
-end Tests2
 
 section SeamLatS
 
@@ -1766,7 +1750,7 @@ theorem perO_fg {E : Type} [Field E] [NumberField E] [StarRing E] {a b : ℕ} (A
     intro x
     have hx : x = ∑ i, x i • (Pi.single i (1 : E) : Sp E b) := by
       funext j
-      simp [Pi.single_apply, Finset.sum_ite_eq']
+      simp [Pi.single_apply]
     rw [hx]
     exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _
       (Submodule.subset_span (single_mem_stdLat (E := E) i 1))
@@ -1934,15 +1918,7 @@ theorem initial_lattice_eq_standard {D : D7} {u : D.what₂.Word} {C : ColumnCha
   rw [← hy]
   exact NumberField.RingOfIntegers.isIntegral_coe y
 
-section JetX
-
-open MvPolynomial Formalism.L2.DIV
-
-end JetX
-
 namespace Test
-
-open MvPolynomial Formalism.L2.DIV
 
 end Test
 

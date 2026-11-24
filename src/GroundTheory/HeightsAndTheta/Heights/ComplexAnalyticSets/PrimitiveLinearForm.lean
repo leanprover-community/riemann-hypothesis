@@ -100,7 +100,7 @@ theorem exists_linear_primitive {K L : Type*} [Field K] [Field L] [Algebra K L] 
     rw [Finset.sum_eq_single j] at hc
     · simpa [sub_eq_zero] using hc
     · intro b _ hb
-      simp [Finsupp.single_apply, show (b : ℕ) ≠ (j : ℕ) from fun h => hb (Fin.ext h)]
+      simp [show (b : ℕ) ≠ (j : ℕ) from fun h => hb (Fin.ext h)]
     · simp
   have hev : ∀ φψ : (L →ₐ[K] A) × (L →ₐ[K] A), ∀ t : A,
       (p φψ).eval t = ∑ j : Fin n, (φψ.1 (x j) - φψ.2 (x j)) * t ^ (j : ℕ) := by

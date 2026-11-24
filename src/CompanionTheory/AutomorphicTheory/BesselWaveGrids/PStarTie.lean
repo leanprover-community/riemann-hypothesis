@@ -119,7 +119,6 @@ variable {P : M.Par} {lam : Fin (2 * P.r + P.k + 1) → ℝ} {c g b : ℝ}
 
 theorem HypLam.k_le (h : HypLam P.k P.r lam c g b) : (P.k : ℝ) ≤ b := by
   have h1 : (1 : ℝ) ≤ Real.exp 1 := Real.one_le_exp zero_le_one
-  have h2 : (0 : ℝ) ≤ P.k := Nat.cast_nonneg _
   nlinarith [h.b_ge_k]
 
 theorem HypLam.lamN_le (h : HypLam P.k P.r lam c g b) :

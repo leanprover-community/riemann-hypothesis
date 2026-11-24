@@ -88,7 +88,6 @@ theorem linComb_triv_g {X Y : Scheme.{0}} {K : Type} [Fintype K] (φ : K → (Y 
   rw [hg, map_one]
   first
     | exact (congrArg (· ^ ε k) (map_one _)).trans (one_zpow _)
-    | (erw [map_one, one_zpow])
 
 theorem powOver_triv_g {S : Scheme.{0}} (A : Over S) (U : S.Opens) (N : ℕ)
     (j j' : (powOver A (trivLB A.left) U N).ι) : (powOver A (trivLB A.left) U N).g j j' = 1 :=
@@ -101,10 +100,8 @@ theorem surj_appLE {X Y : Scheme.{0}} (f : X ⟶ Y) [IsIso f] (D : X.Opens) (hD 
   have h2 : IsIso (f.appLE ⊤ ⊤ e) := by
     first
       | (rw [Scheme.Hom.appLE]; infer_instance)
-      | (show IsIso (f.app ⊤ ≫ X.presheaf.map (homOfLE e).op); infer_instance)
   first
     | exact (ConcreteCategory.bijective_of_isIso (f.appLE ⊤ ⊤ e)).2
-    | exact (asIso (f.appLE ⊤ ⊤ e)).commRingCatIsoToRingEquiv.surjective
 
 variable (S : Scheme.{0})
 

@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.CuspSpanNormBounds.CayleyDegreeNondegeneracy.ExtendByIdentitySymmFixOrth
 public import Formalism.SharpRestriction.CuspSpanNormBounds.IsPrimitiveSub
 public import Lemmata.GeneralBFactThirdRest.Imports
 import Mathlib.Algebra.Order.Floor.Extended
@@ -57,59 +58,9 @@ theorem mem_orth {U : Submodule E S.V} {v : S.V} : v ∈ orth S U ↔ ∀ x ∈ 
 
 theorem finrank_orth_add (U : Submodule E S.V) :
     finrank E (orth S U) + finrank E U = finrank E S.V := by
-  set d := finrank E U
-  let b := Module.finBasis E U
-  let f : Fin d → Module.Dual E S.V := fun i => S.hT (b i : S.V)
-  have hli : LinearIndependent E f := by
-    rw [Fintype.linearIndependent_iff]
-    intro g hg i
-    have h0 : S.hT (∑ j, star (g j) • (b j : S.V)) = 0 := by
+  apply Formalism.MainNotions.BridgeLemma₂.finrank_orth_add_finrank <;> assumption
 
-      rw [map_sum]
-      simp only [LinearMap.map_smulₛₗ, starRingEnd_apply, star_star]
-      exact hg
-    have h1 : ∑ j, star (g j) • (b j : S.V) = 0 :=
-      S.nondeg.1 _ (fun y => by rw [h0]; rfl)
-    have hli' : LinearIndependent E (fun j => (b j : S.V)) :=
-      b.linearIndependent.map' U.subtype (Submodule.ker_subtype U)
-    have := (Fintype.linearIndependent_iff.mp hli') (fun j => star (g j)) h1 i
-    simpa using this
-  let Φ : Submodule E (Module.Dual E S.V) := Submodule.span E (Set.range f)
-  have hΦ : finrank E Φ = d := by
-    rw [finrank_span_eq_card hli]; simp [d]
-  have hco : Φ.dualCoannihilator = orth S U := by
-    ext v
-    rw [Submodule.mem_dualCoannihilator, mem_orth]
-    constructor
-    · intro h x hx
-      have hx' := b.sum_repr ⟨x, hx⟩
-      have : x = ∑ i, (b.repr ⟨x, hx⟩ i) • (b i : S.V) := by
-        have h2 := congrArg Subtype.val hx'
-        rw [Submodule.coe_sum] at h2
-        simp only [Submodule.coe_smul] at h2
-        exact h2.symm
-
-      rw [this, map_sum, LinearMap.sum_apply]
-      refine Finset.sum_eq_zero fun i _ => ?_
-      rw [LinearMap.map_smulₛₗ, LinearMap.smul_apply]
-      have := h (f i) (Submodule.subset_span ⟨i, rfl⟩)
-      simp only [f] at this
-      rw [this, smul_zero]
-    · intro h φ hφ
-      induction hφ using Submodule.span_induction with
-      | mem x hx =>
-        obtain ⟨i, rfl⟩ := hx
-        exact h _ (b i).2
-      | zero => rfl
-      | add x y _ _ hx hy => simp [hx, hy]
-      | smul c x _ hx => simp [hx]
-  have := Subspace.finrank_add_finrank_dualCoannihilator_eq Φ
-  rw [hco, hΦ] at this
-  omega
-
-theorem exists_smul_mem (Λ : Submodule (𝓞 E) S.V) (hΛ : Submodule.IsFullLattice E Λ) (x : S.V) :
-    ∃ a : 𝓞 E, a ≠ 0 ∧ a • x ∈ Λ :=
-  Bl.general_b_fact_third''''.goal1 S Λ hΛ x
+alias exists_smul_mem := _root_.Bl.general_b_fact_third''''.goal1
 
 theorem span_inf_toO (Λ : Submodule (𝓞 E) S.V) (hΛ : Submodule.IsFullLattice E Λ) (U : Submodule E S.V) :
     Submodule.span E ((Λ ⊓ toO S U : Submodule (𝓞 E) S.V) : Set S.V) = U := by

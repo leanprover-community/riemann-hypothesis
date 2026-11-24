@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.OrbitLimits.CurveVerticalPointChart
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsPowSubMemSpanOfIsUnitModOfIsAlgClosed
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -200,31 +201,7 @@ theorem aeval_ne_zero {y : (Σ k, ι k) → Ω} {h : MRing ι} {d : K → ℕ} (
 theorem chart_form {y : (Σ k, ι k) → Ω} {c : ∀ k, ι k} (hc : ∀ k, y ⟨k, c k⟩ ≠ 0) {r : Ω}
     (hr : r ∈ chartRingZ y c) :
     ∃ (m : K → ℕ) (G : MRing ι), IsMultiHomog G m ∧ r * ∏ k, y ⟨k, c k⟩ ^ m k = aeval y G := by
-  classical
-  induction hr using Algebra.adjoin_induction with
-  | mem x hx =>
-    obtain ⟨p, rfl⟩ := hx
-    refine ⟨Pi.single p.1 1, X p, homog_X p, ?_⟩
-    rw [aeval_X, Finset.prod_eq_single p.1 (fun k _ hk => by rw [Pi.single_eq_of_ne hk, pow_zero])
-      (by simp), Pi.single_eq_same, pow_one, div_mul_cancel₀ _ (hc p.1)]
-  | algebraMap z =>
-    exact ⟨0, C z, homog_C z, by simp⟩
-  | add x1 x2 _ _ ih1 ih2 =>
-    obtain ⟨m1, G1, hG1, e1⟩ := ih1
-    obtain ⟨m2, G2, hG2, e2⟩ := ih2
-    refine ⟨m1 + m2, G1 * cMon c m2 + G2 * cMon c m1,
-      homog_add (homog_mul hG1 (homog_cMon c m2))
-        (by rw [add_comm m1 m2]; exact homog_mul hG2 (homog_cMon c m1)), ?_⟩
-    rw [map_add (f := _), map_mul, map_mul, aeval_cMon, aeval_cMon, ← e1, ← e2]
-    simp only [Pi.add_apply, pow_add, Finset.prod_mul_distrib]
-    ring
-  | mul x1 x2 _ _ ih1 ih2 =>
-    obtain ⟨m1, G1, hG1, e1⟩ := ih1
-    obtain ⟨m2, G2, hG2, e2⟩ := ih2
-    refine ⟨m1 + m2, G1 * G2, homog_mul hG1 hG2, ?_⟩
-    rw [map_mul, ← e1, ← e2]
-    simp only [Pi.add_apply, pow_add, Finset.prod_mul_distrib]
-    ring
+  apply GroundTheory.Heights₂.Heights.Targets.CurveVerticalPointChart.exists_rep <;> assumption
 
 theorem mem_of_local (R : Subalgebra ℤ Ω) (w : Ω)
     (h : ∀ q : Ideal R, q.IsPrime → ∃ a : R, a ∉ q ∧ (a : Ω) * w ∈ R) : w ∈ R := by

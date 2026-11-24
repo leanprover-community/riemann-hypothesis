@@ -104,7 +104,7 @@ theorem exists_flag_dual (y : (Σ k, ι k) → Ω) (B : ChartBundle R (segreVec 
     apply hm
     rcases hjm.lt_or_eq with h | h
     · have hne : j ≠ m := fun h' => (ne_of_lt h) (congrArg Fin.val h')
-      simp [heT j m h, Finsupp.single_apply, hne]
+      simp [heT j m h, hne]
     · have : m = j := Fin.ext h.symm
       subst this
       simp [heD]
@@ -353,7 +353,7 @@ theorem chart_pair (y : (Σ k, ι k) → Ω) (B' : ChartBundle O (segreVec y) N 
       · simp [vdeg]
       · have h3 := hdeg j
         have h4 := hβ j
-        simp [vdeg, Pi.single_apply]
+        simp [vdeg]
         omega
     rw [hd]
     exact h2
@@ -483,7 +483,7 @@ theorem SegreFlagCutForms.proof : SegreFlagCutForms.Statement := by
   · simp [vdeg, zetaSecond, liftPairDeg]
   · simp [vdeg, zetaSecond, liftPairDeg]
   · have := hβD j
-    simp [vdeg, zetaSecond, liftPairDeg, Pi.single_apply]
+    simp [vdeg, zetaSecond, liftPairDeg]
     omega
 
 end

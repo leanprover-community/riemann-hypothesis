@@ -1,7 +1,8 @@
 module
 
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.MemEurOfTeichmullerSeries
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicPowerSeriesAlgHomActionLawsStatement
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CyclotomicPowerSeriesAlgHomActionLaws
+import Formalism.SharpRestriction.LevelLetterCocycles.RingConditionOfDeltaInvariants
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -54,25 +55,7 @@ namespace GlobalTheory.Cyc
 theorem algHom_ext_of_constantCoeff_zero {O : Type} [CommRing O]
     (f g : PowerSeries O →ₐ[O] PowerSeries O) (h : f PowerSeries.X = g PowerSeries.X)
     (h0 : PowerSeries.constantCoeff (f PowerSeries.X) = 0) : f = g := by
-  have key : ∀ (n : ℕ) (a : PowerSeries O), PowerSeries.X ^ n ∣ f a - g a := by
-    intro n
-    induction n with
-    | zero => intro a; simp
-    | succ n ih =>
-      intro a
-      obtain ⟨b, hb⟩ : PowerSeries.X ∣ a - PowerSeries.C (PowerSeries.constantCoeff a) := by
-        rw [PowerSeries.X_dvd_iff]; simp
-      have ha : a = algebraMap O (PowerSeries O) (PowerSeries.constantCoeff a) + PowerSeries.X * b := by
-        rw [← hb, PowerSeries.algebraMap_eq]; ring
-      have : f a - g a = f PowerSeries.X * (f b - g b) := by
-        conv_lhs => rw [ha]
-        rw [map_add (f := _), map_add (f := _), map_mul, map_mul, f.commutes, g.commutes, ← h]; ring
-      rw [this, pow_succ']
-      exact mul_dvd_mul (PowerSeries.X_dvd_iff.2 h0) (ih b)
-  ext a n
-  have := (PowerSeries.X_pow_dvd_iff.1 (key (n + 1) a)) n (Nat.lt_succ_self n)
-  rw [map_sub] at this
-  exact sub_eq_zero.1 this
+  apply Formalism.MainNotions.WachCoordinates.Br.algHom_ext_X <;> assumption
 
 theorem constantCoeff_algHom {O : Type} [CommRing O]
     (f : PowerSeries O →ₐ[O] PowerSeries O)
@@ -143,7 +126,7 @@ theorem eq_of_commute_pow {O : Type} [CommRing O] [IsDomain O] (l : ℕ) (hl0 : 
 
 theorem act_unique : ∀ (l : ℕ) [Fact l.Prime] (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [IsAdicComplete (IsLocalRing.maximalIdeal O) O] [Algebra ℤ_[l] O], (l : O) ≠ 0 → ¬ IsUnit (l : O) → ∀ (f : PowerSeries O →ₐ[O] PowerSeries O) (φ₀ : PowerSeries O →ₐ[O] PowerSeries O) (c : ℤ_[l]), φ₀ PowerSeries.X = (1 + PowerSeries.X) ^ l - 1 → (∀ a, φ₀ (f a) = f (φ₀ a)) → PowerSeries.constantCoeff (f PowerSeries.X) = 0 → PowerSeries.coeff 1 (f PowerSeries.X) = algebraMap ℤ_[l] O c → φ₀ = phi l O ∧ f = act l O c := by
   intro l _ O _ _ _ _ _ hl0 hlu f φ₀ c hφ hcomm hf0 hf1
-  obtain ⟨hX, hmul, -, hnat, hlin, -⟩ := GlobalTheory.T.cyclotomicPowerSeriesAlgHom_action_laws l O
+  obtain ⟨hX, hmul, -, hnat, hlin, -⟩ := _root_.GlobalTheory.Cyc.act_laws l O
   have hφe : φ₀ = phi l O := by
     refine algHom_ext_of_constantCoeff_zero _ _ ?_ (by rw [hφ]; simp)
     rw [hφ, phi, hX, hnat]

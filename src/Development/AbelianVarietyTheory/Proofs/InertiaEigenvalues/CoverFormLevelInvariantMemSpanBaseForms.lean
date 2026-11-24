@@ -1,32 +1,26 @@
 module
 
+public import Formalism.LocalToGlobal.ProjectiveLattices.CuspidalL2Subspace
+public import Development.AbelianVarietyTheory.Definitions.ThetaValues.GamAt
+public import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
+public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.RootOfUnityEqOneOfConjCongruence
+public import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.UnfGroupContainsCongruenceUptoRootsOfUnity
+public import Development.AbelianVarietyTheory.Proofs.GenericRegularity.NumericalConsequencesOfPins
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryExistsWithPrescribedParts
+public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.CoreArithmeticGroupContainsPrincipalCongruence
+public import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic
+public import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice
+public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.Hat1
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IntFormsSubset
 public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.CoeSelfDualLatticeInFrameCoordinatesEq
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MulVecMemIdealLatHat
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RightTranslationLiftEqLevelMoveUnitConst
 public import Formalism.LocalToGlobal.ProjectiveLattices.FreeBridge
-import Development.AbelianVarietyTheory.Counterexamples.LevelGroupExamples.OrthonormalBaseFrameNeg
-public import Development.AbelianVarietyTheory.Counterexamples.ThetaValuation.CongruenceSpanLevel
-import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ContinuousRmulPair
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianTraceFormLattice
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MatchingDeterminantRootOfUnity
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MovedSectionReadingEqMovedFrameReading
 public import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsCoversOfHalves
-import Development.AbelianVarietyTheory.Proofs.HeightProofs.MarkedIsometryHalf
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BaseCoverFramesDifferByRationalIsometry
-import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MemCuspFormsOfMultipleRationalIsometryMove
-import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsFormExtendToAllLattices
-import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.IsStabiliserInvariantPullBoundedSection
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryEqRealMulFiniteSplit
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryLatticeRationalTranslateInvarianceStatement
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ArchimedeanMatrixUnitaryContinuousMultiplicativeStatement
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsUniqueFramedPointMoveUniversalTriple
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FiniteDimensionalOfLeHolSub
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FrameMulTriangularOrthonormal
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FrameUniformEmbeddingSecond
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointMoveCalculus
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.RealAdelesCmFieldEquivComplexCmType
-import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.UnitFrameEqOrthonormalMulTriangular
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -42,7 +36,6 @@ import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.Tactic.Basify
 import Mathlib.Tactic.Echelon.Zsqrtd
 import Mathlib.Tactic.Inclusion.Extension.Core.Core
 import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
@@ -50,7 +43,6 @@ import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
 import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
 import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.NormNum.Irrational
 import Mathlib.Tactic.NormNum.IsCoprime
 import Mathlib.Tactic.NormNum.IsSquare
@@ -63,13 +55,337 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
+import Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil
+import Mathlib.Tactic.Basify
+import Mathlib.Tactic.Linter.Style
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.PairUnfoldPfA
+import Development.AbelianVarietyTheory.Counterexamples.LevelGroupExamples.OrthonormalBaseFrameNeg
+import Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ContinuousRmulPair
+import Development.AbelianVarietyTheory.Proofs.HeightProofs.MarkedIsometryHalf
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.MemCuspFormsOfMultipleRationalIsometryMove
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsFormExtendToAllLattices
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.IsStabiliserInvariantPullBoundedSection
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryEqRealMulFiniteSplit
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryLatticeRationalTranslateInvarianceStatement
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ArchimedeanMatrixUnitaryContinuousMultiplicativeStatement
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsUniqueFramedPointMoveUniversalTriple
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FiniteDimensionalOfLeHolSub
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FrameMulTriangularOrthonormal
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FrameUniformEmbeddingSecond
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointMoveCalculus
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.RealAdelesCmFieldEquivComplexCmType
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.UnitFrameEqOrthonormalMulTriangular
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.OntoStatementPfE
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.DetSubUpper
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OrthogonalFrameDomain
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.SiegelSpaceAlgebraHolds
 
+-- This file was produced by scripts/clump.py from the modules listed below.
+-- Members: Development.AbelianVarietyTheory.BlockTheory.ExistenceTori.PrincipalCongruenceGamma, Development.AbelianVarietyTheory.Counterexamples.LevelGroupExamples.ArchimedeanGluing, Development.AbelianVarietyTheory.Counterexamples.ThetaValuation.CongruenceSpanLevel, Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CoverFormLevelInvariantMemSpanBaseForms
+
+-- ===== clump member: Development.AbelianVarietyTheory.BlockTheory.ExistenceTori.PrincipalCongruenceGamma =====
+-- clump-header: {"m": "Development.AbelianVarietyTheory.BlockTheory.ExistenceTori.PrincipalCongruenceGamma", "h": "module\n\npublic import Formalism.LocalToGlobal.ProjectiveLattices.CuspidalL2Subspace\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
+section -- clump:auto
+@[expose] public section
+
+noncomputable section
+
+namespace GlobalTheory.IndefiniteRowSideFullHecke.PrincipalCongruenceGamma
+
+open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.BasicNotions Formalism.L2.Pj
+
+section Model
+
+variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
+
+def IsPrinc (X : Data E r) (M : ℕ) (γ : GL (Fin r) E) : Prop :=
+  IsUStab X.Gm X.Λ γ ∧
+    ∀ x ∈ X.Λ, ∃ y ∈ X.Λ, Matrix.mulVec (γ : Matrix (Fin r) (Fin r) E) x - x = M • y
+
+def princ (X : Data E r) (M : ℕ) : Subgroup (GL (Fin r) E) where
+  carrier := {γ | IsPrinc X M γ}
+  one_mem' := by
+    refine ⟨⟨fun x y => by simp, fun x => by simp⟩, fun x _ => ⟨0, X.Λ.zero_mem, by simp⟩⟩
+  mul_mem' := by
+    rintro a b ⟨⟨ha1, ha2⟩, ha3⟩ ⟨⟨hb1, hb2⟩, hb3⟩
+    refine ⟨⟨fun x y => ?_, fun x => ?_⟩, fun x hx => ?_⟩
+    · rw [Units.val_mul, ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec, ha1, hb1]
+    · rw [Units.val_mul, ← Matrix.mulVec_mulVec, ← ha2, ← hb2]
+    · obtain ⟨y, hy, e⟩ := hb3 x hx
+      obtain ⟨z, hz, e'⟩ := ha3 _ ((hb2 x).1 hx)
+      refine ⟨z + y, X.Λ.add_mem hz hy, ?_⟩
+      rw [Units.val_mul, ← Matrix.mulVec_mulVec, smul_add, ← e, ← e']
+      abel
+  inv_mem' := by
+    rintro a ⟨⟨ha1, ha2⟩, ha3⟩
+    have hc : ∀ x : Fin r → E, Matrix.mulVec (a : Matrix (Fin r) (Fin r) E)
+        (Matrix.mulVec ((a⁻¹ : GL (Fin r) E) : Matrix (Fin r) (Fin r) E) x) = x := by
+      intro x
+      rw [Matrix.mulVec_mulVec, ← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.one_mulVec]
+    have hm : ∀ x, x ∈ X.Λ ↔ Matrix.mulVec ((a⁻¹ : GL (Fin r) E) : Matrix (Fin r) (Fin r) E) x ∈ X.Λ := by
+      intro x
+      rw [ha2 (Matrix.mulVec ((a⁻¹ : GL (Fin r) E) : Matrix (Fin r) (Fin r) E) x), hc]
+    refine ⟨⟨fun x y => ?_, hm⟩, fun x hx => ?_⟩
+    · rw [← ha1, hc, hc]
+    · obtain ⟨y, hy, e⟩ := ha3 _ ((hm x).1 hx)
+      refine ⟨-y, X.Λ.neg_mem hy, ?_⟩
+      rw [hc] at e
+      rw [smul_neg, ← e]
+      abel
+
+end Model
+
+variable {D : D7}
+
+def GamAt (T : Core D) (j : ℕ) (σ : T.Q.c.F →+* ℂ) : Prop :=
+  ∀ k : (T.U j σ).Comp, princ ((T.U j σ).X k) T.Q.l.M ≤ ((T.U j σ).X k).Γ
+
+def Gam (T : Core D) : Prop :=
+  ∀ j, InR D j → ∀ σ : T.Q.c.F →+* ℂ, GoodEmb T.Q.c σ → GamAt T j σ
+
+end GlobalTheory.IndefiniteRowSideFullHecke.PrincipalCongruenceGamma
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AbelianVarietyTheory.BlockTheory.ExistenceTori.PrincipalCongruenceGamma =====
+
+-- ===== clump member: Development.AbelianVarietyTheory.Counterexamples.LevelGroupExamples.ArchimedeanGluing =====
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Counterexamples.LevelGroupExamples.ArchimedeanGluing", "h": "module\n\npublic import Development.AbelianVarietyTheory.BlockTheory.ExistenceTori.PrincipalCongruenceGamma\npublic import Development.AbelianVarietyTheory.Definitions.ThetaValues.GamAt\npublic import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral\npublic import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.RootOfUnityEqOneOfConjCongruence\npublic import Development.AbelianVarietyTheory.Proofs.CubicalLineBundles.UnfGroupContainsCongruenceUptoRootsOfUnity\npublic import Development.AbelianVarietyTheory.Proofs.GenericRegularity.NumericalConsequencesOfPins\npublic import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryExistsWithPrescribedParts\npublic import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.CoreArithmeticGroupContainsPrincipalCongruence\npublic import Formalism.HermitianLattices.HermitianLatticesProofs.DualBasic\npublic import Formalism.HermitianLattices.HermitianLatticesProofs.DualLattice\nimport Formalism.LocalToGlobal.BesselHermitianTheta.LemmasWeil\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.PairUnfoldPfA\npublic import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.Hat1\n\n"}
+section -- clump:auto
+@[expose] public section
+
+open NumberField IsDedekindDomain ReciprocityTheory.ChartRestriction.G.Geo.Tor Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj
+open ReciprocityTheory.ChartRestriction.G.FD Formalism.BasicNotions.TH Formalism.L2.Theta Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes
+open scoped TensorProduct Matrix
+
+namespace GlobalTheory.Survey.ArchimedeanCompatibility
+
+open GlobalTheory.IndefiniteRowSideFullHecke.PrincipalCongruenceGamma GlobalTheory.PrincCore
+
+theorem gam_iff {D : D7} (T : Core D) : Gam T ↔ GlobalTheory.RunIn.GamAt T := by
+  constructor
+  · intro h j hj σ hσ k γ h1 h2
+    refine h j hj σ hσ k ⟨h1, fun x hx => ?_⟩
+    obtain ⟨y, hy, e⟩ := h2 x hx
+    exact ⟨y, hy, by rw [e, Nat.cast_smul_eq_nsmul]⟩
+  · intro h j hj σ hσ k γ hγ
+    refine h j hj σ hσ k γ hγ.1 fun x hx => ?_
+    obtain ⟨y, hy, e⟩ := hγ.2 x hx
+    exact ⟨y, hy, by rw [e, Nat.cast_smul_eq_nsmul]⟩
+
+attribute [local instance] Formalism.BasicNotions.Host.cmStar
+
+def ArchGlue {D : D7} (V : HSp D) : Prop :=
+  ∀ (Ψ : Finset (D.host.E →+* ℂ)) (th : Ψ → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)),
+    (∀ τ : D.host.E →+* ℂ, τ ∈ Ψ ↔ ComplexEmbedding.conjugate τ ∉ Ψ) → (∀ τ, Formalism.MainNotions.StandardLattice.IsInfEmb τ.1 (th τ)) →
+    (∀ γ ∈ GQ V, ∃ γ₀ : GL (Fin V.rank) D.host.E, (∀ τ, archM V (th τ) γ = (γ₀ : Matrix _ _ D.host.E).map τ.1) ∧
+      (finHom V γ).1 = (γ₀ : Matrix _ _ D.host.E).map (inclR (Af D.host.F))) ∧
+    ∀ u : Ψ → Matrix (Fin V.rank) (Fin V.rank) ℂ,
+      (∀ τ, ((u τ).map (starRingEnd ℂ)).transpose * V.gram.map τ.1 * u τ = V.gram.map τ.1) →
+      ∃ h ∈ GinfC V, ∀ τ, archM V (th τ) h = u τ
+
+
+
+theorem root_eq_one_of_glue {D : D7} (V : HSp D) (hglue : ArchGlue V) {r : ℕ} (hr : V.rank = r) (hr0 : 0 < r) {Comp : Type}
+    (X : Comp → Data D.host.E r) (dict : GA D V → Σ c, Frame (X c).Ψ r) (mu : GA D V → ℂ)
+    (Kf : Subgroup (GA D V)) (th : ∀ c, (X c).Ψ → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ))
+    (hth : ∀ k τ, Formalism.MainNotions.StandardLattice.IsInfEmb τ.1 (th k τ)) (hD : DictIsUnif V dict Kf th hr) (hmu : MuUnit V dict mu)
+    (M : ℕ) (hM : 3 ≤ M) (hK : IsLevelK V M Kf) (k : Comp) (γ γ' : GL (Fin r) D.host.E) (hγ' : γ' ∈ (X k).Γ)
+    (hc : ∀ x ∈ (X k).Λ, ∃ y ∈ (X k).Λ, (γ : Matrix (Fin r) (Fin r) D.host.E) *ᵥ x - x = (M : D.host.E) • y)
+    (u : D.host.E) (n : ℕ) (hn : 0 < n) (hu : u ^ n = 1)
+    (he : (γ' : Matrix (Fin r) (Fin r) D.host.E) = u • (γ : Matrix (Fin r) (Fin r) D.host.E)) : u = 1 := by
+  classical
+  subst hr
+  obtain ⟨-, -, ⟨x0, hx0, heq⟩, -, -, hfib⟩ := hD
+  obtain ⟨hdom, g, hg⟩ := hx0 k
+  obtain ⟨hrat, hsur⟩ := hglue (X k).Ψ (th k) (X k).cmType (hth k)
+  have hact : ∀ h, ∀ τ, mat (rmul (x0 k) (archMat V th rfl x0 h k)) τ = archM V (th k τ) h * mat (x0 k) τ := by
+    intro h τ
+    show mat (x0 k) τ * ((mat (x0 k) τ)⁻¹ * Matrix.reindex (finCongr rfl) (finCongr rfl) (archM V (th k τ) h) *
+      mat (x0 k) τ) = _
+    rw [← Matrix.mul_assoc, ← Matrix.mul_assoc, Matrix.mul_nonsing_inv _ (isUnit_iff_ne_zero.2 (hdom τ).1),
+      Matrix.one_mul]
+    rfl
+  have key : ∀ h ∈ GinfC V, ∃ γ'' ∈ (X k).Γ,
+      dict (g * h) = ⟨k, lact γ'' (rmul (x0 k) (archMat V th rfl x0 h k))⟩ := by
+    have := heq g
+    rw [hg] at this
+    exact this
+  have hun : ∀ τ : (X k).Ψ, ((γ'.1.map τ.1).map (starRingEnd ℂ))ᵀ * V.gram.map τ.1 *
+      γ'.1.map τ.1 = V.gram.map τ.1 := by
+    intro τ
+    refine unitary_of_first_minor hr0 τ.1 (X k).Gm (X k).Gm_herm _ (mat (x0 k) τ) ?_ ?_ ?_ _ ?_
+    · ext a b
+      simp only [Matrix.conjTranspose_apply, Matrix.map_apply, HSpace.gram]
+      rw [← V.herm.eq (V.frame b) (V.frame a)]
+      exact (IsCMField.complexEmbedding_complexConj D.host.E τ.1 _).symm
+    · rw [← RingHom.mapMatrix_apply, ← RingHom.map_det]
+      exact (map_ne_zero_iff _ τ.1.injective).2 (gram_det_ne V)
+    · intro w hw
+      obtain ⟨h, hh, hw'⟩ := hsur (Function.update (fun _ => 1) τ w) (by
+        intro τ'
+        by_cases e : τ' = τ
+        · subst e
+          simpa using hw
+        · simp [Function.update_of_ne e])
+      obtain ⟨γ'', h1, h2⟩ := key h hh
+      have h3 := hmu.2.2.2 (g * h)
+      rw [h2] at h3
+      have h4 := h3 τ ⟨1, by omega⟩
+      rw [ReciprocityTheory.ChartRestriction.G.AR.Up.PairUnfoldPf.dmin_lact (X k) h1] at h4
+      unfold dmin at h4
+      rw [hact, hw', Function.update_self] at h4
+      exact h4
+    · have hcc : (γ'.1.map τ.1).map (starRingEnd ℂ) =
+          (γ'.1.map cc).map τ.1 := by
+        ext a b
+        exact (IsCMField.complexEmbedding_complexConj D.host.E τ.1 _).symm
+      rw [hcc, ← Matrix.transpose_map, ← Matrix.map_mul, ← Matrix.map_mul,
+        ReciprocityTheory.ChartRestriction.G.AR.Up.PairUnfoldPf.gramE (X k) hγ']
+  obtain ⟨h, hh, hw⟩ := hsur _ hun
+  obtain ⟨γ'', h1, h2⟩ := key h hh
+  obtain ⟨γ₀, hγ₀, κ, hκ, hdc⟩ := hfib g (g * h) (by
+    rw [hg]
+    refine ⟨γ'' * γ', mul_mem h1 hγ', ?_⟩
+    rw [h2]
+    congr 1
+    funext τ
+    show γ''.1.map τ.1 * mat (rmul (x0 k) (archMat V th rfl x0 h k)) τ =
+      (γ'' * γ').1.map τ.1 * mat (x0 k) τ
+    rw [hact, hw, Units.val_mul, Matrix.map_mul, Matrix.mul_assoc])
+  obtain ⟨δ, hδ1, hδ2⟩ := hrat γ₀ hγ₀
+  obtain ⟨hκ1, hκ2⟩ := (hK κ⁻¹).1 (inv_mem hκ)
+  have hfin : finHom V γ₀ * finHom V g = finHom V g * finHom V κ⁻¹ := by
+    have h0 : finHom V h = 1 := hh
+    have : γ₀ * g = g * h * κ⁻¹ := by rw [hdc]; group
+    rw [← map_mul, this, map_mul, map_mul, h0, mul_one]
+  have hinf : infHom V γ₀ * infHom V g = infHom V g * infHom V h := by
+    have h0 : infHom V κ⁻¹ = 1 := hκ1
+    have : γ₀ * g = g * h * κ⁻¹ := by rw [hdc]; group
+    rw [← map_mul, this, map_mul, map_mul, h0, mul_one]
+  let f : V.V →ₗ[𝓞 D.host.E] (Fin V.rank → D.host.E) := V.frame.equivFun.toLinearMap.restrictScalars _
+  have hhat : latHat V = GlobalTheory.AdLat.hat D.host.F (V.L0.map f : Set (Fin V.rank → D.host.E)) := by
+    unfold latHat GlobalTheory.AdLat.hat
+    congr 1
+    ext z
+    constructor
+    · rintro ⟨a, ha, x, hx, rfl⟩
+      exact ⟨a, ha, f x, ⟨x, hx, rfl⟩, rfl⟩
+    · rintro ⟨a, ha, _, ⟨x, hx, rfl⟩, rfl⟩
+      exact ⟨a, ha, x, hx, rfl⟩
+  have hspan : Submodule.span D.host.E (V.L0.map f : Set (Fin V.rank → D.host.E)) = ⊤ := by
+    have hfull : Submodule.span D.host.E (V.L0 : Set V.V) = ⊤ := by
+      by_contra hspan
+      obtain ⟨φ, hφ₀, hφ⟩ := Submodule.exists_le_ker_of_lt_top _ (lt_top_iff_ne_top.mpr hspan)
+      obtain ⟨bs, hbs⟩ := Formalism.HermitianLatticesTheory.dualLattice_dualBasis V.hT V.nondeg V.frame
+      let μ : V.V := ∑ j, star (φ (V.frame j)) • bs j
+      have hμ : V.hT μ = φ := by
+        apply V.frame.ext
+        intro i
+        rw [show μ = ∑ j, star (φ (V.frame j)) • bs j from rfl, map_sum, LinearMap.sum_apply]
+        have hs : ∀ j, V.hT (star (φ (V.frame j)) • bs j) (V.frame i) =
+            φ (V.frame j) * (if i = j then 1 else 0) := by
+          intro j
+          rw [LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, starRingEnd_apply, star_star]
+          congr 1
+          rw [← V.herm.eq (V.frame i) (bs j), hbs]
+          split_ifs <;> simp
+        simp only [hs, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      have hμ₀ : μ ≠ 0 := by
+        intro h
+        apply hφ₀
+        rw [← hμ, h, map_zero]
+      have hline (a : D.host.E) : a • μ ∈ V.L0 := by
+        rw [← V.baseLattice_isUnimodular, Formalism.HermitianLatticesTheory.dualBasic_mem_dual]
+        intro y hy
+        have hy₀ := LinearMap.mem_ker.mp (hφ (Submodule.subset_span hy))
+        simp [← V.herm.eq (a • μ) y, LinearMap.map_smulₛₗ, hμ, hy₀]
+      let i : D.host.E →ₗ[𝓞 D.host.E] V.L0 :=
+        ((LinearMap.toSpanSingleton D.host.E _ μ).restrictScalars (𝓞 D.host.E)).codRestrict V.L0 hline
+      let : Module.Finite (𝓞 D.host.E) V.L0 := Module.Finite.iff_fg.mpr V.standardTuple_isLattice.fg
+      let : Module.Finite (𝓞 D.host.E) D.host.E := Module.Finite.of_injective i fun a b hab =>
+        smul_left_injective D.host.E hμ₀ (congrArg Subtype.val hab)
+      exact RingOfIntegers.not_isField D.host.E
+        (isField_of_isIntegral_of_isField (IsFractionRing.injective (𝓞 D.host.E) D.host.E) (Field.toIsField D.host.E))
+    have : (V.L0.map f : Set (Fin V.rank → D.host.E)) = V.frame.equivFun.toLinearMap '' (V.L0 : Set V.V) := rfl
+    rw [this, ← Submodule.map_span, hfull, Submodule.map_top, LinearEquiv.range]
+  rw [hhat] at hκ2
+  obtain ⟨Λ', g1, g2, g3⟩ := exists_lattice_congr D.host.F D.host.E V.rank M (by omega) (V.L0.map f)
+    (V.standardTuple_isLattice.fg.map f) hspan (finHom V g) (finHom V κ⁻¹).1 δ.1 hκ2 (by
+      rw [← hδ2, ← Units.val_mul, hfin, Units.val_mul])
+  obtain ⟨τ⟩ : Nonempty (X k).Ψ := by
+    obtain ⟨τ⟩ : Nonempty (D.host.E →+* ℂ) := inferInstance
+    by_cases e : τ ∈ (X k).Ψ
+    · exact ⟨⟨τ, e⟩⟩
+    · exact ⟨⟨_, not_not.1 (fun e' => e (((X k).cmType τ).2 e'))⟩⟩
+  have hm : ∀ a b, archM V (th k τ) (a * b) = archM V (th k τ) a * archM V (th k τ) b := by
+    intro a b
+    unfold archM
+    rw [map_mul, Units.val_mul, Matrix.map_mul]
+  have h1' : archM V (th k τ) 1 = 1 := by
+    unfold archM
+    rw [map_one, Units.val_one, Matrix.map_one _ (map_zero _) (map_one _)]
+  refine GlobalTheory.root_of_unity_eq_one_of_conj_congruence D.host.E V.rank M n (X k).Λ Λ' γ.1 δ.1 u τ.1
+    (archM V (th k τ) g⁻¹) hr0 hM hn hu (X k).Λ_fg g1 (X k).Λ_span g2 hc g3 ?_ ?_
+  · have := congrArg Matrix.det (hm g⁻¹ g)
+    rw [inv_mul_cancel, h1', Matrix.det_one, Matrix.det_mul] at this
+    exact left_ne_zero_of_mul_eq_one this.symm
+  · rw [← he, ← hw τ, ← hδ1 τ, ← hm, ← hm]
+    have e : infHom V (h * g⁻¹) = infHom V (g⁻¹ * γ₀) := by
+      rw [map_mul, map_mul, map_inv, eq_inv_mul_iff_mul_eq, ← mul_assoc, ← hinf, mul_inv_cancel_right]
+    unfold archM
+    rw [e]
+
+theorem gam_of_lawsM {D : D7} (hglue : ∀ V : HSp D, ArchGlue V) (T : Core D) (h : LawsM T) : Gam T := by
+  rw [gam_iff]
+  intro j hj σ hσ k γ hγ hc
+  obtain ⟨hgood, hA, -, -, -, -, hnum⟩ := GlobalTheory.PinNum.numerics_of_pins D T.Q h.pins
+  have hr : 0 < D.R.r := (hnum j hj).2.1
+  obtain ⟨γ', hγ', u, n, hn, hu, he⟩ := GlobalTheory.unf_group_contains_congruence_upto_rootsOfUnity _ _ _ _ _ _ σ _
+    (Formalism.L2.PjFree.Unf.ofPj (T.U j σ)) (h.unf j hj σ hσ) hA hr k γ hγ hc
+  obtain ⟨th, hrk, hth, hD⟩ := h.dictU j hj σ hσ
+  have hK := h.levelK j hj σ hσ
+  rw [← h.pins.2.1.1] at hK
+  have h1 := root_eq_one_of_glue (T.V j σ) (hglue _) hrk hr (T.U j σ).X (T.dict j σ) (T.mu j σ) (T.Kf j σ) th hth hD
+    (h.muUnit j hj σ hσ) _ T.Q.l.three_le hK k γ γ' hγ' hc u n hn hu he
+  rw [h1, one_smul] at he
+  exact Units.ext he ▸ hγ'
+
+theorem archGlue {D : D7} (V : HSp D) : ArchGlue V := fun Ψ th h1 h2 =>
+  ⟨((GlobalTheory.UnitaryGlue.adelic_glue D V).2 Ψ th h1 h2).2.1, ((GlobalTheory.UnitaryGlue.adelic_glue D V).2 Ψ th h1 h2).2.2.2⟩
+
+theorem gam_of_laws {D : D7} (T : Core D) (h : LawsM T) : Gam T := gam_of_lawsM archGlue T h
+
+end GlobalTheory.Survey.ArchimedeanCompatibility
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AbelianVarietyTheory.Counterexamples.LevelGroupExamples.ArchimedeanGluing =====
+
+-- ===== clump member: Development.AbelianVarietyTheory.Counterexamples.ThetaValuation.CongruenceSpanLevel =====
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Counterexamples.ThetaValuation.CongruenceSpanLevel", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.ThetaValues.GamAt\npublic import Development.AbelianVarietyTheory.Counterexamples.LevelGroupExamples.ArchimedeanGluing\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
+section -- clump:auto
+@[expose] public section
+
+open NumberField ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj
+open scoped Matrix
+
+namespace GlobalTheory.Survey.CongruenceSpanLevel
+
+open GlobalTheory.RunIn
+
+theorem gamAt_of_lawsM {D : D7} (T : Core D) (h : LawsM T) : GamAt T :=
+  (GlobalTheory.Survey.ArchimedeanCompatibility.gam_iff T).1 (GlobalTheory.Survey.ArchimedeanCompatibility.gam_of_laws T h)
+
+end GlobalTheory.Survey.CongruenceSpanLevel
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AbelianVarietyTheory.Counterexamples.ThetaValuation.CongruenceSpanLevel =====
+
+-- ===== clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CoverFormLevelInvariantMemSpanBaseForms =====
+-- clump-header: {"m": "Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CoverFormLevelInvariantMemSpanBaseForms", "h": "module\n\npublic import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.IntFormsSubset\npublic import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.CoeSelfDualLatticeInFrameCoordinatesEq\npublic import Development.AbelianVarietyTheory.Proofs.TwistedOperators.MulVecMemIdealLatHat\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.RightTranslationLiftEqLevelMoveUnitConst\npublic import Formalism.LocalToGlobal.ProjectiveLattices.FreeBridge\nimport Development.AbelianVarietyTheory.Counterexamples.LevelGroupExamples.OrthonormalBaseFrameNeg\npublic import Development.AbelianVarietyTheory.Counterexamples.ThetaValuation.CongruenceSpanLevel\nimport Development.AbelianVarietyTheory.Proofs.CuspFormEvaluations.ContinuousRmulPair\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.HermitianTraceFormLattice\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MatchingDeterminantRootOfUnity\npublic import Development.AbelianVarietyTheory.Proofs.DivisorProofs.MovedSectionReadingEqMovedFrameReading\npublic import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ExistsCoversOfHalves\nimport Development.AbelianVarietyTheory.Proofs.HeightProofs.MarkedIsometryHalf\npublic import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.BaseCoverFramesDifferByRationalIsometry\nimport Development.AbelianVarietyTheory.Proofs.JetHarmonics.MemCuspFormsOfMultipleRationalIsometryMove\nimport Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsFormExtendToAllLattices\nimport Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.IsStabiliserInvariantPullBoundedSection\nimport Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryEqRealMulFiniteSplit\nimport Development.AbelianVarietyTheory.Proofs.UnitaryExistence.AdelicUnitaryLatticeRationalTranslateInvarianceStatement\nimport Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ArchimedeanMatrixUnitaryContinuousMultiplicativeStatement\nimport Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsUniqueFramedPointMoveUniversalTriple\nimport Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FiniteDimensionalOfLeHolSub\nimport Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FrameMulTriangularOrthonormal\nimport Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FrameUniformEmbeddingSecond\nimport Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FramedPointMoveCalculus\nimport Development.AbelianVarietyTheory.Proofs.UnitaryExistence.RealAdelesCmFieldEquivComplexCmType\nimport Development.AbelianVarietyTheory.Proofs.UnitaryExistence.UnitFrameEqOrthonormalMulTriangular\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.OntoStatementPfE\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.DetSubUpper\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.OrthogonalFrameDomain\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.SiegelSpaceAlgebraHolds\n\n"}
+section -- clump:auto
 @[expose] public section
 
 set_option autoImplicit false
@@ -546,3 +862,7 @@ theorem mem_span_baseForms : ∀ (D : D7) (T : CoreJ D), LawsJ T → ∀ j, Form
     exact Submodule.smul_mem _ c hx
 
 end GlobalTheory.CoverDescSpan
+end -- clump:auto
+end -- clump:auto
+end -- clump:auto
+-- ===== end clump member: Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CoverFormLevelInvariantMemSpanBaseForms =====

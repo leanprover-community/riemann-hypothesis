@@ -108,8 +108,7 @@ theorem continuous_mat : Continuous (mat G) := by
   exact continuous_subtype_val
 
 theorem isClosed_set : IsClosed {x : PI.MtM m | Matrix.of x ∈ G} := by
-  show IsClosed (Matrix.of ⁻¹' G)
-  exact hG.out.1.preimage (by exact continuous_id)
+  exact hG.out.1.preimage continuous_id
 
 theorem isClosedEmbedding_val : IsClosedEmbedding (Subtype.val : Gt G → PI.MtM m) := by
   exact (isClosed_set G).isClosedEmbedding_subtypeVal
@@ -353,16 +352,14 @@ theorem quotM_exists {m : ℕ} {G S : Set (Matrix (Fin m) (Fin m) ℂ)} (hG : PI
     (hS : PI.IsMatGroup S) (hSG : S ⊆ G)
     {μG μS : Measure (PI.MtM m)} (hμG : PI.IsHaarOnM G μG) (hμS : PI.IsHaarOnM S μS) :
     ∃ ν : Measure (PI.MtM m), PI.IsQuotM μG μS ν := by
-  obtain ⟨ν, -, hν⟩ := quotM_existsSF hG hS hSG hμG hμS
-  exact ⟨ν, hν⟩
+  exact (quotM_existsSF hG hS hSG hμG hμS).imp fun _ h => h.2
 
 theorem quotMeasExists : ∀ (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ), Formalism.QuantumDeterminants.inWb k r z → 0 < Formalism.QuantumDeterminants.Tz k r z →
     ∀ μG μS : Measure (Formalism.QuantumDeterminants.Mt k r), Formalism.MainNotions.S.IsHaarOn (Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r)) μG →
       Formalism.MainNotions.S.IsHaarOn (Formalism.QuantumDeterminants.Sset k r z) μS → ∃ ν, Formalism.MainNotions.S.IsQuotMeas μG μS ν := by
   intro k r z hz hT μG μS hG hS
   obtain ⟨h1, h2, h3, -, -⟩ := quotient_measure_unitary_group k r z hz hT
-  obtain ⟨ν, -, hν⟩ := quotM_existsSF h1 h2 h3 hG hS
-  exact ⟨ν, hν⟩
+  exact (quotM_existsSF h1 h2 h3 hG hS).imp fun _ h => h.2
 
 theorem quotMeasExistsSF : ∀ (k r : ℕ) (z : Fin (2 * r + k + 1) → ℂ), Formalism.QuantumDeterminants.inWb k r z → 0 < Formalism.QuantumDeterminants.Tz k r z →
     ∀ μG μS : Measure (Formalism.QuantumDeterminants.Mt k r), Formalism.MainNotions.S.IsHaarOn (Formalism.QuantumDeterminants.UH (Formalism.QuantumDeterminants.Hpk k r)) μG →

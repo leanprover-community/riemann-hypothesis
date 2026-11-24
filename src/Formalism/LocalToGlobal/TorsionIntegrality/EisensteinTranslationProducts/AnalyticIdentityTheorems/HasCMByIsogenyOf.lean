@@ -144,10 +144,10 @@ theorem jInvScale_of (h : Homogeneity) : JInvScale := by
 
 theorem has_cm_scale : HasCMByScale := hasCMByScale_of homogeneity
 
-theorem cm_pair_has_cm : CmPairHasCMBy := cmPairHasCMBy_of cmStable
+theorem cm_pair_has_cm : CmPairHasCMBy := cmPairHasCMBy_of _root_.Formalism.L2.Th1.F.cm_stable
 
 theorem hasCMByIsogeny_of' (hf : IsogenyFormulaInstance) : HasCMByIsogeny :=
-  hasCMByIsogeny_of has_cm_stable kerRepsExist kerRepsCard hf quasiPeriodConstIsogeny
+  hasCMByIsogeny_of has_cm_stable kerRepsExist kerRepsCard hf _root_.Formalism.L2.Th1.F.quasiPeriodConstIsogeny_thm
 
 theorem j_invariant_scale : JInvScale := jInvScale_of homogeneity
 

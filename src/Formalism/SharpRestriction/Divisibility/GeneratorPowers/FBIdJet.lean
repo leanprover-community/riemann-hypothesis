@@ -63,7 +63,6 @@ theorem psTrunc_eq {ι : Type} [Fintype ι] [DecidableEq ι] (m : ℕ) (f : MvPo
   have hle : ∀ i, e i ≤ e.degree := fun i => by
     first
     | exact Finsupp.le_degree i e
-    | exact Finsupp.le_degree e i
     | (by_cases hi : e i = 0
        · omega
        · exact Finset.single_le_sum (f := fun j => e j) (fun _ _ => Nat.zero_le _)
@@ -71,7 +70,6 @@ theorem psTrunc_eq {ι : Type} [Fintype ι] [DecidableEq ι] (m : ℕ) (f : MvPo
   have hdeg : (e.sum fun _ k => k) = e.degree := by
     first
     | rfl
-    | simp [Finsupp.degree, Finsupp.sum]
   have hmem : e ∈ degLE m ↔ e.degree < m + 1 := by
     unfold degLE
     simp only [Finset.mem_filter, Finset.mem_image, Finset.mem_univ, true_and]
@@ -89,8 +87,6 @@ theorem psTrunc_eq {ι : Type} [Fintype ι] [DecidableEq ι] (m : ℕ) (f : MvPo
     simp only [MvPolynomial.coeff_monomial]
     first
     | exact Finset.sum_ite_eq' (degLE m) e (fun x => MvPowerSeries.coeff x f)
-    | exact Finset.sum_ite_eq (degLE m) e (fun x => MvPowerSeries.coeff x f)
-    | simp
   rw [hL]
   by_cases h : e.degree < m + 1
   · rw [if_pos (hmem.2 h), MvPowerSeries.coeff_truncTotal]
@@ -100,8 +96,6 @@ theorem psTrunc_eq {ι : Type} [Fintype ι] [DecidableEq ι] (m : ℕ) (f : MvPo
     | exact (MvPowerSeries.coeff_truncTotal_eq_zero (by omega)).symm
     | exact (MvPowerSeries.coeff_truncTotal_eq_zero _ (by omega)).symm
     | (rw [MvPowerSeries.coeff_truncTotal_eq_zero]; omega)
-    | exact (MvPowerSeries.coeff_truncTotal_of_le (by omega)).symm
-    | simp [MvPowerSeries.truncTotal, MvPowerSeries.truncTotalFun, MvPolynomial.coeff_sum, h]
     | (simp [MvPowerSeries.truncTotal, h]; done)
 
 private lemma mem_orig_pow_lemma_6 {ι : Type} (m : ℕ) (Q : MvPolynomial ι R)
@@ -118,14 +112,12 @@ private lemma mem_orig_pow_lemma_6 {ι : Type} (m : ℕ) (Q : MvPolynomial ι R)
   have hX : ∀ i, (MvPolynomial.X i : MvPolynomial ι R) ∈ orig R ι := fun i => by
     first
     | exact Ideal.subset_span ⟨i, rfl⟩
-    | (unfold orig; exact Ideal.subset_span ⟨i, rfl⟩)
   have h1 : (∏ i ∈ e.support, (MvPolynomial.X i : MvPolynomial ι R) ^ e i) ∈
       ∏ i ∈ e.support, orig R ι ^ e i :=
     Ideal.prod_mem_prod fun i _ => Ideal.pow_mem_pow (hX i) _
   rw [Finset.prod_pow_eq_pow_sum] at h1
   first
   | exact h1
-  | (unfold Finsupp.prod; simpa [Finsupp.degree] using h1)
 
 theorem mk_trunc_coe {ι : Type} [Fintype ι] [DecidableEq ι] (m : ℕ) (P : MvPolynomial ι R) :
     (Ideal.Quotient.mk (orig R ι ^ (m + 1))
@@ -136,7 +128,6 @@ theorem mk_trunc_coe {ι : Type} [Fintype ι] [DecidableEq ι] (m : ℕ) (P : Mv
   first
   | (rw [MvPolynomial.coeff_sub, MvPowerSeries.coeff_truncTotal, MvPolynomial.coeff_coe,
       sub_self] <;> exact he)
-  | simp [MvPowerSeries.coeff_truncTotal, he]
 
 private lemma coe_sub_lemma_7 {ι : Type} (x y : MvPolynomial ι R) :
     ((x - y : MvPolynomial ι R) : MvPowerSeries ι R) = (x : MvPowerSeries ι R) - y := by
@@ -154,13 +145,10 @@ private lemma low_mul_lemma {τ : Type} {F G : MvPowerSeries τ R} {p q : ℕ}
     first
     | exact Finset.mem_antidiagonal.1 hx
     | simpa using hx
-    | exact Finsupp.mem_antidiagonal.1 hx
   have hd : x.1.degree + x.2.degree = e.degree := by
     rw [← hx]
     first
     | exact (map_add Finsupp.degree x.1 x.2).symm
-    | exact (Finsupp.degree_add x.1 x.2).symm
-    | simp [Finsupp.degree, Finsupp.sum_add_index']
     | (simp only [Finsupp.degree_eq_weight_one, map_add (f := _)])
   by_cases h1 : x.1.degree < p
   · rw [hF _ h1, zero_mul]
@@ -173,7 +161,6 @@ private lemma low_trunc_lemma_5 {ι : Type} [Fintype ι] [DecidableEq ι] (m : �
   first
   | (rw [map_sub, MvPolynomial.coeff_coe, psTrunc_eq, MvPowerSeries.coeff_truncTotal,
       sub_self] <;> exact he)
-  | simp [psTrunc_eq, MvPowerSeries.coeff_truncTotal, he]
 
 theorem psJet_mul {ι : Type} [Fintype ι] [DecidableEq ι] (m : ℕ) (f g : MvPowerSeries ι R) :
     psJet m (f * g) = psJet m f * psJet m g := by
@@ -193,7 +180,6 @@ theorem psJet_mul {ι : Type} [Fintype ι] [DecidableEq ι] (m : ℕ) (f g : MvP
     rw [← MvPolynomial.coeff_coe, coe_sub_lemma_7, MvPolynomial.coe_mul]
     first
     | (congr 1; ring)
-    | exact congrArg _ (by ring)
   rw [hcoe, map_sub, map_add (f := _), h1, h2, h3, add_zero, sub_zero]
 
 theorem psJet_one {ι : Type} [Fintype ι] [DecidableEq ι] (m : ℕ) :
@@ -201,9 +187,6 @@ theorem psJet_one {ι : Type} [Fintype ι] [DecidableEq ι] (m : ℕ) :
   unfold psJet
   first
   | rw [psTrunc_eq, ← MvPolynomial.coe_one, mk_trunc_coe, map_one]
-  | (have h := mk_trunc_coe (R := R) (ι := ι) m 1
-     rw [MvPolynomial.coe_one] at h
-     rw [psTrunc_eq, h, map_one])
 
 theorem psTrunc_mem_orig {τ : Type} [Fintype τ] [DecidableEq τ] (m : ℕ) (g : MvPowerSeries τ R)
     (hg : MvPowerSeries.constantCoeff g = 0) : psTrunc m g ∈ orig R τ := by
@@ -229,11 +212,9 @@ theorem psTrunc_mem_orig {τ : Type} [Fintype τ] [DecidableEq τ] (m : ℕ) (g 
           | (simp only [Finsupp.coe_add, Finsupp.coe_tsub, Pi.add_apply, Pi.sub_apply,
               Finsupp.single_eq_same]; omega)
           | (simp [Finsupp.single_apply]; omega)
-          | simp [Finsupp.single_apply]
         · first
           | (simp only [Finsupp.coe_add, Finsupp.coe_tsub, Pi.add_apply, Pi.sub_apply,
               Finsupp.single_eq_of_ne h, Finsupp.single_eq_of_ne (Ne.symm h)]; omega)
-          | simp [Finsupp.single_apply, h, Ne.symm h]
       rw [MvPolynomial.X, MvPolynomial.monomial_mul, mul_one, hs]
     rw [key]
     refine Ideal.mul_mem_left _ _ ?_
@@ -248,7 +229,6 @@ theorem aeval_coe_comp {σ τ : Type} (A : σ → MvPolynomial τ R) (P : MvPoly
   next c =>
     first
     | simp [MvPowerSeries.algebraMap_apply, MvPolynomial.algebraMap_eq]
-    | simp [MvPolynomial.algebraMap_eq]
     | (rw [MvPolynomial.aeval_C, MvPolynomial.aeval_C, MvPolynomial.algebraMap_eq,
         MvPolynomial.coe_C]; rfl)
     | (ext n; simp [MvPowerSeries.coeff_C, MvPolynomial.coeff_C, MvPolynomial.algebraMap_eq])
@@ -314,13 +294,11 @@ theorem psJet_subst {σ τ : Type} [Fintype σ] [DecidableEq σ] [Fintype τ] [D
     first
     | exact MvPowerSeries.HasSubst.of_constantCoeff_zero' ha
     | exact MvPowerSeries.hasSubst_of_constantCoeff_zero ha
-    | exact ⟨fun s => by rw [ha s]; exact IsNilpotent.zero, fun d => Set.toFinite _⟩
   have ha1 : ∀ i, ∀ e : τ →₀ ℕ, e.degree < 1 → MvPowerSeries.coeff e (a i) = 0 := by
     intro i e he
     have he0 : e = 0 := by
       first
       | exact (Finsupp.degree_eq_zero_iff e).1 (by omega)
-      | exact Finsupp.degree_eq_zero_iff.1 (by omega)
     subst he0
     first
     | simpa using ha i
@@ -331,7 +309,6 @@ theorem psJet_subst {σ τ : Type} [Fintype σ] [DecidableEq σ] [Fintype τ] [D
     have hd : d.degree = ∑ s ∈ d.support, d s := by
       first
       | rfl
-      | simp [Finsupp.degree]
     exact low_prod_lemma_3 d.support (fun s => a s ^ d s) (fun s => d s)
       (fun s _ => low_pow_lemma_2 (ha1 s) (d s)) e (lt_of_lt_of_eq he hd)
   have hr := low_trunc_lemma_5 m f
@@ -345,7 +322,6 @@ theorem psJet_subst {σ τ : Type} [Fintype σ] [DecidableEq σ] [Fintype τ] [D
     · rw [hr d hd, zero_smul]
     · first
       | rw [hprod d e (by omega), smul_zero]
-      | simp [hprod d e (by omega)]
   have hsplit : MvPowerSeries.subst a f = MvPolynomial.aeval a (psTrunc m f) +
       MvPowerSeries.subst a (f - (psTrunc m f : MvPowerSeries σ R)) := by
     first
@@ -374,7 +350,6 @@ theorem psJet_subst {σ τ : Type} [Fintype σ] [DecidableEq σ] [Fintype τ] [D
     rw [← MvPolynomial.coeff_coe, coe_sub_lemma_7, ← aeval_coe_comp]
     first
     | (congr 1; linear_combination hsplit)
-    | exact congrArg _ (by linear_combination hsplit)
   rw [hcoe, map_sub, map_add (f := _), hA, hsr e he, hT, add_zero, sub_zero]
 
 end Formalism.MainNotions.ModuliIntegralCharts.H1.FBIdJet

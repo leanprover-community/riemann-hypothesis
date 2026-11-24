@@ -4,10 +4,11 @@ public import Development.AbelianVarietyTheory.Definitions.Divisors.IsRapidInf
 public import Development.AbelianVarietyTheory.Definitions.Divisors.IsAddHaarMeasureVolumeLie
 public import Development.AbelianVarietyTheory.Definitions.Foundations.IsSatVecUOfIsSphericalU
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AutomorphicFormGLContinuous
-public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ShintaniFormulaStatement
-import Formalism.SatakeDualWeyl.KpqSubgroupCompact
+public import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.NotIsGenericDetRepTwo
+public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ShintaniFormula
 public import GroundTheory.AutomorphicForms.MultiplicityOne.Equivariance
 public import GroundTheory.AutomorphicForms.MultiplicityOne.Functional
+import Formalism.SatakeDualWeyl.KpqSubgroupCompact
 import GroundTheory.AutomorphicForms.ReductionMeasure
 import GroundTheory.GlobalFields.Adele.Topology
 import Mathlib.Algebra.Order.Floor.Extended
@@ -225,7 +226,7 @@ theorem whit_mul_locGL_diagPow_of_fixed (π : CuspSub E a) (w : HeightOneSpectru
       exact (congrArg (fun F => whit F y) (funext fun _ => (zero_mul _).symm)).trans e
     rw [hz, hz, mul_zero]
   have hsat := hα.2 φ hφ h0
-  have hmain := GlobalTheory.T.shintani_formula_alt E w a (psiLocChar w) hψ (f φ) α ?_ ?_ ?_ ϖ hϖ l
+  have hmain := _root_.GlobalTheory.JSW.shintani_formula E w a (psiLocChar w) hψ (f φ) α ?_ ?_ ?_ ϖ hϖ l
   · change whit φ.1.1 (g * finGL E a (locGL E a w (diagPow ϖ l))) = _ * whit φ.1.1 (g * finGL E a (locGL E a w 1))
       at hmain
     rwa [map_one, map_one, mul_one] at hmain

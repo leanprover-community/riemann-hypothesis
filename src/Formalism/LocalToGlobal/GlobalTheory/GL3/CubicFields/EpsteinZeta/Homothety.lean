@@ -79,7 +79,6 @@ theorem discr_smul (Λ : AddSubgroup ℂ) (c : ℂ) (hc : c ≠ 0) :
     discr (c • Λ) = (c ^ 12)⁻¹ * discr Λ := by
   first
   | (unfold discr; simp only [g2, g3, eisG_smul Λ c hc]; ring)
-  | (unfold discr g2 g3; done)
 
 theorem latI_eq_smul {K : Type} [Field K] [NumberField K] (φ : K →+* ℂ) (𝔞 : Ideal (𝓞 K))
     (δ : ℂ) : latI φ 𝔞 δ = δ • latI φ 𝔞 1 := by

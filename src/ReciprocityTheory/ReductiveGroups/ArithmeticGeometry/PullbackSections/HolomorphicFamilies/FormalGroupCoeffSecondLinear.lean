@@ -139,9 +139,9 @@ theorem formal_group_coeff_first_linear (G : FGLaw R d) (i l : Fin d) :
       fin_cases j <;> simp [pt])] at e
   rw [Fintype.sum_prod_type, Fin.sum_univ_two] at e
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one, pt, coeff_X_single] at e
-  simp only [Prod.mk.injEq, Fin.zero_eq_one_iff, Fin.one_eq_zero_iff, false_and, if_false, mul_zero,
+  simp only [Prod.mk.injEq, false_and, if_false, mul_zero,
     Finset.sum_const_zero, zero_add, true_and, mul_ite, mul_one, Finset.sum_ite_eq, Finset.mem_univ, if_true,
-    OfNat.ofNat_ne_one, one_ne_zero, zero_ne_one] at e
+    zero_ne_one] at e
   rw [← e, formal_group_coeff_second_linear]
 
 end Lin

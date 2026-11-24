@@ -63,14 +63,14 @@ noncomputable section
 theorem third_fderiv_symm_one_two {D : ℕ} (φ : (Fin D → ℂ) → ℝ) (z : Fin D → ℂ) (h : ContDiffAt ℝ 3 φ z)
     (u x : Fin D → ℂ) :
     fderiv ℝ (fderiv ℝ (fderiv ℝ φ)) z u x = fderiv ℝ (fderiv ℝ (fderiv ℝ φ)) z x u := by
-  have h2 : ContDiffAt ℝ 2 (fderiv ℝ φ) z := h.fderiv_right (by first | norm_num | simp | rfl)
-  exact h2.isSymmSndFDerivAt (by first | simp | norm_num | (simp only [minSmoothness_of_isRCLikeNormedField]; norm_num)) u x
+  have h2 : ContDiffAt ℝ 2 (fderiv ℝ φ) z := h.fderiv_right (by first | norm_num)
+  exact h2.isSymmSndFDerivAt (by first | simp) u x
 
 theorem differentiableAt_snd_fderiv {D : ℕ} (φ : (Fin D → ℂ) → ℝ) (z : Fin D → ℂ)
     (h : ContDiffAt ℝ 3 φ z) : DifferentiableAt ℝ (fderiv ℝ (fderiv ℝ φ)) z := by
-  have h2 : ContDiffAt ℝ 2 (fderiv ℝ φ) z := h.fderiv_right (by first | norm_num | simp | rfl)
-  have h1 : ContDiffAt ℝ 1 (fderiv ℝ (fderiv ℝ φ)) z := h2.fderiv_right (by first | norm_num | simp | rfl)
-  exact h1.differentiableAt (by first | norm_num | simp | exact one_ne_zero)
+  have h2 : ContDiffAt ℝ 2 (fderiv ℝ φ) z := h.fderiv_right (by first | norm_num)
+  have h1 : ContDiffAt ℝ 1 (fderiv ℝ (fderiv ℝ φ)) z := h2.fderiv_right (by first | norm_num)
+  exact h1.differentiableAt (by first | norm_num)
 
 theorem third_fderiv_symm_two_three {D : ℕ} (φ : (Fin D → ℂ) → ℝ) (z : Fin D → ℂ) (h : ContDiffAt ℝ 3 φ z)
     (u x y : Fin D → ℂ) :
@@ -80,14 +80,14 @@ theorem third_fderiv_symm_two_three {D : ℕ} (φ : (Fin D → ℂ) → ℝ) (z 
       fderiv ℝ (⇑(evalL x y) ∘ fderiv ℝ (fderiv ℝ φ)) z =
         (evalL x y).comp (fderiv ℝ (fderiv ℝ (fderiv ℝ φ)) z) :=
     fun x y => ((evalL x y).hasFDerivAt.comp z hd.hasFDerivAt).fderiv
-  have h2 : ContDiffAt ℝ 2 φ z := h.of_le (by first | norm_num | simp | rfl)
-  have hev : ∀ᶠ w in 𝓝 z, ContDiffAt ℝ 2 φ w := h2.eventually (by first | simp | norm_num | decide | exact ENat.coe_ne_top _)
+  have h2 : ContDiffAt ℝ 2 φ z := h.of_le (by first | norm_num)
+  have hev : ∀ᶠ w in 𝓝 z, ContDiffAt ℝ 2 φ w := h2.eventually (by first | simp)
   have ev : (⇑(evalL x y) ∘ fderiv ℝ (fderiv ℝ φ)) =ᶠ[𝓝 z]
       (⇑(evalL y x) ∘ fderiv ℝ (fderiv ℝ φ)) := by
     filter_upwards [hev] with w hw
     simp only [Function.comp_apply, evalL, ContinuousLinearMap.coe_comp',
       ContinuousLinearMap.apply_apply]
-    exact hw.isSymmSndFDerivAt (by first | simp | norm_num | (simp only [minSmoothness_of_isRCLikeNormedField]; norm_num)) x y
+    exact hw.isSymmSndFDerivAt (by first | simp) x y
   have e := Filter.EventuallyEq.fderiv_eq (𝕜 := ℝ) ev
   rw [key x y, key y x] at e
   have e2 := congrArg (fun L => L u) e
@@ -195,9 +195,6 @@ theorem dz_add (hf : DifferentiableAt ℝ f z) (hg : DifferentiableAt ℝ g z) :
   have e : fderiv ℝ (fun y => f y + g y) z = fderiv ℝ f z + fderiv ℝ g z := by
     first
     | (exact (hf.hasFDerivAt.add hg.hasFDerivAt).fderiv)
-    | (exact (hf.hasFDerivAt.fun_add hg.hasFDerivAt).fderiv)
-    | (exact fderiv_add hf hg)
-    | (exact fderiv_fun_add hf hg)
   unfold dz
   rw [e, ContinuousLinearMap.add_apply, ContinuousLinearMap.add_apply]
   ring
@@ -207,9 +204,6 @@ theorem dz_mul (hf : DifferentiableAt ℝ f z) (hg : DifferentiableAt ℝ g z) :
   have e : fderiv ℝ (fun y => f y * g y) z = f z • fderiv ℝ g z + g z • fderiv ℝ f z := by
     first
     | (exact (hf.hasFDerivAt.mul hg.hasFDerivAt).fderiv)
-    | (exact (hf.hasFDerivAt.fun_mul hg.hasFDerivAt).fderiv)
-    | (exact fderiv_mul hf hg)
-    | (exact fderiv_fun_mul hf hg)
   unfold dz
   rw [e]
   simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
@@ -241,7 +235,6 @@ theorem differentiableAt_dzb (hf : ContDiffAt ℝ 2 f z) : DifferentiableAt ℝ 
     first
       | (exact h4.div_const (2 : ℂ))
       | (simpa only [div_eq_mul_inv] using h4.mul_const (2⁻¹ : ℂ))
-      | (fun_prop)
   exact h5
 
 end DzCalc
@@ -280,7 +273,7 @@ private lemma sum_superset_neg_one_pow_fin_eq_ite_univ (N : ℕ) (T : Finset (Fi
   rw [h1, h0]
   by_cases hT : T = Finset.univ
   · have h2 : Tᶜ = ∅ := by rw [hT]; simp
-    simp [h2, hT]
+    simp [hT]
   · have h2 : Tᶜ ≠ ∅ := by
       intro h
       apply hT
@@ -368,45 +361,6 @@ private lemma prod_cons_eq_sum_mul_prod_cons_single {n : ℕ} (A : Matrix (Fin (
     | (rw [Finset.sum_eq_single (σ i0) (fun x _ hx => by simp [hx]) (by simp)]
        rw [Finset.sum_eq_single i0 (fun x _ hx => by simp [hx]) (by simp)]
        simp)
-    | (simp [ite_and])
-    | (simp [ite_and, Finset.sum_ite_eq', Finset.sum_ite_eq])
-
-theorem mixedDisc_cons_eq_sum {n : ℕ} (A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ)
-    (B : Fin n → Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ) :
-    mdisc (Fin.cons A B) = ∑ j, ∑ k, A j k * mixedCof B j k := by
-  have e1 : ∀ g : Fin (n + 1) → Fin (n + 1) → Equiv.Perm (Fin (n + 1)) →
-      (Fin (n + 1) → Fin (n + 1)) → ℂ,
-      ∑ j, ∑ k, ∑ σ, ∑ f, g j k σ f = ∑ σ, ∑ f, ∑ j, ∑ k, g j k σ f := by
-    intro g
-    calc ∑ j, ∑ k, ∑ σ, ∑ f, g j k σ f = ∑ j, ∑ σ, ∑ k, ∑ f, g j k σ f :=
-          Finset.sum_congr rfl fun j _ => Finset.sum_comm
-      _ = ∑ σ, ∑ j, ∑ k, ∑ f, g j k σ f := Finset.sum_comm
-      _ = ∑ σ, ∑ j, ∑ f, ∑ k, g j k σ f :=
-          Finset.sum_congr rfl fun σ _ => Finset.sum_congr rfl fun j _ => Finset.sum_comm
-      _ = ∑ σ, ∑ f, ∑ j, ∑ k, g j k σ f := Finset.sum_congr rfl fun σ _ => Finset.sum_comm
-  have ht : ∀ (σ : Equiv.Perm (Fin (n + 1))) (f : Fin (n + 1) → Fin (n + 1)),
-      (if Finset.univ.image f = Finset.univ then ((Equiv.Perm.sign σ : ℤ) : ℂ) *
-        ∏ i, (Fin.cons A B : Fin (n + 1) → Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ) (f i) (σ i) i
-        else 0) =
-      ∑ j, ∑ k, A j k * (if Finset.univ.image f = Finset.univ then
-        ((Equiv.Perm.sign σ : ℤ) : ℂ) * ∏ i, (Fin.cons (Matrix.single j k 1) B :
-          Fin (n + 1) → Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ) (f i) (σ i) i else 0) := by
-    intro σ f
-    by_cases hf : Finset.univ.image f = Finset.univ
-    · simp only [if_pos hf]
-      rw [prod_cons_eq_sum_mul_prod_cons_single A B σ f hf, Finset.mul_sum]
-      refine Finset.sum_congr rfl fun j _ => ?_
-      rw [Finset.mul_sum]
-      refine Finset.sum_congr rfl fun k _ => ?_
-      ring
-    · simp [if_neg hf]
-  rw [mdisc_eq_inv_factorial_mul_sum_sign_prod]
-  simp only [mixedCof, mdisc_eq_inv_factorial_mul_sum_sign_prod]
-  simp only [ht]
-  simp only [Finset.mul_sum, e1]
-  refine Finset.sum_congr rfl fun σ _ => Finset.sum_congr rfl fun f _ =>
-    Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k _ => ?_
-  ring
 
 theorem maDens_cons_eq {n : ℕ} (φ : Fin n → (Fin (n + 1) → ℂ) → ℝ) (v : (Fin (n + 1) → ℂ) → ℝ)
     (z : Fin (n + 1) → ℂ) :
@@ -439,9 +393,6 @@ theorem monge_ampere_density_cofactor : MaDensCofStatement := by
               (fderiv ℝ (fderiv ℝ v) z)))) z := by
       first
         | (exact ((hw _).add ((hw _).const_mul Complex.I)).const_mul (1 / 2 : ℂ))
-        | (exact ((hw _).fun_add ((hw _).const_mul Complex.I)).const_mul (1 / 2 : ℂ))
-        | (exact ((hw _).add ((hw _).fun_const_mul Complex.I)).fun_const_mul (1 / 2 : ℂ))
-        | (exact ((hw _).fun_add ((hw _).fun_const_mul Complex.I)).fun_const_mul (1 / 2 : ℂ))
     have heq : dzb k (cplx v) =ᶠ[𝓝 z] fun y => (1 / 2 : ℂ) *
         (((fderiv ℝ v y (Pi.single k 1) : ℝ) : ℂ) +
           Complex.I * ((fderiv ℝ v y (Complex.I • Pi.single k 1) : ℝ) : ℂ)) := by
@@ -463,7 +414,7 @@ theorem monge_ampere_density_cofactor : MaDensCofStatement := by
     push_cast
     linear_combination ((fderiv ℝ (fderiv ℝ v) z (Complex.I • Pi.single j 1)
       (Complex.I • Pi.single k 1) : ℝ) : ℂ) / 4 * Complex.I_sq
-  rw [maDens_cons_eq, mixedDisc_cons_eq_sum]
+  rw [maDens_cons_eq, _root_.ReciprocityTheory.AnForm.A.mdisc_cons_eq_sum]
   have hsum : (∑ j, ∑ k, hessC v z j k * mixedCof (fun i => hessC (φ i) z) j k) =
       ∑ j, ∑ k, hessCof φ z j k * dz j (dzb k (cplx v)) z := by
     refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k _ => ?_

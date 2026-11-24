@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ProportionalRaw
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.PhiPowSt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FirstCohomology.PhiPowAlg
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.PhiGenPf
@@ -74,34 +75,10 @@ theorem trPt_one : DegPre.trPt D F 1 = 𝟙 _ := by
   rw [show padd D.P.A (D.prB F) 1 = D.prB F * 1 from rfl, _root_.mul_one]
   first
     | exact lift_fst_snd
-    | (simp [DegPre.prB]; done)
-    | (unfold DegPre.prB; clear * -; done)
 
 theorem trPt_mul (m m' : TF (R := R) F ⟶ D.P.A) :
     DegPre.trPt D F m ≫ DegPre.trPt D F m' = DegPre.trPt D F (m * m') := by
-  have cm : ∀ (f : DegPre.BF D F ⟶ DegPre.BF D F) (g h : DegPre.BF D F ⟶ D.P.A),
-      f ≫ (g * h) = (f ≫ g) * (f ≫ h) := by
-    intro f g h
-    show f ≫ (lift g h ≫ μ) = lift (f ≫ g) (f ≫ h) ≫ μ
-    rw [comp_lift_assoc]
-  have ca : ∀ (f : DegPre.BF D F ⟶ TF (R := R) F) (g h : TF (R := R) F ⟶ D.P.A),
-      f ≫ (g * h) = (f ≫ g) * (f ≫ h) := by
-    intro f g h
-    show f ≫ (lift g h ≫ μ) = lift (f ≫ g) (f ≫ h) ≫ μ
-    rw [comp_lift_assoc]
-  have hB : ∀ m₀ : TF (R := R) F ⟶ D.P.A,
-      lift (fst (TF (R := R) F) D.P.A) (padd D.P.A (D.prB F) (fst (TF (R := R) F) D.P.A ≫ m₀)) ≫ D.prB F =
-        D.prB F * (fst (TF (R := R) F) D.P.A ≫ m₀) := by
-    intro m₀
-    first
-      | exact lift_snd _ _
-      | (simp only [DegPre.prB, lift_snd]; rfl)
-      | (simp [DegPre.prB]; rfl)
-  simp only [DegPre.trPt]
-  rw [comp_lift, lift_fst]
-  congr 1
-  show lift _ _ ≫ (D.prB F * (fst _ _ ≫ m')) = D.prB F * (fst _ _ ≫ (m * m'))
-  rw [cm, hB, lift_fst_assoc, ca, _root_.mul_assoc]
+  apply GlobalTheory.UU.SchurComp.trPt_comp <;> assumption
 
 theorem tr_left_pow (b : TF (R := R) F ⟶ D.P.A) (j : ℕ) {Z : Scheme.{0}} (r : Z ⟶ (DegPre.BF D F).left) :
     (r ≫ (DegPre.trPt D F b).left) ≫ (DegPre.trPt D F (b ^ j)).left = r ≫ (DegPre.trPt D F (b ^ (j + 1))).left := by

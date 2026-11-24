@@ -96,7 +96,6 @@ theorem isTransp_iff {D : D7} (X : HidaSetting D) (v : InfinitePlace X.B.I.F) (g
       IsTranspC X v (-(Complex.I * (g : ℂ)) / (2 * (Real.pi : ℂ))) k r Q Qi := by
   first
   | exact Iff.rfl
-  | (unfold Formalism.L2.SG.RealObj.IsTransp IsTranspC; exact Iff.rfl)
 
 def frS (D : D7) : ℂ := ((D.host.ka / (2 * Real.pi) : ℝ) : ℂ)
 

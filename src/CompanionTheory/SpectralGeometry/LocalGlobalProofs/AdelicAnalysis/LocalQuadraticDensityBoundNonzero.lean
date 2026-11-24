@@ -1,8 +1,8 @@
 module
 
 public import CompanionTheory.SpectralGeometry.CountingDefinitions.AdelicEulerProducts.IsEulerProd
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.LocalQuadraticDensityNearOneStatement
-import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.StandardLocalHaarPropertiesStatement
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.LocalQuadraticDensityNearOne
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.StandardLocalHaarProperties
 import Formalism.LocalRingCardinality.SpanPowerMembership.LocAtA
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -67,19 +67,9 @@ theorem exists_unif (v : HeightOneSpectrum (𝓞 F)) : ∃ π : Fv F v, Valued.v
   obtain ⟨π, hπ⟩ := v.valuation_exists_uniformizer F
   exact ⟨((π : v.adicCompletion F) : Fv F v), by rw [v.valuedAdicCompletion_eq_valuation', hπ]⟩
 
-theorem le_exp_of_lt_one {a : WithZero (Multiplicative ℤ)} (h : a < 1) : a ≤ WithZero.exp (-1 : ℤ) := by
-  rcases eq_or_ne a 0 with rfl | ha
-  · exact zero_le
-  · rw [← WithZero.exp_log ha] at h ⊢
-    have h' : WithZero.log a < 0 := by
-      rw [← WithZero.exp_lt_exp, WithZero.exp_zero]; exact h
-    rw [WithZero.exp_le_exp]
-    omega
-
 variable {v : HeightOneSpectrum (𝓞 F)} {ι : Type} [Fintype ι]
 
-theorem mem_int {x : Fv F v} : x ∈ v.adicCompletionIntegers F ↔ Valued.v x ≤ 1 := by
-  exact Iff.rfl
+alias mem_int := _root_.GlobalTheory.CompanionTheory.SW.Hensel.mem_int
 
 theorem q_int (h2 : Valued.v (2 : Fv F v) = 1) {B : Matrix ι ι (Fv F v)}
     (hB : ∀ i j, B i j ∈ v.adicCompletionIntegers F) {y : ι → Fv F v}
@@ -120,7 +110,7 @@ private theorem sigmaFinite_of_isStdV {lam : Measure (Fv F v)} (hstd : IsStdV v 
     SigmaFinite lam := by
   haveI := borel_Fv (F := F) (v := v)
   obtain ⟨π, hπ⟩ := exists_unif v
-  obtain ⟨-, hmap, -, -⟩ := GlobalTheory.T.standard_local_haar_properties F v lam hstd
+  obtain ⟨-, hmap, -, -⟩ := _root_.GlobalTheory.CompanionTheory.SW.Vol.volumes_in_completion F v lam hstd
   have hm := hmap π hπ
   have hO : MeasurableSet (v.adicCompletionIntegers F : Set (Fv F v)) :=
     (Valued.isOpen_valuationSubring (Fv F v)).measurableSet
@@ -174,7 +164,7 @@ theorem pi_scale {lam : Measure (Fv F v)} (hstd : IsStdV v lam) {π : Fv F v}
     intro h0
     rw [h0, map_zero] at hπ
     exact WithZero.exp_ne_zero hπ.symm
-  obtain ⟨-, hmap, -, -⟩ := GlobalTheory.T.standard_local_haar_properties F v lam hstd
+  obtain ⟨-, hmap, -, -⟩ := _root_.GlobalTheory.CompanionTheory.SW.Vol.volumes_in_completion F v lam hstd
   have hm := hmap π hπ
   have hN : (Ideal.absNorm v.asIdeal : ℝ≥0∞) = ((Ideal.absNorm v.asIdeal : ℝ≥0) : ℝ≥0∞) :=
     (ENNReal.coe_natCast _).symm
@@ -198,7 +188,7 @@ theorem lam_scale {lam : Measure (Fv F v)} (hstd : IsStdV v lam) {π : Fv F v}
   have hmeas : Measurable (fun z : Fv F v => π * (π * z)) :=
     (measurable_const_mul π).comp (measurable_const_mul π)
   refine ⟨hmeas hA, ?_⟩
-  obtain ⟨-, hmap, -, -⟩ := GlobalTheory.T.standard_local_haar_properties F v lam hstd
+  obtain ⟨-, hmap, -, -⟩ := _root_.GlobalTheory.CompanionTheory.SW.Vol.volumes_in_completion F v lam hstd
   have hm := hmap π hπ
   have h1 : (lam.map (fun t => π * t)).map (fun t => π * t) A = lam {z | π * (π * z) ∈ A} := by
     rw [Measure.map_map (measurable_const_mul π) (measurable_const_mul π), Measure.map_apply ((measurable_const_mul π).comp (measurable_const_mul π)) hA]
@@ -253,7 +243,7 @@ theorem pi_ne_zero {π : Fv F v} (hπ : Valued.v π = WithZero.exp (-1 : ℤ)) :
 theorem div_int {π : Fv F v} (hπ : Valued.v π = WithZero.exp (-1 : ℤ)) {a : Fv F v}
     (h1 : Valued.v a ≤ 1) (h2 : Valued.v a ≠ 1) : Valued.v (π⁻¹ * a) ≤ 1 := by
   have hlt : Valued.v a < 1 := lt_of_le_of_ne h1 h2
-  have hle := le_exp_of_lt_one hlt
+  have hle := _root_.GlobalTheory.CompanionTheory.SW.QuadIso.le_exp_neg_one hlt
   rw [map_mul, val_inv hπ]
   calc WithZero.exp (1 : ℤ) * Valued.v a ≤ WithZero.exp (1 : ℤ) * WithZero.exp (-1 : ℤ) :=
         mul_le_mul_of_nonneg_left hle zero_le
@@ -291,7 +281,6 @@ theorem bound_step {q : ℝ} {M : ℕ} (hq : 2 ≤ q) (hM : 3 ≤ M) {Dp D' : �
     (hD' : |D' - 1| ≤ 2 / q ^ (M - 1))
     (hDp : |Dp - 1| ≤ 1 / q ^ (M - 1) + 1 / q ^ (2 * M - 1)) :
     |Dp + q ^ 2 / q ^ (2 * M) * D' - 1| ≤ 2 / q ^ (M - 1) := by
-  have hq0 : 0 < q := by linarith
   obtain ⟨k, rfl⟩ : ∃ k, M = k + 3 := ⟨M - 3, by omega⟩
   have e1 : k + 3 - 1 = k + 2 := by omega
   have e2 : 2 * (k + 3) - 1 = 2 * (k + 2) + 1 := by omega
@@ -307,7 +296,6 @@ theorem bound_step {q : ℝ} {M : ℕ} (hq : 2 ≤ q) (hM : 3 ≤ M) {Dp D' : �
     have h1 : q ^ 2 ≤ q ^ (k + 2) := pow_le_pow_right₀ (by linarith) (by omega)
     nlinarith
   generalize q ^ (k + 2) = t at ht4 hD' hDp ⊢
-  have htpos : 0 < t := by linarith
   have hqr : q ^ 2 / (t ^ 2 * q ^ 2) * D' = (1 / t) ^ 2 * D' := by
     field_simp
   have hf1 : 1 / (t ^ 2 * q) = (1 / t) ^ 2 * (1 / q) := by field_simp
@@ -329,7 +317,6 @@ theorem bound_step {q : ℝ} {M : ℕ} (hq : 2 ≤ q) (hM : 3 ≤ M) {Dp D' : �
   have p3 := mul_le_mul_of_nonneg_left hr2 (sq_nonneg u)
   have p4 := mul_le_mul_of_nonneg_left hu4 hu0.le
   have p5 := mul_le_mul_of_nonneg_left hu4 (sq_nonneg u)
-  have p6 := mul_nonneg (sq_nonneg u) hr0.le
   constructor <;> nlinarith
 
 theorem local_quadratic_density_bound_at_level {lam : Measure (Fv F v)} (hstd : IsStdV v lam) (h2 : Valued.v (2 : Fv F v) = 1)
@@ -352,7 +339,7 @@ theorem local_quadratic_density_bound_at_level {lam : Measure (Fv F v)} (hstd : 
   have hq2 : (2 : ℝ) ≤ (Ideal.absNorm v.asIdeal : ℝ) := by
     have : 2 ≤ Ideal.absNorm v.asIdeal := by omega
     exact_mod_cast this
-  obtain ⟨Dp, hDpb, hP⟩ := GlobalTheory.T.local_quadratic_density_near_one F v lam hstd h2 ι B hsym hB hdet M hc (by omega) s hs
+  obtain ⟨Dp, hDpb, hP⟩ := _root_.GlobalTheory.CompanionTheory.SW.LGPrim.density_primitive F v lam hstd h2 ι B hsym hB hdet M hc (by omega) s hs
   have hvs0 : Valued.v s ≠ 0 := (Valuation.ne_zero_iff _).mpr hs0
   have hL : Valued.v s = WithZero.exp (WithZero.log (Valued.v s)) := (WithZero.exp_log hvs0).symm
   have hLn : -(n : ℤ) ≤ WithZero.log (Valued.v s) := by

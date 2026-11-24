@@ -99,7 +99,7 @@ theorem normRep_atPt (t : TermDef.Term D u u' (X.Fu u) (Y.what₂ u)) (w' : Form
     (F' : Formalism.MainNotions.S.Lat.LFlag (D.sp.Y 0) D.R.rS ((Formalism.MainNotions.S.Lat.Tu D u' : ℕ) : D.host.E)) (L U : Formalism.L2.SG.PairVal.MatR D)
     (hN : Formalism.L2.SG.PairVal.NormRep t w' F' L U) (hG : t.G ≠ 0) : t.atPt w' := by
   obtain ⟨⟨h, hmk⟩, -, hL, hU, hZ⟩ := hN
-  have hGF := (Formalism.L2.SG.Closed.TermFun_holds D u u' (X.Fu u) t.lam ((Y.rowsOK u).1 t.lam t.mem)).1
+  have hGF := (_root_.term_function_const D u u' (X.Fu u) t.lam ((Y.rowsOK u).1 t.lam t.mem)).1
   have hG' : Formalism.MainNotions.S.Lat.Gval (lf D (X.Fu u)) F' ≠ 0 := by
     intro h0
     apply hG

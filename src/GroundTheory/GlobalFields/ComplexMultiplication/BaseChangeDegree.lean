@@ -76,39 +76,6 @@ theorem xOf_map {K L : Type*} [Field K] [Field L] [Algebra F K] [Algebra F L] [D
   | zero => exact (map_zero f).symm
   | some x y h => rfl
 
-theorem two_genY_add_ne_zero [E.IsElliptic] :
-    (2 : E.toAffine.FunctionField) * genY E + algebraMap F _ E.a₁ * genX E +
-      algebraMap F _ E.a₃ ≠ 0 := by
-  intro h
-  set A := E.toAffine.CoordinateRing
-  set K := E.toAffine.FunctionField
-  have key : (C E.a₁ * X + C E.a₃ : F[X]) • (1 : A) +
-      (2 : F[X]) • WeierstrassCurve.Affine.CoordinateRing.mk E.toAffine Y = 0 := by
-    apply IsFractionRing.injective A K
-    rw [map_zero, ← h]
-    simp only [Algebra.smul_def, mul_one, map_add (f := _), map_mul, ← IsScalarTower.algebraMap_apply,
-      genX_eq, genY, map_ofNat]
-    rw [IsScalarTower.algebraMap_apply F F[X] K, IsScalarTower.algebraMap_apply F F[X] K,
-      Polynomial.algebraMap_apply, Polynomial.algebraMap_apply]
-    simp only [Algebra.algebraMap_self, RingHom.id_apply]
-    ring
-  obtain ⟨h1, h2⟩ := WeierstrassCurve.Affine.CoordinateRing.smul_basis_eq_zero key
-  have h2F : (2 : F) = 0 := by
-    have := congrArg (AddMonoidAlgebra.coeff · 0) h2
-    simpa using this
-  have ha₁ : E.a₁ = 0 := by
-    have := congrArg (AddMonoidAlgebra.coeff · 1) h1
-    simpa using this
-  have ha₃ : E.a₃ = 0 := by
-    have := congrArg (AddMonoidAlgebra.coeff · 0) h1
-    simpa using this
-  have hΔ : E.Δ = 0 := by
-    simp only [WeierstrassCurve.Δ, WeierstrassCurve.b₂, WeierstrassCurve.b₄, WeierstrassCurve.b₆,
-      WeierstrassCurve.b₈, ha₁, ha₃]
-    linear_combination (-8 * E.a₂ ^ 2 * (4 * E.a₂ * E.a₆ - E.a₄ ^ 2) - 32 * E.a₄ ^ 3 -
-      216 * E.a₆ ^ 2 + 144 * E.a₂ * E.a₄ * E.a₆) * h2F
-  exact not_isUnit_zero (hΔ ▸ E.isUnit_Δ)
-
 end Neg
 
 section Even
@@ -147,7 +114,7 @@ theorem mem_adjoin_genX_of_negFF {c : E.toAffine.FunctionField} (h : negFF E c =
   have hs0 : s = 0 := by
     have : s * ((2 : E.toAffine.FunctionField) * genY E + algebraMap F _ E.a₁ * genX E +
         algebraMap F _ E.a₃) = 0 := by linear_combination -h
-    exact (mul_eq_zero.mp this).resolve_right (two_genY_add_ne_zero E)
+    exact (mul_eq_zero.mp this).resolve_right (_root_.GroundTheory.Global.genDen_ne_zero E)
   rw [hs0, zero_mul, add_zero]
   exact hr
 

@@ -78,7 +78,7 @@ theorem tl_commute_of_one_off : ∀ (E : Type) [Field E] [NumberField E] (n : �
         show ((ϖ v ^ ((Finsupp.mapRange (fun x : Fin n → ℤ => x i) rfl l.1) v) : (v.adicCompletion E)ˣ) :
           v.adicCompletion E) = 1
         rw [Finsupp.mapRange_apply, hl, Pi.zero_apply, zpow_zero, Units.val_one]
-      · simp [Matrix.diagonal_apply, hij, Matrix.one_apply]
+      · simp [hij]
     · exact Or.inl (hp v hv)
 
 end GlobalTheory.CellDec.TlComm

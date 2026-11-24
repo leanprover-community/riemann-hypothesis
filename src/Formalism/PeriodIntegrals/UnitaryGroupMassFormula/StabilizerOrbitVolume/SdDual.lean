@@ -470,7 +470,7 @@ theorem pairHerm_iota (σ : E →ₐ[F] E) (hσ : ∀ x, σ (σ x) = x) {a : ℕ
       Algebra.trace (Fv F v) (Fv F v ⊗[F] E) (∑ p, ∑ q, sigR (Fv F v) σ (X p q) * Tm q p) := by
 
     simp only [BR, hR, Formalism.UG.hform, JR, Matrix.map_apply, Matrix.one_apply, apply_ite,
-    map_one, map_zero, mul_ite, mul_one, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq,
+    map_one, map_zero, mul_one, mul_zero, ite_mul, zero_mul, Finset.sum_ite_eq,
     Finset.mem_univ, if_true, map_sum]
   rw [hBR]
   simp only [pairHerm, iota, add_mul, Finset.sum_add_distrib, map_add (f := _)]

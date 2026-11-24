@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.HomBaseChangeBijectiveOfLeNilradical
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.AbelianSchemeQuotients.IsAbelianScheme
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.SemiabelianSchemes.PrecompleteBases.Torus2GammaBijective
 public import Mathlib.AlgebraicGeometry.Geometrically.Integral
@@ -536,7 +537,7 @@ theorem isMonHom_of_comp {B : Scheme.{u}} (h : S ⟶ B) (g : S' ⟶ B) (e : g = 
     · rw [hφ]
       simp [m, Over.pullbackComp]
       erw [Category.id_comp]
-      simp [Over.mapComp, pullback.lift_fst_assoc, pullback.lift_fst]
+      simp [Over.mapComp]
     · exact (Over.w φ).trans (Over.w m.inv.hom).symm
   rw [hφ']
   exact m.inv.isMonHom_hom
@@ -558,23 +559,7 @@ theorem baseChangeIso_naturality (u : Y →+ X) :
 end BaseChange
 
 theorem chi_injective [Nonempty S] : Function.Injective (chi (S := S) X) := by
-  obtain ⟨s⟩ := ‹Nonempty S›
-  intro a b hab
-  let K := S.residueField s
-  let p : Spec K ⟶ S := S.fromSpecResidueField s
-  let φ : torusRing ZU X ⟶ CommRingCat.of (AddMonoidAlgebra K X) :=
-    CommRingCat.ofHom (AddMonoidAlgebra.mapRingHom X
-      ((Int.castRingHom K).comp (ULift.ringEquiv : ULift.{u} ℤ ≃+* ℤ).toRingHom))
-  let T : Over S := Over.mk (Spec.map (CommRingCat.ofHom (algebraMap K (AddMonoidAlgebra K X))) ≫ p)
-  let t : T ⟶ splitTorus S X := ofCoord T (φ ≫ (Scheme.ΓSpecIso _).inv)
-  have h1 : ∀ x, (coord t).hom (AddMonoidAlgebra.single x 1) = t.left.appTop.hom (chi X x) :=
-    fun x => by rw [← Category.comp_id t, coord_comp, Category.comp_id]; rfl
-  have h2 := (h1 a).trans ((congrArg _ hab).trans (h1 b).symm)
-  rw [coord_ofCoord] at h2
-  have h3 : φ.hom (AddMonoidAlgebra.single a 1) = φ.hom (AddMonoidAlgebra.single b 1) :=
-    (cr_iso_bij (Scheme.ΓSpecIso (.of (AddMonoidAlgebra K X))).symm).1 h2
-  simp only [φ, CommRingCat.hom_ofHom, AddMonoidAlgebra.mapRingHom_single, map_one] at h3
-  exact AddMonoidAlgebra.single_left_injective one_ne_zero h3
+  apply GlobalTheory.SplitTorus.chi_injective <;> assumption
 
 theorem diagMap_injective [Nonempty S] :
     Function.Injective (diagMap S : (Y →+ X) → (splitTorus S X ⟶ splitTorus S Y)) := by

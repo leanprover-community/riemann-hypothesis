@@ -277,35 +277,9 @@ theorem second_difference_C_mul_sum (c : K) {α : Type} (s : Finset α) (f : α 
     subst_C_mul_sum (MvPowerSeries.hasSubst_of_constantCoeff_zero Formalism.DworkPowerSeriesWeights.Transfer.constantCoeff_substTwo'),
     Finset.sum_sub_distrib, Finset.sum_sub_distrib, mul_sub, mul_sub]
 
-theorem constantCoeff_defectOne {be : MvPowerSeries (ZMod d) K} (h : constantCoeff be = 0) :
-    constantCoeff (de1 be) = 0 := by
-  unfold de1
-  rw [map_sub, map_sub,
-    MvPowerSeries.constantCoeff_subst_eq_zero
-      (MvPowerSeries.hasSubst_of_constantCoeff_zero Formalism.DworkPowerSeriesWeights.Transfer.constantCoeff_substOne)
-      Formalism.DworkPowerSeriesWeights.Transfer.constantCoeff_substOne h,
-    MvPowerSeries.constantCoeff_subst_eq_zero
-      (MvPowerSeries.hasSubst_of_constantCoeff_zero Formalism.DworkPowerSeriesWeights.Transfer.constantCoeff_substZero)
-      Formalism.DworkPowerSeriesWeights.Transfer.constantCoeff_substZero h,
-    MvPowerSeries.constantCoeff_subst_eq_zero
-      (MvPowerSeries.hasSubst_of_constantCoeff_zero Formalism.DworkPowerSeriesWeights.Transfer.constantCoeff_substTwo)
-      Formalism.DworkPowerSeriesWeights.Transfer.constantCoeff_substTwo h]
-  simp
+alias constantCoeff_defectOne := _root_.Formalism.DworkPowerSeriesWeights.Transfer.constantCoeff_defectOne
 
-theorem constantCoeff_defectTwo {be : MvPowerSeries (ZMod d) K} (h : constantCoeff be = 0) :
-    constantCoeff (de2 be) = 0 := by
-  unfold de2
-  rw [map_sub, map_sub,
-    MvPowerSeries.constantCoeff_subst_eq_zero
-      (MvPowerSeries.hasSubst_of_constantCoeff_zero Formalism.DworkPowerSeriesWeights.Transfer.constantCoeff_substOne')
-      Formalism.DworkPowerSeriesWeights.Transfer.constantCoeff_substOne' h,
-    MvPowerSeries.constantCoeff_subst_eq_zero
-      (MvPowerSeries.hasSubst_of_constantCoeff_zero Formalism.DworkPowerSeriesWeights.Transfer.constantCoeff_substZero)
-      Formalism.DworkPowerSeriesWeights.Transfer.constantCoeff_substZero h,
-    MvPowerSeries.constantCoeff_subst_eq_zero
-      (MvPowerSeries.hasSubst_of_constantCoeff_zero Formalism.DworkPowerSeriesWeights.Transfer.constantCoeff_substTwo')
-      Formalism.DworkPowerSeriesWeights.Transfer.constantCoeff_substTwo' h]
-  simp
+alias constantCoeff_defectTwo := _root_.Formalism.DworkPowerSeriesWeights.Transfer.constantCoeff_defectTwo
 
 theorem iterate_of_pow {σ : K →+* K} {u : K} {l : ℕ} (h : σ u = u ^ l) (j : ℕ) :
     σ^[j] u = u ^ (l ^ j) := by

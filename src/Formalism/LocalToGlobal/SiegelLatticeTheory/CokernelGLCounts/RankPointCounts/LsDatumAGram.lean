@@ -176,7 +176,7 @@ private theorem det_sub_cornerM (N : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (t : 
   rw [Matrix.det_succ_row (N - cornerM t) (Fin.last r), Matrix.det_succ_row N (Fin.last r),
     Fin.sum_univ_castSucc, Fin.sum_univ_castSucc]
   simp only [hsub, hrow, hP]
-  simp only [Matrix.sub_apply, cornerM, Matrix.of_apply, eq_self_iff_true, and_self, ite_true,
+  simp only [Matrix.sub_apply, cornerM, Matrix.of_apply, and_self, ite_true,
     Fin.succAbove_last]
   ring
 

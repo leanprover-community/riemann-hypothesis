@@ -178,15 +178,13 @@ theorem sw_coeff_euler (R : Type) [CommRing R] {r n : ℕ} (a : Fin r) (f : MvPo
 
 theorem sw_Dop_self (R : Type) [CommRing R] {r n : ℕ} (a : Fin r) (f : MvPolynomial (Fin r × Fin n) R) :
     Dop R a a f = rowDiv R a a 1 f := by
-  have h := sw_step_eq R a 0 f
-  simp only [zero_add, Nat.cast_one, one_smul, Nat.cast_zero, zero_smul, sub_zero, sw_rowDiv_zero] at h
-  exact h.symm
+  simpa only [zero_add, Nat.cast_one, one_smul, Nat.cast_zero, zero_smul, sub_zero, sw_rowDiv_zero]
+    using (sw_step_eq R a 0 f).symm
 
 theorem sw_Dop_ne (R : Type) [CommRing R] {r n : ℕ} (a b : Fin r) (hab : a ≠ b)
     (f : MvPolynomial (Fin r × Fin n) R) : Dop R a b f = rowDiv R a b 1 f := by
-  have h := sw_step_ne R a b hab 0 f
-  simp only [zero_add, Nat.cast_one, one_smul, sw_rowDiv_zero] at h
-  exact h.symm
+  simpa only [zero_add, Nat.cast_one, one_smul, sw_rowDiv_zero]
+    using (sw_step_ne R a b hab 0 f).symm
 
 theorem sw_Dop_rowDiv (R : Type) [CommRing R] {r n : ℕ} (a b : Fin r)
     (f : MvPolynomial (Fin r × Fin n) R) : Dop R a b f = rowDiv R a b 1 f := by
@@ -245,10 +243,8 @@ theorem sw_weyl_eq (K : Type) [Field K] [CharZero K] (r n : ℕ) (hn : n ≤ r) 
   rw [zsmul_eq_mul, map_mul, map_intCast, sw_bidet_map, ← hbm] at h5
   have hcK : (c : K) ≠ 0 := by exact_mod_cast hc
   have h6 : b i = (c : K)⁻¹ • (((c : ℤ) : MvPolynomial (Fin r × Fin n) K) * b i) := by
-    rw [smul_eq_C_mul, ← mul_assoc]
-    have : (C (c : K)⁻¹ : MvPolynomial (Fin r × Fin n) K) * ((c : ℤ) : MvPolynomial (Fin r × Fin n) K) = 1 := by
-      rw [← map_intCast (C : K →+* MvPolynomial (Fin r × Fin n) K), ← map_mul, inv_mul_cancel₀ hcK, map_one]
-    rw [this, one_mul]
+    rw [smul_eq_C_mul, ← mul_assoc, ← map_intCast (C : K →+* MvPolynomial (Fin r × Fin n) K),
+      ← map_mul, inv_mul_cancel₀ hcK, map_one, one_mul]
   show b i ∈ weyl K r n hn ν
   rw [h6]
   exact Submodule.smul_mem _ _ h5

@@ -257,7 +257,7 @@ lemma covA_span (K : Type) [Field K] [NumberField K] (d : ℕ) [Fact d.Prime] (h
     · exact ⟨u - v, by rw [hu, hv]; ring⟩
   refine ⟨m, B, ?_⟩
   apply FaithfulSMul.algebraMap_injective (𝓞 K) K
-  simp only [map_add (f := _), map_mul, map_intCast]
+  simp only [map_add (f := _), map_intCast]
   change (y : K) = (m : K) + (B : K) * ((1 + x) / 2)
   rw [hab]
   have ha2 : (2 : K) * a = A := by exact_mod_cast hA.symm
@@ -265,9 +265,7 @@ lemma covA_span (K : Type) [Field K] [NumberField K] (d : ℕ) [Fact d.Prime] (h
   have hm2 : (A : K) - B = 2 * m := by exact_mod_cast hm
   linear_combination (1 / 2 : K) * ha2 + (x / 2) * hb2 + (1 / 2 : K) * hm2
 
-theorem discr_K (K : Type) [Field K] [NumberField K] (d : ℕ) [Fact d.Prime] (hd4 : d % 4 = 3)
-    (x : K) (hx : x ^ 2 = -(d : K)) (hK : Module.finrank ℚ K = 2) :
-    NumberField.discr K = -(d : ℤ) := covA_discr K d hd4 x hx hK
+alias discr_K := _root_.Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.B5.covA_discr
 
 theorem latI_top_basis (K : Type) [Field K] [NumberField K] (d : ℕ) [Fact d.Prime] (hd4 : d % 4 = 3)
     (x : K) (hx : x ^ 2 = -(d : K)) (hK : Module.finrank ℚ K = 2)

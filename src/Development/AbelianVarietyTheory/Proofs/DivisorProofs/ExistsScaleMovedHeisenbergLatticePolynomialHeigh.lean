@@ -150,7 +150,7 @@ theorem GlobalTheory.MovedLat.exists_scale : ∀ (F E : Type) [Field F] [NumberF
   have hHf : (Function.mulSupport H).Finite :=
     (hKcf.union (hgf.union hhf)).subset ((Function.mulSupport_mul _ _).trans
       (Set.union_subset_union le_rfl (Function.mulSupport_mul _ _)))
-  obtain ⟨M, hM0, hMb, hMv⟩ := GlobalTheory.SmoothForms.denom_global H hH1 hHf
+  obtain ⟨M, hM0, hMb, hMv⟩ := _root_.GlobalTheory.AdicNormZpowEstimates.exists_denominator H hH1 hHf
   have hfin : ∀ x : AF F, (∀ v, ‖evFin F v x‖₊ ≤ H v) → GlobalTheory.FinSupp.FinDiv F N (((N * M : ℕ) : AF F) * x) := by
     intro x hx v
     refine ⟨(M : Fv F v) * evFin F v x, Valued.toNormedField.norm_le_one_iff.1 (hMv v _ (hx v)), ?_⟩

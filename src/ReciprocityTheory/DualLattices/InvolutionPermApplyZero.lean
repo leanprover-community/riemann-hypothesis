@@ -80,14 +80,11 @@ lemma idem_free {R : Type} [CommRing R] [IsLocalRing R] {g : ℕ} (P : Matrix (F
     apply Subtype.ext
     first
     | exact hff y
-    | simp [hff]
   haveI : Module.Projective R (LinearMap.range f) :=
     Module.Projective.of_split (LinearMap.range f).subtype f.rangeRestrict hsplit
   haveI : Module.Free R (LinearMap.range f) := by
     first
     | exact Module.free_of_flat_of_isLocalRing
-    | exact Module.free_of_flat_of_localRing
-    | infer_instance
   exact ⟨Module.finrank R (LinearMap.range f), ⟨(Module.finBasis R (LinearMap.range f)).equivFun⟩⟩
 
 lemma hasLen_subsingleton {C : Type} [Field C] (v : Valuation C NNReal) (R : Type) [CommRing R]

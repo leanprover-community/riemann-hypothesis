@@ -83,7 +83,7 @@ theorem kExpTiedS_holds : KernelExponentAgreement := by
   have hFE := Formalism.L2.SG.Pf.fundExistsC_holds D X Y u u'
   have hOO := Formalism.L2.SG.Closed.OOIntAllC_outright D X Y u u' f1 f2 hFE
   exact Formalism.L2.SG.Closed.KExpansionC_holds D X Y u u' f1 f2
-    (Formalism.L2.SG.Closed.InHHC_holds D X Y u hT.2.2.2.2.2.1 f1) (Formalism.L2.SG.Closed.InHHC_holds D X Y u' hT.2.2.2.2.2.1 f2) hFE hOO
+    (_root_.Formalism.L2.SG.Pf.inHHC_holds D X Y u hT.2.2.2.2.2.1 f1) (_root_.Formalism.L2.SG.Pf.inHHC_holds D X Y u' hT.2.2.2.2.2.1 f2) hFE hOO
     (Formalism.L2.SG.Closed.OOFundIndepC_holds D X Y u u' hFE hOO) (Formalism.L2.SG.Closed.AmpWellDefC_holds D X Y u u' hOO)
     (Formalism.L2.SG.Closed.AbsConvC_outright D X Y u u' f1 f2 hFE hOO)
 

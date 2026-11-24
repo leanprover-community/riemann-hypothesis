@@ -74,10 +74,10 @@ theorem sch_linear : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsStdChar D 
   · funext x
     have h1 := (dblDec A).integrableOn_mixS hψ.1.1 hν hf x 0
     have h2 := (dblDec A).integrableOn_mixS hψ.1.1 hν hf' x 0
-    simp only [sch, HypDec.mixS, _root_.I195MixedCoordinates_8f574703cd7515a934a5d64e.source, HypDec.integrandS_eq, Pi.add_apply, mul_add] at h1 h2 ⊢
+    simp only [sch, HypDec.mixS, HypDec.integrandS_eq, Pi.add_apply, mul_add] at h1 h2 ⊢
     exact integral_add h1 h2
   · funext x
-    simp only [sch, HypDec.mixS, _root_.I195MixedCoordinates_8f574703cd7515a934a5d64e.source, HypDec.integrandS_eq, Pi.smul_apply, smul_eq_mul, mul_left_comm _ c,
+    simp only [sch, HypDec.mixS, HypDec.integrandS_eq, Pi.smul_apply, smul_eq_mul, mul_left_comm _ c,
       integral_const_mul]
 
 end GlobalTheory.StdUnn

@@ -88,11 +88,11 @@ theorem block_inl_inl_one : bl Sum.inl Sum.inl (1 : Matrix (l ⊕ l) (l ⊕ l) �
 
 theorem block_inl_inr_one : bl Sum.inl Sum.inr (1 : Matrix (l ⊕ l) (l ⊕ l) ℝ) = 0 := by
   ext x a
-  simp [bl_apply, Matrix.one_apply]
+  simp [bl_apply]
 
 theorem block_inr_inl_one : bl Sum.inr Sum.inl (1 : Matrix (l ⊕ l) (l ⊕ l) ℝ) = 0 := by
   ext x a
-  simp [bl_apply, Matrix.one_apply]
+  simp [bl_apply]
 
 theorem hasDerivAt_lin_exp {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F] (L : Matrix (l ⊕ l) (l ⊕ l) ℝ →ₗ[ℝ] F)
     (X : Matrix (l ⊕ l) (l ⊕ l) ℝ) (t : ℝ) :
@@ -139,7 +139,7 @@ theorem fou_mq_fouInv (B : Matrix l l ℝ) (f : Sch l) :
   simp only [mq_apply, SchwartzMap.smul_apply, SchwartzMap.sum_apply, dRho_single_inr, smul_eq_mul,
     ContinuousLinearMap.neg_apply, inner_neg_right, inner_toEuclideanCLM, dotProduct, mulVec, Finset.mul_sum]
   push_cast
-  simp only [mul_neg, neg_mul, neg_neg, Finset.mul_sum, Finset.sum_mul]
+  simp only [mul_neg, neg_mul, Finset.mul_sum, Finset.sum_mul]
   simp only [← Finset.sum_neg_distrib, neg_neg]
   refine Finset.sum_congr rfl fun j _ => ?_
   refine Finset.sum_congr rfl fun k _ => ?_

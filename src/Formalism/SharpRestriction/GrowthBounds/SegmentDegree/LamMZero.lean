@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.CardFinRange
 public import Formalism.SharpRestriction.GrowthBounds.SegmentDegree.LamImgApply
 import Mathlib.Algebra.Order.Floor.Extended
 public import Mathlib.Algebra.Order.Floor.Semifield
@@ -61,23 +62,8 @@ theorem lam_m_zero {a b m J : ℤ} (ha : 0 ≤ a) (ha' : a < J) (hb : 0 ≤ b) (
     omega
 
 private theorem fr_le_fr_of_index_le {n' r : ℕ} [NeZero n'] (F : Frames n' r) {L₁ N₁ : ℕ} (hV : F.Valid L₁ N₁)
-    (j : ℤ) : ∀ k, k < r → ∀ i ≤ k, F.fr j i ≤ F.fr j k := by
-  intro k
-  induction k with
-  | zero =>
-    intro _ i hi
-    have : i = 0 := by omega
-    subst this
-    exact le_refl _
-  | succ k ih =>
-    intro hk i hi
-    rcases Nat.lt_or_ge i (k + 1) with h | h
-    · have h1 := ih (by omega) i (by omega)
-      have h2 := hV.2.2.1 j k hk
-      omega
-    · have : i = k + 1 := by omega
-      subst this
-      exact le_refl _
+    (j : ℤ) : ∀ k, k < r → ∀ i ≤ k, F.fr j i ≤ F.fr j k :=
+  fun k hk i hi => TE.fr_le hV j i k hi hk
 
 private theorem exists_index_eq_fr_of_between {n' r : ℕ} [NeZero n'] (F : Frames n' r) {L₁ N₁ : ℕ} (hV : F.Valid L₁ N₁)
     (j x : ℤ) (hx : posOf n' x ∈ F.TT) :
@@ -121,28 +107,12 @@ theorem lam_W_late {n' r : ℕ} [NeZero n'] [NeZero r] (X : Dat n' r) {L₁ N₁
     omega
 
 private theorem fr_last_lt_fr_last_succ {n' r : ℕ} [NeZero n'] [NeZero r] (F : Frames n' r) {L₁ N₁ : ℕ}
-    (hV : F.Valid L₁ N₁) (a : ℤ) : F.fr a (r - 1) < F.fr (a + 1) (r - 1) := by
-  have hr : 0 < r := Nat.pos_of_ne_zero (NeZero.ne r)
-  have h1 := hV.2.2.2.1 a
-  have h2 := fr_le_fr_of_index_le F hV (a + 1) (r - 1) (by omega) 0 (Nat.zero_le _)
-  omega
-
-private theorem fr_last_le_fr_last_add_nat {n' r : ℕ} [NeZero n'] [NeZero r] (F : Frames n' r) {L₁ N₁ : ℕ}
-    (hV : F.Valid L₁ N₁) (a : ℤ) : ∀ k : ℕ, F.fr a (r - 1) ≤ F.fr (a + k) (r - 1) := by
-  intro k
-  induction k with
-  | zero => simp
-  | succ k ih =>
-    have h := fr_last_lt_fr_last_succ F hV (a + k)
-    push_cast
-    rw [← add_assoc]
-    omega
+    (hV : F.Valid L₁ N₁) (a : ℤ) : F.fr a (r - 1) < F.fr (a + 1) (r - 1) :=
+  eFr_strictMono hV (lt_add_one a)
 
 private theorem fr_last_monotone {n' r : ℕ} [NeZero n'] [NeZero r] (F : Frames n' r) {L₁ N₁ : ℕ}
-    (hV : F.Valid L₁ N₁) (a b : ℤ) (h : a ≤ b) : F.fr a (r - 1) ≤ F.fr b (r - 1) := by
-  have h1 := fr_last_le_fr_last_add_nat F hV a (b - a).toNat
-  rw [Int.toNat_of_nonneg (by omega), show a + (b - a) = b by ring] at h1
-  exact h1
+    (hV : F.Valid L₁ N₁) (a b : ℤ) (h : a ≤ b) : F.fr a (r - 1) ≤ F.fr b (r - 1) :=
+  (eFr_strictMono hV).monotone h
 
 private theorem eq_of_mod_eq_of_mem_Ioc_fr_last {n' r : ℕ} [NeZero n'] [NeZero r] (F : Frames n' r) {L₁ N₁ : ℕ}
     (hV : F.Valid L₁ N₁) (s a b x x' : ℤ) (hsa : s ≤ a) (haJ : a < s + F.J) (hsb : s ≤ b)

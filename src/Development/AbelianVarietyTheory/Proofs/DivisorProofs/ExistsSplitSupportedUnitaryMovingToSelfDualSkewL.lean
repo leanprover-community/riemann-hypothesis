@@ -47,6 +47,7 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.TypeStar
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CosetVecEq
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsSkewLatticeMoverWithDeterminant
 
 @[expose] public section
 
@@ -250,101 +251,7 @@ theorem zeroAt_zero' (D : D7) (q : ℕ) : ZeroAt D q 0 :=
 
 theorem exists_skew_move : ∀ (D : D7) (𝔪 : Ideal (𝓞 D.host.E)), 𝔪 ≠ ⊥ → IsCoprime 𝔪 (D.host.conj • 𝔪) → ∀ d : ℕ, ∃ (g' : GA D d) (x' : (AE D)ˣ), SuppSplit D (g' : GL (Fin d) (AE D)) ∧ Moves D (g' : GL (Fin d) (AE D)) (skewLat D 𝔪 d) ∧ (∀ q : ℕ, q.Prime → InertQ D q → ZeroAt D q ((x' : AE D) - 1)) ∧ x' = Matrix.GeneralLinearGroup.det (g' : GL (Fin d) (AE D)) * sgU D x' := by
   intro D 𝔪 h𝔪 hcop d
-  obtain ⟨y, f, y1, ⟨k, b, w, hb, hw, hy⟩, hf, hff, hfy, hq⟩ := exists_gen_idem 𝔪 h𝔪 hcop
-  obtain ⟨e, he_def⟩ : ∃ e : AE D, e = f * sgA D f := ⟨_, rfl⟩
-  have hfb : sgA D f * sgA D f = sgA D f := by rw [← map_mul, hff]
-  have he : e * e = e := by rw [he_def]; linear_combination sgA D f * sgA D f * hff + f * hfb
-  have hse : sgA D e = e := by rw [he_def, map_mul, VacMove.sgA_sgA, mul_comm]
-  have heO : e ∈ OhE D := he_def ▸ mul_mem hf (VacMove.sgA_mem D hf)
-  have hyO : (y : AE D) ∈ OhE D := hy ▸ sum_mem fun i _ => mul_mem (VacMove.inc_int D (b i)) (hw i)
-  have hyy : (y : AE D) * ((y⁻¹ : (AE D)ˣ) : AE D) = 1 := y.mul_inv
-  have hY : sgA D (y : AE D) * sgA D ((y⁻¹ : (AE D)ˣ) : AE D) = 1 := by rw [← map_mul, hyy, map_one]
-  have hA : e * sgA D (y : AE D) * ((y⁻¹ : (AE D)ˣ) : AE D) ∈ OhE D := by
-    have : e * sgA D (y : AE D) * ((y⁻¹ : (AE D)ˣ) : AE D) =
-        (sgA D f * sgA D (y : AE D)) * (f * ((y⁻¹ : (AE D)ˣ) : AE D)) := by rw [he_def]; ring
-    rw [this]; exact mul_mem (mul_mem (VacMove.sgA_mem D hf) (VacMove.sgA_mem D hyO)) hfy
-  have hB : e * (y : AE D) * sgA D ((y⁻¹ : (AE D)ˣ) : AE D) ∈ OhE D := by
-    have : e * (y : AE D) * sgA D ((y⁻¹ : (AE D)ˣ) : AE D) =
-        (f * (y : AE D)) * sgA D (f * ((y⁻¹ : (AE D)ˣ) : AE D)) := by rw [he_def, map_mul]; ring
-    rw [this]; exact mul_mem (mul_mem hf hyO) (VacMove.sgA_mem D hfy)
-
-  have h1e : ∀ q : ℕ, q.Prime → InertQ D q → ZeroAt D q (1 - e) := by
-    intro q hqp hi j
-    obtain ⟨w', hw', e'⟩ := hq q hqp hi j
-    have e'' : 1 - sgA D f = (q : AE D) ^ j * sgA D w' := by
-      rw [← map_one (sgA D), ← map_sub, e', map_mul, map_pow, map_natCast]
-    refine ⟨1, one_pos, Nat.coprime_one_left q, w' + f * sgA D w', add_mem hw' (mul_mem hf (VacMove.sgA_mem D hw')), ?_⟩
-    rw [he_def, Nat.cast_one, one_mul]
-    linear_combination e' + f * e''
-
-  have hu : ((1 - e) * (y : AE D) + e) * ((1 - e) * ((y⁻¹ : (AE D)ˣ) : AE D) + e) = 1 := by
-    linear_combination (1 - e) ^ 2 * hyy + (2 - (y : AE D) - ((y⁻¹ : (AE D)ˣ) : AE D)) * he
-  obtain ⟨u, hu_val, hu_inv⟩ : ∃ u : (AE D)ˣ, (u : AE D) = (1 - e) * (y : AE D) + e ∧
-      ((u⁻¹ : (AE D)ˣ) : AE D) = (1 - e) * ((y⁻¹ : (AE D)ˣ) : AE D) + e :=
-    ⟨⟨_, _, hu, by rw [mul_comm]; exact hu⟩, rfl, rfl⟩
-  have hsv : ∀ z : (AE D)ˣ, ((sgU D z : (AE D)ˣ) : AE D) = sgA D (z : AE D) := fun z => rfl
-  have hsi : ∀ z : (AE D)ˣ, (((sgU D z)⁻¹ : (AE D)ˣ) : AE D) = sgA D ((z⁻¹ : (AE D)ˣ) : AE D) := fun z => rfl
-  have hu1 : ∀ q : ℕ, q.Prime → InertQ D q → ZeroAt D q ((u : AE D) - 1) := fun q hqp hi => by
-    have := VacMove.zeroAt_mul D hqp (h1e q hqp hi) ((y : AE D) - 1)
-    rw [hu_val]
-    convert this using 1
-    ring
-  obtain ⟨v, hv_def⟩ : ∃ v : (AE D)ˣ, v = u * (sgU D u)⁻¹ := ⟨_, rfl⟩
-  have hv : (v : AE D) = ((1 - e) * (y : AE D) + e) * ((1 - e) * sgA D ((y⁻¹ : (AE D)ˣ) : AE D) + e) := by
-    rw [hv_def, Units.val_mul, hsi, hu_val, hu_inv, map_add (f := _), map_mul, map_sub, map_one, hse]
-  have hvi : ((v⁻¹ : (AE D)ˣ) : AE D) = ((1 - e) * ((y⁻¹ : (AE D)ˣ) : AE D) + e) * ((1 - e) * sgA D (y : AE D) + e) := by
-    rw [hv_def, mul_inv_rev, inv_inv, Units.val_mul, hsv, hu_val, hu_inv, map_add (f := _), map_mul, map_sub, map_one, hse, mul_comm]
-  have hv2 : ((1 - e) * sgA D (y : AE D) + e) * ((1 - e) * sgA D ((y⁻¹ : (AE D)ˣ) : AE D) + e) = 1 := by
-    linear_combination (1 - e) ^ 2 * hY + (2 - sgA D (y : AE D) - sgA D ((y⁻¹ : (AE D)ˣ) : AE D)) * he
-  have hss : sgU D (sgU D u) = u := Units.ext (VacMove.sgA_sgA D _)
-  have hvv' : sgU D v * v = 1 := by
-    rw [hv_def]
-    rw [map_mul, map_inv, hss]
-    group
-  have hvv : sgA D (v : AE D) * (v : AE D) = 1 := congrArg Units.val hvv'
-  obtain ⟨gG, hgv, hgi⟩ : ∃ gG : GL (Fin d) (AE D), (gG : Matrix (Fin d) (Fin d) (AE D)) =
-      Matrix.diagonal (fun _ => (v : AE D)) ∧ ((gG⁻¹ : GL (Fin d) (AE D)) : Matrix (Fin d) (Fin d) (AE D)) =
-      Matrix.diagonal fun _ => ((v⁻¹ : (AE D)ˣ) : AE D) :=
-    ⟨Units.map (Matrix.scalar (Fin d) : AE D →+* Matrix (Fin d) (Fin d) (AE D)).toMonoidHom v, rfl, rfl⟩
-  have hmem : gG ∈ GA D d := by
-    rw [GlobalTheory.NormSum.PtsMem.mem_GA, hgv, Matrix.diagonal_map (map_zero _), Matrix.diagonal_transpose,
-      Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
-    exact congrArg Matrix.diagonal (funext fun _ => hvv)
-  have hsupp : SuppSplit D gG := by
-    intro q hqp hi i j
-    rw [hgv]
-    by_cases hij : i = j
-    · subst hij
-      rw [Matrix.diagonal_apply_eq, Matrix.one_apply_eq]
-      have := VacMove.zeroAt_mul D hqp (h1e q hqp hi)
-        (((y : AE D) - sgA D (y : AE D)) * ((1 - e) * sgA D ((y⁻¹ : (AE D)ˣ) : AE D) + e))
-      convert this using 1
-      rw [hv]
-      linear_combination hv2
-    · rw [Matrix.diagonal_apply_ne _ hij, Matrix.one_apply_ne hij, sub_self]
-      exact zeroAt_zero' D q
-  have hmove : Moves D gG (skewLat D 𝔪 d) := by
-    intro x
-    rw [hgi]
-    simp only [Matrix.mulVec_diagonal, hvi]
-    change x ∈ Submodule.pi Set.univ _ ↔ _
-    rw [Submodule.mem_pi]
-    refine ⟨fun h i => ?_, fun h i _ => ?_⟩
-    · exact (move_iff (OhE D) heO he hyy hY hA hB).2 ((mem_skew_iff h𝔪 y1 hb hw hy (x i)).1 (FractionalIdeal.mem_coe.1 (h i (Set.mem_univ i))))
-    · have key := (mem_skew_iff h𝔪 y1 hb hw hy (x i)).2 ((move_iff (OhE D) heO he hyy hY hA hB).1 (h i))
-      exact key
-  have hdet : Matrix.GeneralLinearGroup.det gG = v ^ d := by
-    have h1 : ((Matrix.GeneralLinearGroup.det gG : (AE D)ˣ) : AE D) = (gG : Matrix (Fin d) (Fin d) (AE D)).det :=
-      Matrix.GeneralLinearGroup.val_det_apply gG
-    have h2 : (gG : Matrix (Fin d) (Fin d) (AE D)).det = (v : AE D) ^ d := by
-      rw [hgv, Matrix.det_diagonal, Finset.prod_const, Finset.card_univ, Fintype.card_fin]
-    refine Units.ext ?_
-    rw [h1, h2, Units.val_pow_eq_pow_val]
-  refine ⟨⟨gG, hmem⟩, u ^ d, hsupp, hmove, ?_, ?_⟩
-  · intro q hqp hi
-    rw [Units.val_pow_eq_pow_val, ← mul_geom_sum]
-    exact VacMove.zeroAt_mul D hqp (hu1 q hqp hi) _
-  · change u ^ d = Matrix.GeneralLinearGroup.det gG * sgU D (u ^ d)
-    rw [hdet, map_pow, hv_def, mul_pow, inv_pow, inv_mul_cancel_right]
+  obtain ⟨g', x', h1, h2, h3, h4, -⟩ := GlobalTheory.SkewCentral.exists_central_skew_move D 𝔪 h𝔪 hcop d
+  exact ⟨g', x', h1, h2, h3, h4⟩
 
 end GlobalTheory.SkewMove

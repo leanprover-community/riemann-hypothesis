@@ -191,7 +191,6 @@ lemma genHasVal_units {X : Scheme.{0}} (L : LB X) {Ix : Type} [Fintype Ix]
   · rw [Units.val_mul, hj]
     first
       | exact Units.mul_inv_cancel_right _ _
-      | simp
   · exact (inv_mul_cancel_right _ _).symm
 
 
@@ -228,7 +227,7 @@ lemma genHasVal_top {X : Scheme.{0}} (L : LB X) {Ix : Type} [Fintype Ix]
     have hnat := congrArg (fun f => (CommRingCat.Hom.hom f)
         (((Spec (CommRingCat.of V)).presheaf.map (homOfLE hV).op).hom (e.s j₀).val))
       (Scheme.ΓSpecIso_naturality (CommRingCat.ofHom (algebraMap V (FractionRing V))))
-    simp only [CommRingCat.comp_apply, CommRingCat.hom_ofHom] at hnat
+    simp only at hnat
     erw [← hnat]
     rw [CommRingCat.comp_apply]
     congr 1

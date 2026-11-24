@@ -94,7 +94,6 @@ theorem dpsi_e_w (k r : ℕ) (z' : Fin (2 * r + k + 1) → ℂ) (p : ℕ) (hp : 
     dpsiP k r z' (pe k r p) (wI k r w) = if p + 1 = r then z' (wI k r w) else 0 := by
   have h1 : min p (2 * r + k) = p := by omega
   have hw : (wI k r w).val = r + w.val := rfl
-  have hwk := w.isLt
   simp only [dpsiP, pe_val, h1, hw]
   rw [if_neg (by omega), if_pos (by omega)]
 
@@ -106,7 +105,7 @@ theorem dpsi_last_basis_shift (k r : ℕ) (z' : Fin (2 * r + k + 1) → ℂ) (a 
   have c4 : r + k < 2 * r + k - a ∧ r + k < 2 * r + k - b := by omega
   have c5 : (2 * r + k - b = 2 * r + k - a + 1) ↔ (b + 1 = a) := by omega
   have c6 : ¬(2 * r + k - a ≤ r + k) := by omega
-  simp only [dpsiP, ps_val, c1, c2, c3, c4, c5, c6, if_false, if_true, and_self, and_false, false_and, and_true]
+  simp only [dpsiP, ps_val, c1, c2, c4, c5, c6, if_false, if_true, and_self, and_false, and_true]
 
 theorem third_peeling_minor_mem_ideal {A : Type} [Ring A] [Algebra ℂ A] (k r : ℕ) (z' : Fin (2 * r + k + 1) → ℂ)
     (E : Fin (2 * r + k + 1) → Fin (2 * r + k + 1) → A) (hG : GlRel E) (ell : ℂ) : ∀ (m i : ℕ), i ≤ m → m + 1 ≤ r →
@@ -203,7 +202,6 @@ theorem second_peeling_identity : PeelingCovector := by
       have := l.isLt
       apply hT_of _ _ _ (fun w => dpsiP k (m + 1) z' (pe k (m + 1) l.val) (wI k (m + 1) w))
       · intro w
-        have hw := w.isLt
         have hne : pe k (m + 1) l.val ≠ wI k (m + 1) w := by
           intro h2; have h3 := congrArg Fin.val h2; rw [pe_lt (by omega)] at h3; simp only [wI] at h3; omega
         rw [tm_offdiag _ _ hne]

@@ -382,9 +382,6 @@ theorem mollify_thm : MollifyStatement := by
   · filter_upwards [self_mem_nhdsWithin, nhdsWithin_le_nhds (Iio_mem_nhds hR0)] with ε hε hεR
     exact ((mollify_main ρ hU hφ hε).2.2.2 z (hsh ε hε hεR)).2
 
-theorem mollification_second_order : MollificationSecondOrder :=
-  mollificationSecondOrder_holds
-
 end
 
 end ReciprocityTheory.AnForm.A

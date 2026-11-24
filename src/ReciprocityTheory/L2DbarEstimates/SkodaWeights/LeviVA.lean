@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.L2DbarEstimates.LeviForms.OfRealNormSqSumMul
 public import ReciprocityTheory.L2DbarEstimates.ChartDerivatives.ChartSymmEventuallyEq
 public import ReciprocityTheory.L2DbarEstimates.SkodaWeights.Matrix
 public import ReciprocityTheory.L2DbarEstimates.IsLocalHomeomorph
@@ -82,34 +83,7 @@ theorem ofReal_normSq_sum_mul (a ξ : Fin n → ℂ) :
   ring
 
 theorem leviChain : LeviChainStatement := by
-  intro n k v x ξ hv hk
-  have hv1 : DifferentiableAt ℝ v x := hv.differentiableAt (by simp)
-  have hk1 : DifferentiableAt ℝ (deriv k) (v x) := differentiableAt_deriv_of_contDiffAt hk
-  have hv' : ContDiffAt ℝ 2 (fun y => ((v y : ℝ) : ℂ)) x :=
-    ofRealCLM.contDiff.contDiffAt.comp x hv
-  have hvd : ∀ᶠ y in 𝓝 x, DifferentiableAt ℝ v y := eventually_differentiableAt_of_contDiffAt hv
-  have hkd : ∀ᶠ y in 𝓝 x, DifferentiableAt ℝ k (v y) :=
-    hv1.continuousAt.tendsto.eventually (eventually_differentiableAt_of_contDiffAt hk)
-  have hE : ∀ kk : Fin n, wdb n kk (fun y => ((k (v y) : ℝ) : ℂ)) =ᶠ[𝓝 x]
-      fun y => ((deriv k (v y) : ℝ) : ℂ) * wdb n kk (fun y => ((v y : ℝ) : ℂ)) y := by
-    intro kk
-    filter_upwards [hvd, hkd] with y hy1 hy2
-    exact wdb_ofReal_comp hy2 hy1
-  have hD1 : DifferentiableAt ℝ (fun y => ((deriv k (v y) : ℝ) : ℂ)) x :=
-    differentiableAt_ofReal (hk1.comp x hv1)
-  have hterm : ∀ j kk : Fin n, wd n j (wdb n kk (fun y => ((k (v y) : ℝ) : ℂ))) x =
-      ((deriv (deriv k) (v x) : ℝ) : ℂ) * wd n j (fun y => ((v y : ℝ) : ℂ)) x *
-          conj (wd n kk (fun y => ((v y : ℝ) : ℂ)) x) +
-        ((deriv k (v x) : ℝ) : ℂ) * wd n j (wdb n kk (fun y => ((v y : ℝ) : ℂ))) x := by
-    intro j kk
-    rw [wd_congr (hE kk),
-      wd_mul (f := fun y => ((deriv k (v y) : ℝ) : ℂ)) (g := wdb n kk (fun y => ((v y : ℝ) : ℂ)))
-        hD1 (differentiableAt_wdb hv'),
-      wd_ofReal_comp hk1 hv1, wdb_ofReal hv1]
-  rw [ofReal_normSq_sum_mul]
-  simp only [leviV, hterm, Finset.mul_sum, ← Finset.sum_add_distrib]
-  refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun kk _ => ?_
-  ring
+  apply ReciprocityTheory.L2DbarEstimates.leviChain <;> assumption
 
 theorem wd_ofReal_sum {m : ℕ} {j : Fin n} {u : Fin m → V n → ℝ} {x : V n}
     (hu : ∀ i, DifferentiableAt ℝ (u i) x) :
@@ -123,7 +97,6 @@ theorem wd_ofReal_sum {m : ℕ} {j : Fin n} {u : Fin m → V n → ℝ} {x : V n
   rw [hfun]
   first
   | rw [fderiv_fun_sum hd]
-  | rw [fderiv_sum' hd]
   simp only [ContinuousLinearMap.sum_apply]
   rw [Finset.mul_sum, ← Finset.sum_sub_distrib, Finset.sum_div]
 
@@ -134,7 +107,6 @@ private theorem wd_wdb_finset_sum {m : ℕ} {j : Fin n} {G : Fin m → V n → �
   unfold wd
   first
   | rw [fderiv_fun_sum hd]
-  | rw [fderiv_sum hd]
   simp only [ContinuousLinearMap.sum_apply]
   rw [Finset.mul_sum, ← Finset.sum_sub_distrib, Finset.sum_div]
 
@@ -145,7 +117,6 @@ private theorem wdb_sum' {m : ℕ} {k : Fin n} {G : Fin m → V n → ℂ} {x : 
   unfold wdb
   first
   | rw [fderiv_fun_sum hd]
-  | rw [fderiv_sum hd]
   simp only [ContinuousLinearMap.sum_apply]
   rw [Finset.mul_sum, ← Finset.sum_add_distrib, Finset.sum_div]
 
@@ -153,24 +124,6 @@ private theorem wd_apply_congr_of_eventuallyEq {j : Fin n} {f g : V n → ℂ} {
     wd n j f x = wd n j g x := by
   unfold wd
   rw [h.fderiv_eq]
-
-private theorem wdb_differentiableAt_of_contDiffAt_two {k : Fin n} {U : V n → ℂ} {x : V n} (hU : ContDiffAt ℝ 2 U x) :
-    DifferentiableAt ℝ (wdb n k U) x := by
-  have h1 : ContDiffAt ℝ 1 (fderiv ℝ U) x :=
-    hU.fderiv_right (by first | norm_num | rfl | simp)
-  have h2 : DifferentiableAt ℝ (fderiv ℝ U) x := h1.differentiableAt one_ne_zero
-  unfold wdb
-  have h3 : DifferentiableAt ℝ (fun y => fderiv ℝ U y (bas n k)) x :=
-    h2.clm_apply (differentiableAt_const _)
-  have h4 : DifferentiableAt ℝ (fun y => fderiv ℝ U y (Complex.I • bas n k)) x :=
-    h2.clm_apply (differentiableAt_const _)
-  have h5 : DifferentiableAt ℝ (fun y => fderiv ℝ U y (bas n k) +
-      Complex.I * fderiv ℝ U y (Complex.I • bas n k)) x := h3.add (h4.const_mul Complex.I)
-  first
-  | fun_prop
-  | exact h5.div_const (2 : ℂ)
-  | exact (h5.mul_const ((2 : ℂ)⁻¹)).congr_of_eventuallyEq
-      (Filter.Eventually.of_forall fun y => div_eq_mul_inv _ _)
 
 theorem leviV_ofReal_sum {m : ℕ} {u : Fin m → V n → ℝ} {x : V n}
     (hu : ∀ i, ContDiffAt ℝ 2 (u i) x) (ξ : Fin n → ℂ) :
@@ -183,8 +136,8 @@ theorem leviV_ofReal_sum {m : ℕ} {u : Fin m → V n → ℝ} {x : V n}
   have hev : ∀ᶠ y in 𝓝 x, ∀ i, DifferentiableAt ℝ (fun y => ((u i y : ℝ) : ℂ)) y := by
     rw [Filter.eventually_all]
     intro i
-    filter_upwards [(hU i).eventually (by first | simp | decide | norm_num)] with y hy
-    exact hy.differentiableAt (by first | norm_num | simp | exact one_le_two)
+    filter_upwards [(hU i).eventually (by first | simp)] with y hy
+    exact hy.differentiableAt (by first | norm_num)
   have hwdb : ∀ k, wdb n k (fun y => ∑ i, ((u i y : ℝ) : ℂ)) =ᶠ[𝓝 x]
       fun y => ∑ i, wdb n k (fun y => ((u i y : ℝ) : ℂ)) y := by
     intro k
@@ -193,7 +146,7 @@ theorem leviV_ofReal_sum {m : ℕ} {u : Fin m → V n → ℝ} {x : V n}
   have hterm : ∀ j k, wd n j (wdb n k (fun y => ((∑ i, u i y : ℝ) : ℂ))) x =
       ∑ i, wd n j (wdb n k (fun y => ((u i y : ℝ) : ℂ))) x := by
     intro j k
-    rw [hfun, wd_apply_congr_of_eventuallyEq (hwdb k), wd_wdb_finset_sum fun i => wdb_differentiableAt_of_contDiffAt_two (hU i)]
+    rw [hfun, wd_apply_congr_of_eventuallyEq (hwdb k), wd_wdb_finset_sum fun i => _root_.ReciprocityTheory.L2DbarEstimates.differentiableAt_wdb (hU i)]
   unfold leviV
   simp only [hterm, Finset.sum_mul]
   conv_rhs => rw [Finset.sum_comm]
@@ -215,14 +168,13 @@ theorem contDiffAt_normSq_comp {g : V n → ℂ} {x : V n} (hg : ContDiffAt ℂ 
   have h2 : ContDiffAt ℝ 2 (fun y => ‖g y‖ ^ 2) x := by
     first
     | exact (contDiff_norm_sq ℝ).contDiffAt.comp x h1
-    | exact (contDiff_norm_sq ℂ).contDiffAt.comp x h1
   refine h2.congr_of_eventuallyEq (Filter.Eventually.of_forall fun y => ?_)
   exact Complex.normSq_eq_norm_sq _
 
 theorem wd_normSq_comp {j : Fin n} {g : V n → ℂ} {x : V n} (hg : ContDiffAt ℂ 2 g x) :
     wd n j (fun y => ((Complex.normSq (g y) : ℝ) : ℂ)) x = wd n j g x * conj (g x) := by
   have hdiff : DifferentiableAt ℂ g x :=
-    hg.differentiableAt (by first | norm_num | exact one_le_two | decide | simp)
+    hg.differentiableAt (by first | norm_num)
   have hD : HasFDerivAt g (fderiv ℝ g x) x := (hdiff.restrictScalars ℝ).hasFDerivAt
   have hlin : ∀ v : V n, fderiv ℝ g x (Complex.I • v) = Complex.I * fderiv ℝ g x v := by
     intro v
@@ -304,12 +256,12 @@ theorem leviV_normSq_comp {g : V n → ℂ} {x : V n} (hg : ContDiffAt ℂ 2 g x
     leviV n (fun y => ((Complex.normSq (g y) : ℝ) : ℂ)) x ξ =
       ((Complex.normSq (∑ j, wd n j g x * ξ j) : ℝ) : ℂ) := by
   have hev : ∀ᶠ y in 𝓝 x, DifferentiableAt ℂ g y := by
-    filter_upwards [hg.eventually (by first | simp | decide | norm_num)] with y hy
-    exact hy.differentiableAt (by first | norm_num | simp)
+    filter_upwards [hg.eventually (by first | simp)] with y hy
+    exact hy.differentiableAt (by first | norm_num)
   have hdx : DifferentiableAt ℂ g x := hev.self_of_nhds
   have hhol : ∀ k, DifferentiableAt ℂ (wd n k g) x := by
     intro k
-    have h1 : ContDiffAt ℂ 1 (fderiv ℂ g) x := hg.fderiv_right (by first | norm_num | rfl | simp)
+    have h1 : ContDiffAt ℂ 1 (fderiv ℂ g) x := hg.fderiv_right (by first | norm_num)
     have h2 : DifferentiableAt ℂ (fun y => fderiv ℂ g y (bas n k)) x :=
       (h1.differentiableAt one_ne_zero).clm_apply (differentiableAt_const _)
     refine h2.congr_of_eventuallyEq ?_
@@ -405,7 +357,7 @@ theorem leviLogNormSq : LeviLogNormSqStatement := by
       ∑ i, wd n j (g i) x * conj (g i x) := by
     intro j
     unfold sqNorm
-    rw [wd_ofReal_sum fun i => (hSi i).differentiableAt (by first | norm_num | simp)]
+    rw [wd_ofReal_sum fun i => (hSi i).differentiableAt (by first | norm_num)]
     exact Finset.sum_congr rfl fun i _ => wd_normSq_comp (hg i)
   have hlv : leviV n (fun y => ((sqNorm (fun i => g i y) : ℝ) : ℂ)) x ξ =
       ∑ i, ((Complex.normSq ((wJac n p g x *ᵥ ξ) i) : ℝ) : ℂ) := by

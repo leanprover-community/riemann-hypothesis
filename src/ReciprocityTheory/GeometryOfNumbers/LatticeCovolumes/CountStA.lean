@@ -81,13 +81,6 @@ theorem covol_div_covol_eq_relIndex {E : Type*} [NormedAddCommGroup E] [NormedSp
   rw [Matrix.map_apply, Basis.toMatrix_apply, Basis.toMatrix_apply]
   exact (b₂.ofZLatticeBasis_repr_apply ℝ L₂ ⟨b₁ j, h (Submodule.coe_mem _)⟩ i)
 
-theorem measurePreserving_swapPi {ι κ X : Type*} [Fintype ι] [Fintype κ] [MeasurableSpace X]
-    (ν : Measure X) [SigmaFinite ν] :
-    MeasurePreserving (fun (f : ι → κ → X) (k : κ) (i : ι) => f i k)
-      (Measure.pi fun _ : ι => Measure.pi fun _ : κ => ν)
-      (Measure.pi fun _ : κ => Measure.pi fun _ : ι => ν) := by
-  first | exact UpperTheory.Reformulated.B.Qe3b.measurePreserving_swapPi .. | (apply UpperTheory.Reformulated.B.Qe3b.measurePreserving_swapPi <;> assumption) | (intros; apply UpperTheory.Reformulated.B.Qe3b.measurePreserving_swapPi <;> assumption) | (apply @UpperTheory.Reformulated.B.Qe3b.measurePreserving_swapPi <;> assumption) | (intros; apply @UpperTheory.Reformulated.B.Qe3b.measurePreserving_swapPi <;> assumption) | (apply @UpperTheory.Reformulated.B.Qe3b.measurePreserving_swapPi <;> first | assumption | infer_instance)
-
 end ReciprocityTheory.GeometryOfNumbersTheory
 
 namespace ReciprocityTheory.GeometryOfNumbersTheory
@@ -126,11 +119,5 @@ theorem HermFam.form_expand (h : HermFam K V) (σ : K →+* ℂ) {n : ℕ} (c : 
   ring
 
 end Form
-
-section Places
-
-variable {K : Type*} [Field K] [NumberField K]
-
-end Places
 
 end ReciprocityTheory.GeometryOfNumbersTheory

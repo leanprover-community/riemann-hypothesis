@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsLevelSubgroup
 public import Formalism.SharpRestriction.CuspSpanNormBounds.LocalGroupInFamilyNontrivial
 import Formalism.LocalRingCardinality.SpanPowerMembership.ExampleLayerExistsGenerators
 import Mathlib.Algebra.Order.Floor.Extended
@@ -84,7 +85,7 @@ theorem tie_hypE_indep (D : D7) : LinearIndependent D.host.E D.sp.hypE := by
     rw [tie_hypFE]
     by_cases h : i = j
     · subst h; simp
-    · simp [h, Ne.symm h, Pi.single_apply]
+    · simp [h, Ne.symm h]
   rw [hfun]
   exact (Pi.basisFun D.host.E (Fin D.R.rS)).linearIndependent
 
@@ -106,7 +107,7 @@ theorem tie_zmOf_norm (D : D7) (u : D.what₂.Word) :
   rw [LinearMap.map_smulₛₗ₂, map_smul, hz, ← hq]
   simp only [Tu, smul_eq_mul, starRingEnd_apply, star_inv₀, tie_star]
   field_simp
-  <;> ring
+
 
 def tie_flag0 (D : D7) (u : D.what₂.Word) : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E) where
   e := D.sp.hypE
@@ -153,30 +154,7 @@ open Formalism.MainNotions.S.LocalSplitGroups
 
 theorem tie_gram_det_ne {E : Type} [Field E] [NumberField E] [StarRing E] (S : Formalism.BasicNotions.HSpace E) :
     S.gram.det ≠ 0 := by
-  intro hdet
-  obtain ⟨v, hv0, hv⟩ := Matrix.exists_mulVec_eq_zero_iff.mpr hdet
-  have hcol : ∀ i, S.hT (S.frame i) (∑ j, v j • S.frame j) = 0 := by
-    intro i
-    have hi := congrFun hv i
-    simp only [Matrix.mulVec, dotProduct, HSpace.gram, Pi.zero_apply] at hi
-
-    rw [map_sum]
-    simp only [map_smul, smul_eq_mul]
-    rw [← hi]
-    exact Finset.sum_congr rfl (fun j _ => mul_comm _ _)
-  have hall : ∀ x, S.hT x (∑ j, v j • S.frame j) = 0 := by
-    intro x
-    have hx : x ∈ Submodule.span E (Set.range S.frame) := by
-      rw [S.frame.span_eq]; exact Submodule.mem_top
-    induction hx using Submodule.span_induction with
-    | mem z hz =>
-      obtain ⟨i, rfl⟩ := hz
-      exact hcol i
-    | zero => rw [map_zero, LinearMap.zero_apply]
-    | add u w _ _ hu hw => rw [map_add (f := _), LinearMap.add_apply, hu, hw, add_zero]
-    | smul c u _ hu => rw [map_smulₛₗ, LinearMap.smul_apply, hu, smul_zero]
-  have hy0 : ∑ j, v j • S.frame j = 0 := S.nondeg.2 _ hall
-  exact hv0 (funext (Fintype.linearIndependent_iff.mp S.frame.linearIndependent v hy0))
+  apply GlobalTheory.RecDict.det_gram_ne_zero <;> assumption
 
 variable (D : D7) (p : PlF D)
 
@@ -214,8 +192,8 @@ theorem tie_diagPt_mat {K : Type*} [Zero K] {n : ℕ} (f : Fin n → K) (hf : �
   rw [tie_ptEntry_diag]
   by_cases h : a = b
   · subst h
-    simp [List.getD_eq_getElem, Matrix.diagonal_apply_eq]
-  · simp [h, Fin.val_inj, Matrix.diagonal_apply_ne _ h]
+    simp [Matrix.diagonal_apply_eq]
+  · simp [h, Fin.val_inj]
 
 theorem zero_of_gram_point_exists (D : D7) (u u' : D.what₂.Word) :
     ∃ w : Point D.host.E (D.R.rS + 1), Gpt (D.mem u).A.T (D.mem u').A.T w = 0 := by

@@ -92,7 +92,7 @@ theorem equation_gen : (W.baseChange W.toAffine.FunctionField).toAffine.Equation
     WeierstrassCurve.map_a₃, WeierstrassCurve.map_a₄, WeierstrassCurve.map_a₆, genX, genY]
   have e : ∀ a : F, algebraMap W.toAffine.CoordinateRing W.toAffine.FunctionField
       (CoordinateRing.mk W (C (C a))) = algebraMap F W.toAffine.FunctionField a := fun a => rfl
-  simp only [C_add, C_mul, map_add (f := _), map_mul, e] at h1
+  simp only [e] at h1
   linear_combination h1
 
 end Generic

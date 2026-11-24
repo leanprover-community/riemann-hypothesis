@@ -68,7 +68,7 @@ theorem ConeSliceIdeal.proof : ConeSliceIdeal.Statement := by
     · rw [hl, zero_mul]
     · set l := eval c (linForm t)
       have hsl : eval (l⁻¹ • c) (linForm t) = 1 := by
-        rw [GoodChartZeroSet.eval_smul_of_isHomogeneous hℓ, pow_one, inv_mul_cancel₀ hl]
+        rw [_root_.UpperTheory.Reformulated.B.Ydc1.eval_smul_of_isHomogeneous hℓ, pow_one, inv_mul_cancel₀ hl]
       have hmem : l⁻¹ • c ∈ {x | x ∈ C ∧ eval x (linForm t) = 1} :=
         ⟨hC c hc _ (inv_ne_zero hl), hsl⟩
       have hf0 : eval (l⁻¹ • c) f = 0 := (mem_vanishingIdeal_iff.mp hf) _ hmem
@@ -78,7 +78,7 @@ theorem ConeSliceIdeal.proof : ConeSliceIdeal.Statement := by
         rw [map_sub, map_mul, map_sub, hsl, hf0, map_one] at h
         simpa using h
       have hc' : c = l • (l⁻¹ • c) := by rw [smul_smul, mul_inv_cancel₀ hl, one_smul]
-      rw [hc', GoodChartZeroSet.eval_smul_of_isHomogeneous hG, hGv, mul_zero, mul_zero]
+      rw [hc', _root_.UpperTheory.Reformulated.B.Ydc1.eval_smul_of_isHomogeneous hG, hGv, mul_zero, mul_zero]
   have e : f = linForm t * G - (linForm t - 1) * G - (G - f) := by ring
   rw [e]
   refine Ideal.sub_mem _ (Ideal.sub_mem _ (Ideal.mem_sup_left hLG) ?_) (Ideal.mem_sup_right hGf)

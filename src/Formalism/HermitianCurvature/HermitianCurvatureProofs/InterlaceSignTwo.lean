@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.EulerZetaGammaInvIdentity
 public import Formalism.HermitianCurvature.StatementM
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -176,33 +177,7 @@ theorem ord (k : ℕ) (u u' ρ : ℕ → ℝ) (hI : I.Interlaces k u u' ρ) (l :
     (∀ i ∈ Icc 1 k, i ≤ l → u l ≤ u i ∧ u' l ≤ u' i) ∧ (∀ i ∈ Icc 1 k, l < i → u i ≤ u (l + 1) ∧ u' i ≤ u' (l + 1)) ∧
     (∀ j ∈ Icc 1 (k - 1), j < l → u l + 1 / 2 ≤ ρ j ∧ u' l + 1 / 2 ≤ ρ j) ∧
     (∀ j ∈ Icc 1 (k - 1), l < j → ρ j + 1 / 2 ≤ u (l + 1) ∧ ρ j + 1 / 2 ≤ u' (l + 1)) := by
-  have hm := mono k u u' ρ hI
-  have hl' := Finset.mem_Icc.1 hl
-  refine ⟨?_, ?_, ?_, ?_⟩
-  · intro i hi h
-    have hi' := Finset.mem_Icc.1 hi
-    have c := hm (l - i) i hi'.1 (by omega)
-    have e : i + (l - i) = l := by omega
-    rwa [e] at c
-  · intro i hi h
-    have hi' := Finset.mem_Icc.1 hi
-    have c := hm (i - (l + 1)) (l + 1) (by omega) (by omega)
-    have e : l + 1 + (i - (l + 1)) = i := by omega
-    rwa [e] at c
-  · intro j hj h
-    have hj' := Finset.mem_Icc.1 hj
-    have b := hI j hj
-    have c := hm (l - (j + 1)) (j + 1) (by omega) (by omega)
-    have e : j + 1 + (l - (j + 1)) = l := by omega
-    rw [e] at c
-    constructor <;> linarith [b.2.2.1, b.2.2.2, c.1, c.2]
-  · intro j hj h
-    have hj' := Finset.mem_Icc.1 hj
-    have b := hI j hj
-    have c := hm (j - (l + 1)) (l + 1) (by omega) (by omega)
-    have e : l + 1 + (j - (l + 1)) = j := by omega
-    rw [e] at c
-    constructor <;> linarith [b.1, b.2.1, c.1, c.2]
+  apply Formalism.FourierDecayAlt.P.Mx4.ord <;> assumption
 
 theorem nrm_pos (P : Par) (hP : P.OK) (l : ℕ) (hl : l ∈ Icc 1 (P.k - 1)) (π π' : Ty P) (hU : Up P l π π') :
     0 < Nrm P l π := by
@@ -274,9 +249,7 @@ theorem top (P : Par) (hP : P.OK) (l : ℕ) (hl : l ∈ Icc 1 (P.k - 1)) (π : T
   · have : i = ⟨l - 1, by omega⟩ := Fin.ext (by simp; omega)
     rw [val_congr P π _ _ this, hi]; omega
   · intro i
-    by_cases hi : (i : ℕ) + 1 = l
-    · simp [hi]
-    · simp [hi]
+    by_cases hi : (i : ℕ) + 1 = l <;> simp [hi]
 
 theorem bot (P : Par) (l : ℕ) (hl : l ∈ Icc 1 (P.k - 1)) (π : Ty P) (h : ¬ ∃ π', Up P l π' π) :
     rho P π l = P.lo l := by
@@ -349,8 +322,7 @@ theorem rho_inj (P : Par) (hP : P.OK) (π : Ty P) (i j : ℕ) (hi : i ∈ Icc 1 
     (hij : i < j) : rho P π j < rho P π i := by
   have hI := tyInterlaces P hP π
   have o := (ord P.k P.u P.u' (rho P π) hI i hi).2.2.2 j hj hij
-  have b := hI i hi
-  linarith [o.1, b.2.2.1]
+  linarith [o.1, (hI i hi).2.2.1]
 
 open Polynomial in
 theorem wExact : WExact := by
@@ -411,9 +383,7 @@ theorem wExact : WExact := by
 
 theorem realPoints : RealPoints := by
   intro P π Y
-  constructor
-  · simp [xC, I.xpoly]
-  · simp [qC, I.qpoly]
+  exact ⟨by simp [xC, I.xpoly], by simp [qC, I.qpoly]⟩
 
 theorem interlaceSignTwo : InterlaceSignTwo := by
   intro k u u' ρ l Y h1 h2 hI hC e he
@@ -465,7 +435,6 @@ namespace Formalism.FourierDecayAlt.P
 theorem types_interlace : Formalism.FourierDecayAlt.M.TyInterlaces := Mx3.tyInterlaces
 theorem types_complete : Formalism.FourierDecayAlt.M.TyComplete := Mx3.tyComplete
 theorem rho_raise : Formalism.FourierDecayAlt.M.RhoUp := Mx3.rhoUp
-theorem nrmFacts_statement : Formalism.FourierDecayAlt.M.NrmFacts := Mx3.nrmFacts
 theorem realPoints_statement : Formalism.FourierDecayAlt.M.RealPoints := Mx3.realPoints
 theorem weight_exact : Formalism.FourierDecayAlt.M.WExact := Mx3.wExact
 theorem interlace_sign_two : Formalism.FourierDecayAlt.M.InterlaceSignTwo := Mx3.interlaceSignTwo

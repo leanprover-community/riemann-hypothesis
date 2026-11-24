@@ -46,6 +46,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.CompactExponentialSurjective
 
 @[expose] public section
 
@@ -149,10 +150,6 @@ theorem Pz_J (hA : IsGrad ε A) : Pz A * Formalism.REAL.Jm ε = Formalism.REAL.J
     Matrix.mul_one]
   abel
 
-theorem hs_nonneg (M : Matrix (Fin n) (Fin n) ℂ) : 0 ≤ hs M := Formalism.REAL.frobenius_nonneg M
-
-theorem hs_mul_le (M N : Matrix (Fin n) (Fin n) ℂ) : hs (M * N) ≤ hs M * hs N := Formalism.REAL.frobenius_mul_le M N
-
 theorem hs_eq_trace (M : Matrix (Fin n) (Fin n) ℂ) : hs M = (Matrix.trace (M * Mᴴ)).re := by
   simp only [Formalism.REAL.hs, Matrix.trace, Matrix.diag, Matrix.mul_apply, Matrix.conjTranspose_apply, Complex.re_sum]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
@@ -213,7 +210,7 @@ theorem hs_one : hs (1 : Matrix (Fin n) (Fin n) ℂ) = n := by
 theorem hs_proj_le {P : Matrix (Fin n) (Fin n) ℂ} (h1 : Pᴴ = P) (h2 : P * P = P) : hs P ≤ n := by
   have := hs_split h1 h2 1
   rw [hs_one, Matrix.one_mul, Matrix.one_mul] at this
-  linarith [hs_nonneg (1 - P)]
+  linarith [_root_.Formalism.REAL.frobenius_nonneg_matrix (1 - P)]
 
 theorem hs_eq_zero {M : Matrix (Fin n) (Fin n) ℂ} (h : hs M = 0) : M = 0 := by
   ext i j
@@ -223,10 +220,10 @@ theorem hs_eq_zero {M : Matrix (Fin n) (Fin n) ℂ} (h : hs M = 0) : M = 0 := by
   simpa using h3
 
 theorem hs_pos {M : Matrix (Fin n) (Fin n) ℂ} (h : M ≠ 0) : 0 < hs M :=
-  lt_of_le_of_ne (hs_nonneg M) fun e => h (hs_eq_zero e.symm)
+  lt_of_le_of_ne (_root_.Formalism.REAL.frobenius_nonneg_matrix M) fun e => h (hs_eq_zero e.symm)
 
 theorem one_le_hs {P : Matrix (Fin n) (Fin n) ℂ} (h2 : P * P = P) (h0 : P ≠ 0) : 1 ≤ hs P := by
-  have h := hs_mul_le P P
+  have h := _root_.Formalism.REAL.frobenius_mul_le P P
   rw [h2] at h
   have hp := hs_pos h0
   nlinarith

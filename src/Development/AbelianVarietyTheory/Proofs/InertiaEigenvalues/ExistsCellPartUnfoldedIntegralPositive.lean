@@ -264,7 +264,6 @@ theorem exists_compact_support {S : Finset (HeightOneSpectrum (𝓞 E))} {b φ :
     intro hb0
     apply h0
     rw [hdef]
-    change GlobalTheory.JSW.whit φ (g * infGL E (m + 1) (secInv y)) * _ * _ * _ * _ = 0
     rw [hW', hb0, mul_zero]; ring
   obtain ⟨u', hu', hc'⟩ := hbC p hpS hbp
   have hu'N : u' ∈ NA E (m + 1) := (GlobalTheory.SmGL.mem_unipB _).2 hu'

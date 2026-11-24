@@ -66,16 +66,8 @@ namespace GlobalTheory.CompanionTheory.SmoothModule
 
 variable {n : ℕ} {ε : Fin n → Bool}
 
-theorem J_mul_J (ε : Fin n → Bool) : Jm ε * Jm ε = 1 := by
-  rw [Jm, diagonal_mul_diagonal, ← diagonal_one]
-  congr 1; funext a; split_ifs <;> simp
-
-theorem J_conj (ε : Fin n → Bool) : (Jm ε)ᴴ = Jm ε := by
-  rw [Jm, diagonal_conjTranspose]
-  congr 1; funext a; simp only [Pi.star_apply]; split_ifs <;> simp
-
 theorem J_J_mul (X : Matrix (Fin n) (Fin n) ℂ) : Jm ε * (Jm ε * X) = X := by
-  rw [← Matrix.mul_assoc, J_mul_J, Matrix.one_mul]
+  rw [← Matrix.mul_assoc, _root_.Formalism.REAL.Jm_mul_self, Matrix.one_mul]
 
 theorem inG_iff {X : Matrix (Fin n) (Fin n) ℂ} : inG ε X ↔ thetaJ ε X = X := by
   change Xᴴ * Jm ε + Jm ε * X = 0 ↔ _
@@ -100,8 +92,8 @@ theorem theta_smul (c : ℂ) (X : Matrix (Fin n) (Fin n) ℂ) :
   simp only [thetaJ, conjTranspose_smul, Matrix.mul_smul, Matrix.smul_mul, smul_neg]; rfl
 
 theorem theta_theta (X : Matrix (Fin n) (Fin n) ℂ) : thetaJ ε (thetaJ ε X) = X := by
-  simp only [thetaJ, conjTranspose_neg, conjTranspose_mul, J_conj, conjTranspose_conjTranspose,
-    Matrix.mul_neg, Matrix.neg_mul, neg_neg, Matrix.mul_assoc, J_J_mul, J_mul_J, Matrix.mul_one]
+  simp only [thetaJ, conjTranspose_neg, conjTranspose_mul, _root_.Formalism.REAL.Jm_conjTranspose, conjTranspose_conjTranspose,
+    Matrix.mul_neg, Matrix.neg_mul, neg_neg, Matrix.mul_assoc, J_J_mul, _root_.Formalism.REAL.Jm_mul_self, Matrix.mul_one]
 
 theorem theta_mul (X Y : Matrix (Fin n) (Fin n) ℂ) : thetaJ ε (X * Y) = -(thetaJ ε Y * thetaJ ε X) := by
   simp only [thetaJ, conjTranspose_mul, Matrix.mul_neg, Matrix.neg_mul, neg_neg, Matrix.mul_assoc, J_J_mul]
@@ -171,7 +163,7 @@ theorem im_pair {A B : Matrix (Fin n) (Fin n) ℂ} (hA : inG ε A) (hB : inG ε 
 
 theorem UJ_left_inv {g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UJset ε) : Jm ε * gᴴ * Jm ε * g = 1 := by
   have h : gᴴ * Jm ε * g = Jm ε := hg
-  rw [Matrix.mul_assoc, Matrix.mul_assoc, ← Matrix.mul_assoc gᴴ, h, J_mul_J]
+  rw [Matrix.mul_assoc, Matrix.mul_assoc, ← Matrix.mul_assoc gᴴ, h, _root_.Formalism.REAL.Jm_mul_self]
 
 theorem UJ_inv {g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UJset ε) : g⁻¹ = Jm ε * gᴴ * Jm ε :=
   inv_eq_left_inv (UJ_left_inv hg)
@@ -183,7 +175,7 @@ theorem UJ_inv_mem {g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UJset ε) : g⁻
   change (g⁻¹)ᴴ * Jm ε * g⁻¹ = Jm ε
   have h := mul_eq_one_comm.1 (UJ_left_inv hg)
   rw [UJ_inv hg]
-  simp only [conjTranspose_mul, J_conj, conjTranspose_conjTranspose, Matrix.mul_assoc, J_J_mul] at h ⊢
+  simp only [conjTranspose_mul, _root_.Formalism.REAL.Jm_conjTranspose, conjTranspose_conjTranspose, Matrix.mul_assoc, J_J_mul] at h ⊢
   rw [h, Matrix.mul_one]
 
 theorem UJ_mul {g h : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UJset ε) (hh : h ∈ UJset ε) : g * h ∈ UJset ε := by
@@ -199,19 +191,19 @@ theorem inG_conj {g X : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UJset ε) (hX : 
   rw [inG_iff] at *
   conv_rhs => rw [← hX]
   rw [UJ_inv hg]
-  simp only [thetaJ, conjTranspose_mul, J_conj, conjTranspose_conjTranspose, Matrix.mul_assoc, J_J_mul,
+  simp only [thetaJ, conjTranspose_mul, _root_.Formalism.REAL.Jm_conjTranspose, conjTranspose_conjTranspose, Matrix.mul_assoc, J_J_mul,
     Matrix.mul_neg, Matrix.neg_mul]
 
 theorem exp_mem {X : Matrix (Fin n) (Fin n) ℂ} (hX : inG ε X) : NormedSpace.exp X ∈ UJset ε := by
   change (NormedSpace.exp X)ᴴ * Jm ε * NormedSpace.exp X = Jm ε
-  have hu : IsUnit (Jm ε) := ⟨⟨Jm ε, Jm ε, J_mul_J ε, J_mul_J ε⟩, rfl⟩
-  have hinv : (Jm ε)⁻¹ = Jm ε := inv_eq_left_inv (J_mul_J ε)
+  have hu : IsUnit (Jm ε) := ⟨⟨Jm ε, Jm ε, _root_.Formalism.REAL.Jm_mul_self ε, _root_.Formalism.REAL.Jm_mul_self ε⟩, rfl⟩
+  have hinv : (Jm ε)⁻¹ = Jm ε := inv_eq_left_inv (_root_.Formalism.REAL.Jm_mul_self ε)
   have h1 : Xᴴ = Jm ε * (-X) * (Jm ε)⁻¹ := by
     conv_rhs => rw [← inG_iff.1 hX]
     rw [hinv]
-    simp only [thetaJ, neg_neg, Matrix.mul_assoc, J_J_mul, J_mul_J, Matrix.mul_one]
+    simp only [thetaJ, neg_neg, Matrix.mul_assoc, J_J_mul, _root_.Formalism.REAL.Jm_mul_self, Matrix.mul_one]
   rw [← Matrix.exp_conjTranspose, h1, Matrix.exp_conj _ _ hu, hinv, Matrix.exp_neg, Matrix.mul_assoc _ (Jm ε) (Jm ε),
-    J_mul_J, Matrix.mul_one, Matrix.mul_assoc,
+    _root_.Formalism.REAL.Jm_mul_self, Matrix.mul_one, Matrix.mul_assoc,
     nonsing_inv_mul _ ((Matrix.isUnit_iff_isUnit_det _).1 (Matrix.isUnit_exp X)), Matrix.mul_one]
 
 theorem conj_single (g h : Matrix (Fin n) (Fin n) ℂ) (a b : Fin n) :

@@ -273,7 +273,6 @@ lemma eq_smul_of_top (hF : KRel ε E) (hU : KUnit ε E) (hv0 : v ≠ 0) (hv : Is
       have := hgt_kwt μ _ hl
       rw [h] at this
       simp only [List.length_cons, Nat.cast_add, Nat.cast_one] at this
-      have h0 : (0 : ℝ) ≤ l.length := Nat.cast_nonneg _
       linarith
 
 lemma kstab_orthogonal (hU : KUnit ε E) {L : Submodule ℂ V} (hL : KStab ε E L) : KStab ε E Lᗮ := by

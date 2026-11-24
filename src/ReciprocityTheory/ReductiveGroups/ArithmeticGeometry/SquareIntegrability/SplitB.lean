@@ -69,8 +69,6 @@ structure Good (X : PT E) (c : ℝ) (I : Submodule ℤ (Vsp X.dim)) : Prop where
 private lemma act_zero_square_integrability {dim : (E →+* ℂ) → ℕ} (α : 𝓞 E) : act α (0 : Vsp dim) = 0 := by
   first
   | (ext i; simp [act])
-  | simp [act]
-  | (unfold act; ext i; simp)
 
 theorem Good.bot (X : PT E) (c : ℝ) : Good X c ⊥ := by
   refine { le := bot_le, sat := ?_, stable := ?_, iso := ?_, sep := ?_ }
@@ -101,14 +99,11 @@ private lemma act_add_square_integrability {dim : (E →+* ℂ) → ℕ} (α : �
     act α (v + w) = act α v + act α w := by
   first
   | (ext i; simp [act, mul_add])
-  | (unfold act; ext i; simp [mul_add])
 
 private lemma act_real_smul {dim : (E →+* ℂ) → ℕ} (α : 𝓞 E) (r : ℝ) (v : Vsp dim) :
     act α (r • v) = r • act α v := by
   first
   | (ext i; simp [act, Complex.real_smul]; ring)
-  | (ext i; simp [act, mul_smul_comm])
-  | (unfold act; ext i; simp [Complex.real_smul]; ring)
 
 theorem Good.IR_stable {X : PT E} {c : ℝ} {I : Submodule ℤ (Vsp X.dim)} (hI : Good X c I)
     (α : 𝓞 E) : ∀ v ∈ IR I, act α v ∈ IR I := by
@@ -127,20 +122,6 @@ private lemma Hf_add_right' {ι : Type} [Fintype ι] (v w w' : EuclideanSpace �
     Hf v (w + w') = Hf v w + Hf v w' := by
   simp [Hf, mul_add, Finset.sum_add_distrib]
 
-private lemma im_Hf_real_smul_left {ι : Type} [Fintype ι] (r : ℝ) (v w : EuclideanSpace ℂ ι) :
-    (Hf (r • v) w).im = r * (Hf v w).im := by
-  first
-  | (simp only [Hf, PiLp.smul_apply, Complex.real_smul, mul_assoc, ← Finset.mul_sum]; simp [Complex.mul_im])
-  | (simp [Hf, Complex.real_smul, mul_assoc, ← Finset.mul_sum, Complex.mul_im])
-  | (simp [Hf, Finset.mul_sum, Complex.mul_im, Complex.real_smul])
-
-private lemma Hf_real_smul_right_im {ι : Type} [Fintype ι] (r : ℝ) (v w : EuclideanSpace ℂ ι) :
-    (Hf v (r • w)).im = r * (Hf v w).im := by
-  first
-  | (simp only [Hf, PiLp.smul_apply, Complex.real_smul, map_mul, Complex.conj_ofReal, mul_left_comm _ (r : ℂ), ← Finset.mul_sum]; simp [Complex.mul_im])
-  | (simp [Hf, Complex.real_smul, mul_left_comm _ (r : ℂ), ← Finset.mul_sum, Complex.mul_im])
-  | (simp [Hf, Finset.mul_sum, Complex.mul_im, Complex.real_smul])
-
 theorem Good.IR_iso {X : PT E} {c : ℝ} {I : Submodule ℤ (Vsp X.dim)} (hI : Good X c I) :
     ∀ v ∈ IR I, ∀ w ∈ IR I, (Hf v w).im = 0 := by
   intro v hv w hw
@@ -150,10 +131,10 @@ theorem Good.IR_iso {X : PT E} {c : ℝ} {I : Submodule ℤ (Vsp X.dim)} (hI : G
     | mem y hy => exact hI.iso x hx y hy
     | zero => simp [Hf]
     | add y y' _ _ h1 h2 => rw [Hf_add_right', Complex.add_im, h1, h2, add_zero]
-    | smul r y _ h => rw [Hf_real_smul_right_im, h, mul_zero]
+    | smul r y _ h => rw [_root_.ReciprocityTheory.ChartRestriction.G.I2.Hf_im_smul_right, h, mul_zero]
   | zero => simp [Hf]
   | add x x' _ _ h1 h2 => rw [Hf_add_left', Complex.add_im, h1, h2, add_zero]
-  | smul r x _ h => rw [im_Hf_real_smul_left, h, mul_zero]
+  | smul r x _ h => rw [_root_.ReciprocityTheory.ChartRestriction.G.I2.Hf_im_smul_left, h, mul_zero]
 
 theorem im_eq_zero_of_lt (X : PT E) {x y : Vsp X.dim} (hx : x ∈ X.L) (hy : y ∈ X.L)
     (h : |(Hf x y).im| < 1) : (Hf x y).im = 0 := by

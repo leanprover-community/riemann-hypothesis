@@ -65,7 +65,6 @@ theorem hat_nodes_decay_holds : JDHatNodes := by
             (fun _ _ => Finset.sum_nonneg fun _ _ => abs_nonneg _) (Finset.mem_univ π)
     have hpos : 0 < Mb + ((j : ℕ) : ℝ) + M.rho P π i := by
       have h1 := neg_abs_le (M.rho P π i)
-      have hj : (0 : ℝ) ≤ ((j : ℕ) : ℝ) := Nat.cast_nonneg _
       linarith
     have hc : (((Mb + ((j : ℕ) : ℝ) : ℝ) : ℂ) + ((M.rho P π i : ℝ) : ℂ)) =
         ((Mb + ((j : ℕ) : ℝ) + M.rho P π i : ℝ) : ℂ) := by push_cast; ring

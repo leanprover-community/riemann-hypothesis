@@ -71,8 +71,6 @@ theorem aeval_psumQ (δ k : ℕ) :
   have h2 := congrArg Subtype.val h
   first
   | (rw [esymmAlgHom_apply] at h2; exact h2)
-  | exact h2
-  | simpa [psumQ, esymmAlgHom_apply] using h2
 
 theorem sum_pow_eq_aeval_psumQ {S : Type*} [CommRing S] {δ : ℕ} (f : Fin δ → S) (k : ℕ) :
     ∑ i, f i ^ k =
@@ -92,7 +90,6 @@ theorem multiset_sum_pow_eq {S : Type*} [CommRing S] (s : Multiset S) {n : ℕ}
   have hs : (Finset.univ.val.map l.get : Multiset S) = (l : Multiset S) := by
     first
     | rw [Fin.univ_val_map, List.ofFn_get]
-    | simp [Fin.univ_val_map, List.ofFn_get]
   have key := sum_pow_eq_aeval_psumQ l.get k
   rw [hs] at key
   rw [← key, Finset.sum_eq_multiset_sum, ← hs, Multiset.map_map] <;> rfl
@@ -136,8 +133,6 @@ theorem Gen.deh_S {w : Fin (D + 1) → ℂ} (j : ℕ) :
   have hc : Multiset.card (G.P.map (deh w 0)).roots = (G.P.map (deh w 0)).natDegree := by
     first
     | exact Polynomial.splits_iff_card_roots.mp (IsAlgClosed.splits _)
-    | exact (IsAlgClosed.splits _).card_roots
-    | exact (Polynomial.natDegree_eq_card_roots' (IsAlgClosed.splits _)).symm
   rw [sum_roots_pow _ hm hc j, hd, Gen.S, map_psumC]
 
 private theorem eval₂_deh_eq_zero_of_mem_roots {w : Fin (D + 1) → ℂ} (hw : G.Good w)
@@ -153,7 +148,6 @@ private theorem eval₂_deh_eq_zero_of_mem_roots {w : Fin (D + 1) → ℂ} (hw :
     first
     | exact Polynomial.modByMonic_add_div H G.monic
     | exact Polynomial.modByMonic_add_div H G.P
-    | exact Polynomial.modByMonic_add_div H G.P G.monic
   have hr : (H %ₘ G.P).eval₂ (deh (x ∘ e) 0) (deh x (e 0) G.Θ) = 0 := by
     have h1 := congrArg (Polynomial.eval₂ (deh (x ∘ e) 0) (deh x (e 0) G.Θ)) hdecomp
     rw [Polynomial.eval₂_add, Polynomial.eval₂_mul, G.root, zero_mul, add_zero, hH] at h1
@@ -193,7 +187,6 @@ private theorem deh_dd_mul_deh_zOf_X_eq_eval₂_Q {w : Fin (D + 1) → ℂ} (hw 
     rw [Polynomial.eval₂_sub, Polynomial.eval₂_C, sub_eq_zero] at h1
     rw [h1]
     field_simp
-    first | done | ring
 
 private theorem exists_pow_mul_eq_eval₂_theta {w : Fin (D + 1) → ℂ} (hw : G.Good w) (f : MvPolynomial ι ℤ) :
     ∃ (N : ℕ) (H : Polynomial (MvPolynomial (Fin (D + 1)) ℤ)),
@@ -289,12 +282,6 @@ theorem exists_int_primitive {F E : Type*} [Field F] [Field E] [Algebra F E] [Ch
     | exact inferInstance
     | exact Field.finite_intermediateField_of_exists_primitive_element F E
         (Field.exists_primitive_element F E)
-    | exact Field.finite_intermediateField_of_exists_primitive_element
-        (Field.exists_primitive_element F E)
-    | exact (Field.exists_primitive_element_iff_finite_intermediateField F E).mp
-        ⟨inferInstance, Field.exists_primitive_element F E⟩
-    | exact Field.exists_primitive_element_iff_finite_intermediateField.mp
-        ⟨inferInstance, Field.exists_primitive_element F E⟩
   have key : ∀ s : Finset ι, ∃ c : ι → ℤ, ∀ i ∈ s, v i ∈ F⟮∑ j, (c j : E) * v j⟯ := by
     intro s
     refine Finset.induction_on s ⟨0, by simp⟩ ?_
@@ -330,18 +317,11 @@ theorem trace_pow_eq_psumC {K E : Type*} [Field K] [Field E] [Algebra K E] [Char
       ((minpoly K θ).map (algebraMap K (AlgebraicClosure K))).natDegree := by
     first
     | exact Polynomial.splits_iff_card_roots.mp (IsAlgClosed.splits _)
-    | exact (IsAlgClosed.splits _).card_roots
-    | exact (Polynomial.natDegree_eq_card_roots' (IsAlgClosed.splits _)).symm
   have hnd : ((minpoly K θ).map (algebraMap K (AlgebraicClosure K))).roots.Nodup :=
     Polynomial.nodup_roots hsep.map
   have hadj : Algebra.adjoin K {θ} = ⊤ := by
     first
     | rw [← IntermediateField.adjoin_simple_toSubalgebra_of_isAlgebraic hint.isAlgebraic, hθ,
-        IntermediateField.top_toSubalgebra]
-    | rw [← IntermediateField.adjoin_simple_toSubalgebra_of_integral hint, hθ,
-        IntermediateField.top_toSubalgebra]
-    | rw [← IntermediateField.adjoin_toSubalgebra_of_isAlgebraic
-          (fun x hx => (Set.mem_singleton_iff.mp hx) ▸ hint.isAlgebraic), hθ,
         IntermediateField.top_toSubalgebra]
   have hinj : Function.Injective (fun σ : E →ₐ[K] AlgebraicClosure K => σ θ) := by
     intro σ τ h
@@ -357,7 +337,6 @@ theorem trace_pow_eq_psumC {K E : Type*} [Field K] [Field E] [Algebra K E] [Char
       first
       | rw [Polynomial.IsRoot.def, Polynomial.eval_map, ← Polynomial.aeval_def,
           Polynomial.aeval_algHom_apply, minpoly.aeval, map_zero]
-      | simp [Polynomial.eval_map, ← Polynomial.aeval_def, Polynomial.aeval_algHom_apply]
     · rw [Multiset.toFinset_card_of_nodup hnd, hc, hmon.natDegree_map,
         Finset.card_image_of_injective _ hinj, Finset.card_univ, ← hfin]
       exact (AlgHom.card K E (AlgebraicClosure K)).ge
@@ -366,8 +345,6 @@ theorem trace_pow_eq_psumC {K E : Type*} [Field K] [Field E] [Algebra K E] [Char
     ← sum_roots_pow _ (hmon.map _) hc j]
   first
   | rw [trace_eq_sum_embeddings (AlgebraicClosure K)]
-  | rw [trace_eq_sum_embeddings]
-  | rw [Algebra.trace_eq_sum_embeddings (AlgebraicClosure K)]
   simp only [map_pow]
   have hsum := Finset.sum_image (s := Finset.univ)
     (g := fun σ : E →ₐ[K] AlgebraicClosure K => σ θ) (f := fun y => y ^ j)
@@ -387,6 +364,6 @@ theorem exists_clear {A K : Type*} [CommRing A] [IsDomain A] [Field K] [Algebra 
   · exact Finset.prod_ne_zero_iff.mpr fun i _ => nonZeroDivisors.ne_zero (hb i).1
   · rw [Polynomial.map_mul, (hb i).2, Polynomial.map_C, ← algebraMap_smul K (b i : A) (q i),
       Polynomial.smul_eq_C_mul, ← Finset.prod_erase_mul _ _ (Finset.mem_univ i)]
-    simp only [map_mul, Polynomial.C_mul, mul_assoc]
+    simp only [map_mul, mul_assoc]
 
 end ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.Fib

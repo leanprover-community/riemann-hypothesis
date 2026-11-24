@@ -88,7 +88,7 @@ theorem Ms_id (X : Data E r) (τ : X.Ψ) (v : Fin r → ℂ) :
     rw [Finset.sum_eq_single (Fin.castLE X.p0_le a)]
     · have hs : sgn X.p0 ((Fin.castLE X.p0_le a : Fin r) : ℕ) = 1 := by simp [sgn, a.2]
       by_cases hab : a = b
-      · subst hab; simp [hs, sgn, a.2]
+      · subst hab; simp [sgn, a.2]
       · have : Fin.castLE X.p0_le a ≠ Fin.castLE X.p0_le b := fun h => hab (Fin.castLE_injective X.p0_le h)
         simp [hab, this]
     · intro k _ hk; simp [hk]
@@ -190,7 +190,7 @@ theorem Ag_Nid (p0 : ℕ) (hp : p0 ≤ r) : Ag p0 hp (Nid r) = 1 := by
   rw [Finset.sum_eq_single (Fin.castLE hp a)]
   · have hs : sgn p0 ((Fin.castLE hp a : Fin r) : ℕ) = 1 := by simp [sgn, a.2]
     by_cases hab : a = b
-    · subst hab; simp [hs, sgn, a.2]
+    · subst hab; simp [sgn, a.2]
     · have : Fin.castLE hp a ≠ Fin.castLE hp b := fun h => hab (Fin.castLE_injective hp h)
       simp [hab, this]
   · intro k _ hk; simp [hk]

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsSplitSupportedUnitaryComponent
 public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedSmooth
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -108,23 +109,7 @@ end Lin
 variable {D : D7} (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ)) (V : HSp D)
 
 theorem gram_det_ne : V.gram.det ≠ 0 := by
-  intro h
-  obtain ⟨v, hv, h0⟩ := Matrix.exists_mulVec_eq_zero_iff.2 h
-  have hx : ∀ y, V.hT y (∑ j, v j • V.frame j) = 0 := by
-    intro y
-    rw [← V.frame.sum_repr y]
-
-    simp only [map_sum, LinearMap.sum_apply, map_smulₛₗ, LinearMap.smul_apply, RingHom.id_apply, smul_eq_mul]
-    simp only [Finset.mul_sum]
-    rw [Finset.sum_comm]
-    refine Finset.sum_eq_zero fun i _ => ?_
-    have := congrFun h0 i
-    simp only [mulVec, dotProduct, HSpace.gram, Pi.zero_apply] at this
-    calc _ = (starRingEnd _) (V.frame.repr y i) * ∑ j, V.hT (V.frame i) (V.frame j) * v j := by
-          rw [Finset.mul_sum]; exact Finset.sum_congr rfl fun j _ => by ring
-      _ = 0 := by rw [this, mul_zero]
-  have := V.nondeg.2 _ hx
-  exact hv (funext (Fintype.linearIndependent_iff.1 V.frame.linearIndependent v this))
+  apply GlobalTheory.SplitOnto.gram_det_ne <;> assumption
 
 theorem gramAt_unit (τ : D.what₂.Tau) : IsUnit (gramAt D V τ).det := by
   have : (gramAt D V τ).det = tauE D τ V.gram.det := (RingHom.map_det _ _).symm

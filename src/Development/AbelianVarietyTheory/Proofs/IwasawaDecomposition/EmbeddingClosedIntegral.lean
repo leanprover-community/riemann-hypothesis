@@ -1,5 +1,7 @@
 module
 
+import Mathlib.RingTheory.Valuation.Integral
+import Mathlib.Topology.Algebra.Valued.NormedValued
 public import Mathlib.NumberTheory.Padics.Complex
 public import Mathlib.NumberTheory.Padics.PadicIntegers
 public import Mathlib.Topology.Algebra.Nonarchimedean.AdicTopology
@@ -76,32 +78,13 @@ variable {l : ℕ} [Fact l.Prime] {O : Type} [CommRing O] [Algebra ℤ_[l] O] [M
 private lemma norm_le_one_of_monic_root_lemma {R F : Type*} [CommRing R] [NormedField F]
     [IsUltrametricDist F] (f : R →+* F) (hf : ∀ r, ‖f r‖ ≤ 1) {P : Polynomial R}
     (hP : P.Monic) {y : F} (hy : P.eval₂ f y = 0) : ‖y‖ ≤ 1 := by
-  by_contra h
-  push_neg at h
-  rw [Polynomial.eval₂_eq_sum_range, Finset.sum_range_succ, hP.coeff_natDegree, map_one,
-    one_mul] at hy
-  obtain ⟨k, hk⟩ : ∃ k, P.natDegree = k + 1 := by
-    refine ⟨P.natDegree - 1, ?_⟩
-    rcases Nat.eq_zero_or_pos P.natDegree with h0 | h0
-    · rw [h0] at hy
-      simp at hy
-    · omega
-  rw [hk] at hy
-  have hsum : ‖∑ i ∈ Finset.range (k + 1), f (P.coeff i) * y ^ i‖ ≤ ‖y‖ ^ k := by
-    apply IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg (by positivity)
-    intro i hi
-    rw [norm_mul, norm_pow]
-    calc ‖f (P.coeff i)‖ * ‖y‖ ^ i ≤ 1 * ‖y‖ ^ k :=
-          mul_le_mul (hf _) (pow_le_pow_right₀ h.le (Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)))
-            (by positivity) zero_le_one
-      _ = ‖y‖ ^ k := one_mul _
-  have heq : y ^ (k + 1) = -∑ i ∈ Finset.range (k + 1), f (P.coeff i) * y ^ i := by
-    linear_combination hy
-  have h1 : ‖y‖ ^ (k + 1) ≤ ‖y‖ ^ k := by
-    rw [← norm_pow, heq, norm_neg]
-    exact hsum
-  have h2 : ‖y‖ ^ k < ‖y‖ ^ (k + 1) := pow_lt_pow_right₀ h (Nat.lt_succ_self k)
-  linarith
+  let v := NormedField.valuation (K := F)
+  let g : R →+* v.integer := f.codRestrict v.integer (fun r => hf r)
+  have hg : (algebraMap v.integer F).comp g = f := RingHom.ext fun _ => rfl
+  have hy' : IsIntegral v.integer y := by
+    refine ⟨P.map g, hP.map g, ?_⟩
+    simpa only [Polynomial.aeval_def, Polynomial.eval₂_map, hg] using hy
+  exact ((Valuation.integer.integers v).isIntegral_iff_v_le_one.mp hy')
 
 
 open IsLocalRing Topology in

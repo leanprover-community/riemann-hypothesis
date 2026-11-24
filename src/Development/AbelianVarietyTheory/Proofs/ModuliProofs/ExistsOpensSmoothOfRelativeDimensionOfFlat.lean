@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsSmoothOfRelDimOfIsUnitProperFlat
 public import Mathlib.AlgebraicGeometry.Morphisms.Proper
 public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
@@ -68,28 +69,7 @@ theorem exists_opens_smoothOfRelativeDimension_of_flat {R : CommRingCat.{0}} {Z 
     (s : Z ⟶ Spec R) [LocallyOfFinitePresentation s] [Flat s] (t : T ⟶ Spec R) (g : ℕ)
     (h : SmoothOfRelativeDimension g (pullback.snd s t)) (z : Z) (w : T) (hw : s z = t w) :
     ∃ W : Z.Opens, z ∈ W ∧ SmoothOfRelativeDimension g (W.ι ≫ s) := by
-  have hz : z ∈ s.smoothLocus := by
-    refine GlobalTheory.VeryDenseFibres.mem_smoothLocus_of_smooth_fiber s z ?_
-    rw [hw]
-    have : Smooth (pullback.snd s t) := SmoothOfRelativeDimension.smooth g _
-    exact GlobalTheory.VeryDenseFibres.smooth_fiber_of_smooth_fiber s t w
-      (inferInstanceAs (Smooth (pullback.snd (pullback.snd s t) (T.fromSpecResidueField w))))
-  have : Smooth (s.smoothLocus.ι ≫ s) := by
-    rw [← Scheme.Hom.smoothLocus_eq_top_iff, ← Scheme.Hom.preimage_smoothLocus_eq]
-    simp
-  have h2 : SmoothOfRelativeDimension (0 + (0 + g)) (pullback.snd (s.smoothLocus.ι ≫ s) t) := by
-    rw [← pullbackRightPullbackFstIso_inv_snd_snd]
-    infer_instance
-  obtain ⟨W, hW, hW'⟩ := GlobalTheory.VeryDenseFibres.exists_opens_smoothOfRelativeDimension
-    (s.smoothLocus.ι ≫ s) t g (by simpa using h2) ⟨z, hz⟩ w hw
-  let j := W.ι ≫ s.smoothLocus.ι
-  refine ⟨j.opensRange, ⟨⟨⟨z, hz⟩, hW⟩, rfl⟩, ?_⟩
-  have e : j.opensRange.ι ≫ s = j.isoOpensRange.inv ≫ (W.ι ≫ s.smoothLocus.ι ≫ s) := by
-    rw [← Scheme.Hom.isoOpensRange_inv_comp, Category.assoc, Category.assoc]
-  have h3 : SmoothOfRelativeDimension (0 + g)
-      (j.isoOpensRange.inv ≫ (W.ι ≫ s.smoothLocus.ι ≫ s)) := inferInstance
-  rw [e]
-  simpa using h3
+  apply GlobalTheory.SmoothNearFibre.exists_opens_of_flat <;> assumption
 
 theorem smoothOfRelativeDimension_pullback_snd {Z T S : Scheme.{0}} (s : Z ⟶ S) (t : T ⟶ S)
     (g : ℕ) (h : ∀ (z : Z) (w : T), s z = t w →

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsSplitSupportedUnitaryComponent
 public import Formalism.LocalRingCardinality.DataTheta
 public import Formalism.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.GenusMassVolumes
 import Mathlib.Algebra.Order.Floor.Extended
@@ -56,22 +57,7 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 variable {D : D7}
 
 theorem gram_det_ne_zero (V : HSp D) : V.gram.det ≠ 0 := by
-  intro h
-  obtain ⟨v, hv, hm⟩ := Matrix.exists_mulVec_eq_zero_iff.2 h
-  apply hv
-  have h0 : V.frame.equivFun.symm v = 0 := by
-    refine V.nondeg.2 _ fun x => ?_
-    have : V.hT.flip (V.frame.equivFun.symm v) = 0 := by
-      refine V.frame.ext fun i => ?_
-      have := congrFun hm i
-      simp only [Matrix.mulVec, dotProduct, HSpace.gram, Pi.zero_apply] at this
-
-      simp only [LinearMap.flip_apply, Module.Basis.equivFun_symm_apply, map_sum, map_smul, smul_eq_mul,
-      LinearMap.zero_apply, LinearMap.sum_apply, LinearMap.smul_apply]
-      refine Eq.trans (Finset.sum_congr rfl fun j _ => ?_) this
-      exact mul_comm (v j) _
-    exact congrArg (fun f => f x) this
-  exact (LinearEquiv.map_eq_zero_iff _).1 h0
+  apply GlobalTheory.SplitOnto.gram_det_ne <;> assumption
 
 theorem det_norm_one_gen {A B : Type} [CommRing A] [CommRing B] {n : ℕ} (σ : A →+* A) (τ : B → B) (φ : A →+* B)
     (hφ : ∀ x, τ (φ x) = φ (σ x)) (J g : Matrix (Fin n) (Fin n) A) (hJ : IsUnit J.det)

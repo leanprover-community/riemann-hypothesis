@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.KcEqOfPowEqOne
 public import Formalism.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.CycBasic
 public import Mathlib.NumberTheory.NumberField.Cyclotomic.Basic
 public import Formalism.FrobeniusOrbits.FrobeniusOrbitsProofs.Decomp
@@ -64,36 +65,7 @@ open Formalism.FrobeniusOrbits Formalism.TwoAdicCyclotomicDecomposition
 
 theorem root_eq_of_sub_mem {S : Type*} [CommRing S] [IsDomain S] (P : Ideal S) [hP : P.IsPrime] {m : ℕ}
     (hm : (m : S) ∉ P) {x y : S} (hx : x ^ m = 1) (hy : y ^ m = 1) (hxy : x - y ∈ P) : x = y := by
-  have hm0 : m ≠ 0 := by
-    rintro rfl
-    exact hm (by simp)
-  have hgeom := geom_sum₂_mul x y m
-  rw [hx, hy, sub_self] at hgeom
-  rcases mul_eq_zero.1 hgeom with hG | hG
-  · exfalso
-    have hq : Ideal.Quotient.mk P x = Ideal.Quotient.mk P y := Ideal.Quotient.eq.2 hxy
-    have h1 := congrArg (Ideal.Quotient.mk P) hG
-
-    rw [map_sum, map_zero] at h1
-    simp only [map_mul, map_pow, hq] at h1
-    have h2 : ∀ i ∈ Finset.range m, (Ideal.Quotient.mk P y) ^ i * (Ideal.Quotient.mk P y) ^ (m - 1 - i) =
-        (Ideal.Quotient.mk P y) ^ (m - 1) := by
-      intro i hi
-      rw [← pow_add]
-      congr 1
-      rw [Finset.mem_range] at hi
-      omega
-    rw [Finset.sum_congr rfl h2, Finset.sum_const, Finset.card_range, nsmul_eq_mul] at h1
-    rcases mul_eq_zero.1 h1 with h3 | h3
-    · apply hm
-      rw [← Ideal.Quotient.eq_zero_iff_mem, map_natCast]
-      exact h3
-    · have h4 : (Ideal.Quotient.mk P y) ^ m = 1 := by rw [← map_pow, hy, map_one]
-      have h5 : (Ideal.Quotient.mk P y) ^ m = 0 := by
-        rw [show m = m - 1 + 1 by omega, pow_succ, h3, zero_mul]
-      rw [h4] at h5
-      exact one_ne_zero h5
-  · exact sub_eq_zero.1 hG
+  apply (config := { allowSynthFailures := true }) Formalism.HC.Der.kc_eq_of_pow_eq_one <;> assumption
 
 theorem val_modEq_iff {M N : ℕ} [NeZero N] (h : M ∣ N) (u : (ZMod N)ˣ) (x : ℕ) :
     (u : ZMod N).val ≡ x [MOD M] ↔ ((ZMod.unitsMap h u : (ZMod M)ˣ) : ZMod M) = (x : ZMod M) := by

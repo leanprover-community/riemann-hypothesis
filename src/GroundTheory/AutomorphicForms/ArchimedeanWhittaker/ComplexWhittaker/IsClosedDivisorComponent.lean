@@ -164,7 +164,7 @@ theorem map_Kint {φ : U2 → ℂ} (hφ : Continuous φ) (g : GL2C) (x : H) :
   unfold Kint
   rw [← ContinuousLinearMap.integral_comp_comm (σ g : H →L[ℂ] H) (integrable_Kint σ hφ x)]
   congr 1; funext k
-  simp [UnitaryRep.map_mul_apply]
+  simp
 
 theorem map_kC_Kint {φ : U2 → ℂ} (hφ : Continuous φ) (l : U2) (x : H) :
     σ (kC l) (Kint σ φ x) = Kint σ (fun k => φ (l⁻¹ * k)) x := by
@@ -214,8 +214,7 @@ theorem map_tC_Q (n : ℕ) (q : ℤ) {i : ℕ} (hi : i ≤ n) (a b : ℝ) (x : H
     ext r s; fin_cases r <;> fin_cases s <;> simp [← Complex.exp_add]
   rw [hinv, psi_tC_mul n q hi, smul_smul, map_mul, ← Complex.exp_conj]
   congr 2
-  simp only [map_mul, conj_I, map_add (f := _), map_sub, map_neg, Complex.conj_ofReal, map_intCast,
-    map_natCast]
+  simp only [map_mul, conj_I, Complex.conj_ofReal]
   push_cast
   ring
 

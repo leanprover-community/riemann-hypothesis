@@ -1,6 +1,11 @@
 module
 
-public import Mathlib
+import Mathlib
+public import Mathlib.Analysis.SpecialFunctions.Log.Basic
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+public import Mathlib.RingTheory.MvPolynomial.Homogeneous
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
+public import Mathlib.Algebra.CharP.Algebra
 
 @[expose] public section
 

@@ -102,7 +102,6 @@ theorem phLoc_conv {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (hU : I
   rw [← inner_conj_symm (σ (umat y) w) w, starRingEnd_apply]
   first
   | (field_simp; done)
-  | (field_simp; ring)
 
 end Local
 
@@ -140,7 +139,7 @@ theorem prod_op_eq (R : G1 × G2 → (Hp →L[ℂ] Hp)) (hmul : ∀ g h, R (g * 
   have hint : Integrable (fun p : G1 × G2 => (φ1 p.1 * φ2 p.2) * ⟪x, R p y⟫_ℂ) (μ1.prod μ2) := by
     refine (hφ.const_mul ((‖x‖ * ‖y‖ : ℝ) : ℂ)).mono (hφ.aestronglyMeasurable.mul (hmeas x y))
       (Filter.Eventually.of_forall fun p => ?_)
-    simp only [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_mul, abs_norm]
+    simp only [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_norm]
     nlinarith [hbd p, norm_nonneg (φ1 p.1), norm_nonneg (φ2 p.2),
       mul_nonneg (norm_nonneg (φ1 p.1)) (norm_nonneg (φ2 p.2))]
   constructor

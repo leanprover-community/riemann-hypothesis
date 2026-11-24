@@ -76,8 +76,7 @@ private theorem coe_iota_eq_algebraMap_coe (a : 𝓞 F) : jK (ι a) = algebraMap
 
 private theorem jK_iota_ne_zero {a : 𝓞 F} (ha : a ≠ 0) : jK (ι a) ≠ 0 := by
   rw [coe_iota_eq_algebraMap_coe]
-  refine (map_ne_zero (algebraMap F K)).mpr ?_
-  exact (map_ne_zero_iff _ (IsFractionRing.injective (𝓞 F) F)).mpr ha
+  exact (map_ne_zero (algebraMap F K)).mpr ((map_ne_zero_iff _ (IsFractionRing.injective (𝓞 F) F)).mpr ha)
 
 private theorem jK_ne_zero_of_mem_closure_prime_compl {𝔭 : Ideal (𝓞 F)} {s : 𝓞 K}
     (hs : s ∈ Submonoid.closure {s : 𝓞 K | ∃ t : 𝓞 F, t ∉ 𝔭 ∧ algebraMap (𝓞 F) (𝓞 K) t = s}) :

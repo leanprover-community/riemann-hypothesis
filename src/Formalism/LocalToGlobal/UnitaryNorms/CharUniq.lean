@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Definitions.Foundations.IsUnitaryOfOrder
 public import Formalism.LocalToGlobal.UnitaryNorms.CharHost
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -179,21 +180,7 @@ theorem PiBar.overP (P : PiBar H) {k : Fin 2} {w : HeightOneSpectrum (𝓞 H.E)}
 
 theorem isUnitAt_nat {p a : ℕ} {w : HeightOneSpectrum (𝓞 H.E)} (hw : OverP H p w) (ha : a.Coprime p) {x : H.Eˣ}
     (hx : (x : H.E) = (a : H.E)) : IsUnitAt w (atFin w x) := by
-  have hna : ((a : ℕ) : 𝓞 H.E) ∉ w.asIdeal := by
-    intro hmem
-    obtain ⟨u, v, huv⟩ := (Nat.isCoprime_iff_coprime.mpr ha)
-    have h1 : (1 : 𝓞 H.E) ∈ w.asIdeal := by
-      have e : (1 : 𝓞 H.E) = (u : 𝓞 H.E) * ((a : ℕ) : 𝓞 H.E) + (v : 𝓞 H.E) * ((p : ℕ) : 𝓞 H.E) := by
-        have := congrArg (fun z : ℤ => (z : 𝓞 H.E)) huv
-        push_cast at this
-        exact this.symm
-      rw [e]
-      exact w.asIdeal.add_mem (w.asIdeal.mul_mem_left _ hmem) (w.asIdeal.mul_mem_left _ hw)
-    exact w.isPrime.ne_top ((Ideal.eq_top_iff_one _).mpr h1)
-  have h := valued_algebraMap_eq_one H.E w _ hna
-  show Valued.v (algebraMap H.E (w.adicCompletion H.E) (x : H.E)) = 1
-  rw [hx]
-  simpa using h
+  apply GlobalTheory.Mem.Chr.isUnitAt_nat <;> assumption
 
 theorem isPsi_one (l : ℕ) : IsPsi (H := H) l ∅ (1 : HChar H.E) :=
   ⟨⟨0, one_pow _⟩, isClsF_one.triv, fun _ _ _ _ => rfl,

@@ -76,9 +76,6 @@ theorem normFactor_rightBorel_holds : NfacRmulStatement (E := E) := by
     simp only [bchar, norm_prod, norm_zpow]
   simp only [Data.nfac, key, Finset.prod_mul_distrib, Finset.prod_inv_distrib, hbc]
 
-private theorem ringHom_cc_eq_conj (τ : E →+* ℂ) (y : E) : τ (cc y) = starRingEnd ℂ (τ y) :=
-  NumberField.IsCMField.complexEmbedding_complexConj E τ y
-
 private theorem sum_mul_gram_mul_cc_of_isUStab {r : ℕ} (G : Matrix (Fin r) (Fin r) E)
     (Λ : Submodule (𝓞 E) (Fin r → E)) (γ : GL (Fin r) E) (hγ : IsUStab G Λ γ) (j l : Fin r) :
     ∑ a, ∑ b, (γ : Matrix (Fin r) (Fin r) E) a j * G a b * cc ((γ : Matrix (Fin r) (Fin r) E) b l)
@@ -122,7 +119,7 @@ private theorem hermC_mulVec_map_of_isUStab {r : ℕ} (τ : E →+* ℂ) (G : Ma
     intro j l
     rw [← sum_mul_gram_mul_cc_of_isUStab G Λ γ hγ j l]
 
-    simp only [map_sum, map_mul, ringHom_cc_eq_conj]
+    simp only [map_sum, map_mul, _root_.ReciprocityTheory.ChartRestriction.G.FD.emb_cc]
   have hmv : ∀ (M : Matrix (Fin r) (Fin r) ℂ) (w : Fin r → ℂ) (i : Fin r),
       Matrix.mulVec M w i = ∑ j, M i j * w j := fun _ _ _ => rfl
   have lhs : hermC τ G (Matrix.mulVec ((γ : Matrix (Fin r) (Fin r) E).map τ) u)

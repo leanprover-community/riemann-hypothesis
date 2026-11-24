@@ -65,12 +65,7 @@ def rreg (ε : Fin n → Bool) (g : Matrix (Fin n) (Fin n) ℂ) : L2 ε →L[ℂ
 def toL2 (ε : Fin n → Bool) (F : Matrix (Fin n) (Fin n) ℂ → ℂ) : L2 ε :=
   if h : MemLp (fun g : Formalism.REAL.UJ ε => F (Formalism.MainNotions.S.umat g)) 2 (Formalism.REAL.muG ε) then h.toLp _ else 0
 
-theorem signature_matrix_sq (ε : Fin n → Bool) : Formalism.REAL.Jm ε * Formalism.REAL.Jm ε = 1 := by
-  unfold Formalism.REAL.Jm
-  rw [Matrix.diagonal_mul_diagonal, ← Matrix.diagonal_one]
-  congr 1
-  funext a
-  split_ifs <;> norm_num
+alias signature_matrix_sq := _root_.Formalism.REAL.Jm_mul_self
 
 theorem exists_unitary_preimage (ε : Fin n → Bool) {g : Matrix (Fin n) (Fin n) ℂ} (hg : g ∈ UJset ε) :
     ∃ y : Formalism.REAL.UJ ε, Formalism.MainNotions.S.umat y = g := by
@@ -82,7 +77,6 @@ theorem exists_unitary_preimage (ε : Fin n → Bool) {g : Matrix (Fin n) (Fin n
   have hr : g * (Formalism.REAL.Jm ε * gᴴ * Formalism.REAL.Jm ε) = 1 := by
     first
     | exact mul_eq_one_comm.mp hl
-    | (letI := Matrix.invertibleOfLeftInverse g _ hl; exact mul_invOf_self g)
   exact ⟨⟨⟨g, Formalism.REAL.Jm ε * gᴴ * Formalism.REAL.Jm ε, hr, hl⟩, h⟩, rfl⟩
 
 theorem unitary_matrix_injective (ε : Fin n → Bool) {x y : Formalism.REAL.UJ ε}

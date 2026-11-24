@@ -122,12 +122,8 @@ theorem glo_res_zero (x : v.adicCompletionIntegers F) (h : Valued.v (x : v.adicC
   rw [h2] at h5
   exact absurd h (not_lt.2 h5)
 
-theorem glo_algMap_int (r : 𝓞 F) : algebraMap (𝓞 F) (v.adicCompletion F) r ∈ v.adicCompletionIntegers F := by
-  rw [HeightOneSpectrum.mem_adicCompletionIntegers, csApprox_val_int]
-  exact HeightOneSpectrum.intValuation_le_one v r
-
 theorem glo_res_surj (z : kv F v) : ∃ r : 𝓞 F,
-    IsLocalRing.residue (v.adicCompletionIntegers F) ⟨algebraMap (𝓞 F) (v.adicCompletion F) r, glo_algMap_int v r⟩ = z := by
+    IsLocalRing.residue (v.adicCompletionIntegers F) ⟨algebraMap (𝓞 F) (v.adicCompletion F) r, _root_.Formalism.UG.P.levelaf_int_mem_v v r⟩ = z := by
   obtain ⟨x, rfl⟩ := IsLocalRing.residue_surjective z
   obtain ⟨D, hDv, hD⟩ := Submodule.exists_mem_ne_zero_of_ne_bot v.ne_bot
   obtain ⟨r, y, hy, e⟩ := integral_adele_approximation_holds F D hD (afsplitI v (x : v.adicCompletion F)) (afsplitI_mem_intAd v _ x.2)
@@ -145,11 +141,11 @@ theorem glo_res_surj (z : kv F v) : ∃ r : 𝓞 F,
     exact lt_of_le_of_lt (mul_le_of_le_one_right' hyv) hDval
   have hmem : algebraMap (𝓞 F) (v.adicCompletion F) D * y v ∈ v.adicCompletionIntegers F :=
     (HeightOneSpectrum.mem_adicCompletionIntegers _ _ _).2 hlt.le
-  have hx : x = ⟨algebraMap (𝓞 F) (v.adicCompletion F) r, glo_algMap_int v r⟩ + ⟨_, hmem⟩ := Subtype.ext ev
+  have hx : x = ⟨algebraMap (𝓞 F) (v.adicCompletion F) r, _root_.Formalism.UG.P.levelaf_int_mem_v v r⟩ + ⟨_, hmem⟩ := Subtype.ext ev
   rw [hx, map_add (f := _), glo_res_zero v ⟨_, hmem⟩ hlt, add_zero]
 
 theorem gloRho_algMap (r : 𝓞 F) : gloRho v spl halg (oToS F E (algebraMap (𝓞 F) (𝓞 E) r)) =
-    IsLocalRing.residue (v.adicCompletionIntegers F) ⟨algebraMap (𝓞 F) (v.adicCompletion F) r, glo_algMap_int v r⟩ := by
+    IsLocalRing.residue (v.adicCompletionIntegers F) ⟨algebraMap (𝓞 F) (v.adicCompletion F) r, _root_.Formalism.UG.P.levelaf_int_mem_v v r⟩ := by
   rw [gloRho_apply]
   congr 1
   apply Subtype.ext

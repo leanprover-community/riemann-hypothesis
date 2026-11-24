@@ -157,7 +157,6 @@ theorem coeff_kill (j : Fin n) (f : PS k n d) (m : Fin n × Fin d →₀ ℕ) :
         show ((Function.update gen j 0 j : Q k d n) : Pt k n d) b ^ e (j, b) = 0
         first
         | rw [Function.update_self]
-        | rw [Function.update_same]
         exact zero_pow hb
       rw [hp, map_zero, if_neg]
       rintro ⟨rfl, h⟩

@@ -112,7 +112,7 @@ theorem norm_tensor_phi_le_sqrt_hs {g : Matrix (Fin n) (Fin n) ℂ} (hg : inUJ �
     have h2 : ∑ j', ‖g c j'‖ ^ 2 ≤ ∑ i', ∑ j', ‖g i' j'‖ ^ 2 :=
       Finset.single_le_sum (f := fun i' => ∑ j', ‖g i' j'‖ ^ 2) (fun _ _ => by positivity) (Finset.mem_univ c)
     have h3 : ‖g c d‖ ^ 2 ≤ S7.hs g := by
-      simp only [S7.hs, Formalism.REAL.hs]
+      simp only [S7.hs]
       exact h1.trans h2
     have h4 := Real.abs_le_sqrt h3
     rwa [abs_of_nonneg (norm_nonneg _)] at h4
@@ -166,16 +166,6 @@ theorem smoothOnG_tensor_phi (dual : Bool) (c d : Fin n) : Formalism.REAL.Smooth
     rw [tensor_phi_of_unitary hg true c d]
     rfl
 
-private lemma smoothOnG_mul {f g : Matrix (Fin n) (Fin n) ℂ → ℂ} (hf : Formalism.REAL.SmoothOnG ε f)
-    (hg : Formalism.REAL.SmoothOnG ε g) : Formalism.REAL.SmoothOnG ε (fun x => f x * g x) := by
-  unfold Formalism.REAL.SmoothOnG at hf hg ⊢
-  intro g₀ h₀
-  obtain ⟨U, F, hU, h0U, hF, hFU⟩ := hf g₀ h₀
-  obtain ⟨V, G, hV, h0V, hG, hGV⟩ := hg g₀ h₀
-  refine ⟨U ∩ V, fun x => F x * G x, hU.inter hV, ⟨h0U, h0V⟩,
-    (hF.mono Set.inter_subset_left).mul (hG.mono Set.inter_subset_right), fun x hx hxJ => ?_⟩
-  simp only [hFU x hx.1 hxJ, hGV x hx.2 hxJ]
-
 theorem tensor_coef_smooth (dual : Bool) (η f : Fin n → H) (hf : ∀ d, IsSmoothVecU ε σ (f d)) :
     Formalism.REAL.SmoothOnG ε (fun g => ∑ c, inner ℂ (η c) (tensGrp dual σ g f c)) := by
   have heq : (fun g => ∑ c, inner ℂ (η c) (tensGrp dual σ g f c)) =
@@ -185,7 +175,7 @@ theorem tensor_coef_smooth (dual : Bool) (η f : Fin n → H) (hf : ∀ d, IsSmo
   rw [heq]
   exact smoothOnG_finset_sum univ (fun c g => ∑ d, oa1Phi dual g c d * inner ℂ (η c) (σ g (f d))) fun c _ =>
     smoothOnG_finset_sum univ (fun d g => oa1Phi dual g c d * inner ℂ (η c) (σ g (f d))) fun d _ =>
-      smoothOnG_mul (smoothOnG_tensor_phi dual c d) (smoothOnG_inner_rep (η c) (hf d))
+      _root_.Formalism.REAL.smooth_on_group_mul (smoothOnG_tensor_phi dual c d) (smoothOnG_inner_rep (η c) (hf d))
 
 theorem continuous_umat' : Continuous (fun g : Formalism.REAL.UJ ε => Formalism.MainNotions.S.umat g) := Units.continuous_val.comp continuous_subtype_val
 

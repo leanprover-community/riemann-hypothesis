@@ -3,7 +3,8 @@ module
 public import Formalism.LocalToGlobal.Divisibility.NumbersLemmas
 public import Formalism.LocalToGlobal.Divisibility.ZscOfNum
 public import Formalism.SharpRestriction.ElevenLe
-public import Formalism.PeriodIntegrals.OrbitalBoundsConclusion.GZeroLogBound
+public import Formalism.PeriodIntegrals.GZeroLogBound
+public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.GeneralLinearCardBound.ZeroLogBound
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -111,7 +112,7 @@ theorem log_card_le_unitE {G : Type} [Fintype G] (L : SizeData₂ D) (hSG : Size
 
   have hlam : Real.log (Fintype.card G : ℝ) ≤
       2 * (D.R.f : ℝ) * (D.R.r : ℝ) ^ 2 * Real.log (2 * (D.host.g 0 : ℝ)) := by
-    have h := GZeroLogBound D (D.host.g 0 : ℝ) (fun i => (hSG i 0).2.1)
+    have h := _root_.PI.GZeroLogBound.UnitaryGroupMassFormula.target D (D.host.g 0 : ℝ) (fun i => (hSG i 0).2.1)
     rw [hc]
     exact h
 

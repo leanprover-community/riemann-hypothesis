@@ -66,7 +66,7 @@ variable {n : ℕ} {ε : Fin n → Bool}
 theorem dc_aeval_intertwine {Y Z : Type*} [AddCommGroup Y] [Module ℂ Y] [AddCommGroup Z] [Module ℂ Z]
     (ψ : Y →ₗ[ℂ] Z) (A : Module.End ℂ Y) (B : Module.End ℂ Z) (h : ∀ y, ψ (A y) = B (ψ y)) (p : ℂ[X])
     (y : Y) : ψ (aeval A p y) = aeval B p (ψ y) := by
-  first | exact UpperTheory.Reformulated.B.Qj10.dc_aeval_intertwine .. | (apply UpperTheory.Reformulated.B.Qj10.dc_aeval_intertwine <;> assumption) | (intros; apply UpperTheory.Reformulated.B.Qj10.dc_aeval_intertwine <;> assumption) | (apply @UpperTheory.Reformulated.B.Qj10.dc_aeval_intertwine <;> assumption) | (intros; apply @UpperTheory.Reformulated.B.Qj10.dc_aeval_intertwine <;> assumption) | (apply @UpperTheory.Reformulated.B.Qj10.dc_aeval_intertwine <;> first | assumption | infer_instance)
+  first | (apply UpperTheory.Reformulated.B.Qj10.dc_aeval_intertwine <;> assumption)
 
 theorem dc_tensSub_fd {M : Type*} [AddCommGroup M] [Module ℂ M] {S : Submodule ℂ M}
     (hS : FiniteDimensional ℂ S) : FiniteDimensional ℂ (tensSub (n := n) S) := by

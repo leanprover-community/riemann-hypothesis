@@ -135,8 +135,6 @@ theorem ninf_conj (u : D.what₂.Word) (s : X.B.I.Ginf)
     delta uMat
     first
     | exact (s v).2
-    | exact (s v).1.2
-    | simpa using (s v).2
   rw [hmul]
   exact inN_conj _ _ _ (uMat (s v)) (uMat (s⁻¹ v)) (uMat (r v)) h1 hU (he v) (hz v) (hr v)
 

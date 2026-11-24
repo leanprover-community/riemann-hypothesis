@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ExistsMemProjEqOnFinset
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalVolumeIndices.MassDataKppVolOf
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalVolumeIndices.Single
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalVolumeIndices.CstNatCastApply
@@ -57,26 +58,7 @@ open Formalism.MainNotions.S (AutInst)
 
 theorem index_pi₂ {ι : Type} [Fintype ι] {G : ι → Type} [∀ i, Group (G i)] (H : ∀ i, Subgroup (G i)) :
     (Subgroup.pi Set.univ H).index = ∏ i, (H i).index := by
-  classical
-  show Nat.card ((∀ i, G i) ⧸ Subgroup.pi Set.univ H) = ∏ i, Nat.card (G i ⧸ H i)
-  rw [← Nat.card_pi]
-  refine Nat.card_congr (Equiv.ofBijective
-    (fun q => Quotient.liftOn' q (fun g i => (QuotientGroup.mk (g i) : G i ⧸ H i)) ?_) ⟨?_, ?_⟩)
-  · intro a b hab
-    funext i
-    rw [QuotientGroup.eq]
-    have h1 : a⁻¹ * b ∈ Subgroup.pi Set.univ H := QuotientGroup.leftRel_apply.mp hab
-    exact (Subgroup.mem_pi _).mp h1 i (Set.mem_univ i)
-  · intro q q' h
-    obtain ⟨a, rfl⟩ := QuotientGroup.mk_surjective q
-    obtain ⟨b, rfl⟩ := QuotientGroup.mk_surjective q'
-    rw [QuotientGroup.eq, Subgroup.mem_pi]
-    intro i _
-    exact QuotientGroup.eq.mp (congrFun h i)
-  · intro f
-    refine ⟨QuotientGroup.mk (fun i => (f i).out), ?_⟩
-    funext i
-    exact QuotientGroup.out_eq' (f i)
+  apply GlobalTheory.index_pi_univ_dep <;> assumption
 
 def KsetSub (I : AutInst) : Subgroup I.Gf :=
   (Formalism.UG.stabGL I.Lf).comap (Formalism.UG.UPts I.cm.sig I.J (Af I.F)).subtype

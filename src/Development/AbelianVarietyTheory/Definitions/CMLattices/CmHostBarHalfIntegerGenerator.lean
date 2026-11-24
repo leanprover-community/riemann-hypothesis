@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.CmHostIdempotentTraceEqOne
 public import Development.AbelianVarietyTheory.Definitions.CMLattices.IsDiffOf
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -50,30 +51,7 @@ namespace GlobalTheory.CM.Test
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
 
 theorem bar_rt (H : Host E) : H.bar H.rt = -H.rt := by
-  have hsq : (H.bar H.rt - H.rt) * (H.bar H.rt + H.rt) = 0 := by
-    have e : H.bar (H.rt ^ 2) = H.bar (-(H.d : 𝓞 E)) := by rw [H.rt_sq]
-    rw [map_pow, map_neg, map_natCast, ← H.rt_sq] at e
-    linear_combination e
-  rcases mul_eq_zero.mp hsq with h | h
-  · exfalso
-    have hfix : H.bar H.rt = H.rt := sub_eq_zero.mp h
-    obtain ⟨φ⟩ : Nonempty (E →+* ℂ) := inferInstance
-    have hc := H.bar_eq H.rt
-    rw [hfix] at hc
-    have hconj : starRingEnd ℂ (φ (H.rt : E)) = φ (H.rt : E) := by
-      rw [← NumberField.IsCMField.complexEmbedding_complexConj, ← hc]
-    have hsqC : (φ (H.rt : E)) ^ 2 = -(H.d : ℂ) := by
-      rw [← map_pow]
-      have e : ((H.rt ^ 2 : 𝓞 E) : E) = ((-(H.d : 𝓞 E) : 𝓞 E) : E) := by rw [H.rt_sq]
-      push_cast at e
-      rw [e]
-      simp
-    have him : (φ (H.rt : E)).im = 0 := Complex.conj_eq_iff_im.mp hconj
-    have hre := congrArg Complex.re hsqC
-    simp only [pow_two, Complex.mul_re, him, mul_zero, sub_zero, Complex.neg_re, Complex.natCast_re] at hre
-    have hd : (2 : ℝ) ≤ H.d := by exact_mod_cast H.d_prime.two_le
-    nlinarith [mul_self_nonneg (φ (H.rt : E)).re]
-  · linear_combination h
+  apply GlobalTheory.QuadTrace.bar_rt <;> assumption
 
 variable {D : Datum H} {ε : ℤˣ} {h : D.La → D.La → OK H}
 

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.NonemptyRingHomComplexOfFg
 public import Formalism.LocalRingCardinality.DataDIV
 public import Mathlib.Algebra.MvPolynomial.Cardinal
 import Mathlib.Algebra.Order.Floor.Extended
@@ -54,20 +55,7 @@ namespace GlobalTheory.WittFracComplex
 open Cardinal in
 theorem nonempty_ringHom_complex_of_le_continuum (K : Type) [Field K] [CharZero K] (hK : #K ≤ 𝔠) :
     Nonempty (K →+* ℂ) := by
-  let F := FractionRing (MvPolynomial ℝ K)
-  let L := AlgebraicClosure F
-  have hF : #F = 𝔠 := by
-    rw [Cardinal.mk_fractionRing, MvPolynomial.cardinalMk_eq_max, Cardinal.mk_real, max_eq_right hK,
-      max_eq_left Cardinal.aleph0_le_continuum]
-  have hL : #L = 𝔠 := by
-    refine le_antisymm ?_ (hF ▸ Cardinal.mk_le_of_injective (algebraMap F L).injective)
-    have := Algebra.IsAlgebraic.cardinalMk_le_max F L
-    rwa [hF, max_eq_left Cardinal.aleph0_le_continuum] at this
-  let j : K →+* L := (algebraMap F L).comp ((algebraMap (MvPolynomial ℝ K) F).comp MvPolynomial.C)
-  have : CharZero L := (RingHom.charZero_iff j.injective).1 inferInstance
-  obtain ⟨e⟩ := IsAlgClosed.ringEquiv_of_equiv_of_charZero (K := L) (L := ℂ)
-    (hL ▸ Cardinal.aleph0_lt_continuum) (Cardinal.eq.1 (hL.trans Cardinal.mk_complex.symm))
-  exact ⟨e.toRingHom.comp j⟩
+  apply _root_.GlobalTheory.FGFieldEmb.nonempty_ringHom_complex_of_mk_le <;> assumption
 
 theorem charZero_wittVector (p : ℕ) [hp : Fact p.Prime] (k : Type) [Field k] [CharP k p] :
     CharZero (WittVector p k) := by

@@ -326,7 +326,7 @@ lemma add_step' [DecidableEq K] {W : Affine K} {M : ℝ} (h₁ : ‖W.a₁‖ �
     have := neg_param h₁ h₂ h₃ h₄ h₆ hM hQ ((Affine.equation_iff _ _).1 k₂.1)
     rw [← norm_neg]
     refine le_of_eq_of_le (congrArg norm ?_) this
-    simp only [Affine.Point.zero_def, param, Affine.negY]
+    simp only [param, Affine.negY]
     ring
   have hp := Affine.addPolynomial_slope k₁.1 k₂.1 hxy
   rw [Affine.addPolynomial_eq, neg_inj, Cubic.prod_X_sub_C_eq, Cubic.toPoly_injective] at hp
@@ -370,7 +370,7 @@ theorem norm_x_le_one [DecidableEq K] {W : Affine K} (h₁ : ‖W.a₁‖ ≤ 1)
     induction k with
     | zero =>
       rw [zero_nsmul]
-      exact ⟨trivial, by simp [Affine.Point.zero_def, param]⟩
+      exact ⟨trivial, by simp [param]⟩
     | succ k ih =>
       obtain ⟨s1, s2⟩ := add_step' h₁ h₂ h₃ h₄ h₆ hx _ _ ih.1 hP
       rw [succ_nsmul]
@@ -382,7 +382,7 @@ theorem norm_x_le_one [DecidableEq K] {W : Affine K} (h₁ : ‖W.a₁‖ ≤ 1)
       ring
   have h1 := (key N).2
   rw [h0] at h1
-  simp only [Affine.Point.zero_def, param, zero_sub, norm_neg, norm_mul, hN, one_mul,
+  simp only [param, zero_sub, norm_neg, norm_mul, hN, one_mul,
     norm_div] at h1
   have hy := norm_y_sq' h₁ h₂ h₃ h₄ h₆ hx ((Affine.equation_iff _ _).1 h.1)
   have x0 : 0 < ‖x‖ := by linarith

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ArchActionReadingsCompatible
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFockMap
 import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.LcscAdelicUnitaryGroup
 import Mathlib.Algebra.Order.Floor.Extended
@@ -166,35 +167,7 @@ namespace PositivityTheory.RL
 open SeminormBoundRestriction
 
 theorem actsLaws : GlobalTheory.RealLift.ActsLaws := by
-  intro F _ _ κ _ f f₁ f₂
-  refine ⟨fun T hT h r hr x => ?_, fun T hT h r hr => ?_, fun T h₁ h₂ => ?_, fun T h₁ h₂ => ?_, fun T h₁ h₂ => ?_⟩
-  · by_cases hf : f = 0
-    · subst hf
-      have h1 : f₁ = 0 := by
-        refine eq_of_pureA fun g hg y => ?_
-        have h2 := h g hg _ (eval_adm y)
-        simp only [pureA_zero, hT, map_zero] at h2
-        rw [pureA_zero]
-        exact h2.unique (hasDerivAt_const _ _)
-      subst h1
-      simp only [tens_zero, hT]
-      exact hasDerivAt_const _ _
-    · obtain ⟨g, hg, rfl⟩ := exists_of_rest hf hr
-      exact h g hg _ (eval_adm x)
-  · by_cases hf : f = 0
-    · subst hf
-      have h1 : f₁ = 0 := by
-        refine eq_of_pureA fun g hg y => ?_
-        have h2 := h g hg
-        rw [pureA_zero, hT] at h2
-        rw [pureA_zero, ← h2]
-      subst h1
-      rw [tens_zero, hT]
-    · obtain ⟨g, hg, rfl⟩ := exists_of_rest hf hr
-      exact h g hg
-  · exact eq_of_pureA fun g hg x => (h₁ _ (rest_of_SB f hg) x).unique (h₂ _ (rest_of_SB f hg) x)
-  · exact eq_of_pureA fun g hg x => congrFun ((h₁ _ (rest_of_SB f hg)).symm.trans (h₂ _ (rest_of_SB f hg))) x
-  · exact eq_of_pureA fun g hg x => (h₁ g hg _ (eval_adm x)).unique (h₂ g hg _ (eval_adm x))
+  apply GlobalTheory.RealLift.actsLaws <;> assumption
 
 end PositivityTheory.RL
 

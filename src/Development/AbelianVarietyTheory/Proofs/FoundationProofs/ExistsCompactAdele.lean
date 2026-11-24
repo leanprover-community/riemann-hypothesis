@@ -52,6 +52,7 @@ public import Mathlib.Topology.Algebra.Group.OpenMapping
 import Mathlib.Topology.Baire.LocallyCompactRegular
 import Mathlib.Topology.UniformSpace.Uniformizable
 import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.LeftInvOfUnitary
+import Formalism.HermitianLattices.HermitianLatticesProofs.UnimodularSpan
 
 @[expose] public section
 
@@ -233,63 +234,8 @@ theorem exists_lattice (W : HSpace E) : ∃ L : Submodule (𝓞 E) (Fin W.rank �
   let f := W.frame.equivFun.toLinearMap
   refine ⟨W.L0.map (f.restrictScalars (𝓞 E)), W.standardTuple_isLattice.fg.map _, ?_, ?_⟩
   · have : (W.L0.map (f.restrictScalars (𝓞 E)) : Set (Fin W.rank → E)) = f '' W.L0 := rfl
-    have hspan : Submodule.span E (W.L0 : Set W.V) = ⊤ := by
-      classical
-      by_contra hspan
-      obtain ⟨φ, hφ₀, hφ⟩ := Submodule.exists_le_ker_of_lt_top _ (lt_top_iff_ne_top.mpr hspan)
-      obtain ⟨bs, hbs⟩ := Formalism.HermitianLatticesTheory.dualLattice_dualBasis W.hT W.nondeg W.frame
-      let μ := ∑ j, star (φ (W.frame j)) • bs j
-      have hμ : ∀ v, W.hT μ v = φ v := by
-        have key : W.hT μ = φ := by
-          apply W.frame.ext
-          intro i
-          dsimp [μ]
-          rw [map_sum, LinearMap.sum_apply]
-          have hs : ∀ j, W.hT (star (φ (W.frame j)) • bs j) (W.frame i) =
-              φ (W.frame j) * (if i = j then 1 else 0) := by
-            intro j
-            rw [LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, starRingEnd_apply, star_star]
-            congr 1
-            rw [← W.herm.eq (W.frame i) (bs j), hbs]
-            split_ifs <;> simp
-          simp only [hs, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, if_true]
-        intro v
-        rw [key]
-      have hμ₀ : μ ≠ 0 := by
-        intro h
-        apply hφ₀
-        ext y
-        simpa [h] using (hμ y).symm
-      have hline (a : E) : a • μ ∈ W.L0 := by
-        rw [← W.baseLattice_isUnimodular]
-        change a • μ ∈ Formalism.E.hdual W.hT W.L0
-        simp only [Formalism.E.hdual, Submodule.mem_iInf, Submodule.mem_comap,
-          LinearMap.restrictScalars_apply]
-        intro y hy
-        have hy₀ := LinearMap.mem_ker.mp (hφ (Submodule.subset_span hy))
-        simp [← W.herm.eq (a • μ) y, LinearMap.map_smulₛₗ, hμ, hy₀]
-      obtain ⟨ψ, hψ, -⟩ := Submodule.exists_le_ker_of_notMem
-        (show μ ∉ (⊥ : Submodule E W.V) by simpa using hμ₀)
-      let g := ψ.restrictScalars (𝓞 E)
-      have hmap (x : E) : x ∈ W.L0.map g := by
-        refine ⟨(x / ψ μ) • μ, hline _, ?_⟩
-        change ψ ((x / ψ μ) • μ) = x
-        rw [map_smul, smul_eq_mul, div_mul_cancel₀ _ hψ]
-      obtain ⟨d, hd₀, hd⟩ := FractionalIdeal.isFractional_of_fg
-        (S := nonZeroDivisors (𝓞 E)) (W.standardTuple_isLattice.fg.map g)
-      have hinj := IsFractionRing.injective (𝓞 E) E
-      have hne {a : 𝓞 E} (ha : a ≠ 0) : algebraMap (𝓞 E) E a ≠ 0 :=
-        fun h => ha (hinj (h.trans (map_zero _).symm))
-      have hinteger (x : E) : IsLocalization.IsInteger (𝓞 E) x := by
-        have hx := hd _ (hmap ((algebraMap (𝓞 E) E d)⁻¹ * x))
-        rwa [Algebra.smul_def, ← mul_assoc, mul_inv_cancel₀ (hne (nonZeroDivisors.ne_zero hd₀)),
-          one_mul] at hx
-      apply RingOfIntegers.not_isField E
-      refine ⟨⟨0, 1, zero_ne_one⟩, mul_comm, ?_⟩
-      intro a ha
-      obtain ⟨b, hb⟩ := hinteger ((algebraMap (𝓞 E) E a)⁻¹)
-      refine ⟨b, hinj ?_⟩
-      rw [map_mul, hb, map_one, mul_inv_cancel₀ (hne ha)]
+    have hspan : Submodule.span E (W.L0 : Set W.V) = ⊤ :=
+      Formalism.HermitianLatticesTheory.IsUnimodular.span_eq_top W.baseLattice_isUnimodular W.herm W.standardTuple_isLattice.fg
     rw [this, ← Submodule.map_span, hspan, Submodule.map_top, LinearEquiv.range]
   · ext v
     constructor

@@ -92,7 +92,7 @@ def blkDiag (ε : Fin n → Bool) :
 lemma blkDiag_apply (ε : Fin n → Bool) (v : ∀ s : Bool, Matrix (Fin (blkP ε s)) (Fin (blkP ε s)) ℂ)
     (x y : Σ s : Bool, Fin (blkP ε s)) :
     blkDiag ε v (blkSig ε x) (blkSig ε y) = blockDiagonal' v x y := by
-  simp [blkDiag, Matrix.reindexAlgEquiv_apply, Matrix.reindex_apply]
+  simp [blkDiag, Matrix.reindex_apply]
 
 lemma continuous_blkDiag (ε : Fin n → Bool) : Continuous (blkDiag ε) := by
   let L : (∀ s : Bool, Matrix (Fin (blkP ε s)) (Fin (blkP ε s)) ℂ) →ₗ[ℂ] Matrix (Fin n) (Fin n) ℂ :=
@@ -152,8 +152,7 @@ lemma eq_blkDiag {ε : Fin n → Bool} {X : Matrix (Fin n) (Fin n) ℂ} (hX : X 
 lemma blkDiag_conjTranspose (ε : Fin n → Bool)
     (v : ∀ s : Bool, Matrix (Fin (blkP ε s)) (Fin (blkP ε s)) ℂ) :
     (blkDiag ε v)ᴴ = blkDiag ε (fun s => (v s)ᴴ) := by
-  simp [blkDiag, Matrix.reindexAlgEquiv_apply, Matrix.conjTranspose_reindex,
-    Matrix.blockDiagonal'_conjTranspose]
+  simp [blkDiag, Matrix.blockDiagonal'_conjTranspose]
 
 lemma blkDiag_Kset (ε : Fin n → Bool) (v : ∀ s : Bool, Matrix (Fin (blkP ε s)) (Fin (blkP ε s)) ℂ)
     (hv : ∀ s, v s * (v s)ᴴ = 1) : blkDiag ε v ∈ Kset ε := by
@@ -246,7 +245,7 @@ theorem exp_blk {ε : Fin n → Bool} {X : Matrix (Fin n) (Fin n) ℂ} (hX : X *
   rw [embM, embM, ← map_mul]
   congr 1
   funext t
-  cases t <;> simp [Pi.mulSingle_apply]
+  cases t <;> simp
 
 theorem blk_curve {ε : Fin n → Bool} {X : Matrix (Fin n) (Fin n) ℂ} (hX : inK ε X)
     (γ : ℝ → KG ε) (hγ : ∀ t : ℝ, toMK (γ t) = NormedSpace.exp ((t : ℂ) • X))

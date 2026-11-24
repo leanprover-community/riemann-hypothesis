@@ -120,7 +120,6 @@ theorem FrameAtV_holds : FrameAtV := by
     intro p q
     first
     | exact ((VS D).herm.eq p q).symm
-    | exact ((VS D).herm p q).symm
   simp only [HidaSetting.eR, HidaSetting.fR, HidaSetting.zR, hc]
   refine ⟨fun a b => by rw [X.ee a b, map_zero], fun a b => by rw [X.ff a b, map_zero],
     fun a b => ?_, fun a b => ?_,

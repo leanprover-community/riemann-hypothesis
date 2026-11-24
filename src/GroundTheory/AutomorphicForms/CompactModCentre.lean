@@ -71,7 +71,7 @@ theorem span_orbit_eq_top [π.IsIrreducible] {v : V} (hv : v ≠ 0) :
     intro g x hx
     have : S ≤ S.comap (π g) := Submodule.span_le.2 (by
       rintro _ ⟨h, rfl⟩
-      exact Submodule.subset_span ⟨g * h, by simp [Module.End.mul_apply]⟩)
+      exact Submodule.subset_span ⟨g * h, by simp⟩)
     exact this hx
   rcases IsSimpleOrder.eq_bot_or_eq_top (⟨S, hS⟩ : Subrepresentation π) with h | h
   · exfalso

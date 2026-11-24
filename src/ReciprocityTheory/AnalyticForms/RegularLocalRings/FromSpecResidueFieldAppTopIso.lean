@@ -82,7 +82,7 @@ theorem fromSpecResidueField_appTop_iso (x : S) :
       (homOfLE (le_top : (⊤ : (Spec (S.presheaf.stalk x)).Opens) ≤ ⊤)).op = 𝟙 _ := by
     rw [show (homOfLE (le_top : (⊤ : (Spec (S.presheaf.stalk x)).Opens) ≤ ⊤)).op = 𝟙 _ from rfl,
       CategoryTheory.Functor.map_id]
-  simp [hid]
+  simp
 
 theorem constRes_eq (x : S) (hx : IsClosed ({x} : Set S)) [LocallyOfFiniteType s] :
     constRes s x = (residueFieldIsoBase s x hx).inv.hom := by

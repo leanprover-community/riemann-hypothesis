@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.TorusInvariance.TransferInvarianceRestriction
 public import Formalism.HermitianCurvature.StatementQr
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.OperatorRepresentations
 public import Formalism.HermitianCurvature.HermitianCurvatureProofs.RestrictionIrrelevantDoubleLevelOperator
@@ -84,8 +85,7 @@ theorem ldV_smul (X : Mx k r) (c : ℂ) (f : Mx k r → E) : Q.LdV X (fun x => c
 theorem lZ_smul (Z : Mx k r) (c : ℂ) (f : Mx k r → E) :
     LZ (Hpk k r) Z (fun x => c • f x) = fun x => c • LZ (Hpk k r) Z f x := by
   funext x
-  unfold LZ
-  simp only [ldV_smul, smul_add]
+  simp only [LZ, ldV_smul, smul_add]
   rw [smul_comm Complex.I c]
 
 theorem foldl_smul (L : List ((Mx k r → E) → Mx k r → E)) (c : ℂ)
@@ -101,8 +101,7 @@ theorem foldl_smul (L : List ((Mx k r → E) → Mx k r → E)) (c : ℂ)
 theorem capLft_smul {m : ℕ} (Bs : Fin m → Fin (2 * r + k + 1) → ℂ) (w c : ℂ) (f : Mx k r → E) :
     capLft k r Bs w (fun x => c • f x) = fun x => c • capLft k r Bs w f x := by
   funext x
-  unfold capLft qmFrev
-  simp only [Finset.sum_apply, Pi.smul_apply, Finset.smul_sum]
+  simp only [capLft, qmFrev, Finset.sum_apply, Pi.smul_apply, Finset.smul_sum]
   refine Finset.sum_congr rfl fun σ _ => ?_
   rw [foldl_smul _ c ?_ f]
   · exact smul_comm _ _ _
@@ -157,22 +156,7 @@ theorem mul_inv_uh {g : Mx k r} (hg : g ∈ UH (Hpk k r)) : g * g⁻¹ = 1 := by
 theorem inv_mul_uh {g : Mx k r} (hg : g ∈ UH (Hpk k r)) : g⁻¹ * g = 1 := Matrix.nonsing_inv_mul g (Matrix.isUnit_det_of_right_inverse (mul_inv_uh hg))
 
 theorem glev_inv {i : Fin (r + 1)} {g : Mx k r} (hg : g ∈ Glev k r i) : g⁻¹ ∈ Glev k r i := by
-  simp only [Glev, Set.mem_setOf_eq] at hg ⊢
-  obtain ⟨hU, hfix⟩ := hg
-  have h1 := mul_inv_uh hU
-  have h2 := inv_mul_uh hU
-  refine ⟨?_, fun a ha => ?_⟩
-  · have hU' : gᴴ * Hpk k r * g = Hpk k r := hU
-    show (g⁻¹)ᴴ * Hpk k r * g⁻¹ = Hpk k r
-    calc (g⁻¹)ᴴ * Hpk k r * g⁻¹ = (g⁻¹)ᴴ * (gᴴ * Hpk k r * g) * g⁻¹ := by rw [hU']
-      _ = (g * g⁻¹)ᴴ * Hpk k r * (g * g⁻¹) := by rw [conjTranspose_mul]; simp only [Matrix.mul_assoc]
-      _ = Hpk k r := by rw [h1, conjTranspose_one, Matrix.one_mul, Matrix.mul_one]
-  · obtain ⟨e1, e2⟩ := hfix a ha
-    constructor
-    · conv_lhs => rw [← e1]
-      rw [mulVec_mulVec, h2, one_mulVec]
-    · conv_lhs => rw [← e2]
-      rw [mulVec_mulVec, h2, one_mulVec]
+  apply Formalism.FourierDecayAlt.Q.TInvW.glev_inv <;> assumption
 
 theorem herm_inv {g : Mx k r} (hg : g ∈ UH (Hpk k r)) (x y : Fin (2 * r + k + 1) → ℂ) :
     herm (Hpk k r) (g *ᵥ x) y = herm (Hpk k r) x (g⁻¹ *ᵥ y) := by
@@ -224,7 +208,7 @@ variable {k r : ℕ} {E : Type} [NormedAddCommGroup E] [NormedSpace ℂ E] {i : 
 
 theorem uC_last (Y : ℂ) : uC k r (Fin.last r) Y = Y + (k : ℂ) / 2 := by
   unfold uC mdim
-  simp <;> ring
+  simp
 
 theorem uC_succ (Y : ℂ) : uC k r i (Y + 1) = uC k r i Y + 1 := by
   unfold uC
@@ -233,8 +217,7 @@ theorem uC_succ (Y : ℂ) : uC k r i (Y + 1) = uC k r i Y + 1 := by
 theorem chatA_eval (u : ℂ) (a β : Fin (mdim k r i) → ℂ) (ψ : SV k r i D E) (g : Mx k r) :
     (chatA (EV k r i D E) u a β ψ).1 g =
       ∑ p : Fin (mdim k r i), ∑ q : Fin (mdim k r i), ((-1 : ℂ) ^ ((p : ℕ) + (q : ℕ)) * β p * a q) • (qminor (EV k r i D E) (skip1 p) (skip1 q) u ψ).1 g := by
-  unfold chatA
-  simp only [LinearMap.sum_apply, LinearMap.smul_apply, Submodule.coe_sum, Submodule.coe_smul, Finset.sum_apply,
+  simp only [chatA, LinearMap.sum_apply, LinearMap.smul_apply, Submodule.coe_sum, Submodule.coe_smul, Finset.sum_apply,
     Pi.smul_apply]
 
 theorem chYY_eval (hD : IsOpen D) (z : Fin (2 * r + k + 1) → ℂ) (u : ℂ) (ψ : SV k r i D E) {g : Mx k r}
@@ -242,8 +225,7 @@ theorem chYY_eval (hD : IsOpen D) (z : Fin (2 * r + k + 1) → ℂ) (u : ℂ) (�
     (chYY (EV k r i D E) u (yV k r z i D E) (etaV k r z i D E) ψ).1 g =
       (chatA (EV k r i D E) u (yv k r z i g) (ybv k r z i g) ψ).1 g := by
   rw [chatA_eval]
-  unfold chYY
-  simp only [LinearMap.sum_apply, LinearMap.smul_apply, Submodule.coe_sum, Submodule.coe_smul, Finset.sum_apply,
+  simp only [chYY, LinearMap.sum_apply, LinearMap.smul_apply, Submodule.coe_sum, Submodule.coe_smul, Finset.sum_apply,
     Pi.smul_apply]
   refine Finset.sum_congr rfl fun p _ => Finset.sum_congr rfl fun q _ => ?_
   have h1 : ((etaV k r z i D E p * yV k r z i D E q * qminor (EV k r i D E) (skip1 p) (skip1 q) u) ψ).1 g =

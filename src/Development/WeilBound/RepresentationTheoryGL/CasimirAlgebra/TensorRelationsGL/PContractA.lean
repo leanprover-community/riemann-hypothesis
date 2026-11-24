@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.RepresentationTheoryGL.CasimirAlgebra.TensorRelationsGL.PWallAlgA
 public import Development.WeilBound.RepresentationTheoryGL.CasimirAlgebra.TensorRelationsGL.KTypeData
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -118,36 +119,7 @@ def splitE (m n : ℕ) (h : n ≤ m) : Fin m ≃ Fin (m - n) ⊕ Fin n where
 
 theorem pm_alt_firstG {m k : ℕ} (τ : Equiv.Perm (Fin m)) (hτ : τ ∈ firstG m k) (x : TV n M (Fin m)) :
     pm τ (alt (firstG m k) x) = ((Equiv.Perm.sign τ : ℤ) : ℂ) • alt (firstG m k) x := by
-  have hmem : ∀ σ : Equiv.Perm (Fin m), σ ∈ firstG m k ↔ ∀ j : Fin m, k ≤ (j : ℕ) → σ j = j := by
-    intro σ
-    simp [firstG]
-  have hτ' := (hmem τ).1 hτ
-  have hmul : ∀ σ : Equiv.Perm (Fin m), pm τ (pm σ x) = pm (τ * σ) x := by
-    intro σ
-    funext I
-    rfl
-
-  simp only [alt, LinearMap.sum_apply, map_sum, Finset.smul_sum, LinearMap.smul_apply, map_smul, hmul, smul_smul]
-  refine Finset.sum_nbij' (fun σ => τ * σ) (fun σ => τ⁻¹ * σ) ?_ ?_ ?_ ?_ ?_
-  · intro σ hσ
-    rw [hmem] at hσ ⊢
-    intro j hj
-    simp [Equiv.Perm.mul_apply, hσ j hj, hτ' j hj]
-  · intro σ hσ
-    rw [hmem] at hσ ⊢
-    intro j hj
-    have h1 : τ⁻¹ j = j := by
-      rw [Equiv.Perm.inv_eq_iff_eq]
-      exact (hτ' j hj).symm
-    simp [Equiv.Perm.mul_apply, hσ j hj, h1]
-  · intro σ _
-    simp
-  · intro σ _
-    simp
-  · intro σ _
-    congr 1
-    rw [Equiv.Perm.sign_mul]
-    rcases Int.units_eq_one_or (Equiv.Perm.sign τ) with h | h <;> simp [h]
+  apply PositivityTheory.Rg.Cz.WallAlgP.pm_alt_first <;> assumption
 
 theorem cur_anti {m : ℕ} (h : n ≤ m) (η : TV n M (Fin m))
     (hη : ∀ τ ∈ firstG m n, pm τ η = ((Equiv.Perm.sign τ : ℤ) : ℂ) • η) (σ : Equiv.Perm (Fin n)) :
@@ -176,7 +148,7 @@ theorem cur_anti {m : ℕ} (h : n ≤ m) (η : TV n M (Fin m))
   congr 1
   funext x
   simp only [Function.comp_apply, τ, Equiv.trans_apply, Equiv.apply_symm_apply, S,
-    Equiv.sumCongr_apply, Equiv.refl_apply]
+    Equiv.sumCongr_apply]
   cases e x <;> rfl
 
 end PositivityTheory.Rg.Cz.CtrX

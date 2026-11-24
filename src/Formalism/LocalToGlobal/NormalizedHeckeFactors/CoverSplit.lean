@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SplitExEveryDatum
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverAct
 public import Formalism.LocalToGlobal.GaloisLevelStructure.TiedHecke
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.PSplitT
@@ -90,31 +91,7 @@ theorem eq_or_eq_conjPlE (P w : PlE D.host)
     (hw : w.asIdeal.comap (algebraMap (𝓞 (maximalRealSubfield D.host.E)) (𝓞 D.host.E)) =
       P.asIdeal.comap (algebraMap (𝓞 (maximalRealSubfield D.host.E)) (𝓞 D.host.E))) :
     w = P ∨ w = conjPlE P := by
-  by_contra hne
-  push Not at hne
-  obtain ⟨h1, h2⟩ := hne
-  have nle : ∀ Q : PlE D.host, w ≠ Q → ¬ w.asIdeal ≤ Q.asIdeal := fun Q h hle =>
-    h (HeightOneSpectrum.ext (w.isMaximal.eq_of_le Q.isPrime.ne_top hle))
-  obtain ⟨a, ha, haP⟩ := Set.not_subset.mp (nle P h1)
-  obtain ⟨b, hb, hbQ⟩ := Set.not_subset.mp (nle _ h2)
-  have key : ∃ x ∈ w.asIdeal, x ∉ P.asIdeal ∧ x ∉ (conjPlE P).asIdeal := by
-    by_cases haQ : a ∈ (conjPlE P).asIdeal
-    · by_cases hbP : b ∈ P.asIdeal
-      · refine ⟨a + b, w.asIdeal.add_mem ha hb, fun h => haP ?_, fun h => hbQ ?_⟩
-        · simpa using P.asIdeal.sub_mem h hbP
-        · simpa using (conjPlE P).asIdeal.sub_mem h haQ
-      · exact ⟨b, hb, hbP, hbQ⟩
-    · exact ⟨a, ha, haP, haQ⟩
-  obtain ⟨x, hx, hxP, hxQ⟩ := key
-  rw [mem_conjPlE] at hxQ
-  have hfix : cO (x * cO x) = x * cO x := by rw [map_mul, cO_cO, mul_comm]
-  obtain ⟨y, hy⟩ := (IsCMField.ringOfIntegersComplexConj_eq_self_iff D.host.E _).1 hfix
-  have hyw : y ∈ w.asIdeal.comap (algebraMap (𝓞 (maximalRealSubfield D.host.E)) (𝓞 D.host.E)) := by
-    rw [Ideal.mem_comap, hy]; exact w.asIdeal.mul_mem_right _ hx
-  rw [hw, Ideal.mem_comap, hy] at hyw
-  rcases P.isPrime.mem_or_mem hyw with h | h
-  · exact hxP h
-  · exact hxQ h
+  apply GlobalTheory.SplitConjPlace.eq_or_eq_conjPlE <;> assumption
 
 def conjSplit (s : SplitPlace D.host.E) : SplitPlace D.host.E :=
   ⟨s.v, s.i.comp (IsCMField.complexConj D.host.E).toAlgHom⟩
@@ -304,21 +281,6 @@ theorem exists_splitPlace (v : PlE D.host) (x0 : 𝓞 D.host.E) (hx0 : x0 ∈ v.
   exact ⟨⟨v₀, i⟩, rfl⟩
 
 theorem splitEx_of_star (hstar : ∀ x : D.host.E, D.host.conj x = IsCMField.complexConj D.host.E x) : SplitEx D := by
-  refine splitEx_of hstar fun v₀ ⟨w, w', hne, hw, hw'⟩ => ?_
-
-  have key : ∃ x0 ∈ w.asIdeal, cO x0 ∉ w.asIdeal := by
-    rcases eq_or_eq_conjPlE w w' (hw'.trans hw.symm) with h | h
-    · exact absurd h.symm hne
-    · by_contra hall
-      push Not at hall
-      apply hne
-      rw [h]
-      ext1
-      refine le_antisymm (fun x hx => hall x hx) ?_
-      exact w.isMaximal.eq_of_le (conjPlE w).isPrime.ne_top (fun x hx => hall x hx) ▸ le_refl _
-  obtain ⟨x0, hx0, hc0⟩ := key
-  obtain ⟨s, hs⟩ := exists_splitPlace w x0 hx0 hc0
-  refine ⟨s, hs.trans ?_⟩
-  exact HeightOneSpectrum.ext hw
+  apply GlobalTheory.SplitConjPlace.splitEx_of_star <;> assumption
 
 end Formalism.L2

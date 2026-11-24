@@ -182,7 +182,6 @@ theorem integral_char_eq_zero (hF : IsTotallyReal F) (ρ : InfinitePlace F → (
       rw [← hr]
       first
         | rfl
-        | simp
     have h1 : f (fun w => ρ w ((N : F) * (s : F))) = 1 := by
       have : (∑ w, ρ w β * ρ w ((N : F) * (s : F))) = (z : ℝ) := by
         rw [← hz]

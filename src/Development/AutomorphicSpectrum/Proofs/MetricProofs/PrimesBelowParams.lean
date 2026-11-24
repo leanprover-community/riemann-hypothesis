@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.MetricProofs.UnitTimesParameterMonomial
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.ChPrime
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -67,26 +68,7 @@ theorem algebraMap_locRing_eq_zero_of_mem {I : Ideal (MvPolynomial (Fin m) ℂ)}
 theorem map_ptIdeal_eq_maximalIdeal {I : Ideal (MvPolynomial (Fin m) ℂ)} {t : Fin m → ℂ}
     (hI : ∀ h ∈ I, eval t h = 0) [IsLocalRing (locRing I t)] :
     Ideal.map (algebraMap _ (locRing I t)) (ptIdeal t) = IsLocalRing.maximalIdeal (locRing I t) := by
-  apply le_antisymm
-  · rw [Ideal.map_le_iff_le_comap]
-    intro g hg
-    rw [Ideal.mem_comap, IsLocalRing.mem_maximalIdeal, mem_nonunits_iff,
-      isUnit_algebraMap_locRing_iff I t hI]
-    simpa using RingHom.mem_ker.mp hg
-  · intro x hx
-    obtain ⟨a, b, hb, hab⟩ := exists_mk_locRing I t x
-    have hbu := (isUnit_algebraMap_locRing_iff I t hI b).mpr hb
-    have ha : a ∈ ptIdeal t := by
-      refine RingHom.mem_ker.mpr ?_
-      by_contra hne
-      have hau := (isUnit_algebraMap_locRing_iff I t hI a).mpr hne
-      rw [← hab] at hau
-      exact ((IsLocalRing.mem_maximalIdeal _).mp hx) (isUnit_of_mul_isUnit_left hau)
-    obtain ⟨v, hv⟩ := hbu.exists_right_inv
-    have : x = algebraMap _ (locRing I t) a * v := by
-      rw [← hab, mul_assoc, hv, mul_one]
-    rw [this]
-    exact Ideal.mul_mem_right _ _ (Ideal.mem_map_of_mem _ ha)
+  apply GlobalTheory.CompanionTheory.Ar.Cmp.SncRes.Par.map_ptIdeal_eq_maximalIdeal_ordAff <;> assumption
 
 theorem chPrime_le_of_mem {I 𝔮 : Ideal (MvPolynomial (Fin m) ℂ)} {t : Fin m → ℂ}
     {f : MvPolynomial (Fin m) ℂ} (h𝔮 : 𝔮.IsPrime) (hI𝔮 : I ≤ 𝔮) (h𝔮t : 𝔮 ≤ ptIdeal t)

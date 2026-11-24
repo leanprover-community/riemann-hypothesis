@@ -76,7 +76,7 @@ def TmGood (ε : Fin (2 * r + k + 1) → Bool) (σ : Mat k r → (H →L[ℂ] H)
 theorem tmC_good_add {x₀ : Mat k r} {w : H} {a : ℝ} {m m' : H} (hm : TmGood ε σ x₀ w a m)
     (hm' : TmGood ε σ x₀ w a m') (c : ℂ) : TmGood ε σ x₀ w a (m + c • m') := by
   have e : coefX σ x₀ w (m + c • m') = fun g => coefX σ x₀ w m g + c * coefX σ x₀ w m' g := by
-    funext g; simp [coefX, inner_add_right, inner_smul_right]
+    funext g; simp [coefX]
   refine ⟨?_, fun wd => ?_⟩
   · rw [e]; exact Formalism.REAL.smooth_on_group_add hm.1 (Formalism.REAL.smooth_on_group_const_mul c hm'.1)
   · obtain ⟨C₁, h₁⟩ := hm.2 wd
@@ -225,7 +225,7 @@ theorem tmD_single_mulVec (a b c : Fin (2 * r + k + 1)) :
   · subst hc
     by_cases h : i = a
     · subst h; simp [Matrix.mulVec, dotProduct, Matrix.single_apply, Pi.single_apply]
-    · simp [Matrix.mulVec, dotProduct, Matrix.single_apply, Pi.single_apply, h, Ne.symm h]
+    · simp [Matrix.mulVec, dotProduct, Pi.single_apply, h, Ne.symm h]
   · simp [Matrix.mulVec, dotProduct, Matrix.single_apply, Pi.single_apply, hc, Ne.symm hc]
 
 theorem tmD_cJ_bound (x₁ : Fin (2 * r + k + 1) → ℂ) (c : Fin (2 * r + k + 1)) (g : Mat k r) :

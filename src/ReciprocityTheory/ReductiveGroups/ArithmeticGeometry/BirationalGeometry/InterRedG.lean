@@ -63,8 +63,8 @@ theorem blockDeg_single (q : Σ k, ι k) (m : ℕ) (k' : K) :
   obtain ⟨k0, i0⟩ := q
   by_cases h : k0 = k'
   · subst h
-    simp [Finsupp.single_apply, Sigma.mk.inj_iff]
-  · simp [Finsupp.single_apply, Sigma.mk.inj_iff, h]
+    simp [Finsupp.single_apply]
+  · simp [h]
 
 def secOf (i : ∀ k, ι k) (b : K → ℕ) : MRing ι := ∏ k, X ⟨k, i k⟩ ^ b k
 

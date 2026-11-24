@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.CoreStatements.HomogeneousNonvanishing.IAlgebra
 public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsPeriodOn
 public import Development.AutomorphicSpectrum.Proofs.MetricProofs.AevalNeZeroOfNotMem
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.CoordinateIdeals.MemMCoordIdealOfAevalEqZero
@@ -195,54 +196,15 @@ variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 theorem isMultiHomog_finset_prod {α : Type} (s : Finset α) (f : α → MRing ι) (a : α → K → ℕ)
     (h : ∀ i ∈ s, IsMultiHomog (f i) (a i)) : IsMultiHomog (∏ i ∈ s, f i) (∑ i ∈ s, a i) := by
   induction s using Finset.induction_on with
-  | empty => simpa using (isMultiHomog_one : IsMultiHomog (1 : MRing ι) 0)
+  | empty => exact GroundTheory.Heights₂.Heights.LowerBoundFree.isMultiHomog_one
   | insert b s hb ih =>
     rw [Finset.prod_insert hb, Finset.sum_insert hb]
-    exact isMultiHomog_mul (h b (Finset.mem_insert_self _ _))
+    exact LowerBoundFree.isMultiHomog_mul (h b (Finset.mem_insert_self _ _))
       (ih fun i hi => h i (Finset.mem_insert_of_mem hi))
 
 theorem isMultiHomog_rename_block {κ : K → K'} {v : (Σ k, ι k) → (Σ k, ι' k)} (hv : IsBlockMap κ v) {f : MRing ι}
     {a : K → ℕ} (hf : IsMultiHomog f a) : IsMultiHomog (rename v f : MRing ι') (Function.extend κ a 0) := by
-  intro m hm k'
-  rw [support_rename_of_injective hv.2.1] at hm
-  obtain ⟨m0, hm0, rfl⟩ := Finset.mem_image.mp hm
-  by_cases hk : k' ∈ Set.range κ
-  · obtain ⟨k, rfl⟩ := hk
-    rw [hv.1.extend_apply, ← hf m0 hm0 k]
-    have hex : ∀ i' : ι' (κ k), ∃ i : ι k, v ⟨k, i⟩ = ⟨κ k, i'⟩ := by
-      intro i'
-      obtain ⟨p, hp⟩ := hv.2.2.2 ⟨κ k, i'⟩ ⟨k, rfl⟩
-      have h1 : κ p.1 = κ k := by rw [← hv.2.2.1 p, hp]
-      obtain ⟨k₁, i⟩ := p
-      obtain rfl : k₁ = k := hv.1 h1
-      exact ⟨i, hp⟩
-    choose g hg using hex
-    have hb : Function.Bijective g := by
-      constructor
-      · intro a b hab
-        have : (⟨κ k, a⟩ : Σ k, ι' k) = ⟨κ k, b⟩ := by rw [← hg a, ← hg b, hab]
-        exact eq_of_heq (Sigma.mk.inj this).2
-      · intro i
-        have hq : ∃ i', v ⟨k, i⟩ = ⟨κ k, i'⟩ := by
-          have h1 := hv.2.2.1 ⟨k, i⟩
-          generalize v ⟨k, i⟩ = q at h1
-          obtain ⟨q1, q2⟩ := q
-          simp only at h1
-          subst h1
-          exact ⟨q2, rfl⟩
-        obtain ⟨i', hi'⟩ := hq
-        refine ⟨i', ?_⟩
-        have h2 : v ⟨k, g i'⟩ = v ⟨k, i⟩ := by rw [hg i', hi']
-        exact eq_of_heq (Sigma.mk.inj (hv.2.1 h2)).2
-    calc ∑ i', (Finsupp.mapDomain v m0) ⟨κ k, i'⟩ = ∑ i', m0 ⟨k, g i'⟩ := by
-          refine Finset.sum_congr rfl fun i' _ => ?_
-          rw [← hg i', Finsupp.mapDomain_apply_of_injective hv.2.1]
-      _ = ∑ i, m0 ⟨k, i⟩ := hb.sum_comp fun i => m0 ⟨k, i⟩
-  · rw [Function.extend_apply' _ _ _ (by simpa using hk)]
-    refine Finset.sum_eq_zero fun i' _ => ?_
-    refine Finsupp.mapDomain_notin_range _ _ ?_
-    rintro ⟨p, hp⟩
-    exact hk ⟨p.1, by rw [← hv.2.2.1 p, hp]⟩
+  apply PositivityTheory.UnitarySelfGeneration.ialg_rename <;> assumption
 
 abbrev ev (f : MRing ι) (w : (Σ k, ι k) → ℂ) : ℂ := eval w (map (Int.castRingHom ℂ) f)
 
@@ -270,7 +232,8 @@ theorem exists_rep {Ω : Type} [Field Ω] [CharZero Ω] (y : (Σ k, ι k) → Ω
       aeval y g = c * aeval y h := by
   have zero_rep : ∃ (d : K → ℕ) (g h : MRing ι), IsMultiHomog g d ∧ IsMultiHomog h d ∧ aeval y h ≠ 0 ∧
       aeval y g = (0 : Ω) * aeval y h :=
-    ⟨0, 0, 1, isMultiHomog_zero 0, isMultiHomog_one, by simp, by simp⟩
+    ⟨0, 0, 1, isMultiHomog_zero 0, GroundTheory.Heights₂.Heights.LowerBoundFree.isMultiHomog_one,
+      by simp, by simp⟩
   unfold blockFnField at hc
   induction hc using IntermediateField.adjoin_induction with
   | mem x hx =>
@@ -293,9 +256,10 @@ theorem exists_rep {Ω : Type} [Field Ω] [CharZero Ω] (y : (Σ k, ι k) → Ω
   | add a b _ _ ha hb =>
     obtain ⟨d, g, h, hg, hh, hy, he⟩ := ha
     obtain ⟨d', g', h', hg', hh', hy', he'⟩ := hb
-    refine ⟨d + d', g * h' + g' * h, h * h', isMultiHomog_add (isMultiHomog_mul hg hh') ?_,
-      isMultiHomog_mul hh hh', ?_, ?_⟩
-    · rw [add_comm d d']; exact isMultiHomog_mul hg' hh
+    refine ⟨d + d', g * h' + g' * h, h * h',
+      LowerBoundFree.isMultiHomog_add (LowerBoundFree.isMultiHomog_mul hg hh') ?_,
+      LowerBoundFree.isMultiHomog_mul hh hh', ?_, ?_⟩
+    · rw [add_comm d d']; exact LowerBoundFree.isMultiHomog_mul hg' hh
     · rw [map_mul]; exact mul_ne_zero hy hy'
     · simp only [map_add (f := _), map_mul, he, he']; ring
   | inv a _ ha =>
@@ -308,7 +272,8 @@ theorem exists_rep {Ω : Type} [Field Ω] [CharZero Ω] (y : (Σ k, ι k) → Ω
   | mul a b _ _ ha hb =>
     obtain ⟨d, g, h, hg, hh, hy, he⟩ := ha
     obtain ⟨d', g', h', hg', hh', hy', he'⟩ := hb
-    refine ⟨d + d', g * g', h * h', isMultiHomog_mul hg hg', isMultiHomog_mul hh hh', ?_, ?_⟩
+    refine ⟨d + d', g * g', h * h', LowerBoundFree.isMultiHomog_mul hg hg',
+      LowerBoundFree.isMultiHomog_mul hh hh', ?_, ?_⟩
     · rw [map_mul]; exact mul_ne_zero hy hy'
     · simp only [map_mul, he, he']; ring
 
@@ -413,7 +378,7 @@ theorem polyVal_of_rep (hv : IsBlockMap κ v) (x' : (Σ k, ι' k) → Ω) {P : P
     {g h : ℕ → MRing ι} (hr : IsRep (x' ∘ v) P n d g h) {z : (Σ k, ι' k) → ℂ}
     (hz : ∀ e < n, ev (h e) (z ∘ v) ≠ 0) : PolyVal x' z P (valPoly n g h (z ∘ v)) := fun e => by
   have hc : (valPoly n g h (z ∘ v)).coeff e = if e < n then fr (g e) (h e) (z ∘ v) else 0 := by
-    simp [valPoly, Polynomial.finsetSum_coeff, Polynomial.coeff_C_mul, Polynomial.coeff_X_pow]
+    simp [valPoly, Polynomial.coeff_C_mul, Polynomial.coeff_X_pow]
   by_cases he : e < n
   · rw [hc, if_pos he]
     obtain ⟨a, b, c, f⟩ := hr.2 e
@@ -446,7 +411,7 @@ theorem exists_good_form [CharZero Ω] (hv : IsBlockMap κ v) (x' : (Σ k, ι' k
   have m₁ := isMultiHomog_finset_prod (Finset.range n₁) h₁ d₁ fun e _ => (r₁.2 e).2.1
   have m₂ := isMultiHomog_finset_prod (Finset.range n₂) h₂ d₂ fun e _ => (r₂.2 e).2.1
   have m₃ := isMultiHomog_finset_prod (Finset.range n₃) h₃ d₃ fun e _ => (r₃.2 e).2.1
-  have mE := isMultiHomog_mul (isMultiHomog_mul m₁ m₂) m₃
+  have mE := LowerBoundFree.isMultiHomog_mul (LowerBoundFree.isMultiHomog_mul m₁ m₂) m₃
   refine ⟨_, _, mE, ?_, ?_⟩
   · simp only [map_mul, map_prod]
     exact mul_ne_zero (mul_ne_zero (Finset.prod_ne_zero_iff.2 fun e _ => (r₁.2 e).2.2.1)

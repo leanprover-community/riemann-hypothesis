@@ -17,8 +17,10 @@ import Mathlib.NumberTheory.Height.Projectivization
 import Mathlib.NumberTheory.LucasLehmer
 import Mathlib.NumberTheory.SelbergSieve
 import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Flat.Basic
 public import Mathlib.RingTheory.MvPolynomial.EulerIdentity
 import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.TensorProduct.MvPolynomial
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Tactic.Basify
 import Mathlib.Tactic.ENatToNat
@@ -1077,14 +1079,10 @@ theorem word_ord {R : Type} [CommRing R] {K : ℕ} (b' b'' : Fin (segN F j) → 
   classical
   intro mm hmm i
   obtain ⟨m1, h1, m2, h2, rfl⟩ := Finset.mem_add.mp (support_mul _ _ hmm)
-  have hf1 : Function.Injective (fun v : Fin (segN F j) × Fin r => (segE F j v.1, Fin.castAdd K v.2)) := by
-    intro x y h
-    simp only [Prod.mk.injEq] at h
-    exact Prod.ext ((segE_strictMono F j).injective h.1) (Fin.castAdd_injective _ _ h.2)
-  have hf2 : Function.Injective (fun v : Fin (segN F j) × Fin K => (segE F j v.1, Fin.natAdd r v.2)) := by
-    intro x y h
-    simp only [Prod.mk.injEq] at h
-    exact Prod.ext ((segE_strictMono F j).injective h.1) (Fin.natAdd_injective _ _ h.2)
+  have hf1 : Function.Injective (fun v : Fin (segN F j) × Fin r => (segE F j v.1, Fin.castAdd K v.2)) :=
+    (segE_strictMono F j).injective.prodMap (Fin.castAdd_injective r K)
+  have hf2 : Function.Injective (fun v : Fin (segN F j) × Fin K => (segE F j v.1, Fin.natAdd r v.2)) :=
+    (segE_strictMono F j).injective.prodMap (Fin.natAdd_injective K r)
   have e1 : plEmb R r K (segRen F j R r a) =
       rename (fun v : Fin (segN F j) × Fin r => (segE F j v.1, Fin.castAdd K v.2)) a := by
     simp only [plEmb, segRen, rename_rename]; rfl
@@ -1381,18 +1379,12 @@ theorem li_allDeg (O : Type) [CommRing O] (N n : ℕ) (LL : Letters (Fin N))
     exact h3
 
 theorem li_sum_inl {R σ τ : Type} [CommRing R] (p : MvPolynomial σ R) :
-    sumAlgEquiv R σ τ (rename Sum.inl p) = MvPolynomial.map C p := by
-  induction p using MvPolynomial.induction_on with
-  | C a => simp [sumAlgEquiv_C_inl]
-  | add p q hp hq => simp only [map_add (f := _), hp, hq]
-  | mul_X p v hp => simp only [map_mul, hp, rename_X, map_X, sumAlgEquiv_X_inl]
+    sumAlgEquiv R σ τ (rename Sum.inl p) = MvPolynomial.map C p :=
+  DFunLike.congr_fun (sumAlgEquiv_comp_rename_inl R σ τ) p
 
 theorem li_sum_inr {R σ τ : Type} [CommRing R] (q : MvPolynomial τ R) :
-    sumAlgEquiv R σ τ (rename Sum.inr q) = C q := by
-  induction q using MvPolynomial.induction_on with
-  | C a => simp [sumAlgEquiv_C_inl]
-  | add p q hp hq => simp only [map_add (f := _), hp, hq]
-  | mul_X p v hp => simp only [map_mul, hp, rename_X, sumAlgEquiv_X_inr]
+    sumAlgEquiv R σ τ (rename Sum.inr q) = C q :=
+  DFunLike.congr_fun (sumAlgEquiv_comp_rename_inr R σ τ) q
 
 theorem li_key {R σ τ : Type} [CommRing R] (p : MvPolynomial σ R) (q : MvPolynomial τ R) (m : σ →₀ ℕ) :
     AddMonoidAlgebra.coeff (sumAlgEquiv R σ τ (rename Sum.inl p * rename Sum.inr q)) m = AddMonoidAlgebra.coeff p m • q := by
@@ -1402,48 +1394,24 @@ theorem li_ext {R : Type} [CommRing R] {σ τ α β : Type} (u : α → MvPolyno
     (hu : LinearIndependent R u) (hv : LinearIndependent R v) :
     LinearIndependent R
       (fun x : α × β => (rename Sum.inl (u x.1) * rename Sum.inr (v x.2) : MvPolynomial (σ ⊕ τ) R)) := by
-  classical
-  rw [linearIndependent_iff']
-  intro s g hs x0 hx0
-  let g' : α → β → R := fun a b => if (a, b) ∈ s then g (a, b) else 0
-  have hs' : ∑ a ∈ s.image Prod.fst, ∑ b ∈ s.image Prod.snd,
-      g' a b • (rename Sum.inl (u a) * rename Sum.inr (v b) : MvPolynomial (σ ⊕ τ) R) = 0 := by
-    rw [← Finset.sum_product' (s.image Prod.fst) (s.image Prod.snd)
-      (fun a b => g' a b • (rename Sum.inl (u a) * rename Sum.inr (v b) : MvPolynomial (σ ⊕ τ) R)), ← hs]
-    symm
-    refine Finset.sum_subset_zero_on_sdiff ?_ ?_ ?_
-    · intro x hx
-      exact Finset.mem_product.mpr ⟨Finset.mem_image_of_mem _ hx, Finset.mem_image_of_mem _ hx⟩
-    · intro x hx
-      have hx' : (x.1, x.2) ∉ s := (Finset.mem_sdiff.mp hx).2
-      simp only [g', if_neg hx', zero_smul]
-    · intro x hx
-      have hx' : (x.1, x.2) ∈ s := hx
-      simp only [g', if_pos hx']
-  have step : ∀ m : σ →₀ ℕ, ∑ b ∈ s.image Prod.snd, (∑ a ∈ s.image Prod.fst, g' a b * AddMonoidAlgebra.coeff (u a) m) • v b = 0 := by
-    intro m
-    have h1 := congrArg (fun P => AddMonoidAlgebra.coeff (sumAlgEquiv R σ τ P) m) hs'
-
-    simp only [map_sum, map_smul, coeff_sum, MvPolynomial.coeff_smul, li_key, map_zero, AddMonoidAlgebra.coeff_zero] at h1
-    change _ = 0 at h1
-    rw [Finset.sum_comm] at h1
-    rw [← h1]
-    refine Finset.sum_congr rfl fun b _ => ?_
-    rw [Finset.sum_smul]
-    exact Finset.sum_congr rfl fun a _ => by rw [mul_smul]
-  have hb : ∀ b ∈ s.image Prod.snd, ∀ m : σ →₀ ℕ, ∑ a ∈ s.image Prod.fst, g' a b * AddMonoidAlgebra.coeff (u a) m = 0 :=
-    fun b hb m => linearIndependent_iff'.mp hv _ _ (step m) b hb
-  have ha : ∀ b ∈ s.image Prod.snd, ∑ a ∈ s.image Prod.fst, g' a b • u a = 0 := by
-    intro b hb'
-    ext m
-    rw [coeff_sum, AddMonoidAlgebra.coeff_zero]
-    change (∑ a ∈ s.image Prod.fst, AddMonoidAlgebra.coeff (g' a b • u a) m) = 0
-    rw [← hb b hb' m]
-    exact Finset.sum_congr rfl fun a _ => by rw [MvPolynomial.coeff_smul, smul_eq_mul]
-  have h2 := linearIndependent_iff'.mp hu _ (fun a => g' a x0.2) (ha x0.2 (Finset.mem_image_of_mem _ hx0)) x0.1
-    (Finset.mem_image_of_mem _ hx0)
-  have hx0' : (x0.1, x0.2) ∈ s := hx0
-  simpa only [g', if_pos hx0'] using h2
+  let e := tensorEquivSum R σ τ R
+  have hleft : e.toAlgHom.comp Algebra.TensorProduct.includeLeft = rename Sum.inl := by
+    ext i
+    simp [e, Algebra.TensorProduct.includeLeft_apply]
+  have hright : e.toAlgHom.comp Algebra.TensorProduct.includeRight = rename Sum.inr := by
+    ext i
+    simp [e, Algebra.TensorProduct.includeRight_apply]
+  have hprod (p : MvPolynomial σ R) (q : MvPolynomial τ R) :
+      e (TensorProduct.tmul R p q) = rename Sum.inl p * rename Sum.inr q := by
+    rw [← DFunLike.congr_fun hleft p, ← DFunLike.congr_fun hright q]
+    change _ = e (Algebra.TensorProduct.includeLeft (R := R) (S := R) p) *
+      e (Algebra.TensorProduct.includeRight q)
+    rw [← map_mul, Algebra.TensorProduct.includeLeft_apply, Algebra.TensorProduct.includeRight_apply,
+      Algebra.TensorProduct.tmul_mul_tmul, mul_one, one_mul]
+  have h := (hu.tmul_of_flat_left hv).map' e.toLinearEquiv.toLinearMap
+    (LinearMap.ker_eq_bot.mpr e.injective)
+  change LinearIndependent R (fun i : α × β => e (TensorProduct.tmul R (u i.1) (v i.2))) at h
+  simpa only [hprod] using h
 
 open Formalism.MainNotions.SelectionLemmas in
 theorem li_segE_injective {n' r : ℕ} [NeZero n'] (F : Frames n' r) (j : ℤ) : Function.Injective (segE F j) :=
@@ -1467,22 +1435,14 @@ theorem space_statement_linear_independent (O : Type) [CommRing O] [IsDomain O] 
   have hext := li_ext _ _ hu hv
   let gv : (Fin (segN F j) × Fin r) ⊕ (Fin (segN F j) × Fin K) → ℤ × Fin (r + K) :=
     Sum.elim (fun v => (segE F j v.1, Fin.castAdd K v.2)) (fun v => (segE F j v.1, Fin.natAdd r v.2))
+  let e := (Equiv.prodSumDistrib (Fin (segN F j)) (Fin r) (Fin K)).symm.trans
+    (Equiv.prodCongr (Equiv.refl _) finSumFinEquiv)
   have hg : Function.Injective gv := by
-    rintro (a | a) (b | b) hab
-    · simp only [gv, Sum.elim_inl, Prod.mk.injEq] at hab
-      exact congrArg Sum.inl (Prod.ext (li_segE_injective F j hab.1) (Fin.castAdd_injective _ _ hab.2))
-    · simp only [gv, Sum.elim_inl, Sum.elim_inr, Prod.mk.injEq] at hab
-      have := congrArg Fin.val hab.2
-      simp only [Fin.val_castAdd, Fin.val_natAdd] at this
-      have := a.2.2
-      omega
-    · simp only [gv, Sum.elim_inl, Sum.elim_inr, Prod.mk.injEq] at hab
-      have := congrArg Fin.val hab.2
-      simp only [Fin.val_castAdd, Fin.val_natAdd] at this
-      have := b.2.2
-      omega
-    · simp only [gv, Sum.elim_inr, Prod.mk.injEq] at hab
-      exact congrArg Sum.inr (Prod.ext (li_segE_injective F j hab.1) (Fin.natAdd_injective _ _ hab.2))
+    have hgv : gv = (fun v => (segE F j v.1, v.2)) ∘ e := by
+      funext v
+      cases v <;> rfl
+    rw [hgv]
+    exact (segVar_injective F j (r + K)).comp e.injective
   have h3 := hext.map' (rename gv : _ →ₐ[O] _).toLinearMap (LinearMap.ker_eq_bot.mpr (rename_injective gv hg))
   let ψ : {x : ((Fin (segN F j + 1) → Fin r → ℤ) × (Fin (segN F j + 1) → Fin K → ℤ)) ×
         ((ℤ → Finset (Fin r)) × (ℤ → Finset (Fin K))) //
@@ -1642,11 +1602,6 @@ theorem sat_words_top (O : Type) [CommRing O] (N r K : ℕ) (LL : Letters (Fin N
   rintro G ⟨a, b, rfl⟩
   exact h2 a b
 
-theorem sat_segE_injective {n' r : ℕ} [NeZero n'] (F : Frames n' r) (j : ℤ) : Function.Injective (segE F j) := by
-  intro a b h
-  unfold segE at h
-  exact ((F.letters j).orderIsoOfFin rfl).injective (Subtype.ext h)
-
 theorem space_statement_saturated (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     (hA2 : ∀ (N n : ℕ) [NeZero n] (LL : Letters (Fin N)) (B : Fin N → ℕ),
       LinearIndependent O (fun x : {x : PPath n N LL B × (ℤ → Finset (Fin n)) // IsSt x.1.mu x.2} =>
@@ -1680,10 +1635,7 @@ theorem space_statement_saturated (O : Type) [CommRing O] [IsDomain O] [IsDiscre
     · rintro ⟨x, hx, rfl⟩
       exact ⟨_, ⟨x.1.1, hx, x.1.2.1, x.1.2.2, x.2.2.1, x.2.2.2, rfl⟩, rfl⟩
 
-  have hg : Function.Injective (fun w : Fin (segN F j) × Fin (r + K) => (segE F j w.1, w.2)) := by
-    intro x y h
-    simp only [Prod.mk.injEq] at h
-    exact Prod.ext (sat_segE_injective F j h.1) h.2
+  have hg := segVar_injective F j (r + K)
   have hr : ∃ q, rename (fun w : Fin (segN F j) × Fin (r + K) => (segE F j w.1, w.2)) q = f := by
     refine sat_range _ hg f a ha ?_
     rw [h1] at haf
@@ -2634,15 +2586,12 @@ end Formalism.MainNotions.G.Joints.StandardMonomialSpace
 
 namespace Formalism.MainNotions.G.Joints
 
-theorem transport_statement_holds (D : Formalism.BasicNotions.D7) : Formalism.MainNotions.SelectionLemmas.TypeDecompositionsCommute D := StandardMonomialSpace.transport_statement_holds D
+alias transport_statement_holds := _root_.Formalism.MainNotions.G.Joints.StandardMonomialSpace.transport_statement_holds
 
-theorem valuation_transport_of_lemma (D : Formalism.BasicNotions.D7) (h : Formalism.MainNotions.CovariantDegrees.ValuationsAdditive D) : Formalism.MainNotions.SelectionLemmas.admB2 D := StandardMonomialSpace.valuation_transport_of_lemma D h
+alias valuation_transport_of_lemma := _root_.Formalism.MainNotions.G.Joints.StandardMonomialSpace.valuation_transport_of_lemma
 
-theorem space_statement_of_lemmas (D : Formalism.BasicNotions.D7) (hA2 : Formalism.MainNotions.CovariantDegrees.HyperplaneRank D) (hA3 : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D)
-    (hB1 : Formalism.MainNotions.CovariantDegrees.RotatedSumBound D) (hB3 : Formalism.MainNotions.CovariantDegrees.ConclusionB3 D) : Formalism.MainNotions.SelectionLemmas.NestedTypeBound D :=
-  StandardMonomialSpace.space_statement_of_lemmas D hA2 hA3 hB1 hB3
+alias space_statement_of_lemmas := _root_.Formalism.MainNotions.G.Joints.StandardMonomialSpace.space_statement_of_lemmas
 
-theorem space_criterion_of_standard_basis (D : Formalism.BasicNotions.D7) (hA3 : Formalism.MainNotions.CovariantDegrees.DefiniteRankOne D) : Formalism.MainNotions.SourceCleaning.SpaceCriterionModuloUniformiser D :=
-  StandardMonomialSpace.space_criterion_of_standard_basis D hA3
+alias space_criterion_of_standard_basis := _root_.Formalism.MainNotions.G.Joints.StandardMonomialSpace.space_criterion_of_standard_basis
 
 end Formalism.MainNotions.G.Joints

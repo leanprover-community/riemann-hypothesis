@@ -222,8 +222,6 @@ theorem matching_unitary_eq (K : ClsTied u i hi) (c c1 c2 c3 : (D.mem u).C.cls i
     intro k
     first
       | exact ((K.lev.U_eq _).1 k.2).1
-      | exact (K.lev.U_eq _).1 k.2
-      | exact ((K.lev.U_eq _).mp k.2).1
   have e1 := eq_mul_inv_of_mul_eq h1
   have e2 := eq_mul_inv_of_mul_eq h2
   have e3 : bc (inclE (F := D.host.F) (FiniteAdeleRing (𝓞 D.host.F) D.host.F)) γd =

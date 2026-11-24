@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.IntegralFrameChangeIntegralInvertibleMatrix
 public import Formalism.LocalToGlobal.ProjectiveLattices.ChartDirectionsIntegral
 public import Formalism.LocalToGlobal.ProjectiveLattices.IntAllProof
 public import Formalism.LocalToGlobal.ProjectiveLattices.AllTest
@@ -218,55 +219,7 @@ theorem smT_comp {G' : Over X0} (a : S) (v : overAt x0 (DualNumber S) ⟶ G) (φ
 
 theorem smT_add (v : overAt x0 (DualNumber S) ⟶ G) (h0 : smT x0 0 v = 1) (a b : S) :
     smT x0 (a + b) v = smT x0 a v * smT x0 b v := by
-  have key : homAt x0 (tm (LinearMap.prod LinearMap.id LinearMap.id : S →ₗ[S] S × S)) ≫ v =
-      (homAt x0 (tm (LinearMap.inl S S S)) ≫ v) * (homAt x0 (tm (LinearMap.inr S S S)) ≫ v) := by
-    have hz : (0 : S →ₗ[S] S) = (0 : S) • (LinearMap.id : S →ₗ[S] S) := by simp
-    apply Over.OverMorphism.ext
-    apply spec_ext_two (tm (LinearMap.fst S S S) : TrivSqZeroExt S (S × S) →+* DualNumber S)
-      (tm (LinearMap.snd S S S) : TrivSqZeroExt S (S × S) →+* DualNumber S)
-    · intro y
-      refine ⟨tm (LinearMap.inl S S S) y, ?_⟩
-      ext <;> simp
-    · intro x hx
-      have h1 : x.fst = 0 := by simpa using congrArg TrivSqZeroExt.fst hx
-      ext <;> simp [h1]
-    · intro x hx hx'
-      have h1 : x.fst = 0 := by simpa using congrArg TrivSqZeroExt.fst hx
-      have h2 : x.snd.1 = 0 := by simpa using congrArg TrivSqZeroExt.snd hx
-      have h3 : x.snd.2 = 0 := by simpa using congrArg TrivSqZeroExt.snd hx'
-      ext <;> simp [h1, h2, h3]
-    · have h : homAt x0 (tm (LinearMap.fst S S S)) ≫
-          homAt x0 (tm (LinearMap.prod LinearMap.id LinearMap.id : S →ₗ[S] S × S)) ≫ v =
-          homAt x0 (tm (LinearMap.fst S S S)) ≫
-            ((homAt x0 (tm (LinearMap.inl S S S)) ≫ v) * (homAt x0 (tm (LinearMap.inr S S S)) ≫ v)) := by
-        rw [MonObj.comp_mul, ← Category.assoc, ← Category.assoc, ← Category.assoc, homAt_comp, homAt_comp,
-          homAt_comp, ← TrivSqZeroExt.map_comp_map, ← TrivSqZeroExt.map_comp_map, ← TrivSqZeroExt.map_comp_map,
-          LinearMap.fst_prod, LinearMap.fst_comp_inl, LinearMap.fst_comp_inr, hz]
-        change _ = _ * smT x0 0 v
-        rw [h0, _root_.mul_one]
-      exact congrArg (fun φ => φ.left) h
-    · have h : homAt x0 (tm (LinearMap.snd S S S)) ≫
-          homAt x0 (tm (LinearMap.prod LinearMap.id LinearMap.id : S →ₗ[S] S × S)) ≫ v =
-          homAt x0 (tm (LinearMap.snd S S S)) ≫
-            ((homAt x0 (tm (LinearMap.inl S S S)) ≫ v) * (homAt x0 (tm (LinearMap.inr S S S)) ≫ v)) := by
-        rw [MonObj.comp_mul, ← Category.assoc, ← Category.assoc, ← Category.assoc, homAt_comp, homAt_comp,
-          homAt_comp, ← TrivSqZeroExt.map_comp_map, ← TrivSqZeroExt.map_comp_map, ← TrivSqZeroExt.map_comp_map,
-          LinearMap.snd_prod, LinearMap.snd_comp_inl, LinearMap.snd_comp_inr, hz]
-        change _ = smT x0 0 v * _
-        rw [h0, _root_.one_mul]
-      exact congrArg (fun φ => φ.left) h
-  have h := congrArg (fun φ => homAt x0 (tm (LinearMap.coprod (a • (LinearMap.id : S →ₗ[S] S))
-    (b • (LinearMap.id : S →ₗ[S] S)))) ≫ φ) key
-  beta_reduce at h
-  rw [MonObj.comp_mul, ← Category.assoc, ← Category.assoc, ← Category.assoc, homAt_comp, homAt_comp,
-    homAt_comp, ← TrivSqZeroExt.map_comp_map, ← TrivSqZeroExt.map_comp_map, ← TrivSqZeroExt.map_comp_map,
-    LinearMap.coprod_inl, LinearMap.coprod_inr] at h
-  have hs : (LinearMap.coprod (a • (LinearMap.id : S →ₗ[S] S)) (b • (LinearMap.id : S →ₗ[S] S))).comp
-      (LinearMap.prod LinearMap.id LinearMap.id) = (a + b) • (LinearMap.id : S →ₗ[S] S) := by
-    ext
-    simp
-  rw [hs] at h
-  exact h
+  apply GlobalTheory.IntRebase.smT_add <;> assumption
 
 section Comb
 
@@ -442,37 +395,10 @@ variable {t x0}
 def ovT {v : Sp (DualNumber S) ⟶ t.G.left} (hv : IsTanAtG t x0 v) : tEpsG x0 ⟶ t.G := Over.homMk v hv.1
 
 theorem smT_zero_ovT {v : Sp (DualNumber S) ⟶ t.G.left} (hv : IsTanAtG t x0 v) : smT x0 0 (ovT hv) = 1 := by
-  have he : epsMul (0 : S) = (algebraMap S (DualNumber S)).comp (TrivSqZeroExt.fstHom S S S).toRingHom := by
-    apply RingHom.ext
-    intro r
-    ext <;> simp [epsMul, TrivSqZeroExt.algebraMap_eq_inl]
-  let φ : tEpsG x0 ⟶ Over.mk x0 := Over.homMk (spMap (algebraMap S (DualNumber S))) rfl
-  have h1 : (φ ≫ (1 : Over.mk x0 ⟶ t.G)) = 1 := MonObj.comp_one φ
-  apply Over.OverMorphism.ext
-  rw [← h1, smT_left]
-  simp only [ovT, Over.homMk_left, Over.comp_left, φ]
-  rw [he, ← spMap_comp', Category.assoc, hv.2]
+  apply GlobalTheory.IntRebase.smT_zero_ovT <;> assumption
 
 theorem isTanAtG_of (W : tEpsG x0 ⟶ t.G) (h : smT x0 0 W = 1) : IsTanAtG t x0 W.left := by
-  refine ⟨Over.w W, ?_⟩
-  have hid : (TrivSqZeroExt.fstHom S S S).toRingHom.comp (algebraMap S (DualNumber S)) = RingHom.id S := by
-    apply RingHom.ext
-    intro r
-    simp
-  let ψ : Over.mk x0 ⟶ tEpsG x0 := Over.homMk (spMap (TrivSqZeroExt.fstHom S S S).toRingHom) (by
-    show spMap (TrivSqZeroExt.fstHom S S S).toRingHom ≫ spMap (algebraMap S (DualNumber S)) ≫ x0 = x0
-    rw [← Category.assoc, spMap_comp', hid]
-    simp [spMap])
-  have h1 : ψ ≫ W = 1 := by
-    refine tan_pull x0 ψ ?_ W h
-    apply Over.OverMorphism.ext
-    simp only [Over.comp_left, ψ, Over.homMk_left, homAt]
-    rw [spMap_comp']
-    congr 1
-    apply RingHom.ext
-    intro r
-    simp
-  exact congrArg (fun φ => φ.left) h1
+  apply GlobalTheory.IntRebase.isTanAtG_of <;> assumption
 
 theorem tanLinG {m m' : ℕ} (v : Fin m → (Sp (DualNumber S) ⟶ t.G.left)) (hv : ∀ j, IsTanAtG t x0 (v j))
     (w : Fin m' → (Sp (DualNumber S) ⟶ t.G.left)) (A : Matrix (Fin m) (Fin m') S) (N : Fin m' → S)
@@ -575,28 +501,7 @@ theorem isComb_iff {m : ℕ} (ub : Fin m → (epsOver V V ⟶ G)) (a : Fin m →
 
 theorem isTan_kapI (W : tEpsG (𝟙 (Sp V)) ⟶ G) (h : smT (𝟙 (Sp V)) 0 W = 1) :
     ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsTan (kapI ≫ W) := by
-  have hid : (TrivSqZeroExt.fstHom V V V).toRingHom.comp (algebraMap V (DualNumber V)) = algebraMap V V := by
-    apply RingHom.ext
-    intro r
-    simp
-  let ψ : ptOver V V ⟶ tEpsG (𝟙 (Sp V)) := Over.homMk (spMap (TrivSqZeroExt.fstHom V V V).toRingHom) (by
-    show spMap (TrivSqZeroExt.fstHom V V V).toRingHom ≫ spMap (algebraMap V (DualNumber V)) ≫ 𝟙 _ =
-      spMap (algebraMap V V)
-    rw [Category.comp_id, spMap_comp', hid])
-  have h1 : ψ ≫ W = 1 := by
-    refine tan_pull _ ψ ?_ W h
-    apply Over.OverMorphism.ext
-    simp only [Over.comp_left, ψ, Over.homMk_left, homAt]
-    rw [spMap_comp']
-    congr 1
-    apply RingHom.ext
-    intro r
-    simp
-  have h2 := congrArg (fun φ => φ.left) h1
-  simp only [Over.comp_left, ψ, Over.homMk_left] at h2
-  unfold ReciprocityTheory.ChartRestriction.G.Geo.Tor.IsTan
-  simp only [Over.comp_left, kapI, Over.homMk_left, Category.id_comp]
-  exact h2
+  apply GlobalTheory.IntRebase.isTan_kapI <;> assumption
 
 end Kap
 
@@ -697,15 +602,7 @@ variable {S' S0 : Scheme.{0}} {G' : Over S'} [GrpObj G'] {G : Over S0} [GrpObj G
 
 theorem grpPull_one (h : IsGrpPullback G' G f φ) (T : Over S') :
     (1 : Over.mk (T.hom ≫ f) ⟶ G).left = (1 : T ⟶ G').left ≫ φ := by
-  let e0 : Over.mk (T.hom ≫ f) ⟶ G := Over.homMk ((1 : T ⟶ G').left ≫ φ) (by
-    show ((1 : T ⟶ G').left ≫ φ) ≫ G.hom = T.hom ≫ f
-    rw [Category.assoc, h.1.w, ← Category.assoc, Over.w])
-  have h1 : (e0 * e0).left = ((1 : T ⟶ G') * 1).left ≫ φ := h.2 T 1 1 e0 e0 rfl rfl
-  rw [_root_.mul_one] at h1
-  have h2 : e0 * e0 = e0 := Over.OverMorphism.ext h1
-  have h3 : e0 = 1 := mul_eq_left.1 h2
-  rw [← h3]
-  rfl
+  apply GlobalTheory.IntRebase.grpPull_one <;> assumption
 
 theorem grpPull_prod [IsCommMonObj G'] [IsCommMonObj G] (h : IsGrpPullback G' G f φ) (T : Over S') {κ : Type}
     (s : Finset κ) (x : κ → (T ⟶ G')) (x₀ : κ → (Over.mk (T.hom ≫ f) ⟶ G))
@@ -791,16 +688,7 @@ theorem isEigV_kapI_iff {Fr : Type} [Field Fr] [Algebra V Fr] (io : c.F →+* Fr
     (W : tEpsG (𝟙 (Sp V)) ⟶ G.G) :
     IsEigV c io G τ (kapI ≫ W) ↔ ∀ (a : 𝓞 E) (z : V), algebraMap V Fr z = io (embK c τ a) →
       W ≫ G.act.act a = smT (𝟙 (Sp V)) z W := by
-  constructor
-  · intro h a z hz
-    apply Over.OverMorphism.ext
-    have h1 := h a z hz
-    simp only [Over.comp_left, smT_left, kapI, Over.homMk_left, Category.id_comp] at h1 ⊢
-    exact h1
-  · intro h a z hz
-    have h1 := congrArg (fun φ => φ.left) (h a z hz)
-    simp only [Over.comp_left, smT_left, kapI, Over.homMk_left, Category.id_comp] at h1 ⊢
-    exact h1
+  apply GlobalTheory.IntRebase.isEigV_kapI_iff <;> assumption
 
 end KapMore
 

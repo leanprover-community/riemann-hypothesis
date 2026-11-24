@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DecoratedLatticeProofs.FourierJacobiTargetBilinearFormIntegral
 public import Development.AbelianVarietyTheory.Definitions.LatticeFrames.ToOneSucc
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.CharEqOneOfOpENeZero
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.EventuallyCompSideMulEq
@@ -100,67 +101,7 @@ theorem exists_isQuotInt_tInt {k : Type} [Field k] [ValuativeRel k] [Topological
     {B : SB (Matrix n n' k) →ₗ[ℂ] A →ₗ[ℂ] ℂ} (hB : BilPos ψ μ p σ B) (F : A)
     (Φ : SB (Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k)) :
     ∃ z, IsQuotInt ν μX μG p (tInt ψ ν μ p σ B F Φ.1) z := by
-  have hE := (opE_SB_and_linear k n n' c p ψ hψ ν).1
-  let E : GL (n ⊕ Fin c) k → SB (Matrix n n' k) := fun h =>
-    ⟨opE ψ ν p (om μ 1 h Φ.1), hE _ (om_mem_SB μ 1 h Φ.2)⟩
-  set f := tInt ψ ν μ p σ B F Φ.1 with hf
-  have hfE : ∀ h, f h = B (E h) (σ h F) := fun h => by
-    rw [hf, tInt]
-    exact congrArg (fun l : A →ₗ[ℂ] ℂ => l (σ h F)) (app_coe B (E h))
-  have hmul : ∀ (g h : GL (n ⊕ Fin c) k) (Ψ : Matrix (n ⊕ Fin c) (n' ⊕ Fin (c + 1)) k → ℂ),
-      om μ 1 (g * h) Ψ = om μ 1 g (om μ 1 h Ψ) := fun g h Ψ => by
-    rw [← om_mul, one_mul]
-  refine (GlobalTheory.QuotInt.quotInt_unique_exists k n c p hp hpc ν μX μG f).2 ?_ ?_ ?_
-  · rw [IsLocallyConstant.iff_eventually_eq]
-    intro h
-    have hU : IsOpen ({u : GL (n ⊕ Fin c) k | om μ 1 u Φ.1 = Φ.1} ∩ {u | σ u F = F}) :=
-      ((isOpen_stabilizer_om hμ Φ.2).preimage (Continuous.prodMk_right 1)).inter (hσ F)
-    have ht : Filter.Tendsto (fun y : GL (n ⊕ Fin c) k => h⁻¹ * y) (𝓝 h) (𝓝 1) := by
-      simpa using (continuous_const_mul h⁻¹).tendsto h
-    filter_upwards [ht.eventually (hU.mem_nhds ⟨om_one μ _, by simp⟩)] with y hy
-    obtain ⟨u, rfl⟩ : ∃ u, y = h * u := ⟨h⁻¹ * y, by simp⟩
-    rw [inv_mul_cancel_left] at hy
-    have h1 : om μ 1 u Φ.1 = Φ.1 := hy.1
-    have h2 : σ u F = F := hy.2
-    have h3 : E (h * u) = E h := Subtype.ext (by
-      show opE ψ ν p (om μ 1 (h * u) Φ.1) = opE ψ ν p (om μ 1 h Φ.1)
-      rw [hmul, h1])
-    rw [hfE h, hfE (h * u), h3, map_mul, Module.End.mul_apply, h2]
-  · obtain ⟨Λ, hΛ, hΛ'⟩ := exists_open_translations Φ.2
-    obtain ⟨Ω, hΩ, H⟩ := opE_support_compact_mod_R k n n' c p hp hpc ψ hψ hψ1 ν (tsupport Φ.1)
-      Φ.2.2 Λ hΛ
-    refine ⟨Ω, hΩ, fun h hh => ?_⟩
-    have hne : E h ≠ 0 := fun h0 => hh (by rw [hfE, h0]; simp)
-    obtain ⟨x₀, hx₀⟩ : ∃ x₀, opE ψ ν p (om μ 1 h Φ.1) x₀ ≠ 0 := by
-      by_contra hc
-      push_neg at hc
-      exact hne (Subtype.ext (funext hc))
-    exact H μ Φ.1 (subset_tsupport _) hΛ' (fun _ => 1) (IsLocallyConstant.const 1) h x₀
-      (by simpa using hx₀)
-  · intro x u hu h
-    set a : ℂ := ((nabs k (Matrix.GeneralLinearGroup.det x) ^ (((c : ℝ) + 1) / 2 - p) : ℝ) : ℂ) with ha
-    let Ψ : SB (Matrix n n' k) := ⟨om μ 1 x (E h).1, om_mem_SB μ 1 x (E h).2⟩
-    have h1 : E (embX c x * u * h) = (a * (ψ (-simpleSum u) : ℂ)) • Ψ := by
-      apply Subtype.ext
-      show opE ψ ν p (om μ 1 (embX c x * u * h) Φ.1) =
-        (a * (ψ (-simpleSum u) : ℂ)) • om μ 1 x (opE ψ ν p (om μ 1 h Φ.1))
-      rw [mul_assoc, hmul, (opE_om_embX k n n' c p hp hpc ψ ν μ _).1, hmul,
-        opE_om_target_unipotent k n n' c p hp hpc ψ ν μ _ u hu]
-      funext y
-      simp only [om, Pi.smul_apply, smul_eq_mul, ha]
-      ring
-    have h3 : (ψ (-simpleSum u) : ℂ) * (ψ (simpleSum u) : ℂ) = 1 := by
-      rw [← Circle.coe_mul, ← AddChar.map_add_eq_mul]; simp
-    have h4 : a * a =
-        ((nabs k (Matrix.GeneralLinearGroup.det x) ^ ((c : ℝ) + 1 - 2 * p) : ℝ) : ℂ) := by
-      rw [ha, ← Complex.ofReal_mul, ← Real.rpow_add (nabs_pos _ _)]
-      congr 2
-      ring
-    have h5 := hB.1 (E h) u hu (σ h F)
-    have h6 := hB.2 x (E h) Ψ (σ u (σ h F)) rfl
-    rw [hfE, hfE, h1, map_smul, LinearMap.smul_apply, map_mul, map_mul,
-      Module.End.mul_apply, Module.End.mul_apply, h6, h5, ← h4, ← ha, smul_eq_mul]
-    linear_combination (a * a * B (E h) (σ h F)) * h3
+  apply GlobalTheory.PosOne.FJTarget.exists_isQuotInt_tInt <;> assumption
 
 end GlobalTheory.PosOne.RrLin
 

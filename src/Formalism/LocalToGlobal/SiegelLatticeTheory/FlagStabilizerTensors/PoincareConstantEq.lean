@@ -94,8 +94,7 @@ abbrev tO (u u' : D.what₂.Word) :=
   tOf (X.Fu u) (X.Fu u') Y.TR (Y.cs u) (Y.cs u') (Y.FN u) (Y.FN u')
 
 theorem poincare_constant_eq (u : D.what₂.Word) : c0X X u (Y.FN u) = Y.volN u * Y.volH u / (Module.finrank ℂ (X.Vpi u) : ℝ) := by
-  unfold c0X volN volH
-  rfl
+  simp only [c0X, volN, volH]
 
 theorem frameTie (u u' : D.what₂.Word) : FrameTie X u u' (X.Fu u) (X.Fu u') :=
   ⟨fun a => congrFun (X.Fu_e u) a, X.flagZVector u, fun a => congrFun (X.Fu_e u') a, X.flagZVector u'⟩

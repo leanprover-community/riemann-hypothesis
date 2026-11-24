@@ -160,9 +160,7 @@ theorem phInf_eq (I : AutInst) {H : InfinitePlace I.F → Type} [∀ v, NormedAd
     (w : ∀ v, H v) (dv : InfinitePlace I.F → ℝ) :
     phInf I σ w dv = fun g => ∏ v, phLoc (ε := I.ε v) (σ v) (w v) (dv v) (g v) := by
   funext g
-  simp only [phInf, mInf, phLoc, Complex.ofReal_prod, Finset.prod_mul_distrib]
-  congr 1
-  exact map_prod (starRingEnd ℂ) _ _
+  simp [phInf, mInf, phLoc, Complex.ofReal_prod, Finset.prod_mul_distrib]
 
 theorem projRowsR_of (hS : SchurConv) (hC : ConvProj) (hP : ProdConv) (hR : RegUnitary) : ProjRowsR := by
   classical
@@ -175,10 +173,8 @@ theorem projRowsR_of (hS : SchurConv) (hC : ConvProj) (hP : ProdConv) (hR : RegU
     (fun v => phLoc (ε := I.ε v) (σ v) (w v) (dv v))
     (fun v => coefM (fun g : Formalism.REAL.UJ (I.ε v) => σ v (umat g)) (w v)) hL hloc
   rw [← phInf_eq] at hint hconv
-  rw [phInf_eq] at hT
-  have hT' : IsOpInt (muInf I) (fun g => R (g, 1)) (phInf I σ w dv) T := by rw [phInf_eq]; exact hT
   exact hC I.Ginf (muInf I) (phInf I σ w dv) (mInf I σ w) hint hconv (I.L2 μf fund) (fun g => R (g, 1)) T
-    (hR I μf fund hfund R hRR) hT'
+    (hR I μf fund hfund R hRR) hT
 
 end Inst
 

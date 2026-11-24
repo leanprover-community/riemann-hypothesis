@@ -201,9 +201,6 @@ theorem coeff_free {f : PS C 3 dd} (h1 : ev (rz 2) f = 1) {p : Fin 3 × Fin dd �
       induction k using Fin.cases <;> simp [rz, pt]
     first
     | exact MvPowerSeries.hasSubst_of_constantCoeff_zero hz
-    | exact MvPowerSeries.HasSubst.of_constantCoeff_zero' hz
-    | exact MvPowerSeries.HasSubst.of_constantCoeff_nilpotent (fun q => by rw [hz q]; exact IsNilpotent.zero)
-    | exact MvPowerSeries.hasSubst_of_constantCoeff_nilpotent (fun q => by rw [hz q]; exact IsNilpotent.zero)
   have hmon : ∀ d' : Fin 2 × Fin dd →₀ ℕ,
       (d'.prod fun s n => (X s : PS C 2 dd) ^ n) = MvPowerSeries.monomial d' (1 : C) := by
     intro d'

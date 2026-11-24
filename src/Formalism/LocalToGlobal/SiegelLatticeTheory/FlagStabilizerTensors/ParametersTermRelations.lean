@@ -408,11 +408,8 @@ theorem packageTieConc (D : D7) (L : SizeData₂ D) : ParametersTermRelations D 
   have h1 : L.hsSq u u' = ‖(Y.tO u u').K0‖ ^ 2 := by
     rw [hNT hDu hDu' hKE hAC hId hdeg]
     exact hIso D.s (sOf hF) hI u u'
-  rw [h1]
+  rw [h1, Real.rpow_neg hb, show (6 : ℝ) = ((6 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
   rw [hDs, hdu, hdu'] at hK0
-  have hbpow : L.sc.b ^ (-(6 : ℝ)) = (L.sc.b ^ 6)⁻¹ := by
-    rw [Real.rpow_neg hb, show (6 : ℝ) = ((6 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
-  rw [hbpow]
   exact hK0.trans_eq (by ring)
 
 end Link

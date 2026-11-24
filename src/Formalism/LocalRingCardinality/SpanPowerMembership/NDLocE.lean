@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.BocksteinBaseChange.SmoothGaloisGeometry.NormLtOneOfIrreducible
 public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Algebra.CharP.Subring
@@ -61,21 +62,7 @@ variable {l : ℕ} [hl : Fact l.Prime]
 theorem norm_eq_spectralValue (x : PadicAlgCl l) : ‖x‖ = spectralValue (minpoly ℚ_[l] x) := rfl
 
 theorem isIntegral_iff_norm_le (x : PadicAlgCl l) : IsIntegral ℤ_[l] x ↔ ‖x‖ ≤ 1 := by
-  have halg : IsIntegral ℚ_[l] x := Algebra.IsIntegral.isIntegral x
-  have hmon := minpoly.monic halg
-  rw [norm_eq_spectralValue, spectralValue_le_one_iff hmon]
-  constructor
-  · intro hx n
-    rw [minpoly.isIntegrallyClosed_eq_field_fractions' ℚ_[l] hx, Polynomial.coeff_map]
-    exact PadicInt.norm_le_one _
-  · intro h
-    have hl : minpoly ℚ_[l] x ∈ Polynomial.lifts (algebraMap ℤ_[l] ℚ_[l]) := by
-      rw [Polynomial.lifts_iff_coeff_lifts]
-      intro n
-      exact ⟨⟨_, h n⟩, rfl⟩
-    obtain ⟨q, hq, -, hqm⟩ := Polynomial.lifts_and_degree_eq_and_monic hl hmon
-    refine ⟨q, hqm, ?_⟩
-    rw [← Polynomial.aeval_def, ← Polynomial.aeval_map_algebraMap ℚ_[l], hq, minpoly.aeval]
+  apply CrystallineSemistableComparison.isIntegral_iff_norm_le <;> assumption
 
 variable (LL : FinExt l)
 

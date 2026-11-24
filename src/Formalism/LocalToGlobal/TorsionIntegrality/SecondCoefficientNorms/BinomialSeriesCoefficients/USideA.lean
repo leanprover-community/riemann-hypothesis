@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.BinomialSeriesCoefficients.IntPSDerivativeOfLG
 public import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.VeluIntegral
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -94,35 +95,7 @@ theorem intPS_sum {ι : Type} (s : Finset ι) {F : ι → PowerSeries K} (hF : �
 
 theorem intPS_of_mul_eq_one {U V : PowerSeries K} (hU : IntPS R U)
     (hU0 : PowerSeries.constantCoeff U = 1) (hUV : U * V = 1) : IntPS R V := by
-  intro n
-  induction n using Nat.strong_induction_on with
-  | _ n ih =>
-    have h := congrArg (PowerSeries.coeff n) hUV
-    rw [PowerSeries.coeff_mul, PowerSeries.coeff_one] at h
-    have hmem0 : ((0, n) : ℕ × ℕ) ∈ Finset.HasAntidiagonal.antidiagonal n := by simp
-    rw [← Finset.add_sum_erase (Finset.HasAntidiagonal.antidiagonal n)
-      (fun p : ℕ × ℕ => PowerSeries.coeff p.1 U * PowerSeries.coeff p.2 V)
-      hmem0] at h
-    simp only [PowerSeries.coeff_zero_eq_constantCoeff_apply, hU0, one_mul] at h
-    have hrest : (∑ p ∈ (Finset.HasAntidiagonal.antidiagonal n).erase (0, n),
-        PowerSeries.coeff p.1 U * PowerSeries.coeff p.2 V) ∈ R := by
-      refine R.sum_mem (fun p hp => R.mul_mem (hU _) (ih _ ?_))
-      obtain ⟨hne, hmem⟩ := Finset.mem_erase.mp hp
-      rw [Finset.HasAntidiagonal.mem_antidiagonal] at hmem
-      by_contra hle
-      apply hne
-      obtain ⟨a, b⟩ := p
-      simp only [Prod.mk.injEq] at hmem hle ⊢
-      refine ⟨?_, ?_⟩ <;> omega
-    have h' : PowerSeries.coeff n V = (if n = 0 then 1 else 0) -
-        ∑ p ∈ (Finset.HasAntidiagonal.antidiagonal n).erase (0, n),
-          PowerSeries.coeff p.1 U * PowerSeries.coeff p.2 V := by
-      linear_combination h
-    rw [h']
-    refine R.sub_mem ?_ hrest
-    split_ifs
-    · exact R.one_mem
-    · exact R.zero_mem
+  apply Formalism.L2.Th1.C.JetSubstitutionLemmas.intPS_of_mul_eq_one <;> assumption
 
 end Int
 
@@ -174,7 +147,7 @@ theorem subst_wpShift_zero {a : PowerSeries K} (ha : PowerSeries.HasSubst a) (e 
     PowerSeries.subst a (wpShift e 0) = 1 + a ^ 2 * PowerSeries.subst a e := by
   unfold wpShift
   rw [← PowerSeries.coe_substAlgHom ha]
-  simp only [map_add (f := _), map_one, map_mul, map_pow, map_sub, map_zero, sub_zero,
+  simp only [map_add (f := _), map_one, map_mul, map_pow, map_zero, sub_zero,
     PowerSeries.coe_substAlgHom, PowerSeries.subst_X ha]
 
 end Log
@@ -204,7 +177,7 @@ theorem veluXOfSigma' : VeluXFromZ := by
 
   simp only [map_add (f := _), map_mul, map_sum, map_sub, PowerSeries.coe_substAlgHom] at F3
   simp only [subst_C'] at F3
-  simp only [hw, ← hZr, map_pow, map_add (f := _)] at F3
+  simp only [hw, ← hZr, map_pow] at F3
   have hsum : ∑ P, (xs P + PowerSeries.C c0 - (PowerSeries.C (xP P) + PowerSeries.C c0)) =
       ∑ P, (xs P - PowerSeries.C (xP P)) := Finset.sum_congr rfl (fun P _ => by ring)
   rw [hsum] at F3

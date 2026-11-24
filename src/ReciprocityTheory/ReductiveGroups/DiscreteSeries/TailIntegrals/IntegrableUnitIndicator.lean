@@ -81,15 +81,12 @@ lemma integrable_unitIndicator : Integrable one1 := by
   unfold one1
   first
   | exact (continuous_one.integrableOn_Icc).integrable_indicator measurableSet_Icc
-  | exact (Continuous.integrableOn_Icc continuous_const).integrable_indicator measurableSet_Icc
-  | exact (integrableOn_const.2 (Or.inr measure_Icc_lt_top)).integrable_indicator measurableSet_Icc
 
 lemma integrable_powIndicator {β : ℝ} (hβ : β < 1) : Integrable (pw1 β) := by
   have hr : (-1 : ℝ) < -β := by linarith
   have h0 : IntervalIntegrable (fun t : ℝ => t ^ (-β)) volume 0 1 := by
     first
     | exact intervalIntegral.intervalIntegrable_rpow' hr
-    | exact intervalIntegrable_rpow' hr
   have hpos : IntervalIntegrable (fun t : ℝ => |t| ^ (-β)) volume 0 1 := by
     rw [intervalIntegrable_iff_integrableOn_Ioc_of_le zero_le_one] at h0 ⊢
     refine h0.congr_fun (fun t ht => ?_) measurableSet_Ioc
@@ -107,8 +104,6 @@ lemma integrable_reim {p q : ℝ → ℝ} (hp : Integrable p) (hq : Integrable q
   have h : Integrable (fun z : ℝ × ℝ => p z.1 * q z.2) (volume.prod volume) := by
     first
     | exact Integrable.mul_prod hp hq
-    | exact Integrable.prod_mul hp hq
-    | exact Integrable.prod_smul hp hq
   have e := Complex.volume_preserving_equiv_real_prod
   have h2 := (e.integrable_comp_emb Complex.measurableEquivRealProd.measurableEmbedding).2 h
   first
@@ -122,14 +117,12 @@ lemma volume_axes : volume {z : ℂ | z.im = 0 ∨ z.re = 0} = 0 := by
     have hs : {z : ℂ | z.im = 0} = Complex.measurableEquivRealProd ⁻¹' (Set.univ ×ˢ {0}) := by
       first
       | (ext z; exact ⟨fun h => ⟨trivial, h⟩, fun h => h.2⟩)
-      | (ext z; simp [Complex.measurableEquivRealProd])
     rw [hs, e.measure_preimage_equiv, Measure.volume_eq_prod, Measure.prod_prod]
     simp
   have h2 : volume {z : ℂ | z.re = 0} = 0 := by
     have hs : {z : ℂ | z.re = 0} = Complex.measurableEquivRealProd ⁻¹' ({0} ×ˢ Set.univ) := by
       first
       | (ext z; exact ⟨fun h => ⟨h, trivial⟩, fun h => h.1⟩)
-      | (ext z; simp [Complex.measurableEquivRealProd])
     rw [hs, e.measure_preimage_equiv, Measure.volume_eq_prod, Measure.prod_prod]
     simp
   have hu : {z : ℂ | z.im = 0 ∨ z.re = 0} = {z : ℂ | z.im = 0} ∪ {z : ℂ | z.re = 0} := rfl
@@ -146,8 +139,6 @@ lemma volume_bad (ι : Type*) [Fintype ι] :
   rw [volume_pi]
   first
   | exact Measure.pi_eval_preimage_null _ volume_axes
-  | exact Measure.pi_eval_preimage_null volume_axes
-  | exact Measure.pi_eval_preimage_null (μ := fun _ => volume) volume_axes
 
 lemma mp_unitary {ι : Type*} [Fintype ι] [DecidableEq ι] (h : Matrix ι ι ℂ) (hu : h.conjTranspose * h = 1) :
     MeasurePreserving (fun y : ι → ℂ => h.mulVec y) volume volume := by
@@ -156,7 +147,6 @@ lemma mp_unitary {ι : Type*} [Fintype ι] [DecidableEq ι] (h : Matrix ι ι �
     funext y
     first
     | rfl
-    | simp [L, Matrix.toLin'_apply]
   have hdetC : Complex.normSq h.det = 1 := by
     have h1 := congrArg Matrix.det hu
     rw [Matrix.det_mul, Matrix.det_conjTranspose, Matrix.det_one] at h1
@@ -165,7 +155,6 @@ lemma mp_unitary {ι : Type*} [Fintype ι] [DecidableEq ι] (h : Matrix ι ι �
       first
       | exact h1
       | (rw [starRingEnd_apply]; exact h1)
-      | simpa using h1
     exact_mod_cast h2
   have hdet : LinearMap.det L = 1 := by
     first
@@ -213,7 +202,6 @@ lemma unitIndicator_eq {y : ℝ} (hy : |y| ≤ 1) : one1 y = 1 := by
 lemma powIndicator_eq {β y : ℝ} (hy : |y| ≤ 1) : pw1 β y = |y| ^ (-β) := by
   unfold pw1
   rw [Set.indicator_of_mem (show y ∈ Set.Icc (-1 : ℝ) 1 from abs_le.mp hy)]
-  try rfl
 
 lemma gF_integrable (p q : ι) {β : ℝ} (hβ : β < 1) (i : ι) : Integrable (gF p q β i) := by
   by_cases h1 : i = q
@@ -254,8 +242,8 @@ lemma psi_le {p q : ι} (hpq : p ≠ q) {k : ℕ} (hk : Fintype.card ι = k + 1)
     intro z hz
     rw [Complex.normSq_apply] at hz
     constructor
-    · nlinarith [sq_abs z.re, abs_nonneg z.re, mul_self_nonneg z.im]
-    · nlinarith [sq_abs z.im, abs_nonneg z.im, mul_self_nonneg z.re]
+    · exact abs_le_one_iff_mul_self_le_one.2 (by linarith [mul_self_nonneg z.im])
+    · exact abs_le_one_iff_mul_self_le_one.2 (by linarith [mul_self_nonneg z.re])
   have hnsq : ∀ z : ℂ, Complex.normSq z = ‖z‖ ^ 2 := by
     intro z
     first
@@ -265,10 +253,10 @@ lemma psi_le {p q : ι} (hpq : p ≠ q) {k : ℕ} (hk : Fintype.card ι = k + 1)
   have hsmall : ∀ i, i ≠ q → Complex.normSq (x i) ≤ 1 := by
     intro i hi
     have h1 := normSq_le_tW q x i hi
-    nlinarith [htpos]
+    linarith [pow_le_one₀ (n := 2) htpos.le ht2]
   have hqsmall : Complex.normSq (x q) ≤ 1 := by
     rw [hnsq]
-    nlinarith [norm_nonneg (x q)]
+    exact pow_le_one₀ (norm_nonneg _) hxq
 
   have hnnj : ∀ j ∈ Finset.univ, 0 ≤ (if j = q then 0 else Complex.normSq (x j)) := by
     intro j _
@@ -285,7 +273,6 @@ lemma psi_le {p q : ι} (hpq : p ≠ q) {k : ℕ} (hk : Fintype.card ι = k + 1)
     have h1 : |(1 - star (x p) / (tW q x : ℂ)).im| ≤ ‖1 - star (x p) / (tW q x : ℂ)‖ := by
       first
       | exact Complex.abs_im_le_norm _
-      | exact Complex.abs_im_le_abs _
     rw [him, abs_div, abs_of_pos htpos] at h1
     have h2 : |(x p).im| ≤ |(x p).im| / tW q x := by
       first
@@ -314,12 +301,12 @@ lemma psi_le {p q : ι} (hpq : p ≠ q) {k : ℕ} (hk : Fintype.card ι = k + 1)
     rw [hnsq (x p)] at hsum
     have hre2 : 2 * (|(x i).re| * |(x i).im|) ≤ Complex.normSq (x i) := by
       rw [Complex.normSq_apply]
-      nlinarith [sq_abs (x i).re, sq_abs (x i).im, sq_nonneg (|(x i).re| - |(x i).im|)]
+      linarith [sq_abs (x i).re, sq_abs (x i).im, sq_nonneg (|(x i).re| - |(x i).im|)]
     have hr0 := norm_nonneg (x p)
     have hni := Complex.normSq_nonneg (x i)
-    have hrt : ‖x p‖ ≤ tW q x := by nlinarith
+    have hrt : ‖x p‖ ≤ tW q x := (pow_le_pow_iff_left₀ hr0 htpos.le two_ne_zero).1 (by linarith)
     have hm : |(x i).re| * |(x i).im| ≤ tW q x - ‖x p‖ := by
-      nlinarith [mul_nonneg (sub_nonneg.2 hrt) (by linarith : (0 : ℝ) ≤ 2 - tW q x - ‖x p‖)]
+      linarith [mul_nonneg (sub_nonneg.2 hrt) (by linarith : (0 : ℝ) ≤ 2 - tW q x - ‖x p‖)]
     have hd : ‖x p‖ / tW q x ≤ 1 - tW q x + ‖x p‖ := by
       first
       | (rw [div_le_iff₀ htpos]; nlinarith [mul_nonneg (sub_nonneg.2 ht2) (sub_nonneg.2 hrt)])
@@ -334,7 +321,6 @@ lemma psi_le {p q : ι} (hpq : p ≠ q) {k : ℕ} (hk : Fintype.card ι = k + 1)
     first
     | exact (ofReal_norm_eq_coe_nnnorm _).symm
     | (rw [ofReal_norm_eq_enorm, enorm_eq_nnnorm])
-    | exact (enorm_eq_nnnorm _).symm.trans (ofReal_norm_eq_enorm _).symm
     | (simp; rfl)
   rw [hP]
   apply ENNReal.ofReal_le_ofReal
@@ -411,9 +397,7 @@ lemma integrable_gprod (p q : ι) {β : ℝ} (hβ : β < 1) :
     Integrable (fun x : ι → ℂ => ∏ i, gF p q β i (x i)) := by
   first
   | exact Integrable.fintype_prod (f := fun i => gF p q β i) (fun i => gF_integrable p q hβ i)
-  | exact Integrable.fintype_prod (fun i => gF_integrable p q hβ i)
   | (rw [volume_pi]; exact Integrable.fintype_prod (fun i => gF_integrable p q hβ i))
-  | exact Integrable.fintype_prod_dep (fun i => gF_integrable p q hβ i)
 
 lemma ae_good : ∀ᵐ x : ι → ℂ, ∀ i, (x i).im ≠ 0 ∧ (x i).re ≠ 0 := by
   rw [ae_iff]
@@ -444,7 +428,6 @@ lemma lint_Bset_lt_top {p q : ι} (hpq : p ≠ q) {k : ℕ} (hk : Fintype.card �
   have h3 : ∫⁻ x : ι → ℂ, ENNReal.ofReal (∏ i, gF p q (s / k) i (x i)) < ∞ := by
     first
     | exact Integrable.lintegral_lt_top hG
-    | exact HasFiniteIntegral.lintegral_lt_top hG.2
   exact lt_of_le_of_lt (h1.trans h2) h3
 
 end Shell2

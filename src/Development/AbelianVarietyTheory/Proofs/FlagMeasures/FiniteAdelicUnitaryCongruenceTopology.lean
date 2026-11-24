@@ -100,7 +100,7 @@ theorem conj_mem_cong {Λ : Submodule S (n → A)} {a : A} {k x : GL n A}
   refine ⟨(k : Matrix n n A) *ᵥ z, (hk z).1 hz, ?_⟩
   rw [← Matrix.mulVec_smul, ← e]
   simp only [Matrix.sub_mulVec, Matrix.one_mulVec, Matrix.mulVec_mulVec, Matrix.mulVec_sub,
-    Units.val_mul, Units.mul_inv, mul_assoc, sub_mul, one_mul, mul_sub]
+    Units.val_mul, Units.mul_inv, mul_assoc, sub_mul, one_mul]
 
 variable [TopologicalSpace A] [IsTopologicalRing A]
 

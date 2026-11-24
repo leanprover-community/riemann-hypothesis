@@ -1,8 +1,9 @@
 module
 
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.DltEqZero
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardLatticesIdempotentPositionBoundedStatement
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsLatticeIdempotentPositionInvolutionStableStatement
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.CardLatticesIdempotentPositionBounded
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsLatticeIdempotentPositionInvolutionStable
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.DiscrMulMemOfIsIntegral
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -60,44 +61,11 @@ noncomputable section
 namespace GlobalTheory.UnitLemma.Desc
 open GlobalTheory.UnitLemma Polynomial Classical
 
-theorem isIntegral_trace_of_isIntegral'
-    (U L Ω : Type) [CommRing U] [Field L] [CommRing Ω] [Algebra U L] [Algebra L Ω] [Algebra U Ω]
-    [IsScalarTower U L Ω] [Module.Finite L Ω] (ω : Ω) (h : IsIntegral U ω) :
-    IsIntegral U (Algebra.trace L Ω ω) := by
-  classical
-  let b := Module.finBasis L Ω
-  let A := AlgebraicClosure L
-  let f : Ω →ₐ[U] Matrix (Fin (Module.finrank L Ω)) (Fin (Module.finrank L Ω)) A :=
-    (((Algebra.ofId L A).mapMatrix).comp (Algebra.leftMulMatrix b)).restrictScalars U
-  have hM : IsIntegral U (f ω) := h.map f
-  have htr : algebraMap L A (Algebra.trace L Ω ω) = (f ω).trace := by
-    rw [Algebra.trace_eq_matrix_trace b]
-
-    simp only [Matrix.trace, Matrix.diag, map_sum]
-    rfl
-  rw [← isIntegral_algebraMap_iff (A := L) (B := A) , htr,
-    Matrix.trace_eq_sum_roots_charpoly]
-  refine IsIntegral.multiset_sum fun μ hμ => ?_
-  have hroot : IsRoot (f ω).charpoly μ := (mem_roots'.1 hμ).2
-  have hspec : μ ∈ spectrum A (f ω) := Matrix.mem_spectrum_iff_isRoot_charpoly.2 hroot
-  obtain ⟨p, hp, hp0⟩ := hM
-  refine ⟨p, hp, ?_⟩
-  have h1 := spectrum.subset_polynomial_aeval (f ω) (p.map (algebraMap U A)) ⟨μ, hspec, rfl⟩
-  have h2 : aeval (f ω) (p.map (algebraMap U A)) = 0 := by
-    rw [aeval_map_algebraMap]; simpa [aeval_def] using hp0
-  have : Nontrivial (Matrix (Fin (Module.finrank L Ω)) (Fin (Module.finrank L Ω)) A) := by
-    by_contra h
-    rw [not_nontrivial_iff_subsingleton] at h
-    rw [spectrum.of_subsingleton] at hspec
-    exact hspec
-  rw [h2, spectrum.zero_eq, Set.mem_singleton_iff] at h1
-  simpa [eval_map] using h1
-
 variable {K : UQ} (B : InvAlg K)
 
 theorem trace_mem_of_isIntegral (x : B.A) (hx : IsIntegral K.O x) :
     Algebra.trace K.E B.A x ∈ (algebraMap K.O K.E).range :=
-  IsIntegrallyClosed.isIntegral_iff.1 (isIntegral_trace_of_isIntegral' K.O K.E B.A x hx)
+  IsIntegrallyClosed.isIntegral_iff.1 (_root_.GlobalTheory.DiscConductor.isIntegral_trace_of_isIntegral K.O K.E B.A x hx)
 
 theorem trace_idem_ne_zero (e : B.A) (he : IsIdempotentElem e) (h0 : e ≠ 0) :
     Algebra.trace K.E B.A e ≠ 0 := by
@@ -234,8 +202,8 @@ theorem finite_term_ne_zero : ∀ (K : UQ) (B : InvAlg K) (ι : Type) [Fintype �
   intro K B ι _ e π S hsep hF I I' hI hI' u s hu hs
   set a : K.O := (Nat.card (IsLocalRing.ResidueField K.O) : K.O)
   have ha : K.Small a := small_card K
-  obtain ⟨N, hN⟩ := GlobalTheory.T.exists_lattice_idempotent_position_involution_stable K B ι e π S a hsep ha hF
-  obtain ⟨C, hC⟩ := GlobalTheory.T.card_lattices_idempotent_position_bounded K B ι e π S a hsep ha hF N
+  obtain ⟨N, hN⟩ := _root_.GlobalTheory.UnitLemma.Desc.exists_pos K B ι e π S a hsep ha hF
+  obtain ⟨C, hC⟩ := _root_.GlobalTheory.UnitLemma.Desc.PosCount.card_pos_le K B ι e π S a hsep ha hF N
   have he : ∀ i, IsIdempotentElem (e i) := fun i => hF.1.1.idem i
   have he0 : ∀ i, e i ≠ 0 := by
     intro i

@@ -712,7 +712,6 @@ theorem bk_bound (d q : ℕ) : ∃ B : ℝ, 0 ≤ B ∧ ∀ (Ω : Set (Fin d →
   refine bkb_Bd_mono hP.le ?_ bb
   rw [one_mul, le_div_iff₀ hGpos]
   set K := (q.factorial : ℝ) ^ 2 * ((d : ℝ) ^ 2 * 2 ^ q) ^ q with hK
-  have hKnn : 0 ≤ K := by positivity
   have : 2 ^ q * (K / N0) * G * G = 2 ^ q * K * (G ^ 2 / N0) := by ring
   rw [this]
   have h3 : G ^ 2 / N0 ≤ d := by rw [div_le_iff₀ hN0pos]; exact hsq
@@ -822,7 +821,6 @@ theorem fk_bound {q n : ℕ} (hn : n ≤ q) {Ω : Set (Fin d → ℂ)} {g : (Fin
     have h2 : (2 : ℝ) ^ n ≤ 2 ^ q := pow_le_pow_right₀ (by norm_num) hn
     have h3 : 2 ^ q * B * S / η = 2 ^ q * (B / η) * S := by ring
     rw [h3]
-    have h4 : 0 ≤ B / ‖fderiv ℂ g x‖ := div_nonneg hB hG.le
     gcongr
   · have hx' : x ∉ tsupport (fun y => bk g k y • a y) := fun h =>
       hx (hsupp (tsupport_smul_subset' _ _ h))
@@ -926,7 +924,6 @@ theorem main_induction {q : ℕ} {β t : ℂ} (hβ : β ≠ 0) (ht : t ≠ 0) {�
     have hws : ∀ k, tsupport (wirt k (fun y => bk g k y • a y)) ⊆ tsupport a := fun k =>
       (wirt_tsupport k _).trans (hfs k)
     have hfb := fun k => fk_bound hn hΩ hg hη hP hlow hB hbk ha hsupp hb k
-    have hβ' : 0 < ‖β‖ := norm_pos_iff.mpr hβ
     have hk : ∀ k : Fin d, ‖∫ x : Fin d → ℂ, psi β (g x / t) • wirt k (fun y => bk g k y • a y) x
         ∂(muPi β (Fin d))‖ ≤ (2 / ‖β‖ * d * (2 ^ q * B)) ^ n * (2 ^ q * B * S / η * P) * (‖t‖ * P / η) ^ n *
           (muPi β (Fin d) (tsupport a)).toReal := by
@@ -975,7 +972,5 @@ theorem nonStatPhase : NonStatPhase := by
 end Formalism.FourierDecayAlt.P.WirtingerIntegrationByParts
 
 namespace Formalism.FourierDecayAlt.P
-
-theorem nonstationary_phase : Formalism.FourierDecayAlt.G.NonStatPhase := WirtingerIntegrationByParts.nonStatPhase
 
 end Formalism.FourierDecayAlt.P

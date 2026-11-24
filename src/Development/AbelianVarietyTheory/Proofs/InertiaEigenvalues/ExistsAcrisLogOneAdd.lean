@@ -43,6 +43,7 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ThetaBdRPlusSurjectiveKerUnitsEquivariant
 
 @[expose] public section
 
@@ -68,18 +69,7 @@ theorem acris_lim_pt (s : ℕ → Per.Acris0 l)
   exact hz
 
 theorem frobenius_surjective_modP : Function.Surjective (frobenius (ModP (Per.OC l) l) l) := by
-  intro x
-  obtain ⟨a, rfl⟩ := Ideal.Quotient.mk_surjective x
-  have hl : 0 < l := (Fact.out : l.Prime).pos
-  obtain ⟨b, hb⟩ := IsAlgClosed.exists_pow_nat_eq (a : ℂ_[l]) hl
-  have hb1 : b ∈ 𝓞_ℂ_[l] := by
-    rw [GlobalTheory.RingBasics.mem_OC]
-    have := (GlobalTheory.RingBasics.mem_OC _).1 a.2
-    rw [← hb, norm_pow] at this
-    exact (pow_le_one_iff_of_nonneg (norm_nonneg _) hl.ne').1 this
-  refine ⟨Ideal.Quotient.mk _ ⟨b, hb1⟩, ?_⟩
-  rw [frobenius_def, ← map_pow]
-  exact congrArg _ (Subtype.ext hb)
+  apply _root_.GlobalTheory.MemLoc.ThetaD.frob_surj <;> assumption
 
 theorem θ_surjective : Function.Surjective (Per.θ l) :=
   surjective_fontaineTheta frobenius_surjective_modP
@@ -101,7 +91,7 @@ theorem exists_divPow {w : Per.Ainf l} (hw : InJ w) (k : ℕ) :
       rw [← mul_assoc, hu, one_mul]
     exact ⟨_, GlobalTheory.RingIface.dividedPower_mem_Acris0 l _ j _ hz e, e⟩
   choose d hdm hdd using hd
-  choose q hq using fun m : ℕ => GlobalTheory.RingBasics.exists_pow_div_factorial l m
+  choose q hq using fun m : ℕ => _root_.Reformulated.AutPerF.exists_factorial_mul_eq_pow l m
   let ζ : ℤ_[l] →+* Per.AinfP l := (algebraMap (Per.Ainf l) (Per.AinfP l)).comp (Per.zA l)
   have hq' : ∀ m : ℕ, ((m.factorial : ℕ) : Per.AinfP l) * ζ (q m) = ((l : ℕ) : Per.AinfP l) ^ m := by
     intro m

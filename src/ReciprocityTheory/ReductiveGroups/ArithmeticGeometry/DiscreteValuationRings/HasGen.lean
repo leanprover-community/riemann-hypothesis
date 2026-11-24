@@ -94,8 +94,6 @@ lemma HasGen.add {F G : (Y ⟶ X) →₀ ℤ} (hF : HasGen L F) (hG : HasGen L G
       | (simp only [res, Units.coe_map, MonoidHom.coe_coe]
          rw [← RingHom.comp_apply, ← CommRingCat.hom_comp, ← Functor.map_comp]
          rfl)
-      | (simp [res, ← Functor.map_comp_apply])
-      | (simp [res]; rfl)
   obtain ⟨K, _, φ, ε, rfl, g, hg⟩ := hF
   obtain ⟨K', _, φ', ε', rfl, g', hg'⟩ := hG
   have hl : ∀ i : K ⊕ K' → L.ι, LB.wchart L (Sum.elim φ φ') i ≤ LB.wchart L φ (i ∘ Sum.inl) := by
@@ -116,11 +114,9 @@ lemma HasGen.add {F G : (Y ⟶ X) →₀ ℤ} (hF : HasGen L F) (hG : HasGen L G
         res hW ((LB.LinComb L φ ε).g (i ∘ Sum.inl) (j ∘ Sum.inl)) *
           res hW' ((LB.LinComb L φ' ε').g (i ∘ Sum.inr) (j ∘ Sum.inr)) := by
       first
-        | (simp only [LB.LinComb, Fintype.prod_sum_type, map_prod, map_zpow, res_res]; rfl)
+        | (simp only [LB.LinComb, Fintype.prod_sum_type, map_prod, map_zpow]; rfl)
         | (simp [LB.LinComb, Fintype.prod_sum_type, map_prod, map_zpow]
            congr 1 <;> refine Finset.prod_congr rfl fun k _ => ?_ <;> erw [res_res] <;> try rfl)
-        | (simp [LB.LinComb, Fintype.prod_sum_type, map_prod, map_zpow]
-           congr 1 <;> refine Finset.prod_congr rfl fun k _ => ?_ <;> rw [res_res])
     have e1 := congrArg (res hW) (hg (i ∘ Sum.inl) (j ∘ Sum.inl))
     have e2 := congrArg (res hW') (hg' (i ∘ Sum.inr) (j ∘ Sum.inr))
     erw [map_mul, res_res, res_res] at e1 e2
@@ -137,8 +133,6 @@ lemma HasGen.neg {F : (Y ⟶ X) →₀ ℤ} (hF : HasGen L F) : HasGen L (-F) :=
     have hgg : (LB.LinComb L φ (fun k => -ε k)).g i j = ((LB.LinComb L φ ε).g i j)⁻¹ := by
       first
         | (simp only [LB.LinComb, zpow_neg, Finset.prod_inv_distrib]; rfl)
-        | (simp [LB.LinComb, zpow_neg, Finset.prod_inv_distrib]; rfl)
-        | (unfold LB.LinComb; simp [zpow_neg, Finset.prod_inv_distrib])
     have hij := hg i j
     dsimp only
     rw [hgg]

@@ -67,9 +67,6 @@ attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] {ε : Fin n → Bool}
 
-theorem smBr_inUJ_one : inUJ ε (1 : Matrix (Fin n) (Fin n) ℂ) := by
-  unfold inUJ; simp
-
 theorem smBr_hasDerivAt_ext (f F : Matrix (Fin n) (Fin n) ℂ → E) (U : Set (Matrix (Fin n) (Fin n) ℂ))
     (g X : Matrix (Fin n) (Fin n) ℂ) (hU : IsOpen U) (hg : g ∈ U) (hgJ : inUJ ε g)
     (hF : ContDiffOn ℝ ∞ F U) (hfF : ∀ h ∈ U, inUJ ε h → f h = F h) (hX : inG ε X) :
@@ -152,8 +149,8 @@ theorem smBr_dS_eq (Z : Matrix (Fin n) (Fin n) ℂ) (w : H) :
 theorem smBr_orbit (hσ : IsURepOn (UJset ε) σ) {Z : Matrix (Fin n) (Fin n) ℂ} (hZ : inG ε Z)
     {v : H} (hv : IsSmoothVecU ε σ v) {g : Matrix (Fin n) (Fin n) ℂ} (hg : inUJ ε g) :
     σ g (dS σ Z v) = S7.RdV Z (fun g => σ g v) g := by
-  obtain ⟨U, F, hU, h1U, hF, hfF⟩ := hv 1 smBr_inUJ_one
-  have hc := smBr_hasDerivAt_ext (fun g => σ g v) F U 1 Z hU h1U smBr_inUJ_one hF hfF hZ
+  obtain ⟨U, F, hU, h1U, hF, hfF⟩ := hv 1 _root_.ReciprocityTheory.ChartRestriction.DS.smd_inUJ_one
+  have hc := smBr_hasDerivAt_ext (fun g => σ g v) F U 1 Z hU h1U _root_.ReciprocityTheory.ChartRestriction.DS.smd_inUJ_one hF hfF hZ
   simp only [one_mul] at hc
   have h2 := ((σ g).restrictScalars ℝ).hasFDerivAt.comp_hasDerivAt (0 : ℝ) hc
   have hfun : ((σ g) ∘ fun t : ℝ => σ (NormedSpace.exp ((t : ℂ) • Z)) v) =
@@ -178,11 +175,11 @@ theorem dS_bracket (hσ : IsURepOn (UJset ε) σ) {X Y : Matrix (Fin n) (Fin n) 
     dS σ X (dS σ Y v) - dS σ Y (dS σ X v) = dS σ (X * Y - Y * X) v := by
   have e1 : dS σ X (dS σ Y v) = S7.RdV X (S7.RdV Y (fun g => σ g v)) 1 := by
     rw [smBr_dS_eq]
-    exact smBr_loc (fun g hg => smBr_orbit hσ hY hv hg) hX smBr_inUJ_one
+    exact smBr_loc (fun g hg => smBr_orbit hσ hY hv hg) hX _root_.ReciprocityTheory.ChartRestriction.DS.smd_inUJ_one
   have e2 : dS σ Y (dS σ X v) = S7.RdV Y (S7.RdV X (fun g => σ g v)) 1 := by
     rw [smBr_dS_eq]
-    exact smBr_loc (fun g hg => smBr_orbit hσ hX hv hg) hY smBr_inUJ_one
+    exact smBr_loc (fun g hg => smBr_orbit hσ hX hv hg) hY _root_.ReciprocityTheory.ChartRestriction.DS.smd_inUJ_one
   rw [e1, e2, smBr_dS_eq]
-  exact smBr_rdBracket _ X Y 1 hv hX hY smBr_inUJ_one
+  exact smBr_rdBracket _ X Y 1 hv hX hY _root_.ReciprocityTheory.ChartRestriction.DS.smd_inUJ_one
 
 end ReciprocityTheory.ChartRestriction.DS

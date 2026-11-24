@@ -69,7 +69,7 @@ theorem inW_pW (y : (VS D).V) : InW X (pW X y) := by
   unfold pW
 
   simp only [map_sub, map_sum, map_smul, smul_eq_mul, X.ee, X.ef, h_fe, X.ff, mul_ite, mul_one, mul_zero,
-  Finset.sum_ite_eq', Finset.mem_univ, if_true, Finset.sum_const_zero, sub_zero]
+  Finset.sum_const_zero, sub_zero]
   constructor
   · simp only [Finset.sum_ite_eq, Finset.mem_univ, if_true, sub_self]
   · simp only [Finset.sum_ite_eq, Finset.mem_univ, if_true, sub_self]

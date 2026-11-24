@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.CartanEigenOrthonormalFrameExists
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IsFockMap
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -268,31 +269,6 @@ namespace PositivityTheory.RL
 open _root_.PositivityTheory.RL.Frame
 
 theorem frameEx : GlobalTheory.RealLift.FrameEx := by
-  rintro n r s M θ ⟨hn, B, hB⟩ ⟨hθ, hiso, hpos⟩
-  have ct : ∀ {α β : Type} (X : Matrix α β ℂ), (X.map star)ᴴ = Xᵀ := by
-    intro α β X; ext i j; simp
-  have mm : ∀ {α β : Type} (X : Matrix α β ℂ), (X.map star).map star = X := by
-    intro α β X; ext i j; simp
-  have mul : ∀ {α β γ : Type} [Fintype β] (X : Matrix α β ℂ) (Y : Matrix β γ ℂ),
-      (X * Y).map star = X.map star * Y.map star := by
-    intro α β γ _ X Y
-    exact Matrix.map_mul (f := starRingEnd ℂ)
-  have one : (1 : Matrix (Fin n) (Fin n) ℂ).map star = 1 := Matrix.map_one _ (star_zero _) (star_one _)
-  obtain ⟨C, hC, ⟨C', hC'⟩, hφ⟩ := frame_conj hn M (θ.map star) (B.map star) (by rw [ct, hB, blocks_eq])
-    (by rw [← mul, hθ, one]) (by rw [ct, hiso]) (by
-      intro x hx
-      have h1 := hpos (star x) (by simpa using hx)
-      rw [star_star, ← Matrix.vecMul_transpose, ← Matrix.dotProduct_mulVec, Matrix.mulVec_mulVec] at h1
-      rw [ct]
-      exact h1)
-  refine ⟨C.map star, ⟨?_, C'.map star, ?_⟩, ?_⟩
-  · rw [← ct, mm, hC, Jm_eq]
-  · rw [← mul, hC', one]
-  · have h1 := congrArg (fun X => Matrix.map X star) hφ
-    simp only [mul, mm] at h1
-    rw [h1, Jm_eq]
-    congr 1
-    ext a b
-    by_cases h : a = b <;> simp [h]
+  apply GlobalTheory.RealLift.frameEx_holds <;> assumption
 
 end PositivityTheory.RL

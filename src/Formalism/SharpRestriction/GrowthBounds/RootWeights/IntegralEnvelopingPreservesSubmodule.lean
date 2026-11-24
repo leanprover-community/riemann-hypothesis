@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.RootWeights.DvrFractionFieldCharZeroPrime
 public import Formalism.SharpRestriction.GrowthBounds.ObjPol
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -63,26 +64,7 @@ open Formalism.MainNotions.G Formalism.MainNotions.CovariantDegrees
 
 theorem dvr_fraction_field_char_zero_prime {p : ℕ} {O : Type*} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     (S : UniformizedDVR p O) (hp : p.Prime) : CharZero (KK O) := by
-  obtain ⟨w, _, p_mem, p_ne, _⟩ := S
-  haveI : CharZero O := by
-    obtain ⟨q, hq⟩ := CharP.exists O
-    rcases CharP.char_is_prime_or_zero O q with hqp | hq0
-    · exfalso
-      by_cases hdvd : q ∣ p
-      · have hqp' : q = p := (Nat.prime_dvd_prime_iff_eq hqp hp).mp hdvd
-        subst hqp'
-        exact p_ne (CharP.cast_eq_zero O q)
-      · have hcop : Nat.Coprime p q := (Nat.coprime_primes hp hqp).mpr (fun h => hdvd (by subst h; exact dvd_rfl))
-        have hu : IsUnit (p : ZMod q) := by
-          rw [← ZMod.coe_unitOfCoprime p hcop]; exact Units.isUnit _
-        have hu' : IsUnit (p : O) := by
-          have h5 := hu.map (ZMod.castHom (dvd_refl q) O)
-          simpa using h5
-        exact (IsLocalRing.mem_maximalIdeal _).mp p_mem hu'
-    · subst hq0
-      exact CharP.charP_to_charZero O
-  unfold KK
-  exact charZero_of_injective_algebraMap (IsFractionRing.injective O (FractionRing O))
+  apply Formalism.MainNotions.G.GLWeightTheory.dvr_fraction_field_charZero_prime <;> assumption
 
 section field
 

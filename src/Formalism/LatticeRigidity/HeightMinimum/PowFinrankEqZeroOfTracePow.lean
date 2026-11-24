@@ -67,15 +67,12 @@ variable {K V : Type*} [Field K] [IsAlgClosed K] [AddCommGroup V] [Module K V]
 theorem finite_eig (f : Module.End K V) : {μ | f.maxGenEigenspace μ ≠ ⊥}.Finite := by
   first
   | exact WellFoundedGT.finite_ne_bot_of_iSupIndep (Module.End.independent_maxGenEigenspace f)
-  | exact WellFoundedGT.finite_ne_bot_of_iSupIndep (Module.End.iSupIndep_maxGenEigenspace f)
   | exact CompleteLattice.WellFoundedGT.finite_ne_bot_of_iSupIndep
       (Module.End.independent_maxGenEigenspace f)
   | exact CompleteLattice.WellFoundedGT.finite_ne_bot_of_independent
       (Module.End.independent_maxGenEigenspace f)
   | exact CompleteLattice.WellFounded.finite_ne_bot_of_independent wellFounded_gt
       (Module.End.independent_maxGenEigenspace f)
-  | exact (Module.End.independent_maxGenEigenspace f).finite_ne_bot
-  | exact (Module.End.iSupIndep_maxGenEigenspace f).finite_ne_bot
 
 theorem trace_pow_restrict_maxGen (f : Module.End K V) (μ : K) (j : ℕ) :
     LinearMap.trace K _ ((f ^ j).restrict
@@ -92,7 +89,6 @@ theorem trace_pow_restrict_maxGen (f : Module.End K V) (μ : K) (j : ℕ) :
       intro z
       first
       | rw [pow_succ', Module.End.mul_apply, pow_succ', Module.End.mul_apply, ← ih]
-      | rw [pow_succ', LinearMap.mul_apply, pow_succ', LinearMap.mul_apply, ← ih]
       rfl
   have hg : (f ^ j).restrict
       (Module.End.mapsTo_maxGenEigenspace_of_comm ((Commute.refl f).pow_right j) μ) =
@@ -105,8 +101,6 @@ theorem trace_pow_restrict_maxGen (f : Module.End K V) (μ : K) (j : ℕ) :
     refine LinearMap.ext fun z => Subtype.ext ?_
     first
     | rfl
-    | simp [LinearMap.restrict_apply]
-    | simp
   generalize f.restrict h1 = x at hxy ⊢
   have hc : Commute x (algebraMap K (Module.End K (f.maxGenEigenspace μ)) μ) :=
     (Algebra.commutes μ x).symm
@@ -129,14 +123,10 @@ theorem trace_pow_restrict_maxGen (f : Module.End K V) (μ : K) (j : ℕ) :
             (hc.pow_left i).mul_left ((Commute.refl _).pow_left _)
     first
     | exact hcomm.isNilpotent_mul_left hxy
-    | exact hcomm.isNilpotent_mul_right hxy
-    | exact hcomm.symm.isNilpotent_mul_left hxy
-    | exact hcomm.symm.isNilpotent_mul_right hxy
   have h0 : LinearMap.trace K _ (x ^ j -
       (algebraMap K (Module.End K (f.maxGenEigenspace μ)) μ) ^ j) = 0 := by
     first
     | exact (LinearMap.isNilpotent_trace_of_isNilpotent hnil).eq_zero
-    | exact IsNilpotent.eq_zero (LinearMap.isNilpotent_trace_of_isNilpotent hnil)
   rw [map_sub, sub_eq_zero] at h0
   rw [h0, ← map_pow (algebraMap K (Module.End K (f.maxGenEigenspace μ))),
     Algebra.algebraMap_eq_smul_one, map_smul, LinearMap.trace_one, smul_eq_mul, mul_comm]
@@ -149,7 +139,6 @@ theorem trace_pow_eq_sum (f : Module.End K V) (j : ℕ) :
     refine eq_top_iff.mpr ?_
     first
     | rw [← Module.End.iSup_maxGenEigenspace_eq_top f]
-    | rw [← Module.End.iSup_maxGenEigenspace_eq_top (f := f)]
     refine iSup_le fun μ => ?_
     by_cases hμ : f.maxGenEigenspace μ = ⊥
     · rw [hμ]; exact bot_le
@@ -158,7 +147,6 @@ theorem trace_pow_eq_sum (f : Module.End K V) (j : ℕ) :
   have hind : iSupIndep (fun μ : (finite_eig f).toFinset => f.maxGenEigenspace (μ : K)) := by
     first
     | exact (Module.End.independent_maxGenEigenspace f).comp Subtype.val_injective
-    | exact (Module.End.iSupIndep_maxGenEigenspace f).comp Subtype.val_injective
   have hmap : ∀ μ : K, Set.MapsTo (f ^ j) (f.maxGenEigenspace μ) (f.maxGenEigenspace μ) :=
     fun μ => Module.End.mapsTo_maxGenEigenspace_of_comm ((Commute.refl f).pow_right j) μ
   have key := LinearMap.trace_eq_sum_trace_restrict_of_eq_biSup _ hind hmap ⊤ htop.symm

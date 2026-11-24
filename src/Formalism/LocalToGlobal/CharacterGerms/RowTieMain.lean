@@ -1,9 +1,6 @@
 module
 
 public import Formalism.LocalToGlobal.CharacterGerms.HostTraceIdentity
-public import Formalism.LocalToGlobal.CharacterGerms.RowTiePDescSpanFinal
-public import Formalism.LocalToGlobal.CharacterGerms.RowTiePNabMapSt
-public import Formalism.LocalToGlobal.CharacterGerms.RowTiePNvalEqSt
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -41,29 +38,21 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Formalism.LocalToGlobal.CharacterGerms.ContentZeroAt
-public import Formalism.LocalToGlobal.CharacterGerms.RowTieDesc
+import Development.AbelianVarietyTheory.Proofs.UnramifiedDepth.NuLocCLeNuPlEBaseChange
 
 @[expose] public section
 
 set_option autoImplicit false
 
-noncomputable section
-
-open scoped BigOperators
-open Classical
-
 namespace Formalism.L2.FormalSeriesBounds
 
-open Formalism.IncomingBounds Formalism.L2.Pj NumberField Formalism.L2.FormalSeriesBounds.RF
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Geo.Tor.Germ
+open NumberField
+open ReciprocityTheory.ChartRestriction.G.Geo.Tor
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H} {l : Level H}
 variable (Xo : Moduli Dw l) (c : Coeff l) [StarRing (𝓞 E)]
 
-theorem descent_holds : DescentSt Xo c := descent_of (nabMapSt_holds Xo c) descent_span nvalEqSt_holds
-
-variable {Xo c}
-variable {C : Type} [Field C] [CharZero C] {V : VF C}
-variable {T : CDVR} {io : c.F →+* T.Fr} {y : IntFr Xo c T io} {Orb : Type} [Fintype Orb] {d : ℕ} [NeZero d]
+theorem descent_holds : DescentSt Xo c :=
+  GlobalTheory.nuLocC_le_nuPlE_baseChange E H Dw l Xo c
 
 end Formalism.L2.FormalSeriesBounds

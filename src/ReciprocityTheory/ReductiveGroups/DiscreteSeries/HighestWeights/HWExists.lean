@@ -64,13 +64,10 @@ theorem UJset_allPos_eq_Kset (k : ℕ) :
     unfold Formalism.REAL.Jm Formalism.MainNotions.S.allPos
     first
     | simp
-    | (ext i j; simp [Matrix.diagonal, Matrix.one_apply])
   ext g
   first
   | simp only [Formalism.MainNotions.S.UJset, Formalism.REAL.Kset, Set.mem_setOf_eq, Formalism.REAL.inUJ, hJ, mul_one, one_mul,
       and_true, Matrix.mem_unitaryGroup_iff', Matrix.star_eq_conjTranspose]
-  | simp [Formalism.MainNotions.S.UJset, Formalism.REAL.Kset, Formalism.REAL.inUJ, hJ, Matrix.mem_unitaryGroup_iff',
-      Matrix.star_eq_conjTranspose]
 
 theorem highest_weight_exists : HighestWeightExistsBody := by
   intro k u hu

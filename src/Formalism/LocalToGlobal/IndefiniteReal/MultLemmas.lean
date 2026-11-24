@@ -136,7 +136,6 @@ theorem rder_smul (τ : D.what₂.Tau) (X : Matrix (Fin V.rank) (Fin V.rank) ℂ
   simp only [Rder, Pi.smul_apply, smul_eq_mul]
   first
     | exact deriv_const_mul_field c
-    | simp
 
 variable (V) in
 theorem foldr_rder_smul (l : List (D.what₂.Tau × Matrix (Fin V.rank) (Fin V.rank) ℂ)) (c : ℂ) (φ : GA D V → ℂ) :

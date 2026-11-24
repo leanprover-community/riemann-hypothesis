@@ -73,12 +73,9 @@ theorem one_mem_autLz (Λ : Submodule (𝓞 D.host.E) (VS D).V) : (id : WbQ D F0
   rw [Set.mem_setOf_eq]
   refine ⟨1, ?_, ?_, fun x hx => rfl⟩
   · first
-      | exact Subgroup.one_mem _
-      | exact one_mem _
       | (unfold stabF; simp)
   · first
       | simp [Formalism.HermitianLatticesTheory.gmap]
-      | rfl
 
 theorem wRow_pos {Λ : Submodule (𝓞 D.host.E) (VS D).V} (h : (autLz D F0 Λ).Finite) : 0 < wRow D F0 Λ := by
   unfold wRow
@@ -121,8 +118,6 @@ theorem norm_psiInf (g : ℕ) (x : E) : ‖psiInf g x‖ = 1 := by
   unfold psiInf
   first
     | (rw [Complex.norm_exp]; simp)
-    | (rw [Complex.abs_exp]; simp)
-    | simp [Complex.norm_exp]
 
 end Phase
 

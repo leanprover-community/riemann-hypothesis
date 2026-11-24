@@ -73,7 +73,7 @@ theorem finite_ringHom (k : Type) [CommRing k] [Module.Finite ℤ k] : Finite (k
     | mem x h => exact hs' x h
     | zero => simp
     | add x y _ _ hx hy => simp [map_add (f := _), hx, hy]
-    | smul a x _ hx => simp [map_zsmul, hx]
+    | smul a x _ hx => simp [hx]
   exact RingHom.ext fun x => hspan x (hs ▸ Submodule.mem_top)
 
 variable {k : Type} [CommRing k] {X : Scheme.{0}}

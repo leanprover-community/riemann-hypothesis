@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SerreClassOfCechSpectralSequence
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.HodgeSurjectivity.CosieveRes
 public import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.DcColSurj
 import Development.WeilBound.CoreStatements.PadicHodgeComparison.EtaleCohomologyComparison.CechPairings.MapHComp
@@ -214,21 +215,7 @@ theorem lift {a p : ℕ} (hex : ∀ s < a, ∀ p (y : K.X p s), K.dv p s y = 0 �
     simp
 
 theorem dh_bd {y : ∀ p q, K.X p q} (hD : K.D y = 0) (p a : ℕ) : K.dh p a (y p a) ∈ (K.col (p + 1)).B a := by
-  cases a with
-  | zero =>
-    have h := congrFun (congrFun hD (p + 1)) 0
-    rw [K.D_apply] at h
-    have h0 : K.Dv y (p + 1) 0 = 0 := rfl
-    rw [h0, smul_zero, add_zero] at h
-    exact h
-  | succ a =>
-    have h := congrFun (congrFun hD (p + 1)) (a + 1)
-    rw [K.D_apply] at h
-    have h' : K.dh p (a + 1) (y p (a + 1)) + (-1 : ℤ) ^ (p + 1) • K.dv (p + 1) a (y (p + 1) a) = 0 := h
-    refine ⟨-((-1 : ℤ) ^ (p + 1) • y (p + 1) a), ?_⟩
-    change K.dv (p + 1) a (-((-1 : ℤ) ^ (p + 1) • y (p + 1) a)) = _
-    rw [map_neg, map_zsmul]
-    exact (eq_neg_of_add_eq_zero_left h').symm
+  apply GlobalTheory.CompanionTheory.CechSerre.dh_lead <;> assumption
 
 theorem prevB {n : ℕ} (u : K.tot.X n) (w : ∀ p q, K.X p q) (hw : Pv K n w) (h : u.1 = K.D w) : u ∈ K.tot.B n := by
   cases n with

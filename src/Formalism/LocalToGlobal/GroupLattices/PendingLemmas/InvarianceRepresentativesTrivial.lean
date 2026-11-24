@@ -61,21 +61,7 @@ theorem ordP_mul [IsDomain W] [IsDiscreteValuationRing W] [IsFractionRing W Qq] 
   have hu : algebraMap W Qq (u : W) ≠ 0 := (u.isUnit.map (algebraMap W Qq)).ne_zero
   rw [← mul_assoc, ordP_mul_zpow hp (mul_ne_zero hx hu), ordP_mul_unit hp hx, ordP_eq hp]
 
-theorem colSpan_mul {k : ℕ} (A g : Matrix (Fin k) (Fin k) Qq) :
-    (colSpan W g).map ((Matrix.mulVecLin A).restrictScalars W) = colSpan W (A * g) := by
-  unfold colSpan
-  rw [Submodule.map_span]
-  congr 1
-  ext x
-  constructor
-  · rintro ⟨_, ⟨c, rfl⟩, rfl⟩
-    refine ⟨c, ?_⟩
-    ext i
-    simp [Matrix.mulVec, Matrix.mul_apply, dotProduct]
-  · rintro ⟨c, rfl⟩
-    refine ⟨_, ⟨c, rfl⟩, ?_⟩
-    ext i
-    simp [Matrix.mulVec, Matrix.mul_apply, dotProduct]
+alias colSpan_mul := _root_.Formalism.MainNotions.G.LatticeSystems.je_colSpan_mul
 
 theorem gl_det_ne {k : ℕ} (A : GL (Fin k) Qq) : (A : Matrix (Fin k) (Fin k) Qq).det ≠ 0 :=
   ((Matrix.isUnit_iff_isUnit_det _).1 A.isUnit).ne_zero
@@ -185,11 +171,6 @@ theorem kapG_mul (j : ℕ) (c : X.Lv.comp j) (γ γ' : (X.Lv.lev j c).Γ) :
 theorem kapG_ne_zero (j : ℕ) (c : X.Lv.comp j) (γ : (X.Lv.lev j c).Γ) : kapG X Kc j c γ ≠ 0 := by
   rw [kapG_eq]
   exact mul_ne_zero (mul_ne_zero (chiC_ne_zero X Kc j c γ) (cA_ne_zero X Kc j _)) (pPart_ne_zero X hp0 j _)
-
-theorem kapG_one (j : ℕ) (c : X.Lv.comp j) : kapG X Kc j c 1 = 1 := by
-  have h := kapG_mul X Kc hp0 j c 1 1
-  rw [mul_one] at h
-  exact (mul_eq_left₀ (kapG_ne_zero X Kc hp0 j c 1)).1 h.symm
 
 omit hp0
 

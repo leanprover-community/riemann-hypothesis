@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.TorsionIntegrality.SecondCoefficientNorms.BinomialSeriesCoefficients.DegreeLeOfMemAntidiagonal
 public import Formalism.EllipticTorsion.Statement
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -95,21 +96,7 @@ theorem pderiv_subst_coe (p : Polynomial R) {a : MvPowerSeries σ R}
     (ha : MvPowerSeries.constantCoeff a = 0) (i : σ) :
     MvPowerSeries.pderiv (R := R) i ((p : PowerSeries R).subst a) =
       (derivative (p : PowerSeries R)).subst a * MvPowerSeries.pderiv (R := R) i a := by
-  have hs : PowerSeries.HasSubst a := PowerSeries.HasSubst.of_constantCoeff_zero ha
-  suffices H : ∀ P : Polynomial R, MvPowerSeries.pderiv (R := R) i (PowerSeries.substAlgHom hs (P : PowerSeries R)) =
-      PowerSeries.substAlgHom hs (derivative (P : PowerSeries R)) * MvPowerSeries.pderiv (R := R) i a by
-    simpa only [PowerSeries.coe_substAlgHom] using H p
-  intro P
-  induction P using Polynomial.induction_on'
-  next P Q hP hQ =>
-    rw [Polynomial.coe_add, map_add (f := _), map_add (f := _), hP, hQ, map_add (f := _), map_add (f := _), add_mul]
-  next n c =>
-    have hX : PowerSeries.substAlgHom hs (PowerSeries.X : PowerSeries R) = a := by
-      rw [PowerSeries.coe_substAlgHom, PowerSeries.subst_X hs]
-    rw [← Polynomial.smul_X_eq_monomial]
-    simp only [Polynomial.coe_smul, Polynomial.coe_pow, Polynomial.coe_X, map_smul, map_pow, hX,
-      Derivation.map_smul, Derivation.leibniz_pow, PowerSeries.derivative_X, map_nsmul, smul_eq_mul,
-      mul_one, map_mul, map_one, nsmul_eq_mul, map_natCast, smul_mul_assoc, mul_assoc]
+  apply Formalism.L2.Th1.C.IntegralMvPolynomialLemmas.pderiv_subst_coe <;> assumption
 
 theorem degree_le_of_mem_antidiagonal [DecidableEq σ] {d : σ →₀ ℕ} {x : (σ →₀ ℕ) × (σ →₀ ℕ)}
     (hx : x ∈ Finset.HasAntidiagonal.antidiagonal d) : x.1.degree ≤ d.degree := by
@@ -121,24 +108,7 @@ theorem pderiv_subst (g : PowerSeries R) {a : MvPowerSeries σ R}
     (ha : MvPowerSeries.constantCoeff a = 0) (i : σ) :
     MvPowerSeries.pderiv (R := R) i (g.subst a) =
       (derivative g).subst a * MvPowerSeries.pderiv (R := R) i a := by
-  classical
-  ext e
-  have hP : ∀ k ≤ e.degree + 1,
-      coeff k ((PowerSeries.trunc (e.degree + 2) g : Polynomial R) : PowerSeries R) = coeff k g := by
-    intro k hk
-    rw [Polynomial.coeff_coe, PowerSeries.coeff_trunc, if_pos (by omega)]
-  have hdeg : (e + Finsupp.single i 1).degree = e.degree + 1 := by
-    rw [map_add (f := _), Finsupp.degree_single]
-  have h1 : MvPowerSeries.coeff e (MvPowerSeries.pderiv (R := R) i (g.subst a)) =
-      MvPowerSeries.coeff e (MvPowerSeries.pderiv (R := R) i
-        (((PowerSeries.trunc (e.degree + 2) g : Polynomial R) : PowerSeries R).subst a)) := by
-    rw [MvPowerSeries.coeff_pderiv, MvPowerSeries.coeff_pderiv,
-      coeff_subst_congr ha _ (fun k hk => (hP k (by omega)).symm)]
-  rw [h1, pderiv_subst_coe _ ha i, MvPowerSeries.coeff_mul, MvPowerSeries.coeff_mul]
-  refine Finset.sum_congr rfl fun x hx => ?_
-  have hxd := degree_le_of_mem_antidiagonal hx
-  rw [coeff_subst_congr ha x.1 (fun k hk => ?_)]
-  rw [PowerSeries.coeff_derivative, PowerSeries.coeff_derivative, hP (k + 1) (by omega)]
+  apply Formalism.L2.Th1.C.IntegralMvPolynomialLemmas.pderiv_subst <;> assumption
 
 end Chain
 

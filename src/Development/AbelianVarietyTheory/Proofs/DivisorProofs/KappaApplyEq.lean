@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IdealSheafEqOfKerTensorToSubschemeSections
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.EqOfSecAlgTop
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -56,22 +57,7 @@ theorem theta_comm {T : Scheme.{0}} (g : T ⟶ Spec (CommRingCat.of A)) (U : T.O
     ((pullback.fst (str A B) g).appLE ⊤ ((pullback.snd (str A B) g) ⁻¹ᵁ U) (by simp)).hom
       ((Scheme.ΓSpecIso (CommRingCat.of B)).inv.hom (algebraMap A B a)) =
     ((pullback.snd (str A B) g).app U).hom (secAlg A g U a) := by
-  have h1 := Scheme.ΓSpecIso_inv_naturality (CommRingCat.ofHom (algebraMap A B))
-  have h2 : (Scheme.ΓSpecIso (CommRingCat.of B)).inv.hom (algebraMap A B a) =
-      (str A B).appTop.hom ((Scheme.ΓSpecIso (CommRingCat.of A)).inv.hom a) :=
-    congrArg (fun f => f.hom a) h1
-  have key : (str A B).appTop ≫ (pullback.fst (str A B) g).appLE ⊤
-      ((pullback.snd (str A B) g) ⁻¹ᵁ U) (by simp) =
-      g.appLE ⊤ U (by simp) ≫ (pullback.snd (str A B) g).app U := by
-    calc _ = (pullback.fst (str A B) g ≫ str A B).appLE ⊤
-          ((pullback.snd (str A B) g) ⁻¹ᵁ U) (by simp) :=
-          (Scheme.Hom.comp_appLE _ _ _ _ _).symm
-      _ = (pullback.snd (str A B) g ≫ g).appLE ⊤
-          ((pullback.snd (str A B) g) ⁻¹ᵁ U) (by simp) :=
-          appLE_eq_of_eq (by simp [pullback.condition]) _ _ _ _
-      _ = _ := by
-          rw [Scheme.Hom.app_eq_appLE]; exact (Scheme.Hom.appLE_comp_appLE _ _ _ _ _ _ _).symm
-  rw [h2, secAlg, RingHom.comp_apply, ← CommRingCat.comp_apply, key, CommRingCat.comp_apply]
+  apply GlobalTheory.HilbAff.IdealDet.comm_fst <;> assumption
 
 def theta {T : Scheme.{0}} (g : T ⟶ Spec (CommRingCat.of A)) (U : T.Opens) :
     letI := (secAlg A g U).toAlgebra;

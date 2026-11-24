@@ -61,15 +61,12 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 theorem tns_isModuleTopology : IsModuleTopology (AF F) (AF F ⊗[F] E) := by
   first
     | exact ⟨rfl⟩
-    | infer_instance
 
 attribute [local instance] tns_isModuleTopology
 
 theorem tns_isTopologicalAddGroup : IsTopologicalAddGroup (AF F ⊗[F] E) := by
   first
     | exact IsModuleTopology.topologicalAddGroup (AF F) (AF F ⊗[F] E)
-    | exact IsModuleTopology.topologicalAddGroup (R := AF F)
-    | exact IsModuleTopology.topologicalAddGroup (AF F)
     | infer_instance
 
 section Basis
@@ -82,22 +79,17 @@ def tnsCoord : (AF F ⊗[F] E) ≃ₗ[AF F] (Fin d → AF F) :=
 theorem tnsCoord_continuous : Continuous (tnsCoord b) := by
   first
     | exact IsModuleTopology.continuous_of_linearMap (R := AF F) (tnsCoord b).toLinearMap
-    | exact IsModuleTopology.continuous_of_linearMap (tnsCoord b).toLinearMap
 
 theorem tnsCoord_inclR (e : E) (k : Fin d) :
     tnsCoord b (inclR (AF F) e) k = algebraMap F (AF F) (b.repr e k) := by
   first
     | simp [tnsCoord, inclR, Algebra.TensorProduct.basis_repr_tmul]
-    | (simp only [tnsCoord, Module.Basis.equivFun_apply]
-       erw [Algebra.TensorProduct.basis_repr_tmul]
-       simp)
 
 end Basis
 
 private theorem module_finite_F_E : Module.Finite F E := by
   first
     | infer_instance
-    | exact Module.Finite.of_restrictScalars_finite ℚ F E
 
 private theorem exists_isOpen_nhd_zero_algebraMap_discrete : ∃ V : Set (AF F), IsOpen V ∧ (0 : AF F) ∈ V ∧
     ∀ a : F, algebraMap F (AF F) a ∈ V → a = 0 := by
@@ -116,9 +108,6 @@ private theorem exists_isOpen_nhd_zero_algebraMap_discrete : ∃ V : Set (AF F),
         intro v
         first
           | exact Valued.isOpen_valuationSubring _
-          | exact Valued.valuationSubring_isOpen _
-          | exact (Valued.isOpen_integer _)
-          | exact IsDedekindDomain.HeightOneSpectrum.isOpen_adicCompletionIntegers v
       exact (RestrictedProduct.isOpen_forall_mem hO).preimage continuous_snd
     exact hA.inter hB
   · refine ⟨fun w => ?_, fun v => ?_⟩
@@ -151,21 +140,17 @@ private theorem exists_isOpen_nhd_zero_algebraMap_discrete : ∃ V : Set (AF F),
     obtain ⟨x, rfl⟩ : a ∈ (algebraMap (𝓞 F) F).range := by
       first
         | exact IsDedekindDomain.HeightOneSpectrum.mem_integers_of_valuation_le_one F a hv
-        | exact IsDedekindDomain.HeightOneSpectrum.mem_integers_of_valuation_le_one a hv
     obtain ⟨w0⟩ := (inferInstance : Nonempty (NumberField.InfinitePlace F))
     have hnn : ∀ w : NumberField.InfinitePlace F, 0 ≤ w (algebraMap (𝓞 F) F x) := by
       intro w
       first
         | positivity
-        | exact w.nonneg _
-        | exact apply_nonneg w _
     have hle : ∏ w ∈ Finset.univ.erase w0, w (algebraMap (𝓞 F) F x) ^ w.mult ≤ 1 :=
       Finset.prod_le_one₀ (fun w _ => pow_nonneg (hnn w) _)
         fun w _ => pow_le_one₀ (hnn w) (hw w).le
     have hm : w0.mult ≠ 0 := by
       first
         | exact NumberField.InfinitePlace.mult_ne_zero
-        | exact (NumberField.InfinitePlace.mult_pos).ne'
     have hlt : w0 (algebraMap (𝓞 F) F x) ^ w0.mult < 1 := pow_lt_one₀ (hnn w0) (hw w0) hm
     have hprod : ∏ w : NumberField.InfinitePlace F, w (algebraMap (𝓞 F) F x) ^ w.mult < 1 := by
       rw [← Finset.mul_prod_erase Finset.univ _ (Finset.mem_univ w0)]
@@ -232,8 +217,5 @@ theorem tup_disc (M n : ℕ) :
         exact h0
   first
     | exact discreteTopology_iff_isOpen_singleton.mpr key
-    | exact ⟨eq_bot_of_singletons_open key⟩
-    | exact singletons_open_iff_discrete.mp key
-    | exact discreteTopology_iff_singleton_mem_nhds.mpr fun p => (key p).mem_nhds rfl
 
 end Formalism.IndefR.Eqv.G5

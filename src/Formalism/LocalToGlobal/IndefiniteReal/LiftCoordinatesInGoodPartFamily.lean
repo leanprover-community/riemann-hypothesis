@@ -136,9 +136,7 @@ section Equiv3
 variable {G : Type} [Group G] [Fintype G] {Pl0 I0 Ty T : Type} {m : ℕ}
 variable {A3 : FamIn3 K G Pl0 I0 Ty T m} {X : CxData A3.fam3.amb3}
 
-theorem coordinates_mem_subspace {B : BlockDat K G Pl0} (ℓ : Lvl K G) (Z : Submodule K B.S.Forms) (y : Fin (B.dZ ℓ Z) → K) :
-    B.toF ℓ Z y ∈ Z := by
-  exact toF_mem_Z ℓ Z y
+alias coordinates_mem_subspace := _root_.Formalism.IndefR.Cx.toF_mem_Z
 
 theorem part_iff_rows3 (hR : X.KFormR) (hst : X.zs.Stable) {s : ℕ} (hOk : A3.fam3.Ok3 s)
     {hE : ∀ t, (A3.rowI t).OpIx → Module.End ℂ X.EE} (hH : HeckeIntertwiningDefinite A3 X hE) (p : A3.fam3.base3.Ix)

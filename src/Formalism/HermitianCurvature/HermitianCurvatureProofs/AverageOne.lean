@@ -93,8 +93,7 @@ lemma avg_norm_le (e : ι → Λ) (c : ℕ → Λ) (g : Λ → ℂ) (B : ℝ) (h
 
 lemma tendsto_lim_of_bdd (u : ℕ → ℂ) (B : ℝ) (hu : ∀ n, ‖u n‖ ≤ B) :
     Tendsto u (hyperfilter ℕ : Filter ℕ) (𝓝 (limUnder (hyperfilter ℕ : Filter ℕ) u)) := by
-  have hc : IsCompact (Metric.closedBall (0 : ℂ) B) := isCompact_closedBall 0 B
-  obtain ⟨x, -, hx⟩ := hc.ultrafilter_le_nhds ((hyperfilter ℕ).map u) (by
+  obtain ⟨x, -, hx⟩ := (isCompact_closedBall (0 : ℂ) B).ultrafilter_le_nhds ((hyperfilter ℕ).map u) (by
     rw [Ultrafilter.coe_map, le_principal_iff, Filter.mem_map]
     exact Filter.univ_mem' (fun n => by simpa using hu n))
   exact tendsto_nhds_limUnder ⟨x, hx⟩
@@ -125,7 +124,6 @@ lemma avg_smul (e : ι → Λ) (c : ℕ → Λ) (a : ℂ) (g : Λ → ℂ) :
 lemma avg_one (e : ι → Λ) (c : ℕ → Λ) (n : ℕ) : avg e c (fun _ => 1) n = 1 := by
   unfold avg
   rw [Finset.sum_const, card_box, nsmul_eq_mul, mul_one]
-  have hpos : (0 : ℝ) < (n + 1 : ℝ) ^ Fintype.card ι := by positivity
   push_cast
   field_simp
 
@@ -134,9 +132,8 @@ lemma avg_real_nonneg (e : ι → Λ) (c : ℕ → Λ) (g : Λ → ℂ)
     0 ≤ (avg e c g n).re ∧ (avg e c g n).im = 0 := by
   unfold avg
   rw [Complex.re_ofReal_mul, Complex.im_ofReal_mul, Complex.re_sum, Complex.im_sum]
-  constructor
-  · exact mul_nonneg (by positivity) (Finset.sum_nonneg (fun m _ => (hg _).1))
-  · simp [(hg _).2]
+  exact ⟨mul_nonneg (by positivity) (Finset.sum_nonneg (fun m _ => (hg _).1)),
+    by simp [(hg _).2]⟩
 
 lemma bpt_add_single (e : ι → Λ) (c : Λ) (m : ι → ℕ) (j : ι) :
     bpt e c m + e j = bpt e c (m + Pi.single j 1) := by
@@ -262,7 +259,6 @@ lemma avg_shift_small (e : ι → Λ) (c : ℕ → Λ) (g : Λ → ℂ) (B : ℝ
     refine Finset.sum_congr rfl (fun m _ => ?_); rw [bpt_add_single]
   rw [hs]
   have h := shift_sum_bound (n + 1) j (fun m => g (bpt e (c n) m)) B (fun m => hB _)
-  have hpos : (0 : ℝ) < (n + 1 : ℝ) := by positivity
   have hpow : ((n + 1 : ℕ) : ℝ) ^ Fintype.card ι = (n + 1 : ℝ) * (n + 1 : ℝ) ^ (Fintype.card ι - 1) := by
     push_cast
     rw [← pow_succ']; congr 1; omega
@@ -380,7 +376,6 @@ lemma exists_far {f : ℕ} (La : Submodule ℤ (V f)) [DiscreteTopology La] [IsZ
   let b := Module.Free.chooseBasis ℤ La
   let bR := b.ofZLatticeBasis ℝ La
   set γ : ℝ := ∑ i, ‖bR i‖ with hγ
-  have hγ0 : 0 ≤ γ := Finset.sum_nonneg (fun i _ => norm_nonneg _)
   let w : V f := fun _ => ((|T| + γ : ℝ) : ℂ)
   refine ⟨(ZSpan.floor bR w : V f), ?_, ?_⟩
   · have h := (ZSpan.floor bR w).2
@@ -403,10 +398,8 @@ lemma le_atInfAll (f : ℕ) :
     (⨅ T : ℝ, 𝓟 {x : V f | ∀ v, T ≤ ‖x v‖}) ≤ atInfAll f := by
   unfold atInfAll
   refine le_iInf (fun v => ?_)
-  rw [← Filter.tendsto_iff_comap]
-  rw [Filter.tendsto_atTop]
-  intro T
-  exact Filter.mem_iInf_of_mem T (Filter.mem_principal.mpr (fun x hx => hx v))
+  rw [← Filter.tendsto_iff_comap, Filter.tendsto_atTop]
+  exact fun T => Filter.mem_iInf_of_mem T (Filter.mem_principal.mpr (fun x hx => hx v))
 
 lemma exists_T_of_mem {f : ℕ} {t : Set (V f)} (ht : t ∈ atInfAll f) :
     ∃ T : ℝ, {x : V f | ∀ v, T ≤ ‖x v‖} ⊆ t := by
@@ -424,7 +417,6 @@ theorem meanExists : MeanExists := by
   let Λ := La.toAddSubgroup
   let e : Module.Free.ChooseBasisIndex ℤ La → Λ := fun i => ⟨(b i : V f), (b i).2⟩
   set β : ℝ := ∑ i, ‖(b i : V f)‖ with hβ
-  have hβ0 : 0 ≤ β := Finset.sum_nonneg (fun i _ => norm_nonneg _)
   have hfar := fun n : ℕ => exists_far La ((n : ℝ) + (n + 1) * β)
   choose y hyLa hy using hfar
   let c : ℕ → Λ := fun n => ⟨y n, hyLa n⟩
@@ -486,6 +478,6 @@ theorem meanExists : MeanExists := by
 
 end Lattice
 
-theorem _root_.Formalism.FourierDecayAlt.P.invariantMeanExists : Formalism.FourierDecayAlt.crystallineComparison.MeanExists := meanExists
+alias _root_.Formalism.FourierDecayAlt.P.invariantMeanExists := _root_.Formalism.FourierDecayAlt.P.BoxAverageLimits.meanExists
 
 end Formalism.FourierDecayAlt.P.BoxAverageLimits

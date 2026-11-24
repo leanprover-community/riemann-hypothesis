@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSmallSectionsSeparated
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.InstFintypeSumElim
 public import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.StatementsSegreClosureModel
@@ -137,23 +138,7 @@ theorem mon_not_mem {W : Ideal (MRing J)} (hW : W.IsPrime) {s : ∀ k, J k}
 
 theorem mem_mCoordIdeal {y : (Σ k, J k) → Ω} {g : MRing J} {d : K → ℕ} (hg : IsMultiHomog g d)
     (h : aeval y g = 0) : g ∈ mCoordIdeal y := by
-  classical
-  have key : mConeMap y g = C (aeval y g) * ∏ k, X k ^ d k := by
-    conv_lhs => rw [g.as_sum]
-    conv_rhs => rw [g.as_sum]
-
-    rw [map_sum, map_sum, map_sum, Finset.sum_mul]
-    refine Finset.sum_congr rfl fun m hm => ?_
-    rw [mConeMap, aeval_monomial, aeval_monomial, Finsupp.prod_fintype _ _ (by simp),
-      Finsupp.prod_fintype _ _ (by simp)]
-    simp only [mul_pow, Finset.prod_mul_distrib, map_mul, map_prod, map_pow, mul_assoc]
-    congr 1
-    congr 1
-    rw [Fintype.prod_sigma]
-    refine Finset.prod_congr rfl fun k _ => ?_
-    simp only [Finset.prod_pow_eq_pow_sum, hg m hm k]
-  rw [mCoordIdeal, RingHom.mem_ker]
-  rw [key, h, map_zero, zero_mul]
+  apply GroundTheory.Heights₂.Heights.HilbertSamuel.SmallSectionsSeparated.mem_mCoordIdeal_of_homog <;> assumption
 
 omit [∀ k, Fintype (J k)] in
 theorem mseg_ne_zero {y : (Σ k, J k) → Ω} {W : Ideal (MRing J)} (hle : mCoordIdeal y ≤ W) {s : ∀ k, J k}

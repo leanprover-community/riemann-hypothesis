@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsComplexEmbeddingFractionFieldCdvr
 public import Formalism.LocalToGlobal.ProjectiveLattices.OneLtAbsNormReal
 public import Formalism.SharpRestriction.Divisibility.AbelianOpenPart.IsOpenPart
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsAbsoluteValueOfIsDiscreteValuationRing
@@ -75,20 +76,7 @@ theorem mk_le_of_denseRange {A C : Type} [MetricSpace C] (f : A → C) (hf : Den
 
 theorem mk_le_continuum_of_finite_residueField (V : Type) [CommRing V] [IsLocalRing V]
     [IsNoetherianRing V] [Finite (ResidueField V)] : #V ≤ 𝔠 := by
-  have hfin : ∀ n : ℕ, Finite (V ⧸ maximalIdeal V ^ n) := fun n =>
-    haveI : Finite (V ⧸ maximalIdeal V) := inferInstanceAs (Finite (ResidueField V))
-    Ideal.finite_quotient_pow (maximalIdeal V).fg_of_isNoetherianRing n
-  let f : V → ∀ n : ℕ, V ⧸ maximalIdeal V ^ n := fun x n => Ideal.Quotient.mk _ x
-  have hinj : Function.Injective f := by
-    intro x y hxy
-    have : x - y ∈ ⨅ n : ℕ, maximalIdeal V ^ n :=
-      Ideal.mem_iInf.2 fun n => Ideal.Quotient.eq.1 (congrFun hxy n)
-    rw [Ideal.iInf_pow_eq_bot_of_isLocalRing _ (maximalIdeal.isMaximal V).ne_top] at this
-    exact sub_eq_zero.1 this
-  refine (mk_le_of_injective hinj).trans ?_
-  rw [mk_pi]
-  refine (prod_le_prod _ (fun _ => ℵ₀) fun n => mk_le_aleph0).trans ?_
-  simp
+  apply _root_.GlobalTheory.ComplexEmbedding.mk_le_continuum_of_finite_residueField <;> assumption
 
 theorem exists_small_closed_subfield {K C : Type} [Field K] [NontriviallyNormedField C]
     [IsUltrametricDist C] [CompleteSpace C] [IsAlgClosed C] [Algebra K C] (hK : #K ≤ 𝔠)

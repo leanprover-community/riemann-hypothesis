@@ -87,7 +87,6 @@ theorem decay_J {t : ∀ n : ℕ, (Fin n → Bool) → ℝ} (hZ : ZuckT t) {n : 
     exact norm_inner_le_norm _ _
   | succ m ih =>
     intro h μ H _ _ _ σ hμ hσ hgap hlt v w hv hw
-    have hm : (0 : ℝ) ≤ m := Nat.cast_nonneg m
     push_cast at hlt
     obtain ⟨X⟩ := hZ n ε μ H σ hμ hσ h hgap (by linarith)
     have key : ∀ i j : Fin n, ∃ C : ℝ, ∀ g ∈ UJset ε, sN g ^ m * (‖⟪w, σ g v⟫_ℂ‖ * ‖g i j‖) ≤ C := by

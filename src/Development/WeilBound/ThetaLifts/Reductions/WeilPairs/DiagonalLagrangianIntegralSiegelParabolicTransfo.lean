@@ -185,9 +185,7 @@ theorem modu_ne_zero (u : (AF F)ˣ) : (adeleClass F).modu u ≠ 0 := by
   rw [mul_inv_cancel, map_one, h0, zero_mul] at this
   exact one_ne_zero this
 
-theorem mfac_pos {nT : ℕ} (nS : ℕ) (t : GL (Fin nT) (AF F ⊗[F] E)) : 0 < mfac F E nS t := by
-  unfold mfac
-  exact Real.rpow_pos_of_pos (NNReal.coe_pos.2 (pos_iff_ne_zero.2 (modu_ne_zero _))) _
+alias mfac_pos := _root_.PositivityTheory.ThKW.NormModulusHeisenberg.mfac_pos'
 
 theorem mfac_mul {nT : ℕ} (nS : ℕ) (s t : GL (Fin nT) (AF F ⊗[F] E)) :
     mfac F E nS (s * t) = mfac F E nS s * mfac F E nS t := by

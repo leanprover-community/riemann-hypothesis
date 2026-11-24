@@ -123,8 +123,6 @@ theorem bd_supp (lev : Fin n → ℕ) (E : Fin n → Fin n → Module.End ℂ V)
       show lev i.1.1 < lev i.1.2
       rw [t2, t3]
       have : lev i'.1.2 = lev j.1.1 := by rw [t1]
-      have u1' : lev i'.1.1 < lev i'.1.2 := u1
-      have u2' : lev j.1.1 < lev j.1.2 := u2
       omega
     · exact h _ h5 i (mem_insert_of_mem (mem_insert_of_mem (mem_erase.2 ⟨hk, hi⟩)))
 
@@ -412,7 +410,6 @@ theorem acycU (lev : Fin n → ℕ) (E : Fin n → Fin n → Module.End ℂ Z) (
           intro y hy1 hy2 hs hd hc
           have hne : ((m : ℂ) + (j + 1 : ℕ)) ≠ 0 := by exact_mod_cast (by omega : m + (j + 1) ≠ 0)
           have hHy := hHs y hs hd
-          have hbs : SuppIn (inU lev) (bd (allT n) E y) := bd_supp lev E hs
           have hL : ∀ A, (bd (allT n) E (H y) - Da (H y)) A + H (bd (allT n) E y - Da y) A ∈ G k := fun A =>
             Submodule.add_mem _ (hρ k _ (hHG k y hy1) hHy.1 A) (hHG k _ (hρ (k + 1) y hy1 hs) A)
           have hw : ∀ A, (bd (allT n) E (H y) - ((m : ℂ) + (j + 1 : ℕ)) • y) A =
@@ -636,7 +633,6 @@ theorem sum_cU {M : Type} [AddCommGroup M] [Module ℂ M] {lev : Fin n → ℕ} 
     ∑ j, cU lev p q l j • g j =
       (if h : q = l.1.1 then g ⟨(p, l.1.2), hlev.reflect_lt (by rw [hpq, h]; exact hl)⟩ else 0) -
       (if h : l.1.2 = p then g ⟨(l.1.1, q), hlev.reflect_lt (by rw [← hpq, ← h]; exact hl)⟩ else 0) := by
-  have hlt : lev l.1.1 < lev l.1.2 := hl
   rw [← sum_root g (q = l.1.1) p l.1.2 (fun h => hlev.reflect_lt (by rw [hpq, h]; exact hl)),
     ← sum_root g (l.1.2 = p) l.1.1 q (fun h => hlev.reflect_lt (by rw [← hpq, ← h]; exact hl)),
     ← Finset.sum_sub_distrib]

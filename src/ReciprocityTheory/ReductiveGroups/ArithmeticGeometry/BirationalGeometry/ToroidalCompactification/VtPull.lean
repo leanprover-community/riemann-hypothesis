@@ -68,7 +68,6 @@ theorem mem_wchart_pull {φ : K → (Y ⟶ X)} {φ' : K → (Y' ⟶ X)} {h : Y' 
   intro k
   first
     | simpa [e k] using hy k
-    | (have hk := hy k; rw [e k] at hk; exact hk)
 
 theorem exists_gen_pull (φ : K → (Y ⟶ X)) (ε : K → ℤ) (t : LB.Gen (LB.LinComb L φ ε)) (h : Y' ⟶ Y)
     (φ' : K → (Y' ⟶ X)) (e : ∀ k, φ' k = h ≫ φ k) :
@@ -102,11 +101,6 @@ theorem val_of_pull {φ : K → (Y ⟶ X)} {ε : K → ℤ} {φ' : K → (Y' ⟶
        simp only [TopologicalSpace.Opens.mem_mk, Set.mem_iInter, Set.mem_preimage, SetLike.mem_coe]
        intro k
        simpa using hJ (r ≫ h ≫ φ k))
-    | (simp only [LB.wchart, TopologicalSpace.Opens.mem_mk, Set.mem_iInter, Set.mem_preimage]
-       intro k
-       simpa using hJ (r ≫ h ≫ φ k))
-    | (simp [Category.assoc])
-    | (congr 1)
 
 end Germ
 
@@ -119,13 +113,10 @@ variable {T T' : Over S} (σ : T' ⟶ T)
 theorem whisk_snd : (σ ▷ A) ≫ snd T A = snd T' A := by
   first
     | exact whiskerRight_snd σ A
-    | (simp; done)
 
 theorem translPt_whisk (x : T ⟶ A) : (σ ▷ A) ≫ translPt A x = translPt A (σ ≫ x) := by
   first
     | (simp only [translPt, comp_lift_assoc, whiskerRight_fst_assoc, whiskerRight_snd]; done)
-    | (simp [translPt]; done)
-    | (unfold translPt; rw [comp_lift_assoc, whiskerRight_fst_assoc, whiskerRight_snd])
 
 theorem transl_whisk (x : T ⟶ A) : translT A (σ ≫ x) ≫ (σ ▷ A) = (σ ▷ A) ≫ translT A x := by
   apply CartesianMonoidalCategory.hom_ext
@@ -142,11 +133,6 @@ theorem mul_whisk (N : ℕ) : mulT A T' N ≫ (σ ▷ A) = (σ ▷ A) ≫ mulT A
   · simp [mulT]
   · first
       | (simp [mulT, comp_pow]; done)
-      | (simp [mulT]; done)
-      | (simp only [mulT, Category.assoc, whiskerRight_snd, lift_snd]
-         induction N with
-         | zero => simp
-         | succ n ih => simp [pow_succ, comp_mul, ih])
 
 end Nat
 

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsSmulMemSpanIntegers
 public import Mathlib.NumberTheory.NumberField.Basic
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -53,31 +54,6 @@ theorem goal1 :
     Exists.{1} fun (d : NumberField.RingOfIntegers.{0} E) ↦
       And (Ne.{1} d 0)
         (Membership.mem.{0, 0} (Submodule.span.{0, 0} (NumberField.RingOfIntegers.{0} E) A) (HSMul.hSMul.{0, 0, 0} d y)) := by
-  intro E _ _ V _ _ _ _ A y hy
-  induction hy using Submodule.span_induction with
-  | mem x hx => exact ⟨1, one_ne_zero, by rw [one_smul]; exact Submodule.subset_span hx⟩
-  | zero => exact ⟨1, one_ne_zero, by rw [smul_zero]; exact Submodule.zero_mem _⟩
-  | add x z _ _ hx hz =>
-    obtain ⟨d1, hd1, h1⟩ := hx
-    obtain ⟨d2, hd2, h2⟩ := hz
-    refine ⟨d1 * d2, mul_ne_zero hd1 hd2, ?_⟩
-    have e1 : (d1 * d2) • x = d2 • (d1 • x) := by rw [mul_comm, mul_smul]
-    have e2 : (d1 * d2) • z = d1 • (d2 • z) := by rw [mul_smul]
-    rw [smul_add, e1, e2]
-    exact Submodule.add_mem _ (Submodule.smul_mem _ _ h1) (Submodule.smul_mem _ _ h2)
-  | smul c x _ hx =>
-    obtain ⟨d, hd, h⟩ := hx
-    obtain ⟨⟨a, b⟩, hab⟩ := IsLocalization.surj (nonZeroDivisors (NumberField.RingOfIntegers E)) c
-    have hb : (b : NumberField.RingOfIntegers E) ≠ 0 := nonZeroDivisors.coe_ne_zero b
-    refine ⟨(b : NumberField.RingOfIntegers E) * d, mul_ne_zero hb hd, ?_⟩
-    have key : ((b : NumberField.RingOfIntegers E) * d) • (c • x) = a • (d • x) := by
-      rw [← algebraMap_smul E ((b : NumberField.RingOfIntegers E) * d), ← algebraMap_smul E a,
-        ← algebraMap_smul E d, smul_smul, smul_smul, map_mul]
-      congr 1
-      simp only at hab
-      rw [← hab]
-      ring
-    rw [key]
-    exact Submodule.smul_mem _ _ h
+  apply GlobalTheory.SmulMemSpanIntegers.exists_smul_mem_span_integers <;> assumption
 
 end Bl.general_b_fact_right_alt_form

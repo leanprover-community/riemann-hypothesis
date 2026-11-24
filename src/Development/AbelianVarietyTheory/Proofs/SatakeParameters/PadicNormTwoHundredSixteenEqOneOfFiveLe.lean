@@ -72,6 +72,11 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.ExistsWittSeriesInverseFormalGroupIso
+import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.PadicNormTwoHundredSixteenEqOneOfFiveLe
+import Formalism.LocalToGlobal.InertKernelTheory.InertCoprimeLemmas.RepDict
+import Formalism.LocalToGlobal.TorsionIntegrality.EisensteinTranslationProducts.HasCMByStable
+import Formalism.LocalToGlobal.TorsionIntegrality.FrobeniusFibreCurves.LogarithmicSubstitution.NormHalfB2SubTwoTorsionLeOne
 
 @[expose] public section
 
@@ -173,22 +178,7 @@ theorem isWq_scale (W : WeierstrassCurve ℂ_[p]) (wq : PowerSeries ℂ_[p]) (h 
 
 theorem omegaW_scale (W : WeierstrassCurve ℂ_[p]) (wq : PowerSeries ℂ_[p]) :
     omegaW (scC ν hν • W) (PowerSeries.rescale ν⁻¹ wq) = PowerSeries.rescale ν⁻¹ (omegaW W wq) := by
-  unfold omegaW
-  dsimp only
-  rw [scale_weierstrass_a1, scale_weierstrass_a3]
-  have hnum : (-(2 : PowerSeries ℂ_[p]) * PowerSeries.rescale ν⁻¹ wq - PowerSeries.X * dX (PowerSeries.rescale ν⁻¹ wq)) =
-      PowerSeries.rescale ν⁻¹ (-(2 : PowerSeries ℂ_[p]) * wq - PowerSeries.X * dX wq) := by
-    rw [X_dX_rescale, map_sub]
-    congr 1
-    simp only [map_mul, map_neg, map_ofNat]
-  have hden : PowerSeries.rescale ν⁻¹ wq * (algebraMap ℂ_[p] (PowerSeries ℂ_[p]) (ν⁻¹ * W.a₁) * PowerSeries.X +
-      algebraMap ℂ_[p] (PowerSeries ℂ_[p]) (ν⁻¹ ^ 3 * W.a₃) * PowerSeries.X ^ 3 * PowerSeries.rescale ν⁻¹ wq - 2) =
-      PowerSeries.rescale ν⁻¹ (wq * (algebraMap ℂ_[p] (PowerSeries ℂ_[p]) W.a₁ * PowerSeries.X +
-        algebraMap ℂ_[p] (PowerSeries ℂ_[p]) W.a₃ * PowerSeries.X ^ 3 * wq - 2)) := by
-    simp only [map_add (f := _), map_sub, map_mul, map_pow, map_ofNat, PowerSeries.rescale_X,
-      PowerSeries.algebraMap_eq, rescale_C']
-    ring
-  rw [hnum, hden, ← rescale_inv, ← map_mul]
+  apply _root_.Formalism.L2.KerInert.WeierstrassScaling.omegaW_scale <;> assumption
 
 theorem flog_scale (W : WeierstrassCurve ℂ_[p]) (wq : PowerSeries ℂ_[p]) :
     flog (scC ν hν • W) (PowerSeries.rescale ν⁻¹ wq) = PowerSeries.C ν * PowerSeries.rescale ν⁻¹ (flog W wq) := by
@@ -235,44 +225,12 @@ theorem scC_mul_uinv (ν : ℂ_[p]) (hν : ν ≠ 0) (C : WeierstrassCurve.Varia
 theorem ePhi1_scale (lam : Qbar →+* ℂ_[p]) (Λ : AddSubgroup ℂ) (C : WeierstrassCurve.VariableChange ℂ_[p])
     (wq : PowerSeries ℂ_[p]) (ν : ℂ_[p]) (hν : ν ≠ 0) :
     ePhi1 lam Λ (scC ν hν * C) (PowerSeries.rescale ν⁻¹ wq) = PowerSeries.rescale ν⁻¹ (ePhi1 lam Λ C wq) := by
-  have hW : (scC ν hν * C) • wModel lam Λ = scC ν hν • (C • wModel lam Λ) := mul_smul _ _ _
-  set ep : ℂ_[p] := ((C.u⁻¹ : ℂ_[p]ˣ) : ℂ_[p]) with hep
-  have hep0 : ep ≠ 0 := Units.ne_zero _
-  set fl := flog (C • wModel lam Λ) wq with hfl
-  have hA0 : PowerSeries.constantCoeff (algebraMap ℂ_[p] (PowerSeries ℂ_[p]) ep * fl) = 0 := by
-    rw [map_mul, hfl, flog_constantCoeff, mul_zero]
-  have harg : algebraMap ℂ_[p] (PowerSeries ℂ_[p]) (ν⁻¹ * ep) * flog (scC ν hν • (C • wModel lam Λ))
-      (PowerSeries.rescale ν⁻¹ wq) = PowerSeries.rescale ν⁻¹ (algebraMap ℂ_[p] (PowerSeries ℂ_[p]) ep * fl) := by
-    rw [flog_scale ν hν, map_mul (PowerSeries.rescale ν⁻¹) _ _, rescale_alg, PowerSeries.algebraMap_eq, ← hfl,
-      ← mul_assoc, ← map_mul, show ν⁻¹ * ep * ν = ep by field_simp]
-  ext n
-  unfold ePhi1
-  dsimp only
-  rw [hW, scC_mul_uinv, ← hep, harg, subst_rescale_arg _ _ _ hA0, PowerSeries.coeff_mk, PowerSeries.coeff_rescale,
-    PowerSeries.coeff_rescale, PowerSeries.coeff_mk, mul_inv, inv_inv]
-  have h1 : ν * ν⁻¹ = 1 := mul_inv_cancel₀ hν
-  rw [pow_succ]
-  linear_combination (ν⁻¹ ^ n * ep⁻¹ * PowerSeries.coeff (n + 1)
-    (PowerSeries.subst (algebraMap ℂ_[p] (PowerSeries ℂ_[p]) ep * fl) (sgSer lam Λ))) * h1
+  apply _root_.Formalism.L2.KerInert.WeierstrassScaling.ePhi1_scale <;> assumption
 
 theorem isModel_scale (lam : Qbar →+* ℂ_[p]) (Λ : AddSubgroup ℂ) (C : WeierstrassCurve.VariableChange ℂ_[p])
     (hU : Formalism.MainNotions.GL3Theta.IsModelU lam Λ C) (ν : ℂ_[p]) (hν : ν ≠ 0) (hν1 : ‖ν‖ = 1)
     (hν12 : ν ^ 12 = (C • wModel lam Λ).Δ) : IsModel lam Λ (scC ν hν * C) := by
-  obtain ⟨h1, h2, h3, h4, h6, -⟩ := hU
-  have hW : (scC ν hν * C) • wModel lam Λ = scC ν hν • (C • wModel lam Λ) := mul_smul _ _ _
-  have hn : ‖ν⁻¹‖ = 1 := by rw [norm_inv, hν1, inv_one]
-  show IsIntP ((scC ν hν * C) • wModel lam Λ).a₁ ∧ IsIntP ((scC ν hν * C) • wModel lam Λ).a₂ ∧
-    IsIntP ((scC ν hν * C) • wModel lam Λ).a₃ ∧ IsIntP ((scC ν hν * C) • wModel lam Λ).a₄ ∧
-    IsIntP ((scC ν hν * C) • wModel lam Λ).a₆ ∧ ((scC ν hν * C) • wModel lam Λ).Δ = 1
-  rw [hW]
-  unfold IsIntP at h1 h2 h3 h4 h6 ⊢
-  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
-  · rw [scale_weierstrass_a1, norm_mul, hn, one_mul]; exact h1
-  · rw [scale_weierstrass_a2, norm_mul, norm_pow, hn, one_pow, one_mul]; exact h2
-  · rw [scale_weierstrass_a3, norm_mul, norm_pow, hn, one_pow, one_mul]; exact h3
-  · rw [scale_weierstrass_a4, norm_mul, norm_pow, hn, one_pow, one_mul]; exact h4
-  · rw [scale_weierstrass_a6, norm_mul, norm_pow, hn, one_pow, one_mul]; exact h6
-  · rw [WeierstrassCurve.variableChange_Δ, scC_uinv, ← hν12, inv_pow, inv_mul_cancel₀ (pow_ne_zero _ hν)]
+  apply _root_.Formalism.L2.KerInert.WeierstrassScaling.isModel_scale <;> assumption
 
 theorem dict_core (hp2 : p ≠ 2) (D : D7) {N N' r : ℕ} (lam : Qbar →+* ℂ_[p]) (Λ : AddSubgroup ℂ)
     (C : WeierstrassCurve.VariableChange ℂ_[p]) (wq : PowerSeries ℂ_[p])
@@ -395,29 +353,14 @@ theorem sgStar_lattice (L : PeriodPair) :
 theorem taylor_sgStar_map (L : PeriodPair) (a2 a3 s0 : Formalism.MainNotions.TaylorLogMetric.Qbar) (h2 : L.g₂ = a2) (h3 : L.g₃ = a3)
     (hs : Formalism.L2.Th1.F.s2 L = s0) :
     Formalism.L2.Th1.F.taylor0 (Formalism.L2.Th1.F.sgStar L) =
-      PowerSeries.map (algebraMap Formalism.MainNotions.TaylorLogMetric.Qbar ℂ) (Formalism.L2.Th1.B.sgStar s0 (Formalism.L2.Th1.F.pOf a2 a3)) := by
-  rw [Formalism.L2.Th1.F.taylorSgStar L, Formalism.L2.Th1.F.pOfLattice L, h2, h3, hs]
-  have hm := Formalism.L2.Th1.F.seriesMap Formalism.MainNotions.TaylorLogMetric.Qbar ℂ (algebraMap Formalism.MainNotions.TaylorLogMetric.Qbar ℂ) a2 a3 s0
-    (Formalism.L2.Th1.F.pOf a2 a3)
-  rw [hm.2.2.2.2.2, hm.2.2.1]
-  rfl
+      PowerSeries.map (algebraMap Formalism.MainNotions.TaylorLogMetric.Qbar ℂ) (Formalism.L2.Th1.B.sgStar s0 (Formalism.L2.Th1.F.pOf a2 a3)) :=
+  Formalism.L2.KerInert.Sigma.taylor_sgStar_map L a2 a3 s0 h2 h3 hs
 
 theorem sgSer_eq {p : ℕ} [Fact p.Prime] (lam : Formalism.MainNotions.TaylorLogMetric.Qbar →+* ℂ_[p]) (L : PeriodPair)
     (a2 a3 s0 : Formalism.MainNotions.TaylorLogMetric.Qbar) (h2 : L.g₂ = a2) (h3 : L.g₃ = a3) (hs : Formalism.L2.Th1.F.s2 L = s0) :
     Formalism.MainNotions.TaylorLogMetric.sgSer lam L.lattice.toAddSubgroup =
-      Formalism.L2.Th1.B.sgStar (lam s0) (Formalism.L2.Th1.F.pOf (lam a2) (lam a3)) := by
-  have hT := taylor_sgStar_map L a2 a3 s0 h2 h3 hs
-  have e : Formalism.MainNotions.TaylorLogMetric.sgSer lam L.lattice.toAddSubgroup =
-      PowerSeries.map lam (Formalism.L2.Th1.B.sgStar s0 (Formalism.L2.Th1.F.pOf a2 a3)) := by
-    ext n
-    have hn := congrArg (PowerSeries.coeff n) hT
-    unfold Formalism.L2.Th1.F.taylor0 at hn
-    rw [PowerSeries.coeff_mk, PowerSeries.coeff_map] at hn
-    unfold Formalism.MainNotions.TaylorLogMetric.sgSer
-    rw [PowerSeries.coeff_mk, PowerSeries.coeff_map, sgStar_lattice L, hn]
-    exact GlobalTheory.InertGenusOne.lamC_coe lam _
-  have hm := Formalism.L2.Th1.F.seriesMap Formalism.MainNotions.TaylorLogMetric.Qbar ℂ_[p] lam a2 a3 s0 (Formalism.L2.Th1.F.pOf a2 a3)
-  rw [e, hm.2.2.2.2.2, hm.2.2.1]
+      Formalism.L2.Th1.B.sgStar (lam s0) (Formalism.L2.Th1.F.pOf (lam a2) (lam a3)) :=
+  Formalism.L2.KerInert.Sigma.sgSer_eq lam L a2 a3 s0 h2 h3 hs
 
 theorem wModel_g {p : ℕ} [Fact p.Prime] (lam : Formalism.MainNotions.TaylorLogMetric.Qbar →+* ℂ_[p]) (Λ : AddSubgroup ℂ)
     (a2 a3 : Formalism.MainNotions.TaylorLogMetric.Qbar) (h2 : Formalism.MainNotions.TaylorLogMetric.g2 Λ = a2) (h3 : Formalism.MainNotions.TaylorLogMetric.g3 Λ = a3) :
@@ -440,7 +383,7 @@ theorem g_change {p : ℕ} [Fact p.Prime] (C : WeierstrassCurve.VariableChange �
 
 theorem wpReg_eq {K : Type} [Field K] [CharZero K] (W : WeierstrassCurve K) :
     Formalism.L2.Th1.A.wpReg W = Formalism.L2.Th1.F.pOf (Formalism.L2.Th1.A.g₂ W) (Formalism.L2.Th1.A.g₃ W) :=
-  Formalism.L2.Th1.F.isWpUnique K _ _ _ _ (Formalism.L2.Th1.A.bridgeWp K W) (Formalism.L2.Th1.F.pOfIsWp K _ _)
+  _root_.Formalism.L2.Th1.F.weierstrass_series_unique K _ _ _ _ (Formalism.L2.Th1.A.bridgeWp K W) (_root_.Formalism.L2.Th1.F.weierstrass_p_of_series K _ _)
 
 section Int
 
@@ -499,49 +442,7 @@ theorem inv_good (W : WeierstrassCurve ℂ_[p]) (h5 : 5 ≤ p) (i1 : ‖W.a₁�
     Formalism.L2.Th1.A.g₂ W ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p ∧ Formalism.L2.Th1.A.g₃ W ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p ∧
       ‖Formalism.L2.Th1.A.g₂ W‖ ≤ 1 ∧ ‖Formalism.L2.Th1.A.g₃ W‖ ≤ 1 ∧
       ‖Formalism.L2.Th1.A.g₂ W ^ 3 - 27 * Formalism.L2.Th1.A.g₃ W ^ 2‖ = 1 := by
-  have k1 := wp_sub_kur _ w1
-  have k2 := wp_sub_kur _ w2
-  have k3 := wp_sub_kur _ w3
-  have k4 := wp_sub_kur _ w4
-  have k6 := wp_sub_kur _ w6
-  have hb2 : W.b₂ ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p ∧ ‖W.b₂‖ ≤ 1 := by
-    unfold WeierstrassCurve.b₂
-    exact ⟨add_mem (pow_mem k1 2) (mul_mem (ofNat_mem _ 4) k2),
-      nadd (by rw [norm_pow]; exact pow_le_one₀ (norm_nonneg _) i1) (nmul (nofNat 4) i2)⟩
-  have hb4 : W.b₄ ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p ∧ ‖W.b₄‖ ≤ 1 := by
-    unfold WeierstrassCurve.b₄
-    exact ⟨add_mem (mul_mem (ofNat_mem _ 2) k4) (mul_mem k1 k3), nadd (nmul (nofNat 2) i4) (nmul i1 i3)⟩
-  have hb6 : W.b₆ ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p ∧ ‖W.b₆‖ ≤ 1 := by
-    unfold WeierstrassCurve.b₆
-    exact ⟨add_mem (pow_mem k3 2) (mul_mem (ofNat_mem _ 4) k6),
-      nadd (by rw [norm_pow]; exact pow_le_one₀ (norm_nonneg _) i3) (nmul (nofNat 4) i6)⟩
-  obtain ⟨m2, n2⟩ := hb2
-  obtain ⟨m4, n4⟩ := hb4
-  obtain ⟨m6, n6⟩ := hb6
-  have hc4 : W.c₄ ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p ∧ ‖W.c₄‖ ≤ 1 := by
-    unfold WeierstrassCurve.c₄
-    exact ⟨sub_mem (pow_mem m2 2) (mul_mem (ofNat_mem _ 24) m4),
-      nsub (by rw [norm_pow]; exact pow_le_one₀ (norm_nonneg _) n2) (nmul (nofNat 24) n4)⟩
-  have hc6 : W.c₆ ∈ Formalism.L2.Th1.CM.MaximalUnramifiedExtension p ∧ ‖W.c₆‖ ≤ 1 := by
-    unfold WeierstrassCurve.c₆
-    exact ⟨sub_mem (add_mem (neg_mem (pow_mem m2 3)) (mul_mem (mul_mem (ofNat_mem _ 36) m2) m4))
-        (mul_mem (ofNat_mem _ 216) m6),
-      nsub (nadd (by rw [norm_neg, norm_pow]; exact pow_le_one₀ (norm_nonneg _) n2)
-        (nmul (nmul (nofNat 36) n2) n4)) (nmul (nofNat 216) n6)⟩
-  have e12 := padic_norm_twelve_eq_one_of_five_le (p := p) h5
-  have e216 := padicNorm_twoHundredSixteen_eq_one_of_five_le (p := p) h5
-  have h12 : (12 : ℂ_[p]) ≠ 0 := by intro h; rw [h, norm_zero] at e12; exact zero_ne_one e12
-  have h216 : (216 : ℂ_[p]) ≠ 0 := by intro h; rw [h, norm_zero] at e216; exact zero_ne_one e216
-  refine ⟨div_mem hc4.1 (ofNat_mem _ 12), div_mem hc6.1 (ofNat_mem _ 216), ?_, ?_, ?_⟩
-  · unfold Formalism.L2.Th1.A.g₂; rw [norm_div, e12, div_one]; exact hc4.2
-  · unfold Formalism.L2.Th1.A.g₃; rw [norm_div, e216, div_one]; exact hc6.2
-  · have hrel := W.c_relation
-    have e : Formalism.L2.Th1.A.g₂ W ^ 3 - 27 * Formalism.L2.Th1.A.g₃ W ^ 2 = W.Δ := by
-      unfold Formalism.L2.Th1.A.g₂ Formalism.L2.Th1.A.g₃
-      have h1728 : (1728 : ℂ_[p]) = 12 ^ 3 := by norm_num
-      field_simp
-      linear_combination (-(216 : ℂ_[p]) ^ 2 * 12 ^ 3 / 1728 + 0) * hrel
-    rw [e, hΔ]
+  apply _root_.Formalism.L2.KerInert.Sigma.inv_good <;> assumption
 
 end Int
 
@@ -670,25 +571,7 @@ theorem map_cob {K K' : Type} [Field K] [Field K'] (φ : K →+* K') (F : MvPowe
 
 theorem cc_beLT {l : ℕ} [Fact l.Prime] {g : G1 l} (hOk : g.Ok) (hLT : LTIso g) (hb : BeRat g (eLT hLT))
     (hph : PowerSeries.constantCoeff g.ph = 0) : MvPowerSeries.constantCoeff (beLT hLT) = 0 := by
-  have hex := hOk.2.2.1
-  apply (k0ToC l).injective
-  rw [map_zero, ← MvPowerSeries.constantCoeff_map]
-  show MvPowerSeries.constantCoeff (MvPowerSeries.map (k0ToC l) (Formalism.L2.G.Pend.beOf g (eLT hLT))) = 0
-  rw [Formalism.L2.G.Pend.map_beOf hb]
-  have h0 : ∀ i : Fin 2, MvPowerSeries.constantCoeff
-      (MvPowerSeries.C (eLT hLT)⁻¹ * MvPowerSeries.X i : MvPowerSeries (Fin 2) ℂ_[l]) = 0 := by
-    intro i
-    rw [map_mul, MvPowerSeries.constantCoeff_X, mul_zero]
-  have hp0 := Formalism.MainNotions.J.cc_pt g hex (h0 0)
-  have hp1 := Formalism.MainNotions.J.cc_pt g hex (h0 1)
-  have hadd : MvPowerSeries.constantCoeff (g.add (g.pt (MvPowerSeries.C (eLT hLT)⁻¹ * MvPowerSeries.X 0))
-      (g.pt (MvPowerSeries.C (eLT hLT)⁻¹ * MvPowerSeries.X 1)) : MvPowerSeries (Fin 2) ℂ_[l]) = 0 := by
-    apply Formalism.MainNotions.J.cc_pt g hex
-    rw [map_add (f := _), Formalism.MainNotions.J.cc_lg g hp0, Formalism.MainNotions.J.cc_lg g hp1, add_zero]
-  unfold Formalism.L2.G.Pend.beC G1.be G1.phAt
-  rw [map_sub, map_sub, PowerSeries.constantCoeff_subst_eq_zero hadd _ hph,
-    PowerSeries.constantCoeff_subst_eq_zero hp0 _ hph, PowerSeries.constantCoeff_subst_eq_zero hp1 _ hph]
-  simp
+  apply _root_.Formalism.L2.KerInert.BeCob.cc_beLT <;> assumption
 
 theorem ips {K : Type} [NormedField K] [IsUltrametricDist K] {f : PowerSeries K}
     (hf : Formalism.DworkPowerSeriesWeights.Integral (f : MvPowerSeries Unit K)) (k : ℕ) : ‖PowerSeries.coeff k f‖ ≤ 1 := hf _
@@ -745,15 +628,15 @@ theorem curveDict_of_inputs (hGood : Formalism.L2.Th1.CM.CM2) (hTor : Formalism.
   have hwp : Formalism.L2.Th1.A.wpReg g.W =
       PowerSeries.C (εu ^ 2) * PowerSeries.rescale εu (Formalism.L2.Th1.F.pOf (g.lam a2) (g.lam a3)) := by
     rw [wpReg_eq, gW2, gW3]
-    exact (Formalism.L2.Th1.F.seriesScale ℂ_[l] (g.lam a2) (g.lam a3) εu).2.2.2.1
+    exact (_root_.Formalism.L2.Th1.F.series_scale ℂ_[l] (g.lam a2) (g.lam a3) εu).2.2.2.1
   set s2 : ℂ_[l] := εu ^ 2 * g.lam s0 with hs2def
   have hR : PowerSeries.rescale εu (Formalism.MainNotions.TaylorLogMetric.sgSer g.lam g.abelian₂) = PowerSeries.C εu * Formalism.L2.Th1.B.sgW g.W s2 := by
     unfold Formalism.L2.Th1.B.sgW
     rw [hser, hwp]
-    exact ((Formalism.L2.Th1.F.sigmaScale ℂ_[l] (Formalism.L2.Th1.F.pOf (g.lam a2) (g.lam a3)) (g.lam s0) εu).2).symm
+    exact ((_root_.Formalism.L2.Th1.F.sigma_scale' ℂ_[l] (Formalism.L2.Th1.F.pOf (g.lam a2) (g.lam a3)) (g.lam s0) εu).2).symm
   have hph : g.ph = Formalism.L2.Th1.B.phW g.W s2 := Formalism.L2.KerInert.Dict.formal_phase_agree l g s2 hOk hR
   have hcc0 : PowerSeries.constantCoeff g.ph = 0 := by
-    rw [hph]; exact (Formalism.L2.Th1.B.curveSigma ℂ_[l] g.W s2).1
+    rw [hph]; exact (_root_.Formalism.L2.Th1.B.Crv.curve_sigma_function_holds ℂ_[l] g.W s2).1
 
   obtain ⟨ι, hι⟩ := GlobalTheory.PadicComplexIso.exists_ringEquiv_extending l g.lam
   have hdp : D.host.d.Prime := D.host.hyp.2.1
@@ -848,7 +731,7 @@ theorem curveDict_of_inputs (hGood : Formalism.L2.Th1.CM.CM2) (hTor : Formalism.
     rw [← Formalism.L2.G.Pend.witt_fraction_to_Cp_algebraMap l]
     exact Formalism.L2.G.Pend.beRat_of g hOk.2.2.1 hB (Formalism.L2.G.Pend.exRat_of g hOk ⟨w1, w2, w3, w4, w6⟩) _
   obtain ⟨σ0, hσ0⟩ := frobExists l h5
-  obtain ⟨F0, hF0⟩ := (Formalism.InvariantFactorPaths.G7.Top.lawExists (MaximalUnramifiedExtension l) l hσ0.1 hσ0.2.2.1).1
+  obtain ⟨F0, hF0⟩ := (_root_.Formalism.InvariantFactorPaths.G7.formal_law_exists (MaximalUnramifiedExtension l) l hσ0.1 hσ0.2.2.1).1
   have tie : ∀ F : MvPowerSeries (Fin 2) (MaximalUnramifiedExtension l), IsLawOfLog l F →
       Formalism.InvariantFactorPaths.G7.Simeq (MvPowerSeries.map (k0ToC l) (inParam l (beLT hLT)))
         (MvPowerSeries.map (MaximalUnramifiedExtension l).subtype (cob F (phFF l G2 G3 S2 E))) := by

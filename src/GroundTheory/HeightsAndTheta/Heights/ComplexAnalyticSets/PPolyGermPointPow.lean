@@ -91,10 +91,6 @@ theorem coeff_eq_zero_of_isBigO {P : Polynomial ℂ} {k : ℕ}
       simpa using ((continuous_norm.tendsto (0 : ℂ)).const_mul c).mono_left nhdsWithin_le_nhds
     exact norm_le_zero_iff.mp (le_of_tendsto_of_tendsto h2 h3 h1)
 
-theorem eval_smul_of_isHomogeneous {σ : Type} [Fintype σ] {h : MvPolynomial σ ℂ} {d : ℕ}
-    (hh : h.IsHomogeneous d) (t : ℂ) (v : σ → ℂ) : eval (t • v) h = t ^ d * eval v h :=
-  _root_.UpperTheory.Reformulated.B.HomogeneousEvalSmul.eval_smul_of_isHomogeneous hh t v
-
 variable {σ : Type} [Fintype σ] (w : σ → ℂ)
 
 def bigOIdeal (k : ℕ) : Ideal (holGerms w) where
@@ -171,7 +167,7 @@ theorem mem_pow_ker_of_isBigO {k : ℕ} {q : MvPolynomial σ ℂ}
 
       simp only [P, Polynomial.eval_finsetSum, Polynomial.eval_monomial, map_sum]
       refine Finset.sum_congr rfl fun e _ => ?_
-      rw [eval_smul_of_isHomogeneous (homogeneousComponent_isHomogeneous e q'), mul_comm]
+      rw [_root_.UpperTheory.Reformulated.B.HomogeneousEvalSmul.eval_smul_of_isHomogeneous (homogeneousComponent_isHomogeneous e q'), mul_comm]
     have hT : Tendsto (fun t : ℂ => t • v + w) (𝓝 0) (𝓝 w) := by
       simpa using ((continuous_id.smul continuous_const).add continuous_const).tendsto (0 : ℂ)
         (f := fun t : ℂ => t • v + w)

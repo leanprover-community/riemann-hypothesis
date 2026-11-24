@@ -177,7 +177,6 @@ theorem sep_grid (S : C.HidaSetting E Wp Wq) (hG : C.GridsOK S) (v : Fin S.f) {b
     rw [le_div_iff₀ hNpos]
     nlinarith
   set Δ := (S.cutHi v - S.cutLo v) / (6 * S.Ntop) with hΔdef
-  have hΔ0 : 0 ≤ Δ := by nlinarith
   rcases lt_or_gt_of_ne hne with hlt | hlt
   · have hbb : (b : ℝ) + 1 ≤ b' := by exact_mod_cast hlt
     have key : 2 * (b : ℝ) * Δ + 2 * Δ ≤ 2 * (b' : ℝ) * Δ := by nlinarith
@@ -396,9 +395,6 @@ theorem newLetters : NewLetters := by
     have H1 : (List.ofFn fun b => grid b (j b)).Pairwise fun y y' => 4 < |y - y'| := by
       rw [List.pairwise_ofFn]
       intro i i' hii'
-      have hlt : (i : ℕ) < i' := hii'
-      have hi := i.isLt
-      have hi' := i'.isLt
       have := sep_grid S hG v (hmem i (j i)) (hmem i' (j i')) (by omega) (e := 0) (e' := 0) (by simp) (by simp)
       simp only [add_zero] at this
       linarith [h4.2]
@@ -458,5 +454,3 @@ theorem newLetters1 : NewLetters1 := by
 
 end Formalism.FourierDecayAlt.P.PBD
 
-theorem Formalism.FourierDecayAlt.P.new_letters_admissible : Formalism.FourierDecayAlt.P.PBD.NewLetters := Formalism.FourierDecayAlt.P.PBD.newLetters
-theorem Formalism.FourierDecayAlt.P.new_letters_admissible_level_one : Formalism.FourierDecayAlt.P.PBD.NewLetters1 := Formalism.FourierDecayAlt.P.PBD.newLetters1

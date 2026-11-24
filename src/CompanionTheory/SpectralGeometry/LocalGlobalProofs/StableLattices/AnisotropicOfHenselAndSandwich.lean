@@ -188,7 +188,6 @@ theorem aniso : StHensel → StSandwich → StAniso := by
     rw [hV₀] at hx ⊢
     rw [norm_q_smul hs hh]
     have := norm_nonneg a
-    have h2 := norm_nonneg (h x x)
     calc ‖a‖ * ‖a‖ * ‖h x x‖ ≤ 1 * 1 * 1 := by gcongr
       _ = 1 := by norm_num
   have hδle : ∀ x ∈ V₀, ∀ y ∈ V₀, ‖h x y‖ ≤ ‖δ‖ := by

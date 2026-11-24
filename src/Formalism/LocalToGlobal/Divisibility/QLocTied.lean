@@ -221,8 +221,6 @@ theorem nuP_succ (C : CharFrame D) (P : HeightOneSpectrum (𝓞 D.host.E)) (j : 
   rw [dite_eq_left ⟨by omega, by omega⟩]
   first
     | rfl
-    | (congr 3; ext; simp)
-    | (congr 2; ext; simp)
 
 structure QLocTied (Tp : TupTied D C nch) (Z : DivX D)
     (PQ : ∀ μ, Z.QPl μ → HeightOneSpectrum (𝓞 D.host.E)) : Prop where

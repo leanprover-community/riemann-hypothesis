@@ -80,7 +80,7 @@ theorem exists_nfFull_of_relevant_of_G_eq_zero (Y : Full X) {u : D.what₂.Word}
   have hpos : 0 < (σ ((Tu D u : ℕ) : D.host.E)).re := by
     rw [map_natCast, Complex.natCast_re]
     exact_mod_cast tie_Tu_pos D u
-  refine Formalism.HermitianLatticeCounting.Final.S6.normalForm D.host.E (hS D).V σ (nfH (hS D)) D.R.rS _ _ (fun x => p_starConj D σ x)
+  refine _root_.Formalism.HermitianLatticeCounting.P.existsNormalForm D.host.E (hS D).V σ (nfH (hS D)) D.R.rS _ _ (fun x => p_starConj D σ x)
     hpos hpos (nf_pos _ _ (p_posX D _ (tie_Tu_pos D u) _) σ) (nf_pos _ _ (p_posX D _ (tie_Tu_pos D u) _) σ)
     (nf_rel D.host.F (tie_trace D.sp.cm) _ _ _ _ hrel) ?_
   rw [nf_G (lf D (X.Fu u)).fl (frq X t.rep).fl (fixedFlag_level_ne_zero D u) (nf_T_ne D u)]
@@ -129,7 +129,7 @@ theorem delta_pos_le_height_sq (hPF : PFHost D) (large₂ : SizeData₂ D) {CH C
     exact Real.one_le_rpow (by linarith) (by positivity)
   unfold k2S
   rw [← Finset.prod_pow]
-  refine Formalism.HermitianLatticeCounting.Final.S6.normSgBound D.what₂.Tau D.R.rS D.R.f _ _ (H1C large₂ CH) _ (szf_card_Tau D)
+  refine _root_.Formalism.HermitianLatticeCounting.P.norm_singular_value_bound D.what₂.Tau D.R.rS D.R.f _ _ (H1C large₂ CH) _ (szf_card_Tau D)
     (by linarith) (two_pow_le_height_bound _ CH C _ _ _ hb (two_rank_add_two_eq_m D) hCH hC) (fun τ => (hpos τ).le) (fun τ => ?_) (fun τ => ?_)
   · exact (Finset.le_fold_max _).2 (Or.inl le_rfl)
   · rcases Nat.eq_zero_or_pos (jT t) with h0 | h0
@@ -164,7 +164,7 @@ theorem localNorm_le_height_sq (hPF : PFHost D) (large₂ : SizeData₂ D) {CH C
   rw [hPF]
   unfold k2S
   rw [← Finset.prod_pow]
-  refine Formalism.HermitianLatticeCounting.Final.S6.normSgBound D.what₂.Tau D.R.rS D.R.f _ _ (H1C large₂ CH) _ (szf_card_Tau D)
+  refine _root_.Formalism.HermitianLatticeCounting.P.norm_singular_value_bound D.what₂.Tau D.R.rS D.R.f _ _ (H1C large₂ CH) _ (szf_card_Tau D)
     (by linarith) (two_pow_le_height_bound _ CH C _ _ _ hb (two_rank_add_two_eq_m D) hCH hC) (fun τ => ?_) (fun τ => ?_) (fun τ => ?_)
   · unfold absReal
     positivity

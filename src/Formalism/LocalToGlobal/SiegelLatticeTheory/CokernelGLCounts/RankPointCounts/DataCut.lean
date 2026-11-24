@@ -357,7 +357,7 @@ theorem countable_Term (u u' : D.what₂.Word) (F0 : FlagG (VS D) D.R.rS ((Lat.T
 theorem rowLabelExists_of (hG : Corank.ScalarEquivG) (hR : ∀ u u' : D.what₂.Word, Corank.ScalarRepFree D u u') :
     RowLabelExists D := by
   intro u u' F0 what₂ hrows
-  have e := Corank.scalarEquivT_of (Formalism.L2.SG.Pf.term_equivalence_iff D u u') (Corank.scalarEquiv_of_G hG u u') (hR u u')
+  have e := Corank.scalarEquivT_of (_root_.term_eq_iff_relation D u u') (Corank.scalarEquiv_of_G hG u u') (hR u u')
     F0 what₂ hrows
   letI s : Setoid {t : TermDef.Term D u u' F0 what₂ // t.G ≠ 0} := ⟨_, e⟩
   have := countable_Term u u' F0 what₂
@@ -631,7 +631,7 @@ theorem density_gram_matrix_sub_posSemidef {ι Θ : Type*} [Fintype ι] [Fintype
       · simp [hvy]
       have hxy := hsupp θ x y hvx hvy
       exact absurd (hxy ▸ hy) hx
-    · simp only [if_neg hx, if_neg hy, star_zero, mul_zero, zero_mul, zero_add]
+    · simp only [if_neg hx, if_neg hy, star_zero, mul_zero, zero_add]
       push_cast
       ring
 
@@ -657,10 +657,8 @@ theorem rowVec_eq_chat (vR : TermDef.Term D u u' F0 what₂ → ℝ) (κ : TermD
 
 theorem massTerm_nonneg (t : TermDef.Term D u u' F0 what₂) : 0 ≤ PairVal.massTerm t := by
   unfold PairVal.massTerm PairVal.massRow
-  apply div_nonneg
-  · unfold Formalism.MainNotions.S.wRow; positivity
-  · unfold Formalism.MainNotions.S.Cnt.massRows
-    exact Finset.sum_nonneg fun _ _ => by unfold Formalism.MainNotions.S.wRow; positivity
+  exact div_nonneg (by unfold Formalism.MainNotions.S.wRow; positivity)
+    (Finset.sum_nonneg fun _ _ => by unfold Formalism.MainNotions.S.wRow; positivity)
 
 theorem lam_eq_of_termScal {t t' : TermDef.Term D u u' F0 what₂} (h : Corank.TermScal D t t') : t.lam = t'.lam := by
   obtain ⟨p, rfl, rfl, -⟩ := h
@@ -723,8 +721,8 @@ theorem rows_pair {δ : ∀ p : PlF D, (D.s.atP p).Fp} {M : ∀ p : PlF D, Loc.M
   set Sy : ℕ → ℂ := fun ρ => ∑ t ∈ Γy.filter (fun t => κ t = ρ), f t wy
   have hcx : ∀ ρ, chat vR κ nc ρ wx = Sx ρ / ax := fun ρ => chat_eq_sum vR κ nc ρ wx Γx hΓx
   have hcy : ∀ ρ, chat vR κ nc ρ wy = Sy ρ / ay := fun ρ => chat_eq_sum vR κ nc ρ wy Γy hΓy
-  have hay : star ay = ay := by simp [ay, Complex.star_def]
-  have hax : star ax = ax := by simp [ax, Complex.star_def]
+  have hay : star ay = ay := by simp [ay]
+  have hax : star ax = ax := by simp [ax]
   have e1 : ∀ ρ, chat vR κ nc ρ wx * star (chat vR κ nc ρ wy) = Sx ρ * star (Sy ρ) / (ax * ay) := by
     intro ρ
     rw [hcx, hcy, star_div₀, hay]
@@ -876,7 +874,6 @@ theorem dom_points (hN : SupportG.NormProd D) {δ : ∀ p : PlF D, (D.s.atP p).F
         intro t
         rw [Finset.mem_filter, hΓ, ← hdat j]
         simp only [dat, Prod.mk.injEq]
-        try tauto
       have hsum : ∑ t ∈ (Γ x).filter (fun t => dat x t = j.1), (PairVal.massTerm t : ℂ) * PairVal.cAt vR t (w x) =
           (n x : ℂ) * (dens j : ℂ) * (a j : ℂ) * v j x := by
         have h1 : ∑ t ∈ (Γ x).filter (fun t => dat x t = j.1), (PairVal.massTerm t : ℂ) * PairVal.cAt vR t (w x) =

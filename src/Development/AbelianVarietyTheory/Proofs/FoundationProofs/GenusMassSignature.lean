@@ -1,5 +1,6 @@
 module
 
+import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.ArchimedeanDenseStabilizers.DenseRangeOfNotIsReal
 public import Formalism.LocalRingCardinality.DataSpaces
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -55,22 +56,7 @@ open scoped ComplexOrder MatrixOrder
 
 theorem denseRange_of_not_isReal {K : Type} [Field K] (σ : K →+* ℂ)
     (h : ¬ ComplexEmbedding.IsReal σ) : DenseRange σ := by
-  have hc : IsClosed (σ.fieldRange.topologicalClosure : Set ℂ) :=
-    Subfield.isClosed_topologicalClosure _
-  rcases Complex.subfield_eq_of_closed hc with h1 | h1
-  · exfalso
-    apply h
-    rw [ComplexEmbedding.isReal_iff]
-    ext x
-    have hx : σ x ∈ σ.fieldRange.topologicalClosure := Subfield.le_topologicalClosure _ ⟨x, rfl⟩
-    rw [h1] at hx
-    obtain ⟨r, hr⟩ := hx
-    rw [ComplexEmbedding.conjugate_coe_eq, ← hr]
-    exact Complex.conj_ofReal r
-  · have : closure (Set.range σ) = Set.univ := by
-      have := congrArg (fun S : Subfield ℂ => (S : Set ℂ)) h1
-      exact this
-    exact dense_iff_closure_eq.2 this
+  apply CompanionTheory.Rg.FlCls.denseRange_of_not_isReal <;> assumption
 
 theorem hasSignature_of_posDef {n : ℕ} {J : Matrix (Fin n) (Fin n) ℂ} (h : J.PosDef) :
     Formalism.UG.HasSignature J n 0 := by

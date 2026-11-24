@@ -117,7 +117,7 @@ theorem append_line {N d : ℕ} (r : Fin N → ℝ) (t : Fin d → ℝ) (i : Fin
       have := congrArg Fin.val h
       simp only [Fin.coe_natAdd, Fin.coe_castAdd] at this
       omega
-    simp [Pi.single_apply, hne]
+    simp [hne]
 
 theorem contDiff_append_left {N d : ℕ} (t : Fin d → ℝ) : ContDiff ℝ ∞ (fun r : Fin N → ℝ => Fin.append r t) := by
   refine contDiff_pi.2 fun j => ?_

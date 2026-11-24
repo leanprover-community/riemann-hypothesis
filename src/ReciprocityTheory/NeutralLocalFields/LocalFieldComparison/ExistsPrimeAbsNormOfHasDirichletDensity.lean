@@ -284,7 +284,6 @@ theorem exists_prime_absNorm_of_hasDirichletDensity {S : Set (HeightOneSpectrum 
   have h6 : δ / 2 * (2 * (B + 1) / δ) = B + 1 := by
     have hδ' : δ ≠ 0 := hδ.ne'
     field_simp
-    try ring
   rw [h6] at h5
   linarith
 

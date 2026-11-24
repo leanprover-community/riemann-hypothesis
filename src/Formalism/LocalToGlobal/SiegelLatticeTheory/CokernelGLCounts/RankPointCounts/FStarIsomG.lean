@@ -124,7 +124,7 @@ theorem hT_span_rem {ι : Type*} [Fintype ι] [DecidableEq ι] (u : ι → S.V) 
       exact hT_u_rem u hdet v k
     | zero => simp
     | add x y _ _ hx hy => simp [hx, hy]
-    | smul a x _ hx => simp [LinearMap.map_smulₛₗ₂, hx]
+    | smul a x _ hx => simp [hx]
   refine ⟨first, ?_⟩
   rw [← S.herm.eq z, first]
   simp

@@ -238,7 +238,7 @@ theorem avgSchur : ∀ (n : ℕ) (ε : Fin n → Bool) (W : Type) [NormedAddComm
   have e : ∀ k : KG ε, ⟪ρ (toMK k) w, w⟫_ℂ * innerSL ℂ w (ρ (toMK k) w) =
       ((‖⟪w, ρ (toMK k) w⟫_ℂ‖ ^ 2 : ℝ) : ℂ) := fun k => by
     rw [innerSL_apply_apply, ← inner_conj_symm, Complex.conj_mul']; simp
-  simp only [e, integral_ofReal] at h0
+  simp only [e] at h0
   have hc2 : Continuous (fun k : KG ε => ‖⟪w, ρ (toMK k) w⟫_ℂ‖ ^ 2) := (continuous_const.inner h1).norm.pow 2
   have hpos := hc2.integral_pos_of_hasCompactSupport_nonneg_nonzero (μ := muK ε) (x := 1)
     (HasCompactSupport.of_compactSpace _) (fun k => by positivity) (by

@@ -98,7 +98,7 @@ theorem phi_one_Wm (hE : IsGlRep E) (hU : IsInfUnitary ε E) (hV : IsKIrrHW ε E
     rw [map_zero] at hfx
     exact hy0 hfx.symm
   obtain ⟨a, b, hab, hε, hμ⟩ := Wm_khw hE hU hV hmono hh hbig hx1 hx10 hkhw
-  have hlay : phi E 1 x₀ ∈ layer ε E V 1 := phi_mem_layer (Wm_le_ncV hx₀)
+  have hlay : phi E 1 x₀ ∈ layer ε E V 1 := _root_.ReciprocityTheory.ChartRestriction.DS.wordContraction_mem_noncompactLayer' (Wm_le_ncV hx₀)
   have hcas : casimir E (phi E 1 x₀) = (casVal lam : ℂ) • phi E 1 x₀ :=
     casimir_genSub hE hc _ (layer_le_genSub (ε := ε) 1 hlay)
   rw [hμ] at hyμ
@@ -109,9 +109,6 @@ theorem sch_coord_apply {k : ℕ} (κ : Fin k → Fin n × Fin n) (F : Big n k M
 
 theorem sch_slice_apply {k : ℕ} (i : Fin k) (κ : Fin k → Fin n × Fin n) (F : Big n k M)
     (ι : Fin 1 → Fin n × Fin n) : slice i κ F ι = F (Function.update κ i (ι 0)) := rfl
-
-theorem sch_permute_apply {k : ℕ} (σ : Equiv.Perm (Fin k)) (F : Big n k M)
-    (κ : Fin k → Fin n × Fin n) : permute σ F κ = F (κ ∘ σ) := rfl
 
 theorem sch_word_snoc {k : ℕ} (init : Fin k → Fin n × Fin n) (p : Fin n × Fin n) :
     word E (Fin.snoc init p : Fin (k + 1) → Fin n × Fin n) = word E init * E p.1 p.2 := by
@@ -165,7 +162,7 @@ theorem phi_Wm_position (hE : IsGlRep E) (hU : IsInfUnitary ε E) (hV : IsKIrrHW
     have heq : slice (Fin.last k) κ (permute (Equiv.swap i (Fin.last k)) F) =
         slice i (κ ∘ Equiv.swap i (Fin.last k)) F := by
       refine PiLp.ext fun ι => ?_
-      rw [sch_slice_apply, sch_permute_apply, sch_slice_apply, Function.update_comp_equiv,
+      rw [sch_slice_apply, _root_.ReciprocityTheory.ChartRestriction.DS.permute_apply, sch_slice_apply, Function.update_comp_equiv,
         Equiv.symm_swap, Equiv.swap_apply_right]
     rw [heq]
     exact hF _

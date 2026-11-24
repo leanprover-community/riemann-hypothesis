@@ -104,8 +104,7 @@ lemma coefOp_unitary_le_one {k : Matrix (Fin n) (Fin n) ℂ} (hk : k ∈ Matrix.
 theorem coefOp_le_sqrt_hs (A : Matrix (Fin n) (Fin n) ℂ) :
     ‖Matrix.toEuclideanCLM (𝕜 := ℂ) A‖ ≤ Real.sqrt (S7.hs A) := by
   refine ContinuousLinearMap.opNorm_le_bound _ (Real.sqrt_nonneg _) fun v => ?_
-  have h := coefOp_apply_le_frob A v
-  rwa [← S7.sqrt_hs_frobVG A] at h
+  simpa only [← S7.sqrt_hs_frobVG A] using coefOp_apply_le_frob A v
 
 theorem coefOp_unitary_mul_exp {k : Matrix (Fin n) (Fin n) ℂ} (hk : k ∈ Matrix.unitaryGroup (Fin n) ℂ)
     (X : Matrix (Fin n) (Fin n) ℂ) :
@@ -117,8 +116,7 @@ theorem coefOp_unitary_mul_exp {k : Matrix (Fin n) (Fin n) ℂ} (hk : k ∈ Matr
     let _ : NormedRing (Matrix (Fin n) (Fin n) ℂ) := Matrix.frobeniusNormedRing
     let _ : NormedAlgebra ℂ (Matrix (Fin n) (Fin n) ℂ) := Matrix.frobeniusNormedAlgebra
     refine NormedSpace.map_exp_of_mem_ball (𝕂 := ℂ) _ hc X ?_
-    rw [NormedSpace.expSeries_radius_eq_top]
-    simp
+    simp [NormedSpace.expSeries_radius_eq_top]
   rw [map_mul, hexp]
   calc ‖Matrix.toEuclideanCLM (𝕜 := ℂ) k * NormedSpace.exp (Matrix.toEuclideanCLM (𝕜 := ℂ) X)‖
       ≤ ‖Matrix.toEuclideanCLM (𝕜 := ℂ) k‖ * ‖NormedSpace.exp (Matrix.toEuclideanCLM (𝕜 := ℂ) X)‖ :=
@@ -132,8 +130,7 @@ theorem coefOp_unitary_mul_exp {k : Matrix (Fin n) (Fin n) ℂ} (hk : k ∈ Matr
 theorem coefOp_kexp {ε : Fin n → Bool} (k : S7.KG ε) (X : Matrix (Fin n) (Fin n) ℂ) :
     ‖Matrix.toEuclideanCLM (𝕜 := ℂ) (S7.toMK k * NormedSpace.exp X)‖ ≤ Real.exp (Real.sqrt (S7.hs X)) := by
   have hk : S7.toMK k ∈ Matrix.unitaryGroup (Fin n) ℂ := by
-    rw [Matrix.mem_unitaryGroup_iff, Matrix.star_eq_conjTranspose]
-    exact (S7.toMK_facts k).2.1
+    simpa [Matrix.mem_unitaryGroup_iff, Matrix.star_eq_conjTranspose] using (S7.toMK_facts k).2.1
   exact coefOp_unitary_mul_exp hk X
 
 end ReciprocityTheory.ChartRestriction.DS

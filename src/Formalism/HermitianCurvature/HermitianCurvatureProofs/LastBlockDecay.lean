@@ -106,7 +106,6 @@ theorem memLp_comp_mul {p : ENNReal} {f : ℂ → E} (hf : MemLp f p volume) (ρ
 
 theorem integral_norm_dil_sq (f : ℂ → E) (ρ : ℂ) (hρ : ρ ≠ 0) :
     ∫ z, ‖‖ρ‖ • f (ρ * z)‖ ^ 2 = ∫ z, ‖f z‖ ^ 2 := by
-  have hρ0 : 0 < ‖ρ‖ := norm_pos_iff.mpr hρ
   have e : (fun z => ‖‖ρ‖ • f (ρ * z)‖ ^ 2) = fun z => ‖ρ‖ ^ 2 * ‖f (ρ * z)‖ ^ 2 := by
     funext z
     rw [norm_smul, norm_norm, mul_pow]
@@ -124,7 +123,6 @@ theorem tendsto_dil_cpt (g : ℂ → E) (hgc : Continuous g) (hgs : HasCompactSu
     Tendsto (fun ρ : ℂ => ∫ z, ‖‖ρ‖ • g (ρ * z) - ‖ζ‖ • g (ζ * z)‖ ^ 2) (𝓝 ζ) (𝓝 0) := by
   obtain ⟨M, hM⟩ := hgc.bounded_above_of_compact_support hgs
   obtain ⟨R, hR⟩ := hgs.isCompact.isBounded.subset_closedBall (0 : ℂ)
-  have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM 0)
   have hζ0 : 0 < ‖ζ‖ := norm_pos_iff.mpr hζ
   have hzero : ∀ w : ℂ, max R 0 < ‖w‖ → g w = 0 := by
     intro w hw
@@ -133,8 +131,6 @@ theorem tendsto_dil_cpt (g : ℂ → E) (hgc : Continuous g) (hgs : HasCompactSu
     have h1 := hR hmem
     rw [Metric.mem_closedBall, dist_zero_right] at h1
     linarith [le_max_left R 0]
-  have hR0 : 0 ≤ max R 0 := le_max_right R 0
-  have hr0 : 0 ≤ 2 * max R 0 / ‖ζ‖ := by positivity
   have hlim := tendsto_integral_filter_of_dominated_convergence
     (F := fun ρ z => ‖‖ρ‖ • g (ρ * z) - ‖ζ‖ • g (ζ * z)‖ ^ 2)
     (f := fun z => ‖‖ζ‖ • g (ζ * z) - ‖ζ‖ • g (ζ * z)‖ ^ 2)
@@ -207,7 +203,6 @@ theorem tendsto_dil (f : ℂ → E) (hf : MemLp f 2 volume) (ζ : ℂ) (hζ : ζ
   have hT := tendsto_dil_cpt g hgc hgs ζ hζ
   rw [Metric.tendsto_nhds] at hT
   filter_upwards [hT (ε / 6) (by positivity), eventually_ne_nhds hζ] with ρ hρT hρ0
-  have hnn : ∀ (h : ℂ → ℝ), 0 ≤ ∫ z, ‖h z‖ ^ 2 := fun h => integral_nonneg fun _ => by positivity
   rw [Real.dist_eq, sub_zero, abs_of_nonneg (integral_nonneg fun _ => by positivity)] at hρT ⊢
   have h3 : ∀ a b c : E, ‖a + b + c‖ ^ 2 ≤ 3 * (‖a‖ ^ 2 + ‖b‖ ^ 2 + ‖c‖ ^ 2) := by
     intro a b c

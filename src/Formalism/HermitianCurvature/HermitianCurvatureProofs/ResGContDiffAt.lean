@@ -216,7 +216,6 @@ theorem vAB_comm (y : ℂ) (j : Fin r) : ∀ (i : ℕ), i ≤ j.val → ∀ {G :
   | succ i ih =>
     intro hij G hG
     obtain ⟨hA, hB, c1, c2⟩ := ih (by omega) hG
-    have hpG : pOp j G ∈ WSm r V := opL_mem j 0 hG
     have hi : i < r := by have := j.isLt; omega
     have hne : (⟨i, hi⟩ : Fin r) ≠ j := by intro h; rw [← h] at hij; simp at hij
     obtain ⟨hm1, hm2⟩ := vAB_mem y (i + 1) hG

@@ -269,8 +269,6 @@ theorem mem_UW {h : Matrix (Fin k) (Fin k) ℂ} (hu : h ∈ Matrix.unitaryGroup 
     have hs' : star h * h = 1 := by
       first
         | exact Matrix.mem_unitaryGroup_iff'.mp hu
-        | exact Unitary.star_mul_self_of_mem hu
-        | exact hu.1
     rwa [Matrix.star_eq_conjTranspose] at hs'
   simp only [Formalism.QuantumDeterminants.UWset, Set.mem_setOf_eq]
   refine ⟨?_, fun a => ⟨?_, ?_⟩, ?_⟩

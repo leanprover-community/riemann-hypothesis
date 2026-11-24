@@ -96,7 +96,7 @@ theorem cone_smul_eq_zero_iff {Ω : Type} [Field Ω] (c : K → Ω) (hc : ∀ k,
     | add p q hp hq => simp only [eval₂_add, map_add (f := _), hp, hq]
     | mul_X p q hp =>
       rw [eval₂_mul, eval₂_mul, map_mul, hp]
-      simp only [eval₂_X, aeval_X, D, map_mul, aeval_C, algebraMap_eq, C_mul]
+      simp only [eval₂_X, aeval_X, D, map_mul, aeval_C, algebraMap_eq]
       ring
   have hinv : ∀ G, D (fun k => (c k)⁻¹) (D c G) = G := by
     intro G
@@ -225,8 +225,7 @@ theorem proof : FlagImageGrass.Statement := by
   have hN : j + (N - j) = N := by omega
   rw [image_eq]
   ext F
-  simp only [GroundTheory.Heights₂.Heights.grassIdeal, mCoordIdeal, RingHom.mem_ker, AlgHom.toRingHom_eq_coe,
-    RingHom.coe_coe, mConeMap_apply, Function.comp_apply]
+  simp only [GroundTheory.Heights₂.Heights.grassIdeal, mCoordIdeal, RingHom.mem_ker, mConeMap_apply, Function.comp_apply]
 
   have ha : ∀ F : MvPolynomial (Σ _ : Fin (Fintype.card Ψ), PlIdx j (N - j)) ℤ,
       eval₂ (Int.castRingHom _) (fun p => C (yFl Ψ N (grFlV Ψ N j hj hjN p)) * X p.1 :

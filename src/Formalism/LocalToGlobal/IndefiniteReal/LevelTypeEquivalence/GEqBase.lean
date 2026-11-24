@@ -69,8 +69,6 @@ theorem comm_inf_fin {a b : GA D V} (ha : a ∈ GinfC V) (hb : b ∈ GfC V) : a 
     exact ae_ext (D := D) (congrFun (congrFun hinf i) j) (congrFun (congrFun hfin i) j)
   first
   | exact Subtype.ext (Units.ext key)
-  | (apply Subtype.ext; apply Units.ext; exact key)
-  | (apply Subtype.ext; apply Subtype.ext; apply Units.ext; exact key)
 
 variable (θ : D.what₂.Tau → (Ainf D.host.F ⊗[D.host.F] D.host.E →+* ℂ))
 

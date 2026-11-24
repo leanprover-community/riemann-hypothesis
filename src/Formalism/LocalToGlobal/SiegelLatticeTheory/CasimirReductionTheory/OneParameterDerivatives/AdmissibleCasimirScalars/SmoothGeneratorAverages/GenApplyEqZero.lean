@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.AdmissibleCasimirScalars.SmoothGeneratorAverages.HasDerivAtDS
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.CasimirReductionTheory.OneParameterDerivatives.AdmissibleCasimirScalars.CompactDerivativesBounded
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -113,26 +114,7 @@ lemma tens (ε : Fin n → Bool) (i j k l : Fin n) :
         simp_all <;> cases ε k <;> cases ε l <;> simp_all <;> ring_nf <;> simp [Complex.I_sq] <;> ring
 
 lemma gen_inG (ε : Fin n → Bool) (p : Fin n × Fin n) : inG ε (gen ε p) := by
-  unfold inG
-  ext i j
-  simp only [Matrix.add_apply, Jm, Matrix.mul_diagonal, Matrix.diagonal_mul, conjTranspose_apply,
-    Matrix.zero_apply, gen_apply]
-  obtain ⟨a, b⟩ := p
-  dsimp only
-  unfold sg
-  dsimp only
-  by_cases hab : a = b
-  · subst hab
-    by_cases hi : a = i <;> by_cases hj : a = j <;> simp [hi, hj] <;> by_cases hij : i = j <;> simp_all <;>
-      cases ε j <;> simp
-  · rcases lt_or_gt_of_ne hab with h | h
-    · simp only [hab, h, if_false, if_true]
-      by_cases h1 : a = i <;> by_cases h2 : b = j <;> by_cases h3 : b = i <;> by_cases h4 : a = j <;>
-        simp_all <;> cases ε i <;> cases ε j <;> simp_all
-    · have h' : ¬ a < b := not_lt_of_gt h
-      simp only [hab, h', if_false]
-      by_cases h1 : a = i <;> by_cases h2 : b = j <;> by_cases h3 : b = i <;> by_cases h4 : a = j <;>
-        simp_all <;> cases ε i <;> cases ε j <;> simp_all
+  apply Formalism.L2.SG.Pf.admitted.AdmissibleVectors.inG_gen <;> assumption
 
 lemma lgen (ε : Fin n → Bool) (X : Matrix (Fin n) (Fin n) ℂ) :
     ∑ p, (((cf ε p : ℝ) : ℂ) * trace (X * gen ε p)) • gen ε p = -X := by

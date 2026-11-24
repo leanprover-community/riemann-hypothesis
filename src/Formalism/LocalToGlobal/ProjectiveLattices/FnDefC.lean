@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.PullbackSections.HolomorphicFamilies.UnitHmE
 public import Formalism.LocalToGlobal.ProjectiveLattices.PetersonNormSubspace
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -56,32 +57,7 @@ theorem relab_injective (c : Coeff l) (σ : c.F →+* ℂ) : Function.Injective 
 
 theorem relab_rt_iff (c : Coeff l) (σ : c.F →+* ℂ) (hσ : GoodEmb c σ) (τ' : E →+* ℂ) :
     relab c σ τ' (H.rt : E) = H.rt0 ↔ τ' (H.rt : E) = H.rt0 := by
-  have h0 : H.rt0 ≠ 0 := by
-    intro h
-    have := H.sqrt_neg_disc_sq
-    rw [h] at this
-    have hd : (H.d : ℂ) = 0 := by linear_combination this
-    exact H.d_prime.ne_zero (by exact_mod_cast hd)
-  have hσ0 : σ ⟨H.rt0, c.le (baseKA l).ρ.2⟩ = H.rt0 := hσ
-  have hE : ((H.rt : E)) ^ 2 = -(H.d : E) := by
-    have := congrArg (fun z : 𝓞 E => (z : E)) H.rt_sq
-    simpa using this
-  have hsq : (τ' (H.rt : E)) ^ 2 = H.rt0 ^ 2 := by
-    rw [H.sqrt_neg_disc_sq, ← map_pow, hE, map_neg, map_natCast]
-  have hval : relab c σ τ' (H.rt : E) = σ ⟨τ' (H.rt : E), c.conj τ' _⟩ := rfl
-  rcases sq_eq_sq_iff_eq_or_eq_neg.1 hsq with hx | hx
-  · refine ⟨fun _ => hx, fun _ => ?_⟩
-    rw [hval, ← hσ0]
-    exact congrArg σ (Subtype.ext hx)
-  · refine ⟨fun h => ?_, fun h => ?_⟩
-    · exfalso
-      have h1 : σ ⟨τ' (H.rt : E), c.conj τ' _⟩ = -σ ⟨H.rt0, c.le (baseKA l).ρ.2⟩ := by
-        rw [← map_neg]
-        exact congrArg σ (Subtype.ext hx)
-      rw [← hval, h, hσ0] at h1
-      exact h0 (by linear_combination h1 / 2)
-    · exfalso
-      exact h0 (by linear_combination (h.symm.trans hx) / 2)
+  apply ReciprocityTheory.ChartRestriction.G.PullbackSections.UH.relab_rt <;> assumption
 
 theorem conjEmb_conjEmb (τ : E →+* ℂ) : conjEmb (conjEmb τ) = τ :=
   RingHom.ext fun z => Complex.conj_conj (τ z)

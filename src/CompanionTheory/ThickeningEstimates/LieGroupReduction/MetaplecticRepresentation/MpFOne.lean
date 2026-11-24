@@ -59,23 +59,23 @@ variable {l : Type} [Fintype l] [DecidableEq l]
 
 theorem mq_add' (S T : Eu l →L[ℝ] Eu l) (g : Sch l) : mq (S + T) g = mq S g + mq T g := by
   ext x
-  simp only [mq_apply, SchwartzMap.add_apply, ContinuousLinearMap.add_apply, inner_add_right]
+  simp only [mq_apply, SchwartzMap.add_apply, inner_add_right]
   push_cast
   ring
 
 theorem mq_smul' (c : ℝ) (S : Eu l →L[ℝ] Eu l) (g : Sch l) : mq (c • S) g = c • mq S g := by
   ext x
-  simp only [mq_apply, SchwartzMap.smul_apply, ContinuousLinearMap.smul_apply, inner_smul_right, Complex.real_smul]
+  simp only [mq_apply, SchwartzMap.smul_apply, inner_smul_right, Complex.real_smul]
   push_cast
   ring
 
 theorem vf_add' (H K : Eu l →L[ℝ] Eu l) (g : Sch l) : vf (H + K) g = vf H g + vf K g := by
   ext x
-  simp only [vf_apply, SchwartzMap.add_apply, ContinuousLinearMap.add_apply, map_add (f := _)]
+  simp only [vf_apply, SchwartzMap.add_apply, map_add (f := _)]
 
 theorem vf_smul' (c : ℝ) (H : Eu l →L[ℝ] Eu l) (g : Sch l) : vf (c • H) g = c • vf H g := by
   ext x
-  simp only [vf_apply, SchwartzMap.smul_apply, ContinuousLinearMap.smul_apply, map_smul]
+  simp only [vf_apply, SchwartzMap.smul_apply, map_smul]
 
 def qdLin (f : Sch l) : Mat l →ₗ[ℝ] Sch l where
   toFun X := Qd X f

@@ -1,5 +1,6 @@
 module
 
+import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.LeviDecomposition
 public import CompanionTheory.AutomorphicTheory.BesselOrbitBounds.BesselMapUniqueness.BesselMapUniqGap
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -112,24 +113,7 @@ end general
 variable {k r : ℕ}
 
 theorem hq_sq : Hq k r * Hq k r = 1 := by
-  ext i j
-  rw [Matrix.mul_apply]
-  by_cases hi : outer k r i
-  · rw [Finset.sum_eq_single (⟨2 * r + k - i.val, by omega⟩ : Fin (2 * r + k + 1))]
-    · have h2 : outer k r ⟨2 * r + k - i.val, by omega⟩ := by
-        unfold outer at *; have := i.isLt; simp only; omega
-      have := i.isLt
-      simp only [Hq, hi, h2, if_true, Matrix.one_apply, Fin.ext_iff]
-      split_ifs <;> first | omega | simp
-    · intro b _ hb
-      have : ¬ (i.val + b.val = 2 * r + k) := fun h => hb (Fin.ext (by simp only; omega))
-      simp [Hq, hi, this]
-    · simp
-  · rw [Finset.sum_eq_single i]
-    · simp [Hq, hi, Matrix.one_apply]
-    · intro b _ hb
-      simp [Hq, hi, Ne.symm hb]
-    · simp
+  apply GlobalTheory.CompanionTheory.BesselLevi.Hq_sq <;> assumption
 
 theorem hq_e (a : Fin r) : Hq k r *ᵥ bvec (eI k r a) = bvec (esI k r a) := by
   ext i

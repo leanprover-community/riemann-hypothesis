@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.SlopeSqSubLeSlopeSqSpan
 public import Formalism.HermitianLattices.StatementMass
 public import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.CountStB
 public import ReciprocityTheory.GeometryOfNumbers.LatticeCovolumes.EllipsoidSt
@@ -83,34 +84,7 @@ namespace GlobalTheory.ShortVec
 
 theorem denseRange_emb {K : Type} [Field K] (σ : K →+* ℂ) (h : ¬ ComplexEmbedding.IsReal σ) :
     DenseRange σ := by
-  obtain ⟨x, hx⟩ : ∃ x, (σ x).im ≠ 0 := by
-    by_contra hcon
-    push Not at hcon
-    apply h
-    show ComplexEmbedding.conjugate σ = σ
-    ext a
-    rw [ComplexEmbedding.conjugate_coe_eq, Complex.conj_eq_iff_im]
-    exact hcon a
-  let T : Subring ℂ := σ.range.topologicalClosure
-  have mem : ∀ y, y ∈ closure (Set.range σ) → y ∈ T := fun y hy => by
-    show y ∈ closure (σ.range : Set ℂ)
-    rw [RingHom.coe_range]
-    exact hy
-  have hR : ∀ r : ℝ, (r : ℂ) ∈ T := fun r => mem _ <|
-    map_mem_closure Complex.continuous_ofReal (Rat.denseRange_cast r)
-      (fun y hy => by
-        obtain ⟨q, rfl⟩ := hy
-        exact ⟨(q : K), by simp⟩)
-  have hz : σ x ∈ T := mem _ (subset_closure ⟨x, rfl⟩)
-  show ∀ w, w ∈ closure (Set.range σ)
-  intro w
-  have hw : w = (w.re : ℂ) + ((w.im / (σ x).im : ℝ) : ℂ) * (σ x - ((σ x).re : ℂ)) := by
-    apply Complex.ext <;> simp [hx]
-  have : w ∈ T := by
-    rw [hw]
-    exact T.add_mem (hR _) (T.mul_mem (hR _) (T.sub_mem hz (hR _)))
-  have h2 : w ∈ closure (σ.range : Set ℂ) := this
-  rwa [RingHom.coe_range] at h2
+  apply GlobalTheory.SlopeExt.denseRange_of_not_isReal <;> assumption
 
 theorem posDef_map {K : Type} [Field K] [StarRing K] {n : ℕ} (σ : K →+* ℂ)
     (hσ : ¬ ComplexEmbedding.IsReal σ) (hs : ∀ a, σ (star a) = starRingEnd ℂ (σ a))

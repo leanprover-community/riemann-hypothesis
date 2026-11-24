@@ -126,7 +126,7 @@ theorem genPow (D : D7) (Q : HeightOneSpectrum (𝓞 D.host.E)) :
     have : Q.asIdeal ^ h ≤ M := by rw [← hspan, Ideal.span_le]; simpa using hπM
     exact Q.isMaximal.eq_of_le hM.ne_top (hM.le_of_pow_le this)
 
-theorem cO_cO (D : D7) (x : 𝓞 D.host.E) : cO D (cO D x) = x := Subtype.ext (conj_conj' D (x : D.host.E))
+theorem cO_cO (D : D7) (x : 𝓞 D.host.E) : cO D (cO D x) = x := Subtype.ext (_root_.Formalism.L2.GlobalTheoryTheory.IntegralLatticeDensity.CU.conj_conj D (x : D.host.E))
 
 def cQ (D : D7) (Q : HeightOneSpectrum (𝓞 D.host.E)) : HeightOneSpectrum (𝓞 D.host.E) where
   asIdeal := Q.asIdeal.comap (cO D)

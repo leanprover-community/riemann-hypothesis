@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.SatGramLocPfA
 public import Formalism.LocalRingCardinality.DataHost
 public import Formalism.LocalRingCardinality.SpanPowerMembership.PlacesOverNcardOfSplitInj
 import Mathlib.Algebra.AffineMonoid.Basic
@@ -183,42 +184,13 @@ variable {K : Type} [Field K] [NumberField K]
 theorem image_places_eq_primesOver (p : ℕ) (hp : p.Prime) :
     (fun v : HeightOneSpectrum (𝓞 K) => v.asIdeal) '' {v | (p : 𝓞 K) ∈ v.asIdeal} =
       (Ideal.span {(p : ℤ)}).primesOver (𝓞 K) := by
-  have hpZ : Prime (p : ℤ) := Nat.prime_iff_prime_int.1 hp
-  ext I
-  constructor
-  · rintro ⟨v, hv, rfl⟩
-    exact ⟨v.isPrime, liesOver_of_natCast_mem p hp v hv⟩
-  · rintro ⟨hI, hIl⟩
-    have hI0 : I ≠ ⊥ := by
-      rintro rfl
-      have h0 : Ideal.span {(p : ℤ)} = ⊥ := by
-        rw [hIl.over]; exact Ideal.comap_bot_of_injective _ (FaithfulSMul.algebraMap_injective ℤ (𝓞 K))
-      exact hpZ.ne_zero (Ideal.span_singleton_eq_bot.1 h0)
-    refine ⟨⟨I, hI, hI0⟩, ?_, rfl⟩
-    change ((p : ℕ) : 𝓞 K) ∈ I
-    have : (p : ℤ) ∈ I.under ℤ := by rw [← hIl.over]; exact Ideal.mem_span_singleton_self _
-    simpa using this
+  apply Formalism.L2.SG.Pf.SatGramLoc.image_places_primesOver <;> assumption
 
 theorem ram_inertia_of_split (p : ℕ) (hp : p.Prime)
     (hs : {v : HeightOneSpectrum (𝓞 K) | (p : 𝓞 K) ∈ v.asIdeal}.ncard = Module.finrank ℚ K)
     (v : HeightOneSpectrum (𝓞 K)) (hv : (p : 𝓞 K) ∈ v.asIdeal) :
     v.asIdeal.ramificationIdx ℤ = 1 ∧ v.asIdeal.inertiaDeg ℤ = 1 := by
-  classical
-  have hpZ : Prime (p : ℤ) := Nat.prime_iff_prime_int.1 hp
-  have hpI : (Ideal.span {(p : ℤ)}).IsPrime := (Ideal.span_singleton_prime hpZ.ne_zero).2 hpZ
-  have hpM : (Ideal.span {(p : ℤ)}).IsMaximal :=
-    hpI.isMaximal (by rw [Ne, Ideal.span_singleton_eq_bot]; exact hpZ.ne_zero)
-  have hsum := Ideal.sum_ramification_inertia_eq_finrank (Ideal.span {(p : ℤ)}) (𝓞 K)
-  rw [RingOfIntegers.rank, ← hs, ← Set.ncard_image_of_injective _
-    (fun v w h => HeightOneSpectrum.ext h), image_places_eq_primesOver p hp,
-    ← Nat.card_coe_set_eq, Nat.card_eq_fintype_card, Fintype.card_eq_sum_ones] at hsum
-  have hle : ∀ q : (Ideal.span {(p : ℤ)}).primesOver (𝓞 K),
-      1 ≤ q.1.ramificationIdx ℤ * q.1.inertiaDeg ℤ := by
-    rintro ⟨q, hq, hql⟩
-    exact Nat.mul_pos (Ideal.ramificationIdx_pos (R := ℤ) q) (Ideal.inertiaDeg_pos q ℤ)
-  have hall := (Finset.sum_eq_sum_iff_of_le (fun q _ => hle q)).1 hsum.symm
-    ⟨v.asIdeal, v.isPrime, liesOver_of_natCast_mem p hp v hv⟩ (Finset.mem_univ _)
-  exact ⟨Nat.dvd_one.1 ⟨_, hall⟩, Nat.dvd_one.1 ⟨_, hall.trans (mul_comm _ _)⟩⟩
+  apply Formalism.L2.SG.Pf.SatGramLoc.ram_inertia_split <;> assumption
 
 theorem intValuation_of_split (p : ℕ) (hp : p.Prime)
     (hs : {v : HeightOneSpectrum (𝓞 K) | (p : 𝓞 K) ∈ v.asIdeal}.ncard = Module.finrank ℚ K)

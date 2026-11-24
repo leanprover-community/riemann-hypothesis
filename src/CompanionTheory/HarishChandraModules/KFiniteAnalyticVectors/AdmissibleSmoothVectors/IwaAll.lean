@@ -261,7 +261,7 @@ theorem dec_Jm (ε : Fin n → Bool) : Dec (Jm ε) := by
   have hV : ∀ H : Matrix (Fin n) (Fin n) ℂ, V.conjTranspose * H * V = H.submatrix σ σ := by
     intro H
     ext a b
-    simp [V, Matrix.mul_apply, Matrix.one_apply, Matrix.submatrix_apply, Matrix.conjTranspose_apply]
+    simp [V, Matrix.mul_apply, Matrix.one_apply, Matrix.submatrix_apply]
   apply Dec.of_conj (V := V)
   · have h1 := hV 1
     rw [Matrix.mul_one] at h1

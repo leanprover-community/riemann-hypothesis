@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassType.CongruenceLiftOfBasis
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeAutomorphismApprox.LocDefs
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.FiniteAdelicComparison.AdelicLatticeToLocalLattices
 import Mathlib.Algebra.Order.Floor.Extended
@@ -71,22 +72,7 @@ theorem val_natCast_lt_one (F : Type) [Field F] [NumberField F] (v : HeightOneSp
 theorem natCast_mem_max (F : Type) [Field F] [NumberField F] (v : HeightOneSpectrum (𝓞 F)) (g : ℕ)
     (hg : (g : 𝓞 F) ∈ v.asIdeal) :
     (g : v.adicCompletionIntegers F) ∈ IsLocalRing.maximalIdeal (v.adicCompletionIntegers F) := by
-  rw [IsLocalRing.mem_maximalIdeal, mem_nonunits_iff]
-  intro hu
-  obtain ⟨w, hw⟩ := hu.exists_right_inv
-  have h1 := val_natCast_lt_one F v g hg
-  have h2 : Valued.v ((w : v.adicCompletion F)) ≤ 1 := w.2
-  have h3 : (g : v.adicCompletion F) * (w : v.adicCompletion F) = 1 := by
-    have := congrArg Subtype.val hw
-    simpa using this
-  have h4 := congrArg Valued.v h3
-  rw [map_mul, map_one] at h4
-  have h5 : Valued.v ((g : v.adicCompletion F)) * Valued.v ((w : v.adicCompletion F)) < 1 :=
-    calc Valued.v ((g : v.adicCompletion F)) * Valued.v ((w : v.adicCompletion F))
-        ≤ Valued.v ((g : v.adicCompletion F)) * 1 := by gcongr
-      _ = Valued.v ((g : v.adicCompletion F)) := mul_one _
-      _ < 1 := h1
-  exact (ne_of_lt h5) h4
+  apply PI.LocMassTypL.natCast_mem_max <;> assumption
 
 theorem vecV_smul' (I : AutInst) (v : HeightOneSpectrum (𝓞 I.F)) (a : I.E ⊗[I.F] Af I.F)
     (x : Fin I.n → I.E ⊗[I.F] Af I.F) :

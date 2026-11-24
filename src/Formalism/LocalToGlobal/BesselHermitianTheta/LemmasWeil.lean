@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ExistsSplitSupportedUnitaryComponent
 public import Formalism.LocalToGlobal.BesselHermitianTheta.TiedWeil
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -215,25 +216,7 @@ theorem splitFac_swap (V W : HSp D) (hne : V.rank ≠ W.rank) (c c' : (AE D)ˣ �
   · rw [if_pos (show W.rank ≤ V.rank by omega), if_neg (show ¬ V.rank ≤ W.rank by omega), mul_comm]
 
 theorem gram_det_ne (V : HSp D) : V.gram.det ≠ 0 := by
-  intro hdet
-  obtain ⟨v, hv, hJv⟩ := Matrix.exists_mulVec_eq_zero_iff.mpr hdet
-  apply hv
-  have hrow : ∀ i, ∑ j, V.gram i j * v j = 0 := fun i => by
-    have := congrFun hJv i
-    simpa [Matrix.mulVec, dotProduct] using this
-  have hb : V.hT.flip (∑ j, v j • V.frame j) = 0 := by
-    refine V.frame.ext fun i => ?_
-
-    rw [LinearMap.flip_apply, LinearMap.zero_apply, map_sum, ← hrow i]
-    refine Finset.sum_congr rfl fun j _ => ?_
-    rw [map_smul, smul_eq_mul]
-    exact mul_comm _ _
-  have hy : ∀ x, V.hT x (∑ j, v j • V.frame j) = 0 := fun x => by
-    have := LinearMap.congr_fun hb x
-    rwa [LinearMap.flip_apply, LinearMap.zero_apply] at this
-  have h0 := V.nondeg.2 _ hy
-  funext i
-  exact Fintype.linearIndependent_iff.mp V.frame.linearIndependent v h0 i
+  apply GlobalTheory.SplitOnto.gram_det_ne <;> assumption
 
 theorem det_conj_mul (V : HSp D) (g : GA D V) : cA D (mt V g).det * (mt V g).det = 1 := by
   have h := congrArg Matrix.det (mt_rel V g)

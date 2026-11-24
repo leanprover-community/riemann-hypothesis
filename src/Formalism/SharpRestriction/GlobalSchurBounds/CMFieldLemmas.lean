@@ -122,11 +122,6 @@ def Conclusion4 (D : D7) (C : ℝ) : Prop :=
       Real.log l / (l : ℝ) ≤
       C * J * Real.log (((2 ^ D.R.e : ℕ) : ℝ) * Y) ^ 2 / ((2 ^ D.R.e : ℕ) : ℝ))
 
-def NoThreeTermRelation (T : Finset ℕ) (L : ℕ) : Prop :=
-  ∀ s₁ ∈ T, ∀ s₂ ∈ T, ∀ s₃ ∈ T, s₁ ≠ s₂ → s₁ ≠ s₃ → s₂ ≠ s₃ →
-    ∀ i j : ℤ, 0 < |i| → |i| ≤ L → 0 < |j| → |j| ≤ L → i ≠ j →
-      j * ((s₂ : ℤ) - s₁) ≠ i * ((s₃ : ℤ) - s₁)
-
 def transl {φ : Formalism.HC.Frame} (T : Finset ℕ) (u₀ : φ.A) : Set φ.A := {x | ∃ s ∈ T, x = φ.dig s + u₀}
 
 def coset {G : Type} [AddCommGroup G] (t h : G) : Set G := {x | ∃ i : ℤ, x = t + i • h}
@@ -137,7 +132,7 @@ def Conclusion5 (D : D7) (C : ℝ) : Prop :=
   ∀ Lw : ℕ, 2 ≤ Lw → ∃ T₂ : Finset ℕ,
     (∀ s ∈ T₂, (s : ℝ) < (D.R.n0 : ℝ) / (4 * Lw)) ∧
     (D.R.n0 : ℝ) * Real.exp (-C * Real.sqrt (Real.log D.R.n0 * Real.log Lw)) / Lw ≤ T₂.card ∧
-    NoThreeTermRelation T₂ Lw ∧
+    _root_.Formalism.FrobeniusOrbits.NoRel T₂ Lw ∧
     ∀ u₀ t h : HH D,
       (4 * Lw < addOrderOf h → ∀ i₀ : ℤ,
         ((Finset.Ico i₀ (i₀ + Lw)).filter (fun i : ℤ => t + i • h ∈ transl T₂ u₀)).card ≤ 2) ∧

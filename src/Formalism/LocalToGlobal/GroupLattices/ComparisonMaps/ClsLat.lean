@@ -66,8 +66,7 @@ theorem mem_gMap (g : GL (Fin k) Qq) (A : Submodule W (Fin k → Qq)) (x : Fin k
 
 theorem gMap_one (A : Submodule W (Fin k → Qq)) : gMap W 1 A = A := by
   ext x
-  rw [mem_gMap]
-  simp
+  simp [mem_gMap]
 
 theorem gMap_mul (g h : GL (Fin k) Qq) (A : Submodule W (Fin k → Qq)) : gMap W (g * h) A = gMap W g (gMap W h A) := by
   ext x
@@ -79,8 +78,7 @@ theorem gMap_mul (g h : GL (Fin k) Qq) (A : Submodule W (Fin k → Qq)) : gMap W
     exact ⟨y, hy, by rw [Matrix.mulVec_mulVec]⟩
 
 theorem gMap_inj (g : GL (Fin k) Qq) {A B : Submodule W (Fin k → Qq)} (h : gMap W g A = gMap W g B) : A = B := by
-  have e := congrArg (gMap W g⁻¹) h
-  rwa [← gMap_mul, ← gMap_mul, inv_mul_cancel, gMap_one, gMap_one] at e
+  simpa only [← gMap_mul, inv_mul_cancel, gMap_one] using congrArg (gMap W g⁻¹) h
 
 def stdL : Submodule W (Fin k → Qq) := colSpan W (1 : Matrix (Fin k) (Fin k) Qq)
 
@@ -104,33 +102,16 @@ theorem isLattice_iff (L : Submodule W (Fin k → Qq)) : IsLattice W L ↔ ∃ g
 
 theorem mem_stdL (x : Fin k → Qq) : x ∈ stdL (k := k) (Qq := Qq) W ↔ ∀ a, x a ∈ (algebraMap W Qq).range := by
   show x ∈ Submodule.span W (Set.range fun c : Fin k => fun i => (1 : Matrix (Fin k) (Fin k) Qq) i c) ↔ _
+  rw [Submodule.mem_span_range_iff_exists_fun]
   constructor
-  · intro hx
-    induction hx using Submodule.span_induction with
-    | mem y hy =>
-      obtain ⟨c, rfl⟩ := hy
-      intro a
-      by_cases h : a = c
-      · subst h; exact ⟨1, by simp⟩
-      · exact ⟨0, by simp [Matrix.one_apply_ne h]⟩
-    | zero => intro a; exact ⟨0, by simp⟩
-    | add y z _ _ hy hz =>
-      intro a
-      obtain ⟨u, hu⟩ := hy a
-      obtain ⟨v, hv⟩ := hz a
-      exact ⟨u + v, by simp [hu, hv]⟩
-    | smul w y _ hy =>
-      intro a
-      obtain ⟨u, hu⟩ := hy a
-      exact ⟨w * u, by simp [hu, Algebra.smul_def]⟩
+  · rintro ⟨c, rfl⟩ a
+    exact ⟨c a, by simp [Finset.sum_apply, Matrix.one_apply, Algebra.smul_def]⟩
   · intro h
     simp only [RingHom.mem_range] at h
     choose w hw using h
-    have e : x = ∑ c, w c • (fun i => (1 : Matrix (Fin k) (Fin k) Qq) i c) := by
-      ext i
-      simp [Finset.sum_apply, Matrix.one_apply, Algebra.smul_def, hw]
-    rw [e]
-    exact Submodule.sum_mem _ fun c _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨c, rfl⟩)
+    refine ⟨w, ?_⟩
+    ext i
+    simp [Finset.sum_apply, Matrix.one_apply, Algebra.smul_def, hw]
 
 theorem gMap_std_le (g : GL (Fin k) Qq) :
     gMap W g (stdL W) ≤ stdL W ↔ ∀ a b, (g : Matrix (Fin k) (Fin k) Qq) a b ∈ (algebraMap W Qq).range := by
@@ -197,18 +178,12 @@ def tupOf (g : Fin nV → GL (Fin k) Qq) : Fin nV → Submodule W (Fin k → Qq)
 def stabTup : Subgroup (Fin nV → GL (Fin k) Qq) := Subgroup.pi Set.univ fun _ => stabStd W
 
 theorem mem_stabTup (g : Fin nV → GL (Fin k) Qq) : g ∈ stabTup (nV := nV) (k := k) (Qq := Qq) W ↔ ∀ v, g v ∈ stabStd W := by
-  show g ∈ Subgroup.pi Set.univ _ ↔ _
-  simp [Subgroup.mem_pi]
+  simp [stabTup, Subgroup.mem_pi]
 
 theorem tupOf_eq_iff (g h : Fin nV → GL (Fin k) Qq) :
     tupOf W g = tupOf W h ↔ h⁻¹ * g ∈ stabTup (nV := nV) (k := k) (Qq := Qq) W := by
-  rw [mem_stabTup]
-  constructor
-  · intro H v
-    exact (gMap_std_eq_iff W (g v) (h v)).1 (congrFun H v)
-  · intro H
-    funext v
-    exact (gMap_std_eq_iff W (g v) (h v)).2 (H v)
+  rw [mem_stabTup, funext_iff]
+  exact forall_congr' fun v => gMap_std_eq_iff W (g v) (h v)
 
 theorem exists_tupOf (L : Fin nV → Submodule W (Fin k → Qq)) (hL : ∀ v, IsLattice W (L v)) : ∃ g, L = tupOf W g := by
   choose g hg using fun v => (isLattice_iff W (L v)).1 (hL v)

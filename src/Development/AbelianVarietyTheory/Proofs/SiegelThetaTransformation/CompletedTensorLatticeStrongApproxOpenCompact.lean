@@ -301,7 +301,7 @@ theorem exists_nsmul_mem_open (hfg : A.toIntSubmodule.FG) (U : AddSubgroup (Matr
     (hU : IsOpen (U : Set (Matrix (Fin r) (Fin n) (AF F ⊗[F] E)))) :
     ∃ N : ℕ, 0 < N ∧ ∀ u ∈ hatG F A, N • u ∈ U := by
   obtain ⟨m, x, hx⟩ := exists_gen (F := F) hfg
-  obtain ⟨N, hN, h⟩ := GlobalTheory.AdLat.OpenLat.exists_nsmul_adele F (⋂ k, (fun α => fT F α (x k)) ⁻¹' U)
+  obtain ⟨N, hN, h⟩ := _root_.GlobalTheory.LocalNormBound.main F (⋂ k, (fun α => fT F α (x k)) ⁻¹' U)
     (Filter.iInter_mem.2 fun k => (hU.preimage (continuous_fT (x k))).mem_nhds (by simp))
   refine ⟨N, hN, fun u hu => ?_⟩
   obtain ⟨c, hc, rfl⟩ := (hx u).1 hu
@@ -353,7 +353,7 @@ theorem isOpen_nsmul (hden : ∀ y, ∃ N : ℕ, 0 < N ∧ N • y ∈ A) {N : �
     (⋂ p, co b p ⁻¹' {c | ∃ a : Af F, (∀ v, a v ∈ v.adicCompletionIntegers F) ∧ c = (N * M) • a}) ?_ ?_
   · refine Filter.iInter_mem.2 fun p => (continuous_co b p).continuousAt.preimage_mem_nhds ?_
     rw [map_zero]
-    exact GlobalTheory.AdLat.OpenLat.nsmul_integral_mem_nhds F _ (mul_pos hN hM)
+    exact _root_.GlobalTheory.IntegralNeighbourhoodZero.nsmul_integral_mem_nhds_zero F _ (mul_pos hN hM)
   · intro w hw
     choose a ha hx using Set.mem_iInter.1 hw
     refine ⟨∑ p, fT F (a p) (M • sgl b p), sum_mem fun p _ => fT_mem (ha p) (hA p), ?_⟩

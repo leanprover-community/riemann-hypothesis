@@ -236,22 +236,18 @@ theorem pairingBNondegenerate_holds : PairBNondeg := by
     rw [pairBK_apply, ← pairP_trivial] at hxy
     exact hxy
 
-private theorem actP_one' {K : Type} [Field K] {ι : Type} [Fintype ι] {n : ℕ} (lam : ι → DomWeight n)
-    (F : Pol K ι n) : actP lam (1 : ι → GL (Fin n) K) F = F := by
-  simp [actP, detTwK_one, trAct_one]
-
 theorem pb_extNormB_ne (K : Type) [Field K] [CharZero K] {ι : Type} [Fintype ι] {n : ℕ} (lam : ι → DomWeight n) :
     extNormB K lam ≠ 0 := by
   intro h0
   have h := @pairingExtremal_holds K _ starRingOfComm _ ι _ n lam (fun _ => 1) 1 (fun τ => by simp)
-  rw [actP_one', pairP_trivial, pairB_apply, h0, inv_zero, zero_mul] at h
+  rw [_root_.Formalism.L2.DIV.polyAction_one₂, pairP_trivial, pairB_apply, h0, inv_zero, zero_mul] at h
   exact zero_ne_one h
 
 theorem pairingBExtremal_holds : PairBExtremal := by
   intro K _ _ ι _ n lam B
   rw [pairingBInvariantK_holds K ι n lam B]
   have h := @pairingExtremal_holds K _ starRingOfComm _ ι _ n lam (fun _ => 1) 1 (fun τ => by simp)
-  rw [actP_one', pairP_trivial] at h
+  rw [_root_.Formalism.L2.DIV.polyAction_one₂, pairP_trivial] at h
   exact h
 
 section Star
@@ -288,15 +284,10 @@ theorem pb_invTrK_invTrK {K : Type} [Field K] {ι : Type} {n : ℕ} (g : ι → 
   change ((g τ : Matrix (Fin n) (Fin n) K)ᵀ)ᵀ = (g τ : Matrix (Fin n) (Fin n) K)
   exact Matrix.transpose_transpose _
 
-private theorem actP_mul' {K : Type} [Field K] {ι : Type} [Fintype ι] {n : ℕ} (lam : ι → DomWeight n)
-    (a b : ι → GL (Fin n) K) (F : Pol K ι n) : actP lam (a * b) F = actP lam a (actP lam b F) := by
-  have h := congrArg (fun φ : Module.End K (Pol K ι n) => φ F) ((rhoP lam).map_mul a b)
-  simpa [rhoP] using h
-
 theorem pairB_adj {K : Type} [Field K] {ι : Type} [Fintype ι] {n : ℕ} (lam : ι → DomWeight n) (g : ι → GL (Fin n) K)
     (F F' : Pol K ι n) : pairB lam (actP lam g F) F' = pairB lam F (actP lam (invTrK g)⁻¹ F') := by
   have h1 := pairingBInvariantK_holds K ι n lam (invTrK g)⁻¹ (actP lam g F) F'
-  rw [map_inv, pb_invTrK_invTrK, ← actP_mul', inv_mul_cancel, actP_one'] at h1
+  rw [map_inv, pb_invTrK_invTrK, ← _root_.Formalism.L2.DIV.polyAction_mul, inv_mul_cancel, _root_.Formalism.L2.DIV.polyAction_one₂] at h1
   exact h1.symm
 
 theorem pb_fockS_eq {K : Type} [Field K] [StarRing K] {σ : Type} (f g : MvPolynomial σ K) :

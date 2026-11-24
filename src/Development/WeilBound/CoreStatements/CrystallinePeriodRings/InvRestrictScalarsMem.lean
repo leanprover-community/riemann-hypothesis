@@ -41,6 +41,7 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
+import Development.WeilBound.CoreStatements.CrystallinePeriodRings.PhiGalCris
 
 @[expose] public section
 
@@ -135,15 +136,6 @@ theorem invD (K : FinExt l) (b : Per6.BdR l) (hb : ∀ g ∈ GK K, Per6.σD g b 
     exact hb _ (inv_restrictScalars_mem K σ)
   exact ⟨k.1, k.2, hk⟩
 
-theorem inv_cD_galCris (g : GQ l) (x : ACris.ACris ℂ_[l] l) :
-    cD l (ACris.galCris (Per6.toBot g) x) = Per6.σD g (cD l x) := by
-  rw [cD_apply, cD_apply, ← ACris.gal_smul_def, ACris.iota_gal_smul]
-  exact (galBdRField_algebraMap _ _).symm
-
-theorem inv_ιCD_σB (g : GQ l) (b : Per6.Bcris l) : ιCD l (Per6.σB g b) = Per6.σD g (ιCD l b) :=
-  inv_equivariant (ιCD_fac l) (cB_isFrac l) (σB_comp g) (Per6.σD g) (inv_cD_galCris g) b
-
-
 variable (l) in
 def invPlusD : ACris.BCrisPlus ℂ_[l] l →+* Per6.BdR l :=
   (algebraMap (Per6.BdRp l) (Per6.BdR l)).comp (ACris.iotaPlus ℂ_[l] l)
@@ -177,7 +169,7 @@ theorem inv_mem_Kur {b : Per6.Bcris l} {c : Om l} (h : oD l c = ιCD l b) : c �
 theorem invB (K : FinExt l) (b : Per6.Bcris l) (hb : ∀ g ∈ GK K, Per6.σB g b = b) :
     ∃ c : ↥(MaximalUnramifiedExtension l), (c : Om l) ∈ K.1 ∧ uB l c = b := by
   obtain ⟨c, hc, h⟩ := invD K (ιCD l b) fun g hg =>
-    (inv_ιCD_σB g b).symm.trans (congrArg (ιCD l) (hb g hg))
+    (_root_.PositivityTheory.LocInh.GaloisCommutant.ιCD_σB_aux g b).symm.trans (congrArg (ιCD l) (hb g hg))
   exact ⟨⟨c, inv_mem_Kur h⟩, hc, ιCD_injective ((ιCD_uB _).trans h)⟩
 
 end PositivityTheory.LocInh

@@ -104,12 +104,12 @@ theorem gram_det (m : ℕ) (Mx : Matrix (Fin (m + 1)) (Fin (m + 1)) ℂ) (c : �
     ext i j
     refine Fin.cases ?_ (fun i => ?_) i <;> refine Fin.cases ?_ (fun j => ?_) j
     · simp [h00, U, V, al, xh, ah, Matrix.mul_apply, Fin.sum_univ_three]
-    · simp [h0j, U, V, al, xh, ah, Matrix.mul_apply, Fin.sum_univ_three, Matrix.one_apply, (Fin.succ_ne_zero j).symm]
-    · simp [hj0, U, V, al, xh, ah, Matrix.mul_apply, Fin.sum_univ_three, Matrix.one_apply]
+    · simp [h0j, U, V, al, xh, ah, Matrix.mul_apply, Fin.sum_univ_three, (Fin.succ_ne_zero j).symm]
+    · simp [hj0, U, V, al, xh, ah, Matrix.mul_apply, Fin.sum_univ_three]
     · simp [hij, U, V, al, xh, ah, Matrix.mul_apply, Fin.sum_univ_three, Matrix.one_apply, Fin.succ_inj]
   rw [hM, det_one_add_mul_comm, det_fin_three]
   simp only [← Fin.sum_univ_eq_sum_range]
-  simp [U, V, al, xh, ah, Matrix.mul_apply, Fin.sum_univ_succ, Matrix.one_apply]
+  simp [U, V, al, xh, ah, Matrix.mul_apply, Fin.sum_univ_succ]
   ring
 
 end FormulaFAux

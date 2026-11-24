@@ -150,16 +150,6 @@ theorem _root_.GlobalTheory.SplitLocEq.eq_of_trivOutside_of_loc_eq : ∀ (L : Ty
     intro z hz w hw i j
     have := hz w (by simpa using hw)
     exact congrFun (congrFun this i) j
-  have trivInv : ∀ z : _root_.ReciprocityTheory.Aut.GA L n, _root_.ReciprocityTheory.Aut.TrivOutside (L := L) {s.v} z → _root_.ReciprocityTheory.Aut.TrivOutside (L := L) {s.v} z⁻¹ := by
-    intro z hz w hw
-    show ((z⁻¹).1 : Matrix (Fin n) (Fin n) (_root_.ReciprocityTheory.Aut.AL L)).map (_root_.ReciprocityTheory.Aut.compAt L w) = 1
-    have hm : (z.1 : Matrix (Fin n) (Fin n) (_root_.ReciprocityTheory.Aut.AL L)) *
-        ((z⁻¹).1 : Matrix (Fin n) (Fin n) (_root_.ReciprocityTheory.Aut.AL L)) = 1 := by simp
-    have h2 := congrArg (Matrix.map · (_root_.ReciprocityTheory.Aut.compAt L w)) hm
-    simp only [Matrix.map_mul] at h2
-    rw [hz w hw, one_mul] at h2
-    rw [h2]
-    exact Matrix.map_one _ (map_zero _) (map_one _)
   have hinv : SplitPlace.loc s n x⁻¹ = SplitPlace.loc s n y⁻¹ := by simp [map_inv, hxy]
   apply Subtype.ext
   apply Units.ext

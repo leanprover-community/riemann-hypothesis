@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.ComplexAnalyticSets.PUnitaryZariskiDense
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TZero
 public import Mathlib.Algebra.MvPolynomial.Eval
 public import Mathlib.Analysis.Complex.Norm
@@ -60,28 +61,7 @@ open Finset GlobalTheory.CompanionTheory.CoefId
 namespace GlobalTheory.CompanionTheory.CoefId
 
 theorem unitCircle_infinite : {z : ℂ | ‖z‖ = 1}.Infinite := by
-  have hinj : Function.Injective (fun k : ℕ => ((1 + (k : ℂ) * Complex.I) / (1 - (k : ℂ) * Complex.I))) := by
-    intro s t hst
-    have h1 : ∀ k : ℕ, (1 - (k : ℂ) * Complex.I) ≠ 0 := by
-      intro k h0
-      have := congrArg Complex.re h0
-      simp at this
-    have h2 := (div_eq_div_iff (h1 s) (h1 t)).mp hst
-    have h3 := congrArg Complex.im h2
-    simp at h3
-    have h4 : (s : ℝ) = t := by linarith
-    exact_mod_cast h4
-  refine Set.infinite_of_injective_forall_mem hinj fun k => ?_
-  have h5 : ‖(1 + (k : ℂ) * Complex.I)‖ = ‖(1 - (k : ℂ) * Complex.I)‖ := by
-    rw [← Complex.norm_conj (1 + (k : ℂ) * Complex.I)]
-    simp [sub_eq_add_neg]
-  have h6 : ‖(1 - (k : ℂ) * Complex.I)‖ ≠ 0 := by
-    rw [norm_ne_zero_iff]
-    intro h0
-    have := congrArg Complex.re h0
-    simp at this
-  simp only [Set.mem_ofPred_eq, norm_div, h5]
-  exact div_self h6
+  apply GroundTheory.Heights₂.Heights.ComplexSets.UnitaryZariskiDense.unit_circle_infinite <;> assumption
 
 theorem poly_zero_of_torus {n : ℕ} (p : MvPolynomial (Fin n) ℂ)
     (h : ∀ z : Fin n → ℂ, (∀ a, ‖z a‖ = 1) → Function.Injective (fun a => z a ^ 2) →

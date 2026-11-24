@@ -77,8 +77,6 @@ theorem schur_selfAdjoint (𝒰 : Set (H →L[ℂ] H))
     intro φ U hU
     first
     | exact (hcomm U hU).cfc_real φ
-    | exact Commute.cfc_real (hcomm U hU) φ
-    | exact (hcomm U hU).cfc (by rw [hA.star_eq]; exact hcomm U hU) φ
   have hne0 : ∀ (φ : ℝ → ℝ) (u : ℝ), Continuous φ → u ∈ spectrum ℝ A → φ u ≠ 0 → cfc φ A ≠ 0 := by
     intro φ u hφ hu hφu h0
     have hmem : φ u ∈ spectrum ℝ (cfc φ A) := by
@@ -102,7 +100,6 @@ theorem schur_selfAdjoint (𝒰 : Set (H →L[ℂ] H))
       have hFG : cfc f A * cfc g A = 0 := by
         first
         | rw [← cfc_mul f g A hf.continuousOn hg.continuousOn, hz, cfc_const (0 : ℝ) A hA, map_zero]
-        | rw [← cfc_mul f g A, hz, cfc_const (0 : ℝ) A hA, map_zero]
       let K : Submodule ℂ H := LinearMap.ker ((cfc f A : H →L[ℂ] H) : H →ₗ[ℂ] H)
       have hKc : IsClosed (K : Set H) := (cfc f A).isClosed_ker
       have hKi : ∀ U ∈ 𝒰, ∀ v ∈ K, U v ∈ K := by
@@ -132,11 +129,9 @@ theorem schur_selfAdjoint (𝒰 : Set (H →L[ℂ] H))
     have hfc : Continuous fun x : ℝ => max 0 (|s - t| / 2 - |x - s|) := by
       first
       | fun_prop
-      | exact continuous_const.max (continuous_const.sub (continuous_id.sub continuous_const).abs)
     have hgc : Continuous fun x : ℝ => max 0 (|s - t| / 2 - |x - t|) := by
       first
       | fun_prop
-      | exact continuous_const.max (continuous_const.sub (continuous_id.sub continuous_const).abs)
     refine key _ _ hfc hgc (fun x => ?_) ?_ ?_
     · have hst' : |s - t| ≤ |x - s| + |x - t| := by
         have h3 := abs_sub_le s x t
@@ -161,8 +156,6 @@ theorem schur_selfAdjoint (𝒰 : Set (H →L[ℂ] H))
   rw [h1]
   first
   | exact (Complex.coe_smul c (1 : H →L[ℂ] H)).symm
-  | exact RCLike.real_smul_eq_coe_smul (K := ℂ) c (1 : H →L[ℂ] H)
-  | simp
 
 theorem schur_bounded (𝒰 : Set (H →L[ℂ] H)) (hstar : ∀ U ∈ 𝒰, star U ∈ 𝒰)
     (hirr : ∀ S : Submodule ℂ H, IsClosed (S : Set H) → (∀ U ∈ 𝒰, ∀ v ∈ S, U v ∈ S) → S = ⊥ ∨ S = ⊤)
@@ -200,7 +193,6 @@ variable {μ : Measure G} {ρ : G → (H →L[ℂ] H)}
 theorem SqRep.inner_map (h : SqRep μ ρ) (g : G) (x y : H) : ⟪ρ g x, ρ g y⟫_ℂ = ⟪x, y⟫_ℂ := by
   first
   | exact (⟨(ρ g : H →ₗ[ℂ] H), h.iso g⟩ : H →ₗᵢ[ℂ] H).inner_map_map x y
-  | exact LinearIsometry.inner_map_map { toLinearMap := (ρ g : H →ₗ[ℂ] H), norm_map' := h.iso g } x y
 
 theorem SqRep.inv_apply (h : SqRep μ ρ) (g : G) (x : H) : ρ g (ρ g⁻¹ x) = x := by
   have e : ρ (g * g⁻¹) x = ρ g (ρ g⁻¹ x) := by
@@ -215,8 +207,6 @@ private theorem star_inner_lemma_2 {E : Type*} [NormedAddCommGroup E] [InnerProd
     star ⟪x, y⟫_ℂ = ⟪y, x⟫_ℂ := by
   first
   | exact inner_conj_symm y x
-  | exact inner_conj_symm x y
-  | simp
 
 theorem SqRep.memLp' (h : SqRep μ ρ) (v w : H) : MemLp (fun g => ⟪ρ g v, w⟫_ℂ) 2 μ := by
   have e : (fun g => ⟪ρ g v, w⟫_ℂ) = fun g => star ⟪w, ρ g v⟫_ℂ := by
@@ -224,10 +214,7 @@ theorem SqRep.memLp' (h : SqRep μ ρ) (v w : H) : MemLp (fun g => ⟪ρ g v, w�
     exact (star_inner_lemma_2 w (ρ g v)).symm
   rw [e]
   first
-  | exact (h.sq v w).congr_norm (h.sq v w).1.star (ae_of_all _ fun g => (norm_star _).symm)
   | exact (h.sq v w).star
-  | exact (h.sq v w).congr_norm (continuous_star.comp_aestronglyMeasurable (h.sq v w).1)
-      (ae_of_all _ fun g => (norm_star _).symm)
 
 def Tlin (h : SqRep μ ρ) (v : H) : H →ₗ[ℂ] Lp ℂ 2 μ where
   toFun w := (h.memLp' v w).toLp _
@@ -235,17 +222,16 @@ def Tlin (h : SqRep μ ρ) (v : H) : H →ₗ[ℂ] Lp ℂ 2 μ where
     rw [← MemLp.toLp_add]
     congr 1
     funext g
-    simp [inner_add_right]
+    simp
   map_smul' c w := by
     rw [RingHom.id_apply, ← MemLp.toLp_const_smul]
     congr 1
     funext g
-    simp [inner_smul_right]
+    simp
 
 theorem Tlin_coe (h : SqRep μ ρ) (v w : H) : (Tlin h v w : G → ℂ) =ᵐ[μ] fun g => ⟪ρ g v, w⟫_ℂ := by
   first
   | exact (h.memLp' v w).coeFn_toLp
-  | exact MemLp.coeFn_toLp _
 
 variable [CompleteSpace H]
 
@@ -272,7 +258,6 @@ private theorem innerC_lemma (a b : ℂ) : ⟪a, b⟫_ℂ = star a * b := by
   first
   | (simp only [RCLike.inner_apply, starRingEnd_apply]; done)
   | (simp only [RCLike.inner_apply, starRingEnd_apply]; ring)
-  | simp [mul_comm]
 
 theorem Tcl_inner (h : SqRep μ ρ) (v v' w w' : H) :
     ⟪Tcl h v w, Tcl h v' w'⟫_ℂ = ∫ g, ⟪w, ρ g v⟫_ℂ * star ⟪w', ρ g v'⟫_ℂ ∂μ := by
@@ -302,7 +287,6 @@ theorem Iint_left [μ.IsMulLeftInvariant] (h : SqRep μ ρ) (a : G) (v w v' w' :
   simp_rw [e]
   first
   | exact integral_mul_left_eq_self (fun g => ⟪w, ρ g v⟫_ℂ * star ⟪w', ρ g v'⟫_ℂ) a⁻¹
-  | exact integral_mul_left_eq_self (μ := μ) (fun g => ⟪w, ρ g v⟫_ℂ * star ⟪w', ρ g v'⟫_ℂ) a⁻¹
 
 theorem Iint_inv [μ.IsInvInvariant] (h : SqRep μ ρ) (v w v' w' : H) : Iint μ ρ v w v' w' = Iint μ ρ w' v' w v := by
   unfold Iint
@@ -315,7 +299,6 @@ theorem Iint_inv [μ.IsInvInvariant] (h : SqRep μ ρ) (v w v' w' : H) : Iint μ
   simp_rw [e]
   first
   | exact integral_inv_eq_self (fun g => ⟪v', ρ g w'⟫_ℂ * star ⟪v, ρ g w⟫_ℂ) μ
-  | exact integral_inv_eq_self (fun g => ⟪v', ρ g w'⟫_ℂ * star ⟪v, ρ g w⟫_ℂ)
 
 theorem Iint_integrable (h : SqRep μ ρ) (v w v' w' : H) :
     Integrable (fun g => ⟪w, ρ g v⟫_ℂ * star ⟪w', ρ g v'⟫_ℂ) μ := by
@@ -386,7 +369,6 @@ theorem schur_orth [μ.IsMulLeftInvariant] [μ.IsInvInvariant] [μ.IsOpenPosMeas
     simp only [Function.mem_support, h.one, ContinuousLinearMap.one_apply]
     first
     | exact pow_ne_zero 2 (norm_ne_zero_iff.2 (inner_self_ne_zero.2 he))
-    | simpa using he
   have hIe : Iint μ ρ e e e e = ((∫ g, ‖⟪e, ρ g e⟫_ℂ‖ ^ 2 ∂μ : ℝ) : ℂ) := by
     unfold Iint
     first
@@ -396,13 +378,10 @@ theorem schur_orth [μ.IsMulLeftInvariant] [μ.IsInvInvariant] [μ.IsOpenPosMeas
     show ⟪e, ρ g e⟫_ℂ * star ⟪e, ρ g e⟫_ℂ = ((‖⟪e, ρ g e⟫_ℂ‖ ^ 2 : ℝ) : ℂ)
     first
     | rw [Complex.star_def, Complex.mul_conj, Complex.normSq_eq_norm_sq]
-    | exact RCLike.mul_conj _
-    | simp [Complex.mul_conj, Complex.normSq_eq_norm_sq, Complex.star_def]
     | (rw [Complex.star_def, Complex.mul_conj, Complex.normSq_eq_abs]; push_cast; ring)
   have hee : ⟪e, e⟫_ℂ = ((‖e‖ ^ 2 : ℝ) : ℂ) := by
     first
     | (rw [inner_self_eq_norm_sq_to_K]; norm_cast)
-    | simp [inner_self_eq_norm_sq_to_K]
   have key : ∀ v v' : H, c v v' * ((‖e‖ ^ 2 : ℝ) : ℂ) = c e e * ⟪v', v⟫_ℂ := by
     intro v v'
     rw [← hee, ← hI v e v' e, Iint_inv h v e v' e, hI e v' e v]
@@ -466,7 +445,6 @@ theorem Bop_tw [μ.IsMulLeftInvariant] (h : SqRep μ ρ) (h' : SqRep μ ρ') (v 
   simp_rw [e]
   first
   | exact (integral_mul_left_eq_self (fun g => ⟪w, ρ g v⟫_ℂ * star ⟪ρ' a w', ρ' g v'⟫_ℂ) a).symm
-  | exact (integral_mul_left_eq_self (μ := μ) (fun g => ⟪w, ρ g v⟫_ℂ * star ⟪ρ' a w', ρ' g v'⟫_ℂ) a).symm
 
 theorem equiv_of_intertwiner (h : SqRep μ ρ) (h' : SqRep μ ρ')
     (hirr : ∀ S : Submodule ℂ H, IsClosed (S : Set H) → (∀ g, ∀ v ∈ S, ρ g v ∈ S) → S = ⊥ ∨ S = ⊤)
@@ -537,12 +515,10 @@ theorem equiv_of_intertwiner (h : SqRep μ ρ) (h' : SqRep μ ρ')
     have hcl : IsClosed (Set.range V) := by
       first
       | exact V.isometry.antilipschitz.isClosed_range V.isometry.uniformContinuous
-      | exact V.isometry.isClosedEmbedding.isClosed_range
     let S : Submodule ℂ H := LinearMap.range V.toLinearMap
     have hS : (S : Set H) = Set.range V := by
       first
       | exact LinearMap.coe_range _
-      | exact LinearMap.range_coe _
       | (ext x; exact LinearMap.mem_range)
     have hinv : ∀ g, ∀ x ∈ S, ρ g x ∈ S := by
       intro g x hx
@@ -566,7 +542,6 @@ theorem equiv_of_intertwiner (h : SqRep μ ρ) (h' : SqRep μ ρ')
   have hE : ∀ x, E x = V x := fun x => by
     first
     | rfl
-    | simp [E]
   refine ⟨E.symm, fun g v => E.injective ?_⟩
   rw [LinearIsometryEquiv.apply_symm_apply, hE, hVtw, ← hE, LinearIsometryEquiv.apply_symm_apply]
 
@@ -592,13 +567,10 @@ instance instInvInvMuG : (Formalism.REAL.muG ε).IsInvInvariant :=
 theorem continuous_umat : Continuous (fun g : Formalism.REAL.UJ ε => umat g) := by
   first
   | exact Units.continuous_val.comp continuous_subtype_val
-  | fun_prop
-  | continuity
 
 theorem umat_mem (g : Formalism.REAL.UJ ε) : umat g ∈ UJset ε := by
   first
   | exact g.2
-  | exact g.prop
 
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 
@@ -641,7 +613,6 @@ private theorem umat_surj_lemma {n : ℕ} {ε : Fin n → Bool} (g : Matrix (Fin
        rwa [Matrix.inv_eq_left_inv hl] at h3)
   first
   | exact ⟨⟨⟨g, _, hr, hl⟩, hg⟩, rfl⟩
-  | exact ⟨⟨⟨g, _, hr, hl⟩, hg'⟩, rfl⟩
 
 theorem irr_of {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} (hI : IsIrredOn (UJset ε) σ) :
     ∀ S : Submodule ℂ H, IsClosed (S : Set H) → (∀ g : Formalism.REAL.UJ ε, ∀ v ∈ S, σ (umat g) v ∈ S) → S = ⊥ ∨ S = ⊤ := by
@@ -657,11 +628,9 @@ theorem schur_UJ [CompleteSpace H] (σ : Matrix (Fin n) (Fin n) ℂ → (H →L[
   haveI : (Formalism.REAL.muG ε).IsMulLeftInvariant := by
     first
     | infer_instance
-    | (unfold Formalism.REAL.muG; infer_instance)
   haveI : (Formalism.REAL.muG ε).IsOpenPosMeasure := by
     first
     | infer_instance
-    | (unfold Formalism.REAL.muG; infer_instance)
   obtain ⟨d, hd, hrel⟩ := schur_orth (μ := Formalism.REAL.muG ε) (sqRep_of hU hS) (irr_of hI)
   exact ⟨d, hd, hrel⟩
 

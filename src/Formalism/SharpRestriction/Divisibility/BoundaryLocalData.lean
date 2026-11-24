@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
 public import Formalism.SharpRestriction.ParConsts
 public import Formalism.SharpRestriction.Divisibility.ModuliIntegralCharts
 import Mathlib.Algebra.Order.Floor.Extended
@@ -54,21 +55,7 @@ theorem sqrtMinusD_sq (D : Formalism.BasicNotions.D7) : D.host.sqrtMinusD ^ 2 = 
 
 theorem half_one_add_sqrt_neg_isIntegral (D : Formalism.BasicNotions.D7) :
     IsIntegral ℤ ((1 + D.host.sqrtMinusD) / 2 : D.host.E) := by
-  obtain ⟨-, -, -, hd, -⟩ := D.host.hyp
-  obtain ⟨k, hk⟩ : ∃ k : ℕ, D.host.d = 16 * k + 7 := ⟨D.host.d / 16, by omega⟩
-  refine ⟨Polynomial.X ^ 2 - Polynomial.X + Polynomial.C ((4 * k + 2 : ℕ) : ℤ), ?_, ?_⟩
-  · monicity!
-  · have h := sqrtMinusD_sq D
-    rw [hk] at h
-    simp only [Polynomial.eval₂_add, Polynomial.eval₂_sub, Polynomial.eval₂_pow, Polynomial.eval₂_X,
-      Polynomial.eval₂_C]
-    push_cast at h
-    simp only [eq_intCast, Int.cast_add, Int.cast_mul, Int.cast_natCast, Int.cast_ofNat, Nat.cast_add,
-      Nat.cast_mul, Nat.cast_ofNat]
-    have : ((1 + D.host.sqrtMinusD) / 2 : D.host.E) ^ 2 =
-        (1 + 2 * D.host.sqrtMinusD + D.host.sqrtMinusD ^ 2) / 4 := by ring
-    rw [this, h]
-    ring
+  apply Formalism.L2.Pj.half_one_add_sqrt_neg_isIntegral <;> assumption
 
 def w0 (D : Formalism.BasicNotions.D7) : 𝓞 D.host.E := ⟨(1 + D.host.sqrtMinusD) / 2, half_one_add_sqrt_neg_isIntegral D⟩
 

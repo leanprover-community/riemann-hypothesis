@@ -313,7 +313,7 @@ private lemma eq_frame_expansion_hJ (G : PtRepPf.Fr ε r k) (v : Fin n → ℂ) 
       Finset.mem_univ, if_true, sub_self]
   · intro b
     simp only [PtRepPf.hJ_sub_right, PtRepPf.hJ_add_right, hJ_sum_right_root_lattice_thresholds, PtRepPf.hJ_smul_right, fe, G.ff,
-      G.fz, G.fw, mul_zero, Finset.sum_const_zero, zero_add, add_zero, mul_ite, mul_one, Finset.sum_ite_eq',
+      G.fz, G.fw, mul_zero, Finset.sum_const_zero, add_zero, mul_ite, mul_one, Finset.sum_ite_eq',
       Finset.mem_univ, if_true, sub_self]
   · simp only [PtRepPf.hJ_sub_right, PtRepPf.hJ_add_right, hJ_sum_right_root_lattice_thresholds, PtRepPf.hJ_smul_right, ze, zf,
       G.zz, G.zw, mul_zero, Finset.sum_const_zero, zero_add, add_zero]
@@ -531,7 +531,7 @@ theorem bridge_place (hT : TrHyp F Qm Qim c) (hT' : TrHyp F' Qm Qim c) {sc : ℝ
   have hdet : (Formalism.QuantumDeterminants.Zhat k r Bs.z Bs.z' (Qim * (Hi * g * H') * Qm)).det = pL * pS * Z.det := by
     rw [hZC, Matrix.det_mul, Matrix.det_mul, Matrix.det_diagonal, Matrix.det_diagonal]
     ring
-  have hDl : Formalism.L2.SG.RealObj.Dl Z (r + 1) = Z.det := dl_top' Z
+  have hDl : Formalism.L2.SG.RealObj.Dl Z (r + 1) = Z.det := _root_.Formalism.L2.SG.RealObj.InfCut.PtRepPf.dl_top Z
   have hMM : star M * M = 1 := Matrix.mem_unitaryGroup_iff'.mp hMu
   have hMM' : star M' * M' = 1 := Matrix.mem_unitaryGroup_iff'.mp hM'u
   refine ⟨?_, ?_, ?_⟩

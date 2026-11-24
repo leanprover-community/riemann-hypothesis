@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FrameChangeExistsUniqueOfSamePoint
 public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.UnivFrame
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -91,23 +92,7 @@ theorem appLE_id_apply (X : Scheme.{0}) (U : X.Opens) (h : U ≤ 𝟙 X ⁻¹ᵁ
 
 theorem secBC_id_iff {S : Type} [CommRing S] (x : Sp S ⟶ Xo.X) (a : S) (s s' : LB.Sec (PPx x)) :
     SecBC (RingHom.id S) a x x s s' ↔ ∀ i, s'.f i = scal x a i * s.f i := by
-  have hid : (fst (Over.mk x) Xo.univ.t.G).left ≫ spMap (RingHom.id S) = (fst (Over.mk x) Xo.univ.t.G).left := by
-    rw [spMap_id]
-    exact Category.comp_id _
-
-  have hpm : ∀ pm : Gx x ⟶ Gx x, pm ≫ (snd (Over.mk x) Xo.univ.t.G).left = (snd (Over.mk x) Xo.univ.t.G).left →
-      pm ≫ (fst (Over.mk x) Xo.univ.t.G).left = (fst (Over.mk x) Xo.univ.t.G).left ≫ spMap (RingHom.id S) →
-      pm = 𝟙 _ := by
-    intro pm h₁ h₂
-    rw [hid] at h₂
-    exact pullback.hom_ext (h₂.trans (Category.id_comp _).symm) (h₁.trans (Category.id_comp _).symm)
-  constructor
-  · rintro ⟨pm, h₁, h₂, h₃⟩ i
-    obtain rfl := hpm pm h₁ h₂
-    exact ((appLE_id_apply _ _ _ _).symm.trans (h₃ i le_rfl)).symm
-  · intro hs
-    refine ⟨𝟙 _, Category.id_comp _, (Category.id_comp _).trans hid.symm, fun i h => ?_⟩
-    exact (appLE_id_apply _ _ _ _).trans (hs i).symm
+  apply GlobalTheory.Frames.ChgOf.secBC_id_iff <;> assumption
 
 private theorem secBC_unique_of_secGen {S : Type} [CommRing S] (x x' : Sp S ⟶ Xo.X) (hx : x' = x) {a b : S}
     (s : LB.Sec (PPx x)) (s' : LB.Sec (PPx x')) (ha : SecBC (RingHom.id S) a x x' s s')

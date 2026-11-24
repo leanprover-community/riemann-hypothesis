@@ -136,7 +136,7 @@ theorem num_mon (g0 : Fin 2) (t0 : ZMod d) (c0 : ℕ) (g : Fin 2) (e : ZMod d �
   by_cases hg : g0 = g
   · subst hg
     rw [Fintype.sum_eq_single t0]
-    · simp only [eq_self_iff_true, true_and, and_true, smul_ite, smul_eq_mul, mul_ite, mul_one, mul_zero]
+    · simp only [true_and, and_true, smul_eq_mul, mul_ite, mul_one, mul_zero]
       rw [← Finset.sum_filter, ← Finset.sum_filter]
       refine Finset.sum_congr ?_ (fun _ _ => rfl)
       ext k

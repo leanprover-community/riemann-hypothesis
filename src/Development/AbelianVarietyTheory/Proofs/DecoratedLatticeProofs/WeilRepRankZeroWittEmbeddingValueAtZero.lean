@@ -66,14 +66,6 @@ theorem rz_gA : gA S = adj d.p0 ⬝ (gA S₀ ⬝ d.p0) := by
   rw [d.gA_eq, Subsingleton.elim d.pX 0, Subsingleton.elim d.pY 0]
   simp
 
-theorem rz_j0p0 : d.j0 ⬝ d.p0 = 1 := by
-  have := d.sum_eq_one
-  rwa [Subsingleton.elim d.jX 0, Subsingleton.elim d.jY 0, Matrix.zero_mul, Matrix.zero_mul, zero_add, add_zero] at this
-
-theorem unitaryMatrix_rankZeroWittEmbedding_eq (g : GA D S₀) : mt S (d.emb0 g) = d.j0 ⬝ mt S₀ g ⬝ d.p0 := by
-  rw [d.unitaryMatrix_wittCoreEmbedding, Subsingleton.elim d.jX 0, Subsingleton.elim d.jY 0]
-  simp
-
 theorem rz_unit (g : GA D S) : adj (d.p0 ⬝ mt S g ⬝ d.j0) ⬝ (gA S₀ ⬝ (d.p0 ⬝ mt S g ⬝ d.j0)) = gA S₀ := by
   have key : ∀ X : Mx D S.rank S₀.rank, adj d.p0 ⬝ (gA S₀ ⬝ (d.p0 ⬝ X)) = gA S ⬝ X := fun X => by
     rw [rz_gA d, Matrix.mul_assoc, Matrix.mul_assoc]
@@ -90,13 +82,13 @@ def rzEquiv : GA D S₀ ≃* GA D S where
   toFun := d.emb0
   invFun := rzInv d
   left_inv g := mt_injective S₀ (by
-    rw [mt_rzInv, unitaryMatrix_rankZeroWittEmbedding_eq]
+    rw [mt_rzInv, _root_.GlobalTheory.WeilSrc.Zero.unitaryMatrix_wittCoreEmbedding]
     simp only [Matrix.mul_assoc, d.p0_j0, Matrix.mul_one]
     rw [← Matrix.mul_assoc, d.p0_j0, Matrix.one_mul])
   right_inv g := mt_injective S (by
-    rw [unitaryMatrix_rankZeroWittEmbedding_eq, mt_rzInv]
-    simp only [Matrix.mul_assoc, rz_j0p0 d, Matrix.mul_one]
-    rw [← Matrix.mul_assoc, rz_j0p0 d, Matrix.one_mul])
+    rw [_root_.GlobalTheory.WeilSrc.Zero.unitaryMatrix_wittCoreEmbedding, mt_rzInv]
+    simp only [Matrix.mul_assoc, _root_.GlobalTheory.WeilSrc.Zero.witt_decomposition_zero_section_embed_eq_one d, Matrix.mul_one]
+    rw [← Matrix.mul_assoc, _root_.GlobalTheory.WeilSrc.Zero.witt_decomposition_zero_section_embed_eq_one d, Matrix.one_mul])
   map_mul' := map_mul d.emb0
 
 theorem rzInv_continuous : Continuous (rzInv d) :=

@@ -112,8 +112,8 @@ theorem dAway_lift {T : Type} [CommRing T] (gg : DualNumber S →+* T) (hu : IsU
   refine RingHom.ext fun x => ?_
   conv_rhs => rw [eq_inl_add_inr x]
   simp only [RingHom.comp_apply, RingHom.coe_mk, MonoidHom.coe_mk, OneHom.coe_mk, dAway, dualMapR,
-    TrivSqZeroExt.fst_add, TrivSqZeroExt.snd_add, TrivSqZeroExt.fst_inl, TrivSqZeroExt.snd_inl,
-    TrivSqZeroExt.fst_inr, TrivSqZeroExt.snd_inr, map_zero, add_zero, zero_add, map_add, map_mul, hφ]
+    TrivSqZeroExt.fst_inl, TrivSqZeroExt.snd_inl,
+    TrivSqZeroExt.fst_inr, TrivSqZeroExt.snd_inr, map_zero, zero_add, map_add, map_mul, hφ]
   simp only [zero_mul, add_zero, e]
 
 end Dual

@@ -119,15 +119,12 @@ section Chars
 variable (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
 theorem congU_mono {I J : Ideal (RInt F E)} (h : I ≤ J) : congU F E I ≤ congU F E J := by
-  apply Subgroup.map_mono
-  intro u hu
-  rw [mem_kerRed] at hu ⊢
-  exact h hu
+  exact Subgroup.map_mono fun u hu => by
+    rw [mem_kerRed] at hu ⊢
+    exact h hu
 
 theorem congN_dvd {M N : ℕ} (h : M ∣ N) : congN F E N ≤ congN F E M := by
-  apply congU_mono
-  rw [Ideal.span_singleton_le_span_singleton]
-  exact_mod_cast (Nat.cast_dvd_cast (α := RInt F E) h)
+  exact congU_mono F E (Ideal.span_singleton_le_span_singleton.2 (by exact_mod_cast (Nat.cast_dvd_cast (α := RInt F E) h)))
 
 variable (L : Type) [Field L]
 

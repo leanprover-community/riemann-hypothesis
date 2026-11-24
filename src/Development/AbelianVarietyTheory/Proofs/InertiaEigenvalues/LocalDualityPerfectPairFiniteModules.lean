@@ -40,6 +40,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
 import Development.AbelianVarietyTheory.PublishedTheorems.GaloisCohomology₂.PoitouTateNineTermTransgressionZeroApply
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.LocalDualityFiniteDiscreteModules
 
 @[expose] public section
 
@@ -108,42 +109,7 @@ private def cocycleTransport : Z1 ρ ≃+ Z1 ρ' where
   map_add' z w := Subtype.ext (funext fun g => map_add e _ _)
 
 
-include he in
-private theorem exists_H1_transport : ∃ T : H1 ρ ≃+ H1 ρ', ∀ (z : Z1 ρ) (z' : Z1 ρ'),
-    (∀ g, z'.1 g = e (z.1 g)) → T (Submodule.Quotient.mk z) = Submodule.Quotient.mk z' := by
-  refine ⟨QuotientAddGroup.congr ((B1 ρ).comap (Z1 ρ).subtype).toAddSubgroup
-    ((B1 ρ').comap (Z1 ρ').subtype).toAddSubgroup (cocycleTransport ρ ρ' e he) ?_, fun z z' h => ?_⟩
-  · ext z'
-    constructor
-    · rintro ⟨z, hz, rfl⟩
-      obtain ⟨m, hm⟩ := (mem_coboundaries1 ρ _).1 hz
-      refine (mem_coboundaries1 ρ' _).2 ⟨e m, fun g => ?_⟩
-      change e (z.1 g) = _
-      rw [← he, ← map_sub]
-      exact congrArg e (hm g)
-    · intro hz
-      obtain ⟨m, hm⟩ := (mem_coboundaries1 ρ' _).1 hz
-      refine ⟨(cocycleTransport ρ ρ' e he).symm z', (mem_coboundaries1 ρ _).2 ⟨e.symm m, fun g => ?_⟩,
-        (cocycleTransport ρ ρ' e he).apply_symm_apply z'⟩
-      apply e.injective
-      change e (e.symm (z'.1 g)) = _
-      rw [map_sub, he, e.apply_symm_apply, e.apply_symm_apply]
-      exact hm g
-  · obtain rfl : z' = cocycleTransport ρ ρ' e he z := Subtype.ext (funext h)
-    rfl
-
 end Transport
-
-private theorem card_H0_transport {R R' : Type} [CommRing R] [CommRing R'] {D D' : Type} [Group D] [Group D']
-    {M : Type} [AddCommGroup M] [Module R M] {M' : Type} [AddCommGroup M'] [Module R' M']
-    (ρ : Representation R D M) (ρ' : Representation R' D' M') (φ : D → D')
-    (hφ : Function.Surjective φ) (e : M ≃+ M') (he : ∀ g m, e (ρ g m) = ρ' (φ g) (e m)) :
-    Nat.card (H0 ρ') = Nat.card (H0 ρ) := by
-  refine (Nat.card_congr (e.toEquiv.subtypeEquiv fun m => ?_)).symm
-  change (∀ g, ρ g m = m) ↔ ∀ g, ρ' g (e m) = e m
-  rw [hφ.forall]
-  refine forall_congr' fun g => ?_
-  rw [← he, e.injective.eq_iff]
 
 theorem local_pair : LocalFiniteness → LocalTateDuality → LocalEulerChar → ∀ (F Ω : Type) [Field F] [NumberField F] [Field Ω] [Algebra F Ω] [IsAlgClosure F Ω] (l : ℕ) [Fact l.Prime] (n : ℕ) (A : ValuationSubring Ω) (v : HeightOneSpectrum (𝓞 F)), IsPlaceOver A v → ∀ (Λ : Type) [CommRing Λ] (W : Type) [AddCommGroup W] [Module Λ W] [TopologicalSpace W] [DiscreteTopology W] [Finite W] (W' : Type) [AddCommGroup W'] [Module Λ W'] [TopologicalSpace W'] [DiscreteTopology W'] [Finite W'] (ρ : Representation Λ (Dec (F := F) A) W) (ρ' : Representation Λ (Dec (F := F) A) W') (P : W →+ W' →+ ZMod (l ^ n)), 0 < n → ContAction ρ → ContAction ρ' → (∀ x, (∀ y, P x y = 0) → x = 0) → (∀ y, (∀ x, P x y = 0) → y = 0) → (∀ g x y, P (ρ g x) (ρ' g y) = ((cycMod F Ω l n g.1 : (ZMod (l ^ n))ˣ) : ZMod (l ^ n)) * P x y) → (∀ y : Z1 ρ', (∀ x : Z1 ρ, CupB (fun g : Dec (F := F) A => ((cycMod F Ω l n g.1 : (ZMod (l ^ n))ˣ) : ZMod (l ^ n))) (fun g m => ρ' g m) P x.1 y.1) ↔ Cob ρ' y.1) ∧ (((l : ℕ) : 𝓞 F) ∉ v.asIdeal → Nat.card (H1 ρ) = Nat.card (H0 ρ) * Nat.card (H0 ρ')) := by
   intro hLF hLD hLE F Ω _ _ _ _ _ l _ n A v hA Λ _ W _ _ _ _ _ W' _ _ _ _ _ ρ ρ' P hn hρ hρ' h1 h2 hP
@@ -180,9 +146,9 @@ theorem local_pair : LocalFiniteness → LocalTateDuality → LocalEulerChar →
     have hee := dual_equivariant ρ ρ' P χ hP e he
     obtain ⟨⟨j⟩, -, -, -, hb⟩ := hLD F Ω l n W A (zmodRep (l ^ n) ρ) v hn hA hρ
     have hE := (hLE F Ω l n W A (zmodRep (l ^ n) ρ) v hn hA hρ).2 hv
-    obtain ⟨T, -⟩ := exists_H1_transport ρ (zmodRep (l ^ n) ρ) (AddEquiv.refl W) fun _ _ => rfl
-    have c0 := card_H0_transport ρ (zmodRep (l ^ n) ρ) id Function.surjective_id (AddEquiv.refl W) fun _ _ => rfl
-    have c0' := card_H0_transport ρ' ((twDual χ (zmodRep (l ^ n) ρ)).comp (MonoidHom.id _)) id Function.surjective_id e hee
+    obtain ⟨T, -⟩ := _root_.GlobalTheory.DualPairFormula.exists_H1_equiv_of_equivariant_equiv ρ (zmodRep (l ^ n) ρ) (AddEquiv.refl W) fun _ _ => rfl
+    have c0 := _root_.GlobalTheory.DualPairFormula.card_H0_eq_of_equivariant_equiv ρ (zmodRep (l ^ n) ρ) id Function.surjective_id (AddEquiv.refl W) fun _ _ => rfl
+    have c0' := _root_.GlobalTheory.DualPairFormula.card_H0_eq_of_equivariant_equiv ρ' ((twDual χ (zmodRep (l ^ n) ρ)).comp (MonoidHom.id _)) id Function.surjective_id e hee
     have : Finite (TDual (ZMod (l ^ n)) W) := Finite.of_equiv _ e.toEquiv
     rw [Nat.card_congr T.toEquiv, hE, c0, ← c0']
     congr 1

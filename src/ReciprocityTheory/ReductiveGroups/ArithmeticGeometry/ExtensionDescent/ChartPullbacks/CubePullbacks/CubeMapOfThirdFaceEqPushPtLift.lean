@@ -69,31 +69,26 @@ lemma pzero_left {S₀ : Scheme.{0}} (H : Over S₀) [GrpObj H] (T : Over S₀) 
     (pzero H T).left = T.hom ≫ eSec H := by
   first
     | rfl
-    | simp [pzero, eSec]
 
 lemma eSec_hom {S₀ : Scheme.{0}} (H : Over S₀) [GrpObj H] : eSec H ≫ H.hom = 𝟙 _ := by
   first
     | simp [eSec]
-    | (unfold eSec; exact Over.w _)
 
 lemma psum_empty {S₀ : Scheme.{0}} (H : Over S₀) [GrpObj H] [IsCommMonObj H] {T : Over S₀} {n : ℕ}
     (x : Fin n → (T ⟶ H)) : psum H x ∅ = pzero H T := by
   first
-    | rfl
     | simp [psum, pzero]
 
 lemma padd_pzero {S₀ : Scheme.{0}} (H : Over S₀) [GrpObj H] [IsCommMonObj H] {T : Over S₀}
     (a : T ⟶ H) : padd H a (pzero H T) = a := by
   first
     | simp [padd, pzero]
-    | simp [padd]
 
 lemma psum_single {S₀ : Scheme.{0}} (H : Over S₀) [GrpObj H] [IsCommMonObj H] {T : Over S₀}
     (x : Fin 3 → (T ⟶ H)) (i : Fin 3) : psum H x {i} = x i := by
   fin_cases i <;>
     first
       | exact padd_pzero H _
-      | simp [psum, List.finRange, padd_pzero]
 
 lemma cubeMap_lies_over_base : m.F3 ≫ (G3 G).hom = (G3 G').hom ≫ m.e := by
   have h := m.psum_comm ∅
@@ -133,26 +128,22 @@ lemma tb_comp {T T' : Over S'} (a : T' ⟶ T) (y : T ⟶ G') :
 lemma tb_pzero (T : Over S') : tb m (pzero G' T) = pzero G ((Over.map m.e).obj T) := by
   ext
   rw [tb_left, pzero_left, pzero_left, Category.assoc, m.e_comm]
-  all_goals first | rfl | simp
+  all_goals first | rfl
 
 lemma psum_01 {S₀ : Scheme.{0}} (H : Over S₀) [GrpObj H] [IsCommMonObj H] {T : Over S₀}
     (x : Fin 3 → (T ⟶ H)) : psum H x {0, 1} = padd H (x 0) (x 1) := by
   first
     | exact congrArg (padd H (x 0)) (padd_pzero H (x 1))
-    | (show padd H (x 0) (padd H (x 1) (pzero H T)) = _; rw [padd_pzero])
 
 lemma comp_padd' {S₀ : Scheme.{0}} (H : Over S₀) [GrpObj H] {T T' : Over S₀} (L : T' ⟶ T)
     (a b : T ⟶ H) : L ≫ padd H a b = padd H (L ≫ a) (L ≫ b) := by
   first
     | (simp only [padd, ← Category.assoc, CartesianMonoidalCategory.comp_lift])
-    | (unfold padd; rw [← Category.assoc, CartesianMonoidalCategory.comp_lift])
-    | simp [padd]
 
 lemma comp_pzero' {S₀ : Scheme.{0}} (H : Over S₀) [GrpObj H] {T T' : Over S₀} (L : T' ⟶ T) :
     L ≫ pzero H T = pzero H T' := by
   first
     | simp [pzero]
-    | (unfold pzero; simp)
 
 def cubeMapOverAlt : (Over.map m.e).obj (G3 G') ⟶ G3 G := Over.homMk m.F3 (cubeMap_lies_over_base m)
 
@@ -163,7 +154,6 @@ lemma cubeMapOver_comp_proj (i : Fin 3) : cubeMapOverAlt m ≫ x3 G i = tb m (x3
   ext
   first
     | simp [cubeMapOverAlt, tb, cubeMap_on_coordinates]
-    | (simp only [cubeMapOverAlt, tb, Over.comp_left, Over.homMk_left]; exact (cubeMap_on_coordinates m i).symm)
 
 lemma cubeMapOver_eq_productMap : cubeMapOverAlt m = L3 m := by
   apply CartesianMonoidalCategory.hom_ext
@@ -229,18 +219,12 @@ theorem face_comm (i : Fin 3) :
   · have h := lift_triple_comm_pullback m (L2 m) (pzero G' (G2 G')) (x2 G' 0) (x2 G' 1) (pzero G (G2 G)) (x2 G 0) (x2 G 1) (tb_pzero' m (L2 m)) (pullback_proj_square m 0) (pullback_proj_square m 1)
     first
       | exact h
-      | (simp only [faceMap, pullbackMapSquare]; exact h)
-      | simpa [faceMap, pullbackMapSquare] using h
   · have h := lift_triple_comm_pullback m (L2 m) (x2 G' 0) (pzero G' (G2 G')) (x2 G' 1) (x2 G 0) (pzero G (G2 G)) (x2 G 1) (pullback_proj_square m 0) (tb_pzero' m (L2 m)) (pullback_proj_square m 1)
     first
       | exact h
-      | (simp only [faceMap, pullbackMapSquare]; exact h)
-      | simpa [faceMap, pullbackMapSquare] using h
   · have h := lift_triple_comm_pullback m (L2 m) (x2 G' 0) (x2 G' 1) (pzero G' (G2 G')) (x2 G 0) (x2 G 1) (pzero G (G2 G)) (pullback_proj_square m 0) (pullback_proj_square m 1) (tb_pzero' m (L2 m))
     first
       | exact h
-      | (simp only [faceMap, pullbackMapSquare]; exact h)
-      | simpa [faceMap, pullbackMapSquare] using h
 
 theorem swap_first_two_comm :
     (lift (x3 G' 1) (lift (x3 G' 0) (x3 G' 2))).left ≫ m.F3 =

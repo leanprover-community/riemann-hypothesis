@@ -60,24 +60,19 @@ variable {R : Type u} [CommRing R]
 theorem subst_neg' {a : R⟦X⟧} (ha : HasSubst a) (f : R⟦X⟧) : (-f).subst a = -f.subst a := by
   first
     | (rw [← PowerSeries.coe_substAlgHom ha]; exact map_neg _ f)
-    | simp [PowerSeries.subst_neg ha]
 
 theorem subst_one' {a : R⟦X⟧} (ha : HasSubst a) : (1 : R⟦X⟧).subst a = 1 := by
   first
     | (rw [← PowerSeries.coe_substAlgHom ha]; exact map_one _)
-    | simp
 
 private theorem hasSubst_lemma {a : R⟦X⟧} (h : constantCoeff a = 0) : HasSubst a := by
   first
   | exact HasSubst.of_constantCoeff_zero' h
-  | exact HasSubst.of_constantCoeff_zero h
-  | exact PowerSeries.HasSubst.of_constantCoeff_zero' h
 
 private theorem powerSeries_subst_mul_of_hasSubst {a : R⟦X⟧} (ha : HasSubst a) (f g : R⟦X⟧) :
     (f * g).subst a = f.subst a * g.subst a := by
   first
   | exact PowerSeries.subst_mul ha f g
-  | (rw [← PowerSeries.coe_substAlgHom ha]; exact map_mul _ f g)
 
 private theorem constantCoeff_powerSeries_subst_eq_zero {a f : R⟦X⟧} (ha0 : constantCoeff a = 0) (hf : constantCoeff f = 0) :
     constantCoeff (f.subst a) = 0 := by
@@ -89,8 +84,6 @@ private theorem powerSeries_subst_subst_eq_subst_subst {a b f : R⟦X⟧} (ha : 
       = PowerSeries.subst (PowerSeries.subst b a : R⟦X⟧) f := by
   first
   | exact PowerSeries.subst_comp_subst_apply ha hb f
-  | exact (PowerSeries.subst_comp_subst_apply ha hb f).symm
-  | rw [PowerSeries.subst_comp_subst_apply ha hb]
 
 theorem subst_injective_of_leftInverse {l e a b : R⟦X⟧} (hl : HasSubst l) (ha : HasSubst a)
     (hb : HasSubst b) (hel : e.subst l = X) (h : l.subst a = l.subst b) : a = b := by

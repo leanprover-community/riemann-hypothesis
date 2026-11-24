@@ -42,6 +42,7 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
+import Formalism.SharpRestriction.GlobalSchurBounds.ThickPlacesCorollaryOfAnyTranslate
 
 @[expose] public section
 
@@ -148,7 +149,7 @@ theorem cover (X : HidaSetting D) (k : Fin 2) (w : HeightOneSpectrum (𝓞 D.hos
       Set.ncard_range_of_injective (D.naut.plGw_inj k), Set.ncard_range_of_injective hinj2,
       Nat.card_eq_fintype_card, D.nd.card_PlG k]
     ring
-  have hcT : T.ncard = 2 * D.R.f := by rw [hT, D.nd.g_split k, finrank_cmField]
+  have hcT : T.ncard = 2 * D.R.f := by rw [hT, D.nd.g_split k, _root_.Formalism.MainNotions.StandardLattice.finrank_host]
   have hEq : A = T := Set.eq_of_subset_of_ncard_le hAT (by rw [hcA, hcT]) hTfin
   have : w ∈ A := by rw [hEq]; exact hw
   rcases this with ⟨v, rfl⟩ | ⟨v, rfl⟩

@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockResolutionImageSup
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsResolutionImageSup
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsChartSup
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PResolutionSupBound
@@ -126,33 +127,7 @@ theorem lintegral_chart_le {X : Type*} [TopologicalSpace X] [MeasurableSpace X] 
       μ S = ∫⁻ y in φ.target ∩ φ.symm ⁻¹' S, ENNReal.ofReal (ν y))
     {g : X → ENNReal} (hg : Measurable g) :
     ∫⁻ z in φ.target, ENNReal.ofReal (ν z) * g (φ.symm z) ≤ ∫⁻ y, g y ∂μ := by
-  have hT : MeasurableSet φ.target := φ.open_target.measurableSet
-  have hs : AEMeasurable φ.symm (volume.restrict φ.target) := φ.continuousOn_symm.aemeasurable hT
-  have hνm : AEMeasurable (fun z => ENNReal.ofReal (ν z)) (volume.restrict φ.target) :=
-    ENNReal.measurable_ofReal.comp_aemeasurable (hν.aemeasurable hT)
-  have hs' : AEMeasurable φ.symm
-      ((volume.restrict φ.target).withDensity fun z => ENNReal.ofReal (ν z)) :=
-    hs.mono_ac (withDensity_absolutelyContinuous _ _)
-  have hmap : Measure.map φ.symm ((volume.restrict φ.target).withDensity fun z => ENNReal.ofReal (ν z)) =
-      μ.restrict φ.source := by
-    ext S hS
-    have hset : φ.symm ⁻¹' S ∩ φ.target = φ.target ∩ φ.symm ⁻¹' (S ∩ φ.source) := by
-      ext z
-      constructor
-      · rintro ⟨h1, h2⟩
-        exact ⟨h2, h1, φ.map_target h2⟩
-      · rintro ⟨h2, h1, -⟩
-        exact ⟨h1, h2⟩
-    rw [Measure.map_apply_of_aemeasurable hs' hS, withDensity_apply' _ _, Measure.restrict_restrict' hT,
-      Measure.restrict_apply hS, hμ _ (hS.inter φ.open_source.measurableSet) inter_subset_right, hset]
-  calc ∫⁻ z in φ.target, ENNReal.ofReal (ν z) * g (φ.symm z)
-      = ∫⁻ z, g (φ.symm z) ∂((volume.restrict φ.target).withDensity fun z => ENNReal.ofReal (ν z)) :=
-        (lintegral_withDensity_eq_lintegral_mul₀ hνm (hg.comp_aemeasurable hs)).symm
-    _ = ∫⁻ y, g y ∂(Measure.map φ.symm
-          ((volume.restrict φ.target).withDensity fun z => ENNReal.ofReal (ν z))) :=
-        (lintegral_map' hg.aemeasurable hs').symm
-    _ = ∫⁻ y in φ.source, g y ∂μ := by rw [hmap]
-    _ ≤ ∫⁻ y, g y ∂μ := setLIntegral_le_lintegral _ _
+  apply GroundTheory.Heights₂.Heights.HilbertSamuel.BlockResolutionImageSup.lintegral_chart_le <;> assumption
 
 theorem local_bound (hC : ChartSupBound.Statement) (d : HSMDatum D Ω κ) (x₀ : d.R.X) :
     ∃ N : Set d.R.X, IsOpen N ∧ x₀ ∈ N ∧ ∃ C : ℝ, 0 ≤ C ∧ ∀ n : ℕ, 1 ≤ n →

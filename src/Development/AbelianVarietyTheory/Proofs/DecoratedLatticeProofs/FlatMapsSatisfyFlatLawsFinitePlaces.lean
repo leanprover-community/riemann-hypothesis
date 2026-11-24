@@ -122,7 +122,7 @@ theorem flatAt_dual (hψ : IsStdChar D ψ (-1)) (f : WO V W → ℂ) (hf : IsThe
   have hm := mixT_smul dW ψ vT.μ vT.𝓕 (ψ (symplO V W (dV.extX W x) (dV.extY W a)))
   unfold _root_.I195MixedCoordinates_e025acfe930a3926902b259b.target at hm
   funext w
-  simp only [flatAt, flatFun, evalAt, key, hm, Pi.smul_apply, smul_eq_mul]
+  simp only [flatAt, flatFun, evalAt, key, Pi.smul_apply, smul_eq_mul]
   rw [← integral_const_mul]
   congr 1; funext u
   unfold _root_.I195MixedCoordinates_14b5fd3aa93c7f4842f1a892.target
@@ -146,7 +146,7 @@ theorem flatAt_iso (hψ : IsStdChar D ψ (-1)) (f : WO V W → ℂ) (hf : IsThet
     unfold _root_.I195MixedCoordinates_a63f0715cbf334f1e52c5d7b.source at hg
     simpa only [_root_.I195MixedCoordinates_a63f0715cbf334f1e52c5d7b.target, _root_.I195MixedCoordinates_14b5fd3aa93c7f4842f1a892.target] using (GlobalTheory.T.heisenbergThetaMixedModelTarget_of_mixedModel D ψ hψ V₀ W W₀ σ dW vT.μ vT.𝓕 vT.covol _ hg).1 ξ y
   funext w
-  simp only [flatAt, flatFun, evalAt, key, Pi.smul_apply, smul_eq_mul]
+  simp only [flatAt, flatFun, evalAt, Pi.smul_apply, smul_eq_mul]
   rw [← integral_const_mul]
   congr 1; funext u
   rw [congrFun (key u) w]
@@ -168,7 +168,7 @@ theorem flatAt_core (hψ : IsStdChar D ψ (-1)) (f : WO V W → ℂ) (hf : IsThe
     unfold _root_.I195MixedCoordinates_a63f0715cbf334f1e52c5d7b.source at hg
     simpa only [_root_.I195MixedCoordinates_a63f0715cbf334f1e52c5d7b.target, _root_.I195MixedCoordinates_14b5fd3aa93c7f4842f1a892.target] using (GlobalTheory.T.heisenbergThetaMixedModelTarget_of_mixedModel D ψ hψ V₀ W W₀ σ dW vT.μ vT.𝓕 vT.covol _ hg).2.1 w₀ y
   funext w
-  simp only [flatAt, flatFun, evalAt, key, heisO]
+  simp only [flatAt, flatFun, evalAt, heisO]
   rw [← integral_const_mul]
   congr 1; funext u
   rw [congrFun (key u) w]
@@ -221,4 +221,4 @@ theorem flatLaws_all (D : D7) : GlobalTheory.FinPl.FlatLaws D := by
 
 end GlobalTheory.FlatLawsDuality
 
-theorem GlobalTheory.FinPl.flatLaws_all : ∀ D : D7, GlobalTheory.FinPl.FlatLaws D := GlobalTheory.FlatLawsDuality.flatLaws_all
+alias GlobalTheory.FinPl.flatLaws_all := _root_.GlobalTheory.FlatLawsDuality.flatLaws_all

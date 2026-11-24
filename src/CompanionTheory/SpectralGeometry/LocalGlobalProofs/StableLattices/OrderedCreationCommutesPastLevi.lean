@@ -148,7 +148,7 @@ theorem bd_prod : ∀ (n : ℕ) (V : Type) [AddCommGroup V] [Module ℂ V] (E : 
       rw [h2, hx f List.mem_cons_self, map_zero]
     have h3 := LinearMap.congr_fun (hC f) (((t.map cre).prod : Module.End ℂ (Cn n V)) x)
     simp only [LinearMap.add_apply, Module.End.mul_apply, hf, ih'] at h3
-    simp only [List.map_cons, List.prod_cons, Module.End.mul_apply, List.length_cons, pow_succ, map_smul]
+    simp only [List.map_cons, List.prod_cons, Module.End.mul_apply, List.length_cons, pow_succ]
     rw [eq_neg_of_add_eq_zero_left h3, mul_neg_one, neg_smul, map_smul]
 
 end GlobalTheory.CompanionTheory.FarReg.BdProd

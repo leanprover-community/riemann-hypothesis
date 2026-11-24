@@ -1,7 +1,7 @@
 module
 
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsPullHermPullLine
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SpecializesIffPointIdealLeStatement
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.SpecializesIffPointIdealLe
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -56,6 +56,6 @@ namespace GlobalTheory.CompanionTheory.MPDict
 
 theorem dict_ptIdeal_injective {m : ℕ} (n : Fin (m + 1) → ℕ) :
     Function.Injective (ptIdeal : MP ℤ m n → Ideal (Geo.MRing (Bk n))) := fun x y h =>
-  (((GlobalTheory.T.specializes_iff_point_ideal_le m n x y).2 h.le).antisymm ((GlobalTheory.T.specializes_iff_point_ideal_le m n y x).2 h.ge)).eq
+  (((_root_.GlobalTheory.CompanionTheory.MPDict.Spec.specializes_iff_ptIdeal_le m n x y).2 h.le).antisymm ((_root_.GlobalTheory.CompanionTheory.MPDict.Spec.specializes_iff_ptIdeal_le m n y x).2 h.ge)).eq
 
 end GlobalTheory.CompanionTheory.MPDict

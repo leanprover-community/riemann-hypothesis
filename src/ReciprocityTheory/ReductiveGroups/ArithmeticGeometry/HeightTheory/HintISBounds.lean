@@ -140,14 +140,6 @@ theorem hint_bsp_smul : blockSphereProb d.D (d.N + 1) =
   simp only [sphereProb, ProbabilityTheory.cond_apply MeasurableSet.univ, Set.univ_inter,
     Finset.prod_mul_distrib, Finset.prod_const, Finset.card_univ, Fintype.card_fin]
 
-private theorem eq_ratio_smul_of_mem_graded {d' : Data K ι Ω WT A} (hd : d'.AxH 𝒜) {c : ι} {G : WT} {f e : A c}
-    (he : e ∈ 𝒜 c G) (he0 : e ≠ 0) (hf : f ∈ 𝒜 c G) : f = ratio (Ω := Ω c) f e • e := by
-  have hnz : (⟨e, he⟩ : 𝒜 c G) ≠ 0 := fun h0 => he0 (by simpa using congrArg Subtype.val h0)
-  obtain ⟨a, ha⟩ := (finrank_eq_one_iff_of_nonzero' (⟨e, he⟩ : 𝒜 c G) hnz).mp (hd.finrank_one c G) ⟨f, hf⟩
-  have hex : ∃ a : Ω c, f = a • e := ⟨a, by simpa using (congrArg Subtype.val ha).symm⟩
-  rw [ratio, dite_eq_left hex]
-  exact hex.choose_spec
-
 theorem hint_meas (hd : d.AxH 𝒜) (c : ι) (sg : K →+* ℂ) {G : WT} {f : A c} (hf : f ∈ 𝒜 c G)
     (hf0 : f ≠ 0) :
     AEStronglyMeasurable (d.hintSm c sg fun P => Real.log (d.nrm c G f P))
@@ -159,14 +151,14 @@ variable {d} in
 theorem hint_ratio_ne (hd : d.AxH 𝒜) {c : ι} {G : WT} {f e : A c} (he : e ∈ 𝒜 c G) (he0 : e ≠ 0)
     (hf : f ∈ 𝒜 c G) (hf0 : f ≠ 0) : ratio (Ω := Ω c) f e ≠ 0 := by
   intro h0
-  have h1 := eq_ratio_smul_of_mem_graded hd he he0 hf
+  have h1 := _root_.ReciprocityTheory.ChartRestriction.G.T0.Data.hint_line hd he he0 hf
   rw [h0, zero_smul] at h1
   exact hf0 h1
 
 theorem hint_log_line (hd : d.AxH 𝒜) {c : ι} {G : WT} {f e : A c} (he : e ∈ 𝒜 c G) (he0 : e ≠ 0)
     (hf : f ∈ 𝒜 c G) (hf0 : f ≠ 0) (P : Ω c →+* ℂ) :
     Real.log (d.nrm c G f P) = Real.log ‖P (ratio (Ω := Ω c) f e)‖ + Real.log (d.nrm c G e P) := by
-  have hfe := eq_ratio_smul_of_mem_graded hd he he0 hf
+  have hfe := _root_.ReciprocityTheory.ChartRestriction.G.T0.Data.hint_line hd he he0 hf
   have hr := hint_ratio_ne hd he he0 hf hf0
   calc Real.log (d.nrm c G f P)
       = Real.log (d.nrm c G (ratio (Ω := Ω c) f e • e) P) := by rw [← hfe]
@@ -212,13 +204,13 @@ theorem hint_log_be (hd : d.AxH 𝒜) (c : ι) (P : Ω c →+* ℂ) :
     intro j
     by_cases hj : d.w j c = 0
     · have hr : ratio (Ω := Ω c) (d.w j c) (d.w (d.jc c) c) = 0 := by
-        have h1 := eq_ratio_smul_of_mem_graded hd he he0 (hd.w_mem j c)
+        have h1 := _root_.ReciprocityTheory.ChartRestriction.G.T0.Data.hint_line hd he he0 (hd.w_mem j c)
         have h2 : ratio (Ω := Ω c) (d.w j c) (d.w (d.jc c) c) • d.w (d.jc c) c = 0 := by
           rw [← h1]; exact hj
         exact (smul_eq_zero.mp h2).resolve_right he0
       rw [hr, hj, hd.nrm_zero, map_zero, norm_zero, zero_mul]
     · rw [← hd.nrm_smul c P _ he he0 (hint_ratio_ne hd he he0 (hd.w_mem j c) hj),
-        ← eq_ratio_smul_of_mem_graded hd he he0 (hd.w_mem j c)]
+        ← _root_.ReciprocityTheory.ChartRestriction.G.T0.Data.hint_line hd he he0 (hd.w_mem j c)]
   have hsum : ∑ j, d.nrm c d.wL (d.w j c) P ^ 2 = d.nrm c d.wL (d.w (d.jc c) c) P ^ 2 *
       ∑ j, ‖P (ratio (Ω := Ω c) (d.w j c) (d.w (d.jc c) c))‖ ^ 2 := by
     rw [Finset.mul_sum]
@@ -255,7 +247,7 @@ theorem hint_thp_ne (hd : d.AxH 𝒜) (c : ι) : ∃ k, d.thp k c ≠ 0 := by
   refine Finset.sum_eq_zero fun k _ => ?_
   have hr : ratio (Ω := Ω c) (d.thp (hd.sel k) c) (e c) = 0 := by
     rw [hall]
-    have h1 := eq_ratio_smul_of_mem_graded hd (he c).1 (he c).2 (Submodule.zero_mem _)
+    have h1 := _root_.ReciprocityTheory.ChartRestriction.G.T0.Data.hint_line hd (he c).1 (he c).2 (Submodule.zero_mem _)
     exact (smul_eq_zero.mp h1.symm).resolve_right (he c).2
   rw [hr, map_zero, mul_zero]
 

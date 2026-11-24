@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.PrimeIdealsCountingBounds
 public import Development.AbelianVarietyTheory.Definitions.RegularCharts.ModelAt
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.UniformisationConclusion
 import Mathlib.Algebra.Order.Floor.Extended
@@ -93,26 +94,7 @@ theorem exists_valuationSubring_comap_eq_nonunits {K L : Type} [Field K] [Field 
 
 theorem exists_prime_natCast_mem {K : Type} [Field K] [NumberField K] (la : HeightOneSpectrum (𝓞 K)) :
     ∃ p : ℕ, p.Prime ∧ (p : 𝓞 K) ∈ la.asIdeal := by
-  classical
-  have hbot : la.asIdeal ≠ ⊥ := la.ne_bot
-  have hprime : la.asIdeal.IsPrime := la.isPrime
-  have main : ∀ n : ℕ, (n : 𝓞 K) ∈ la.asIdeal → n ≠ 0 → ∃ p : ℕ, p.Prime ∧ (p : 𝓞 K) ∈ la.asIdeal := by
-    intro n
-    induction n using Nat.strong_induction_on with
-    | _ n ih =>
-      intro hn hn0
-      have hn1 : n ≠ 1 := by
-        rintro rfl
-        exact hprime.ne_top ((Ideal.eq_top_iff_one _).mpr (by simpa using hn))
-      obtain ⟨p, hp, m, rfl⟩ := Nat.exists_prime_and_dvd hn1
-      rw [Nat.cast_mul] at hn
-      rcases hprime.mem_or_mem hn with h | h
-      · exact ⟨p, hp, h⟩
-      · have hm0 : m ≠ 0 := by rintro rfl; simp at hn0
-        refine ih m ?_ h hm0
-        calc m = 1 * m := (_root_.one_mul m).symm
-          _ < p * m := Nat.mul_lt_mul_of_pos_right hp.one_lt (Nat.pos_of_ne_zero hm0)
-  exact main _ (Ideal.absNorm_mem la.asIdeal) (by rwa [Ne, Ideal.absNorm_eq_zero_iff])
+  apply GlobalTheory.Mem.FewPrimes.exists_prime_mem <;> assumption
 
 theorem modelAt_of_good_level : PartI → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (Dw : Datum H), 1 ≤ Dw.p + Dw.q → ∀ (Xo : ∀ l : Level H, Moduli Dw l) (l : Level H) (c : Coeff l) (la : HeightOneSpectrum (𝓞 c.F)), (∀ p : ℕ, p.Prime → (p : 𝓞 c.F) ∈ la.asIdeal → l.GoodAt p) → ModelAt (Xo l) c la := by
   intro hI E _ _ _ H Dw hpq Xo l c la hgood

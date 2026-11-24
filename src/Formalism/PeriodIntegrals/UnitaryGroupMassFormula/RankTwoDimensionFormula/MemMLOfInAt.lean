@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.ParCols
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.TermOp
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RankTwoDimensionFormula.FlagLevelCharacterEqPsiDivN
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RankTwoDimensionFormula.DualBetaReferenceCongruence
@@ -85,46 +86,12 @@ theorem hA_adj (g : X.B.I.Gf) (x y : VA X.B.I) :
 
 theorem mem_mL_of_InAt {d : VA X.B.I} (hd : d ∈ X.B.I.Lf) (h : InAt X.B.I X.B.g X.B.g d) :
     d ∈ mL X.B.I X.B.g := by
-  obtain ⟨c, hc, hcd⟩ := h
-  have hb : ((c : ℤ) * Nat.gcdA c X.B.g + (X.B.g : ℤ) * Nat.gcdB c X.B.g) = 1 := by
-    rw [← Nat.gcd_eq_gcd_ab, hc.gcd_eq_one]; rfl
-  have e : d = ((Nat.gcdA c X.B.g : ℤ) : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • ((c : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • d) +
-      ((Nat.gcdB c X.B.g : ℤ) : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • ((X.B.g : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) • d) := by
-    rw [smul_smul, smul_smul, ← add_smul]
-    have : ((Nat.gcdA c X.B.g : ℤ) : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) * (c : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) +
-        ((Nat.gcdB c X.B.g : ℤ) : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) * (X.B.g : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) = 1 := by
-      have := congrArg (fun z : ℤ => (z : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F)) hb
-      push_cast at this
-      linear_combination this
-    rw [this, one_smul]
-  rw [e]
-  have hint : ∀ z : ℤ, ((z : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F)) ∈ IntAf X.B.I.F X.B.I.E := fun z => intCast_mem _ z
-  have sm : ∀ (z : ℤ) (w : VA X.B.I), w ∈ mL X.B.I X.B.g →
-      ((z : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F)) • w ∈ mL X.B.I X.B.g := fun z w hw => by
-    have : ((z : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F)) • w = (⟨_, hint z⟩ : IntAf X.B.I.F X.B.I.E) • w := rfl
-    rw [this]; exact Submodule.smul_mem _ _ hw
-  exact add_mem (sm _ _ hcd) (sm _ _ (smul_mem_mL X.B.I hd))
+  apply Formalism.L2.SG.NormCut.mem_mL_of_InAt <;> assumption
 
 theorem mem_Mo_eb {v : VA X.B.I} (hv : v ∈ X.B.I.Lf) (he : ∀ a, ZMod' X.B.I X.B.g (hA X.B.I (X.e0 a) v))
     (hz : ZMod' X.B.I X.B.g (hA X.B.I X.z0 v)) (hb : ∀ l, ZMod' X.B.I X.B.g (hA X.B.I (X.bw l) v)) :
     v ∈ Mo X.B.I X.B.g (Set.range X.e0 ∪ Set.range X.bw) := by
-  obtain ⟨hE, hF, hZ, hB, hBd⟩ := frame_Lf X
-  have hd := dual_coords X hv
-  have e : v = (v - repr0 X v) + repr0 X v := by abel
-  rw [e]
-  refine add_mem (mL_Mo X.B.I hd) ?_
-  have spn : ∀ (c : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F) (w : VA X.B.I), c ∈ IntAf X.B.I.F X.B.I.E →
-      w ∈ Set.range X.e0 ∪ Set.range X.bw → c • w ∈ Mo X.B.I X.B.g (Set.range X.e0 ∪ Set.range X.bw) :=
-    fun c w hc hw => by
-      have : c • w = (⟨c, hc⟩ : IntAf X.B.I.F X.B.I.E) • w := rfl
-      rw [this]; exact Submodule.smul_mem _ _ (sub_Mo X.B.I hw)
-  unfold repr0
-  refine add_mem (add_mem (sub_mem (add_mem ?_ ?_) ?_) ?_) ?_
-  · exact sum_mem fun a _ => spn _ _ (hA_int X.B.I (hF a) hv) (Or.inl ⟨a, rfl⟩)
-  · exact sum_mem fun a _ => mL_Mo X.B.I (Z_smul_mL X (he a) (hF a))
-  · exact mL_Mo X.B.I (Z_smul_mL X hz hZ)
-  · exact sum_mem fun l _ => spn _ _ (hA_int X.B.I (hBd l) hv) (Or.inr ⟨l, rfl⟩)
-  · exact sum_mem fun l _ => mL_Mo X.B.I (Z_smul_mL X (hb l) (hBd l))
+  apply Formalism.L2.SG.NormCut.mem_Mo_eb <;> assumption
 
 def Par (x : X.B.I.Gf) : Prop :=
   x ∈ X.B.I.Kset ∧ (∀ a, X.B.I.fmat x *ᵥ X.e0 a ∈ Mo X.B.I X.B.g (Set.range X.e0)) ∧
@@ -164,31 +131,7 @@ theorem leviM_mul_par {x y : X.B.I.Gf} (hx : Par X x) (hy : Par X y) (v : TR.Pl)
   leviM_mul TR hx.1 hy.1 hy.2.2 hx.2.1 v
 
 theorem leviM_one (v : TR.Pl) : leviM TR 1 v = 1 := by
-  ext i j
-  have hbw : ∀ j, X.bw j ∈ X.B.I.Lf := fun j => (X.vectorsInLattice.2.2 j).1
-  have hbwd : ∀ j, X.bwd j ∈ X.B.I.Lf := fun j => (X.vectorsInLattice.2.2 j).2
-  simp only [leviM, show X.B.I.fmat 1 = 1 from rfl, Matrix.one_mulVec]
-  have hI := hA_int X.B.I (hbwd i) (hbw j)
-  rw [resT_of_mem TR v hI]
-  have hZ := X.bw_dual i j
-  have hIt : (if i = j then X.ew else 0) ∈ IntAf X.B.I.F X.B.I.E := by
-    split_ifs
-    · exact X.ew_int
-    · exact zero_mem _
-  have e : (⟨_, hI⟩ : IntAf X.B.I.F X.B.I.E) = ⟨_, sub_mem hI hIt⟩ + ⟨_, hIt⟩ := by
-    apply Subtype.ext; simp
-  rw [e, map_add (f := _), res_eq_zero_of_Z TR v _ hZ, zero_add]
-  by_cases h : i = j
-  · subst h
-    simp only [if_true, Matrix.one_apply_eq]
-    have e2 : (⟨X.ew, X.ew_int⟩ : IntAf X.B.I.F X.B.I.E) = ⟨X.ew * (1 : X.B.I.E ⊗[X.B.I.F] Af X.B.I.F),
-        (IntAf X.B.I.F X.B.I.E).mul_mem X.ew_int (one_mem _)⟩ := by apply Subtype.ext; simp
-    have := TR.res_ew v 1
-    simp only [OneMemClass.coe_one] at this
-    convert this using 2
-    exact (map_one (TR.res v)).symm
-  · simp only [h, if_false, Matrix.one_apply_ne h]
-    exact map_zero (TR.res v) |>.symm ▸ (by congr 1)
+  apply Formalism.L2.SG.NormCut.leviM_one <;> assumption
 
 end Par
 

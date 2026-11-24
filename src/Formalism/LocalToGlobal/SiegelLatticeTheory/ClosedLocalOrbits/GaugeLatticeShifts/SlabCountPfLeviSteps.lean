@@ -100,7 +100,7 @@ theorem srat_flag {D : D7} (X : Formalism.L2.SG.HidaSetting.HidaSetting D) {u' :
   have hX : ∀ j : ℕ, Xflag (lf D (X.Fu u')) j = Submodule.span D.host.E (X.eX '' {b | b.1 < j}) := by
     intro j
     unfold Formalism.MainNotions.S.Lat.Xflag Formalism.MainNotions.S.FlagG.Xa
-    simp only [Formalism.MainNotions.S.lf, X.Fu_e]
+    simp only [X.Fu_e]
   intro j x hx
   rw [hX (j + 1)] at hx
   rw [hX j]

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ExistsUniqueJet
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ToStkAInjective
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.DiscreteValuationRings.ProdExpPf
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsUniqueFactorCompletedStalkOfMap
@@ -418,29 +419,7 @@ theorem expandsAt_value {e k : ℕ} {σ : H0 U.LG.L k} {f : ∀ α : D.toPre.X, 
 theorem exists_limit (J : Ideal S) [IsPrecomplete J S] (v : ∀ e : ℕ, S ⧸ J ^ (e + 1))
     (hv : ∀ e, Ideal.Quotient.factor (Ideal.pow_le_pow_right (Nat.le_succ (e + 1))) (v (e + 1)) = v e) :
     ∃ a : S, ∀ e, Ideal.Quotient.mk (J ^ (e + 1)) a = v e := by
-  choose c hc using fun e => Ideal.Quotient.mk_surjective (v e)
-  have h₁ : ∀ e, c (e + 1) - c e ∈ J ^ (e + 1) := fun e => by
-    rw [← Ideal.Quotient.eq, hc e, ← hv e, ← hc (e + 1), Ideal.Quotient.factor_mk]
-  have h₀ : ∀ m d, c m - c (m + d) ∈ J ^ m := fun m d => by
-    induction d with
-    | zero => simp
-    | succ d ih =>
-      have h₂ : c (m + d + 1) - c (m + d) ∈ J ^ m := Ideal.pow_le_pow_right (by omega) (h₁ (m + d))
-      have e : c m - c (m + (d + 1)) = (c m - c (m + d)) - (c (m + d + 1) - c (m + d)) := by
-        rw [← _root_.add_assoc]; ring
-      rw [e]
-      exact (J ^ m).sub_mem ih h₂
-  obtain ⟨a, ha⟩ := IsPrecomplete.prec' (I := J) c fun {m n} hmn => by
-    obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hmn
-    rw [SModEq.sub_mem, smul_eq_mul, Ideal.mul_top]
-    exact h₀ m d
-  refine ⟨a, fun e => ?_⟩
-  have h₂ := ha (e + 1)
-  rw [SModEq.sub_mem, smul_eq_mul, Ideal.mul_top] at h₂
-  rw [← hc e, Ideal.Quotient.eq]
-  have e' : a - c e = (c (e + 1) - c e) - (c (e + 1) - a) := by ring
-  rw [e']
-  exact (J ^ (e + 1)).sub_mem (h₁ e) h₂
+  apply GlobalTheory.SeriesValue.exists_lim <;> assumption
 
 theorem eq_of_forall_mk_eq (J : Ideal S) [IsHausdorff J S] {a b : S}
     (h : ∀ e, Ideal.Quotient.mk (J ^ (e + 1)) a = Ideal.Quotient.mk _ b) : a = b := by
@@ -655,7 +634,7 @@ theorem exists_isZero (P : DegPre R) (T : Over (Sp R)) : ∃ g : GtPt P T, g.IsZ
     rw [val_one] at H
     refine Eq.trans ?_ H
     refine Eq.trans ?_ (val_cub P.cub (lift (P.cT T χ) (P.cT T χ')) hJ (x2 P.P.A 0) (x2 P.P.A 1) (pzero P.P.A _)).symm
-    congr 1 <;> simp [x2, pzero, Hom.one_def, DegPre.zeroT]
+    congr 1 <;> simp [x2, pzero, DegPre.zeroT]
   exact congrArg₂ (· * ·) ((v _ y J hJ).trans (v _ y J hJ).symm)
     (c.trans (face.trans (v _ y J hJ).symm))
 

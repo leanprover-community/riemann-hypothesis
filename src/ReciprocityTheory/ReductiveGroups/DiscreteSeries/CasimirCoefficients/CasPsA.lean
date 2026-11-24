@@ -62,13 +62,13 @@ variable {n : ℕ}
 
 theorem entry_conj_single (u v : Matrix (Fin n) (Fin n) ℂ) (a b i j : Fin n) :
     (u * Matrix.single a b (1 : ℂ) * v) i j = u i a * v b j := by
-  simp [Matrix.mul_apply, Matrix.single_apply, ite_and, Finset.sum_ite_eq, Finset.sum_ite_eq']
+  simp [Matrix.mul_apply, Matrix.single_apply, ite_and, Finset.sum_ite_eq]
 
 theorem conj_single_eq (u v : Matrix (Fin n) (Fin n) ℂ) (a b : Fin n) :
     u * Matrix.single a b (1 : ℂ) * v = ∑ c, ∑ d, (u c a * v b d) • Matrix.single c d (1 : ℂ) := by
   ext i j
   rw [entry_conj_single]
-  simp [Matrix.sum_apply, Matrix.single_apply, ite_and, Finset.sum_ite_eq, Finset.sum_ite_eq']
+  simp [Matrix.sum_apply, Matrix.single_apply, ite_and, Finset.sum_ite_eq']
 
 theorem sum_coef_conj (u v : Matrix (Fin n) (Fin n) ℂ) (huv : u * v = 1) (c d : Fin n) :
     ∑ a, ∑ b, (u c a * v b d) • (u * Matrix.single b a (1 : ℂ) * v) = Matrix.single d c (1 : ℂ) := by

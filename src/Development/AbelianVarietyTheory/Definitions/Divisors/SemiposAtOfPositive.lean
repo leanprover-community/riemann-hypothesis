@@ -164,9 +164,6 @@ open GlobalTheory.Mean4 GlobalTheory.Mean4O Formalism.BasicNotions.DV
 
 structure HypothesesH : Prop where
   sieg : GlobalTheory.Published.SiegelToroidalIntegral
-  fan : GlobalTheory.Published.ToroidalChartsForFan
-  charts : GlobalTheory.Published.ToroidalCharts
-  deg : GlobalTheory.Published.ArDegree
 
 end Obj
 

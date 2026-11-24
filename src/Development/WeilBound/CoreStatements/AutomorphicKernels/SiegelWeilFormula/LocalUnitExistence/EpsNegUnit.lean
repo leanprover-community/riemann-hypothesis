@@ -88,7 +88,7 @@ theorem eps_neg_unit {ε : ℤˣ} (h : ((ε : ℤ) : E) = -1) : ε = -1 := by
 theorem hgtPull : Ald.HgtPull := by
   intro F E _ _ _ _ _ σ d n h Y b j hn hs hb hJ
   have hB := d.ok.good
-  have hσ : ∀ z, σ (σ z) = z := UnitA.sig_sig hB.cm
+  have hσ : ∀ z, σ (σ z) = z := _root_.GlobalTheory.AdelicU.cm_conj_conj hB.cm
   refine ⟨fun x => ?_, val_pull h hJ hb⟩
   obtain ⟨Y₀, b₀, K₀, a₀, hb₀, he₀, hK₀, ha₀⟩ := exists_eigenvalueGLOne_eq_cuspidalLabel_gen hB hn
   obtain ⟨ε, he⟩ := hb.1

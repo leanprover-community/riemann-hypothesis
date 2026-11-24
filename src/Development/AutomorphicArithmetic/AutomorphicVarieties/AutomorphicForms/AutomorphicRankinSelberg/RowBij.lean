@@ -67,7 +67,7 @@ private theorem UpperTheory.V.Af.Rs.eq_T_zpow_mul_of_row_eq {γ δ : SL(2, ℤ)}
 private theorem UpperTheory.V.Af.Rs.row_T_zpow_mul (n : ℤ) (δ : SL(2, ℤ)) :
     UpperTheory.V.Af.Rs.row (ModularGroup.T ^ n * δ) = UpperTheory.V.Af.Rs.row δ := by
   funext i
-  simp [UpperTheory.V.Af.Rs.row, ModularGroup.coe_T_zpow, Matrix.mul_apply, Fin.sum_univ_two]
+  simp [UpperTheory.V.Af.Rs.row]
 
 theorem UpperTheory.V.Af.Rs.rowBij :
     UpperTheory.V.Af.Rs.RowBij := by

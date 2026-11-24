@@ -178,8 +178,6 @@ def sig (a b : ℕ) : cat1 a b ⟶ pglCat (a + b) where
     first
     | exact Subtype.ext (Prod.ext (blockGL_map a b f.hom p.1.1.1 p.1.1.2).symm rfl)
     | exact Subtype.ext (Prod.ext (blockGL_map a b f.hom p.1.1.1 p.1.1.2) rfl)
-    | exact Prod.ext (blockGL_map a b f.hom p.1.1.1 p.1.1.2).symm rfl
-    | exact Prod.ext (blockGL_map a b f.hom p.1.1.1 p.1.1.2) rfl
 
 def rho (a b : ℕ) : cat1 a b ⟶ pglCat a where
   app A := (toFirst a b A).toCatHom
@@ -197,15 +195,11 @@ theorem ofCatMap_comp {C D F : CommRingCat.{0} ⥤ Cat.{0,0}} (α : C ⟶ D) (β
     ofCatMap (α ≫ β) = ofCatMap α ≫ ofCatMap β := by
   first
   | rfl
-  | (unfold ofCatMap; rw [Functor.whiskerRight_comp, Functor.whiskerLeft_comp, Functor.map_comp])
-  | simp [ofCatMap]
 
 theorem liftCat_fst {E : Spc} {C D : CommRingCat.{0} ⥤ Cat.{0,0}} (V : E ⟶ ofCat C) (W : E ⟶ ofCat D) :
     liftCat V W ≫ ofCatMap (fstNat C D) = V := by
   first
   | rfl
-  | (ext n U x; rfl)
-  | (ext n U x; exact CategoryTheory.Functor.ext (fun _ => rfl) (fun _ _ _ => by simp))
 
 theorem e_rho (a b : ℕ) : rho a b ≫ glNat a = pr1 a b ≫ fstNat _ _ := by
   ext A
@@ -252,8 +246,6 @@ theorem jmF {a b : ℕ} {A : Type} [CommRing A] {J : Type} [Category J] (F G : J
   have k1 := congrArg (fun q => q.1) (CategoryTheory.Functor.congr_hom h1 f)
   first
   | (rw [Um_eqToHom_comp, Um_comp_eqToHom] at k1)
-  | (simp only [Um_eqToHom_comp, Um_comp_eqToHom] at k1)
-  | (rw [Um_comp_val, Um_comp_val, Um_eqToHom_val, Um_eqToHom_val] at k1; simp only [one_mul, mul_one] at k1)
   have ku : (F.map f).1.2 = (G.map f).1.2 := by
     have := congrArg Prod.snd k1
     exact this
@@ -329,8 +321,6 @@ theorem LeafHalf1_of : LeafHalf1 := by
       rw [blockDiagonal_apply₂]
       first
       | exact t.trans (by simp only [mul_one, one_mul])
-      | exact t.trans (by rw [mul_one, one_mul])
-      | exact t.trans ((congrArg (· * 1) (one_mul _)).trans (mul_one _))
     have hfirst : ∀ i, Ideal.span (Set.range fun k : Fin a => (F.obj i).1 (Fin.castAdd b k)) = ⊤ := by
       intro i
       let f0 : (0 : Fin (n + 1)) ⟶ i := homOfLE (Fin.zero_le i)
@@ -352,7 +342,6 @@ theorem LeafHalf1_of : LeafHalf1 := by
         ((ofCatMap (pr1 a b)).app (op (SimplexCategory.mk n))).app (op X) (show Sx (ofCat (cat1 a b)) n X from G) := by
       first
       | rfl
-      | exact CategoryTheory.Functor.ext (fun _ => rfl) (fun _ _ _ => by simp [G, toProd])
     obtain ⟨y, hy1, hy2⟩ := pb_exists (liftCat V W) (ofCatMap (pr1 a b)) e (show Sx (ofCat (cat1 a b)) n X from G) hG
     refine ⟨y, pb_ext ?_ ?_⟩
     · exact (ConcreteCategory.congr_hom (NatTrans.congr_app (NatTrans.congr_app (pullback.lift_fst _ _ hf) _) _) y).trans hy1

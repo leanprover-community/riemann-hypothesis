@@ -261,7 +261,7 @@ theorem key_degree (hd : d.AxH 𝒜) (h : d.S1) (c : ι) (r : Ω c) (hr : r ≠ 
     refine finsum_eq_zero_of_forall_eq_zero fun w => ?_
     by_cases hw : w ∈ d.GoodP c p
     · have h0 : d.Wres c w r = 0 := hcon w hw.1
-      simp [finsum_eq_if, hw, h0]
+      simp [hw, h0]
     · simp [finsum_eq_if, hw]
   intro p hp hn0 s hs
   have hex : ∃ w, w ∈ d.GoodP c p := by
@@ -332,7 +332,7 @@ theorem use₈ (hd : d.AxH 𝒜) (h : d.S1) (c : ι) (r : Ω c) (hr : r ≠ 0) :
   classical
   by_cases hw : w ∈ d.GoodP c p
   · have h0 : d.Wres c w r = 0 := hcon w hw.1
-    simp [finsum_eq_if, hw, h0]
+    simp [hw, h0]
   · simp [finsum_eq_if, hw]
 
 theorem arithDegree_additive (hd : d.AxH 𝒜) (h : d.S1) :

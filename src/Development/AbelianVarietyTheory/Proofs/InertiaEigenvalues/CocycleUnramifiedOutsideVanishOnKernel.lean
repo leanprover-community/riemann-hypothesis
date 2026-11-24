@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.UnramifiedOfAttached
 public import Formalism.GaloisCohomology.Statement
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -59,32 +60,7 @@ namespace GlobalTheory.UnramCocycle
 theorem conj_mem_ine_of_smul {F Ω : Type} [Field F] [NumberField F] [Field Ω] [Algebra F Ω]
     (A : ValuationSubring Ω) (g σ : G F Ω) (hσ : σ ∈ Ine (F := F) (g • A)) :
     g⁻¹ * σ * g ∈ Ine (F := F) A := by
-  rw [mem_Ine] at hσ ⊢
-  obtain ⟨hdec, hval⟩ := hσ
-
-  have hmem : ∀ y : Ω, y ∈ g • A ↔ g⁻¹ y ∈ A := fun y =>
-    ValuationSubring.mem_pointwise_smul_iff_inv_smul_mem
-  have hgg : ∀ y : Ω, g⁻¹ (g y) = y := fun y => by
-    rw [← AlgEquiv.mul_apply, inv_mul_cancel, AlgEquiv.one_apply]
-  refine ⟨?_, fun x hx => ?_⟩
-  · have h' : σ • (g • A) = g • A := hdec
-    show (g⁻¹ * σ * g) • A = A
-    rw [mul_smul, mul_smul, h', inv_smul_smul]
-  · have hx' : (g • A).valuation (g x) ≤ 1 := by
-      rw [ValuationSubring.valuation_le_one_iff, hmem, hgg]
-      exact (ValuationSubring.valuation_le_one_iff A x).1 hx
-    have hy := hval (g x) hx'
-    have e : (g⁻¹ * σ * g) x - x = g⁻¹ (σ (g x) - g x) := by
-      rw [map_sub, hgg, AlgEquiv.mul_apply, AlgEquiv.mul_apply]
-    rw [e]
-    rw [valuation_lt_one_iff'] at hy ⊢
-    obtain ⟨hy1, hy2⟩ := hy
-    refine ⟨(hmem _).1 hy1, ?_⟩
-    rcases hy2 with h0 | h0
-    · left
-      rw [h0, map_zero]
-    · right
-      rwa [← map_inv₀, ← hmem]
+  apply GlobalTheory.TripleUnramified.conj_mem_Ine_of_smul <;> assumption
 
 def kerSub {Γ R M : Type} [Group Γ] [TopologicalSpace Γ] [CommRing R] [AddCommGroup M]
     [Module R M] [TopologicalSpace M] [DiscreteTopology M] (ρ : Representation R Γ M)

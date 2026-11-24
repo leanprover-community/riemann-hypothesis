@@ -2,14 +2,16 @@ module
 
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.OrthKerEqRangeAdjoint
 public import Formalism.LocalToGlobal.ProjectiveLattices.HalfOneAddSqrtNegIsIntegral
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SphericalHeckeScalarOnTypeSpacesAllPlacesStatement
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.RowsExhaust
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.SphericalHeckeScalarOnTypeSpacesAllPlaces
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.CoeffMonicPolySum
 public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.ComplexHeckeEigenvectorDescendsToCoefficientFiel
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FiniteCosetsHeckeSetAtSplitPlaceOutsideLevelStatement
-import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SplitExEveryDatum
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverEta
-import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverPoly
 public import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverStdB
+import Formalism.LocalToGlobal.GaloisLevelStructure.DefsAut
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.FiniteCosetsHeckeSetAtSplitPlaceOutsideLevel
+import Development.AbelianVarietyTheory.Proofs.SatakeParameters.SplitExEveryDatum
+import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverPoly
 import Formalism.LocalToGlobal.NormalizedHeckeFactors.CoverThm
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -108,7 +110,7 @@ theorem tN_lin (D : D7) (M : MtFam D) (HT : HeckeTied D M) (NL : NormalizedLocal
     (hu : IsUnif D.host.E s.v ϖ) (c : ℂ) (f f' : GAf D.host.E D.R.nV → (M.loc i).wt.W) :
     NG.tN (M.loc i).J s ϖ k (c • f + f') = c • NG.tN (M.loc i).J s ϖ k f + NG.tN (M.loc i).J s ϖ k f' := by
   have hbad : s.v ∉ badPl D i := genOutBad_of NL j w i h v k s hvk hc
-  have hfin := GlobalTheory.T.finite_cosets_heckeSet_at_splitPlace_outside_level D.host.E D.R.nV (M.loc i).J (M.loc i).χ (badPl D i) (HT.J_hyp i) s ϖ k hbad hu
+  have hfin := _root_.GlobalTheory.TSetFin.finite_image_tSet D.host.E D.R.nV (M.loc i).J (M.loc i).χ (badPl D i) (HT.J_hyp i) s ϖ k hbad hu
   simp only [NG.tN]
   rw [GlobalTheory.PtLocalEig.heckeD_add _ _ _ _ hfin c f f', smul_add, smul_comm]
 
@@ -233,7 +235,7 @@ theorem main : ∀ (D : D7) (M : MtFam D), HeckeTied D M → AVTied D M → ∀ 
     rw [← NL.phK_emb _ _ i h y, ← D.naut.iota_LL i y]
     exact congrArg (fun f : FractionRing (D.nd.O i) →+* ℂ => f (D.nd.embK i y)) hφK
 
-  have HS := GlobalTheory.T.sphericalHeckeScalarOnTypeSpaces_all_places D M HT AV i
+  have HS := _root_.GlobalTheory.HeckeScalarAll.heckeScalar_all D M HT AV i
   have key : ∀ v k, GenAt D (D.what₂.places.resChar (D.nd.w i)) (NL.B.Qc (D.nd.j i) (D.nd.w i)) v k →
       ∃ κ : NL.B.Oc (D.nd.j i) (D.nd.w i), ∀ (s : SplitPlace D.host.E)
         (ϖ : s.v.adicCompletion (maximalRealSubfield D.host.E)), IsConjPl D.host v s.w → IsUnif D.host.E s.v ϖ →

@@ -110,7 +110,7 @@ theorem extensionEmbedding_algebraMap_apply (k : K) (w : InfinitePlace K) :
 
 theorem infiniteTrace_algebraMap (k : K) :
     infiniteTrace K (algebraMap K (InfiniteAdeleRing K) k) = (Algebra.trace ℚ K k : ℝ) :=
-  by apply _root_.UpperTheory.Reformulated.B.Qh34.infiniteTrace_algebraMap <;> assumption
+  by apply _root_.UpperTheory.Reformulated.B.Qh34.infiniteTrace_algebraMap
 
 theorem forall_mul_mem_iff_forall_trace_mem (k : K) :
     (∀ y ∈ differentIdeal ℤ (𝓞 K), k * algebraMap (𝓞 K) K y ∈ (algebraMap (𝓞 K) K).range) ↔

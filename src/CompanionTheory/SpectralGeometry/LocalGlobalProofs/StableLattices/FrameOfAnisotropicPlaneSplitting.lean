@@ -203,7 +203,7 @@ theorem exists_adapted_frame_with_unit_scaling (hA : StAniso) (hP : StPlane) (hS
       intro x
       rw [hUm, herm_smul_left hh, herm_smul_left hh]
       have hsi' : s ((s u)⁻¹) ≠ 0 := (map_ne_zero s).2 (inv_ne_zero hsu)
-      simp [hsu, hsi']
+      simp [hsu]
     obtain ⟨-, -, -, hmax'⟩ :=
       hS L s hs δ hδ V h hh (u • e) ((s u)⁻¹ • f) (orthPair hh e f) hee' hff' hef' hUm'
     obtain ⟨m1, p1⟩ := hmax Λ hΛ he hf

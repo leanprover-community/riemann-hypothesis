@@ -1,5 +1,6 @@
 module
 
+import CompanionTheory.AutomorphicTheory.PieriRules.ThetaBesselIsometries.TensorRawOfFrep
 public import Development.AbelianVarietyTheory.Definitions.Jets.SumIoPrAlt
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.DiscreteSeriesUnitarySmoothBasicStatement
 import Formalism.HermitianCurvature.HermitianCurvatureProofs.ContinuousMulMt
@@ -64,43 +65,14 @@ theorem kfin_of_family {R R' : Rep k r} (T : ι → R.H → R'.H) (hT : ∀ c, S
     (hK : ∀ v, R.KFin v → v ∈ R.sm)
     (hA : ∀ g ∈ GG k r, ∀ c, ∀ y ∈ R.sm, ∃ a : ι → ℂ, R'.σ g (T c y) = ∑ i, a i • T i (R.σ g y))
     (c : ι) (y : R.H) (hy : R.KFin y) : R'.KFin (T c y) := by
-  obtain ⟨S, hfd, hyS, hst⟩ := hy
-  have hsm : ∀ x ∈ S, x ∈ R.sm := fun x hx => hK x ⟨S, hfd, hx, hst⟩
-  let L : ι → (S →ₗ[ℂ] R'.H) := fun i =>
-    { toFun := fun x => T i x
-      map_add' := fun x x' => (hT i).add _ (hsm _ x.2) _ (hsm _ x'.2)
-      map_smul' := fun a x => (hT i).smul a _ (hsm _ x.2) }
-  have hmem : ∀ i, ∀ x ∈ S, T i x ∈ ⨆ i, LinearMap.range (L i) := fun i x hx =>
-    Submodule.mem_iSup_of_mem i ⟨⟨x, hx⟩, rfl⟩
-  refine ⟨⨆ i, LinearMap.range (L i), inferInstance, hmem c y hyS, fun g hg x hx => ?_⟩
-  have hle : (⨆ i, LinearMap.range (L i)) ≤
-      (⨆ i, LinearMap.range (L i)).comap (R'.σ g : R'.H →ₗ[ℂ] R'.H) := by
-    refine iSup_le fun i => ?_
-    rintro _ ⟨z, rfl⟩
-    obtain ⟨a, ha⟩ := hA g hg.1 i z (hsm _ z.2)
-    have : R'.σ g (T i z) ∈ ⨆ i, LinearMap.range (L i) := by
-      rw [ha]
-      exact Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (hmem j _ (hst g hg _ z.2))
-    exact this
-  exact hle hx
+  apply Gp91.GlobalTheory.TensorKFinite.kfin_of_family <;> assumption
 
 theorem tk_of_family {R R' : Rep k r} (T : ι → R.H → R'.H) (hT : ∀ c, SmMap R R' (T c))
     (hK : ∀ v, R.KFin v → v ∈ R.sm) (hTK : ∀ v ∈ R.TK, v ∈ R.sm)
     (hF : ∀ c y, R.KFin y → R'.KFin (T c y))
     (hB : ∀ g ∈ GG k r, ∀ c, ∀ y ∈ R.sm, ∃ a : ι → ℂ, T c (R.σ g y) = ∑ i, a i • R'.σ g (T i y))
     (c : ι) (y : R.H) (hy : y ∈ R.TK) : T c y ∈ R'.TK := by
-  induction hy using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨g, hg, v, hv, rfl⟩ := hx
-    obtain ⟨a, ha⟩ := hB g hg c v (hK v hv)
-    rw [ha]
-    exact Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _
-      (Submodule.subset_span ⟨g, hg, _, hF j v hv, rfl⟩)
-  | zero => rw [smMap_zero (hT c)]; exact Submodule.zero_mem _
-  | add x x' hx hx' h1 h2 =>
-    rw [(hT c).add _ (hTK _ hx) _ (hTK _ hx')]; exact Submodule.add_mem _ h1 h2
-  | smul a x hx h1 =>
-    rw [(hT c).smul a _ (hTK _ hx)]; exact Submodule.smul_mem _ _ h1
+  apply Gp91.GlobalTheory.TensorKFinite.tk_of_family <;> assumption
 
 theorem inv_rows [DecidableEq ι] {V : Type} [AddCommGroup V] [Module ℂ V] (A B : Matrix ι ι ℂ) (h : A * B = 1)
     (u v : ι → V) (huv : ∀ i, u i = ∑ j, B i j • v j) (c : ι) : v c = ∑ i, A c i • u i := by

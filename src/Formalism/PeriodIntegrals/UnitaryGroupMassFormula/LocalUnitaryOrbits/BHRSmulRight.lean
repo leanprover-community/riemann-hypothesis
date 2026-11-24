@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.CokernelGLCounts.RankPointCounts.DualFamilyCounting.NcSIntWittOEv
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.TraceEqAdd
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.SdVolWOfTop
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalUnitaryOrbits.PairHermZeroRight
@@ -101,29 +102,7 @@ theorem b_int_of_sc {a : Fv F v} (ha : sc (E := E) v a ∈ OEv (E := E) v) : a �
 
 theorem b_sigR_mem (σ : E →ₐ[F] E) {z : Fv F v ⊗[F] E} (hz : z ∈ OEv (E := E) v) :
     sigR (Fv F v) σ z ∈ OEv (E := E) v := by
-  induction hz using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨b, -, rfl⟩ := hx
-    have hb : IsIntegral ℤ (σ (b : E)) := by
-      simpa using (b.isIntegral_coe).map (σ.toRingHom.toIntAlgHom)
-    have e : sigR (Fv F v) σ (inclR (F := F) (Fv F v) (b : E)) =
-        inclR (F := F) (Fv F v) ((⟨σ (b : E), hb⟩ : 𝓞 E) : E) := by
-      simp [sigR, inclR]
-    rw [e]
-    exact b_inclR_mem (F := F) (E := E) v ⟨σ (b : E), hb⟩
-  | zero => rw [map_zero]; exact Submodule.zero_mem _
-  | add x y _ _ hx hy => rw [map_add (f := _)]; exact Submodule.add_mem _ hx hy
-  | smul r x _ hx =>
-    have h1 : r • x = algebraMap (Fv F v) (Fv F v ⊗[F] E) (r : Fv F v) * x := by
-      rw [← Algebra.smul_def]; rfl
-    have h2 : algebraMap (Fv F v) (Fv F v ⊗[F] E) (r : Fv F v) * sigR (Fv F v) σ x =
-        r • sigR (Fv F v) σ x := by
-      rw [← Algebra.smul_def]; rfl
-    have h3 : sigR (Fv F v) σ (algebraMap (Fv F v) (Fv F v ⊗[F] E) (r : Fv F v)) =
-        algebraMap (Fv F v) (Fv F v ⊗[F] E) (r : Fv F v) := by
-      simp [sigR, Algebra.TensorProduct.algebraMap_apply]
-    rw [h1, map_mul, h3, h2]
-    exact Submodule.smul_mem _ r hx
+  apply Formalism.L2.SG.Pf.NcS.IntWittPf.oev_sigR <;> assumption
 
 theorem b_tr_sc (s : Fv F v) (w : Fv F v ⊗[F] E) :
     Algebra.trace (Fv F v) (Fv F v ⊗[F] E) (sc (E := E) v s * w) =

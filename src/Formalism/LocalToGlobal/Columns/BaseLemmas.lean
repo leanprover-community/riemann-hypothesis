@@ -485,7 +485,7 @@ theorem lamOf_wtN {R : Ranks} (P : HCParam R) {j : ℕ} (hj : j ≤ R.m) (i : Fi
       obtain ⟨a, ha⟩ := R.k_even
       have hk : (R.k : ℚ) = a + a := by exact_mod_cast ha
       refine ⟨z - a + 1 + ((i.1 : ℕ) : ℤ), ?_⟩
-      simp only [hcToWeightQ, rhoVec, Fin.val_mk]
+      simp only [hcToWeightQ, rhoVec]
       rw [hz, hk]
       push_cast
       ring

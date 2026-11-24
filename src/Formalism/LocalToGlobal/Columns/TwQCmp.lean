@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.AdelicProofs.LocalValuationLogNormsExistence
 public import Mathlib.RingTheory.DedekindDomain.AdicValuation.Completion
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -65,40 +66,7 @@ theorem qsp_val_one (t : 𝓞 E) (ht : t ∉ P.asIdeal) : Valued.v (φ (algebraM
 
 theorem qsp_frac (x : E) (hx : P.valuation E x ≤ 1) :
     ∃ (a : 𝓞 E) (t : 𝓞 E), t ∉ P.asIdeal ∧ x * algebraMap (𝓞 E) E t = algebraMap (𝓞 E) E a := by
-  obtain ⟨⟨n, d⟩, hnd⟩ := IsLocalization.surj (nonZeroDivisors (𝓞 E)) x
-  simp only at hnd
-  have hd0 : (d : 𝓞 E) ≠ 0 := nonZeroDivisors.ne_zero d.2
-  have hspan : Ideal.span {(d : 𝓞 E)} ≠ 0 := by
-    rw [Ne, Ideal.zero_eq_bot, Ideal.span_singleton_eq_bot]
-    exact hd0
-  have hPu : ¬ IsUnit P.asIdeal := by
-    rw [Ideal.isUnit_iff]
-    exact P.isPrime.ne_top
-  obtain ⟨e, J, hPJ, hJ⟩ := WfDvdMonoid.max_power_factor' hspan hPu
-  have hJP : ¬ J ≤ P.asIdeal := fun h => hPJ (Ideal.dvd_iff_le.2 h)
-  obtain ⟨t, htJ, htP⟩ := SetLike.not_le_iff_exists.1 hJP
-  have hvd : P.intValuation (d : 𝓞 E) ≤ WithZero.exp (-(e : ℤ)) := by
-    rw [P.intValuation_le_pow_iff_dvd, hJ]
-    exact dvd_mul_right _ _
-  have hvn : P.intValuation n ≤ WithZero.exp (-(e : ℤ)) := by
-    refine le_trans ?_ hvd
-    rw [← HeightOneSpectrum.valuation_of_algebraMap (K := E),
-      ← HeightOneSpectrum.valuation_of_algebraMap (K := E)]
-    change P.valuation E (algebraMap (𝓞 E) E n) ≤ P.valuation E (algebraMap (𝓞 E) E (d : 𝓞 E))
-    rw [← hnd, map_mul]
-    exact mul_le_of_le_one_left' hx
-  have hnt : n * t ∈ Ideal.span {(d : 𝓞 E)} := by
-    rw [hJ]
-    exact Ideal.mul_mem_mul ((P.intValuation_le_pow_iff_mem n e).1 hvn) htJ
-  obtain ⟨a, ha⟩ := Ideal.mem_span_singleton'.1 hnt
-  refine ⟨a, t, htP, ?_⟩
-  have hD : algebraMap (𝓞 E) E d ≠ 0 :=
-    (map_ne_zero_iff _ (IsFractionRing.injective (𝓞 E) E)).2 hd0
-  have hat : algebraMap (𝓞 E) E a * algebraMap (𝓞 E) E d =
-      algebraMap (𝓞 E) E n * algebraMap (𝓞 E) E t := by
-    rw [← map_mul, ← map_mul, ha]
-  apply mul_right_cancel₀ hD
-  linear_combination (algebraMap (𝓞 E) E t) * hnd - hat
+  apply GlobalTheory.CompanionTheory.Ar.Br.Dd.exists_frac <;> assumption
 
 
 include hint hPv in

@@ -362,7 +362,7 @@ theorem cc_pderiv_Q {l : PowerSeries K} (hl0 : PowerSeries.constantCoeff l = 0)
     rw [hd1, Derivation.leibniz, MvPowerSeries.pderiv_C, hdv]
     simp
   rw [IntegralMvPolynomialLemmas.pderiv_subst ψ hu 1, Derivation.leibniz, hd01, IntegralMvPolynomialLemmas.pderiv_subst _ hu 0, hd0, hd1]
-  simp only [smul_zero, smul_eq_mul, mul_zero, zero_add, map_mul]
+  simp only [smul_eq_mul, mul_zero, zero_add, map_mul]
   rw [cc_subst hu, MvPowerSeries.constantCoeff_C, MvPowerSeries.constantCoeff_C, cc_subst (hX 0),
     cc_subst (hX 1), hl1]
   ring

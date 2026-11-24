@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PBlockGraphFibreRatio
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockImageTop
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsGraphChangeOfModel
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsBlockGraphDeg
@@ -80,21 +81,7 @@ theorem isMultiHomog_blockForms (k₀ : K) (M : Matrix (Ix κ) (ι k₀) ℤ) (q
 theorem sub_mem_mCoordIdeal {Ω : Type} [Field Ω] {y : (Σ k, ι k) → Ω} {k₀ : K} {M : Matrix (Ix κ) (ι k₀) ℤ}
     {N : Matrix (ι k₀) (Ix κ) ℤ} {x : Ix κ → Ω} (h : IsBlockImage y k₀ M N x) (i : ι k₀) :
     X ⟨k₀, i⟩ - ∑ j, C (N i j) * blockForms k₀ M j ∈ mCoordIdeal y := by
-  have hf : ∀ j, mConeMap y (blockForms k₀ M j) = MvPolynomial.C (x j) * MvPolynomial.X k₀ := by
-    intro j
-
-    rw [h.1 j, map_sum, Finset.sum_mul]
-
-    simp [blockForms, mConeMap, map_sum, mul_assoc]
-  have hX : mConeMap y (X ⟨k₀, i⟩) = MvPolynomial.C (y ⟨k₀, i⟩) * MvPolynomial.X k₀ := by
-    simp [mConeMap]
-
-  rw [mCoordIdeal, RingHom.mem_ker, map_sub, map_sum]
-  simp only [map_mul, hf]
-
-  rw [hX, h.2 i, map_sum, Finset.sum_mul, sub_eq_zero]
-  refine Finset.sum_congr rfl fun j _ => ?_
-  simp [mConeMap, mul_assoc]
+  apply GroundTheory.Heights₂.Heights.HilbertSamuel.BlockGraphFibreRatio.sub_mem_mCoordIdeal <;> assumption
 
 theorem isBasePtFree_blockForms {Ω : Type} [Field Ω] {y : (Σ k, ι k) → Ω} {k₀ : K} {M : Matrix (Ix κ) (ι k₀) ℤ}
     {N : Matrix (ι k₀) (Ix κ) ℤ} {x : Ix κ → Ω} (h : IsBlockImage y k₀ M N x) :

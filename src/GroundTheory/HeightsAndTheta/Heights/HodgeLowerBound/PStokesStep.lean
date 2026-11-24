@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PStokesTelescope
 public import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsStokesStep
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterRes
 import Mathlib.Algebra.Order.Floor.Extended
@@ -77,17 +78,7 @@ theorem isOpen_multicone : IsOpen {z : (Σ k, ι k) → ℂ | ∀ k, ∃ i, z �
 theorem ptsIntegral_congr_g (P : Ideal (MRing ι)) {e : ℕ} (φ : Fin e → ((Σ k, ι k) → ℂ) → ℝ)
     {g g' : ((Σ k, ι k) → ℂ) → ℝ} (hg : ∀ z ∈ mcPts P, g z = g' z) :
     ptsIntegral P φ g = ptsIntegral P φ g' := by
-  classical
-  unfold ptsIntegral ptsIntegralAt
-  split_ifs with hΨ
-  · congr 1
-    funext y
-    refine finsum_congr fun w => finsum_congr fun _ => ?_
-    unfold sheetDensity
-    split_ifs with hγ
-    · rw [hg _ hγ.choose_spec.2.self_of_nhds.2.1]
-    · rfl
-  · rfl
+  apply _root_.GroundTheory.Heights₂.Heights.LowerBoundFree.StokesTelescope.ptsIntegral_congr_g <;> assumption
 
 theorem isConeTangent_lift {P J : Ideal (MRing ι)} {e : ℕ} (R : AnLogRes P J e) (x : R.X)
     (j : Fin R.A.n) {y : Fin e → ℂ}

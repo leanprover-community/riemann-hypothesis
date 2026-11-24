@@ -70,16 +70,10 @@ theorem v_natCast_nonneg (m : ℕ) : 0 ≤ v (m : LL) := by
 private theorem withTop_zero_lt_one : (0 : WithTop ℚ) < 1 := by
   first
   | exact WithTop.coe_lt_coe.2 zero_lt_one
-  | (rw [← WithTop.coe_zero, ← WithTop.coe_one, WithTop.coe_lt_coe]; norm_num)
-  | norm_num
-  | simp
 
 private theorem withTop_rat_not_one_add_one_le_one : ¬ ((1 : WithTop ℚ) + 1 ≤ 1) := by
   first
   | (rw [← WithTop.coe_one, ← WithTop.coe_add, WithTop.coe_le_coe]; norm_num)
-  | exact_mod_cast (by norm_num : ¬ ((1 : ℚ) + 1 ≤ 1))
-  | norm_num
-  | simp
 
 private theorem le_v_sum_range_of_forall (f : ℕ → LL) (g : WithTop ℚ) (hf : ∀ i, g ≤ v (f i)) (m : ℕ) :
     g ≤ v (∑ i ∈ Finset.range m, f i) := by
@@ -93,11 +87,8 @@ theorem v_intCast_nonneg (z : ℤ) : 0 ≤ v (z : LL) := by
   obtain ⟨n, rfl | rfl⟩ := Int.eq_nat_or_neg z
   · first
     | (rw [Int.cast_natCast]; exact v_natCast_nonneg v n)
-    | (simp only [Int.cast_natCast]; exact v_natCast_nonneg v n)
-    | (push_cast; exact v_natCast_nonneg v n)
   · first
     | (rw [Int.cast_neg, Int.cast_natCast, v.map_neg]; exact v_natCast_nonneg v n)
-    | (push_cast; rw [v.map_neg]; exact v_natCast_nonneg v n)
 
 variable {p : ℕ} (hp : p.Prime) (hv : v (p : LL) = 1)
 include hp hv
@@ -111,8 +102,6 @@ theorem v_natCast_eq_zero (m : ℕ) (hm : ¬ p ∣ m) : v (m : LL) = 0 := by
   have hL : (p : LL) * (Nat.gcdA p m : LL) + (m : LL) * (Nat.gcdB p m : LL) = 1 := by
     first
     | (have h := congrArg (fun z : ℤ => (z : LL)) hb; push_cast at h; exact h.symm)
-    | (have h := congrArg (Int.cast : ℤ → LL) hb; simp only [Int.cast_add, Int.cast_mul,
-        Int.cast_natCast, Int.cast_one] at h; exact h.symm)
   have h1 : 0 < v ((p : LL) * (Nat.gcdA p m : LL)) := by
     rw [v.map_mul, hv]
     exact lt_of_lt_of_le withTop_zero_lt_one (le_add_of_nonneg_right (v_intCast_nonneg v _))
@@ -159,7 +148,6 @@ theorem v_geom_sub {ξ : LL} (h1 : (1 : WithTop ℚ) ≤ v (ξ - 1)) (m : ℕ) :
   have e : (∑ i ∈ Finset.range m, ξ ^ i) - (m : LL) = ∑ i ∈ Finset.range m, (ξ ^ i - 1) := by
     first
     | (rw [Finset.sum_sub_distrib]; simp)
-    | simp [Finset.sum_sub_distrib]
   rw [e]
   exact le_v_sum_range_of_forall v (fun i => ξ ^ i - 1) _ (fun i => v_pow_sub_one v h1 i) m
 
@@ -178,14 +166,12 @@ theorem pow_p_ne_one {ξ : LL} (hp3 : 3 ≤ p) (h1 : (1 : WithTop ℚ) ≤ v (ξ
     simp only [geom_sum_mul]
     first
     | (rw [Finset.sum_sub_distrib]; simp)
-    | simp [Finset.sum_sub_distrib]
   have hT : 1 ≤ v (∑ i ∈ Finset.range p, ∑ j ∈ Finset.range i, ξ ^ j) := by
     have e2 : (∑ i ∈ Finset.range p, ∑ j ∈ Finset.range i, ξ ^ j) =
         (∑ i ∈ Finset.range p, ((∑ j ∈ Finset.range i, ξ ^ j) - (i : LL))) +
           (((∑ i ∈ Finset.range p, i : ℕ)) : LL) := by
       first
       | (rw [Finset.sum_sub_distrib, Nat.cast_sum]; ring)
-      | (push_cast; rw [Finset.sum_sub_distrib]; ring)
     rw [e2]
     apply v.map_le_add
     · exact le_v_sum_range_of_forall v _ _ (fun i => le_trans h1 (v_geom_sub v h1 i)) p

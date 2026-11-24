@@ -46,6 +46,7 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LatticeCountingBound.ArchPlace
 
 @[expose] public section
 
@@ -156,7 +157,7 @@ def HaarAtC (u u' : D.what₂.Word) (τ : D.what₂.Tau) : Prop :=
 theorem frameAt_of (u u' : D.what₂.Word) (τ : D.what₂.Tau) (hH : HaarAtC C u u' τ) : FrameAt C u u' τ := by
   intro γ μRv ν hP
   obtain ⟨hG, hM, -, -, -⟩ := id hP
-  refine ⟨Formalism.L2.SG.Pf.Bridge.delta_GV (trHyp_Qc C u τ) (Formalism.L2.SG.Pf.Carrier.uMat_unitary γ), ?_,
+  refine ⟨Formalism.L2.SG.Pf.Bridge.delta_GV (trHyp_Qc C u τ) (_root_.PI.UnitaryGroupMassFormula.LCG.ap_inUJ γ), ?_,
     gf_pos_tr (trHyp_Qc C u τ) (trHyp_Qc C u' τ) (uMat γ) hG, hH γ μRv ν hP⟩
   have hz : Formalism.QuantumDeterminants.Zhat D.R.k D.R.rS (Formalism.L2.SG.Pf.BaseOf.baseOf X C u u' (vOf X τ)).z
       (Formalism.L2.SG.Pf.BaseOf.baseOf X C u u' (vOf X τ)).z'

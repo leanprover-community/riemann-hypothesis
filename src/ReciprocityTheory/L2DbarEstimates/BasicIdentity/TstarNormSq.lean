@@ -180,12 +180,10 @@ theorem tstar_norm_sq (n : ℕ) {M : Type*} [TopologicalSpace M] (z : M → V n)
     congr 1
     first
       | rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos he]
-      | simp [abs_of_pos he]
   have hT' : ‖T‖ = ‖S‖ * Real.exp (-ψ x) := by
     rw [Real.exp_neg, ← hn]
     first
       | rw [mul_comm (Real.exp (ψ x)), mul_assoc, mul_inv_cancel₀ he.ne', mul_one]
-      | field_simp
   have hx : Real.exp (-ψ x) ^ 2 * Real.exp (-(ph x - 2 * ψ x)) = Real.exp (-ph x) := by
     rw [sq, ← Real.exp_add, ← Real.exp_add]
     congr 1

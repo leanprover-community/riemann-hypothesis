@@ -181,8 +181,7 @@ theorem complexFourier_conj (f : ℂ → ℂ) (w : ℂ) :
   rw [complexFourier, complexFourier, ← integral_conj]
   congr 1
   funext z
-  simp [Circle.smul_def, Real.fourierChar_apply, ← exp_conj, map_ofNat, neg_re, neg_im,
-    mul_re, ofReal_sub, ofReal_mul]
+  simp [Circle.smul_def, Real.fourierChar_apply, ← exp_conj, map_ofNat, neg_re, mul_re, ofReal_sub, ofReal_mul]
   congr 2 <;> try ring <;> simp
 
 theorem conj_cexp_neg_two_pi_norm_sq (z : ℂ) :

@@ -165,8 +165,7 @@ theorem arb_datum (hDS : Formalism.MainNotions.S.IsDS ε lam σ) (hcas : CasOnSm
   have hσ : IsURepOn (UJset ε) σ := hDS.2.2.1
   obtain ⟨S, hS⟩ := hDS.2.2.2.2.2.1
   obtain ⟨V, hV, hV0, hVK, -⟩ := exists_datum_of_isKTypeOf hσ hS
-  refine ⟨V, hV, hV0, hVK, fun v _ => ?_⟩
-  apply Subtype.ext
+  refine ⟨V, hV, hV0, hVK, fun v _ => Subtype.ext ?_⟩
   rw [← casU_eq_casimir (isDerivedOn_smE hσ) v]
   exact hcas _ ((mem_smD_iff ε σ _).1 v.2)
 
@@ -188,8 +187,7 @@ theorem equiv_sigLam_of_cas (hDS : Formalism.MainNotions.S.IsDS ε lam σ) (hgap
   have htop := data_closGen_eq_top hgap hσ (isDerivedOn_smE hσ) hV hc hVK hDS.2.2.2.1 hV0
   obtain ⟨U, hU⟩ := sigLam_equiv_data hgap hP hv₀ hσ (isDerivedOn_smE hσ) hV hc hVK hV0
   refine ⟨U.trans (LinearIsometryEquiv.ofTop _ _ htop), fun g hg x => ?_⟩
-  simp only [LinearIsometryEquiv.trans_apply, LinearIsometryEquiv.ofTop_apply]
-  exact hU g hg x
+  simpa only [LinearIsometryEquiv.trans_apply, LinearIsometryEquiv.ofTop_apply] using hU g hg x
 
 end One
 

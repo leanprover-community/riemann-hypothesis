@@ -79,7 +79,7 @@ theorem prod_mem_span {O Y ι : Type} [CommRing O] [CommRing Y] [Algebra O Y] (t
       · have hne : i ≠ j := fun h => hj (h ▸ hi)
         simpa [Function.update_apply, hne] using ha i hi
     · rw [Finset.prod_insert hj]
-      simp only [Function.update_apply, if_pos rfl]
+      simp only [Function.update_apply]
       congr 1
       refine Finset.prod_congr rfl fun i hi => ?_
       have hne : i ≠ j := fun h => hj (h ▸ hi)

@@ -61,8 +61,7 @@ theorem goal1 :
     refine ⟨s * t, mul_ne_zero hs ht, ?_⟩
     have e : (s * t) • (x + z) = t • (s • x) + s • (t • z) := by
       rw [smul_add, smul_smul, smul_smul, mul_comm t s]
-    rw [e]
-    exact M.add_mem (M.smul_mem t hsx) (M.smul_mem s htz)
+    simpa only [e] using M.add_mem (M.smul_mem t hsx) (M.smul_mem s htz)
   | smul a x _ hx =>
     obtain ⟨s, hs, hsx⟩ := hx
     obtain ⟨⟨n, d⟩, hnd⟩ := IsLocalization.surj (nonZeroDivisors O) a
@@ -73,7 +72,6 @@ theorem goal1 :
       simp only at hnd
       rw [hnd, algebraMap_smul]
       exact smul_comm s n x
-    rw [e]
-    exact M.smul_mem n hsx
+    simpa only [e] using M.smul_mem n hsx
 
 end Bl.general_b_fact_left_bis_form

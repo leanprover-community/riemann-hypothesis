@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsLastEntryPosNotLastPos
 public import Development.AbelianVarietyTheory.Definitions.Jets.IsSelfOf
 public import Development.AbelianVarietyTheory.Definitions.Jets.DepthNumbersThresholdEq
 import Mathlib.Algebra.Order.Floor.Extended
@@ -63,21 +64,7 @@ theorem conj_conj (τ : E →+* ℂ) : ComplexEmbedding.conjugate (ComplexEmbedd
   ext x; simp
 
 theorem rt_conj (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) : (starRingEnd ℂ) H.rt0 = -H.rt0 ∧ H.rt0 ≠ 0 := by
-  have hd : (0 : ℝ) < H.d := by exact_mod_cast H.d_prime.pos
-  have h := H.sqrt_neg_disc_sq
-  have hre := congrArg Complex.re h
-  have him := congrArg Complex.im h
-  simp [pow_two] at hre him
-  have h0 : H.rt0.re = 0 := by
-    by_contra hne
-    have h1 : H.rt0.re * H.rt0.im = 0 := by linarith
-    have h2 : H.rt0.im = 0 := (mul_eq_zero.1 h1).resolve_left hne
-    rw [h2] at hre
-    nlinarith [mul_self_nonneg H.rt0.re]
-  refine ⟨Complex.ext (by simp [h0]) (by simp), fun hz => ?_⟩
-  rw [hz] at hre
-  simp at hre
-  exact H.d_prime.ne_zero hre
+  apply GlobalTheory.ThetaClaimsCompare.rt0_conj_neg_ne_zero <;> assumption
 
 theorem inPsi_or_conj (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E) (τ : E →+* ℂ) :
     InPsi H τ ∨ InPsi H (ComplexEmbedding.conjugate τ) := by

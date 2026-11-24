@@ -183,7 +183,7 @@ theorem homog_coeff_isMH (q : MvPolynomial (Fin (D + 1) × Fin (N + 1)) K) :
           rw [Finsupp.mem_support_iff] at h; omega
         by_cases hb : b = i
         · subst hb; simp [Finsupp.single_apply]; omega
-        · simp [Finsupp.single_apply, Pi.single_apply, hb, Ne.symm hb]
+        · simp [Finsupp.single_apply, hb, Ne.symm hb]
       · rw [mul_zero]; exact isMH_zero _
 
 noncomputable def psi (sg : K →+* ℂ) (tt : Fin D × Fin (N + 1) → ℂ) :

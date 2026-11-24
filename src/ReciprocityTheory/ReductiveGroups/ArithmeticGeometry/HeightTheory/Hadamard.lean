@@ -1,5 +1,6 @@
 module
 
+import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.SchurAverage
 public import Mathlib.Analysis.Complex.Order
 public import Mathlib.LinearAlgebra.Matrix.PosDef
 import Mathlib.Algebra.Order.Floor.Extended
@@ -73,7 +74,6 @@ theorem psd_det_re_le_one_of_diag (N : ℕ) (H : Matrix (Fin N) (Fin N) ℂ) (hH
     rw [hHerm.det_eq_prod_eigenvalues]
     first
       | (norm_cast)
-      | simp [← Complex.ofReal_prod]
   rw [hre]
   calc ∏ i, hHerm.eigenvalues i ≤ ∏ i, Real.exp (hHerm.eigenvalues i - 1) :=
         Finset.prod_le_prod₀ (fun i _ => hH.eigenvalues_nonneg i)
@@ -141,28 +141,6 @@ theorem psd_det_re_le_prod_diag (N : ℕ) (G : Matrix (Fin N) (Fin N) ℂ) (hG :
 
 theorem hadamard_det_le {n : ℕ} (A : Matrix (Fin n) (Fin n) ℂ) :
     ‖A.det‖ ≤ ∏ i, Real.sqrt (∑ j, ‖A i j‖ ^ 2) := by
-  have hdet : (A * Aᴴ).det.re = ‖A.det‖ ^ 2 := by
-    rw [Matrix.det_mul, Matrix.det_conjTranspose]
-    rw [show star A.det = (starRingEnd ℂ) A.det from rfl, Complex.mul_conj, Complex.ofReal_re,
-      Complex.normSq_eq_norm_sq]
-  have hdiag : ∀ i, ((A * Aᴴ) i i).re = ∑ j, ‖A i j‖ ^ 2 := fun i => by
-    simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, Complex.re_sum]
-    refine Finset.sum_congr rfl fun j _ => ?_
-    rw [show star (A i j) = (starRingEnd ℂ) (A i j) from rfl, Complex.mul_conj, Complex.ofReal_re,
-      Complex.normSq_eq_norm_sq]
-  have key := psd_det_re_le_prod_diag n (A * Aᴴ) (Matrix.posSemidef_self_mul_conjTranspose A)
-  rw [hdet] at key
-  simp only [hdiag] at key
-  have hs : ∀ i, 0 ≤ ∑ j, ‖A i j‖ ^ 2 := fun i => Finset.sum_nonneg fun j _ => by positivity
-  calc ‖A.det‖ = Real.sqrt (‖A.det‖ ^ 2) := (Real.sqrt_sq (norm_nonneg _)).symm
-    _ ≤ Real.sqrt ((∏ i, Real.sqrt (∑ j, ‖A i j‖ ^ 2)) ^ 2) := by
-        apply Real.sqrt_le_sqrt
-        rw [← Finset.prod_pow]
-        have h : ∏ i, Real.sqrt (∑ j, ‖A i j‖ ^ 2) ^ 2 = ∏ i, ∑ j, ‖A i j‖ ^ 2 :=
-          Finset.prod_congr rfl fun i _ => Real.sq_sqrt (hs i)
-        rw [h]
-        exact key
-    _ = ∏ i, Real.sqrt (∑ j, ‖A i j‖ ^ 2) :=
-        Real.sqrt_sq (Finset.prod_nonneg fun i _ => Real.sqrt_nonneg _)
+  apply Formalism.HermitianLatticeCounting.P.norm_det_le_prod_row_norms <;> assumption
 
 end ReciprocityTheory.ChartRestriction.G.T0

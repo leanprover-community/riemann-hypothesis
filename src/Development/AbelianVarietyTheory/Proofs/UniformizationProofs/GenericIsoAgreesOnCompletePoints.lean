@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsUnitLevels
 public import Development.AbelianVarietyTheory.Proofs.HomogeneousIdeals.ExistsUniqueFactorCompletedStalkOfMap
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsIsoOfSectionRing
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.DivCalc
@@ -105,22 +106,7 @@ theorem fn_ext_germs [IsHausdorff J B] {a b : Γ(Spec (CommRingCat.of B), ⊤)}
 theorem exists_fn_levels [IsAdicComplete J B] (a : ∀ e : ℕ, Γ(Spec (CommRingCat.of (B ⧸ J ^ (e + 1))), ⊤))
     (h : ∀ e, (adicLevelMap J (Nat.le_succ (e + 1))).appTop.hom (a (e + 1)) = a e) :
     ∃ A : Γ(Spec (CommRingCat.of B), ⊤), ∀ e, (adicLevelι J (e + 1)).appTop.hom A = a e := by
-  choose b hb using fun e => (inv_bijective (B ⧸ J ^ (e + 1))).2 (a e)
-  have ha : StrictMono fun n : ℕ => n + 1 := strictMono_id.add_const 1
-  let φ : ∀ e : ℕ, Polynomial ℤ →+* B ⧸ J ^ (e + 1) := fun e => Polynomial.eval₂RingHom (Int.castRingHom _) (b e)
-  have hφ : ∀ e, φ e Polynomial.X = b e := fun e => Polynomial.eval₂_X _ _
-  have hc : ∀ {m : ℕ}, (Ideal.Quotient.factorPow J (ha.monotone m.le_succ)).comp (φ (m + 1)) = φ m := by
-    intro m
-    refine Polynomial.ringHom_ext' (RingHom.ext_int _ _) ?_
-    rw [RingHom.comp_apply, hφ, hφ]
-    have := h m
-    rw [← hb, ← hb, appTop_spec] at this
-    exact (inv_bijective _).1 this
-  refine ⟨(Scheme.ΓSpecIso (CommRingCat.of B)).inv.hom
-    (IsAdicComplete.StrictMono.liftRingHom J ha φ hc Polynomial.X), fun e => ?_⟩
-  rw [appTop_spec, ← hb, ← hφ]
-  exact congrArg _ (congrArg (fun q => q Polynomial.X)
-    (IsAdicComplete.StrictMono.mk_comp_liftRingHom J ha φ hc (n := e)))
+  apply GlobalTheory.RedTotal.exists_fn_levels <;> assumption
 
 theorem exists_unit_levels [IsAdicComplete J B] (v : ∀ e : ℕ, Γ(Spec (CommRingCat.of (B ⧸ J ^ (e + 1))), ⊤)ˣ)
     (h : ∀ e z, gm (adicLevelMap J (Nat.le_succ (e + 1))) z ⊤ (v (e + 1)) = gm (𝟙 _) z ⊤ (v e)) :

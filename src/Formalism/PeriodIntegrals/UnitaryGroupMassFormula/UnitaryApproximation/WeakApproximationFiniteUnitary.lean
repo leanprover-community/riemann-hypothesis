@@ -65,12 +65,6 @@ theorem wa_isOpen_lt_one (v : HeightOneSpectrum (𝓞 F)) (x : v.adicCompletion 
   have hz' : Valued.v (z - y) < 1 := by
     first
       | simpa using hz
-      | exact_mod_cast hz
-      | (simp only [Set.mem_setOf_eq, Units.val_one] at hz
-         first
-           | exact (Valuation.restrict_lt_iff _ _ _).mp hz
-           | exact (Valuation.restrict_lt_one_iff _ _).mp hz
-           | exact_mod_cast hz)
   simp only [Set.mem_setOf_eq] at hy ⊢
   have hzx : z - x = (z - y) + (y - x) := by abel
   rw [hzx]
@@ -85,10 +79,6 @@ theorem wa_exists_close (v : HeightOneSpectrum (𝓞 F)) (x : v.adicCompletion F
   have hd : DenseRange (algebraMap F (v.adicCompletion F)) := by
     first
       | exact denseRange_algebraMap F v
-      | exact UniformSpace.Completion.denseRange_coe
-      | exact (UniformSpace.Completion.denseRange_coe).comp (WithVal.equiv (v.valuation F)).symm.surjective.denseRange
-          (UniformSpace.Completion.continuous_coe _)
-      | exact IsDedekindDomain.HeightOneSpectrum.denseRange_algebraMap_adicCompletion v
   obtain ⟨b, hb⟩ := hd.exists_mem_open (wa_isOpen_lt_one v x) ⟨x, by simp⟩
   refine ⟨b, ?_⟩
   rw [Valuation.map_sub_swap]
@@ -111,24 +101,16 @@ theorem wa_exists_int_approx (T : Finset (HeightOneSpectrum (𝓞 F)))
     intro v
     first
       | exact v.intValuation_ne_zero _ hd0
-      | exact (v.intValuation).ne_zero_iff.mpr hd0
-      | (intro h0
-         have h1 := v.valuation_of_algebraMap (K := F) (d : 𝓞 F)
-         rw [h0] at h1
-         exact hdF ((Valuation.zero_iff _).mp h1))
   have hexp : ∀ v : HeightOneSpectrum (𝓞 F), ∃ e : ℕ,
       WithZero.exp (-(e : ℤ)) ≤ v.intValuation (d : 𝓞 F) := by
     intro v
     obtain ⟨k, hk⟩ : ∃ k : ℤ, v.intValuation (d : 𝓞 F) = WithZero.exp k := by
       first
         | exact ⟨_, (WithZero.exp_log (hne v)).symm⟩
-        | (obtain ⟨a, ha⟩ := WithZero.ne_zero_iff_exists.mp (hne v)
-           exact ⟨Multiplicative.toAdd a, by rw [← ha]; rfl⟩)
     refine ⟨k.natAbs, ?_⟩
     rw [hk, WithZero.exp_le_exp]
     first
       | omega
-      | (rw [Int.natCast_natAbs]; exact neg_abs_le k)
   choose e he using hexp
   obtain ⟨m, hm⟩ := IsDedekindDomain.exists_forall_sub_mem_ideal (s := T) (fun v => v.asIdeal) e
     (fun v _ => v.prime) (fun v _ w _ hvw h => hvw (HeightOneSpectrum.ext h)) (fun v => n v.1)
@@ -142,15 +124,12 @@ theorem wa_exists_int_approx (T : Finset (HeightOneSpectrum (𝓞 F)))
   have hlt : (0 : WithZero (Multiplicative ℤ)) < v.intValuation (d : 𝓞 F) := zero_lt_iff.mpr (hne v)
   first
     | exact (div_le_one₀ hlt).mpr (h1.trans (he v))
-    | exact div_le_one_of_le₀ (h1.trans (he v)) hlt.le
 
 theorem weak_approximation_finite_unitary : WeakApproxF := by
   intro F _ _ T c D hD
   have hDF : ((D : 𝓞 F) : F) ≠ 0 := by
     first
       | exact_mod_cast hD
-      | exact (RingOfIntegers.coe_ne_zero_iff).mpr hD
-      | (intro h; exact hD (Subtype.ext h))
   choose b hb using fun v : HeightOneSpectrum (𝓞 F) =>
     wa_exists_close v (c v * (algebraMap F (v.adicCompletion F) (D : F))⁻¹)
   obtain ⟨a', ha'⟩ := wa_exists_int_approx T b

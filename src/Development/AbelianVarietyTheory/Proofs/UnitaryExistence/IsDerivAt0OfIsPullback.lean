@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.ThetaShiftProofs.HolomorphicHomDetermined
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
 public import Development.AbelianVarietyTheory.Proofs.ToricGeometry.TopLePreimageOfValAtNeZero
 import Mathlib.Algebra.Order.Floor.Extended
@@ -125,22 +126,7 @@ theorem evEps_spMap (a : Γ(Sp ℂ, ⊤)) (h) :
 theorem top_le_preimage_eps (v : Sp (DualNumber ℂ) ⟶ X) (x : Sp ℂ ⟶ X)
     (hx : spMap (TrivSqZeroExt.fstHom ℂ ℂ ℂ).toRingHom ≫ v = x) (U : X.Opens) :
     ⊤ ≤ v ⁻¹ᵁ U ↔ ⊤ ≤ x ⁻¹ᵁ U := by
-  subst hx
-  refine ⟨fun h p _ => h (Set.mem_univ _), fun h p _ => ?_⟩
-  have hs : Function.Surjective (PrimeSpectrum.comap (TrivSqZeroExt.fstHom ℂ ℂ ℂ).toRingHom) := by
-    intro q
-    have : q ∈ Set.range (PrimeSpectrum.comap (TrivSqZeroExt.fstHom ℂ ℂ ℂ).toRingHom) := by
-      rw [range_comap_of_surjective _ _ (fun a => ⟨TrivSqZeroExt.inl a, rfl⟩)]
-      intro b hb
-      have hb' : b.fst = 0 := hb
-      refine q.2.mem_of_pow_mem 2 ?_
-      have : b ^ 2 = 0 := by
-        ext <;> simp [pow_two, hb']
-      rw [this]
-      exact zero_mem _
-    exact this
-  obtain ⟨q, rfl⟩ := hs p
-  exact h (Set.mem_univ q)
+  apply GlobalTheory.HolHom.le_preimage_dual_iff <;> assumption
 
 theorem isDerivAt0_iff (e : (Fin g → ℂ) → (Sp ℂ ⟶ X)) (w : Fin g → ℂ) (v : Sp (DualNumber ℂ) ⟶ X) :
     IsDerivAt0 e w v ↔ spMap (TrivSqZeroExt.fstHom ℂ ℂ ℂ).toRingHom ≫ v = e 0 ∧

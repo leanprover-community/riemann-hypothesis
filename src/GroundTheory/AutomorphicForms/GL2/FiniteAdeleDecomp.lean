@@ -128,12 +128,8 @@ theorem apply_adeleSingleS_add {E : Type*} {G : FiniteAdeleRing (𝓞 K) K → E
 def intS : Set ((v : S) → v.1.adicCompletion K) :=
   Set.univ.pi fun v ↦ (v.1.adicCompletionIntegers K : Set (v.1.adicCompletion K))
 
-theorem isOpen_adicCompletionIntegers (v : HeightOneSpectrum (𝓞 K)) :
-    IsOpen (v.adicCompletionIntegers K : Set (v.adicCompletion K)) :=
-  Valued.isOpen_integer _
-
 theorem isOpen_intS : IsOpen (intS (K := K) S) :=
-  isOpen_set_pi Set.finite_univ fun v _ ↦ isOpen_adicCompletionIntegers v.1
+  isOpen_set_pi Set.finite_univ fun v _ ↦ _root_.GroundTheory.Global.isOpen_adicCompletionIntegers v.1
 
 theorem measurableSet_intS : MeasurableSet (intS (K := K) S) :=
   (isOpen_intS S).measurableSet

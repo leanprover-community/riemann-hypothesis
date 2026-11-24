@@ -109,10 +109,10 @@ theorem vd_le_one_of_basis {h : V →ₗ⋆[K] V →ₗ[K] K} {N : ℕ} (hN : fi
 
 variable [FiniteDimensional K V]
 
-theorem exists_lattice (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F)
+theorem exists_full_lattice (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F)
     {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm) (hd : IsTotPosDef h)
     (h𝔭 : 𝔭.IsMaximal) {x₀ : V} {n : 𝓞 F} (hx : h x₀ x₀ = κ (ι n)) (hn : n ∉ 𝔭) :
-    ∃ L₀ : Submodule (𝓞 K) V, Submodule.IsLattice K L₀ ∧ Formalism.HermitianLatticesTheory.IsIntegralLat h L₀ ∧
+    ∃ L₀ : Submodule (𝓞 K) V, Submodule.IsFullLattice K L₀ ∧ Formalism.HermitianLatticesTheory.IsIntegralLat h L₀ ∧
       x₀ ∈ L₀ ∧ vd h L₀ 𝔭 ≤ 1 := by
   have hp := h𝔭.isPrime
   have hp0 := ne_bot h𝔭
@@ -298,7 +298,12 @@ theorem exists_lattice (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF 
     rw [Finset.prod_eq_zero (Finset.mem_univ i) h0]
     exact zero_mem _
   obtain ⟨e, he⟩ := GramDeterminantPositive.exists_basis_of_ortho h _ hr hof hne
-  refine ⟨spanO e, isLattice_spanO e,
+  have hfull : Submodule.IsFullLattice K (spanO e) :=
+    { toIsLattice := isLattice_spanO e
+      span_eq_top := by
+        change Submodule.span K (Submodule.span (𝓞 K) (Set.range e) : Set V) = ⊤
+        rw [Submodule.span_span_of_tower, e.span_eq] }
+  refine ⟨spanO e, hfull,
     integral_spanO e _ (fun i j hij => by rw [he, he]; exact hof i j hij)
       (fun i => by rw [he]; exact hnf i), ?_,
     vd_le_one_of_basis hr e _ (fun i j hij => by rw [he, he]; exact hof i j hij)
@@ -306,5 +311,12 @@ theorem exists_lattice (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF 
   rcases hx₀ with rfl | ⟨i, hi⟩
   · exact Submodule.subset_span ⟨0, by rw [he, Fin.cons_zero]⟩
   · exact Submodule.subset_span ⟨i.succ, by rw [he, Fin.cons_succ, hi]⟩
+theorem exists_lattice (hK : Formalism.HermitianLatticesTheory.IsCMUnram K) (hF : IsFixF K F)
+    {h : V →ₗ⋆[K] V →ₗ[K] K} (hs : h.IsSymm) (hd : IsTotPosDef h)
+    (h𝔭 : 𝔭.IsMaximal) {x₀ : V} {n : 𝓞 F} (hx : h x₀ x₀ = κ (ι n)) (hn : n ∉ 𝔭) :
+    ∃ L₀ : Submodule (𝓞 K) V, Submodule.IsLattice K L₀ ∧ Formalism.HermitianLatticesTheory.IsIntegralLat h L₀ ∧
+      x₀ ∈ L₀ ∧ vd h L₀ 𝔭 ≤ 1 := by
+  obtain ⟨L, hL, hI, hxL, hv⟩ := exists_full_lattice hK hF hs hd h𝔭 hx hn
+  exact ⟨L, hL.toIsLattice, hI, hxL, hv⟩
 
 end Formalism.HermitianLattices.Ext.L3.Cell

@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.BigStatementPf
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovVolumes.UpperBounds.WeightFunctionOnFrames
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -41,6 +42,8 @@ import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Topology.Sheaves.Init
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.BoundedSectionAlgebra
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.FlowCoefficientBounds
 
 @[expose] public section
 
@@ -53,26 +56,9 @@ open scoped ENNReal
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {r : ℕ}
 
-private lemma dmin_ne_zero_of_mem_dom (X : Data E r) {x : Frame X.Ψ r} (hx : x ∈ X.dom) (τ : X.Ψ)
-    (i : Fin (r + 1)) : dmin X.Gm x τ i ≠ 0 := by
-  have h' : ∀ τ : X.Ψ, (mat x τ).det ≠ 0 ∧ ∀ i : Fin (r + 1), 0 < psgn X.p0 i * (dmin X.Gm x τ i).re := hx
-  intro h0
-  have := (h' τ).2 i
-  rw [h0, Complex.zero_re, mul_zero] at this
-  exact lt_irrefl _ this
-
-private lemma norm_dmin_succ_div_castSucc_pos_of_mem_dom (X : Data E r) {x : Frame X.Ψ r} (hx : x ∈ X.dom) (τ : X.Ψ) (i : Fin r) :
-    0 < ‖dmin X.Gm x τ i.succ / dmin X.Gm x τ i.castSucc‖ :=
-  norm_pos_iff.mpr (div_ne_zero (dmin_ne_zero_of_mem_dom X hx τ _) (dmin_ne_zero_of_mem_dom X hx τ _))
-
-private lemma nfac_pos_of_mem_dom' (X : Data E r) {x : Frame X.Ψ r} (hx : x ∈ X.dom) (la : Wt X.Ψ r) :
-    0 < X.nfac la x := by
-  unfold Data.nfac
-  exact Finset.prod_pos fun τ _ => Finset.prod_pos fun i _ => Real.rpow_pos_of_pos (norm_dmin_succ_div_castSucc_pos_of_mem_dom X hx τ i) _
-
 theorem phla_add (X : Data E r) {x : Frame X.Ψ r} (hx : x ∈ X.dom) (la la' : Wt X.Ψ r) :
     phla X (la + la') x = phla X la x + phla X la' x := by
-  have hq := norm_dmin_succ_div_castSucc_pos_of_mem_dom X hx
+  have hq := _root_.ReciprocityTheory.ChartRestriction.G.FD.BoundedSectionAlgebra.ratio_pos X hx
   have hmul : X.nfac (la + la') x = X.nfac la x * X.nfac la' x := by
     unfold Data.nfac
     rw [← Finset.prod_mul_distrib]
@@ -84,31 +70,18 @@ theorem phla_add (X : Data E r) {x : Frame X.Ψ r} (hx : x ∈ X.dom) (la la' : 
     simp only [Pi.add_apply, Int.cast_add]
     ring
   unfold phla
-  rw [hmul, Real.log_mul (nfac_pos_of_mem_dom' X hx la).ne' (nfac_pos_of_mem_dom' X hx la').ne']
+  rw [hmul, Real.log_mul (_root_.ReciprocityTheory.ChartRestriction.G.FD.FlowCoefficientBounds.nfac_pos X hx la).ne' (_root_.ReciprocityTheory.ChartRestriction.G.FD.FlowCoefficientBounds.nfac_pos X hx la').ne']
   ring
 
 theorem phla_nsmul (X : Data E r) {x : Frame X.Ψ r} (hx : x ∈ X.dom) (k : ℕ) (la : Wt X.Ψ r) :
     phla X (k • la) x = k * phla X la x := by
-  have hq := norm_dmin_succ_div_castSucc_pos_of_mem_dom X hx
-  have hpow : X.nfac (k • la) x = X.nfac la x ^ k := by
-    unfold Data.nfac
-    rw [← Finset.prod_pow]
-    refine Finset.prod_congr rfl fun τ _ => ?_
-    rw [← Finset.prod_pow]
-    refine Finset.prod_congr rfl fun i _ => ?_
-    rw [← Real.rpow_natCast, ← Real.rpow_mul (hq τ i).le]
-    congr 1
-    simp only [Pi.smul_apply, nsmul_eq_mul, Int.cast_mul, Int.cast_natCast]
-    ring
-  unfold phla
-  rw [hpow, Real.log_pow]
-  ring
+  apply ReciprocityTheory.ChartRestriction.G.AR.Up.BigC.phla_nsmul <;> assumption
 
 theorem nfac_sq (X : Data E r) {x : Frame X.Ψ r} (hx : x ∈ X.dom) (la : Wt X.Ψ r) :
     X.nfac la x ^ 2 = Real.exp (-phla X la x) := by
   unfold phla
   rw [show -(-2 * Real.log (X.nfac la x)) = Real.log (X.nfac la x ^ 2) by rw [Real.log_pow]; push_cast; ring,
-    Real.exp_log (pow_pos (nfac_pos_of_mem_dom' X hx la) 2)]
+    Real.exp_log (pow_pos (_root_.ReciprocityTheory.ChartRestriction.G.FD.FlowCoefficientBounds.nfac_pos X hx la) 2)]
 
 theorem pnorm_sq (X : Data E r) {x : Frame X.Ψ r} (hx : x ∈ X.dom) (la : Wt X.Ψ r)
     (P : Frame X.Ψ r → ℂ) : X.pnorm la P x ^ 2 = ‖P x‖ ^ 2 * Real.exp (-phla X la x) := by
@@ -176,7 +149,7 @@ theorem wSk_eq {z : V (nd X)} (hz : z ∈ OmF X x0) (hs : 0 < Ss X Xa Fl x0 z) (
   have hd : 0 < densF X x0 z := by
     unfold densF
     exact Finset.prod_pos fun τ _ => Finset.prod_pos fun i _ =>
-      zpow_pos (norm_pos_iff.mpr (dmin_ne_zero_of_mem_dom X hx τ _)) _
+      zpow_pos (norm_pos_iff.mpr (_root_.ReciprocityTheory.ChartRestriction.G.FD.FlowCoefficientBounds.dmin_ne X hx τ _)) _
   unfold Sw at hSw
   unfold Ss at hs
   rw [WSk, if_pos hx, phla_add X hx, phla_nsmul X hx, hW, hS]
@@ -250,7 +223,7 @@ theorem weightedDensity_bound {z : V (nd X)} (hz : z ∈ OmF X x0) (hs : 0 < Ss 
   have hd : 0 < densF X x0 z := by
     unfold densF
     exact Finset.prod_pos fun τ _ => Finset.prod_pos fun i _ =>
-      zpow_pos (norm_pos_iff.mpr (dmin_ne_zero_of_mem_dom X hx τ _)) _
+      zpow_pos (norm_pos_iff.mpr (_root_.ReciprocityTheory.ChartRestriction.G.FD.FlowCoefficientBounds.dmin_ne X hx τ _)) _
   rw [sumL_eq X Xa x0 hz Fl.s] at hCs
   rw [sumL_eq X Xa x0 hz Xa.w] at hCw
   unfold Sw at hSw

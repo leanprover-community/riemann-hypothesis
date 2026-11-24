@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.PPolynomialLocalizedLength
 public import Mathlib.RingTheory.Length
 public import Mathlib.RingTheory.Localization.AtPrime.Basic
 import Mathlib.Algebra.Order.Floor.Extended
@@ -65,16 +66,7 @@ theorem length_localizedModule_quotient {A : Type*} [CommRing A] (K W : Ideal A)
     Module.length (Localization.AtPrime W) (LocalizedModule W.primeCompl (A ⧸ K)) =
       Module.length (Localization.AtPrime W)
         (Localization.AtPrime W ⧸ K.map (algebraMap A (Localization.AtPrime W))) := by
-  let g := Submodule.toLocalizedQuotient' (Localization.AtPrime W) W.primeCompl
-    (Algebra.linearMap A (Localization.AtPrime W)) K
-  let e := (IsLocalizedModule.linearEquiv W.primeCompl g
-    (LocalizedModule.mkLinearMap W.primeCompl (A ⧸ K))).restrictScalars (Localization.AtPrime W)
-  have hK : Submodule.localized' (Localization.AtPrime W) W.primeCompl
-      (Algebra.linearMap A (Localization.AtPrime W)) K = K.map (algebraMap A (Localization.AtPrime W)) := by
-    rw [Submodule.localized'_eq_span]
-    rfl
-  rw [← e.length_eq]
-  exact (Submodule.quotEquivOfEq _ _ hK).length_eq
+  apply _root_.GroundTheory.Heights₂.Heights.NumbersDVR.length_localizedModule_quotient_eq <;> assumption
 
 theorem length_self_eq_of_ringEquiv {Q Q' : Type*} [CommRing Q] [CommRing Q'] (τ : Q ≃+* Q') :
     Module.length Q Q = Module.length Q' Q' := by

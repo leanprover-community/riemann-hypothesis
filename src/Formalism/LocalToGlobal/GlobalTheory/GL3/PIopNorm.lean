@@ -304,10 +304,6 @@ theorem ep_mul_conj (T : Tor D) (x x' y : VC D N N') :
   push_cast
   ring
 
-theorem ep_eq_one_iff (t : ℝ) :
-    Complex.exp (2 * (Real.pi : ℂ) * Complex.I * (t : ℂ)) = 1 ↔ ∃ n : ℤ, t = n := by
-  first | exact UpperTheory.Reformulated.B.Qj15.ep_eq_one_iff .. | (apply UpperTheory.Reformulated.B.Qj15.ep_eq_one_iff <;> assumption) | (intros; apply UpperTheory.Reformulated.B.Qj15.ep_eq_one_iff <;> assumption) | (apply @UpperTheory.Reformulated.B.Qj15.ep_eq_one_iff <;> assumption) | (intros; apply @UpperTheory.Reformulated.B.Qj15.ep_eq_one_iff <;> assumption) | (apply @UpperTheory.Reformulated.B.Qj15.ep_eq_one_iff <;> first | assumption | infer_instance) | exact @UpperTheory.Reformulated.B.Qj15.ep_eq_one_iff t
-
 theorem int_shift {M : AddSubgroup (VC D N N')} [Countable M] {t : Set (VC D N N')}
     (ht : IsAddFundamentalDomain M t volume) (f : VC D N N' → ℂ)
     (hper : ∀ m ∈ M, ∀ z, f (z + m) = f z) (x : VC D N N') :
@@ -443,7 +439,7 @@ theorem crD_Mper (T : Tor D) {La₁ La₂ : AddSubgroup (VC D N N')} {G : VC D N
   intro m hm z
   rw [crD_shift T hG hm.1, ep_mul_conj]
   obtain ⟨b, hb⟩ := hZ (x - x') (La₂.sub_mem hx hx') m hm.2
-  rw [hb, (ep_eq_one_iff _).2 ⟨b, rfl⟩, one_mul]
+  rw [hb, (_root_.UpperTheory.Reformulated.B.Qj15.ep_eq_one_iff _).2 ⟨b, rfl⟩, one_mul]
 
 theorem trm_cont (T : Tor D) {G : VC D N N' → ℂ} (hG : Continuous G) (x : VC D N N') :
     Continuous (trm T G x) := by
@@ -535,7 +531,7 @@ theorem iso_core (T : Tor D) {La₁ La₂ : AddSubgroup (VC D N N')}
     refine int_zero_of_char ht _ (crD_Mper T hG hZ (hxr q) (hxr q')) y _ ?_
       (fun z => by rw [crD_shift T hG hy, ep_mul_conj])
     intro h1
-    obtain ⟨n, hn⟩ := (ep_eq_one_iff _).1 h1
+    obtain ⟨n, hn⟩ := (_root_.UpperTheory.Reformulated.B.Qj15.ep_eq_one_iff _).1 h1
     exact hb n hn
 
   have hdiag : ∀ q : Q, ∫ z in t, crD T (trm T G (xr q)) (trm T G (xr q)) z =

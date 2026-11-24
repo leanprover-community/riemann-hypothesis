@@ -114,8 +114,7 @@ theorem frame_mul (Φ : Matrix (Fin n) ι ℂ) (K : Matrix ι (Fin n) ℂ) (M : 
 
 theorem frame_sub (Φ : Matrix (Fin n) ι ℂ) (K : Matrix ι (Fin n) ℂ) (M : Matrix ι ι ℂ) (hKΦ : K * Φ = 1) :
     (1 + Φ * (M - 1) * K - 1) * Φ * K = 1 + Φ * (M - 1) * K - 1 := by
-  have e : (1 + Φ * (M - 1) * K - 1 : Matrix (Fin n) (Fin n) ℂ) = Φ * (M - 1) * K := by abel
-  rw [e, Matrix.mul_assoc (Φ * (M - 1)) K Φ, hKΦ, Matrix.mul_one]
+  rw [add_sub_cancel_left, Matrix.mul_assoc (Φ * (M - 1)) K Φ, hKΦ, Matrix.mul_one]
 
 theorem left_inverse_three_blocks (G G' : Matrix ι ι ℂ) (B : Matrix ι (Fin n) ℂ) (C : Matrix (Fin n) (Fin n) ℂ) (h : G * G' = 1) :
     B * C = G * (G' * B * C) := by
@@ -135,21 +134,15 @@ theorem last_ne (b : Fin r) : Fin.last r ≠ Fin.castSucc b := (Fin.castSucc_lt_
 
 theorem Pl_mul_Em : Pl r * Em r = 0 := by
   ext i b
-  unfold Pl Em
+  simp only [Pl, Em]
   rw [Matrix.diagonal_mul]
-  by_cases h1 : i = Fin.last r
-  · subst h1
-    simp [last_ne b]
-  · simp [h1]
+  by_cases h1 : i = Fin.last r <;> simp [h1, last_ne b]
 
 theorem EmT_mul_Pl : (Em r)ᵀ * Pl r = 0 := by
   ext b j
-  unfold Pl Em
+  simp only [Pl, Em]
   rw [Matrix.mul_diagonal]
-  by_cases h1 : j = Fin.last r
-  · subst h1
-    simp [last_ne b]
-  · simp [h1]
+  by_cases h1 : j = Fin.last r <;> simp [h1, last_ne b]
 
 theorem Pl_mul_Pl : Pl r * Pl r = Pl r := by
   unfold Pl
@@ -167,8 +160,7 @@ theorem Pl_conjT : (Pl r)ᴴ = Pl r := by
 
 theorem Em_conjT : (Em r)ᴴ = (Em r)ᵀ := by
   ext b i
-  simp only [Em, Matrix.conjTranspose_apply, Matrix.transpose_apply, Matrix.of_apply]
-  split_ifs <;> simp
+  by_cases h : i = Fin.castSucc b <;> simp [Em, h]
 
 theorem EmT_conjT : ((Em r)ᵀ)ᴴ = Em r := by
   rw [← Em_conjT, Matrix.conjTranspose_conjTranspose]
@@ -178,21 +170,18 @@ theorem EmT_mul_Em : (Em r)ᵀ * Em r = 1 := by
   by_cases h : a = b
   · subst h
     simp [Em, Matrix.mul_apply]
-  · simp [Em, Matrix.mul_apply, Matrix.one_apply, Fin.castSucc_inj, h, Ne.symm h]
+  · simp [Em, Matrix.mul_apply, Fin.castSucc_inj, h, Ne.symm h]
 
 theorem Em_mul_EmT : Em r * (Em r)ᵀ = 1 - Pl r := by
   ext i j
   simp only [Matrix.mul_apply, Matrix.transpose_apply, Em, Matrix.of_apply, Matrix.sub_apply, Matrix.one_apply,
     Pl, Matrix.diagonal_apply]
-  by_cases hi : i = Fin.last r
-  · subst hi
-    simp [last_ne]
-  · obtain ⟨b, rfl⟩ := Fin.exists_castSucc_eq.2 hi
-    by_cases hj : j = Fin.last r
-    · subst hj
-      simp [(last_ne b).symm, last_ne]
-    · obtain ⟨b', rfl⟩ := Fin.exists_castSucc_eq.2 hj
-      simp [Fin.castSucc_inj, (last_ne b).symm]
+  induction i using Fin.lastCases with
+  | last => simp [last_ne]
+  | cast b =>
+      induction j using Fin.lastCases with
+      | last => simp [(last_ne b).symm, last_ne]
+      | cast b' => simp [Fin.castSucc_inj, (last_ne b).symm]
 
 def Gm (t : ℂ) : Matrix (Fin (r + 1) ⊕ Fin r) (Fin (r + 1) ⊕ Fin r) ℂ := fromBlocks (t • Pl r) (Em r) (Em r)ᵀ 0
 
@@ -212,10 +201,8 @@ theorem lo_last (hP : Formalism.MainNotions.S.IsLoUni P) (i : Fin (r + 1)) :
     P i (Fin.last r) = if i = Fin.last r then 1 else 0 := by
   by_cases hi : i = Fin.last r
   · subst hi
-    rw [if_pos rfl]
-    exact (hP _ _).2 rfl
-  · rw [if_neg hi]
-    exact (hP _ _).1 (lt_of_le_of_ne (Fin.le_last i) hi)
+    simpa using (hP _ _).2 rfl
+  · simpa [hi] using (hP _ _).1 (lt_of_le_of_ne (Fin.le_last i) hi)
 
 theorem Pbar_mul_Pl (hP : Formalism.MainNotions.S.IsLoUni P) : P.map star * Pl r = Pl r := by
   ext i j
@@ -226,8 +213,7 @@ theorem Pbar_mul_Pl (hP : Formalism.MainNotions.S.IsLoUni P) : P.map star * Pl r
   · subst hj
     rw [lo_last hP]
     split_ifs <;> simp_all
-  · simp only [hj, if_false, mul_zero]
-    split_ifs <;> simp_all
+  · split_ifs <;> simp_all
 
 theorem Pl_mul_PT (hP : Formalism.MainNotions.S.IsLoUni P) : Pl r * Pᵀ = Pl r := by
   ext i j
@@ -250,8 +236,7 @@ theorem det_Pbar (hP : Formalism.MainNotions.S.IsLoUni P) : (P.map star).det = 1
   rw [Matrix.det_of_lowerTriangular]
   · simp [Matrix.map_apply, hd]
   · intro i j hij
-    simp only [Matrix.map_apply]
-    rw [(hP i j).1 (OrderDual.toDual_lt_toDual.1 hij), star_zero]
+    simp [Matrix.map_apply, (hP i j).1 (OrderDual.toDual_lt_toDual.1 hij)]
 
 def Rm (P : Matrix (Fin (r + 1)) (Fin (r + 1)) ℂ) : Matrix (Fin (r + 1)) (Fin r) ℂ := (P.map star)⁻¹ * Em r
 
@@ -340,7 +325,7 @@ theorem Mm_gram (hP : Formalism.MainNotions.S.IsLoUni P) {t : ℂ} (ht : t ≠ 0
   rw [hM]
   unfold Gm Mm
   rw [Matrix.fromBlocks_multiply, Matrix.fromBlocks_multiply]
-  simp only [Matrix.zero_mul, Matrix.mul_zero, add_zero, zero_add]
+  simp only [Matrix.zero_mul, Matrix.mul_zero, add_zero]
   congr 1
   · rw [Matrix.mul_smul, Matrix.smul_mul, Pbar_mul_Pl hP, Pl_mul_PT hP]
   · have h21 := congrArg Matrix.conjTranspose h12
@@ -398,9 +383,8 @@ theorem PhiJ_mulVec (ε : Fin n → Bool) (e f : Fin r → Fin n → ℂ) (z : F
 theorem PhiJPhi_apply (ε : Fin n → Bool) (e f : Fin r → Fin n → ℂ) (z : Fin n → ℂ) (i j : Fin (r + 1) ⊕ Fin r) :
     ((Phi e f z)ᴴ * Formalism.REAL.Jm ε * Phi e f z) i j =
       hJ ε (Sum.elim (fam e z) f i) (Sum.elim (fam e z) f j) := by
-  have h := congrFun (PhiJ_mulVec ε e f z (Sum.elim (fam e z) f j)) i
-  rw [← h]
-  simp only [Matrix.mul_apply, Matrix.mulVec, dotProduct, Phi, Matrix.of_apply]
+  simpa [Matrix.mul_apply, Matrix.mulVec, dotProduct, Phi, Matrix.of_apply] using
+    congrFun (PhiJ_mulVec ε e f z (Sum.elim (fam e z) f j)) i
 
 theorem gram (ε : Fin n → Bool) (e f : Fin r → Fin n → ℂ) (z : Fin n → ℂ)
     (hee : ∀ a b, hJ ε (e a) (e b) = 0) (hff : ∀ a b, hJ ε (f a) (f b) = 0)

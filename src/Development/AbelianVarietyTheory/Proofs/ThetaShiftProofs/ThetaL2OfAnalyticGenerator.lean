@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ExistsUniqueThetaCharAtPoint
 public import Development.AbelianVarietyTheory.Definitions.ArchimedeanThetaValues.IsThetaL2NormSquared
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsFundamentalDomainMeanNormSqThetaChar
 public import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExpMulThetaCharAutomorphy
@@ -86,31 +87,7 @@ theorem mulVec_period {g : ℕ} {La : Type} [AddCommGroup La] (P : La →+ (Fin 
     (per : ∀ k, h *ᵥ (P (bas (Pi.single (.inl k) 1))) = Pi.single k 1 ∧
       h *ᵥ (P (bas (Pi.single (.inr k) 1))) = τ *ᵥ (Pi.single k 1)) (u : Fin g ⊕ Fin g → ℤ) :
     h *ᵥ P (bas u) = (fun i => (u (.inl i) : ℂ)) + τ *ᵥ (fun i => (u (.inr i) : ℂ)) := by
-  let A : (Fin g ⊕ Fin g → ℤ) →+ (Fin g → ℂ) :=
-    (Matrix.mulVecLin h).toAddMonoidHom.comp (P.comp bas.toLinearMap.toAddMonoidHom)
-  let B : (Fin g ⊕ Fin g → ℤ) →+ (Fin g → ℂ) := AddMonoidHom.mk'
-    (fun u => (fun i => (u (.inl i) : ℂ)) + τ *ᵥ (fun i => (u (.inr i) : ℂ))) (by
-      intro a b
-      have : (fun i => ((a + b) (.inr i) : ℂ)) = (fun i => (a (.inr i) : ℂ)) + (fun i => (b (.inr i) : ℂ)) := by
-        funext i; simp
-      rw [this, Matrix.mulVec_add]
-      funext i; simp; ring)
-  have : A.toIntLinearMap = B.toIntLinearMap := by
-    refine LinearMap.pi_ext' fun j => LinearMap.ext_ring ?_
-    rcases j with k | k
-    · have := (per k).1
-      have e : (fun i => ((Pi.single (Sum.inl k) 1 : Fin g ⊕ Fin g → ℤ) (.inr i) : ℂ)) = 0 := by
-        funext i; simp
-      change h *ᵥ (P (bas (Pi.single (.inl k) 1))) = (fun i => ((Pi.single (Sum.inl k) 1 : Fin g ⊕ Fin g → ℤ) (.inl i) : ℂ)) + τ *ᵥ (fun i => ((Pi.single (Sum.inl k) 1 : Fin g ⊕ Fin g → ℤ) (.inr i) : ℂ))
-      rw [this, e]
-      funext i; by_cases hi : i = k <;> simp [Pi.single_apply, hi]
-    · have := (per k).2
-      have e : (fun i => ((Pi.single (Sum.inr k) 1 : Fin g ⊕ Fin g → ℤ) (.inr i) : ℂ)) = Pi.single k 1 := by
-        funext i; by_cases hi : i = k <;> simp [Pi.single_apply, hi]
-      change h *ᵥ (P (bas (Pi.single (.inr k) 1))) = (fun i => ((Pi.single (Sum.inr k) 1 : Fin g ⊕ Fin g → ℤ) (.inl i) : ℂ)) + τ *ᵥ (fun i => ((Pi.single (Sum.inr k) 1 : Fin g ⊕ Fin g → ℤ) (.inr i) : ℂ))
-      rw [this, e]
-      funext i; simp
-  exact LinearMap.congr_fun this u
+  apply GlobalTheory.ThetaPoint.mulVec_period_basis <;> assumption
 
 theorem im_form {g : ℕ} {τ : Matrix (Fin g) (Fin g) ℂ} (hs : τ.IsSymm) (hp : (τ.map Complex.im).PosDef)
     (m n m' n' : Fin g → ℤ) :

@@ -84,7 +84,7 @@ theorem ePow_comm {E : Fin n → Fin n → Module.End ℂ M} (hE : IsGlRep E) (k
     simp_rw [commutator_mul_right, hE a b c, ih]
     by_cases hbc : b = c <;> by_cases hda : d = a <;>
       simp [hbc, hda, sub_mul, mul_sub, Finset.sum_sub_distrib, Finset.sum_add_distrib, ite_mul, mul_ite,
-        Finset.sum_ite_eq, Finset.sum_ite_eq', mul_assoc] <;> abel
+        Finset.sum_ite_eq, Finset.sum_ite_eq'] <;> abel
 
 theorem gelfand_comm {E : Fin n → Fin n → Module.End ℂ M} (hE : IsGlRep E) (k : ℕ) (a b : Fin n) :
     E a b * gelfand E k = gelfand E k * E a b := by

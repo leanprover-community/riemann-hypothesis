@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.CharacterDataBaseChange
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LieLatticeData
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -103,27 +104,7 @@ theorem mem_stdLat (R : Subalgebra o Ω) {ι : Type} {v : ι → Ω} :
   simp [stdLat, AddSubgroup.mem_pi]
 
 theorem locFree_stdLat (R : Subalgebra o Ω) (m : ℕ) : LocFree R m (stdLat R (Fin m)) := by
-  classical
-  refine ⟨fun a ha e he => ?_, 1, fun _ => 1, fun _ => 1, fun _ => R.one_mem, fun _ => R.one_mem,
-    by simp, fun _ => ?_⟩
-  · rw [mem_stdLat] at he ⊢
-    intro j
-    simpa using R.mul_mem ha (he j)
-  · refine ⟨fun q => (Pi.basisFun Ω (Fin m)) q, (Pi.basisFun Ω (Fin m)).linearIndependent,
-      (Pi.basisFun Ω (Fin m)).span_eq, fun e => ?_⟩
-    have hsum : ∀ a : Fin m → Ω, (∑ q, a q • (Pi.basisFun Ω (Fin m)) q) = a := by
-      intro a
-      simpa using (Pi.basisFun Ω (Fin m)).sum_repr a
-    constructor
-    · rintro ⟨_, hn⟩
-      simp only [one_pow, one_smul] at hn
-      exact ⟨e, fun q => ⟨0, by simpa using (mem_stdLat R).1 hn q⟩, (hsum e).symm⟩
-    · rintro ⟨a, ha, rfl⟩
-      refine ⟨0, ?_⟩
-      rw [hsum, pow_zero, one_smul, mem_stdLat]
-      intro q
-      obtain ⟨n, hn⟩ := ha q
-      simpa using hn
+  apply PositivityTheory.Xgn.LocallyFreeLatticeSpans.locFree_std <;> assumption
 
 theorem locFree_divLat (R : Subalgebra o Ω) {E : Type} [AddCommGroup E] [Module Ω E] {c : Ω}
     (hc : c ≠ 0) {r : ℕ} {L : AddSubgroup E} (h : LocFree R r L) : LocFree R r (divLat c L) := by
@@ -187,7 +168,7 @@ theorem span_bcMap_annSub (Ω C : Type) [Field Ω] [Field C] [Algebra Ω C] (n i
       · intro j _ hjk
         by_cases hj : (j : ℕ) < i
         · simp [hj, bcMap]
-        · simp [hj, bcMap, Pi.single_apply, hjk.symm]
+        · simp [hj, bcMap, hjk.symm]
       · simp
     rw [this]
     refine Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨_, ?_, rfl⟩)
@@ -196,7 +177,7 @@ theorem span_bcMap_annSub (Ω C : Type) [Field Ω] [Field C] [Algebra Ω C] (n i
     by_cases hj : (j : ℕ) < i
     · simp [hj]
     · have : k ≠ j := by rintro rfl; exact hj hk
-      simp [hj, Pi.single_apply, this]
+      simp [hj, this]
 
 theorem spanOver_swap {C V Z Vc Zc : Type} [Field C] [Algebra o C] (RC : Subalgebra o C)
     [AddCommGroup V] [AddCommGroup Z] [AddCommGroup Vc] [AddCommGroup Zc]

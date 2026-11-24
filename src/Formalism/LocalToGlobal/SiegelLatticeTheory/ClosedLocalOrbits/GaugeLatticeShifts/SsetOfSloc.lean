@@ -93,7 +93,6 @@ private theorem mulVec_single_one_apply_gauge_lattice_shifts {n : ℕ} (m : Matr
     (m *ᵥ Pi.single j (1:ℂ)) i = m i j := by
   first
   | simp [Matrix.mulVec, dotProduct, Pi.single_apply]
-  | simp [Pi.single_apply]
 
 theorem sset_col {z : Fin (2 * r + k + 1) → ℂ} {M : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ}
     (hM : M ∈ Sset k r z) (a : Fin r) (i : Fin (2 * r + k + 1)) (hi : a.val ≤ i.val) :
@@ -166,7 +165,7 @@ theorem sum_low {n : ℕ} (Q : Matrix (Fin n) (Fin (2 * r + k + 1)) ℂ) (a : �
           rw [hv] at this
           simp only [Fin.val_mk]
           omega))
-        simp [bvec, Pi.single_apply, hne]
+        simp [bvec, hne]
       · intro h
         exact absurd (Finset.mem_univ _) h
     · rw [hw j (by omega)]
@@ -176,7 +175,7 @@ theorem sum_low {n : ℕ} (Q : Matrix (Fin n) (Fin (2 * r + k + 1)) ℂ) (a : �
           have := congrArg Fin.val h
           rw [hv] at this
           omega)
-        simp [bvec, Pi.single_apply, hne]
+        simp [bvec, hne]
       · simp
   conv_lhs => rw [hw']
 

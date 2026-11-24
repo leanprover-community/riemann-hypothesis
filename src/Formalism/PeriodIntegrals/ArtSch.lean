@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
 public import Mathlib.Analysis.Normed.Field.Instances
 public import Mathlib.NumberTheory.Padics.Complex
 public import Mathlib.RingTheory.Perfection
@@ -57,21 +58,7 @@ section
 variable (l : ℕ) [Fact l.Prime]
 
 theorem OC_l_not_unit : ¬ IsUnit ((l : ℕ) : PadicComplexInt l) := by
-  have key : Valued.v ((l : ℕ) : ℂ_[l]) = ‖((l : ℕ) : ℚ_[l])‖₊ := by
-    have e1 : ((l : ℕ) : ℂ_[l]) = (((l : ℕ) : PadicAlgCl l) : ℂ_[l]) := by
-      first
-        | exact (map_natCast (UniformSpace.Completion.coeRingHom : PadicAlgCl l →+* ℂ_[l]) l).symm
-        | norm_cast
-        | simp
-    rw [e1, Valued.valuedCompletion_apply, ← map_natCast (algebraMap ℚ_[l] (PadicAlgCl l))]
-    apply NNReal.eq
-    exact PadicAlgCl.norm_extends l _
-  rw [(PadicComplexInt.integers l).isUnit_iff_valuation_eq_one, map_natCast, key]
-  intro h
-  have h2 : ‖((l : ℕ) : ℚ_[l])‖ = 1 := by
-    have h3 := congrArg NNReal.toReal h
-    simpa using h3
-  exact absurd h2 (ne_of_lt Padic.norm_p_lt_one)
+  apply Formalism.BasicNotions.Loc.OC_l_not_unit <;> assumption
 
 instance factOC : Fact (¬ IsUnit ((l : ℕ) : PadicComplexInt l)) := ⟨OC_l_not_unit l⟩
 

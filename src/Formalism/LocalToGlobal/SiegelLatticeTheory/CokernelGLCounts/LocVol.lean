@@ -455,8 +455,7 @@ def PrimX (w : D.what₂.Word) : Prop :=
   ∀ v : PlX X, IsPrim v (LamX X) (locF v (ratTup (Fv X.B.I.F v) (F0 (frameOf X w))))
 
 theorem locTieX_of (w : D.what₂.Word) (h1 : LocCompatX X ψ w) (h2 : PrimX X w) : LocTieX X ψ w := by
-  intro v
-  refine ⟨X.measG_norm.2.2.2.1 v, (X.measW_norm w).2.2.2.2.2.2.2.1 v, h1 v, h2 v⟩
+  exact fun v => ⟨X.measG_norm.2.2.2.1 v, (X.measW_norm w).2.2.2.2.2.2.2.1 v, h1 v, h2 v⟩
 
 end Parts
 

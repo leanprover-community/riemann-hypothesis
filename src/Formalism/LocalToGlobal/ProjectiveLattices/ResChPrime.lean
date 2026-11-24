@@ -98,8 +98,6 @@ theorem resCh_prime {K : Type} [Field K] [NumberField K] (la : HeightOneSpectrum
   haveI : Finite (𝓞 K ⧸ la.asIdeal) := Ideal.finiteQuotientOfFreeOfNeBot la.asIdeal la.ne_bot
   first
   | exact CharP.char_is_prime (𝓞 K ⧸ la.asIdeal) _
-  | exact (CharP.char_is_prime_or_zero (𝓞 K ⧸ la.asIdeal) _).resolve_right
-      (ringChar.char_ne_zero_of_finite _)
 
 variable {Q}
 

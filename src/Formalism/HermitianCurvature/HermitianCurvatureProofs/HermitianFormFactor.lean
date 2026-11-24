@@ -173,9 +173,6 @@ theorem posDef_factor {T : Matrix Q Q ℂ} (hT : T.PosDef) : ∃ a : Matrix Q Q 
         have h0 : 0 ≤ T := Matrix.nonneg_iff_posSemidef.mpr hT.posSemidef
         have hs : (CFC.sqrt T)ᴴ = CFC.sqrt T := IsSelfAdjoint.of_nonneg (CFC.sqrt_nonneg T)
         rw [hs, CFC.sqrt_mul_sqrt_self T h0]⟩
-    | exact Matrix.posSemidef_iff_eq_conjTranspose_mul_self.mp hT.posSemidef
-    | exact Matrix.posSemidef_iff_eq_transpose_mul_self.mp hT.posSemidef
-    | exact Matrix.PosSemidef.exists_eq_conjTranspose_mul_self hT.posSemidef
   refine ⟨a, ?_, ha⟩
   rw [isUnit_iff_ne_zero]
   intro h0
@@ -195,7 +192,6 @@ theorem det_norm_one {g : Matrix m m ℂ} (hH : IsUnit H.det) (hg : g ∈ UH H) 
   have h4 : ‖g.det‖ ^ 2 = 1 := by
     first
     | rw [Complex.sq_norm]; exact h3
-    | rw [← Complex.normSq_eq_norm_sq]; exact h3
   rw [← Real.sqrt_sq (norm_nonneg _), h4, Real.sqrt_one]
 
 theorem frame_trans (F : Frame H Ep Em) (Y : Matrix m Q ℂ) (hY : (Tm H Y).PosDef) :
@@ -293,7 +289,6 @@ theorem mul_H_conj {g : Matrix m m ℂ} (h2 : H * H = 1) (hg : g ∈ UH H) : g *
     first
     | exact Matrix.mul_eq_one_comm.mp h1
     | exact mul_eq_one_comm.mp h1
-    | rw [← Matrix.inv_eq_left_inv h1]; exact Matrix.mul_nonsing_inv _ (Matrix.isUnit_det_of_left_inverse h1)
   calc g * H * gᴴ = g * H * gᴴ * (H * H) := by rw [h2, Matrix.mul_one]
     _ = g * (H * gᴴ * H) * H := by simp only [Matrix.mul_assoc]
     _ = H := by rw [h3, Matrix.one_mul]
@@ -335,28 +330,28 @@ theorem hsblock : Formalism.FourierDecayAlt.B2.HSBlock := by
   have hH2 : Hpk k r * Hpk k r = 1 := (hpkFacts k r).2.1
   have hAA : Ppos k r * Ppos k r = Ppos k r := by
     unfold Ppos
-    simp only [Matrix.smul_mul, Matrix.mul_smul, smul_smul, Matrix.add_mul, Matrix.mul_add, Matrix.one_mul,
+    simp only [Matrix.smul_mul, Matrix.mul_smul, Matrix.add_mul, Matrix.mul_add, Matrix.one_mul,
       Matrix.mul_one, hH2]
     ext i j
     simp only [Matrix.smul_apply, Matrix.add_apply, smul_eq_mul]
     ring
   have hDD : Pneg k r * Pneg k r = Pneg k r := by
     unfold Pneg
-    simp only [Matrix.smul_mul, Matrix.mul_smul, smul_smul, Matrix.sub_mul, Matrix.mul_sub, Matrix.one_mul,
+    simp only [Matrix.smul_mul, Matrix.mul_smul, Matrix.sub_mul, Matrix.mul_sub, Matrix.one_mul,
       Matrix.mul_one, hH2]
     ext i j
     simp only [Matrix.smul_apply, Matrix.sub_apply, smul_eq_mul]
     ring
   have hAD : Ppos k r * Pneg k r = 0 := by
     unfold Ppos Pneg
-    simp only [Matrix.smul_mul, Matrix.mul_smul, smul_smul, Matrix.add_mul, Matrix.mul_sub, Matrix.one_mul,
+    simp only [Matrix.smul_mul, Matrix.mul_smul, Matrix.add_mul, Matrix.mul_sub, Matrix.one_mul,
       Matrix.mul_one, hH2]
     ext i j
     simp only [Matrix.smul_apply, Matrix.sub_apply, Matrix.add_apply, Matrix.zero_apply, smul_eq_mul]
     ring
   have hDA : Pneg k r * Ppos k r = 0 := by
     unfold Ppos Pneg
-    simp only [Matrix.smul_mul, Matrix.mul_smul, smul_smul, Matrix.sub_mul, Matrix.mul_add, Matrix.one_mul,
+    simp only [Matrix.smul_mul, Matrix.mul_smul, Matrix.sub_mul, Matrix.mul_add, Matrix.one_mul,
       Matrix.mul_one, hH2]
     ext i j
     simp only [Matrix.smul_apply, Matrix.sub_apply, Matrix.add_apply, Matrix.zero_apply, smul_eq_mul]
@@ -1005,7 +1000,6 @@ theorem isAddHaarMeasure_matrix_volume {A B : Type} [Fintype A] [Fintype B] : (v
     rw [MeasureTheory.volume_pi]
     first
     | infer_instance
-    | exact MeasureTheory.Measure.pi.isAddHaarMeasure _
   rw [MeasureTheory.volume_pi]
   first
   | infer_instance
@@ -1018,7 +1012,6 @@ theorem haar_prod2 {A B C D : Type} [Fintype A] [Fintype B] [Fintype C] [Fintype
   haveI := (isAddHaarMeasure_matrix_volume : (volume : Measure (A → B → ℂ)).IsAddHaarMeasure)
   haveI := (isAddHaarMeasure_matrix_volume : (volume : Measure (C → D → ℂ)).IsAddHaarMeasure)
   first
-  | infer_instance
   | exact MeasureTheory.Measure.prod.instIsAddHaarMeasure _ _
 
 attribute [local instance] haar_prod2
@@ -1129,7 +1122,6 @@ theorem tb_cont : Continuous (tb H Ep : (Q → m → ℂ) → _) := by
   unfold tb
   first
   | exact h1.prodMk h2
-  | exact h1.prod_mk h2
 
 def act (g : m → m → ℂ) (Y : Q → m → ℂ) : Q → m → ℂ := fun j => Matrix.of g *ᵥ Y j
 
@@ -1446,7 +1438,6 @@ theorem Kf_slice {T : Q → Q → ℂ} (hT : (Matrix.of T).PosDef ∧ (Matrix.tr
     unfold Kf
     first
     | rw [Set.indicator_of_notMem h1, Set.indicator_of_notMem h2]
-    | rw [Set.indicator_of_not_mem h1, Set.indicator_of_not_mem h2]
 
 theorem Kf_slice_zero {T : Q → Q → ℂ} (hT : ¬ ((Matrix.of T).PosDef ∧ (Matrix.trace (Matrix.of T)).re ≤ 1)) (σ : ℝ)
     (B : Q → P → ℂ) : Kf P Q σ (T, B) = 0 := by
@@ -1491,7 +1482,6 @@ theorem k2map_cont : Continuous (swapBlockPair : (Q → P → ℂ) × (Q → Q �
   unfold swapBlockPair
   first
   | exact h1.prodMk continuous_fst
-  | exact h1.prod_mk continuous_fst
 
 theorem tb_coord (F : Frame H Ep Em) (Y : Q → m → ℂ) : tb H Ep Y = swapBlockPair (coordE F Y) := by
   refine Prod.ext ?_ rfl
@@ -1537,7 +1527,6 @@ theorem entry_bound (C : Matrix P Q ℂ) (M : Matrix Q Q ℂ) (hC : ∑ i, ∑ j
   have hn : ∀ z : ℂ, ‖z‖ ^ 2 = Complex.normSq z := fun z => by
     first
     | exact Complex.sq_norm z
-    | exact (Complex.normSq_eq_norm_sq z).symm
   have hC' : ∑ l, ‖C i l‖ ^ 2 ≤ 1 := by
     rw [Finset.sum_congr rfl fun l _ => hn (C i l)]
     exact le_trans (Finset.single_le_sum (f := fun i => ∑ l, Complex.normSq (C i l))
@@ -1713,7 +1702,6 @@ theorem ball_bound {k r : ℕ} {c : ℝ} (hc : 1 ≤ c) {g : Mt k r} (h : gN (Ma
     have h3 : ‖g i j‖ ^ 2 = Complex.normSq (g i j) := by
       first
       | exact Complex.sq_norm _
-      | exact (Complex.normSq_eq_norm_sq _).symm
     rw [h3]; linarith
   nlinarith [norm_nonneg (g i j), mul_le_mul_of_nonneg_left hc hc0]
 

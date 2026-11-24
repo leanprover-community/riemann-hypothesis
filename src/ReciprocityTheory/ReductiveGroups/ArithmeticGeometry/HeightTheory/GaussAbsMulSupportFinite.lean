@@ -85,10 +85,6 @@ theorem int_of_le_one (x : K) (h : ∀ w : FinitePlace K, w x ≤ 1) : ∃ y : �
          have h5 : Valued.v (FinitePlace.embedding v x) = v.valuation K x := by
            first
              | exact IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_eq_valuation' v x
-             | exact v.valuedAdicCompletion_eq_valuation' x
-             | exact FinitePlace.valuation_embedding v x
-             | exact IsDedekindDomain.HeightOneSpectrum.valuedAdicCompletion_eq_valuation v x
-             | rfl
          rw [h5] at h1
          exact (WithZeroMulInt.toNNReal_le_one_iff he).mp (by exact_mod_cast h1))
   obtain ⟨y, hy⟩ := IsDedekindDomain.HeightOneSpectrum.mem_integers_of_valuation_le_one K x hv
@@ -151,7 +147,6 @@ theorem gaussAbs_C_mul {κ : Type} [Fintype κ] (w : FinitePlace K) (c : K) (F :
   · have hw : 0 < w c := by
       first
         | exact w.pos_iff.mpr hc
-        | exact (FinitePlace.pos_iff).mpr hc
     have hsupp : (MvPolynomial.C c * F).support = F.support := by
       rw [MvPolynomial.C_mul', MvPolynomial.support_smul_eq hc]
     unfold ReciprocityTheory.MultiplicativeHeights.gaussAbs
@@ -187,8 +182,6 @@ theorem finsum_log_norm (c : K) (hc : c ≠ 0) :
     intro w
     first
       | exact w.pos_iff.mpr hc
-      | exact (FinitePlace.pos_iff).mpr hc
-      | exact lt_of_le_of_ne (by positivity) (fun h => hc (by simpa using h.symm))
   rw [finsum_log_eq (fun w : FinitePlace K => w c) hpos (FinitePlace.hasFiniteMulSupport hc),
     FinitePlace.prod_eq_inv_abs_norm hc]
   push_cast
@@ -244,10 +237,6 @@ theorem contId_ne_bot {κ : Type*} (G₀ : MvPolynomial κ (𝓞 K)) (h : G₀ �
 private lemma place_nonneg_lemma_3 (w : FinitePlace K) (x : K) : 0 ≤ w x := by
   first
     | positivity
-    | exact AbsoluteValue.nonneg _ _
-    | exact w.1.nonneg _
-    | exact norm_nonneg _
-    | simp
 
 theorem gaussAbs_eq_iSup {κ : Type*} (G₀ : MvPolynomial κ (𝓞 K)) (h : G₀ ≠ 0) (w : FinitePlace K) :
     ReciprocityTheory.MultiplicativeHeights.gaussAbs w (MvPolynomial.map (algebraMap (𝓞 K) K) G₀) =
@@ -255,8 +244,6 @@ theorem gaussAbs_eq_iSup {κ : Type*} (G₀ : MvPolynomial κ (𝓞 K)) (h : G�
   have hinj : Function.Injective (algebraMap (𝓞 K) K) := by
     first
       | exact RingOfIntegers.coe_injective
-      | exact IsFractionRing.injective (𝓞 K) K
-      | exact FaithfulSMul.algebraMap_injective (𝓞 K) K
   obtain ⟨s0, hs0⟩ := MvPolynomial.ne_zero_iff.mp h
   have hs0' : s0 ∈ G₀.support := MvPolynomial.mem_support_iff.mpr hs0
   have hbdd : BddAbove (Set.range fun i : G₀.support => w ((G₀.coeff i : 𝓞 K) : K)) :=
@@ -298,7 +285,6 @@ theorem mem_inv_of {κ : Type*} (G₀ : MvPolynomial κ (𝓞 K)) (h : G₀ ≠ 
   have hy2 : ∃ y', y' ∈ contId G₀ ∧ algebraMap (𝓞 K) K y' = y := by
     first
       | exact (FractionalIdeal.mem_coeIdeal _).mp hy
-      | exact FractionalIdeal.mem_coeIdeal.mp hy
   obtain ⟨y', hy', rfl⟩ := hy2
   rw [FractionalIdeal.mem_one_iff]
   have key : ∃ z : 𝓞 K, (z : K) = x * (y' : K) := by
@@ -315,20 +301,15 @@ theorem mem_inv_of {κ : Type*} (G₀ : MvPolynomial κ (𝓞 K)) (h : G₀ ≠ 
       refine ⟨z1 + z2, ?_⟩
       first
         | (push_cast; linear_combination h1 + h2)
-        | (simp only [map_add (f := _)]; linear_combination h1 + h2)
-        | (simp; linear_combination h1 + h2)
     | smul r a _ ha =>
       obtain ⟨z, hz⟩ := ha
       refine ⟨r * z, ?_⟩
       rw [smul_eq_mul]
       first
         | (push_cast; linear_combination (r : K) * hz)
-        | (simp only [map_mul]; linear_combination (algebraMap (𝓞 K) K r) * hz)
-        | (simp; linear_combination (r : K) * hz)
   obtain ⟨z, hz⟩ := key
   first
     | exact ⟨z, hz⟩
-    | exact ⟨z, by simpa using hz⟩
 
 theorem relIndex_inv {κ : Type*} (G₀ : MvPolynomial κ (𝓞 K)) (h : G₀ ≠ 0) :
     (((1 : Submodule (𝓞 K) K).toAddSubgroup.relIndex

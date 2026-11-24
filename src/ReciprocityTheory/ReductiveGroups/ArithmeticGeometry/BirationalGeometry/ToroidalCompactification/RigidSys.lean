@@ -70,7 +70,6 @@ theorem mem_range_jK {k : Type} [Field k] (x : Sp (PowerSeries k)) (hx : PowerSe
   have hXu : ¬ IsUnit (PowerSeries.X : PowerSeries k) := by
     intro hu
     first
-      | (have h1 := hu.map (PowerSeries.constantCoeff k); simp at h1)
       | (have h1 := hu.map (PowerSeries.constantCoeff (R := k)); simp at h1)
   have hbot : x.asIdeal = ⊥ := by
     by_contra hne

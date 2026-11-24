@@ -1,5 +1,6 @@
 module
 
+import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.OccDAdjA
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.ExceptionalGroupG2.StdGap
 public import Mathlib.Analysis.InnerProductSpace.Subspace
 public import ReciprocityTheory.ReductiveGroups.DiscreteSeries.TensorRepresentations.HidaSetting
@@ -65,63 +66,6 @@ open Finset
 namespace ReciprocityTheory.ChartRestriction.DS.G2
 
 variable {n : ℕ}
-
-theorem adjA_high {D : Type*} [AddCommGroup D] [Module ℂ D] {W : Type*} [AddCommGroup W] [Module ℂ W]
-    [FiniteDimensional ℂ W] (M : Submodule ℂ D) (T : Module.End ℂ D) (hT : ∀ y ∈ M, T y ∈ M)
-    (Φ : D →ₗ[ℂ] W) (hΦ : ∀ y ∈ M, Φ y = 0 → Φ (T y) = 0) :
-    ∃ C : ℝ, ∀ y ∈ M, ∀ θ : ℝ, C < θ → T y = (θ : ℂ) • y → Φ y = 0 := by
-  classical
-  set TM : Module.End ℂ M := T.restrict hT
-  set Φ' : M →ₗ[ℂ] W := Φ.comp M.subtype
-  set p : Submodule ℂ M := LinearMap.ker Φ'
-  have hp : p ≤ p.comap TM := by
-    intro y hy
-    simp only [Submodule.mem_comap, p, LinearMap.mem_ker, Φ', LinearMap.comp_apply,
-      Submodule.subtype_apply] at hy ⊢
-    exact hΦ y y.2 hy
-  set Tb : Module.End ℂ (M ⧸ p) := p.mapQ p TM hp
-  have : FiniteDimensional ℂ (LinearMap.range Φ') := inferInstance
-  have : FiniteDimensional ℂ (M ⧸ p) := LinearEquiv.finiteDimensional Φ'.quotKerEquivRange.symm
-  have hfin := Module.End.finite_hasEigenvalue Tb
-  refine ⟨∑ μ ∈ hfin.toFinset, ‖μ‖, fun y hy θ hθ hTy => ?_⟩
-  by_contra hne
-  have hq : Submodule.Quotient.mk (p := p) (⟨y, hy⟩ : M) ≠ 0 := by
-    rw [Ne, Submodule.Quotient.mk_eq_zero]
-    exact hne
-  have hTb : Tb (Submodule.Quotient.mk (⟨y, hy⟩ : M)) = (θ : ℂ) • Submodule.Quotient.mk (⟨y, hy⟩ : M) := by
-    rw [Submodule.mapQ_apply, ← Submodule.Quotient.mk_smul]
-    congr 1
-    exact Subtype.ext hTy
-  have hev : Tb.HasEigenvalue (θ : ℂ) :=
-    Module.End.hasEigenvalue_of_hasEigenvector ⟨Module.End.mem_eigenspace_iff.2 hTb, hq⟩
-  have hmem : (θ : ℂ) ∈ hfin.toFinset := hfin.mem_toFinset.2 hev
-  have hle : ‖(θ : ℂ)‖ ≤ ∑ μ ∈ hfin.toFinset, ‖μ‖ :=
-    Finset.single_le_sum (f := fun μ : ℂ => ‖μ‖) (fun _ _ => norm_nonneg _) hmem
-  rw [Complex.norm_real, Real.norm_eq_abs] at hle
-  linarith [le_abs_self θ]
-
-theorem adjA_tensF_single {M : Type*} [AddCommGroup M] [Module ℂ M] (dual : Bool)
-    (E : Fin n → Fin n → Module.End ℂ M) (a b c : Fin n) (y : M) :
-    ∃ c' : Fin n, ∃ r : ℂ, tensF dual E a b (Pi.single c y) = Pi.single c (E a b y) + r • (Pi.single c' y : Fin n → M) := by
-  classical
-  cases dual
-  · refine ⟨a, if b = c then 1 else 0, ?_⟩
-    funext x
-    simp only [tensF, cond_false, tensV_coord, Pi.add_apply, Pi.smul_apply, Pi.single_apply]
-    split_ifs <;> simp_all
-  · refine ⟨b, if a = c then -1 else 0, ?_⟩
-    funext x
-    simp only [tensF, cond_true, tensVd_coord, Pi.add_apply, Pi.smul_apply, Pi.single_apply]
-    split_ifs <;> simp_all [sub_eq_add_neg]
-
-theorem adjA_single_mem {M : Type*} [AddCommGroup M] [Module ℂ M] {S : Submodule ℂ M} (c : Fin n) {y : M}
-    (hy : y ∈ S) : (Pi.single c y : Fin n → M) ∈ tensSub S := by
-  classical
-  refine Submodule.mem_pi.2 fun x _ => ?_
-  rw [Pi.single_apply]
-  split_ifs
-  · exact hy
-  · exact S.zero_mem
 
 section Rep
 

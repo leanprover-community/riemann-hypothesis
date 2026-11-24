@@ -205,7 +205,6 @@ lemma c2x2_lowOf_sub {m : ℕ} (p : Fin m × Fin m → Prop) [DecidablePred p] (
 
 theorem lower_parabolic_coordinates : C2.LPCoords := by
   intro m w d hd
-  have hPu := isUnit_det_monomialMatrix w d hd
   constructor
   · ext l
     simp only [Set.mem_range, C2.LPg, Set.mem_setOf_eq]

@@ -134,7 +134,7 @@ theorem approxB_normSq_single {r : ℕ} (j : Fin r) (R : ℝ) :
   rw [Finset.sum_eq_single j]
   · simp [sq_abs]
   · intro b _ hb
-    simp [Pi.single_apply, hb]
+    simp [hb]
   · simp
 
 abbrev ApproxPosIdx (r p : ℕ) := {j : Fin r // (j : ℕ) < p}
@@ -226,7 +226,7 @@ theorem approxB_det_le_of_posSemidef {n : Type*} [Fintype n] [DecidableEq n]
   have hl : ∀ i, 0 ≤ hH.eigenvalues i := hN.eigenvalues_nonneg
   have htr : ∑ i, hH.eigenvalues i = ∑ k, (N k k).re := by
     have h2 := congrArg Complex.re hH.trace_eq_sum_eigenvalues
-    simp only [Matrix.trace, Matrix.diag, Complex.re_sum, Complex.ofReal_re] at h2
+    simp only [Matrix.trace, Matrix.diag, Complex.re_sum] at h2
     exact h2.symm
   have hnorm : ‖N.det‖ = ∏ i, hH.eigenvalues i := by
     rw [hdet, norm_prod]
@@ -238,7 +238,7 @@ theorem approxB_det_le_of_posSemidef {n : Type*} [Fintype n] [DecidableEq n]
       _ = Fintype.card n * c := by simp
   rcases Nat.eq_zero_or_pos (Fintype.card n) with h0 | hpos
   · haveI : IsEmpty n := Fintype.card_eq_zero_iff.mp h0
-    simp [h0]
+    simp
   · have hm : (0 : ℝ) < Fintype.card n := by exact_mod_cast hpos
     have hAM := Real.geom_mean_le_arith_mean_weighted Finset.univ (fun _ => (1 : ℝ) / Fintype.card n)
       hH.eigenvalues (fun i _ => by positivity)

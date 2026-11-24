@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsMulStarEqOfNormOneUnramifiedQuadratic
 public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.FourierMatch
 public import Mathlib.FieldTheory.Galois.Basic
 import Mathlib.Algebra.Order.Floor.Extended
@@ -206,46 +207,7 @@ theorem fixed_eq {z : E} (hz : star z = z) : algebraMap F E (Algebra.trace F E z
     inv_mul_cancel₀ h2E, one_mul]
 
 theorem exists_far : ∃ w : E, ‖w‖ = 1 ∧ ∀ c : F, 1 ≤ ‖w - algebraMap F E c‖ := by
-  haveI := hU.ultraE
-  haveI := hU.ultraF
-  haveI := hU.lcF
-  haveI : ProperSpace F := ProperSpace.of_locallyCompactSpace F
-  obtain ⟨y, hy⟩ := hU.star_ne
-  have hyF : ∀ c : F, y - algebraMap F E c ≠ 0 := by
-    intro c hc
-    apply hy
-    rw [sub_eq_zero.mp hc, hU.star_fix]
-  obtain ⟨c0, -, hmin⟩ := (isCompact_closedBall (0 : F) ‖y‖).exists_isMinOn
-    ⟨0, by simp⟩ (f := fun c => ‖y - algebraMap F E c‖)
-    (by fun_prop)
-  have hall : ∀ c : F, ‖y - algebraMap F E c0‖ ≤ ‖y - algebraMap F E c‖ := by
-    intro c
-    by_cases hc : ‖c‖ ≤ ‖y‖
-    · exact hmin (by simpa using hc)
-    · push_neg at hc
-      have h0 : ‖y - algebraMap F E c0‖ ≤ ‖y‖ := by simpa using hmin (a := 0) (by simp)
-      have : ‖c‖ ≤ max ‖y‖ ‖y - algebraMap F E c‖ := by
-        have := um_sub y (y - algebraMap F E c)
-        simpa [norm_algebraMap'] using this
-      have : ‖y‖ < ‖y - algebraMap F E c‖ := by
-        rcases le_max_iff.mp this with h | h
-        · exact absurd (hc.trans_le h) (lt_irrefl _)
-        · exact hc.trans_le h
-      linarith
-  set z := y - algebraMap F E c0 with hzdef
-  have hz0 : z ≠ 0 := hyF c0
-  obtain ⟨x, hx⟩ := hU.unram z
-  have hxpos : 0 < ‖x‖ := by rw [← hx]; exact norm_pos_iff.mpr hz0
-  have hx0 : x ≠ 0 := norm_pos_iff.mp hxpos
-  have hX0 : algebraMap F E x ≠ 0 := by simpa using hx0
-  refine ⟨z / algebraMap F E x, ?_, ?_⟩
-  · rw [norm_div, norm_algebraMap', ← hx, div_self (norm_pos_iff.mpr hz0).ne']
-  · intro c
-    have : z / algebraMap F E x - algebraMap F E c
-        = (y - algebraMap F E (c0 + x * c)) / algebraMap F E x := by
-      rw [hzdef]; field_simp; rw [map_add (f := _), map_mul]; ring
-    rw [this, norm_div, norm_algebraMap', le_div_iff₀ hxpos, one_mul, ← hx]
-    exact hall _
+  apply GlobalTheory.NormUnits.exists_far_unit <;> assumption
 
 theorem exists_diff_one (h2 : ‖(2 : F)‖ < 1) : ∃ w : E, ‖w‖ ≤ 1 ∧ ‖w - star w‖ = 1 := by
   haveI := hU.ultraE

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsUniqueInfEmb
 public import Development.AbelianVarietyTheory.BlockTheory.HeightDefect.WeilIdempotents
 public import Development.AbelianVarietyTheory.Counterexamples.HeightSurvey.StarPurelyImaginaryEqNeg
 public import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
@@ -283,27 +284,7 @@ theorem gen_inf_val (τ : E →+* ℂ) (w : InfinitePlace F) (hw : w.embedding =
 
 theorem gen_inf_exists (τ : E →+* ℂ) (w : InfinitePlace F) (hw : w.embedding = τ.comp (algebraMap F E)) :
     ∃ θ : Ainf F ⊗[F] E →+* ℂ, IsInfEmb τ θ := by
-  let _ : Algebra F ℂ := (τ.comp (algebraMap F E)).toAlgebra
-  let f : Ainf F →ₐ[F] ℂ :=
-    { toRingHom := (InfinitePlace.Completion.extensionEmbedding w).comp (Pi.evalRingHom _ w)
-      commutes' := fun x => by
-        change InfinitePlace.Completion.extensionEmbedding w (algebraMap F (Ainf F) x w) =
-          (τ.comp (algebraMap F E)) x
-        rw [InfiniteAdeleRing.algebraMap_apply]
-        exact (InfinitePlace.Completion.extensionEmbedding_coe w _).trans (DFunLike.congr_fun hw x) }
-  let g : E →ₐ[F] ℂ := { toRingHom := τ, commutes' := fun _ => rfl }
-  refine ⟨(Algebra.TensorProduct.lift f g (fun _ _ => Commute.all _ _)).toRingHom, fun x => ?_, ?_⟩
-  · show f 1 * g x = τ x
-    rw [map_one, one_mul]
-    rfl
-  · have : (fun a : Ainf F => (Algebra.TensorProduct.lift f g (fun _ _ => Commute.all _ _)).toRingHom
-        (a ⊗ₜ[F] (1 : E))) = fun a => InfinitePlace.Completion.extensionEmbedding w (a w) := by
-      funext a
-      show f a * g 1 = _
-      rw [map_one, mul_one]
-      rfl
-    rw [this]
-    exact (InfinitePlace.Completion.isometry_extensionEmbedding w).continuous.comp (continuous_apply w)
+  apply GlobalTheory.Mem.VolEmb.infEmb_exists <;> assumption
 
 end Gen
 

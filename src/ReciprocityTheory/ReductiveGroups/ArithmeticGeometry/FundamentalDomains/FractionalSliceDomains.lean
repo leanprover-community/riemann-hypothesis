@@ -161,7 +161,6 @@ theorem hfun_periodic (P : Frame X.Ψ r → ℂ) (la : Wt X.Ψ r) (hP : X.IsSec 
       exact Submodule.sum_mem _ fun j _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
     first
       | exact h1
-      | exact (AddSubgroup.mem_toIntSubmodule _).mp h1
   have hsum : (fun τ => ∑ j, (s + fun k => (m k : ℂ)) j * (ω j τ : ℂ)) =
       TransvectionPeriodicity.cR X (fun τ => ∑ j, (m j : ℝ) * ω j τ) + fun τ => ∑ j, s j * (ω j τ : ℂ) := by
     funext τ
@@ -173,7 +172,6 @@ theorem hfun_periodic (P : Frame X.Ψ r → ℂ) (la : Wt X.Ψ r) (hP : X.IsSec 
     P (X.flow ξ (fun τ => ∑ j, s j * (ω j τ : ℂ)) x)
   first
     | rw [hsum, ← EmbeddingHermitianPairs.flow_flow (X := X) hξ.2.1]
-    | rw [hsum, ← AdmissibleHermitianColumns.flow_flow (X := X) hξ.2.1]
   exact TransvectionPeriodicity.sec_periodic X la P hP hξ.1 hξ.2.1 hp _ hS
 
 theorem slice_fract (P : Frame X.Ψ r → ℂ) (la : Wt X.Ψ r) (hP : X.IsSec la P) (hx : x ∈ X.dom)

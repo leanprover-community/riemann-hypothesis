@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.OrbitQuotientTopology.IsClosedRStab
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RootSubgroupBasics.FlagMatLower
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RootSubgroupJacobian.SUpPowEqZero
 import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.RootSubgroupBasics.TriShear
@@ -61,37 +62,7 @@ variable {k r : ℕ}
 
 theorem nset_mul' {a b : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (ha : a ∈ Nset k r)
     (hb : b ∈ Nset k r) : a * b ∈ Nset k r := by
-  refine ⟨?_, ?_, ?_⟩
-  · show (a * b)ᴴ * Hpk k r * (a * b) = Hpk k r
-    have h1 : aᴴ * Hpk k r * a = Hpk k r := ha.1
-    have h2 : bᴴ * Hpk k r * b = Hpk k r := hb.1
-    rw [conjTranspose_mul]
-    calc bᴴ * aᴴ * Hpk k r * (a * b) = bᴴ * (aᴴ * Hpk k r * a) * b := by simp only [Matrix.mul_assoc]
-      _ = Hpk k r := by rw [h1, h2]
-  · intro c i hci
-    rw [Matrix.mul_apply, Finset.sum_eq_single (eI k r c)]
-    · rw [hb.2.1 c (eI k r c) le_rfl, if_pos rfl, mul_one]; exact ha.2.1 c i hci
-    · intro j _ hj
-      by_cases hjc : c.val ≤ j.val
-      · rw [hb.2.1 c j hjc, if_neg hj, mul_zero]
-      · have hjr : j.val < r := by have := c.isLt; omega
-        have e : eI k r ⟨j.val, hjr⟩ = j := Fin.ext rfl
-        have := ha.2.1 ⟨j.val, hjr⟩ i (show j.val ≤ i.val by omega)
-        rw [e, if_neg (fun h => hjc (by rw [← h]; exact hci))] at this
-        rw [this, zero_mul]
-    · intro h; exact absurd (Finset.mem_univ _) h
-  · intro i j hj1 hj2 hi
-    rw [Matrix.mul_apply, Finset.sum_eq_single j]
-    · rw [hb.2.2 j j hj1 hj2 hj1, if_pos rfl, mul_one]; exact ha.2.2 i j hj1 hj2 hi
-    · intro l _ hl
-      by_cases hlr : r ≤ l.val
-      · rw [hb.2.2 l j hj1 hj2 hlr, if_neg hl, mul_zero]
-      · have hlr' : l.val < r := by omega
-        have e : eI k r ⟨l.val, hlr'⟩ = l := Fin.ext rfl
-        have := ha.2.1 ⟨l.val, hlr'⟩ i (show l.val ≤ i.val by omega)
-        rw [e, if_neg (fun h => by rw [h] at hi; omega)] at this
-        rw [this, zero_mul]
-    · intro h; exact absurd (Finset.mem_univ _) h
+  apply PI.AmpOrbQuot.nset_mul <;> assumption
 
 theorem rstab_mul' {g a b : Matrix (Fin (2 * r + k + 1)) (Fin (2 * r + k + 1)) ℂ} (hg : g ∈ UH (Hpk k r))
     (ha : a ∈ RStab k r g) (hb : b ∈ RStab k r g) : a * b ∈ RStab k r g := by

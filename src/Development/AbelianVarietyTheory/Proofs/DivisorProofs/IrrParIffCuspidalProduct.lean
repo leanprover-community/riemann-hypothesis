@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteDimensionalOfIrr
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.BlockProductIsomorphism
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.BlockEmbeddingFactors
 import Mathlib.Algebra.Order.Floor.Extended
@@ -65,21 +66,7 @@ theorem nontrivial_of_irr (τ : Representation ℂ G V) (h : τ.IsIrreducible) :
 
 theorem finiteDimensional_of_irr [Finite G] (τ : Representation ℂ G V) (h : τ.IsIrreducible) :
     FiniteDimensional ℂ V := by
-  have := nontrivial_of_irr τ h
-  obtain ⟨v, hv⟩ := exists_ne (0 : V)
-  let S : Subrepresentation τ := ⟨Submodule.span ℂ (Set.range fun g => τ g v), fun g w hw => by
-    have : Submodule.span ℂ (Set.range fun g => τ g v) ≤
-        (Submodule.span ℂ (Set.range fun g => τ g v)).comap (τ g) := by
-      refine Submodule.span_le.2 ?_
-      rintro _ ⟨x, rfl⟩
-      exact Submodule.subset_span ⟨g * x, by simp⟩
-    exact this hw⟩
-  rcases eq_bot_or_eq_top S with hS | hS
-  · have h1 : v ∈ S.toSubmodule := Submodule.subset_span ⟨1, by simp⟩
-    rw [hS] at h1
-    exact absurd h1 hv
-  · have h2 : Submodule.span ℂ (Set.range fun g => τ g v) = ⊤ := congrArg Subrepresentation.toSubmodule hS
-    exact ⟨h2 ▸ Submodule.fg_span (Set.finite_range _)⟩
+  apply (config := { allowSynthFailures := true }) GlobalTheory.FinGL.IrrProduct.finiteDimensional_of_irr <;> assumption
 
 theorem span_stable (τ : Representation ℂ G V) (ρ : Representation ℂ G W) (T : IntertwiningMap τ τ) {v : V}
     (hv : v ∈ ⨆ f : IntertwiningMap ρ τ, LinearMap.range f.toLinearMap) :

@@ -55,21 +55,6 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 private theorem countable_numberField' (K : Type) [Field K] [NumberField K] : Countable K :=
   (Module.finBasis ℚ K).equivFun.injective.countable
 
-private theorem countable_heightOneSpectrum_ringOfIntegers (K : Type) [Field K] [NumberField K] :
-    Countable (IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers K)) := by
-  have := countable_numberField' K
-  have : Countable (NumberField.RingOfIntegers K) :=
-    Function.Injective.countable (NumberField.RingOfIntegers.coe_injective (K := K))
-  have hI : Countable (Ideal (NumberField.RingOfIntegers K)) := by
-    refine Function.Surjective.countable
-      (f := fun s : Finset (NumberField.RingOfIntegers K) => Ideal.span (s : Set (NumberField.RingOfIntegers K))) ?_
-    intro I
-    obtain ⟨s, hs⟩ := IsNoetherian.noetherian I
-    exact ⟨s, hs⟩
-  exact Function.Injective.countable
-    (f := fun v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers K) => v.asIdeal)
-    (fun v w h => IsDedekindDomain.HeightOneSpectrum.ext h)
-
 private theorem univ_le_preimage_inf_of_univ_le (K : Type) [Field K] [NumberField K] :
     T2Space (NumberField.InfiniteAdeleRing K) ∧ SecondCountableTopology (NumberField.InfiniteAdeleRing K) := by
   have h : ∀ v : NumberField.InfinitePlace K, SecondCountableTopology v.Completion := fun v =>
@@ -81,7 +66,7 @@ private theorem fin_lemma_4 (K : Type) [Field K] [NumberField K] :
     T2Space (IsDedekindDomain.FiniteAdeleRing (NumberField.RingOfIntegers K) K) ∧
       SecondCountableTopology (IsDedekindDomain.FiniteAdeleRing (NumberField.RingOfIntegers K) K) := by
   have := countable_numberField' K
-  have := countable_heightOneSpectrum_ringOfIntegers K
+  have := _root_.GlobalTheory.AdelicUnitaryTop.countable_heightOneSpectrum K
   have hsep : ∀ v : IsDedekindDomain.HeightOneSpectrum (NumberField.RingOfIntegers K),
       SecondCountableTopology (v.adicCompletion K) := by
     intro v

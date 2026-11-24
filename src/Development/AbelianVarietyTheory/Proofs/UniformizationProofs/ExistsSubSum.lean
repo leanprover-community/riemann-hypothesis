@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ProductSupportInSubgroupTheta
 public import Development.AbelianVarietyTheory.Definitions.Uniformization.SvalTwistOne
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsIsProdB
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.StalkMapInjectiveOfFlat
@@ -69,21 +70,7 @@ theorem exists_sub_sum {X Y : Scheme.{0}} {L : LB X} {K : Type} [Fintype K] {φ 
     (S : LB.Sec (LB.LinComb L φ ε)) (p : Ix → LB.Sec (LB.LinComb L φ ε)) (s : Finset Ix) :
     ∃ d : LB.Sec (LB.LinComb L φ ε), ∀ (Z : Scheme.{0}) (r : Z ⟶ Y) (z : Z) (J), Good L z J →
       sval d r z J = sval S r z J - ∑ i ∈ s, sval (p i) r z J := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => exact ⟨S, fun Z r z J _ => by rw [Finset.sum_empty, sub_zero]⟩
-  | insert i s hi ih =>
-    obtain ⟨d, hd⟩ := ih
-    refine ⟨DVR.SecOps.secAdd d (DVR.SecOps.secNeg (p i)), fun Z r z J hJ => ?_⟩
-    have hm := hJ.mem φ r
-    have e : sval (DVR.SecOps.secAdd d (DVR.SecOps.secNeg (p i))) r z J = sval d r z J - sval (p i) r z J := by
-      refine (gs_add r z _ hm _ _).trans ?_
-      rw [sub_eq_add_neg]
-      congr 1
-      refine (gs_eq r z _ hm _).trans (Eq.trans ?_ (congrArg Neg.neg (gs_eq r z _ hm _)).symm)
-      exact (congrArg _ (map_neg _ _)).trans (map_neg _ _)
-    rw [e, hd Z r z J hJ, Finset.sum_insert hi]
-    ring
+  apply GlobalTheory.MulSupp.exists_sub_sum <;> assumption
 
 variable {R : Type} [CommRing R] [IsDomain R] {I : Ideal R} {D : DegPre R}
   {G : Over (Spec (CommRingCat.of R))} [GrpObj G] [IsCommMonObj G]

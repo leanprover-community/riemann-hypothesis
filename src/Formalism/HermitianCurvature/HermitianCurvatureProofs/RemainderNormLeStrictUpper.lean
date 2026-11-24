@@ -1,5 +1,6 @@
 module
 
+import Formalism.HermitianCurvature.HermitianCurvatureProofs.OrbitalIntegralConvergesAbs
 public import Formalism.HermitianCurvature.StatementG
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -84,21 +85,7 @@ theorem isStrictUpper_neg {d : ℕ} {X : Matrix (Fin d) (Fin d) ℂ} (hX : IsStr
 
 theorem pow_apply_eq_zero {d : ℕ} {X : Matrix (Fin d) (Fin d) ℂ} (hX : IsStrictUpper X) (k : ℕ) :
     ∀ i j : Fin d, (j : ℕ) < i + k → (X ^ k) i j = 0 := by
-  induction k with
-  | zero =>
-    intro i j h
-    rw [pow_zero]
-    refine Matrix.one_apply_ne ?_
-    intro e
-    subst e
-    simp at h
-  | succ k ih =>
-    intro i j h
-    rw [pow_succ, Matrix.mul_apply]
-    refine Finset.sum_eq_zero fun l _ => ?_
-    by_cases hl : (l : ℕ) < i + k
-    · rw [ih i l hl, zero_mul]
-    · rw [hX l j (by rw [Fin.le_def]; omega), mul_zero]
+  apply Formalism.FourierDecayAlt.P.G7.pow_apply_strict <;> assumption
 
 theorem pow_apply_zero {m : ℕ} {X : Matrix (Fin (m + 1)) (Fin (m + 1)) ℂ} (hX : IsStrictUpper X) :
     ∀ (j : ℕ) (hj : j < m + 1), (X ^ j) 0 ⟨j, hj⟩ =

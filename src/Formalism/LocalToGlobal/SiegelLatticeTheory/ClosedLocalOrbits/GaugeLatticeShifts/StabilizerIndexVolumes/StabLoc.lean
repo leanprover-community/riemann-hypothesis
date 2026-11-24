@@ -66,11 +66,11 @@ theorem mul_single_mul (l ρ : Matrix (Fin n) (Fin n) K) (i j k m : Fin n) (c : 
     by_cases hx : x = j
     · subst hx
       rw [if_pos rfl, Finset.sum_eq_single i]
-      · simp [Matrix.single_apply]
-      · intro y _ hy; simp [Matrix.single_apply, Ne.symm hy]
+      · simp
+      · intro y _ hy; simp [Ne.symm hy]
       · simp
     · rw [if_neg hx]
-      exact Finset.sum_eq_zero fun y _ => by simp [Matrix.single_apply, Ne.symm hx]
+      exact Finset.sum_eq_zero fun y _ => by simp [Ne.symm hx]
   rw [h1, Matrix.mul_apply, Finset.sum_eq_single j]
   · simp [mul_assoc]
   · intro y _ hy; simp [hy]
@@ -159,16 +159,15 @@ theorem linG_move (e : K ≃ₐ[F] F × F) (cj : K →+* K) (he : ∀ x, e (cj x
     refine Finset.sum_congr rfl fun d _ => Finset.sum_congr rfl fun c _ => ?_
     have h1 := hy c
     have h2 := hx d
-    first | (field_simp; done) | (field_simp; ring)
-  · simp only [Prod.snd_sum, Prod.snd_mul, Prod.swap, Finset.sum_div, Finset.mul_sum, Finset.sum_mul, Prod.snd_neg,
-      neg_div, mul_neg, neg_mul]
+    first | (field_simp; done)
+  · simp only [Prod.snd_sum, Prod.snd_mul, Prod.swap, Finset.sum_div, Finset.mul_sum, Finset.sum_mul, mul_neg, neg_mul]
     rw [← Finset.sum_neg_distrib]
     simp only [← Finset.sum_neg_distrib]
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun d _ => Finset.sum_congr rfl fun c _ => ?_
     have h1 := hy c
     have h2 := hx d
-    first | (field_simp; done) | (field_simp; ring)
+    first | (field_simp; done)
 
 theorem constG (e : K ≃ₐ[F] F × F) (ι : E →+* K) (Dd : Fin (r + 1) → K) (hx : ∀ i, (e (Dd i)).1 ≠ 0)
     (hy : ∀ i, (e (Dd i)).2 ≠ 0) (a b : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (ha : IsLoUni a) (hb : IsUpUni b)

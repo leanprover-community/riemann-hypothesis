@@ -212,7 +212,6 @@ theorem epsHom_comp (C : Chart G) : (epsHom C).hom.comp (alg0 C) = RingHom.id R�
       epsHom_spec, CommRingCat.ofHom_id, Spec.map_id]
     first
     | exact Over.w (η[G])
-    | simpa using Over.w (η[G])
   exact congrArg CommRingCat.Hom.hom (Spec.map_injective e)
 
 def eps (C : Chart G) : Γ(G.left, C.U) →ₐ[R₀] R₀ :=
@@ -227,8 +226,6 @@ theorem pt_eps (C : Chart G) (P : Type) [CommRing P] [Algebra R₀ P] :
   rw [e, Spec.map_comp, Category.assoc, epsHom_spec]
   first
   | rfl
-  | (rw [MonObj.Hom.one_def]; rfl)
-  | simp [MonObj.Hom.one_def]
 
 end ChartB
 

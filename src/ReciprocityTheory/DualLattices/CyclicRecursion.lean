@@ -64,7 +64,7 @@ variable {p : ℕ} [hp : Fact p.Prime]
 private lemma ghost_one {R : Type*} [CommRing R] (x : WittVector p R) :
     ghostComponent 1 x = x.coeff 0 ^ p + (p : R) * x.coeff 1 := by
   rw [WittVector.ghostComponent_apply, wittPolynomial_eq_sum_C_mul_X_pow]
-  simp [Finset.sum_range_succ] <;> ring
+  simp [Finset.sum_range_succ]
 
 private lemma coeff_zero_sum {R ι : Type*} [CommRing R] (s : Finset ι) (f : ι → WittVector p R) :
     (∑ i ∈ s, f i).coeff 0 = ∑ i ∈ s, (f i).coeff 0 := by

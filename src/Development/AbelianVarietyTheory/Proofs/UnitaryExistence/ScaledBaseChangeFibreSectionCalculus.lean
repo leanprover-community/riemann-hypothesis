@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.FrameChangeCommBaseChange
 public import Development.AbelianVarietyTheory.Definitions.ExistenceOfLattices.UnivFrame
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -99,28 +100,7 @@ theorem scal_pull' {S T : Type} [CommRing S] [CommRing T] (φ : S →+* T) {x : 
     (hf : pm ≫ (Formalism.L2.PjFree.gxSnd (x)) = (Formalism.L2.PjFree.gxSnd (x')) ≫ spMap φ)
     (i : Fin 1 → Xo.univ.t.PP.L.ι) (h : (PPx x').U i ≤ pm ⁻¹ᵁ (PPx x).U i) (a : S) :
     (pm.appLE _ _ h).hom (scal x a i) = scal x' (φ a) i := by
-  have key : ∀ (q : Gx x' ⟶ Sp S), q = (fst (Over.mk x') Xo.univ.t.G).left ≫ spMap φ →
-      ∀ e : (PPx x').U i ≤ q ⁻¹ᵁ ⊤,
-      q.appLE ⊤ ((PPx x').U i) e = (spMap φ).appTop ≫ (fst (Over.mk x') Xo.univ.t.G).left.appLE ⊤ _ (le_top) := by
-    rintro q rfl e
-    exact Scheme.Hom.comp_appLE _ _ _ _ _
-  have M : (fst (Over.mk x) Xo.univ.t.G).left.appTop ≫ (Gx x).presheaf.map (homOfLE le_top).op ≫ pm.appLE _ _ h =
-      (spMap φ).appTop ≫ (fst (Over.mk x') Xo.univ.t.G).left.appTop ≫ (Gx x').presheaf.map (homOfLE le_top).op := by
-    rw [Scheme.Hom.map_appLE]
-    have e1 : (fst (Over.mk x) Xo.univ.t.G).left.appTop =
-        (fst (Over.mk x) Xo.univ.t.G).left.appLE ⊤ ⊤ le_top := (Scheme.Hom.appLE_eq_app _).symm
-    rw [e1]
-    exact (Scheme.Hom.appLE_comp_appLE _ _ _ _ _ _ _).trans ((key _ hf _).trans rfl)
-  have M' := congrArg (fun f => f.hom (toΓ S a)) M
-  simp only [CommRingCat.hom_comp, RingHom.comp_apply] at M'
-  have N := congrArg (fun f => f.hom a) (Scheme.ΓSpecIso_inv_naturality (CommRingCat.ofHom φ))
-  simp only [CommRingCat.hom_comp, RingHom.comp_apply, CommRingCat.hom_ofHom] at N
-  show (pm.appLE _ _ h).hom (((Gx x).presheaf.map (homOfLE le_top).op).hom
-      ((fst (Over.mk x) Xo.univ.t.G).left.appTop.hom (toΓ S a))) =
-    ((Gx x').presheaf.map (homOfLE le_top).op).hom ((fst (Over.mk x') Xo.univ.t.G).left.appTop.hom (toΓ T (φ a)))
-  rw [M']
-  congr 2
-  exact N.symm
+  apply GlobalTheory.Frames.ChgBC.scal_pull <;> assumption
 
 theorem pm_ext {S : Type} [CommRing S] {x : Sp S ⟶ Xo.X} {Y : Scheme.{0}} (p q : Y ⟶ Gx x)
     (hs : p ≫ (snd (Over.mk x) Xo.univ.t.G).left = q ≫ (snd (Over.mk x) Xo.univ.t.G).left)

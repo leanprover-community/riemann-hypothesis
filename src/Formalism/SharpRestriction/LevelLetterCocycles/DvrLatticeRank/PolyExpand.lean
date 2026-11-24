@@ -84,7 +84,6 @@ theorem Gd.mul (hF : Antitone F) (H : Gd F h A v) (u : PowerSeries LL) :
   have hpq' : pq.1 + pq.2 = i := by
     first
     | exact Finset.HasAntidiagonal.mem_antidiagonal.mp hpq
-    | simpa using hpq
   exact hF (show h - (i : ℤ) ≤ h - (pq.2 : ℤ) by omega) (H pq.2)
 
 theorem Gd.unit (hF : Antitone F) {u : PowerSeries LL} (hu : IsUnit u)
@@ -205,8 +204,6 @@ theorem peel1 {y u : PowerSeries LL} (hy : y = X * u) (hu : IsUnit u) {N : ℕ} 
 private theorem algebraMap_powerSeries_eq_C (c : LL) : algebraMap LL (PowerSeries LL) c = C c := by
   first
   | rfl
-  | simp
-  | exact PowerSeries.algebraMap_apply' c
 
 theorem poly_expand (y : PowerSeries LL) (N : ℕ) : ∀ Q : Polynomial LL, ∃ G : PowerSeries LL,
     Polynomial.aeval y Q = ∑ k ∈ range N, C (Q.coeff k) * y ^ k + y ^ N * G := by
@@ -237,7 +234,6 @@ private theorem coeff_eq_zero_of_isUnit_of_coeff_mul_eq_zero {u E : PowerSeries 
   have hpq' : pq.1 + pq.2 = i := by
     first
     | exact Finset.HasAntidiagonal.mem_antidiagonal.mp hpq
-    | simpa using hpq
   rw [h pq.2 (by omega), mul_zero]
 
 private theorem sum_coeff_smul_eq_of_isUnit_mul_eq {u : PowerSeries LL} (hu : IsUnit u) {G : PowerSeries LL} {w : V} {n : ℕ}
@@ -254,7 +250,6 @@ private theorem sum_coeff_smul_eq_of_isUnit_mul_eq {u : PowerSeries LL} (hu : Is
   have hpq' : pq.1 + pq.2 = i := by
     first
     | exact Finset.HasAntidiagonal.mem_antidiagonal.mp hpq
-    | simpa using hpq
   rw [H pq.2 (by omega), mul_smul]
 
 private theorem sum_smul_eq_smul_of_coeff_expansion {y u : PowerSeries LL} (hy : y = X * u) (hu : IsUnit u) {N : ℕ}
@@ -272,7 +267,6 @@ private theorem sum_smul_eq_smul_of_coeff_expansion {y u : PowerSeries LL} (hy :
     simp only [Option.elim]
     first
     | rw [H i hi, smul_neg, neg_add_cancel]
-    | simp [H i hi]
   have hm := Formalism.MainNotions.N.Ln34.LevelExpansions.Gd.peel (F := Fv LL V) (v := fun x : Option ι => Option.elim x (-w) v₀)
     Fv_anti hy hu N (N : ℤ) (fun x => Option.elim x G A₀) (fun x => Option.elim x G' A₀')
     (fun x k => Option.elim x (c k) (fun j => p j k))
@@ -289,7 +283,6 @@ theorem van_of_dvd {y u G : PowerSeries LL} (hy : y = X * u) (N : ℕ) :
     exact Dvd.intro _ rfl
   first
   | exact PowerSeries.X_pow_dvd_iff.mp hd
-  | (intro i hi; rw [hy, mul_pow, mul_assoc, PowerSeries.coeff_X_pow_mul', if_neg (by omega)])
 
 end Good
 
@@ -318,7 +311,6 @@ theorem Dv.expand {y : Z → PowerSeries LL} (H : Dv ev O y) (N : ℕ) : ∀ a :
       congr 1
       · first
         | rw [if_pos rfl, pow_zero, mul_one]
-        | simp
       · refine Finset.sum_congr rfl fun k _ => ?_
         rw [if_neg (show k + 1 ≠ 0 by omega), Nat.add_sub_cancel]
         ring
@@ -356,7 +348,6 @@ theorem unit_add_C {y u : PowerSeries LL} (hy : y = X * u) {δ : LL} (hδ : δ �
   subst hy
   first
   | (rw [PowerSeries.isUnit_iff_constantCoeff]; simpa using hδ)
-  | exact isUnit_of_mul_eq_one _ _ (PowerSeries.mul_inv_cancel _ (by simpa using hδ))
 
 theorem integ {yU yD : Z → PowerSeries LL} (HU : Dv ev O yU) (HD : Dv ev O yD) {zU zD : Z}
     {u u' : PowerSeries LL} (hyU : yU zU = X * u) (hu : IsUnit u) (hyD : yD zD = X * u')
@@ -379,7 +370,6 @@ theorem integ {yU yD : Z → PowerSeries LL} (HU : Dv ev O yU) (HD : Dv ev O yD)
     rw [hP, hUD]
     first
     | (simp only [map_mul, map_pow, map_add (f := _), Polynomial.aeval_X, Polynomial.aeval_C, algebraMap_powerSeries_eq_C]; done)
-    | (simp only [map_mul, map_pow, map_add (f := _), Polynomial.aeval_X, Polynomial.aeval_C, algebraMap_powerSeries_eq_C]; ring)
   have hsU : IsUnit (yU zD) := by rw [hUD]; exact unit_add_C hyD hδ
   have key : yU zD ^ (h - b) * Polynomial.aeval (yD zD) P = C x * (C a₂ * yU zD * yD zD) ^ h := by
     rw [hPt]

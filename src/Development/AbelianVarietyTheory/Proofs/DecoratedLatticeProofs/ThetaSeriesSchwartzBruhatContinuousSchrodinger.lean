@@ -125,13 +125,9 @@ theorem integral_char_eq_zero {m n : ℕ} {μ : Measure (Mx D m n)} {𝓕 : Set 
 
 variable {ψ : AddChar (AF D.host.F) ℂ}
 
-theorem symplO_add_left (S T : HSp D) (x x' y : WO S T) :
-    symplO S T (x + x') y = symplO S T x y + symplO S T x' y := by
-  simp only [symplO_eq_add, GlobalTheory.OrientedHeis.symplOH_add_left]; ring
+alias symplO_add_left := _root_.GlobalTheory.LatVac.symplO_add_left
 
-theorem symplO_add_right (S T : HSp D) (x y y' : WO S T) :
-    symplO S T x (y + y') = symplO S T x y + symplO S T x y' := by
-  simp only [symplO_eq_add, GlobalTheory.OrientedHeis.symplOH_add_right]; ring
+alias symplO_add_right := _root_.GlobalTheory.LatVac.symplO_add_right
 
 theorem continuous_symplO {S T : HSp D} {X : Type} [TopologicalSpace X] {x y : X → WO S T} (hx : Continuous x)
     (hy : Continuous y) : Continuous fun t => symplO S T (x t) (y t) := by

@@ -164,10 +164,7 @@ theorem li_basis (c0 : V0 →ₛₗ[e] W0) (b : Module.Basis ι LL V0)
     LinearIndependent Kf fun i => c0 (b' i) := by
   exact li_core_lemma_2 c0 b hli b' b'.linearIndependent
 
-theorem li_of_li {κ : Type*} (c0 : V0 →ₛₗ[e] W0) (b : Module.Basis ι LL V0)
-    (hli : LinearIndependent Kf fun i => c0 (b i)) (v : κ → V0) (hv : LinearIndependent LL v) :
-    LinearIndependent Kf fun k => c0 (v k) := by
-  exact li_core_lemma_2 c0 b hli v hv
+alias li_of_li := _root_.Formalism.L2.G.Cmp.li_core_lemma_2
 
 end Indep
 

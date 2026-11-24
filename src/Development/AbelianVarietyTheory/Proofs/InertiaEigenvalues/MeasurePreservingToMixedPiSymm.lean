@@ -49,6 +49,7 @@ import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
 import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsOpenKerFinIdele
+import Formalism.HarderNarasimhan.HarderNarasimhanProofs.HtGram
 
 @[expose] public section
 
@@ -169,7 +170,7 @@ def placeEquiv : {w : InfinitePlace E // w.IsComplex} ≃ InfinitePlace E :=
   Equiv.subtypeUnivEquiv IsTotallyComplex.isComplex
 
 theorem measurePreserving_toMixed_symm : MeasurePreserving (toMixed E).symm volume volume := by
-  have := isEmpty_isReal E
+  have := _root_.Formalism.HN.HeightGram.isEmpty_real E
   have : IsProbabilityMeasure (volume : Measure ({w : InfinitePlace E // w.IsReal} → ℝ)) :=
     ⟨by rw [volume_pi, Measure.pi_univ]; simp⟩
   have h := (volume_measurePreserving_piCongrLeft (fun _ : InfinitePlace E => ℂ) (placeEquiv E)).comp
@@ -185,7 +186,7 @@ theorem measurePreserving_toMixed_symm : MeasurePreserving (toMixed E).symm volu
 
 theorem mixedTraceForm_toMixed (x u : Cinf E) :
     mixedTraceForm E (toMixed E x) (toMixed E u) = ∑ w, 2 * (x w * u w).re := by
-  have := isEmpty_isReal E
+  have := _root_.Formalism.HN.HeightGram.isEmpty_real E
   rw [mixedTraceForm_apply', Finset.univ_eq_empty, Finset.sum_empty, zero_add, ← (placeEquiv E).sum_comp]
   simp only [toMixed_apply, toMixedRing_snd]
   rfl

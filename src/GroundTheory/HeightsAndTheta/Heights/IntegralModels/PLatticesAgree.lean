@@ -52,15 +52,11 @@ variable {A : Type} [CommRing A] [IsDomain A]
   {K : Type} [Field K] [Algebra A K] [IsFractionRing A K]
   {V : Type} [AddCommGroup V] [Module K V] [Module A V] [IsScalarTower A K V]
 
-theorem exists_ne_zero_smul_mem_of_span_eq_top (M : Submodule A V)
-    (hM : Submodule.span K (M : Set V) = ⊤) (v : V) : ∃ d : A, d ≠ 0 ∧ d • v ∈ M :=
-  _root_.UpperTheory.Reformulated.B.SmulMemOfSpanEqTop.exists_ne_zero_smul_mem_of_span_eq_top M hM v
-
 theorem mem_of_forall_mem_localizedIn (hHOI : HeightOneIntersection.Statement)
     [IsNoetherianRing A] [IsIntegrallyClosed A] (M : Submodule A V) [Module.Projective A M]
     (hM : Submodule.span K (M : Set V) = ⊤) (v : V)
     (hv : ∀ p : PrimeSpectrum A, p.asIdeal.height = 1 → v ∈ localizedIn p.asIdeal M) : v ∈ M := by
-  obtain ⟨d, hd, hdv⟩ := exists_ne_zero_smul_mem_of_span_eq_top (K := K) M hM v
+  obtain ⟨d, hd, hdv⟩ := _root_.UpperTheory.Reformulated.B.SmulMemOfSpanEqTop.exists_ne_zero_smul_mem_of_span_eq_top (K := K) M hM v
   obtain ⟨c, hc⟩ := Module.projective_def.mp (inferInstance : Module.Projective A M)
   set x : M := ⟨d • v, hdv⟩ with hx
   have hdK : algebraMap A K d ≠ 0 := (map_ne_zero_iff _ (IsFractionRing.injective A K)).mpr hd

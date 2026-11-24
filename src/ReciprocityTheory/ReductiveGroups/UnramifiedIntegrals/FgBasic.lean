@@ -63,9 +63,7 @@ variable {ι : Type}
 
 theorem integralMv_iff_divBy_one (F : MvPowerSeries ι K) : IntegralMv F ↔ DivByMv (1 : K) F := by
   first
-  | exact Iff.rfl
   | (unfold IntegralMv DivByMv; simp)
-  | simp [IntegralMv, DivByMv]
 theorem integralPS_iff_mv (f : PowerSeries K) : IntegralPS f ↔ IntegralMv (ι := Unit) f := by
   rw [integralMv_iff_divBy_one]
   unfold IntegralPS DivByMv
@@ -326,7 +324,6 @@ theorem integralMv_subst {f : PowerSeries K} {P : MvPowerSeries ι K} (hf : Inte
     rwa [norm_one] at h1
   first
   | rw [PowerSeries.coeff_subst ha]
-  | rw [PowerSeries.coeff_subst' ha]
   exact norm_finsum_le_of_forall_norm_le _ zero_le_one fun k => by
     rw [smul_eq_mul, norm_mul]
     exact mul_le_one₀ (hf' k) (norm_nonneg _) (hPk k)
@@ -340,7 +337,6 @@ theorem divByMv_subst {x : K} {f : PowerSeries K} {P : MvPowerSeries ι K} (hf :
     rwa [norm_one] at h1
   first
   | rw [PowerSeries.coeff_subst ha]
-  | rw [PowerSeries.coeff_subst' ha]
   exact norm_finsum_le_of_forall_norm_le _ (norm_nonneg _) fun k => by
     rw [smul_eq_mul, norm_mul]
     calc ‖coeff k f‖ * ‖MvPowerSeries.coeff d (P ^ k)‖ ≤ ‖x‖ * 1 :=
@@ -387,7 +383,6 @@ theorem divByMv_subst2 {x : K} {F : MvPowerSeries (Fin 2) K} {P : Fin 2 → MvPo
     (hP : ∀ i, IntegralMv (P i)) : DivByMv x (F.subst P) := by
   have ha : MvPowerSeries.HasSubst P := by
     first
-    | exact MvPowerSeries.HasSubst.of_constantCoeff_zero hP0
     | exact ⟨fun s => by rw [hP0 s]; exact IsNilpotent.zero, fun _ => Set.toFinite _⟩
   have hprod : ∀ e : Fin 2 →₀ ℕ, IntegralMv (e.prod fun s k => P s ^ k) := by
     intro e
@@ -416,11 +411,9 @@ theorem divByMv_subst2_congr {x : K} (hx : ‖x‖ ≤ 1) {F : MvPowerSeries (Fi
     DivByMv x (F.subst P - F.subst Q) := by
   have haP : MvPowerSeries.HasSubst P := by
     first
-    | exact MvPowerSeries.HasSubst.of_constantCoeff_zero hP0
     | exact ⟨fun s => by rw [hP0 s]; exact IsNilpotent.zero, fun _ => Set.toFinite _⟩
   have haQ : MvPowerSeries.HasSubst Q := by
     first
-    | exact MvPowerSeries.HasSubst.of_constantCoeff_zero hQ0
     | exact ⟨fun s => by rw [hQ0 s]; exact IsNilpotent.zero, fun _ => Set.toFinite _⟩
   have hpow : ∀ i k, DivByMv x (P i ^ k - Q i ^ k) := by
     intro i k

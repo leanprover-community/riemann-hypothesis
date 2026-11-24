@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PSectionBounded
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ArithmeticHilbertSamuelLowerBound
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -113,26 +114,7 @@ theorem form_natCast_mul {f : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a) 
 
 theorem cone_form (y : (Σ k, ι k) → Ω) {h : MRing ι} {d : K → ℕ} (hh : IsMultiHomog h d) :
     mConeMap y h = MvPolynomial.C (aeval y h) * ∏ k, (X k : MvPolynomial K Ω) ^ d k := by
-  classical
-  have key : ∀ v ∈ h.support, mConeMap y (monomial v (AddMonoidAlgebra.coeff h v)) =
-      MvPolynomial.C (aeval y (monomial v (AddMonoidAlgebra.coeff h v))) * ∏ k, (X k : MvPolynomial K Ω) ^ d k := by
-    intro v hv
-    have hX : (v.prod fun p e => (X p.1 : MvPolynomial K Ω) ^ e) = ∏ k, (X k : MvPolynomial K Ω) ^ d k := by
-      rw [Finsupp.prod_fintype _ _ (fun _ => pow_zero _), Fintype.prod_sigma]
-      exact Finset.prod_congr rfl fun k _ => by simp only [Finset.prod_pow_eq_pow_sum, hh v hv k]
-    have h1 : (v.prod fun p e => (MvPolynomial.C (y p) * X p.1 : MvPolynomial K Ω) ^ e) =
-        MvPolynomial.C (v.prod fun p e => y p ^ e) * v.prod fun p e => (X p.1 : MvPolynomial K Ω) ^ e := by
-      rw [map_finsuppProd, ← Finsupp.prod_mul]
-      exact Finsupp.prod_congr fun p _ => by simp only [mul_pow, map_pow]
-    show (aeval fun p => MvPolynomial.C (y p) * (X p.1 : MvPolynomial K Ω)) (monomial v (AddMonoidAlgebra.coeff h v)) = _
-    simp only [MvPolynomial.aeval_monomial]
-    rw [h1, hX, map_mul]
-    simp only [algebraMap_int_eq, eq_intCast, Int.coe_castRingHom, map_intCast]
-    ring
-  rw [h.as_sum]
-
-  simp only [map_sum, Finset.sum_mul]
-  exact Finset.sum_congr rfl key
+  apply GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBounded.mConeMap_homog <;> assumption
 
 theorem mem_of_aeval_eq_zero {y : (Σ k, ι k) → Ω} {h : MRing ι} {d : K → ℕ} (hh : IsMultiHomog h d)
     (h0 : aeval y h = 0) : h ∈ mCoordIdeal y := by

@@ -126,9 +126,7 @@ theorem exists_curve (ε : Fin n → Bool) {X : Matrix (Fin n) (Fin n) ℂ} (hX 
 lemma onep_KG_ext {ε : Fin n → Bool} {g h : KG ε} (hgh : toMK g = toMK h) : g = h := by
   unfold toMK at hgh
   first
-    | exact Subtype.ext (Subtype.ext hgh)
     | exact Subtype.ext (Subtype.ext (Units.ext hgh))
-    | (unfold toM at hgh; done)
 
 theorem KType.op_curve {ε : Fin n → Bool} {Λ : Fin n → ℝ} (T : KType ε Λ)
     {X : Matrix (Fin n) (Fin n) ℂ} (hX : inK ε X) (γ : ℝ → KG ε)

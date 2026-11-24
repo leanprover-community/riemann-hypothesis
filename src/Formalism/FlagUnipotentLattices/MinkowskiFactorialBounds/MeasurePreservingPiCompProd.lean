@@ -1,5 +1,6 @@
 module
 
+import Formalism.FlagUnipotentLattices.MinkowskiFactorialBounds.IdealsOfNormEqIndexSet
 public import Formalism.FlagUnipotentLattices.CardSubmodulesAndLinearEquivBounds
 public import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Algebra.Order.Floor.Extended
@@ -175,23 +176,7 @@ lemma s5b7_smul_top_prod {R M N : Type} [CommRing R] [AddCommGroup M] [Module R 
     [Module R N] (I : Ideal R) :
     I • (⊤ : Submodule R (M × N)) =
       (I • (⊤ : Submodule R M)).prod (I • (⊤ : Submodule R N)) := by
-  apply le_antisymm
-  · intro x hx
-    constructor
-    · have : (I • (⊤ : Submodule R (M × N))).map (LinearMap.fst R M N) ≤ I • ⊤ := by
-        rw [Submodule.map_smul'']; exact Submodule.smul_mono le_rfl le_top
-      exact this ⟨x, hx, rfl⟩
-    · have : (I • (⊤ : Submodule R (M × N))).map (LinearMap.snd R M N) ≤ I • ⊤ := by
-        rw [Submodule.map_smul'']; exact Submodule.smul_mono le_rfl le_top
-      exact this ⟨x, hx, rfl⟩
-  · rintro ⟨a, b⟩ ⟨ha, hb⟩
-    have h1 : (I • (⊤ : Submodule R M)).map (LinearMap.inl R M N) ≤ I • ⊤ := by
-      rw [Submodule.map_smul'']; exact Submodule.smul_mono le_rfl le_top
-    have h2 : (I • (⊤ : Submodule R N)).map (LinearMap.inr R M N) ≤ I • ⊤ := by
-      rw [Submodule.map_smul'']; exact Submodule.smul_mono le_rfl le_top
-    have e : ((a, b) : M × N) = LinearMap.inl R M N a + LinearMap.inr R M N b := by simp
-    rw [e]
-    exact Submodule.add_mem _ (h1 ⟨a, ha, rfl⟩) (h2 ⟨b, hb, rfl⟩)
+  apply Formalism.HermitianLatticeCounting.P.ideal_smul_top_prod <;> assumption
 
 theorem s5b7_quot (p : Ideal O) [hp : p.IsMaximal] [Finite (O ⧸ p)] (Y : Type) [AddCommGroup Y]
     [Module O Y] [Module.Finite O Y] [Module.Projective O Y] :

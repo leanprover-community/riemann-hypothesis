@@ -109,7 +109,6 @@ theorem abel_step (B : ℝ) (hB : 0 < B) (j : ℕ) :
     have hK1 : (1 : ℝ) ≤ K := by
       have : 1 ≤ K := by omega
       exact_mod_cast this
-    have hKpos : (0 : ℝ) < K := by linarith
     rw [show M + (j + 1) = K + 1 by omega] at *
     rw [Finset.sum_range_succ, Finset.sum_range_succ]
     set S := ∑ i ∈ range K, primeWeight B i / (i : ℝ) ^ 2
@@ -117,11 +116,6 @@ theorem abel_step (B : ℝ) (hB : 0 < B) (j : ℕ) :
     set g := primeWeight B K
     have hG1 : G + g ≤ K * Real.log 4 := by
       have := sum_primeWeight_le B K
-      rw [Finset.sum_range_succ] at this
-      exact this
-    have hG1nn : 0 ≤ G + g := by
-      have : 0 ≤ ∑ i ∈ range (K + 1), primeWeight B i :=
-        Finset.sum_nonneg (fun i _ => primeWeight_nonneg B i)
       rw [Finset.sum_range_succ] at this
       exact this
     have hlog4 : 0 ≤ Real.log 4 := Real.log_nonneg (by norm_num)
@@ -150,8 +144,6 @@ theorem abel_step (B : ℝ) (hB : 0 < B) (j : ℕ) :
             rw [div_le_div_iff₀ (by positivity) (by positivity)]
             nlinarith
         _ = 2 * Real.log 4 * (1 / (K : ℝ) - 1 / ((K : ℝ) + 1)) := by ring
-    have ih' : S - G / (K : ℝ) ^ 2 ≤ 2 * Real.log 4 * (1 / ((M : ℕ) : ℝ) - 1 / (K : ℝ)) := by
-      simpa using ih
     have : S + g / (K : ℝ) ^ 2 - (G + g) / ((K : ℝ) + 1) ^ 2 ≤
         2 * Real.log 4 * (1 / ((M : ℕ) : ℝ) - 1 / ((K : ℝ) + 1)) := by
       linarith
@@ -160,10 +152,8 @@ theorem abel_step (B : ℝ) (hB : 0 < B) (j : ℕ) :
 theorem prime_partial_le (B : ℝ) (hB : 0 < B) (K : ℕ) :
     ∑ i ∈ range K, primeWeight B i / (i : ℝ) ^ 2 ≤ 2 * Real.log 4 / B := by
   set M := ⌊B⌋₊ + 1 with hM
-  have hlog4 : 0 ≤ Real.log 4 := Real.log_nonneg (by norm_num)
   have hMB : B < (M : ℝ) := by
     rw [hM]; push_cast; exact Nat.lt_floor_add_one B
-  have hMpos : (0 : ℝ) < M := lt_trans hB hMB
   have hfinal : 2 * Real.log 4 / (M : ℝ) ≤ 2 * Real.log 4 / B :=
     div_le_div_of_nonneg_left (by positivity) hB hMB.le
   rcases lt_or_ge K M with hK | hK

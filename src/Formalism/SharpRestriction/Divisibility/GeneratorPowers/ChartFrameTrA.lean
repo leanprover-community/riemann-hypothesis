@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsRescaledLineBundlePowerIsoGenerator
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.GlobalSectionsRankAlgClosed
 public import Mathlib.Tactic.ENatToNat
 import Mathlib.Algebra.Order.Floor.Extended
@@ -59,39 +60,7 @@ theorem glue_units {X : Scheme.{0}} {κ : Type} (U : κ → X.Opens) (hcov : ∀
     (r : ∀ i, Γ(X, U i)ˣ)
     (hr : ∀ i j, res (inf_le_left : U i ⊓ U j ≤ U i) (r i) = res (inf_le_right : U i ⊓ U j ≤ U j) (r j)) :
     ∃ u : Γ(X, ⊤)ˣ, ∀ i, res (le_top : U i ≤ ⊤) u = r i := by
-  simp only [res] at hr ⊢
-  have hc : (⊤ : X.Opens) ≤ iSup U := by
-    intro x _
-    obtain ⟨i, hi⟩ := hcov x
-    exact TopologicalSpace.Opens.mem_iSup.mpr ⟨i, hi⟩
-  obtain ⟨s, hs, -⟩ : ∃! s : Γ(X, ⊤), ∀ i,
-      (X.presheaf.map (homOfLE (le_top : U i ≤ ⊤)).op).hom s = (r i : Γ(X, U i)) :=
-    X.sheaf.existsUnique_gluing' U ⊤ (fun i => homOfLE le_top) hc
-    (fun i => ((r i : Γ(X, U i)))) (fun i j => by
-      have h1 := congrArg Units.val (hr i j)
-      simp only [Units.coe_map, MonoidHom.coe_coe] at h1
-      exact h1)
-  obtain ⟨t, ht, -⟩ : ∃! t : Γ(X, ⊤), ∀ i,
-      (X.presheaf.map (homOfLE (le_top : U i ≤ ⊤)).op).hom t = (((r i)⁻¹ : Γ(X, U i)ˣ) : Γ(X, U i)) :=
-    X.sheaf.existsUnique_gluing' U ⊤ (fun i => homOfLE le_top) hc
-    (fun i => (((r i)⁻¹ : Γ(X, U i)ˣ) : Γ(X, U i))) (fun i j => by
-      have h1 := congrArg (fun v => ((v⁻¹ : Γ(X, U i ⊓ U j)ˣ) : Γ(X, U i ⊓ U j))) (hr i j)
-      simp only [← map_inv, Units.coe_map, MonoidHom.coe_coe] at h1
-      exact h1)
-  have hs' : ∀ i, (X.presheaf.map (homOfLE (le_top : U i ≤ ⊤)).op).hom s = (r i : Γ(X, U i)) :=
-    fun i => hs i
-  have ht' : ∀ i, (X.presheaf.map (homOfLE (le_top : U i ≤ ⊤)).op).hom t =
-      (((r i)⁻¹ : Γ(X, U i)ˣ) : Γ(X, U i)) := fun i => ht i
-  have hst : s * t = 1 := by
-    apply X.sheaf.eq_of_locally_eq' U ⊤ (fun i => homOfLE le_top) hc
-    intro i
-    show (X.presheaf.map (homOfLE (le_top : U i ≤ ⊤)).op).hom (s * t) =
-      (X.presheaf.map (homOfLE (le_top : U i ≤ ⊤)).op).hom 1
-    rw [map_mul, map_one, hs' i, ht' i, Units.mul_inv]
-  refine ⟨⟨s, t, hst, by rw [mul_comm]; exact hst⟩, fun i => ?_⟩
-  ext
-  simp only [Units.coe_map, MonoidHom.coe_coe, Units.val_mk]
-  exact hs' i
+  apply GlobalTheory.RigNorm.glue_units <;> assumption
 
 theorem exists_ratio_gen {X : Scheme.{0}} {M : LB X} (hcov : ∀ x : X, ∃ i, x ∈ M.U i) {g₁ g₂ : LB.Gen M}
     (h₁ : g₁.IsGen) (h₂ : g₂.IsGen) : ∃ u : Γ(X, ⊤)ˣ, ∀ i, g₁.s i = res (le_top : M.U i ≤ ⊤) u * g₂.s i := by

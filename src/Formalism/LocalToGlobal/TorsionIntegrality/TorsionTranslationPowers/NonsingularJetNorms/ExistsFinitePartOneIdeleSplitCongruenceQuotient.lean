@@ -150,7 +150,7 @@ theorem collinear (z w : ℂ) (hz : z ∉ L.lattice) (hw : w ∉ L.lattice) (hp 
     ring
   have hu := ((hasDerivAt_P L (z + w) hp).comp_add_const z w).unique (hg.congr_of_eventuallyEq hev)
   beta_reduce at hu
-  simp only [Pi.div_apply, Pi.mul_apply, Pi.sub_apply] at hu
+  simp only [Pi.div_apply] at hu
   have hF : (L.derivWeierstrassP z - L.derivWeierstrassP w) / (L.weierstrassP z - L.weierstrassP w) * (L.weierstrassP z - L.weierstrassP w) = L.derivWeierstrassP z - L.derivWeierstrassP w := div_mul_cancel₀ _ hne
   have hFz : ((6 * L.weierstrassP z ^ 2 - L.g₂ / 2) * (L.weierstrassP z - L.weierstrassP w) - (L.derivWeierstrassP z - L.derivWeierstrassP w) * L.derivWeierstrassP z) / (L.weierstrassP z - L.weierstrassP w) ^ 2 * (L.weierstrassP z - L.weierstrassP w) ^ 2 = (6 * L.weierstrassP z ^ 2 - L.g₂ / 2) * (L.weierstrassP z - L.weierstrassP w) - (L.derivWeierstrassP z - L.derivWeierstrassP w) * L.derivWeierstrassP z :=
     div_mul_cancel₀ _ (pow_ne_zero 2 hne)
@@ -198,7 +198,7 @@ theorem nonsing (t : ℂ) (ht : t ∉ L.lattice) :
   haveI : (curveL l L ι).IsElliptic := ⟨(disc_ne l L ι).isUnit⟩
   rw [← WeierstrassCurve.Affine.equation_iff_nonsingular, WeierstrassCurve.Affine.equation_iff]
   have h := congrArg ι (L.derivWeierstrassP_sq t ht)
-  simp only [map_sub, map_mul, map_pow, map_ofNat, map_add (f := _)] at h
+  simp only [map_sub, map_mul, map_pow, map_ofNat] at h
   simp only [curveL, Formalism.L2.Th1.A.shortW]
   linear_combination (1 / 4 : ℂ_[l]) * h
 
@@ -222,7 +222,7 @@ theorem ptOf_add_lattice (t ω : ℂ) (hω : ω ∈ L.lattice) : ptOf l L ι (t 
   by_cases ht : t ∈ L.lattice
   · rw [ptOf_lattice l L ι t ht, ptOf_lattice l L ι (t + ω) (h3.mpr ht)]
   · rw [ptOf_some l L ι t ht, ptOf_some l L ι (t + ω) (fun h => ht (h3.mp h))]
-    simp only [WeierstrassCurve.Affine.Point.some.injEq, h1, h2, and_self]
+    simp only [h1, h2]
 
 theorem ptOf_neg (t : ℂ) : ptOf l L ι (-t) = -ptOf l L ι t := by
   by_cases ht : t ∈ L.lattice

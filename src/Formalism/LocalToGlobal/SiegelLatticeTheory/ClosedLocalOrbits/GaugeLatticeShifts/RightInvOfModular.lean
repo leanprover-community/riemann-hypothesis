@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.IsClosedSLoc
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.ClosedLocalOrbits.GaugeLatticeShifts.JacobianCoordinates
 public import Formalism.RealPlaceAnalysis.FinalF
 import Mathlib.Algebra.Order.Floor.Extended
@@ -56,21 +57,7 @@ variable {n r : ℕ} (ε : Fin n → Bool) (e : Fin r → Fin n → ℂ) (z : Fi
 
 theorem inS_pres {g : Matrix (Fin n) (Fin n) ℂ} (hg : InS e z g) (a : ℕ) :
     ∀ y ∈ spanLt e a, g *ᵥ y ∈ spanLt e a := by
-  intro y hy
-  have hle : spanLt e a ≤ (spanLt e a).comap (Matrix.mulVecLin g) := by
-    unfold spanLt
-    rw [Submodule.span_le]
-    rintro _ ⟨b, hb, rfl⟩
-    have hb' : (b : ℕ) < a := hb
-    simp only [SetLike.mem_coe, Submodule.mem_comap, Matrix.mulVecLin_apply]
-    have e1 : g *ᵥ e b = e b + (g - 1) *ᵥ e b := by
-      rw [Matrix.sub_mulVec, Matrix.one_mulVec]; abel
-    rw [e1]
-    refine Submodule.add_mem _ (Submodule.subset_span ⟨b, hb', rfl⟩) ?_
-    refine Submodule.span_mono ?_ (hg.1 b)
-    rintro _ ⟨c, hc, rfl⟩
-    exact ⟨c, lt_trans hc hb', rfl⟩
-  exact hle hy
+  apply Formalism.L2.SG.RealObj.InfCut.JacobianCoordinates.JL.HC.spanLt_pres <;> assumption
 
 theorem inS_mul {g h : Matrix (Fin n) (Fin n) ℂ} (hg : InS e z g) (hh : InS e z h) : InS e z (g * h) := by
   have key : ∀ v : Fin n → ℂ, (g * h - 1) *ᵥ v = g *ᵥ ((h - 1) *ᵥ v) + (g - 1) *ᵥ v := fun v => by

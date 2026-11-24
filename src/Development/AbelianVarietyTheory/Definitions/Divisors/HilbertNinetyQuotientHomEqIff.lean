@@ -317,9 +317,9 @@ theorem isLagr_diagCols (JB : Matrix β β E) : IsLagr c (dbl JB) (diagCols β :
   · simp [diagCols, dbl, h3, h1, transpose_fromRows, fromCols_mul_fromBlocks, fromCols_mul_fromRows]
   · simp [dbl, h3, h1', transpose_fromRows, fromCols_mul_fromBlocks, fromCols_mul_fromRows]
   · rw [diagCols, fromCols_fromRows_eq_fromBlocks, Matrix.mul_smul, fromBlocks_multiply, fromBlocks_smul, ← fromBlocks_one]
-    simp [← add_smul, h2]
+    simp [← add_smul]
   · rw [diagCols, fromCols_fromRows_eq_fromBlocks, Matrix.smul_mul, fromBlocks_multiply, fromBlocks_smul, ← fromBlocks_one]
-    simp [← add_smul, h2]
+    simp [← add_smul]
 
 def SiegelRule (C : TestClass R) (ψ : AddChar R ℂ) (ξ : E) (JA : Matrix α α E) (JB : Matrix β β E) {κ : Type} [Fintype κ]
     (d : Darboux (symp c ξ JA JB) κ) (χ : Eˣ →* Circle) {ν : Type} [Fintype ν] [DecidableEq ν] (Cy : Matrix β ν E)

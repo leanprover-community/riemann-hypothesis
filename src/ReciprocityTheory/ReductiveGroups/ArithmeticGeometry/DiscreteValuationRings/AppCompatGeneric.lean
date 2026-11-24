@@ -63,8 +63,6 @@ lemma pullU_comp_eq_pullU_pullU (h : Z ⟶ Y) (ψ : Y ⟶ X) (U : X.Opens) (x : 
   show ((h ≫ ψ).app U).hom x.val = (h.app _).hom ((ψ.app U).hom x.val)
   first
   | rfl
-  | (rw [Scheme.Hom.comp_app]; rfl)
-  | simp
 
 lemma app_rs (h : Z ⟶ Y) {U V : Y.Opens} (hle : V ≤ U) (x : Γ(Y, U)) :
     (h.app V).hom (rs hle x) = rs ((Opens.map h.base).monotone hle) ((h.app U).hom x) := by
@@ -82,7 +80,6 @@ lemma wchart_comp_le (φ : K → (Y ⟶ X)) (h : Z ⟶ Y) (j : K → L.ι) :
   intro k
   first
   | exact hz' k
-  | simpa using hz' k
 
 lemma res_pullU_comp' (h : Z ⟶ Y) (ψ : Y ⟶ X) {U : X.Opens} {W : Y.Opens} {V : Z.Opens}
     (hC : W ≤ ψ ⁻¹ᵁ U) (hB : V ≤ h ⁻¹ᵁ W) (hA : V ≤ (h ≫ ψ) ⁻¹ᵁ U) (x : Γ(X, U)ˣ) :
@@ -92,9 +89,6 @@ lemma res_pullU_comp' (h : Z ⟶ Y) (ψ : Y ⟶ X) {U : X.Opens} {W : Y.Opens} {
   rw [← CommRingCat.comp_apply]
   first
   | rw [Scheme.Hom.appLE_comp_appLE]
-  | rw [Scheme.appLE_comp_appLE]
-  | simp [Scheme.Hom.appLE_comp_appLE]
-  | rfl
 
 lemma prod_pull_generic (h : Z ⟶ Y) (ψ : K → (Y ⟶ X)) (a b : K → L.ι) (W : Y.Opens)
     (hW : ∀ k, W ≤ ψ k ⁻¹ᵁ (L.U (a k) ⊓ L.U (b k))) (V : Z.Opens) (hV : V ≤ h ⁻¹ᵁ W)
@@ -135,7 +129,6 @@ lemma app_compat_generic (h : Z ⟶ Y) {Ui Uj : Y.Opens} {Wi Wj : Z.Opens} (hi :
     intro A B h1 x y
     show (Z.presheaf.map (homOfLE h1).op).hom (x * y) = _
     rw [map_mul]
-    try rfl
   have hl : (Wi ⊓ Wj) ≤ h ⁻¹ᵁ (Ui ⊓ Uj) := le_inf (inf_le_left.trans hi) (inf_le_right.trans hj)
   have e1 : rs (inf_le_left : Wi ⊓ Wj ≤ Wi) (rs hi ((h.app Ui).hom fi)) =
       rs hl ((h.app (Ui ⊓ Uj)).hom (rs (inf_le_left : Ui ⊓ Uj ≤ Ui) fi)) := by
@@ -240,7 +233,6 @@ lemma mul_compat_generic {Ui Uj Ui' Uj' Wi Wj : Y.Opens} (hi : Wi ≤ Ui) (hi' :
     intro A B h1 x y
     show (Y.presheaf.map (homOfLE h1).op).hom (x * y) = _
     rw [map_mul]
-    try rfl
   have hres : ∀ {A B : Y.Opens} (h1 : B ≤ A) (u : Γ(Y, A)ˣ),
       ((res h1 u : Γ(Y, B)ˣ) : Γ(Y, B)) = rs h1 (u : Γ(Y, A)) := fun _ _ => rfl
   have hl : Wi ⊓ Wj ≤ Ui ⊓ Uj := le_inf (inf_le_left.trans hi) (inf_le_right.trans hj)

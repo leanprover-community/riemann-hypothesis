@@ -86,8 +86,6 @@ theorem thetaV_tmul (v : InfinitePlace I.F) (a : Formalism.MainNotions.GlobalThe
     thetaV I v (a ⊗ₜ[I.F] x) = evV I v a * I.φ v x := by
   first
     | (simp [thetaV]; done)
-    | (exact Algebra.TensorProduct.lift_tmul _ _ _ a x)
-    | rfl
 
 def tauF : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF I.F ⊗[I.F] I.E →+* I.E ⊗[I.F] Formalism.MainNotions.S.Af I.F :=
   (Algebra.TensorProduct.lift
@@ -169,17 +167,13 @@ theorem thetaV_sigR (v : InfinitePlace I.F) (x : Formalism.MainNotions.GlobalThe
   have hv : v.IsReal := by
     first
     | exact I.cm.totReal.isReal v
-    | (haveI := I.cm.totReal; exact NumberField.IsTotallyReal.isReal v)
   have hc : Continuous (InfinitePlace.Completion.extensionEmbedding v) := by
     first
     | exact (InfinitePlace.Completion.isometry_extensionEmbedding v).continuous
-    | fun_prop
   have hK : ∀ y : I.F, starRingEnd ℂ (v.embedding y) = v.embedding y := by
     intro y
     first
     | exact RingHom.congr_fun
-        (NumberField.ComplexEmbedding.isReal_iff.mp (InfinitePlace.isReal_iff.mp hv)) y
-    | simpa using RingHom.congr_fun
         (NumberField.ComplexEmbedding.isReal_iff.mp (InfinitePlace.isReal_iff.mp hv)) y
   have key : ∀ c : v.Completion, starRingEnd ℂ (InfinitePlace.Completion.extensionEmbedding v c) =
       InfinitePlace.Completion.extensionEmbedding v c := by
@@ -187,8 +181,6 @@ theorem thetaV_sigR (v : InfinitePlace I.F) (x : Formalism.MainNotions.GlobalThe
     first
     | (refine InfinitePlace.Completion.induction_on c (isClosed_eq (Complex.continuous_conj.comp hc) hc) ?_; intro y; first | (rw [InfinitePlace.Completion.extensionEmbedding_coe]; exact hK _) | (simp only [InfinitePlace.Completion.extensionEmbedding_coe]; exact hK _) | (simp [InfinitePlace.Completion.extensionEmbedding_coe, hK]; done) | (simp [hK]; done))
     | (refine (InfinitePlace.Completion.denseRange_coe (v := v)).induction_on c (isClosed_eq (Complex.continuous_conj.comp hc) hc) ?_; intro y; first | (rw [InfinitePlace.Completion.extensionEmbedding_coe]; exact hK _) | (simp only [InfinitePlace.Completion.extensionEmbedding_coe]; exact hK _) | (simp [InfinitePlace.Completion.extensionEmbedding_coe, hK]; done) | (simp [hK]; done))
-    | (refine (InfinitePlace.Completion.denseRange_coe v).induction_on c (isClosed_eq (Complex.continuous_conj.comp hc) hc) ?_; intro y; first | (rw [InfinitePlace.Completion.extensionEmbedding_coe]; exact hK _) | (simp only [InfinitePlace.Completion.extensionEmbedding_coe]; exact hK _) | (simp [InfinitePlace.Completion.extensionEmbedding_coe, hK]; done) | (simp [hK]; done))
-    | (obtain ⟨c'⟩ := c; refine UniformSpace.Completion.induction_on c' (isClosed_eq (Complex.continuous_conj.comp (hc.comp (by fun_prop))) (hc.comp (by fun_prop))) ?_; intro y; first | (rw [InfinitePlace.Completion.extensionEmbedding_coe]; exact hK _) | (simp only [InfinitePlace.Completion.extensionEmbedding_coe]; exact hK _) | (simp [InfinitePlace.Completion.extensionEmbedding_coe, hK]; done) | (simp [hK]; done))
   have hreal : ∀ a : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF I.F, starRingEnd ℂ (evV I v a) = evV I v a :=
     fun a => key (a.1 v)
   induction x using TensorProduct.induction_on with
@@ -209,11 +201,6 @@ theorem ofHAInf_rat (h : HAd I) (γ : GL (Fin I.n) I.E)
       (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF I.F)) := by
     first
       | (unfold hmat; rw [hγ]; rfl)
-      | (simp only [hmat, hγ]; rfl)
-      | (simp only [hmat, hγ]; done)
-      | (rw [show hmat I h = ((Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.HA.mat (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF I.F) I.cm.sig I.J h :
-          GL (Fin I.n) (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF I.F ⊗[I.F] I.E)) :
-          Matrix (Fin I.n) (Fin I.n) (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF I.F ⊗[I.F] I.E)) from rfl, hγ]; rfl)
   have key : (hmat I h).map (thetaV I v) = (γ : Matrix (Fin I.n) (Fin I.n) I.E).map (I.φ v) := by
     rw [hh]
     ext i j
@@ -230,11 +217,6 @@ theorem ofHAFin_rat (h : HAd I) (γ : GL (Fin I.n) I.E)
       (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF I.F)) := by
     first
       | (unfold hmat; rw [hγ]; rfl)
-      | (simp only [hmat, hγ]; rfl)
-      | (simp only [hmat, hγ]; done)
-      | (rw [show hmat I h = ((Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.HA.mat (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF I.F) I.cm.sig I.J h :
-          GL (Fin I.n) (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF I.F ⊗[I.F] I.E)) :
-          Matrix (Fin I.n) (Fin I.n) (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.AF I.F ⊗[I.F] I.E)) from rfl, hγ]; rfl)
   unfold ofHAFin
   rw [hh]
   ext i j

@@ -71,7 +71,7 @@ theorem sig_frame (M : Matrix (Fin n) (Fin n) ℂ) (h : Formalism.UG.HasSignatur
     ∃ (e : Fin n ≃ Fin p ⊕ Fin q) (P : Matrix (Fin n) (Fin n) ℂ), IsUnit P.det ∧
       Pᴴ * M * P = Formalism.REAL.Jm (fun i => (e i).isLeft) := by
   obtain ⟨e, P', hP'⟩ := h
-  rw [Formalism.L2.SG.InstExistsPf.cT_eq] at hP'
+  rw [_root_.Formalism.UG.P.cT_conj_eq] at hP'
   let A : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ := (P' : Matrix _ _ ℂ)
   let Ai : Matrix (Fin p ⊕ Fin q) (Fin p ⊕ Fin q) ℂ := ((P'⁻¹ : GL _ ℂ) : Matrix _ _ ℂ)
   refine ⟨e, A.submatrix e e, ?_, ?_⟩

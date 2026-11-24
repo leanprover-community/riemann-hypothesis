@@ -244,7 +244,7 @@ theorem mratio_self (c : ∀ k, Bk n k) (k : Fin (m + 1)) : mratio c ⟨k, c k�
 theorem evaluation_resG' {X : Scheme.{0}} {U V : X.Opens} (h : V ≤ U) (x : X) (hx : x ∈ V) (s : Γ(X, U)) :
     X.evaluation V x hx (resG X h s) = X.evaluation U x (h hx) s := by
   rw [← Scheme.germ_residue, ← Scheme.germ_residue]
-  simp only [CommRingCat.hom_comp, RingHom.comp_apply, CommRingCat.comp_apply]
+  simp only [CommRingCat.hom_comp, RingHom.comp_apply]
   rw [TopCat.Presheaf.germ_res_apply]
 
 theorem ptCoord_ne_zero_iff (x : MP ℤ m n) (k : Fin (m + 1)) (i : Bk n k) :
@@ -284,7 +284,7 @@ theorem mCoordIdeal_le_of_scale {Ω : Type} [Field Ω] (y r : (Σ k, Bk n k) →
   have e : (Geo.mConeMap y).toRingHom = S.toRingHom.comp (Geo.mConeMap r).toRingHom := by
     refine MvPolynomial.ringHom_ext (fun a => ?_) fun p => ?_
     · simp
-    · simp [Geo.mConeMap, S, h p, mul_comm, mul_left_comm, mul_assoc]
+    · simp [Geo.mConeMap, S, h p, mul_comm, mul_left_comm]
   have := RingHom.congr_fun e f
   simp only [RingHom.comp_apply, AlgHom.toRingHom_eq_coe, RingHom.coe_coe] at this
   rw [this, hf, map_zero]

@@ -70,12 +70,11 @@ theorem coarse_of_le {a : ℕ} {bl : List ℕ} {i : ℕ} (h : a ≤ i) : coarse 
   simp [coarse, blkIdx, Nat.not_lt.mpr h]
 
 theorem coarse_eq_zero {a : ℕ} {bl : List ℕ} {i : ℕ} : coarse a bl i = 0 ↔ i < a := by
-  constructor
-  · intro h
-    by_contra h'
-    rw [coarse_of_le (Nat.not_lt.mp h')] at h
-    omega
-  · exact coarse_of_lt
+  by_cases h : i < a
+  · rw [coarse_of_lt h]
+    simp [h]
+  · rw [coarse_of_le (Nat.not_lt.mp h)]
+    exact ⟨fun hzero => by omega, fun hlt => by omega⟩
 
 theorem fine_lt_right {a : ℕ} {bl : List ℕ} {i l : ℕ} (hi : i < a) : fine a bl l < fine a bl i ↔ l < i := by
   unfold fine
@@ -111,9 +110,7 @@ theorem blkIdx_replicate {t : ℕ} (ht : 0 < t) (j i : ℕ) (h : i < j * t) : bl
     · have h2 : i - t < j * t := by
         have : (j + 1) * t = j * t + t := by ring
         omega
-      rw [ih _ h2]
-      have h3 : i = (i - t) + t := by omega
-      conv_rhs => rw [h3, Nat.add_div_right _ ht]
+      rw [ih _ h2, ← Nat.add_div_right _ ht, show i - t + t = i by omega]
 
 section Groups
 
@@ -148,8 +145,7 @@ theorem toSquareBlock_mul {A B : Matrix (Fin n) (Fin n) κ} {b : Fin n → ℕ} 
   symm
   apply Finset.sum_subset (Finset.filter_subset _ _)
   intro l _ hl
-  have hl' : b l ≠ c := by simpa using hl
-  rcases lt_or_gt_of_ne hl' with h | h
+  rcases lt_or_gt_of_ne (by simpa using hl) with h | h
   · rw [hA (by rw [i.2]; exact h), zero_mul]
   · rw [hB (by rw [j.2]; exact h), mul_zero]
 
@@ -181,8 +177,7 @@ theorem fine_diag_mul {a : ℕ} {bl : List ℕ} {A B : Matrix (Fin n) (Fin n) κ
   rw [Matrix.mul_apply]
   apply Finset.sum_eq_single i
   · intro l _ hl
-    have hl' : l.val ≠ i.val := fun h => hl (Fin.ext h)
-    rcases lt_or_gt_of_ne hl' with h | h
+    rcases lt_or_gt_of_ne (fun e => hl (Fin.ext e)) with h | h
     · rw [hA ((fine_lt_right hi).mpr h), zero_mul]
     · rw [hB ((fine_lt_left hi).mpr h), mul_zero]
   · intro h; exact absurd (Finset.mem_univ i) h
@@ -233,11 +228,10 @@ theorem sup_mul {a : ℕ} {bl : List ℕ} {A B : GL (Fin n) κ} (hA : A ∈ uniU
   have hne : i ≠ j := fun h => by rw [h] at hij; omega
   rw [Units.val_mul, Matrix.mul_apply, Finset.sum_eq_add i j hne, hA.2 i hi, hB.2 j hj, one_mul, mul_one, add_comm]
   · rintro l _ ⟨h1, h2⟩
-    have h1' : l.val ≠ i.val := fun h => h1 (Fin.ext h)
-    have h2' : l.val ≠ j.val := fun h => h2 (Fin.ext h)
-    by_cases h : l.val < i.val
+    rcases lt_or_gt_of_ne (fun e => h1 (Fin.ext e)) with h | h
     · rw [hA.1 ((fine_lt_right hi).mpr h), zero_mul]
-    · rw [hB.1 ((fine_lt_left hj).mpr (by omega)), mul_zero]
+    · have h2' : l.val ≠ j.val := fun e => h2 (Fin.ext e)
+      rw [hB.1 ((fine_lt_left hj).mpr (by omega)), mul_zero]
   · intro h; exact absurd (Finset.mem_univ i) h
   · intro h; exact absurd (Finset.mem_univ j) h
 
@@ -340,17 +334,14 @@ theorem diagEmb_injective {r : ℕ} (h : r ≤ n) : Function.Injective (diagEmb 
   intro i j
   have e' := congrArg (fun X : GL (Fin n) κ => (X : Matrix (Fin n) (Fin n) κ) (Fin.castLE h i) (Fin.castLE h j)) e
   beta_reduce at e'
-  rw [diagEmb_val, diagEmb_val, diagMat_of_lt _ (show (Fin.castLE h i).val < r from i.2)
-    (show (Fin.castLE h j).val < r from j.2), diagMat_of_lt _ (show (Fin.castLE h i).val < r from i.2)
-    (show (Fin.castLE h j).val < r from j.2)] at e'
+  rw [diagEmb_val, diagEmb_val, diagMat_of_lt (i := Fin.castLE h i) (j := Fin.castLE h j) _ i.2 j.2, diagMat_of_lt (i := Fin.castLE h i) (j := Fin.castLE h j) _ i.2 j.2] at e'
   exact e'
 
 theorem diagEmb_mem_blockUT {r : ℕ} (h : r ≤ n) (bl : List ℕ) (g : GL (Fin r) κ) : diagEmb κ h g ∈ blockUT n κ r bl := by
   intro i j hij
-  have hij' : coarse r bl j.val < coarse r bl i.val := hij
-  have hi : ¬ i.val < r := fun hi => by rw [coarse_of_lt hi] at hij'; omega
+  have hi : ¬ i.val < r := fun hi => by beta_reduce at hij; rw [coarse_of_lt hi] at hij; omega
   rw [diagEmb_val, diagMat_of_not_left _ _ hi]
-  exact Matrix.one_apply_ne fun e => by rw [e] at hij'; omega
+  exact Matrix.one_apply_ne fun e => by rw [e] at hij; beta_reduce at hij; omega
 
 def fixCol (n : ℕ) (κ : Type) [CommRing κ] (c : ℕ) : Subgroup (GL (Fin n) κ) where
   carrier := {M | ∀ i j : Fin n, j.val = c → (M : Matrix (Fin n) (Fin n) κ) i j = (1 : Matrix (Fin n) (Fin n) κ) i j}
@@ -377,14 +368,12 @@ theorem mem_HK {r : ℕ} {bl : List ℕ} {M : GL (Fin n) κ} :
     refine ⟨hM, fun i j hi hj => ?_⟩
     have h1 := congrArg (fun X : Matrix {i : Fin n // coarse r bl i.val = 0} {i : Fin n // coarse r bl i.val = 0} κ =>
       X ⟨i, coarse_of_lt hi⟩ ⟨j, coarse_of_lt hj⟩) (MonoidHom.mem_ker.mp hk)
-    show (M : Matrix (Fin n) (Fin n) κ) i j = _
-    simpa only [blkHom_apply, Matrix.one_apply, Subtype.mk.injEq] using h1
+    simpa only [blkHom_apply, Matrix.one_apply, Subtype.mk.injEq, Subgroup.coe_subtype, Subtype.coe_mk] using h1
   · rintro ⟨hM, h⟩
     refine ⟨⟨M, hM⟩, ?_, rfl⟩
     rw [SetLike.mem_coe, MonoidHom.mem_ker]
     ext i j
-    have h1 := h i.1 j.1 (coarse_eq_zero.mp i.2) (coarse_eq_zero.mp j.2)
-    rw [blkHom_apply, h1]
+    rw [blkHom_apply, h i.1 j.1 (coarse_eq_zero.mp i.2) (coarse_eq_zero.mp j.2)]
     simp only [Matrix.one_apply, Subtype.ext_iff]
 
 theorem HK_le_blockUT (n : ℕ) (κ : Type) [CommRing κ] (r : ℕ) (bl : List ℕ) : HK n κ r bl ≤ blockUT n κ r bl :=
@@ -585,11 +574,10 @@ theorem off_mul {n k rS : ℕ} {A B : GL (Fin n) κ} (hA : A ∈ HPsym κ n k rS
   have hne : i ≠ j := fun h => by rw [h] at hi; omega
   rw [Units.val_mul, Matrix.mul_apply, Finset.sum_eq_add i j hne, hA.1.2 i i.2, hB.1.2 j j.2, one_mul, mul_one, add_comm]
   · rintro l _ ⟨h1, h2⟩
-    have h1' : l.val ≠ i.val := fun h => h1 (Fin.ext h)
-    have h2' : l.val ≠ j.val := fun h => h2 (Fin.ext h)
-    by_cases c1 : l.val < i.val
-    · rw [hA.1.1 ((fine_lt_right i.2).mpr c1), zero_mul]
-    · by_cases c2 : l.val < rS + k
+    rcases lt_or_gt_of_ne (fun e => h1 (Fin.ext e)) with h | h
+    · rw [hA.1.1 ((fine_lt_right i.2).mpr h), zero_mul]
+    · have h2' : l.val ≠ j.val := fun e => h2 (Fin.ext e)
+      by_cases c2 : l.val < rS + k
       · rw [hB.2 l j (by omega) c2 hj, mul_zero]
       · rw [hB.1.1 ((fine_lt_left j.2).mpr (by omega)), mul_zero]
   · intro h; exact absurd (Finset.mem_univ i) h
@@ -635,8 +623,7 @@ def lamQ (ξ : κˣ →* Kˣ) (n a b : ℕ) : ↥(HQ κ n a b) →* Kˣ := detCh
 
 theorem lamQ_apply (ξ : κˣ →* Kˣ) (n a b : ℕ) (M : ↥(HQ κ n a b)) :
     lamQ ξ n a b M = ξ (blkDet n κ (coarse a [b]) 1 M) := by
-  rw [lamQ, detChar_apply]
-  simp
+  simp [lamQ, detChar_apply]
 
 end Levels
 

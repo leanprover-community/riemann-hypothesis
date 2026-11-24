@@ -65,7 +65,7 @@ theorem span_pair_orth_eq_zero {T T' : E} (F : FlagG S r T) (F' : FlagG S r T') 
     (ho : ∀ i, S.hT (Sum.elim F.fvec F'.fvec i) x = 0) : x = 0 := by
   obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun E).1 hx
   have hdet : (Formalism.L2.SG.GramJoint.gramFF F F').det ≠ 0 := by
-    rw [Formalism.L2.SG.Closed.GramDetFlag_holds E S r T T' F F']
+    rw [_root_.Formalism.L2.SG.GramJoint.gramDetFlag E S r T T' F F']
     exact mul_ne_zero (pow_ne_zero _ (by norm_num)) hG
   have hc : Formalism.L2.SG.GramJoint.gramFF F F' *ᵥ c = 0 := by
     funext i

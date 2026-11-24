@@ -144,7 +144,7 @@ theorem mem_of_block_le {I : Ideal (MRing ι F)} {k : K}
     refine Finset.sum_eq_zero fun v _ => ?_
     by_cases hv : v.1 = k
     · simp [hno v hv]
-    · simp [blockWeight, Pi.single_apply, Ne.symm hv]
+    · simp [blockWeight, Ne.symm hv]
   rw [hw] at h0
   omega
 

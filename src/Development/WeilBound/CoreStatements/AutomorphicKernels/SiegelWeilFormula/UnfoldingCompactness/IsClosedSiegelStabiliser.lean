@@ -69,7 +69,7 @@ theorem isCompact_K (d : SD σ) : IsCompact (d.K : Set d.G) :=
 theorem isClosed_siegel_stabiliser (d : SD σ) : IsClosed (par2 σ d.Y : Set d.G) := by
   have e : (par2 σ d.Y : Set d.G) = (fun p : d.G => (inFrame d.b p).toBlocks₂₁) ⁻¹' {0} := by
     ext p
-    exact mem_stabiliser_iff_lower_block_zero d.ok.frame p
+    exact _root_.PositivityTheory.SiegelWeilFormula.kunf.mem_stabiliser_iff_frame_lower_block d.ok.frame p
   rw [e]
   have hfr := GlobalTheory.EisBL.DoubledParabolic.continuous_inFrame (σ := σ) (Y := d.Y) d.b
   exact isClosed_singleton.preimage

@@ -279,6 +279,6 @@ end Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.KLExOf
 
 namespace Formalism.FourierDecayAlt.P.CutMP.Gauge.GC
 
-theorem lie_existence_of_iso_group : KLExistsOf := KLExOf.lie_existence_of_iso_group
+alias lie_existence_of_iso_group := _root_.Formalism.FourierDecayAlt.P.CutMP.Gauge.GC.KLExOf.lie_existence_of_iso_group
 
 end Formalism.FourierDecayAlt.P.CutMP.Gauge.GC

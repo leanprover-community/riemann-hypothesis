@@ -91,7 +91,6 @@ theorem coe_pDC {R : Ranks} (H : Host R) (l : ℕ) :
     (pDC H l : Set (HeightOneSpectrum (𝓞 H.E))) = placesOver H.E (if l = H.pde then H.pde' else H.pde) := by
   first
     | exact Set.Finite.coe_toFinset _
-    | (simp [pDC]; done)
 
 end places
 

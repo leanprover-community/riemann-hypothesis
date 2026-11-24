@@ -150,9 +150,6 @@ theorem par_one : Par X 1 := by
   refine ⟨?_, fun a => ?_, fun j => ?_⟩
   · first
     | exact (Formalism.UG.stabGL X.B.I.Lf).one_mem
-    | exact one_mem (Formalism.UG.stabGL X.B.I.Lf)
-    | (show ((1 : X.B.I.Gf) : GL (Fin X.B.I.n) (X.B.I.E ⊗[X.B.I.F] Af X.B.I.F)) ∈ Formalism.UG.stabGL X.B.I.Lf
-       exact one_mem _)
   · rw [show X.B.I.fmat 1 = 1 from rfl, Matrix.one_mulVec]
     exact Submodule.mem_sup_left (Submodule.subset_span ⟨a, rfl⟩)
   · rw [show X.B.I.fmat 1 = 1 from rfl, Matrix.one_mulVec]

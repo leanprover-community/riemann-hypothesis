@@ -82,7 +82,6 @@ lemma N_upper {g : B.Mat k r} (hg : g ∈ Nset k r) (i j : Fin (2 * r + k + 1)) 
         _ = 1 := by rw [hU, WeylGroupFacts.hpk_sq]
     have hci := ((WeylGroupFacts.nset_iff _).mp (WeylGroupFacts.mem_n_inv hg)).2
     rw [hinv] at hci
-    have hle : j.val ≤ i.val := hji
     have hsj := GBasic.sig_val k r j
     have hsi := GBasic.sig_val k r i
     rw [if_pos (Or.inr hj)] at hsj

@@ -205,15 +205,17 @@ theorem mk_eq_mk_iff {M : IntermediateField ℚ_[p] (PadicAlgCl p)} (σ τ : GK 
 
 theorem mem_subG_Kur_iff (hK : FiniteDimensional ℚ_[p] K) (σ : GK p K) :
     σ ∈ subG p K (MaximalUnramifiedExtension p K) ↔ ∀ x : PadicAlgCl p, ‖x‖ ≤ 1 → ‖σ x - x‖ < 1 := by
+  have hum : ∀ a b : PadicAlgCl p, ‖a - b‖ ≤ max ‖a‖ ‖b‖ := fun a b => by
+    simpa [sub_eq_add_neg, norm_neg] using IsUltrametricDist.norm_add_le_max a (-b)
   constructor
   · intro h x hx
     rcases lt_or_eq_of_le hx with hlt | heq
-    · exact lt_of_le_of_lt (UnramifiedExtensions.norm_sub_le_max' _ _) (max_lt (by rw [norm_GK]; exact hlt) hlt)
+    · exact lt_of_le_of_lt (hum _ _) (max_lt (by rw [norm_GK]; exact hlt) hlt)
     · obtain ⟨ζ, m, hm, hζ, hxζ⟩ := exists_teichmuller_bar x heq
       have h1 : σ ζ = ζ := h ζ (mem_Kur_of_pow hK hm hζ)
       have h2 : σ x - x = σ (x - ζ) - (x - ζ) := by rw [map_sub, h1]; ring
       rw [h2]
-      exact lt_of_le_of_lt (UnramifiedExtensions.norm_sub_le_max' _ _) (max_lt (by rw [norm_GK]; exact hxζ) hxζ)
+      exact lt_of_le_of_lt (hum _ _) (max_lt (by rw [norm_GK]; exact hxζ) hxζ)
   · intro h x hx
     refine eqOn_Kur (σ := σ) (τ := 1) (fun ζ m hm hζ => ?_) hK hx
     have hm0 : m ≠ 0 := by rintro rfl; exact hm (dvd_zero p)

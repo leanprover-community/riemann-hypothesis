@@ -103,7 +103,7 @@ def IsFunEqTypeMv {ι : Type v} (p q : ℕ) (hq : q ≠ 0) (σ : K →+* K) (φ 
 end FunEq
 
 def unitBall (K : Type u) [NormedField K] [IsUltrametricDist K] : Subring K := by
-  first | exact @Bl.FirstLemmaM.goal1 K ‹_› ‹_› | exact @Bl.FirstLemmaM.goal1 K ‹_› | exact @Bl.FirstLemmaM.goal1 K | exact @Bl.FirstLemmaM.goal1
+  first | exact @Bl.FirstLemmaM.goal1 K ‹_› ‹_›
 
 def FunctionalEquationSetting (K : Type u) [NormedField K] (p q : ℕ) (σ : K →+* K) : Prop :=
   p.Prime ∧ (∃ h : ℕ, 0 < h ∧ q = p ^ h) ∧ ‖(p : K)‖ < 1 ∧ IsFrobLift p q σ

@@ -67,25 +67,23 @@ theorem fundBridge_holds : FundBridge X := by
   show IsFundamentalDomain (Formalism.MainNotions.LeviCoordinates.rr_GF X.B.I) X.B.fund (X.B.I.muA X.B.μf)
   obtain ⟨hmeas, hcov, hdisj⟩ := X.B.fund_spec
   refine IsFundamentalDomain.mk'' hmeas.nullMeasurableSet
-    (Filter.Eventually.of_forall fun y => ?_) (fun g hg => ?_) (fun g => ?_)
-  · obtain ⟨γ, hγ, hy⟩ := hcov y
-    exact ⟨⟨γ, hγ⟩, hy⟩
-  · have hg' : (g : X.B.I.GA) ≠ 1 := fun h => hg (Subtype.ext h)
-    exact hdisj g g.2 hg'
-  · exact (measurePreserving_mul_left (X.B.I.muA X.B.μf) (g : X.B.I.GA)).quasiMeasurePreserving
+    (Filter.Eventually.of_forall fun y => by
+      obtain ⟨γ, hγ, hy⟩ := hcov y
+      exact ⟨⟨γ, hγ⟩, hy⟩)
+    (fun g hg => hdisj g g.2 (fun h => hg (Subtype.ext h)))
+    (fun g => (measurePreserving_mul_left (X.B.I.muA X.B.μf) (g : X.B.I.GA)).quasiMeasurePreserving)
 
 theorem pserMeas_holds (u : D.what₂.Word) (hK : X.LevelSubgroupCharacter) : PserMeas X u hK := by
   intro hPM T Dt hDt hsum
   classical
-  have hG : (Formalism.MainNotions.LeviCoordinates.rr_GF X.B.I : Set X.B.I.GA).Countable :=
-    Set.countable_coe_iff.mp (by exact (inferInstance : Countable (Formalism.MainNotions.LeviCoordinates.rr_GF X.B.I)))
-  have hc : Dt.Countable := Set.Countable.mono hDt.1 hG
+  have hc : Dt.Countable :=
+    Set.Countable.mono hDt.1
+      (Set.countable_coe_iff.mp (inferInstance : Countable (Formalism.MainNotions.LeviCoordinates.rr_GF X.B.I)))
   haveI : Countable Dt := hc.to_subtype
   refine measurable_of_tendsto_metrizable' (Filter.atTop : Filter (Finset Dt))
-    (f := fun (s : Finset Dt) x => ∑ δ ∈ s, Ph X u hK T ((δ : X.B.I.GA) * x)) (fun s => ?_) ?_
-  · exact Finset.measurable_sum s fun δ _ => (hPM T).comp (measurable_const_mul _)
-  · refine tendsto_pi_nhds.mpr fun x => ?_
-    exact (Summable.of_norm (hsum x)).hasSum
+    (f := fun (s : Finset Dt) x => ∑ δ ∈ s, Ph X u hK T ((δ : X.B.I.GA) * x))
+    (fun s => Finset.measurable_sum s fun δ _ => (hPM T).comp (measurable_const_mul _)) ?_
+  exact tendsto_pi_nhds.mpr fun x => (Summable.of_norm (hsum x)).hasSum
 
 namespace InHHLeaf
 
@@ -356,12 +354,11 @@ variable {G : Type*} [Group G] [MeasurableSpace G] [MeasurableMul₂ G] [Measura
 
 private theorem isFundamentalDomain_of_rr_FD (h : rr_FD μ Γ D) : IsFundamentalDomain Γ D μ := by
   refine IsFundamentalDomain.mk'' h.meas.nullMeasurableSet
-    (Filter.Eventually.of_forall fun y => ?_) (fun g hg => ?_) (fun g => ?_)
-  · obtain ⟨γ, hγ, hy⟩ := h.cov y
-    exact ⟨⟨γ, hγ⟩, hy⟩
-  · have hg' : (g : G) ≠ 1 := fun h' => hg (Subtype.ext h')
-    exact h.disj g g.2 hg'
-  · exact (measurePreserving_mul_left μ (g : G)).quasiMeasurePreserving
+    (Filter.Eventually.of_forall fun y => by
+      obtain ⟨γ, hγ, hy⟩ := h.cov y
+      exact ⟨⟨γ, hγ⟩, hy⟩)
+    (fun g hg => h.disj g g.2 (fun h' => hg (Subtype.ext h')))
+    (fun g => (measurePreserving_mul_left μ (g : G)).quasiMeasurePreserving)
 
 theorem unfold_lint (h : rr_FD μ Γ D) (S : Subgroup G) (hS : S ≤ Γ) (Dt : Set G)
     (hD : FoldBound.IsRightTransversal Γ S Dt) (Fs : Set G) (hFs : IsFundamentalDomain S Fs μ)
@@ -426,10 +423,8 @@ theorem one_le_mult {G : Type*} [Group G] (Γ : Subgroup G) (Ω : Set G) (h1 : (
   unfold Formalism.L2.SG.FoldBound.mult
   refine le_trans ?_ (le_iSup _ x)
   have hmem : (1 : Γ) ∈ ({γ : Γ | x⁻¹ * ((γ : G) * x) ∈ Ω} : Set Γ) := by simpa using h1
-  have h1' : (1 : ℕ∞) ≤ ({γ : Γ | x⁻¹ * ((γ : G) * x) ∈ Ω} : Set Γ).encard :=
-    Set.one_le_encard_iff_nonempty.mpr ⟨1, hmem⟩
-  calc (1 : ℝ≥0∞) = ((1 : ℕ∞) : ℝ≥0∞) := by simp
-    _ ≤ _ := ENat.toENNReal_le.mpr h1'
+  simpa using ENat.toENNReal_le.mpr
+    (Set.one_le_encard_iff_nonempty.mpr ⟨1, hmem⟩)
 
 theorem pserRph_holds (u : D.what₂.Word) (hK : X.LevelSubgroupCharacter) : PserRph X u hK := by
   intro hOK hPI hPP T Dt hD

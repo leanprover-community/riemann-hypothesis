@@ -193,7 +193,7 @@ theorem dpow_mul_dpow (m n : ℕ) (x : AInf K p) :
 
 
 variable (K p) in
-def ACrisZero : Subalgebra (AInf K p) 𝔸 :=
+def ACrisZero [Fact (¬ IsUnit (p : normInteger K))] : Subalgebra (AInf K p) 𝔸 :=
   Algebra.adjoin (AInf K p) {y | ∃ n : ℕ, ∃ x ∈ RingHom.ker θ, dpow n x = y}
 
 theorem dpow_mem {x : AInf K p} (hx : x ∈ RingHom.ker θ) (n : ℕ) :
@@ -216,7 +216,7 @@ theorem acrisZero_eq_adjoin {ξ : AInf K p} (hξ : RingHom.ker θ = Ideal.span {
 
 
 variable (K p) in
-abbrev ACris : Type _ :=
+abbrev ACris [Fact (¬ IsUnit (p : normInteger K))] : Type _ :=
   AdicCompletion (Ideal.span {(p : ACrisZero (K := K) (p := p))}) (ACrisZero (K := K) (p := p))
 
 end Defs

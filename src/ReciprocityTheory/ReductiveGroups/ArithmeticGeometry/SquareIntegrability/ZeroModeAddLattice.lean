@@ -97,7 +97,7 @@ theorem z_of_K (hI : IsSplit P I) (k : Fin (dK (IR I))) {b : Vsp X.dim} (hb : b 
   have hek : e (IR I) k ∈ IR I := (ob (IR I) k).2
   apply Complex.ext
   · rw [Complex.ofReal_re]
-    simp [z, Hf, real_inner_eq_re_inner, PiLp.inner_apply, Complex.mul_re, mul_comm]
+    simp [z, Hf, real_inner_eq_re_inner, PiLp.inner_apply, Complex.mul_re]
   · rw [Complex.ofReal_im]
     exact Hf_im_eq_zero_of_mem_IR_of_isSplit hI hb hek
 
@@ -227,7 +227,7 @@ theorem zeroMode_add_lattice (hI : IsSplit P I) {s : (Fin 1 → Vsp X.dim) → �
     intro w
     unfold gaugeExp
     simp only [hzx, Complex.ofReal_zero, zero_mul, mul_zero, Finset.sum_const_zero, neg_zero,
-      zero_sub, sub_zero, zero_add]
+      sub_zero, zero_add]
     try ring
   have hzadd : ∀ k (a b : Vsp X.dim), z (IR I) k (a + b) = z (IR I) k a + z (IR I) k b := by
     intro k a b

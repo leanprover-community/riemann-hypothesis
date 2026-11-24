@@ -68,7 +68,7 @@ theorem kumTExists : LateralTheory.E.CupProductRingLaws.LeafKumTExists := fun q 
 theorem oneSpec : LateralTheory.E.CupProductRingLaws.LeafOneSpec :=
   LateralTheory.E.LeafOneSpecPf.LeafOneSpec_of
     (LateralTheory.E.LeafOneExistsPf.CocycleOfSec.LeafOneExists_of_unit LateralTheory.E.UnitSections.LeafUnitSec_of)
-    LateralTheory.E.LeafPrimCoverPf.LeafPrimCover_of
+    _root_.LateralTheory.E.LeafPrimCoverPf.leafPrimCover_pf
 
 theorem etaleFirstChernClass_represented_by_chern_cocycle : LateralTheory.E.CupProductRingLaws.EtaleFirstChernClassRepresentedByChernCocycle :=
   have hr := LateralTheory.E.LeafRootLocPf.LeafRootLoc_of

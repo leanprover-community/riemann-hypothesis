@@ -580,8 +580,7 @@ theorem pi_smul {ι : Type*} [Fintype ι] {α : ι → Type*} [∀ i, Measurable
   rw [Measure.smul_apply, Measure.pi_pi, smul_eq_mul, ← Finset.prod_mul_distrib]
   simp only [Measure.smul_apply, smul_eq_mul]
 
-theorem sf_smul {α : Type*} [MeasurableSpace α] (μ : Measure α) [SigmaFinite μ] {c : ℝ≥0∞} (hc : c ≠ ⊤) :
-    SigmaFinite (c • μ) := sf_smul_lemma μ hc
+alias sf_smul := _root_.Formalism.L2.SG.NGPin.sf_smul_lemma
 
 theorem muStab_eq (w : Point D.host.E (D.R.rS + 1)) :
     ∃ K : ℝ≥0∞, K ≠ 0 ∧ K ≠ ⊤ ∧ muStab X w =

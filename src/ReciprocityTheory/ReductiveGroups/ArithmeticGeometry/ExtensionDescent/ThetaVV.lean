@@ -67,8 +67,7 @@ def liftHom {T : Over S} (W : (T ⊗ A).left.Opens) : Γ(T.left, ⊤) →+* Γ((
 
 theorem res_liftHom {T : Over S} {W W' : (T ⊗ A).left.Opens} (h : W' ≤ W) (r : Γ(T.left, ⊤)) :
     ((T ⊗ A).left.presheaf.map (homOfLE h).op).hom (liftHom A W r) = liftHom A W' r := by
-  simp only [liftHom, RingHom.comp_apply]
-  rw [← CommRingCat.comp_apply, ← Functor.map_comp]
+  simp only [liftHom, RingHom.comp_apply, ← CommRingCat.comp_apply, Category.assoc, ← Functor.map_comp]
   rfl
 
 @[instance_reducible]
@@ -114,8 +113,7 @@ abbrev mulA (n : ℕ) : A ⟶ A := 𝟙 A ^ n
 theorem rigT_le (L : LB A.left) {T : Over S} (j : Fin 1 → L.ι) :
     LB.wchart L (fun _ : Fin 1 => T.hom ≫ eSec A) j ≤
       T.hom ⁻¹ᵁ LB.wchart L (fun _ : PUnit => eSec A) (fun _ => j 0) := by
-  intro y hy
-  exact Set.mem_iInter.2 fun _ => Set.mem_iInter.1 hy 0
+  exact fun y hy => Set.mem_iInter.2 fun _ => Set.mem_iInter.1 hy 0
 
 def rigT (L : LB A.left) (rig : LB.Gen (L.pull (eSec A))) (T : Over S) (k : ℤ) :
     LB.Gen (LB.LinComb L (Y := T.left) (K := Fin 1) (fun _ => T.hom ≫ eSec A) (fun _ => k)) where

@@ -61,17 +61,17 @@ theorem dropI_nonneg (X : Inst D L) (K : Consts) (a b : HH D → ℤ) (p : ℕ) 
   unfold dropI; split_ifs <;> norm_num
 
 theorem WReq_iff (X : Inst D L) (K : Consts) (a b : HH D → ℤ) :
-    WReq X K a b ↔ ∑ p ∈ candF D L K, Real.log p / p * (2 * dropI X K a b p + 4 * Sig X K a b p) ≤
+    WReq X K a b ↔ ∑ p ∈ _root_.Formalism.MainNotions.AuxBlock8.cands D L K, Real.log p / p * (2 * dropI X K a b p + 4 * Sig X K a b p) ≤
       L.sc.x ^ (-9 : ℝ) := Iff.rfl
 
-theorem mem_candF {K : Consts} {p : ℕ} (h : Cand D L K p) : p ∈ candF D L K := by
+theorem mem_candF {K : Consts} {p : ℕ} (h : Cand D L K p) : p ∈ _root_.Formalism.MainNotions.AuxBlock8.cands D L K := by
   classical
-  unfold candF
+  unfold _root_.Formalism.MainNotions.AuxBlock8.cands
   exact Finset.mem_filter.2 ⟨Finset.mem_range.2 (Nat.lt_ceil.2 h.2.1), h⟩
 
-theorem cand_of_mem {K : Consts} {p : ℕ} (h : p ∈ candF D L K) : Cand D L K p := by
+theorem cand_of_mem {K : Consts} {p : ℕ} (h : p ∈ _root_.Formalism.MainNotions.AuxBlock8.cands D L K) : Cand D L K p := by
   classical
-  unfold candF at h
+  unfold _root_.Formalism.MainNotions.AuxBlock8.cands at h
   exact (Finset.mem_filter.1 h).2
 
 theorem lp_nonneg (p : ℕ) : 0 ≤ Real.log p / p := div_nonneg (Real.log_natCast_nonneg p) (Nat.cast_nonneg p)
@@ -85,7 +85,7 @@ def Dfc (X : Inst D L) (K : Consts) (a b : HH D → ℤ) (p : ℕ) : ℝ :=
 theorem io_le (X : Inst D L) (K : Consts) (hK : K.Nonneg) (P : ParameterChoice' D L) {a b : HH D → ℤ} (h : InWin L a b)
     (hSig : ∀ p, Cand D L K p → 0 ≤ Sig X K a b p) (p : ℕ) :
     Real.log p * ioP X K a b p ≤
-      (if p ∈ candF D L K then Real.log p / p * (2 * dropI X K a b p + 4 * Sig X K a b p) else 0) *
+      (if p ∈ _root_.Formalism.MainNotions.AuxBlock8.cands D L K then Real.log p / p * (2 * dropI X K a b p + 4 * Sig X K a b p) else 0) *
         (((D.R.m : ℝ) * (D.host.TT.card : ℝ)) * L.sc.a) := by
   classical
   have ha := sc_one_lt_a L.sc
@@ -159,7 +159,7 @@ theorem sdiff_le (X : Inst D L) (K : Consts) {a b : HH D → ℤ}
       (if p ∈ A3 then Real.log p / p else 0) * (D.host.TT.card : ℝ) +
       (if p ∈ A4 then Real.log p / p else 0) * (D.host.TT.card : ℝ) +
       (if p ∈ PS then Real.log p / p * badf p else 0) +
-      (if p ∈ candF D L K then Real.log p / p * (2 * dropI X K a b p + 4 * Sig X K a b p) else 0) * (D.host.TT.card : ℝ) := by
+      (if p ∈ _root_.Formalism.MainNotions.AuxBlock8.cands D L K then Real.log p / p * (2 * dropI X K a b p + 4 * Sig X K a b p) else 0) * (D.host.TT.card : ℝ) := by
   classical
   have hlp := lp_nonneg p
   have hN : (0 : ℝ) ≤ (D.host.TT.card : ℝ) := Nat.cast_nonneg _
@@ -171,7 +171,7 @@ theorem sdiff_le (X : Inst D L) (K : Consts) {a b : HH D → ℤ}
     split_ifs
     · exact mul_nonneg hlp (hbad0 p)
     · exact le_rfl
-  have t8 : 0 ≤ (if p ∈ candF D L K then Real.log p / p * (2 * dropI X K a b p + 4 * Sig X K a b p) else 0) *
+  have t8 : 0 ≤ (if p ∈ _root_.Formalism.MainNotions.AuxBlock8.cands D L K then Real.log p / p * (2 * dropI X K a b p + 4 * Sig X K a b p) else 0) *
       (D.host.TT.card : ℝ) := by
     split_ifs with hc
     · have := hSig p (cand_of_mem hc)

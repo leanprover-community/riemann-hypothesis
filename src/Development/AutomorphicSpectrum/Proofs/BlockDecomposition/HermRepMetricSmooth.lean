@@ -45,6 +45,7 @@ import Mathlib.Tactic.NormNum.RealSqrt
 public import ReciprocityTheory.AnalyticForms.AnalyticCharts.Osgood
 import Development.AbelianVarietyTheory.Definitions.Divisors.NefFibOfIsNef
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.ArakelovCycleHeights.QpSndStr
+import Mathlib.Algebra.Azumaya.Basic
 
 @[expose] public section
 

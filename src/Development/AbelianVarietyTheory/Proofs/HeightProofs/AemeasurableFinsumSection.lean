@@ -69,7 +69,7 @@ theorem sImg_indep_finite (K Ω : Type) [Field K] [CharZero K] [Field Ω] [Algeb
     Function.Injective (sHom (K := K) (D := D) j₀ x) ∧
       FiniteDimensional (IntermediateField.adjoin K (Set.range (sImg (D := D) j₀ x)))
         (OmS Ω D N) := by
-  have hfs := ReciprocityTheory.MultiplicativeHeights.Closed.fieldOfS K Ω D N x hfg htr hJ
+  have hfs := _root_.ReciprocityTheory.MultiplicativeHeights.genericImageFinite K Ω D N x hfg htr hJ
   let e : TVar D N ≃ TVar D N :=
     Equiv.prodCongr (Equiv.refl _) (Fin.cycleRange j₀).symm
   have key : (ReciprocityTheory.MultiplicativeHeights.sImage (D := D) x) = (sImg (D := D) j₀ x) ∘ e := by

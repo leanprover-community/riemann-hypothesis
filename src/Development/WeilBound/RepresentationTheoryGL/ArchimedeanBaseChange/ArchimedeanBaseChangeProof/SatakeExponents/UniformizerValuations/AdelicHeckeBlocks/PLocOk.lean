@@ -7,8 +7,6 @@ import Development.AbelianVarietyTheory.Definitions.Foundations.GLintEqKOAndPrin
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.AbsHalfBlockDetIntegralGLInvariant
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.BlockLevelsEqIntegralGLOfUnramified
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IwahoriProjSurjective
-public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.BorelApproximation
-public import Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.ZeroContDiffOnSupported
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ConstantTermLocallyConstant
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsCompactSupportDcos
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.UnitaryLevelSubgroupProperties
@@ -123,9 +121,6 @@ theorem isOpen_KGL (w : Pl E) (a : ℕ) : IsOpen (GlobalTheory.LFun.KGL w (n := 
   rw [GlobalTheory.CompanionTheory.IwLevels.KGL_eq_KO]
   exact GlobalTheory.SplitFlip.isOpen_KO
 
-theorem isCompact_KGL (w : Pl E) (a : ℕ) : IsCompact (GlobalTheory.LFun.KGL w (n := a) : Set (GLw a w)) :=
-  GlobalTheory.CompanionTheory.IwLevels.isCompact_KGL w a
-
 theorem thL_KGL (a : ℕ) (w : Pl E) (k : GLw a w) (hk : k ∈ GlobalTheory.LFun.KGL w (n := a)) : thL a w k ∈ GlobalTheory.LFun.KGL w (n := a) := by
   unfold thL
   split_ifs
@@ -198,12 +193,30 @@ section Place
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
 theorem dcos_left {m : ℕ} {w : Pl E} (t k g : GLw m w) (hk : k ∈ iwGL m w) :
-    dcos m w t (k * g) = dcos m w t g :=
-  _root_.UpperTheory.Reformulated.B.BorelApproximation.dcos_left t k g hk
+    dcos m w t (k * g) = dcos m w t g := by
+  have : (∃ x ∈ iwGL m w, ∃ z ∈ iwGL m w, k * g = x * t * z) ↔
+      (∃ x ∈ iwGL m w, ∃ z ∈ iwGL m w, g = x * t * z) := by
+    constructor
+    · rintro ⟨x, hx, z, hz, e⟩
+      refine ⟨k⁻¹ * x, mul_mem (inv_mem hk) hx, z, hz, ?_⟩
+      calc g = k⁻¹ * (k * g) := by group
+        _ = _ := by rw [e]; simp only [mul_assoc]
+    · rintro ⟨x, hx, z, hz, e⟩
+      exact ⟨k * x, mul_mem hk hx, z, hz, by rw [e]; simp only [mul_assoc]⟩
+  simp only [dcos, this]
 
 theorem dcos_right {m : ℕ} {w : Pl E} (t k g : GLw m w) (hk : k ∈ iwGL m w) :
-    dcos m w t (g * k) = dcos m w t g :=
-  _root_.UpperTheory.Reformulated.B.H23.dcos_right t k g hk
+    dcos m w t (g * k) = dcos m w t g := by
+  have : (∃ x ∈ iwGL m w, ∃ z ∈ iwGL m w, g * k = x * t * z) ↔
+      (∃ x ∈ iwGL m w, ∃ z ∈ iwGL m w, g = x * t * z) := by
+    constructor
+    · rintro ⟨x, hx, z, hz, e⟩
+      refine ⟨x, hx, z * k⁻¹, mul_mem hz (inv_mem hk), ?_⟩
+      calc g = (g * k) * k⁻¹ := by group
+        _ = _ := by rw [e]; simp only [mul_assoc]
+    · rintro ⟨x, hx, z, hz, e⟩
+      exact ⟨x, hx, z * k, mul_mem hz hk, by rw [e]; simp only [mul_assoc]⟩
+  simp only [dcos, this]
 
 theorem isHecke_iwahori_pair_double_coset {a b : ℕ} (w : Pl E) (ϖ : (w.adicCompletion E)ˣ) (x : Fin a → ℤ) (y : Fin b → ℤ) :
     IsHecke (I2 a b w) (dc2 w ϖ x y) := by
@@ -400,7 +413,7 @@ theorem hc_H (h2 : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E], LocOp
     simp only [F, toSub, dif_pos hy]
   have hHk : IsHk (GlobalTheory.LFun.KGL w (n := n)) F := by
     rw [hF]
-    exact ⟨isOpen_KGL w n, isCompact_KGL w n, hcs_of_fin (isCompact_KGL w n) hT.2,
+    exact ⟨isOpen_KGL w n, _root_.GlobalTheory.CompanionTheory.IwLevels.isCompact_KGL w n, hcs_of_fin (_root_.GlobalTheory.CompanionTheory.IwLevels.isCompact_KGL w n) hT.2,
       fun k₁ hk₁ k₂ hk₂ g => hT.1 ⟨k₁, hk₁⟩ ⟨k₂, hk₂⟩ g⟩
   obtain ⟨c1, c2, -, -⟩ := h2 E n a (n - a) (Nat.add_sub_of_le ha) w (GlobalTheory.LFun.KGL w (n := n)) (isOpen_KGL w n) le_rfl
     (fun k hk k' hk' => mul_mem (mul_mem hk hk') (inv_mem hk)) {1} (by simp)

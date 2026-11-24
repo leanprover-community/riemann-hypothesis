@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdicCompactDensity.ExistsNatLocal
 public import Formalism.UnipotentAdelicQuotients.SWXSDefs
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.AdelesLocallyCompactSecondCountable
 public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.AdelicAnalysis.TensorLocallyCompactRing
@@ -114,23 +115,7 @@ theorem latN_mono {N N' : ℕ} (h : N ∣ N') : latN F N ⊆ latN F N' := by
 
 theorem exists_nat_mul_mem (v : HeightOneSpectrum (𝓞 F)) (x : v.adicCompletion F) :
     ∃ N : ℕ, 0 < N ∧ (N : v.adicCompletion F) * x ∈ v.adicCompletionIntegers F := by
-  obtain ⟨b, hb, hbx⟩ := HeightOneSpectrum.adicCompletion.mul_nonZeroDivisor_mem_adicCompletionIntegers v x
-  have hb0 : b ≠ 0 := nonZeroDivisors.ne_zero hb
-  have hN : Ideal.absNorm (Ideal.span {b}) ≠ 0 := by
-    rw [Ne, Ideal.absNorm_eq_zero_iff]
-    simpa using hb0
-  obtain ⟨c, hc⟩ := Ideal.mem_span_singleton'.mp (Ideal.absNorm_mem (Ideal.span {b}))
-  refine ⟨_, Nat.pos_of_ne_zero hN, ?_⟩
-  have hcast : ((Ideal.absNorm (Ideal.span {b}) : ℕ) : v.adicCompletion F) =
-      algebraMap (𝓞 F) (v.adicCompletion F) c * algebraMap (𝓞 F) (v.adicCompletion F) b := by
-    rw [← map_mul, hc, map_natCast]
-  rw [hcast]
-  have hcm : algebraMap (𝓞 F) (v.adicCompletion F) c ∈ v.adicCompletionIntegers F :=
-    HeightOneSpectrum.coe_mem_adicCompletionIntegers v c
-  have hm : algebraMap (𝓞 F) (v.adicCompletion F) c *
-      (x * algebraMap (𝓞 F) (v.adicCompletion F) b) ∈ v.adicCompletionIntegers F := mul_mem hcm hbx
-  convert hm using 1
-  ring
+  apply PI.AdCpctDenWork.exists_nat_local <;> assumption
 
 theorem exists_mem_latN (y : Af F) : ∃ N : ℕ, 0 < N ∧ y ∈ latN F N := by
   classical

@@ -2,7 +2,8 @@ module
 
 public import CompanionTheory.AutomorphicTheory.ProductFormulaTheory.CuspidalExhaustion.JuxtDefs
 public import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.IrreducibleAdmissibleGL
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CuspidalTwistInjectiveStatement
+public import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.NonemptyEquivMultiProdOne
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CuspidalTwistInjective
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -61,7 +62,7 @@ theorem not_linked_single (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) 
     ¬ (Segment.single (ρ.nu (n : ℂ)) (hρ.nu _)).Linked (Segment.single (ρ.nu (j : ℂ)) (hρ.nu _)) := by
   rintro ⟨⟨Γ, hΓ⟩, -, -⟩
   simp only [Segment.carrier_single] at hΓ
-  have inj : ∀ a b : ℕ, ρ.nu (a : ℂ) = ρ.nu (b : ℂ) → a = b := fun a b h => GlobalTheory.T.cuspidal_twist_injective hA ρ hρ a b h
+  have inj : ∀ a b : ℕ, ρ.nu (a : ℂ) = ρ.nu (b : ℂ) → a = b := fun a b h => _root_.GlobalTheory.CompanionTheory.SegNu.nu_natCast_inj hA ρ hρ a b h
   have ha : ρ.nu (n : ℂ) ∈ Γ.carrier := by rw [hΓ]; exact Or.inl rfl
   have hb : ρ.nu (j : ℂ) ∈ Γ.carrier := by rw [hΓ]; exact Or.inr rfl
   obtain ⟨i, hi, ei⟩ := Segment.mem_carrier.1 ha

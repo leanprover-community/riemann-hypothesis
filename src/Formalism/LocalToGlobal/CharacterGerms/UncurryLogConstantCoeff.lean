@@ -214,17 +214,10 @@ theorem lgS_add (Y : FBChart C V O dd) (p : SelfData Y d I0) : LgAdd (lawS Y) (Y
 private theorem deg_single_lemma_0 {τ : Type} (c : τ) (n : ℕ) : Finsupp.degree (Finsupp.single c n) = n := by
   first
   | exact Finsupp.degree_single c n
-  | simp [Finsupp.degree_single]
-  | simp [Finsupp.degree]
-  | (classical
-     unfold Finsupp.degree
-     by_cases h : n = 0 <;> simp [h])
 
 private theorem deg_zero_lemma_0 {τ : Type} (d : τ →₀ ℕ) (h : Finsupp.degree d = 0) : d = 0 := by
   first
   | exact (Finsupp.degree_eq_zero_iff d).mp h
-  | exact Finsupp.degree_eq_zero_iff.mp h
-  | simpa using h
 
 private theorem deg_map_lemma_6 {α β : Type} (f : α → β) (μ : α →₀ ℕ) :
     Finsupp.degree (μ.mapDomain f) = Finsupp.degree μ := by

@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.JetHarmonics.CpSeriesMultiplicativeShiftCompAndSubst
 public import Development.AbelianVarietyTheory.Proofs.JetHarmonics.ConstantCoeffShiftS
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -67,36 +68,7 @@ theorem continuous_zc : Continuous (zc : ℤ_[q] → ℂ_[q]) := by
   simp [zc]
 
 theorem norm_sub_one_lt_of_root {ζ : ℂ_[q]} {n : ℕ} (h : ζ ^ (q ^ n) = 1) : ‖ζ - 1‖ < 1 := by
-  have hp : q.Prime := Fact.out
-  have hn : q ^ n ≠ 0 := pow_ne_zero _ hp.ne_zero
-  have h1 : ‖ζ‖ = 1 := by
-    have := congrArg norm h
-    rw [norm_pow, norm_one] at this
-    exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) hn).mp this
-  let O : Subring ℂ_[q] :=
-    { carrier := {x | ‖x‖ ≤ 1}
-      mul_mem' := fun {a b} ha hb => by
-        show ‖a * b‖ ≤ 1
-        rw [norm_mul]; exact mul_le_one₀ ha (norm_nonneg _) hb
-      one_mem' := by simp
-      add_mem' := fun {a b} ha hb => (IsUltrametricDist.norm_add_le_max a b).trans (max_le ha hb)
-      zero_mem' := by simp
-      neg_mem' := fun {a} ha => by simpa using ha }
-  have hz : ζ ∈ O := h1.le
-  obtain ⟨r, hr⟩ := exists_add_pow_prime_pow_eq hp ((⟨ζ, hz⟩ : O) - 1) 1 n
-  have hr' := congrArg (fun x : O => (x : ℂ_[q])) hr
-  simp only [sub_add_cancel] at hr'
-  push_cast at hr'
-  have hq : ‖(q : ℂ_[q])‖ < 1 := by
-    rw [← zc_natCast, norm_zc]; exact Padic.norm_p_lt_one
-  have e : (ζ - 1) ^ q ^ n = -((q : ℂ_[q]) * ((ζ - 1) * r)) := by
-    rw [h, one_pow] at hr'
-    linear_combination -hr'
-  have hm : ‖(ζ - 1) * r‖ ≤ 1 := O.mul_mem (O.sub_mem hz O.one_mem) r.2
-  have : ‖ζ - 1‖ ^ q ^ n < 1 := by
-    rw [← norm_pow, e, norm_neg, norm_mul]
-    exact (mul_le_of_le_one_right (norm_nonneg _) hm).trans_lt hq
-  exact (pow_lt_one_iff_of_nonneg (norm_nonneg _) hn).mp this
+  apply GlobalTheory.MomOne.ShiftComp.norm_sub_one_lt_of_root <;> assumption
 
 theorem continuous_redFun (r : ℕ) (g : ZMod (q ^ r) → ℂ_[q]) :
     Continuous fun a : ℤ_[q] => g (PadicInt.toZModPow r a) := by

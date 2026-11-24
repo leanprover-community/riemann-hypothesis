@@ -101,7 +101,7 @@ theorem ev_psi (ε : Fin n → Bool) (E : Fin n → Fin n → Module.End ℂ V) 
     by_cases h : ε p.1 = ε p.2
     · simp [psi, rho, ev, h]
     · simp [psi, rho, ev, h]
-  | mul a b ha hb => intro s; simp [map_mul, Module.End.mul_apply, ha, hb]
+  | mul a b ha hb => intro s; simp [map_mul, ha, hb]
   | add a b ha hb => intro s; simp [map_add (f := _), ha, hb]
 
 theorem rho_surj (ε : Fin n → Bool) (E : Fin n → Fin n → Module.End ℂ V) (L : Submodule ℂ V) (hL : KStab ε E L)

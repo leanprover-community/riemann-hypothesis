@@ -53,4 +53,4 @@ theorem _root_.GlobalTheory.T.deriv_heisenbergCM_theta_quasiInvariant_rational :
       ∀ f : Formalism.IndefR.DatumF.WOF F E nS nT → ℂ, Formalism.IndefR.DatumF.IsThetaFunOF σ JS JT ξ₀ B.ψ f → ∀ L : ℝ →+ Formalism.IndefR.DatumF.WOF F E nS nT, Continuous L → (∀ t, (L t).map (Formalism.IndefR.DatumF.finPartF F E) = 0) →
       ∀ (γ : Matrix (Fin nT) (Fin nS) E) (w : Formalism.IndefR.DatumF.WOF F E nS nT),
       deriv (fun t : ℝ => Formalism.IndefR.DatumF.heisOF σ JS JT ξ₀ B.ψ (L t) f (Formalism.IndefR.DatumF.ratWF γ + w)) 0 = B.ψ (-(Formalism.IndefR.DatumF.symplOHF σ JS JT ξ₀ (Formalism.IndefR.DatumF.ratWF γ) w)) * deriv (fun t : ℝ => Formalism.IndefR.DatumF.heisOF σ JS JT ξ₀ B.ψ (L t) f (w)) 0 := by
-  first | exact @GlobalTheory.ThetaDerivQuasi.deriv_heis_quasi | exact GlobalTheory.ThetaDerivQuasi.deriv_heis_quasi | (intros; apply GlobalTheory.ThetaDerivQuasi.deriv_heis_quasi <;> assumption)
+  first | exact @GlobalTheory.ThetaDerivQuasi.deriv_heis_quasi

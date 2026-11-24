@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.DegenerationProofs.ExistsIntegralDegenerationValues
 public import Mathlib.RingTheory.Valuation.ValuationSubring
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.ThickTransComp
@@ -66,21 +67,7 @@ theorem exists_extension {R : Type} [CommRing R] [IsDomain R] (D : DegPre R) {F 
     [Algebra (FractionRing R) F] (S : ValuationSubring F)
     (hS : ∀ r : R, algebraMap (FractionRing R) F (algebraMap R _ r) ∈ S)
     (x : TF (R := R) F ⟶ D.P.A) : ∃ x₀ : Sp S ⟶ D.P.A.left, spMap S.subtype ≫ x₀ = x.left := by
-  haveI := D.P.isAb.proper
-  have hE : ValuativeCriterion.Existence D.P.A.hom := by
-    have h : UniversallyClosed D.P.A.hom := inferInstance
-    rw [UniversallyClosed.eq_valuativeCriterion] at h
-    exact h.1
-  let f : R →+* S := ((algebraMap (FractionRing R) F).comp (algebraMap R _)).codRestrict S hS
-  let Q : ValuativeCommSq D.P.A.hom :=
-    { R := S, K := F, i₁ := x.left, i₂ := Spec.map (CommRingCat.ofHom f),
-      commSq := ⟨by
-        refine (Over.w x).trans ?_
-        show Spec.map _ ≫ Spec.map _ = _
-        rw [← Spec.map_comp, ← Spec.map_comp]
-        rfl⟩ }
-  obtain ⟨⟨l, h1, -⟩⟩ := hE Q
-  exact ⟨l, h1⟩
+  apply GlobalTheory.ValuesExist.exists_ext <;> assumption
 
 theorem exists_integral_gauge (R : Type) [CommRing R] [IsDomain R] (D : DegPre R) (F : Type) [Field F]
     [Algebra (FractionRing R) F] (S : ValuationSubring F)

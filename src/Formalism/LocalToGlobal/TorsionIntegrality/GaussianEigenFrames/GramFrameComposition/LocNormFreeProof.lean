@@ -83,8 +83,6 @@ theorem TensStd_of (hZ : ShapeToZ) (hT : TransIntC) : TensStd := by
   have hω : (cmL a₀ b₀ dK ha hdK lam hlam).ω₁ = lam * a₀ := by
     first
       | rfl
-      | simp [cmL, Formalism.L2.Th1.F.scalePair, Formalism.L2.Th1.F.cmPair]
-      | (simp [cmL, Formalism.L2.Th1.F.scalePair, Formalism.L2.Th1.F.cmPair]; ring)
   have hmem : lam * (a₀ : ℂ) ∈ (cmL a₀ b₀ dK ha hdK lam hlam).lattice :=
     hω ▸ PeriodPair.ω₁_mem_lattice _
   have hnot : lam * (a₀ : ℂ) / 2 ∉ (cmL a₀ b₀ dK ha hdK lam hlam).lattice :=

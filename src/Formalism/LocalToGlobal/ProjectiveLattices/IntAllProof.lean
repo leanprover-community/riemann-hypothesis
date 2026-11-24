@@ -284,7 +284,7 @@ theorem reFrame_of (hT : TanLin Xo) (hR : IntRebase Xo c) : ReFrame Xo c := by
     have hu := isCombAt_single (y0.1.tan τ) i'
     have heq := (y0.1.basis τ (y0.1.u τ i') (y0.1.tan τ i') (y0.1.eig τ i')).unique hc hu
     have h1 := congrFun heq j'
-    simp only [Matrix.mulVec, dotProduct, A, Bm, Matrix.of_apply] at h1
+    simp only [Matrix.mulVec, dotProduct, A, Matrix.of_apply] at h1
     rw [Matrix.mul_apply, Matrix.one_apply]
     simp only [A, Bm, Matrix.of_apply]
     rw [h1, Pi.single_apply]

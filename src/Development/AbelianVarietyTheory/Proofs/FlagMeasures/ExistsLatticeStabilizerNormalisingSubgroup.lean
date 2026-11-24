@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.RmulMul
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ComplementReferenceCompactSubgroup
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.HermLat
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.BasisOfIsCompl
@@ -144,21 +145,7 @@ theorem inter (A A' B : Submodule O V) (P P' W : Submodule E V) (hA : ∀ x ∈ 
 
 theorem uni_mul {m : ℕ} {s t : Matrix (Fin m) (Fin m) E} (hs : IsUni s) (ht : IsUni t) :
     IsUni (s * t) := by
-  constructor
-  · intro i j hij
-    rw [Matrix.mul_apply]
-    refine Finset.sum_eq_zero fun l _ => ?_
-    rcases lt_or_ge l i with h | h
-    · rw [hs.1 i l h, zero_mul]
-    · rw [ht.1 l j (lt_of_lt_of_le hij h), mul_zero]
-  · intro i
-    rw [Matrix.mul_apply, Finset.sum_eq_single i]
-    · rw [hs.2, ht.2, mul_one]
-    · intro l _ hl
-      rcases lt_or_gt_of_ne hl with h | h
-      · rw [hs.1 i l h, zero_mul]
-      · rw [ht.1 l i h, mul_zero]
-    · simp
+  apply GlobalTheory.IntClsCount.uni_mul <;> assumption
 
 theorem map_comb {m : ℕ} (g : Fin m → V) (h : V ≃ₗ[E] V) (s t : Matrix (Fin m) (Fin m) E)
     (hs : ∀ j, h (g j) = ∑ i, s i j • g i) (j : Fin m) :

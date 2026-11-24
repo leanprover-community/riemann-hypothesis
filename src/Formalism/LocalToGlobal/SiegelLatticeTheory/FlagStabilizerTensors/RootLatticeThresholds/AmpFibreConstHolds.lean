@@ -49,6 +49,6 @@ open Formalism.BasicNotions Formalism.L2.SG.HidaSetting Formalism.L2.SG.Full
 namespace Formalism.L2.SG.Pf.FibreCounting
 
 theorem AmpFibreConst_holds {D : D7} {X : HidaSetting D} (Y : Full X) : Formalism.L2.SG.LoopTieOf.AmpFibreConst Y :=
-  ampFibreConst_of Formalism.L2.SG.Pf.ratPt_holds Formalism.L2.SG.Closed.ChiTrivialC_holds Y
+  ampFibreConst_of Formalism.L2.SG.Pf.ratPt_holds _root_.Formalism.L2.SG.Pf.chiTrivialC_outright Y
 
 end Formalism.L2.SG.Pf.FibreCounting

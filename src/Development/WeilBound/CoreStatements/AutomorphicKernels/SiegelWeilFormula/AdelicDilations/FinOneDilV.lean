@@ -77,7 +77,7 @@ theorem piInf_dilV (h : IsCMExt F E σ) (τ' : ∀ w : InfinitePlace F, EmbOver 
       · rw [if_pos h2, if_pos h2]; simp
       · rw [if_neg h2, if_neg h2]; simp
     · rw [if_neg h1, map_one]
-      split_ifs <;> simp [Pi.single_apply, h1]
+      split_ifs <;> simp [h1]
   · simp only [dilV, Sum.elim_inr]
     by_cases h1 : j = i₀
     · subst h1
@@ -86,7 +86,7 @@ theorem piInf_dilV (h : IsCMExt F E σ) (τ' : ∀ w : InfinitePlace F, EmbOver 
       · rw [if_pos h2, if_pos h2]; simp
       · rw [if_neg h2, if_neg h2]; simp
     · rw [if_neg h1, map_one]
-      split_ifs <;> simp [Pi.single_apply, h1]
+      split_ifs <;> simp [h1]
 
 theorem finOne_dilV (h : IsCMExt F E σ) {n : ℕ} (w : InfinitePlace F) (i₀ : Fin n) (τ : ℝ) (k : Fin n ⊕ Fin n) :
     finOne F • dilV h w i₀ τ k = finOne F • (1 : AE F E) := by
@@ -114,15 +114,14 @@ theorem inFrame_dil {d : SD σ} (R : RD d) (w : InfinitePlace F) (i₀ : Fin d.n
         · exact one_ne_zero
         · exact Complex.I_ne_zero
       have hZ : dZ d.n R.ζ⁻¹ * dZ d.n R.ζ = 1 := by
-        simp only [dZ, Matrix.fromBlocks_multiply, Matrix.mul_one, Matrix.one_mul, Matrix.mul_zero, Matrix.zero_mul,
-          add_zero, zero_add, Matrix.smul_mul, Matrix.mul_smul, smul_smul, inv_mul_cancel₀ hζ, mul_inv_cancel₀ hζ, one_smul,
+        simp only [dZ, Matrix.fromBlocks_multiply, Matrix.mul_one, Matrix.mul_zero, add_zero, zero_add, Matrix.mul_smul, smul_smul, mul_inv_cancel₀ hζ, one_smul,
           smul_zero, Matrix.fromBlocks_one]
       have e1 : d.cw u (inFrame d.b (R.ι u y)) = dZ d.n R.ζ⁻¹ * (mR y * dZ d.n R.ζ) := by
         rw [← hat, ← Matrix.mul_assoc, hZ, Matrix.one_mul]
       show d.cw u _ = _
       rw [e1, hy, ← Matrix.fromBlocks_diagonal]
       simp only [dZ, Matrix.fromBlocks_multiply, Matrix.mul_one, Matrix.one_mul, Matrix.mul_zero, Matrix.zero_mul,
-        add_zero, zero_add, Matrix.smul_mul, Matrix.mul_smul, smul_smul, inv_mul_cancel₀ hζ, one_smul, Matrix.one_mul,
+        add_zero, zero_add, Matrix.smul_mul, Matrix.mul_smul, smul_smul, one_smul, Matrix.one_mul,
         smul_zero, mul_inv_cancel₀ hζ]
     · simp only [if_neg hu, Matrix.diagonal_one]
       exact R.off_w w u y hu

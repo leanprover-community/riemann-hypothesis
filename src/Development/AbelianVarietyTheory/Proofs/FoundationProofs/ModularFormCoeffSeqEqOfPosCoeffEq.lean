@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FoundationProofs.ModularFormCoeffSeqLinearStructure
 public import Development.AbelianVarietyTheory.Definitions.Foundations.PetIPSmulRight
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -54,31 +55,7 @@ namespace GlobalTheory.EisM
 
 lemma summable_norm_qterm_of_polyB (a : ℕ → ℂ) (ha : PolyB a) (τ : ℍ) :
     Summable fun n : ℕ => ‖a n * cexp (2 * π * Complex.I * n * τ)‖ := by
-  obtain ⟨C, A, hC⟩ := ha
-  set r : ℝ := Real.exp (-2 * π * τ.im) with hr
-  have hr0 : 0 < r := Real.exp_pos _
-  have hr1 : r < 1 := by
-    rw [hr, ← Real.exp_zero, Real.exp_lt_exp]
-    have := τ.im_pos
-    nlinarith [Real.pi_pos]
-  have hnorm : ∀ n : ℕ, ‖cexp (2 * π * Complex.I * n * τ)‖ = r ^ n := by
-    intro n
-    rw [Complex.norm_exp, hr, ← Real.exp_nat_mul]
-    congr 1
-    simp [Complex.mul_re, Complex.mul_im]
-    ring
-  have hg : Summable fun n : ℕ => ((n : ℝ) + 1) ^ A * r ^ n := by
-    have h0 : Summable fun n : ℕ => (n : ℝ) ^ A * r ^ n :=
-      summable_pow_mul_geometric_of_norm_lt_one A (by rw [Real.norm_eq_abs, abs_of_pos hr0]; exact hr1)
-    have h1 := (summable_nat_add_iff 1).mpr h0
-    have h2 := h1.mul_left r⁻¹
-    refine h2.congr fun n => ?_
-    push_cast
-    rw [pow_succ]
-    field_simp
-  refine Summable.of_nonneg_of_le (fun n => norm_nonneg _) (fun n => ?_) (hg.mul_left C)
-  rw [norm_mul, hnorm n, ← mul_assoc]
-  exact mul_le_mul_of_nonneg_right (hC n) (pow_nonneg hr0.le n)
+  apply GlobalTheory.EisM.Lin.summ_norm <;> assumption
 
 end GlobalTheory.EisM
 
@@ -137,11 +114,11 @@ theorem eq_of_coeff_pos_eq : ∀ (k L : ℕ) (χ : ℤ → ℂ) (a b : ℕ → �
   have hlt : ‖(L : ℂ) * τ₁ + 1‖ < ‖(L : ℂ) * τ₂ + 1‖ := by
     have s1 : ‖(L : ℂ) * τ₁ + 1‖ ^ 2 = 1 + (L : ℝ) ^ 2 := by
       rw [Complex.sq_norm, Complex.normSq_apply]
-      simp [τ₁, UpperHalfPlane.coe_mk]
+      simp [τ₁]
       ring
     have s2 : ‖(L : ℂ) * τ₂ + 1‖ ^ 2 = 1 + 4 * (L : ℝ) ^ 2 := by
       rw [Complex.sq_norm, Complex.normSq_apply]
-      simp [τ₂, UpperHalfPlane.coe_mk]
+      simp [τ₂]
       ring
     have : ‖(L : ℂ) * τ₁ + 1‖ ^ 2 < ‖(L : ℂ) * τ₂ + 1‖ ^ 2 := by
       rw [s1, s2]; nlinarith

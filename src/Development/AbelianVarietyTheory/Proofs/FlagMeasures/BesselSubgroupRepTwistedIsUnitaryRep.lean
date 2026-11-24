@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.LocalWeightCharts.ColOfLeftInv
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.MatrixOfBesselTwoSidedAction
 public import Formalism.FormalDegreeBessel.FormalDegreeRatio.UnitaryWeylNormalHolds
 public import Formalism.FormalDegreeBessel.FinalG
@@ -58,25 +59,7 @@ variable {k r : ℕ}
 theorem ellA_mul (z : Fin (2 * r + k + 1) → ℂ) (hz : inWb k r z) {g h : Mat k r}
     (hg : col k r g) (hh : col k r h) (a : Fin r) :
     ellA k r z (g * h) a = ellA k r z g a + ellA k r z h a := by
-  unfold ellA
-  by_cases ha : a.val + 1 < r
-  · rw [dite_eq_left ha, dite_eq_left ha, dite_eq_left ha]
-    exact mul_apply_add hg hh _ _ (by simp only [eI]; omega) (by simp only [eI]; omega)
-      (by simp only [eI]; omega) (by simp only [eI]; omega)
-  · rw [dite_eq_right ha, dite_eq_right ha, dite_eq_right ha]
-    simp only [Matrix.mulVec, dotProduct]
-    rw [← Finset.sum_add_distrib]
-    apply Finset.sum_congr rfl
-    intro j _
-    by_cases hzj : z j = 0
-    · rw [hzj, mul_zero, mul_zero, mul_zero, add_zero]
-    · have hjW : r ≤ j.val ∧ j.val ≤ r + k := by
-        by_contra hc
-        apply hzj
-        apply hz
-        omega
-      rw [mul_apply_add hg hh _ _ (by simp only [eI]; omega) (by omega)
-        (by simp only [eI]; omega) (by simp only [eI]; omega), add_mul]
+  apply WlocSk.UnitaryGroupBasics.ellA_mul <;> assumption
 
 theorem psiGen_mul_N (z : Fin (2 * r + k + 1) → ℂ) (c : Fin r → ℂ) (hz : inWb k r z) {g h : Mat k r}
     (hg : g ∈ Nset k r) (hh : h ∈ Nset k r) :

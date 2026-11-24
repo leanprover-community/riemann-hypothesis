@@ -1,5 +1,6 @@
 module
 
+import Development.AutomorphicSpectrum.Proofs.GeometryProofs.JetLeftMem
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermCut
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
 public import Formalism.SharpRestriction.Divisibility.GeneratorPowers.GermBGen
@@ -163,35 +164,7 @@ variable {S : Type} [CommRing S] (x0 : Sp S ⟶ X0) (d : ℕ)
 theorem val_scale {Y Z : Scheme.{0}} {K : Type} [Fintype K] (φ : K → (Y ⟶ t.G.left)) (ε : K → ℤ) (u : Γ(Y, ⊤)ˣ)
     (g : LB.Gen (LB.LinComb t.PP.L φ ε)) (r : Z ⟶ Y) (z : Z) (J : (Z ⟶ t.G.left) → t.PP.L.ι)
     (hJ : Good t.PP.L z J) : val (scaleGenG t φ ε u g) r z J = gm r z ⊤ u * val g r z J := by
-  unfold scaleGenG val gm
-  have hz : r z ∈ t.PP.L.wchart φ fun k => J (r ≫ φ k) := by
-    unfold Good at hJ
-    unfold LB.wchart
-    show r z ∈ (⋂ k, ⇑(φ k) ⁻¹' ↑(t.PP.L.U (J (r ≫ φ k))) : Set _)
-    rw [Set.mem_iInter]
-    intro k
-    have hk := hJ (r ≫ φ k)
-    simpa using hk
-  rw [dite_eq_left hz, dite_eq_left (show r z ∈ (⊤ : Y.Opens) from trivial)]
-  dsimp only
-  refine (MonoidHom.map_mul _ _ _).trans ?_
-  congr 1
-  apply Units.ext
-  unfold pullU res
-  have hz' : z ∈ r ⁻¹ᵁ (t.PP.L.wchart φ fun k => J (r ≫ φ k)) := hz
-  have ht : z ∈ r ⁻¹ᵁ (⊤ : Y.Opens) := trivial
-  have key := congrArg (fun f => CommRingCat.Hom.hom f (u : Γ(Y, ⊤)))
-    (show Y.presheaf.map (homOfLE (le_top : t.PP.L.wchart φ (fun k => J (r ≫ φ k)) ≤ ⊤)).op ≫
-        Scheme.Hom.app r (t.PP.L.wchart φ fun k => J (r ≫ φ k)) ≫
-        Z.presheaf.germ (r ⁻¹ᵁ t.PP.L.wchart φ fun k => J (r ≫ φ k)) z hz' =
-        Scheme.Hom.app r ⊤ ≫ Z.presheaf.germ (r ⁻¹ᵁ ⊤) z ht by
-      rw [Scheme.Hom.naturality_assoc, TopCat.Presheaf.germ_res]
-      all_goals rfl)
-  first
-    | exact key
-    | (simp only [CommRingCat.hom_comp, RingHom.comp_apply] at key
-       simp only [MonoidHom.coe_comp, Function.comp_apply, MonoidHom.comp_apply, Units.coe_map, MonoidHom.coe_coe]
-       exact key)
+  apply GlobalTheory.CompanionTheory.Ar.Coc.Pf.val_scale <;> assumption
 
 abbrev ρn (n m : ℕ) : jOG x0 d m n ⟶ jOG x0 d (m + 1) n :=
   homAt x0 (jetTrunc : Jet S (Fin n × Fin d) (m + 1) →ₐ[S] Jet S (Fin n × Fin d) m)
@@ -268,9 +241,7 @@ theorem pe_trunc {x : ∀ m, jOG x0 d m 1 ⟶ t.G} {e : ∀ m, FrTyG t x0 d x m}
       (homAt x0 (jetSubstP m fun p : Fin 2 × Fin d => φ m p.1 p.2)).left y J =
       val (e m) (homAt x0 (jetSubstP m fun p : Fin 2 × Fin d => φ m p.1 p.2)).left y J := by
     first
-    | exact ReciprocityTheory.ChartRestriction.G.Geo.Tor.val_corr (htr m) _
     | exact ReciprocityTheory.ChartRestriction.G.Geo.Tor.val_corr hJ (htr m) _
-    | exact ReciprocityTheory.ChartRestriction.G.Geo.Tor.val_corr (htr m) _ hJ
   try unfold peG
   refine h1.trans ?_
   rw [hcomp, hc]

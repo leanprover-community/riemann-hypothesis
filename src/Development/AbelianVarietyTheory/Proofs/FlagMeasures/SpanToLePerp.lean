@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.FrameUnipotentUnitriangular
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.ComplementReferenceCompactSubgroup
 public import Development.AbelianVarietyTheory.Proofs.FlagMeasures.EichlerIsometry
 import Mathlib.Algebra.Order.Floor.Extended
@@ -88,23 +89,7 @@ theorem hf_spanTo (g : Fin (r + 1) → S.V) {a : ℕ} {v w : S.V} (hv : v ∈ S.
 
 theorem coords (g : Fin (r + 1) → S.V) {a : ℕ} {v : S.V} (hv : v ∈ S.spanTo g a) :
     ∃ c : Fin (r + 1) → E, (∀ i : Fin (r + 1), a ≤ (i : ℕ) → c i = 0) ∧ v = ∑ i, c i • g i := by
-  induction hv using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨i, hi, rfl⟩ := hx
-    refine ⟨Pi.single i 1, fun j hj => ?_, ?_⟩
-    · have hi' : (i : ℕ) < a := hi
-      rw [Pi.single_eq_of_ne]
-      rintro rfl
-      omega
-    · simp [Pi.single_apply]
-  | zero => exact ⟨0, fun _ _ => rfl, by simp⟩
-  | add x y _ _ hx hy =>
-    obtain ⟨c, hc, rfl⟩ := hx
-    obtain ⟨d, hd, rfl⟩ := hy
-    exact ⟨c + d, fun i hi => by simp [hc i hi, hd i hi], by simp [add_smul, Finset.sum_add_distrib]⟩
-  | smul t x _ hx =>
-    obtain ⟨c, hc, rfl⟩ := hx
-    exact ⟨t • c, fun i hi => by simp [hc i hi], by simp [Finset.smul_sum, smul_smul]⟩
+  apply GlobalTheory.HL.FrameTri.coeff_of_mem <;> assumption
 
 variable (g : Fin (r + 1) → S.V) (gs : Fin r → S.V) (T : Fˣ)
   (gram : ∀ a b, hf L S.Hm (g a) (g b) =

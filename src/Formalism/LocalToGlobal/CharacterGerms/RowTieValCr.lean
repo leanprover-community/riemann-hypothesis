@@ -71,7 +71,6 @@ theorem comp_eq_map_at {n : ℕ} (ε : Pt C 1 dd) (a : Pt C n dd) : comp1 ε a =
   funext p
   first
     | (rw [Fin.fin_one_eq_zero p.1]; rfl)
-    | (simp [Fin.fin_one_eq_zero p.1])
 
 theorem cc_mapAt {ε : Pt C 1 dd} (hε : ∀ i, MvPowerSeries.constantCoeff (ε i) = 0) {a : Fin dd → MvPowerSeries τ C}
     (ha : ∀ i, MvPowerSeries.constantCoeff (a i) = 0) (i : Fin dd) :
@@ -108,7 +107,6 @@ theorem subst_pow' {σ : Type} [Finite σ] {a : σ → MvPowerSeries τ C}
   have hb : MvPowerSeries.HasSubst a := MvPowerSeries.hasSubst_of_constantCoeff_zero ha
   first
     | exact MvPowerSeries.subst_pow hb f k
-    | (rw [← MvPowerSeries.coe_substAlgHom hb, map_pow])
 
 variable (Y : FBChart C V O dd)
 

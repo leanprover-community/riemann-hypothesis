@@ -237,7 +237,6 @@ theorem hint_intNorm (hd : d.AxH 𝒜) (h : d.S1) (c : ι) (sg : K →+* ℂ) (g
   have hIb := hint_logInt_tail hn hmapb hβb hβb0 0
   refine (hIa.sub hIb).congr ?_
   filter_upwards [d.norm_at_sg_B hd h c sg, hint_ae_tail hn hmapb hβb hβb0 0] with z hz hbz
-  beta_reduce at hz
   obtain ⟨hfin, -, hcl1, -⟩ := hz
   have hbz' : d.evT sg 0 (d.tOf z) b ≠ 0 := by rw [hint_evT_eq]; exact hbz
   have hprod := hcl1 g a' b 0 hg hb0 hkey hbz'
@@ -361,7 +360,6 @@ theorem hint_intU (hd : d.AxH 𝒜) (h : d.S1) (c : ι) (sg : K →+* ℂ) :
     (integrable_const ((d.delc c : ℝ) * (harmonic d.N : ℝ) / 2))).congr ?_
   filter_upwards [d.norm_at_sg_B hd h c sg, hint_ae_tail hn hac0 hαa hαa0 0,
     hint_ae_tail hn hbc0 hαb hαb0 0] with z hz haz hbz
-  beta_reduce at hz
   obtain ⟨hfin, hcard, -, hcl2⟩ := hz
   set S := d.ST c sg (d.tOf z) with hS
   have hind : ∀ (q : MvPolynomial (Fin (d.D + 1) × Fin (d.N + 1)) ℂ) (α : Fin (d.D + 1) → ℕ),

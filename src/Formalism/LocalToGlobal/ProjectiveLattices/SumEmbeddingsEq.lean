@@ -67,11 +67,11 @@ theorem trace_eq_sum_psi (Ψ : Finset (E →+* ℂ))
   have hc : ∑ σ ∈ Ψᶜ, σ z = ∑ τ ∈ Ψ, conj (τ z) := by
     refine Finset.sum_nbij' ComplexEmbedding.conjugate ComplexEmbedding.conjugate ?_ ?_ ?_ ?_ ?_
     · intro σ hσ
-      simp only [Finset.mem_coe, Finset.mem_compl] at hσ ⊢
+      simp only [Finset.mem_compl] at hσ ⊢
       rw [hΨ, show ComplexEmbedding.conjugate (ComplexEmbedding.conjugate σ) = σ from star_star σ]
       exact hσ
     · intro τ hτ
-      simp only [Finset.mem_coe, Finset.mem_compl]
+      simp only [Finset.mem_compl]
       exact (hΨ τ).mp hτ
     · intro σ _; exact star_star σ
     · intro τ _; exact star_star τ
@@ -85,7 +85,7 @@ theorem sesq_repr [StarRing E] {V : Type} [AddCommGroup V] [Module E V] {ι : Ty
     h x y = ∑ i, ∑ j, star (b.repr x i) * h (b i) (b j) * b.repr y j := by
   conv_lhs => rw [← b.sum_repr x, ← b.sum_repr y]
 
-  simp only [map_sum, LinearMap.sum_apply, map_smulₛₗ, LinearMap.smul_apply, map_smul, smul_eq_mul,
+  simp only [map_sum, LinearMap.sum_apply, map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul,
   starRingEnd_apply, Finset.mul_sum, RingHom.id_apply]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring

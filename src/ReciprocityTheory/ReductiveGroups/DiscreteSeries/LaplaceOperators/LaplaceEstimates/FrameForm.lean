@@ -83,8 +83,7 @@ theorem per_lin (hP : Formalism.MainNotions.S.IsCayley k r ε P) (hB : IsBData z
   rw [← integral_smul]
   refine Eq.trans ?_ (integral_add i1 (i2.smul t))
   refine integral_congr_ae (Eventually.of_forall fun p => ?_)
-  simp only [coefX, map_add (f := _), map_smul, inner_add_right, inner_smul_right, add_smul, smul_smul,
-    Pi.smul_apply]
+  simp only [coefX, map_add (f := _), map_smul, inner_add_right, inner_smul_right, add_smul, smul_smul]
 
 theorem frame_form (hP : Formalism.MainNotions.S.IsCayley k r ε P) (hg : g ∈ UH (Hpk k r)) :
     IsUnit (g * P⁻¹).det ∧ (g * P⁻¹)ᴴ * Hpk k r * (g * P⁻¹) = Jm ε := by

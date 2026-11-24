@@ -48,7 +48,4 @@ import Mathlib.Topology.Sheaves.Init
 namespace Formalism.L2.Th1.B
 
 theorem baseChange : BaseChange := Map.baseChangeCompatible
-theorem curveSigma : CurveSigma := Crv.curve_sigma_function_holds
-theorem weierstrass_biadditive_mod_equiv : WeierstrassBiadditiveModEquiv := Crv.curve_formal_first_level_holds
-
 end Formalism.L2.Th1.B

@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.ThetaLifts.LatticeBasics.RealInvL
 public import Development.AbelianVarietyTheory.BlockTheory.DivisorBase.WeilTensorModels
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -58,26 +59,7 @@ namespace PositivityTheory.SiegelWeilFormula.KLI
 
 open Complex in
 theorem tg_exp : Function.HasTemperateGrowth (fun t : ℝ => cexp (I * t)) := by
-  have hd : ∀ n : ℕ, iteratedDeriv n (fun t : ℝ => cexp (I * t)) = fun t : ℝ => I ^ n * cexp (I * t) := by
-    intro n
-    induction n with
-    | zero =>
-      funext t
-      simp
-    | succ n ih =>
-      rw [iteratedDeriv_succ, ih]
-      funext t
-      have h1 : HasDerivAt (fun s : ℝ => I * (s : ℂ)) I t := by
-        simpa using (Complex.ofRealCLM.hasDerivAt (x := t)).const_mul I
-      have h2 : HasDerivAt (fun s : ℝ => I ^ n * cexp (I * s)) (I ^ n * (cexp (I * t) * I)) t :=
-        h1.cexp.const_mul _
-      rw [h2.deriv]
-      ring
-  refine ⟨?_, fun n => ⟨0, 1, fun t => ?_⟩⟩
-  · exact Complex.contDiff_exp.comp (contDiff_const.mul Complex.ofRealCLM.contDiff)
-  · rw [norm_iteratedFDeriv_eq_norm_iteratedDeriv, hd n, norm_mul, norm_pow, Complex.norm_I, one_pow,
-      mul_comm I, Complex.norm_exp_ofReal_mul_I]
-    simp
+  apply GlobalTheory.ThK.Dbl.Dense.temperate_exp <;> assumption
 
 section admitted
 

@@ -281,8 +281,6 @@ theorem gs_comp {Z Y X : Scheme.{0}} (r : Z ⟶ Y) (F : Y ⟶ X) (z : Z) (U : X.
   rw [e]
   first
   | rfl
-  | (rw [Scheme.Hom.comp_app, CommRingCat.comp_apply]; rfl)
-  | (simp only [Scheme.Hom.comp_app, CommRingCat.comp_apply]; rfl)
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H} {B : Type} [CommRing B]
   {b : Base l B} {X : Scheme.{0}} {s : X ⟶ Sp B}

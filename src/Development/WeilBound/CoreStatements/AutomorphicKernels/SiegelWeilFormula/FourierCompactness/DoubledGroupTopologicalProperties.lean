@@ -195,7 +195,7 @@ instance ratMx_discrete {p q : ℕ} : DiscreteTopology (ratMx F E p q) := by
     subst h2
     exact Set.mem_singleton_iff.2 (Subtype.ext incM_zero)
 
-theorem countable_E : Countable E := (Module.finBasis ℚ E).equivFun.injective.countable
+alias countable_E := _root_.Formalism.L2.GlobalTheoryTheory.GenusMassVolumes.Unfold.countableE
 
 instance ratMx_countable {p q : ℕ} : Countable (ratMx F E p q) := by
   haveI := countable_E (E := E)

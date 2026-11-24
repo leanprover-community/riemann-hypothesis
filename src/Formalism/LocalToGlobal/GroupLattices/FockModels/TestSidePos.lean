@@ -237,10 +237,7 @@ variable {p n' : ℕ} {W Qq O Kf : Type} [CommRing W] [IsDomain W] [IsDiscreteVa
   [Algebra W Qq] [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field Kf] [Algebra O Kf]
   {ι : Qq →+* Kf} {σ : Qq ≃+* Qq} {j : W →+* O} {w : O}
 
-theorem leAt_of_basis (h : HidaSetting p n' W Qq O Kf ι σ j w) (m r : ℕ) (e : Edge W Qq (m + 1))
-    (g : Matrix (Fin (m + 1)) (Fin (m + 1)) Qq) (hgb : IsEdgeBasis p r e g) (s : ℕ) :
-    LeAt p ι σ w s e = colSpan O (la_tw ι σ s g * lb_D (m + 1) r (algebraMap O Kf w)) := by
-  exact leAt_eq_colSpan_la_tw_mul_lb_D_of_edgeBasis h m r e g hgb s
+alias leAt_of_basis := _root_.Formalism.L2.G.Model.leAt_eq_colSpan_la_tw_mul_lb_D_of_edgeBasis
 
 theorem extO_colSpan (h : HidaSetting p n' W Qq O Kf ι σ j w) {k : ℕ} (g : Matrix (Fin k) (Fin k) Qq) (s : ℕ) :
     extO O ι σ s (colSpan W g) = colSpan O (la_tw ι σ s g) := by
@@ -327,7 +324,7 @@ theorem dE_sq_D (r : ℕ) (c : Kf) (hc : c ≠ 0) : dE k r (c ^ 2) * lb_D k r c 
   rw [Matrix.diagonal_mul_diagonal]
   congr 1
   funext a
-  split_ifs <;> simp [pow_two, mul_assoc, hc]
+  split_ifs <;> simp [pow_two, hc]
 
 end
 

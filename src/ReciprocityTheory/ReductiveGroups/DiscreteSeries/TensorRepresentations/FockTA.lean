@@ -98,8 +98,8 @@ theorem fockT_stable_gen {E cp cm : Fin n → Fin n → Module.End ℂ W} (hC : 
     · simp only [if_pos (And.intro ha hc), LinearMap.sum_apply, map_sum, Module.End.mul_apply]
       refine Finset.sum_eq_zero fun y hy => hcpcm a y c y ⟨ha, ?_⟩
       simpa [minusIdx] using hy
-    · simp [ha, hc, sgE]
-    · simp [ha, hc, sgE]
+    · simp [ha, hc]
+    · simp [ha, hc]
     · have ha0 : ε a = false := by cases h : ε a <;> simp_all
       have hc0 : ε c = false := by cases h : ε c <;> simp_all
       simp only [if_neg (show ¬(ε a = true ∧ ε c = true) from fun h => ha h.1),

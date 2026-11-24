@@ -69,8 +69,7 @@ theorem gramR_eq_mul (σ : E →ₐ[F] E) {M n : ℕ} (J : Matrix (Fin M) (Fin M
     gramR R σ J X =
       (cT (sigR R σ) (colsM R X) * JR R J : Matrix (Fin n) (Fin M) (R ⊗[F] E)) * colsM R X := by
   ext a b
-  simp only [gramR, hR, hform, Matrix.mul_apply, cT, Matrix.transpose_apply, Matrix.map_apply,
-    colsM, Finset.sum_mul]
+  simp only [gramR, hR, hform, Matrix.mul_apply, cT, colsM]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [← Finset.sum_mul]

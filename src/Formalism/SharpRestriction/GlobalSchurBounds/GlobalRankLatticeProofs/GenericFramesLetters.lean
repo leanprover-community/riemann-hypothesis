@@ -202,7 +202,7 @@ theorem sum_split (m : ℕ) (hm : 4 ≤ m) (S : Finset ℕ) (N : ℕ)
         · rw [h0, mul_zero] at hd
           omega
         · omega
-      · first | omega | linarith
+      · first | omega
     calc ∑ l ∈ S.filter (fun l => ¬ l % m = 1), F l
         ≤ ∑ l ∈ S.filter (fun l => ¬ l % m = 1), G ((l + 1) / m) := by
           apply Finset.sum_le_sum
@@ -216,7 +216,7 @@ theorem sum_split (m : ℕ) (hm : 4 ≤ m) (S : Finset ℕ) (N : ℕ)
           have ha' := (hq a ha).1
           have hb' := (hq b hb).1
           rw [hab'] at ha'
-          first | omega | linarith
+          first | omega
       _ ≤ ∑ q ∈ Finset.Icc 1 N, G q := by
           apply Finset.sum_le_sum_of_subset_of_nonneg
           · intro q hqi
@@ -334,7 +334,7 @@ theorem sum_lin_bound (m : ℕ) (hm : 4 ≤ m) (S : Finset ℕ) (N : ℕ) (Y : �
     have hlog : Real.log l ≤ Real.log Y := Real.log_le_log (by linarith) (by linarith)
     have h1 := div_le_div_of_le_of_le _ _ _ _ hlY hlog hc hsz.1
     have e : Real.log Y / ((3 / 4 : ℝ) * ((m : ℝ) * q)) = 4 / 3 * Real.log Y / (m : ℝ) * (1 / (q : ℝ)) := by
-      field_simp <;> ring
+      field_simp
     linarith
   have h := sum_split m hm S N hS (fun l => Real.log l / (l : ℝ))
     (fun q => 4 / 3 * Real.log Y / (m : ℝ) * (1 / (q : ℝ))) hG0 hFG
@@ -349,22 +349,13 @@ theorem sum_lin_bound (m : ℕ) (hm : 4 ≤ m) (S : Finset ℕ) (N : ℕ) (Y : �
 
 theorem coprime_two {l : ℕ} (hl : l.Prime) (h2 : l ≠ 2) : Nat.Coprime l 2 := (Nat.coprime_primes hl Nat.prime_two).mpr h2
 
-private theorem orderOf_iotaH_eq_addOrderOf (e : ℕ) (x : ZMod (2 ^ e)) : orderOf (iotaH e x) = addOrderOf x := by
-  let f : Multiplicative (ZMod (2 ^ e)) →* HGrp e :=
-    MonoidHom.mk' (fun a => iotaH e (Multiplicative.toAdd a))
-      (fun a b => iotaH_add e (Multiplicative.toAdd a) (Multiplicative.toAdd b))
-  have hf : Function.Injective f := fun a b h => Multiplicative.toAdd.injective (iotaH_injective e h)
-  have h := orderOf_injective f hf (Multiplicative.ofAdd x)
-  rw [orderOf_ofAdd_eq_addOrderOf] at h
-  exact h
-
 theorem hOf_ord (e l : ℕ) (hl : Nat.Coprime l 2) :
     ordH (hOf e l) =
       orderOf (hcl e (ZMod.unitOfCoprime l (Nat.Coprime.pow_right (e + 2) hl))) := by
   unfold hOf
   rw [dite_eq_left hl]
   unfold ordH
-  rw [← orderOf_iotaH_eq_addOrderOf, iotaH_iotaHInv]
+  rw [← _root_.Formalism.MainNotions.UnusedSlot33.SlopeTestRemainingChoices.orderOf_iotaH, iotaH_iotaHInv]
 
 private theorem two_pow_dvd_sq_pm_one_iff_of_odd (x : ℤ) (hx : Odd x) (N : ℕ) :
     ((2 : ℤ) ^ N ∣ x ^ 2 - 1 ∨ (2 : ℤ) ^ N ∣ x ^ 2 + 1) ↔
@@ -372,7 +363,7 @@ private theorem two_pow_dvd_sq_pm_one_iff_of_odd (x : ℤ) (hx : Odd x) (N : ℕ
   obtain ⟨k, rfl⟩ := hx
   rcases N with _ | _ | n
   · simp
-  · simp only [pow_one, Nat.sub_self, pow_zero, one_dvd, or_true, iff_true]
+  · simp only [Nat.sub_self, pow_zero, one_dvd, or_true, iff_true]
     left
     exact ⟨2 * k ^ 2 + 2 * k, by ring⟩
   · rw [show n + 1 + 1 - 1 = n + 1 by omega]

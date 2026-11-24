@@ -75,8 +75,8 @@ theorem paTh_diff_le (hP : Ext.PackingCount) (hA : Ext.GaussianTailBound) (Y : G
       (2 ^ (1 + 3 * ((Fintype.card ι : ℝ) + c) / 2) *
         ∑' γ : lat Y.b, (if (γ : EuclideanSpace ℂ ι) = 0 then 0 else
           Real.exp (-(q * Real.pi) * ‖(γ : EuclideanSpace ℂ ι)‖ ^ 2 / 16))) * paN q F * paN q G := by
-  obtain ⟨hBs, -⟩ := paTail hP hA Y hq hR0 hlat hR
-  have hT := paTh_IP hP hA Y hq hR0 hlat hR hF hG
+  obtain ⟨hBs, -⟩ := _root_.ReciprocityTheory.ChartRestriction.G.I2.FPw.paTail hP hA Y hq hR0 hlat hR
+  have hT := _root_.ReciprocityTheory.ChartRestriction.G.I2.FPw.gaussianInner_theta' hP hA Y hq hR0 hlat hR hF hG
   have hg := hT.update 0 0
   have hf0 : Y.ka ((0 : lat Y.b) : EuclideanSpace ℂ ι) *
       paIP q (paU q ((0 : lat Y.b) : EuclideanSpace ℂ ι) F) G = paIP q F G := by
@@ -233,11 +233,11 @@ theorem propA_core (hP : Ext.PackingCount) (hA : Ext.GaussianTailBound) (Y : GT 
       paIP q (paJet c (paTh Y q F)) G = paIP q (paTh Y q F) G := by
     intro F G hF hG
     rw [gaussianInner_jet_eq_sum hq _ hG]
-    have h1 := paTh_IP hP hA Y hq hR0 hlat hR hF hG
+    have h1 := _root_.ReciprocityTheory.ChartRestriction.G.I2.FPw.gaussianInner_theta' hP hA Y hq hR0 hlat hR hF hG
     have h2 : ∀ γ : lat Y.b, Y.ka γ * paIP q (paU q γ F) G =
         ∑ α ∈ paS c, (Y.ka γ * paD α (paU q γ F)) / paFact α * paIP q (paMono α) G := by
       intro γ
-      rw [gaussianInner_jet hq _ hF hG, gaussianInner_jet_eq_sum hq _ hG, Finset.mul_sum]
+      rw [_root_.ReciprocityTheory.ChartRestriction.G.I2.FPw.gaussianInner_jet' hq _ hF hG, gaussianInner_jet_eq_sum hq _ hG, Finset.mul_sum]
       refine Finset.sum_congr rfl fun α _ => ?_
       ring
     have h3 : HasSum (fun γ : lat Y.b => ∑ α ∈ paS c,
@@ -248,7 +248,7 @@ theorem propA_core (hP : Ext.PackingCount) (hA : Ext.GaussianTailBound) (Y : GT 
       exact (((hdata hF).2.2 α).div_const _).mul_right _
     rw [← funext h2] at h3
     exact h3.unique h1
-  obtain ⟨hBs2, hBt⟩ := paTail hP hA Y hq hR0 hlat hR
+  obtain ⟨hBs2, hBt⟩ := _root_.ReciprocityTheory.ChartRestriction.G.I2.FPw.paTail hP hA Y hq hR0 hlat hR
   have hK0 : (0 : ℝ) ≤ 2 ^ (1 + 3 * ((Fintype.card ι : ℝ) + c) / 2) := by positivity
   have hε := (mul_le_mul_of_nonneg_left hBt hK0).trans (paNum (Fintype.card ι) (c : ℝ) R0 hc0 h270 h90)
   have hclose : ∀ {F G : EuclideanSpace ℂ ι → ℂ}, F ∈ paPoly c → G ∈ paPoly c →
@@ -289,7 +289,7 @@ theorem propA_core (hP : Ext.PackingCount) (hA : Ext.GaussianTailBound) (Y : GT 
   refine ⟨paTh Y q F, paTh_sec Y hC (hdata hF).1 (hdata hF).2.1, fun α hα => ?_, ?_⟩
   · rw [← hFj']
     exact (paD_jet c _ hα).symm
-  · rw [paUnfold hP hA Y hq hR0 hC hlat hR hF, ← hJ hF hF, hFj']
+  · rw [_root_.ReciprocityTheory.ChartRestriction.G.I2.FPw.paUnfold_w hP hA Y hq hR0 hC hlat hR hF, ← hJ hF hF, hFj']
     have hl := hlow hF
     rw [hFj'] at hl
     have hcs := norm_gaussianInner_le hq hj hF

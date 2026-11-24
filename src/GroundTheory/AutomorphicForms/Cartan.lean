@@ -67,10 +67,6 @@ section Smith
 
 variable {R : Type*} [CommRing R] [IsDomain R] {n : ℕ}
 
-theorem mul_left_cancel_of_det_ne_zero {A X Y : Matrix (Fin n) (Fin n) R} (hA : A.det ≠ 0)
-    (h : A * X = A * Y) : X = Y :=
-  _root_.UpperTheory.Reformulated.B.Yoa2.mul_left_cancel_of_det_ne_zero hA h
-
 theorem mulVecLin_injective_of_det_ne_zero {A : Matrix (Fin n) (Fin n) R} (hA : A.det ≠ 0) :
     Function.Injective A.mulVecLin := by
   intro v w h
@@ -129,7 +125,7 @@ theorem exists_eq_mul_diagonal_mul_of_smith (A : Matrix (Fin n) (Fin n) R) (hA :
     rw [mul_comm, ← this, Matrix.mul_apply, Matrix.mulVec, dotProduct]
     rfl
   have hWC : W * C = 1 := by
-    apply mul_left_cancel_of_det_ne_zero hA
+    apply _root_.UpperTheory.Reformulated.B.Yoa2.mul_left_cancel_of_det_ne_zero hA
     rw [Matrix.mul_one, ← Matrix.mul_assoc, hAW, ← hAPC]
   have hCW : C * W = 1 := mul_eq_one_comm.mp hWC
   refine ⟨⟨P, (b.toMatrix (Pi.basisFun R (Fin n))), Module.Basis.toMatrix_mul_toMatrix_flip _ _,
@@ -352,10 +348,6 @@ theorem existsUnique_mem_doubleCoset (g : GL (Fin n) F) :
   obtain ⟨μ, hμ, h⟩ := exists_eq_mul_diagPow_mul F n g
   exact ⟨μ, ⟨hμ, (mem_doubleCoset_diagPow F n).mpr h⟩,
     fun ν hν => (eq_of_mem_doubleCoset F n hν.1 hμ hν.2 ((mem_doubleCoset_diagPow F n).mpr h))⟩
-
-section Lattices
-
-end Lattices
 
 end Local
 

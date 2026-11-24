@@ -63,7 +63,6 @@ theorem norm_sigma_le {p q : ℕ} {σ : K →+* K} (hσ : IsFrobLift p q σ) (hp
     rw [norm_pow]
     first
       | exact pow_le_one₀ (norm_nonneg a) ha
-      | exact pow_le_one q (norm_nonneg a) ha
   calc ‖σ a‖ = ‖(σ a - a ^ q) + a ^ q‖ := by rw [sub_add_cancel]
     _ ≤ max ‖σ a - a ^ q‖ ‖a ^ q‖ := IsUltrametricDist.norm_add_le_max _ _
     _ ≤ 1 := max_le (h1.trans hp.le) h2
@@ -76,7 +75,6 @@ def sigmaO {p q : ℕ} {σ : K →+* K} (hσ : IsFrobLift p q σ) (hp : ‖(p : 
 theorem natCast_coe (p : ℕ) : (((p : unitBall K)) : K) = (p : K) := by
   first
     | exact map_natCast (unitBall K).subtype p
-    | simp
 
 theorem norm_le_of_mem_span {p : ℕ} (x : unitBall K)
     (hx : x ∈ Ideal.span {((p : ℕ) : unitBall K)}) : ‖(x : K)‖ ≤ ‖(p : K)‖ := by
@@ -95,7 +93,6 @@ theorem mem_span_of_norm_le {p : ℕ} (hp0 : (p : K) ≠ 0) (x : unitBall K)
     rw [norm_div]
     first
       | exact div_le_one_of_le₀ hx (norm_nonneg _)
-      | exact (div_le_one (norm_pos_iff.mpr hp0)).mpr hx
   refine Ideal.mem_span_singleton'.mpr ⟨⟨(x : K) / (p : K), hy⟩, ?_⟩
   apply Subtype.ext
   show (x : K) / (p : K) * ((p : unitBall K) : K) = (x : K)
@@ -146,11 +143,9 @@ theorem main {ι : Type v} (p h : ℕ) (hpr : p.Prime) (σ : K →+* K) (hp0 : (
     rw [RingHom.comp_apply, RingHom.comp_apply, iterateFrobenius_def, ← map_pow]
     first
       | rw [Ideal.Quotient.eq]
-      | rw [Ideal.Quotient.mk_eq_mk_iff_sub_mem]
     apply mem_span_of_norm_le hp0
     first
       | exact hσ c.1 c.2
-      | (push_cast; exact hσ c.1 c.2)
   have h1 : MvPowerSeries.map (Ideal.Quotient.mk (Ideal.span {((p : ℕ) : unitBall K)}))
         (MvPowerSeries.map (sigmaO hσ hp) (liftO A hA))
       = MvPowerSeries.map (iterateFrobenius (unitBall K ⧸ Ideal.span {((p : ℕ) : unitBall K)}) p h)
@@ -172,7 +167,6 @@ theorem main {ι : Type v} (p h : ℕ) (hpr : p.Prime) (σ : K →+* K) (hp0 : (
     ext d
     first
       | rfl
-      | (simp only [MvPowerSeries.coeff_map]; rfl)
   have hsub : MvPowerSeries.map (unitBall K).subtype ((liftO A hA) ^ (p ^ h)
       - MvPowerSeries.expand (p ^ h) hq (MvPowerSeries.map (sigmaO hσ hp) (liftO A hA)))
       = A ^ (p ^ h) - MvPowerSeries.expand (p ^ h) (pow_ne_zero h hpr.ne_zero) (MvPowerSeries.map σ A) := by

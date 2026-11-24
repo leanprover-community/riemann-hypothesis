@@ -163,7 +163,7 @@ lemma exists_blockGL (σ : K →+* K) (J : Matrix (Fin M) (Fin M) K) {s : K} (hs
   have hBi0 : ∀ i : Fin M, B i.succ 0 = 0 := by
     intro i
     rw [← hcol, hBA]
-    simp [Matrix.one_apply, Fin.succ_ne_zero]
+    simp [Fin.succ_ne_zero]
   have eB := eq_blockOne_of_col σ J hs (h := B) ((UJ σ (blockOne s J)).inv_mem hm) hB00 hBi0
   have e1 : A.submatrix Fin.succ Fin.succ * B.submatrix Fin.succ Fin.succ = 1 := by
     apply blockOne_right_injective (a := (1 : K)) (b := 1)

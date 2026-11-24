@@ -78,7 +78,7 @@ theorem gc_wdb_comp (n d : ℕ) (g : V d → ℂ) (F : V n → V d) (J : V n →
   rw [fc_clm_decomp d D c, fc_clm_decomp d D (Complex.I • c), Finset.mul_sum,
     ← Finset.sum_add_distrib, Finset.sum_div]
   refine Finset.sum_congr rfl fun a _ => ?_
-  simp only [PiLp.smul_apply, smul_eq_mul, map_mul, Complex.conj_I, wdb, wd]
+  simp only [PiLp.smul_apply, smul_eq_mul, map_mul, Complex.conj_I, wdb]
   linear_combination ((D (bas d a) - Complex.I * D (Complex.I • bas d a)) / 2 * c a / 2 -
     (D (bas d a) + Complex.I * D (Complex.I • bas d a)) / 2 * (starRingEnd ℂ) (c a) / 2) *
       Complex.I_sq
@@ -96,7 +96,7 @@ theorem gc_wd_comp (n d : ℕ) (g : V d → ℂ) (F : V n → V d) (J : V n →L
   rw [fc_clm_decomp d D c, fc_clm_decomp d D (Complex.I • c), Finset.mul_sum,
     ← Finset.sum_sub_distrib, Finset.sum_div]
   refine Finset.sum_congr rfl fun a _ => ?_
-  simp only [PiLp.smul_apply, smul_eq_mul, map_mul, Complex.conj_I, wdb, wd]
+  simp only [PiLp.smul_apply, smul_eq_mul, map_mul, Complex.conj_I, wd]
   linear_combination (-(D (bas d a) - Complex.I * D (Complex.I • bas d a)) / 2 * c a / 2 +
     (D (bas d a) + Complex.I * D (Complex.I • bas d a)) / 2 * (starRingEnd ℂ) (c a) / 2) *
       Complex.I_sq
@@ -167,7 +167,7 @@ theorem gc_leviV_comp (n d : ℕ) (g : V d → ℂ) (F : V n → V d) (U : Set (
       wd d b (wdb d a g) (F v) * fderiv ℂ F v (bas n j) b *
         (starRingEnd ℂ) (fderiv ℂ F v (bas n k) a) := by
     intro j k
-    rw [wd_congr n j _ _ v (hwdb k),
+    rw [@wd_congr n j _ _ v (hwdb k),
       fc_wd_sum n j Finset.univ (fun a y => wdb d a g (F y) *
         (starRingEnd ℂ) (fderiv ℂ F y (bas n k) a)) v (fun a _ => (hWa a).mul (hCa k a))]
     refine Finset.sum_congr rfl fun a _ => ?_

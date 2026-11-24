@@ -57,10 +57,7 @@ attribute [local instance] Formalism.BasicNotions.Host.cmStar
 
 variable {D : D7}
 
-theorem ddS_ne : ddS D ≠ 0 := by
-  intro h
-  apply shapeNZ.1 1
-  unfold ddPow; rw [h]; simp
+alias ddS_ne := _root_.Formalism.L2.SG.Pf.StabIntSh.lg_ddS_ne
 
 theorem ddPow_mul (i j : ℕ) : ddPow D i * ddPow D j = ddPow D (i + j) := by
   unfold ddPow

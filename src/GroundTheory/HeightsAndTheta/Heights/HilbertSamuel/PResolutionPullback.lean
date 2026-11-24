@@ -1,5 +1,6 @@
 module
 
+import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PResolutionMetricPair
 public import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.StatementsResolutionPullback
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -97,32 +98,7 @@ theorem lintegral_chart [MeasurableSpace X] [BorelSpace X] (c : OpenPartialHomeo
       μ S = ∫⁻ y in c.target ∩ c.symm ⁻¹' S, ENNReal.ofReal (ν y))
     {W : Set X} (hW : IsOpen W) (g : X → ℝ≥0∞) (hg : Measurable g) :
     ∫⁻ x in c.source ∩ W, g x ∂μ = ∫⁻ y in c.target ∩ c.symm ⁻¹' W, g (c.symm y) * ENNReal.ofReal (ν y) := by
-  set T := c.target ∩ c.symm ⁻¹' W with hT
-  have hTm : MeasurableSet T := (c.isOpen_inter_preimage_symm hW).measurableSet
-  have hsymm : AEMeasurable c.symm (volume.restrict T) :=
-    (c.continuousOn_symm.mono inter_subset_left).aemeasurable hTm
-  have hdens : AEMeasurable (fun y => ENNReal.ofReal (ν y)) (volume.restrict T) :=
-    ENNReal.measurable_ofReal.comp_aemeasurable ((hνc.mono inter_subset_left).aemeasurable hTm)
-  have hsymm' : AEMeasurable c.symm ((volume.restrict T).withDensity fun y => ENNReal.ofReal (ν y)) :=
-    hsymm.mono_ac (withDensity_absolutelyContinuous _ _)
-  have hmeas : μ.restrict (c.source ∩ W) =
-      ((volume.restrict T).withDensity fun y => ENNReal.ofReal (ν y)).map c.symm := by
-    ext S hS
-    rw [Measure.restrict_apply hS, Measure.map_apply_of_aemeasurable hsymm' hS, withDensity_apply',
-      Measure.restrict_restrict' hTm,
-      hν _ (hS.inter (c.open_source.inter hW).measurableSet) (inter_subset_right.trans inter_subset_left)]
-    have hset : c.target ∩ c.symm ⁻¹' (S ∩ (c.source ∩ W)) = c.symm ⁻¹' S ∩ T := by
-      ext y
-      constructor
-      · rintro ⟨hyt, hyS, -, hyW⟩
-        exact ⟨hyS, hyt, hyW⟩
-      · rintro ⟨hyS, hyt, hyW⟩
-        exact ⟨hyt, hyS, c.map_target hyt, hyW⟩
-    rw [hset]
-  rw [hmeas, lintegral_map' hg.aemeasurable hsymm',
-    lintegral_withDensity_eq_lintegral_mul₀ (g := fun a => g (c.symm a)) hdens (hg.comp_aemeasurable hsymm)]
-  refine lintegral_congr fun y => ?_
-  simp [mul_comm]
+  apply GroundTheory.Heights₂.Heights.HilbertSamuel.ResolutionMetricPair.lintegral_chart <;> assumption
 
 end Refine
 

@@ -127,8 +127,6 @@ private theorem formEq_sumElim_pullφ_rosatiφ (oa : D.toPre.OAct O) (a : O) (k 
     rw [mul_comm]
     first
     | rw [MonObj.comp_mul]
-    | rw [comp_mul]
-    | rw [Hom.comp_mul]
     simp [aF, cP]
   have E7 : (cP D.toPre (DegPre.BF D.toPre F) χ).left =
       (aF D F oa a).left ≫ (toUnit _ ≫ D.toPre.c χ).left := by

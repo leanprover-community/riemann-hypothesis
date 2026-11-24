@@ -68,7 +68,7 @@ theorem gramE {γ : GL (Fin r) E} (hγ : γ ∈ X.Γ) :
   have hU := (X.Γ_stab γ hγ).1
   ext i j
   have e1 : herm X.Gm (Pi.single i 1) (Pi.single j 1) = X.Gm i j := by
-    simp [herm, Pi.single_apply, apply_ite cc, cc_one, cc_zero]
+    simp [herm, Pi.single_apply, apply_ite cc]
   rw [← e1, ← hU (Pi.single i 1) (Pi.single j 1)]
   simp only [herm, Matrix.mulVec_single_one, Matrix.col_apply, Matrix.mul_apply, Matrix.transpose_apply,
     Matrix.map_apply, Finset.sum_mul]
@@ -82,13 +82,6 @@ instance countGL : Countable (GL (Fin r) E) := by
 theorem mat_lact (γ : GL (Fin r) E) (x : Frame X.Ψ r) (τ : X.Ψ) :
     mat (lact γ x) τ = (γ : Matrix (Fin r) (Fin r) E).map τ.1 * mat x τ := rfl
 
-theorem gram_eq' (τ : E →+* ℂ) (G : Matrix (Fin r) (Fin r) E) (M : Matrix (Fin r) (Fin r) ℂ) :
-    gram τ G M = M.transpose * G.map τ * M.map (starRingEnd ℂ) := by
-  ext a b
-  simp only [gram, hermC, col, Matrix.of_apply, Matrix.mul_apply, Matrix.transpose_apply, Matrix.map_apply,
-    Finset.sum_mul]
-  exact Finset.sum_comm
-
 theorem gram_lact {γ : GL (Fin r) E} (hγ : γ ∈ X.Γ) (x : Frame X.Ψ r) (τ : X.Ψ) :
     gram τ.1 X.Gm (mat (lact γ x) τ) = gram τ.1 X.Gm (mat x τ) := by
   have key := congrArg (fun M : Matrix (Fin r) (Fin r) E => M.map τ.1) (gramE X hγ)
@@ -98,7 +91,7 @@ theorem gram_lact {γ : GL (Fin r) E} (hγ : γ ∈ X.Γ) (x : Frame X.Ψ r) (τ
     ext i j
     simp [emb_cc]
   rw [hcc] at key
-  rw [mat_lact, gram_eq', gram_eq', Matrix.transpose_mul, Matrix.map_mul]
+  rw [mat_lact, _root_.ReciprocityTheory.ChartRestriction.G.FD.FrameDegreeData.gram_eq, _root_.ReciprocityTheory.ChartRestriction.G.FD.FrameDegreeData.gram_eq, Matrix.transpose_mul, Matrix.map_mul]
   rw [show ∀ A B C D F : Matrix (Fin r) (Fin r) ℂ, A * B * C * (D * F) = A * (B * C * D) * F from
     fun A B C D F => by simp only [Matrix.mul_assoc], key]
 

@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.PushLF
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.LocalMassOrder.Development
 public import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.AdelicLocalCompactness.AdeleLC
 import Mathlib.Algebra.Order.Floor.Extended
@@ -239,21 +240,7 @@ theorem continuous_wMat {a M : ℕ} :
 include b in
 theorem isOpen_linIndep (hU : IsOpen {r : R | IsUnit r}) (hL : LIP R) {a M : ℕ} :
     IsOpen {X : Fin a → Fin M → R ⊗[F] E | LinearIndependent (R ⊗[F] E) X} := by
-  have e : {X : Fin a → Fin M → R ⊗[F] E | LinearIndependent (R ⊗[F] E) X} =
-      ⋃ P : Matrix (Fin a × Fin d) (Fin M × Fin d) R,
-        (fun X => (P * wMat b R X).det) ⁻¹' {r | IsUnit r} := by
-    ext X
-    simp only [Set.mem_ofPred_eq, Set.mem_iUnion, Set.mem_preimage]
-    rw [linIndep_iff b]
-    constructor
-    · intro h
-      obtain ⟨P, hP⟩ := hL _ _ _ h
-      exact ⟨P, by rw [hP, Matrix.det_one]; exact isUnit_one⟩
-    · rintro ⟨P, hP⟩ c hc
-      exact inj_of_isUnit _ P hP c hc
-  rw [e]
-  exact isOpen_iUnion fun P =>
-    hU.preimage ((continuous_const.matrix_mul (continuous_wMat b R)).matrix_det)
+  apply PI.AprimeInfW.isOpen_linIndep <;> assumption
 
 end Free
 
@@ -322,7 +309,6 @@ variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algeb
 theorem finDim_FE : FiniteDimensional F E := by
   first
   | infer_instance
-  | exact Module.Finite.of_restrictScalars_finite ℚ F E
 
 theorem isOpen_indep (v : HeightOneSpectrum (𝓞 F)) (n a : ℕ) :
     IsOpen (IndepV (E := E) (n := n) v a) := by
@@ -345,7 +331,6 @@ theorem orbit_measure_sFinite : LocMassOrdW.OmSF := by
       haveI : SecondCountableTopology (Fv F v ⊗[F] E) := sc_tens (Fv F v)
       haveI : OpensMeasurableSpace (TupV (E := E) v n a) := by
         first
-        | exact ⟨le_rfl⟩
         | (haveI : BorelSpace (Fv F v ⊗[F] E) := ⟨rfl⟩; infer_instance)
       exact sfinite_of_fib (isOpen_indep v n a) hfib.choose_spec ⟨T, hT⟩
     · infer_instance

@@ -62,24 +62,26 @@ variable {l : ℕ} [Fact l.Prime]
 def βS (hC : B.Compat l) {O : Type} [CommRing O] (F : B.Fn O) (κ : O →+* OC l) (k : Bool) (j : ℕ) :
     Sys.Hom (B.HcSys F κ k j) (MSys (F.pt κ) j) (RingHom.id _) where
   f n := B.β F κ k n j
-  comm n x := (hC.red F κ k n.le_succ j x).symm
+  comm n x := Eq.symm (hC.red F κ k (m := n + 1) n.le_succ j x)
 
 variable {K : IntermediateField ℚ_[l] (PadicAlgCl l)}
 
 theorem atlas_of {M : Model l K} (h : M.Sm) : ∃ d, Nonempty ((B.schFn M.p).Atlas d) := by
   have : Smooth M.p := h.2
   have : IsProper M.p := AdicGeo.proper_p (M := M) h.1
-  exact B.P.atlas (O := OK l K) (X := M.X) M.p
+  exact _root_.GlobalTheory.CompanionTheory.SchAtlas.exists_atlas (O := OK l K) (X := M.X) M.p
 
 variable (Amp : ∀ M : Model l K, E.LineData M.X → Prop)
 
 def bβ (hC : B.Compat l) {M : Model l K} (a : (dat Amp).Ch M) (j : ℕ) :
     ((dat Amp).H a).N j →ₗ[(per l K).A] ((dat Amp).A a).N j :=
-  (βS hC (B.schFn M.p) (okToOC l K) false j).lim
+  (show Sys.Hom (M.HS false j) (M.MS j) (RingHom.id _) from
+    βS hC (B.schFn M.p) (okToOC l K) false j).lim
 
 def bβ' (hC : B.Compat l) {M : Model l K} (a : (dat Amp).Ch M) (j : ℕ) :
     ((dat Amp).H' a).N j →ₗ[(per l K).A] ((dat Amp).A a).N j :=
-  (βS hC (B.schFn M.p) (okToOC l K) true j).lim
+  (show Sys.Hom (M.HS true j) (M.MS j) (RingHom.id _) from
+    βS hC (B.schFn M.p) (okToOC l K) true j).lim
 
 private theorem limit_bounds (hMain : B.Main l) (hC : B.Compat l)
     {O : Type} [CommRing O] (F : B.Fn O) (κ : O →+* OC l)
@@ -101,33 +103,31 @@ private theorem limit_bounds (hMain : B.Main l) (hC : B.Compat l)
       (fun n r => hC.smul_fil F κ false n r j ε.μ (ε.μ_mem false (PAlg.base l) n))
       (fun n => ((hLevel n).1 false).1) (fun n => (hLevel n).2)
 
-theorem f_inj (hMain : B.Main l) (hC : B.Compat l) {M : Model l K} (a : (dat Amp).Ch M) (hM : M.Sm) (j : ℕ) :
-    ∃ n : ℕ, ∀ x, bβ Amp hC a j x = 0 → (per l K).t ^ n • x = 0 := by
-  have h := limit_bounds hMain hC (B.schFn M.p) (okToOC l K) (atlas_of hM) j
+-- The same exponent works for both comparison maps and the filtered lift.
+private theorem model_bounds (hMain : B.Main l) (hC : B.Compat l) {M : Model l K}
+    (a : (dat Amp).Ch M) (hM : M.Sm) (j : ℕ) :
+    ∃ n : ℕ, UpTo ((per l K).t ^ n) (bβ Amp hC a j) ∧
+      UpTo ((per l K).t ^ n) (bβ' Amp hC a j) ∧
+      ∀ y, ∃ x, (dat Amp).fil a j n x ∧ bβ Amp hC a j x = (per l K).t ^ n • y := by
+  obtain ⟨n, hb, hf⟩ := limit_bounds hMain hC (B.schFn M.p) (okToOC l K) (atlas_of hM) j
     (per l K).t (GlueBE.exists_eps_period_t_unit l K)
-  have h' := h.imp (fun _ hn => (hn.1 false).1)
-  exact h'
+  exact ⟨n, hb false, hb true, hf⟩
+
+theorem f_inj (hMain : B.Main l) (hC : B.Compat l) {M : Model l K} (a : (dat Amp).Ch M) (hM : M.Sm) (j : ℕ) :
+    ∃ n : ℕ, ∀ x, bβ Amp hC a j x = 0 → (per l K).t ^ n • x = 0 :=
+  (model_bounds Amp hMain hC a hM j).imp fun _ h => h.1.1
 
 theorem f_inj' (hMain : B.Main l) (hC : B.Compat l) {M : Model l K} (a : (dat Amp).Ch M) (hM : M.Sm) (j : ℕ) :
-    ∃ n : ℕ, ∀ x, bβ' Amp hC a j x = 0 → (per l K).t ^ n • x = 0 := by
-  have h := limit_bounds hMain hC (B.schFn M.p) (okToOC l K) (atlas_of hM) j
-    (per l K).t (GlueBE.exists_eps_period_t_unit l K)
-  have h' := h.imp (fun _ hn => (hn.1 true).1)
-  exact h'
+    ∃ n : ℕ, ∀ x, bβ' Amp hC a j x = 0 → (per l K).t ^ n • x = 0 :=
+  (model_bounds Amp hMain hC a hM j).imp fun _ h => h.2.1.1
 
 theorem f_surj' (hMain : B.Main l) (hC : B.Compat l) {M : Model l K} (a : (dat Amp).Ch M) (hM : M.Sm) (j : ℕ) :
-    ∃ n : ℕ, ∀ y, ∃ x, bβ' Amp hC a j x = (per l K).t ^ n • y := by
-  have h := limit_bounds hMain hC (B.schFn M.p) (okToOC l K) (atlas_of hM) j
-    (per l K).t (GlueBE.exists_eps_period_t_unit l K)
-  have h' := h.imp (fun _ hn => (hn.1 true).2)
-  exact h'
+    ∃ n : ℕ, ∀ y, ∃ x, bβ' Amp hC a j x = (per l K).t ^ n • y :=
+  (model_bounds Amp hMain hC a hM j).imp fun _ h => h.2.1.2
 
 theorem f_surj (hMain : B.Main l) (hC : B.Compat l) {M : Model l K} (a : (dat Amp).Ch M) (hM : M.Sm) (j : ℕ) :
-    ∃ n : ℕ, ∀ y, ∃ x, (dat Amp).fil a j n x ∧ bβ Amp hC a j x = (per l K).t ^ n • y := by
-  have h := limit_bounds hMain hC (B.schFn M.p) (okToOC l K) (atlas_of hM) j
-    (per l K).t (GlueBE.exists_eps_period_t_unit l K)
-  have h' := h.imp (fun _ hn => hn.2)
-  exact h'
+    ∃ n : ℕ, ∀ y, ∃ x, (dat Amp).fil a j n x ∧ bβ Amp hC a j x = (per l K).t ^ n • y :=
+  (model_bounds Amp hMain hC a hM j).imp fun _ h => h.2.2
 
 end GlueB'
 

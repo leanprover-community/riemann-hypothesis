@@ -88,8 +88,8 @@ theorem lOf_eq (A B : Formalism.L2.SG.PairVal.MatR D) :
     simp only [Matrix.mul_apply, Matrix.diagonal_apply, Matrix.map_apply, Matrix.transpose_apply, Sg,
       ite_mul, zero_mul, mul_ite, mul_zero, Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true,
       RingHom.comp_apply, adeleInfiniteComponent_apply, adele_ext_components, frFac_cf, AlgEquiv.commutes, Prod.algebraMap_apply, map_mul, map_pow,
-      map_neg, map_one, Prod.fst_mul, Prod.snd_mul, Prod.pow_fst, Prod.pow_snd, Prod.fst_neg, Prod.snd_neg,
-      Prod.fst_one, Prod.snd_one, Algebra.algebraMap_self, RingHom.id_apply]
+      map_neg, map_one, Prod.snd_mul, Prod.pow_snd, Prod.snd_neg,
+      Prod.snd_one, Algebra.algebraMap_self, RingHom.id_apply]
     have h1 : ∀ a, cf Zd p a ≠ 0 := fun a => left_ne_zero_of_mul_eq_one (cf_cfi Zd p a)
     have h2 : ∀ a, cfi Zd p a = (cf Zd p a)⁻¹ := fun a => eq_inv_of_mul_eq_one_right (cf_cfi Zd p a)
     ext

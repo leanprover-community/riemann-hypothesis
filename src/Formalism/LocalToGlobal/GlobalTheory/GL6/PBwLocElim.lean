@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.GlobalTheory.GL6.PBwDecomp
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.LatticeInclusionOfDecompGlob
 public import Formalism.LocalToGlobal.GlobalTheory.GL6.BwAValIntegralNonneg
 public import Formalism.SharpRestriction.GlobalSchurBounds.ProductFirstZerothParts
@@ -248,33 +249,7 @@ open scoped Matrix
 variable (D : D7) (u : D.what₂.Word)
 
 theorem bwE_loc_Ow (w : D.what₂.places.Pl) : bwE_Loc (bwA_Ow D w) := by
-  intro r s c m hc hm hsum
-  by_contra hno
-  push Not at hno
-  choose γ hγ hγe using fun i => Subring.mem_map.1 (hc i)
-  choose μ hμ hμe using fun i => Subring.mem_map.1 (hm i)
-  have hpos : ∀ i ∈ s, (0 : WithTop ℤ) < D.what₂.places.val w (γ i * μ i) := by
-    intro i hi
-    have h0 : (0 : WithTop ℤ) ≤ D.what₂.places.val w (μ i) := hμ i
-    have hne : D.what₂.places.val w (μ i) ≠ 0 := by
-      intro h
-      have hμ0 : μ i ≠ 0 := by
-        intro h'; rw [h', AddValuation.map_zero] at h; simp at h
-      refine hno i hi (D.what₂.embLL (μ i)⁻¹) (Subring.mem_map.2 ⟨(μ i)⁻¹, ?_, rfl⟩) ?_
-      · show (0 : WithTop ℤ) ≤ D.what₂.places.val w (μ i)⁻¹
-        rw [AddValuation.map_inv, h, neg_zero]
-      · rw [← hμe i, ← map_mul, mul_inv_cancel₀ hμ0, map_one]
-    rw [AddValuation.map_mul]
-    exact lt_of_lt_of_le (lt_of_le_of_ne h0 (Ne.symm hne)) (le_add_of_nonneg_left (hγ i))
-  have h1 : ∑ i ∈ s, γ i * μ i = 1 := by
-    apply D.what₂.embLL.injective
-
-    rw [map_sum, map_one, ← hsum]
-    exact Finset.sum_congr rfl (fun i _ => by rw [map_mul, hγe, hμe])
-  have h2 : (0 : WithTop ℤ) < D.what₂.places.val w (∑ i ∈ s, γ i * μ i) :=
-    AddValuation.map_lt_sum _ (by simp) hpos
-  rw [h1, AddValuation.map_one] at h2
-  exact lt_irrefl _ h2
+  apply Formalism.L2.GlobalTheoryTheory.LocalLatticeBases.bwD_loc_Ow <;> assumption
 
 theorem bwE_mem_Ow (w : D.what₂.places.Pl) (hw : OverT D u w) (τ : D.what₂.Tau) (y : D.host.E) (s : ℕ)
     (hs : ¬ (D.mem u).A.T ∣ s) (hy : (s : D.host.E) * y ∈ (algebraMap (𝓞 D.host.E) D.host.E).range) :

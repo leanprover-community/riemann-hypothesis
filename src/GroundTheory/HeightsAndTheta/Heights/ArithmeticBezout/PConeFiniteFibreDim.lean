@@ -144,7 +144,7 @@ theorem ConeFiniteFibreDim.proof : ConeFiniteFibreDim.Statement := by
     obtain ⟨i, j⟩ := ij
     change eval v (g (i, j)) = (blk v * N) i j
 
-    simp only [g, blk, Matrix.mul_apply, map_sum, map_mul, eval_C]
+    simp only [g, blk, map_sum, map_mul, eval_C]
     refine Finset.sum_congr rfl fun l _ => ?_
     induction i using Fin.addCases <;> simp
   have hP0 : bind₁ g p ≠ 0 := by

@@ -203,7 +203,7 @@ theorem tele_fam_succAbove (m₀ m₁ : ConeMetric (C := ℂ) (ι := Ix κ)) (D 
   simp only [Function.comp, tele_fam]
   have hv : (Fin.succAbove (⟨i, hi⟩ : Fin (D + 1)) j).val = if j.val < i then j.val else j.val + 1 := by
     unfold Fin.succAbove
-    split_ifs with h1 h2 h2 <;> simp_all [Fin.lt_def] <;> omega
+    split_ifs with h1 h2 h2 <;> simp_all [Fin.lt_def]
   rw [hv]
   split_ifs <;> first | rfl | (exfalso; omega)
 
@@ -228,7 +228,6 @@ theorem top_sub_top (I : AllFam) (hI : I.IsFamily) {x : Ix κ → Ω} {m₀ m₁
     rw [hF, top]
     show I Unit (GlobalTheory κ) (coordIdeal ℤ x) (D + 1) (tele_fam m₀ m₁ (D + 1) 0) = _
     congr 1
-    try (funext j; simp [tele_fam])
   have hFD : F (D + 1) = top I x m₁ D := by
     rw [hF, top]
     show I Unit (GlobalTheory κ) (coordIdeal ℤ x) (D + 1) (tele_fam m₀ m₁ (D + 1) (D + 1)) = _

@@ -64,7 +64,7 @@ lemma single_smul_self {m : ℕ} (c : Fin m → R) (i : Fin m) :
   funext k
   by_cases hk : k = i
   · subst hk
-    simp [Algebra.smul_def, Ideal.Quotient.eq_zero_iff_mem, Ideal.mem_span_singleton_self]
+    simp [Algebra.smul_def]
   · simp [Pi.single_eq_of_ne hk]
 
 lemma eq_sum_single {m : ℕ} (c : Fin m → R) (x : (i : Fin m) → R ⧸ Ideal.span {c i}) :

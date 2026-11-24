@@ -111,8 +111,7 @@ variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] {ε : Fin 
 
 theorem dS_eq_actM (hD : IsDerivedOn ε σ D E) {X : Matrix (Fin n) (Fin n) ℂ} (hX : inG ε X) (v : D) :
     dS σ X v = ((actM E X v : D) : H) := by
-  unfold dS
-  exact (hD.deriv X hX v).deriv
+  simpa only [dS] using (hD.deriv X hX v).deriv
 
 theorem casU_eq_casimir (hD : IsDerivedOn ε σ D E) (v : D) :
     casU ε σ v = ((casimir E v : D) : H) := by

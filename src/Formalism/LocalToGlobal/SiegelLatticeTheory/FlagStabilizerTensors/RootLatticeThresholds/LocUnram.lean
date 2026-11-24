@@ -80,7 +80,6 @@ theorem exists_theta : ∃ (θ : D.host.E) (c tr nm : 𝓞 D.host.F), IsIntegral
   haveI : Algebra.IsIntegral (𝓞 D.host.F) (𝓞 D.host.E) := by
     first
     | infer_instance
-    | exact ⟨fun z => (NumberField.RingOfIntegers.isIntegral z).tower_top⟩
   have hinj : Function.Injective (algebraMap (𝓞 D.host.F) (𝓞 D.host.E)) := by
     intro a b h
     apply NumberField.RingOfIntegers.ext
@@ -108,7 +107,6 @@ theorem exists_theta : ∃ (θ : D.host.E) (c tr nm : 𝓞 D.host.F), IsIntegral
     rw [hc]; push_cast
     first
     | rw [← htE]
-    | simp [htE]
   rw [key] at hcp
   exact hθt (hQ.isPrime.mem_of_pow_mem 2 hcp)
 
@@ -126,7 +124,6 @@ private theorem mem_integers_iff_valuation_le_one (z : (D.s.atP p).Fp) :
     z ∈ 𝒪[(D.s.atP p).Fp] ↔ ValuativeRel.valuation (D.s.atP p).Fp z ≤ 1 := by
   first
   | exact Valuation.mem_integer_iff _ _
-  | exact Iff.rfl
 
 private theorem valuative_le_iff_valuation_le (y z : (D.s.atP p).Fp) :
     y ≤ᵥ z ↔ ValuativeRel.valuation (D.s.atP p).Fp y ≤ ValuativeRel.valuation (D.s.atP p).Fp z :=
@@ -137,8 +134,6 @@ theorem iotaF_mem (x : 𝓞 D.host.F) : (D.s.atP p).ιF (x : D.host.F) ∈ 𝒪[
     ← map_one (D.s.atP p).ιF, (D.s.atP p).val, map_one]
   first
   | exact p.valuation_le_one x
-  | exact p.valuation_le_one (K := D.host.F) x
-  | exact p.valuation_le_one D.host.F x
 
 theorem iotaF_inv_mem (x : 𝓞 D.host.F) (hx : x ∉ p.asIdeal) :
     ((D.s.atP p).ιF (x : D.host.F))⁻¹ ∈ 𝒪[(D.s.atP p).Fp] := by
@@ -150,8 +145,6 @@ theorem iotaF_inv_mem (x : 𝓞 D.host.F) (hx : x ∉ p.asIdeal) :
     refine not_lt.1 (fun h => hx ?_)
     first
     | exact (p.valuation_lt_one_iff_mem x).1 h
-    | exact (p.valuation_lt_one_iff_mem (K := D.host.F) x).1 h
-    | exact (p.valuation_lt_one_iff_mem D.host.F x).1 h
   rw [mem_integers_iff_valuation_le_one p, map_inv₀, le_antisymm h1 h2, inv_one]
 
 theorem iotaF_ne (x : 𝓞 D.host.F) (hx : x ∉ p.asIdeal) : (D.s.atP p).ιF (x : D.host.F) ≠ 0 := by
@@ -161,7 +154,6 @@ theorem iotaF_ne (x : 𝓞 D.host.F) (hx : x ∉ p.asIdeal) : (D.s.atP p).ιF (x
   have h1 : x = 0 := by
     first
     | exact_mod_cast h0
-    | exact NumberField.RingOfIntegers.ext h0
   rw [h1]; exact p.asIdeal.zero_mem
 
 theorem iotaE_alg (x : D.host.F) :
@@ -175,7 +167,6 @@ theorem iotaE_mem (θ : D.host.E) (hθ : IsIntegral ℤ θ) : (D.s.atP p).ιE θ
 private theorem isScalarTower_integers_Fp_Ep : IsScalarTower 𝒪[(D.s.atP p).Fp] (D.s.atP p).Fp (D.s.atP p).Ep := by
   first
   | infer_instance
-  | exact IsScalarTower.of_algebraMap_eq (fun _ => rfl)
 
 private theorem algebraMap_Fp_Ep_injective : Function.Injective (algebraMap (D.s.atP p).Fp (D.s.atP p).Ep) := by
   haveI : Nontrivial (D.s.atP p).Ep := by
@@ -193,7 +184,6 @@ private theorem mem_integers_of_isIntegral_algebraMap (s : (D.s.atP p).Fp) (hs :
   have h1 : IsIntegral 𝒪[(D.s.atP p).Fp] s := (isIntegral_algebraMap_iff ).1 hs
   first
   | exact (Valuation.integer.integers _).mem_of_integral h1
-  | (obtain ⟨t, ht⟩ := (Valuation.integer.integers _).mem_of_integral h1; rw [← ht]; exact t.2)
 
 private theorem algebraMap_mem_O_of_mem_integers (a : (D.s.atP p).Fp) (ha : a ∈ 𝒪[(D.s.atP p).Fp]) :
     algebraMap (D.s.atP p).Fp (D.s.atP p).Ep a ∈ (D.s.atP p).O := by
@@ -202,7 +192,6 @@ private theorem algebraMap_mem_O_of_mem_integers (a : (D.s.atP p).Fp) (ha : a �
   have h := isIntegral_algebraMap (R := 𝒪[(D.s.atP p).Fp]) (A := (D.s.atP p).Ep) (x := (⟨a, ha⟩ : 𝒪[(D.s.atP p).Fp]))
   first
   | exact h
-  | (rw [IsScalarTower.algebraMap_apply 𝒪[(D.s.atP p).Fp] (D.s.atP p).Fp (D.s.atP p).Ep] at h; exact h)
 
 private theorem linearIndependent_one_omega_of_cj_ne (ω : (D.s.atP p).Ep) (hne : (D.s.atP p).cj ω ≠ ω) :
     LinearIndependent (D.s.atP p).Fp ![(1 : (D.s.atP p).Ep), ω] := by
@@ -345,7 +334,6 @@ theorem c_eq (θ : D.host.E) (c tr nm : 𝓞 D.host.F) (hc : ((c : D.host.F) : D
     rw [hc, htr, hnm]; ring
   have hF : (c : D.host.F) = (tr : D.host.F) ^ 2 - 4 * (nm : D.host.F) := by
     first
-    | exact_mod_cast hE
     | exact Subtype.ext (by push_cast; exact hE)
   rw [hF, map_sub, map_pow, map_mul, map_ofNat]
 
@@ -412,7 +400,6 @@ theorem core {R : Type*} [CommRing R] (ϖ A B T N K C Dd : R) (hpr : Prime ϖ) (
   have h2 : ϖ ∣ B ^ 4 := by
     first
     | exact (hK.dvd_mul_right).1 h1
-    | exact (IsUnit.dvd_mul_right hK).1 h1
     | (obtain ⟨u, rfl⟩ := hK; exact (Units.dvd_mul_right).1 h1)
   have hB : ϖ ∣ B := hpr.dvd_of_dvd_pow h2
   obtain ⟨b, rfl⟩ := hB
@@ -426,11 +413,6 @@ theorem prime_of_irr (ϖ : 𝒪[(D.s.atP p).Fp]) (h : Irreducible ϖ) : Prime ϖ
   haveI := (D.s.atP p).lf
   first
   | exact h.prime
-  | exact UniqueFactorizationMonoid.irreducible_iff_prime.1 h
-  | exact PrincipalIdealRing.irreducible_iff_prime.1 h
-
-theorem alg_mem_O (a : (D.s.atP p).Fp) (ha : a ∈ 𝒪[(D.s.atP p).Fp]) :
-    algebraMap (D.s.atP p).Fp (D.s.atP p).Ep a ∈ (D.s.atP p).O := algebraMap_mem_O_of_mem_integers p a ha
 
 theorem sq_coords (θ : D.host.E) (tr nm : 𝓞 D.host.F)
     (htr : ((tr : D.host.F) : D.host.E) = θ + D.conjF θ) (hnm : ((nm : D.host.F) : D.host.E) = θ * D.conjF θ)
@@ -477,8 +459,8 @@ theorem unramAt : UnramAt p := by
   have hA1 : A = (ϖ : (D.s.atP p).Fp) * (a1 : (D.s.atP p).Fp) := congrArg Subtype.val ha1
   have hB1 : B = (ϖ : (D.s.atP p).Fp) * (b1 : (D.s.atP p).Fp) := congrArg Subtype.val hb1
   refine ⟨⟨algebraMap (D.s.atP p).Fp (D.s.atP p).Ep (a1 : (D.s.atP p).Fp) + algebraMap (D.s.atP p).Fp (D.s.atP p).Ep (b1 : (D.s.atP p).Fp) * (D.s.atP p).ιE θ,
-    Subring.add_mem _ (alg_mem_O p _ a1.2)
-      (Subring.mul_mem _ (alg_mem_O p _ b1.2) (iotaE_mem p θ hθ))⟩, ?_⟩
+    Subring.add_mem _ (_root_.Formalism.L2.SG.Pf.LocUnramP.algebraMap_mem_O_of_mem_integers p _ a1.2)
+      (Subring.mul_mem _ (_root_.Formalism.L2.SG.Pf.LocUnramP.algebraMap_mem_O_of_mem_integers p _ b1.2) (iotaE_mem p θ hθ))⟩, ?_⟩
   change (algebraMap (D.s.atP p).Fp (D.s.atP p).Ep (a1 : (D.s.atP p).Fp) + algebraMap (D.s.atP p).Fp (D.s.atP p).Ep (b1 : (D.s.atP p).Fp) * (D.s.atP p).ιE θ) *
     algebraMap (D.s.atP p).Fp (D.s.atP p).Ep (ϖ : (D.s.atP p).Fp) = x
   rw [hAB, hA1, hB1]

@@ -88,9 +88,8 @@ theorem wU_sq : wU p n ^ 2 = (p : OO p n) := by
 theorem sq_OO [NeZero n] (hp2 : p ≠ 2) (z : ℤ) : ∃ y : OO p n, y ^ 2 = (z : OO p n) := by
   by_cases hz : z = 0
   · exact ⟨0, by simp [hz]⟩
-  have hfin : FiniteMultiplicity (p : ℤ) z :=
-    Int.finiteMultiplicity_iff.2 ⟨by simpa using hp.out.one_lt.ne', hz⟩
-  obtain ⟨c, hc, hpc⟩ := hfin.exists_eq_pow_mul_and_not_dvd
+  obtain ⟨c, hc, hpc⟩ := (show FiniteMultiplicity (p : ℤ) z from
+    Int.finiteMultiplicity_iff.2 ⟨by simpa using hp.out.one_lt.ne', hz⟩).exists_eq_pow_mul_and_not_dvd
   obtain ⟨y, hy⟩ := exists_sq_eq_intCast_of_not_dvd_of_ne_two p n hp2 c hpc
   refine ⟨wU p n ^ multiplicity (p : ℤ) z * algebraMap (W2 p n) (OO p n) y, ?_⟩
   rw [mul_pow, ← pow_mul, mul_comm _ 2, pow_mul, wU_sq, ← map_pow, hy, map_intCast]
@@ -112,9 +111,7 @@ theorem settingStd (h5 : 5 ≤ p) (h2 : 2 ≤ n) (he : Even n) :
       p_unif := WittVector.irreducible p
       res_card := card_quot_WQ p n
       eq_sum_herm_smul_frame_of_inW := inferInstance
-      frob := fun x => by
-        obtain ⟨y, hy⟩ := frob_WQ p n x
-        exact ⟨y, by rw [sig_alg, hy]⟩
+      frob := fun x => (frob_WQ p n x).imp fun y hy => by rw [sig_alg, hy]
       period := sig_period p n
       ι_comp := fun x => IsFractionRing.lift_algebraMap (inj_WK p n) x
       finite := (Quad.algebraMap_finite _).comp (jW_finite p n)

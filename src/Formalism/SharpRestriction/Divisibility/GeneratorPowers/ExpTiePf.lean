@@ -228,14 +228,6 @@ private lemma coe_C_lemma_12 {R κ : Type} [CommRing R] (c : R) :
     ((MvPolynomial.C c : MvPolynomial κ R) : MvPowerSeries κ R) = algebraMap R _ c := by
   first
     | (rw [MvPolynomial.coe_C, Algebra.algebraMap_eq_smul_one, MvPowerSeries.smul_eq_C_mul, mul_one])
-    | (ext e
-       simp [Algebra.algebraMap_eq_smul_one, MvPowerSeries.coeff_C, MvPowerSeries.coeff_one])
-    | (ext e
-       rw [MvPolynomial.coeff_coe, MvPolynomial.coeff_C, Algebra.algebraMap_eq_smul_one,
-         MvPowerSeries.coeff_smul, MvPowerSeries.coeff_one]
-       by_cases h : e = 0
-       · subst h; simp
-       · simp [h, Ne.symm h])
 
 theorem jetSubstPS_psJet {S : Type} [CommRing S] {d N : ℕ} (φ : Fin d → MvPowerSeries (Fin 1 × Fin N) S)
     (h0 : ∀ j, constantCoeff (φ j) = 0) (m : ℕ) (f : MvPowerSeries (Fin 1 × Fin d) S) :
@@ -244,9 +236,6 @@ theorem jetSubstPS_psJet {S : Type} [CommRing S] {d N : ℕ} (φ : Fin d → MvP
   have hs : MvPowerSeries.HasSubst (fun p : Fin 1 × Fin d => φ p.2) := by
     first
       | exact MvPowerSeries.hasSubst_of_constantCoeff_zero (fun p => h0 p.2)
-      | exact MvPowerSeries.HasSubst.of_constantCoeff_zero' (fun p => h0 p.2)
-      | exact ⟨fun p => by simp [h0 p.2], by simp [Filter.cofinite_eq_bot, Filter.tendsto_bot]⟩
-      | exact ⟨by simp [Filter.cofinite_eq_bot, Filter.tendsto_bot], fun p => by simp [h0 p.2]⟩
   have hpoly : ∀ P : MvPolynomial (Fin 1 × Fin d) S,
       (jetSubstPS (m := m) (fun p : Fin 1 × Fin d => φ p.2))
           (Ideal.Quotient.mk (orig S (Fin 1 × Fin d) ^ (m + 1)) P) =
@@ -272,7 +261,6 @@ theorem jetSubstPS_psJet {S : Type} [CommRing S] {d N : ℕ} (φ : Fin d → MvP
             AddMonoidAlgebra.coeff (psTrunc m (φ n.2)) 0 from rfl, coeff_psTrunc_lemma_2 m _ 0 (by simp)]
         first
           | (rw [MvPowerSeries.coeff_zero_eq_constantCoeff_apply]; exact h0 n.2)
-          | simpa using h0 n.2
       have hX : (jetSubstPS (m := m) (fun p : Fin 1 × Fin d => φ p.2))
             (Ideal.Quotient.mk (orig S (Fin 1 × Fin d) ^ (m + 1)) (MvPolynomial.X n)) =
           Ideal.Quotient.mk (orig S (Fin 1 × Fin N) ^ (m + 1))
@@ -281,10 +269,6 @@ theorem jetSubstPS_psJet {S : Type} [CommRing S] {d N : ℕ} (φ : Fin d → MvP
           | (simp only [jetSubstPS, jetMap, liftJet, Ideal.Quotient.liftₐ_apply]
              erw [Ideal.Quotient.lift_mk]
              simp)
-          | (simp [jetSubstPS, jetMap, liftJet]
-             erw [Ideal.Quotient.lift_mk]
-             simp)
-          | rfl
       rw [hX, hc, map_zero, sub_zero]
       all_goals rfl
   have hvan : ∀ e : Fin 1 × Fin N →₀ ℕ, (e.sum fun _ j => j) ≤ m →
@@ -300,8 +284,6 @@ theorem jetSubstPS_psJet {S : Type} [CommRing S] {d N : ℕ} (φ : Fin d → MvP
       first
         | exact (congrArg (fun x => MvPowerSeries.coeff u (f - ((psTrunc m f : MvPolynomial (Fin 1 × Fin d) S) :
             MvPowerSeries (Fin 1 × Fin d) S)) • x) hz).trans (smul_zero _)
-        | (rw [show MvPowerSeries.coeff e (u.prod fun s n => φ s.2 ^ n) = 0 from hz, smul_zero])
-        | (simp only [hz, smul_zero])
   have e3 : subst (fun p : Fin 1 × Fin d => φ p.2) f = MvPowerSeries.substAlgHom hs f := by
     rw [MvPowerSeries.coe_substAlgHom]
   have e4 : MvPowerSeries.substAlgHom hs f =
@@ -336,8 +318,6 @@ theorem exp_pow_inv {S : Type} [CommRing S] [Algebra ℚ S] {σ : Type} (b : MvP
     rw [h2, PowerSeries.rescale_zero, RingHom.comp_apply, PowerSeries.constantCoeff_exp, map_one]
   rw [h1, one_pow]
   first
-    | exact PowerSeries.subst_one hs
-    | exact (PowerSeries.substAlgHom hs).map_one
     | simp [← PowerSeries.coe_substAlgHom hs]
 
 theorem isValueAt_of_eq {S0 : Scheme.{0}} (A : Over S0) [GrpObj A] (L : LB A.left) (a : ℤ) {T : Over S0}

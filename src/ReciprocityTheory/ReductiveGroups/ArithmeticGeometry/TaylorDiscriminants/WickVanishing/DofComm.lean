@@ -88,10 +88,6 @@ theorem vf_comm (c c' : τ → MvPowerSeries τ k) (G : MvPowerSeries τ k) :
   simp only [vf, sub_mul, Finset.sum_sub_distrib]
   ring
 
-private theorem vf_sub' {k : Type} [CommRing k] {τ : Type} [Fintype τ] (c : τ → MvPowerSeries τ k)
-    (a b : MvPowerSeries τ k) : vf c (a - b) = vf c a - vf c b := by
-  simp only [vf, map_sub, mul_sub, Finset.sum_sub_distrib]
-
 private theorem vf_mul' {k : Type} [CommRing k] {τ : Type} [Fintype τ] (c : τ → MvPowerSeries τ k)
     (a b : MvPowerSeries τ k) : vf c (a * b) = a * vf c b + b * vf c a := by
   simp only [vf, Derivation.leibniz, smul_eq_mul, mul_add, Finset.sum_add_distrib, Finset.mul_sum]
@@ -100,7 +96,7 @@ private theorem vf_mul' {k : Type} [CommRing k] {τ : Type} [Fintype τ] (c : τ
 theorem vfm_comm (c c' : τ → MvPowerSeries τ k) (f f' G : MvPowerSeries τ k) :
     (vf c (vf c' G - f' * G) - f * (vf c' G - f' * G)) - (vf c' (vf c G - f * G) - f' * (vf c G - f * G)) =
       vf (fun t => vf c (c' t) - vf c' (c t)) G - (vf c f' - vf c' f) * G := by
-  rw [vf_sub', vf_sub', vf_mul', vf_mul', ← vf_comm]
+  rw [_root_.ReciprocityTheory.ChartRestriction.G.TB.WickVanishing.Nab.vf_sub, _root_.ReciprocityTheory.ChartRestriction.G.TB.WickVanishing.Nab.vf_sub, vf_mul', vf_mul', ← vf_comm]
   ring
 
 theorem vf_Cmul (c : τ → MvPowerSeries τ k) (a : k) (g : MvPowerSeries τ k) : vf c (C a * g) = C a * vf c g := by
@@ -256,12 +252,6 @@ theorem vf_co_jac (u : Fin d → k) (j i : Fin d) :
   rw [Finset.sum_comm]
   exact Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => by ring
 
-private theorem vf_finset_sum {τ : Type} [Fintype τ] {ι : Type} (s : Finset ι) (c : τ → MvPowerSeries τ k)
-    (f : ι → MvPowerSeries τ k) : vf c (∑ i ∈ s, f i) = ∑ i ∈ s, vf c (f i) := by
-
-  simp only [vf, map_sum, Finset.mul_sum]
-  rw [Finset.sum_comm]
-
 private theorem sum_mul_sum_symm_swap_of_symmetric {ι : Type} [Fintype ι] (x y : ι → PS k 1 d) (T : ι → ι → PS k 1 d)
     (hT : ∀ b i, T b i = T i b) : ∑ i, x i * ∑ b, y b * T b i = ∑ i, y i * ∑ b, x b * T b i := by
   simp only [Finset.mul_sum]
@@ -272,7 +262,7 @@ private theorem sum_mul_sum_symm_swap_of_symmetric {ι : Type} [Fintype ι] (x y
 
 theorem co_bracket (u v : Fin d → k) (p : Fin 1 × Fin d) :
     vf (co G u) (co G v p) - vf (co G v) (co G u p) = 0 := by
-  simp only [co, vf_finset_sum, vf_Cmul, vf_co_jac]
+  simp only [co, _root_.ReciprocityTheory.ChartRestriction.G.TB.WickVanishing.Nab.vf_sum, vf_Cmul, vf_co_jac]
   rw [sub_eq_zero]
   exact sum_mul_sum_symm_swap_of_symmetric (fun i => C (v i)) (fun b => C (u b))
     (fun b i => ∑ c, Jac G c b * pderiv (R := k) ((0 : Fin 1), c) (Jac G p.2 i)) (fun b i => T_symm G b i p.2)

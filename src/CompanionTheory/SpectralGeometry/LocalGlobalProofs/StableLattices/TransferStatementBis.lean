@@ -1,7 +1,7 @@
 module
 
 public import CompanionTheory.RealGroups.UnitaryAdmissibility.ArchimedeanUnitaryDual.InhabitedFinite
-public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.HeckeOperatorsSpanAndFaithfulStatement
+public import CompanionTheory.SpectralGeometry.LocalGlobalProofs.StableLattices.HeckeOperatorsSpanAndFaithful
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -207,7 +207,7 @@ theorem word_apply {E : H →L[ℂ] H} (hA : IsAvg σ K E) (b : G → Hk K)
   induction l with
   | nil =>
     simp only [List.map_nil, word_nil, List.reverse_nil, List.prod_nil, OneMemClass.coe_one,
-      Module.End.one_apply, dlt, phi_single hv, one_smul, map_one, ContinuousLinearMap.one_apply]
+      dlt, phi_single hv, one_smul, map_one, ContinuousLinearMap.one_apply]
     exact hA.2.1 v hv
   | cons g l ih =>
     simp only [List.map_cons, word_cons, ContinuousLinearMap.mul_apply]
@@ -217,7 +217,7 @@ theorem word_apply {E : H →L[ℂ] H} (hA : IsAvg σ K E) (b : G → Hk K)
 
 theorem stTransfer : StTransfer := by
   intro G _ K M hK hPI H _ _ _ σ _ E hA g
-  obtain ⟨T, hT, -, -⟩ := GlobalTheory.T.hecke_operators_span_and_faithful G K hK
+  obtain ⟨T, hT, -, -⟩ := _root_.GlobalTheory.CompanionTheory.HeckeBasis.heckeBasis G K hK
   have hfin : ∀ x : G, (MulAction.orbit K (x : G ⧸ K)).Finite := hK
   let S : G → Finset (G ⧸ K) := fun x => (hfin x).toFinset
   have hS : ∀ x, (↑(S x) : Set (G ⧸ K)) = MulAction.orbit K (x : G ⧸ K) :=

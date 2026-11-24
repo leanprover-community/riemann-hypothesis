@@ -136,8 +136,6 @@ theorem instance_sizes : InstSizes := by
   have hrd := rd_pos' (E := E)
   have hg : 0 < G.g := by
     unfold Sz.Glob.g
-    have a1 : (0:ℝ) < G.g1 := by exact_mod_cast hg1
-    have a2 : (0:ℝ) < G.g2 := by exact_mod_cast hg2
     positivity
   have hgN : 0 < G.g1 * G.g2 := Nat.mul_pos hg1 hg2
   have hgc : ((G.g1 * G.g2 : ℕ) : ℝ) = G.g := by unfold Sz.Glob.g; push_cast; ring
@@ -360,7 +358,6 @@ theorem global_positive : GlobPositive := by
   have hk3r : (3 : ℝ) ≤ G.k := by exact_mod_cast hk3
   have hk0 : (0 : ℝ) < G.k := by linarith
   have hbb := hyp.hbb
-  have hbb0 : 0 < bb := by linarith
   have hpos : 0 < ((G.k : ℝ) * bb) ^ 8 := by positivity
   have hg1 : 0 < G.g1 := by
     have : (0 : ℝ) < G.g1 := lt_of_lt_of_le hpos hyp.hg1

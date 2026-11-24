@@ -1,5 +1,6 @@
 module
 
+import Formalism.SharpRestriction.GrowthBounds.RootWeights.IntegralEnvelopingPreservesStable
 public import Formalism.SharpRestriction.GrowthBounds.RootWeights.OperatorsKillInvariantProjection
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -57,26 +58,7 @@ open Formalism.MainNotions.G Formalism.MainNotions.CovariantDegrees
 
 theorem charZero_fraction_field_of_setting {p : ℕ} {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
     (S : UniformizedDVR p O) (hp : p.Prime) : CharZero (KK O) := by
-  have hO : CharZero O := by
-    rcases S with ⟨w, hw, hpm, hp0, -⟩
-    rcases CharP.char_is_prime_or_zero O (ringChar O) with hq | hq
-    · exfalso
-      have hne : p ≠ ringChar O := by
-        rintro h
-        apply hp0
-        rw [h]
-        exact CharP.cast_eq_zero O (ringChar O)
-      have hcop : Nat.gcd p (ringChar O) = 1 := (Nat.coprime_primes hp hq).mpr hne
-      have key : (1 : O) = (p : O) * (Nat.gcdA p (ringChar O) : O) := by
-        have h := congrArg (fun z : ℤ => (z : O)) (Nat.gcd_eq_gcd_ab p (ringChar O))
-        simp only [hcop, Nat.cast_one, Int.cast_one, Int.cast_add, Int.cast_mul, Int.cast_natCast,
-          CharP.cast_eq_zero, zero_mul, add_zero] at h
-        exact h
-      have h1 : (1 : O) ∈ IsLocalRing.maximalIdeal O := key ▸ Ideal.mul_mem_right _ _ hpm
-      exact (IsLocalRing.maximalIdeal.isMaximal O).ne_top ((Ideal.eq_top_iff_one _).mpr h1)
-    · haveI : CharP O 0 := hq ▸ ringChar.charP O
-      exact CharP.charP_to_charZero O
-  exact charZero_of_injective_algebraMap (IsFractionRing.injective O (KK O))
+  apply Formalism.MainNotions.G.GLWeightTheory.dvr_fraction_field_charZero <;> assumption
 
 theorem cyclicSubmodule_isSubrepresentation {n : ℕ} {K V : Type} [Field K] [AddCommGroup V] [Module K V] (E : GLOps n K V) (v : V) :
     IsSubrepresentation E (cyclicSubmodule E v) := by

@@ -66,7 +66,6 @@ private theorem powerSeries_hasSubst_of_constantCoeff_eq_zero {τ : Type} {f : M
     PowerSeries.HasSubst f := by
   first
   | exact PowerSeries.HasSubst.of_constantCoeff_zero hf
-  | (show IsNilpotent _; rw [hf]; exact IsNilpotent.zero)
 
 private theorem coeff_diagS [DecidableEq ι] (a : PowerSeries R) (i : ι) (e : ι →₀ ℕ) :
     coeff e (diagS a i : MvPowerSeries ι R) =
@@ -79,7 +78,6 @@ private theorem coeff_diagS [DecidableEq ι] (a : PowerSeries R) (i : ι) (e : �
     intro d
     first
     | (rw [MvPowerSeries.coeff_X_pow, smul_eq_mul]; split_ifs <;> simp)
-    | (rw [MvPowerSeries.X_pow_eq, MvPowerSeries.coeff_monomial, smul_eq_mul]; split_ifs <;> simp)
   simp_rw [hterm]
   rw [finsum_eq_single _ (e i)]
   intro d hd
@@ -117,7 +115,6 @@ private theorem hasSubst_of_finite_constantCoeff_eq_zero {σ τ : Type} [Finite 
     (hc : ∀ s, constantCoeff (c s) = 0) : HasSubst c := by
   first
   | exact MvPowerSeries.hasSubst_of_constantCoeff_zero hc
-  | exact MvPowerSeries.HasSubst.of_constantCoeff_zero hc
 
 theorem subst_psubst {c : ι → MvPowerSeries κ R} (hc : HasSubst c) {f : MvPowerSeries ι R}
     (hf : constantCoeff f = 0) (a : PowerSeries R) :
@@ -125,7 +122,6 @@ theorem subst_psubst {c : ι → MvPowerSeries κ R} (hc : HasSubst c) {f : MvPo
   have hf' : HasSubst (fun _ : Unit => f) := hasSubst_of_finite_constantCoeff_eq_zero (fun _ => hf)
   first
   | exact MvPowerSeries.subst_comp_subst_apply hf' hc a
-  | (rw [PowerSeries.subst, PowerSeries.subst, MvPowerSeries.subst_comp_subst_apply hf' hc])
 
 theorem dg_comp {a b : PowerSeries R} (hb : PowerSeries.constantCoeff b = 0) (i : ι) :
     subst (diagS b) (diagS a i : MvPowerSeries ι R) = diagS (PowerSeries.subst b a) i := by
@@ -167,8 +163,6 @@ private theorem constantCoeff_powerSeries_subst_eq_zero_admissible_parameter_joi
   obtain ⟨b, rfl⟩ := PowerSeries.X_dvd_iff.mpr ha
   first
   | rw [PowerSeries.subst_mul (powerSeries_hasSubst_of_constantCoeff_eq_zero hf), PowerSeries.subst_X (powerSeries_hasSubst_of_constantCoeff_eq_zero hf), map_mul, hf, zero_mul]
-  | rw [← PowerSeries.coe_substAlgHom (powerSeries_hasSubst_of_constantCoeff_eq_zero hf), map_mul, PowerSeries.coe_substAlgHom,
-      PowerSeries.subst_X (powerSeries_hasSubst_of_constantCoeff_eq_zero hf), map_mul, hf, zero_mul]
 
 theorem coeff_pow_zero {f : MvPowerSeries ι R} (hf : constantCoeff f = 0) :
     ∀ (d : ℕ) (n : ι →₀ ℕ), n.degree < d → coeff n (f ^ d) = 0 := by
@@ -189,13 +183,11 @@ theorem coeff_pow_zero {f : MvPowerSeries ι R} (hf : constantCoeff f = 0) :
         first
         | exact (Finsupp.degree_add p.1 p.2).symm
         | exact (map_add Finsupp.degree p.1 p.2).symm
-        | simp [Finsupp.degree_add]
       have hpos : p.2.degree ≠ 0 := by
         intro h
         apply h2
         first
         | exact (Finsupp.degree_eq_zero_iff _).mp h
-        | exact Finsupp.degree_eq_zero_iff.mp h
       rw [ih p.1 (by omega), zero_mul]
 
 end AlgebraTools
@@ -261,10 +253,6 @@ private theorem coeff_X_zero_add_X_one_pow (n : Fin 2 →₀ ℕ) (k : ℕ) :
     first
     | (rw [← nsmul_eq_mul', map_nsmul, MvPowerSeries.X_pow_eq, MvPowerSeries.X_pow_eq,
         MvPowerSeries.monomial_mul_monomial, one_mul, MvPowerSeries.coeff_monomial, nsmul_eq_mul]
-       split_ifs <;> simp)
-    | (rw [MvPowerSeries.X_pow_eq, MvPowerSeries.X_pow_eq, MvPowerSeries.monomial_mul_monomial, one_mul,
-        ← map_natCast (MvPowerSeries.C (σ := Fin 2) (R := K)), MvPowerSeries.coeff_mul_C,
-        MvPowerSeries.coeff_monomial]
        split_ifs <;> simp)
   rw [Finset.sum_congr rfl hterm]
   split_ifs with hk
@@ -341,9 +329,6 @@ theorem Ex_biv : Ex (X 0 + X 1 : MvPowerSeries (Fin 2) K) = Ex (X 0) * Ex (X 1) 
   have hne : ((n 0 + n 1).factorial : K) ≠ 0 := Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero _)
   first
   | (rw [div_mul_div_comm, one_mul, div_mul_cancel_left₀ hne]; simp)
-  | (field_simp; done)
-  | (field_simp; rw [mul_inv_cancel₀ hne, one_mul])
-  | (field_simp; simp [hne])
   all_goals first | ring | exact mul_comm _ _
 
 theorem Ex_add {f g : MvPowerSeries ι K} (hf : constantCoeff f = 0) (hg : constantCoeff g = 0) :
@@ -363,9 +348,7 @@ theorem Ex_neg_mul {f : MvPowerSeries ι K} (hf : constantCoeff f = 0) : Ex (-f)
   rw [← Ex_add hn hf]
   simp [Ex_zero]
 
-theorem coeff_Ex {f : MvPowerSeries ι K} (hf : constantCoeff f = 0) (n : ι →₀ ℕ) :
-    coeff n (Ex f) = ∑ k ∈ Finset.range (n.degree + 1), ((k.factorial : K))⁻¹ * coeff n (f ^ k) := by
-  exact coeff_Ex_eq_sum_inv_factorial_coeff_pow hf n
+alias coeff_Ex := _root_.Formalism.MainNotions.J.coeff_Ex_eq_sum_inv_factorial_coeff_pow
 
 end Exp
 
@@ -379,7 +362,6 @@ theorem exists_lift (O : Subring K) (A : MvPowerSeries ι K) (h : ∀ n, coeff n
   ext n
   first
   | rfl
-  | (erw [MvPowerSeries.coeff_map]; rfl)
 
 private theorem finsum_mem_subring (O : Subring K) {α : Type} (F : α → K) (hF : ∀ x, F x ∈ O) :
     ∑ᶠ x, F x ∈ O := by

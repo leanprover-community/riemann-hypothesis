@@ -2,10 +2,14 @@ module
 
 public import Formalism.SharpRestriction.LevelLetterCocycles.LocalSituation
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ConcretePeriodDeRhamModuleFinrankLe
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFinExtEmbeddingSplittingStatement
-public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FinrankPeriodFunctorCoeffBaseChangeStatement
+public import Formalism.SharpRestriction.LevelLetterCocycles.DataNLoc
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.ExistsFinExtEmbeddingSplitting
+public import Formalism.WeaklyAdmissibleFiltrations.Statement
+public import Mathlib.RingTheory.IsTensorProduct
+public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FinrankPeriodFunctorCoeffBaseChange
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.FontaineInequalityDcrisFiniteConcreteRings
 public import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.IsDeRhamOfIsCrystallineSpan
+import Development.AbelianVarietyTheory.Proofs.InertiaEigenvalues.StrictnessOfTied
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -59,29 +63,7 @@ noncomputable def extRep {G : Type} [Group G] {LL : Type} [Field LL] (LL' : Type
 
 theorem fontCore_of_tied (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P)
     (hT : LocTied l P AI) (K : FinExt l) : Formalism.MainNotions.LocalSituation.fontCore (P.PD K) := by
-  intro LL _ _ _ O _ _ hO A
-  haveI : FiniteDimensional ℚ_[l] LL := hO.2.1
-  obtain ⟨LL', ⟨f⟩, -, -⟩ := GlobalTheory.T.exists_finExt_embedding_splitting' l K LL
-  letI : Algebra LL ↥LL'.1 := f.toRingHom.toAlgebra
-  haveI : IsScalarTower ℚ_[l] LL ↥LL'.1 :=
-    IsScalarTower.of_algebraMap_eq fun x => (f.commutes x).symm
-  haveI : FiniteDimensional ℚ_[l] ↥LL'.1 := LL'.2
-  haveI : FiniteDimensional LL ↥LL'.1 := Module.Finite.of_restrictScalars_finite ℚ_[l] LL ↥LL'.1
-  obtain ⟨hV, -, ⟨hc, hcf⟩, ⟨hd, hdf⟩, -⟩ :=
-    GlobalTheory.T.finrank_periodFunctor_coeff_baseChange (P.PD K) LL ↥LL'.1 A.V (↥LL'.1 ⊗[LL] A.V) A.ρ (extRep ↥LL'.1 A.ρ)
-      (TensorProduct.mk LL ↥LL'.1 A.V 1) (TensorProduct.isBaseChange LL A.V ↥LL'.1)
-      (fun g x => by simp [extRep])
-  obtain ⟨h1, h2⟩ := GlobalTheory.Per.FontaineBound.fontaineLe_of_tied l P AI hT K LL'
-  obtain ⟨h3, h4⟩ := GlobalTheory.Per.TiedDdR.ddR_finrank_le l P AI hT K LL' _ (extRep ↥LL'.1 A.ρ)
-  refine ⟨⟨hcf.1 (h2 _ _), ?_⟩, ⟨hdf.1 h3, ?_⟩, fun hcr => ?_⟩
-  · rw [← hc, ← hV]; exact h1 _ _
-  · rw [← hd, ← hV]; exact h4
-  · have h5 : IsCrys (P.PD K) (extRep ↥LL'.1 A.ρ) := by
-      unfold IsCrys at hcr ⊢
-      rw [hc, hV]; exact hcr
-    have h6 := (GlobalTheory.Per.CrisDR.isDR_of_isCrys l P AI hT K LL' _ _ h5).1
-    unfold IsDR at h6 ⊢
-    rw [← hd, ← hV]; exact h6
+  apply GlobalTheory.FontaineExtensionCriteria.fontCore_of_tied <;> assumption
 
 theorem fontaine_bounds : ∀ D : D7, Formalism.MainNotions.LocalSituation.adm7 D :=
   fun D l _ K => fontCore_of_tied l (D.loc l) (D.locA l) (D.locT l) K

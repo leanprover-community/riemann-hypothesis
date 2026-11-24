@@ -158,10 +158,10 @@ theorem pad_matrix_lower_block (M : Matrix (Fin L.n ⊕ Fin L.n) (Fin L.n ⊕ Fi
   simp only [Matrix.toBlocks₂₁, Matrix.of_apply, Matrix.zero_apply]
   by_cases hi : i = L.i₀
   · rw [padM_out_row L M (not_inr L i hi)]
-    simp [Matrix.one_apply]
+    simp
   · by_cases hk : k = L.i₀
     · rw [padM_out_col L M _ (not_inl L k hk)]
-      simp [Matrix.one_apply]
+      simp
     · obtain ⟨a, rfl⟩ := (L.rng i).1 hi
       obtain ⟨a', rfl⟩ := (L.rng k).1 hk
       have h1 := padM_emS L M (Sum.inr a) (Sum.inl a')

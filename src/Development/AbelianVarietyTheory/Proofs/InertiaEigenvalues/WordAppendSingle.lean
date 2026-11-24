@@ -91,11 +91,11 @@ theorem Good.growth {F : GA E a → ℂ} (h : Good F) : Growth F := (h.2 []).2
 
 theorem word_cons (X : Lie E a) (l : List (Lie E a)) (φ : Sm E a) :
     GlobalTheory.GLFin.word (X :: l) φ = lie E a X (GlobalTheory.GLFin.word l φ) := by
-  simp [GlobalTheory.GLFin.word, Module.End.mul_apply]
+  simp [GlobalTheory.GLFin.word]
 
 theorem word_append_single (l : List (Lie E a)) (X : Lie E a) (φ : Sm E a) :
     GlobalTheory.GLFin.word (l ++ [X]) φ = GlobalTheory.GLFin.word l (lie E a X φ) := by
-  simp [GlobalTheory.GLFin.word, List.prod_append, Module.End.mul_apply]
+  simp [GlobalTheory.GLFin.word, List.prod_append]
 
 theorem Good.derivative {F : GA E a → ℂ} (h : Good F) (X : Lie E a) : Good (lieD X F) := by
   obtain ⟨hF, hl⟩ := h

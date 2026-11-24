@@ -65,12 +65,11 @@ def PublishedIntClos : Prop :=
 private theorem inj_lemma (K A : Type) [Field K] [CommRing A] [Algebra K A] [FiniteDimensional K A]
     [IsReduced A] (x : A) (hx : ∀ M : MaximalSpectrum A, x ∈ M.asIdeal) : x = 0 := by
   haveI : IsArtinianRing A := IsArtinianRing.of_finite K A
-  have h : IsNilpotent x := by
-    rw [nilpotent_iff_mem_prime]
-    intro J hJ
-    haveI := hJ
-    exact hx ⟨J, IsArtinianRing.isMaximal_of_isPrime J⟩
-  exact h.eq_zero
+  apply IsNilpotent.eq_zero
+  rw [nilpotent_iff_mem_prime]
+  intro J hJ
+  haveI := hJ
+  exact hx ⟨J, IsArtinianRing.isMaximal_of_isPrime J⟩
 
 private theorem idem_lemma_2 (K A : Type) [Field K] [CommRing A] [Algebra K A] [FiniteDimensional K A]
     (I : MaximalSpectrum A) : ∃ e : A, Ideal.Quotient.mk I.asIdeal e = 1 ∧
@@ -97,11 +96,9 @@ private theorem idem_lemma_2 (K A : Type) [Field K] [CommRing A] [Algebra K A] [
     exact Finset.prod_eq_one fun J hJ => hbI J (Finset.mem_filter.mp hJ).2
   · intro J hJ
     rw [Ideal.Quotient.eq_zero_iff_mem]
-    have hmem : J ∈ Finset.univ.filter (fun J => J ≠ I) :=
-      Finset.mem_filter.mpr ⟨Finset.mem_univ _, hJ⟩
+    have hmem : J ∈ Finset.univ.filter (fun J => J ≠ I) := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hJ⟩
     obtain ⟨c, hc⟩ := Finset.dvd_prod_of_mem b hmem
-    rw [hc]
-    exact Ideal.mul_mem_right _ _ (hbJ J hJ)
+    simpa [hc] using Ideal.mul_mem_right _ _ (hbJ J hJ)
 
 private theorem fld_lemma_3 (O K A : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field K]
     [Algebra O K] [IsFractionRing O K] [CharZero K] [CommRing A] [Algebra K A] [Algebra O A]
@@ -317,8 +314,7 @@ private theorem pt_lemma_6 (O K A : Type) [CommRing O] [IsDomain O] [IsDiscreteV
   exact ⟨h1, h2⟩
 
 theorem integralClosure_dvr' : PublishedIntClos := by
-  intro O K A _ _ _ _ _ _ _ _ _ _ _ _ _
-  exact ⟨fin_lemma_5 O K A, fun ζ => pt_lemma_6 O K A ζ⟩
+  exact fun (O K A : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing O] [Field K] [Algebra O K] [IsFractionRing O K] [CharZero K] [CommRing A] [Algebra K A] [Algebra O A] [IsScalarTower O K A] [FiniteDimensional K A] [IsReduced A] => ⟨fin_lemma_5 O K A, pt_lemma_6 O K A⟩
 
 def unif (X : PJ D B P j) (la : HeightOneSpectrum (𝓞 B.KO)) : X.Ol la :=
   Classical.choose (IsDiscreteValuationRing.exists_irreducible (X.Ol la))

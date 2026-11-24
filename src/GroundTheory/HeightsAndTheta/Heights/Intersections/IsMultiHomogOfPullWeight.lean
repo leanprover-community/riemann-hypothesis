@@ -168,7 +168,7 @@ theorem exists_elim {κ : K → K'} {v : (Σ k, ι k) → (Σ k', ι' k')} {P' :
         · simp
         · intro j _ hj
           have h : (j : ℕ) ≠ m := fun h => hj (Fin.ext h)
-          simp [Polynomial.coeff_monomial, Finsupp.single_apply, h]
+          simp [Polynomial.coeff_monomial, h]
         · simp
       rw [h0, Polynomial.coeff_zero] at hcoeff
       exact hlead (Ideal.Quotient.eq_zero_iff_mem.mp hcoeff.symm)

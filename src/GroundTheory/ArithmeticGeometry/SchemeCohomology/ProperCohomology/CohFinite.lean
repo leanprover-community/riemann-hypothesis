@@ -52,27 +52,6 @@ set_option maxSynthPendingDepth 3
 
 namespace GroundTheory.Arith.SchemeCoh
 
-section
-
-open AlgebraicGeometry CategoryTheory TopologicalSpace
-
-universe c236Ext c236Scheme
-
-private noncomputable def H.linearMapV436 {X : Scheme.{c236Scheme}}
-    [HasExt.{c236Ext} (Sheaf (Opens.grothendieckTopology X.toTopCat) AddCommGrpCat.{c236Scheme})]
-    (A : Type*) [CommRing A] [Algebra A Γ(X, ⊤)]
-    {F G : X.Modules} (φ : F ⟶ G) (n : ℕ) :
-    Sheaf.H.{c236Ext} (modulesAb F) n →ₗ[A] Sheaf.H.{c236Ext} (modulesAb G) n where
-  toFun := Sheaf.H.map.{c236Ext} (modulesAbMap φ) n
-  map_add' := map_add _
-  map_smul' a x := by
-    change Sheaf.H.map.{c236Ext} (modulesAbMap φ) n (a • x) =
-      a • Sheaf.H.map.{c236Ext} (modulesAbMap φ) n x
-    rw [H.smul_def, H.smul_def, ← Sheaf.H.map_comp_apply, ← Sheaf.H.map_comp_apply,
-      ← modulesAbMap_comp, ← modulesAbMap_comp, smulHom_comp]
-
-end
-
 open AlgebraicGeometry CategoryTheory Opposite TopologicalSpace Limits Abelian
 
 universe w' u
@@ -113,15 +92,15 @@ theorem FiniteH.of_shortExact₂ {S : ShortComplex X.Modules} (hS : S.ShortExact
     (h₁ : FiniteH.{w'} A S.X₁) (h₃ : FiniteH.{w'} A S.X₃) : FiniteH.{w'} A S.X₂ := fun p =>
   have := h₁ p
   have := h₃ p
-  let f := H.linearMapV436.{w'} A S.f p
-  let g := H.linearMapV436.{w'} A S.g p
+  let f := H.linearMap.{w'} A S.f p
+  let g := H.linearMap.{w'} A S.g p
   finite_of_exact_noetherian f g (H.exact₂.{w'} (shortExact_abSC hS) (n := p))
 
 theorem FiniteH.of_shortExact₁ {S : ShortComplex X.Modules} (hS : S.ShortExact)
     (h₂ : FiniteH.{w'} A S.X₂) (h₃ : FiniteH.{w'} A S.X₃) : FiniteH.{w'} A S.X₁ := by
   intro p
   have hS' := shortExact_abSC hS
-  let f := H.linearMapV436.{w'} A S.f
+  let f := H.linearMap.{w'} A S.f
   cases p with
   | zero =>
     have := h₂ 0

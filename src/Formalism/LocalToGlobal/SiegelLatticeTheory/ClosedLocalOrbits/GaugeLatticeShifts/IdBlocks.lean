@@ -718,7 +718,7 @@ theorem rk1_smul_right {V V' : Type*} [NormedAddCommGroup V] [InnerProductSpace 
     [NormedAddCommGroup V'] [InnerProductSpace ℂ V'] (v : V) (c : ℂ) (w : V') :
     rk1 v (c • w) = starRingEnd ℂ c • rk1 v w := by
   ext ξ
-  simp [rankOneInnerOperator_apply, inner_smul_left, smul_smul, mul_comm]
+  simp [rankOneInnerOperator_apply, smul_smul, mul_comm]
 
 theorem oot_eq {u : D.what₂.Word} {F0 : FlagG (VS D) D.R.rS ((Tu D u : ℕ) : D.host.E)}
     {what₂ : Finset (Submodule (𝓞 D.host.E) (VS D).V)} (t : GTerm X u u F0 F0 what₂ what₂)

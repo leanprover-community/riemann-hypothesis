@@ -105,9 +105,6 @@ theorem linIndep_of_gram (H : HermSp M V) (g : ι → V) (hG : IsUnit (H.gram g)
   rw [hc0]
   rfl
 
-private theorem hermSp_h_add_right (H : HermSp M V) (w x y : V) : H.h w (x + y) = H.h w x + H.h w y := by
-  rw [H.h_herm, H.h_add_left, map_add (f := _), ← H.h_herm, ← H.h_herm]
-
 end Lin
 
 section Dual
@@ -129,7 +126,7 @@ theorem dual_mem_sharp (H : HermSp M V) {r : ℕ} (t : Term V M r) {u : V}
     · exact M.L.O.one_mem
     · exact M.L.O.zero_mem
   | zero => rw [h_zero_right']; exact M.L.O.zero_mem
-  | add x y _ _ hx hy => rw [hermSp_h_add_right]; exact M.L.O.add_mem hx hy
+  | add x y _ _ hx hy => rw [_root_.PI.LocHerm.Glue.h_add_right]; exact M.L.O.add_mem hx hy
   | smul c x _ hx => rw [Subring.smul_def, h_smul_right']; exact M.L.O.mul_mem (cj_mem_O _ c.2) hx
 
 theorem mem_MMo_of_dual (H : HermSp M V) {r : ℕ} (t : Term V M r) (hG : IsUnit (H.gram (H.MMfam t)).det)

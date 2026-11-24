@@ -96,8 +96,6 @@ theorem stImA_of (p : TypX X) (h : LevelReductionImage X hb p) : StImA X hb p :=
   haveI : Fact (gOf p).Prime := ⟨gOf_prime X p⟩
   first
   | exact card_nuG (ZMod (gOf p)) D.R.rS D.R.k
-  | (rw [card_nuG]; unfold nnC ukC; rfl)
-  | (rw [card_nuG]; unfold nnC ukC)
 
 theorem stImB_of (u : D.what₂.Word) (p : TypX X) (h : ParabolicReductionImage X u p) : StImB X u p := by
   obtain ⟨K₀, hK₀, ρ₀, hρ₀, hker₀, A, hA, hkA, c, hc⟩ := h
@@ -125,7 +123,5 @@ theorem stImB_of (u : D.what₂.Word) (p : TypX X) (h : ParabolicReductionImage 
   haveI : Fact (gOf p).Prime := ⟨gOf_prime X p⟩
   first
   | exact card_sG (ZMod (gOf p)) D.R.rS D.R.k
-  | (rw [card_sG]; unfold glkC nnC; rfl)
-  | (rw [card_sG]; unfold glkC nnC)
 
 end MassDataIdxSteps

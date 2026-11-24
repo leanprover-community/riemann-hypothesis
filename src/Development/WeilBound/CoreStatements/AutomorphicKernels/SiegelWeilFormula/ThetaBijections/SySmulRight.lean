@@ -104,7 +104,7 @@ theorem incM_dbl {β : Type} [DecidableEq β] (J : Matrix β β E) : incM F (dbl
   ext (i | i) (j | j) <;> simp [incM, dbl]
 
 theorem incM_diagCols {β : Type} [DecidableEq β] : incM F (diagCols β : Matrix (β ⊕ β) β E) = diagCols β := by
-  ext (i | i) j <;> simp [incM, diagCols, Matrix.one_apply] <;> split_ifs <;> simp
+  ext (i | i) j <;> simp [incM, diagCols, Matrix.one_apply] <;> split_ifs
 
 namespace Adp
 
@@ -139,7 +139,7 @@ theorem sy_sum_left {ι : Type} (s : Finset ι) (a : ι → AF F) (v : ι → Ma
     (w' : Matrix (Fin d.m) (Fin d.n ⊕ Fin d.n) (AE F E)) : sy d (∑ i ∈ s, a i • v i) w' = ∑ i ∈ s, a i * sy d (v i) w' := by
 
   simp only [sy_eq, map_sum, map_smul, om, Prod.fst_sum, Prod.snd_sum, Prod.smul_fst, Prod.smul_snd, sum_dotProduct,
-  dotProduct_sum, smul_dotProduct, dotProduct_smul, smul_eq_mul, Finset.mul_sum, ← Finset.sum_sub_distrib]
+  dotProduct_sum, smul_dotProduct, dotProduct_smul, smul_eq_mul, ← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl fun i _ => ?_
   ring
 

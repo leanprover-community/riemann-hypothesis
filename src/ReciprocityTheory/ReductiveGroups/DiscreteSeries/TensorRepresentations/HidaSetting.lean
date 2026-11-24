@@ -97,7 +97,7 @@ theorem tset_actM_single {M : Type*} [AddCommGroup M] [Module ℂ M] (E : Fin n 
 theorem tset_conj_single (k : Matrix (Fin n) (Fin n) ℂ) (r d a b : Fin n) :
     (k * Matrix.single r d (1 : ℂ) * kᴴ : Matrix (Fin n) (Fin n) ℂ) a b = k a r * star (k b d) := by
   simp [Matrix.mul_apply, Matrix.single_apply, Matrix.conjTranspose_apply, ite_and, ite_mul,
-    Finset.sum_ite_eq, Finset.sum_ite_eq']
+    Finset.sum_ite_eq]
 
 theorem tset_unit {k : Matrix (Fin n) (Fin n) ℂ} (hu : k * kᴴ = 1) (s b : Fin n) :
     ∑ d, k s d * star (k b d) = if s = b then 1 else 0 := by

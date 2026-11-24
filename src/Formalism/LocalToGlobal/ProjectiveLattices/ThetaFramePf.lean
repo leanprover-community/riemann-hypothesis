@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.ExistsFibreSectionNowhereZeroOfPullbackTriple
 public import Formalism.LocalToGlobal.ProjectiveLattices.IntFrames
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.ValCalc
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ExtensionDescent.SecBaseChangeAnySt
@@ -102,37 +103,7 @@ theorem thf_secUp {L : LB X} {L' : LB X'} {F : X' ⟶ X} {w : LB.Iso L' (L.pull 
     (hL' : L'.IsLB) (σ : LB.Sec L') : ∃ s : LB.Sec (L.pull F), ∀ (Z : Scheme.{0}) (r : Z ⟶ X') (z : Z)
       (J : PUnit → L.ι) (k : L'.ι), r z ∈ (L.pull F).U J → r z ∈ L'.U k →
       gs r z _ (s.f J) = (gw w r z (J PUnit.unit) k).val * gs r z _ (σ.f k) := by
-  have hP : ∀ K : PUnit → L'.ι, (L'.pull (𝟙 X')).U K ≤ L'.U (K PUnit.unit) := fun K x hx => by
-    have hx' := (mem_pull (L := L') (F := 𝟙 X')).1 hx
-    simpa using hx'
-  obtain ⟨w', hw'⟩ : ∃ w' : LB.Iso (L.pull F) (L'.pull (𝟙 X')), ∀ (Y : Scheme.{0}) (f : Y ⟶ X') (y : Y) (j : L'.ι)
-      (K : PUnit → L.ι), f y ∈ L'.U j → f y ∈ (L.pull F).U K → gw w' f y j K = (gw w f y (K PUnit.unit) j)⁻¹ := by
-    refine ⟨⟨fun p => (res (le_inf inf_le_right (inf_le_left.trans (hP p.1))) (w.s (p.2, p.1 PUnit.unit)))⁻¹⟩, ?_⟩
-    intro Y f y j K hj hK
-    have hm : f y ∈ (L'.pull (𝟙 X')).U (fun _ => j) ⊓ (L.pull F).U K :=
-      ⟨(mem_pull (L := L') (F := 𝟙 X')).2 (by simpa using hj), hK⟩
-    unfold gw
-    dsimp only
-    exact (map_inv (gm f y _) _).trans (congrArg (·⁻¹) (gm_res f y _ hm _))
-  have hPG : PGen w' := by
-    intro Y f y j j' k k' hj hj' hk hk'
-    have hj0 : f y ∈ L'.U j := by simpa using hj
-    have hj0' : f y ∈ L'.U j' := by simpa using hj'
-    rw [hw' Y f y j k hj0 hk, hw' Y f y j' k' hj0' hk', gm_pull_g L F f y k k' hk hk', Category.comp_id,
-      hw Y f y (k PUnit.unit) (k' PUnit.unit) j j' (mem_pull.1 hk) (mem_pull.1 hk') hj0 hj0']
-    simp only [mul_inv, inv_inv]
-    ac_rfl
-  obtain ⟨s, hs⟩ := sec_down (L := L') (F := 𝟙 X') (L' := L.pull F) (w := w') hPG hL' (pull_isLB hL F)
-    (fun j => (Scheme.Hom.appLE (𝟙 X') (L'.U j) ((𝟙 X') ⁻¹ᵁ L'.U j) le_rfl).hom (σ.f j)) (by
-      intro y j j' hj hj'
-      rw [gs_appLE (𝟙 X') (L'.U j) ((𝟙 X') ⁻¹ᵁ L'.U j) le_rfl (𝟙 X') y hj,
-        gs_appLE (𝟙 X') (L'.U j') ((𝟙 X') ⁻¹ᵁ L'.U j') le_rfl (𝟙 X') y hj', Category.comp_id]
-      exact gs_compat σ (𝟙 X') y hj hj')
-  refine ⟨s, fun Z r z J k hJ hk => ?_⟩
-  have hk1 : (𝟙 X') (r z) ∈ L'.U k := by simpa using hk
-  have e := hs Z r z k J hk1 hJ
-  rw [gs_appLE (𝟙 X') (L'.U k) ((𝟙 X') ⁻¹ᵁ L'.U k) le_rfl r z hk, Category.comp_id, hw' Z r z k J hk hJ] at e
-  rw [e, ← _root_.mul_assoc, ← Units.val_mul, _root_.mul_inv_cancel, Units.val_one, _root_.one_mul]
+  apply GlobalTheory.SecTransport.exists_sec_along_iso <;> assumption
 
 end Calc
 

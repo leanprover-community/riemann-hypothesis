@@ -222,12 +222,4 @@ theorem formal_degree_inequality {ε : Fin n → Bool} {lam : Fin n → ℝ} {H 
     exact mul_le_mul_right s4 _
   exact (ENNReal.mul_le_mul_iff_right (ENNReal.ofReal_pos.mpr hpos).ne' ENNReal.ofReal_ne_top).1 s5
 
-theorem lintegral_fF_coeff_sq_le_finrank_div_fdeg {ε : Fin n → Bool} {lam : Fin n → ℝ} {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-    [CompleteSpace H] {σ : Matrix (Fin n) (Fin n) ℂ → (H →L[ℂ] H)} {T : KType ε (lowK ε lam)}
-    {j : T.V →L[ℂ] H} (hF : FData ε lam σ T j) {d : ℝ} (hd : Formalism.MainNotions.S.IsFdeg (muCD ε) σ d) :
-    ENNReal.ofReal (cPQ ε) *
-        ∫⁻ z : PCoord ε → ℂ, ENNReal.ofReal (‖⟪T.w, fF ε lam T (pmat z) T.w⟫_ℂ‖ ^ 2 * Jac z) ≤
-      ENNReal.ofReal ((Module.finrank ℂ T.V : ℝ) / d) :=
-  formal_degree_inequality hF hd
-
 end ReciprocityTheory.ChartRestriction.DS

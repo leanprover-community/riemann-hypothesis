@@ -82,7 +82,6 @@ theorem GPt_junk (D : D7) (u u' : D.what₂.Word) :
   all_goals first
     | rfl
     | (push_cast; rfl)
-    | norm_cast
 
 theorem GPt_ne_of_NGPt {D : D7} (TT : ℕ) (γ : PN.Pts D.host.E D.R.rS) (h : 1 ≤ NGPt D.host.rdE TT γ) :
     GPt TT γ ≠ 0 := by
@@ -105,7 +104,7 @@ theorem gval_occ (t : TauC Y u u')
     have hΛ := (Y.rowsOK u).1 t.lam t.mem
     show Formalism.L2.SG.TermDef.Gt _ _ _ t.toTerm.cls = _
     rw [← hmk]
-    exact Formalism.L2.SG.TermDef.Gt_mk ((Formalism.L2.SG.Closed.TermFun_holds D u u' (X.Fu u) t.lam hΛ).1) _
+    exact Formalism.L2.SG.TermDef.Gt_mk ((_root_.term_function_const D u u' (X.Fu u) t.lam hΛ).1) _
   · exfalso
     apply hne
     show GPt _ (toPts (Formalism.L2.SG.PairVal.ptOf t.toTerm)) = 0

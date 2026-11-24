@@ -108,7 +108,7 @@ private lemma tensV_single (E : Fin n → Fin n → Module.End ℂ M) (a b c : F
   simp only [tensV, LinearMap.pi_apply, LinearMap.add_apply, LinearMap.comp_apply, prj, LinearMap.proj_apply,
     Pi.add_apply]
   by_cases h2 : c' = a <;> by_cases h1 : c' = c <;> by_cases h3 : b = c <;>
-    simp_all [Pi.single_apply, ite_apply]
+    simp_all
 
 private lemma tensVd_single (E : Fin n → Fin n → Module.End ℂ M) (a b c : Fin n) (m : M) :
     tensVd E a b (Pi.single c m) = Pi.single c (E a b m) - (if a = c then Pi.single b m else 0) := by
@@ -116,7 +116,7 @@ private lemma tensVd_single (E : Fin n → Fin n → Module.End ℂ M) (a b c : 
   simp only [tensVd, LinearMap.pi_apply, LinearMap.sub_apply, LinearMap.comp_apply, prj, LinearMap.proj_apply,
     Pi.sub_apply]
   by_cases h2 : c' = b <;> by_cases h1 : c' = c <;> by_cases h3 : a = c <;>
-    simp_all [Pi.single_apply, ite_apply]
+    simp_all
 
 end GeneratorMatrix
 

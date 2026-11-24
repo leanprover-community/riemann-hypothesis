@@ -58,15 +58,12 @@ theorem fk_map_initMinor {R S : Type} [CommRing R] [CommRing S] (φ : R →+* S)
     (hs : s ≤ n) : map φ (Formalism.GradedWeylDivisibility.initMinor R I hs) = Formalism.GradedWeylDivisibility.initMinor S I hs := by
   unfold Formalism.GradedWeylDivisibility.initMinor
   rw [RingHom.map_det]
-  congr 1
-  ext p q
-  simp
+  exact congrArg Matrix.det (by ext p q; simp)
 
 theorem fk_map_bidet {R S : Type} [CommRing R] [CommRing S] (φ : R →+* S) {r n k : ℕ} (sz : Fin k → ℕ)
     (hsz : ∀ i, sz i ≤ n) (I : ∀ i, Fin (sz i) → Fin r) :
     map φ (Formalism.GradedWeylDivisibility.bideterminant R sz hsz I) = Formalism.GradedWeylDivisibility.bideterminant S sz hsz I := by
-  unfold Formalism.GradedWeylDivisibility.bideterminant
-  rw [map_prod]
+  simp only [Formalism.GradedWeylDivisibility.bideterminant, map_prod]
   exact Finset.prod_congr rfl fun i _ => fk_map_initMinor φ _ _
 
 theorem ssB_int (K : Type) [Field K] {n : ℕ} (ν : Fin n → ℕ) (m : Formalism.GradedWeylDivisibility.ssIdx n n ν) :
@@ -86,8 +83,6 @@ theorem bVVfun_int (K : Type) [Field K] {ι : Type} [Fintype ι] {n : ℕ} (lam 
   refine ⟨∏ τ, Formalism.GradedWeylDivisibility.blockEmb ℤ τ (Q τ), ?_⟩
   rw [map_prod]
   unfold bVVfun ten
-  refine Finset.prod_congr rfl fun τ _ => ?_
-  rw [fk_map_blockEmb]
-  exact congrArg _ (hQ τ)
+  exact Finset.prod_congr rfl fun τ _ => by rw [fk_map_blockEmb]; exact congrArg _ (hQ τ)
 
 end Formalism.L2.DIV

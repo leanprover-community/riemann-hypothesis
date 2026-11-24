@@ -191,7 +191,7 @@ theorem half_period_standard_CM (hcm : CmOK a b c d) :
 omit a b c d lam in
 theorem parity_key (r s k a c : ℤ) (hc : Even c) (ha : ¬ Even a) (h3 : ¬ (Even (-s * c - k * r) ∧ Even (r * a + s * (k + 1))))
     (h4 : ¬ (Even (r - (-s * c - k * r)) ∧ Even (s - (r * a + s * (k + 1))))) : Even (r - 1) ∧ Even s := by
-  simp [Int.even_sub, Int.even_add, Int.even_mul, Int.even_add_one, hc, ha] at h3 h4 ⊢
+  simp [Int.even_sub, Int.even_add, Int.even_mul, hc, ha] at h3 h4 ⊢
   simp only [← Int.not_even_iff_odd] at h3 h4 ⊢
   tauto
 

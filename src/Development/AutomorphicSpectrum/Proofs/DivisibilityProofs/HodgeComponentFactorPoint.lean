@@ -1,5 +1,6 @@
 module
 
+import Development.WeilBound.CoreStatements.HodgeTatePoints.MlLift
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHodgeLine
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -115,37 +116,7 @@ theorem eq_genPt_of_specializes {X : Scheme.{0}} {Ω : Type} [Field Ω] (ξ : Sp
 
 theorem mem_of_dense_of_noGen {P : Type} [TopologicalSpace P] [TopologicalSpace.NoetherianSpace P] [QuasiSober P]
     {U : Set P} (hU : IsOpen U) (hd : Dense U) {y : P} (hy : ∀ y', y' ⤳ y → y' = y) : y ∈ U := by
-  classical
-  have hCi : IsIrreducible (irreducibleComponent y) := isIrreducible_irreducibleComponent
-  have hCc : IsClosed (irreducibleComponent y) := isClosed_irreducibleComponent
-  have hgen := hCi.isGenericPoint_genericPoint_closure
-  rw [hCc.closure_eq] at hgen
-  have hη : hCi.genericPoint = y := hy _ (hgen.specializes mem_irreducibleComponent)
-  rw [hη] at hgen
-  have hmax := irreducibleComponent_mem_irreducibleComponents y
-  set D : Set P := ⋃₀ (irreducibleComponents P \ {irreducibleComponent y}) with hD
-  have hDc : IsClosed D := by
-    rw [hD, Set.sUnion_eq_biUnion]
-    exact Set.Finite.isClosed_biUnion
-      (TopologicalSpace.NoetherianSpace.finite_irreducibleComponents.subset Set.sdiff_subset)
-      fun C hC => isClosed_of_mem_irreducibleComponents C hC.1
-  have hyD : y ∉ D := by
-    rintro ⟨C, ⟨hC, hne⟩, hyC⟩
-    have hle : irreducibleComponent y ⊆ C := by
-      rw [← hgen.def]
-      exact (isClosed_of_mem_irreducibleComponents C hC).closure_subset_iff.2 (by simpa using hyC)
-    exact hne (le_antisymm (hmax.2 hC.1 hle) hle)
-  obtain ⟨u, huD, huU⟩ := hd.inter_open_nonempty Dᶜ hDc.isOpen_compl ⟨y, hyD⟩
-  have huC : u ∈ irreducibleComponent y := by
-    by_contra hne
-    refine huD ⟨irreducibleComponent u, ⟨irreducibleComponent_mem_irreducibleComponents u, ?_⟩,
-      mem_irreducibleComponent⟩
-    intro e
-    exact hne (by
-      have : u ∈ irreducibleComponent u := mem_irreducibleComponent
-      rw [Set.mem_singleton_iff.1 e] at this
-      exact this)
-  exact (hgen.specializes huC).mem_open hU huU
+  apply PositivityTheory.HtPt.Ml.mem_of_dense_of_max <;> assumption
 
 theorem noetherianSpace_baseChange {X : Scheme.{0}} {O F : Type} [CommRing O] [Field F] {s : X ⟶ Sp O}
     (hs : IsProjOver s) (β : O →+* F) : TopologicalSpace.NoetherianSpace ↥(pullback s (spMap β)) := by

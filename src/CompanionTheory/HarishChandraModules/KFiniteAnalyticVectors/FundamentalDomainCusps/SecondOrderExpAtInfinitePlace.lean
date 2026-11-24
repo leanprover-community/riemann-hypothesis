@@ -61,13 +61,6 @@ section Loc
 
 variable {n : ℕ} {ε : Fin n → Bool}
 
-theorem Jm_hermC (ε : Fin n → Bool) : (Formalism.REAL.Jm ε)ᴴ = Formalism.REAL.Jm ε := by
-  unfold Formalism.REAL.Jm
-  rw [diagonal_conjTranspose]
-  congr 1
-  funext a
-  by_cases h : ε a <;> simp [h]
-
 theorem Jm_det (ε : Fin n → Bool) : IsUnit (Formalism.REAL.Jm ε).det := by
   unfold Formalism.REAL.Jm
   rw [det_diagonal, isUnit_iff_ne_zero, Finset.prod_ne_zero_iff]
@@ -291,8 +284,8 @@ theorem nilpotent_cover_of : Transp → GamSub → NilpAlg → NilpRep → NCove
   have hperp := (hT I).2.2.2.1
   have hWv : ∀ v, Isot (Formalism.REAL.Jm (I.ε v)) (Wv I W v) := fun v => by
     rw [Isot, ← hperp]; exact Submodule.span_mono (Set.image_mono hW)
-  have A := fun v => hA ℂ I.n _ _ (Jm_hermC (I.ε v)) (Jm_det _) (hWv v)
-  have R := fun v => hR ℂ I.n _ _ (Jm_hermC (I.ε v)) (Jm_det _) (hWv v) d _ (Wv_span I v w)
+  have A := fun v => hA ℂ I.n _ _ (_root_.Formalism.REAL.Jm_conjTranspose (I.ε v)) (Jm_det _) (hWv v)
+  have R := fun v => hR ℂ I.n _ _ (_root_.Formalism.REAL.Jm_conjTranspose (I.ε v)) (Jm_det _) (hWv v) d _ (Wv_span I v w)
   choose X hX hmX using fun v => (A v).2.1 (uMat (m v)) (m v).2 (hm v)
   choose b hb hXb using fun v => (R v).2.2.1 _ (hX v)
   obtain ⟨β, hβ, hβr⟩ := split_cov I hc2 hk0 b fun v i => by rw [hperp]; exact hb v i

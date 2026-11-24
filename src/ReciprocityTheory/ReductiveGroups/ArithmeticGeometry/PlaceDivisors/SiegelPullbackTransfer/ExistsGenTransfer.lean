@@ -66,14 +66,12 @@ theorem unit_ext {X : Scheme.{0}} {O : X.Opens} (s t : Γ(X, O)ˣ)
   intro x hx
   first
   | exact congrArg Units.val (h x hx)
-  | simpa [gU] using congrArg Units.val (h x hx)
 
 theorem gU_res {X : Scheme.{0}} {O O' : X.Opens} (hle : O' ≤ O) (x : X) (hx : x ∈ O')
     (s : Γ(X, O)ˣ) : gU x hx (res hle s) = gU x (hle hx) s := by
   apply Units.ext
   first
   | exact congrArg (fun φ => φ.hom s.val) (X.presheaf.germ_res (homOfLE hle) x hx)
-  | (simp [gU, res]; done)
 
 theorem gU_pullU {X Y : Scheme.{0}} (f : Y ⟶ X) (U : X.Opens) (y : Y) (hy : y ∈ f ⁻¹ᵁ U)
     (x : Γ(X, U)ˣ) :
@@ -82,7 +80,6 @@ theorem gU_pullU {X Y : Scheme.{0}} (f : Y ⟶ X) (U : X.Opens) (y : Y) (hy : y 
   first
   | (simp [gU, pullU]; done)
   | exact (congrArg (fun φ => φ.hom x.val) (Scheme.Hom.germ_stalkMap f U y hy)).symm
-  | exact congrArg (fun φ => φ.hom x.val) (Scheme.Hom.germ_stalkMap f U y hy)
 
 theorem pullU_res' {X Y : Scheme.{0}} (f : Y ⟶ X) {U V : X.Opens} (h : V ≤ U) (x : Γ(X, U)ˣ) :
     pullU f V (res h x) = res (fun _ hy => h hy : f ⁻¹ᵁ V ≤ f ⁻¹ᵁ U) (pullU f U x) := by
@@ -140,7 +137,6 @@ private theorem pull_g_lemma_6 (L : LB X) (a : Y ⟶ X) (i j : PUnit.{1} → L.�
   simp only [Fintype.prod_subsingleton _ PUnit.unit, zpow_one]
   first
   | rfl
-  | skip
 
 theorem germ_pull (L : LB X) (a : Y ⟶ X) (i j : PUnit.{1} → L.ι) (y : Y)
     (hy : y ∈ (L.pull a).U i ⊓ (L.pull a).U j)
@@ -149,8 +145,7 @@ theorem germ_pull (L : LB X) (a : Y ⟶ X) (i j : PUnit.{1} → L.ι) (y : Y)
   rw [pull_g_lemma_6 L a i j]
   exact gU_res _ y hy _
 
-theorem pull_inf_le (L : LB X) (a : Y ⟶ X) (i j : PUnit.{1} → L.ι) :
-    (L.pull a).U i ⊓ (L.pull a).U j ≤ a ⁻¹ᵁ (L.U (i PUnit.unit) ⊓ L.U (j PUnit.unit)) := fun y hy => ⟨(mem_wchart_pu L a i y).1 hy.1, (mem_wchart_pu L a j y).1 hy.2⟩
+alias pull_inf_le := _root_.ReciprocityTheory.ChartRestriction.G.Pdiv.PullbackComparison.pull_le_lemma_5
 
 theorem pull_g_eq (L : LB X) (a : Y ⟶ X) (i j : PUnit.{1} → L.ι) :
     (L.pull a).g i j = res (pull_inf_le L a i j) (pullU a _ (L.g (i PUnit.unit) (j PUnit.unit))) := pull_g_lemma_6 L a i j
@@ -160,7 +155,6 @@ theorem base_eq {A B B' C : Scheme.{0}} {f : A ⟶ B} {g : A ⟶ B'} {f' : B ⟶
     f'.base (f.base z) = g'.base (g.base z) := by
   first
   | exact congrArg (fun φ : A ⟶ C => φ.base z) h
-  | simpa using congrArg (fun φ : A ⟶ C => φ.base z) h
 
 private theorem gU_pullU_comp_lemma (b : Z ⟶ Y) (a : Y ⟶ X) (U : X.Opens) (x : Γ(X, U)ˣ) (y : Z)
     (hy : y ∈ (b ≫ a) ⁻¹ᵁ U) :

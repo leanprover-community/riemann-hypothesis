@@ -65,12 +65,7 @@ variable {X Y Z : Scheme.{0}} {L : LB X} {K K' K₂ K₂' : Type} [Fintype K] [F
   {φ : K → (Y ⟶ X)} {ε : K → ℤ} {φ' : K' → (Y ⟶ X)} {ε' : K' → ℤ}
   {φ₂ : K₂ → (Y ⟶ X)} {ε₂ : K₂ → ℤ} {φ₂' : K₂' → (Y ⟶ X)} {ε₂' : K₂' → ℤ}
 
-private lemma res_res_lemma {A : Scheme.{0}} {U V W : A.Opens} (h1 : V ≤ U) (h2 : W ≤ V)
-    (a : Γ(A, U)ˣ) : res h2 (res h1 a) = res (h2.trans h1) a := by
-  ext
-  simp only [res, Units.coe_map, MonoidHom.coe_coe]
-  rw [← RingHom.comp_apply, ← CommRingCat.hom_comp, ← Functor.map_comp]
-  try rfl
+private alias res_res_lemma := _root_.ReciprocityTheory.ChartRestriction.G.DVR.res_res'
 
 private lemma res_eq_res_of_le_of_res_eq {A : Scheme.{0}} {U V V0 O : A.Opens} {a : Γ(A, U)ˣ} {b : Γ(A, V)ˣ}
     {p : V0 ≤ U} {q : V0 ≤ V} (h : res p a = res q b) (hO : O ≤ V0) (r : O ≤ U) (s : O ≤ V) :
@@ -232,7 +227,6 @@ lemma shape_pull_comp {W : Scheme.{0}} (g : Z ⟶ Y) (g' : W ⟶ Z) {U : Y.Opens
   simp only [pullU_res_eq_res_pullU', res_res_lemma]
   first
     | exact (res_res_lemma _ _ _).trans (pullU_comp_lemma _ _ _ _ _)
-    | exact (res_res_lemma _ _ _).trans ((res_res_lemma _ _ _).trans (pullU_comp_lemma _ _ _ _ _))
 
 lemma corr_pullGen_comp {W : Scheme.{0}} (t : LB.Gen (LB.LinComb L φ ε)) (g : Z ⟶ Y) (g' : W ⟶ Z) :
     LB.Gen.Corr L _ ε _ ε (LB.pullGen L _ ε (LB.pullGen L φ ε t g) g') (LB.pullGen L φ ε t (g' ≫ g)) := by

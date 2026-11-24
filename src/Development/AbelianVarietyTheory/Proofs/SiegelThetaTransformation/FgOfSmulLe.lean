@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.SiegelThetaTransformation.ExistsEvenRepsTensorLatticeAndSum
 public import Development.AbelianVarietyTheory.Definitions.SpanningFamilies.IsBaseClassLevelAdapted
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -68,22 +69,7 @@ theorem mem_std (v : Fin n → E) : v ∈ Formalism.L2.Pj.stdLat E n ↔ ∀ i, 
   exact forall_congr' fun i => mem_range_iff (v i)
 
 theorem std_eq : Formalism.L2.Pj.stdLat E n = stdL E n := by
-  apply le_antisymm
-  · intro v hv
-    rw [mem_std] at hv
-    have : v = ∑ i, (⟨v i, hv i⟩ : 𝓞 E) • (Pi.single i 1 : Fin n → E) := by
-      ext j
-      simp [Finset.sum_apply, Pi.single_apply, Algebra.smul_def]
-      rfl
-    rw [this]
-    exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
-  · refine Submodule.span_le.2 ?_
-    rintro _ ⟨i, rfl⟩
-    rw [SetLike.mem_coe, mem_std]
-    intro j
-    by_cases h : j = i
-    · subst h; simpa using isIntegral_one
-    · simpa [Pi.single_apply, h] using isIntegral_zero
+  apply GlobalTheory.Dict.ZLat.stdLat_eq <;> assumption
 
 theorem span_smul_le (k : ℕ) (A B : Lt E n) :
     Ideal.span {(k : 𝓞 E)} • A ≤ B ↔ ∀ v ∈ A, (k : E) • v ∈ B := by

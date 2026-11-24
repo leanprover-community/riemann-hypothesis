@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.MeasurePreservingReindex
 public import Development.AbelianVarietyTheory.BlockTheory.SiegelWeilLocal.OrthonormalPlaceBasis
 public import Development.AbelianVarietyTheory.Definitions.SemilocalFrames.HermitianFormUnitaryOneOne
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
@@ -134,33 +135,7 @@ theorem expU_inv {n : ℕ} {ε : Fin n → Bool} (X : gLie ε) (t : ℝ) : (expU
   rw [← expU_add, add_neg_cancel, zero_smul, expU_zero]
 
 theorem continuous_expU {n : ℕ} {ε : Fin n → Bool} (X : gLie ε) : Continuous fun t : ℝ => expU (t • X) := by
-  have hcexp : ∀ A : Matrix (Fin n) (Fin n) ℂ, Continuous fun t : ℝ => NormedSpace.exp (t • A) := by
-    intro A
-    letI : NormedRing (Matrix (Fin n) (Fin n) ℂ) := Matrix.linftyOpNormedRing
-    letI : NormedAlgebra ℝ (Matrix (Fin n) (Fin n) ℂ) := Matrix.linftyOpNormedAlgebra
-    exact (differentiable_exp_smul_const ℝ A).continuous
-  apply Continuous.subtype_mk
-  rw [Units.continuous_iff]
-  constructor
-  · have e : (fun t : ℝ => (((expU (t • X) : Formalism.REAL.UJ ε) : (Matrix (Fin n) (Fin n) ℂ)ˣ) :
-        Matrix (Fin n) (Fin n) ℂ)) = fun t : ℝ => NormedSpace.exp (t • X.1) := by
-      funext t
-      rw [← Submodule.coe_smul]
-      exact uMat_expU (t • X)
-    have h := hcexp X.1
-    rw [← e] at h
-    exact h
-  · have e : (fun t : ℝ => ((((expU (t • X) : Formalism.REAL.UJ ε) : (Matrix (Fin n) (Fin n) ℂ)ˣ)⁻¹ :
-        (Matrix (Fin n) (Fin n) ℂ)ˣ) : Matrix (Fin n) (Fin n) ℂ)) =
-        fun t : ℝ => NormedSpace.exp (t • (-X.1)) := by
-      funext t
-      have h1 := congrArg (fun g : Formalism.REAL.UJ ε => ((g : (Matrix (Fin n) (Fin n) ℂ)ˣ) :
-        Matrix (Fin n) (Fin n) ℂ)) (expU_inv X t)
-      refine h1.trans ((uMat_expU _).trans ?_)
-      rw [Submodule.coe_smul, neg_smul, smul_neg]
-    have h := hcexp (-X.1)
-    rw [← e] at h
-    exact h
+  apply GlobalTheory.SobolevBound.continuous_expU <;> assumption
 
 theorem hasDerivAt_exp_mul_entry {n : ℕ} (X Y : Matrix (Fin n) (Fin n) ℂ) (t : ℝ) (i j : Fin n) :
     HasDerivAt (fun s : ℝ => (NormedSpace.exp (s • X) * Y) i j) ((X * (NormedSpace.exp (t • X) * Y)) i j) t := by
@@ -204,7 +179,7 @@ theorem hasDerivAt_orbit_average : ∀ (B : RowsAut) (F : (InfinitePlace B.I.F �
       map_smul' := by
         intro r M
         funext v i j
-        simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply, Complex.real_smul, Finset.mul_sum]
+        simp only [Pi.smul_apply, RingHom.id_apply, Complex.real_smul, Finset.mul_sum]
         exact Finset.sum_congr rfl fun k _ => mul_left_comm _ _ _ }
   let L := LinearMap.toContinuousLinearMap Lm
   let F' : (InfinitePlace B.I.F → Fin B.I.n → Fin B.I.n → ℂ) → ℂ := fun M => fderiv ℝ F M (L M)

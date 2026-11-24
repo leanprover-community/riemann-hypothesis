@@ -136,11 +136,6 @@ section Loc
 
 variable {K : Type} [Field K] [NumberField K]
 
-theorem nb_mem_span_ow {V : Type} [AddCommGroup V] [Module (𝓞 K) V] (w : HeightOneSpectrum (𝓞 K)) [Module (Ow w) V]
-    [IsScalarTower (𝓞 K) (Ow w) V] (T : Set V) (x : V) :
-    x ∈ Submodule.span (Ow w) T ↔ x ∈ Formalism.HermitianLatticesTheory.localization₂ w.asIdeal (Submodule.span (𝓞 K) T) :=
-  GlobalTheory.LocalSpanCriterion.span_local_iff w T x
-
 variable {ι : Type} [Fintype ι] {n : ℕ}
 
 theorem nb_nabStd_eq (lam : ι → DomWeight n) :
@@ -168,14 +163,14 @@ theorem nb_mem_nabW (w : HeightOneSpectrum (𝓞 K)) (lam : ι → DomWeight n) 
   have h : (fun τ => (nablaSq (Ow w) n (lam τ)).map
       (mapAlgHom (σ := Fin n × Fin n) (Algebra.ofId (Ow w) K)).toLinearMap) =
       fun τ => Submodule.span (Ow w) (bideterminantsOfShape K (lam τ).natW) := funext fun τ => nb_map_nablaSq (Ow w) (lam τ)
-  rw [nbNabW, h, nb_tensorLat_span, nb_nabStd_eq, nb_mem_span_ow]
+  rw [nbNabW, h, nb_tensorLat_span, nb_nabStd_eq, _root_.GlobalTheory.LocalSpanCriterion.span_local_iff]
 
 theorem nb_mem_delW (w : HeightOneSpectrum (𝓞 K)) (lam : ι → DomWeight n) (x : Pol K ι n) :
     x ∈ nbDelW w lam ↔ x ∈ Formalism.HermitianLatticesTheory.localization₂ w.asIdeal (delStd K lam) := by
   have h : (fun τ => (delSq (Ow w) n (lam τ)).map
       (mapAlgHom (σ := Fin n × Fin n) (Algebra.ofId (Ow w) K)).toLinearMap) =
       fun τ => Submodule.span (Ow w) (nbWord K (lam τ).natW) := funext fun τ => nb_map_delSq (Ow w) (lam τ)
-  rw [nbDelW, h, nb_tensorLat_span, nb_delStd_eq, nb_mem_span_ow]
+  rw [nbDelW, h, nb_tensorLat_span, nb_delStd_eq, _root_.GlobalTheory.LocalSpanCriterion.span_local_iff]
 
 end Loc
 

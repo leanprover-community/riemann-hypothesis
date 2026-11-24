@@ -77,7 +77,6 @@ theorem sqrt_mem_Kur {l : ℕ} [Fact l.Prime] (hl : l ≠ 2) {d : ℕ} (hld : ¬
   have hc : -(d : ℂ_[l]) ∈ MaximalUnramifiedExtension l := by
     first
     | exact neg_mem (natCast_mem (MaximalUnramifiedExtension l) d)
-    | exact neg_mem (by simpa using SubfieldClass.ratCast_mem (MaximalUnramifiedExtension l) (d : ℚ))
   have h2 : ‖s‖ ^ 2 = 1 := by rw [← norm_pow, hs, norm_neg, hd]
   have hy : ‖s‖ = 1 := by
     have h0 := norm_nonneg s
@@ -100,7 +99,6 @@ theorem kur_le {l : ℕ} [Fact l.Prime] (hl : l ≠ 2) {d : ℕ} (hld : ¬ l ∣
   have hK : FiniteDimensional ℚ_[l] (IntermediateField.adjoin ℚ_[l] {s}) := by
     first
     | exact IntermediateField.adjoin.finiteDimensional (Algebra.IsIntegral.isIntegral s)
-    | exact IntermediateField.adjoin.finiteDimensional (Algebra.IsAlgebraic.isAlgebraic s).isIntegral
 
   have hq2 : 2 ≤ ReciprocityTheory.DiscreteGroups.LocalClassField.qK l (IntermediateField.adjoin ℚ_[l] {s}) := by
     by_contra hlt
@@ -125,7 +123,6 @@ theorem kur_le {l : ℕ} [Fact l.Prime] (hl : l ≠ 2) {d : ℕ} (hld : ¬ l ∣
     have h3 : ReciprocityTheory.DiscreteGroups.LocalClassField.qK l (IntermediateField.adjoin ℚ_[l] {s}) ∣ ReciprocityTheory.DiscreteGroups.LocalClassField.qK l (IntermediateField.adjoin ℚ_[l] {s}) ^ n - (ReciprocityTheory.DiscreteGroups.LocalClassField.qK l (IntermediateField.adjoin ℚ_[l] {s}) ^ n - 1) := by
       first
       | exact Nat.dvd_sub h1 hdvd
-      | exact Nat.dvd_sub (by omega) h1 hdvd
     rw [Nat.sub_sub_self hpos] at h3
     have := Nat.le_of_dvd one_pos h3
     omega
@@ -136,7 +133,6 @@ theorem kur_le {l : ℕ} [Fact l.Prime] (hl : l ≠ 2) {d : ℕ} (hld : ¬ l ∣
     have h3 : l ∣ ReciprocityTheory.DiscreteGroups.LocalClassField.qK l (IntermediateField.adjoin ℚ_[l] {s}) ^ k - (ReciprocityTheory.DiscreteGroups.LocalClassField.qK l (IntermediateField.adjoin ℚ_[l] {s}) ^ k - 1) := by
       first
       | exact Nat.dvd_sub h1 h
-      | exact Nat.dvd_sub (by omega) h1 h
     rw [Nat.sub_sub_self hpos] at h3
     exact (Fact.out : l.Prime).one_lt.ne' (Nat.dvd_one.1 h3)
 

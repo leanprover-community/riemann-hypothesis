@@ -217,7 +217,7 @@ theorem relH_eq (d : SD σ) (η : E) (hη : η ≠ 0) (β : nA σ d.Y d.b) :
   have h1 : Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (F := F) (E := E) (AF F) η * Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (F := F) (AF F) η⁻¹ = 1 := by
     rw [← map_mul, mul_inv_cancel₀ hη, map_one]
   ext i j
-  simp [relH, incM, Matrix.mul_apply, Matrix.scalar_apply, Matrix.diagonal_apply, ← mul_assoc, h1]
+  simp [relH, incM, Matrix.mul_apply, Matrix.scalar_apply, Matrix.diagonal_apply, ← mul_assoc]
   rw [mul_comm (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.inclR (F := F) (E := E) (AF F) η⁻¹), h1, one_mul]
 
 theorem rel_Td (d : SD σ) (ε : ℤˣ)

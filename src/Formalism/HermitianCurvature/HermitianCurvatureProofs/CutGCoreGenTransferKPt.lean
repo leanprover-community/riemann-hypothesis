@@ -298,7 +298,7 @@ theorem frame_const {z z' : Fin (2 * r + k + 1) → ℂ} {μsec : ℂ → Matrix
     rw [h0] at h1
     rw [herm_conj x (Bs a), ← h1, star_zero]
   refine ⟨hBw, hon, fun a v hv => ?_⟩
-  simp only [List.mem_cons, List.mem_singleton, List.not_mem_nil, or_false] at hv
+  simp only [List.mem_cons, List.not_mem_nil, or_false] at hv
   rcases hv with rfl | rfl
   · exact hxB a
   · exact hz'0 a
@@ -357,7 +357,6 @@ theorem gauge_kappa_pointwise_holds : GTKPt := by
   set n := Module.finrank ℂ Wq with hn
   set b := hC.eigenvectorBasis hn.symm with hbdef
   set lam : Fin n → ℝ := hC.eigenvalues hn.symm with hlamdef
-  have hCb : ∀ i, C (b i) = (lam i : ℂ) • b i := fun i => hC.apply_eigenvectorBasis hn.symm i
 
   classical
   let ρ₀ : M.Ty P := Classical.arbitrary _

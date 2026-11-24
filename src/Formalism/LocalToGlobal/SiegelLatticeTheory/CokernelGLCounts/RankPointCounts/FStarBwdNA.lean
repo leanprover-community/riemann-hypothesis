@@ -56,7 +56,7 @@ variable {E : Type} [Field E] [NumberField E] [StarRing E] (S : HSpace E)
 
 def SD (Λ : Submodule (𝓞 E) S.V) : Prop := ∀ x, x ∈ Λ ↔ ∀ y ∈ Λ, IsIntegral ℤ (S.hT y x)
 
-theorem hsw (x y : S.V) : S.hT y x = star (S.hT x y) := PI.ScalarPairDr.W.hT_swap S x y
+alias hsw := _root_.PI.PairCorankPos.W.hT_swap
 
 theorem hT_smulL (a : E) (x v : S.V) : S.hT (a • x) v = star a * S.hT x v := by
   rw [LinearMap.map_smulₛₗ, LinearMap.smul_apply, smul_eq_mul, starRingEnd_apply]

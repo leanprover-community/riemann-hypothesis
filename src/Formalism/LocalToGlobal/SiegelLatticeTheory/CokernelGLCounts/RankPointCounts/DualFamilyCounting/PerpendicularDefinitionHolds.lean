@@ -90,7 +90,6 @@ theorem hT_fam (a b : Fin (D.R.rS + 1) ⊕ Fin (D.R.rS + 1)) :
     rw [← starRingEnd_apply]
     first
       | exact (VS D).herm.eq x y
-      | exact (VS D).herm x y
   have hze : ∀ j, (VS D).hT F0.z (F0.e j) = 0 := fun j => by rw [← hs, F0.z_orth, star_zero]
   have hze' : ∀ j, (VS D).hT F'.fl.z (F'.fl.e j) = 0 := fun j => by rw [← hs, F'.fl.z_orth, star_zero]
   rcases a with a | a <;> rcases b with b | b

@@ -138,7 +138,7 @@ theorem proof : IncidenceZeroLocus.Statement := by
       exact fun q hq => hle hq
     obtain ⟨i, hi⟩ := hno y hy0 hyQ
     have h := hy _ (Ideal.subset_span ⟨Sum.inr i, rfl⟩)
-    simp [G, φv, coe_aeval_eq_eval] at h
+    simp [G, φv] at h
     exact hi h
   have hrad : ∀ j, ∃ m, (X j : MvPolynomial (Fin n) Ω) ^ m ∈ Jv := by
     intro j
@@ -169,7 +169,7 @@ theorem proof : IncidenceZeroLocus.Statement := by
   let Mf : Finset (Fin n →₀ ℕ) :=
     (Finset.range (N + 1)).biUnion fun d => (Finset.univ : Finset (Fin n)).finsuppAntidiag d
   have memMf : ∀ m, m ∈ Mf ↔ m.degree ≤ N := fun m => by
-    simp [Mf, Finset.mem_finsuppAntidiag, Finsupp.degree_eq_sum, Nat.lt_succ_iff]
+    simp [Mf, Finset.mem_finsuppAntidiag, Finsupp.degree_eq_sum]
   let c : (S ⊕ Fin k) × Mf → MvPolynomial (Fin n) (MvPolynomial (Fin k × Fin n) F) :=
     fun p => homogeneousComponent N (monomial (p.2 : Fin n →₀ ℕ) 1 * G p.1)
   let Mx : Matrix Rows ((S ⊕ Fin k) × Mf) (MvPolynomial (Fin k × Fin n) F) :=

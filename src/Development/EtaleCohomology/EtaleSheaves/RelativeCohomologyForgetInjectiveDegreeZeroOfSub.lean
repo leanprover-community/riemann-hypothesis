@@ -1,5 +1,6 @@
 module
 
+import Development.EtaleCohomology.EtaleSheaves.EtaleStandingHypothesesImplyRestrictionAxiom
 public import Development.EtaleCohomology.EtaleSheaves.LeafInj0Of
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -69,45 +70,7 @@ theorem res_comp {q : ℕ} {i : ℤ} {X Y Z : Scheme.{0}} (f : X ⟶ Y) (g : Y �
 
 theorem relative_cohomology_forget_injective_degree_zero_of_subsingleton (R : Type) [CommRing R] (F : Shv R) {U E : Spc} (f : U ⟶ E)
     (hU : Subsingleton (H R U F (-1))) (y : Hrel R f F 0) (hy : fgt R f F 0 y = 0) : y = 0 := by
-  obtain ⟨z, rfl⟩ := y.mk_surjective
-  change CohomologyClass.mk (zcomp (Cocycle.ofHom (mappingCone.inr ((chains R).map f))) z (zero_add 0)) = 0 at hy
-  rw [CohomologyClass.mk_eq_zero_iff] at hy
-  obtain ⟨m, hm, γ, hγ⟩ := hy
-  obtain rfl : m = -1 := by omega
-  simp only [zcomp, Cocycle.mk_coe, Cocycle.ofHom_coe] at hγ
-  set φ := (chains R).map f
-  let w : Cochain (mappingCone φ) (res R F) (-1) := mappingCone.descCochain φ (0 : Cochain ((chains R).obj U) (res R F) (-2)) γ (by norm_num)
-  let z' : Cochain (mappingCone φ) (res R F) 0 := z.1 - δ (-1) 0 w
-  have hz'c : δ 0 1 z' = 0 := by
-    simp [z', δ_δ]
-  have hinr : (Cochain.ofHom (mappingCone.inr φ)).comp z' (zero_add 0) = 0 := by
-    have h1 : δ (-1) 0 ((Cochain.ofHom (mappingCone.inr φ)).comp w (zero_add _)) =
-        (Cochain.ofHom (mappingCone.inr φ)).comp (δ (-1) 0 w) (zero_add 0) := by
-      rw [δ_ofHom_comp]
-    simp only [z', Cochain.comp_sub, ← h1, w, mappingCone.inr_descCochain]
-    rw [hγ, sub_self]
-  let β : Cochain ((chains R).obj U) (res R F) (-1) := (mappingCone.inl φ).comp z' (by norm_num)
-  have hβc : δ (-1) 0 β = 0 := by
-    simp only [β]
-    rw [δ_comp _ _ (by norm_num) 0 1 0 (by norm_num) (by norm_num) (by norm_num), mappingCone.δ_inl, hz'c]
-    simp only [Cochain.comp_zero, smul_zero, add_zero, Cochain.ofHom_comp]
-    rw [Cochain.comp_assoc_of_first_is_zero_cochain, hinr]
-    simp
-  have hβ0 : CohomologyClass.mk (Cocycle.mk β 0 (by norm_num) hβc) = (0 : H R U F (-1)) := Subsingleton.elim _ _
-  rw [CohomologyClass.mk_eq_zero_iff] at hβ0
-  obtain ⟨m', hm', ε, hε⟩ := hβ0
-  obtain rfl : m' = -2 := by omega
-  have hz' : z' = δ (-1) 0 (mappingCone.descCochain φ ε 0 (by norm_num)) := by
-    rw [mappingCone.δ_descCochain _ _ _ _ 0 (by norm_num)]
-    rw [mappingCone.ext_cochain_from_iff φ (-1) 0 (by norm_num)]
-    constructor
-    · simp [β] at hε
-      simp [hε, β]
-    · simp [hinr]
-  rw [CohomologyClass.mk_eq_zero_iff]
-  refine ⟨-1, by norm_num, w + mappingCone.descCochain φ ε 0 (by norm_num), ?_⟩
-  rw [δ_add, ← hz']
-  simp [z']
+  apply LateralTheory.E.LeafInj0WPf.fgtInj0 <;> assumption
 
 theorem secTr (hH : Hyps) (q : ℕ) [NeZero q] (i : ℤ) {B W Y : Scheme.{0}} (ι : W ⟶ B) (P : Y ⟶ B) (U : B.Etale)
     (c : Hrel (ZMod q) (sch.map (prB ι U)) (tw q i) 0) : ∃ s : Sec (tw q i) U.left,

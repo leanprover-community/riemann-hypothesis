@@ -1,5 +1,6 @@
 module
 
+import Formalism.PeriodIntegrals.UnitaryGroupMassFormula.ArchimedeanOrbitMeasures.SqChartCore
 public import Formalism.UnipotentAdelicQuotients.SWXSDefs
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -71,17 +72,7 @@ theorem exists_coord_pi {X : Type} [AddCommGroup X] [TopologicalSpace X] {k : �
 
 theorem exists_coord_Ainf (F : Type) [Field F] [NumberField F] [IsTotallyReal F] :
     ∃ (k : ℕ) (e : Ainf F ≃ₜ (Fin k → ℝ)), ∀ x y, e (x + y) = e x + e y := by
-  let e1 : Ainf F ≃ₜ (InfinitePlace F → ℝ) :=
-    Homeomorph.piCongrRight fun v =>
-      (InfinitePlace.Completion.isometryEquivRealOfIsReal (IsTotallyReal.isReal v)).toHomeomorph
-  have h1 : ∀ x y, e1 (x + y) = e1 x + e1 y := by
-    intro x y; funext v
-    exact (InfinitePlace.Completion.ringEquivRealOfIsReal (IsTotallyReal.isReal v)).map_add _ _
-  let L := ContinuousLinearEquiv.ofFinrankEq (𝕜 := ℝ) (E := InfinitePlace F → ℝ)
-    (F := Fin (Module.finrank ℝ (InfinitePlace F → ℝ)) → ℝ) (Module.finrank_fin_fun ℝ).symm
-  refine ⟨_, e1.trans L.toHomeomorph, fun x y => ?_⟩
-  show L (e1 (x + y)) = L (e1 x) + L (e1 y)
-  rw [h1, map_add (f := _)]
+  apply _root_.PI.AprimeInfW.sq_coord_Ainf <;> assumption
 
 theorem exists_coord_tens (F E : Type) [Field F] [NumberField F] [IsTotallyReal F] [Field E]
     [NumberField E] [Algebra F E] :

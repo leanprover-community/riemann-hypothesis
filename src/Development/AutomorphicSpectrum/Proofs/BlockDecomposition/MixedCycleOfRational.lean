@@ -94,15 +94,6 @@ theorem exists_point {W : Ideal (Pol n)} (hW : IsMultiProjPrime W)
 
 end Points
 
-section Krull
-
-theorem eq_or_eq_of_mem_minimalPrimes {A : Type} [CommRing A] [IsNoetherianRing A] {P Q W : Ideal A} [hP : P.IsPrime]
-    [hQ : Q.IsPrime] {s : A} (hW : W ∈ (P ⊔ Ideal.span {s}).minimalPrimes) (hPQ : P ≤ Q) (hQW : Q ≤ W) :
-    Q = P ∨ Q = W :=
-  _root_.UpperTheory.Reformulated.B.MinimalPrimesMap.eq_or_eq_of_mem_minimalPrimes hW hPQ hQW
-
-end Krull
-
 section Codim
 
 variable [IsClosedImmersion i]
@@ -117,7 +108,7 @@ theorem coheight_eq_one_of_mem_minimalPrimes {s : Pol n} (hs : s ∉ ptIdeal (i 
   · have : (ptIdeal (i y)).IsPrime := (isMultiProjPrime_ptIdeal m n _).1
     have h1 : y = genericPoint X := by
       have hle : y ⤳ z := hy.le
-      rcases eq_or_eq_of_mem_minimalPrimes hz
+      rcases _root_.UpperTheory.Reformulated.B.MinimalPrimesMap.eq_or_eq_of_mem_minimalPrimes hz
         ((specializes_iff (i := i) _ _).1 (genericPoint_specializes y))
         ((specializes_iff (i := i) _ _).1 hle) with e | e
       · exact ptIdeal_injective (i := i) e
@@ -238,7 +229,7 @@ theorem cone_of_isMultiHomog {F : Pol n} {d : Fin (m + 1) → ℕ} (hF : IsMulti
     show ∏ i, (MvPolynomial.X k : MvPolynomial (Fin (m + 1)) D) ^ μ ⟨k, i⟩ = _
     rw [← hF μ hμ k, Finset.prod_pow_eq_pow_sum]
   rw [monomial_eq, Finsupp.prod_fintype _ _ (fun _ => pow_zero _)]
-  simp only [map_mul, map_prod, map_pow, cone, coe_eval₂Hom, eval₂_mul, eval₂_C, eval₂_pow, eval₂_X, mul_pow,
+  simp only [map_mul, map_prod, map_pow, cone, coe_eval₂Hom, eval₂_X, mul_pow,
     Finset.prod_mul_distrib, hX, eq_intCast, map_intCast]
   ring
 

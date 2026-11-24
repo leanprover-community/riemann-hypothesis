@@ -46,6 +46,7 @@ import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
+import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.FundamentalDomains.NsqMulVecLeOpN
 
 @[expose] public section
 
@@ -158,15 +159,9 @@ lemma opN_smul_le {m n : ℕ} (t : ℂ) (A : Matrix (Fin m) (Fin n) ℂ) :
   refine le_of_eq ?_
   rw [hS, Real.sSup_smul_of_nonneg (norm_nonneg t), smul_eq_mul]
 
-private lemma opN_nonneg' {m n : ℕ} (A : Matrix (Fin m) (Fin n) ℂ) : 0 ≤ Data.opN A := by
-  unfold Data.opN
-  apply Real.sSup_nonneg
-  rintro s ⟨v, _, rfl⟩
-  positivity
-
 lemma zN_nonneg (Z : X.Coord) : 0 ≤ X.zN Z := by
   unfold Data.zN
-  exact Real.iSup_nonneg fun τ => opN_nonneg' _
+  exact Real.iSup_nonneg fun τ => _root_.ReciprocityTheory.ChartRestriction.G.FD.OrthonormalChartBounds.opN_nonneg _
 
 lemma zN_smul_le (t : ℂ) (Z : X.Coord) : X.zN (t • Z) ≤ ‖t‖ * X.zN Z := by
   unfold Data.zN
@@ -190,7 +185,6 @@ lemma xZ_diff (x : Frame X.Ψ r) : Differentiable ℂ fun Z : X.Coord => X.xZ x 
   show Differentiable ℂ fun Z : X.Coord => ∑ j, mat x τ a j * X.lowBlock Z τ j b
   first
     | exact Differentiable.fun_sum (fun j _ => (hL j).const_mul _)
-    | exact Differentiable.sum (fun j _ => (hL j).const_mul _)
 
 lemma xZ_zero (x : Frame X.Ψ r) : X.xZ x 0 = x := by
   funext τ

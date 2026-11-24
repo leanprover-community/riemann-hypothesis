@@ -114,22 +114,8 @@ theorem isPEL_pull : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H :
         · exact (congrArg (pushPt h.1.w) (Category.id_comp _).symm).trans (pa _ _)
     obtain ⟨_, _, _, _, _, m, -⟩ := hp
     exact ⟨_, ⟨m⟩⟩
-  have pull_isLB : ∀ {X Y : Scheme.{0}} {L : LB X}, L.IsLB → (F : Y ⟶ X) → (L.pull F).IsLB := by
-    intro X Y L hL F
-    refine { cover := top_le_iff.1 ?_, g_self := ?_, cocycle := ?_ }
-    · intro y _
-      obtain ⟨i, hi⟩ := exists_chart hL (F y)
-      exact TopologicalSpace.Opens.mem_iSup.2 ⟨fun _ => i, mem_pull.2 hi⟩
-    · intro J
-      refine unit_ext fun y hy => ?_
-      rw [gm_res (𝟙 Y) y _ hy, map_one, gm_pull_g L F (𝟙 Y) y J J hy hy]
-      exact gm_self hL _ y (mem_pull.1 hy)
-    · intro I J K
-      refine unit_ext fun y hy => ?_
-      rw [map_mul, gm_res (𝟙 Y) y _ hy, gm_res (𝟙 Y) y _ hy, gm_res (𝟙 Y) y _ hy, gm_pull_g L F (𝟙 Y) y I J hy.1.1 hy.1.2,
-        gm_pull_g L F (𝟙 Y) y J K hy.1.2 hy.2, gm_pull_g L F (𝟙 Y) y I K hy.1.1 hy.2]
-      exact gm_cocycle hL _ y (mem_pull.1 hy.1.1) (mem_pull.1 hy.1.2) (mem_pull.1 hy.2)
-
+  have pull_isLB : ∀ {X Y : Scheme.{0}} {L : LB X}, L.IsLB → (F : Y ⟶ X) → (L.pull F).IsLB :=
+    fun hL F => ReciprocityTheory.ChartRestriction.G.Geo.Tor.pull_isLB hL F
   have hL : LBIso τ'.PP.L (τ.PP.L.pull m.cm.F) := by
     obtain ⟨w, hw, -⟩ := m.lin
     exact ⟨w, hw⟩

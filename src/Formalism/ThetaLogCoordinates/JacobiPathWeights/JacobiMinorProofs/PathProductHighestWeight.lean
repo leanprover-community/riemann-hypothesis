@@ -1,5 +1,6 @@
 module
 
+import Formalism.ThetaLogCoordinates.JacobiPathWeights.JacobiMinorProofs.JacobiMinorProof
 public import Formalism.ThetaLogCoordinates.JacobiPathWeights.StatementA
 public import Formalism.ThetaLogCoordinates.JacobiPathWeights.StatementC
 public import Formalism.ThetaLogCoordinates.JacobiPathWeights.JacobiMinorProofs.ActFormContract
@@ -69,23 +70,7 @@ theorem mem_can {n : ℕ} {μN : Fin n → ℤ} (h : Antitone μN) (c : ℤ) (m 
     rw [← not_le, Paths.le_iff_lt_colHeight h c m, not_lt]
 
 theorem isIndex_can {n : ℕ} (μN : Fin n → ℤ) : IsIndex μN (canIdx μN) := by
-  intro c
-  have hn := Paths.colHeight_le μN c
-  unfold canIdx
-  split_ifs with hc
-  · have : (univ.filter fun m : Fin n => m.val < colHeight μN c) =
-        (Finset.range (colHeight μN c)).attachFin (fun i hi => by
-          rw [Finset.mem_range] at hi; omega) := by
-      ext m; simp
-    rw [this, Finset.card_attachFin, Finset.card_range]
-  · have h1 : (univ.filter fun m : Fin n => colHeight μN c ≤ m.val) =
-        (univ.filter fun m : Fin n => m.val < colHeight μN c)ᶜ := by
-      ext m; simp
-    have h2 : (univ.filter fun m : Fin n => m.val < colHeight μN c) =
-        (Finset.range (colHeight μN c)).attachFin (fun i hi => by
-          rw [Finset.mem_range] at hi; omega) := by
-      ext m; simp
-    rw [h1, Finset.card_compl, h2, Finset.card_attachFin, Finset.card_range, Fintype.card_fin]
+  apply Formalism.InvariantFactorPaths.GelfandTsetlinBases.SignTwistStarLemmas.canIdx_isIndex <;> assumption
 
 theorem map_step {A A' : Type*} [CommRing A] [CommRing A'] (φ : A →+* A') {n : ℕ} (up : Bool)
     (K : Form A n) (K' : Form A' n) (Xv : Fin n → A) (hK : ∀ J, φ (K J) = K' J) (J : Finset (Fin n)) :

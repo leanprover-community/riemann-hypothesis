@@ -45,6 +45,7 @@ import Mathlib.Tactic.Polynomial.Basic
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Topology.Sheaves.Init
 import Std.Tactic.BVDecide.Normalize.Prop
+import Formalism.RealPlaceAnalysis.RealPlaceTaylor.ComplexifiedDerivativeCommutator
 
 @[expose] public section
 
@@ -69,12 +70,6 @@ variable {n : ℕ} {ε : Fin n → Bool}
 
 theorem inG_zero : inG ε (0 : Matrix (Fin n) (Fin n) ℂ) := by
   unfold inG; simp
-
-theorem inG_add {X Y : Matrix (Fin n) (Fin n) ℂ} (hX : inG ε X) (hY : inG ε Y) : inG ε (X + Y) := by
-  unfold inG at *
-  calc (X + Y)ᴴ * Jm ε + Jm ε * (X + Y) = (Xᴴ * Jm ε + Jm ε * X) + (Yᴴ * Jm ε + Jm ε * Y) := by
-        rw [conjTranspose_add, Matrix.add_mul, Matrix.mul_add]; abel
-    _ = 0 := by rw [hX, hY, add_zero]
 
 theorem inG_rsmul (r : ℝ) {X : Matrix (Fin n) (Fin n) ℂ} (hX : inG ε X) : inG ε ((r : ℂ) • X) := by
   unfold inG at *
@@ -120,7 +115,7 @@ theorem inG_gen (p : Fin n × Fin n) : inG ε (gen ε p) := by
         subst_vars <;> simp_all <;> cases hεa : ε a <;> cases hεb : ε b <;> simp_all
 
 theorem inG_comb (z : Fin n × Fin n → ℝ) : inG ε (∑ p, ((z p : ℝ) : ℂ) • gen ε p) :=
-  Finset.sum_induction _ (inG ε) (fun _ _ h1 h2 => inG_add h1 h2) inG_zero
+  Finset.sum_induction _ (inG ε) (fun _ _ h1 h2 => _root_.Formalism.REAL.lie_algebra_add_mem_matrix h1 h2) inG_zero
     (fun p _ => inG_rsmul (z p) (inG_gen p))
 
 end Lie

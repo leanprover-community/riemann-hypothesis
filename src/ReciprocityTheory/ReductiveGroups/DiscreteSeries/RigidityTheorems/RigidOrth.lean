@@ -68,33 +68,25 @@ theorem rigid_orth {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] 
     (horth : ∀ v v' : V, inner ℂ (j' v') ((v : D) : H) = 0) :
     ∀ g ∈ UJset ε, ∀ v v' : V, inner ℂ (j' v') (σ g ((v : D) : H)) = 0 := by
   intro g hg v v'
-  have hC := rigid_orth_closure hgap hσ hD hV hc hVK j' hj horth v'
-  apply hC
+  apply rigid_orth_closure hgap hσ hD hV hc hVK j' hj horth v'
   obtain ⟨k, hk, Y, hY, rfl⟩ := polar_UJ hg
   have hVf : FiniteDimensional ℂ V := hV.1
   have hVK' : IsKStableSub ε E V := hV.2.1
   have hv : (v : D) ∈ genSub E V := by
     unfold genSub
     exact Submodule.mem_sInf.mpr fun T hT => hT.1 v.2
-  have hkJ : kᴴ * Jm ε * k = Jm ε := by
-    obtain ⟨hku, hkJ⟩ := hk
-    have hu : kᴴ * k = 1 := (Matrix.mem_unitaryGroup_iff').mp hku
-    rw [Matrix.mul_assoc, ← hkJ, ← Matrix.mul_assoc, hu, Matrix.one_mul]
-  have hkU : k ∈ UJset ε := hkJ
+  have hkU : k ∈ UJset ε := closure_inUJ_of_mem_Kset hk
+  have hkJ : kᴴ * Jm ε * k = Jm ε := hkU
   have heU : NormedSpace.exp Y ∈ UJset ε := by
     have hg' : (k * NormedSpace.exp Y)ᴴ * Jm ε * (k * NormedSpace.exp Y) = Jm ε := hg
     rw [Matrix.conjTranspose_mul] at hg'
-    show (NormedSpace.exp Y)ᴴ * Jm ε * NormedSpace.exp Y = Jm ε
     calc (NormedSpace.exp Y)ᴴ * Jm ε * NormedSpace.exp Y
         = (NormedSpace.exp Y)ᴴ * (kᴴ * Jm ε * k) * NormedSpace.exp Y := by rw [hkJ]
-      _ = ((NormedSpace.exp Y)ᴴ * kᴴ) * Jm ε * (k * NormedSpace.exp Y) := by
-          simp only [Matrix.mul_assoc]
-      _ = Jm ε := hg'
+      _ = Jm ε := by simpa only [Matrix.mul_assoc] using hg'
   rw [hσ.1.2 k hkU _ heU, ContinuousLinearMap.comp_apply]
   have h1 := exp_apply_mem_topologicalClosure hσ hD hVf hVK' hc hY hv
   obtain ⟨Z, hZ, hZk⟩ := exists_exp_eq_of_mem_Kset hk
   refine closure_mapsTo_of_genSub (σ k) (fun w hw => ?_) h1
-  rw [← hZk]
-  exact exp_inK_apply_mem_closure hσ hD hVf hVK' hZ hw
+  simpa only [hZk] using exp_inK_apply_mem_closure hσ hD hVf hVK' hZ hw
 
 end ReciprocityTheory.ChartRestriction.DS

@@ -72,8 +72,6 @@ theorem ratio_eq {Ω V : Type*} [Field Ω] [AddCommGroup V] [Module Ω V] {f g :
 theorem wt_cancel {a b c : WithTop ℤ} (hb : b ≠ ⊤) (h : a + b = c + b) : a = c := by
   first
     | exact WithTop.add_right_cancel hb h
-    | (lift b to ℤ using hb
-       induction a <;> induction c <;> simp_all <;> norm_cast at h <;> omega)
 
 end ValuationResidueLemmas
 

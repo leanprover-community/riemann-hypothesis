@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.FlagMeasures.NotDvdAbsNormDifferent
 public import Formalism.LocalToGlobal.SiegelLatticeTheory.HaarTransversals.UnitaryHaarProducts.SettingBlocks
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -54,25 +55,7 @@ theorem ef_one_of_split (E L : Type) [Field E] [NumberField E] [Field L] [Number
       W.asIdeal.ramificationIdx ℤ = 1 ∧ W.asIdeal.inertiaDeg ℤ = 1)
     (Q : Ideal (𝓞 E)) (hQp : Q.IsPrime) (hQb : Q ≠ ⊥) (hpQ' : ((p : ℕ) : 𝓞 E) ∈ Q) :
     Q.ramificationIdx ℤ = 1 ∧ Q.inertiaDeg ℤ = 1 := by
-  have hinjEL : Function.Injective (algebraMap (𝓞 E) (𝓞 L)) :=
-    FaithfulSMul.algebraMap_injective (𝓞 E) (𝓞 L)
-  obtain ⟨W, -, hWp, hWQ⟩ := Ideal.exists_ideal_over_prime_of_isIntegral (S := 𝓞 L) Q ⊥
-    (by rw [(show Ideal.under _ ⊥ = ⊥ from Ideal.comap_bot_of_injective _ hinjEL)]; exact bot_le)
-  have hWb : W ≠ ⊥ := by
-    intro h0; apply hQb; rw [← hWQ, h0, Ideal.under_def, Ideal.comap_bot_of_injective _ hinjEL]
-  have hpW : ((p : ℕ) : 𝓞 L) ∈ W := by
-    have : algebraMap (𝓞 E) (𝓞 L) ((p : ℕ) : 𝓞 E) ∈ W := by
-      rw [← Ideal.mem_comap]
-      change ((p : ℕ) : 𝓞 E) ∈ Ideal.under (𝓞 E) W
-      rw [hWQ]; exact hpQ'
-    simpa using this
-  obtain ⟨h1, h2⟩ := hall ⟨W, hWp, hWb⟩ hpW
-  have : W.LiesOver Q := ⟨hWQ.symm⟩
-  have h1' : W.ramificationIdx ℤ = 1 := h1
-  have h2' : W.inertiaDeg ℤ = 1 := h2
-  rw [Ideal.ramificationIdx_tower (R := ℤ) Q W] at h1'
-  rw [Ideal.inertiaDeg_tower (R := ℤ) Q W] at h2'
-  exact ⟨(mul_eq_one.mp h1').1, (mul_eq_one.mp h2').1⟩
+  apply (config := { allowSynthFailures := true }) GlobalTheory.FrameIntegral.ef_one_of_split <;> assumption
 
 theorem card_over_of_split (F E L : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Field L]
     [NumberField L] [Algebra F E] [Algebra E L] (p : ℕ) (hp : p.Prime)

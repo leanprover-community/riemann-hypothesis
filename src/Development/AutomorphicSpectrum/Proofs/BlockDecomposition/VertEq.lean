@@ -2,19 +2,22 @@ module
 
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsSmoothHermCombLine
 public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsLineBundleSectionsGenerateIdealSheaf
-import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsLinearMapMultilinearMapBaseChange
-import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsFiniteLengthOfIsArtinianRingAnnihilator
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.ClosedSubschemeModLProjective
 public import Development.AbelianVarietyTheory.Proofs.DivisorProofs.DimClosureOfCoheightField
-import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntersectionNumberZeroSmallImage
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CoordinateDivisorMultiplicitySumStatement
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CoordinateDivisorMultiplicitySum
 public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.DimOfIsArithVar
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EulerCharacteristicDimensionZeroStatement
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GenericPointNonvanishingCoordinateSectionStatement
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermRepClassDecompositionStatement
-public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.O1ClassPullbackNaturalityStatement
-import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PointIdealMultiprojectivePrime
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsPullHermPullLine
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.EulerCharacteristicDimensionZero
+public import Development.AbelianVarietyTheory.Proofs.IwasawaDecomposition.ExistsSectionsGenerateIdealProjective
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.GenericPointNonvanishingCoordinateSection
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HermRepClassDecomposition
+public import Development.AbelianVarietyTheory.Proofs.ModuliProofs.ClsLinCombSingle
+public import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.O1ClassPullbackNaturality
 public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.CoheightEqOneOfDimClosure
+import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.ExistsLinearMapMultilinearMapBaseChange
+import Development.AbelianVarietyTheory.Proofs.CoherentCohomologyProofs.IsFiniteLengthOfIsArtinianRingAnnihilator
+import Development.AbelianVarietyTheory.Proofs.DivisorProofs.IntersectionNumberZeroSmallImage
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.PointIdealMultiprojectivePrime
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Algebra.Order.Interval.Basic
@@ -52,6 +55,7 @@ import Mathlib.Tactic.NormNum.Ordinal
 import Mathlib.Tactic.NormNum.Parity
 import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Algebra.Azumaya.Basic
 
 @[expose] public section
 
@@ -75,7 +79,7 @@ theorem key (p : ℕ) [Fact p.Prime] {m : ℕ} {n : Fin (m + 1) → ℕ} (a : Fi
   | zero =>
     intro Z _ f _ _ hd L hL _
     rw [topSelf_zero]
-    exact GlobalTheory.T.euler_characteristic_dimension_zero m n Z f p hd _
+    exact _root_.GlobalTheory.CompanionTheory.MixZ.VertBase.chi_eq_geoNum m n Z f p hd _
   | succ d ih =>
     intro Z _ f _ _ hd L hL hc
     have hp : IsProjOver (strHom (ZMod p) (X := Z)) :=
@@ -104,7 +108,7 @@ theorem key (p : ℕ) [Fact p.Prime] {m : ℕ} {n : Fin (m + 1) → ℕ} (a : Fi
 
         rw [cls_pull hL, hc, map_sum]
         refine Finset.sum_congr rfl fun k _ => ?_
-        rw [map_zsmul, Category.assoc, GlobalTheory.T.cls_pullO_one_comp_eq_pull (redι C) (f ≫ prB n k)]
+        rw [map_zsmul, Category.assoc, _root_.GlobalTheory.CompanionTheory.MixZ.cls_pullO_comp (redι C) (f ≫ prB n k)]
       have e := ih _ (redι C ≫ f) hdim _ (pull_isLB hL _) hcl
       rw [interNumRed_def, interNumSub_def, interNumOn_def,
         interNum_pushforward_of_isClosedImmersion hfZ _ (fun _ => hL)]
@@ -119,7 +123,7 @@ theorem key (p : ℕ) [Fact p.Prime] {m : ℕ} {n : Fin (m + 1) → ℕ} (a : Fi
       funext i
       refine Fin.cases ?_ (fun i => ?_) i
       · simp
-      · simp [Function.update_of_ne (Fin.succ_ne_zero i)]
+      · simp
     simp only [upd] at e
     have e0 : (Fin.cons L (fun _ : Fin d => L) : Fin (d + 1) → LB Z) = fun _ => L := by
       funext i
@@ -129,10 +133,10 @@ theorem key (p : ℕ) [Fact p.Prime] {m : ℕ} {n : Fin (m + 1) → ℕ} (a : Fi
     refine Finset.sum_congr rfl fun k _ => ?_
     refine congrArg (a k * ·) ?_
     have hl := (hrel k).choose_spec
-    have hs := GlobalTheory.T.generic_point_nonvanishing_coordinate_section m n Z f k _ hl
+    have hs := _root_.GlobalTheory.CompanionTheory.MixZ.VertGen.genericPoint_mem_nonzeroLocus m n Z f k _ hl
     rw [GlobalTheory.CompanionTheory.Ar.IntersectionMultiplicitySection.interNum_cons_eq_finsum_mult (ZMod p) Z hp d (by rw [hd]) _ (isLB_pullO _ 1)
       (fun _ => L) (fun _ => hL) _ hs]
-    refine Eq.trans (finsum_congr fun w => ?_) (GlobalTheory.T.coordinate_divisor_multiplicity_sum m n Z f k _ hs (fun W => geoNum d W (fun _ => a)))
+    refine Eq.trans (finsum_congr fun w => ?_) (_root_.GlobalTheory.CompanionTheory.MixZ.DivCyc.divOfSec_cycle m n Z f k _ hs (fun W => geoNum d W (fun _ => a)))
     by_cases hw : (divOfSec (isLB_pullO _ 1) _ hs).mult w = 0
     · rw [hw, zero_mul, zero_mul]
     · rw [red w (CartierDiv.coheight_eq_one_of_mult_ne_zero hw)]
@@ -141,8 +145,8 @@ theorem vertEq : VertEq := by
   intro m n M A hA X i _ Z _ j _ p _ _ d hd
   refine key p A.a d Z (j ≫ i) hd _ (pull_isLB (pull_isLB M.isLB _) _) ?_
 
-  rw [cls_pull (pull_isLB M.isLB _), cls_pull M.isLB, GlobalTheory.T.hermRep_class_decomposition m n M A hA, map_sum, map_sum]
+  rw [cls_pull (pull_isLB M.isLB _), cls_pull M.isLB, _root_.GlobalTheory.CompanionTheory.MPDict.ClsRep.cls_eq_of_isHermRep m n M A hA, map_sum, map_sum]
   refine Finset.sum_congr rfl fun k _ => ?_
-  rw [map_zsmul, map_zsmul, Category.assoc, GlobalTheory.T.cls_pullO_one_comp_eq_pull, GlobalTheory.T.cls_pullO_one_comp_eq_pull]
+  rw [map_zsmul, map_zsmul, Category.assoc, _root_.GlobalTheory.CompanionTheory.MixZ.cls_pullO_comp, _root_.GlobalTheory.CompanionTheory.MixZ.cls_pullO_comp]
 
 end GlobalTheory.CompanionTheory.MixZ.Vert

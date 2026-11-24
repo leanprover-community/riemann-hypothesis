@@ -1,5 +1,6 @@
 module
 
+import Development.AbelianVarietyTheory.Proofs.UnitaryExistence.PrincipalGroupActsFreelyOnFlags
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsHolPeriods
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -122,7 +123,6 @@ theorem symm_contraction (F F₀ : V →ₗ[ℂ] V →ₗ⋆[ℂ] ℂ) (N : V �
         rw [hA, hB]
         simp only [map_sub, LinearMap.sub_apply]
         rw [hC, hC']
-        try ring
       rw [hD, Complex.sub_re] at hpos
       linarith
 
@@ -910,43 +910,7 @@ theorem exists_contraction (P : D.La →+ (Fin g → ℂ)) (hl : ∀ (a : 𝓞 E
 
 theorem conj_rt (H : Host E) (τ : E →+* ℂ) :
     (τ (H.rt : E) = H.rt0 ↔ ¬ ComplexEmbedding.conjugate τ (H.rt : E) = H.rt0) := by
-  have hd : (0 : ℝ) < H.d := Nat.cast_pos.2 H.d_prime.pos
-  have hw : (τ (H.rt : E)) ^ 2 = -(H.d : ℂ) := by
-    have e := congrArg (τ.comp (algebraMap (𝓞 E) E)) H.rt_sq
-    rw [map_pow, map_neg, map_natCast] at e
-    exact e
-  have hre : H.rt0.re = 0 := by
-    have e1 := congrArg Complex.re H.sqrt_neg_disc_sq
-    have e2 := congrArg Complex.im H.sqrt_neg_disc_sq
-    simp only [pow_two, Complex.mul_re, Complex.mul_im, Complex.neg_re, Complex.neg_im,
-      Complex.natCast_re, Complex.natCast_im, neg_zero] at e1 e2
-    have hri : H.rt0.re * H.rt0.im = 0 := by linarith
-    rcases mul_eq_zero.1 hri with h | h
-    · exact h
-    · exfalso
-      rw [h] at e1
-      nlinarith [sq_nonneg H.rt0.re]
-  have hconj : (starRingEnd ℂ) H.rt0 = -H.rt0 := by
-    apply Complex.ext <;> simp [hre]
-  have hne : H.rt0 ≠ -H.rt0 := by
-    intro h
-    have h0 : H.rt0 = 0 := by linear_combination h / 2
-    have e := H.sqrt_neg_disc_sq
-    rw [h0] at e
-    have hd0 : (H.d : ℂ) = 0 := by linear_combination e
-    exact H.d_prime.ne_zero (by exact_mod_cast hd0)
-  have hroots : τ (H.rt : E) = H.rt0 ∨ τ (H.rt : E) = -H.rt0 := by
-    have e : (τ (H.rt : E) - H.rt0) * (τ (H.rt : E) + H.rt0) = 0 := by
-      linear_combination hw - H.sqrt_neg_disc_sq
-    rcases mul_eq_zero.1 e with h | h
-    · left; linear_combination h
-    · right; linear_combination h
-  rw [ComplexEmbedding.conjugate_coe_eq]
-  rcases hroots with h | h <;> rw [h]
-  · rw [hconj]
-    exact ⟨fun _ h' => hne h'.symm, fun _ => rfl⟩
-  · rw [map_neg, hconj, neg_neg]
-    exact ⟨fun h' => absurd h'.symm hne, fun h' => absurd rfl h'⟩
+  apply GlobalTheory.PrincFree.cmType_of_rt <;> assumption
 
 theorem card_pairs {p q : ℕ} (hty : IsTypeFn H p q ty) :
     Nat.card {x : Fin g × Fin g // ty x.1 = ComplexEmbedding.conjugate (ty x.2)} = finrank ℚ E * p * q := by

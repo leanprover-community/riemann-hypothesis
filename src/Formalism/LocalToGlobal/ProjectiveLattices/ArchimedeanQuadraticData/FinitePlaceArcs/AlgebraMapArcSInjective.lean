@@ -1,5 +1,6 @@
 module
 
+import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.MaximalCuspKernels.LinOfPoly
 public import Formalism.LocalToGlobal.ProjectiveLattices.ArchimedeanQuadraticData.ArcLineFunctions.FunDef
 import Mathlib.Algebra.Order.Floor.Extended
 import Mathlib.Algebra.Order.Floor.Semifield
@@ -59,22 +60,7 @@ namespace FinPf
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {Dw : Datum H}
 
 theorem arcDet_ne_zero (Dw : Datum H) (K₁ : Type) [Field K₁] : arcDet Dw K₁ ≠ 0 := by
-  unfold arcDet
-  refine Finset.prod_ne_zero_iff.mpr fun τ _ => ?_
-  have hinj : Function.Injective
-      (fun p : Fin (Dw.mult τ) × Fin (Dw.mult τ) => (⟨τ, p⟩ : ArcLt Dw)) :=
-    fun a b hab => eq_of_heq (Sigma.mk.inj_iff.mp hab).2
-  have e : (Matrix.of fun i k =>
-      (MvPolynomial.X ⟨τ, (i, k)⟩ : MvPolynomial (ArcLt Dw) (LaurentSeries K₁))) =
-      (MvPolynomial.rename fun p : Fin (Dw.mult τ) × Fin (Dw.mult τ) => (⟨τ, p⟩ : ArcLt Dw)).mapMatrix
-        (Matrix.mvPolynomialX (Fin (Dw.mult τ)) (Fin (Dw.mult τ)) (LaurentSeries K₁)) := by
-    ext i k
-    simp [Matrix.mvPolynomialX]
-  rw [e, ← AlgHom.map_det]
-  intro hz
-  apply Matrix.det_mvPolynomialX_ne_zero (Fin (Dw.mult τ)) (LaurentSeries K₁)
-  apply MvPolynomial.rename_injective _ hinj
-  rw [hz, map_zero]
+  apply Formalism.L2.Pj.QAt.LinOfPoly.arcDet_ne_zero <;> assumption
 
 theorem algebraMap_arcS_injective (Dw : Datum H) (K₁ : Type) [Field K₁] :
     Function.Injective (algebraMap (MvPolynomial (ArcLt Dw) (LaurentSeries K₁)) (ArcS Dw K₁)) :=
@@ -88,8 +74,6 @@ theorem arcNum_algebraMap {K₁ : Type} [Field K₁] (P : MvPolynomial (ArcLt Dw
   · rename_i h
     first
       | exact algebraMap_arcS_injective Dw K₁ h.choose_spec
-      | exact (algebraMap_arcS_injective Dw K₁ h.choose_spec).symm
-      | exact algebraMap_arcS_injective Dw K₁ h.choose_spec.symm
   · rename_i h
     exact absurd ⟨P, rfl⟩ h
 
