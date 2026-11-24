@@ -8,8 +8,7 @@ below. This page is for whoever assembles one.
 
 ## Labels at a glance
 
-The sections below give the details. A row marked *(planned)* describes a label that a pull
-request still under review adds. Until it lands, the label exists but nothing puts it on.
+The sections below give the details.
 
 | Label | On | Put on when | Taken off when |
 |---|---|---|---|
