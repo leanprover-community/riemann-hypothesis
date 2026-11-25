@@ -47,11 +47,15 @@ rebuilt without one of its pull requests, which is how a pull request is taken o
 the dependent pull request still carries that one's commits: landing it would land them too, and
 GitHub would mark the pull request that was taken out merged. A sweep looks for this in each pull
 request that depends on an open batch, or shares commits beyond main with a batch it is compared
-with (see `stale_in`). When its branch holds commits of another open pull request that neither
-main, nor any batch being built, nor a pull request it says it depends on holds, it is labelled
+with (see `stale_in`). Its branch must hold a batch's merge commit for another open pull request,
+`Merge PR #123 into batch` or `Merge #123 head (...) into batch/...` as batches are assembled,
+whose merged commit the batch's current branch no longer has. A pull request merged in some other
+way, as when one is stacked on another open pull request, does not count. It is then labelled
 `awaiting-author` and told in a comment to make a new branch from the batch's current branch and
-copy only its own commits onto it. A hidden marker in the comment names the batch and its head,
-so it is sent once for each head of the batch.
+copy only its own commits onto it. A hidden marker in the comment names the pull requests it
+carries, so it is told once for each such set, whatever the batch's head or number: a batch
+rebuilt again, or under a new number, without the same pull requests tells it nothing new, and
+an `awaiting-author` taken off after that comment stays off.
 
 Which batches a pull request was told about is read from its comments, once a run at most, and
 only when it is about to be told something it may not have been told: when it carries
@@ -102,9 +106,13 @@ RETRIES, WAIT = 3, 15.0
 MARKER = "<!-- conflict-labels-batch {number} -->"
 TOLD = re.compile(r"<!-- conflict-labels-batch (\d+) -->")
 # Hidden at the start of the comment sent to a pull request whose branch carries commits that the
-# batch it builds on no longer has, once for each head of the batch.
-STALE = "<!-- conflict-labels-stale {number} {sha} -->"
-STALE_TOLD = re.compile(r"<!-- conflict-labels-stale (\d+) ([0-9a-f]{40}) -->")
+# batch it builds on no longer has, once for each set of pull requests it carries: `prs` is their
+# numbers, joined by commas.
+STALE = "<!-- conflict-labels-stale {number} {prs} -->"
+STALE_TOLD = re.compile(r"<!-- conflict-labels-stale (\d+) ([0-9]+(?:,[0-9]+)*) -->")
+# The subject of a batch's merge commit for a pull request, as batches are assembled by hand:
+# `Merge PR #123 into batch` or `Merge #123 head (0123abc) into batch/b14-on-2101`.
+BATCH_MERGE = re.compile(r"Merge (?:PR )?#(\d+)\b.*\binto batch\b", re.IGNORECASE)
 
 FIELDS = """
   number state isDraft headRefName headRefOid baseRefName mergeable body
@@ -199,8 +207,8 @@ class GitHub(_rest.GitHub):
 
     def notices(self, number):
         """What this script has told pull request `number`, read from its comments once a run:
-        {"told": the batches it was told it conflicts with, "stale": (batch, head) for each head of
-        a batch it was told its branch carries commits that batch no longer has}."""
+        {"told": the batches it was told it conflicts with, "stale": the sets of pull requests, as
+        `carried_key` gives them, it was told its branch carries that a batch no longer has}."""
         cache = self.__dict__.setdefault("_notices", {})  # emptied by `sync` at the start of a run
         if number not in cache:
             found, after = {"told": set(), "stale": set()}, None
@@ -216,7 +224,7 @@ class GitHub(_rest.GitHub):
                         found["told"].add(int(match.group(1)))
                     match = STALE_TOLD.match(body)
                     if match:
-                        found["stale"].add((int(match.group(1)), match.group(2)))
+                        found["stale"].add(match.group(2))
                 if not page["pageInfo"]["hasNextPage"]:
                     break
                 after = page["pageInfo"]["endCursor"]
@@ -328,8 +336,10 @@ def decide(pr, main, batches, results, carried=None):
                 "why": {MAIN_CONFLICT: said, BATCH_CONFLICT: said}}
     stale = {}
     if carried and carried.get("prs"):
-        stale = {number: {"head": batches[number]["sha"], "prs": sorted(carried["prs"])}
-                 for number in sorted(carried["on"]) if number in batches}
+        # Said once, for the lowest of the batches it builds on.
+        on = [number for number in sorted(carried["on"]) if number in batches]
+        if on:
+            stale = {on[0]: {"head": batches[on[0]]["sha"], "prs": sorted(carried["prs"])}}
     on = sorted(pr["depends"] & set(batches))
     if on:
         wanted_main, why[MAIN_CONFLICT] = False, f"it depends on the batch #{on[0]}"
@@ -374,15 +384,22 @@ def needs_told(pr, decision, known=None):
     known = known or {"told": set(), "stale": set()}
     if decision["batch"] and BATCH_CONFLICT in pr["labels"] and set(decision["conflicts"]) - known["told"]:
         return True
-    return any((number, item["head"]) not in known["stale"] for number, item in decision.get("stale", {}).items())
+    return any(carried_key(item["prs"]) not in known["stale"] for item in decision.get("stale", {}).values())
+
+
+def carried_key(prs):
+    """The pull requests a branch carries that a batch no longer has, as the stale notice's marker
+    names them: their numbers in order, joined by commas."""
+    return ",".join(str(number) for number in sorted(prs))
 
 
 def plan(pr, decision, told, batches, stale_told=None):
     """The changes to make: (labels to add, labels to take off, [(batch number, comment)]).
 
     `told` is the set of batches the pull request was already sent a comment about, and
-    `stale_told` the (batch, head) it was told it carries commits of that the batch no longer
-    has, both None when they were not read because nothing new is to be said (see `needs_told`).
+    `stale_told` the sets of pull requests it was told it carries commits of that a batch no longer
+    has (see `carried_key`), both None when they were not read because nothing new is to be said
+    (see `needs_told`).
     A pull request that conflicts with a batch and does not carry `batch-conflict` is told about
     every batch it conflicts with, whatever `told` says: it conflicts for the first time, or again
     after the label came off, when it had been fixed. While it keeps the label, it is told about
@@ -402,7 +419,7 @@ def plan(pr, decision, told, batches, stale_told=None):
                 notes.append((number, message(batches[number], result)))
     if stale_told is not None:
         for number, item in sorted(decision.get("stale", {}).items()):
-            if (number, item["head"]) not in stale_told:
+            if carried_key(item["prs"]) not in stale_told:
                 notes.append((number, stale_message(batches[number], item["prs"])))
     if notes and WAITING not in pr["labels"]:
         add.add(WAITING)
@@ -471,7 +488,7 @@ def stale_message(batch, prs):
     branch = _conflicts.show(batch["ref"].encode())
     names = ", ".join(f"#{number}" for number in prs)
     lines = [
-        STALE.format(number=batch["number"], sha=batch["sha"]),
+        STALE.format(number=batch["number"], prs=carried_key(prs)),
         f"This pull request's branch carries commits of {names} that #{batch['number']}, the batch it builds on, "
         f"no longer has: the batch's branch {branch} was rebuilt without them. If this pull request lands as it "
         f"is, they land with it, and GitHub marks {names} merged.",
@@ -486,8 +503,8 @@ def stale_message(batch, prs):
         f"From then on, bring this pull request up to date by merging {branch} into it, never by rebasing onto "
         "it.",
         "",
-        f"This pull request is labelled `{WAITING}` meanwhile. It is told this once for each head of "
-        f"#{batch['number']}.",
+        f"This pull request is labelled `{WAITING}` meanwhile. It is told this once for {names}, whatever "
+        "becomes of the batch.",
     ]
     return "\n".join(lines) + "\n"
 
@@ -602,25 +619,24 @@ def compare_all(repo, main, building, candidates, log, *, origin=None, watch=Non
 
 
 def stale_in(work, trunk, heads, candidates, watch, sharing, carried, log):
-    """Find the candidates whose branch carries commits of another open pull request that a batch
-    they build on no longer has, and fill in `carried` with {number: {"on": [batch numbers],
-    "prs": [numbers]}} for each.
+    """Find the candidates whose branch carries a pull request that a batch they build on was
+    rebuilt without, and fill in `carried` with {number: {"on": [batch numbers], "prs":
+    [numbers]}} for each.
 
     A candidate builds on the batches `watch` names for it (those its description says it depends
     on) and, failing those, on the batches it shares commits beyond main with (`sharing`). Its
     commits that neither main, nor any head in its "exclude" (every batch being built, and every
     pull request it says it depends on), holds are what it carries of its own or from elsewhere.
-    Those that are also among another candidate's own commits belong to that pull request: the
-    batch was rebuilt without it, and the candidate still carries it. A pull request's own commits
-    are those on its first-parent line beyond main that are not merges: what it carries from a
-    batch, or from another pull request, came in through a merge. A candidate's own commits, and
-    those of a pull request it says it depends on, are never counted.
+    Among them, a batch's merge commit for another candidate (see `BATCH_MERGE`) whose merged
+    commit, its second parent, neither main nor any batch it builds on holds now, shows that a
+    batch it merged held that pull request and was rebuilt without it. Nothing else counts: a pull
+    request it carries because it merged that one's branch itself, as when it is stacked on it, is
+    its own business.
     """
-    git, theirs = _conflicts.git, {}
+    git = _conflicts.git
 
-    def beyond(head, *options):
-        code, out = git(work, "rev-list", *options, head, f"^{trunk}", ok=(0, 128))
-        return set(out.decode().split()) if code == 0 else None
+    def contained(commit, head):
+        return git(work, "merge-base", "--is-ancestor", commit, head, ok=(0, 1, 128))[0] == 0
 
     for number in sorted(candidates):
         on = sorted(set((watch.get(number) or {}).get("on") or ()) or sharing.get(number) or ())
@@ -628,17 +644,24 @@ def stale_in(work, trunk, heads, candidates, watch, sharing, carried, log):
         if not on or not head:
             continue
         exclude = {other for other in (watch.get(number) or {}).get("exclude") or ()} | set(on) | {number}
-        own = beyond(head, *(f"^{heads[other]}" for other in sorted(exclude - {number}) if other in heads))
-        if not own:
+        code, out = git(work, "log", "--merges", "--format=%H %P%x09%s", head, f"^{trunk}",
+                        *(f"^{heads[other]}" for other in sorted(exclude - {number}) if other in heads), ok=(0, 128))
+        if code != 0:
             continue
-        prs = []
-        for other in sorted(candidates):
-            if other in exclude or other not in heads:
+        prs = set()
+        for line in out.decode("utf-8", "replace").splitlines():
+            commits, _, subject = line.partition("\t")
+            parents = commits.split()[1:]
+            match = BATCH_MERGE.match(subject)
+            if not match or len(parents) < 2:
                 continue
-            if other not in theirs:
-                theirs[other] = beyond(heads[other], "--first-parent", "--no-merges") or set()
-            if theirs[other] & own:
-                prs.append(other)
+            other = int(match.group(1))
+            if other in exclude or other not in candidates or other in prs:
+                continue
+            if contained(parents[1], trunk) or any(contained(parents[1], heads[batch]) for batch in on if batch in heads):
+                continue
+            prs.add(other)
+        prs = sorted(prs)
         if prs:
             carried[number] = {"on": on, "prs": prs}
             log.append(f"#{number} carries commits of " + ", ".join(f"#{other}" for other in prs) + " that "
