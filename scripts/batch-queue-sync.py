@@ -120,7 +120,8 @@ After every run, `frozen` is put on each open pull request a maintainer's `batch
 `frozen` and `batch-building` are taken off any that is neither queued nor in a batch being built.
 A frozen pull request whose head has moved on from the commit that was taken, by its own batch or
 by the queue, is labelled `changed after frozen` until its head is that commit again or it is no
-longer frozen; `pushed` adds the label as soon as the push comes in.
+longer frozen; `pushed` adds the label as soon as the push comes in, and every sync looks again.
+A new head that its batch's branch has already counts as the commit taken (see `has_head`).
 Which pull requests a batch contains is read from its branch, never from its description. The names of the labels are in
 `batch-labels.py`, and `verification/BATCHES.md` says what someone assembling a batch by hand
 should do for all this to work.
@@ -1933,12 +1934,12 @@ def reconcile(gh, pulls, held, approved, log):
 def approvals(gh, pulls, main, approved, log, every=False):
     """Fill in `approved` for the queued pull requests that are not labelled `frozen`, or are
     labelled `changed after frozen`, with the commit a maintainer's `batch` stands for on each, for
-    `reconcile` to freeze them or to take `changed after frozen` off again. With `every`, for
-    every queued pull request, as `pushed` asks for the one pushed to. With `ASSEMBLE` on, the batch
-    being assembled looks at every queued pull request into main instead. Each costs a request or
-    so, and `batch` labels what it queues `frozen` itself, so only a pull request labelled `batch
-    queue` by hand, or pushed to after it was queued, is looked at again run after run. A queued
-    pull request that is pushed to is labelled `changed after frozen` by `pushed`, not by a sync."""
+    `reconcile` to freeze them, to label them `changed after frozen` or to take that off again.
+    With `every`, for every queued pull request: a sync asks for that, so that a queued pull
+    request pushed to is labelled even when the `pushed` job for the push failed, and so does
+    `pushed` for the one pushed to. With `ASSEMBLE` on, the batch being assembled looks at every
+    queued pull request into main instead. Each costs a request or so, about five a sync for the
+    queue as it is."""
     for pr in sorted(pulls.values(), key=lambda pr: pr["number"]):
         if QUEUED not in pr["labels"] or is_batch(pr) or pr["base"] != main:
             continue
@@ -1983,6 +1984,7 @@ def pushed(gh, number):
             if by_hand(other) and BUILDING in other["labels"]]
     key = str(number)
     hand = stack(gh, hand, pulls, log)
+    held_at = holding(hand)
     for batch in hand:
         commit = members(batch["note"]).get(key)
         if commit is None:
@@ -1990,6 +1992,8 @@ def pushed(gh, number):
         if commit != pr["sha"] and kept(batch["note"], "pushed").get(key) != commit:
             inside = has_head(gh, batch, pr["sha"])
             if inside:
+                # Frozen at the new head, as the next sync records it.
+                held_at[key] = pr["sha"]
                 log.append(f"#{key} was pushed to with `{pr['sha'][:10]}`, which the batch #{batch['number']} has "
                            "already: nothing to say")
             elif inside is None:
@@ -2006,7 +2010,7 @@ def pushed(gh, number):
         break
     approved = {}
     approvals(gh, {number: pr}, main, approved, log, every=True)
-    reconcile(gh, {number: pr}, holding(hand), approved, log)
+    reconcile(gh, {number: pr}, held_at, approved, log)
     return log or [f"#{number}: nothing to do"]
 
 
@@ -2053,10 +2057,12 @@ def assemble(gh, now):
     by = {batch["number"]: batch for batch in hand}
     for batch in hand:
         look_through(gh, batch, by, pulls, before, {gone['number'] for gone in done}, log)
-    held, held_at = holders(hand), holding(hand)
+    held = holders(hand)
     requeued = False
     for batch in hand:
         requeued |= keep_in_step(gh, batch, pulls, held, main, log)
+    # After `keep_in_step`, which records a member at a new head its batch has already.
+    held_at = holding(hand)
     unsure = unsettled(gh, done, hand, pulls)
     for number in sorted(unsure):
         log.append(f"batch #{number} was closed without merging, and a batch stacked on it could not be looked "
@@ -2074,7 +2080,7 @@ def assemble(gh, now):
     if not ASSEMBLE:
         # A batch of this script's own whose pull request was merged or closed was tidied up
         # after above. One that has none is left alone (see `ASSEMBLE`).
-        approvals(gh, pulls, main, approved, log)
+        approvals(gh, pulls, main, approved, log, every=True)
         return log or ["nothing to do"], approved, pulls, held, held_at
     if requeued:
         # Leave time to take the pull request that broke the build out of the queue first.
