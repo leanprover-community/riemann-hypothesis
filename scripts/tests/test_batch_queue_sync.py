@@ -9,6 +9,8 @@ import json
 import os
 from pathlib import Path
 import re
+import sys
+import tempfile
 import unittest
 from unittest import mock
 
@@ -3611,6 +3613,61 @@ class Workflow(unittest.TestCase):
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         self.assertIn(QUEUED, module.LABELS)
+
+
+class RefusedWrites(unittest.TestCase):
+    """A write GitHub refuses, with the run started by `main` as the workflow starts it."""
+
+    def closed(self):
+        """Two closed pull requests that kept `batch queue`: the run takes it off #12, then #13."""
+        gh = Fake()
+        for number in (12, 13):
+            gh.add_pull(number, f"head{number}", labels=[QUEUED])
+            gh.close(number)
+        return gh
+
+    def refuse(self, gh, path, status, message):
+        """GitHub answers `status` to every write to `path`."""
+        answer = gh.call
+
+        def call(method, to, payload=None):
+            if method != "GET" and to == path:
+                gh.calls += 1
+                return status, {"message": message}
+            return answer(method, to, payload)
+        gh.call = call
+
+    def run_main(self, gh):
+        with tempfile.TemporaryDirectory() as folder:
+            summary = Path(folder) / "summary.md"
+            argv = ["batch-queue-sync.py", "--repo", REPO, "--summary", str(summary)]
+            with mock.patch.object(batch, "GitHub", lambda repo, dry_run=False: gh), \
+                    mock.patch.object(sys, "argv", argv), contextlib.redirect_stdout(io.StringIO()), \
+                    self.assertRaises(SystemExit) as stop:
+                batch.main()
+            return stop.exception.code, summary.read_text()
+
+    def test_a_refusal_for_the_rate_limit_stops_the_run_and_says_so(self):
+        gh = self.closed()
+        self.refuse(gh, "issues/13/labels/batch%20queue", 429, "API rate limit exceeded")
+        code, summary = self.run_main(gh)
+        self.assertEqual(code, 1)
+        self.assertIn("GitHub's rate limit refused DELETE issues/13/labels/batch%20queue", summary)
+        self.assertEqual(gh.pulls[12]["labels"], set())
+
+    def test_another_refusal_is_reported_and_fails_the_run(self):
+        gh = self.closed()
+        self.refuse(gh, "issues/13/labels/batch%20queue", 500, "Server Error")
+        code, summary = self.run_main(gh)
+        self.assertEqual(code, 1)
+        self.assertIn("- #12 is closed: `batch queue` removed\n", summary)
+        self.assertIn("- #13: GitHub answered 500 to removing `batch queue`, so it is still on\n", summary)
+        self.assertEqual(gh.pulls[13]["labels"], {QUEUED})
+
+    def test_a_run_without_a_refusal_succeeds(self):
+        code, summary = self.run_main(self.closed())
+        self.assertIsNone(code)
+        self.assertIn("- #13 is closed: `batch queue` removed\n", summary)
 
 
 if __name__ == "__main__":

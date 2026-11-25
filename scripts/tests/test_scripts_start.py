@@ -5,9 +5,9 @@ calls.
 The scripts load each other's files at startup (see `load` in `github-rest.py`), so a mistake there
 stops a script before it reads its arguments, and only on some Python versions: a module missing
 from `sys.modules` breaks a dataclass under `from __future__ import annotations` up to Python 3.14
-but not on 3.15. GitHub's runners use Python 3.12, so besides the interpreter running the tests,
-each script is started with the other versions found here, and a version that isn't installed is
-skipped.
+but not on 3.15. The workflows run on `ubuntu-26.04`, whose `python3` is 3.14, so besides the
+interpreter running the tests, each script is started with the interpreters in `OTHER_PYTHONS`
+that exist on the machine, and one that doesn't is skipped.
 
 The scripts are found by looking for `github-rest.py` in their text, so a new one is checked without
 being listed here.
@@ -18,8 +18,9 @@ import sys
 import unittest
 
 SCRIPTS = Path(__file__).resolve().parents[1]
-# Interpreters to start the scripts with, besides the one running the tests: Homebrew's Python 3.14
-# and macOS's own Python 3.9.
+# Further interpreters to start the scripts with, besides the one running the tests, where they
+# exist: on a runner `/usr/bin/python3` is the system's 3.14, and on a Mac these are Homebrew's
+# 3.14 and the system's older Python.
 OTHER_PYTHONS = ["/opt/homebrew/bin/python3.14", "/usr/bin/python3"]
 
 
