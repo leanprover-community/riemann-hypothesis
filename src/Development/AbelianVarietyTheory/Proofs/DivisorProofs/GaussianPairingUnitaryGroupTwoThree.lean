@@ -157,8 +157,7 @@ theorem detPlus_identities : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (s : 
   intro ι _ _ s hs ss
   obtain ⟨p, hp⟩ : ∃ p : Matrix ι ι ℂ, p = (1 / 2 : ℂ) • (1 + s) := ⟨_, rfl⟩
   have pp : p * p = p := by
-    rw [hp]
-    simp only [smul_mul_smul_comm, mul_add, add_mul, ss, one_mul, mul_one]
+    simp only [hp, smul_mul_smul_comm, mul_add, add_mul, ss, one_mul, mul_one]
     module
   have pp' : ∀ x, p * (p * x) = p * x := fun x => by rw [← mul_assoc, pp]
   have hpH : pᴴ = p := by

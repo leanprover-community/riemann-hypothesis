@@ -92,8 +92,7 @@ theorem ae_good (hD : IsFundamentalDomain Γ D μ) : ∀ᵐ y ∂μ, Good Γ D y
   by_cases h : γ = γ'
   · exact Eventually.of_forall fun _ _ _ => h
   · have h' : γ⁻¹ ≠ γ'⁻¹ := fun e => h (inv_injective e)
-    have := hD.aedisjoint h'
-    refine (measure_eq_zero_iff_ae_notMem.1 this).mono fun y hy h1 h2 => absurd ?_ hy
+    refine (measure_eq_zero_iff_ae_notMem.1 (hD.aedisjoint h')).mono fun y hy h1 h2 => absurd ?_ hy
     refine ⟨?_, ?_⟩
     · exact mem_inv_smul_set_iff.2 h1
     · exact mem_inv_smul_set_iff.2 h2

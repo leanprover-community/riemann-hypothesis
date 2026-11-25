@@ -84,8 +84,7 @@ theorem exists_int_elem {X : Type} [MeasurableSpace X] (ν : Measure X) {V : Typ
   choose cl hcl using fun j => LinearMap.exists_extend (b.coord j)
   have hc : ∀ j x, cl j (φ x) = b.repr ⟨φ x, hφ x⟩ j := by
     intro j x
-    have := LinearMap.congr_fun (hcl j) ⟨φ x, hφ x⟩
-    simpa using this
+    simpa using LinearMap.congr_fun (hcl j) ⟨φ x, hφ x⟩
   have hrepr : ∀ x, φ x = ∑ j, cl j (φ x) • (b j : V) := by
     intro x
     have h1 := b.sum_repr ⟨φ x, hφ x⟩

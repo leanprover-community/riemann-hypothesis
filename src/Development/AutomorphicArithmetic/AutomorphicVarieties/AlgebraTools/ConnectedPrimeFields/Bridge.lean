@@ -75,13 +75,12 @@ theorem UpperTheory.V.AlgebraTools.Conn.bridge :
   intro R _ a k
   constructor
   · intro h J hJ
-    have hs : Function.Surjective (Ideal.Quotient.mk a) := Ideal.Quotient.mk_surjective
     have hle : a ≤ J.comap (Ideal.Quotient.mk a) := by
       intro x hx
       rw [Ideal.mem_comap, Ideal.Quotient.eq_zero_iff_mem.mpr hx]
       exact J.zero_mem
     have hJ' : (J.comap (Ideal.Quotient.mk a)).map (Ideal.Quotient.mk a) = J :=
-      Ideal.map_comap_of_surjective _ hs J
+      Ideal.map_comap_of_surjective _ Ideal.Quotient.mk_surjective J
     rw [← hJ'] at hJ ⊢
     rw [ringKrullDim_eq_of_ringEquiv (DoubleQuot.quotQuotEquivQuotOfLE hle)] at hJ
     exact (etaleCohomology_simplicialCochain_representation_step a _).mp (h _ hle hJ)

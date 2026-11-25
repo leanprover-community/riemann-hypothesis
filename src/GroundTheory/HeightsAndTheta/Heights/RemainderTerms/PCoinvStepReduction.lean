@@ -50,10 +50,9 @@ theorem CoinvStepReduction.proof : CoinvStepReduction.Statement := by
       intro u hu
       apply Finsupp.mapDomain_of_notMem_range
       rintro ⟨s, rfl⟩
-      have hks : k < (s : Fin n) := Finset.mem_Ioi.mp s.2
       rcases hu with hu | hu
       · exact hu rfl
-      · exact absurd hu (not_le.mpr hks)
+      · exact absurd hu (not_le.mpr (Finset.mem_Ioi.mp s.2))
     rw [Finset.mem_range] at hj
     refine ⟨fun u hu => ?_, ?_⟩
     · have hne : u ≠ (b, k) := by

@@ -71,8 +71,7 @@ theorem tens_mul (X Y : Fin d → Matrix (Fin n) (Fin n) ℂ) : tens X * tens Y 
 theorem tens_one : tens (1 : Fin d → Matrix (Fin n) (Fin n) ℂ) = 1 := by
   ext I K
   simp only [tens, Matrix.of_apply, Pi.one_apply, Matrix.one_apply]
-  rw [Finset.prod_ite_zero]
-  simp [funext_iff]
+  simp [Finset.prod_ite_zero, funext_iff]
 
 theorem tens_single_apply (p : Fin d) (Y : Matrix (Fin n) (Fin n) ℂ) (I K : Fin d → Fin n) :
     tens (Pi.mulSingle p Y) I K = if ∀ q, q ≠ p → I q = K q then Y (I p) (K p) else 0 := by

@@ -112,8 +112,7 @@ theorem cth_eq {q t : ℂ} (hq : ‖q‖ < 1) (c : ℕ) (h1 : ∀ m : ℕ, 1 - q
   have eC : qp q (t ^ c) = C := pC.tprod_eq
   have eD : qp q (t ^ c)⁻¹ = D := pD.tprod_eq
   unfold cth tp
-  rw [hP.tprod_eq, eC, eD]
-  simp only [div_eq_mul_inv, mul_inv, mul_pow]
+  simp only [hP.tprod_eq, eC, eD, div_eq_mul_inv, mul_inv, mul_pow]
   ring
 
 theorem expo (c : ℕ) : ((c : ℤ) - (c : ℤ) ^ 2) / 2 = -((c.choose 2 : ℕ) : ℤ) := by

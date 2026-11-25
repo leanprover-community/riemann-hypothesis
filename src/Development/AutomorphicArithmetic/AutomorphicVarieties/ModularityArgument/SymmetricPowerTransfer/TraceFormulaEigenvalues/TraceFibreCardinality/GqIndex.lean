@@ -124,8 +124,7 @@ private theorem fib_card (K : Subgroup H) (g : H) (y : Y) :
         rw [← mul_smul, show g⁻¹ * (h * (k0 : H)) * ((k0 : H)⁻¹ * h⁻¹) * g = 1 by group, one_smul]
       refine ⟨QuotientGroup.mk ⟨g⁻¹ * (h * k0 * c), hs⟩, ?_⟩
       rw [hf, QuotientGroup.eq]
-      have hm : (c⁻¹ * (k0 : H)⁻¹) ∈ K := K.mul_mem (K.inv_mem hc) (K.inv_mem k0.2)
-      simpa [mul_assoc] using hm
+      simpa [mul_assoc] using K.mul_mem (K.inv_mem hc) (K.inv_mem k0.2)
     · rintro ⟨q, hq⟩
       obtain ⟨s, rfl⟩ := QuotientGroup.mk_surjective q
       rw [hf, QuotientGroup.eq] at hq

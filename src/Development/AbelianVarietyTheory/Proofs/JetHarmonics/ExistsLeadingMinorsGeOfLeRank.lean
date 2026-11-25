@@ -110,8 +110,7 @@ theorem exists_leading_minors_ge_of_le_rank {C : Type} [Field C] (v : Valuation 
           Matrix.of fun b i : Fin n => t i (Fin.castLE hn (a.succAbove b)) := by
         ext b i
         simp [Function.update_of_ne (Nat.ne_of_lt i.isLt)]
-      rw [this]
-      simp only [coef, Matrix.of_apply, Fin.val_last, Function.update_self]
+      simp only [this, coef, Matrix.of_apply, Fin.val_last, Function.update_self]
       ring
     have hval : φ (c • Pi.single (Fin.castLE hn (Fin.last n)) 1) =
         c * (Matrix.of fun a i : Fin n => t i (Fin.castLE (Nat.le_of_succ_le hn) a)).det := by

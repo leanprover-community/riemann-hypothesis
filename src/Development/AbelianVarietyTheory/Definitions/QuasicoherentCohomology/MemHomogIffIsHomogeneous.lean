@@ -83,8 +83,7 @@ theorem isBaseChange_dual [Module.Finite R M] [Module.Projective R M] {j : M →
   · intro φ
     refine ⟨e.symm ((TensorProduct.rid R S).symm.toLinearMap ∘ₗ φ.restrictScalars R ∘ₗ j), ?_⟩
     refine h.algHom_ext _ _ fun m => ?_
-    rw [key]
-    simp
+    simp [key]
 
 end BaseChange
 

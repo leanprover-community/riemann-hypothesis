@@ -67,8 +67,7 @@ omit [∀ k, Fintype (ι k)] in
 theorem aeval_segForm {R : Type} [CommRing R] (v : (Σ k, ι k) → R) {N : ℕ} (E : Fin (N + 1) ≃ ((k : K) → ι k))
     (Gz : MvPolynomial (Fin (N + 1)) ℤ) :
     aeval v (segForm E Gz) = aeval (fun j => ∏ k, v ⟨k, E j k⟩) Gz := by
-  rw [segForm, comp_aeval_apply]
-  simp only [map_prod, aeval_X]
+  simp only [segForm, comp_aeval_apply, map_prod, aeval_X]
 
 theorem isMultiHomog_of_weighted [DecidableEq K] {s : MRing ι} {n : ℕ}
     (h : ∀ k, IsWeightedHomogeneous (fun p : Σ k, ι k => if p.1 = k then 1 else 0) s n) :

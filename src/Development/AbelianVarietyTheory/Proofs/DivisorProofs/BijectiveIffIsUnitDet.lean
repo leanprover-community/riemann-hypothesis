@@ -89,7 +89,6 @@ theorem bijective_iff_isUnit_det (b : Basis ι A Λ) :
   constructor
   · intro h; exact e.bijective.comp h
   · intro h
-    have := e.symm.bijective.comp h
-    simpa [Function.comp_def, f] using this
+    simpa [Function.comp_def, f] using e.symm.bijective.comp h
 
 end GlobalTheory.LocAzumaya

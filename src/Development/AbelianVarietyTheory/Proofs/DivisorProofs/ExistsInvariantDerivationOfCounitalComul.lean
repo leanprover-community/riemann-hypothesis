@@ -86,8 +86,7 @@ theorem invariant_derivation_exists :
     induction x using TensorProduct.induction_on with
     | zero => simp
     | tmul a b =>
-      rw [hF]
-      simp [mul_comm]
+      simp [hF, mul_comm]
     | add x₁ x₂ ih₁ ih₂ => rw [map_add (f := _), map_add (f := _), ih₁, ih₂, map_add (f := _), map_add (f := _), map_add (f := _)]
   refine ⟨Derivation.mk' (F ∘ₗ Δ.toLinearMap) (fun a b => ?_), fun a => ?_⟩
   · simp only [LinearMap.coe_comp, Function.comp_apply, AlgHom.toLinearMap_apply, map_mul,

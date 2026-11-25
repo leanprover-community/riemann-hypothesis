@@ -30,8 +30,7 @@ theorem CoinvAboveTopGeneral.proof (h1 : CoinvAboveTop.Statement) :
 
   rw [map_sum, ← Equiv.sum_comp eβ.symm]
   refine Finset.sum_congr rfl fun b' _ => ?_
-  rw [map_mul]
-  simp only [Equiv.apply_symm_apply]
+  simp only [map_mul, Equiv.apply_symm_apply]
   congr 1
 
   rw [bps, map_sum, ← Equiv.sum_comp eι.symm]

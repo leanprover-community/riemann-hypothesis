@@ -84,7 +84,6 @@ theorem AL_eq_zero_of_compAt (L : Type) [Field L] [NumberField L] (a : Reciproci
     have h2 := equivFinsuppOfBasisLeft_lTensor b (ReciprocityTheory.Aut.evalAt L v).toLinearMap a i
     rw [← h1 a, h v, map_zero, Finsupp.zero_apply] at h2
     exact h2.symm
-  have : e a = 0 := Finsupp.ext hc
-  simpa using congrArg e.symm this
+  simpa using congrArg e.symm (Finsupp.ext hc : e a = 0)
 
 end GlobalTheory

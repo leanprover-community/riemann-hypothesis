@@ -113,8 +113,7 @@ private theorem mem_of_mem {σ : T ≃ₐ[S] T} {q : ℕ} (h : IsGal σ q) (a z 
       exact dvd_mul_left _ _
   obtain ⟨r, rfl⟩ : ∃ r, q = r + 1 := ⟨q - 1, by have := h.pos; omega⟩
   have hN : σ (∏ j ∈ Finset.range (r + 1), (σ ^ j) z) = ∏ j ∈ Finset.range (r + 1), (σ ^ j) z := by
-    rw [map_prod]
-    simp only [← pow_succ_app]
+    simp only [map_prod, ← pow_succ_app]
     rw [Finset.prod_range_succ, h.pow, Finset.prod_range_succ' _ r, pow_zero]
   obtain ⟨n, hn⟩ := h.fix _ hN
   have h1 : algebraMap S T n ∈ P := by

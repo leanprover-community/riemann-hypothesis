@@ -92,8 +92,7 @@ theorem main : ∀ (K L : Type) [inst : Field K] [inst_1 : Field L] [inst_2 : Al
     have e1 : Algebra.leftMulMatrix b x = ∑ i, b.repr x i • Algebra.leftMulMatrix b (b i) := by
       conv_lhs => rw [hx]
 
-      rw [map_sum]
-      simp only [map_smul]
+      simp only [map_sum, map_smul]
     rw [e1, RingHom.mapMatrix_apply, Matrix.map_apply, Matrix.sum_apply]
 
     simp only [P, map_sum, eval_mul, eval_X, eval_C, Matrix.smul_apply, smul_eq_mul]

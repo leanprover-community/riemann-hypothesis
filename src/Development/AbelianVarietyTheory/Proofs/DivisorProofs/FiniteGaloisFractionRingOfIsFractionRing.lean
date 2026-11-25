@@ -61,7 +61,6 @@ theorem _root_.GlobalTheory.finiteGalois_fractionRing_of_isFractionRing :
   · exact Module.Finite.of_equiv_equiv e.symm.toRingEquiv (RingEquiv.refl L) hcomp
   · exact IsGalois.of_equiv_equiv (f := e.symm.toRingEquiv) (g := RingEquiv.refl L) hcomp
   · intro σ x
-    have := σ.commutes (e.symm x)
-    simpa [hmap] using this
+    simpa [hmap] using σ.commutes (e.symm x)
 
 end GlobalTheory

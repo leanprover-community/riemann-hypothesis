@@ -172,8 +172,7 @@ theorem theta_from_section :
         intro j
         have hj := congrArg (fun t => LB.Sec.f t j) heq
         simp only [secComb] at hj
-        rw [hj]
-        simp [constFn_zero]
+        simp [hj, constFn_zero]
       intro i
       rw [ha0]
       rfl

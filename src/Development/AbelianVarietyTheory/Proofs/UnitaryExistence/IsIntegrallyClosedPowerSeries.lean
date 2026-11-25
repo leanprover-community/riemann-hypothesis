@@ -175,9 +175,8 @@ private theorem exists_X_pow_dvd_sub_mul_of_mem_almostMultiples [IsNoetherianRin
       rw [← he]; exact Ideal.sub_mem _ hf (Ideal.mul_mem_right _ _ hgI)
     obtain ⟨c, hc⟩ := constantCoeff_dvd_of_mem_almostMultiples hg (mem_almostMultiples_of_X_pow_mul_mem hg hmem)
     refine ⟨r + C c * X ^ k, ?_⟩
-    have hX : (X : R⟦X⟧) ∣ e - g * C c := by
+    obtain ⟨w, hw⟩ : (X : R⟦X⟧) ∣ e - g * C c := by
       rw [X_dvd_iff]; simp [hc]
-    obtain ⟨w, hw⟩ := hX
     refine ⟨w, ?_⟩
     have : f - g * (r + C c * X ^ k) = X ^ k * (e - g * C c) := by
       linear_combination he

@@ -108,8 +108,7 @@ section ZMod
 variable {n k : ℕ}
 
 theorem isUnit_two_zmod_pow (hn : Odd n) (k : ℕ) : IsUnit (2 : ZMod (n ^ k)) := by
-  have h : Nat.Coprime 2 (n ^ k) := (Nat.coprime_two_left.2 hn).pow_right k
-  simpa using (ZMod.isUnit_iff_coprime 2 (n ^ k)).2 h
+  simpa using (ZMod.isUnit_iff_coprime 2 (n ^ k)).2 ((Nat.coprime_two_left.2 hn).pow_right k)
 
 theorem exists_eq_nsmul_of_nsmul_eq_zero_zmod (hn : n ≠ 0) (hk : 2 ≤ k) (x : ZMod (n ^ k))
     (hx : n • x = 0) : ∃ a, x = n • a := by

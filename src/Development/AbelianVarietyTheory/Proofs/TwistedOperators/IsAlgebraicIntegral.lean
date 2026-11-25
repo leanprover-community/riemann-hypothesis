@@ -145,7 +145,6 @@ theorem isAlgebraic_integral (ρ : K →* Matrix ι ι ℂ) (hρ : Continuous ρ
     rw [← (key s).2, h1]
   obtain ⟨q, hq⟩ := GlobalTheory.GaloisDescent.mem_range_algebraMap_of_forall_algEquiv (K := Q) (P a b)
     fun s => congrFun (congrFun (fix s) a) b
-  have : P a b ∈ Q := hq ▸ q.2
-  exact mem_algebraicClosure_iff.1 this
+  exact mem_algebraicClosure_iff.1 (hq ▸ q.2 : P a b ∈ Q)
 
 end GlobalTheory.HaarAlg

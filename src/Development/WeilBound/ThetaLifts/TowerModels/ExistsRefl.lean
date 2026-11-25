@@ -132,8 +132,7 @@ theorem exists_refl (hM : ∀ i j, star (M j i) = M i j) (h1 : θ * θ = 1) (h2 
     · have : a = 0 := by
         by_contra hne
         have := h3 a hne
-        rw [hθa, map_smul, LinearMap.smul_apply, haa, h0] at this
-        simp at this
+        simp [hθa, map_smul, LinearMap.smul_apply, haa, h0] at this
       rw [this, smul_zero, sub_zero]
       exact sub_eq_zero.1 (ha ▸ this)
     · rw [inv_mul_cancel₀ h0, one_smul, ha, sub_sub_cancel]

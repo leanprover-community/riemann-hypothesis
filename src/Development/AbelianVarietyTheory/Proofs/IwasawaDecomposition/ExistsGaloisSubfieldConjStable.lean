@@ -76,9 +76,8 @@ theorem exists_galois_subfield_conj_stable (S : Finset ℂ) (hS : ∀ z ∈ S, I
   let K : IntermediateField ℚ ℂ := IntermediateField.adjoin ℚ (p.rootSet ℂ)
   have : p.IsSplittingField ℚ K :=
     IntermediateField.adjoin_rootSet_isSplittingField (IsAlgClosed.splits (p.map (algebraMap ℚ ℂ)))
-  have hfin : FiniteDimensional ℚ K := Polynomial.IsSplittingField.finiteDimensional K p
   have : Normal ℚ K := Normal.of_isSplittingField p
-  refine ⟨K, hfin, IsGalois.mk,
+  refine ⟨K, (Polynomial.IsSplittingField.finiteDimensional K p), IsGalois.mk,
     fun z hz => IntermediateField.subset_adjoin ℚ _ (hroot z (Finset.mem_insert_of_mem hz)),
     IntermediateField.subset_adjoin ℚ _ (hroot _ (Finset.mem_insert_self _ _)), ?_⟩
   let φ : ℂ →ₐ[ℚ] ℂ := Complex.conjAe.toAlgHom.restrictScalars ℚ

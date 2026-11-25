@@ -62,9 +62,8 @@ theorem isDia_conj_mem_lev : ∀ (N l : ℕ) (d : ℤ) (σ γ : SL(2, ℤ)), IsD
   obtain ⟨hγ1, hγ0⟩ := Subgroup.mem_inf.1 hγ
   refine Subgroup.mem_inf.2
     ⟨?_, (Gamma0 l).mul_mem ((Gamma0 l).mul_mem hσl hγ0) ((Gamma0 l).inv_mem hσl)⟩
-  have hγN : γ ∈ Gamma0 N := ((Gamma1_mem N γ).1 hγ1).2.2
   set S : Gamma0 N := ⟨σ, hσN⟩
-  set G : Gamma0 N := ⟨γ, hγN⟩
+  set G : Gamma0 N := ⟨γ, (((Gamma1_mem N γ).1 hγ1).2.2)⟩
   have hG : G ∈ Gamma1' N := (Gamma1_to_Gamma0_mem G).2 ((Gamma1_mem N γ).1 hγ1)
   have hX : S * G * S⁻¹ ∈ Gamma1' N := by
     rw [Gamma1_mem'] at hG ⊢

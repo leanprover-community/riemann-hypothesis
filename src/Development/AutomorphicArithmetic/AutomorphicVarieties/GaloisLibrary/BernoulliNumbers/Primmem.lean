@@ -101,8 +101,7 @@ open Finset UpperTheory.V.Bern
 
 private theorem dirichletCharacter_unit_isIntegral {R : Type} [CommRing R] {N : ℕ} [NeZero N]
     (χ : DirichletCharacter R N) (u : (ZMod N)ˣ) : IsIntegral ℤ (χ u) := by
-  have hpos : 0 < orderOf u := orderOf_pos u
-  refine IsIntegral.of_pow hpos ?_
+  refine IsIntegral.of_pow (orderOf_pos u) ?_
   have h1 : χ (u : ZMod N) ^ orderOf u = 1 := by
     rw [← map_pow, ← Units.val_pow_eq_pow_val, pow_orderOf_eq_one, Units.val_one, map_one]
   rw [h1]

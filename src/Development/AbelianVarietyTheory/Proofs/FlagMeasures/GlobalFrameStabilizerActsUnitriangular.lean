@@ -63,9 +63,8 @@ theorem descend {E R : Type} [Field E] [CommRing R] [Nontrivial R] (ι : E →+*
     (h : (fun i => ι (v i)) ∈ Submodule.span R ((fun a i => ι (w a i)) '' s)) :
     v ∈ Submodule.span E (w '' s) := by
   letI : Algebra E R := ι.toAlgebra
-  have hinj : Function.Injective (Algebra.linearMap E R) := ι.injective
   obtain ⟨g, hg⟩ := LinearMap.exists_leftInverse_of_injective (Algebra.linearMap E R)
-    (LinearMap.ker_eq_bot.mpr hinj)
+    (LinearMap.ker_eq_bot.mpr (ι.injective))
   have hg1 : ∀ c : E, g (ι c) = c := fun c => LinearMap.congr_fun hg c
   have hgm : ∀ (a : R) (c : E), g (a * ι c) = c * g a := by
     intro a c

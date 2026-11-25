@@ -53,9 +53,8 @@ namespace GlobalTheory
 
 private theorem tateMat_val_smul {Γ : Type} [AddCommGroup Γ] {N : ℕ} [NeZero N] {x : Γ}
     (hx : N • x = 0) (a : ℤ) : ((a : ZMod N).val) • x = a • x := by
-  have h : (N : ℤ) ∣ a - ((a : ZMod N).val : ℤ) := by
+  obtain ⟨c, hc⟩ : (N : ℤ) ∣ a - ((a : ZMod N).val : ℤ) := by
     rw [← ZMod.intCast_eq_intCast_iff_dvd_sub]; simp
-  obtain ⟨c, hc⟩ := h
   have h2 : a = ((a : ZMod N).val : ℤ) + c * N := by linarith
   conv_rhs => rw [h2, add_smul, mul_smul, natCast_zsmul, natCast_zsmul, hx, smul_zero, add_zero]
 

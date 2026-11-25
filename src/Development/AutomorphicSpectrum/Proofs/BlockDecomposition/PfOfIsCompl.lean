@@ -95,10 +95,9 @@ theorem pf_of_isCompl : ∀ (p : ℕ) [Fact p.Prime] (B : Type) [CommRing B] (T 
       have h3 : g π ^ (p * M) ∣ (z - w - g b) ^ p := dvdp _ _ hb
       rw [h2, dvd_neg] at h3
       rwa [map_pow]
-    have h4 : π ^ M ∣ b := root M b (inj' _ _ h1)
     have h5 : g π ^ M ∣ g b := by
       rw [← map_pow]
-      exact map_dvd g h4
+      exact map_dvd g (root M b (inj' _ _ h1))
     have h6 : g π ^ M ∣ z - w - g b := (pow_dvd_pow _ (Nat.le_mul_of_pos_left M hp0)).trans hb
     have h7 := dvd_add h6 h5
     rwa [sub_add_cancel] at h7

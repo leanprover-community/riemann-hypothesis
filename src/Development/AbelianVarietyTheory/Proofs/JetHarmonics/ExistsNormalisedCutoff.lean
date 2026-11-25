@@ -214,8 +214,7 @@ theorem exists_normalised_cutoff : ∀ (m : ℕ) (G S : Set (Matrix (Fin m) (Fin
       (hφ.comp (continuous_mulM_left x).measurable) (continuous_mulM_left s₀).measurable
     rw [h1] at h2
     simp only [hIdef]
-    rw [h2]
-    simp only [mulM_assoc]
+    simp only [h2, mulM_assoc]
   refine ⟨fun y => φ y * (I y)⁻¹, hφ.mul hIm.inv, fun x hx => ?_⟩
   have hae : ∀ᵐ s ∂μ, Matrix.of s ∈ S := hμ.2.2.1
   calc ∫⁻ s, φ (mulM s x) * (I (mulM s x))⁻¹ ∂μ = ∫⁻ s, φ (mulM s x) * (I x)⁻¹ ∂μ := by

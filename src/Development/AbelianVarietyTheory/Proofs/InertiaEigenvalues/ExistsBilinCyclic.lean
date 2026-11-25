@@ -226,8 +226,7 @@ theorem _root_.GlobalTheory.SimilarTranspose.main : ∀ (k ι : Type) [Field k] 
       simp only at hvw
       rw [hvw, sub_self, zero_dotProduct]
     have := hBn (o (v - w)) fun n => by
-      have := h0 (o.symm n)
-      simpa [Q] using this
+      simpa [Q] using h0 (o.symm n)
     rwa [map_eq_zero_iff _ o.injective, sub_eq_zero] at this
   · have := congrArg (LinearMap.toMatrix₂' k) hQ
     rw [LinearMap.toMatrix₂'_compl₁₂, LinearMap.toMatrix₂'_compl₁₂] at this

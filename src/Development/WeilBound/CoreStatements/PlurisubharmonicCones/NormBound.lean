@@ -81,9 +81,8 @@ theorem exists_val : ∃ v : Valuation K NNReal, v.Integers V ∧ ∀ x : V, ¬ 
   · rw [Valuation.map_apply, ← map_one f]
     exact hf.monotone (P.valuation_le_one (K := K) x)
   · rw [Valuation.map_apply, ← map_one f] at hr
-    have hr' : P.valuation K r ≤ 1 := hf.le_iff_le.1 hr
     obtain ⟨y, hy⟩ := HeightOneSpectrum.mem_integers_of_valuation_le_one (K := K) (x := r)
-      (h := fun w => by rw [hP w]; exact hr')
+      (h := fun w => by rw [hP w]; exact (hf.le_iff_le.1 hr))
     exact ⟨y, hy⟩
   · rw [Valuation.map_apply, ← map_one f]
     exact hf ((P.valuation_lt_one_iff_mem (K := K) x).2 ((IsLocalRing.mem_maximalIdeal x).2 hx))

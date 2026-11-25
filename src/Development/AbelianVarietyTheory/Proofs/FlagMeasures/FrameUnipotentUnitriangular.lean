@@ -136,8 +136,7 @@ theorem last_mem_perp : g (Fin.last r) ∈ perp L S.Hm (S.spanTo g r) := by
   induction hy using Submodule.span_induction with
   | mem x hx =>
     obtain ⟨i, hi, rfl⟩ := hx
-    have hi' : (i : ℕ) < r := hi
-    have : i ≠ Fin.last r := by rintro rfl; simp at hi'
+    have : i ≠ Fin.last r := by rintro rfl; simp at hi
     simp [hg, this]
   | zero => simp [hf]
   | add x y _ _ hx hy => rw [hf_add_right, hx, hy, add_zero]

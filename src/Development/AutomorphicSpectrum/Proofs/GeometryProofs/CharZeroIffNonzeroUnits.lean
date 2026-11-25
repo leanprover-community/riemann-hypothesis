@@ -192,8 +192,7 @@ theorem char_zero_iff_integers_units (F : Type) [Field F] [NumberField F] (Ω : 
     rw [e2]
     exact mul_mem (hreg d') hu.2.2
   · intro h r hr hf
-    have hr0 : (r : 𝓞 F) ≠ 0 := Nat.cast_ne_zero.2 hr.ne_zero
-    have := h _ hr0
+    have := h _ (Nat.cast_ne_zero.2 hr.ne_zero)
     rw [map_natCast] at this
     exact hf this
 

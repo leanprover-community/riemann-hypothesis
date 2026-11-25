@@ -92,8 +92,7 @@ theorem exists_leftInverse_flagForms (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ
     obtain ⟨ψ, hψdef⟩ : ∃ ψ : E →ₗ[Ω] Ω, ψ = ∑ j, (g i j / x k ^ m) • φ j := ⟨_, rfl⟩
     have hψ : ∀ e, ψ e = ∑ j, g i j / x k ^ m * φ j e := by
       intro e
-      rw [hψdef]
-      simp only [LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul]
+      simp only [hψdef, LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul]
     have heq : Set.EqOn (w i) ψ (Set.range b) := by
       rintro _ ⟨t, rfl⟩
       have hbt : b t ∈ L p₀ := by

@@ -66,13 +66,12 @@ theorem exists_algHom_X_add_C {O : Type} [CommRing O] (I : Ideal O) [h : IsAdicC
     ha.map (φ := (C : O →+* O⟦X⟧)) PowerSeries.WithPiTopology.continuous_C
   have : IsLinearTopology O⟦X⟧ O⟦X⟧ :=
     inferInstance
-  have hX : PowerSeries.HasEval (X + C c : O⟦X⟧) := PowerSeries.HasEval.X.add hC
   have : ContinuousSMul O O⟦X⟧ := ⟨by
     have : (fun p : O × O⟦X⟧ => p.1 • p.2) = fun p => C p.1 * p.2 := by
       funext p; rw [smul_eq_C_mul]
     rw [this]
     exact (PowerSeries.WithPiTopology.continuous_C.comp continuous_fst).mul continuous_snd⟩
-  refine ⟨PowerSeries.aeval hX, ?_⟩
+  refine ⟨PowerSeries.aeval (PowerSeries.HasEval.X.add hC), ?_⟩
   rw [PowerSeries.coe_aeval, PowerSeries.eval₂_X]
 
 theorem exists_algEquiv_X_add_C : ∀ {O : Type} [CommRing O] (I : Ideal O) [IsAdicComplete I O] (c : O), c ∈ I → ∃ lev : O⟦X⟧ ≃ₐ[O] O⟦X⟧, lev X = X + C c := by

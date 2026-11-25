@@ -71,8 +71,7 @@ theorem monic_dvd_X_pow_card_sub_one_exists_root :
   have hQ1 : 1 < Q := Fintype.one_lt_card
   have hdvd' : g ∣ X ^ Q - X := by
     have h1 : g ∣ X ^ (Q - 1) - 1 := by
-      have := Polynomial.map_dvd (residue S) hdvd
-      simpa [hQ, g] using this
+      simpa [hQ, g] using Polynomial.map_dvd (residue S) hdvd
     have : (X ^ Q - X : (ResidueField S)[X]) = X * (X ^ (Q - 1) - 1) := by
       conv_lhs => rw [show Q = (Q - 1) + 1 by omega]
       ring

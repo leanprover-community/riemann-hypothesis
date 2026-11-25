@@ -82,7 +82,6 @@ theorem exists_extension_character : ∀ {H M F : Type} [inst : CommGroup H] [in
   obtain ⟨h, hh⟩ := (Module.Baer.of_divisible (Additive Fˣ)).extension_property_addMonoidHom
     (MonoidHom.toAdditive Φ) hΦ (MonoidHom.toAdditive χ)
   refine ⟨MonoidHom.toAdditive.symm h, fun x => ?_⟩
-  have := DFunLike.congr_fun hh (Additive.ofMul x)
-  exact this
+  exact DFunLike.congr_fun hh (Additive.ofMul x)
 
 end GlobalTheory.ExtensionCharacter

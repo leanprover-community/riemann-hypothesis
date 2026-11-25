@@ -82,8 +82,7 @@ theorem commutator_casimir_term {V : Type} [AddCommGroup V] [_root_.Module ℂ V
     have key : E c d * (E a b * E b a) - E a b * E b a * E c d
         = -((E a b * E c d - E c d * E a b) * E b a) - E a b * (E b a * E c d - E c d * E b a) := by
       noncomm_ring
-    rw [key, h1, h2]
-    simp only [sub_mul, mul_sub, ite_mul, mul_ite, zero_mul, mul_zero]
+    simp only [key, h1, h2, sub_mul, mul_sub, ite_mul, mul_ite, zero_mul, mul_zero]
     abel
   · simp only [ite_eq_right h]
     simp

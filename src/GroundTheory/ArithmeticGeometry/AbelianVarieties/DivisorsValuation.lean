@@ -90,9 +90,8 @@ theorem exists_eq_pow_of_le_one_iff {L : Type*} [Field L] (w v : Valuation L ℤ
     congr 1
     simp
   have hwg : w (f * π ^ l) = 1 := by
-    have hg0 : f * π ^ l ≠ 0 := mul_ne_zero hf (zpow_ne_zero _ hπ0)
     refine le_antisymm ((h _).mpr hg.le) (not_lt.mp fun hl => ?_)
-    have := (hlt _ hg0).mp hl
+    have := (hlt _ (mul_ne_zero hf (zpow_ne_zero _ hπ0))).mp hl
     rw [hg] at this
     exact lt_irrefl _ this
   rw [map_mul, map_zpow₀, hwπc, ← exp_zsmul] at hwg

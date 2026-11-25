@@ -56,8 +56,7 @@ theorem isOpenEmbedding_sq (ι : Type) [Fintype ι] :
     ext x
     constructor
     · rintro ⟨u, rfl⟩ i
-      have hu : 0 < ((u : (ι → ℝ)ˣ) : ι → ℝ) i := u.2 i
-      simpa [g] using pow_pos hu 2
+      simpa [g] using pow_pos (u.2 i) 2
     · intro hx
       have hs : ∀ i, 0 < Real.sqrt (x i) := fun i => Real.sqrt_pos.2 (hx i)
       let w : (ι → ℝ)ˣ :=

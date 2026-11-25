@@ -136,8 +136,7 @@ theorem proof (hRE : RiemannExtensionAnalytic.Statement) : MaximalCountUnbranche
     intro y₀ hy₀ hg₀
     obtain ⟨_, hsec⟩ := hgsec y₀ hy₀.2 hg₀
     obtain ⟨O₁, V₁, h₁, hO₁, _hV₁, hzV₁, han₁, hA₁, hYV₁⟩ := hsec (h y₀) (hhY y₀ hy₀) (hhA y₀ hy₀)
-    have hz : h y₀ ∈ h₁ '' O₁ := hYV₁ ▸ ⟨hhY y₀ hy₀, hzV₁⟩
-    obtain ⟨y₁, hy₁, hy₁e⟩ := hz
+    obtain ⟨y₁, hy₁, hy₁e⟩ : h y₀ ∈ h₁ '' O₁ := hYV₁ ▸ ⟨hhY y₀ hy₀, hzV₁⟩
     have hy₁₀ : y₁ = y₀ := by rw [← hA₁ y₁ hy₁, hy₁e, hhA y₀ hy₀]
     rw [hy₁₀] at hy₁ hy₁e
     have hc₁ : ContinuousAt h₁ y₀ := (han₁ y₀ hy₁).continuousAt

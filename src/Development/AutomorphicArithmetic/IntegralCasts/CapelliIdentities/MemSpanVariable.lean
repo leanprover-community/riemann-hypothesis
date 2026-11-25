@@ -82,8 +82,7 @@ theorem UpperTheory.Reformulated.B.MemSpanVariable.mem_span_X :
   have hsum : f = ∑ i, MvPowerSeries.X i * g i := by
     ext n
 
-    rw [map_sum]
-    simp only [key]
+    simp only [map_sum, key]
     by_cases h : n = 0
     · subst h
       simpa using hf

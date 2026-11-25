@@ -179,8 +179,7 @@ theorem nonempty_of_antitone (ν : Fin k → ℤ) (hν : Antitone ν) : Nonempty
     exact ⟨(M - m).toNat, fun a => by have := hM ⟨a, rfl⟩; omega⟩
   induction N generalizing ν with
   | zero =>
-    have : ν = fun _ => m := funext fun a => le_antisymm (by simpa using hN a) (hm a)
-    exact this ▸ ⟨detPow k m⟩
+    exact (funext fun a => le_antisymm (by simpa using hN a) (hm a) : ν = fun _ => m) ▸ ⟨detPow k m⟩
   | succ N ih =>
     let p : Fin k → Prop := fun a => m < ν a
     have hp : ∀ a b, a ≤ b → p b → p a := fun a b hab hb => lt_of_lt_of_le hb (hν hab)

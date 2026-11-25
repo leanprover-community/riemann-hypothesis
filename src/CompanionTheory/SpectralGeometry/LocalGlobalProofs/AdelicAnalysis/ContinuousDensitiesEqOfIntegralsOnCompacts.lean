@@ -28,7 +28,6 @@ theorem not_lt_of_setLIntegral_compact_eq {X : Type} [TopologicalSpace X] [Local
   obtain ⟨S, hSn, hSN, hS⟩ := local_compact_nhds hN
   have hSm : MeasurableSet S := hS.isClosed.measurableSet
   have hpos : ν S ≠ 0 := (Measure.measure_pos_of_mem_nhds ν hSn).ne'
-  have htop : ν S ≠ ∞ := hS.measure_lt_top.ne
   have hle1 : ∫⁻ x in S, D x ∂ν ≤ c1 * ν S := by
     rw [← setLIntegral_const]
     exact lintegral_mono_ae ((ae_restrict_iff' hSm).2
@@ -37,7 +36,7 @@ theorem not_lt_of_setLIntegral_compact_eq {X : Type} [TopologicalSpace X] [Local
     rw [← setLIntegral_const]
     exact lintegral_mono_ae ((ae_restrict_iff' hSm).2
       (Filter.Eventually.of_forall fun x hx => (hSN hx).1.2.le))
-  have hmid : c1 * ν S < c2 * ν S := (ENNReal.mul_lt_mul_iff_left hpos htop).2 hc
+  have hmid : c1 * ν S < c2 * ν S := (ENNReal.mul_lt_mul_iff_left hpos hS.measure_lt_top.ne).2 hc
   exact (hle1.trans_lt (hmid.trans_le hle2)).ne (h S hS fun x hx => (hSN hx).2)
 
 theorem eq_of_setLIntegral_compact_eq :

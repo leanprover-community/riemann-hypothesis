@@ -359,8 +359,7 @@ theorem of_linearEquiv {N : Type*} [AddCommGroup N] [Module R N] {f : ι → R}
     (h : IsQuasiRegularSeq M f) (e : M ≃ₗ[R] N) : IsQuasiRegularSeq N f := by
   intro a c hc α
   have := h a (fun β => e.symm (c β)) (by
-    have := Submodule.smul_top_le_comap_smul_top _ e.symm.toLinearMap hc
-    simpa using this) α
+    simpa using (Submodule.smul_top_le_comap_smul_top _ e.symm.toLinearMap hc)) α
   simpa using Submodule.smul_top_le_comap_smul_top _ e.toLinearMap this
 
 end IsQuasiRegularSeq

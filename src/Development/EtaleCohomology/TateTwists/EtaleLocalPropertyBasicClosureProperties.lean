@@ -83,8 +83,7 @@ theorem loc_trans (U : Scheme.{0}) (P : ∀ V : Scheme.{0}, (V ⟶ U) → Prop)
   obtain ⟨T, hT, hTP⟩ := hSP Y f hf
   refine (Scheme.etaleTopology).superset_covering ?_ hT
   intro Z k hk W' k'
-  have := hTP W' (k' ≫ k) (T.downward_closed hk k')
-  simpa [Category.assoc] using this
+  simpa [Category.assoc] using hTP W' (k' ≫ k) (T.downward_closed hk k')
 
 theorem loc_finset (U : Scheme.{0}) (ι : Type) (P : ι → ∀ V : Scheme.{0}, (V ⟶ U) → Prop)
     (h : ∀ i, Loc U (P i)) (s : Finset ι) : Loc U fun V g => ∀ i ∈ s, P i V g := by

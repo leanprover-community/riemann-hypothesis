@@ -91,8 +91,7 @@ variable {σ : Type*} [Fintype σ] [DecidableEq σ]
 
 theorem coeff_prod_geomSeries (n : ℕ) :
     PowerSeries.coeff n (∏ i : σ, geomSeries (X i : MvPolynomial σ ℚ)) = hsymm σ ℚ n := by
-  rw [PowerSeries.coeff_prod, hsymm_eq_sum_finsuppAntidiag]
-  simp [geomSeries, PowerSeries.coeff_mk]
+  simp [PowerSeries.coeff_prod, hsymm_eq_sum_finsuppAntidiag, geomSeries, PowerSeries.coeff_mk]
 
 def omitProduct (j : σ) : PowerSeries (MvPolynomial σ ℚ) :=
   ∏ i ∈ univ.erase j, (1 - PowerSeries.C (X i) * PowerSeries.X)

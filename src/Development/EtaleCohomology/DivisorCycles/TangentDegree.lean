@@ -134,8 +134,7 @@ lemma tan_deg (hE : ExpVan) (hD : DegPoly) [CharZero C] {N n : ℕ} (S : Submono
     · rw [Polynomial.natDegree_comp, Polynomial.natDegree_linear hs, mul_one]; exact hqd
     · rw [Polynomial.aeval_comp]
       convert hqx using 2
-      rw [hUZ]
-      simp [Algebra.algebraMap_eq_smul_one, add_comm]
+      simp [hUZ, Algebra.algebraMap_eq_smul_one, add_comm]
   have hZ0 : ∀ f ∈ 𝓕, MvPolynomial.aeval (fun p : Fin N × Fin N => Z Y p.1 p.2) f = 0 := by
     intro f hf
     have := (@h𝓕 F _ alg ((Z Y).map ι)).1 hZF f hf

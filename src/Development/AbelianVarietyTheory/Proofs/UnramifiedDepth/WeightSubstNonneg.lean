@@ -117,11 +117,10 @@ theorem weight_subst_nonneg :
   apply AddValuation.map_le_sum
   intro d _
   rw [smul_eq_mul, AddValuation.map_mul]
-  have h1 : (0 : WithTop ℝ) ≤ v (MvPowerSeries.coeff d K) := hK d
   have h2 : WtNonneg v ρ (d.prod fun c e => t c ^ e) := by
     unfold Finsupp.prod
     exact wtNonneg_prod v ρ _ _ (fun c _ => wtNonneg_pow v ρ (ht c) _)
-  have h3 := add_le_add h1 (h2 α)
+  have h3 := add_le_add (hK d) (h2 α)
   rwa [zero_add] at h3
 
 end GlobalTheory.WeightSubst

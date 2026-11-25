@@ -265,8 +265,7 @@ theorem mem_FildR_iff (hE : ∀ g x i, E (ρ' g x) i = ρ g (E x i)) (τ : K →
       rw [hmap, LinearEquiv.apply_symm_apply, hz i]
   simp only [FildR, DdRE, Submodule.mem_inf, Submodule.mem_iInf, LinearMap.mem_ker,
     LinearMap.sub_apply, LinearMap.smul_apply, LinearMap.id_apply, sub_eq_zero]
-  rw [hA, hB, hC]
-  simp only [forall_and]
+  simp only [hA, hB, hC, forall_and]
 
 end Period
 

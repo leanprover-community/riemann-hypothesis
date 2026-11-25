@@ -83,8 +83,7 @@ theorem _root_.GlobalTheory.fourier_uniqueness_of_openSubgroup : ∀ {H A : Type
     have hsub : (QuotientAddGroup.mk ⁻¹' ({(t₀ : H ⧸ L)} : Set (H ⧸ L))) ⊆ Kc := by
       intro x hx
       by_contra hxK
-      have hx' : -t₀ + x ∈ L := QuotientAddGroup.eq.mp hx.symm
-      have := hφL t₀ _ hx'
+      have := hφL t₀ _ (QuotientAddGroup.eq.mp hx.symm)
       rw [add_neg_cancel_left, hsupp x hxK] at this
       exact ht₀ this.symm
     rw [← hmeas (t₀ : H ⧸ L)]

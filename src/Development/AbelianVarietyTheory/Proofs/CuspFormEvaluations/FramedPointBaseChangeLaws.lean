@@ -111,8 +111,7 @@ theorem refl {S : Type} [CommRing S] [Algebra c.F S] (y : FrPt Xo c S) :
   have eid := spec_algHom_id c.F S
   have did : spMap (dualMap (AlgHom.id c.F S).toRingHom) = 𝟙 _ := by
     show spMap (dualMap (RingHom.id S)) = _
-    rw [dual_id]
-    simp [spMap]
+    simp [dual_id, spMap]
   refine ⟨by rw [eid, Category.id_comp], fun τ i => by rw [did, Category.id_comp], 𝟙 _,
     Category.id_comp _, by rw [eid]; exact (Category.id_comp _).trans (Category.comp_id _).symm, ?_⟩
   intro i h

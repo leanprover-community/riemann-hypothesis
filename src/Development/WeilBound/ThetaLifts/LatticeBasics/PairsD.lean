@@ -143,8 +143,7 @@ theorem exists_smul_of_rank_le_aleph0 (hV : Module.rank ℂ V ≤ ℵ₀) (φ : 
       rw [← Finset.prod_erase_mul _ _ hk, map_mul, Module.End.mul_apply, hw]
     have h3 := congrArg (aeval φ (∏ j ∈ s, (X - C j))) hg
 
-    rw [map_sum, map_zero] at h3
-    simp only [LinearMap.map_smul_of_tower] at h3
+    simp only [map_sum, map_zero, LinearMap.map_smul_of_tower] at h3
     rw [Finset.sum_congr rfl (fun k hk => by rw [key k hk])] at h3
     have h4 : aeval φ (∑ k ∈ s, C (g k) * ∏ j ∈ s.erase k, (X - C j)) v = 0 := by
 

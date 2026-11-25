@@ -68,8 +68,7 @@ theorem exists_perm_of_map_eq {α J : Type} [Fintype α] (f g : α → J)
 
 theorem toMultiset_sum_single {d : ℕ} {J : Type} (w : Fin d → J) :
     Finsupp.toMultiset (∑ k, Finsupp.single (w k) 1 : J →₀ ℕ) = Finset.univ.val.map w := by
-  rw [Finsupp.toMultiset_sum]
-  simp only [Finsupp.toMultiset_single, one_smul]
+  simp only [Finsupp.toMultiset_sum, Finsupp.toMultiset_single, one_smul]
   rw [← Multiset.sum_map_singleton (Finset.univ.val.map w), Multiset.map_map]
   rfl
 

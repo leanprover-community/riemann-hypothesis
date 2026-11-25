@@ -103,7 +103,6 @@ theorem _root_.GlobalTheory.FinWeil.sumOp_sumOp_eq_idx_smul : ∀ {R X M : Type}
           exact congrArg (fun n : ℕ => (n : ℂ) • v) hidx
         · rw [ite_eq_right (mt hmem.1 hp), ite_eq_right hp, zero_smul]
     _ = (_root_.GlobalTheory.FinWeil.idx A B : ℂ) • v := by
-        rw [Finset.sum_ite_eq']
-        simp
+        simp [Finset.sum_ite_eq']
 
 end GlobalTheory.FinWeil

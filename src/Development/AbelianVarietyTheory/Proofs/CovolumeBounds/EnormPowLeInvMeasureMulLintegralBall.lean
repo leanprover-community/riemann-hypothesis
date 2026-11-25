@@ -296,8 +296,7 @@ theorem volume_ball_of_finrank_eq_two_mul {D : ℕ} (hD : Module.finrank ℝ E =
       rw [Subsingleton.elim z a]
       simp only [mem_ball_self hr, true_iff, mem_parallelepiped_iff]
       exact ⟨0, by simp, Subsingleton.elim _ _⟩
-    rw [h, OrthonormalBasis.volume_parallelepiped, hD0]
-    simp
+    simp [h, OrthonormalBasis.volume_parallelepiped, hD0]
   · rw [InnerProductSpace.volume_ball_of_dim_even hD, hD, ← ENNReal.ofReal_pow hr.le,
       ← ENNReal.ofReal_mul (by positivity)]
     congr 1

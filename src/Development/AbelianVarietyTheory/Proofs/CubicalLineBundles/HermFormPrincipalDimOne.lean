@@ -135,8 +135,7 @@ theorem hermForm_principal_dim_one :
       rw [map_zero, LinearMap.zero_apply]
       obtain ⟨c, hc⟩ := hdvd a y
       rw [hc, hk0, zero_mul]
-    have ha0 : a = 0 := hbij.1 hEa
-    have h0 : L.ω₁ • w = 0 := congrArg Subtype.val ha0
+    have h0 : L.ω₁ • w = 0 := congrArg Subtype.val (hbij.1 hEa)
     rcases smul_eq_zero.1 h0 with h | h
     · exact L.indep.ne_zero 0 (by simpa using h)
     · exact hw h

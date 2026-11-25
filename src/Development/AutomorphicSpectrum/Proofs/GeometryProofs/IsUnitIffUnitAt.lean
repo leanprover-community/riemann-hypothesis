@@ -102,7 +102,6 @@ theorem exists_valAt_hom (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (Com
     obtain ⟨s, rfl⟩ := e.surjective a
     simp only [RingHom.comp_apply, RingHom.coe_coe]
     rw [key]
-    have : IsUnit (v s) ↔ IsUnit s := isUnit_map_iff v s
-    exact this.trans (isUnit_iff_unitAt ξ hξ p s)
+    exact (isUnit_map_iff v s : IsUnit (v s) ↔ IsUnit s).trans (isUnit_iff_unitAt ξ hξ p s)
 
 end GlobalTheory.CompanionTheory.Ar.ValHom

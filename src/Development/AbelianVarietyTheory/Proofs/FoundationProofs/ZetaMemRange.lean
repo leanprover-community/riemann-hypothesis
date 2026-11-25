@@ -63,8 +63,7 @@ theorem zeta_mem_range : ∀ (k K Ω : Type) [Field k] [IsAlgClosed k] [CharZero
   haveI : NeZero (N : k) := ⟨by exact_mod_cast hN.ne'⟩
   obtain ⟨ξ, hξ⟩ := HasEnoughRootsOfUnity.exists_primitiveRoot k N
   let φ : k →+* Ω := (algebraMap K Ω).comp ((algebraMap k[X] K).comp Polynomial.C)
-  have hφ : Function.Injective φ := φ.injective
-  have hξ' : IsPrimitiveRoot (φ ξ) N := hξ.map_of_injective hφ
+  have hξ' : IsPrimitiveRoot (φ ξ) N := hξ.map_of_injective (φ.injective)
   obtain ⟨i, -, hi⟩ := hξ'.eq_pow_of_pow_eq_one hζ.pow_eq_one
   refine ⟨(algebraMap k[X] K (Polynomial.C ξ)) ^ i, ?_⟩
   rw [map_pow, ← hi]

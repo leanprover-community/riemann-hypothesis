@@ -67,8 +67,7 @@ theorem isHaarMeasure_of_sigmaFinite {H : Type} [Group H] [TopologicalSpace H] [
   refine measure_iUnion_null fun n => ?_
   have h1 := measure_spanningSets_lt_top ν n
   have h2 : ν (spanningSets ν n) = ⊤ * Measure.haarMeasure K (spanningSets ν n) := by
-    have := congrArg (fun ρ : Measure H => ρ (spanningSets ν n)) e
-    simpa [hc] using this
+    simpa [hc] using congrArg (fun ρ : Measure H => ρ (spanningSets ν n)) e
   by_cases h3 : Measure.haarMeasure K (spanningSets ν n) = 0
   · rw [h2, h3, mul_zero]
   · rw [h2, ENNReal.top_mul h3] at h1

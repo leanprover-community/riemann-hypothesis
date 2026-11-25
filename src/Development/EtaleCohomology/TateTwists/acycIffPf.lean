@@ -63,8 +63,7 @@ theorem map_res {F G : Shv R} (φ : F ⟶ G) {V U : Scheme.{0}} (g : V ⟶ U) (x
 
 theorem iCycles_inj (S : ShortComplex (Shv R)) (U : Scheme.{0}) :
     Function.Injective (Sec.map S.iCycles (U := U)) := by
-  have : Mono ((ev U).map S.iCycles) := inferInstance
-  exact (ModuleCat.mono_iff_injective _).1 this
+  exact (ModuleCat.mono_iff_injective _).1 (inferInstance : Mono ((ev U).map S.iCycles))
 
 theorem iCycles_surj (S : ShortComplex (Shv R)) (U : Scheme.{0}) (z : Sec S.X₂ U) (hz : Sec.map S.g z = 0) :
     ∃ c : Sec S.cycles U, Sec.map S.iCycles c = z := by

@@ -73,8 +73,7 @@ theorem isPeriod_comp_realLinear {O : Type} [Ring O] {bar : O → O} (D : PLat O
     have hi : Function.Injective f := by
       intro z w h
       apply Subtype.ext
-      have := congrArg (fun u : P₀.range => ec u.1) h
-      simpa [f] using this
+      simpa [f] using congrArg (fun u : P₀.range => ec u.1) h
     exact DiscreteTopology.of_continuous_injective hf hi
   · have : Set.range (R.toAddMonoidHom.comp P₀) = R '' Set.range P₀ := by
       rw [← Set.range_comp]; rfl

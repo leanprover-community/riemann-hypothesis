@@ -73,8 +73,7 @@ theorem ts_herm_conjTranspose (x : Fin n → Fin n → ℝ) : (herm x)ᴴ = herm
 
 theorem ts_inG_nU {b : Matrix (Fin n) (Fin n) ℂ} (hb : bᴴ = b) : InG (nU b) := by
   unfold InG nU JJ
-  rw [fromBlocks_conjTranspose, fromBlocks_multiply, fromBlocks_multiply]
-  simp [hb]
+  simp [fromBlocks_conjTranspose, fromBlocks_multiply, fromBlocks_multiply, hb]
 
 theorem ts_continuous_herm : Continuous (herm : (Fin n → Fin n → ℝ) → Matrix (Fin n) (Fin n) ℂ) := by
   unfold herm

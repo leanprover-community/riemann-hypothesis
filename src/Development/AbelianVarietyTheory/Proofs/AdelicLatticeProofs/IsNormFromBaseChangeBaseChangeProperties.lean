@@ -108,10 +108,9 @@ theorem tnorm_baseChange : ∀ (F E : Type) [Field F] [Field E] [Algebra F E] [F
   · intro K _ _ e
     exact ⟨(1 : K) ⊗ₜ[F] e, tensor_norm_one_tmul K e⟩
   · rintro K _ _ x y hy0 ⟨a, ha⟩ ⟨c, hc⟩
-    have hyK : algebraMap F K y ≠ 0 := (_root_.map_ne_zero _).mpr hy0
     have hu : IsUnit (Algebra.lmul K (K ⊗[F] E) c) := by
       rw [LinearMap.isUnit_iff_isUnit_det, ← Algebra.norm_apply, hc]
-      exact hyK.isUnit
+      exact ((_root_.map_ne_zero _).mpr hy0).isUnit
     obtain ⟨d, hd⟩ := ((Module.End.isUnit_iff _).mp hu).2 1
     have hd' : c * d = 1 := hd
     have hn : Algebra.norm K c * Algebra.norm K d = 1 := by

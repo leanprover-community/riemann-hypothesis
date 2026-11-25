@@ -66,7 +66,7 @@ theorem natCast_dvd_of_pow_dvd_of_not_isUnit (R : Type) [CommRing R] [IsDomain R
   | succ m ih =>
     intro k hk
     have h1 : (l : R) ∣ (k : R) := (dvd_pow_self _ (Nat.succ_ne_zero m)).trans hk
-    have h2 : l ∣ k := by
+    obtain ⟨k', rfl⟩ : l ∣ k := by
       by_contra hnd
       have hcop : Nat.Coprime l k := (Nat.Prime.coprime_iff_not_dvd hl).2 hnd
       have hg := Nat.gcd_eq_gcd_ab l k
@@ -77,7 +77,6 @@ theorem natCast_dvd_of_pow_dvd_of_not_isUnit (R : Type) [CommRing R] [IsDomain R
       have := congrArg (fun z : ℤ => (z : R)) hg
       simp only [Nat.cast_one, Int.cast_one, Int.cast_add, Int.cast_mul, Int.cast_natCast] at this
       rw [this, hc]; ring
-    obtain ⟨k', rfl⟩ := h2
     have hl0 : (l : R) ≠ 0 := by exact_mod_cast hl.ne_zero
     have hk' : (l : R) ^ m ∣ (k' : R) := by
       obtain ⟨c, hc⟩ := hk

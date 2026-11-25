@@ -64,8 +64,7 @@ lemma IsBaseChangeSection.comp {W T U : Scheme.{u}} {f : W ⟶ T} {g : T ⟶ U} 
         map_smul' := fun t x => by
           simp only [RingHom.id_apply]
           rw [pullbackSection_smul, map_smul, hsm] }
-    have h₁ : χ₁ = ψ₁ := u₁ χ₁ hχ
-    have h₂ : χ = ψ₂ := u₂ χ (fun x => congrArg (fun l => l x) h₁)
+    have h₂ : χ = ψ₂ := u₂ χ (fun x => congrArg (fun l => l x) (u₁ χ₁ hχ))
     ext x
     simp only [LinearMap.comp_apply, sectionLinear_apply, ← h₂, χ, hchi]
 

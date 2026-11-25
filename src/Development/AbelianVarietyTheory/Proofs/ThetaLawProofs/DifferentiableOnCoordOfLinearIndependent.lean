@@ -78,8 +78,7 @@ theorem differentiableOn_coord_of_linearIndependent :
       rw [hspan]; trivial
     obtain ⟨l, hl⟩ := Finsupp.mem_span_range_iff_exists_finsupp.1 hm
     refine ⟨l, fun j => ?_⟩
-    have := congrFun hl j
-    simpa [Finsupp.sum, flip, Finset.sum_apply] using this
+    simpa [Finsupp.sum, flip, Finset.sum_apply] using congrFun hl j
   choose l hl using hl
   let A : E → Matrix I I ℂ := fun e => Matrix.of fun i j => ∑ z ∈ (l i).support, l i z * Th j e z
   let b : E → I → ℂ := fun e i => ∑ z ∈ (l i).support, l i z * F e z

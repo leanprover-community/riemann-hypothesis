@@ -278,8 +278,7 @@ namespace GlobalTheory.WpFam.RowsSummed
 
 theorem norm_ch (N : ℕ) (j : ZMod N) : ‖ch N j‖ = 1 := by
   unfold ch
-  rw [Complex.norm_exp]
-  simp [Complex.div_re]
+  simp [Complex.norm_exp, Complex.div_re]
 
 theorem norm_q_lt (N : ℕ) [NeZero N] (τ : ℍ) :
     ‖Complex.exp ((2 * (Real.pi : ℂ) * Complex.I) * τ / N)‖ < 1 := by

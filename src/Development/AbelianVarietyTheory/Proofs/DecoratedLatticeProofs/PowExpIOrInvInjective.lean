@@ -52,8 +52,7 @@ namespace GlobalTheory.ExpPow
 theorem int_eq_zero_of_exp_I_mul (m : ℤ) (h : Complex.exp (Complex.I * m) = 1) : m = 0 := by
   obtain ⟨n, hn⟩ := Complex.exp_eq_one_iff.mp h
   have h1 : (m : ℝ) = n * (2 * Real.pi) := by
-    have := congrArg Complex.im hn
-    simpa using this
+    simpa using congrArg Complex.im hn
   by_contra hm
   have hn0 : (n : ℝ) ≠ 0 := by
     intro h0

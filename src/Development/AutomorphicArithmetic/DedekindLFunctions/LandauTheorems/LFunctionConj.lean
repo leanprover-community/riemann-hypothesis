@@ -93,8 +93,7 @@ lemma differentiable_reg (a : UnitAddCircle) : Differentiable ℂ (reg a) := by
 
 lemma pole_conj (s : ℂ) : 1 / ((starRingEnd ℂ) s - 1) / Gammaℝ ((starRingEnd ℂ) s)
     = (starRingEnd ℂ) (1 / (s - 1) / Gammaℝ s) := by
-  rw [Complex.Gammaℝ_conj]
-  simp [map_div₀]
+  simp [Complex.Gammaℝ_conj, map_div₀]
 
 lemma hurwitz_conj_real {a : ℝ} (ha : a ∈ Icc (0 : ℝ) 1) (s : ℂ) :
     hurwitzZeta a ((starRingEnd ℂ) s) = (starRingEnd ℂ) (hurwitzZeta a s) := by

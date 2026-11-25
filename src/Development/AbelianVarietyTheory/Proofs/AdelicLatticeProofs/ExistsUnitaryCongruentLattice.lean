@@ -75,8 +75,7 @@ theorem fv_sub (x y : Fin n → E) : fv F (x - y) = fv F x - fv F y := by
 theorem nsmul_cancel {M : ℕ} (hM : 0 < M) {x y : Fin n → RA F E} (h : M • x = M • y) : x = y := by
   have hM' : (M : F) ≠ 0 := by exact_mod_cast hM.ne'
   rw [← Nat.cast_smul_eq_nsmul F, ← Nat.cast_smul_eq_nsmul F] at h
-  have := congrArg (fun z => (M : F)⁻¹ • z) h
-  simpa [smul_smul, inv_mul_cancel₀ hM'] using this
+  simpa [smul_smul, inv_mul_cancel₀ hM'] using congrArg (fun z => (M : F)⁻¹ • z) h
 
 end General
 

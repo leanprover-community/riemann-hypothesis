@@ -132,11 +132,10 @@ lemma loc_map {P X : Scheme.{u}} (f : P ⟶ X) [IsOpenImmersion f] (J : P.IdealS
     (W W' : X.affineOpens) (hle : W' ≤ W) (hW : W.1 ≤ f.opensRange)
     (h : IsAffineOpen (f ⁻¹ᵁ W.1)) (h' : IsAffineOpen (f ⁻¹ᵁ W'.1)) :
     (loc f J W h).map (X.presheaf.map (homOfLE hle).op).hom = loc f J W' h' := by
-  have hW' : W'.1 ≤ f.opensRange := (show W'.1 ≤ W.1 from hle).trans hW
   have hJ := J.map_ideal' (U := ⟨f ⁻¹ᵁ W'.1, h'⟩) (V := ⟨f ⁻¹ᵁ W.1, h⟩)
     ((TopologicalSpace.Opens.map f.base).map (homOfLE hle).op.unop).op
   exact (ideal_transfer _ _ _ _ (f.naturality (homOfLE hle).op) (app_bijective f W.1 hW)
-    (app_bijective f W'.1 hW') _).trans (congrArg _ hJ)
+    (app_bijective f W'.1 ((show W'.1 ≤ W.1 from hle).trans hW)) _).trans (congrArg _ hJ)
 
 lemma loc_indep {X : Scheme.{u}} {ι : Type*} (P : ι → Scheme.{u}) (e : ∀ i, P i ⟶ X)
     [∀ i, IsOpenImmersion (e i)] (K : ∀ i, (P i).IdealSheafData)

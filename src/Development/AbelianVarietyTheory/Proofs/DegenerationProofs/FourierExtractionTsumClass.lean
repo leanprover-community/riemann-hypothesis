@@ -191,7 +191,7 @@ private theorem exists_torsionCharacter_apply_ne_one {ι : Type} [Fintype ι] (b
     (hx : ¬ ∃ μ : X, N • μ = x) :
     ∃ t : _root_.GlobalTheory.TorsionFourier.torsionChars K X N, t.1 (Multiplicative.ofAdd x) ≠ 1 := by
   classical
-  have hcoord : ∃ i, ¬ (N : ℤ) ∣ b.repr x i := by
+  obtain ⟨i, hi⟩ : ∃ i, ¬ (N : ℤ) ∣ b.repr x i := by
     by_contra! hall
     apply hx
     refine ⟨∑ i, (b.repr x i / N) • b i, ?_⟩
@@ -199,7 +199,6 @@ private theorem exists_torsionCharacter_apply_ne_one {ι : Type} [Fintype ι] (b
     rw [Finset.smul_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [← Nat.cast_smul_eq_nsmul ℤ, smul_smul, Int.mul_ediv_cancel' (hall i)]
-  obtain ⟨i, hi⟩ := hcoord
   let u : ι → rootsOfUnity N K := Pi.mulSingle i hζ.toRootsOfUnity
   refine ⟨(_root_.GlobalTheory.TorsionFourier.torsionCharsEquiv b N).symm u, ?_⟩
   change _root_.GlobalTheory.TorsionFourier.charOfValues b (fun j => (u j).1) (Multiplicative.ofAdd x) ≠ 1

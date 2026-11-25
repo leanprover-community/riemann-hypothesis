@@ -105,8 +105,7 @@ theorem exp_comm {g : ℕ} (Hm : Matrix (Fin g) (Fin g) ℂ) (hH : Hm.IsHermitia
   rw [← Complex.exp_add, ← Complex.exp_add, ← Complex.exp_add, add_dotProduct, add_dotProduct,
     smul_dotProduct, smul_dotProduct, h1, h2]
   congr 1
-  rw [Complex.star_def]
-  simp only [smul_eq_mul]
+  simp only [Complex.star_def, smul_eq_mul]
   push_cast at h3
   linear_combination (-(Real.pi : ℂ) * (k : ℂ)⁻¹) * h3
 

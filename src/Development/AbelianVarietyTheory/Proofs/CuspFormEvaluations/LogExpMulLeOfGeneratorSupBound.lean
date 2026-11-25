@@ -127,7 +127,7 @@ theorem log_exp_mul_le_of_generator_sup_bound : ∀ (f r n d : ℕ) (L ℓ a rd 
   · rw [← hS0, mul_zero, Real.log_zero]
     exact hRHS0
   set E := (Real.pi * Real.exp 1 * t * d) ^ ((d : ℝ) / 2) with hEdef
-  have hE : 0 < E ∧ Real.log E - (d / 2) * Real.log (Real.pi * t) ≤ 10 * L * a := by
+  obtain ⟨hE0, hEb⟩ : 0 < E ∧ Real.log E - (d / 2) * Real.log (Real.pi * t) ≤ 10 * L * a := by
     rcases Nat.eq_zero_or_pos d with hd | hd
     · subst hd
       simp only [hEdef, Nat.cast_zero, zero_div, Real.rpow_zero, Real.log_one, zero_mul, sub_zero]
@@ -145,7 +145,6 @@ theorem log_exp_mul_le_of_generator_sup_bound : ∀ (f r n d : ℕ) (L ℓ a rd 
         _ ≤ d * (10 * L) := mul_le_mul_of_nonneg_left (by linarith only [hld, hL]) hd0
         _ ≤ a * (10 * L) := mul_le_mul_of_nonneg_right hda (by positivity)
         _ = _ := mul_comm _ _
-  obtain ⟨hE0, hEb⟩ := hE
   have hvpos : 0 < v := by linarith only [hSpos, hSv]
   have hcpos : 0 < c := by
     rcases hc.eq_or_lt with h | h

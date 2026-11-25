@@ -306,7 +306,6 @@ theorem eulerOp_rec : ∀ (ι : Type) [DecidableEq ι] (X : ι → Type) (x0 : �
         (∏ᶠ u, a u (f.1.1 u)) • B f.1.1) ∘ (Equiv.ofBijective e he)) (g, x))
         (((∏ᶠ u, a u (g.1.1 u)) • B g.1.1) * Z v) := by
     intro g
-    have hgv : g.1.1 v = x0 v := g.2 v hv
     have key : ∀ x, ((fun f : {f : {f : ∀ v, X v // {w | f w ≠ x0 w}.Finite} // ∀ w ∉ insert v S, f.1 w = x0 w} =>
         (∏ᶠ u, a u (f.1.1 u)) • B f.1.1) ∘ (Equiv.ofBijective e he)) (g, x) =
         (∏ᶠ u, a u (g.1.1 u)) • (a v x • B (Function.update g.1.1 v x)) := by
@@ -325,7 +324,7 @@ theorem eulerOp_rec : ∀ (ι : Type) [DecidableEq ι] (X : ι → Type) (x0 : �
         rw [Function.update_of_ne h1]; exact g.2 w h2
     simp_rw [key]
     rw [smul_mul_assoc]
-    exact (hZ v g.1.1 g.1.2 hgv).const_smul _
+    exact (hZ v g.1.1 g.1.2 (g.2 v hv)).const_smul _
   have h3 := hall.prod_fiberwise hfib
   have h4 := hsumS.hasSum.mul_right (Z v)
   rw [← h3.unique h4]

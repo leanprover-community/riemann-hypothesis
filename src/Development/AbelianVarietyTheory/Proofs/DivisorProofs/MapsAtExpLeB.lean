@@ -60,8 +60,7 @@ lemma mapsAtExp_le_b (pr : J → (X' ⟶ X)) (ε : J → ℤ) (p : Y ⟶ X') (jN
     p ⁻¹ᵁ (LB.div (LB.LinComb L pr ε) L').U (jN, jL) ≤ LB.wchart L (fun i => p ≫ pr i) jN := by
   intro y hy
   refine Set.mem_iInter.2 fun i => ?_
-  have h1 : p.base y ∈ LB.wchart L pr jN := hy.1
-  exact Set.mem_iInter.1 h1 i
+  exact Set.mem_iInter.1 hy.1 i
 
 lemma mapsAtExp_le_a (pr : J → (X' ⟶ X)) (ε : J → ℤ) (p : Y ⟶ X') (jN : J → L.ι) (jL : L'.ι) :
     p ⁻¹ᵁ (LB.div (LB.LinComb L pr ε) L').U (jN, jL) ≤ LB.wchart L' (fun _ : PUnit => p) (fun _ => jL) :=

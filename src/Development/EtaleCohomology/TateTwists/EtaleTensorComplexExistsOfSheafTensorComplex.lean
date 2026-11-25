@@ -94,8 +94,7 @@ theorem etale_tensor_complex_exists_of_sheaf_tensor_complex (hS : EtaleSheafTens
             (fun p => Sec (I.X p.1.1) U ⊗[ULift.{1} R] Sec (J.X p.1.2) U) ⟨(s, t), h⟩))
       nat := by
         intro V U g s t w h a b
-        have := hnat g w (tensPure s t w h a b)
-        simpa [tensPure, Tens.res, DirectSum.lmap_lof] using this
+        simpa [tensPure, Tens.res, DirectSum.lmap_lof] using hnat g w (tensPure s t w h a b)
       leibniz := by
         intro U s t w h a b
         simpa [tensPure] using hd U s t w h a b }

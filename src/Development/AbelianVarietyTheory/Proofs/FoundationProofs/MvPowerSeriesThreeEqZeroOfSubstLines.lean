@@ -86,8 +86,7 @@ theorem mvPowerSeries_three_eq_zero_of_subst_lines :
         ∑ᶠ e : Fin 3 →₀ ℕ, MvPowerSeries.coeff e Φ • PowerSeries.coeff n
           (e.prod fun s k => (PowerSeries.C (t s) * PowerSeries.X : PowerSeries K) ^ k) :=
       MvPowerSeries.coeff_subst ha Φ (Finsupp.single () n)
-    rw [h1]
-    simp only [hprod, PowerSeries.coeff_C_mul_X_pow, smul_eq_mul]
+    simp only [h1, hprod, PowerSeries.coeff_C_mul_X_pow, smul_eq_mul]
     rw [finsum_eq_sum_of_support_subset _ (s := S) ?_]
     · simp only [P, map_sum, MvPolynomial.eval_monomial]
       refine Finset.sum_congr rfl (fun e he => ?_)

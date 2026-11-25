@@ -105,7 +105,6 @@ theorem UpperTheory.V.Pr.locProp :
   let P0 : PrimeSpectrum R := ⟨q, hq.1.1⟩
   have hP0I : P0 ≤ I := show q ≤ I.asIdeal from hqI
   have hP0ti : P0 ∈ L.TI := hL.ti_down P0 I hP0I hIti
-  have hP0c : L.Comp P0 := hL.comp P0 hP0ti hq
   obtain ⟨p, hpn, hIp⟩ := hL.nice_good I hIg hIbig
   have hP0g := hW p hpn ⟨I, hIp, hIti, hIg⟩ P0 (le_trans hP0I hIp) hP0ti
   have hP0 : Inv P0 := ⟨fun _ => hP0g, Or.inl ⟨hP0ti, hP0g⟩⟩
@@ -114,4 +113,4 @@ theorem UpperTheory.V.Pr.locProp :
     induction hch with
     | refl => exact hP0
     | tail _ hadj ih => exact step _ _ hadj ih
-  exact (hall P (hL.chain P0 P hP0c (hL.comp P hPti hPmin))).1 hPti
+  exact (hall P (hL.chain P0 P (hL.comp P0 hP0ti hq) (hL.comp P hPti hPmin))).1 hPti

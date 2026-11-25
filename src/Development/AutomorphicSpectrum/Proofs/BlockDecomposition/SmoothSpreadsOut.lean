@@ -249,8 +249,7 @@ theorem exists_finite_chart {R R₀ : Type} [CommRing R] [CommRing R₀] [Algebr
     infer_instance
   obtain ⟨s, hs, H⟩ := exists_finite_smooth (R₀ := R₀) (R := R) (B := B)
   refine ⟨s, hs, fun A hA W p q hW ↦ ?_⟩
-  have := H A hA
-  exact (smooth_iff_of_isPullback (j ≫ f₀) e he hW).mpr this
+  exact (smooth_iff_of_isPullback (j ≫ f₀) e he hW).mpr (H A hA)
 
 end Schemes
 

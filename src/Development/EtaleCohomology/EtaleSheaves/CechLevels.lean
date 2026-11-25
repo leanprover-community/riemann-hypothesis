@@ -65,7 +65,7 @@ theorem qm_surj {A A' : Type} [CommRing A] [CommRing A'] (φ : A →+* A') (I : 
     Function.Surjective (PrimeSpectrum.comap (Ideal.quotientMap (I.map φ) φ Ideal.le_comap_map)) := by
   intro P
   obtain ⟨Q, hQ⟩ := hs (PrimeSpectrum.comap (Ideal.Quotient.mk I) P)
-  have hmem : Q ∈ Set.range (PrimeSpectrum.comap (Ideal.Quotient.mk (I.map φ))) := by
+  obtain ⟨Q', rfl⟩ : Q ∈ Set.range (PrimeSpectrum.comap (Ideal.Quotient.mk (I.map φ))) := by
     rw [range_comap_of_surjective _ _ Ideal.Quotient.mk_surjective, Ideal.mk_ker]
     show I.map φ ≤ Q.asIdeal
     rw [Ideal.map_le_iff_le_comap]
@@ -73,7 +73,6 @@ theorem qm_surj {A A' : Type} [CommRing A] [CommRing A'] (φ : A →+* A') (I : 
     have : x ∈ (PrimeSpectrum.comap φ Q).asIdeal := by
       rw [hQ]; show Ideal.Quotient.mk I x ∈ P.asIdeal; rw [Ideal.Quotient.eq_zero_iff_mem.2 hx]; exact zero_mem _
     exact this
-  obtain ⟨Q', rfl⟩ := hmem
   refine ⟨Q', comap_injective_of_surjective _ Ideal.Quotient.mk_surjective ?_⟩
   rw [← hQ, ← PrimeSpectrum.comap_comp_apply, ← PrimeSpectrum.comap_comp_apply, qm_comp]
 

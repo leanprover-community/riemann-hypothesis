@@ -62,8 +62,7 @@ theorem wchart_comp_le {X Y Z : Scheme.{0}} (L : LB X) (f : Z ⟶ Y) (φ : Y ⟶
     LB.wchart L (fun _ : Fin 1 => f ≫ φ) j ≤ f ⁻¹ᵁ LB.wchart L (fun _ : Fin 1 => φ) j := by
   intro y hy
   exact Set.mem_iInter.2 fun k => by
-    have := Set.mem_iInter.1 hy k
-    simpa using this
+    simpa using Set.mem_iInter.1 hy k
 
 variable {Rg : Type} [CommRing Rg] {A B : Over (Sp Rg)} [GrpObj A] [GrpObj B] {L : LB A.left} {M : LB B.left}
 

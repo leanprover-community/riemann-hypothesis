@@ -133,8 +133,7 @@ theorem exists_extension {X Y Z P : Scheme.{0}} (π : Y ⟶ X) (p : X) (y₀ : Y
     intro x _
     have hx : X.fromSpecStalk p x ∈ Set.range (X.fromSpecStalk p) := ⟨x, rfl⟩
     rw [Scheme.range_fromSpecStalk] at hx
-    have hx' : X.fromSpecStalk p x ⤳ p := hx
-    exact (Scheme.Hom.mem_preimage _).2 (Specializes.mem_open hx' V.isOpen hpV)
+    exact (Scheme.Hom.mem_preimage _).2 (Specializes.mem_open hx V.isOpen hpV)
   obtain ⟨UY, hUY⟩ : ∃ UY, UY = fst ⁻¹ᵁ W₀ ⊓ snd ⁻¹ᵁ ⊤ := ⟨_, rfl⟩
   have hUYle : UY ≤ fst ⁻¹ᵁ W₀ := by
     rw [hUY]

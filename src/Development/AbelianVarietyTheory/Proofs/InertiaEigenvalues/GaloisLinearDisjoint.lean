@@ -74,12 +74,11 @@ private theorem natDegree_minpoly_le_natDegree_minpoly_map {k Ω D : Type} [Fiel
   have hroot : aeval (o α) ((minpoly k α).map ψ) = 0 := by
     rw [aeval_def, eval₂_map, hcomp', ← hom_eval₂, ← aeval_def, minpoly.aeval, map_zero]
   have hβ : IsIntegral F (o α) := ⟨_, hmon, hroot⟩
-  have hdvd : minpoly F (o α) ∣ (minpoly k α).map ψ := minpoly.dvd F _ hroot
   have hP : ((minpoly k α).map ψ).map F.subtype = ((minpoly k α).map (algebraMap k Ω)).map o := by
     rw [map_map, map_map, hcomp]
   have hP0 : ((minpoly k α).map ψ).map F.subtype ≠ 0 := (hmon.map _).ne_zero
   have hGdvd : (minpoly F (o α)).map F.subtype ∣ ((minpoly k α).map ψ).map F.subtype :=
-    Polynomial.map_dvd _ hdvd
+    Polynomial.map_dvd _ (minpoly.dvd F _ hroot)
   have hGs : ((minpoly F (o α)).map F.subtype).Splits := by
     refine Splits.of_dvd ?_ hP0 hGdvd
     rw [hP]

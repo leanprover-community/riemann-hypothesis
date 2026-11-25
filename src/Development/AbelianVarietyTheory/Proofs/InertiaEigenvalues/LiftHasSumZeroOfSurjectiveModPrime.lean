@@ -95,8 +95,7 @@ theorem lift_hasSum_zero : ∀ (l : ℕ) [Fact l.Prime] (X ι : Type) (η : X �
     induction k with
     | zero => simp [hy0, ts, t0]; field_simp
     | succ k ih =>
-      rw [Finset.sum_range_succ, ih, hysucc, htsucc]
-      simp only [step]
+      simp only [Finset.sum_range_succ, ih, hysucc, htsucc, step]
       field_simp
       ring
 

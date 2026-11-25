@@ -57,8 +57,7 @@ theorem _root_.GlobalTheory.CoefZero.continuousOn_of_ckOn {k r : ℕ} {E : Type}
     {f : _root_.Formalism.FourierDecayAlt.B.Mat k r → E} (h : _root_.Formalism.FourierDecayAlt.B.CkOn m (_root_.Formalism.FourierDecayAlt.B.GV k r) f) : ContinuousOn f (_root_.Formalism.FourierDecayAlt.B.GV k r) := by
   intro g₀ hg₀
   obtain ⟨U, f', hU, hgU, hf', hfeq⟩ := h g₀ hg₀
-  have hc : ContinuousOn f' U := hf'.continuousOn
-  have hcont : ContinuousAt f' g₀ := hc.continuousAt (hU.mem_nhds hgU)
+  have hcont : ContinuousAt f' g₀ := hf'.continuousOn.continuousAt (hU.mem_nhds hgU)
   refine hcont.continuousWithinAt.congr_of_eventuallyEq ?_ (hfeq g₀ hgU hg₀)
   filter_upwards [inter_mem_nhdsWithin (_root_.Formalism.FourierDecayAlt.B.GV k r) (hU.mem_nhds hgU)] with g hg
   exact hfeq g hg.2 hg.1

@@ -86,8 +86,7 @@ theorem poinPt : PoinPt := by
       ((((q + 1 : ℕ) : ℝ) * t ^ q) • w c + t ^ (q + 1) • A d) t := by
     have h1 : HasDerivAt (fun r : ℝ => p₀ + r • d) d t := by
       simpa using ((hasDerivAt_id t).smul_const d).const_add p₀
-    have h2 : HasDerivAt (fun r => w (p₀ + r • d)) (A d) t := hA.comp_hasDerivAt t h1
-    have h3 := (hasDerivAt_pow (q + 1) t).smul h2
+    have h3 := (hasDerivAt_pow (q + 1) t).smul (hA.comp_hasDerivAt t h1)
     refine h3.congr_deriv ?_
     rw [show q + 1 - 1 = q from rfl]
     exact add_comm _ _

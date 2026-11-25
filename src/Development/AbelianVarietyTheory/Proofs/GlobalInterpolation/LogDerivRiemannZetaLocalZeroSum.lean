@@ -167,8 +167,7 @@ theorem logDeriv_riemannZeta_local : ∃ C : ℝ, 0 < C ∧ ∀ (t : ℝ) (s : �
     refine finsum_mem_congr rfl fun w hw => ?_
     rw [order_shift, order_zeta₁ ((zeta₁_eq_zero_iff _).1 hw.2).1, sub_sub]
   rw [e]
-  rw [deriv_comp_const_add] at H3
-  simp only [add_sub_cancel, add_zero] at H3
+  simp only [deriv_comp_const_add, add_sub_cancel, add_zero] at H3
   refine H3.trans ?_
   have ht := abs_nonneg t
   have hT : 2 ≤ |t| + 2 := by linarith

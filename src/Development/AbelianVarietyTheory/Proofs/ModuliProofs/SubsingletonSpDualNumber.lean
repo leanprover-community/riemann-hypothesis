@@ -66,7 +66,6 @@ theorem eq_comp_section_of_const {X T Y : Scheme.{0}} (p : X ⟶ T) (ε : T ⟶ 
     rw [hy x, Scheme.Opens.range_ι]
     exact hyW
   have key := GlobalTheory.eq_comp_section_of_surjective_appTop p ε (IsOpenImmersion.lift (Scheme.Opens.ι W) g hr) h hs
-  have := congrArg (· ≫ Scheme.Opens.ι W) key
-  simpa only [Category.assoc, IsOpenImmersion.lift_fac] using this
+  simpa only [Category.assoc, IsOpenImmersion.lift_fac] using congrArg (· ≫ Scheme.Opens.ι W) key
 
 end GlobalTheory.DualRigidity

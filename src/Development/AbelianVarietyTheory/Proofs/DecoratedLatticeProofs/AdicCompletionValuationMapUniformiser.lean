@@ -77,8 +77,7 @@ theorem adicCompletion_valuation_map_uniformiser : ∀ (F : Type) [Field F] [Num
   have hvx0 : Valued.v x ≠ 0 := by
     simpa using hx0
   have hvx1 : Valued.v x < 1 := by
-    have hle : Valued.v x ≤ 1 := (hφ _).2 ϖ.2
-    refine lt_of_le_of_ne hle ?_
+    refine lt_of_le_of_ne ((hφ _).2 ϖ.2) ?_
     intro heq
     apply hϖ.not_isUnit
     have hinv : ((ϖ : k))⁻¹ ∈ 𝒪[k] := by

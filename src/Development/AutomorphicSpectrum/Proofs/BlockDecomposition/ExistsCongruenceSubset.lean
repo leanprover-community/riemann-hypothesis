@@ -95,14 +95,13 @@ theorem inv_mem_of_mem {N : ℕ} {t : ValueGroupWithZero k} (ht : t < 1) (g : GL
     (fun p => valuation k (B p.1 p.2)) ⟨(i, j), Finset.mem_univ _⟩
   set M := valuation k (B i₀ j₀) with hM
   have hMt : t < M := lt_of_lt_of_le hcon (hmax (i, j) (Finset.mem_univ _))
-  have hM0 : 0 < M := lt_of_le_of_lt zero_le' hMt
   have hprod : valuation k ((A * B) i₀ j₀) ≤ t * M := by
     rw [Matrix.mul_apply]
     refine Valuation.map_sum_le _ fun l _ => ?_
     rw [map_mul]
     exact mul_le_mul' (hAle _ _) (hmax (l, j₀) (Finset.mem_univ _))
   have htM : t * M < M := by
-    simpa using mul_lt_mul_of_pos_right ht hM0
+    simpa using mul_lt_mul_of_pos_right ht (lt_of_le_of_lt zero_le' hMt)
   have hent : B i₀ j₀ = -A i₀ j₀ - (A * B) i₀ j₀ := by
     conv_lhs => rw [hrel]
     simp

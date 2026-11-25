@@ -110,8 +110,7 @@ theorem UpperTheory.V.FW.nilCard :
       show (T ^ N) x = (T ^ N) y
       rw [hN]
       rfl
-    have := Nat.card_le_card_of_injective _ hinj
-    simpa using this
+    simpa using Nat.card_le_card_of_injective _ hinj
   rw [hidx]
   calc Nat.card V
       ≤ K ^ N * Nat.card (AddMonoidHom.range ((T ^ N : AddMonoid.End V) : V →+ V)) := main N

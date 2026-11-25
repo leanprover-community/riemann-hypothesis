@@ -352,9 +352,8 @@ theorem reesDegreeZeroRingHom_injective (I : Ideal R) :
     Function.Injective (reesDegreeZeroRingHom I) := by
   intro r s h
   have h1 := congrArg (fun x : ↥(reesGrading I 0) => ((x : ↥(reesAlgebra I)) : R[X])) h
-  have h2 : (Polynomial.monomial 0 r : R[X]) = Polynomial.monomial 0 s := h1
   have h3 : (Polynomial.monomial 0 r : R[X]).coeff 0 = (Polynomial.monomial 0 s : R[X]).coeff 0 :=
-    congrArg (fun p : R[X] => p.coeff 0) h2
+    congrArg (fun p : R[X] => p.coeff 0) h1
   simpa using h3
 
 theorem reesDegreeZeroRingHom_surjective (I : Ideal R) :

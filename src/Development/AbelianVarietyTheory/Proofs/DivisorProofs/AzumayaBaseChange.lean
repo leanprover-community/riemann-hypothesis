@@ -140,8 +140,7 @@ theorem isAzumaya_baseChange [IsAzumaya A Λ] [Module.Free A Λ] :
       let bS := Algebra.TensorProduct.basis S b
       obtain ⟨i⟩ := b.index_nonempty
       refine ⟨fun {s₁ s₂} h => ?_⟩
-      have := congrArg (fun x => bS.repr x i) (h (bS i))
-      simpa using this
+      simpa using congrArg (fun x => bS.repr x i) (h (bS i))
   · have hφ : Bijective ((AlgHom.mulLeftRight A Λ).toLinearMap.lTensor S) := by
       let e := LinearEquiv.ofBijective (AlgHom.mulLeftRight A Λ).toLinearMap IsAzumaya.bij
       have : (AlgHom.mulLeftRight A Λ).toLinearMap.lTensor S = (e.lTensor S : _ →ₗ[A] _) := rfl

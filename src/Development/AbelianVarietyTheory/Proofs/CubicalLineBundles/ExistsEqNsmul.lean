@@ -58,9 +58,8 @@ theorem section_ext {K k : Type} [Field K] [Field k] (t : Sp k ⟶ Sp K) {G : Ov
     {s s' : 𝟙_ (Over (Sp K)) ⟶ G} (h : toUnit (Over.mk t) ≫ s = toUnit (Over.mk t) ≫ s') : s = s' := by
   have h1 : Surjective t := ⟨fun x => ⟨IsLocalRing.closedPoint k, Subsingleton.elim _ _⟩⟩
   have h2 : Flat t := inferInstance
-  have h3 : Epi t := Flat.epi_of_flat_of_surjective t
   have h4 : (toUnit (Over.mk t)).left = t := by simp
-  have h5 : Epi (toUnit (Over.mk t)).left := by rw [h4]; exact h3
+  have h5 : Epi (toUnit (Over.mk t)).left := by rw [h4]; exact Flat.epi_of_flat_of_surjective t
   have h6 : Epi (toUnit (Over.mk t)) := Over.epi_of_epi_left _
   exact (cancel_epi _).1 h
 

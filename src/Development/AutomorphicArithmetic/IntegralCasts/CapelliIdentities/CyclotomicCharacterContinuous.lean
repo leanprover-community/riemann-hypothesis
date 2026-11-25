@@ -80,7 +80,6 @@ theorem UpperTheory.Reformulated.B.CyclotomicCharacterContinuous.cont_cyc :
       [inst_4 : Fact (Nat.Prime l)],
       Continuous (⇑(UpperTheory.Reformulated.B.CyclotomicCharacterContinuous.cycBar F Ω l) : UpperTheory.Reformulated.B.CyclotomicCharacterContinuous.G F Ω → (UpperTheory.Reformulated.B.CyclotomicCharacterContinuous.Qbar l)ˣ) := by
   intro F Ω _ _ _ _ l _
-  have h1 : Continuous (UpperTheory.Reformulated.B.CyclotomicCharacterContinuous.cycZ F Ω l) := cyclotomicCharacter.continuous l F Ω
   have h2 : Continuous (fun x : ℤ_[l] ↦ algebraMap ℚ_[l] (PadicAlgCl l) (x : ℚ_[l])) :=
     (continuous_algebraMap ℚ_[l] (PadicAlgCl l)).comp continuous_subtype_val
-  exact (Continuous.units_map _ h2).comp h1
+  exact (Continuous.units_map _ h2).comp (cyclotomicCharacter.continuous l F Ω)

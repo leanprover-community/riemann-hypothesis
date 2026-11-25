@@ -87,8 +87,7 @@ theorem tv_mulVec (x : Fin n → R) (t : R) (v : Fin n → R) :
 
 theorem ext_mulVec {A B : Matrix (Fin n) (Fin n) R} (h : ∀ v, A *ᵥ v = B *ᵥ v) : A = B := by
   ext i j
-  have := congrFun (h (Pi.single j 1)) i
-  simpa using this
+  simpa using congrFun (h (Pi.single j 1)) i
 
 theorem tv_mul (x : Fin n → R) (t t' : R) :
     tv σ G x t * tv σ G x t' = tv σ G x (t + t' + t * t' * hf σ G x x) := by

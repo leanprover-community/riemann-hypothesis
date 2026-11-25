@@ -70,12 +70,11 @@ theorem exists_nat_smul_mem {E : Type} [Field E] [NumberField E] {M₁ M₂ V : 
     have hv : v ∈ Submodule.span E (Set.range φ₂) := by rw [hspan]; trivial
     obtain ⟨t, ht⟩ := multiple_mem_span_of_mem_localization_span (𝓞 E)⁰ E _ v hv
     rw [← LinearMap.coe_range, Submodule.span_eq] at ht
-    have ht0 : (t : 𝓞 E) ≠ 0 := nonZeroDivisors.ne_zero t.2
     have hm := Ideal.absNorm_mem (Ideal.span {(t : 𝓞 E)})
     obtain ⟨c, hc⟩ := Ideal.mem_span_singleton'.1 hm
     refine ⟨Ideal.absNorm (Ideal.span {(t : 𝓞 E)}), Nat.pos_of_ne_zero ?_, ?_⟩
     · rw [Ne, Ideal.absNorm_eq_zero_iff, Ideal.span_singleton_eq_bot]
-      exact ht0
+      exact nonZeroDivisors.ne_zero t.2
     · rw [← hc, mul_smul]
       exact Submodule.smul_mem _ _ ht
   choose n hn hmem using h1

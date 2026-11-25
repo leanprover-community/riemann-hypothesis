@@ -279,7 +279,7 @@ theorem isAlgClosed_of_denseRange {K L : Type*} [Field K] [NontriviallyNormedFie
       (by simpa using degree_ne_of_natDegree_ne fnatdeg0)
   have hcl : IsClosed (Set.range (algebraMap L F)) :=
     (algebraMap_isometry L F).isClosedEmbedding.isClosed_range
-  have ha : a ∈ Set.range (algebraMap L F) := by
+  obtain ⟨c, hc⟩ : a ∈ Set.range (algebraMap L F) := by
     rw [← hcl.closure_eq, Metric.mem_closure_iff]
     intro δ δpos
     have hε : (δ / (max ‖a‖ 1)) ^ f.natDegree / (f.natDegree + 1) > 0 := by positivity
@@ -299,7 +299,6 @@ theorem isAlgClosed_of_denseRange {K L : Type*} [Field K] [NontriviallyNormedFie
         Multiset.mem_map] at hb
     obtain ⟨c, _, hc⟩ := hb
     exact ⟨c, hc⟩
-  obtain ⟨c, hc⟩ := ha
   refine ⟨c, ?_⟩
   apply_fun algebraMap L F
   · rwa [← Polynomial.aeval_algebraMap_apply_eq_algebraMap_eval, hc, map_zero]

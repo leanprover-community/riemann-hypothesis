@@ -130,8 +130,7 @@ theorem differentiableAt_coeff_partialProd {p : Polynomial (MvPolynomial (Fin d)
     have hy0 : (p.map (MvPolynomial.eval x₀)).eval y = 0 :=
       (Polynomial.mem_roots (hp.map _).ne_zero).mp hy
     have ht : Tendsto (fun x => (x, ψ y x)) (𝓝 x₀) (𝓝 (x₀, y)) := by
-      have := (continuousAt_id.prodMk (hψ y hy).1.continuousAt).tendsto
-      simpa [(hψ y hy).2] using this
+      simpa [(hψ y hy).2] using (continuousAt_id.prodMk (hψ y hy).1.continuousAt).tendsto
     exact ht.eventually (hu y hy0)
   have hall : ∀ᶠ x in 𝓝 x₀, ∀ y ∈ R₀.toFinset,
       (p.map (MvPolynomial.eval x)).eval (ψ y x) = 0 → ((x, ψ y x) ∈ u ↔ (x₀, y) ∈ u) :=

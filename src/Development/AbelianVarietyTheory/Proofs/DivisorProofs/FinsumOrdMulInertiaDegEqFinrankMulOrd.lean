@@ -209,9 +209,8 @@ private lemma length_quotient_smul_univ_eq_finrank_mul {A M : Type*} [CommRing A
     simp
   rw [hα] at e2
   rw [hβ] at e1
-  have hfin : Module.length A (M ⧸ N) ≠ ⊤ := Module.length_ne_top_iff.2 hCfin
   rw [e1, add_comm] at e2
-  exact (WithTop.add_left_cancel hfin e2).symm
+  exact (WithTop.add_left_cancel (Module.length_ne_top_iff.2 hCfin) e2).symm
 
 
 open IsLocalRing in

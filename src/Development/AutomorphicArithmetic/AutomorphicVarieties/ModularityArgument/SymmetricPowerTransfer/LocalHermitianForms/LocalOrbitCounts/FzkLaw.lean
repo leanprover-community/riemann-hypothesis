@@ -89,8 +89,7 @@ theorem UpperTheory.V.Z.Sym.Loc.fzkLaw : UpperTheory.V.Z.Sym.Loc.FzkLaw := by
     have hw := hex.choose_spec
     have hs : Matrix.GeneralLinearGroup.scalar (Fin 2) (hex.choose⁻¹ * z) ∈ KG O K := by
       have e : Matrix.GeneralLinearGroup.scalar (Fin 2) (hex.choose⁻¹ * z) = (Matrix.GeneralLinearGroup.scalar (Fin 2) hex.choose)⁻¹ * (Matrix.GeneralLinearGroup.scalar (Fin 2) z * k) * k⁻¹ := by
-        rw [map_mul, map_inv]
-        simp [mul_assoc]
+        simp [map_mul, map_inv, mul_assoc]
       rw [e]
       exact Subgroup.mul_mem _ hw (Subgroup.inv_mem _ hk)
     have h1 := key _ hs

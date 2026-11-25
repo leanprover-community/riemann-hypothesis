@@ -111,8 +111,7 @@ lemma Tan.hom_mem (v : Tan x G) : v.hom ∈ tanSub x G := (Additive.toMul v : ta
 def Tan.homAdd : Tan x G →+ Additive (epsPtR x ⟶ G) := (tanSub x G).subtype.toAdditive
 
 lemma Tan.hom_sum {I : Type} (s : Finset I) (v : I → Tan x G) : (∑ i ∈ s, v i).hom = ∏ i ∈ s, (v i).hom := by
-  have := map_sum (Tan.homAdd (x := x) (G := G)) v s
-  exact congrArg Additive.toMul this
+  exact congrArg Additive.toMul (map_sum (Tan.homAdd (x := x) (G := G)) v s)
 
 instance : Module k (Tan x G) where
   smul c v := Tan.mk (epsScalePt x c ≫ v.hom) (by

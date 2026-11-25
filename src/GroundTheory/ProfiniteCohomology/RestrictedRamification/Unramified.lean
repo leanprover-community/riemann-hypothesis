@@ -58,9 +58,8 @@ theorem isUnramifiedIn_iff_inertia {E M : IntermediateField F Ω} (h : E ≤ M)
     exact (isUnramifiedAt_under_iff_inertia Q).1 hu σ hσ ⟨x, hx⟩
   · intro hI P hP hPv
     obtain ⟨⟨Q, hQ, hQP⟩⟩ := (inferInstance : Nonempty (P.primesOver (𝓞 M)))
-    have hQv : Q.LiesOver v.asIdeal := Ideal.LiesOver.trans Q P v.asIdeal
     have hu := (isUnramifiedAt_under_iff_inertia (F := F) (E := E) Q).2
-      (fun σ hσ y => hI Q hQ hQv σ hσ y.1 y.2)
+      (fun σ hσ y => hI Q hQ (Ideal.LiesOver.trans Q P v.asIdeal) σ hσ y.1 y.2)
     have e : P = Q.under (𝓞 E) := Ideal.over_def Q P
     subst e
     exact hu

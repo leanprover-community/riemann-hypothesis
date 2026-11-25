@@ -83,8 +83,7 @@ theorem map_restrict_isHaar : ∀ (G B : Type) [Group G] [TopologicalSpace G] [I
       · rintro ⟨h1, h2⟩; exact ⟨h1, A.mul_mem (hiA b) h2⟩
       · rintro ⟨h1, h2⟩
         refine ⟨h1, ?_⟩
-        have := A.mul_mem (A.inv_mem (hiA b)) h2
-        simpa using this
+        simpa using A.mul_mem (A.inv_mem (hiA b)) h2
     rw [this, measure_preimage_mul]
   · intro U hU hne
     rw [happ U hU.measurableSet]

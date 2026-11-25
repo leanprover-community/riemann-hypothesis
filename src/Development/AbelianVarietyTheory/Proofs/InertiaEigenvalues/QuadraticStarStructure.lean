@@ -143,8 +143,7 @@ theorem quadratic_star_structure {K L : Type} [CommRing K] [CommRing L] [StarRin
     intro x hx
     rw [hmap] at hx
     have := hrep0 x 0
-    rw [zero_smul, add_zero, hx] at this
-    simp at this
+    simp [zero_smul, add_zero, hx] at this
     exact this.symm
   · intro y
     rw [Algebra.norm_eq_matrix_det b, Matrix.det_fin_two]

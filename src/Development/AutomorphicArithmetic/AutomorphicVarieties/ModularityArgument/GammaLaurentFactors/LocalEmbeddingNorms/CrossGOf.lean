@@ -221,10 +221,9 @@ theorem crossGOf : CrossGOf := by
     linear_combination u * h1 - (a * R.eval ((q : ℂ) ^ (-s))) * h2
   have hK' := poly_zero hq _ fun s => congrFun hK s
   refine hsec q hq P P' (u * b / (v * a)) P1 P'1 ?_
-  have hva : (C (v * a) : ℂ[X]) ≠ 0 := C_ne_zero.mpr (mul_ne_zero v0 a0)
   change R = C _ * R'
   clear_value R R' U V a b
-  refine mul_left_cancel₀ hva ?_
+  refine mul_left_cancel₀ (C_ne_zero.mpr (mul_ne_zero v0 a0)) ?_
   rw [← mul_assoc (C (v * a)), ← C_mul, mul_div_cancel₀ _ (mul_ne_zero v0 a0), C_mul (a := v), C_mul (a := u)]
   linear_combination hK'
 

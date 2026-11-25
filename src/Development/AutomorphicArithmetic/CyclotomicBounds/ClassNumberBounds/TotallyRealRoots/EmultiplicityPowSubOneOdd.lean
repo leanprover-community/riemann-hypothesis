@@ -102,13 +102,12 @@ private theorem lte_two_step (hl : l = 2) {w : ℤ_[l]} (hw : (l : ℤ_[l]) ^ 2 
     emultiplicity (l : ℤ_[l]) (w ^ l - 1) = emultiplicity (l : ℤ_[l]) (w - 1) + 1 := by
   subst hl
   have hp : Prime ((2 : ℕ) : ℤ_[2]) := PadicInt.prime_p
-  have h2 : ((2 : ℕ) : ℤ_[2]) ∣ w - 1 := (dvd_pow_self _ two_ne_zero).trans hw
   rw [show w ^ 2 - 1 = (w - 1) * (w + 1) by ring, emultiplicity_mul hp]
   congr 1
   rw [← Nat.cast_one (R := ℕ∞)]
   refine emultiplicity_eq_coe.2 ⟨?_, ?_⟩
   · rw [pow_one, show w + 1 = (w - 1) + ((2 : ℕ) : ℤ_[2]) by push_cast; ring]
-    exact dvd_add h2 (dvd_refl _)
+    exact dvd_add ((dvd_pow_self _ two_ne_zero).trans hw) (dvd_refl _)
   · rw [one_add_one_eq_two]
     intro h
     have h3 := dvd_sub h hw

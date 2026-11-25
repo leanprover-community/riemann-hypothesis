@@ -250,7 +250,7 @@ open WithZero in
 theorem exists_fixed_val {E : Type} [Field E] (v : Valuation E (WithZero (Multiplicative ℤ))) (π : E)
     (hπ : v π = exp (-1)) (c : E ≃+* E) (hc : ∀ x, c (c x) = x) (hv : ∀ y, v (c y) = v y)
     (a : E) (ha : v a ≤ 1) (hd : v (a - c a) = 1) (y : E) : ∃ x, c x = x ∧ v y = v x := by
-  have key : ∃ ϖ, c ϖ = ϖ ∧ v ϖ = v π := by
+  obtain ⟨ϖ, h1, h2⟩ : ∃ ϖ, c ϖ = ϖ ∧ v ϖ = v π := by
     by_contra h
     push Not at h
     have h1 : v (π + c π) < v π :=
@@ -264,7 +264,6 @@ theorem exists_fixed_val {E : Type} [Field E] (v : Valuation E (WithZero (Multip
     rw [show a * π + c (a * π) - c a * (π + c π) = (a - c a) * π by rw [map_mul]; ring, map_mul, hd,
       one_mul] at h4
     exact lt_irrefl _ h4
-  obtain ⟨ϖ, h1, h2⟩ := key
   by_cases hy : y = 0
   · exact ⟨0, map_zero _, by rw [hy]⟩
   refine ⟨ϖ ^ (-log (v y)), by rw [map_zpow₀, h1], ?_⟩

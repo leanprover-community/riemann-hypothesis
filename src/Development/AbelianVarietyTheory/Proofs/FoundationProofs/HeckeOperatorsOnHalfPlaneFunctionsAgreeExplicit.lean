@@ -119,8 +119,7 @@ theorem tq_eq (k : ℤ) (q : ℕ) (σ : SL(2, ℤ)) (f : ℍ → ℂ) (hq : 0 < 
     have e2 : tqFam q σ (Fin.last q) = mat σ * dg q 1 := by
       rw [tqFam, ite_eq_right (by simp)]
     simp only [TqF, UlF, hkF]
-    rw [Fin.sum_univ_castSucc, e2]
-    simp only [e]
+    simp only [Fin.sum_univ_castSucc, e2, e]
   have hq' : (0 : ℤ) < q := by exact_mod_cast hq
   have hdg : (dg q 1).det ≠ 0 := by simp [dg, Matrix.det_fin_two_of, hq.ne']
   have hσ : (mat σ).det ≠ 0 := by simp [mat]

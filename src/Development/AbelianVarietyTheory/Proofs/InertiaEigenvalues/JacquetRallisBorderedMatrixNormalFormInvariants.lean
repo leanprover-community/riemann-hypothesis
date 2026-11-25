@@ -254,9 +254,8 @@ theorem unique_conj (Y Y₁ : Gl r k) (hΔ : Delta (inv Y) ≠ 0) (hI : inv Y₁
     rw [hI] at hAB₁ hc₁
     rw [← eu] at hAB hc
     rw [← eu₁] at hAB₁ hc₁
-    have hl : l₁ = l := congrArg (fun a : Inv r k => a.2.2) hI
     simp only [act, _root_.mul_inv_rev, inv_inv, Units.val_mul, Prod.mk.injEq]
-    refine ⟨?_, ?_, ?_, hl.symm⟩
+    refine ⟨?_, ?_, ?_, (congrArg (fun a : Inv r k => a.2.2) hI).symm⟩
     · calc (u₁ : Matrix (Fin r) (Fin r) k) * ↑u⁻¹ * A * (↑u * ↑u₁⁻¹)
             = ↑u₁ * (↑u⁻¹ * (A * ↑u)) * ↑u₁⁻¹ := by simp only [mul_assoc]
           _ = ↑u₁ * companion (inv (A, b, c, l)).1 * ↑u₁⁻¹ := by

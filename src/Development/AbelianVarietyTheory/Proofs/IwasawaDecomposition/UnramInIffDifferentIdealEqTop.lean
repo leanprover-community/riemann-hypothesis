@@ -82,11 +82,10 @@ theorem unramIn_iff_differentIdeal_eq_top :
   · rintro hD 𝔭 σ ⟨P, hP, hPo, hσ⟩
     haveI := hP
     haveI := hPo
-    have hPb : P ≠ ⊥ := Ideal.ne_bot_of_liesOver_of_ne_bot 𝔭.ne_bot P
     have hnd : ¬ P ∣ differentIdeal (𝓞 K) (𝓞 L) := by
       rw [hD]
       exact fun hd => hP.ne_top (top_le_iff.mp (Ideal.dvd_iff_le.mp hd))
-    have hb := (not_dvd_iff_inertia K L P hPb).mp hnd
+    have hb := (not_dvd_iff_inertia K L P (Ideal.ne_bot_of_liesOver_of_ne_bot 𝔭.ne_bot P)).mp hnd
     have hmem : σ ∈ P.inertia (L ≃ₐ[K] L) := fun x => hσ x
     rw [hb] at hmem
     exact Subgroup.mem_bot.mp hmem

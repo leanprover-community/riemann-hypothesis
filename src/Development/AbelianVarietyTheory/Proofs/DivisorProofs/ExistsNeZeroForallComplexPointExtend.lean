@@ -88,8 +88,7 @@ theorem exists_ringHom_extend_of_ker_mem_range_comap {B A L : Type*} [CommRing B
   obtain ⟨P, hP⟩ := h
   have : (RingHom.ker φ).IsPrime := RingHom.ker_isPrime φ
   have hPp : RingHom.ker φ = P.asIdeal.comap (algebraMap B A) := by
-    have := congrArg PrimeSpectrum.asIdeal hP
-    simpa using this.symm
+    simpa using (congrArg PrimeSpectrum.asIdeal hP).symm
 
   let σ : (RingHom.ker φ).ResidueField →+* L :=
     Ideal.ResidueField.lift (RingHom.ker φ) φ le_rfl (fun x hx => by

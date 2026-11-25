@@ -69,8 +69,7 @@ theorem cochains_bij (R : Type) [CommRing R] (F : Shv R) (E : Spc) (ι : Type) (
       (π k).app (op (Q i)) (((HC R F).map (a i).op).f n x) =
         (free R).map ((a i).app (op (SimplexCategory.mk k))) ≫ (π k).app (op E) x := by
     intro k i x
-    have := ConcreteCategory.congr_hom ((π k).naturality (a i).op) x
-    exact this
+    exact ConcreteCategory.congr_hom ((π k).naturality (a i).op) x
   let hk := fun k : ℕ => (hc (op (SimplexCategory.mk k))).some
   constructor
   · intro x y hxy

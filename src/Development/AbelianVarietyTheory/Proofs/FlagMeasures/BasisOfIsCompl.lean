@@ -227,8 +227,7 @@ theorem cramer_last {r : ℕ} (Z : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (β : F
   have h1 := congrArg (fun v => Z.adjugate.mulVec v (Fin.last r)) h
   simp only [Matrix.mulVec_mulVec, Matrix.adjugate_mul, Matrix.smul_mulVec, Matrix.one_mulVec,
     Pi.smul_apply, smul_eq_mul, Matrix.mulVec_single] at h1
-  rw [h1]
-  simp [Matrix.adjugate_fin_succ_eq_det_submatrix, ← two_mul]
+  simp [h1, Matrix.adjugate_fin_succ_eq_det_submatrix, ← two_mul]
 
 theorem solve_zero {r : ℕ} (Z Z' : Matrix (Fin (r + 1)) (Fin (r + 1)) E) (T T' : E)
     (hZ : IsUnit Z.det) (hZ' : IsUnit Z'.det)

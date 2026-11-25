@@ -111,10 +111,9 @@ theorem hwMap_of_lowSpan : LowSpan → HWMap := by
   let P : T →L[ℂ] W0 := W0.orthogonalProjectionOnto
   have hP : ∀ a b, ε a = ε b → ∀ y : T, (P (ET a b y) : T) = ET a b (P y) := by
     intro a b hab y
-    have hmem : ET a b (P y : T) ∈ W0 := hW0stab a b hab _ (P y).2
     rw [Submodule.coe_orthogonalProjectionOnto_apply]
     refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero ?_ fun w hw => ?_
-    · exact hmem
+    · exact hW0stab a b hab _ (P y).2
     · rw [← map_sub, hUT a b hab, Submodule.coe_orthogonalProjectionOnto_apply]
       exact Submodule.inner_left_of_mem_orthogonal (hW0stab b a hab.symm w hw)
         (Submodule.sub_starProjection_mem_orthogonal y)

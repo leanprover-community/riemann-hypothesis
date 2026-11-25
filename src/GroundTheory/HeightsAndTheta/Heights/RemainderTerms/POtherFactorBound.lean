@@ -146,8 +146,7 @@ theorem OtherFactorBound.proof (hO : OtherFactorFormula.Statement)
           ((n1).factorial : ℚ) ^ g) * P ^ g * z * y| ≤
       ((n + 1 : ℕ) : ℚ) * |C₀ * (n.factorial : ℚ) / ((n1).factorial : ℚ) ^ (g + 2) * P ^ (g + 2)| *
         ((n1.descFactorial (k - 1) : ℚ) * 2 ^ (k - 1)) / (k.factorial : ℚ) := by
-    rw [hD1, hM]
-    simp only [abs_mul, abs_div, abs_pow, Nat.abs_cast, abs_of_pos hP]
+    simp only [hD1, hM, abs_mul, abs_div, abs_pow, Nat.abs_cast, abs_of_pos hP]
     have hX1 : 0 ≤ |C₀| * (k : ℚ) * (((n + 1 : ℕ) : ℚ) * (n.factorial : ℚ)) /
         ((Nat.choose (n1 + k) k : ℚ) * (k.factorial : ℚ) * (n1.factorial : ℚ) *
           ((n1 - (k - 1)).factorial : ℚ) * (n1.factorial : ℚ) ^ g) * P ^ g := by positivity

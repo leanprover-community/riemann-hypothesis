@@ -56,12 +56,11 @@ theorem intValuation_map_le_of_map_le {R : Type} [CommRing R] [IsDedekindDomain 
   have h1 : P.intValuation a = WithZero.exp (-((Associates.mk P.asIdeal).count
       (Associates.mk (Ideal.span {a} : Ideal R)).factors : ℕ) : ℤ) := P.intValuation_if_neg ha
   set k := (Associates.mk P.asIdeal).count (Associates.mk (Ideal.span {a} : Ideal R)).factors
-  have h2 : a ∈ P.asIdeal ^ k := (P.intValuation_le_pow_iff_mem a k).1 h1.le
   rw [h1, P.intValuation_le_pow_iff_mem]
   have h3 : (P.asIdeal ^ k).map σ ≤ P.asIdeal ^ k := by
     rw [Ideal.map_pow]
     exact Ideal.pow_right_mono h k
-  exact h3 (Ideal.mem_map_of_mem σ h2)
+  exact h3 (Ideal.mem_map_of_mem σ ((P.intValuation_le_pow_iff_mem a k).1 h1.le))
 
 theorem valuation_eq_one_of_norm_one_of_not_moved :
     ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (c : E ≃ₐ[F] E),

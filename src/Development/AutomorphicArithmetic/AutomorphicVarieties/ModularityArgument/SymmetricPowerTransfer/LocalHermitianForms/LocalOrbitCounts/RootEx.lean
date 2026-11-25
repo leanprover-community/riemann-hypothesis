@@ -74,10 +74,9 @@ theorem UpperTheory.V.Z.Sym.Loc.rootEx : UpperTheory.V.Z.Sym.Loc.RootEx := by
       rwa [sub_sub_cancel] at this
     exact ((mem_nonunits_iff).1 ((IsLocalRing.mem_maximalIdeal _).1 h2m)) h2
   set y : O := ((hsu.unit⁻¹ : Oˣ) : O) with hydef
-  have hy : s * y = 1 := hsu.mul_val_inv
   have key : (τ₀ + 2 * ((e : ℤ) : O)) * y ^ 2 = ((e : ℤ) : O) := by
     linear_combination (-(τ₀ + 2 * ((e : ℤ) : O)) * y ^ 2) * he
-      + (-((e : ℤ) : O) * y ^ 2) * hs + ((e : ℤ) : O) * (s * y + 1) * hy
+      + (-((e : ℤ) : O) * y ^ 2) * hs + ((e : ℤ) : O) * (s * y + 1) * hsu.mul_val_inv
   have kK : ((algebraMap O K) τ₀ + 2 * ((e : ℤ) : K)) * ((algebraMap O K) y) ^ 2
       = ((e : ℤ) : K) := by
     have := congrArg (algebraMap O K) key

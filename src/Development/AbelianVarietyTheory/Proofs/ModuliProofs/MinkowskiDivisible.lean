@@ -124,9 +124,8 @@ theorem prime_case (l p : ℕ) (hl : l.Prime) (ho : Odd l) (hp : p.Prime) (f : A
         have e2 : g (g x) = 0 := h1 _ e1
         have e4 := iterate_eq f g hfg x (by rw [e2, map_zero]) p
         rw [hord x _ hx, e2, smul_zero, add_zero] at e4
-        have e5 : p • g x = 0 := add_eq_left.mp e4.symm
         have hc : Nat.Coprime p l := (Nat.coprime_primes hp hl).mpr hpl
-        have d1 := addOrderOf_dvd_of_nsmul_eq_zero e5
+        have d1 := addOrderOf_dvd_of_nsmul_eq_zero (add_eq_left.mp e4.symm)
         have d2 := addOrderOf_dvd_of_nsmul_eq_zero e1
         have d3 := Nat.dvd_gcd d1 d2
         rw [hc, Nat.dvd_one] at d3

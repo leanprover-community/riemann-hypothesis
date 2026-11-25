@@ -81,8 +81,7 @@ theorem chainsXIso_nat (R : Type) [CommRing R] {E E' : Spc} (φ : E ⟶ E') (p :
       (chainsXIso R E p).hom ≫ (free R).map (φ.app (op (SimplexCategory.mk p))) := by
   have h := HomologicalComplex.extendMap_f ((chainsN R).map φ) ComplexShape.embeddingDownNat (i := p) (i' := -(p:ℤ)) rfl
   have h2 : ((chains R).map φ).f (-(p:ℤ)) = (HomologicalComplex.extendMap ((chainsN R).map φ) ComplexShape.embeddingDownNat).f (-(p:ℤ)) := rfl
-  rw [h2, h]
-  simp only [chainsXIso]
+  simp only [h2, h, chainsXIso]
   erw [Category.assoc, Category.assoc, Iso.inv_hom_id, Category.comp_id]
   rfl
 

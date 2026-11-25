@@ -145,8 +145,7 @@ theorem valuation_le_one_iff_isIntegral_of_complete_dvr :
   obtain ⟨f, hna, hnt, hball, hcomp⟩ := _root_.GlobalTheory.KLC.exists_absoluteValue_completeSpace_of_isDiscreteValuationRing R (FractionRing R)
   obtain ⟨v, -, hv⟩ := _root_.GlobalTheory.exists_spectralValuation (FractionRing R) Ω f hna hnt hcomp
   refine ⟨v, fun x => ?_⟩
-  rw [hv]
-  simp only [hball]
+  simp only [hv, hball]
   constructor
   · intro h
     have hl : minpoly (FractionRing R) x ∈ Polynomial.lifts (algebraMap R (FractionRing R)) :=

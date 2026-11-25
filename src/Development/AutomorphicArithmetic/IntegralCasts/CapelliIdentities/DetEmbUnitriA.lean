@@ -65,8 +65,7 @@ theorem UpperTheory.Reformulated.B.Qe13.aux2 :
           Matrix.fromBlocks B (0 : Matrix (Fin n) (Fin (1 : ℕ)) R) (0 : Matrix (Fin (1 : ℕ)) (Fin n) R)
             (1 : Matrix (Fin (1 : ℕ)) (Fin (1 : ℕ)) R) := by
   intro R _ n A B
-  rw [Matrix.fromBlocks_multiply]
-  simp
+  simp [Matrix.fromBlocks_multiply]
 
 noncomputable def UpperTheory.Reformulated.B.Qe13.blkHom :
     (R : Type) →

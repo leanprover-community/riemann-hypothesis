@@ -94,8 +94,7 @@ private theorem eq_of_le_of_mem_nonunits_of_dvr {K : Type*} [Field K]
       have : a ∈ A.idealOfLE B hB := (hmem B hB a).2 haB
       rw [hbot, Ideal.mem_bot] at this
       exact ha0 this
-    have := (inferInstance : (A.idealOfLE B hB).IsPrime).isMaximal hne
-    exact IsLocalRing.eq_maximalIdeal this
+    exact IsLocalRing.eq_maximalIdeal ((inferInstance : (A.idealOfLE B hB).IsPrime).isMaximal hne)
   have haA : (a : K) ∈ A.nonunits := (ValuationSubring.nonunits_le_nonunits.2 h) haW
   have hcongr : ∀ (P Q : Ideal A) [P.IsPrime] [Q.IsPrime], P = Q → A.ofPrime P = A.ofPrime Q := by
     rintro P Q _ _ rfl; rfl

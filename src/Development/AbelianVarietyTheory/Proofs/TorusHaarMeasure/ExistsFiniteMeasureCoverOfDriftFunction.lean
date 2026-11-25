@@ -127,8 +127,7 @@ theorem fundamentalSet_lintegral_mul_right_and_measure_le :
     have hmeas : MeasurableSet {g : G | g * h⁻¹ ∈ F} := (measurable_mul_const h⁻¹) hF
     have hFD' : IsFundamentalDomain Γ {g : G | g * h⁻¹ ∈ F} ν := by
       refine IsFundamentalDomain.mk' hmeas.nullMeasurableSet (fun g => ?_)
-      have := hex (g * h⁻¹)
-      simpa [Subgroup.smul_def, mul_assoc] using this
+      simpa [Subgroup.smul_def, mul_assoc] using hex (g * h⁻¹)
     have h1 : ∫⁻ g in {g : G | g * h⁻¹ ∈ F}, φ g ∂ν = ∫⁻ g in F, φ (g * h) ∂ν := by
       conv_lhs => rw [← hh]
       rw [setLIntegral_map hmeas hφ (measurable_mul_const h)]

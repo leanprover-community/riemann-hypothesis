@@ -54,8 +54,7 @@ variable {k k' : Type} [CommRing k] [CommRing k'] (φ : k →+* k') {r : ℕ}
 
 theorem mom_glMap (Y : Gl r k) (i : ℕ) : mom (glMap φ Y) i = φ (mom Y i) := by
   have hp : (Y.1.map φ) ^ i = (Y.1 ^ i).map φ := by
-    have := map_pow φ.mapMatrix Y.1 i
-    simpa only [RingHom.mapMatrix_apply] using this.symm
+    simpa only [RingHom.mapMatrix_apply] using (map_pow φ.mapMatrix Y.1 i).symm
 
   simp only [mom, glMap, hp, dotProduct, Matrix.mulVec, Matrix.map_apply, map_sum, map_mul]
 

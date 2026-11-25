@@ -78,7 +78,6 @@ theorem div_mem_of_forall_pow_succ_div_pow_mem :
     field_simp
     ring
   rw [hK, Ideal.mem_bot] at hmem
-  have h0 : f' ^ (1 + 1) / f ^ 1 = 0 := congrArg Subtype.val hmem
-  exact div_ne_zero (pow_ne_zero _ hf') (pow_ne_zero _ hf) h0
+  exact div_ne_zero (pow_ne_zero _ hf') (pow_ne_zero _ hf) (congrArg Subtype.val hmem)
 
 end GlobalTheory.ZH

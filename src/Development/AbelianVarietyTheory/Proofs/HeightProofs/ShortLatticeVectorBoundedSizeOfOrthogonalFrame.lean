@@ -199,8 +199,7 @@ theorem size_sum_le {E : Type} [Field E] [NumberField E] [IsCMField E]
   classical
   induction s using Finset.induction_on with
   | empty =>
-    have := H.smul_le 0 0
-    simpa [house] using this
+    simpa [house] using H.smul_le 0 0
   | insert i s hi ih =>
     rw [Finset.sum_insert hi, Finset.sum_insert hi]
     exact (H.add_le _ _).trans (by linarith)

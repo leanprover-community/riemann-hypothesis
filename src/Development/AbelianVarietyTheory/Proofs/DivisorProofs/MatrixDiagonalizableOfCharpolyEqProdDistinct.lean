@@ -82,8 +82,7 @@ theorem matrix_diagonalizable_of_charpoly_eq_prod_distinct (K : Type) [Field K] 
   rw [Matrix.toLin'_apply] at h1
   have h2 := congrFun h1 i
   simp only [Pi.smul_apply, smul_eq_mul] at h2
-  rw [Matrix.mul_apply]
-  simp only [hY, Matrix.of_apply]
+  simp only [Matrix.mul_apply, hY, Matrix.of_apply]
   rw [mul_comm, ← h2]
   rfl
 

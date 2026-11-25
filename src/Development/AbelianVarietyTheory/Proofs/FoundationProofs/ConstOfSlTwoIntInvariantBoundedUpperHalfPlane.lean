@@ -92,7 +92,6 @@ theorem const_of_invariant_bounded :
         exact hbdd }
   obtain ⟨c, hc⟩ := ModularFormClass.levelOne_weight_zero_const F
   refine ⟨c, fun z hz => ?_⟩
-  have := congrFun hc ⟨z, hz⟩
-  exact this
+  exact congrFun hc ⟨z, hz⟩
 
 end GlobalTheory.KZ.LevelOne

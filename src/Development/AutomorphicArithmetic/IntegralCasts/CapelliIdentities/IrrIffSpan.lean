@@ -108,9 +108,8 @@ theorem UpperTheory.Reformulated.B.Qe4.irrIffSpan :
       exact hN (e (ρ g)) ⟨ρ g, Submodule.subset_span ⟨g, rfl⟩, rfl⟩ v hv
     rw [eq_top_iff]
     intro M _
-    have hM : e M ∈ A.map (e : Matrix ι ι K →ₐ[K] Module.End K (ι → K)) := by
+    obtain ⟨x, hx, hxe⟩ : e M ∈ A.map (e : Matrix ι ι K →ₐ[K] Module.End K (ι → K)) := by
       rw [hS]; exact Algebra.mem_top
-    obtain ⟨x, hx, hxe⟩ := hM
     have : x = M := e.injective hxe
     rw [← this]
     exact hx

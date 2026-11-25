@@ -225,8 +225,7 @@ theorem lower {s m : ℕ} (φ : MvPolynomial (Fin s) K →ₐ[K] B) (hφ : Funct
   have he : Function.Injective e := by
     intro a a' h
     funext i
-    have := congrArg (fun z : Fin s →₀ ℕ => z i) h
-    exact Fin.ext (by simpa [e] using this)
+    exact Fin.ext (by simpa [e] using (congrArg (fun z : Fin s →₀ ℕ => z i) h))
   have hli : LinearIndependent K fun a => φ (MvPolynomial.monomial (e a) (1 : K)) := by
     have h1 := ((MvPolynomial.basisMonomials (Fin s) K).linearIndependent.comp e he).map'
       φ.toLinearMap (LinearMap.ker_eq_bot.2 hφ)

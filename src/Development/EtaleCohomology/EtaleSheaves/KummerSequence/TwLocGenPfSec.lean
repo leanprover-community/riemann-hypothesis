@@ -309,7 +309,7 @@ theorem AlgPow_of : LateralTheory.E.H2CurveOrder.TwLocGenPfSec.AlgPow := by
     exact pow_ne_dom q _ h1 b0 b (Finset.ne_of_mem_erase hb).symm (sub_eq_zero.1 e)
   · rintro _ ⟨a, rfl⟩
     refine ⟨a, ?_⟩
-    have hnil : IsNilpotent (f a * (ξ.1 - ζ.1 ^ (a : ZMod q).val)) := by
+    obtain ⟨n, hn⟩ : IsNilpotent (f a * (ξ.1 - ζ.1 ^ (a : ZMod q).val)) := by
       rw [← mem_nilradical, nilradical_eq_sInf, Ideal.mem_sInf]
       intro p hp
       have hp : p.IsPrime := hp
@@ -321,7 +321,6 @@ theorem AlgPow_of : LateralTheory.E.H2CurveOrder.TwLocGenPfSec.AlgPow := by
       · subst hab; simp
       · apply mul_eq_zero_of_left
         exact Finset.prod_eq_zero (Finset.mem_erase.2 ⟨hab, Finset.mem_univ _⟩) (sub_self _)
-    obtain ⟨n, hn⟩ := hnil
     obtain ⟨w, hw⟩ := self_sq q hqA ξ.1 (ζ.1 ^ (a : ZMod q).val) (pow_q q _ hξ)
       (by rw [← pow_mul, mul_comm, pow_mul, pow_q q _ hζ, one_pow])
     refine ⟨n, ?_⟩

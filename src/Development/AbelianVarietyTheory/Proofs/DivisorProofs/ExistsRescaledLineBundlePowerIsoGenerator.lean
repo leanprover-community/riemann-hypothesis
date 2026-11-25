@@ -73,8 +73,7 @@ theorem glue_units {T : Scheme.{0}} {I : Type} (W : I → T.Opens) (hW : ∀ x :
     exact ⟨s, hs⟩
   obtain ⟨s, hs⟩ := glue (fun i => (u i).val) (fun i j => congrArg Units.val (hu i j))
   obtain ⟨s', hs'⟩ := glue (fun i => ((u i)⁻¹).val) (fun i j => by
-    have := congrArg (fun x => (x⁻¹).val) (hu i j)
-    simpa [res, map_inv] using this)
+    simpa [res, map_inv] using (congrArg (fun x => (x⁻¹).val) (hu i j)))
   have h1 : s * s' = 1 := by
     apply TopCat.Sheaf.eq_of_locally_eq' T.sheaf W ⊤ (fun i => homOfLE le_top) hc
     intro i

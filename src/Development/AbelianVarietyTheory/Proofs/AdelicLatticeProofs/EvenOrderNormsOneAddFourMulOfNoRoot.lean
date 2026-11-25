@@ -68,8 +68,7 @@ theorem _root_.GlobalTheory.QNorm.evenNorms_one_add_four_mul :
   intro K _ w ρ h2 hρ hroot a b hab
   by_cases hb : b = 0
   · subst hb
-    have ha : a ≠ 0 := hab.resolve_right (not_not.mpr rfl)
-    exact exists_exp_two_mul_of_eq_sq w ha (by congr 1; ring)
+    exact exists_exp_two_mul_of_eq_sq w (hab.resolve_right (not_not.mpr rfl)) (by congr 1; ring)
   · set t := (a - b) / (2 * b) with ht_def
     have hfac : a ^ 2 - (1 + 4 * ρ) * b ^ 2 = (2 * b) ^ 2 * (t ^ 2 + t - ρ) := by
       rw [ht_def]

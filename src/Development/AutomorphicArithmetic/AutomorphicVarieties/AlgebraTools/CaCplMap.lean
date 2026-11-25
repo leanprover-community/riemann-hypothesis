@@ -63,12 +63,11 @@ theorem UpperTheory.V.AlgebraTools.IsCplAt.map_pow_eq :
       apply hs
       rw [← h.comap_eq, Ideal.mem_comap]
       exact (IsLocalRing.mem_maximalIdeal _).mpr hn
-    have hm2 : maximalIdeal B ^ 2 ≤ maximalIdeal B := Ideal.pow_le_self two_ne_zero
     have ha : a ∈ p := by
       rw [← h.comap_eq, Ideal.mem_comap]
       have : algebraMap R B a = algebraMap R B s * b - (algebraMap R B s * b - algebraMap R B a) := by ring
       rw [this]
-      exact sub_mem (Ideal.mul_mem_left _ _ hb) (hm2 hsa)
+      exact sub_mem (Ideal.mul_mem_left _ _ hb) ((Ideal.pow_le_self two_ne_zero) hsa)
     obtain ⟨u, hu⟩ := hsu
     have hb' : b = (↑u⁻¹ : B) * (algebraMap R B a + (algebraMap R B s * b - algebraMap R B a)) := by
       rw [← hu]

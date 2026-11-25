@@ -212,8 +212,7 @@ theorem bicomm : Bicomm := by
   obtain ⟨s, hs, rfl⟩ := Subalgebra.mem_map.1 hs'
   have hxs : x = s := by
     refine e.ext fun k => ?_
-    have := congrFun hs'E k
-    simpa [diag_apply] using this
+    simpa [diag_apply] using congrFun hs'E k
   rwa [hxs]
 
 end PositivityTheory.Rg.Sw.LC

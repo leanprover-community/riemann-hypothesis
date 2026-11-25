@@ -204,8 +204,7 @@ theorem _root_.GlobalTheory.HermModel.rank_integral_selfDual (E : Type) [Field E
       (Submodule.one_le.mp le_rfl) hmem
     rw [← NumberField.coe_discr] at hint
     convert hint using 1
-    rw [Algebra.smul_def, mul_one]
-    simp
+    simp [Algebra.smul_def, mul_one]
   · intro v
     constructor
     · intro hv

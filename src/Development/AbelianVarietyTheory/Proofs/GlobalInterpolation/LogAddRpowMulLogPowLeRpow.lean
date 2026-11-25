@@ -59,8 +59,7 @@ theorem log_add_rpow_mul_log_pow_le_rpow :
     (isLittleO_log_rpow_atTop hb).const_mul_left c
   have h2 : (fun x : ℝ => C * x ^ a * Real.log x ^ p) =o[atTop] fun x => x ^ b := by
     have hl : (fun x : ℝ => Real.log x ^ p) =o[atTop] fun x => x ^ (b - a) := by
-      have := isLittleO_log_rpow_rpow_atTop (p : ℝ) (sub_pos.2 hab)
-      simpa [Real.rpow_natCast] using this
+      simpa [Real.rpow_natCast] using isLittleO_log_rpow_rpow_atTop (p : ℝ) (sub_pos.2 hab)
     have hm : (fun x : ℝ => x ^ a * Real.log x ^ p) =o[atTop]
         fun x => x ^ a * x ^ (b - a) :=
       (isBigO_refl (fun x : ℝ => x ^ a) atTop).mul_isLittleO hl

@@ -187,8 +187,7 @@ theorem absNorm_rat (p : HeightOneSpectrum (𝓞 ℚ)) :
   rw [Ideal.absNorm_apply, Submodule.cardQuot_apply, Nat.card_congr e.toEquiv]
   have := Ideal.absNorm_span_singleton ((Rat.HeightOneSpectrum.natGenerator p : ℕ) : ℤ)
   rw [Ideal.absNorm_apply, Submodule.cardQuot_apply] at this
-  rw [this]
-  simp only [Algebra.norm_self, MonoidHom.id_apply, Int.natAbs_natCast]
+  simp only [this, Algebra.norm_self, MonoidHom.id_apply, Int.natAbs_natCast]
   rfl
 
 end GlobalTheory.NT

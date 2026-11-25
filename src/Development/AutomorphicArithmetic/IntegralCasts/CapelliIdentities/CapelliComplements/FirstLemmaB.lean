@@ -55,11 +55,10 @@ theorem goal1 {R : Type*} [CommRing R] {n : ℕ} (P Q : Matrix (Fin n) (Fin n) R
     P * Q = c • (1 : Matrix (Fin n) (Fin n) R) := by
   have hdet : Q.det * P.det = c ^ n := by
     rw [← det_mul, h, det_smul, det_one, mul_one, Fintype.card_fin]
-  have hcn : c ^ n ∈ nonZeroDivisors R := pow_mem hc n
   have hP : P.det ∈ nonZeroDivisors R := by
     rw [mem_nonZeroDivisors_iff_right]
     intro x hx
-    apply (mem_nonZeroDivisors_iff_right.mp hcn) x
+    apply (mem_nonZeroDivisors_iff_right.mp (pow_mem hc n)) x
     rw [← hdet, mul_comm Q.det P.det, ← mul_assoc, hx, zero_mul]
   have h1 : Q * P * P.adjugate = c • P.adjugate := by
     rw [h, smul_mul_assoc, Matrix.one_mul]

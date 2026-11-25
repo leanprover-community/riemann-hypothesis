@@ -187,9 +187,8 @@ theorem exists_basis_of_cmType (Ψ : Finset (E →+* ℂ))
       rw [← Set.range_comp]; rfl
     rw [this, ← Submodule.map_span, c.span_eq, Submodule.map_subtype_top]
   have hli : LinearIndependent ℤ w := c.linearIndependent.map' L.subtype L.ker_subtype
-  have hliQ : LinearIndependent ℚ w := (LinearIndependent.iff_fractionRing ℤ ℚ).1 hli
   have hle : Fintype.card (Module.Free.ChooseBasisIndex ℤ L) ≤ 2 * (Ψ.card * r) := by
-    have := hliQ.fintype_card_le_finrank
+    have := ((LinearIndependent.iff_fractionRing ℤ ℚ).1 hli).fintype_card_le_finrank
     rw [Module.finrank_pi_fintype, Finset.sum_const, finrank_eq_two_mul_card Ψ h] at this
     simp only [Finset.card_univ, Fintype.card_fin, smul_eq_mul] at this
     calc _ ≤ _ := this

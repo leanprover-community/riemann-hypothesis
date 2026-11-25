@@ -204,10 +204,9 @@ theorem densePrimes_localization (h : DenseP (objPrimes b Mat κ β v)) (f : R) 
     by_cases hfp : f ∈ p
     · exact p.mul_mem_right a hfp
     · obtain ⟨q₁, hq₁, hcomap⟩ := exists_mem_loc hp hfp
-      have hgq : g ∈ q₁ := hg q₁ hq₁ (isPrime_of_mem hq₁)
       have haq : algebraMap R (Localization.Away f) a ∈ q₁ := by
         rw [← hc]
-        exact q₁.mul_mem_right _ hgq
+        exact q₁.mul_mem_right _ (hg q₁ hq₁ (isPrime_of_mem hq₁))
       have : a ∈ p := by
         rwa [← hcomap]
       exact p.mul_mem_left f this

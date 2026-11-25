@@ -76,13 +76,12 @@ theorem map_maximalIdeal_le_jacobson_and_pow_le :
     letI : Field (O ⧸ m) := Ideal.Quotient.field m
     letI : Algebra (O ⧸ m) (R ⧸ I) := f.toAlgebra
     have hcomp : (f.comp (Ideal.Quotient.mk m)).Finite := by
-      have h1 : (algebraMap O R).Finite := RingHom.finite_algebraMap.mpr inferInstance
       have h2 : (Ideal.Quotient.mk I).Finite :=
         RingHom.Finite.of_surjective _ Ideal.Quotient.mk_surjective
       have h3 : f.comp (Ideal.Quotient.mk m) = (Ideal.Quotient.mk I).comp (algebraMap O R) := by
         ext x; simp [f]
       rw [h3]
-      exact h2.comp h1
+      exact h2.comp (RingHom.finite_algebraMap.mpr inferInstance)
     have hf : f.Finite := RingHom.Finite.of_comp_finite hcomp
     haveI : Module.Finite (O ⧸ m) (R ⧸ I) := hf
     haveI : IsArtinianRing (R ⧸ I) := IsArtinianRing.of_finite (O ⧸ m) (R ⧸ I)

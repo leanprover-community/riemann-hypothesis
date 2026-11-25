@@ -118,8 +118,7 @@ theorem pt (q : ℕ) [NeZero q] (U : Scheme.{0}) (hq : IsUnit (q : Γ(U, ⊤))) 
   obtain ⟨z, hz⟩ : y ∈ Set.range hW.fromSpec := by rw [hW.range_fromSpec]; exact hyW
   let A : CommRingCat.{0} := Γ(U, W)
   have : Nontrivial A := by
-    have := z.asIdeal.ne_top_iff_one.mp z.isPrime.ne_top
-    exact ⟨⟨1, 0, fun h => this (h ▸ z.asIdeal.zero_mem)⟩⟩
+    exact ⟨⟨1, 0, fun h => (z.asIdeal.ne_top_iff_one.mp z.isPrime.ne_top) (h ▸ z.asIdeal.zero_mem)⟩⟩
   let ρ : Γ(U, ⊤) →+* A := (Scheme.ΓSpecIso A).hom.hom.comp hW.fromSpec.appTop.hom
   let u₁ : Aˣ := Units.map ρ.toMonoidHom u
   have hqA : IsUnit (q : A) := by simpa using hq.map ρ

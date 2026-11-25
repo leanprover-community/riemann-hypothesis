@@ -85,8 +85,7 @@ theorem UpperTheory.Gal.Gen.triMat_pf :
   let b := b₀.reindex e
   have hb : ∀ h i j, j ≤ i → b.repr (ρ' h (b j) - b j) i = 0 := by
     intro h i j hij
-    have := hb₀ h (e.symm i) (e.symm j) (by simpa [e] using hij)
-    simpa [b] using this
+    simpa [b] using hb₀ h (e.symm i) (e.symm j) (by simpa [e] using hij)
   let Q : Matrix (Fin (Fintype.card X)) X ℤ := fun i x => ((b.repr (Pi.single x 1) i).val : ℤ)
   let P : Matrix X (Fin (Fintype.card X)) ℤ := fun x j => ((b j x).val : ℤ)
   refine ⟨Q, P, fun h i j hij => ?_⟩

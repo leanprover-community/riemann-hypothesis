@@ -92,8 +92,7 @@ theorem exists_right_inv {E : Type} [Field E] [NumberField E] {κ ι : Type} [Fi
     exact this.symm
   have hr' : ∀ m, g (j (r m)) ᵥ* W = j (r m) := by
     intro m
-    have : j (r m) - g (j (r m)) ᵥ* W = 0 := hr m
-    exact (sub_eq_zero.mp this).symm
+    exact (sub_eq_zero.mp (hr m : j (r m) - g (j (r m)) ᵥ* W = 0)).symm
   let h : (ι → 𝓞 E) →ₗ[𝓞 E] (κ → E) := (g.restrictScalars (𝓞 E)) ∘ₗ j ∘ₗ r
   refine ⟨Matrix.of fun a k => c * h (Pi.single a 1) k, ?_, ?_⟩
   · intro a k

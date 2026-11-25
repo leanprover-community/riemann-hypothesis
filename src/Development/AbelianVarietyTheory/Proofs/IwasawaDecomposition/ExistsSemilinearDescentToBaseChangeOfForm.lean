@@ -69,8 +69,7 @@ theorem exists_semilinear_descent_to_baseChange :
   obtain ⟨π, hπ⟩ := LinearMap.exists_leftInverse_of_injective (Algebra.linearMap L0 LL)
     (LinearMap.ker_eq_bot.mpr (algebraMap L0 LL).injective)
   have hπ1 : π 1 = 1 := by
-    have := LinearMap.congr_fun hπ 1
-    simpa using this
+    simpa using LinearMap.congr_fun hπ 1
   have hπx : ∀ (c : L0) (y : LL), π ((c : LL) * y) = c * π y := by
     intro c y
     have : ((c : LL) * y) = c • y := (Algebra.smul_def c y).symm

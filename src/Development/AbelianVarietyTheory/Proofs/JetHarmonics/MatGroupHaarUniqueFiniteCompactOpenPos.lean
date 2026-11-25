@@ -182,8 +182,7 @@ theorem factor_pos_lt_top {X : Type*} [MeasurableSpace X] (μ ν : Measure X) [S
   refine measure_iUnion_null fun n => ?_
   have h1 := measure_spanningSets_lt_top μ n
   have h2 : μ (spanningSets μ n) = ⊤ * ν (spanningSets μ n) := by
-    have := congrArg (fun ρ : Measure X => ρ (spanningSets μ n)) h
-    simpa [hc] using this
+    simpa [hc] using congrArg (fun ρ : Measure X => ρ (spanningSets μ n)) h
   by_cases h3 : ν (spanningSets μ n) = 0
   · rw [h2, h3, mul_zero]
   · rw [h2, ENNReal.top_mul h3] at h1

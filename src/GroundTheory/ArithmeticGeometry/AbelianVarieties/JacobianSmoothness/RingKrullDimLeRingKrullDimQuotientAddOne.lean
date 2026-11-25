@@ -104,8 +104,7 @@ theorem exists_ringKrullDim_eq_trdeg [IsDomain A] :
 
 theorem ringKrullDim_eq_trdeg [IsDomain A] : ringKrullDim A = (trdeg k A).toENat := by
   obtain ⟨n, h1, h2⟩ := exists_ringKrullDim_eq_trdeg (k := k) (A := A)
-  rw [h1, h2]
-  simp
+  simp [h1, h2]
 
 
 include k in

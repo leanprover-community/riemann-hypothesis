@@ -654,8 +654,7 @@ theorem coeff_sub_comp_X_sub_C {K : Type*} [Field K] (P : K[X]) (r : K) (e : ℕ
     (P - P.comp (X - C r)).degree < (e + 1 : ℕ) ∧
       (P - P.comp (X - C r)).coeff e = r * (e + 1) * P.coeff (e + 1) := by
   have hQ : P = (P.comp (X - C r)).comp (X + C r) := by
-    rw [comp_assoc]
-    simp
+    simp [comp_assoc]
   have hdeg : (P.comp (X - C r)).degree ≤ (e + 1 : ℕ) := by
     rwa [sub_eq_add_neg, ← C_neg, ← taylor_apply, degree_taylor]
   have htop : (P.comp (X - C r)).coeff (e + 1) = P.coeff (e + 1) := by

@@ -93,8 +93,7 @@ theorem gram_det_mul_le :
     have hM0 : 0 ≤ (Mᴴ * M).det.re :=
       (H ι _ _ (Matrix.posSemidef_conjTranspose_mul_self M) (Matrix.posSemidef_conjTranspose_mul_self M)).1
     have e1 : (a * M)ᴴ * (a * M) = Mᴴ * (aᴴ * a) * M := by
-      rw [Matrix.conjTranspose_mul]
-      simp only [Matrix.mul_assoc]
+      simp only [Matrix.conjTranspose_mul, Matrix.mul_assoc]
     have e2 : Mᴴ * (aᴴ * a) * M + Mᴴ * ((c : ℂ) • 1 - aᴴ * a) * M = (c : ℂ) • (Mᴴ * M) := by
       rw [← Matrix.add_mul, ← Matrix.mul_add, add_sub_cancel, Matrix.mul_smul, Matrix.mul_one, Matrix.smul_mul]
     rw [e1]

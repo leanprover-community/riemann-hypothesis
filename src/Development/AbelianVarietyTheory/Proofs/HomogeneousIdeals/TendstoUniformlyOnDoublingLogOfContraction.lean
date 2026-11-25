@@ -85,8 +85,7 @@ theorem map_zero_of_isBigO_sq {f : E → F} {L : E →L[ℂ] F}
 
 theorem hasFDerivAt_of_isBigO_sq {f : E → F} {L : E →L[ℂ] F}
     (h : (fun x => f x - L x) =O[𝓝 0] fun x => ‖x‖ ^ 2) : HasFDerivAt f L 0 := by
-  rw [hasFDerivAt_iff_isLittleO_nhds_zero]
-  simp only [zero_add, map_zero_of_isBigO_sq h, sub_zero]
+  simp only [hasFDerivAt_iff_isLittleO_nhds_zero, zero_add, map_zero_of_isBigO_sq h, sub_zero]
   exact h.trans_isLittleO (isLittleO_norm_pow_id one_lt_two)
 
 end Taylor

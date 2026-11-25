@@ -108,8 +108,7 @@ theorem shift1_eq_csub (F : MvPowerSeries (Fin 2) K) (y : K) :
       (∏ i, (![PowerSeries.X, PowerSeries.C y] : Fin 2 → MvPowerSeries Unit K) i ^ ν i) =
       MvPowerSeries.coeff ν F * (if m = ν 0 then y ^ ν 1 else 0) := by
     intro ν
-    rw [hc, Fin.prod_univ_two]
-    simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
+    simp only [hc, Fin.prod_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one]
     rw [← map_pow, mul_comm (PowerSeries.X ^ _), PowerSeries.coeff_C_mul_X_pow]
   simp only [hterm]
   rw [shift1, PowerSeries.coeff_mk]

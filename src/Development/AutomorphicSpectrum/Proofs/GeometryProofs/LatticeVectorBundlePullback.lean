@@ -59,7 +59,6 @@ theorem isVBOn_pull :
   intro X Ω _ ξ E _ _ X' Ω' _ ξ' f i E' _ _ j L T r V hd hj hli hvb p' hp'
   obtain ⟨h, hT⟩ := hp'
   obtain ⟨U, hU, b, hb, hfr⟩ := hvb _ hT
-  have hind' : LinearIndependent Ω' fun k => j (b k) := hli r b (hfr _ hT hU).1
   have hbV : ∀ k, b k ∈ V := fun k => hb ▸ Submodule.subset_span ⟨k, rfl⟩
   have key : ∀ v ∈ Submodule.span Ω (Set.range b),
       j v ∈ Submodule.span Ω' (Set.range fun k => j (b k)) := by
@@ -84,7 +83,7 @@ theorem isVBOn_pull :
       rintro _ ⟨v, hv, rfl⟩
       exact key v (by rw [hb]; exact hv)
   · rintro q' ⟨h', hT'⟩ hq'
-    refine ⟨hind', ?_⟩
+    refine ⟨(hli r b (hfr _ hT hU).1), ?_⟩
     have hL := (hfr _ hT' hq').2
     obtain ⟨h2, hreg, -⟩ := RegAtDom.regAt_dominates X Ω ξ X' Ω' ξ' f i hd q'
     have key' : ∀ e ∈ Submodule.span (regAt ξ ⟨f q'.1, h'⟩) (Set.range b),

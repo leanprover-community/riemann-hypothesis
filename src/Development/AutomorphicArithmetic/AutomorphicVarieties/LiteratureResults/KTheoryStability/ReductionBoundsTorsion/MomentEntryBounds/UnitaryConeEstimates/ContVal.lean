@@ -110,8 +110,7 @@ theorem cpt_Om [Fintype ι] (M : ℝ) : IsCompact (OmG (ι := ι) (N := N) M) :=
       constructor
       · rintro ⟨h1, h2, h3, h4⟩; exact ⟨⟨⟨fun w i j hij => h1 w hij, h2⟩, h3⟩, h4⟩
       · rintro ⟨⟨⟨h1, h2⟩, h3⟩, h4⟩; exact ⟨fun w i j hij => h1 w i j hij, h2, h3, h4⟩
-    rw [this]
-    simp only [Set.ofPred_forall]
+    simp only [this, Set.ofPred_forall]
     refine ((IsClosed.inter ?_ ?_).inter ?_).inter ?_
     · exact isClosed_iInter fun w => isClosed_iInter fun i => isClosed_iInter fun j => isClosed_iInter fun _ =>
         isClosed_eq (cont_mt w i j) continuous_const

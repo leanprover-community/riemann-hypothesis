@@ -75,10 +75,9 @@ theorem one_add_pow_prime_pow_add {T : Type} [CommRing T] {l ν k : ℕ} (hl : l
         exact absurd (Nat.le_of_dvd (Nat.succ_pos i) hd) (not_le.2 hik)
       have hiN : i + 1 ≤ l ^ (k + ν) := Finset.mem_range.1 hi
       have hf := Nat.factorization_choose_prime_pow hl hiN (Nat.succ_ne_zero i)
-      have hdvd : l ^ (ν + 1) ∣ (l ^ (k + ν)).choose (i + 1) := by
+      obtain ⟨c, hc⟩ : l ^ (ν + 1) ∣ (l ^ (k + ν)).choose (i + 1) := by
         rw [hl.pow_dvd_iff_le_factorization (Nat.choose_pos hiN).ne', hf]
         omega
-      obtain ⟨c, hc⟩ := hdvd
       rw [hc, Nat.cast_mul, Nat.cast_pow, h0, zero_mul, mul_zero]
   rw [Finset.sum_eq_zero hterm]
   simp

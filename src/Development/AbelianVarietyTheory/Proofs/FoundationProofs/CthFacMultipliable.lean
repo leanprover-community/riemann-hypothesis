@@ -72,8 +72,7 @@ theorem _root_.GlobalTheory.Sieg.cthFac_multipliable : ∀ (c : ℕ) (q t : ℂ)
   have hg0 : g 0 = 1 := by simp [hg]
   have hbig : (fun m : ℕ => g (q ^ (m + 1)) - 1) =O[Filter.atTop] (fun m : ℕ => q ^ (m + 1)) := by
     have h := hgd.isBigO_sub
-    rw [hg0] at h
-    simp only [sub_zero] at h
+    simp only [hg0, sub_zero] at h
     have ht : Filter.Tendsto (fun m : ℕ => q ^ (m + 1)) Filter.atTop (nhds 0) :=
       (tendsto_pow_atTop_nhds_zero_of_norm_lt_one hq).comp (Filter.tendsto_add_atTop_nat 1)
     exact h.comp_tendsto ht

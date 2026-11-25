@@ -170,8 +170,7 @@ theorem qProj_eq_zero (h : I ≤ J) (q : QMod N I) : qProj h q = 0 ↔ q ∈ J �
     rw [Submodule.map_smul'', Submodule.map_top, Submodule.range_mkQ]
   rw [qProj_mk, Submodule.Quotient.mk_eq_zero, e]
   refine ⟨fun hx => ⟨x, hx, rfl⟩, fun ⟨y, hy, hyx⟩ => ?_⟩
-  have := Submodule.smul_mono_left h ((Submodule.Quotient.eq _).1 hyx)
-  simpa using sub_mem hy this
+  simpa using sub_mem hy (Submodule.smul_mono_left h ((Submodule.Quotient.eq _).1 hyx))
 
 theorem map_mem_smul_top {M M' : Type} [AddCommGroup M] [Module O M] [AddCommGroup M'] [Module O M'] (f : M →ₗ[O] M')
     {x : M} (hx : x ∈ J • (⊤ : Submodule O M)) : f x ∈ J • (⊤ : Submodule O M') := by

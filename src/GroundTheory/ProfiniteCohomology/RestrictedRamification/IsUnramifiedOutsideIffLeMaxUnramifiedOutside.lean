@@ -89,8 +89,7 @@ theorem isUnramifiedOutside_iff_le_maxUnramifiedOutside {E : IntermediateField F
     have hx' : x = ∑ i, b.repr ⟨x, hx⟩ i • (b i : Ω) := by
       have := congrArg E.val (b.sum_repr ⟨x, hx⟩)
 
-      rw [map_sum] at this
-      simp only [map_smul] at this
+      simp only [map_sum, map_smul] at this
       exact this.symm
     rw [hx']
     exact sum_mem fun i _ => E'.smul_mem (hE' _ (Finset.mem_image_of_mem _ (Finset.mem_univ i)))

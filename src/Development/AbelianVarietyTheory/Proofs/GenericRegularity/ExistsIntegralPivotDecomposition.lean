@@ -122,13 +122,12 @@ private theorem exists_pivot_unipotent_mul_triangular {L : Type} [Field L] (W : 
     have hv0 : v ≠ 0 := by
       intro h0
       apply hxspan
-      have hxv : x - u' *ᵥ c = 0 := h0
       have hu' : u' = g' * b'⁻¹ := by
         rw [hgub]
         exact (Matrix.mul_nonsing_inv_cancel_right (B := u') (h := hb'det)).symm
       have hxe : x = g' *ᵥ (b'⁻¹ *ᵥ c) := by
         rw [Matrix.mulVec_mulVec, ← hu']
-        exact sub_eq_zero.1 hxv
+        exact sub_eq_zero.1 h0
       have hmem := LinearMap.mem_range_self g'.mulVecLin (b'⁻¹ *ᵥ c)
       rw [Matrix.range_mulVecLin] at hmem
       rwa [hxe]

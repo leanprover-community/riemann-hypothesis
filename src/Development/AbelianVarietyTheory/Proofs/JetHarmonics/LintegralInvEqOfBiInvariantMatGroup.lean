@@ -75,11 +75,10 @@ lemma measurable_mulM {m : ℕ} {α : Type*} [MeasurableSpace α] {u v : α → 
 lemma measurable_invM {m : ℕ} : Measurable (invM : PI.MtM m → PI.MtM m) := by
   refine Measurable.of_eval fun i => Measurable.of_eval fun j => ?_
   have hof : Continuous fun x : PI.MtM m => (Matrix.of x : Matrix (Fin m) (Fin m) ℂ) := continuous_id
-  have h1 : Measurable fun x : PI.MtM m => (Matrix.of x).det := hof.matrix_det.measurable
   have h2 : Measurable fun x : PI.MtM m => (Matrix.of x).adjugate i j :=
     (hof.matrix_adjugate.matrix_elem i j).measurable
   simp only [invM, Matrix.inv_def, Ring.inverse_eq_inv', Matrix.smul_apply, smul_eq_mul]
-  exact h1.inv.mul h2
+  exact hof.matrix_det.measurable.inv.mul h2
 
 theorem lintegral_inv_eq : ∀ (m : ℕ) (S : Set (Matrix (Fin m) (Fin m) ℂ)) (μ : Measure (PI.MtM m)), PI.IsMatGroup S → PI.IsHaarOnM S μ → PI.IsRightInvM S μ → ∀ f : PI.MtM m → ℝ≥0∞, Measurable f → ∫⁻ s, f (fun i j => (Matrix.of s)⁻¹ i j) ∂μ = ∫⁻ s, f s ∂μ := by
   intro m S μ hS hμ hR f hf

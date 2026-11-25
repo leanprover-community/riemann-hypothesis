@@ -57,14 +57,13 @@ theorem exists_isAddHaarMeasure_isAddFundamentalDomain_preimage :
       measurable_invFun := hes.measurable }
   have hmp : MeasurePreserving m (μ.map e.symm) μ :=
     (MeasurePreserving.symm m.symm ⟨m.symm.measurable, rfl⟩)
-  have hmp' : MeasurePreserving e (μ.map e.symm) μ := hmp
   refine ⟨μ.map e.symm, AddEquiv.isAddHaarMeasure_map μ e.symm hes (by simpa using he), ?_, ?_⟩
   · let f : Λ → Γ := fun y => ⟨e.symm y, (hΓ _).1 (by simpa using y.2)⟩
     have hf : Function.Bijective f := by
       constructor
       · exact fun a b hab => Subtype.ext (e.symm.injective (congrArg Subtype.val hab))
       · exact fun x => ⟨⟨e x, (hΓ _).2 x.2⟩, Subtype.ext (by simp [f])⟩
-    refine h𝓕.preimage_of_equiv hmp'.quasiMeasurePreserving hf ?_
+    refine h𝓕.preimage_of_equiv hmp.quasiMeasurePreserving hf ?_
     intro y x
     simp [f, AddSubgroup.vadd_def]
   · intro φ

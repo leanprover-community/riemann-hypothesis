@@ -61,8 +61,7 @@ theorem GlobalTheory.tensorBasisCoords : ∀ (F : Type) [Field F] (B : Type) [Co
     rw [LinearEquiv.symm_apply_eq]
     funext j
 
-    rw [map_sum, Finset.sum_apply]
-    simp only [h1, Basis.repr_self, Finsupp.single_apply]
+    simp only [map_sum, Finset.sum_apply, h1, Basis.repr_self, Finsupp.single_apply]
     simp
   · intro r f y
     induction y using TensorProduct.induction_on with

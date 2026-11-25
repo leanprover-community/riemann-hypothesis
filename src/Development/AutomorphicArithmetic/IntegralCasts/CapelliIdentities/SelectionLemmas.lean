@@ -315,8 +315,7 @@ theorem main : ∀ {K : Type} [inst : Field K] [inst_1 : NumberField K]
   have hvl : 0 ≤ vw w (l : K) := by simpa using vw_nonneg w (l : 𝓞 K)
   rcases Nat.eq_zero_or_pos D with rfl | hD
   · have : gramR (quotGram P H) e = 1 := Matrix.det_isEmpty
-    rw [this, vw, FractionalIdeal.spanSingleton_one, FractionalIdeal.count_one]
-    simp
+    simp [this, vw, FractionalIdeal.spanSingleton_one, FractionalIdeal.count_one]
   by_cases hG : gramR (quotGram P H) e = 0
   · rw [hG, vw, FractionalIdeal.spanSingleton_zero, FractionalIdeal.count_zero]
     positivity

@@ -61,8 +61,7 @@ theorem isIntegral_pi {O : Type} [CommRing O] {ι : Type} [Finite ι] {R : ι �
   rw [← aeval_def]
   funext j
   have key : (aeval x (∏ i, p i)) j = aeval (x j) (∏ i, p i) := by
-    have := (aeval_algHom_apply (Pi.evalAlgHom O R j) x (∏ i, p i)).symm
-    simpa using this
+    simpa using (aeval_algHom_apply (Pi.evalAlgHom O R j) x (∏ i, p i)).symm
   rw [key, map_prod, Pi.zero_apply]
   exact Finset.prod_eq_zero (Finset.mem_univ j) (by rw [aeval_def]; exact hp j)
 

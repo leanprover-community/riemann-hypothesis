@@ -42,8 +42,7 @@ theorem ParamImageNull.proof : ParamImageNull.Statement := by
     simp only [Pi.smul_apply, smul_eq_mul, Fin.cons_zero] at h0
     have hG0 : G i w 0 ≠ 0 := by
       intro h
-      rw [hG] at h
-      simp only at h
+      simp only [hG] at h
       rw [h, mul_zero] at h0
       exact zero_ne_one h0
     refine Set.mem_iUnion.2 ⟨i, w, ⟨hw, hG0⟩, ?_⟩

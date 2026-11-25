@@ -69,8 +69,7 @@ theorem pderiv_linRoot (u : Wt Ψ N) (τ : Ψ) (i : Fin N) :
 theorem pderiv_linRoot_pow (u : Wt Ψ N) (τ : Ψ) (i : Fin N) (D : ℕ) :
     pderiv (τ, i) (linRoot u ^ (D + 1)) =
       C (-(((D : ℝ) + 1) * u τ i)) * linRoot u ^ D := by
-  rw [Derivation.leibniz_pow, pderiv_linRoot]
-  simp only [Nat.add_sub_cancel, nsmul_eq_mul, smul_eq_mul]
+  simp only [Derivation.leibniz_pow, pderiv_linRoot, Nat.add_sub_cancel, nsmul_eq_mul, smul_eq_mul]
   simp only [map_neg, map_mul, map_add (f := _), map_natCast, map_one]
   push_cast
   ring

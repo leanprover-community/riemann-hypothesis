@@ -236,8 +236,7 @@ theorem exists_adapted_unimodular :
       (C *ᵥ v) hquad
     have hCv : C *ᵥ v = ∑ a, v a • b (Sum.inl a) := by
       ext i
-      rw [Finset.sum_apply]
-      simp only [Matrix.mulVec, dotProduct, hC, Pi.smul_apply, smul_eq_mul]
+      simp only [Finset.sum_apply, Matrix.mulVec, dotProduct, hC, Pi.smul_apply, smul_eq_mul]
       exact Finset.sum_congr rfl fun a _ => mul_comm _ _
     exact hv (hinj v (by rw [Matrix.mulVecLin_apply, ← hCv]; exact hSw))
 

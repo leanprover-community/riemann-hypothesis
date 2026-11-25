@@ -77,8 +77,7 @@ theorem isAbelianScheme_of_generically_surjective :
   have := hB.proper
   have := hG.smooth
   have := hG.separated
-  have hw : ψ.left ≫ G.hom = B.hom := Over.w ψ
-  have : IsProper (ψ.left ≫ G.hom) := hw ▸ hB.proper
+  have : IsProper (ψ.left ≫ G.hom) := (Over.w ψ) ▸ hB.proper
   have : IsProper ψ.left := IsProper.of_comp ψ.left G.hom
   have : Surjective ψ.left := surjective_of_generic_fibre_subset_range ψ.left G.hom h
   have : UniversallyClosed G.hom := UniversallyClosed.of_comp_surjective ψ.left G.hom

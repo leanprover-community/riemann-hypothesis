@@ -258,10 +258,9 @@ theorem local_of_ring [IsAffineHom f] (Q : MorphismProperty Scheme.{0}) (K : Typ
   obtain ⟨a, ha, hQ⟩ := h A B j j' H hj (isIso_SpecMap_iff.1 hi) m
   refine ⟨_, _, _, _, _, (isPullback_tensor A (Localization.Away a) B).paste_vert H,
     inferInstance, ?_, hQ⟩
-  have hy : y ∈ Set.range (PrimeSpectrum.comap (algebraMap A (Localization.Away a))) := by
+  obtain ⟨z, rfl⟩ : y ∈ Set.range (PrimeSpectrum.comap (algebraMap A (Localization.Away a))) := by
     rw [PrimeSpectrum.localization_away_comap_range (Localization.Away a) a, ← hm]
     exact ha
-  obtain ⟨z, rfl⟩ := hy
   exact ⟨z, Scheme.Hom.comp_apply _ _ _⟩
 
 end Geometry

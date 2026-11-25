@@ -105,8 +105,7 @@ theorem lower_line (y : M2 n) (c : Matrix (Fin n) (Fin n) ℂ) (t : ℂ) :
   rw [e, mul_add, mul_one, mul_smul_comm]
 
 theorem herm_real_smul {b : Matrix (Fin n) (Fin n) ℂ} (hb : bᴴ = b) (t : ℝ) : ((t : ℂ) • b)ᴴ = (t : ℂ) • b := by
-  rw [conjTranspose_smul, hb]
-  simp
+  simp [conjTranspose_smul, hb]
 
 private theorem fderiv_apply_eq_zero_of_const_on_real_line {E W : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
     [NormedAddCommGroup W] [NormedSpace ℂ W] {f : E → W} {y v : E}

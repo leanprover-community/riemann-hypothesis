@@ -82,8 +82,7 @@ theorem exists_root_sub_mem_of_eval_mem (T : Type) [CommRing T] [IsLocalRing T] 
     rw [hev] at hmem
     rcases (maximalIdeal.isMaximal T).isPrime.mem_or_mem hmem with h | h
     · refine ⟨r, hrr, ?_⟩
-      have := (maximalIdeal T).neg_mem h
-      simpa using this
+      simpa using (maximalIdeal T).neg_mem h
     · obtain ⟨a, ha, ha'⟩ := ih g hgm hgdeg a₀ h
       refine ⟨a, ?_, ha'⟩
       rw [← hdiv]

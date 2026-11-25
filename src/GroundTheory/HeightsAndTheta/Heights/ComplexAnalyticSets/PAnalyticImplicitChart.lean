@@ -150,8 +150,7 @@ theorem proof : AnalyticImplicitChart.Statement := by
     · rintro ⟨y, hy, rfl⟩
       have hp : (y, (0 : ι → ℂ)) ∈ Ψ.target := hy
       refine ⟨Ψ.map_target hp, fun j => ?_⟩
-      have := congrFun (congrArg Prod.snd (Ψ.right_inv hp)) j
-      simpa [hΨF, hF] using this
+      simpa [hΨF, hF] using congrFun (congrArg Prod.snd (Ψ.right_inv hp)) j
 
 end AnalyticImplicitChart
 

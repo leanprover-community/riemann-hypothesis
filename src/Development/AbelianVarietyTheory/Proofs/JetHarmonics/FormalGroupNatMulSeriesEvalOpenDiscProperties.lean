@@ -62,11 +62,10 @@ theorem intg_nMul_for_point {K : Type} [NormedField K] [IsUltrametricDist K] (F 
     exact GlobalTheory.BddAlg.intg_zero
   | succ n ih =>
     rw [nMul_succ]
-    have hX : Intg (PowerSeries.X : PowerSeries K) := (GlobalTheory.BddAlg.small_X ()).1
     refine GlobalTheory.BddAlg.Le.subst (c := 1) (fun j => ?_) (fun j => ?_) hF
     · fin_cases j
       · exact ih
-      · exact hX
+      · exact (GlobalTheory.BddAlg.small_X ()).1
     · fin_cases j
       · exact nMul_constantCoeff F n
       · exact PowerSeries.constantCoeff_X

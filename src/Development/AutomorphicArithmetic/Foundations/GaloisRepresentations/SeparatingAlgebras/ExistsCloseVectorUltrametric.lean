@@ -81,11 +81,10 @@ private theorem exists_close_vector_ultrametric (k : Type) [NormedField k] [IsUl
       have hc0 : c = 0 := by simpa using hc
       simp [hc0]
   · obtain ⟨p0, hp0, hp0ne⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hP
-    have hex : ∃ i, p0 i ≠ 0 := by
+    obtain ⟨j, hj⟩ : ∃ i, p0 i ≠ 0 := by
       by_contra hcon
       push Not at hcon
       exact hp0ne (funext hcon)
-    obtain ⟨j, hj⟩ := hex
     have : Nonempty X := ⟨j⟩
     obtain ⟨i0, hi0⟩ := Finite.exists_max (fun i => ‖p0 i‖)
     have hne : p0 i0 ≠ 0 := by

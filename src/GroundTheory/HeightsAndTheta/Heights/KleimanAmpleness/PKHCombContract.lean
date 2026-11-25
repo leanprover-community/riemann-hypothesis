@@ -237,8 +237,7 @@ theorem ext_zero (J : ∀ k, Finset (ι k)) (n : ℕ) : ext J n (0 : CombC S J n
 
 theorem combD_apply (J : ∀ k, Finset (ι k)) (n : ℕ) (φ : CombC S J n) (I : CombCell ι J (n + 1)) :
     combD S J n φ I = tD (ext J n φ) I.1.1 := by
-  rw [tD, Finset.sum_sigma]
-  simp only [combD, LinearMap.pi_apply, LinearMap.sum_apply, rem]
+  simp only [tD, Finset.sum_sigma, combD, LinearMap.pi_apply, LinearMap.sum_apply, rem]
   refine Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun i _ => ?_
   by_cases h : ((∀ l', (Function.update I.1.1 l ((I.1.1 l).erase i) l').Nonempty) ∧
       ∑ l', ((Function.update I.1.1 l ((I.1.1 l).erase i) l').card - 1) = n) ∧

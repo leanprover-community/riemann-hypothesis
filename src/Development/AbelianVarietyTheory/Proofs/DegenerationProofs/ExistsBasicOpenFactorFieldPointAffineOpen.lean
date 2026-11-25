@@ -61,8 +61,7 @@ theorem exists_basicOpen_factor : ∀ (k : Type) [CommRing k] (G : Over (Sp k)) 
   let p₀ : PrimeSpectrum F := ⟨⊥, Ideal.isPrime_bot⟩
   let p : PrimeSpectrum B := PrimeSpectrum.comap (δ : B →+* F) p₀
   have hl : (algOverHom δ).left ≫ φ.left = (algOverHom χ₀).left ≫ j.left := by
-    have := congrArg (fun x => x.left) h
-    simpa only [Over.comp_left] using this
+    simpa only [Over.comp_left] using congrArg (fun x => x.left) h
   have hp : p ∈ (U : Set (Spec (CommRingCat.of B))) := by
     refine ⟨(algOverHom χ₀).left p₀, ?_⟩
     have := congrArg (fun x => x p₀) hl

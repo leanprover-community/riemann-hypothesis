@@ -61,8 +61,7 @@ theorem GeneralLinearCoordinates.proof : GeneralLinearCoordinates.Statement := b
     intro x hx
     have h1 : (L x) none = 0 := by rw [hx]; rfl
     have hnone : x none = 0 := by
-      rw [hL] at h1
-      simp [e] at h1
+      simp [hL, e] at h1
       have h2 : x none * v none = 0 := by linear_combination h1
       exact (mul_eq_zero.mp h2).resolve_right hvt
     rwa [hL, hnone, zero_smul, add_zero] at hx

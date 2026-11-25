@@ -207,8 +207,7 @@ theorem modN_sq_iff_exists_genLat_sum : ∀ (E : Type) [Field E] [NumberField E]
 
       rw [map_sum, map_mul]
       change _ = _ * (y k : E)
-      rw [hy]
-      simp only [Matrix.mulVec, dotProduct, Finset.mul_sum]
+      simp only [hy, Matrix.mulVec, dotProduct, Finset.mul_sum]
       refine Finset.sum_congr rfl fun j _ => ?_
       rw [map_mul]
       change (cm i j : E) * (v k j : E) = _

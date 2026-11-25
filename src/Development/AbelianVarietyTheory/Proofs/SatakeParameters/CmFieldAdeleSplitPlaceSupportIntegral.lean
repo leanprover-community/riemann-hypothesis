@@ -113,8 +113,7 @@ theorem mem_ALint_of_supported_at_split : ∀ (L : Type) [Field L] [NumberField 
     simp [ReciprocityTheory.Aut.compAt, Algebra.TensorProduct.map_tmul] at h
     exact h
   have h1 : s.proj (L := L) z = A s.v + s.i (e : L) * B s.v := by
-    rw [hAB]
-    simp [ReciprocityTheory.Aut.SplitPlace.proj, Algebra.TensorProduct.lift_tmul]
+    simp [hAB, ReciprocityTheory.Aut.SplitPlace.proj, Algebra.TensorProduct.lift_tmul]
     rfl
   have h2 : s.proj (L := L) (ReciprocityTheory.Aut.conjAL L z) =
       A s.v + s.i (IsCMField.complexConj L (e : L)) * B s.v := by

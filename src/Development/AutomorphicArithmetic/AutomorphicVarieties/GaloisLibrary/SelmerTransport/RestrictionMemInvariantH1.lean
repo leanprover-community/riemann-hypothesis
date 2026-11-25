@@ -68,8 +68,7 @@ theorem mem_eig {π : Representation R Q N} {ψ : Q →* Rˣ} {x : N} :
 
 theorem eig_one (π : Representation R Q N) : eig π 1 = π.invariants := by
   ext x
-  rw [mem_eig, Representation.mem_invariants]
-  simp
+  simp [mem_eig, Representation.mem_invariants]
 
 def coeig (π : Representation R Q N) (ψ : Q →* Rˣ) : Submodule R N :=
   ⨆ g, LinearMap.range (π g - ((ψ g : Rˣ) : R) • LinearMap.id)

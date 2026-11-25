@@ -94,10 +94,9 @@ theorem valAt_down {ξ' : Spec (CommRingCat.of Ω) ⟶ X'} (g : X' ⟶ X) (hinj 
     (hreg : regAt ξ' ⟨centre z, h'⟩ = regAt (ξ' ≫ g) ⟨g (centre z), h⟩)
     {a : Ω} {r : ℂ} (hv : ValAt ξ' z a r) : ValAt (ξ' ≫ g) (z ≫ g) a r := by
   obtain ⟨h1, s, hs, rfl⟩ := hv
-  have ha : a ∈ regAt (ξ' ≫ g) ⟨g (centre z), h⟩ := by
+  obtain ⟨s₀, hs₀⟩ : a ∈ regAt (ξ' ≫ g) ⟨g (centre z), h⟩ := by
     rw [← hreg]
     exact ⟨s, hs⟩
-  obtain ⟨s₀, hs₀⟩ := ha
   have e : (g.stalkMap (centre z)).hom s₀ = s := by
     apply hinj.inj ⟨centre z, h'⟩
     rw [genMap_stalkMap ξ' g ⟨centre z, h'⟩ h s₀]

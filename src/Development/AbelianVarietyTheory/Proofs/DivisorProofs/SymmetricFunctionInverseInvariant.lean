@@ -62,8 +62,7 @@ theorem exists_perm_of_univ_map_eq {ι β : Type} [Fintype ι] (g g' : ι → β
     intro c
     have := congrArg (Multiset.count c) h
     rw [Multiset.count_map, Multiset.count_map] at this
-    rw [Fintype.card_subtype, Fintype.card_subtype]
-    simp only [Finset.card, Finset.filter_val]
+    simp only [Fintype.card_subtype, Fintype.card_subtype, Finset.card, Finset.filter_val]
     simpa only [eq_comm] using this.symm
   exact ⟨Equiv.ofFiberEquiv (fun c => Fintype.equivOfCardEq (hc c)),
     fun i => Equiv.ofFiberEquiv_map _ i⟩

@@ -87,7 +87,7 @@ theorem NormalLocalDepthTwo.proof : NormalLocalDepthTwo.Statement := by
     rw [IsDiscreteValuationRing.ringKrullDim_eq_one]
     simp
 
-  have hreg : ∃ y ∈ maximalIdeal B, IsSMulRegular (QuotSMulTop x B) y := by
+  obtain ⟨y, hym, hy⟩ : ∃ y ∈ maximalIdeal B, IsSMulRegular (QuotSMulTop x B) y := by
     by_contra hcon
     push Not at hcon
     have hsub : ((maximalIdeal B : Ideal B) : Set B) ⊆
@@ -116,7 +116,6 @@ theorem NormalLocalDepthTwo.proof : NormalLocalDepthTwo.Statement := by
         Submodule.Quotient.mk_eq_zero, Submodule.mem_smul_pointwise_iff_exists]
       exact ⟨c, trivial, by rw [hc, smul_eq_mul]⟩
     exact (maximalIdeal.isMaximal B).ne_top ((Ideal.eq_top_iff_one _).mpr h1)
-  obtain ⟨y, hym, hy⟩ := hreg
   refine ⟨[x, y], ?_, ?_, ?_⟩
   · intro r hr
     simp only [List.mem_cons, List.not_mem_nil, or_false] at hr

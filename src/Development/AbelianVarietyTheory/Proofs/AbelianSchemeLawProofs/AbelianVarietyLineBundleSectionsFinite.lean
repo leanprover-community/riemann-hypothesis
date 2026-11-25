@@ -98,8 +98,7 @@ theorem Perf.exists_relation {X : Scheme.{0}} {K : Type} [Field K] {f : X ⟶ Sp
   rw [Fintype.not_linearIndependent_iff] at hdep
   obtain ⟨c, hc, k₀, hk₀⟩ := hdep
   have hc' : ∀ l, ∑ k, c k * v k l = 0 := fun l => by
-    have := congrFun hc l
-    simpa [Finset.sum_apply] using this
+    simpa [Finset.sum_apply] using congrFun hc l
   have hW : ∀ j, ∑ k, cst f (Q.W j) (c k) * rs X (Q.le j) ((s k).f (Q.ch j)) = 0 := by
     intro j
     simp only [hv, Finset.mul_sum, ← _root_.mul_assoc, ← map_mul]

@@ -129,8 +129,7 @@ theorem ph_finsum_quotient {A : Type} [AddCommGroup A] (P S : AddSubgroup A) (φ
     rw [Function.mem_support, hφ] at hq
     split_ifs at hq with hmem
     · refine ⟨((⟨q.out - a, hmem⟩ : S) : S ⧸ ψ.ker), ?_⟩
-      rw [hjmk]
-      simp
+      simp [hjmk]
     · exact absurd rfl hq
   have hsum : ∑ᶠ q : A ⧸ P, φ q.out = c * ∑ m : S ⧸ ψ.ker, fb m := by
     rw [← finsum_mem_univ, finsum_mem_inter_support_eq' _ Set.univ (Set.range j)

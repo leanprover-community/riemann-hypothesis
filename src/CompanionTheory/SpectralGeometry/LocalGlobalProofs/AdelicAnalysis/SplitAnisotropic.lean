@@ -117,7 +117,6 @@ theorem split_anisotropic : ∀ (F E : Type) [Field F] [NumberField F] [Field E]
       rw [cT, Matrix.det_transpose]
       exact ((σ : E →+* E).map_det gm).symm
     rw [h5] at h4
-    have h6 : σ gm.det ≠ 0 := (map_ne_zero _).2 hdet
-    exact mul_ne_zero (mul_ne_zero h6 hJ.2) hdet h4.symm
+    exact mul_ne_zero (mul_ne_zero ((map_ne_zero _).2 hdet) hJ.2) hdet h4.symm
 
 end GlobalTheory.CompanionTheory.SW.AlgSplit

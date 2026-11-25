@@ -111,8 +111,7 @@ theorem UpperTheory.V.FW.teich :
       · exact ⟨1, by simp [h] <;> rfl⟩
       · refine ⟨⟨-1, ?_⟩, ?_⟩
         · show (-1 : ℤ_[2]ˣ) ∈ rootsOfUnity (Nat.totient (2 ^ ee 2)) ℤ_[2]
-          rw [ht, mem_rootsOfUnity]
-          simp
+          simp [ht, mem_rootsOfUnity]
         · rw [h]
           exact Units.ext (by simp [redU] <;> rfl)
     · have he : ee l = 1 := ite_eq_right h2

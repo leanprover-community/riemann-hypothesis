@@ -158,8 +158,7 @@ theorem tanMat_sub_one (k i b : Fin P ⊕ Fin Q) (y : Sp P Q) (h1 : qf y = sg k)
       smul_eq_mul, jpq_eq_diagonal, vecMul_diagonal, Pi.star_apply, Pi.add_apply,
       Pi.single_eq_of_ne hb, sub_neg_eq_add, zero_add]
     ring
-  rw [this]
-  simp only [norm_neg, norm_mul, norm_inv, norm_star, norm_sg, mul_one]
+  simp only [this, norm_neg, norm_mul, norm_inv, norm_star, norm_sg, mul_one]
   ring
 
 theorem exists_tangent_section : ∀ (P Q P' Q' : ℕ)

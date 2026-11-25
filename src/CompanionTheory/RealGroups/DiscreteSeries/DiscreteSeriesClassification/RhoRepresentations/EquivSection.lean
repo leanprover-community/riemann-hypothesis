@@ -64,8 +64,7 @@ theorem equivariant_section_holds : EquivSection := by
       show f (ρ g (s0 (σ g⁻¹ y))) = y
       rw [hfe, hs0y, hσinv]
     show f (((c : ℂ)⁻¹) • ∫ g, F y g ∂μ) = y
-    rw [map_smul, h1]
-    simp only [h2, integral_const]
+    simp only [map_smul, h1, h2, integral_const]
     rw [← hc_def, ← Complex.coe_smul, smul_smul, inv_mul_cancel₀ (by exact_mod_cast hc), one_smul]
   · have h3 : ∀ g, F (σ h y) (h * g) = ρ h (F y g) := fun g => by
       show ρ (h * g) (s0 (σ (h * g)⁻¹ (σ h y))) = ρ h (ρ g (s0 (σ g⁻¹ y)))

@@ -54,9 +54,8 @@ namespace GlobalTheory
 theorem eq_zero_of_forall_smul_mem_countable {V : Type*} [AddCommGroup V] [Module ℂ V] {S : Set V}
     (hS : S.Countable) {z : V} (hz : ∀ s : ℂ, s • z ∈ S) : z = 0 := by
   by_contra h
-  have hinj : Function.Injective fun s : ℂ => s • z := smul_left_injective ℂ h
   have h1 : (Set.univ : Set ℂ).Countable :=
-    (hS.preimage_of_injOn hinj.injOn).mono fun s _ => hz s
+    (hS.preimage_of_injOn (smul_left_injective ℂ h).injOn).mono fun s _ => hz s
   exact not_countable_complex h1
 
 namespace KerPerp

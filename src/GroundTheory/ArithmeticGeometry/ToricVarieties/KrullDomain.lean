@@ -40,7 +40,6 @@ theorem height_eq_one_of_isAssociatedPrime {b : A} (hb : b ≠ 0) {P : Ideal A}
     let K := FractionRing A
     have hinj : Function.Injective (algebraMap A K) := IsFractionRing.injective A K
     let N : Submodule A K := Submodule.map (Algebra.linearMap A K) P
-    have hNfg : N.FG := (IsNoetherian.noetherian P).map _
     have hN0 : N ≠ ⊥ := by
       intro h
       have : algebraMap A K b ∈ N := Submodule.mem_map.2 ⟨b, hbP, rfl⟩
@@ -48,7 +47,7 @@ theorem height_eq_one_of_isAssociatedPrime {b : A} (hb : b ≠ 0) {P : Ideal A}
       exact hb (hinj (by rw [this, map_zero]))
     have hbK : algebraMap A K b ≠ 0 := fun h => hb (hinj (by rw [h, map_zero]))
     have hint : IsIntegral A (algebraMap A K y / algebraMap A K b) := by
-      refine isIntegral_of_smul_mem_submodule N hN0 hNfg _ ?_
+      refine isIntegral_of_smul_mem_submodule N hN0 ((IsNoetherian.noetherian P).map _) _ ?_
       intro n hn
       obtain ⟨r, hr, rfl⟩ := Submodule.mem_map.1 hn
       obtain ⟨s, hs⟩ := (hmem r).1 hr

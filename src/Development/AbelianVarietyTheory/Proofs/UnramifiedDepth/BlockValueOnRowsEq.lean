@@ -398,8 +398,7 @@ lemma mfact_diagMon {n0 n : ℕ} (L y : ℕ) :
   have hcard : ((Finset.univ : Finset (Fin n)).filter fun ρ => n0 ≤ ρ.val).card = n - n0 := by
     have h1 := Finset.card_filter_add_card_filter_not (s := (Finset.univ : Finset (Fin n)))
       (fun ρ : Fin n => ρ.val < n0)
-    rw [Fin.card_filter_val_lt, Finset.card_univ, Fintype.card_fin] at h1
-    simp only [not_lt] at h1
+    simp only [Fin.card_filter_val_lt, Finset.card_univ, Fintype.card_fin, not_lt] at h1
     omega
   have key : ∀ t : ℕ, ∏ ρ : Fin n, ∏ c : Fin n, (if n0 ≤ ρ.val ∧ c = ρ then t else 0).factorial =
       t.factorial ^ (n - n0) := by

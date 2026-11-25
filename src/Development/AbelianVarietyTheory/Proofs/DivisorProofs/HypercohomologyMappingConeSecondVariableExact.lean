@@ -137,8 +137,7 @@ theorem GlobalTheory.EtC.coneSeqTgt_exact : ∀ (R : Type) [CommRing R] (K : Cx 
       rw [cpost_mk]
       congr 1
       apply Cocycle.ext
-      rw [coe_zcomp]
-      simp [mappingCone.liftCochain_fst]
+      simp [coe_zcomp, mappingCone.liftCochain_fst]
     · rintro ⟨c', hc'⟩
       rw [← hc']
       obtain ⟨z, rfl⟩ := c'.mk_surjective

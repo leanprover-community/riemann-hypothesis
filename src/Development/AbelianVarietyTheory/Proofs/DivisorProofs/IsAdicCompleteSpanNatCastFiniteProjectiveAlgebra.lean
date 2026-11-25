@@ -73,8 +73,7 @@ theorem isAdicComplete_pi {R ι : Type*} [CommRing R] [Finite ι] (J : Ideal R)
   refine ⟨⟨fun x hx => funext fun j => IsHausdorff.haus' (I := J) (x j) fun n => ?_⟩,
     ⟨fun u hu => ?_⟩⟩
   · rw [hR]
-    have := SModEq.sub_mem.1 (hx n)
-    simpa using (mem_smul_top_pi (J ^ n) _).1 this j
+    simpa using (mem_smul_top_pi (J ^ n) _).1 (SModEq.sub_mem.1 (hx n)) j
   · have h1 : ∀ i, ∃ L : R, ∀ k, u k i ≡ L [SMOD (J ^ k • ⊤ : Submodule R R)] :=
       fun i => IsPrecomplete.prec' (fun k => u k i) fun {a b} hab => by
         rw [SModEq.sub_mem, smul_eq_mul, Ideal.mul_top]

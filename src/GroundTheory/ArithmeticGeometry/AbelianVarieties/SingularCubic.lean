@@ -162,8 +162,7 @@ theorem origin_x_ne_zero {x y : F} (h : V.toAffine.Nonsingular x y) : x ≠ 0 :=
   have he := origin_eq V h3 h4 h6 h.1
   have hy : y = 0 := pow_eq_zero_iff (n := 2) (by norm_num) |>.1 (by linear_combination he)
   subst hy
-  have := (nonsingular_zero (W := V.toAffine)).1 h
-  rcases this.2 with h' | h'
+  rcases ((nonsingular_zero (W := V.toAffine)).1 h).2 with h' | h'
   · exact h' h3
   · exact h' h4
 

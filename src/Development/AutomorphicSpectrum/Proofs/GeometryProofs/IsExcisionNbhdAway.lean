@@ -351,9 +351,8 @@ variable {R : Type} [CommRing R] [IsLocalRing R]
 
 theorem specializes_of_injective {p : Cpt ξ} (hp : Function.Injective (genMap ξ p)) {y : X} (hy : y ⤳ p.1) :
     genPt ξ ⤳ y := by
-  have hr : y ∈ Set.range (X.fromSpecStalk p.1) := by
+  obtain ⟨t, rfl⟩ : y ∈ Set.range (X.fromSpecStalk p.1) := by
     rw [Scheme.range_fromSpecStalk]; exact hy
-  obtain ⟨t, rfl⟩ := hr
   have e : genPt ξ = X.fromSpecStalk p.1 (genPt (CptModel.pt (genMap ξ p))) :=
     congrArg (fun g => g (IsLocalRing.closedPoint Ω)) (spec_genMap ξ p).symm
   have h2 : genPt (CptModel.pt (genMap ξ p)) ⤳ t := (PrimeSpectrum.le_iff_specializes _ _).1 (by

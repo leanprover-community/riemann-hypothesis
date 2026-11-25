@@ -222,8 +222,7 @@ theorem foldr_creation_zero : ∀ (σ W : Type) [NormedAddCommGroup W] [NormedSp
     List.sum_eq_zero fun x hx => by
       obtain ⟨p, -, rfl⟩ := List.mem_map.1 hx
       simp
-  rw [hE]
-  simp only [h0, add_zero]
+  simp only [hE, h0, add_zero]
   rw [foldr_holD_eq_iteratedFDeriv u hθ L]
 
 end GlobalTheory.Ker.CreOp

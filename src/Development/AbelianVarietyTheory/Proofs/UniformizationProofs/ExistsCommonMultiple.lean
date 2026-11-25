@@ -169,8 +169,7 @@ theorem finrank_sandwich {K F F' I : Type*} [Field K] [Field F] [Field F'] [Alge
       finrank K (W t) ≤ d * finrank K (V (t + a)) := by
   obtain ⟨a, u, hu, hub⟩ := exists_common_multiple A ρ c hρ hc hr hext
   have hpi : ∀ t, finrank K (Fin d → V t) = d * finrank K (V t) := fun t => by
-    rw [Module.finrank_pi_fintype]
-    simp
+    simp [Module.finrank_pi_fintype]
   refine ⟨a, fun t => ⟨?_, ?_⟩⟩
   · rw [← hpi]
     let L : (Fin d → V t) →ₗ[K] F' :=

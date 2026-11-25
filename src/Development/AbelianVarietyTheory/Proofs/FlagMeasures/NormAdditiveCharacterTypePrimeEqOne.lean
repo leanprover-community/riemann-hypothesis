@@ -138,10 +138,9 @@ theorem exists_nsmul_mem [IsNonarchimedeanLocalField F] (L : LocE F E) (y : E) :
     rw [Nat.card_eq_fintype_card]
     exact FiniteField.cast_card_eq_zero _
   rw [hϖ.maximalIdeal_eq, Ideal.mem_span_singleton] at hp
-  have hdv : c ∣ ((Nat.card 𝓀[F] ^ m : ℕ) : 𝒪[F]) := by
+  obtain ⟨d, hd⟩ : c ∣ ((Nat.card 𝓀[F] ^ m : ℕ) : 𝒪[F]) := by
     rw [hu, Nat.cast_pow, Units.mul_left_dvd]
     exact pow_dvd_pow_of_dvd hp m
-  obtain ⟨d, hd⟩ := hdv
   refine ⟨Nat.card 𝓀[F] ^ m, pow_ne_zero _ Nat.card_pos.ne', (L.O_def _).2 ?_⟩
   have : ((Nat.card 𝓀[F] ^ m : ℕ) : E) * y = d • (c • y) := by
     rw [smul_smul, mul_comm d c, ← hd, Nat.cast_smul_eq_nsmul, nsmul_eq_mul]

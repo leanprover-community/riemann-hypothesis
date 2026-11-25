@@ -63,8 +63,7 @@ theorem _root_.GlobalTheory.EtC.cochain_shortExact_of_injective :
     simp
   · have hb' : ∀ p q (h : p + n = q), S.f.f p ≫ b.v p q h = 0 := by
       intro p q h
-      have := Cochain.congr_v hb p q h
-      simpa using this
+      simpa using Cochain.congr_v hb p q h
     refine ⟨Cochain.mk (fun p q h =>
       (CokernelCofork.IsColimit.desc' (hp p).gIsCokernel (b.v p q h) (hb' p q h)).1), ?_⟩
     refine Cochain.ext _ _ (fun p q h => ?_)

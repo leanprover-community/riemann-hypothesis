@@ -150,8 +150,7 @@ theorem isIntegral_sigma {r : B.A} (hr : IsIntegral K.O r) : IsIntegral K.O (B.�
   let cO : K.O →+* K.O := ψ.symm.toRingHom.comp
     (((K.c : K.E →+* K.E).comp (algebraMap K.O K.E)).codRestrict _ hsub)
   have hcO : ∀ x, algebraMap K.O K.E (cO x) = K.c (algebraMap K.O K.E x) := fun x => by
-    have := ψ.apply_symm_apply ⟨K.c (algebraMap K.O K.E x), hsub x⟩
-    exact congrArg Subtype.val this
+    exact congrArg Subtype.val (ψ.apply_symm_apply ⟨K.c (algebraMap K.O K.E x), hsub x⟩)
   have hcomp : (algebraMap K.O B.A).comp cO = (B.σ : B.A →+* B.A).comp (algebraMap K.O B.A) := by
     ext x
     simp only [RingHom.comp_apply, RingHom.coe_coe]

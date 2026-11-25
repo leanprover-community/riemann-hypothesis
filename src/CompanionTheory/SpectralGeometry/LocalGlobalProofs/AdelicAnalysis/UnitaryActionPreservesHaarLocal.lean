@@ -233,10 +233,9 @@ theorem smul_cancel (lam : Measure K) [lam.IsAddHaarMeasure] {a b : ℝ≥0}
     (h : a • lam = b • lam) : a = b := by
   obtain ⟨C, hC, hn⟩ := exists_compact_mem_nhds (0 : K)
   have h0 : lam C ≠ 0 := (Measure.measure_pos_of_mem_nhds lam hn).ne'
-  have h1 : lam C ≠ ∞ := hC.measure_lt_top.ne
   have e := congrArg (fun m : Measure K => m C) h
   simp only [Measure.smul_apply, Measure.nnreal_smul_coe_apply] at e
-  exact ENNReal.coe_injective ((ENNReal.mul_left_inj h0 h1).1 e)
+  exact ENNReal.coe_injective ((ENNReal.mul_left_inj h0 hC.measure_lt_top.ne).1 e)
 
 theorem map_transvections {ι : Type} [Fintype ι] [DecidableEq ι] (μ : Measure (ι → K))
     [μ.IsAddHaarMeasure] (L : List (Matrix.TransvectionStruct ι K)) :

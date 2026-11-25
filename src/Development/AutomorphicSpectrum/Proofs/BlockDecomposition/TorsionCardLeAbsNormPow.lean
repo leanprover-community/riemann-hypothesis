@@ -160,8 +160,7 @@ theorem rank_one (𝔠 : Submodule (𝓞 K) K) (hfg : 𝔠.FG) (h0 : 𝔠 ≠ �
       smul_mem' := by
         intro c x hx a ha
         convert 𝔠.smul_mem c (hx a ha) using 1
-        rw [smul_eq_mul]
-        simp only [Algebra.smul_def, map_mul]
+        simp only [smul_eq_mul, Algebra.smul_def, map_mul]
         ring }
   have hJ0 : J ≠ ⊥ := by
     obtain ⟨o, ho⟩ := hdi c₀ hc₀

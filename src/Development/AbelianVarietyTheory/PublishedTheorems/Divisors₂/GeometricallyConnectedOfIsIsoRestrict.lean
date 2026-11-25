@@ -85,8 +85,7 @@ theorem _root_.GlobalTheory.Principalise.effCartier_comap_of_disjoint {W X : Sch
   obtain ⟨_, ⟨V, hV, rfl⟩, hwV, -⟩ :=
     W.isBasis_affineOpens.exists_subset_of_mem_open (Set.mem_univ w) isOpen_univ
   refine ⟨⟨V, hV⟩, 1, hwV, one_mem _, ?_⟩
-  rw [htop, Ideal.span_singleton_one]
-  simp [Scheme.IdealSheafData.ideal_top]
+  simp [htop, Ideal.span_singleton_one, Scheme.IdealSheafData.ideal_top]
 
 
 open AlgebraicGeometry CategoryTheory Limits TopologicalSpace in

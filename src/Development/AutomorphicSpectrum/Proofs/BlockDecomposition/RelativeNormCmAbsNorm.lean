@@ -65,8 +65,7 @@ theorem norm_eq_mul_conj_and_absNorm : ∀ (F E : Type) [Field F] [NumberField F
     have hne : σ' ≠ 1 := by
       intro h
       have hx : ∀ x, σ x = x := fun x => by
-        have := congrArg (fun g : E ≃ₐ[F] E => g x) h
-        simpa [hσ'] using this
+        simpa [hσ'] using congrArg (fun g : E ≃ₐ[F] E => g x) h
       obtain ⟨w⟩ := (inferInstance : Nonempty (InfinitePlace E))
       have hwc : w.IsComplex := hE.isComplex w
       rw [InfinitePlace.isComplex_iff] at hwc

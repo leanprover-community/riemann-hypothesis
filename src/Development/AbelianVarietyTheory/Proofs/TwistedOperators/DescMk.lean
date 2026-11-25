@@ -145,14 +145,13 @@ theorem approx : ∀ (G : Type) [inst : AddCommGroup G] [inst_1 : TopologicalSpa
     intro q₁ q₂
     refine QuotientAddGroup.induction_on q₁ fun x => QuotientAddGroup.induction_on q₂ fun y => ?_
     intro hne
-    have hex : ∃ a, χ a x ≠ χ a y := by
+    obtain ⟨a, ha⟩ : ∃ a, χ a x ≠ χ a y := by
       by_contra hall
       simp only [not_exists, ne_eq, not_not] at hall
       apply hne
       rw [QuotientAddGroup.eq]
       refine (hker _).1 fun a => ?_
       rw [hmulx, ← hall a, ← hmulx, neg_add_cancel, hχ0 a]
-    obtain ⟨a, ha⟩ := hex
     refine ⟨e a, ⟨e a, Submodule.subset_span ⟨a, rfl⟩, rfl⟩, ?_⟩
     rwa [he_apply, he_apply]
 

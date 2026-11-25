@@ -90,8 +90,7 @@ theorem fourier_coset_sums : ∀ (G Γ : Type) [Group G] [Finite G] [Group Γ] [
     obtain ⟨k, rfl⟩ := Subgroup.mem_zpowers_iff.mp (hs t)
     rw [map_zpow, hη₀s] at ht
     have hk : ζ ^ k = 1 := by
-      have := congrArg Units.val ht
-      simpa [u, Units.val_zpow_eq_zpow_val] using this
+      simpa [u, Units.val_zpow_eq_zpow_val] using congrArg Units.val ht
     rw [hζ.zpow_eq_one_iff_dvd] at hk
     rw [← orderOf_dvd_iff_zpow_eq_one, hord]; exact hk
   let η : G ⋊[φ] Γ →* ℂˣ := η₀.comp rightHom

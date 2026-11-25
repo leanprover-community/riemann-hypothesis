@@ -141,8 +141,7 @@ theorem ksRel_const (w : Fin g → ℂ) :
       rw [← key]
       rfl
     have e : fn u (𝟙 _) ⊤ (constFn A₀.hom ⊤ r) = fun _ => K := funext hK
-    rw [e]
-    simp
+    simp [e]
   case hol =>
     intro W f
     exact ((cauchyRiemann_iff_differentiableOn_complex g _ _ (isOpen_dom u W)).2 (differentiableOn_fn u W f)).2 w

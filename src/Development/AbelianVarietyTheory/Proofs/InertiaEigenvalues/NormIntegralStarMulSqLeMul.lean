@@ -73,12 +73,11 @@ theorem norm_integral_star_mul_sq_le {X : Type} [MeasurableSpace X] (μ : Measur
   have n1 : ‖∫ x, star (f x) * h x ∂μ‖ ≤ ∫ x, ‖f x‖ * ‖h x‖ ∂μ := by
     refine (norm_integral_le_integral_norm _).trans (le_of_eq ?_)
     congr 1; funext x; rw [norm_mul, norm_star]
-  have n0 : 0 ≤ ‖∫ x, star (f x) * h x ∂μ‖ := norm_nonneg _
   have hsq : ((∫ x, ‖f x‖ ^ 2 ∂μ) ^ (1 / (2:ℝ)) * (∫ x, ‖h x‖ ^ 2 ∂μ) ^ (1 / (2:ℝ))) ^ 2
       = (∫ x, ‖f x‖ ^ 2 ∂μ) * (∫ x, ‖h x‖ ^ 2 ∂μ) := by
     rw [mul_pow, ← Real.sqrt_eq_rpow, ← Real.sqrt_eq_rpow, Real.sq_sqrt A0, Real.sq_sqrt B0]
   calc ‖∫ x, star (f x) * h x ∂μ‖ ^ 2 ≤ ((∫ x, ‖f x‖ ^ 2 ∂μ) ^ (1 / (2:ℝ)) * (∫ x, ‖h x‖ ^ 2 ∂μ) ^ (1 / (2:ℝ))) ^ 2 :=
-        pow_le_pow_left₀ n0 (n1.trans hold) 2
+        pow_le_pow_left₀ (norm_nonneg _) (n1.trans hold) 2
     _ = _ := hsq
 
 end GlobalTheory

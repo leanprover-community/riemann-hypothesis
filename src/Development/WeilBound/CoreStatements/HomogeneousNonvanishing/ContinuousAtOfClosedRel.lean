@@ -77,8 +77,7 @@ theorem holo_compat {A : FinHolAtlas e X} {ψ : OpenPartialHomeomorph X (Fin e �
     AnalyticAt ℂ (g ∘ ψ.symm) v := by
   obtain ⟨j, hj⟩ := A.cover (ψ.symm v)
   have h1 := holo_analyticAt hg j hj hU
-  have h2 : AnalyticAt ℂ (A.chart j ∘ ψ.symm) v := (hψ j).2 v ⟨hv, hj⟩
-  refine (AnalyticAt.comp (f := A.chart j ∘ ψ.symm) h1 h2).congr ?_
+  refine (AnalyticAt.comp (f := A.chart j ∘ ψ.symm) h1 ((hψ j).2 v ⟨hv, hj⟩)).congr ?_
   filter_upwards [(ψ.isOpen_inter_preimage_symm (A.chart j).open_source).mem_nhds ⟨hv, hj⟩] with w hw
   simp only [Function.comp_apply]
   rw [(A.chart j).left_inv hw.2]

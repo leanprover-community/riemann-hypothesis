@@ -63,8 +63,7 @@ theorem isIrreducible_fibre_pullback {X Y S : Scheme.{0}} (f : X ⟶ S) (g : Y �
     intro X f h
     rw [← Scheme.Pullback.range_fst] at h
     have e := (pullback.fst f i).isClosedEmbedding.isEmbedding
-    have := Subtype.irreducibleSpace h
-    exact e.toHomeomorph.irreducibleSpace_iff.2 this
+    exact e.toHomeomorph.irreducibleSpace_iff.2 (Subtype.irreducibleSpace h)
   have h1 := irr f hf
   have h2 := irr g hg
   have h3 : GeometricallyIrreducible (pullback.snd f i) := geometricallyIrreducible_of_isAlgClosed _

@@ -154,8 +154,7 @@ theorem mem_span_of_leading {R : Type} [CommRing R] (I : Ideal R) [hc : IsAdicCo
       simp only [Finset.range_zero, Finset.sum_empty, zero_mul, Finset.sum_const_zero, zero_add]
       rfl
     | succ N ih =>
-      rw [hres_succ]
-      simp only [Finset.sum_range_succ, add_mul, Finset.sum_add_distrib]
+      simp only [hres_succ, Finset.sum_range_succ, add_mul, Finset.sum_add_distrib]
       conv_lhs => rw [ih]
       ring
   have hpow : ∀ {m n : ℕ} {x : R}, m ≤ n → x ∈ I ^ n → x ∈ I ^ m :=

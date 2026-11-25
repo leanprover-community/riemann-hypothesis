@@ -59,8 +59,7 @@ theorem exists_eq_add_nsmul_of_torsion_characters_eq (k X : Type) [Field k] [Add
       t (Multiplicative.ofAdd α) = t (Multiplicative.ofAdd β)) :
     ∃ w, α = β + N • w := by
   classical
-  have hu : IsUnit ζ := hζ.isUnit hN.ne'
-  obtain ⟨u, rfl⟩ := hu
+  obtain ⟨u, rfl⟩ : IsUnit ζ := hζ.isUnit hN.ne'
   have hu' : IsPrimitiveRoot u N := IsPrimitiveRoot.coe_units_iff.mp hζ
   let b := Module.Free.chooseBasis ℤ X
   have key : ∀ i, (N : ℤ) ∣ b.repr (α - β) i := by

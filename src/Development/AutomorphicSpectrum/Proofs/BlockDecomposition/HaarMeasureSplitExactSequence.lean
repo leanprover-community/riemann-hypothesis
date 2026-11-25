@@ -152,8 +152,7 @@ theorem measure_preimage_inter_eq {π : A →+ A'} (hπ : Measurable π) {s : A'
       simp only [Set.mem_preimage, Set.mem_inter_iff, hTinv γ γ.2 x]
     have hset : (fun x => (γ : A') + x) ⁻¹' 𝓖' = (Equiv.neg Γ') γ +ᵥ 𝓖' := by
       ext x
-      rw [Set.mem_preimage, Set.mem_vadd_set_iff_neg_vadd_mem]
-      simp [AddSubgroup.vadd_def]
+      simp [Set.mem_preimage, Set.mem_vadd_set_iff_neg_vadd_mem, AddSubgroup.vadd_def]
     have hae : (fun x => (γ : A') + x) ⁻¹' M =ᵐ[lam'] (fun x => (γ : A') + x) ⁻¹' 𝓖' :=
       (measurePreserving_add_left lam' (γ : A')).quasiMeasurePreserving.preimage_ae_eq hMae
     rw [hpre, ← hset]

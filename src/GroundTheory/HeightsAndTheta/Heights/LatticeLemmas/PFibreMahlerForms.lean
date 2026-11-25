@@ -31,7 +31,6 @@ theorem span_fibreVec_eq_top (h : HermitianMetric K E) (σ : K →+* ℂ) {ι : 
   set N := Submodule.span (𝓞 K) (Set.range s)
   have := finite_quotient_span hs hcard
   set m := Nat.card (E ⧸ N)
-  have hm : 0 < m := Nat.card_pos
   have hmem : ∀ e : E, m • e ∈ N := fun e ↦
     (Submodule.Quotient.mk_eq_zero N).mp (by rw [Submodule.Quotient.mk_smul]; exact card_nsmul_eq_zero')
   set W := Submodule.span ℂ (Set.range fun i ↦ fibreVec h σ (s i))
@@ -48,7 +47,7 @@ theorem span_fibreVec_eq_top (h : HermitianMetric K E) (σ : K →+* ℂ) {ι : 
     rw [← Nat.cast_smul_eq_nsmul (𝓞 K) m e, fibreVec_smul] at this
     have hc : (σ ((m : 𝓞 K) : K)) = (m : ℂ) := by simp
     rw [hc] at this
-    exact (W.smul_mem_iff (Nat.cast_ne_zero.mpr hm.ne')).mp this
+    exact (W.smul_mem_iff (Nat.cast_ne_zero.mpr Nat.card_pos.ne')).mp this
   rw [eq_top_iff]
   rintro x -
   obtain ⟨y, rfl⟩ := (FibreSpace.equiv h σ).surjective x

@@ -65,8 +65,7 @@ noncomputable def doublingIterate (h : E → ℂ) : ℕ → E → ℂ
       3 * doublingIterate h n ((2 : ℂ)⁻¹ • z) + doublingIterate h n (-((2 : ℂ)⁻¹ • z))
 
 private theorem norm_half_smul (z : E) : ‖(2 : ℂ)⁻¹ • z‖ = ‖z‖ / 2 := by
-  rw [norm_smul, norm_inv]
-  simp [div_eq_inv_mul]
+  simp [norm_smul, norm_inv, div_eq_inv_mul]
 
 private theorem half_mem_ball {r : ℝ} {z : E} (hz : z ∈ Metric.ball (0 : E) r) :
     (2 : ℂ)⁻¹ • z ∈ Metric.ball (0 : E) r := by

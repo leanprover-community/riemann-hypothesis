@@ -51,8 +51,7 @@ theorem embedding_bijective (hF : IsTotallyReal F) :
     Function.Bijective (fun w : InfinitePlace F => (w.embedding : F →+* ℂ)) := by
   constructor
   · intro w w' h
-    have := congrArg InfinitePlace.mk h
-    simpa using this
+    simpa using congrArg InfinitePlace.mk h
   · intro φ
     have hr : ComplexEmbedding.IsReal φ :=
       InfinitePlace.isReal_mk_iff.1 (hF.isReal (InfinitePlace.mk φ))

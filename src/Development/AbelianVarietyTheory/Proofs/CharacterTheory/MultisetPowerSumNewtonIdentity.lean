@@ -69,8 +69,7 @@ private theorem aeval_psum_eq_sum_map_pow (s : Multiset ℂ) (n : ℕ) :
     MvPolynomial.aeval (fun x : s => (x : ℂ)) (MvPolynomial.psum s ℂ n) = (s.map (· ^ n)).sum := by
   classical
 
-  rw [MvPolynomial.psum, map_sum]
-  simp only [map_pow, MvPolynomial.aeval_X]
+  simp only [MvPolynomial.psum, map_sum, map_pow, MvPolynomial.aeval_X]
   conv_rhs => rw [← Multiset.map_univ_coe s]
   rw [Multiset.map_map]
   rfl

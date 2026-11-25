@@ -123,7 +123,6 @@ theorem flag_pf : FixVec → Flag := by
   by_contra hne
   have hi : i ∈ ((b.repr (ρ h (b j) - b j)).support : Set _) := by
     simpa using hne
-  have := hsupp hi
-  exact absurd this (not_lt.2 hji)
+  exact absurd (hsupp hi) (not_lt.2 hji)
 
 end UpperTheory.Gal.Gen

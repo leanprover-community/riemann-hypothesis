@@ -142,10 +142,9 @@ theorem isUnit_of_isUnit_app {X Y : Scheme.{0}} (π : X ⟶ Y) [Surjective π] (
     (a : Γ(Y, U)) (ha : IsUnit ((π.app U).hom a)) : IsUnit a := by
   refine Y.toRingedSpace.isUnit_of_isUnit_germ U a fun y hy => ?_
   obtain ⟨x, rfl⟩ := π.surjective y
-  have h1 : X.basicOpen ((π.app U).hom a) = π ⁻¹ᵁ U := X.basicOpen_of_isUnit ha
   have h2 : x ∈ π ⁻¹ᵁ (Y.basicOpen a) := by
     rw [Scheme.preimage_basicOpen]
-    exact h1.ge hy
+    exact (X.basicOpen_of_isUnit ha).ge hy
   exact (Y.mem_basicOpen a (π x) hy).1 h2
 
 theorem exists_app_eq {X Y : Scheme.{0}} (π : X ⟶ Y) [Flat π] [Surjective π] [QuasiCompact π]

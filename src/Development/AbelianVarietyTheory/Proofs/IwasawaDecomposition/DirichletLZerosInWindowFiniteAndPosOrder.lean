@@ -108,8 +108,7 @@ theorem one_le_zmult {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) {t T :
   have h2 : analyticOrderAt (LFunction χ) ρ ≠ 0 := by
     rw [analyticOrderAt_ne_zero]
     exact ⟨analyticOff χ ρ (ne_one_of_mem hρ), hρ.2.2.2⟩
-  rw [Nat.one_le_iff_ne_zero]
-  simp [h1, h2]
+  simp [Nat.one_le_iff_ne_zero, h1, h2]
 
 theorem finite_and_one_le_zmult : ∀ (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q) (t T : ℝ),
     (zerosIn χ t T).Finite ∧ ∀ ρ ∈ zerosIn χ t T, 1 ≤ zmult χ ρ :=

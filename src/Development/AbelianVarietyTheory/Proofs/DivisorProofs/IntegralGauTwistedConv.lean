@@ -141,8 +141,7 @@ theorem proj_heis_proj {ρ : V → B →L[ℂ] B} (hJ : ∀ x, J (J x) = -x) (h 
     rw [mul_add, Complex.exp_add]
     ring
   have he : ∀ r : ℝ, ‖cexp (π * I * (r : ℂ))‖ = 1 := fun r => by
-    rw [Complex.norm_exp]
-    simp
+    simp [Complex.norm_exp]
   have hnorm : ∀ u z, ‖F u z‖ = ‖gau u‖ * (‖gau (z - (u + a))‖ * ‖f‖) := by
     intro u z
     simp only [hF, norm_smul, norm_mul, h.2.2.1]

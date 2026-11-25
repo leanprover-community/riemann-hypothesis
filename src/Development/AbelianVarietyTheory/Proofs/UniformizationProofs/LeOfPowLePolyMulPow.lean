@@ -120,8 +120,7 @@ theorem degree_eq_pow_of_growth :
   apply le_antisymm
   · apply le_of_pow_le_poly_mul_pow d (q ^ g) C a g
     intro k
-    have hp : 1 ≤ q ^ k * (1 + k * a) := Nat.mul_pos (Nat.pow_pos hq) (by omega)
-    refine (lo k).trans ((hg _ hp).2.trans (le_of_eq ?_))
+    refine (lo k).trans ((hg _ (Nat.mul_pos (Nat.pow_pos hq) (by omega))).2.trans (le_of_eq ?_))
     rw [mul_pow, ← pow_mul, ← pow_mul, mul_comm k g]; ring
   · apply le_of_pow_le_poly_mul_pow (q ^ g) d (c * C) a g
     intro k

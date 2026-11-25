@@ -127,9 +127,8 @@ theorem der_der_eq (H : IsLieData σ j s) {φ : G → ℂ} {g : G} {F : 𝔸 →
     rwa [hc0] at this
   have hu : ∀ t : ℝ, σ (NormedSpace.exp (t • j X)) * NormedSpace.exp (t • j X) = 1 := fun t => by
     simpa [map_smul] using exp_unitary H (t • X)
-  have hF1 : ContDiffAt ℝ 1 (fderiv ℝ F) 1 := hF.fderiv_right (by norm_num)
   have hA : HasFDerivAt (fderiv ℝ F) (fderiv ℝ (fderiv ℝ F) 1) (NormedSpace.exp ((0 : ℝ) • j X)) := by
-    rw [hc0]; exact (hF1.differentiableAt one_ne_zero).hasFDerivAt
+    rw [hc0]; exact ((hF.fderiv_right (by norm_num)).differentiableAt one_ne_zero).hasFDerivAt
   have h1 : HasDerivAt (fun t : ℝ => fderiv ℝ F (NormedSpace.exp (t • j X)))
       (fderiv ℝ (fderiv ℝ F) 1 (j X)) 0 := hA.comp_hasDerivAt (x := (0 : ℝ)) hcd
   have h3 := h1.clm_apply (hcd.mul_const (j Y))

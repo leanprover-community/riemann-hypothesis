@@ -58,11 +58,10 @@ theorem injective_of_maximal_point {X : Scheme.{0}} {Ω : Type} [Field Ω] (p : 
     Function.Injective φ.hom := by
   let z : PrimeSpectrum (X.presheaf.stalk p) := ⟨⊥, Ideal.isPrime_bot⟩
   let q : PrimeSpectrum (X.presheaf.stalk p) := PrimeSpectrum.comap φ.hom (IsLocalRing.closedPoint Ω)
-  have hs : z ⤳ q := (PrimeSpectrum.le_iff_specializes z q).1 bot_le
   have hq : (Spec.map φ ≫ X.fromSpecStalk p) (IsLocalRing.closedPoint Ω) = X.fromSpecStalk p q := rfl
   rw [hq] at h
   have h1 : X.fromSpecStalk p z = X.fromSpecStalk p q :=
-    h _ (hs.map (X.fromSpecStalk p).continuous)
+    h _ (((PrimeSpectrum.le_iff_specializes z q).1 bot_le).map (X.fromSpecStalk p).continuous)
   have h2 : z = q := (X.fromSpecStalk p).isEmbedding.injective h1
   refine (injective_iff_map_eq_zero _).2 fun a ha => ?_
   have h3 : a ∈ q.asIdeal := by

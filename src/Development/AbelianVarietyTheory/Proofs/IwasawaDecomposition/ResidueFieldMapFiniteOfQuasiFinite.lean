@@ -71,7 +71,6 @@ theorem residueField_map_finite_of_quasiFinite {R S : Type} [CommRing R] [IsLoca
 
 theorem residueFieldMap_finite_of_locallyQuasiFinite {Y Z : Scheme.{0}} (g : Y ⟶ Z)
     [LocallyQuasiFinite g] (y : Y) : (g.residueFieldMap y).hom.Finite := by
-  have hq : (g.stalkMap y).hom.QuasiFinite := g.quasiFiniteAt y
-  exact residueField_map_finite_of_quasiFinite _ hq
+  exact residueField_map_finite_of_quasiFinite _ (g.quasiFiniteAt y)
 
 end GlobalTheory

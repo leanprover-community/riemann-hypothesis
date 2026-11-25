@@ -103,8 +103,7 @@ theorem herm_v (r c : Fin n) : herm (v1 r c) + Complex.I • herm (v2 r c) = Mat
     by_cases h : i = r ∧ j = c
     · obtain ⟨rfl, rfl⟩ := h; simp
     · rw [ite_eq_right h, ite_eq_right (fun h' => h ⟨h'.1.symm, h'.2.symm⟩)]; simp
-  rw [e3]
-  simp only [herm, v1, v2, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, e1, e2]
+  simp only [e3, herm, v1, v2, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, e1, e2]
   generalize (if i = r ∧ j = c then (1:ℝ) else 0) = a
   generalize (if i = c ∧ j = r then (1:ℝ) else 0) = b
   push_cast

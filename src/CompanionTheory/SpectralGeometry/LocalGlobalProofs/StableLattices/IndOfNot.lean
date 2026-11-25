@@ -60,8 +60,7 @@ theorem normSq_le (t : Fin n → Fin n → ℝ) (ht : ∀ a b, t b a = - t a b) 
   let τ : Equiv.Perm (Fin n) := Tuple.sort (fun a => - x a)
   have hτ : Antitone (fun a => x (τ a)) := by
     intro a b hab
-    have := Tuple.monotone_sort (fun a => - x a) hab
-    simpa using this
+    simpa using Tuple.monotone_sort (fun a => - x a) hab
   have e1 : 4 * ∑ a, x a ^ 2 ≤ 4 * ∑ a, x (τ a) * r a := by
     have := pair_eq t ht x
     have h2 := pair_eq sig sig_anti (fun a => x (τ a))

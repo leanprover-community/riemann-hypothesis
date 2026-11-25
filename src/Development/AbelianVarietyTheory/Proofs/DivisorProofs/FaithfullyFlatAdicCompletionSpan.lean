@@ -135,8 +135,7 @@ theorem mem_pow_of_mul_mem_pow (A R : Type) [CommRing A] [IsDomain A] [CommRing 
         linear_combination hq
       have h3 : t * (algebraMap A R a * r' - t ^ n * q) = 0 := by rw [mul_sub, this, sub_self]
       exact sub_eq_zero.1 ((mul_left_mem_nonZeroDivisors_eq_zero_iff ht).1 h3)
-    have := ih r' (Ideal.mem_span_singleton.2 ⟨q, h2⟩)
-    obtain ⟨q', rfl⟩ := Ideal.mem_span_singleton.1 this
+    obtain ⟨q', rfl⟩ := Ideal.mem_span_singleton.1 (ih r' (Ideal.mem_span_singleton.2 ⟨q, h2⟩))
     exact Ideal.mem_span_singleton.2 ⟨q', by ring⟩
 
 theorem torsionFree_quot : ∀ (A R : Type) [CommRing A] [IsDomain A] [CommRing R] [Algebra A R]

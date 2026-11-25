@@ -65,8 +65,7 @@ theorem injectiveResolution_sections_degree_zero_kernel (R : Type) [CommRing R] 
       (by rw [← Functor.map_comp, I.ι_f_zero_comp_complex_d, Functor.map_zero])
   have hS : S.Exact := S.exact_of_f_is_kernel hlim
   refine ⟨fun w hw => (ShortComplex.moduleCat_exact_iff S).1 hS w hw, ?_⟩
-  have : Mono ((secEvalFun R U).map (I.ι.f 0)) := inferInstance
-  exact (ModuleCat.mono_iff_injective _).1 this
+  exact (ModuleCat.mono_iff_injective _).1 (inferInstance : Mono ((secEvalFun R U).map (I.ι.f 0)))
 
 theorem chosenInjectiveResolutionAugmentation_eq_iota_comp (R : Type) [CommRing R] (F : Shv R) :
     resι R F = (injectiveResolution F).ι.f 0 ≫ ((injectiveResolution F).cochainComplexXIso 0 0 rfl).inv := by

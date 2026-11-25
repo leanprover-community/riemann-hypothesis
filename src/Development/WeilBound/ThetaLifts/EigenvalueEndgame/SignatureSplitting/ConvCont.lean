@@ -118,8 +118,7 @@ theorem Bump.zero (D : G → ℂ) (hD : Continuous D) (g : G) (h : ∀ V ∈ �
     rw [← this]
     congr 1
     funext y
-    rw [mul_div_right_comm]
-    simp
+    simp [mul_div_right_comm]
   have := hη.cont
   refine (Continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero (x := 1) (by fun_prop) hη.cpt.mul_left (fun y => ?_)
     (by simp [h0, hη.one])).ne' h1

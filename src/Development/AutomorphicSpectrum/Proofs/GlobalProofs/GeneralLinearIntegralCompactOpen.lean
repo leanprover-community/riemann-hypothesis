@@ -101,8 +101,7 @@ theorem GLint_eq_preimage (O : Subring F) (n : ℕ) :
   · rintro ⟨h1, h2⟩
     exact ⟨h1, ⟨_, h2, rfl⟩⟩
   · rintro ⟨h1, ⟨y, hy, he⟩⟩
-    have hy' : y = ((g⁻¹ : GL (Fin n) F) : Matrix (Fin n) (Fin n) F) := MulOpposite.op_injective he
-    exact ⟨h1, hy' ▸ hy⟩
+    exact ⟨h1, (MulOpposite.op_injective he) ▸ hy⟩
 
 theorem gl_topology : ∀ {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
     {O : Subring F} {ϖ : F} {nrm : AbsoluteValue F ℝ} {q : ℕ}, LF O ϖ nrm q → ∀ n : ℕ,

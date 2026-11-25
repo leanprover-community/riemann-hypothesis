@@ -110,13 +110,12 @@ theorem isGenericPoint_preimage_of_isInducing {f : Y → X} (hf : Topology.IsInd
 theorem isGenericPoint_image_of_isClosedEmbedding {f : Y → X}
     (hf : Topology.IsClosedEmbedding f) {y : Y} {T : Set Y} (h : IsGenericPoint y T) :
     IsGenericPoint (f y) (f '' T) := by
-  have hyT : y ∈ T := IsGenericPoint.mem h
   show closure ({f y} : Set X) = f '' T
   apply Set.Subset.antisymm
   · have hcl : IsClosed (f '' T) := by
       rw [← IsGenericPoint.def h]
       exact hf.isClosedMap _ isClosed_closure
-    exact hcl.closure_subset_iff.mpr (Set.singleton_subset_iff.mpr ⟨y, hyT, rfl⟩)
+    exact hcl.closure_subset_iff.mpr (Set.singleton_subset_iff.mpr ⟨y, (IsGenericPoint.mem h), rfl⟩)
   · have h2 : f '' closure ({y} : Set Y) ⊆ closure (f '' ({y} : Set Y)) :=
       image_closure_subset_closure_image hf.continuous
     rw [Set.image_singleton] at h2

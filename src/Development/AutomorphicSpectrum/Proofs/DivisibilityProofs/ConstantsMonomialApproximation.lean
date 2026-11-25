@@ -102,8 +102,7 @@ theorem exists_form_of_mem_chart (y : (Σ k, ι k) → Ω) (c : ∀ k, ι k) (hs
     refine ⟨0, C z, ?_, ?_⟩
     · exact isWeightedHomogeneous_C (blockWeight ι) z
     · have h1 : (C z : MRing ι ℤ) = algebraMap ℤ (MRing ι ℤ) z := rfl
-      rw [h1, AlgHom.commutes]
-      simp
+      simp [h1, AlgHom.commutes]
   | add u v _ _ hu hv =>
     obtain ⟨a, F, hF, hFc⟩ := hu
     obtain ⟨b, G, hG, hGc⟩ := hv

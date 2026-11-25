@@ -173,10 +173,9 @@ theorem cst_bijective (f : X ⟶ Spec (CommRingCat.of R)) [IsIso f] {W : X.Opens
     have : ⇑(rs X (le_top : (⊤ : X.Opens) ≤ ⊤)) = id := funext fun x => rs_self _ x
     rw [this]
     exact Function.bijective_id
-  have h₂ : Function.Bijective f.appTop.hom := ConcreteCategory.bijective_of_isIso (f.app ⊤)
   have h₃ : Function.Bijective (Scheme.ΓSpecIso (CommRingCat.of R)).inv.hom :=
     ConcreteCategory.bijective_of_isIso (Scheme.ΓSpecIso (CommRingCat.of R)).inv
-  exact h₁.comp (h₂.comp h₃)
+  exact h₁.comp ((ConcreteCategory.bijective_of_isIso (f.app ⊤)).comp h₃)
 
 theorem triv_trivLB (X : Scheme.{0}) : Triv (Inh.trivLB X) :=
   ⟨⟨fun _ => 1⟩, fun _ _ => by

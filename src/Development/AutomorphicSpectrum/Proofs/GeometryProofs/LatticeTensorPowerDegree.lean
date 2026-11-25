@@ -89,8 +89,7 @@ theorem GlobalTheory.CompanionTheory.Ar.Lat.tens_isDegOn : ∀ (X : Scheme.{0}) 
   have he : ∀ i, e i ≠ 0 := fun i => (h i).1
   refine ⟨Finset.prod_ne_zero_iff.2 fun i _ => zpow_ne_zero _ (he i), ?_⟩
   intro p hp c hc
-  have hc0 : ∏ k, y ⟨k, c k⟩ ≠ 0 := hc.1
-  have hy : ∀ k, y ⟨k, c k⟩ ≠ 0 := fun k => Finset.prod_ne_zero_iff.1 hc0 k (Finset.mem_univ k)
+  have hy : ∀ k, y ⟨k, c k⟩ ≠ 0 := fun k => Finset.prod_ne_zero_iff.1 hc.1 k (Finset.mem_univ k)
   let g : I → Ω := fun i => (∏ k, y ⟨k, c k⟩ ^ d i k) • e i
   have hg0 : ∀ i, g i ≠ 0 := fun i =>
     mul_ne_zero (Finset.prod_ne_zero_iff.2 fun k _ => zpow_ne_zero _ (hy k)) (he i)

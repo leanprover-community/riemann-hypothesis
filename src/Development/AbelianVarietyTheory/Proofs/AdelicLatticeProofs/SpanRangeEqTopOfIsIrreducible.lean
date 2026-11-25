@@ -102,8 +102,7 @@ private theorem subalgebra_end_eq_whole_of_isSimpleModule {V : Type} [AddCommGro
   obtain ⟨a, ha⟩ := Submodule.mem_span_singleton.1 hmem
   have hT : T = (a : Module.End ℂ V) := by
     refine b.ext fun i => ?_
-    have := congrFun ha i
-    exact this.symm
+    exact (congrFun ha i).symm
   rw [hT]
   exact a.2
 

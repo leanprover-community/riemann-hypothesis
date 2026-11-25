@@ -110,8 +110,7 @@ theorem aic_iff : ∀ (D : Type) [CommRing D] [IsDomain D],
         (algebraMap D (FractionRing D))
         (algebraMap D (FractionRing D) a / algebraMap D (FractionRing D) g.leadingCoeff)
       rw [mul_div_cancel₀ _ hl, eval₂_at_apply, ha, map_zero, ← eval_map, hgmap, eval_mul, eval_C] at key
-      have := key.symm
-      simpa [hl, hc] using this
+      simpa [hl, hc] using key.symm
   · rintro ⟨h1, h2⟩ p hp hpos
     have hd : (p.map (algebraMap D (FractionRing D))).degree ≠ 0 := by
       refine ne_of_gt (natDegree_pos_iff_degree_pos.1 ?_)

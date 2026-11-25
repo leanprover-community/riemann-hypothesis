@@ -73,7 +73,6 @@ theorem exists_const {G H X : Type} [Group G] [TopologicalSpace G] [IsTopologica
   swap
   · exact ⟨0, fun s hs => (hex ⟨s, hs⟩).elim⟩
   obtain ⟨s₀, hs₀, hs₀'⟩ := hex
-  have hjm : Measurable j := hj.continuous.measurable
   have key : ∀ (f : G → ℝ≥0∞) (b c : G), a b x₀ = a c x₀ →
       ∫⁻ g', f (b * j g') ∂μ' = ∫⁻ g', f (c * j g') ∂μ' := by
     intro f b c h
@@ -86,7 +85,7 @@ theorem exists_const {G H X : Type} [Group G] [TopologicalSpace G] [IsTopologica
     refine lintegral_congr fun g' => ?_
     rw [map_mul, hk, ← mul_assoc, mul_inv_cancel_left]
   have hp : Measurable fun p : X × H => s₀ p.1 * j p.2 :=
-    (hs₀.comp measurable_fst).mul (hjm.comp measurable_snd)
+    (hs₀.comp measurable_fst).mul (hj.continuous.measurable.comp measurable_snd)
   set m : Measure G := (ν.prod μ').map fun p : X × H => s₀ p.1 * j p.2 with hm
   have hint : ∀ f : G → ℝ≥0∞, Measurable f →
       ∫⁻ g, f g ∂m = ∫⁻ y, (∫⁻ g', f (s₀ y * j g') ∂μ') ∂ν := by

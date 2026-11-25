@@ -73,8 +73,7 @@ theorem ofHom_eq_of_cls {T I : Cx R} {f g : T ⟶ I}
     mem_coboundaries_iff _ (-1) (by omega)] at h
   obtain ⟨β, hβ⟩ := h
   refine ⟨β, ?_⟩
-  rw [hβ]
-  simp
+  simp [hβ]
 
 end GlobalTheory.EtC.ExtHom
 

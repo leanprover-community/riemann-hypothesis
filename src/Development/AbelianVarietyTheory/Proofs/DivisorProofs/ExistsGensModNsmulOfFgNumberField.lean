@@ -68,7 +68,7 @@ theorem exists_gen_mod_nsmul_of_linearMap (E : Type) [Field E] [NumberField E] (
   have hmem : ∀ a : 𝓞 E, a ∈ I ↔ ∃ x : N, d • π x = algebraMap (𝓞 E) E a := by
     intro a; simp [hI]
   have hM0 : (M : 𝓞 E) ≠ 0 := by exact_mod_cast (by omega : M ≠ 0)
-  have key : ∃ a ∈ I, Ideal.span {(M : 𝓞 E)} * I ⊔ Ideal.span {a} = I := by
+  obtain ⟨a, haI, ha⟩ : ∃ a ∈ I, Ideal.span {(M : 𝓞 E)} * I ⊔ Ideal.span {a} = I := by
     by_cases h : I = ⊥
     · exact ⟨0, I.zero_mem, by simp [h]⟩
     · obtain ⟨a, ha⟩ := IsDedekindDomain.exists_sup_span_eq
@@ -77,7 +77,6 @@ theorem exists_gen_mod_nsmul_of_linearMap (E : Type) [Field E] [NumberField E] (
       refine ⟨a, ?_, ha⟩
       rw [← ha]
       exact Ideal.mem_sup_right (Ideal.mem_span_singleton_self a)
-  obtain ⟨a, haI, ha⟩ := key
   obtain ⟨l, hl⟩ := (hmem a).1 haI
   refine ⟨l, fun x => ?_⟩
   obtain ⟨b, hb⟩ := hint (π x) ⟨x, rfl⟩

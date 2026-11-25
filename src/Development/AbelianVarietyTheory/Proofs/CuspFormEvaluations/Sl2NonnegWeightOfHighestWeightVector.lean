@@ -172,9 +172,7 @@ theorem sl2_nonneg_weight_of_highest_weight_vector {K V : Type*} [Field K] [Char
       (fun k : Fin (Module.finrank K W + 1) => (l : K) - 2 * ((k : ℕ) : K)) ?_ _
       (fun k => ⟨Module.End.mem_eigenspace_iff.2 (hHFk k), hne k⟩)
     intro a b hab
-    have h1 : (2 : K) * ((a : ℕ) : K) = 2 * ((b : ℕ) : K) := sub_right_injective hab
-    have h2 : ((a : ℕ) : K) = ((b : ℕ) : K) := mul_left_cancel₀ two_ne_zero h1
-    exact Fin.ext (Nat.cast_injective h2)
+    exact Fin.ext (Nat.cast_injective (mul_left_cancel₀ two_ne_zero (sub_right_injective hab)))
   have hw : LinearIndependent K
       (fun k : Fin (Module.finrank K W + 1) => (⟨(F ^ (k : ℕ)) v, hmem k⟩ : W)) :=
     LinearIndependent.of_comp W.subtype hli

@@ -95,8 +95,7 @@ theorem smooth_away_core (O : Type) [CommRing O] (ϖ : O) (σ : Type) [Finite σ
     have h3 : ∀ i, ψP (MvPolynomial.X i) = z i := fun i => MvPolynomial.aeval_X z i
     have h4 : ψP (MvPolynomial.C ϖ) = algebraMap O C' ϖ := MvPolynomial.aeval_C z ϖ
     have h5 : ψP ((∏ i ∈ T, MvPolynomial.X i) - MvPolynomial.C ϖ) = 0 := by
-      rw [map_sub, map_prod, h4]
-      simp only [h3, hz, sub_self]
+      simp only [map_sub, map_prod, h4, h3, hz, sub_self]
     rw [map_mul, h5, mul_zero]
   let ψA : A →ₐ[O] C' := Ideal.Quotient.liftₐ I ψP hψP
   have hψA : ∀ p : P, ψA (Ideal.Quotient.mk I p) = ψP p := fun p => rfl

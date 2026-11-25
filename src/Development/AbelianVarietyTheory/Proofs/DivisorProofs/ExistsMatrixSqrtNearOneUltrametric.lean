@@ -162,10 +162,9 @@ theorem exists_sqrt [CompleteSpace K] [CharZero K] (σ : K →+* K) (hσ : Conti
     rw [dist_eq_norm, norm_sub_rev]; exact norm_iter_diff_le hc k
   obtain ⟨y, hy⟩ := cauchySeq_tendsto_of_complete hcs
   have hfix : y + y * y = u := by
-    have h1 : Tendsto (fun k => iter u (k + 1)) atTop (𝓝 y) := hy.comp (tendsto_add_atTop_nat 1)
     have h2 : Tendsto (fun k => iter u (k + 1)) atTop (𝓝 (u - y * y)) :=
       tendsto_const_nhds.sub (hy.mul hy)
-    exact eq_sub_iff_add_eq.1 (tendsto_nhds_unique h1 h2)
+    exact eq_sub_iff_add_eq.1 (tendsto_nhds_unique (hy.comp (tendsto_add_atTop_nat 1)) h2)
   refine ⟨1 + (2 : K) • y, ?_, ?_, ?_⟩
   · calc (1 + (2 : K) • y) * (1 + (2 : K) • y) = 1 + (4 : K) • (y + y * y) := by
           rw [add_mul, mul_add, mul_add, one_mul, mul_one, one_mul, smul_mul_smul_comm]

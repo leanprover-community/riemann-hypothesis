@@ -128,7 +128,6 @@ theorem sqrt_hecke_point_weil_orthogonal : ∀ {p : ℕ} [Fact p.Prime] (D : Glo
     have hnp : (N * k * 2).Coprime p := Nat.Coprime.mul_left (Nat.Coprime.mul_left hNp hk) h2p
     have hnk : 0 < N * k := Nat.mul_pos hN (Nat.pos_of_ne_zero hk0)
     refine ⟨N * k * 2, I.ev (N * k * 2) (N • g x), by omega, hnp, I.tower (N * k) 2 hnk (by norm_num) hnp _, ?_⟩
-    have := core (N * k * 2) 1 (by omega) hnp ⟨1, by push_cast; ring⟩
-    simpa only [one_smul] using this
+    simpa only [one_smul] using core (N * k * 2) 1 (by omega) hnp ⟨1, by push_cast; ring⟩
 
 end GlobalTheory.UPel.HT.HeckeRoot

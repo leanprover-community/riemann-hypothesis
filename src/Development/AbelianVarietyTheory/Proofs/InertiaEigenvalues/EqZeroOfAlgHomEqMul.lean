@@ -115,8 +115,7 @@ theorem _root_.GlobalTheory.CycFr.eq_act_of_comm {l : ℕ} [Fact l.Prime] {O : T
   have hGA : G = A := by
     rw [← sub_eq_zero]
     ext m
-    have := PowerSeries.X_pow_dvd_iff.mp (hdvd m) m (by omega)
-    simpa using this
+    simpa using PowerSeries.X_pow_dvd_iff.mp (hdvd m) m (by omega)
   exact _root_.GlobalTheory.CycFr.algHom_ext_X _ _ (PowerSeries.X_dvd_iff.mpr h0) hGA
 
 end GlobalTheory.CycFr

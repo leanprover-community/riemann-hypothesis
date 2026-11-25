@@ -87,8 +87,7 @@ theorem multilinear_sum_eq_of_prod_fun_eq
       exact hu l
     conv_lhs => rw [hu', MultilinearMap.map_sum_finset]
     refine Finset.sum_congr rfl fun ξ _ => ?_
-    rw [MultilinearMap.map_smul_univ, smul_eq_mul]
-    simp only [RingHom.id_apply]
+    simp only [MultilinearMap.map_smul_univ, smul_eq_mul, RingHom.id_apply]
   have gen : ∀ f' : κ → ∀ l, V l,
       (∀ c ∈ a.support, ∀ l, (f' c l : X l → ℂ) = ∑ x ∈ s l, (f' c l : X l → ℂ) x • E l x) →
       (a.sum fun c b => b * Φ (f' c)) = ∑ ξ ∈ Fintype.piFinset s,

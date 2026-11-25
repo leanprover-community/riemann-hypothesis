@@ -70,8 +70,7 @@ theorem eq_of_root_congr_of_deriv_unit {Ω : Type} [Field Ω] (A : ValuationSubr
   have hne' : β' - β ≠ 0 := sub_ne_zero.mpr (Ne.symm hne)
   have hD : aeval β (derivative f) = -((k : Ω) * (β' - β)) := by
     have : (β' - β) * (aeval β (derivative f) + (k : Ω) * (β' - β)) = 0 := by linear_combination -hc
-    have := (mul_eq_zero.mp this).resolve_left hne'
-    linear_combination this
+    linear_combination ((mul_eq_zero.mp this).resolve_left hne')
   apply hd
   rw [hD, Valuation.map_neg, Valuation.map_mul, Valuation.map_sub_swap]
   have hk1 : A.valuation (k : Ω) ≤ 1 := (A.valuation_le_one_iff _).mpr k.2

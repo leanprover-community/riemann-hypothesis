@@ -66,8 +66,7 @@ theorem aeval_scale {σ K R A : Type} [Fintype K] [CommRing R] [CommRing A] [Alg
       simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, ← Finset.prod_pow_eq_pow_sum, ← Finset.prod_pow,
         ← pow_mul, mul_comm]
       exact Finset.prod_comm
-    rw [e]
-    simp only [mul_pow, Finsupp.prod_mul]
+    simp only [e, mul_pow, Finsupp.prod_mul]
     ring
 
 variable {o : Type} [CommRing o] {Ω : Type} [Field Ω] [Algebra o Ω] {K : Type} [Fintype K] {J : K → Type}

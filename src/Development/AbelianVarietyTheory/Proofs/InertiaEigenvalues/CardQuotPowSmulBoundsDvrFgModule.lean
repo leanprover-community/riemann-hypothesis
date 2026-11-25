@@ -152,12 +152,11 @@ theorem card_quot_pow_smul_bounds : ∀ (O M : Type) [CommRing O] [IsDomain O] [
       card_quot_smul_top_of_flat']
     simp [F]
   haveI : Finite (T ⧸ (I • ⊤ : Submodule O T)) := Finite.of_surjective _ (Submodule.mkQ_surjective _)
-  have h1 : 1 ≤ Nat.card (T ⧸ (I • ⊤ : Submodule O T)) := Nat.card_pos
   have h2 : Nat.card (T ⧸ (I • ⊤ : Submodule O T)) ≤ Nat.card T :=
     Nat.card_le_card_of_surjective _ (Submodule.mkQ_surjective _)
   rw [hcard, hrank]
   constructor
-  · exact Nat.le_mul_of_pos_right _ h1
+  · exact Nat.le_mul_of_pos_right _ Nat.card_pos
   · rw [mul_comm]; exact Nat.mul_le_mul_right _ h2
 
 end GlobalTheory.DVRQuotCount

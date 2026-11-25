@@ -113,8 +113,7 @@ theorem exists_form_limit_ideal (R : Type) [CommRing R] (I : Ideal R) (hI : IsAd
     by_cases hdt : d.degree = t
     · have : AddMonoidAlgebra.coeff F₁ d = L d := by
         simp only [F₁, coeff_sum, coeff_monomial]
-        rw [Finset.sum_ite_eq']
-        simp [hdt]
+        simp [Finset.sum_ite_eq', hdt]
       rw [MvPolynomial.coeff_sub, this]
       exact hL d m
     · rw [((s m).2.1.sub hF₁).coeff_eq_zero hdt]

@@ -91,8 +91,7 @@ theorem isInternal_quotGrading {I : Ideal A} (hI : I.IsHomogeneous 𝒜) :
         (map_zero _) (fun x y hx hy => by simp only [map_add (f := _), hx, hy, add_zero])
       intro hji z hz
       rw [GradedRing.proj_apply, DirectSum.decompose_of_mem_ne 𝒜 hz hji]
-    have hab' : a - b ∈ I := Ideal.Quotient.eq.mp hab.symm
-    have h2 : GradedRing.proj 𝒜 i (a - b) ∈ I := hI i hab'
+    have h2 : GradedRing.proj 𝒜 i (a - b) ∈ I := hI i (Ideal.Quotient.eq.mp hab.symm)
     rw [map_sub, hb0, sub_zero, GradedRing.proj_apply,
       DirectSum.decompose_of_mem_same 𝒜 ha] at h2
     exact Ideal.Quotient.eq_zero_iff_mem.mpr h2

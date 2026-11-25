@@ -151,8 +151,7 @@ theorem unfold_abs : ∀ {A X Y : Type} [AddCommGroup A] [MeasurableSpace A] [Me
 
   have hF0e : F0 = F (e 0) := by
     funext b
-    have := hF0 0 b
-    simpa using this.symm
+    simpa using (hF0 0 b).symm
   have hint0 : Integrable F0 lam := by
     refine integrable_of_lattice_bound lam Λ 𝓖 h𝓖 h1 F0 (hF0e ▸ hF (e 0)) M (fun b => ?_)
     simpa only [hF0] using hsub e he b

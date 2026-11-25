@@ -66,8 +66,7 @@ theorem finsum_quot_eq {V K : Type} [AddCommGroup V] [Field K] (f : V → K) (M 
     intro v
     have h : -v + (QuotientAddGroup.mk v : V ⧸ M).out ∈ M := by
       rw [← QuotientAddGroup.eq]; simp
-    have := hf v _ (hMN h)
-    simpa using this
+    simpa using hf v _ (hMN h)
   rw [finsum_eq_sum_of_support_subset (s := (S ×ˢ Finset.univ).image φ)]
   · rw [Finset.sum_image]
     · rw [Finset.sum_product]

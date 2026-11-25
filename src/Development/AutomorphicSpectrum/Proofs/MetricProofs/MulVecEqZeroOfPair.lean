@@ -248,8 +248,7 @@ theorem limit_period : ∀ (n a g : ℕ) (ha : a ≤ n) (U : Set (Fin n → ℂ)
     rw [← exp_coord_eq _ _ _ 0, Complex.exp_eq_exp_iff_exists_int] at h1
     obtain ⟨N, hN⟩ := h1
     refine ⟨N, mul_left_cancel₀ Complex.two_pi_I_ne_zero ?_⟩
-    rw [hN]
-    simp only [Pi.add_apply, Pi.zero_apply, Int.cast_zero, zero_add]
+    simp only [hN, Pi.add_apply, Pi.zero_apply, Int.cast_zero, zero_add]
     ring
   choose u0 hu0 using hint
   exact ⟨u0, v0, hker, funext hu0⟩

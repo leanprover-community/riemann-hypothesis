@@ -65,5 +65,4 @@ theorem _root_.UpperTheory.KN.admissible_lattices_commensurable :
   intro u hu hμ
   have h1 : (⟨u, hu⟩ : Λ) ∈ f (N + 1) := hμ
   rw [← hN (N + 1) (Nat.le_succ N)] at h1
-  have h2 : c ^ N • u ∈ A := h1
-  exact ⟨c ^ N • u, h2, by rw [pow_succ, mul_comm, mul_smul]⟩
+  exact ⟨c ^ N • u, h1, by rw [pow_succ, mul_comm, mul_smul]⟩

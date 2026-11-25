@@ -70,9 +70,8 @@ theorem co_series_three_step : (∀ (Sg : Type) [Fintype Sg] [DecidableEq Sg] (�
     have hpk0 : (0 : ℝ) < (p : ℝ) ^ k := by linarith
     set r : ℝ := ((p : ℝ) ^ k)⁻¹ with hr
     have hr0 : 0 ≤ r := (inv_pos.mpr hpk0).le
-    have hr1 : r < 1 := inv_lt_one_of_one_lt₀ hpk1
     have hgeo : Summable (fun n : ℕ => r ^ (n + 1)) :=
-      (summable_nat_add_iff 1).mpr (summable_geometric_of_lt_one hr0 hr1)
+      (summable_nat_add_iff 1).mpr (summable_geometric_of_lt_one hr0 (inv_lt_one_of_one_lt₀ hpk1))
     have hterm : ∀ σ n, returnTerm φ p k τ σ n = if (φ ^ (n + 1)) τ = σ then r ^ (n + 1) else 0 := by
       intro σ n
       simp only [returnTerm, one_div, hr]

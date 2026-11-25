@@ -63,8 +63,7 @@ theorem mem_uniM_iff_nat (R M : Type) [CommRing R] [AddCommGroup M] [Module R M]
     simpa [Fin.ext_iff] using this
   · rintro ⟨f, hf⟩
     refine ⟨fun i => f i, fun i j => ?_⟩
-    have := hf i j i.isLt j.isLt
-    simpa [Fin.ext_iff] using this
+    simpa [Fin.ext_iff] using hf i j i.isLt j.isLt
 
 end GlobalTheory.UniModVec
 

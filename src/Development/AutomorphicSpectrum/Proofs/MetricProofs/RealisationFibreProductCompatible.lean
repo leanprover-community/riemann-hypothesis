@@ -87,8 +87,7 @@ theorem h_samesing_ne {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (
     intro k
     obtain ⟨i, hi⟩ := hz.1 k
     refine ⟨i, fun h => hi ?_⟩
-    have := (RingHom.mem_ker).1 h
-    simpa [φ] using this
+    simpa [φ] using (RingHom.mem_ker).1 h
   obtain ⟨u', v', -, hv', h'⟩ := hW _ hWp hPW hrel
   have hmem : (u * v' - v * u') * f ∈ P := by
     have e : (u * v' - v * u') * f = v' * (u * f - v * g) - v * (u' * f - v' * g) := by ring

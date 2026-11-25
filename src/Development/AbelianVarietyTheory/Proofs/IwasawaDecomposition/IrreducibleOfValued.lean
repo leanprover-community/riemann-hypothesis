@@ -124,8 +124,7 @@ theorem _root_.GlobalTheory.DegreeOneUniformiser.exists_irreducible_eq : ∀ (F 
     rw [hψ, ← hu, ← HeightOneSpectrum.valuation_of_algebraMap (K := F)]
     exact HeightOneSpectrum.valuedAdicCompletion_eq_valuation' v (u : F)
   have hf0 : f ≠ 0 := fun h => by
-    rw [h] at hf
-    simp only [map_zero] at hf
+    simp only [h, map_zero] at hf
     exact WithZero.exp_ne_zero hf.symm
   have hfP : f ∈ P.asIdeal := by
     rw [hP f hf0, HeightOneSpectrum.mem_adicCompletionIntegers, not_le, map_inv₀, map_inv₀, hf,

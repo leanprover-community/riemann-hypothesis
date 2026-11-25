@@ -91,9 +91,8 @@ theorem exists_perfect_radical (p : ℕ) [Fact p.Prime] (S : Type) [CommRing S] 
     · intro x
       constructor
       · intro h
-        have hk : Ideal.Quotient.mk I.radical x ∈ RingHom.ker (PerfectClosure.of (S ⧸ I.radical) p) := h
         obtain ⟨n, hn⟩ := mem_pNilradical.mp
-          (IsPRadical.ker_le (i := PerfectClosure.of (S ⧸ I.radical) p) (p := p) hk)
+          (IsPRadical.ker_le (i := PerfectClosure.of (S ⧸ I.radical) p) (p := p) h)
         exact Ideal.Quotient.eq_zero_iff_mem.mp (IsReduced.eq_zero _ ⟨_, hn⟩)
       · intro h
         simp [Ideal.Quotient.eq_zero_iff_mem.mpr h]

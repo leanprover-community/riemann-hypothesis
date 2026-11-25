@@ -127,8 +127,7 @@ lemma smul_mem_fix {L : Type} [Field L] {G : Type} [Group G] [MulSemiringAction 
     (N : Subgroup G) [hN : N.Normal] (g : G) {y : L} (hy : y ∈ Fix L N) : g • y ∈ Fix L N := by
   intro n
   have hc : g⁻¹ * (n : G) * g ∈ N := by
-    have := hN.conj_mem (n : G) n.2 g⁻¹
-    simpa using this
+    simpa using hN.conj_mem (n : G) n.2 g⁻¹
   have h1 : (g⁻¹ * (n : G) * g) • y = y := hy ⟨_, hc⟩
   show (n : G) • g • y = g • y
   calc (n : G) • g • y = g • ((g⁻¹ * (n : G) * g) • y) := by

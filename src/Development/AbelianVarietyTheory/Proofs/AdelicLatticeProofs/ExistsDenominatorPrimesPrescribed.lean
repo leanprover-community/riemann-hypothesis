@@ -105,9 +105,8 @@ theorem exists_denominator_primes_prescribed :
   let A0 : Ideal (𝓞 E) := ⨅ i, A i
   have hA0 : A0 ≠ ⊥ := by
     obtain ⟨c, hc⟩ := IsLocalization.exist_integer_multiples_of_finite (nonZeroDivisors (𝓞 E)) x
-    have hc0 : (c : 𝓞 E) ≠ 0 := nonZeroDivisors.coe_ne_zero c
     intro hbot
-    apply hc0
+    apply (nonZeroDivisors.coe_ne_zero c)
     have hcmem : (c : 𝓞 E) ∈ A0 := by
       refine (Submodule.mem_iInf _).mpr fun i => (memA i _).mpr ?_
       obtain ⟨b, hb⟩ := hc i

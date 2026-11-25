@@ -68,8 +68,7 @@ private theorem base_sub {Γ G V : Type} [Group Γ] [Group G] [AddCommGroup V] [
   obtain ⟨B, h1, h2, h3⟩ := base_bot ((ι.comp S.subtype).codRestrict T fun γ => h γ γ.2)
     ((U.comap (MulAut.conj x⁻¹).toMonoidHom).subgroupOf T) W
   refine ⟨B, fun γ => by rw [h1]; rfl, fun g => ?_, h3⟩
-  rw [h2, Subgroup.mem_subgroupOf, Subgroup.mem_comap]
-  simp
+  simp [h2, Subgroup.mem_subgroupOf, Subgroup.mem_comap]
 
 private theorem mem_SU {K : Type} [Field K] {Δ : K} (g : DX Δ) : g ∈ SU Δ ↔ (mt g).det = 1 := by
   rw [SU, MonoidHom.mem_ker, ← Units.val_eq_one]

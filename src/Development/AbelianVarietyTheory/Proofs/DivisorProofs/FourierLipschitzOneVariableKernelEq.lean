@@ -142,8 +142,7 @@ theorem fourier_phi1_eq_factorial_mul_zpow : ∀ (k : ℕ), 2 ≤ k → Even k �
   have hwx : w - (x : ℂ) ≠ 0 := by
     intro h
     apply hw
-    have := congrArg Complex.im h
-    simpa using this
+    simpa using congrArg Complex.im h
   have h2pi : (2 * Real.pi * Complex.I : ℂ) ≠ 0 := by
     simp [Real.pi_ne_zero, Complex.I_ne_zero]
   simp only [Nat.add_sub_cancel]

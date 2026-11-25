@@ -93,8 +93,7 @@ theorem mul_norm_sq_le_norm_adjoint_sq_of_spanning_parts
       have h4 : ((μ : ℂ) - (l : ℂ)) * ⟪v, y⟫_ℂ = 0 := by rw [sub_mul, h1, sub_self]
       exact (mul_eq_zero.mp h4).resolve_left h3
     have hv' : v ∈ (ℂ ∙ v)ᗮ := by
-      have : (⊤ : Submodule ℂ Y) ≤ (ℂ ∙ v)ᗮ := hP ▸ iSup_le hle
-      exact this Submodule.mem_top
+      exact (hP ▸ iSup_le hle : (⊤ : Submodule ℂ Y) ≤ (ℂ ∙ v)ᗮ) Submodule.mem_top
     rw [Submodule.mem_orthogonal_singleton_iff_inner_right, inner_self_eq_zero] at hv'
     exact hv.2 hv'
   have h1 := hev _ hsym.hasEigenvalue_iInf_of_finiteDimensional

@@ -87,8 +87,7 @@ theorem free_rank (B K L : Type) [CommRing B] [IsDomain B] [Field K] [Algebra B 
         (LocalizedModule.mkLinearMap q.asIdeal.primeCompl L) hle]
   have hK := congrFun (Module.rankAtStalk_eq_finrank_of_free (R := K) (M := K ⊗[B] L))
     (IsLocalRing.closedPoint K)
-  rw [Module.rankAtStalk_baseChange, hstalk] at hK
-  simp only [Pi.natCast_apply, Nat.cast_id] at hK
+  simp only [Module.rankAtStalk_baseChange, hstalk, Pi.natCast_apply, Nat.cast_id] at hK
   exact hK.symm
 
 theorem tw_g_free : ∀ (E : Type) [Field E] [NumberField E] (p : ℕ) [Fact p.Prime] (L : Type) [AddCommGroup L] [Module (𝓞 E) L] [Module.Finite (𝓞 E) L] [Module.Projective (𝓞 E) L], ∃ φ : (ℤ_[p] ⊗[ℤ] L) ≃ₗ[ℤ_[p]] (Fin (Module.finrank (𝓞 E) L) → ℤ_[p] ⊗[ℤ] 𝓞 E), ∀ (z : ℤ_[p]) (a : 𝓞 E) (x : L), φ (z ⊗ₜ (a • x)) = ((1 : ℤ_[p]) ⊗ₜ[ℤ] a : ℤ_[p] ⊗[ℤ] 𝓞 E) • φ (z ⊗ₜ x) := by

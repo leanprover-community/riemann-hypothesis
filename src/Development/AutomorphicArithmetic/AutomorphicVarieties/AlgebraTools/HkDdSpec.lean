@@ -155,7 +155,7 @@ theorem UpperTheory.V.AlgebraTools.hkDdSpec :
     ∀ (R : Type) [CommRing R] [IsDomain R] (n : ℕ) (x : MvPolynomial (Fin n) R), De R n * dd x = alt x := by
   intro R _ _ n x
   have hlt : ∀ p ∈ pairs n, p.1 < p.2 := fun p hp => by simpa [pairs] using hp
-  have hd : De R n ∣ alt x := by
+  obtain ⟨y, hy⟩ : De R n ∣ alt x := by
     refine _root_.UpperTheory.Reformulated.B.Qi3.finset_prod_dvd_of_prime_of_dvd_imp_eq _ _ _ (fun p hp => prime_sb (hlt p hp).ne) (fun p hp q hq hpq => ?_)
       (fun p hp => (dvd_iff_sb _ _ _).2 (alt_sb (hlt p hp).ne x))
     rw [dvd_iff_sb, map_sub, rename_X, rename_X, sub_eq_zero] at hpq
@@ -169,7 +169,6 @@ theorem UpperTheory.V.AlgebraTools.hkDdSpec :
     · rw [e, b] at h2
       exact absurd h1 h2.not_gt
     · exact absurd e h2.ne'
-  obtain ⟨y, hy⟩ := hd
   have h : ∃ y, De R n * y = alt x := ⟨y, hy.symm⟩
   rw [dd, dite_eq_left h]
   exact h.choose_spec

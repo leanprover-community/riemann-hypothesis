@@ -58,8 +58,7 @@ theorem UpperTheory.V.KH.imageRep :
     (Rep.mono_iff_injective _).1 inferInstance
   have hc : ∀ x, (Abelian.image.ι d).hom ((Abelian.factorThruImage d).hom x) = d.hom x := by
     intro x
-    have := congrArg (fun f : C ⟶ B => f.hom x) (Abelian.image.fac d)
-    simpa using this
+    simpa using congrArg (fun f : C ⟶ B => f.hom x) (Abelian.image.fac d)
   refine ⟨Abelian.image d, Abelian.factorThruImage d, Abelian.image.ι d, hs, hi, hc, ?_⟩
   intro y
   rw [h y]

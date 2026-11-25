@@ -225,8 +225,7 @@ theorem norm_smul_le_one_of_lt (C : Type) [NontriviallyNormedField C] [IsUltrame
   set s := i (c • y) + j (c • y) with hsdef
   have hγs : ∀ m, dpow C m s =
       ∑ x ∈ antidiagonal m, i (dpow C x.1 (c • y)) * j (dpow C x.2 (c • y)) := fun m => by
-    rw [hsdef, dpow_add]
-    simp only [map_dpow]
+    simp only [hsdef, dpow_add, map_dpow]
   have hsle : ∀ m, N₂ (dpow C m s) ≤ t k * t k := fun m => by
     rw [hγs]
     refine sum_le N₂ h0 hadd hT.le _ _ fun x _ => ?_

@@ -193,8 +193,7 @@ theorem exists_nat_mul_mem [CharZero Ω] (hξ : IsCptGen ξ) (W : X.Opens) (hW :
   obtain ⟨Q, hQ, hDQ, hQM⟩ := Ideal.exists_le_prime_disjoint D M hdisj
   let z : PrimeSpectrum Γ(X, W) := ⟨Q, hQ⟩
   have hxW : hW.fromSpec z ∈ W := by
-    have := hW.range_fromSpec
-    exact (Set.ext_iff.1 this _).1 ⟨z, rfl⟩
+    exact (Set.ext_iff.1 hW.range_fromSpec _).1 ⟨z, rfl⟩
   let x : W := ⟨hW.fromSpec z, hxW⟩
   have hxz : hW.primeIdealOf x = z := by
     exact hW.fromSpec.isOpenEmbedding.injective (hW.fromSpec_primeIdealOf x)

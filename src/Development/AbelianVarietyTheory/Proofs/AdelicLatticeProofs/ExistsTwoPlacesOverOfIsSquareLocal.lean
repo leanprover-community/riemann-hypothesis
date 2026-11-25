@@ -200,8 +200,7 @@ theorem two_places_of_isSquare : ∀ (F E : Type) [Field F] [NumberField F] [Fie
       have := val_integer_le_one u' n
       rw [← hnd, map_mul] at this
       exact le_trans (le_mul_of_one_le_right' hd1) this
-    have : u y * u' y < 1 := lt_of_le_of_lt (mul_le_of_le_one_right' h1) huy
-    exact this.ne huu
+    exact (lt_of_le_of_lt (mul_le_of_le_one_right' h1) huy : u y * u' y < 1).ne huu
   · have hd1 : 1 ≤ u (algebraMap (𝓞 E) E d) := not_lt.1 fun a => hd' ((hwm d).2 a)
     rw [← hnd, map_mul] at hd1
     exact absurd (lt_of_le_of_lt (mul_le_of_le_one_right' (val_integer_le_one u n)) huy)

@@ -62,8 +62,7 @@ theorem isRadical_of_squarefree {S : Type} [CommRing S] [IsDedekindDomain S] {I 
   obtain ⟨n, hn⟩ := hx
   have h1 : I ∣ Ideal.span {x} ^ n := by
     rwa [Ideal.dvd_iff_le, Ideal.span_singleton_pow, Ideal.span_singleton_le_iff_mem]
-  have h2 : I ∣ Ideal.span {x} := hI.isRadical n _ h1
-  exact (Ideal.span_singleton_le_iff_mem I).1 (Ideal.dvd_iff_le.1 h2)
+  exact (Ideal.span_singleton_le_iff_mem I).1 (Ideal.dvd_iff_le.1 (hI.isRadical n _ h1))
 
 theorem isRadical_span_of_ncard_primesOver : ∀ (E : Type) [Field E] [NumberField E] (p : ℕ), p.Prime →
     (Ideal.primesOver (Ideal.span {(p : ℤ)}) (𝓞 E)).ncard = Module.finrank ℚ E →

@@ -82,8 +82,7 @@ theorem norm_le_max_Ain (s : ℝ) (x : κ' ⊕ κ'' → W) : ‖x‖ ≤ max ‖
   cases j with
   | inl i =>
     have h : Ain s x (Sum.inl i) = x (Sum.inl i) := by
-      rw [Ain_apply]
-      simp [sc]
+      simp [Ain_apply, sc]
     rw [← h]
     exact (norm_le_pi_norm (Ain s x) _).trans (le_max_left _ _)
   | inr i =>

@@ -85,7 +85,6 @@ theorem _root_.GlobalTheory.HL.invVol_mul_pos_le_conj : ∀ {G : Type} [Group G]
   have hd0 : (K0 ⊓ K1 ⊓ K).relIndex K0 ≠ 0 :=
     Subgroup.relIndex_inf_ne_zero (Subgroup.relIndex_inf_ne_zero (by simp) h10) hK0
   have hd1 : (K0 ⊓ K1 ⊓ K).relIndex K1 ≠ 0 := Subgroup.relIndex_ne_zero_trans hd0 h01
-  have hdK : (K0 ⊓ K1 ⊓ K).relIndex K ≠ 0 := Subgroup.relIndex_ne_zero_trans hd0 h0K
   have l0 : K0 ⊓ K1 ⊓ K ≤ K0 := inf_le_left.trans inf_le_left
   have l1 : K0 ⊓ K1 ⊓ K ≤ K1 := inf_le_left.trans inf_le_right
   have lK : K0 ⊓ K1 ⊓ K ≤ K := inf_le_right
@@ -98,7 +97,7 @@ theorem _root_.GlobalTheory.HL.invVol_mul_pos_le_conj : ∀ {G : Type} [Group G]
   refine ⟨hmul, ?_, ?_, ?_⟩
   · rw [e0K]
     exact div_pos (Nat.cast_pos.mpr (Nat.pos_of_ne_zero hd0))
-      (Nat.cast_pos.mpr (Nat.pos_of_ne_zero hdK))
+      (Nat.cast_pos.mpr (Nat.pos_of_ne_zero (Subgroup.relIndex_ne_zero_trans hd0 h0K)))
   · intro hle
     have h1 : K1.relIndex K = 1 := Subgroup.relIndex_eq_one.mpr hle
     rw [hmul]

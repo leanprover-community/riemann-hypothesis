@@ -56,10 +56,9 @@ theorem sq_two_mul_rho_sub_tr (b : Base D R) :
   linear_combination 4 * h
 
 theorem isUnit_two_mul_rho_sub_tr (b : Base D R) : IsUnit (2 * b.ρ - (D.tr : R)) := by
-  have hp : (p).Prime := Fact.out
   set d : ℤ := D.tr ^ 2 - 4 * D.nm with hd
   have hc : d.natAbs.Coprime p := by
-    refine Nat.Coprime.symm ((Nat.Prime.coprime_iff_not_dvd hp).2 fun h => D.disc_p ?_)
+    refine Nat.Coprime.symm ((Nat.Prime.coprime_iff_not_dvd Fact.out).2 fun h => D.disc_p ?_)
     exact Int.natCast_dvd.2 h
   have hu := b.unit _ hc
   have hdu : IsUnit ((d : ℤ) : R) := by

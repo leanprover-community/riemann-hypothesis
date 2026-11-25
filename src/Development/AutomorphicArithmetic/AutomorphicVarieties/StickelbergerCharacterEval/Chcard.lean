@@ -76,7 +76,7 @@ theorem UpperTheory.V.B5.card_signedInvolutionChar_eq_card_involutionQuotient :
     ∀ {Ω : Type} [Field Ω] {Γ : Type} [CommGroup Γ] [Finite Γ] [HasEnoughRootsOfUnity Ω (Monoid.exponent Γ)] (c : Γ) (ε : ℤ), c * c = 1 → c ≠ 1 → ε * ε = 1 → Fintype.card (Ch Ω c ε) = Fintype.card (Qc c) := by
   intro Ω _ Γ _ _ _ c ε h2 hc hε
   classical
-  have hne₀ : Nonempty (Ch Ω c ε) := by
+  obtain ⟨χ₀⟩ : Nonempty (Ch Ω c ε) := by
     rcases Int.eq_one_or_neg_one_of_mul_eq_one' hε with ⟨rfl, -⟩ | ⟨rfl, -⟩
     · exact ⟨⟨1, by simp⟩⟩
     · obtain ⟨φ, hφ⟩ := CommGroup.exists_apply_ne_one_of_hasEnoughRootsOfUnity Γ Ω hc
@@ -87,7 +87,6 @@ theorem UpperTheory.V.B5.card_signedInvolutionChar_eq_card_involutionQuotient :
       rcases mul_self_eq_one_iff.mp hsq with h | h
       · exact absurd h hne
       · simpa using h
-  obtain ⟨χ₀⟩ := hne₀
   haveI : NeZero (Monoid.exponent Γ) := ⟨Monoid.exponent_ne_zero_of_finite⟩
   haveI : HasEnoughRootsOfUnity Ω (Monoid.exponent (Γ ⧸ Subgroup.zpowers c)) :=
     HasEnoughRootsOfUnity.of_dvd Ω (Group.exponent_quotient_dvd _)

@@ -224,8 +224,7 @@ theorem weight_integral {σ : Matrix (Fin n) (Fin n) ℂ → H →L[ℂ] H} {ω 
 theorem cptLE_pair {ε : Fin n → Bool} {ω Λ : Fin n → ℝ} (h : HarishChandraRootData.CptLE ε ω Λ) :
     ∑ i : Fin n, ((i : ℕ) : ℝ) * (Λ - ω) i ≤ 0 := by
   obtain ⟨c, hc⟩ := h
-  rw [hc]
-  simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
+  simp only [hc, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
   rw [Finset.sum_comm]
   apply Finset.sum_nonpos
   intro x hx

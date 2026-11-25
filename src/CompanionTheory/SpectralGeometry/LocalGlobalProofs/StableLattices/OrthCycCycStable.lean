@@ -44,8 +44,7 @@ theorem orthCyc : CompanionTheory.D.LK.OrthCyc := by
     exact h
   have hpH : KHighest ε E μ p := by
     refine ⟨fun a => key a a rfl _ (hu.1 a), fun a b hab hε => ?_⟩
-    have := key a b hε 0 (by rw [zero_smul]; exact hu.2 a b hab hε)
-    simpa using this
+    simpa using key a b hε 0 (by rw [zero_smul]; exact hu.2 a b hab hε)
   obtain ⟨c, hc⟩ := h1 p hp.2 hpH
   have hq' := (Submodule.mem_orthogonal W q).1 hq
   have hpu : ⟪p, u⟫_ℂ = 0 := by rw [hc, inner_smul_left, hvu, mul_zero]

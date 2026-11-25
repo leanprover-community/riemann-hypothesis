@@ -111,10 +111,9 @@ theorem trGram_det_ne_zero {σ : E →ₐ[F] E} (h : IsCMExt F E σ) {M d : ℕ}
     refine (traceForm_nondegenerate F E).1 _ fun e => ?_
     rw [Algebra.traceForm_apply, mul_comm]
     exact key2 i e
-  have hy0 : y = 0 := Matrix.eq_zero_of_mulVec_eq_zero hJ.2 hw
   apply hv
   funext ⟨j, l⟩
-  have := congrFun hy0 j
+  have := congrFun (Matrix.eq_zero_of_mulVec_eq_zero hJ.2 hw) j
   have h2 := Fintype.linearIndependent_iff.1 b.linearIndependent (fun l => v (j, l)) this l
   simpa using h2
 

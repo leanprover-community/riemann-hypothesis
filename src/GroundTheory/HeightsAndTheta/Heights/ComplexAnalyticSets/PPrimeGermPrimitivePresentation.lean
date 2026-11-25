@@ -87,8 +87,7 @@ def compA {d : ℕ} (A : (σ → ℂ) →L[ℂ] (Fin d → ℂ)) (w : σ → ℂ
 theorem toGerm_compA_congr {d : ℕ} (A : (σ → ℂ) →L[ℂ] (Fin d → ℂ)) (w : σ → ℂ) (u v : anFun (A w))
     (h : toGerm (A w) u = toGerm (A w) v) : toGerm w (compA A w u) = toGerm w (compA A w v) := by
   apply Subtype.ext
-  have h' : ((u.1 : (Fin d → ℂ) → ℂ) : Germ (𝓝 (A w)) ℂ) = (v.1 : Germ (𝓝 (A w)) ℂ) := congrArg Subtype.val h
-  exact Germ.coe_eq.2 ((A.continuous.tendsto w).eventually (Germ.coe_eq.1 h'))
+  exact Germ.coe_eq.2 ((A.continuous.tendsto w).eventually (Germ.coe_eq.1 (congrArg Subtype.val h)))
 
 def pull {d : ℕ} (A : (σ → ℂ) →L[ℂ] (Fin d → ℂ)) (w : σ → ℂ) : holGerms (A w) →+* holGerms w where
   toFun φ := toGerm w (compA A w (rep φ))

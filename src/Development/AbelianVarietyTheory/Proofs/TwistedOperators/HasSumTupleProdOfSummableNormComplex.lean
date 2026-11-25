@@ -68,8 +68,7 @@ theorem hasSum_pi_prod_of_summable_norm : ∀ (ι : Type) [Fintype ι] [Decidabl
     intro i
     refine Filter.tendsto_atTop_atTop.2 fun b =>
       ⟨Function.update (fun j => (∅ : Finset (J j))) i b, fun S hS => ?_⟩
-    have := hS i
-    simpa using this
+    simpa using hS i
   have h2 : Tendsto (fun S : ∀ i, Finset (J i) => ∏ i, ∑ x ∈ S i, f i x)
       atTop (𝓝 (∏ i, ∑' j, f i j)) :=
     tendsto_finsetProd _ fun i _ => ((hf i).of_norm.hasSum).comp (hproj i)

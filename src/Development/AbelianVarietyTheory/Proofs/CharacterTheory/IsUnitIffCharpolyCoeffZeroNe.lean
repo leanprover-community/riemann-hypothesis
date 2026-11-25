@@ -76,8 +76,7 @@ theorem _root_.GlobalTheory.CuspGL.ipGL_charpoly_eq_finsum_mass (F : Type) [Fiel
     intro g
     simp only [hS, Set.mem_setOf_eq, LinearMap.charpoly_monic, LinearMap.charpoly_natDegree,
       true_and]
-    rw [LinearMap.isUnit_iff_isUnit_det, LinearMap.det_eq_sign_charpoly_coeff, isUnit_iff_ne_zero]
-    simp
+    simp [LinearMap.isUnit_iff_isUnit_det, LinearMap.det_eq_sign_charpoly_coeff, isUnit_iff_ne_zero]
   have hset : {g : Module.End F V | IsUnit g} =
       ⋃ P ∈ I, {g : Module.End F V | LinearMap.charpoly g = P} := by
     ext g

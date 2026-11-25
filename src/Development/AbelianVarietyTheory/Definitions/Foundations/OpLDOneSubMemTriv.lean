@@ -130,8 +130,7 @@ theorem isDiam_sgD {N l d : ℕ} (hN : N ≠ 0) (hl : l ≠ 0) (hd : Nat.Coprime
   exact Classical.epsilon_spec (exists_isDiam hN hl hd)
 
 theorem isDiam_sgD_of_adm {N l q : ℕ} (h : admitted N l (Letter.T q)) : IsDiam N l q (sgD N l q) := by
-  have h' : q.Prime ∧ ¬ q ∣ N * l := h
-  obtain ⟨hq, hqN⟩ := h'
+  obtain ⟨hq, hqN⟩ : q.Prime ∧ ¬ q ∣ N * l := h
   have hN : N ≠ 0 := by
     rintro rfl
     exact hqN (by simp)

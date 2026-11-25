@@ -77,9 +77,8 @@ theorem bdry_isClosed_dense_compl (e : ℕ) (X : Type) [TopologicalSpace X] (A :
   · rw [dense_iff_inter_open]
     intro V hV ⟨x, hx⟩
     obtain ⟨ψ, -, hxψ, S, hS⟩ := key x
-    have hsub : V ∩ ψ.source ⊆ ψ.source := Set.inter_subset_right
     have himg : IsOpen (ψ '' (V ∩ ψ.source)) :=
-      ψ.isOpen_image_of_subset_source (hV.inter ψ.open_source) hsub
+      ψ.isOpen_image_of_subset_source (hV.inter ψ.open_source) Set.inter_subset_right
     have hne : (ψ '' (V ∩ ψ.source)).Nonempty := ⟨ψ x, x, ⟨hx, hxψ⟩, rfl⟩
     obtain ⟨z, hz, hz0⟩ := (_root_.GlobalTheory.CompanionTheory.Ar.PB.Flat.dense_forall_coord_ne_zero e).inter_open_nonempty _ himg hne
     obtain ⟨y, ⟨hyV, hyψ⟩, rfl⟩ := hz

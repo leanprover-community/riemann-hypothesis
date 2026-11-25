@@ -75,8 +75,7 @@ theorem sum_out_refine {N K : Subgroup H} (hNK : N ≤ K) [Fintype (H ⧸ N)] [F
     _ = ∑ p : (H ⧸ K) × (K ⧸ N.subgroupOf K), f p.1.out :=
         Equiv.sum_comp (Subgroup.quotientEquivProdOfLE hNK) (fun p => f p.1.out)
     _ = Fintype.card (K ⧸ N.subgroupOf K) • ∑ q : H ⧸ K, f q.out := by
-        rw [Fintype.sum_prod_type]
-        simp only [Finset.sum_const, Finset.card_univ]
+        simp only [Fintype.sum_prod_type, Finset.sum_const, Finset.card_univ]
         rw [Finset.smul_sum]
 
 theorem sum_out_mul_right (N : Subgroup H) [N.Normal] [Fintype (H ⧸ N)] (f : H → V)

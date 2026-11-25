@@ -245,8 +245,7 @@ theorem integrable_rpow_sq_add {Y s : ℝ} (hY : 0 < Y) (hs : 1 ≤ s) :
   have h' : Integrable (fun t : ℝ => (t ^ 2 + Y ^ 2) ^ (-s) * Real.Gamma s) := by
     refine h.congr (Filter.Eventually.of_forall fun t => ?_)
     exact integral_Ioi_rpow_mul_exp_neg_eq_rpow_mul_Gamma hY (by linarith)
-  have := h'.div_const (Real.Gamma s)
-  simpa [hΓ.ne'] using this
+  simpa [hΓ.ne'] using h'.div_const (Real.Gamma s)
 
 theorem integral_rpow_sq_add {Y s : ℝ} (hY : 0 < Y) (hs : 1 / 2 < s) :
     ∫ t : ℝ, (t ^ 2 + Y ^ 2) ^ (-s) = betaConst s * Y ^ (1 - 2 * s) := by

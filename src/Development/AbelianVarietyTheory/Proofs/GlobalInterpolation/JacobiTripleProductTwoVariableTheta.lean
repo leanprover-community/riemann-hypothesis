@@ -336,8 +336,7 @@ theorem tendsto_finCoeff_sum_jacobiTheta₂ : ∀ (τ : ℂ) (z : ℂ), 0 < τ.i
     (f := fun (n : ℕ) (j : ℤ) => finCoeff t n j * jacobiTheta₂_term j z τ)
     (g := fun j => jacobiTheta₂_term j z τ * (qPochInf t)⁻¹) hsum
     (fun j => by
-      have := (hlim j).mul_const (jacobiTheta₂_term j z τ)
-      simpa [mul_comm] using this)
+      simpa [mul_comm] using ((hlim j).mul_const (jacobiTheta₂_term j z τ)))
     (Filter.Eventually.of_forall fun n j => by
       rw [norm_mul]
       exact mul_le_mul_of_nonneg_right (hC n j) (norm_nonneg _))

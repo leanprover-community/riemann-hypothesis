@@ -77,8 +77,7 @@ theorem isOpen_thetaDomain : IsOpen (ThetaDomain ι) := by
       ∀ x ∈ Metric.sphere (0 : ι → ℝ) 1, 0 < x ⬝ᵥ (S τ *ᵥ x) := by
     intro τ
     change (S τ).PosDef ↔ _
-    rw [Matrix.posDef_iff_dotProduct_mulVec]
-    simp only [star_trivial]
+    simp only [Matrix.posDef_iff_dotProduct_mulVec, star_trivial]
     constructor
     · rintro ⟨-, h⟩ x hx
       apply h

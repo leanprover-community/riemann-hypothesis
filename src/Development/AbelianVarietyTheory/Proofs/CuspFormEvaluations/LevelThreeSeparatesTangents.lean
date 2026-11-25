@@ -258,7 +258,6 @@ theorem level_three_separates_tangents {ι : Type} [Fintype ι] (Y : GT ι) (θ 
   refine ⟨hc, ?_⟩
   obtain ⟨d, hd1, hd2, -⟩ := exists_mem_four_of_open_dense ho hden (Homeomorph.refl _)
     (Homeomorph.subLeft (-a₀)) (Homeomorph.refl _) (Homeomorph.refl _)
-  have := hf a₀ ha₀ d hd1 hd2
-  simpa [hfdef, hc] using this
+  simpa [hfdef, hc] using hf a₀ ha₀ d hd1 hd2
 
 end GlobalTheory

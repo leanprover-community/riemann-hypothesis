@@ -142,8 +142,7 @@ theorem _root_.GlobalTheory.GaloisDescent.mem_range_algebraMap_of_forall_algEqui
     let σ : L ≃ₐ[K] L := AlgEquiv.ofRingEquiv (f := τ) (fun k => by simpa [φ] using hτ (C k))
     have h1 := hx σ
     have h2 : τ x = x := h1
-    rw [hτx] at h2
-    simp at h2
+    simp [hτx] at h2
 
 
 open MvPolynomial Cardinal in

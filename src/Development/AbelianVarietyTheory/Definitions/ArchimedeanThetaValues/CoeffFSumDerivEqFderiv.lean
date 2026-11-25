@@ -79,8 +79,7 @@ theorem _root_.GlobalTheory.AnArc.term_add_period {j : ℕ} {α : A.X} {th : (Fi
       _root_.GlobalTheory.AnArc.degeneratingTori_periodMap_eq_base_of_y_eq_zero _ _ (mk_y _ _ _)]
   set v' : A.V := v + A.P0 L + A.P0 M
   have hv : v + A.Pw w la = v' + A.Pw w Y := by
-    rw [hPw]
-    simp only [v']
+    simp only [hPw, v']
     abel
   have key := A.term_add_Pw_y j α th w μ y v'
   rw [← hv] at key

@@ -178,8 +178,7 @@ theorem _root_.GlobalTheory.CoefEmbed.embedding_closed_integral : ∀ (l : ℕ) 
     obtain ⟨e', rfl⟩ : ∃ e', e = e' + 1 := ⟨e - 1, by omega⟩
     refine ⟨n, ↑u⁻¹ * ↑w ^ n * ϖ ^ (e' * n), ?_⟩
     rw [hw]
-    have := u.mul_inv
-    linear_combination (↑w ^ n * ϖ ^ (n + e' * n)) * this
+    linear_combination (↑w ^ n * ϖ ^ (n + e' * n)) * u.mul_inv
   obtain ⟨s, hs⟩ := Module.Finite.fg_top (R := ℤ_[l]) (M := O)
   set V : Submodule ℚ_[l] (PadicAlgCl l) := Submodule.span ℚ_[l] (g '' (s : Set O)) with hV
   have hgV : ∀ x : O, g x ∈ V := by
